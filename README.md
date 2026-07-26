@@ -49,15 +49,16 @@ I due livelli si alternano nello stesso capitolo: si può leggere tutto all'Elem
 | 19 | **Speech Recognition** | Dalla voce al testo: allineamento e CTC, modelli con attenzione, Whisper, sintesi vocale (TTS) |
 | 20 | **Generative Adversarial Network** | Il gioco avversario, applicazioni ed evoluzioni |
 | 21 | **Modelli di Diffusione** | Da DDPM a Stable Diffusion e ai Diffusion Transformer (DiT, Sora) |
-| 22 | **World Model** | Simulatori interni: Ha & Schmidhuber, Dreamer, reti a energia, la via di LeCun (JEPA) |
-| 23 | **Graph Neural Network** | Dati relazionali e message passing: GCN, GraphSAGE, GAT; node embedding, applicazioni (molecole, raccomandazione, frodi, traffico) e limiti (oversmoothing) |
-| 24 | **Sistemi di Raccomandazione** | Dal Netflix Prize alla matrix factorization e alla raccomandazione neurale |
-| 25 | **Serie temporali** | Prevedere dal passato: decomposizione, ARIMA e Holt-Winters, validazione temporale e metriche (MASE, pinball loss), forecasting neurale (TCN, DeepAR, N-BEATS, Transformer, foundation model) |
-| 26 | **Physics-Informed Neural Networks** | Le equazioni differenziali dentro la loss; operatori neurali |
-| 27 | **MLOps** | Dal notebook alla produzione: versionamento, pipeline di dati, serving e quantizzazione, monitoraggio del drift, LLMOps e deploy |
-| 28 | **Interpretabilità e XAI** | Aprire la scatola nera: modelli trasparenti, importanza delle feature, LIME/SHAP/controfattuali, Grad-CAM e integrated gradients, interpretabilità meccanicistica |
-| 29 | **AI responsabile** | Equità e bias, privacy (differential privacy, federated learning) e robustezza agli attacchi avversari, allineamento (RLHF/DPO) e governance (l'AI Act europeo) |
-| 30 | **Conclusioni** | Bilancio e letture per proseguire |
+| 22 | **Modelli a energia** | Il paesaggio invece della probabilità: memoria associativa di Hopfield, macchine di Boltzmann e contrastive divergence, i modi di aggirare la funzione di partizione (Langevin, score matching, NCE), la cornice di LeCun, EBM di oggi (IGEBM, JEM) |
+| 23 | **World Model** | Simulatori interni: Ha & Schmidhuber, Dreamer, la via di LeCun (JEPA), simulatori video e dibattito |
+| 24 | **Graph Neural Network** | Dati relazionali e message passing: GCN, GraphSAGE, GAT; node embedding, applicazioni (molecole, raccomandazione, frodi, traffico) e limiti (oversmoothing) |
+| 25 | **Sistemi di Raccomandazione** | Dal Netflix Prize alla matrix factorization e alla raccomandazione neurale |
+| 26 | **Serie temporali** | Prevedere dal passato: decomposizione, ARIMA e Holt-Winters, validazione temporale e metriche (MASE, pinball loss), forecasting neurale (TCN, DeepAR, N-BEATS, Transformer, foundation model) |
+| 27 | **Physics-Informed Neural Networks** | Le equazioni differenziali dentro la loss; operatori neurali |
+| 28 | **MLOps** | Dal notebook alla produzione: versionamento, pipeline di dati, serving e quantizzazione, monitoraggio del drift, LLMOps e deploy |
+| 29 | **Interpretabilità e XAI** | Aprire la scatola nera: modelli trasparenti, importanza delle feature, LIME/SHAP/controfattuali, Grad-CAM e integrated gradients, interpretabilità meccanicistica |
+| 30 | **AI responsabile** | Equità e bias, privacy (differential privacy, federated learning) e robustezza agli attacchi avversari, allineamento (RLHF/DPO) e governance (l'AI Act europeo) |
+| 31 | **Conclusioni** | Bilancio e letture per proseguire |
 
 Il framework di riferimento per tutto il codice è **PyTorch** (con NumPy e scikit-learn dove appropriato). Due capitoli — Introduzione e Attenzione lineare — hanno un notebook eseguibile, con i pulsanti per Colab e per l'esecuzione nel browser (Thebe); negli altri il codice è da leggere e copiare.
 

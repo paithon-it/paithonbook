@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 396" role="img" aria-label="Quattro coppie affiancate. A sinistra, in terracotta e precedute da un simbolo di divieto, le rinunce proposte da LeCun: modelli generativi, modelli probabilistici, metodi contrastivi, reinforcement learning. A destra, in teal, le alternative: architetture a incorporamento congiunto, modelli a energia, metodi regolarizzati, controllo predittivo su modello. Sotto ogni alternativa, il punto del libro che la tratta.">
+  <defs>
+    <marker id="freccia-rinuncia" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1A1A1A"/>
+    </marker>
+  </defs>
+
+  <!-- intestazioni delle due colonne -->
+  <text x="92" y="44" font-family="Inter, sans-serif" font-size="13" font-weight="700" letter-spacing="1.6" fill="#B5532C">ABBANDONARE</text>
+  <text x="400" y="44" font-family="Inter, sans-serif" font-size="13" font-weight="700" letter-spacing="1.6" fill="#2D5A5C">IN FAVORE DI</text>
+  <line x1="92" y1="58" x2="768" y2="58" stroke="#C9A961" stroke-width="1.5"/>
+
+  <!-- riga 1: generativo -> incorporamento congiunto -->
+  <circle cx="101" cy="105" r="9" fill="none" stroke="#B5532C" stroke-width="2"/>
+  <line x1="95" y1="111" x2="107" y2="99" stroke="#B5532C" stroke-width="2"/>
+  <text x="122" y="111" font-family="Inter, sans-serif" font-size="17" font-weight="600" fill="#B5532C">modelli generativi</text>
+  <line x1="345" y1="105" x2="386" y2="105" stroke="#1A1A1A" stroke-width="2" marker-end="url(#freccia-rinuncia)"/>
+  <text x="400" y="111" font-family="Inter, sans-serif" font-size="17" font-weight="700" fill="#2D5A5C">architetture a incorporamento congiunto</text>
+  <text x="400" y="131" font-family="Inter, sans-serif" font-size="12" fill="#5E5852">le JEPA, nel capitolo World Model</text>
+
+  <!-- riga 2: probabilistico -> energia -->
+  <circle cx="101" cy="187" r="9" fill="none" stroke="#B5532C" stroke-width="2"/>
+  <line x1="95" y1="193" x2="107" y2="181" stroke="#B5532C" stroke-width="2"/>
+  <text x="122" y="193" font-family="Inter, sans-serif" font-size="17" font-weight="600" fill="#B5532C">modelli probabilistici</text>
+  <line x1="345" y1="187" x2="386" y2="187" stroke="#1A1A1A" stroke-width="2" marker-end="url(#freccia-rinuncia)"/>
+  <text x="400" y="193" font-family="Inter, sans-serif" font-size="17" font-weight="700" fill="#2D5A5C">modelli a energia</text>
+  <text x="400" y="213" font-family="Inter, sans-serif" font-size="12" fill="#5E5852">la tesi di questo capitolo: niente funzione di partizione</text>
+
+  <!-- riga 3: contrastivo -> regolarizzato -->
+  <circle cx="101" cy="269" r="9" fill="none" stroke="#B5532C" stroke-width="2"/>
+  <line x1="95" y1="275" x2="107" y2="263" stroke="#B5532C" stroke-width="2"/>
+  <text x="122" y="275" font-family="Inter, sans-serif" font-size="17" font-weight="600" fill="#B5532C">metodi contrastivi</text>
+  <line x1="345" y1="269" x2="386" y2="269" stroke="#1A1A1A" stroke-width="2" marker-end="url(#freccia-rinuncia)"/>
+  <text x="400" y="275" font-family="Inter, sans-serif" font-size="17" font-weight="700" fill="#2D5A5C">metodi regolarizzati</text>
+  <text x="400" y="295" font-family="Inter, sans-serif" font-size="12" fill="#5E5852">poco volume a bassa energia, invece di controesempi</text>
+
+  <!-- riga 4: RL -> controllo predittivo -->
+  <circle cx="101" cy="351" r="9" fill="none" stroke="#B5532C" stroke-width="2"/>
+  <line x1="95" y1="357" x2="107" y2="345" stroke="#B5532C" stroke-width="2"/>
+  <text x="122" y="357" font-family="Inter, sans-serif" font-size="17" font-weight="600" fill="#B5532C">reinforcement learning</text>
+  <line x1="345" y1="351" x2="386" y2="351" stroke="#1A1A1A" stroke-width="2" marker-end="url(#freccia-rinuncia)"/>
+  <text x="400" y="357" font-family="Inter, sans-serif" font-size="17" font-weight="700" fill="#2D5A5C">controllo predittivo su modello</text>
+  <text x="400" y="377" font-family="Inter, sans-serif" font-size="12" fill="#5E5852">pianificare nel modello del mondo; il RL solo per correggerlo</text>
+</svg>

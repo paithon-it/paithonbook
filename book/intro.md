@@ -31,7 +31,7 @@ Questa versione online del libro **è gratuita** ed **in continuo aggiornamento*
 
 ## Il percorso
 
-Trenta capitoli, dall'alfabeto (Python e matematica) alle frontiere (Transformer, modelli di diffusione, agenti LLM, generazione audio, produzione con l'MLOps). Ogni capitolo si legge da solo, ma l'ordine è pensato per costruire un mattone alla volta.
+Trentuno capitoli, dall'alfabeto (Python e matematica) alle frontiere (Transformer, modelli di diffusione, agenti LLM, generazione audio, produzione con l'MLOps). Ogni capitolo si legge da solo, ma l'ordine è pensato per costruire un mattone alla volta.
 
 <div class="pt-chapters">
   <a class="pt-card" href="Introduzione/overview.html">
@@ -139,48 +139,53 @@ Trenta capitoli, dall'alfabeto (Python e matematica) alle frontiere (Transformer
     <span class="pt-card-title">Modelli di Diffusione</span>
     <span class="pt-card-desc">Rumore e ritorno: da DDPM a Stable Diffusion e ai Diffusion Transformer.</span>
   </a>
-  <a class="pt-card" href="WorldModels/overview.html">
+  <a class="pt-card" href="ModelliEnergia/overview.html">
     <span class="pt-card-num">22</span>
+    <span class="pt-card-title">Modelli a energia</span>
+    <span class="pt-card-desc">Il paesaggio invece della probabilit&agrave;: da Hopfield e Boltzmann allo score matching, la lingua in cui sono scritte diffusione e JEPA.</span>
+  </a>
+  <a class="pt-card" href="WorldModels/overview.html">
+    <span class="pt-card-num">23</span>
     <span class="pt-card-title">World Model</span>
     <span class="pt-card-desc">Simulatori interni della realtà: dai sogni di Ha &amp; Schmidhuber alla via di LeCun (JEPA).</span>
   </a>
   <a class="pt-card" href="GraphNeuralNetwork/overview.html">
-    <span class="pt-card-num">23</span>
+    <span class="pt-card-num">24</span>
     <span class="pt-card-title">Graph Neural Network</span>
     <span class="pt-card-desc">Reti che imparano su dati a grafo: message passing, GCN, GraphSAGE e GAT — dalle molecole alla scoperta di farmaci e alle raccomandazioni.</span>
   </a>
   <a class="pt-card" href="SistemiRaccomandazione/overview.html">
-    <span class="pt-card-num">24</span>
+    <span class="pt-card-num">25</span>
     <span class="pt-card-title">Sistemi di Raccomandazione</span>
     <span class="pt-card-desc">Dal Netflix Prize alla raccomandazione neurale: i modelli che scelgono per noi.</span>
   </a>
   <a class="pt-card" href="SerieTemporali/overview.html">
-    <span class="pt-card-num">25</span>
+    <span class="pt-card-num">26</span>
     <span class="pt-card-title">Serie temporali</span>
     <span class="pt-card-desc">Prevedere dal passato: decomposizione e modelli classici (ARIMA, Holt-Winters), validazione temporale e metriche, forecasting neurale (TCN, DeepAR, N-BEATS, Transformer e foundation model).</span>
   </a>
   <a class="pt-card" href="PINN/overview.html">
-    <span class="pt-card-num">26</span>
+    <span class="pt-card-num">27</span>
     <span class="pt-card-title">Physics-Informed Neural Networks</span>
     <span class="pt-card-desc">Le leggi della fisica dentro la loss: reti che rispettano le equazioni differenziali.</span>
   </a>
   <a class="pt-card" href="MLOps/overview.html">
-    <span class="pt-card-num">27</span>
+    <span class="pt-card-num">28</span>
     <span class="pt-card-title">MLOps</span>
     <span class="pt-card-desc">Il capitolo conclusivo: dal notebook alla produzione — versioning, serving, monitoraggio del drift, LLMOps e deploy.</span>
   </a>
   <a class="pt-card" href="Interpretabilita/overview.html">
-    <span class="pt-card-num">28</span>
+    <span class="pt-card-num">29</span>
     <span class="pt-card-title">Interpretabilità e XAI</span>
     <span class="pt-card-desc">Aprire la scatola nera: modelli trasparenti e importanza delle feature, spiegazioni locali (LIME, SHAP, controfattuali), attribuzione (Grad-CAM, integrated gradients) e interpretabilità meccanicistica.</span>
   </a>
   <a class="pt-card" href="AIResponsabile/overview.html">
-    <span class="pt-card-num">29</span>
+    <span class="pt-card-num">30</span>
     <span class="pt-card-title">AI responsabile</span>
     <span class="pt-card-desc">Equità e bias algoritmico, privacy (differential privacy, federated learning) e robustezza agli attacchi avversari, allineamento (RLHF, DPO) e governance (l'AI Act europeo).</span>
   </a>
   <a class="pt-card" href="Conclusioni/overview.html">
-    <span class="pt-card-num">30</span>
+    <span class="pt-card-num">31</span>
     <span class="pt-card-title">Conclusioni</span>
     <span class="pt-card-desc">Bilancio del viaggio e letture per proseguire.</span>
   </a>

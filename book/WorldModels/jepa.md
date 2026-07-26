@@ -91,7 +91,7 @@ $$
 dove $E$ è l'energia della coppia, $z$ è un'eventuale variabile latente che
 assorbe la molteplicità dei futuri (quale dei tanti esiti plausibili si è
 realizzato), e $\theta$, $\bar{\theta}$, $\phi$ sono i parametri dei due
-encoder e del predictor. Il collegamento con la sezione precedente è
+encoder e del predictor. Il collegamento con il capitolo precedente è
 letterale: una JEPA **è** un modello a energia non normalizzato — la
 compatibilità tra presente e futuro è l'errore di predizione nello spazio
 latente, l'inferenza è la solita $\arg\min$, e della funzione di partizione
@@ -121,7 +121,7 @@ rappresentazioni, dove l'irrilevante non è mai entrato.
 
 ## Il ritorno del collasso
 
-Chi ha letto la sezione sulle reti a energia sa già dove si nasconde la
+Chi ha letto il capitolo sui modelli a energia sa già dove si nasconde la
 trappola, perché è la stessa del buttafuori pigro: se la loss premia solo
 la vicinanza tra embedding predetto e embedding del target, la soluzione
 più comoda non è capire il mondo — è **appiattirlo**. Basta che i due
@@ -339,7 +339,7 @@ l'equivalente della softmax non esiste e ricostruire costringe a modellare
 l'irrilevante: è l'argomento centrale di {cite}`lecun2022path`.
 **Contrastiva**: si impara una geometria, avvicinando le coppie compatibili
 e allontanando quelle incompatibili — CLIP {cite}`radford2021learning` con
-la loss InfoNCE su coppie immagine–didascalia. Nel lessico della sezione
+la loss InfoNCE su coppie immagine–didascalia. Nel lessico del capitolo
 precedente: energia abbassata sulle coppie giuste e *alzata esplicitamente*
 sui controesempi, con la nota difficoltà di trovarne mai abbastanza in alta
 dimensione. **Predittiva nello spazio latente**: la famiglia JEPA — energia

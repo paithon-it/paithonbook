@@ -201,13 +201,13 @@ rudimentale, emerso dalla sola predizione del token successivo. La proposta
 alternativa di {cite}`lecun2022path` — predire non nello spazio dei token o
 dei pixel ma in uno spazio di rappresentazioni astratte, con architetture
 *joint-embedding* addestrate a energia — è esattamente ciò che studieremo
-nelle sezioni su reti a energia e JEPA.
+nella sezione sulla JEPA, nel linguaggio del capitolo precedente.
 
 `````
 
 ## Come è organizzato il capitolo
 
-Quattro tappe. Si parte dai **mondi in miniatura**: nel 2018 David Ha e
+Tre tappe. Si parte dai **mondi in miniatura**: nel 2018 David Ha e
 Jürgen Schmidhuber addestrano un agente che impara a giocare a un vecchio
 sparatutto — schivare palle di fuoco in *Doom* — esercitandosi *dentro il
 proprio sogno*: un world model ricorrente in cui la policy si allena senza
@@ -215,12 +215,12 @@ toccare il gioco vero. Quella linea di ricerca arriva ai **Dreamer** di
 Danijar Hafner e colleghi (2020–2023), che imparano
 interamente nell'immaginazione latente, fino a ottenere — primo algoritmo al
 mondo — un diamante in *Minecraft* senza dimostrazioni umane. Seconda tappa,
-le **reti a energia**: un salto all'indietro fino alle reti di John Hopfield
-(1982) per impadronirci del linguaggio — funzioni di energia, minimi,
-compatibilità tra configurazioni — senza il quale la proposta di LeCun resta
-illeggibile. Terza tappa, la **via di LeCun**: le architetture **JEPA**
+la **via di LeCun**: le architetture **JEPA**
 (I-JEPA per le immagini, V-JEPA per i video), che predicono nello spazio delle
-rappresentazioni e non dei pixel. Ultima tappa, i **simulatori generativi di
+rappresentazioni e non dei pixel. Qui il capitolo precedente torna utile per
+intero: una JEPA è un modello a energia non normalizzato, e senza quel
+linguaggio — energia come compatibilità, collasso, metodi regolarizzati — la
+proposta di LeCun resta illeggibile. Ultima tappa, i **simulatori generativi di
 video** — Sora di OpenAI, presentato nel 2024 come passo verso «simulatori di
 mondo», e Genie di Google DeepMind, che genera ambienti interattivi giocabili
 — e la domanda con cui il capitolo chiude, onestamente aperta: generare video
@@ -244,6 +244,6 @@ plausibili significa aver capito la fisica, o soltanto saperla imitare?
   **posizione** autorevole dentro un dibattito aperto, non un consenso: altri
   ricercatori vedono negli LLM world model impliciti già in formazione.
 - Il percorso del capitolo: mondi in miniatura (Ha & Schmidhuber, Dreamer) →
-  reti a energia (da Hopfield) → JEPA → simulatori video generativi e
-  dibattito.
+  JEPA → simulatori video generativi e dibattito. Il linguaggio dell'energia,
+  su cui poggia la JEPA, è quello del capitolo precedente.
 ```

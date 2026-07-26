@@ -279,7 +279,7 @@ parts:
     - file: SpeechRecognition/sintesi-vocale.md
       title: Sintesi vocale
 
-- caption: Modelli generativi
+- caption: Energia e generazione
   chapters:
   - file: GAN/overview.md
     title: GAN
@@ -297,13 +297,24 @@ parts:
       title: Stable Diffusion
     - file: ModelliDiffusione/diffusion-transformer.md
       title: Diffusion Transformer (DiT)
+  - file: ModelliEnergia/overview.md
+    title: Modelli a energia
+    sections:
+    - file: ModelliEnergia/memoria-associativa.md
+      title: Memoria associativa
+    - file: ModelliEnergia/boltzmann.md
+      title: Macchine di Boltzmann
+    - file: ModelliEnergia/oltre-la-partizione.md
+      title: Oltre la partizione
+    - file: ModelliEnergia/energia-come-compatibilita.md
+      title: Energia come compatibilità
+    - file: ModelliEnergia/paesaggi-di-oggi.md
+      title: Paesaggi di oggi
   - file: WorldModels/overview.md
     title: World Model
     sections:
     - file: WorldModels/mondi-in-miniatura.md
       title: Mondi in miniatura
-    - file: WorldModels/reti-energia.md
-      title: Reti a energia
     - file: WorldModels/jepa.md
       title: La via di LeCun (JEPA)
     - file: WorldModels/simulatori-e-dibattito.md
