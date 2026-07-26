@@ -2,9 +2,9 @@
 
 Prima di addestrare qualunque modello c'è un lavoro poco glamour che occupa,
 nella pratica, gran parte del tempo di chi fa machine learning: prendere dei
-dati grezzi — un file esportato da un gestionale, uno storico di vendite, un
-registro di sensori — e portarli in una forma pulita, ordinata, esplorabile.
-In Python questo lavoro ha due strumenti quasi obbligati: **Pandas** per
+dati grezzi (un file esportato da un gestionale, uno storico di vendite, un
+registro di sensori) e portarli in una forma pulita, ordinata, esplorabile. In
+Python questo lavoro ha due strumenti quasi obbligati: **Pandas** per
 manipolare le tabelle e **Matplotlib** per guardarle. Se NumPy è l'algebra,
 Pandas è il foglio di calcolo programmabile e Matplotlib è la finestra da cui
 osservare cosa abbiamo davvero tra le mani.
@@ -47,7 +47,7 @@ le operazioni vettoriali colonna per colonna. L'indice non è un semplice
 numero di riga: è una struttura etichettata (anche gerarchica, `MultiIndex`)
 usata per l'allineamento automatico. Quando sommi due Series, Pandas non
 allinea per posizione ma **per etichetta**, inserendo `NaN` dove le etichette
-non combaciano — comportamento che evita interi errori "off-by-one" tipici
+non combaciano: comportamento che evita interi errori "off-by-one" tipici
 degli array grezzi.
 
 `````
@@ -55,8 +55,8 @@ degli array grezzi.
 ## Caricare e ispezionare i dati
 
 Nella realtà i dati non li digiti a mano: li carichi. Il formato più comune è
-il **CSV** — un semplice file di testo con i valori separati da virgole, il
-formato in cui quasi ogni programma sa esportare una tabella — e la funzione
+il **CSV** (un semplice file di testo con i valori separati da virgole, il
+formato in cui quasi ogni programma sa esportare una tabella) e la funzione
 `read_csv` lo legge in una riga, riconoscendo da sola tipi e intestazioni.
 
 ```python
@@ -161,7 +161,7 @@ report o per un ulteriore `merge`.
 
 I dati reali sono quasi sempre incompleti: un campo non compilato, un sensore
 spento, una risposta saltata. Pandas rappresenta questi buchi con `NaN` (*Not
-a Number*), e ignorarli non è un'opzione — un solo `NaN` può propagarsi e
+a Number*), e ignorarli non è un'opzione: un solo `NaN` può propagarsi e
 avvelenare un intero calcolo.
 
 `````{tab} Elementare
@@ -238,8 +238,9 @@ plt.show()
 
 Lo scatter rivela relazioni e valori anomali; l'istogramma mostra se una
 variabile è simmetrica, asimmetrica o bimodale (con due "gobbe" invece di
-una) — cose che una media da sola nasconde. È il modo più economico per non costruire, sopra dati fraintesi, un
-modello perfetto nella forma e sbagliato nella sostanza.
+una): cose che una media da sola nasconde. È il modo più economico per non
+costruire, sopra dati fraintesi, un modello perfetto nella forma e sbagliato
+nella sostanza.
 
 ```{admonition} Da ricordare
 :class: important

@@ -1,17 +1,18 @@
 # Visione artificiale: far vedere le macchine
 
-Nel 1966, al MIT, Seymour Papert affidò a uno studente un compito per l'estate:
-collegare una telecamera a un computer e insegnargli a descrivere quello che
-vedeva. Il progetto si chiamava, con ottimismo, *Summer Vision Project*. L'idea
-di fondo era che un problema tanto naturale — noi vediamo senza sforzo, di
-continuo — si potesse sistemare in una manciata di settimane. Mezzo secolo dopo,
-la visione artificiale è ancora un campo di ricerca vivo e aperto. Quella
-sottovalutazione racconta una verità profonda: vedere ci *sembra* facile solo
-perché il nostro cervello lo fa per noi, in silenzio e in pochi millisecondi.
+Nel 1966, al MIT, Seymour Papert affidò a uno studente un compito per
+l'estate: collegare una telecamera a un computer e insegnargli a descrivere
+quello che vedeva. Il progetto si chiamava, con ottimismo, *Summer Vision
+Project*. L'idea di fondo era che un problema tanto naturale (noi vediamo
+senza sforzo, di continuo) si potesse sistemare in una manciata di settimane.
+Mezzo secolo dopo, la visione artificiale è ancora un campo di ricerca vivo e
+aperto. Quella sottovalutazione racconta una verità profonda: vedere ci
+*sembra* facile solo perché il nostro cervello lo fa per noi, in silenzio e in
+pochi millisecondi.
 
 Questo capitolo parte proprio da lì: da che cosa significhi, per una macchina,
-"vedere". E dalla scoperta — arrivata sul serio solo negli anni Dieci di questo
-secolo — che il modo migliore per insegnarglielo non è scrivere regole, ma
+"vedere". E dalla scoperta (arrivata sul serio solo negli anni Dieci di questo
+secolo) che il modo migliore per insegnarglielo non è scrivere regole, ma
 mostrarle milioni di esempi.
 
 ## Un'immagine è una griglia di numeri
@@ -28,28 +29,29 @@ scuro: $0$ è nero pieno, $255$ è bianco pieno, e i valori in mezzo sono le
 sfumature di grigio. Una foto in bianco e nero, per il computer, è tutta qui:
 una tabella di numeri fra $0$ e $255$.
 
-Se la foto è a colori, ogni quadretto non ha più un numero solo ma tre — quanto
-rosso, quanto verde, quanto blu (il famoso **RGB**) — che mescolati ricreano
-ogni tinta. Un'immagine, insomma, è una griglia di numeri. Tutto il lavoro della
-visione artificiale consiste nel trovare, dentro quella griglia, delle
+Se la foto è a colori, ogni quadretto non ha più un numero solo ma tre, quanto
+rosso, quanto verde, quanto blu (il famoso **RGB**), che mescolati ricreano
+ogni tinta. Un'immagine, insomma, è una griglia di numeri. Tutto il lavoro
+della visione artificiale consiste nel trovare, dentro quella griglia, delle
 regolarità che corrispondano a ciò che noi chiamiamo "un gatto".
 
 `````
 
 `````{tab} Superiore
 
-Un'immagine è un **tensore** $X \in \mathbb{R}^{C \times H \times W}$ —
-nell'ordine *channels-first* di PyTorch: canali, altezza, larghezza — dove
-$C=1$ in scala di grigi, $C=3$ per RGB. L'elemento $X_{c,i,j}$ è l'intensità
+Un'immagine è un **tensore** $X \in \mathbb{R}^{C \times H \times W}$,
+nell'ordine *channels-first* di PyTorch: canali, altezza, larghezza (dove
+$C=1$ in scala di grigi, $C=3$ per RGB). L'elemento $X_{c,i,j}$ è l'intensità
 del canale $c$ nel pixel di riga $i$ e colonna $j$, tipicamente un intero in
 $\{0,\dots,255\}$ che in fase di addestramento si normalizza in $[0,1]$ o si
 standardizza a media nulla e varianza unitaria.
 
-Le dimensioni crescono in fretta: una modesta immagine $3 \times 224 \times 224$
-— la taglia d'ingresso classica delle reti addestrate su ImageNet — è un vettore
-di $150\,528$ numeri. Trattarla come un vettore piatto, ignorando che i pixel
-vicini sono correlati, è proprio l'errore che le reti convoluzionali —
-protagoniste dei prossimi paragrafi — evitano per costruzione.
+Le dimensioni crescono in fretta: una modesta immagine
+$3 \times 224 \times 224$ (la taglia d'ingresso classica delle reti addestrate
+su ImageNet) è un vettore di $150\,528$ numeri. Trattarla come un vettore
+piatto, ignorando che i pixel vicini sono correlati, è proprio l'errore che le
+reti convoluzionali (protagoniste dei prossimi paragrafi) evitano per
+costruzione.
 
 `````
 
@@ -72,7 +74,7 @@ singolo oggetto pixel per pixel (segmentazione di istanza).
 `````{tab} Elementare
 
 - **Classificazione**: "che cosa c'è in questa foto?". Il modello risponde con
-  una sola parola per l'intera immagine — *gatto* — senza dire dove si trovi.
+  una sola parola per l'intera immagine (*gatto*) senza dire dove si trovi.
 - **Rilevamento (detection)**: "che cosa c'è, e *dove*?". Il modello disegna un
   riquadro attorno a ogni oggetto e lo etichetta: due riquadri "gatto" e uno
   "palla".
@@ -118,9 +120,9 @@ scrivi tu la regola per trovarlo.
 L'idea era che un esperto progettasse a mano dei "rilevatori": una formula per
 scovare i bordi (dove il colore cambia bruscamente è probabile ci sia un
 contorno), un'altra per le forme, un'altra per gli angoli. Funzionava, ma solo
-fino a un certo punto: ogni nuovo problema richiedeva nuove regole cucite a mano,
-e la realtà — luci, ombre, angolazioni — è troppo varia per essere ingabbiata in
-istruzioni fisse.
+fino a un certo punto: ogni nuovo problema richiedeva nuove regole cucite a
+mano, e la realtà (luci, ombre, angolazioni) è troppo varia per essere
+ingabbiata in istruzioni fisse.
 
 La svolta è stata capovolgere il ragionamento: invece di dire alla macchina
 *come* riconoscere un gatto, le mostriamo migliaia di gatti e lasciamo che sia
@@ -163,22 +165,22 @@ architettura.
 
 ## Come è organizzato il capitolo
 
-Nei prossimi paragrafi partiamo dal mattone fondamentale — la **convoluzione**,
-l'operazione che permette a una rete di "guardare" un'immagine rispettandone la
-struttura spaziale. Da lì costruiamo le **reti convoluzionali** e ne ripercorriamo
-le architetture che hanno fatto scuola. Passeremo poi ai compiti più ambiziosi,
-il rilevamento e la segmentazione, e a tecniche pratiche come il *transfer
-learning*, che consente di riusare reti già addestrate su ImageNet per i nostri
-problemi con pochi dati. L'obiettivo non è solo capire come funzionano: è
-metterle al lavoro, con PyTorch, sulle nostre immagini.
+Nei prossimi paragrafi partiamo dal mattone fondamentale: la **convoluzione**,
+l'operazione che permette a una rete di "guardare" un'immagine rispettandone
+la struttura spaziale. Da lì costruiamo le **reti convoluzionali** e ne
+ripercorriamo le architetture che hanno fatto scuola. Passeremo poi ai compiti
+più ambiziosi, il rilevamento e la segmentazione, e a tecniche pratiche come
+il *transfer learning*, che consente di riusare reti già addestrate su
+ImageNet per i nostri problemi con pochi dati. L'obiettivo non è solo capire
+come funzionano: è metterle al lavoro, con PyTorch, sulle nostre immagini.
 
 ```{admonition} Da ricordare
 :class: important
 - Per un computer un'immagine è un **tensore** $X \in \mathbb{R}^{C \times H \times W}$:
   una griglia di numeri, non di oggetti.
-- I quattro compiti classici — **classificazione, rilevamento, segmentazione
-  semantica e di istanza** — differiscono per la forma dell'output, dall'etichetta
-  unica alla maschera per singolo oggetto.
+- I quattro compiti classici (**classificazione, rilevamento, segmentazione
+  semantica e di istanza**) differiscono per la forma dell'output,
+  dall'etichetta unica alla maschera per singolo oggetto.
 - La grande transizione è dalle **feature disegnate a mano** (Canny, SIFT, HOG)
   alle **feature imparate** dalle CNN: la svolta è AlexNet su ImageNet (2012).
 - Senza i grandi dataset (**ImageNet**, **COCO**) niente di tutto questo sarebbe

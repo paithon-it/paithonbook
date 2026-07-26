@@ -12,7 +12,8 @@ Nelle GAN il falsario è il **generatore** $G$, il detective è il **discriminat
 
 ## Il generatore: dal rumore al dato
 
-Il generatore parte dal nulla — letteralmente da un pugno di numeri casuali — e deve costruire un dato che sembri autentico.
+Il generatore parte dal nulla (letteralmente da un pugno di numeri casuali) e
+deve costruire un dato che sembri autentico.
 
 `````{tab} Elementare
 
@@ -38,7 +39,12 @@ Il discriminatore fa il mestiere opposto, e più familiare: è un classificatore
 
 `````{tab} Elementare
 
-$D$ è il detective. Riceve un dato — a volte vero (pescato dal dataset), a volte falso (sfornato da $G$) — e deve rispondere a una sola domanda: *è autentico?* La sua risposta è un numero tra $0$ e $1$, una specie di livello di fiducia: vicino a $1$ significa "sono quasi certo che sia reale", vicino a $0$ significa "quasi certo che sia un falso". Il suo mestiere è non farsi ingannare.
+$D$ è il detective. Riceve un dato, a volte vero (pescato dal dataset), a
+volte falso (sfornato da $G$), e deve rispondere a una sola domanda: *è
+autentico?* La sua risposta è un numero tra $0$ e $1$, una specie di livello
+di fiducia: vicino a $1$ significa "sono quasi certo che sia reale", vicino a
+$0$ significa "quasi certo che sia un falso". Il suo mestiere è non farsi
+ingannare.
 
 `````
 
@@ -70,7 +76,13 @@ Le due reti non ottimizzano due funzioni scollegate: condividono un'**unica** fu
 
 `````{tab} Elementare
 
-Immagina un punteggio unico del gioco. Il detective guadagna punti ogni volta che indovina; il falsario "vince" ogni volta che gli fa perdere punti. Quello che è un bene per uno è un male per l'altro: è un gioco a somma (quasi) nulla. Non esiste un traguardo fisso da raggiungere — esiste un *equilibrio*, il punto in cui nessuno dei due riesce più a migliorare a spese dell'altro. Lì il falsario è così bravo che il detective, per quanto si sforzi, può solo tirare a indovinare.
+Immagina un punteggio unico del gioco. Il detective guadagna punti ogni volta
+che indovina; il falsario "vince" ogni volta che gli fa perdere punti. Quello
+che è un bene per uno è un male per l'altro: è un gioco a somma (quasi) nulla.
+Non esiste un traguardo fisso da raggiungere: esiste un *equilibrio*, il punto
+in cui nessuno dei due riesce più a migliorare a spese dell'altro. Lì il
+falsario è così bravo che il detective, per quanto si sforzi, può solo tirare
+a indovinare.
 
 `````
 
@@ -125,15 +137,36 @@ Due dettagli del codice contengono tutta la logica del gioco: il modo in cui i d
 
 `````{tab} Elementare
 
-Primo dettaglio: quando si allena il detective sui falsi, quei falsi vengono "staccati" dal falsario (è la parola `.detach()` nel codice): il giudizio serve a correggere solo chi giudica, non chi ha dipinto. E quando è il turno del falsario, l'aggiornamento tocca solo i pesi suoi: ognuno impara nel proprio turno, come da regolamento — è il "congelamento" descritto sopra, che in PyTorch si scrive in una parola.
+Primo dettaglio: quando si allena il detective sui falsi, quei falsi vengono
+"staccati" dal falsario (è la parola `.detach()` nel codice): il giudizio
+serve a correggere solo chi giudica, non chi ha dipinto. E quando è il turno
+del falsario, l'aggiornamento tocca solo i pesi suoi: ognuno impara nel
+proprio turno, come da regolamento; è il "congelamento" descritto sopra, che
+in PyTorch si scrive in una parola.
 
-Secondo dettaglio: nel suo turno, il falsario chiede al detective di trattare i propri falsi come "reali" e impara da quanto il verdetto se ne discosta. È una versione più *generosa* del gioco: dà al falsario lezioni chiare proprio all'inizio, quando i suoi quadri sono pessimi e il detective li respinge con totale sicurezza. Senza questo trucco — già suggerito nel paper del 2014 — il principiante non riceverebbe quasi nessun insegnamento e resterebbe maldestro per sempre.
+Secondo dettaglio: nel suo turno, il falsario chiede al detective di trattare
+i propri falsi come "reali" e impara da quanto il verdetto se ne discosta. È
+una versione più *generosa* del gioco: dà al falsario lezioni chiare proprio
+all'inizio, quando i suoi quadri sono pessimi e il detective li respinge con
+totale sicurezza. Senza questo trucco (già suggerito nel paper del 2014), il
+principiante non riceverebbe quasi nessun insegnamento e resterebbe maldestro
+per sempre.
 
 `````
 
 `````{tab} Superiore
 
-Nel passo di $D$, il `.detach()` stacca i campioni sintetici dal grafo di $G$: il giudizio su di essi corregge solo il discriminatore, e nessun gradiente risale fino al generatore. Nel passo di $G$ accade il contrario: il gradiente attraversa $D$, ma `opt_G` aggiorna solo i pesi del generatore. E c'è una scelta nascosta nella riga `criterio(D(G(z)), uni)`: chiedere che i falsi siano etichettati "reale" equivale a **massimizzare** $\log D(G(z))$, invece di minimizzare $\log(1-D(G(z)))$ come nella formula minimax. Le due formulazioni hanno lo stesso ottimo, ma la prima fornisce gradienti più forti proprio all'inizio, quando $G$ è pessimo e $D(G(z)) \approx 0$ farebbe saturare l'obiettivo originale — è il *non-saturating loss* già suggerito nel paper del 2014.
+Nel passo di $D$, il `.detach()` stacca i campioni sintetici dal grafo di $G$:
+il giudizio su di essi corregge solo il discriminatore, e nessun gradiente
+risale fino al generatore. Nel passo di $G$ accade il contrario: il gradiente
+attraversa $D$, ma `opt_G` aggiorna solo i pesi del generatore. E c'è una
+scelta nascosta nella riga `criterio(D(G(z)), uni)`: chiedere che i falsi
+siano etichettati "reale" equivale a **massimizzare** $\log D(G(z))$, invece
+di minimizzare $\log(1-D(G(z)))$ come nella formula minimax. Le due
+formulazioni hanno lo stesso ottimo, ma la prima fornisce gradienti più forti
+proprio all'inizio, quando $G$ è pessimo e $D(G(z)) \approx 0$ farebbe
+saturare l'obiettivo originale: è il *non-saturating loss* già suggerito nel
+paper del 2014.
 
 `````
 

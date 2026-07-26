@@ -1,22 +1,23 @@
 # Oltre la GCN: GraphSAGE, GAT e applicazioni
 
 La *Graph Convolutional Network* della sezione precedente è un piccolo
-miracolo di semplicità: un solo strato di message passing — media normalizzata
-dei vicini, trasformazione lineare, non linearità — e già classifica i nodi di
+miracolo di semplicità: un solo strato di message passing (media normalizzata
+dei vicini, trasformazione lineare, non linearità) e già classifica i nodi di
 un grafo meglio di quanto facessero i cammini casuali. Ma quella eleganza si
 paga con due limiti che, su un grafo vero, diventano subito ingombranti.
 
 Il primo è che la GCN, così com'è formulata, è **transduttiva**: la
 normalizzazione $\hat{A} = \tilde{D}^{-1/2}\tilde{A}\,\tilde{D}^{-1/2}$ va
 calcolata sull'intera matrice di adiacenza, il grafo intero, fissato una volta
-per tutte. Arriva un nodo nuovo — un utente che si iscrive oggi a un social —
-e bisogna in linea di principio rifare i conti su tutto. Il secondo è di
-**scala**: ad ogni strato ogni nodo somma *tutti* i suoi vicini, e i vicini dei
-vicini, e così via; su un grafo di miliardi di archi, dove qualche nodo-celebrità
-ha milioni di connessioni, questa somma esplode. Questa sezione racconta le due
-idee che hanno tolto la GNN dal laboratorio e l'hanno messa in produzione da
-Pinterest a Google Maps — *GraphSAGE* e la *Graph Attention Network* — e poi
-fa il giro delle cose che oggi, con questi strumenti, si riesce davvero a fare.
+per tutte. Arriva un nodo nuovo (un utente che si iscrive oggi a un social) e
+bisogna in linea di principio rifare i conti su tutto. Il secondo è di
+**scala**: ad ogni strato ogni nodo somma *tutti* i suoi vicini, e i vicini
+dei vicini, e così via; su un grafo di miliardi di archi, dove qualche
+nodo-celebrità ha milioni di connessioni, questa somma esplode. Questa sezione
+racconta le due idee che hanno tolto la GNN dal laboratorio e l'hanno messa in
+produzione da Pinterest a Google Maps (*GraphSAGE* e la *Graph Attention
+Network*) e poi fa il giro delle cose che oggi, con questi strumenti, si
+riesce davvero a fare.
 
 ## GraphSAGE: imparare a generalizzare
 
@@ -26,25 +27,26 @@ aggreGatE* {cite}`hamilton2017inductive`. Due parole, due idee.
 
 `````{tab} Elementare
 
-Torniamo all'immagine della sezione sul message passing: per farsi un'idea di un
-nodo si guardano i suoi vicini. La GCN, per farlo, ha bisogno di avere davanti
-*tutta* la rete di amicizie, e di averla vista per intero già durante
+Torniamo all'immagine della sezione sul message passing: per farsi un'idea di
+un nodo si guardano i suoi vicini. La GCN, per farlo, ha bisogno di avere
+davanti *tutta* la rete di amicizie, e di averla vista per intero già durante
 l'addestramento. GraphSAGE cambia il punto di vista con una domanda semplice:
-e se, invece di imparare a memoria un vettore per ciascuna persona, imparassimo
-la **ricetta** per costruirlo? Una ricetta del tipo «prendi la persona, guarda
-i suoi amici, mescola nel modo giusto». Una ricetta la puoi applicare anche a
-qualcuno che non hai mai visto, purché tu sappia chi sono i suoi amici. Questo
-si chiama modo **induttivo**: la rete non impara *i risultati*, impara *come si
-calcolano*, e quel «come» funziona pure sui nuovi arrivati e su reti diverse da
-quella di addestramento — un antibiotico nuovo, un utente iscritto stamattina.
+e se, invece di imparare a memoria un vettore per ciascuna persona,
+imparassimo la **ricetta** per costruirlo? Una ricetta del tipo «prendi la
+persona, guarda i suoi amici, mescola nel modo giusto». Una ricetta la puoi
+applicare anche a qualcuno che non hai mai visto, purché tu sappia chi sono i
+suoi amici. Questo si chiama modo **induttivo**: la rete non impara *i
+risultati*, impara *come si calcolano*, e quel «come» funziona pure sui nuovi
+arrivati e su reti diverse da quella di addestramento (un antibiotico nuovo,
+un utente iscritto stamattina).
 
 La seconda idea combatte l'ingombro. Se una persona ha diecimila contatti,
 guardarli tutti a ogni giro è impraticabile. E se ne bastasse un **campione**?
 GraphSAGE, a ogni strato, non prende tutti i vicini ma ne pesca a caso un
-numero fisso — diciamo venticinque — e aggrega solo quelli. È come farsi
-un'idea di un quartiere non intervistando tutti gli abitanti, ma un campione a
-sorte: molto più economico, e quasi altrettanto informativo. Nel pannello di
-sinistra della {numref}`fig-gnn-graphsage-gat` i tre vicini pieni sono quelli
+numero fisso (diciamo venticinque) e aggrega solo quelli. È come farsi un'idea
+di un quartiere non intervistando tutti gli abitanti, ma un campione a sorte:
+molto più economico, e quasi altrettanto informativo. Nel pannello di sinistra
+della {numref}`fig-gnn-graphsage-gat` i tre vicini pieni sono quelli
 campionati; gli altri, questo giro, restano fuori.
 
 `````
@@ -61,22 +63,22 @@ h_v^{(k)} = \sigma\!\Big(W^{(k)} \big[\, h_v^{(k-1)} \;\|\; h_{\mathcal{N}(v)}^{
 $$
 
 dove $\|$ è la concatenazione, $\sigma$ una non linearità, $W^{(k)}$ i pesi
-condivisi dello strato $k$, e — cruciale — $\mathcal{S}(v) \subseteq \mathcal{N}(v)$
-è un **sottoinsieme campionato uniformemente** dei vicini, di dimensione fissa.
-È il campionamento a rendere il costo per nodo indipendente dal grado: con $S$
-vicini campionati per strato e $K$ strati, il sottografo che alimenta un nodo ha
-al più $S^K$ foglie, comunque grande sia il grafo. E poiché $W^{(k)}$ e le
-funzioni di aggregazione non dipendono da *quali* nodi si stia guardando ma solo
-dalle loro feature, il modello si applica di peso a nodi e grafi mai visti:
-l'inferenza su un nuovo nodo richiede solo di conoscerne il vicinato, non di
-riaddestrare.
+condivisi dello strato $k$, e (cruciale)
+$\mathcal{S}(v) \subseteq \mathcal{N}(v)$ è un **sottoinsieme campionato
+uniformemente** dei vicini, di dimensione fissa. È il campionamento a rendere
+il costo per nodo indipendente dal grado: con $S$ vicini campionati per strato
+e $K$ strati, il sottografo che alimenta un nodo ha al più $S^K$ foglie,
+comunque grande sia il grafo. E poiché $W^{(k)}$ e le funzioni di aggregazione
+non dipendono da *quali* nodi si stia guardando ma solo dalle loro feature, il
+modello si applica di peso a nodi e grafi mai visti: l'inferenza su un nuovo
+nodo richiede solo di conoscerne il vicinato, non di riaddestrare.
 
 La funzione $\mathrm{AGGREGATE}$ deve restare invariante all'ordine dei vicini;
 Hamilton et al. ne propongono tre varianti:
 
 - **mean**: la media (eventualmente pesata) dei vettori dei vicini. Con una
-  piccola modifica — concatenare non più, ma sommare $v$ ai suoi vicini prima
-  della media — si riottiene quasi esattamente la propagazione della GCN, che
+  piccola modifica (concatenare non più, ma sommare $v$ ai suoi vicini prima
+  della media), si riottiene quasi esattamente la propagazione della GCN, che
   diventa così un *caso particolare* di GraphSAGE.
 - **pool**: ogni vicino passa per uno stesso piccolo strato denso, poi si prende
   il massimo elemento per elemento (*max-pooling*): $\max\{\sigma(W_{\text{pool}}\,h_u + b) : u \in \mathcal{S}(v)\}$.
@@ -124,12 +126,13 @@ Ricordi l'evidenziatore del capitolo sull'attenzione? Davanti a una parola, il
 modello ripassava tutte le altre e le colorava con intensità diversa, secondo
 quanto contavano. La GAT fa la stessa cosa, ma l'evidenziatore lo passa sui
 **vicini di un nodo nel grafo**. Quando aggiorna un nodo non fa più una media
-democratica: prima decide, vicino per vicino, *quanto* pesarlo — dà a ognuno un
-voto tra 0 e 1, e i voti sommano a 1 — e poi fa la media *pesata* con quei voti.
-Il bello è che nessuno scrive a mano questi pesi: li impara la rete, come ogni
-altro parametro. Nel pannello di destra della {numref}`fig-gnn-graphsage-gat` lo
-spessore di ogni arco è il peso di attenzione: un vicino, quello con l'arco più
-grosso, si prende la fetta più grande; gli altri contano meno.
+democratica: prima decide, vicino per vicino, *quanto* pesarlo (dà a ognuno un
+voto tra 0 e 1, e i voti sommano a 1) e poi fa la media *pesata* con quei
+voti. Il bello è che nessuno scrive a mano questi pesi: li impara la rete,
+come ogni altro parametro. Nel pannello di destra della
+{numref}`fig-gnn-graphsage-gat` lo spessore di ogni arco è il peso di
+attenzione: un vicino, quello con l'arco più grosso, si prende la fetta più
+grande; gli altri contano meno.
 
 C'è un ponte esplicito da tenere a mente. L'attenzione dei Transformer fa
 guardare ogni parola a tutte le altre della frase: è, in fondo, attenzione su un
@@ -175,11 +178,11 @@ $$
 $$
 
 e i tre pesi sommano a $1$ come devono: il primo vicino domina l'aggregazione
-(due terzi del peso), il terzo è quasi ignorato. Come nei Transformer, si usano
-più **teste** in parallelo (*multi-head*): $K$ meccanismi di attenzione
-indipendenti, i cui risultati si concatenano negli strati intermedi e si mediano
-nello strato finale — così il modello può pesare i vicini secondo criteri
-diversi contemporaneamente.
+(due terzi del peso), il terzo è quasi ignorato. Come nei Transformer, si
+usano più **teste** in parallelo (*multi-head*): $K$ meccanismi di attenzione
+indipendenti, i cui risultati si concatenano negli strati intermedi e si
+mediano nello strato finale; così il modello può pesare i vicini secondo
+criteri diversi contemporaneamente.
 
 `````
 
@@ -209,25 +212,25 @@ conv2 = GATConv(hid_dim * 8, out_dim, heads=1, concat=False)
 
 ## Dal nodo al grafo intero: readout e potere espressivo
 
-Finora abbiamo prodotto un vettore *per ogni nodo*. Ma i compiti a **livello di
-grafo** — «questa molecola è tossica?», «questo composto uccide i batteri?» —
-chiedono un solo verdetto per l'intero grafo. Serve un passo in più: comprimere
-i tanti vettori dei nodi in **un** vettore del grafo. Questo passo si chiama
-**readout** (o *pooling* globale).
+Finora abbiamo prodotto un vettore *per ogni nodo*. Ma i compiti a **livello
+di grafo** («questa molecola è tossica?», «questo composto uccide i batteri?»)
+chiedono un solo verdetto per l'intero grafo. Serve un passo in più:
+comprimere i tanti vettori dei nodi in **un** vettore del grafo. Questo passo
+si chiama **readout** (o *pooling* globale).
 
 `````{tab} Elementare
 
-Immagina di aver dato un voto a ogni giocatore di una squadra e di volere ora un
-unico numero per la squadra intera. Le strade ovvie sono tre: **sommare** tutti
-i voti, farne la **media**, o prendere il **massimo** (il voto del migliore).
-Sono esattamente le tre ricette del readout: somma, media, massimo dei vettori
-dei nodi. Semplici, e — nota — tutte e tre indifferenti all'ordine in cui elenchi
-i giocatori, che è proprio ciò che ci serve su un grafo.
+Immagina di aver dato un voto a ogni giocatore di una squadra e di volere ora
+un unico numero per la squadra intera. Le strade ovvie sono tre: **sommare**
+tutti i voti, farne la **media**, o prendere il **massimo** (il voto del
+migliore). Sono esattamente le tre ricette del readout: somma, media, massimo
+dei vettori dei nodi. Semplici, e (nota) tutte e tre indifferenti all'ordine
+in cui elenchi i giocatori, che è proprio ciò che ci serve su un grafo.
 
 Sembrano equivalenti, ma non lo sono, e la differenza è più profonda di quanto
 sembri. La media e il massimo **dimenticano quanti** sono i nodi; la somma no.
 Un esempio: una molecola con due gruppi ossidrili e una con un solo gruppo
-ossidrilo, a parità di tutto il resto, sono molecole diverse — e possono
+ossidrilo, a parità di tutto il resto, sono molecole diverse, e possono
 comportarsi in modo diverso. Se i due nodi «ossidrile» hanno lo stesso vettore
 $b$, la **somma** dà $2b$ nel primo caso e $b$ nel secondo: li distingue. La
 **media** dà $b$ in entrambi i casi, il **massimo** pure: confondono le due
@@ -237,24 +240,24 @@ molecole. Contare, a volte, è tutto.
 
 `````{tab} Superiore
 
-Il readout aggrega l'insieme $\{h_v^{(K)} : v \in V\}$ in un vettore $h_G$
-con un'operazione invariante a permutazione — tipicamente
-$h_G = \sum_v h_v^{(K)}$, oppure la media o il massimo. Esistono anche schemi di
-**pooling gerarchico** (per esempio *DiffPool*), che alternano message passing e
-fusione di gruppi di nodi in super-nodi, costruendo il vettore del grafo per
-livelli, come il pooling delle CNN accorpa regioni dell'immagine.
+Il readout aggrega l'insieme $\{h_v^{(K)} : v \in V\}$ in un vettore $h_G$ con
+un'operazione invariante a permutazione; tipicamente $h_G = \sum_v h_v^{(K)}$,
+oppure la media o il massimo. Esistono anche schemi di **pooling gerarchico**
+(per esempio *DiffPool*), che alternano message passing e fusione di gruppi di
+nodi in super-nodi, costruendo il vettore del grafo per livelli, come il
+pooling delle CNN accorpa regioni dell'immagine.
 
 La scelta dell'aggregatore non è un dettaglio implementativo: decide il
 **potere espressivo** della rete, cioè quali grafi diversi essa riesce a
 distinguere. Il risultato di riferimento è di Xu, Hu, Leskovec e Jegelka nel
 2019 {cite}`xu2019powerful`, e lega le GNN a un classico test di
-**isomorfismo** — il test di Weisfeiler–Lehman (WL). Il test WL colora
-iterativamente i nodi impastando la propria etichetta con il *multinsieme* delle
-etichette dei vicini: è esattamente la struttura del message passing. Xu et al.
-dimostrano che **nessuna GNN a message passing può distinguere due grafi che il
-test WL dichiara indistinguibili** — è il tetto teorico — e che una GNN lo
-raggiunge solo se la sua aggregazione è **iniettiva** sul multinsieme dei
-vicini. Da qui la gerarchia:
+**isomorfismo**: il test di Weisfeiler–Lehman (WL). Il test WL colora
+iterativamente i nodi impastando la propria etichetta con il *multinsieme*
+delle etichette dei vicini: è esattamente la struttura del message passing. Xu
+et al. dimostrano che **nessuna GNN a message passing può distinguere due
+grafi che il test WL dichiara indistinguibili** (è il tetto teorico) e che una
+GNN lo raggiunge solo se la sua aggregazione è **iniettiva** sul multinsieme
+dei vicini. Da qui la gerarchia:
 
 $$
 \text{somma} \;\succ\; \text{media} \;\succ\; \text{massimo},
@@ -271,10 +274,11 @@ $$
 h_v^{(k)} = \mathrm{MLP}^{(k)}\!\Big( \big(1 + \epsilon^{(k)}\big)\, h_v^{(k-1)} + \sum_{u \in \mathcal{N}(v)} h_u^{(k-1)} \Big),
 $$
 
-dove $\mathrm{MLP}^{(k)}$ è un piccolo percettrone multistrato ed $\epsilon^{(k)}$
-uno scalare (appreso o fissato a 0) che dosa il peso del nodo rispetto ai vicini.
-La somma sui vicini, seguita da un MLP, è quanto basta perché GIN eguagli il
-potere del test WL — il massimo ottenibile da una GNN a message passing.
+dove $\mathrm{MLP}^{(k)}$ è un piccolo percettrone multistrato ed
+$\epsilon^{(k)}$ uno scalare (appreso o fissato a 0) che dosa il peso del nodo
+rispetto ai vicini. La somma sui vicini, seguita da un MLP, è quanto basta
+perché GIN eguagli il potere del test WL: il massimo ottenibile da una GNN a
+message passing.
 
 `````
 
@@ -284,16 +288,17 @@ Il capitolo si è aperto su un antibiotico; è ora di mantenere la promessa e
 mostrare dove le GNN, oggi, fanno la differenza.
 
 **Chimica e farmaci.** È il terreno naturale delle GNN: una molecola *è* un
-grafo — atomi nei nodi, legami negli archi — e prevederne una proprietà è un
+grafo (atomi nei nodi, legami negli archi) e prevederne una proprietà è un
 compito a livello di grafo. L'idea di leggere le molecole con reti su grafo
 risale ai *fingerprint molecolari neurali* di Duvenaud e colleghi del 2015
 {cite}`duvenaud2015convolutional`, che sostituiscono i descrittori chimici
 scritti a mano con un vettore appreso end-to-end. La punta di diamante è la
-scoperta di **halicin**, già raccontata nell'apertura del capitolo: nel 2020 il
-gruppo di Jonathan Stokes e James Collins al MIT addestra una rete a message
-passing a prevedere l'attività antibatterica, la passa al setaccio su una
-libreria di composti e ne pesca uno che nessuno associava agli antibiotici,
-efficace contro ceppi resistenti a ogni farmaco noto (pubblicato su *Cell*).
+scoperta di **halicin**, già raccontata nell'apertura del capitolo: nel 2020
+il gruppo di Jonathan Stokes e James Collins al MIT addestra una rete a
+message passing a prevedere l'attività antibatterica, la passa al setaccio su
+una libreria di composti e ne pesca uno che nessuno associava agli
+antibiotici, efficace contro ceppi resistenti a ogni farmaco noto (pubblicato
+su *Cell*).
 
 **Raccomandazione su grafo.** Il caso industriale più celebre è **PinSage**, il
 sistema che Pinterest mette in produzione nel 2018 (Ying e colleghi) per
@@ -303,19 +308,19 @@ con brevi cammini casuali e li aggrega, girando su un grafo di tre miliardi di
 nodi. Come discusso nel capitolo sui sistemi di raccomandazione, raccomandare è
 *link prediction* su un grafo utente–oggetto, ed è lì che le GNN danno il meglio.
 
-**Rilevamento frodi.** Le transazioni finanziarie formano un grafo — conti nei
-nodi, pagamenti negli archi — e le frodi vivono nelle *relazioni*: anelli di
+**Rilevamento frodi.** Le transazioni finanziarie formano un grafo (conti nei
+nodi, pagamenti negli archi) e le frodi vivono nelle *relazioni*: anelli di
 conti che si rimpallano denaro, account che gravitano attorno a un mulo. Un
-classificatore che guardi i conti uno per uno non lo vede; una GNN, che propaga
-segnale lungo gli archi, sì. È oggi uno strumento standard nell'antiriciclaggio
-e nella difesa dei pagamenti.
+classificatore che guardi i conti uno per uno non lo vede; una GNN, che
+propaga segnale lungo gli archi, sì. È oggi uno strumento standard
+nell'antiriciclaggio e nella difesa dei pagamenti.
 
 **Mappe e traffico.** Dal 2020 le stime del **tempo di percorrenza in Google
-Maps** sono calcolate da una GNN sviluppata con DeepMind: la rete stradale è il
-grafo — segmenti di strada nei nodi, incroci a collegarli — e il modello prevede
-i tempi propagando informazione lungo il percorso, migliorando l'accuratezza
-degli arrivi stimati in molte città (lavoro pubblicato da Derrow-Pinion e
-colleghi nel 2021).
+Maps** sono calcolate da una GNN sviluppata con DeepMind: la rete stradale è
+il grafo (segmenti di strada nei nodi, incroci a collegarli) e il modello
+prevede i tempi propagando informazione lungo il percorso, migliorando
+l'accuratezza degli arrivi stimati in molte città (lavoro pubblicato da
+Derrow-Pinion e colleghi nel 2021).
 
 **Scienza e fisica.** Le GNN sono diventate *simulatori*: rappresentando un
 fluido o un materiale come un grafo di particelle interagenti, reti come quelle
@@ -327,7 +332,7 @@ meteorologica, e diversi analizzatori di collisioni nella fisica delle particell
 ## I limiti, senza nasconderli
 
 Le GNN non sono una bacchetta magica, e la letteratura è onesta sui loro punti
-deboli — vale la pena conoscerli prima di innamorarsene. Una rassegna d'insieme
+deboli: vale la pena conoscerli prima di innamorarsene. Una rassegna d'insieme
 è la survey di Wu e colleghi {cite}`wu2021comprehensive`.
 
 `````{tab} Elementare
@@ -336,20 +341,21 @@ Il difetto più curioso è che **impilare troppi strati peggiora le cose**. Con
 uno strato ogni nodo ascolta i vicini; con due, anche i vicini dei vicini; ma
 continuando così, dopo un po' *tutti* finiscono per ascoltare *tutti*, e le
 rappresentazioni dei nodi si assomigliano sempre di più fino a diventare
-indistinguibili — come una voce che, passando di bocca in bocca per tutto il
+indistinguibili, come una voce che, passando di bocca in bocca per tutto il
 paese, si uniforma in un unico mormorio. Si chiama **oversmoothing**,
 «levigatura eccessiva»: a furia di mediare con i vicini, si cancellano le
 differenze che volevamo cogliere. Ecco perché, in pratica, le GNN restano
-**basse**: due, tre, quattro strati, di rado di più. È l'opposto delle reti per
-immagini, dove si arriva a centinaia di strati.
+**basse**: due, tre, quattro strati, di rado di più. È l'opposto delle reti
+per immagini, dove si arriva a centinaia di strati.
 
 Un secondo problema è opposto e complementare: se l'informazione utile sta
-**lontana** nel grafo — a molti passi di distanza — per arrivare deve passare da
-imbuti sempre più stretti, e si perde per strada. È l'**over-squashing**,
-lo «schiacciamento» dell'informazione lontana. Si aggiungono la fatica di girare
+**lontana** nel grafo (a molti passi di distanza) per arrivare deve passare da
+imbuti sempre più stretti, e si perde per strada. È l'**over-squashing**, lo
+«schiacciamento» dell'informazione lontana. Si aggiungono la fatica di girare
 su grafi da miliardi di archi, e il fatto che quasi tutte le GNN danno per
-scontato che i nodi collegati si somiglino (gli amici hanno gusti simili): quando
-è il contrario — reti dove chi è connesso è *diverso* — rendono molto meno.
+scontato che i nodi collegati si somiglino (gli amici hanno gusti simili):
+quando è il contrario (reti dove chi è connesso è *diverso*) rendono molto
+meno.
 
 `````
 
@@ -370,29 +376,31 @@ scontato che i nodi collegati si somiglino (gli amici hanno gusti simili): quand
 - **Scalabilità.** Il campionamento di GraphSAGE e PinSage attenua il costo, ma
   addestrare su grafi da miliardi di nodi resta un problema aperto di sistemi,
   non solo di modelli.
-- **Eterofilia.** Molte GNN presuppongono l'**omofilia** — nodi collegati con
-  etichette simili — che l'aggregazione dei vicini sfrutta implicitamente. Sui
-  grafi **eterofili**, dove i nodi collegati tendono a differire, le architetture
-  standard possono fare peggio di un percettrone che ignora la struttura, ed è un
-  filone di ricerca attivo.
+- **Eterofilia.** Molte GNN presuppongono l'**omofilia** (nodi collegati con
+  etichette simili) che l'aggregazione dei vicini sfrutta implicitamente. Sui
+  grafi **eterofili**, dove i nodi collegati tendono a differire, le
+  architetture standard possono fare peggio di un percettrone che ignora la
+  struttura, ed è un filone di ricerca attivo.
 
 `````
 
 ## L'ecosistema, e dove andare da qui
 
 Chi voglia mettere le mani in pasta non parte da zero: due librerie coprono
-quasi tutto. **PyTorch Geometric** (PyG) — quella degli esempi di questa sezione
-— e la **Deep Graph Library** (DGL) offrono, sopra PyTorch, gli strati già
-pronti (`GCNConv`, `SAGEConv`, `GATConv`, `GINConv`), i *loader* per il
+quasi tutto. **PyTorch Geometric** (PyG) (quella degli esempi di questa
+sezione) e la **Deep Graph Library** (DGL) offrono, sopra PyTorch, gli strati
+già pronti (`GCNConv`, `SAGEConv`, `GATConv`, `GINConv`), i *loader* per il
 campionamento dei vicini e decine di dataset di riferimento. Scrivere una GNN,
-oggi, è questione di poche righe — proprio come lo è diventato scrivere una CNN.
+oggi, è questione di poche righe: proprio come lo è diventato scrivere una
+CNN.
 
-Con questo si chiude il capitolo. Il filo, però, non si spezza: l'attenzione che
-qui pesa i vicini di un nodo è la stessa dei Transformer, e i grafi bipartiti
-utente–oggetto di questa sezione sono lo stesso oggetto del capitolo sui sistemi
-di raccomandazione. Le reti su grafo non sono un'isola: sono il punto in cui
-convoluzione, attenzione e apprendimento di rappresentazioni si ritrovano, sotto
-un'unica lente — quella, geometrica, delle simmetrie del dato.
+Con questo si chiude il capitolo. Il filo, però, non si spezza: l'attenzione
+che qui pesa i vicini di un nodo è la stessa dei Transformer, e i grafi
+bipartiti utente–oggetto di questa sezione sono lo stesso oggetto del capitolo
+sui sistemi di raccomandazione. Le reti su grafo non sono un'isola: sono il
+punto in cui convoluzione, attenzione e apprendimento di rappresentazioni si
+ritrovano, sotto un'unica lente (quella, geometrica, delle simmetrie del
+dato).
 
 ```{admonition} Da ricordare
 :class: important

@@ -6,21 +6,21 @@ La matematica è il linguaggio con cui Dio ha scritto l'universo.
 -- attribuito a Galileo Galilei
 ```
 
-C'è un equivoco tenace da sciogliere prima di cominciare: per usare il
-machine learning non serve essere matematici, ma per *capirlo* serve
-riconoscere le poche idee matematiche che vi ritornano di continuo. Sono
-sorprendentemente poche. Un modello di deep learning con miliardi di
-parametri — le "manopole" interne che l'addestramento regola da solo —,
-quando lo si smonta, parla tre lingue soltanto: **algebra
-lineare** (per rappresentare i dati e i pesi), **analisi** (per capire in che
-direzione migliorare) e **probabilità** (per convivere con l'incertezza). A
-tenere insieme il tutto quando i conti passano dalla carta al calcolatore c'è
-una quarta voce, discreta ma decisiva: l'**analisi numerica**.
+C'è un equivoco tenace da sciogliere prima di cominciare: per usare il machine
+learning non serve essere matematici, ma per *capirlo* serve riconoscere le
+poche idee matematiche che vi ritornano di continuo. Sono sorprendentemente
+poche. Un modello di deep learning con miliardi di parametri (le "manopole"
+interne che l'addestramento regola da solo), quando lo si smonta, parla tre
+lingue soltanto: **algebra lineare** (per rappresentare i dati e i pesi),
+**analisi** (per capire in che direzione migliorare) e **probabilità** (per
+convivere con l'incertezza). A tenere insieme il tutto quando i conti passano
+dalla carta al calcolatore c'è una quarta voce, discreta ma decisiva:
+l'**analisi numerica**.
 
 Questo capitolo non è un corso di matematica: è una cassetta degli attrezzi.
 Prendiamo solo gli strumenti che useremo davvero nei capitoli successivi, e li
-prendiamo due volte — una in modo intuitivo, una in modo formale — così che
-tu possa fermarti al livello che ti serve.
+prendiamo due volte (una in modo intuitivo, una in modo formale), così che tu
+possa fermarti al livello che ti serve.
 
 ## Perché proprio questi tre pilastri
 
@@ -32,7 +32,7 @@ Trasformare quei numeri, strato dopo strato, finché non emerge la risposta
 non lineari. Misurare *quanto* il modello sbaglia e decidere come correggere
 ogni singolo parametro per sbagliare un po' meno la prossima volta è
 **analisi** (nello specifico: derivate e gradienti). E poiché nessun modello è
-mai certo — è "abbastanza sicuro" che sia un gatto — il modo naturale di
+mai certo (è "abbastanza sicuro" che sia un gatto), il modo naturale di
 esprimere quella sicurezza è la **probabilità**.
 
 Le tre lingue, insieme, coprono l'intero ciclo di vita di un modello:
@@ -41,13 +41,13 @@ nel risultato.
 
 ## Come è organizzato il capitolo
 
-- **Algebra lineare** — vettori, matrici, i prodotti che contano e le norme
-  con cui misuriamo lunghezze ed errori.
-- **Analisi e ottimizzazione** — derivate, gradiente, regola della catena: la
+- **Algebra lineare**: vettori, matrici, i prodotti che contano e le norme con
+  cui misuriamo lunghezze ed errori.
+- **Analisi e ottimizzazione**, derivate, gradiente, regola della catena: la
   bussola che indica dove migliorare, e la discesa del gradiente che la segue.
-- **Probabilità e statistica** — variabili aleatorie, valore atteso e
-  varianza, le distribuzioni ricorrenti, il teorema di Bayes.
-- **Analisi numerica** — cosa cambia quando i numeri hanno una precisione
+- **Probabilità e statistica**: variabili aleatorie, valore atteso e varianza,
+  le distribuzioni ricorrenti, il teorema di Bayes.
+- **Analisi numerica**, cosa cambia quando i numeri hanno una precisione
   finita: stabilità, overflow, il trucco del *log-sum-exp*.
 
 Ogni sezione segue la regola del libro: una spiegazione **Elementare** con

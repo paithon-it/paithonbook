@@ -1,15 +1,14 @@
 # Support Vector Machine: il margine massimo
 
-Disegna due nuvole di punti su un foglio — pallini blu a sinistra, quadratini
-rossi a destra — e traccia una retta che li separi. Facile. Ora traccia
+Disegna due nuvole di punti su un foglio (pallini blu a sinistra, quadratini
+rossi a destra) e traccia una retta che li separi. Facile. Ora traccia
 *un'altra* retta che li separi lo stesso, e poi un'altra ancora: se le due
 nuvole sono ben distinte, di rette buone ce ne sono infinite. Quale scegliere?
 La regressione logistica del capitolo sull'apprendimento supervisionato ne
 sceglie una, il *perceptron* un'altra, e nessuno dei due si pone davvero la
 domanda. La **Support Vector Machine** (SVM) sì, e con una risposta di netta
-eleganza geometrica: tra tutte le rette che separano, scegli la più
-*prudente* — quella che lascia il corridoio più largo possibile tra le due
-classi.
+eleganza geometrica: tra tutte le rette che separano, scegli la più *prudente*
+(quella che lascia il corridoio più largo possibile tra le due classi).
 
 È un'idea nata nei primi anni Novanta nei laboratori Bell da Vladimir Vapnik e
 colleghi, formalizzata da Boser, Guyon e Vapnik nel 1992
@@ -22,7 +21,7 @@ oggi una scelta sensata quando gli esempi sono poche migliaia.
 ## La retta più prudente
 
 Immagina il confine tra due quartieri di case. Potresti tracciarlo rasente al
-muro dell'ultima villetta di uno dei due — ma basterebbe una casa nuova, un
+muro dell'ultima villetta di uno dei due, ma basterebbe una casa nuova, un
 metro più in là, per trovarti dalla parte sbagliata. La scelta prudente è
 tirare il confine *nel mezzo del prato*, il più lontano possibile dalle case
 di entrambi i lati. Così hai il massimo respiro: piccole variazioni non ti
@@ -36,17 +35,17 @@ il più largo possibile.
 
 Tra le infinite rette che separano le due classi, la SVM sceglie quella che
 massimizza il **margine**: la larghezza del corridoio (in ocra) tra i punti
-più vicini. Solo quei punti — i **vettori di supporto**, cerchiati — determinano
+più vicini. Solo quei punti (i **vettori di supporto**, cerchiati) determinano
 la soluzione.
 ```
 
-Come mostra {numref}`fig-svm-margine`, la soluzione poggia su pochissimi punti:
-quelli che toccano i bordi del corridoio. Tutti gli altri, per quanto numerosi,
-sono irrilevanti — potresti spostarli o cancellarli e il confine non si
-muoverebbe di un millimetro. Sono i punti sul bordo a «reggere» l'iperpiano, e
-per questo si chiamano **vettori di supporto**. È una differenza sostanziale
-rispetto alla regressione logistica, la cui frontiera dipende (sia pur poco) da
-*tutti* i dati.
+Come mostra {numref}`fig-svm-margine`, la soluzione poggia su pochissimi
+punti: quelli che toccano i bordi del corridoio. Tutti gli altri, per quanto
+numerosi, sono irrilevanti: potresti spostarli o cancellarli e il confine non
+si muoverebbe di un millimetro. Sono i punti sul bordo a «reggere»
+l'iperpiano, e per questo si chiamano **vettori di supporto**. È una
+differenza sostanziale rispetto alla regressione logistica, la cui frontiera
+dipende (sia pur poco) da *tutti* i dati.
 
 ## Il classificatore a massimo margine
 
@@ -63,12 +62,12 @@ W^\top X + b = 0,
 $$
 
 la stessa che descriveva il confine di decisione della regressione logistica:
-$W$ è il vettore che dà l'orientamento della frontiera e $b$ la sposta avanti o
-indietro. Un punto nuovo si classifica guardando il *segno* di $W^\top X + b$:
-positivo di qua, negativo di là. La novità della SVM non è questa formula — è
-il criterio con cui sceglie $W$ e $b$: non una frontiera qualsiasi, ma quella
-che lascia il vuoto più ampio attorno a sé. Più il corridoio è largo, più il
-classificatore è robusto.
+$W$ è il vettore che dà l'orientamento della frontiera e $b$ la sposta avanti
+o indietro. Un punto nuovo si classifica guardando il *segno* di
+$W^\top X + b$: positivo di qua, negativo di là. La novità della SVM non è
+questa formula, è il criterio con cui sceglie $W$ e $b$: non una frontiera
+qualsiasi, ma quella che lascia il vuoto più ampio attorno a sé. Più il
+corridoio è largo, più il classificatore è robusto.
 
 `````
 
@@ -83,8 +82,8 @@ $$
 y_i\,(W^\top X_i + b) \ge 1, \qquad i = 1, \dots, m.
 $$
 
-La distanza di un punto sul margine dall'iperpiano è $1/\lVert W\rVert$, quindi
-la larghezza totale del corridoio — da un bordo all'altro — è
+La distanza di un punto sul margine dall'iperpiano è $1/\lVert W\rVert$,
+quindi la larghezza totale del corridoio (da un bordo all'altro) è
 
 $$
 \text{margine} = \frac{2}{\lVert W\rVert}.
@@ -145,16 +144,16 @@ $$
 $$
 
 Ed è esattamente la distanza euclidea tra $X_1=(0,0)$ e $X_2=(2,2)$, che vale
-$\sqrt{2^2+2^2}=\sqrt{8}=2\sqrt{2}$: i due vettori di supporto, uno per classe,
-si affacciano sui bordi opposti dello stesso corridoio. Nota il punto cruciale:
-cancellare $X_3$ e $X_4$ non cambia nulla — la soluzione dipende solo dai due
-punti sul bordo.
+$\sqrt{2^2+2^2}=\sqrt{8}=2\sqrt{2}$: i due vettori di supporto, uno per
+classe, si affacciano sui bordi opposti dello stesso corridoio. Nota il punto
+cruciale: cancellare $X_3$ e $X_4$ non cambia nulla; la soluzione dipende solo
+dai due punti sul bordo.
 
 ## Quando i dati non sono perfetti: il margine morbido
 
 Il margine rigido ha due difetti gemelli: pretende che i dati siano
-*perfettamente* separabili, e basta un solo punto fuori posto — un outlier, un
-errore di misura — per stravolgere la soluzione o renderla impossibile. Nel
+*perfettamente* separabili, e basta un solo punto fuori posto (un outlier, un
+errore di misura) per stravolgere la soluzione o renderla impossibile. Nel
 mondo reale le classi si sovrappongono quasi sempre. La risposta di Cortes e
 Vapnik {cite}`cortes1995support` è il **margine morbido** (*soft margin*):
 concedere qualche violazione, pagandola.
@@ -202,27 +201,27 @@ $$
 + \frac{1}{2C}\lVert W\rVert^2 .
 $$
 
-La hinge loss $\max(0,\,1 - y_i f(X_i))$ è nulla per i punti ben classificati e
-fuori dal margine, e cresce *linearmente* per quelli dentro la fascia o dalla
-parte sbagliata: è l'analogo, per la SVM, di ciò che la log-loss è per la
-regressione logistica — con la differenza che, essendo piatta oltre il margine,
-ignora del tutto i punti «facili» e dà alla SVM la sua sparsità in vettori di
-supporto. In questa forma si legge chiaramente il ruolo di $C$: il coefficiente
-della penalità $\lVert W\rVert^2$ è $1/(2C)$, quindi **$C$ è l'inverso della
-forza di regolarizzazione**. $C$ grande → penalità debole → margine stretto,
-varianza alta; $C$ piccolo → penalità forte → margine largo, bias più alto. È
-la stessa manopola $\lambda$ della sezione sull'overfitting, letta al contrario:
-$\lambda \approx 1/(2C)$.
+La hinge loss $\max(0,\,1 - y_i f(X_i))$ è nulla per i punti ben classificati
+e fuori dal margine, e cresce *linearmente* per quelli dentro la fascia o
+dalla parte sbagliata: è l'analogo, per la SVM, di ciò che la log-loss è per
+la regressione logistica, con la differenza che, essendo piatta oltre il
+margine, ignora del tutto i punti «facili» e dà alla SVM la sua sparsità in
+vettori di supporto. In questa forma si legge chiaramente il ruolo di $C$: il
+coefficiente della penalità $\lVert W\rVert^2$ è $1/(2C)$, quindi **$C$ è
+l'inverso della forza di regolarizzazione**. $C$ grande → penalità debole →
+margine stretto, varianza alta; $C$ piccolo → penalità forte → margine largo,
+bias più alto. È la stessa manopola $\lambda$ della sezione sull'overfitting,
+letta al contrario: $\lambda \approx 1/(2C)$.
 
 `````
 
 ## Il kernel trick: separare l'inseparabile
 
 Fin qui, però, la SVM traccia solo iperpiani: frontiere *diritte*. E se le due
-classi sono intrecciate in modo che nessuna retta le separi — pensa a un
-bersaglio, con una classe al centro e l'altra tutt'intorno ad anello? Qui entra
-in gioco l'idea più affascinante di tutta la storia delle SVM, quella che le ha
-rese celebri: il **kernel trick**.
+classi sono intrecciate in modo che nessuna retta le separi: pensa a un
+bersaglio, con una classe al centro e l'altra tutt'intorno ad anello? Qui
+entra in gioco l'idea più affascinante di tutta la storia delle SVM, quella
+che le ha rese celebri: il **kernel trick**.
 
 `````{tab} Elementare
 
@@ -231,9 +230,9 @@ Sul foglio, piatto, nessuna retta li separa. Ma immagina di *sollevare* ogni
 punto in aria di un'altezza pari a quanto è lontano dal centro: i punti del
 cerchio interno, vicini al centro, restano bassi; quelli dell'anello, lontani,
 salgono in alto. Ora le due classi stanno a quote diverse, e un semplice
-*piano orizzontale* — una lastra di vetro infilata a mezz'aria — le separa
-nettamente. Non abbiamo cambiato i punti: li abbiamo guardati in uno spazio con
-una dimensione in più, e lì il problema è diventato lineare.
+*piano orizzontale* (una lastra di vetro infilata a mezz'aria) le separa
+nettamente. Non abbiamo cambiato i punti: li abbiamo guardati in uno spazio
+con una dimensione in più, e lì il problema è diventato lineare.
 
 `````
 
@@ -319,8 +318,8 @@ possibile*.
 
 `````{tab} Elementare
 
-Invece di penalizzare ogni piccolo scarto tra previsione e valore vero — come
-fa la regressione lineare classica — la SVR disegna un «tubo» di tolleranza
+Invece di penalizzare ogni piccolo scarto tra previsione e valore vero (come
+fa la regressione lineare classica) la SVR disegna un «tubo» di tolleranza
 attorno alla curva: finché un punto ci sta dentro, l'errore conta *zero*.
 Vengono penalizzati solo i punti che sporgono dal tubo, e solo per quanto
 sporgono. È un modo indulgente di adattare i dati: non insegue le piccole
@@ -348,8 +347,8 @@ esattamente come la SVM classifica frontiere non lineari.
 ## Una classe sola: novelty e anomaly detection
 
 C'è un'ultima variante, e risponde a una domanda diversa: e se avessimo esempi
-di *una sola* classe? Vogliamo imparare com'è fatto il «normale» — transazioni
-regolari, macchinari sani, traffico di rete legittimo — per poi accorgerci di
+di *una sola* classe? Vogliamo imparare com'è fatto il «normale» (transazioni
+regolari, macchinari sani, traffico di rete legittimo) per poi accorgerci di
 ciò che se ne discosta. È il problema della **novelty detection** (riconoscere
 il nuovo) e dell'**anomaly detection** (riconoscere il guasto), e si lega a
 quel tema dei dati fuori distribuzione toccato nella sezione sui dati che
@@ -358,16 +357,17 @@ invece di predire con finta sicurezza.
 
 `````{tab} Elementare
 
-Immagina di aver visto migliaia di transazioni oneste con la carta di credito e
-nemmeno una frode. Non puoi addestrare un classificatore «onesto contro frode»:
-la seconda classe non ce l'hai. La **one-class SVM** ribalta il problema:
-impara a disegnare, attorno ai dati normali, il «recinto» più stretto che li
-racchiude tutti. Da quel momento, ogni nuova transazione che cade *fuori* dal
-recinto è sospetta — non perché somigli a una frode nota, ma perché non somiglia
-a nulla di normale. Una manopola, $\nu$, dice più o meno quale frazione di dati
-ci aspettiamo che finisca fuori (le anomalie tollerate). Serve per rilevare
-frodi, guasti di macchinari, intrusioni informatiche, difetti in una linea di
-produzione: ovunque gli esempi «anomali» siano rari o non ancora visti.
+Immagina di aver visto migliaia di transazioni oneste con la carta di credito
+e nemmeno una frode. Non puoi addestrare un classificatore «onesto contro
+frode»: la seconda classe non ce l'hai. La **one-class SVM** ribalta il
+problema: impara a disegnare, attorno ai dati normali, il «recinto» più
+stretto che li racchiude tutti. Da quel momento, ogni nuova transazione che
+cade *fuori* dal recinto è sospetta: non perché somigli a una frode nota, ma
+perché non somiglia a nulla di normale. Una manopola, $\nu$, dice più o meno
+quale frazione di dati ci aspettiamo che finisca fuori (le anomalie
+tollerate). Serve per rilevare frodi, guasti di macchinari, intrusioni
+informatiche, difetti in una linea di produzione: ovunque gli esempi «anomali»
+siano rari o non ancora visti.
 
 `````
 
@@ -377,18 +377,18 @@ La one-class SVM di Schölkopf e colleghi {cite}`scholkopf2001estimating`
 adatta l'idea del margine al caso non supervisionato: mappati i dati nello
 spazio delle feature con un kernel (di solito RBF), cerca l'iperpiano che
 separa i punti dall'**origine** con il massimo margine. Ricondotto allo spazio
-originale, questo equivale a racchiudere i dati normali in una regione compatta;
-ciò che cade fuori è novità/anomalia. Il parametro $\nu \in (0,1]$ ha un doppio
-significato preciso: è un limite *superiore* alla frazione di esempi di
-addestramento classificati come anomali (i *margin error*) e un limite
-*inferiore* alla frazione di vettori di supporto. La distingue dalla
+originale, questo equivale a racchiudere i dati normali in una regione
+compatta; ciò che cade fuori è novità/anomalia. Il parametro $\nu \in (0,1]$
+ha un doppio significato preciso: è un limite *superiore* alla frazione di
+esempi di addestramento classificati come anomali (i *margin error*) e un
+limite *inferiore* alla frazione di vettori di supporto. La distingue dalla
 classificazione binaria un'assenza: in addestramento **non** c'è la classe
 «anomalo»: si impara solo la forma del normale. Un parente stretto è la
 **Support Vector Data Description** (SVDD) di Tax e Duin, che invece della
 separazione dall'origine cerca la *ipersfera* minima che racchiude i dati; e
-tra le alternative non-kernel ci sono l'**Isolation Forest** — che isola le
+tra le alternative non-kernel ci sono l'**Isolation Forest** (che isola le
 anomalie con partizioni casuali, ereditando la scalabilità degli alberi della
-sezione sugli ensemble — e il *Local Outlier Factor* basato sulla densità
+sezione sugli ensemble) e il *Local Outlier Factor* basato sulla densità
 locale.
 
 `````

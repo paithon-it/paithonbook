@@ -12,7 +12,7 @@ prodotto.
 
 Questa sezione mostra come, restando dentro PyTorch e senza aggiungere alcuno
 strumento: cinque file di Python semplice, e un comando che si lancia dal
-terminale. Il che comincia a fare venire in mente la produzione — argomento del
+terminale. Il che comincia a fare venire in mente la produzione: argomento del
 [capitolo sull'MLOps](../MLOps/dal-notebook-alla-produzione.md), che riprende
 il discorso da qui in poi.
 
@@ -38,7 +38,7 @@ un ricordo.
 La differenza sostanziale è tra **stato implicito** e **stato esplicito**. Nel
 notebook lo stato vive nel kernel: l'ordine di esecuzione delle celle è
 invisibile nel documento salvato, quindi il codice non determina il risultato
-— condizione che rende impossibile la riproducibilità. Uno script ha un unico
+(condizione che rende impossibile la riproducibilità). Uno script ha un unico
 punto d'ingresso, un ordine totale delle istruzioni, e tutto ciò che varia
 passa dagli argomenti della riga di comando: input, output e parametri sono
 dichiarati.
@@ -195,13 +195,13 @@ come è stato ottenuto.
 
 `````{tab} Superiore
 `argparse` fa parte della libreria standard e per un progetto singolo basta.
-Quando la configurazione cresce — decine di parametri, combinazioni annidate,
-varianti per ambiente — si passa a un sistema di configurazione a file
-(`YAML` più `dataclass`, oppure Hydra), che rende l'intera configurazione un
-artefatto versionabile invece di una stringa nella cronologia della shell.
-È esattamente la nozione di *tre artefatti da versionare* — codice, dati,
-configurazione — discussa in
-[dal notebook alla produzione](../MLOps/dal-notebook-alla-produzione.md).
+Quando la configurazione cresce (decine di parametri, combinazioni annidate,
+varianti per ambiente), si passa a un sistema di configurazione a file (`YAML`
+più `dataclass`, oppure Hydra), che rende l'intera configurazione un artefatto
+versionabile invece di una stringa nella cronologia della shell. È esattamente
+la nozione di *tre artefatti da versionare* (codice, dati, configurazione)
+discussa in [dal notebook alla
+produzione](../MLOps/dal-notebook-alla-produzione.md).
 
 Sul salvataggio conviene essere espliciti: un `state_dict` nudo non è
 autosufficiente. Il minimo utile è un dizionario che contenga i pesi, la
@@ -221,8 +221,8 @@ def salva_modello(modello, percorso, classi, argomenti):
 
 Da PyTorch 2.6 `torch.load` usa `weights_only=True` come default, quindi un
 file che contiene oggetti Python arbitrari va ricaricato con
-`weights_only=False` — o, meglio, salvato con dentro solo tipi elementari,
-come qui.
+`weights_only=False`, o, meglio, salvato con dentro solo tipi elementari, come
+qui.
 `````
 
 ## Riproducibilità: fissare il caso
@@ -246,9 +246,9 @@ def fissa_seme(seme: int = 42) -> None:
 
 `````{tab} Elementare
 Il caso, in un computer, non è mai davvero casuale: è una lunga sequenza
-prestabilita di numeri che sembrano casuali, e il **seme** è il punto da cui si
-comincia a leggerla. Stesso seme, stessa sequenza, stessi pesi iniziali, stesso
-ordine di mescolamento dei dati — quindi stesso risultato.
+prestabilita di numeri che sembrano casuali, e il **seme** è il punto da cui
+si comincia a leggerla. Stesso seme, stessa sequenza, stessi pesi iniziali,
+stesso ordine di mescolamento dei dati, quindi stesso risultato.
 
 Attenzione a che cosa significa e a che cosa non significa. Fissare il seme
 serve a **confrontare**: se cambio il learning rate e il risultato migliora, con
@@ -271,15 +271,15 @@ torch.backends.cudnn.benchmark = False     # niente autotuning degli algoritmi
 # e, per cuBLAS, la variabile d'ambiente CUBLAS_WORKSPACE_CONFIG=:4096:8
 ```
 
-`cudnn.benchmark = True` — il default consigliato per le prestazioni — prova
-più algoritmi di convoluzione e sceglie il più veloce per quella forma di
-input: è ottimo quando le forme sono costanti, controproducente quando
-cambiano di continuo, e non deterministico in entrambi i casi. Anche i
-`DataLoader` con più worker richiedono attenzione: si passa un `generator` con
-seme fisso e si definisce `worker_init_fn` per fissare il seme di ciascun
-processo. In pratica, nella ricerca si punta alla riproducibilità *statistica*
-— stessa distribuzione di risultati su più semi — e si riserva il determinismo
-bit-a-bit ai casi in cui serve davvero, come il debugging di una regressione.
+`cudnn.benchmark = True` (il default consigliato per le prestazioni) prova più
+algoritmi di convoluzione e sceglie il più veloce per quella forma di input: è
+ottimo quando le forme sono costanti, controproducente quando cambiano di
+continuo, e non deterministico in entrambi i casi. Anche i `DataLoader` con
+più worker richiedono attenzione: si passa un `generator` con seme fisso e si
+definisce `worker_init_fn` per fissare il seme di ciascun processo. In
+pratica, nella ricerca si punta alla riproducibilità *statistica* (stessa
+distribuzione di risultati su più semi) e si riserva il determinismo bit-a-bit
+ai casi in cui serve davvero, come il debugging di una regressione.
 `````
 
 ## Quando *non* modularizzare
@@ -288,14 +288,14 @@ Vale la pena dirlo, perché il consiglio opposto è più comune: si può
 modularizzare troppo presto. Un'idea che non si sa ancora se funzioni non ha
 bisogno di cinque file, di un parser degli argomenti e di una gerarchia di
 classi; ha bisogno di essere provata in venti minuti. La divisione in moduli è
-un investimento che si ripaga quando qualcosa si ripete — e non prima.
+un investimento che si ripaga quando qualcosa si ripete, e non prima.
 
 Il criterio pratico è quello delle **tre volte**: la prima volta si scrive nel
 notebook; la seconda si copia e incolla, borbottando; la terza si estrae una
 funzione. E il passaggio non è mai tutto-o-niente: si può tenere il notebook
 come interfaccia di esplorazione e importarvi `engine.py`, ottenendo il meglio
-delle due cose — grafici e assaggi nel notebook, logica stabile e testabile nei
-file.
+delle due cose (grafici e assaggi nel notebook, logica stabile e testabile nei
+file).
 
 ```{admonition} Da ricordare
 :class: important
@@ -303,12 +303,12 @@ file.
   script è un **prodotto** (un punto d'ingresso, tutto dichiarato). Il segnale
   del passaggio è: "sto rilanciando la stessa cosa cambiando un numero".
 - La divisione standard è in cinque file: `data_setup`, `model_builder`,
-  `engine`, `utils`, `train` — dove `engine` contiene il loop, indipendente dal
-  problema.
+  `engine`, `utils`, `train` (dove `engine` contiene il loop, indipendente dal
+  problema).
 - Nell'accumulo di metriche: `perdita.item() * X.size(0)`, perché la loss di
   PyTorch è già una media sul batch.
-- `argparse` più `if __name__ == "__main__":` — quest'ultimo indispensabile
-  anche per i worker del `DataLoader` su Windows e macOS.
+- `argparse` più `if __name__ == "__main__":` (quest'ultimo indispensabile
+  anche per i worker del `DataLoader` su Windows e macOS).
 - Si salvano **pesi, classi e configurazione** insieme: uno `state_dict` nudo
   fra sei mesi non dice che cosa predice.
 - Fissare i semi serve a **confrontare** gli esperimenti; il determinismo

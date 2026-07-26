@@ -1,18 +1,18 @@
 # Privacy e robustezza: dati protetti e attacchi avversari
 
-Nel 2021 un gruppo di ricercatori guidato da Nicholas Carlini pose a GPT-2 —
-il modello linguistico di OpenAI addestrato su un'enorme raccolta di testi del
-web — un gran numero di inneschi, e si mise a leggere le risposte. In mezzo al
+Nel 2021 un gruppo di ricercatori guidato da Nicholas Carlini pose a GPT-2 (il
+modello linguistico di OpenAI addestrato su un'enorme raccolta di testi del
+web) un gran numero di inneschi, e si mise a leggere le risposte. In mezzo al
 mare di frasi plausibili ne trovarono alcune che *non erano* plausibili: erano
 *vere*. Il modello sputava, parola per parola, il nome completo di una persona
-reale, il suo indirizzo, un numero di telefono, un'email — informazioni comparse
-una manciata di volte nei dati di addestramento, e da lì *memorizzate*. Nessuno
-aveva chiesto al modello di ricordarle: l'aveva fatto da solo, come effetto
-collaterale dell'imparare.
+reale, il suo indirizzo, un numero di telefono, un'email: informazioni
+comparse una manciata di volte nei dati di addestramento, e da lì
+*memorizzate*. Nessuno aveva chiesto al modello di ricordarle: l'aveva fatto
+da solo, come effetto collaterale dell'imparare.
 
 Questo episodio apre il secondo dei tre assi annunciati nell'introduzione del
 capitolo. Dopo l'equità, affrontiamo insieme **privacy** e **robustezza**: due
-facce della stessa domanda scomoda — quanto è discreto, e quanto è fragile, un
+facce della stessa domanda scomoda; quanto è discreto, e quanto è fragile, un
 modello una volta messo nel mondo. Il filo conduttore è che entrambe le
 proprietà non si aggiungono alla fine come una vernice, ma vanno costruite
 dentro l'addestramento, con un costo in accuratezza da mettere in conto
@@ -28,36 +28,37 @@ un'informazione personale, la memorizzazione diventa una falla di privacy.
 `````{tab} Elementare
 
 Immagina uno studente che, invece di capire la materia, impari il libro a
-memoria. All'esame, se gli capita una domanda vista in aula, non ragiona: recita
-la pagina. Molti modelli fanno qualcosa di simile con gli esempi rari o
+memoria. All'esame, se gli capita una domanda vista in aula, non ragiona:
+recita la pagina. Molti modelli fanno qualcosa di simile con gli esempi rari o
 ripetuti: non ne colgono la regola, li imparano di sbieco così come sono. Due
-guai ne seguono. Il primo: dando al modello l'inizio di una frase che c'era nei
-dati, questo può completarla *identica* — se in quei dati c'era il tuo indirizzo,
-può ripeterlo. Il secondo, più sottile: anche senza fargli sputare nulla, si può
-spesso indovinare *se una certa persona era nei dati* di addestramento,
-osservando che il modello è stranamente sicuro proprio sui suoi esempi. È come
-capire che uno studente ha già visto un compito perché lo svolge troppo in
-fretta e senza esitazioni. Sapere «Tizio era nel dataset dell'ospedale» può
-essere di per sé un'informazione sensibile.
+guai ne seguono. Il primo: dando al modello l'inizio di una frase che c'era
+nei dati, questo può completarla *identica*; se in quei dati c'era il tuo
+indirizzo, può ripeterlo. Il secondo, più sottile: anche senza fargli sputare
+nulla, si può spesso indovinare *se una certa persona era nei dati* di
+addestramento, osservando che il modello è stranamente sicuro proprio sui suoi
+esempi. È come capire che uno studente ha già visto un compito perché lo
+svolge troppo in fretta e senza esitazioni. Sapere «Tizio era nel dataset
+dell'ospedale» può essere di per sé un'informazione sensibile.
 
 `````
 
 `````{tab} Superiore
 
-I due attacchi hanno nomi precisi. Il **membership inference attack**, formalizzato
-da Shokri e colleghi (2017), decide se un dato campione $X$ apparteneva o meno
-all'insieme di addestramento, sfruttando il divario di comportamento del modello
-tra ciò che ha visto e ciò che non ha visto — tipicamente una loss più bassa, o
-una confidenza più alta, sugli esempi di training. È l'evidenza empirica
-dell'*overfitting* discusso nel capitolo di Machine Learning, qui riletto come
-vulnerabilità: più un modello si adatta ai singoli esempi, più li lascia
-riconoscere. L'**estrazione di dati di addestramento** è più aggressiva: Carlini
-e colleghi (2021) mostrarono che da GPT-2 si potevano recuperare *verbatim*
-sequenze memorizzate — nomi, recapiti, frammenti di codice — presenti anche una
-sola manciata di volte nel corpus. La memorizzazione cresce con la dimensione
-del modello e con la ripetizione del dato: un problema strutturale dei grandi
-modelli linguistici, non un bug isolato. Serve quindi una nozione di privacy che
-sia una *garanzia matematica*, non un rammendo a posteriori.
+I due attacchi hanno nomi precisi. Il **membership inference attack**,
+formalizzato da Shokri e colleghi (2017), decide se un dato campione $X$
+apparteneva o meno all'insieme di addestramento, sfruttando il divario di
+comportamento del modello tra ciò che ha visto e ciò che non ha visto:
+tipicamente una loss più bassa, o una confidenza più alta, sugli esempi di
+training. È l'evidenza empirica dell'*overfitting* discusso nel capitolo di
+Machine Learning, qui riletto come vulnerabilità: più un modello si adatta ai
+singoli esempi, più li lascia riconoscere. L'**estrazione di dati di
+addestramento** è più aggressiva: Carlini e colleghi (2021) mostrarono che da
+GPT-2 si potevano recuperare *verbatim* sequenze memorizzate (nomi, recapiti,
+frammenti di codice) presenti anche una sola manciata di volte nel corpus. La
+memorizzazione cresce con la dimensione del modello e con la ripetizione del
+dato: un problema strutturale dei grandi modelli linguistici, non un bug
+isolato. Serve quindi una nozione di privacy che sia una *garanzia
+matematica*, non un rammendo a posteriori.
 
 `````
 
@@ -73,13 +74,14 @@ non lascia traccia rilevabile.
 
 `````{tab} Elementare
 
-C'è un vecchio trucco per fare sondaggi su domande imbarazzanti — «hai mai
-evaso le tasse?» — senza mettere in imbarazzo nessuno. Prima di rispondere,
-ognuno lancia in segreto una moneta: se esce testa dice la verità, se esce croce
-risponde a caso. Ora, se qualcuno ha detto «sì», tu non puoi accusarlo: forse è
-solo la moneta. Eppure, su mille persone, il rumore delle monete si media e la
-percentuale vera di evasori salta comunque fuori con buona precisione. Ogni
-individuo ha la sua *negabilità plausibile*; la statistica collettiva sopravvive.
+C'è un vecchio trucco per fare sondaggi su domande imbarazzanti («hai mai
+evaso le tasse?») senza mettere in imbarazzo nessuno. Prima di rispondere,
+ognuno lancia in segreto una moneta: se esce testa dice la verità, se esce
+croce risponde a caso. Ora, se qualcuno ha detto «sì», tu non puoi accusarlo:
+forse è solo la moneta. Eppure, su mille persone, il rumore delle monete si
+media e la percentuale vera di evasori salta comunque fuori con buona
+precisione. Ogni individuo ha la sua *negabilità plausibile*; la statistica
+collettiva sopravvive.
 
 La privacy differenziale è questa idea resa una garanzia numerica: al risultato
 di un calcolo sui dati si aggiunge un pizzico di caso, *calibrato* in modo che
@@ -100,15 +102,15 @@ $$
 \Pr[\mathcal{M}(D) \in S] \;\le\; e^{\varepsilon}\,\Pr[\mathcal{M}(D') \in S].
 $$
 
-Qui $\mathcal{M}$ è la procedura (randomizzata) che produce l'output; $D$ e $D'$
-sono *dataset vicini*, identici a meno di una riga; $\varepsilon \ge 0$ è il
-**budget di privacy**. La disuguaglianza dice che aggiungere o togliere una
+Qui $\mathcal{M}$ è la procedura (randomizzata) che produce l'output; $D$ e
+$D'$ sono *dataset vicini*, identici a meno di una riga; $\varepsilon \ge 0$ è
+il **budget di privacy**. La disuguaglianza dice che aggiungere o togliere una
 persona può moltiplicare la probabilità di *qualunque* esito al più per
-$e^{\varepsilon}$: con $\varepsilon = 0{,}5$ il fattore è $e^{0{,}5}\approx 1{,}65$,
-uno scarto modesto. Una versione rilassata, la **$(\varepsilon,\delta)$-DP**,
-ammette un termine additivo $+\,\delta$ con $\delta$ piccolissimo — la
-probabilità che la garanzia salti — ed è quella che serve per i meccanismi
-gaussiani usati nel deep learning.
+$e^{\varepsilon}$: con $\varepsilon = 0{,}5$ il fattore è
+$e^{0{,}5}\approx 1{,}65$, uno scarto modesto. Una versione rilassata, la
+**$(\varepsilon,\delta)$-DP**, ammette un termine additivo $+\,\delta$ con
+$\delta$ piccolissimo (la probabilità che la garanzia salti) ed è quella che
+serve per i meccanismi gaussiani usati nel deep learning.
 
 Come si ottiene? Con il **meccanismo di Laplace**. Data una funzione numerica
 $f$, se ne misura la *sensibilità* $\Delta f = \max_{D,D'} \lVert f(D)-f(D')\rVert_1$,
@@ -125,16 +127,16 @@ va aggiunto. Il risultato garantisce esattamente $\varepsilon$-DP.
 
 `````
 
-Un esempio concreto vale la definizione. Vogliamo pubblicare **quanti** dipendenti
-di un'azienda guadagnano oltre una certa soglia — un conteggio. Aggiungere o
-togliere una persona cambia il conteggio al massimo di $1$, dunque la sensibilità
-è $\Delta f = 1$. Scegliamo $\varepsilon = 0{,}5$: la scala del rumore è
-$b = \Delta f / \varepsilon = 1/0{,}5 = 2$. Se il conteggio vero è $42$,
-pubblichiamo $42$ più un numero estratto da $\mathrm{Lap}(0, 2)$: il più delle
-volte cade entro $\pm 3$, così l'utente legge $43$ o $40$ invece di $42$. La
-statistica resta utile, ma nessuno può dedurre dal risultato se *una specifica
-persona* fosse o meno nel conteggio: entrambi i mondi — con lei, senza di lei —
-producono numeri quasi indistinguibili.
+Un esempio concreto vale la definizione. Vogliamo pubblicare **quanti**
+dipendenti di un'azienda guadagnano oltre una certa soglia: un conteggio.
+Aggiungere o togliere una persona cambia il conteggio al massimo di $1$,
+dunque la sensibilità è $\Delta f = 1$. Scegliamo $\varepsilon = 0{,}5$: la
+scala del rumore è $b = \Delta f / \varepsilon = 1/0{,}5 = 2$. Se il conteggio
+vero è $42$, pubblichiamo $42$ più un numero estratto da $\mathrm{Lap}(0, 2)$:
+il più delle volte cade entro $\pm 3$, così l'utente legge $43$ o $40$ invece
+di $42$. La statistica resta utile, ma nessuno può dedurre dal risultato se
+*una specifica persona* fosse o meno nel conteggio: entrambi i mondi (con lei,
+senza di lei) producono numeri quasi indistinguibili.
 
 In `numpy` il meccanismo sta in tre righe, ed è eseguibile così com'è:
 
@@ -164,13 +166,13 @@ privacy differenziale nel deep learning è la **DP-SGD** di Abadi e colleghi
 
 Nell'addestramento normale ogni esempio spinge i pesi del modello nella
 direzione che riduce il suo errore. Il problema di privacy è che un esempio
-*insolito* può dare una spinta enorme e riconoscibile: la sua impronta resta nei
-pesi. DP-SGD fa due cose per cancellare quell'impronta. Primo, mette un
+*insolito* può dare una spinta enorme e riconoscibile: la sua impronta resta
+nei pesi. DP-SGD fa due cose per cancellare quell'impronta. Primo, mette un
 **tetto** alla spinta di ogni singolo esempio: per quanto strano sia, non può
 spingere più di tanto. Secondo, alla spinta complessiva del gruppo aggiunge un
 po' di **rumore casuale**, così da confondere il contributo dei singoli. Il
-modello impara comunque la tendenza generale — la spingono tutti nella stessa
-direzione — ma il segno particolare di ciascuno si perde nel rumore. Si paga in
+modello impara comunque la tendenza generale (la spingono tutti nella stessa
+direzione) ma il segno particolare di ciascuno si perde nel rumore. Si paga in
 accuratezza, com'è giusto: la privacy non è mai gratis.
 
 `````
@@ -196,16 +198,16 @@ $$
 \theta \leftarrow \theta - \eta\,\tilde{g}.
 $$
 
-Qui $B$ è la dimensione del batch, $\sigma$ il *moltiplicatore di rumore*, $\eta$
-il passo di apprendimento e $I$ l'identità. Il clipping fissa la sensibilità del
-passo (nessun esempio la fa esplodere), il rumore gaussiano fornisce la
-garanzia; componendo i molti passi con il *moments accountant* introdotto nello
-stesso lavoro si ottiene un budget $(\varepsilon,\delta)$ complessivo. Il
-**compromesso privacy/utilità** è concreto: Abadi e colleghi addestrano su MNIST
-con un budget dell'ordine di $\varepsilon \approx 8$ arrivando attorno al $97\%$
-di accuratezza — qualche punto sotto un modello non privato — e la qualità cala
-via via che si stringe $\varepsilon$. Più privacy, meno accuratezza: la manopola
-è sempre la stessa.
+Qui $B$ è la dimensione del batch, $\sigma$ il *moltiplicatore di rumore*,
+$\eta$ il passo di apprendimento e $I$ l'identità. Il clipping fissa la
+sensibilità del passo (nessun esempio la fa esplodere), il rumore gaussiano
+fornisce la garanzia; componendo i molti passi con il *moments accountant*
+introdotto nello stesso lavoro si ottiene un budget $(\varepsilon,\delta)$
+complessivo. Il **compromesso privacy/utilità** è concreto: Abadi e colleghi
+addestrano su MNIST con un budget dell'ordine di $\varepsilon \approx 8$
+arrivando attorno al $97\%$ di accuratezza (qualche punto sotto un modello non
+privato) e la qualità cala via via che si stringe $\varepsilon$. Più privacy,
+meno accuratezza: la manopola è sempre la stessa.
 
 `````
 
@@ -224,10 +226,10 @@ raccogliere tutte le cartelle cliniche in un unico grande archivio. Ma quelle
 cartelle non devono uscire dall'ospedale. Il *federated learning* rovescia il
 verso del viaggio: invece di portare i dati al modello, porta il **modello ai
 dati**. Il server manda a ogni ospedale una copia del modello; ognuno lo
-allena un po' sui propri pazienti, in casa; poi rispedisce indietro non i dati,
-ma solo il modello aggiornato — cosa ha *imparato*, non cosa ha *visto*. Il
-server fonde insieme tutte le versioni in un modello migliore e ricomincia. Le
-cartelle non lasciano mai l'ospedale.
+allena un po' sui propri pazienti, in casa; poi rispedisce indietro non i
+dati, ma solo il modello aggiornato: cosa ha *imparato*, non cosa ha *visto*.
+Il server fonde insieme tutte le versioni in un modello migliore e ricomincia.
+Le cartelle non lasciano mai l'ospedale.
 
 `````
 
@@ -244,15 +246,15 @@ $$
 \qquad n = \sum_{k} n_k.
 $$
 
-Il vantaggio è duplice: i dati grezzi restano sul dispositivo e comunicare i pesi
-ogni tanto costa molto meno che spedire i dati ad ogni passo. Ma attenzione a non
-dichiarare vittoria troppo presto: **i gradienti perdono informazione**. Lavori
-successivi (Zhu e colleghi, 2019) hanno mostrato che da un aggiornamento
-condiviso si possono talvolta *ricostruire* gli esempi che l'hanno prodotto. Il
-federated learning va perciò combinato con la privacy differenziale — rumore
-sugli aggiornamenti — e con l'aggregazione sicura, che lascia vedere al server
-solo la somma dei contributi, mai il singolo. Decentrare i dati riduce il
-rischio, non lo azzera.
+Il vantaggio è duplice: i dati grezzi restano sul dispositivo e comunicare i
+pesi ogni tanto costa molto meno che spedire i dati ad ogni passo. Ma
+attenzione a non dichiarare vittoria troppo presto: **i gradienti perdono
+informazione**. Lavori successivi (Zhu e colleghi, 2019) hanno mostrato che da
+un aggiornamento condiviso si possono talvolta *ricostruire* gli esempi che
+l'hanno prodotto. Il federated learning va perciò combinato con la privacy
+differenziale (rumore sugli aggiornamenti) e con l'aggregazione sicura, che
+lascia vedere al server solo la somma dei contributi, mai il singolo.
+Decentrare i dati riduce il rischio, non lo azzera.
 
 `````
 
@@ -272,10 +274,11 @@ Il loro esempio è diventato un'icona, e lo riproduce schematicamente la
 :alt: Tre riquadri in fila collegati da un piu e da un uguale. Nel primo una sagoma stilizzata di panda con etichetta panda 58 per cento. Nel secondo una griglia di rumore impercettibile etichettata epsilon per il segno del gradiente. Nel terzo la stessa identica sagoma di panda con l'etichetta errata gibbone 99 per cento in terracotta.
 :width: 100%
 
-La ricetta di un esempio avversario. All'immagine di un panda, riconosciuta con
-il $57{,}7\%$ di confidenza, si somma un rumore impercettibile — $\varepsilon$
-per il segno del gradiente — e la *stessa* immagine viene classificata «gibbone»
-con il $99{,}3\%$ di confidenza. A occhio nudo le due immagini sono identiche.
+La ricetta di un esempio avversario. All'immagine di un panda, riconosciuta
+con il $57{,}7\%$ di confidenza, si somma un rumore impercettibile
+($\varepsilon$ per il segno del gradiente) e la *stessa* immagine viene
+classificata «gibbone» con il $99{,}3\%$ di confidenza. A occhio nudo le due
+immagini sono identiche.
 ```
 
 `````{tab} Elementare
@@ -283,37 +286,37 @@ con il $99{,}3\%$ di confidenza. A occhio nudo le due immagini sono identiche.
 La cosa controintuitiva è che la perturbazione non è casuale: è costruita *su
 misura* per quel modello. Un rumore a caso non farebbe quasi nulla; questo,
 invece, spinge ogni singolo pixel nella direzione precisa che aumenta l'errore
-della rete, tutti d'accordo nello stesso verso. Presi uno a uno, gli spostamenti
-sono minuscoli — non li vedi. Ma sommati su centinaia di migliaia di pixel,
-formano una spinta abbastanza forte da scavallare il confine di decisione. È
-come far cadere una persona non con una spinta, ma con mille dita che premono
-tutte dallo stesso lato di un soffio ciascuna: singolarmente impercettibili,
-insieme irresistibili. Ed è specifico della macchina: a noi il panda resta un
-panda.
+della rete, tutti d'accordo nello stesso verso. Presi uno a uno, gli
+spostamenti sono minuscoli: non li vedi. Ma sommati su centinaia di migliaia
+di pixel, formano una spinta abbastanza forte da scavallare il confine di
+decisione. È come far cadere una persona non con una spinta, ma con mille dita
+che premono tutte dallo stesso lato di un soffio ciascuna: singolarmente
+impercettibili, insieme irresistibili. Ed è specifico della macchina: a noi il
+panda resta un panda.
 
 `````
 
 `````{tab} Superiore
 
 Il metodo si chiama **Fast Gradient Sign Method** (FGSM). Fissati i pesi
-$\theta$, invece di derivare la loss rispetto ai parametri — come
-nell'addestramento — la si deriva rispetto all'**input**, e ci si muove nella
+$\theta$, invece di derivare la loss rispetto ai parametri (come
+nell'addestramento) la si deriva rispetto all'**input**, e ci si muove nella
 direzione che la *aumenta*:
 
 $$
 X_{\text{adv}} = X + \varepsilon \cdot \operatorname{sign}\!\big(\nabla_X \mathcal{L}(\theta, X, y)\big).
 $$
 
-Qui $X$ è l'input, $y$ l'etichetta vera, $\mathcal{L}$ la loss, $\theta$ i pesi
-(congelati), e $\nabla_X \mathcal{L}$ il gradiente della loss *rispetto
+Qui $X$ è l'input, $y$ l'etichetta vera, $\mathcal{L}$ la loss, $\theta$ i
+pesi (congelati), e $\nabla_X \mathcal{L}$ il gradiente della loss *rispetto
 all'input*; $\operatorname{sign}(\cdot)$ ne prende il segno componente per
 componente e $\varepsilon$ è il budget di perturbazione, cioè la massima
-variazione ammessa per singola componente (una norma $\ell_\infty$). Prendere il
-solo segno assegna a ogni componente lo stesso spostamento $\pm\varepsilon$: la
-perturbazione è impercettibile per pixel, ma allineata al gradiente e quindi
-massimamente dannosa. Nell'esempio originale bastava $\varepsilon = 0{,}007$ —
-uno scarto sotto la soglia di quantizzazione a 8 bit — per far passare il panda
-($57{,}7\%$) a gibbone ($99{,}3\%$).
+variazione ammessa per singola componente (una norma $\ell_\infty$). Prendere
+il solo segno assegna a ogni componente lo stesso spostamento
+$\pm\varepsilon$: la perturbazione è impercettibile per pixel, ma allineata al
+gradiente e quindi massimamente dannosa. Nell'esempio originale bastava
+$\varepsilon = 0{,}007$ (uno scarto sotto la soglia di quantizzazione a 8 bit)
+per far passare il panda ($57{,}7\%$) a gibbone ($99{,}3\%$).
 
 FGSM è un unico passo, ed è per questo un attacco *debole*. La sua versione
 iterativa è la **Projected Gradient Descent** (PGD) di Madry e colleghi
@@ -337,13 +340,13 @@ $\min$ esterno, l'addestramento) giocano l'uno contro l'altro.
 
 ## Difese e la corsa agli armamenti
 
-Se il $\max$ interno è l'attacco, il $\min$ esterno è la difesa. La strategia più
-efficace e concettualmente pulita è l'**adversarial training**: durante
+Se il $\max$ interno è l'attacco, il $\min$ esterno è la difesa. La strategia
+più efficace e concettualmente pulita è l'**adversarial training**: durante
 l'addestramento non si mostrano alla rete solo gli esempi puliti, ma anche le
-loro versioni avversarie, generate con PGD ad ogni passo. La rete impara così a
-classificare correttamente anche gli input perturbati. Funziona, ma ha un
-prezzo: è molto più costoso — ogni passo di addestramento contiene un piccolo
-attacco al suo interno — e migliora la robustezza a una certa soglia
+loro versioni avversarie, generate con PGD ad ogni passo. La rete impara così
+a classificare correttamente anche gli input perturbati. Funziona, ma ha un
+prezzo: è molto più costoso (ogni passo di addestramento contiene un piccolo
+attacco al suo interno) e migliora la robustezza a una certa soglia
 $\varepsilon$ spesso a scapito dell'accuratezza sugli esempi puliti.
 
 `````{tab} Elementare
@@ -351,13 +354,13 @@ $\varepsilon$ spesso a scapito dell'accuratezza sugli esempi puliti.
 Difendersi dagli esempi avversari somiglia a una rincorsa continua. Si propone
 una difesa, sembra reggere, e poco dopo qualcuno trova un attacco nuovo che la
 aggira. Molte protezioni annunciate negli anni si sono rivelate illusorie: non
-bloccavano davvero l'avversario, gli nascondevano solo le tracce (il gradiente)
-che usava per orientarsi, e bastava recuperarle per bucarle di nuovo. È una
-*corsa agli armamenti*, e va detto con onestà: al momento non esiste una difesa
-definitiva. L'unica garanzia solida viene dalla **robustezza certificata**, che
-non promette «nessuno passerà» ma dimostra, con un teorema, che *dentro un
-raggio preciso* attorno all'input nessuna perturbazione può cambiare la risposta
-— un perimetro piccolo ma sicuro.
+bloccavano davvero l'avversario, gli nascondevano solo le tracce (il
+gradiente) che usava per orientarsi, e bastava recuperarle per bucarle di
+nuovo. È una *corsa agli armamenti*, e va detto con onestà: al momento non
+esiste una difesa definitiva. L'unica garanzia solida viene dalla **robustezza
+certificata**, che non promette «nessuno passerà» ma dimostra, con un teorema,
+che *dentro un raggio preciso* attorno all'input nessuna perturbazione può
+cambiare la risposta: un perimetro piccolo ma sicuro.
 
 `````
 
@@ -365,8 +368,8 @@ raggio preciso* attorno all'input nessuna perturbazione può cambiare la rispost
 
 L'onestà impone di ricordare che molte difese euristiche proposte dopo il 2015
 sono state poi aggirate: Athalye e colleghi (2018) mostrarono che davano una
-falsa sicurezza per *gradient masking* — offuscavano il gradiente invece di
-rimuovere la vulnerabilità — e cadevano appena l'attaccante lo ricostruiva.
+falsa sicurezza per *gradient masking* (offuscavano il gradiente invece di
+rimuovere la vulnerabilità) e cadevano appena l'attaccante lo ricostruiva.
 L'adversarial training con PGD è tra i pochi ad aver retto. In parallelo si è
 sviluppata la **robustezza certificata**, che fornisce garanzie dimostrabili:
 il *randomized smoothing* (Cohen e colleghi, 2019), per esempio, costruisce da
@@ -378,12 +381,12 @@ dimostra che non si rompe».
 Gli esempi avversari agiscono in fase di *inferenza*, su un modello già
 addestrato. Esiste una minaccia gemella che agisce in fase di *addestramento*:
 il **data poisoning**, in cui l'attaccante inietta esempi malevoli nel dataset
-per degradare il modello o piazzarvi una **backdoor** — un innesco segreto (un
+per degradare il modello o piazzarvi una **backdoor**; un innesco segreto (un
 piccolo adesivo su un segnale stradale, una parola-chiave in un testo) che, se
 presente, fa scattare a comando una risposta scelta dall'attaccante, mentre su
-tutti gli altri input il modello si comporta normalmente (Gu e colleghi, 2017).
-Chi controlla i dati, controlla il modello: un'altra ragione per prendere sul
-serio la provenienza dei dati di addestramento.
+tutti gli altri input il modello si comporta normalmente (Gu e colleghi,
+2017). Chi controlla i dati, controlla il modello: un'altra ragione per
+prendere sul serio la provenienza dei dati di addestramento.
 
 `````
 
@@ -405,7 +408,7 @@ schema ritrova il pattern anche dopo una compressione moderata. SynthID di
 Google DeepMind applica questa idea a immagini, audio e video.
 
 La **provenienza dichiarata** fa l'opposto: invece di nascondere, allega. Lo
-standard **C2PA** attacca al file una scheda firmata crittograficamente — chi
+standard **C2PA** attacca al file una scheda firmata crittograficamente: chi
 l'ha creato, con quale strumento, come è stato modificato.
 
 La differenza pratica è netta e vale la pena tenerla a mente: **il watermark
@@ -500,16 +503,16 @@ avversario: p(classe 1) = 0.190  ->  predice 0  (sbagliato)
 perturbazione: 0.15 per feature; norma L2 = 0.82 contro 6.00 dell'input
 ```
 
-Il modello passa da una confidenza dell'$89\%$ nella classe corretta al $19\%$,
-sbagliando, con una perturbazione la cui norma è meno di un settimo di quella
-dell'input. E qui si vede la spiegazione *lineare* di Goodfellow: lungo la
-direzione $\operatorname{sign}(W)$, il punteggio si sposta di
+Il modello passa da una confidenza dell'$89\%$ nella classe corretta al
+$19\%$, sbagliando, con una perturbazione la cui norma è meno di un settimo di
+quella dell'input. E qui si vede la spiegazione *lineare* di Goodfellow: lungo
+la direzione $\operatorname{sign}(W)$, il punteggio si sposta di
 $\varepsilon\,\lVert W\rVert_1$, una quantità che cresce con il numero di
-dimensioni. In alta dimensione — dove vivono immagini e testi — bastano tante
-piccole spinte concordi per scavallare il confine. La stessa formula in PyTorch
-si scriverebbe con `x.requires_grad_(True)`, un passaggio `loss.backward()` e
-`x + eps * x.grad.sign()`: identica idea, gradiente rispetto all'input calcolato
-in automatico.
+dimensioni. In alta dimensione (dove vivono immagini e testi) bastano tante
+piccole spinte concordi per scavallare il confine. La stessa formula in
+PyTorch si scriverebbe con `x.requires_grad_(True)`, un passaggio
+`loss.backward()` e `x + eps * x.grad.sign()`: identica idea, gradiente
+rispetto all'input calcolato in automatico.
 
 ```{admonition} Da ricordare
 :class: important

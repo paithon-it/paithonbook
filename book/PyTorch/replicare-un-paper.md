@@ -1,13 +1,13 @@
 # Replicare un paper
 
 Un articolo scientifico si può leggere in tre modi. Il primo è scorrerlo:
-mezz'ora, si ricava l'idea generale e si dimentica in una settimana. Il secondo
-è studiarlo: si seguono le derivazioni, si capisce l'argomento. Il terzo è
-**farlo girare** — trasformare le equazioni in `nn.Module`, mandare avanti un
-tensore e guardare se esce quello che deve uscire. È l'unico modo che non
-consente di autoingannarsi, perché il codice non accetta i passaggi vaghi: dove
-il testo dice "si proietta linearmente" bisogna decidere una matrice, e la
-matrice ha una forma precisa.
+mezz'ora, si ricava l'idea generale e si dimentica in una settimana. Il
+secondo è studiarlo: si seguono le derivazioni, si capisce l'argomento. Il
+terzo è **farlo girare**: trasformare le equazioni in `nn.Module`, mandare
+avanti un tensore e guardare se esce quello che deve uscire. È l'unico modo
+che non consente di autoingannarsi, perché il codice non accetta i passaggi
+vaghi: dove il testo dice "si proietta linearmente" bisogna decidere una
+matrice, e la matrice ha una forma precisa.
 
 Questa sezione non introduce nulla di nuovo di PyTorch: usa quello che il
 capitolo ha già costruito. Introduce un **metodo**, che è la cosa più
@@ -55,7 +55,7 @@ tutti controllabili **senza addestrare**:
    addestramento che non converge.
 
 Solo dopo che i tre invarianti sono soddisfatti ha senso parlare di risultati
-numerici — ed è a quel punto che comincia la parte difficile.
+numerici, ed è a quel punto che comincia la parte difficile.
 `````
 
 ## Il caso: il Vision Transformer
@@ -63,7 +63,7 @@ numerici — ed è a quel punto che comincia la parte difficile.
 Prendiamo un articolo che il libro ha già incontrato più volte: *An Image is
 Worth 16x16 Words* {cite}`dosovitskiy2021image`, che nel 2021 ha portato
 l'architettura Transformer dentro la visione artificiale. È un ottimo caso di
-studio perché l'architettura è breve — quattro equazioni — e perché i numeri da
+studio perché l'architettura è breve (quattro equazioni) e perché i numeri da
 verificare sono pubblicati.
 
 La prima equazione del paper costruisce la sequenza di ingresso: l'immagine
@@ -119,17 +119,17 @@ Le righe da guardare sono due: la convoluzione e il token di classe.
 `````{tab} Elementare
 **La convoluzione.** Il paper dice "si taglia l'immagine in quadratini e si
 proietta ciascuno". La traduzione letterale sarebbe: taglia, impila, applica
-uno strato lineare — tre operazioni. Ma una convoluzione con la finestra grande
-esattamente quanto il passo fa già questo: scorre di sedici pixel alla volta
-con una finestra di sedici, quindi guarda ogni quadratino una volta e nessun
-pixel due volte. Una riga invece di tre, e più veloce. Accorgersi che due
-descrizioni diverse sono la stessa operazione è metà del mestiere di chi
+uno strato lineare (tre operazioni). Ma una convoluzione con la finestra
+grande esattamente quanto il passo fa già questo: scorre di sedici pixel alla
+volta con una finestra di sedici, quindi guarda ogni quadratino una volta e
+nessun pixel due volte. Una riga invece di tre, e più veloce. Accorgersi che
+due descrizioni diverse sono la stessa operazione è metà del mestiere di chi
 replica un paper.
 
 **Il token di classe.** È un vettore in più, premesso ai 196 quadratini, che
 non contiene nessun pezzo di immagine: è un foglio bianco. Attraversando la
 rete, quel foglio raccoglie informazione da tutti gli altri, e alla fine è lì
-che si va a leggere la risposta — un po' come il verbale di una riunione, che
+che si va a leggere la risposta: un po' come il verbale di una riunione, che
 non è uno dei partecipanti ma è dove finisce il senso di quello che si sono
 detti.
 `````
@@ -147,13 +147,13 @@ da `nn.Linear`, che materializza un tensore intermedio molto più grande.
 **Token di classe e posizioni.** Entrambi sono `nn.Parameter`, cioè imparati:
 $\mathbf{x}_{\text{class}}$ è la sonda da cui l'equazione 4 legge l'uscita, e
 le codifiche di posizione sono *apprese* (non sinusoidali come nel Transformer
-originale {cite}`vaswani2017attention`) — il ViT verifica sperimentalmente che
+originale {cite}`vaswani2017attention`); il ViT verifica sperimentalmente che
 la differenza è trascurabile. Due conseguenze pratiche. La prima: la lunghezza
 di $\mathbf{E}_{\text{pos}}$ è legata alla risoluzione, quindi cambiare la
 dimensione dell'immagine richiede di **interpolare** le codifiche, non basta
 riallocarle. La seconda: l'alternativa al token di classe è il *global average
 pooling* sui token delle patch, che funziona altrettanto bene ma richiede un
-learning rate diverso — dettaglio che il paper riporta in appendice, ed
+learning rate diverso; dettaglio che il paper riporta in appendice, ed
 esattamente il tipo di nota che fa fallire una replica.
 `````
 
@@ -199,7 +199,7 @@ class BloccoTransformer(nn.Module):
 Due trappole in dieci righe, ed è normale. `nn.MultiheadAttention` restituisce
 una **tupla** (output, pesi): dimenticare `[0]` produce un errore di tipo poco
 comprensibile. E `batch_first=True` non è il default: senza, il modulo si
-aspetta tensori $(L, B, D)$ e non $(B, L, D)$ — un errore che *non* solleva
+aspetta tensori $(L, B, D)$ e non $(B, L, D)$; un errore che *non* solleva
 eccezioni se $B$ e $L$ per caso coincidono, e che quindi va messo lì e
 dimenticato.
 
@@ -263,11 +263,11 @@ spesso non lo è, e non per colpa di chi ci prova.
 
 Il ViT è un caso esemplare proprio in questo. La tesi dell'articolo è che
 l'architettura raggiunge o supera le CNN **solo dopo** un pre-addestramento su
-grandi quantità di dati: ImageNet-21k, o il JFT-300M interno a Google — 300
-milioni di immagini, mai reso pubblico. Addestrato da zero sul solo ImageNet-1k,
-lo stesso identico codice dà risultati mediocri, e questo è un *risultato* del
-paper, non un fallimento della replica. Sapere in anticipo che la
-riproduzione completa è impossibile cambia l'obiettivo: si replica
+grandi quantità di dati: ImageNet-21k, o il JFT-300M interno a Google (300
+milioni di immagini, mai reso pubblico). Addestrato da zero sul solo
+ImageNet-1k, lo stesso identico codice dà risultati mediocri, e questo è un
+*risultato* del paper, non un fallimento della replica. Sapere in anticipo che
+la riproduzione completa è impossibile cambia l'obiettivo: si replica
 l'architettura, si verifica sui pesi pubblicati, e si addestra su un problema
 alla propria portata usando il *transfer learning*.
 
@@ -282,8 +282,9 @@ Quando invece i numeri dovrebbero tornare e non tornano, la lista dei sospetti
    solo "lr $= 10^{-3}$" ne sta omettendo metà.
 3. **La dimensione del batch e l'accumulo.** Chi ha 8 GPU e chi ne ha una non
    stanno addestrando lo stesso modello, a meno di accumulare i gradienti.
-4. **Regolarizzazione**: weight decay (e su quali parametri — di solito non su
-   bias e LayerNorm), dropout, *stochastic depth*, *label smoothing*, clipping.
+4. **Regolarizzazione**: weight decay (e su quali parametri; di solito non su
+   bias e LayerNorm), dropout, *stochastic depth*, *label smoothing*,
+   clipping.
 5. **L'inizializzazione**, quando non è quella di default.
 6. **Il protocollo di valutazione**: quale split, quante *crop* in test, se la
    metrica riportata è la migliore o l'ultima.
@@ -302,7 +303,7 @@ C'è poi una regola che salva molte replicazioni: **se hai una GPU sola e il
 paper ne usava otto, non stai addestrando lo stesso modello**. Il numero di
 esempi visti a ogni aggiornamento è diverso, e con esso il rumore del
 gradiente. Si rimedia accumulando i gradienti per più batch prima di
-aggiornare — un modo di fingere un batch grande su una macchina piccola.
+aggiornare: un modo di fingere un batch grande su una macchina piccola.
 `````
 
 `````{tab} Superiore
@@ -320,7 +321,7 @@ schedule non è replicabile alla lettera.
 $B_{\text{eff}} = B_{\text{micro}} \times k \times n_{\text{GPU}}$, dove $k$
 sono i passi di accumulo: si eseguono $k$ `backward()` e un solo
 `optimizer.step()`, ricordando di dividere la loss per $k$ se la riduzione è
-la media. Non è del tutto equivalente a un batch grande vero — le statistiche
+la media. Non è del tutto equivalente a un batch grande vero: le statistiche
 della batch normalization restano calcolate sul micro-batch, ragione per cui i
 lavori che scalano molto preferiscono LayerNorm o GroupNorm.
 
@@ -365,6 +366,6 @@ lavoro: se un risultato dipende da un seme fortunato, non è un risultato.
 - ViT-Base ha $85\,797\,120$ parametri senza LayerNorm finale né testa: il
   conto si rifà a mano e smaschera qualunque svista strutturale.
 - Riprodurre l'**architettura** è quasi sempre possibile; riprodurre i
-  **risultati** spesso no — dati non pubblici, iperparametri omessi, hardware
+  **risultati** spesso no: dati non pubblici, iperparametri omessi, hardware
   diverso. Dirlo è parte del lavoro.
 ```

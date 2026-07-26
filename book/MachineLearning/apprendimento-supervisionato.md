@@ -1,12 +1,12 @@
 # Apprendimento supervisionato: regressione e classificazione
 
 Immagina di affiancare per una settimana un agente immobiliare esperto. Non ti
-spiega nessuna formula: ti mostra centinaia di case già vendute — metri quadri,
-numero di stanze, quartiere — e accanto a ciascuna il prezzo finale. Dopo un
-po', davanti a un appartamento mai visto, sai già sparare una cifra ragionevole.
-Hai imparato **dagli esempi etichettati**. È, in una frase, ciò che fa
-l'apprendimento supervisionato: mostragli abbastanza coppie *domanda–risposta*
-e imparerà a rispondere da solo.
+spiega nessuna formula: ti mostra centinaia di case già vendute (metri quadri,
+numero di stanze, quartiere) e accanto a ciascuna il prezzo finale. Dopo un
+po', davanti a un appartamento mai visto, sai già sparare una cifra
+ragionevole. Hai imparato **dagli esempi etichettati**. È, in una frase, ciò
+che fa l'apprendimento supervisionato: mostragli abbastanza coppie
+*domanda–risposta* e imparerà a rispondere da solo.
 
 ## Imparare una funzione dagli esempi
 
@@ -58,12 +58,12 @@ classificazione.
 
 ## Due domande, due problemi
 
-Ciò che cambia tutto è il *tipo* di risposta. "Quanto costa questa casa?" chiede
-un numero su una scala continua: è **regressione**. "Questa email è spam, sì o
-no?" chiede un'etichetta da un insieme finito: è **classificazione**. Stesso
-impianto — imparare $f$ da coppie $(X, y)$ — due geometrie diverse, come mostra
-{numref}`fig-regr-classif`: a sinistra cerchiamo una linea che *segua* i punti,
-a destra una linea che li *separi*.
+Ciò che cambia tutto è il *tipo* di risposta. "Quanto costa questa casa?"
+chiede un numero su una scala continua: è **regressione**. "Questa email è
+spam, sì o no?" chiede un'etichetta da un insieme finito: è
+**classificazione**. Stesso impianto, imparare $f$ da coppie $(X, y)$, due
+geometrie diverse, come mostra {numref}`fig-regr-classif`: a sinistra
+cerchiamo una linea che *segua* i punti, a destra una linea che li *separi*.
 
 ```{figure} ../figures/regressione-vs-classificazione.svg
 :name: fig-regr-classif
@@ -116,10 +116,11 @@ $$
 = \frac{1}{m}\sum_{i=1}^{m}\big(W^\top X^{(i)} + b - y^{(i)}\big)^2 .
 $$
 
-$\mathcal{L}$ è convessa in $(W,b)$: ha un unico minimo, raggiungibile in forma
-chiusa con le equazioni normali oppure, su grandi dataset, con la discesa del
-gradiente. Elevare al quadrato penalizza fortemente gli errori grossi e rende
-la loss differenziabile ovunque — due proprietà che tornano comode.
+$\mathcal{L}$ è convessa in $(W,b)$: ha un unico minimo, raggiungibile in
+forma chiusa con le equazioni normali oppure, su grandi dataset, con la
+discesa del gradiente. Elevare al quadrato penalizza fortemente gli errori
+grossi e rende la loss differenziabile ovunque: due proprietà che tornano
+comode.
 
 `````
 
@@ -127,7 +128,7 @@ la loss differenziabile ovunque — due proprietà che tornano comode.
 
 Per la classificazione la retta da sola non basta: un prezzo può valere
 $310\,000$, ma "spam sì/no" vive solo tra $0$ e $1$. La **regressione
-logistica** — che, malgrado il nome, classifica — risolve il problema
+logistica** (che, malgrado il nome, classifica) risolve il problema
 schiacciando l'uscita lineare dentro l'intervallo $(0,1)$.
 
 `````{tab} Elementare
@@ -180,19 +181,20 @@ numeri, li usa tutti.
 
 `````{tab} Superiore
 
-Dato un punto $X$, si ordinano gli esempi di addestramento per distanza —
-tipicamente euclidea, $\lVert X - X^{(i)}\rVert_2$ — e si prendono i $k$ più
+Dato un punto $X$, si ordinano gli esempi di addestramento per distanza,
+tipicamente euclidea, $\lVert X - X^{(i)}\rVert_2$, e si prendono i $k$ più
 vicini. In classificazione si assegna la classe di maggioranza; in regressione
 si fa la media dei loro $y^{(i)}$. Non esiste una fase di ottimizzazione: il
 costo si sposta interamente sulla previsione, $O(m)$ per query nella versione
 ingenua. Il valore di $k$ regola il compromesso: $k$ piccolo segue il rumore,
-$k$ grande liscia troppo. La distanza euclidea, inoltre, impone di normalizzare
-le feature, altrimenti quella con la scala più ampia domina il conto.
+$k$ grande liscia troppo. La distanza euclidea, inoltre, impone di
+normalizzare le feature, altrimenti quella con la scala più ampia domina il
+conto.
 
 Due raffinamenti sono già in scikit-learn. Il **voto pesato**
-(`weights="distance"`) fa contare di più i vicini più prossimi invece di dare a
-tutti e $k$ lo stesso peso. Le **strutture di indicizzazione** — KD-tree,
-ball-tree — abbattono il costo per query da $O(m)$ a circa $O(\log m)$
+(`weights="distance"`) fa contare di più i vicini più prossimi invece di dare
+a tutti e $k$ lo stesso peso. Le **strutture di indicizzazione** (KD-tree,
+ball-tree) abbattono il costo per query da $O(m)$ a circa $O(\log m)$
 partizionando lo spazio in anticipo. Proprio quegli indici, però, smettono di
 essere utili oltre poche decine di dimensioni, per la ragione dell'avvertenza
 qui sotto.
@@ -217,9 +219,9 @@ riduzione e clustering.
 ## Un'ombra all'orizzonte: l'overfitting
 
 C'è un tranello in agguato. Un modello abbastanza flessibile può imparare *a
-memoria* gli esempi di addestramento — rumore compreso — e poi fallire su dati
-nuovi, come uno studente che ripete le soluzioni senza aver capito il metodo. È
-l'**overfitting**, il problema centrale del machine learning applicato: lo
+memoria* gli esempi di addestramento (rumore compreso) e poi fallire su dati
+nuovi, come uno studente che ripete le soluzioni senza aver capito il metodo.
+È l'**overfitting**, il problema centrale del machine learning applicato: lo
 affrontiamo nella sezione dedicata, insieme all'idea di tenere sempre da parte
 dati che il modello non ha mai visto per misurarne l'onestà.
 
@@ -244,7 +246,7 @@ knn = KNeighborsClassifier(n_neighbors=5).fit(X_train, y_spam)
 etichetta = knn.predict(X_nuovo)
 ```
 
-La stessa forma — `fit` per imparare, `predict` per rispondere — vale per quasi
+La stessa forma (`fit` per imparare, `predict` per rispondere) vale per quasi
 tutti i modelli della libreria: è la grammatica comune che ci porteremo dietro
 per tutto il resto del libro.
 

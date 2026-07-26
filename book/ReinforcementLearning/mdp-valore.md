@@ -2,8 +2,8 @@
 
 Nessuno consegna a un bambino che impara ad andare in bicicletta un manuale di
 fisica. Prova, oscilla, cade; una pedalata storta finisce a terra, una decisa
-lo porta avanti. Impara dalle *conseguenze*. Il **reinforcement learning** —
-apprendimento per rinforzo — costruisce agenti che imparano nello stesso modo:
+lo porta avanti. Impara dalle *conseguenze*. Il **reinforcement learning**
+(apprendimento per rinforzo) costruisce agenti che imparano nello stesso modo:
 agiscono, osservano cosa succede, incassano una ricompensa e correggono il
 tiro. Non c'è un insegnante che sussurra la risposta giusta a ogni passo; c'è
 solo un ambiente che reagisce.
@@ -26,7 +26,7 @@ questo giro.
 Pensa a un piccolo robot in un labirinto a caselle. Lo *stato* è la casella in
 cui si trova; le *azioni* sono i movimenti possibili (su, giù, destra,
 sinistra); la *transizione* è dove finisce dopo la mossa; la *ricompensa* è il
-punteggio che riceve — diciamo $+10$ quando raggiunge l'uscita e $-1$ per ogni
+punteggio che riceve: diciamo $+10$ quando raggiunge l'uscita e $-1$ per ogni
 passo, così impara a uscire *in fretta*. Il robot non conosce la mappa: la
 scopre muovendosi.
 
@@ -68,7 +68,7 @@ prossima mossa, basta la foto: non gli serve sapere in che ordine i pezzi sono
 arrivati lì. La posizione attuale racconta già tutto ciò che conta. Uno stato
 fatto così si dice *markoviano*. E se la foto non bastasse? Si allarga
 l'inquadratura finché basta: negli scacchi veri, per esempio, alla foto va
-aggiunta una nota — "il re non ha ancora mosso" — perché da essa dipende una
+aggiunta una nota ("il re non ha ancora mosso"), perché da essa dipende una
 mossa speciale come l'arrocco. L'importante è che tutto il necessario stia
 nello stato, e niente resti nascosto nella storia.
 
@@ -85,8 +85,8 @@ $$
 La distribuzione dello stato successivo, condizionata a stato e azione
 correnti, non cambia aggiungendo l'intera traiettoria passata. Se
 l'osservazione disponibile non soddisfa questa proprietà, si *arricchisce* lo
-stato (aggiungendo variabili, o una finestra di osservazioni recenti) finché
-la proprietà vale — è esattamente ciò che farà il DQN impilando quattro frame
+stato (aggiungendo variabili, o una finestra di osservazioni recenti), finché
+la proprietà vale: è esattamente ciò che farà il DQN impilando quattro frame
 consecutivi di un videogioco per catturare le velocità.
 
 `````
@@ -100,7 +100,7 @@ di comportamento dell'agente si chiama **policy**.
 
 La policy è l'abitudine dell'agente: per ogni stato, quale azione scegliere.
 "In questa stanza vado sempre a destra" è una policy. Può anche assomigliare a
-un dado truccato — "qui vado a destra 8 volte su 10" — quando conviene
+un dado truccato ("qui vado a destra 8 volte su 10"), quando conviene
 esplorare invece di ripetere sempre la stessa mossa. Imparare, nel RL,
 significa migliorare la policy.
 
@@ -160,9 +160,10 @@ ritrae un mondo minuscolo con tre stati: da $s_0$ l'agente può salire verso
 $s_1$ oppure restare fermo, da $s_1$ può scendere verso l'obiettivo $s_2$
 (terminale) o tornare indietro. Ogni freccia è un'azione ed è annotata con la
 ricompensa che paga: salire non costa nulla, restare o tornare costa $-1$,
-raggiungere l'obiettivo frutta $+10$. Con $\gamma$ vicino a 1 la policy ottimale
-è intuibile a colpo d'occhio — $s_0 \to s_1 \to s_2$ — ed è proprio quel "colpo
-d'occhio" che le funzioni valore rendono calcolabile in modo sistematico.
+raggiungere l'obiettivo frutta $+10$. Con $\gamma$ vicino a 1 la policy
+ottimale è intuibile a colpo d'occhio ($s_0 \to s_1 \to s_2$) ed è proprio
+quel "colpo d'occhio" che le funzioni valore rendono calcolabile in modo
+sistematico.
 
 ```{figure} ../figures/mdp-grafo.svg
 :name: fig-mdp
@@ -176,7 +177,7 @@ riporta la ricompensa. L'obiettivo $s_2$ è terminale.
 ## Le funzioni valore: $V$ e $Q$
 
 Il ritorno di un singolo episodio è rumoroso: dipende dal caso e dalle scelte.
-Ciò che ci serve è il ritorno *atteso* — quanto promette, in media, trovarsi in
+Ciò che ci serve è il ritorno *atteso*: quanto promette, in media, trovarsi in
 una certa situazione seguendo una data policy. È il compito delle **funzioni
 valore**.
 
@@ -243,7 +244,7 @@ $$
 
 È un sistema di equazioni lineari: una relazione di consistenza fra il valore
 di uno stato e quello dei suoi successori. Da qui partono tutti gli algoritmi
-che incontreremo — a cominciare dalla *value iteration* e dalla *policy
+che incontreremo: a cominciare dalla *value iteration* e dalla *policy
 iteration* qui sotto, fino al *Q-learning* della prossima sezione.
 
 `````
@@ -285,9 +286,9 @@ l'**equazione di ottimalità di Bellman**,
 $V^*(s) = \max_a \sum_{s'} P(s'\mid s,a)\big[R(s,a) + \gamma\, V^*(s')\big]$,
 dove $V^*$ è il valore della migliore policy possibile. La convergenza è
 garantita: l'operatore di aggiornamento è una **contrazione** di fattore
-$\gamma$ nella norma del massimo — a ogni passo la distanza da $V^*$ si riduce
-almeno di un fattore $\gamma$ — quindi il punto fisso è unico e l'iterazione
-vi arriva da qualunque inizializzazione {cite}`bellman1957dynamic`
+$\gamma$ nella norma del massimo (a ogni passo la distanza da $V^*$ si riduce
+almeno di un fattore $\gamma$) quindi il punto fisso è unico e l'iterazione vi
+arriva da qualunque inizializzazione {cite}`bellman1957dynamic`
 {cite}`sutton2018reinforcement`. Estratto $V^*$, la policy ottima è quella
 *greedy*: in ogni stato, l'azione che realizza il massimo.
 
@@ -299,8 +300,8 @@ Facciamo davvero i conti, sull'MDP in miniatura della {numref}`fig-mdp` e con
 $\gamma = 0{,}9$. Le transizioni lì sono deterministiche, quindi la somma
 sugli stati d'arrivo ha un solo termine e l'aggiornamento si legge:
 "ricompensa della mossa più $0{,}9$ volte il valore dello stato d'arrivo,
-tenendo la mossa migliore". Lo stato terminale $s_2$ vale sempre $0$ — lì il
-gioco è finito — e partiamo da $V_0(s_0) = V_0(s_1) = 0$.
+tenendo la mossa migliore". Lo stato terminale $s_2$ vale sempre $0$ (lì il
+gioco è finito) e partiamo da $V_0(s_0) = V_0(s_1) = 0$.
 
 **Prima iterazione.** In $s_1$: scendere rende $10 + 0{,}9 \times 0 = 10$,
 tornare rende $-1 + 0{,}9 \times 0 = -1$; vince scendere, quindi
@@ -326,7 +327,7 @@ Quindi $V_3(s_0) = 9$ e $V_3(s_1) = 10$: l'algoritmo si è fermato.
 | $k=3$  | $9$      | $10$     | $0$      |
 
 I numeri hanno smesso di muoversi: quello è $V^*$. E la policy ottima si legge
-dalle mosse vincenti — da $s_0$ salire, da $s_1$ scendere — esattamente il
+dalle mosse vincenti (da $s_0$ salire, da $s_1$ scendere) esattamente il
 "colpo d'occhio" di prima, solo che adesso è un calcolo che un computer può
 ripetere identico su un milione di stati.
 
@@ -342,9 +343,9 @@ valore parte dalla casella con la ricompensa e **risale di una casella per
 iterazione**, aggirando i muri, finché i numeri smettono di muoversi.
 ```
 
-Guardando la {numref}`fig-iterazione-valore` si capisce anche quante iterazioni
-servono: tante quante il numero di passi che separano lo stato più lontano
-dall'obiettivo. Il valore non "si diffonde" ovunque insieme — cammina.
+Guardando la {numref}`fig-iterazione-valore` si capisce anche quante
+iterazioni servono: tante quante il numero di passi che separano lo stato più
+lontano dall'obiettivo. Il valore non "si diffonde" ovunque insieme: cammina.
 
 ## Policy iteration: valutare e migliorare, a turni
 
@@ -361,8 +362,8 @@ tempo, la correzione: scorro la pagella e, situazione per situazione, cambio
 la mossa dove una diversa renderebbe di più (*miglioramento*). Poi rifaccio la
 pagella per la nuova strategia, la correggo ancora, e avanti così. Quando un
 giro di correzioni non cambia più nulla, la strategia è la migliore possibile.
-Rispetto alla value iteration i giri sono pochi — spesso una manciata — ma
-ogni pagella completa è un lavoro lungo.
+Rispetto alla value iteration i giri sono pochi (spesso una manciata) ma ogni
+pagella completa è un lavoro lungo.
 
 `````
 
@@ -386,20 +387,20 @@ l'alternanza termina sulla policy ottima in un numero finito di iterazioni
 compromesso classico: la policy iteration converge in *meno* iterazioni, ma
 ciascuna contiene una valutazione completa (costosa: un sistema di
 $|\mathcal{S}|$ equazioni, o molte passate); la value iteration fa iterazioni
-molto più economiche — una sola passata con il $\max$ — ma ne richiede di più.
+molto più economiche (una sola passata con il $\max$) ma ne richiede di più.
 Si può anzi leggere la value iteration come una policy iteration impaziente,
 che tronca la valutazione dopo un solo passo.
 
 `````
 
 Due strade per la stessa vetta, insomma: pochi passi pesanti o molti passi
-leggeri. Nei problemi reali si sceglie in base alle dimensioni del problema —
-o si mescolano le due, troncando la valutazione dopo poche passate.
+leggeri. Nei problemi reali si sceglie in base alle dimensioni del problema, o
+si mescolano le due, troncando la valutazione dopo poche passate.
 
 ## Quando manca la mappa
 
 C'è però un dettaglio che finora abbiamo dato per scontato, ed è enorme. Per
-fare quei conti — "ricompensa della mossa più valore dello stato d'arrivo" —
+fare quei conti ("ricompensa della mossa più valore dello stato d'arrivo"),
 bisogna *sapere in anticipo* dove porta ogni mossa e quanto paga: value
 iteration e policy iteration richiedono di conoscere il modello dell'ambiente,
 cioè le funzioni $P$ e $R$. È pianificare un viaggio con la mappa già in mano.
@@ -407,8 +408,8 @@ Ma il robot del nostro labirinto la mappa non ce l'ha, e il mondo reale quasi
 mai la consegna: nessuno fornisce a un agente le probabilità di transizione
 del traffico o di una partita a Go. Quando il modello manca resta una sola
 strada: stimare i valori *dall'esperienza*, una mossa e una sorpresa alla
-volta. È esattamente ciò che fa il **Q-learning**, protagonista della
-prossima sezione.
+volta. È esattamente ciò che fa il **Q-learning**, protagonista della prossima
+sezione.
 
 ```{admonition} Da ricordare
 :class: important
@@ -422,5 +423,5 @@ prossima sezione.
   definisce in modo ricorsivo, ed è la base di ogni algoritmo di RL.
 - Con il modello ($P$ e $R$) noto, **value iteration** e **policy iteration**
   calcolano valori e policy ottimi iterando Bellman; quando il modello manca
-  bisogna imparare dall'esperienza — è il Q-learning.
+  bisogna imparare dall'esperienza: è il Q-learning.
 ```

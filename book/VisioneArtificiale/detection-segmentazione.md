@@ -1,11 +1,12 @@
 # Object detection e segmentazione
 
-Un'auto a guida autonoma si avvicina a un incrocio. Una rete di classificazione,
-di quelle viste finora, sa dirle una cosa sola: *nell'immagine c'è un pedone*.
-Vero, ma inutile. Per frenare in tempo l'auto deve sapere **dove** si trova quel
-pedone, se è uno o sono tre, se quello a destra è un ciclista, e — al limite —
-quale sagoma esatta occupa sull'asfalto. La classificazione risponde alla
-domanda "cosa"; qui impariamo a rispondere anche a "dove" e "quali contorni".
+Un'auto a guida autonoma si avvicina a un incrocio. Una rete di
+classificazione, di quelle viste finora, sa dirle una cosa sola:
+*nell'immagine c'è un pedone*. Vero, ma inutile. Per frenare in tempo l'auto
+deve sapere **dove** si trova quel pedone, se è uno o sono tre, se quello a
+destra è un ciclista, e (al limite), quale sagoma esatta occupa sull'asfalto.
+La classificazione risponde alla domanda "cosa"; qui impariamo a rispondere
+anche a "dove" e "quali contorni".
 
 ## Dalla classificazione al riquadro
 
@@ -16,11 +17,11 @@ un riquadro e un'etichetta.
 
 `````{tab} Elementare
 
-Immagina di cerchiare con un pennarello ogni oggetto interessante in una foto e
-di scrivergli accanto un nome: "auto", "cane", "semaforo". Ogni cerchio è in
-realtà un rettangolo — lo chiamiamo **bounding box**, la "cornice" — e ogni
-nome è la classe. Un rilevatore fa esattamente questo, ma in automatico e per
-molti oggetti insieme. Per ciascuno deve indovinare due cose alla volta: *dove*
+Immagina di cerchiare con un pennarello ogni oggetto interessante in una foto
+e di scrivergli accanto un nome: "auto", "cane", "semaforo". Ogni cerchio è in
+realtà un rettangolo (lo chiamiamo **bounding box**, la "cornice") e ogni nome
+è la classe. Un rilevatore fa esattamente questo, ma in automatico e per molti
+oggetti insieme. Per ciascuno deve indovinare due cose alla volta: *dove*
 tracciare la cornice e *cosa* c'è dentro.
 
 `````
@@ -58,7 +59,7 @@ Più precisi, ma più lenti.
 
 I rilevatori **a uno stadio** fanno tutto in un colpo solo: un'unica passata
 sull'immagine sputa fuori direttamente cornici ed etichette. Meno precisi sui
-casi difficili, ma abbastanza rapidi da lavorare in tempo reale su un video —
+casi difficili, ma abbastanza rapidi da lavorare in tempo reale su un video,
 ed è per questo che si chiama YOLO, *You Only Look Once*.
 
 `````
@@ -71,19 +72,18 @@ Network*: uno
 stadio propone regioni candidate, il secondo le classifica e ne raffina i
 riquadri. Accuratezza elevata, ma latenza maggiore.
 
-La famiglia a **uno stadio** — YOLO {cite}`redmon2016you` e SSD
-{cite}`liu2016ssd` — elimina la fase di proposta: una sola rete convoluzionale predice
-simultaneamente riquadri e classi su una griglia dell'immagine. Il prezzo
-storico è stato lo squilibrio tra i pochi riquadri con oggetto e i moltissimi
-di sfondo; la *focal loss* di RetinaNet {cite}`lin2017focal` lo ha in gran
-parte
-sanato, avvicinando le due famiglie in accuratezza.
+La famiglia a **uno stadio** (YOLO {cite}`redmon2016you` e SSD
+{cite}`liu2016ssd`) elimina la fase di proposta: una sola rete convoluzionale
+predice simultaneamente riquadri e classi su una griglia dell'immagine. Il
+prezzo storico è stato lo squilibrio tra i pochi riquadri con oggetto e i
+moltissimi di sfondo; la *focal loss* di RetinaNet {cite}`lin2017focal` lo ha
+in gran parte sanato, avvicinando le due famiglie in accuratezza.
 
 `````
 
 ## Le ancore: non partire da zero
 
-Le due famiglie condividono un problema — e la soluzione. Nello stesso punto
+Le due famiglie condividono un problema, e la soluzione. Nello stesso punto
 dell'immagine possono trovarsi oggetti dalle forme opposte: un pedone alto e
 stretto, un'auto bassa e larga, un pallone quasi quadrato. Chiedere alla rete
 di disegnare il riquadro giusto partendo dal nulla è chiederle molto. La
@@ -102,23 +102,23 @@ il pedone, quella alta e stretta (terracotta) è già quasi giusta.
 `````{tab} Elementare
 
 Pensa a un corniciaio. Non costruisce una cornice su misura per ogni quadro
-che entra in bottega: tiene pronti alcuni formati standard — verticale per i
-ritratti, orizzontale per i paesaggi, quadrato — e poi ritocca quello che ci
-va più vicino. Le ancore funzionano allo stesso modo. In ogni punto
-dell'immagine la rete ha a disposizione qualche cornice predefinita, di
-taglie e proporzioni diverse ({numref}`fig-anchor-boxes`). Davanti a un
-pedone non deve inventarsi il rettangolo: prende la cornice verticale, che
-gli somiglia già, e la aggiusta — "spostati un po' a sinistra, allungati un
-pelo". Correggere una cornice quasi giusta è molto più facile che disegnarne
-una dal nulla, e la rete impara proprio questo: piccole correzioni, più il
-nome di ciò che c'è dentro.
+che entra in bottega: tiene pronti alcuni formati standard (verticale per i
+ritratti, orizzontale per i paesaggi, quadrato) e poi ritocca quello che ci va
+più vicino. Le ancore funzionano allo stesso modo. In ogni punto dell'immagine
+la rete ha a disposizione qualche cornice predefinita, di taglie e proporzioni
+diverse ({numref}`fig-anchor-boxes`). Davanti a un pedone non deve inventarsi
+il rettangolo: prende la cornice verticale, che gli somiglia già, e la
+aggiusta ("spostati un po' a sinistra, allungati un pelo"). Correggere una
+cornice quasi giusta è molto più facile che disegnarne una dal nulla, e la
+rete impara proprio questo: piccole correzioni, più il nome di ciò che c'è
+dentro.
 
 `````
 
 `````{tab} Superiore
 
-Su ogni cella della mappa di feature si centrano $k$ riquadri predefiniti —
-le ancore — a più **scale** e **proporzioni**. La rete non predice coordinate
+Su ogni cella della mappa di feature si centrano $k$ riquadri predefiniti (le
+ancore) a più **scale** e **proporzioni**. La rete non predice coordinate
 assolute: per ciascuna ancora produce i punteggi di classe e quattro
 **offset** che la deformano verso il riquadro vero,
 
@@ -160,14 +160,14 @@ reale (teal): è l'area di **intersezione** divisa per l'area di **unione**.
 
 `````{tab} Elementare
 
-Prendi la cornice predetta e quella giusta e chiediti: *quanto si sovrappongono?*
-La IoU misura proprio questo. Si guarda l'area in comune (la sovrapposizione) e
-la si divide per l'area totale coperta dalle due cornici messe insieme
-({numref}`fig-iou`). Il risultato va da 0 a 1: **1** significa cornici
-perfettamente combacianti, **0** che non si toccano nemmeno. Un esempio con i
-quadretti: se le due cornici ne condividono 30 e, messe insieme, ne coprono
-60, la IoU è $30/60 = 0{,}5$. Di solito si dice che una predizione è "giusta"
-proprio se la IoU supera **0,5** — metà o più di sovrapposizione.
+Prendi la cornice predetta e quella giusta e chiediti: *quanto si
+sovrappongono?* La IoU misura proprio questo. Si guarda l'area in comune (la
+sovrapposizione) e la si divide per l'area totale coperta dalle due cornici
+messe insieme ({numref}`fig-iou`). Il risultato va da 0 a 1: **1** significa
+cornici perfettamente combacianti, **0** che non si toccano nemmeno. Un
+esempio con i quadretti: se le due cornici ne condividono 30 e, messe insieme,
+ne coprono 60, la IoU è $30/60 = 0{,}5$. Di solito si dice che una predizione
+è "giusta" proprio se la IoU supera **0,5**: metà o più di sovrapposizione.
 
 `````
 
@@ -226,15 +226,14 @@ sagoma di ogni singola istanza.
 
 ## Risalire di risoluzione: la convoluzione trasposta
 
-Nelle reti di segmentazione c'è un passaggio rimasto nell'ombra.
-Convoluzioni e pooling *riducono* le mappe: dopo la metà della rete che
-comprime — l'**encoder** — un'immagine 512×512 può essersi ristretta a
-16×16. Ma il verdetto della segmentazione va dato pixel per pixel, alla
-risoluzione di partenza: serve una metà che riespanda, il **decoder**. Come
-si risale? L'operazione che la *Fully Convolutional Network*
-{cite}`long2015fully` ha reso standard è la **convoluzione trasposta**: una
-convoluzione che invece di rimpicciolire ingrandisce — con numeri che la
-rete impara.
+Nelle reti di segmentazione c'è un passaggio rimasto nell'ombra. Convoluzioni
+e pooling *riducono* le mappe: dopo la metà della rete che comprime
+(l'**encoder**) un'immagine 512×512 può essersi ristretta a 16×16. Ma il
+verdetto della segmentazione va dato pixel per pixel, alla risoluzione di
+partenza: serve una metà che riespanda, il **decoder**. Come si risale?
+L'operazione che la *Fully Convolutional Network* {cite}`long2015fully` ha
+reso standard è la **convoluzione trasposta**: una convoluzione che invece di
+rimpicciolire ingrandisce, con numeri che la rete impara.
 
 ```{figure} ../figures/convoluzione-trasposta.svg
 :name: fig-convoluzione-trasposta
@@ -314,16 +313,17 @@ occhio si perderebbe. Nell'**industria**, un rilevatore su una linea di
 produzione individua il graffio o il pezzo mal assemblato prima che arrivi al
 cliente.
 
-Nessuno di questi sistemi è infallibile: una IoU del 90% resta un 10% di errore,
-e in medicina o alla guida quel margine va sempre soppesato con un occhio umano.
-Ma la traiettoria è chiara — dal *cosa*, al *dove*, fino al contorno esatto.
+Nessuno di questi sistemi è infallibile: una IoU del 90% resta un 10% di
+errore, e in medicina o alla guida quel margine va sempre soppesato con un
+occhio umano. Ma la traiettoria è chiara: dal *cosa*, al *dove*, fino al
+contorno esatto.
 
 ```{admonition} Da ricordare
 :class: important
 - L'**object detection** predice per ogni oggetto un **riquadro** e una
   **classe** insieme.
-- Due famiglie: **due stadi** (R-CNN, Faster R-CNN) più accurate, **uno stadio**
-  (YOLO, SSD) più veloci — un compromesso accuratezza/velocità.
+- Due famiglie: **due stadi** (R-CNN, Faster R-CNN) più accurate, **uno
+  stadio** (YOLO, SSD) più veloci (un compromesso accuratezza/velocità).
 - Le **anchor box** danno alla rete riquadri di partenza a più scale e
   proporzioni: si predicono piccoli **offset**, non riquadri dal nulla.
 - La **IoU** misura la sovrapposizione riquadro-realtà; la **mAP** riassume la
@@ -331,5 +331,5 @@ Ma la traiettoria è chiara — dal *cosa*, al *dove*, fino al contorno esatto.
 - **Semantica** (FCN, U-Net) etichetta ogni pixel; **istanza** (Mask R-CNN)
   separa anche i singoli oggetti.
 - La **convoluzione trasposta** riporta le mappe a piena risoluzione con un
-  ingrandimento *appreso* — occhio agli artefatti a scacchiera.
+  ingrandimento *appreso*: occhio agli artefatti a scacchiera.
 ```

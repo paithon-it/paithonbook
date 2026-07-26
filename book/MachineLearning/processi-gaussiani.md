@@ -4,17 +4,17 @@ C'è una differenza sottile ma decisiva tra due previsioni del tempo. «Domani
 24 gradi» è una cifra secca: sembra sicura, ma non dice nulla su quanto
 fidarsi. «Domani tra 21 e 27» dice di meno e comunica di più: oltre alla
 stima, dichiara *quanto il modello non sa*. Tutti i modelli visti finora in
-questo capitolo — la retta di regressione, la logistica, il k-NN — rispondono
+questo capitolo (la retta di regressione, la logistica, il k-NN) rispondono
 alla prima maniera: un numero, prendere o lasciare. In questa sezione
 incontriamo un modello che risponde alla seconda: il **processo gaussiano**.
 
 L'idea ha radici minerarie. Nel 1951 Danie Krige, un giovane ingegnere
 sudafricano, affrontava il problema più costoso delle miniere d'oro del
-Witwatersrand: ogni carotaggio — un pozzo di assaggio per misurare la
-concentrazione del minerale — costava una fortuna, e i punti campionati erano
+Witwatersrand: ogni carotaggio (un pozzo di assaggio per misurare la
+concentrazione del minerale) costava una fortuna, e i punti campionati erano
 per forza pochi e sparsi. Come stimare quanto oro c'è *tra* un pozzo e
 l'altro? Krige propose di usare medie pesate dei campioni vicini, con pesi
-scelti in modo statistico — e con una misura esplicita di quanto ogni stima
+scelti in modo statistico, e con una misura esplicita di quanto ogni stima
 fosse affidabile. Nei primi anni Sessanta il matematico francese Georges
 Matheron formalizzò il metodo e lo battezzò *kriging*, in suo onore. Oggi la
 stessa matematica, generalizzata e ribattezzata processi gaussiani, è uno
@@ -51,12 +51,12 @@ f \sim \mathcal{GP}\big(m(x),\, k(x, x')\big),
 $$
 
 dove $m(x)$ è la funzione media (spesso posta a zero dopo aver centrato i
-dati) e $k(x, x')$ è la funzione di covarianza, o **kernel**. La proprietà
-che lo definisce: per *qualunque* insieme finito di punti $x_1, \dots, x_n$,
-il vettore dei valori $\big(f(x_1), \dots, f(x_n)\big)$ ha distribuzione
+dati) e $k(x, x')$ è la funzione di covarianza, o **kernel**. La proprietà che
+lo definisce: per *qualunque* insieme finito di punti $x_1, \dots, x_n$, il
+vettore dei valori $\big(f(x_1), \dots, f(x_n)\big)$ ha distribuzione
 gaussiana multivariata, con medie $m(x_i)$ e covarianze $k(x_i, x_j)$. È un
 *prior* sulle funzioni: prima di vedere i dati, tutte le curve coerenti con il
-kernel sono possibili; condizionare sulle osservazioni — lo vedremo tra poco —
+kernel sono possibili; condizionare sulle osservazioni (lo vedremo tra poco)
 restringe il fascio, e il risultato è ancora un processo gaussiano
 {cite}`rasmussen2006gaussian`.
 
@@ -72,17 +72,17 @@ valori in due punti devono somigliarsi.
 `````{tab} Elementare
 
 La regola del kernel è il buon senso del geometra: **punti vicini hanno valori
-simili**. Se a Modena ci sono 24 gradi, a Bologna — quaranta chilometri — mi
+simili**. Se a Modena ci sono 24 gradi, a Bologna (quaranta chilometri), mi
 aspetto quasi la stessa temperatura; ad Ancona, duecento chilometri più in là,
 la mia misura modenese dice ormai poco. Il kernel trasforma questa intuizione
-in un numero tra 0 e 1: vicini quasi gemelli valgono quasi 1, lontani
-estranei valgono quasi 0. E ha una manopola fondamentale, il **raggio di
-influenza**: fin dove arriva l'effetto di una misura? Con un raggio corto ogni
-osservazione parla solo del suo vicinato e le curve possono zigzagare; con un
-raggio lungo ogni misura si fa sentire lontano e le curve escono morbide e
-distese. Per dare un'idea con i numeri: con raggio 1, due punti a distanza 1
-si somigliano 0,61; a distanza 2 solo 0,14; a distanza 3 appena 0,01 —
-l'influenza svanisce in fretta.
+in un numero tra 0 e 1: vicini quasi gemelli valgono quasi 1, lontani estranei
+valgono quasi 0. E ha una manopola fondamentale, il **raggio di influenza**:
+fin dove arriva l'effetto di una misura? Con un raggio corto ogni osservazione
+parla solo del suo vicinato e le curve possono zigzagare; con un raggio lungo
+ogni misura si fa sentire lontano e le curve escono morbide e distese. Per
+dare un'idea con i numeri: con raggio 1, due punti a distanza 1 si somigliano
+0,61; a distanza 2 solo 0,14; a distanza 3 appena 0,01 (l'influenza svanisce
+in fretta).
 
 `````
 
@@ -94,17 +94,16 @@ $$
 k(x, x') = \sigma^2 \exp\!\left(-\frac{\lVert x - x'\rVert^2}{2\ell^2}\right),
 $$
 
-dove $\sigma^2$ è la varianza di segnale (l'ampiezza tipica delle
-oscillazioni del fascio) e $\ell$ è la **lunghezza-scala** (*lengthscale*): la
-distanza oltre la quale due valori diventano, di fatto, indipendenti. Con
-$\ell = 1$ due punti a distanza $1$ hanno correlazione
-$e^{-0{,}5} \approx 0{,}61$; a distanza $3$, $e^{-4{,}5} \approx 0{,}01$. Una
-$\ell$ piccola produce funzioni nervose che dimenticano in fretta; una $\ell$
-grande, funzioni lisce e a lungo raggio. Il kernel RBF genera funzioni
-infinitamente derivabili — un'ipotesi di regolarità forte, non sempre
-realistica. I suoi iperparametri $(\sigma, \ell)$ non si fissano a mano: si
-stimano massimizzando la verosimiglianza marginale dei dati, cosa che
-`scikit-learn` fa da sola durante il `fit`.
+dove $\sigma^2$ è la varianza di segnale (l'ampiezza tipica delle oscillazioni
+del fascio) e $\ell$ è la **lunghezza-scala** (*lengthscale*): la distanza
+oltre la quale due valori diventano, di fatto, indipendenti. Con $\ell = 1$
+due punti a distanza $1$ hanno correlazione $e^{-0{,}5} \approx 0{,}61$; a
+distanza $3$, $e^{-4{,}5} \approx 0{,}01$. Una $\ell$ piccola produce funzioni
+nervose che dimenticano in fretta; una $\ell$ grande, funzioni lisce e a lungo
+raggio. Il kernel RBF genera funzioni infinitamente derivabili: un'ipotesi di
+regolarità forte, non sempre realistica. I suoi iperparametri $(\sigma, \ell)$
+non si fissano a mano: si stimano massimizzando la verosimiglianza marginale
+dei dati, cosa che `scikit-learn` fa da sola durante il `fit`.
 
 `````
 
@@ -118,14 +117,14 @@ alla previsione vera e propria.
 
 Ogni punto osservato *stringe* il fascio lì vicino: le curve che non passano
 nei paraggi vengono scartate, quelle che restano sono quasi d'accordo tra
-loro, e la banda d'incertezza si riduce a un filo. Lontano dai punti — tra un
-dato e l'altro, o fuori dalla zona esplorata — sopravvivono curve molto
+loro, e la banda d'incertezza si riduce a un filo. Lontano dai punti (tra un
+dato e l'altro, o fuori dalla zona esplorata) sopravvivono curve molto
 diverse, e la banda si riapre. Il risultato, per ogni punto in cui vogliamo
 una previsione, sono due numeri: la **media** delle curve sopravvissute (la
-stima migliore) e la **larghezza** del fascio (quanto fidarsi). Se la stima
-è 24 gradi e la banda va da 21 a 27, il modello sta dicendo: «quasi
-certamente il valore è lì in mezzo». Una banda larghissima non è un difetto:
-è il modello che alza la mano e ammette di non avere dati per rispondere.
+stima migliore) e la **larghezza** del fascio (quanto fidarsi). Se la stima è
+24 gradi e la banda va da 21 a 27, il modello sta dicendo: «quasi certamente
+il valore è lì in mezzo». Una banda larghissima non è un difetto: è il modello
+che alza la mano e ammette di non avere dati per rispondere.
 
 `````
 
@@ -155,9 +154,9 @@ prior. La banda al 95% è $\mu_* \pm 2\sqrt{\operatorname{diag}(\Sigma_*)}$.
 `````
 
 La {numref}`fig-processo-gaussiano` mostra tutto il meccanismo in un colpo
-d'occhio: la banda si stringe sui punti osservati fin quasi a toccarli — quasi,
+d'occhio: la banda si stringe sui punti osservati fin quasi a toccarli (quasi,
 perché il rumore di misura $\sigma_n^2$ impedisce la certezza assoluta anche
-lì — e si riapre nel buco centrale e ai bordi, dove i dati mancano.
+lì) e si riapre nel buco centrale e ai bordi, dove i dati mancano.
 
 ```{figure} ../figures/processo-gaussiano.svg
 :name: fig-processo-gaussiano
@@ -226,8 +225,8 @@ addestreremo mai un processo gaussiano sulle foto di tutto internet.
 Il collo di bottiglia è l'inversione (in pratica, la fattorizzazione di
 Cholesky) di $K + \sigma_n^2 I$: costo $O(n^3)$ in tempo e $O(n^2)$ in
 memoria. Oltre qualche decina di migliaia di punti il metodo esatto diventa
-proibitivo. Esistono approssimazioni *sparse* — si riassume il dataset con
-$p \ll n$ punti "induttori", scendendo a $O(n p^2)$ — ma pagano in fedeltà
+proibitivo. Esistono approssimazioni *sparse*, si riassume il dataset con
+$p \ll n$ punti "induttori", scendendo a $O(n p^2)$, ma pagano in fedeltà
 proprio sulla merce di casa: la qualità delle incertezze. A ciò si aggiunge la
 sensibilità alla scelta del kernel, che incorpora ipotesi forti (con l'RBF, la
 regolarità infinita) da verificare sul problema reale.
@@ -239,8 +238,8 @@ Esperimenti di laboratorio dove ogni misura vale una giornata di lavoro,
 simulazioni ingegneristiche da ore di calcolo l'una, prove sul campo che non
 si possono ripetere. E il caso che abbiamo già incontrato: l'**ottimizzazione
 bayesiana degli iperparametri** {cite}`snoek2012practical`, dove ogni "dato" è
-un intero addestramento e il processo gaussiano fa da mappa — stima più
-incertezza — per decidere quale configurazione provare dopo. La sezione sugli
+un intero addestramento e il processo gaussiano fa da mappa (stima più
+incertezza) per decidere quale configurazione provare dopo. La sezione sugli
 iperparametri di questo capitolo racconta proprio quel meccanismo: qui abbiamo
 aperto il cofano del suo motore.
 
@@ -248,13 +247,13 @@ aperto il cofano del suo motore.
 :class: important
 - Un processo gaussiano non impara una curva sola: mantiene una distribuzione
   su **tutte le curve compatibili con i dati** e per ogni punto restituisce
-  una media e un'incertezza — «tra 21 e 27», non «24 e basta».
+  una media e un'incertezza; «tra 21 e 27», non «24 e basta».
 - Il **kernel** codifica la somiglianza ("punti vicini hanno valori simili");
   la lunghezza-scala $\ell$ decide fin dove arriva l'influenza di
   un'osservazione.
 - La **banda d'incertezza** si stringe sui punti osservati e si riapre dove i
   dati mancano: il modello dichiara quanto non sa.
 - Costo $O(n^3)$: improponibile sui grandi dataset, perfetto con **pochi dati
-  costosi** — esperimenti, simulazioni, ottimizzazione bayesiana degli
-  iperparametri.
+  costosi** (esperimenti, simulazioni, ottimizzazione bayesiana degli
+  iperparametri).
 ```

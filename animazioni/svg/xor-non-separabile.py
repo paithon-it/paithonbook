@@ -2,7 +2,7 @@
 
 Il contraltare del percettrone: là la retta convergeva, qui gira su sé stessa
 e resta sempre con due punti sbagliati. Il conteggio degli errori non è
-scritto a mano — si calcola per ogni orientamento mostrato.
+scritto a mano: si calcola per ogni orientamento mostrato.
 """
 
 import math

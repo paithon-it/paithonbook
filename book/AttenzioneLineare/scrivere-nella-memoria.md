@@ -2,8 +2,8 @@
 
 Nella sezione precedente abbiamo scoperto che l'attenzione lineare è, sotto
 mentite spoglie, una rete ricorrente: al posto della cache di chiavi e valori
-che cresce a ogni parola, un'unica memoria $S$ di dimensione fissa — una
-matrice $d \times d$ — che accumula ogni nuova coppia con un semplice prodotto
+che cresce a ogni parola, un'unica memoria $S$ di dimensione fissa (una
+matrice $d \times d$) che accumula ogni nuova coppia con un semplice prodotto
 esterno,
 
 $$
@@ -20,7 +20,7 @@ Il registro, però, ha due difetti che si vedono a occhio nudo. **Non
 dimentica**: ogni voce resta scritta per sempre, e con abbastanza token la
 pagina si satura di tracce sovrapposte finché non si legge più nulla di
 preciso. E **non corregge**: se una voce era sbagliata, l'unico modo per
-rimediare è scriverne un'altra sopra che la contraddica — la vecchia resta lì a
+rimediare è scriverne un'altra sopra che la contraddica; la vecchia resta lì a
 disturbare. Da qui due idee semplici e complementari per scrivere *meglio*
 nella memoria: **dimenticare** (i gate) e **correggere** (la delta rule). Sono
 le due mosse da cui nasce, come vedremo, l'intera famiglia delle ricorrenze
@@ -31,7 +31,7 @@ lineari moderne.
 La prima idea è lasciare che le voci vecchie sbiadiscano da sole. Invece di
 tramandare la memoria intatta, la si moltiplica a ogni passo per un fattore di
 decadimento minore di uno: ciò che è stato scritto tempo fa pesa sempre meno,
-finché svanisce. È il **gate di dimenticanza** — lo stesso meccanismo che le
+finché svanisce. È il **gate di dimenticanza**: lo stesso meccanismo che le
 LSTM usavano trent'anni fa, riportato qui nella sua forma più essenziale.
 
 `````{tab} Elementare
@@ -94,7 +94,7 @@ selettivo.
 
 `````
 
-Il gate risolve il primo difetto — la saturazione — ma non il secondo. Per
+Il gate risolve il primo difetto (la saturazione) ma non il secondo. Per
 quanto si sbiadisca, ogni scrittura resta un'aggiunta cieca: nessuno controlla
 se quella voce contraddice ciò che c'è già.
 
@@ -111,21 +111,22 @@ scrivere, guardare cosa c'è già.
 `````{tab} Elementare
 
 Torniamo alla rubrica. L'accumulo puro è chi, ogni volta che scopre un numero
-di telefono, aggiunge una riga nuova — anche se quel contatto era già in
-rubrica, magari con un numero sbagliato. Le righe si accavallano e chi consulta
-la rubrica trova una media confusa tra il numero vecchio e quello nuovo.
+di telefono, aggiunge una riga nuova: anche se quel contatto era già in
+rubrica, magari con un numero sbagliato. Le righe si accavallano e chi
+consulta la rubrica trova una media confusa tra il numero vecchio e quello
+nuovo.
 
 La **delta rule** fa la cosa sensata: prima di scrivere, *cerca il contatto* e
-legge il numero attualmente memorizzato. Poi scrive soltanto la **correzione** —
-la differenza tra quello giusto e quello che c'era. Un esempio con i numeri:
-alla chiave «Mario» la memoria oggi risponde $7$, ma il valore giusto è $10$;
-l'errore è $10 - 7 = 3$. Con un «passo di correzione» pari a $\beta = 0{,}5$
-scrivo solo $0{,}5 \times 3 = 1{,}5$, e la memoria passa a rispondere $8{,}5$:
-si avvicina alla verità senza cancellare tutto di colpo. Il parametro $\beta$
-dosa quanto dare retta all'errore: con $\beta = 1$ **sovrascrivo** del tutto
-(la memoria risponde $10$), con $\beta = 0$ **ignoro** e lascio $7$. È
-esattamente come si corregge un tiro: non riparti da zero, aggiusti in
-proporzione a quanto hai sbagliato.
+legge il numero attualmente memorizzato. Poi scrive soltanto la
+**correzione**: la differenza tra quello giusto e quello che c'era. Un esempio
+con i numeri: alla chiave «Mario» la memoria oggi risponde $7$, ma il valore
+giusto è $10$; l'errore è $10 - 7 = 3$. Con un «passo di correzione» pari a
+$\beta = 0{,}5$ scrivo solo $0{,}5 \times 3 = 1{,}5$, e la memoria passa a
+rispondere $8{,}5$: si avvicina alla verità senza cancellare tutto di colpo.
+Il parametro $\beta$ dosa quanto dare retta all'errore: con $\beta = 1$
+**sovrascrivo** del tutto (la memoria risponde $10$), con $\beta = 0$
+**ignoro** e lascio $7$. È esattamente come si corregge un tiro: non riparti
+da zero, aggiusti in proporzione a quanto hai sbagliato.
 
 `````
 
@@ -164,13 +165,14 @@ se $\beta_t = 0$ lascia la memoria intatta. Perché il fattore sia ben
 condizionato (autovalori in $[0,1]$) le chiavi vanno **normalizzate in norma
 $L_2$**, così che $k_t^\top k_t = 1$.
 
-Vale una nota di notazione. La formulazione originale del Transformer lineare, e
-lo stesso lavoro di Schlag e colleghi, trascina un **normalizzatore** $z_t$ (la
-somma delle chiavi) per riscalare la lettura come in una media pesata. La
-famiglia di ricorrenze che seguiamo qui — GLA, DeltaNet e le loro parenti — lo
-**abbandona**: normalizza le chiavi in $L_2$ e applica una LayerNorm all'uscita,
-ottenendo lo stesso effetto stabilizzante senza il termine $z_t$. Nel resto del
-capitolo restiamo su questa seconda impostazione, senza mischiarla con la prima.
+Vale una nota di notazione. La formulazione originale del Transformer lineare,
+e lo stesso lavoro di Schlag e colleghi, trascina un **normalizzatore** $z_t$
+(la somma delle chiavi) per riscalare la lettura come in una media pesata. La
+famiglia di ricorrenze che seguiamo qui (GLA, DeltaNet e le loro parenti) lo
+**abbandona**: normalizza le chiavi in $L_2$ e applica una LayerNorm
+all'uscita, ottenendo lo stesso effetto stabilizzante senza il termine $z_t$.
+Nel resto del capitolo restiamo su questa seconda impostazione, senza
+mischiarla con la prima.
 
 `````
 
@@ -183,20 +185,21 @@ precedente. Per anni questo l'ha confinata a un giocattolo teorico, non
 addestrabile su sequenze lunghe. Nel 2024 **DeltaNet**, di Yang e colleghi
 (NeurIPS 2024) {cite}`yang2024deltanet`, l'ha sbloccata: un algoritmo
 **chunk-parallel** che spezza la sequenza in blocchi e, tramite una
-rappresentazione a matrici di rango basso (la cosiddetta forma *WY*), calcola il
-blocco in parallelo passando allo stato solo un riassunto compatto. La delta
-rule diventa così addestrabile alla scala dei modelli linguistici — competitiva,
-sui compiti di richiamo associativo, con l'attenzione piena.
+rappresentazione a matrici di rango basso (la cosiddetta forma *WY*), calcola
+il blocco in parallelo passando allo stato solo un riassunto compatto. La
+delta rule diventa così addestrabile alla scala dei modelli linguistici:
+competitiva, sui compiti di richiamo associativo, con l'attenzione piena.
 
 ## Unire oblio e correzione: Gated DeltaNet
 
-A questo punto abbiamo due mosse che risolvono difetti diversi, e la domanda si
-fa naturale: perché scegliere? Il gate **svuota in fretta** la memoria, ma in
-modo **uniforme e indiscriminato** — non sa *cosa* sta buttando via. La delta
-rule fa **correzioni mirate** su singole chiavi, ma da sola **non svuota**:
-tende a lasciare la memoria piena di tracce, sia pure aggiustate. Yang, Kautz e
-Hatamizadeh, di NVIDIA (2024) {cite}`yang2024gateddelta`, osservano che sono
-**complementari** e li mettono insieme in **Gated DeltaNet**.
+A questo punto abbiamo due mosse che risolvono difetti diversi, e la domanda
+si fa naturale: perché scegliere? Il gate **svuota in fretta** la memoria, ma
+in modo **uniforme e indiscriminato**: non sa *cosa* sta buttando via. La
+delta rule fa **correzioni mirate** su singole chiavi, ma da sola **non
+svuota**: tende a lasciare la memoria piena di tracce, sia pure aggiustate.
+Yang, Kautz e Hatamizadeh, di NVIDIA (2024) {cite}`yang2024gateddelta`,
+osservano che sono **complementari** e li mettono insieme in **Gated
+DeltaNet**.
 
 La ricorrenza combina i due fattori di transizione:
 
@@ -232,9 +235,9 @@ learning: è un passo di **minimi quadrati**.
 `````{tab} Elementare
 
 Ricordate la retta di best fit? Data una nuvola di punti, cercavamo la retta
-che minimizza l'errore quadratico — la somma dei quadrati degli scarti tra
-valori veri e previsti. Facevamo tutto in una volta, con l'intero dataset sotto
-gli occhi.
+che minimizza l'errore quadratico: la somma dei quadrati degli scarti tra
+valori veri e previsti. Facevamo tutto in una volta, con l'intero dataset
+sotto gli occhi.
 
 Una memoria associativa fa la stessa cosa, ma **un dato alla volta, mentre
 scorre**. Il suo compito è imparare a mappare ogni chiave nel suo valore: dato
@@ -274,10 +277,10 @@ $$
 dello stesso passo: l'accumulo puro dell'attenzione lineare è la versione
 ingenua che scrive $v_t k_t^\top$ senza sottrarre ciò che la memoria già
 predice; e il gate $\alpha_t$ è, in questa lettura, un **weight decay
-adattivo** — la contrazione $S \leftarrow \alpha_t S$ che l'ottimizzazione
+adattivo**; la contrazione $S \leftarrow \alpha_t S$ che l'ottimizzazione
 applica per non lasciare che i vecchi coefficienti si accumulino all'infinito,
-regolata token per token. Ogni RNN lineare che abbiamo incontrato è, dunque, un
-diverso ottimizzatore online sullo stesso obiettivo $\mathcal{L}_t$.
+regolata token per token. Ogni RNN lineare che abbiamo incontrato è, dunque,
+un diverso ottimizzatore online sullo stesso obiettivo $\mathcal{L}_t$.
 
 `````
 
@@ -309,16 +312,16 @@ che moltiplica lo stato precedente.
 | DeltaNet | $S_t = S_{t-1}(I - \beta_t\, k_t k_t^\top) + \beta_t\, v_t\, k_t^\top$ | $I - \beta_t\, k_t k_t^\top$ (Householder) |
 | Gated DeltaNet | $S_t = S_{t-1}\big[\alpha_t(I - \beta_t\, k_t k_t^\top)\big] + \beta_t\, v_t\, k_t^\top$ | $\alpha_t(I - \beta_t\, k_t k_t^\top)$ (gated-delta) |
 
-Letta dall'alto in basso, la tabella racconta una sola storia: **cambia soltanto
-la transizione di stato**, il fattore che decide *come* la memoria di ieri
-sopravvive a oggi. Tutto il resto — lo stato di dimensione fissa, la scrittura
-per prodotto esterno, il fatto che si addestri in parallelo e si inferisca in
-modo ricorrente — resta identico. Questa è la struttura profonda che unifica
-l'intera famiglia, e la stessa che, nel prossimo capitolo, ritroveremo arrivando
-da tutt'altra strada: quella dei sistemi dinamici degli State Space Model. Non è
-un caso che Mamba-2 compaia due volte, qui tra le attenzioni lineari e là tra
-gli SSM: è il ponte, e la sua «dualità» tra stato e attenzione è la prova che le
-due famiglie sono due viste della stessa cosa.
+Letta dall'alto in basso, la tabella racconta una sola storia: **cambia
+soltanto la transizione di stato**, il fattore che decide *come* la memoria di
+ieri sopravvive a oggi. Tutto il resto (lo stato di dimensione fissa, la
+scrittura per prodotto esterno, il fatto che si addestri in parallelo e si
+inferisca in modo ricorrente) resta identico. Questa è la struttura profonda
+che unifica l'intera famiglia, e la stessa che, nel prossimo capitolo,
+ritroveremo arrivando da tutt'altra strada: quella dei sistemi dinamici degli
+State Space Model. Non è un caso che Mamba-2 compaia due volte, qui tra le
+attenzioni lineari e là tra gli SSM: è il ponte, e la sua «dualità» tra stato
+e attenzione è la prova che le due famiglie sono due viste della stessa cosa.
 
 ```{admonition} Da ricordare
 :class: important
@@ -326,15 +329,16 @@ due famiglie sono due viste della stessa cosa.
   (la memoria si satura) e **non corregge** (le voci sbagliate restano). Gate e
   delta rule li risolvono separatamente.
 - Il **gate di dimenticanza** moltiplica la memoria per un fattore in $(0,1)$:
-  scalare e fisso in RetNet, scalare e data-dipendente in Mamba-2, **diagonale**
-  e data-dipendente in GLA — dal più grossolano al più selettivo, riga per riga.
+  scalare e fisso in RetNet, scalare e data-dipendente in Mamba-2,
+  **diagonale** e data-dipendente in GLA; dal più grossolano al più selettivo,
+  riga per riga.
 - La **delta rule** (Widrow–Hoff, dai fast weights di Schlag e colleghi) scrive
   solo l'**errore** $v_t - S_{t-1}k_t$ scalato da $\beta_t$: $\beta_t=1$
   sovrascrive la chiave, $\beta_t=0$ la ignora. DeltaNet l'ha resa
   **parallelizzabile** (algoritmo chunk-parallel, rappresentazione WY).
 - **Gated DeltaNet** combina i due gesti complementari: $\alpha_t$ decade in
-  modo globale, $\beta_t$ corregge in modo mirato — dimentica in fretta *e*
-  aggiusta con precisione.
+  modo globale, $\beta_t$ corregge in modo mirato (dimentica in fretta *e*
+  aggiusta con precisione).
 - Il filo che unisce tutto: ogni RNN lineare è **un passo di regressione
   online** sull'obiettivo $\tfrac{1}{2}\lVert S k_t - v_t \rVert^2$. La delta
   rule è la discesa del gradiente esatta; l'accumulo è la sua versione ingenua;

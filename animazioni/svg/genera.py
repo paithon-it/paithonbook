@@ -51,7 +51,7 @@ def main(argv):
             print(f"✗ {f.stem}: {type(e).__name__}: {e}", file=sys.stderr)
 
     if files and not errori:
-        print(f"\nprovini (aprili con Read — è lo stato che finirà in stampa):\n  {PROVINI}")
+        print(f"\nprovini (aprili con Read, è lo stato che finirà in stampa):\n  {PROVINI}")
     return 1 if errori else 0
 
 

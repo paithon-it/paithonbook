@@ -1,17 +1,17 @@
 # Data augmentation: moltiplicare i dati senza raccoglierli
 
-Per insegnare a un bambino che cos'è una tazza non servono diecimila tazze.
-Ne basta una: la gira tra le mani, la guarda dall'alto e di lato, la vede al
-sole e in penombra, mezza nascosta dietro la caffettiera. Ogni sguardo è
+Per insegnare a un bambino che cos'è una tazza non servono diecimila tazze. Ne
+basta una: la gira tra le mani, la guarda dall'alto e di lato, la vede al sole
+e in penombra, mezza nascosta dietro la caffettiera. Ogni sguardo è
 un'immagine diversa dello stesso oggetto, e da quella manciata di occhiate il
 concetto di "tazza" esce solidissimo. Una rete neurale non ha mani. Ma
 possiamo girare noi l'oggetto al posto suo: prendere ogni fotografia del
 training set e mostrargliela specchiata, ritagliata, un po' ruotata, più
-chiara o più scura. Si chiama **data augmentation** — letteralmente "aumento
-dei dati" — ed è il modo più economico che esista per moltiplicare gli esempi
+chiara o più scura. Si chiama **data augmentation** (letteralmente "aumento
+dei dati") ed è il modo più economico che esista per moltiplicare gli esempi
 senza raccoglierne di nuovi. Non è un'idea recente: nel capitolo sul deep
 learning abbiamo visto che già AlexNet, nel 2012, la usava in modo aggressivo
-— ritagli casuali, riflessioni, perturbazioni di colore. Bastano i primi due,
+(ritagli casuali, riflessioni, perturbazioni di colore). Bastano i primi due,
 calcolano gli autori, per ricavare da ogni immagine oltre duemila varianti
 possibili {cite}`krizhevsky2012imagenet`.
 
@@ -19,17 +19,17 @@ possibili {cite}`krizhevsky2012imagenet`.
 
 Tutto il trucco sta in un vincolo, che va capito bene: una trasformazione è
 ammessa solo se cambia l'immagine ma **non cambia l'etichetta**. Le
-trasformazioni buone catturano le *invarianze* del compito — i modi in cui il
+trasformazioni buone catturano le *invarianze* del compito: i modi in cui il
 mondo può variare senza che la risposta giusta vari. E qui serve onestà:
 nessuna trasformazione è innocente in assoluto.
 
 `````{tab} Elementare
 Specchia la foto di un gatto: è ancora, senza alcun dubbio, un gatto. La
-natura non distingue tra gatti "che guardano a destra" e gatti "che guardano
-a sinistra", quindi lo specchio è un modo gratuito di raddoppiare le foto di
+natura non distingue tra gatti "che guardano a destra" e gatti "che guardano a
+sinistra", quindi lo specchio è un modo gratuito di raddoppiare le foto di
 gatti. Ma prova a specchiare un cartello stradale: l'obbligo di svolta a
-destra diventa un obbligo di svolta a *sinistra* — stessa grafica, significato
-opposto. O prendi la cifra 6 e capovolgila: ottieni un 9. Una scritta ruotata
+destra diventa un obbligo di svolta a *sinistra* (stessa grafica, significato
+opposto). O prendi la cifra 6 e capovolgila: ottieni un 9. Una scritta ruotata
 di novanta gradi smette di essere leggibile. La stessa mossa che per i gatti è
 un regalo, per i cartelli o per le cifre è un sabotaggio: la trasformazione
 giusta dipende dal *compito*, non dall'immagine.
@@ -63,14 +63,14 @@ Da una sola immagine, quattro esempi "nuovi": i pixel cambiano, l'etichetta no.
 Come mostra {numref}`fig-data-augmentation`, da una fotografia ne ricaviamo
 molte: tutte diverse per la rete, tutte identiche per l'etichettatore.
 
-## Ogni epoca un'immagine nuova — ma mai all'esame
+## Ogni epoca un'immagine nuova, ma mai all'esame
 
 In pratica le trasformazioni non si applicano una volta per tutte: si
 estraggono **a caso, al volo**, ogni volta che un'immagine viene caricata. Il
-dataset su disco non cresce di un byte, ma la rete non rivede mai due volte
-la stessa identica immagine. E c'è una regola d'oro che non ammette
-eccezioni disinvolte: l'augmentation si applica **solo al training set**. Sul
-validation e sul test set si fanno soltanto le operazioni deterministiche —
+dataset su disco non cresce di un byte, ma la rete non rivede mai due volte la
+stessa identica immagine. E c'è una regola d'oro che non ammette eccezioni
+disinvolte: l'augmentation si applica **solo al training set**. Sul validation
+e sul test set si fanno soltanto le operazioni deterministiche:
 ridimensionare, ritagliare al centro, normalizzare.
 
 `````{tab} Elementare
@@ -95,16 +95,16 @@ ritagliate a caso) e dev'essere riproducibile tra un'esecuzione e l'altra.
 Esiste un'eccezione consapevole, la *test-time augmentation*: si media la
 predizione su più copie trasformate della stessa immagine per guadagnare
 qualche decimo di punto. È una scelta dichiarata di inferenza, non
-un'augmentation "dimenticata accesa" — e il confronto con altri modelli va
+un'augmentation "dimenticata accesa", e il confronto con altri modelli va
 fatto a parità di questa scelta.
 `````
 
 ## In pratica, con torchvision
 
-Nella sezione sul transfer learning la pipeline di preprocessing ce la dava
-la rete stessa (`pesi.transforms()`). Per aggiungere l'augmentation la
-scriviamo a mano con `torchvision.transforms`, tenendo le due pipeline —
-training e test — rigorosamente separate.
+Nella sezione sul transfer learning la pipeline di preprocessing ce la dava la
+rete stessa (`pesi.transforms()`). Per aggiungere l'augmentation la scriviamo
+a mano con `torchvision.transforms`, tenendo le due pipeline (training e test)
+rigorosamente separate.
 
 ```{code-block} python
 :class: pt-non-eseguibile
@@ -139,7 +139,7 @@ train_dl = DataLoader(train_ds, batch_size=32, shuffle=True)
 test_dl  = DataLoader(test_ds,  batch_size=32)
 ```
 
-Il resto — modello, loss, training loop — è identico a quello della sezione
+Il resto (modello, loss, training loop) è identico a quello della sezione
 precedente: l'augmentation vive tutta dentro il `Dataset`. E la scelta delle
 trasformazioni segue il compito: per un classificatore di cifre o di cartelli
 stradali, il `RandomHorizontalFlip` va tolto.
@@ -148,9 +148,9 @@ stradali, il `RandomHorizontalFlip` va tolto.
 
 Nel capitolo sul machine learning abbiamo messo un freno ai modelli con la
 regolarizzazione $\ell_2$; in quello sul deep learning, con il dropout
-{cite}`srivastava2014dropout`: modi diversi di impedire a una rete di
-imparare a memoria. L'augmentation appartiene alla stessa famiglia — è una
-**regolarizzazione** — ma agisce sui dati invece che sui pesi.
+{cite}`srivastava2014dropout`: modi diversi di impedire a una rete di imparare
+a memoria. L'augmentation appartiene alla stessa famiglia (è una
+**regolarizzazione**) ma agisce sui dati invece che sui pesi.
 
 `````{tab} Elementare
 Uno studente che rifà cento volte lo stesso identico esercizio finisce per
@@ -176,10 +176,10 @@ $$
 dove $\tau$ è la distribuzione sulle trasformazioni ammesse. In altre parole
 **allarga il supporto della distribuzione empirica**: invece di esigere la
 risposta giusta in $n$ punti isolati, la esige su interi intorni, e questo
-spinge $f_\theta$ verso funzioni *invarianti* alle trasformazioni scelte — un
+spinge $f_\theta$ verso funzioni *invarianti* alle trasformazioni scelte (un
 vincolo che riduce l'overfitting esattamente come farebbe un termine di
-regolarizzazione. È l'idea del *vicinal risk minimization* — apprendere non
-dai punti, ma dai loro dintorni — che tra poco vedremo portata alle estreme
+regolarizzazione). È l'idea del *vicinal risk minimization* (apprendere non
+dai punti, ma dai loro dintorni) che tra poco vedremo portata alle estreme
 conseguenze da mixup {cite}`zhang2018mixup`.
 `````
 
@@ -218,28 +218,27 @@ codifica one-hot e $\lambda \in [0,1]$ è estratto da una distribuzione
 $\mathrm{Beta}(\alpha, \alpha)$, dove l'iperparametro $\alpha$ regola
 l'intensità della mescolanza: con $\alpha$ piccolo (il paper usa valori tra
 $0{,}1$ e $0{,}4$) $\lambda$ si concentra vicino a $0$ o a $1$, e le miscele
-restano leggere. Il modello viene addestrato a produrre
-predizioni che interpolano linearmente tra le classi, il che regolarizza il
-comportamento *tra* gli esempi, dove il rischio empirico tace. **Cutout**
-{cite}`devries2017improved` azzera un riquadro casuale dell'immagine
-(l'idea quasi identica del *random erasing* lo sostituisce con valori
-casuali; torchvision la implementa in `transforms.RandomErasing`, da
-applicare dopo `ToTensor`), impedendo alla rete di dipendere
-da una singola regione discriminante — un dropout applicato allo spazio dei
-pixel. Infine **AutoAugment** {cite}`cubuk2019autoaugment` tratta la scelta
-delle trasformazioni come un problema di ricerca: un controllore addestrato
-per rinforzo compone la *policy* di augmentation che massimizza l'accuratezza
-in validazione; il successore RandAugment ottiene risultati simili riducendo
-la ricerca a due soli iperparametri (numero e intensità delle
-trasformazioni).
+restano leggere. Il modello viene addestrato a produrre predizioni che
+interpolano linearmente tra le classi, il che regolarizza il comportamento
+*tra* gli esempi, dove il rischio empirico tace. **Cutout**
+{cite}`devries2017improved` azzera un riquadro casuale dell'immagine (l'idea
+quasi identica del *random erasing* lo sostituisce con valori casuali;
+torchvision la implementa in `transforms.RandomErasing`, da applicare dopo
+`ToTensor`), impedendo alla rete di dipendere da una singola regione
+discriminante: un dropout applicato allo spazio dei pixel. Infine
+**AutoAugment** {cite}`cubuk2019autoaugment` tratta la scelta delle
+trasformazioni come un problema di ricerca: un controllore addestrato per
+rinforzo compone la *policy* di augmentation che massimizza l'accuratezza in
+validazione; il successore RandAugment ottiene risultati simili riducendo la
+ricerca a due soli iperparametri (numero e intensità delle trasformazioni).
 `````
 
-## Quando aiuta — e quando no
+## Quando aiuta, e quando no
 
 L'augmentation rende di più dove i dati scarseggiano: con poche centinaia di
 immagini per classe può valere parecchi punti di accuratezza, ed è la prima
-cosa da provare quando il modello va in overfitting — insieme, non in
-alternativa, al transfer learning visto nella sezione precedente. Ma non è
+cosa da provare quando il modello va in overfitting (insieme, non in
+alternativa, al transfer learning visto nella sezione precedente). Ma non è
 una moltiplicazione miracolosa: le varianti di una foto portano *meno*
 informazione di altrettante foto nuove, perché raccontano sempre la stessa
 scena.
@@ -251,11 +250,11 @@ specchio e nessun ritaglio colmerà quella distanza: è il problema dei *dati
 che cambiano* che abbiamo discusso nel capitolo sul machine learning, e la
 risposta è raccogliere dati rappresentativi del dominio reale, non deformare
 quelli vecchi. Anzi, un'augmentation scelta male può peggiorare le cose,
-perché iniettare l'invarianza sbagliata significa insegnare alla rete una
-cosa falsa sul mondo: una radiografia del torace specchiata mette il cuore a
+perché iniettare l'invarianza sbagliata significa insegnare alla rete una cosa
+falsa sul mondo: una radiografia del torace specchiata mette il cuore a
 destra, un'anatomia rarissima che il modello imparerebbe a considerare
-normale. Le trasformazioni codificano le nostre ipotesi sul problema — e
-delle ipotesi, come sempre, si risponde.
+normale. Le trasformazioni codificano le nostre ipotesi sul problema, e delle
+ipotesi, come sempre, si risponde.
 
 ```{admonition} Da ricordare
 :class: important

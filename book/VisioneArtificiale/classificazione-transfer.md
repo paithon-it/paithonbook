@@ -1,15 +1,14 @@
 # Classificazione e transfer learning
 
 Nell'autunno del 2012 una rete neurale chiamata **AlexNet** vinse la
-competizione ImageNet portando l'errore top-5 dal 26% al 15% circa — un salto
-che nessun metodo precedente aveva nemmeno avvicinato — e la visione
+competizione ImageNet portando l'errore top-5 dal 26% al 15% circa (un salto
+che nessun metodo precedente aveva nemmeno avvicinato) e la visione
 artificiale non fu più la stessa {cite}`krizhevsky2012imagenet`. Ma dietro
-quel
-risultato c'erano 1,2 milioni di immagini etichettate e giorni di addestramento
-su GPU. La buona notizia è che quasi nessuno di noi deve ripetere quella fatica:
-possiamo *prendere in prestito* ciò che quelle reti hanno già imparato. Si
-chiama **transfer learning** ed è, oggi, il modo normale di costruire un
-classificatore di immagini.
+quel risultato c'erano 1,2 milioni di immagini etichettate e giorni di
+addestramento su GPU. La buona notizia è che quasi nessuno di noi deve
+ripetere quella fatica: possiamo *prendere in prestito* ciò che quelle reti
+hanno già imparato. Si chiama **transfer learning** ed è, oggi, il modo
+normale di costruire un classificatore di immagini.
 
 ## Dalla foto all'etichetta: la pipeline
 
@@ -20,13 +19,13 @@ dalla foto all'etichetta.
 `````{tab} Elementare
 
 L'immagine entra come una griglia di pixel. La rete la fa passare attraverso
-una pila di **strati convoluzionali**: i primi riconoscono cose semplici —
-bordi, angoli, macchie di colore — quelli più profondi combinano questi
-pezzetti in forme via via più complesse: una texture, un occhio, un muso.
-Alla fine tutte queste "prove raccolte" vengono riassunte in una lista di
-numeri (le *caratteristiche*), e un ultimo strato le trasforma in
-probabilità: `cane 0.82`, `gatto 0.11`, e così via. Vince l'etichetta con il
-numero più alto.
+una pila di **strati convoluzionali**: i primi riconoscono cose semplici
+(bordi, angoli, macchie di colore) quelli più profondi combinano questi
+pezzetti in forme via via più complesse: una texture, un occhio, un muso. Alla
+fine tutte queste "prove raccolte" vengono riassunte in una lista di numeri
+(le *caratteristiche*), e un ultimo strato le trasforma in probabilità:
+`cane 0.82`, `gatto 0.11`, e così via. Vince l'etichetta con il numero più
+alto.
 
 `````
 
@@ -55,26 +54,26 @@ $\theta$ della rete.
 Una CNN moderna ha da qualche milione a decine di milioni di parametri. Per
 stimarli senza andare in **overfitting** servono moltissimi esempi etichettati
 e molta potenza di calcolo. Con le poche migliaia di foto di un progetto reale
-— le lastre di un ambulatorio, i difetti su una linea di produzione, le specie
-di una guida botanica — una rete addestrata da zero impara a memoria il
+(le lastre di un ambulatorio, i difetti su una linea di produzione, le specie
+di una guida botanica), una rete addestrata da zero impara a memoria il
 training set e fallisce sul resto. Il collo di bottiglia, quasi sempre, non è
 l'algoritmo: sono i **dati** e il **tempo**.
 
 ## Prendere in prestito: transfer learning
 
 L'idea del transfer learning è semplice: invece di ripartire da zero,
-prendiamo una rete già addestrata su un grande dataset — quasi sempre ImageNet
-— e la adattiamo al nostro compito. Funziona per una ragione precisa, che vale
+prendiamo una rete già addestrata su un grande dataset (quasi sempre ImageNet)
+e la adattiamo al nostro compito. Funziona per una ragione precisa, che vale
 la pena capire.
 
 `````{tab} Elementare
 
 Pensa a un cuoco che ha passato anni a imparare le tecniche di base: tagliare,
 soffriggere, montare, impastare. Se domani deve preparare un piatto che non ha
-mai fatto, non ricomincia da capo — quelle tecniche gli servono comunque, deve
+mai fatto, non ricomincia da capo: quelle tecniche gli servono comunque, deve
 solo imparare la ricetta nuova. Una CNN funziona allo stesso modo. I suoi
-primi strati imparano le "tecniche di base" della visione — riconoscere bordi,
-angoli, texture, colori — che valgono per qualunque immagine. Solo gli ultimi
+primi strati imparano le "tecniche di base" della visione (riconoscere bordi,
+angoli, texture, colori) che valgono per qualunque immagine. Solo gli ultimi
 strati imparano la "ricetta" specifica di ImageNet, cioè distinguere un
 pastore tedesco da un labrador. Riusiamo le tecniche di base e riscriviamo
 soltanto la ricetta.
@@ -86,16 +85,14 @@ soltanto la ricetta.
 Che i primi strati di una CNN imparino filtri generici non è un'ipotesi, ma un
 fatto osservato. Visualizzando i pesi degli strati iniziali
 {cite}`zeiler2014visualizing` si trovano rilevatori di bordi orientati e di
-macchie di colore, molto
-simili ai filtri di Gabor della corteccia visiva; salendo in profondità le
-unità rispondono a motivi via via più astratti e specifici del compito.
-Yosinski e colleghi {cite}`yosinski2014transferable` hanno quantificato
-questa *transferibilità*: le
-caratteristiche dei primi strati si trasferiscono quasi senza perdita a compiti
-diversi, mentre quelle degli ultimi strati sono tanto più specializzate — e
-meno riusabili — quanto più ci si avvicina all'uscita. Da qui la strategia:
-congelare gli strati bassi (generici) e riaddestrare quelli alti (specifici)
-sul nuovo dominio.
+macchie di colore, molto simili ai filtri di Gabor della corteccia visiva;
+salendo in profondità le unità rispondono a motivi via via più astratti e
+specifici del compito. Yosinski e colleghi {cite}`yosinski2014transferable`
+hanno quantificato questa *transferibilità*: le caratteristiche dei primi
+strati si trasferiscono quasi senza perdita a compiti diversi, mentre quelle
+degli ultimi strati sono tanto più specializzate (e meno riusabili) quanto più
+ci si avvicina all'uscita. Da qui la strategia: congelare gli strati bassi
+(generici) e riaddestrare quelli alti (specifici) sul nuovo dominio.
 
 `````
 
@@ -200,7 +197,7 @@ bello del transfer learning.
   chiudendo con **softmax** sulle classi.
 - Addestrare da zero è spesso proibitivo: servono troppi **dati** e troppo
   **tempo**. Il transfer learning riusa una base già addestrata su ImageNet.
-- **Feature extraction**: base congelata, si allena solo la testa — veloce,
-  pochi dati. **Fine-tuning**: si scongelano gli strati alti con learning rate
-  piccolo — più preciso, più dati.
+- **Feature extraction**: base congelata, si allena solo la testa (veloce,
+  pochi dati). **Fine-tuning**: si scongelano gli strati alti con learning
+  rate piccolo (più preciso, più dati).
 ```

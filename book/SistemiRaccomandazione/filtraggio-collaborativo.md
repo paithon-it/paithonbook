@@ -1,14 +1,14 @@
 # Il filtraggio collaborativo
 
 C'è un algoritmo di raccomandazione che usiamo da sempre, e non richiede
-computer: chiedere all'amico giusto. Non a un amico qualunque — a quello con
-cui, film dopo film, ci siamo sempre trovati d'accordo. Se ha amato gli
-stessi film che ho amato io, e ne ha visto uno che io non conosco, il suo
-entusiasmo vale una previsione. Il **filtraggio collaborativo** è questa idea
-resa calcolabile: prevedere i gusti di una persona usando i giudizi delle
-persone che le somigliano. Il dettaglio sorprendente è ciò che *ignora*: il
-sistema non sa nulla dei film — né trama, né genere, né regista. Vede solo la
-matrice dei voti, e le basta.
+computer: chiedere all'amico giusto. Non a un amico qualunque: a quello con
+cui, film dopo film, ci siamo sempre trovati d'accordo. Se ha amato gli stessi
+film che ho amato io, e ne ha visto uno che io non conosco, il suo entusiasmo
+vale una previsione. Il **filtraggio collaborativo** è questa idea resa
+calcolabile: prevedere i gusti di una persona usando i giudizi delle persone
+che le somigliano. Il dettaglio sorprendente è ciò che *ignora*: il sistema
+non sa nulla dei film, né trama, né genere, né regista. Vede solo la matrice
+dei voti, e le basta.
 
 ## La saggezza dei vicini
 
@@ -26,13 +26,13 @@ prevedo che anche Anna gli darà circa 4. Con più vicini, faccio una media
 pesata: i gemelli quasi perfetti pesano di più dei sosia approssimativi.
 
 **Da oggetto a oggetto.** Si può ribaltare il punto di vista: invece di
-cercare utenti simili, cerco *film* simili — dove "simili" non significa
-stesso genere, ma "votati in modo simile dalle stesse persone". È il celebre
-«chi ha comprato questo ha comprato anche...» di Amazon: per stimare quanto
-ti piacerà un film, guardo i voti che *tu* hai dato ai film che gli
-somigliano. Questa variante ha un pregio pratico: i gusti delle persone
-cambiano, le somiglianze tra film sono più stabili e si possono calcolare in
-anticipo, una volta per tutte.
+cercare utenti simili, cerco *film* simili; dove "simili" non significa stesso
+genere, ma "votati in modo simile dalle stesse persone". È il celebre «chi ha
+comprato questo ha comprato anche...» di Amazon: per stimare quanto ti piacerà
+un film, guardo i voti che *tu* hai dato ai film che gli somigliano. Questa
+variante ha un pregio pratico: i gusti delle persone cambiano, le somiglianze
+tra film sono più stabili e si possono calcolare in anticipo, una volta per
+tutte.
 
 `````
 
@@ -97,17 +97,17 @@ Immagina di descrivere ogni film con poche "manopole": quanto è commedia e
 quanto dramma, quanto è mainstream e quanto di nicchia, quanto punta
 sull'azione. E di descrivere ogni persona con le *stesse* manopole: quanto le
 piace la commedia, quanto cerca la nicchia, e così via. La previsione diventa
-un confronto tra le due schede. Se Anna ha «commedia $0{,}9$, azione
-$0{,}1$» e un film ha «commedia $0{,}8$, azione $0{,}2$», l'affinità si
-calcola voce per voce: $0{,}9 \cdot 0{,}8 + 0{,}1 \cdot 0{,}2 = 0{,}74$ —
-alta. Con un film d'azione puro («commedia $0{,}1$, azione $0{,}9$») verrebbe
-$0{,}9 \cdot 0{,}1 + 0{,}1 \cdot 0{,}9 = 0{,}18$ — bassa.
+un confronto tra le due schede. Se Anna ha «commedia $0{,}9$, azione $0{,}1$»
+e un film ha «commedia $0{,}8$, azione $0{,}2$», l'affinità si calcola voce
+per voce: $0{,}9 \cdot 0{,}8 + 0{,}1 \cdot 0{,}2 = 0{,}74$ (alta). Con un film
+d'azione puro («commedia $0{,}1$, azione $0{,}9$»), verrebbe
+$0{,}9 \cdot 0{,}1 + 0{,}1 \cdot 0{,}9 = 0{,}18$: bassa.
 
 Il colpo di scena è che le manopole **non le sceglie nessuno**. Non c'è un
 esperto che etichetta i film: l'algoritmo riceve solo la tabella dei voti e
 cerca da solo i numeri da mettere nelle schede, in modo che i voti già noti
-tornino. I tratti che emergono — a posteriori, ispezionandoli, somigliano
-spesso a "commedia/dramma" o "mainstream/nicchia" — sono per questo detti
+tornino. I tratti che emergono (a posteriori, ispezionandoli, somigliano
+spesso a "commedia/dramma" o "mainstream/nicchia") sono per questo detti
 **fattori latenti**: nascosti nei dati, mai dichiarati da nessuno.
 
 `````
@@ -115,7 +115,7 @@ spesso a "commedia/dramma" o "mainstream/nicchia" — sono per questo detti
 `````{tab} Superiore
 
 A ogni utente $u$ si associa un vettore $P_u \in \mathbb{R}^k$ e a ogni film
-$i$ un vettore $Q_i \in \mathbb{R}^k$, con $k$ dell'ordine delle decine —
+$i$ un vettore $Q_i \in \mathbb{R}^k$, con $k$ dell'ordine delle decine,
 contro le decine di migliaia di colonne della matrice originale. Il voto
 previsto è
 
@@ -155,7 +155,7 @@ dal 1997. La versione storica, MovieLens 100K, contiene 100.000 voti da 1 a 5
 dati da 943 utenti a 1.682 film, con almeno 20 voti per utente: un fratello
 minore del dataset Netflix, da vent'anni banco di prova standard del settore.
 Per un esempio eseguibile all'istante generiamo invece voti sintetici con la
-stessa struttura — triple (utente, film, voto) — così il codice gira senza
+stessa struttura, triple (utente, film, voto), così il codice gira senza
 scaricare nulla; per usare MovieLens basterebbe sostituire la generazione con
 la lettura del file dei voti.
 
@@ -208,10 +208,9 @@ loader = DataLoader(TensorDataset(u, i, voti), batch_size=256, shuffle=True)
 ```
 
 L'addestramento è un normale ciclo PyTorch con MSE; la regolarizzazione
-$\lambda$ della formula è affidata al `weight_decay` dell'ottimizzatore
-(che, a differenza della formula classica, penalizza a ogni passo *tutti* i
-fattori e non solo quelli del batch — per i nostri scopi la differenza è
-irrilevante).
+$\lambda$ della formula è affidata al `weight_decay` dell'ottimizzatore (che,
+a differenza della formula classica, penalizza a ogni passo *tutti* i fattori
+e non solo quelli del batch, per i nostri scopi la differenza è irrilevante).
 
 ```python
 modello = FattorizzazioneMatrici(n_utenti, n_film, k=8)
@@ -254,30 +253,30 @@ piacciono»): stanno comprando a poco prezzo le prime celle della tua riga.
 **La dittatura della popolarità.** I film con moltissimi voti compaiono tra i
 vicini di tutti, vengono consigliati spesso, e così raccolgono altri voti: i
 ricchi diventano più ricchi. Il capolavoro di nicchia con dodici voti
-entusiasti resta invisibile — proprio il titolo che il tuo amico cinefilo,
-lui sì, ti avrebbe messo in mano.
+entusiasti resta invisibile: proprio il titolo che il tuo amico cinefilo, lui
+sì, ti avrebbe messo in mano.
 
 `````
 
 `````{tab} Superiore
 
 **Cold start.** Un utente o item senza interazioni ha embedding fermo
-all'inizializzazione casuale: nessun gradiente lo ha mai toccato, e il
-modello collaborativo puro non ha alcun canale per informarlo. Le mitigazioni
-escono dal paradigma: modelli *content-based* o ibridi che inizializzano
-l'embedding dai metadati (genere, cast, descrizione — per gli item) o da
-questionari e dati demografici (per gli utenti), oppure strategie di
-esplorazione che raccolgono interazioni mirate nei primi giorni di vita.
+all'inizializzazione casuale: nessun gradiente lo ha mai toccato, e il modello
+collaborativo puro non ha alcun canale per informarlo. Le mitigazioni escono
+dal paradigma: modelli *content-based* o ibridi che inizializzano l'embedding
+dai metadati (genere, cast, descrizione, per gli item) o da questionari e dati
+demografici (per gli utenti), oppure strategie di esplorazione che raccolgono
+interazioni mirate nei primi giorni di vita.
 
 **Bias di popolarità.** La distribuzione delle interazioni è a coda lunga, e
 l'obiettivo di minimizzare l'errore medio concentra la capacità del modello
 sulla testa della distribuzione, dove stanno quasi tutti i termini della
 somma. Il feedback loop visto nella panoramica fa il resto: più esposizione,
-più interazioni, più esposizione. Le contromisure — ripesare le coppie per
+più interazioni, più esposizione. Le contromisure (ripesare le coppie per
 propensità inversa, penalizzare la popolarità nel punteggio, imporre quote di
-diversità nella lista finale — comprano equità nella coda pagando qualche
-punto di accuratezza in testa. È un compromesso da scegliere, non un difetto
-da correggere una volta per tutte.
+diversità nella lista finale) comprano equità nella coda pagando qualche punto
+di accuratezza in testa. È un compromesso da scegliere, non un difetto da
+correggere una volta per tutte.
 
 `````
 

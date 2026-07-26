@@ -24,15 +24,15 @@ che produce `NaN`.
 `````{tab} Elementare
 
 Pensa al display di una calcolatrice tascabile: può mostrare solo una decina
-di cifre. Se le chiedi $1/3$ ti risponde $0{,}3333333$ e si ferma — le altre
+di cifre. Se le chiedi $1/3$ ti risponde $0{,}3333333$ e si ferma: le altre
 cifre le butta via. I computer fanno lo stesso, in binario, con un **budget**
 fisso di cifre per ogni numero.
 
-Con questo budget si scrive un numero come nella notazione scientifica —
-"tante cifre significative, moltiplicate per una potenza" — così lo stesso
-formato copre sia $0{,}0000001$ sia $10^{30}$. Il prezzo è che tra due numeri
-vicini resta sempre un piccolo "gradino" vuoto: $0{,}1 + 0{,}2$ cade tra due
-gradini e viene arrotondato, ed ecco lo `0.30000000000000004`.
+Con questo budget si scrive un numero come nella notazione scientifica ("tante
+cifre significative, moltiplicate per una potenza"), così lo stesso formato
+copre sia $0{,}0000001$ sia $10^{30}$. Il prezzo è che tra due numeri vicini
+resta sempre un piccolo "gradino" vuoto: $0{,}1 + 0{,}2$ cade tra due gradini
+e viene arrotondato, ed ecco lo `0.30000000000000004`.
 
 `````
 
@@ -97,12 +97,12 @@ straripano. La cura è un'idea semplice ed elegante.
 `````{tab} Elementare
 
 La softmax risponde alla domanda "che quota di probabilità spetta a ciascuna
-classe?". Se i punteggi sono $z=(1000,\ 1001,\ 1002)$, gli $e^{z_i}$ vanno tutti
-in overflow e il conto fallisce. Ma la softmax guarda solo le *differenze* tra i
-punteggi: se sottrai lo stesso numero a tutti — per esempio il massimo, $1002$
-— il risultato non cambia. I punteggi diventano $(-2,\ -1,\ 0)$, gli
-esponenziali restano piccoli e comodi, e la probabilità è identica. Sottrarre
-il massimo prima di esponenziare: tutto qui.
+classe?". Se i punteggi sono $z=(1000,\ 1001,\ 1002)$, gli $e^{z_i}$ vanno
+tutti in overflow e il conto fallisce. Ma la softmax guarda solo le
+*differenze* tra i punteggi: se sottrai lo stesso numero a tutti (per esempio
+il massimo, $1002$) il risultato non cambia. I punteggi diventano
+$(-2,\ -1,\ 0)$, gli esponenziali restano piccoli e comodi, e la probabilità è
+identica. Sottrarre il massimo prima di esponenziare: tutto qui.
 
 `````
 
@@ -147,8 +147,8 @@ numeri quasi uguali.
 `````{tab} Elementare
 
 Immagina di misurare il peso di un capitano *con la sua barca* ($80\,000$ kg)
-e della sola barca ($79\,930$ kg), ciascuno accurato al chilo. La differenza —
-il peso del capitano — è $70$ kg, ma l'incertezza di un chilo su ciascuna
+e della sola barca ($79\,930$ kg), ciascuno accurato al chilo. La differenza
+(il peso del capitano) è $70$ kg, ma l'incertezza di un chilo su ciascuna
 misura ora pesa tantissimo *in proporzione*. Le cifre affidabili si sono
 "cancellate" e resta soprattutto rumore. In pratica: evita di calcolare una
 quantità piccola come differenza di due quantità grandi.
@@ -162,7 +162,7 @@ $\operatorname{Var}(x)=\overline{x^2}-\bar{x}^2$: con dati grandi e varianza
 piccola i due termini sono quasi uguali e la sottrazione perde quasi tutte le
 cifre significative (può perfino dare un valore negativo). Le librerie usano
 invece l'algoritmo di **Welford** a passata singola, numericamente stabile.
-Regola generale: riformula le espressioni per non sottrarre grandezze vicine —
+Regola generale: riformula le espressioni per non sottrarre grandezze vicine;
 la stessa quantità matematica può avere condizionamenti numerici molto diversi
 a seconda di *come* la si calcola.
 
@@ -176,7 +176,7 @@ dell'input producono piccole variazioni dell'output; è **mal condizionato** se
 le amplifica a dismisura. È una proprietà del problema, non dell'algoritmo: su
 un problema mal condizionato anche il codice perfetto fatica, perché eredita
 l'errore di arrotondamento già presente negli input. Per un sistema lineare
-$A x = b$ lo si misura con il **numero di condizionamento** di $A$ — il
+$A x = b$ lo si misura con il **numero di condizionamento** di $A$, il
 rapporto tra la massima e la minima "amplificazione" che la matrice può
 imprimere a un vettore (formalmente, tra il suo valore singolare più grande e
 quello più piccolo): se è enorme, la soluzione è ipersensibile e poco
@@ -191,11 +191,12 @@ caratteristica (*feature*) ha media $0$ e scala $1$. Non è solo cosmesi:
 serve la stabilità.
 
 Se una feature vale in migliaia di euro e un'altra in numero di stanze, i loro
-prodotti dentro la rete stanno su scale lontanissime — invito all'overflow — e
+prodotti dentro la rete stanno su scale lontanissime (invito all'overflow) e
 la superficie della *loss* si allunga in una valle stretta, mal condizionata.
 La discesa del gradiente vi rimbalza da una parete all'altra a zig-zag,
 convergendo con lentezza esasperante. Standardizzare rende le curve di livello
-più tonde: il gradiente punta dritto verso il minimo ({numref}`fig-condizionamento`).
+più tonde: il gradiente punta dritto verso il minimo
+({numref}`fig-condizionamento`).
 
 ```{figure} ../figures/condizionamento-normalizzazione.svg
 :name: fig-condizionamento

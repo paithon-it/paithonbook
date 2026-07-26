@@ -4,7 +4,7 @@ Le due sezioni precedenti hanno smontato i *meccanismi*: il trucco del kernel
 che trasforma l'attenzione in una ricorrenza a stato fisso, i gate che fanno
 sbiadire la memoria, la delta rule che corregge invece di accumulare. Erano
 pezzi sciolti su un tavolo. In questa sezione li vediamo montati in macchine
-intere — le architetture che, tra il 2023 e il 2025, hanno provato a fare
+intere: le architetture che, tra il 2023 e il 2025, hanno provato a fare
 concorrenza al Transformer sul suo stesso terreno.
 
 Ne guardiamo tre, scelte perché raccontano tre strade diverse verso la stessa
@@ -13,9 +13,9 @@ decadimento fisso; **RWKV**, cresciuta come progetto aperto di comunità;
 **xLSTM**, in cui l'inventore della LSTM torna a rimettere mano alla propria
 creatura. Sotto la carrozzeria, però, il motore è sempre lo stesso: una rete
 ricorrente lineare a stato di dimensione fissa, che si addestra in parallelo
-come un Transformer e fa inferenza un token alla volta a costo costante come una
-RNN. A cambiare, da una all'altra, è quasi soltanto la **transizione di stato**
-— il fattore che decide come la memoria di ieri sopravvive a oggi — e
+come un Transformer e fa inferenza un token alla volta a costo costante come
+una RNN. A cambiare, da una all'altra, è quasi soltanto la **transizione di
+stato** (il fattore che decide come la memoria di ieri sopravvive a oggi) e
 l'ingegneria che la rende addestrabile su larga scala.
 
 ## RetNet: la retention e le sue tre forme
@@ -27,22 +27,23 @@ posto della softmax dell'attenzione, che normalizza i punteggi, si mette un
 **decadimento esponenziale fisso**. Ogni coppia di posizioni pesa in base a
 quanto dista nel tempo, e nient'altro.
 
-Il punto interessante di RetNet non è tanto il meccanismo quanto il fatto che lo
-stesso calcolo ammette **tre forme equivalenti** — tre modi di ottenere
-esattamente lo stesso risultato, ciascuno conveniente in una situazione diversa.
+Il punto interessante di RetNet non è tanto il meccanismo quanto il fatto che
+lo stesso calcolo ammette **tre forme equivalenti**: tre modi di ottenere
+esattamente lo stesso risultato, ciascuno conveniente in una situazione
+diversa.
 
 `````{tab} Elementare
 
 Immaginate di dover fare la somma dei voti di una classe, dando più peso alle
 interrogazioni recenti e meno a quelle vecchie. Potete farlo in tre modi, e il
-totale non cambia. **Tutto insieme**: mettete tutti i voti in tabella, accanto a
-ciascuno il suo peso, e sommate in un colpo solo — comodo se avete un foglio di
-calcolo che macina tante moltiplicazioni in parallelo. **Uno alla volta**:
+totale non cambia. **Tutto insieme**: mettete tutti i voti in tabella, accanto
+a ciascuno il suo peso, e sommate in un colpo solo (comodo se avete un foglio
+di calcolo che macina tante moltiplicazioni in parallelo). **Uno alla volta**:
 tenete un totale corrente e, a ogni nuova interrogazione, sbiadite un po' il
-totale vecchio e ci aggiungete il voto nuovo — comodo quando i voti arrivano in
-diretta, uno oggi e uno domani, e non volete rifare tutto da capo ogni volta. **A
-blocchi**: sommate un mese per volta con il metodo veloce, e poi collegate i
-totali mensili sbiadendo l'uno nell'altro — il compromesso per quando i voti
+totale vecchio e ci aggiungete il voto nuovo; comodo quando i voti arrivano in
+diretta, uno oggi e uno domani, e non volete rifare tutto da capo ogni volta.
+**A blocchi**: sommate un mese per volta con il metodo veloce, e poi collegate
+i totali mensili sbiadendo l'uno nell'altro; il compromesso per quando i voti
 sono tantissimi.
 
 RetNet è esattamente questo: la stessa somma pesata, in tre versioni. La prima
@@ -95,32 +96,34 @@ dentro ogni blocco si usa la forma parallela, tra un blocco e l'altro quella
 ricorrente. Il costo diventa lineare in $n$, tenendo la parallelizzazione dentro
 i blocchi.
 
-Un dettaglio dà a RetNet la sua firma: la retention è **multi-scala**. Ogni testa
-usa un $\gamma$ diverso — chi vicino a $1$ ricorda a lungo, chi più piccolo
-dimentica in fretta — così che l'insieme delle teste copra orizzonti temporali
-di durata diversa, dal contesto immediato a quello lontano.
+Un dettaglio dà a RetNet la sua firma: la retention è **multi-scala**. Ogni
+testa usa un $\gamma$ diverso (chi vicino a $1$ ricorda a lungo, chi più
+piccolo dimentica in fretta), così che l'insieme delle teste copra orizzonti
+temporali di durata diversa, dal contesto immediato a quello lontano.
 
 `````
 
-Vale la pena collocare RetNet nella famiglia che abbiamo costruito nella sezione
-precedente. La sua ricorrenza $S_t = \gamma\, S_{t-1} + v_t k_t^\top$ è la riga
-«Mamba-2 / RetNet» della tabella unificante: un **decadimento scalare**. La
-differenza, rispetto a Mamba-2 e alla GLA, è che qui $\gamma$ è **fisso e
-data-indipendente** — scelto a priori, uguale per ogni parola, imparato solo nel
-senso che si sceglie l'insieme dei valori per le teste. È la forma più
-grossolana di oblio: efficace e a costo nullo, ma cieca al contenuto. I gate
-appresi che abbiamo visto — lo scalare data-dipendente di Mamba-2, il vettore
-diagonale della GLA — nascono proprio per superare questa cecità, lasciando che
-sia l'input a decidere, token per token, cosa tenere e cosa lasciar andare.
+Vale la pena collocare RetNet nella famiglia che abbiamo costruito nella
+sezione precedente. La sua ricorrenza $S_t = \gamma\, S_{t-1} + v_t k_t^\top$
+è la riga «Mamba-2 / RetNet» della tabella unificante: un **decadimento
+scalare**. La differenza, rispetto a Mamba-2 e alla GLA, è che qui $\gamma$ è
+**fisso e data-indipendente**: scelto a priori, uguale per ogni parola,
+imparato solo nel senso che si sceglie l'insieme dei valori per le teste. È la
+forma più grossolana di oblio: efficace e a costo nullo, ma cieca al
+contenuto. I gate appresi che abbiamo visto (lo scalare data-dipendente di
+Mamba-2, il vettore diagonale della GLA) nascono proprio per superare questa
+cecità, lasciando che sia l'input a decidere, token per token, cosa tenere e
+cosa lasciar andare.
 
 ## RWKV: reinventare le RNN
 
-La seconda architettura non esce da un laboratorio ma da una comunità. **RWKV**
-— l'acronimo sta per le sue quattro componenti: *Receptance*, *Weight*, *Key*,
-*Value* — è un progetto aperto guidato da Bo Peng, sviluppato in pubblico da una
-comunità di ricercatori indipendenti. Il suo obiettivo dichiarato è nel titolo
-del primo articolo: *«Reinventing RNNs for the Transformer Era»*, reinventare le
-reti ricorrenti per l'epoca dei Transformer {cite}`peng2023rwkv`.
+La seconda architettura non esce da un laboratorio ma da una comunità.
+**RWKV**, l'acronimo sta per le sue quattro componenti: *Receptance*,
+*Weight*, *Key*, *Value*; è un progetto aperto guidato da Bo Peng, sviluppato
+in pubblico da una comunità di ricercatori indipendenti. Il suo obiettivo
+dichiarato è nel titolo del primo articolo: *«Reinventing RNNs for the
+Transformer Era»*, reinventare le reti ricorrenti per l'epoca dei Transformer
+{cite}`peng2023rwkv`.
 
 Strutturalmente, un blocco RWKV impila due sotto-blocchi, per analogia con il
 Transformer. Il **time-mixing** è il cuore che mescola l'informazione *nel
@@ -134,16 +137,16 @@ trascorso.
 
 `````{tab} Elementare
 
-Il tratto che rende RWKV curioso è che è **due cose insieme, a seconda di come lo
-guardi**. Durante l'addestramento si comporta come un Transformer: legge tutta la
-sequenza in blocco e sfrutta le schede grafiche a pieno, in parallelo. Durante
-l'uso — quando genera parola per parola — si comporta come una RNN: tiene uno
-stato di dimensione fissa, lo aggiorna a ogni parola e non conserva nulla del
-passato se non quel piccolo riassunto. È la stessa ricetta cucinata in due modi:
-in cucina lavori come una catena di montaggio veloce, a tavola servi un piatto
-alla volta. Questo è esattamente il graal che insegue tutta la famiglia:
-addestramento parallelo *e* inferenza a memoria costante, senza doverne
-sacrificare una.
+Il tratto che rende RWKV curioso è che è **due cose insieme, a seconda di come
+lo guardi**. Durante l'addestramento si comporta come un Transformer: legge
+tutta la sequenza in blocco e sfrutta le schede grafiche a pieno, in
+parallelo. Durante l'uso (quando genera parola per parola) si comporta come
+una RNN: tiene uno stato di dimensione fissa, lo aggiorna a ogni parola e non
+conserva nulla del passato se non quel piccolo riassunto. È la stessa ricetta
+cucinata in due modi: in cucina lavori come una catena di montaggio veloce, a
+tavola servi un piatto alla volta. Questo è esattamente il graal che insegue
+tutta la famiglia: addestramento parallelo *e* inferenza a memoria costante,
+senza doverne sacrificare una.
 
 `````
 
@@ -169,41 +172,42 @@ nella sezione precedente. In RWKV-4 il decadimento $w$ è appreso ma **fisso**
 (uno per canale, non dipende dall'input): la transizione di stato è dunque un
 decadimento diagonale data-indipendente.
 
-L'architettura è poi evoluta in due tappe. **RWKV-5/6**, nome in codice *Eagle*
-e *Finch* {cite}`peng2024eagle`, promuove lo stato da vettore a **matrice**
-(multi-testa, come qui) e rende il decadimento **data-dipendente**: in Finch (v6)
-il fattore di oblio è generato dall'input, avvicinando RWKV alla GLA. **RWKV-7**,
-nome in codice *Goose* {cite}`peng2025rwkv7`, compie il salto più netto: adotta
-una **delta rule generalizzata**, con un tasso di apprendimento appreso in
-contesto e una sostituzione dei valori più flessibile. La fonte non ne fornisce
-la formula in forma chiusa, quindi la descriviamo a parole: la transizione di
-stato passa dal semplice decadimento a un fattore di tipo **gated-delta** — la
-stessa famiglia dell'ultima riga della tabella unificante. Questo dà a RWKV-7 una
-capacità di *state tracking* che le versioni precedenti non avevano: gli autori
-mostrano che riconosce tutti i linguaggi regolari pur mantenendo l'addestramento
-parallelo, e argomentano che, sotto le congetture standard della teoria della
-complessità, ciò eccede quanto un Transformer a profondità fissa può fare (che
-resta confinato nella classe $\text{TC}^0$).
+L'architettura è poi evoluta in due tappe. **RWKV-5/6**, nome in codice
+*Eagle* e *Finch* {cite}`peng2024eagle`, promuove lo stato da vettore a
+**matrice** (multi-testa, come qui) e rende il decadimento
+**data-dipendente**: in Finch (v6) il fattore di oblio è generato dall'input,
+avvicinando RWKV alla GLA. **RWKV-7**, nome in codice *Goose*
+{cite}`peng2025rwkv7`, compie il salto più netto: adotta una **delta rule
+generalizzata**, con un tasso di apprendimento appreso in contesto e una
+sostituzione dei valori più flessibile. La fonte non ne fornisce la formula in
+forma chiusa, quindi la descriviamo a parole: la transizione di stato passa
+dal semplice decadimento a un fattore di tipo **gated-delta** (la stessa
+famiglia dell'ultima riga della tabella unificante). Questo dà a RWKV-7 una
+capacità di *state tracking* che le versioni precedenti non avevano: gli
+autori mostrano che riconosce tutti i linguaggi regolari pur mantenendo
+l'addestramento parallelo, e argomentano che, sotto le congetture standard
+della teoria della complessità, ciò eccede quanto un Transformer a profondità
+fissa può fare (che resta confinato nella classe $\text{TC}^0$).
 
 `````
 
 RWKV ha una particolarità sociologica che vale la pena notare, in un campo
 dominato dai grandi laboratori: RWKV-4 è stata scalata fino a 14 miliardi di
-parametri — la più grande RNN densa del suo tempo — e RWKV-7 è distribuita con
-pesi aperti sotto licenza Apache 2.0, in una gamma di taglie da circa 0,19 a 2,9
-miliardi di parametri. È la dimostrazione che un'architettura competitiva può
-crescere fuori dai recinti industriali.
+parametri (la più grande RNN densa del suo tempo) e RWKV-7 è distribuita con
+pesi aperti sotto licenza Apache 2.0, in una gamma di taglie da circa 0,19 a
+2,9 miliardi di parametri. È la dimostrazione che un'architettura competitiva
+può crescere fuori dai recinti industriali.
 
 ## xLSTM: il ritorno di Hochreiter
 
-La terza architettura ha il sapore di un ritorno. Nel capitolo sull'NLP abbiamo
-studiato la **LSTM** {cite}`hochreiter1997long`: la cella con lo stato di memoria
-$c_t$ e i tre gate — *forget*, *input*, *output* — che negli anni Novanta risolse
-il problema del gradiente che svanisce e per un decennio ha dominato
-l'elaborazione delle sequenze. Nel 2024 uno dei suoi due inventori, **Sepp
-Hochreiter**, torna sulla propria creatura e la aggiorna per l'era dei
-Transformer. Il risultato è **xLSTM**, di Beck e colleghi, presentato a NeurIPS
-2024 {cite}`beck2024xlstm`.
+La terza architettura ha il sapore di un ritorno. Nel capitolo sull'NLP
+abbiamo studiato la **LSTM** {cite}`hochreiter1997long`: la cella con lo stato
+di memoria $c_t$ e i tre gate (*forget*, *input*, *output*) che negli anni
+Novanta risolse il problema del gradiente che svanisce e per un decennio ha
+dominato l'elaborazione delle sequenze. Nel 2024 uno dei suoi due inventori,
+**Sepp Hochreiter**, torna sulla propria creatura e la aggiorna per l'era dei
+Transformer. Il risultato è **xLSTM**, di Beck e colleghi, presentato a
+NeurIPS 2024 {cite}`beck2024xlstm`.
 
 La domanda di partenza è schietta: che cosa mancava alla LSTM per reggere il
 confronto? Due cose, secondo gli autori. Primo, un modo di **rivedere le decisioni
@@ -215,16 +219,16 @@ due esigenze.
 `````{tab} Elementare
 
 Pensate alla vecchia LSTM come a un magazziniere con un unico scaffale e tre
-interruttori — uno per buttare via, uno per riporre, uno per mostrare cosa c'è.
+interruttori: uno per buttare via, uno per riporre, uno per mostrare cosa c'è.
 Ha funzionato per anni, ma lo scaffale è piccolo e gli interruttori sono
 delicati. xLSTM è lo stesso magazziniere che riapre bottega in grande. Nella
-prima variante tiene lo scaffale singolo ma installa interruttori più decisi, che
-possono spalancare o chiudere la memoria di colpo invece che a metà. Nella
-seconda sostituisce lo scaffale con un intero **archivio a griglia**, dove ogni
-richiesta («dammi il valore di questa chiave») pesca in una tabella molto più
-grande — e, dettaglio decisivo, questo archivio si può riempire tutto in una volta
-in parallelo, non una casella alla volta. È la LSTM di trent'anni fa, rifatta con
-la memoria e i muscoli di oggi.
+prima variante tiene lo scaffale singolo ma installa interruttori più decisi,
+che possono spalancare o chiudere la memoria di colpo invece che a metà. Nella
+seconda sostituisce lo scaffale con un intero **archivio a griglia**, dove
+ogni richiesta («dammi il valore di questa chiave») pesca in una tabella molto
+più grande, e, dettaglio decisivo, questo archivio si può riempire tutto in
+una volta in parallelo, non una casella alla volta. È la LSTM di trent'anni
+fa, rifatta con la memoria e i muscoli di oggi.
 
 `````
 
@@ -249,8 +253,9 @@ tra le teste ed è, per costruzione, **ricorrente non parallelizzabile**: si val
 con un kernel sequenziale.
 
 **mLSTM** (memoria *matriciale*) è la variante pensata per le GPU. Lo stato
-diventa una matrice $C_t \in \mathbb{R}^{d\times d}$ aggiornata con una **regola di
-covarianza** — un prodotto esterno, esattamente come nell'attenzione lineare:
+diventa una matrice $C_t \in \mathbb{R}^{d\times d}$ aggiornata con una
+**regola di covarianza**, un prodotto esterno, esattamente come
+nell'attenzione lineare:
 
 $$
 C_t = f_t\, C_{t-1} + i_t\, v_t\, k_t^\top,
@@ -288,43 +293,44 @@ garantisce.
 
 ## Lo stesso scheletro
 
-Tre architetture, tre storie — un laboratorio industriale, una comunità aperta,
-il ritorno di un pioniere — e tre insiemi di scelte ingegneristiche. Eppure, se
+Tre architetture, tre storie (un laboratorio industriale, una comunità aperta,
+il ritorno di un pioniere) e tre insiemi di scelte ingegneristiche. Eppure, se
 si toglie la carrozzeria, sotto c'è sempre lo stesso telaio. RetNet, RWKV e
-xLSTM sono tutte **reti ricorrenti lineari a stato di dimensione fissa**: tengono
-una memoria che si scrive per prodotto esterno, si addestrano in parallelo e si
-usano in modo ricorrente a costo costante per token. Sono, insieme a GLA e
-DeltaNet della sezione precedente, variazioni sullo stesso tema.
+xLSTM sono tutte **reti ricorrenti lineari a stato di dimensione fissa**:
+tengono una memoria che si scrive per prodotto esterno, si addestrano in
+parallelo e si usano in modo ricorrente a costo costante per token. Sono,
+insieme a GLA e DeltaNet della sezione precedente, variazioni sullo stesso
+tema.
 
 E il tema è quello della tabella unificante che abbiamo costruito poco fa: a
 cambiare, da un'architettura all'altra, è **quasi soltanto la transizione di
-stato**. RetNet la fissa a un decadimento scalare data-indipendente ($\gamma I$);
-la mLSTM di xLSTM la rende uno scalare data-dipendente con gating esponenziale;
-RWKV la fa evolvere nel tempo, dal decadimento diagonale fisso della v4 a quello
-data-dipendente della v6, fino alla transizione gated-delta della v7 — lo stesso
-gradino di espressività che, nella famiglia di Yang, separa la GLA dal Gated
-DeltaNet. Nomi, sigle e comunità diversi descrivono, in fondo, lo stesso zoo di
-matrici di transizione.
+stato**. RetNet la fissa a un decadimento scalare data-indipendente
+($\gamma I$); la mLSTM di xLSTM la rende uno scalare data-dipendente con
+gating esponenziale; RWKV la fa evolvere nel tempo, dal decadimento diagonale
+fisso della v4 a quello data-dipendente della v6, fino alla transizione
+gated-delta della v7: lo stesso gradino di espressività che, nella famiglia di
+Yang, separa la GLA dal Gated DeltaNet. Nomi, sigle e comunità diversi
+descrivono, in fondo, lo stesso zoo di matrici di transizione.
 
-Questa unità apparecchia il prossimo capitolo. Gli **State Space Model** — S4,
-Mamba e i loro discendenti — arrivano esattamente allo stesso posto, ma da
-tutt'altra strada: non quella dell'attenzione da linearizzare, bensì quella dei
-**sistemi dinamici continui**, discretizzati passo dopo passo. Vedremo che il
-punto d'arrivo coincide: anche un SSM è una ricorrenza lineare a stato fisso con
-le sue due forme, parallela e ricorrente. E vedremo che non è una coincidenza:
-Mamba-2, con la sua *dualità* tra stato e attenzione, dimostrerà che le due
-famiglie — le attenzioni lineari di questo capitolo e gli SSM del prossimo — sono
-due viste della stessa cosa.
+Questa unità apparecchia il prossimo capitolo. Gli **State Space Model** (S4,
+Mamba e i loro discendenti) arrivano esattamente allo stesso posto, ma da
+tutt'altra strada: non quella dell'attenzione da linearizzare, bensì quella
+dei **sistemi dinamici continui**, discretizzati passo dopo passo. Vedremo che
+il punto d'arrivo coincide: anche un SSM è una ricorrenza lineare a stato
+fisso con le sue due forme, parallela e ricorrente. E vedremo che non è una
+coincidenza: Mamba-2, con la sua *dualità* tra stato e attenzione, dimostrerà
+che le due famiglie (le attenzioni lineari di questo capitolo e gli SSM del
+prossimo) sono due viste della stessa cosa.
 
 Un'ultima onestà, prima di proseguire. Nessuna di queste architetture ha
-«ucciso» il Transformer, e nessuna lo farà a breve. Lo stato di dimensione fissa,
-che è la loro forza in efficienza, è anche il loro limite: quando serve ritrovare
-un dettaglio preciso in un contesto molto lungo — il *recall associativo esatto*
-— l'attenzione piena, che conserva ogni token, resta superiore. È da qui che
-nascono gli **ibridi**, che alternano pochi strati di attenzione a molti strati
-lineari. Ma questi limiti, e il modo in cui l'ecosistema li sta affrontando, si
-capiscono meglio dopo aver visto anche l'altra metà della famiglia: li
-riprenderemo alla fine del prossimo capitolo.
+«ucciso» il Transformer, e nessuna lo farà a breve. Lo stato di dimensione
+fissa, che è la loro forza in efficienza, è anche il loro limite: quando serve
+ritrovare un dettaglio preciso in un contesto molto lungo (il *recall
+associativo esatto*) l'attenzione piena, che conserva ogni token, resta
+superiore. È da qui che nascono gli **ibridi**, che alternano pochi strati di
+attenzione a molti strati lineari. Ma questi limiti, e il modo in cui
+l'ecosistema li sta affrontando, si capiscono meglio dopo aver visto anche
+l'altra metà della famiglia: li riprenderemo alla fine del prossimo capitolo.
 
 ```{admonition} Da ricordare
 :class: important
@@ -349,8 +355,8 @@ riprenderemo alla fine del prossimo capitolo.
   (memoria matriciale $C_t = f_t C_{t-1} + i_t v_t k_t^\top$, parallelizzabile,
   di fatto una gated linear attention). **xLSTM-7B** {cite}`beck2025xlstm7b` la
   porta alla scala dei grandi modelli.
-- Il filo comune: RetNet, RWKV e xLSTM — con GLA e DeltaNet — sono la stessa **RNN
-  lineare a stato fisso**; cambia **solo la transizione di stato**. Gli State
-  Space Model del prossimo capitolo arriveranno allo stesso punto da un'altra
-  strada, e Mamba-2 dimostrerà che sono la stessa cosa.
+- Il filo comune: RetNet, RWKV e xLSTM (con GLA e DeltaNet) sono la stessa
+  **RNN lineare a stato fisso**; cambia **solo la transizione di stato**. Gli
+  State Space Model del prossimo capitolo arriveranno allo stesso punto da
+  un'altra strada, e Mamba-2 dimostrerà che sono la stessa cosa.
 ```

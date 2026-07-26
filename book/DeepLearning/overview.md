@@ -37,9 +37,9 @@ al piatto.
 `````{tab} Superiore
 
 In una pipeline classica di visione artificiale un estrattore fisso e
-progettato a mano — SIFT, HOG, filtri di Gabor — mappa l'immagine in un vettore
-di feature $\phi(X)$, su cui un classificatore $g$ viene addestrato. L'estrattore
-$\phi$ è congelato: non impara nulla dai dati.
+progettato a mano (SIFT, HOG, filtri di Gabor) mappa l'immagine in un vettore
+di feature $\phi(X)$, su cui un classificatore $g$ viene addestrato.
+L'estrattore $\phi$ è congelato: non impara nulla dai dati.
 
 Una rete profonda è invece una composizione di trasformazioni parametriche
 
@@ -77,10 +77,10 @@ intermedi, l'oggetto intero riconosciuto dagli ultimi strati.
 
 `````{tab} Elementare
 
-Immagina di costruire con i mattoncini. Prima metti insieme i pezzi più piccoli
-— tratti dritti, curve, angoli. Poi combini quei tratti in parti riconoscibili:
-due cerchi diventano occhi, due triangoli diventano orecchie. Alla fine le parti
-si assemblano in un gatto intero.
+Immagina di costruire con i mattoncini. Prima metti insieme i pezzi più
+piccoli: tratti dritti, curve, angoli. Poi combini quei tratti in parti
+riconoscibili: due cerchi diventano occhi, due triangoli diventano orecchie.
+Alla fine le parti si assemblano in un gatto intero.
 
 La rete fa esattamente questo, ma al contrario di come lo racconteremmo noi:
 nessuno le dice "questo è un occhio". Impara da sola che, per riconoscere i
@@ -139,7 +139,7 @@ milioni di immagini etichettate da persone; la sua competizione annuale, la
 **ILSVRC**, ne usa un sottoinsieme di circa 1,2 milioni di immagini di
 addestramento distribuite su 1000 categorie. Nel 2012 **AlexNet** (Krizhevsky,
 Sutskever, Hinton) vince proprio la ILSVRC portando l'errore *top-5* dal 26,2%
-del miglior metodo classico al 15,3% — un salto senza precedenti.
+del miglior metodo classico al 15,3%: un salto senza precedenti.
 
 I tre ingredienti, in numeri:
 
@@ -159,11 +159,10 @@ combinazione, alla scala giusta.
 
 Resta un'obiezione teorica seria. Il **teorema di approssimazione universale**
 ({cite}`cybenko1989approximation`; {cite}`hornik1991approximation`) dimostra
-che basta *un solo* strato nascosto,
-purché abbastanza ampio, per approssimare qualunque funzione continua — cioè
-per imitare, con la precisione voluta, qualunque regola che leghi ingressi e
-uscite senza salti bruschi. Se una rete "piatta" e larga è già universale,
-perché impilare tanti strati?
+che basta *un solo* strato nascosto, purché abbastanza ampio, per approssimare
+qualunque funzione continua, cioè per imitare, con la precisione voluta,
+qualunque regola che leghi ingressi e uscite senza salti bruschi. Se una rete
+"piatta" e larga è già universale, perché impilare tanti strati?
 
 `````{tab} Elementare
 
@@ -209,7 +208,7 @@ complesso:
 ```python
 from torch import nn
 
-# input: un batch di immagini RGB, shape (N, 3, 128, 128) — canali prima
+# input: un batch di immagini RGB, shape (N, 3, 128, 128): canali prima
 model = nn.Sequential(
     nn.Conv2d(3, 32, 3), nn.ReLU(),    # primi strati: bordi e linee
     nn.MaxPool2d(2),

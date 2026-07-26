@@ -13,17 +13,17 @@ in cui si costruiscono questi modelli.
 Prima di dare in pasto l'audio a una rete, lo trasformiamo in uno
 **spettrogramma**: tagliamo il segnale in finestrelle di circa 25 millisecondi
 (i *frame*) e per ciascuna misuriamo quanta energia c'è a ogni frequenza. Un
-secondo di parlato diventa così un centinaio di frame. La trascrizione, invece,
-è lunga poche decine di caratteri. Due sequenze di lunghezza molto diversa — e
-nessuno ci dice quale frame corrisponde a quale lettera.
+secondo di parlato diventa così un centinaio di frame. La trascrizione,
+invece, è lunga poche decine di caratteri. Due sequenze di lunghezza molto
+diversa, e nessuno ci dice quale frame corrisponde a quale lettera.
 
 `````{tab} Elementare
 Immagina di dover sottotitolare un video a orecchio, senza conoscere i tempi.
-Chi parla lento, chi veloce; una vocale tenuta a lungo — «caaasa» — occupa
-molti fotogrammi ma resta una sola lettera; tra una parola e l'altra ci sono
-pause e respiri che non vanno scritti. Sai *cosa* è stato detto, ma non
-*quando* comincia e finisce ogni suono. Questo è l'allineamento: appaiare i
-tanti pezzetti di audio ai pochi caratteri del testo.
+Chi parla lento, chi veloce; una vocale tenuta a lungo («caaasa») occupa molti
+fotogrammi ma resta una sola lettera; tra una parola e l'altra ci sono pause e
+respiri che non vanno scritti. Sai *cosa* è stato detto, ma non *quando*
+comincia e finisce ogni suono. Questo è l'allineamento: appaiare i tanti
+pezzetti di audio ai pochi caratteri del testo.
 `````
 
 `````{tab} Superiore
@@ -121,26 +121,28 @@ prezzo di una generazione sequenziale più lenta.
 Nel settembre 2022 OpenAI rilascia **Whisper**: un unico Transformer
 encoder-decoder che riceve lo spettrogramma log-mel e produce direttamente il
 testo. La sua forza non è tanto l'architettura quanto i dati: 680.000 ore di
-audio raccolte dal web con etichettatura debole — trascrizioni prese così
-com'erano, senza revisione umana — in oltre novanta lingue. Con lo
-stesso modello Whisper trascrive, traduce verso l'inglese e riconosce la lingua,
-guidato da istruzioni speciali (*token*) inserite nel decoder. È robusto ad accenti e rumore e ha reso
-obsoleta la vecchia pipeline a stadi (estrazione feature, modello acustico,
-dizionario di pronuncia, modello di linguaggio). I limiti restano onesti: su
-silenzi lunghi può «allucinare» testo o ripetersi in loop.
+audio raccolte dal web con etichettatura debole (trascrizioni prese così
+com'erano, senza revisione umana) in oltre novanta lingue. Con lo stesso
+modello Whisper trascrive, traduce verso l'inglese e riconosce la lingua,
+guidato da istruzioni speciali (*token*), inserite nel decoder. È robusto ad
+accenti e rumore e ha reso obsoleta la vecchia pipeline a stadi (estrazione
+feature, modello acustico, dizionario di pronuncia, modello di linguaggio). I
+limiti restano onesti: su silenzi lunghi può «allucinare» testo o ripetersi in
+loop.
 
 ## Il modello di linguaggio, il correttore silenzioso
 
 L'evidenza acustica, da sola, è ambigua. In italiano «l'ago» e «lago», «l'una»
 e «luna» suonano identici; è il contesto a decidere. Qui entra il **modello di
-linguaggio** (LM), che assegna una probabilità alle sequenze di parole plausibili
-e sposta la trascrizione verso ciò che «suona» come italiano corretto. Nei
-sistemi classici i due giudizi — quello dell'orecchio e quello del linguaggio —
-si sommano in un punteggio unico, con un peso che regola quanto contare il
-secondo (*shallow fusion*); in alternativa il LM si usa per riordinare le
-prime $n$ ipotesi di trascrizione. I modelli end-to-end come Whisper
-imparano un LM *implicito* dal loro stesso addestramento; un LM esterno resta
-comunque utile per termini rari o di dominio: nomi propri, sigle, gergo medico.
+linguaggio** (LM), che assegna una probabilità alle sequenze di parole
+plausibili e sposta la trascrizione verso ciò che «suona» come italiano
+corretto. Nei sistemi classici i due giudizi (quello dell'orecchio e quello
+del linguaggio) si sommano in un punteggio unico, con un peso che regola
+quanto contare il secondo (*shallow fusion*); in alternativa il LM si usa per
+riordinare le prime $n$ ipotesi di trascrizione. I modelli end-to-end come
+Whisper imparano un LM *implicito* dal loro stesso addestramento; un LM
+esterno resta comunque utile per termini rari o di dominio: nomi propri,
+sigle, gergo medico.
 
 ## Misurare gli errori: il Word Error Rate
 

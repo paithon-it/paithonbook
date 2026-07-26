@@ -13,7 +13,7 @@ from paithon_anim import *
 PAROLE = ["Il", "gatto", "nero", "salta", "sul", "muro"]
 
 # Pesi dopo la softmax: riga = query, colonna = chiave. Ogni riga somma a 1 e
-# nessuna guarda oltre la diagonale — è esattamente ciò che impone la maschera.
+# nessuna guarda oltre la diagonale: è esattamente ciò che impone la maschera.
 PESI = [
     [1.00],
     [0.30, 0.70],

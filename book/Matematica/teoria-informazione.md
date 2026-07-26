@@ -1,22 +1,23 @@
 # Teoria dell'informazione: misurare la sorpresa
 
 Nel luglio del 1948, sulla rivista tecnica dei Bell Labs, un ingegnere
-trentaduenne di nome Claude Shannon pubblica un articolo dal titolo volutamente
-sobrio: *A Mathematical Theory of Communication* {cite}`shannon1948mathematical`.
-Dentro c'è un'idea che cambierà il mondo più di quanto il titolo lasci intuire:
-l'informazione si può **misurare**, con la stessa oggettività con cui si misurano
-metri e chilogrammi. L'unità di misura è il **bit** — contrazione di *binary
-digit*, parola che Shannon attribuisce al collega John Tukey e che proprio in
-quell'articolo compare a stampa per la prima volta.
+trentaduenne di nome Claude Shannon pubblica un articolo dal titolo
+volutamente sobrio: *A Mathematical Theory of Communication*
+{cite}`shannon1948mathematical`. Dentro c'è un'idea che cambierà il mondo più
+di quanto il titolo lasci intuire: l'informazione si può **misurare**, con la
+stessa oggettività con cui si misurano metri e chilogrammi. L'unità di misura
+è il **bit**: contrazione di *binary digit*, parola che Shannon attribuisce al
+collega John Tukey e che proprio in quell'articolo compare a stampa per la
+prima volta.
 
 Alla grandezza centrale della teoria Shannon diede il nome **entropia**, lo
-stesso della termodinamica. Si racconta — la fonte è lo stesso Shannon, in una
+stesso della termodinamica. Si racconta (la fonte è lo stesso Shannon, in una
 conversazione riferita molti anni dopo, quindi va presa con la cautela che
-meritano gli aneddoti — che a suggerirglielo fu John von Neumann: "chiamala
+meritano gli aneddoti) che a suggerirglielo fu John von Neumann: "chiamala
 entropia: nessuno sa davvero cosa sia, e in ogni discussione partirai in
 vantaggio". Vera o abbellita che sia la battuta, il nome è rimasto. E ci
 riguarda da vicino: la funzione di costo con cui addestreremo quasi tutti i
-classificatori di questo libro — la *cross-entropy* — discende in linea diretta
+classificatori di questo libro (la *cross-entropy*) discende in linea diretta
 da quell'articolo del 1948.
 
 ## La sorpresa di un evento
@@ -31,16 +32,16 @@ Il telegiornale non apre mai con "domani il sole sorgerà": è certo, quindi non
 L'informazione, insomma, è **sorpresa**: un evento scontato ne porta poca, un
 evento raro ne porta molta.
 
-Shannon trasformò l'intuizione in un numero. L'esito di una moneta equa —
-testa o croce, 50 e 50 — vale esattamente **1 bit**: è la sorpresa di una
-domanda secca con due risposte ugualmente possibili. L'esito di un dado a sei
-facce sorprende di più (le alternative erano sei, non due): circa 2,6 bit.
-E sapere che una moneta truccata, che dà testa 9 volte su 10, ha dato testa?
-Quasi niente: 0,15 bit. Ce lo aspettavamo già.
+Shannon trasformò l'intuizione in un numero. L'esito di una moneta equa (testa
+o croce, 50 e 50) vale esattamente **1 bit**: è la sorpresa di una domanda
+secca con due risposte ugualmente possibili. L'esito di un dado a sei facce
+sorprende di più (le alternative erano sei, non due): circa 2,6 bit. E sapere
+che una moneta truccata, che dà testa 9 volte su 10, ha dato testa? Quasi
+niente: 0,15 bit. Ce lo aspettavamo già.
 
 Se l'idea di "misurare in domande" sembra astratta, pensa al gioco delle
 **venti domande**: uno pensa a un oggetto, l'altro può chiedere solo cose con
-risposta sì o no. Giocando bene — ogni domanda dimezza le possibilità rimaste —
+risposta sì o no. Giocando bene (ogni domanda dimezza le possibilità rimaste)
 venti domande bastano a distinguere fra più di un milione di oggetti, perché
 $2^{20} \approx 1{,}05$ milioni. Giocando male ("è un carciofo?", "è un
 trapano?") non bastano nemmeno per il contenuto di un cassetto. Un bit è
@@ -59,8 +60,8 @@ $$
 
 dove il segno meno rende la quantità positiva (i logaritmi di numeri fra $0$ e
 $1$ sono negativi) e la base $2$ fissa l'unità di misura in bit. La forma
-logaritmica non è un vezzo: è l'unica (a meno della base) che rende la sorpresa
-**additiva** per eventi indipendenti — se $p(x,y)=p(x)\,p(y)$, allora
+logaritmica non è un vezzo: è l'unica (a meno della base) che rende la
+sorpresa **additiva** per eventi indipendenti; se $p(x,y)=p(x)\,p(y)$, allora
 $I(x,y)=I(x)+I(y)$, perché il logaritmo trasforma i prodotti in somme.
 
 Esempi: moneta equa, $I=-\log_2 0{,}5 = 1$ bit; una faccia del dado,
@@ -73,9 +74,10 @@ $\log_2$ l'unità si chiama *nat*: è la convenzione usata dalle loss di PyTorch
 
 ## L'entropia: la sorpresa media
 
-Un singolo esito ha una sorpresa; una *sorgente* di esiti — una moneta, un dado,
-una lingua — ha una sorpresa **media**. È l'entropia: quanto ci aspettiamo di
-essere sorpresi, in media, a ogni estrazione ({numref}`fig-entropia-monete`).
+Un singolo esito ha una sorpresa; una *sorgente* di esiti (una moneta, un
+dado, una lingua) ha una sorpresa **media**. È l'entropia: quanto ci
+aspettiamo di essere sorpresi, in media, a ogni estrazione
+({numref}`fig-entropia-monete`).
 
 ```{figure} ../figures/entropia-monete.svg
 :name: fig-entropia-monete
@@ -132,18 +134,18 @@ seconda sbaglia rispetto alla prima.
 
 `````{tab} Elementare
 
-Il codice Morse assegna il segnale più corto — un punto — alla E, che in
-inglese è la lettera più frequente: le scorciatoie migliori vanno alle cose più
+Il codice Morse assegna il segnale più corto (un punto) alla E, che in inglese
+è la lettera più frequente: le scorciatoie migliori vanno alle cose più
 comuni, così i messaggi restano brevi. Ora immagina di telegrafare in italiano
-usando il Morse *tarato sull'inglese*: funziona, ogni lettera ha il suo codice,
-ma le frequenze delle lettere sono diverse e ogni tanto una lettera comune da
-noi si porta dietro un codice lungo. In media, **sprechi**.
+usando il Morse *tarato sull'inglese*: funziona, ogni lettera ha il suo
+codice, ma le frequenze delle lettere sono diverse e ogni tanto una lettera
+comune da noi si porta dietro un codice lungo. In media, **sprechi**.
 
 La **cross-entropia** è la lunghezza media dei tuoi messaggi quando usi il
 codice pensato per la lingua sbagliata: le lettere arrivano secondo la realtà
-($p$), le scorciatoie sono ottimizzate per la convinzione del modello ($q$). La
-**divergenza di Kullback–Leibler** è lo spreco puro: i bit pagati in più
-rispetto al codice giusto. È zero solo se $q$ indovina esattamente $p$ — e non
+($p$), le scorciatoie sono ottimizzate per la convinzione del modello ($q$).
+La **divergenza di Kullback–Leibler** è lo spreco puro: i bit pagati in più
+rispetto al codice giusto. È zero solo se $q$ indovina esattamente $p$, e non
 è simmetrica: sbagliare codice in un verso non costa quanto sbagliarlo
 nell'altro.
 
@@ -168,8 +170,8 @@ $$
 dove la disuguaglianza (di Gibbs) vale sempre, con uguaglianza se e solo se
 $p=q$. Esempio con le nostre monete: se la realtà è la moneta truccata
 ($p = (0{,}9;\, 0{,}1)$) e il modello la crede equa, $H(p,q)=1$ bit e
-$D_{KL} = 1 - 0{,}469 \approx 0{,}531$ bit. Nel verso opposto — realtà equa,
-modello convinto del trucco — $H(p,q) \approx 1{,}737$ bit e
+$D_{KL} = 1 - 0{,}469 \approx 0{,}531$ bit. Nel verso opposto (realtà equa,
+modello convinto del trucco) $H(p,q) \approx 1{,}737$ bit e
 $D_{KL} \approx 0{,}737$ bit. I due valori differiscono: la KL è
 **asimmetrica**, $D_{KL}(p\,\|\,q) \ne D_{KL}(q\,\|\,p)$ in generale, e non
 soddisfa la disuguaglianza triangolare. Non è una distanza in senso
@@ -183,14 +185,14 @@ Ed ecco il motivo per cui questa sezione sta in un libro di machine learning.
 
 `````{tab} Elementare
 
-Quando una rete neurale impara a classificare, a ogni esempio le si fa una sola
-domanda: *quanto ti sorprende la risposta giusta?* Se il modello dava al gatto
-il 90% di probabilità e l'immagine era davvero un gatto, la sorpresa è piccola
-e la correzione minima; se gli dava il 2%, la sorpresa è enorme e la correzione
-energica. Addestrare significa girare le manopole dei parametri per rendere la
-risposta giusta sempre meno sorprendente. La "punizione" media è esattamente la
-cross-entropia dell'analogia del Morse: il modello smette di sprecare quando il
-suo codice — le sue probabilità — combacia con la realtà.
+Quando una rete neurale impara a classificare, a ogni esempio le si fa una
+sola domanda: *quanto ti sorprende la risposta giusta?* Se il modello dava al
+gatto il 90% di probabilità e l'immagine era davvero un gatto, la sorpresa è
+piccola e la correzione minima; se gli dava il 2%, la sorpresa è enorme e la
+correzione energica. Addestrare significa girare le manopole dei parametri per
+rendere la risposta giusta sempre meno sorprendente. La "punizione" media è
+esattamente la cross-entropia dell'analogia del Morse: il modello smette di
+sprecare quando il suo codice (le sue probabilità) combacia con la realtà.
 
 `````
 
@@ -208,11 +210,11 @@ l'entropia dei dati, la loro incertezza irriducibile. Inoltre, sulla
 distribuzione empirica del training set la cross-entropia coincide con la
 log-verosimiglianza negativa media: minimizzarla *è* la stima di massima
 verosimiglianza vista nella sezione su probabilità e statistica. Le tre
-prospettive — minimizzare la cross-entropia, avvicinare $q_\theta$ a $p$ nel
-senso della KL, massimizzare la verosimiglianza — sono la stessa operazione.
-È ciò che fa `nn.CrossEntropyLoss`, la loss $\mathcal{L}=-\log \hat{y}_c$ —
-dove $\hat{y}_c$ è la probabilità che il modello assegna alla classe corretta
-$c$ — che useremo nei capitoli sulle reti neurali e su PyTorch.
+prospettive (minimizzare la cross-entropia, avvicinare $q_\theta$ a $p$ nel
+senso della KL, massimizzare la verosimiglianza) sono la stessa operazione. È
+ciò che fa `nn.CrossEntropyLoss`, la loss $\mathcal{L}=-\log \hat{y}_c$ (dove
+$\hat{y}_c$ è la probabilità che il modello assegna alla classe corretta $c$)
+che useremo nei capitoli sulle reti neurali e su PyTorch.
 
 `````
 
@@ -227,7 +229,7 @@ Dire "entropia 2,585 bit" non è intuitivo; dire "è incerto come un dado a sei
 facce" sì. La **perplessità** fa proprio questa traduzione: riconverte
 l'entropia nel *numero di alternative ugualmente probabili* che darebbero la
 stessa incertezza. Moneta equa: perplessità 2. Dado onesto: 6. La moneta
-truccata: circa 1,4 — quasi nessun dubbio, poco più di un'alternativa secca.
+truccata: circa 1,4 (quasi nessun dubbio, poco più di un'alternativa secca).
 Quando leggerai che un modello di linguaggio "ha perplessità 20", ora sai cosa
 significa: a ogni parola è incerto *come se* tirasse un dado a 20 facce.
 
@@ -258,15 +260,14 @@ Chiudiamo con la conseguenza più concreta del lavoro di Shannon: l'entropia è
 un **limite alla compressione**. Nessun programma, per quanto ingegnoso, può
 comprimere senza perdite una sorgente sotto la sua entropia: in media, sotto
 $H$ bit per simbolo non si scende. È il motivo per cui uno zip morde bene un
-file di testo — le lingue sono ridondanti: nel 1951 lo stesso Shannon stimò per
+file di testo, le lingue sono ridondanti: nel 1951 lo stesso Shannon stimò per
 l'inglese scritto circa un bit per lettera, contro i quasi $5$ di lettere
-equiprobabili {cite}`shannon1951prediction` — e non riesce a comprimere un
-file già compresso, dove la
-ridondanza è già stata spremuta. Comprimere è l'arte del Morse portata al suo
-limite matematico: scorciatoie a ciò che è frequente. E un modello che predice
-bene, assegnando poca sorpresa alla realtà, è per ciò stesso un buon
-compressore: predire e comprimere, ci dice Shannon, sono in fondo la stessa
-cosa.
+equiprobabili {cite}`shannon1951prediction`, e non riesce a comprimere un file
+già compresso, dove la ridondanza è già stata spremuta. Comprimere è l'arte
+del Morse portata al suo limite matematico: scorciatoie a ciò che è frequente.
+E un modello che predice bene, assegnando poca sorpresa alla realtà, è per ciò
+stesso un buon compressore: predire e comprimere, ci dice Shannon, sono in
+fondo la stessa cosa.
 
 ## In pratica, con NumPy
 
@@ -302,8 +303,8 @@ print(2**entropia(equa), 2**entropia(dado))   # 2.0  6.0
 
 ```{admonition} Da ricordare
 :class: important
-- L'informazione è **sorpresa**: un esito di probabilità $p$ vale
-  $-\log_2 p$ bit — tanto più, quanto più è raro.
+- L'informazione è **sorpresa**: un esito di probabilità $p$ vale $-\log_2 p$
+  bit; tanto più, quanto più è raro.
 - L'**entropia** $H(p)=-\sum_i p_i \log_2 p_i$ è la sorpresa media: 1 bit per
   la moneta equa, 0,47 per quella truccata, 2,585 per il dado. Massima
   sull'uniforme, nulla sul certo.

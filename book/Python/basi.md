@@ -41,8 +41,8 @@ f"{nome} ha {eta} anni"          # 'Ada ha 36 anni'
 f"la metà di {eta} è {eta / 2}"  # 'la metà di 36 è 18.0'
 ```
 
-Dentro le graffe può stare qualsiasi espressione, e dopo i due punti si mette il
-formato — comodissimo per stampare numeri leggibili:
+Dentro le graffe può stare qualsiasi espressione, e dopo i due punti si mette
+il formato, comodissimo per stampare numeri leggibili:
 
 ```python
 loss = 0.0347218
@@ -74,12 +74,12 @@ nome. Un nome è solo un riferimento; `x = 5` lega il nome `x` all'oggetto
 intero `5`. Ogni valore è un oggetto con un tipo a runtime, e lo stesso nome può
 essere rilegato a oggetti di tipo diverso in momenti diversi.
 
-Dettagli che contano più avanti: gli `int` hanno **precisione arbitraria** (non
-c'è overflow a 64 bit), i `float` sono double IEEE 754 a 64 bit (attenzione agli
-errori di arrotondamento), le `str` sono sequenze Unicode **immutabili**, e
-`bool` è una sottoclasse di `int` — infatti `True == 1` e `False == 0`. Ne
-segue lo stile *duck typing*: conta cosa un oggetto *sa fare*, non a quale
-classe appartiene.
+Dettagli che contano più avanti: gli `int` hanno **precisione arbitraria**
+(non c'è overflow a 64 bit), i `float` sono double IEEE 754 a 64 bit
+(attenzione agli errori di arrotondamento), le `str` sono sequenze Unicode
+**immutabili**, e `bool` è una sottoclasse di `int`, infatti `True == 1` e
+`False == 0`. Ne segue lo stile *duck typing*: conta cosa un oggetto *sa
+fare*, non a quale classe appartiene.
 
 `````
 
@@ -98,7 +98,7 @@ unici  = {3, 1, 4}                        # set: insieme senza duplicati
 
 ```{figure} ../figures/strutture-dati-python.svg
 :name: fig-strutture-dati
-:alt: Quattro schede a confronto — list ordinata e modificabile, tuple ordinata e immutabile, dict con coppie chiave-valore, set senza duplicati.
+:alt: Quattro schede a confronto (list ordinata e modificabile, tuple ordinata e immutabile, dict con coppie chiave-valore, set senza duplicati).
 :width: 90%
 
 Le quattro strutture dati native di Python a confronto: cambiano per ordine,
@@ -109,11 +109,11 @@ modificabilità e modo di accedere agli elementi.
 
 Le analogie aiutano ({numref}`fig-strutture-dati`):
 
-- **list** — la lista della spesa: elementi in fila, che aggiungi e togli.
-- **tuple** — le coordinate scritte a penna: una coppia fissa, non si cancella.
-- **dict** — la rubrica del telefono: cerchi per *nome* (la chiave) e trovi il
+- **list**, la lista della spesa: elementi in fila, che aggiungi e togli.
+- **tuple**, le coordinate scritte a penna: una coppia fissa, non si cancella.
+- **dict**, la rubrica del telefono: cerchi per *nome* (la chiave) e trovi il
   numero (il valore).
-- **set** — un sacchetto in cui i doppioni si fondono: mettere due volte lo
+- **set**, un sacchetto in cui i doppioni si fondono: mettere due volte lo
   stesso elemento non cambia nulla.
 
 `````
@@ -123,10 +123,10 @@ Le analogie aiutano ({numref}`fig-strutture-dati`):
 La differenza tecnica è **mutabilità** e **hashabilità**. `list`, `dict` e
 `set` sono mutabili; `tuple` è immutabile (e quindi *hashable*, perciò usabile
 come chiave di dizionario). `dict` e `set` sono tabelle hash: l'accesso e il
-test di appartenenza sono in media $O(1)$, contro l'$O(n)$ della ricerca lineare
-in una lista. Le chiavi di un `dict` e gli elementi di un `set` devono essere
-hashable, cioè immutabili — motivo per cui una lista non può stare in un set,
-ma una tupla sì.
+test di appartenenza sono in media $O(1)$, contro l'$O(n)$ della ricerca
+lineare in una lista. Le chiavi di un `dict` e gli elementi di un `set` devono
+essere hashable, cioè immutabili: motivo per cui una lista non può stare in un
+set, ma una tupla sì.
 
 `````
 
@@ -290,7 +290,7 @@ Si legge quasi in italiano: "il quadrato di `n`, per ogni `n` da 0 a 9, se `n`
 
 ## Un assaggio di oggetti: le classi
 
-In Python *tutto* è un oggetto — numeri, stringhe, liste, perfino le funzioni.
+In Python *tutto* è un oggetto: numeri, stringhe, liste, perfino le funzioni.
 Quando ti servono oggetti su misura, definisci una **classe**: uno stampo che
 descrive quali dati un oggetto contiene e cosa sa fare.
 
@@ -392,9 +392,9 @@ della chiamata e li riaccende all'uscita.
 Due dettagli separano un decoratore giocattolo da uno usabile.
 
 **Preservare l'identità della funzione.** L'involucro sostituisce l'originale,
-quindi `__name__`, `__doc__` e la firma diventano quelli dell'involucro — con
-danni a `help()`, ai debugger e a qualunque codice che faccia introspezione. Il
-rimedio è una riga:
+quindi `__name__`, `__doc__` e la firma diventano quelli dell'involucro, con
+danni a `help()`, ai debugger e a qualunque codice che faccia introspezione.
+Il rimedio è una riga:
 
 ```python
 import functools
@@ -408,7 +408,7 @@ def cronometra(funzione):
 
 **I decoratori con argomenti hanno un livello in più.** `@torch.no_grad()` ha
 le parentesi perché non è il decoratore: è una *fabbrica* che restituisce il
-decoratore. Servono quindi tre livelli — parametri, funzione, chiamata.
+decoratore. Servono quindi tre livelli: parametri, funzione, chiamata.
 
 Il parente stretto è **`@property`**, che fa sembrare attributo il risultato di
 un metodo. Serve quando un valore è derivato o va validato, ma si vuole
@@ -450,9 +450,9 @@ with open("dati.csv") as f:      # il file si apre...
 
 L'oggetto usato con `with` si chiama *context manager*: definisce cosa fare
 all'ingresso e cosa all'uscita del blocco. Il valore sta tutto nella seconda
-metà — **la pulizia avviene comunque**, anche se dentro il blocco viene sollevata
-un'eccezione. Chiudere un file a mano è facile da dimenticare; con `with` non
-serve ricordarsene.
+metà: **la pulizia avviene comunque**, anche se dentro il blocco viene
+sollevata un'eccezione. Chiudere un file a mano è facile da dimenticare; con
+`with` non serve ricordarsene.
 
 In PyTorch lo incontrerai soprattutto così:
 
@@ -464,8 +464,8 @@ with torch.no_grad():            # dentro il blocco niente gradienti
 ```
 
 ed è la stessa identica cosa del decoratore `@torch.no_grad()` visto sopra: la
-differenza è solo l'ambito — il decoratore avvolge un'intera funzione, `with`
-avvolge un blocco. Molte API offrono entrambe le forme proprio per questo.
+differenza è solo l'ambito (il decoratore avvolge un'intera funzione, `with`
+avvolge un blocco). Molte API offrono entrambe le forme proprio per questo.
 
 ```{admonition} Da ricordare
 :class: important
@@ -477,8 +477,8 @@ avvolge un blocco. Molte API offrono entrambe le forme proprio per questo.
 - I blocchi sono definiti dall'**indentazione**; `if/elif/else`, `for` e `while`
   bastano per il controllo di flusso.
 - Le **funzioni** (`def` … `return`) e le **list comprehension** rendono il
-  codice conciso; le **classi** modellano oggetti su misura — la stessa forma di
-  scikit-learn e PyTorch.
+  codice conciso; le **classi** modellano oggetti su misura: la stessa forma
+  di scikit-learn e PyTorch.
 - Le **f-string** (`f"{nome} ha {eta} anni"`) inseriscono valori nel testo, con
   il formato dopo i due punti: `f"{loss:.3f}"`.
 - Un **decoratore** (`@qualcosa`) avvolge una funzione senza modificarla:

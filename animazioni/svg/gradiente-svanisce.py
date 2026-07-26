@@ -72,7 +72,7 @@ def costruisci() -> Figura:
         '<text class="lbl" x="30" y="34">il gradiente parte dall\'uscita '
         'e risale verso l\'ingresso</text>',
         f'<text class="lbl" x="30" y="{152 + 170 + 62}">'
-        f'a ogni strato si moltiplica per σ′ ≤ 0,25 — oppure per 1, con la ReLU</text>',
+        f'a ogni strato si moltiplica per σ′ ≤ 0,25, oppure per 1, con la ReLU</text>',
     ]
 
     return Figura(

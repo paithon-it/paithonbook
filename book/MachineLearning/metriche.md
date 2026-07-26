@@ -1,22 +1,22 @@
 # Valutare un modello: le metriche
 
 Un modello di machine learning, l'abbiamo visto, "impara" solo se la sua
-performance migliora con l'esperienza — la $P$ della definizione di Mitchell.
+performance migliora con l'esperienza: la $P$ della definizione di Mitchell.
 Ma quella $P$, come la misuriamo davvero? La domanda sembra tecnica e invece è
 la più delicata dell'intero progetto: scegliere male la metrica significa
 ottimizzare il modello verso l'obiettivo sbagliato.
 
 Partiamo da un caso che mette in guardia. Immagina un modello che deve
-diagnosticare una malattia rara, presente in 1 persona su 100. Un modello pigro
-che risponde sempre "sano" indovina il 99% delle volte. Il 99%: un voto quasi
-perfetto. Eppure quel modello non ha riconosciuto un solo malato — è del tutto
-inutile. L'accuratezza, da sola, ci ha ingannati. Per capire *dove* un modello
-sbaglia serve uno strumento più fine.
+diagnosticare una malattia rara, presente in 1 persona su 100. Un modello
+pigro che risponde sempre "sano" indovina il 99% delle volte. Il 99%: un voto
+quasi perfetto. Eppure quel modello non ha riconosciuto un solo malato: è del
+tutto inutile. L'accuratezza, da sola, ci ha ingannati. Per capire *dove* un
+modello sbaglia serve uno strumento più fine.
 
 ## La matrice di confusione
 
 Tutto, nella valutazione di un classificatore, parte da qui: contare i quattro
-esiti possibili di una previsione binaria — una previsione con due sole
+esiti possibili di una previsione binaria; una previsione con due sole
 risposte in gioco, sì o no ({numref}`fig-matrice-confusione`).
 
 ```{figure} ../figures/matrice-confusione.svg
@@ -40,8 +40,8 @@ Pensa a un rilevatore di fumo. Ci sono quattro cose che può succedere:
 - non c'è incendio e l'allarme tace → **vero negativo** (VN): giusto.
 
 La matrice di confusione non è altro che questa tabellina: quante volte il
-modello ha azzeccato (VP e VN) e, soprattutto, *in che modo* ha sbagliato —
-falso allarme o incendio mancato. Non è mai indifferente quale dei due.
+modello ha azzeccato (VP e VN) e, soprattutto, *in che modo* ha sbagliato
+(falso allarme o incendio mancato). Non è mai indifferente quale dei due.
 
 `````
 
@@ -65,20 +65,20 @@ resta la somma della diagonale sul totale.
 
 ## Perché l'accuratezza inganna
 
-Torniamo al modello che dice sempre "sano". Su 100 pazienti, 99 sani e 1 malato,
-fa $\text{VN}=99$, $\text{FN}=1$, e $\text{VP}=\text{FP}=0$: accuratezza del
-99%, eppure zero malati trovati. Quando le classi sono **sbilanciate** — una
-molto più frequente dell'altra — l'accuratezza premia chi si limita a predire
-sempre la classe maggioritaria. È il tranello più comune, e la ragione per cui
-non ci si ferma mai alla sola accuratezza. Servono metriche che guardino
-separatamente ai due tipi di errore.
+Torniamo al modello che dice sempre "sano". Su 100 pazienti, 99 sani e 1
+malato, fa $\text{VN}=99$, $\text{FN}=1$, e $\text{VP}=\text{FP}=0$:
+accuratezza del 99%, eppure zero malati trovati. Quando le classi sono
+**sbilanciate** (una molto più frequente dell'altra), l'accuratezza premia chi
+si limita a predire sempre la classe maggioritaria. È il tranello più comune,
+e la ragione per cui non ci si ferma mai alla sola accuratezza. Servono
+metriche che guardino separatamente ai due tipi di errore.
 
 L'analogia che chiarisce la posta in gioco è una **guardia notturna** valutata
 sul numero di notti "gestite correttamente". Se i furti avvengono una notte su
-cento, la guardia che dorme sempre ottiene una valutazione del $99\%$ —
+cento, la guardia che dorme sempre ottiene una valutazione del $99\%$:
 identica sulla carta a quella di un collega scrupoloso, e del tutto inutile
-nell'unica notte che conta. Il valore della guardia sta tutto nel caso raro; la
-metrica lo pesa come un centesimo del totale.
+nell'unica notte che conta. Il valore della guardia sta tutto nel caso raro;
+la metrica lo pesa come un centesimo del totale.
 
 ## Classi sbilanciate: cosa farci
 
@@ -89,14 +89,15 @@ frode resta al $99\%$ di accuratezza finché nessuno guarda altrove.
 
 Tre leve, in ordine di quanto conviene provarle.
 
-**Cambiare metrica** è gratis ed è il primo passo: recall, F1, e soprattutto la
-curva **precision-recall**, che con sbilanciamenti estremi è più informativa
-della ROC — quest'ultima tende a dipingere quadri troppo ottimisti.
+**Cambiare metrica** è gratis ed è il primo passo: recall, F1, e soprattutto
+la curva **precision-recall**, che con sbilanciamenti estremi è più
+informativa della ROC (quest'ultima tende a dipingere quadri troppo
+ottimisti).
 
 **Spostare la soglia.** Un classificatore produce una probabilità, e la soglia
 di $0{,}5$ non ha niente di sacro. Abbassarla a $0{,}2$ significa "segnala
 anche i casi dubbi": la recall sale, la precision scende. La soglia giusta
-dipende da quanto costa un falso allarme rispetto a un caso mancato — una
+dipende da quanto costa un falso allarme rispetto a un caso mancato: una
 decisione di business, non di statistica.
 
 **Pesare le classi.** Quasi tutti i modelli accettano un peso per classe: dire
@@ -123,7 +124,7 @@ applicandolo al dataset.
 Un secondo punto: il ricampionamento **distorce le probabilità predette**. Un
 modello addestrato su dati riequilibrati stima $P(y=1\mid x)$ rispetto alla
 distribuzione riequilibrata, non a quella reale. Se servono probabilità
-calibrate — per una soglia basata sui costi, o per combinarle con altre stime —
+calibrate (per una soglia basata sui costi, o per combinarle con altre stime),
 occorre ricalibrare, oppure preferire i pesi di classe al ricampionamento.
 
 Infine il criterio decisionale corretto quando i costi sono noti: non "massimizza
@@ -183,7 +184,7 @@ precision, utile quando i due errori non hanno lo stesso costo.
 `````
 
 Quale privilegiare dipende da **quale errore fa più male**. Nello screening di
-una malattia grave un falso negativo — un malato dichiarato sano — è
+una malattia grave un falso negativo (un malato dichiarato sano) è
 inaccettabile: si punta sulla **recall**, accettando qualche falso allarme in
 più. In un filtro antispam è il contrario: un falso positivo butta nel cestino
 un'email importante, quindi si privilegia la **precision**, tollerando che
@@ -193,7 +194,7 @@ qualche spam passi. Stessa matrice, priorità opposte.
 
 Molti classificatori non restituiscono un secco "sì/no" ma una probabilità;
 siamo noi a fissare la **soglia** oltre la quale dichiarare positivo. Cambiare
-soglia cambia l'equilibrio tra i due errori — e la curva ROC visualizza tutti
+soglia cambia l'equilibrio tra i due errori, e la curva ROC visualizza tutti
 questi equilibri in un colpo solo.
 
 `````{tab} Elementare
@@ -229,19 +230,19 @@ molto sbilanciati la curva *precision–recall* è spesso più informativa.
 
 ## Quando il target è un numero: le metriche di regressione
 
-Se il modello non classifica ma prevede una quantità continua — il prezzo di
-una casa, la temperatura di domani — la matrice di confusione non serve: contano
-gli **scarti** tra valore previsto $\hat{y}$ e valore reale $y$.
+Se il modello non classifica ma prevede una quantità continua (il prezzo di
+una casa, la temperatura di domani), la matrice di confusione non serve:
+contano gli **scarti** tra valore previsto $\hat{y}$ e valore reale $y$.
 
 `````{tab} Elementare
 
 Le più usate sono tre. Il **MAE** è l'errore medio "in valore assoluto": in
 media, di quanti euro sbagliamo il prezzo. Il **RMSE** è simile, ma eleva al
-quadrato gli errori prima di mediarli: così **punisce di più i grandi svarioni**
-(sbagliare di 100 pesa molto più di due errori da 50). Entrambi si leggono
-nella stessa unità del target. L'**R²** invece è un voto da $0$ a $1$: dice
-quanta parte della variabilità dei dati il modello riesce a spiegare — $1$ è
-perfetto, $0$ è come indovinare sempre la media.
+quadrato gli errori prima di mediarli: così **punisce di più i grandi
+svarioni** (sbagliare di 100 pesa molto più di due errori da 50). Entrambi si
+leggono nella stessa unità del target. L'**R²** invece è un voto da $0$ a $1$:
+dice quanta parte della variabilità dei dati il modello riesce a spiegare; $1$
+è perfetto, $0$ è come indovinare sempre la media.
 
 `````
 
@@ -275,12 +276,13 @@ possibili e segnalano un modello peggiore della semplice media.
 
 ## Scegliere la metrica giusta
 
-Non esiste "la" metrica migliore: esiste quella allineata al problema. Il target
-è una categoria o un numero? Se è una categoria, le classi sono bilanciate — e
-l'accuratezza può bastare — o sbilanciate, e allora servono precision, recall,
-F1 o AUC? E dei due errori, quale costa di più: un falso allarme o un caso
-mancato? La metrica non è un dettaglio da consultare alla fine: è la definizione
-stessa di "successo" che diamo al modello prima ancora di addestrarlo.
+Non esiste "la" metrica migliore: esiste quella allineata al problema. Il
+target è una categoria o un numero? Se è una categoria, le classi sono
+bilanciate (e l'accuratezza può bastare) o sbilanciate, e allora servono
+precision, recall, F1 o AUC? E dei due errori, quale costa di più: un falso
+allarme o un caso mancato? La metrica non è un dettaglio da consultare alla
+fine: è la definizione stessa di "successo" che diamo al modello prima ancora
+di addestrarlo.
 
 ## In pratica, con scikit-learn
 

@@ -1,38 +1,38 @@
 # Attenzione lineare
 
-Nel 2020, mentre il mondo dell'intelligenza artificiale celebrava i Transformer
-come la rottura definitiva con il passato ricorrente, quattro ricercatori —
-Katharopoulos, Vyas, Pappas e Fleuret, tra l'Idiap e l'EPFL — pubblicano un
-articolo dal titolo che suona come una provocazione: *Transformers are RNNs*
-{cite}`katharopoulos2020transformers`. La tesi è tanto semplice quanto
-spiazzante. Togliete al meccanismo di attenzione la sua funzione softmax — quella
-normalizzazione che, davanti a una parola, pesa tutte le altre l'una contro
-l'altra — e il Transformer, il modello che aveva appena spodestato le reti
-ricorrenti, ricade esattamente in una **rete ricorrente**. Il re, sotto il
-mantello, era un vecchio parente.
+Nel 2020, mentre il mondo dell'intelligenza artificiale celebrava i
+Transformer come la rottura definitiva con il passato ricorrente, quattro
+ricercatori (Katharopoulos, Vyas, Pappas e Fleuret, tra l'Idiap e l'EPFL)
+pubblicano un articolo dal titolo che suona come una provocazione:
+*Transformers are RNNs* {cite}`katharopoulos2020transformers`. La tesi è tanto
+semplice quanto spiazzante. Togliete al meccanismo di attenzione la sua
+funzione softmax (quella normalizzazione che, davanti a una parola, pesa tutte
+le altre l'una contro l'altra) e il Transformer, il modello che aveva appena
+spodestato le reti ricorrenti, ricade esattamente in una **rete ricorrente**.
+Il re, sotto il mantello, era un vecchio parente.
 
 Non è un gioco di prestigio: è una porta. Nel capitolo sui Transformer abbiamo
-visto il prezzo dell'attenzione — un costo **quadratico** nella lunghezza della
-sequenza, perché ogni parola guarda tutte le altre, e in generazione una *cache*
-di chiavi e valori che **cresce** parola dopo parola. È il muro contro cui
-sbattono i contesti lunghi. La provocazione di Katharopoulos indica una via per
-aggirarlo: se l'attenzione, spogliata della softmax, è una RNN, allora possiamo
-riscriverla come una ricorrenza a **stato di dimensione fissa** — costo lineare
-in addestramento, memoria costante in inferenza — senza rinunciare del tutto a
-ciò che l'aveva resa vincente.
+visto il prezzo dell'attenzione: un costo **quadratico** nella lunghezza della
+sequenza, perché ogni parola guarda tutte le altre, e in generazione una
+*cache* di chiavi e valori che **cresce** parola dopo parola. È il muro contro
+cui sbattono i contesti lunghi. La provocazione di Katharopoulos indica una
+via per aggirarlo: se l'attenzione, spogliata della softmax, è una RNN, allora
+possiamo riscriverla come una ricorrenza a **stato di dimensione fissa**
+(costo lineare in addestramento, memoria costante in inferenza) senza
+rinunciare del tutto a ciò che l'aveva resa vincente.
 
 ## Il compromesso che tutti inseguono
 
 `````{tab} Elementare
 
 Le due grandi famiglie di modelli per sequenze hanno ciascuna un pregio e un
-difetto speculari. I Transformer si addestrano in fretta, perché guardano tutta
-la frase in una volta e sfruttano a pieno le schede grafiche; ma per farlo devono
-tenere tutto sott'occhio, e più il testo è lungo più questo costa — in fretta
-diventa insostenibile. Le vecchie reti ricorrenti fanno il contrario: leggono
-una parola alla volta portandosi dietro un riassunto di dimensione fissa, quindi
-in lettura costano poco e non si spaventano davanti a testi lunghissimi; ma
-proprio perché procedono in fila, addestrarle è lento.
+difetto speculari. I Transformer si addestrano in fretta, perché guardano
+tutta la frase in una volta e sfruttano a pieno le schede grafiche; ma per
+farlo devono tenere tutto sott'occhio, e più il testo è lungo più questo
+costa: in fretta diventa insostenibile. Le vecchie reti ricorrenti fanno il
+contrario: leggono una parola alla volta portandosi dietro un riassunto di
+dimensione fissa, quindi in lettura costano poco e non si spaventano davanti a
+testi lunghissimi; ma proprio perché procedono in fila, addestrarle è lento.
 
 Il sogno è avere le due cose insieme: la **velocità di addestramento** dei
 Transformer e il **basso costo in lettura** delle reti ricorrenti. È esattamente
@@ -45,16 +45,17 @@ questo capitolo.
 
 Formalizziamo il compromesso. L'attenzione softmax costa $O(n^2 d)$ nella
 lunghezza $n$ della sequenza (la matrice di affinità è $n \times n$) e in
-generazione autoregressiva conserva tutte le chiavi e i valori passati: memoria
-che cresce linearmente con il contesto. Una rete ricorrente costa $O(n d^2)$ —
-lineare in $n$ — e mantiene uno stato di dimensione fissa, ma il passo $t$ dipende
-dal passo $t-1$: niente parallelismo lungo la sequenza.
+generazione autoregressiva conserva tutte le chiavi e i valori passati:
+memoria che cresce linearmente con il contesto. Una rete ricorrente costa
+$O(n d^2)$ (lineare in $n$) e mantiene uno stato di dimensione fissa, ma il
+passo $t$ dipende dal passo $t-1$: niente parallelismo lungo la sequenza.
 
-L'attenzione lineare vive nel punto d'incontro: espone **due forme equivalenti**
-dello stesso calcolo. Una forma *parallela*, per addestrare sull'intera sequenza
-sfruttando le GPU; e una forma *ricorrente*, per generare a costo e memoria
-costanti per token — nessuna *cache* che si gonfia. È la proprietà che
-inseguono, con ingredienti diversi, tutte le architetture di questi due capitoli.
+L'attenzione lineare vive nel punto d'incontro: espone **due forme
+equivalenti** dello stesso calcolo. Una forma *parallela*, per addestrare
+sull'intera sequenza sfruttando le GPU; e una forma *ricorrente*, per generare
+a costo e memoria costanti per token: nessuna *cache* che si gonfia. È la
+proprietà che inseguono, con ingredienti diversi, tutte le architetture di
+questi due capitoli.
 
 `````
 
@@ -68,12 +69,13 @@ $$
 S_t = (\text{transizione}_t)\, S_{t-1} + (\text{scrittura}_t).
 $$
 
-Lo stato $S_t$ è una piccola matrice — una memoria che associa chiavi a valori —
-e ciò che distingue un modello dall'altro è, essenzialmente, **come si aggiorna
-quella memoria**: se ci si limita ad accumulare, se si impara a dimenticare, se
-si corregge ciò che è già scritto. Cambiare la regola di transizione significa
-passare dall'attenzione lineare a RetNet, a Mamba, a DeltaNet — nomi che
-incontreremo come varianti di uno stesso scheletro, non come invenzioni scollegate.
+Lo stato $S_t$ è una piccola matrice (una memoria che associa chiavi a valori)
+e ciò che distingue un modello dall'altro è, essenzialmente, **come si
+aggiorna quella memoria**: se ci si limita ad accumulare, se si impara a
+dimenticare, se si corregge ciò che è già scritto. Cambiare la regola di
+transizione significa passare dall'attenzione lineare a RetNet, a Mamba, a
+DeltaNet: nomi che incontreremo come varianti di uno stesso scheletro, non
+come invenzioni scollegate.
 
 ## Come è organizzato il capitolo
 
@@ -81,16 +83,16 @@ Tre tappe, dal meccanismo alle architetture concrete.
 
 Si parte da **come l'attenzione diventa lineare**: il "trucco del kernel" che
 spezza la softmax e trasforma l'attenzione in una ricorrenza a stato-matrice,
-con la sua doppia natura parallelo/ricorrente — e il limite dell'accumulo puro,
+con la sua doppia natura parallelo/ricorrente, e il limite dell'accumulo puro,
 una memoria che si riempie e non dimentica. Seconda tappa, **scrivere meglio
-nella memoria**: i due strumenti che risolvono quel limite — i *gate* per
-dimenticare e la *delta rule* per correggere — fino alla tabella che unifica
+nella memoria**: i due strumenti che risolvono quel limite (i *gate* per
+dimenticare e la *delta rule* per correggere) fino alla tabella che unifica
 attenzione lineare, GLA, DeltaNet e Gated DeltaNet come casi di una stessa
 regressione online. Terza tappa, **le architetture lineari** che oggi si
-misurano con i Transformer — RetNet, RWKV, xLSTM — ciascuna un'istanza dello
-stesso principio. Chiude un breve **notebook** in cui verifichiamo con NumPy, in
-poche righe, che la forma parallela e quella ricorrente calcolano davvero la
-stessa funzione.
+misurano con i Transformer (RetNet, RWKV, xLSTM) ciascuna un'istanza dello
+stesso principio. Chiude un breve **notebook** in cui verifichiamo con NumPy,
+in poche righe, che la forma parallela e quella ricorrente calcolano davvero
+la stessa funzione.
 
 ```{admonition} Da ricordare
 :class: important

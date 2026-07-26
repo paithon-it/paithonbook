@@ -16,17 +16,17 @@ l'**esplorazione** in un mondo dove le ricompense sono **sparse**.
 
 Nella maggior parte dei giochi Atari qualcosa di buono o cattivo capita a ogni
 secondo, e l'agente ha un flusso costante di segnali da cui correggersi. Ma
-quando la ricompensa arriva solo dopo lunghe sequenze di azioni giuste — la
-chiave, la porta, il livello — il segnale diventa un ago in un pagliaio.
+quando la ricompensa arriva solo dopo lunghe sequenze di azioni giuste (la
+chiave, la porta, il livello), il segnale diventa un ago in un pagliaio.
 Finché l'agente non inciampa *per caso* in quella prima ricompensa, non ha
-nulla che gli dica in che direzione andare. E la probabilità di inciamparci per
-caso, con l'esplorazione casuale, crolla esponenzialmente con la lunghezza
+nulla che gli dica in che direzione andare. E la probabilità di inciamparci
+per caso, con l'esplorazione casuale, crolla esponenzialmente con la lunghezza
 della catena.
 
 Nel capitolo sul reinforcement learning abbiamo introdotto il dilemma
 esplorazione–sfruttamento e la strategia $\varepsilon$-greedy: agire quasi
 sempre secondo la stima migliore, ma ogni tanto scegliere a caso. Qui vediamo
-perché quella ricetta, in ambienti come Montezuma, non basta — e cosa si è
+perché quella ricetta, in ambienti come Montezuma, non basta, e cosa si è
 inventato per andare oltre.
 
 ## Perché $\varepsilon$-greedy non basta
@@ -40,7 +40,7 @@ Per raggiungere un vicolo lontano dieci svolte precise, la probabilità di
 azzeccarle tutte tirando a sorte è minuscola.
 
 L'esplorazione casuale è così: agita le mani nel buio nei dintorni di dove sei
-già. Quello che servirebbe è un'esplorazione **diretta** — una spinta a puntare
+già. Quello che servirebbe è un'esplorazione **diretta**: una spinta a puntare
 verso i posti che non hai *ancora* visto, invece di rimescolare a caso quelli
 di sempre.
 
@@ -131,8 +131,8 @@ l'agente verso l'ignoto senza toccare la regola di scelta.
 
 Contare le visite, anche per approssimazione, resta difficile. Un'idea più
 elegante ribalta la domanda: invece di chiederci *quante volte* abbiamo visto
-uno stato, chiediamoci *quanto ci sorprende*. Uno stato sorprendente — uno di
-cui non sappiamo prevedere le conseguenze — è, per definizione, uno da cui
+uno stato, chiediamoci *quanto ci sorprende*. Uno stato sorprendente (uno di
+cui non sappiamo prevedere le conseguenze) è, per definizione, uno da cui
 abbiamo ancora molto da imparare. La sorpresa diventa così una **ricompensa
 intrinseca**, generata dall'agente stesso, che affianca quella estrinseca
 dell'ambiente.
@@ -183,7 +183,7 @@ $$
 
 Sugli stati già visti molte volte il predictor ha imparato a riprodurre la
 target e l'errore è basso; su uno stato mai incontrato non ha idea di cosa
-produrrà la rete casuale, e l'errore — cioè la novità — è alto. RND fu il primo
+produrrà la rete casuale, e l'errore (cioè la novità) è alto. RND fu il primo
 metodo a superare la prestazione media umana su Montezuma's Revenge senza
 ricorrere a dimostrazioni umane né allo stato interno dell'emulatore: quel
 punteggio zero, dopo tre anni, era finalmente battuto.
@@ -285,7 +285,7 @@ l'apprendimento rendendo il segnale più denso, senza spostare l'obiettivo
 
 Il pericolo intravisto con il reward shaping è in realtà molto più generale, e
 ha un nome: **reward hacking** (o *specification gaming*). L'agente ottimizza
-esattamente la ricompensa che gli abbiamo scritto — e proprio per questo trova
+esattamente la ricompensa che gli abbiamo scritto, e proprio per questo trova
 scorciatoie che massimizzano quel numero tradendo del tutto ciò che
 intendevamo.
 
@@ -302,16 +302,16 @@ della ricompensa, perdendo secondo ogni ragionevole intento.
 
 È la stessa cosa che succede quando si paga un idraulico a numero di tubi
 sostituiti: qualcuno inizierà a sostituire tubi che andavano benissimo. Il
-metro con cui misuri diventa l'obiettivo, e l'obiettivo vero — l'impianto che
-funziona — passa in secondo piano. Gli economisti la chiamano **legge di
-Goodhart**: *quando una misura diventa un bersaglio, smette di essere una buona
-misura*.
+metro con cui misuri diventa l'obiettivo, e l'obiettivo vero (l'impianto che
+funziona) passa in secondo piano. Gli economisti la chiamano **legge di
+Goodhart**: *quando una misura diventa un bersaglio, smette di essere una
+buona misura*.
 
-Con gli agenti è identico, e più insidioso, perché un ottimizzatore instancabile
-cercherà *ogni* scorciatoia possibile. Il problema non è che l'agente
-disobbedisce: è che obbedisce troppo bene, alla lettera sbagliata. Scrivere una
-ricompensa che dica davvero ciò che vogliamo — e non una sua approssimazione
-sfruttabile — è molto più difficile di quanto sembri.
+Con gli agenti è identico, e più insidioso, perché un ottimizzatore
+instancabile cercherà *ogni* scorciatoia possibile. Il problema non è che
+l'agente disobbedisce: è che obbedisce troppo bene, alla lettera sbagliata.
+Scrivere una ricompensa che dica davvero ciò che vogliamo (e non una sua
+approssimazione sfruttabile) è molto più difficile di quanto sembri.
 
 `````
 
@@ -327,20 +327,20 @@ coincidono più.
 Le difese sono un ambito di ricerca attivo e nessuna è risolutiva: vincoli e
 penalità esplicite, apprendimento della ricompensa dalle preferenze umane
 (*reward modeling*, RLHF), verifica di robustezza rispetto a piccole modifiche
-della specifica. Il nodo di fondo — specificare compiutamente ciò che vogliamo
-tramite una funzione scalare — è il **problema dell'allineamento**, che
-affronteremo nel capitolo sull'AI responsabile. Il reward hacking è il punto in
-cui l'ottimizzazione tecnica incontra una domanda che tecnica non è del tutto:
-siamo sicuri di aver chiesto la cosa giusta?
+della specifica. Il nodo di fondo (specificare compiutamente ciò che vogliamo
+tramite una funzione scalare) è il **problema dell'allineamento**, che
+affronteremo nel capitolo sull'AI responsabile. Il reward hacking è il punto
+in cui l'ottimizzazione tecnica incontra una domanda che tecnica non è del
+tutto: siamo sicuri di aver chiesto la cosa giusta?
 
 `````
 
 Curiosità e reward hacking sono, in un certo senso, le due facce della stessa
 libertà. Diamo all'agente margine per esplorare oltre ciò che gli indichiamo,
-e scopre strategie che non avevamo immaginato — la mossa geniale, ma anche la
-scorciatoia sleale. Progettare l'esplorazione e progettare la ricompensa è, alla
-fine, lo stesso mestiere: decidere con cura cosa spingiamo davvero l'agente a
-cercare.
+e scopre strategie che non avevamo immaginato: la mossa geniale, ma anche la
+scorciatoia sleale. Progettare l'esplorazione e progettare la ricompensa è,
+alla fine, lo stesso mestiere: decidere con cura cosa spingiamo davvero
+l'agente a cercare.
 
 ```{admonition} Da ricordare
 :class: important
@@ -351,11 +351,11 @@ cercare.
   ($\propto 1/\sqrt{N(s)}$); negli spazi grandi si usano **pseudo-conteggi**.
 - La **curiosità intrinseca** trasforma la *sorpresa* in ricompensa: **ICM**
   usa l'errore di predizione della dinamica in uno spazio di feature, **RND**
-  l'errore nel predire una rete casuale fissa — e risolse Montezuma.
+  l'errore nel predire una rete casuale fissa, e risolse Montezuma.
 - Il **reward shaping** densifica il segnale; solo la forma *potential-based*
   $F=\gamma\Phi(s')-\Phi(s)$ (Ng, Harada, Russell, 1999) preserva la policy
   ottima.
 - Il **reward hacking** (legge di Goodhart) è l'agente che ottimizza la
-  *lettera* della ricompensa, non l'intento — come la barca di *CoastRunners*.
+  *lettera* della ricompensa, non l'intento, come la barca di *CoastRunners*.
   È il ponte verso il problema dell'**allineamento**.
 ```

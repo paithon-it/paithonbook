@@ -1,12 +1,12 @@
 # Il percettrone e la sua regola di apprendimento
 
 Nel 1958 uno psicologo di Cornell, Frank Rosenblatt, presenta alla stampa il
-*percettrone*, un modello di neurone artificiale che impara a riconoscere forme
-dagli esempi. Il *New York Times* scrive che è l'embrione di un cervello
-elettronico capace, un giorno, di camminare, parlare e riprodursi. Due anni dopo
-l'idea prende corpo in una macchina grande come un armadio, il *Mark I
+*percettrone*, un modello di neurone artificiale che impara a riconoscere
+forme dagli esempi. Il *New York Times* scrive che è l'embrione di un cervello
+elettronico capace, un giorno, di camminare, parlare e riprodursi. Due anni
+dopo l'idea prende corpo in una macchina grande come un armadio, il *Mark I
 Perceptron*: una griglia di quattrocento fotocellule collegate da fili a pesi
-realizzati con potenziometri motorizzati. L'hype era smisurato — e lo pagheremo
+realizzati con potenziometri motorizzati. L'hype era smisurato, e lo pagheremo
 caro qualche pagina più avanti. Ma dietro il clamore c'è un'idea sobria e
 duratura, che ancora oggi è il mattone di ogni rete neurale: un neurone
 artificiale non è altro che un pezzo di aritmetica.
@@ -34,10 +34,10 @@ neurone li combina in una somma pesata e vi aggiunge un termine costante, il
 
 Immagina di decidere se uscire di casa con l'ombrello. Guardi alcuni indizi:
 quanto è nuvoloso, l'umidità, cosa dice l'app del meteo. Dai a ciascun indizio
-un peso — l'app conta più del colore del cielo — e fai una somma: indizio per
-il suo peso, il tutto sommato. Il bias è la tua indole di partenza: un
-pessimista parte già orientato verso il "sì, prendilo". Se il totale supera una
-soglia, esci con l'ombrello.
+un peso (l'app conta più del colore del cielo) e fai una somma: indizio per il
+suo peso, il tutto sommato. Il bias è la tua indole di partenza: un pessimista
+parte già orientato verso il "sì, prendilo". Se il totale supera una soglia,
+esci con l'ombrello.
 
 Con due ingressi la somma è semplicemente
 
@@ -119,8 +119,8 @@ poi nessun esempio provoca più un aggiornamento.
 
 Nella {numref}`fig-percettrone-impara` si vede la proprietà che rese famoso
 l'algoritmo: **quando una retta separatrice esiste, il percettrone la trova in
-un numero finito di correzioni**. È il teorema di convergenza di Rosenblatt —
-e il "quando esiste" è la clausola che fra poco presenterà il conto.
+un numero finito di correzioni**. È il teorema di convergenza di Rosenblatt, e
+il "quando esiste" è la clausola che fra poco presenterà il conto.
 
 `````{tab} Elementare
 
@@ -198,7 +198,7 @@ per quanto la si giri, restano sempre **due** punti dalla parte sbagliata.
 
 Il contrasto con la {numref}`fig-percettrone-impara` è tutto il punto: là la
 rotazione finiva, qui non finisce mai. La {numref}`fig-xor-non-separabile` non
-prova il teorema — mostra solo alcuni orientamenti — ma rende evidente da dove
+prova il teorema (mostra solo alcuni orientamenti) ma rende evidente da dove
 viene l'ostacolo: le due classi occupano angoli **opposti** del quadrato.
 
 `````{tab} Elementare
@@ -227,15 +227,15 @@ Il libro di Minsky e Papert raffreddò gli entusiasmi e contribuì al primo
 
 ## Oltre la linea: strati nascosti e non linearità
 
-Se un neurone traccia una sola linea, mettiamone di più. Impilando i neuroni in
-uno **strato nascosto** e componendo gli strati, la rete può piegare la
+Se un neurone traccia una sola linea, mettiamone di più. Impilando i neuroni
+in uno **strato nascosto** e componendo gli strati, la rete può piegare la
 frontiera fino a separare anche lo XOR: un primo strato costruisce
-rappresentazioni intermedie, un secondo le combina. C'è però una condizione non
-negoziabile: tra uno strato e l'altro serve una **non linearità**. Comporre due
-trasformazioni lineari dà ancora una trasformazione lineare — cento strati
-senza attivazioni collasserebbero in un unico iperpiano, di nuovo incapace di
-XOR. È qui che entrano funzioni come la ReLU o la sigmoide, e con esse il
-percettrone multistrato (MLP) e l'algoritmo che lo addestra, la
+rappresentazioni intermedie, un secondo le combina. C'è però una condizione
+non negoziabile: tra uno strato e l'altro serve una **non linearità**.
+Comporre due trasformazioni lineari dà ancora una trasformazione lineare:
+cento strati senza attivazioni collasserebbero in un unico iperpiano, di nuovo
+incapace di XOR. È qui che entrano funzioni come la ReLU o la sigmoide, e con
+esse il percettrone multistrato (MLP) e l'algoritmo che lo addestra, la
 *backpropagation*: il tema dei prossimi capitoli.
 
 ```{admonition} Da ricordare

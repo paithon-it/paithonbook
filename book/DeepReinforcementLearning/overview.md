@@ -54,7 +54,7 @@ dati per visitarli tutti esisteranno mai. Il problema non è l'algoritmo, è la
 
 La svolta concettuale è semplice da enunciare. Se non possiamo *elencare* il
 valore di ogni stato, proviamo ad **approssimarlo** con una funzione che
-*generalizza*: stati simili — schermate simili — dovrebbero ricevere giudizi
+*generalizza*: stati simili (schermate simili), dovrebbero ricevere giudizi
 simili. E quale strumento sappiamo essere bravissimo a leggere immagini ed
 estrarne una risposta? Una rete neurale, in particolare convoluzionale
 ({numref}`fig-drl-pixel-to-q`).
@@ -102,12 +102,12 @@ che il capitolo affronterà entrambe.
 
 ## La svolta: da Atari a AlphaGo
 
-Quel primo lavoro — *Playing Atari with Deep Reinforcement Learning* (Mnih e
-colleghi, 2013) — diventa nel 2015 un articolo su *Nature*, *Human-level
+Quel primo lavoro, *Playing Atari with Deep Reinforcement Learning* (Mnih e
+colleghi, 2013), diventa nel 2015 un articolo su *Nature*, *Human-level
 control through deep reinforcement learning*: **un'unica architettura**, senza
 ritocchi specifici per gioco, raggiunge o supera il livello di un giocatore
-umano professionista in molti dei 49 titoli Atari testati. È la prova che pixel
-grezzi e ricompensa scarna bastano.
+umano professionista in molti dei 49 titoli Atari testati. È la prova che
+pixel grezzi e ricompensa scarna bastano.
 
 L'anno dopo arriva il colpo che raggiunge il grande pubblico: **AlphaGo**
 (Silver e colleghi, *Nature* 2016) batte per 4 a 1 il campione Lee Sedol nel
@@ -123,12 +123,12 @@ capriccioso.
 
 `````{tab} Elementare
 
-Due difficoltà su tutte. La prima: l'allenamento è **instabile**, come inseguire
-il proprio riflesso in uno specchio che si muove ogni volta che ci si avvicina;
-piccole modifiche possono far crollare tutto. La seconda: serve **una quantità
-enorme di partite**. L'agente impara per tentativi, e di tentativi ne vuole
-milioni — settimane di gioco. In un videogioco simulato va bene; con un robot
-vero che si può rompere, molto meno.
+Due difficoltà su tutte. La prima: l'allenamento è **instabile**, come
+inseguire il proprio riflesso in uno specchio che si muove ogni volta che ci
+si avvicina; piccole modifiche possono far crollare tutto. La seconda: serve
+**una quantità enorme di partite**. L'agente impara per tentativi, e di
+tentativi ne vuole milioni: settimane di gioco. In un videogioco simulato va
+bene; con un robot vero che si può rompere, molto meno.
 
 `````
 
@@ -148,8 +148,8 @@ la versione di *Nature* usava circa $50$ milioni di fotogrammi per titolo. La
 
 ## Come è organizzato il capitolo
 
-Partiremo dal **DQN** e dai suoi ingredienti stabilizzanti — experience replay e
-rete target — costruendo un agente che gioca a un ambiente Atari con
+Partiremo dal **DQN** e dai suoi ingredienti stabilizzanti (experience replay
+e rete target) costruendo un agente che gioca a un ambiente Atari con
 `gymnasium` e PyTorch. Vedremo poi i miglioramenti più influenti (Double DQN,
 Dueling, replay prioritizzato). Cambieremo quindi famiglia con i metodi a
 **gradiente di policy** e gli approcci **actor-critic** (A2C, A3C, PPO). Da lì
@@ -157,9 +157,9 @@ apriremo la cassetta degli attrezzi del deep RL moderno: il **controllo
 continuo** per la robotica (DDPG, TD3, SAC), l'apprendimento **basato su
 modello** che impara a pianificare (da Dyna a MuZero e Dreamer), l'**offline
 RL** che impara da dati già raccolti senza mai interagire (fino al Decision
-Transformer), e il nodo dell'**esplorazione** con ricompense sparse — con
+Transformer), e il nodo dell'**esplorazione** con ricompense sparse, con
 l'insidia del *reward hacking*, che ci accompagnerà fino al capitolo sull'AI
 responsabile. Chiuderemo tornando al filo che unisce tutto: la ricerca dietro
 ad AlphaGo e ai suoi successori. L'obiettivo non è collezionare acronimi, ma
-capire *perché* ciascun pezzo esiste — quale fragilità dell'idea precedente è
+capire *perché* ciascun pezzo esiste: quale fragilità dell'idea precedente è
 venuto a curare.

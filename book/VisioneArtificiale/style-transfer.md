@@ -1,13 +1,13 @@
 # Neural style transfer: la tua foto dipinta da van Gogh
 
-Nell'estate del 2015 tre ricercatori dell'Università di Tubinga — Leon Gatys,
-Alexander Ecker e Matthias Bethge — misero online una manciata di immagini
+Nell'estate del 2015 tre ricercatori dell'Università di Tubinga (Leon Gatys,
+Alexander Ecker e Matthias Bethge) misero online una manciata di immagini
 destinate a fare il giro del mondo: la Neckarfront, la fila di case sul fiume
 che è la cartolina della loro città, ridipinta nello stile della *Notte
 stellata* di van Gogh, dell'*Urlo* di Munch, di una composizione di Kandinsky
 {cite}`gatys2016image`. Nessun pittore e nessun filtro fotografico: solo una
-rete convoluzionale e una discesa del gradiente. Il metodo aveva un difetto —
-minuti di calcolo per una singola immagine — ma l'idea era irresistibile, e
+rete convoluzionale e una discesa del gradiente. Il metodo aveva un difetto
+(minuti di calcolo per una singola immagine) ma l'idea era irresistibile, e
 l'anno dopo scappò dal laboratorio: nel giugno 2016 l'app **Prisma** la portò
 in tasca a milioni di persone, con oltre dieci milioni di download nelle prime
 settimane e più di settanta milioni entro fine anno. Per un'estate i social si
@@ -30,8 +30,8 @@ Il neural style transfer combina il *contenuto* di una foto (cosa c'è) con lo
 
 In tutto il libro, finora, "addestrare" ha voluto dire una cosa sola: il
 gradiente scende sui **pesi** della rete finché le predizioni migliorano. Il
-neural style transfer capovolge lo schema. La rete — una VGG pre-addestrata su
-ImageNet {cite}`simonyan2015very` — non impara nulla: i suoi pesi restano
+neural style transfer capovolge lo schema. La rete (una VGG pre-addestrata su
+ImageNet {cite}`simonyan2015very`) non impara nulla: i suoi pesi restano
 **congelati**. A muoversi, un passo di gradiente alla volta, sono i **pixel
 dell'immagine**.
 
@@ -41,7 +41,7 @@ Immagina un critico d'arte dal giudizio infallibile ma immobile: non cambia
 mai idea, sa solo valutare. Gli mostri una tela e lui ti dice due cose: quanto
 la scena somiglia ancora alla tua foto, e quanto la pennellata somiglia a
 quella del quadro che vuoi imitare. Tu ritocchi la tela un pochino, gliela
-rimostri, ritocchi ancora — centinaia di volte, sempre nella direzione che
+rimostri, ritocchi ancora: centinaia di volte, sempre nella direzione che
 migliora i suoi due giudizi. Alla fine la tela è la tua foto, ma dipinta.
 
 Il critico è la rete convoluzionale: ha già imparato a "vedere" su milioni di
@@ -69,9 +69,9 @@ dove $X$ è il tensore-immagine che stiamo generando e $\theta$ sono i pesi
 (congelati) della VGG. Per autograd non fa differenza: basta dichiarare $X$
 come foglia con `requires_grad_(True)` e la backpropagation restituisce
 $\partial \mathcal{L} / \partial X$, il gradiente della loss **rispetto ai
-pixel**. È lo stesso meccanismo che rende possibili gli *esempi avversari* —
-immagini ritoccate in modo impercettibile apposta per ingannare una rete —
-qui usato a fin di bene.
+pixel**. È lo stesso meccanismo che rende possibili gli *esempi avversari*
+(immagini ritoccate in modo impercettibile apposta per ingannare una rete) qui
+usato a fin di bene.
 
 `````
 
@@ -85,25 +85,24 @@ con la stessa rete, sia di pennellate sia di case e campanili.
 ## Contenuto e stile: cosa c'è, come è dipinto
 
 La scoperta di Gatys e colleghi è che dentro questa gerarchia contenuto e
-stile vivono in posti diversi — e quindi si possono **separare** e
-ricombinare.
+stile vivono in posti diversi, e quindi si possono **separare** e ricombinare.
 
 `````{tab} Elementare
 
 Pensa a un quadro come a due cose sovrapposte: il **soggetto** (una notte, un
-paese, un cipresso) e la **mano del pittore** — la tavolozza dei colori, lo
-spessore e la direzione delle pennellate, il ritmo delle texture. Riconosci
+paese, un cipresso) e la **mano del pittore** (la tavolozza dei colori, lo
+spessore e la direzione delle pennellate, il ritmo delle texture). Riconosci
 uno van Gogh da tre centimetri quadrati di cielo, senza sapere cosa
 rappresenta il quadro: quella è la mano, non il soggetto. È come la grafia di
 un amico: la riconosci su qualunque parola, perché non dipende da *cosa*
 scrive ma da *come* scrive.
 
 Nella rete succede lo stesso. Il "cosa c'è" abita negli strati profondi, che
-rispondono agli oggetti e alla loro disposizione. Il "come è dipinto" abita
-in una domanda diversa: *quali coppie di motivi elementari compaiono insieme?*
+rispondono agli oggetti e alla loro disposizione. Il "come è dipinto" abita in
+una domanda diversa: *quali coppie di motivi elementari compaiono insieme?*
 Pennellata spessa insieme a giallo acceso, tratto a spirale insieme a blu
-notte. Contando queste coppie in tutta l'immagine — senza badare a *dove*
-compaiono — si ottiene una specie di carta d'identità della mano del pittore.
+notte. Contando queste coppie in tutta l'immagine (senza badare a *dove*
+compaiono) si ottiene una specie di carta d'identità della mano del pittore.
 
 `````
 
@@ -125,11 +124,11 @@ $$
 
 dove l'elemento $G^{(l)}_{ij}$ è il prodotto scalare tra il canale $i$ e il
 canale $j$: misura quanto i due filtri si attivano *insieme*, sommando su
-tutte le posizioni spaziali. In quella somma la geometria della scena sparisce
-— resta solo la statistica delle co-occorrenze di texture e colori, cioè lo
-stile. È per questo che il risultato conserva la disposizione della foto ma
-non copia i cipressi di van Gogh: della *Notte stellata* sopravvivono solo le
-correlazioni.
+tutte le posizioni spaziali. In quella somma la geometria della scena
+sparisce: resta solo la statistica delle co-occorrenze di texture e colori,
+cioè lo stile. È per questo che il risultato conserva la disposizione della
+foto ma non copia i cipressi di van Gogh: della *Notte stellata* sopravvivono
+solo le correlazioni.
 
 `````
 
@@ -151,9 +150,9 @@ $\alpha$ e $\beta$ sono due manopole. Con $\alpha$ alto comanda il giudice del
 contenuto: la foto resta quasi intatta, con una leggera patina pittorica. Con
 $\beta$ alto comanda il giudice dello stile: le pennellate prendono il
 sopravvento e la scena scivola verso l'astratto. In pratica lo stile parte
-svantaggiato — è più "difficile da accontentare" — e gli si dà molto più
-peso: con $\alpha = 1$ e $\beta = 1000$, un errore di stile conta mille volte
-un pari errore di contenuto. Trovare l'equilibrio giusto è questione di gusto,
+svantaggiato (è più "difficile da accontentare") e gli si dà molto più peso:
+con $\alpha = 1$ e $\beta = 1000$, un errore di stile conta mille volte un
+pari errore di contenuto. Trovare l'equilibrio giusto è questione di gusto,
 letteralmente: si prova e si guarda il risultato.
 
 `````
@@ -187,7 +186,7 @@ larghe. Nel paper il rapporto $\alpha/\beta$ è dell'ordine di $10^{-3}$–$10^{
 ## In pratica, con PyTorch
 
 Bastano sorprendentemente poche righe: una VGG-19 congelata da cui leggere le
-attivazioni, un'immagine dichiarata "ottimizzabile" e il solito loop — con
+attivazioni, un'immagine dichiarata "ottimizzabile" e il solito loop, con
 l'ottimizzatore che riceve i pixel al posto dei pesi.
 
 ```{code-block} python
@@ -263,19 +262,19 @@ Alahi e Fei-Fei {cite}`johnson2016perceptual` lo aggirarono con una mossa
 elegante: usare la loss di Gatys non per generare un'immagine, ma per
 **addestrare una rete** feed-forward che trasforma qualunque foto in un dato
 stile. L'ottimizzazione costosa si paga una volta sola, in fase di
-addestramento; dopo, applicare lo stile è una singola passata in avanti —
-tre ordini di grandezza più veloce, abbastanza per un video in tempo reale. È
-la famiglia di tecniche che ha reso possibili app come Prisma, con il
-compromesso di una rete da addestrare *per ciascuno stile*.
+addestramento; dopo, applicare lo stile è una singola passata in avanti: tre
+ordini di grandezza più veloce, abbastanza per un video in tempo reale. È la
+famiglia di tecniche che ha reso possibili app come Prisma, con il compromesso
+di una rete da addestrare *per ciascuno stile*.
 
 La storia poi è proseguita altrove. CycleGAN {cite}`zhu2017unpaired` ha
 imparato a "tradurre" foto in quadri (e viceversa) con reti avversarie, senza
 nemmeno bisogno di coppie di esempi; e oggi il trasferimento di stile è una
 delle tante abilità dei **modelli di diffusione**, che con un'istruzione
-testuale ridipingono un'immagine in qualunque maniera
-{cite}`rombach2022high`. Ne parleremo nel capitolo sulle GAN, nella sezione
-sulle evoluzioni. Ma l'idea di fondo — contenuto e stile come statistiche
-diverse dentro una stessa rete — nasce qui, da una passeggiata sul Neckar.
+testuale ridipingono un'immagine in qualunque maniera {cite}`rombach2022high`.
+Ne parleremo nel capitolo sulle GAN, nella sezione sulle evoluzioni. Ma l'idea
+di fondo (contenuto e stile come statistiche diverse dentro una stessa rete)
+nasce qui, da una passeggiata sul Neckar.
 
 ```{admonition} Da ricordare
 :class: important

@@ -1,56 +1,57 @@
 # Flash Attention: l'attenzione che non spreca memoria
 
 Chiedere a un modello di riassumere un romanzo intero, o di rispondere su un
-contratto di cento pagine, fino a pochi anni fa era impensabile — e non per una
-carenza di intelligenza. L'ostacolo era idraulico: una matrice che cresce con il
-*quadrato* della lunghezza del testo. Raddoppia le parole e quella matrice
-quadruplica; moltiplicale per dieci e diventa cento volte più grande. A un certo
-punto non ci sta più nella memoria della GPU, e anche quando ci sta, spostarla
-avanti e indietro costa così tanto tempo da rendere tutto insopportabilmente
-lento. Questa sezione racconta l'idea — sorprendentemente semplice nella sostanza
-— che ha fatto saltare quel muro e ha reso possibili i contesti lunghi di oggi.
+contratto di cento pagine, fino a pochi anni fa era impensabile, e non per una
+carenza di intelligenza. L'ostacolo era idraulico: una matrice che cresce con
+il *quadrato* della lunghezza del testo. Raddoppia le parole e quella matrice
+quadruplica; moltiplicale per dieci e diventa cento volte più grande. A un
+certo punto non ci sta più nella memoria della GPU, e anche quando ci sta,
+spostarla avanti e indietro costa così tanto tempo da rendere tutto
+insopportabilmente lento. Questa sezione racconta l'idea (sorprendentemente
+semplice nella sostanza) che ha fatto saltare quel muro e ha reso possibili i
+contesti lunghi di oggi.
 
-Nel capitolo sui **Transformer** abbiamo visto *cosa* fa l'attenzione: per ogni
-posizione confronta una *query* con tutte le *key*, normalizza i punteggi con una
-softmax e usa i pesi per mediare i *value*, in una riga sola,
-$\text{Attention}(Q,K,V) = \text{softmax}\!\big(QK^\top/\sqrt{d_k}\big)V$. Lì il
-problema era *quale* informazione l'attenzione raccoglie. Qui il problema è
-un altro, tutto hardware: *come* si esegue quel conto senza affogare nel traffico
-di memoria. Non ri-deriviamo l'attenzione — diamo per acquisito il capitolo sui
-Transformer — e ci concentriamo sul *come*.
+Nel capitolo sui **Transformer** abbiamo visto *cosa* fa l'attenzione: per
+ogni posizione confronta una *query* con tutte le *key*, normalizza i punteggi
+con una softmax e usa i pesi per mediare i *value*, in una riga sola,
+$\text{Attention}(Q,K,V) = \text{softmax}\!\big(QK^\top/\sqrt{d_k}\big)V$. Lì
+il problema era *quale* informazione l'attenzione raccoglie. Qui il problema è
+un altro, tutto hardware: *come* si esegue quel conto senza affogare nel
+traffico di memoria. Non ri-deriviamo l'attenzione (diamo per acquisito il
+capitolo sui Transformer) e ci concentriamo sul *come*.
 
 ## Il problema è la memoria, non i conti
 
-Il primo istinto è pensare che l'attenzione sia lenta perché fa *tanti conti*. È
-vero solo a metà. Il vero collo di bottiglia, come quasi sempre su una GPU, non è
-il calcolo: è il **movimento dei dati** — la stessa lezione della gerarchia di
-memoria e del roofline delle sezioni precedenti.
+Il primo istinto è pensare che l'attenzione sia lenta perché fa *tanti conti*.
+È vero solo a metà. Il vero collo di bottiglia, come quasi sempre su una GPU,
+non è il calcolo: è il **movimento dei dati** (la stessa lezione della
+gerarchia di memoria e del roofline delle sezioni precedenti).
 
 `````{tab} Elementare
-Immagina di dover confrontare ogni parola di un testo con ogni altra parola. Con
-mille parole, sono un milione di confronti: una tabella di mille righe per mille
-colonne. Fin qui, tanti conti ma niente di drammatico. Il guaio è *dove* metti
-quella tabella. È troppo grande per il tavolo di lavoro veloce (la memoria
-on-chip), quindi la GPU la scrive nel magazzino lontano — la memoria grande e
-lenta — e poi deve tornare a prenderla per fare il passo successivo, la softmax,
-e poi *di nuovo* per l'ultima moltiplicazione. Tre spedizioni al magazzino per
-una tabella enorme che, alla fine, non serviva nemmeno tenere: era solo un
-passaggio intermedio. È come impastare tutta la pasta del mondo, stenderla su un
-tavolo lungo un chilometro solo per tagliarla, e correre avanti e indietro per
-tutta la lunghezza a ogni operazione. Il tempo non se ne va nel taglio: se ne va
-nella corsa.
+Immagina di dover confrontare ogni parola di un testo con ogni altra parola.
+Con mille parole, sono un milione di confronti: una tabella di mille righe per
+mille colonne. Fin qui, tanti conti ma niente di drammatico. Il guaio è *dove*
+metti quella tabella. È troppo grande per il tavolo di lavoro veloce (la
+memoria on-chip), quindi la GPU la scrive nel magazzino lontano (la memoria
+grande e lenta) e poi deve tornare a prenderla per fare il passo successivo,
+la softmax, e poi *di nuovo* per l'ultima moltiplicazione. Tre spedizioni al
+magazzino per una tabella enorme che, alla fine, non serviva nemmeno tenere:
+era solo un passaggio intermedio. È come impastare tutta la pasta del mondo,
+stenderla su un tavolo lungo un chilometro solo per tagliarla, e correre
+avanti e indietro per tutta la lunghezza a ogni operazione. Il tempo non se ne
+va nel taglio: se ne va nella corsa.
 `````
 
 `````{tab} Superiore
 Per una sequenza di lunghezza $N$ e teste di dimensione $d_k$, l'attenzione
-materializza due matrici $N \times N$: i punteggi $S = QK^\top/\sqrt{d_k}$ e i pesi
-$P = \text{softmax}(S)$. Il calcolo è $O(N^2 d_k)$ FLOP, ma il dato che uccide le
-prestazioni è la **memoria**: $S$ e $P$ occupano $O(N^2)$ byte e vengono scritte
-e rilette dalla HBM più volte (produci $S$, la rileggi per la softmax, rileggi
-$P$ per il prodotto con $V$). Un numero concreto: con $N = 8192$, una sola matrice
-$S$ ha $N^2 \approx 67$ milioni di elementi; in `float16` (2 byte) sono circa
-$134$ MB — *per testa, per strato*. La memoria cresce quadraticamente, e con essa
-il traffico verso la HBM.
+materializza due matrici $N \times N$: i punteggi $S = QK^\top/\sqrt{d_k}$ e i
+pesi $P = \text{softmax}(S)$. Il calcolo è $O(N^2 d_k)$ FLOP, ma il dato che
+uccide le prestazioni è la **memoria**: $S$ e $P$ occupano $O(N^2)$ byte e
+vengono scritte e rilette dalla HBM più volte (produci $S$, la rileggi per la
+softmax, rileggi $P$ per il prodotto con $V$). Un numero concreto: con
+$N = 8192$, una sola matrice $S$ ha $N^2 \approx 67$ milioni di elementi; in
+`float16` (2 byte) sono circa $134$ MB (*per testa, per strato*). La memoria
+cresce quadraticamente, e con essa il traffico verso la HBM.
 
 Sul roofline questa è l'operazione tipicamente **memory-bound**: le parti pesanti
 del calcolo (i due matmul $QK^\top$ e $PV$) hanno buona intensità aritmetica, ma
@@ -64,36 +65,37 @@ spostare* quei byte.
 
 La svolta arriva nel 2022 da Tri Dao e colleghi con **FlashAttention**
 {cite}`dao2022flashattention`. La loro osservazione è che la matrice
-$N \times N$ è solo un *intermedio*: alla fine ci serve l'output, non la tabella
-dei punteggi. E allora perché scriverla? L'algoritmo è **IO-aware**: ottimizza il
-movimento dei dati, non i conti, e — dettaglio cruciale — dà il **risultato
-esatto**, non un'approssimazione.
+$N \times N$ è solo un *intermedio*: alla fine ci serve l'output, non la
+tabella dei punteggi. E allora perché scriverla? L'algoritmo è **IO-aware**:
+ottimizza il movimento dei dati, non i conti, e (dettaglio cruciale) dà il
+**risultato esatto**, non un'approssimazione.
 
 Due ingredienti lo rendono possibile ({numref}`fig-flash-attention`): il
-**tiling** di $Q$, $K$, $V$ — lo stesso «carica una tessera, riusala» del GEMM
-della sezione precedente — e la **online softmax**, che permette di normalizzare
-i punteggi *a pezzi* invece che tutti insieme.
+**tiling** di $Q$, $K$, $V$ (lo stesso «carica una tessera, riusala» del GEMM
+della sezione precedente) e la **online softmax**, che permette di
+normalizzare i punteggi *a pezzi* invece che tutti insieme.
 
 ```{figure} ../figures/flash-attention-tiling.svg
 :name: fig-flash-attention
 :alt: "A sinistra la matrice dei punteggi S uguale Q per K trasposto, N per N, disegnata come griglia e barrata da una grande X: la matrice che FlashAttention non scrive mai nella memoria HBM. A destra lo schema: una shared memory on-chip tiene un tile fisso di Q e un blocco corrente di K e V; sotto, i blocchi di K e V scorrono uno per volta dalla HBM verso la shared memory; un accumulatore aggiorna a ogni blocco l'output O e le due statistiche del softmax, il massimo corrente m e la somma corrente l; alla fine l'uscita è O diviso l, ed è esatta."
 :width: 90%
 
-FlashAttention non materializza mai la matrice $N \times N$: tiene un tile di $Q$
-in shared memory e vi fa scorrere i blocchi di $K,V$ uno per volta, aggiornando a
-ogni passo l'output $O$ e le statistiche del softmax — il massimo corrente $m$ e
-la somma corrente $l$.
+FlashAttention non materializza mai la matrice $N \times N$: tiene un tile di
+$Q$ in shared memory e vi fa scorrere i blocchi di $K,V$ uno per volta,
+aggiornando a ogni passo l'output $O$ e le statistiche del softmax (il massimo
+corrente $m$ e la somma corrente $l$).
 ```
 
 `````{tab} Elementare
 Il trucco è non costruire mai la tabella gigante. Tieni ferma sul tavolo di
-lavoro una manciata di query — una *tessera* di $Q$ — e fai scorrere il testo
-sorgente a blocchetti: prendi le prime chiavi, calcoli i loro punteggi, aggiorni
-il risultato; butti via quel blocchetto, prendi il successivo, e così via fino
-alla fine. Sul tavolo, in ogni istante, c'è solo un pezzetto piccolo: quello che
-stai usando *adesso*. La tabella da un milione di caselle non viene mai scritta
-per intero da nessuna parte — esiste solo un blocchetto alla volta, e sparisce
-appena hai finito di usarlo. Meno viaggi al magazzino, stesso risultato.
+lavoro una manciata di query (una *tessera* di $Q$) e fai scorrere il testo
+sorgente a blocchetti: prendi le prime chiavi, calcoli i loro punteggi,
+aggiorni il risultato; butti via quel blocchetto, prendi il successivo, e così
+via fino alla fine. Sul tavolo, in ogni istante, c'è solo un pezzetto piccolo:
+quello che stai usando *adesso*. La tabella da un milione di caselle non viene
+mai scritta per intero da nessuna parte: esiste solo un blocchetto alla volta,
+e sparisce appena hai finito di usarlo. Meno viaggi al magazzino, stesso
+risultato.
 
 C'è però un'insidia da risolvere: come fai a calcolare le *percentuali* (la
 softmax trasforma i punteggi in pesi che sommano a 100%) se non hai ancora visto
@@ -105,17 +107,18 @@ conosci solo alla fine. La risposta è la *online softmax* del prossimo passaggi
 Formalmente, si spezzano $Q$, $K$, $V$ in blocchi di righe. Per un blocco di
 query, si itera sui blocchi $(K_j, V_j)$: si carica $K_j, V_j$ in **shared
 memory**, si calcola il tile di punteggi $S_j = Q K_j^\top/\sqrt{d_k}$, e si
-aggiorna l'output *sul posto*, senza mai scrivere l'intera matrice $S$ in HBM. La
-memoria on-chip trattiene solo i tile correnti; la HBM vede scorrere $K,V$ una
-volta sola. Il costo in FLOP resta $O(N^2 d_k)$ — non tocchiamo i conti — ma il
-traffico verso la HBM scende da $O(N^2)$ a $O(N)$, ed è ciò che conta su un
+aggiorna l'output *sul posto*, senza mai scrivere l'intera matrice $S$ in HBM.
+La memoria on-chip trattiene solo i tile correnti; la HBM vede scorrere $K,V$
+una volta sola. Il costo in FLOP resta $O(N^2 d_k)$ (non tocchiamo i conti) ma
+il traffico verso la HBM scende da $O(N^2)$ a $O(N)$, ed è ciò che conta su un
 carico memory-bound. È l'idea del tiling in shared memory del GEMM, applicata
-all'attenzione: caricare una volta, riusare in tanti, non tornare al magazzino.
+all'attenzione: caricare una volta, riusare in tanti, non tornare al
+magazzino.
 
 Il nodo tecnico è che la softmax *non* è elemento-per-elemento: normalizza per
 righe, e la normalizzazione richiede in teoria di aver già visto tutti i
-punteggi della riga. Scorrere $K$ a blocchi significa vedere i punteggi un pezzo
-per volta — e qui entra la online softmax.
+punteggi della riga. Scorrere $K$ a blocchi significa vedere i punteggi un
+pezzo per volta, e qui entra la online softmax.
 `````
 
 ### La online softmax, con i numeri
@@ -180,24 +183,24 @@ stato per riga, e la matrice $N \times N$ non viene mai scritta.
 
 ## Cosa si guadagna (e cosa costa)
 
-Il risultato è netto: l'attenzione passa da $O(N^2)$ a $O(N)$ di memoria, senza
-cambiare di una virgola il valore calcolato. A sequenze corte il guadagno è
-modesto, ma cresce con $N$ — ed è proprio sulle sequenze lunghe, dove la vecchia
-attenzione andava in *out of memory* o rallentava fino a fermarsi, che
-FlashAttention cambia le carte in tavola: è ciò che ha reso pratici i contesti di
-decine o centinaia di migliaia di token. Una versione successiva,
-**FlashAttention-2** {cite}`dao2023flashattention2`, spreme ancora di più
-l'hardware ripartendo meglio il lavoro tra i gruppi di thread e limitando le
-operazioni più lente — quelle diverse dalle moltiplicazioni di matrici, che i
-tensor core non sanno accelerare — con un altro sostanziale guadagno di velocità,
-nell'ordine del raddoppio rispetto alla prima versione.
+Il risultato è netto: l'attenzione passa da $O(N^2)$ a $O(N)$ di memoria,
+senza cambiare di una virgola il valore calcolato. A sequenze corte il
+guadagno è modesto, ma cresce con $N$, ed è proprio sulle sequenze lunghe,
+dove la vecchia attenzione andava in *out of memory* o rallentava fino a
+fermarsi, che FlashAttention cambia le carte in tavola: è ciò che ha reso
+pratici i contesti di decine o centinaia di migliaia di token. Una versione
+successiva, **FlashAttention-2** {cite}`dao2023flashattention2`, spreme ancora
+di più l'hardware ripartendo meglio il lavoro tra i gruppi di thread e
+limitando le operazioni più lente (quelle diverse dalle moltiplicazioni di
+matrici, che i tensor core non sanno accelerare) con un altro sostanziale
+guadagno di velocità, nell'ordine del raddoppio rispetto alla prima versione.
 
-Onestà, però: quello che in queste pagine sta in un'idea semplice, nel codice è
-un kernel notoriamente complicato — indici, gestione della shared memory, casi
-limite della maschera causale. Non è codice che si scrive a mano per un progetto
-normale, ed è giusto così. In PyTorch lo usi senza nemmeno saperlo: la funzione
-`scaled_dot_product_attention` seleziona da sé il backend migliore disponibile e,
-su GPU adatte, quello è proprio FlashAttention.
+Onestà, però: quello che in queste pagine sta in un'idea semplice, nel codice
+è un kernel notoriamente complicato (indici, gestione della shared memory,
+casi limite della maschera causale). Non è codice che si scrive a mano per un
+progetto normale, ed è giusto così. In PyTorch lo usi senza nemmeno saperlo:
+la funzione `scaled_dot_product_attention` seleziona da sé il backend migliore
+disponibile e, su GPU adatte, quello è proprio FlashAttention.
 
 ```python
 import torch
@@ -221,48 +224,50 @@ generazione.
 
 ## La frontiera: nascondere il movimento dei dati
 
-FlashAttention è l'esempio più limpido di un filo conduttore che attraversa tutto
-questo capitolo, ed è il modo migliore per chiuderlo dal lato dell'hardware: **la
-storia della velocità sulle GPU è la storia di come nascondere il movimento dei
-dati**. Ogni tecnica che abbiamo incontrato — coalescenza, tiling in shared
-memory, fusione dei kernel, e ora l'attenzione IO-aware — è una variazione sullo
-stesso tema: fare più conti per ogni byte spostato, e tenere il byte il più
-vicino possibile ai core.
+FlashAttention è l'esempio più limpido di un filo conduttore che attraversa
+tutto questo capitolo, ed è il modo migliore per chiuderlo dal lato
+dell'hardware: **la storia della velocità sulle GPU è la storia di come
+nascondere il movimento dei dati**. Ogni tecnica che abbiamo incontrato
+(coalescenza, tiling in shared memory, fusione dei kernel, e ora l'attenzione
+IO-aware) è una variazione sullo stesso tema: fare più conti per ogni byte
+spostato, e tenere il byte il più vicino possibile ai core.
 
 I kernel più veloci di oggi portano questa idea ancora più in là. Restando al
-livello concettuale — niente istruzioni di basso livello — le leve sono tre.
+livello concettuale (niente istruzioni di basso livello) le leve sono tre.
 
 `````{tab} Elementare
-Pensa a una catena di montaggio ben organizzata. Nelle GPU più recenti, mentre un
-gruppo di operai lavora sui pezzi che ha già sul banco, un *altro* gruppo è già
-andato a prendere i pezzi successivi dal magazzino: quando i primi finiscono, il
-materiale nuovo è lì pronto, e nessuno resta mai fermo ad aspettare. È il
-**movimento asincrono** dei dati — la copia dal magazzino e il lavoro sul banco
-avvengono *nello stesso momento*, sovrapposti, invece che uno dopo l'altro. E i
-ruoli si specializzano: c'è chi fa solo il portapacchi e chi solo il montaggio,
-come in una catena vera, perché un operaio dedicato a un compito lo fa meglio di
-uno che salta di continuo da un lavoro all'altro. Più i tavoli di lavoro
-(i *tensor core*) diventano potenti, più questo conta: se i pezzi non arrivano in
-tempo, il tavolo più veloce del mondo resta a girarsi i pollici. Tutta l'arte sta
-nel far arrivare i pezzi *mentre* si lavora, così che il tavolo non si fermi mai.
+Pensa a una catena di montaggio ben organizzata. Nelle GPU più recenti, mentre
+un gruppo di operai lavora sui pezzi che ha già sul banco, un *altro* gruppo è
+già andato a prendere i pezzi successivi dal magazzino: quando i primi
+finiscono, il materiale nuovo è lì pronto, e nessuno resta mai fermo ad
+aspettare. È il **movimento asincrono** dei dati: la copia dal magazzino e il
+lavoro sul banco avvengono *nello stesso momento*, sovrapposti, invece che uno
+dopo l'altro. E i ruoli si specializzano: c'è chi fa solo il portapacchi e chi
+solo il montaggio, come in una catena vera, perché un operaio dedicato a un
+compito lo fa meglio di uno che salta di continuo da un lavoro all'altro. Più
+i tavoli di lavoro (i *tensor core*) diventano potenti, più questo conta: se i
+pezzi non arrivano in tempo, il tavolo più veloce del mondo resta a girarsi i
+pollici. Tutta l'arte sta nel far arrivare i pezzi *mentre* si lavora, così
+che il tavolo non si fermi mai.
 `````
 
 `````{tab} Superiore
 Tre direzioni, tutte volte a *nascondere* la latenza del movimento dati dietro il
 calcolo:
 
-- **Movimento asincrono dei dati.** Le GPU recenti (dall'architettura Hopper in
-  poi) hanno unità dedicate — come il *Tensor Memory Accelerator*, TMA — che
+- **Movimento asincrono dei dati.** Le GPU recenti (dall'architettura Hopper
+  in poi) hanno unità dedicate (come il *Tensor Memory Accelerator*, TMA) che
   copiano tessere dalla HBM alla shared memory *in parallelo* al calcolo sui
-  tensor core, sovrapponendo trasferimento ed esecuzione. Il kernel non aspetta i
-  dati: lavora sul tile corrente mentre il prossimo è già in viaggio.
+  tensor core, sovrapponendo trasferimento ed esecuzione. Il kernel non
+  aspetta i dati: lavora sul tile corrente mentre il prossimo è già in
+  viaggio.
 - **Tensor core sempre più potenti e formati più stretti.** Le unità di matmul
-  crescono in throughput di generazione in generazione (Hopper, poi Blackwell) e
-  guadagnano formati numerici più compatti — fino a **FP8** (8 bit) — che
-  dimezzano ancora i byte da spostare, nella stessa logica della precisione mista
-  vista nella sezione «Prestazioni e scala». Ma più i tensor core sono veloci,
-  più è facile ritrovarsi memory-bound: il ginocchio del roofline si sposta a
-  destra, e la partita torna a giocarsi sui byte.
+  crescono in throughput di generazione in generazione (Hopper, poi Blackwell)
+  e guadagnano formati numerici più compatti, fino a **FP8** (8 bit), che
+  dimezzano ancora i byte da spostare, nella stessa logica della precisione
+  mista vista nella sezione «Prestazioni e scala». Ma più i tensor core sono
+  veloci, più è facile ritrovarsi memory-bound: il ginocchio del roofline si
+  sposta a destra, e la partita torna a giocarsi sui byte.
 - **Warp specialization.** Invece di far fare a ogni warp un po' di tutto, gli si
   assegnano *ruoli*: alcuni warp fanno solo da *producer* (caricano i dati dalla
   HBM), altri da *consumer* (calcolano sui tensor core), coordinati come i
@@ -270,26 +275,26 @@ calcolo:
   calcolo sempre rifornite e i canali di memoria sempre occupati.
 
 Sono le tecniche con cui sono scritte le versioni più recenti dei kernel di
-attenzione, che portano l'idea di FlashAttention fin sul silicio più nuovo. Chi
-vuole seguirle fino in fondo — dal TMA alla warp specialization, fino alle
-generazioni più recenti di FlashAttention — trova una trattazione avanzata nel
+attenzione, che portano l'idea di FlashAttention fin sul silicio più nuovo.
+Chi vuole seguirle fino in fondo (dal TMA alla warp specialization, fino alle
+generazioni più recenti di FlashAttention) trova una trattazione avanzata nel
 corso *Modern GPU Programming for MLSys* di mlc.ai. Il messaggio, però, resta
-quello con cui abbiamo aperto il capitolo: le migliaia di core semplici sono la
-parte facile; l'ingegneria vera è tenerle sfamate.
+quello con cui abbiamo aperto il capitolo: le migliaia di core semplici sono
+la parte facile; l'ingegneria vera è tenerle sfamate.
 `````
 
 ```{admonition} Da ricordare
 :class: important
-- L'attenzione materializza due matrici $N \times N$ ($S = QK^\top/\sqrt{d_k}$ e
-  $P = \text{softmax}(S)$): $O(N^2)$ memoria e traffico HBM. Il collo di
-  bottiglia è la **memoria**, non i FLOP — è **memory-bound**.
+- L'attenzione materializza due matrici $N \times N$ ($S = QK^\top/\sqrt{d_k}$
+  e $P = \text{softmax}(S)$): $O(N^2)$ memoria e traffico HBM. Il collo di
+  bottiglia è la **memoria**, non i FLOP: è **memory-bound**.
 - **FlashAttention** {cite}`dao2022flashattention` è **IO-aware**: con il
   **tiling** di $Q,K,V$ in shared memory e la **online softmax** non scrive mai
   la matrice $N \times N$ in HBM. Il risultato è **esatto**, non approssimato.
 - La **online softmax** normalizza i punteggi a blocchi tenendo due scalari di
-  stato — massimo corrente $m$ e somma corrente $l$ — e ri-scalando ciò che ha
-  già sommato quando compare un massimo nuovo: dà gli stessi pesi del calcolo in
-  un colpo solo.
+  stato (massimo corrente $m$ e somma corrente $l$) e ri-scalando ciò che ha
+  già sommato quando compare un massimo nuovo: dà gli stessi pesi del calcolo
+  in un colpo solo.
 - Il guadagno: memoria da $O(N^2)$ a $O(N)$, grande accelerazione a sequenze
   lunghe, contesti lunghi resi pratici. **FlashAttention-2**
   {cite}`dao2023flashattention2` migliora ancora la ripartizione del lavoro. In

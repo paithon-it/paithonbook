@@ -8,10 +8,10 @@ sistema migliore era intorno al 26%; nel 2015 era sceso sotto il 4%, meglio di
 un essere umano messo alla prova sullo stesso compito. In quattro anni un
 problema considerato durissimo è stato quasi chiuso.
 
-Dietro quel crollo non ci sono soltanto "più dati e computer più potenti".
-C'è una manciata di **architetture** — modi diversi di impilare gli strati di
-una rete — ognuna delle quali ha spostato la frontiera. Ripercorriamole in
-ordine, perché conoscerle significa capire come si progetta una rete profonda.
+Dietro quel crollo non ci sono soltanto "più dati e computer più potenti". C'è
+una manciata di **architetture** (modi diversi di impilare gli strati di una
+rete) ognuna delle quali ha spostato la frontiera. Ripercorriamole in ordine,
+perché conoscerle significa capire come si progetta una rete profonda.
 
 ## LeNet-5: dove tutto comincia
 
@@ -34,8 +34,8 @@ scritto a regole.
 LeNet-5 alterna strati **convoluzionali** (che condividono i pesi su tutta
 l'immagine) e strati di **sottocampionamento** (l'antenato del *pooling*),
 seguiti da strati *fully-connected* per la classificazione finale, con
-attivazioni $\tanh$. Ha circa $60\,000$ parametri — minuscola per gli standard
-odierni — ed è addestrata con la *backpropagation* sul dataset di cifre
+attivazioni $\tanh$. Ha circa $60\,000$ parametri (minuscola per gli standard
+odierni) ed è addestrata con la *backpropagation* sul dataset di cifre
 manoscritte **MNIST**. Introduce già i tre principi delle CNN: connettività
 locale, condivisione dei pesi e invarianza approssimata alla traslazione.
 `````
@@ -44,10 +44,10 @@ locale, condivisione dei pesi e invarianza approssimata alla traslazione.
 
 Per oltre un decennio le CNN restarono una curiosità. La svolta arriva nel
 2012, quando **AlexNet** {cite}`krizhevsky2012imagenet` vince la sfida
-ImageNet con un margine imbarazzante: un errore *top-5* — la risposta giusta
-non compare nemmeno tra le prime cinque proposte — del 15,3%, contro il 26%
-del secondo classificato, che usava ancora tecniche "artigianali". Fu il
-momento in cui il resto del campo capì che il deep learning funzionava.
+ImageNet con un margine imbarazzante: un errore *top-5* (la risposta giusta
+non compare nemmeno tra le prime cinque proposte) del 15,3%, contro il 26% del
+secondo classificato, che usava ancora tecniche "artigianali". Fu il momento
+in cui il resto del campo capì che il deep learning funzionava.
 
 `````{tab} Elementare
 AlexNet è, in fondo, una LeNet cresciuta: molti più strati, molte più
@@ -70,7 +70,7 @@ scala giusta sul dataset giusto.
 ## Network in Network: una piccola rete dentro il filtro
 
 Nel 2013, mentre il mondo digeriva la lezione di AlexNet, tre ricercatori
-della National University of Singapore — Min Lin, Qiang Chen e Shuicheng Yan —
+della National University of Singapore (Min Lin, Qiang Chen e Shuicheng Yan)
 pubblicano un articolo dal titolo quasi ricorsivo: **Network in Network**
 (NiN) {cite}`lin2013network`. Non vince nessuna classifica, ma contiene due
 idee destinate a diventare equipaggiamento standard di quasi tutte le reti
@@ -79,15 +79,14 @@ venute dopo.
 `````{tab} Elementare
 In ogni punto dell'immagine la rete accumula, strato dopo strato, tante
 "opinioni" diverse: una segnala un bordo, un'altra una macchia di colore,
-un'altra ancora una trama. La prima idea di NiN è una lente
-piccolissima che guarda un solo punto alla volta, ma legge *tutte* le opinioni
-raccolte su quel punto e le fonde in un giudizio più maturo: una piccola
-riunione di esperti convocata pixel per pixel. La seconda idea riguarda il
-finale. Invece di collegare tutto a un enorme "ufficio" di neuroni che decide
-la classe — dove le reti dell'epoca concentravano quasi tutti i loro
-collegamenti — NiN prepara una mappa per ogni categoria e guarda quanto
-ciascuna mappa si accende in media: la più accesa vince. Milioni di
-collegamenti sostituiti da una media.
+un'altra ancora una trama. La prima idea di NiN è una lente piccolissima che
+guarda un solo punto alla volta, ma legge *tutte* le opinioni raccolte su quel
+punto e le fonde in un giudizio più maturo: una piccola riunione di esperti
+convocata pixel per pixel. La seconda idea riguarda il finale. Invece di
+collegare tutto a un enorme "ufficio" di neuroni che decide la classe (dove le
+reti dell'epoca concentravano quasi tutti i loro collegamenti) NiN prepara una
+mappa per ogni categoria e guarda quanto ciascuna mappa si accende in media:
+la più accesa vince. Milioni di collegamenti sostituiti da una media.
 `````
 
 `````{tab} Superiore
@@ -97,13 +96,13 @@ lineare del suo vettore di canali, seguita dalla non-linearità: non tocca la
 struttura spaziale ma ricombina i canali, con appena
 $C_{\text{in}} \cdot C_{\text{out}}$ pesi. Farne seguire una o due a una
 convoluzione ordinaria equivale a far scorrere sull'immagine un piccolo
-percettrone multistrato al posto di un filtro lineare — da qui il nome
-*network in network*. All'altro capo della rete, il **global average pooling**
-elimina gli strati *fully-connected* finali: l'ultimo strato convoluzionale
-produce una mappa di attivazione per classe, ogni mappa viene ridotta alla
-propria media spaziale e il vettore risultante va dritto alla softmax. Zero
-parametri dove AlexNet ne concentrava oltre il 90% (nei tre strati densi), e
-meno overfitting.
+percettrone multistrato al posto di un filtro lineare: da qui il nome *network
+in network*. All'altro capo della rete, il **global average pooling** elimina
+gli strati *fully-connected* finali: l'ultimo strato convoluzionale produce
+una mappa di attivazione per classe, ogni mappa viene ridotta alla propria
+media spaziale e il vettore risultante va dritto alla softmax. Zero parametri
+dove AlexNet ne concentrava oltre il 90% (nei tre strati densi), e meno
+overfitting.
 `````
 
 Tenete a mente entrambe le idee: le ritroveremo tra poco, dentro la rete che
@@ -126,7 +125,7 @@ combinati in tanti strati.
 
 `````{tab} Superiore
 Due convoluzioni $3\times 3$ in serie hanno lo stesso *campo recettivo* di una
-$5\times 5$, tre in serie di una $7\times 7$ — ma con più non-linearità
+$5\times 5$, tre in serie di una $7\times 7$, ma con più non-linearità
 intermedie e **meno parametri**. Su $C$ canali, un filtro $5\times 5$ costa
 $25C^2$ pesi, due filtri $3\times 3$ solo $2\cdot 9C^2 = 18C^2$. VGG-16 e
 VGG-19 spingono la profondità a 16–19 strati e diventano il punto di
@@ -136,9 +135,9 @@ riferimento per il *transfer learning* degli anni successivi.
 ## GoogLeNet e i moduli Inception
 
 Lo stesso anno Google vince la classificazione di ImageNet con **GoogLeNet**
-{cite}`szegedy2015going`, costruita a partire da un blocco ingegnoso — il
-**modulo Inception** — che mette a frutto proprio le convoluzioni
-$1\times 1$ di NiN.
+{cite}`szegedy2015going`, costruita a partire da un blocco ingegnoso (il
+**modulo Inception**) che mette a frutto proprio le convoluzioni $1\times 1$
+di NiN.
 
 `````{tab} Elementare
 Quanto è grande la cosa che stiamo cercando? Un dettaglio minuscolo o un
@@ -165,11 +164,10 @@ i suoi parametri sono così pochi.
 ## ResNet: insegnare alle reti a non dimenticare l'input
 
 Restava un muro. Impilando strati oltre una certa soglia, le reti non solo
-smettevano di migliorare: peggioravano, e non per overfitting — sbagliavano di
+smettevano di migliorare: peggioravano, e non per overfitting; sbagliavano di
 più anche sui dati di addestramento. Questo **problema di degradazione** viene
-risolto da **ResNet** {cite}`he2016deep` di He, Zhang, Ren e Sun, che porta
-la profondità
-a 152 strati e l'errore su ImageNet al 3,57%.
+risolto da **ResNet** {cite}`he2016deep` di He, Zhang, Ren e Sun, che porta la
+profondità a 152 strati e l'errore su ImageNet al 3,57%.
 
 ```{figure} ../figures/residuo-skip-connection.svg
 :name: fig-skip-connection
@@ -211,13 +209,13 @@ centinaia di strati.
 ## DenseNet: se una scorciatoia funziona, prendetele tutte
 
 La connessione residua apre una strada, e nel 2017 un gruppo tra Cornell,
-Tsinghua e Facebook AI Research — Gao Huang, Zhuang Liu, Laurens van der
-Maaten e Kilian Weinberger — la percorre fino in fondo con **DenseNet**
-{cite}`huang2017densely`, premiata come miglior articolo, a pari merito con
-un altro lavoro, alla conferenza CVPR. Se ResNet *somma* l'input all'uscita
+Tsinghua e Facebook AI Research (Gao Huang, Zhuang Liu, Laurens van der Maaten
+e Kilian Weinberger) la percorre fino in fondo con **DenseNet**
+{cite}`huang2017densely`, premiata come miglior articolo, a pari merito con un
+altro lavoro, alla conferenza CVPR. Se ResNet *somma* l'input all'uscita
 ($\mathbf{x} + \mathcal{F}(\mathbf{x})$), DenseNet *concatena*: dentro un
-blocco denso ogni strato riceve le feature di **tutti** gli strati
-precedenti, affiancate una all'altra.
+blocco denso ogni strato riceve le feature di **tutti** gli strati precedenti,
+affiancate una all'altra.
 
 ```{figure} ../figures/blocco-denso.svg
 :name: fig-blocco-denso
@@ -225,8 +223,8 @@ precedenti, affiancate una all'altra.
 :width: 100%
 
 Il blocco denso: ogni strato riceve, affiancate lungo i canali, le feature di
-tutti gli strati precedenti — non una sola scorciatoia come nel blocco
-residuo, ma tutte.
+tutti gli strati precedenti (non una sola scorciatoia come nel blocco residuo,
+ma tutte).
 ```
 
 `````{tab} Elementare
@@ -237,8 +235,8 @@ prima*, messo semplicemente uno accanto all'altro
 ({numref}`fig-blocco-denso`). È come una chat di gruppo in cui ogni nuovo
 messaggio ha sotto gli occhi l'intera conversazione: nessuna informazione va
 riassunta o ricostruita, basta consultarla. E proprio perché può contare su
-tutto il lavoro già fatto, ogni strato aggiunge poco di suo — poche mappe
-nuove per volta — e la rete resta sorprendentemente snella. Il rovescio della
+tutto il lavoro già fatto, ogni strato aggiunge poco di suo (poche mappe nuove
+per volta) e la rete resta sorprendentemente snella. Il rovescio della
 medaglia è lo stesso delle chat: la cronologia cresce, e tenerla tutta aperta
 occupa parecchia memoria.
 `````
@@ -253,14 +251,14 @@ $$
 
 dove $[\cdot]$ indica la concatenazione lungo i canali, $\mathbf{x}_0$ è
 l'input del blocco e $H_\ell$ una sequenza batch normalization → ReLU →
-convoluzione $3\times 3$. Ogni strato produce solo $k$ mappe nuove — il
-**growth rate**, tipicamente $k=12$ o $k=32$ — così lo strato $\ell$ riceve
+convoluzione $3\times 3$. Ogni strato produce solo $k$ mappe nuove (il
+**growth rate**, tipicamente $k=12$ o $k=32$), così lo strato $\ell$ riceve
 $k_0 + k(\ell-1)$ canali, dove $k_0$ sono quelli dell'input. Il **riuso delle
 feature** rende la rete efficiente nei parametri (a parità di accuratezza su
 ImageNet, all'incirca la metà di una ResNet comparabile) e la concatenazione
 apre a ogni strato un percorso diretto verso il gradiente della loss. Poiché
 concatenare richiede mappe della stessa dimensione spaziale, i blocchi densi
-sono separati da *strati di transizione* (convoluzione $1\times 1$ e pooling)
+sono separati da *strati di transizione* (convoluzione $1\times 1$ e pooling),
 che dimezzano la risoluzione. Il conto da pagare è la **memoria** in
 addestramento: in un'implementazione ingenua le attivazioni concatenate
 crescono col quadrato della profondità del blocco, ed esistono varianti più
@@ -283,10 +281,10 @@ gli ingredienti in proporzione, o il risultato è immangiabile. Una rete può
 crescere in tre modi: più strati (profondità), strati più larghi (larghezza),
 immagini d'ingresso più grandi (risoluzione). Invece di puntare tutto su uno
 solo, EfficientNet li fa crescere insieme, in proporzioni fisse trovate una
-volta per tutte: a ogni raddoppio del budget di calcolo, la profondità
-aumenta di circa il 20%, la larghezza del 10% e la risoluzione del 15%.
-Ripetendo la ricetta si ottiene una famiglia di reti, dalla più piccola —
-adatta a un telefono — alla più grande.
+volta per tutte: a ogni raddoppio del budget di calcolo, la profondità aumenta
+di circa il 20%, la larghezza del 10% e la risoluzione del 15%. Ripetendo la
+ricetta si ottiene una famiglia di reti, dalla più piccola (adatta a un
+telefono) alla più grande.
 `````
 
 `````{tab} Superiore
@@ -311,7 +309,7 @@ rispetto alle CNN precedenti.
 
 La seconda direzione è automatizzare la ricerca stessa: nella **neural
 architecture search** un algoritmo esplora lo spazio delle possibili
-architetture e seleziona le più promettenti — la rete base di EfficientNet è
+architetture e seleziona le più promettenti; la rete base di EfficientNet è
 stata trovata proprio così, non disegnata a mano. E la storia non è finita:
 dal 2020 i **Vision Transformer** {cite}`dosovitskiy2021image`, reti basate
 sull'attenzione e nate per il linguaggio, hanno dimostrato di poter competere
@@ -322,19 +320,19 @@ ai Transformer.
 ## L'architettura conta quanto i dati
 
 Nessuna di queste reti ha vinto solo con più esempi o più GPU. LeNet ha dato
-la convoluzione, AlexNet ha dimostrato che scala, NiN ha ripensato il filtro
-e il finale della rete, VGG ha reso la profondità sistematica, Inception ha
-aggiunto la multi-scala, ResNet ha reso la profondità finalmente
-addestrabile, DenseNet ha portato il riuso delle feature alle estreme
-conseguenze. Ogni salto è nato da un'**idea strutturale** su come
-far scorrere l'informazione dentro la rete. I dati sono il carburante, ma la
-forma del motore decide quanto lontano si arriva — ed è una lezione che vale
-ancora oggi, dai Transformer in poi.
+la convoluzione, AlexNet ha dimostrato che scala, NiN ha ripensato il filtro e
+il finale della rete, VGG ha reso la profondità sistematica, Inception ha
+aggiunto la multi-scala, ResNet ha reso la profondità finalmente addestrabile,
+DenseNet ha portato il riuso delle feature alle estreme conseguenze. Ogni
+salto è nato da un'**idea strutturale** su come far scorrere l'informazione
+dentro la rete. I dati sono il carburante, ma la forma del motore decide
+quanto lontano si arriva, ed è una lezione che vale ancora oggi, dai
+Transformer in poi.
 
 ```{admonition} Da ricordare
 :class: important
-- **LeNet-5** (1998): la convoluzione che legge le cifre — connettività
-  locale, pesi condivisi, pooling.
+- **LeNet-5** (1998): la convoluzione che legge le cifre (connettività locale,
+  pesi condivisi, pooling).
 - **AlexNet** (2012): ReLU, dropout e GPU portano le CNN a vincere ImageNet.
 - **NiN** (2013): convoluzioni $1\times 1$ come mini-rete pixel per pixel e
   *global average pooling* al posto degli strati densi.
@@ -344,7 +342,7 @@ ancora oggi, dai Transformer in poi.
 - **ResNet** (2015): la connessione residua $\mathbf{y}=\mathcal{F}(\mathbf{x})+\mathbf{x}$
   rende addestrabili reti di centinaia di strati.
 - **DenseNet** (2017): ogni strato riceve, concatenate, le feature di
-  **tutti** i precedenti — pochi parametri, molta memoria.
+  **tutti** i precedenti (pochi parametri, molta memoria).
 - Dopo l'artigianato, il metodo: il **compound scaling** di EfficientNet fa
   crescere insieme profondità, larghezza e risoluzione; la *neural
   architecture search* automatizza il progetto.

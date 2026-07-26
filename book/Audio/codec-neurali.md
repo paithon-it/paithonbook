@@ -1,22 +1,22 @@
 # Il suono come token: i codec neurali
 
 Nell'overview del capitolo abbiamo lanciato una promessa: se riuscissimo a
-trasformare un suono in una sequenza di simboli discreti — un «alfabeto sonoro»
-finito — potremmo generarne di nuovo esattamente come un modello di linguaggio
+trasformare un suono in una sequenza di simboli discreti (un «alfabeto sonoro»
+finito) potremmo generarne di nuovo esattamente come un modello di linguaggio
 genera testo, un simbolo alla volta. Ma il testo quell'alfabeto ce l'ha già,
-regalato dalla lingua: ventuno lettere e via. L'audio no. È un'onda continua, e
-un alfabeto per il suono in natura non esiste: va **costruito**. Questa sezione
-racconta chi lo costruisce — i **codec neurali** — e come. È la chiave di volta
-della generazione audio moderna: senza un buon alfabeto, non c'è nulla su cui
-scrivere.
+regalato dalla lingua: ventuno lettere e via. L'audio no. È un'onda continua,
+e un alfabeto per il suono in natura non esiste: va **costruito**. Questa
+sezione racconta chi lo costruisce (i **codec neurali**) e come. È la chiave
+di volta della generazione audio moderna: senza un buon alfabeto, non c'è
+nulla su cui scrivere.
 
 ## Comprimere imparando
 
-La parola *codec* non è nuova. Ogni volta che ascoltate un brano in streaming o
-salvate un vocale, un codec ha ridotto l'audio a una frazione della sua
+La parola *codec* non è nuova. Ogni volta che ascoltate un brano in streaming
+o salvate un vocale, un codec ha ridotto l'audio a una frazione della sua
 dimensione. Il più famoso, l'**MP3** (standardizzato nel 1993), comprime
 buttando via ciò che l'orecchio non sente: si appoggia a un modello
-psicoacustico — un insieme di **regole fisse**, scritte a mano da ingegneri —
+psicoacustico (un insieme di **regole fisse**, scritte a mano da ingegneri)
 che decide quali frequenze sono mascherate da altre e quindi eliminabili. È un
 ottimo mestiere artigianale, ma è *congelato*: quelle regole non cambiano, non
 imparano, non si adattano ai dati.
@@ -40,10 +40,11 @@ sul tuo bagaglio, che nessuno ti ha dettato. Il codec neurale è il secondo
 viaggiatore: nessuno gli dice *cosa* buttare, lo scopre da solo cercando di far
 tornare a casa la valigia il più intatta possibile.
 
-La vera sorpresa, però, non è la compressione in sé — l'MP3 già comprime bene.
-È che questa rappresentazione compatta, imparata, possiamo poi **arrotondarla**
-a un piccolo insieme di valori-tipo. E un valore-tipo è un simbolo: un numero
-intero. È il ponte che stavamo cercando, dall'onda continua all'alfabeto.
+La vera sorpresa, però, non è la compressione in sé: l'MP3 già comprime bene.
+È che questa rappresentazione compatta, imparata, possiamo poi
+**arrotondarla** a un piccolo insieme di valori-tipo. E un valore-tipo è un
+simbolo: un numero intero. È il ponte che stavamo cercando, dall'onda continua
+all'alfabeto.
 
 `````
 
@@ -60,10 +61,11 @@ GAN che spinge $\hat{x}$ a suonare realistico, non solo a minimizzare l'errore
 medio.
 
 Fin qui è compressione con rappresentazione **continua**: $z$ è un vettore di
-numeri reali. La novità che ci interessa è renderla **discreta** — sostituire
+numeri reali. La novità che ci interessa è renderla **discreta**: sostituire
 ogni vettore latente con un simbolo preso da un insieme finito. È il passaggio
-che trasforma un compressore in un *tokenizzatore* del suono, e apre la porta ai
-modelli di linguaggio sull'audio. Il come è il tema delle prossime due sezioni.
+che trasforma un compressore in un *tokenizzatore* del suono, e apre la porta
+ai modelli di linguaggio sull'audio. Il come è il tema delle prossime due
+sezioni.
 
 `````
 
@@ -81,9 +83,9 @@ Pensa a una fotografia con milioni di sfumature di colore e a una tavolozza
 fissa di, diciamo, 16 colori. Per ogni pixel della foto scegli il colore della
 tavolozza che gli somiglia di più e lo sostituisci: la foto diventa un po' più
 «a blocchi», ma la riconosci ancora. E adesso il colpo di genio: invece di
-salvare per ogni pixel i suoi tre numeri di colore, salvi **un solo numero** —
-la *posizione* nella tavolozza, da 0 a 15. La tavolozza la conosciamo già, ci
-basta l'indice.
+salvare per ogni pixel i suoi tre numeri di colore, salvi **un solo numero**
+(la *posizione* nella tavolozza, da 0 a 15). La tavolozza la conosciamo già,
+ci basta l'indice.
 
 La *vector quantization* fa esattamente questo, ma sui vettori latenti del
 suono invece che sui colori dei pixel. La «tavolozza» si chiama **codebook**: un
@@ -105,7 +107,7 @@ k^\star = \arg\min_{k \in \{1,\dots,K\}} \lVert z - e_k \rVert^2,
 \qquad q(z) = e_{k^\star},
 $$
 
-dove $q(z)$ è il vettore quantizzato e $k^\star$ è il token — un intero in
+dove $q(z)$ è il vettore quantizzato e $k^\star$ è il token: un intero in
 $\{1, \dots, K\}$. L'audio non è più una sequenza di vettori reali ma una
 sequenza di interi, esattamente come un testo tokenizzato.
 
@@ -147,12 +149,13 @@ ciò che serve per scrivere l'audio in un alfabeto.
 
 ## Residual vector quantization: strati di precisione
 
-C'è un problema, e lo si vede proprio nell'esempio. Sostituire $(0{,}8,\ 0{,}1)$
-con $(1,0)$ è comodo ma **grossolano**: ci siamo persi lo scarto $(-0{,}2,\
-0{,}1)$. Per l'audio, questo scarto è la differenza tra una voce naturale e una
-voce metallica da citofono. Potremmo allargare il codebook — più prototipi,
-approssimazione più fine — ma per dimezzare l'errore servirebbero *tantissimi*
-prototipi, e ogni raddoppio costa un bit in più per token. Non regge.
+C'è un problema, e lo si vede proprio nell'esempio. Sostituire
+$(0{,}8,\ 0{,}1)$ con $(1,0)$ è comodo ma **grossolano**: ci siamo persi lo
+scarto $(-0{,}2,\ 0{,}1)$. Per l'audio, questo scarto è la differenza tra una
+voce naturale e una voce metallica da citofono. Potremmo allargare il codebook
+(più prototipi, approssimazione più fine) ma per dimezzare l'errore
+servirebbero *tantissimi* prototipi, e ogni raddoppio costa un bit in più per
+token. Non regge.
 
 La soluzione, elegante, è la **residual vector quantization** (RVQ), introdotta
 per i codec neurali da **SoundStream** {cite}`zeghidour2021soundstream` (Google,
@@ -162,19 +165,19 @@ corregge l'errore lasciato dal precedente.
 
 `````{tab} Elementare
 
-Hai presente quando devi dare un resto di 87 centesimi con le monete? Non cerchi
-una moneta magica da 87: prendi prima la più grossa che ci sta — 50 —, ti
-restano 37; poi la più grossa che ci sta nei 37 — 20 —, restano 17; poi 10,
+Hai presente quando devi dare un resto di 87 centesimi con le monete? Non
+cerchi una moneta magica da 87: prendi prima la più grossa che ci sta (50), ti
+restano 37; poi la più grossa che ci sta nei 37 (20), restano 17; poi 10,
 restano 7; poi 5, poi 2. Ogni moneta si occupa di ciò che è avanzato dalla
 precedente, e passo dopo passo ti avvicini alla cifra esatta.
 
 La RVQ fa la stessa cosa con i vettori del suono. Il primo codebook dà
-l'approssimazione grossolana — la moneta da 50. Poi calcola quanto ha
-sbagliato — il **residuo**, il resto da coprire — e chiede a un secondo codebook
-di approssimare *quel residuo*. Il secondo lascia a sua volta un residuo più
+l'approssimazione grossolana: la moneta da 50. Poi calcola quanto ha sbagliato
+(il **residuo**, il resto da coprire) e chiede a un secondo codebook di
+approssimare *quel residuo*. Il secondo lascia a sua volta un residuo più
 piccolo, che un terzo codebook rifinisce ancora, e così via. Alla fine ogni
-pezzetto di audio non è più un solo token, ma una **pila** di token — uno per
-codebook — che insieme lo descrivono con la precisione che serve, spendendo
+pezzetto di audio non è più un solo token, ma una **pila** di token (uno per
+codebook) che insieme lo descrivono con la precisione che serve, spendendo
 pochissimi bit.
 
 `````
@@ -206,19 +209,20 @@ $$
 
 dove $\log_2 K$ sono i bit per indice. EnCodec a $24$ kHz usa codebook di
 $K = 1024$ voci ($10$ bit) a $f_r = 75$ frame al secondo: con $N = 8$
-quantizzatori si ottengono $8 \cdot 10 \cdot 75 = 6000$ bit/s, cioè **6 kbps** —
-contro i 128 kbps e più di un MP3 di buona qualità, a fedeltà comparabile.
-Variando $N$ si sceglie il compromesso: da $1{,}5$ kbps ($N=2$) fino a $24$ kbps
-($N=32$).
+quantizzatori si ottengono $8 \cdot 10 \cdot 75 = 6000$ bit/s, cioè **6
+kbps**, contro i 128 kbps e più di un MP3 di buona qualità, a fedeltà
+comparabile. Variando $N$ si sceglie il compromesso: da $1{,}5$ kbps ($N=2$)
+fino a $24$ kbps ($N=32$).
 
 `````
 
-Il risultato è una rappresentazione a due assi ({numref}`fig-audio-codec-rvq`):
-lungo il **tempo**, un frame ogni manciata di millisecondi; lungo la
-**profondità**, gli $N$ token della cascata RVQ per ciascun frame. Un secondo di
-audio diventa così una piccola griglia di interi — poche migliaia di simboli —
-da cui il decoder sa ricostruire un suono ad alta fedeltà. È questo l'oggetto
-che, nella prossima sezione, daremo in pasto a un modello di linguaggio.
+Il risultato è una rappresentazione a due assi
+({numref}`fig-audio-codec-rvq`): lungo il **tempo**, un frame ogni manciata di
+millisecondi; lungo la **profondità**, gli $N$ token della cascata RVQ per
+ciascun frame. Un secondo di audio diventa così una piccola griglia di interi
+(poche migliaia di simboli) da cui il decoder sa ricostruire un suono ad alta
+fedeltà. È questo l'oggetto che, nella prossima sezione, daremo in pasto a un
+modello di linguaggio.
 
 ```{figure} ../figures/audio-codec-rvq.svg
 :name: fig-audio-codec-rvq
@@ -233,10 +237,11 @@ l'audio.
 
 ## Un RVQ in miniatura
 
-La RVQ, spogliata delle reti neurali, è pochissime righe di NumPy: un codebook,
-la ricerca del prototipo più vicino, il residuo, e un secondo codebook che lo
-rifinisce. Il codice seguente quantizza sei vettori 2D — un «batch» giocattolo
-di latenti — e misura l'errore di ricostruzione con uno e con due stadi.
+La RVQ, spogliata delle reti neurali, è pochissime righe di NumPy: un
+codebook, la ricerca del prototipo più vicino, il residuo, e un secondo
+codebook che lo rifinisce. Il codice seguente quantizza sei vettori 2D (un
+«batch» giocattolo di latenti) e misura l'errore di ricostruzione con uno e
+con due stadi.
 
 ```python
 import numpy as np
@@ -305,10 +310,10 @@ MSE con 2 quantizzatori: 0.0481
 ```
 
 L'errore più che si dimezza, da $0{,}1021$ a $0{,}0481$, semplicemente
-correggendo il residuo con un secondo codebook — e ogni vettore è ora descritto
+correggendo il residuo con un secondo codebook, e ogni vettore è ora descritto
 da due interi invece che da due numeri reali. È l'intera idea della RVQ, in
-scala di laboratorio: nei codec veri i vettori hanno centinaia di dimensioni, i
-codebook migliaia di voci e gli stadi sono otto o più, ma la meccanica è
+scala di laboratorio: nei codec veri i vettori hanno centinaia di dimensioni,
+i codebook migliaia di voci e gli stadi sono otto o più, ma la meccanica è
 precisamente questa.
 
 Un'onestà d'obbligo, prima di chiudere. Questo giocattolo usa codebook *fissati
@@ -326,17 +331,17 @@ esattamente quello che hai appena eseguito.
   ricostruzione.
 - La **vector quantization** {cite}`oord2017neural` rende la rappresentazione
   *discreta*: un **codebook** di prototipi, ogni latente sostituito dal più
-  vicino, e il suo **indice** diventa il **token** — l'alfabeto sonoro.
+  vicino, e il suo **indice** diventa il **token** (l'alfabeto sonoro).
 - Un solo codebook è troppo grossolano. La **residual vector quantization**
   {cite}`zeghidour2021soundstream` {cite}`defossez2023high` mette più codebook in
   **cascata**: ognuno quantizza il **residuo** del precedente, come dare il resto
   con monete via via più piccole.
 - L'audio diventa così una **griglia di token** (tempo × profondità della
-  cascata), ad alta fedeltà e bitrate bassissimo — poche kbps contro le decine di
-  un MP3. Il bitrate è $N \cdot \log_2 K \cdot f_r$.
+  cascata), ad alta fedeltà e bitrate bassissimo: poche kbps contro le decine
+  di un MP3. Il bitrate è $N \cdot \log_2 K \cdot f_r$.
 - Con due soli stadi, nell'esempio in NumPy, l'errore di ricostruzione più che si
   dimezza: è l'intera meccanica della RVQ in scala di laboratorio.
-- Ottenuto l'alfabeto, l'audio *è* una sequenza di simboli: tutto l'armamentario
-  dei Transformer diventa applicabile — ed è ciò che vedremo nella sezione sulla
-  generazione.
+- Ottenuto l'alfabeto, l'audio *è* una sequenza di simboli: tutto
+  l'armamentario dei Transformer diventa applicabile, ed è ciò che vedremo
+  nella sezione sulla generazione.
 ```

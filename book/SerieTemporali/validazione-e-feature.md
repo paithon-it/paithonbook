@@ -3,16 +3,17 @@
 Un analista quantitativo mostra il grafico di un suo modello: rendimento annuo
 del 40%, curva che sale liscia come una pista da sci. Lo mette a lavorare sui
 soldi veri e nel giro di un mese è in rosso. Cos'è successo? Ricostruendo il
-codice, si scopre che tra le variabili in ingresso ce n'era una calcolata sulla
-media dell'intero periodo — futuro compreso. Il modello, in fase di prova,
-«sapeva» dove sarebbe andato il prezzo. Sul passato era un veggente; sul futuro,
-un ciarlatano.
+codice, si scopre che tra le variabili in ingresso ce n'era una calcolata
+sulla media dell'intero periodo: futuro compreso. Il modello, in fase di
+prova, «sapeva» dove sarebbe andato il prezzo. Sul passato era un veggente;
+sul futuro, un ciarlatano.
 
 Questa è la trappola numero uno di chi lavora con le serie temporali, e ha un
 nome: **leakage**, la fuga di informazione dal futuro verso il passato. La
-sezione precedente ci ha dato il vocabolario delle serie — trend, stagionalità,
-autocorrelazione. Questa spiega come *valutare* onestamente una previsione e come
-*rappresentare* il tempo perché un normale modello tabellare possa impararlo.
+sezione precedente ci ha dato il vocabolario delle serie: trend, stagionalità,
+autocorrelazione. Questa spiega come *valutare* onestamente una previsione e
+come *rappresentare* il tempo perché un normale modello tabellare possa
+impararlo.
 
 ## Perché mescolare i dati è un errore
 
@@ -31,24 +32,24 @@ il 5 marzo. Lo studente, «esercitandosi» sul 4 e 5, ha di fatto sbirciato cosa
 c'era intorno al 3: la sua previsione del 3 marzo sembrerà miracolosa, ma solo
 perché ha spiato i giorni vicini nel futuro.
 
-Nel mondo vero non funziona così: quando prevedi domani, hai solo *ieri e prima*.
-Non puoi allenarti sui risultati di domani per indovinare domani. Mescolare i
-dati di una serie temporale rompe proprio questa regola — mette futuro e passato
-nello stesso mucchio — e ti regala un modello che sul foglio va benissimo e nella
-realtà crolla.
+Nel mondo vero non funziona così: quando prevedi domani, hai solo *ieri e
+prima*. Non puoi allenarti sui risultati di domani per indovinare domani.
+Mescolare i dati di una serie temporale rompe proprio questa regola (mette
+futuro e passato nello stesso mucchio) e ti regala un modello che sul foglio
+va benissimo e nella realtà crolla.
 
 `````
 
 `````{tab} Superiore
 
 Il problema è che gli esempi di una serie non sono **indipendenti**: sono
-ordinati e fortemente autocorrelati. Uno split casuale, o una k-fold con shuffle,
-mette nel training istanti $t+1, t+3, \dots$ e nel validation l'istante $t$: il
-modello osserva valori *successivi* a quello che deve prevedere, e sfrutta
-l'autocorrelazione per «interpolare» all'indietro. La stima dell'errore che ne
-esce è sistematicamente ottimista — un caso di *data leakage*, la stessa fuga di
-informazione che nel capitolo sulla validazione ci imponeva di non toccare mai il
-test.
+ordinati e fortemente autocorrelati. Uno split casuale, o una k-fold con
+shuffle, mette nel training istanti $t+1, t+3, \dots$ e nel validation
+l'istante $t$: il modello osserva valori *successivi* a quello che deve
+prevedere, e sfrutta l'autocorrelazione per «interpolare» all'indietro. La
+stima dell'errore che ne esce è sistematicamente ottimista: un caso di *data
+leakage*, la stessa fuga di informazione che nel capitolo sulla validazione ci
+imponeva di non toccare mai il test.
 
 La regola è netta: **ogni dato usato per addestrare deve precedere nel tempo ogni
 dato usato per validare**. Il confine tra train e validation è un istante $t_0$,
@@ -66,8 +67,8 @@ valutazione «su origine mobile» {cite}`hyndman2021forecasting`.
 
 `````{tab} Elementare
 
-L'idea è rifare più volte lo stesso gioco onesto — allena sul prima, prova sul
-dopo — spostando ogni volta il confine in avanti. Ci sono due modi.
+L'idea è rifare più volte lo stesso gioco onesto (allena sul prima, prova sul
+dopo) spostando ogni volta il confine in avanti. Ci sono due modi.
 
 Con la **finestra espansa** (*expanding*), a ogni giro tieni tutto il passato
 disponibile e lo allunghi: prima usi i primi due mesi per prevedere il terzo, poi
@@ -76,7 +77,7 @@ studia, più contesto ha.
 
 Con la **finestra scorrevole** (*rolling*), tieni invece una finestra di
 lunghezza fissa che scivola in avanti: sempre, per esempio, gli ultimi dodici
-mesi. Utile quando il passato troppo lontano non è più rappresentativo — le
+mesi. Utile quando il passato troppo lontano non è più rappresentativo: le
 abitudini d'acquisto di dieci anni fa dicono poco su quelle di oggi.
 
 In entrambi i casi il test è **sempre a destra** del train, cioè nel futuro,
@@ -123,10 +124,10 @@ temperatura. Servono metriche che si possano confrontare tra serie diverse.
 
 Il primo tentativo è misurare l'errore in **percentuale**: sbagliare di 500 su
 50 000 è l'1%, su 500 è il 100%. Questa è la **MAPE**, l'errore percentuale
-medio. Comoda da spiegare, ma con tre difetti seri. Se il valore vero è **zero**
-— un giorno senza vendite — si divide per zero e la metrica esplode. Ed è
-**asimmetrica**: prevedere troppo alto o troppo basso non costa uguale, e alla
-lunga premia i modelli timidi che sottostimano.
+medio. Comoda da spiegare, ma con tre difetti seri. Se il valore vero è
+**zero** (un giorno senza vendite), si divide per zero e la metrica esplode.
+Ed è **asimmetrica**: prevedere troppo alto o troppo basso non costa uguale, e
+alla lunga premia i modelli timidi che sottostimano.
 
 Una scorciatoia più robusta è confrontarsi con una previsione stupida: «di
 quanto sbaglio, rispetto a chi si limita a ripetere l'ultimo valore?». È l'idea
@@ -178,10 +179,10 @@ nella stessa unità, la MASE è **adimensionale** e confrontabile tra serie: val
 $<1$ battono il naive, $>1$ no. Non ha problemi con gli zeri, purché la serie di
 training non sia costante.
 
-Quando la previsione non è un singolo numero ma una **distribuzione** — un
-intervallo, o un insieme di quantili — si misura la calibrazione con la **pinball
-loss** (o *quantile loss*). Per il quantile di livello $\tau\in(0,1)$, con
-previsione $\hat{y}_\tau$ e valore vero $y$:
+Quando la previsione non è un singolo numero ma una **distribuzione** (un
+intervallo, o un insieme di quantili), si misura la calibrazione con la
+**pinball loss** (o *quantile loss*). Per il quantile di livello
+$\tau\in(0,1)$, con previsione $\hat{y}_\tau$ e valore vero $y$:
 
 $$
 \mathcal{L}_\tau(y,\hat{y}_\tau) =
@@ -221,12 +222,12 @@ solo imitando, peggio, ciò che una riga di codice farebbe gratis.
 
 ## Trasformare il tempo in una tabella
 
-Ed eccoci alla seconda metà del titolo: *rappresentare*. Buona parte dei modelli
-che conosciamo — la regressione, gli alberi con gradient boosting, le reti — non
-sanno nulla di «tempo»: vogliono una tabella di righe indipendenti, ciascuna con
-le sue feature e il suo target. Il **feature engineering temporale** costruisce
-quella tabella a partire dalla serie, riducendo la previsione a un normale
-problema **supervisionato** tabellare.
+Ed eccoci alla seconda metà del titolo: *rappresentare*. Buona parte dei
+modelli che conosciamo (la regressione, gli alberi con gradient boosting, le
+reti) non sanno nulla di «tempo»: vogliono una tabella di righe indipendenti,
+ciascuna con le sue feature e il suo target. Il **feature engineering
+temporale** costruisce quella tabella a partire dalla serie, riducendo la
+previsione a un normale problema **supervisionato** tabellare.
 
 `````{tab} Elementare
 
@@ -269,9 +270,9 @@ reintrodurre leakage):
   pugno di regressori, invece delle $m-1$ dummy stagionali
   {cite}`hyndman2021forecasting`.
 
-Il target della riga $t$ è $y_{t+h}$ per l'orizzonte $h$ desiderato. A quel punto
-qualunque regressore tabellare — dai modelli lineari al gradient boosting —
-diventa un modello di forecasting.
+Il target della riga $t$ è $y_{t+h}$ per l'orizzonte $h$ desiderato. A quel
+punto qualunque regressore tabellare (dai modelli lineari al gradient
+boosting) diventa un modello di forecasting.
 
 `````
 
@@ -293,7 +294,7 @@ La strategia **diretta** allena un modello *diverso* per ogni orizzonte: uno per
 eredita gli errori altrui, ma addestrare tanti modelli costa.
 
 La strategia **multi-output** usa un unico modello che sputa fuori l'intero
-vettore dei passi futuri in un colpo solo — è la via naturale per le reti
+vettore dei passi futuri in un colpo solo: è la via naturale per le reti
 neurali, che possono avere molte uscite.
 
 `````
@@ -311,9 +312,9 @@ Volendo prevedere $H$ passi $\hat{y}_{t+1}, \dots, \hat{y}_{t+H}$:
   $h=1,\dots,H$, con $\hat{y}_{t+h}=f_h(y_t, y_{t-1}, \dots)$. Nessun errore
   ereditato, ma $H$ modelli da stimare e nessuna coerenza imposta tra i passi.
 - **Multi-output** (MIMO): un'unica funzione a valori vettoriali
-  $(\hat{y}_{t+1}, \dots, \hat{y}_{t+H}) = f(y_t, y_{t-1}, \dots)$, che modella
-  congiuntamente le dipendenze tra gli orizzonti — la forma tipica delle reti
-  neurali, con $H$ neuroni in uscita.
+  $(\hat{y}_{t+1}, \dots, \hat{y}_{t+H}) = f(y_t, y_{t-1}, \dots)$, che
+  modella congiuntamente le dipendenze tra gli orizzonti (la forma tipica
+  delle reti neurali, con $H$ neuroni in uscita).
 
 `````
 
@@ -324,10 +325,11 @@ scelga, la si valuta col walk-forward, mai mescolando il tempo.
 
 ## In pratica: walk-forward e MASE con NumPy
 
-Mettiamo insieme i due pezzi centrali della sezione — lo split walk-forward e la
-MASE — in poche righe di NumPy puro, su una serie sintetica con trend leggero e
-stagionalità settimanale. Confrontiamo due baseline: il naive stagionale (ripete
-l'ultima settimana) e il naive semplice (ripete l'ultimo valore).
+Mettiamo insieme i due pezzi centrali della sezione (lo split walk-forward e
+la MASE) in poche righe di NumPy puro, su una serie sintetica con trend
+leggero e stagionalità settimanale. Confrontiamo due baseline: il naive
+stagionale (ripete l'ultima settimana) e il naive semplice (ripete l'ultimo
+valore).
 
 ```python
 import numpy as np
@@ -366,10 +368,10 @@ print(f"MASE medio - naive semplice:   {np.mean(mase_semplice):.3f}")
 ```
 
 Poiché la serie è chiaramente stagionale, il naive stagionale ottiene un MASE
-nettamente **sotto 1** — sbaglia molto meno del predittore che copia ieri — mentre
-il naive semplice, cieco alla settimana, resta vicino o sopra 1. È esattamente la
-lettura che rende la MASE preziosa: un unico numero, senza unità, che dice al
-volo se un modello vale più della pigrizia.
+nettamente **sotto 1** (sbaglia molto meno del predittore che copia ieri),
+mentre il naive semplice, cieco alla settimana, resta vicino o sopra 1. È
+esattamente la lettura che rende la MASE preziosa: un unico numero, senza
+unità, che dice al volo se un modello vale più della pigrizia.
 
 ```{admonition} Da ricordare
 :class: important

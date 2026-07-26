@@ -1,26 +1,28 @@
 # Da frase a frase: tradurre con le reti
 
-Prova a tradurre parola per parola: «Il gatto nero salta sul muro» diventerebbe
-*«The cat black jumps on the wall»* — e un inglese storcerebbe il naso, perché
-l'aggettivo va prima del nome: *«The black cat jumps on the wall»*. Sei parole
-sono diventate sette, e due si sono scambiate di posto. La traduzione non è una
-sostituzione uno-a-uno: è prendere il *senso* di una sequenza e riscriverlo in
-un'altra sequenza, di lunghezza diversa e con un ordine diverso.
+Prova a tradurre parola per parola: «Il gatto nero salta sul muro»
+diventerebbe *«The cat black jumps on the wall»*, e un inglese storcerebbe il
+naso, perché l'aggettivo va prima del nome: *«The black cat jumps on the
+wall»*. Sei parole sono diventate sette, e due si sono scambiate di posto. La
+traduzione non è una sostituzione uno-a-uno: è prendere il *senso* di una
+sequenza e riscriverlo in un'altra sequenza, di lunghezza diversa e con un
+ordine diverso.
 
-Nella sezione precedente abbiamo costruito gli attrezzi — RNN, LSTM, GRU. In
+Nella sezione precedente abbiamo costruito gli attrezzi: RNN, LSTM, GRU. In
 questa li mettiamo alla prova sul compito che più di ogni altro ha spinto
 avanti l'NLP: la traduzione automatica. È una storia che vale la pena seguire
-da vicino, perché è proprio qui, tra il 2014 e il 2017, che nasce il meccanismo
-di **attenzione**: il ponte diretto verso il capitolo sui Transformer.
+da vicino, perché è proprio qui, tra il 2014 e il 2017, che nasce il
+meccanismo di **attenzione**: il ponte diretto verso il capitolo sui
+Transformer.
 
 ## Scommettere sulla prossima parola
 
 Prima di tradurre, un modello deve saper *parlare* la lingua d'arrivo. Lo
 strumento è il **modello di linguaggio** che conosciamo dalla sezione sugli
 *n-gram*: un sistema che, data una sequenza di parole, assegna una probabilità
-alla parola successiva — la tastiera che dopo «a domani e buona» suggerisce
-«serata» e quasi mai «carburatore». La novità è *chi* fa la scommessa: non più
-una tabella di conteggi, ma una rete ricorrente con la sua memoria.
+alla parola successiva (la tastiera che dopo «a domani e buona» suggerisce
+«serata» e quasi mai «carburatore»). La novità è *chi* fa la scommessa: non
+più una tabella di conteggi, ma una rete ricorrente con la sua memoria.
 
 `````{tab} Elementare
 
@@ -84,10 +86,10 @@ bidirezionali**.
 indizio va al suo posto, perché sai già come va a finire. Una rete
 bidirezionale fa le due letture insieme: una cella percorre la frase da
 sinistra a destra, un'altra da destra a sinistra, e per ogni parola si
-incollano i due riassunti — quello di ciò che precede e quello di ciò che
-segue. Attenzione però: questo trucco vale solo per **capire** un testo che
+incollano i due riassunti (quello di ciò che precede e quello di ciò che
+segue). Attenzione però: questo trucco vale solo per **capire** un testo che
 esiste già tutto intero. Per **generare** una frase non funziona: mentre
-scrivi, le parole future non esistono ancora — nessun giallista può rileggere
+scrivi, le parole future non esistono ancora; nessun giallista può rileggere
 il capitolo che deve ancora scrivere. Per questo, come vedremo, chi *legge* la
 frase può essere bidirezionale, ma chi la *scrive* procede sempre in avanti.
 
@@ -108,12 +110,11 @@ che condensa l'intera frase *vista da quella posizione*: prefisso e suffisso.
 È lo standard per i compiti di comprensione (classificazione, NER, encoding),
 ma è inapplicabile alla generazione autoregressiva: al passo $t$ la catena
 all'indietro richiederebbe $x_{t+1}, \dots, x_n$, che non sono ancora stati
-generati. Il decoder resta quindi unidirezionale per costruzione — un vincolo
+generati. Il decoder resta quindi unidirezionale per costruzione: un vincolo
 di causalità che ritroveremo, sotto forma di *maschera*, anche nei
 Transformer. Ortogonale a questo è l'**impilamento** (*stacked RNN*): più
-strati ricorrenti sovrapposti, dove la sequenza di stati dello strato
-$\ell-1$ fa da input allo strato $\ell$, per rappresentazioni via via più
-astratte.
+strati ricorrenti sovrapposti, dove la sequenza di stati dello strato $\ell-1$
+fa da input allo strato $\ell$, per rappresentazioni via via più astratte.
 
 `````
 
@@ -138,9 +139,9 @@ print(h.shape)    # torch.Size([4, 1, 128]): 2 strati x 2 direzioni
 
 ## Comprimere una frase in un vettore
 
-Torniamo alla traduzione. Nel 2014 due gruppi — Cho e colleghi a Montréal
+Torniamo alla traduzione. Nel 2014 due gruppi, Cho e colleghi a Montréal
 {cite}`cho2014learning` (lo stesso paper che introduce la GRU) e Sutskever,
-Vinyals e Le a Google {cite}`sutskever2014sequence` — arrivano alla stessa
+Vinyals e Le a Google {cite}`sutskever2014sequence`, arrivano alla stessa
 architettura, oggi nota come **encoder–decoder** o **seq2seq**. L'idea è di
 una semplicità disarmante: una prima rete ricorrente (l'*encoder*) legge tutta
 la frase sorgente e la comprime nel suo stato finale, un unico **vettore di
@@ -156,7 +157,7 @@ italiano. L'encoder è l'ascolto, il vettore di contesto è ciò che gli resta i
 testa, il decoder è la resa in italiano. Nel paper di Google c'è un dettaglio
 curioso: dare all'encoder la frase sorgente **al contrario** («muro sul salta
 nero gatto Il») migliorava nettamente le traduzioni. Perché? Così l'*inizio*
-della frase — la prima cosa che il decoder deve tradurre — viene letto per
+della frase (la prima cosa che il decoder deve tradurre) viene letto per
 *ultimo*, ed è il ricordo più fresco. Un trucco che rivela il difetto di
 fondo: se la qualità dipende da quale parola è stata ascoltata più di recente,
 la memoria unica è troppo stretta. Sulle frasi brevi regge; su un discorso
@@ -175,19 +176,19 @@ P(y \mid x) = \prod_{t=1}^{m} P(y_t \mid y_1, \dots, y_{t-1}, c),
 c = h_n,
 $$
 
-dove $c$ è il vettore di contesto — lo stato finale dell'encoder — e ogni
+dove $c$ è il vettore di contesto (lo stato finale dell'encoder) e ogni
 fattore è calcolato dal decoder, una RNN inizializzata da $c$ con softmax sul
 vocabolario di arrivo. Sutskever et al. usano LSTM a 4 strati con stati da
 1000 dimensioni e riportano, sul benchmark WMT'14 inglese→francese, un BLEU di
 $34{,}8$ (con un ensemble di cinque modelli) contro il $33{,}3$ del sistema
-statistico a frasi di riferimento.
-L'aneddoto dell'inversione è documentato nei numeri: invertire l'ordine delle
-parole sorgente fa scendere la perplessità di test da $5{,}8$ a $4{,}7$ e
-salire il BLEU da $25{,}9$ a $30{,}6$, perché accorcia le dipendenze tra le
-prime parole di $x$ e le prime di $y$, semplificando l'ottimizzazione. Ma il
-limite strutturale resta: qualunque sia $n$, tutta l'informazione su $x$ deve
-passare per un vettore di dimensione fissa. È un **collo di bottiglia**, e le
-prestazioni degradano visibilmente al crescere della lunghezza della frase.
+statistico a frasi di riferimento. L'aneddoto dell'inversione è documentato
+nei numeri: invertire l'ordine delle parole sorgente fa scendere la
+perplessità di test da $5{,}8$ a $4{,}7$ e salire il BLEU da $25{,}9$ a
+$30{,}6$, perché accorcia le dipendenze tra le prime parole di $x$ e le prime
+di $y$, semplificando l'ottimizzazione. Ma il limite strutturale resta:
+qualunque sia $n$, tutta l'informazione su $x$ deve passare per un vettore di
+dimensione fissa. È un **collo di bottiglia**, e le prestazioni degradano
+visibilmente al crescere della lunghezza della frase.
 
 `````
 
@@ -197,7 +198,7 @@ La soluzione arriva nel giro di pochi mesi, da Dzmitry Bahdanau, Kyunghyun Cho
 e Yoshua Bengio {cite}`bahdanau2015neural`. La domanda giusta è: perché
 costringere il decoder a lavorare a memoria? La frase sorgente è ancora lì,
 con tutti gli stati che l'encoder ha prodotto leggendo ogni parola. Basta
-lasciare che il decoder, a ogni passo, **torni a guardarli tutti** — dando a
+lasciare che il decoder, a ogni passo, **torni a guardarli tutti**: dando a
 ciascuno un peso diverso a seconda di quanto serve *adesso*. Questi pesi sono
 l'**attenzione**.
 
@@ -219,21 +220,21 @@ contenere l'intera frase.
 `````{tab} Elementare
 
 Il nostro interprete adesso ha il testo dell'intervento sul tavolo. Mentre
-traduce non recita più a memoria: per ogni parola che pronuncia dà
-un'occhiata al foglio, e l'occhio cade sul punto che serve in quel momento —
-come un evidenziatore che si sposta man mano che la traduzione avanza. Non
-c'è nessuna regola scritta a mano che dica dove guardare: la rete impara da
-sola, durante l'addestramento, che quando sta per dire *cat* conviene pesare
-molto «gatto». Sorpresa in regalo: disegnando dove cade l'evidenziatore si
-ottiene, gratis, l'allineamento tra le parole delle due lingue — «cat» ↔
-«gatto», «wall» ↔ «muro» — che nessuno aveva chiesto al modello di imparare.
+traduce non recita più a memoria: per ogni parola che pronuncia dà un'occhiata
+al foglio, e l'occhio cade sul punto che serve in quel momento, come un
+evidenziatore che si sposta man mano che la traduzione avanza. Non c'è nessuna
+regola scritta a mano che dica dove guardare: la rete impara da sola, durante
+l'addestramento, che quando sta per dire *cat* conviene pesare molto «gatto».
+Sorpresa in regalo: disegnando dove cade l'evidenziatore si ottiene, gratis,
+l'allineamento tra le parole delle due lingue («cat» ↔ «gatto», «wall» ↔
+«muro») che nessuno aveva chiesto al modello di imparare.
 
 `````
 
 `````{tab} Superiore
 
-L'encoder — bidirezionale, così che ogni $h_j$ rappresenti la parola $j$ con
-tutto il suo contesto — produce gli stati $h_1, \dots, h_n$. Al passo $i$ il
+L'encoder (bidirezionale, così che ogni $h_j$ rappresenti la parola $j$ con
+tutto il suo contesto) produce gli stati $h_1, \dots, h_n$. Al passo $i$ il
 decoder, con stato $s_{i-1}$, calcola un punteggio di allineamento verso ogni
 posizione sorgente con una piccola rete a un solo strato nascosto:
 
@@ -255,14 +256,14 @@ dove $\alpha_{ij}$ è quanto il passo di decodifica $i$ «guarda» la parola
 sorgente $j$ (i pesi sommano a 1) e $c_i$ è la media pesata degli stati
 dell'encoder, che entra nel calcolo di $s_i$ e della parola successiva. La
 matrice dei pesi $\alpha_{ij}$, visualizzata, è una mappa di allineamento tra
-le due frasi — appresa senza alcuna supervisione esplicita.
+le due frasi: appresa senza alcuna supervisione esplicita.
 
 `````
 
 Vale la pena dirlo in modo esplicito: questa è **la stessa attenzione** che
 ritroveremo nel capitolo sui Transformer. Cambierà solo il modo di calcolare i
-punteggi — non più una piccola rete con la $\tanh$, ma un semplice prodotto
-scalare riscalato, la *scaled dot-product attention* — e cadrà l'impalcatura
+punteggi (non più una piccola rete con la $\tanh$, ma un semplice prodotto
+scalare riscalato, la *scaled dot-product attention*) e cadrà l'impalcatura
 ricorrente attorno. L'idea di fondo, «una media pesata di tutti gli stati, con
 pesi softmax appresi», nasce qui, come rattoppo per la traduzione.
 
@@ -304,7 +305,7 @@ $$
 $$
 
 e trattiene le migliori $k$ (con $k=1$ si torna alla greedy). Non è una
-ricerca esatta — l'ottimo globale può comunque sfuggire al fascio — ma in
+ricerca esatta (l'ottimo globale può comunque sfuggire al fascio) ma in
 traduzione valori di $k$ tra 4 e 10 bastano quasi sempre. Un dettaglio
 pratico: essendo una somma di logaritmi negativi, il punteggio penalizza le
 frasi lunghe, e il decoder tenderebbe a traduzioni troppo corte. Si corregge
@@ -331,22 +332,22 @@ greedy non avrebbe mai trovato.
 
 ## 2016: la traduzione neurale entra in produzione
 
-Questa storia ha una data di consegna. Nel settembre 2016 Google annuncia
-GNMT (*Google Neural Machine Translation*) {cite}`wu2016google`: un
-encoder–decoder di LSTM a 8 strati con attenzione — esattamente la ricetta di
-questa sezione, in grande — che sostituisce in produzione il sistema
-statistico a frasi usato per un decennio. Si parte dalla coppia
-cinese→inglese, circa 18 milioni di traduzioni al giorno; nelle valutazioni
-umane fianco a fianco gli errori di traduzione calano in media del 60% sulle
-principali coppie di lingue. Per la prima volta le reti ricorrenti che
-abbiamo studiato traducono, ogni giorno, per centinaia di milioni di persone.
+Questa storia ha una data di consegna. Nel settembre 2016 Google annuncia GNMT
+(*Google Neural Machine Translation*) {cite}`wu2016google`: un encoder–decoder
+di LSTM a 8 strati con attenzione (esattamente la ricetta di questa sezione,
+in grande) che sostituisce in produzione il sistema statistico a frasi usato
+per un decennio. Si parte dalla coppia cinese→inglese, circa 18 milioni di
+traduzioni al giorno; nelle valutazioni umane fianco a fianco gli errori di
+traduzione calano in media del 60% sulle principali coppie di lingue. Per la
+prima volta le reti ricorrenti che abbiamo studiato traducono, ogni giorno,
+per centinaia di milioni di persone.
 
 Ma il rattoppo si stava già mangiando il vestito. Se l'attenzione permette a
-ogni parola generata di guardare direttamente tutte le parole sorgente, a
-cosa serve ancora far scorrere uno stato passo dopo passo? Nel 2017 un gruppo
-di ricercatori di Google si fa esattamente questa domanda, e il titolo della
+ogni parola generata di guardare direttamente tutte le parole sorgente, a cosa
+serve ancora far scorrere uno stato passo dopo passo? Nel 2017 un gruppo di
+ricercatori di Google si fa esattamente questa domanda, e il titolo della
 risposta è tutto un programma: *Attention Is All You Need*
-{cite}`vaswani2017attention` — l'attenzione è tutto ciò che serve. Via la
+{cite}`vaswani2017attention`; l'attenzione è tutto ciò che serve. Via la
 ricorrenza, resta solo il meccanismo che avete appena visto nascere, promosso
 da comprimario a protagonista. Come, di preciso, è il tema del capitolo sui
 **Transformer**.
@@ -363,7 +364,7 @@ da comprimario a protagonista. Come, di preciso, è il tema del capitolo sui
   contesto, un decoder la riscrive nell'altra lingua. Il vettore fisso è un
   **collo di bottiglia** sulle frasi lunghe.
 - L'**attenzione di Bahdanau** lo elimina: a ogni passo il decoder rivede
-  *tutti* gli stati dell'encoder con pesi $\alpha_{ij}$ appresi — è il
+  *tutti* gli stati dell'encoder con pesi $\alpha_{ij}$ appresi; è il
   precursore diretto della *scaled dot-product attention* dei Transformer.
 - In generazione la scelta **greedy** è miope; la **beam search** tiene
   aperte le $k$ ipotesi migliori (con una *length penalty* per non penalizzare

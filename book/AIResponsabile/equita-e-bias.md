@@ -1,30 +1,31 @@
 # Equità e bias algoritmico
 
 Nel 2018 un'inchiesta di Reuters rivela che Amazon aveva accantonato in
-silenzio, un anno prima, uno strumento sperimentale di selezione del personale.
-L'idea era seducente: dare in pasto a un modello i curriculum
-degli ultimi dieci anni e lasciargli imparare a riconoscere i candidati
-«bravi», quelli che in passato erano stati assunti. Il modello imparò
-benissimo — troppo bene. Poiché quei dieci anni di assunzioni erano stati
-dominati da uomini, il sistema dedusse che *essere uomo* fosse un buon segnale:
-penalizzava i curriculum che contenevano la parola «women's» (come in «women's
-chess club captain») e declassava chi aveva studiato in due college femminili.
-Nessuno aveva scritto una regola contro le donne. La regola era stata *appresa*,
-letta nel passato dell'azienda e riproposta come profezia.
+silenzio, un anno prima, uno strumento sperimentale di selezione del
+personale. L'idea era seducente: dare in pasto a un modello i curriculum degli
+ultimi dieci anni e lasciargli imparare a riconoscere i candidati «bravi»,
+quelli che in passato erano stati assunti. Il modello imparò benissimo: troppo
+bene. Poiché quei dieci anni di assunzioni erano stati dominati da uomini, il
+sistema dedusse che *essere uomo* fosse un buon segnale: penalizzava i
+curriculum che contenevano la parola «women's» (come in «women's chess club
+captain») e declassava chi aveva studiato in due college femminili. Nessuno
+aveva scritto una regola contro le donne. La regola era stata *appresa*, letta
+nel passato dell'azienda e riproposta come profezia.
 
-È il tema di questa sezione. Un modello non inventa il pregiudizio: lo eredita.
-E per governarlo servono due cose che affronteremo in ordine — prima capire *da
-dove* entra il bias, poi imparare a *misurarlo* con precisione, riusando la
-matrice di confusione già vista nel capitolo di Machine Learning ma applicandola
-gruppo per gruppo. Alla fine ci imbatteremo in una sorpresa scomoda: alcune
-richieste di equità, per quanto ragionevoli, non possono valere tutte insieme.
+È il tema di questa sezione. Un modello non inventa il pregiudizio: lo
+eredita. E per governarlo servono due cose che affronteremo in ordine: prima
+capire *da dove* entra il bias, poi imparare a *misurarlo* con precisione,
+riusando la matrice di confusione già vista nel capitolo di Machine Learning
+ma applicandola gruppo per gruppo. Alla fine ci imbatteremo in una sorpresa
+scomoda: alcune richieste di equità, per quanto ragionevoli, non possono
+valere tutte insieme.
 
 ## Da dove entra il bias
 
 Il pregiudizio algoritmico non nasce dal codice, che è cieco e indifferente:
 nasce a monte, nei dati e nelle scelte con cui li abbiamo raccolti ed
-etichettati. La letteratura — per esempio la rassegna di Mehrabi e colleghi
-{cite}`mehrabi2021survey` — distingue alcune sorgenti ricorrenti.
+etichettati. La letteratura (per esempio la rassegna di Mehrabi e colleghi
+{cite}`mehrabi2021survey`) distingue alcune sorgenti ricorrenti.
 
 `````{tab} Elementare
 
@@ -33,16 +34,16 @@ prese in passato dai suoi capi, senza mai chiedersi se fossero giuste. Erediter�
 la loro bravura, ma anche le loro storture. Con i dati succede lo stesso, e le
 storture arrivano da quattro porte.
 
-- **Il passato è ingiusto.** Se per anni i prestiti sono andati soprattutto agli
-  abitanti di certi quartieri, un modello addestrato su quello storico imparerà
-  a dire di sì agli stessi e di no agli altri — non perché siano meno
+- **Il passato è ingiusto.** Se per anni i prestiti sono andati soprattutto
+  agli abitanti di certi quartieri, un modello addestrato su quello storico
+  imparerà a dire di sì agli stessi e di no agli altri: non perché siano meno
   affidabili, ma perché *storicamente* hanno avuto meno occasioni.
 - **Il campione non rappresenta tutti.** Se le foto per allenare un
   riconoscitore di volti ritraggono in gran parte persone dalla pelle chiara, il
   sistema funzionerà peggio su tutti gli altri: non li ha quasi mai visti.
 - **Le etichette sono distorte.** Spesso la «risposta giusta» che diamo in
-  pasto al modello non è la verità, ma una sua approssimazione imperfetta —
-  «è stato arrestato» al posto di «ha commesso un reato», e l'arresto dipende
+  pasto al modello non è la verità, ma una sua approssimazione imperfetta: «è
+  stato arrestato» al posto di «ha commesso un reato», e l'arresto dipende
   anche da *dove* e *chi* la polizia controlla di più.
 - **Il modello si morde la coda.** Se un sistema manda più pattuglie in un
   quartiere, lì si registreranno più reati, il che convince il sistema a
@@ -88,10 +89,10 @@ perché il difetto è nella definizione stessa dell'obiettivo.
 Per parlare di equità con rigore serve un vocabolario. Fissiamo la notazione:
 $A$ è l'**attributo protetto** che identifica il gruppo (per esempio $A=a$ e
 $A=b$), $Y \in \{0,1\}$ è l'**esito reale**, $\hat{Y}$ è la **decisione** del
-modello e $S \in [0,1]$ il **punteggio** da cui la decisione si ottiene fissando
-una soglia. Le metriche che seguono sono le stesse del capitolo di Machine
-Learning — tasso di veri positivi (TPR) e di falsi positivi (FPR) letti dalla
-matrice di confusione — con una differenza sola ma decisiva: si calcolano
+modello e $S \in [0,1]$ il **punteggio** da cui la decisione si ottiene
+fissando una soglia. Le metriche che seguono sono le stesse del capitolo di
+Machine Learning, tasso di veri positivi (TPR) e di falsi positivi (FPR) letti
+dalla matrice di confusione, con una differenza sola ma decisiva: si calcolano
 **separatamente per ciascun gruppo** e poi si confrontano
 ({numref}`fig-equita-tassi`).
 
@@ -100,10 +101,10 @@ matrice di confusione — con una differenza sola ma decisiva: si calcolano
 :alt: Due matrici di confusione due per due affiancate, etichettate Gruppo A e Gruppo B, con le celle VP, FP, FN, VN riempite di numeri esempio; sotto ciascuna matrice il tasso di veri positivi (TPR) e il tasso di falsi positivi (FPR), con valori diversi fra i due gruppi.
 :width: 100%
 
-Lo stesso modello valutato su due gruppi. Dalle matrici di confusione si leggono
-tassi diversi — Gruppo A: $\text{TPR}=0{,}80$, $\text{FPR}=0{,}10$; Gruppo B:
-$\text{TPR}=0{,}60$, $\text{FPR}=0{,}30$. Quando TPR e FPR divergono fra i gruppi,
-l'equalized odds è violata.
+Lo stesso modello valutato su due gruppi. Dalle matrici di confusione si
+leggono tassi diversi, Gruppo A: $\text{TPR}=0{,}80$, $\text{FPR}=0{,}10$;
+Gruppo B: $\text{TPR}=0{,}60$, $\text{FPR}=0{,}30$. Quando TPR e FPR divergono
+fra i gruppi, l'equalized odds è violata.
 ```
 
 `````{tab} Elementare
@@ -111,9 +112,9 @@ l'equalized odds è violata.
 Ci sono tre modi diversi di chiedere «il modello è equo?», e portano a tre
 richieste distinte.
 
-- **Stessa quota di sì (parità demografica).** Il modello dice «approvato» alla
-  stessa percentuale di persone in ogni gruppo. Se approva il 40% degli uomini,
-  deve approvare il 40% delle donne — a prescindere da tutto il resto.
+- **Stessa quota di sì (parità demografica).** Il modello dice «approvato»
+  alla stessa percentuale di persone in ogni gruppo. Se approva il 40% degli
+  uomini, deve approvare il 40% delle donne: a prescindere da tutto il resto.
 - **Stessa affidabilità sugli errori (equalized odds).** Fra chi *meritava
   davvero* un sì, la quota di sì è uguale nei due gruppi; e fra chi *meritava un
   no*, la quota di sì sbagliati è uguale. In altre parole: il modello sbaglia
@@ -177,12 +178,12 @@ di COMPAS invocava a propria difesa.
 
 ## Il risultato di impossibilità
 
-Arriviamo al nodo. Le tre richieste appena viste non sono capricci in conflitto
-per caso: sono **matematicamente incompatibili** ogni volta che i gruppi
-partono da tassi di base diversi. Lo hanno dimostrato, in modo indipendente e
-quasi simultaneo, Alexandra Chouldechova {cite}`chouldechova2017fair` e — con un
-teorema gemello sui punteggi di rischio — Jon Kleinberg, Sendhil Mullainathan e
-Manish Raghavan (2016).
+Arriviamo al nodo. Le tre richieste appena viste non sono capricci in
+conflitto per caso: sono **matematicamente incompatibili** ogni volta che i
+gruppi partono da tassi di base diversi. Lo hanno dimostrato, in modo
+indipendente e quasi simultaneo, Alexandra Chouldechova
+{cite}`chouldechova2017fair` e (con un teorema gemello sui punteggi di
+rischio) Jon Kleinberg, Sendhil Mullainathan e Manish Raghavan (2016).
 
 `````{tab} Elementare
 
@@ -196,11 +197,11 @@ ogni gruppo (parte dell'equalized odds).
 Il teorema dice: non puoi. Se i tassi di base sono diversi, garantire la prima
 costringe la seconda a saltare, e viceversa. Non è un bug da correggere con
 codice migliore o più dati: è un vincolo dell'aritmetica, come chiedere a un
-rettangolo di avere area 12 e perimetro 10 con lati interi — semplicemente non
-esiste. È il cuore della disputa su COMPAS: l'inchiesta di ProPublica accusava
-il sistema di generare molti più falsi allarmi fra gli imputati neri; l'azienda
-rispondeva che il punteggio era calibrato allo stesso modo per tutti. Avevano
-ragione **entrambe** — ed è proprio questo il punto.
+rettangolo di avere area 12 e perimetro 10 con lati interi (semplicemente non
+esiste). È il cuore della disputa su COMPAS: l'inchiesta di ProPublica
+accusava il sistema di generare molti più falsi allarmi fra gli imputati neri;
+l'azienda rispondeva che il punteggio era calibrato allo stesso modo per
+tutti. Avevano ragione **entrambe**, ed è proprio questo il punto.
 
 `````
 
@@ -236,12 +237,12 @@ $$
 $$
 
 Stesso valore predittivo, stesso tasso di veri positivi, eppure il tasso di
-falsi positivi è tre volte più alto nel gruppo con prevalenza maggiore: $0{,}30$
-contro $0{,}10$. È esattamente la forma del caso COMPAS
-{cite}`angwin2016machine`. Kleinberg, Mullainathan e Raghavan (2016) provano la
-versione per i punteggi continui: calibrazione, bilanciamento della classe
+falsi positivi è tre volte più alto nel gruppo con prevalenza maggiore:
+$0{,}30$ contro $0{,}10$. È esattamente la forma del caso COMPAS
+{cite}`angwin2016machine`. Kleinberg, Mullainathan e Raghavan (2016) provano
+la versione per i punteggi continui: calibrazione, bilanciamento della classe
 positiva e bilanciamento della classe negativa coesistono solo nei casi
-degeneri — prevalenze identiche o predizione perfetta.
+degeneri (prevalenze identiche o predizione perfetta).
 
 `````
 
@@ -283,13 +284,13 @@ che qualcuno considera essa stessa una forma di disparità di trattamento.
 - **Post-processing.** Si lascia intatto il modello e si aggiustano le
   **soglie**: Hardt, Price e Srebro {cite}`hardt2016equality` mostrano come
   derivare soglie per-gruppo (eventualmente randomizzate) che raggiungono
-  l'equalized odds a partire da un qualsiasi punteggio già addestrato — una
-  costruzione geometrica sulle curve ROC dei due gruppi.
+  l'equalized odds a partire da un qualsiasi punteggio già addestrato (una
+  costruzione geometrica sulle curve ROC dei due gruppi).
 
 Il risultato di impossibilità della sezione precedente resta sullo sfondo:
 nessuna di queste tecniche annulla il conflitto fra calibrazione ed equalized
 odds quando i tassi di base differiscono. Sposta soltanto *quale* criterio
-privilegiare — e quel «quale» non è una scelta tecnica.
+privilegiare, e quel «quale» non è una scelta tecnica.
 
 `````
 
@@ -308,10 +309,10 @@ può approvarne uno e bocciare l'altro solo perché appartengono a gruppi divers
 «non fare distinzioni ingiustificate fra individui vicini».
 
 Il problema è tutto in quella parola, *simili*. Simili rispetto a cosa? Due
-curriculum possono sembrare vicini per titoli di studio e lontani per esperienza:
-chi decide il metro? Definire la somiglianza «giusta» è difficile quanto il
-problema di equità di partenza — e spesso nasconde, dentro il metro, le stesse
-distorsioni che volevamo eliminare.
+curriculum possono sembrare vicini per titoli di studio e lontani per
+esperienza: chi decide il metro? Definire la somiglianza «giusta» è difficile
+quanto il problema di equità di partenza, e spesso nasconde, dentro il metro,
+le stesse distorsioni che volevamo eliminare.
 
 `````
 
@@ -339,12 +340,12 @@ tale e quale.
 
 ## Il conflitto, coi numeri
 
-Chiudiamo il cerchio con un esperimento riproducibile. Costruiamo un punteggio di
-rischio **calibrato per costruzione** — l'etichetta reale è estratta con
-probabilità pari al punteggio, $P(Y=1\mid S=s)=s$, identica in entrambi i gruppi
-— ma con **tassi di base diversi**, ottenuti da distribuzioni di punteggio
-diverse. Poi applichiamo la stessa soglia a tutti e leggiamo i tassi gruppo per
-gruppo.
+Chiudiamo il cerchio con un esperimento riproducibile. Costruiamo un punteggio
+di rischio **calibrato per costruzione**, l'etichetta reale è estratta con
+probabilità pari al punteggio, $P(Y=1\mid S=s)=s$, identica in entrambi i
+gruppi, ma con **tassi di base diversi**, ottenuti da distribuzioni di
+punteggio diverse. Poi applichiamo la stessa soglia a tutti e leggiamo i tassi
+gruppo per gruppo.
 
 ```python
 import numpy as np
@@ -397,16 +398,16 @@ Calibrazione (bin di score -> frazione reale di positivi):
   Gruppo B: [0.0,0.2)->0.13  [0.2,0.4)->0.29  [0.4,0.6)->0.48  [0.6,0.8)->0.67  [0.8,1.0)->0.81
 ```
 
-Le due curve di calibrazione sono **essenzialmente identiche**: in ogni fascia di
-punteggio, la frazione reale di positivi è pressoché la stessa fra i gruppi (e
-coincide con il punteggio medio della fascia, come impone la calibrazione per
-costruzione). La calibrazione, cioè, *vale*. Eppure il tasso di
-falsi positivi è tre volte più alto nel Gruppo A ($0{,}346$ contro $0{,}110$) e
-anche il TPR diverge nettamente ($0{,}658$ contro $0{,}348$): l'equalized odds è
-platealmente violata. Non c'è nessun errore nel codice — è l'impossibilità della
-sezione precedente che si materializza in numeri. Cambiare la soglia sposta i
-tassi, ma non li può allineare *tutti* insieme finché le prevalenze restano
-$0{,}50$ e $0{,}33$.
+Le due curve di calibrazione sono **essenzialmente identiche**: in ogni fascia
+di punteggio, la frazione reale di positivi è pressoché la stessa fra i gruppi
+(e coincide con il punteggio medio della fascia, come impone la calibrazione
+per costruzione). La calibrazione, cioè, *vale*. Eppure il tasso di falsi
+positivi è tre volte più alto nel Gruppo A ($0{,}346$ contro $0{,}110$) e
+anche il TPR diverge nettamente ($0{,}658$ contro $0{,}348$): l'equalized odds
+è platealmente violata. Non c'è nessun errore nel codice: è l'impossibilità
+della sezione precedente che si materializza in numeri. Cambiare la soglia
+sposta i tassi, ma non li può allineare *tutti* insieme finché le prevalenze
+restano $0{,}50$ e $0{,}33$.
 
 ## Nessuna metrica è «quella giusta»
 
@@ -419,13 +420,13 @@ altri. Nello screening di una malattia grave conta non mancare i malati (uguale
 TPR); nella concessione di un mutuo conta che un punteggio significhi lo stesso
 per tutti (calibrazione).
 
-La statistica fa il suo mestiere fino a un certo punto: delimita lo spazio delle
-opzioni, quantifica i compromessi, smaschera le incompatibilità. Ma *quale*
-criterio far valere non discende dai dati — è una scelta di valore, che va posta
-in chiaro e discussa, non nascosta dentro una funzione obiettivo. Con lo stesso
-spirito affronteremo, nelle sezioni successive, la privacy e la robustezza dei
-modelli, e più avanti l'interpretabilità come strumento per rendere queste scelte
-finalmente ispezionabili.
+La statistica fa il suo mestiere fino a un certo punto: delimita lo spazio
+delle opzioni, quantifica i compromessi, smaschera le incompatibilità. Ma
+*quale* criterio far valere non discende dai dati: è una scelta di valore, che
+va posta in chiaro e discussa, non nascosta dentro una funzione obiettivo. Con
+lo stesso spirito affronteremo, nelle sezioni successive, la privacy e la
+robustezza dei modelli, e più avanti l'interpretabilità come strumento per
+rendere queste scelte finalmente ispezionabili.
 
 ```{admonition} Da ricordare
 :class: important

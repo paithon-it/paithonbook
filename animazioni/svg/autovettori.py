@@ -1,15 +1,15 @@
 """Autovettori: le due direzioni che una matrice non riesce a girare.
 
 Ogni vettore unitario diventa Av. Quasi tutti cambiano direzione; quelli sulle
-diagonali no — restano sulla propria retta e si limitano ad allungarsi (λ = 3)
+diagonali no, restano sulla propria retta e si limitano ad allungarsi (λ = 3)
 o a non muoversi affatto (λ = 1). Angoli e lunghezze si calcolano applicando
 davvero la matrice.
 
 Nota di tecnica, valida per tutte le figure di questa cartella: il disegno
 *fermo* usa coordinate vere, senza nessun `transform`, ed è lo stato finale.
 L'animazione parte dalla trasformazione **inversa** e finisce sull'identità.
-Così il riposo non dipende dal CSS — cioè regge in stampa, nei PDF e con
-`prefers-reduced-motion` — e non c'è modo che i due stati divergano.
+Così il riposo non dipende dal CSS, cioè regge in stampa, nei PDF e con
+`prefers-reduced-motion`, e non c'è modo che i due stati divergano.
 """
 
 import math

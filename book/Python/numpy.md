@@ -1,16 +1,15 @@
 # NumPy: calcolo numerico vettorizzato
 
-Nel 2005 Travis Oliphant unisce due librerie rivali — *Numeric* e *Numarray* —
+Nel 2005 Travis Oliphant unisce due librerie rivali (*Numeric* e *Numarray*)
 in un solo progetto, che l'anno seguente rilascia come **NumPy 1.0**. È una di
 quelle scelte silenziose che cambiano un intero campo: da allora quasi ogni
-pezzo dell'ecosistema scientifico di Python — Pandas, scikit-learn, PyTorch,
-TensorFlow — poggia, direttamente o no, sulla struttura dati che NumPy
-introduce.
-Quella struttura è l'**array N-dimensionale**, l'`ndarray`: una griglia di
-numeri che può essere una semplice fila, una tabella, o una pila di tabelle.
-Capirlo bene è il prerequisito pratico a tutto il resto del libro: è il ponte
-tra la matematica dei vettori e delle matrici e il codice che addestra i
-modelli.
+pezzo dell'ecosistema scientifico di Python (Pandas, scikit-learn, PyTorch,
+TensorFlow) poggia, direttamente o no, sulla struttura dati che NumPy
+introduce. Quella struttura è l'**array N-dimensionale**, l'`ndarray`: una
+griglia di numeri che può essere una semplice fila, una tabella, o una pila di
+tabelle. Capirlo bene è il prerequisito pratico a tutto il resto del libro: è
+il ponte tra la matematica dei vettori e delle matrici e il codice che
+addestra i modelli.
 
 ## L'ndarray: perché non basta una lista
 
@@ -33,16 +32,17 @@ diventano corte da scrivere e molto più veloci da eseguire.
 
 `````{tab} Superiore
 
-Un `ndarray` è un blocco di memoria **contiguo, omogeneo e tipizzato** (`dtype`,
-per esempio `float64` o `int32`), corredato da una *forma* (`shape`) e da un
-insieme di *stride* che dicono di quanti byte spostarsi per passare all'elemento
-successivo lungo ogni asse. Questa struttura permette due cose. Primo: molte
-viste (*slice*, `reshape`, trasposizione) sono ricalcoli di stride a costo
-zero, senza copiare i dati. Secondo: le operazioni elemento-per-elemento sono
-delegate a cicli in C compilati e vettorizzati (istruzioni SIMD), che saltano
-l'*overhead* dell'interprete su ogni iterazione; l'algebra lineare vera e
-propria — i prodotti tra matrici — passa invece per librerie BLAS ottimizzate.
-È la differenza tra `float` scatolati sparsi nella heap e un array C nudo.
+Un `ndarray` è un blocco di memoria **contiguo, omogeneo e tipizzato**
+(`dtype`, per esempio `float64` o `int32`), corredato da una *forma* (`shape`)
+e da un insieme di *stride* che dicono di quanti byte spostarsi per passare
+all'elemento successivo lungo ogni asse. Questa struttura permette due cose.
+Primo: molte viste (*slice*, `reshape`, trasposizione) sono ricalcoli di
+stride a costo zero, senza copiare i dati. Secondo: le operazioni
+elemento-per-elemento sono delegate a cicli in C compilati e vettorizzati
+(istruzioni SIMD), che saltano l'*overhead* dell'interprete su ogni
+iterazione; l'algebra lineare vera e propria (i prodotti tra matrici) passa
+invece per librerie BLAS ottimizzate. È la differenza tra `float` scatolati
+sparsi nella heap e un array C nudo.
 
 `````
 
@@ -91,7 +91,7 @@ C'è poi un'indicizzazione che in Python puro richiederebbe un ciclo con `if`.
 `````{tab} Elementare
 
 L'**indicizzazione booleana** seleziona gli elementi in base a una condizione.
-Scrivi la domanda — "quali sono maggiori di 25?" — e NumPy ti restituisce solo
+Scrivi la domanda ("quali sono maggiori di 25?") e NumPy ti restituisce solo
 quelli:
 
 ```python
@@ -110,10 +110,10 @@ x[x > 25] = 0     # ...oppure riscrivili tutti in un colpo
 
 Una condizione come `x > 25` produce una **maschera booleana**, un array di
 `bool` della stessa forma. Usata come indice, `x[mask]` estrae gli elementi
-dove la maschera è `True`, restituendo un array 1-D (una *copia*, non una vista).
-La stessa maschera funziona in assegnazione, `x[mask] = 0`, e si compone con gli
-operatori logici *bitwise* `&`, `|`, `~` — non `and`/`or`, che su array sono
-ambigui — ciascun confronto tra parentesi:
+dove la maschera è `True`, restituendo un array 1-D (una *copia*, non una
+vista). La stessa maschera funziona in assegnazione, `x[mask] = 0`, e si
+compone con gli operatori logici *bitwise* `&`, `|`, `~` (non `and`/`or`, che
+su array sono ambigui) ciascun confronto tra parentesi:
 
 ```python
 x[(x > 15) & (x < 45)]    # elementi in (15, 45)
@@ -201,12 +201,13 @@ def raddoppia_loop(v):          # la versione "a mano"
 
 `````{tab} Elementare
 
-Le due righe fanno la stessa cosa — raddoppiare un milione di numeri — ma la
+Le due righe fanno la stessa cosa (raddoppiare un milione di numeri) ma la
 seconda è tipicamente **decine o centinaia di volte più veloce** (`%timeit` è
 il cronometro dei notebook: misura quanto impiega un'istruzione). Il ciclo
-Python paga un piccolo pedaggio a ogni giro; `2 * x` fa lavorare direttamente il
-motore in C su tutto il blocco. La regola d'oro con NumPy: *se stai scrivendo un
-`for` su un array, quasi sempre esiste un modo per non scriverlo*.
+Python paga un piccolo pedaggio a ogni giro; `2 * x` fa lavorare direttamente
+il motore in C su tutto il blocco. La regola d'oro con NumPy: *se stai
+scrivendo un `for` su un array, quasi sempre esiste un modo per non
+scriverlo*.
 
 `````
 
@@ -219,14 +220,14 @@ ciclo dentro codice C compilato che opera su memoria contigua, con buona
 località di cache e, dove disponibile, vettorizzazione SIMD. Non è gratis
 all'infinito: la vettorizzazione può aumentare l'uso di memoria (array
 temporanei intermedi) e non copre bene ogni algoritmo intrinsecamente
-sequenziale — ma per l'algebra dei dati è quasi sempre la scelta giusta.
+sequenziale, ma per l'algebra dei dati è quasi sempre la scelta giusta.
 
 `````
 
 ## Algebra lineare, in una riga
 
-Qui i conti del prossimo capitolo — quello di matematica — diventano codice.
-Se termini come *prodotto scalare* o *matrice inversa* non ti dicono ancora
+Qui i conti del prossimo capitolo (quello di matematica) diventano codice. Se
+termini come *prodotto scalare* o *matrice inversa* non ti dicono ancora
 nulla, nessun problema: verranno spiegati lì, e potrai tornare a rileggere
 queste righe. Per ora conta una cosa sola: ogni operazione è una riga.
 Prodotto scalare, prodotto matrice-vettore e prodotto tra matrici sono tutti
@@ -248,9 +249,10 @@ np.linalg.solve(A, v)  # risolve A z = v  (piu' stabile dell'inversa)
 
 Un'avvertenza che torna spesso: per risolvere un sistema $A z = v$ si usa
 `np.linalg.solve`, non `inv(A) @ v`. Il primo è più preciso e più veloce;
-calcolare l'inversa esplicita è quasi sempre uno spreco. Con questi mattoni —
-array, broadcasting, vettorizzazione, algebra lineare — abbiamo il vocabolario
-per esprimere in poche righe ciò che un modello, sotto, fa milioni di volte.
+calcolare l'inversa esplicita è quasi sempre uno spreco. Con questi mattoni
+(array, broadcasting, vettorizzazione, algebra lineare), abbiamo il
+vocabolario per esprimere in poche righe ciò che un modello, sotto, fa milioni
+di volte.
 
 ```{admonition} Da ricordare
 :class: important

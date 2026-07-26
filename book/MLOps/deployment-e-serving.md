@@ -1,17 +1,17 @@
 # Servire un modello: dal file all'API
 
 Alla fine di tutto, un modello addestrato è un file. Qualche centinaio di
-megabyte di numeri su un disco — i pesi che nella sezione precedente abbiamo
-imparato a versionare e archiviare — e nient'altro. Da solo non fa niente: è
+megabyte di numeri su un disco (i pesi che nella sezione precedente abbiamo
+imparato a versionare e archiviare) e nient'altro. Da solo non fa niente: è
 inerte come uno spartito senza orchestra. «Metterlo in produzione» significa
 esattamente dargli l'orchestra: un modo di ricevere richieste dal mondo e di
 rispondere, in fretta e in modo affidabile, migliaia di volte al minuto.
 
-La sezione precedente si è fermata sul punto in cui l'artefatto — dati, codice,
-pesi — è tracciabile e riproducibile. Questa affronta il passo successivo, il
+La sezione precedente si è fermata sul punto in cui l'artefatto (dati, codice,
+pesi) è tracciabile e riproducibile. Questa affronta il passo successivo, il
 nodo *Deploy* dell'anello: come si mette un modello **in ascolto**. È una
-questione tanto ingegneristica quanto di aspettative — decidere *che cosa
-promettere* a chi userà il servizio — e per una volta il grosso del lavoro non
+questione tanto ingegneristica quanto di aspettative (decidere *che cosa
+promettere* a chi userà il servizio) e per una volta il grosso del lavoro non
 riguarda la rete neurale, ma tutto ciò che le sta attorno
 {cite}`kreuzberger2023machine`.
 
@@ -28,19 +28,19 @@ Pensa a un forno.
 
 C'è il pane **in blocco**: di notte, quando il negozio è chiuso, il fornaio
 prepara in un colpo solo tutto il pane che servirà l'indomani. Nessuno aspetta
-al bancone, quindi non importa se ci mette due ore: conta solo sfornarne tanto.
-Questo è il regime *batch*: si accumula un mucchio di richieste e le si smaltisce
-tutte insieme, quando fa comodo — di notte, offline.
+al bancone, quindi non importa se ci mette due ore: conta solo sfornarne
+tanto. Questo è il regime *batch*: si accumula un mucchio di richieste e le si
+smaltisce tutte insieme, quando fa comodo (di notte, offline).
 
 C'è poi il **panino al momento**: un cliente entra, ordina, e vuole il suo
 panino *adesso*, non domani. Qui conta la fretta: ogni singola richiesta deve
 avere risposta in pochi secondi, mentre la persona aspetta. Questo è il regime
 *online*: una richiesta, una risposta, subito.
 
-E c'è il **nastro trasportatore** del sushi: i piatti scorrono senza sosta e tu
-prendi al volo quello che passa. Nessuno «ordina» e nessuno «finisce»: è un
+E c'è il **nastro trasportatore** del sushi: i piatti scorrono senza sosta e
+tu prendi al volo quello che passa. Nessuno «ordina» e nessuno «finisce»: è un
 flusso continuo che non si ferma mai. Questo è lo *streaming*: eventi che
-arrivano ininterrottamente — clic, transazioni, sensori — e il modello li lavora
+arrivano ininterrottamente (clic, transazioni, sensori) e il modello li lavora
 al volo, mentre passano.
 
 `````
@@ -52,12 +52,12 @@ una richiesta e la sua risposta) e **throughput** (quante richieste al secondo
 il sistema smaltisce). Sono in tensione, e ogni regime ottimizza uno sacrificando
 l'altro.
 
-- **Batch (offline)**: si accumula un grande insieme di input e li si elabora in
-  un'unica passata pianificata (tipicamente notturna). La latenza per singolo
-  esempio è irrilevante — ore vanno benissimo — mentre il throughput si
-  massimizza sfruttando batch enormi. Caso d'uso: assegnare un punteggio a tutti
-  i clienti di un database per una campagna, o pre-calcolare le raccomandazioni
-  della home page.
+- **Batch (offline)**: si accumula un grande insieme di input e li si elabora
+  in un'unica passata pianificata (tipicamente notturna). La latenza per
+  singolo esempio è irrilevante (ore vanno benissimo), mentre il throughput si
+  massimizza sfruttando batch enormi. Caso d'uso: assegnare un punteggio a
+  tutti i clienti di un database per una campagna, o pre-calcolare le
+  raccomandazioni della home page.
 - **Online (sincrono)**: la richiesta arriva e attende la risposta in linea, con
   un budget di latenza stretto (spesso decine di millisecondi). Il throughput si
   ottiene con la concorrenza, non con batch grandi. Caso d'uso: la
@@ -89,34 +89,34 @@ una richiesta per volta, subito (conta la *latenza*).
 
 ## Il modello dietro un'API
 
-Nel regime online — il più comune e il più esigente — il modello vive dietro un
-**endpoint**: un indirizzo a cui altri programmi mandano una richiesta (di solito
-in JSON, via HTTP) e da cui ricevono la risposta. Chi chiama non sa e non deve
-sapere che dentro c'è una rete neurale: vede solo un servizio che, dati certi
-ingressi, restituisce una previsione. Il programma che tiene il modello in
-memoria e traduce le richieste in chiamate al `forward` si chiama **model
-server**.
+Nel regime online (il più comune e il più esigente) il modello vive dietro un
+**endpoint**: un indirizzo a cui altri programmi mandano una richiesta (di
+solito in JSON, via HTTP) e da cui ricevono la risposta. Chi chiama non sa e
+non deve sapere che dentro c'è una rete neurale: vede solo un servizio che,
+dati certi ingressi, restituisce una previsione. Il programma che tiene il
+modello in memoria e traduce le richieste in chiamate al `forward` si chiama
+**model server**.
 
 `````{tab} Elementare
 
-È lo sportello di un ufficio. Dietro il vetro c'è l'impiegato — il modello — che
-sa fare una cosa sola ma la sa fare bene. Tu non entri nel retro a rovistare tra
-le pratiche: passi il tuo modulo dalla fessura e ti torna indietro la risposta
-compilata. Lo sportello (l'*endpoint*) nasconde tutto il resto. E c'è una regola
-di buon senso che vale oro: l'impiegato arriva la mattina, si siede *una volta
-sola* e resta lì tutto il giorno. Sarebbe assurdo se andasse a casa e tornasse a
-ogni singolo cliente. Con i modelli è identico: i pesi si caricano in memoria una
-volta all'avvio del servizio, non a ogni richiesta — caricarli costa secondi, e a
-ogni richiesta li si pagherebbe di nuovo.
+È lo sportello di un ufficio. Dietro il vetro c'è l'impiegato (il modello) che
+sa fare una cosa sola ma la sa fare bene. Tu non entri nel retro a rovistare
+tra le pratiche: passi il tuo modulo dalla fessura e ti torna indietro la
+risposta compilata. Lo sportello (l'*endpoint*) nasconde tutto il resto. E c'è
+una regola di buon senso che vale oro: l'impiegato arriva la mattina, si siede
+*una volta sola* e resta lì tutto il giorno. Sarebbe assurdo se andasse a casa
+e tornasse a ogni singolo cliente. Con i modelli è identico: i pesi si
+caricano in memoria una volta all'avvio del servizio, non a ogni richiesta;
+caricarli costa secondi, e a ogni richiesta li si pagherebbe di nuovo.
 
 `````
 
 `````{tab} Superiore
 
-Il model server carica i pesi una volta all'avvio e li tiene in memoria; a ogni
-richiesta esegue solo il *forward*, in modalità inferenza. Sopra questa logica si
-appoggia un livello di trasporto — REST/JSON per semplicità, o gRPC per la bassa
-latenza e i payload binari — che però è, in sostanza, contorno.
+Il model server carica i pesi una volta all'avvio e li tiene in memoria; a
+ogni richiesta esegue solo il *forward*, in modalità inferenza. Sopra questa
+logica si appoggia un livello di trasporto (REST/JSON per semplicità, o gRPC
+per la bassa latenza e i payload binari) che però è, in sostanza, contorno.
 
 Il problema serio non è esporre l'endpoint, è renderlo **riproducibile**. Un
 modello dipende da una versione precisa di PyTorch, delle librerie di
@@ -156,14 +156,15 @@ def predici(richiesta: dict) -> dict:
 ```
 
 Due dettagli fanno la differenza tra un giocattolo e un servizio corretto.
-`modello.eval()` commuta il comportamento degli strati che si comportano in modo
-diverso in addestramento e in inferenza — *dropout* e *BatchNorm* su tutti —
-senza il quale le previsioni sarebbero silenziosamente sbagliate.
-`torch.no_grad()` (o l'equivalente più aggressivo `torch.inference_mode()`) dice
-ad autograd di non costruire il grafo per il *backward*: in inferenza non serve, e
-ometterlo spreca memoria e tempo a ogni richiesta. Il resto — la produzione dei
-*logit*, la `softmax` che li trasforma in probabilità — è esattamente il modello
-del capitolo PyTorch, ora chiamato a rispondere invece che a imparare.
+`modello.eval()` commuta il comportamento degli strati che si comportano in
+modo diverso in addestramento e in inferenza (*dropout* e *BatchNorm* su
+tutti) senza il quale le previsioni sarebbero silenziosamente sbagliate.
+`torch.no_grad()` (o l'equivalente più aggressivo `torch.inference_mode()`)
+dice ad autograd di non costruire il grafo per il *backward*: in inferenza non
+serve, e ometterlo spreca memoria e tempo a ogni richiesta. Il resto (la
+produzione dei *logit*, la `softmax` che li trasforma in probabilità) è
+esattamente il modello del capitolo PyTorch, ora chiamato a rispondere invece
+che a imparare.
 
 ## Ottimizzare l'inferenza
 
@@ -172,28 +173,29 @@ accelerare l'inferenza sono diverse da quelle dell'addestramento, ma una radice 
 comune con il capitolo PyTorch: meno byte da spostare, più velocità.
 
 La prima leva è il **batching dinamico**. Come abbiamo visto parlando di
-prestazioni, la GPU rende al massimo su tanti conti identici in parallelo: servire
-le richieste una per una la lascia mezza vuota. Il server allora accumula per
-qualche millisecondo le richieste che arrivano, le impacchetta in un unico batch e
-le passa al modello in un colpo solo — un filo di latenza in più in cambio di molto
-più throughput. La seconda leva è **ridurre la precisione** dei numeri: la sezione
-sulle prestazioni ha introdotto la precisione mista e il `float16` per
-l'addestramento; in inferenza lo stesso passaggio a 16 bit dimezza memoria e banda
-quasi gratis. La terza leva spinge oltre, fino agli **interi**: la
-**quantizzazione** a `int8` {cite}`jacob2018quantization`.
+prestazioni, la GPU rende al massimo su tanti conti identici in parallelo:
+servire le richieste una per una la lascia mezza vuota. Il server allora
+accumula per qualche millisecondo le richieste che arrivano, le impacchetta in
+un unico batch e le passa al modello in un colpo solo: un filo di latenza in
+più in cambio di molto più throughput. La seconda leva è **ridurre la
+precisione** dei numeri: la sezione sulle prestazioni ha introdotto la
+precisione mista e il `float16` per l'addestramento; in inferenza lo stesso
+passaggio a 16 bit dimezza memoria e banda quasi gratis. La terza leva spinge
+oltre, fino agli **interi**: la **quantizzazione** a `int8`
+{cite}`jacob2018quantization`.
 
 `````{tab} Elementare
 
-È il trucco di quando mandi una foto su una chat: l'app la rimpicciolisce prima di
-spedirla. Perdi un filo di nitidezza — se ci fai molto caso —, ma il file pesa un
-quarto e parte in un lampo. Quantizzare un modello è la stessa idea applicata ai
-suoi numeri. I pesi, di norma, sono decimali finissimi (tante cifre dopo la
-virgola); la quantizzazione li riscrive come **numeri interi grossolani**, da 0 a
-255 livelli. Ne guadagni quattro volte in leggerezza e spesso un bel taglio di
-velocità; ne perdi un pizzico di precisione. Il patto conviene quasi sempre: nella
-maggior parte dei modelli l'accuratezza cala di una frazione di punto percentuale,
-un prezzo minuscolo per un modello quattro volte più piccolo che gira anche su un
-telefono.
+È il trucco di quando mandi una foto su una chat: l'app la rimpicciolisce
+prima di spedirla. Perdi un filo di nitidezza (se ci fai molto caso), ma il
+file pesa un quarto e parte in un lampo. Quantizzare un modello è la stessa
+idea applicata ai suoi numeri. I pesi, di norma, sono decimali finissimi
+(tante cifre dopo la virgola); la quantizzazione li riscrive come **numeri
+interi grossolani**, da 0 a 255 livelli. Ne guadagni quattro volte in
+leggerezza e spesso un bel taglio di velocità; ne perdi un pizzico di
+precisione. Il patto conviene quasi sempre: nella maggior parte dei modelli
+l'accuratezza cala di una frazione di punto percentuale, un prezzo minuscolo
+per un modello quattro volte più piccolo che gira anche su un telefono.
 
 `````
 
@@ -256,10 +258,10 @@ dipende dal modello e non è mai garantito trascurabile a priori.
 
 ## Latenza e throughput: cosa promettere
 
-Ottimizzato il servizio, resta la domanda più scomoda: che cosa **promettere** a
-chi lo userà? La promessa si scrive in un **SLA** (*Service Level Agreement*), e il
-punto delicato è che va misurata con l'onestà giusta — la media, qui, è una
-bugia gentile.
+Ottimizzato il servizio, resta la domanda più scomoda: che cosa **promettere**
+a chi lo userà? La promessa si scrive in un **SLA** (*Service Level
+Agreement*), e il punto delicato è che va misurata con l'onestà giusta: la
+media, qui, è una bugia gentile.
 
 `````{tab} Elementare
 
@@ -279,18 +281,18 @@ coda lenta.
 Si descrive la latenza con i suoi **percentili**, non con la media. La p50
 (mediana) è il tempo entro cui risponde metà delle richieste; la **p95** e la
 **p99** i tempi entro cui ne risponde il 95% e il 99%. La *coda* della
-distribuzione — la p99, la p99.9 — è ciò che governa l'esperienza reale sotto
-carico, perché in un sistema che compone più servizi anche una piccola frazione di
-richieste lente si propaga e degrada l'insieme. Un SLA serio si scrive sui
-percentili alti: «p99 sotto i 200 ms», non «latenza media 80 ms», che nasconde la
-coda.
+distribuzione, la p99, la p99.9: è ciò che governa l'esperienza reale sotto
+carico, perché in un sistema che compone più servizi anche una piccola
+frazione di richieste lente si propaga e degrada l'insieme. Un SLA serio si
+scrive sui percentili alti: «p99 sotto i 200 ms», non «latenza media 80 ms»,
+che nasconde la coda.
 
 Il secondo numero da promettere è il **throughput** sostenibile (richieste al
 secondo), che con la latenza forma il classico compromesso: più batch grandi
-alzano il throughput ma allungano la coda della latenza. Il terzo è economico, il
-**costo per richiesta** — tempo di calcolo moltiplicato per il prezzo
-dell'hardware — che spesso è il vero vincolo di progetto: un modello che rispetta
-lo SLA ma costa dieci volte troppo per richiesta non è dispiegabile
+alzano il throughput ma allungano la coda della latenza. Il terzo è economico,
+il **costo per richiesta** (tempo di calcolo moltiplicato per il prezzo
+dell'hardware) che spesso è il vero vincolo di progetto: un modello che
+rispetta lo SLA ma costa dieci volte troppo per richiesta non è dispiegabile
 {cite}`huyen2022designing`.
 
 `````
@@ -324,6 +326,6 @@ misurare prima di fidarsi.
   misurare** sempre.
 - Un **SLA** si scrive sui **percentili alti** della latenza (p95, p99), non sulla
   media, e va bilanciato con **throughput** e **costo per richiesta**.
-- Le nuove versioni si rilasciano per gradi — *canary*, *shadow*, A/B — per non
+- Le nuove versioni si rilasciano per gradi (*canary*, *shadow*, A/B) per non
   rompere niente in produzione.
 ```

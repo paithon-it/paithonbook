@@ -2,33 +2,34 @@
 
 A metà degli anni Novanta, addestrando un modello per stimare il rischio di
 morte dei pazienti ricoverati per polmonite, un gruppo di ricercatori di
-Pittsburgh scoprì che
-l'algoritmo aveva imparato una regola sorprendente: *chi soffre d'asma ha un
-rischio più basso*. Preso alla lettera, un consiglio pericoloso — gli
-asmatici sono pazienti fragili. La spiegazione era clinica, non causale: negli
-ospedali gli asmatici con polmonite venivano mandati subito in terapia
-intensiva, e proprio quelle cure aggressive ne abbassavano la mortalità. Il
-modello aveva colto una correlazione vera nei dati e ne aveva tratto una
-conclusione che, usata per decidere chi mandare a casa, avrebbe ucciso. La
-storia — raccontata anni dopo da Rich Caruana — è diventata il manifesto di un
-campo: se non possiamo *guardare dentro* un modello, non sappiamo su quali
-scorciatoie si regge, e non possiamo fidarcene quando la posta è alta.
+Pittsburgh scoprì che l'algoritmo aveva imparato una regola sorprendente: *chi
+soffre d'asma ha un rischio più basso*. Preso alla lettera, un consiglio
+pericoloso: gli asmatici sono pazienti fragili. La spiegazione era clinica,
+non causale: negli ospedali gli asmatici con polmonite venivano mandati subito
+in terapia intensiva, e proprio quelle cure aggressive ne abbassavano la
+mortalità. Il modello aveva colto una correlazione vera nei dati e ne aveva
+tratto una conclusione che, usata per decidere chi mandare a casa, avrebbe
+ucciso. La storia (raccontata anni dopo da Rich Caruana) è diventata il
+manifesto di un campo: se non possiamo *guardare dentro* un modello, non
+sappiamo su quali scorciatoie si regge, e non possiamo fidarcene quando la
+posta è alta.
 
 Ci sono due strade per capire un modello. La prima è sceglierlo **trasparente
 per costruzione**, così semplice che la sua logica si legge a occhio nudo. La
-seconda è tenere il modello com'è — magari una grande rete — e interrogarlo da
+seconda è tenere il modello com'è (magari una grande rete) e interrogarlo da
 fuori con strumenti che ne rivelano il comportamento. Questa sezione apre il
-capitolo percorrendo la prima strada, i modelli intrinsecamente interpretabili,
-e imboccando la seconda con il primo attrezzo del kit *post-hoc*:
-l'**importanza delle feature**. Per un panorama sistematico dell'intero campo
-il riferimento è il manuale di Molnar {cite}`molnar2022interpretable`.
+capitolo percorrendo la prima strada, i modelli intrinsecamente
+interpretabili, e imboccando la seconda con il primo attrezzo del kit
+*post-hoc*: l'**importanza delle feature**. Per un panorama sistematico
+dell'intero campo il riferimento è il manuale di Molnar
+{cite}`molnar2022interpretable`.
 
 ## Modelli trasparenti per costruzione
 
 Alcuni modelli non hanno bisogno di essere spiegati: *sono* la loro
-spiegazione. La regressione lineare e quella logistica, incontrate nel capitolo
-sul machine learning, ne sono l'esempio più puro — la predizione è una somma
-pesata delle feature, e i pesi *sono* la storia che il modello racconta.
+spiegazione. La regressione lineare e quella logistica, incontrate nel
+capitolo sul machine learning, ne sono l'esempio più puro: la predizione è una
+somma pesata delle feature, e i pesi *sono* la storia che il modello racconta.
 
 `````{tab} Elementare
 
@@ -62,9 +63,9 @@ confrontabili tra loro solo se le feature sono **standardizzate** (stessa
 scala): un $w_j$ grande può riflettere semplicemente un'unità di misura
 piccola. Secondo, l'inciso «a parità di tutte le altre» è fragile quando le
 feature sono **correlate**: se due colonne si muovono insieme, il modello può
-spartire il loro effetto in modo arbitrario, e i singoli coefficienti diventano
-instabili — la stessa multicollinearità che rende preziosa la regolarizzazione
-Ridge/Lasso vista nel capitolo di machine learning.
+spartire il loro effetto in modo arbitrario, e i singoli coefficienti
+diventano instabili (la stessa multicollinearità che rende preziosa la
+regolarizzazione Ridge/Lasso vista nel capitolo di machine learning).
 
 `````
 
@@ -75,10 +76,10 @@ foglia, e quel percorso *è* la spiegazione. Sulla stessa famiglia si collocano
 i **modelli additivi generalizzati** (GAM), che estendono la regressione
 lineare sostituendo a ogni coefficiente una funzione liscia,
 $\hat{y} = \beta_0 + \sum_j f_j(x_j)$: ogni $f_j$ si può disegnare come una
-curva — «come cambia il rischio al variare dell'età» — restando leggibile una
-feature alla volta. E ci sono i **sistemi a regole**, elenchi di condizioni del
-tipo «SE reddito $<$ 20 000 E contratto a termine ALLORA nega», che decidono in
-modo del tutto ispezionabile.
+curva («come cambia il rischio al variare dell'età») restando leggibile una
+feature alla volta. E ci sono i **sistemi a regole**, elenchi di condizioni
+del tipo «SE reddito $<$ 20 000 E contratto a termine ALLORA nega», che
+decidono in modo del tutto ispezionabile.
 
 Aleggia però un pregiudizio diffuso: che la trasparenza si paghi in
 accuratezza, che per essere bravi si debba per forza essere oscuri. È vero solo
@@ -87,16 +88,16 @@ in parte.
 `````{tab} Elementare
 
 L'idea comune è: «i modelli semplici sono deboli, quelli forti sono
-incomprensibili — scegli». A volte è così, soprattutto su immagini, testo e
+incomprensibili (scegli»). A volte è così, soprattutto su immagini, testo e
 suoni, dove le reti profonde vincono senza rivali. Ma su tanti problemi
-concreti — quelli a righe e colonne di un foglio di calcolo, come una
-valutazione del credito o del rischio clinico — un modello trasparente ben
+concreti (quelli a righe e colonne di un foglio di calcolo, come una
+valutazione del credito o del rischio clinico) un modello trasparente ben
 costruito arriva vicinissimo, a volte alla pari, con la scatola nera. In quei
 casi scegliere l'oscurità non compra accuratezza: regala solo opacità.
 
 Il consiglio pratico che ne segue è di buon senso: parti dal modello
 trasparente e misura quanto perdi davvero passando a uno più complicato. Se la
-differenza è minima, l'interpretabilità è un guadagno netto — soprattutto dove
+differenza è minima, l'interpretabilità è un guadagno netto: soprattutto dove
 una decisione sbagliata ha un costo umano.
 
 `````
@@ -114,11 +115,12 @@ significative, e modelli come gradient boosting o GAM catturano quasi tutta la
 struttura utile restando ispezionabili.
 
 Ne discende una gerarchia metodologica: preferire un modello intrinsecamente
-interpretabile quando le prestazioni sono comparabili, e riservare gli strumenti
-*post-hoc* — importanza delle feature, PDP, e i metodi locali che vedremo più
-avanti nel capitolo — ai casi in cui la scatola nera è davvero necessaria. Gli
-strumenti post-hoc, va detto subito, spiegano il modello *dall'esterno* e sono
-approssimazioni: non sostituiscono la trasparenza di progetto.
+interpretabile quando le prestazioni sono comparabili, e riservare gli
+strumenti *post-hoc* (importanza delle feature, PDP, e i metodi locali che
+vedremo più avanti nel capitolo) ai casi in cui la scatola nera è davvero
+necessaria. Gli strumenti post-hoc, va detto subito, spiegano il modello
+*dall'esterno* e sono approssimazioni: non sostituiscono la trasparenza di
+progetto.
 
 `````
 
@@ -127,7 +129,7 @@ approssimazioni: non sostituiscono la trasparenza di progetto.
 Passiamo agli strumenti che interrogano un modello già addestrato, quale che
 sia. La prima domanda, la più naturale, è: **su quali colonne si regge?**
 Vogliamo una classifica delle feature per quanto contano nelle predizioni.
-Cominciamo dal metodo più generale e robusto — la permutazione — perché non
+Cominciamo dal metodo più generale e robusto (la permutazione), perché non
 guarda dentro il modello: lo tratta come una scatola chiusa che riceve input e
 sputa predizioni.
 
@@ -135,33 +137,35 @@ sputa predizioni.
 
 `````{tab} Elementare
 
-L'idea è quasi impertinente: se una colonna conta davvero, allora **rovinarla**
-deve far crollare le prestazioni. Prendiamo un modello che prevede se un cliente
-restituirà un prestito, e mettiamolo alla prova su 100 clienti mai visti:
-indovina 90 volte su 100. Ora prendiamo una colonna sola — il reddito — e ne
-**rimescoliamo** i valori tra i 100 clienti: ognuno si ritrova il reddito di
-qualcun altro. Tutto il resto è intatto, ma quella colonna è diventata rumore.
-Riproviamo il modello: ora indovina solo 72 volte. Ha perso 18 punti *solo*
-perché gli abbiamo scombinato il reddito: segno che ci si appoggiava molto.
-L'importanza del reddito è quel calo, $90\% - 72\% = 18$ punti.
+L'idea è quasi impertinente: se una colonna conta davvero, allora
+**rovinarla** deve far crollare le prestazioni. Prendiamo un modello che
+prevede se un cliente restituirà un prestito, e mettiamolo alla prova su 100
+clienti mai visti: indovina 90 volte su 100. Ora prendiamo una colonna sola
+(il reddito) e ne **rimescoliamo** i valori tra i 100 clienti: ognuno si
+ritrova il reddito di qualcun altro. Tutto il resto è intatto, ma quella
+colonna è diventata rumore. Riproviamo il modello: ora indovina solo 72 volte.
+Ha perso 18 punti *solo* perché gli abbiamo scombinato il reddito: segno che
+ci si appoggiava molto. L'importanza del reddito è quel calo,
+$90\% - 72\% = 18$ punti.
 
 Rifacciamo lo stesso gioco con una colonna che non c'entra nulla, il colore
 preferito: rimescolandola, il modello continua a indovinare 90 volte. Calo
-zero, importanza zero. Poiché il rimescolamento è casuale, lo si ripete qualche
-volta e si fa la media, per non farsi ingannare da un mescolamento fortunato. Il
-bello è che questo trucco funziona con *qualsiasi* modello — una foresta, una
-rete, un GAM — perché serve solo poterlo interrogare.
+zero, importanza zero. Poiché il rimescolamento è casuale, lo si ripete
+qualche volta e si fa la media, per non farsi ingannare da un mescolamento
+fortunato. Il bello è che questo trucco funziona con *qualsiasi* modello (una
+foresta, una rete, un GAM), perché serve solo poterlo interrogare.
 
 `````
 
 `````{tab} Superiore
 
-Formalizziamo. Sia $f$ il modello addestrato e $e_{\text{orig}} = \mathcal{L}(f,
-D)$ il suo errore (o l'opposto di uno *score*: MSE in regressione, $1-\text{acc}$
-in classificazione) su un insieme di valutazione $D = (X, y)$. Per la feature
-$j$ si costruisce $X_{\pi_j}$, copia di $X$ in cui i valori della **sola colonna
-$j$** sono permutati casualmente lungo le righe — rompendo il legame tra $x_j$ e
-$y$ ma preservandone la distribuzione marginale — e si misura
+Formalizziamo. Sia $f$ il modello addestrato e
+$e_{\text{orig}} = \mathcal{L}(f, D)$ il suo errore (o l'opposto di uno
+*score*: MSE in regressione, $1-\text{acc}$ in classificazione) su un insieme
+di valutazione $D = (X, y)$. Per la feature $j$ si costruisce $X_{\pi_j}$,
+copia di $X$ in cui i valori della **sola colonna $j$** sono permutati
+casualmente lungo le righe (rompendo il legame tra $x_j$ e $y$ ma
+preservandone la distribuzione marginale) e si misura
 $e_{\pi_j} = \mathcal{L}(f, (X_{\pi_j}, y))$. L'importanza è il peggioramento
 
 $$
@@ -171,8 +175,8 @@ $$
 media su $K$ permutazioni indipendenti (in `scikit-learn`, `n_repeats`), che
 fornisce anche una deviazione standard. Introdotta da Breiman con le foreste
 casuali {cite}`breiman2001random` e in seguito formalizzata da Fisher, Rudin e
-Dominici (2019) come *model reliance* — nella loro variante il rapporto
-$e_{\pi_j}/e_{\text{orig}}$ anziché la differenza — è **model-agnostic**:
+Dominici (2019) come *model reliance* (nella loro variante il rapporto
+$e_{\pi_j}/e_{\text{orig}}$ anziché la differenza) è **model-agnostic**:
 richiede solo il forward del modello e un insieme etichettato.
 
 Due accortezze. La misura va calcolata su dati **held-out**: sul *training* essa
@@ -187,26 +191,28 @@ un limite che condivideremo con i metodi basati sulla marginalizzazione.
 ### Importanza da impurità (e il suo bias)
 
 Le foreste casuali offrono gratis una seconda misura, la **mean decrease in
-impurity** (MDI): quanto ogni feature, sommando su tutti gli alberi, ha ridotto
-l'impurità (Gini o entropia) negli split in cui compare. È l'attributo
+impurity** (MDI): quanto ogni feature, sommando su tutti gli alberi, ha
+ridotto l'impurità (Gini o entropia) negli split in cui compare. È l'attributo
 `feature_importances_` che abbiamo già incontrato nel capitolo sugli alberi e
-gli ensemble. È rapidissima — si calcola durante l'addestramento — ma va letta
+gli ensemble. È rapidissima (si calcola durante l'addestramento) ma va letta
 con prudenza, per una ragione che vale la pena rendere esplicita.
 
 `````{tab} Elementare
 
 L'importanza da impurità premia le feature che l'albero *usa spesso* per
-tagliare. Il problema è che una feature con tanti valori diversi — un'età
-precisa al giorno, un importo in centesimi — offre all'albero un'enorme quantità
-di soglie tra cui scegliere, e con così tante possibilità ne trova quasi sempre
-una che, per puro caso, separa un po' i dati. Così accumula «meriti» anche
-quando non porta vera informazione. Una feature con pochi valori (sì/no, tre
-categorie) parte invece svantaggiata: ha poche soglie da provare.
+tagliare. Il problema è che una feature con tanti valori diversi (un'età
+precisa al giorno, un importo in centesimi) offre all'albero un'enorme
+quantità di soglie tra cui scegliere, e con così tante possibilità ne trova
+quasi sempre una che, per puro caso, separa un po' i dati. Così accumula
+«meriti» anche quando non porta vera informazione. Una feature con pochi
+valori (sì/no, tre categorie) parte invece svantaggiata: ha poche soglie da
+provare.
 
 Il risultato è che l'importanza da impurità tende a **gonfiare** le feature
-continue o con molte categorie e a **sminuire** quelle a pochi valori — un
-difetto strutturale, non del singolo dataset. Per una classifica di cui fidarsi,
-meglio la permutazione, misurata su dati che il modello non ha mai visto.
+continue o con molte categorie e a **sminuire** quelle a pochi valori: un
+difetto strutturale, non del singolo dataset. Per una classifica di cui
+fidarsi, meglio la permutazione, misurata su dati che il modello non ha mai
+visto.
 
 `````
 
@@ -215,11 +221,11 @@ meglio la permutazione, misurata su dati che il modello non ha mai visto.
 Il bias della MDI è verso le feature ad **alta cardinalità** e quelle
 **continue**. La causa è combinatoria: il numero di split candidati cresce con
 il numero di valori distinti, e massimizzare la riduzione d'impurità su molti
-tagli equivale a un test statistico con molte comparazioni — una feature
-puramente casuale ma continua ottiene, in aspettazione, un guadagno positivo per
-sovradattamento locale. La stessa documentazione di `scikit-learn` avverte che
-`feature_importances_` è calcolata sul *training set* e può risultare fuorviante
-proprio su queste feature.
+tagli equivale a un test statistico con molte comparazioni (una feature
+puramente casuale ma continua ottiene, in aspettazione, un guadagno positivo
+per sovradattamento locale). La stessa documentazione di `scikit-learn`
+avverte che `feature_importances_` è calcolata sul *training set* e può
+risultare fuorviante proprio su queste feature.
 
 Rispetto alla permutation importance, la MDI ha due svantaggi: è legata alla
 struttura interna del modello (vale solo per gli alberi) ed è misurata sui dati
@@ -274,10 +280,10 @@ sventagliano, un effetto medio piatto maschera **interazioni** o eterogeneità.
 
 Il difetto profondo del PDP è l'**estrapolazione con feature correlate**:
 fissare $x_j = v$ mentre si tengono i valori reali di $X_{-j}$ genera punti
-$(v, X_{-j}^{(i)})$ implausibili — altezza 2 m con peso 50 kg — su cui il
+$(v, X_{-j}^{(i)})$ implausibili (altezza 2 m con peso 50 kg) su cui il
 modello viene interrogato fuori dal supporto dei dati, producendo curve
-fuorvianti. L'**Accumulated Local Effects** (ALE) di Apley e Zhu (2020) corregge
-il tiro: invece di marginalizzare su tutta la distribuzione, media le
+fuorvianti. L'**Accumulated Local Effects** (ALE) di Apley e Zhu (2020)
+corregge il tiro: invece di marginalizzare su tutta la distribuzione, media le
 *differenze* di predizione entro piccoli intervalli di $x_j$, usando la
 distribuzione **condizionata** e restando così nelle regioni densamente
 popolate. È la scelta da preferire quando le feature sono marcatamente
@@ -339,28 +345,28 @@ Le due misure concordano sull'essenziale: `bmi` e `s5` (un indice metabolico)
 dominano, `bp` le segue, il resto conta poco. Ma emergono anche le differenze
 attese. Le feature in fondo alla classifica hanno importanza di permutazione
 lievemente **negativa**: rimescolarle *migliora* di un soffio il test, cioè il
-modello vi si appoggiava solo per rumore — un'informazione onesta che la misura
+modello vi si appoggiava solo per rumore; un'informazione onesta che la misura
 da impurità, sempre positiva per costruzione, non può darti. E l'impurità
 assegna a `s3` o `s6` valori non trascurabili ($\approx 0{,}06$) benché la
-permutazione li dichiari inutili: è il bias verso le feature continue in azione.
-Con un $R^2$ di circa $0{,}31$ il modello, per inciso, spiega solo una parte
-della variabilità — l'importanza descrive *questo* modello, non la verità
+permutazione li dichiari inutili: è il bias verso le feature continue in
+azione. Con un $R^2$ di circa $0{,}31$ il modello, per inciso, spiega solo una
+parte della variabilità: l'importanza descrive *questo* modello, non la verità
 clinica.
 
 ## Che una feature conti, non come, né perché
 
 Chiudiamo con l'avvertenza più importante, la stessa della storia degli
-asmatici. L'importanza delle feature — di permutazione o da impurità — dice
-**che** una colonna pesa sulle predizioni del modello. Non dice **come** agisce
-(per quello servono PDP, ICE, ALE), non dice se l'effetto sia lo stesso per
-tutti (per quello servono i metodi locali del prossimo tratto del capitolo), e
-soprattutto **non dice che sia causale**. Il reddito può risultare importante
-perché è una spia del quartiere, e il quartiere del vero fattore in gioco. Il
-modello riflette le correlazioni nei suoi dati di addestramento, non i
-meccanismi del mondo. Confondere «feature importante per il modello» con «causa
-del fenomeno» è l'errore che trasforma uno strumento di *debug* in una fonte di
-decisioni sbagliate. L'interpretabilità apre la scatola: sta a noi non leggerci
-dentro più di quel che c'è.
+asmatici. L'importanza delle feature (di permutazione o da impurità) dice
+**che** una colonna pesa sulle predizioni del modello. Non dice **come**
+agisce (per quello servono PDP, ICE, ALE), non dice se l'effetto sia lo stesso
+per tutti (per quello servono i metodi locali del prossimo tratto del
+capitolo), e soprattutto **non dice che sia causale**. Il reddito può
+risultare importante perché è una spia del quartiere, e il quartiere del vero
+fattore in gioco. Il modello riflette le correlazioni nei suoi dati di
+addestramento, non i meccanismi del mondo. Confondere «feature importante per
+il modello» con «causa del fenomeno» è l'errore che trasforma uno strumento di
+*debug* in una fonte di decisioni sbagliate. L'interpretabilità apre la
+scatola: sta a noi non leggerci dentro più di quel che c'è.
 
 ```{admonition} Da ricordare
 :class: important
@@ -377,7 +383,7 @@ dentro più di quel che c'è.
   Preferire la permutazione.
 - **PDP** mostra l'effetto marginale *medio* di una feature, **ICE** una curva
   per istanza (rivela le interazioni che il PDP media via); con feature
-  **correlate** il PDP estrapola e inganna — meglio **ALE**.
+  **correlate** il PDP estrapola e inganna: meglio **ALE**.
 - L'importanza dice **che** una feature conta, non **come** né se è **causale**.
   Correlazione nel modello non è causazione nel mondo. Panoramica completa in
   Molnar {cite}`molnar2022interpretable`.

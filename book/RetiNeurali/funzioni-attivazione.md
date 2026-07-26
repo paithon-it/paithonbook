@@ -2,17 +2,17 @@
 
 Prendi una rete profonda: dieci strati, migliaia di neuroni, milioni di
 parametri. Ora togli le funzioni di attivazione. Tutta quella profondità si
-sgonfia in un istante — quello che resta è, matematicamente, una banale
+sgonfia in un istante: quello che resta è, matematicamente, una banale
 regressione lineare. Le funzioni di attivazione sono il piccolo gesto non
-lineare che, ripetuto strato dopo strato, trasforma una pila di moltiplicazioni
-in un modello capace di riconoscere un volto o tradurre una frase. Sono l'anima
-non lineare della rete.
+lineare che, ripetuto strato dopo strato, trasforma una pila di
+moltiplicazioni in un modello capace di riconoscere un volto o tradurre una
+frase. Sono l'anima non lineare della rete.
 
 ## Perché serve una non linearità
 
 Ogni strato di una rete calcola $W\mathbf{x}+\mathbf{b}$: una moltiplicazione
 per una matrice di pesi, più un bias. È un'operazione *lineare*. Il problema è
-che comporre due operazioni lineari dà ancora un'operazione lineare — e mille
+che comporre due operazioni lineari dà ancora un'operazione lineare, e mille
 non cambierebbero nulla.
 
 `````{tab} Elementare
@@ -187,7 +187,7 @@ $$
 $$
 
 Sulla stessa idea nascono PReLU (con $\alpha$ appreso), ELU e, nei Transformer
-moderni, la **GELU** — una ReLU "ammorbidita" pesata dalla gaussiana.
+moderni, la **GELU**: una ReLU "ammorbidita" pesata dalla gaussiana.
 
 `````
 
@@ -200,9 +200,9 @@ probabilità: la **softmax**.
 
 `````{tab} Elementare
 
-Immagina che la rete debba decidere tra "gatto", "cane" e "volpe" e produca tre
-punteggi grezzi, per esempio $2{,}0$, $1{,}0$, $0{,}1$. La softmax li converte in
-tre percentuali che sommano a $100\%$ — qui $66\%$, $24\%$, $10\%$ —
+Immagina che la rete debba decidere tra "gatto", "cane" e "volpe" e produca
+tre punteggi grezzi, per esempio $2{,}0$, $1{,}0$, $0{,}1$. La softmax li
+converte in tre percentuali che sommano a $100\%$ (qui $66\%$, $24\%$, $10\%$)
 esaltando il punteggio più alto ma senza mai azzerare del tutto gli altri. Il
 risultato si legge come "quanto la rete è convinta di ciascuna classe".
 
@@ -218,10 +218,10 @@ $$
 $$
 
 È la generalizzazione multiclasse della sigmoide e si accompagna alla loss di
-**cross-entropia**. Attenzione: l'esponenziale di logit grandi va facilmente in
-overflow. La soluzione standard è sottrarre il massimo, $z_i \leftarrow z_i -
-\max_j z_j$, che non cambia il risultato ma lo rende numericamente stabile — il
-trucco del *log-sum-exp*, discusso nel capitolo di
+**cross-entropia**. Attenzione: l'esponenziale di logit grandi va facilmente
+in overflow. La soluzione standard è sottrarre il massimo,
+$z_i \leftarrow z_i - \max_j z_j$, che non cambia il risultato ma lo rende
+numericamente stabile: il trucco del *log-sum-exp*, discusso nel capitolo di
 [Analisi numerica](../Matematica/analisi-numerica.md).
 
 `````
@@ -270,7 +270,7 @@ def softmax(z):
 softmax(np.array([2.0, 1.0, 0.1]))         # -> [0.659, 0.242, 0.099]
 ```
 
-In PyTorch — il framework che incontreremo nel prossimo capitolo — non serve
+In PyTorch (il framework che incontreremo nel prossimo capitolo) non serve
 implementarle a mano: esistono come funzioni (`torch.relu`, `torch.tanh`,
 `torch.sigmoid`, `torch.softmax`) o come moduli da impilare tra gli strati
 (`nn.ReLU()`, `nn.Sigmoid()`), e sono già scritte nella forma numericamente

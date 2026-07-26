@@ -1,7 +1,8 @@
 # Paithon Book
 
-**Il Libro di Intelligenza Artificiale che spiega due volte.**  
-Machine Learning, Deep Learning e Reinforcement Learning con Python — in italiano, gratis, in aggiornamento continuo.
+**Il Libro di Intelligenza Artificiale che spiega due volte.** Machine
+Learning, Deep Learning e Reinforcement Learning con Python: in italiano,
+gratis, in aggiornamento continuo.
 
 <p>
   <a href="https://book.paithon.it/main/"><img alt="Leggi online" src="https://img.shields.io/badge/Leggi%20online-book.paithon.it-B5532C?style=flat-square"></a>
@@ -11,7 +12,11 @@ Machine Learning, Deep Learning e Reinforcement Learning con Python — in itali
   <a href="https://www.apache.org/licenses/LICENSE-2.0"><img alt="Licenza codice Apache 2.0" src="https://img.shields.io/badge/codice-Apache%202.0-1A1A1A?style=flat-square"></a>
 </p>
 
-Questa è la versione online del libro **"PAIthon: Machine Learning, Deep Learning e Reinforcement Learning con Python"** di Francesco Messina: un percorso completo — dall'algebra lineare ai Transformer — scritto con la tradizione della divulgazione italiana. Rigoroso nei contenuti, accessibile nel tono.
+Questa è la versione online del libro **"PAIthon: Machine Learning, Deep
+Learning e Reinforcement Learning con Python"** di Francesco Messina: un
+percorso completo (dall'algebra lineare ai Transformer) scritto con la
+tradizione della divulgazione italiana. Rigoroso nei contenuti, accessibile
+nel tono.
 
 👉 **Leggilo qui: [book.paithon.it](https://book.paithon.it/main/)**
 
@@ -19,8 +24,10 @@ Questa è la versione online del libro **"PAIthon: Machine Learning, Deep Learni
 
 Ogni concetto chiave è spiegato due volte, con un sistema di schede affiancate:
 
-- **Elementare** — analogie concrete e quotidiane, zero prerequisiti: deve poterlo leggere uno studente di liceo (o chiunque, sotto l'ombrellone).
-- **Superiore** — la trattazione formale: definizioni, notazione, formule, riferimenti ai paper originali.
+- **Elementare**, analogie concrete e quotidiane, zero prerequisiti: deve
+  poterlo leggere uno studente di liceo (o chiunque, sotto l'ombrellone).
+- **Superiore**, la trattazione formale: definizioni, notazione, formule,
+  riferimenti ai paper originali.
 
 I due livelli si alternano nello stesso capitolo: si può leggere tutto all'Elementare, tutto al Superiore, o saltare dall'uno all'altro. Un **interruttore nella barra in alto** (icona a due barrette, accanto a ricerca e chiaro/scuro) imposta il livello di partenza di tutto il libro e lo ricorda; aprire una singola scheda al livello opposto resta un'eccezione locale, che non contagia i paragrafi successivi. Per questo ogni livello è scritto per reggersi da solo.
 
@@ -60,11 +67,16 @@ I due livelli si alternano nello stesso capitolo: si può leggere tutto all'Elem
 | 30 | **AI responsabile** | Equità e bias, privacy (differential privacy, federated learning) e robustezza agli attacchi avversari, allineamento (RLHF/DPO) e governance (l'AI Act europeo) |
 | 31 | **Conclusioni** | Bilancio e letture per proseguire |
 
-Il framework di riferimento per tutto il codice è **PyTorch** (con NumPy e scikit-learn dove appropriato). Due capitoli — Introduzione e Attenzione lineare — hanno un notebook eseguibile, con i pulsanti per Colab e per l'esecuzione nel browser (Thebe); negli altri il codice è da leggere e copiare.
+Il framework di riferimento per tutto il codice è **PyTorch** (con NumPy e
+scikit-learn dove appropriato). Due capitoli (Introduzione e Attenzione
+lineare) hanno un notebook eseguibile, con i pulsanti per Colab e per
+l'esecuzione nel browser (Thebe); negli altri il codice è da leggere e
+copiare.
 
 ## Come è fatto
 
-- **Sorgente**: `book/` — Markdown [MyST](https://myst-parser.readthedocs.io/) e notebook Jupyter, indice in `book/_toc.yml`.
+- **Sorgente**: `book/`, Markdown [MyST](https://myst-parser.readthedocs.io/)
+  e notebook Jupyter, indice in `book/_toc.yml`.
 - **Figure**: SVG geometriche disegnate a mano in `book/figures/`, su palette fissa (terracotta `#B5532C`, teal `#2D5A5C`, ocra `#C9A961`, warm-black `#1A1A1A`, cream `#F8F5EE`). Niente immagini generate, niente stock.
 - **Tema**: la firma visiva arriva dal submodule [`paithon-it/brand`](https://github.com/paithon-it) (`book/_static/brand`), con light/dark mode automatica.
 - **Bibliografia**: `book/references.bib`, citata nel testo capitolo per capitolo.
@@ -88,7 +100,8 @@ python -m http.server 8080
 # poi apri http://localhost:8080/book/_build/html/
 ```
 
-Se qualcosa non torna: `jb clean book && jb build book` ricostruisce da zero. Non serve buildare in locale per contribuire — il CI costruisce a ogni push.
+Se qualcosa non torna: `jb clean book && jb build book` ricostruisce da zero.
+Non serve buildare in locale per contribuire: il CI costruisce a ogni push.
 
 ## Contribuire
 
@@ -102,11 +115,19 @@ Se qualcosa non torna: `jb clean book && jb build book` ricostruisce da zero. No
 
 Il progetto adotta un **doppio regime di licenza**:
 
-- **Testi e figure** — [CC BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-nd/4.0/deed.it) (file [`LICENSE`](LICENSE)): puoi condividerli citando la fonte, senza usi commerciali né opere derivate. Vale per i `.md` e i `.ipynb` sotto `book/` e per le SVG in `book/figures/`.
-- **Codice degli esempi** — [Apache 2.0](LICENSE-CODE) (file [`LICENSE-CODE`](LICENSE-CODE)): puoi usarlo, modificarlo e integrarlo nei tuoi progetti, anche commerciali, mantenendo le note di copyright e di licenza. Include una concessione esplicita di brevetto. Sono i frammenti di codice dentro i capitoli e i notebook.
+- **Testi e figure**, [CC BY-NC-ND
+  4.0](https://creativecommons.org/licenses/by-nc-nd/4.0/deed.it) (file
+  [`LICENSE`](LICENSE)): puoi condividerli citando la fonte, senza usi
+  commerciali né opere derivate. Vale per i `.md` e i `.ipynb` sotto `book/` e
+  per le SVG in `book/figures/`.
+- **Codice degli esempi**, [Apache 2.0](LICENSE-CODE) (file
+  [`LICENSE-CODE`](LICENSE-CODE)): puoi usarlo, modificarlo e integrarlo nei
+  tuoi progetti, anche commerciali, mantenendo le note di copyright e di
+  licenza. Include una concessione esplicita di brevetto. Sono i frammenti di
+  codice dentro i capitoli e i notebook.
 
-Tutto il resto del repository — la meccanica del libro (`book/_static/`,
-`book/_templates/`), gli script e i generatori — è **© paithon.it, tutti i
+Tutto il resto del repository, la meccanica del libro (`book/_static/`,
+`book/_templates/`), gli script e i generatori, è **© paithon.it, tutti i
 diritti riservati**.
 
 Materiale di terzi, con le sue licenze: il tema
@@ -116,7 +137,7 @@ Materiale di terzi, con le sue licenze: il tema
 [`paithon-it/brand`](https://github.com/paithon-it/brand), che ha una licenza
 propria.
 
-Per contribuire — e per la concessione che serve, dato che la licenza dei testi
-vieta le opere derivate — vedi [`CONTRIBUTING.md`](CONTRIBUTING.md).
+Per contribuire (e per la concessione che serve, dato che la licenza dei testi
+vieta le opere derivate), vedi [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
 © 2024–2026 Francesco Messina · [paithon.it](https://www.paithon.it)

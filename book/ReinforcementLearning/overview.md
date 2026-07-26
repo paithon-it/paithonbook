@@ -3,7 +3,7 @@
 Nessuno insegna a un bambino a camminare elencandogli la sequenza esatta di
 contrazioni muscolari. Il bambino ci prova, oscilla, cade, si rialza, fa un
 passo e cade di nuovo. Ogni tentativo il mondo gli restituisce un giudizio
-implicito — un tonfo doloroso oppure un metro guadagnato verso il divano — e
+implicito (un tonfo doloroso oppure un metro guadagnato verso il divano) e
 settimana dopo settimana quel giudizio scolpisce un modo di muoversi che
 nessun manuale ha mai descritto. Questo è, in una frase, il **reinforcement
 learning** (apprendimento per rinforzo, spesso abbreviato in RL): imparare a
@@ -134,8 +134,8 @@ $$
 
 In pratica $\varepsilon$ parte alto e decresce nel tempo: si esplora molto
 all'inizio, quando le stime di $Q$ sono grezze, e si sfrutta sempre di più man
-mano che diventano affidabili. Approcci più raffinati — *softmax*, *Upper
-Confidence Bound*, bonus di curiosità — dosano l'esplorazione in base
+mano che diventano affidabili. Approcci più raffinati (*softmax*, *Upper
+Confidence Bound*, bonus di curiosità) dosano l'esplorazione in base
 all'incertezza invece che a caso.
 
 `````
@@ -143,28 +143,29 @@ all'incertezza invece che a caso.
 ## Tre tappe che hanno fatto la storia
 
 Il RL non è un'idea nuova, ma ha avuto pochi momenti che ne hanno mostrato la
-potenza. Nei primi anni Novanta, all'IBM, Gerald Tesauro costruì **TD-Gammon**:
-una rete neurale addestrata con la *differenza temporale* — il metodo, che
-vedremo, del correggere le proprie previsioni un passo alla volta — che imparò
-a giocare a backgammon quasi al livello dei campioni umani, giocando oltre un milione di
-partite contro sé stessa e scoprendo aperture che i maestri poi adottarono. Nel
-2015 DeepMind pubblicò su *Nature* il **DQN**, un agente che imparava a giocare
-a decine di videogiochi **Atari** partendo dai soli pixel dello schermo e dal
-punteggio, senza sapere nulla delle regole. E nel marzo 2016 **AlphaGo** batté
-4-1 il campione Lee Sedol al Go, un gioco considerato fuori portata per le
-macchine a causa del suo spazio combinatorio immenso: un risultato che molti si
-aspettavano lontano un decennio.
+potenza. Nei primi anni Novanta, all'IBM, Gerald Tesauro costruì
+**TD-Gammon**: una rete neurale addestrata con la *differenza temporale* (il
+metodo, che vedremo, del correggere le proprie previsioni un passo alla volta)
+che imparò a giocare a backgammon quasi al livello dei campioni umani,
+giocando oltre un milione di partite contro sé stessa e scoprendo aperture che
+i maestri poi adottarono. Nel 2015 DeepMind pubblicò su *Nature* il **DQN**,
+un agente che imparava a giocare a decine di videogiochi **Atari** partendo
+dai soli pixel dello schermo e dal punteggio, senza sapere nulla delle regole.
+E nel marzo 2016 **AlphaGo** batté 4-1 il campione Lee Sedol al Go, un gioco
+considerato fuori portata per le macchine a causa del suo spazio combinatorio
+immenso: un risultato che molti si aspettavano lontano un decennio.
 
 ## Come è organizzato questo capitolo
 
-Partiamo dalle fondamenta appena introdotte — MDP, ritorno, funzioni di valore —
+Partiamo dalle fondamenta appena introdotte (MDP, ritorno, funzioni di valore)
 e le rendiamo algoritmo con i metodi classici (programmazione dinamica, Monte
 Carlo, differenza temporale, Q-learning). Da lì il passo verso il **deep
 reinforcement learning**, dove reti neurali stimano le funzioni di valore o
 direttamente la politica, è naturale: lo affrontiamo nel capitolo successivo,
 ricostruendo proprio il tipo di agente che ha imparato a giocare a partire dai
-pixel. L'obiettivo non è collezionare sigle, ma capire un'unica idea da tutte le
-angolazioni: come si impara a decidere quando l'unico maestro è l'esperienza.
+pixel. L'obiettivo non è collezionare sigle, ma capire un'unica idea da tutte
+le angolazioni: come si impara a decidere quando l'unico maestro è
+l'esperienza.
 
 ```{admonition} Da ricordare
 :class: important

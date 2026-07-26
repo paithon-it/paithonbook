@@ -1,7 +1,7 @@
 # Generative Adversarial Networks
 
-La leggenda — perché ormai è una leggenda — la colloca in un bar di Montréal,
-i *Trois Brasseurs*, nel 2014. Ian Goodfellow, dottorando nel laboratorio di
+La leggenda (perché ormai è una leggenda) la colloca in un bar di Montréal, i
+*Trois Brasseurs*, nel 2014. Ian Goodfellow, dottorando nel laboratorio di
 Yoshua Bengio, festeggia con alcuni colleghi. Qualcuno racconta di stare
 provando a costruire una rete che generi fotografie realistiche stimandone
 tutte le statistiche, e si arena. Goodfellow obietta che così non funzionerà,
@@ -22,9 +22,9 @@ non esistevano prima.
 
 Un classificatore guarda la foto di un gatto e dice "gatto". Un modello
 generativo, partendo da un pugno di numeri casuali, *disegna* la foto di un
-gatto che non è mai esistito — un gatto che nessuna macchina fotografica ha
-mai ripreso. Non ha imparato a mettere un'etichetta: ha imparato la "ricetta"
-di che aspetto ha una foto di gatto, e può cucinarne di nuove all'infinito.
+gatto che non è mai esistito: un gatto che nessuna macchina fotografica ha mai
+ripreso. Non ha imparato a mettere un'etichetta: ha imparato la "ricetta" di
+che aspetto ha una foto di gatto, e può cucinarne di nuove all'infinito.
 
 `````
 
@@ -116,11 +116,12 @@ Qui $X\sim p_{\text{data}}$ è un campione reale, $z\sim p_z$ è il rumore in
 ingresso a $G$, $D(X)$ è la probabilità stimata che l'input sia autentico. Il
 Discriminatore *massimizza* $V$ (assegna probabilità alta ai veri, bassa ai
 falsi $G(z)$); il Generatore *minimizza* il secondo termine, cioè spinge
-$D(G(z))$ verso $1$. All'ottimo teorico si ha $p_{\text{model}}=p_{\text{data}}$
-e $D(X)=\tfrac{1}{2}$ ovunque: l'esperto non sa più decidere. In pratica
-l'equilibrio è delicato — instabilità dell'addestramento e *mode collapse* (il
-Generatore che produce sempre la stessa immagine vincente) sono i due grattacapi
-ricorrenti, che affronteremo più avanti.
+$D(G(z))$ verso $1$. All'ottimo teorico si ha
+$p_{\text{model}}=p_{\text{data}}$ e $D(X)=\tfrac{1}{2}$ ovunque: l'esperto
+non sa più decidere. In pratica l'equilibrio è delicato: instabilità
+dell'addestramento e *mode collapse* (il Generatore che produce sempre la
+stessa immagine vincente) sono i due grattacapi ricorrenti, che affronteremo
+più avanti.
 
 `````
 
@@ -128,10 +129,10 @@ ricorrenti, che affronteremo più avanti.
 
 Le GAN hanno spostato il confine di ciò che una macchina può *fabbricare*. Da
 questa idea nascono i **volti fotorealistici** di persone inesistenti: la
-famiglia StyleGAN di NVIDIA (Karras et al., 2019) alimenta siti come
-*This Person Does Not Exist*, dove ogni ricarica mostra un volto sintetico
-indistinguibile da una fotografia. Da qui arrivano anche i **deepfake** — volti
-sostituiti nei video — con tutto il loro carico di rischi per disinformazione e
+famiglia StyleGAN di NVIDIA (Karras et al., 2019) alimenta siti come *This
+Person Does Not Exist*, dove ogni ricarica mostra un volto sintetico
+indistinguibile da una fotografia. Da qui arrivano anche i **deepfake** (volti
+sostituiti nei video) con tutto il loro carico di rischi per disinformazione e
 consenso, un tema su cui questo libro sceglie l'onestà più che l'entusiasmo. E
 arriva l'**arte generata**: nel 2018 il ritratto *Edmond de Belamy*, prodotto
 con una GAN dal collettivo Obvious, è stato battuto da Christie's per circa
@@ -146,7 +147,7 @@ convincenti. Ragione in più per capirne bene il funzionamento.
 Dall'intuizione passiamo alla pratica. Nelle prossime sezioni vedremo
 **l'architettura** del Generatore e del Discriminatore e come collegarli; la
 **funzione di perdita** e il ciclo di addestramento alternato, con le sue
-insidie (instabilità, *mode collapse*) e i trucchi per domarle; le **varianti**
-che hanno fatto la storia — DCGAN, le GAN condizionali, fino a StyleGAN; e
-infine un'**implementazione in PyTorch**, dove costruiremo una GAN che impara a
-generare cifre manoscritte partendo, letteralmente, dal rumore.
+insidie (instabilità, *mode collapse*) e i trucchi per domarle; le
+**varianti** che hanno fatto la storia, DCGAN, le GAN condizionali, fino a
+StyleGAN; e infine un'**implementazione in PyTorch**, dove costruiremo una GAN
+che impara a generare cifre manoscritte partendo, letteralmente, dal rumore.

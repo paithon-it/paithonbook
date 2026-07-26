@@ -8,26 +8,26 @@ catena di domande sulle caratteristiche di un esempio, ciascuna scelta per
 dividere i casi nel modo più netto possibile, fino a una risposta.
 
 Nelle sezioni precedenti abbiamo incontrato modelli che tracciano rette e
-iperpiani — regressione, k-NN, regressione logistica. Gli alberi appartengono
-a un'altra famiglia, e sono i re incontrastati di un terreno preciso: i **dati
+iperpiani: regressione, k-NN, regressione logistica. Gli alberi appartengono a
+un'altra famiglia, e sono i re incontrastati di un terreno preciso: i **dati
 tabellari**, quelli a righe e colonne di un foglio di calcolo, dove ogni
 colonna è una caratteristica di natura diversa (un'età, un reddito, una
-categoria). Su questo terreno gli algoritmi che vedremo — foreste casuali e
-gradient boosting — restano, ancora oggi, difficili da battere.
+categoria). Su questo terreno gli algoritmi che vedremo (foreste casuali e
+gradient boosting) restano, ancora oggi, difficili da battere.
 
 C'è poi una ragione in più per studiarli: sono **interpretabili**. Un albero
 si può leggere, stampare, seguire domanda per domanda. È la differenza tra un
 modello «scatola bianca» (*white box*), di cui capiamo la logica, e una
 «scatola nera» (*black box*) come una grande rete neurale, che dà la risposta
-giusta senza dirci perché. Quando la decisione conta — un prestito negato, una
-diagnosi — poter spiegare il *perché* non è un lusso.
+giusta senza dirci perché. Quando la decisione conta (un prestito negato, una
+diagnosi), poter spiegare il *perché* non è un lusso.
 
 ## L'albero decisionale: dividere per domande
 
 L'algoritmo classico per costruire questi alberi si chiama **CART**
 (*Classification And Regression Trees*), introdotto nel 1984 da Leo Breiman e
 colleghi {cite}`breiman1984classification`. L'idea è cercare, a ogni nodo, la
-domanda che separa meglio i dati — e ripeterla, ricorsivamente, su ciascuno dei
+domanda che separa meglio i dati, e ripeterla, ricorsivamente, su ciascuno dei
 due gruppi che ne risultano.
 
 Ogni domanda è una soglia su una caratteristica: «reddito < 25 000 €?», «età <
@@ -88,10 +88,10 @@ $$
 \tfrac{4}{10}\cdot 0 + \tfrac{6}{10}\cdot 0{,}278 \approx 0{,}167 .
 $$
 
-Il **guadagno** è quanto abbiamo ridotto l'impurità: $0{,}5 - 0{,}167 =
-0{,}333$. Un bel taglio! L'algoritmo prova tutte le domande possibili su tutte
-le caratteristiche e sceglie quella dal guadagno più alto — poi ricomincia su
-ciascun gruppo.
+Il **guadagno** è quanto abbiamo ridotto l'impurità:
+$0{,}5 - 0{,}167 = 0{,}333$. Un bel taglio! L'algoritmo prova tutte le domande
+possibili su tutte le caratteristiche e sceglie quella dal guadagno più alto:
+poi ricomincia su ciascun gruppo.
 
 `````
 
@@ -139,21 +139,21 @@ veloce (niente logaritmi) ed è la scelta di default in scikit-learn.
 `````
 
 Per **predire**, un esempio nuovo scende lungo l'albero rispondendo alle
-domande, fino a una foglia: la sua classe è quella di maggioranza tra gli esempi
-di addestramento finiti in quella foglia. Lo stesso meccanismo serve la
+domande, fino a una foglia: la sua classe è quella di maggioranza tra gli
+esempi di addestramento finiti in quella foglia. Lo stesso meccanismo serve la
 **regressione**: basta cambiare cosa contiene la foglia e come si misura
 l'impurità. La foglia non predice più una classe ma la **media** dei valori
 $y$ degli esempi che vi cadono, e al posto di Gini si minimizza l'**MSE**
-interno ai figli — cioè si cerca lo split che rende i valori dentro ciascun
+interno ai figli, cioè si cerca lo split che rende i valori dentro ciascun
 gruppo il più simili possibile alla loro media. L'errore quadratico medio è la
-stessa loss vista per la regressione lineare; qui però il modello, invece di una
-retta, produce una funzione «a scalini», costante su ogni rettangolo.
+stessa loss vista per la regressione lineare; qui però il modello, invece di
+una retta, produce una funzione «a scalini», costante su ogni rettangolo.
 
 ## Il tallone d'Achille: alta varianza
 
 Un albero lasciato crescere senza freni continua a dividere finché ogni foglia
 contiene un solo esempio: a quel punto classifica alla perfezione i dati di
-addestramento — e generalizza malissimo. È l'**overfitting** che abbiamo
+addestramento, e generalizza malissimo. È l'**overfitting** che abbiamo
 studiato nella sezione sull'overfitting e la validazione, nella sua forma più
 estrema.
 
@@ -161,8 +161,8 @@ estrema.
 
 Un albero profondo è come lo studente che impara a memoria: costruisce una
 domanda su misura per ogni singolo esempio, rumore compreso. Il problema è che
-è anche **instabile**. Cambia appena qualche dato di addestramento — togline
-dieci, aggiungine altri dieci — e l'albero può risultare completamente diverso:
+è anche **instabile**. Cambia appena qualche dato di addestramento (togline
+dieci, aggiungine altri dieci) e l'albero può risultare completamente diverso:
 uno split scelto in cima cambia, e tutto ciò che ci sta sotto cambia con lui.
 
 Nella sezione sul compromesso bias-varianza avevamo dato un nome a questa
@@ -181,8 +181,8 @@ approssimare frontiere di decisione arbitrarie, ma la scelta greedy degli split
 è estremamente sensibile alle fluttuazioni del campione. Piccole perturbazioni
 dei dati si propagano dalla radice alle foglie, cambiando l'intera struttura.
 
-Lo si può limitare con la **potatura** (*pruning*) o vincolando la crescita —
-profondità massima, numero minimo di esempi per foglia — ma questi freni
+Lo si può limitare con la **potatura** (*pruning*) o vincolando la crescita
+(profondità massima, numero minimo di esempi per foglia) ma questi freni
 scambiano varianza con bias, e un solo albero raramente compete con i modelli
 migliori. La strada vincente è un'altra: tenere alberi flessibili (bias basso)
 e abbattere la varianza **combinandone molti**. È il principio degli ensemble,
@@ -218,18 +218,19 @@ sommati con pesi.
 
 ### Bagging: mediare per ridurre la varianza
 
-Il **bagging** — da *bootstrap aggregating*, proposto da Breiman nel 1996
-{cite}`breiman1996bagging` — attacca direttamente il problema della varianza
+Il **bagging** (da *bootstrap aggregating*, proposto da Breiman nel 1996
+{cite}`breiman1996bagging`) attacca direttamente il problema della varianza
 degli alberi. Il trucco è generare tanti dataset di addestramento leggermente
 diversi a partire da uno solo, e su ciascuno addestrare un albero.
 
 `````{tab} Elementare
 
 Come si ottengono dataset diversi avendone uno solo? Con il **bootstrap**: si
-pesca a caso dal dataset, *rimettendo* ogni volta l'esempio pescato nel mucchio.
-Così alcuni esempi capitano più volte, altri restano fuori, e ogni campione è
-una versione un po' diversa dell'originale — come rifare la spesa prendendo a
-caso dagli scaffali: la lista somiglia sempre a sé stessa, ma non è mai identica.
+pesca a caso dal dataset, *rimettendo* ogni volta l'esempio pescato nel
+mucchio. Così alcuni esempi capitano più volte, altri restano fuori, e ogni
+campione è una versione un po' diversa dell'originale, come rifare la spesa
+prendendo a caso dagli scaffali: la lista somiglia sempre a sé stessa, ma non
+è mai identica.
 
 Su ognuno di questi campioni si addestra un albero. Ne escono, poniamo, 100
 alberi tutti diversi. Per classificare un esempio nuovo, li si interpella tutti
@@ -255,11 +256,12 @@ $$
 dove $\sigma^2$ è la varianza del singolo modello e $\rho$ la correlazione tra
 due modelli distinti. Il secondo termine svanisce all'aumentare di $B$: con
 molti alberi resta solo $\rho\,\sigma^2$. La media riduce dunque la varianza
-tanto più quanto i modelli sono **decorrelati** (cioè quanto $\rho$ è piccolo).
-Qui sta il limite del bagging puro: alberi addestrati su campioni bootstrap
-dello stesso dataset restano abbastanza correlati — se una caratteristica è
-molto predittiva, quasi tutti gli alberi la scelgono in cima e finiscono per
-somigliarsi. È il collo di bottiglia che la foresta casuale rimuove.
+tanto più quanto i modelli sono **decorrelati** (cioè quanto $\rho$ è
+piccolo). Qui sta il limite del bagging puro: alberi addestrati su campioni
+bootstrap dello stesso dataset restano abbastanza correlati; se una
+caratteristica è molto predittiva, quasi tutti gli alberi la scelgono in cima
+e finiscono per somigliarsi. È il collo di bottiglia che la foresta casuale
+rimuove.
 
 `````
 
@@ -272,10 +274,10 @@ mirata proprio ad abbassare quella correlazione $\rho$ che frena il bagging.
 `````{tab} Elementare
 
 L'idea è tanto semplice quanto efficace: a ogni split, invece di lasciar
-scegliere all'albero la domanda migliore tra *tutte* le caratteristiche, gliene
-mostriamo solo un sottoinsieme casuale — poche, estratte a caso ogni volta. Se
-la caratteristica dominante non è tra quelle proposte, l'albero è costretto a
-guardare altrove.
+scegliere all'albero la domanda migliore tra *tutte* le caratteristiche,
+gliene mostriamo solo un sottoinsieme casuale (poche, estratte a caso ogni
+volta). Se la caratteristica dominante non è tra quelle proposte, l'albero è
+costretto a guardare altrove.
 
 È come chiedere a una giuria di esperti di votare, ma bendando ogni giurato su
 aspetti diversi del caso: nessuno può basarsi sempre sull'indizio più ovvio, e i
@@ -290,13 +292,13 @@ bravo (gli abbiamo nascosto delle carte), ma l'insieme diventa molto più forte.
 A ogni nodo, la ricerca dello split migliore è ristretta a un sottoinsieme
 casuale di $m$ caratteristiche estratte dalle $n$ totali (una scelta comune è
 $m = \sqrt{n}$ per la classificazione, $m = n/3$ per la regressione). Questo
-vincolo abbassa la correlazione $\rho$ tra gli alberi — nella formula della
+vincolo abbassa la correlazione $\rho$ tra gli alberi: nella formula della
 varianza della media, è esattamente la leva che fa scendere il termine
 dominante $\rho\,\sigma^2$. Si accetta un lieve aumento del bias e della
 varianza del singolo albero in cambio di una riduzione netta della varianza
 dell'ensemble. Una variante ancora più aggressiva, gli **Extra-Trees**
-(*Extremely Randomized Trees*), estrae a caso anche le soglie di split invece di
-ottimizzarle, guadagnando velocità e ulteriore decorrelazione.
+(*Extremely Randomized Trees*), estrae a caso anche le soglie di split invece
+di ottimizzarle, guadagnando velocità e ulteriore decorrelazione.
 
 `````
 
@@ -310,9 +312,9 @@ addestramento: è una stima dell'errore di generalizzazione ottenuta gratis,
 senza mettere da parte un validation set separato.
 
 Il secondo è la **feature importance**. Sommando, su tutti gli alberi, di
-quanto ciascuna caratteristica ha ridotto l'impurità nei suoi split, si ottiene
-una classifica di quanto ogni caratteristica «conta» per il modello. È
-un'informazione preziosa per capire i dati — con un'avvertenza che scikit-learn
+quanto ciascuna caratteristica ha ridotto l'impurità nei suoi split, si
+ottiene una classifica di quanto ogni caratteristica «conta» per il modello. È
+un'informazione preziosa per capire i dati, con un'avvertenza che scikit-learn
 stessa segnala: questa misura tende a gonfiare l'importanza delle
 caratteristiche con molti valori distinti, e va letta con prudenza (una stima
 più affidabile è la *permutation importance*).
@@ -320,8 +322,8 @@ più affidabile è la *permutation importance*).
 ## Boosting: correggere gli errori, uno alla volta
 
 Il **boosting** ribalta la logica del bagging. Invece di addestrare tanti
-alberi forti in parallelo e mediarli, ne addestra molti **deboli** — alberi
-minuscoli, spesso profondi appena uno o due livelli — ma **in sequenza**, dove
+alberi forti in parallelo e mediarli, ne addestra molti **deboli** (alberi
+minuscoli, spesso profondi appena uno o due livelli) ma **in sequenza**, dove
 ognuno si concentra sugli errori commessi da chi lo precede. La somma di tanti
 correttori mediocri, ciascuno che ripara un pezzetto, diventa un modello molto
 accurato.
@@ -404,16 +406,16 @@ peggiora quasi mai. Ottima scelta di default, specie quando si vuole un modello
 solido con poca messa a punto, e si parallelizza banalmente (gli alberi sono
 indipendenti).
 
-Il **boosting** parte da alberi deboli a bias alto e lo abbatte correggendo gli
-errori in sequenza. Tipicamente raggiunge l'accuratezza più alta sui dati
+Il **boosting** parte da alberi deboli a bias alto e lo abbatte correggendo
+gli errori in sequenza. Tipicamente raggiunge l'accuratezza più alta sui dati
 tabellari, ma è più delicato: siccome ogni albero rincorre gli errori del
-precedente, **può andare in overfitting** se lo si lascia correre troppo. I due
-freni principali sono il **learning rate** $\nu$ (passi piccoli, che rendono
-l'apprendimento più lento ma più stabile — di solito si abbina un $\nu$ piccolo
-a molti alberi) e l'**early stopping**, cioè fermarsi quando l'errore su un
-validation set smette di migliorare, come abbiamo visto nella sezione sugli
-iperparametri. Il boosting inoltre è **sequenziale** per costruzione: non si
-parallelizza sugli alberi come il bagging.
+precedente, **può andare in overfitting** se lo si lascia correre troppo. I
+due freni principali sono il **learning rate** $\nu$ (passi piccoli, che
+rendono l'apprendimento più lento ma più stabile: di solito si abbina un $\nu$
+piccolo a molti alberi) e l'**early stopping**, cioè fermarsi quando l'errore
+su un validation set smette di migliorare, come abbiamo visto nella sezione
+sugli iperparametri. Il boosting inoltre è **sequenziale** per costruzione:
+non si parallelizza sugli alberi come il bagging.
 
 In sintesi: se cerchi robustezza con poco sforzo, parti dalla random forest; se
 cerchi l'ultimo punto di accuratezza e sei disposto a mettere a punto learning
@@ -467,12 +469,13 @@ xgb.fit(X_train, y_train, eval_set=[(X_val, y_val)], verbose=False)
 ```
 
 Un consiglio pratico, che riassume tutta la sezione: su un problema tabellare
-nuovo, una random forest con i parametri di default è quasi sempre la prima cosa
-da provare — è la linea di base onesta contro cui misurare tutto il resto. Se
-serve spremere di più, si passa a XGBoost o LightGBM con learning rate basso ed
-early stopping. Per il *deep learning* — che affronteremo con PyTorch nei
-capitoli successivi — il turno arriva sui dati non tabellari: immagini, testo,
-audio, dove queste stesse foreste e questi boosting cedono il passo alle reti.
+nuovo, una random forest con i parametri di default è quasi sempre la prima
+cosa da provare; è la linea di base onesta contro cui misurare tutto il resto.
+Se serve spremere di più, si passa a XGBoost o LightGBM con learning rate
+basso ed early stopping. Per il *deep learning* (che affronteremo con PyTorch
+nei capitoli successivi), il turno arriva sui dati non tabellari: immagini,
+testo, audio, dove queste stesse foreste e questi boosting cedono il passo
+alle reti.
 
 ```{admonition} Da ricordare
 :class: important

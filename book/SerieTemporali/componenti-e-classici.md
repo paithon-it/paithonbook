@@ -6,12 +6,12 @@ statistici: i passeggeri mensili delle linee aeree internazionali dal 1949 al
 1960 {cite}`box2015time`. A guardarla, quella serie racconta tre storie
 sovrapposte. Una **crescita** costante, decennio del boom dei voli: ogni anno
 si vola più dell'anno prima. Un **respiro stagionale**: ogni estate un picco,
-ogni inverno un avvallamento, puntuali come le stagioni che li causano. E, sopra
-a tutto, un **tremolio** irregolare che nessuna regola spiega. Box e Jenkins
-notarono anche un dettaglio decisivo: le oscillazioni estive non erano sempre
-alte uguali, ma *crescevano* insieme al livello dei voli. È da qui che parte
-ogni modello classico di serie temporale — imparare a leggere quelle tre storie
-separatamente prima di provare a prevederle.
+ogni inverno un avvallamento, puntuali come le stagioni che li causano. E,
+sopra a tutto, un **tremolio** irregolare che nessuna regola spiega. Box e
+Jenkins notarono anche un dettaglio decisivo: le oscillazioni estive non erano
+sempre alte uguali, ma *crescevano* insieme al livello dei voli. È da qui che
+parte ogni modello classico di serie temporale: imparare a leggere quelle tre
+storie separatamente prima di provare a prevederle.
 
 ## Scomporre una serie: trend, stagionalità, residuo
 
@@ -31,13 +31,13 @@ che oscilla attorno allo zero.
 
 `````{tab} Elementare
 
-Pensa alla bolletta della luce. Dentro quel numero ci sono tre cose diverse. C'è
-una **parte fissa**, il canone, che cambia poco e semmai cresce piano di anno in
-anno: è il *trend*, la direzione di fondo. C'è una **parte stagionale**: d'estate
-il condizionatore, d'inverno le luci accese di più — un su e giù che torna
-uguale ogni anno. E poi c'è l'**imprevisto**: il mese che sei stato in ferie e
-hai consumato meno, l'amico ospite che ha lasciato tutto acceso — piccoli scarti
-che non seguono nessuna regola. È il *residuo*.
+Pensa alla bolletta della luce. Dentro quel numero ci sono tre cose diverse.
+C'è una **parte fissa**, il canone, che cambia poco e semmai cresce piano di
+anno in anno: è il *trend*, la direzione di fondo. C'è una **parte
+stagionale**: d'estate il condizionatore, d'inverno le luci accese di più (un
+su e giù che torna uguale ogni anno). E poi c'è l'**imprevisto**: il mese che
+sei stato in ferie e hai consumato meno, l'amico ospite che ha lasciato tutto
+acceso; piccoli scarti che non seguono nessuna regola. È il *residuo*.
 
 Scomporre una serie vuol dire fare esattamente questo: guardare la bolletta e
 dire «di questi 90 euro, 60 sono il canone di base, 25 sono la stagione calda,
@@ -62,12 +62,13 @@ $$
 
 Nell'additivo l'ampiezza della stagionalità è *costante* in valore assoluto:
 l'estate aggiunge sempre lo stesso numero di unità, qualunque sia il livello.
-Nel moltiplicativo l'ampiezza è *proporzionale* al livello: l'estate aggiunge una
-percentuale, quindi cresce con la serie — proprio come i passeggeri delle linee
-aeree. Un modello moltiplicativo si linearizza prendendo il logaritmo,
+Nel moltiplicativo l'ampiezza è *proporzionale* al livello: l'estate aggiunge
+una percentuale, quindi cresce con la serie (proprio come i passeggeri delle
+linee aeree). Un modello moltiplicativo si linearizza prendendo il logaritmo,
 $\log x_t = \log T_t + \log S_t + \log R_t$, che riporta al caso additivo. Le
 stime pratiche di $T_t$, $S_t$, $R_t$ si ottengono con medie mobili centrate
-(classical decomposition) o con metodi più robusti come STL {cite}`hyndman2021forecasting`.
+(classical decomposition) o con metodi più robusti come STL
+{cite}`hyndman2021forecasting`.
 
 `````
 
@@ -122,13 +123,13 @@ $$
 \nabla x_t = x_t - x_{t-1}.
 $$
 
-Toglie una tendenza lineare in un colpo solo. Sulla serie $100, 110, 120, 130$,
-che cresce di $10$ a ogni passo, la differenziata è $10, 10, 10$: il trend è
-sparito, resta una costante. Per la stagionalità si usa la **differenziazione
-stagionale** $\nabla_m x_t = x_t - x_{t-m}$, che sottrae il valore dello stesso
-periodo del ciclo precedente (mese contro stesso mese dell'anno prima). Prima di
-modellare, si differenzia quanto basta a stabilizzare la serie — e non di più,
-per non introdurre rumore inutile.
+Toglie una tendenza lineare in un colpo solo. Sulla serie
+$100, 110, 120, 130$, che cresce di $10$ a ogni passo, la differenziata è
+$10, 10, 10$: il trend è sparito, resta una costante. Per la stagionalità si
+usa la **differenziazione stagionale** $\nabla_m x_t = x_t - x_{t-m}$, che
+sottrae il valore dello stesso periodo del ciclo precedente (mese contro
+stesso mese dell'anno prima). Prima di modellare, si differenzia quanto basta
+a stabilizzare la serie, e non di più, per non introdurre rumore inutile.
 
 Come si *diagnostica* la struttura che resta? Con due grafici che sono il pane
 quotidiano dell'analista di serie temporali: l'**ACF** e la **PACF**.
@@ -187,10 +188,10 @@ somma, e aggiunge un pizzico di imprevedibile per il resto. «Auto-regressivo»
 vuol dire che la serie fa da predittore *a sé stessa*: guarda il proprio
 passato, non variabili esterne.
 
-Il numero di passati che guarda è l'ordine. Un AR(1) guarda solo ieri; un AR(2)
-guarda ieri e l'altro ieri. Più passati includi, più la memoria del modello si
-allunga — ma anche più parametri devi stimare da una serie che è pur sempre
-lunga un tanto.
+Il numero di passati che guarda è l'ordine. Un AR(1) guarda solo ieri; un
+AR(2) guarda ieri e l'altro ieri. Più passati includi, più la memoria del
+modello si allunga, ma anche più parametri devi stimare da una serie che è pur
+sempre lunga un tanto.
 
 `````
 
@@ -202,15 +203,16 @@ $$
 x_t = c + \phi_1 x_{t-1} + \phi_2 x_{t-2} + \dots + \phi_p x_{t-p} + \varepsilon_t,
 $$
 
-dove $\phi_1,\dots,\phi_p$ sono i coefficienti autoregressivi, $c$ una costante e
-$\varepsilon_t$ è **rumore bianco** — una sequenza a media nulla, varianza
-$\sigma^2$ costante e incorrelata nel tempo. Il valore atteso condizionato al
-passato è $\mathbb{E}[x_t \mid x_{t-1},\dots] = c + \sum_{i=1}^p \phi_i x_{t-i}$:
-la parte prevedibile. La stazionarietà richiede che le radici del polinomio
+dove $\phi_1,\dots,\phi_p$ sono i coefficienti autoregressivi, $c$ una
+costante e $\varepsilon_t$ è **rumore bianco**: una sequenza a media nulla,
+varianza $\sigma^2$ costante e incorrelata nel tempo. Il valore atteso
+condizionato al passato è
+$\mathbb{E}[x_t \mid x_{t-1},\dots] = c + \sum_{i=1}^p \phi_i x_{t-i}$: la
+parte prevedibile. La stazionarietà richiede che le radici del polinomio
 caratteristico $1 - \phi_1 z - \dots - \phi_p z^p$ stiano fuori dal cerchio
 unitario; per l'AR(1) questo si riduce alla condizione $|\phi_1| < 1$. In quel
-caso la media di lungo periodo è $\mu = c/(1-\phi_1)$ e la serie vi ritorna dopo
-ogni scossa.
+caso la media di lungo periodo è $\mu = c/(1-\phi_1)$ e la serie vi ritorna
+dopo ogni scossa.
 
 `````
 
@@ -253,10 +255,10 @@ serie stazionarie, e le serie vere quasi mai lo sono. La soluzione di Box e
 Jenkins è incorporare la differenziazione nel modello stesso: nasce
 l'**ARIMA($p,d,q$)** {cite}`box2015time`. Le tre lettere:
 
-- **AR($p$)** — l'ordine autoregressivo, quanti valori passati;
-- **I($d$)** — *integrated*, quante volte si differenzia la serie per renderla
+- **AR($p$)**, l'ordine autoregressivo, quanti valori passati;
+- **I($d$)**, *integrated*, quante volte si differenzia la serie per renderla
   stazionaria ($d=1$ toglie un trend lineare, $d=2$ una curvatura);
-- **MA($q$)** — l'ordine a media mobile, quanti errori passati.
+- **MA($q$)**: l'ordine a media mobile, quanti errori passati.
 
 In pratica si differenzia la serie $d$ volte, si adatta un ARMA($p,q$) al
 risultato, e si «re-integra» sommando all'indietro per tornare alla scala
@@ -343,24 +345,24 @@ che aggiungono un'interpretazione probabilistica e intervalli di previsione
 Verrebbe da pensare che, con le reti neurali del capitolo successivo, questi
 modelli di mezzo secolo fa siano roba da manuale di storia. Non è così, e vale
 la pena dire perché con onestà. La prova più citata sono le **competizioni M**
-dello statistico greco Spyros Makridakis: gare pubbliche in cui decine di metodi
-si sfidano su decine di migliaia di serie reali. Il verdetto, ripetuto edizione
-dopo edizione, è scomodo per gli entusiasti: i metodi statistici semplici —
-ARIMA, Holt-Winters, e loro medie — restano difficilissimi da battere, e per
-molti anni hanno superato reti neurali ben più complesse.
+dello statistico greco Spyros Makridakis: gare pubbliche in cui decine di
+metodi si sfidano su decine di migliaia di serie reali. Il verdetto, ripetuto
+edizione dopo edizione, è scomodo per gli entusiasti: i metodi statistici
+semplici (ARIMA, Holt-Winters, e loro medie) restano difficilissimi da
+battere, e per molti anni hanno superato reti neurali ben più complesse.
 
 Le ragioni sono tre. La **robustezza**: un modello con pochi parametri non ha
 molto spazio per adattarsi al rumore, quindi generalizza bene anche quando la
 serie è corta o disturbata. La **frugalità di dati**: gran parte delle serie
-reali — le vendite mensili di un prodotto, i pazienti di un reparto — hanno
+reali (le vendite mensili di un prodotto, i pazienti di un reparto) hanno
 poche decine o centinaia di osservazioni, troppo poche per addestrare una rete
-affamata di dati, più che sufficienti per un ARIMA. E l'**interpretabilità**: un
-coefficiente $\phi$, una componente stagionale, un intervallo di confidenza sono
-oggetti che un analista legge, discute e difende davanti a chi deve decidere —
-mentre i pesi di una rete no {cite}`hyndman2021forecasting`. La regola pratica
-che ne discende attraversa tutto il forecasting serio: un modello classico è la
-**linea di base onesta**. Prima si batte quella, poi si tira in ballo il deep
-learning.
+affamata di dati, più che sufficienti per un ARIMA. E l'**interpretabilità**:
+un coefficiente $\phi$, una componente stagionale, un intervallo di confidenza
+sono oggetti che un analista legge, discute e difende davanti a chi deve
+decidere, mentre i pesi di una rete no {cite}`hyndman2021forecasting`. La
+regola pratica che ne discende attraversa tutto il forecasting serio: un
+modello classico è la **linea di base onesta**. Prima si batte quella, poi si
+tira in ballo il deep learning.
 
 ## In pratica: stimare un AR(1) ai minimi quadrati
 
@@ -401,13 +403,13 @@ Il $\phi$ stimato cade vicino a $0{,}6$ e la costante vicino a $4$: con
 cinquecento osservazioni i minimi quadrati ricostruiscono bene i parametri del
 processo che ha generato la serie. La previsione a un passo è semplicemente la
 formula del modello applicata all'ultimo valore osservato. Da qui in avanti si
-può iterare in avanti per orizzonti più lunghi — ricadendo, però, nel problema
+può iterare in avanti per orizzonti più lunghi: ricadendo, però, nel problema
 dell'accumulo dell'errore visto nell'introduzione al capitolo.
 
 Con questo abbiamo la cassetta degli attrezzi classica: decomposizione per
 capire, ARIMA e Holt-Winters per prevedere, ACF e PACF per diagnosticare. La
-sezione successiva affronta una domanda che finora abbiamo aggirato — come si
-**valida** un modello di serie temporale senza barare col futuro — e come si
+sezione successiva affronta una domanda che finora abbiamo aggirato (come si
+**valida** un modello di serie temporale senza barare col futuro) e come si
 trasformano le serie in feature per i modelli tabulari già incontrati nel
 capitolo sul Machine Learning.
 

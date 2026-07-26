@@ -3,7 +3,7 @@
 
 Il libro è testo: i blocchi ```python si leggono e si copiano. Questo script ne
 ricava **un notebook per capitolo**, così chi vuole *provare* il codice lo apre
-su Colab — dove torch è già installato e la GPU è gratis — invece di
+su Colab (dove torch è già installato e la GPU è gratis) invece di
 ricostruirlo a mano.
 
     python3 scripts/genera-notebook.py                 # tutti i capitoli
@@ -22,7 +22,7 @@ Con `--verifica` lo script esce con codice 1 se una cella si rompe: è così che
 Perché i numeri lo dicono. Su 28 capitoli con codice, quasi tutte le *pagine*
 hanno uno o due blocchi: Matematica ne ha 6 distribuiti su 6 pagine, Machine
 Learning 11 su 10. Un notebook per pagina sarebbe stato quasi sempre un notebook
-da due celle — che si copia a mano in meno tempo di quanto ci voglia ad aprire
+da due celle, che si copia a mano in meno tempo di quanto ci voglia ad aprire
 Colab. Il capitolo invece è un'unità che il lettore riconosce.
 
 ## Le regole, che sono la sostanza
@@ -42,8 +42,8 @@ Colab. Il capitolo invece è un'unità che il lettore riconosce.
 
   `pt-lento` esiste perché «verificabile in CI» e «eseguibile su Colab» non sono
   la stessa cosa: scaricare MNIST, addestrare dieci epoche o dipendere da un
-  pacchetto che in CI non vale 250 MB di wheel va benissimo su Colab — dove è
-  già installato — e non va in una pipeline. Confonderli significa mentire in un
+  pacchetto che in CI non vale 250 MB di wheel va benissimo su Colab, dove è
+  già installato, e non va in una pipeline. Confonderli significa mentire in un
   verso o nell'altro.
 * **Preludio facoltativo, e ripristinato a ogni pagina.**
   `notebooks/_preludi/<Capitolo>.py` crea i dati e i nomi che il testo dà per
@@ -78,7 +78,7 @@ SITO = "https://book.paithon.it/main"
 MINIMO_CELLE = 3
 
 # Capitoli rinviati: il loro codice dipende da librerie che non possiamo
-# eseguire in CI, quindi il notebook non sarebbe verificato — e un pulsante
+# eseguire in CI, quindi il notebook non sarebbe verificato, e un pulsante
 # "Esegui" su codice non provato e' una promessa che non possiamo mantenere.
 # Il motivo sta accanto al nome, cosi' si sa cosa serve per sbloccarli.
 RINVIATI = {
@@ -109,7 +109,7 @@ PACCHETTI = {
 }
 
 # Le versioni dichiarate: finiscono in testa a ogni notebook, così chi lo apre
-# fra un anno sa contro cosa era stato provato — e se qualcosa non gira sa dove
+# fra un anno sa contro cosa era stato provato, e se qualcosa non gira sa dove
 # guardare invece di dare la colpa al libro.
 VERSIONI = RADICE / "requirements-notebook.txt"
 
@@ -144,7 +144,7 @@ def capitoli() -> dict[str, list[pathlib.Path]]:
     toc = yaml.safe_load((LIBRO / "_toc.yml").read_text())
     # Il toc raggruppa i capitoli in `parts` (con la caption che intesta
     # l'indice); la forma piatta `chapters` resta accettata perche' e' quella
-    # di jb-book senza parti — le parti qui non contano, contano i capitoli.
+    # di jb-book senza parti: le parti qui non contano, contano i capitoli.
     elenco = [c for p in toc.get("parts", []) for c in p["chapters"]] \
         or toc.get("chapters", [])
     fuori: dict[str, list[pathlib.Path]] = {}
@@ -247,7 +247,7 @@ def componi(nome: str, pagine: list[pathlib.Path]):
 
     celle = [cella_testo([
         f"# {titolo_capitolo}\n", "\n",
-        f"Il codice del capitolo [«{titolo_capitolo}»]({url_capitolo}) — "
+        f"Il codice del capitolo [«{titolo_capitolo}»]({url_capitolo}), "
         "*Paithon Book*.\n", "\n",
         "Le celle sono quelle del libro, nell'ordine in cui compaiono: il testo "
         "che le spiega sta nelle pagine, qui c'è solo la parte da eseguire e da "
@@ -262,7 +262,7 @@ def componi(nome: str, pagine: list[pathlib.Path]):
             f"> **Verificato il {data_verifica}** con {elenco_versioni}. "
             "Tutte le celle di questo notebook sono state eseguite senza errori "
             "con quelle versioni; le librerie si muovono, e se qualcosa qui non "
-            "gira piu' e' un errore del libro — "
+            "gira piu' e' un errore del libro: "
             "[segnalalo](https://github.com/paithon-it/paithonbook/issues).\n"]))
 
     if pacchetti:
@@ -330,7 +330,7 @@ def verifica(nb: dict) -> str:
     errore, si stampano numero, eccezione e prima riga.
 
     Si saltano: la cella di installazione (`pt-setup`), quelle marcate
-    `pt-lento`, e le righe che cominciano con `%` o `!` — le magie IPython sono
+    `pt-lento`, e le righe che cominciano con `%` o `!`, le magie IPython sono
     legittime in un notebook ma non in Python puro. E un modulo mancante viene
     distinto da un errore vero: su una macchina spoglia può solo mancare, non
     essere rotto.
@@ -447,7 +447,7 @@ def main() -> None:
             obsoleto = USCITA / f"{nome}.ipynb"
             if obsoleto.exists():
                 obsoleto.unlink()
-            print(f"  ⏸  {nome}: rinviato — serve {motivo}")
+            print(f"  ⏸  {nome}: rinviato, serve {motivo}")
     if argomenti:
         elenco = {k: v for k, v in elenco.items() if k in argomenti}
     if solo_esistenti:
@@ -459,8 +459,8 @@ def main() -> None:
         nb, n = componi(nome, pagine)
         if nb is None:
             saltati += 1
-            # Se il capitolo era già pubblicato e ora scende sotto soglia — di
-            # solito perché i suoi blocchi sono stati marcati — il notebook
+            # Se il capitolo era già pubblicato e ora scende sotto soglia, di
+            # solito perché i suoi blocchi sono stati marcati, il notebook
             # vecchio va rimosso: altrimenti resta su disco, entra nel
             # manifesto e il pulsante porta a un file che non rispecchia più
             # il libro.

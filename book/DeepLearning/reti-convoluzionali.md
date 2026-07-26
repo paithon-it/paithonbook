@@ -5,23 +5,23 @@ ancora, banalmente, un gatto. Per una rete fatta come quelle del capitolo
 scorso, invece, è diventato un input completamente diverso. Questo scarto tra
 come *noi* vediamo un'immagine e come la vede una rete neurale ordinaria è il
 problema che le **reti convoluzionali** (Convolutional Neural Networks, CNN)
-sono nate per risolvere. L'idea affonda le radici nella biologia — gli studi
-di Hubel e Wiesel sulla corteccia visiva del gatto negli anni Sessanta — e
-prende forma nel *Neocognitron* di Fukushima
-{cite}`fukushima1980neocognitron` e nella LeNet-5 di Yann LeCun (1998), che
-leggeva le cifre scritte a mano sugli assegni. Nel 2012
-AlexNet, di Krizhevsky, Sutskever e Hinton, vince la competizione ImageNet
-con un margine tale da riaccendere l'intero campo del deep learning.
+sono nate per risolvere. L'idea affonda le radici nella biologia (gli studi di
+Hubel e Wiesel sulla corteccia visiva del gatto negli anni Sessanta) e prende
+forma nel *Neocognitron* di Fukushima {cite}`fukushima1980neocognitron` e
+nella LeNet-5 di Yann LeCun (1998), che leggeva le cifre scritte a mano sugli
+assegni. Nel 2012 AlexNet, di Krizhevsky, Sutskever e Hinton, vince la
+competizione ImageNet con un margine tale da riaccendere l'intero campo del
+deep learning.
 
 ## Perché uno strato denso non basta
 
 `````{tab} Elementare
 
-Uno strato **denso** — il "completamente connesso" che conosciamo dal
-capitolo sulle reti neurali — collega *ogni* pixel a *ogni* neurone. Sembra
-generoso, ma è uno spreco. Una foto a colori di 256×256 pixel sono quasi 200.000 numeri:
-un solo strato denso con 1000 neuroni avrebbe quasi 200 milioni di pesi da
-imparare — solo per il primo strato. Troppi.
+Uno strato **denso** (il "completamente connesso" che conosciamo dal capitolo
+sulle reti neurali) collega *ogni* pixel a *ogni* neurone. Sembra generoso, ma
+è uno spreco. Una foto a colori di 256×256 pixel sono quasi 200.000 numeri: un
+solo strato denso con 1000 neuroni avrebbe quasi 200 milioni di pesi da
+imparare (solo per il primo strato). Troppi.
 
 E c'è un problema più profondo. Se la rete impara a riconoscere un occhio
 quando compare in alto a sinistra, non sa nulla dello stesso occhio in basso
@@ -37,12 +37,12 @@ $h$ unità richiede $h\cdot d$ pesi. Per un'immagine RGB $256\times256$ si ha
 $d = 256\cdot256\cdot3 \approx 1{,}97\times10^{5}$: con $h=1000$ servono circa
 $2\times10^{8}$ parametri, un invito all'*overfitting*.
 
-Soprattutto, lo strato denso non possiede **invarianza alla traslazione**:
-un pattern spostato di un vettore $\Delta$ attiva pesi diversi, perché
-l'indice della componente cambia. Le CNN reintroducono questa struttura via
-due vincoli architetturali — connettività locale e condivisione dei pesi —
-che riducono i parametri e rendono la risposta *equivariante* alla
-traslazione (sposti l'input, si sposta l'attivazione).
+Soprattutto, lo strato denso non possiede **invarianza alla traslazione**: un
+pattern spostato di un vettore $\Delta$ attiva pesi diversi, perché l'indice
+della componente cambia. Le CNN reintroducono questa struttura via due vincoli
+architetturali (connettività locale e condivisione dei pesi) che riducono i
+parametri e rendono la risposta *equivariante* alla traslazione (sposti
+l'input, si sposta l'attivazione).
 
 `````
 
@@ -52,7 +52,7 @@ Il cuore della rete è la **convoluzione**: un piccolo filtro (o *kernel*),
 tipicamente $3\times3$, che scivola su tutta l'immagine. In ogni posizione
 sovrappone il filtro alla porzione di immagine sottostante, moltiplica valore
 per valore e somma il tutto in *un* numero. Quel numero misura quanto bene
-quella porzione somiglia al motivo che il filtro cerca — un bordo verticale,
+quella porzione somiglia al motivo che il filtro cerca: un bordo verticale,
 una macchia di colore, una texture.
 
 ```{figure} ../figures/convoluzione.svg
@@ -128,7 +128,7 @@ migliaia di volte.
 `````{tab} Elementare
 
 Un filtro $3\times3$ su un'immagine a colori ha solo $3\times3\times3+1 = 28$
-numeri da imparare. Con 32 filtri diversi arrivi a meno di mille parametri —
+numeri da imparare. Con 32 filtri diversi arrivi a meno di mille parametri,
 contro i milioni dello strato denso. Pochi pesi, riusati ovunque: la rete
 impara *cosa* cercare, non *dove*.
 
@@ -196,10 +196,10 @@ o = \left\lfloor \frac{n + 2p - k}{s} \right\rfloor + 1,
 $$
 
 dove $n$ è la dimensione d'ingresso e $k$ quella del kernel. Un esempio con i
-numeri del codice qui sotto — ingresso $n=28$, kernel $k=3$, padding $p=1$,
+numeri del codice qui sotto, ingresso $n=28$, kernel $k=3$, padding $p=1$,
 stride $s=1$: $o = \lfloor(28 + 2 - 3)/1\rfloor + 1 = 28$, la risoluzione non
-cambia. Con `padding="same"` si sceglie appunto $p$ affinché $o=n$ (a
-stride 1): l'uscita conserva la risoluzione dell'ingresso.
+cambia. Con `padding="same"` si sceglie appunto $p$ affinché $o=n$ (a stride
+1): l'uscita conserva la risoluzione dell'ingresso.
 
 In PyTorch l'intera architettura sta in poche righe:
 
@@ -219,12 +219,13 @@ model = nn.Sequential(
 )
 ```
 
-Nota il ritmo ricorrente: le mappe si restringono (28 → 14 → 7) mentre il
+Nota il ritmo ricorrente: le mappe si restringono (28 → 14 → 7), mentre il
 numero di filtri cresce (32 → 64). La rete scambia risoluzione spaziale con
 ricchezza semantica, finché le poche feature rimaste bastano allo strato denso
-per decidere. Un dettaglio tutto di PyTorch: lo strato `nn.Linear` finale vuole
-sapere esattamente quanti numeri riceve — qui $64 \cdot 7 \cdot 7 = 3136$ — e
-il conto delle dimensioni resta a chi progetta la rete, non alla libreria.
+per decidere. Un dettaglio tutto di PyTorch: lo strato `nn.Linear` finale
+vuole sapere esattamente quanti numeri riceve (qui
+$64 \cdot 7 \cdot 7 = 3136$) e il conto delle dimensioni resta a chi progetta
+la rete, non alla libreria.
 
 ```{admonition} Da ricordare
 :class: important

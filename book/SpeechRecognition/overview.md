@@ -1,13 +1,14 @@
 # Speech Recognition: dalla voce al testo
 
-Nel 1952, nei laboratori della Bell Telephone, un apparecchio ingombrante fatto
-di valvole e relè imparò a riconoscere le cifre da zero a nove pronunciate ad
-alta voce. Si chiamava **Audrey** e aveva un limite quasi comico: funzionava con
-un solo parlante, che doveva scandire i numeri lentamente e fare una pausa netta
-fra l'uno e l'altro. Settant'anni dopo diciamo "metti la sveglia alle sette" al
-telefono mentre carichiamo la lavastoviglie, e la frase diventa testo — e poi
-azione — in una frazione di secondo. In mezzo c'è la storia dell'**ASR**
-(*Automatic Speech Recognition*), il riconoscimento vocale automatico.
+Nel 1952, nei laboratori della Bell Telephone, un apparecchio ingombrante
+fatto di valvole e relè imparò a riconoscere le cifre da zero a nove
+pronunciate ad alta voce. Si chiamava **Audrey** e aveva un limite quasi
+comico: funzionava con un solo parlante, che doveva scandire i numeri
+lentamente e fare una pausa netta fra l'uno e l'altro. Settant'anni dopo
+diciamo "metti la sveglia alle sette" al telefono mentre carichiamo la
+lavastoviglie, e la frase diventa testo (e poi azione) in una frazione di
+secondo. In mezzo c'è la storia dell'**ASR** (*Automatic Speech Recognition*),
+il riconoscimento vocale automatico.
 
 ## Che cosa fa, in fondo
 
@@ -16,12 +17,12 @@ parole che contiene.
 
 `````{tab} Elementare
 
-Pensa a una persona che ascolta una registrazione e la trascrive a mano. Riceve
-un flusso continuo di suono — alti, bassi, pause — e produce una riga di parole
-scritte. Il riconoscitore vocale fa esattamente questo: in ingresso l'onda
-sonora catturata dal microfono, in uscita del testo. Attenzione: nessuna
-*comprensione* del significato, per ora. Solo il passaggio dal suono alle
-lettere giuste.
+Pensa a una persona che ascolta una registrazione e la trascrive a mano.
+Riceve un flusso continuo di suono (alti, bassi, pause) e produce una riga di
+parole scritte. Il riconoscitore vocale fa esattamente questo: in ingresso
+l'onda sonora catturata dal microfono, in uscita del testo. Attenzione:
+nessuna *comprensione* del significato, per ora. Solo il passaggio dal suono
+alle lettere giuste.
 
 `````
 
@@ -48,7 +49,7 @@ Nessuno pronuncia due volte la stessa parola allo stesso modo. La voce cambia
 con la persona (timbro, accento, velocità), con lo stato d'animo, con il
 raffreddore. C'è il **rumore di fondo**: traffico, musica, altre voci
 sovrapposte. C'è la **coarticolazione**, il fenomeno per cui i suoni si
-contaminano a vicenda — la "n" di *un cane* non è la stessa "n" di *un pane*,
+contaminano a vicenda: la "n" di *un cane* non è la stessa "n" di *un pane*,
 perché la bocca si sta già preparando al suono che segue. E ci sono gli
 **omofoni**: *l'ago* e *lago* suonano identici, e solo il contesto della frase
 dice quale sia quello giusto. Un microfono non "vede" gli spazi tra le parole:
@@ -100,13 +101,11 @@ L'ultimo salto è l'approccio **end-to-end** ("da un capo all'altro"): una sola
 rete neurale che impara direttamente il passaggio dall'audio al testo, senza
 scomporre a mano acustica e linguaggio. Tecniche come la **CTC**
 (*Connectionist Temporal Classification* {cite}`graves2006connectionist`) e i
-modelli
-encoder-decoder con attenzione — una parte della rete ascolta tutto, l'altra
-scrive — hanno reso possibile addestrare l'intero sistema da coppie
-(audio, testo). **Whisper** di OpenAI (2022), un
-Transformer encoder-decoder allenato su circa 680.000 ore di audio multilingue,
-è l'esempio più noto: trascrive e traduce decine di lingue, italiano compreso,
-con un unico modello.
+modelli encoder-decoder con attenzione (una parte della rete ascolta tutto,
+l'altra scrive) hanno reso possibile addestrare l'intero sistema da coppie
+(audio, testo). **Whisper** di OpenAI (2022), un Transformer encoder-decoder
+allenato su circa 680.000 ore di audio multilingue, è l'esempio più noto:
+trascrive e traduce decine di lingue, italiano compreso, con un unico modello.
 
 ## La pipeline, passo per passo
 
@@ -132,7 +131,7 @@ qualcosa di trattabile.
 
 Il segnale grezzo è troppo minuto e dettagliato per lavorarci direttamente.
 Allora lo si taglia in fettine di pochi centesimi di secondo e, per ognuna, si
-misura "quanta energia c'è a ciascuna altezza sonora" — un po' come le barre di
+misura "quanta energia c'è a ciascuna altezza sonora": un po' come le barre di
 un equalizzatore che salgono e scendono a ritmo di musica. Questa sequenza di
 istantanee sonore è molto più facile da dare in pasto a un modello del segnale
 originale.
@@ -155,13 +154,13 @@ nel modello acustico.
 
 Il riconoscimento vocale è ormai ovunque: gli **assistenti vocali** (Siri,
 Alexa, Google Assistant) che aspettano un comando; la **sottotitolazione
-automatica** di YouTube e delle videochiamate, preziosa per l'accessibilità; la
-**dettatura** che trasforma la voce in documenti, dai referti medici ai messaggi
-scritti mentre si guida. È la porta d'ingresso di quasi ogni sistema che
-"capisce" il parlato: una volta che la voce è diventata testo, tocca agli
+automatica** di YouTube e delle videochiamate, preziosa per l'accessibilità;
+la **dettatura** che trasforma la voce in documenti, dai referti medici ai
+messaggi scritti mentre si guida. È la porta d'ingresso di quasi ogni sistema
+che "capisce" il parlato: una volta che la voce è diventata testo, tocca agli
 strumenti del linguaggio naturale interpretarne il significato. Ma quel primo,
-difficile passo — dall'onda alla parola — comincia sempre qui.
+difficile passo (dall'onda alla parola) comincia sempre qui.
 
 E il viaggio, in questo capitolo, ha anche un ritorno: l'ultima sezione
-percorre la strada opposta — dal testo all'onda sonora, la **sintesi
-vocale** — chiudendo il cerchio tra ascoltare e parlare.
+percorre la strada opposta (dal testo all'onda sonora, la **sintesi vocale**)
+chiudendo il cerchio tra ascoltare e parlare.

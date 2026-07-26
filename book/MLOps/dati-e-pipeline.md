@@ -1,80 +1,83 @@
 # I dati come cittadini di prima classe
 
-Apri il registro delle modifiche — la cronologia di `git` — di un sistema di
+Apri il registro delle modifiche (la cronologia di `git`) di un sistema di
 rilevamento frodi in produzione. Il codice del modello è quasi fermo: qualche
-commit al mese, una libreria aggiornata, un iperparametro ritoccato. Poi guarda
-i dati che quel codice ingoia: milioni di transazioni ogni giorno, mai due
-uguali, con nuovi negozi, nuovi importi, nuove truffe che ieri non esistevano.
-Il codice è il fiume; i dati sono la piena. Nel software tradizionale l'oggetto
-che cambia — e che quindi si versiona, si testa, si sorveglia — è il codice. Nel
-machine learning il codice è spesso la parte *stabile*, e la parte viva, quella
-che si muove sotto i piedi, sono i dati.
+commit al mese, una libreria aggiornata, un iperparametro ritoccato. Poi
+guarda i dati che quel codice ingoia: milioni di transazioni ogni giorno, mai
+due uguali, con nuovi negozi, nuovi importi, nuove truffe che ieri non
+esistevano. Il codice è il fiume; i dati sono la piena. Nel software
+tradizionale l'oggetto che cambia (e che quindi si versiona, si testa, si
+sorveglia) è il codice. Nel machine learning il codice è spesso la parte
+*stabile*, e la parte viva, quella che si muove sotto i piedi, sono i dati.
 
-Da questa asimmetria nasce un'idea che negli ultimi anni ha un nome: **data-centric
-AI**. La provocazione, resa popolare da Andrew Ng intorno al 2021, è semplice:
-abbiamo passato un decennio a limare architetture per rubare un decimale di
-accuratezza a un *benchmark*, mentre il guadagno più grande, nei sistemi reali,
-si ottiene quasi sempre migliorando i *dati* — etichette più coerenti, esempi
-più rappresentativi, meno rumore. Se è così, i dati non possono restare un
-allegato del codice: vanno trattati come **cittadini di prima classe**,
-versionati, testati e sorvegliati con la stessa disciplina. La sezione
-precedente ha stabilito che riprodurre un modello richiede tre artefatti — codice,
-dati, modello. Questa entra nel più grande e trascurato dei tre, e nel sistema
-di tubature che lo trasporta {cite}`huyen2022designing`.
+Da questa asimmetria nasce un'idea che negli ultimi anni ha un nome:
+**data-centric AI**. La provocazione, resa popolare da Andrew Ng intorno al
+2021, è semplice: abbiamo passato un decennio a limare architetture per rubare
+un decimale di accuratezza a un *benchmark*, mentre il guadagno più grande,
+nei sistemi reali, si ottiene quasi sempre migliorando i *dati* (etichette più
+coerenti, esempi più rappresentativi, meno rumore). Se è così, i dati non
+possono restare un allegato del codice: vanno trattati come **cittadini di
+prima classe**, versionati, testati e sorvegliati con la stessa disciplina. La
+sezione precedente ha stabilito che riprodurre un modello richiede tre
+artefatti: codice, dati, modello. Questa entra nel più grande e trascurato dei
+tre, e nel sistema di tubature che lo trasporta {cite}`huyen2022designing`.
 
 ## Versionare i dati
 
-Se non sai *quali* dati hanno prodotto un modello, non puoi riprodurlo, non puoi
-capire perché una predizione è quella che è, e non puoi tornare indietro quando
-un nuovo addestramento peggiora le cose. Il codice lo versiona `git` da
-decenni; per i dati serve qualcosa di analogo, ma `git` da solo non basta — è
+Se non sai *quali* dati hanno prodotto un modello, non puoi riprodurlo, non
+puoi capire perché una predizione è quella che è, e non puoi tornare indietro
+quando un nuovo addestramento peggiora le cose. Il codice lo versiona `git` da
+decenni; per i dati serve qualcosa di analogo, ma `git` da solo non basta: è
 pensato per file di testo piccoli e confrontabili riga per riga, mentre un
-dataset è grande, binario e opaco. Metterci dentro dieci gigabyte di immagini lo
-gonfia fino a renderlo inservibile.
+dataset è grande, binario e opaco. Metterci dentro dieci gigabyte di immagini
+lo gonfia fino a renderlo inservibile.
 
 `````{tab} Elementare
 
-Hai presente la cronologia di un documento condiviso — un Google Doc, una pagina
-di Wikipedia? Puoi tornare a com'era martedì scorso, vedere chi ha cambiato cosa,
-recuperare un paragrafo cancellato per sbaglio. Versionare i dati è la stessa
-idea, applicata a una tabella o a una cartella di immagini: a ogni «versione»
-del dataset resta appeso un cartellino con un codice, e citando quel codice
-chiunque ritrova *esattamente* quei dati, non una loro versione simile.
+Hai presente la cronologia di un documento condiviso: un Google Doc, una
+pagina di Wikipedia? Puoi tornare a com'era martedì scorso, vedere chi ha
+cambiato cosa, recuperare un paragrafo cancellato per sbaglio. Versionare i
+dati è la stessa idea, applicata a una tabella o a una cartella di immagini: a
+ogni «versione» del dataset resta appeso un cartellino con un codice, e
+citando quel codice chiunque ritrova *esattamente* quei dati, non una loro
+versione simile.
 
 Il trucco per farlo senza duplicare montagne di file è un'impronta digitale.
 Immagina di passare l'intero dataset in un tritatutto che ne ricava un codice
-corto — poche decine di caratteri — con una proprietà magica: se cambi anche un
+corto (poche decine di caratteri) con una proprietà magica: se cambi anche un
 solo pixel, il codice cambia del tutto; se il dataset è identico, il codice è
 identico. Così, invece di conservare cento copie dei dati dentro il progetto,
-conservi solo i cartellini, e i dati veri stanno una volta sola in un magazzino
-a parte. Il progetto dice «mi servono i dati con il cartellino `a3f8…`», e il
-magazzino li consegna.
+conservi solo i cartellini, e i dati veri stanno una volta sola in un
+magazzino a parte. Il progetto dice «mi servono i dati con il cartellino
+`a3f8…`», e il magazzino li consegna.
 
 `````
 
 `````{tab} Superiore
 
-L'impronta è un **hash crittografico** del contenuto (per esempio SHA-256): una
-funzione che mappa una sequenza arbitraria di byte in una stringa di lunghezza
-fissa, deterministica e sensibile a ogni bit. Su questa idea si costruisce il
-**content-addressable storage**: l'indirizzo di un dato *è* l'hash del suo
-contenuto, non un percorso né un nome scelto a mano. Ne discendono tre proprietà
-preziose. **Immutabilità**: un dato non si modifica «sul posto», si scrive una
-nuova versione con un nuovo indirizzo — le vecchie restano raggiungibili, e un
-esperimento passato non cambia sotto i piedi. **Deduplicazione**: file identici
-hanno lo stesso hash e occupano spazio una volta sola. **Integrità**: ricalcolare
-l'hash verifica che il dato non si sia corrotto in transito.
+L'impronta è un **hash crittografico** del contenuto (per esempio SHA-256):
+una funzione che mappa una sequenza arbitraria di byte in una stringa di
+lunghezza fissa, deterministica e sensibile a ogni bit. Su questa idea si
+costruisce il **content-addressable storage**: l'indirizzo di un dato *è*
+l'hash del suo contenuto, non un percorso né un nome scelto a mano. Ne
+discendono tre proprietà preziose. **Immutabilità**: un dato non si modifica
+«sul posto», si scrive una nuova versione con un nuovo indirizzo; le vecchie
+restano raggiungibili, e un esperimento passato non cambia sotto i piedi.
+**Deduplicazione**: file identici hanno lo stesso hash e occupano spazio una
+volta sola. **Integrità**: ricalcolare l'hash verifica che il dato non si sia
+corrotto in transito.
 
-Nel repository si versiona allora solo un *puntatore* — un piccolo file di testo
-che contiene l'hash e l'indirizzo del magazzino remoto — mentre l'artefatto vero
-vive in un *object store* (un bucket S3, un disco di rete). Strumenti come DVC
-(*Data Version Control*) industrializzano esattamente questo pattern, ma il
-concetto è indipendente dal tool: è lo stesso meccanismo con cui `git`
-identifica i propri oggetti. Sopra i puntatori si costruisce infine il
-**lineage** (la *provenienza*): il grafo che lega ogni modello alla versione
-esatta dei dati e del codice che lo hanno generato. È ciò che permette, mesi
-dopo, di rispondere alla domanda più temuta in un audit — «da dove viene questa
-predizione?» — risalendo la catena fino al singolo dato grezzo.
+Nel repository si versiona allora solo un *puntatore* (un piccolo file di
+testo che contiene l'hash e l'indirizzo del magazzino remoto), mentre
+l'artefatto vero vive in un *object store* (un bucket S3, un disco di rete).
+Strumenti come DVC (*Data Version Control*) industrializzano esattamente
+questo pattern, ma il concetto è indipendente dal tool: è lo stesso meccanismo
+con cui `git` identifica i propri oggetti. Sopra i puntatori si costruisce
+infine il **lineage** (la *provenienza*): il grafo che lega ogni modello alla
+versione esatta dei dati e del codice che lo hanno generato. È ciò che
+permette, mesi dopo, di rispondere alla domanda più temuta in un audit («da
+dove viene questa predizione?») risalendo la catena fino al singolo dato
+grezzo.
 
 `````
 
@@ -84,13 +87,13 @@ Un dataset pronto per l'addestramento non nasce così: è il prodotto finale di
 una catena di trasformazioni. Si **estrae** il dato grezzo da una o più
 sorgenti (un database, un flusso di eventi, dei file); si **pulisce** (valori
 mancanti, duplicati, formati incoerenti); si costruiscono le **feature**, cioè
-le variabili in cui il modello «vede» il mondo; e solo alla fine si **addestra**.
-Ognuno di questi passaggi usa gli strumenti che già conosciamo — le maschere
-booleane e i `groupby` di Pandas, la vettorizzazione di NumPy visti nel capitolo
-su Python — ma il salto di qualità non è tecnico, è organizzativo: la catena
-deve essere **riproducibile** (rieseguendola sugli stessi dati grezzi si
-riottiene lo stesso dataset) e **orchestrata** (i passaggi si succedono in un
-ordine dichiarato, non a mano in un notebook).
+le variabili in cui il modello «vede» il mondo; e solo alla fine si
+**addestra**. Ognuno di questi passaggi usa gli strumenti che già conosciamo
+(le maschere booleane e i `groupby` di Pandas, la vettorizzazione di NumPy
+visti nel capitolo su Python) ma il salto di qualità non è tecnico, è
+organizzativo: la catena deve essere **riproducibile** (rieseguendola sugli
+stessi dati grezzi si riottiene lo stesso dataset) e **orchestrata** (i
+passaggi si succedono in un ordine dichiarato, non a mano in un notebook).
 
 `````{tab} Elementare
 
@@ -117,28 +120,29 @@ Formalmente una pipeline è un **DAG** (*directed acyclic graph*): i nodi sono
 trasformazioni, gli archi le dipendenze dato-verso-dato, e l'assenza di cicli
 garantisce un ordine di esecuzione ben definito. Due proprietà la rendono
 governabile. L'**idempotenza**: rieseguire uno stadio sugli stessi input
-produce lo stesso output, senza effetti collaterali accumulati — condizione per
-poter ripartire da metà catena dopo un errore. E la **materializzazione
-versionata** degli stadi intermedi, così che un cambiamento a valle non obblighi
-a ricalcolare tutto da capo. Orchestratori come Airflow, Dagster o Prefect
-gestiscono lo scheduling, le dipendenze e i tentativi di ripristino; ma, come per
-il versionamento, lo strumento è secondario rispetto al principio. Automatizzare
-l'intera catena — da dato grezzo a modello valutato — con un comando solo è il
-cuore della *Continuous Delivery for Machine Learning* {cite}`sato2019continuous`:
-finché un pezzo della pipeline resta un rito manuale, l'intero sistema non è né
-riproducibile né rilasciabile in modo affidabile.
+produce lo stesso output, senza effetti collaterali accumulati (condizione per
+poter ripartire da metà catena dopo un errore). E la **materializzazione
+versionata** degli stadi intermedi, così che un cambiamento a valle non
+obblighi a ricalcolare tutto da capo. Orchestratori come Airflow, Dagster o
+Prefect gestiscono lo scheduling, le dipendenze e i tentativi di ripristino;
+ma, come per il versionamento, lo strumento è secondario rispetto al
+principio. Automatizzare l'intera catena (da dato grezzo a modello valutato)
+con un comando solo è il cuore della *Continuous Delivery for Machine
+Learning* {cite}`sato2019continuous`: finché un pezzo della pipeline resta un
+rito manuale, l'intero sistema non è né riproducibile né rilasciabile in modo
+affidabile.
 
 `````
 
 ## Il feature store
 
 C'è un punto della pipeline che merita un discorso a sé: le **feature**. Una
-stessa feature — «spesa media dell'utente negli ultimi 30 giorni», «numero di
-transazioni nell'ultima ora» — serve a più modelli e, soprattutto, va calcolata
+stessa feature («spesa media dell'utente negli ultimi 30 giorni», «numero di
+transazioni nell'ultima ora») serve a più modelli e, soprattutto, va calcolata
 in *due momenti diversi*: durante l'addestramento, su masse di dati storici, e
 durante il servizio, su un singolo caso che arriva ora. Se i due calcoli
-divergono anche di poco, il modello riceve in produzione qualcosa di diverso da
-ciò su cui ha imparato. Il **feature store** è l'infrastruttura che risolve
+divergono anche di poco, il modello riceve in produzione qualcosa di diverso
+da ciò su cui ha imparato. Il **feature store** è l'infrastruttura che risolve
 questo problema centralizzando la definizione e il calcolo delle feature
 {cite}`huyen2022designing`.
 
@@ -153,9 +157,9 @@ nulla.
 
 Il feature store è quella dispensa. Le feature si definiscono una volta, in un
 posto solo, e sia chi addestra il modello sia chi lo manda in produzione le
-prende dallo stesso scaffale — con la garanzia che siano *le stesse* e *fresche*,
-cioè aggiornate. In più, una feature preparata bene la riusano dieci modelli
-diversi: si cucina una volta, si serve a tutti.
+prende dallo stesso scaffale, con la garanzia che siano *le stesse* e
+*fresche*, cioè aggiornate. In più, una feature preparata bene la riusano
+dieci modelli diversi: si cucina una volta, si serve a tutti.
 
 `````
 
@@ -170,51 +174,52 @@ stessa *definizione* alimenta entrambi, ed è questa condivisione a sradicare
 alla radice le incoerenze tra addestramento e produzione.
 
 Il problema tecnico più insidioso che un feature store deve garantire è la
-**point-in-time correctness**. Costruendo un esempio di addestramento etichettato
-al tempo $t$, le sue feature vanno calcolate con i soli dati disponibili *prima*
-di $t$: usare un valore aggregato che include informazione successiva a $t$
-inietta nel modello una conoscenza del futuro che in produzione non avrà mai —
-una forma di *data leakage* temporale che gonfia le metriche in laboratorio e
-crolla sul campo. Un *point-in-time join* corretto è tedioso da implementare a
-mano ed è una delle ragioni per cui il feature store esiste come componente
-dedicato.
+**point-in-time correctness**. Costruendo un esempio di addestramento
+etichettato al tempo $t$, le sue feature vanno calcolate con i soli dati
+disponibili *prima* di $t$: usare un valore aggregato che include informazione
+successiva a $t$ inietta nel modello una conoscenza del futuro che in
+produzione non avrà mai (una forma di *data leakage* temporale che gonfia le
+metriche in laboratorio e crolla sul campo). Un *point-in-time join* corretto
+è tedioso da implementare a mano ed è una delle ragioni per cui il feature
+store esiste come componente dedicato.
 
 `````
 
 ## Training–serving skew
 
-Arriviamo così al bug più classico e più costoso di tutta la disciplina, quello
-che il feature store esiste per prevenire: il **training–serving skew**. Si
-verifica quando una feature è calcolata in un modo durante l'addestramento e in
-un modo *anche solo leggermente diverso* durante il servizio. Il modello, tarato
-sui numeri del training, riceve in produzione numeri che vogliono dire un'altra
-cosa — e sbaglia in silenzio, senza che nessuna eccezione venga sollevata.
+Arriviamo così al bug più classico e più costoso di tutta la disciplina,
+quello che il feature store esiste per prevenire: il **training–serving
+skew**. Si verifica quando una feature è calcolata in un modo durante
+l'addestramento e in un modo *anche solo leggermente diverso* durante il
+servizio. Il modello, tarato sui numeri del training, riceve in produzione
+numeri che vogliono dire un'altra cosa, e sbaglia in silenzio, senza che
+nessuna eccezione venga sollevata.
 
 `````{tab} Elementare
 
-È come tarare una bilancia in grammi e poi, senza dirlo a nessuno, pesarci sopra
-in once. Nessun errore lampeggia sullo schermo: i numeri arrivano, sembrano
-plausibili, e il risultato è semplicemente sbagliato. Il caso da manuale è la
-**normalizzazione**. In addestramento si «centra» ogni feature sottraendo la sua
-media e dividendo per la sua deviazione (per portarle tutte a una scala
-confrontabile), calcolando media e deviazione sull'intero dataset. In produzione,
-per una svista, qualcuno le ricalcola sul *singolo lotto* di dati in arrivo — e
-un lotto tutto di importi alti, ricentrato su sé stesso, sembra improvvisamente
-«normale». Vediamolo con i numeri.
+È come tarare una bilancia in grammi e poi, senza dirlo a nessuno, pesarci
+sopra in once. Nessun errore lampeggia sullo schermo: i numeri arrivano,
+sembrano plausibili, e il risultato è semplicemente sbagliato. Il caso da
+manuale è la **normalizzazione**. In addestramento si «centra» ogni feature
+sottraendo la sua media e dividendo per la sua deviazione (per portarle tutte
+a una scala confrontabile), calcolando media e deviazione sull'intero dataset.
+In produzione, per una svista, qualcuno le ricalcola sul *singolo lotto* di
+dati in arrivo, e un lotto tutto di importi alti, ricentrato su sé stesso,
+sembra improvvisamente «normale». Vediamolo con i numeri.
 
 `````
 
 `````{tab} Superiore
 
-Sia $x$ una feature e $z = (x - \mu)/\sigma$ la sua versione standardizzata, dove
-$\mu$ e $\sigma$ sono media e deviazione standard. La regola vincolante è che
-$\mu$ e $\sigma$ siano **statistiche del training**, stimate una volta e
+Sia $x$ una feature e $z = (x - \mu)/\sigma$ la sua versione standardizzata,
+dove $\mu$ e $\sigma$ sono media e deviazione standard. La regola vincolante è
+che $\mu$ e $\sigma$ siano **statistiche del training**, stimate una volta e
 *congelate*: fanno parte del modello tanto quanto i pesi. Usarle in
-addestramento e ricalcolarle in produzione su un altro campione viola l'ipotesi
-sotto cui il modello è stato ottimizzato. Nel codice qui sotto la versione
-corretta applica $\mu,\sigma$ del training; quella bacata ricalcola
+addestramento e ricalcolarle in produzione su un altro campione viola
+l'ipotesi sotto cui il modello è stato ottimizzato. Nel codice qui sotto la
+versione corretta applica $\mu,\sigma$ del training; quella bacata ricalcola
 $\mu_{\text{batch}},\sigma_{\text{batch}}$ sul lotto corrente, azzerandone di
-fatto la media: un batch anomalo — tutto di importi alti — viene ricondotto a
+fatto la media: un batch anomalo (tutto di importi alti) viene ricondotto a
 zero e il modello non lo riconosce più come anomalo.
 
 `````
@@ -271,10 +276,11 @@ scarto massimo sulle predizioni: 0.793
 Lo stesso identico modello, sugli stessi identici dati, dà due risposte
 opposte. La pipeline corretta riconosce il lotto come sospetto (probabilità
 media di frode $0{,}97$); quella bacata, ricentrando ogni batch su sé stesso,
-cancella l'anomalia e lo giudica quasi innocuo ($0{,}45$), con differenze fino a
-$0{,}79$ su singole transazioni. Nessun errore, nessun avviso: solo predizioni
-sbagliate. Ecco perché la definizione di una feature deve vivere in *un posto
-solo*, condiviso tra addestramento e servizio — è il compito del feature store.
+cancella l'anomalia e lo giudica quasi innocuo ($0{,}45$), con differenze fino
+a $0{,}79$ su singole transazioni. Nessun errore, nessun avviso: solo
+predizioni sbagliate. Ecco perché la definizione di una feature deve vivere in
+*un posto solo*, condiviso tra addestramento e servizio: è il compito del
+feature store.
 
 ## Validare i dati in ingresso
 
@@ -306,19 +312,20 @@ singolo record; l'ultima solo guardando tanti record insieme.
 `````{tab} Superiore
 
 La validazione dei dati è uno dei quattro assi della **ML Test Score**
-{cite}`breck2017ml`, la rubrica di collaudo che misura la maturità di un sistema
-di ML: include test sullo schema delle feature, sui loro intervalli e sul fatto
-che ogni feature apporti davvero valore. Conviene distinguere due livelli. I
-controlli **puntuali** — tipo, obbligatorietà, intervallo, assenza di `NaN` — si
-applicano a ogni record isolato e sono economici: sono quelli che implementiamo
-qui sotto. I controlli **distribuzionali** — la media di una feature è slittata?
-la proporzione di una categoria è raddoppiata? — richiedono di confrontare un
-lotto con una *baseline* di riferimento, ed è qui che la validazione statica
-sfuma nel **monitoraggio** del *dataset shift* {cite}`quinonero2009dataset`: lo
-abbiamo inquadrato in termini statistici nella sezione «Quando i dati cambiano»,
-e il suo lato operativo — sorvegliare le distribuzioni nel tempo e decidere
-quando riaddestrare — avrà una sezione dedicata. Qui restiamo al primo livello:
-fermare alla porta il record palesemente malformato.
+{cite}`breck2017ml`, la rubrica di collaudo che misura la maturità di un
+sistema di ML: include test sullo schema delle feature, sui loro intervalli e
+sul fatto che ogni feature apporti davvero valore. Conviene distinguere due
+livelli. I controlli **puntuali** (tipo, obbligatorietà, intervallo, assenza
+di `NaN`) si applicano a ogni record isolato e sono economici: sono quelli che
+implementiamo qui sotto. I controlli **distribuzionali** (la media di una
+feature è slittata? la proporzione di una categoria è raddoppiata?) richiedono
+di confrontare un lotto con una *baseline* di riferimento, ed è qui che la
+validazione statica sfuma nel **monitoraggio** del *dataset shift*
+{cite}`quinonero2009dataset`: lo abbiamo inquadrato in termini statistici
+nella sezione «Quando i dati cambiano», e il suo lato operativo (sorvegliare
+le distribuzioni nel tempo e decidere quando riaddestrare) avrà una sezione
+dedicata. Qui restiamo al primo livello: fermare alla porta il record
+palesemente malformato.
 
 `````
 
@@ -384,8 +391,8 @@ record 4: eta: tipo str, atteso int
 Poche righe, ma è la porta blindata del sistema: ogni record che entra viene
 promosso o respinto secondo regole esplicite, e i respinti finiscono in un
 registro invece che, silenziosamente, dentro il modello. In produzione questo
-schema si arricchisce — soglie sulla percentuale di `NaN` tollerata, controlli
-di coerenza tra campi, l'aggancio ai test distribuzionali — ma l'ossatura è
+schema si arricchisce (soglie sulla percentuale di `NaN` tollerata, controlli
+di coerenza tra campi, l'aggancio ai test distribuzionali) ma l'ossatura è
 questa: dichiarare cosa ci si aspetta dai dati, e verificarlo prima di
 fidarsene. Trattare i dati da cittadini di prima classe significa, alla fine,
 esattamente questo: dargli un contratto, e farlo rispettare.
@@ -394,8 +401,8 @@ esattamente questo: dargli un contratto, e farlo rispettare.
 :class: important
 - Nel ML il codice è spesso la parte stabile e i **dati** la parte viva:
   l'approccio **data-centric** sposta l'attenzione dal limare il modello al
-  migliorare i dati, e li tratta come artefatti di prima classe — versionati,
-  testati, sorvegliati {cite}`huyen2022designing`.
+  migliorare i dati, e li tratta come artefatti di prima classe (versionati,
+  testati, sorvegliati {cite}`huyen2022designing`).
 - **Versionare i dati**: `git` non basta (file grandi e binari); si usa
   l'**hash del contenuto** come indirizzo (*content-addressable storage*), da
   cui immutabilità, deduplicazione e **lineage** che lega ogni modello ai dati
@@ -412,8 +419,8 @@ esattamente questo: dargli un contratto, e farlo rispettare.
   calcolata diversamente in training e in produzione (es. normalizzare col
   batch invece che con le statistiche congelate del training) sballa le
   predizioni senza sollevare alcun errore.
-- **Validare i dati in ingresso** — schema, tipi, range, valori mancanti,
-  distribuzioni — è un asse della **ML Test Score** {cite}`breck2017ml`. I
+- **Validare i dati in ingresso** (schema, tipi, range, valori mancanti,
+  distribuzioni) è un asse della **ML Test Score** {cite}`breck2017ml`. I
   controlli puntuali fermano il record malformato; quelli distribuzionali
   sfumano nel monitoraggio del *dataset shift* {cite}`quinonero2009dataset`.
 ```

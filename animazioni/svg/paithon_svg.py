@@ -10,7 +10,7 @@ Regola fondativa, che vale come "l'ultimo fotogramma deve reggere da solo" per
 Manim: **lo stato di riposo dell'SVG è lo stato finale**. Si scrive come
 attributo di presentazione, e l'animazione CSS lo sovrascrive solo mentre gira.
 Così la stampa, il PDF, `prefers-reduced-motion` e qualunque rasterizzatore
-vedono la figura *conclusa* — e non serve salvare nessun PNG a parte.
+vedono la figura *conclusa*, e non serve salvare nessun PNG a parte.
 
     python3 animazioni/svg/genera.py            # rigenera tutte le figure
     python3 animazioni/svg/genera.py percettrone-impara
@@ -26,7 +26,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 # --------------------------------------------------------------------------
-# Palette — la stessa, fissa, delle illustrazioni editoriali. Nessun altro
+# Palette: la stessa, fissa, delle illustrazioni editoriali. Nessun altro
 # colore può comparire: `scrivi()` lo verifica e rifiuta il file.
 # --------------------------------------------------------------------------
 TERRACOTTA = "#B5532C"
@@ -100,7 +100,7 @@ class Riquadro:
         Il punto scelto è quello della retta più vicino al centro del riquadro,
         così la trasformazione resta sempre dentro l'inquadratura. La direzione
         nei dati è (-w1, w0); passando all'SVG la y si ribalta, quindi diventa
-        (-w1, -w0) — è qui che è facilissimo sbagliare il segno.
+        (-w1, -w0): è qui che è facilissimo sbagliare il segno.
         """
         n2 = w[0] ** 2 + w[1] ** 2 or 1e-9
         cx, cy = (self.xmin + self.xmax) / 2, (self.ymin + self.ymax) / 2
@@ -159,8 +159,8 @@ class Figura:
         stop = self.fermi or "*"
         return f"""<?xml version="1.0" encoding="UTF-8"?>
 <!--
-  paithon book — figura animata: {titolo}
-  Generata da animazioni/svg/{nome}.py — non modificare a mano.
+  paithon book, figura animata: {titolo}
+  Generata da animazioni/svg/{nome}.py: non modificare a mano.
   Palette-locked, fondo trasparente, animazione in CSS puro (nessuno script).
   Lo stato di riposo è quello finale: chi non anima (stampa, PDF,
   prefers-reduced-motion) vede la figura conclusa.

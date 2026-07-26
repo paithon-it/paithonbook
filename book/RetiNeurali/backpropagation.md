@@ -1,12 +1,13 @@
 # Backpropagation: come impara una rete
 
-Nel 1986 tre ricercatori — David Rumelhart, Geoffrey Hinton e Ronald Williams —
+Nel 1986 tre ricercatori (David Rumelhart, Geoffrey Hinton e Ronald Williams)
 pubblicano su *Nature* un articolo di poche pagine, *"Learning representations
-by back-propagating errors"* {cite}`rumelhart1986learning`. L'algoritmo che descrivono non era del tutto nuovo
-(Paul Werbos lo aveva già formulato nel 1974, e le radici affondano nella
-differenziazione automatica degli anni '70), ma quel testo mostra al mondo come
-una rete neurale possa correggersi da sola, un errore alla volta. È la stessa
-ricetta con cui, ancora oggi, imparano modelli da miliardi di parametri.
+by back-propagating errors"* {cite}`rumelhart1986learning`. L'algoritmo che
+descrivono non era del tutto nuovo (Paul Werbos lo aveva già formulato nel
+1974, e le radici affondano nella differenziazione automatica degli anni '70),
+ma quel testo mostra al mondo come una rete neurale possa correggersi da sola,
+un errore alla volta. È la stessa ricetta con cui, ancora oggi, imparano
+modelli da miliardi di parametri.
 
 L'idea sta in due movimenti, come un respiro. **In avanti** la rete produce una
 risposta; **all'indietro** misura di quanto ha sbagliato e distribuisce la
@@ -21,8 +22,8 @@ combina con i propri parametri e lo passa avanti.
 `````{tab} Elementare
 
 Immagina una catena di montaggio. Alla prima postazione arrivano i dati grezzi
-(per esempio i pixel di una foto). Ogni postazione ha una fila di "manopole" —
-i **pesi** — con cui mescola ciò che riceve, applica un piccolo filtro e
+(per esempio i pixel di una foto). Ogni postazione ha una fila di "manopole"
+(i **pesi**) con cui mescola ciò che riceve, applica un piccolo filtro e
 consegna il risultato alla postazione successiva. L'ultima postazione affaccia
 il prodotto finito: la previsione della rete, per esempio "gatto: 0,92".
 
@@ -100,12 +101,12 @@ raggiunge anche i primi strati.
 
 `````{tab} Elementare
 
-Pensa a una catena di responsabilità. L'errore nasce all'uscita, ma non è "colpa"
-solo dell'ultimo strato: viene ereditato da quello prima, e da quello prima
-ancora, fino all'inizio. La backpropagation parte dal fondo e chiede a ogni
-strato: "quanto hai contribuito tu a questo errore?". La risposta di uno strato
-serve a calcolare quella dello strato precedente — come un rimprovero che si
-passa all'indietro lungo la fila ({numref}`fig-forward-backward`).
+Pensa a una catena di responsabilità. L'errore nasce all'uscita, ma non è
+"colpa" solo dell'ultimo strato: viene ereditato da quello prima, e da quello
+prima ancora, fino all'inizio. La backpropagation parte dal fondo e chiede a
+ogni strato: "quanto hai contribuito tu a questo errore?". La risposta di uno
+strato serve a calcolare quella dello strato precedente, come un rimprovero
+che si passa all'indietro lungo la fila ({numref}`fig-forward-backward`).
 
 Un esempio in piccolo, con i numeri di prima: la rete prevede 170.000 € per la
 casa che ne vale 200.000. I 30.000 € di errore vengono ripartiti tra i neuroni
@@ -204,8 +205,8 @@ sembrerebbe un difetto, aiuta la rete a scavalcare i minimi poco profondi.
 
 ## Reti profonde: attenzione ai gradienti
 
-Più la rete è profonda, più il gradiente deve viaggiare lontano per raggiungere i
-primi strati — e lungo il tragitto può degradarsi.
+Più la rete è profonda, più il gradiente deve viaggiare lontano per
+raggiungere i primi strati, e lungo il tragitto può degradarsi.
 
 `````{tab} Elementare
 
@@ -224,13 +225,12 @@ il messaggio integro fino in fondo.
 Il gradiente verso i primi strati è un prodotto di molti fattori (le Jacobiane
 strato per strato). Se questi fattori sono in media $<1$, il prodotto tende a
 zero esponenzialmente con la profondità (*vanishing gradient*); se sono $>1$,
-diverge (*exploding gradient*) — analisi resa celebre da Hochreiter (1991) e da
+diverge (*exploding gradient*): analisi resa celebre da Hochreiter (1991) e da
 Bengio et al. (1994) sulle reti ricorrenti. I rimedi standard: attivazioni
 **ReLU** al posto della sigmoide (Glorot et al., 2011), **inizializzazione**
-accorta dei pesi (Xavier/He), **batch normalization**
-{cite}`ioffe2015batch`, **connessioni residue** delle ResNet
-{cite}`he2016deep` e, per l'esplosione, il
-*gradient clipping*. Sono queste tecniche ad aver reso addestrabili reti da
+accorta dei pesi (Xavier/He), **batch normalization** {cite}`ioffe2015batch`,
+**connessioni residue** delle ResNet {cite}`he2016deep` e, per l'esplosione,
+il *gradient clipping*. Sono queste tecniche ad aver reso addestrabili reti da
 centinaia di strati.
 
 `````
@@ -240,7 +240,7 @@ centinaia di strati.
 Nella pratica non implementiamo la backpropagation a mano: i framework la
 eseguono per noi tramite differenziazione automatica (in PyTorch si chiama
 *autograd*). A noi resta da dichiarare l'architettura, la loss e
-l'ottimizzatore — e da scrivere il ciclo di addestramento, che in PyTorch
+l'ottimizzatore, e da scrivere il ciclo di addestramento, che in PyTorch
 ricalca passo per passo il respiro descritto in questo capitolo.
 
 ```{code-block} python

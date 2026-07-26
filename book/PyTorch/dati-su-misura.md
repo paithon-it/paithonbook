@@ -2,12 +2,12 @@
 
 Nei manuali il dataset arriva sempre pronto: una riga di codice, MNIST si
 scarica da solo, le immagini sono già quadrate, già etichettate, già divise in
-addestramento e test. Nella vita reale il primo giorno di un progetto assomiglia
-piuttosto a questo: una cartella con quattromila fotografie, i nomi dei file
-scritti da tre persone diverse, due immagini corrotte, una classe con dodici
-esempi e un'altra con duemila. Prima di poter scrivere un `nn.Module` bisogna
-costruire il tubo che porta quei file dentro la rete — e in PyTorch quel tubo
-si costruisce con due pezzi soltanto, sempre gli stessi.
+addestramento e test. Nella vita reale il primo giorno di un progetto
+assomiglia piuttosto a questo: una cartella con quattromila fotografie, i nomi
+dei file scritti da tre persone diverse, due immagini corrotte, una classe con
+dodici esempi e un'altra con duemila. Prima di poter scrivere un `nn.Module`
+bisogna costruire il tubo che porta quei file dentro la rete, e in PyTorch
+quel tubo si costruisce con due pezzi soltanto, sempre gli stessi.
 
 Il capitolo li ha già incontrati di sfuggita nella sezione
 [sull'addestramento](addestramento.md): `Dataset` sa consegnare l'esempio
@@ -61,8 +61,8 @@ sbagliare tutto mentre invece funziona benissimo.
 ## Scrivere un `Dataset` a mano
 
 `ImageFolder` copre il caso fortunato. Appena i dati stanno in un CSV, in un
-database, in file audio con le etichette in un foglio a parte — o appena
-servono più informazioni della sola classe — si scrive la propria classe. È
+database, in file audio con le etichette in un foglio a parte (o appena
+servono più informazioni della sola classe), si scrive la propria classe. È
 meno lavoro di quanto sembri: il contratto è di **tre metodi**.
 
 ```python
@@ -95,28 +95,28 @@ class DatasetImmagini(Dataset):
 `````{tab} Elementare
 Sono tre risposte a tre domande che il `DataLoader` continuerà a fare per
 tutto l'addestramento. *Come ti prepari?* (`__init__`: qui si fa il lavoro
-lento una volta sola — elencare i file, leggere il CSV degli indici.) *Quanti
+lento una volta sola, elencare i file, leggere il CSV degli indici.) *Quanti
 esempi hai?* (`__len__`.) *Dammi il numero 137* (`__getitem__`: qui si fa il
 lavoro veloce, ed è la parte che verrà eseguita milioni di volte).
 
 La regola pratica sta tutta in questa divisione del lavoro: **in `__init__` le
 cose pesanti, in `__getitem__` le cose leggere**. Se in `__init__` carichi in
 memoria tutte le immagini, un dataset da 200 GB non parte nemmeno; se in
-`__getitem__` riapri un file CSV di 300 MB per leggere una riga, l'addestramento
-diventa lentissimo — e la GPU, che aspetta i dati, resterà ferma a girarsi i
-pollici.
+`__getitem__` riapri un file CSV di 300 MB per leggere una riga,
+l'addestramento diventa lentissimo, e la GPU, che aspetta i dati, resterà
+ferma a girarsi i pollici.
 `````
 
 `````{tab} Superiore
 È il protocollo *map-style*: una mappa da indice a esempio, che consente
 campionamento casuale e quindi `shuffle`. L'alternativa è `IterableDataset`
-(`__iter__`), pensata per gli stream — file compressi letti in sequenza, code
-di messaggi, dataset che non stanno su disco — dove il campionamento casuale
+(`__iter__`), pensata per gli stream (file compressi letti in sequenza, code
+di messaggi, dataset che non stanno su disco), dove il campionamento casuale
 non è possibile e lo shuffling si approssima con un buffer.
 
 Due cose vanno sapute su `__getitem__`. La prima: viene eseguito nei
 **processi worker**, non nel processo principale, quindi tutto ciò che tocca
-deve essere serializzabile (`pickle`) e non deve essere un handle già aperto —
+deve essere serializzabile (`pickle`) e non deve essere un handle già aperto;
 un connettore a database o un file HDF5 aperto in `__init__` e usato nel
 `__getitem__` è la causa classica dei crash con `num_workers > 0`. Si apre
 *pigramente*, al primo accesso, dentro il worker. La seconda: deve restituire
@@ -130,8 +130,8 @@ gli elementi del batch abbiano la **stessa forma**.
 Una `transform` è una funzione che riceve un esempio e ne restituisce una
 versione modificata. Serve a due scopi diversi, che è bene non confondere:
 **preparare** (portare tutto alla stessa misura, allo stesso intervallo di
-valori) e **moltiplicare** (generare varianti plausibili per rendere il modello
-più robusto — la *data augmentation*, trattata in profondità nel
+valori) e **moltiplicare** (generare varianti plausibili per rendere il
+modello più robusto; la *data augmentation*, trattata in profondità nel
 [capitolo sulla visione](../VisioneArtificiale/data-augmentation.md)).
 
 ```python
@@ -185,7 +185,7 @@ vanno prima.
 
 Le statistiche giuste sono quelle del dataset su cui il modello è stato
 addestrato: se si fa transfer learning da pesi ImageNet si usano quelle di
-ImageNet, e la scorciatoia più sicura è chiederle direttamente ai pesi —
+ImageNet, e la scorciatoia più sicura è chiederle direttamente ai pesi;
 `torchvision.models.EfficientNet_B0_Weights.DEFAULT.transforms()` restituisce
 la pipeline esatta con cui quei pesi sono stati prodotti. Da `torchvision`
 0.15 esiste `torchvision.transforms.v2`, che accetta anche box, maschere e
@@ -223,13 +223,13 @@ un addestramento che dura un'ora e uno che ne dura sei.
 `````{tab} Elementare
 `num_workers` è il numero di aiutanti che preparano i vassoi mentre la cucina
 cucina. Con zero aiutanti, il processo principale alterna: prepara un vassoio,
-lo dà alla GPU, aspetta, prepara il prossimo — e la GPU, che è la parte cara
+lo dà alla GPU, aspetta, prepara il prossimo, e la GPU, che è la parte cara
 della macchina, resta ferma metà del tempo. Con quattro o otto aiutanti i
 vassoi successivi sono già pronti quando servono.
 
 `pin_memory` è il piano d'appoggio accanto al passavivande: i dati vengono
 messi in una zona di memoria da cui la GPU può prenderli senza passaggi
-intermedi. `drop_last` butta via l'ultimo vassoio se è mezzo vuoto — con
+intermedi. `drop_last` butta via l'ultimo vassoio se è mezzo vuoto, con
 duemila esempi e batch da 32, l'ultimo ne ha 16, e nei modelli con la batch
 normalization un batch anomalo può dare statistiche strane.
 
@@ -245,7 +245,7 @@ processo principale preleva. `prefetch_factor` (default 2) regola quanti batch
 ogni worker tiene pronti in anticipo: la memoria occupata cresce come
 $k \times \text{prefetch\_factor} \times \text{dimensione batch}$, e su
 macchine con poca RAM è la prima causa di *out of memory* che non riguarda la
-GPU. `persistent_workers=True` evita il costo di riavviarli a ogni epoca —
+GPU. `persistent_workers=True` evita il costo di riavviarli a ogni epoca:
 significativo quando `__init__` è pesante.
 
 `pin_memory=True` alloca i batch in memoria *page-locked*, che consente il
@@ -265,7 +265,7 @@ personalizzato deve togliere `shuffle`.
 
 Il meccanismo che impila gli esempi in un batch pretende che abbiano tutti la
 stessa forma. Con le immagini ridimensionate è vero per costruzione; con il
-testo, l'audio o le serie temporali non lo è quasi mai — una frase è lunga
+testo, l'audio o le serie temporali non lo è quasi mai: una frase è lunga
 sette parole, la successiva quarantatré. La soluzione è sostituire quel
 meccanismo con il proprio.
 
@@ -284,13 +284,14 @@ def raggruppa(batch):
 loader = DataLoader(dati, batch_size=32, shuffle=True, collate_fn=raggruppa)
 ```
 
-Le **lunghezze** vanno restituite insieme ai dati e non sono un dettaglio: senza
-di esse il modello non può distinguere una parola vera da un'imbottitura, e
-finirebbe per imparare che lo zero è un token come gli altri. Servono a
-costruire la *maschera* di attenzione dei Transformer, o a chiamare
-`pack_padded_sequence` con le reti ricorrenti — argomenti dei capitoli sul
-[natural language processing](../NaturalLanguageProcessing/modelli-sequenza.md)
-e sui [Transformer](../Transformers/architettura.md).
+Le **lunghezze** vanno restituite insieme ai dati e non sono un dettaglio:
+senza di esse il modello non può distinguere una parola vera da
+un'imbottitura, e finirebbe per imparare che lo zero è un token come gli
+altri. Servono a costruire la *maschera* di attenzione dei Transformer, o a
+chiamare `pack_padded_sequence` con le reti ricorrenti: argomenti dei capitoli
+sul [natural language
+processing](../NaturalLanguageProcessing/modelli-sequenza.md) e sui
+[Transformer](../Transformers/architettura.md).
 
 ## Classi sbilanciate: pescare con criterio
 
@@ -303,7 +304,7 @@ from torch.utils.data import WeightedRandomSampler
 
 # Le etichette si leggono dall'indice, senza aprire una sola immagine:
 # ImageFolder le tiene in .targets. Iterare il dataset le otterrebbe
-# ugualmente, ma caricando tutti i file da disco — inutilmente.
+# ugualmente, ma caricando tutti i file da disco, inutilmente.
 etichette = torch.tensor(dati_train.targets)               # (N,)
 conteggi = torch.bincount(etichette)                       # esempi per classe
 peso_per_classe = 1.0 / conteggi.float()                   # la classe rara pesa di più
@@ -317,16 +318,16 @@ campionatore = WeightedRandomSampler(weights=pesi,
 loader = DataLoader(dati_train, batch_size=32, sampler=campionatore)
 ```
 
-Il campionamento pesato è una delle tre leve possibili — le altre sono pesare
+Il campionamento pesato è una delle tre leve possibili: le altre sono pesare
 la *loss* (`weight` in `CrossEntropyLoss`) e generare esempi sintetici della
-classe rara. Il capitolo sul machine learning discute quando conviene ciascuna,
-e soprattutto perché in questi casi l'accuratezza smette di essere una metrica
-onesta: si guardano
-[precisione, richiamo e F1](../MachineLearning/metriche.md).
+classe rara. Il capitolo sul machine learning discute quando conviene
+ciascuna, e soprattutto perché in questi casi l'accuratezza smette di essere
+una metrica onesta: si guardano [precisione, richiamo e
+F1](../MachineLearning/metriche.md).
 
 ## Dividere i dati senza barare
 
-Il gesto più innocuo del progetto — dividere in addestramento e test — è anche
+Il gesto più innocuo del progetto (dividere in addestramento e test) è anche
 quello dove si commettono i danni più difficili da scoprire.
 
 ```python
@@ -346,7 +347,7 @@ lo sono, per esempio, se il dataset contiene **dieci fotografie dello stesso
 paziente**, o dieci fotogrammi consecutivi dello stesso video: dividendo a
 caso, alcune finiscono nell'addestramento e altre nel test, il modello
 riconosce il paziente invece della malattia, e il voto d'esame risulta
-splendido — fino al giorno in cui arriva un paziente nuovo.
+splendido (fino al giorno in cui arriva un paziente nuovo).
 
 La regola è: **si divide per gruppo, non per esempio**. Tutti i dati di un
 paziente stanno o di qua o di là. E se i dati hanno una data, si divide per
@@ -357,29 +358,28 @@ funzionerà davvero.
 `````{tab} Superiore
 È la *data leakage* da correlazione di gruppo: la divisione casuale assume
 esempi i.i.d., ipotesi violata da qualunque struttura gerarchica (paziente,
-sessione, utente, documento). La contromisura è una divisione per gruppi —
+sessione, utente, documento). La contromisura è una divisione per gruppi:
 l'equivalente PyTorch di `GroupShuffleSplit` di scikit-learn si scrive
-raccogliendo gli indici per gruppo e passandoli a
-`torch.utils.data.Subset`. Per dati temporali vale l'analogo temporale
-(*forward chaining*), trattato in
+raccogliendo gli indici per gruppo e passandoli a `torch.utils.data.Subset`.
+Per dati temporali vale l'analogo temporale (*forward chaining*), trattato in
 [serie temporali](../SerieTemporali/validazione-e-feature.md).
 
 Un secondo tranello, più sottile: le statistiche di normalizzazione e ogni
 altro parametro di preprocessing vanno calcolati **solo sul training set** e
 poi applicati agli altri. Calcolare media e deviazione standard su tutto il
-dataset prima di dividere lascia filtrare informazione dal test — un errore
-che gonfia i risultati di poco, ma abbastanza da falsare un confronto.
+dataset prima di dividere lascia filtrare informazione dal test: un errore che
+gonfia i risultati di poco, ma abbastanza da falsare un confronto.
 `````
 
 ## Il collo di bottiglia è quasi sempre il disco
 
 Un'ultima cosa, la meno intuitiva. Quando un addestramento è lento, l'istinto
 dice che la colpa è del modello. Nella maggior parte dei progetti che non
-riguardano i modelli giganti, la colpa è invece del **caricamento dei dati**: la
-GPU finisce il batch e aspetta il successivo. La diagnosi è semplice — si guarda
-l'utilizzo della GPU durante l'addestramento (con `nvidia-smi`, o con il
-profiler `torch.profiler`): se oscilla tra il 100% e lo zero invece di restare
-alto, la cucina sta aspettando i vassoi.
+riguardano i modelli giganti, la colpa è invece del **caricamento dei dati**:
+la GPU finisce il batch e aspetta il successivo. La diagnosi è semplice, si
+guarda l'utilizzo della GPU durante l'addestramento (con `nvidia-smi`, o con
+il profiler `torch.profiler`): se oscilla tra il 100% e lo zero invece di
+restare alto, la cucina sta aspettando i vassoi.
 
 I rimedi, in ordine di efficacia: alzare `num_workers`; ridimensionare le
 immagini **una volta** su disco invece che a ogni epoca; usare formati che si

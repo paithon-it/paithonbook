@@ -1,7 +1,8 @@
 # Contribuire a Paithon Book
 
-Il libro è pubblico perché il lavoro migliora quando qualcuno lo legge davvero.
-Le segnalazioni sono benvenute — e più sono precise, più diventano correzioni.
+Il libro è pubblico perché il lavoro migliora quando qualcuno lo legge
+davvero. Le segnalazioni sono benvenute, e più sono precise, più diventano
+correzioni.
 
 ## Il modo più rapido: seleziona e segnala
 
@@ -18,10 +19,10 @@ va. Per cose private, `info@paithon.it`.
 
 Utile:
 
-- **errori di fatto** — una data, un autore, un numero, un benchmark sbagliato;
-- **conti che non tornano** — un esempio numerico che non si riproduce, una
+- **errori di fatto**, una data, un autore, un numero, un benchmark sbagliato;
+- **conti che non tornano**, un esempio numerico che non si riproduce, una
   formula con un indice fuori posto, un pezzo di codice che non gira;
-- **passaggi poco chiari** — se una spiegazione non ha funzionato su di te, è
+- **passaggi poco chiari**, se una spiegazione non ha funzionato su di te, è
   un dato: dire *dove* ti sei perso vale più di una riscrittura;
 - **link morti**, refusi, figure che non caricano.
 
@@ -45,8 +46,8 @@ Queste regole sono vincolanti. Le tre che contano più delle altre:
    lettore ha un interruttore globale: qualcuno attraverserà tutto il libro
    senza vedere mai l'altro livello. Il Superiore non è l'Elementare con più
    formule, e l'Elementare non è il Superiore tagliato.
-3. **Ogni affermazione fattuale è verificata su fonti primarie** — paper,
-   documentazione ufficiale — e citata in `book/references.bib`. Il codice
+3. **Ogni affermazione fattuale è verificata su fonti primarie** (paper,
+   documentazione ufficiale) e citata in `book/references.bib`. Il codice
    Python va eseguito, non immaginato.
 
 In pratica, scrivendo una pagina:
@@ -67,17 +68,17 @@ In pratica, scrivendo una pagina:
   ``````
 
 - **niente lineette** (`—`): non sono nello stile del libro. Un inciso che si
-  potrebbe togliere va fra parentesi, un concetto racchiuso dentro la frase fra
-  virgole, una spiegazione dopo i due punti, due proposizioni che si oppongono
-  separate dal punto e virgola; per una digressione più lunga, una nota a piè
-  di pagina (`[^nota]`). Restano il trattino d'unione e la lineetta breve degli
-  intervalli (`2020–2023`);
+  potrebbe togliere va fra parentesi, un concetto racchiuso dentro la frase
+  fra virgole, una spiegazione dopo i due punti, due proposizioni che si
+  oppongono separate dal punto e virgola; per una digressione più lunga, una
+  nota a piè di pagina (`[^nota]`). Restano il trattino d'unione e la lineetta
+  breve degli intervalli (`2020–2023`);
 - **formule** in LaTeX (`$…$` in linea, `$$…$$` in blocco), con i simboli
   spiegati subito dopo. Notazione coerente col resto del libro: matrici e
   vettori maiuscoli ($X$, $W$), scalari minuscoli, $\hat{y}$ per le
   predizioni, $\mathcal{L}$ per la loss, $\theta$ per i parametri;
 - **codice**: Python idiomatico ed eseguibile, commenti in italiano e brevi.
-  Il framework di deep learning del libro è **PyTorch** — niente
+  Il framework di deep learning del libro è **PyTorch**: niente
   Keras/TensorFlow, che possono comparire solo come citazione storica o
   confronto. Se una pagina ha un notebook in `notebooks/`, il codice viene
   eseguito dalla CI: un blocco che non gira fa fallire la verifica;
@@ -89,12 +90,13 @@ In pratica, scrivendo una pagina:
   nemmeno costruito (`only_build_toc_files: true`). Il toc raggruppa i
   capitoli in parti (`parts:` con `caption:`, sono i blocchi dell'indice di
   sinistra): un capitolo nuovo va dentro la parte a cui appartiene. Ogni voce
-  porta anche un `title:` breve — è l'etichetta nell'indice, dove un titolo
+  porta anche un `title:` breve, è l'etichetta nell'indice, dove un titolo
   lungo andrebbe a capo due volte; il titolo esteso resta l'H1 della pagina.
-  Un capitolo nuovo vuole anche la sua scheda nella griglia di `book/intro.md`:
-  il **numero** non si scrive (lo conta il CSS, lo `<span class="pt-card-num">`
-  resta vuoto), e `python3 scripts/coerenza.py --solo landing` dice se una
-  scheda manca o è fuori ordine.
+  Un capitolo nuovo vuole anche la sua scheda nella griglia di
+  `book/intro.md`: il **numero** non si scrive (lo conta il CSS, lo
+  `<span class="pt-card-num">` resta vuoto), e
+  `python3 scripts/coerenza.py --solo landing` dice se una scheda manca o è
+  fuori ordine.
 
 Una cosa che il libro **non** ospita: la cronaca. Classifiche, benchmark,
 prezzi, "questo modello supera quell'altro" invecchiano dentro un testo che si
@@ -104,8 +106,8 @@ legge per anni. Qui si spiega come funziona un meccanismo; le notizie stanno su
 ## Vedere le proprie modifiche
 
 Il libro è un [Jupyter Book](https://jupyterbook.org), costruito con la
-distribuzione [TeachBooks](https://teachbooks.io) — la stessa che usa il deploy.
-In locale:
+distribuzione [TeachBooks](https://teachbooks.io) (la stessa che usa il
+deploy). In locale:
 
 ```bash
 pip install -r requirements.txt
@@ -114,7 +116,7 @@ python -m http.server 8080 --directory book/_build/html
 ```
 
 Non è obbligatorio: la pubblicazione la fa GitHub Actions a ogni push su
-`book/`. Se preferisci segnalare a parole, va benissimo — vedi sopra.
+`book/`. Se preferisci segnalare a parole, va benissimo: vedi sopra.
 
 ## Come entra una correzione
 
@@ -124,14 +126,14 @@ pubblicazioni e non di commit quotidiani. Per chi contribuisce cambia una cosa
 sola: la **issue** è la strada diretta, mentre una **pull request** accettata
 viene riportata a mano nel ramo di lavoro e torna qui con la pubblicazione
 successiva. Il commit che la porta online non è il tuo, ma ti cita come
-coautore — il credito segue la correzione.
+coautore: il credito segue la correzione.
 
 Se ci vuole qualche giorno, non è disinteresse: è che una correzione entra
 quando il capitolo intorno regge ancora.
 
 ## Licenza dei contributi
 
-Serve chiarirlo, perché i testi del libro sono sotto **CC BY-NC-ND 4.0** — una
+Serve chiarirlo, perché i testi del libro sono sotto **CC BY-NC-ND 4.0**: una
 licenza che *vieta le opere derivate*. Un paragrafo corretto è tecnicamente
 un'opera derivata, quindi senza una concessione esplicita non potrebbe essere
 pubblicato nemmeno se la correzione fosse giusta.
@@ -144,13 +146,13 @@ dichiari che:
 2. concedi a Francesco Messina / paithon.it una licenza **non esclusiva,
    irrevocabile, gratuita e valida in tutto il mondo** per pubblicarlo,
    modificarlo e distribuirlo come parte del libro, comprese le edizioni
-   future — anche a stampa o commerciali;
+   future, anche a stampa o commerciali;
 3. per il **codice**, il contributo si intende sotto
    [Apache 2.0](LICENSE-CODE) come il resto del codice del progetto (è la
    regola di default della licenza stessa, §5), concessione di brevetto
    inclusa.
 
 Resti autore di quello che hai scritto: la concessione è una licenza, non una
-cessione. Chi segnala un errore viene citato nel commit che lo corregge — la
+cessione. Chi segnala un errore viene citato nel commit che lo corregge: la
 storia di git è il registro dei contributi.
 

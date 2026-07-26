@@ -1,7 +1,7 @@
 """Il teorema del limite centrale: la campana che si forma da sola.
 
 Il tempo è il contenuto: la campana non viene disegnata, si accumula. Un dado
-è piatto — nessuna faccia è più probabile di un'altra — eppure la somma di tre
+è piatto (nessuna faccia è più probabile di un'altra) eppure la somma di tre
 dadi, ripetuta abbastanza volte, produce sempre la stessa forma.
 
 I conti sono veri: i lanci si estraggono con un seme fisso e la curva

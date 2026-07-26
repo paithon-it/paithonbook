@@ -17,8 +17,8 @@ _albero = DecisionTreeClassifier(max_depth=3, random_state=0).fit(X_train, y_tra
 y_pred = _albero.predict(X_test)
 y_prob = _albero.predict_proba(X_test)[:, 1]
 
-# I nomi concreti con cui il libro racconta gli esempi — prezzi, spam, un input
-# nuovo da predire — qui esistono, con numeri finti.
+# I nomi concreti con cui il libro racconta gli esempi (prezzi, spam, un input
+# nuovo da predire) qui esistono, con numeri finti.
 y_prezzo = 150_000 + 12_000 * X_train[:, 0] + rng.normal(0, 5_000, len(X_train))
 y_spam = y_train
 X_nuovo = X_test[:3]

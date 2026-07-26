@@ -8,8 +8,8 @@ sperando che smetta. La buona notizia è che quel messaggio non è mai davvero
 nuovo. Sotto la varietà apparente ci sono **tre** errori, e sono sempre gli
 stessi tre: la forma dei dati, il loro tipo, il dispositivo su cui abitano.
 
-Un tensore ha esattamente queste tre proprietà oltre ai numeri che contiene —
-`shape`, `dtype`, `device` — ed è per questo che sbagliare significa quasi
+Un tensore ha esattamente queste tre proprietà oltre ai numeri che contiene
+(`shape`, `dtype`, `device`) ed è per questo che sbagliare significa quasi
 sempre sbagliare una delle tre. Chi impara a riconoscerle a colpo d'occhio
 smette di debuggare per tentativi.
 
@@ -29,11 +29,10 @@ della sezione la percorre un vertice alla volta.
 RuntimeError: mat1 and mat2 shapes cannot be multiplied (32x784 and 128x10)
 ```
 
-È il più frequente in assoluto, e il messaggio — una volta imparato a
-leggerlo — dice già tutto: PyTorch ha provato a moltiplicare una matrice
-$32 \times 784$ per una $128 \times 10$, e non si può, perché il numero di
-colonne della prima ($784$) non coincide con il numero di righe della seconda
-($128$).
+È il più frequente in assoluto, e il messaggio (una volta imparato a leggerlo)
+dice già tutto: PyTorch ha provato a moltiplicare una matrice $32 \times 784$
+per una $128 \times 10$, e non si può, perché il numero di colonne della prima
+($784$) non coincide con il numero di righe della seconda ($128$).
 
 `````{tab} Elementare
 Pensa ai tensori come a scatole con un'etichetta che dice quante cose
@@ -53,7 +52,7 @@ sotto.
 
 **Manca la dimensione del gruppo.** Il modello si aspetta *un mucchietto* di
 esempi, anche quando l'esempio è uno solo. Un'immagine singola va da
-$(3, 224, 224)$ a $(1, 3, 224, 224)$ — con `x.unsqueeze(dim=0)` — cioè "un
+$(3, 224, 224)$ a $(1, 3, 224, 224)$, con `x.unsqueeze(dim=0)`, cioè "un
 mucchietto che contiene un'immagine". È l'inciampo classico del momento in cui
 si prova il modello su una foto scaricata al volo.
 `````
@@ -70,8 +69,8 @@ $d_{in} = C \cdot H \cdot W$.
 
 **Composizione.** In una `nn.Sequential`, `out_features` di uno strato deve
 uguagliare `in_features` del successivo. Quando la dimensione dipende da
-calcoli — l'uscita di uno stack convoluzionale, per esempio, dove ogni
-`stride` e ogni `padding` la modificano — conviene non calcolarla a mano:
+calcoli (l'uscita di uno stack convoluzionale, per esempio, dove ogni `stride`
+e ogni `padding` la modificano), conviene non calcolarla a mano:
 `nn.LazyLinear(d_out)` la deduce dal primo tensore che riceve, materializzando
 i pesi alla prima chiamata. È comodo in fase esplorativa; nel codice
 definitivo, meglio fissare il numero.
@@ -80,12 +79,13 @@ definitivo, meglio fissare il numero.
 *batch-first* $(B, \dots)$. In inferenza su un singolo esempio si aggiunge con
 `unsqueeze(0)`. Attenzione all'inverso: `squeeze()` senza argomento elimina
 **tutte** le dimensioni unitarie, e su un batch da un elemento cancella anche
-quella del batch — si passi sempre `dim` esplicito.
+quella del batch; si passi sempre `dim` esplicito.
 
-Lo strumento di diagnosi è `torchinfo`: `summary(modello, input_size=(32, 3,
-224, 224))` stampa la forma in ingresso e in uscita di ogni strato, ed è il
-modo più rapido per vedere dove la catena si spezza. In alternativa, un
-`print(x.shape)` in ogni riga del `forward` — poco elegante, sempre efficace.
+Lo strumento di diagnosi è `torchinfo`:
+`summary(modello, input_size=(32, 3, 224, 224))` stampa la forma in ingresso e
+in uscita di ogni strato, ed è il modo più rapido per vedere dove la catena si
+spezza. In alternativa, un `print(x.shape)` in ogni riga del `forward`: poco
+elegante, sempre efficace.
 `````
 
 ## 2. Il tipo non torna
@@ -99,15 +99,15 @@ Il secondo errore riguarda il `dtype`. PyTorch, a differenza di NumPy, non
 converte quasi mai i tipi da solo: preferisce fermarsi piuttosto che indovinare.
 
 `````{tab} Elementare
-Un'immagine appena letta da un file è fatta di numeri interi da $0$ a $255$ —
-è il tipo `uint8`, il "Byte" del messaggio. Una rete neurale lavora invece con
+Un'immagine appena letta da un file è fatta di numeri interi da $0$ a $255$: è
+il tipo `uint8`, il "Byte" del messaggio. Una rete neurale lavora invece con
 numeri decimali. Sono due modi diversi di scrivere la stessa cosa, ma il
 computer non li scambia da solo, e la conversione è a carico nostro: la fa la
 trasformazione `ToTensor()`, oppure `.float()` a mano.
 
 Il secondo messaggio è il caso opposto e riguarda le **etichette**. Alla
-`CrossEntropyLoss` le classi vere si danno come numeri interi — la classe
-$3$, non $3{,}0$ — perché sono nomi, non quantità. Passare $3{,}0$ produce
+`CrossEntropyLoss` le classi vere si danno come numeri interi (la classe $3$,
+non $3{,}0$), perché sono nomi, non quantità. Passare $3{,}0$ produce
 quell'errore. Alla `BCEWithLogitsLoss`, invece, servono proprio decimali,
 perché lì l'etichetta è una probabilità ($0{,}0$ oppure $1{,}0$).
 
@@ -118,7 +118,7 @@ converte quando i dati entrano, non a metà del training loop.
 `````{tab} Superiore
 Il default di PyTorch è `float32`; il default di NumPy è `float64`. Un
 `torch.from_numpy(array)` conserva il `float64` e produce un tensore che non
-può essere moltiplicato per i pesi `float32` del modello — è la sorgente più
+può essere moltiplicato per i pesi `float32` del modello: è la sorgente più
 insidiosa di errori di tipo, perché nasce fuori da PyTorch. La conversione
 esplicita `torch.from_numpy(a).float()` (o `.to(torch.float32)`) va fatta al
 confine.
@@ -188,14 +188,15 @@ def forward(self, x):
 La regola generale è non leggere mai una variabile globale `device` dentro un
 modulo, ma dedurlo da un tensore che si ha già in mano (`x.device`) o dai
 propri parametri (`next(self.parameters()).device`). Per le costanti che
-appartengono al modello — una tabella di codifiche posizionali, una media di
-normalizzazione — la soluzione corretta è `self.register_buffer("nome",
-tensore)`: i buffer non sono parametri (non ricevono gradiente) ma seguono il
-modulo in `.to()`, finiscono nello `state_dict` e si salvano con lui.
+appartengono al modello (una tabella di codifiche posizionali, una media di
+normalizzazione), la soluzione corretta è
+`self.register_buffer("nome", tensore)`: i buffer non sono parametri (non
+ricevono gradiente) ma seguono il modulo in `.to()`, finiscono nello
+`state_dict` e si salvano con lui.
 
 Ultimo dettaglio: un tensore ancora agganciato al grafo autograd non si passa
-a NumPy. `tensore.detach().cpu().numpy()` è la sequenza completa —
-`detach` stacca dal grafo, `cpu` fa il trasloco, `numpy` converte.
+a NumPy. `tensore.detach().cpu().numpy()` è la sequenza completa: `detach`
+stacca dal grafo, `cpu` fa il trasloco, `numpy` converte.
 `````
 
 ## Un metodo, non un rimedio
@@ -205,7 +206,7 @@ Vale la pena rendere esplicito il metodo, perché funziona anche per il
 quarto errore, quello che non è in nessun elenco.
 
 1. **Leggi il traceback dal basso verso l'alto.** L'ultima riga dice *che
-   cosa* è successo; risalendo si trova la prima riga di codice *tuo* — quella
+   cosa* è successo; risalendo si trova la prima riga di codice *tuo*: quella
    è il punto da guardare, non le venti righe interne di PyTorch che stanno
    sotto.
 2. **Stampa la terna.** `print(x.shape, x.dtype, x.device)` prima della riga
@@ -234,7 +235,7 @@ scende affatto, e non c'è niente di rosso da leggere.
   volte: il modello impara comunque qualcosa, ma molto peggio. La loss vuole i
   **logit** (si veda il [flusso di lavoro](flusso-di-lavoro.md)).
 - **`model.eval()` dimenticato in valutazione.** Con dropout e batch norm
-  attivi, le metriche di test risultano peggiori e — cosa più insidiosa —
+  attivi, le metriche di test risultano peggiori e (cosa più insidiosa)
   diverse a ogni esecuzione.
 - **Memoria che cresce a ogni epoca.** Accumulare `totale += perdita` invece
   di `totale += perdita.item()` tiene in vita l'intero grafo dei calcoli di

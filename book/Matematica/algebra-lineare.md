@@ -11,8 +11,8 @@ una **matrice**. L'algebra lineare è la grammatica di queste pile.
 `````{tab} Elementare
 
 Un vettore è semplicemente una lista ordinata di numeri. Se descrivo un
-appartamento con tre numeri — metri quadri, numero di stanze, piano — ho già
-un vettore:
+appartamento con tre numeri (metri quadri, numero di stanze, piano), ho già un
+vettore:
 
 $$
 x = (75,\ 3,\ 2)
@@ -99,7 +99,7 @@ diventano mille.
 
 Il nome viene dall'esito. La somma di due vettori restituisce un vettore,
 questa operazione restituisce uno *scalare*, un numero singolo. È una
-compressione radicale — da duemila numeri a uno — e proprio per questo è
+compressione radicale (da duemila numeri a uno) e proprio per questo è
 preziosa: condensa la relazione fra due oggetti complicati in una cifra
 confrontabile.
 
@@ -154,7 +154,7 @@ Una matrice è una tabella di numeri: righe e colonne. Ci serve per due cose.
 Primo, **impilare tanti esempi**: se ho 100 appartamenti descritti da 3 numeri
 ciascuno, ottengo una tabella $100\times 3$. Secondo, **trasformare** i dati:
 moltiplicare i dati per una matrice significa mescolarli e rimapparli in un
-nuovo spazio — è così che ogni strato di una rete neurale "riscrive" ciò che
+nuovo spazio; è così che ogni strato di una rete neurale "riscrive" ciò che
 riceve prima di passarlo allo strato dopo.
 
 `````
@@ -181,8 +181,8 @@ Non è commutativo ($AB\neq BA$ in generale) e le dimensioni "interne" devono
 combaciare. Uno strato *fully-connected* di una rete non è altro che
 $\mathbf{h} = \sigma(W\mathbf{x}+\mathbf{b})$: una moltiplicazione per la
 matrice dei pesi $W$, seguita da una non linearità $\sigma$. Il fatto che
-tante operazioni si riducano a prodotti tra matrici è ciò che rende le GPU —
-nate per moltiplicare matrici in grafica — così efficaci nel deep learning.
+tante operazioni si riducano a prodotti tra matrici è ciò che rende le GPU
+(nate per moltiplicare matrici in grafica), così efficaci nel deep learning.
 
 `````
 
@@ -214,10 +214,10 @@ del coltello che usi. Gli autovettori sono le venature di una matrice: le
 direzioni lungo cui la trasformazione agisce nel modo più semplice possibile.
 
 Semplice quanto? Applicare la matrice a un vettore che sta su una venatura
-equivale a moltiplicarlo per un numero. Tutta la complessità del gesto — stira
-di qua, comprime di là — lungo quella direzione collassa in una moltiplicazione.
-Il vettore può allungarsi, accorciarsi, perfino ribaltarsi, ma **non lascia la
-sua retta** ({numref}`fig-autovettori`).
+equivale a moltiplicarlo per un numero. Tutta la complessità del gesto (stira
+di qua, comprime di là) lungo quella direzione collassa in una
+moltiplicazione. Il vettore può allungarsi, accorciarsi, perfino ribaltarsi,
+ma **non lascia la sua retta** ({numref}`fig-autovettori`).
 
 Il numero $\lambda$ è una specie di oroscopo per quella direzione:
 
@@ -225,7 +225,7 @@ Il numero $\lambda$ è una specie di oroscopo per quella direzione:
 - $0 < \lambda < 1$: viene **attenuato**;
 - $\lambda < 0$: viene **ribaltato**.
 
-Il punto diventa serio quando la matrice si applica non una volta ma cento —
+Il punto diventa serio quando la matrice si applica non una volta ma cento,
 come a un segnale che attraversa cento strati di una rete. L'effetto si
 accumula: $\lambda$ elevato alla centesima. Un $1{,}1$ diventa $13\,781$, un
 $0{,}9$ diventa $0{,}000027$. È da qui che nascono i gradienti che esplodono o
@@ -267,11 +267,11 @@ varianza c'è lungo ciascuna.
 L'iterazione chiarisce il resto: $A^k\mathbf{v} = \lambda^k\mathbf{v}$, quindi
 il comportamento asintotico di un sistema iterato è governato dall'autovalore
 di modulo massimo (il *raggio spettrale*). Se $\rho(A)>1$ le componenti
-divergono, se $\rho(A)<1$ collassano a zero — la lettura in una riga dei
+divergono, se $\rho(A)<1$ collassano a zero: la lettura in una riga dei
 gradienti che esplodono o svaniscono nelle reti profonde. Lo stesso argomento,
-applicato alla matrice dei link del web, è il **PageRank**: l'ordinamento delle
-pagine è l'autovettore associato all'autovalore $1$, l'unica direzione che
-quella trasformazione lascia esattamente com'è.
+applicato alla matrice dei link del web, è il **PageRank**: l'ordinamento
+delle pagine è l'autovettore associato all'autovalore $1$, l'unica direzione
+che quella trasformazione lascia esattamente com'è.
 
 `````
 

@@ -1,13 +1,13 @@
 # Probabilità e statistica: convivere con l'incertezza
 
-Nell'estate del 1654 due matematici francesi, Blaise Pascal e Pierre de Fermat,
-si scambiano alcune lettere su un problema apparentemente frivolo: come dividere
-la posta di un gioco d'azzardo interrotto prima della fine. Da quella
-corrispondenza nasce, di fatto, la teoria della probabilità — la disciplina che
-insegna a ragionare quando non sappiamo *con certezza* cosa accadrà. È la stessa
-situazione del machine learning. Un modello non "sa" se un'email è spam: stima
-*quanto è probabile* che lo sia. Misurare l'incertezza, e aggiornarla quando
-arrivano nuovi dati, è metà del mestiere.
+Nell'estate del 1654 due matematici francesi, Blaise Pascal e Pierre de
+Fermat, si scambiano alcune lettere su un problema apparentemente frivolo:
+come dividere la posta di un gioco d'azzardo interrotto prima della fine. Da
+quella corrispondenza nasce, di fatto, la teoria della probabilità: la
+disciplina che insegna a ragionare quando non sappiamo *con certezza* cosa
+accadrà. È la stessa situazione del machine learning. Un modello non "sa" se
+un'email è spam: stima *quanto è probabile* che lo sia. Misurare l'incertezza,
+e aggiornarla quando arrivano nuovi dati, è metà del mestiere.
 
 ## Lo spazio delle possibilità
 
@@ -84,14 +84,15 @@ dispersa attorno ad esso.
 `````{tab} Elementare
 
 Il **valore atteso** $E[X]$ è la media dei valori possibili, ciascuno pesato
-dalla sua probabilità: è il risultato medio che ci aspettiamo "a lungo andare".
-Per un dado onesto vale $\tfrac{1+2+3+4+5+6}{6}=3{,}5$ — un numero che non uscirà
-mai in un singolo lancio, ma attorno al quale si assesta la media di tanti lanci.
-La **varianza** $\mathrm{Var}(X)$ misura invece quanto tipicamente ci si allontana
-dal centro: piccola se i valori sono raccolti, grande se sono sparpagliati. La
-sua radice quadrata, la **deviazione standard**, esprime quello scarto tipico
-nelle stesse unità dei valori: per il dado vale circa $1{,}7$ punti — in media,
-un lancio cade a un paio di punti dal centro $3{,}5$.
+dalla sua probabilità: è il risultato medio che ci aspettiamo "a lungo
+andare". Per un dado onesto vale $\tfrac{1+2+3+4+5+6}{6}=3{,}5$: un numero che
+non uscirà mai in un singolo lancio, ma attorno al quale si assesta la media
+di tanti lanci. La **varianza** $\mathrm{Var}(X)$ misura invece quanto
+tipicamente ci si allontana dal centro: piccola se i valori sono raccolti,
+grande se sono sparpagliati. La sua radice quadrata, la **deviazione
+standard**, esprime quello scarto tipico nelle stesse unità dei valori: per il
+dado vale circa $1{,}7$ punti (in media, un lancio cade a un paio di punti dal
+centro $3{,}5$).
 
 `````
 
@@ -152,13 +153,14 @@ f(x)=\frac{1}{\sigma\sqrt{2\pi}}\;
 \exp\!\left(-\frac{(x-\mu)^2}{2\sigma^2}\right),
 $$
 
-dove $\mu$ è la media (il centro della campana) e $\sigma$ la deviazione standard
-(la sua larghezza). Perché è così onnipresente? Per il **teorema del limite
-centrale** (de Moivre, Laplace, poi Lyapunov): la somma — o la media — di tante
-variabili aleatorie indipendenti e a varianza finita, *quale che sia* la loro
-distribuzione di partenza, tende a una normale al crescere del numero di termini.
-È il motivo per cui gli errori di misura si modellano gaussiani e per cui il
-rumore e l'inizializzazione dei pesi nelle reti neurali sono spesso normali.
+dove $\mu$ è la media (il centro della campana) e $\sigma$ la deviazione
+standard (la sua larghezza). Perché è così onnipresente? Per il **teorema del
+limite centrale** (de Moivre, Laplace, poi Lyapunov): la somma (o la media) di
+tante variabili aleatorie indipendenti e a varianza finita, *quale che sia* la
+loro distribuzione di partenza, tende a una normale al crescere del numero di
+termini. È il motivo per cui gli errori di misura si modellano gaussiani e per
+cui il rumore e l'inizializzazione dei pesi nelle reti neurali sono spesso
+normali.
 
 `````
 
@@ -171,15 +173,15 @@ detto a parole sembra una promessa e guardato sembra un trucco.
 :width: 90%
 
 Un dado è **piatto**: nessuna faccia è più probabile di un'altra. Eppure la
-somma di tre dadi, ripetuta seicento volte, si dispone da sé lungo la campana
-— e la curva sovrapposta non è adattata ai dati: è la
+somma di tre dadi, ripetuta seicento volte, si dispone da sé lungo la campana,
+e la curva sovrapposta non è adattata ai dati: è la
 $\mathcal{N}(n\mu,\, n\sigma^2)$ che il teorema prevede prima di tirare.
 ```
 
 Due cose valgono più della formula, nella {numref}`fig-limite-centrale`. La
 prima è che la distribuzione di partenza è **la più piatta possibile**, e la
 campana arriva lo stesso: è questo il senso di *quale che sia*. La seconda è
-che $n=3$ — tre soli addendi — basta già a renderla riconoscibile.
+che $n=3$ (tre soli addendi) basta già a renderla riconoscibile.
 
 ## Aggiornare le credenze: il teorema di Bayes
 
@@ -216,8 +218,9 @@ $$
 P(A\mid B)=\frac{0{,}99\cdot 0{,}01}{0{,}0594}\approx 0{,}167 .
 $$
 
-La prevalenza $P(A)$ — il *prior* — domina il risultato: nessun classificatore va
-giudicato dalla sola accuratezza quando le classi sono fortemente sbilanciate.
+La prevalenza $P(A)$ (il *prior*) domina il risultato: nessun classificatore
+va giudicato dalla sola accuratezza quando le classi sono fortemente
+sbilanciate.
 
 `````
 
@@ -232,8 +235,8 @@ il caso si spegne e resta solo il margine.
 
 Se ripeti tante volte lo stesso esperimento casuale, la media delle
 osservazioni si avvicina sempre di più al valore atteso. Su $10$ lanci di una
-moneta equa, $7$ teste non stupiscono nessuno. Su $10\,000$ lanci, il $70\%$ di
-teste è talmente improbabile che concluderesti — ragionevolmente — che la
+moneta equa, $7$ teste non stupiscono nessuno. Su $10\,000$ lanci, il $70\%$
+di teste è talmente improbabile che concluderesti (ragionevolmente) che la
 moneta è truccata.
 
 Attenzione a un equivoco diffuso: **il caso non si corregge, si diluisce.**
@@ -243,7 +246,7 @@ man mano che i lanci si accumulano, finché diventano irrilevanti nella media.
 
 Due condizioni non sono pignoleria: le osservazioni devono essere
 **indipendenti** e provenire dalla **stessa distribuzione**. Se si influenzano
-a vicenda, o se la distribuzione cambia strada facendo, la garanzia salta —
+a vicenda, o se la distribuzione cambia strada facendo, la garanzia salta:
 mille recensioni scritte dagli amici del ristoratore non valgono mille
 recensioni di clienti qualsiasi. È la stessa ragione per cui un dataset
 raccolto male non migliora aggiungendone altro raccolto allo stesso modo.
@@ -286,8 +289,8 @@ esempi, quattro decimi di punto sono **due risposte esatte in più**. Due.
 
 L'accuratezza sul test set non è *la* prestazione del modello: è una **stima**
 della prestazione vera, calcolata su un campione finito. Il numero che
-interessa davvero — quanto il modello risponderebbe bene su tutti i casi
-possibili — non lo conosceremo mai.
+interessa davvero (quanto il modello risponderebbe bene su tutti i casi
+possibili) non lo conosceremo mai.
 
 L'analogia giusta è il sondaggio elettorale. Nessun istituto serio titola "il
 candidato A è al $47{,}2\%$" senza il margine d'errore: con mille intervistati
@@ -346,8 +349,8 @@ La correlazione misura il **co-movimento**: quanto due grandezze tendono a
 salire e scendere insieme. Ed è simmetrica e cieca.
 
 *Simmetrica*: la correlazione fra gelati e annegamenti è identica a quella fra
-annegamenti e gelati — il numero non contiene alcuna informazione su chi
-influenzi chi.
+annegamenti e gelati (il numero non contiene alcuna informazione su chi
+influenzi chi).
 
 *Cieca*: non distingue fra una relazione diretta, una mediata da altro e una
 pura coincidenza. È come notare che due colleghi arrivano sempre insieme in
@@ -357,7 +360,7 @@ perché abitano nello stesso quartiere.
 Il caldo dell'esempio si chiama **confondente**: una causa comune che spiega
 entrambi gli effetti. Il guaio è che noi il caldo lo sospettiamo per buon
 senso; un modello no. Impara la scorciatoia che funziona sui dati che ha visto
-e la usa finché il mondo non cambia — poi sbaglia, e sbaglia in modo
+e la usa finché il mondo non cambia: poi sbaglia, e sbaglia in modo
 inspiegabile.
 
 `````
@@ -370,7 +373,7 @@ $$
 \rho_{XY} = \frac{\mathrm{Cov}(X,Y)}{\sigma_X\,\sigma_Y} \in [-1,1],
 $$
 
-e misura la sola dipendenza **lineare**: $\rho=0$ non implica indipendenza —
+e misura la sola dipendenza **lineare**: $\rho=0$ non implica indipendenza;
 una relazione a parabola ha correlazione nulla e dipendenza perfetta.
 
 Le strutture da tenere distinte:
@@ -383,10 +386,10 @@ Le strutture da tenere distinte:
   paradossi di selezione del campione.
 
 Dai soli dati osservativi le tre sono indistinguibili: servono un intervento
-(esperimento randomizzato) o assunzioni causali esplicite. Nel machine learning
-la conseguenza ha un nome, *shortcut learning*: il modello aggancia la
-correlazione più comoda del dataset — lo sfondo invece dell'animale, il
-marcatore dell'ospedale invece della patologia — e crolla appena la
+(esperimento randomizzato) o assunzioni causali esplicite. Nel machine
+learning la conseguenza ha un nome, *shortcut learning*: il modello aggancia
+la correlazione più comoda del dataset (lo sfondo invece dell'animale, il
+marcatore dell'ospedale invece della patologia) e crolla appena la
 distribuzione cambia. La correlazione basta per **predire** dentro la stessa
 distribuzione; non basta per **decidere** un intervento.
 

@@ -4,13 +4,13 @@
 Il logo del sito è il bollo tribar più il wordmark «paithon» in Fraunces
 vettorializzato (nessuna dipendenza da font a runtime). Qui si aggiunge
 «book» ricavando i contorni dei glifi dal Fraunces SemiBold del design
-system — così anche la parola nuova è geometria, non testo.
+system: così anche la parola nuova è geometria, non testo.
 
 Escono due lockup dagli stessi pezzi:
 
-* **impilato** (`logo-light.svg`, `logo-dark.svg`) — «book» su una seconda
+* **impilato** (`logo-light.svg`, `logo-dark.svg`), «book» su una seconda
   riga allineata a destra. È il logo della sidebar, dove c'è larghezza.
-* **in linea** (`logo-inline-light.svg`, `logo-inline-dark.svg`) — «book»
+* **in linea** (`logo-inline-light.svg`, `logo-inline-dark.svg`), «book»
   sulla stessa linea di base, dopo uno spazio. Serve alla barra in alto su
   schermo piccolo, dove l'altezza è quella di un'icona.
 

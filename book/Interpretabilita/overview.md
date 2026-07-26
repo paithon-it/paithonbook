@@ -1,13 +1,13 @@
 # Aprire la scatola nera
 
-Nel 2016 tre ricercatori dell'Università di Washington — Marco Túlio Ribeiro,
-Sameer Singh e Carlos Guestrin — addestrarono un classificatore a distinguere
+Nel 2016 tre ricercatori dell'Università di Washington (Marco Túlio Ribeiro,
+Sameer Singh e Carlos Guestrin) addestrarono un classificatore a distinguere
 le foto di **husky** da quelle di **lupo**. Sul set di prova il modello andava
 benissimo, con un'accuratezza da fare invidia. Poi gli chiesero di *mostrare*
 su cosa si basava, e la risposta fu imbarazzante: guardava la **neve**. Nelle
 immagini di addestramento i lupi comparivano quasi sempre su sfondo innevato,
-gli husky quasi mai; la rete aveva imparato una scorciatoia — «c'è neve →
-lupo» — che con l'animale non c'entrava nulla {cite}`ribeiro2016why`. Un
+gli husky quasi mai; la rete aveva imparato una scorciatoia («c'è neve →
+lupo») che con l'animale non c'entrava nulla {cite}`ribeiro2016why`. Un
 rilevatore di neve travestito da riconoscitore di canidi.
 
 La storia ha un antenato illustre. All'inizio del Novecento, a Berlino, un
@@ -50,16 +50,16 @@ smascherato, perché anche nel test i lupi stavano sulla neve.
 
 `````{tab} Superiore
 
-Il fenomeno degli husky ha un nome tecnico: **correlazione spuria** (o *shortcut
-learning*). Il modello minimizza la sua *loss* sui dati disponibili, e se una
-feature accessoria (la neve) è statisticamente associata all'etichetta nel
-training *e* nel test, l'ottimizzazione la sfrutta senza scrupoli — è la
-strategia più economica per abbassare l'errore. La metrica di generalizzazione
-non lo cattura perché il bias è presente in entrambe le partizioni,
-indistinguibili sotto l'ipotesi che siano campionate dalla stessa
+Il fenomeno degli husky ha un nome tecnico: **correlazione spuria** (o
+*shortcut learning*). Il modello minimizza la sua *loss* sui dati disponibili,
+e se una feature accessoria (la neve) è statisticamente associata
+all'etichetta nel training *e* nel test, l'ottimizzazione la sfrutta senza
+scrupoli: è la strategia più economica per abbassare l'errore. La metrica di
+generalizzazione non lo cattura perché il bias è presente in entrambe le
+partizioni, indistinguibili sotto l'ipotesi che siano campionate dalla stessa
 distribuzione. È l'illusione dell'accuratezza: un modello «giusto per la
-ragione sbagliata» collassa appena la distribuzione cambia — un lupo su erba,
-un husky sulla neve — perché la scorciatoia appresa non è la relazione causale
+ragione sbagliata» collassa appena la distribuzione cambia (un lupo su erba,
+un husky sulla neve), perché la scorciatoia appresa non è la relazione causale
 che ci interessava. L'**interpretabilità** è lo strumento diagnostico che
 espone la discrepanza tra ciò che il modello *dovrebbe* usare e ciò che *usa*
 davvero, e che l'accuratezza aggregata, per costruzione, non può vedere.
@@ -72,16 +72,17 @@ Le ragioni per volere una spiegazione non sono una sola, e non hanno tutte lo
 stesso peso. Vale la pena elencarle, perché guidano *che tipo* di spiegazione
 cerchiamo.
 
-- **Fiducia.** Un medico non delega una diagnosi a un sistema di cui non capisce
-  il ragionamento. La spiegazione è la condizione perché un esperto accetti di
-  affidarsi al modello — o di scartarlo, come è giusto quando guarda la neve.
+- **Fiducia.** Un medico non delega una diagnosi a un sistema di cui non
+  capisce il ragionamento. La spiegazione è la condizione perché un esperto
+  accetti di affidarsi al modello, o di scartarlo, come è giusto quando guarda
+  la neve.
 - **Debug.** Il caso husky è il manifesto: senza interpretabilità, un bug
   concettuale (la scorciatoia) resta invisibile dietro una buona accuratezza.
   Aprire la scatola è, prima di tutto, uno strumento di ingegneria.
 - **Equità.** Un modello può discriminare per genere, etnia o codice postale
   anche senza che quelle variabili compaiano esplicitamente, riscoprendole da
   proxy correlati. Solo esaminando *su cosa* si basa una decisione si può
-  scoprirlo — un tema che riprenderemo nel capitolo sull'AI responsabile.
+  scoprirlo: un tema che riprenderemo nel capitolo sull'AI responsabile.
 - **Scoperta scientifica.** Quando un modello prevede la struttura di una
   proteina o l'attività di un farmaco, capire *cosa ha imparato* può suggerire
   ipotesi nuove ai ricercatori: il modello come microscopio, non solo come
@@ -108,11 +109,11 @@ spiegazione «buona» dipende da a chi parli e a cosa gli serve.
 
 `````{tab} Superiore
 
-Doshi-Velez e Kim {cite}`doshi2017towards` insistono su questo: l'interpretabilità
-non è una proprietà monolitica del modello, ma è relativa a un **compito a
-valle** e a un **destinatario**. Ne deriva la loro tassonomia della
-*valutazione* delle spiegazioni, su tre livelli di rigore crescente:
-*application-grounded* (esperti reali sul compito reale — un medico che usa la
+Doshi-Velez e Kim {cite}`doshi2017towards` insistono su questo:
+l'interpretabilità non è una proprietà monolitica del modello, ma è relativa a
+un **compito a valle** e a un **destinatario**. Ne deriva la loro tassonomia
+della *valutazione* delle spiegazioni, su tre livelli di rigore crescente:
+*application-grounded* (esperti reali sul compito reale; un medico che usa la
 spiegazione in corsia), *human-grounded* (persone non esperte su compiti
 semplificati, per esperimenti controllati), *functionally-grounded* (nessun
 umano, ma una definizione formale di interpretabilità come proxy, per esempio
@@ -132,10 +133,10 @@ ortogonali tra loro, mettono ordine e ci accompagneranno per tutto il capitolo.
 
 Pensa a tre domande da porre a ogni metodo di spiegazione.
 
-- **Il modello è trasparente di suo, o va spiegato dopo?** Un piccolo albero di
-  decisione — «se il reddito è sotto X e l'età sotto Y, rifiuta» — si legge come
-  una ricetta: è **trasparente**. Una rete profonda no, e allora serve uno
-  strumento esterno che la interroghi *dopo* l'addestramento (spiegazione
+- **Il modello è trasparente di suo, o va spiegato dopo?** Un piccolo albero
+  di decisione («se il reddito è sotto X e l'età sotto Y, rifiuta») si legge
+  come una ricetta: è **trasparente**. Una rete profonda no, e allora serve
+  uno strumento esterno che la interroghi *dopo* l'addestramento (spiegazione
   **post-hoc**).
 - **Vuoi capire tutto il modello, o una singola decisione?** «In generale questo
   modello dà molto peso al reddito» riguarda il modello **nel suo insieme**
@@ -144,7 +145,7 @@ Pensa a tre domande da porre a ogni metodo di spiegazione.
 - **Lo strumento funziona solo per un tipo di modello, o per qualunque
   modello?** Alcuni metodi guardano dentro un modello specifico (i pesi di una
   regressione lineare); altri lo trattano come una scatola chiusa e funzionano
-  con qualunque cosa — li chiamiamo *agnostici*.
+  con qualunque cosa: li chiamiamo *agnostici*.
 
 Tre domande, e ogni tecnica del capitolo trova il suo posto nella griglia.
 
@@ -161,12 +162,12 @@ distinguiamo lungo tre assi.
   *post-hoc* si applica dopo l'addestramento a un modello già dato, senza
   alterarne l'architettura (per esempio calcolando importanze delle feature o
   surrogati locali).
-- **Globale vs locale.** Una spiegazione *globale* descrive il comportamento del
-  modello sull'intero dominio — quali feature contano in media, che forma ha la
-  dipendenza. Una spiegazione *locale* riguarda una singola predizione
+- **Globale vs locale.** Una spiegazione *globale* descrive il comportamento
+  del modello sull'intero dominio: quali feature contano in media, che forma
+  ha la dipendenza. Una spiegazione *locale* riguarda una singola predizione
   $f(x_0)$: perché *questo* input ha prodotto *questa* uscita. I due livelli
-  richiedono metodi diversi; un modello con superficie decisionale complessa può
-  essere globalmente incomprensibile ma localmente approssimabile.
+  richiedono metodi diversi; un modello con superficie decisionale complessa
+  può essere globalmente incomprensibile ma localmente approssimabile.
 - **Model-specific vs model-agnostic.** Un metodo *specifico* sfrutta la
   struttura interna di una classe di modelli (i coefficienti di un GLM, i
   gradienti di una rete). Un metodo *agnostico* accede solo alla funzione
@@ -196,31 +197,31 @@ albero.fit(X, y)
 print(export_text(albero, feature_names=list(iris.feature_names)))
 ```
 
-Il testo stampato è una manciata di regole annidate sulla larghezza dei petali:
-nessuna spiegazione post-hoc, il modello *è* la propria spiegazione. Se
-lo stesso dato lo diamo in pasto a una foresta casuale da centinaia di alberi,
-l'accuratezza sale ma la leggibilità sparisce — ed è lì che nascono i metodi del
-capitolo.
+Il testo stampato è una manciata di regole annidate sulla larghezza dei
+petali: nessuna spiegazione post-hoc, il modello *è* la propria spiegazione.
+Se lo stesso dato lo diamo in pasto a una foresta casuale da centinaia di
+alberi, l'accuratezza sale ma la leggibilità sparisce, ed è lì che nascono i
+metodi del capitolo.
 
 ## Spiegare non è essere fedeli
 
 C'è una trappola, e il campo ci è caduto più di una volta. Una spiegazione
 post-hoc è, per sua natura, una *ricostruzione a posteriori* di ciò che il
-modello ha fatto — non il modello stesso. E una ricostruzione può essere
+modello ha fatto: non il modello stesso. E una ricostruzione può essere
 **plausibile senza essere fedele**: raccontarci una storia convincente sul
 perché di una decisione, mentre il modello dentro faceva tutt'altro.
 
 `````{tab} Elementare
 
 Immagina di chiedere a un amico perché ha scelto un ristorante e lui ti
-risponde: «per le recensioni». Suona sensato — ma se la verità è che ci andava
+risponde: «per le recensioni». Suona sensato, ma se la verità è che ci andava
 la sua ex e voleva rivederla, la spiegazione è *credibile* e *falsa* insieme.
 Con i modelli è lo stesso: uno strumento post-hoc può produrre una motivazione
-che a noi umani sembra ragionevole, ma che non corrisponde a come il modello ha
-davvero deciso. Chiamiamo **fedeltà** quanto la spiegazione aderisce al vero
-funzionamento del modello, e **plausibilità** quanto ci convince. Sono due cose
-diverse, e la seconda è pericolosa proprio quando non c'è la prima: una
-spiegazione bella e infedele ci fa fidare di un modello che non lo merita.
+che a noi umani sembra ragionevole, ma che non corrisponde a come il modello
+ha davvero deciso. Chiamiamo **fedeltà** quanto la spiegazione aderisce al
+vero funzionamento del modello, e **plausibilità** quanto ci convince. Sono
+due cose diverse, e la seconda è pericolosa proprio quando non c'è la prima:
+una spiegazione bella e infedele ci fa fidare di un modello che non lo merita.
 
 `````
 
@@ -238,9 +239,9 @@ $$
 
 dove $\pi_{x_0}$ è una distribuzione di prossimità centrata su $x_0$ e
 $\mathbb{1}(\cdot)$ vale 1 quando surrogato e modello concordano. Una fedeltà
-alta *sull'intorno* non garantisce nulla *globalmente*, ed è del tutto scorrelata
-dalla **plausibilità** — quanto la spiegazione appare sensata a un umano.
-Nulla vieta a un surrogato di essere plausibile e infedele, o fedele e
+alta *sull'intorno* non garantisce nulla *globalmente*, ed è del tutto
+scorrelata dalla **plausibilità**: quanto la spiegazione appare sensata a un
+umano. Nulla vieta a un surrogato di essere plausibile e infedele, o fedele e
 controintuitivo. È il difetto costitutivo di ogni spiegazione post-hoc:
 approssima, e un'approssimazione può ingannare.
 
@@ -248,49 +249,49 @@ approssima, e un'approssimazione può ingannare.
 
 Da qui uno dei dibattiti più netti del campo. Cynthia Rudin
 {cite}`rudin2019stop` sostiene una tesi tagliente: per le **decisioni ad alto
-rischio** — giustizia, sanità, credito — si dovrebbe **smettere di spiegare le
+rischio** (giustizia, sanità, credito) si dovrebbe **smettere di spiegare le
 scatole nere** e usare invece **modelli intrinsecamente interpretabili**.
 L'argomento è duplice. Primo: una spiegazione post-hoc infedele è peggio di
 niente, perché dà una falsa sensazione di controllo. Secondo, e più radicale:
-il presunto compromesso tra accuratezza e interpretabilità spesso *non esiste*
-— su molti problemi con feature ben strutturate, un modello trasparente
+il presunto compromesso tra accuratezza e interpretabilità spesso *non
+esiste*; su molti problemi con feature ben strutturate, un modello trasparente
 raggiunge la stessa accuratezza di uno opaco, e allora l'opacità è un costo
 senza contropartita.
 
-Non tutti concordano. Su dati non strutturati — immagini, testo, segnali — le
+Non tutti concordano. Su dati non strutturati (immagini, testo, segnali) le
 reti profonde restano di gran lunga le più accurate, e rinunciarvi non è
 un'opzione: lì il post-hoc è, pragmaticamente, l'unica finestra disponibile
 sulla scatola nera. Il monito di Doshi-Velez e Kim {cite}`doshi2017towards`
 vale per entrambe le fazioni: qualunque spiegazione va prodotta e *valutata*
-con rigore scientifico, dichiarando cosa misura e con quale metodo, non offerta
-come rassicurazione qualitativa. Non esistono spiegazioni «gratis»: esistono
-spiegazioni verificate e spiegazioni che ci raccontiamo.
+con rigore scientifico, dichiarando cosa misura e con quale metodo, non
+offerta come rassicurazione qualitativa. Non esistono spiegazioni «gratis»:
+esistono spiegazioni verificate e spiegazioni che ci raccontiamo.
 
 ## Come è organizzato il capitolo
 
 Con questa mappa in tasca, il capitolo procede lungo i tre assi.
 
-Cominceremo dai **modelli trasparenti** — regressione lineare e logistica,
-alberi di decisione, sistemi a regole — già incontrati nel capitolo sul Machine
-Learning, riletti qui per la domanda «quanto sono leggibili?», e dalle misure di
-**importanza delle feature** (globali) che dicono su cosa un modello si appoggia
-in media. Passeremo poi alle **spiegazioni locali** — perché *questa* singola
-predizione: **LIME**, il metodo del caso husky, che approssima il modello con un
-surrogato lineare nell'intorno del punto; **SHAP**, che distribuisce il
-«merito» di una predizione tra le feature con una regola presa dalla teoria dei
-giochi; e le spiegazioni **controfattuali**, che rispondono a «cosa sarebbe
-dovuto cambiare nell'input perché la decisione fosse diversa?». Chiuderemo con
-l'**attribuzione nelle reti profonde** — saliency map, gradienti integrati,
-mappe di attenzione che avevamo visto nascere nel capitolo sui Transformer — e
-con la giovane **interpretabilità meccanicistica**, che prova a smontare una
-rete circuito per circuito, come un ingegnere inverso apre un chip per capirne
-la logica.
+Cominceremo dai **modelli trasparenti** (regressione lineare e logistica,
+alberi di decisione, sistemi a regole) già incontrati nel capitolo sul Machine
+Learning, riletti qui per la domanda «quanto sono leggibili?», e dalle misure
+di **importanza delle feature** (globali) che dicono su cosa un modello si
+appoggia in media. Passeremo poi alle **spiegazioni locali**, perché *questa*
+singola predizione: **LIME**, il metodo del caso husky, che approssima il
+modello con un surrogato lineare nell'intorno del punto; **SHAP**, che
+distribuisce il «merito» di una predizione tra le feature con una regola presa
+dalla teoria dei giochi; e le spiegazioni **controfattuali**, che rispondono a
+«cosa sarebbe dovuto cambiare nell'input perché la decisione fosse diversa?».
+Chiuderemo con l'**attribuzione nelle reti profonde** (saliency map, gradienti
+integrati, mappe di attenzione che avevamo visto nascere nel capitolo sui
+Transformer) e con la giovane **interpretabilità meccanicistica**, che prova a
+smontare una rete circuito per circuito, come un ingegnere inverso apre un
+chip per capirne la logica.
 
 Un filo, sopra a tutto, tiene insieme il capitolo con quello sull'**AI
 responsabile**: aprire la scatola nera non è un vezzo accademico, ma il primo
-passo per costruire sistemi di cui potersi fidare — e da poter contestare quando
-sbagliano. Il classificatore che guardava la neve non era un modello cattivo:
-era un modello di cui nessuno aveva ancora guardato dentro.
+passo per costruire sistemi di cui potersi fidare, e da poter contestare
+quando sbagliano. Il classificatore che guardava la neve non era un modello
+cattivo: era un modello di cui nessuno aveva ancora guardato dentro.
 
 ```{admonition} Da ricordare
 :class: important
@@ -298,8 +299,8 @@ era un modello di cui nessuno aveva ancora guardato dentro.
   Hans*, la neve al posto del lupo): l'accuratezza aggregata non smaschera le
   **correlazioni spurie**, l'interpretabilità sì.
 - Si spiega per **fiducia, debug, equità, scoperta scientifica e obblighi
-  normativi**; la spiegazione «buona» dipende da **a chi** serve — sviluppatore,
-  utente finale, regolatore vogliono cose diverse.
+  normativi**; la spiegazione «buona» dipende da **a chi** serve:
+  sviluppatore, utente finale, regolatore vogliono cose diverse.
 - Tre assi ordinano il campo: **intrinseca vs post-hoc**, **globale vs locale**,
   **model-specific vs model-agnostic**. Sono largamente indipendenti.
 - **Plausibilità ≠ fedeltà**: una spiegazione post-hoc può convincere senza

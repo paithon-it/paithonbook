@@ -2,13 +2,13 @@
 
 Nel 2013 un piccolo gruppo di ricercatori londinesi di una startup chiamata
 DeepMind mostrò un video destinato a diventare storico: un unico programma che
-imparava a giocare a diversi videogiochi Atari — *Breakout*, *Pong*, *Space
-Invaders* — senza che nessuno gli avesse spiegato le regole. L'algoritmo
+imparava a giocare a diversi videogiochi Atari (*Breakout*, *Pong*, *Space
+Invaders*) senza che nessuno gli avesse spiegato le regole. L'algoritmo
 riceveva solo ciò che vedrebbe un ragazzino davanti al cabinato: i pixel dello
 schermo e il punteggio. Da lì, per tentativi, arrivava a giocare meglio di un
 umano esperto {cite}`mnih2013playing`. Due anni dopo il risultato finì sulla
-copertina di *Nature* {cite}`mnih2015human`.
-Quel programma si chiama **Deep Q-Network**, DQN.
+copertina di *Nature* {cite}`mnih2015human`. Quel programma si chiama **Deep
+Q-Network**, DQN.
 
 Nel capitolo precedente abbiamo incontrato il *Q-learning*: un agente impara una
 funzione $Q(s,a)$ che stima quanto è conveniente, nel lungo periodo, compiere
@@ -29,7 +29,7 @@ Immagina un enorme schedario in cui, per ogni possibile schermata di gioco,
 c'è un cartellino con scritto quanto vale ciascuna mossa. Impossibile
 compilarlo: le schermate sono infinite. Allora sostituisci lo schedario con un
 *esperto* che guarda la schermata e, a colpo d'occhio, ti dice il valore di
-ogni mossa — anche per schermate che non ha mai visto prima, perché ha imparato
+ogni mossa: anche per schermate che non ha mai visto prima, perché ha imparato
 a riconoscere le somiglianze. Quell'esperto è la rete neurale.
 
 `````
@@ -44,7 +44,7 @@ Q(s, a; \theta) \approx Q^{*}(s, a).
 $$
 
 La rete prende in ingresso lo stato $s$ (i pixel) e restituisce in uscita un
-vettore con un valore $Q$ per **ciascuna** azione ammissibile — non serve una
+vettore con un valore $Q$ per **ciascuna** azione ammissibile: non serve una
 passata per azione. È un *function approximator*: generalizza a stati mai
 visti, sfruttando la struttura condivisa delle immagini invece di memorizzare
 ogni caso singolarmente.
@@ -81,7 +81,7 @@ consecutivi si somigliano troppo e la rete finisce per "fissarsi". La memoria
 di replay è un grande quaderno degli appunti: ogni esperienza vissuta viene
 annotata e, per allenarsi, l'agente pesca **a caso** vecchie esperienze dal
 quaderno. Così mescola situazioni lontane nel tempo e impara in modo più
-equilibrato — e riutilizza ogni esperienza molte volte, non una sola.
+equilibrato, e riutilizza ogni esperienza molte volte, non una sola.
 
 `````
 
@@ -90,8 +90,8 @@ equilibrato — e riutilizza ogni esperienza molte volte, non una sola.
 Ogni transizione $(s, a, r, s')$ viene salvata in un buffer $D$ (tipicamente
 un milione di transizioni). L'aggiornamento dei pesi avviene su *minibatch*
 campionati uniformemente da $D$, e non sull'ultima transizione. Questo rompe
-la correlazione temporale tra campioni consecutivi — che violerebbe l'ipotesi
-di indipendenza della discesa del gradiente stocastica — e aumenta enormemente
+la correlazione temporale tra campioni consecutivi (che violerebbe l'ipotesi
+di indipendenza della discesa del gradiente stocastica) e aumenta enormemente
 l'efficienza nell'uso dei dati, riutilizzando ogni transizione in molti
 aggiornamenti.
 
@@ -167,16 +167,16 @@ bersaglio = r + gamma * q_next * (1 - fine)        # se terminale, resta solo r
 ## Atari: giocare partendo dai pixel
 
 Il dettaglio storicamente rilevante è cosa vede la rete: nient'altro che
-l'immagine. DeepMind impilava quattro fotogrammi consecutivi in scala di grigi,
-ridotti a $84\times84$, per dare alla rete un senso del movimento (dove va la
-pallina?). Nessuna informazione sulle regole, nessuna feature costruita a mano.
-Lo **stesso** algoritmo, con gli **stessi** iperparametri, fu addestrato su 49
-giochi diversi: raggiunse un livello comparabile a quello di un tester umano
-professionista, ottenendo almeno il 75% del suo punteggio in 29 giochi su 49.
-In *Breakout* scoprì da solo la strategia del "tunnel" — scavare un varco
-laterale per far rimbalzare la pallina dietro il muro — che nessuno gli aveva
-insegnato. Era la prima volta che un singolo sistema imparava una gamma così
-ampia di compiti partendo da input sensoriali grezzi.
+l'immagine. DeepMind impilava quattro fotogrammi consecutivi in scala di
+grigi, ridotti a $84\times84$, per dare alla rete un senso del movimento (dove
+va la pallina?). Nessuna informazione sulle regole, nessuna feature costruita
+a mano. Lo **stesso** algoritmo, con gli **stessi** iperparametri, fu
+addestrato su 49 giochi diversi: raggiunse un livello comparabile a quello di
+un tester umano professionista, ottenendo almeno il 75% del suo punteggio in
+29 giochi su 49. In *Breakout* scoprì da solo la strategia del "tunnel"
+(scavare un varco laterale per far rimbalzare la pallina dietro il muro) che
+nessuno gli aveva insegnato. Era la prima volta che un singolo sistema
+imparava una gamma così ampia di compiti partendo da input sensoriali grezzi.
 
 ## I limiti
 
@@ -192,7 +192,7 @@ hanno guidato la ricerca successiva.
   minuti. DQN è potente ma spaventosamente inefficiente.
 - **Solo azioni discrete.** Il $\max$ richiede di enumerare le azioni: va bene
   per un joystick a poche direzioni, non per controllare uno sterzo o un
-  braccio robotico continui — da cui gli algoritmi *actor-critic* che vedremo.
+  braccio robotico continui; da cui gli algoritmi *actor-critic* che vedremo.
 - **Ricompense rade.** Dove il punteggio arriva solo dopo lunghe sequenze
   (il famigerato *Montezuma's Revenge*), DQN sostanzialmente fallisce: senza
   segnale, non c'è nulla da inseguire.

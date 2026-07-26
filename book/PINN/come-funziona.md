@@ -8,13 +8,13 @@ Derivate della loss **rispetto ai pesi**, milioni di volte, per addestrare
 classificatori, traduttori, generatori.
 
 Questa sezione comincia con un colpo di scena: la domanda si può cambiare.
-Autograd non sa che cosa siano "i pesi" — sa derivare qualunque uscita del
+Autograd non sa che cosa siano "i pesi": sa derivare qualunque uscita del
 grafo rispetto a qualunque suo ingresso. Se gli chiediamo la derivata
 dell'uscita della rete **rispetto all'input**, otteniamo qualcosa che finora
 non ci era mai servito: data una rete $u_\theta(t)$ che riceve un istante $t$
 e restituisce un numero, possiamo calcolare $u_\theta'(t)$ e $u_\theta''(t)$
-in qualunque punto, esatte a meno della precisione di macchina. La rete
-smette di essere soltanto una scatola addestrabile: diventa una **funzione
+in qualunque punto, esatte a meno della precisione di macchina. La rete smette
+di essere soltanto una scatola addestrabile: diventa una **funzione
 derivabile**, un oggetto matematico a pieno titolo. E a una funzione
 derivabile si può chiedere di rispettare un'equazione differenziale.
 
@@ -27,9 +27,8 @@ L'idea si capisce meglio raccontandola come un compito in classe.
 `````{tab} Elementare
 
 Immagina uno studente alle prese con un compito insolito: disegnare, su un
-foglio a quadretti, la curva di una molla che oscilla — la posizione del
-peso, istante per istante. Nessuna tabella di valori da copiare. Solo tre
-vincoli:
+foglio a quadretti, la curva di una molla che oscilla (la posizione del peso,
+istante per istante). Nessuna tabella di valori da copiare. Solo tre vincoli:
 
 1. la curva deve **partire dal punto giusto** (la molla è stata tirata fino
    a una certa altezza);
@@ -69,17 +68,17 @@ $$
 + \big(u_\theta'(0) - v_0\big)^2 \Big]}_{\text{condizioni iniziali}},
 $$
 
-dove i $t_j$ sono gli $N_c$ **punti di collocazione** — istanti sparsi nel
+dove i $t_j$ sono gli $N_c$ **punti di collocazione** (istanti sparsi nel
 dominio, casuali o equispaziati, nei quali esigiamo il rispetto
-dell'equazione — e $\lambda > 0$ bilancia i due termini. Per una PDE su un
+dell'equazione) e $\lambda > 0$ bilancia i due termini. Per una PDE su un
 dominio spaziale si aggiunge un termine identico per le **condizioni al
-contorno**, con punti campionati sul bordo; e se esistono misure
-$(t_i, u_i)$ si aggiunge il termine dati
+contorno**, con punti campionati sul bordo; e se esistono misure $(t_i, u_i)$
+si aggiunge il termine dati
 $\frac{1}{N_d}\sum_{i=1}^{N_d} \big(u_\theta(t_i) - u_i\big)^2$, come nella
 loss vista in apertura di capitolo. Tutte le derivate che compaiono in
-$r_\theta$ — per noi $u_\theta'$ e $u_\theta''$ — le fornisce la
-differenziazione automatica rispetto all'ingresso $t$: esatte, senza
-rapporti incrementali né passo di discretizzazione.
+$r_\theta$ (per noi $u_\theta'$ e $u_\theta''$) le fornisce la
+differenziazione automatica rispetto all'ingresso $t$: esatte, senza rapporti
+incrementali né passo di discretizzazione.
 
 Un dettaglio che sembra pedante e non lo è: il termine di fisica, da solo,
 ha un minimo banale, perché la funzione $u \equiv 0$ risolve l'equazione
@@ -100,17 +99,17 @@ residuo, via autograd) e quello dei dati; la loss li somma e la
 backpropagation chiude il cerchio.
 ```
 
-In {numref}`fig-pinn-schema` c'è il metodo per intero. Vale la pena fissare
-il ramo color ocra: quelle derivate *rispetto all'input* non compaiono in
-nessun'altra architettura di questo libro. È il pezzo nuovo — ed è tutto qui.
+In {numref}`fig-pinn-schema` c'è il metodo per intero. Vale la pena fissare il
+ramo color ocra: quelle derivate *rispetto all'input* non compaiono in
+nessun'altra architettura di questo libro. È il pezzo nuovo, ed è tutto qui.
 
 ## Una molla come banco di prova
 
-Ci serve un problema abbastanza semplice da avere una soluzione esatta con
-cui dare i voti alla rete, e abbastanza ricco da non essere un giocattolo.
-Il classico dei classici: l'**oscillatore armonico smorzato** — un peso
-appeso a una molla, con un po' d'attrito che spegne piano piano le
-oscillazioni. La legge di Newton per questo sistema è
+Ci serve un problema abbastanza semplice da avere una soluzione esatta con cui
+dare i voti alla rete, e abbastanza ricco da non essere un giocattolo. Il
+classico dei classici: l'**oscillatore armonico smorzato** (un peso appeso a
+una molla, con un po' d'attrito che spegne piano piano le oscillazioni). La
+legge di Newton per questo sistema è
 
 $$
 m\,u''(t) + c\,u'(t) + k\,u(t) = 0,
@@ -127,20 +126,20 @@ lasciato andare da fermo.
 
 Leggiamo l'equazione come una regola di buon senso, portando tutto a destra:
 *accelerazione* $= -4 \times$ *posizione* $- 0{,}4 \times$ *velocità*. Due
-forze, cioè: la molla richiama sempre verso il centro, tanto più forte
-quanto più sei lontano (il fattore 4); l'attrito frena sempre, tanto più
-quanto più vai veloce (il fattore 0,4). Facciamo il conto a mano
-sull'istante iniziale: posizione 1, velocità 0, quindi accelerazione
-$= -4 \cdot 1 - 0{,}4 \cdot 0 = -4$ — il peso parte richiamato con decisione
-verso il centro.
+forze, cioè: la molla richiama sempre verso il centro, tanto più forte quanto
+più sei lontano (il fattore 4); l'attrito frena sempre, tanto più quanto più
+vai veloce (il fattore 0,4). Facciamo il conto a mano sull'istante iniziale:
+posizione 1, velocità 0, quindi accelerazione
+$= -4 \cdot 1 - 0{,}4 \cdot 0 = -4$ (il peso parte richiamato con decisione
+verso il centro).
 
 Il film completo lo conosce chiunque abbia giocato con una molla: il peso
-oscilla su e giù, circa una volta ogni 3,2 secondi con i nostri numeri, e
-ogni oscillazione è un po' più bassa della precedente, perché l'attrito
-ruba energia a ogni passaggio. Dopo 10 secondi l'ampiezza è scesa a circa
-un settimo di quella iniziale. Questa è la curva che lo studente del
-compito in classe deve disegnare — e che la nostra rete dovrà imparare
-senza vederne neppure un punto, tranne la partenza.
+oscilla su e giù, circa una volta ogni 3,2 secondi con i nostri numeri, e ogni
+oscillazione è un po' più bassa della precedente, perché l'attrito ruba
+energia a ogni passaggio. Dopo 10 secondi l'ampiezza è scesa a circa un
+settimo di quella iniziale. Questa è la curva che lo studente del compito in
+classe deve disegnare, e che la nostra rete dovrà imparare senza vederne
+neppure un punto, tranne la partenza.
 
 `````
 
@@ -160,10 +159,10 @@ $$
 $$
 
 dove $\gamma$ è il tasso di decadimento e $\omega_d$ la **pulsazione
-smorzata** — appena più lenta della pulsazione naturale
+smorzata**, appena più lenta della pulsazione naturale
 $\omega_0 = \sqrt{k/m} = 2$: il fattore di smorzamento vale
-$\zeta = \gamma/\omega_0 = 0{,}1$, smorzamento debole. La soluzione generale
-è $e^{-\gamma t}(A\cos\omega_d t + B\sin\omega_d t)$; imponendo $u(0)=1$ si
+$\zeta = \gamma/\omega_0 = 0{,}1$, smorzamento debole. La soluzione generale è
+$e^{-\gamma t}(A\cos\omega_d t + B\sin\omega_d t)$; imponendo $u(0)=1$ si
 ottiene $A = 1$, imponendo $u'(0)=0$ si ottiene
 $B = \gamma/\omega_d \approx 0{,}1005$. Quindi
 
@@ -184,28 +183,26 @@ sarà la pagella con cui giudicheremo la PINN.
 
 ## Perché tanh, e non ReLU
 
-Prima di scrivere la rete, una scelta che in ogni altro capitolo sarebbe
-stata automatica: la funzione di attivazione. Nel capitolo sulle reti
-neurali abbiamo incoronato la ReLU regina degli strati nascosti — veloce,
-niente saturazione, gradienti che non svaniscono. Qui però la ReLU è
-squalificata in partenza, e il motivo è istruttivo. La ReLU è fatta di due
-semirette: una rete di sole ReLU calcola una funzione *lineare a tratti*,
-la cui derivata prima è a gradini e la cui **derivata seconda è zero quasi
-ovunque**. Ma nel nostro residuo compare $u''$: per una rete ReLU sarebbe
-identicamente nullo (tranne nei punti di piega, dove non esiste proprio), e
-il termine principale dell'equazione diventerebbe invisibile alla loss. La
-`tanh`, al contrario, è liscia — derivabile infinite volte, con derivate
-continue a ogni ordine — e infatti è la scelta standard delle PINN
-(funzionano bene anche il seno e la softplus: l'importante è la
-regolarità). La vecchia S centrata nello zero, pensionata dalla ReLU nel
-deep learning "normale", qui si prende la rivincita.
+Prima di scrivere la rete, una scelta che in ogni altro capitolo sarebbe stata
+automatica: la funzione di attivazione. Nel capitolo sulle reti neurali
+abbiamo incoronato la ReLU regina degli strati nascosti: veloce, niente
+saturazione, gradienti che non svaniscono. Qui però la ReLU è squalificata in
+partenza, e il motivo è istruttivo. La ReLU è fatta di due semirette: una rete
+di sole ReLU calcola una funzione *lineare a tratti*, la cui derivata prima è
+a gradini e la cui **derivata seconda è zero quasi ovunque**. Ma nel nostro
+residuo compare $u''$: per una rete ReLU sarebbe identicamente nullo (tranne
+nei punti di piega, dove non esiste proprio), e il termine principale
+dell'equazione diventerebbe invisibile alla loss. La `tanh`, al contrario, è
+liscia (derivabile infinite volte, con derivate continue a ogni ordine) e
+infatti è la scelta standard delle PINN (funzionano bene anche il seno e la
+softplus: l'importante è la regolarità). La vecchia S centrata nello zero,
+pensionata dalla ReLU nel deep learning "normale", qui si prende la rivincita.
 
 ## La PINN, riga per riga
 
 Ecco il codice, completo ed eseguibile. È forse il più "scientifico" del
-libro, quindi ce lo guadagniamo a pezzi: prima la preparazione, poi il
-cuore — le derivate rispetto all'input — infine il confronto con la
-soluzione esatta.
+libro, quindi ce lo guadagniamo a pezzi: prima la preparazione, poi il cuore
+(le derivate rispetto all'input) infine il confronto con la soluzione esatta.
 
 ```python
 import numpy as np
@@ -237,9 +234,9 @@ ottimizzatore = torch.optim.Adam(rete.parameters(), lr=1e-3)
 
 Due righe meritano una sosta. `t_c.requires_grad_(True)` accende il
 registratore di autograd **sull'input**, non su un peso: è l'inversione di
-prospettiva da cui siamo partiti. E la rete è minuscola — tre strati
-nascosti da 32 neuroni — perché la funzione da rappresentare è una curva
-liscia in una dimensione, non ImageNet.
+prospettiva da cui siamo partiti. E la rete è minuscola (tre strati nascosti
+da 32 neuroni), perché la funzione da rappresentare è una curva liscia in una
+dimensione, non ImageNet.
 
 Il cuore del metodo sono due chiamate a `torch.autograd.grad`, con due
 argomenti che non avevamo mai usato:
@@ -273,29 +270,26 @@ for epoca in range(30_000):
 ```
 
 Il primo argomento nuovo è `torch.ones_like(u)`: `u` è una colonna di 200
-valori, uno per punto di collocazione, e autograd — che di suo calcola
-prodotti vettore–jacobiana — con un vettore di uni restituisce in un
-colpo solo tutte le 200 derivate. Poiché ogni $u_j$ dipende soltanto dal
-suo $t_j$, non c'è alcuna mescolanza: nella colonna `u_t` la riga $j$ è
-esattamente $u_\theta'(t_j)$.
+valori, uno per punto di collocazione, e autograd (che di suo calcola prodotti
+vettore–jacobiana) con un vettore di uni restituisce in un colpo solo tutte le
+200 derivate. Poiché ogni $u_j$ dipende soltanto dal suo $t_j$, non c'è alcuna
+mescolanza: nella colonna `u_t` la riga $j$ è esattamente $u_\theta'(t_j)$.
 
-Il secondo è `create_graph=True`, e senza non funzionerebbe niente: chiede
-ad autograd di *registrare anche il calcolo della derivata*, così che la
-derivata resti a sua volta derivabile. Ci serve due volte. Primo, per
-derivare di nuovo: `u_tt` è la derivata di `u_t`, quindi il grafo di `u_t`
-deve esistere. Secondo, più sottile: `u_t` e `u_tt` finiscono *dentro la
-loss*, e quando chiamiamo `loss.backward()` il gradiente deve poter
-attraversare anche il calcolo delle derivate per arrivare fino ai pesi. È
-una derivata di una derivata — il registratore che registra sé stesso — ed
-è il motivo per cui ogni epoca di una PINN costa più di un'epoca di
-regressione ordinaria.
+Il secondo è `create_graph=True`, e senza non funzionerebbe niente: chiede ad
+autograd di *registrare anche il calcolo della derivata*, così che la derivata
+resti a sua volta derivabile. Ci serve due volte. Primo, per derivare di
+nuovo: `u_tt` è la derivata di `u_t`, quindi il grafo di `u_t` deve esistere.
+Secondo, più sottile: `u_t` e `u_tt` finiscono *dentro la loss*, e quando
+chiamiamo `loss.backward()` il gradiente deve poter attraversare anche il
+calcolo delle derivate per arrivare fino ai pesi. È una derivata di una
+derivata (il registratore che registra sé stesso) ed è il motivo per cui ogni
+epoca di una PINN costa più di un'epoca di regressione ordinaria.
 
 Notare infine il peso $100$ sulla `loss_iniziale`: come detto sopra, il
 termine di fisica da solo sarebbe felicissimo con la soluzione nulla
-$u \equiv 0$; le due condizioni iniziali sono l'unica cosa che gliela
-vieta, e vanno protette. Trentamila epoche di Adam {cite}`kingma2015adam`
-dopo, il verdetto — confrontando con la soluzione analitica calcolata in
-NumPy:
+$u \equiv 0$; le due condizioni iniziali sono l'unica cosa che gliela vieta, e
+vanno protette. Trentamila epoche di Adam {cite}`kingma2015adam` dopo, il
+verdetto, confrontando con la soluzione analitica calcolata in NumPy:
 
 ```python
 # La soluzione analitica, per dare i voti alla rete
@@ -314,14 +308,14 @@ with torch.no_grad():   # solo valutazione: registratore spento
 print(f"errore massimo: {np.abs(u_pinn - u_esatta).max():.1e}")
 ```
 
-Lanciando il programma, la loss parte dall'ordine del centinaio — all'inizio
-la rete viola allegramente sia la fisica sia le condizioni iniziali — e
-precipita di molti ordini di grandezza; su CPU il tutto richiede qualche
-minuto. Alla fine, su 500 punti di verifica sparsi lungo tutti i 10 secondi,
-lo scarto massimo dalla formula esatta scende all'ordine del millesimo: le
-due curve sono indistinguibili a occhio. E ripetiamolo, perché è il punto
-dell'intera sezione: la rete non ha mai visto un solo valore della
-soluzione. Solo la partenza e la legge.
+Lanciando il programma, la loss parte dall'ordine del centinaio (all'inizio la
+rete viola allegramente sia la fisica sia le condizioni iniziali) e precipita
+di molti ordini di grandezza; su CPU il tutto richiede qualche minuto. Alla
+fine, su 500 punti di verifica sparsi lungo tutti i 10 secondi, lo scarto
+massimo dalla formula esatta scende all'ordine del millesimo: le due curve
+sono indistinguibili a occhio. E ripetiamolo, perché è il punto dell'intera
+sezione: la rete non ha mai visto un solo valore della soluzione. Solo la
+partenza e la legge.
 
 ## Né regressione né solutore: una terza via
 
@@ -332,58 +326,56 @@ Fermiamoci a guardare che cosa è successo, perché è facile passarci sopra.
 Confrontiamo con i due mestieri che già conosciamo. La **regressione** dei
 capitoli sul machine learning è unire i puntini: senza puntini non parte
 nemmeno, e per disegnare questa curva le sarebbero servite decine di misure
-sparse su tutti i 10 secondi. La nostra rete ha ricevuto **zero misure**:
-un punto di partenza, una regola, fine — la fisica ha fatto il lavoro dei
-dati. Il **solutore numerico** visto in apertura di capitolo, invece, la
-curva la sa calcolare, ma avanza a passettini su una griglia di istanti e
-restituisce una tabella: vuoi il valore tra due righe? Interpoli. Vuoi
-proseguire oltre l'ultimo istante? Rifai il conto. La PINN restituisce una
-**funzione**: chiedile il valore a $3{,}7$ secondi, o in qualunque altro
-punto, e risponde all'istante, perché la soluzione ormai abita dentro la
-rete — continua, senza griglia, interrogabile ovunque. Onestà d'obbligo:
-su questo problemino il solutore classico resta molto più veloce; il
-vantaggio della PINN emerge quando dati e legge vanno mescolati, come
-vedremo tra un attimo.
+sparse su tutti i 10 secondi. La nostra rete ha ricevuto **zero misure**: un
+punto di partenza, una regola, fine; la fisica ha fatto il lavoro dei dati. Il
+**solutore numerico** visto in apertura di capitolo, invece, la curva la sa
+calcolare, ma avanza a passettini su una griglia di istanti e restituisce una
+tabella: vuoi il valore tra due righe? Interpoli. Vuoi proseguire oltre
+l'ultimo istante? Rifai il conto. La PINN restituisce una **funzione**:
+chiedile il valore a $3{,}7$ secondi, o in qualunque altro punto, e risponde
+all'istante, perché la soluzione ormai abita dentro la rete (continua, senza
+griglia, interrogabile ovunque). Onestà d'obbligo: su questo problemino il
+solutore classico resta molto più veloce; il vantaggio della PINN emerge
+quando dati e legge vanno mescolati, come vedremo tra un attimo.
 
 `````
 
 `````{tab} Superiore
 
-Rispetto alla **regressione pura**: minimizzare solo il termine dati
-richiede $N_d$ grande e non promette nulla tra un campione e l'altro,
-mentre qui il residuo vincola $u_\theta$ su tutto il dominio e bastano le
-condizioni iniziali — il termine di fisica agisce come una
-regolarizzazione infinitamente informata. Rispetto a un **integratore
-classico** (Eulero, Runge–Kutta): quello discretizza il tempo con passo
-$h$, propaga sequenzialmente e offre garanzie di convergenza con errore
-$O(h^p)$; la PINN sostituisce la propagazione con un'ottimizzazione
-globale non convessa — nessuna garanzia formale, costo superiore di ordini
-di grandezza su un problema standard come questo, ma soluzione *mesh-free*
-e continua, valutabile (e derivabile) in qualunque punto.
+Rispetto alla **regressione pura**: minimizzare solo il termine dati richiede
+$N_d$ grande e non promette nulla tra un campione e l'altro, mentre qui il
+residuo vincola $u_\theta$ su tutto il dominio e bastano le condizioni
+iniziali (il termine di fisica agisce come una regolarizzazione infinitamente
+informata). Rispetto a un **integratore classico** (Eulero, Runge–Kutta):
+quello discretizza il tempo con passo $h$, propaga sequenzialmente e offre
+garanzie di convergenza con errore $O(h^p)$; la PINN sostituisce la
+propagazione con un'ottimizzazione globale non convessa; nessuna garanzia
+formale, costo superiore di ordini di grandezza su un problema standard come
+questo, ma soluzione *mesh-free* e continua, valutabile (e derivabile) in
+qualunque punto.
 
 Quanto alla storia, un'onestà dovuta: l'idea non nasce nel 2019. Isaac
 Lagaris, Aristidis Likas e Dimitrios Fotiadis pubblicano nel 1998 un metodo
 che è, a tutti gli effetti, questo {cite}`lagaris1998artificial`: MLP come
-soluzioni di prova di ODE e PDE, addestrati a minimizzare il residuo sui
-punti di collocazione. Ma nel 1998 le derivate della rete andavano ricavate
-con formule scritte a mano, caso per caso, e l'ottimizzazione girava su
-CPU dell'epoca: l'idea restò di nicchia per vent'anni. Quando Maziar
-Raissi, Paris Perdikaris e George Karniadakis la rilanciano nel 2019
+soluzioni di prova di ODE e PDE, addestrati a minimizzare il residuo sui punti
+di collocazione. Ma nel 1998 le derivate della rete andavano ricavate con
+formule scritte a mano, caso per caso, e l'ottimizzazione girava su CPU
+dell'epoca: l'idea restò di nicchia per vent'anni. Quando Maziar Raissi, Paris
+Perdikaris e George Karniadakis la rilanciano nel 2019
 {cite}`raissi2019physics`, la differenza non è concettuale ma
-infrastrutturale: autograd generale e maturo {cite}`paszke2019pytorch` —
-le due chiamate a `torch.autograd.grad` di poco fa — e GPU per
-l'addestramento. A volte, nella ricerca, l'idea giusta deve solo aspettare
-i suoi attrezzi.
+infrastrutturale: autograd generale e maturo {cite}`paszke2019pytorch`; le due
+chiamate a `torch.autograd.grad` di poco fa, e GPU per l'addestramento. A
+volte, nella ricerca, l'idea giusta deve solo aspettare i suoi attrezzi.
 
 `````
 
 ## Il problema inverso, in tre righe di codice
 
-Chiudiamo con la variazione promessa in apertura di capitolo — quella che,
-più di ogni altra, giustifica l'esistenza delle PINN. Finora la rigidezza
-$k$ la conoscevamo. Ribaltiamo la situazione: la molla è dentro una scatola
-chiusa, $k$ non lo sappiamo, ma un sensore ci ha regalato 25 misure della
-posizione, sporcate di rumore. Nel codice cambia pochissimo:
+Chiudiamo con la variazione promessa in apertura di capitolo: quella che, più
+di ogni altra, giustifica l'esistenza delle PINN. Finora la rigidezza $k$ la
+conoscevamo. Ribaltiamo la situazione: la molla è dentro una scatola chiusa,
+$k$ non lo sappiamo, ma un sensore ci ha regalato 25 misure della posizione,
+sporcate di rumore. Nel codice cambia pochissimo:
 
 ```{code-block} python
 :class: pt-non-eseguibile
@@ -415,7 +407,7 @@ del parametro fisico è un sottoprodotto della stessa discesa del gradiente.
 
 Sembra poco: tre righe. È moltissimo: è il medico legale che risale all'ora
 del decesso, il geofisico che deduce la struttura del sottosuolo dalle onde
-sismiche, l'ingegnere che stima l'usura di un componente dai sensori — la
+sismiche, l'ingegnere che stima l'usura di un componente dai sensori; la
 famiglia di problemi in cui le PINN non hanno rivali comodi. La prossima
 sezione è dedicata a loro.
 

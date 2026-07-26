@@ -30,7 +30,13 @@ Conoscere il valore di uno stato non basta per decidere: serve sapere quanto val
 
 `````{tab} Elementare
 
-Immagina una grande tabella: una riga per ogni situazione in cui puoi trovarti, una colonna per ogni mossa possibile. In ciascuna casella scrivi un voto — la $Q$ — che dice "quanto conviene fare questa mossa in questa situazione". All'inizio i voti sono tutti a zero: l'agente non sa nulla. Giocando e ricevendo ricompense, corregge i voti. Alla fine, per agire bene, gli basta guardare la riga della situazione corrente e scegliere la mossa col voto più alto.
+Immagina una grande tabella: una riga per ogni situazione in cui puoi
+trovarti, una colonna per ogni mossa possibile. In ciascuna casella scrivi un
+voto (la $Q$) che dice "quanto conviene fare questa mossa in questa
+situazione". All'inizio i voti sono tutti a zero: l'agente non sa nulla.
+Giocando e ricevendo ricompense, corregge i voti. Alla fine, per agire bene,
+gli basta guardare la riga della situazione corrente e scegliere la mossa col
+voto più alto.
 
 La parte sorprendente: l'agente può muoversi anche a casaccio, sbagliando di proposito per esplorare, e **imparare comunque quali sarebbero le mosse migliori**. Impara una cosa mentre ne fa un'altra. Per questo si dice *off-policy*.
 
@@ -44,7 +50,13 @@ $$
 Q^*(s,a) = \mathbb{E}\big[\,r + \gamma \max_{a'} Q^*(s',a')\,\big].
 $$
 
-Il Q-learning è **off-policy** perché il suo *target* usa $\max_{a'} Q(s',a')$ — il valore dell'azione *migliore* nello stato successivo — indipendentemente da quale azione l'agente abbia poi effettivamente scelto. Impara così la politica ottima anche mentre ne segue una esplorativa. Watkins e Dayan {cite}`watkins1992q` dimostrarono che, sotto ipotesi ragionevoli (ogni coppia $(s,a)$ visitata infinite volte, $\alpha$ decrescente in modo opportuno), $Q$ converge a $Q^*$.
+Il Q-learning è **off-policy** perché il suo *target* usa $\max_{a'} Q(s',a')$
+(il valore dell'azione *migliore* nello stato successivo) indipendentemente da
+quale azione l'agente abbia poi effettivamente scelto. Impara così la politica
+ottima anche mentre ne segue una esplorativa. Watkins e Dayan
+{cite}`watkins1992q` dimostrarono che, sotto ipotesi ragionevoli (ogni coppia
+$(s,a)$ visitata infinite volte, $\alpha$ decrescente in modo opportuno), $Q$
+converge a $Q^*$.
 
 `````
 
@@ -64,7 +76,13 @@ Se l'agente scegliesse sempre la mossa col voto più alto, resterebbe intrappola
 
 `````{tab} Elementare
 
-È il dilemma del ristorante: torni sempre da quello che conosci e ti piace (**sfruttare**), o provi il nuovo che ha appena aperto e potrebbe essere una scoperta (**esplorare**)? La ricetta ε-greedy è semplice: nella grande maggioranza dei casi vai sul sicuro, ma con una piccola probabilità — chiamata $\varepsilon$, ad esempio il 10% — tiri un dado e provi una mossa a caso. All'inizio esplori molto; man mano che impari, riduci $\varepsilon$ e ti affidi sempre più a ciò che sai.
+È il dilemma del ristorante: torni sempre da quello che conosci e ti piace
+(**sfruttare**), o provi il nuovo che ha appena aperto e potrebbe essere una
+scoperta (**esplorare**)? La ricetta ε-greedy è semplice: nella grande
+maggioranza dei casi vai sul sicuro, ma con una piccola probabilità (chiamata
+$\varepsilon$, ad esempio il 10%) tiri un dado e provi una mossa a caso.
+All'inizio esplori molto; man mano che impari, riduci $\varepsilon$ e ti
+affidi sempre più a ciò che sai.
 
 `````
 
@@ -152,7 +170,12 @@ def aggiorna(s, a, r, s_next):
     Q[s, a] += alpha * (td_target - Q[s, a])   # correggi verso il target
 ```
 
-La funzione `aggiorna` è il Q-learning per intero; per ottenere SARSA basterebbe passare l'azione realmente scelta `a_next` e sostituire `np.max(Q[s_next])` con `Q[s_next, a_next]`. L'ambiente vero e proprio — che dato $(s,a)$ restituisce $r$ e $s'$ — è omesso qui, ma è ciò che, ripetuto per migliaia di episodi, riempie la tabella e fa emergere le frecce della {numref}`fig-labirinto`.
+La funzione `aggiorna` è il Q-learning per intero; per ottenere SARSA
+basterebbe passare l'azione realmente scelta `a_next` e sostituire
+`np.max(Q[s_next])` con `Q[s_next, a_next]`. L'ambiente vero e proprio, che
+dato $(s,a)$ restituisce $r$ e $s'$, è omesso qui, ma è ciò che, ripetuto per
+migliaia di episodi, riempie la tabella e fa emergere le frecce della
+{numref}`fig-labirinto`.
 
 ```{admonition} Da ricordare
 :class: important

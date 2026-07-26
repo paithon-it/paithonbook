@@ -1,15 +1,14 @@
 # Machine Learning: imparare dai dati
 
 Nel 1959 un ingegnere dell'IBM di nome Arthur Samuel pubblicò un articolo dal
-titolo modesto — *Some Studies in Machine Learning Using the Game of Checkers*
-{cite}`samuel1959some` —
-che oggi suona profetico. Samuel aveva scritto un programma che giocava a dama,
-e la parte sorprendente è questa: dopo migliaia di partite contro sé stesso, il
-programma giocava **meglio del suo autore**. Non perché Samuel gli avesse
-insegnato le mosse giuste una per una, ma perché il programma le aveva ricavate
-dall'esperienza. In quelle pagine compare, tra le prime volte nella storia,
-l'espressione *machine learning*: la capacità di un calcolatore di migliorare a
-un compito senza essere riprogrammato a mano.
+titolo modesto (*Some Studies in Machine Learning Using the Game of Checkers*
+{cite}`samuel1959some`) che oggi suona profetico. Samuel aveva scritto un
+programma che giocava a dama, e la parte sorprendente è questa: dopo migliaia
+di partite contro sé stesso, il programma giocava **meglio del suo autore**.
+Non perché Samuel gli avesse insegnato le mosse giuste una per una, ma perché
+il programma le aveva ricavate dall'esperienza. In quelle pagine compare, tra
+le prime volte nella storia, l'espressione *machine learning*: la capacità di
+un calcolatore di migliorare a un compito senza essere riprogrammato a mano.
 
 È un'idea che ribalta il modo consueto di pensare al software.
 
@@ -24,13 +23,13 @@ Immagina di dover costruire un filtro antispam. Con la programmazione classica
 ti siedi e **scrivi tu le regole**: "se l'email contiene la parola *vincita*,
 segnala come spam", "se il mittente è sconosciuto, sospetta". Ogni regola la
 pensi, la scrivi, la correggi a mano. Funziona finché gli spammer non cambiano
-trucco — e allora ricominci da capo.
+trucco, e allora ricominci da capo.
 
 Il machine learning fa il contrario. Tu non scrivi le regole: raccogli
 **migliaia di email già etichettate** come "spam" o "non spam" e le dai in
-pasto al programma. È lui a trovare da solo le regolarità — quali parole,
-quali mittenti, quali combinazioni ricorrono nello spam. Le regole *emergono*
-dai dati, non le scrivi tu.
+pasto al programma. È lui a trovare da solo le regolarità: quali parole, quali
+mittenti, quali combinazioni ricorrono nello spam. Le regole *emergono* dai
+dati, non le scrivi tu.
 
 `````
 
@@ -42,10 +41,11 @@ $\text{output} = f(\text{input})$. Le regole sono note *a priori*.
 
 Nel machine learning $f$ è **ignota**. Disponiamo invece di una collezione di
 coppie input-output osservate, e cerchiamo una funzione $f_\theta$, presa da
-una famiglia parametrizzata dai parametri $\theta$, che le riproduca bene e —
-soprattutto — **generalizzi** a input mai visti. Il compito non è più
-*scrivere* $f$, ma *stimare* i parametri $\theta$ a partire dai dati. Il codice
-resta fisso; ciò che cambia, con l'esperienza, sono i numeri dentro $\theta$.
+una famiglia parametrizzata dai parametri $\theta$, che le riproduca bene e
+(soprattutto) **generalizzi** a input mai visti. Il compito non è più
+*scrivere* $f$, ma *stimare* i parametri $\theta$ a partire dai dati. Il
+codice resta fisso; ciò che cambia, con l'esperienza, sono i numeri dentro
+$\theta$.
 
 `````
 
@@ -60,9 +60,9 @@ un programma sta davvero imparando e quando no.
 Un programma **impara** se, facendo pratica, diventa più bravo in un compito, e
 questo "più bravo" lo possiamo misurare. Servono tre ingredienti:
 
-- il **compito** — cosa deve fare (giocare a dama);
-- l'**esperienza** — su cosa fa pratica (le partite giocate);
-- la **misura** — come contiamo i progressi (la percentuale di partite vinte).
+- il **compito**, cosa deve fare (giocare a dama);
+- l'**esperienza**, su cosa fa pratica (le partite giocate);
+- la **misura**, come contiamo i progressi (la percentuale di partite vinte).
 
 Il programma di Samuel diventava più bravo (vinceva di più) man mano che
 accumulava partite. Questo, e solo questo, è imparare.
@@ -82,7 +82,7 @@ $E$.
 
 La formulazione è deliberatamente astratta: non nomina reti neurali né alberi
 di decisione. È un contratto che qualunque algoritmo di apprendimento deve
-rispettare — se all'aumentare di $E$ la $P$ non cresce, non c'è apprendimento.
+rispettare: se all'aumentare di $E$ la $P$ non cresce, non c'è apprendimento.
 
 `````
 
@@ -141,14 +141,14 @@ vedere l'esito, e correggere la propria strategia. Vincere era la ricompensa.
 
 ## Dall'idea al modello: il flusso di un progetto
 
-Un progetto di machine learning non è mai solo "addestrare un modello".
-È una catena di passaggi, e — dettaglio cruciale — non è una linea retta ma un
-**ciclo**: i risultati della valutazione ti dicono come tornare indietro e fare
-meglio ({numref}`fig-workflow-ml`).
+Un progetto di machine learning non è mai solo "addestrare un modello". È una
+catena di passaggi, e (dettaglio cruciale) non è una linea retta ma un
+**ciclo**: i risultati della valutazione ti dicono come tornare indietro e
+fare meglio ({numref}`fig-workflow-ml`).
 
 ```{figure} ../figures/workflow-ml.svg
 :name: fig-workflow-ml
-:alt: Cinque blocchi in fila — Dati, Feature, Modello, Valutazione, Deploy — collegati da frecce; una freccia di feedback torna dalla Valutazione alle Feature.
+:alt: Cinque blocchi in fila (Dati, Feature, Modello, Valutazione, Deploy) collegati da frecce; una freccia di feedback torna dalla Valutazione alle Feature.
 :width: 95%
 
 Il flusso tipico di un progetto ML. Dopo la valutazione si torna quasi sempre
@@ -157,17 +157,17 @@ indietro a rivedere feature e modello: l'apprendimento è iterativo.
 
 I passaggi, in ordine:
 
-1. **Dati** — raccogliere esempi e ripulirli (valori mancanti, duplicati,
+1. **Dati**: raccogliere esempi e ripulirli (valori mancanti, duplicati,
    errori). Spesso è la fase più lunga e ingrata dell'intero progetto.
-2. **Feature** — trasformare i dati grezzi nella rappresentazione numerica che
+2. **Feature**, trasformare i dati grezzi nella rappresentazione numerica che
    il modello riceverà: le *feature*. Rappresentare bene un problema è metà
    della soluzione.
-3. **Modello** — scegliere una famiglia di modelli e **addestrarla** sui dati:
-   l'addestramento cerca i numeri interni del modello — i *parametri*
-   $\theta$ — che riducono al minimo l'errore (la *loss*).
-4. **Valutazione** — misurare le prestazioni su dati **mai visti** in
+3. **Modello**, scegliere una famiglia di modelli e **addestrarla** sui dati:
+   l'addestramento cerca i numeri interni del modello (i *parametri* $\theta$)
+   che riducono al minimo l'errore (la *loss*).
+4. **Valutazione**: misurare le prestazioni su dati **mai visti** in
    addestramento, per stimare come il modello si comporterà nel mondo reale.
-5. **Deploy** — se i numeri convincono, mettere il modello in produzione e
+5. **Deploy**: se i numeri convincono, mettere il modello in produzione e
    monitorarlo, perché i dati del mondo cambiano nel tempo.
 
 La freccia di ritorno è la parte più importante: quasi mai il primo tentativo
@@ -202,18 +202,18 @@ y_pred = modello.predict(X_test)    # previsione su dati mai visti in training
 
 ## Perché questo capitolo non è archeologia
 
-C'è una scena che si ripete in ogni team alle prime armi. Arriva un problema —
-prevedere quali clienti abbandoneranno il servizio, a partire da una tabella di
-età, contratti, consumi, reclami — e qualcuno propone subito una rete neurale
-profonda, perché è quella di cui parlano tutti. Dopo due settimane di tuning la
-rete arriva faticosamente a pareggiare un gradient boosting che un collega
-scettico aveva addestrato in dieci minuti con i parametri di default.
+C'è una scena che si ripete in ogni team alle prime armi. Arriva un problema
+(prevedere quali clienti abbandoneranno il servizio, a partire da una tabella
+di età, contratti, consumi, reclami) e qualcuno propone subito una rete
+neurale profonda, perché è quella di cui parlano tutti. Dopo due settimane di
+tuning la rete arriva faticosamente a pareggiare un gradient boosting che un
+collega scettico aveva addestrato in dieci minuti con i parametri di default.
 
 `````{tab} Elementare
 
 Il deep learning ha ridefinito cosa è possibile con immagini, audio e
 linguaggio. Ma dedurne che sia lo strumento migliore per qualsiasi problema è
-un errore di categoria — e su un'ampia fascia di casi reali, probabilmente la
+un errore di categoria, e su un'ampia fascia di casi reali, probabilmente la
 maggioranza di quelli che un'azienda incontra, i metodi di questo capitolo
 restano la scelta più sensata.
 
@@ -233,7 +233,7 @@ naturalmente variabili categoriche e valori mancanti.
 Tre casi in cui il classico resta la scelta giusta:
 
 - **dati tabulari**, che sono la forma più comune dei dati aziendali;
-- **pochi esempi** — con qualche migliaio di righe una rete profonda non ha
+- **pochi esempi**, con qualche migliaio di righe una rete profonda non ha
   abbastanza materiale per imparare le feature da sola;
 - **serve spiegare la decisione**: un albero o una regressione si leggono, e
   quando una decisione va motivata a un cliente o a un regolatore questo non è
@@ -251,7 +251,7 @@ parità di tuning, e con un budget di ricerca degli iperparametri molto minore.
 Le ragioni identificate sono strutturali, non contingenti:
 
 1. le reti hanno un *bias induttivo* verso funzioni regolari, mentre i target
-   tabulari sono spesso irregolari a tratti — esattamente ciò che una serie di
+   tabulari sono spesso irregolari a tratti, esattamente ciò che una serie di
    split assiali approssima bene;
 2. le reti sono sensibili alle feature non informative, di cui una tabella
    reale abbonda, mentre gli alberi le ignorano per costruzione;
@@ -260,7 +260,7 @@ Le ragioni identificate sono strutturali, non contingenti:
 
 Il corollario pratico riguarda il **costo**: un gradient boosting si addestra
 in minuti su CPU e si mette in produzione senza GPU. Prima di pagare il conto
-del deep learning conviene avere una baseline classica ben tarata — e succede
+del deep learning conviene avere una baseline classica ben tarata, e succede
 spesso che quella baseline sia già la risposta.
 
 `````
@@ -275,6 +275,6 @@ spesso che quella baseline sia già la risposta.
   migliora con l'esperienza $E$.
 - Tre paradigmi: **supervisionato** (dati etichettati), **non supervisionato**
   (struttura nascosta, senza etichette), **per rinforzo** (agente e ricompense).
-- Il flusso — dati, feature, modello, valutazione, deploy — è un **ciclo**: la
+- Il flusso (dati, feature, modello, valutazione, deploy) è un **ciclo**: la
   valutazione rimanda indietro, e si itera.
 ```

@@ -5,8 +5,8 @@ vedere a un metro di distanza. Un'informazione, però, ce l'hai sempre: la
 pendenza del terreno sotto i piedi. Ti basta sentire da che parte scende, fare
 un passo in quella direzione, rimisurare e ripetere. Addestrare un modello è
 esattamente questo. La collina da scendere è la funzione che misura *quanto il
-modello sbaglia* — il **costo** o **loss**, che indichiamo con $\mathcal{L}$ —
-e lo strumento che sente la pendenza sotto i piedi è la **derivata**. Questa
+modello sbaglia* (il **costo** o **loss**, che indichiamo con $\mathcal{L}$) e
+lo strumento che sente la pendenza sotto i piedi è la **derivata**. Questa
 sezione è la bussola promessa all'inizio del capitolo.
 
 ## La derivata: la pendenza istante per istante
@@ -52,8 +52,8 @@ dell'errore quadratico, quello che si minimizza quando il modello deve
 prevedere un numero), l'**esponenziale** $e^x$ (dentro la sigmoide e la
 softmax, che trasformano punteggi in probabilità) e il **logaritmo** (nella
 cross-entropy, la loss della classificazione). Per derivarle si va a memoria:
-la pendenza di $x^2$ è $2x$ — nel punto $x=3$ la parabola sale con pendenza
-$6$ —, quella di $e^x$ è di nuovo $e^x$: derivandola, resta identica a sé
+la pendenza di $x^2$ è $2x$ (nel punto $x=3$ la parabola sale con pendenza
+$6$), quella di $e^x$ è di nuovo $e^x$: derivandola, resta identica a sé
 stessa.
 
 `````
@@ -84,10 +84,10 @@ tutti insieme. Ci serve la derivata "una direzione alla volta".
 
 La **derivata parziale** è semplice: tieni fermi tutti i parametri tranne uno
 e misura la pendenza rispetto a quello, come chiudere gli occhi su tutte le
-manopole di un mixer tranne una e ascoltare l'effetto di quella sola. Metti
-in fila tutte queste pendenze e ottieni il **gradiente**: un vettore che
-punta nella direzione in cui il costo cresce più in fretta — la salita più
-ripida. Per *scendere*, ci basta andare nel verso opposto.
+manopole di un mixer tranne una e ascoltare l'effetto di quella sola. Metti in
+fila tutte queste pendenze e ottieni il **gradiente**: un vettore che punta
+nella direzione in cui il costo cresce più in fretta (la salita più ripida).
+Per *scendere*, ci basta andare nel verso opposto.
 
 `````
 
@@ -139,11 +139,11 @@ $$
 il prodotto tra la pendenza della funzione esterna $f$ (valutata in $g(w)$) e
 quella della funzione interna $g$. In una rete profonda la catena si allunga
 di un anello per strato, e le derivate si moltiplicano una dopo l'altra. Il
-**backpropagation** {cite}`rumelhart1986learning` applica questa regola
-in ordine inverso — dall'uscita agli ingressi — riutilizzando i fattori
-condivisi tra i cammini. È ciò che permette di calcolare il gradiente rispetto
-a milioni di parametri in un'unica passata all'indietro, invece di derivare
-ogni peso da capo.
+**backpropagation** {cite}`rumelhart1986learning` applica questa regola in
+ordine inverso (dall'uscita agli ingressi) riutilizzando i fattori condivisi
+tra i cammini. È ciò che permette di calcolare il gradiente rispetto a milioni
+di parametri in un'unica passata all'indietro, invece di derivare ogni peso da
+capo.
 
 `````
 
@@ -160,7 +160,7 @@ nebbia: un passo in discesa, ricalcola, ripeti ({numref}`fig-discesa-gradiente`)
 
 La funzione di costo $\mathcal{L}(\theta)$ come una scodella. Partendo da
 $\theta_0$ sul fianco, ogni passo va nel verso opposto al gradiente. I passi
-si accorciano avvicinandosi al minimo, dove la pendenza — e quindi il passo —
+si accorciano avvicinandosi al minimo, dove la pendenza (e quindi il passo)
 tende a zero.
 ```
 
@@ -215,8 +215,7 @@ learning, però, sono quasi sempre **non convesse**: nessuna garanzia. La buona
 notizia empirica è che per reti molto grandi i minimi locali "buoni" sono
 tantissimi e quasi equivalenti al globale; gli ostacoli veri sono più i punti
 di sella che le conche profonde {cite}`dauphin2014identifying`. Ci si
-accontenta — con
-ottimi risultati — di un minimo *abbastanza buono*.
+accontenta (con ottimi risultati) di un minimo *abbastanza buono*.
 
 `````
 

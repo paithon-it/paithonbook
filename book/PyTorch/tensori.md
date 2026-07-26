@@ -2,7 +2,7 @@
 
 Dentro PyTorch ogni cosa è un tensore: l'immagine da classificare, la frase
 tradotta in numeri, ogni peso della rete. Il nome stesso della libreria lo
-porta scritto — *Torch* accende i tensori, *Py* li porta in Python. E accanto
+porta scritto: *Torch* accende i tensori, *Py* li porta in Python. E accanto
 ai tensori vive il secondo protagonista, più discreto ma decisivo:
 **autograd**, il meccanismo che osserva i calcoli mentre avvengono e sa
 risalire alle derivate. Capire questi due oggetti significa capire il motore
@@ -39,7 +39,7 @@ direzioni lungo cui si estende ({numref}`fig-tensori-scala`):
 
 Il numero di assi si chiama **rank**; le lunghezze lungo ciascun asse formano
 la **shape** (la "forma"). Una foto RGB $256 \times 256$ è, in PyTorch, un
-tensore di shape $(3, 256, 256)$ — prima i tre colori, poi le due dimensioni
+tensore di shape $(3, 256, 256)$, prima i tre colori, poi le due dimensioni
 della griglia: rank 3.
 
 `````
@@ -55,7 +55,7 @@ attributi:
 
 Scalare, vettore e matrice sono i casi $r = 0, 1, 2$. Nel deep learning si
 lavora costantemente con rank più alti: in PyTorch un *batch* di immagini RGB
-è un tensore $(N, C, H, W)$ — numero di esempi, canali, altezza, larghezza —
+è un tensore $(N, C, H, W)$ (numero di esempi, canali, altezza, larghezza)
 quindi rank 4 (l'ordine *channels-first*, diverso dal $(N, H, W, C)$ di altre
 librerie). A differenza dell'oggetto matematico "tensore" (che porta con sé
 regole di trasformazione tra sistemi di coordinate), qui il termine indica
@@ -67,7 +67,7 @@ soltanto la struttura dati: un array $n$-dimensionale con un `dtype` omogeneo
 ## Creare tensori e farci i conti
 
 Un `torch.Tensor` si crea da liste Python, con le funzioni di fabbrica, o
-direttamente da un array NumPy — le due librerie sono parenti strette.
+direttamente da un array NumPy: le due librerie sono parenti strette.
 
 ```python
 import torch
@@ -85,8 +85,8 @@ torch.randn(3, 3)        # numeri casuali dalla normale standard
 torch.arange(0, 10, 2)   # tensor([0, 2, 4, 6, 8])
 ```
 
-Sui tensori valgono le operazioni dell'algebra lineare che già conosciamo —
-somma, prodotto per scalare, prodotto matriciale — e ogni riga viene eseguita
+Sui tensori valgono le operazioni dell'algebra lineare che già conosciamo
+(somma, prodotto per scalare, prodotto matriciale) e ogni riga viene eseguita
 nell'istante in cui la scrivi, come in NumPy:
 
 ```python
@@ -103,12 +103,12 @@ a.reshape(3, 1)  # stessa memoria, nuova forma: colonna 3x1
 `````{tab} Elementare
 
 Due cose da notare. Primo: il risultato compare all'istante, con i numeri già
-dentro — puoi controllare ogni passaggio come su una calcolatrice, senza
-"avviare" nulla. Secondo: il **broadcasting**, che conosciamo già da NumPy,
-funziona identico. Se scrivi `a + 5`, PyTorch capisce da solo che vuoi
-sommare $5$ a *ciascuno* dei tre numeri, come un insegnante che alza di un
-punto tutti i voti della classe senza bisogno di scrivere la regola tre
-volte: il risultato è `tensor([6., 7., 8.])`.
+dentro (puoi controllare ogni passaggio come su una calcolatrice, senza
+"avviare" nulla). Secondo: il **broadcasting**, che conosciamo già da NumPy,
+funziona identico. Se scrivi `a + 5`, PyTorch capisce da solo che vuoi sommare
+$5$ a *ciascuno* dei tre numeri, come un insegnante che alza di un punto tutti
+i voti della classe senza bisogno di scrivere la regola tre volte: il
+risultato è `tensor([6., 7., 8.])`.
 
 `````
 
@@ -117,21 +117,21 @@ volte: il risultato è `tensor([6., 7., 8.])`.
 L'interoperabilità con NumPy è alla pari: `torch.from_numpy(arr)` e
 `t.numpy()` convertono nei due sensi **condividendo la memoria** (nessuna
 copia: modificare l'uno modifica l'altro). Le regole di broadcasting sono le
-stesse di NumPy — gli assi si allineano da destra e le dimensioni compatibili
+stesse di NumPy, gli assi si allineano da destra e le dimensioni compatibili
 (uguali, o pari a 1) si espandono virtualmente: una matrice $(3, 4)$ più un
 vettore $(4,)$ produce una $(3, 4)$. Il prodotto matriciale è `@` (ovvero
 `torch.matmul`), con la stessa semantica di NumPy anche sui vettori rank-1:
 `a @ b` tra due vettori è direttamente il prodotto scalare, senza bisogno di
-reshape. Molte operazioni esistono in variante
-*in-place* col suffisso underscore (`t.add_(1)`, `t.zero_()`): risparmiano
-memoria ma, come vedremo, vanno evitate sui tensori tracciati da autograd.
+reshape. Molte operazioni esistono in variante *in-place* col suffisso
+underscore (`t.add_(1)`, `t.zero_()`): risparmiano memoria ma, come vedremo,
+vanno evitate sui tensori tracciati da autograd.
 
 `````
 
 ## Lo stesso codice su CPU e GPU
 
-Ogni tensore vive su un *device*. Di default è la CPU; spostarlo su una GPU —
-se c'è — è una chiamata a `.to()`, e tutto il resto del codice non cambia.
+Ogni tensore vive su un *device*. Di default è la CPU; spostarlo su una GPU
+(se c'è) è una chiamata a `.to()`, e tutto il resto del codice non cambia.
 
 ```python
 device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -145,12 +145,12 @@ prodotto = M @ M          # calcolato dove vive il tensore
 
 La regola è una sola: **i conti avvengono dove stanno i numeri**. Se il
 tensore è sulla CPU, calcola la CPU; se lo sposti sulla scheda grafica,
-calcola lei — e per le moltiplicazioni tra matrici grandi può essere decine o
+calcola lei, e per le moltiplicazioni tra matrici grandi può essere decine o
 centinaia di volte più veloce, perché una GPU è nata per fare migliaia di
 piccoli conti in parallelo (in origine, i pixel dei videogiochi). L'unica
 attenzione: due tensori possono lavorare insieme solo se stanno sullo stesso
-dispositivo — non puoi sommare un numero che sta in cucina con uno che sta in
-garage senza prima spostarne uno.
+dispositivo (non puoi sommare un numero che sta in cucina con uno che sta in
+garage senza prima spostarne uno).
 
 `````
 
@@ -160,11 +160,11 @@ Il pattern idiomatico è definire `device` una volta all'inizio e spostare
 modello e batch con `.to(device)`; su Apple Silicon il device si chiama
 `"mps"`. Operazioni tra tensori su device diversi sollevano un errore
 esplicito (nessun trasferimento implicito, che nasconderebbe costi: il
-passaggio CPU↔GPU attraversa il bus PCIe ed è lento rispetto al calcolo).
-Le stesse moltiplicazioni tra matrici che scriviamo qui sono, sull'hardware,
-migliaia di prodotti scalari eseguiti in parallelo dai kernel CUDA/cuDNN: è
-il motivo per cui le GPU — nate per la grafica — sono diventate lo strumento
-del deep learning. Il codice resta identico; cambia solo la velocità.
+passaggio CPU↔GPU attraversa il bus PCIe ed è lento rispetto al calcolo). Le
+stesse moltiplicazioni tra matrici che scriviamo qui sono, sull'hardware,
+migliaia di prodotti scalari eseguiti in parallelo dai kernel CUDA/cuDNN: è il
+motivo per cui le GPU (nate per la grafica) sono diventate lo strumento del
+deep learning. Il codice resta identico; cambia solo la velocità.
 
 `````
 
@@ -221,12 +221,12 @@ precedente: un'unica passata all'indietro calcola il gradiente rispetto a
 
 Tre dettagli operativi che incontreremo di continuo. I gradienti si
 **accumulano**: una seconda `backward()` somma in `x.grad` invece di
-sovrascrivere, per questo il training loop azzera i gradienti a ogni passo.
-Il blocco `with torch.no_grad():` sospende la registrazione — indispensabile
-in valutazione, quando i gradienti non servono e il grafo sarebbe solo
-memoria sprecata. Infine `t.detach()` restituisce una vista del tensore
-staccata dal grafo, e le operazioni in-place sui tensori tracciati vanno
-evitate perché possono invalidare i valori salvati per la passata a ritroso.
+sovrascrivere, per questo il training loop azzera i gradienti a ogni passo. Il
+blocco `with torch.no_grad():` sospende la registrazione; indispensabile in
+valutazione, quando i gradienti non servono e il grafo sarebbe solo memoria
+sprecata. Infine `t.detach()` restituisce una vista del tensore staccata dal
+grafo, e le operazioni in-place sui tensori tracciati vanno evitate perché
+possono invalidare i valori salvati per la passata a ritroso.
 
 `````
 
@@ -240,6 +240,6 @@ evitate perché possono invalidare i valori salvati per la passata a ritroso.
 - Ogni tensore vive su un **device** (`"cpu"`, `"cuda"`, `"mps"`): i conti
   avvengono dove stanno i numeri, e il codice non cambia.
 - **Autograd** calcola i gradienti da solo: `requires_grad=True` accende il
-  registratore, `.backward()` riavvolge il nastro — è la backpropagation,
-  cioè la regola della catena applicata a ritroso sul grafo dei calcoli.
+  registratore, `.backward()` riavvolge il nastro; è la backpropagation, cioè
+  la regola della catena applicata a ritroso sul grafo dei calcoli.
 ```

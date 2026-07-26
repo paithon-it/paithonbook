@@ -17,8 +17,8 @@ lungo l'assone verso le **sinapsi**, i punti di contatto con gli altri
 neuroni. È da questa immagine che nasce il neurone artificiale. Attenzione,
 però: è una metafora, non una fotografia. Un neurone reale è una cellula viva,
 governata da una chimica di una complessità che non riproduciamo. Il neurone
-artificiale ne prende in prestito una sola idea — *sommare tanti segnali e
-decidere* — e la trasforma in aritmetica.
+artificiale ne prende in prestito una sola idea (*sommare tanti segnali e
+decidere*) e la trasforma in aritmetica.
 
 `````{tab} Elementare
 
@@ -42,10 +42,11 @@ $$
 
 Qui $\mathbf{w}$ è il vettore dei **pesi** (una "importanza" per ciascun
 ingresso), $b$ è il **bias** (che sposta la soglia), $z$ è la
-**pre-attivazione** (la somma pesata) e $\sigma$ è la **funzione di attivazione** che introduce la non
-linearità — un gradino, una sigmoide o, oggi, quasi sempre la ReLU
-$\max(0,z)$. Il cuore del calcolo, $\mathbf{w}^\top\mathbf{x}$, è il prodotto
-scalare che abbiamo incontrato nel capitolo di algebra lineare.
+**pre-attivazione** (la somma pesata) e $\sigma$ è la **funzione di
+attivazione** che introduce la non linearità: un gradino, una sigmoide o,
+oggi, quasi sempre la ReLU $\max(0,z)$. Il cuore del calcolo,
+$\mathbf{w}^\top\mathbf{x}$, è il prodotto scalare che abbiamo incontrato nel
+capitolo di algebra lineare.
 
 `````
 
@@ -60,7 +61,7 @@ carta, senza apprendimento: i pesi li fissava a mano il progettista.
 Il salto arriva nel 1958 con Frank Rosenblatt e il suo **percettrone**. Non
 solo un neurone che decide, ma un neurone che *impara*: aggiusta i propri pesi
 guardando gli errori che commette. La stampa dell'epoca si entusiasma fino
-all'iperbole — il *New York Times* scrisse di una macchina che un giorno
+all'iperbole: il *New York Times* scrisse di una macchina che un giorno
 avrebbe "camminato, parlato e avuto coscienza di sé".
 
 `````{tab} Elementare
@@ -103,7 +104,7 @@ numero finito di passi un iperpiano che li separa. Il guaio è tutto in quel
 
 Nel 1969 Marvin Minsky e Seymour Papert pubblicano *Perceptrons*, un'analisi
 matematica impeccabile e devastante. Il percettrone, dimostrano, sa tracciare
-una sola linea di separazione — e alcune funzioni banali quella linea non la
+una sola linea di separazione, e alcune funzioni banali quella linea non la
 concedono. Il controesempio simbolo è lo **XOR**, l'"o esclusivo".
 
 `````{tab} Elementare
@@ -123,12 +124,12 @@ XOR non lo imparerà mai.
 Le quattro coppie sono $(0,0)\to 0$, $(0,1)\to 1$, $(1,0)\to 1$, $(1,1)\to 0$.
 Un percettrone realizza un separatore lineare $\mathbf{w}^\top\mathbf{x}+b=0$,
 cioè un iperpiano; può risolvere solo problemi **linearmente separabili**. Lo
-XOR non lo è: non esistono $\mathbf{w}$ e $b$ tali che
-$w_1 x_1 + w_2 x_2 + b$ risulti positivo esattamente sui due punti con
-etichetta $1$ e non positivo sugli altri due. La soluzione — impilare più
-neuroni in **strati** — era nota già allora, ma mancava un modo efficiente per
-addestrarla. I finanziamenti si prosciugarono e la ricerca sulle reti neurali
-entrò in una lunga pausa: il loro primo "inverno".
+XOR non lo è: non esistono $\mathbf{w}$ e $b$ tali che $w_1 x_1 + w_2 x_2 + b$
+risulti positivo esattamente sui due punti con etichetta $1$ e non positivo
+sugli altri due. La soluzione (impilare più neuroni in **strati**) era nota
+già allora, ma mancava un modo efficiente per addestrarla. I finanziamenti si
+prosciugarono e la ricerca sulle reti neurali entrò in una lunga pausa: il
+loro primo "inverno".
 
 `````
 
@@ -139,8 +140,8 @@ più, in **strati**. Ma come si addestrano i neuroni intermedi, che non hanno
 un'etichetta che dica loro "la risposta giusta era questa"? La risposta è la
 **backpropagation** (retropropagazione dell'errore), resa celebre nel 1986 da
 David Rumelhart, Geoffrey Hinton e Ronald Williams su *Nature*. L'algoritmo
-aveva precursori — Paul Werbos lo aveva formulato nella sua tesi del 1974 — ma
-è quel lavoro a farne lo standard.
+aveva precursori (Paul Werbos lo aveva formulato nella sua tesi del 1974) ma è
+quel lavoro a farne lo standard.
 
 `````{tab} Elementare
 
@@ -149,8 +150,8 @@ Backpropagation è il modo di distribuire la colpa all'indietro: parte dal
 difetto finale e risale la catena, assegnando a ogni stazione una quota di
 responsabilità. Chi ha contribuito di più all'errore riceve la correzione più
 grande. Ripetuto su migliaia di esempi, questo "attribuire la colpa e
-correggere" fa sì che anche gli operai in mezzo alla catena — i neuroni
-nascosti — imparino il loro mestiere.
+correggere" fa sì che anche gli operai in mezzo alla catena (i neuroni
+nascosti) imparino il loro mestiere.
 
 `````
 
@@ -195,10 +196,9 @@ Tre strati, tre ruoli. Lo **strato di input** non calcola nulla: è la porta da
 cui entrano i dati (i tre numeri che descrivono l'esempio). Gli **strati
 nascosti** sono la fabbrica: ogni neurone combina ciò che riceve e costruisce
 via via caratteristiche più astratte. Lo **strato di output** tira le somme e
-produce la risposta — qui due numeri, per esempio quanto la rete è convinta di
-ciascuna delle due risposte possibili ("gatto" o "cane").
-"Nascosto" vuol dire solo che non lo vediamo né in ingresso né in uscita:
-lavora in mezzo.
+produce la risposta: qui due numeri, per esempio quanto la rete è convinta di
+ciascuna delle due risposte possibili ("gatto" o "cane"). "Nascosto" vuol dire
+solo che non lo vediamo né in ingresso né in uscita: lavora in mezzo.
 
 `````
 
@@ -232,11 +232,11 @@ attivazione** e perché la non linearità è ciò che tiene in piedi tutto; la
 **backpropagation** nel dettaglio, cioè il meccanismo con cui l'errore risale
 la rete e corregge ogni peso (per chi ha le derivate nello zaino: la regola
 della catena applicata con ordine); la **discesa del gradiente** e le sue
-varianti per addestrare in pratica; le scelte pratiche — come misurare
-l'errore, da dove far partire i pesi — che separano una rete che impara da
-una che diverge. È la cerniera del libro:
-tutto ciò che segue — visione artificiale, NLP, modelli generativi — sono
-percettroni multistrato cresciuti, specializzati e resi profondi.
+varianti per addestrare in pratica; le scelte pratiche (come misurare
+l'errore, da dove far partire i pesi) che separano una rete che impara da una
+che diverge. È la cerniera del libro: tutto ciò che segue (visione
+artificiale, NLP, modelli generativi) sono percettroni multistrato cresciuti,
+specializzati e resi profondi.
 
 ```{admonition} Da ricordare
 :class: important

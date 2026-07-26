@@ -1,12 +1,12 @@
 # Il training loop: addestrare un modello
 
 Chi programma in PyTorch riconosce a colpo d'occhio cinque righe che tornano,
-identiche, in ogni progetto — dal tutorial per principianti al codice che
+identiche, in ogni progetto: dal tutorial per principianti al codice che
 addestra i grandi modelli linguistici. Sono il **training loop**, e il fatto
 che si scrivano *a mano* non è una dimenticanza della libreria: è una presa di
 posizione. Dove altri framework nascondono l'addestramento dietro un unico
-comando, PyTorch preferisce che ogni passo — previsione, errore, gradiente,
-correzione — resti visibile e modificabile. È più codice, ma è *tuo*: quando
+comando, PyTorch preferisce che ogni passo (previsione, errore, gradiente,
+correzione) resti visibile e modificabile. È più codice, ma è *tuo*: quando
 vorrai cambiare qualcosa nel modo di apprendere, saprai esattamente dove
 mettere le mani.
 
@@ -28,15 +28,14 @@ for X_batch, y_batch in dataloader:
 
 `````{tab} Elementare
 È il metodo con cui si impara con le flashcard, le carte per memorizzare.
-Guardi la domanda e provi a rispondere (passo 1, la previsione). Giri la
-carta e confronti con la risposta giusta: quanto eri lontano? (passo 2,
-l'errore). Butti via gli appunti del giro precedente (passo 3), capisci *in
-che direzione* hai sbagliato — troppo alto? troppo basso? (passo 4) — e
-aggiusti di conseguenza il tuo modo di rispondere, un poco alla volta (passo
-5). Poi passi al mazzetto successivo — e quando hai ripassato l'intero mazzo
-una volta, hai completato quella che si chiama un'**epoca**. Ripetuto per
-migliaia di carte ed epoche, questo giro è tutto ciò che serve a una rete per
-imparare.
+Guardi la domanda e provi a rispondere (passo 1, la previsione). Giri la carta
+e confronti con la risposta giusta: quanto eri lontano? (passo 2, l'errore).
+Butti via gli appunti del giro precedente (passo 3), capisci *in che
+direzione* hai sbagliato, troppo alto? troppo basso? (passo 4), e aggiusti di
+conseguenza il tuo modo di rispondere, un poco alla volta (passo 5). Poi passi
+al mazzetto successivo, e quando hai ripassato l'intero mazzo una volta, hai
+completato quella che si chiama un'**epoca**. Ripetuto per migliaia di carte
+ed epoche, questo giro è tutto ciò che serve a una rete per imparare.
 `````
 
 `````{tab} Superiore
@@ -49,15 +48,15 @@ $$
 
 dove $\eta$ è il *learning rate*. `loss.backward()` calcola
 $\nabla_{\theta}\mathcal{L}$ via autograd e lo deposita in `p.grad` per ogni
-parametro; `optimizer.step()` applica l'aggiornamento — la formula esatta
+parametro; `optimizer.step()` applica l'aggiornamento, la formula esatta
 dipende dall'ottimizzatore: la discesa semplice per `optim.SGD`, stime
 adattive dei momenti per `optim.Adam` {cite}`kingma2015adam`, il default
 robusto di quasi ogni progetto. `zero_grad()` è necessario perché autograd
 **accumula** i gradienti a ogni `backward()`: senza azzeramento, ogni passo
 userebbe la somma di tutti i gradienti precedenti. L'ordine dei passi 3–5 è
-l'unica liturgia da rispettare; tutto il resto è normale Python, e infatti
-qui si innestano senza attrito *gradient clipping*, *scheduler* del learning
-rate, *mixed precision*.
+l'unica liturgia da rispettare; tutto il resto è normale Python, e infatti qui
+si innestano senza attrito *gradient clipping*, *scheduler* del learning rate,
+*mixed precision*.
 `````
 
 ## `Dataset` e `DataLoader`: la catena di rifornimento
@@ -84,28 +83,28 @@ test_loader = DataLoader(test_data, batch_size=256)
 Il `Dataset` è la dispensa: sa quanti esempi ci sono e sa consegnarti
 l'esempio numero $i$ quando glielo chiedi. Il `DataLoader` è il cameriere che
 apparecchia: pesca dalla dispensa, **mescola** l'ordine a ogni giro (così la
-rete non impara la sequenza a memoria, come uno studente che ripassa sempre
-le carte nello stesso ordine) e porta in tavola vassoi da 64 esempi alla
-volta. Perché proprio a vassoi? Un esempio alla volta è uno spreco — la GPU
-resta ferma ad aspettare; tutti insieme non entrano in memoria. Il
-mini-batch è la via di mezzo che tiene la cucina sempre piena.
+rete non impara la sequenza a memoria, come uno studente che ripassa sempre le
+carte nello stesso ordine) e porta in tavola vassoi da 64 esempi alla volta.
+Perché proprio a vassoi? Un esempio alla volta è uno spreco, la GPU resta
+ferma ad aspettare; tutti insieme non entrano in memoria. Il mini-batch è la
+via di mezzo che tiene la cucina sempre piena.
 `````
 
 `````{tab} Superiore
 `Dataset` (variante *map-style*) è un protocollo minimo: `__len__` e
-`__getitem__`. Qualunque classe che li implementi — un file CSV, una
-cartella di immagini, un database — diventa una sorgente per il
-`DataLoader`, che aggiunge campionamento (`shuffle=True` rimescola gli
-indici a ogni epoca), *batching* (impila gli esempi lungo il primo asse: qui
-tensori $(64, 1, 28, 28)$), e caricamento parallelo (`num_workers`) con
-trasferimento asincrono verso la GPU (`pin_memory=True`). La `transform`
-`ToTensor()` converte le immagini PIL in tensori `float32` con valori in
-$[0, 1]$ e layout channels-first $(C, H, W)$; per MNIST si può aggiungere
-`transforms.Normalize((0.1307,), (0.3081,))` — media e deviazione standard
-del dataset — per centrare gli input, come visto nel capitolo sulle reti
-neurali. Statisticamente, il gradiente su un mini-batch è una stima non
-distorta ma rumorosa del gradiente vero: il rumore è il prezzo (e in parte
-il segreto) della discesa *stocastica*.
+`__getitem__`. Qualunque classe che li implementi (un file CSV, una cartella
+di immagini, un database) diventa una sorgente per il `DataLoader`, che
+aggiunge campionamento (`shuffle=True` rimescola gli indici a ogni epoca),
+*batching* (impila gli esempi lungo il primo asse: qui tensori
+$(64, 1, 28, 28)$), e caricamento parallelo (`num_workers`) con trasferimento
+asincrono verso la GPU (`pin_memory=True`). La `transform` `ToTensor()`
+converte le immagini PIL in tensori `float32` con valori in $[0, 1]$ e layout
+channels-first $(C, H, W)$; per MNIST si può aggiungere
+`transforms.Normalize((0.1307,), (0.3081,))` (media e deviazione standard del
+dataset) per centrare gli input, come visto nel capitolo sulle reti neurali.
+Statisticamente, il gradiente su un mini-batch è una stima non distorta ma
+rumorosa del gradiente vero: il rumore è il prezzo (e in parte il segreto)
+della discesa *stocastica*.
 `````
 
 ## MNIST da cima a fondo
@@ -178,28 +177,28 @@ Nel programma compaiono due chiamate su cui vale la pena fermarsi:
 
 `````{tab} Elementare
 La rete ha due modalità, come uno studente. Quando **studia**
-(`model.train()`) può usare trucchi che servono solo a imparare meglio — per
+(`model.train()`) può usare trucchi che servono solo a imparare meglio, per
 esempio coprirsi a caso qualche appunto per non adagiarsi (il *dropout* che
 vedremo nel prossimo capitolo). Quando **dà l'esame** (`model.eval()`) i
 trucchi si spengono: risponde e basta, al meglio di quel che sa. E
 `torch.no_grad()` dice al registratore dei gradienti di spegnersi: durante
-l'esame non si prende appunti per migliorare, si risponde soltanto — e senza
-il registratore acceso tutto è più veloce e leggero.
+l'esame non si prende appunti per migliorare, si risponde soltanto, e senza il
+registratore acceso tutto è più veloce e leggero.
 `````
 
 `````{tab} Superiore
-`train()`/`eval()` commutano un flag che cambia il comportamento dei moduli
-"a doppia personalità": `nn.Dropout` (attivo solo in training) e
-`nn.BatchNorm` (statistiche del batch in training, medie mobili in
-valutazione) sono i due casi principali. `torch.no_grad()` è un context
-manager che sospende la costruzione del grafo autograd: dimezza circa la
-memoria e accelera l'inferenza, perché non vengono salvati i valori
-intermedi per un `backward()` che non arriverà mai. Sono due meccanismi
-indipendenti e servono entrambi: `eval()` senza `no_grad()` dà predizioni
-corrette ma spreca memoria; `no_grad()` senza `eval()` lascia il dropout
-acceso e falsa le predizioni. Il nostro MLP non ha né dropout né batch norm,
-quindi qui `eval()` è tecnicamente superfluo — ma scriverlo sempre è
-un'abitudine che evita bug sottili appena il modello cresce.
+`train()`/`eval()` commutano un flag che cambia il comportamento dei moduli "a
+doppia personalità": `nn.Dropout` (attivo solo in training) e `nn.BatchNorm`
+(statistiche del batch in training, medie mobili in valutazione) sono i due
+casi principali. `torch.no_grad()` è un context manager che sospende la
+costruzione del grafo autograd: dimezza circa la memoria e accelera
+l'inferenza, perché non vengono salvati i valori intermedi per un `backward()`
+che non arriverà mai. Sono due meccanismi indipendenti e servono entrambi:
+`eval()` senza `no_grad()` dà predizioni corrette ma spreca memoria;
+`no_grad()` senza `eval()` lascia il dropout acceso e falsa le predizioni. Il
+nostro MLP non ha né dropout né batch norm, quindi qui `eval()` è tecnicamente
+superfluo, ma scriverlo sempre è un'abitudine che evita bug sottili appena il
+modello cresce.
 `````
 
 ## Quando fermarsi: la validazione
@@ -221,28 +220,29 @@ dell'arresto anticipato marca il momento giusto per fermarsi.
 Guarda le due curve in {numref}`fig-curve-overfitting`. Quella
 dell'addestramento è come i voti nei compiti fatti a casa: migliorano sempre,
 perché il modello rivede gli stessi esercizi. Quella della validazione è la
-simulazione d'esame con domande nuove. All'inizio migliorano insieme — buon
+simulazione d'esame con domande nuove. All'inizio migliorano insieme: buon
 segno. Poi la validazione si ferma e comincia a peggiorare, mentre
 l'addestramento continua a salire: da lì in avanti il modello sta imparando a
 memoria, è l'**overfitting** che abbiamo incontrato nel capitolo sul machine
-learning. La mossa giusta è fermarsi al punto migliore della validazione — e
+learning. La mossa giusta è fermarsi al punto migliore della validazione, e
 tenere da parte la copia del modello salvata in quel momento.
 `````
 
 `````{tab} Superiore
 Nel loop esplicito la diagnosi si scrive da sé: si ritaglia un set di
-validazione (ad esempio con `torch.utils.data.random_split(train_data,
-[55000, 5000])`), a fine epoca si misura $\mathcal{L}_{\text{val}}$, e
-l'*early stopping* è un `if`: se la validazione non migliora da $k$ epoche
-(la *patience*), si esce dal ciclo e si ricaricano i pesi dell'epoca
-migliore, salvati via via con `torch.save`. Ciò che Keras offriva come
-callback preconfezionate, in PyTorch sono sei righe di controllo di flusso —
-in cambio, nessun limite: fermarsi su una metrica composta, salvare solo a
-condizioni particolari, riprendere da checkpoint sono varianti banali dello
-stesso `if`. Il divario $\mathcal{L}_{\text{val}} -
-\mathcal{L}_{\text{train}}$ resta la bussola: se si allarga, servono i freni
-(regolarizzazione L2 via `weight_decay` dell'ottimizzatore, `nn.Dropout`) che
-approfondiremo nel capitolo sul deep learning.
+validazione (ad esempio con
+`torch.utils.data.random_split(train_data, [55000, 5000])`), a fine epoca si
+misura $\mathcal{L}_{\text{val}}$, e l'*early stopping* è un `if`: se la
+validazione non migliora da $k$ epoche (la *patience*), si esce dal ciclo e si
+ricaricano i pesi dell'epoca migliore, salvati via via con `torch.save`. Ciò
+che Keras offriva come callback preconfezionate, in PyTorch sono sei righe di
+controllo di flusso, in cambio, nessun limite: fermarsi su una metrica
+composta, salvare solo a condizioni particolari, riprendere da checkpoint sono
+varianti banali dello stesso `if`. Il divario
+$\mathcal{L}_{\text{val}} - \mathcal{L}_{\text{train}}$ resta la bussola: se
+si allarga, servono i freni (regolarizzazione L2 via `weight_decay`
+dell'ottimizzatore, `nn.Dropout`) che approfondiremo nel capitolo sul deep
+learning.
 `````
 
 ## Salvare il lavoro: lo `state_dict`
@@ -260,9 +260,9 @@ model2.load_state_dict(torch.load("mnist_mlp.pt")) # ...pesi ricaricati
 model2.eval()                                      # pronto per l'uso
 ```
 
-Il codice che definisce l'architettura resta la fonte di verità; il file
-`.pt` contiene solo i numeri. È una divisione dei compiti coerente con tutto
-il capitolo — il modello è codice, i pesi sono dati — ed è il formato in cui
+Il codice che definisce l'architettura resta la fonte di verità; il file `.pt`
+contiene solo i numeri. È una divisione dei compiti coerente con tutto il
+capitolo (il modello è codice, i pesi sono dati) ed è il formato in cui
 circolano i modelli pre-addestrati che riutilizzeremo nel capitolo sulla
 visione artificiale, quando un modello nato per un compito verrà rifinito
 (*fine-tuning*) su un altro.
@@ -276,7 +276,7 @@ visione artificiale, quando un modello nato per un compito verrà rifinito
   **mini-batch**: il gradiente sul batch è una stima rumorosa ma economica di
   quello vero.
 - In valutazione: `model.eval()` spegne dropout e batch norm,
-  `torch.no_grad()` spegne autograd — servono entrambi.
+  `torch.no_grad()` spegne autograd (servono entrambi).
 - Le curve di training e validazione diagnosticano l'**overfitting**;
   l'early stopping in PyTorch è un semplice `if` nel loop.
 - Si salva lo **`state_dict`** (`torch.save`/`load_state_dict`), non

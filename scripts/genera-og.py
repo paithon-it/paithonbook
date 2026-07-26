@@ -46,7 +46,7 @@ TEAL = "#5BA39C"
 TERRACOTTA = "#E27B52"
 
 # Ogni riga è una sequenza di (testo, colore): "due" e "volte" portano i colori
-# dei due livelli — teal l'Elementare, terracotta il Superiore — come le
+# dei due livelli (teal l'Elementare, terracotta il Superiore) come le
 # linguette nel libro.
 CLAIM = [
     [("Il Libro di Intelligenza Artificiale", INCHIOSTRO)],

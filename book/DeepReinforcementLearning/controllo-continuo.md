@@ -1,20 +1,20 @@
 # Controllo continuo: DDPG, TD3, SAC
 
-Un joystick Atari ha nove posizioni: su, giù, le diagonali, il centro. Il
-Deep Q-Network sceglie fra queste con un `argmax`, confrontando i valori di un
+Un joystick Atari ha nove posizioni: su, giù, le diagonali, il centro. Il Deep
+Q-Network sceglie fra queste con un `argmax`, confrontando i valori di un
 pugno di azioni. Ma prova a immaginare un braccio robotico con sette
-articolazioni, o un robot a quattro zampe che deve imparare a camminare. A ogni
-istante il controllore non decide "sinistra o destra": decide *quanta* coppia
-applicare a ciascun motore, un numero reale — magari negativo per frenare,
-magari 3,4 newton-metro, magari 3,41. Non c'è un menu di mosse da scorrere:
-c'è un continuo di forze da dosare.
+articolazioni, o un robot a quattro zampe che deve imparare a camminare. A
+ogni istante il controllore non decide "sinistra o destra": decide *quanta*
+coppia applicare a ciascun motore, un numero reale (magari negativo per
+frenare, magari 3,4 newton-metro, magari 3,41). Non c'è un menu di mosse da
+scorrere: c'è un continuo di forze da dosare.
 
 È lo scoglio con cui si chiude il capitolo su DQN. L'operatore $\max_a$, cuore
 del Q-learning, richiede di *enumerare* le azioni per trovare la migliore. Con
 un joystick funziona; con uno sterzo, un acceleratore o sette giunti che si
 muovono insieme, le combinazioni sono infinite e l'`argmax` diventa
 intrattabile. Dall'altra parte, i metodi a gradiente di policy che abbiamo
-visto — REINFORCE, actor-critic, A3C, PPO — gestiscono nativamente le azioni
+visto (REINFORCE, actor-critic, A3C, PPO) gestiscono nativamente le azioni
 continue, ma nella loro forma *on-policy* buttano via ogni esperienza dopo
 averla usata una volta e soffrono di varianza elevata: per un robot vero, dove
 ogni tentativo costa secondi di usura reale, è un lusso che non ci si può
@@ -67,26 +67,26 @@ Gradient*, presentato da Lillicrap e colleghi di DeepMind nel 2016
 *deterministico* addestrato con un *gradiente di policy*, dentro l'impianto
 off-policy di DQN.
 
-L'idea è tenere due reti che collaborano. L'**attore** $\mu_\theta(s)$ prende lo
-stato e sputa fuori un'azione precisa — non una distribuzione, ma esattamente
-la forza da applicare. Il **critico** $Q_\phi(s,a)$ è il vecchio Q-network, ma
-ora prende in ingresso *anche* l'azione (un vettore continuo) e restituisce un
-solo numero: quanto vale quella coppia stato-azione. Il critico impara
-esattamente come in DQN, minimizzando l'errore di Bellman contro un bersaglio
-calcolato con reti *target* congelate; l'attore impara a proporre le azioni che
-il critico premia di più.
+L'idea è tenere due reti che collaborano. L'**attore** $\mu_\theta(s)$ prende
+lo stato e sputa fuori un'azione precisa: non una distribuzione, ma
+esattamente la forza da applicare. Il **critico** $Q_\phi(s,a)$ è il vecchio
+Q-network, ma ora prende in ingresso *anche* l'azione (un vettore continuo) e
+restituisce un solo numero: quanto vale quella coppia stato-azione. Il critico
+impara esattamente come in DQN, minimizzando l'errore di Bellman contro un
+bersaglio calcolato con reti *target* congelate; l'attore impara a proporre le
+azioni che il critico premia di più.
 
 `````{tab} Elementare
 
 Come fa l'attore a "sapere" in che direzione muovere la forza? Immagina il
-critico come un paesaggio di colline: per ogni azione possibile c'è un'altezza,
-il suo valore. L'attore sta in un punto e vuole salire. Il critico, oltre a
-dirgli l'altezza, gli indica la *pendenza*: "da qui, aumentando un filo la
-coppia sul secondo giunto, sali". L'attore fa un passettino in quella
-direzione. Ripetuto tante volte, l'attore scivola verso la cima — cioè verso
-l'azione di valore massimo — senza mai dover provare tutte le azioni una per
-una. È la differenza tra cercare la vetta a tentoni e seguire la bussola della
-pendenza.
+critico come un paesaggio di colline: per ogni azione possibile c'è
+un'altezza, il suo valore. L'attore sta in un punto e vuole salire. Il
+critico, oltre a dirgli l'altezza, gli indica la *pendenza*: "da qui,
+aumentando un filo la coppia sul secondo giunto, sali". L'attore fa un
+passettino in quella direzione. Ripetuto tante volte, l'attore scivola verso
+la cima (cioè verso l'azione di valore massimo) senza mai dover provare tutte
+le azioni una per una. È la differenza tra cercare la vetta a tentoni e
+seguire la bussola della pendenza.
 
 Per non restare fermo su ciò che già conosce, l'attore aggiunge alle sue azioni
 un po' di **rumore** casuale: piccole spinte imprevedibili che lo fanno provare
@@ -207,8 +207,8 @@ di controllo continuo, restando concettualmente lo stesso algoritmo.
 
 Quasi in contemporanea con TD3, Tuomas Haarnoja e colleghi propongono una
 filosofia diversa: **SAC**, *Soft Actor-Critic* {cite}`haarnoja2018soft`. Qui
-l'attore torna **stocastico** — restituisce una distribuzione di probabilità
-sulle azioni, non un singolo valore — e cambia l'obiettivo stesso
+l'attore torna **stocastico** (restituisce una distribuzione di probabilità
+sulle azioni, non un singolo valore) e cambia l'obiettivo stesso
 dell'apprendimento.
 
 `````{tab} Elementare
@@ -307,28 +307,28 @@ with torch.no_grad():
 
 Il segno meno nella `perdita_attore` è tutto ciò che serve: minimizzare
 $-Q(s,\mu(s))$ equivale a *massimizzare* il valore, e la retropropagazione fa
-scorrere la pendenza del critico $\nabla_a Q$ dentro i parametri dell'attore —
-esattamente il deterministic policy gradient scritto sopra.
+scorrere la pendenza del critico $\nabla_a Q$ dentro i parametri dell'attore
+(esattamente il deterministic policy gradient scritto sopra).
 
 ## Onestà sui limiti
 
 Questi metodi off-policy sono molto più **campione-efficienti** di PPO e A3C:
 riusando ogni transizione molte volte dal replay buffer, imparano da meno
-interazioni con l'ambiente — decisivo quando ogni tentativo consuma un robot
-vero. Il prezzo è la **stabilità**. DDPG, in particolare, è fragile e
-capriccioso; TD3 e SAC lo domano, ma restano più delicati da mettere a punto di
-un PPO ben tarato, che spesso si preferisce proprio perché "perdona" di più. Non
-esiste il vincitore assoluto: la scelta dipende da quanto costano i campioni e
-da quanta cura si può dedicare alla taratura.
+interazioni con l'ambiente (decisivo quando ogni tentativo consuma un robot
+vero). Il prezzo è la **stabilità**. DDPG, in particolare, è fragile e
+capriccioso; TD3 e SAC lo domano, ma restano più delicati da mettere a punto
+di un PPO ben tarato, che spesso si preferisce proprio perché "perdona" di
+più. Non esiste il vincitore assoluto: la scelta dipende da quanto costano i
+campioni e da quanta cura si può dedicare alla taratura.
 
 C'è poi un limite che nessuno di questi algoritmi risolve da sé, il
-**sim-to-real gap**. Addestrare un robot direttamente nel mondo fisico è lento e
-rischioso, così quasi sempre si impara in simulazione, dove i campioni sono
+**sim-to-real gap**. Addestrare un robot direttamente nel mondo fisico è lento
+e rischioso, così quasi sempre si impara in simulazione, dove i campioni sono
 abbondanti e le cadute non rompono nulla. Ma il simulatore non è la realtà:
 attriti, ritardi dei motori, giochi meccanici e rumore dei sensori non
 coincidono mai del tutto. Una policy perfetta nel simulatore può inciampare al
-primo passo reale. Colmare quello scarto — con randomizzazione dei parametri
-fisici, calibrazione, adattamento sul campo — è un problema di ricerca ancora
+primo passo reale. Colmare quello scarto (con randomizzazione dei parametri
+fisici, calibrazione, adattamento sul campo) è un problema di ricerca ancora
 aperto, e ci ricorda che l'algoritmo di controllo è solo un pezzo del percorso
 che porta un robot a muoversi nel mondo.
 

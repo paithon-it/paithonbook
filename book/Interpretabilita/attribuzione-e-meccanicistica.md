@@ -11,13 +11,13 @@ aprire la scatola.
 
 Nella sezione precedente abbiamo visto modelli **interpretabili per
 costruzione**: una regressione lineare ci consegna un coefficiente per ogni
-variabile, e quel numero *è* la spiegazione — leggibile a occhio nudo, come nel
-capitolo sul Machine Learning classico. Una rete profonda no. Ha milioni di
+variabile, e quel numero *è* la spiegazione (leggibile a occhio nudo, come nel
+capitolo sul Machine Learning classico). Una rete profonda no. Ha milioni di
 parametri intrecciati, e nessuno di essi, preso da solo, dice qualcosa di
 sensato. Dobbiamo cambiare domanda. Non «quanto pesa questa variabile in
-generale?», ma «quanto ha contribuito *questo* ingresso a *questa* decisione?».
-La risposta, sorprendentemente, è uno strumento che già conosciamo bene: il
-**gradiente**.
+generale?», ma «quanto ha contribuito *questo* ingresso a *questa*
+decisione?». La risposta, sorprendentemente, è uno strumento che già
+conosciamo bene: il **gradiente**.
 
 ## Saliency maps: il gradiente come mappa di importanza
 
@@ -90,7 +90,7 @@ dell'immagine.
 Grad-CAM chiede al gradiente quali faretti contano per la classe che ci
 interessa, e poi li accende in proporzione. Se stiamo spiegando la risposta
 «cane», i faretti sul muso e sulle orecchie pesano tanto, quelli sull'erba
-pesano zero. Sovrapposti alla foto, danno una macchia calda — una *heatmap* —
+pesano zero. Sovrapposti alla foto, danno una macchia calda (una *heatmap*)
 che dice, letteralmente, *dove* la rete ha guardato per dire «cane». È
 grossolana (la risoluzione è quella dell'ultimo strato, non dei pixel), ma è
 pulita e onesta: nel caso dell'husky, la macchia calda finirebbe proprio sulla
@@ -131,30 +131,30 @@ che ha guidato la decisione.
 ## Integrated Gradients: gli assiomi e il cammino dalla baseline
 
 Sia la saliency sia Grad-CAM misurano il gradiente in **un solo punto**, e qui
-si nasconde un problema. Se la rete è già «sicura» — il neurone è saturo, come
-la parte piatta di una sigmoide — il gradiente locale è quasi zero, anche se
+si nasconde un problema. Se la rete è già «sicura» (il neurone è saturo, come
+la parte piatta di una sigmoide), il gradiente locale è quasi zero, anche se
 quell'ingresso è la ragione stessa della decisione. Sundararajan, Taly e Yan,
 nel 2017, hanno affrontato la questione partendo non da un'euristica ma da due
 **assiomi**: proprietà che una buona spiegazione *deve* soddisfare
 {cite}`sundararajan2017axiomatic`.
 
-Il primo è la **sensibilità**: se cambiando una variabile la predizione cambia,
-quella variabile deve ricevere attribuzione non nulla. Il secondo è
-l'**invarianza all'implementazione**: due reti che calcolano la stessa funzione
-matematica, con architetture diverse, devono ricevere le stesse attribuzioni —
-la spiegazione riguarda *cosa* la rete calcola, non *come* lo scrive in codice.
-Il gradiente locale, da solo, viola la sensibilità proprio nei casi di
-saturazione.
+Il primo è la **sensibilità**: se cambiando una variabile la predizione
+cambia, quella variabile deve ricevere attribuzione non nulla. Il secondo è
+l'**invarianza all'implementazione**: due reti che calcolano la stessa
+funzione matematica, con architetture diverse, devono ricevere le stesse
+attribuzioni (la spiegazione riguarda *cosa* la rete calcola, non *come* lo
+scrive in codice). Il gradiente locale, da solo, viola la sensibilità proprio
+nei casi di saturazione.
 
 `````{tab} Elementare
 
-Invece di misurare la pendenza solo nel punto di arrivo, immagina di partire da
-un'immagine «neutra» — di solito tutta nera, la *baseline* — e di arrivare
+Invece di misurare la pendenza solo nel punto di arrivo, immagina di partire
+da un'immagine «neutra» (di solito tutta nera, la *baseline*) e di arrivare
 piano piano all'immagine vera, mescolandole in tante tappe: 10% vera e 90%
 nera, poi 20 e 80, e così via fino al 100%. A ogni tappa misuri la pendenza, e
-alla fine fai la media. Così, anche se all'arrivo la rete è satura e non reagisce
-più, hai comunque registrato la sua reazione lungo tutta la salita, quando
-reagiva eccome.
+alla fine fai la media. Così, anche se all'arrivo la rete è satura e non
+reagisce più, hai comunque registrato la sua reazione lungo tutta la salita,
+quando reagiva eccome.
 
 Questo metodo ha una proprietà bellissima da controllare: se sommi le
 attribuzioni di tutti i pixel, ottieni esattamente *quanto* la rete è passata
@@ -205,66 +205,67 @@ dedicato: i pesi di **attenzione** {cite}`vaswani2017attention` sono già lì,
 belli normalizzati, e sembrano dire su quali parole il modello si è
 concentrato. Perché non usarli come spiegazione, gratis?
 
-La comunità ci ha discusso a lungo. Nel 2019 Jain e Wallace, con un articolo dal
-titolo programmatico *«Attention is not Explanation»*, hanno mostrato che spesso
-si possono costruire distribuzioni di attenzione **molto diverse** che portano
-alla **stessa** predizione: se più configurazioni dei pesi danno lo stesso
-verdetto, nessuna di esse può essere *la* spiegazione. Altri — Wiegreffe e
-Pinter, sempre nel 2019, con la replica *«Attention is not not Explanation»* —
-hanno ribattuto che dipende da cosa si pretende: sotto vincoli più stretti
-l'attenzione conserva un valore esplicativo. La morale operativa è di
-**cautela**: i pesi di attenzione sono un indizio suggestivo, non una prova; una
-heatmap di attenzione va letta come una traccia, non come una confessione.
+La comunità ci ha discusso a lungo. Nel 2019 Jain e Wallace, con un articolo
+dal titolo programmatico *«Attention is not Explanation»*, hanno mostrato che
+spesso si possono costruire distribuzioni di attenzione **molto diverse** che
+portano alla **stessa** predizione: se più configurazioni dei pesi danno lo
+stesso verdetto, nessuna di esse può essere *la* spiegazione. Altri (Wiegreffe
+e Pinter, sempre nel 2019, con la replica *«Attention is not not
+Explanation»*) hanno ribattuto che dipende da cosa si pretende: sotto vincoli
+più stretti l'attenzione conserva un valore esplicativo. La morale operativa è
+di **cautela**: i pesi di attenzione sono un indizio suggestivo, non una
+prova; una heatmap di attenzione va letta come una traccia, non come una
+confessione.
 
 Un approccio complementare, più controllato, è il **probing**. L'idea: se una
-rappresentazione interna «sa» qualcosa — poniamo, la parte del discorso di una
-parola — allora un classificatore *lineare* addestrato su quella
+rappresentazione interna «sa» qualcosa (poniamo, la parte del discorso di una
+parola), allora un classificatore *lineare* addestrato su quella
 rappresentazione dovrebbe saperlo prevedere. Si congela la rete, si estraggono
 le attivazioni di uno strato e ci si allena sopra una semplice regressione
 logistica per una proprietà a scelta. Se il probe riesce, l'informazione è
-presente e linearmente accessibile in quello strato; se fallisce, non lo è. È un
-modo economico per mappare *dove*, nella pila di strati, emergono le varie
-proprietà — con l'avvertenza, discussa da Alain e Bengio e da altri, che un
-probe troppo potente rischia di *imparare* lui la proprietà invece di limitarsi a
-leggerla.
+presente e linearmente accessibile in quello strato; se fallisce, non lo è. È
+un modo economico per mappare *dove*, nella pila di strati, emergono le varie
+proprietà, con l'avvertenza, discussa da Alain e Bengio e da altri, che un
+probe troppo potente rischia di *imparare* lui la proprietà invece di
+limitarsi a leggerla.
 
 ## Interpretabilità meccanicistica: fare reverse-engineering dei circuiti
 
 Attribuzione e probing dicono *cosa* pesa e *dove* sta l'informazione, ma non
-*come* la rete la calcola. La frontiera — giovane, ambiziosa, ancora molto
-aperta — punta più in alto: **fare reverse-engineering** dei calcoli interni,
-come si smonta un circuito elettronico per capire cosa fa ciascun componente. È
-l'**interpretabilità meccanicistica**.
+*come* la rete la calcola. La frontiera (giovane, ambiziosa, ancora molto
+aperta) punta più in alto: **fare reverse-engineering** dei calcoli interni,
+come si smonta un circuito elettronico per capire cosa fa ciascun componente.
+È l'**interpretabilità meccanicistica**.
 
 `````{tab} Elementare
 
 Finora abbiamo trattato la rete come una scatola su cui bussare da fuori: le
 mostri un ingresso, guardi l'uscita, misuri le reazioni. L'interpretabilità
-meccanicistica apre la scatola e prova a leggere il circuito dentro. L'obiettivo
-è ricostruire i **circuiti**: piccoli gruppi di neuroni collegati che, insieme,
-svolgono un compito riconoscibile — un rilevatore di curve, un pezzo che tiene il
-conto delle parentesi aperte in un testo.
+meccanicistica apre la scatola e prova a leggere il circuito dentro.
+L'obiettivo è ricostruire i **circuiti**: piccoli gruppi di neuroni collegati
+che, insieme, svolgono un compito riconoscibile (un rilevatore di curve, un
+pezzo che tiene il conto delle parentesi aperte in un testo).
 
 C'è però un ostacolo curioso, chiamato **sovrapposizione**: la rete ha meno
 neuroni dei concetti che deve rappresentare, e allora fa come chi ha poche
-scatole e troppa roba — mette più concetti nella stessa scatola, e un singolo
+scatole e troppa roba; mette più concetti nella stessa scatola, e un singolo
 neurone finisce per accendersi per cose scollegate (un po' per i gatti, un po'
-per le automobili, un po' per il colore verde). Una tecnica recente, gli *sparse
-autoencoder*, prova a «ri-sistemare gli scatoloni»: espande le attivazioni in
-uno spazio molto più grande in cui, si spera, ogni casella torni a
-rappresentare **una cosa sola** e leggibile. È un campo giovane: promettente,
-ma ancora lontano dal capire una rete grande per intero.
+per le automobili, un po' per il colore verde). Una tecnica recente, gli
+*sparse autoencoder*, prova a «ri-sistemare gli scatoloni»: espande le
+attivazioni in uno spazio molto più grande in cui, si spera, ogni casella
+torni a rappresentare **una cosa sola** e leggibile. È un campo giovane:
+promettente, ma ancora lontano dal capire una rete grande per intero.
 
 `````
 
 `````{tab} Superiore
 
-Il programma dei **circuiti** è stato articolato da Olah e colleghi su *Distill*
-nel 2020 {cite}`olah2020zoom`: studiare una rete come un oggetto scientifico,
-individuando *feature* (direzioni nello spazio delle attivazioni che codificano
-un concetto) e i *circuiti* che le collegano — sottografi di neuroni e pesi che
-implementano un calcolo interpretabile, come i rilevatori di curve nelle prime
-reti di visione.
+Il programma dei **circuiti** è stato articolato da Olah e colleghi su
+*Distill* nel 2020 {cite}`olah2020zoom`: studiare una rete come un oggetto
+scientifico, individuando *feature* (direzioni nello spazio delle attivazioni
+che codificano un concetto) e i *circuiti* che le collegano; sottografi di
+neuroni e pesi che implementano un calcolo interpretabile, come i rilevatori
+di curve nelle prime reti di visione.
 
 L'ostacolo teorico è la **sovrapposizione** (*superposition*): una rete con
 $n$ neuroni può rappresentare molte più di $n$ feature sfruttando direzioni
@@ -276,19 +277,19 @@ autoencoder** {cite}`bricken2023monosemanticity`: le attivazioni di uno strato
 vengono ricodificate in un dizionario **sovracompleto** (molte più unità dei
 neuroni originali) sotto un vincolo di **sparsità**, che spinge poche unità
 attive per esempio. Le feature così estratte risultano in larga parte
-**monosemantiche** — ciascuna corrisponde a un concetto singolo e nominabile — e
+**monosemantiche** (ciascuna corrisponde a un concetto singolo e nominabile) e
 molto più interpretabili dei neuroni grezzi.
 
 Il campo è nascente e va preso con l'onestà che si deve alle frontiere: i
 risultati sono su modelli piccoli o su strati singoli, e nessuno ha ancora
-«letto» un modello di grande scala per intero. La posta in gioco, però, è alta —
-ne parliamo qui sotto.
+«letto» un modello di grande scala per intero. La posta in gioco, però, è
+alta, ne parliamo qui sotto.
 
 `````
 
 Perché tutto questo conta, e non è solo un esercizio di curiosità? Per la
 **sicurezza**. Un modello linguistico di grandi dimensioni può apprendere
-comportamenti che non vogliamo — inganni, scorciatoie, bias — senza che nulla,
+comportamenti che non vogliamo (inganni, scorciatoie, bias) senza che nulla,
 dall'esterno, li tradisca. Poter leggere i circuiti interni significherebbe
 accorgersene *prima* che si manifestino: è il ponte, che riprenderemo nel
 capitolo sull'AI responsabile, tra l'interpretabilità come curiosità
@@ -380,11 +381,11 @@ heatmap = heatmap / heatmap.max()          # normalizzata in [0, 1]
 # heatmap va poi sovracampionata a 224x224 e sovrapposta all'immagine
 ```
 
-Il cuore è tutto nelle ultime tre righe: `alpha` è il peso $\alpha_k^c$
-(la media spaziale del gradiente), la somma pesata delle mappe seguita dalla
+Il cuore è tutto nelle ultime tre righe: `alpha` è il peso $\alpha_k^c$ (la
+media spaziale del gradiente), la somma pesata delle mappe seguita dalla
 `relu` è $L^c_{\text{Grad-CAM}}$, e l'ultima riga la porta in $[0,1]$ per
-visualizzarla. Su un'immagine di cane la macchia calda cadrebbe sul muso; su un
-husky del dataset ingannevole, sulla neve — ed è precisamente questo che
+visualizzarla. Su un'immagine di cane la macchia calda cadrebbe sul muso; su
+un husky del dataset ingannevole, sulla neve, ed è precisamente questo che
 volevamo poter vedere.
 
 ```{admonition} Da ricordare
@@ -403,8 +404,8 @@ volevamo poter vedere.
 - I **pesi di attenzione** non sono di per sé una spiegazione affidabile
   (dibattito *«Attention is not Explanation»*, 2019); il **probing** con
   classificatori lineari mappa dove sta l'informazione negli strati interni.
-- L'**interpretabilità meccanicistica** — circuiti {cite}`olah2020zoom` e
-  feature monosemantiche via sparse autoencoder {cite}`bricken2023monosemanticity`
-  — punta a fare reverse-engineering dei calcoli interni. Campo giovane, ma
-  centrale per la sicurezza degli LLM.
+- L'**interpretabilità meccanicistica** (circuiti {cite}`olah2020zoom` e
+  feature monosemantiche via sparse autoencoder
+  {cite}`bricken2023monosemanticity`) punta a fare reverse-engineering dei
+  calcoli interni. Campo giovane, ma centrale per la sicurezza degli LLM.
 ```

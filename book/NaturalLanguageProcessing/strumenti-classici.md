@@ -1,10 +1,10 @@
 # La cassetta degli attrezzi: espressioni regolari, normalizzazione e distanza di edit
 
 Nell'Introduzione abbiamo incontrato ELIZA, il programma con cui Joseph
-Weizenbaum dimostrò — suo malgrado — quanto sia facile attribuire
+Weizenbaum dimostrò (suo malgrado) quanto sia facile attribuire
 un'intelligenza a una macchina {cite}`weizenbaum1966eliza`. Vale la pena
-riaprire il cofano: dentro non c'era nessuna comprensione del linguaggio, ma un
-gioco di **pattern matching**, la ricerca di schemi nel testo. Se l'utente
+riaprire il cofano: dentro non c'era nessuna comprensione del linguaggio, ma
+un gioco di **pattern matching**, la ricerca di schemi nel testo. Se l'utente
 scriveva «mi sento triste», ELIZA agganciava lo schema «mi sento X» e
 riassemblava i pezzi in «Da quanto tempo ti senti X?», seguendo regole scritte
 a mano da Weizenbaum stesso. Tutto qui.
@@ -14,7 +14,7 @@ larga parte questo: schemi, regole, conteggi. Sarebbe però un errore liquidare
 questi attrezzi come pezzi da museo. Sono ovunque, anche oggi: nel comando
 `grep` con cui i programmatori setacciano file da mezzo secolo, nel modulo web
 che ti avvisa che «l'indirizzo email non è valido», nella pulizia dei dati che
-— chiedete a chiunque lavori nel settore — occupa la parte più grossa di
+(chiedete a chiunque lavori nel settore) occupa la parte più grossa di
 qualunque progetto reale. Prima di insegnare a una rete neurale a leggere,
 conviene imparare a usare la cassetta degli attrezzi.
 
@@ -24,8 +24,8 @@ Il primo attrezzo risponde a una domanda concreta: come si cerca in un testo
 qualcosa che non è una parola precisa ma una *forma*? Tutte le date, tutti i
 CAP, tutti gli importi in euro. La risposta ha un nome intimidatorio,
 **espressioni regolari** (*regular expressions*, o *regex*), e una storia
-curiosa: nascono negli anni Cinquanta dai lavori del logico Stephen Kleene, che
-studiava proprio i modelli matematici dei neuroni di McCulloch e Pitts — le
+curiosa: nascono negli anni Cinquanta dai lavori del logico Stephen Kleene,
+che studiava proprio i modelli matematici dei neuroni di McCulloch e Pitts; le
 espressioni regolari e le reti neurali, gli attrezzi «vecchi» e quelli «nuovi»
 di questo capitolo, condividono l'atto di nascita. A portarle nei programmi fu
 Ken Thompson alla fine degli anni Sessanta, prima nell'editor QED e poi in
@@ -44,7 +44,7 @@ cifre, una barra, quattro cifre» trova tutte le date scritte come 3/7/2026;
 
 È la funzione Trova del tuo editor di testi, ma con i superpoteri: invece di
 controllare lettera per lettera, controlla *tipo* di lettera per tipo di
-lettera — qui voglio una cifra, qui una lettera qualsiasi, qui uno spazio.
+lettera (qui voglio una cifra, qui una lettera qualsiasi, qui uno spazio).
 Quando un sito ti dice al volo che il numero di telefono che hai digitato non
 è valido, nove volte su dieci c'è un'espressione regolare che ha confrontato
 quello che hai scritto con lo schema atteso e ha trovato che non combacia.
@@ -73,7 +73,7 @@ Il rovescio della medaglia è un limite espressivo preciso: un automa a stati
 finiti non sa *contare*, quindi nessuna espressione regolare può verificare
 strutture annidate a profondità arbitraria (parentesi bilanciate, subordinate
 dentro subordinate). Per la sintassi delle lingue naturali servono strumenti
-più potenti — o, come vedremo, modelli che la imparano dai dati.
+più potenti, o, come vedremo, modelli che la imparano dai dati.
 
 `````
 
@@ -106,7 +106,7 @@ m.group(1), m.group(2), m.group(3)
 ```
 
 Una regola d'onestà: le espressioni regolari non *capiscono* niente. Trovano
-forme, non significati — proprio come ELIZA, che agganciava «mi sento X» senza
+forme, non significati: proprio come ELIZA, che agganciava «mi sento X» senza
 avere idea di cosa fosse un sentimento. Per estrarre un CAP bastano; per
 decidere se una recensione è entusiasta o sarcastica no. È il confine esatto
 tra ciò che questa sezione può fare e ciò per cui servirà il resto del
@@ -117,9 +117,9 @@ capitolo.
 Il secondo attrezzo è meno appariscente ma altrettanto indispensabile. Un
 calcolatore è un pignolo assoluto: per lui `Muro`, `muro` e `MURO` sono tre
 stringhe diverse, e `perché` scritto con due codifiche Unicode diverse è
-diverso da sé stesso. Prima di contare le parole di un testo — cosa che
-faremo, eccome, nella prossima sezione — bisogna decidere quali varianti
-contare *insieme*. Questa scelta si chiama **normalizzazione**.
+diverso da sé stesso. Prima di contare le parole di un testo (cosa che faremo,
+eccome, nella prossima sezione), bisogna decidere quali varianti contare
+*insieme*. Questa scelta si chiama **normalizzazione**.
 
 `````{tab} Elementare
 
@@ -128,14 +128,14 @@ cosa va nello stesso barattolo. I fusilli integrali e i fusilli normali sono
 «pasta» o due cose diverse? Dipende da cosa vuoi cucinare. Con le parole è
 uguale, e le mosse tipiche sono tre. Primo: tutto minuscolo, così *Muro* a
 inizio frase e *muro* in mezzo finiscono nello stesso barattolo. Secondo:
-togliere le **stopword**, le parole-colla come *il*, *di*, *che*, *e* — sono
+togliere le **stopword**, le parole-colla come *il*, *di*, *che*, *e*; sono
 dappertutto e proprio per questo non dicono nulla sull'argomento del testo.
 Terzo, il più delicato: raggruppare le forme della stessa parola. *Andavamo*,
 *andiamo* e *andrò* sono tutte facce del verbo *andare*.
 
 Per quest'ultima mossa ci sono due attrezzi. Lo **stemming** lavora di
 forbici: taglia la coda delle parole secondo regole fisse, veloce ma
-grossolano — a volte da *andavamo* esce un moncone come *andavam*, che non è
+grossolano; a volte da *andavamo* esce un moncone come *andavam*, che non è
 nemmeno una parola. La **lemmatizzazione** lavora di dizionario: cerca la
 forma base, il **lemma**, e da *andavamo* ricava proprio *andare*, come
 farebbe chiunque consulti un vocabolario. Più precisa, ma più lenta e più
@@ -152,19 +152,18 @@ composti e precomposti, come la *é* codificata in un modo o in due),
 rimozione di punteggiatura e stopword, riduzione morfologica.
 
 Per quest'ultima, lo **stemming** applica regole di troncamento dei suffissi:
-il capostipite è l'algoritmo di Porter (1980) per l'inglese, esteso
+il capostipite è l'algoritmo di Porter (1980), per l'inglese, esteso
 all'italiano nella famiglia Snowball. È una funzione puramente ortografica,
 senza dizionario, e si vede: lo stemmer Snowball italiano manda *gatto*,
-*gatta* e *gatti* correttamente in *gatt*, ma spezza il paradigma di
-*andare* in tre gambi diversi — *andavamo* → *andavam*, *andiamo* → *andiam*,
-*andare* → *andar*. La **lemmatizzazione** richiede invece un'analisi
-morfologica con dizionario e contesto (per disambiguare, ad esempio, *porta*
-sostantivo da *porta* voce del verbo *portare*) e restituisce il lemma:
-*andavamo* → *andare*. Nei sistemi a conteggio la riduzione morfologica
-aumenta la *recall* (query e documento si incontrano anche se flessi
-diversamente) al prezzo di un po' di *precision* (forme distinte collassano);
-per una lingua flessiva come l'italiano il compromesso è quasi sempre
-favorevole.
+*gatta* e *gatti* correttamente in *gatt*, ma spezza il paradigma di *andare*
+in tre gambi diversi; *andavamo* → *andavam*, *andiamo* → *andiam*, *andare* →
+*andar*. La **lemmatizzazione** richiede invece un'analisi morfologica con
+dizionario e contesto (per disambiguare, ad esempio, *porta* sostantivo da
+*porta* voce del verbo *portare*) e restituisce il lemma: *andavamo* →
+*andare*. Nei sistemi a conteggio la riduzione morfologica aumenta la *recall*
+(query e documento si incontrano anche se flessi diversamente) al prezzo di un
+po' di *precision* (forme distinte collassano); per una lingua flessiva come
+l'italiano il compromesso è quasi sempre favorevole.
 
 `````
 
@@ -194,7 +193,7 @@ che vedremo nella prossima sezione, normalizzare bene fa la differenza tra
 trovare e non trovare un documento. I modelli neurali moderni, invece, hanno
 progressivamente smesso di buttare via l'informazione: maiuscole, accenti e
 desinenze *portano significato* («Rosa è rosa» perde qualcosa, tutto
-minuscolo), e i loro tokenizzatori — li incontreremo tra poche pagine —
+minuscolo), e i loro tokenizzatori (li incontreremo tra poche pagine)
 preferiscono conservare il testo com'è e spezzarlo in unità più piccole della
 parola. La normalizzazione aggressiva è un attrezzo da usare quando si conta,
 non un obbligo universale.
@@ -205,7 +204,7 @@ Il terzo attrezzo nasce da un'esperienza quotidiana: digiti «gatot» e il
 telefono capisce che intendevi «gatto». Come fa a sapere che «gatot» somiglia
 a «gatto» più che a «divano»? Serve un modo per *misurare* la distanza tra due
 parole. La misura standard porta il nome del matematico sovietico Vladimir
-Levenshtein, che la introdusse nel 1966 {cite}`levenshtein1966binary` — in un
+Levenshtein, che la introdusse nel 1966 {cite}`levenshtein1966binary`, in un
 articolo di poche pagine che non parlava affatto di parole: parlava di codici
 binari per correggere errori di trasmissione, e le sue «parole» erano sequenze
 di 0 e 1. Il nome **distanza di Levenshtein** per la versione sul testo si
@@ -220,17 +219,17 @@ una lettera, **cancellarne** una, **inserirne** una. Ogni mossa costa 1.
 
 Da *casa* a *cosa*: sostituisci la prima *a* con una *o*, una mossa. Distanza
 1. Da *carta* a *casa* servono invece due mosse: cancella la *r* (*carta* →
-*cata*), poi sostituisci la *t* con una *s* (*cata* → *casa*). Distanza 2 — e
-puoi provare quanto vuoi, con meno di due mosse non ce la fai: le parole hanno
-lunghezze diverse (quindi almeno una cancellazione è obbligatoria) e una
-cancellazione da sola non basta mai a far combaciare il resto.
+   *cata*), poi sostituisci la *t* con una *s* (*cata* → *casa*). Distanza 2,
+   e puoi provare quanto vuoi, con meno di due mosse non ce la fai: le parole
+   hanno lunghezze diverse (quindi almeno una cancellazione è obbligatoria) e
+   una cancellazione da sola non basta mai a far combaciare il resto.
 
 Ecco il senso della misura: più piccola è la distanza, più le parole si
 somigliano. «Gatot» dista 2 da «gatto» ma 5 da «divano»: per questo il
 correttore scommette su «gatto». L'unica difficoltà vera è garantire che le
 mosse trovate siano davvero *il minimo*: per due parole corte si fa a occhio,
 per due parole lunghe il computer compila una tabella di distanze parziali,
-pezzo per pezzo, senza mai perdersi una scorciatoia — e lo fa in un lampo.
+pezzo per pezzo, senza mai perdersi una scorciatoia, e lo fa in un lampo.
 
 `````
 
@@ -270,17 +269,17 @@ e la riga di $\varepsilon$, la stringa vuota, sono i casi base):
 | **r** | 3 | 2 | 2 | **1** | 2 |
 | **o** | 4 | 3 | 3 | 2 | **2** |
 
-L'angolo in basso a destra dà $D_{4,4} = 2$: bastano due sostituzioni
-(*u* → *a*, *o* → *e*), e il percorso ottimo — in grassetto — scende lungo la
+L'angolo in basso a destra dà $D_{4,4} = 2$: bastano due sostituzioni (*u* →
+*a*, *o* → *e*), e il percorso ottimo (in grassetto) scende lungo la
 diagonale, pagando 1 solo dove le lettere differiscono. La tabella ha
 $(n+1)(m+1)$ celle e ogni cella costa un confronto: complessità $O(nm)$ in
 tempo, riducibile a $O(\min(n,m))$ in memoria tenendo in vita solo due righe
-della tabella, orientata lungo la stringa più corta. La
-formulazione tabellare è nota anche come algoritmo di Wagner–Fischer (1974).
-Una variante dovuta a Fred Damerau (1964) aggiunge lo **scambio** di due
-lettere adiacenti come quarta mossa: per «gatot» → «gatto» la distanza scende
-da 2 a 1, coerente con l'osservazione di Damerau che circa quattro refusi su
-cinque sono a una sola mossa dalla parola giusta.
+della tabella, orientata lungo la stringa più corta. La formulazione tabellare
+è nota anche come algoritmo di Wagner–Fischer (1974). Una variante dovuta a
+Fred Damerau (1964) aggiunge lo **scambio** di due lettere adiacenti come
+quarta mossa: per «gatot» → «gatto» la distanza scende da 2 a 1, coerente con
+l'osservazione di Damerau che circa quattro refusi su cinque sono a una sola
+mossa dalla parola giusta.
 
 `````
 
@@ -312,10 +311,10 @@ passo è più sottile di «suggerisci la parola più vicina». Se digito «cassa
 era un refuso per *casa*, per *cassia*, o era proprio *cassa*? La cornice
 giusta viene dalla teoria dell'informazione di Shannon
 {cite}`shannon1948mathematical`: immagina che chi scrive avesse in mente la
-parola giusta, e che questa sia passata attraverso un **canale rumoroso** — le
-dita, la tastiera, la fretta — che ogni tanto la sporca. Il correttore deve
+parola giusta, e che questa sia passata attraverso un **canale rumoroso** (le
+dita, la tastiera, la fretta) che ogni tanto la sporca. Il correttore deve
 risalire il canale: tra le parole *plausibili* (quelle a distanza di edit 1 o
-2 da ciò che leggo), scegliere quella che meglio bilancia due fattori — quanto
+2 da ciò che leggo), scegliere quella che meglio bilancia due fattori; quanto
 è *frequente* nella lingua e quanto è *facile* che il rumore l'abbia
 trasformata proprio in ciò che è arrivato. È un'idea messa in pratica già nel
 1990 da Kernighan, Church e Gale con un correttore puramente statistico, ed è
@@ -327,8 +326,8 @@ La distanza di edit, del resto, non corregge solo refusi: varianti pesate
 della stessa ricorrenza allineano sequenze di DNA in bioinformatica e
 deduplicano anagrafiche («Giovanni Rossi» contro «Givanni Rossi») nei database
 di mezzo mondo. E non abbiamo finito di incontrarla: la ritroveremo nel
-capitolo sul riconoscimento vocale, dove — contata a livello di parola invece
-che di lettera — misura gli errori dei trascrittori automatici con la metrica
+capitolo sul riconoscimento vocale, dove (contata a livello di parola invece
+che di lettera) misura gli errori dei trascrittori automatici con la metrica
 WER. Chi volesse approfondire l'intera cassetta degli attrezzi di questa
 sezione trova la trattazione di riferimento in Jurafsky e Martin
 {cite}`jurafsky2026speech`.
@@ -336,8 +335,8 @@ sezione trova la trattazione di riferimento in Jurafsky e Martin
 ```{admonition} Da ricordare
 :class: important
 - Le **espressioni regolari** descrivono *schemi* («cinque cifre di fila»),
-  non parole esatte: perfette per estrarre e validare, incapaci — per un
-  limite matematico preciso — di gestire strutture annidate o significati.
+  non parole esatte: perfette per estrarre e validare, incapaci (per un limite
+  matematico preciso) di gestire strutture annidate o significati.
 - ELIZA, `grep`, i validatori dei moduli web: il pattern matching è l'NLP
   «a regole», ed è ancora ovunque nella pulizia dei dati.
 - La **normalizzazione** (minuscole, Unicode, stopword) decide cosa contare
@@ -345,8 +344,8 @@ sezione trova la trattazione di riferimento in Jurafsky e Martin
   fisse, la **lemmatizzazione** risale alla forma di dizionario
   (*andavamo* → *andare*).
 - Normalizzare in modo aggressivo serve quando si *conta* (ricerca,
-  bag-of-words); i modelli neurali moderni preferiscono conservare il testo
-  e spezzarlo in unità sotto la parola — è il tema della prossima sezione.
+  bag-of-words); i modelli neurali moderni preferiscono conservare il testo e
+  spezzarlo in unità sotto la parola: è il tema della prossima sezione.
 - La **distanza di Levenshtein** {cite}`levenshtein1966binary` è il numero
   minimo di inserzioni, cancellazioni e sostituzioni tra due stringhe; si
   calcola per programmazione dinamica in tempo $O(nm)$.

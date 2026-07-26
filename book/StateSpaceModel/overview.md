@@ -1,21 +1,21 @@
 # State Space Model
 
-C'è un'idea che l'ingegneria usa da oltre mezzo secolo per descrivere qualunque
-sistema che evolve nel tempo — un termostato, la traiettoria di un razzo, un
-circuito elettrico. Si chiama **modello a spazio degli stati** (*state space
-model*): un pugno di equazioni che riassumono tutto il passato di un segnale in
-uno **stato** interno, e da quello prevedono il futuro. È la matematica dei
-filtri di Kalman che portarono l'Apollo sulla Luna. Che cosa ci fa in un libro
-sull'intelligenza artificiale?
+C'è un'idea che l'ingegneria usa da oltre mezzo secolo per descrivere
+qualunque sistema che evolve nel tempo: un termostato, la traiettoria di un
+razzo, un circuito elettrico. Si chiama **modello a spazio degli stati**
+(*state space model*): un pugno di equazioni che riassumono tutto il passato
+di un segnale in uno **stato** interno, e da quello prevedono il futuro. È la
+matematica dei filtri di Kalman che portarono l'Apollo sulla Luna. Che cosa ci
+fa in un libro sull'intelligenza artificiale?
 
 La risposta arriva nel 2021, quando Albert Gu, Karan Goel e Christopher Ré
-prendono quelle equazioni vecchie di sessant'anni, le impacchettano in uno strato
-di rete neurale e le mettono alla prova sul *Long Range Arena*, il banco di prova
-delle dipendenze a lunghissimo raggio. Il loro modello, **S4**
+prendono quelle equazioni vecchie di sessant'anni, le impacchettano in uno
+strato di rete neurale e le mettono alla prova sul *Long Range Arena*, il
+banco di prova delle dipendenze a lunghissimo raggio. Il loro modello, **S4**
 {cite}`gu2022s4`, riesce là dove Transformer e reti ricorrenti si arrendevano:
 riconosce strutture che si estendono per **sedicimila** passi. È l'atto di
-nascita di una seconda strada verso il modello di sequenze a tempo lineare — non
-quella dell'attenzione resa economica del capitolo precedente, ma quella,
+nascita di una seconda strada verso il modello di sequenze a tempo lineare:
+non quella dell'attenzione resa economica del capitolo precedente, ma quella,
 apparentemente lontana, dei sistemi dinamici. Alla fine, scopriremo, le due
 strade portano allo stesso posto.
 
@@ -33,7 +33,7 @@ il modello.
 Uno *state space model* fa esattamente questo con una sequenza: mantiene uno
 stato di dimensione fissa che riassume tutto ciò che ha letto finora, e lo
 aggiorna a ogni passo. È lo stesso spirito della rete ricorrente vista nel
-capitolo sul linguaggio — ma qui la regola di aggiornamento nasce da una teoria
+capitolo sul linguaggio, ma qui la regola di aggiornamento nasce da una teoria
 matematica precisa, quella dei sistemi che evolvono nel tempo, e questo, come
 vedremo, fa una grande differenza sulla memoria a lungo termine.
 
@@ -51,46 +51,48 @@ $$
 La matrice $A$ governa la dinamica interna (come lo stato evolve da solo), $B$
 come l'ingresso vi entra, $C$ come se ne legge l'uscita. Per usarlo su una
 sequenza discreta lo si **discretizza** con un passo $\Delta$, ottenendo una
-ricorrenza $h_t = \bar A\, h_{t-1} + \bar B\, x_t$. E qui sta la ricchezza: finché
-i parametri sono costanti nel tempo, questa ricorrenza ha una **doppia natura** —
-si può calcolare passo per passo come una RNN (inferenza a costo costante) oppure
-tutta in una volta come una **convoluzione** (addestramento parallelo). È la
-stessa dualità parallelo/ricorrente che muove il capitolo sull'attenzione
-lineare, raggiunta però dalla teoria dei segnali.
+ricorrenza $h_t = \bar A\, h_{t-1} + \bar B\, x_t$. E qui sta la ricchezza:
+finché i parametri sono costanti nel tempo, questa ricorrenza ha una **doppia
+natura**; si può calcolare passo per passo come una RNN (inferenza a costo
+costante) oppure tutta in una volta come una **convoluzione** (addestramento
+parallelo). È la stessa dualità parallelo/ricorrente che muove il capitolo
+sull'attenzione lineare, raggiunta però dalla teoria dei segnali.
 
 `````
 
 ## Due strade, una meta
 
-L'attenzione lineare e gli *state space model* nascono da mondi diversi — l'una
-dal meccanismo di attenzione, gli altri dai sistemi dinamici — ma convergono
-sullo stesso oggetto: una **ricorrenza lineare a stato fisso**, addestrabile in
-parallelo e capace di generare a memoria costante. Non è una coincidenza
+L'attenzione lineare e gli *state space model* nascono da mondi diversi (l'una
+dal meccanismo di attenzione, gli altri dai sistemi dinamici) ma convergono
+sullo stesso oggetto: una **ricorrenza lineare a stato fisso**, addestrabile
+in parallelo e capace di generare a memoria costante. Non è una coincidenza
 superficiale. Alla fine del capitolo, con **Mamba-2** {cite}`dao2024mamba2`,
-vedremo che la parentela è esatta: un *state space model* di forma opportuna *è*
-un'attenzione mascherata. Le due famiglie che raccontiamo in due capitoli sono,
-in fondo, due viste dello stesso disegno.
+vedremo che la parentela è esatta: un *state space model* di forma opportuna
+*è* un'attenzione mascherata. Le due famiglie che raccontiamo in due capitoli
+sono, in fondo, due viste dello stesso disegno.
 
-Ma prima c'è una tensione da sciogliere. La doppia natura convoluzione/ricorrenza
-vale solo se il sistema è **invariante nel tempo** — stessi parametri a ogni
-passo. Ed è proprio questa rigidità che **Mamba** {cite}`gu2023mamba` romperà,
-rendendo il sistema *selettivo*, per dargli qualcosa che a S4 mancava: la
-capacità di scegliere, in base al contenuto, cosa ricordare e cosa dimenticare.
+Ma prima c'è una tensione da sciogliere. La doppia natura
+convoluzione/ricorrenza vale solo se il sistema è **invariante nel tempo**:
+stessi parametri a ogni passo. Ed è proprio questa rigidità che **Mamba**
+{cite}`gu2023mamba` romperà, rendendo il sistema *selettivo*, per dargli
+qualcosa che a S4 mancava: la capacità di scegliere, in base al contenuto,
+cosa ricordare e cosa dimenticare.
 
 ## Come è organizzato il capitolo
 
 Quattro tappe, dall'idea di base alla frontiera.
 
-Si parte **dai sistemi dinamici a S4**: il sistema a spazio degli stati continuo,
-la sua discretizzazione, la doppia natura ricorrenza/convoluzione, e come HiPPO e
-S4 risolvono la memoria a lungo raggio. Seconda tappa, **Mamba**: la selettività
-che rende i parametri dipendenti dall'input, il prezzo (via la convoluzione, entra
-lo *scan*) e lo *scan* hardware-aware che lo rende veloce, dentro il blocco Mamba.
-Terza tappa, **la dualità**: Mamba-2 che riscopre l'attenzione dentro l'SSM e
-recupera i *tensor core*, e Mamba-3 con le sue raffinatezze — discretizzazione di
-ordine superiore, stato complesso, formulazione MIMO. Chiude un **panorama e i
-limiti**: una mappa unificata di entrambi i capitoli, l'onesto collo di bottiglia
-dello stato fisso, e gli **ibridi** che oggi combinano il meglio dei due mondi.
+Si parte **dai sistemi dinamici a S4**: il sistema a spazio degli stati
+continuo, la sua discretizzazione, la doppia natura ricorrenza/convoluzione, e
+come HiPPO e S4 risolvono la memoria a lungo raggio. Seconda tappa, **Mamba**:
+la selettività che rende i parametri dipendenti dall'input, il prezzo (via la
+convoluzione, entra lo *scan*) e lo *scan* hardware-aware che lo rende veloce,
+dentro il blocco Mamba. Terza tappa, **la dualità**: Mamba-2 che riscopre
+l'attenzione dentro l'SSM e recupera i *tensor core*, e Mamba-3 con le sue
+raffinatezze (discretizzazione di ordine superiore, stato complesso,
+formulazione MIMO). Chiude un **panorama e i limiti**: una mappa unificata di
+entrambi i capitoli, l'onesto collo di bottiglia dello stato fisso, e gli
+**ibridi** che oggi combinano il meglio dei due mondi.
 
 ```{admonition} Da ricordare
 :class: important
@@ -98,9 +100,9 @@ dello stato fisso, e gli **ibridi** che oggi combinano il meglio dei due mondi.
   fissa**, con equazioni che l'ingegneria usa da decenni per i sistemi dinamici;
   **S4** {cite}`gu2022s4` le porta nel deep learning e conquista le dipendenze a
   lunghissimo raggio (fino a $16\,000$ passi sul *Long Range Arena*).
-- Discretizzato, un SSM invariante nel tempo ha una **doppia natura**: ricorrente
-  (inferenza a costo costante) e convoluzionale (addestramento parallelo) — la
-  stessa dualità dell'attenzione lineare, da un'altra strada.
+- Discretizzato, un SSM invariante nel tempo ha una **doppia natura**:
+  ricorrente (inferenza a costo costante) e convoluzionale (addestramento
+  parallelo) (la stessa dualità dell'attenzione lineare, da un'altra strada).
 - **Mamba** {cite}`gu2023mamba` rompe l'invarianza temporale con la
   **selettività**; **Mamba-2** {cite}`dao2024mamba2` mostra che un SSM è
   un'attenzione mascherata: le due famiglie coincidono.

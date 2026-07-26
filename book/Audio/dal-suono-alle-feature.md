@@ -2,16 +2,16 @@
 
 Quando pronunciamo una parola non facciamo altro che spingere aria. Le corde
 vocali vibrano, l'aria si comprime e si rarefà, e un'onda di pressione viaggia
-fino al timpano di chi ascolta — o alla membrana di un microfono. Negli anni
+fino al timpano di chi ascolta, o alla membrana di un microfono. Negli anni
 Quaranta, ai Bell Labs, un gruppo guidato da Ralph Potter costruì il *sound
 spectrograph*, una macchina che trasformava quest'onda in un'immagine e la
 chiamò *visible speech*, "parola visibile". È esattamente il percorso che
-compie oggi *qualsiasi* sistema che lavora sull'audio — riconoscere una voce,
-un canto, un allarme — **prima** ancora di provare a capire *cosa* quel suono
+compie oggi *qualsiasi* sistema che lavora sull'audio (riconoscere una voce,
+un canto, un allarme) **prima** ancora di provare a capire *cosa* quel suono
 significhi: trasformare un'onda in numeri, e i numeri in un'immagine su cui un
 modello sa lavorare. Questa sezione, in apertura del capitolo, costruisce quel
-percorso: sono le fondamenta comuni a tutto ciò che segue — qui, e nel capitolo
-sullo Speech Recognition.
+percorso: sono le fondamenta comuni a tutto ciò che segue (qui, e nel capitolo
+sullo Speech Recognition).
 
 ## Il suono come numeri
 
@@ -24,9 +24,9 @@ dentro un computer dobbiamo misurarlo.
 Immagina di annotare la posizione della membrana migliaia di volte al secondo,
 come un sismografo che disegna una linea tremolante mentre la terra si muove.
 Il risultato è una lunghissima lista di numeri: quanto era "in avanti" o "in
-indietro" la membrana in ogni istante. Un suono, per il computer, è tutto qui —
+indietro" la membrana in ogni istante. Un suono, per il computer, è tutto qui:
 una sequenza di numeri che sale e scende nel tempo. Numeri grandi (in positivo
-o in negativo) quando il suono è forte, vicini allo zero quando c'è silenzio.
+o in negativo), quando il suono è forte, vicini allo zero quando c'è silenzio.
 
 `````
 
@@ -139,25 +139,26 @@ dice quanta energia c'è a una certa frequenza in un certo istante.
 
 È la stessa "parola visibile" di Potter: le bande orizzontali più intense sono
 le *formanti*, le risonanze del tratto vocale che danno a ogni vocale il suo
-timbro. Un modello di riconoscimento vocale può ora trattare l'audio come tratta
-un'immagine — e sui dati a griglia sappiamo far lavorare bene le reti.
+timbro. Un modello di riconoscimento vocale può ora trattare l'audio come
+tratta un'immagine, e sui dati a griglia sappiamo far lavorare bene le reti.
 
 ## MFCC e la scala mel: ascoltare come un orecchio
 
 Lo spettrogramma è ancora ricco e ridondante. Possiamo comprimerlo imitando il
 modo in cui l'orecchio umano percepisce davvero i suoni, ottenendo **feature**
-— caratteristiche riassuntive del suono — più compatte e robuste: i
+(caratteristiche riassuntive del suono) più compatte e robuste: i
 **coefficienti cepstrali in scala mel** (MFCC).
 
 `````{tab} Elementare
 
-Il nostro orecchio non è un righello: distingue benissimo due note gravi vicine,
-ma fatica con due note acute altrettanto vicine. In basso è "preciso", in alto è
-"approssimativo". La **scala mel** riscrive le frequenze proprio così, come le
-sente una persona. Gli MFCC prendono lo spettrogramma, lo rileggono con questa
-scala e lo riassumono in una manciata di numeri per finestrella — di solito
-13 — che catturano la "forma" del suono buttando via i dettagli inutili.
-Meno numeri, ma quelli che contano davvero per capire il parlato.
+Il nostro orecchio non è un righello: distingue benissimo due note gravi
+vicine, ma fatica con due note acute altrettanto vicine. In basso è "preciso",
+in alto è "approssimativo". La **scala mel** riscrive le frequenze proprio
+così, come le sente una persona. Gli MFCC prendono lo spettrogramma, lo
+rileggono con questa scala e lo riassumono in una manciata di numeri per
+finestrella (di solito 13) che catturano la "forma" del suono buttando via i
+dettagli inutili. Meno numeri, ma quelli che contano davvero per capire il
+parlato.
 
 `````
 
@@ -182,11 +183,11 @@ nascosti (HMM).
 ## Perché queste feature aiutano il modello
 
 La forma d'onda grezza è enorme (decine di migliaia di numeri al secondo) e
-piena di variazioni irrilevanti: il volume, il rumore di fondo, uno spostamento
-di pochi millisecondi. Spettrogramma mel e MFCC concentrano l'informazione
-*linguisticamente utile* — quali frequenze, quando — scartando gran parte del
-resto. Il compito del modello diventa così più facile: parte da una
-rappresentazione più piccola, più stabile e già "orientata" verso ciò che
+piena di variazioni irrilevanti: il volume, il rumore di fondo, uno
+spostamento di pochi millisecondi. Spettrogramma mel e MFCC concentrano
+l'informazione *linguisticamente utile* (quali frequenze, quando) scartando
+gran parte del resto. Il compito del modello diventa così più facile: parte da
+una rappresentazione più piccola, più stabile e già "orientata" verso ciò che
 distingue un suono dall'altro.
 
 Onestà d'obbligo: i sistemi più recenti *end-to-end*, come wav2vec 2.0 (Baevski
@@ -198,8 +199,8 @@ learning.
 
 ## In pratica
 
-Con la libreria `librosa` l'intera catena — dal file audio allo spettrogramma
-mel — è una manciata di righe.
+Con la libreria `librosa` l'intera catena (dal file audio allo spettrogramma
+mel) è una manciata di righe.
 
 ```python
 import librosa

@@ -136,7 +136,7 @@ print(X.toarray())                  # pesi TF-IDF per ciascun documento
 
 ## Vettori densi: i word embedding
 
-Il salto concettuale arriva nel 2013. L'idea guida è vecchia — il linguista
+Il salto concettuale arriva nel 2013. L'idea guida è vecchia, il linguista
 John Firth nel 1957 la riassunse così: *"You shall know a word by the company
 it keeps"*, conoscerai una parola dalla compagnia che frequenta. Parole che
 appaiono in contesti simili hanno significati simili. Se lo facciamo dire ai
@@ -172,24 +172,24 @@ $\mathbb{R}^{d}$ denso: meno dimensioni, ma cariche di struttura semantica.
 
 word2vec e GloVe hanno però un punto cieco: assegnano un vettore a ogni parola
 *intera*. Se una parola non compare mai nel corpus di addestramento, per lei
-non c'è nessun vettore; e una lingua ricca di flessioni come l'italiano —
-*gatto*, *gatta*, *gatti*, *gattino* — moltiplica le forme da imparare una per
-una. **fastText** {cite}`bojanowski2017enriching` risolve entrambi i problemi
-con una mossa sola: scendere sotto il livello della parola.
+non c'è nessun vettore; e una lingua ricca di flessioni come l'italiano
+(*gatto*, *gatta*, *gatti*, *gattino*), moltiplica le forme da imparare una
+per una. **fastText** {cite}`bojanowski2017enriching` risolve entrambi i
+problemi con una mossa sola: scendere sotto il livello della parola.
 
 `````{tab} Elementare
 
 Immagina di scomporre ogni parola in mattoncini di poche lettere che si
-sovrappongono. Con mattoncini da tre lettere, *gatto* — scritto con i suoi
-confini, `<gatto>` — diventa `<ga`, `gat`, `att`, `tto`, `to>`. Ogni
+sovrappongono. Con mattoncini da tre lettere, *gatto* (scritto con i suoi
+confini, `<gatto>`), diventa `<ga`, `gat`, `att`, `tto`, `to>`. Ogni
 mattoncino ha il proprio vettore, e il vettore di *gatto* è semplicemente la
 **somma** dei vettori dei suoi mattoncini.
 
 I vantaggi sono due, e concreti. Primo: *gatto*, *gatta* e *gattino*
-condividono i pezzi `gat` e `att`, quindi i loro vettori nascono già simili —
-prezioso in una lingua di desinenze come la nostra. Secondo: anche una parola
-mai vista prima ha comunque i suoi mattoncini, e quindi un vettore: nessuna
-parola resta più senza rappresentazione.
+condividono i pezzi `gat` e `att`, quindi i loro vettori nascono già simili
+(prezioso in una lingua di desinenze come la nostra). Secondo: anche una
+parola mai vista prima ha comunque i suoi mattoncini, e quindi un vettore:
+nessuna parola resta più senza rappresentazione.
 
 `````
 
@@ -208,9 +208,9 @@ $$
 dove $\mathbf{z}_g \in \mathbb{R}^{d}$ è il vettore appreso per l'n-gramma
 $g$. Due conseguenze pratiche: le parole **out-of-vocabulary** restano
 rappresentabili sommando i soli n-grammi, e nelle lingue morfologicamente
-ricche le forme flesse di una stessa radice condividono parametri —
-Bojanowski et al. misurano i guadagni maggiori proprio su lingue molto
-flessive come ceco e tedesco {cite}`bojanowski2017enriching`.
+ricche le forme flesse di una stessa radice condividono parametri (Bojanowski
+et al). misurano i guadagni maggiori proprio su lingue molto flessive come
+ceco e tedesco {cite}`bojanowski2017enriching`.
 
 `````
 
@@ -222,7 +222,7 @@ si possono sommare e sottrarre come frecce.
 
 ```{figure} ../figures/embedding-analogia.svg
 :name: fig-embedding-analogia
-:alt: Quattro punti — uomo, re, donna, regina — in un piano; le frecce che li collegano formano un parallelogramma, con l'offset "regalità" e l'offset "femminile" ripetuti su entrambi i lati.
+:alt: Quattro punti (uomo, re, donna, regina) in un piano; le frecce che li collegano formano un parallelogramma, con l'offset "regalità" e l'offset "femminile" ripetuti su entrambi i lati.
 :width: 85%
 
 I quattro embedding formano un parallelogramma: la stessa freccia
@@ -278,6 +278,6 @@ scalare.
   **vicinanza geometrica riflette la vicinanza di significato**, misurata con
   la **similarità del coseno**.
 - **fastText** somma i vettori degli *n-grammi di caratteri*: dà un vettore
-  anche alle parole mai viste e sfrutta la morfologia — un aiuto concreto per
+  anche alle parole mai viste e sfrutta la morfologia; un aiuto concreto per
   lingue flessive come l'italiano.
 ```

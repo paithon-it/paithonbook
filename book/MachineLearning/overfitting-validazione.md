@@ -1,11 +1,12 @@
 # Overfitting, bias-varianza e validazione
 
 C'è un modo infallibile per andare male a un esame: imparare a memoria le
-soluzioni dei compiti degli anni scorsi. Chi lo fa risponde alla perfezione alle
-domande già viste e va nel panico davanti a un esercizio anche solo leggermente
-diverso. Ha memorizzato, non capito. Un modello di machine learning può cadere
-esattamente nella stessa trappola — e distinguere la memoria dalla comprensione
-è, in fondo, il problema centrale di tutta la disciplina.
+soluzioni dei compiti degli anni scorsi. Chi lo fa risponde alla perfezione
+alle domande già viste e va nel panico davanti a un esercizio anche solo
+leggermente diverso. Ha memorizzato, non capito. Un modello di machine
+learning può cadere esattamente nella stessa trappola, e distinguere la
+memoria dalla comprensione è, in fondo, il problema centrale di tutta la
+disciplina.
 
 Nelle sezioni precedenti abbiamo detto che la posta in gioco non è riprodurre
 gli esempi già visti, ma **generalizzare** a input nuovi. Un modello che azzecca
@@ -48,12 +49,12 @@ Formalmente, l'errore che ci interessa è quello su dati **non** visti in
 addestramento, l'*errore di generalizzazione*. Confrontarlo con l'errore
 sull'insieme di training rivela il regime in cui ci troviamo:
 
-- **Underfitting** — errore di training *alto* e vicino a quello di test. Il
+- **Underfitting**: errore di training *alto* e vicino a quello di test. Il
   modello è troppo poco espressivo: non riesce a catturare la struttura dei
   dati (*bias* alto).
-- **Overfitting** — errore di training *molto basso* ma errore di test *alto*.
-  Il modello ha capacità in eccesso e adatta $f_\theta$ anche alle fluttuazioni
-  casuali del campione (*varianza* alta).
+- **Overfitting**: errore di training *molto basso* ma errore di test *alto*.
+  Il modello ha capacità in eccesso e adatta $f_\theta$ anche alle
+  fluttuazioni casuali del campione (*varianza* alta).
 
 Il divario tra i due errori, $\text{err}_{\text{test}} -
 \text{err}_{\text{train}}$, è la spia dell'overfitting: quando si allarga,
@@ -72,7 +73,7 @@ Immagina di ripetere l'esperimento: raccogli molte volte un nuovo campione di
 dati e riaddestri il modello ogni volta.
 
 - Un modello **rigido** (la retta) darà sempre più o meno la stessa risposta,
-  campione dopo campione — è *stabile* ma *sistematicamente storto*, perché la
+  campione dopo campione: è *stabile* ma *sistematicamente storto*, perché la
   forma giusta non è una retta. Questo errore sistematico è il **bias**.
 - Un modello **flessibile** (la curva contorta) cambierà parecchio a ogni nuovo
   campione, inseguendo il rumore di turno. È *senza pregiudizi* sulla forma, ma
@@ -111,11 +112,11 @@ Per accorgersi dell'overfitting bisogna misurare l'errore su dati che il modello
 **non ha usato** per imparare. Da qui la regola d'oro: si divide il dataset in
 tre parti, ciascuna con un compito distinto.
 
-- **Training set** — i dati su cui il modello impara i parametri $\theta$.
-- **Validation set** — i dati su cui si scelgono gli *iperparametri*, cioè le
+- **Training set**: i dati su cui il modello impara i parametri $\theta$.
+- **Validation set**, i dati su cui si scelgono gli *iperparametri*, cioè le
   scelte di contorno che non si imparano dai dati: quanto complesso può essere
   il modello, quanto forte il freno alla memorizzazione che vedremo tra poco.
-- **Test set** — i dati che si guardano **una sola volta**, alla fine, per
+- **Test set**: i dati che si guardano **una sola volta**, alla fine, per
   stimare onestamente le prestazioni nel mondo reale.
 
 `````{tab} Elementare
@@ -124,7 +125,7 @@ Il test set è il compito d'esame vero. Se lo sbirci mentre studi e aggiusti le
 tue scelte in base a quello, il voto finale non dice più nulla: hai imparato a
 memoria *quell'* esame. Per questo il test si tiene chiuso in un cassetto e si
 apre soltanto alla fine. Ogni volta che usi il test per decidere qualcosa, lo
-"consumi" — e il numero che ti restituisce diventa troppo ottimista.
+"consumi", e il numero che ti restituisce diventa troppo ottimista.
 
 `````
 
@@ -200,10 +201,10 @@ ogni volta che alza troppo i pesi, e quindi lo fa solo se ne vale davvero la pen
 `````{tab} Elementare
 
 Pensa alla regolarizzazione come a un budget di spesa sui pesi del modello.
-Senza limiti, per passare su ogni punto il modello gonfia i suoi coefficienti a
-dismisura: è così che nasce la curva contorta. Imponendo un tetto alla spesa
-totale, lo costringi a essere sobrio — e le curve sobrie sono più morbide, quindi
-generalizzano meglio. Due modi di contare la spesa:
+Senza limiti, per passare su ogni punto il modello gonfia i suoi coefficienti
+a dismisura: è così che nasce la curva contorta. Imponendo un tetto alla spesa
+totale, lo costringi a essere sobrio, e le curve sobrie sono più morbide,
+quindi generalizzano meglio. Due modi di contare la spesa:
 
 - **Ridge (L2)**: penalizza la *somma dei quadrati* dei pesi. Li rimpicciolisce
   tutti dolcemente, senza azzerarne nessuno.
@@ -233,10 +234,11 @@ $$
 $$
 
 Con $\lambda \to 0$ si torna al modello non regolarizzato (varianza alta); con
-$\lambda$ grande i pesi sono schiacciati verso zero (bias alto): $\lambda$ è la
-manopola del compromesso bias-varianza, e la si sceglie per cross-validation. La
-geometria spigolosa della norma $\ell_1$ è ciò che rende *sparse* le soluzioni
-del Lasso, annullando interi coefficienti — un selettore automatico di feature.
+$\lambda$ grande i pesi sono schiacciati verso zero (bias alto): $\lambda$ è
+la manopola del compromesso bias-varianza, e la si sceglie per
+cross-validation. La geometria spigolosa della norma $\ell_1$ è ciò che rende
+*sparse* le soluzioni del Lasso, annullando interi coefficienti: un selettore
+automatico di feature.
 
 `````
 
@@ -257,11 +259,12 @@ eleganza estetica: è ciò che permette di generalizzare.
 
 ## Quando la U non basta: la doppia discesa
 
-C'è un punto in cui il quadro appena disegnato entra in tensione con la pratica
-del deep learning, e vale la pena affrontarlo invece di ignorarlo. La curva a U
-dice: oltre una certa capacità l'errore di test risale. Eppure i modelli
-linguistici moderni hanno miliardi di parametri, molti più degli esempi di
-addestramento, memorizzano perfettamente il training set — e generalizzano.
+C'è un punto in cui il quadro appena disegnato entra in tensione con la
+pratica del deep learning, e vale la pena affrontarlo invece di ignorarlo. La
+curva a U dice: oltre una certa capacità l'errore di test risale. Eppure i
+modelli linguistici moderni hanno miliardi di parametri, molti più degli
+esempi di addestramento, memorizzano perfettamente il training set, e
+generalizzano.
 
 `````{tab} Elementare
 
@@ -270,11 +273,11 @@ ingrandire il modello *oltre* il punto in cui impara a memoria ogni esempio. E
 l'errore sul test, dopo essere risalito come previsto, **è tornato a scendere**.
 Non un caso fortunato: un fenomeno riproducibile, chiamato **doppia discesa**.
 
-La curva, insomma, non è una U ma una U seguita da una seconda discesa. Il picco
-sta esattamente nel punto di **interpolazione**: quando il modello ha giusto i
-parametri sufficienti per azzerare l'errore di training. Lì è costretto a
-passare per tutti i punti, rumore compreso, nell'unico modo che gli riesce —
-contorcendosi. È il momento peggiore.
+La curva, insomma, non è una U ma una U seguita da una seconda discesa. Il
+picco sta esattamente nel punto di **interpolazione**: quando il modello ha
+giusto i parametri sufficienti per azzerare l'errore di training. Lì è
+costretto a passare per tutti i punti, rumore compreso, nell'unico modo che
+gli riesce: contorcendosi. È il momento peggiore.
 
 Oltre quel punto, però, di soluzioni che passano per tutti i dati ce ne sono
 infinite, e l'addestramento non ne sceglie una a caso: la discesa del gradiente
@@ -296,22 +299,22 @@ in ambito neurale da Nakkiran e colleghi (2021). Tre precisazioni che evitano
 di trarne la conclusione sbagliata.
 
 **Non è solo la taglia del modello.** La doppia discesa si osserva anche
-rispetto al *tempo di addestramento* (epoch-wise) e alla *quantità di dati* — e
-in quest'ultimo caso produce l'effetto contro-intuitivo per cui, vicino al punto
-di interpolazione, **aggiungere dati può peggiorare** il test error.
+rispetto al *tempo di addestramento* (epoch-wise) e alla *quantità di dati*, e
+in quest'ultimo caso produce l'effetto contro-intuitivo per cui, vicino al
+punto di interpolazione, **aggiungere dati può peggiorare** il test error.
 
-**Il rasoio di Occam non è confutato, è misurato male.** Il numero di parametri
-è un pessimo proxy della complessità di una rete: la quantità che conta è una
-misura di norma della soluzione trovata, non di capacità dell'ipotesi. La
-discesa del gradiente ha un *bias implicito* verso soluzioni a norma piccola, e
-in quel senso continua a scegliere la spiegazione più semplice — solo che
-«semplice» non si conta in parametri.
+**Il rasoio di Occam non è confutato, è misurato male.** Il numero di
+parametri è un pessimo proxy della complessità di una rete: la quantità che
+conta è una misura di norma della soluzione trovata, non di capacità
+dell'ipotesi. La discesa del gradiente ha un *bias implicito* verso soluzioni
+a norma piccola, e in quel senso continua a scegliere la spiegazione più
+semplice: solo che «semplice» non si conta in parametri.
 
 **La regolarizzazione appiana il picco.** Con regolarizzazione adeguata la gobba
 attorno all'interpolazione si attenua o sparisce: la doppia discesa è più
 marcata proprio dove non si regolarizza.
 
-Resta parecchio da capire — quali architetture e quali regimi la mostrino, e
+Resta parecchio da capire: quali architetture e quali regimi la mostrino, e
 perché il bias implicito abbia la forma che ha. Il consiglio operativo non è
 cambiato, ma la sua motivazione sì: **non fermarsi al primo minimo della curva
 di validazione solo perché il modello sembra troppo grande.**
@@ -330,7 +333,7 @@ Il punto di partenza è un paradosso noto da tempo. Prendi una rete addestrata,
 elimina i pesi più piccoli: puoi buttarne via il $90\%$ senza quasi perdere
 accuratezza. Ma se poi provi a costruire da zero una rete piccola *con quella
 stessa struttura* e ad addestrarla, impara peggio. La potatura funziona solo
-**dopo** l'addestramento — e nessuno spiegava bene perché.
+**dopo** l'addestramento, e nessuno spiegava bene perché.
 
 Frankle e Carbin (2019) hanno provato una cosa diversa. Dopo aver potato, invece
 di ripartire con pesi casuali nuovi, hanno **riavvolto** i pesi sopravvissuti ai
@@ -365,10 +368,11 @@ $\theta_k$ dopo qualche iterazione di addestramento (*rewinding* tardivo). Il
 biglietto, quindi, non è del tutto presente all'inizializzazione: si forma nelle
 prime fasi.
 
-**Non è un metodo di compressione pratico.** Per *trovare* il biglietto bisogna
-addestrare la rete piena, più volte. Il valore è conoscitivo — dice qualcosa su
-cosa fa la sovraparametrizzazione — non computazionale. Per comprimere davvero
-si usano la potatura strutturata e la quantizzazione del capitolo su MLOps.
+**Non è un metodo di compressione pratico.** Per *trovare* il biglietto
+bisogna addestrare la rete piena, più volte. Il valore è conoscitivo (dice
+qualcosa su cosa fa la sovraparametrizzazione) non computazionale. Per
+comprimere davvero si usano la potatura strutturata e la quantizzazione del
+capitolo su MLOps.
 
 Il filo con la sezione precedente è comunque lo stesso: il numero di parametri
 misura male la complessità. La doppia discesa lo mostra dall'esterno, guardando

@@ -1,12 +1,12 @@
 # Esempi pratici
 
 Dopo tanta architettura, mettiamo i Transformer al lavoro su due compiti
-concreti: tradurre una frase e capire se una recensione è entusiasta o
-delusa. Sono gli stessi esempi che un lettore incontra ogni giorno senza
-pensarci — il tasto "traduci" sotto un post, il termometro delle recensioni
-di un prodotto — e per fortuna non serve addestrare nulla da zero: la
-libreria `transformers` di Hugging Face, costruita su PyTorch, mette a
-disposizione migliaia di modelli già addestrati.
+concreti: tradurre una frase e capire se una recensione è entusiasta o delusa.
+Sono gli stessi esempi che un lettore incontra ogni giorno senza pensarci (il
+tasto "traduci" sotto un post, il termometro delle recensioni di un prodotto)
+e per fortuna non serve addestrare nulla da zero: la libreria `transformers`
+di Hugging Face, costruita su PyTorch, mette a disposizione migliaia di
+modelli già addestrati.
 
 ## Traduzione automatica
 
@@ -19,12 +19,11 @@ Segui il viaggio di "The cat sits on the mat". Prima la frase viene spezzata
 in mattoncini (le parole o pezzi di parola: i *token*) e l'encoder la legge
 tutta, costruendo per ogni parola quella rappresentazione ricca di contesto
 che conosciamo. Poi il decoder comincia a scrivere in italiano, una parola
-alla volta: quando deve produrre "gatto" il suo evidenziatore punta su
-"cat", quando produce "siede" punta su "sits". Non è un dizionario che
-sostituisce parola per parola: è più simile a un traduttore che legge tutta
-la frase, la capisce, e la riscrive — infatti se la frase fosse "The cat
-sits on the *bank*", saprebbe scegliere tra "panchina" e "banca" guardando
-il contesto.
+alla volta: quando deve produrre "gatto" il suo evidenziatore punta su "cat",
+quando produce "siede" punta su "sits". Non è un dizionario che sostituisce
+parola per parola: è più simile a un traduttore che legge tutta la frase, la
+capisce, e la riscrive, infatti se la frase fosse "The cat sits on the
+*bank*", saprebbe scegliere tra "panchina" e "banca" guardando il contesto.
 `````
 
 `````{tab} Superiore
@@ -54,7 +53,7 @@ token), **inferenza** con `generate` (encoder e decoder Transformer, con
 generazione autoregressiva e maschera causale) e **decodifica** (dagli id di
 token al testo). La libreria offre anche una scorciatoia, `pipeline`, che li
 incapsula in una riga; qui li teniamo separati perché sono esattamente i pezzi
-che il capitolo ha spiegato — e perché i nomi delle scorciatoie cambiano tra
+che il capitolo ha spiegato, e perché i nomi delle scorciatoie cambiano tra
 versioni, mentre `AutoTokenizer` e `generate` no. Sotto il cofano il modello è
 un `nn.Module` PyTorch come quelli del capitolo su PyTorch: con
 `modello.named_parameters()` si ispezionano strati, teste di attenzione e
@@ -63,18 +62,18 @@ parametri.
 
 ## Analisi del sentiment
 
-Qui il Transformer non deve generare nulla: deve *capire* e classificare —
-positivo, negativo — un compito perfetto per un modello solo-encoder.
+Qui il Transformer non deve generare nulla: deve *capire* e classificare
+(positivo, negativo) un compito perfetto per un modello solo-encoder.
 
 `````{tab} Elementare
-"Mi è piaciuto moltissimo questo prodotto!" e "Una delusione totale": per te
-è ovvio, e il bello è che ormai lo è anche per la macchina — comprese le
+"Mi è piaciuto moltissimo questo prodotto!" e "Una delusione totale": per te è
+ovvio, e il bello è che ormai lo è anche per la macchina; comprese le
 sfumature che fregavano i sistemi vecchi, tipo "non è affatto male", dove le
 parole "non" e "male" sembrano negative ma la frase è un complimento. Il
 modello legge la frase intera con l'attenzione, così "non" e "male" si
-guardano a vicenda e il significato combinato emerge. Aziende e ricercatori
-lo usano per misurare l'umore di migliaia di recensioni o commenti in pochi
-secondi — un lavoro che a mano richiederebbe settimane.
+guardano a vicenda e il significato combinato emerge. Aziende e ricercatori lo
+usano per misurare l'umore di migliaia di recensioni o commenti in pochi
+secondi: un lavoro che a mano richiederebbe settimane.
 `````
 
 `````{tab} Superiore
@@ -99,12 +98,12 @@ for r in recensioni:
 
 Il modello è un BERT multilingue rifinito (*fine-tuned*) su recensioni: la
 classificazione usa la rappresentazione del token speciale `[CLS]` passata a
-una testa lineare — architettura solo-encoder, senza generazione. Si noti la
-**confidenza**: un classificatore serio si valuta con le metriche del
-capitolo sul machine learning (accuratezza, precision/recall), e su domini
-diversi da quello di addestramento (ironia, sarcasmo, gergo) le prestazioni
-calano sensibilmente. La demo è convincente; la validazione sul *tuo* dominio
-resta obbligatoria.
+una testa lineare (architettura solo-encoder, senza generazione). Si noti la
+**confidenza**: un classificatore serio si valuta con le metriche del capitolo
+sul machine learning (accuratezza, precision/recall), e su domini diversi da
+quello di addestramento (ironia, sarcasmo, gergo) le prestazioni calano
+sensibilmente. La demo è convincente; la validazione sul *tuo* dominio resta
+obbligatoria.
 `````
 
 ```{admonition} Da ricordare

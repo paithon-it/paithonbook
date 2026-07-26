@@ -1,10 +1,11 @@
 # Modelli di sequenza: da RNN ai Transformer
 
-Leggi questa frase da sinistra a destra, una parola alla volta. Quando arrivi a
-«lo» o a «quello», la tua mente sa già a cosa si riferisce, perché ha tenuto in
-memoria ciò che è venuto prima. Il linguaggio funziona così: ogni parola prende
-senso dalla scia di quelle che la precedono. «Il gatto nero salta sul muro» non
-è un sacchetto di parole mescolabili a piacere — l'ordine *è* il significato.
+Leggi questa frase da sinistra a destra, una parola alla volta. Quando arrivi
+a «lo» o a «quello», la tua mente sa già a cosa si riferisce, perché ha tenuto
+in memoria ciò che è venuto prima. Il linguaggio funziona così: ogni parola
+prende senso dalla scia di quelle che la precedono. «Il gatto nero salta sul
+muro» non è un sacchetto di parole mescolabili a piacere: l'ordine *è* il
+significato.
 
 Un modello che vuole capire o generare testo deve quindi fare due cose che una
 comune rete *feed-forward* non sa fare: trattare l'input come una **sequenza**
@@ -16,8 +17,8 @@ passati dalle prime reti con memoria fino alla vigilia dei Transformer.
 
 L'idea delle **reti neurali ricorrenti** (RNN, *Recurrent Neural Network*) è
 elegante: invece di guardare tutta la frase in un colpo solo, la rete la
-percorre un elemento alla volta e mantiene uno **stato nascosto** — un vettore
-di numeri — che aggiorna a ogni passo. Quello stato è la sua memoria di lavoro:
+percorre un elemento alla volta e mantiene uno **stato nascosto** (un vettore
+di numeri) che aggiorna a ogni passo. Quello stato è la sua memoria di lavoro:
 riassume «tutto ciò che ho letto finora».
 
 ```{figure} ../figures/rnn-srotolata.svg
@@ -39,10 +40,10 @@ passare di mano in mano.
 Immagina di leggere un libro tenendo accanto un foglietto su cui scrivi, riga
 dopo riga, un riassunto di ciò che è successo finora. Per ogni nuova frase fai
 sempre lo stesso gesto: guardi la frase, guardi il foglietto, e riscrivi il
-foglietto aggiornato. Il foglietto è lo **stato nascosto**; il gesto che ripeti
-è la cella della RNN. È «la stessa mano» che lavora a ogni riga — per questo la
-rete ha bisogno di pochi parametri anche per testi lunghissimi: non impara un
-gesto diverso per ogni parola, ne impara uno solo e lo riusa.
+foglietto aggiornato. Il foglietto è lo **stato nascosto**; il gesto che
+ripeti è la cella della RNN. È «la stessa mano» che lavora a ogni riga, per
+questo la rete ha bisogno di pochi parametri anche per testi lunghissimi: non
+impara un gesto diverso per ogni parola, ne impara uno solo e lo riusa.
 
 `````
 
@@ -108,10 +109,9 @@ dipendenze su molti passi.
 ## LSTM e GRU: cancelli per la memoria
 
 La soluzione, proposta da Sepp Hochreiter e Jürgen Schmidhuber
-{cite}`hochreiter1997long`, è la
-**LSTM** (*Long Short-Term Memory*). L'intuizione: dare alla cella una memoria
-protetta, e insegnarle a decidere — con dei «cancelli» — cosa scrivere, cosa
-cancellare e cosa leggere.
+{cite}`hochreiter1997long`, è la **LSTM** (*Long Short-Term Memory*).
+L'intuizione: dare alla cella una memoria protetta, e insegnarle a decidere
+(con dei «cancelli») cosa scrivere, cosa cancellare e cosa leggere.
 
 `````{tab} Elementare
 
@@ -119,7 +119,7 @@ Immagina che il foglietto dei riassunti abbia ora tre interruttori. Il primo
 decide quanto del vecchio riassunto **dimenticare**; il secondo quanto della
 nuova frase **annotare**; il terzo quanto del riassunto **mostrare** in uscita
 al passo successivo. Sono i **gate** (cancelli). Grazie a loro un'informazione
-importante — «stiamo parlando di *chiavi*, plurale» — può restare intatta per
+importante («stiamo parlando di *chiavi*, plurale») può restare intatta per
 molte righe, finché serve, senza essere sovrascritta. La rete impara da sola
 quando aprire e chiudere ogni interruttore.
 
@@ -128,8 +128,8 @@ quando aprire e chiudere ogni interruttore.
 `````{tab} Superiore
 
 La LSTM affianca allo stato nascosto $h_t$ uno **stato di cella** $c_t$, la
-memoria a lungo termine. Tre gate — *forget* $f_t$, *input* $i_t$, *output*
-$o_t$ — sono vettori in $[0,1]$ prodotti da una sigmoide $\sigma$:
+memoria a lungo termine. Tre gate (*forget* $f_t$, *input* $i_t$, *output*
+$o_t$) sono vettori in $[0,1]$ prodotti da una sigmoide $\sigma$:
 
 $$
 f_t = \sigma(W_f[h_{t-1},x_t]+b_f), \quad
@@ -157,7 +157,7 @@ meno parametri.
 
 ## In pratica, con PyTorch
 
-Tutta questa storia — cella ricorrente, gate, stato nascosto — in PyTorch si
+Tutta questa storia (cella ricorrente, gate, stato nascosto) in PyTorch si
 condensa in un piccolo `nn.Module`. Le tre celle (`nn.RNN`, `nn.LSTM`,
 `nn.GRU`) espongono la stessa interfaccia: si sostituiscono l'una all'altra
 cambiando una sola parola.
@@ -207,24 +207,25 @@ turno.
 La ricorrenza $h_t = f(h_{t-1}, x_t)$ è intrinsecamente **sequenziale**: il
 calcolo su una sequenza di lunghezza $n$ richiede $O(n)$ passi che non possono
 essere parallelizzati lungo l'asse temporale. Questo mal si sposa con le GPU,
-progettate per eseguire in parallelo enormi moltiplicazioni tra matrici. Inoltre
-il segnale tra due token distanti deve attraversare $O(n)$ celle, il che rende
-ancora arduo — pur mitigato dai gate — l'apprendimento di dipendenze molto lunghe.
+progettate per eseguire in parallelo enormi moltiplicazioni tra matrici.
+Inoltre il segnale tra due token distanti deve attraversare $O(n)$ celle, il
+che rende ancora arduo (pur mitigato dai gate) l'apprendimento di dipendenze
+molto lunghe.
 
 `````
 
 ## Dove ci porta tutto questo
 
 Le celle ricorrenti che abbiamo costruito qui sono i mattoni del passo
-successivo: mettere due RNN una di fronte all'altra — una che legge, una che
-scrive — e fargli **tradurre una frase intera**. È la storia della prossima
+successivo: mettere due RNN una di fronte all'altra (una che legge, una che
+scrive) e fargli **tradurre una frase intera**. È la storia della prossima
 sezione, ed è proprio lì, per rimediare ai limiti di questa architettura, che
 nascerà il meccanismo di **attenzione**: la possibilità, per ogni parola in
 uscita, di tornare a guardare tutte le parole in ingresso e pesare da sola
 quali contano.
 
 Quell'idea si rivelerà così potente da fare, nel 2017, un passo ulteriore:
-eliminare del tutto la ricorrenza e tenere solo l'attenzione — è la tesi di
+eliminare del tutto la ricorrenza e tenere solo l'attenzione; è la tesi di
 *«Attention Is All You Need»* {cite}`vaswani2017attention`, il salto che ha
 reso possibili i grandi modelli linguistici di oggi e a cui è dedicato un
 intero capitolo. Le RNN, LSTM e GRU restano però fondamentali: sono il modo

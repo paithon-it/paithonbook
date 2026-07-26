@@ -11,11 +11,11 @@ strette di mano di distanza.
 
 Questo passaparola a giri è, alla lettera, il modo in cui una rete neurale su
 grafo elabora l'informazione. La sezione «Il mondo come grafo» ha messo in
-forma il dato — la matrice di adiacenza $A$, la matrice delle feature dei nodi
+forma il dato: la matrice di adiacenza $A$, la matrice delle feature dei nodi
 $X$, la matrice diagonale dei gradi $D$, e la versione con i cappi
-$\tilde{A} = A + I$. L'introduzione al capitolo gli ha dato un nome:
-**message passing**, «scambio di messaggi». Qui lo apriamo: prima nella sua
-forma generale, poi nella sua incarnazione più usata, la *Graph Convolutional
+$\tilde{A} = A + I$. L'introduzione al capitolo gli ha dato un nome: **message
+passing**, «scambio di messaggi». Qui lo apriamo: prima nella sua forma
+generale, poi nella sua incarnazione più usata, la *Graph Convolutional
 Network*, che ricaveremo passo dopo passo e faremo girare, coi numeri alla
 mano, su un grafo minuscolo.
 
@@ -39,20 +39,22 @@ due strati, il campo recettivo cresce dai vicini diretti ai vicini dei vicini.
 `````{tab} Elementare
 
 Pensa a ogni nodo come a una persona con una scheda su cui scrive «chi sono».
-A ogni giro fa tre cose, sempre nell'ordine. **Primo**, ascolta: ogni amico gli
-passa un bigliettino con scritto ciò che c'è sulla propria scheda — sono i
-*messaggi*. **Secondo**, mette insieme i bigliettini in un unico riassunto. E
-qui c'è un dettaglio importante: il riassunto non deve dipendere dall'ordine in
-cui arrivano i bigliettini, perché tra amici non c'è un «primo» e un «ultimo».
-Un riassunto che va bene è la **somma**, o la **media**: cambi l'ordine degli
-addendi e il totale non cambia. **Terzo**, aggiorna la propria scheda mettendo
-insieme il riassunto degli amici e quello che già sapeva di sé.
+A ogni giro fa tre cose, sempre nell'ordine. **Primo**, ascolta: ogni amico
+gli passa un bigliettino con scritto ciò che c'è sulla propria scheda (sono i
+*messaggi*). **Secondo**, mette insieme i bigliettini in un unico riassunto. E
+qui c'è un dettaglio importante: il riassunto non deve dipendere dall'ordine
+in cui arrivano i bigliettini, perché tra amici non c'è un «primo» e un
+«ultimo». Un riassunto che va bene è la **somma**, o la **media**: cambi
+l'ordine degli addendi e il totale non cambia. **Terzo**, aggiorna la propria
+scheda mettendo insieme il riassunto degli amici e quello che già sapeva di
+sé.
 
-Fatto questo per tutti i nodi, il giro è finito e se ne può fare un altro. È lo
-stesso identico meccanismo per ogni persona della rete: nessuno ha una regola
-speciale. Proprio come nella convoluzione delle immagini, dove lo stesso
-piccolo filtro scorre su tutti i pixel — solo che qui i «vicini» non sono i
-quattro pixel accanto, ma gli amici sul grafo, che possono essere due o dieci.
+Fatto questo per tutti i nodi, il giro è finito e se ne può fare un altro. È
+lo stesso identico meccanismo per ogni persona della rete: nessuno ha una
+regola speciale. Proprio come nella convoluzione delle immagini, dove lo
+stesso piccolo filtro scorre su tutti i pixel: solo che qui i «vicini» non
+sono i quattro pixel accanto, ma gli amici sul grafo, che possono essere due o
+dieci.
 
 `````
 
@@ -73,7 +75,7 @@ $$
 Qui $\mathcal{N}(v)$ è l'insieme dei vicini di $v$; $M_k$ è la **funzione
 messaggio** (una rete, che può usare anche la feature dell'arco $e_{vu}$); il
 simbolo $\bigoplus$ è l'**aggregazione**, un'operazione *invariante alla
-permutazione* dei vicini — tipicamente $\sum$, la media o il massimo — che
+permutazione* dei vicini (tipicamente $\sum$, la media o il massimo) che
 produce il messaggio aggregato $m_v^{(k)}$; e $U_k$ è la **funzione di
 aggiornamento** che fonde lo stato precedente con $m_v^{(k)}$. Dopo $K$ passi,
 per un compito sull'intero grafo si applica una funzione di lettura
@@ -83,7 +85,7 @@ $\hat{y}_G = R\big(\{\, h_v^{(K)} : v \in V \,\}\big)$.
 L'invarianza di $\bigoplus$ è ciò che garantisce l'**equivarianza alla
 permutazione** anticipata nell'introduzione: rinumerare i nodi non cambia i
 messaggi, perché una somma non ha un primo addendo. Ed è la stessa forma
-astratta — «aggrega dai vicini, poi aggiorna» — dello schema
+astratta («aggrega dai vicini, poi aggiorna») dello schema
 $\mathrm{AGGREGATE}$/$\mathrm{UPDATE}$ visto nell'overview del capitolo, qui
 resa esplicita nelle sue tre componenti apprendibili.
 
@@ -92,8 +94,8 @@ resa esplicita nelle sue tre componenti apprendibili.
 ## Dalla formula alla matrice: la GCN
 
 La MPNN è un telaio: per avere un modello concreto bisogna scegliere le tre
-mosse. La scelta più celebre — semplice, veloce, e ancora oggi il primo modello
-che si prova su un grafo — è la **Graph Convolutional Network** (GCN),
+mosse. La scelta più celebre (semplice, veloce, e ancora oggi il primo modello
+che si prova su un grafo) è la **Graph Convolutional Network** (GCN),
 presentata nel 2017 da Thomas Kipf e Max Welling {cite}`kipf2017semi`. La sua
 regola di propagazione, da uno strato al successivo, sta in una riga:
 
@@ -117,8 +119,8 @@ Ogni simbolo ha un ruolo preciso:
   più uno per il cappio).
 - $\hat{A} = \tilde{D}^{-1/2}\,\tilde{A}\,\tilde{D}^{-1/2}$ è l'adiacenza
   **normalizzata in modo simmetrico**: il pezzo che pesa i messaggi.
-- $W^{(l)}$ è la matrice dei pesi appresi dello strato — la stessa per tutti i
-  nodi, come il filtro di una CNN — e $\sigma$ una non-linearità (di solito la
+- $W^{(l)}$ è la matrice dei pesi appresi dello strato (la stessa per tutti i
+  nodi, come il filtro di una CNN) e $\sigma$ una non-linearità (di solito la
   ReLU).
 
 Letta nodo per nodo, la riga matriciale dice esattamente «aggrega, poi
@@ -147,7 +149,7 @@ i vicini, ma dividere per $\sqrt{\tilde{d}_v\,\tilde{d}_u}$?
 Immagina un'aggregazione che somma e basta, senza dividere. Un nodo con dieci
 amici riceve dieci bigliettini e li somma: un numerone. Un nodo con due amici
 ottiene un numero piccolo. Dopo qualche giro, i nodi «popolari» hanno valori
-enormi e quelli isolati valori minuscoli — non perché contino di più, ma solo
+enormi e quelli isolati valori minuscoli: non perché contino di più, ma solo
 perché hanno più connessioni. La rete finirebbe per confondere «essere
 importante» con «avere tanti amici».
 
@@ -171,15 +173,15 @@ sconta il grado di *entrambi* gli estremi. Il vantaggio è duplice.
 Primo, la **scala**. Senza normalizzazione, moltiplicare ripetutamente per
 $\tilde{A}$ amplifica i valori sui nodi ad alto grado in modo incontrollato;
 gli autovalori di $\hat{A}$ stanno invece nell'intervallo $[-1, 1]$, così
-impilare molti strati non fa esplodere né svanire il segnale — è il collegamento
-diretto con il problema dei gradienti nelle reti profonde, discusso nella
-sezione sulla backpropagation. Kipf e Welling la chiamano *renormalization
-trick*: passare da $D^{-1/2}(A+I)D^{-1/2}$ con la $D$ «sbagliata» alla forma
-coerente $\tilde{D}^{-1/2}\tilde{A}\tilde{D}^{-1/2}$ con $\tilde{D}$ calcolata
-su $\tilde{A}$, cappi inclusi.
+impilare molti strati non fa esplodere né svanire il segnale: è il
+collegamento diretto con il problema dei gradienti nelle reti profonde,
+discusso nella sezione sulla backpropagation. Kipf e Welling la chiamano
+*renormalization trick*: passare da $D^{-1/2}(A+I)D^{-1/2}$ con la $D$
+«sbagliata» alla forma coerente $\tilde{D}^{-1/2}\tilde{A}\tilde{D}^{-1/2}$
+con $\tilde{D}$ calcolata su $\tilde{A}$, cappi inclusi.
 
 Secondo, l'**origine spettrale**. La GCN nasce come approssimazione al
-prim'ordine di una convoluzione definita nel dominio spettrale del grafo — i
+prim'ordine di una convoluzione definita nel dominio spettrale del grafo: i
 filtri polinomiali di Čebyšëv di Defferrard, Bresson e Vandergheynst
 {cite}`defferrard2016convolutional`. Troncare quel polinomio al primo grado e
 riordinare i termini restituisce esattamente $\hat{A}$: è da qui che la
@@ -193,7 +195,7 @@ numero piccolo di strati e si addestra come una qualunque rete profonda.
 ## Un passo di propagazione, coi numeri
 
 Vale più di mille formule vedere i conti tornare. Prendiamo un grafo a quattro
-nodi disposti in catena — $1 - 2 - 3 - 4$ — con una feature scalare per nodo,
+nodi disposti in catena ($1 - 2 - 3 - 4$) con una feature scalare per nodo,
 $X = (1,\, 2,\, 3,\, 4)^\top$. Calcoliamo un passo di GCN a mano, scegliendo
 $W = I$ e $\sigma = \text{identità}$ per isolare l'effetto della sola
 propagazione $\hat{A}\,H$.
@@ -217,7 +219,7 @@ A = \begin{bmatrix}
 $$
 
 Sommando le righe di $\tilde{A}$ otteniamo i gradi con cappio,
-$\tilde{d} = (2,\, 3,\, 3,\, 2)$ — i due nodi di bordo hanno un vicino, i due
+$\tilde{d} = (2,\, 3,\, 3,\, 2)$: i due nodi di bordo hanno un vicino, i due
 interni ne hanno due, più il cappio. Dunque
 
 $$
@@ -291,15 +293,15 @@ ciò che sta entro $K$ passi da lui. La striscia in basso nella
 
 Impilare $K$ strati di GCN corrisponde ad applicare $K$ volte l'operatore di
 propagazione: lo stato finale $h_v^{(K)}$ dipende da tutti i nodi $u$ per cui
-esiste un cammino di lunghezza $\le K$ fino a $v$ — il **campo recettivo** a
+esiste un cammino di lunghezza $\le K$ fino a $v$ (il **campo recettivo** a
 $K$ salti, l'analogo esatto del campo recettivo che cresce con la profondità
-nelle CNN. Da qui due indicazioni pratiche. Primo, la profondità va scelta in
-base al **diametro** del vicinato utile: due o tre strati bastano quasi sempre,
-perché il numero di nodi raggiunti cresce in fretta col grado. Secondo, andare
-troppo profondi è controproducente: applicando molte volte $\hat{A}$ le
-rappresentazioni dei nodi convergono verso un unico punto e diventano
-indistinguibili — il fenomeno dell'*over-smoothing*, per cui in pratica le GCN
-molto profonde rendono peggio di quelle a due strati.
+nelle CNN). Da qui due indicazioni pratiche. Primo, la profondità va scelta in
+base al **diametro** del vicinato utile: due o tre strati bastano quasi
+sempre, perché il numero di nodi raggiunti cresce in fretta col grado.
+Secondo, andare troppo profondi è controproducente: applicando molte volte
+$\hat{A}$ le rappresentazioni dei nodi convergono verso un unico punto e
+diventano indistinguibili; il fenomeno dell'*over-smoothing*, per cui in
+pratica le GCN molto profonde rendono peggio di quelle a due strati.
 
 `````
 
@@ -315,14 +317,15 @@ vicini e arrivano anch'essi.
 
 La {numref}`fig-message-passing-animato` rende evidente il punto che rende
 delicata la profondità: l'informazione lontana non salta, **transita**. Ogni
-strato in più la fa passare per un altro nodo, che la mescola con la propria —
-ed è proprio questa mescolanza ripetuta a produrre, alla lunga, l'over-smoothing.
+strato in più la fa passare per un altro nodo, che la mescola con la propria,
+ed è proprio questa mescolanza ripetuta a produrre, alla lunga,
+l'over-smoothing.
 
 ## Addestrare: classificare i nodi con poche etichette
 
-Con lo schema in mano, addestrare una GCN è la solita storia: definire una loss,
-calcolarne il gradiente con la backpropagation e scendere lungo di esso — le
-stesse regole della sezione sull'addestramento delle reti. Cambia solo la
+Con lo schema in mano, addestrare una GCN è la solita storia: definire una
+loss, calcolarne il gradiente con la backpropagation e scendere lungo di esso
+(le stesse regole della sezione sull'addestramento delle reti). Cambia solo la
 forma del dato. Il banco di prova classico è **Cora**: un grafo di circa 2700
 articoli scientifici (i nodi), collegati da un arco quando uno cita l'altro
 (circa 5400 archi), ciascuno descritto da una feature *bag-of-words* di 1433
@@ -330,14 +333,14 @@ parole e da etichettare in una di 7 categorie tematiche.
 
 `````{tab} Elementare
 
-La particolarità è che conosciamo l'argomento di **pochissimi** articoli — nel
-setup standard di Cora appena 20 per categoria, 140 nodi in tutto su 2700 — e
+La particolarità è che conosciamo l'argomento di **pochissimi** articoli (nel
+setup standard di Cora appena 20 per categoria, 140 nodi in tutto su 2700) e
 vogliamo indovinare quello di tutti gli altri. Come si fa con così poche
-risposte in mano? Sfruttando i collegamenti: un articolo tende a citare articoli
-del suo stesso campo. Il message passing fa scorrere le poche etichette note
-lungo le citazioni, contagiando i vicini. È come indovinare gli hobby di una
-comitiva conoscendone solo alcuni: chi frequenta i patiti di scacchi,
-probabilmente gioca a scacchi anche lui.
+risposte in mano? Sfruttando i collegamenti: un articolo tende a citare
+articoli del suo stesso campo. Il message passing fa scorrere le poche
+etichette note lungo le citazioni, contagiando i vicini. È come indovinare gli
+hobby di una comitiva conoscendone solo alcuni: chi frequenta i patiti di
+scacchi, probabilmente gioca a scacchi anche lui.
 
 Il trucco è che, pur pagando (con la loss) solo gli errori sui 140 articoli che
 conosciamo, per rispondere su di essi la rete ha dovuto far girare
@@ -369,12 +372,13 @@ $$
 $$
 
 dove $y_{vc}$ è l'etichetta one-hot del nodo $v$ per la classe $c$ e $C$ il
-numero di classi. Il punto sottile è che $z_v$ dipende, tramite $\hat{A}$, dalle
-feature dell'intero vicinato a due salti: il gradiente di $\mathcal{L}$ fluisce
-quindi indietro anche attraverso nodi **non** etichettati, che partecipano
-all'addestramento pur senza comparire nella somma. La GCN originale raggiunge
-circa l'$81{,}5\%$ di accuratezza sul test di Cora — un balzo netto rispetto ai
-metodi precedenti, ottenuto con appena due strati e $140$ nodi etichettati.
+numero di classi. Il punto sottile è che $z_v$ dipende, tramite $\hat{A}$,
+dalle feature dell'intero vicinato a due salti: il gradiente di $\mathcal{L}$
+fluisce quindi indietro anche attraverso nodi **non** etichettati, che
+partecipano all'addestramento pur senza comparire nella somma. La GCN
+originale raggiunge circa l'$81{,}5\%$ di accuratezza sul test di Cora: un
+balzo netto rispetto ai metodi precedenti, ottenuto con appena due strati e
+$140$ nodi etichettati.
 
 `````
 
@@ -430,10 +434,10 @@ for epoca in range(200):
 
 In pratica non serve scrivere lo strato a mano: la libreria **PyTorch
 Geometric** offre `GCNConv`, che aggiunge i cappi e applica la normalizzazione
-simmetrica al volo, prendendo il grafo nel formato compatto `edge_index`
-(la lista degli archi, di forma `(2, num_archi)`) invece della matrice
-$\hat{A}$ densa — indispensabile sui grafi grandi, dove $\hat{A}$ non entrerebbe
-in memoria:
+simmetrica al volo, prendendo il grafo nel formato compatto `edge_index` (la
+lista degli archi, di forma `(2, num_archi)`) invece della matrice $\hat{A}$
+densa, indispensabile sui grafi grandi, dove $\hat{A}$ non entrerebbe in
+memoria:
 
 ```python
 from torch_geometric.nn import GCNConv

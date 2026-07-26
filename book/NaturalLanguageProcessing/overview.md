@@ -1,12 +1,12 @@
 # Natural Language Processing
 
-Nel 1954 un gruppo di ricercatori di IBM e della Georgetown University annunciò
-al mondo una traduzione automatica dal russo all'inglese: sessanta frasi,
-tradotte da un calcolatore, davanti alla stampa entusiasta. Il progetto
-prometteva di risolvere la traduzione "in tre, forse cinque anni". Ne servirono
-molti di più — e la lezione che ne uscì è ancora il cuore di questo capitolo:
-il linguaggio umano sembra semplice perché lo maneggiamo senza sforzo, ma per
-una macchina è uno dei problemi più ostici che esistano.
+Nel 1954 un gruppo di ricercatori di IBM e della Georgetown University
+annunciò al mondo una traduzione automatica dal russo all'inglese: sessanta
+frasi, tradotte da un calcolatore, davanti alla stampa entusiasta. Il progetto
+prometteva di risolvere la traduzione "in tre, forse cinque anni". Ne
+servirono molti di più, e la lezione che ne uscì è ancora il cuore di questo
+capitolo: il linguaggio umano sembra semplice perché lo maneggiamo senza
+sforzo, ma per una macchina è uno dei problemi più ostici che esistano.
 
 Il **Natural Language Processing** (NLP, elaborazione del linguaggio naturale)
 è la disciplina che insegna ai calcolatori a leggere, capire e produrre testo.
@@ -63,8 +63,8 @@ continuo, e attraversano tutto il resto del capitolo.
   È spam o no? Questa recensione è positiva o negativa? Questa email va allo
   sportello "reclami" o "fatturazione"?
 - **Traduzione automatica** (*machine translation*): trasformare una frase da
-  una lingua all'altra preservandone il senso — proprio la promessa di
-  Georgetown del 1954.
+  una lingua all'altra preservandone il senso (proprio la promessa di
+  Georgetown del 1954).
 - **Riconoscimento di entità nominate** (*Named Entity Recognition*, NER):
   individuare nel testo persone, luoghi, organizzazioni, date. In "Enrico Fermi
   nacque a Roma nel 1901", un sistema NER etichetta *Enrico Fermi* come
@@ -98,7 +98,7 @@ la lingua, le si dà da leggere montagne di testo e la si lascia notare le
 regolarità: dopo "buon" viene spesso "giorno", raramente "sasso". Con la
 diffusione di internet il testo da leggere è diventato praticamente infinito,
 e i modelli hanno imparato a **rappresentare le parole come punti in uno
-spazio**, mettendo vicine quelle che compaiono in contesti simili — così "re" e
+spazio**, mettendo vicine quelle che compaiono in contesti simili: così "re" e
 "regina" finiscono vicini. L'ultimo salto, nel 2017, è stato un modello capace
 di guardare l'intera frase in una volta e pesare quali parole contano davvero.
 
@@ -132,22 +132,22 @@ inserita a mano** in favore di rappresentazioni apprese direttamente dal testo.
 ## Come è organizzato il capitolo
 
 Nelle sezioni seguenti seguiremo questa stessa parabola, ma da vicino. Si
-parte dalla **cassetta degli attrezzi classica** — espressioni regolari,
-normalizzazione, distanza di edit — poi il testo diventa numeri: dalla
-*tokenizzazione* al conteggio *bag-of-words*, fino agli *embedding* densi.
-Con i numeri in mano affronteremo i compiti, uno alla volta: **classificare**
-un testo (da Naive Bayes alla regressione logistica), **scommettere sulla
-parola successiva** con i modelli *n-gram*, **ricordare** con le reti
-ricorrenti, **tradurre** con encoder–decoder e attenzione, **etichettare**
-parole ed entità (POS tagging e NER, con il classico algoritmo di Viterbi),
-scoprire la **struttura della frase** con il parsing e, per chiudere il
-cerchio aperto da ELIZA nell'Introduzione, **parlare con le macchine**:
-dialogo e chatbot. Ovunque, esempi in Python su `scikit-learn` e PyTorch,
-tenendo l'italiano come lingua di lavoro.
+parte dalla **cassetta degli attrezzi classica** (espressioni regolari,
+normalizzazione, distanza di edit) poi il testo diventa numeri: dalla
+*tokenizzazione* al conteggio *bag-of-words*, fino agli *embedding* densi. Con
+i numeri in mano affronteremo i compiti, uno alla volta: **classificare** un
+testo (da Naive Bayes alla regressione logistica), **scommettere sulla parola
+successiva** con i modelli *n-gram*, **ricordare** con le reti ricorrenti,
+**tradurre** con encoder–decoder e attenzione, **etichettare** parole ed
+entità (POS tagging e NER, con il classico algoritmo di Viterbi), scoprire la
+**struttura della frase** con il parsing e, per chiudere il cerchio aperto da
+ELIZA nell'Introduzione, **parlare con le macchine**: dialogo e chatbot.
+Ovunque, esempi in Python su `scikit-learn` e PyTorch, tenendo l'italiano come
+lingua di lavoro.
 
 L'ultima tappa, i **Transformer**, merita un capitolo tutto suo: è
 l'architettura che ha ridefinito non solo il NLP ma buona parte dell'AI
 contemporanea, e la tratteremo in dettaglio nel capitolo dedicato. Qui basti
-sapere dove stiamo andando: da un calcolatore che nel 1954 arrancava su sessanta
-frasi, a modelli che oggi traducono, riassumono e conversano — senza mai, va
-detto con onestà, "capire" nel senso in cui capiamo noi.
+sapere dove stiamo andando: da un calcolatore che nel 1954 arrancava su
+sessanta frasi, a modelli che oggi traducono, riassumono e conversano, senza
+mai, va detto con onestà, "capire" nel senso in cui capiamo noi.

@@ -11,7 +11,7 @@ di volte contro se stesso.
 
 Come si insegna a una macchina una strategia? Nei metodi basati sul valore,
 che abbiamo incontrato con il Q-learning, impariamo a stimare *quanto vale*
-uno stato o un'azione — la funzione $V(s)$ e la funzione $Q(s,a)$ — e ne
+uno stato o un'azione, la funzione $V(s)$ e la funzione $Q(s,a)$, e ne
 ricaviamo l'azione migliore scegliendo di volta in volta quella con valore più
 alto. I metodi a **gradiente di policy** ribaltano la prospettiva: invece di
 valutare e poi decidere, imparano *direttamente a decidere*.
@@ -200,15 +200,16 @@ reti profonde.
 
 ## Un ultimo salto: allineare i modelli linguistici
 
-Lo stesso meccanismo — aumentare la probabilità di ciò che riceve un giudizio
-positivo — è oggi al cuore dell'addestramento dei modelli linguistici.
-Nell'**RLHF** (*Reinforcement Learning from Human Feedback*; Christiano et al.,
-2017; {cite}`ouyang2022training`) le risposte del modello sono l'"azione", dei
-valutatori umani indicano quali preferiscono, e le loro preferenze addestrano
-un *modello di ricompensa* che fa da critico. Con PPO si ritocca poi la policy
-del modello — la sua tendenza a produrre certe risposte — verso ciò che gli
-umani apprezzano. La stessa idea che ha portato una macchina a giocare la mossa
-37 aiuta oggi un assistente a rispondere in modo utile e onesto.
+Lo stesso meccanismo (aumentare la probabilità di ciò che riceve un giudizio
+positivo) è oggi al cuore dell'addestramento dei modelli linguistici.
+Nell'**RLHF** (*Reinforcement Learning from Human Feedback*; Christiano et
+al., 2017; {cite}`ouyang2022training`) le risposte del modello sono
+l'"azione", dei valutatori umani indicano quali preferiscono, e le loro
+preferenze addestrano un *modello di ricompensa* che fa da critico. Con PPO si
+ritocca poi la policy del modello (la sua tendenza a produrre certe risposte),
+verso ciò che gli umani apprezzano. La stessa idea che ha portato una macchina
+a giocare la mossa 37 aiuta oggi un assistente a rispondere in modo utile e
+onesto.
 
 ```{admonition} Da ricordare
 :class: important

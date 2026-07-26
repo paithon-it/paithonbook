@@ -18,7 +18,7 @@ toglierli di mezzo prima di rileggere:
   toc        file sotto book/ non elencati in _toc.yml
   landing    schede di intro.md che non corrispondono ai capitoli del _toc.yml
              (mancanti, di troppo, fuori ordine, o col numero scritto a mano)
-  avanti     rimandi in avanti ("vedremo", "prossima sezione") — solo elenco,
+  avanti     rimandi in avanti ("vedremo", "prossima sezione"), solo elenco,
              la verifica resta umana
 
   scripts/coerenza.py            # tutto
@@ -27,7 +27,7 @@ toglierli di mezzo prima di rileggere:
 Un asse PROVATO E SCARTATO, per non rifarlo: "termini usati prima di essere
 definiti", ricostruendo l'ordine di lettura dal _toc.yml e usando il grassetto
 come marca di introduzione (e' la convenzione del libro). Ha prodotto 474
-risultati quasi tutti rumore — parole comuni che capita siano in grassetto
+risultati quasi tutti rumore, parole comuni che capita siano in grassetto
 ("ottimizzazione", "stessa", "a mano") e la front matter che anticipa tutto il
 libro per mestiere. Filtrando su intro/Introduzione e richiedendo che il
 termine sia anche un titolo di sezione si scende a 11, e di quegli 11 **nessuno
@@ -173,7 +173,7 @@ def main():
             for numero in re.findall(r'<span class="pt-card-num">([^<]+)</span>',
                                      testo_landing):
                 problemi["numero scritto a mano nella scheda"].append(
-                    f"«{numero}» — lo conta il CSS, lo <span> va lasciato vuoto")
+                    f"«{numero}», lo conta il CSS, lo <span> va lasciato vuoto")
 
     if "avanti" in attivi:
         for f, t in testi.items():

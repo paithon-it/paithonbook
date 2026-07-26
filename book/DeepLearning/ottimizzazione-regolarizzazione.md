@@ -1,16 +1,16 @@
 # Far funzionare le reti profonde
 
-Per molto tempo una rete con tanti strati è stata più un'idea che una
-pratica. Negli anni '90 e nei primi 2000 impilare più livelli spesso
-*peggiorava* le cose: la loss non scendeva, l'addestramento si arenava dopo
-poche epoche. Non era solo questione di potenza di calcolo. Mancavano gli
-accorgimenti che rendono stabile l'apprendimento quando la rete è profonda.
-Tra il 2010 e il 2015 una manciata di idee — inizializzazioni pensate meglio,
-la *batch normalization* {cite}`ioffe2015batch`, il *dropout*
+Per molto tempo una rete con tanti strati è stata più un'idea che una pratica.
+Negli anni '90 e nei primi 2000 impilare più livelli spesso *peggiorava* le
+cose: la loss non scendeva, l'addestramento si arenava dopo poche epoche. Non
+era solo questione di potenza di calcolo. Mancavano gli accorgimenti che
+rendono stabile l'apprendimento quando la rete è profonda. Tra il 2010 e il
+2015 una manciata di idee, inizializzazioni pensate meglio, la *batch
+normalization* {cite}`ioffe2015batch`, il *dropout*
 {cite}`srivastava2014dropout`, gli optimizer adattivi come Adam
-{cite}`kingma2015adam` — hanno
-trasformato le reti profonde da promessa fragile a strumento affidabile.
-Questo capitolo le mette in fila: prima il problema, poi i rimedi.
+{cite}`kingma2015adam`: hanno trasformato le reti profonde da promessa fragile
+a strumento affidabile. Questo capitolo le mette in fila: prima il problema,
+poi i rimedi.
 
 ## Quando il segnale svanisce (o esplode)
 
@@ -28,7 +28,7 @@ Il fattore che sopravvive al passaggio di ogni strato. Con la sigmoide, la cui
 derivata non supera mai $0{,}25$, dopo sei strati resta meno di un millesimo
 del gradiente di partenza; con la ReLU, che sulla parte attiva ha derivata
 $1$, il prodotto non si consuma. *(Le altezze sono in scala logaritmica: in
-scala lineare le ultime barre non si vedrebbero — che poi è il punto.)*
+scala lineare le ultime barre non si vedrebbero, che poi è il punto.)*
 ```
 
 I numeri della {numref}`fig-gradiente-svanisce` sono il caso **migliore** per
@@ -38,7 +38,7 @@ $z=0$. Lontano dall'origine è molto più piccolo, e il crollo è più rapido.
 `````{tab} Elementare
 
 Immagina una catena di ingranaggi in cui ogni ruota trasmette solo una
-frazione del movimento alla successiva — diciamo un decimo. Dopo dieci ruote,
+frazione del movimento alla successiva: diciamo un decimo. Dopo dieci ruote,
 del movimento iniziale non resta quasi nulla: un decimo di miliardesimo. È ciò
 che succede al segnale di correzione che, dall'uscita della rete, deve tornare
 fino ai primi strati: attraversando molti livelli si assottiglia fino a
@@ -63,10 +63,10 @@ dove $W_k$ è la matrice dei pesi e $\sigma'(z_k)$ la derivata
 dell'attivazione. Se i fattori hanno modulo tipico minore di $1$, il prodotto
 tende a $0$ esponenzialmente in $L$ (**vanishing gradient**); se maggiore di
 $1$, diverge (**exploding gradient**). La sigmoide aggrava il primo caso:
-$\sigma'(z)\le 0{,}25$ ovunque, quindi il solo fattore di attivazione riduce il
-gradiente di almeno quattro volte a ogni strato. Rimedi complementari:
+$\sigma'(z)\le 0{,}25$ ovunque, quindi il solo fattore di attivazione riduce
+il gradiente di almeno quattro volte a ogni strato. Rimedi complementari:
 attivazioni non saturanti come la ReLU ($\sigma'=1$ per input positivi),
-*gradient clipping* per l'esplosione, e — soprattutto — una scelta accurata
+*gradient clipping* per l'esplosione, e (soprattutto) una scelta accurata
 della scala iniziale dei pesi.
 
 `````
@@ -127,8 +127,8 @@ regolare, calcolate sul mini-batch corrente. È come rimettere in scala i
 numeri a ogni passo, così che nessuno strato debba adattarsi a input che
 cambiano scala di continuo. In pratica accelera molto l'addestramento,
 permette learning rate (il passo di correzione dei pesi) più aggressivi e ha
-un lieve effetto di regolarizzazione — cioè frena l'imparare a memoria —
-perché la statistica del batch introduce un po' di rumore utile.
+un lieve effetto di regolarizzazione (cioè frena l'imparare a memoria), perché
+la statistica del batch introduce un po' di rumore utile.
 
 `````
 
@@ -186,9 +186,9 @@ inferenza tutti i neuroni tornano attivi.
 
 `````{tab} Superiore
 
-Con probabilità di spegnimento $p$ — la convenzione di `nn.Dropout(p)` in
-PyTorch — si applica alle attivazioni una maschera binaria $m \sim
-\text{Bernoulli}(1-p)$:
+Con probabilità di spegnimento $p$, la convenzione di `nn.Dropout(p)` in
+PyTorch, si applica alle attivazioni una maschera binaria
+$m \sim \text{Bernoulli}(1-p)$:
 
 $$
 \tilde{h} = \frac{1}{1-p}\,(m \odot h),
@@ -228,8 +228,8 @@ in una valle: accumula velocità nella direzione giusta e si lascia dietro i
 rimbalzi laterali. **Adagrad** aggiunge un'idea in più: dare a ogni parametro
 un passo su misura, più corto dove il terreno è ripido e più lungo dove è
 piatto. Per farlo tiene il conto di tutta la strada già percorsa: i parametri
-corretti di continuo rallentano, quelli toccati di rado — capita spesso quando
-molti ingressi sono quasi sempre zero, come le parole rare in un testo —
+corretti di continuo rallentano, quelli toccati di rado (capita spesso quando
+molti ingressi sono quasi sempre zero, come le parole rare in un testo),
 conservano passi generosi. Il difetto è che quel conto non si azzera mai:
 passo dopo passo la falcata si accorcia, finché la discesa semplicemente si
 ferma. **RMSProp** rimedia guardando solo al passato recente invece che
@@ -261,8 +261,8 @@ $$
 
 dove le operazioni sono elemento per elemento: ogni parametro riceve un
 learning rate effettivo $\eta/(\sqrt{G_t}+\epsilon)$ tutto suo. La
-normalizzazione premia le feature sparse — i parametri aggiornati di rado
-conservano passi ampi — ma $G_t$ cresce monotonicamente, quindi il passo
+normalizzazione premia le feature sparse (i parametri aggiornati di rado
+conservano passi ampi) ma $G_t$ cresce monotonicamente, quindi il passo
 effettivo tende a zero e prima o poi l'addestramento si arena. **RMSProp**
 rimedia sostituendo la somma con una media mobile esponenziale, che dimentica
 il passato remoto:
@@ -275,9 +275,9 @@ $$
 
 Sulla stessa idea, **Adadelta** {cite}`zeiler2012adadelta` accumula una media
 mobile anche degli aggiornamenti, eliminando di fatto la scelta di $\eta$.
-**Adam** unisce momentum e passo adattivo — i coefficienti delle due medie
-mobili si ribattezzano $\beta_1$ e $\beta_2$ — con correzione del bias
-iniziale $\hat{v}_t = v_t/(1-\beta_1^t)$ e $\hat{s}_t = s_t/(1-\beta_2^t)$:
+**Adam** unisce momentum e passo adattivo (i coefficienti delle due medie
+mobili si ribattezzano $\beta_1$ e $\beta_2$) con correzione del bias iniziale
+$\hat{v}_t = v_t/(1-\beta_1^t)$ e $\hat{s}_t = s_t/(1-\beta_2^t)$:
 
 $$
 \theta_t = \theta_{t-1}
@@ -291,16 +291,15 @@ un'enorme varietà di casi.
 
 C'è un punto in cui gli ottimizzatori incontrano la lotta contro
 l'overfitting. Il parametro `weight_decay` di `torch.optim` applica il
-**decadimento dei pesi**:
-a ogni aggiornamento i pesi vengono leggermente riportati verso lo zero, così
-la rete non può affidarsi a valori enormi per imparare a memoria. È la stessa
-cosa della **regolarizzazione L2** — aggiungere alla loss una penalità
-proporzionale al quadrato dei pesi — almeno finché la discesa è quella
-semplice. Con i passi adattivi di Adam, però, l'equivalenza si rompe: il
-decadimento viene riscalato insieme al gradiente e perde parte dell'effetto.
-**AdamW** {cite}`loshchilov2019decoupled` lo *disaccoppia* dall'aggiornamento
-adattivo, applicandolo direttamente ai pesi, ed è oggi il default de facto
-per addestrare i Transformer:
+**decadimento dei pesi**: a ogni aggiornamento i pesi vengono leggermente
+riportati verso lo zero, così la rete non può affidarsi a valori enormi per
+imparare a memoria. È la stessa cosa della **regolarizzazione L2** (aggiungere
+alla loss una penalità proporzionale al quadrato dei pesi) almeno finché la
+discesa è quella semplice. Con i passi adattivi di Adam, però, l'equivalenza
+si rompe: il decadimento viene riscalato insieme al gradiente e perde parte
+dell'effetto. **AdamW** {cite}`loshchilov2019decoupled` lo *disaccoppia*
+dall'aggiornamento adattivo, applicandolo direttamente ai pesi, ed è oggi il
+default de facto per addestrare i Transformer:
 `optim.AdamW(model.parameters(), lr=1e-3, weight_decay=0.01)`.
 
 ## Regolare il passo nel tempo
@@ -320,11 +319,12 @@ governa tutto: troppo corto e non si arriva, troppo lungo e si scappa.
 La {numref}`fig-learning-rate` ha anche un conto esatto dietro. Su $f(x)=x^2$
 l'aggiornamento è $x \leftarrow x(1-2\eta)$, quindi $x_k = x_0\,(1-2\eta)^k$:
 si converge se e solo se $|1-2\eta| < 1$, cioè $0 < \eta < 1$. Il terzo
-pannello usa $\eta = 1{,}05$ — fattore $-1{,}1$, e ogni passo scavalca il
-minimo più lontano del precedente. Non è una licenza grafica: è la disuguaglianza
-che si rompe. Su una funzione qualunque la soglia dipende dalla curvatura, ed è
-proprio questo che uno schedule insegue mentre la curvatura cambia. Un passo grande all'inizio esplora in fretta; lo stesso passo verso
-la fine fa oscillare attorno al minimo senza mai stabilizzarsi. Il **learning
+pannello usa $\eta = 1{,}05$: fattore $-1{,}1$, e ogni passo scavalca il
+minimo più lontano del precedente. Non è una licenza grafica: è la
+disuguaglianza che si rompe. Su una funzione qualunque la soglia dipende dalla
+curvatura, ed è proprio questo che uno schedule insegue mentre la curvatura
+cambia. Un passo grande all'inizio esplora in fretta; lo stesso passo verso la
+fine fa oscillare attorno al minimo senza mai stabilizzarsi. Il **learning
 rate schedule** riduce progressivamente $\eta$: per esempio con decadimento
 inverso $\eta_t = \eta_0/(1+kt)$, a gradini, o con andamento a coseno. In
 PyTorch gli *scheduler* vivono accanto all'ottimizzatore e si aggiornano nel
@@ -355,7 +355,7 @@ for epoca in range(50):
 - **Inizializzazione** giusta (He per ReLU, Glorot per tanh), **batch
   normalization** e **dropout** rendono l'addestramento stabile e
   generalizzabile.
-- **Adam** (momentum + passo adattivo) è il punto di partenza sensato —
+- **Adam** (momentum + passo adattivo) è il punto di partenza sensato,
   **AdamW** se si usa il weight decay; un **learning rate schedule** che
   decade nel tempo rifinisce la convergenza.
 ```

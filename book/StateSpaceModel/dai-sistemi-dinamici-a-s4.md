@@ -1,24 +1,25 @@
 # Dai sistemi dinamici a S4
 
-Nel 1960 l'ingegnere ungherese-americano Rudolf Kálmán propose un modo nuovo di
-descrivere un sistema che evolve nel tempo: non un groviglio di equazioni sulle
-sole grandezze osservabili, ma una manciata di variabili nascoste — lo **stato**
-— che riassumono tutto ciò che del passato serve per prevedere il futuro. Da
-quella *rappresentazione in spazio degli stati* nacque il filtro di Kalman, che
-di lì a pochi anni avrebbe guidato le capsule Apollo verso la Luna, stimando
-posizione e velocità da misure rumorose. È un'idea di teoria del controllo e di
-elaborazione dei segnali, lontana anni luce dal linguaggio naturale.
+Nel 1960 l'ingegnere ungherese-americano Rudolf Kálmán propose un modo nuovo
+di descrivere un sistema che evolve nel tempo: non un groviglio di equazioni
+sulle sole grandezze osservabili, ma una manciata di variabili nascoste (lo
+**stato**) che riassumono tutto ciò che del passato serve per prevedere il
+futuro. Da quella *rappresentazione in spazio degli stati* nacque il filtro di
+Kalman, che di lì a pochi anni avrebbe guidato le capsule Apollo verso la
+Luna, stimando posizione e velocità da misure rumorose. È un'idea di teoria
+del controllo e di elaborazione dei segnali, lontana anni luce dal linguaggio
+naturale.
 
-Eppure è la stessa idea che, mezzo secolo dopo, ha dato una seconda strada verso
-un vecchio obiettivo di questo capitolo: un modello di sequenze che si addestri
-in parallelo come un Transformer e faccia inferenza a costo costante per token
-come una rete ricorrente. Nel capitolo precedente ci siamo arrivati partendo
-dall'attenzione: abbiamo sostituito la softmax con un prodotto tra funzioni,
-e l'attenzione è diventata una RNN lineare a stato fisso. Qui partiamo dal
-lato opposto — un sistema dinamico continuo — e arriviamo, sorprendentemente,
-quasi allo stesso posto. Stessa meta, radice diversa. Alla fine del capitolo
-Mamba-2 chiuderà il cerchio, mostrando che le due strade portavano alla stessa
-città.
+Eppure è la stessa idea che, mezzo secolo dopo, ha dato una seconda strada
+verso un vecchio obiettivo di questo capitolo: un modello di sequenze che si
+addestri in parallelo come un Transformer e faccia inferenza a costo costante
+per token come una rete ricorrente. Nel capitolo precedente ci siamo arrivati
+partendo dall'attenzione: abbiamo sostituito la softmax con un prodotto tra
+funzioni, e l'attenzione è diventata una RNN lineare a stato fisso. Qui
+partiamo dal lato opposto (un sistema dinamico continuo) e arriviamo,
+sorprendentemente, quasi allo stesso posto. Stessa meta, radice diversa. Alla
+fine del capitolo Mamba-2 chiuderà il cerchio, mostrando che le due strade
+portavano alla stessa città.
 
 ## Un sistema che evolve nel tempo
 
@@ -30,12 +31,12 @@ equazioni differenziali lineari.
 `````{tab} Elementare
 
 Pensa a una vasca da bagno con il rubinetto aperto e lo scarico non del tutto
-chiuso. Il *livello dell'acqua* è lo stato: riassume tutta la storia passata di
-quanto hai aperto il rubinetto, senza bisogno di ricordarla minuto per minuto.
-Il rubinetto è l'ingresso: quando lo apri di più, il livello sale. Lo scarico è
-la dinamica interna: se smetti di versare acqua, il livello cala da solo, un po'
-alla volta. E ciò che *leggi* — magari un galleggiante collegato a un ago — è
-l'uscita, che dipende dal livello.
+chiuso. Il *livello dell'acqua* è lo stato: riassume tutta la storia passata
+di quanto hai aperto il rubinetto, senza bisogno di ricordarla minuto per
+minuto. Il rubinetto è l'ingresso: quando lo apri di più, il livello sale. Lo
+scarico è la dinamica interna: se smetti di versare acqua, il livello cala da
+solo, un po' alla volta. E ciò che *leggi* (magari un galleggiante collegato a
+un ago) è l'uscita, che dipende dal livello.
 
 Un eco in una valle funziona allo stesso modo: gridi (ingresso), il suono
 rimbomba e si spegne gradualmente (stato che decade), e quello che senti è una
@@ -56,15 +57,16 @@ $$
 
 dove $u(t)\in\mathbb{R}$ è l'ingresso, $y(t)\in\mathbb{R}$ l'uscita e
 $h(t)\in\mathbb{R}^{N}$ lo **stato** interno di dimensione $N$. Le tre matrici
-hanno ruoli distinti: $A\in\mathbb{R}^{N\times N}$ è la **dinamica interna** —
-governa come lo stato evolve da solo, in assenza di ingresso (gli autovalori di
-$A$ decidono se lo stato decade, oscilla o esplode); $B\in\mathbb{R}^{N\times 1}$
-è la **matrice d'ingresso** — dice come il segnale in arrivo si scrive nello
-stato; $C\in\mathbb{R}^{1\times N}$ è la **matrice d'uscita** — legge lo stato e
-produce il segnale in uscita. Il termine $D\,u(t)$ è una scorciatoia diretta
-dall'ingresso all'uscita, una *skip connection*: nei modelli che vedremo lo si
-tiene a parte (equivale a un residuo) e ci si concentra sulla parte con
-memoria, ponendo spesso $D=0$ nella derivazione.
+hanno ruoli distinti: $A\in\mathbb{R}^{N\times N}$ è la **dinamica interna**,
+governa come lo stato evolve da solo, in assenza di ingresso (gli autovalori
+di $A$ decidono se lo stato decade, oscilla o esplode);
+$B\in\mathbb{R}^{N\times 1}$ è la **matrice d'ingresso**, dice come il segnale
+in arrivo si scrive nello stato; $C\in\mathbb{R}^{1\times N}$ è la **matrice
+d'uscita** (legge lo stato e produce il segnale in uscita). Il termine
+$D\,u(t)$ è una scorciatoia diretta dall'ingresso all'uscita, una *skip
+connection*: nei modelli che vedremo lo si tiene a parte (equivale a un
+residuo) e ci si concentra sulla parte con memoria, ponendo spesso $D=0$ nella
+derivazione.
 
 Questa è la *rappresentazione in spazio degli stati* della teoria del controllo:
 lo stato $h(t)$ è, per costruzione, una statistica sufficiente del passato. La
@@ -80,12 +82,12 @@ tradurlo dal continuo al discreto.
 
 ## Dal continuo al discreto
 
-Il passaggio si chiama **discretizzazione** ed è lo stesso problema che abbiamo
-incontrato nel capitolo di analisi numerica: sostituire una derivata continua —
-un cambiamento infinitesimo — con un passo finito. Introduciamo un intervallo di
-campionamento $\Delta$ (il tempo tra due campioni) e riscriviamo il sistema in
-modo che salti di stato in stato, da $h_{t-1}$ a $h_t$, invece di scivolare con
-continuità.
+Il passaggio si chiama **discretizzazione** ed è lo stesso problema che
+abbiamo incontrato nel capitolo di analisi numerica: sostituire una derivata
+continua (un cambiamento infinitesimo) con un passo finito. Introduciamo un
+intervallo di campionamento $\Delta$ (il tempo tra due campioni) e riscriviamo
+il sistema in modo che salti di stato in stato, da $h_{t-1}$ a $h_t$, invece
+di scivolare con continuità.
 
 C'è un punto su cui vale la pena essere espliciti, perché è una fonte comune di
 confusione: **non esiste un solo modo di discretizzare**. Sono possibili diverse
@@ -98,14 +100,14 @@ lo ZOH a S4 è un errore che si trova spesso in giro.
 `````{tab} Elementare
 
 Discretizzare è come campionare un segnale continuo: invece di seguire l'acqua
-della vasca in ogni istante, ne misuri il livello a intervalli regolari — ogni
-$\Delta$ secondi — e ti chiedi come passare da una misura alla successiva.
-Se il passo $\Delta$ è piccolo campioni fitto e cogli ogni sfumatura, ma con più
+della vasca in ogni istante, ne misuri il livello a intervalli regolari (ogni
+$\Delta$ secondi) e ti chiedi come passare da una misura alla successiva. Se
+il passo $\Delta$ è piccolo campioni fitto e cogli ogni sfumatura, ma con più
 lavoro; se è grande campioni rado e rischi di perderti quello che succede in
 mezzo. È lo stesso compromesso di ogni fotografia a scatti di un movimento
 fluido.
 
-Le "due regole" per fare questo passo — bilineare e ZOH — sono due modi
+Le "due regole" per fare questo passo (bilineare e ZOH) sono due modi
 leggermente diversi di indovinare cosa succede *tra* un campione e l'altro. Il
 risultato pratico è lo stesso tipo di ricorrenza; cambia la formula esatta con
 cui si ricavano le matrici discrete. Basta ricordare quale usa quale modello:
@@ -153,7 +155,7 @@ lo stato dimentica.
 ## Due facce della stessa medaglia: ricorrenza e convoluzione
 
 Ora arriva il fatto che rende speciali questi modelli. Finché $\bar{A}$,
-$\bar{B}$ e $C$ sono **costanti** — non cambiano da un passo all'altro — il
+$\bar{B}$ e $C$ sono **costanti** (non cambiano da un passo all'altro), il
 sistema discretizzato è *lineare e tempo-invariante* (in sigla LTI). E per un
 sistema LTI vale un'equivalenza esatta tra due modi apparentemente diversi di
 calcolare la stessa uscita: una forma **ricorrente** e una forma
@@ -166,18 +168,19 @@ lineare, dove un unico calcolo si poteva leggere in due modi: "passo dopo passo"
 oppure "tutto insieme". Qui succede l'identico.
 
 Da un lato la forma **ricorrente**: parti dallo stato, aggiungi il nuovo
-ingresso, ottieni il nuovo stato, leggi l'uscita, e ripeti. Un token alla volta,
-con una quantità di memoria che non cresce mai — perfetta per generare testo o
-processare un flusso audio in tempo reale. È il modo di lavorare di una RNN.
+ingresso, ottieni il nuovo stato, leggi l'uscita, e ripeti. Un token alla
+volta, con una quantità di memoria che non cresce mai: perfetta per generare
+testo o processare un flusso audio in tempo reale. È il modo di lavorare di
+una RNN.
 
 Dall'altro la forma **convoluzionale**: se il sistema non cambia nel tempo, si
-può dimostrare che l'intera uscita è una singola convoluzione dell'ingresso con
-un filtro fisso. E la convoluzione la conosciamo dal capitolo sulle reti
-convoluzionali: un filtro che scorre lungo il segnale. La differenza è che qui il
-filtro è lungo quanto tutta la sequenza, e nessuno lo impara a mano: nasce dalle
-matrici $\bar{A}$, $\bar{B}$, $C$. Il vantaggio è che una convoluzione si calcola
-in un colpo solo, in parallelo su tutta la sequenza — proprio ciò che serve per
-sfruttare le GPU in addestramento.
+può dimostrare che l'intera uscita è una singola convoluzione dell'ingresso
+con un filtro fisso. E la convoluzione la conosciamo dal capitolo sulle reti
+convoluzionali: un filtro che scorre lungo il segnale. La differenza è che qui
+il filtro è lungo quanto tutta la sequenza, e nessuno lo impara a mano: nasce
+dalle matrici $\bar{A}$, $\bar{B}$, $C$. Il vantaggio è che una convoluzione
+si calcola in un colpo solo, in parallelo su tutta la sequenza: proprio ciò
+che serve per sfruttare le GPU in addestramento.
 
 Morale: si **addestra** in forma convoluzionale (veloce, parallela) e si
 **inferisce** in forma ricorrente (economica, un token alla volta). La stessa
@@ -230,9 +233,9 @@ kernel di convoluzione fisso svanirà, e resterà solo lo scan ricorrente.
 Questa dualità è esattamente lo stesso trucco che ha animato il capitolo
 sull'attenzione lineare: un'unica funzione con una forma parallela per
 l'addestramento e una forma ricorrente per l'inferenza. Che due strade così
-diverse — una nata dall'attenzione, l'altra dai sistemi dinamici — approdino
-alla stessa struttura non è un caso, come vedremo. La {numref}`fig-ssm-forma-duale`
-mostra le due facce affiancate.
+diverse (una nata dall'attenzione, l'altra dai sistemi dinamici) approdino
+alla stessa struttura non è un caso, come vedremo. La
+{numref}`fig-ssm-forma-duale` mostra le due facce affiancate.
 
 ```{figure} ../figures/ssm-forma-duale.svg
 :name: fig-ssm-forma-duale
@@ -247,22 +250,22 @@ tutta la sequenza in parallelo con un unico kernel (addestramento veloce).
 
 ## HiPPO e S4: ricordare a lungo
 
-C'è un problema che abbiamo scavalcato. Perché uno stato di dimensione piccola —
-poche decine di numeri — dovrebbe ricordare qualcosa avvenuto migliaia di passi
-prima? Le potenze $\bar{A}^{\,j}$ del kernel tendono in genere a svanire in
-fretta: dopo poche decine di passi il contributo del passato è già polvere. Una
-RNN classica soffre esattamente di questo, ed è la ragione per cui LSTM e GRU
-sono nate. Per gli SSM la risposta non sta in nuovi cancelli, ma nella **scelta
-della matrice $A$**: fatta a caso, la memoria è corta; costruita con criterio,
-può essere lunghissima.
+C'è un problema che abbiamo scavalcato. Perché uno stato di dimensione piccola
+(poche decine di numeri), dovrebbe ricordare qualcosa avvenuto migliaia di
+passi prima? Le potenze $\bar{A}^{\,j}$ del kernel tendono in genere a svanire
+in fretta: dopo poche decine di passi il contributo del passato è già polvere.
+Una RNN classica soffre esattamente di questo, ed è la ragione per cui LSTM e
+GRU sono nate. Per gli SSM la risposta non sta in nuovi cancelli, ma nella
+**scelta della matrice $A$**: fatta a caso, la memoria è corta; costruita con
+criterio, può essere lunghissima.
 
 `````{tab} Elementare
 
 Immagina di dover riassumere un romanzo lunghissimo in una sola pagina di
 appunti, aggiornata mentre leggi. Se ogni frase nuova cancella la precedente,
 alla fine ti resta in mano solo l'ultimo capitolo. Serve un modo *principiato*
-di comprimere: tenere una specie di riassunto a più livelli — l'idea generale,
-gli snodi principali, i dettagli recenti — così che ciò che conta del passato
+di comprimere: tenere una specie di riassunto a più livelli (l'idea generale,
+gli snodi principali, i dettagli recenti), così che ciò che conta del passato
 lontano non sbiadisca del tutto.
 
 È l'idea di **HiPPO**: un modo matematicamente fondato di riassumere una storia
@@ -276,15 +279,16 @@ di un SSM con la ricetta di HiPPO ottiene, gratis, una memoria a lungo raggio.
 `````{tab} Superiore
 
 **HiPPO** (*High-order Polynomial Projection Operators*, Gu et al., 2020,
-{cite}`gu2020hippo`) formalizza la compressione online di un segnale come la sua
-proiezione ottima su una base di **polinomi ortogonali** (per esempio i polinomi
-di Legendre) rispetto a una misura sul passato. Lo stato $h(t)$ diventa il
-vettore dei coefficienti di quella proiezione: ricostruisce, nel modo meno
-sbagliato possibile, tutto il segnale visto fin lì. La variante **HiPPO-LegS**
-(*scaled Legendre*) usa una misura che copre uniformemente tutta la storia, ed è
-robusta alla scala temporale: ricorda a lungo indipendentemente da $\Delta$.
-Il risultato pratico è una matrice $A$ specifica — la *matrice HiPPO* — con cui
-**inizializzare** l'SSM per dotarlo di memoria a lungo raggio.
+{cite}`gu2020hippo`) formalizza la compressione online di un segnale come la
+sua proiezione ottima su una base di **polinomi ortogonali** (per esempio i
+polinomi di Legendre) rispetto a una misura sul passato. Lo stato $h(t)$
+diventa il vettore dei coefficienti di quella proiezione: ricostruisce, nel
+modo meno sbagliato possibile, tutto il segnale visto fin lì. La variante
+**HiPPO-LegS** (*scaled Legendre*) usa una misura che copre uniformemente
+tutta la storia, ed è robusta alla scala temporale: ricorda a lungo
+indipendentemente da $\Delta$. Il risultato pratico è una matrice $A$
+specifica (la *matrice HiPPO*) con cui **inizializzare** l'SSM per dotarlo di
+memoria a lungo raggio.
 
 **S4** (*Structured State Space Sequence model*, Gu, Goel e Ré, ICLR 2022,
 {cite}`gu2022s4`) parte proprio da qui: inizializza $A$ con HiPPO-LegS. Ma sorge
@@ -318,48 +322,48 @@ lunga di pixel, S4 raggiunge circa il 91% su sequential CIFAR-10.
 ## Tappe verso il linguaggio
 
 S4 dimostrò che uno stato piccolo, ben costruito, poteva competere con
-l'attenzione sulle sequenze lunghe. Ma tra quel risultato e Mamba — il modello
-che porta gli SSM sul linguaggio in modo convincente — ci sono alcune tappe che
+l'attenzione sulle sequenze lunghe. Ma tra quel risultato e Mamba (il modello
+che porta gli SSM sul linguaggio in modo convincente) ci sono alcune tappe che
 vale la pena nominare, perché ognuna smonta un pezzo del problema.
 
 **S5** (Smith, Warrington e Linderman, ICLR 2023, {cite}`smith2023s5`)
-semplifica S4 su due fronti. Primo: usa un unico SSM **MIMO** (a più ingressi e
-più uscite) con matrice $A$ **diagonale**, invece di tanti SSM scalari
+semplifica S4 su due fronti. Primo: usa un unico SSM **MIMO** (a più ingressi
+e più uscite) con matrice $A$ **diagonale**, invece di tanti SSM scalari
 indipendenti. Secondo, e più importante per il seguito: abbandona la
-convoluzione via FFT e calcola la ricorrenza con un **parallel scan** — un
+convoluzione via FFT e calcola la ricorrenza con un **parallel scan** (un
 algoritmo che, sfruttando l'associatività della ricorrenza lineare, la calcola
-in parallelo in tempo logaritmico nella lunghezza. È il ponte diretto verso lo
-scan che sarà il cuore di Mamba: la forma ricorrente smette di essere il modo
-"lento", diventa anch'essa parallelizzabile.
+in parallelo in tempo logaritmico nella lunghezza). È il ponte diretto verso
+lo scan che sarà il cuore di Mamba: la forma ricorrente smette di essere il
+modo "lento", diventa anch'essa parallelizzabile.
 
 **H3** (*Hungry Hungry Hippos*, Fu, Dao et al., ICLR 2023, {cite}`fu2023h3`)
 attacca il punto debole degli SSM sul linguaggio: il **recall associativo**,
 cioè ritrovare a distanza un'informazione già vista ("chi era il soggetto di
-quella frase?"). Un SSM LTI puro fatica a copiare e confrontare token, cosa che
-l'attenzione fa con naturalezza. H3 impila **due SSM** — uno a spostamento
-(*shift*) e uno diagonale — intervallati da un **gating moltiplicativo**, un
+quella frase?"). Un SSM LTI puro fatica a copiare e confrontare token, cosa
+che l'attenzione fa con naturalezza. H3 impila **due SSM**, uno a spostamento
+(*shift*) e uno diagonale, intervallati da un **gating moltiplicativo**, un
 prodotto elemento per elemento tra due rami che permette al modello di
 confrontare token vicini e "trattenere" un valore fino a quando serve. Con
-l'aggiunta di pochissimi strati di attenzione, gli ibridi basati su H3 arrivano
-a taglie fino a 2,7 miliardi di parametri e reggono il confronto con i
-Transformer.
+l'aggiunta di pochissimi strati di attenzione, gli ibridi basati su H3
+arrivano a taglie fino a 2,7 miliardi di parametri e reggono il confronto con
+i Transformer.
 
 **Hyena** (Poli, Massaroli et al., ICML 2023, {cite}`poli2023hyena`) tira una
 riga di sintesi: se l'ingrediente utile è una convoluzione lunga, la si può
-apprendere direttamente. Hyena impila **convoluzioni lunghe implicite** — filtri
-lunghi quanto la sequenza, ma parametrizzati da una piccola rete invece che
-memorizzati numero per numero — alternate a un **gating controllato dai dati**.
-Non è un SSM in senso stretto, ma è imparentato: entrambi calcolano l'uscita come
-convoluzione lunga, entrambi girano in tempo $O(L \log L)$ con la FFT. Hyena
-mostra che si può avvicinare la qualità dell'attenzione senza attenzione, con
-sole convoluzioni.
+apprendere direttamente. Hyena impila **convoluzioni lunghe implicite**
+(filtri lunghi quanto la sequenza, ma parametrizzati da una piccola rete
+invece che memorizzati numero per numero) alternate a un **gating controllato
+dai dati**. Non è un SSM in senso stretto, ma è imparentato: entrambi
+calcolano l'uscita come convoluzione lunga, entrambi girano in tempo
+$O(L \log L)$ con la FFT. Hyena mostra che si può avvicinare la qualità
+dell'attenzione senza attenzione, con sole convoluzioni.
 
 Restava un limite comune a tutti: essendo LTI, questi modelli trattano ogni
 token allo stesso modo, incapaci di *scegliere* cosa ricordare in base al
-contenuto. Chi legge una parola importante e chi legge una virgola aggiornano lo
-stato con la stessa regola fissa. Rompere questo vincolo — rendere il sistema
-**tempo-variante**, capace di selezionare — è il passo che porta a Mamba, ed è il
-tema della prossima sezione.
+contenuto. Chi legge una parola importante e chi legge una virgola aggiornano
+lo stato con la stessa regola fissa. Rompere questo vincolo (rendere il
+sistema **tempo-variante**, capace di selezionare) è il passo che porta a
+Mamba, ed è il tema della prossima sezione.
 
 ```{admonition} Da ricordare
 :class: important
@@ -367,14 +371,14 @@ tema della prossima sezione.
   $y(t)=C\,h(t)$: lo **stato** $h$ è una fotografia compatta del passato, con
   $A$ dinamica interna, $B$ ingresso, $C$ uscita. È l'altra strada verso il
   tempo lineare, complementare all'attenzione lineare del capitolo precedente.
-- Per usarlo su sequenze discrete serve un passo $\Delta$ di **discretizzazione**.
-  Attenzione: **S4 usa la bilineare**, **Mamba usa lo ZOH**
-  ($\bar{A}=\exp(\Delta A)$) — due regole diverse, da non confondere.
+- Per usarlo su sequenze discrete serve un passo $\Delta$ di
+  **discretizzazione**. Attenzione: **S4 usa la bilineare**, **Mamba usa lo
+  ZOH** ($\bar{A}=\exp(\Delta A)$) (due regole diverse, da non confondere).
 - Se il sistema discretizzato è **tempo-invariante** (LTI), la stessa funzione
   ha due forme equivalenti: **ricorrente** $h_t=\bar{A}h_{t-1}+\bar{B}x_t$
-  (inferenza $O(1)$ per passo) e **convoluzionale** $y=x*\bar{K}$ (addestramento
-  parallelo). Si allena convoluzionale, si inferisce ricorrente — la stessa
-  dualità vista con l'attenzione lineare.
+  (inferenza $O(1)$ per passo) e **convoluzionale** $y=x*\bar{K}$
+  (addestramento parallelo). Si allena convoluzionale, si inferisce
+  ricorrente: la stessa dualità vista con l'attenzione lineare.
 - Questa equivalenza vale **solo** se $\bar{A},\bar{B},C$ sono costanti: Mamba la
   romperà rendendoli dipendenti dall'ingresso, e allora resterà solo lo scan.
 - **HiPPO** (Gu et al., 2020) sceglie $A$ proiettando la storia su polinomi
