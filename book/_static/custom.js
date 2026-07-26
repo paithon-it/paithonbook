@@ -320,100 +320,20 @@
     }
   }
 
-  // ===== FIX ALL PAITHON.IT LINKS TO LOCAL =====
-  function fixAllLinks() {
-    // Fix logo to point to intro.html instead of old version
-    const logo = document.querySelector('.navbar-brand');
-    if (logo) {
-      logo.href = 'intro.html';
-      logo.title = 'Torna alla homepage';
-
-      const logoImg = logo.querySelector('img');
-      if (logoImg) {
-        logoImg.alt = 'Paithon Book - Homepage';
-      }
-    }
-
-    // Fix ALL links including relative ones
-    const allLinks = document.querySelectorAll('a[href]');
-    allLinks.forEach(link => {
-      const href = link.href;
-      const hrefAttr = link.getAttribute('href');
-
-      // Skip if already fixed
-      if (link.dataset.fixed === 'true') return;
-
-      // Check if it's a link to the book section (absolute URL)
-      if (href && href.includes('paithon.it/book')) {
-        // Extract the path after /book/
-        const match = href.match(/\/book\/(.+)/);
-
-        if (match && match[1]) {
-          // Replace with local path
-          let localPath = match[1];
-
-          // Remove trailing slash
-          if (localPath.endsWith('/')) {
-            localPath = localPath.slice(0, -1);
-          }
-
-          // If it's empty, point to intro.html
-          if (localPath === '' || localPath === '/') {
-            link.href = 'intro.html';
-          } else {
-            // Use the local file directly
-            link.href = localPath;
-          }
-        } else {
-          // Just /book or /book/
-          link.href = 'intro.html';
-        }
-
-        // Mark as fixed
-        link.dataset.fixed = 'true';
-      }
-      // Also check for relative links that might be broken
-      else if (hrefAttr && hrefAttr.startsWith('../') && !href.includes('http')) {
-        // Keep relative links as-is, they should work
-        link.dataset.fixed = 'true';
-      }
-    });
-  }
-
-  // ===== FIX LINKS ON CLICK (REAL-TIME) =====
-  function interceptLinkClicks() {
-    document.addEventListener('click', (e) => {
-      const link = e.target.closest('a');
-      if (!link) return;
-
-      const href = link.href;
-
-      // Intercept links to paithon.it/book
-      if (href && href.includes('paithon.it/book')) {
-        e.preventDefault();
-        e.stopPropagation();
-
-        // Extract local path
-        const match = href.match(/\/book\/(.+)/);
-
-        let localPath = 'intro.html';
-        if (match && match[1] && match[1] !== '' && match[1] !== '/') {
-          localPath = match[1];
-          // Remove trailing slash
-          if (localPath.endsWith('/')) {
-            localPath = localPath.slice(0, -1);
-          }
-        }
-
-        console.log('Redirecting from', href, 'to', localPath);
-
-        // Navigate to local file
-        window.location.href = localPath;
-
-        return false;
-      }
-    }, true); // Use capture phase
-  }
+  // Qui c'erano due funzioni che riscrivevano gli href a mano: `fixAllLinks`
+  // metteva sul logo un `intro.html` **relativo**, e `interceptLinkClicks`
+  // trasformava i link a `paithon.it/book` nel percorso che seguiva `/book/`,
+  // anch'esso relativo. Servivano quando il libro stava sotto `paithon.it/book`.
+  //
+  // Ora il libro sta su `book.paithon.it/main/`, e quel codice era diventato la
+  // causa di un 404: da una pagina in sottocartella — cioe' da quasi tutte —
+  // `intro.html` relativo risolve in `Introduzione/intro.html`, che non esiste,
+  // e un percorso estratto come `main/Introduzione/intro.html` risolve in
+  // `/main/main/Introduzione/intro.html`. Il doppio `main/` veniva da qui.
+  //
+  // Il tema calcola l'href giusto da se' (`../intro.html` da una sottocartella,
+  // `#` sulla landing) e `_templates/pt-logo-compatto.html` usa `pathto()`.
+  // Non c'e' niente da aggiustare: bastava non aggiustarlo.
 
   // ===== INITIALIZE ALL FEATURES =====
   function init() {
@@ -424,8 +344,6 @@
     }
 
     // Initialize features
-    fixAllLinks();
-    interceptLinkClicks();
     addScrollToTop();
     addReadingProgressBar();
     markExternalLinks();
@@ -445,7 +363,6 @@
 
   // Re-run some features on dynamic content changes (for SPAs)
   const observer = new MutationObserver(debounce(() => {
-    fixAllLinks();
     markExternalLinks();
     makeTablesResponsive();
   }, 500));
