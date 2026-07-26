@@ -32,7 +32,7 @@ il libro e si cambia quando vuoi.
 ```{epigraph}
 Gli artisti comprendono che i matematici hanno un modo tutto loro di guardare il mondo, che può far loro percepire le cose in modo diverso.
 
--- Marcus du Sautoy
+<p class="attribution">Marcus du Sautoy</p>
 ```
 
 Addentrarsi le prime volte nel mondo del Machine Learning e dell'Intelligenza Artificiale con Python può sembrare una sfida complessa, ma con la giusta guida può diventare un viaggio affascinante e gratificante. Paithon Book è qui per rendere questo percorso più semplice e accessibile, offrendo risorse chiare e pratiche, tutte in italiano, per chiunque voglia imparare, indipendentemente dal proprio livello di partenza.

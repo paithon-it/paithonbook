@@ -61,7 +61,6 @@ sphinx:
       - Agenti
       - Audio
       - DeepReinforcementLearning
-      - GPU
       - GraphNeuralNetwork
       - Interpretabilita
       - MLOps

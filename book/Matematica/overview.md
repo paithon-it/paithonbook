@@ -3,7 +3,7 @@
 ```{epigraph}
 La matematica è il linguaggio con cui Dio ha scritto l'universo.
 
--- attribuito a Galileo Galilei
+<p class="attribution">attribuito a Galileo Galilei</p>
 ```
 
 C'è un equivoco tenace da sciogliere prima di cominciare: per usare il machine

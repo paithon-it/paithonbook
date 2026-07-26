@@ -26,66 +26,10 @@
     };
   };
 
-  // ===== SMOOTH SCROLL TO TOP BUTTON =====
-  function addScrollToTop() {
-    // Create button
-    const scrollBtn = document.createElement('button');
-    scrollBtn.innerHTML = '↑';
-    scrollBtn.className = 'scroll-to-top';
-    scrollBtn.setAttribute('aria-label', 'Torna su');
-    scrollBtn.style.cssText = `
-      position: fixed;
-      bottom: 30px;
-      right: 30px;
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      background: var(--primary-color, #B5532C);
-      color: white;
-      border: none;
-      font-size: 24px;
-      cursor: pointer;
-      opacity: 0;
-      visibility: hidden;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 12px rgba(181, 83, 44, 0.3);
-      z-index: 1000;
-    `;
-
-    document.body.appendChild(scrollBtn);
-
-    // Show/hide on scroll
-    const handleScroll = debounce(() => {
-      if (window.pageYOffset > 300) {
-        scrollBtn.style.opacity = '1';
-        scrollBtn.style.visibility = 'visible';
-      } else {
-        scrollBtn.style.opacity = '0';
-        scrollBtn.style.visibility = 'hidden';
-      }
-    }, 100);
-
-    window.addEventListener('scroll', handleScroll);
-
-    // Smooth scroll to top
-    scrollBtn.addEventListener('click', () => {
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-      });
-    });
-
-    // Hover effect
-    scrollBtn.addEventListener('mouseenter', () => {
-      scrollBtn.style.transform = 'translateY(-5px)';
-      scrollBtn.style.boxShadow = '0 8px 20px rgba(181, 83, 44, 0.5)';
-    });
-
-    scrollBtn.addEventListener('mouseleave', () => {
-      scrollBtn.style.transform = 'translateY(0)';
-      scrollBtn.style.boxShadow = '0 4px 12px rgba(181, 83, 44, 0.3)';
-    });
-  }
+  // Il pulsante «torna su» lo mette gia' il tema (`#pst-back-to-top`, la
+  // pillola in basso): quello nostro, un cerchio terracotta in fisso a
+  // destra, faceva la stessa cosa a due dita di distanza. Su schermo piccolo
+  // se ne vedevano due, uno sopra l'altro. Tolto il nostro.
 
   // ===== READING PROGRESS BAR =====
   function addReadingProgressBar() {
@@ -344,7 +288,6 @@
     }
 
     // Initialize features
-    addScrollToTop();
     addReadingProgressBar();
     markExternalLinks();
     makeTablesResponsive();

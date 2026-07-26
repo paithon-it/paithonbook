@@ -509,6 +509,25 @@
     });
   }
 
+  // ===== «TORNA SU» IN ITALIANO =====
+  // La pillola in basso e' del tema (`#pst-back-to-top`) e dice «Back to top»:
+  // e' l'unica scritta inglese che resta in vista in un libro italiano. La
+  // traduzione del tema esiste ma si attiverebbe solo impostando `language:
+  // it`, che cambierebbe anche altro (i prefissi delle figure, per dirne una).
+  // Qui si cambia solo questa etichetta.
+  function tornaSuInItaliano() {
+    const bottone = document.getElementById('pst-back-to-top');
+    if (!bottone) return;
+    bottone.setAttribute('aria-label', 'Torna su');
+    for (const nodo of bottone.childNodes) {
+      if (nodo.nodeType === Node.TEXT_NODE && nodo.textContent.trim()) {
+        nodo.textContent = 'Torna su';
+        return;
+      }
+    }
+    bottone.append('Torna su');
+  }
+
   // ===== AVVIO =====
   function avvia() {
     if (document.readyState === 'loading') {
@@ -519,6 +538,7 @@
     statisticheRepository();
     segnalazioneDaSelezione();
     livelloDiLettura();
+    tornaSuInItaliano();
   }
 
   avvia();
