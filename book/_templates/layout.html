@@ -3,7 +3,7 @@
   Override del blocco `extrahead` del tema (pydata / sphinx-book-theme) per
   iniettare `_static/head_custom.html` nel <head> di OGNI pagina.
 
-  Perché serve: nessuna estensione include automaticamente head_custom.html —
+  Perché serve: nessuna estensione include automaticamente head_custom.html:
   senza questo override quel file resta inerte e NON vengono caricati né i
   Google Fonts (Fraunces / Inter / JetBrains Mono) né lo script del tema
   scuro di default. `{{ super() }}` preserva il contenuto originale del blocco;
