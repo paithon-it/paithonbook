@@ -1,0 +1,27 @@
+<svg viewBox="0 0 800 440" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Grafico: curve di loss in funzione del compute per modelli di taglia diversa, con frontiera compute-ottimale">
+  <rect x="0" y="0" width="800" height="440" fill="#F8F5EE"/>
+  <line x1="90" y1="40" x2="90" y2="350" stroke="#1A1A1A" stroke-width="2"/>
+  <line x1="90" y1="350" x2="740" y2="350" stroke="#1A1A1A" stroke-width="2"/>
+  <text x="40" y="200" font-family="sans-serif" font-size="15" fill="#1A1A1A" transform="rotate(-90 40 200)" text-anchor="middle">loss (scala log)</text>
+  <text x="415" y="390" font-family="sans-serif" font-size="15" fill="#1A1A1A" text-anchor="middle">compute di addestramento (scala log)</text>
+  <path d="M 110 90 C 200 150, 260 205, 330 232 C 400 258, 520 268, 700 272" fill="none" stroke="#C9A961" stroke-width="2"/>
+  <path d="M 170 100 C 260 150, 330 190, 410 215 C 490 238, 600 246, 710 250" fill="none" stroke="#2D5A5C" stroke-width="2"/>
+  <path d="M 250 110 C 340 150, 420 178, 500 197 C 580 214, 660 221, 720 224" fill="none" stroke="#B5532C" stroke-width="2"/>
+  <path d="M 110 92 C 250 170, 420 220, 720 250" fill="none" stroke="#1A1A1A" stroke-width="1.5" stroke-dasharray="7 5"/>
+  <g font-family="sans-serif" font-size="14">
+    <line x1="520" y1="60" x2="556" y2="60" stroke="#C9A961" stroke-width="2"/>
+    <text x="564" y="65" fill="#1A1A1A">modello piccolo</text>
+    <line x1="520" y1="86" x2="556" y2="86" stroke="#2D5A5C" stroke-width="2"/>
+    <text x="564" y="91" fill="#1A1A1A">modello medio</text>
+    <line x1="520" y1="112" x2="556" y2="112" stroke="#B5532C" stroke-width="2"/>
+    <text x="564" y="117" fill="#1A1A1A">modello grande</text>
+    <line x1="520" y1="138" x2="556" y2="138" stroke="#1A1A1A" stroke-width="1.5" stroke-dasharray="7 5"/>
+    <text x="564" y="143" fill="#1A1A1A">frontiera compute-ottimale</text>
+  </g>
+  <circle cx="330" cy="232" r="5" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="2"/>
+  <circle cx="490" cy="238" r="5" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="2"/>
+  <text x="300" y="310" font-family="sans-serif" font-size="13" fill="#1A1A1A">oltre questo punto conviene</text>
+  <text x="300" y="328" font-family="sans-serif" font-size="13" fill="#1A1A1A">passare a un modello più grande</text>
+  <line x1="335" y1="240" x2="350" y2="288" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="415" y="424" font-family="sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">Ogni taglia di modello ha un pavimento: la frontiera ottimale attraversa i punti dove cambiare taglia rende di più che insistere.</text>
+</svg>

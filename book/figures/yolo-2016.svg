@@ -1,0 +1,43 @@
+<svg viewBox="0 0 680 380" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Un'immagine con griglia 7 per 7 passa una sola volta in una rete convoluzionale e produce direttamente i riquadri degli oggetti">
+  <defs>
+    <marker id="yolo-arrow" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#1A1A1A"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="680" height="380" fill="#F8F5EE"/>
+  <text x="340" y="30" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#1A1A1A" font-weight="bold">Un solo passaggio: dall'immagine ai riquadri</text>
+  <!-- input image with grid -->
+  <rect x="40" y="80" width="180" height="180" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="2"/>
+  <line x1="66" y1="80" x2="66" y2="260" stroke="#C9C2B4" stroke-width="1"/>
+  <line x1="91" y1="80" x2="91" y2="260" stroke="#C9C2B4" stroke-width="1"/>
+  <line x1="117" y1="80" x2="117" y2="260" stroke="#C9C2B4" stroke-width="1"/>
+  <line x1="143" y1="80" x2="143" y2="260" stroke="#C9C2B4" stroke-width="1"/>
+  <line x1="169" y1="80" x2="169" y2="260" stroke="#C9C2B4" stroke-width="1"/>
+  <line x1="194" y1="80" x2="194" y2="260" stroke="#C9C2B4" stroke-width="1"/>
+  <line x1="40" y1="106" x2="220" y2="106" stroke="#C9C2B4" stroke-width="1"/>
+  <line x1="40" y1="131" x2="220" y2="131" stroke="#C9C2B4" stroke-width="1"/>
+  <line x1="40" y1="157" x2="220" y2="157" stroke="#C9C2B4" stroke-width="1"/>
+  <line x1="40" y1="183" x2="220" y2="183" stroke="#C9C2B4" stroke-width="1"/>
+  <line x1="40" y1="208" x2="220" y2="208" stroke="#C9C2B4" stroke-width="1"/>
+  <line x1="40" y1="234" x2="220" y2="234" stroke="#C9C2B4" stroke-width="1"/>
+  <rect x="70" y="180" width="72" height="42" fill="#2D5A5C" opacity="0.85"/>
+  <circle cx="178" cy="132" r="24" fill="#B5532C" opacity="0.9"/>
+  <text x="130" y="284" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#5E5852">griglia 7 × 7 sull'immagine</text>
+  <!-- network -->
+  <line x1="222" y1="170" x2="266" y2="170" stroke="#1A1A1A" stroke-width="2" marker-end="url(#yolo-arrow)"/>
+  <rect x="270" y="140" width="140" height="60" rx="8" fill="#1A1A1A"/>
+  <text x="340" y="166" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#F8F5EE">una sola rete</text>
+  <text x="340" y="185" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#C9A961">24 conv. + 2 densi</text>
+  <text x="340" y="222" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#5E5852">un passaggio → 7 × 7 × 30 valori</text>
+  <line x1="412" y1="170" x2="456" y2="170" stroke="#1A1A1A" stroke-width="2" marker-end="url(#yolo-arrow)"/>
+  <!-- output image with boxes -->
+  <rect x="460" y="80" width="180" height="180" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="2"/>
+  <rect x="486" y="176" width="80" height="50" fill="none" stroke="#2D5A5C" stroke-width="2.5"/>
+  <rect x="486" y="162" width="52" height="14" fill="#2D5A5C"/>
+  <text x="512" y="173" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#F8F5EE">auto 0.9</text>
+  <circle cx="594" cy="128" r="30" fill="none" stroke="#B5532C" stroke-width="2.5"/>
+  <rect x="566" y="94" width="66" height="14" fill="#B5532C"/>
+  <text x="599" y="105" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#F8F5EE">persona 0.8</text>
+  <text x="550" y="284" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#5E5852">riquadro + classe + confidenza</text>
+  <text x="340" y="330" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">nessuna caccia a tentativi ripetuti: tutte le predizioni escono insieme, in una sola lettura dell'immagine</text>
+</svg>

@@ -1,0 +1,69 @@
+<svg viewBox="0 0 760 400" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Il modello bozza piccolo genera in sequenza quattro token candidati; il modello grande li verifica tutti in un'unica passata parallela, accetta i primi tre e corregge il quarto">
+  <rect x="0" y="0" width="760" height="400" fill="#F8F5EE"/>
+  <text x="380" y="32" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="bold" fill="#1A1A1A">Speculative decoding: il piccolo propone, il grande verifica</text>
+
+  <!-- modello bozza -->
+  <rect x="30" y="70" width="120" height="60" rx="6" fill="#2D5A5C"/>
+  <text x="90" y="95" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#F8F5EE">modello bozza</text>
+  <text x="90" y="113" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#F8F5EE">piccolo, veloce</text>
+
+  <!-- token proposti in sequenza -->
+  <g font-family="sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">
+    <rect x="200" y="76" width="90" height="48" rx="5" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.5"/>
+    <text x="245" y="105">t&#8321;</text>
+    <rect x="320" y="76" width="90" height="48" rx="5" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.5"/>
+    <text x="365" y="105">t&#8322;</text>
+    <rect x="440" y="76" width="90" height="48" rx="5" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.5"/>
+    <text x="485" y="105">t&#8323;</text>
+    <rect x="560" y="76" width="90" height="48" rx="5" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.5"/>
+    <text x="605" y="105">t&#8324;</text>
+  </g>
+  <!-- frecce sequenziali tra i token bozza -->
+  <g stroke="#2D5A5C" stroke-width="1.5" fill="none">
+    <line x1="150" y1="100" x2="196" y2="100"/><path d="M196 100 L188 96 L188 104 Z" fill="#2D5A5C"/>
+    <line x1="290" y1="100" x2="316" y2="100"/><path d="M316 100 L308 96 L308 104 Z" fill="#2D5A5C"/>
+    <line x1="410" y1="100" x2="436" y2="100"/><path d="M436 100 L428 96 L428 104 Z" fill="#2D5A5C"/>
+    <line x1="530" y1="100" x2="556" y2="100"/><path d="M556 100 L548 96 L548 104 Z" fill="#2D5A5C"/>
+  </g>
+  <text x="425" y="60" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#5E5852">generati uno dopo l'altro (economici)</text>
+
+  <!-- modello grande: barra unica -->
+  <rect x="200" y="200" width="450" height="58" rx="6" fill="#B5532C"/>
+  <text x="425" y="225" text-anchor="middle" font-family="sans-serif" font-size="14" font-weight="bold" fill="#F8F5EE">modello grande &#8212; una sola passata di verifica</text>
+  <text x="425" y="245" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#F8F5EE">controlla tutti i candidati in parallelo</text>
+
+  <!-- frecce parallele verso il modello grande -->
+  <g stroke="#1A1A1A" stroke-width="1.5" fill="none">
+    <line x1="245" y1="124" x2="245" y2="196"/><path d="M245 196 L241 188 L249 188 Z" fill="#1A1A1A"/>
+    <line x1="365" y1="124" x2="365" y2="196"/><path d="M365 196 L361 188 L369 188 Z" fill="#1A1A1A"/>
+    <line x1="485" y1="124" x2="485" y2="196"/><path d="M485 196 L481 188 L489 188 Z" fill="#1A1A1A"/>
+    <line x1="605" y1="124" x2="605" y2="196"/><path d="M605 196 L601 188 L609 188 Z" fill="#1A1A1A"/>
+  </g>
+
+  <!-- esiti -->
+  <g font-family="sans-serif" font-size="12" text-anchor="middle">
+    <circle cx="245" cy="300" r="15" fill="#C9A961"/>
+    <path d="M238 300 l5 5 l9 -11" stroke="#1A1A1A" stroke-width="2" fill="none"/>
+    <text x="245" y="335" fill="#1A1A1A">accettato</text>
+    <circle cx="365" cy="300" r="15" fill="#C9A961"/>
+    <path d="M358 300 l5 5 l9 -11" stroke="#1A1A1A" stroke-width="2" fill="none"/>
+    <text x="365" y="335" fill="#1A1A1A">accettato</text>
+    <circle cx="485" cy="300" r="15" fill="#C9A961"/>
+    <path d="M478 300 l5 5 l9 -11" stroke="#1A1A1A" stroke-width="2" fill="none"/>
+    <text x="485" y="335" fill="#1A1A1A">accettato</text>
+    <circle cx="605" cy="300" r="15" fill="none" stroke="#B5532C" stroke-width="2"/>
+    <line x1="597" y1="292" x2="613" y2="308" stroke="#B5532C" stroke-width="2"/>
+    <line x1="613" y1="292" x2="597" y2="308" stroke="#B5532C" stroke-width="2"/>
+    <text x="605" y="335" fill="#B5532C">respinto</text>
+  </g>
+  <g stroke="#1A1A1A" stroke-width="1.2" fill="none">
+    <line x1="245" y1="258" x2="245" y2="283"/>
+    <line x1="365" y1="258" x2="365" y2="283"/>
+    <line x1="485" y1="258" x2="485" y2="283"/>
+    <line x1="605" y1="258" x2="605" y2="283"/>
+  </g>
+  <text x="605" y="360" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#5E5852">qui il grande</text>
+  <text x="605" y="373" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#5E5852">scrive il token giusto</text>
+
+  <text x="380" y="392" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">tre token guadagnati in una passata sola, invece di quattro passate in fila</text>
+</svg>

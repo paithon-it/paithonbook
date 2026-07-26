@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 430" role="img" aria-label="Diagramma del parallelismo dati: un mini-batch si divide in tre parti, ognuna elaborata da una GPU con una replica identica del modello; i gradienti locali confluiscono in un'operazione di all-reduce che ne calcola la media e la restituisce a tutte le GPU, che applicano lo stesso aggiornamento dei pesi.">
+  <defs>
+    <marker id="freccia-g" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#5E5852"/>
+    </marker>
+    <marker id="freccia-t" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#B5532C"/>
+    </marker>
+  </defs>
+
+  <!-- mini-batch diviso in tre parti -->
+  <rect x="25" y="85" width="120" height="245" rx="8" fill="#F8F5EE" stroke="#C9A961" stroke-width="2"/>
+  <rect x="40" y="103" width="90" height="16" rx="3" fill="#C9A961" fill-opacity="0.3" stroke="#C9A961" stroke-width="1.2"/>
+  <rect x="40" y="124" width="90" height="16" rx="3" fill="#C9A961" fill-opacity="0.3" stroke="#C9A961" stroke-width="1.2"/>
+  <rect x="40" y="183" width="90" height="16" rx="3" fill="#C9A961" fill-opacity="0.3" stroke="#C9A961" stroke-width="1.2"/>
+  <rect x="40" y="204" width="90" height="16" rx="3" fill="#C9A961" fill-opacity="0.3" stroke="#C9A961" stroke-width="1.2"/>
+  <rect x="40" y="263" width="90" height="16" rx="3" fill="#C9A961" fill-opacity="0.3" stroke="#C9A961" stroke-width="1.2"/>
+  <rect x="40" y="284" width="90" height="16" rx="3" fill="#C9A961" fill-opacity="0.3" stroke="#C9A961" stroke-width="1.2"/>
+  <text x="85" y="352" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#1A1A1A">mini-batch</text>
+  <text x="85" y="370" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#5E5852">diviso in tre parti</text>
+
+  <!-- frecce batch -> GPU -->
+  <line x1="150" y1="121" x2="228" y2="96" stroke="#5E5852" stroke-width="2" marker-end="url(#freccia-g)"/>
+  <line x1="150" y1="201" x2="228" y2="215" stroke="#5E5852" stroke-width="2" marker-end="url(#freccia-g)"/>
+  <line x1="150" y1="281" x2="228" y2="334" stroke="#5E5852" stroke-width="2" marker-end="url(#freccia-g)"/>
+
+  <!-- GPU 0 -->
+  <rect x="235" y="50" width="200" height="92" rx="10" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2"/>
+  <text x="335" y="72" text-anchor="middle" font-family="Inter, sans-serif" font-size="15" font-weight="700" fill="#2D5A5C">GPU 0</text>
+  <rect x="252" y="84" width="75" height="11" rx="3" fill="#2D5A5C" fill-opacity="0.15" stroke="#2D5A5C" stroke-width="1.2"/>
+  <rect x="252" y="100" width="75" height="11" rx="3" fill="#2D5A5C" fill-opacity="0.15" stroke="#2D5A5C" stroke-width="1.2"/>
+  <rect x="252" y="116" width="75" height="11" rx="3" fill="#2D5A5C" fill-opacity="0.15" stroke="#2D5A5C" stroke-width="1.2"/>
+  <text x="383" y="98" text-anchor="middle" font-family="Inter, sans-serif" font-size="11.5" fill="#5E5852">replica di θ</text>
+  <text x="383" y="122" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" font-weight="700" fill="#B5532C">∇L<tspan dy="3" font-size="10">0</tspan></text>
+
+  <!-- GPU 1 -->
+  <rect x="235" y="169" width="200" height="92" rx="10" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2"/>
+  <text x="335" y="191" text-anchor="middle" font-family="Inter, sans-serif" font-size="15" font-weight="700" fill="#2D5A5C">GPU 1</text>
+  <rect x="252" y="203" width="75" height="11" rx="3" fill="#2D5A5C" fill-opacity="0.15" stroke="#2D5A5C" stroke-width="1.2"/>
+  <rect x="252" y="219" width="75" height="11" rx="3" fill="#2D5A5C" fill-opacity="0.15" stroke="#2D5A5C" stroke-width="1.2"/>
+  <rect x="252" y="235" width="75" height="11" rx="3" fill="#2D5A5C" fill-opacity="0.15" stroke="#2D5A5C" stroke-width="1.2"/>
+  <text x="383" y="217" text-anchor="middle" font-family="Inter, sans-serif" font-size="11.5" fill="#5E5852">replica di θ</text>
+  <text x="383" y="241" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" font-weight="700" fill="#B5532C">∇L<tspan dy="3" font-size="10">1</tspan></text>
+
+  <!-- GPU 2 -->
+  <rect x="235" y="288" width="200" height="92" rx="10" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2"/>
+  <text x="335" y="310" text-anchor="middle" font-family="Inter, sans-serif" font-size="15" font-weight="700" fill="#2D5A5C">GPU 2</text>
+  <rect x="252" y="322" width="75" height="11" rx="3" fill="#2D5A5C" fill-opacity="0.15" stroke="#2D5A5C" stroke-width="1.2"/>
+  <rect x="252" y="338" width="75" height="11" rx="3" fill="#2D5A5C" fill-opacity="0.15" stroke="#2D5A5C" stroke-width="1.2"/>
+  <rect x="252" y="354" width="75" height="11" rx="3" fill="#2D5A5C" fill-opacity="0.15" stroke="#2D5A5C" stroke-width="1.2"/>
+  <text x="383" y="336" text-anchor="middle" font-family="Inter, sans-serif" font-size="11.5" fill="#5E5852">replica di θ</text>
+  <text x="383" y="360" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" font-weight="700" fill="#B5532C">∇L<tspan dy="3" font-size="10">2</tspan></text>
+
+  <!-- frecce GPU -> all-reduce (gradienti locali) -->
+  <line x1="439" y1="88" x2="538" y2="180" stroke="#5E5852" stroke-width="2" marker-end="url(#freccia-g)"/>
+  <line x1="439" y1="207" x2="538" y2="215" stroke="#5E5852" stroke-width="2" marker-end="url(#freccia-g)"/>
+  <line x1="439" y1="326" x2="538" y2="250" stroke="#5E5852" stroke-width="2" marker-end="url(#freccia-g)"/>
+
+  <!-- all-reduce -->
+  <rect x="545" y="157" width="190" height="116" rx="10" fill="#F8F5EE" stroke="#B5532C" stroke-width="2"/>
+  <text x="640" y="182" text-anchor="middle" font-family="Inter, sans-serif" font-size="15" font-weight="700" fill="#B5532C">all-reduce</text>
+  <text x="640" y="200" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#5E5852">media dei gradienti</text>
+  <text x="640" y="228" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" fill="#1A1A1A">(∇L<tspan dy="3" font-size="9">0</tspan><tspan dy="-3"> + </tspan>∇L<tspan dy="3" font-size="9">1</tspan><tspan dy="-3"> + </tspan>∇L<tspan dy="3" font-size="9">2</tspan><tspan dy="-3">) / 3</tspan></text>
+  <rect x="558" y="242" width="164" height="22" rx="11" fill="#F8F5EE" stroke="#B5532C" stroke-width="1.5"/>
+  <text x="640" y="257" text-anchor="middle" font-family="Inter, sans-serif" font-size="11.5" fill="#B5532C">stesso aggiornamento di θ</text>
+
+  <!-- frecce di ritorno: gradiente medio verso tutte le GPU -->
+  <line x1="541" y1="192" x2="443" y2="106" stroke="#B5532C" stroke-width="1.8" stroke-dasharray="6 4" marker-end="url(#freccia-t)"/>
+  <line x1="541" y1="227" x2="443" y2="225" stroke="#B5532C" stroke-width="1.8" stroke-dasharray="6 4" marker-end="url(#freccia-t)"/>
+  <line x1="541" y1="262" x2="443" y2="344" stroke="#B5532C" stroke-width="1.8" stroke-dasharray="6 4" marker-end="url(#freccia-t)"/>
+
+  <!-- legenda -->
+  <line x1="40" y1="408" x2="80" y2="408" stroke="#5E5852" stroke-width="2" marker-end="url(#freccia-g)"/>
+  <text x="90" y="412" font-family="Inter, sans-serif" font-size="12" fill="#5E5852">gradienti locali (uno per GPU)</text>
+  <line x1="330" y1="408" x2="370" y2="408" stroke="#B5532C" stroke-width="1.8" stroke-dasharray="6 4" marker-end="url(#freccia-t)"/>
+  <text x="380" y="412" font-family="Inter, sans-serif" font-size="12" fill="#5E5852">gradiente medio, identico per tutte</text>
+</svg>

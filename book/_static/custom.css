@@ -1,0 +1,1456 @@
+/* ========================================
+   PAITHON BOOK - CUSTOM UI/UX STYLES
+   Ottimizzato per desktop, tablet e mobile
+   ======================================== */
+
+/* Fonte unica della firma visiva: paithon-it/brand (submodule _static/brand). */
+@import "brand/tokens.css";
+/* Sfondo "aurora" condiviso col sito paithon — stessa fonte, stessi token. */
+@import "brand/aurora.css";
+
+/* ===== VARIABILI CSS - OTTIMIZZATE PER LEGGIBILITÀ MASSIMA ===== */
+/*
+ * Le variabili del book sono ALIAS dei token brand (var(--pt-*)): cambi la
+ * firma in brand, il libro la eredita, in light E dark. Solo alcune restano
+ * locali al book (larghezza colonna, sidebar) perche brand non le vincola.
+ * Il dark e' guidato dal toggle NATIVO di sphinx-book-theme (setta
+ * data-theme="dark" su <html>), su cui i token brand commutano da soli.
+ */
+:root {
+  /* Palette — da brand */
+  --primary-color: var(--pt-accent);        /* terracotta */
+  --primary-light: #D17552;                 /* brand non ha una terracotta chiara in light */
+  --primary-dark:  var(--pt-accent-hover);  /* terracotta hover */
+  --accent-color:  var(--pt-accent-2);      /* verde petrolio */
+  --accent-ocra:   var(--pt-accent-3);      /* ocra */
+  --text-color:    var(--pt-fg);            /* warm black */
+  --text-light:    var(--pt-fg-muted);      /* secondario warm */
+  --bg-page:       var(--pt-bg);            /* carta */
+  --bg-main:       var(--pt-bg-elev);       /* superfici elevate */
+  --bg-secondary:  var(--pt-bg-elev-warm);  /* warm off-white */
+  --bg-code:       var(--pt-bg-elev-warm);
+  --border-color:  var(--pt-border);
+  --border-strong: var(--pt-border-strong);
+
+  /* Tipografia — da brand */
+  --font-body:    var(--pt-font-body);
+  --font-heading: var(--pt-font-display);
+  --font-mono:    var(--pt-font-mono);
+
+  /* Layout — locale al book. Alla Tufte: container AMPIO, ma la prosa resta a
+     una misura leggibile (--measure, ~73ch) e centrata; codice, tabelle e
+     figure rompono a piena larghezza del container. */
+  --content-max-width: 1120px;
+  --measure: 50rem;
+  --sidebar-width: 300px;
+  --spacing-unit: 1.5rem;
+
+  /* Ombre e transizioni — da brand */
+  --shadow-sm: var(--pt-shadow-sm);
+  --shadow-md: var(--pt-shadow-md);
+  --shadow-lg: var(--pt-shadow-lg);
+  --transition-fast:   var(--pt-transition-fast);
+  --transition-normal: var(--pt-transition-base);
+}
+
+/*
+ * Dark mode: NIENTE hex qui. Le variabili del book sopra sono alias di
+ * var(--pt-*), e i token brand commutano da soli su [data-theme="dark"] e
+ * prefers-color-scheme. Il toggle tema NATIVO (sphinx-book-theme) stampa
+ * data-theme, quindi il dark eredita interamente da brand.
+ * (Unica eccezione: --primary-light, che brand non definisce → resta il
+ * literal del :root, uguale in light e dark.)
+ */
+
+/* ===== TIPOGRAFIA SUPER LEGGIBILE ===== */
+body {
+  font-family: var(--font-body);
+  line-height: 1.7;
+  color: var(--text-color);
+  font-size: 20px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+  font-weight: 400;
+}
+
+/* Titoli display Fraunces — voce editoriale espressiva */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-optical-sizing: auto;
+  line-height: 1.15;
+  margin-top: 3rem;
+  margin-bottom: 1.25rem;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: var(--measure);
+  color: var(--text-color);
+  letter-spacing: -0.015em;
+}
+
+h1 {
+  font-size: 3.2rem;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  line-height: 1.08;
+}
+
+h2 {
+  font-size: 2.25rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  padding-bottom: 0.6rem;
+  border-bottom: 2px solid var(--border-strong);
+  margin-top: 3.5rem;
+  margin-bottom: 1.75rem;
+}
+
+h3 {
+  font-size: 1.7rem;
+  color: var(--text-color);
+  margin-top: 2.75rem;
+  margin-bottom: 1.1rem;
+}
+
+h4 {
+  font-size: 1.6rem;
+  margin-top: 2.5rem;
+}
+
+h5 {
+  font-size: 1.35rem;
+  margin-top: 2rem;
+}
+
+/* Paragrafi - SPAZIATURA GENEROSA */
+p {
+  margin: 0 auto 2rem;
+  max-width: var(--measure);
+  line-height: 1.75;
+  font-size: 1.1em;
+}
+
+/* Primo paragrafo dopo titolo - PIÙ GRANDE */
+h1 + p,
+h2 + p,
+h3 + p {
+  font-size: 1.2em;
+  line-height: 1.85;
+  margin-top: 1.5rem;
+}
+
+/* Link */
+a {
+  color: var(--primary-color);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+  border-bottom: 1px solid transparent;
+}
+
+a:hover {
+  color: var(--primary-dark);
+  border-bottom-color: var(--primary-light);
+}
+
+/* ===== SFONDO AURORA (da brand) — traspare dietro il contenuto ===== */
+/*
+ * L'aurora vive su layer fissi negativi (brand/aurora.css). Diamo la tinta di
+ * base a <html> (commuta light/dark dai token brand) e rendiamo trasparenti il
+ * body e i contenitori principali della colonna di lettura, così il gas
+ * colorato traspare — sottile, come sul sito. Sidebar, header, blocchi di
+ * codice, admonition, tabelle e card restano su pannello opaco per la
+ * leggibilità del long-form (mantengono i loro var(--bg-*)).
+ */
+html { background-color: var(--pt-bg); }
+body,
+.bd-container,
+.bd-main,
+.bd-page-width,
+.bd-article-container,
+.bd-content,
+.bd-content > section,
+.bd-content > article {
+  background: transparent !important;
+}
+
+/* ===== LAYOUT PRINCIPALE - ULTRA LEGGIBILE ===== */
+.bd-container {
+  max-width: 100%;
+}
+
+.bd-main .bd-content {
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+  padding: 3rem 3rem;
+}
+
+/* Spaziatura extra tra sezioni */
+.bd-content > section,
+.bd-content > article {
+  margin-bottom: 4rem;
+}
+
+/* Migliore spaziatura per elementi */
+.bd-content > * + * {
+  margin-top: 2rem;
+}
+
+/* Sidebar - ULTRA LEGGIBILE */
+.bd-sidebar {
+  background: var(--bg-secondary);
+  border-right: 2px solid var(--border-color);
+  box-shadow: var(--shadow-md);
+  font-size: 16px;
+}
+
+.bd-sidebar .nav-link {
+  padding: 0.75rem 1.25rem;
+  border-radius: 8px;
+  margin: 0.3rem 0.75rem;
+  transition: all var(--transition-fast);
+  font-size: 1rem;
+  line-height: 1.6;
+  font-weight: 500;
+}
+
+.bd-sidebar .nav-link:hover {
+  background: rgba(181, 83, 44, 0.08);
+  color: var(--primary-dark);
+  transform: translateX(3px);
+}
+
+.bd-sidebar .nav-link.active {
+  background: rgba(181, 83, 44, 0.10);
+  color: var(--primary-dark);
+  font-weight: 700;
+  box-shadow: inset 3px 0 0 var(--primary-color);
+}
+
+/* Table of contents nel sidebar */
+.bd-sidebar nav ul {
+  padding-left: 0;
+}
+
+.bd-sidebar nav li {
+  margin: 0.25rem 0;
+  list-style: none;
+}
+
+/* ===== CODE BLOCKS ULTRA LEGGIBILI ===== */
+code {
+  font-family: var(--font-mono);
+  font-size: 0.88em;
+  background: var(--bg-code);
+  padding: 0.15em 0.45em;
+  border-radius: 5px;
+  color: var(--primary-dark);
+  border: 1px solid var(--border-color);
+  font-weight: 500;
+}
+
+pre {
+  background: var(--bg-code);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 1.5rem 1.75rem;
+  overflow-x: auto;
+  box-shadow: var(--shadow-sm);
+  margin: 2rem 0;
+  line-height: 1.6;
+  font-size: 0.9rem;
+}
+
+pre code {
+  background: none;
+  padding: 0;
+  border: none;
+  font-size: 0.95rem;
+  color: inherit;
+  line-height: 1.7;
+}
+
+/* Jupyter cell styling */
+.cell {
+  margin: 2rem 0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.cell_input {
+  background: var(--bg-code);
+  border-left: 4px solid var(--primary-color);
+  padding: 1rem;
+}
+
+.cell_output {
+  background: var(--bg-secondary);
+  padding: 1rem;
+  border-left: 4px solid var(--accent-color);
+  margin-top: 0.5rem;
+}
+
+/* ===== TABS Elementare/Superiore =====
+   Gli stili vivono in tabs-enhanced.css e usano i selettori REALI di
+   sphinx-inline-tabs (.tab-set / .tab-label / .tab-content). */
+
+/* ===== ADMONITIONS E BOX - ULTRA LEGGIBILI ===== */
+.admonition {
+  padding: 1.5rem 1.75rem;
+  margin: 2.5rem 0;
+  border-radius: 10px;
+  border: 1px solid var(--border-color);
+  border-left: 4px solid var(--primary-color);
+  box-shadow: var(--shadow-sm);
+  background: var(--bg-main);
+  font-size: 1em;
+  line-height: 1.75;
+}
+
+.admonition.note {
+  border-left-color: #2D5A5C;
+  background: rgba(45, 90, 92, 0.06);
+}
+
+.admonition.warning,
+.admonition.caution {
+  border-left-color: #C9A961;
+  background: rgba(201, 169, 97, 0.10);
+}
+
+.admonition.tip,
+.admonition.hint {
+  border-left-color: #2D6A4F;
+  background: rgba(45, 106, 79, 0.06);
+}
+
+.admonition.important,
+.admonition.attention,
+.admonition.danger,
+.admonition.error {
+  border-left-color: #B5532C;
+  background: rgba(181, 83, 44, 0.06);
+}
+
+.admonition-title {
+  font-weight: 700;
+  margin-bottom: 1.25rem;
+  font-size: 1.25rem;
+  font-family: var(--font-heading);
+  letter-spacing: -0.01em;
+}
+
+/* Contenuto admonition */
+.admonition p {
+  margin-bottom: 1.25rem;
+}
+
+.admonition p:last-child {
+  margin-bottom: 0;
+}
+
+/* ===== TABELLE - ULTRA LEGGIBILI ===== */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 3rem 0;
+  box-shadow: var(--shadow-md);
+  border-radius: 10px;
+  overflow: hidden;
+  font-size: 1.02em;
+  line-height: 1.75;
+}
+
+thead {
+  background: var(--accent-color);
+  color: #F8F5EE;
+}
+
+th {
+  padding: 1.5rem;
+  text-align: left;
+  font-weight: 700;
+  font-family: var(--font-heading);
+  font-size: 1.05em;
+  letter-spacing: 0.02em;
+}
+
+td {
+  padding: 1.25rem 1.5rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border-color);
+}
+
+tbody tr:hover {
+  background: var(--bg-secondary);
+  transition: background 0.2s ease;
+}
+
+tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* ===== IMMAGINI E FIGURE ===== */
+/* Le figure del libro sono SVG flat su fondo trasparente (palette brand):
+   niente ombre ne' angoli arrotondati, che creerebbero "cartoline" grigie. */
+img {
+  max-width: 100%;
+  height: auto;
+  margin: 2rem 0;
+}
+
+figure {
+  margin: 2rem 0;
+  text-align: center;
+}
+
+figcaption {
+  font-style: italic;
+  color: var(--text-light);
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+}
+
+/* ===== LISTE - SUPER LEGGIBILI ===== */
+ul, ol {
+  padding-left: 2.5rem;
+  margin: 2rem auto;
+  max-width: var(--measure);
+}
+
+li {
+  margin: 1rem 0;
+  line-height: 1.9;
+  font-size: 1.1em;
+}
+
+li::marker {
+  color: var(--primary-color);
+  font-weight: bold;
+}
+
+/* Liste annidate */
+li > ul,
+li > ol {
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+/* Miglior distanziamento tra punti elenco */
+li + li {
+  margin-top: 0.75rem;
+}
+
+/* ===== HEADER E NAVBAR ===== */
+.navbar-brand {
+  font-weight: 700;
+  font-size: 1.3rem;
+  color: var(--primary-color) !important;
+  transition: transform var(--transition-fast);
+  cursor: pointer;
+}
+
+.navbar-brand:hover {
+  transform: scale(1.05);
+}
+
+.navbar {
+  box-shadow: var(--shadow-md);
+  background: var(--bg-main) !important;
+  border-bottom: 2px solid var(--primary-color);
+}
+
+/* Fix navigation links to prevent external redirects */
+.navbar a,
+.bd-sidebar a,
+nav a {
+  cursor: pointer;
+}
+
+/* Visual feedback for all internal navigation */
+.bd-links a {
+  transition: all var(--transition-fast);
+}
+
+.bd-links a:hover {
+  text-decoration: none;
+}
+
+/* ===== BUTTONS ===== */
+/* Solo i bottoni di contenuto (.btn): la regola NON deve toccare i bottoni
+   icona del tema (header, copybutton, toggle), che hanno le proprie misure. */
+.btn {
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  font-weight: 600;
+  transition: all var(--transition-fast);
+  border: none;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--primary-color);
+  color: white;
+}
+
+.btn-primary:hover {
+  background: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* ===== SCROLLBAR CUSTOM ===== */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--primary-color);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-dark);
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+
+/* Tablet (768px - 1024px) */
+@media (max-width: 1024px) {
+  body {
+    font-size: 16px;
+  }
+
+  h1 { font-size: 2rem; }
+  h2 { font-size: 1.75rem; }
+  h3 { font-size: 1.4rem; }
+
+  .bd-main .bd-content {
+    padding: 1.5rem 1rem;
+  }
+
+  .bd-sidebar {
+    width: 240px;
+  }
+}
+
+/* Mobile (max 767px) - LEGGIBILITÀ MANTENUTA */
+@media (max-width: 767px) {
+  body {
+    font-size: 19px;
+    line-height: 1.8;
+  }
+
+  h1 {
+    font-size: 2.5rem;
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  h2 {
+    font-size: 2rem;
+    margin-top: 3rem;
+    margin-bottom: 1.5rem;
+  }
+
+  h3 {
+    font-size: 1.65rem;
+    margin-top: 2.5rem;
+  }
+
+  h4 { font-size: 1.35rem; }
+
+  .bd-main .bd-content {
+    padding: 2rem 1.5rem;
+    max-width: 100%;
+  }
+
+  p {
+    margin-bottom: 1.75rem;
+    font-size: 1.05em;
+  }
+
+  /* Sidebar mobile */
+  .bd-sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  /* Tabs mobile friendly */
+  .sphinx-tabs-tab {
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  .sphinx-tabs-panel {
+    padding: 1rem;
+  }
+
+  /* Code blocks mobile */
+  pre {
+    padding: 1rem;
+    font-size: 0.85rem;
+  }
+
+  /* Tables mobile */
+  table {
+    font-size: 0.9rem;
+  }
+
+  th, td {
+    padding: 0.75rem 0.5rem;
+  }
+
+  /* Immagini mobile */
+  img {
+    margin: 1rem 0;
+  }
+
+  /* Liste mobile */
+  ul, ol {
+    padding-left: 1.5rem;
+  }
+
+  /* Admonitions mobile */
+  .admonition {
+    padding: 1rem;
+    margin: 1.5rem 0;
+  }
+}
+
+/* Small mobile (max 480px) - LEGGIBILITÀ MANTENUTA */
+@media (max-width: 480px) {
+  body {
+    font-size: 18px;
+    line-height: 1.75;
+  }
+
+  h1 {
+    font-size: 2.15rem;
+    margin-top: 1rem;
+  }
+
+  h2 {
+    font-size: 1.8rem;
+    margin-top: 2.5rem;
+  }
+
+  h3 {
+    font-size: 1.5rem;
+    margin-top: 2rem;
+  }
+
+  h4 { font-size: 1.3rem; }
+
+  .bd-main .bd-content {
+    padding: 1.5rem 1rem;
+  }
+
+  p {
+    margin-bottom: 1.5rem;
+  }
+
+  .sphinx-tabs-tab {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.85rem;
+  }
+}
+
+/* ===== ANIMAZIONI E TRANSIZIONI ===== */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.bd-content > * {
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* Smooth scroll */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Focus states accessibili */
+:focus-visible {
+  outline: 3px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+/* ===== PRINT STYLES ===== */
+@media print {
+  body {
+    font-size: 12pt;
+    line-height: 1.5;
+  }
+
+  .bd-sidebar,
+  .navbar,
+  button,
+  .btn {
+    display: none;
+  }
+
+  .bd-main .bd-content {
+    max-width: 100%;
+    padding: 0;
+  }
+
+  a {
+    color: black;
+    text-decoration: underline;
+  }
+
+  img {
+    max-width: 100%;
+    page-break-inside: avoid;
+  }
+}
+
+/* ===== MIGLIORAMENTI PERFORMANCE ===== */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+img, video {
+  will-change: transform;
+}
+
+/* ===== BLOCKQUOTES / EPIGRAFI — pull-quote editoriale ===== */
+/* Niente lastra scura: un velo caldo appena percettibile + filo terracotta,
+   così l'aurora respira dietro la citazione anche in dark mode. */
+blockquote {
+  position: relative;
+  margin: 2.5rem 0 3rem;
+  padding: 1.35rem 1.9rem 1.35rem 2.3rem;
+  border: none;
+  border-left: 3px solid var(--primary-color);
+  background: color-mix(in srgb, var(--primary-color) 7%, transparent);
+  font-size: 1.15em;
+  line-height: 1.85;
+  font-style: italic;
+  color: var(--text-color);
+  border-radius: 0 12px 12px 0;
+  box-shadow: none;
+}
+
+blockquote p {
+  margin-bottom: 1rem;
+}
+
+blockquote p:last-child {
+  margin-bottom: 0;
+}
+
+blockquote cite {
+  display: block;
+  margin-top: 1rem;
+  font-size: 0.9em;
+  font-style: normal;
+  color: var(--text-color);
+  font-weight: 600;
+}
+
+blockquote cite::before {
+  content: "— ";
+}
+
+/* ===== STRONG & EM - ENFATIZZATI ===== */
+strong, b {
+  font-weight: 700;
+  color: var(--text-color);
+}
+
+em, i {
+  font-style: italic;
+  color: var(--text-color);
+}
+
+/* ===== HORIZONTAL RULE ===== */
+hr {
+  border: none;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--primary-color), transparent);
+  margin: 4rem 0;
+  border-radius: 2px;
+}
+
+/* ===== UTILITY CLASSES ===== */
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+.mt-2 { margin-top: 2rem; }
+.mb-2 { margin-bottom: 2rem; }
+.p-2 { padding: 2rem; }
+
+/* ===== FOOTER ===== */
+footer {
+  margin-top: 4rem;
+  padding: 2rem 0;
+  border-top: 2px solid var(--border-color);
+  color: var(--text-light);
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+/* ===== SPECIAL: Buy me a coffee button ===== */
+.bmc-btn {
+  box-shadow: var(--shadow-md) !important;
+  transition: transform var(--transition-fast) !important;
+}
+
+.bmc-btn:hover {
+  transform: translateY(-3px) !important;
+  box-shadow: var(--shadow-lg) !important;
+}
+
+/* ============================================================
+   PAITHON EDITORIAL — reskin del design system del sito paithon.it
+   sopra il tema pydata/sphinx-book. Carta cream, terracotta,
+   Fraunces display. Sensazione "libro da leggere e sfogliare".
+   ============================================================ */
+
+/* --- Variabili del tema pydata mappate sulla palette paithon ---
+ *
+ * ATTENZIONE al selettore. Non basta `html`: sphinx-book-theme dichiara questi
+ * stessi --pst-color-* dentro `html[data-theme=light]` e
+ * `html[data-theme=dark]`, che a specificità battono `html` — e vincevano.
+ * Risultato: --pst-color-primary restava il blu di fabbrica (#176de8 in light,
+ * #528fe4 in dark) e --pst-color-secondary l'ambra, quindi il link della
+ * pagina corrente nella sidebar era BLU e i link-ancora accanto ai titoli
+ * ARANCIO ambra, fuori palette, in un libro che ha il terracotta.
+ * Ripetendo qui gli stessi attributi la specificità si pareggia, e custom.css
+ * viene caricato dopo il tema: a parità vince l'ultimo. */
+html,
+html[data-theme="light"],
+html[data-theme="dark"] {
+  --pst-color-primary: var(--pt-accent);
+  --pst-color-primary-highlight: var(--pt-accent-hover);
+  --pst-color-secondary: var(--pt-accent-2);
+  --pst-color-secondary-highlight: var(--pt-accent-2-hover);
+  --pst-color-link: var(--pt-accent);
+  --pst-color-link-hover: var(--pt-accent-hover);
+  --pst-color-background: var(--pt-bg);
+  --pst-color-on-background: var(--pt-bg-elev-warm);
+  --pst-color-surface: var(--pt-bg-elev);
+  --pst-color-on-surface: var(--pt-fg);
+  --pst-color-text-base: var(--pt-fg);
+  --pst-color-text-muted: var(--pt-fg-muted);
+  --pst-color-border: var(--pt-border);
+  --pst-color-heading-color: var(--pt-fg);
+  --pst-heading-color: var(--pt-fg);
+  --pst-color-inline-code: var(--pt-accent-hover);
+  --pst-color-target: rgba(201, 169, 97, 0.35);
+  --pst-font-family-base: var(--font-body);
+  --pst-font-family-heading: var(--font-heading);
+  --pst-font-family-monospace: var(--font-mono);
+}
+/*
+ * Non serve un blocco dark separato: i valori sono var(--pt-*), che commutano
+ * da soli su [data-theme="dark"]. Il blocco qui sopra elenca i tre selettori
+ * solo per pareggiare la specificità del tema, non per dare valori diversi.
+ */
+
+/* --- Carta e superfici --- */
+body,
+.bd-container,
+.bd-main {
+  background: var(--bg-page);
+}
+
+/* Header: banda cream con filo sottile, niente ombra pesante (editoriale) */
+.navbar,
+header.bd-header,
+.bd-header.navbar {
+  background: var(--bg-page) !important;
+  border-bottom: 1px solid var(--border-color);
+  box-shadow: none;
+}
+
+/* Sidebar capitoli: superficie warm appena staccata dalla carta */
+.bd-sidebar-primary,
+.bd-sidebar {
+  background: var(--bg-secondary);
+  border-right: 1px solid var(--border-color);
+  box-shadow: none;
+}
+
+/* TOC di pagina (destra) e footer sulla stessa carta */
+.bd-sidebar-secondary,
+.bd-footer {
+  background: var(--bg-page);
+  border-color: var(--border-color);
+}
+
+/* --- Logo: lockup bollo tribar + wordmark "paithon" (SVG theme-aware) --- */
+/* Il logo NON eredita ombra/raggio/margine delle immagini di contenuto. */
+img.logo__image,
+.navbar-brand img,
+.sidebar-header-items img,
+.bd-sidebar img {
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
+
+/* Lockup centrato nell'header della sidebar, con un po' d'aria attorno. */
+.navbar-brand {
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin: 0.35rem auto 0.65rem;
+  text-align: center;
+}
+
+/* NB: niente `display` qui — il tema usa .only-light/.only-dark per mostrare
+   la variante giusta (l'altra è display:none). Il centraggio lo fa il flex
+   del contenitore .navbar-brand qui sopra. */
+img.logo__image {
+  margin: 0 auto !important;
+  width: auto;
+  height: auto;
+  max-height: 2.9rem;   /* il lockup è orizzontale (~4.9:1) */
+  max-width: 100%;      /* su sidebar strette rientra scalando in altezza */
+}
+
+/* Il wordmark "paithon" è ora DENTRO l'immagine del logo: nascondiamo il
+   titolo testuale del tema per non duplicarlo ("paithon" + "Paithon Book"). */
+.navbar-brand .title,
+p.title.logo__title,
+.logo__title {
+  display: none !important;
+}
+
+.navbar-brand:hover {
+  transform: none;
+  opacity: 0.85;
+}
+
+/* In dark mode il wordmark "paithon" (warm-black nella variante chiara) sparisce
+   sul fondo scuro, perché il tema serve comunque la variante light. Fix robusto
+   (non dipende dal supporto di `content:` sugli <img>): nascondiamo l'immagine
+   del tema MANTENENDONE il box, e dipingiamo la variante dark (wordmark cream)
+   come background del contenitore centrato .navbar-brand. Vale sia che il tema
+   renda una sola <img> sia che ne renda due (only-light/only-dark). */
+html[data-theme="dark"] .navbar-brand {
+  background-image: url("logo-dark.svg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  min-height: 2.9rem;   /* garantisce l'area anche se le img sono nascoste */
+}
+html[data-theme="dark"] .navbar-brand img,
+html[data-theme="dark"] .navbar-brand img.logo__image {
+  visibility: hidden !important;
+}
+
+/* --- Capolettera (drop cap) sul primo paragrafo del capitolo --- */
+.bd-content h1 + p::first-letter,
+.bd-article h1 + p::first-letter {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  float: left;
+  font-size: 3.5em;
+  line-height: 0.72;
+  padding: 0.06em 0.1em 0 0;
+  margin: 0.02em 0.06em 0 0;
+  color: var(--primary-color);
+}
+
+/* --- "Sfoglia": prev/next come pagine da voltare --- */
+.prev-next-area {
+  margin-top: 3.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.prev-next-area a.left-prev,
+.prev-next-area a.right-next {
+  padding: 0.9rem 1.15rem;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  background: var(--bg-main);
+  text-decoration: none;
+  transition: border-color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.prev-next-area a.left-prev:hover,
+.prev-next-area a.right-next:hover {
+  border-color: var(--primary-color);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.prev-next-area a:hover {
+  text-decoration: none;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.prev-next-area .prev-next-title {
+  color: var(--primary-color);
+  font-weight: 600;
+  font-family: var(--font-heading);
+}
+
+.prev-next-area .prev-next-subtitle {
+  color: var(--text-light);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.7rem;
+}
+
+.prev-next-area i,
+.prev-next-area .fa,
+.prev-next-area svg {
+  color: var(--primary-color);
+}
+
+/* --- Blockquote come pull-quote serif --- */
+blockquote {
+  font-family: var(--font-heading);
+  font-weight: 400;
+}
+
+/* --- Epigrafe (citazione d'apertura): pull-quote con virgoletta ---
+   Era 1.5em fissi: su un telefono la citazione d'apertura si mangiava tutto
+   il primo schermo e il libro cominciava sotto la piega. Ora scala con la
+   larghezza — circa 17px su un iPhone, 20px da desktop — e resta una
+   pull-quote senza fare da titolo. */
+blockquote.epigraph {
+  font-size: clamp(1.02rem, 0.96rem + 0.4vw, 1.25rem);
+  line-height: 1.55;
+  padding-top: 2.4rem;
+}
+
+@media (max-width: 575.98px) {
+  blockquote.epigraph {
+    padding-top: 1.6rem;
+  }
+
+  blockquote.epigraph::before {
+    font-size: 2.2rem;
+    top: 0.1rem;
+    left: 0.5rem;
+  }
+}
+
+blockquote.epigraph::before {
+  content: "\201C";                 /* virgoletta aperta decorativa */
+  position: absolute;
+  top: 0.2rem;
+  left: 0.9rem;
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 3.2rem;
+  line-height: 1;
+  color: var(--primary-color);
+  opacity: 0.38;
+  pointer-events: none;
+}
+
+/* Attribuzione ("— Marcus du Sautoy"): sobria, non in corsivo. */
+blockquote .attribution,
+blockquote p.attribution {
+  display: block;
+  margin-top: 1.1rem;
+  font-family: var(--font-body);
+  font-style: normal;
+  font-weight: 600;
+  font-size: 0.9em;
+  color: var(--text-light);
+}
+
+/* --- Dettagli editoriali --- */
+::selection {
+  background: rgba(201, 169, 97, 0.35);
+  color: var(--text-color);
+}
+
+hr {
+  height: 1px;
+  background: var(--border-strong);
+}
+
+/* Focus coerente con l'accent */
+:focus-visible {
+  outline-color: var(--primary-color);
+}
+
+/* ============================================================
+   ICONE E CONTROLLI DEL TEMA — allineamento pulito
+   ============================================================ */
+
+/* Barra superiore: i bottoni icona (tema, GitHub, fullscreen, ricerca,
+   razzo Thebe/Colab) tornano compatti, centrati e sulla stessa baseline. */
+.bd-header .navbar-header-items,
+.bd-header .navbar-header-items__end,
+.bd-header .navbar-header-items__center,
+.bd-header .navbar-item,
+.header-article-items,
+.header-article-items__start,
+.header-article-items__end {
+  display: flex;
+  align-items: center;
+}
+
+.bd-header button,
+.bd-header .btn,
+.header-article-items button,
+.header-article-items .btn,
+.bd-header-article button,
+.bd-header-article .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.4rem 0.55rem;
+  border-radius: 8px;
+  line-height: 1;
+  font-weight: 500;
+  background: transparent;
+  box-shadow: none;
+}
+
+.bd-header button:hover,
+.bd-header .btn:hover,
+.header-article-items button:hover,
+.header-article-items .btn:hover,
+.bd-header-article button:hover,
+.bd-header-article .btn:hover {
+  background: rgba(181, 83, 44, 0.08);
+  color: var(--primary-dark);
+  transform: none;
+  box-shadow: none;
+}
+
+.bd-header i,
+.bd-header svg,
+.header-article-items i,
+.header-article-items svg {
+  font-size: 1.05rem;
+  vertical-align: middle;
+}
+
+/* Copybutton nativo di Jupyter Book: unico, discreto, in palette. */
+button.copybtn {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 0.25rem 0.4rem;
+  opacity: 0;
+  transition: opacity var(--transition-fast), background var(--transition-fast);
+}
+
+div.highlight:hover button.copybtn,
+button.copybtn:focus-visible {
+  opacity: 1;
+}
+
+button.copybtn:hover {
+  background: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+button.copybtn:hover svg {
+  color: #F8F5EE;
+  stroke: #F8F5EE;
+}
+
+/* Footer: le icone Creative Commons in linea col testo, senza ombre.
+   In dark mode si invertono per restare visibili. */
+.bd-footer img,
+.bd-footer-content img,
+footer img,
+p.copyright img {
+  height: 1.05em !important;
+  width: auto;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  margin: 0 0 0 0.25em !important;
+  vertical-align: -0.18em !important;
+  display: inline-block;
+}
+
+html[data-theme="dark"] .bd-footer img,
+html[data-theme="dark"] .bd-footer-content img,
+html[data-theme="dark"] footer img,
+html[data-theme="dark"] p.copyright img {
+  filter: invert(1) hue-rotate(180deg);
+  opacity: 0.85;
+}
+
+/* ============================================================
+   COPERTINA — griglia dei capitoli (landing page intro.md)
+   Ispirazione: indici-catalogo dei book-site tecnici; carta paithon.
+   ============================================================ */
+
+.pt-chapters {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1rem;
+  margin: 2.5rem 0 3rem;
+}
+
+a.pt-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 1.25rem 1.35rem 1.35rem;
+  background: var(--bg-main);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  text-decoration: none;
+  color: var(--text-color);
+  transition: transform var(--transition-fast),
+              border-color var(--transition-fast),
+              box-shadow var(--transition-fast);
+}
+
+a.pt-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--primary-color);
+  box-shadow: var(--shadow-md);
+  border-bottom-color: var(--primary-color);
+}
+
+.pt-card-num {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 1.6rem;
+  line-height: 1;
+  color: var(--accent-ocra);
+  letter-spacing: -0.02em;
+}
+
+.pt-card-title {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 1.18rem;
+  line-height: 1.25;
+  color: var(--text-color);
+  letter-spacing: -0.01em;
+}
+
+a.pt-card:hover .pt-card-title {
+  color: var(--primary-color);
+}
+
+.pt-card-desc {
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: var(--text-light);
+}
+
+/* Il badge "Bonus" sulle card è stato eliminato: i capitoli sono tutti
+   uguali e numerati di seguito, quindi la regola non ha più niente da
+   colorare. */
+
+/* Logo come titolo della landing: il lockup al posto delle parole "Paithon
+   Book", come la copertina di un libro. Le due varianti commutano con
+   `only-light`/`only-dark` del tema. */
+.pt-copertina-logo {
+  display: block;
+  width: min(560px, 100%);
+  height: auto;
+  margin: 0.25rem 0 2rem;
+}
+
+@media (max-width: 575.98px) {
+  .pt-copertina-logo {
+    width: min(340px, 100%);
+    margin-bottom: 1.5rem;
+  }
+}
+
+@media (max-width: 767px) {
+  .pt-chapters {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+}
+
+/* ============================================================
+   RIFINITURE
+   ============================================================ */
+
+/* Il wrapper di scorrimento delle tabelle (custom.js) non deve sommare
+   margini e ombre a quelli della tabella. */
+.table-wrapper table {
+  margin: 0;
+  box-shadow: none;
+}
+
+/* Formule lunghe: scorrono nel proprio riquadro, mai la pagina. */
+.math-wrapper,
+div.math,
+mjx-container[display="true"] {
+  overflow-x: auto;
+  overflow-y: hidden;
+  max-width: 100%;
+}
+
+/* ============================================================
+   SIDEBAR COLLASSATA → LETTURA PIÙ AMPIA
+   ============================================================
+   Quando il toggle laterale nasconde la barra di sinistra, lo spazio
+   liberato non deve restare margine vuoto: la colonna di lettura si allarga
+   e il testo cresce un filo. La classe `pt-sidebar-collapsed` su <html> la
+   mette custom.js misurando se la sidebar occupa ancora spazio nel layout
+   (robusto rispetto al meccanismo esatto del tema). Transizione morbida,
+   in sincrono con lo scorrimento della sidebar. */
+
+/* Le transizioni valgono sempre: rendono fluido anche il ritorno. */
+body {
+  transition: font-size var(--transition-normal, 0.35s) ease;
+}
+.bd-main .bd-content {
+  transition: max-width var(--transition-normal, 0.35s) ease,
+              padding var(--transition-normal, 0.35s) ease;
+}
+.bd-content p,
+.bd-content li,
+.bd-content h1, .bd-content h2, .bd-content h3, .bd-content h4, .bd-content h5 {
+  transition: max-width var(--transition-normal, 0.35s) ease;
+}
+
+/* L'ingrandimento vero solo su desktop, dove nascondere la sidebar libera
+   davvero spazio: sotto i 1025px la sidebar è un overlay e la colonna è già
+   piena, quindi non tocchiamo nulla. */
+@media (min-width: 1025px) {
+  html.pt-sidebar-collapsed {
+    --measure: 54rem;            /* ~73ch → ~79ch: colonna un filo più larga */
+    --content-max-width: 1220px; /* usa lo spazio liberato dalla sidebar */
+  }
+  html.pt-sidebar-collapsed body {
+    font-size: 21px;             /* prosa: 20px → 21px (i paragrafi sono 1.1em) */
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body,
+  .bd-main .bd-content,
+  .bd-content p, .bd-content li,
+  .bd-content h1, .bd-content h2, .bd-content h3, .bd-content h4, .bd-content h5 {
+    transition: none;
+  }
+}
+
+/* Titolo della landing: il saluto ("Benvenuto!") era superfluo — il logo
+   sopra dice già come si chiama il libro. Al suo posto c'è il sottotitolo
+   vero, che serve a chi arriva da una ricerca e diventa il <title> della
+   pagina. Non si può eliminare del tutto: Sphinx costruisce da qui il titolo
+   del documento e la navigazione. Qui però si comporta da sottotitolo, non da
+   titolone: il selettore lo prende solo dove c'è il logo di copertina, cioè
+   nella sola landing. */
+/* Il titolo della landing resta nel documento — Sphinx ne ricava il <title>,
+   la navigazione e gli screen reader lo leggono — ma agli occhi lo sostituisce
+   `.pt-claim`. Serve perché due parole vanno colorate coi colori dei livelli, e
+   per farlo servono degli <span>: dentro l'H1 finirebbero nel <title> come
+   markup, perché quel testo è la fonte del titolo del documento. */
+.pt-copertina-logo ~ section > h1 {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.pt-claim {
+  margin: 0 0 0.5rem !important;
+  max-width: 34ch;
+  font-family: var(--font-heading);
+  font-size: clamp(1.35rem, 1.1rem + 1vw, 2rem) !important;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  color: var(--text-color);
+}
+
+/* I due livelli nei loro colori, gli stessi delle linguette. */
+.pt-claim__el {
+  color: var(--accent-color);
+}
+
+.pt-claim__sup {
+  color: var(--primary-color);
+}
+
+/* Il sottotitolo: la riga subito sotto il titolo, non un primo paragrafo
+   qualsiasi — quindi va smorzata invece di essere ingrandita come fa la regola
+   generale `h1 + p`. */
+.pt-claim + p,
+.pt-copertina-logo ~ section > h1 + p {
+  max-width: 46ch;
+  margin-top: 0;
+  font-size: 1rem !important;
+  line-height: 1.5;
+  color: var(--text-light);
+}
+
+
+/* Link-ancora (#) accanto ai titoli: elemento di servizio, non decorazione.
+   Il tema lo colora con --pst-color-secondary; qui resta smorzato e si accende
+   in terracotta solo al passaggio del mouse. */
+a.headerlink {
+  color: var(--text-light) !important;
+  opacity: 0.45;
+}
+
+a.headerlink:hover {
+  color: var(--primary-color) !important;
+  opacity: 1;
+}
+
+/* Codice inline dentro le voci dell'indice: il tema lo dipinge col suo ciano
+   di fabbrica (#3FB1C5), che nella sidebar di questo libro è un corpo
+   estraneo. Deve seguire il colore della voce — grigio da fermo, terracotta
+   quando è la pagina corrente — non gridare per conto suo. */
+.bd-sidebar-primary code,
+.bd-sidebar-primary .nav-link code {
+  color: inherit !important;
+  background: transparent;
+  border-color: transparent;
+  font-size: 0.86em;
+}
+
+/* L'icona del livello ripetuta dentro il testo della home: è la stessa del
+   pulsante in barra, con le stesse classi, quindi **segue il livello scelto**
+   dal lettore — chi legge in Superiore vede l'icona piena. Serve a legare la
+   frase all'oggetto: "quell'icona lì in alto è questa qui". */
+.pt-livello-inline {
+  display: inline-block;
+  margin-right: 0.15em;
+  color: var(--accent-color);
+}
+
+html[data-pt-livello="superiore"] .pt-livello-inline {
+  color: var(--primary-color);
+}
+
+.pt-livello-inline .pt-livello__icona {
+  display: none;
+  vertical-align: -0.18em;
+}
+
+html:not([data-pt-livello="superiore"]) .pt-livello-inline .pt-livello__icona--elementare,
+html[data-pt-livello="superiore"] .pt-livello-inline .pt-livello__icona--superiore {
+  display: inline-block;
+}
+
+

@@ -1,0 +1,195 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 820 420" role="img" aria-label="Due file di riquadri. In alto il processo in avanti: un paesaggio stilizzato che di riquadro in riquadro si copre di puntini di rumore fino a diventare rumore puro, con frecce teal verso destra. In basso il processo inverso: dagli stessi riquadri, letti da destra a sinistra, la rete epsilon-theta toglie rumore a ogni passo fino a recuperare il paesaggio, con frecce terracotta verso sinistra.">
+  <defs>
+    <marker id="freccia-avanti" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#2D5A5C"/>
+    </marker>
+    <marker id="freccia-indietro" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#B5532C"/>
+    </marker>
+    <g id="paesaggio">
+      <path d="M18,88 L50,40 L82,88 Z" fill="#C9A961" fill-opacity="0.35" stroke="#1A1A1A" stroke-width="2" stroke-linejoin="round"/>
+      <circle cx="80" cy="27" r="9" fill="#B5532C" fill-opacity="0.35" stroke="#1A1A1A" stroke-width="2"/>
+    </g>
+    <g id="rumore-lieve" fill="#1A1A1A" fill-opacity="0.35">
+      <circle cx="39.1" cy="23.6" r="2.1"/>
+      <circle cx="16.5" cy="58.2" r="1.8"/>
+      <circle cx="15.2" cy="55.7" r="1.5"/>
+      <circle cx="49.0" cy="16.3" r="1.6"/>
+      <circle cx="48.2" cy="84.4" r="1.6"/>
+      <circle cx="30.1" cy="66.5" r="2.4"/>
+      <circle cx="61.9" cy="45.7" r="2.4"/>
+      <circle cx="14.2" cy="87.3" r="1.8"/>
+      <circle cx="23.0" cy="20.6" r="1.8"/>
+      <circle cx="83.5" cy="26.3" r="2.0"/>
+      <circle cx="67.5" cy="43.5" r="2.0"/>
+      <circle cx="15.7" cy="15.4" r="1.7"/>
+    </g>
+    <g id="rumore-medio" fill="#1A1A1A" fill-opacity="0.45">
+      <circle cx="71.2" cy="48.5" r="1.8"/>
+      <circle cx="62.7" cy="50.8" r="1.8"/>
+      <circle cx="81.5" cy="72.9" r="1.7"/>
+      <circle cx="61.7" cy="57.3" r="2.3"/>
+      <circle cx="75.7" cy="35.9" r="2.4"/>
+      <circle cx="20.6" cy="47.6" r="2.2"/>
+      <circle cx="23.7" cy="54.0" r="1.5"/>
+      <circle cx="70.1" cy="78.8" r="2.0"/>
+      <circle cx="88.8" cy="38.2" r="2.1"/>
+      <circle cx="63.5" cy="62.2" r="1.9"/>
+      <circle cx="85.6" cy="95.0" r="1.9"/>
+      <circle cx="69.8" cy="15.5" r="2.1"/>
+      <circle cx="68.2" cy="99.4" r="2.2"/>
+      <circle cx="35.6" cy="44.7" r="2.1"/>
+      <circle cx="12.0" cy="51.6" r="1.7"/>
+      <circle cx="20.5" cy="15.3" r="2.2"/>
+      <circle cx="21.6" cy="32.3" r="1.9"/>
+      <circle cx="88.4" cy="17.3" r="1.9"/>
+      <circle cx="59.4" cy="89.5" r="2.2"/>
+      <circle cx="87.8" cy="35.1" r="1.9"/>
+      <circle cx="42.3" cy="89.6" r="2.4"/>
+      <circle cx="23.6" cy="25.9" r="1.7"/>
+      <circle cx="31.0" cy="53.6" r="2.0"/>
+      <circle cx="33.6" cy="10.4" r="1.9"/>
+      <circle cx="43.2" cy="61.0" r="2.4"/>
+      <circle cx="72.1" cy="56.4" r="2.1"/>
+      <circle cx="70.9" cy="14.9" r="2.3"/>
+      <circle cx="80.2" cy="88.7" r="2.2"/>
+      <circle cx="45.3" cy="45.9" r="1.6"/>
+      <circle cx="67.1" cy="15.6" r="1.6"/>
+    </g>
+    <g id="rumore-pieno" fill="#1A1A1A" fill-opacity="0.55">
+      <circle cx="28.8" cy="24.6" r="1.8"/>
+      <circle cx="14.7" cy="10.0" r="1.6"/>
+      <circle cx="19.1" cy="42.7" r="1.5"/>
+      <circle cx="88.7" cy="65.3" r="1.6"/>
+      <circle cx="32.7" cy="41.3" r="1.8"/>
+      <circle cx="21.1" cy="86.4" r="2.4"/>
+      <circle cx="51.9" cy="53.5" r="1.6"/>
+      <circle cx="19.2" cy="40.8" r="1.7"/>
+      <circle cx="84.6" cy="24.5" r="1.5"/>
+      <circle cx="95.6" cy="57.5" r="1.6"/>
+      <circle cx="58.9" cy="12.4" r="2.0"/>
+      <circle cx="98.1" cy="87.7" r="2.1"/>
+      <circle cx="33.5" cy="43.0" r="1.7"/>
+      <circle cx="79.5" cy="57.9" r="2.2"/>
+      <circle cx="39.7" cy="30.1" r="2.2"/>
+      <circle cx="98.6" cy="86.7" r="2.2"/>
+      <circle cx="83.6" cy="76.6" r="1.7"/>
+      <circle cx="56.6" cy="42.0" r="1.5"/>
+      <circle cx="12.5" cy="35.1" r="1.7"/>
+      <circle cx="72.3" cy="96.1" r="1.9"/>
+      <circle cx="94.3" cy="98.9" r="2.4"/>
+      <circle cx="42.8" cy="29.8" r="1.7"/>
+      <circle cx="27.7" cy="28.4" r="2.1"/>
+      <circle cx="91.0" cy="85.6" r="1.9"/>
+      <circle cx="68.8" cy="82.0" r="1.6"/>
+      <circle cx="69.5" cy="91.9" r="2.2"/>
+      <circle cx="77.5" cy="53.0" r="1.7"/>
+      <circle cx="81.0" cy="39.9" r="2.2"/>
+      <circle cx="97.4" cy="45.6" r="1.9"/>
+      <circle cx="95.2" cy="75.2" r="1.7"/>
+      <circle cx="21.4" cy="23.6" r="2.3"/>
+      <circle cx="82.6" cy="23.2" r="2.2"/>
+      <circle cx="98.2" cy="69.2" r="1.8"/>
+      <circle cx="59.4" cy="21.8" r="1.5"/>
+      <circle cx="97.4" cy="68.5" r="2.0"/>
+      <circle cx="94.0" cy="49.0" r="2.3"/>
+      <circle cx="84.4" cy="29.0" r="1.7"/>
+      <circle cx="36.4" cy="31.6" r="2.0"/>
+      <circle cx="33.3" cy="47.7" r="1.6"/>
+      <circle cx="91.9" cy="41.8" r="1.9"/>
+      <circle cx="62.5" cy="91.4" r="1.9"/>
+      <circle cx="92.6" cy="55.1" r="2.0"/>
+      <circle cx="57.1" cy="11.7" r="1.9"/>
+      <circle cx="26.5" cy="10.4" r="2.2"/>
+      <circle cx="25.5" cy="52.6" r="2.2"/>
+      <circle cx="60.1" cy="39.3" r="2.0"/>
+      <circle cx="60.0" cy="80.6" r="1.6"/>
+      <circle cx="60.4" cy="32.4" r="1.7"/>
+      <circle cx="79.5" cy="55.7" r="2.0"/>
+      <circle cx="78.4" cy="92.1" r="1.9"/>
+      <circle cx="65.1" cy="55.5" r="2.0"/>
+      <circle cx="72.3" cy="50.7" r="2.0"/>
+      <circle cx="53.0" cy="94.7" r="2.1"/>
+      <circle cx="88.9" cy="94.8" r="1.7"/>
+      <circle cx="60.4" cy="94.9" r="2.3"/>
+      <circle cx="22.3" cy="20.9" r="1.9"/>
+      <circle cx="16.5" cy="31.7" r="1.6"/>
+      <circle cx="70.3" cy="80.6" r="2.3"/>
+      <circle cx="23.9" cy="74.5" r="2.1"/>
+      <circle cx="22.9" cy="89.5" r="2.4"/>
+    </g>
+  </defs>
+
+  <!-- ===================== processo in avanti ===================== -->
+  <text x="60" y="30" font-family="Inter, sans-serif" font-size="13.5" font-weight="700" fill="#2D5A5C">Processo in avanti &#8212; fisso: a ogni passo si aggiunge un velo di rumore</text>
+  <text x="760" y="30" text-anchor="end" font-family="Inter, sans-serif" font-size="11.5" fill="#5E5852">t cresce &#8594;</text>
+
+  <!-- riquadri -->
+  <rect x="60" y="48" width="110" height="110" rx="8" fill="#2D5A5C" fill-opacity="0.10" stroke="#2D5A5C" stroke-width="2"/>
+  <g transform="translate(60,48)"><use href="#paesaggio" xlink:href="#paesaggio"/></g>
+
+  <rect x="250" y="48" width="110" height="110" rx="8" fill="#2D5A5C" fill-opacity="0.10" stroke="#2D5A5C" stroke-width="2"/>
+  <g transform="translate(250,48)" opacity="0.75"><use href="#paesaggio" xlink:href="#paesaggio"/></g>
+  <use href="#rumore-lieve" xlink:href="#rumore-lieve" x="250" y="48"/>
+
+  <rect x="440" y="48" width="110" height="110" rx="8" fill="#2D5A5C" fill-opacity="0.10" stroke="#2D5A5C" stroke-width="2"/>
+  <g transform="translate(440,48)" opacity="0.40"><use href="#paesaggio" xlink:href="#paesaggio"/></g>
+  <use href="#rumore-medio" xlink:href="#rumore-medio" x="440" y="48"/>
+
+  <rect x="630" y="48" width="110" height="110" rx="8" fill="#2D5A5C" fill-opacity="0.10" stroke="#2D5A5C" stroke-width="2.5"/>
+  <use href="#rumore-pieno" xlink:href="#rumore-pieno" x="630" y="48"/>
+
+  <!-- frecce in avanti -->
+  <line x1="176" y1="103" x2="244" y2="103" stroke="#2D5A5C" stroke-width="2.5" marker-end="url(#freccia-avanti)"/>
+  <text x="210" y="92" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#5E5852">+ rumore</text>
+  <line x1="366" y1="103" x2="434" y2="103" stroke="#2D5A5C" stroke-width="2.5" marker-end="url(#freccia-avanti)"/>
+  <text x="400" y="92" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" fill="#5E5852">&#8230;</text>
+  <line x1="556" y1="103" x2="624" y2="103" stroke="#2D5A5C" stroke-width="2.5" marker-end="url(#freccia-avanti)"/>
+  <text x="590" y="92" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" fill="#5E5852">&#8230;</text>
+
+  <!-- etichette -->
+  <text x="115" y="180" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#1A1A1A">x&#8320;</text>
+  <text x="305" y="180" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#1A1A1A">x&#8321;</text>
+  <text x="495" y="180" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#1A1A1A">x&#8348;</text>
+  <text x="685" y="180" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#1A1A1A">x<tspan dy="4" font-size="10">T</tspan></text>
+
+  <!-- ===================== processo inverso ===================== -->
+  <text x="60" y="240" font-family="Inter, sans-serif" font-size="13.5" font-weight="700" fill="#B5532C">Processo inverso &#8212; appreso: la rete toglie un velo di rumore alla volta</text>
+  <text x="760" y="240" text-anchor="end" font-family="Inter, sans-serif" font-size="11.5" fill="#5E5852">&#8592; t decresce</text>
+
+  <!-- riquadri (da leggere da destra a sinistra) -->
+  <rect x="60" y="258" width="110" height="110" rx="8" fill="#B5532C" fill-opacity="0.10" stroke="#B5532C" stroke-width="2.5"/>
+  <g transform="translate(60,258)"><use href="#paesaggio" xlink:href="#paesaggio"/></g>
+
+  <rect x="250" y="258" width="110" height="110" rx="8" fill="#B5532C" fill-opacity="0.10" stroke="#B5532C" stroke-width="2"/>
+  <g transform="translate(250,258)" opacity="0.75"><use href="#paesaggio" xlink:href="#paesaggio"/></g>
+  <use href="#rumore-lieve" xlink:href="#rumore-lieve" x="250" y="258"/>
+
+  <rect x="440" y="258" width="110" height="110" rx="8" fill="#B5532C" fill-opacity="0.10" stroke="#B5532C" stroke-width="2"/>
+  <g transform="translate(440,258)" opacity="0.40"><use href="#paesaggio" xlink:href="#paesaggio"/></g>
+  <use href="#rumore-medio" xlink:href="#rumore-medio" x="440" y="258"/>
+
+  <rect x="630" y="258" width="110" height="110" rx="8" fill="#B5532C" fill-opacity="0.10" stroke="#B5532C" stroke-width="2"/>
+  <use href="#rumore-pieno" xlink:href="#rumore-pieno" x="630" y="258"/>
+
+  <!-- frecce all'indietro, con la rete su ogni passo -->
+  <line x1="624" y1="313" x2="556" y2="313" stroke="#B5532C" stroke-width="2.5" marker-end="url(#freccia-indietro)"/>
+  <line x1="434" y1="313" x2="366" y2="313" stroke="#B5532C" stroke-width="2.5" marker-end="url(#freccia-indietro)"/>
+  <line x1="244" y1="313" x2="176" y2="313" stroke="#B5532C" stroke-width="2.5" marker-end="url(#freccia-indietro)"/>
+
+  <rect x="572" y="300" width="36" height="26" rx="8" fill="#F8F5EE" stroke="#B5532C" stroke-width="2"/>
+  <text x="590" y="318" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" fill="#1A1A1A">&#949;<tspan dy="3" font-size="9">&#952;</tspan></text>
+  <rect x="382" y="300" width="36" height="26" rx="8" fill="#F8F5EE" stroke="#B5532C" stroke-width="2"/>
+  <text x="400" y="318" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" fill="#1A1A1A">&#949;<tspan dy="3" font-size="9">&#952;</tspan></text>
+  <rect x="192" y="300" width="36" height="26" rx="8" fill="#F8F5EE" stroke="#B5532C" stroke-width="2"/>
+  <text x="210" y="318" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" fill="#1A1A1A">&#949;<tspan dy="3" font-size="9">&#952;</tspan></text>
+
+  <!-- etichette -->
+  <text x="115" y="390" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#1A1A1A">x&#8320;</text>
+  <text x="305" y="390" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#1A1A1A">x&#8321;</text>
+  <text x="495" y="390" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#1A1A1A">x&#8348;</text>
+  <text x="685" y="390" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#1A1A1A">x<tspan dy="4" font-size="10">T</tspan></text>
+
+  <!-- didascalia interna -->
+  <text x="410" y="412" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#5E5852">l'andata distrugge con una regola fissa; il ritorno ricostruisce con la rete: partendo da neve nuova, l'immagine che emerge &#232; nuova</text>
+</svg>

@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 560" role="img" aria-label="Confronto a due pannelli. Sopra, architettura generativa: dal contesto un decoder generativo disegna ogni pixel del futuro e la loss confronta pixel per pixel la predizione, sfocata, con il futuro reale. Sotto, JEPA: un encoder in teal trasforma il contesto in un embedding, un encoder target tratteggiato e aggiornato per media mobile esponenziale trasforma il target, e un predictor in terracotta predice l'embedding del target; la loss confronta i due embedding nello spazio delle rappresentazioni.">
+  <defs>
+    <marker id="freccia-jepa" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#5E5852"/>
+    </marker>
+    <marker id="freccia-jepa-t" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#B5532C"/>
+    </marker>
+  </defs>
+
+  <!-- ===================== PANNELLO A: GENERATIVA ===================== -->
+  <text x="24" y="34" font-family="Inter, sans-serif" font-size="15" font-weight="700" fill="#1A1A1A">A &#183; Architettura generativa: predire il futuro nei pixel</text>
+
+  <!-- contesto -->
+  <rect x="24" y="60" width="140" height="76" rx="8" fill="#5E5852" fill-opacity="0.10" stroke="#5E5852" stroke-width="2"/>
+  <text x="94" y="94" text-anchor="middle" font-family="Inter, sans-serif" font-size="13.5" fill="#1A1A1A">contesto x</text>
+  <text x="94" y="114" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" fill="#5E5852">la parte visibile</text>
+  <line x1="164" y1="98" x2="200" y2="98" stroke="#5E5852" stroke-width="2" marker-end="url(#freccia-jepa)"/>
+
+  <!-- decoder generativo -->
+  <rect x="204" y="60" width="160" height="76" rx="8" fill="#C9A961" fill-opacity="0.15" stroke="#C9A961" stroke-width="2.5"/>
+  <text x="284" y="94" text-anchor="middle" font-family="Inter, sans-serif" font-size="13.5" font-weight="700" fill="#1A1A1A">decoder generativo</text>
+  <text x="284" y="114" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" fill="#5E5852">disegna ogni pixel</text>
+  <line x1="364" y1="98" x2="400" y2="98" stroke="#5E5852" stroke-width="2" marker-end="url(#freccia-jepa)"/>
+
+  <!-- predizione nei pixel -->
+  <rect x="404" y="60" width="160" height="76" rx="8" fill="#5E5852" fill-opacity="0.10" stroke="#5E5852" stroke-width="2" stroke-dasharray="3 3"/>
+  <text x="484" y="94" text-anchor="middle" font-family="Inter, sans-serif" font-size="13.5" fill="#1A1A1A">predizione &#375;</text>
+  <text x="484" y="114" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" fill="#5E5852">media sfocata dei futuri</text>
+
+  <!-- loss nei pixel -->
+  <line x1="572" y1="98" x2="636" y2="98" stroke="#B5532C" stroke-width="2" marker-start="url(#freccia-jepa-t)" marker-end="url(#freccia-jepa-t)"/>
+  <text x="604" y="82" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" font-weight="700" fill="#B5532C">loss nei pixel</text>
+
+  <!-- futuro reale -->
+  <rect x="644" y="60" width="176" height="76" rx="8" fill="#1A1A1A" fill-opacity="0.10" stroke="#1A1A1A" stroke-width="2"/>
+  <text x="732" y="94" text-anchor="middle" font-family="Inter, sans-serif" font-size="13.5" fill="#1A1A1A">futuro reale y</text>
+  <text x="732" y="114" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" fill="#5E5852">tutti i pixel, tutti i dettagli</text>
+
+  <!-- annotazione dettagli irrilevanti -->
+  <text x="484" y="164" text-anchor="middle" font-family="Inter, sans-serif" font-size="11.5" fill="#B5532C">capacit&#224; sprecata sui dettagli imprevedibili:</text>
+  <text x="484" y="181" text-anchor="middle" font-family="Inter, sans-serif" font-size="11.5" fill="#5E5852">le foglie che tremano, i riflessi sul vetro, la forma di ogni scheggia</text>
+
+  <!-- divisore -->
+  <line x1="24" y1="208" x2="836" y2="208" stroke="#5E5852" stroke-width="1" stroke-opacity="0.3"/>
+
+  <!-- ===================== PANNELLO B: JEPA ===================== -->
+  <text x="24" y="242" font-family="Inter, sans-serif" font-size="15" font-weight="700" fill="#1A1A1A">B &#183; JEPA: predire nello spazio delle rappresentazioni</text>
+
+  <!-- regione: spazio delle rappresentazioni -->
+  <rect x="396" y="258" width="446" height="252" rx="12" fill="none" stroke="#C9A961" stroke-width="2" stroke-dasharray="8 6"/>
+  <text x="619" y="280" text-anchor="middle" font-family="Inter, sans-serif" font-size="11.5" fill="#5E5852">spazio delle rappresentazioni</text>
+
+  <!-- riga contesto -->
+  <rect x="24" y="296" width="130" height="64" rx="8" fill="#5E5852" fill-opacity="0.10" stroke="#5E5852" stroke-width="2"/>
+  <text x="89" y="324" text-anchor="middle" font-family="Inter, sans-serif" font-size="13.5" fill="#1A1A1A">contesto x</text>
+  <text x="89" y="342" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" fill="#5E5852">la parte visibile</text>
+  <line x1="154" y1="328" x2="196" y2="328" stroke="#5E5852" stroke-width="2" marker-end="url(#freccia-jepa)"/>
+
+  <rect x="200" y="296" width="160" height="64" rx="8" fill="#2D5A5C" fill-opacity="0.12" stroke="#2D5A5C" stroke-width="2.5"/>
+  <text x="280" y="324" text-anchor="middle" font-family="Inter, sans-serif" font-size="13.5" font-weight="700" fill="#1A1A1A">encoder</text>
+  <text x="280" y="342" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" fill="#5E5852">riceve il gradiente</text>
+  <line x1="360" y1="328" x2="406" y2="328" stroke="#5E5852" stroke-width="2" marker-end="url(#freccia-jepa)"/>
+
+  <rect x="410" y="310" width="58" height="36" rx="8" fill="#2D5A5C" fill-opacity="0.12" stroke="#2D5A5C" stroke-width="2"/>
+  <text x="439" y="333" text-anchor="middle" font-family="Inter, sans-serif" font-size="13.5" fill="#1A1A1A">s<tspan dy="4" font-size="10">x</tspan></text>
+  <line x1="468" y1="328" x2="508" y2="328" stroke="#5E5852" stroke-width="2" marker-end="url(#freccia-jepa)"/>
+
+  <rect x="512" y="296" width="150" height="64" rx="8" fill="#B5532C" fill-opacity="0.15" stroke="#B5532C" stroke-width="2.5"/>
+  <text x="587" y="324" text-anchor="middle" font-family="Inter, sans-serif" font-size="13.5" font-weight="700" fill="#1A1A1A">predictor</text>
+  <text x="587" y="342" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" fill="#5E5852">predice l&#8217;embedding</text>
+  <line x1="662" y1="328" x2="702" y2="328" stroke="#5E5852" stroke-width="2" marker-end="url(#freccia-jepa)"/>
+
+  <rect x="706" y="310" width="58" height="36" rx="8" fill="#B5532C" fill-opacity="0.12" stroke="#B5532C" stroke-width="2"/>
+  <text x="735" y="333" text-anchor="middle" font-family="Inter, sans-serif" font-size="13.5" fill="#1A1A1A">&#349;<tspan dy="4" font-size="10">y</tspan></text>
+
+  <!-- copia lenta EMA -->
+  <line x1="280" y1="360" x2="280" y2="426" stroke="#2D5A5C" stroke-width="2" stroke-dasharray="6 5" marker-end="url(#freccia-jepa)"/>
+  <text x="292" y="398" font-family="Inter, sans-serif" font-size="10.5" fill="#5E5852">copia lenta dei pesi</text>
+
+  <!-- riga target -->
+  <rect x="24" y="430" width="130" height="64" rx="8" fill="#5E5852" fill-opacity="0.10" stroke="#5E5852" stroke-width="2"/>
+  <text x="89" y="458" text-anchor="middle" font-family="Inter, sans-serif" font-size="13.5" fill="#1A1A1A">target y</text>
+  <text x="89" y="476" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" fill="#5E5852">il pezzo da prevedere</text>
+  <line x1="154" y1="462" x2="196" y2="462" stroke="#5E5852" stroke-width="2" marker-end="url(#freccia-jepa)"/>
+
+  <rect x="200" y="430" width="160" height="64" rx="8" fill="#2D5A5C" fill-opacity="0.12" stroke="#2D5A5C" stroke-width="2.5" stroke-dasharray="7 5"/>
+  <text x="280" y="458" text-anchor="middle" font-family="Inter, sans-serif" font-size="13.5" font-weight="700" fill="#1A1A1A">encoder target</text>
+  <text x="280" y="476" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" fill="#5E5852">EMA &#183; senza gradiente</text>
+  <line x1="360" y1="462" x2="702" y2="462" stroke="#5E5852" stroke-width="2" marker-end="url(#freccia-jepa)"/>
+
+  <rect x="706" y="444" width="58" height="36" rx="8" fill="#2D5A5C" fill-opacity="0.12" stroke="#2D5A5C" stroke-width="2"/>
+  <text x="735" y="467" text-anchor="middle" font-family="Inter, sans-serif" font-size="13.5" fill="#1A1A1A">s<tspan dy="4" font-size="10">y</tspan></text>
+
+  <!-- loss tra embedding -->
+  <line x1="735" y1="354" x2="735" y2="436" stroke="#B5532C" stroke-width="2" marker-start="url(#freccia-jepa-t)" marker-end="url(#freccia-jepa-t)"/>
+  <text x="722" y="399" text-anchor="end" font-family="Inter, sans-serif" font-size="12" font-weight="700" fill="#B5532C">loss tra embedding</text>
+
+  <!-- annotazione finale -->
+  <text x="430" y="540" font-family="Inter, sans-serif" font-size="11.5" fill="#5E5852">i dettagli imprevedibili non arrivano fin qui: l&#8217;encoder li ha gi&#224; lasciati fuori</text>
+</svg>

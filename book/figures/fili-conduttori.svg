@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  paithon book - figura: i tre fili conduttori del libro.
+  In alto l'arco narrativo (Matematica -> Machine learning -> Reti neurali ->
+  Deep learning -> Generativi & RL) su un asse con freccia: i modelli
+  diventano via via piu' espressivi. In basso tre linee parallele - Dati
+  (terracotta), Rappresentazioni (teal), Ottimizzazione (ocra) - che
+  attraversano l'intero arco: cio' che resta costante. Palette-locked,
+  fondo trasparente, tratti scuri leggibili anche in dark mode.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 300" role="img"
+     aria-label="Arco del libro con cinque tappe - Matematica, Machine learning, Reti neurali, Deep learning, Generativi e reinforcement learning - e sotto tre fili conduttori paralleli: Dati, Rappresentazioni, Ottimizzazione">
+  <style>
+    .rail  { stroke:#8B847C; stroke-width:2.5; fill:none; }
+    .dot   { fill:#F8F5EE; stroke:#1A1A1A; stroke-width:2; }
+    .way   { font-family:Inter, system-ui, sans-serif; font-size:12.5px; fill:#1A1A1A; }
+    .sub   { font-family:Inter, system-ui, sans-serif; font-size:11px; font-style:italic; fill:#5E5852; }
+    .title { font-family:Fraunces, Georgia, serif; font-size:15px; font-weight:600; fill:#1A1A1A; }
+    .pill  { fill:#F8F5EE; }
+    .pilltx{ font-family:Inter, system-ui, sans-serif; font-size:13.5px; font-weight:600; fill:#1A1A1A; }
+    .role  { font-family:Inter, system-ui, sans-serif; font-size:11.5px; font-style:italic; fill:#5E5852; }
+  </style>
+
+  <!-- arco narrativo: asse con freccia -->
+  <line class="rail" x1="70" y1="80" x2="692" y2="80"/>
+  <polygon points="702,80 690,74 690,86" fill="#8B847C"/>
+
+  <!-- tappe -->
+  <circle class="dot" cx="90"  cy="80" r="6"/>
+  <circle class="dot" cx="230" cy="80" r="6"/>
+  <circle class="dot" cx="370" cy="80" r="6"/>
+  <circle class="dot" cx="510" cy="80" r="6"/>
+  <circle class="dot" cx="650" cy="80" r="6"/>
+
+  <!-- etichette tappe (due righe) -->
+  <text class="way" x="90"  y="48" text-anchor="middle">Matematica<tspan x="90"  dy="15">&amp; statistica</tspan></text>
+  <text class="way" x="230" y="48" text-anchor="middle">Machine<tspan x="230" dy="15">learning</tspan></text>
+  <text class="way" x="370" y="48" text-anchor="middle">Reti<tspan x="370" dy="15">neurali</tspan></text>
+  <text class="way" x="510" y="48" text-anchor="middle">Deep<tspan x="510" dy="15">learning</tspan></text>
+  <text class="way" x="650" y="48" text-anchor="middle">Generativi<tspan x="650" dy="15">&amp; RL</tspan></text>
+
+  <text class="sub" x="380" y="104" text-anchor="middle">modelli via via piu' espressivi →</text>
+
+  <!-- titolo sezione fili -->
+  <text class="title" x="380" y="140" text-anchor="middle">I tre fili che attraversano ogni capitolo</text>
+
+  <!-- Filo 1: Dati (terracotta) -->
+  <line x1="232" y1="168" x2="612" y2="168" stroke="#B5532C" stroke-width="2.8"/>
+  <circle cx="280" cy="168" r="3.5" fill="#B5532C"/>
+  <circle cx="346" cy="168" r="3.5" fill="#B5532C"/>
+  <circle cx="412" cy="168" r="3.5" fill="#B5532C"/>
+  <circle cx="478" cy="168" r="3.5" fill="#B5532C"/>
+  <circle cx="544" cy="168" r="3.5" fill="#B5532C"/>
+  <circle cx="612" cy="168" r="4"   fill="#B5532C"/>
+  <rect class="pill" x="40" y="152" width="178" height="32" rx="6" stroke="#B5532C" stroke-width="2.2"/>
+  <text class="pilltx" x="129" y="173" text-anchor="middle">Dati</text>
+  <text class="role" x="625" y="172">il carburante</text>
+
+  <!-- Filo 2: Rappresentazioni (teal) -->
+  <line x1="232" y1="210" x2="612" y2="210" stroke="#2D5A5C" stroke-width="2.8"/>
+  <circle cx="280" cy="210" r="3.5" fill="#2D5A5C"/>
+  <circle cx="346" cy="210" r="3.5" fill="#2D5A5C"/>
+  <circle cx="412" cy="210" r="3.5" fill="#2D5A5C"/>
+  <circle cx="478" cy="210" r="3.5" fill="#2D5A5C"/>
+  <circle cx="544" cy="210" r="3.5" fill="#2D5A5C"/>
+  <circle cx="612" cy="210" r="4"   fill="#2D5A5C"/>
+  <rect class="pill" x="40" y="194" width="178" height="32" rx="6" stroke="#2D5A5C" stroke-width="2.2"/>
+  <text class="pilltx" x="129" y="215" text-anchor="middle">Rappresentazioni</text>
+  <text class="role" x="625" y="214">il cuore</text>
+
+  <!-- Filo 3: Ottimizzazione (ocra) -->
+  <line x1="232" y1="252" x2="612" y2="252" stroke="#C9A961" stroke-width="2.8"/>
+  <circle cx="280" cy="252" r="3.5" fill="#C9A961"/>
+  <circle cx="346" cy="252" r="3.5" fill="#C9A961"/>
+  <circle cx="412" cy="252" r="3.5" fill="#C9A961"/>
+  <circle cx="478" cy="252" r="3.5" fill="#C9A961"/>
+  <circle cx="544" cy="252" r="3.5" fill="#C9A961"/>
+  <circle cx="612" cy="252" r="4"   fill="#C9A961"/>
+  <rect class="pill" x="40" y="236" width="178" height="32" rx="6" stroke="#C9A961" stroke-width="2.2"/>
+  <text class="pilltx" x="129" y="257" text-anchor="middle">Ottimizzazione</text>
+  <text class="role" x="625" y="256">il motore</text>
+</svg>

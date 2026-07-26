@@ -1,0 +1,30 @@
+<svg viewBox="0 0 800 340" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Spettro delle posizioni sul rischio esistenziale da AI">
+  <rect x="0" y="0" width="800" height="340" fill="#F8F5EE"/>
+  <text x="400" y="36" text-anchor="middle" font-family="sans-serif" font-size="17" font-weight="bold" fill="#1A1A1A">Il dibattito sul rischio esistenziale: uno spettro, non due fazioni</text>
+  <line x1="70" y1="170" x2="730" y2="170" stroke="#1A1A1A" stroke-width="2"/>
+  <polygon points="730,170 718,164 718,176" fill="#1A1A1A"/>
+  <text x="70" y="200" font-family="sans-serif" font-size="12" fill="#5E5852">preoccupazione minima</text>
+  <text x="730" y="200" text-anchor="end" font-family="sans-serif" font-size="12" fill="#5E5852">preoccupazione massima</text>
+
+  <circle cx="130" cy="170" r="11" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="130" y="120" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#1A1A1A">«È fantascienza»</text>
+  <text x="130" y="138" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#5E5852">LeCun, Ng</text>
+
+  <circle cx="320" cy="170" r="11" fill="#C9A961" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="320" y="240" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#1A1A1A">«Il rischio vero è già qui»</text>
+  <text x="320" y="258" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#5E5852">Gebru, Bender: bias, lavoro, potere</text>
+  <text x="320" y="276" text-anchor="middle" font-family="sans-serif" font-size="11" font-style="italic" fill="#5E5852">(contesta l'asse stesso del dibattito)</text>
+
+  <circle cx="530" cy="170" r="11" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="530" y="120" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#1A1A1A">«Rischio serio, probabilità incerta»</text>
+  <text x="530" y="138" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#5E5852">Hinton, Bengio</text>
+
+  <circle cx="700" cy="170" r="11" fill="#1A1A1A" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="690" y="240" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#1A1A1A">«Fermare tutto»</text>
+  <text x="690" y="258" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#5E5852">Yudkowsky</text>
+
+  <line x1="320" y1="181" x2="320" y2="222" stroke="#C9A961" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <line x1="700" y1="181" x2="695" y2="222" stroke="#1A1A1A" stroke-width="1.5" stroke-dasharray="4 3"/>
+
+  <text x="400" y="318" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#8B847C">Posizioni pubbliche note al 2023-2024 · collocazione indicativa</text>
+</svg>

@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" role="img" aria-label="Un array di otto elementi in memoria, ognuno assegnato a un thread. I thread sono raggruppati in due blocchi da quattro; ogni thread calcola il proprio indice globale con la formula i = blockIdx per blockDim piu threadIdx. Il thread del blocco 1 con threadIdx 2 ricava l'indice 6 ed e evidenziato in terracotta.">
+  <defs>
+    <marker id="giu-k" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1A1A1A"/>
+    </marker>
+    <marker id="giu-t" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#B5532C"/>
+    </marker>
+  </defs>
+
+  <!-- titolo -->
+  <text x="320" y="26" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#1A1A1A">un array in memoria — un elemento per thread</text>
+
+  <!-- array di 8 celle -->
+  <rect x="104" y="44" width="54" height="42" rx="4" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.6"/>
+  <rect x="158" y="44" width="54" height="42" rx="4" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.6"/>
+  <rect x="212" y="44" width="54" height="42" rx="4" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.6"/>
+  <rect x="266" y="44" width="54" height="42" rx="4" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.6"/>
+  <rect x="320" y="44" width="54" height="42" rx="4" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.6"/>
+  <rect x="374" y="44" width="54" height="42" rx="4" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.6"/>
+  <rect x="428" y="44" width="54" height="42" rx="4" fill="#B5532C" fill-opacity="0.14" stroke="#B5532C" stroke-width="2.2"/>
+  <rect x="482" y="44" width="54" height="42" rx="4" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.6"/>
+  <text x="131" y="71" text-anchor="middle" font-family="Inter, sans-serif" font-size="15" fill="#1A1A1A">0</text>
+  <text x="185" y="71" text-anchor="middle" font-family="Inter, sans-serif" font-size="15" fill="#1A1A1A">1</text>
+  <text x="239" y="71" text-anchor="middle" font-family="Inter, sans-serif" font-size="15" fill="#1A1A1A">2</text>
+  <text x="293" y="71" text-anchor="middle" font-family="Inter, sans-serif" font-size="15" fill="#1A1A1A">3</text>
+  <text x="347" y="71" text-anchor="middle" font-family="Inter, sans-serif" font-size="15" fill="#1A1A1A">4</text>
+  <text x="401" y="71" text-anchor="middle" font-family="Inter, sans-serif" font-size="15" fill="#1A1A1A">5</text>
+  <text x="455" y="71" text-anchor="middle" font-family="Inter, sans-serif" font-size="15" font-weight="700" fill="#B5532C">6</text>
+  <text x="509" y="71" text-anchor="middle" font-family="Inter, sans-serif" font-size="15" fill="#1A1A1A">7</text>
+
+  <!-- connettori cella -> thread -->
+  <line x1="131" y1="88" x2="131" y2="202" stroke="#1A1A1A" stroke-width="1.4" marker-end="url(#giu-k)"/>
+  <line x1="185" y1="88" x2="185" y2="202" stroke="#1A1A1A" stroke-width="1.4" marker-end="url(#giu-k)"/>
+  <line x1="239" y1="88" x2="239" y2="202" stroke="#1A1A1A" stroke-width="1.4" marker-end="url(#giu-k)"/>
+  <line x1="293" y1="88" x2="293" y2="202" stroke="#1A1A1A" stroke-width="1.4" marker-end="url(#giu-k)"/>
+  <line x1="347" y1="88" x2="347" y2="202" stroke="#1A1A1A" stroke-width="1.4" marker-end="url(#giu-k)"/>
+  <line x1="401" y1="88" x2="401" y2="202" stroke="#1A1A1A" stroke-width="1.4" marker-end="url(#giu-k)"/>
+  <line x1="455" y1="88" x2="455" y2="202" stroke="#B5532C" stroke-width="2" marker-end="url(#giu-t)"/>
+  <line x1="509" y1="88" x2="509" y2="202" stroke="#1A1A1A" stroke-width="1.4" marker-end="url(#giu-k)"/>
+
+  <!-- riquadri dei blocchi -->
+  <rect x="107" y="196" width="210" height="82" rx="8" fill="none" stroke="#2D5A5C" stroke-width="1.8"/>
+  <rect x="323" y="196" width="210" height="82" rx="8" fill="none" stroke="#2D5A5C" stroke-width="1.8"/>
+  <text x="212" y="269" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#2D5A5C">blocco 0</text>
+  <text x="428" y="269" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#2D5A5C">blocco 1</text>
+
+  <!-- thread (quadrati) -->
+  <rect x="113" y="206" width="36" height="36" rx="5" fill="#F8F5EE" stroke="#C9A961" stroke-width="1.8"/>
+  <rect x="167" y="206" width="36" height="36" rx="5" fill="#F8F5EE" stroke="#C9A961" stroke-width="1.8"/>
+  <rect x="221" y="206" width="36" height="36" rx="5" fill="#F8F5EE" stroke="#C9A961" stroke-width="1.8"/>
+  <rect x="275" y="206" width="36" height="36" rx="5" fill="#F8F5EE" stroke="#C9A961" stroke-width="1.8"/>
+  <rect x="329" y="206" width="36" height="36" rx="5" fill="#F8F5EE" stroke="#C9A961" stroke-width="1.8"/>
+  <rect x="383" y="206" width="36" height="36" rx="5" fill="#F8F5EE" stroke="#C9A961" stroke-width="1.8"/>
+  <rect x="437" y="206" width="36" height="36" rx="5" fill="#B5532C" fill-opacity="0.14" stroke="#B5532C" stroke-width="2.2"/>
+  <rect x="491" y="206" width="36" height="36" rx="5" fill="#F8F5EE" stroke="#C9A961" stroke-width="1.8"/>
+  <text x="131" y="229" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#1A1A1A">0</text>
+  <text x="185" y="229" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#1A1A1A">1</text>
+  <text x="239" y="229" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#1A1A1A">2</text>
+  <text x="293" y="229" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#1A1A1A">3</text>
+  <text x="347" y="229" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#1A1A1A">0</text>
+  <text x="401" y="229" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#1A1A1A">1</text>
+  <text x="455" y="229" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" font-weight="700" fill="#B5532C">2</text>
+  <text x="509" y="229" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#1A1A1A">3</text>
+  <text x="72" y="229" text-anchor="middle" font-family="Inter, sans-serif" font-size="11.5" fill="#1A1A1A">threadIdx</text>
+
+  <!-- formula -->
+  <text x="320" y="308" text-anchor="middle" font-family="Inter, sans-serif" font-size="15" fill="#1A1A1A">indice globale del thread:  i = blockIdx · blockDim + threadIdx</text>
+  <text x="320" y="336" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" fill="#B5532C">riquadro evidenziato: blocco 1, thread 2  →  i = 1 · 4 + 2 = 6</text>
+</svg>

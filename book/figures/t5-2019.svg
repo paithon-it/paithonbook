@@ -1,0 +1,56 @@
+<svg viewBox="0 0 780 380" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Quattro compiti diversi (traduzione, accettabilità grammaticale, somiglianza, riassunto) entrano come testo con un prefisso in un unico modello T5 ed escono tutti come testo">
+  <defs>
+    <marker id="ah150" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#1A1A1A"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="780" height="380" fill="#F8F5EE"/>
+
+  <!-- input boxes -->
+  <rect x="24" y="44" width="224" height="52" rx="6" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="36" y="66" font-family="sans-serif" font-size="11" fill="#2D5A5C">translate En&#8594;De:</text>
+  <text x="36" y="86" font-family="sans-serif" font-size="14" fill="#1A1A1A">That is good</text>
+
+  <rect x="24" y="124" width="224" height="52" rx="6" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="36" y="146" font-family="sans-serif" font-size="11" fill="#2D5A5C">cola:</text>
+  <text x="36" y="166" font-family="sans-serif" font-size="14" fill="#1A1A1A">he go home</text>
+
+  <rect x="24" y="204" width="224" height="52" rx="6" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="36" y="226" font-family="sans-serif" font-size="11" fill="#2D5A5C">stsb:</text>
+  <text x="36" y="246" font-family="sans-serif" font-size="14" fill="#1A1A1A">gatto / gattino</text>
+
+  <rect x="24" y="284" width="224" height="52" rx="6" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="36" y="306" font-family="sans-serif" font-size="11" fill="#2D5A5C">summarize:</text>
+  <text x="36" y="326" font-family="sans-serif" font-size="14" fill="#1A1A1A">&#8230;articolo lungo&#8230;</text>
+
+  <!-- arrows in -->
+  <line x1="248" y1="70" x2="322" y2="120" stroke="#1A1A1A" stroke-width="1.5" marker-end="url(#ah150)"/>
+  <line x1="248" y1="150" x2="322" y2="165" stroke="#1A1A1A" stroke-width="1.5" marker-end="url(#ah150)"/>
+  <line x1="248" y1="230" x2="322" y2="215" stroke="#1A1A1A" stroke-width="1.5" marker-end="url(#ah150)"/>
+  <line x1="248" y1="310" x2="322" y2="260" stroke="#1A1A1A" stroke-width="1.5" marker-end="url(#ah150)"/>
+
+  <!-- T5 box -->
+  <rect x="322" y="44" width="150" height="292" rx="8" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="2"/>
+  <text x="397" y="182" text-anchor="middle" font-family="sans-serif" font-size="30" font-weight="bold" fill="#F8F5EE">T5</text>
+  <text x="397" y="208" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#F8F5EE">un solo modello</text>
+  <text x="397" y="226" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#F8F5EE">testo &#8594; testo</text>
+
+  <!-- arrows out -->
+  <line x1="472" y1="120" x2="556" y2="70" stroke="#1A1A1A" stroke-width="1.5" marker-end="url(#ah150)"/>
+  <line x1="472" y1="165" x2="556" y2="150" stroke="#1A1A1A" stroke-width="1.5" marker-end="url(#ah150)"/>
+  <line x1="472" y1="215" x2="556" y2="230" stroke="#1A1A1A" stroke-width="1.5" marker-end="url(#ah150)"/>
+  <line x1="472" y1="260" x2="556" y2="310" stroke="#1A1A1A" stroke-width="1.5" marker-end="url(#ah150)"/>
+
+  <!-- output boxes -->
+  <rect x="556" y="44" width="200" height="52" rx="6" fill="#F8F5EE" stroke="#B5532C" stroke-width="2"/>
+  <text x="656" y="76" text-anchor="middle" font-family="sans-serif" font-size="14" fill="#B5532C">Das ist gut</text>
+
+  <rect x="556" y="124" width="200" height="52" rx="6" fill="#F8F5EE" stroke="#B5532C" stroke-width="2"/>
+  <text x="656" y="156" text-anchor="middle" font-family="sans-serif" font-size="14" fill="#B5532C">not acceptable</text>
+
+  <rect x="556" y="204" width="200" height="52" rx="6" fill="#F8F5EE" stroke="#B5532C" stroke-width="2"/>
+  <text x="656" y="236" text-anchor="middle" font-family="sans-serif" font-size="14" fill="#B5532C">4.2</text>
+
+  <rect x="556" y="284" width="200" height="52" rx="6" fill="#F8F5EE" stroke="#B5532C" stroke-width="2"/>
+  <text x="656" y="316" text-anchor="middle" font-family="sans-serif" font-size="14" fill="#B5532C">riassunto breve</text>
+</svg>

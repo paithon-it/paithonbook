@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  paithon book - figura: bagging contro boosting.
+  A SINISTRA il bagging: un dataset genera tre campioni bootstrap, ciascuno
+  addestra IN PARALLELO un proprio albero; le risposte confluiscono in un
+  blocco di voto/media -> predizione. A DESTRA il boosting: alberi piccoli IN
+  SEQUENZA, ognuno collegato al successivo da una freccia «residui», sommati
+  con pesi -> predizione. Palette-locked, fondo trasparente.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 380" role="img"
+     aria-label="Confronto tra bagging e boosting. A sinistra il bagging: un blocco dati in alto si dirama in tre campioni bootstrap affiancati; sotto ciascuno un albero addestrato in parallelo; le tre risposte confluiscono verso il basso in un blocco voto o media e infine nella predizione. A destra il boosting: un blocco dati alimenta il primo di tre alberi piccoli in fila; frecce orizzontali etichettate residui collegano ogni albero al successivo; i tre alberi confluiscono in un blocco somma pesata e poi nella predizione.">
+  <defs>
+    <marker id="bb-arr" viewBox="0 0 10 10" refX="8" refY="5"
+            markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#5E5852"/>
+    </marker>
+  </defs>
+  <style>
+    .flow  { stroke:#8B847C; stroke-width:1.8; fill:none; }
+    .box   { fill:#F8F5EE; stroke:#5E5852; stroke-width:1.8; }
+    .agg   { fill:#C9A961; fill-opacity:0.22; stroke:#C9A961; stroke-width:2.2; }
+    .tedge { stroke:#2D5A5C; stroke-width:1.8; }
+    .tnode { fill:#2D5A5C; }
+    .bl    { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#1A1A1A; text-anchor:middle; }
+    .sm    { font-family:Inter, system-ui, sans-serif; font-size:11px; fill:#5E5852; text-anchor:middle; }
+    .res   { font-family:Inter, system-ui, sans-serif; font-size:11px; fill:#B5532C; text-anchor:middle; font-weight:600; }
+    .pred  { font-family:Inter, system-ui, sans-serif; font-size:13px; font-weight:600; fill:#B5532C; text-anchor:middle; }
+    .ttl   { font-family:Georgia, 'Times New Roman', serif; font-size:15px; fill:#1A1A1A; text-anchor:middle; font-style:italic; }
+    .div   { stroke:#8B847C; stroke-width:1.4; stroke-dasharray:4 5; }
+  </style>
+
+  <!-- divisorio -->
+  <line class="div" x1="410" y1="40" x2="410" y2="352"/>
+
+  <!-- titoli -->
+  <text class="ttl" x="205" y="28">Bagging — in parallelo</text>
+  <text class="ttl" x="615" y="28">Boosting — in sequenza</text>
+
+  <!-- ============================ BAGGING ============================ -->
+  <!-- dataset -->
+  <rect class="box" x="170" y="44" width="70" height="26" rx="6"/>
+  <text class="bl" x="205" y="61">dati</text>
+
+  <!-- diramazione verso i tre campioni -->
+  <path class="flow" d="M 205,70 L 95,94"  marker-end="url(#bb-arr)"/>
+  <path class="flow" d="M 205,70 L 205,94" marker-end="url(#bb-arr)"/>
+  <path class="flow" d="M 205,70 L 315,94" marker-end="url(#bb-arr)"/>
+
+  <!-- tre campioni bootstrap -->
+  <g>
+    <rect class="box" x="52"  y="96" width="86" height="24" rx="6"/>
+    <text class="sm" x="95"  y="112">campione 1</text>
+    <rect class="box" x="162" y="96" width="86" height="24" rx="6"/>
+    <text class="sm" x="205" y="112">campione 2</text>
+    <rect class="box" x="272" y="96" width="86" height="24" rx="6"/>
+    <text class="sm" x="315" y="112">campione 3</text>
+  </g>
+
+  <!-- campione -> albero -->
+  <path class="flow" d="M 95,120  L 95,146"  marker-end="url(#bb-arr)"/>
+  <path class="flow" d="M 205,120 L 205,146" marker-end="url(#bb-arr)"/>
+  <path class="flow" d="M 315,120 L 315,146" marker-end="url(#bb-arr)"/>
+
+  <!-- tre alberi (glifi) in parallelo -->
+  <g>
+    <line class="tedge" x1="95" y1="156" x2="81" y2="182"/>
+    <line class="tedge" x1="95" y1="156" x2="109" y2="182"/>
+    <circle class="tnode" cx="95" cy="154" r="5"/>
+    <circle class="tnode" cx="81" cy="184" r="5"/>
+    <circle class="tnode" cx="109" cy="184" r="5"/>
+  </g>
+  <g>
+    <line class="tedge" x1="205" y1="156" x2="191" y2="182"/>
+    <line class="tedge" x1="205" y1="156" x2="219" y2="182"/>
+    <circle class="tnode" cx="205" cy="154" r="5"/>
+    <circle class="tnode" cx="191" cy="184" r="5"/>
+    <circle class="tnode" cx="219" cy="184" r="5"/>
+  </g>
+  <g>
+    <line class="tedge" x1="315" y1="156" x2="301" y2="182"/>
+    <line class="tedge" x1="315" y1="156" x2="329" y2="182"/>
+    <circle class="tnode" cx="315" cy="154" r="5"/>
+    <circle class="tnode" cx="301" cy="184" r="5"/>
+    <circle class="tnode" cx="329" cy="184" r="5"/>
+  </g>
+
+  <!-- confluenza verso l'aggregazione -->
+  <path class="flow" d="M 95,192  L 168,236" marker-end="url(#bb-arr)"/>
+  <path class="flow" d="M 205,192 L 205,236" marker-end="url(#bb-arr)"/>
+  <path class="flow" d="M 315,192 L 242,236" marker-end="url(#bb-arr)"/>
+
+  <!-- blocco voto / media -->
+  <rect class="agg" x="135" y="238" width="140" height="30" rx="7"/>
+  <text class="bl" x="205" y="257">voto / media</text>
+
+  <!-- predizione -->
+  <path class="flow" d="M 205,268 L 205,296" marker-end="url(#bb-arr)"/>
+  <text class="pred" x="205" y="316">predizione</text>
+
+  <!-- ============================ BOOSTING ============================ -->
+  <!-- dataset -->
+  <rect class="box" x="465" y="44" width="70" height="26" rx="6"/>
+  <text class="bl" x="500" y="61">dati</text>
+  <path class="flow" d="M 500,70 L 500,146" marker-end="url(#bb-arr)"/>
+
+  <!-- tre alberi in sequenza -->
+  <g>
+    <line class="tedge" x1="500" y1="156" x2="486" y2="182"/>
+    <line class="tedge" x1="500" y1="156" x2="514" y2="182"/>
+    <circle class="tnode" cx="500" cy="154" r="5"/>
+    <circle class="tnode" cx="486" cy="184" r="5"/>
+    <circle class="tnode" cx="514" cy="184" r="5"/>
+  </g>
+  <g>
+    <line class="tedge" x1="620" y1="156" x2="606" y2="182"/>
+    <line class="tedge" x1="620" y1="156" x2="634" y2="182"/>
+    <circle class="tnode" cx="620" cy="154" r="5"/>
+    <circle class="tnode" cx="606" cy="184" r="5"/>
+    <circle class="tnode" cx="634" cy="184" r="5"/>
+  </g>
+  <g>
+    <line class="tedge" x1="740" y1="156" x2="726" y2="182"/>
+    <line class="tedge" x1="740" y1="156" x2="754" y2="182"/>
+    <circle class="tnode" cx="740" cy="154" r="5"/>
+    <circle class="tnode" cx="726" cy="184" r="5"/>
+    <circle class="tnode" cx="754" cy="184" r="5"/>
+  </g>
+
+  <!-- frecce sequenziali "residui" -->
+  <path class="flow" d="M 522,168 L 598,168" marker-end="url(#bb-arr)"/>
+  <text class="res" x="560" y="160">residui</text>
+  <path class="flow" d="M 642,168 L 718,168" marker-end="url(#bb-arr)"/>
+  <text class="res" x="680" y="160">residui</text>
+
+  <!-- confluenza verso la somma pesata -->
+  <path class="flow" d="M 500,192 L 575,236" marker-end="url(#bb-arr)"/>
+  <path class="flow" d="M 620,192 L 620,236" marker-end="url(#bb-arr)"/>
+  <path class="flow" d="M 740,192 L 665,236" marker-end="url(#bb-arr)"/>
+
+  <!-- blocco somma pesata -->
+  <rect class="agg" x="545" y="238" width="150" height="30" rx="7"/>
+  <text class="bl" x="620" y="257">somma pesata</text>
+
+  <!-- predizione -->
+  <path class="flow" d="M 620,268 L 620,296" marker-end="url(#bb-arr)"/>
+  <text class="pred" x="620" y="316">predizione</text>
+</svg>

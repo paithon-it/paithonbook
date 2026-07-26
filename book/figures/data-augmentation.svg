@@ -1,0 +1,53 @@
+<svg viewBox="0 0 760 320" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Una stessa immagine di foglia genera cinque varianti: specchiata, ruotata, ritagliata, piu' scura, con rumore">
+  <rect x="0" y="0" width="760" height="320" fill="#F8F5EE"/>
+  <text x="380" y="32" text-anchor="middle" font-family="sans-serif" font-size="17" font-weight="bold" fill="#1A1A1A">Una immagine, molte varianti — stessa etichetta</text>
+  <!-- original -->
+  <rect x="55" y="110" width="110" height="110" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="2"/>
+  <path d="M110 135 C85 155 85 190 110 200 C135 190 135 155 110 135 Z" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="1.5"/>
+  <line x1="110" y1="145" x2="110" y2="198" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="110" y="245" text-anchor="middle" font-family="sans-serif" font-size="14" font-weight="bold" fill="#1A1A1A">originale</text>
+  <!-- fan-out arrows -->
+  <line x1="175" y1="165" x2="235" y2="70" stroke="#B5532C" stroke-width="2"/>
+  <path d="M235 70 L226 72 L231 80 Z" fill="#B5532C"/>
+  <line x1="175" y1="165" x2="235" y2="120" stroke="#B5532C" stroke-width="2"/>
+  <path d="M235 120 L226 119 L229 128 Z" fill="#B5532C"/>
+  <line x1="175" y1="165" x2="235" y2="165" stroke="#B5532C" stroke-width="2"/>
+  <path d="M235 165 L227 160 L227 170 Z" fill="#B5532C"/>
+  <line x1="175" y1="165" x2="235" y2="212" stroke="#B5532C" stroke-width="2"/>
+  <path d="M235 212 L229 205 L226 214 Z" fill="#B5532C"/>
+  <line x1="175" y1="165" x2="235" y2="260" stroke="#B5532C" stroke-width="2"/>
+  <path d="M235 260 L231 252 L226 259 Z" fill="#B5532C"/>
+  <!-- variant 1: flipped -->
+  <rect x="248" y="46" width="66" height="48" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.5"/>
+  <path d="M281 56 C296 64 296 80 281 86 C266 80 266 64 281 56 Z" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="1.5" transform="scale(-1,1) translate(-562,0)"/>
+  <text x="330" y="75" font-family="sans-serif" font-size="13" fill="#1A1A1A">specchiata</text>
+  <!-- variant 2: rotated -->
+  <rect x="248" y="102" width="66" height="48" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.5"/>
+  <path d="M281 112 C266 120 266 136 281 142 C296 136 296 120 281 112 Z" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="1.5" transform="rotate(25 281 127)"/>
+  <text x="330" y="131" font-family="sans-serif" font-size="13" fill="#1A1A1A">ruotata</text>
+  <!-- variant 3: cropped -->
+  <rect x="248" y="148" width="66" height="48" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.5"/>
+  <path d="M281 150 C258 164 258 186 281 196 C304 186 304 164 281 150 Z" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="1.5"/>
+  <rect x="248" y="148" width="66" height="48" fill="none" stroke="#C9A961" stroke-width="2" stroke-dasharray="5 4"/>
+  <text x="330" y="177" font-family="sans-serif" font-size="13" fill="#1A1A1A">ritagliata (zoom)</text>
+  <!-- variant 4: darker -->
+  <rect x="248" y="204" width="66" height="48" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.5"/>
+  <path d="M281 212 C268 220 268 238 281 244 C294 238 294 220 281 212 Z" fill="#1A1A1A" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="330" y="233" font-family="sans-serif" font-size="13" fill="#1A1A1A">luminosità ridotta</text>
+  <!-- variant 5: noise -->
+  <rect x="248" y="260" width="66" height="48" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.5"/>
+  <path d="M281 268 C268 276 268 294 281 300 C294 294 294 276 281 268 Z" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="1.5"/>
+  <circle cx="260" cy="272" r="2" fill="#C9A961"/><circle cx="300" cy="268" r="2" fill="#C9A961"/>
+  <circle cx="256" cy="298" r="2" fill="#C9A961"/><circle cx="305" cy="292" r="2" fill="#C9A961"/>
+  <circle cx="290" cy="302" r="2" fill="#C9A961"/><circle cx="270" cy="264" r="2" fill="#C9A961"/>
+  <text x="330" y="288" font-family="sans-serif" font-size="13" fill="#1A1A1A">rumore / jitter</text>
+  <!-- right side: same label -->
+  <line x1="460" y1="75" x2="530" y2="150" stroke="#2D5A5C" stroke-width="2"/>
+  <line x1="460" y1="127" x2="530" y2="157" stroke="#2D5A5C" stroke-width="2"/>
+  <line x1="460" y1="172" x2="530" y2="165" stroke="#2D5A5C" stroke-width="2"/>
+  <line x1="460" y1="228" x2="530" y2="172" stroke="#2D5A5C" stroke-width="2"/>
+  <line x1="460" y1="284" x2="530" y2="180" stroke="#2D5A5C" stroke-width="2"/>
+  <rect x="538" y="130" width="170" height="70" fill="#C9A961" stroke="#1A1A1A" stroke-width="2"/>
+  <text x="623" y="160" text-anchor="middle" font-family="sans-serif" font-size="15" font-weight="bold" fill="#1A1A1A">etichetta:</text>
+  <text x="623" y="182" text-anchor="middle" font-family="sans-serif" font-size="15" font-weight="bold" fill="#1A1A1A">"foglia sana"</text>
+</svg>

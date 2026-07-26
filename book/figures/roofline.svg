@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  paithon book — figura: il modello roofline (scala log-log). Asse x =
+  intensita aritmetica (FLOP per byte); asse y = prestazione raggiungibile
+  (FLOP/s). Il "tetto" ha due tratti: il tratto inclinato (pendenza = banda
+  di memoria) a sinistra del ginocchio, il tratto piatto (picco di calcolo)
+  a destra. A sinistra del ginocchio i kernel sono memory-bound, a destra
+  compute-bound. Due punti-esempio: una somma vettoriale a intensita bassissima
+  (memory-bound) e un GEMM grande a intensita alta (compute-bound). Una freccia
+  mostra che la kernel fusion alza l'intensita, spostando l'operazione verso
+  destra. Palette-locked: teal per il tetto, ocra per il ginocchio, terracotta
+  per i punti e la freccia della fusione. Backing cream. Nessun colore fuori palette.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 450" role="img"
+     aria-label="Grafico del modello roofline in scala logaritmica. L'asse orizzontale e l'intensita aritmetica in FLOP per byte, quello verticale la prestazione raggiungibile in FLOP al secondo. Il tetto e formato da un tratto inclinato a sinistra, il cui pendio e la banda di memoria, e da un tratto orizzontale a destra, il picco di calcolo; i due tratti si incontrano nel ginocchio. A sinistra del ginocchio i programmi sono limitati dalla memoria (memory-bound), a destra dal calcolo (compute-bound). Un punto in basso a sinistra rappresenta una somma vettoriale a intensita circa un dodicesimo di FLOP per byte, un punto in alto a destra un GEMM grande. Una freccia tratteggiata indica che la fusione dei kernel alza l'intensita, spostando l'operazione verso destra, sotto il tetto di banda.">
+  <style>
+    .frame { stroke:#1A1A1A; stroke-width:1.6; opacity:0.55; fill:none; }
+    .roof  { stroke:#2D5A5C; stroke-width:3.5; fill:none; stroke-linejoin:round; stroke-linecap:round; }
+    .div   { stroke:#1A1A1A; stroke-width:1.4; stroke-dasharray:4 5; opacity:0.35; }
+    .axlbl { font-family:Inter, system-ui, sans-serif; font-size:13px; font-weight:600; fill:#1A1A1A; opacity:0.8; }
+    .rooflbl { font-family:Inter, system-ui, sans-serif; font-size:12px; font-weight:600; fill:#2D5A5C; }
+    .reg   { font-family:Inter, system-ui, sans-serif; font-size:12.5px; font-weight:700; fill:#1A1A1A; opacity:0.6; }
+    .pt    { font-family:Inter, system-ui, sans-serif; font-size:12px; font-weight:600; fill:#B5532C; }
+    .fus   { font-family:Inter, system-ui, sans-serif; font-size:11.5px; font-weight:600; fill:#B5532C; }
+    .tick  { font-family:Inter, system-ui, sans-serif; font-size:11px; fill:#1A1A1A; opacity:0.6; }
+  </style>
+  <defs>
+    <marker id="rf-arrow" viewBox="0 0 10 10" refX="8" refY="5"
+            markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#B5532C"/>
+    </marker>
+  </defs>
+
+  <!-- backing cream -->
+  <rect x="6" y="6" width="688" height="438" rx="14" fill="#F8F5EE" stroke="#1A1A1A" stroke-opacity="0.12" stroke-width="1.5"/>
+
+  <!-- assi -->
+  <line class="frame" x1="92" y1="60"  x2="92"  y2="380"/>
+  <line class="frame" x1="92" y1="380" x2="648" y2="380"/>
+  <polygon points="92,50 86,66 98,66" fill="#1A1A1A" fill-opacity="0.55"/>
+  <polygon points="658,380 642,374 642,386" fill="#1A1A1A" fill-opacity="0.55"/>
+
+  <!-- etichette assi -->
+  <text class="axlbl" x="370" y="416" text-anchor="middle">intensità aritmetica  (FLOP / byte) →</text>
+  <text class="axlbl" x="34" y="220" text-anchor="middle" transform="rotate(-90 34 220)">prestazione (FLOP/s) →</text>
+
+  <!-- linea divisoria verticale al ginocchio -->
+  <line class="div" x1="392" y1="120" x2="392" y2="380"/>
+
+  <!-- il tetto: tratto inclinato (banda) + tratto piatto (picco) -->
+  <line class="roof" x1="120" y1="352" x2="392" y2="120"/>
+  <line class="roof" x1="392" y1="120" x2="632" y2="120"/>
+
+  <!-- ginocchio -->
+  <circle cx="392" cy="120" r="6" fill="#C9A961" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text class="reg" x="392" y="108" text-anchor="middle" fill="#C9A961" opacity="1">ginocchio</text>
+
+  <!-- etichette dei due tetti -->
+  <text class="rooflbl" x="200" y="228" transform="rotate(-40.5 200 228)">tetto di banda (pendenza = banda)</text>
+  <text class="rooflbl" x="512" y="110" text-anchor="middle">tetto di calcolo (picco FLOP/s)</text>
+
+  <!-- regioni -->
+  <text class="reg" x="235" y="368" text-anchor="middle">memory-bound</text>
+  <text class="reg" x="520" y="368" text-anchor="middle">compute-bound</text>
+
+  <!-- punto: somma vettoriale (intensita bassissima, sul tetto di banda) -->
+  <circle cx="150" cy="326" r="5.5" fill="#B5532C"/>
+  <text class="pt" x="160" y="322">somma vettoriale</text>
+  <text class="pt" x="160" y="338" font-weight="400">≈ 1/12 FLOP/byte</text>
+
+  <!-- punto: GEMM grande (intensita alta, sul tetto di calcolo) -->
+  <circle cx="560" cy="120" r="5.5" fill="#B5532C"/>
+  <text class="pt" x="560" y="146" text-anchor="middle">GEMM grande</text>
+
+  <!-- freccia della fusione: alza l'intensita, sposta verso destra sotto il tetto -->
+  <path class="roof" d="M 205,300 L 320,202" fill="none" stroke="#B5532C" stroke-width="2.4"
+        stroke-dasharray="6 5" marker-end="url(#rf-arrow)"/>
+  <text class="fus" x="250" y="270" transform="rotate(-40.5 250 270)">la fusione alza l'intensità →</text>
+</svg>

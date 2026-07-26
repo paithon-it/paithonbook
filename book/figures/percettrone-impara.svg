@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  paithon book — figura animata: la regola del percettrone
+  Generata da animazioni/svg/percettrone-impara.py — non modificare a mano.
+  Palette-locked, fondo trasparente, animazione in CSS puro (nessuno script).
+  Lo stato di riposo è quello finale: chi non anima (stampa, PDF,
+  prefers-reduced-motion) vede la figura conclusa.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 664 500"
+     role="img" aria-label="La retta di separazione di un percettrone ruota a ogni correzione finché separa i punti terracotta dai punti teal.">
+  <style>
+    svg  { --d: 7.5s; }
+    .ax  { stroke:#C5BEAA; stroke-width:2; fill:none; }
+    .axc { stroke:#E2DCC9; stroke-width:1.5; }
+    .lbl { font-family:Inter, system-ui, sans-serif; font-size:15px; fill:#1A1A1A; }
+    .lbs { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#5E5852; }
+    .ttl { font-family:Fraunces, Georgia, serif; font-size:16px; font-style:italic; fill:#1A1A1A; }
+    .pt  { stroke:#F8F5EE; }
+    .pos { fill:#B5532C; stroke:#B5532C; }
+    .neg { fill:#2D5A5C; stroke:#2D5A5C; }
+    .sep { stroke:#1A1A1A; stroke-width:3; }
+    .eti { font-family:Inter, system-ui, sans-serif; font-size:15px; fill:#5E5852; opacity:0; }
+    #retta { animation:ruota var(--d) infinite; transform-box:view-box; }
+        @keyframes ruota{0.00%{transform:translate(274.0px,230.0px) rotate(119.1deg)}11.00%{transform:translate(274.0px,230.0px) rotate(119.1deg)}20.00%{transform:translate(290.2px,248.1px) rotate(138.2deg)}31.00%{transform:translate(290.2px,248.1px) rotate(138.2deg)}40.00%{transform:translate(290.1px,288.4px) rotate(164.6deg)}51.00%{transform:translate(290.1px,288.4px) rotate(164.6deg)}60.00%{transform:translate(272.0px,254.5px) rotate(-175.4deg)}71.00%{transform:translate(272.0px,254.5px) rotate(-175.4deg)}80.00%{transform:translate(274.0px,230.0px) rotate(-151.6deg)}91.00%{transform:translate(274.0px,230.0px) rotate(-151.6deg)}100.00%{transform:translate(274.0px,230.0px) rotate(-151.6deg)}}
+    @keyframes lampo1{0.00%{stroke-width:1;stroke-opacity:0}18.80%{stroke-width:1;stroke-opacity:0}20.00%{stroke-width:12;stroke-opacity:0.4}31.00%{stroke-width:1;stroke-opacity:0}100.00%{stroke-width:1;stroke-opacity:0}}
+    @keyframes lampo2{0.00%{stroke-width:1;stroke-opacity:0}38.80%{stroke-width:1;stroke-opacity:0}40.00%{stroke-width:12;stroke-opacity:0.4}51.00%{stroke-width:1;stroke-opacity:0}100.00%{stroke-width:1;stroke-opacity:0}}
+    @keyframes lampo3{0.00%{stroke-width:1;stroke-opacity:0}58.80%{stroke-width:1;stroke-opacity:0}60.00%{stroke-width:12;stroke-opacity:0.4}71.00%{stroke-width:1;stroke-opacity:0}100.00%{stroke-width:1;stroke-opacity:0}}
+    @keyframes lampo4{0.00%{stroke-width:1;stroke-opacity:0}78.80%{stroke-width:1;stroke-opacity:0}80.00%{stroke-width:12;stroke-opacity:0.4}91.00%{stroke-width:1;stroke-opacity:0}100.00%{stroke-width:1;stroke-opacity:0}}
+    @keyframes eti0{0.00%{opacity:0}0.01%{opacity:0}0.00%{opacity:1}19.40%{opacity:1}20.00%{opacity:0}100.00%{opacity:0}}
+    @keyframes eti1{0.00%{opacity:0}19.40%{opacity:0}20.00%{opacity:1}39.40%{opacity:1}40.00%{opacity:0}100.00%{opacity:0}}
+    @keyframes eti2{0.00%{opacity:0}39.40%{opacity:0}40.00%{opacity:1}59.40%{opacity:1}60.00%{opacity:0}100.00%{opacity:0}}
+    @keyframes eti3{0.00%{opacity:0}59.40%{opacity:0}60.00%{opacity:1}79.40%{opacity:1}80.00%{opacity:0}100.00%{opacity:0}}
+    @keyframes eti4{0.00%{opacity:0}79.40%{opacity:0}80.00%{opacity:1}99.40%{opacity:1}100.00%{opacity:0}100.00%{opacity:0}}
+    @media (prefers-reduced-motion:reduce) { #retta, .pt, .eti { animation:none !important; } }
+  </style>
+  <clipPath id="campo"><rect x="78" y="34" width="392" height="392" rx="4"/></clipPath><rect class="ax" x="78" y="34" width="392" height="392" rx="4"/><line class="axc" x1="78" y1="230.0" x2="470" y2="230.0"/><line class="axc" x1="274.0" y1="34" x2="274.0" y2="426"/><g clip-path="url(#campo)"><g id="retta" transform="translate(274.0,230.0) rotate(-151.6)"><line class="sep" x1="-620" y1="0" x2="620" y2="0"/></g></g><circle class="pt pos" cx="374.3" cy="157.1" r="8" style="animation:lampo1 var(--d) infinite"/><circle class="pt pos" cx="429.0" cy="220.9" r="8" style="animation:lampo2 var(--d) infinite"/><circle class="pt pos" cx="328.7" cy="75.0" r="8"/><circle class="pt pos" cx="401.6" cy="102.4" r="8"/><circle class="pt neg" cx="173.7" cy="302.9" r="8" style="animation:lampo3 var(--d) infinite"/><circle class="pt neg" cx="119.0" cy="230.0" r="8" style="animation:lampo4 var(--d) infinite"/><circle class="pt neg" cx="219.3" cy="385.0" r="8"/><circle class="pt neg" cx="146.4" cy="357.6" r="8"/><text class="eti" x="78" y="460" style="animation:eti0 var(--d) infinite">partenza</text><text class="eti" x="78" y="460" style="animation:eti1 var(--d) infinite">correzione 1</text><text class="eti" x="78" y="460" style="animation:eti2 var(--d) infinite">correzione 2</text><text class="eti" x="78" y="460" style="animation:eti3 var(--d) infinite">correzione 3</text><text class="eti" x="78" y="460" style="animation:eti4 var(--d) infinite;opacity:1">correzione 4</text><circle class="pt pos" cx="496" cy="54" r="8"/><text class="lbs" x="512" y="59">classe +1</text><circle class="pt neg" cx="496" cy="82" r="8"/><text class="lbs" x="512" y="87">classe −1</text><text class="lbl" x="78" y="488">w ← w + η (t − ŷ) x</text>
+</svg>

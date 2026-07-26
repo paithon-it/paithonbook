@@ -1,0 +1,28 @@
+<svg viewBox="0 0 680 360" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Paesaggio di ottimizzazione con più valli: una pallina terracotta resta bloccata nel primo minimo locale seguendo solo la discesa; una traiettoria teal tratteggiata mostra i salti del simulated annealing che scavalcano due colline e raggiungono il minimo globale, segnato da una bandierina ocra">
+  <rect x="0" y="0" width="680" height="360" fill="#F8F5EE"/>
+  <!-- paesaggio: curva con 3 valli, la terza e' la piu' profonda -->
+  <path d="M 30 80 Q 90 200 150 195 Q 210 190 240 120 Q 270 60 310 130 Q 350 200 390 205 Q 430 210 460 110 Q 490 20 540 170 Q 575 275 620 280 L 650 278"
+        fill="none" stroke="#1A1A1A" stroke-width="2"/>
+  <!-- pallina hill climbing bloccata nella prima valle -->
+  <circle cx="150" cy="187" r="9" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5"/>
+  <path d="M 60 130 Q 100 175 132 186" fill="none" stroke="#B5532C" stroke-width="2"/>
+  <polygon points="138,188 126,182 128,193" fill="#B5532C"/>
+  <text x="148" y="230" font-family="sans-serif" font-size="13" fill="#B5532C" text-anchor="middle">hill climbing:</text>
+  <text x="148" y="247" font-family="sans-serif" font-size="13" fill="#B5532C" text-anchor="middle">fermo nel minimo locale</text>
+  <!-- traiettoria annealing: salti tratteggiati oltre le colline -->
+  <path d="M 150 178 Q 210 40 300 120" fill="none" stroke="#2D5A5C" stroke-width="2" stroke-dasharray="7 5"/>
+  <path d="M 310 122 Q 390 30 455 100" fill="none" stroke="#2D5A5C" stroke-width="2" stroke-dasharray="7 5"/>
+  <path d="M 462 108 Q 530 60 598 258" fill="none" stroke="#2D5A5C" stroke-width="2" stroke-dasharray="7 5"/>
+  <polygon points="600,266 590,254 601,252" fill="#2D5A5C"/>
+  <circle cx="310" cy="126" r="6" fill="#2D5A5C"/>
+  <circle cx="460" cy="104" r="6" fill="#2D5A5C"/>
+  <text x="330" y="52" font-family="sans-serif" font-size="13" fill="#2D5A5C" text-anchor="middle">simulated annealing: salti accettati (T alta)</text>
+  <!-- minimo globale -->
+  <circle cx="620" cy="272" r="9" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="1.5"/>
+  <line x1="620" y1="260" x2="620" y2="225" stroke="#1A1A1A" stroke-width="2"/>
+  <polygon points="620,225 648,232 620,240" fill="#C9A961" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="600" y="318" font-family="sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">minimo globale</text>
+  <!-- asse -->
+  <line x1="30" y1="330" x2="650" y2="330" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="340" y="350" font-family="sans-serif" font-size="12" fill="#1A1A1A" text-anchor="middle">spazio delle soluzioni</text>
+</svg>

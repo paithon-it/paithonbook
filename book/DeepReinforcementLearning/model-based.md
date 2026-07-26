@@ -1,0 +1,400 @@
+# Reinforcement learning basato su modello
+
+La prima volta che ti siedi a un tavolo davanti a un gioco da tavolo nuovo,
+dopo un paio di mani hai già smesso di muovere a caso. Non perché tu abbia
+giocato migliaia di partite: ne bastano due o tre perché la testa cominci a
+fare da sola una cosa preziosa — *provare le mosse prima di farle*. «Se scarto
+questa carta lui pesca e chiude… allora no.» La mossa cattiva muore
+nell'immaginazione, senza costarti la partita. È questa la differenza, ancora
+oggi imbarazzante, fra un essere umano e un agente come il DQN incontrato nel
+capitolo sul Deep Reinforcement Learning: a noi bastano pochi minuti per
+capire *Breakout*, all'agente servono decine di milioni di fotogrammi. La
+parola tecnica per questa distanza è **sample efficiency**, l'efficienza nei
+campioni — quanta esperienza serve per imparare — ed è il problema che questa
+sezione affronta di petto.
+
+Tutti gli algoritmi visti finora — Q-learning, DQN, i metodi a gradiente di
+policy — condividono una scelta implicita: imparano *provando per davvero*.
+Provano un'azione nel mondo, guardano cosa succede, aggiustano. Non si
+costruiscono mai una copia del gioco da consultare in privato. Sono metodi
+**model-free**, «senza modello». Qui cambiamo strategia: costruiamo prima un
+modello dell'ambiente e poi lo usiamo per *pianificare* — cioè per provare le
+mosse nella testa, come al tavolo da gioco.
+
+## Provare per davvero o provare nella testa
+
+```{figure} ../figures/model-based-loop.svg
+:name: fig-model-based-loop
+:alt: Anello a quattro blocchi. L'esperienza reale raccolta dall'ambiente addestra un modello appreso della dinamica e della ricompensa; dal modello si srotolano rollout immaginati (planning); i rollout aggiornano policy e valore senza toccare l'ambiente; la policy agisce di nuovo nel mondo. Il ramo dai rollout immaginati verso policy e valore è in terracotta.
+:width: 90%
+
+Il ciclo del reinforcement learning basato su modello. L'esperienza reale
+serve ad addestrare il modello; dentro il modello si «immaginano» traiettorie
+che addestrano policy e valore. Il ramo in terracotta è quello immaginato:
+migliora la policy senza spendere un solo passo nell'ambiente vero.
+```
+
+La {numref}`fig-model-based-loop` riassume l'idea: un anello tocca il mondo
+vero, un altro (in terracotta) vive solo nella testa dell'agente. Tutto il
+gioco del model-based sta nel far girare molto il secondo pagando poco il primo.
+
+`````{tab} Elementare
+
+Immagina due allievi che imparano a guidare. Il primo impara solo
+schiantandosi: prova una manovra sull'auto vera, se va male paga il danno, e
+solo così capisce che non andava fatta. Il secondo, dopo qualche giro, si è
+costruito in testa un piccolo simulatore della macchina — «se sterzo così a
+questa velocità, il posteriore scappa» — e le manovre pericolose le prova lì
+dentro, gratis. Il primo è un agente **model-free**: impara solo dall'urto
+reale. Il secondo è **model-based**: prima impara *come funziona* il mondo, poi
+usa quella conoscenza per provare le mosse nell'immaginazione, e nel mondo vero
+ci va già preparato.
+
+Il vantaggio è ovvio: ogni giro reale del secondo allievo vale molto di più,
+perché da esso spreme decine di prove immaginate. Il rischio, altrettanto
+ovvio, è di fidarsi di un simulatore sbagliato: se nella sua testa le curve
+sono più dolci che in strada, si allena a guidare un'auto che non esiste.
+
+`````
+
+`````{tab} Superiore
+
+Un ambiente di RL è un processo decisionale di Markov con dinamica
+$p(s' \mid s, a)$ — la probabilità di finire nello stato $s'$ partendo da $s$
+e compiendo $a$ — e una funzione di ricompensa $r(s, a)$. Un metodo
+**model-free** apprende direttamente la policy $\pi_\theta(a \mid s)$ o i
+valori $Q(s, a)$, $V(s)$ dall'interazione, senza mai stimare $p$ e $r$. Un
+metodo **model-based** fa l'opposto: apprende un modello $\hat p_\psi(s' \mid s, a)$
+e $\hat r_\psi(s, a)$ dalle transizioni osservate, poi lo usa per
+**pianificare** — cercare, tra le traiettorie *immaginate*, quelle a ritorno
+più alto — o per generare esperienza sintetica su cui allenare policy e valore
+{cite}`sutton2018reinforcement`.
+
+Il guadagno atteso è la **sample efficiency**: una transizione reale, digerita
+nel modello, ne genera molte simulate. Il prezzo ha un nome preciso, **model
+bias**: il modello $\hat p_\psi$ non è la dinamica vera, e l'errore di
+predizione si propaga lungo l'orizzonte. Peggio, una policy ottimizzata *dentro*
+il modello impara a sfruttarne i difetti (*model exploitation*), incassando
+ritorni immaginari che l'ambiente reale non paga. L'intera storia di questa
+sezione è il racconto di come si è negoziato questo compromesso: quanta fiducia
+concedere al modello.
+
+`````
+
+## Dyna: intrecciare il vero e l'immaginato
+
+L'idea non è nuova. Nel 1990 Richard Sutton — lo stesso del libro di
+riferimento su cui poggia mezzo capitolo {cite}`sutton2018reinforcement` —
+propone **Dyna** {cite}`sutton1991dyna`, un'architettura tanto semplice quanto
+lungimirante: mentre l'agente gioca, impara *contemporaneamente* due cose —
+una policy, come sempre, e un modellino del mondo — e usa il modellino per
+«ripassare» esperienze mai vissute davvero.
+
+`````{tab} Elementare
+
+Pensa a uno studente che, dopo aver fatto un esercizio di matematica in classe,
+la sera lo rifà a mente altre venti volte, variando i numeri. Non ha bisogno di
+tornare a scuola: gli basta ricordare *come funzionano* i conti — la sua regola
+appresa — per generarsi esercizi nuovi e allenarsi su quelli. Dyna fa
+esattamente questo. Ogni volta che l'agente compie una mossa vera, impara due
+cose: aggiusta le sue valutazioni in base a com'è andata, *e* si annota la
+transizione («da qui, con questa mossa, sono finito lì e ho preso questa
+ricompensa»). Poi, prima della mossa successiva, si concede qualche
+«ripasso»: pesca a caso alcune transizioni già annotate e riaggiusta le
+valutazioni anche su quelle, come se le stesse rivivendo. Una mossa vera, tanti
+ripassi immaginati: la ricompensa si propaga all'indietro molto più in fretta.
+
+`````
+
+`````{tab} Superiore
+
+Dyna-Q intreccia *apprendimento diretto* e *planning* attorno allo stesso
+$Q(s,a)$. Dopo ogni passo reale $(s, a, r, s')$ esegue due tipi di
+aggiornamento. Il primo, dall'esperienza vera:
+
+$$
+Q(s, a) \leftarrow Q(s, a) + \alpha \big[\, r + \gamma \max_{a'} Q(s', a') - Q(s, a) \,\big],
+$$
+
+e memorizza la transizione nel modello, $\text{modello}(s,a) \leftarrow (r, s')$.
+Poi ripete $n$ volte un passo di **planning**: campiona una coppia $(s, a)$
+già osservata, ne recupera $(r, s')$ dal modello e applica lo *stesso*
+aggiornamento di sopra — solo che l'esperienza è simulata, non vissuta. Qui
+$\alpha$ è il passo di apprendimento e $\gamma$ il fattore di sconto. Con
+$n$ grande, ogni interazione reale scatena molti aggiornamenti immaginati, e
+la propagazione dei valori accelera drasticamente. È il seme di tutto il
+model-based moderno: separare l'esperienza (costosa, reale) dagli aggiornamenti
+(economici, ripetibili nel modello).
+
+`````
+
+Vale la pena vedere Dyna-Q al lavoro su un ambiente minuscolo. Un corridoio di
+sei caselle: si parte a sinistra, l'obiettivo è la casella più a destra, e la
+ricompensa arriva solo entrando nell'obiettivo. Con abbastanza passi di
+planning, la policy corretta — «vai sempre a destra» — emerge in pochissime
+partite reali.
+
+```python
+import numpy as np
+
+rng = np.random.default_rng(0)
+
+# Ambiente: corridoio di 6 stati; l'obiettivo e' lo stato 5 (assorbente).
+# Azioni: 0 = sinistra, 1 = destra. Ricompensa +1 solo entrando nell'obiettivo.
+n_stati, n_azioni, goal = 6, 2, 5
+
+def passo(s, a):
+    s2 = min(s + 1, goal) if a == 1 else max(s - 1, 0)
+    r = 1.0 if s2 == goal else 0.0
+    return s2, r, (s2 == goal)
+
+def scelta_greedy(q):              # argmax con i pareggi rotti a caso
+    return int(rng.choice(np.flatnonzero(q == q.max())))
+
+Q = np.zeros((n_stati, n_azioni))
+modello = {}                       # (s, a) -> (r, s2): la dinamica APPRESA
+alpha, gamma, eps, n_plan = 0.1, 0.95, 0.1, 20
+
+for _ in range(30):                # appena 30 episodi reali
+    s = 0
+    for _ in range(100):
+        a = int(rng.integers(n_azioni)) if rng.random() < eps else scelta_greedy(Q[s])
+        s2, r, fine = passo(s, a)
+        # 1) aggiornamento dall'esperienza REALE
+        Q[s, a] += alpha * (r + gamma * Q[s2].max() - Q[s, a])
+        modello[(s, a)] = (r, s2)  # memorizza la transizione osservata
+        # 2) n passi di PLANNING su transizioni gia' viste (esperienza immaginata)
+        viste = list(modello.keys())
+        for _ in range(n_plan):
+            sp, ap = viste[rng.integers(len(viste))]
+            rp, s2p = modello[(sp, ap)]
+            Q[sp, ap] += alpha * (rp + gamma * Q[s2p].max() - Q[sp, ap])
+        s = s2
+        if fine:
+            break
+
+policy = np.argmax(Q, axis=1)      # ci aspettiamo 1 (destra) ovunque
+print("Policy appresa (0=sx, 1=dx):", policy[:goal].tolist())
+```
+
+## Il tallone d'Achille: l'errore che si accumula
+
+C'è un motivo se Dyna, nell'esempio, «immagina» transizioni di *un solo passo*
+già osservate, e non intere partite inventate di sana pianta. È il problema
+strutturale di ogni approccio model-based: l'errore del modello **si compone**
+lungo il rollout. Una predizione appena imprecisa a un passo diventa una
+predizione mediocre a cinque passi e un'assurdità a venti.
+
+`````{tab} Elementare
+
+È il gioco del telefono senza fili. Il primo bambino sussurra la frase giusta;
+ognuno la ripete con un piccolo errore, e dopo dieci passaggi la frase è
+irriconoscibile. Un modello del mondo fa lo stesso quando gli chiedi di
+immaginare lontano: la prima previsione è quasi giusta, ma la seconda parte da
+quella «quasi», la terza dal «quasi del quasi», e l'errore si gonfia a ogni
+passo. Morale: le previsioni utili sono quelle a breve. La cura, trovata dai
+ricercatori nel 2019, è disarmante nella sua semplicità — invece di far partire
+i sogni dall'inizio della partita e tirarli avanti a lungo, si parte da uno
+stato *vero*, appena visitato, e si immagina solo pochi passi. Sogni corti,
+ancorati alla realtà: l'errore non fa in tempo ad accumularsi.
+
+`````
+
+`````{tab} Superiore
+
+Se il modello sbaglia in media di una quantità $\epsilon$ a ogni passo e gli
+errori non si cancellano, lo scarto fra la traiettoria immaginata e quella
+reale cresce all'incirca in proporzione all'orizzonte $k$ del rollout. È il
+**compounding error**, e impone un compromesso: rollout lunghi danno più
+segnale di allenamento ma sempre meno affidabile.
+
+**MBPO** (*Model-Based Policy Optimization*, Janner et al., 2019
+{cite}`janner2019trust`) risolve il compromesso con un'idea nel titolo del
+lavoro — *When to Trust Your Model*, «quando fidarsi del modello». Invece di
+srotolare lunghe traiettorie dallo stato iniziale, MBPO esegue **rollout
+brevi** (spesso di uno o pochi passi) che *si diramano da stati reali*
+campionati dal buffer di esperienza: il modello — in pratica un *ensemble* di
+reti probabilistiche, che rappresenta anche la propria incertezza — viene
+interrogato solo dove è più affidabile, vicino a stati davvero visitati. Le
+transizioni sintetiche così generate alimentano un algoritmo model-free
+off-policy (SAC). L'analisi degli autori lega esplicitamente il divario di
+ritorno all'errore del modello *e* alla lunghezza del rollout, giustificando
+formalmente la scelta di tenerlo corto: si sfrutta il modello dove aiuta,
+lo si evita dove mente.
+
+`````
+
+## MuZero: pianificare senza conoscere le regole
+
+Fin qui abbiamo dato per scontato di poter osservare lo «stato» del mondo. Ma
+in Go, negli scacchi, in un videogioco Atari, ciò che l'agente riceve sono
+posizioni sulla scacchiera o pixel sullo schermo, e la dinamica vera — le
+regole — può essere ignota o troppo complessa da scrivere a mano. Nel 2020 un
+gruppo di DeepMind guidato da Julian Schrittwieser presenta **MuZero**
+{cite}`schrittwieser2020mastering`, che fa un passo che sembra un gioco di
+prestigio: pianifica in profondità *senza conoscere le regole del gioco*.
+
+`````{tab} Elementare
+
+MuZero è l'erede di AlphaZero, l'algoritmo che nel capitolo sui gradienti di
+policy abbiamo visto padroneggiare Go, scacchi e shogi partendo dalle sole
+regole. Ma ad AlphaZero le regole erano *date*: sapeva con esattezza, per ogni
+mossa, quale posizione ne sarebbe seguita. MuZero no: se le costruisce da solo
+guardando le partite, e — dettaglio cruciale — non si fa un modello che
+ridisegna la scacchiera pezzo per pezzo, ma solo un modello «da stratega».
+Immagina un maestro che ragiona per sensazioni: non visualizza ogni pedone dopo
+dieci mosse, ma tiene in testa quel tanto che gli serve per rispondere a tre
+domande — «questa mossa mi avvicina alla vittoria? chi è in vantaggio? che
+ricompensa arriva ora?». MuZero impara questo riassunto astratto, il minimo per
+pianificare, e butta via il resto; poi, lì dentro, esplora a fondo le linee più
+promettenti prima di decidere.
+
+`````
+
+`````{tab} Superiore
+
+MuZero apprende un **modello latente** fatto di tre funzioni, addestrate insieme
+end-to-end:
+
+$$
+s^0 = h_\psi(o_{\le t}), \qquad
+(s^{k+1}, \hat r^{k+1}) = g_\psi(s^k, a^k), \qquad
+(\hat p^k, \hat v^k) = f_\psi(s^k).
+$$
+
+La *rappresentazione* $h_\psi$ codifica le osservazioni passate $o_{\le t}$ in
+uno stato latente iniziale $s^0$; la *dinamica* $g_\psi$, dato lo stato
+latente $s^k$ e un'azione ipotetica $a^k$, predice il latente successivo
+$s^{k+1}$ e la ricompensa $\hat r^{k+1}$; la *predizione* $f_\psi$ ne ricava
+una policy $\hat p^k$ e un valore $\hat v^k$. Punto decisivo: $s^k$ **non**
+è addestrato a ricostruire l'osservazione. Non c'è alcuna pressione a
+rappresentare i pixel; il latente deve solo contenere ciò che serve a predire
+*policy, valore e ricompensa* — le tre quantità utili alla pianificazione.
+Su questo modello latente MuZero esegue una **ricerca ad albero Monte Carlo**
+(MCTS), la stessa idea di AlphaGo/AlphaZero {cite}`silver2017mastering`, ma
+srotolata dentro il modello appreso anziché su un simulatore dato. Il risultato:
+prestazioni pari ad AlphaZero su Go, scacchi e shogi *senza* riceverne le
+regole, e stato dell'arte sul benchmark Atari — dove un modello scritto a mano
+non esiste. La differenza con AlphaZero è tutta qui: AlphaZero pianifica su un
+modello *fornito*, MuZero su un modello *appreso*.
+
+`````
+
+## Dreamer: allenare la policy nel sogno
+
+C'è una terza via, che il capitolo sui World Model racconta per esteso e che
+qui richiamiamo solo come tassello del quadro model-based. Invece di pianificare
+al momento della decisione, come fa MCTS in MuZero, si può apprendere un **world
+model** — un simulatore interno dell'ambiente — e poi allenare *interamente
+dentro di esso* una policy, per retropropagazione attraverso traiettorie
+immaginate. È l'*immaginazione latente*.
+
+`````{tab} Elementare
+
+È il pilota che, la sera prima della gara, ripassa il circuito a occhi chiusi,
+curva per curva. Non consuma benzina, non rischia incidenti: la pista ce l'ha
+in testa, e lì dentro può girare quante volte vuole. Gli algoritmi della
+famiglia **Dreamer** fanno questo: si costruiscono un modello del gioco e poi
+addestrano il pilota *solo dentro il sogno*, riportandolo nel mondo vero già
+allenato. La linea di ricerca nasce dai «mondi in miniatura» di Ha e
+Schmidhuber — l'agente che imparava a schivare palle di fuoco esercitandosi nel
+proprio sogno — e arriva a **DreamerV3** di Danijar Hafner e colleghi
+{cite}`hafner2023mastering`, che con la *stessa* configurazione, senza ritocchi,
+padroneggia oltre 150 compiti diversi — robot simulati, giochi Atari,
+navigazione 3D — e riesce persino a raccogliere i diamanti in *Minecraft*
+partendo da zero, senza che nessuno gli mostri come.
+
+`````
+
+`````{tab} Superiore
+
+Dreamer apprende un modello ricorrente dello stato nello spazio latente e vi
+addestra un attore-critico (i metodi visti nella sezione sui gradienti di
+policy) per retropropagazione lungo **rollout immaginati** a orizzonte breve
+— una quindicina di passi — proprio per contenere il compounding error.
+DreamerV3 {cite}`hafner2023mastering` aggiunge normalizzazioni robuste di
+osservazioni, ricompense e ritorni che rendono lo stesso set di iperparametri
+valido su domini radicalmente diversi: è la dimostrazione che un agente
+model-based può essere *generalista*. La parentela con Dyna è diretta —
+attore e critico crescono su esperienza sintetica generata da un modello
+appreso — ma il modello qui è una rete profonda che vive in uno spazio latente,
+non una tabella di transizioni. Per la ricetta completa (encoder, modello
+ricorrente, il «sogno» come rollout latente) si rimanda al capitolo sui World
+Model, che tratta anche la proposta di LeCun e le architetture JEPA, la
+frontiera di questa linea di ricerca.
+
+`````
+
+Un modello dinamico appreso, del tipo che alimenta MBPO o Dreamer, in PyTorch
+ha una forma semplice: da stato e azione predice lo stato successivo e la
+ricompensa. Il rollout «immaginato» è poi la sua applicazione ripetuta, tenuta
+volutamente corta.
+
+```python
+import torch
+from torch import nn
+
+class ModelloDinamica(nn.Module):
+    """Modello appreso: da (stato, azione) predice stato successivo e ricompensa."""
+    def __init__(self, dim_s, dim_a, dim_h=200):
+        super().__init__()
+        self.corpo = nn.Sequential(
+            nn.Linear(dim_s + dim_a, dim_h), nn.SiLU(),
+            nn.Linear(dim_h, dim_h), nn.SiLU(),
+        )
+        self.testa_stato = nn.Linear(dim_h, dim_s)    # variazione dello stato
+        self.testa_ricompensa = nn.Linear(dim_h, 1)   # ricompensa predetta
+
+    def forward(self, s, a):                          # s: (B, dim_s), a: (B, dim_a)
+        h = self.corpo(torch.cat([s, a], dim=-1))
+        s_succ = s + self.testa_stato(h)              # residuo: predice il cambiamento
+        r = self.testa_ricompensa(h).squeeze(-1)      # (B,)
+        return s_succ, r
+
+# Rollout BREVE immaginato (stile MBPO): parte da stati reali, pochi passi.
+modello = ModelloDinamica(dim_s=4, dim_a=1)
+policy = nn.Sequential(nn.Linear(4, 1), nn.Tanh())    # policy giocattolo
+s = torch.randn(32, 4)                                # 32 stati REALI dal buffer
+for _ in range(3):                                    # orizzonte corto: 3 passi
+    a = policy(s)                                     # (32, 1)
+    s, r = modello(s, a)                              # transizioni SINTETICHE
+```
+
+## Onestà: quando il sogno inganna
+
+Resta il punto dolente, che nessun risultato spettacolare cancella. Una policy
+addestrata dentro un modello finisce, prima o poi, per **sfruttarne i difetti**.
+Se il modello sbaglia in modo sistematico — sopravvaluta una ricompensa,
+dimentica un ostacolo — l'ottimizzazione trova con precisione chirurgica proprio
+quelle crepe: emergono policy che incassano ritorni immaginari altissimi e
+falliscono nel mondo vero. È il *model exploitation*, e nel capitolo sui World
+Model se ne vede l'esempio da manuale — l'agente che, dentro il proprio sogno di
+*Doom*, scopre movimenti per cui i mostri «non sparano mai». Il compromesso è
+strutturale: più ci si fida del modello (rollout lunghi, tutta la policy
+allenata nel sogno), più si guadagna in efficienza e più ci si espone al suo
+bias; più lo si tiene a bada (rollout corti ancorati a stati reali, ensemble che
+misurano l'incertezza), più si è robusti ma si torna a spendere esperienza vera.
+I metodi model-free, per contro, non hanno un modello da sfruttare e restano
+competitivi quando i campioni costano poco. Non c'è un vincitore assoluto: c'è
+una manopola, e sapere dove metterla — quanta fiducia concedere al sogno — è
+oggi materia di ricerca aperta.
+
+```{admonition} Da ricordare
+:class: important
+- **Model-free** impara provando per davvero; **model-based** apprende prima la
+  dinamica $\hat p_\psi(s' \mid s, a)$ e la ricompensa, poi *pianifica* dentro
+  il modello. Il premio è la **sample efficiency**; il pericolo è il **model
+  bias**.
+- **Dyna** (Sutton, 1990) è il capostipite: intreccia aggiornamenti da
+  esperienza reale e da esperienza «immaginata» campionata dal modello appreso.
+- L'**errore si accumula** lungo il rollout (compounding error): **MBPO**
+  (Janner et al., 2019) lo aggira con rollout *brevi* diramati da stati reali,
+  usando il modello solo dove è affidabile.
+- **MuZero** (Schrittwieser et al., 2020) apprende un modello *latente*
+  (dinamica, ricompensa, valore) e pianifica con MCTS *senza conoscere le
+  regole* del gioco: è l'erede di AlphaZero, che il modello lo riceveva già
+  fatto.
+- **Dreamer** (Hafner et al.) allena la policy interamente nell'immaginazione
+  latente; DreamerV3 è generalista su oltre 150 compiti. Il limite di fondo
+  resta uno: la policy è buona quanto il modello in cui è cresciuta.
+```

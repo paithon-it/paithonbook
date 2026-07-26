@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 520" role="img" aria-label="Tre cerchi concentrici che rappresentano i tre livelli del programmare un LLM. Il cerchio interno e' PROMPT (il singolo messaggio), la corona intermedia e' CONTESTO (l'intera finestra come sistema), la corona esterna e' LOOP (il processo iterativo con verifica). Ogni livello contiene il precedente. A destra una legenda con i tre livelli: prompt engineering in terracotta, context engineering in ocra, loop engineering in teal.">
+  <!-- corona esterna: LOOP -->
+  <circle cx="280" cy="275" r="210" fill="#2D5A5C" fill-opacity="0.08" stroke="#2D5A5C" stroke-width="3"/>
+  <!-- corona intermedia: CONTESTO -->
+  <circle cx="280" cy="275" r="142" fill="#C9A961" fill-opacity="0.13" stroke="#C9A961" stroke-width="3"/>
+  <!-- cerchio interno: PROMPT -->
+  <circle cx="280" cy="275" r="73" fill="#B5532C" fill-opacity="0.16" stroke="#B5532C" stroke-width="3"/>
+
+  <!-- etichette delle bande -->
+  <text x="280" y="98" text-anchor="middle" font-family="Inter, sans-serif" font-size="16" font-weight="700" fill="#1A1A1A">LOOP</text>
+  <text x="280" y="116" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" fill="#5E5852">il processo iterativo</text>
+
+  <text x="280" y="170" text-anchor="middle" font-family="Inter, sans-serif" font-size="15" font-weight="700" fill="#1A1A1A">CONTESTO</text>
+  <text x="280" y="187" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" fill="#5E5852">la finestra come sistema</text>
+
+  <text x="280" y="271" text-anchor="middle" font-family="Inter, sans-serif" font-size="15" font-weight="700" fill="#1A1A1A">PROMPT</text>
+  <text x="280" y="289" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" fill="#5E5852">il singolo messaggio</text>
+
+  <!-- legenda a destra -->
+  <rect x="556" y="150" width="16" height="16" rx="3" fill="#B5532C" fill-opacity="0.16" stroke="#B5532C" stroke-width="2.2"/>
+  <text x="584" y="159" font-family="Inter, sans-serif" font-size="14" font-weight="700" fill="#1A1A1A">Prompt engineering</text>
+  <text x="584" y="177" font-family="Inter, sans-serif" font-size="11.5" fill="#5E5852">il singolo messaggio</text>
+
+  <rect x="556" y="238" width="16" height="16" rx="3" fill="#C9A961" fill-opacity="0.16" stroke="#C9A961" stroke-width="2.2"/>
+  <text x="584" y="247" font-family="Inter, sans-serif" font-size="14" font-weight="700" fill="#1A1A1A">Context engineering</text>
+  <text x="584" y="265" font-family="Inter, sans-serif" font-size="11.5" fill="#5E5852">l'intera finestra come sistema</text>
+
+  <rect x="556" y="326" width="16" height="16" rx="3" fill="#2D5A5C" fill-opacity="0.14" stroke="#2D5A5C" stroke-width="2.2"/>
+  <text x="584" y="335" font-family="Inter, sans-serif" font-size="14" font-weight="700" fill="#1A1A1A">Loop engineering</text>
+  <text x="584" y="353" font-family="Inter, sans-serif" font-size="11.5" fill="#5E5852">il ciclo iterativo con verifica</text>
+
+  <!-- didascalia interna -->
+  <text x="390" y="502" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#5E5852">Tre livelli concentrici: ogni cerchio contiene il precedente &#8212; il prompt nel contesto, il contesto nel loop.</text>
+</svg>

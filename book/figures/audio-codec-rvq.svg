@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 344" role="img" aria-label="Pipeline di un codec audio neurale: un'onda audio entra in un encoder convoluzionale che la comprime in un vettore latente z; z passa in un blocco di quantizzazione a residui (RVQ) fatto di codebook in cascata, ognuno dei quali produce un token intero e passa il residuo al successivo; i token, piu' flussi paralleli, alimentano un decoder che ricostruisce l'onda audio.">
+  <defs>
+    <marker id="ac-sig" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#B5532C"/>
+    </marker>
+    <marker id="ac-res" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#2D5A5C"/>
+    </marker>
+  </defs>
+
+  <!-- audio in -->
+  <rect x="18" y="60" width="100" height="80" rx="6" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="2"/>
+  <polyline points="28,100 38,82 48,118 58,84 68,116 78,86 88,114 98,86 108,100" fill="none" stroke="#B5532C" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+  <text x="68" y="158" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" font-weight="700" fill="#1A1A1A">audio</text>
+
+  <line x1="120" y1="100" x2="144" y2="100" stroke="#B5532C" stroke-width="2.5" marker-end="url(#ac-sig)"/>
+
+  <!-- encoder (trapezio che comprime) -->
+  <polygon points="148,60 148,140 214,124 214,76" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2" stroke-linejoin="round"/>
+  <text x="181" y="105" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#2D5A5C">encoder</text>
+  <text x="181" y="158" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#2D5A5C">(CNN)</text>
+
+  <line x1="214" y1="100" x2="238" y2="100" stroke="#B5532C" stroke-width="2.5" marker-end="url(#ac-sig)"/>
+
+  <!-- latente z -->
+  <rect x="242" y="82" width="36" height="36" rx="4" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2"/>
+  <text x="260" y="106" text-anchor="middle" font-family="Fraunces, Georgia, serif" font-size="16" font-style="italic" fill="#2D5A5C">z</text>
+  <text x="260" y="136" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#2D5A5C">latente</text>
+
+  <line x1="278" y1="100" x2="342" y2="100" stroke="#B5532C" stroke-width="2.5" marker-end="url(#ac-sig)"/>
+
+  <!-- contenitore RVQ -->
+  <rect x="302" y="44" width="344" height="262" rx="8" fill="none" stroke="#C9A961" stroke-width="2.5"/>
+  <text x="316" y="64" text-anchor="start" font-family="Inter, sans-serif" font-size="12.5" font-weight="700" fill="#B5532C">RVQ &#183; quantizzazione a residui</text>
+
+  <!-- codebook 1 -->
+  <rect x="346" y="80" width="150" height="40" rx="5" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2"/>
+  <text x="421" y="98" text-anchor="middle" font-family="Inter, sans-serif" font-size="12.5" font-weight="700" fill="#1A1A1A">codebook 1</text>
+  <text x="421" y="113" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" fill="#2D5A5C">K prototipi</text>
+
+  <!-- codebook 2 -->
+  <rect x="346" y="160" width="150" height="40" rx="5" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2"/>
+  <text x="421" y="178" text-anchor="middle" font-family="Inter, sans-serif" font-size="12.5" font-weight="700" fill="#1A1A1A">codebook 2</text>
+  <text x="421" y="193" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" fill="#2D5A5C">K prototipi</text>
+
+  <!-- codebook 3 -->
+  <rect x="346" y="240" width="150" height="40" rx="5" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2"/>
+  <text x="421" y="258" text-anchor="middle" font-family="Inter, sans-serif" font-size="12.5" font-weight="700" fill="#1A1A1A">codebook 3</text>
+  <text x="421" y="273" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" fill="#2D5A5C">K prototipi</text>
+
+  <!-- residui in cascata -->
+  <line x1="421" y1="120" x2="421" y2="157" stroke="#2D5A5C" stroke-width="2" marker-end="url(#ac-res)"/>
+  <text x="430" y="143" text-anchor="start" font-family="Inter, sans-serif" font-size="10.5" fill="#2D5A5C">residuo r&#8321;</text>
+  <line x1="421" y1="200" x2="421" y2="237" stroke="#2D5A5C" stroke-width="2" marker-end="url(#ac-res)"/>
+  <text x="430" y="223" text-anchor="start" font-family="Inter, sans-serif" font-size="10.5" fill="#2D5A5C">residuo r&#8322;</text>
+
+  <!-- token in uscita da ogni codebook -->
+  <line x1="496" y1="100" x2="534" y2="100" stroke="#B5532C" stroke-width="2.5" marker-end="url(#ac-sig)"/>
+  <rect x="538" y="82" width="36" height="36" rx="4" fill="#F8F5EE" stroke="#B5532C" stroke-width="2"/>
+  <text x="556" y="106" text-anchor="middle" font-family="Inter, sans-serif" font-size="15" font-weight="700" fill="#B5532C">5</text>
+
+  <line x1="496" y1="180" x2="534" y2="180" stroke="#B5532C" stroke-width="2.5" marker-end="url(#ac-sig)"/>
+  <rect x="538" y="162" width="36" height="36" rx="4" fill="#F8F5EE" stroke="#B5532C" stroke-width="2"/>
+  <text x="556" y="186" text-anchor="middle" font-family="Inter, sans-serif" font-size="15" font-weight="700" fill="#B5532C">2</text>
+
+  <line x1="496" y1="260" x2="534" y2="260" stroke="#B5532C" stroke-width="2.5" marker-end="url(#ac-sig)"/>
+  <rect x="538" y="242" width="36" height="36" rx="4" fill="#F8F5EE" stroke="#B5532C" stroke-width="2"/>
+  <text x="556" y="266" text-anchor="middle" font-family="Inter, sans-serif" font-size="15" font-weight="700" fill="#B5532C">7</text>
+
+  <text x="556" y="298" text-anchor="middle" font-family="Inter, sans-serif" font-size="11.5" font-weight="700" fill="#B5532C">token (N flussi)</text>
+
+  <!-- bus dei token verso il decoder -->
+  <line x1="574" y1="100" x2="600" y2="100" stroke="#B5532C" stroke-width="2.5"/>
+  <line x1="574" y1="180" x2="600" y2="180" stroke="#B5532C" stroke-width="2.5"/>
+  <line x1="574" y1="260" x2="600" y2="260" stroke="#B5532C" stroke-width="2.5"/>
+  <line x1="600" y1="100" x2="600" y2="260" stroke="#B5532C" stroke-width="2.5"/>
+  <line x1="600" y1="180" x2="662" y2="180" stroke="#B5532C" stroke-width="2.5" marker-end="url(#ac-sig)"/>
+
+  <!-- decoder (trapezio che espande) -->
+  <polygon points="666,156 666,204 732,220 732,140" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2" stroke-linejoin="round"/>
+  <text x="699" y="185" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#2D5A5C">decoder</text>
+
+  <line x1="732" y1="180" x2="756" y2="180" stroke="#B5532C" stroke-width="2.5" marker-end="url(#ac-sig)"/>
+
+  <!-- audio ricostruito -->
+  <rect x="760" y="140" width="100" height="80" rx="6" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="2"/>
+  <polyline points="770,180 780,162 790,198 800,164 810,196 820,166 830,194 840,166 850,180" fill="none" stroke="#B5532C" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+  <text x="810" y="238" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" font-weight="700" fill="#1A1A1A">audio</text>
+  <text x="810" y="255" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#2D5A5C">ricostruito</text>
+
+  <!-- didascalia interna -->
+  <text x="430" y="332" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#2D5A5C">Ogni stadio quantizza il residuo del precedente: pi&#249; codebook in cascata, pi&#249; fedelt&#224;.</text>
+</svg>

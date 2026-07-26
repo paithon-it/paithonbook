@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  paithon book — figura: lo stack di PyTorch come strati sovrapposti.
+  Dal basso: l'hardware (CPU/GPU/acceleratori) -> il motore C++ (ATen e
+  autograd) -> l'API Python (torch, torch.nn, torch.optim) -> il tuo modello.
+  Palette-locked: box color cream, bordi terracotta/ocra/teal/warm-black,
+  testo warm-black e grigi warm. Fondo trasparente (leggibile in light e
+  dark). Nessun colore fuori palette.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360" role="img"
+     aria-label="Diagramma a strati dello stack di PyTorch: alla base l'hardware con CPU, GPU e altri acceleratori; sopra il motore C++ con ATen e autograd; sopra ancora l'API Python con torch, torch.nn e torch.optim; in cima il tuo modello">
+  <style>
+    .box  { fill:#F8F5EE; }
+    .name { font-family:Fraunces, Georgia, serif; font-size:19px; font-weight:600; fill:#1A1A1A; }
+    .desc { font-family:Inter, system-ui, sans-serif; font-size:12px; fill:#5E5852; }
+    .hw   { font-family:Fraunces, Georgia, serif; font-size:17px; font-weight:600; fill:#1A1A1A; }
+    .conn { stroke:#8B847C; stroke-width:1.5; stroke-dasharray:3 4; }
+    .cap  { font-family:Inter, system-ui, sans-serif; font-size:12px; fill:#8B847C; }
+  </style>
+
+  <!-- connettori: ogni strato poggia su quello sotto (freccia verso l'alto) -->
+  <line class="conn" x1="260" y1="264" x2="260" y2="246"/>
+  <polygon points="260,242 255,252 265,252" fill="#8B847C"/>
+  <line class="conn" x1="260" y1="184" x2="260" y2="166"/>
+  <polygon points="260,162 255,172 265,172" fill="#8B847C"/>
+  <line class="conn" x1="260" y1="104" x2="260" y2="86"/>
+  <polygon points="260,82 255,92 265,92" fill="#8B847C"/>
+
+  <!-- in cima: il tuo modello (terracotta) -->
+  <rect class="box" x="40" y="24" width="440" height="56" rx="6" stroke="#B5532C" stroke-width="2.5"/>
+  <text class="name" x="260" y="50" text-anchor="middle">Il tuo modello</text>
+  <text class="desc" x="260" y="69" text-anchor="middle">quello che progetti e addestri, in normale codice Python</text>
+
+  <!-- API Python (ocra) -->
+  <rect class="box" x="40" y="104" width="440" height="56" rx="6" stroke="#C9A961" stroke-width="2.5"/>
+  <text class="name" x="260" y="130" text-anchor="middle">API Python</text>
+  <text class="desc" x="260" y="149" text-anchor="middle">torch &#183; torch.nn &#183; torch.optim &#183; DataLoader</text>
+
+  <!-- motore C++ (teal) -->
+  <rect class="box" x="40" y="184" width="440" height="56" rx="6" stroke="#2D5A5C" stroke-width="2.5"/>
+  <text class="name" x="260" y="210" text-anchor="middle">Il motore C++</text>
+  <text class="desc" x="260" y="229" text-anchor="middle">ATen e autograd &#183; kernel ottimizzati, gradienti automatici</text>
+
+  <!-- alla base: l'hardware (warm-black) -->
+  <rect class="box" x="40"  y="264" width="136" height="56" rx="6" stroke="#1A1A1A" stroke-width="3"/>
+  <text class="hw" x="108" y="298" text-anchor="middle">CPU</text>
+  <rect class="box" x="192" y="264" width="136" height="56" rx="6" stroke="#1A1A1A" stroke-width="3"/>
+  <text class="hw" x="260" y="298" text-anchor="middle">GPU</text>
+  <rect class="box" x="344" y="264" width="136" height="56" rx="6" stroke="#1A1A1A" stroke-width="3"/>
+  <text class="hw" x="412" y="291" text-anchor="middle">MPS</text>
+  <text class="desc" x="412" y="309" text-anchor="middle">Apple Silicon</text>
+  <text class="cap" x="260" y="340" text-anchor="middle">Hardware &#183; dove avvengono davvero le moltiplicazioni di matrici</text>
+</svg>

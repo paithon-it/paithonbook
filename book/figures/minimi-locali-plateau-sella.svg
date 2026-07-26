@@ -1,0 +1,21 @@
+<svg viewBox="0 0 720 410" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Paesaggio di loss stilizzato con plateau, minimo locale, punto di sella e minimo globale">
+  <rect width="720" height="410" fill="#F8F5EE"/>
+  <path d="M 88 108 C 138 100 188 100 233 108 C 278 118 283 210 323 216 C 353 220 363 184 393 174 C 420 166 428 172 456 170 C 496 168 518 268 563 276 C 603 282 638 188 672 108" fill="none" stroke="#C9A961" stroke-width="1.5" opacity="0.7"/>
+  <path d="M 64 134 C 114 126 164 126 209 134 C 254 144 259 236 299 242 C 329 246 339 210 369 200 C 396 192 404 198 432 196 C 472 194 494 294 539 302 C 579 308 614 214 655 134" fill="none" stroke="#2D5A5C" stroke-width="1.5" opacity="0.8"/>
+  <path d="M 40 160 C 90 152 140 152 185 160 C 230 170 235 262 275 268 C 305 272 315 236 345 226 C 372 218 380 224 408 222 C 448 220 470 320 515 328 C 555 334 590 240 638 160" fill="none" stroke="#1A1A1A" stroke-width="2"/>
+  <line x1="112" y1="112" x2="112" y2="150" stroke="#1A1A1A" stroke-width="1.5" stroke-dasharray="4 4"/>
+  <text x="112" y="100" font-family="sans-serif" font-size="15" fill="#1A1A1A" text-anchor="middle">plateau</text>
+  <circle cx="275" cy="268" r="7" fill="#B5532C"/>
+  <line x1="275" y1="278" x2="275" y2="316" stroke="#B5532C" stroke-width="1.5" stroke-dasharray="4 4"/>
+  <text x="275" y="336" font-family="sans-serif" font-size="15" fill="#B5532C" text-anchor="middle">minimo locale</text>
+  <circle cx="408" cy="222" r="7" fill="#2D5A5C"/>
+  <line x1="408" y1="212" x2="408" y2="172" stroke="#2D5A5C" stroke-width="1.5" stroke-dasharray="4 4"/>
+  <text x="408" y="158" font-family="sans-serif" font-size="15" fill="#2D5A5C" text-anchor="middle">punto di sella</text>
+  <circle cx="515" cy="328" r="8" fill="#F8F5EE" stroke="#B5532C" stroke-width="2"/>
+  <line x1="527" y1="336" x2="574" y2="366" stroke="#B5532C" stroke-width="1.5" stroke-dasharray="4 4"/>
+  <text x="582" y="374" font-family="sans-serif" font-size="15" fill="#B5532C">minimo globale</text>
+  <circle cx="72" cy="156" r="6" fill="#C9A961" stroke="#1A1A1A" stroke-width="1.5"/>
+  <path d="M 86 168 C 106 180 122 180 140 172" fill="none" stroke="#C9A961" stroke-width="1.5"/>
+  <path d="M 140 172 l -10 -3 m 10 3 l -8 6" fill="none" stroke="#C9A961" stroke-width="1.5"/>
+  <text x="60" y="392" font-family="sans-serif" font-size="13" fill="#1A1A1A">La pallina segue il gradiente: nei punti piatti (plateau, sella) il segnale di discesa quasi scompare.</text>
+</svg>

@@ -1,0 +1,278 @@
+# Panorama e limiti
+
+Abbiamo attraversato due capitoli — l'attenzione lineare e gli *state space
+model* — che sembravano raccontare storie diverse: uno partiva dai Transformer e
+ne linearizzava l'attenzione, l'altro dai sistemi dinamici continui e li
+discretizzava. Eppure siamo arrivati, ogni volta, allo stesso posto. Vale la
+pena, ora che li abbiamo entrambi in mano, mettere i pezzi in fila e chiedersi
+cosa abbiamo davvero costruito, dove regge e dove no.
+
+Il punto di partenza era un difetto ben preciso. Nel capitolo sui Transformer,
+confrontandoli con le RNN, avevamo trovato il loro tallone d'Achille: far
+guardare ogni parola a tutte le altre costa in tempo e memoria **al quadrato**
+nella lunghezza della sequenza. Raddoppiare il testo quadruplica il lavoro. Da
+lì nascevano le finestre di contesto limitate e una vasta ricerca su come
+collegare le parti di un testo lungo senza convocare ogni volta l'assemblea
+plenaria. Le architetture di questi due capitoli sono una delle risposte più
+promettenti a quel problema. E la tesi che le tiene insieme, ripetuta di sezione
+in sezione, è una sola: sono tutte **reti ricorrenti lineari a stato di
+dimensione fissa**, che si addestrano in parallelo come un Transformer e fanno
+inferenza un token alla volta a costo costante come una RNN.
+
+## Un'unica famiglia
+
+Ricapitoliamo la convenzione che ci ha accompagnato. Lo stato è una matrice
+$S_t \in \mathbb{R}^{d\times d}$, una memoria che associa **chiavi a valori**;
+si scrive per prodotto esterno e si legge per proiezione:
+
+$$
+S_t = (\text{transizione}_t)\, S_{t-1} + v_t\, k_t^\top,
+\qquad
+o_t = S_t\, q_t,
+$$
+
+dove $q_t, k_t, v_t$ sono query, chiave e valore del token $t$ — gli stessi
+introdotti nell'attenzione dei Transformer — e $v_t k_t^\top$ è la nuova coppia
+scritta in memoria. Tutto il resto, da RetNet a Mamba, è una scelta su quel
+fattore di **transizione** che moltiplica lo stato di ieri prima di aggiungergli
+oggi.
+
+`````{tab} Elementare
+
+Immagina un unico apparecchio con poche manopole. Il corpo della macchina è
+sempre lo stesso: una memoria che a ogni parola scrive una nuova voce e ne
+rilegge le vecchie. Cambiare architettura non vuol dire cambiare macchina, ma
+girare tre manopole. La prima decide **quanto è grande** la memoria. La seconda
+decide **come sbiadisce** il passato quando arriva il presente: si può tenere
+tutto senza dimenticare mai, sbiadire tutto in blocco della stessa quantità,
+sbiadire cassetto per cassetto in modo diverso, oppure — la versione più
+raffinata — cancellare *di mira* solo la vecchia voce che sta per essere
+riscritta. La terza manopola decide se queste scelte sono **fisse**, uguali per
+ogni parola, o se invece è la parola stessa a deciderle, momento per momento.
+RetNet, GLA, DeltaNet, Mamba: sono lo stesso apparecchio con le manopole in
+posizioni diverse. Nomi e sigle diversi per un solo schema.
+
+`````
+
+`````{tab} Superiore
+
+Gli assi di progetto sono tre, e ciascuno ha un prezzo e un guadagno.
+
+**1. La dimensione dello stato.** Quanto è grande $d$ (o, per gli SSM, la
+dimensione $N$ dello stato per canale). Uno stato più grande è una memoria più
+capiente — più coppie chiave-valore ci stanno senza pestarsi i piedi — ma costa
+più calcolo e più memoria a ogni passo, $O(d^2)$ per l'aggiornamento. È la
+manopola della capacità grezza.
+
+**2. La struttura della transizione.** È la vera firma di ogni architettura, e
+la tabella unificante del capitolo precedente la ordinava per espressività
+crescente:
+
+$$
+\underbrace{I}_{\text{lin. attn}}
+\;\to\;
+\underbrace{\alpha_t I}_{\text{RetNet, Mamba-2}}
+\;\to\;
+\underbrace{\mathrm{Diag}(\alpha_t)}_{\text{GLA}}
+\;\to\;
+\underbrace{I - \beta_t k_t k_t^\top}_{\text{DeltaNet}}
+\;\to\;
+\underbrace{\alpha_t\,(I - \beta_t k_t k_t^\top)}_{\text{Gated DeltaNet}}
+$$
+
+dove $\alpha_t \in (0,1)$ è un fattore di **oblio** e $\beta_t \in (0,1)$ la
+**forza di riscrittura** della delta rule. Si va dall'accumulo puro — identità,
+non si dimentica nulla — al decadimento scalare uniforme, a quello diagonale
+per-canale, alla correzione mirata di Householder che *cancella* la vecchia
+associazione prima di scrivere la nuova, fino alla combinazione dei due
+(decadimento globale *più* correzione mirata) del Gated DeltaNet
+{cite}`yang2024gateddelta`. Ogni gradino compra più capacità di *state tracking*
+e di *recall* preciso, al costo di una transizione più complicata da rendere
+parallelizzabile.
+
+**3. Il grado di dipendenza dai dati.** La transizione può essere **fissa** —
+scelta a priori, uguale per ogni token, come il $\gamma$ di RetNet o il
+decadimento della RWKV-4 — oppure **data-dipendente**, generata dall'input token
+per token, come in GLA, DeltaNet e Mamba {cite}`gu2023mamba`. La dipendenza dai
+dati è ciò che compra il *ragionamento basato sul contenuto*: decidere cosa
+tenere e cosa lasciar cadere in base a *ciò che si legge*, non solo a quanto
+tempo è passato. È il salto che separa un metal detector regolato una volta per
+tutte da una guardia che valuta caso per caso.
+
+Su questa mappa gli SSM non sono un'isola. La **dualità stato-attenzione** (SSD)
+di Mamba-2 {cite}`dao2024mamba2`, che abbiamo visto nella sezione su Mamba-2,
+dimostra che un SSM con transizione **scalare per identità** ($\alpha_t I$) è
+*esattamente* un'attenzione lineare mascherata: è la seconda riga della tabella,
+raggiunta dal versante dei sistemi dinamici invece che da quello
+dell'attenzione. Le due famiglie che abbiamo raccontato in capitoli separati
+sono, alla lettera, due viste della stessa cosa.
+
+`````
+
+## Il collo di bottiglia dello stato fisso
+
+Fin qui i pregi. Ora il limite, e va detto senza giri di parole, perché è
+strutturale e non un difetto d'implementazione: **uno stato di dimensione fissa
+non può fare tutto ciò che fa l'attenzione piena**. In particolare non regge il
+confronto sul *recall associativo esatto* — ritrovare, in un contesto
+lunghissimo, un dettaglio preciso letto centinaia di pagine prima.
+
+`````{tab} Elementare
+
+La differenza è quella tra un quaderno di appunti e una biblioteca. L'attenzione
+piena dei Transformer è la biblioteca: conserva *ogni* parola letta, e quando le
+chiedi «cosa diceva esattamente quella frase a pagina 900?» va allo scaffale e la
+ripesca alla lettera. Il prezzo è lo spazio: la biblioteca cresce senza fine, un
+ripiano per ogni pagina, ed è esattamente il costo quadratico che volevamo
+evitare.
+
+Le architetture di questi due capitoli sono invece un quaderno di appunti di
+taglia fissa. A ogni pagina che leggi aggiorni i tuoi appunti — riassumi,
+sovrascrivi, cancelli il vecchio per far posto al nuovo. Il quaderno costa
+pochissimo: resta sempre dello stesso spessore per quante pagine tu legga. Ma
+proprio perché non cresce, non può contenere tutto: se dopo mille pagine ti
+chiedo di **citare a memoria** una frase precisa di pagina 900, il quaderno ti
+dà il senso generale, non le parole esatte. Le hai riassunte, non trascritte.
+Questo è il compromesso: memoria che costa poco e non cresce, in cambio della
+rinuncia al ricordo alla lettera di ogni singolo dettaglio.
+
+`````
+
+`````{tab} Superiore
+
+La ragione è di capacità d'informazione. Uno stato $S \in \mathbb{R}^{d\times
+d}$ ha un numero finito di gradi di libertà: come osservato già nel lavoro sui
+*fast weight programmer*, in dimensione $d$ non esistono più di $d$ direzioni
+mutuamente ortogonali, quindi oltre un certo numero di coppie chiave-valore
+distinte la memoria va in *sovraccarico* e le associazioni cominciano a
+interferire. L'attenzione piena non ha questo tetto: la sua «memoria» è la KV
+cache, che conserva **tutte** le coppie chiave-valore dei token passati, al
+prezzo di crescere linearmente con la lunghezza (ed è quel prezzo a rendere il
+costo complessivo quadratico).
+
+Questo divario si misura con i benchmark di **recall**. Nel *needle in a
+haystack* si nasconde un fatto preciso — l'ago — in un contesto molto lungo — il
+pagliaio — e si chiede al modello di recuperarlo verbatim. In **MQAR**
+(*Multi-Query Associative Recall*) si presentano molte coppie chiave-valore e si
+interroga il modello su chiavi arbitrarie. Sono proprio i compiti su cui la
+dimensione dello stato diventa il collo di bottiglia. I progressi nella
+transizione aiutano — la delta rule di DeltaNet, che *riscrive* invece di
+accumulare, sposta in avanti la frontiera e ottiene risultati forti su MQAR
+proprio perché usa meglio lo spazio disponibile — ma non spostano il tetto:
+finché lo stato è di taglia fissa, per il retrieval esatto su contesti
+sufficientemente lunghi l'attenzione piena resta superiore. Non è una gara che le
+ricorrenze lineari possano vincere sul suo stesso terreno; è una gara che
+conviene **non giocare da sole**.
+
+`````
+
+## Il meglio dei due mondi: gli ibridi
+
+Se l'attenzione piena vince sul recall esatto e la ricorrenza lineare vince sul
+costo, la mossa ovvia è non scegliere. È esattamente ciò che, nella pratica, dà
+oggi i risultati migliori: le architetture **ibride**, che alternano **pochi
+strati di attenzione piena** a **molti strati lineari o SSM**. Pochi strati di
+biblioteca dove serve ritrovare alla lettera, molti strati di quaderno per tutto
+il resto — e il costo complessivo resta vicino a quello lineare, perché
+l'attenzione, essendo confinata a una minoranza di strati, pesa poco sul totale.
+
+`````{tab} Elementare
+
+È la logica di una squadra ben assortita. In un'inchiesta giornalistica non metti
+solo archivisti né solo cronisti: tieni pochi archivisti — quelli che sanno
+ripescare il documento esatto quando serve la citazione precisa — e molti
+cronisti veloci che tengono il filo del racconto senza rileggersi ogni volta tutto
+l'archivio. La stragrande maggioranza del lavoro la fanno i cronisti, a costo
+basso; gli archivisti intervengono nei pochi momenti in cui l'esattezza è
+decisiva. Le architetture ibride sono organizzate così: qualche strato che
+conserva tutto e ricorda alla lettera, il resto a memoria costante. Non è un
+compromesso al ribasso, è la divisione dei compiti che oggi rende meglio.
+
+`````
+
+`````{tab} Superiore
+
+L'idea ricorre in tutti i lavori recenti, con dosaggi diversi. **Jamba**
+{cite}`lieber2024jamba` (AI21 Labs, 2024) intervalla strati di attenzione e
+strati Mamba in una proporzione sbilanciata verso questi ultimi, aggiungendo
+esperti selettivi (*mixture-of-experts*), e regge contesti molto lunghi con una
+occupazione di memoria contenuta. **Samba** {cite}`ren2024samba` (Microsoft,
+2024) combina strati Mamba con strati di **attenzione a finestra scorrevole**
+(*sliding-window attention*): l'attenzione locale copre il contesto ravvicinato,
+Mamba porta la memoria a lungo raggio, e insieme estrapolano a lunghezze molto
+oltre quella di addestramento. La stessa ricetta appare come variante ibrida sia
+del Gated DeltaNet {cite}`yang2024gateddelta` — combinato con attenzione a
+finestra o globale — sia di Mamba-2 {cite}`dao2024mamba2`, il cui articolo studia
+esplicitamente l'aggiunta di pochi strati di attenzione a uno stack SSM.
+
+I numeri confermano la tendenza, con l'onestà d'obbligo sulle scale in gioco. Nei
+confronti riportati per il Gated DeltaNet a 1,3 miliardi di parametri su 100
+miliardi di token, le varianti ibride superano in media zero-shot sia un
+Transformer di riferimento sia lo stesso Samba, oltre alle baseline puramente
+ricorrenti. Il messaggio non è «l'ibrido vince sempre», ma qualcosa di
+più solido e più modesto: allo stato dell'arte attuale, **mescolare** poca
+attenzione e molta ricorrenza lineare è il compromesso che funziona meglio, più
+di ciascuna delle due famiglie presa da sola.
+
+`````
+
+## Dove sta andando
+
+Resta la domanda che aleggia su tutto il percorso: queste architetture sono i
+«killer dei Transformer»? La risposta onesta è no — e non perché siano deboli,
+ma perché la domanda è mal posta. Non stiamo assistendo a una sostituzione, ma
+all'assestamento di un **ecosistema misto**, in cui strumenti diversi occupano
+nicchie diverse.
+
+Dove le ricorrenze lineari e gli SSM danno il meglio è chiaro, e sono territori
+di crescente importanza. Il **contesto lunghissimo**, dove il costo quadratico
+dell'attenzione piena diventa proibitivo e uno stato che non cresce è un enorme
+vantaggio. L'**inferenza a memoria costante**, senza una KV cache che si gonfia
+con ogni token generato — decisiva quando si serve il modello a molti utenti in
+parallelo. Gli scenari in **streaming**, dove i dati arrivano in flusso continuo
+e non si può rileggere tutto da capo a ogni passo. E i **dispositivi con poca
+memoria** — telefoni, sistemi embedded — dove una memoria fissa e prevedibile
+vale più di qualche punto di qualità sul retrieval esatto.
+
+Conviene chiudere con la stessa prudenza con cui, nel capitolo sui Transformer,
+avevamo messo in guardia dalle profezie: questo campo brucia in fretta le
+previsioni. Già lì, tra le tendenze future, gli *state space model* comparivano
+come la linea di ricerca che rimetteva in gioco idee ricorrenti proprio dove
+l'attenzione costa troppo — ed è la storia che questi due capitoli hanno
+raccontato per esteso. La lezione di fondo, però, è la stessa dell'intero libro:
+nessuna architettura vince per sempre. L'attenzione non ha «ucciso» le RNN, e le
+RNN lineari non uccideranno l'attenzione. Chi conosce le idee semplici che stanno
+sotto — una memoria che si scrive per prodotto esterno, una transizione che
+decide cosa dimenticare, due forme dello stesso calcolo — non insegue le mode: le
+legge, e riconosce lo stesso scheletro sotto il prossimo nome che farà rumore.
+
+```{admonition} Da ricordare
+:class: important
+- **Una sola famiglia**: attenzione lineare (RetNet, GLA, DeltaNet, RWKV, xLSTM)
+  e *state space model* (S4, Mamba) sono tutte **RNN lineari a stato fisso**
+  $S_t = (\text{transizione}_t)\, S_{t-1} + v_t k_t^\top$, con lettura
+  $o_t = S_t q_t$. Si addestrano in parallelo, fanno inferenza ricorrente a
+  memoria costante per token.
+- **Tre manopole di progetto**: la dimensione dello stato (capacità), la
+  struttura della transizione ($I \to \alpha_t I \to \mathrm{Diag}(\alpha_t) \to
+  I-\beta_t k_t k_t^\top \to \alpha_t(I-\beta_t k_t k_t^\top)$, per espressività
+  crescente), e quanto è data-dipendente (fisso vs generato dall'input, che
+  compra il ragionamento basato sul contenuto).
+- **La dualità SSD** di Mamba-2 {cite}`dao2024mamba2` dimostra che un SSM a
+  transizione scalare ($\alpha_t I$) è esattamente un'attenzione lineare
+  mascherata: SSM e attenzione lineare sono due viste della stessa cosa.
+- **Il limite onesto**: uno stato di dimensione fissa è un **collo di bottiglia**
+  per il *recall associativo esatto* su contesti lunghissimi. L'attenzione piena,
+  che conserva ogni token nella KV cache, resta superiore sul retrieval verbatim
+  (benchmark *needle in a haystack*, MQAR) — al prezzo del costo quadratico.
+- **Gli ibridi** sono lo stato dell'arte: pochi strati di attenzione piena
+  intervallati a molti strati lineari/SSM (Jamba {cite}`lieber2024jamba`, Samba
+  {cite}`ren2024samba`, le varianti ibride di Gated DeltaNet
+  {cite}`yang2024gateddelta` e Mamba-2). Recall esatto dove serve, costo lineare
+  per il resto.
+- **Prospettiva sobria**: non un «killer dei Transformer» ma un **ecosistema
+  misto**. I punti di forza delle ricorrenze lineari sono il contesto
+  lunghissimo, l'inferenza a memoria costante, lo streaming e i dispositivi con
+  poca memoria. Nessuna architettura vince per sempre: chi conosce le idee
+  semplici riconosce lo stesso scheletro sotto ogni nuovo nome.
+```

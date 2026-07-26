@@ -1,0 +1,48 @@
+<svg viewBox="0 0 760 400" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="I tre tipi di feature: numerico, categorico, ordinale">
+  <rect x="0" y="0" width="760" height="400" fill="#F8F5EE"/>
+  <text x="380" y="34" text-anchor="middle" font-family="sans-serif" font-size="17" font-weight="bold" fill="#1A1A1A">I tre tipi di feature</text>
+  <!-- colonna NUMERICO -->
+  <rect x="30" y="60" width="220" height="270" fill="none" stroke="#B5532C" stroke-width="2" rx="8"/>
+  <rect x="30" y="60" width="220" height="42" fill="#B5532C" rx="8"/>
+  <text x="140" y="87" text-anchor="middle" font-family="sans-serif" font-size="15" font-weight="bold" fill="#F8F5EE">NUMERICO</text>
+  <line x1="55" y1="150" x2="225" y2="150" stroke="#1A1A1A" stroke-width="2"/>
+  <line x1="55" y1="143" x2="55" y2="157" stroke="#1A1A1A" stroke-width="2"/>
+  <line x1="112" y1="143" x2="112" y2="157" stroke="#1A1A1A" stroke-width="2"/>
+  <line x1="169" y1="143" x2="169" y2="157" stroke="#1A1A1A" stroke-width="2"/>
+  <line x1="225" y1="143" x2="225" y2="157" stroke="#1A1A1A" stroke-width="2"/>
+  <text x="55" y="175" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">48</text>
+  <text x="112" y="175" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">75</text>
+  <text x="169" y="175" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">95</text>
+  <text x="225" y="175" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">120</text>
+  <text x="140" y="215" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#1A1A1A">mq, prezzo, bagni</text>
+  <text x="140" y="255" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">distanze e medie</text>
+  <text x="140" y="273" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">hanno senso</text>
+  <text x="140" y="311" text-anchor="middle" font-family="sans-serif" font-size="12" font-style="italic" fill="#B5532C">110 = 65 + 45 &#10003;</text>
+  <!-- colonna CATEGORICO -->
+  <rect x="270" y="60" width="220" height="270" fill="none" stroke="#2D5A5C" stroke-width="2" rx="8"/>
+  <rect x="270" y="60" width="220" height="42" fill="#2D5A5C" rx="8"/>
+  <text x="380" y="87" text-anchor="middle" font-family="sans-serif" font-size="15" font-weight="bold" fill="#F8F5EE">CATEGORICO</text>
+  <circle cx="320" cy="150" r="18" fill="#B5532C"/>
+  <rect x="362" y="132" width="36" height="36" fill="#C9A961"/>
+  <path d="M 440 132 L 458 168 L 422 168 Z" fill="#2D5A5C"/>
+  <text x="380" y="215" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#1A1A1A">quartiere, colore</text>
+  <text x="380" y="255" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">etichette pure,</text>
+  <text x="380" y="273" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">nessun ordine</text>
+  <text x="380" y="311" text-anchor="middle" font-family="sans-serif" font-size="12" font-style="italic" fill="#2D5A5C">Centro &gt; Bari? &#10007;</text>
+  <!-- colonna ORDINALE -->
+  <rect x="510" y="60" width="220" height="270" fill="none" stroke="#C9A961" stroke-width="2" rx="8"/>
+  <rect x="510" y="60" width="220" height="42" fill="#C9A961" rx="8"/>
+  <text x="620" y="87" text-anchor="middle" font-family="sans-serif" font-size="15" font-weight="bold" fill="#1A1A1A">ORDINALE</text>
+  <rect x="540" y="158" width="34" height="20" fill="none" stroke="#1A1A1A" stroke-width="1.5"/>
+  <rect x="584" y="146" width="34" height="32" fill="none" stroke="#1A1A1A" stroke-width="1.5"/>
+  <rect x="628" y="134" width="34" height="44" fill="#C9A961" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="557" y="172" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">C</text>
+  <text x="601" y="166" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">B</text>
+  <text x="645" y="160" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">A</text>
+  <text x="620" y="215" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#1A1A1A">classe energetica, taglie</text>
+  <text x="620" y="255" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">ordine s&#236;,</text>
+  <text x="620" y="273" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">distanze no</text>
+  <text x="620" y="311" text-anchor="middle" font-family="sans-serif" font-size="12" font-style="italic" fill="#1A1A1A">A &gt; B &#10003;  A&#8722;B = ? &#10007;</text>
+  <!-- riga finale -->
+  <text x="380" y="370" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#1A1A1A">Ogni tipo richiede un trattamento diverso prima di entrare nel modello</text>
+</svg>

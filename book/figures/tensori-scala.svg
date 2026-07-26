@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 250" role="img" aria-label="La scala dei tensori da rank 0 a rank 3">
+  <rect x="0" y="0" width="820" height="250" rx="14" fill="#F8F5EE"/>
+
+  <!-- Scalare: rank 0 -->
+  <rect x="70" y="100" width="30" height="30" fill="#B5532C" stroke="#1A1A1A" stroke-width="2"/>
+  <circle cx="85" cy="115" r="4" fill="#F8F5EE"/>
+  <text x="85" y="200" text-anchor="middle" font-family="Georgia, serif" font-size="18" font-weight="700" fill="#1A1A1A">Scalare</text>
+  <text x="85" y="222" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#5E5852">rank 0 &#183; ()</text>
+
+  <!-- freccia -->
+  <text x="150" y="122" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="22" fill="#8B847C">&#8594;</text>
+
+  <!-- Vettore: rank 1 -->
+  <g stroke="#1A1A1A" stroke-width="2" fill="#2D5A5C">
+    <rect x="190" y="100" width="30" height="30"/>
+    <rect x="220" y="100" width="30" height="30"/>
+    <rect x="250" y="100" width="30" height="30"/>
+    <rect x="280" y="100" width="30" height="30"/>
+  </g>
+  <text x="250" y="200" text-anchor="middle" font-family="Georgia, serif" font-size="18" font-weight="700" fill="#1A1A1A">Vettore</text>
+  <text x="250" y="222" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#5E5852">rank 1 &#183; (4,)</text>
+
+  <!-- freccia -->
+  <text x="345" y="122" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="22" fill="#8B847C">&#8594;</text>
+
+  <!-- Matrice: rank 2 -->
+  <g stroke="#1A1A1A" stroke-width="2" fill="#C9A961">
+    <rect x="385" y="70" width="30" height="30"/>
+    <rect x="415" y="70" width="30" height="30"/>
+    <rect x="445" y="70" width="30" height="30"/>
+    <rect x="385" y="100" width="30" height="30"/>
+    <rect x="415" y="100" width="30" height="30"/>
+    <rect x="445" y="100" width="30" height="30"/>
+    <rect x="385" y="130" width="30" height="30"/>
+    <rect x="415" y="130" width="30" height="30"/>
+    <rect x="445" y="130" width="30" height="30"/>
+  </g>
+  <text x="430" y="200" text-anchor="middle" font-family="Georgia, serif" font-size="18" font-weight="700" fill="#1A1A1A">Matrice</text>
+  <text x="430" y="222" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#5E5852">rank 2 &#183; (3, 3)</text>
+
+  <!-- freccia -->
+  <text x="525" y="122" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="22" fill="#8B847C">&#8594;</text>
+
+  <!-- Tensore 3D: rank 3 (pila di griglie) -->
+  <!-- layer posteriore -->
+  <g fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2">
+    <rect x="613" y="46" width="90" height="90"/>
+    <line x1="643" y1="46" x2="643" y2="136"/>
+    <line x1="673" y1="46" x2="673" y2="136"/>
+    <line x1="613" y1="76" x2="703" y2="76"/>
+    <line x1="613" y1="106" x2="703" y2="106"/>
+  </g>
+  <!-- layer intermedio -->
+  <g fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2">
+    <rect x="598" y="61" width="90" height="90"/>
+    <line x1="628" y1="61" x2="628" y2="151"/>
+    <line x1="658" y1="61" x2="658" y2="151"/>
+    <line x1="598" y1="91" x2="688" y2="91"/>
+    <line x1="598" y1="121" x2="688" y2="121"/>
+  </g>
+  <!-- layer frontale pieno -->
+  <g stroke="#1A1A1A" stroke-width="2" fill="#B5532C">
+    <rect x="583" y="76" width="30" height="30"/>
+    <rect x="613" y="76" width="30" height="30"/>
+    <rect x="643" y="76" width="30" height="30"/>
+    <rect x="583" y="106" width="30" height="30"/>
+    <rect x="613" y="106" width="30" height="30"/>
+    <rect x="643" y="106" width="30" height="30"/>
+    <rect x="583" y="136" width="30" height="30"/>
+    <rect x="613" y="136" width="30" height="30"/>
+    <rect x="643" y="136" width="30" height="30"/>
+  </g>
+  <text x="648" y="200" text-anchor="middle" font-family="Georgia, serif" font-size="18" font-weight="700" fill="#1A1A1A">Tensore 3D</text>
+  <text x="648" y="222" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#5E5852">rank 3 &#183; (3, 3, 3)</text>
+</svg>

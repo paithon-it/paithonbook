@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  paithon book — figura: la gerarchia di memoria di una GPU, come piramide.
+  Dall'alto (piccola, velocissima, on-chip) verso il basso (capiente, lenta,
+  lontana): registri, shared memory, cache L2, memoria globale HBM, memoria
+  host oltre il bus PCIe. A sinistra cresce la velocita/banda (verso l'alto),
+  a destra cresce la capacita (verso il basso). Palette-locked: teal per i
+  livelli on-chip (freddi/vicini), ocra al centro, terracotta per i livelli
+  lontani (caldi/lenti). Tinte via fill-opacity, testo/tratti warm-black.
+  Backing cream: leggibile in light e dark. Nessun colore fuori palette.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 430" role="img"
+     aria-label="Piramide della gerarchia di memoria di una GPU su cinque livelli. Dall'apice alla base: registri (per-thread, pochi kilobyte, immediati); shared memory (per-blocco, circa cento kilobyte, on-chip); cache L2 (condivisa, decine di megabyte); memoria globale HBM (decine di gigabyte, banda di qualche terabyte al secondo, latenza di centinaia di cicli); memoria host, la RAM di sistema, oltre il bus PCIe a decine di gigabyte al secondo. Una freccia a sinistra indica che salendo crescono velocita e banda; una freccia a destra indica che scendendo cresce la capacita.">
+  <style>
+    .band  { stroke-width:2; }
+    .name  { font-family:Inter, system-ui, sans-serif; font-size:14px; font-weight:700; fill:#1A1A1A; }
+    .det   { font-family:Inter, system-ui, sans-serif; font-size:11px; fill:#1A1A1A; opacity:0.7; }
+    .side  { font-family:Inter, system-ui, sans-serif; font-size:12.5px; font-weight:600; fill:#1A1A1A; opacity:0.75; }
+    .axis  { stroke:#1A1A1A; stroke-width:1.6; opacity:0.55; }
+  </style>
+
+  <!-- backing cream: rende la figura leggibile anche in dark mode -->
+  <rect x="6" y="6" width="688" height="418" rx="14" fill="#F8F5EE" stroke="#1A1A1A" stroke-opacity="0.12" stroke-width="1.5"/>
+
+  <!-- ===== livelli della piramide (apice = veloce/piccolo) ===== -->
+  <!-- 1. Registri -->
+  <polygon class="band" points="302,60 358,60 400,122 260,122" fill="#2D5A5C" fill-opacity="0.55" stroke="#2D5A5C"/>
+  <text class="name" x="330" y="88"  text-anchor="middle">Registri</text>
+  <text class="det"  x="330" y="105" text-anchor="middle">per-thread · velocissimi</text>
+
+  <!-- 2. Shared memory -->
+  <polygon class="band" points="260,122 400,122 441,184 219,184" fill="#2D5A5C" fill-opacity="0.30" stroke="#2D5A5C"/>
+  <text class="name" x="330" y="150" text-anchor="middle">Shared memory</text>
+  <text class="det"  x="330" y="167" text-anchor="middle">per-blocco · ~100 KB · on-chip</text>
+
+  <!-- 3. Cache L2 -->
+  <polygon class="band" points="219,184 441,184 483,246 177,246" fill="#C9A961" fill-opacity="0.45" stroke="#C9A961"/>
+  <text class="name" x="330" y="212" text-anchor="middle">Cache L2</text>
+  <text class="det"  x="330" y="229" text-anchor="middle">condivisa · decine di MB</text>
+
+  <!-- 4. Memoria globale HBM -->
+  <polygon class="band" points="177,246 483,246 524,308 136,308" fill="#B5532C" fill-opacity="0.30" stroke="#B5532C"/>
+  <text class="name" x="330" y="274" text-anchor="middle">Memoria globale — HBM</text>
+  <text class="det"  x="330" y="291" text-anchor="middle">decine di GB · qualche TB/s · centinaia di cicli</text>
+
+  <!-- 5. Memoria host -->
+  <polygon class="band" points="136,308 524,308 566,370 94,370" fill="#B5532C" fill-opacity="0.55" stroke="#B5532C"/>
+  <text class="name" x="330" y="336" text-anchor="middle">Memoria host (RAM di sistema)</text>
+  <text class="det"  x="330" y="353" text-anchor="middle">oltre il bus PCIe · decine di GB/s</text>
+
+  <!-- ===== freccia sinistra: velocita / banda cresce verso l'alto ===== -->
+  <line class="axis" x1="58" y1="360" x2="58" y2="80"/>
+  <polygon points="58,66 52,82 64,82" fill="#1A1A1A" fill-opacity="0.55"/>
+  <text class="side" x="44" y="230" text-anchor="middle" transform="rotate(-90 44 230)">velocità e banda</text>
+
+  <!-- ===== freccia destra: capacita cresce verso il basso ===== -->
+  <line class="axis" x1="644" y1="80" x2="644" y2="360"/>
+  <polygon points="644,374 638,358 650,358" fill="#1A1A1A" fill-opacity="0.55"/>
+  <text class="side" x="660" y="220" text-anchor="middle" transform="rotate(90 660 220)">capacità</text>
+
+  <!-- etichette on-chip / off-chip -->
+  <text class="det" x="330" y="400" text-anchor="middle">on-chip (dentro la GPU) sopra la L2 · off-chip (HBM e host) sotto</text>
+</svg>

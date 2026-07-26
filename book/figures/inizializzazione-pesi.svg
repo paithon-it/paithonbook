@@ -1,0 +1,30 @@
+<svg viewBox="0 0 760 360" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Grafico della varianza del segnale strato per strato: con pesi troppo grandi esplode, troppo piccoli collassa, con inizializzazione Xavier/He resta stabile">
+  <rect x="0" y="0" width="760" height="360" fill="#F8F5EE"/>
+  <text x="380" y="32" text-anchor="middle" font-family="sans-serif" font-size="17" font-weight="bold" fill="#1A1A1A">Varianza del segnale, strato per strato</text>
+  <!-- axes -->
+  <line x1="80" y1="300" x2="700" y2="300" stroke="#1A1A1A" stroke-width="2"/>
+  <line x1="80" y1="300" x2="80" y2="60" stroke="#1A1A1A" stroke-width="2"/>
+  <text x="390" y="336" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#1A1A1A">profondità (strato 1 → 8)</text>
+  <text x="40" y="180" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#1A1A1A" transform="rotate(-90 40 180)">varianza</text>
+  <!-- layer ticks -->
+  <g font-family="sans-serif" font-size="11" fill="#1A1A1A" text-anchor="middle">
+    <text x="120" y="316">1</text><text x="200" y="316">2</text><text x="280" y="316">3</text>
+    <text x="360" y="316">4</text><text x="440" y="316">5</text><text x="520" y="316">6</text>
+    <text x="600" y="316">7</text><text x="680" y="316">8</text>
+  </g>
+  <!-- exploding: weights too large (ocra) -->
+  <polyline points="120,240 200,228 280,210 360,185 440,152 520,115 600,82 680,62" fill="none" stroke="#C9A961" stroke-width="2"/>
+  <circle cx="120" cy="240" r="4" fill="#C9A961" stroke="#1A1A1A" stroke-width="1.5"/>
+  <circle cx="680" cy="62" r="4" fill="#C9A961" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="560" y="92" font-family="sans-serif" font-size="12" fill="#1A1A1A">pesi troppo grandi: esplode</text>
+  <!-- vanishing: weights too small (terracotta) -->
+  <polyline points="120,240 200,258 280,272 360,283 440,290 520,294 600,296 680,297" fill="none" stroke="#B5532C" stroke-width="2"/>
+  <circle cx="120" cy="240" r="4" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5"/>
+  <circle cx="680" cy="297" r="4" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="540" y="278" font-family="sans-serif" font-size="12" fill="#1A1A1A">pesi troppo piccoli: collassa</text>
+  <!-- stable: Xavier/He (teal) -->
+  <polyline points="120,240 200,236 280,242 360,238 440,241 520,237 600,240 680,239" fill="none" stroke="#2D5A5C" stroke-width="2.5"/>
+  <circle cx="120" cy="240" r="4" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="1.5"/>
+  <circle cx="680" cy="239" r="4" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="470" y="222" font-family="sans-serif" font-size="12" font-weight="bold" fill="#2D5A5C">Xavier / He: stabile</text>
+</svg>

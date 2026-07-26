@@ -1,0 +1,79 @@
+<svg viewBox="0 0 760 460" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Confronto tra attention, con connessioni tra tutte le coppie di token, e state space model selettivo, con uno stato che scorre in avanti e un filtro per token">
+  <rect x="0" y="0" width="760" height="460" fill="#F8F5EE"/>
+  <line x1="380" y1="60" x2="380" y2="410" stroke="#C9C2B4" stroke-width="1.5" stroke-dasharray="4 6"/>
+
+  <!-- LEFT: Attention -->
+  <text x="200" y="42" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700" fill="#1A1A1A">Attention</text>
+  <!-- all-pairs arcs among 5 tokens at x=60,130,200,270,340 y=340 -->
+  <g fill="none" stroke="#B5532C" stroke-width="1.5">
+    <path d="M60,340 Q95,310 130,340"/>
+    <path d="M60,340 Q130,285 200,340"/>
+    <path d="M60,340 Q165,260 270,340"/>
+    <path d="M60,340 Q200,235 340,340"/>
+    <path d="M130,340 Q165,310 200,340"/>
+    <path d="M130,340 Q200,285 270,340"/>
+    <path d="M130,340 Q235,260 340,340"/>
+    <path d="M200,340 Q235,310 270,340"/>
+    <path d="M200,340 Q270,285 340,340"/>
+    <path d="M270,340 Q305,310 340,340"/>
+  </g>
+  <g fill="#F8F5EE" stroke="#1A1A1A" stroke-width="2">
+    <circle cx="60" cy="340" r="13"/>
+    <circle cx="130" cy="340" r="13"/>
+    <circle cx="200" cy="340" r="13"/>
+    <circle cx="270" cy="340" r="13"/>
+    <circle cx="340" cy="340" r="13"/>
+  </g>
+  <text x="200" y="392" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#1A1A1A">ogni token guarda tutti gli altri</text>
+  <text x="200" y="410" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="700" fill="#B5532C">costo ∝ n²</text>
+
+  <!-- RIGHT: SSM selettivo -->
+  <text x="560" y="42" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700" fill="#1A1A1A">State space selettivo</text>
+  <!-- states (teal squares) at y=210 above each token; tokens at y=340; x=440,505,570,635,700 -->
+  <!-- recurrence arrows state->state -->
+  <g stroke="#2D5A5C" stroke-width="2" fill="#2D5A5C">
+    <line x1="452" y1="210" x2="493" y2="210"/><polygon points="499,210 491,206 491,214"/>
+    <line x1="517" y1="210" x2="558" y2="210"/><polygon points="564,210 556,206 556,214"/>
+    <line x1="582" y1="210" x2="623" y2="210"/><polygon points="629,210 621,206 621,214"/>
+    <line x1="647" y1="210" x2="688" y2="210"/><polygon points="694,210 686,206 686,214"/>
+  </g>
+  <!-- state boxes -->
+  <g fill="#2D5A5C" stroke="#2D5A5C" stroke-width="2">
+    <rect x="431" y="201" width="18" height="18" rx="3"/>
+    <rect x="496" y="201" width="18" height="18" rx="3"/>
+    <rect x="561" y="201" width="18" height="18" rx="3"/>
+    <rect x="626" y="201" width="18" height="18" rx="3"/>
+    <rect x="691" y="201" width="18" height="18" rx="3"/>
+  </g>
+  <!-- gates (ocra diamonds) between token and state at y=275 -->
+  <g fill="#C9A961" stroke="#1A1A1A" stroke-width="1.5">
+    <polygon points="440,264 449,275 440,286 431,275"/>
+    <polygon points="505,264 514,275 505,286 496,275"/>
+    <polygon points="570,264 579,275 570,286 561,275"/>
+    <polygon points="635,264 644,275 635,286 626,275"/>
+    <polygon points="700,264 709,275 700,286 691,275"/>
+  </g>
+  <!-- arrows token->gate->state -->
+  <g stroke="#1A1A1A" stroke-width="1.5">
+    <line x1="440" y1="327" x2="440" y2="288"/>
+    <line x1="505" y1="327" x2="505" y2="288"/>
+    <line x1="570" y1="327" x2="570" y2="288"/>
+    <line x1="635" y1="327" x2="635" y2="288"/>
+    <line x1="700" y1="327" x2="700" y2="288"/>
+    <line x1="440" y1="262" x2="440" y2="221"/>
+    <line x1="505" y1="262" x2="505" y2="221"/>
+    <line x1="570" y1="262" x2="570" y2="221"/>
+    <line x1="635" y1="262" x2="635" y2="221"/>
+    <line x1="700" y1="262" x2="700" y2="221"/>
+  </g>
+  <!-- tokens -->
+  <g fill="#F8F5EE" stroke="#1A1A1A" stroke-width="2">
+    <circle cx="440" cy="340" r="13"/>
+    <circle cx="505" cy="340" r="13"/>
+    <circle cx="570" cy="340" r="13"/>
+    <circle cx="635" cy="340" r="13"/>
+    <circle cx="700" cy="340" r="13"/>
+  </g>
+  <text x="560" y="392" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#1A1A1A">lo stato scorre; un filtro sceglie cosa tenere</text>
+  <text x="560" y="410" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="700" fill="#2D5A5C">costo ∝ n</text>
+</svg>

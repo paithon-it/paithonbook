@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 400" font-family="'Inter', -apple-system, Segoe UI, sans-serif" role="img" aria-label="La doppia natura di uno state space model lineare tempo-invariante: a sinistra la forma ricorrente, in cui lo stato h passa da un passo al successivo (usata per l'inferenza, costo costante per passo); a destra la forma convoluzionale, in cui un kernel scorre sull'intera sequenza (usata per l'addestramento in parallelo). Le due forme calcolano la stessa funzione.">
+  <defs>
+    <marker id="sfd-terra" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#B5532C"/>
+    </marker>
+    <marker id="sfd-dark" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1A1A1A"/>
+    </marker>
+    <marker id="sfd-teal" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#2D5A5C"/>
+    </marker>
+  </defs>
+
+  <!-- ============ SINISTRA: forma ricorrente ============ -->
+  <text x="200" y="40" font-size="16" text-anchor="middle" fill="#1A1A1A" font-weight="700">Forma ricorrente</text>
+  <text x="200" y="59" font-size="12.5" text-anchor="middle" fill="#5E5852">inferenza &#183; costo costante per passo</text>
+
+  <!-- stato h orizzontale -->
+  <line x1="70" y1="150" x2="118" y2="150" stroke="#B5532C" stroke-width="3" stroke-dasharray="6 5" marker-end="url(#sfd-terra)"/>
+  <line x1="182" y1="150" x2="270" y2="150" stroke="#B5532C" stroke-width="3" marker-end="url(#sfd-terra)"/>
+  <text x="226" y="142" font-size="14" text-anchor="middle" fill="#B5532C" font-weight="700">h<tspan font-size="10" dy="5">t</tspan></text>
+  <line x1="334" y1="150" x2="382" y2="150" stroke="#B5532C" stroke-width="3" stroke-dasharray="6 5" marker-end="url(#sfd-terra)"/>
+
+  <!-- cella t -->
+  <rect x="118" y="132" width="64" height="52" rx="8" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2.5"/>
+  <text x="150" y="163" font-size="13" text-anchor="middle" fill="#2D5A5C" font-weight="700">SSM</text>
+  <circle cx="150" cy="250" r="8" fill="#C9A961"/>
+  <line x1="150" y1="242" x2="150" y2="186" stroke="#1A1A1A" stroke-width="1.8" marker-end="url(#sfd-dark)"/>
+  <text x="150" y="272" font-size="13" text-anchor="middle" fill="#1A1A1A">x<tspan font-size="10" dy="5">t</tspan></text>
+  <line x1="150" y1="130" x2="150" y2="98" stroke="#2D5A5C" stroke-width="1.8" marker-end="url(#sfd-teal)"/>
+  <circle cx="150" cy="90" r="8" fill="#2D5A5C"/>
+  <text x="150" y="76" font-size="13" text-anchor="middle" fill="#2D5A5C">y<tspan font-size="10" dy="5">t</tspan></text>
+
+  <!-- cella t+1 -->
+  <rect x="270" y="132" width="64" height="52" rx="8" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2.5"/>
+  <text x="302" y="163" font-size="13" text-anchor="middle" fill="#2D5A5C" font-weight="700">SSM</text>
+  <circle cx="302" cy="250" r="8" fill="#C9A961"/>
+  <line x1="302" y1="242" x2="302" y2="186" stroke="#1A1A1A" stroke-width="1.8" marker-end="url(#sfd-dark)"/>
+  <text x="302" y="272" font-size="13" text-anchor="middle" fill="#1A1A1A">x<tspan font-size="10" dy="5">t+1</tspan></text>
+  <line x1="302" y1="130" x2="302" y2="98" stroke="#2D5A5C" stroke-width="1.8" marker-end="url(#sfd-teal)"/>
+  <circle cx="302" cy="90" r="8" fill="#2D5A5C"/>
+  <text x="302" y="76" font-size="13" text-anchor="middle" fill="#2D5A5C">y<tspan font-size="10" dy="5">t+1</tspan></text>
+
+  <!-- formula ricorrente -->
+  <text x="200" y="315" font-size="13.5" text-anchor="middle" fill="#1A1A1A">ricorrenza:  h &#8592; A h + B x</text>
+  <text x="200" y="337" font-size="13.5" text-anchor="middle" fill="#1A1A1A">y = C h</text>
+
+  <!-- ============ CENTRO: equivalenza ============ -->
+  <text x="410" y="158" font-size="34" text-anchor="middle" fill="#B5532C" font-weight="700">&#8801;</text>
+  <text x="410" y="196" font-size="11.5" text-anchor="middle" fill="#5E5852">stessa</text>
+  <text x="410" y="211" font-size="11.5" text-anchor="middle" fill="#5E5852">funzione</text>
+  <text x="410" y="232" font-size="10.5" text-anchor="middle" fill="#8B847C">(sistema</text>
+  <text x="410" y="245" font-size="10.5" text-anchor="middle" fill="#8B847C">invariante, LTI)</text>
+
+  <!-- ============ DESTRA: forma convoluzionale ============ -->
+  <text x="620" y="40" font-size="16" text-anchor="middle" fill="#1A1A1A" font-weight="700">Forma convoluzionale</text>
+  <text x="620" y="59" font-size="12.5" text-anchor="middle" fill="#5E5852">addestramento &#183; in parallelo</text>
+
+  <!-- sequenza di input -->
+  <circle cx="478" cy="150" r="8" fill="#C9A961"/>
+  <circle cx="514" cy="150" r="8" fill="#C9A961"/>
+  <circle cx="550" cy="150" r="8" fill="#C9A961"/>
+  <circle cx="586" cy="150" r="8" fill="#C9A961"/>
+  <circle cx="622" cy="150" r="8" fill="#C9A961"/>
+  <circle cx="658" cy="150" r="8" fill="#C9A961"/>
+  <circle cx="694" cy="150" r="8" fill="#C9A961"/>
+  <circle cx="730" cy="150" r="8" fill="#C9A961"/>
+  <text x="478" y="130" font-size="12" text-anchor="middle" fill="#8B847C">x</text>
+  <text x="740" y="130" font-size="12" text-anchor="middle" fill="#8B847C">&#8230;</text>
+
+  <!-- finestra kernel -->
+  <rect x="465" y="135" width="123" height="30" rx="6" fill="none" stroke="#2D5A5C" stroke-width="2" stroke-dasharray="5 4"/>
+  <text x="526" y="122" font-size="12" text-anchor="middle" fill="#2D5A5C" font-weight="600">kernel K</text>
+
+  <!-- convoluzione verso output -->
+  <line x1="526" y1="167" x2="526" y2="212" stroke="#2D5A5C" stroke-width="1.8" marker-end="url(#sfd-teal)"/>
+  <circle cx="526" cy="222" r="8" fill="#2D5A5C"/>
+  <text x="526" y="248" font-size="12" text-anchor="middle" fill="#2D5A5C">y (in parallelo)</text>
+
+  <!-- kernel espanso -->
+  <text x="620" y="294" font-size="13" text-anchor="middle" fill="#1A1A1A">kernel:  K = ( CB,  CAB,  CA&#178;B,  &#8230; )</text>
+  <!-- formula convoluzione -->
+  <text x="620" y="332" font-size="13.5" text-anchor="middle" fill="#1A1A1A">y = x &#8727; K</text>
+
+  <!-- legenda -->
+  <circle cx="300" cy="376" r="7" fill="#C9A961"/>
+  <text x="314" y="380" font-size="12" fill="#5E5852">ingresso x</text>
+  <circle cx="410" cy="376" r="7" fill="#2D5A5C"/>
+  <text x="424" y="380" font-size="12" fill="#5E5852">uscita y</text>
+  <line x1="500" y1="376" x2="524" y2="376" stroke="#B5532C" stroke-width="3"/>
+  <text x="532" y="380" font-size="12" fill="#5E5852">stato h (memoria)</text>
+</svg>

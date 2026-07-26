@@ -1,0 +1,46 @@
+<svg viewBox="0 0 720 360" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Schema della U-Net: braccio discendente che riduce la risoluzione, collo di bottiglia, braccio ascendente che la recupera, skip connection orizzontali tratteggiate tra livelli corrispondenti">
+  <rect x="0" y="0" width="720" height="360" fill="#F8F5EE"/>
+  <text x="360" y="28" text-anchor="middle" font-family="sans-serif" font-size="15" font-weight="bold" fill="#1A1A1A">U-Net: la clessidra con i corridoi</text>
+  <!-- encoder blocks (left, descending) -->
+  <g font-family="sans-serif" font-size="12">
+    <rect x="60"  y="60"  width="120" height="44" rx="6" fill="#B5532C"/>
+    <text x="120" y="87" text-anchor="middle" fill="#F8F5EE">572×572</text>
+    <rect x="105" y="130" width="100" height="40" rx="6" fill="#B5532C"/>
+    <text x="155" y="155" text-anchor="middle" fill="#F8F5EE">½ risoluzione</text>
+    <rect x="150" y="196" width="80" height="36" rx="6" fill="#B5532C"/>
+    <text x="190" y="219" text-anchor="middle" fill="#F8F5EE">¼</text>
+    <!-- bottleneck -->
+    <rect x="300" y="262" width="120" height="36" rx="6" fill="#1A1A1A"/>
+    <text x="360" y="285" text-anchor="middle" fill="#F8F5EE">bottleneck</text>
+    <!-- decoder blocks (right, ascending) -->
+    <rect x="490" y="196" width="80" height="36" rx="6" fill="#2D5A5C"/>
+    <text x="530" y="219" text-anchor="middle" fill="#F8F5EE">¼</text>
+    <rect x="515" y="130" width="100" height="40" rx="6" fill="#2D5A5C"/>
+    <text x="565" y="155" text-anchor="middle" fill="#F8F5EE">½ risoluzione</text>
+    <rect x="540" y="60"  width="120" height="44" rx="6" fill="#2D5A5C"/>
+    <text x="600" y="87" text-anchor="middle" fill="#F8F5EE">mappa pixel</text>
+  </g>
+  <!-- descending arrows -->
+  <g stroke="#1A1A1A" stroke-width="1.5" fill="none">
+    <line x1="130" y1="104" x2="148" y2="128"/>
+    <line x1="170" y1="170" x2="185" y2="194"/>
+    <line x1="215" y1="232" x2="298" y2="272"/>
+    <line x1="422" y1="272" x2="505" y2="232"/>
+    <line x1="535" y1="194" x2="550" y2="170"/>
+    <line x1="572" y1="128" x2="590" y2="104"/>
+  </g>
+  <!-- skip connections -->
+  <g stroke="#C9A961" stroke-width="2" stroke-dasharray="6 4" fill="none">
+    <line x1="180" y1="82"  x2="538" y2="82"/>
+    <line x1="205" y1="150" x2="513" y2="150"/>
+    <line x1="230" y1="214" x2="488" y2="214"/>
+  </g>
+  <g font-family="sans-serif" font-size="11" fill="#1A1A1A">
+    <text x="360" y="74"  text-anchor="middle">skip: copia e concatena</text>
+    <text x="360" y="142" text-anchor="middle">skip</text>
+    <text x="360" y="206" text-anchor="middle">skip</text>
+  </g>
+  <!-- side labels -->
+  <text x="80" y="330" font-family="sans-serif" font-size="12" fill="#B5532C">↓ contracting path: capire il contesto</text>
+  <text x="420" y="330" font-family="sans-serif" font-size="12" fill="#2D5A5C">↑ expanding path: recuperare la posizione</text>
+</svg>

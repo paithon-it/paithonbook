@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  paithon book - figura: apprendimento supervisionato, due pannelli.
+  Sinistra: scatter con retta di regressione (best fit) che segue i punti.
+  Destra: due nuvole di punti (classi terracotta e teal) separate da un
+  confine di decisione tratteggiato (ocra).
+  Palette-locked: terracotta #B5532C, teal #2D5A5C, ocra #C9A961,
+  warm-black #1A1A1A, neutri warm. Fondo trasparente (light e dark).
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 300" role="img"
+     aria-label="Due pannelli affiancati. A sinistra uno scatter di punti attraversato da una retta di regressione crescente. A destra due nuvole di punti di colore diverso separate da una retta tratteggiata, il confine di decisione.">
+  <style>
+    .axis  { stroke:#8B847C; stroke-width:1.4; }
+    .reg   { stroke:#1A1A1A; stroke-width:2.6; stroke-linecap:round; }
+    .bound { stroke:#C9A961; stroke-width:2.6; stroke-dasharray:7 5; stroke-linecap:round; }
+    .ptA   { fill:#B5532C; stroke:#F8F5EE; stroke-width:1; }
+    .ptB   { fill:#2D5A5C; stroke:#F8F5EE; stroke-width:1; }
+    .title { font-family:Fraunces, Georgia, serif; font-size:16px; font-weight:600; fill:#1A1A1A; text-anchor:middle; }
+    .lbl   { font-family:Inter, system-ui, sans-serif; font-size:12px; fill:#5E5852; }
+  </style>
+
+  <!-- ===================== PANNELLO SINISTRO: REGRESSIONE ===================== -->
+  <text class="title" x="165" y="28">Regressione</text>
+
+  <!-- assi -->
+  <line class="axis" x1="40" y1="250" x2="295" y2="250"/>
+  <line class="axis" x1="40" y1="250" x2="40"  y2="45"/>
+  <polygon points="295,250 285,245 285,255" fill="#8B847C"/>
+  <polygon points="40,45 35,55 45,55" fill="#8B847C"/>
+  <text class="lbl" x="282" y="268">X</text>
+  <text class="lbl" x="22"  y="52">y</text>
+
+  <!-- retta di best fit -->
+  <line class="reg" x1="60" y1="220" x2="275" y2="75"/>
+
+  <!-- punti dello scatter -->
+  <circle class="ptA" cx="70"  cy="210" r="4.5"/>
+  <circle class="ptA" cx="90"  cy="205" r="4.5"/>
+  <circle class="ptA" cx="110" cy="178" r="4.5"/>
+  <circle class="ptA" cx="130" cy="185" r="4.5"/>
+  <circle class="ptA" cx="150" cy="155" r="4.5"/>
+  <circle class="ptA" cx="170" cy="165" r="4.5"/>
+  <circle class="ptA" cx="190" cy="128" r="4.5"/>
+  <circle class="ptA" cx="210" cy="122" r="4.5"/>
+  <circle class="ptA" cx="230" cy="100" r="4.5"/>
+  <circle class="ptA" cx="250" cy="105" r="4.5"/>
+  <circle class="ptA" cx="270" cy="78"  r="4.5"/>
+
+  <!-- ===================== PANNELLO DESTRO: CLASSIFICAZIONE ===================== -->
+  <text class="title" x="475" y="28">Classificazione</text>
+
+  <!-- assi -->
+  <line class="axis" x1="360" y1="250" x2="610" y2="250"/>
+  <line class="axis" x1="360" y1="250" x2="360" y2="45"/>
+  <polygon points="610,250 600,245 600,255" fill="#8B847C"/>
+  <polygon points="360,45 355,55 365,55" fill="#8B847C"/>
+  <text class="lbl" x="597" y="268">X&#8321;</text>
+  <text class="lbl" x="340" y="52">X&#8322;</text>
+
+  <!-- confine di decisione -->
+  <line class="bound" x1="400" y1="60" x2="560" y2="220"/>
+  <text class="lbl" x="470" y="58" font-style="italic">confine di decisione</text>
+
+  <!-- classe A (terracotta), regione inferiore-sinistra -->
+  <circle class="ptA" cx="400" cy="200" r="4.5"/>
+  <circle class="ptA" cx="420" cy="185" r="4.5"/>
+  <circle class="ptA" cx="440" cy="210" r="4.5"/>
+  <circle class="ptA" cx="410" cy="165" r="4.5"/>
+  <circle class="ptA" cx="455" cy="195" r="4.5"/>
+  <circle class="ptA" cx="435" cy="155" r="4.5"/>
+  <circle class="ptA" cx="470" cy="205" r="4.5"/>
+  <circle class="ptA" cx="390" cy="175" r="4.5"/>
+
+  <!-- classe B (teal), regione superiore-destra -->
+  <circle class="ptB" cx="520" cy="90"  r="4.5"/>
+  <circle class="ptB" cx="540" cy="110" r="4.5"/>
+  <circle class="ptB" cx="555" cy="75"  r="4.5"/>
+  <circle class="ptB" cx="500" cy="120" r="4.5"/>
+  <circle class="ptB" cx="530" cy="130" r="4.5"/>
+  <circle class="ptB" cx="560" cy="100" r="4.5"/>
+  <circle class="ptB" cx="515" cy="145" r="4.5"/>
+  <circle class="ptB" cx="545" cy="85"  r="4.5"/>
+</svg>

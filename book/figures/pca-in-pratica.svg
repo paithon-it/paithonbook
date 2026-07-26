@@ -1,0 +1,29 @@
+<svg viewBox="0 0 640 400" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Nuvola di punti allungata in diagonale con i due assi principali: il primo lungo la direzione di massima varianza, il secondo perpendicolare">
+  <rect x="0" y="0" width="640" height="400" fill="#F8F5EE"/>
+  <line x1="60" y1="350" x2="600" y2="350" stroke="#C9C2B4" stroke-width="1.5"/>
+  <line x1="60" y1="350" x2="60" y2="40" stroke="#C9C2B4" stroke-width="1.5"/>
+  <text x="590" y="372" font-family="sans-serif" font-size="13" fill="#8B847C" text-anchor="end">feature x₁</text>
+  <text x="78" y="55" font-family="sans-serif" font-size="13" fill="#8B847C">feature x₂</text>
+  <circle cx="150" cy="300" r="6" fill="#2D5A5C"/>
+  <circle cx="185" cy="285" r="6" fill="#2D5A5C"/>
+  <circle cx="205" cy="295" r="6" fill="#2D5A5C"/>
+  <circle cx="230" cy="255" r="6" fill="#2D5A5C"/>
+  <circle cx="255" cy="270" r="6" fill="#2D5A5C"/>
+  <circle cx="280" cy="230" r="6" fill="#2D5A5C"/>
+  <circle cx="305" cy="245" r="6" fill="#2D5A5C"/>
+  <circle cx="330" cy="205" r="6" fill="#2D5A5C"/>
+  <circle cx="355" cy="220" r="6" fill="#2D5A5C"/>
+  <circle cx="380" cy="180" r="6" fill="#2D5A5C"/>
+  <circle cx="405" cy="195" r="6" fill="#2D5A5C"/>
+  <circle cx="430" cy="155" r="6" fill="#2D5A5C"/>
+  <circle cx="455" cy="170" r="6" fill="#2D5A5C"/>
+  <circle cx="480" cy="130" r="6" fill="#2D5A5C"/>
+  <circle cx="510" cy="115" r="6" fill="#2D5A5C"/>
+  <line x1="120" y1="330" x2="545" y2="95" stroke="#B5532C" stroke-width="2"/>
+  <polygon points="545,95 528,98 536,112" fill="#B5532C"/>
+  <text x="470" y="90" font-family="sans-serif" font-size="14" fill="#B5532C">PC1 — massima varianza</text>
+  <line x1="295" y1="180" x2="365" y2="300" stroke="#C9A961" stroke-width="2"/>
+  <polygon points="295,180 296,197 311,190" fill="#C9A961"/>
+  <text x="212" y="168" font-family="sans-serif" font-size="14" fill="#C9A961">PC2 — il residuo</text>
+  <text x="330" y="35" font-family="sans-serif" font-size="14" fill="#1A1A1A" text-anchor="middle">La PCA ruota gli assi lungo la forma della nuvola</text>
+</svg>

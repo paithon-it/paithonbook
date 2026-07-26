@@ -1,0 +1,27 @@
+<svg viewBox="0 0 800 400" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Schema: confronto tra grid search e random search sullo stesso budget di 16 tentativi">
+  <rect x="0" y="0" width="800" height="400" fill="#F8F5EE"/>
+  <text x="400" y="32" text-anchor="middle" font-family="sans-serif" font-size="17" font-weight="bold" fill="#1A1A1A">Stesso budget (16 prove), due strategie</text>
+  <!-- pannello grid -->
+  <rect x="60" y="70" width="280" height="240" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="2"/>
+  <text x="200" y="62" text-anchor="middle" font-family="sans-serif" font-size="14" font-weight="bold" fill="#B5532C">Grid search</text>
+  <!-- griglia 4x4 -->
+  <circle cx="95" cy="105" r="7" fill="#B5532C"/><circle cx="165" cy="105" r="7" fill="#B5532C"/><circle cx="235" cy="105" r="7" fill="#B5532C"/><circle cx="305" cy="105" r="7" fill="#B5532C"/>
+  <circle cx="95" cy="165" r="7" fill="#B5532C"/><circle cx="165" cy="165" r="7" fill="#B5532C"/><circle cx="235" cy="165" r="7" fill="#B5532C"/><circle cx="305" cy="165" r="7" fill="#B5532C"/>
+  <circle cx="95" cy="225" r="7" fill="#B5532C"/><circle cx="165" cy="225" r="7" fill="#B5532C"/><circle cx="235" cy="225" r="7" fill="#B5532C"/><circle cx="305" cy="225" r="7" fill="#B5532C"/>
+  <circle cx="95" cy="285" r="7" fill="#B5532C"/><circle cx="165" cy="285" r="7" fill="#B5532C"/><circle cx="235" cy="285" r="7" fill="#B5532C"/><circle cx="305" cy="285" r="7" fill="#B5532C"/>
+  <text x="200" y="335" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">solo 4 valori distinti per asse</text>
+  <!-- pannello random -->
+  <rect x="460" y="70" width="280" height="240" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="2"/>
+  <text x="600" y="62" text-anchor="middle" font-family="sans-serif" font-size="14" font-weight="bold" fill="#2D5A5C">Random search</text>
+  <circle cx="492" cy="118" r="7" fill="#2D5A5C"/><circle cx="548" cy="92" r="7" fill="#2D5A5C"/><circle cx="605" cy="140" r="7" fill="#2D5A5C"/><circle cx="700" cy="101" r="7" fill="#2D5A5C"/>
+  <circle cx="520" cy="188" r="7" fill="#2D5A5C"/><circle cx="583" cy="214" r="7" fill="#2D5A5C"/><circle cx="655" cy="168" r="7" fill="#2D5A5C"/><circle cx="716" cy="230" r="7" fill="#2D5A5C"/>
+  <circle cx="478" cy="252" r="7" fill="#2D5A5C"/><circle cx="562" cy="277" r="7" fill="#2D5A5C"/><circle cx="628" cy="246" r="7" fill="#2D5A5C"/><circle cx="688" cy="290" r="7" fill="#2D5A5C"/>
+  <circle cx="505" cy="147" r="7" fill="#2D5A5C"/><circle cx="640" cy="203" r="7" fill="#2D5A5C"/><circle cx="722" cy="152" r="7" fill="#2D5A5C"/><circle cx="536" cy="243" r="7" fill="#2D5A5C"/>
+  <text x="600" y="335" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">16 valori distinti per asse</text>
+  <!-- assi etichette -->
+  <text x="200" y="360" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">iperparametro che conta →</text>
+  <text x="600" y="360" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">iperparametro che conta →</text>
+  <!-- striscia ocra: dimensione importante -->
+  <rect x="60" y="378" width="280" height="8" fill="#C9A961"/>
+  <rect x="460" y="378" width="280" height="8" fill="#C9A961"/>
+</svg>

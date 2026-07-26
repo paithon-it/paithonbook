@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  paithon book - figura: i tre livelli di compito su un grafo.
+  Lo stesso piccolo grafo di 5 nodi mostrato tre volte. (1) livello-nodo: un
+  nodo viene colorato/classificato. (2) livello-arco: un arco tratteggiato
+  "candidato" (link prediction) tra due nodi non collegati, con un punto
+  interrogativo. (3) livello-grafo: l'intero grafo racchiuso in un riquadro con
+  un'unica etichetta (una proprieta della molecola). Palette-locked, fondo
+  trasparente.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 320" role="img"
+     aria-label="Lo stesso grafo di cinque nodi mostrato in tre pannelli. Nel primo, livello-nodo, un nodo e' colorato per indicare una classe prevista. Nel secondo, livello-arco, un arco tratteggiato con un punto interrogativo collega due nodi non ancora connessi: e' una previsione di collegamento. Nel terzo, livello-grafo, l'intero grafo e' racchiuso in un riquadro con un'unica etichetta che indica una proprieta complessiva.">
+  <style>
+    .edge  { stroke:#8B847C; stroke-width:2.2; stroke-linecap:round; }
+    .cand  { stroke:#C9A961; stroke-width:2.6; stroke-dasharray:5 5; stroke-linecap:round; }
+    .node  { fill:#F8F5EE; stroke:#2D5A5C; stroke-width:2.2; }
+    .nodec { fill:#B5532C; stroke:#B5532C; stroke-width:2.2; }
+    .nlbl  { font-family:Inter, system-ui, sans-serif; font-size:13px; font-weight:700; fill:#1A1A1A; text-anchor:middle; }
+    .nlblw { font-family:Inter, system-ui, sans-serif; font-size:13px; font-weight:700; fill:#F8F5EE; text-anchor:middle; }
+    .title { font-family:Inter, system-ui, sans-serif; font-size:15px; font-weight:700; fill:#1A1A1A; text-anchor:middle; }
+    .sub   { font-family:Inter, system-ui, sans-serif; font-size:12px; fill:#5E5852; text-anchor:middle; }
+    .qm    { font-family:'Fraunces', Georgia, serif; font-size:20px; font-weight:700; fill:#C9A961; text-anchor:middle; }
+    .box   { fill:none; stroke:#2D5A5C; stroke-width:2.2; stroke-dasharray:6 4; }
+    .tag   { fill:#2D5A5C; }
+    .tagl  { font-family:Inter, system-ui, sans-serif; font-size:12px; font-weight:700; fill:#F8F5EE; text-anchor:middle; }
+  </style>
+
+  <!-- ===================== PANNELLO 1: livello-nodo (ox=20) ===================== -->
+  <g transform="translate(20,30)">
+    <line class="edge" x1="70" y1="40"  x2="140" y2="60"/>
+    <line class="edge" x1="70" y1="40"  x2="90"  y2="110"/>
+    <line class="edge" x1="140" y1="60" x2="90"  y2="110"/>
+    <line class="edge" x1="90" y1="110" x2="150" y2="150"/>
+    <line class="edge" x1="150" y1="150" x2="70" y2="175"/>
+    <circle class="node"  cx="70"  cy="40"  r="14"/><text class="nlbl"  x="70"  y="45">1</text>
+    <circle class="node"  cx="140" cy="60"  r="14"/><text class="nlbl"  x="140" y="65">2</text>
+    <circle class="node"  cx="90"  cy="110" r="14"/><text class="nlbl"  x="90"  y="115">3</text>
+    <circle class="node"  cx="150" cy="150" r="14"/><text class="nlbl"  x="150" y="155">4</text>
+    <circle class="nodec" cx="70"  cy="175" r="14"/><text class="nlblw" x="70"  y="180">5</text>
+    <text class="title" x="110" y="230">livello-nodo</text>
+    <text class="sub"   x="110" y="250">che classe ha il nodo 5?</text>
+  </g>
+
+  <!-- ===================== PANNELLO 2: livello-arco (ox=275) ===================== -->
+  <g transform="translate(275,30)">
+    <line class="edge" x1="70" y1="40"  x2="140" y2="60"/>
+    <line class="edge" x1="70" y1="40"  x2="90"  y2="110"/>
+    <line class="edge" x1="140" y1="60" x2="90"  y2="110"/>
+    <line class="edge" x1="90" y1="110" x2="150" y2="150"/>
+    <line class="edge" x1="150" y1="150" x2="70" y2="175"/>
+    <!-- arco candidato tra 1 e 5 (non collegati) -->
+    <line class="cand" x1="70" y1="54"  x2="70" y2="161"/>
+    <text class="qm" x="52" y="112">?</text>
+    <circle class="node" cx="70"  cy="40"  r="14"/><text class="nlbl" x="70"  y="45">1</text>
+    <circle class="node" cx="140" cy="60"  r="14"/><text class="nlbl" x="140" y="65">2</text>
+    <circle class="node" cx="90"  cy="110" r="14"/><text class="nlbl" x="90"  y="115">3</text>
+    <circle class="node" cx="150" cy="150" r="14"/><text class="nlbl" x="150" y="155">4</text>
+    <circle class="node" cx="70"  cy="175" r="14"/><text class="nlbl" x="70"  y="180">5</text>
+    <text class="title" x="110" y="230">livello-arco</text>
+    <text class="sub"   x="110" y="250">1 e 5 si collegheranno?</text>
+  </g>
+
+  <!-- ===================== PANNELLO 3: livello-grafo (ox=530) ===================== -->
+  <g transform="translate(530,30)">
+    <rect class="box" x="34" y="18" width="152" height="176" rx="14"/>
+    <line class="edge" x1="70" y1="40"  x2="140" y2="60"/>
+    <line class="edge" x1="70" y1="40"  x2="90"  y2="110"/>
+    <line class="edge" x1="140" y1="60" x2="90"  y2="110"/>
+    <line class="edge" x1="90" y1="110" x2="150" y2="150"/>
+    <line class="edge" x1="150" y1="150" x2="70" y2="175"/>
+    <circle class="node" cx="70"  cy="40"  r="14"/><text class="nlbl" x="70"  y="45">1</text>
+    <circle class="node" cx="140" cy="60"  r="14"/><text class="nlbl" x="140" y="65">2</text>
+    <circle class="node" cx="90"  cy="110" r="14"/><text class="nlbl" x="90"  y="115">3</text>
+    <circle class="node" cx="150" cy="150" r="14"/><text class="nlbl" x="150" y="155">4</text>
+    <circle class="node" cx="70"  cy="175" r="14"/><text class="nlbl" x="70"  y="180">5</text>
+    <!-- etichetta unica del grafo -->
+    <rect class="tag" x="72" y="6" width="76" height="24" rx="12"/>
+    <text class="tagl" x="110" y="22">proprieta?</text>
+    <text class="title" x="110" y="230">livello-grafo</text>
+    <text class="sub"   x="110" y="250">una molecola: e' tossica?</text>
+  </g>
+</svg>

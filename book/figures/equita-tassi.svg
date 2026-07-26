@@ -1,0 +1,71 @@
+<svg width="100%" viewBox="0 0 720 430" xmlns="http://www.w3.org/2000/svg" role="img"
+     font-family="Helvetica, Arial, sans-serif">
+
+  <!-- ===== GRUPPO A ===== -->
+  <text x="182" y="34" text-anchor="middle" font-family="Georgia, serif"
+        font-size="19" font-weight="700" fill="#2D5A5C">Gruppo A</text>
+
+  <!-- intestazioni colonna -->
+  <text x="146" y="80" text-anchor="middle" font-size="13" fill="#2D5A5C">reale +</text>
+  <text x="218" y="80" text-anchor="middle" font-size="13" fill="#2D5A5C">reale &#8722;</text>
+  <!-- intestazioni riga -->
+  <text x="102" y="130" text-anchor="end" font-size="13" fill="#2D5A5C">pred +</text>
+  <text x="102" y="202" text-anchor="end" font-size="13" fill="#2D5A5C">pred &#8722;</text>
+
+  <!-- celle -->
+  <rect x="110" y="90"  width="72" height="72" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2"/>
+  <rect x="182" y="90"  width="72" height="72" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2"/>
+  <rect x="110" y="162" width="72" height="72" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2"/>
+  <rect x="182" y="162" width="72" height="72" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2"/>
+
+  <text x="116" y="106" font-size="11" fill="#2D5A5C">VP</text>
+  <text x="188" y="106" font-size="11" fill="#2D5A5C">FP</text>
+  <text x="116" y="178" font-size="11" fill="#2D5A5C">FN</text>
+  <text x="188" y="178" font-size="11" fill="#2D5A5C">VN</text>
+
+  <text x="146" y="130" text-anchor="middle" dominant-baseline="middle" font-size="27" font-weight="700" fill="#1A1A1A">80</text>
+  <text x="218" y="130" text-anchor="middle" dominant-baseline="middle" font-size="27" font-weight="700" fill="#1A1A1A">10</text>
+  <text x="146" y="202" text-anchor="middle" dominant-baseline="middle" font-size="27" font-weight="700" fill="#1A1A1A">20</text>
+  <text x="218" y="202" text-anchor="middle" dominant-baseline="middle" font-size="27" font-weight="700" fill="#1A1A1A">90</text>
+
+  <!-- tassi gruppo A -->
+  <text x="102" y="268" font-size="15" fill="#1A1A1A">TPR = 80/100 = <tspan fill="#B5532C" font-weight="700">0,80</tspan></text>
+  <text x="102" y="294" font-size="15" fill="#1A1A1A">FPR = 10/100 = <tspan fill="#B5532C" font-weight="700">0,10</tspan></text>
+
+  <!-- ===== GRUPPO B ===== -->
+  <text x="542" y="34" text-anchor="middle" font-family="Georgia, serif"
+        font-size="19" font-weight="700" fill="#2D5A5C">Gruppo B</text>
+
+  <text x="506" y="80" text-anchor="middle" font-size="13" fill="#2D5A5C">reale +</text>
+  <text x="578" y="80" text-anchor="middle" font-size="13" fill="#2D5A5C">reale &#8722;</text>
+  <text x="462" y="130" text-anchor="end" font-size="13" fill="#2D5A5C">pred +</text>
+  <text x="462" y="202" text-anchor="end" font-size="13" fill="#2D5A5C">pred &#8722;</text>
+
+  <rect x="470" y="90"  width="72" height="72" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2"/>
+  <rect x="542" y="90"  width="72" height="72" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2"/>
+  <rect x="470" y="162" width="72" height="72" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2"/>
+  <rect x="542" y="162" width="72" height="72" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2"/>
+
+  <text x="476" y="106" font-size="11" fill="#2D5A5C">VP</text>
+  <text x="548" y="106" font-size="11" fill="#2D5A5C">FP</text>
+  <text x="476" y="178" font-size="11" fill="#2D5A5C">FN</text>
+  <text x="548" y="178" font-size="11" fill="#2D5A5C">VN</text>
+
+  <text x="506" y="130" text-anchor="middle" dominant-baseline="middle" font-size="27" font-weight="700" fill="#1A1A1A">60</text>
+  <text x="578" y="130" text-anchor="middle" dominant-baseline="middle" font-size="27" font-weight="700" fill="#1A1A1A">30</text>
+  <text x="506" y="202" text-anchor="middle" dominant-baseline="middle" font-size="27" font-weight="700" fill="#1A1A1A">40</text>
+  <text x="578" y="202" text-anchor="middle" dominant-baseline="middle" font-size="27" font-weight="700" fill="#1A1A1A">70</text>
+
+  <text x="462" y="268" font-size="15" fill="#1A1A1A">TPR = 60/100 = <tspan fill="#B5532C" font-weight="700">0,60</tspan></text>
+  <text x="462" y="294" font-size="15" fill="#1A1A1A">FPR = 30/100 = <tspan fill="#B5532C" font-weight="700">0,30</tspan></text>
+
+  <!-- divisore -->
+  <line x1="360" y1="70" x2="360" y2="300" stroke="#C9A961" stroke-width="1.5" stroke-dasharray="4 5"/>
+
+  <!-- annotazione -->
+  <line x1="90" y1="338" x2="630" y2="338" stroke="#2D5A5C" stroke-width="1" opacity="0.35"/>
+  <text x="360" y="368" text-anchor="middle" font-size="15" font-style="italic" fill="#B5532C">
+    TPR e FPR differiscono tra i gruppi</text>
+  <text x="360" y="392" text-anchor="middle" font-size="14" fill="#2D5A5C">
+    a parita di modello: l'equalized odds e violata</text>
+</svg>

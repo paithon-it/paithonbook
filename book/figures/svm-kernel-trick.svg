@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  paithon book - figura: il kernel trick.
+  Pannello sinistro: due classi non separabili da una retta in 2D - un disco
+  interno (teal) circondato da un anello (terracotta). Freccia "phi" al centro.
+  Pannello destro: dopo la mappa phi (che aggiunge l'altezza r2 = x2 + y2) gli
+  stessi punti si sollevano lungo una parabola: i punti interni restano in
+  basso, quelli esterni salgono, e una retta orizzontale (il piano separatore
+  visto di taglio) li separa nettamente. Palette-locked, fondo trasparente.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 340" role="img"
+     aria-label="A sinistra, in due dimensioni: punti teal raccolti in un disco centrale, circondati da punti terracotta disposti ad anello; nessuna retta puo' separarli. Al centro una freccia etichettata phi. A destra, dopo la mappa: gli stessi punti sono sollevati lungo una parabola con altezza pari a erre quadro uguale x quadro piu' y quadro; i punti interni restano in basso, quelli esterni salgono in alto, e una retta orizzontale tratteggiata, il piano separatore visto di taglio, li divide nettamente.">
+  <defs>
+    <marker id="pt-k-arrow" viewBox="0 0 10 10" refX="8" refY="5"
+            markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1A1A1A"/>
+    </marker>
+  </defs>
+  <style>
+    .teal   { fill:#2D5A5C; }
+    .terra  { fill:#B5532C; }
+    .guide  { fill:none; stroke:#C9A961; stroke-width:1.6; stroke-dasharray:5 5; }
+    .axis   { stroke:#8B847C; stroke-width:1.5; }
+    .surf   { fill:none; stroke:#C9A961; stroke-width:1.8; }
+    .sep    { stroke:#1A1A1A; stroke-width:2.2; stroke-dasharray:7 5; }
+    .phi    { stroke:#1A1A1A; stroke-width:2.4; }
+    .lbl    { font-family:Inter, system-ui, sans-serif; font-size:14px; fill:#5E5852; }
+    .lblt   { font-family:Inter, system-ui, sans-serif; font-size:15px; font-weight:600; fill:#1A1A1A; text-anchor:middle; }
+    .lblphi { font-family:Inter, system-ui, sans-serif; font-size:20px; font-style:italic; font-weight:600; fill:#1A1A1A; text-anchor:middle; }
+  </style>
+
+  <!-- ===== PANNELLO SINISTRO: 2D non separabile ===== -->
+  <text class="lblt" x="175" y="32">nello spazio originale (2D)</text>
+  <!-- cerchio guida: il confine e' circolare, non una retta -->
+  <circle class="guide" cx="175" cy="185" r="66"/>
+  <!-- disco interno: classe teal -->
+  <circle class="teal" cx="175" cy="185" r="7"/>
+  <circle class="teal" cx="152" cy="172" r="7"/>
+  <circle class="teal" cx="196" cy="175" r="7"/>
+  <circle class="teal" cx="165" cy="205" r="7"/>
+  <circle class="teal" cx="192" cy="203" r="7"/>
+  <!-- anello esterno: classe terracotta -->
+  <rect class="terra" x="168" y="105" width="13" height="13"/>
+  <rect class="terra" x="240" y="140" width="13" height="13"/>
+  <rect class="terra" x="245" y="215" width="13" height="13"/>
+  <rect class="terra" x="168" y="248" width="13" height="13"/>
+  <rect class="terra" x="98"  y="215" width="13" height="13"/>
+  <rect class="terra" x="95"  y="138" width="13" height="13"/>
+
+  <!-- ===== FRECCIA phi ===== -->
+  <line class="phi" x1="308" y1="185" x2="392" y2="185" marker-end="url(#pt-k-arrow)"/>
+  <text class="lblphi" x="350" y="172">&#966;</text>
+  <text class="lbl" x="350" y="212" text-anchor="middle">solleva</text>
+
+  <!-- ===== PANNELLO DESTRO: spazio delle feature con l'altezza r2 ===== -->
+  <text class="lblt" x="560" y="32">dopo la mappa &#966;</text>
+  <!-- assi -->
+  <line class="axis" x1="430" y1="290" x2="700" y2="290"/>
+  <line class="axis" x1="430" y1="290" x2="430" y2="70"/>
+  <polygon points="700,290 690,285 690,295" fill="#8B847C"/>
+  <polygon points="430,70 425,80 435,80" fill="#8B847C"/>
+  <text class="lbl" x="438" y="82">r&#178; = x&#178;+y&#178;</text>
+  <text class="lbl" x="640" y="308">posizione</text>
+
+  <!-- superficie (parabola) su cui giacciono i punti sollevati -->
+  <path class="surf" d="M 452,118 Q 560,332 668,118"/>
+
+  <!-- piano separatore visto di taglio: retta orizzontale -->
+  <line class="sep" x1="440" y1="196" x2="688" y2="196"/>
+  <text class="lblt" x="560" y="188" font-size="13">piano separatore</text>
+
+  <!-- punti interni (teal): bassi, al centro, sotto il piano -->
+  <circle class="teal" cx="560" cy="258" r="7"/>
+  <circle class="teal" cx="535" cy="252" r="7"/>
+  <circle class="teal" cx="588" cy="252" r="7"/>
+  <circle class="teal" cx="515" cy="238" r="7"/>
+  <circle class="teal" cx="608" cy="238" r="7"/>
+
+  <!-- punti esterni (terracotta): alti, ai lati, sopra il piano -->
+  <rect class="terra" x="446" y="118" width="13" height="13"/>
+  <rect class="terra" x="470" y="150" width="13" height="13"/>
+  <rect class="terra" x="655" y="118" width="13" height="13"/>
+  <rect class="terra" x="632" y="150" width="13" height="13"/>
+  <rect class="terra" x="492" y="172" width="13" height="13"/>
+  <rect class="terra" x="612" y="172" width="13" height="13"/>
+</svg>

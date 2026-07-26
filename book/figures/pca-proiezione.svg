@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  paithon book - figura: la proiezione della PCA (2D verso 1D).
+  Una nuvola di punti (teal) allungata in diagonale. Sovrapposti i due assi
+  principali: PC1 (terracotta, lungo, nella direzione di massima varianza) e
+  PC2 (ocra, corto, ortogonale). Tre punti mostrano la loro proiezione
+  perpendicolare (tratteggio neutro) sull'asse PC1: e la riduzione 2D -> 1D.
+  Messaggio: PC1 cattura quasi tutta la varianza. Palette-locked, fondo trasparente.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 360" role="img"
+     aria-label="Una nuvola di punti in teal, allungata lungo una diagonale che sale verso destra. Un asse principale PC1 in terracotta, lungo, corre lungo la direzione in cui i punti sono piu dispersi; un secondo asse PC2 in ocra, molto piu corto, e perpendicolare al primo. Tre punti sono collegati da segmenti tratteggiati alla loro proiezione perpendicolare sull'asse PC1, a illustrare la riduzione da due dimensioni a una sola lungo la direzione di massima varianza.">
+  <style>
+    .pt   { fill:#2D5A5C; }
+    .pc1  { stroke:#B5532C; stroke-width:3.4; stroke-linecap:round; }
+    .pc2  { stroke:#C9A961; stroke-width:3.2; stroke-linecap:round; }
+    .proj { stroke:#5E5852; stroke-width:1.3; stroke-dasharray:4 4; }
+    .foot { fill:#B5532C; }
+    .lpc1 { font-family:Inter, system-ui, sans-serif; font-size:14px; font-weight:600; fill:#B5532C; }
+    .lpc2 { font-family:Inter, system-ui, sans-serif; font-size:13px; font-weight:600; fill:#5E5852; }
+    .lann { font-family:Inter, system-ui, sans-serif; font-size:12px; fill:#5E5852; }
+    .ttl  { font-family:"Fraunces", Georgia, serif; font-size:15px; fill:#1A1A1A; }
+  </style>
+
+  <!-- titolo -->
+  <text class="ttl" x="24" y="34">2 dimensioni &#8594; 1: proiezione sulla componente principale</text>
+
+  <!-- asse PC1: direzione di massima varianza (piu lungo) -->
+  <line class="pc1" x1="127" y1="255" x2="353" y2="125"/>
+  <!-- asse PC2: ortogonale (piu corto) -->
+  <line class="pc2" x1="212" y1="142" x2="268" y2="238"/>
+
+  <!-- proiezioni perpendicolari di tre punti sull'asse PC1 -->
+  <line class="proj" x1="156" y1="225" x2="162" y2="235"/>
+  <line class="proj" x1="219" y1="214" x2="214" y2="205"/>
+  <line class="proj" x1="261" y1="166" x2="266" y2="175"/>
+  <!-- piedi delle proiezioni (sulla retta PC1) -->
+  <circle class="foot" cx="162" cy="235" r="3"/>
+  <circle class="foot" cx="214" cy="205" r="3"/>
+  <circle class="foot" cx="266" cy="175" r="3"/>
+
+  <!-- nuvola di punti (allungata lungo PC1) -->
+  <circle class="pt" cx="148" cy="252" r="4.5"/>
+  <circle class="pt" cx="156" cy="225" r="4.5"/>
+  <circle class="pt" cx="182" cy="229" r="4.5"/>
+  <circle class="pt" cx="193" cy="208" r="4.5"/>
+  <circle class="pt" cx="219" cy="214" r="4.5"/>
+  <circle class="pt" cx="229" cy="191" r="4.5"/>
+  <circle class="pt" cx="252" cy="191" r="4.5"/>
+  <circle class="pt" cx="261" cy="166" r="4.5"/>
+  <circle class="pt" cx="287" cy="170" r="4.5"/>
+  <circle class="pt" cx="297" cy="149" r="4.5"/>
+  <circle class="pt" cx="323" cy="153" r="4.5"/>
+  <circle class="pt" cx="333" cy="130" r="4.5"/>
+
+  <!-- etichette assi -->
+  <text class="lpc1" x="356" y="120">PC1</text>
+  <text class="lann" x="356" y="135" font-size="11">massima varianza</text>
+  <text class="lpc2" x="196" y="136">PC2</text>
+
+  <!-- annotazione proiezione -->
+  <text class="lann" x="150" y="300">i punti proiettati su PC1</text>
+  <text class="lann" x="150" y="316">= i dati compressi in 1D</text>
+</svg>

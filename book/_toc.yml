@@ -1,0 +1,187 @@
+format: jb-book
+root: intro.md
+
+chapters:
+- file: Introduzione/overview.md
+  sections:
+  - file: Introduzione/massimo_comune_divisore.ipynb
+  - file: Introduzione/applicazioni.md
+  - file: Introduzione/conclusione.md
+- file: Python/overview.md
+  sections:
+  - file: Python/basi.md
+  - file: Python/numpy.md
+  - file: Python/pandas-matplotlib.md
+- file: Matematica/overview.md
+  sections:
+  - file: Matematica/algebra-lineare.md
+  - file: Matematica/analisi-ottimizzazione.md
+  - file: Matematica/probabilita-statistica.md
+  - file: Matematica/teoria-informazione.md
+  - file: Matematica/analisi-numerica.md
+- file: MachineLearning/overview.md
+  sections:
+  - file: MachineLearning/apprendimento-supervisionato.md
+  - file: MachineLearning/overfitting-validazione.md
+  - file: MachineLearning/metriche.md
+  - file: MachineLearning/iperparametri.md
+  - file: MachineLearning/alberi-ensemble.md
+  - file: MachineLearning/svm.md
+  - file: MachineLearning/riduzione-clustering.md
+  - file: MachineLearning/dati-che-cambiano.md
+  - file: MachineLearning/processi-gaussiani.md
+- file: RetiNeurali/overview.md
+  sections:
+  - file: RetiNeurali/percettrone.md
+  - file: RetiNeurali/funzioni-attivazione.md
+  - file: RetiNeurali/backpropagation.md
+- file: PyTorch/overview.md
+  sections:
+  - file: PyTorch/tensori.md
+  - file: PyTorch/moduli.md
+  - file: PyTorch/addestramento.md
+  - file: PyTorch/flusso-di-lavoro.md
+  - file: PyTorch/dati-su-misura.md
+  - file: PyTorch/errori-comuni.md
+  - file: PyTorch/dal-notebook-agli-script.md
+  - file: PyTorch/replicare-un-paper.md
+  - file: PyTorch/prestazioni.md
+- file: GPU/overview.md
+  sections:
+  - file: GPU/architettura-gpu.md
+  - file: GPU/gerarchia-memoria.md
+  - file: GPU/kernel-e-cuda.md
+  - file: GPU/gemm-e-tensor-core.md
+  - file: GPU/flash-attention.md
+  - file: GPU/parallelismo-distribuito.md
+- file: DeepLearning/overview.md
+  sections:
+  - file: DeepLearning/reti-convoluzionali.md
+  - file: DeepLearning/ottimizzazione-regolarizzazione.md
+  - file: DeepLearning/architetture-storiche.md
+- file: VisioneArtificiale/overview.md
+  sections:
+  - file: VisioneArtificiale/classificazione-transfer.md
+  - file: VisioneArtificiale/data-augmentation.md
+  - file: VisioneArtificiale/detection-segmentazione.md
+  - file: VisioneArtificiale/style-transfer.md
+- file: ReinforcementLearning/overview.md
+  sections:
+  - file: ReinforcementLearning/mdp-valore.md
+  - file: ReinforcementLearning/q-learning.md
+- file: DeepReinforcementLearning/overview.md
+  sections:
+  - file: DeepReinforcementLearning/dqn.md
+  - file: DeepReinforcementLearning/policy-gradient.md
+  - file: DeepReinforcementLearning/controllo-continuo.md
+  - file: DeepReinforcementLearning/model-based.md
+  - file: DeepReinforcementLearning/offline-rl.md
+  - file: DeepReinforcementLearning/esplorazione-e-ricompensa.md
+- file: NaturalLanguageProcessing/overview.md
+  sections:
+  - file: NaturalLanguageProcessing/strumenti-classici.md
+  - file: NaturalLanguageProcessing/rappresentare-testo.md
+  - file: NaturalLanguageProcessing/classificazione-testo.md
+  - file: NaturalLanguageProcessing/modelli-ngram.md
+  - file: NaturalLanguageProcessing/modelli-sequenza.md
+  - file: NaturalLanguageProcessing/seq2seq-traduzione.md
+  - file: NaturalLanguageProcessing/etichettare-sequenze.md
+  - file: NaturalLanguageProcessing/struttura-frase.md
+  - file: NaturalLanguageProcessing/dialogo-chatbot.md
+- file: Transformers/overview.md
+  sections:
+  - file: Transformers/attenzione.md
+  - file: Transformers/architettura.md
+  - file: Transformers/confronti.md
+  - file: Transformers/esempi.md
+  - file: Transformers/multimodalita.md
+  - file: Transformers/llm.md
+  - file: Transformers/post-training.md
+  - file: Transformers/rag.md
+  - file: Transformers/tendenzefuture.md
+- file: AttenzioneLineare/overview.md
+  sections:
+  - file: AttenzioneLineare/dalla-softmax-alla-ricorrenza.md
+  - file: AttenzioneLineare/scrivere-nella-memoria.md
+  - file: AttenzioneLineare/architetture-lineari.md
+  - file: AttenzioneLineare/linear-attention-ricorrenza.ipynb
+- file: StateSpaceModel/overview.md
+  sections:
+  - file: StateSpaceModel/dai-sistemi-dinamici-a-s4.md
+  - file: StateSpaceModel/mamba.md
+  - file: StateSpaceModel/dualita-e-mamba-2-3.md
+  - file: StateSpaceModel/panorama-e-limiti.md
+- file: Agenti/overview.md
+  sections:
+  - file: Agenti/agenti-e-tool-use.md
+  - file: Agenti/rag-avanzato.md
+  - file: Agenti/context-engineering.md
+  - file: Agenti/architetture-e-valutazione.md
+- file: IngegneriaLLM/overview.md
+  sections:
+  - file: IngegneriaLLM/prompt-engineering.md
+  - file: IngegneriaLLM/context-engineering.md
+  - file: IngegneriaLLM/loop-engineering.md
+- file: Audio/overview.md
+  sections:
+  - file: Audio/dal-suono-alle-feature.md
+  - file: Audio/classificazione-audio.md
+  - file: Audio/rappresentazioni-auto-supervisionate.md
+  - file: Audio/codec-neurali.md
+  - file: Audio/generazione-audio.md
+- file: SpeechRecognition/overview.md
+  sections:
+  - file: SpeechRecognition/modelli-asr.md
+  - file: SpeechRecognition/sintesi-vocale.md
+- file: GAN/overview.md
+  sections:
+  - file: GAN/come-funziona.md
+  - file: GAN/applicazioni-evoluzioni.md
+- file: ModelliDiffusione/overview.md
+  sections:
+  - file: ModelliDiffusione/come-funziona.md
+  - file: ModelliDiffusione/stable-diffusion.md
+  - file: ModelliDiffusione/diffusion-transformer.md
+- file: WorldModels/overview.md
+  sections:
+  - file: WorldModels/mondi-in-miniatura.md
+  - file: WorldModels/reti-energia.md
+  - file: WorldModels/jepa.md
+  - file: WorldModels/simulatori-e-dibattito.md
+- file: GraphNeuralNetwork/overview.md
+  sections:
+  - file: GraphNeuralNetwork/dati-a-grafo.md
+  - file: GraphNeuralNetwork/message-passing.md
+  - file: GraphNeuralNetwork/architetture-applicazioni.md
+- file: SistemiRaccomandazione/overview.md
+  sections:
+  - file: SistemiRaccomandazione/filtraggio-collaborativo.md
+  - file: SistemiRaccomandazione/raccomandazione-neurale.md
+- file: SerieTemporali/overview.md
+  sections:
+  - file: SerieTemporali/componenti-e-classici.md
+  - file: SerieTemporali/validazione-e-feature.md
+  - file: SerieTemporali/forecasting-neurale.md
+- file: PINN/overview.md
+  sections:
+  - file: PINN/come-funziona.md
+  - file: PINN/applicazioni-limiti.md
+- file: MLOps/overview.md
+  sections:
+  - file: MLOps/dal-notebook-alla-produzione.md
+  - file: MLOps/dati-e-pipeline.md
+  - file: MLOps/deployment-e-serving.md
+  - file: MLOps/monitoring-e-drift.md
+  - file: MLOps/llmops.md
+- file: Interpretabilita/overview.md
+  sections:
+  - file: Interpretabilita/modelli-trasparenti-e-importanza.md
+  - file: Interpretabilita/spiegazioni-locali.md
+  - file: Interpretabilita/attribuzione-e-meccanicistica.md
+- file: AIResponsabile/overview.md
+  sections:
+  - file: AIResponsabile/equita-e-bias.md
+  - file: AIResponsabile/privacy-e-robustezza.md
+  - file: AIResponsabile/allineamento-e-governance.md
+- file: Conclusioni/overview.md
+- file: references.md

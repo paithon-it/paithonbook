@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  paithon book — figura: un percettrone multistrato (MLP). Tre strati di
+  nodi da sinistra a destra: input (3 nodi, bordo teal), strato nascosto
+  (4 nodi, bordo ocra), output (2 nodi, bordo terracotta). Ogni nodo di uno
+  strato e' collegato a tutti i nodi dello strato successivo (fully-connected).
+  Palette-locked: nodi cream, connessioni grigio warm, testo warm-black e
+  grigi warm. Fondo trasparente (leggibile in light e dark). Nessun colore
+  fuori palette.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 360" role="img"
+     aria-label="Percettrone multistrato: uno strato di input con tre nodi collegato a uno strato nascosto di quattro nodi, a sua volta collegato a uno strato di output di due nodi; ogni nodo e' connesso a tutti i nodi dello strato successivo e l'informazione scorre da sinistra a destra">
+  <style>
+    .lab  { font-family:Inter, system-ui, sans-serif; font-size:15px; fill:#1A1A1A; }
+    .cap  { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#5E5852; }
+    .edge { stroke:#C9C2B4; stroke-width:1.2; }
+    .node { fill:#F8F5EE; stroke-width:2.5; }
+  </style>
+
+  <!-- connessioni input -> strato nascosto -->
+  <g class="edge">
+    <line x1="90" y1="100" x2="280" y2="75"/>
+    <line x1="90" y1="100" x2="280" y2="145"/>
+    <line x1="90" y1="100" x2="280" y2="215"/>
+    <line x1="90" y1="100" x2="280" y2="285"/>
+    <line x1="90" y1="180" x2="280" y2="75"/>
+    <line x1="90" y1="180" x2="280" y2="145"/>
+    <line x1="90" y1="180" x2="280" y2="215"/>
+    <line x1="90" y1="180" x2="280" y2="285"/>
+    <line x1="90" y1="260" x2="280" y2="75"/>
+    <line x1="90" y1="260" x2="280" y2="145"/>
+    <line x1="90" y1="260" x2="280" y2="215"/>
+    <line x1="90" y1="260" x2="280" y2="285"/>
+  </g>
+
+  <!-- connessioni strato nascosto -> output -->
+  <g class="edge">
+    <line x1="280" y1="75"  x2="470" y2="135"/>
+    <line x1="280" y1="75"  x2="470" y2="225"/>
+    <line x1="280" y1="145" x2="470" y2="135"/>
+    <line x1="280" y1="145" x2="470" y2="225"/>
+    <line x1="280" y1="215" x2="470" y2="135"/>
+    <line x1="280" y1="215" x2="470" y2="225"/>
+    <line x1="280" y1="285" x2="470" y2="135"/>
+    <line x1="280" y1="285" x2="470" y2="225"/>
+  </g>
+
+  <!-- strato di input (teal) -->
+  <circle class="node" cx="90" cy="100" r="20" stroke="#2D5A5C"/>
+  <circle class="node" cx="90" cy="180" r="20" stroke="#2D5A5C"/>
+  <circle class="node" cx="90" cy="260" r="20" stroke="#2D5A5C"/>
+  <text class="lab" x="90" y="100" text-anchor="middle" dy=".35em">x₁</text>
+  <text class="lab" x="90" y="180" text-anchor="middle" dy=".35em">x₂</text>
+  <text class="lab" x="90" y="260" text-anchor="middle" dy=".35em">x₃</text>
+
+  <!-- strato nascosto (ocra) -->
+  <circle class="node" cx="280" cy="75"  r="20" stroke="#C9A961"/>
+  <circle class="node" cx="280" cy="145" r="20" stroke="#C9A961"/>
+  <circle class="node" cx="280" cy="215" r="20" stroke="#C9A961"/>
+  <circle class="node" cx="280" cy="285" r="20" stroke="#C9A961"/>
+
+  <!-- strato di output (terracotta) -->
+  <circle class="node" cx="470" cy="135" r="20" stroke="#B5532C"/>
+  <circle class="node" cx="470" cy="225" r="20" stroke="#B5532C"/>
+  <text class="lab" x="470" y="135" text-anchor="middle" dy=".35em">ŷ₁</text>
+  <text class="lab" x="470" y="225" text-anchor="middle" dy=".35em">ŷ₂</text>
+
+  <!-- didascalie degli strati -->
+  <text class="cap" x="90"  y="340" text-anchor="middle">Input</text>
+  <text class="cap" x="280" y="340" text-anchor="middle">Strato nascosto</text>
+  <text class="cap" x="470" y="340" text-anchor="middle">Output</text>
+</svg>

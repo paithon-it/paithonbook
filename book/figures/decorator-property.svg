@@ -1,0 +1,31 @@
+<svg viewBox="0 0 700 360" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Schema di una funzione avvolta da un decorator: gli argomenti entrano nel wrapper, che esegue codice prima, chiama la funzione originale, esegue codice dopo e restituisce il risultato">
+  <rect x="0" y="0" width="700" height="360" fill="#F8F5EE"/>
+  <!-- scatola esterna: il decorator -->
+  <rect x="150" y="50" width="400" height="260" rx="10" fill="none" stroke="#2D5A5C" stroke-width="2"/>
+  <text x="350" y="78" font-family="sans-serif" font-size="15" font-weight="bold" fill="#2D5A5C" text-anchor="middle">@cronometro — la funzione avvolta</text>
+  <!-- prima -->
+  <rect x="190" y="96" width="320" height="40" fill="#C9A961" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="350" y="121" font-family="sans-serif" font-size="13.5" fill="#1A1A1A" text-anchor="middle">PRIMA: inizio = perf_counter()</text>
+  <!-- funzione originale -->
+  <rect x="190" y="156" width="320" height="52" fill="#B5532C" stroke="#1A1A1A" stroke-width="2"/>
+  <text x="350" y="178" font-family="sans-serif" font-size="14.5" font-weight="bold" fill="#F8F5EE" text-anchor="middle">funzione originale</text>
+  <text x="350" y="197" font-family="sans-serif" font-size="13" fill="#F8F5EE" text-anchor="middle">somma_quadrati(n) — intatta</text>
+  <!-- dopo -->
+  <rect x="190" y="228" width="320" height="40" fill="#C9A961" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="350" y="253" font-family="sans-serif" font-size="13.5" fill="#1A1A1A" text-anchor="middle">DOPO: stampa la durata</text>
+  <!-- frecce verticali interne -->
+  <line x1="350" y1="136" x2="350" y2="150" stroke="#1A1A1A" stroke-width="1.5"/>
+  <polygon points="350,156 344,146 356,146" fill="#1A1A1A"/>
+  <line x1="350" y1="208" x2="350" y2="222" stroke="#1A1A1A" stroke-width="1.5"/>
+  <polygon points="350,228 344,218 356,218" fill="#1A1A1A"/>
+  <!-- ingresso -->
+  <line x1="30" y1="116" x2="184" y2="116" stroke="#1A1A1A" stroke-width="2"/>
+  <polygon points="190,116 178,110 178,122" fill="#1A1A1A"/>
+  <text x="88" y="104" font-family="sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">argomenti</text>
+  <!-- uscita -->
+  <line x1="516" y1="248" x2="668" y2="248" stroke="#1A1A1A" stroke-width="2"/>
+  <polygon points="674,248 662,242 662,254" fill="#1A1A1A"/>
+  <text x="600" y="236" font-family="sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">risultato</text>
+  <!-- didascalia interna -->
+  <text x="350" y="340" font-family="sans-serif" font-size="12.5" fill="#5E5852" text-anchor="middle">il chiamante non vede la differenza: parla con la scatola esterna</text>
+</svg>

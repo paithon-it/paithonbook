@@ -1,0 +1,133 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 480" role="img" aria-label="La gerarchia logica dei thread mappata sull'hardware. In alto, da sinistra a destra, la catena di scomposizione: una griglia (grid) di blocchi, un blocco (CTA) composto da piu warp, un warp fatto di 32 thread, e il singolo thread che elabora un dato. In basso, l'hardware: una GPU come insieme di Streaming Multiprocessor (SM). Una freccia tratteggiata collega un blocco logico a uno SM fisico, a indicare che l'hardware assegna ogni blocco a uno SM, che lo esegue a warp di 32 thread.">
+  <defs>
+    <marker id="ge-arr-k" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1A1A1A"/>
+    </marker>
+    <marker id="ge-arr-t" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#B5532C"/>
+    </marker>
+  </defs>
+
+  <!-- ============ FASCIA LOGICA (in alto) ============ -->
+  <text x="20" y="34" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#1A1A1A" fill-opacity="0.55" letter-spacing="1">LOGICO — cosa lancia il programmatore</text>
+
+  <!-- Grid -->
+  <rect x="20" y="48" width="150" height="118" rx="8" fill="#F8F5EE" stroke="#C9A961" stroke-width="2"/>
+  <text x="95" y="68" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" font-weight="700" fill="#B5532C">Grid</text>
+  <rect x="35" y="80" width="30" height="22" rx="2" fill="#C9A961" fill-opacity="0.28" stroke="#C9A961" stroke-width="1"/>
+  <rect x="72" y="80" width="30" height="22" rx="2" fill="#C9A961" fill-opacity="0.28" stroke="#C9A961" stroke-width="1"/>
+  <rect x="109" y="80" width="30" height="22" rx="2" fill="#C9A961" fill-opacity="0.28" stroke="#C9A961" stroke-width="1"/>
+  <rect x="35" y="106" width="30" height="22" rx="2" fill="#C9A961" fill-opacity="0.28" stroke="#C9A961" stroke-width="1"/>
+  <rect x="72" y="106" width="30" height="22" rx="2" fill="#C9A961" fill-opacity="0.5" stroke="#B5532C" stroke-width="1.6"/>
+  <rect x="109" y="106" width="30" height="22" rx="2" fill="#C9A961" fill-opacity="0.28" stroke="#C9A961" stroke-width="1"/>
+  <rect x="35" y="132" width="30" height="22" rx="2" fill="#C9A961" fill-opacity="0.28" stroke="#C9A961" stroke-width="1"/>
+  <rect x="72" y="132" width="30" height="22" rx="2" fill="#C9A961" fill-opacity="0.28" stroke="#C9A961" stroke-width="1"/>
+  <rect x="109" y="132" width="30" height="22" rx="2" fill="#C9A961" fill-opacity="0.28" stroke="#C9A961" stroke-width="1"/>
+  <text x="95" y="186" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#1A1A1A" fill-opacity="0.7">una griglia di blocchi</text>
+
+  <line x1="170" y1="107" x2="223" y2="107" stroke="#1A1A1A" stroke-width="2" marker-end="url(#ge-arr-k)"/>
+
+  <!-- Block -->
+  <rect x="225" y="48" width="150" height="118" rx="8" fill="#F8F5EE" stroke="#C9A961" stroke-width="2"/>
+  <text x="300" y="68" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" font-weight="700" fill="#B5532C">Block (CTA)</text>
+  <rect x="240" y="80" width="120" height="14" rx="3" fill="#C9A961" fill-opacity="0.28" stroke="#C9A961" stroke-width="1"/>
+  <rect x="240" y="100" width="120" height="14" rx="3" fill="#B5532C" fill-opacity="0.35" stroke="#B5532C" stroke-width="1.6"/>
+  <rect x="240" y="120" width="120" height="14" rx="3" fill="#C9A961" fill-opacity="0.28" stroke="#C9A961" stroke-width="1"/>
+  <rect x="240" y="140" width="120" height="14" rx="3" fill="#C9A961" fill-opacity="0.28" stroke="#C9A961" stroke-width="1"/>
+  <text x="300" y="186" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#1A1A1A" fill-opacity="0.7">un blocco = piu warp</text>
+
+  <line x1="375" y1="107" x2="428" y2="107" stroke="#1A1A1A" stroke-width="2" marker-end="url(#ge-arr-k)"/>
+
+  <!-- Warp: 32 thread (8 x 4) -->
+  <rect x="430" y="48" width="150" height="118" rx="8" fill="#F8F5EE" stroke="#B5532C" stroke-width="2"/>
+  <text x="505" y="68" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" font-weight="700" fill="#B5532C">Warp</text>
+  <!-- riga 1 -->
+  <rect x="440" y="80" width="13" height="12" rx="1.5" fill="#B5532C" fill-opacity="0.32" stroke="#B5532C" stroke-width="0.8"/>
+  <rect x="456" y="80" width="13" height="12" rx="1.5" fill="#B5532C" fill-opacity="0.32" stroke="#B5532C" stroke-width="0.8"/>
+  <rect x="472" y="80" width="13" height="12" rx="1.5" fill="#B5532C" fill-opacity="0.32" stroke="#B5532C" stroke-width="0.8"/>
+  <rect x="488" y="80" width="13" height="12" rx="1.5" fill="#B5532C" fill-opacity="0.32" stroke="#B5532C" stroke-width="0.8"/>
+  <rect x="504" y="80" width="13" height="12" rx="1.5" fill="#B5532C" fill-opacity="0.32" stroke="#B5532C" stroke-width="0.8"/>
+  <rect x="520" y="80" width="13" height="12" rx="1.5" fill="#B5532C" fill-opacity="0.32" stroke="#B5532C" stroke-width="0.8"/>
+  <rect x="536" y="80" width="13" height="12" rx="1.5" fill="#B5532C" fill-opacity="0.32" stroke="#B5532C" stroke-width="0.8"/>
+  <rect x="552" y="80" width="13" height="12" rx="1.5" fill="#B5532C" fill-opacity="0.32" stroke="#B5532C" stroke-width="0.8"/>
+  <!-- riga 2 -->
+  <rect x="440" y="96" width="13" height="12" rx="1.5" fill="#B5532C" fill-opacity="0.32" stroke="#B5532C" stroke-width="0.8"/>
+  <rect x="456" y="96" width="13" height="12" rx="1.5" fill="#B5532C" fill-opacity="0.32" stroke="#B5532C" stroke-width="0.8"/>
+  <rect x="472" y="96" width="13" height="12" rx="1.5" fill="#B5532C" fill-opacity="0.32" stroke="#B5532C" stroke-width="0.8"/>
+  <rect x="488" y="96" width="13" height="12" rx="1.5" fill="#B5532C" fill-opacity="0.32" stroke="#B5532C" stroke-width="0.8"/>
+  <rect x="504" y="96" width="13" height="12" rx="1.5" fill="#B5532C" fill-opacity="0.32" stroke="#B5532C" stroke-width="0.8"/>
+  <rect x="520" y="96" width="13" height="12" rx="1.5" fill="#B5532C" fill-opacity="0.32" stroke="#B5532C" stroke-width="0.8"/>
+  <rect x="536" y="96" width="13" height="12" rx="1.5" fill="#B5532C" fill-opacity="0.32" stroke="#B5532C" stroke-width="0.8"/>
+  <rect x="552" y="96" width="13" height="12" rx="1.5" fill="#B5532C" fill-opacity="0.32" stroke="#B5532C" stroke-width="0.8"/>
+  <!-- riga 3 -->
+  <rect x="440" y="112" width="13" height="12" rx="1.5" fill="#B5532C" fill-opacity="0.32" stroke="#B5532C" stroke-width="0.8"/>
+  <rect x="456" y="112" width="13" height="12" rx="1.5" fill="#B5532C" fill-opacity="0.32" stroke="#B5532C" stroke-width="0.8"/>
+  <rect x="472" y="112" width="13" height="12" rx="1.5" fill="#B5532C" fill-opacity="0.32" stroke="#B5532C" stroke-width="0.8"/>
+  <rect x="488" y="112" width="13" height="12" rx="1.5" fill="#B5532C" fill-opacity="0.32" stroke="#B5532C" stroke-width="0.8"/>
+  <rect x="504" y="112" width="13" height="12" rx="1.5" fill="#B5532C" fill-opacity="0.32" stroke="#B5532C" stroke-width="0.8"/>
+  <rect x="520" y="112" width="13" height="12" rx="1.5" fill="#B5532C" fill-opacity="0.32" stroke="#B5532C" stroke-width="0.8"/>
+  <rect x="536" y="112" width="13" height="12" rx="1.5" fill="#B5532C" fill-opacity="0.32" stroke="#B5532C" stroke-width="0.8"/>
+  <rect x="552" y="112" width="13" height="12" rx="1.5" fill="#B5532C" fill-opacity="0.32" stroke="#B5532C" stroke-width="0.8"/>
+  <!-- riga 4 -->
+  <rect x="440" y="128" width="13" height="12" rx="1.5" fill="#B5532C" fill-opacity="0.32" stroke="#B5532C" stroke-width="0.8"/>
+  <rect x="456" y="128" width="13" height="12" rx="1.5" fill="#B5532C" fill-opacity="0.32" stroke="#B5532C" stroke-width="0.8"/>
+  <rect x="472" y="128" width="13" height="12" rx="1.5" fill="#B5532C" fill-opacity="0.32" stroke="#B5532C" stroke-width="0.8"/>
+  <rect x="488" y="128" width="13" height="12" rx="1.5" fill="#B5532C" fill-opacity="0.32" stroke="#B5532C" stroke-width="0.8"/>
+  <rect x="504" y="128" width="13" height="12" rx="1.5" fill="#B5532C" fill-opacity="0.32" stroke="#B5532C" stroke-width="0.8"/>
+  <rect x="520" y="128" width="13" height="12" rx="1.5" fill="#B5532C" fill-opacity="0.32" stroke="#B5532C" stroke-width="0.8"/>
+  <rect x="536" y="128" width="13" height="12" rx="1.5" fill="#B5532C" fill-opacity="0.32" stroke="#B5532C" stroke-width="0.8"/>
+  <rect x="552" y="128" width="13" height="12" rx="1.5" fill="#B5532C" fill-opacity="0.32" stroke="#B5532C" stroke-width="0.8"/>
+  <text x="505" y="186" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#1A1A1A" fill-opacity="0.7">warp = 32 thread</text>
+
+  <line x1="580" y1="107" x2="633" y2="107" stroke="#1A1A1A" stroke-width="2" marker-end="url(#ge-arr-k)"/>
+
+  <!-- Thread -->
+  <rect x="635" y="48" width="150" height="118" rx="8" fill="#F8F5EE" stroke="#B5532C" stroke-width="2"/>
+  <text x="710" y="68" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" font-weight="700" fill="#B5532C">Thread</text>
+  <rect x="698" y="86" width="24" height="24" rx="3" fill="#B5532C" fill-opacity="0.45" stroke="#B5532C" stroke-width="1.6"/>
+  <text x="710" y="136" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#1A1A1A">un thread,</text>
+  <text x="710" y="151" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#1A1A1A">un dato</text>
+  <text x="710" y="186" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#1A1A1A" fill-opacity="0.7">il singolo lavoratore</text>
+
+  <!-- ============ FASCIA FISICA (in basso) ============ -->
+  <text x="20" y="238" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#1A1A1A" fill-opacity="0.55" letter-spacing="1">FISICO — come esegue l'hardware</text>
+
+  <!-- GPU con griglia di SM -->
+  <rect x="20" y="252" width="430" height="196" rx="10" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2.2"/>
+  <text x="35" y="276" font-family="Inter, sans-serif" font-size="14" font-weight="700" fill="#2D5A5C">GPU: una federazione di SM</text>
+
+  <!-- SM: 4 x 2 -->
+  <rect x="35" y="288" width="90" height="60" rx="6" fill="#2D5A5C" fill-opacity="0.12" stroke="#2D5A5C" stroke-width="1.4"/>
+  <text x="80" y="322" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#2D5A5C">SM</text>
+  <!-- SM evidenziato: riceve il blocco -->
+  <rect x="140" y="288" width="90" height="60" rx="6" fill="#B5532C" fill-opacity="0.16" stroke="#B5532C" stroke-width="2"/>
+  <text x="185" y="316" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#B5532C">SM</text>
+  <text x="185" y="333" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" fill="#B5532C">esegue il blocco</text>
+  <rect x="245" y="288" width="90" height="60" rx="6" fill="#2D5A5C" fill-opacity="0.12" stroke="#2D5A5C" stroke-width="1.4"/>
+  <text x="290" y="322" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#2D5A5C">SM</text>
+  <rect x="350" y="288" width="90" height="60" rx="6" fill="#2D5A5C" fill-opacity="0.12" stroke="#2D5A5C" stroke-width="1.4"/>
+  <text x="395" y="322" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#2D5A5C">SM</text>
+  <rect x="35" y="358" width="90" height="60" rx="6" fill="#2D5A5C" fill-opacity="0.12" stroke="#2D5A5C" stroke-width="1.4"/>
+  <text x="80" y="392" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#2D5A5C">SM</text>
+  <rect x="140" y="358" width="90" height="60" rx="6" fill="#2D5A5C" fill-opacity="0.12" stroke="#2D5A5C" stroke-width="1.4"/>
+  <text x="185" y="392" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#2D5A5C">SM</text>
+  <rect x="245" y="358" width="90" height="60" rx="6" fill="#2D5A5C" fill-opacity="0.12" stroke="#2D5A5C" stroke-width="1.4"/>
+  <text x="290" y="392" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#2D5A5C">SM</text>
+  <rect x="350" y="358" width="90" height="60" rx="6" fill="#2D5A5C" fill-opacity="0.12" stroke="#2D5A5C" stroke-width="1.4"/>
+  <text x="395" y="392" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#2D5A5C">SM</text>
+
+  <!-- freccia di assegnazione: blocco -> SM -->
+  <path d="M300,166 C300,210 235,240 190,286" fill="none" stroke="#B5532C" stroke-width="1.8" stroke-dasharray="6 4" marker-end="url(#ge-arr-t)"/>
+  <text x="318" y="212" font-family="Inter, sans-serif" font-size="11.5" fill="#B5532C">1 blocco &#8594; 1 SM</text>
+
+  <!-- pannello di testo esplicativo -->
+  <rect x="470" y="252" width="370" height="196" rx="10" fill="#F8F5EE" stroke="#C9A961" stroke-width="1.6"/>
+  <text x="488" y="282" font-family="Inter, sans-serif" font-size="13" fill="#1A1A1A">L'hardware assegna ogni <tspan font-weight="700">blocco</tspan> a uno</text>
+  <text x="488" y="302" font-family="Inter, sans-serif" font-size="13" fill="#1A1A1A"><tspan font-weight="700">SM</tspan>, che lo esegue a <tspan font-weight="700">warp</tspan> di 32 thread.</text>
+  <text x="488" y="328" font-family="Inter, sans-serif" font-size="13" fill="#1A1A1A">Piu blocchi restano in coda: appena uno</text>
+  <text x="488" y="348" font-family="Inter, sans-serif" font-size="13" fill="#1A1A1A">SM si libera, ne prende un altro.</text>
+  <line x1="488" y1="368" x2="822" y2="368" stroke="#C9A961" stroke-width="1.2"/>
+  <text x="488" y="392" font-family="Inter, sans-serif" font-size="12" font-weight="700" fill="#2D5A5C">Ordini di grandezza</text>
+  <text x="488" y="412" font-family="Inter, sans-serif" font-size="12" fill="#1A1A1A" fill-opacity="0.85">decine di SM &#183; migliaia di core</text>
+  <text x="488" y="430" font-family="Inter, sans-serif" font-size="12" fill="#1A1A1A" fill-opacity="0.85">decine di migliaia di thread residenti</text>
+</svg>

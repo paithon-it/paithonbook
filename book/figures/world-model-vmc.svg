@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 410" role="img" aria-label="Pipeline del world model di Ha e Schmidhuber: l'ambiente produce un fotogramma; V, l'encoder variazionale, lo comprime in un codice z di 32 numeri; M, il modello ricorrente, predice il prossimo codice; C, un controller lineare minuscolo, sceglie l'azione che torna all'ambiente. Un anello tratteggiato sopra M mostra il sogno: la predizione di M rientra come suo input al posto dell'ambiente.">
+  <defs>
+    <marker id="freccia-wm" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#5E5852"/>
+    </marker>
+    <marker id="freccia-wm-t" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#B5532C"/>
+    </marker>
+    <marker id="freccia-wm-o" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#C9A961"/>
+    </marker>
+  </defs>
+
+  <!-- circuito del sogno: M alimenta se stesso -->
+  <path d="M 598 143 C 632 66, 486 66, 505 140" fill="none" stroke="#C9A961" stroke-width="2.2" stroke-dasharray="7 6" marker-end="url(#freccia-wm-o)"/>
+  <text x="553" y="38" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#1A1A1A">il &#171;sogno&#187;</text>
+  <text x="553" y="56" text-anchor="middle" font-family="Inter, sans-serif" font-size="11.5" fill="#5E5852">la predizione di M rientra come suo input</text>
+
+  <!-- ambiente -->
+  <rect x="28" y="150" width="132" height="112" rx="8" fill="#5E5852" fill-opacity="0.10" stroke="#1A1A1A" stroke-width="2"/>
+  <text x="94" y="178" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" font-weight="700" fill="#1A1A1A">ambiente</text>
+  <text x="94" y="196" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#5E5852">(il gioco vero)</text>
+  <path d="M 46 246 C 66 214, 122 214, 142 246" fill="none" stroke="#5E5852" stroke-width="2"/>
+  <rect x="88" y="226" width="12" height="8" rx="2" fill="#B5532C"/>
+
+  <!-- fotogramma: ambiente -> V -->
+  <line x1="163" y1="205" x2="211" y2="205" stroke="#5E5852" stroke-width="2" marker-end="url(#freccia-wm)"/>
+  <text x="187" y="190" text-anchor="middle" font-family="Inter, sans-serif" font-size="11.5" fill="#5E5852">fotogramma</text>
+  <text x="187" y="225" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#5E5852">64 &#215; 64</text>
+
+  <!-- V: visione -->
+  <rect x="216" y="145" width="148" height="120" rx="8" fill="#2D5A5C" fill-opacity="0.12" stroke="#2D5A5C" stroke-width="2.5"/>
+  <text x="290" y="184" text-anchor="middle" font-family="Inter, sans-serif" font-size="24" font-weight="700" fill="#1A1A1A">V</text>
+  <text x="290" y="206" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" fill="#1A1A1A">visione</text>
+  <text x="290" y="225" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#5E5852">autoencoder</text>
+  <text x="290" y="240" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#5E5852">variazionale</text>
+
+  <!-- V -> z -->
+  <line x1="366" y1="205" x2="396" y2="205" stroke="#5E5852" stroke-width="2" marker-end="url(#freccia-wm)"/>
+
+  <!-- il codice z: colonna di caselle -->
+  <rect x="400" y="150" width="20" height="20" rx="4" fill="#2D5A5C" fill-opacity="0.15" stroke="#2D5A5C" stroke-width="2"/>
+  <rect x="400" y="174" width="20" height="20" rx="4" fill="#2D5A5C" fill-opacity="0.15" stroke="#2D5A5C" stroke-width="2"/>
+  <rect x="400" y="198" width="20" height="20" rx="4" fill="#2D5A5C" fill-opacity="0.15" stroke="#2D5A5C" stroke-width="2"/>
+  <rect x="400" y="222" width="20" height="20" rx="4" fill="#2D5A5C" fill-opacity="0.15" stroke="#2D5A5C" stroke-width="2"/>
+  <text x="410" y="262" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" font-weight="700" fill="#2D5A5C">codice z</text>
+  <text x="410" y="277" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#5E5852">32 numeri</text>
+
+  <!-- z -> M -->
+  <line x1="424" y1="205" x2="464" y2="205" stroke="#5E5852" stroke-width="2" marker-end="url(#freccia-wm)"/>
+
+  <!-- M: memoria -->
+  <rect x="468" y="145" width="170" height="120" rx="8" fill="#C9A961" fill-opacity="0.14" stroke="#C9A961" stroke-width="2.5"/>
+  <text x="553" y="184" text-anchor="middle" font-family="Inter, sans-serif" font-size="24" font-weight="700" fill="#1A1A1A">M</text>
+  <text x="553" y="206" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" fill="#1A1A1A">memoria</text>
+  <text x="553" y="225" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#5E5852">RNN che predice</text>
+  <text x="553" y="240" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#5E5852">il prossimo codice</text>
+
+  <!-- M -> C -->
+  <line x1="640" y1="205" x2="696" y2="205" stroke="#5E5852" stroke-width="2" marker-end="url(#freccia-wm)"/>
+  <text x="668" y="191" text-anchor="middle" font-family="Inter, sans-serif" font-size="11.5" fill="#5E5852">z e h</text>
+
+  <!-- C: controller -->
+  <rect x="700" y="172" width="118" height="66" rx="8" fill="#B5532C" fill-opacity="0.12" stroke="#B5532C" stroke-width="2.5"/>
+  <text x="759" y="198" text-anchor="middle" font-family="Inter, sans-serif" font-size="20" font-weight="700" fill="#1A1A1A">C</text>
+  <text x="759" y="216" text-anchor="middle" font-family="Inter, sans-serif" font-size="11.5" fill="#1A1A1A">controller lineare</text>
+  <text x="759" y="231" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#5E5852">867 parametri</text>
+
+  <!-- azione: C -> ambiente -->
+  <path d="M 759 240 L 759 336 Q 759 350 745 350 L 108 350 Q 94 350 94 336 L 94 268" fill="none" stroke="#B5532C" stroke-width="2.2" marker-end="url(#freccia-wm-t)"/>
+  <text x="426" y="340" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" font-weight="700" fill="#B5532C">azione: sterzo, acceleratore, freno</text>
+
+  <!-- didascalia interna -->
+  <text x="440" y="392" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#5E5852">nel gioco vero il ciclo passa dall'ambiente; nel sogno l'anello tratteggiato lo sostituisce: M fa da mondo a se stesso</text>
+</svg>

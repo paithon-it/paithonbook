@@ -1,0 +1,32 @@
+name: call-deploy-book
+
+on:
+  push:
+    branches:
+    - '**'
+    # If your git repository has the Jupyter Book within some-subfolder next to
+    # unrelated files, you can make this run only if a file within that specific
+    # folder (or the workflow file itself) has been modified.
+    #
+    paths:
+    - book/**
+    - .github/workflows/call-deploy-book.yml
+  workflow_dispatch:
+
+jobs: 
+  call-workflow:
+    # Solo dal repository pubblico. Il libro si scrive in un repo privato che ha
+    # gli stessi workflow: senza questa guardia proverebbe a pubblicare Pages da
+    # la', e il deploy ha una sola destinazione.
+    if: github.repository == 'paithon-it/paithonbook'
+    uses: TeachBooks/deploy-book-workflow/.github/workflows/deploy-book.yml@main
+    # NIENTE `secrets: inherit`: il submodule `book/_static/brand` è PUBBLICO,
+    # quindi il checkout lo clona col GITHUB_TOKEN di default — nessun GH_PAT
+    # serve. Non ereditando i secret, il reusable non raccoglie un eventuale
+    # GH_PAT residuo (che, privo del permesso Pages, faceva fallire lo step
+    # "Include overview summary"). Il GITHUB_TOKEN di default ha `pages: write`.
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+

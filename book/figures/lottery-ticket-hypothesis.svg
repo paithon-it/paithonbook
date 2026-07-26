@@ -1,0 +1,37 @@
+<svg viewBox="0 0 720 380" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Una rete neurale densa con tutte le connessioni in grigio; un sottoinsieme di connessioni e nodi, il biglietto vincente, è evidenziato in terracotta">
+  <rect x="0" y="0" width="720" height="380" fill="#F8F5EE"/>
+  <text x="360" y="34" text-anchor="middle" font-family="sans-serif" font-size="15" fill="#1A1A1A">la rete densa (grigio) e il biglietto vincente al suo interno (terracotta)</text>
+  <!-- connessioni dense in grigio -->
+  <g stroke="#C9C2B4" stroke-width="1.2">
+    <line x1="140" y1="110" x2="380" y2="70"/><line x1="140" y1="110" x2="380" y2="150"/><line x1="140" y1="110" x2="380" y2="230"/><line x1="140" y1="110" x2="380" y2="310"/>
+    <line x1="140" y1="190" x2="380" y2="70"/><line x1="140" y1="190" x2="380" y2="150"/><line x1="140" y1="190" x2="380" y2="230"/><line x1="140" y1="190" x2="380" y2="310"/>
+    <line x1="140" y1="270" x2="380" y2="70"/><line x1="140" y1="270" x2="380" y2="150"/><line x1="140" y1="270" x2="380" y2="230"/><line x1="140" y1="270" x2="380" y2="310"/>
+    <line x1="380" y1="70" x2="620" y2="110"/><line x1="380" y1="70" x2="620" y2="190"/><line x1="380" y1="70" x2="620" y2="270"/>
+    <line x1="380" y1="150" x2="620" y2="110"/><line x1="380" y1="150" x2="620" y2="190"/><line x1="380" y1="150" x2="620" y2="270"/>
+    <line x1="380" y1="230" x2="620" y2="110"/><line x1="380" y1="230" x2="620" y2="190"/><line x1="380" y1="230" x2="620" y2="270"/>
+    <line x1="380" y1="310" x2="620" y2="110"/><line x1="380" y1="310" x2="620" y2="190"/><line x1="380" y1="310" x2="620" y2="270"/>
+  </g>
+  <!-- biglietto vincente in terracotta -->
+  <g stroke="#B5532C" stroke-width="2.5">
+    <line x1="140" y1="110" x2="380" y2="70"/>
+    <line x1="140" y1="110" x2="380" y2="230"/>
+    <line x1="140" y1="270" x2="380" y2="230"/>
+    <line x1="380" y1="70" x2="620" y2="190"/>
+    <line x1="380" y1="230" x2="620" y2="190"/>
+  </g>
+  <!-- nodi non vincenti -->
+  <g fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.5">
+    <circle cx="140" cy="190" r="16"/>
+    <circle cx="380" cy="150" r="16"/><circle cx="380" cy="310" r="16"/>
+    <circle cx="620" cy="110" r="16"/><circle cx="620" cy="270" r="16"/>
+  </g>
+  <!-- nodi vincenti -->
+  <g fill="#B5532C" stroke="#B5532C" stroke-width="1.5">
+    <circle cx="140" cy="110" r="16"/><circle cx="140" cy="270" r="16"/>
+    <circle cx="380" cy="70" r="16"/><circle cx="380" cy="230" r="16"/>
+    <circle cx="620" cy="190" r="16"/>
+  </g>
+  <text x="140" y="352" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#5E5852">ingresso</text>
+  <text x="380" y="352" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#5E5852">strato nascosto</text>
+  <text x="620" y="352" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#5E5852">uscita</text>
+</svg>

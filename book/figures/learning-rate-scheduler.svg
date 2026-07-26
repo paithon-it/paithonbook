@@ -1,0 +1,37 @@
+<svg viewBox="0 0 760 400" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Schema: learning rate con warmup lineare e cosine decay">
+  <rect x="0" y="0" width="760" height="400" fill="#F8F5EE"/>
+  <text x="380" y="34" text-anchor="middle" font-family="sans-serif" font-size="17" font-weight="bold" fill="#1A1A1A">Warmup lineare + cosine decay</text>
+  <!-- axes -->
+  <line x1="80" y1="320" x2="700" y2="320" stroke="#1A1A1A" stroke-width="2"/>
+  <line x1="80" y1="320" x2="80" y2="70" stroke="#1A1A1A" stroke-width="2"/>
+  <text x="390" y="355" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#1A1A1A">passi di training →</text>
+  <text x="40" y="200" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#1A1A1A" transform="rotate(-90 40 200)">learning rate</text>
+  <!-- eta max dashed line -->
+  <line x1="80" y1="100" x2="700" y2="100" stroke="#C9A961" stroke-width="1.5" stroke-dasharray="6 5"/>
+  <text x="695" y="92" text-anchor="end" font-family="sans-serif" font-size="12" fill="#1A1A1A">η max</text>
+  <!-- warmup: linear ramp -->
+  <line x1="80" y1="315" x2="200" y2="100" stroke="#B5532C" stroke-width="2.5"/>
+  <!-- cosine decay half cosine -->
+  <path d="M 200 100
+           C 290 100, 330 130, 400 195
+           C 470 260, 540 300, 700 310"
+        fill="none" stroke="#2D5A5C" stroke-width="2.5"/>
+  <!-- warmup zone marker -->
+  <line x1="200" y1="100" x2="200" y2="320" stroke="#1A1A1A" stroke-width="1.5" stroke-dasharray="4 4"/>
+  <rect x="92" y="120" width="96" height="46" fill="#F8F5EE" stroke="#B5532C" stroke-width="1.5" rx="6"/>
+  <text x="140" y="139" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="bold" fill="#B5532C">warmup</text>
+  <text x="140" y="156" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#1A1A1A">salita lineare</text>
+  <!-- decay label -->
+  <rect x="400" y="130" width="130" height="46" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="1.5" rx="6"/>
+  <text x="465" y="149" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="bold" fill="#2D5A5C">cosine decay</text>
+  <text x="465" y="166" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#1A1A1A">discesa morbida</text>
+  <!-- annotations under axis -->
+  <text x="140" y="338" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#1A1A1A">fase fragile</text>
+  <text x="450" y="338" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#1A1A1A">esplorazione → rifinitura</text>
+  <!-- eta min -->
+  <circle cx="700" cy="310" r="4" fill="#B5532C"/>
+  <text x="695" y="300" text-anchor="end" font-family="sans-serif" font-size="12" fill="#1A1A1A">η min</text>
+  <!-- caption band -->
+  <rect x="80" y="368" width="620" height="26" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.5" rx="6"/>
+  <text x="390" y="385" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">rampa breve per stabilizzare l'inizio, poi mezza curva di coseno fino a fine training</text>
+</svg>

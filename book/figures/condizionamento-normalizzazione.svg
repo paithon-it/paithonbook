@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  paithon book — figura: perche' normalizzare aiuta l'ottimizzazione.
+  A sinistra dati grezzi (curve di livello allungate, problema mal
+  condizionato): la discesa del gradiente rimbalza a zig-zag. A destra dati
+  standardizzati (curve circolari, ben condizionato): discesa diretta.
+  Palette-locked: teal per le curve di livello, terracotta per il cammino,
+  ocra per il minimo, neutri warm per assi/label. Fondo trasparente.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 340" role="img"
+     aria-label="Confronto tra la discesa del gradiente su curve di livello allungate (dati grezzi, cammino a zig-zag) e su curve circolari (dati standardizzati, cammino diretto).">
+  <style>
+    .lvl   { fill:none; stroke:#2D5A5C; stroke-width:1.6; opacity:.75; }
+    .path  { fill:none; stroke:#B5532C; stroke-width:2.6; stroke-linecap:round; stroke-linejoin:round; }
+    .step  { fill:#B5532C; }
+    .axis  { stroke:#C9C2B4; stroke-width:1.4; }
+    .cap   { font-family:Inter, system-ui, sans-serif; font-size:15px; fill:#5E5852; }
+    .cap b { fill:#1A1A1A; }
+    .tag   { font-family:Fraunces, Georgia, serif; font-size:16px; font-weight:600; fill:#1A1A1A; }
+  </style>
+
+  <!-- ===== Pannello A: dati grezzi (mal condizionato) ===== -->
+  <text class="tag" x="60" y="34">dati grezzi</text>
+  <!-- assi leggeri -->
+  <line class="axis" x1="28" y1="290" x2="312" y2="290"/>
+  <line class="axis" x1="28" y1="290" x2="28"  y2="52"/>
+
+  <!-- curve di livello allungate (valle stretta) -->
+  <ellipse class="lvl" cx="170" cy="180" rx="150" ry="46"/>
+  <ellipse class="lvl" cx="170" cy="180" rx="114" ry="35"/>
+  <ellipse class="lvl" cx="170" cy="180" rx="79"  ry="24"/>
+  <ellipse class="lvl" cx="170" cy="180" rx="45"  ry="14"/>
+
+  <!-- cammino a zig-zag del gradiente -->
+  <polyline class="path" points="42,96 138,258 156,108 172,246 172,122 170,180"/>
+  <circle class="step" cx="42"  cy="96"  r="3.5"/>
+  <circle class="step" cx="138" cy="258" r="3.5"/>
+  <circle class="step" cx="156" cy="108" r="3.5"/>
+  <circle class="step" cx="172" cy="246" r="3.5"/>
+  <circle class="step" cx="172" cy="122" r="3.5"/>
+
+  <!-- minimo -->
+  <circle cx="170" cy="180" r="5" fill="#C9A961" stroke="#1A1A1A" stroke-width="1.4"/>
+
+  <!-- ===== Pannello B: dati standardizzati (ben condizionato) ===== -->
+  <text class="tag" x="392" y="34">dati standardizzati</text>
+  <line class="axis" x1="352" y1="290" x2="622" y2="290"/>
+  <line class="axis" x1="352" y1="290" x2="352" y2="52"/>
+
+  <!-- curve di livello circolari -->
+  <circle class="lvl" cx="486" cy="180" r="108"/>
+  <circle class="lvl" cx="486" cy="180" r="80"/>
+  <circle class="lvl" cx="486" cy="180" r="52"/>
+  <circle class="lvl" cx="486" cy="180" r="26"/>
+
+  <!-- cammino diretto del gradiente -->
+  <polyline class="path" points="392,92 448,140 476,166 486,180"/>
+  <circle class="step" cx="392" cy="92"  r="3.5"/>
+  <circle class="step" cx="448" cy="140" r="3.5"/>
+  <circle class="step" cx="476" cy="166" r="3.5"/>
+
+  <!-- minimo -->
+  <circle cx="486" cy="180" r="5" fill="#C9A961" stroke="#1A1A1A" stroke-width="1.4"/>
+
+  <!-- didascalie sotto i pannelli -->
+  <text class="cap" x="60"  y="320">passi a <tspan font-weight="700" fill="#1A1A1A">zig-zag</tspan>, convergenza lenta</text>
+  <text class="cap" x="392" y="320">discesa <tspan font-weight="700" fill="#1A1A1A">diretta</tspan>, pochi passi</text>
+</svg>

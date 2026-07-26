@@ -1,0 +1,44 @@
+<svg viewBox="0 0 720 320" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Schema del variational autoencoder: l'encoder produce media e deviazione, si campiona un punto nello spazio latente, il decoder ricostruisce">
+  <rect x="0" y="0" width="720" height="320" fill="#F8F5EE"/>
+  <text x="360" y="30" text-anchor="middle" font-family="sans-serif" font-size="15" font-weight="bold" fill="#1A1A1A">Il latente probabilistico del VAE</text>
+  <!-- input -->
+  <rect x="30" y="120" width="70" height="70" rx="6" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="2"/>
+  <text x="65" y="160" text-anchor="middle" font-family="sans-serif" font-size="14" fill="#1A1A1A">x</text>
+  <text x="65" y="215" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">input</text>
+  <!-- encoder -->
+  <polygon points="120,105 210,135 210,175 120,205" fill="#B5532C"/>
+  <text x="163" y="160" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#F8F5EE">encoder</text>
+  <!-- mu / sigma -->
+  <rect x="230" y="105" width="56" height="36" rx="6" fill="#F8F5EE" stroke="#B5532C" stroke-width="2"/>
+  <text x="258" y="128" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#1A1A1A">μ</text>
+  <rect x="230" y="165" width="56" height="36" rx="6" fill="#F8F5EE" stroke="#B5532C" stroke-width="2"/>
+  <text x="258" y="188" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#1A1A1A">σ</text>
+  <!-- latent cloud -->
+  <ellipse cx="380" cy="155" rx="62" ry="48" fill="#C9A961" fill-opacity="0.5" stroke="#C9A961" stroke-width="2"/>
+  <circle cx="380" cy="155" r="5" fill="#1A1A1A"/>
+  <text x="398" y="150" font-family="sans-serif" font-size="13" fill="#1A1A1A">z</text>
+  <text x="380" y="235" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">spazio latente: una nuvola, non un punto</text>
+  <!-- epsilon -->
+  <text x="380" y="70" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#1A1A1A">ε ~ N(0, 1)</text>
+  <line x1="380" y1="80" x2="380" y2="102" stroke="#1A1A1A" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <text x="470" y="92" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">z = μ + σ·ε</text>
+  <!-- decoder -->
+  <polygon points="470,135 560,105 560,205 470,175" fill="#2D5A5C"/>
+  <text x="515" y="160" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#F8F5EE">decoder</text>
+  <!-- output -->
+  <rect x="585" y="120" width="70" height="70" rx="6" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="2"/>
+  <text x="620" y="160" text-anchor="middle" font-family="sans-serif" font-size="14" fill="#1A1A1A">x̂</text>
+  <text x="620" y="215" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">ricostruzione</text>
+  <!-- arrows -->
+  <g stroke="#1A1A1A" stroke-width="1.5" fill="none">
+    <line x1="100" y1="155" x2="118" y2="155"/>
+    <line x1="210" y1="130" x2="228" y2="123"/>
+    <line x1="210" y1="180" x2="228" y2="187"/>
+    <line x1="286" y1="123" x2="330" y2="140"/>
+    <line x1="286" y1="187" x2="330" y2="170"/>
+    <line x1="442" y1="155" x2="468" y2="155"/>
+    <line x1="560" y1="155" x2="583" y2="155"/>
+  </g>
+  <!-- KL note -->
+  <text x="150" y="280" font-family="sans-serif" font-size="12" fill="#B5532C">loss = errore di ricostruzione + KL(nuvola ∥ N(0,1))</text>
+</svg>

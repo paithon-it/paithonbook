@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 460" role="img" aria-label="Due schemi affiancati di serving. A sinistra, Batch: una pila di molte richieste accumulate entra in una scatola modello e ne esce una pila di molte previsioni; la priorità è il throughput e la latenza non è critica. A destra, Online: una singola richiesta entra nel modello e ne esce una singola risposta; la priorità è la latenza bassa, una risposta subito. In entrambi i casi il modello carica i pesi una sola volta.">
+  <defs>
+    <marker id="serv-arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#C9A961"/>
+    </marker>
+  </defs>
+
+  <!-- divisore centrale -->
+  <line x1="360" y1="24" x2="360" y2="444" stroke="#C9A961" stroke-width="1.5" stroke-dasharray="6 6"/>
+
+  <!-- ===================== PANNELLO BATCH (sinistra) ===================== -->
+  <rect x="55" y="26" width="270" height="48" rx="9" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2.5"/>
+  <text x="190" y="50" text-anchor="middle" font-family="Georgia, serif" font-size="20" font-weight="700" fill="#2D5A5C">Batch</text>
+  <text x="190" y="67" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#1A1A1A">in blocco &#183; offline</text>
+
+  <!-- input: pila di molte richieste -->
+  <rect x="136" y="102" width="140" height="36" rx="7" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2"/>
+  <rect x="128" y="110" width="140" height="36" rx="7" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2"/>
+  <rect x="120" y="118" width="140" height="36" rx="7" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2"/>
+  <text x="190" y="141" text-anchor="middle" font-family="Inter, sans-serif" font-size="12.5" fill="#1A1A1A">molte richieste</text>
+
+  <line x1="190" y1="160" x2="190" y2="206" stroke="#C9A961" stroke-width="3" marker-end="url(#serv-arrow)"/>
+
+  <!-- modello -->
+  <rect x="128" y="212" width="124" height="50" rx="9" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="2.5"/>
+  <text x="190" y="240" text-anchor="middle" font-family="Inter, sans-serif" font-size="16" font-weight="700" fill="#1A1A1A">modello</text>
+  <text x="190" y="255" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" fill="#1A1A1A">pesi caricati una volta</text>
+
+  <line x1="190" y1="264" x2="190" y2="310" stroke="#C9A961" stroke-width="3" marker-end="url(#serv-arrow)"/>
+
+  <!-- output: pila di molte previsioni -->
+  <rect x="136" y="316" width="140" height="36" rx="7" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2"/>
+  <rect x="128" y="324" width="140" height="36" rx="7" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2"/>
+  <rect x="120" y="332" width="140" height="36" rx="7" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2"/>
+  <text x="190" y="355" text-anchor="middle" font-family="Inter, sans-serif" font-size="12.5" fill="#1A1A1A">molte previsioni</text>
+
+  <!-- callout priorità -->
+  <rect x="70" y="388" width="240" height="50" rx="9" fill="#C9A961" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="190" y="410" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#1A1A1A">priorit&#224;: throughput</text>
+  <text x="190" y="427" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#1A1A1A">la latenza non &#232; critica</text>
+
+  <!-- ===================== PANNELLO ONLINE (destra) ===================== -->
+  <rect x="395" y="26" width="270" height="48" rx="9" fill="#F8F5EE" stroke="#B5532C" stroke-width="2.5"/>
+  <text x="530" y="50" text-anchor="middle" font-family="Georgia, serif" font-size="20" font-weight="700" fill="#B5532C">Online</text>
+  <text x="530" y="67" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#1A1A1A">sincrono &#183; in tempo reale</text>
+
+  <!-- input: una richiesta -->
+  <rect x="460" y="118" width="140" height="36" rx="7" fill="#F8F5EE" stroke="#B5532C" stroke-width="2"/>
+  <text x="530" y="141" text-anchor="middle" font-family="Inter, sans-serif" font-size="12.5" fill="#1A1A1A">una richiesta</text>
+
+  <line x1="530" y1="160" x2="530" y2="206" stroke="#C9A961" stroke-width="3" marker-end="url(#serv-arrow)"/>
+
+  <!-- modello -->
+  <rect x="468" y="212" width="124" height="50" rx="9" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="2.5"/>
+  <text x="530" y="240" text-anchor="middle" font-family="Inter, sans-serif" font-size="16" font-weight="700" fill="#1A1A1A">modello</text>
+  <text x="530" y="255" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" fill="#1A1A1A">pesi caricati una volta</text>
+
+  <line x1="530" y1="264" x2="530" y2="310" stroke="#C9A961" stroke-width="3" marker-end="url(#serv-arrow)"/>
+
+  <!-- output: una risposta -->
+  <rect x="460" y="316" width="140" height="36" rx="7" fill="#F8F5EE" stroke="#B5532C" stroke-width="2"/>
+  <text x="530" y="339" text-anchor="middle" font-family="Inter, sans-serif" font-size="12.5" fill="#1A1A1A">una risposta</text>
+
+  <!-- callout priorità -->
+  <rect x="410" y="388" width="240" height="50" rx="9" fill="#C9A961" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="530" y="410" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#1A1A1A">priorit&#224;: latenza bassa</text>
+  <text x="530" y="427" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#1A1A1A">una risposta subito</text>
+</svg>

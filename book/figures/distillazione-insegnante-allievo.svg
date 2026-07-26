@@ -1,0 +1,48 @@
+<svg viewBox="0 0 720 380" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Schema della distillazione: il modello maestro produce una distribuzione morbida di probabilità che lo studente cerca di riprodurre">
+  <defs>
+    <marker id="dist-ah" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L7,3 L0,6 Z" fill="#1A1A1A"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="720" height="380" fill="#F8F5EE"/>
+  <text x="360" y="28" text-anchor="middle" font-family="sans-serif" font-size="15" font-weight="bold" fill="#1A1A1A">Distillazione — i logits morbidi del maestro guidano lo studente</text>
+
+  <!-- teacher box -->
+  <rect x="40" y="66" width="150" height="86" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="2"/>
+  <text x="115" y="104" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="bold" fill="#F8F5EE">MAESTRO</text>
+  <text x="115" y="126" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#F8F5EE">grande, lento</text>
+  <text x="115" y="186" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#2D5A5C">distribuzione morbida</text>
+
+  <!-- teacher bars -->
+  <line x1="40" y1="320" x2="205" y2="320" stroke="#1A1A1A" stroke-width="1.5"/>
+  <rect x="48" y="212" width="30" height="108" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5"/>
+  <rect x="90" y="277" width="30" height="43" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5"/>
+  <rect x="132" y="300" width="30" height="20" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5"/>
+  <rect x="174" y="311" width="30" height="9" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="63" y="336" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#5E5852">cane</text>
+  <text x="105" y="336" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#5E5852">gatto</text>
+  <text x="147" y="336" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#5E5852">volpe</text>
+  <text x="189" y="336" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#5E5852">aereo</text>
+
+  <!-- arrow -->
+  <line x1="230" y1="250" x2="470" y2="250" stroke="#1A1A1A" stroke-width="2.5" marker-end="url(#dist-ah)"/>
+  <text x="350" y="234" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">soft targets &#183; softmax(z / T)</text>
+  <text x="350" y="272" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#5E5852">la temperatura T alza le probabilit&#224; piccole</text>
+
+  <!-- student box -->
+  <rect x="530" y="66" width="150" height="86" fill="#C9A961" stroke="#1A1A1A" stroke-width="2"/>
+  <text x="605" y="104" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="bold" fill="#1A1A1A">STUDENTE</text>
+  <text x="605" y="126" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#1A1A1A">piccolo, veloce</text>
+  <text x="605" y="186" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#B5532C">cerca di riprodurla</text>
+
+  <!-- student bars (outline only) -->
+  <line x1="518" y1="320" x2="683" y2="320" stroke="#1A1A1A" stroke-width="1.5"/>
+  <rect x="526" y="216" width="30" height="104" fill="none" stroke="#B5532C" stroke-width="2"/>
+  <rect x="568" y="272" width="30" height="48" fill="none" stroke="#B5532C" stroke-width="2"/>
+  <rect x="610" y="296" width="30" height="24" fill="none" stroke="#B5532C" stroke-width="2"/>
+  <rect x="652" y="309" width="30" height="11" fill="none" stroke="#B5532C" stroke-width="2"/>
+  <text x="541" y="336" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#5E5852">cane</text>
+  <text x="583" y="336" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#5E5852">gatto</text>
+  <text x="625" y="336" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#5E5852">volpe</text>
+  <text x="667" y="336" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#5E5852">aereo</text>
+</svg>

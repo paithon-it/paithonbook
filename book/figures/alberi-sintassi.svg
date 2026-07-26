@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 480" role="img" aria-label="La frase ambigua Ho visto un uomo con il binocolo analizzata due volte: a sinistra l'albero a costituenti della lettura in cui il binocolo appartiene all'uomo, a destra il grafo a dipendenze della lettura in cui il binocolo serve a chi guarda, con archi etichettati sopra le parole.">
+  <defs>
+    <marker id="freccia-dip" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#B5532C"/>
+    </marker>
+    <marker id="freccia-root" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#5E5852"/>
+    </marker>
+  </defs>
+
+  <!-- ==================== pannello sinistro: costituenti ==================== -->
+  <text x="30" y="32" font-family="Inter, sans-serif" font-size="15" font-weight="700" fill="#2D5A5C">Costituenti</text>
+  <text x="30" y="50" font-family="Inter, sans-serif" font-size="12" fill="#5E5852">lettura: il binocolo è dell'uomo</text>
+
+  <!-- nodi sintagmatici -->
+  <text x="110" y="125" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#2D5A5C">F</text>
+  <text x="182" y="180" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#2D5A5C">SV</text>
+  <text x="258" y="235" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#2D5A5C">SN</text>
+  <text x="330" y="290" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#2D5A5C">SP</text>
+  <text x="196" y="345" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#2D5A5C">SN</text>
+  <text x="369" y="345" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#2D5A5C">SN</text>
+
+  <!-- rami dell'albero -->
+  <line x1="102" y1="131" x2="47"  y2="383" stroke="#2D5A5C" stroke-width="2"/>
+  <line x1="118" y1="131" x2="176" y2="168" stroke="#2D5A5C" stroke-width="2"/>
+  <line x1="174" y1="186" x2="110" y2="383" stroke="#2D5A5C" stroke-width="2"/>
+  <line x1="190" y1="186" x2="252" y2="223" stroke="#2D5A5C" stroke-width="2"/>
+  <line x1="250" y1="241" x2="200" y2="333" stroke="#2D5A5C" stroke-width="2"/>
+  <line x1="266" y1="241" x2="324" y2="278" stroke="#2D5A5C" stroke-width="3"/>
+  <line x1="322" y1="296" x2="288" y2="383" stroke="#2D5A5C" stroke-width="2"/>
+  <line x1="338" y1="296" x2="365" y2="333" stroke="#2D5A5C" stroke-width="2"/>
+  <line x1="188" y1="351" x2="170" y2="383" stroke="#2D5A5C" stroke-width="2"/>
+  <line x1="204" y1="351" x2="222" y2="383" stroke="#2D5A5C" stroke-width="2"/>
+  <line x1="361" y1="351" x2="342" y2="383" stroke="#2D5A5C" stroke-width="2"/>
+  <line x1="377" y1="351" x2="396" y2="383" stroke="#2D5A5C" stroke-width="2"/>
+
+  <!-- preterminali -->
+  <text x="45"  y="395" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#2D5A5C">AUX</text>
+  <text x="108" y="395" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#2D5A5C">V</text>
+  <text x="168" y="395" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#2D5A5C">DET</text>
+  <text x="224" y="395" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#2D5A5C">N</text>
+  <text x="286" y="395" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#2D5A5C">P</text>
+  <text x="340" y="395" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#2D5A5C">DET</text>
+  <text x="398" y="395" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#2D5A5C">N</text>
+
+  <!-- trattini preterminale-parola -->
+  <line x1="45"  y1="401" x2="45"  y2="414" stroke="#5E5852" stroke-width="1.3"/>
+  <line x1="108" y1="401" x2="108" y2="414" stroke="#5E5852" stroke-width="1.3"/>
+  <line x1="168" y1="401" x2="168" y2="414" stroke="#5E5852" stroke-width="1.3"/>
+  <line x1="224" y1="401" x2="224" y2="414" stroke="#5E5852" stroke-width="1.3"/>
+  <line x1="286" y1="401" x2="286" y2="414" stroke="#5E5852" stroke-width="1.3"/>
+  <line x1="340" y1="401" x2="340" y2="414" stroke="#5E5852" stroke-width="1.3"/>
+  <line x1="398" y1="401" x2="398" y2="414" stroke="#5E5852" stroke-width="1.3"/>
+
+  <!-- parole -->
+  <text x="45"  y="430" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#1A1A1A">Ho</text>
+  <text x="108" y="430" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#1A1A1A">visto</text>
+  <text x="168" y="430" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#1A1A1A">un</text>
+  <text x="224" y="430" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" font-weight="700" fill="#1A1A1A">uomo</text>
+  <text x="286" y="430" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#1A1A1A">con</text>
+  <text x="340" y="430" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#1A1A1A">il</text>
+  <text x="398" y="430" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" font-weight="700" fill="#1A1A1A">binocolo</text>
+
+  <!-- annotazione sull'attacco -->
+  <text x="352" y="248" font-family="Inter, sans-serif" font-size="11" fill="#5E5852">il SP entra</text>
+  <text x="352" y="262" font-family="Inter, sans-serif" font-size="11" fill="#5E5852">nella scatola SN</text>
+
+  <!-- divisore -->
+  <line x1="452" y1="22" x2="452" y2="445" stroke="#5E5852" stroke-width="1" stroke-opacity="0.35" stroke-dasharray="4 4"/>
+
+  <!-- ==================== pannello destro: dipendenze ==================== -->
+  <text x="480" y="32" font-family="Inter, sans-serif" font-size="15" font-weight="700" fill="#B5532C">Dipendenze</text>
+  <text x="480" y="50" font-family="Inter, sans-serif" font-size="12" fill="#5E5852">lettura: il binocolo è di chi guarda</text>
+  <line x1="480" y1="66" x2="505" y2="66" stroke="#B5532C" stroke-width="2" marker-end="url(#freccia-dip)"/>
+  <text x="512" y="70" font-family="Inter, sans-serif" font-size="11" fill="#5E5852">dalla testa al dipendente, con il ruolo</text>
+
+  <!-- radice -->
+  <text x="562" y="88" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#5E5852">root</text>
+  <line x1="562" y1="96" x2="562" y2="392" stroke="#5E5852" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#freccia-root)"/>
+
+  <!-- archi di dipendenza -->
+  <path d="M 556 408 Q 528 350 500 408" fill="none" stroke="#B5532C" stroke-width="2" marker-end="url(#freccia-dip)"/>
+  <path d="M 566 408 Q 622 290 678 408" fill="none" stroke="#B5532C" stroke-width="2" marker-end="url(#freccia-dip)"/>
+  <path d="M 576 408 Q 718 140 860 408" fill="none" stroke="#B5532C" stroke-width="3" marker-end="url(#freccia-dip)"/>
+  <path d="M 672 408 Q 647 368 622 408" fill="none" stroke="#B5532C" stroke-width="2" marker-end="url(#freccia-dip)"/>
+  <path d="M 850 408 Q 795 285 740 408" fill="none" stroke="#B5532C" stroke-width="2" marker-end="url(#freccia-dip)"/>
+  <path d="M 842 408 Q 818 368 794 408" fill="none" stroke="#B5532C" stroke-width="2" marker-end="url(#freccia-dip)"/>
+
+  <!-- etichette degli archi -->
+  <text x="528" y="372" text-anchor="middle" font-family="Inter, sans-serif" font-size="11.5" fill="#B5532C">aux</text>
+  <text x="622" y="342" text-anchor="middle" font-family="Inter, sans-serif" font-size="11.5" fill="#B5532C">obj</text>
+  <text x="718" y="266" text-anchor="middle" font-family="Inter, sans-serif" font-size="12.5" font-weight="700" fill="#B5532C">obl</text>
+  <text x="647" y="381" text-anchor="middle" font-family="Inter, sans-serif" font-size="11.5" fill="#B5532C">det</text>
+  <text x="795" y="339" text-anchor="middle" font-family="Inter, sans-serif" font-size="11.5" fill="#B5532C">case</text>
+  <text x="818" y="381" text-anchor="middle" font-family="Inter, sans-serif" font-size="11.5" fill="#B5532C">det</text>
+
+  <!-- annotazione sull'arco decisivo -->
+  <text x="718" y="188" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#5E5852">l'arco parte dal verbo:</text>
+  <text x="718" y="202" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#5E5852">è lo strumento del vedere</text>
+
+  <!-- parole -->
+  <text x="500" y="430" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#1A1A1A">Ho</text>
+  <text x="562" y="430" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" font-weight="700" fill="#1A1A1A">visto</text>
+  <text x="622" y="430" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#1A1A1A">un</text>
+  <text x="678" y="430" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#1A1A1A">uomo</text>
+  <text x="740" y="430" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#1A1A1A">con</text>
+  <text x="794" y="430" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#1A1A1A">il</text>
+  <text x="852" y="430" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" font-weight="700" fill="#1A1A1A">binocolo</text>
+
+  <!-- didascalia interna -->
+  <text x="450" y="466" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#5E5852">la stessa frase, due formalismi — e ogni formalismo mostra qui una delle due letture</text>
+</svg>

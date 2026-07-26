@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  paithon book - figura: Intersection over Union (IoU).
+  Due riquadri sovrapposti: Reale (teal) e Predetto (terracotta).
+  Pannello sinistro: l'area di INTERSEZIONE (la sovrapposizione) in ocra.
+  Pannello destro: l'area di UNIONE (tutto il coperto) in tinta teal.
+  IoU = intersezione / unione. Palette-locked, fondo trasparente:
+  leggibile in light e dark mode. Nessun colore fuori palette.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 315" role="img"
+     aria-label="Confronto tra due riquadri sovrapposti, uno reale in teal e uno predetto in terracotta. A sinistra e evidenziata in ocra la loro area di intersezione, la sola parte in cui si sovrappongono. A destra e evidenziata in tinta teal la loro area di unione, tutta la regione coperta da almeno uno dei due riquadri. L'Intersection over Union e il rapporto tra queste due aree.">
+  <style>
+    .ptitle { font-family:Fraunces, Georgia, serif; font-size:17px; font-weight:600; fill:#1A1A1A; }
+    .lbl    { font-family:Inter, system-ui, sans-serif; font-size:13px; font-weight:600; }
+    .leg    { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#5E5852; }
+  </style>
+
+  <!-- PANNELLO SINISTRO: intersezione -->
+  <g transform="translate(20,10)">
+    <text class="ptitle" x="120" y="12" text-anchor="middle">Intersezione</text>
+    <rect x="90" y="95" width="60" height="65" fill="#C9A961"/>
+    <rect x="20" y="30" width="130" height="130" rx="6" fill="none" stroke="#2D5A5C" stroke-width="3"/>
+    <rect x="90" y="95" width="130" height="130" rx="6" fill="none" stroke="#B5532C" stroke-width="3"/>
+    <text class="lbl" x="30" y="50" fill="#2D5A5C">Reale</text>
+    <text class="lbl" x="210" y="215" text-anchor="end" fill="#B5532C">Predetto</text>
+  </g>
+
+  <!-- PANNELLO DESTRO: unione -->
+  <g transform="translate(330,10)">
+    <text class="ptitle" x="120" y="12" text-anchor="middle">Unione</text>
+    <polygon points="20,30 150,30 150,95 220,95 220,225 90,225 90,160 20,160"
+             fill="#2D5A5C" fill-opacity="0.18"/>
+    <rect x="20" y="30" width="130" height="130" rx="6" fill="none" stroke="#2D5A5C" stroke-width="3"/>
+    <rect x="90" y="95" width="130" height="130" rx="6" fill="none" stroke="#B5532C" stroke-width="3"/>
+  </g>
+
+  <!-- legenda -->
+  <rect x="120" y="285" width="15" height="15" fill="#C9A961"/>
+  <text class="leg" x="142" y="297">area di intersezione</text>
+  <rect x="345" y="285" width="15" height="15" fill="#2D5A5C" fill-opacity="0.18" stroke="#2D5A5C" stroke-width="1"/>
+  <text class="leg" x="367" y="297">area di unione</text>
+</svg>

@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 365" role="img" aria-label="Matrice utenti per film: griglia di sei utenti per otto film in cui poche celle contengono un voto da uno a cinque e tutte le altre un punto interrogativo; una cella evidenziata in terracotta indica il voto da prevedere.">
+  <defs>
+    <marker id="freccia-m" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#5E5852"/>
+    </marker>
+  </defs>
+  <rect x="150" y="70" width="496" height="252" rx="6" fill="#F8F5EE" stroke="#5E5852" stroke-width="1.5"/>
+  <line x1="212" y1="70" x2="212" y2="322" stroke="#5E5852" stroke-width="0.8" stroke-opacity="0.55"/>
+  <line x1="274" y1="70" x2="274" y2="322" stroke="#5E5852" stroke-width="0.8" stroke-opacity="0.55"/>
+  <line x1="336" y1="70" x2="336" y2="322" stroke="#5E5852" stroke-width="0.8" stroke-opacity="0.55"/>
+  <line x1="398" y1="70" x2="398" y2="322" stroke="#5E5852" stroke-width="0.8" stroke-opacity="0.55"/>
+  <line x1="460" y1="70" x2="460" y2="322" stroke="#5E5852" stroke-width="0.8" stroke-opacity="0.55"/>
+  <line x1="522" y1="70" x2="522" y2="322" stroke="#5E5852" stroke-width="0.8" stroke-opacity="0.55"/>
+  <line x1="584" y1="70" x2="584" y2="322" stroke="#5E5852" stroke-width="0.8" stroke-opacity="0.55"/>
+  <line x1="150" y1="112" x2="646" y2="112" stroke="#5E5852" stroke-width="0.8" stroke-opacity="0.55"/>
+  <line x1="150" y1="154" x2="646" y2="154" stroke="#5E5852" stroke-width="0.8" stroke-opacity="0.55"/>
+  <line x1="150" y1="196" x2="646" y2="196" stroke="#5E5852" stroke-width="0.8" stroke-opacity="0.55"/>
+  <line x1="150" y1="238" x2="646" y2="238" stroke="#5E5852" stroke-width="0.8" stroke-opacity="0.55"/>
+  <line x1="150" y1="280" x2="646" y2="280" stroke="#5E5852" stroke-width="0.8" stroke-opacity="0.55"/>
+  <text x="150" y="34" font-family="Inter, sans-serif" font-size="14" font-weight="700" fill="#1A1A1A">film</text>
+  <text x="181" y="58" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" fill="#5E5852">A</text>
+  <text x="243" y="58" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" fill="#5E5852">B</text>
+  <text x="305" y="58" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" fill="#5E5852">C</text>
+  <text x="367" y="58" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" fill="#5E5852">D</text>
+  <text x="429" y="58" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" fill="#5E5852">E</text>
+  <text x="491" y="58" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" fill="#5E5852">F</text>
+  <text x="553" y="58" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" fill="#5E5852">G</text>
+  <text x="615" y="58" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" fill="#5E5852">H</text>
+  <text x="140" y="34" text-anchor="end" font-family="Inter, sans-serif" font-size="14" font-weight="700" fill="#1A1A1A">utenti</text>
+  <text x="140" y="96" text-anchor="end" font-family="Inter, sans-serif" font-size="13" fill="#1A1A1A">Anna</text>
+  <text x="140" y="138" text-anchor="end" font-family="Inter, sans-serif" font-size="13" fill="#1A1A1A">Bruno</text>
+  <text x="140" y="180" text-anchor="end" font-family="Inter, sans-serif" font-size="13" fill="#1A1A1A">Carla</text>
+  <text x="140" y="222" text-anchor="end" font-family="Inter, sans-serif" font-size="13" fill="#1A1A1A">Dario</text>
+  <text x="140" y="264" text-anchor="end" font-family="Inter, sans-serif" font-size="13" fill="#1A1A1A">Elena</text>
+  <text x="140" y="306" text-anchor="end" font-family="Inter, sans-serif" font-size="13" fill="#1A1A1A">Fabio</text>
+  <rect x="215" y="73" width="56" height="36" rx="4" fill="#2D5A5C" fill-opacity="0.22" stroke="#2D5A5C" stroke-width="1.5"/>
+  <text x="243" y="97" text-anchor="middle" font-family="Inter, sans-serif" font-size="16" font-weight="700" fill="#2D5A5C">5</text>
+  <rect x="401" y="73" width="56" height="36" rx="4" fill="#C9A961" fill-opacity="0.22" stroke="#C9A961" stroke-width="1.5"/>
+  <text x="429" y="97" text-anchor="middle" font-family="Inter, sans-serif" font-size="16" font-weight="700" fill="#1A1A1A">3</text>
+  <rect x="153" y="115" width="56" height="36" rx="4" fill="#2D5A5C" fill-opacity="0.22" stroke="#2D5A5C" stroke-width="1.5"/>
+  <text x="181" y="139" text-anchor="middle" font-family="Inter, sans-serif" font-size="16" font-weight="700" fill="#2D5A5C">4</text>
+  <rect x="525" y="115" width="56" height="36" rx="4" fill="#C9A961" fill-opacity="0.22" stroke="#C9A961" stroke-width="1.5"/>
+  <text x="553" y="139" text-anchor="middle" font-family="Inter, sans-serif" font-size="16" font-weight="700" fill="#1A1A1A">2</text>
+  <rect x="215" y="157" width="56" height="36" rx="4" fill="#2D5A5C" fill-opacity="0.22" stroke="#2D5A5C" stroke-width="1.5"/>
+  <text x="243" y="181" text-anchor="middle" font-family="Inter, sans-serif" font-size="16" font-weight="700" fill="#2D5A5C">5</text>
+  <rect x="339" y="157" width="56" height="36" rx="4" fill="#2D5A5C" fill-opacity="0.22" stroke="#2D5A5C" stroke-width="1.5"/>
+  <text x="367" y="181" text-anchor="middle" font-family="Inter, sans-serif" font-size="16" font-weight="700" fill="#2D5A5C">4</text>
+  <rect x="463" y="199" width="56" height="36" rx="4" fill="#C9A961" fill-opacity="0.22" stroke="#C9A961" stroke-width="1.5"/>
+  <text x="491" y="223" text-anchor="middle" font-family="Inter, sans-serif" font-size="16" font-weight="700" fill="#1A1A1A">1</text>
+  <rect x="153" y="241" width="56" height="36" rx="4" fill="#2D5A5C" fill-opacity="0.22" stroke="#2D5A5C" stroke-width="1.5"/>
+  <text x="181" y="265" text-anchor="middle" font-family="Inter, sans-serif" font-size="16" font-weight="700" fill="#2D5A5C">4</text>
+  <rect x="587" y="241" width="56" height="36" rx="4" fill="#2D5A5C" fill-opacity="0.22" stroke="#2D5A5C" stroke-width="1.5"/>
+  <text x="615" y="265" text-anchor="middle" font-family="Inter, sans-serif" font-size="16" font-weight="700" fill="#2D5A5C">5</text>
+  <rect x="339" y="283" width="56" height="36" rx="4" fill="#C9A961" fill-opacity="0.22" stroke="#C9A961" stroke-width="1.5"/>
+  <text x="367" y="307" text-anchor="middle" font-family="Inter, sans-serif" font-size="16" font-weight="700" fill="#1A1A1A">2</text>
+  <text x="181" y="97" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#5E5852" fill-opacity="0.65">?</text>
+  <text x="305" y="97" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#5E5852" fill-opacity="0.65">?</text>
+  <text x="491" y="97" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#5E5852" fill-opacity="0.65">?</text>
+  <text x="553" y="97" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#5E5852" fill-opacity="0.65">?</text>
+  <text x="615" y="97" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#5E5852" fill-opacity="0.65">?</text>
+  <text x="243" y="139" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#5E5852" fill-opacity="0.65">?</text>
+  <text x="305" y="139" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#5E5852" fill-opacity="0.65">?</text>
+  <text x="367" y="139" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#5E5852" fill-opacity="0.65">?</text>
+  <text x="429" y="139" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#5E5852" fill-opacity="0.65">?</text>
+  <text x="491" y="139" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#5E5852" fill-opacity="0.65">?</text>
+  <text x="615" y="139" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#5E5852" fill-opacity="0.65">?</text>
+  <text x="181" y="181" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#5E5852" fill-opacity="0.65">?</text>
+  <text x="305" y="181" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#5E5852" fill-opacity="0.65">?</text>
+  <text x="429" y="181" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#5E5852" fill-opacity="0.65">?</text>
+  <text x="491" y="181" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#5E5852" fill-opacity="0.65">?</text>
+  <text x="553" y="181" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#5E5852" fill-opacity="0.65">?</text>
+  <text x="615" y="181" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#5E5852" fill-opacity="0.65">?</text>
+  <text x="181" y="223" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#5E5852" fill-opacity="0.65">?</text>
+  <text x="243" y="223" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#5E5852" fill-opacity="0.65">?</text>
+  <text x="305" y="223" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#5E5852" fill-opacity="0.65">?</text>
+  <text x="367" y="223" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#5E5852" fill-opacity="0.65">?</text>
+  <text x="429" y="223" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#5E5852" fill-opacity="0.65">?</text>
+  <text x="553" y="223" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#5E5852" fill-opacity="0.65">?</text>
+  <text x="615" y="223" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#5E5852" fill-opacity="0.65">?</text>
+  <text x="243" y="265" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#5E5852" fill-opacity="0.65">?</text>
+  <text x="305" y="265" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#5E5852" fill-opacity="0.65">?</text>
+  <text x="367" y="265" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#5E5852" fill-opacity="0.65">?</text>
+  <text x="429" y="265" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#5E5852" fill-opacity="0.65">?</text>
+  <text x="491" y="265" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#5E5852" fill-opacity="0.65">?</text>
+  <text x="553" y="265" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#5E5852" fill-opacity="0.65">?</text>
+  <text x="181" y="307" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#5E5852" fill-opacity="0.65">?</text>
+  <text x="243" y="307" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#5E5852" fill-opacity="0.65">?</text>
+  <text x="305" y="307" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#5E5852" fill-opacity="0.65">?</text>
+  <text x="429" y="307" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#5E5852" fill-opacity="0.65">?</text>
+  <text x="491" y="307" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#5E5852" fill-opacity="0.65">?</text>
+  <text x="553" y="307" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#5E5852" fill-opacity="0.65">?</text>
+  <text x="615" y="307" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#5E5852" fill-opacity="0.65">?</text>
+  <rect x="339" y="73" width="56" height="36" rx="4" fill="none" stroke="#B5532C" stroke-width="2.5"/>
+  <text x="367" y="98" text-anchor="middle" font-family="Inter, sans-serif" font-size="18" font-weight="700" fill="#B5532C">?</text>
+  <text x="560" y="34" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#B5532C">il voto da prevedere</text>
+  <line x1="552" y1="38" x2="390" y2="68" stroke="#5E5852" stroke-width="1.5" marker-end="url(#freccia-m)"/>
+  <text x="398" y="350" text-anchor="middle" font-family="Inter, sans-serif" font-size="12.5" fill="#5E5852">Qui una cella su cinque contiene un voto; nel dataset del Netflix Prize ne era piena appena l'1,2%.</text>
+</svg>

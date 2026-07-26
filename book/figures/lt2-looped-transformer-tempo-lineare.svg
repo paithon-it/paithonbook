@@ -1,0 +1,62 @@
+<svg viewBox="0 0 760 430" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Confronto prima-dopo: nel looped transformer classico ogni giro riapplica l'attention piena e la cache cresce a ogni iterazione, con costo quadratico; in LT2 lo stesso blocco condiviso usa un mixer a tempo lineare che mantiene uno stato di dimensione fissa a ogni giro">
+  <rect x="0" y="0" width="760" height="430" fill="#F8F5EE"/>
+  <text x="380" y="34" text-anchor="middle" font-family="sans-serif" font-size="17" font-weight="bold" fill="#1A1A1A">Stesso blocco, ripetuto T volte — ma con che costo?</text>
+
+  <line x1="380" y1="58" x2="380" y2="410" stroke="#C9C2B4" stroke-width="1.5" stroke-dasharray="4 5"/>
+
+  <!-- ===== PANNELLO SINISTRO: Looped Transformer ===== -->
+  <text x="195" y="80" text-anchor="middle" font-family="sans-serif" font-size="15" font-weight="bold" fill="#B5532C">Looped Transformer</text>
+  <text x="195" y="99" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#5E5852">attention piena · O(L²)</text>
+
+  <!-- blocco condiviso -->
+  <rect x="110" y="116" width="170" height="46" rx="8" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="2"/>
+  <text x="195" y="144" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#1A1A1A">blocco condiviso</text>
+  <!-- loop arrow -->
+  <path d="M284 130 C 320 122, 320 158, 284 150" fill="none" stroke="#B5532C" stroke-width="2"/>
+  <path d="M284 150 L 292 146 L 289 156 Z" fill="#B5532C"/>
+  <text x="322" y="143" text-anchor="start" font-family="sans-serif" font-size="12" font-weight="bold" fill="#B5532C">× T</text>
+
+  <!-- freccia giù -->
+  <line x1="195" y1="162" x2="195" y2="196" stroke="#1A1A1A" stroke-width="1.5"/>
+  <path d="M195 196 L 191 188 L 199 188 Z" fill="#1A1A1A"/>
+
+  <!-- barre cache crescenti -->
+  <rect x="110" y="336" width="34" height="24" fill="#B5532C"/>
+  <rect x="158" y="308" width="34" height="52" fill="#B5532C"/>
+  <rect x="206" y="280" width="34" height="80" fill="#B5532C"/>
+  <rect x="254" y="252" width="34" height="108" fill="#B5532C"/>
+  <line x1="102" y1="360" x2="300" y2="360" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="127" y="375" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#5E5852">giro 1</text>
+  <text x="175" y="375" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#5E5852">giro 2</text>
+  <text x="223" y="375" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#5E5852">giro 3</text>
+  <text x="271" y="375" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#5E5852">giro 4</text>
+  <text x="195" y="400" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">la cache si accumula a ogni giro</text>
+
+  <!-- ===== PANNELLO DESTRO: LT2 ===== -->
+  <text x="565" y="80" text-anchor="middle" font-family="sans-serif" font-size="15" font-weight="bold" fill="#2D5A5C">LT2</text>
+  <text x="565" y="99" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#5E5852">mixer lineare · O(L · d)</text>
+
+  <!-- blocco condiviso -->
+  <rect x="480" y="116" width="170" height="46" rx="8" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="2"/>
+  <text x="565" y="144" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#1A1A1A">blocco condiviso</text>
+  <!-- loop arrow -->
+  <path d="M654 130 C 690 122, 690 158, 654 150" fill="none" stroke="#2D5A5C" stroke-width="2"/>
+  <path d="M654 150 L 662 146 L 659 156 Z" fill="#2D5A5C"/>
+  <text x="692" y="143" text-anchor="start" font-family="sans-serif" font-size="12" font-weight="bold" fill="#2D5A5C">× T</text>
+
+  <!-- freccia giù -->
+  <line x1="565" y1="162" x2="565" y2="196" stroke="#1A1A1A" stroke-width="1.5"/>
+  <path d="M565 196 L 561 188 L 569 188 Z" fill="#1A1A1A"/>
+
+  <!-- stato costante: quattro quadrati uguali -->
+  <rect x="480" y="326" width="34" height="34" fill="#2D5A5C"/>
+  <rect x="528" y="326" width="34" height="34" fill="#2D5A5C"/>
+  <rect x="576" y="326" width="34" height="34" fill="#2D5A5C"/>
+  <rect x="624" y="326" width="34" height="34" fill="#2D5A5C"/>
+  <line x1="472" y1="360" x2="670" y2="360" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="497" y="375" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#5E5852">giro 1</text>
+  <text x="545" y="375" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#5E5852">giro 2</text>
+  <text x="593" y="375" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#5E5852">giro 3</text>
+  <text x="641" y="375" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#5E5852">giro 4</text>
+  <text x="565" y="400" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">lo stato resta di dimensione fissa</text>
+</svg>

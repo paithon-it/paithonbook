@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  paithon book — figura: le quattro strutture dati native di Python a
+  confronto (list, tuple, dict, set). Ogni scheda: nome (serif), un tag
+  con le proprietà e un piccolo schema dei dati. Palette-locked:
+  schede cream, bordi terracotta/teal/ocra/warm-black, testo warm-black
+  e grigi warm, valori in monospace. Fondo trasparente (leggibile in
+  light e dark). Nessun colore fuori palette.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360" role="img"
+     aria-label="Quattro schede a confronto: list ordinata e modificabile, tuple ordinata e immutabile, dict con coppie chiave-valore, set senza duplicati">
+  <style>
+    .card  { fill:#F8F5EE; }
+    .name  { font-family:Fraunces, Georgia, serif; font-size:19px; font-weight:600; fill:#1A1A1A; }
+    .tag   { font-family:Inter, system-ui, sans-serif; font-size:12px; fill:#5E5852; }
+    .val   { font-family:"JetBrains Mono", ui-monospace, monospace; font-size:15px; fill:#1A1A1A; }
+    .kv    { font-family:"JetBrains Mono", ui-monospace, monospace; font-size:13px; fill:#1A1A1A; }
+    .setv  { font-family:"JetBrains Mono", ui-monospace, monospace; font-size:19px; fill:#1A1A1A; }
+    .arrow { fill:#5E5852; font-family:"JetBrains Mono", ui-monospace, monospace; font-size:15px; }
+  </style>
+
+  <!-- ===== list (terracotta) ===== -->
+  <rect class="card" x="20" y="20" width="230" height="150" rx="8" stroke="#B5532C" stroke-width="2.5"/>
+  <text class="name" x="40" y="56">list</text>
+  <text class="tag"  x="40" y="76">ordinata &#183; modificabile</text>
+  <!-- celle in fila -->
+  <rect x="42"  y="105" width="34" height="34" rx="5" fill="#F8F5EE" stroke="#B5532C" stroke-width="2"/>
+  <rect x="82"  y="105" width="34" height="34" rx="5" fill="#F8F5EE" stroke="#B5532C" stroke-width="2"/>
+  <rect x="122" y="105" width="34" height="34" rx="5" fill="#F8F5EE" stroke="#B5532C" stroke-width="2"/>
+  <text class="val" x="59"  y="127" text-anchor="middle">3</text>
+  <text class="val" x="99"  y="127" text-anchor="middle">1</text>
+  <text class="val" x="139" y="127" text-anchor="middle">4</text>
+  <!-- cella fantasma: si puo' aggiungere (mutabile) -->
+  <rect x="166" y="105" width="34" height="34" rx="5" fill="none" stroke="#B5532C" stroke-width="2" stroke-dasharray="3 4"/>
+  <text class="val" x="183" y="127" text-anchor="middle" fill="#B5532C">+</text>
+
+  <!-- ===== tuple (teal) ===== -->
+  <rect class="card" x="270" y="20" width="230" height="150" rx="8" stroke="#2D5A5C" stroke-width="2.5"/>
+  <text class="name" x="290" y="56">tuple</text>
+  <text class="tag"  x="290" y="76">ordinata &#183; immutabile</text>
+  <rect x="292" y="105" width="52" height="34" rx="5" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2"/>
+  <rect x="350" y="105" width="52" height="34" rx="5" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2"/>
+  <text class="val" x="318" y="127" text-anchor="middle" font-size="12">45.46</text>
+  <text class="val" x="376" y="127" text-anchor="middle" font-size="13">9.19</text>
+  <!-- lucchetto: immutabile -->
+  <rect x="420" y="117" width="26" height="20" rx="3" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2"/>
+  <path d="M 426 117 v-4 a7 7 0 0 1 14 0 v4" fill="none" stroke="#2D5A5C" stroke-width="2"/>
+  <circle cx="433" cy="126" r="2.5" fill="#2D5A5C"/>
+
+  <!-- ===== dict (ocra) ===== -->
+  <rect class="card" x="20" y="190" width="230" height="150" rx="8" stroke="#C9A961" stroke-width="2.5"/>
+  <text class="name" x="40" y="226">dict</text>
+  <text class="tag"  x="40" y="246">chiave &#8594; valore</text>
+  <!-- riga 1 -->
+  <rect x="42" y="262" width="78" height="28" rx="6" fill="#F8F5EE" stroke="#C9A961" stroke-width="2"/>
+  <text class="kv" x="81" y="281" text-anchor="middle">pane</text>
+  <text class="arrow" x="132" y="281">&#8594;</text>
+  <text class="kv" x="160" y="281">1.2</text>
+  <!-- riga 2 -->
+  <rect x="42" y="300" width="78" height="28" rx="6" fill="#F8F5EE" stroke="#C9A961" stroke-width="2"/>
+  <text class="kv" x="81" y="319" text-anchor="middle">latte</text>
+  <text class="arrow" x="132" y="319">&#8594;</text>
+  <text class="kv" x="160" y="319">0.9</text>
+
+  <!-- ===== set (warm-black) ===== -->
+  <rect class="card" x="270" y="190" width="230" height="150" rx="8" stroke="#1A1A1A" stroke-width="2.5"/>
+  <text class="name" x="290" y="226">set</text>
+  <text class="tag"  x="290" y="246">senza duplicati</text>
+  <!-- input con doppione, sbiadito -->
+  <text class="kv" x="300" y="278" fill="#8B847C">{ 3, 1, 4, </text>
+  <text class="kv" x="370" y="278" fill="#8B847C" text-decoration="line-through">1</text>
+  <text class="kv" x="380" y="278" fill="#8B847C"> }</text>
+  <text class="arrow" x="300" y="304">&#8595;</text>
+  <!-- risultato: insieme senza duplicati -->
+  <rect x="322" y="290" width="150" height="36" rx="18" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="2"/>
+  <text class="setv" x="397" y="314" text-anchor="middle">{ 3, 1, 4 }</text>
+</svg>

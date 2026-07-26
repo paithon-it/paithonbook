@@ -1,0 +1,28 @@
+<svg viewBox="0 0 760 380" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Curva del compromesso tra latenza e throughput al variare della dimensione del batch">
+  <rect x="0" y="0" width="760" height="380" fill="#F8F5EE"/>
+  <text x="380" y="30" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="bold" fill="#1A1A1A">Il compromesso latenza / throughput</text>
+  <!-- assi -->
+  <line x1="90" y1="320" x2="700" y2="320" stroke="#1A1A1A" stroke-width="2"/>
+  <line x1="90" y1="320" x2="90" y2="60" stroke="#1A1A1A" stroke-width="2"/>
+  <text x="395" y="360" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#1A1A1A">latenza per richiesta →</text>
+  <text x="40" y="190" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#1A1A1A" transform="rotate(-90 40 190)">throughput (token/s) →</text>
+  <!-- curva: sale ripida poi plateau -->
+  <path d="M 120 300 C 220 180, 320 110, 460 95 C 560 85, 640 82, 680 80" fill="none" stroke="#2D5A5C" stroke-width="2.5"/>
+  <!-- punto batch=1 -->
+  <circle cx="120" cy="300" r="7" fill="#C9A961" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="132" y="298" font-family="sans-serif" font-size="12" font-weight="bold" fill="#1A1A1A">batch = 1</text>
+  <text x="132" y="314" font-family="sans-serif" font-size="11" fill="#5E5852">latenza minima, GPU quasi vuota</text>
+  <!-- punto batch grande -->
+  <circle cx="680" cy="80" r="7" fill="#C9A961" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="668" y="70" text-anchor="end" font-family="sans-serif" font-size="12" font-weight="bold" fill="#1A1A1A">batch grande</text>
+  <text x="668" y="86" text-anchor="end" font-family="sans-serif" font-size="11" fill="#5E5852">throughput massimo, GPU satura</text>
+  <!-- linea budget latenza (SLA) -->
+  <line x1="430" y1="60" x2="430" y2="320" stroke="#B5532C" stroke-width="2" stroke-dasharray="6 5"/>
+  <text x="438" y="150" font-family="sans-serif" font-size="12" font-weight="bold" fill="#B5532C">budget di latenza</text>
+  <text x="438" y="166" font-family="sans-serif" font-size="11" fill="#B5532C">(SLA: non si va oltre)</text>
+  <!-- punto operativo ottimale sull'intersezione -->
+  <circle cx="430" cy="100" r="8" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="418" y="105" text-anchor="end" font-family="sans-serif" font-size="12" font-weight="bold" fill="#1A1A1A">punto operativo</text>
+  <!-- regione utile -->
+  <text x="255" y="300" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#2D5A5C">↑ throughput utile: dentro il budget</text>
+</svg>

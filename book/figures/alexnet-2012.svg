@@ -1,0 +1,42 @@
+<svg viewBox="0 0 700 380" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Uno stack profondo di otto strati addestrato su due GPU produce il crollo dell'errore top-5 di ImageNet dal 26,2% dei metodi a mano al 15,3% di AlexNet">
+  <rect x="0" y="0" width="700" height="380" fill="#F8F5EE"/>
+  <text x="350" y="34" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="bold" fill="#1A1A1A">Profondità + GPU = svolta</text>
+
+  <!-- Ladder di 8 strati -->
+  <text x="145" y="66" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#5E5852">8 strati addestrabili</text>
+  <rect x="70" y="78"  width="150" height="20" rx="3" fill="#2D5A5C"/>
+  <rect x="70" y="102" width="150" height="20" rx="3" fill="#2D5A5C"/>
+  <rect x="70" y="126" width="150" height="20" rx="3" fill="#2D5A5C"/>
+  <rect x="70" y="150" width="150" height="20" rx="3" fill="#2D5A5C"/>
+  <rect x="70" y="174" width="150" height="20" rx="3" fill="#2D5A5C"/>
+  <rect x="70" y="198" width="150" height="20" rx="3" fill="#C9A961"/>
+  <rect x="70" y="222" width="150" height="20" rx="3" fill="#C9A961"/>
+  <rect x="70" y="246" width="150" height="20" rx="3" fill="#C9A961"/>
+  <text x="235" y="150" font-family="sans-serif" font-size="11" fill="#5E5852">conv</text>
+  <text x="235" y="228" font-family="sans-serif" font-size="11" fill="#5E5852">densi</text>
+
+  <!-- Due GPU -->
+  <rect x="70"  y="286" width="70" height="30" rx="4" fill="none" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="105" y="305" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#1A1A1A">GPU 1</text>
+  <rect x="150" y="286" width="70" height="30" rx="4" fill="none" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="185" y="305" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#1A1A1A">GPU 2</text>
+  <text x="145" y="338" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#5E5852">2× GTX 580, ~6 giorni</text>
+
+  <!-- Freccia centrale -->
+  <text x="350" y="164" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">profondità + GPU</text>
+  <line x1="250" y1="180" x2="452" y2="180" stroke="#1A1A1A" stroke-width="2"/>
+  <path d="M452 180 L 440 174 L 440 186 Z" fill="#1A1A1A"/>
+
+  <!-- Grafico crollo errore -->
+  <line x1="480" y1="90" x2="480" y2="300" stroke="#1A1A1A" stroke-width="1.5"/>
+  <line x1="480" y1="300" x2="668" y2="300" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="478" y="80" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#5E5852">errore top-5</text>
+
+  <line x1="515" y1="117" x2="630" y2="193" stroke="#B5532C" stroke-width="2.5"/>
+  <circle cx="515" cy="117" r="7" fill="#8B847C"/>
+  <circle cx="630" cy="193" r="7" fill="#B5532C"/>
+  <text x="515" y="105" text-anchor="middle" font-family="sans-serif" font-size="14" font-weight="bold" fill="#1A1A1A">26,2%</text>
+  <text x="630" y="181" text-anchor="middle" font-family="sans-serif" font-size="14" font-weight="bold" fill="#1A1A1A">15,3%</text>
+  <text x="515" y="320" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#5E5852">metodi a mano</text>
+  <text x="630" y="320" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#1A1A1A">AlexNet</text>
+</svg>

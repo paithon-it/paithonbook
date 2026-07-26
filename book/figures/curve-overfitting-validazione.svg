@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  paithon book - figura: overfitting letto dalle curve di perdita.
+  Asse x = epoche, asse y = perdita. La curva di addestramento (teal) scende
+  con continuita; quella di validazione (terracotta) scende, tocca un minimo e
+  poi risale. Una linea tratteggiata verticale (ocra) segna l'arresto anticipato
+  in corrispondenza del minimo della validazione; una misura neutra a destra
+  evidenzia il divario crescente. Palette-locked, fondo trasparente.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 330" role="img"
+     aria-label="Grafico della perdita in funzione delle epoche. La curva di addestramento in teal scende con continuita verso il basso. La curva di validazione in terracotta scende, tocca un minimo circa a meta grafico e poi risale. Una linea tratteggiata verticale in ocra, in corrispondenza del minimo della validazione, indica il punto di arresto anticipato. Sulla destra i due tracciati divergono e una misura verticale evidenzia il divario crescente.">
+  <defs>
+    <marker id="pt-arrow-n" viewBox="0 0 10 10" refX="5" refY="5"
+            markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#5E5852"/>
+    </marker>
+  </defs>
+  <style>
+    .axis  { stroke:#8B847C; stroke-width:1.5; }
+    .train { fill:none; stroke:#2D5A5C; stroke-width:3.4; stroke-linecap:round; stroke-linejoin:round; }
+    .val   { fill:none; stroke:#B5532C; stroke-width:3.4; stroke-linecap:round; stroke-linejoin:round; }
+    .stop  { stroke:#C9A961; stroke-width:2.2; stroke-dasharray:5 5; }
+    .meas  { stroke:#5E5852; stroke-width:1.3; }
+    .lbl   { font-family:Inter, system-ui, sans-serif; font-size:14px; fill:#5E5852; }
+    .lbls  { font-family:Inter, system-ui, sans-serif; font-size:12px; fill:#5E5852; }
+    .stopl { font-family:Inter, system-ui, sans-serif; font-size:12px; font-weight:600; fill:#1A1A1A; text-anchor:middle; }
+    .over  { font-family:Inter, system-ui, sans-serif; font-size:13px; font-weight:600; fill:#B5532C; text-anchor:middle; }
+  </style>
+
+  <!-- assi -->
+  <line class="axis" x1="55" y1="270" x2="445" y2="270"/>
+  <line class="axis" x1="55" y1="270" x2="55"  y2="48"/>
+  <polygon points="445,270 435,265 435,275" fill="#8B847C"/>
+  <polygon points="55,48 50,58 60,58" fill="#8B847C"/>
+  <text class="lbl" x="63" y="58">perdita</text>
+  <text class="lbl" x="392" y="289">epoche</text>
+
+  <!-- linea di arresto anticipato, in corrispondenza del minimo di validazione -->
+  <line class="stop" x1="225" y1="58" x2="225" y2="270"/>
+  <text class="stopl" x="225" y="44">arresto anticipato</text>
+
+  <!-- curva di addestramento (teal): scende sempre -->
+  <path class="train" d="M 70,74 C 120,152 165,200 215,215 C 290,238 365,247 438,251"/>
+  <!-- curva di validazione (terracotta): scende, minimo, poi risale -->
+  <path class="val" d="M 70,90 C 130,162 185,207 225,208 C 275,209 350,168 438,138"/>
+
+  <!-- punto di minimo della validazione -->
+  <circle cx="225" cy="208" r="5.5" fill="#C9A961" stroke="#1A1A1A" stroke-width="1.5"/>
+
+  <!-- misura del divario a destra -->
+  <line class="meas" x1="426" y1="146" x2="426" y2="246"
+        marker-start="url(#pt-arrow-n)" marker-end="url(#pt-arrow-n)"/>
+  <text class="lbls" x="420" y="200" text-anchor="end">divario</text>
+
+  <!-- annotazioni delle curve -->
+  <text class="lbls" x="110" y="258" fill="#2D5A5C" font-weight="600">addestramento</text>
+  <text class="over" x="318" y="120">overfitting</text>
+  <text class="lbls" x="90" y="96" fill="#B5532C" font-weight="600">validazione</text>
+</svg>

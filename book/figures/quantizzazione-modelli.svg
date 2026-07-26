@@ -1,0 +1,29 @@
+<svg viewBox="0 0 720 340" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Confronto tra precisione numerica e memoria occupata per un modello da 7 miliardi di parametri">
+  <rect x="0" y="0" width="720" height="340" fill="#F8F5EE"/>
+  <text x="360" y="30" text-anchor="middle" font-family="sans-serif" font-size="15" font-weight="bold" fill="#1A1A1A">Precisione vs memoria — modello da 7 miliardi di parametri</text>
+
+  <!-- FP32 -->
+  <text x="120" y="80" text-anchor="end" font-family="sans-serif" font-size="13" fill="#1A1A1A">FP32 · 32 bit</text>
+  <rect x="140" y="62" width="480" height="28" fill="#1A1A1A" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="632" y="81" font-family="sans-serif" font-size="12" fill="#1A1A1A">~28 GB</text>
+
+  <!-- FP16 -->
+  <text x="120" y="135" text-anchor="end" font-family="sans-serif" font-size="13" fill="#1A1A1A">FP16 · 16 bit</text>
+  <rect x="140" y="117" width="240" height="28" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="392" y="136" font-family="sans-serif" font-size="12" fill="#1A1A1A">~14 GB</text>
+
+  <!-- INT8 -->
+  <text x="120" y="190" text-anchor="end" font-family="sans-serif" font-size="13" fill="#1A1A1A">INT8 · 8 bit</text>
+  <rect x="140" y="172" width="120" height="28" fill="#C9A961" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="272" y="191" font-family="sans-serif" font-size="12" fill="#1A1A1A">~7 GB</text>
+
+  <!-- INT4 -->
+  <text x="120" y="245" text-anchor="end" font-family="sans-serif" font-size="13" fill="#1A1A1A">INT4 · 4 bit</text>
+  <rect x="140" y="227" width="60" height="28" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="212" y="246" font-family="sans-serif" font-size="12" fill="#1A1A1A">~3,5 GB — entra in un portatile</text>
+
+  <!-- Quality axis note -->
+  <line x1="140" y1="285" x2="620" y2="285" stroke="#2D5A5C" stroke-width="1.5" stroke-dasharray="4 4"/>
+  <text x="140" y="310" font-family="sans-serif" font-size="12" fill="#5E5852">&#8592; meno memoria, piu' approssimazione</text>
+  <text x="620" y="310" text-anchor="end" font-family="sans-serif" font-size="12" fill="#5E5852">piu' precisione, piu' memoria &#8594;</text>
+</svg>

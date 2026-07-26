@@ -1,0 +1,46 @@
+<svg viewBox="0 0 720 400" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Un'immagine e un testo passano attraverso i rispettivi encoder e vengono proiettati come punti vicini nello stesso spazio vettoriale, mentre un testo non pertinente atterra lontano">
+  <defs>
+    <marker id="mm-teal" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#2D5A5C"/></marker>
+    <marker id="mm-terra" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#B5532C"/></marker>
+    <marker id="mm-black" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#1A1A1A"/></marker>
+  </defs>
+  <rect x="0" y="0" width="720" height="400" fill="#F8F5EE"/>
+  <!-- immagine sorgente -->
+  <rect x="30" y="55" width="120" height="90" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2"/>
+  <circle cx="70" cy="85" r="14" fill="#C9A961"/>
+  <path d="M40 145 L80 105 L110 145 Z" fill="#2D5A5C"/>
+  <path d="M95 145 L125 115 L150 145 Z" fill="#1A1A1A"/>
+  <text x="90" y="168" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#5E5852">immagine</text>
+  <!-- testo sorgente -->
+  <rect x="20" y="250" width="150" height="46" rx="6" fill="#F8F5EE" stroke="#B5532C" stroke-width="2"/>
+  <text x="95" y="278" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">"un gatto sul tetto"</text>
+  <text x="95" y="318" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#5E5852">testo</text>
+  <!-- encoder immagine -->
+  <rect x="215" y="70" width="110" height="60" rx="4" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="270" y="96" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">encoder</text>
+  <text x="270" y="114" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">immagine</text>
+  <!-- encoder testo -->
+  <rect x="215" y="243" width="110" height="60" rx="4" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="270" y="269" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">encoder</text>
+  <text x="270" y="287" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">testo</text>
+  <!-- frecce sorgente -> encoder -->
+  <line x1="152" y1="100" x2="211" y2="100" stroke="#2D5A5C" stroke-width="2" marker-end="url(#mm-teal)"/>
+  <line x1="172" y1="273" x2="211" y2="273" stroke="#B5532C" stroke-width="2" marker-end="url(#mm-terra)"/>
+  <!-- spazio condiviso -->
+  <rect x="420" y="55" width="270" height="290" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="555" y="42" text-anchor="middle" font-family="sans-serif" font-size="14" fill="#1A1A1A">spazio vettoriale condiviso</text>
+  <line x1="445" y1="320" x2="445" y2="80" stroke="#C9C2B4" stroke-width="1.5"/>
+  <line x1="445" y1="320" x2="665" y2="320" stroke="#C9C2B4" stroke-width="1.5"/>
+  <!-- frecce encoder -> spazio -->
+  <line x1="325" y1="100" x2="518" y2="150" stroke="#2D5A5C" stroke-width="2" marker-end="url(#mm-teal)"/>
+  <line x1="325" y1="273" x2="540" y2="178" stroke="#B5532C" stroke-width="2" marker-end="url(#mm-terra)"/>
+  <!-- cerchio di prossimità -->
+  <circle cx="537" cy="163" r="46" fill="none" stroke="#C9A961" stroke-width="1.5" stroke-dasharray="6 5"/>
+  <!-- punti -->
+  <circle cx="525" cy="150" r="8" fill="#2D5A5C"/>
+  <text x="525" y="134" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#2D5A5C">immagine</text>
+  <circle cx="552" cy="178" r="8" fill="#B5532C"/>
+  <text x="600" y="182" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#B5532C">"gatto sul tetto"</text>
+  <circle cx="628" cy="292" r="8" fill="#1A1A1A"/>
+  <text x="600" y="312" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#5E5852">"un'auto rossa"</text>
+</svg>

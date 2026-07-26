@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  paithon book — figura: discesa del gradiente su una funzione di costo
+  a scodella (convessa). Quattro passi che scendono verso il minimo, con
+  passi via via più corti. Palette-locked: teal per la curva, terracotta
+  per i passi, ocra per il minimo, tratto/label warm-black su neutri warm.
+  Fondo trasparente: leggibile in light e in dark mode.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 460 320" role="img"
+     aria-label="Curva di costo a forma di scodella con quattro punti che scendono lungo il fianco fino al minimo, collegati da frecce sempre più corte.">
+  <defs>
+    <marker id="pt-arrow" viewBox="0 0 10 10" refX="8" refY="5"
+            markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#B5532C"/>
+    </marker>
+  </defs>
+  <style>
+    .axis { stroke:#8B847C; stroke-width:1.5; }
+    .curve{ fill:none; stroke:#2D5A5C; stroke-width:3.5; }
+    .step { stroke:#B5532C; stroke-width:2.5; stroke-linecap:round; }
+    .dash { stroke:#C9C2B4; stroke-width:1.5; stroke-dasharray:3 4; }
+    .lbl  { font-family:Inter, system-ui, sans-serif; font-size:15px; fill:#5E5852; }
+    .lbls { font-family:Inter, system-ui, sans-serif; font-size:12px; fill:#5E5852; }
+  </style>
+
+  <!-- assi -->
+  <line class="axis" x1="55" y1="270" x2="430" y2="270"/>
+  <line class="axis" x1="55" y1="270" x2="55"  y2="40"/>
+  <polygon points="430,270 420,265 420,275" fill="#8B847C"/>
+  <polygon points="55,40 50,50 60,50" fill="#8B847C"/>
+  <text class="lbl" x="64" y="52">ℒ(θ)</text>
+  <text class="lbl" x="434" y="274">θ</text>
+
+  <!-- curva di costo a scodella: parabola esatta (Bezier quadratico) -->
+  <path class="curve" d="M 70,70 Q 240,426 410,70"/>
+
+  <!-- passi di discesa (frecce terracotta, sempre più corte) -->
+  <line class="step" x1="115" y1="150" x2="160" y2="207" marker-end="url(#pt-arrow)"/>
+  <line class="step" x1="172" y1="217" x2="198" y2="236" marker-end="url(#pt-arrow)"/>
+  <line class="step" x1="213" y1="242" x2="220" y2="245" marker-end="url(#pt-arrow)"/>
+
+  <!-- punti theta_0 ... theta_3 sul fianco della scodella -->
+  <circle cx="110" cy="144" r="5" fill="#B5532C"/>
+  <circle cx="165" cy="213" r="5" fill="#B5532C"/>
+  <circle cx="205" cy="240" r="5" fill="#B5532C"/>
+  <circle cx="228" cy="247" r="5" fill="#B5532C"/>
+
+  <!-- minimo -->
+  <line class="dash" x1="240" y1="250" x2="240" y2="270"/>
+  <circle cx="240" cy="248" r="5.5" fill="#C9A961" stroke="#1A1A1A" stroke-width="1.5"/>
+
+  <!-- etichette -->
+  <text class="lbls" x="92" y="137">θ<tspan baseline-shift="sub" font-size="9">0</tspan></text>
+  <text class="lbls" x="250" y="243" fill="#2D5A5C">minimo</text>
+  <text class="lbls" x="231" y="286">θ<tspan baseline-shift="super" font-size="9">*</tspan></text>
+</svg>

@@ -1,0 +1,33 @@
+<svg viewBox="0 0 680 360" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Confronto tra prompting standard e chain-of-thought: in alto la domanda porta direttamente a una risposta sbagliata; in basso la domanda passa attraverso passaggi di ragionamento espliciti fino alla risposta corretta">
+  <rect x="0" y="0" width="680" height="360" fill="#F8F5EE"/>
+  <!-- LANE A: prompting standard -->
+  <text x="30" y="45" font-family="sans-serif" font-size="13" fill="#5E5852">Prompting standard</text>
+  <rect x="30" y="60" width="120" height="70" rx="8" fill="none" stroke="#1A1A1A" stroke-width="2"/>
+  <text x="90" y="92" font-family="sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">domanda</text>
+  <text x="90" y="112" font-family="sans-serif" font-size="11" fill="#5E5852" text-anchor="middle">23, 20, 6…</text>
+  <line x1="150" y1="95" x2="230" y2="95" stroke="#1A1A1A" stroke-width="1.5"/>
+  <path d="M230 95 l-10 -5 v10 z" fill="#1A1A1A"/>
+  <rect x="232" y="60" width="130" height="70" rx="8" fill="none" stroke="#B5532C" stroke-width="2"/>
+  <text x="297" y="92" font-family="sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">risposta: 27</text>
+  <text x="297" y="113" font-family="sans-serif" font-size="16" fill="#B5532C" text-anchor="middle">&#10007;</text>
+  <!-- LANE B: chain-of-thought -->
+  <text x="30" y="205" font-family="sans-serif" font-size="13" fill="#5E5852">Chain-of-thought</text>
+  <rect x="30" y="220" width="110" height="70" rx="8" fill="none" stroke="#1A1A1A" stroke-width="2"/>
+  <text x="85" y="252" font-family="sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">domanda</text>
+  <text x="85" y="272" font-family="sans-serif" font-size="11" fill="#5E5852" text-anchor="middle">23, 20, 6…</text>
+  <line x1="140" y1="255" x2="182" y2="255" stroke="#1A1A1A" stroke-width="1.5"/>
+  <path d="M182 255 l-10 -5 v10 z" fill="#1A1A1A"/>
+  <rect x="184" y="222" width="110" height="66" rx="8" fill="none" stroke="#2D5A5C" stroke-width="2"/>
+  <text x="239" y="250" font-family="sans-serif" font-size="12" fill="#1A1A1A" text-anchor="middle">passo 1</text>
+  <text x="239" y="270" font-family="sans-serif" font-size="12" fill="#2D5A5C" text-anchor="middle">23 &#8722; 20 = 3</text>
+  <line x1="294" y1="255" x2="336" y2="255" stroke="#1A1A1A" stroke-width="1.5"/>
+  <path d="M336 255 l-10 -5 v10 z" fill="#1A1A1A"/>
+  <rect x="338" y="222" width="110" height="66" rx="8" fill="none" stroke="#2D5A5C" stroke-width="2"/>
+  <text x="393" y="250" font-family="sans-serif" font-size="12" fill="#1A1A1A" text-anchor="middle">passo 2</text>
+  <text x="393" y="270" font-family="sans-serif" font-size="12" fill="#2D5A5C" text-anchor="middle">3 + 6 = 9</text>
+  <line x1="448" y1="255" x2="490" y2="255" stroke="#1A1A1A" stroke-width="1.5"/>
+  <path d="M490 255 l-10 -5 v10 z" fill="#1A1A1A"/>
+  <rect x="492" y="222" width="130" height="66" rx="8" fill="#C9A961"/>
+  <text x="557" y="250" font-family="sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle" font-weight="bold">risposta: 9</text>
+  <text x="557" y="273" font-family="sans-serif" font-size="16" fill="#2D5A5C" text-anchor="middle">&#10003;</text>
+</svg>

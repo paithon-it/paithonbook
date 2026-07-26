@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 470" role="img" aria-label="A sinistra la matrice dei punteggi S uguale Q per K trasposto, di dimensione N per N, disegnata come griglia e barrata da una grande X: è la matrice che FlashAttention non scrive mai nella memoria HBM. A destra lo schema di FlashAttention: una memoria condivisa on-chip contiene un tile fisso di Q e un blocco corrente di K e V; sotto, i blocchi di K e V scorrono a uno a uno dalla memoria HBM verso la shared memory; un accumulatore aggiorna a ogni blocco l'output O e le due statistiche del softmax, il massimo corrente m e la somma corrente l; alla fine l'uscita si ottiene dividendo O per l ed è esatta.">
+  <defs>
+    <marker id="fa-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1A1A1A"/>
+    </marker>
+    <marker id="fa-arrow-t" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#B5532C"/>
+    </marker>
+  </defs>
+
+  <!-- ===================== SINISTRA: la matrice N x N mai materializzata ===================== -->
+  <text x="150" y="40" text-anchor="middle" font-family="Inter, sans-serif" font-size="15" font-weight="700" fill="#1A1A1A">S = QK&#8868;  (N&#215;N)</text>
+
+  <!-- griglia 7x7 faint -->
+  <g stroke="#C9A961" stroke-width="1.2" fill="#C9A961" fill-opacity="0.12">
+    <rect x="55" y="60" width="190" height="190"/>
+  </g>
+  <g stroke="#C9A961" stroke-width="1" stroke-opacity="0.7">
+    <line x1="82" y1="60" x2="82" y2="250"/>
+    <line x1="109" y1="60" x2="109" y2="250"/>
+    <line x1="136" y1="60" x2="136" y2="250"/>
+    <line x1="163" y1="60" x2="163" y2="250"/>
+    <line x1="190" y1="60" x2="190" y2="250"/>
+    <line x1="217" y1="60" x2="217" y2="250"/>
+    <line x1="55" y1="87" x2="245" y2="87"/>
+    <line x1="55" y1="114" x2="245" y2="114"/>
+    <line x1="55" y1="141" x2="245" y2="141"/>
+    <line x1="55" y1="168" x2="245" y2="168"/>
+    <line x1="55" y1="195" x2="245" y2="195"/>
+    <line x1="55" y1="222" x2="245" y2="222"/>
+  </g>
+  <!-- grande X terracotta -->
+  <line x1="55" y1="60" x2="245" y2="250" stroke="#B5532C" stroke-width="5" stroke-linecap="round"/>
+  <line x1="245" y1="60" x2="55" y2="250" stroke="#B5532C" stroke-width="5" stroke-linecap="round"/>
+
+  <text x="150" y="278" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="600" fill="#B5532C">mai scritta in HBM</text>
+  <text x="150" y="297" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#1A1A1A" fill-opacity="0.7">materializzarla = O(N&#178;) memoria</text>
+
+  <!-- freccia di passaggio -->
+  <text x="150" y="360" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#2D5A5C">FlashAttention</text>
+  <text x="150" y="379" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#1A1A1A" fill-opacity="0.7">invece di scriverla, la</text>
+  <text x="150" y="395" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#1A1A1A" fill-opacity="0.7">consuma a blocchi &#8594;</text>
+  <line x1="270" y1="375" x2="335" y2="375" stroke="#1A1A1A" stroke-width="2.2" marker-end="url(#fa-arrow)"/>
+
+  <!-- ===================== DESTRA: lo schema a blocchi ===================== -->
+
+  <!-- SMEM box -->
+  <rect x="380" y="55" width="410" height="120" rx="10" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2.2"/>
+  <text x="585" y="46" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#2D5A5C">shared memory (on-chip, veloce)</text>
+
+  <!-- Q tile fisso -->
+  <rect x="402" y="78" width="70" height="74" rx="6" fill="#C9A961" fill-opacity="0.35" stroke="#C9A961" stroke-width="2"/>
+  <text x="437" y="112" text-anchor="middle" font-family="Inter, sans-serif" font-size="16" font-weight="700" fill="#1A1A1A">Q</text>
+  <text x="437" y="132" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" fill="#1A1A1A" fill-opacity="0.7">tile fisso</text>
+
+  <!-- Kj Vj blocco corrente -->
+  <rect x="500" y="78" width="70" height="74" rx="6" fill="#B5532C" fill-opacity="0.22" stroke="#B5532C" stroke-width="2"/>
+  <text x="535" y="105" text-anchor="middle" font-family="Inter, sans-serif" font-size="15" font-weight="700" fill="#1A1A1A">K<tspan dy="4" font-size="10">j</tspan><tspan dy="-4"> V</tspan><tspan dy="4" font-size="10">j</tspan></text>
+  <text x="535" y="125" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" fill="#B5532C" font-weight="600">blocco</text>
+  <text x="535" y="139" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" fill="#B5532C" font-weight="600">corrente</text>
+
+  <!-- calcolo dentro SMEM -->
+  <text x="682" y="102" text-anchor="middle" font-family="Inter, sans-serif" font-size="12.5" fill="#1A1A1A">S<tspan dy="3.5" font-size="9">j</tspan><tspan dy="-3.5"> = Q K</tspan><tspan dy="3.5" font-size="9">j</tspan><tspan dy="-3.5">&#8868;</tspan></text>
+  <text x="682" y="122" text-anchor="middle" font-family="Inter, sans-serif" font-size="12.5" fill="#1A1A1A">poi softmax</text>
+  <text x="682" y="142" text-anchor="middle" font-family="Inter, sans-serif" font-size="12.5" fill="#1A1A1A">&#215; V<tspan dy="3.5" font-size="9">j</tspan></text>
+
+  <!-- HBM: blocchi K,V che scorrono -->
+  <text x="392" y="222" text-anchor="start" font-family="Inter, sans-serif" font-size="12.5" font-weight="600" fill="#1A1A1A" fill-opacity="0.75">HBM:  K, V a blocchi</text>
+  <g font-family="Inter, sans-serif" font-size="12" fill="#1A1A1A">
+    <rect x="500" y="232" width="52" height="34" rx="5" fill="#B5532C" fill-opacity="0.22" stroke="#B5532C" stroke-width="1.8"/>
+    <text x="526" y="254" text-anchor="middle">K<tspan dy="3" font-size="9">j</tspan><tspan dy="-3">V</tspan><tspan dy="3" font-size="9">j</tspan></text>
+    <rect x="560" y="232" width="52" height="34" rx="5" fill="#F8F5EE" stroke="#B5532C" stroke-width="1.4" stroke-opacity="0.6"/>
+    <text x="586" y="254" text-anchor="middle" fill-opacity="0.7">K&#8322;V&#8322;</text>
+    <rect x="620" y="232" width="52" height="34" rx="5" fill="#F8F5EE" stroke="#B5532C" stroke-width="1.4" stroke-opacity="0.6"/>
+    <text x="646" y="254" text-anchor="middle" fill-opacity="0.7">K&#8323;V&#8323;</text>
+    <rect x="680" y="232" width="52" height="34" rx="5" fill="#F8F5EE" stroke="#B5532C" stroke-width="1.4" stroke-opacity="0.6"/>
+    <text x="706" y="254" text-anchor="middle" fill-opacity="0.7">&#8230;</text>
+    <rect x="740" y="232" width="42" height="34" rx="5" fill="#F8F5EE" stroke="#B5532C" stroke-width="1.4" stroke-opacity="0.6"/>
+    <text x="761" y="254" text-anchor="middle" fill-opacity="0.7">K<tspan dy="3" font-size="9">T</tspan><tspan dy="-3">V</tspan><tspan dy="3" font-size="9">T</tspan></text>
+  </g>
+  <!-- scorrono a blocchi -->
+  <line x1="735" y1="285" x2="515" y2="285" stroke="#1A1A1A" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#fa-arrow)"/>
+  <text x="628" y="300" text-anchor="middle" font-family="Inter, sans-serif" font-size="11.5" fill="#1A1A1A" fill-opacity="0.7">scorrono a blocchi, uno per volta</text>
+  <!-- freccia blocco corrente sale in SMEM -->
+  <line x1="526" y1="230" x2="535" y2="156" stroke="#B5532C" stroke-width="2.2" marker-end="url(#fa-arrow-t)"/>
+
+  <!-- accumulatore O, m, l -->
+  <rect x="380" y="330" width="410" height="86" rx="10" fill="#F8F5EE" stroke="#B5532C" stroke-width="2.2"/>
+  <text x="585" y="354" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#B5532C">accumulatore &#8212; aggiornato a ogni blocco</text>
+  <g font-family="Inter, sans-serif" font-size="13.5" fill="#1A1A1A" font-weight="600">
+    <rect x="406" y="368" width="120" height="34" rx="6" fill="#2D5A5C" fill-opacity="0.12" stroke="#2D5A5C" stroke-width="1.5"/>
+    <text x="466" y="390" text-anchor="middle">O  (output)</text>
+    <rect x="540" y="368" width="100" height="34" rx="6" fill="#2D5A5C" fill-opacity="0.12" stroke="#2D5A5C" stroke-width="1.5"/>
+    <text x="590" y="390" text-anchor="middle">m (max)</text>
+    <rect x="654" y="368" width="112" height="34" rx="6" fill="#2D5A5C" fill-opacity="0.12" stroke="#2D5A5C" stroke-width="1.5"/>
+    <text x="710" y="390" text-anchor="middle">l (somma)</text>
+  </g>
+  <!-- freccia SMEM -> accumulatore -->
+  <line x1="500" y1="266" x2="470" y2="326" stroke="#1A1A1A" stroke-width="2" marker-end="url(#fa-arrow)"/>
+  <!-- loop di aggiornamento -->
+  <path d="M 372 373 q -26 0 -26 -60 q 0 -60 34 -60" fill="none" stroke="#1A1A1A" stroke-width="1.8" stroke-dasharray="5 4" marker-end="url(#fa-arrow)"/>
+  <text x="333" y="316" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#1A1A1A" fill-opacity="0.7" transform="rotate(-90 333 316)">ripeti su ogni blocco</text>
+
+  <!-- uscita finale -->
+  <text x="585" y="444" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" fill="#1A1A1A">alla fine:  uscita = O / l   (esatta, non un'approssimazione)</text>
+</svg>

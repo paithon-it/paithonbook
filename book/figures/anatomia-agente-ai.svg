@@ -1,0 +1,35 @@
+<svg viewBox="0 0 720 360" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Ciclo percezione-azione di un agente: percezione, decisione, azione, osservazione, con la memoria al centro che alimenta ogni fase">
+  <rect x="0" y="0" width="720" height="360" fill="#F8F5EE"/>
+  <text x="360" y="34" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="bold" fill="#1A1A1A">Il ciclo percezione–azione</text>
+  <!-- nodi -->
+  <rect x="45" y="150" width="150" height="62" rx="8" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2"/>
+  <text x="120" y="176" text-anchor="middle" font-family="sans-serif" font-size="14" font-weight="bold" fill="#2D5A5C">Percezione</text>
+  <text x="120" y="196" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#1A1A1A">richiesta + ultimo esito</text>
+  <rect x="285" y="62" width="150" height="62" rx="8" fill="#F8F5EE" stroke="#B5532C" stroke-width="2"/>
+  <text x="360" y="88" text-anchor="middle" font-family="sans-serif" font-size="14" font-weight="bold" fill="#B5532C">Decisione</text>
+  <text x="360" y="108" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#1A1A1A">il modello sceglie</text>
+  <rect x="525" y="150" width="150" height="62" rx="8" fill="#F8F5EE" stroke="#B5532C" stroke-width="2"/>
+  <text x="600" y="176" text-anchor="middle" font-family="sans-serif" font-size="14" font-weight="bold" fill="#B5532C">Azione</text>
+  <text x="600" y="196" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#1A1A1A">chiama uno strumento</text>
+  <rect x="285" y="238" width="150" height="62" rx="8" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2"/>
+  <text x="360" y="264" text-anchor="middle" font-family="sans-serif" font-size="14" font-weight="bold" fill="#2D5A5C">Osservazione</text>
+  <text x="360" y="284" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#1A1A1A">risultato dell'azione</text>
+  <!-- memoria centrale -->
+  <circle cx="360" cy="181" r="44" fill="#C9A961" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="360" y="178" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#1A1A1A">Memoria</text>
+  <text x="360" y="195" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#1A1A1A">tiene il filo</text>
+  <defs>
+    <marker id="ar103" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#1A1A1A"/>
+    </marker>
+  </defs>
+  <path d="M 175 148 Q 225 92 282 96" fill="none" stroke="#1A1A1A" stroke-width="2" marker-end="url(#ar103)"/>
+  <path d="M 438 96 Q 498 92 545 148" fill="none" stroke="#1A1A1A" stroke-width="2" marker-end="url(#ar103)"/>
+  <path d="M 545 214 Q 498 270 438 266" fill="none" stroke="#1A1A1A" stroke-width="2" marker-end="url(#ar103)"/>
+  <path d="M 282 266 Q 225 270 175 214" fill="none" stroke="#1A1A1A" stroke-width="2" marker-end="url(#ar103)"/>
+  <text x="205" y="88" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#1A1A1A">osserva</text>
+  <text x="515" y="88" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#1A1A1A">agisce</text>
+  <text x="515" y="282" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#1A1A1A">rientra</text>
+  <text x="205" y="282" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#1A1A1A">aggiorna</text>
+  <text x="360" y="338" text-anchor="middle" font-family="sans-serif" font-size="11" font-style="italic" fill="#1A1A1A">finché il compito è chiuso — o un guardrail lo ferma</text>
+</svg>

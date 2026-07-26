@@ -1,0 +1,42 @@
+<svg viewBox="0 0 760 300" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Schema del flusso: dati grezzi, feature engineering, modello">
+  <rect x="0" y="0" width="760" height="300" fill="#F8F5EE"/>
+  <!-- Raw data box -->
+  <rect x="30" y="70" width="180" height="160" rx="8" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="2"/>
+  <text x="120" y="55" font-family="sans-serif" font-size="15" font-weight="bold" fill="#1A1A1A" text-anchor="middle">DATI GREZZI</text>
+  <text x="45" y="100" font-family="sans-serif" font-size="12" fill="#1A1A1A">2026-07-11 09:14:03</text>
+  <text x="45" y="125" font-family="sans-serif" font-size="12" fill="#1A1A1A">"Via Roma 12, MI"</text>
+  <text x="45" y="150" font-family="sans-serif" font-size="12" fill="#1A1A1A">EUR 34,90 · carta</text>
+  <text x="45" y="175" font-family="sans-serif" font-size="12" fill="#1A1A1A">click, click, buy…</text>
+  <text x="45" y="200" font-family="sans-serif" font-size="12" fill="#8B847C">log illeggibili</text>
+  <!-- Arrow 1 -->
+  <line x1="215" y1="150" x2="270" y2="150" stroke="#B5532C" stroke-width="2"/>
+  <path d="M270 150 l-12 -7 v14 z" fill="#B5532C"/>
+  <!-- Feature box -->
+  <rect x="280" y="70" width="200" height="160" rx="8" fill="#F8F5EE" stroke="#B5532C" stroke-width="2"/>
+  <text x="380" y="55" font-family="sans-serif" font-size="15" font-weight="bold" fill="#B5532C" text-anchor="middle">FEATURE</text>
+  <rect x="295" y="88" width="170" height="24" rx="4" fill="#C9A961"/>
+  <text x="380" y="105" font-family="sans-serif" font-size="12" fill="#1A1A1A" text-anchor="middle">giorno_settimana = 5</text>
+  <rect x="295" y="120" width="170" height="24" rx="4" fill="#C9A961"/>
+  <text x="380" y="137" font-family="sans-serif" font-size="12" fill="#1A1A1A" text-anchor="middle">zona_reddito = alto</text>
+  <rect x="295" y="152" width="170" height="24" rx="4" fill="#C9A961"/>
+  <text x="380" y="169" font-family="sans-serif" font-size="12" fill="#1A1A1A" text-anchor="middle">spesa_media_30gg = 41.2</text>
+  <rect x="295" y="184" width="170" height="24" rx="4" fill="#C9A961"/>
+  <text x="380" y="201" font-family="sans-serif" font-size="12" fill="#1A1A1A" text-anchor="middle">min_da_ultimo_click = 3</text>
+  <!-- Arrow 2 -->
+  <line x1="485" y1="150" x2="540" y2="150" stroke="#B5532C" stroke-width="2"/>
+  <path d="M540 150 l-12 -7 v14 z" fill="#B5532C"/>
+  <!-- Model box -->
+  <rect x="550" y="70" width="180" height="160" rx="8" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="2"/>
+  <text x="640" y="55" font-family="sans-serif" font-size="15" font-weight="bold" fill="#1A1A1A" text-anchor="middle">MODELLO</text>
+  <circle cx="595" cy="120" r="10" fill="#F8F5EE"/>
+  <circle cx="595" cy="155" r="10" fill="#F8F5EE"/>
+  <circle cx="595" cy="190" r="10" fill="#F8F5EE"/>
+  <circle cx="685" cy="155" r="12" fill="#C9A961"/>
+  <line x1="605" y1="120" x2="673" y2="152" stroke="#F8F5EE" stroke-width="1.5"/>
+  <line x1="605" y1="155" x2="673" y2="155" stroke="#F8F5EE" stroke-width="1.5"/>
+  <line x1="605" y1="190" x2="673" y2="158" stroke="#F8F5EE" stroke-width="1.5"/>
+  <text x="640" y="255" font-family="sans-serif" font-size="12" fill="#5E5852" text-anchor="middle">pesi e soglie</text>
+  <!-- Labels under arrows -->
+  <text x="242" y="135" font-family="sans-serif" font-size="11" fill="#B5532C" text-anchor="middle">traduci</text>
+  <text x="512" y="135" font-family="sans-serif" font-size="11" fill="#B5532C" text-anchor="middle">impara</text>
+</svg>

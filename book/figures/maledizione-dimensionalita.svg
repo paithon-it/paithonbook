@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 300" width="100%" role="img" aria-label="Tre pannelli mostrano il volume della sfera inscritta nel cubo al crescere delle dimensioni: 78,5% in 2D, 52,4% in 3D, 0,25% in 10D">
+  <rect x="0" y="0" width="720" height="300" fill="#F8F5EE"/>
+  <text x="360" y="36" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#1A1A1A" font-weight="bold">Il volume che sfugge agli angoli</text>
+  <!-- Pannello 2D -->
+  <rect x="60" y="80" width="130" height="130" fill="#C9A961" stroke="#1A1A1A" stroke-width="2"/>
+  <circle cx="125" cy="145" r="65" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="125" y="240" text-anchor="middle" font-family="sans-serif" font-size="14" fill="#1A1A1A">2D</text>
+  <text x="125" y="262" text-anchor="middle" font-family="sans-serif" font-size="14" fill="#2D5A5C" font-weight="bold">cerchio: 78,5%</text>
+  <!-- freccia -->
+  <line x1="210" y1="145" x2="250" y2="145" stroke="#B5532C" stroke-width="2"/>
+  <path d="M 258 145 l -10 -5 l 0 10 z" fill="#B5532C"/>
+  <!-- Pannello 3D -->
+  <rect x="300" y="100" width="110" height="110" fill="#C9A961" stroke="#1A1A1A" stroke-width="2"/>
+  <polygon points="300,100 330,72 440,72 410,100" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.5"/>
+  <polygon points="410,100 440,72 440,182 410,210" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.5"/>
+  <circle cx="355" cy="155" r="44" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="370" y="240" text-anchor="middle" font-family="sans-serif" font-size="14" fill="#1A1A1A">3D</text>
+  <text x="370" y="262" text-anchor="middle" font-family="sans-serif" font-size="14" fill="#2D5A5C" font-weight="bold">sfera: 52,4%</text>
+  <!-- freccia -->
+  <line x1="460" y1="145" x2="500" y2="145" stroke="#B5532C" stroke-width="2"/>
+  <path d="M 508 145 l -10 -5 l 0 10 z" fill="#B5532C"/>
+  <!-- Pannello 10D -->
+  <rect x="530" y="80" width="130" height="130" fill="#C9A961" stroke="#1A1A1A" stroke-width="2"/>
+  <circle cx="595" cy="145" r="4" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="595" y="240" text-anchor="middle" font-family="sans-serif" font-size="14" fill="#1A1A1A">10D</text>
+  <text x="595" y="262" text-anchor="middle" font-family="sans-serif" font-size="14" fill="#2D5A5C" font-weight="bold">ipersfera: 0,25%</text>
+</svg>

@@ -1,0 +1,31 @@
+{#-
+  «Esegui su Colab»: compare solo sulle pagine che hanno un notebook compagno
+  in `notebooks/`.
+
+  L'elenco arriva da `html_context.pt_notebooks` in `_config.yml`, scritto da
+  `scripts/genera-notebook.py`. Serve perché un template Jinja non può guardare
+  il disco, e un pulsante che porta a un notebook inesistente è peggio di
+  nessun pulsante.
+
+  Colab apre i notebook direttamente da GitHub: `colab.research.google.com/
+  github/<owner>/<repo>/blob/<ramo>/<percorso>`. Là torch è già installato e la
+  GPU è gratis — che è la ragione per cui il libro passa da Colab invece di
+  provare a eseguire nel browser: PyTorch non esiste per WebAssembly.
+-#}
+{#- Il manifesto elenca CAPITOLI: la pagina eredita il notebook del suo. -#}
+{%- set capitolo = pagename.split('/')[0] %}
+{%- set pagina_nb = capitolo if pt_notebooks is defined and capitolo in pt_notebooks else none %}
+{%- if pagina_nb %}
+{%- set slug = theme_repository_url | default('', true) | replace('https://github.com/', '') %}
+<div class="header-article-item pt-notebook">
+  <a class="pt-notebook__link"
+     href="https://colab.research.google.com/github/{{ slug }}/blob/{{ theme_repository_branch | default('main', true) }}/notebooks/{{ pagina_nb }}.ipynb"
+     target="_blank" rel="noopener noreferrer"
+     title="Apri su Google Colab il notebook con il codice di questo capitolo">
+    <svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true" focusable="false">
+      <path fill="currentColor" d="M2.2 2.4a1.4 1.4 0 0 1 2.1-1.22l8.9 5.6a1.4 1.4 0 0 1 0 2.44l-8.9 5.6A1.4 1.4 0 0 1 2.2 13.6V2.4Z"/>
+    </svg>
+    <span class="pt-notebook__testo">Esegui il codice</span>
+  </a>
+</div>
+{%- endif %}

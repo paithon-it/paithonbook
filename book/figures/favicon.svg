@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  paithon favicon — triangolo di Penrose IMPOSSIBILE (tribar di
+  Gödel-Escher-Bach): geometria non euclidea, loop ricorsivo. Simbolo
+  del pensiero su mente e intelligenza — calzante per un magazine AI.
+  Geometria a 3 facce (over/under alla Escher), nei 3 colori
+  illustrazione di paithon (terracotta/teal/ocra) con tratto warm-black,
+  come le illustrazioni editoriali del sito. Stesso segno del bollo header.
+  viewBox centrato sul contenuto (bollo allineato al testo, favicon centrato).
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="11 -8 258 258" role="img" aria-label="paithon">
+  <g stroke="#1A1A1A" stroke-width="5" stroke-linejoin="round">
+    <path d="M 55.0625,182.4375 L 80.6875,182.5625 L 151.21875,59.84375 L 252.21615,228.15076 L 264.76729,205.25818 L 151.5625,13.25 L 55.0625,182.4375 z" fill="#B5532C"/>
+    <path d="M 15.625,206.0625 L 27.5,228.4375 L 252.30454,228.28334 L 151.23246,59.859344 L 138.54873,81.934334 L 211.73429,205.92661 L 15.625,206.0625 z" fill="#2D5A5C"/>
+    <path d="M 124.05609,12.990601 L 15.638759,206.0253 L 211.76418,205.96833 L 197.88064,182.51185 L 54.948939,182.532 L 151.67357,13.253813 L 124.05609,12.990601 z" fill="#C9A961"/>
+  </g>
+</svg>

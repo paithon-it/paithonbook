@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 420" role="img"
+     aria-label="Ciclo del reinforcement learning basato su modello: l'esperienza reale raccolta dall'ambiente addestra un modello appreso della dinamica e della ricompensa; dal modello si srotolano rollout immaginati (planning); i rollout aggiornano policy e valore senza toccare l'ambiente; la policy agisce di nuovo nel mondo, chiudendo l'anello.">
+  <defs>
+    <marker id="mb-dark" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1A1A1A"/>
+    </marker>
+    <marker id="mb-terra" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#B5532C"/>
+    </marker>
+  </defs>
+
+  <!-- box A: esperienza reale (ambiente) -->
+  <rect x="60" y="70" width="250" height="90" rx="10" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="2"/>
+  <text x="185" y="108" text-anchor="middle" font-family="Inter, sans-serif" font-size="17" font-weight="700" fill="#F8F5EE">Esperienza reale</text>
+  <text x="185" y="132" text-anchor="middle" font-family="Inter, sans-serif" font-size="12.5" fill="#F8F5EE">l&#8217;ambiente &#183; il mondo vero</text>
+
+  <!-- box B: modello appreso -->
+  <rect x="450" y="70" width="250" height="90" rx="10" fill="#C9A961" stroke="#1A1A1A" stroke-width="2"/>
+  <text x="575" y="108" text-anchor="middle" font-family="Inter, sans-serif" font-size="17" font-weight="700" fill="#1A1A1A">Modello appreso</text>
+  <text x="575" y="132" text-anchor="middle" font-family="Inter, sans-serif" font-size="12.5" fill="#1A1A1A">dinamica + ricompensa</text>
+
+  <!-- box C: rollout immaginati / planning -->
+  <rect x="450" y="250" width="250" height="90" rx="10" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="2"/>
+  <text x="575" y="288" text-anchor="middle" font-family="Inter, sans-serif" font-size="17" font-weight="700" fill="#F8F5EE">Rollout immaginati</text>
+  <text x="575" y="312" text-anchor="middle" font-family="Inter, sans-serif" font-size="12.5" fill="#F8F5EE">planning &#183; traiettorie simulate</text>
+
+  <!-- box D: policy e valore -->
+  <rect x="60" y="250" width="250" height="90" rx="10" fill="#C9A961" stroke="#1A1A1A" stroke-width="2"/>
+  <text x="185" y="288" text-anchor="middle" font-family="Inter, sans-serif" font-size="17" font-weight="700" fill="#1A1A1A">Policy e Valore</text>
+  <text x="185" y="312" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" fill="#1A1A1A">&#960;(a|s) &#183; V(s)</text>
+
+  <!-- A -> B : raccogli esperienza -->
+  <line x1="314" y1="115" x2="444" y2="115" stroke="#1A1A1A" stroke-width="2.2" marker-end="url(#mb-dark)"/>
+  <text x="379" y="102" text-anchor="middle" font-family="Inter, sans-serif" font-size="11.5" fill="#5E5852">transizioni (s, a, r, s&#8242;)</text>
+
+  <!-- B -> C : srotola rollout -->
+  <line x1="575" y1="164" x2="575" y2="246" stroke="#1A1A1A" stroke-width="2.2" marker-end="url(#mb-dark)"/>
+  <text x="590" y="198" text-anchor="start" font-family="Inter, sans-serif" font-size="11.5" fill="#5E5852">srotola</text>
+  <text x="590" y="214" text-anchor="start" font-family="Inter, sans-serif" font-size="11.5" fill="#5E5852">i rollout</text>
+
+  <!-- C -> D : aggiorna senza ambiente (ramo immaginato, terracotta) -->
+  <line x1="446" y1="295" x2="316" y2="295" stroke="#B5532C" stroke-width="2.6" marker-end="url(#mb-terra)"/>
+  <text x="381" y="330" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" font-weight="700" fill="#B5532C">aggiorna policy e valore</text>
+  <text x="381" y="346" text-anchor="middle" font-family="Inter, sans-serif" font-size="11.5" fill="#B5532C">senza toccare l&#8217;ambiente</text>
+
+  <!-- D -> A : agisci nel mondo -->
+  <line x1="185" y1="246" x2="185" y2="164" stroke="#1A1A1A" stroke-width="2.2" marker-end="url(#mb-dark)"/>
+  <text x="170" y="198" text-anchor="end" font-family="Inter, sans-serif" font-size="11.5" fill="#5E5852">agisci</text>
+  <text x="170" y="214" text-anchor="end" font-family="Inter, sans-serif" font-size="11.5" fill="#5E5852">nel mondo</text>
+
+  <!-- annotazione centrale -->
+  <text x="380" y="205" text-anchor="middle" font-family="Inter, sans-serif" font-size="12.5" font-style="italic" fill="#5E5852">poca esperienza reale,</text>
+  <text x="380" y="223" text-anchor="middle" font-family="Inter, sans-serif" font-size="12.5" font-style="italic" fill="#5E5852">molta immaginata</text>
+
+  <!-- didascalia interna -->
+  <text x="380" y="392" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#5E5852">il ramo in terracotta &#232; l&#8217;anello immaginato: la policy migliora dentro il modello, senza spendere passi nel mondo vero</text>
+</svg>

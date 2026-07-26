@@ -1,0 +1,38 @@
+<svg viewBox="0 0 760 300" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Pipeline di tokenizzazione: la parola straordinariamente viene spezzata in tre subword e poi convertita in tre id numerici">
+  <rect x="0" y="0" width="760" height="300" fill="#F8F5EE"/>
+  <text x="380" y="34" text-anchor="middle" font-family="sans-serif" font-size="15" font-weight="bold" fill="#1A1A1A">Da parola a numeri, in due tagli</text>
+  <!-- fase 1: parola -->
+  <text x="90" y="72" font-family="sans-serif" font-size="12" font-weight="bold" fill="#2D5A5C">1. PAROLA</text>
+  <rect x="90" y="84" width="580" height="48" rx="6" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="2"/>
+  <text x="380" y="114" text-anchor="middle" font-family="sans-serif" font-size="18" fill="#1A1A1A">straordinariamente</text>
+  <!-- frecce -->
+  <g stroke="#1A1A1A" stroke-width="1.5" fill="none">
+    <line x1="380" y1="132" x2="380" y2="152"/>
+    <path d="M 374 146 L 380 154 L 386 146"/>
+  </g>
+  <!-- fase 2: subword -->
+  <text x="90" y="150" font-family="sans-serif" font-size="12" font-weight="bold" fill="#2D5A5C">2. SUBWORD</text>
+  <rect x="90" y="160" width="170" height="48" rx="6" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="175" y="190" text-anchor="middle" font-family="sans-serif" font-size="17" fill="#F8F5EE">stra</text>
+  <rect x="290" y="160" width="200" height="48" rx="6" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="390" y="190" text-anchor="middle" font-family="sans-serif" font-size="17" fill="#F8F5EE">ordinaria</text>
+  <rect x="520" y="160" width="150" height="48" rx="6" fill="#C9A961" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="595" y="190" text-anchor="middle" font-family="sans-serif" font-size="17" fill="#1A1A1A">mente</text>
+  <!-- frecce verso id -->
+  <g stroke="#1A1A1A" stroke-width="1.5" fill="none">
+    <line x1="175" y1="208" x2="175" y2="228"/>
+    <path d="M 169 222 L 175 230 L 181 222"/>
+    <line x1="390" y1="208" x2="390" y2="228"/>
+    <path d="M 384 222 L 390 230 L 396 222"/>
+    <line x1="595" y1="208" x2="595" y2="228"/>
+    <path d="M 589 222 L 595 230 L 601 222"/>
+  </g>
+  <!-- fase 3: id -->
+  <text x="90" y="228" font-family="sans-serif" font-size="12" font-weight="bold" fill="#2D5A5C">3. ID</text>
+  <rect x="130" y="236" width="90" height="40" rx="6" fill="#F8F5EE" stroke="#B5532C" stroke-width="2"/>
+  <text x="175" y="262" text-anchor="middle" font-family="monospace, sans-serif" font-size="16" fill="#1A1A1A">4821</text>
+  <rect x="345" y="236" width="90" height="40" rx="6" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2"/>
+  <text x="390" y="262" text-anchor="middle" font-family="monospace, sans-serif" font-size="16" fill="#1A1A1A">17250</text>
+  <rect x="550" y="236" width="90" height="40" rx="6" fill="#F8F5EE" stroke="#C9A961" stroke-width="2"/>
+  <text x="595" y="262" text-anchor="middle" font-family="monospace, sans-serif" font-size="16" fill="#1A1A1A">903</text>
+</svg>

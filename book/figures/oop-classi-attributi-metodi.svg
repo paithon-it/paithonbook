@@ -1,0 +1,32 @@
+<svg viewBox="0 0 720 340" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Schema classe e istanze: la classe Sensore come stampo a sinistra, tre istanze con valori diversi a destra">
+  <rect x="0" y="0" width="720" height="340" fill="#F8F5EE"/>
+  <text x="360" y="32" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="bold" fill="#1A1A1A">Una classe, tante istanze</text>
+  <rect x="30" y="80" width="220" height="180" rx="10" fill="#F8F5EE" stroke="#B5532C" stroke-width="2"/>
+  <rect x="30" y="80" width="220" height="40" rx="10" fill="#B5532C"/>
+  <text x="140" y="106" text-anchor="middle" font-family="sans-serif" font-size="14" fill="#F8F5EE">class Sensore</text>
+  <text x="48" y="148" font-family="sans-serif" font-size="12" fill="#1A1A1A">attributi:</text>
+  <text x="60" y="168" font-family="sans-serif" font-size="12" fill="#5E5852">nome, posizione, letture</text>
+  <text x="48" y="196" font-family="sans-serif" font-size="12" fill="#1A1A1A">metodi:</text>
+  <text x="60" y="216" font-family="sans-serif" font-size="12" fill="#5E5852">aggiungi(), media()</text>
+  <text x="140" y="248" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#B5532C">lo stampo: definisce la forma</text>
+  <line x1="250" y1="120" x2="420" y2="90" stroke="#1A1A1A" stroke-width="1.5"/>
+  <polygon points="420,90 409,88 411,97" fill="#1A1A1A"/>
+  <line x1="250" y1="170" x2="420" y2="170" stroke="#1A1A1A" stroke-width="1.5"/>
+  <polygon points="420,170 410,165 410,175" fill="#1A1A1A"/>
+  <line x1="250" y1="220" x2="420" y2="250" stroke="#1A1A1A" stroke-width="1.5"/>
+  <polygon points="420,250 409,243 411,252" fill="#1A1A1A"/>
+  <text x="335" y="140" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#5E5852">Sensore(...)</text>
+  <rect x="430" y="60" width="260" height="64" rx="10" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2"/>
+  <circle cx="452" cy="92" r="8" fill="#2D5A5C"/>
+  <text x="472" y="86" font-family="sans-serif" font-size="12" fill="#1A1A1A">cucina = Sensore("s-01")</text>
+  <text x="472" y="106" font-family="sans-serif" font-size="11" fill="#5E5852">letture: [21.5, 22.3]</text>
+  <rect x="430" y="140" width="260" height="64" rx="10" fill="#F8F5EE" stroke="#C9A961" stroke-width="2"/>
+  <circle cx="452" cy="172" r="8" fill="#C9A961"/>
+  <text x="472" y="166" font-family="sans-serif" font-size="12" fill="#1A1A1A">cantina = Sensore("s-02")</text>
+  <text x="472" y="186" font-family="sans-serif" font-size="11" fill="#5E5852">letture: [12.1]</text>
+  <rect x="430" y="220" width="260" height="64" rx="10" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="2"/>
+  <circle cx="452" cy="252" r="8" fill="#1A1A1A"/>
+  <text x="472" y="246" font-family="sans-serif" font-size="12" fill="#1A1A1A">soffitta = Sensore("s-03")</text>
+  <text x="472" y="266" font-family="sans-serif" font-size="11" fill="#5E5852">letture: []</text>
+  <text x="560" y="316" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#5E5852">i biscotti: stessa forma, dati propri e indipendenti</text>
+</svg>

@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 300" role="img" aria-labelledby="title-dqn">
+  <title id="title-dqn">Schema del Deep Q-Network: un fotogramma di gioco entra in una rete convoluzionale che produce un valore Q per ogni azione</title>
+  <!-- Palette: terracotta #B5532C, teal #2D5A5C, ocra #C9A961, warm-black #1A1A1A, cream #F8F5EE, neutri #5E5852 #8B847C #C9C2B4 #E8E2D5 -->
+  <defs>
+    <marker id="dqn-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1A1A1A"/>
+    </marker>
+  </defs>
+
+  <!-- ===== STATO: fotogramma di gioco ===== -->
+  <rect x="24" y="80" width="132" height="132" rx="6" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="2.5"/>
+  <!-- mattoncini (stile Breakout) -->
+  <g>
+    <rect x="31" y="90"  width="17" height="8" fill="#C9A961"/>
+    <rect x="50" y="90"  width="17" height="8" fill="#2D5A5C"/>
+    <rect x="69" y="90"  width="17" height="8" fill="#C9A961"/>
+    <rect x="88" y="90"  width="17" height="8" fill="#2D5A5C"/>
+    <rect x="107" y="90" width="17" height="8" fill="#C9A961"/>
+    <rect x="126" y="90" width="17" height="8" fill="#2D5A5C"/>
+    <rect x="31" y="101" width="17" height="8" fill="#2D5A5C"/>
+    <rect x="50" y="101" width="17" height="8" fill="#C9A961"/>
+    <rect x="69" y="101" width="17" height="8" fill="#2D5A5C"/>
+    <rect x="88" y="101" width="17" height="8" fill="#C9A961"/>
+    <rect x="107" y="101" width="17" height="8" fill="#2D5A5C"/>
+    <rect x="126" y="101" width="17" height="8" fill="#C9A961"/>
+  </g>
+  <!-- pallina -->
+  <circle cx="90" cy="162" r="4.5" fill="#1A1A1A"/>
+  <!-- racchetta -->
+  <rect x="72" y="192" width="36" height="7" rx="2" fill="#B5532C"/>
+  <text x="90" y="234" text-anchor="middle" font-family="Inter, Helvetica, Arial, sans-serif" font-size="14" fill="#1A1A1A">stato: un fotogramma</text>
+
+  <!-- freccia stato -> conv -->
+  <line x1="158" y1="146" x2="200" y2="146" stroke="#1A1A1A" stroke-width="2.5" marker-end="url(#dqn-arrow)"/>
+
+  <!-- ===== RETE CONVOLUZIONALE (volumi che rimpiccioliscono) ===== -->
+  <g stroke="#2D5A5C" stroke-width="2.5" fill="#F8F5EE">
+    <rect x="206" y="98" width="40" height="96"/>
+    <rect x="262" y="110" width="34" height="72"/>
+    <rect x="312" y="122" width="28" height="48"/>
+  </g>
+  <g stroke="#2D5A5C" stroke-width="1.2">
+    <line x1="219" y1="98" x2="219" y2="194"/>
+    <line x1="232" y1="98" x2="232" y2="194"/>
+    <line x1="273" y1="110" x2="273" y2="182"/>
+    <line x1="284" y1="110" x2="284" y2="182"/>
+    <line x1="321" y1="122" x2="321" y2="170"/>
+    <line x1="330" y1="122" x2="330" y2="170"/>
+  </g>
+  <line x1="246" y1="146" x2="260" y2="146" stroke="#1A1A1A" stroke-width="2" marker-end="url(#dqn-arrow)"/>
+  <line x1="296" y1="146" x2="310" y2="146" stroke="#1A1A1A" stroke-width="2" marker-end="url(#dqn-arrow)"/>
+  <text x="273" y="234" text-anchor="middle" font-family="Inter, Helvetica, Arial, sans-serif" font-size="14" fill="#2D5A5C">convoluzioni</text>
+
+  <!-- freccia conv -> denso -->
+  <line x1="342" y1="146" x2="372" y2="146" stroke="#1A1A1A" stroke-width="2.5" marker-end="url(#dqn-arrow)"/>
+
+  <!-- ===== STRATO DENSO (nodi) ===== -->
+  <g fill="#F8F5EE" stroke="#5E5852" stroke-width="2">
+    <circle cx="392" cy="108" r="6.5"/>
+    <circle cx="392" cy="128" r="6.5"/>
+    <circle cx="392" cy="148" r="6.5"/>
+    <circle cx="392" cy="168" r="6.5"/>
+    <circle cx="392" cy="188" r="6.5"/>
+  </g>
+  <text x="392" y="234" text-anchor="middle" font-family="Inter, Helvetica, Arial, sans-serif" font-size="14" fill="#5E5852">denso</text>
+
+  <!-- fan-out verso le uscite -->
+  <g stroke="#C9C2B4" stroke-width="1.4">
+    <line x1="401" y1="148" x2="520" y2="103"/>
+    <line x1="401" y1="148" x2="520" y2="133"/>
+    <line x1="401" y1="148" x2="520" y2="163"/>
+    <line x1="401" y1="148" x2="520" y2="193"/>
+  </g>
+
+  <!-- ===== USCITA: un valore Q per azione ===== -->
+  <text x="518" y="72" text-anchor="start" font-family="Inter, Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#1A1A1A">valore Q per ogni azione</text>
+
+  <!-- etichette azioni -->
+  <g font-family="Inter, Helvetica, Arial, sans-serif" font-size="13" fill="#1A1A1A" text-anchor="end">
+    <text x="516" y="107">niente</text>
+    <text x="516" y="137">sinistra</text>
+    <text x="516" y="167">destra</text>
+    <text x="516" y="197">spara</text>
+  </g>
+
+  <!-- barre Q -->
+  <rect x="524" y="94"  width="46"  height="18" rx="2" fill="#B5532C" fill-opacity="0.35"/>
+  <rect x="524" y="124" width="96"  height="18" rx="2" fill="#B5532C" fill-opacity="0.55"/>
+  <rect x="524" y="154" width="150" height="18" rx="2" fill="#B5532C"/>
+  <rect x="524" y="184" width="70"  height="18" rx="2" fill="#B5532C" fill-opacity="0.45"/>
+
+  <!-- valori numerici -->
+  <g font-family="'JetBrains Mono', monospace" font-size="12" fill="#5E5852">
+    <text x="576"  y="107">0.4</text>
+    <text x="626"  y="137">1.9</text>
+    <text x="680"  y="167" fill="#B5532C" font-weight="700">3.7</text>
+    <text x="600"  y="197">1.2</text>
+  </g>
+  <!-- scelta -->
+  <text x="720" y="167" text-anchor="start" font-family="Inter, Helvetica, Arial, sans-serif" font-size="12" font-weight="700" fill="#B5532C">max</text>
+</svg>

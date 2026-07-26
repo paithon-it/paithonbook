@@ -1,0 +1,186 @@
+# Visione artificiale: far vedere le macchine
+
+Nel 1966, al MIT, Seymour Papert affidò a uno studente un compito per l'estate:
+collegare una telecamera a un computer e insegnargli a descrivere quello che
+vedeva. Il progetto si chiamava, con ottimismo, *Summer Vision Project*. L'idea
+di fondo era che un problema tanto naturale — noi vediamo senza sforzo, di
+continuo — si potesse sistemare in una manciata di settimane. Mezzo secolo dopo,
+la visione artificiale è ancora un campo di ricerca vivo e aperto. Quella
+sottovalutazione racconta una verità profonda: vedere ci *sembra* facile solo
+perché il nostro cervello lo fa per noi, in silenzio e in pochi millisecondi.
+
+Questo capitolo parte proprio da lì: da che cosa significhi, per una macchina,
+"vedere". E dalla scoperta — arrivata sul serio solo negli anni Dieci di questo
+secolo — che il modo migliore per insegnarglielo non è scrivere regole, ma
+mostrarle milioni di esempi.
+
+## Un'immagine è una griglia di numeri
+
+Per un computer non esistono "gatti", "cieli" o "volti": esistono numeri. Prima
+di qualunque ragionamento, un'immagine dev'essere tradotta in qualcosa che una
+macchina possa manipolare, e quel qualcosa è una griglia.
+
+`````{tab} Elementare
+
+Immagina una foto come un enorme foglio a quadretti. Ogni quadretto è un
+**pixel**, e dentro ci sta un numero che dice quanto quel puntino è chiaro o
+scuro: $0$ è nero pieno, $255$ è bianco pieno, e i valori in mezzo sono le
+sfumature di grigio. Una foto in bianco e nero, per il computer, è tutta qui:
+una tabella di numeri fra $0$ e $255$.
+
+Se la foto è a colori, ogni quadretto non ha più un numero solo ma tre — quanto
+rosso, quanto verde, quanto blu (il famoso **RGB**) — che mescolati ricreano
+ogni tinta. Un'immagine, insomma, è una griglia di numeri. Tutto il lavoro della
+visione artificiale consiste nel trovare, dentro quella griglia, delle
+regolarità che corrispondano a ciò che noi chiamiamo "un gatto".
+
+`````
+
+`````{tab} Superiore
+
+Un'immagine è un **tensore** $X \in \mathbb{R}^{C \times H \times W}$ —
+nell'ordine *channels-first* di PyTorch: canali, altezza, larghezza — dove
+$C=1$ in scala di grigi, $C=3$ per RGB. L'elemento $X_{c,i,j}$ è l'intensità
+del canale $c$ nel pixel di riga $i$ e colonna $j$, tipicamente un intero in
+$\{0,\dots,255\}$ che in fase di addestramento si normalizza in $[0,1]$ o si
+standardizza a media nulla e varianza unitaria.
+
+Le dimensioni crescono in fretta: una modesta immagine $3 \times 224 \times 224$
+— la taglia d'ingresso classica delle reti addestrate su ImageNet — è un vettore
+di $150\,528$ numeri. Trattarla come un vettore piatto, ignorando che i pixel
+vicini sono correlati, è proprio l'errore che le reti convoluzionali —
+protagoniste dei prossimi paragrafi — evitano per costruzione.
+
+`````
+
+## I compiti della visione
+
+Avere i numeri è solo l'inizio. La domanda vera è: *che cosa chiediamo al modello
+di produrre?* Da qui nascono i quattro compiti fondamentali, che si possono
+leggere come una scala di ambizione crescente ({numref}`fig-compiti-visione`).
+
+```{figure} ../figures/compiti-visione.svg
+:name: fig-compiti-visione
+:alt: Quattro pannelli mostrano la stessa scena con due gatti e una palla. Classificazione assegna una sola etichetta all'intera immagine; il rilevamento disegna un riquadro attorno a ogni oggetto; la segmentazione semantica colora i pixel per categoria, con i due gatti dello stesso colore; la segmentazione di istanza dà a ciascun oggetto un colore diverso.
+:width: 90%
+
+I quattro compiti classici della visione a confronto sulla stessa scena. Si va
+dall'etichetta unica per l'immagine (classificazione) fino a distinguere ogni
+singolo oggetto pixel per pixel (segmentazione di istanza).
+```
+
+`````{tab} Elementare
+
+- **Classificazione**: "che cosa c'è in questa foto?". Il modello risponde con
+  una sola parola per l'intera immagine — *gatto* — senza dire dove si trovi.
+- **Rilevamento (detection)**: "che cosa c'è, e *dove*?". Il modello disegna un
+  riquadro attorno a ogni oggetto e lo etichetta: due riquadri "gatto" e uno
+  "palla".
+- **Segmentazione semantica**: "a quale categoria appartiene *ogni singolo
+  pixel*?". Si colora l'immagine come una cartina: tutti i pixel-gatto di un
+  colore, i pixel-palla di un altro. I due gatti finiscono nella stessa tinta,
+  perché sono la stessa *categoria*.
+- **Segmentazione di istanza**: come sopra, ma i due gatti diventano due
+  oggetti distinti, con colori diversi. È il compito più fine: separa non solo
+  le categorie, ma i singoli individui.
+
+`````
+
+`````{tab} Superiore
+
+Formalmente, i quattro compiti differiscono per la forma dell'output.
+
+- **Classificazione**: $\hat{y} = \arg\max_{k \in \{1,\dots,K\}} f_k(X)$, una
+  sola etichetta su $K$ classi per l'intera immagine.
+- **Rilevamento**: l'output è un insieme di coppie
+  $\{(\hat{c}_i,\ \mathbf{b}_i)\}_{i=1}^{N}$, dove $\hat{c}_i$ è la classe e
+  $\mathbf{b}_i = (x, y, w, h)$ il *bounding box*. La qualità si misura con la
+  *Intersection over Union* $\mathrm{IoU} = \frac{|A \cap B|}{|A \cup B|}$ tra
+  box predetto e reale, aggregata nella *mean Average Precision* (mAP).
+- **Segmentazione semantica**: una predizione per ogni pixel,
+  $\hat{y}_{i,j} \in \{1,\dots,K\}$. Due istanze della stessa classe condividono
+  l'etichetta.
+- **Segmentazione di istanza**: a ogni pixel si associa una classe *e*
+  un'identità di istanza, distinguendo gatto-1 da gatto-2.
+
+Il costo di annotazione cresce nello stesso ordine: etichettare un'immagine è
+questione di secondi, tracciare una maschera pixel-perfetta richiede minuti.
+
+`````
+
+## Dai filtri disegnati a mano alle feature imparate
+
+Per decenni la strategia fu ovvia quanto faticosa: se vuoi trovare un bordo,
+scrivi tu la regola per trovarlo.
+
+`````{tab} Elementare
+
+L'idea era che un esperto progettasse a mano dei "rilevatori": una formula per
+scovare i bordi (dove il colore cambia bruscamente è probabile ci sia un
+contorno), un'altra per le forme, un'altra per gli angoli. Funzionava, ma solo
+fino a un certo punto: ogni nuovo problema richiedeva nuove regole cucite a mano,
+e la realtà — luci, ombre, angolazioni — è troppo varia per essere ingabbiata in
+istruzioni fisse.
+
+La svolta è stata capovolgere il ragionamento: invece di dire alla macchina
+*come* riconoscere un gatto, le mostriamo migliaia di gatti e lasciamo che sia
+lei a costruirsi i rilevatori giusti. Le "regole" non le scrive più l'ingegnere:
+emergono dai dati.
+
+`````
+
+`````{tab} Superiore
+
+L'era delle *feature* ingegnerizzate ci ha lasciato strumenti tuttora eleganti:
+il rilevatore di bordi di **Canny** (1986), i descrittori **SIFT** di Lowe
+(2004), invarianti a scala e rotazione, e l'istogramma dei gradienti orientati
+**HOG** di Dalal e Triggs {cite}`dalal2005histograms`, a lungo lo standard
+per il rilevamento di
+pedoni. Erano feature *fisse*, seguite da un classificatore addestrabile (spesso
+una SVM).
+
+La rottura arriva con le reti convoluzionali. LeCun e colleghi mostrano già nel
+1998, con **LeNet-5**, che una CNN può imparare da sola i filtri leggendo cifre
+scritte a mano. Ma è il 2012 lo spartiacque: **AlexNet** (Krizhevsky, Sutskever,
+Hinton) vince la competizione ImageNet con un *top-5 error* del $15{,}3\%$
+contro il $26{,}2\%$ del secondo classificato. Da allora le feature non si
+disegnano più: si *imparano*, strato dopo strato, direttamente dai pixel.
+
+`````
+
+## Il carburante: i grandi dataset
+
+Le CNN non avrebbero spiccato il volo senza qualcosa su cui volare. Il progetto
+**ImageNet**, guidato da Fei-Fei Li e presentato nel 2009, mette insieme oltre
+quattordici milioni di immagini etichettate; la sua sfida annuale (ILSVRC) usa un
+sottoinsieme di mille categorie ed è la palestra su cui, nel 2012, AlexNet cambia
+la storia. Poco dopo arriva **COCO** (*Common Objects in Context*, 2014), con
+centinaia di migliaia di immagini annotate non solo con etichette, ma con box e
+maschere per circa ottanta categorie di oggetti comuni: il banco di prova
+naturale per rilevamento e segmentazione. La lezione è netta e vale per tutto il
+deep learning: buoni dati, in grande quantità, contano quanto la buona
+architettura.
+
+## Come è organizzato il capitolo
+
+Nei prossimi paragrafi partiamo dal mattone fondamentale — la **convoluzione**,
+l'operazione che permette a una rete di "guardare" un'immagine rispettandone la
+struttura spaziale. Da lì costruiamo le **reti convoluzionali** e ne ripercorriamo
+le architetture che hanno fatto scuola. Passeremo poi ai compiti più ambiziosi,
+il rilevamento e la segmentazione, e a tecniche pratiche come il *transfer
+learning*, che consente di riusare reti già addestrate su ImageNet per i nostri
+problemi con pochi dati. L'obiettivo non è solo capire come funzionano: è
+metterle al lavoro, con PyTorch, sulle nostre immagini.
+
+```{admonition} Da ricordare
+:class: important
+- Per un computer un'immagine è un **tensore** $X \in \mathbb{R}^{C \times H \times W}$:
+  una griglia di numeri, non di oggetti.
+- I quattro compiti classici — **classificazione, rilevamento, segmentazione
+  semantica e di istanza** — differiscono per la forma dell'output, dall'etichetta
+  unica alla maschera per singolo oggetto.
+- La grande transizione è dalle **feature disegnate a mano** (Canny, SIFT, HOG)
+  alle **feature imparate** dalle CNN: la svolta è AlexNet su ImageNet (2012).
+- Senza i grandi dataset (**ImageNet**, **COCO**) niente di tutto questo sarebbe
+  stato possibile.
+```

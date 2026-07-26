@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  paithon book — figura animata: lo XOR non è separabile linearmente
+  Generata da animazioni/svg/xor-non-separabile.py — non modificare a mano.
+  Palette-locked, fondo trasparente, animazione in CSS puro (nessuno script).
+  Lo stato di riposo è quello finale: chi non anima (stampa, PDF,
+  prefers-reduced-motion) vede la figura conclusa.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 664 500"
+     role="img" aria-label="Una retta ruota su quattro punti disposti a XOR: a ogni orientamento restano due punti dalla parte sbagliata, cerchiati.">
+  <style>
+    svg  { --d: 7.5s; }
+    .ax  { stroke:#C5BEAA; stroke-width:2; fill:none; }
+    .axc { stroke:#E2DCC9; stroke-width:1.5; }
+    .lbl { font-family:Inter, system-ui, sans-serif; font-size:15px; fill:#1A1A1A; }
+    .lbs { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#5E5852; }
+    .ttl { font-family:Fraunces, Georgia, serif; font-size:16px; font-style:italic; fill:#1A1A1A; }
+    .pt  { stroke:#F8F5EE; }
+    .pos { fill:#B5532C; stroke:#B5532C; }
+    .neg { fill:#2D5A5C; stroke:#2D5A5C; }
+    .sep { stroke:#1A1A1A; stroke-width:3; }
+    .err { fill:none; stroke:#1A1A1A; stroke-width:11; stroke-opacity:0; }
+    .cnt { font-family:Inter, system-ui, sans-serif; font-size:16px; font-weight:700; fill:#B5532C; }
+    #retta { animation:gira var(--d) infinite; transform-box:view-box; }
+        @keyframes gira{0.00%{transform:translate(274.0px,230.0px) rotate(-110.0deg)}11.00%{transform:translate(274.0px,230.0px) rotate(-110.0deg)}20.00%{transform:translate(274.0px,230.0px) rotate(-155.0deg)}31.00%{transform:translate(274.0px,230.0px) rotate(-155.0deg)}40.00%{transform:translate(274.0px,230.0px) rotate(160.0deg)}51.00%{transform:translate(274.0px,230.0px) rotate(160.0deg)}60.00%{transform:translate(274.0px,230.0px) rotate(115.0deg)}71.00%{transform:translate(274.0px,230.0px) rotate(115.0deg)}80.00%{transform:translate(274.0px,230.0px) rotate(70.0deg)}91.00%{transform:translate(274.0px,230.0px) rotate(70.0deg)}100.00%{transform:translate(274.0px,230.0px) rotate(70.0deg)}}
+    @keyframes err0{0.00%{stroke-opacity:0}59.20%{stroke-opacity:0}60.00%{stroke-opacity:0.55}78.40%{stroke-opacity:0.55}79.20%{stroke-opacity:0}79.20%{stroke-opacity:0}80.00%{stroke-opacity:0.55}98.40%{stroke-opacity:0.55}99.20%{stroke-opacity:0}100.00%{stroke-opacity:0}}
+    @keyframes err1{0.00%{stroke-opacity:0}0.00%{stroke-opacity:0.55}0.01%{stroke-opacity:0}18.40%{stroke-opacity:0.55}19.20%{stroke-opacity:0}19.20%{stroke-opacity:0}20.00%{stroke-opacity:0.55}38.40%{stroke-opacity:0.55}39.20%{stroke-opacity:0}39.20%{stroke-opacity:0}40.00%{stroke-opacity:0.55}58.40%{stroke-opacity:0.55}59.20%{stroke-opacity:0}100.00%{stroke-opacity:0}}
+    @keyframes err2{0.00%{stroke-opacity:0}0.00%{stroke-opacity:0.55}0.01%{stroke-opacity:0}18.40%{stroke-opacity:0.55}19.20%{stroke-opacity:0}100.00%{stroke-opacity:0}}
+    @keyframes err3{0.00%{stroke-opacity:0}19.20%{stroke-opacity:0}20.00%{stroke-opacity:0.55}38.40%{stroke-opacity:0.55}39.20%{stroke-opacity:0}39.20%{stroke-opacity:0}40.00%{stroke-opacity:0.55}58.40%{stroke-opacity:0.55}59.20%{stroke-opacity:0}59.20%{stroke-opacity:0}60.00%{stroke-opacity:0.55}78.40%{stroke-opacity:0.55}79.20%{stroke-opacity:0}79.20%{stroke-opacity:0}80.00%{stroke-opacity:0.55}98.40%{stroke-opacity:0.55}99.20%{stroke-opacity:0}100.00%{stroke-opacity:0}}
+    @media (prefers-reduced-motion:reduce) { #retta, .err { animation:none !important; } }
+  </style>
+  <clipPath id="campo"><rect x="78" y="34" width="392" height="392" rx="4"/></clipPath><rect class="ax" x="78" y="34" width="392" height="392" rx="4"/><line class="axc" x1="78" y1="230.0" x2="470" y2="230.0"/><line class="axc" x1="274.0" y1="34" x2="274.0" y2="426"/><g clip-path="url(#campo)"><g id="retta" transform="translate(274.0,230.0) rotate(70.0)"><line class="sep" x1="-620" y1="0" x2="620" y2="0"/></g></g><circle class="err" cx="397.8" cy="106.2" r="9" style="animation:err0 var(--d) infinite;stroke-opacity:0.55"/><circle class="pt pos" cx="397.8" cy="106.2" r="9"/><circle class="err" cx="150.2" cy="353.8" r="9" style="animation:err1 var(--d) infinite"/><circle class="pt pos" cx="150.2" cy="353.8" r="9"/><circle class="err" cx="397.8" cy="353.8" r="9" style="animation:err2 var(--d) infinite"/><circle class="pt neg" cx="397.8" cy="353.8" r="9"/><circle class="err" cx="150.2" cy="106.2" r="9" style="animation:err3 var(--d) infinite;stroke-opacity:0.55"/><circle class="pt neg" cx="150.2" cy="106.2" r="9"/><text class="cnt" x="78" y="462">sempre 2 punti sbagliati</text><text class="lbl" x="78" y="490">nessuna retta mette le due classi da parti opposte</text><circle class="pt pos" cx="496" cy="54" r="9"/><text class="lbs" x="514" y="59">XOR = 0</text><circle class="pt neg" cx="496" cy="84" r="9"/><text class="lbs" x="514" y="89">XOR = 1</text>
+</svg>

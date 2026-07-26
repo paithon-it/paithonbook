@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 340" role="img" aria-label="La grande matrice dei voti R, quasi vuota, è approssimata dal prodotto di due matrici strette: P, con una riga di k fattori latenti per ogni utente, e Q trasposta, con una colonna di k fattori latenti per ogni film.">
+
+  <!-- R: matrice dei voti, grande e sparsa -->
+  <text x="145" y="42" text-anchor="middle" font-family="Inter, sans-serif" font-size="15" font-weight="700" fill="#2D5A5C">R — matrice dei voti</text>
+  <rect x="30" y="60" width="230" height="210" rx="8" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2"/>
+  <!-- poche celle piene, sparse -->
+  <rect x="48" y="78" width="18" height="14" rx="2" fill="#2D5A5C" fill-opacity="0.45"/>
+  <rect x="150" y="74" width="18" height="14" rx="2" fill="#C9A961" fill-opacity="0.6"/>
+  <rect x="210" y="90" width="18" height="14" rx="2" fill="#2D5A5C" fill-opacity="0.45"/>
+  <rect x="75" y="120" width="18" height="14" rx="2" fill="#C9A961" fill-opacity="0.6"/>
+  <rect x="185" y="132" width="18" height="14" rx="2" fill="#2D5A5C" fill-opacity="0.45"/>
+  <rect x="48" y="170" width="18" height="14" rx="2" fill="#2D5A5C" fill-opacity="0.45"/>
+  <rect x="120" y="182" width="18" height="14" rx="2" fill="#C9A961" fill-opacity="0.6"/>
+  <rect x="228" y="166" width="18" height="14" rx="2" fill="#2D5A5C" fill-opacity="0.45"/>
+  <rect x="95" y="225" width="18" height="14" rx="2" fill="#2D5A5C" fill-opacity="0.45"/>
+  <rect x="170" y="235" width="18" height="14" rx="2" fill="#C9A961" fill-opacity="0.6"/>
+  <rect x="222" y="240" width="18" height="14" rx="2" fill="#2D5A5C" fill-opacity="0.45"/>
+  <rect x="60" y="246" width="18" height="14" rx="2" fill="#C9A961" fill-opacity="0.6"/>
+  <!-- la cella da ricostruire -->
+  <rect x="132" y="118" width="18" height="14" rx="2" fill="none" stroke="#B5532C" stroke-width="2"/>
+  <text x="141" y="130" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" font-weight="700" fill="#B5532C">?</text>
+  <text x="145" y="292" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#5E5852">n utenti × m film · quasi tutta vuota</text>
+
+  <!-- approssimazione -->
+  <text x="292" y="178" text-anchor="middle" font-family="Inter, sans-serif" font-size="34" fill="#1A1A1A">&#8776;</text>
+
+  <!-- P: fattori latenti degli utenti -->
+  <text x="365" y="42" text-anchor="middle" font-family="Inter, sans-serif" font-size="15" font-weight="700" fill="#2D5A5C">P — utenti</text>
+  <rect x="325" y="60" width="80" height="210" rx="6" fill="#2D5A5C" fill-opacity="0.12" stroke="#2D5A5C" stroke-width="2"/>
+  <line x1="352" y1="60" x2="352" y2="270" stroke="#2D5A5C" stroke-width="0.8" stroke-opacity="0.5"/>
+  <line x1="379" y1="60" x2="379" y2="270" stroke="#2D5A5C" stroke-width="0.8" stroke-opacity="0.5"/>
+  <!-- la riga di un utente -->
+  <rect x="327" y="118" width="76" height="16" rx="2" fill="#2D5A5C" fill-opacity="0.4"/>
+  <text x="365" y="292" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#5E5852">n × k</text>
+
+  <!-- prodotto -->
+  <text x="440" y="176" text-anchor="middle" font-family="Inter, sans-serif" font-size="26" fill="#1A1A1A">×</text>
+
+  <!-- Q trasposta: fattori latenti dei film -->
+  <text x="590" y="42" text-anchor="middle" font-family="Inter, sans-serif" font-size="15" font-weight="700" fill="#B5532C">Q&#7488; — film</text>
+  <rect x="475" y="60" width="230" height="80" rx="6" fill="#B5532C" fill-opacity="0.1" stroke="#B5532C" stroke-width="2"/>
+  <line x1="475" y1="87" x2="705" y2="87" stroke="#B5532C" stroke-width="0.8" stroke-opacity="0.5"/>
+  <line x1="475" y1="113" x2="705" y2="113" stroke="#B5532C" stroke-width="0.8" stroke-opacity="0.5"/>
+  <!-- la colonna di un film -->
+  <rect x="560" y="62" width="16" height="76" rx="2" fill="#B5532C" fill-opacity="0.35"/>
+  <text x="590" y="162" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#5E5852">k × m</text>
+
+  <!-- legenda -->
+  <rect x="478" y="196" width="14" height="12" rx="2" fill="#2D5A5C" fill-opacity="0.4"/>
+  <text x="500" y="206" font-family="Inter, sans-serif" font-size="12.5" fill="#1A1A1A">una riga di P = il profilo di un utente</text>
+  <rect x="478" y="220" width="14" height="12" rx="2" fill="#B5532C" fill-opacity="0.35"/>
+  <text x="500" y="230" font-family="Inter, sans-serif" font-size="12.5" fill="#1A1A1A">una colonna di Q&#7488; = il profilo di un film</text>
+  <text x="478" y="256" font-family="Inter, sans-serif" font-size="12.5" font-weight="700" fill="#B5532C">voto previsto = riga · colonna</text>
+
+  <!-- nota sui fattori -->
+  <text x="390" y="325" text-anchor="middle" font-family="Inter, sans-serif" font-size="12.5" font-style="italic" fill="#5E5852">k fattori latenti (commedia/dramma, mainstream/nicchia, …), con k molto più piccolo di n e m</text>
+</svg>

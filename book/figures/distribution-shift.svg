@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 340" role="img" aria-label="Due distribuzioni a campana sfalsate lungo l'asse degli input: quella dei dati di addestramento a sinistra e quella dei dati incontrati in produzione spostata a destra. Una linea tratteggiata segna il punto in cui il modello è stato tarato, lontano dal grosso dei nuovi dati.">
+  <defs>
+    <marker id="freccia-shift" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#5E5852"/>
+    </marker>
+  </defs>
+
+  <!-- legenda -->
+  <rect x="60" y="22" width="14" height="14" rx="3" fill="#2D5A5C" fill-opacity="0.15" stroke="#2D5A5C" stroke-width="1.5"/>
+  <text x="82" y="34" font-family="Inter, sans-serif" font-size="13" fill="#1A1A1A">dati di addestramento</text>
+  <rect x="248" y="22" width="14" height="14" rx="3" fill="#B5532C" fill-opacity="0.15" stroke="#B5532C" stroke-width="1.5"/>
+  <text x="270" y="34" font-family="Inter, sans-serif" font-size="13" fill="#1A1A1A">dati in produzione</text>
+
+  <!-- campana addestramento (riempimento) -->
+  <path d="M60,268.9 L76,266.6 L92,263.0 L108,257.5 L124,249.7 L140,239.0 L156,225.4 L172,208.7 L188,189.7 L204,169.4 L220,149.3 L236,131.3 L252,117.3 L268,108.9 L284,107.2 L300,112.3 L316,123.7 L332,139.9 L348,159.2 L364,179.6 L380,199.5 L396,217.4 L412,232.6 L428,244.7 L444,253.9 L460,260.5 L476,265.0 L492,267.9 L508,269.7 L524,270.8 L540,271.4 L556,271.7 L572,271.9 L588,271.9 L604,272.0 L620,272.0 L636,272.0 L652,272.0 L668,272.0 L684,272.0 L700,272.0 L700,272 L60,272 Z"
+        fill="#2D5A5C" fill-opacity="0.12" stroke="none"/>
+  <!-- campana addestramento (tratto) -->
+  <path d="M60,268.9 L76,266.6 L92,263.0 L108,257.5 L124,249.7 L140,239.0 L156,225.4 L172,208.7 L188,189.7 L204,169.4 L220,149.3 L236,131.3 L252,117.3 L268,108.9 L284,107.2 L300,112.3 L316,123.7 L332,139.9 L348,159.2 L364,179.6 L380,199.5 L396,217.4 L412,232.6 L428,244.7 L444,253.9 L460,260.5 L476,265.0 L492,267.9 L508,269.7 L524,270.8 L540,271.4 L556,271.7 L572,271.9 L588,271.9 L604,272.0"
+        fill="none" stroke="#2D5A5C" stroke-width="2.5" stroke-linejoin="round"/>
+
+  <!-- campana produzione (riempimento) -->
+  <path d="M156,272.0 L172,271.9 L188,271.8 L204,271.6 L220,271.1 L236,270.4 L252,269.0 L268,266.8 L284,263.4 L300,258.2 L316,250.9 L332,241.1 L348,228.4 L364,213.2 L380,195.9 L396,177.6 L412,159.7 L428,144.0 L444,132.0 L460,125.2 L476,124.4 L492,129.8 L508,140.6 L524,155.5 L540,173.1 L556,191.4 L572,209.1 L588,224.9 L604,238.2 L620,248.7 L636,256.6 L652,262.3 L668,266.1 L684,268.6 L700,270.1 L700,272 L156,272 Z"
+        fill="#B5532C" fill-opacity="0.12" stroke="none"/>
+  <!-- campana produzione (tratto) -->
+  <path d="M156,272.0 L172,271.9 L188,271.8 L204,271.6 L220,271.1 L236,270.4 L252,269.0 L268,266.8 L284,263.4 L300,258.2 L316,250.9 L332,241.1 L348,228.4 L364,213.2 L380,195.9 L396,177.6 L412,159.7 L428,144.0 L444,132.0 L460,125.2 L476,124.4 L492,129.8 L508,140.6 L524,155.5 L540,173.1 L556,191.4 L572,209.1 L588,224.9 L604,238.2 L620,248.7 L636,256.6 L652,262.3 L668,266.1 L684,268.6 L700,270.1"
+        fill="none" stroke="#B5532C" stroke-width="2.5" stroke-linejoin="round"/>
+
+  <!-- taratura del modello: linea tratteggiata sul picco di addestramento -->
+  <line x1="282" y1="272" x2="282" y2="100" stroke="#2D5A5C" stroke-width="2" stroke-dasharray="6 5"/>
+  <text x="282" y="72" text-anchor="middle" font-family="Inter, sans-serif" font-size="13.5" font-weight="700" fill="#2D5A5C">il modello è tarato qui</text>
+  <text x="282" y="90" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#5E5852">dove i dati di ieri abbondano</text>
+
+  <!-- annotazione: zona quasi mai vista -->
+  <text x="596" y="88" text-anchor="middle" font-family="Inter, sans-serif" font-size="13.5" font-weight="700" fill="#B5532C">qui arrivano i dati di oggi</text>
+  <text x="596" y="106" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#5E5852">quasi mai visti in addestramento</text>
+  <line x1="580" y1="116" x2="545" y2="178" stroke="#5E5852" stroke-width="2" marker-end="url(#freccia-shift)"/>
+
+  <!-- asse orizzontale -->
+  <line x1="48" y1="272" x2="716" y2="272" stroke="#5E5852" stroke-width="2" marker-end="url(#freccia-shift)"/>
+  <text x="382" y="300" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" fill="#5E5852">valori in ingresso al modello</text>
+</svg>

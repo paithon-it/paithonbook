@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  paithon book — figura: la gerarchia di feature in una rete profonda per
+  immagini. Da sinistra a destra: immagine di input (pixel), primi strati
+  (bordi e linee), strati intermedi (texture e parti), ultimi strati
+  (oggetto intero). Palette-locked: cream/terracotta/teal/ocra su tratto
+  warm-black e grigi warm. Fondo trasparente (leggibile in light e dark).
+  Nessun colore fuori palette.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 240" role="img"
+     aria-label="Quattro riquadri in fila mostrano come una rete profonda costruisce la percezione a strati: a sinistra l'immagine di input di un gatto fatta di pixel, poi i primi strati che rilevano bordi e linee orientate, poi gli strati intermedi che rilevano texture e parti come un occhio o una curva, infine gli ultimi strati che riconoscono il gatto come oggetto intero racchiuso in un riquadro di rilevamento; frecce collegano i riquadri da sinistra a destra">
+  <style>
+    .card  { fill:none; stroke:#C9C2B4; stroke-width:2; }
+    .tile  { fill:#F8F5EE; stroke:#E8E2D5; stroke-width:1.5; }
+    .title { font-family:Inter, system-ui, sans-serif; font-size:12px; fill:#5E5852; }
+    .label { font-family:Inter, system-ui, sans-serif; font-size:12.5px; font-weight:600; fill:#1A1A1A; }
+    .edge  { stroke:#1A1A1A; stroke-width:4; stroke-linecap:round; }
+    .arrow { stroke:#5E5852; stroke-width:2; }
+  </style>
+
+  <!-- ===== titoli sopra i riquadri ===== -->
+  <text class="title" x="84"  y="56" text-anchor="middle">input</text>
+  <text class="title" x="244" y="56" text-anchor="middle">primi strati</text>
+  <text class="title" x="404" y="56" text-anchor="middle">strati intermedi</text>
+  <text class="title" x="564" y="56" text-anchor="middle">ultimi strati</text>
+
+  <!-- ===== riquadri ===== -->
+  <rect class="card" x="24"  y="70" width="120" height="124" rx="10"/>
+  <rect class="card" x="184" y="70" width="120" height="124" rx="10"/>
+  <rect class="card" x="344" y="70" width="120" height="124" rx="10"/>
+  <rect class="card" x="504" y="70" width="120" height="124" rx="10"/>
+
+  <!-- ===== frecce tra i riquadri ===== -->
+  <line class="arrow" x1="150" y1="132" x2="176" y2="132"/>
+  <polygon points="178,132 170,127 170,137" fill="#5E5852"/>
+  <line class="arrow" x1="310" y1="132" x2="336" y2="132"/>
+  <polygon points="338,132 330,127 330,137" fill="#5E5852"/>
+  <line class="arrow" x1="470" y1="132" x2="496" y2="132"/>
+  <polygon points="498,132 490,127 490,137" fill="#5E5852"/>
+
+  <!-- ===== A) immagine di input: gatto geometrico (teal) ===== -->
+  <polygon points="58,106 66,82 86,100"  fill="#F8F5EE" stroke="#2D5A5C" stroke-width="3" stroke-linejoin="round"/>
+  <polygon points="110,106 102,82 82,100" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="3" stroke-linejoin="round"/>
+  <circle cx="84" cy="132" r="30" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="3"/>
+  <circle cx="74" cy="130" r="4" fill="#2D5A5C"/>
+  <circle cx="94" cy="130" r="4" fill="#2D5A5C"/>
+  <circle cx="84" cy="142" r="3" fill="#B5532C"/>
+
+  <!-- ===== B) primi strati: 4 tessere con bordi orientati ===== -->
+  <rect class="tile" x="194" y="82"  width="46" height="46" rx="4"/>
+  <rect class="tile" x="248" y="82"  width="46" height="46" rx="4"/>
+  <rect class="tile" x="194" y="136" width="46" height="46" rx="4"/>
+  <rect class="tile" x="248" y="136" width="46" height="46" rx="4"/>
+  <line class="edge" x1="200" y1="105" x2="234" y2="105"/>
+  <line class="edge" x1="271" y1="88"  x2="271" y2="128"/>
+  <line class="edge" x1="201" y1="175" x2="233" y2="143"/>
+  <line class="edge" x1="255" y1="143" x2="287" y2="175"/>
+
+  <!-- ===== C) strati intermedi: texture e parti ===== -->
+  <rect class="tile" x="354" y="82"  width="46" height="46" rx="4"/>
+  <rect class="tile" x="408" y="82"  width="46" height="46" rx="4"/>
+  <rect class="tile" x="354" y="136" width="46" height="46" rx="4"/>
+  <rect class="tile" x="408" y="136" width="46" height="46" rx="4"/>
+  <!-- occhio -->
+  <ellipse cx="377" cy="105" rx="16" ry="9" fill="none" stroke="#2D5A5C" stroke-width="2.5"/>
+  <circle cx="377" cy="105" r="4" fill="#1A1A1A"/>
+  <!-- curva (arco terracotta) -->
+  <path d="M 416,118 Q 431,90 446,118" fill="none" stroke="#B5532C" stroke-width="3" stroke-linecap="round"/>
+  <!-- angolo / vertice (ocra) -->
+  <path d="M 364,172 L 377,146 L 390,172" fill="none" stroke="#C9A961" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- texture (righe diagonali) -->
+  <line x1="417" y1="174" x2="431" y2="150" stroke="#5E5852" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="425" y1="176" x2="439" y2="152" stroke="#5E5852" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="433" y1="178" x2="447" y2="154" stroke="#5E5852" stroke-width="2.5" stroke-linecap="round"/>
+
+  <!-- ===== D) ultimi strati: oggetto rilevato (terracotta) ===== -->
+  <rect x="528" y="82" width="72" height="96" rx="4" fill="none" stroke="#B5532C" stroke-width="1.8" stroke-dasharray="5 4"/>
+  <polygon points="540,106 549,82 568,100" fill="#F8F5EE" stroke="#B5532C" stroke-width="3" stroke-linejoin="round"/>
+  <polygon points="588,106 579,82 560,100" fill="#F8F5EE" stroke="#B5532C" stroke-width="3" stroke-linejoin="round"/>
+  <circle cx="564" cy="132" r="28" fill="#F8F5EE" stroke="#B5532C" stroke-width="3"/>
+  <circle cx="556" cy="130" r="3.5" fill="#2D5A5C"/>
+  <circle cx="572" cy="130" r="3.5" fill="#2D5A5C"/>
+  <circle cx="564" cy="142" r="3" fill="#B5532C"/>
+
+  <!-- ===== etichette sotto i riquadri ===== -->
+  <text class="label" x="84"  y="214" text-anchor="middle">immagine</text>
+  <text class="label" x="244" y="214" text-anchor="middle">bordi e linee</text>
+  <text class="label" x="404" y="214" text-anchor="middle">texture e parti</text>
+  <text class="label" x="564" y="214" text-anchor="middle">oggetto</text>
+</svg>

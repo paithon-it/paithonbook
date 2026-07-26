@@ -1,0 +1,39 @@
+<svg viewBox="0 0 720 400" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Onde sinusoidali a frequenze diverse che codificano le posizioni dei token">
+  <rect x="0" y="0" width="720" height="400" fill="#F8F5EE"/>
+  <text x="360" y="30" text-anchor="middle" font-family="sans-serif" font-size="17" font-weight="bold" fill="#1A1A1A">Ogni posizione, una firma di onde</text>
+  <!-- axis -->
+  <line x1="70" y1="330" x2="680" y2="330" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="375" y="392" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#1A1A1A">posizione del token nella frase</text>
+  <!-- position ticks -->
+  <line x1="110" y1="326" x2="110" y2="334" stroke="#1A1A1A" stroke-width="1.5"/>
+  <line x1="260" y1="326" x2="260" y2="334" stroke="#1A1A1A" stroke-width="1.5"/>
+  <line x1="410" y1="326" x2="410" y2="334" stroke="#1A1A1A" stroke-width="1.5"/>
+  <line x1="560" y1="326" x2="560" y2="334" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="110" y="352" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">0</text>
+  <text x="260" y="352" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">5</text>
+  <text x="410" y="352" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">10</text>
+  <text x="560" y="352" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">15</text>
+  <!-- wave 1: fast, terracotta -->
+  <path d="M 70 90 Q 85 55 100 90 Q 115 125 130 90 Q 145 55 160 90 Q 175 125 190 90 Q 205 55 220 90 Q 235 125 250 90 Q 265 55 280 90 Q 295 125 310 90 Q 325 55 340 90 Q 355 125 370 90 Q 385 55 400 90 Q 415 125 430 90 Q 445 55 460 90 Q 475 125 490 90 Q 505 55 520 90 Q 535 125 550 90 Q 565 55 580 90 Q 595 125 610 90 Q 625 55 640 90 Q 655 125 670 90" fill="none" stroke="#B5532C" stroke-width="2"/>
+  <text x="60" y="94" text-anchor="end" font-family="sans-serif" font-size="12" fill="#B5532C">frequenza alta</text>
+  <!-- wave 2: medium, teal -->
+  <path d="M 70 170 Q 107 130 145 170 Q 182 210 220 170 Q 257 130 295 170 Q 332 210 370 170 Q 407 130 445 170 Q 482 210 520 170 Q 557 130 595 170 Q 632 210 670 170" fill="none" stroke="#2D5A5C" stroke-width="2"/>
+  <text x="60" y="174" text-anchor="end" font-family="sans-serif" font-size="12" fill="#2D5A5C">media</text>
+  <!-- wave 3: slow, ocra -->
+  <path d="M 70 250 Q 145 195 220 235 Q 295 275 370 250 Q 445 225 520 245 Q 595 265 670 240" fill="none" stroke="#C9A961" stroke-width="2"/>
+  <text x="60" y="254" text-anchor="end" font-family="sans-serif" font-size="12" fill="#C9A961">bassa</text>
+  <!-- vertical sample lines at positions -->
+  <line x1="260" y1="55" x2="260" y2="322" stroke="#1A1A1A" stroke-width="1.5" stroke-dasharray="4 4"/>
+  <line x1="560" y1="55" x2="560" y2="322" stroke="#1A1A1A" stroke-width="1.5" stroke-dasharray="4 4"/>
+  <!-- sample dots pos 5 -->
+  <circle cx="260" cy="90" r="5" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5"/>
+  <circle cx="260" cy="185" r="5" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="1.5"/>
+  <circle cx="260" cy="248" r="5" fill="#C9A961" stroke="#1A1A1A" stroke-width="1.5"/>
+  <!-- sample dots pos 15 -->
+  <circle cx="560" cy="75" r="5" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5"/>
+  <circle cx="560" cy="150" r="5" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="1.5"/>
+  <circle cx="560" cy="246" r="5" fill="#C9A961" stroke="#1A1A1A" stroke-width="1.5"/>
+  <!-- labels -->
+  <text x="268" y="48" font-family="sans-serif" font-size="12" fill="#1A1A1A">posizione 5: firma [•,•,•]</text>
+  <text x="568" y="48" font-family="sans-serif" font-size="12" fill="#1A1A1A">posizione 15: firma diversa</text>
+</svg>

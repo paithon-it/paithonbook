@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 340" role="img" aria-label="Griglia 3 per 4 con partenza, meta, trappola, muro e frecce della politica appresa" font-family="Inter, Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="punta" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1A1A1A"/>
+    </marker>
+  </defs>
+
+  <!-- Celle libere (cream) -->
+  <rect x="60" y="40" width="90" height="90" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="2"/>
+  <rect x="150" y="40" width="90" height="90" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="2"/>
+  <rect x="240" y="40" width="90" height="90" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="2"/>
+
+  <rect x="60" y="130" width="90" height="90" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="2"/>
+  <rect x="240" y="130" width="90" height="90" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="2"/>
+
+  <rect x="150" y="220" width="90" height="90" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="2"/>
+  <rect x="240" y="220" width="90" height="90" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="2"/>
+  <rect x="330" y="220" width="90" height="90" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="2"/>
+
+  <!-- Muro -->
+  <rect x="150" y="130" width="90" height="90" fill="#C9C2B4" stroke="#1A1A1A" stroke-width="2"/>
+  <text x="195" y="180" text-anchor="middle" font-size="14" fill="#5E5852">muro</text>
+
+  <!-- Meta (goal) -->
+  <rect x="330" y="40" width="90" height="90" fill="#B5532C" stroke="#1A1A1A" stroke-width="2"/>
+  <text x="375" y="80" text-anchor="middle" font-size="26" font-weight="700" fill="#F8F5EE">+1</text>
+  <text x="375" y="105" text-anchor="middle" font-size="13" fill="#F8F5EE">meta</text>
+
+  <!-- Trappola -->
+  <rect x="330" y="130" width="90" height="90" fill="#C9A961" stroke="#1A1A1A" stroke-width="2"/>
+  <text x="375" y="170" text-anchor="middle" font-size="26" font-weight="700" fill="#1A1A1A">−1</text>
+  <text x="375" y="195" text-anchor="middle" font-size="13" fill="#1A1A1A">trappola</text>
+
+  <!-- Partenza -->
+  <rect x="60" y="220" width="90" height="90" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="4"/>
+  <text x="74" y="242" text-anchor="middle" font-size="18" font-weight="700" fill="#2D5A5C">S</text>
+
+  <!-- Frecce della politica -->
+  <!-- (0,0) destra -->
+  <line x1="90" y1="85" x2="120" y2="85" stroke="#1A1A1A" stroke-width="3" marker-end="url(#punta)"/>
+  <!-- (0,1) destra -->
+  <line x1="180" y1="85" x2="210" y2="85" stroke="#1A1A1A" stroke-width="3" marker-end="url(#punta)"/>
+  <!-- (0,2) destra verso meta -->
+  <line x1="270" y1="85" x2="300" y2="85" stroke="#1A1A1A" stroke-width="3" marker-end="url(#punta)"/>
+  <!-- (1,0) su -->
+  <line x1="105" y1="190" x2="105" y2="160" stroke="#1A1A1A" stroke-width="3" marker-end="url(#punta)"/>
+  <!-- (1,2) su -->
+  <line x1="285" y1="190" x2="285" y2="160" stroke="#1A1A1A" stroke-width="3" marker-end="url(#punta)"/>
+  <!-- (2,0) partenza: su -->
+  <line x1="105" y1="290" x2="105" y2="260" stroke="#1A1A1A" stroke-width="3" marker-end="url(#punta)"/>
+  <!-- (2,1) destra -->
+  <line x1="180" y1="265" x2="210" y2="265" stroke="#1A1A1A" stroke-width="3" marker-end="url(#punta)"/>
+  <!-- (2,2) su -->
+  <line x1="285" y1="290" x2="285" y2="260" stroke="#1A1A1A" stroke-width="3" marker-end="url(#punta)"/>
+  <!-- (2,3) sinistra, per evitare la trappola -->
+  <line x1="390" y1="265" x2="360" y2="265" stroke="#1A1A1A" stroke-width="3" marker-end="url(#punta)"/>
+</svg>

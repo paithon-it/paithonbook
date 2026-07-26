@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  paithon book - figura: anatomia di un grafo.
+  A sinistra un piccolo grafo non diretto di 5 nodi etichettati (1..5); accanto
+  a ogni nodo tre caselle rappresentano il suo vettore di feature. Il vicinato
+  del nodo 3 (archi verso 1, 2 e 4) e' evidenziato in terracotta: il nodo 3 ha
+  grado 3. A destra la matrice di adiacenza A (griglia 5x5 di 0/1, simmetrica)
+  e la matrice delle feature X (una riga per nodo, tre colonne). Palette-locked,
+  fondo trasparente.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 440" role="img"
+     aria-label="A sinistra un grafo non diretto di cinque nodi numerati da 1 a 5, con archi 1-2, 1-3, 2-3, 3-4 e 4-5. Accanto a ogni nodo tre piccole caselle rappresentano il vettore di feature del nodo. Gli archi che toccano il nodo 3 sono evidenziati in terracotta: il nodo 3 ha grado 3. A destra la matrice di adiacenza A, una griglia 5 per 5 di zeri e uni simmetrica, e sotto la matrice delle feature X, con una riga per nodo e tre colonne.">
+  <style>
+    .edge   { stroke:#8B847C; stroke-width:2.4; stroke-linecap:round; }
+    .edgeh  { stroke:#B5532C; stroke-width:3.4; stroke-linecap:round; }
+    .node   { fill:#F8F5EE; stroke:#2D5A5C; stroke-width:2.6; }
+    .nodeh  { fill:#F8F5EE; stroke:#B5532C; stroke-width:3.4; }
+    .nlbl   { font-family:Inter, system-ui, sans-serif; font-size:16px; font-weight:700; fill:#1A1A1A; text-anchor:middle; }
+    .feat   { fill:#2D5A5C; fill-opacity:0.18; stroke:#2D5A5C; stroke-width:1; }
+    .cap    { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#5E5852; }
+    .capb   { font-family:Inter, system-ui, sans-serif; font-size:14px; font-weight:700; fill:#1A1A1A; }
+    .terra  { fill:#B5532C; }
+    .grid   { fill:none; stroke:#C9A961; stroke-width:1.2; }
+    .cell   { font-family:Inter, system-ui, sans-serif; font-size:14px; fill:#1A1A1A; text-anchor:middle; }
+    .cellz  { font-family:Inter, system-ui, sans-serif; font-size:14px; fill:#8B847C; text-anchor:middle; }
+    .hdr    { font-family:Inter, system-ui, sans-serif; font-size:12px; fill:#5E5852; text-anchor:middle; }
+    .mname  { font-family:'Fraunces', Georgia, serif; font-size:20px; font-style:italic; fill:#1A1A1A; }
+    .xcell  { stroke:#C9A961; stroke-width:1.2; }
+  </style>
+
+  <!-- ============ GRAFO (sinistra) ============ -->
+  <!-- archi non evidenziati -->
+  <line class="edge"  x1="240" y1="90"  x2="330" y2="150"/><!-- 1-2 -->
+  <line class="edge"  x1="330" y1="290" x2="240" y2="350"/><!-- 4-5 -->
+  <!-- archi del vicinato del nodo 3 (evidenziati) -->
+  <line class="edgeh" x1="240" y1="90"  x2="240" y2="210"/><!-- 1-3 -->
+  <line class="edgeh" x1="330" y1="150" x2="240" y2="210"/><!-- 2-3 -->
+  <line class="edgeh" x1="240" y1="210" x2="330" y2="290"/><!-- 3-4 -->
+
+  <!-- caselle di feature (3 per nodo) -->
+  <!-- nodo 1: a sinistra -->
+  <rect class="feat" x="150" y="83" width="12" height="14"/>
+  <rect class="feat" x="164" y="83" width="12" height="14"/>
+  <rect class="feat" x="178" y="83" width="12" height="14"/>
+  <!-- nodo 3: a sinistra -->
+  <rect class="feat" x="150" y="203" width="12" height="14"/>
+  <rect class="feat" x="164" y="203" width="12" height="14"/>
+  <rect class="feat" x="178" y="203" width="12" height="14"/>
+  <!-- nodo 5: a sinistra -->
+  <rect class="feat" x="150" y="343" width="12" height="14"/>
+  <rect class="feat" x="164" y="343" width="12" height="14"/>
+  <rect class="feat" x="178" y="343" width="12" height="14"/>
+  <!-- nodo 2: a destra -->
+  <rect class="feat" x="360" y="143" width="12" height="14"/>
+  <rect class="feat" x="374" y="143" width="12" height="14"/>
+  <rect class="feat" x="388" y="143" width="12" height="14"/>
+  <!-- nodo 4: a destra -->
+  <rect class="feat" x="360" y="283" width="12" height="14"/>
+  <rect class="feat" x="374" y="283" width="12" height="14"/>
+  <rect class="feat" x="388" y="283" width="12" height="14"/>
+
+  <!-- nodi -->
+  <circle class="node"  cx="240" cy="90"  r="18"/><text class="nlbl" x="240" y="96">1</text>
+  <circle class="node"  cx="330" cy="150" r="18"/><text class="nlbl" x="330" y="156">2</text>
+  <circle class="nodeh" cx="240" cy="210" r="18"/><text class="nlbl" x="240" y="216">3</text>
+  <circle class="node"  cx="330" cy="290" r="18"/><text class="nlbl" x="330" y="296">4</text>
+  <circle class="node"  cx="240" cy="350" r="18"/><text class="nlbl" x="240" y="356">5</text>
+
+  <!-- etichetta grado del nodo 3 -->
+  <text class="cap terra" x="196" y="240" text-anchor="end" font-weight="700">grado 3</text>
+  <text class="cap" x="150" y="70">feature del nodo</text>
+
+  <!-- ============ MATRICE A (destra alto) ============ -->
+  <text class="mname" x="470" y="60">A</text>
+  <text class="cap" x="560" y="60">adiacenza (5&#215;5)</text>
+  <!-- intestazioni colonne -->
+  <text class="hdr" x="497" y="82">1</text>
+  <text class="hdr" x="523" y="82">2</text>
+  <text class="hdr" x="549" y="82">3</text>
+  <text class="hdr" x="575" y="82">4</text>
+  <text class="hdr" x="601" y="82">5</text>
+  <!-- intestazioni righe -->
+  <text class="hdr" x="474" y="106">1</text>
+  <text class="hdr" x="474" y="132">2</text>
+  <text class="hdr" x="474" y="158">3</text>
+  <text class="hdr" x="474" y="184">4</text>
+  <text class="hdr" x="474" y="210">5</text>
+  <!-- griglia 5x5 -->
+  <rect class="grid" x="484" y="88" width="130" height="130"/>
+  <line class="grid" x1="510" y1="88" x2="510" y2="218"/>
+  <line class="grid" x1="536" y1="88" x2="536" y2="218"/>
+  <line class="grid" x1="562" y1="88" x2="562" y2="218"/>
+  <line class="grid" x1="588" y1="88" x2="588" y2="218"/>
+  <line class="grid" x1="484" y1="114" x2="614" y2="114"/>
+  <line class="grid" x1="484" y1="140" x2="614" y2="140"/>
+  <line class="grid" x1="484" y1="166" x2="614" y2="166"/>
+  <line class="grid" x1="484" y1="192" x2="614" y2="192"/>
+  <!-- valori: riga 1: 0 1 1 0 0 -->
+  <text class="cellz" x="497" y="106">0</text><text class="cell" x="523" y="106">1</text><text class="cell" x="549" y="106">1</text><text class="cellz" x="575" y="106">0</text><text class="cellz" x="601" y="106">0</text>
+  <!-- riga 2: 1 0 1 0 0 -->
+  <text class="cell" x="497" y="132">1</text><text class="cellz" x="523" y="132">0</text><text class="cell" x="549" y="132">1</text><text class="cellz" x="575" y="132">0</text><text class="cellz" x="601" y="132">0</text>
+  <!-- riga 3: 1 1 0 1 0 -->
+  <text class="cell" x="497" y="158">1</text><text class="cell" x="523" y="158">1</text><text class="cellz" x="549" y="158">0</text><text class="cell" x="575" y="158">1</text><text class="cellz" x="601" y="158">0</text>
+  <!-- riga 4: 0 0 1 0 1 -->
+  <text class="cellz" x="497" y="184">0</text><text class="cellz" x="523" y="184">0</text><text class="cell" x="549" y="184">1</text><text class="cellz" x="575" y="184">0</text><text class="cell" x="601" y="184">1</text>
+  <!-- riga 5: 0 0 0 1 0 -->
+  <text class="cellz" x="497" y="210">0</text><text class="cellz" x="523" y="210">0</text><text class="cellz" x="549" y="210">0</text><text class="cell" x="575" y="210">1</text><text class="cellz" x="601" y="210">0</text>
+
+  <!-- ============ MATRICE X (destra basso) ============ -->
+  <text class="mname" x="470" y="290">X</text>
+  <text class="cap" x="560" y="290">feature (5&#215;3)</text>
+  <!-- intestazioni righe (nodi) -->
+  <text class="hdr" x="474" y="330">1</text>
+  <text class="hdr" x="474" y="356">2</text>
+  <text class="hdr" x="474" y="382">3</text>
+  <text class="hdr" x="474" y="408">4</text>
+  <text class="hdr" x="474" y="434">5</text>
+  <!-- griglia 5 righe x 3 colonne, celle riempite in teal -->
+  <g class="feat">
+    <rect x="490" y="314" width="30" height="22"/><rect x="522" y="314" width="30" height="22"/><rect x="554" y="314" width="30" height="22"/>
+    <rect x="490" y="340" width="30" height="22"/><rect x="522" y="340" width="30" height="22"/><rect x="554" y="340" width="30" height="22"/>
+    <rect x="490" y="366" width="30" height="22"/><rect x="522" y="366" width="30" height="22"/><rect x="554" y="366" width="30" height="22"/>
+    <rect x="490" y="392" width="30" height="22"/><rect x="522" y="392" width="30" height="22"/><rect x="554" y="392" width="30" height="22"/>
+    <rect x="490" y="418" width="30" height="22"/><rect x="522" y="418" width="30" height="22"/><rect x="554" y="418" width="30" height="22"/>
+  </g>
+  <text class="cap" x="600" y="360">una riga</text>
+  <text class="cap" x="600" y="378">per nodo</text>
+</svg>

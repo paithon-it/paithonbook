@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 745 225" role="img" aria-label="Tre riquadri: una scena con casa, albero e sole (il contenuto, cosa c'è) più un pannello di pennellate a spirale (lo stile, come è dipinto) producono, dopo una freccia, la stessa scena ridisegnata con quelle pennellate (il risultato).">
+  <defs>
+    <marker id="freccia-st" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#5E5852"/>
+    </marker>
+  </defs>
+
+  <!-- riquadro 1: contenuto (la foto) -->
+  <rect x="25" y="30" width="190" height="140" rx="8" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2"/>
+  <circle cx="190" cy="55" r="10" fill="#C9A961"/>
+  <path d="M65,105 L95,85 L125,105 Z" fill="#2D5A5C" fill-opacity="0.15" stroke="#2D5A5C" stroke-width="2" stroke-linejoin="round"/>
+  <rect x="70" y="105" width="50" height="38" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2"/>
+  <rect x="88" y="122" width="13" height="21" fill="#2D5A5C" fill-opacity="0.25" stroke="#2D5A5C" stroke-width="1"/>
+  <line x1="155" y1="143" x2="155" y2="122" stroke="#1A1A1A" stroke-width="2.5"/>
+  <circle cx="155" cy="110" r="13" fill="#2D5A5C" fill-opacity="0.2" stroke="#2D5A5C" stroke-width="2"/>
+  <line x1="40" y1="148" x2="205" y2="148" stroke="#5E5852" stroke-width="1.5"/>
+  <text x="120" y="192" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" font-weight="700" fill="#2D5A5C">contenuto</text>
+  <text x="120" y="209" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#5E5852">la foto: cosa c'è</text>
+
+  <!-- più -->
+  <text x="242" y="108" text-anchor="middle" font-family="Inter, sans-serif" font-size="28" fill="#5E5852">+</text>
+
+  <!-- riquadro 2: stile (il quadro) -->
+  <rect x="270" y="30" width="190" height="140" rx="8" fill="#F8F5EE" stroke="#B5532C" stroke-width="2"/>
+  <path d="M292,120 Q296,86 326,88 Q350,90 348,112 Q346,130 328,128 Q314,126 316,112 Q318,102 328,104" fill="none" stroke="#B5532C" stroke-width="3" stroke-linecap="round"/>
+  <path d="M370,70 Q394,58 404,76 Q412,92 396,100 Q382,106 376,92 Q372,82 382,80" fill="none" stroke="#C9A961" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M410,130 Q428,118 438,132 Q444,142 432,148 Q422,152 418,142" fill="none" stroke="#2D5A5C" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M285,60 Q295,52 307,56" fill="none" stroke="#C9A961" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M330,150 Q345,142 360,148" fill="none" stroke="#B5532C" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M382,120 Q392,112 402,116" fill="none" stroke="#2D5A5C" stroke-width="2" stroke-linecap="round"/>
+  <path d="M292,142 Q300,136 310,140" fill="none" stroke="#2D5A5C" stroke-width="2" stroke-linecap="round"/>
+  <text x="365" y="192" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" font-weight="700" fill="#B5532C">stile</text>
+  <text x="365" y="209" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#5E5852">il quadro: come è dipinto</text>
+
+  <!-- freccia -->
+  <line x1="468" y1="100" x2="520" y2="100" stroke="#5E5852" stroke-width="2" marker-end="url(#freccia-st)"/>
+
+  <!-- riquadro 3: risultato (stessa scena, pennellate nuove) -->
+  <rect x="530" y="30" width="190" height="140" rx="8" fill="#F8F5EE" stroke="#C9A961" stroke-width="2"/>
+  <path d="M545,55 Q552,42 566,46 Q578,50 574,62 Q570,72 558,68 Q550,65 553,57" fill="none" stroke="#2D5A5C" stroke-width="2" stroke-linecap="round"/>
+  <path d="M585,42 Q595,36 606,40" fill="none" stroke="#B5532C" stroke-width="2" stroke-linecap="round"/>
+  <path d="M600,64 Q610,58 620,62" fill="none" stroke="#C9A961" stroke-width="2" stroke-linecap="round"/>
+  <circle cx="695" cy="55" r="10" fill="#C9A961"/>
+  <path d="M683,55 a12,12 0 1,1 6,10" fill="none" stroke="#B5532C" stroke-width="2" stroke-linecap="round"/>
+  <path d="M570,105 L600,85 L630,105 Z" fill="#B5532C" fill-opacity="0.2" stroke="#B5532C" stroke-width="2" stroke-linejoin="round"/>
+  <rect x="575" y="105" width="50" height="38" fill="#F8F5EE" stroke="#B5532C" stroke-width="2"/>
+  <rect x="593" y="122" width="13" height="21" fill="#B5532C" fill-opacity="0.3" stroke="#B5532C" stroke-width="1"/>
+  <line x1="660" y1="143" x2="660" y2="122" stroke="#1A1A1A" stroke-width="2.5"/>
+  <path d="M646,112 Q650,96 666,98 Q678,100 676,112 Q674,122 662,120 Q654,119 656,110" fill="none" stroke="#2D5A5C" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M540,148 Q560,142 580,148 T620,148 T660,148 T700,148" fill="none" stroke="#C9A961" stroke-width="2" stroke-linecap="round"/>
+  <text x="625" y="192" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" font-weight="700" fill="#1A1A1A">risultato</text>
+  <text x="625" y="209" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#5E5852">stesso soggetto, pennellate nuove</text>
+</svg>

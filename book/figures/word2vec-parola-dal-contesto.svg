@@ -1,0 +1,44 @@
+<svg viewBox="0 0 720 320" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Schema: una finestra di contesto scorre sulla frase e produce il vettore della parola centrale">
+  <rect x="0" y="0" width="720" height="320" fill="#F8F5EE"/>
+  <text x="360" y="35" font-family="sans-serif" font-size="14" font-weight="bold" fill="#1A1A1A" text-anchor="middle">Finestra di contesto (skip-gram)</text>
+  <!-- finestra -->
+  <rect x="120" y="60" width="480" height="50" rx="8" fill="none" stroke="#C9A961" stroke-width="2" stroke-dasharray="6 4"/>
+  <!-- parole -->
+  <g font-family="sans-serif" font-size="14" text-anchor="middle">
+    <text x="70" y="90" fill="#8B847C">il</text>
+    <rect x="130" y="68" width="90" height="34" rx="6" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="1.5"/>
+    <text x="175" y="90" fill="#2D5A5C">gatto</text>
+    <rect x="235" y="68" width="90" height="34" rx="6" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="1.5"/>
+    <text x="280" y="90" fill="#2D5A5C">dorme</text>
+    <rect x="340" y="64" width="90" height="42" rx="6" fill="#B5532C"/>
+    <text x="385" y="90" fill="#F8F5EE" font-weight="bold">sul</text>
+    <rect x="445" y="68" width="90" height="34" rx="6" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="1.5"/>
+    <text x="490" y="90" fill="#2D5A5C">divano</text>
+    <rect x="550" y="68" width="40" height="34" rx="6" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="1.5"/>
+    <text x="570" y="90" fill="#2D5A5C">al</text>
+    <text x="650" y="90" fill="#8B847C">sole</text>
+  </g>
+  <text x="175" y="130" font-family="sans-serif" font-size="11" fill="#5E5852" text-anchor="middle">contesto</text>
+  <text x="385" y="130" font-family="sans-serif" font-size="11" fill="#B5532C" text-anchor="middle">parola centrale</text>
+  <text x="490" y="130" font-family="sans-serif" font-size="11" fill="#5E5852" text-anchor="middle">contesto</text>
+  <!-- freccia -->
+  <line x1="385" y1="145" x2="385" y2="195" stroke="#1A1A1A" stroke-width="2"/>
+  <polygon points="385,195 378,183 392,183" fill="#1A1A1A"/>
+  <text x="470" y="175" font-family="sans-serif" font-size="12" fill="#5E5852" text-anchor="middle">addestramento su miliardi di finestre</text>
+  <!-- vettore -->
+  <g font-family="sans-serif" font-size="13" text-anchor="middle">
+    <rect x="185" y="210" width="66" height="36" fill="#B5532C"/>
+    <text x="218" y="233" fill="#F8F5EE">0.21</text>
+    <rect x="253" y="210" width="66" height="36" fill="#2D5A5C"/>
+    <text x="286" y="233" fill="#F8F5EE">−0.87</text>
+    <rect x="321" y="210" width="66" height="36" fill="#C9A961"/>
+    <text x="354" y="233" fill="#1A1A1A">0.05</text>
+    <rect x="389" y="210" width="66" height="36" fill="#2D5A5C"/>
+    <text x="422" y="233" fill="#F8F5EE">0.63</text>
+    <rect x="457" y="210" width="66" height="36" fill="#B5532C"/>
+    <text x="490" y="233" fill="#F8F5EE">−0.14</text>
+    <text x="545" y="233" fill="#5E5852">…</text>
+  </g>
+  <rect x="181" y="206" width="378" height="44" fill="none" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="360" y="285" font-family="sans-serif" font-size="12" fill="#5E5852" text-anchor="middle">vettore denso della parola (~300 dimensioni): il suo &#8220;significato&#8221; in numeri</text>
+</svg>

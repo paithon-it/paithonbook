@@ -1,0 +1,44 @@
+# Le versioni con cui il codice del libro è stato ESEGUITO e ha funzionato.
+#
+# A cosa serve, e a cosa no:
+#
+# * serve alla CI (`verifica-notebook.yml`), che installa esattamente queste:
+#   così se il job diventa rosso è perché è cambiato il libro, non perché nel
+#   frattempo il mondo si è mosso. Un test che cambia sotto i piedi non dice
+#   niente.
+# * serve alla riga «verificato con» che il generatore scrive in testa a ogni
+#   notebook, così chi lo apre fra un anno sa contro cosa era stato provato.
+# * NON serve al lettore come vincolo. Nel notebook il `%pip install` resta
+#   senza versioni: su Colab quasi tutto è già installato, e forzare un
+#   downgrade romperebbe più di quanto aggiusti.
+#
+# Chi le aggiorna: `sentinella-librerie.yml`, che ogni settimana prova le
+# versioni PIÙ RECENTI. Se passano, propone il bump di questo file; se non
+# passano, apre una issue — è così che si scopre una API che se ne va, come
+# `pipeline("translation")`, rimossa in transformers 5, senza aspettare che
+# qualcuno tocchi quella pagina per caso.
+#
+# Ultima verifica completa: 2026-07-25 — 18 capitoli, tutte le celle eseguite.
+
+# --- il framework del libro (ruota CPU: in CI non c'è nessuna GPU) ---
+torch==2.13.0
+torchvision==0.28.0
+
+# --- calcolo, dati, grafici ---
+numpy==2.4.6
+pandas==3.0.5
+matplotlib==3.11.1
+scipy==1.18.0
+scikit-learn==1.9.0
+pillow==12.3.0
+
+# --- capitoli applicativi ---
+transformers==5.14.1
+diffusers==0.39.0
+librosa==0.11.0
+soundfile==0.14.0
+torch-geometric==2.8.0.post1
+torchinfo==1.8.0
+
+# --- serve al generatore, non ai notebook (legge _toc.yml) ---
+pyyaml==6.0.3

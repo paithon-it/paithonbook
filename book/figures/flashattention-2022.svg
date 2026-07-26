@@ -1,0 +1,63 @@
+<svg viewBox="0 0 760 400" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Schema di FlashAttention: le matrici Q, K e V sono divise in blocchi; un blocco alla volta viene caricato nella piccola SRAM veloce, elaborato e accumulato nell'output, senza mai scrivere l'intera matrice di attention nella grande HBM">
+  <rect x="0" y="0" width="760" height="400" fill="#F8F5EE"/>
+  <text x="380" y="32" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="bold" fill="#1A1A1A">Attention a blocchi: un riquadro alla volta in SRAM</text>
+
+  <!-- HBM magazzino -->
+  <rect x="24" y="60" width="230" height="300" rx="8" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="2"/>
+  <text x="139" y="84" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#1A1A1A">HBM — ampia, lenta</text>
+
+  <!-- Q blocks -->
+  <text x="70" y="112" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#1A1A1A">Q</text>
+  <g stroke="#1A1A1A" stroke-width="1.5">
+    <rect x="48" y="120" width="44" height="26" fill="#B5532C"/>
+    <rect x="48" y="148" width="44" height="26" fill="#B5532C"/>
+    <rect x="48" y="176" width="44" height="26" fill="#B5532C"/>
+  </g>
+  <!-- K blocks -->
+  <text x="139" y="112" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#1A1A1A">K</text>
+  <g stroke="#1A1A1A" stroke-width="1.5">
+    <rect x="117" y="120" width="44" height="26" fill="#2D5A5C"/>
+    <rect x="117" y="148" width="44" height="26" fill="#2D5A5C"/>
+    <rect x="117" y="176" width="44" height="26" fill="#2D5A5C"/>
+  </g>
+  <!-- V blocks -->
+  <text x="208" y="112" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#1A1A1A">V</text>
+  <g stroke="#1A1A1A" stroke-width="1.5">
+    <rect x="186" y="120" width="44" height="26" fill="#C9A961"/>
+    <rect x="186" y="148" width="44" height="26" fill="#C9A961"/>
+    <rect x="186" y="176" width="44" height="26" fill="#C9A961"/>
+  </g>
+  <!-- output store -->
+  <text x="139" y="238" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#1A1A1A">output (accumulato)</text>
+  <g stroke="#1A1A1A" stroke-width="1.5">
+    <rect x="70" y="248" width="44" height="26" fill="#F8F5EE"/>
+    <rect x="118" y="248" width="44" height="26" fill="#F8F5EE"/>
+    <rect x="166" y="248" width="44" height="26" fill="#F8F5EE"/>
+  </g>
+  <text x="139" y="322" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#5E5852">la matrice N&#215;N non viene</text>
+  <text x="139" y="340" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#5E5852">mai scritta qui per intero</text>
+
+  <!-- arrows load -->
+  <path d="M254 150 C 300 150, 320 175, 360 178" fill="none" stroke="#1A1A1A" stroke-width="2"/>
+  <path d="M360 178 L 349 174 L 351 184 Z" fill="#1A1A1A"/>
+  <text x="305" y="140" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#1A1A1A">carica 1 blocco</text>
+
+  <!-- SRAM piano di lavoro -->
+  <rect x="366" y="90" width="250" height="220" rx="8" fill="#F8F5EE" stroke="#B5532C" stroke-width="2"/>
+  <text x="491" y="114" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#1A1A1A">SRAM — minuscola, velocissima</text>
+  <rect x="398" y="132" width="186" height="30" rx="4" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="491" y="152" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#1A1A1A">1. punteggi del riquadro</text>
+  <rect x="398" y="170" width="186" height="30" rx="4" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="491" y="190" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#1A1A1A">2. softmax online (max, somma)</text>
+  <rect x="398" y="208" width="186" height="30" rx="4" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="491" y="228" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#1A1A1A">3. accumula nell'output</text>
+  <text x="491" y="272" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#5E5852">ripeti per ogni blocco,</text>
+  <text x="491" y="290" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#5E5852">poi scrivi solo l'output</text>
+
+  <!-- arrow write back -->
+  <path d="M400 250 C 340 255, 300 258, 216 261" fill="none" stroke="#C9A961" stroke-width="3"/>
+  <path d="M216 261 L 227 256 L 226 266 Z" fill="#C9A961"/>
+  <text x="315" y="248" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#1A1A1A">scrivi output</text>
+
+  <text x="380" y="384" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">stesso risultato dell'attention classica, con una frazione delle letture e scritture in HBM</text>
+</svg>

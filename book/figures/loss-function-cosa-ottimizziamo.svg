@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 320" width="100%" role="img" aria-label="Confronto tra la curva dell'errore quadratico medio e quella della cross-entropy">
+  <rect width="720" height="320" fill="#F8F5EE"/>
+  <text x="180" y="34" font-family="sans-serif" font-size="15" fill="#1A1A1A" text-anchor="middle" font-weight="bold">MSE</text>
+  <text x="540" y="34" font-family="sans-serif" font-size="15" fill="#1A1A1A" text-anchor="middle" font-weight="bold">cross-entropy</text>
+
+  <!-- Pannello MSE -->
+  <line x1="40" y1="260" x2="320" y2="260" stroke="#1A1A1A" stroke-width="1.5"/>
+  <line x1="180" y1="60" x2="180" y2="260" stroke="#1A1A1A" stroke-width="1.5"/>
+  <path d="M 40,70 Q 180,450 320,70" fill="none" stroke="#B5532C" stroke-width="2"/>
+  <text x="176" y="276" font-family="sans-serif" font-size="11" fill="#5E5852">0</text>
+  <text x="180" y="296" font-family="sans-serif" font-size="12" fill="#5E5852" text-anchor="middle">errore (y − ŷ)</text>
+  <text x="52" y="60" font-family="sans-serif" font-size="12" fill="#5E5852">loss = errore²</text>
+
+  <!-- Pannello cross-entropy -->
+  <line x1="400" y1="260" x2="680" y2="260" stroke="#1A1A1A" stroke-width="1.5"/>
+  <line x1="400" y1="60" x2="400" y2="260" stroke="#1A1A1A" stroke-width="1.5"/>
+  <path d="M 406,74 C 412,130 425,165 456,196 C 510,235 590,252 680,259" fill="none" stroke="#2D5A5C" stroke-width="2"/>
+  <line x1="406" y1="74" x2="406" y2="60" stroke="#2D5A5C" stroke-width="2" stroke-dasharray="3 3"/>
+  <text x="404" y="276" font-family="sans-serif" font-size="11" fill="#5E5852">0</text>
+  <text x="674" y="276" font-family="sans-serif" font-size="11" fill="#5E5852">1</text>
+  <text x="540" y="296" font-family="sans-serif" font-size="12" fill="#5E5852" text-anchor="middle">probabilità assegnata alla classe vera</text>
+  <text x="480" y="60" font-family="sans-serif" font-size="12" fill="#5E5852">loss = −log p</text>
+</svg>

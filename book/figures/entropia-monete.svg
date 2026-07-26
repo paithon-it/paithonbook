@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 330" role="img" aria-label="Confronto tra una moneta equa e una moneta truccata: per ciascuna, le barre delle probabilita di testa e croce e il valore dell'entropia, 1 bit per la moneta equa e circa 0,47 bit per quella truccata.">
+
+  <!-- ================= pannello sinistro: moneta equa ================= -->
+  <rect x="30" y="40" width="330" height="270" rx="10" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2"/>
+  <text x="195" y="72" text-anchor="middle" font-family="Inter, sans-serif" font-size="15" font-weight="700" fill="#2D5A5C">Moneta equa</text>
+  <text x="195" y="92" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#5E5852">P(testa) = P(croce) = 0,5</text>
+
+  <!-- moneta -->
+  <circle cx="95" cy="165" r="36" fill="#C9A961" fill-opacity="0.3" stroke="#1A1A1A" stroke-width="2"/>
+  <circle cx="95" cy="165" r="27" fill="none" stroke="#1A1A1A" stroke-width="1" opacity="0.5"/>
+
+  <!-- entropia -->
+  <rect x="40" y="222" width="110" height="26" rx="13" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="1.5"/>
+  <text x="95" y="239" text-anchor="middle" font-family="Inter, sans-serif" font-size="12.5" font-weight="700" fill="#2D5A5C">H = 1 bit</text>
+
+  <!-- griglia -->
+  <line x1="175" y1="112" x2="345" y2="112" stroke="#5E5852" stroke-width="1" stroke-dasharray="4 4" opacity="0.5"/>
+  <text x="170" y="116" text-anchor="end" font-family="Inter, sans-serif" font-size="10" fill="#5E5852">1,0</text>
+  <line x1="175" y1="182" x2="345" y2="182" stroke="#5E5852" stroke-width="1" stroke-dasharray="4 4" opacity="0.35"/>
+  <text x="170" y="186" text-anchor="end" font-family="Inter, sans-serif" font-size="10" fill="#5E5852">0,5</text>
+
+  <!-- barre -->
+  <rect x="195" y="182" width="55" height="70" fill="#2D5A5C" fill-opacity="0.2" stroke="#2D5A5C" stroke-width="1.5"/>
+  <rect x="275" y="182" width="55" height="70" fill="#2D5A5C" fill-opacity="0.2" stroke="#2D5A5C" stroke-width="1.5"/>
+  <text x="222" y="174" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" font-weight="700" fill="#2D5A5C">0,5</text>
+  <text x="302" y="174" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" font-weight="700" fill="#2D5A5C">0,5</text>
+
+  <!-- asse -->
+  <line x1="175" y1="252" x2="345" y2="252" stroke="#5E5852" stroke-width="1.5"/>
+  <text x="222" y="272" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#1A1A1A">testa</text>
+  <text x="302" y="272" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#1A1A1A">croce</text>
+
+  <!-- ================= pannello destro: moneta truccata ================= -->
+  <rect x="400" y="40" width="330" height="270" rx="10" fill="#F8F5EE" stroke="#B5532C" stroke-width="2"/>
+  <text x="565" y="72" text-anchor="middle" font-family="Inter, sans-serif" font-size="15" font-weight="700" fill="#B5532C">Moneta truccata</text>
+  <text x="565" y="92" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#5E5852">P(testa) = 0,9; P(croce) = 0,1</text>
+
+  <!-- moneta (identica all'aspetto) -->
+  <circle cx="465" cy="165" r="36" fill="#C9A961" fill-opacity="0.3" stroke="#1A1A1A" stroke-width="2"/>
+  <circle cx="465" cy="165" r="27" fill="none" stroke="#1A1A1A" stroke-width="1" opacity="0.5"/>
+
+  <!-- entropia -->
+  <rect x="405" y="222" width="120" height="26" rx="13" fill="#F8F5EE" stroke="#B5532C" stroke-width="1.5"/>
+  <text x="465" y="239" text-anchor="middle" font-family="Inter, sans-serif" font-size="12.5" font-weight="700" fill="#B5532C">H ≈ 0,47 bit</text>
+
+  <!-- griglia -->
+  <line x1="545" y1="112" x2="715" y2="112" stroke="#5E5852" stroke-width="1" stroke-dasharray="4 4" opacity="0.5"/>
+  <text x="540" y="116" text-anchor="end" font-family="Inter, sans-serif" font-size="10" fill="#5E5852">1,0</text>
+  <line x1="545" y1="182" x2="715" y2="182" stroke="#5E5852" stroke-width="1" stroke-dasharray="4 4" opacity="0.35"/>
+  <text x="540" y="186" text-anchor="end" font-family="Inter, sans-serif" font-size="10" fill="#5E5852">0,5</text>
+
+  <!-- barre -->
+  <rect x="565" y="126" width="55" height="126" fill="#B5532C" fill-opacity="0.2" stroke="#B5532C" stroke-width="1.5"/>
+  <rect x="645" y="238" width="55" height="14" fill="#B5532C" fill-opacity="0.2" stroke="#B5532C" stroke-width="1.5"/>
+  <text x="592" y="118" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" font-weight="700" fill="#B5532C">0,9</text>
+  <text x="672" y="230" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" font-weight="700" fill="#B5532C">0,1</text>
+
+  <!-- asse -->
+  <line x1="545" y1="252" x2="715" y2="252" stroke="#5E5852" stroke-width="1.5"/>
+  <text x="592" y="272" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#1A1A1A">testa</text>
+  <text x="672" y="272" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#1A1A1A">croce</text>
+</svg>

@@ -1,0 +1,45 @@
+<svg viewBox="0 0 720 340" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Confronto tra attenzione bidirezionale di BERT e attenzione causale di GPT">
+  <rect x="0" y="0" width="720" height="340" fill="#F8F5EE"/>
+  <text x="180" y="36" text-anchor="middle" font-family="sans-serif" font-size="18" font-weight="bold" fill="#1A1A1A">BERT — encoder</text>
+  <text x="180" y="56" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">ogni token vede tutti gli altri</text>
+  <g stroke="#2D5A5C" stroke-width="1.5" fill="none">
+    <path d="M 80 200 C 110 140, 190 140, 220 200"/>
+    <path d="M 80 200 C 130 110, 250 110, 300 200"/>
+    <path d="M 150 200 C 175 150, 195 150, 220 200"/>
+    <path d="M 150 200 C 190 130, 260 130, 300 200"/>
+    <path d="M 220 200 C 245 155, 275 155, 300 200"/>
+    <path d="M 80 240 C 110 300, 190 300, 220 240"/>
+    <path d="M 150 240 C 190 310, 260 310, 300 240"/>
+  </g>
+  <g font-family="sans-serif" font-size="13" text-anchor="middle">
+    <rect x="55" y="200" width="50" height="40" rx="6" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="1.5"/>
+    <text x="80" y="225" fill="#F8F5EE">Il</text>
+    <rect x="125" y="200" width="50" height="40" rx="6" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="1.5"/>
+    <text x="150" y="225" fill="#F8F5EE">gatto</text>
+    <rect x="195" y="200" width="50" height="40" rx="6" fill="#C9A961" stroke="#1A1A1A" stroke-width="1.5"/>
+    <text x="220" y="225" fill="#1A1A1A">[MASK]</text>
+    <rect x="275" y="200" width="50" height="40" rx="6" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="1.5"/>
+    <text x="300" y="225" fill="#F8F5EE">sul</text>
+  </g>
+  <text x="540" y="36" text-anchor="middle" font-family="sans-serif" font-size="18" font-weight="bold" fill="#1A1A1A">GPT — decoder</text>
+  <text x="540" y="56" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">ogni token vede solo il passato</text>
+  <g stroke="#B5532C" stroke-width="1.5" fill="none">
+    <path d="M 440 200 C 470 140, 550 140, 580 200"/>
+    <path d="M 440 200 C 490 110, 610 110, 660 200"/>
+    <path d="M 510 200 C 545 145, 625 145, 660 200"/>
+    <path d="M 580 200 C 605 160, 635 160, 660 200"/>
+  </g>
+  <g font-family="sans-serif" font-size="13" text-anchor="middle">
+    <rect x="415" y="200" width="50" height="40" rx="6" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5"/>
+    <text x="440" y="225" fill="#F8F5EE">Il</text>
+    <rect x="485" y="200" width="50" height="40" rx="6" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5"/>
+    <text x="510" y="225" fill="#F8F5EE">gatto</text>
+    <rect x="555" y="200" width="50" height="40" rx="6" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5"/>
+    <text x="580" y="225" fill="#F8F5EE">dorme</text>
+    <rect x="635" y="200" width="50" height="40" rx="6" fill="#C9A961" stroke="#1A1A1A" stroke-width="1.5" stroke-dasharray="5 3"/>
+    <text x="660" y="225" fill="#1A1A1A">?</text>
+  </g>
+  <text x="180" y="300" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">contesto da sinistra e da destra</text>
+  <text x="540" y="300" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">solo contesto a sinistra → genera il prossimo</text>
+  <line x1="360" y1="70" x2="360" y2="310" stroke="#1A1A1A" stroke-width="1.5" stroke-dasharray="6 4"/>
+</svg>

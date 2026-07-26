@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 330" font-family="'Inter', -apple-system, Segoe UI, sans-serif" role="img" aria-label="Le cinque transizioni di stato che distinguono la famiglia delle RNN lineari: identita (attenzione lineare), scalare alfa per identita (RetNet e Mamba-2), diagonale (GLA), Householder identita meno beta k k trasposto (DeltaNet), e la combinazione gated-delta (Gated DeltaNet). Da sinistra a destra si passa dall'accumulo puro all'oblio con correzione mirata.">
+  <defs>
+    <marker id="frl-muted" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#8B847C"/>
+    </marker>
+  </defs>
+
+  <!-- freccia guida in alto -->
+  <line x1="82" y1="40" x2="812" y2="40" stroke="#8B847C" stroke-width="1.5" marker-end="url(#frl-muted)"/>
+  <text x="86" y="30" font-size="12.5" fill="#8B847C" font-style="italic">accumulo puro</text>
+  <text x="812" y="30" font-size="12.5" text-anchor="end" fill="#8B847C" font-style="italic">oblio + correzione mirata</text>
+  <text x="450" y="64" font-size="13.5" text-anchor="middle" fill="#5E5852">stessa ricorrenza a stato fisso: cambia solo la transizione</text>
+
+  <!-- ============ PANNELLO 1: Identita ============ -->
+  <g>
+    <rect x="82" y="86" width="56" height="56" rx="4" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.5"/>
+    <line x1="86" y1="90" x2="134" y2="138" stroke="#B5532C" stroke-width="5" stroke-linecap="round"/>
+    <text x="110" y="166" font-size="16" text-anchor="middle" fill="#1A1A1A" font-weight="700">I</text>
+    <text x="110" y="192" font-size="12.5" text-anchor="middle" fill="#2D5A5C" font-weight="600">Attenzione</text>
+    <text x="110" y="207" font-size="12.5" text-anchor="middle" fill="#2D5A5C" font-weight="600">lineare</text>
+    <text x="110" y="228" font-size="11" text-anchor="middle" fill="#8B847C">accumula</text>
+  </g>
+
+  <!-- ============ PANNELLO 2: alfa I ============ -->
+  <g>
+    <rect x="242" y="86" width="56" height="56" rx="4" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.5"/>
+    <line x1="246" y1="90" x2="294" y2="138" stroke="#C9A961" stroke-width="5" stroke-linecap="round"/>
+    <text x="270" y="166" font-size="16" text-anchor="middle" fill="#1A1A1A" font-weight="700">&#945; I</text>
+    <text x="270" y="192" font-size="12.5" text-anchor="middle" fill="#2D5A5C" font-weight="600">RetNet &#183;</text>
+    <text x="270" y="207" font-size="12.5" text-anchor="middle" fill="#2D5A5C" font-weight="600">Mamba-2</text>
+    <text x="270" y="228" font-size="11" text-anchor="middle" fill="#8B847C">oblio scalare</text>
+  </g>
+
+  <!-- ============ PANNELLO 3: Diag(alfa) ============ -->
+  <g>
+    <rect x="402" y="86" width="56" height="56" rx="4" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.5"/>
+    <line x1="406" y1="90" x2="418" y2="102" stroke="#B5532C" stroke-width="5" stroke-linecap="round"/>
+    <line x1="418" y1="102" x2="430" y2="114" stroke="#C9A961" stroke-width="5" stroke-linecap="round"/>
+    <line x1="430" y1="114" x2="442" y2="126" stroke="#B5532C" stroke-width="5" stroke-linecap="round" opacity="0.6"/>
+    <line x1="442" y1="126" x2="454" y2="138" stroke="#C9A961" stroke-width="5" stroke-linecap="round"/>
+    <text x="430" y="166" font-size="16" text-anchor="middle" fill="#1A1A1A" font-weight="700">Diag(&#945;)</text>
+    <text x="430" y="192" font-size="12.5" text-anchor="middle" fill="#2D5A5C" font-weight="600">GLA</text>
+    <text x="430" y="207" font-size="12.5" text-anchor="middle" fill="#2D5A5C" font-weight="600">RWKV-6</text>
+    <text x="430" y="228" font-size="11" text-anchor="middle" fill="#8B847C">oblio per canale</text>
+  </g>
+
+  <!-- ============ PANNELLO 4: Householder ============ -->
+  <g>
+    <rect x="562" y="86" width="56" height="56" rx="4" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.5"/>
+    <rect x="566" y="90" width="48" height="48" rx="2" fill="#2D5A5C" opacity="0.16"/>
+    <line x1="566" y1="90" x2="614" y2="138" stroke="#B5532C" stroke-width="5" stroke-linecap="round"/>
+    <text x="590" y="166" font-size="14.5" text-anchor="middle" fill="#1A1A1A" font-weight="700">I &#8722; &#946; kk<tspan font-size="10" dy="-7">&#8868;</tspan></text>
+    <text x="590" y="192" font-size="12.5" text-anchor="middle" fill="#2D5A5C" font-weight="600">DeltaNet</text>
+    <text x="590" y="207" font-size="12.5" text-anchor="middle" fill="#2D5A5C" font-weight="600">(delta rule)</text>
+    <text x="590" y="228" font-size="11" text-anchor="middle" fill="#8B847C">corregge</text>
+  </g>
+
+  <!-- ============ PANNELLO 5: Gated delta ============ -->
+  <g>
+    <rect x="722" y="86" width="56" height="56" rx="4" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.5"/>
+    <rect x="726" y="90" width="48" height="48" rx="2" fill="#2D5A5C" opacity="0.16"/>
+    <line x1="726" y1="90" x2="774" y2="138" stroke="#C9A961" stroke-width="5" stroke-linecap="round"/>
+    <text x="750" y="166" font-size="13.5" text-anchor="middle" fill="#1A1A1A" font-weight="700">&#945;(I &#8722; &#946; kk<tspan font-size="9" dy="-7">&#8868;</tspan>)</text>
+    <text x="750" y="192" font-size="12.5" text-anchor="middle" fill="#2D5A5C" font-weight="600">Gated</text>
+    <text x="750" y="207" font-size="12.5" text-anchor="middle" fill="#2D5A5C" font-weight="600">DeltaNet</text>
+    <text x="750" y="228" font-size="11" text-anchor="middle" fill="#8B847C">oblio + corregge</text>
+  </g>
+
+  <!-- legenda -->
+  <line x1="300" y1="300" x2="330" y2="300" stroke="#B5532C" stroke-width="5" stroke-linecap="round"/>
+  <text x="338" y="304" font-size="12" fill="#5E5852">struttura diagonale</text>
+  <rect x="470" y="293" width="14" height="14" rx="2" fill="#2D5A5C" opacity="0.16" stroke="#2D5A5C" stroke-width="0.8"/>
+  <text x="492" y="304" font-size="12" fill="#5E5852">correzione di rango 1 (delta)</text>
+</svg>

@@ -1,0 +1,66 @@
+<svg viewBox="0 0 760 420" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Tabella prima e dopo la codifica: la colonna città diventa una colonna di interi con ordinal encoding oppure tre colonne binarie con one-hot encoding">
+  <rect x="0" y="0" width="760" height="420" fill="#F8F5EE"/>
+  <text x="380" y="32" text-anchor="middle" font-family="sans-serif" font-size="17" font-weight="bold" fill="#1A1A1A">La colonna "città", prima e dopo</text>
+
+  <!-- PRIMA -->
+  <text x="130" y="72" text-anchor="middle" font-family="sans-serif" font-size="14" font-weight="bold" fill="#1A1A1A">PRIMA</text>
+  <g stroke="#1A1A1A" stroke-width="1.5">
+    <rect x="60" y="84" width="140" height="36" fill="#1A1A1A"/>
+    <rect x="60" y="120" width="140" height="36" fill="#F8F5EE"/>
+    <rect x="60" y="156" width="140" height="36" fill="#F8F5EE"/>
+    <rect x="60" y="192" width="140" height="36" fill="#F8F5EE"/>
+    <rect x="60" y="228" width="140" height="36" fill="#F8F5EE"/>
+  </g>
+  <text x="130" y="107" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#F8F5EE">città</text>
+  <circle cx="88" cy="138" r="6" fill="#B5532C"/><text x="104" y="143" font-family="sans-serif" font-size="13" fill="#1A1A1A">Milano</text>
+  <circle cx="88" cy="174" r="6" fill="#2D5A5C"/><text x="104" y="179" font-family="sans-serif" font-size="13" fill="#1A1A1A">Roma</text>
+  <circle cx="88" cy="210" r="6" fill="#C9A961"/><text x="104" y="215" font-family="sans-serif" font-size="13" fill="#1A1A1A">Napoli</text>
+  <circle cx="88" cy="246" r="6" fill="#2D5A5C"/><text x="104" y="251" font-family="sans-serif" font-size="13" fill="#1A1A1A">Roma</text>
+
+  <!-- arrows -->
+  <line x1="215" y1="130" x2="295" y2="112" stroke="#1A1A1A" stroke-width="2"/>
+  <path d="M 295 112 l -12 -1 l 7 10 z" fill="#1A1A1A"/>
+  <line x1="215" y1="210" x2="295" y2="286" stroke="#1A1A1A" stroke-width="2"/>
+  <path d="M 295 286 l -12 -3 l 4 12 z" fill="#1A1A1A"/>
+
+  <!-- DOPO ordinal -->
+  <text x="420" y="72" text-anchor="middle" font-family="sans-serif" font-size="14" font-weight="bold" fill="#B5532C">DOPO — ordinal</text>
+  <g stroke="#1A1A1A" stroke-width="1.5">
+    <rect x="370" y="84" width="100" height="30" fill="#1A1A1A"/>
+    <rect x="370" y="114" width="100" height="30" fill="#F8F5EE"/>
+    <rect x="370" y="144" width="100" height="30" fill="#F8F5EE"/>
+    <rect x="370" y="174" width="100" height="30" fill="#F8F5EE"/>
+    <rect x="370" y="204" width="100" height="30" fill="#F8F5EE"/>
+  </g>
+  <text x="420" y="104" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="bold" fill="#F8F5EE">città</text>
+  <text x="420" y="134" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#1A1A1A">0</text>
+  <text x="420" y="164" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#1A1A1A">2</text>
+  <text x="420" y="194" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#1A1A1A">1</text>
+  <text x="420" y="224" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#1A1A1A">2</text>
+  <rect x="500" y="120" width="216" height="66" fill="#F8F5EE" stroke="#B5532C" stroke-width="2"/>
+  <text x="608" y="145" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="bold" fill="#B5532C">Attenzione: ordine inventato!</text>
+  <text x="608" y="164" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">Roma (2) non è "il doppio"</text>
+  <text x="608" y="180" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">di Napoli (1). Ok solo se S&lt;M&lt;L.</text>
+
+  <!-- DOPO one-hot -->
+  <text x="465" y="278" text-anchor="middle" font-family="sans-serif" font-size="14" font-weight="bold" fill="#2D5A5C">DOPO — one-hot</text>
+  <g stroke="#1A1A1A" stroke-width="1.5">
+    <rect x="370" y="290" width="64" height="26" fill="#B5532C"/>
+    <rect x="434" y="290" width="64" height="26" fill="#2D5A5C"/>
+    <rect x="498" y="290" width="64" height="26" fill="#C9A961"/>
+    <rect x="370" y="316" width="64" height="24" fill="#F8F5EE"/><rect x="434" y="316" width="64" height="24" fill="#F8F5EE"/><rect x="498" y="316" width="64" height="24" fill="#F8F5EE"/>
+    <rect x="370" y="340" width="64" height="24" fill="#F8F5EE"/><rect x="434" y="340" width="64" height="24" fill="#F8F5EE"/><rect x="498" y="340" width="64" height="24" fill="#F8F5EE"/>
+    <rect x="370" y="364" width="64" height="24" fill="#F8F5EE"/><rect x="434" y="364" width="64" height="24" fill="#F8F5EE"/><rect x="498" y="364" width="64" height="24" fill="#F8F5EE"/>
+    <rect x="370" y="388" width="64" height="24" fill="#F8F5EE"/><rect x="434" y="388" width="64" height="24" fill="#F8F5EE"/><rect x="498" y="388" width="64" height="24" fill="#F8F5EE"/>
+  </g>
+  <text x="402" y="307" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="#F8F5EE">Milano</text>
+  <text x="466" y="307" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="#F8F5EE">Roma</text>
+  <text x="530" y="307" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="#1A1A1A">Napoli</text>
+  <text x="402" y="333" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#B5532C">1</text><text x="466" y="333" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#1A1A1A">0</text><text x="530" y="333" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#1A1A1A">0</text>
+  <text x="402" y="357" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#1A1A1A">0</text><text x="466" y="357" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#2D5A5C">1</text><text x="530" y="357" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#1A1A1A">0</text>
+  <text x="402" y="381" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#1A1A1A">0</text><text x="466" y="381" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#1A1A1A">0</text><text x="530" y="381" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#C9A961">1</text>
+  <text x="402" y="405" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#1A1A1A">0</text><text x="466" y="405" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#2D5A5C">1</text><text x="530" y="405" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#1A1A1A">0</text>
+  <text x="640" y="345" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#2D5A5C">una colonna per città,</text>
+  <text x="640" y="363" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#2D5A5C">un solo 1 per riga:</text>
+  <text x="640" y="381" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#2D5A5C">nessun ordine implicito</text>
+</svg>

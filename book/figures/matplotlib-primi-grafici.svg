@@ -1,0 +1,54 @@
+<svg viewBox="0 0 720 440" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Anatomia di una figura Matplotlib: Figure, Axes, titolo, etichette, tick, legenda, linee">
+  <rect x="0" y="0" width="720" height="440" fill="#F8F5EE"/>
+  <!-- Figure frame -->
+  <rect x="40" y="40" width="520" height="360" fill="#F8F5EE" stroke="#B5532C" stroke-width="2"/>
+  <text x="50" y="62" font-family="sans-serif" font-size="14" font-weight="bold" fill="#B5532C">Figure — il foglio (fig)</text>
+  <!-- Axes area -->
+  <rect x="110" y="110" width="400" height="240" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2"/>
+  <!-- title -->
+  <text x="310" y="98" font-family="sans-serif" font-size="14" font-weight="bold" fill="#1A1A1A" text-anchor="middle">Titolo — ax.set_title()</text>
+  <!-- data lines -->
+  <path d="M 120 300 C 160 180, 200 160, 250 220 C 300 280, 340 300, 390 230 C 430 180, 470 170, 500 200"
+        fill="none" stroke="#B5532C" stroke-width="2"/>
+  <path d="M 120 200 C 170 300, 220 310, 270 250 C 320 190, 370 180, 420 250 C 460 300, 480 300, 500 280"
+        fill="none" stroke="#C9A961" stroke-width="2" stroke-dasharray="7 4"/>
+  <!-- ticks x -->
+  <line x1="190" y1="350" x2="190" y2="358" stroke="#1A1A1A" stroke-width="1.5"/>
+  <line x1="270" y1="350" x2="270" y2="358" stroke="#1A1A1A" stroke-width="1.5"/>
+  <line x1="350" y1="350" x2="350" y2="358" stroke="#1A1A1A" stroke-width="1.5"/>
+  <line x1="430" y1="350" x2="430" y2="358" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="190" y="372" font-family="sans-serif" font-size="11" fill="#5E5852" text-anchor="middle">2</text>
+  <text x="270" y="372" font-family="sans-serif" font-size="11" fill="#5E5852" text-anchor="middle">4</text>
+  <text x="350" y="372" font-family="sans-serif" font-size="11" fill="#5E5852" text-anchor="middle">6</text>
+  <text x="430" y="372" font-family="sans-serif" font-size="11" fill="#5E5852" text-anchor="middle">8</text>
+  <!-- ticks y -->
+  <line x1="102" y1="150" x2="110" y2="150" stroke="#1A1A1A" stroke-width="1.5"/>
+  <line x1="102" y1="230" x2="110" y2="230" stroke="#1A1A1A" stroke-width="1.5"/>
+  <line x1="102" y1="310" x2="110" y2="310" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="96" y="154" font-family="sans-serif" font-size="11" fill="#5E5852" text-anchor="end">1</text>
+  <text x="96" y="234" font-family="sans-serif" font-size="11" fill="#5E5852" text-anchor="end">0</text>
+  <text x="96" y="314" font-family="sans-serif" font-size="11" fill="#5E5852" text-anchor="end">-1</text>
+  <!-- axis labels -->
+  <text x="310" y="392" font-family="sans-serif" font-size="12" fill="#1A1A1A" text-anchor="middle">x (radianti) — ax.set_xlabel()</text>
+  <text x="70" y="230" font-family="sans-serif" font-size="12" fill="#1A1A1A" text-anchor="middle" transform="rotate(-90 70 230)">valore — ax.set_ylabel()</text>
+  <!-- legend box -->
+  <rect x="390" y="120" width="110" height="46" rx="4" fill="#F8F5EE" stroke="#C9C2B4" stroke-width="1.5"/>
+  <line x1="398" y1="134" x2="420" y2="134" stroke="#B5532C" stroke-width="2"/>
+  <text x="426" y="138" font-family="sans-serif" font-size="11" fill="#1A1A1A">seno</text>
+  <line x1="398" y1="152" x2="420" y2="152" stroke="#C9A961" stroke-width="2" stroke-dasharray="5 3"/>
+  <text x="426" y="156" font-family="sans-serif" font-size="11" fill="#1A1A1A">coseno</text>
+  <!-- callouts right -->
+  <text x="580" y="120" font-family="sans-serif" font-size="13" font-weight="bold" fill="#2D5A5C">Axes — la tela (ax)</text>
+  <line x1="576" y1="126" x2="512" y2="140" stroke="#2D5A5C" stroke-width="1.5"/>
+  <text x="580" y="164" font-family="sans-serif" font-size="12" fill="#1A1A1A">Legenda</text>
+  <text x="580" y="179" font-family="sans-serif" font-size="12" fill="#1A1A1A">ax.legend()</text>
+  <line x1="576" y1="166" x2="502" y2="150" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="580" y="226" font-family="sans-serif" font-size="12" fill="#B5532C">Linea dati</text>
+  <text x="580" y="241" font-family="sans-serif" font-size="12" fill="#B5532C">ax.plot(x, y)</text>
+  <line x1="576" y1="228" x2="500" y2="205" stroke="#B5532C" stroke-width="1.5"/>
+  <text x="580" y="330" font-family="sans-serif" font-size="12" fill="#1A1A1A">Tick + etichette</text>
+  <text x="580" y="345" font-family="sans-serif" font-size="12" fill="#1A1A1A">dei valori</text>
+  <line x1="576" y1="338" x2="435" y2="356" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="580" y="415" font-family="sans-serif" font-size="12" fill="#5E5852">Una Figure può contenere</text>
+  <text x="580" y="430" font-family="sans-serif" font-size="12" fill="#5E5852">più Axes (subplot)</text>
+</svg>

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transformer Architecture</title>
+    <style>
+        body {
+            background-color: #2b2b2b;
+            color: #e0e0e0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+            width: 90%;
+        }
+
+        .encoder, .decoder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border: 2px solid #555;
+            border-radius: 10px;
+            padding: 20px;
+            background-color: #333;
+            width: 45%;
+        }
+
+        .title {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            color: #80cbc4;
+        }
+
+        .block {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .input-embedding, .output-embedding, .positional-encoding, .multi-head-attention, .masked-multi-head-attention, .feed-forward, .add-norm, .linear, .softmax {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            width: 80%;
+            text-align: center;
+            opacity: 0.3;
+            transition: opacity 1s;
+        }
+
+        .input-embedding, .output-embedding, .positional-encoding {
+            background-color: #b39ddb;
+        }
+
+        .multi-head-attention, .masked-multi-head-attention {
+            background-color: #ffab91;
+        }
+
+        .feed-forward {
+            background-color: #90caf9;
+        }
+
+        .add-norm {
+            background-color: #a5d6a7;
+        }
+
+        .linear, .softmax {
+            background-color: #f48fb1;
+        }
+
+        .layer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border: 1px solid #444;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 10px 0;
+        }
+
+        .layer .add-norm {
+            margin-top: 5px;
+        }
+
+        .linear-softmax {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .linear {
+            margin-bottom: 5px;
+        }
+
+        .active {
+            opacity: 1 !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="encoder">
+            <div class="title">Encoder</div>
+            <div class="block">
+                <div class="input-embedding">Input Embedding</div>
+                <div class="positional-encoding">+ Positional Encoding</div>
+                <div class="layer">
+                    <div class="multi-head-attention">Multi-Head Attention</div>
+                    <div class="add-norm">Add & Norm</div>
+                </div>
+                <div class="layer">
+                    <div class="feed-forward">Feed Forward</div>
+                    <div class="add-norm">Add & Norm</div>
+                </div>
+            </div>
+        </div>
+        <div class="decoder">
+            <div class="title">Decoder</div>
+            <div class="block">
+                <div class="output-embedding">Output Embedding (shifted right)</div>
+                <div class="positional-encoding">+ Positional Encoding</div>
+                <div class="layer">
+                    <div class="masked-multi-head-attention">Masked Multi-Head Attention</div>
+                    <div class="add-norm">Add & Norm</div>
+                </div>
+                <div class="layer">
+                    <div class="multi-head-attention">Multi-Head Attention</div>
+                    <div class="add-norm">Add & Norm</div>
+                </div>
+                <div class="layer">
+                    <div class="feed-forward">Feed Forward</div>
+                    <div class="add-norm">Add & Norm</div>
+                </div>
+                <div class="linear-softmax">
+                    <div class="linear">Linear</div>
+                    <div class="softmax">Softmax</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        const steps = [
+            '.input-embedding',
+            '.positional-encoding',
+            '.encoder .multi-head-attention',
+            '.encoder .add-norm',
+            '.encoder .feed-forward',
+            '.encoder .add-norm',
+            '.output-embedding',
+            '.positional-encoding',
+            '.decoder .masked-multi-head-attention',
+            '.decoder .add-norm',
+            '.decoder .multi-head-attention',
+            '.decoder .add-norm',
+            '.decoder .feed-forward',
+            '.decoder .add-norm',
+            '.linear',
+            '.softmax'
+        ];
+
+        let currentStep = 0;
+
+        function activateNextStep() {
+            if (currentStep > 0) {
+                document.querySelector(steps[currentStep - 1]).classList.remove('active');
+            }
+            if (currentStep < steps.length) {
+                document.querySelector(steps[currentStep]).classList.add('active');
+                currentStep++;
+                setTimeout(activateNextStep, 1000);  // Adjust the delay as needed
+            }
+        }
+
+        window.onload = () => {
+            setTimeout(activateNextStep, 1000);  // Start the animation after a short delay
+        };
+    </script>
+</body>
+</html>

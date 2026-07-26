@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  paithon book — figura: il flusso di un progetto di machine learning.
+  Cinque blocchi in sequenza: Dati -> Feature -> Modello -> Valutazione
+  -> Deploy, con una freccia di feedback che dalla Valutazione torna alle
+  Feature (si itera). Palette-locked: box cream, bordi teal/ocra/terracotta/
+  warm-black, testo warm-black e grigi warm; feedback in terracotta.
+  Fondo trasparente (leggibile in light e dark). Nessun colore fuori palette.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 740 210" role="img"
+     aria-label="Flusso di un progetto di machine learning: Dati, poi Feature, poi Modello, poi Valutazione, infine Deploy; una freccia di feedback riporta dalla Valutazione alle Feature per iterare il processo">
+  <style>
+    .box   { fill:#F8F5EE; }
+    .name  { font-family:Fraunces, Georgia, serif; font-size:17px; font-weight:600; fill:#1A1A1A; }
+    .desc  { font-family:Inter, system-ui, sans-serif; font-size:10.5px; fill:#5E5852; }
+    .fb    { font-family:Inter, system-ui, sans-serif; font-size:11px; font-style:italic; fill:#B5532C; }
+    .flow  { stroke:#8B847C; stroke-width:2; fill:none; }
+  </style>
+
+  <!-- frecce del flusso principale -->
+  <line class="flow" x1="132" y1="84" x2="152" y2="84"/>
+  <polygon points="160,84 150,79 150,89" fill="#8B847C"/>
+  <line class="flow" x1="272" y1="84" x2="292" y2="84"/>
+  <polygon points="300,84 290,79 290,89" fill="#8B847C"/>
+  <line class="flow" x1="412" y1="84" x2="432" y2="84"/>
+  <polygon points="440,84 430,79 430,89" fill="#8B847C"/>
+  <line class="flow" x1="562" y1="84" x2="592" y2="84" stroke-dasharray="4 4"/>
+  <polygon points="600,84 590,79 590,89" fill="#8B847C"/>
+
+  <!-- Dati -->
+  <rect class="box" x="22"  y="56" width="110" height="58" rx="6" stroke="#2D5A5C" stroke-width="2.5"/>
+  <text class="name" x="77"  y="82"  text-anchor="middle">Dati</text>
+  <text class="desc" x="77"  y="100" text-anchor="middle">raccolta &#183; pulizia</text>
+
+  <!-- Feature -->
+  <rect class="box" x="162" y="56" width="110" height="58" rx="6" stroke="#C9A961" stroke-width="2.5"/>
+  <text class="name" x="217" y="82"  text-anchor="middle">Feature</text>
+  <text class="desc" x="217" y="100" text-anchor="middle">rappresentazione</text>
+
+  <!-- Modello -->
+  <rect class="box" x="302" y="56" width="110" height="58" rx="6" stroke="#B5532C" stroke-width="2.5"/>
+  <text class="name" x="357" y="82"  text-anchor="middle">Modello</text>
+  <text class="desc" x="357" y="100" text-anchor="middle">training</text>
+
+  <!-- Valutazione -->
+  <rect class="box" x="442" y="56" width="120" height="58" rx="6" stroke="#2D5A5C" stroke-width="2.5"/>
+  <text class="name" x="502" y="82"  text-anchor="middle">Valutazione</text>
+  <text class="desc" x="502" y="100" text-anchor="middle">test &#183; metriche</text>
+
+  <!-- Deploy (passo finale, bordo tratteggiato) -->
+  <rect class="box" x="602" y="56" width="110" height="58" rx="6" stroke="#1A1A1A" stroke-width="2.5" stroke-dasharray="5 4"/>
+  <text class="name" x="657" y="82"  text-anchor="middle">Deploy</text>
+  <text class="desc" x="657" y="100" text-anchor="middle">in produzione</text>
+
+  <!-- freccia di feedback: dalla Valutazione torna alle Feature -->
+  <path class="flow" stroke="#B5532C" stroke-dasharray="6 4"
+        d="M 502 114 L 502 168 L 217 168 L 217 122"/>
+  <polygon points="217,114 212,124 222,124" fill="#B5532C"/>
+  <text class="fb" x="360" y="163" text-anchor="middle">feedback: si torna indietro e si itera</text>
+</svg>

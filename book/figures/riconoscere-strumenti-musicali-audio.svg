@@ -1,0 +1,40 @@
+<svg viewBox="0 0 720 320" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Pipeline del progetto: dall'onda audio alle feature MFCC alla classificazione SVM">
+  <rect x="0" y="0" width="720" height="320" fill="#F8F5EE"/>
+  <text x="360" y="32" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#1A1A1A" font-weight="bold">Audio → feature → SVM</text>
+  <!-- box 1: onda -->
+  <rect x="20" y="80" width="180" height="130" rx="8" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="2"/>
+  <text x="110" y="105" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#1A1A1A" font-weight="bold">Onda sonora</text>
+  <path d="M35 165 q 8 -38 16 0 t 16 0 t 16 0 q 6 -22 12 0 t 12 0 t 12 0 q 8 -38 16 0 t 16 0 t 16 0" fill="none" stroke="#B5532C" stroke-width="2"/>
+  <text x="110" y="196" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#1A1A1A">22050 campioni/s</text>
+  <!-- freccia 1 -->
+  <line x1="200" y1="145" x2="245" y2="145" stroke="#1A1A1A" stroke-width="2"/>
+  <path d="M245 145 l-10 -6 v12 z" fill="#1A1A1A"/>
+  <text x="222" y="130" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#1A1A1A">librosa</text>
+  <!-- box 2: MFCC -->
+  <rect x="250" y="80" width="180" height="130" rx="8" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="2"/>
+  <text x="340" y="105" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#1A1A1A" font-weight="bold">Feature MFCC</text>
+  <!-- griglia di celle -->
+  <rect x="272" y="120" width="26" height="20" fill="#C9A961"/><rect x="300" y="120" width="26" height="20" fill="#2D5A5C"/><rect x="328" y="120" width="26" height="20" fill="#C9A961"/><rect x="356" y="120" width="26" height="20" fill="#B5532C"/>
+  <rect x="272" y="143" width="26" height="20" fill="#2D5A5C"/><rect x="300" y="143" width="26" height="20" fill="#B5532C"/><rect x="328" y="143" width="26" height="20" fill="#C9A961"/><rect x="356" y="143" width="26" height="20" fill="#2D5A5C"/>
+  <rect x="272" y="166" width="26" height="20" fill="#B5532C"/><rect x="300" y="166" width="26" height="20" fill="#C9A961"/><rect x="328" y="166" width="26" height="20" fill="#2D5A5C"/><rect x="356" y="166" width="26" height="20" fill="#C9A961"/>
+  <text x="340" y="200" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#1A1A1A">13 coefficienti per suono</text>
+  <!-- freccia 2 -->
+  <line x1="430" y1="145" x2="475" y2="145" stroke="#1A1A1A" stroke-width="2"/>
+  <path d="M475 145 l-10 -6 v12 z" fill="#1A1A1A"/>
+  <text x="452" y="130" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#1A1A1A">fit</text>
+  <!-- box 3: SVM -->
+  <rect x="480" y="80" width="220" height="130" rx="8" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="2"/>
+  <text x="590" y="105" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#1A1A1A" font-weight="bold">SVM</text>
+  <!-- iperpiano -->
+  <line x1="510" y1="195" x2="670" y2="120" stroke="#1A1A1A" stroke-width="1.5" stroke-dasharray="6 5"/>
+  <circle cx="525" cy="135" r="8" fill="#B5532C"/>
+  <circle cx="550" cy="120" r="8" fill="#B5532C"/>
+  <circle cx="525" cy="165" r="8" fill="#B5532C"/>
+  <circle cx="620" cy="180" r="8" fill="#2D5A5C"/>
+  <circle cx="650" cy="165" r="8" fill="#2D5A5C"/>
+  <circle cx="640" cy="195" r="8" fill="#2D5A5C"/>
+  <text x="545" y="200" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#B5532C" font-weight="bold">flauto</text>
+  <text x="645" y="150" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#2D5A5C" font-weight="bold">ottone</text>
+  <!-- caption -->
+  <text x="360" y="270" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">L'onda grezza (migliaia di numeri) diventa 13 coefficienti: nello spazio MFCC gli strumenti si separano.</text>
+</svg>

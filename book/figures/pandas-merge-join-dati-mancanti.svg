@@ -1,0 +1,43 @@
+<svg viewBox="0 0 760 340" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="I quattro tipi di join illustrati con diagrammi a due cerchi">
+  <rect x="0" y="0" width="760" height="340" fill="#F8F5EE"/>
+  <text x="380" y="32" text-anchor="middle" font-family="sans-serif" font-size="17" font-weight="bold" fill="#1A1A1A">I quattro join: quali righe sopravvivono?</text>
+  <!-- INNER -->
+  <g>
+    <path d="M 150 105 A 42 42 0 0 1 150 175 A 42 42 0 0 1 150 105 Z" fill="#C9A961"/>
+    <circle cx="125" cy="140" r="42" fill="none" stroke="#B5532C" stroke-width="2"/>
+    <circle cx="175" cy="140" r="42" fill="none" stroke="#2D5A5C" stroke-width="2"/>
+    <text x="150" y="215" text-anchor="middle" font-family="sans-serif" font-size="15" font-weight="bold" fill="#1A1A1A">inner</text>
+    <text x="150" y="236" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">solo le chiavi comuni</text>
+  </g>
+  <!-- LEFT -->
+  <g>
+    <circle cx="345" cy="140" r="42" fill="#C9A961" stroke="#B5532C" stroke-width="2"/>
+    <circle cx="395" cy="140" r="42" fill="none" stroke="#2D5A5C" stroke-width="2"/>
+    <path d="M 370 105 A 42 42 0 0 1 370 175 A 42 42 0 0 1 370 105 Z" fill="#C9A961" stroke="#B5532C" stroke-width="1.5"/>
+    <text x="370" y="215" text-anchor="middle" font-family="sans-serif" font-size="15" font-weight="bold" fill="#1A1A1A">left</text>
+    <text x="370" y="236" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">tutta la tabella sinistra</text>
+  </g>
+  <!-- RIGHT -->
+  <g>
+    <circle cx="615" cy="140" r="42" fill="#C9A961" stroke="#2D5A5C" stroke-width="2"/>
+    <circle cx="565" cy="140" r="42" fill="none" stroke="#B5532C" stroke-width="2"/>
+    <path d="M 590 105 A 42 42 0 0 0 590 175 A 42 42 0 0 0 590 105 Z" fill="#C9A961" stroke="#2D5A5C" stroke-width="1.5"/>
+    <text x="590" y="215" text-anchor="middle" font-family="sans-serif" font-size="15" font-weight="bold" fill="#1A1A1A">right</text>
+    <text x="590" y="236" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">tutta la tabella destra</text>
+  </g>
+  <!-- OUTER -->
+  <g>
+    <circle cx="355" cy="290" r="30" fill="#C9A961" stroke="#B5532C" stroke-width="2"/>
+    <circle cx="391" cy="290" r="30" fill="#C9A961" stroke="#2D5A5C" stroke-width="2"/>
+    <path d="M 373 266 A 30 30 0 0 1 373 314 A 30 30 0 0 1 373 266 Z" fill="#C9A961"/>
+    <text x="455" y="288" font-family="sans-serif" font-size="15" font-weight="bold" fill="#1A1A1A">outer</text>
+    <text x="455" y="306" font-family="sans-serif" font-size="12" fill="#1A1A1A">tutte le righe, buchi inclusi (NaN)</text>
+  </g>
+  <!-- legenda -->
+  <g>
+    <line x1="60" y1="278" x2="88" y2="278" stroke="#B5532C" stroke-width="2"/>
+    <text x="94" y="283" font-family="sans-serif" font-size="12" fill="#1A1A1A">tabella sinistra (clienti)</text>
+    <line x1="60" y1="302" x2="88" y2="302" stroke="#2D5A5C" stroke-width="2"/>
+    <text x="94" y="307" font-family="sans-serif" font-size="12" fill="#1A1A1A">tabella destra (ordini)</text>
+  </g>
+</svg>

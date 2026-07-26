@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 450" font-family="Inter, system-ui, sans-serif" role="img" aria-label="Blocco residuo: l input x attraversa due strati che calcolano F(x) mentre una scorciatoia porta x direttamente alla somma finale F(x)+x.">
+  <defs>
+    <marker id="arrow" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#1A1A1A"/>
+    </marker>
+    <marker id="arrowT" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#B5532C"/>
+    </marker>
+  </defs>
+
+  <!-- input x -->
+  <text x="170" y="32" text-anchor="middle" font-size="22" font-style="italic" font-weight="700" fill="#1A1A1A">x</text>
+  <line x1="170" y1="42" x2="170" y2="80" stroke="#1A1A1A" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+  <!-- F(x) bracket -->
+  <path d="M84 84 q-12 0 -12 12 v108 q0 12 12 12" fill="none" stroke="#5E5852" stroke-width="1.6"/>
+  <text x="52" y="155" text-anchor="middle" font-size="16" font-style="italic" font-weight="700" fill="#5E5852"><tspan>F</tspan><tspan font-style="normal">(</tspan><tspan>x</tspan><tspan font-style="normal">)</tspan></text>
+
+  <!-- weight layer 1 -->
+  <rect x="104" y="84" width="132" height="46" rx="6" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="2.5"/>
+  <text x="170" y="112" text-anchor="middle" font-size="15" fill="#1A1A1A">strato peso</text>
+
+  <!-- connector + ReLU -->
+  <line x1="170" y1="130" x2="170" y2="170" stroke="#1A1A1A" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <text x="184" y="155" text-anchor="start" font-size="14" font-weight="600" fill="#2D5A5C">ReLU</text>
+
+  <!-- weight layer 2 -->
+  <rect x="104" y="172" width="132" height="46" rx="6" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="2.5"/>
+  <text x="170" y="200" text-anchor="middle" font-size="15" fill="#1A1A1A">strato peso</text>
+
+  <!-- to sum -->
+  <line x1="170" y1="218" x2="170" y2="298" stroke="#1A1A1A" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+  <!-- skip connection -->
+  <path d="M170 52 H332 V318 H196" fill="none" stroke="#B5532C" stroke-width="2.8" stroke-linejoin="round" marker-end="url(#arrowT)"/>
+  <text x="344" y="178" text-anchor="start" font-size="14" font-weight="700" fill="#B5532C">identità</text>
+  <text x="344" y="198" text-anchor="start" font-size="14" font-style="italic" fill="#B5532C">x</text>
+
+  <!-- sum node -->
+  <circle cx="170" cy="318" r="20" fill="#C9A961" stroke="#1A1A1A" stroke-width="2.5"/>
+  <text x="170" y="326" text-anchor="middle" font-size="26" font-weight="700" fill="#1A1A1A">+</text>
+
+  <!-- after sum + ReLU -->
+  <line x1="170" y1="338" x2="170" y2="390" stroke="#1A1A1A" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <text x="184" y="370" text-anchor="start" font-size="14" font-weight="600" fill="#2D5A5C">ReLU</text>
+
+  <!-- output -->
+  <text x="170" y="418" text-anchor="middle" font-size="16" font-weight="700" fill="#1A1A1A"><tspan font-style="italic">F</tspan>(<tspan font-style="italic">x</tspan>) + <tspan font-style="italic">x</tspan></text>
+</svg>

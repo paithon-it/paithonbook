@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 512" role="img" aria-label="Traliccio di Viterbi per la frase la porta cigola con tre stati DET, NOME e VERBO: il cammino ottimo DET, NOME, VERBO e' evidenziato in terracotta con le probabilita' parziali 0,30, 0,042 e 0,0063; i cammini alternativi valutati e scartati sono in grigio, quelli a probabilita' zero tratteggiati.">
+  <defs>
+    <marker id="vit-freccia-grigia" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#5E5852"/>
+    </marker>
+    <marker id="vit-freccia-terracotta" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#B5532C"/>
+    </marker>
+  </defs>
+
+  <!-- parole osservate, in alto -->
+  <text x="255" y="34" text-anchor="middle" font-family="Inter, sans-serif" font-size="15" font-weight="700" fill="#1A1A1A">&#171;la&#187;</text>
+  <text x="475" y="34" text-anchor="middle" font-family="Inter, sans-serif" font-size="15" font-weight="700" fill="#1A1A1A">&#171;porta&#187;</text>
+  <text x="695" y="34" text-anchor="middle" font-family="Inter, sans-serif" font-size="15" font-weight="700" fill="#1A1A1A">&#171;cigola&#187;</text>
+  <text x="60" y="34" font-family="Inter, sans-serif" font-size="12" fill="#5E5852">parole:</text>
+
+  <!-- frecce di partenza (probabilita' iniziali) -->
+  <text x="143" y="90" text-anchor="end" font-family="Inter, sans-serif" font-size="12" fill="#5E5852">&#960; = 0,6</text>
+  <line x1="150" y1="86" x2="201" y2="86" stroke="#B5532C" stroke-width="3" marker-end="url(#vit-freccia-terracotta)"/>
+  <text x="143" y="210" text-anchor="end" font-family="Inter, sans-serif" font-size="12" fill="#5E5852" fill-opacity="0.7">&#960; = 0,3</text>
+  <line x1="150" y1="206" x2="201" y2="206" stroke="#5E5852" stroke-width="1.6" stroke-opacity="0.4" stroke-dasharray="5 4" marker-end="url(#vit-freccia-grigia)"/>
+  <text x="143" y="330" text-anchor="end" font-family="Inter, sans-serif" font-size="12" fill="#5E5852" fill-opacity="0.7">&#960; = 0,1</text>
+  <line x1="150" y1="326" x2="201" y2="326" stroke="#5E5852" stroke-width="1.6" stroke-opacity="0.4" stroke-dasharray="5 4" marker-end="url(#vit-freccia-grigia)"/>
+
+  <!-- transizioni valutate -->
+  <!-- DET(la) -> DET(porta): muore, P(porta|DET) = 0 -->
+  <line x1="301" y1="86" x2="425" y2="86" stroke="#5E5852" stroke-width="1.6" stroke-opacity="0.4" stroke-dasharray="5 4" marker-end="url(#vit-freccia-grigia)"/>
+  <!-- DET(la) -> NOME(porta): cammino ottimo -->
+  <line x1="301" y1="96" x2="425" y2="196" stroke="#B5532C" stroke-width="3.5" marker-end="url(#vit-freccia-terracotta)"/>
+  <text x="385" y="136" text-anchor="middle" font-family="Inter, sans-serif" font-size="12.5" font-weight="700" fill="#B5532C">&#215; 0,7</text>
+  <!-- DET(la) -> VERBO(porta): valutato e battuto -->
+  <line x1="301" y1="104" x2="425" y2="316" stroke="#5E5852" stroke-width="2" stroke-opacity="0.8" marker-end="url(#vit-freccia-grigia)"/>
+  <text x="336" y="182" text-anchor="end" font-family="Inter, sans-serif" font-size="12" fill="#5E5852">&#215; 0,2</text>
+  <!-- NOME(porta) -> NOME(cigola): muore, P(cigola|NOME) = 0 -->
+  <line x1="521" y1="206" x2="645" y2="206" stroke="#5E5852" stroke-width="1.6" stroke-opacity="0.4" stroke-dasharray="5 4" marker-end="url(#vit-freccia-grigia)"/>
+  <!-- NOME(porta) -> VERBO(cigola): cammino ottimo -->
+  <line x1="521" y1="216" x2="645" y2="318" stroke="#B5532C" stroke-width="3.5" marker-end="url(#vit-freccia-terracotta)"/>
+  <text x="600" y="252" text-anchor="middle" font-family="Inter, sans-serif" font-size="12.5" font-weight="700" fill="#B5532C">&#215; 0,5</text>
+  <!-- VERBO(porta) -> VERBO(cigola): valutato e battuto -->
+  <line x1="521" y1="330" x2="645" y2="332" stroke="#5E5852" stroke-width="2" stroke-opacity="0.8" marker-end="url(#vit-freccia-grigia)"/>
+  <text x="585" y="320" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#5E5852">&#215; 0,2</text>
+
+  <!-- colonna 1: la -->
+  <rect x="209" y="64" width="92" height="44" rx="8" fill="#2D5A5C" fill-opacity="0.15" stroke="#2D5A5C" stroke-width="2.5"/>
+  <text x="255" y="91" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#1A1A1A">DET</text>
+  <rect x="209" y="184" width="92" height="44" rx="8" fill="none" stroke="#2D5A5C" stroke-width="2" stroke-opacity="0.35" stroke-dasharray="5 4"/>
+  <text x="255" y="211" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" fill="#5E5852">NOME</text>
+  <rect x="209" y="304" width="92" height="44" rx="8" fill="none" stroke="#2D5A5C" stroke-width="2" stroke-opacity="0.35" stroke-dasharray="5 4"/>
+  <text x="255" y="331" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" fill="#5E5852">VERBO</text>
+
+  <!-- colonna 2: porta -->
+  <rect x="429" y="64" width="92" height="44" rx="8" fill="none" stroke="#2D5A5C" stroke-width="2" stroke-opacity="0.35" stroke-dasharray="5 4"/>
+  <text x="475" y="91" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" fill="#5E5852">DET</text>
+  <rect x="429" y="184" width="92" height="44" rx="8" fill="#2D5A5C" fill-opacity="0.15" stroke="#2D5A5C" stroke-width="2.5"/>
+  <text x="475" y="211" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#1A1A1A">NOME</text>
+  <rect x="429" y="304" width="92" height="44" rx="8" fill="#2D5A5C" fill-opacity="0.12" stroke="#2D5A5C" stroke-width="2"/>
+  <text x="475" y="331" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" fill="#1A1A1A">VERBO</text>
+
+  <!-- colonna 3: cigola -->
+  <rect x="649" y="64" width="92" height="44" rx="8" fill="none" stroke="#2D5A5C" stroke-width="2" stroke-opacity="0.35" stroke-dasharray="5 4"/>
+  <text x="695" y="91" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" fill="#5E5852">DET</text>
+  <rect x="649" y="184" width="92" height="44" rx="8" fill="none" stroke="#2D5A5C" stroke-width="2" stroke-opacity="0.35" stroke-dasharray="5 4"/>
+  <text x="695" y="211" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" fill="#5E5852">NOME</text>
+  <rect x="649" y="304" width="92" height="44" rx="8" fill="#2D5A5C" fill-opacity="0.15" stroke="#2D5A5C" stroke-width="2.5"/>
+  <text x="695" y="331" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#1A1A1A">VERBO</text>
+
+  <!-- probabilita' parziali sotto i nodi vivi -->
+  <text x="255" y="128" text-anchor="middle" font-family="Inter, sans-serif" font-size="12.5" font-weight="700" fill="#1A1A1A">v&#8321; = 0,30</text>
+  <text x="255" y="144" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#5E5852">= 0,6 &#215; 0,5</text>
+  <text x="475" y="248" text-anchor="middle" font-family="Inter, sans-serif" font-size="12.5" font-weight="700" fill="#1A1A1A">v&#8322; = 0,042</text>
+  <text x="475" y="264" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#5E5852">= 0,30 &#215; 0,7 &#215; 0,2</text>
+  <text x="475" y="368" text-anchor="middle" font-family="Inter, sans-serif" font-size="12.5" font-weight="700" fill="#1A1A1A">v&#8322; = 0,012</text>
+  <text x="475" y="384" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#5E5852">= 0,30 &#215; 0,2 &#215; 0,2</text>
+  <text x="695" y="368" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#B5532C">v&#8323; = 0,0063</text>
+  <text x="695" y="384" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#5E5852">= 0,042 &#215; 0,5 &#215; 0,3</text>
+
+  <!-- zeri sotto i nodi morti -->
+  <text x="255" y="248" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#5E5852" fill-opacity="0.8">0</text>
+  <text x="255" y="368" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#5E5852" fill-opacity="0.8">0</text>
+  <text x="475" y="128" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#5E5852" fill-opacity="0.8">0</text>
+  <text x="695" y="128" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#5E5852" fill-opacity="0.8">0</text>
+  <text x="695" y="248" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#5E5852" fill-opacity="0.8">0</text>
+
+  <!-- legenda -->
+  <line x1="24" y1="424" x2="64" y2="424" stroke="#B5532C" stroke-width="3.5"/>
+  <text x="72" y="428" font-family="Inter, sans-serif" font-size="11.5" fill="#5E5852">cammino migliore, ricostruito a ritroso dagli appunti</text>
+  <line x1="24" y1="448" x2="64" y2="448" stroke="#5E5852" stroke-width="2" stroke-opacity="0.8"/>
+  <text x="72" y="452" font-family="Inter, sans-serif" font-size="11.5" fill="#5E5852">cammino valutato e battuto</text>
+  <line x1="24" y1="472" x2="64" y2="472" stroke="#5E5852" stroke-width="1.6" stroke-opacity="0.4" stroke-dasharray="5 4"/>
+  <text x="72" y="476" font-family="Inter, sans-serif" font-size="11.5" fill="#5E5852">probabilit&#224; zero: la categoria non direbbe mai quella parola</text>
+
+  <!-- didascalia interna -->
+  <text x="430" y="504" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#5E5852">in ogni casella sopravvive un solo numero: il miglior cammino che vi arriva (precedente &#215; transizione &#215; emissione)</text>
+</svg>

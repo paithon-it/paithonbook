@@ -1,0 +1,39 @@
+<svg viewBox="0 0 760 380" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Schema: obiettivo dichiarato contro obiettivo appreso">
+  <rect x="0" y="0" width="760" height="380" fill="#F8F5EE"/>
+  <text x="380" y="34" text-anchor="middle" font-family="sans-serif" font-size="17" font-weight="bold" fill="#1A1A1A">Obiettivo dichiarato vs obiettivo appreso</text>
+  <!-- intent box -->
+  <rect x="40" y="70" width="200" height="70" rx="8" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="2"/>
+  <text x="140" y="98" text-anchor="middle" font-family="sans-serif" font-size="14" font-weight="bold" fill="#1A1A1A">Intenzione umana</text>
+  <text x="140" y="120" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">"vinci la gara"</text>
+  <!-- proxy box -->
+  <rect x="280" y="70" width="200" height="70" rx="8" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2"/>
+  <text x="380" y="98" text-anchor="middle" font-family="sans-serif" font-size="14" font-weight="bold" fill="#2D5A5C">Metrica dichiarata</text>
+  <text x="380" y="120" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#2D5A5C">"massimizza i punti"</text>
+  <!-- learned box -->
+  <rect x="520" y="70" width="200" height="70" rx="8" fill="#F8F5EE" stroke="#B5532C" stroke-width="2"/>
+  <text x="620" y="98" text-anchor="middle" font-family="sans-serif" font-size="14" font-weight="bold" fill="#B5532C">Obiettivo appreso</text>
+  <text x="620" y="120" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#B5532C">"gira in tondo sui bonus"</text>
+  <!-- arrows -->
+  <line x1="240" y1="105" x2="276" y2="105" stroke="#1A1A1A" stroke-width="2"/>
+  <polygon points="276,100 286,105 276,110" fill="#1A1A1A"/>
+  <text x="258" y="90" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#1A1A1A">traduzione</text>
+  <line x1="480" y1="105" x2="516" y2="105" stroke="#1A1A1A" stroke-width="2"/>
+  <polygon points="516,100 526,105 516,110" fill="#1A1A1A"/>
+  <text x="498" y="90" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#1A1A1A">training</text>
+  <!-- gap labels -->
+  <rect x="150" y="180" width="220" height="56" rx="8" fill="#C9A961" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="260" y="203" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#1A1A1A">Gap 1 — outer alignment</text>
+  <text x="260" y="223" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">la metrica cattura l'intenzione?</text>
+  <rect x="400" y="180" width="220" height="56" rx="8" fill="#C9A961" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="510" y="203" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#1A1A1A">Gap 2 — inner alignment</text>
+  <text x="510" y="223" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">il modello persegue la metrica?</text>
+  <!-- connectors from gaps to arrows -->
+  <line x1="260" y1="180" x2="260" y2="118" stroke="#1A1A1A" stroke-width="1.5" stroke-dasharray="4 4"/>
+  <line x1="510" y1="180" x2="510" y2="118" stroke="#1A1A1A" stroke-width="1.5" stroke-dasharray="4 4"/>
+  <!-- bottom comparison -->
+  <line x1="60" y1="270" x2="700" y2="270" stroke="#1A1A1A" stroke-width="1.5"/>
+  <circle cx="170" cy="315" r="9" fill="#2D5A5C"/>
+  <text x="190" y="320" font-family="sans-serif" font-size="13" fill="#1A1A1A">comportamento previsto: taglia il traguardo</text>
+  <circle cx="170" cy="348" r="9" fill="#B5532C"/>
+  <text x="190" y="353" font-family="sans-serif" font-size="13" fill="#1A1A1A">comportamento reale: punteggio massimo, gara mai finita</text>
+</svg>

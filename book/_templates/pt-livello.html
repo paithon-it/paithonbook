@@ -1,0 +1,38 @@
+{#-
+  Interruttore del livello di lettura, nella barra dell'articolo accanto a
+  ricerca e chiaro/scuro.
+
+  Il libro spiega ogni concetto su due livelli (Elementare e Superiore) con le
+  tab di sphinx_inline_tabs. Questo pulsante decide da quale livello parte
+  TUTTO il libro; le tab restano libere di essere aperte una per una, e una
+  scelta locale non contagia i blocchi successivi — se l'ho letta in Superiore
+  qui, non significa che voglio il Superiore anche tre pagine dopo.
+
+  Lo stato vive in `data-pt-livello` su <html> (impostato subito in
+  head_custom.html, così l'icona non sfarfalla) e in localStorage. La logica è
+  in `_static/pt-formato.js`; l'icona commuta via CSS come fa il tema con sole
+  e luna.
+
+  Registrato via `article_header_end` in `_config.yml`, prima dei pulsanti del
+  tema.
+-#}
+<div class="header-article-item pt-livello">
+  <button type="button"
+          class="btn btn-sm pst-navbar-icon pt-livello__bottone"
+          data-pt-livello-toggle
+          data-bs-placement="bottom" data-bs-toggle="tooltip"
+          title="Livello di lettura"
+          aria-label="Cambia il livello di lettura di tutto il libro">
+    <svg class="pt-livello__icona pt-livello__icona--elementare"
+         viewBox="0 0 16 16" width="17" height="17" aria-hidden="true" focusable="false">
+      <rect x="1.6" y="7" width="5.2" height="6.4" rx="1.3" fill="currentColor"/>
+      <rect x="9.2" y="2.6" width="5.2" height="10.8" rx="1.3" fill="none" stroke="currentColor" stroke-width="1.4" opacity="0.55"/>
+    </svg>
+    <svg class="pt-livello__icona pt-livello__icona--superiore"
+         viewBox="0 0 16 16" width="17" height="17" aria-hidden="true" focusable="false">
+      <rect x="1.6" y="7" width="5.2" height="6.4" rx="1.3" fill="currentColor"/>
+      <rect x="9.2" y="2.6" width="5.2" height="10.8" rx="1.3" fill="currentColor"/>
+    </svg>
+    <span class="pt-livello__testo" data-pt-livello-testo>Elementare</span>
+  </button>
+</div>

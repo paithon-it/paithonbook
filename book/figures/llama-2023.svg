@@ -1,0 +1,39 @@
+<svg viewBox="0 0 720 470" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Confronto tra parametri: LLaMA-13B batte GPT-3-175B, LLaMA-65B regge Chinchilla-70B e PaLM-540B, con molti meno parametri">
+  <rect x="0" y="0" width="720" height="470" fill="#F8F5EE"/>
+  <text x="360" y="34" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="bold" fill="#1A1A1A">Meno parametri, qualità comparabile</text>
+  <text x="360" y="54" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#5E5852">lunghezza barra = miliardi di parametri</text>
+  <!-- Group 1 -->
+  <text x="20" y="88" font-family="sans-serif" font-size="13" font-weight="bold" fill="#1A1A1A">LLaMA-13B ≈ o meglio di GPT-3 sui test</text>
+  <!-- LLaMA-13B -->
+  <text x="200" y="114" text-anchor="end" font-family="sans-serif" font-size="12" fill="#1A1A1A">LLaMA-13B</text>
+  <rect x="210" y="100" width="11" height="22" fill="#B5532C"/>
+  <text x="227" y="116" font-family="sans-serif" font-size="12" fill="#5E5852">13</text>
+  <!-- GPT-3 -->
+  <text x="200" y="148" text-anchor="end" font-family="sans-serif" font-size="12" fill="#1A1A1A">GPT-3</text>
+  <rect x="210" y="134" width="144" height="22" fill="#2D5A5C"/>
+  <text x="360" y="150" font-family="sans-serif" font-size="12" fill="#5E5852">175</text>
+  <!-- divider -->
+  <line x1="20" y1="182" x2="700" y2="182" stroke="#C9C2B4" stroke-width="1.5" stroke-dasharray="4 5"/>
+  <!-- Group 2 -->
+  <text x="20" y="212" font-family="sans-serif" font-size="13" font-weight="bold" fill="#1A1A1A">LLaMA-65B regge Chinchilla-70B e PaLM-540B</text>
+  <!-- LLaMA-65B -->
+  <text x="200" y="238" text-anchor="end" font-family="sans-serif" font-size="12" fill="#1A1A1A">LLaMA-65B</text>
+  <rect x="210" y="224" width="53" height="22" fill="#B5532C"/>
+  <text x="269" y="240" font-family="sans-serif" font-size="12" fill="#5E5852">65</text>
+  <!-- Chinchilla-70B -->
+  <text x="200" y="272" text-anchor="end" font-family="sans-serif" font-size="12" fill="#1A1A1A">Chinchilla-70B</text>
+  <rect x="210" y="258" width="57" height="22" fill="#2D5A5C"/>
+  <text x="273" y="274" font-family="sans-serif" font-size="12" fill="#5E5852">70</text>
+  <!-- PaLM-540B -->
+  <text x="200" y="306" text-anchor="end" font-family="sans-serif" font-size="12" fill="#1A1A1A">PaLM-540B</text>
+  <rect x="210" y="292" width="443" height="22" fill="#2D5A5C"/>
+  <text x="659" y="308" font-family="sans-serif" font-size="12" fill="#5E5852">540</text>
+  <!-- annotation -->
+  <text x="20" y="360" font-family="sans-serif" font-size="12" fill="#1A1A1A" font-style="italic">A parità di qualità sui benchmark, i modelli aperti (terracotta)</text>
+  <text x="20" y="378" font-family="sans-serif" font-size="12" fill="#1A1A1A" font-style="italic">usano una frazione dei parametri dei modelli chiusi (teal).</text>
+  <!-- legend -->
+  <rect x="20" y="418" width="16" height="16" fill="#B5532C"/>
+  <text x="43" y="431" font-family="sans-serif" font-size="12" fill="#1A1A1A">modelli aperti (LLaMA)</text>
+  <rect x="240" y="418" width="16" height="16" fill="#2D5A5C"/>
+  <text x="263" y="431" font-family="sans-serif" font-size="12" fill="#1A1A1A">modelli chiusi / più grandi</text>
+</svg>

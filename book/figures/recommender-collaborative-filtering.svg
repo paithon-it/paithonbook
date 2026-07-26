@@ -1,0 +1,51 @@
+<svg viewBox="0 0 680 420" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Matrice utenti per item: righe utenti, colonne film, celle con i voti, una cella incognita evidenziata; una riga simile evidenziata per il metodo user-based e una colonna simile per il metodo item-based">
+  <rect x="0" y="0" width="680" height="420" fill="#F8F5EE"/>
+  <text x="340" y="34" font-family="sans-serif" font-size="16" fill="#1A1A1A" text-anchor="middle" font-weight="bold">La matrice utenti×item: raccomandare = riempire i buchi</text>
+  <!-- etichette colonne (film) -->
+  <text x="216" y="76" font-family="sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">Incep.</text>
+  <text x="298" y="76" font-family="sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">Inter.</text>
+  <text x="380" y="76" font-family="sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">Notting</text>
+  <text x="462" y="76" font-family="sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">Love A.</text>
+  <text x="544" y="76" font-family="sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">Matrix</text>
+  <!-- etichette righe (utenti) -->
+  <text x="160" y="118" font-family="sans-serif" font-size="13" fill="#1A1A1A" text-anchor="end">Anna</text>
+  <text x="160" y="164" font-family="sans-serif" font-size="13" fill="#1A1A1A" text-anchor="end">Bruno</text>
+  <text x="160" y="210" font-family="sans-serif" font-size="13" fill="#1A1A1A" text-anchor="end">Carla</text>
+  <text x="160" y="256" font-family="sans-serif" font-size="13" fill="#1A1A1A" text-anchor="end">Dario</text>
+  <text x="160" y="302" font-family="sans-serif" font-size="13" fill="#1A1A1A" text-anchor="end">Elena</text>
+  <!-- griglia 5x5: origine 175,88 celle 82x46 -->
+  <g stroke="#1A1A1A" stroke-width="1.5" fill="none">
+    <rect x="175" y="88" width="410" height="230"/>
+    <line x1="257" y1="88" x2="257" y2="318"/>
+    <line x1="339" y1="88" x2="339" y2="318"/>
+    <line x1="421" y1="88" x2="421" y2="318"/>
+    <line x1="503" y1="88" x2="503" y2="318"/>
+    <line x1="175" y1="134" x2="585" y2="134"/>
+    <line x1="175" y1="180" x2="585" y2="180"/>
+    <line x1="175" y1="226" x2="585" y2="226"/>
+    <line x1="175" y1="272" x2="585" y2="272"/>
+  </g>
+  <!-- voti -->
+  <g font-family="sans-serif" font-size="15" fill="#1A1A1A" text-anchor="middle">
+    <text x="216" y="118">5</text><text x="298" y="118">4</text><text x="380" y="118">1</text><text x="544" y="118">5</text>
+    <text x="216" y="164">4</text><text x="380" y="164">2</text><text x="462" y="164">1</text><text x="544" y="164">5</text>
+    <text x="298" y="210">4</text><text x="462" y="210">2</text><text x="544" y="210">4</text>
+    <text x="216" y="256">1</text><text x="380" y="256">5</text><text x="462" y="256">4</text>
+    <text x="298" y="302">1</text><text x="380" y="302">4</text><text x="462" y="302">5</text><text x="544" y="302">2</text>
+  </g>
+  <!-- cella incognita -->
+  <rect x="339" y="180" width="82" height="46" fill="#B5532C"/>
+  <text x="380" y="210" font-family="sans-serif" font-size="18" fill="#F8F5EE" text-anchor="middle" font-weight="bold">?</text>
+  <!-- riga utente simile (user-based) -->
+  <rect x="175" y="134" width="410" height="46" fill="none" stroke="#2D5A5C" stroke-width="2" stroke-dasharray="7 5"/>
+  <!-- colonna item simile (item-based) -->
+  <rect x="421" y="88" width="82" height="230" fill="none" stroke="#C9A961" stroke-width="2" stroke-dasharray="7 5"/>
+  <!-- legenda -->
+  <rect x="80" y="352" width="16" height="16" fill="#B5532C"/>
+  <text x="104" y="365" font-family="sans-serif" font-size="13" fill="#1A1A1A">voto da stimare</text>
+  <rect x="240" y="352" width="16" height="16" fill="none" stroke="#2D5A5C" stroke-width="2" stroke-dasharray="5 4"/>
+  <text x="264" y="365" font-family="sans-serif" font-size="13" fill="#1A1A1A">utente simile → user-based</text>
+  <rect x="460" y="352" width="16" height="16" fill="none" stroke="#C9A961" stroke-width="2" stroke-dasharray="5 4"/>
+  <text x="484" y="365" font-family="sans-serif" font-size="13" fill="#1A1A1A">item simile → item-based</text>
+  <text x="340" y="400" font-family="sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">Quanto piacerà "Notting Hill" a Carla? Due strade: righe simili o colonne simili.</text>
+</svg>

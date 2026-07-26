@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  paithon book - figura: il quartetto di Anscombe (1973). Quattro insiemi di
+  dati con statistiche riassuntive quasi identiche (stessa media, varianza,
+  correlazione e stessa retta di regressione y = 3 + 0.5x) ma forme
+  completamente diverse. Solo il grafico rivela la differenza.
+  Palette-locked: punti terracotta, retta warm-black, assi neutri warm.
+  Fondo trasparente (leggibile in light e dark).
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 420" role="img"
+     aria-label="Quattro grafici a dispersione del quartetto di Anscombe: stessa retta di regressione ma nubi di punti molto diverse (una lineare, una curva, una lineare con un valore anomalo, una con i punti allineati verticalmente piu un punto isolato).">
+  <style>
+    .axis { stroke:#8B847C; stroke-width:1.4; }
+    .reg  { stroke:#1A1A1A; stroke-width:2.2; }
+    .pt   { fill:#B5532C; stroke:#F8F5EE; stroke-width:1; }
+    .ptag { font-family:Fraunces, Georgia, serif; font-size:18px; font-weight:700; fill:#2D5A5C; }
+    .cap  { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#5E5852; text-anchor:middle; }
+    .capb { fill:#1A1A1A; font-weight:700; }
+  </style>
+
+  <line class="axis" x1="60" y1="50" x2="60" y2="170"/>
+  <line class="axis" x1="60" y1="170" x2="235" y2="170"/>
+  <line class="reg" x1="70.3" y1="137.3" x2="224.7" y2="55.5"/>
+  <circle class="pt" cx="132.1" cy="104.1" r="4"/>
+  <circle class="pt" cx="111.5" cy="116.0" r="4"/>
+  <circle class="pt" cx="162.9" cy="109.1" r="4"/>
+  <circle class="pt" cx="121.8" cy="95.7" r="4"/>
+  <circle class="pt" cx="142.4" cy="100.9" r="4"/>
+  <circle class="pt" cx="173.2" cy="83.2" r="4"/>
+  <circle class="pt" cx="90.9" cy="112.8" r="4"/>
+  <circle class="pt" cx="70.3" cy="145.3" r="4"/>
+  <circle class="pt" cx="152.6" cy="73.6" r="4"/>
+  <circle class="pt" cx="101.2" cy="139.2" r="4"/>
+  <circle class="pt" cx="80.6" cy="129.9" r="4"/>
+  <text class="ptag" x="68" y="68">I</text>
+
+  <line class="axis" x1="325" y1="50" x2="325" y2="170"/>
+  <line class="axis" x1="325" y1="170" x2="500" y2="170"/>
+  <line class="reg" x1="335.3" y1="137.3" x2="489.7" y2="55.5"/>
+  <circle class="pt" cx="397.1" cy="92.1" r="4"/>
+  <circle class="pt" cx="376.5" cy="103.0" r="4"/>
+  <circle class="pt" cx="427.9" cy="96.5" r="4"/>
+  <circle class="pt" cx="386.8" cy="96.1" r="4"/>
+  <circle class="pt" cx="407.4" cy="90.8" r="4"/>
+  <circle class="pt" cx="438.2" cy="103.5" r="4"/>
+  <circle class="pt" cx="355.9" cy="124.9" r="4"/>
+  <circle class="pt" cx="335.3" cy="158.0" r="4"/>
+  <circle class="pt" cx="417.6" cy="92.2" r="4"/>
+  <circle class="pt" cx="366.2" cy="112.6" r="4"/>
+  <circle class="pt" cx="345.6" cy="140.1" r="4"/>
+  <text class="ptag" x="333" y="68">II</text>
+
+  <line class="axis" x1="60" y1="255" x2="60" y2="375"/>
+  <line class="axis" x1="60" y1="375" x2="235" y2="375"/>
+  <line class="reg" x1="70.3" y1="342.3" x2="224.7" y2="260.5"/>
+  <circle class="pt" cx="132.1" cy="315.4" r="4"/>
+  <circle class="pt" cx="111.5" cy="323.0" r="4"/>
+  <circle class="pt" cx="162.9" cy="257.8" r="4"/>
+  <circle class="pt" cx="121.8" cy="319.3" r="4"/>
+  <circle class="pt" cx="142.4" cy="311.6" r="4"/>
+  <circle class="pt" cx="173.2" cy="300.4" r="4"/>
+  <circle class="pt" cx="90.9" cy="330.5" r="4"/>
+  <circle class="pt" cx="70.3" cy="338.0" r="4"/>
+  <circle class="pt" cx="152.6" cy="307.9" r="4"/>
+  <circle class="pt" cx="101.2" cy="326.8" r="4"/>
+  <circle class="pt" cx="80.6" cy="334.3" r="4"/>
+  <text class="ptag" x="68" y="273">III</text>
+
+  <line class="axis" x1="325" y1="255" x2="325" y2="375"/>
+  <line class="axis" x1="325" y1="375" x2="500" y2="375"/>
+  <line class="reg" x1="335.3" y1="342.3" x2="489.7" y2="260.5"/>
+  <circle class="pt" cx="376.5" cy="325.0" r="4"/>
+  <circle class="pt" cx="376.5" cy="334.0" r="4"/>
+  <circle class="pt" cx="376.5" cy="312.7" r="4"/>
+  <circle class="pt" cx="376.5" cy="300.4" r="4"/>
+  <circle class="pt" cx="376.5" cy="304.4" r="4"/>
+  <circle class="pt" cx="376.5" cy="320.0" r="4"/>
+  <circle class="pt" cx="376.5" cy="339.5" r="4"/>
+  <circle class="pt" cx="489.7" cy="260.5" r="4"/>
+  <circle class="pt" cx="376.5" cy="336.2" r="4"/>
+  <circle class="pt" cx="376.5" cy="310.5" r="4"/>
+  <circle class="pt" cx="376.5" cy="321.7" r="4"/>
+  <text class="ptag" x="333" y="273">IV</text>
+
+  <text class="cap" x="280" y="402">Stesse statistiche (media, varianza, correlazione, <tspan class="capb">stessa retta</tspan>) - quattro storie diverse.</text>
+</svg>

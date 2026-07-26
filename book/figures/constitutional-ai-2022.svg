@@ -1,0 +1,38 @@
+<svg viewBox="0 0 760 430" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Schema del ciclo di Constitutional AI: una lista di principi alimenta un modello che critica una risposta iniziale e la riscrive, generando il feedback che riaddestra il modello">
+  <rect x="0" y="0" width="760" height="430" fill="#F8F5EE"/>
+  <!-- Costituzione -->
+  <rect x="40" y="150" width="150" height="130" fill="none" stroke="#C9A961" stroke-width="2"/>
+  <text x="115" y="140" font-family="sans-serif" font-size="14" fill="#1A1A1A" text-anchor="middle" font-weight="bold">Costituzione</text>
+  <line x1="60" y1="180" x2="170" y2="180" stroke="#C9A961" stroke-width="2"/>
+  <line x1="60" y1="205" x2="170" y2="205" stroke="#C9A961" stroke-width="2"/>
+  <line x1="60" y1="230" x2="170" y2="230" stroke="#C9A961" stroke-width="2"/>
+  <line x1="60" y1="255" x2="140" y2="255" stroke="#C9A961" stroke-width="2"/>
+  <text x="115" y="300" font-family="sans-serif" font-size="11" fill="#5E5852" text-anchor="middle">principi in</text>
+  <text x="115" y="314" font-family="sans-serif" font-size="11" fill="#5E5852" text-anchor="middle">linguaggio naturale</text>
+  <!-- freccia principio verso AI -->
+  <line x1="190" y1="215" x2="270" y2="215" stroke="#1A1A1A" stroke-width="1.5"/>
+  <polygon points="270,215 260,210 260,220" fill="#1A1A1A"/>
+  <!-- AI critico -->
+  <rect x="270" y="160" width="180" height="110" fill="#2D5A5C" fill-opacity="0.12" stroke="#2D5A5C" stroke-width="2"/>
+  <text x="360" y="200" font-family="sans-serif" font-size="14" fill="#1A1A1A" text-anchor="middle" font-weight="bold">Il modello</text>
+  <text x="360" y="222" font-family="sans-serif" font-size="12" fill="#1A1A1A" text-anchor="middle">critica sé stesso</text>
+  <text x="360" y="240" font-family="sans-serif" font-size="12" fill="#1A1A1A" text-anchor="middle">e riscrive</text>
+  <!-- risposta iniziale in ingresso dall'alto -->
+  <rect x="285" y="60" width="150" height="46" fill="none" stroke="#B5532C" stroke-width="2"/>
+  <text x="360" y="80" font-family="sans-serif" font-size="12" fill="#1A1A1A" text-anchor="middle">risposta</text>
+  <text x="360" y="96" font-family="sans-serif" font-size="12" fill="#1A1A1A" text-anchor="middle">iniziale</text>
+  <line x1="360" y1="106" x2="360" y2="158" stroke="#1A1A1A" stroke-width="1.5"/>
+  <polygon points="360,160 355,150 365,150" fill="#1A1A1A"/>
+  <!-- freccia AI verso risposta rivista -->
+  <line x1="450" y1="215" x2="540" y2="215" stroke="#1A1A1A" stroke-width="1.5"/>
+  <polygon points="540,215 530,210 530,220" fill="#1A1A1A"/>
+  <!-- risposta rivista -->
+  <rect x="540" y="170" width="180" height="90" fill="#B5532C" fill-opacity="0.12" stroke="#B5532C" stroke-width="2"/>
+  <text x="630" y="205" font-family="sans-serif" font-size="14" fill="#1A1A1A" text-anchor="middle" font-weight="bold">Feedback</text>
+  <text x="630" y="227" font-family="sans-serif" font-size="12" fill="#1A1A1A" text-anchor="middle">risposta rivista</text>
+  <text x="630" y="243" font-family="sans-serif" font-size="12" fill="#1A1A1A" text-anchor="middle">= dato di training</text>
+  <!-- freccia di retroazione (riaddestra il modello) -->
+  <path d="M 630 260 C 630 350, 360 360, 360 272" fill="none" stroke="#2D5A5C" stroke-width="1.5" stroke-dasharray="6 5"/>
+  <polygon points="360,272 354,283 366,283" fill="#2D5A5C"/>
+  <text x="470" y="352" font-family="sans-serif" font-size="12" fill="#2D5A5C" text-anchor="middle">riaddestra il modello — nessuna etichetta umana sull'innocuità</text>
+</svg>

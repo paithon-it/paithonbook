@@ -1,0 +1,25 @@
+<svg viewBox="0 0 680 400" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Grafico del punto di pareggio tra cloud e on-premise: sull'asse orizzontale le ore di GPU usate al mese, sull'asse verticale il costo mensile. La retta del cloud parte da zero e sale ripida, la retta dell'on-premise e' quasi piatta e alta; si incrociano nel punto di pareggio. A sinistra del pareggio conviene il cloud, a destra l'on-premise.">
+  <rect x="0" y="0" width="680" height="400" fill="#F8F5EE"/>
+  <!-- assi -->
+  <line x1="70" y1="320" x2="640" y2="320" stroke="#1A1A1A" stroke-width="2"/>
+  <line x1="70" y1="320" x2="70" y2="45" stroke="#1A1A1A" stroke-width="2"/>
+  <text x="355" y="360" text-anchor="middle" font-family="sans-serif" font-size="14" fill="#1A1A1A">ore di GPU usate al mese &#8594;</text>
+  <text x="28" y="182" text-anchor="middle" font-family="sans-serif" font-size="14" fill="#1A1A1A" transform="rotate(-90 28 182)">costo mensile &#8594;</text>
+  <!-- retta on-premise (costo fisso alto) -->
+  <line x1="70" y1="175" x2="630" y2="140" stroke="#2D5A5C" stroke-width="2.5"/>
+  <!-- retta cloud (proporzionale all'uso) -->
+  <line x1="70" y1="315" x2="630" y2="80" stroke="#B5532C" stroke-width="2.5"/>
+  <!-- linea del pareggio -->
+  <line x1="462" y1="151" x2="462" y2="320" stroke="#1A1A1A" stroke-width="1.5" stroke-dasharray="5 4"/>
+  <circle cx="462" cy="151" r="8" fill="#C9A961" stroke="#1A1A1A" stroke-width="2"/>
+  <text x="462" y="338" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#1A1A1A" font-weight="bold">pareggio</text>
+  <!-- etichette regioni -->
+  <text x="235" y="298" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#B5532C" font-weight="bold">qui conviene il cloud</text>
+  <text x="560" y="205" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#2D5A5C" font-weight="bold">qui conviene</text>
+  <text x="560" y="223" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#2D5A5C" font-weight="bold">l'on-premise</text>
+  <!-- legenda -->
+  <line x1="90" y1="70" x2="120" y2="70" stroke="#B5532C" stroke-width="2.5"/>
+  <text x="126" y="74" font-family="sans-serif" font-size="12" fill="#1A1A1A">cloud &#8212; paghi a ore</text>
+  <line x1="90" y1="92" x2="120" y2="92" stroke="#2D5A5C" stroke-width="2.5"/>
+  <text x="126" y="96" font-family="sans-serif" font-size="12" fill="#1A1A1A">on-premise &#8212; costo fisso di possesso</text>
+</svg>

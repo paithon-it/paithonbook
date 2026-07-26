@@ -1,0 +1,38 @@
+<svg viewBox="0 0 720 340" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A sinistra molti gradienti rumorosi vengono mediati in un unico vettore stabile, il primo momento; a destra tre parametri con secondo momento diverso ricevono ciascuno un passo di lunghezza inversa alla dimensione del loro secondo momento">
+  <rect x="0" y="0" width="720" height="340" fill="#F8F5EE"/>
+  <text x="185" y="32" text-anchor="middle" font-family="sans-serif" font-size="15" font-weight="bold" fill="#1A1A1A">Primo momento: direzione mediata</text>
+  <text x="540" y="32" text-anchor="middle" font-family="sans-serif" font-size="15" font-weight="bold" fill="#1A1A1A">Secondo momento: passo per parametro</text>
+  <line x1="360" y1="22" x2="360" y2="318" stroke="#C9C2B4" stroke-width="1.5" stroke-dasharray="6 6"/>
+  <!-- LEFT: noisy gradients averaged into momentum -->
+  <circle cx="95" cy="235" r="4.5" fill="#1A1A1A"/>
+  <g stroke="#8B847C" stroke-width="1.5">
+    <line x1="95" y1="235" x2="150" y2="150"/>
+    <line x1="95" y1="235" x2="192" y2="205"/>
+    <line x1="95" y1="235" x2="145" y2="112"/>
+    <line x1="95" y1="235" x2="208" y2="172"/>
+    <line x1="95" y1="235" x2="168" y2="248"/>
+  </g>
+  <line x1="95" y1="235" x2="252" y2="163" stroke="#B5532C" stroke-width="3"/>
+  <polygon points="252,163 236,161 241,176" fill="#B5532C"/>
+  <text x="260" y="160" font-family="sans-serif" font-size="13" fill="#B5532C" font-weight="bold">m</text>
+  <text x="185" y="300" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">tanti gradienti rumorosi, una direzione stabile</text>
+  <!-- RIGHT: three parameters, big v -> short step -->
+  <text x="398" y="99" text-anchor="end" font-family="sans-serif" font-size="14" fill="#1A1A1A">&#952;&#8321;</text>
+  <rect x="412" y="80" width="172" height="13" fill="#2D5A5C"/>
+  <line x1="412" y1="112" x2="454" y2="112" stroke="#B5532C" stroke-width="3"/>
+  <polygon points="454,112 444,107 444,117" fill="#B5532C"/>
+  <text x="398" y="169" text-anchor="end" font-family="sans-serif" font-size="14" fill="#1A1A1A">&#952;&#8322;</text>
+  <rect x="412" y="150" width="104" height="13" fill="#2D5A5C"/>
+  <line x1="412" y1="182" x2="502" y2="182" stroke="#B5532C" stroke-width="3"/>
+  <polygon points="502,182 492,177 492,187" fill="#B5532C"/>
+  <text x="398" y="239" text-anchor="end" font-family="sans-serif" font-size="14" fill="#1A1A1A">&#952;&#8323;</text>
+  <rect x="412" y="220" width="46" height="13" fill="#2D5A5C"/>
+  <line x1="412" y1="252" x2="562" y2="252" stroke="#B5532C" stroke-width="3"/>
+  <polygon points="562,252 552,247 552,257" fill="#B5532C"/>
+  <!-- legend -->
+  <rect x="412" y="291" width="18" height="11" fill="#2D5A5C"/>
+  <text x="436" y="301" font-family="sans-serif" font-size="11.5" fill="#1A1A1A">secondo momento v</text>
+  <line x1="566" y1="296" x2="596" y2="296" stroke="#B5532C" stroke-width="3"/>
+  <polygon points="596,296 588,292 588,300" fill="#B5532C"/>
+  <text x="602" y="300" font-family="sans-serif" font-size="11.5" fill="#1A1A1A">passo</text>
+</svg>

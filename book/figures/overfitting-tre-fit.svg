@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  paithon book - figura: i tre regimi del fit. Stessa nube di punti (chiaramente
+  a forma di collina) in tre pannelli. Pannello 1: una retta la ignora
+  (underfitting). Pannello 2: una curva morbida la segue (buon compromesso).
+  Pannello 3: una curva contorta passa esattamente per ogni punto (overfitting).
+  Palette-locked: punti terracotta, curva del modello teal, assi neutri warm.
+  Fondo trasparente (leggibile in light e dark).
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 220" role="img"
+     aria-label="Tre grafici a dispersione con la stessa nube di punti a forma di collina. Nel primo una retta quasi orizzontale manca del tutto la curvatura (underfitting). Nel secondo una curva morbida segue bene l'andamento senza toccare ogni punto (buon fit). Nel terzo una curva contorta passa esattamente per ogni punto oscillando in mezzo (overfitting).">
+  <style>
+    .axis  { stroke:#8B847C; stroke-width:1.4; }
+    .pt    { fill:#B5532C; stroke:#F8F5EE; stroke-width:1; }
+    .fit   { fill:none; stroke:#2D5A5C; stroke-width:2.4; stroke-linecap:round; stroke-linejoin:round; }
+    .ttl   { font-family:Fraunces, Georgia, serif; font-size:15px; font-weight:700; fill:#1A1A1A; text-anchor:middle; }
+    .cap   { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#5E5852; text-anchor:middle; }
+    .emph  { fill:#1A1A1A; font-weight:600; }
+  </style>
+
+  <!-- ===== Pannello 1: underfitting ===== -->
+  <g transform="translate(0,0)">
+    <line class="axis" x1="40" y1="34" x2="40" y2="160"/>
+    <line class="axis" x1="40" y1="160" x2="196" y2="160"/>
+    <!-- retta quasi orizzontale: manca la collina -->
+    <path class="fit" d="M 46,103 L 190,95"/>
+    <circle class="pt" cx="50" cy="138" r="4"/>
+    <circle class="pt" cx="68" cy="102" r="4"/>
+    <circle class="pt" cx="86" cy="92" r="4"/>
+    <circle class="pt" cx="104" cy="72" r="4"/>
+    <circle class="pt" cx="122" cy="76" r="4"/>
+    <circle class="pt" cx="140" cy="78" r="4"/>
+    <circle class="pt" cx="158" cy="106" r="4"/>
+    <circle class="pt" cx="176" cy="124" r="4"/>
+    <text class="ttl" x="118" y="22">Underfitting</text>
+  </g>
+
+  <!-- ===== Pannello 2: buon fit ===== -->
+  <g transform="translate(220,0)">
+    <line class="axis" x1="40" y1="34" x2="40" y2="160"/>
+    <line class="axis" x1="40" y1="160" x2="196" y2="160"/>
+    <!-- curva morbida: segue la collina senza toccare ogni punto -->
+    <path class="fit" d="M 48,134 C 72,96 92,74 112,74 C 134,74 156,104 178,122"/>
+    <circle class="pt" cx="50" cy="138" r="4"/>
+    <circle class="pt" cx="68" cy="102" r="4"/>
+    <circle class="pt" cx="86" cy="92" r="4"/>
+    <circle class="pt" cx="104" cy="72" r="4"/>
+    <circle class="pt" cx="122" cy="76" r="4"/>
+    <circle class="pt" cx="140" cy="78" r="4"/>
+    <circle class="pt" cx="158" cy="106" r="4"/>
+    <circle class="pt" cx="176" cy="124" r="4"/>
+    <text class="ttl" x="118" y="22">Buon compromesso</text>
+  </g>
+
+  <!-- ===== Pannello 3: overfitting ===== -->
+  <g transform="translate(440,0)">
+    <line class="axis" x1="40" y1="34" x2="40" y2="160"/>
+    <line class="axis" x1="40" y1="160" x2="196" y2="160"/>
+    <!-- curva contorta: passa per ogni punto oscillando in mezzo -->
+    <path class="fit" d="M 50,138
+      C 58,152 62,110 68,102
+      C 74,96 80,78 86,92
+      C 92,102 98,58 104,72
+      C 110,84 116,64 122,76
+      C 128,86 134,66 140,78
+      C 146,88 152,120 158,106
+      C 164,96 170,136 176,124"/>
+    <circle class="pt" cx="50" cy="138" r="4"/>
+    <circle class="pt" cx="68" cy="102" r="4"/>
+    <circle class="pt" cx="86" cy="92" r="4"/>
+    <circle class="pt" cx="104" cy="72" r="4"/>
+    <circle class="pt" cx="122" cy="76" r="4"/>
+    <circle class="pt" cx="140" cy="78" r="4"/>
+    <circle class="pt" cx="158" cy="106" r="4"/>
+    <circle class="pt" cx="176" cy="124" r="4"/>
+    <text class="ttl" x="118" y="22">Overfitting</text>
+  </g>
+
+  <text class="cap" x="330" y="205">Stessa nube di punti, tre modelli: chi la <tspan class="emph">ignora</tspan>, chi la <tspan class="emph">coglie</tspan>, chi la <tspan class="emph">ricalca</tspan> fin nel rumore.</text>
+</svg>

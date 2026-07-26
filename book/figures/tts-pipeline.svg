@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 230" role="img" aria-label="Pipeline della sintesi vocale in sei stadi: il testo scritto viene normalizzato, convertito in fonemi, trasformato in mel-spettrogramma dal modello acustico e infine in onda sonora dal vocoder">
+  <defs>
+    <marker id="ah-tts" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#B5532C"/>
+    </marker>
+  </defs>
+
+  <!-- input di esempio -->
+  <text x="80" y="26" font-family="Fraunces, Georgia, serif" font-size="16" font-style="italic" fill="#1A1A1A" text-anchor="middle">&#171;Sono le 9:30&#187;</text>
+  <line x1="80" y1="34" x2="80" y2="54" stroke="#B5532C" stroke-width="2.5" marker-end="url(#ah-tts)"/>
+
+  <!-- stadio 1: testo -->
+  <rect x="15" y="60" width="130" height="100" rx="8" fill="#2D5A5C" fill-opacity="0.10" stroke="#2D5A5C" stroke-width="2"/>
+  <line x1="35" y1="88" x2="125" y2="88" stroke="#1A1A1A" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="35" y1="102" x2="112" y2="102" stroke="#1A1A1A" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="35" y1="116" x2="120" y2="116" stroke="#1A1A1A" stroke-width="2.5" stroke-linecap="round"/>
+  <text x="80" y="144" font-family="Inter, sans-serif" font-size="16" font-weight="700" fill="#1A1A1A" text-anchor="middle">Testo</text>
+
+  <!-- stadio 2: normalizzazione -->
+  <rect x="190" y="60" width="130" height="100" rx="8" fill="#2D5A5C" fill-opacity="0.10" stroke="#2D5A5C" stroke-width="2"/>
+  <text x="255" y="96" font-family="Inter, sans-serif" font-size="12" fill="#5E5852" text-anchor="middle">9:30 &#8594;</text>
+  <text x="255" y="113" font-family="Inter, sans-serif" font-size="12" font-style="italic" fill="#5E5852" text-anchor="middle">nove e trenta</text>
+  <text x="255" y="144" font-family="Inter, sans-serif" font-size="13.5" font-weight="700" fill="#1A1A1A" text-anchor="middle">Normalizzazione</text>
+
+  <!-- stadio 3: fonemi (G2P) -->
+  <rect x="365" y="60" width="130" height="100" rx="8" fill="#2D5A5C" fill-opacity="0.10" stroke="#2D5A5C" stroke-width="2"/>
+  <text x="430" y="104" font-family="Inter, sans-serif" font-size="14" fill="#2D5A5C" text-anchor="middle">/&#712;n&#596;ve/</text>
+  <text x="430" y="144" font-family="Inter, sans-serif" font-size="14.5" font-weight="700" fill="#1A1A1A" text-anchor="middle">Fonemi (G2P)</text>
+
+  <!-- stadio 4: modello acustico, con mini mel-spettrogramma -->
+  <rect x="540" y="60" width="130" height="100" rx="8" fill="#2D5A5C" fill-opacity="0.10" stroke="#2D5A5C" stroke-width="2"/>
+  <rect x="552" y="76" width="15" height="9" fill="#2D5A5C"/>
+  <rect x="570" y="76" width="15" height="9" fill="#C9A961"/>
+  <rect x="588" y="76" width="15" height="9" fill="#B5532C" fill-opacity="0.7"/>
+  <rect x="606" y="76" width="15" height="9" fill="#2D5A5C" fill-opacity="0.5"/>
+  <rect x="624" y="76" width="15" height="9" fill="#C9A961" fill-opacity="0.7"/>
+  <rect x="642" y="76" width="15" height="9" fill="#2D5A5C"/>
+  <rect x="552" y="89" width="15" height="9" fill="#C9A961" fill-opacity="0.8"/>
+  <rect x="570" y="89" width="15" height="9" fill="#B5532C" fill-opacity="0.55"/>
+  <rect x="588" y="89" width="15" height="9" fill="#2D5A5C" fill-opacity="0.85"/>
+  <rect x="606" y="89" width="15" height="9" fill="#C9A961" fill-opacity="0.5"/>
+  <rect x="624" y="89" width="15" height="9" fill="#2D5A5C" fill-opacity="0.7"/>
+  <rect x="642" y="89" width="15" height="9" fill="#B5532C" fill-opacity="0.45"/>
+  <rect x="552" y="102" width="15" height="9" fill="#B5532C" fill-opacity="0.4"/>
+  <rect x="570" y="102" width="15" height="9" fill="#2D5A5C" fill-opacity="0.6"/>
+  <rect x="588" y="102" width="15" height="9" fill="#C9A961" fill-opacity="0.85"/>
+  <rect x="606" y="102" width="15" height="9" fill="#2D5A5C" fill-opacity="0.9"/>
+  <rect x="624" y="102" width="15" height="9" fill="#B5532C" fill-opacity="0.65"/>
+  <rect x="642" y="102" width="15" height="9" fill="#C9A961" fill-opacity="0.6"/>
+  <text x="605" y="134" font-family="Inter, sans-serif" font-size="14.5" font-weight="700" fill="#1A1A1A" text-anchor="middle">Modello</text>
+  <text x="605" y="152" font-family="Inter, sans-serif" font-size="14.5" font-weight="700" fill="#1A1A1A" text-anchor="middle">acustico</text>
+  <text x="605" y="180" font-family="Inter, sans-serif" font-size="12" fill="#5E5852" text-anchor="middle">mel-spettrogramma</text>
+
+  <!-- stadio 5: vocoder -->
+  <rect x="715" y="60" width="130" height="100" rx="8" fill="#2D5A5C" fill-opacity="0.10" stroke="#2D5A5C" stroke-width="2"/>
+  <text x="780" y="116" font-family="Inter, sans-serif" font-size="16" font-weight="700" fill="#1A1A1A" text-anchor="middle">Vocoder</text>
+
+  <!-- stadio 6: onda (uscita, in terracotta) -->
+  <rect x="890" y="60" width="130" height="100" rx="8" fill="#B5532C" fill-opacity="0.10" stroke="#B5532C" stroke-width="2.5"/>
+  <polyline points="907,92 919,74 929,106 939,78 949,100 959,82 969,102 979,76 989,98 999,88 1005,92" fill="none" stroke="#B5532C" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+  <text x="955" y="144" font-family="Inter, sans-serif" font-size="16" font-weight="700" fill="#1A1A1A" text-anchor="middle">Onda</text>
+
+  <!-- frecce -->
+  <line x1="148" y1="110" x2="185" y2="110" stroke="#B5532C" stroke-width="2.5" marker-end="url(#ah-tts)"/>
+  <line x1="323" y1="110" x2="360" y2="110" stroke="#B5532C" stroke-width="2.5" marker-end="url(#ah-tts)"/>
+  <line x1="498" y1="110" x2="535" y2="110" stroke="#B5532C" stroke-width="2.5" marker-end="url(#ah-tts)"/>
+  <line x1="673" y1="110" x2="710" y2="110" stroke="#B5532C" stroke-width="2.5" marker-end="url(#ah-tts)"/>
+  <line x1="848" y1="110" x2="885" y2="110" stroke="#B5532C" stroke-width="2.5" marker-end="url(#ah-tts)"/>
+
+  <!-- uscita parlata -->
+  <line x1="955" y1="162" x2="955" y2="186" stroke="#B5532C" stroke-width="2.5" marker-end="url(#ah-tts)"/>
+  <text x="950" y="212" font-family="Fraunces, Georgia, serif" font-size="14" font-style="italic" fill="#B5532C" text-anchor="middle">&#9834; &#171;sono le nove e trenta&#187;</text>
+</svg>

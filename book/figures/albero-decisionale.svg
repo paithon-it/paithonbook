@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  paithon book - figura: albero decisionale e partizione dello spazio.
+  A sinistra il piano eta-reddito, tagliato da due split ortogonali agli assi
+  in tre regioni rettangolari; i punti di due classi (teal = compra, terracotta
+  = non compra) cadono ciascuno nella propria regione. A destra l'albero
+  corrispondente: radice «eta < 30?», poi «reddito < 25k?», e tre foglie
+  colorate come le regioni. Palette-locked, fondo trasparente.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 400" role="img"
+     aria-label="A sinistra il piano cartesiano eta-reddito partizionato da un taglio verticale (eta uguale 30) e da un taglio orizzontale a destra (reddito uguale 25 mila) in tre regioni: la regione a sinistra e quella in alto a destra contengono punti teal della classe compra, la regione in basso a destra contiene punti terracotta della classe non compra. A destra l'albero decisionale corrispondente: la radice chiede eta minore di 30, il ramo si divide in una foglia teal compra e in un nodo che chiede reddito minore di 25 mila, da cui pendono una foglia terracotta non compra e una foglia teal compra.">
+  <style>
+    .grid  { stroke:#8B847C; stroke-width:1; }
+    .axis  { stroke:#8B847C; stroke-width:1.6; }
+    .split { stroke:#1A1A1A; stroke-width:2.4; }
+    .edge  { stroke:#8B847C; stroke-width:1.8; fill:none; }
+    .node  { fill:#F8F5EE; stroke:#5E5852; stroke-width:1.8; }
+    .lbl   { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#5E5852; }
+    .axl   { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#5E5852; }
+    .nlbl  { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#1A1A1A; text-anchor:middle; }
+    .brl   { font-family:Inter, system-ui, sans-serif; font-size:12px; fill:#5E5852; text-anchor:middle; }
+    .leaf  { font-family:Inter, system-ui, sans-serif; font-size:13px; font-weight:600; text-anchor:middle; }
+    .ttl   { font-family:Georgia, 'Times New Roman', serif; font-size:14px; fill:#1A1A1A; text-anchor:middle; font-style:italic; }
+  </style>
+
+  <!-- titoli -->
+  <text class="ttl" x="205" y="30">Lo spazio delle caratteristiche</text>
+  <text class="ttl" x="595" y="30">L'albero corrispondente</text>
+
+  <!-- ============ PIANO 2D ============ -->
+  <!-- regioni colorate -->
+  <rect x="70"  y="70"  width="100" height="260" fill="#2D5A5C" fill-opacity="0.14"/>
+  <rect x="170" y="70"  width="170" height="140" fill="#2D5A5C" fill-opacity="0.14"/>
+  <rect x="170" y="210" width="170" height="120" fill="#B5532C" fill-opacity="0.14"/>
+
+  <!-- cornice del piano -->
+  <rect x="70" y="70" width="270" height="260" fill="none" stroke="#8B847C" stroke-width="1.4"/>
+
+  <!-- assi -->
+  <line class="axis" x1="70" y1="330" x2="352" y2="330"/>
+  <line class="axis" x1="70" y1="330" x2="70"  y2="58"/>
+  <polygon points="352,330 342,325 342,335" fill="#8B847C"/>
+  <polygon points="70,58 65,68 75,68" fill="#8B847C"/>
+  <text class="axl" x="300" y="349">età</text>
+  <text class="axl" x="52" y="66" text-anchor="end" transform="rotate(-90 52 66)">reddito</text>
+
+  <!-- split ortogonali -->
+  <line class="split" x1="170" y1="70"  x2="170" y2="330"/>
+  <line class="split" x1="170" y1="210" x2="340" y2="210"/>
+  <text class="lbl" x="175" y="84">età = 30</text>
+  <text class="lbl" x="248" y="204" text-anchor="middle">reddito = 25k</text>
+
+  <!-- punti classe "compra" (teal): regione sinistra -->
+  <g fill="#2D5A5C">
+    <circle cx="100" cy="115" r="5"/>
+    <circle cx="132" cy="180" r="5"/>
+    <circle cx="112" cy="250" r="5"/>
+    <circle cx="146" cy="300" r="5"/>
+    <circle cx="96"  cy="300" r="5"/>
+    <!-- regione alto-destra -->
+    <circle cx="212" cy="112" r="5"/>
+    <circle cx="282" cy="150" r="5"/>
+    <circle cx="250" cy="98"  r="5"/>
+    <circle cx="315" cy="180" r="5"/>
+  </g>
+  <!-- punti classe "non compra" (terracotta): regione basso-destra -->
+  <g fill="#B5532C">
+    <circle cx="212" cy="270" r="5"/>
+    <circle cx="262" cy="305" r="5"/>
+    <circle cx="305" cy="252" r="5"/>
+    <circle cx="234" cy="316" r="5"/>
+    <circle cx="292" cy="286" r="5"/>
+  </g>
+
+  <!-- ============ ALBERO ============ -->
+  <!-- archi -->
+  <path class="edge" d="M 585,113 L 500,163"/>
+  <path class="edge" d="M 585,113 L 665,163"/>
+  <path class="edge" d="M 665,203 L 610,273"/>
+  <path class="edge" d="M 665,203 L 720,273"/>
+
+  <!-- etichette rami -->
+  <text class="brl" x="527" y="140">sì</text>
+  <text class="brl" x="638" y="140">no</text>
+  <text class="brl" x="627" y="245">sì</text>
+  <text class="brl" x="702" y="245">no</text>
+
+  <!-- nodo radice -->
+  <rect class="node" x="528" y="80" width="114" height="33" rx="7"/>
+  <text class="nlbl" x="585" y="101">età &lt; 30 ?</text>
+
+  <!-- nodo interno destro -->
+  <rect class="node" x="602" y="168" width="126" height="33" rx="7"/>
+  <text class="nlbl" x="665" y="189">reddito &lt; 25k ?</text>
+
+  <!-- foglia sinistra: compra (teal) -->
+  <rect x="468" y="163" width="64" height="33" rx="7" fill="#2D5A5C" fill-opacity="0.20" stroke="#2D5A5C" stroke-width="2"/>
+  <text class="leaf" x="500" y="184" fill="#2D5A5C">compra</text>
+
+  <!-- foglia basso-sinistra: non compra (terracotta) -->
+  <rect x="572" y="273" width="76" height="33" rx="7" fill="#B5532C" fill-opacity="0.20" stroke="#B5532C" stroke-width="2"/>
+  <text class="leaf" x="610" y="294" fill="#B5532C">non compra</text>
+
+  <!-- foglia basso-destra: compra (teal) -->
+  <rect x="688" y="273" width="64" height="33" rx="7" fill="#2D5A5C" fill-opacity="0.20" stroke="#2D5A5C" stroke-width="2"/>
+  <text class="leaf" x="720" y="294" fill="#2D5A5C">compra</text>
+</svg>

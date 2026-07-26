@@ -1,0 +1,57 @@
+<svg viewBox="0 0 760 430" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Slicing visuale di un array NumPy 4 per 6: una riga, una colonna e una sottomatrice evidenziate">
+  <rect x="0" y="0" width="760" height="430" fill="#F8F5EE"/>
+  <text x="30" y="34" font-family="sans-serif" font-size="17" font-weight="bold" fill="#1A1A1A">a.shape = (4, 6) — tre ritagli, tre colori</text>
+  <!-- indici colonne -->
+  <g font-family="sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">
+    <text x="105" y="66">0</text>
+    <text x="175" y="66">1</text>
+    <text x="245" y="66">2</text>
+    <text x="315" y="66">3</text>
+    <text x="385" y="66">4</text>
+    <text x="455" y="66">5</text>
+  </g>
+  <!-- indici righe -->
+  <g font-family="sans-serif" font-size="13" fill="#1A1A1A" text-anchor="end">
+    <text x="60" y="105">0</text>
+    <text x="60" y="165">1</text>
+    <text x="60" y="225">2</text>
+    <text x="60" y="285">3</text>
+  </g>
+  <!-- celle: griglia 4x6, celle 70x60 a partire da (70,75) -->
+  <!-- riempimenti evidenziati -->
+  <!-- riga 1 in teal: a[1, :] -->
+  <rect x="70" y="135" width="420" height="60" fill="#2D5A5C"/>
+  <!-- colonna 4 in ocra: a[:, 4] -->
+  <rect x="350" y="75" width="70" height="240" fill="#C9A961"/>
+  <!-- sottomatrice a[2:4, 1:3] in terracotta -->
+  <rect x="140" y="195" width="140" height="120" fill="#B5532C"/>
+  <!-- intersezione riga/colonna: teal sopra ocra, ridisegno cella (1,4) in teal bordata -->
+  <rect x="350" y="135" width="70" height="60" fill="#2D5A5C"/>
+  <!-- griglia -->
+  <g stroke="#1A1A1A" stroke-width="1.5" fill="none">
+    <rect x="70" y="75" width="420" height="240"/>
+    <line x1="70" y1="135" x2="490" y2="135"/>
+    <line x1="70" y1="195" x2="490" y2="195"/>
+    <line x1="70" y1="255" x2="490" y2="255"/>
+    <line x1="140" y1="75" x2="140" y2="315"/>
+    <line x1="210" y1="75" x2="210" y2="315"/>
+    <line x1="280" y1="75" x2="280" y2="315"/>
+    <line x1="350" y1="75" x2="350" y2="315"/>
+    <line x1="420" y1="75" x2="420" y2="315"/>
+  </g>
+  <!-- legenda -->
+  <g font-family="sans-serif" font-size="14">
+    <rect x="530" y="110" width="22" height="22" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="1.5"/>
+    <text x="562" y="126" fill="#1A1A1A">a[1, :]</text>
+    <text x="562" y="144" fill="#1A1A1A" font-size="12">tutta la riga 1</text>
+    <rect x="530" y="170" width="22" height="22" fill="#C9A961" stroke="#1A1A1A" stroke-width="1.5"/>
+    <text x="562" y="186" fill="#1A1A1A">a[:, 4]</text>
+    <text x="562" y="204" fill="#1A1A1A" font-size="12">tutta la colonna 4</text>
+    <rect x="530" y="230" width="22" height="22" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5"/>
+    <text x="562" y="246" fill="#1A1A1A">a[2:4, 1:3]</text>
+    <text x="562" y="264" fill="#1A1A1A" font-size="12">sottomatrice 2x2</text>
+  </g>
+  <text x="70" y="352" font-family="sans-serif" font-size="14" fill="#1A1A1A">Regola: a[righe, colonne] — i due punti da soli significano "tutto",</text>
+  <text x="70" y="374" font-family="sans-serif" font-size="14" fill="#1A1A1A">inizio:fine prende da inizio a fine ESCLUSA (2:4 &#8594; righe 2 e 3).</text>
+  <text x="70" y="404" font-family="sans-serif" font-size="14" fill="#B5532C">Attenzione: uno slice è una vista, non una copia.</text>
+</svg>

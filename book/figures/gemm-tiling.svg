@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  paithon book - figura: il tiling (blocking) della moltiplicazione tra
+  matrici C = A * B. A sta a sinistra di C (stesse righe), B sta sopra C
+  (stesse colonne). Una tessera di C (evidenziata) nasce dal prodotto della
+  banda-riga di A per la banda-colonna di B; queste bande si scorrono a
+  blocchi lungo la dimensione K, e un blocco T x T di A e uno di B per volta
+  (in ocra) vengono caricati nella shared memory e riusati per tutta la
+  tessera. Palette-locked: teal per le griglie, terracotta per le bande e la
+  tessera di C, ocra per il blocco corrente in shared memory, testo/tratti
+  warm-black. Backing cream: leggibile in light e dark. Nessun colore fuori palette.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 500" role="img"
+     aria-label="Diagramma del tiling della moltiplicazione tra matrici C uguale ad A per B. La matrice A e disposta in basso a sinistra, la matrice B in alto a destra sopra la matrice C, che sta in basso a destra; A condivide le righe con C, B condivide le colonne con C. Una tessera di C e evidenziata in terracotta. La banda orizzontale di A che sta sulle sue stesse righe e la banda verticale di B che sta sulle sue stesse colonne sono evidenziate: il loro prodotto genera la tessera. Lungo la dimensione K le bande si scorrono a blocchi: un blocco di A e uno di B, in ocra, rappresentano i dati caricati una volta nella shared memory e riusati per tutta la tessera. Frecce collegano il blocco di A e il blocco di B alla tessera di C.">
+  <style>
+    .cell   { fill:#F8F5EE; stroke:#2D5A5C; stroke-width:1.2; }
+    .band   { fill:#B5532C; fill-opacity:0.16; stroke:#2D5A5C; stroke-width:1.2; }
+    .tile   { fill:#B5532C; fill-opacity:0.42; stroke:#B5532C; stroke-width:2.4; }
+    .shm    { fill:#C9A961; fill-opacity:0.6; stroke:#1A1A1A; stroke-width:1.4; }
+    .name   { font-family:Inter, system-ui, sans-serif; font-size:15px; font-weight:700; fill:#1A1A1A; }
+    .dim    { font-family:Inter, system-ui, sans-serif; font-size:12px; fill:#1A1A1A; opacity:0.7; }
+    .note   { font-family:Inter, system-ui, sans-serif; font-size:12.5px; font-weight:600; fill:#B5532C; }
+    .shmlbl { font-family:Inter, system-ui, sans-serif; font-size:12px; font-weight:700; fill:#1A1A1A; }
+    .op     { font-family:Inter, system-ui, sans-serif; font-size:26px; font-weight:700; fill:#1A1A1A; opacity:0.75; }
+  </style>
+  <defs>
+    <marker id="gt-arrow" viewBox="0 0 10 10" refX="8" refY="5"
+            markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#B5532C"/>
+    </marker>
+  </defs>
+
+  <!-- backing cream: rende la figura leggibile anche in dark mode -->
+  <rect x="6" y="6" width="708" height="488" rx="14" fill="#F8F5EE" stroke="#1A1A1A" stroke-opacity="0.12" stroke-width="1.5"/>
+
+  <!-- ===================== B (K x N), sopra C ===================== -->
+  <!-- griglia 3 righe (K) x 4 colonne (N), tessere da 40 -->
+  <g>
+    <rect class="cell" x="400" y="60"  width="40" height="40"/>
+    <rect class="cell" x="440" y="60"  width="40" height="40"/>
+    <rect class="cell" x="480" y="60"  width="40" height="40"/>
+    <rect class="cell" x="520" y="60"  width="40" height="40"/>
+    <rect class="cell" x="400" y="100" width="40" height="40"/>
+    <rect class="cell" x="440" y="100" width="40" height="40"/>
+    <rect class="cell" x="480" y="100" width="40" height="40"/>
+    <rect class="cell" x="520" y="100" width="40" height="40"/>
+    <rect class="cell" x="400" y="140" width="40" height="40"/>
+    <rect class="cell" x="440" y="140" width="40" height="40"/>
+    <rect class="cell" x="480" y="140" width="40" height="40"/>
+    <rect class="cell" x="520" y="140" width="40" height="40"/>
+  </g>
+  <!-- banda-colonna di B (colonna 2), tutta lungo K -->
+  <rect class="band" x="440" y="60" width="40" height="120"/>
+  <!-- blocco di B in shared memory (blocco K centrale) -->
+  <rect class="shm" x="440" y="100" width="40" height="40"/>
+  <text class="name" x="480" y="42" text-anchor="middle">B</text>
+  <text class="dim"  x="480" y="205" text-anchor="middle">(K x N)</text>
+
+  <!-- ===================== A (M x K), a sinistra di C ===================== -->
+  <!-- griglia 4 righe (M) x 3 colonne (K) -->
+  <g>
+    <rect class="cell" x="150" y="230" width="40" height="40"/>
+    <rect class="cell" x="190" y="230" width="40" height="40"/>
+    <rect class="cell" x="230" y="230" width="40" height="40"/>
+    <rect class="cell" x="150" y="270" width="40" height="40"/>
+    <rect class="cell" x="190" y="270" width="40" height="40"/>
+    <rect class="cell" x="230" y="270" width="40" height="40"/>
+    <rect class="cell" x="150" y="310" width="40" height="40"/>
+    <rect class="cell" x="190" y="310" width="40" height="40"/>
+    <rect class="cell" x="230" y="310" width="40" height="40"/>
+    <rect class="cell" x="150" y="350" width="40" height="40"/>
+    <rect class="cell" x="190" y="350" width="40" height="40"/>
+    <rect class="cell" x="230" y="350" width="40" height="40"/>
+  </g>
+  <!-- banda-riga di A (riga 2), tutta lungo K -->
+  <rect class="band" x="150" y="270" width="120" height="40"/>
+  <!-- blocco di A in shared memory (blocco K centrale) -->
+  <rect class="shm" x="190" y="270" width="40" height="40"/>
+  <text class="name" x="120" y="315" text-anchor="middle">A</text>
+  <text class="dim"  x="210" y="410" text-anchor="middle">(M x K)</text>
+
+  <!-- operatori: A . B = C -->
+  <text class="op" x="335" y="305" text-anchor="middle">&#183;</text>
+
+  <!-- ===================== C (M x N), in basso a destra ===================== -->
+  <!-- griglia 4 righe (M) x 4 colonne (N) -->
+  <g>
+    <rect class="cell" x="400" y="230" width="40" height="40"/>
+    <rect class="cell" x="440" y="230" width="40" height="40"/>
+    <rect class="cell" x="480" y="230" width="40" height="40"/>
+    <rect class="cell" x="520" y="230" width="40" height="40"/>
+    <rect class="cell" x="400" y="270" width="40" height="40"/>
+    <rect class="cell" x="480" y="270" width="40" height="40"/>
+    <rect class="cell" x="520" y="270" width="40" height="40"/>
+    <rect class="cell" x="400" y="310" width="40" height="40"/>
+    <rect class="cell" x="440" y="310" width="40" height="40"/>
+    <rect class="cell" x="480" y="310" width="40" height="40"/>
+    <rect class="cell" x="520" y="310" width="40" height="40"/>
+    <rect class="cell" x="400" y="350" width="40" height="40"/>
+    <rect class="cell" x="440" y="350" width="40" height="40"/>
+    <rect class="cell" x="480" y="350" width="40" height="40"/>
+    <rect class="cell" x="520" y="350" width="40" height="40"/>
+  </g>
+  <!-- tessera evidenziata di C (riga 2, colonna 2) -->
+  <rect class="tile" x="440" y="270" width="40" height="40"/>
+  <text class="name" x="480" y="410" text-anchor="middle">C = A &#183; B</text>
+  <text class="dim"  x="480" y="428" text-anchor="middle">(M x N)</text>
+
+  <!-- freccia: blocco di A -> tessera di C -->
+  <line x1="230" y1="290" x2="436" y2="290" stroke="#B5532C" stroke-width="2.2"
+        stroke-dasharray="6 5" marker-end="url(#gt-arrow)" opacity="0.9"/>
+  <!-- freccia: blocco di B -> tessera di C -->
+  <line x1="460" y1="140" x2="460" y2="266" stroke="#B5532C" stroke-width="2.2"
+        stroke-dasharray="6 5" marker-end="url(#gt-arrow)" opacity="0.9"/>
+
+  <!-- callout shared memory -->
+  <rect x="70" y="446" width="16" height="16" class="shm"/>
+  <text class="shmlbl" x="94" y="459">un blocco T x T per volta in shared memory</text>
+  <rect x="430" y="446" width="16" height="16" fill="#B5532C" fill-opacity="0.42" stroke="#B5532C" stroke-width="2"/>
+  <text class="shmlbl" x="454" y="459" fill="#B5532C">tessera di C = banda-riga di A &#183; banda-colonna di B</text>
+
+  <!-- nota sullo scorrimento lungo K -->
+  <text class="note" x="270" y="228" text-anchor="middle">si scorre lungo K, a blocchi</text>
+</svg>

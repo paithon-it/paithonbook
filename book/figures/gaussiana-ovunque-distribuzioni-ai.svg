@@ -1,0 +1,39 @@
+<svg viewBox="0 0 760 420" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Istogramma della distribuzione binomiale con 20 lanci sovrapposto alla curva gaussiana corrispondente">
+  <rect x="0" y="0" width="760" height="420" fill="#F8F5EE"/>
+  <!-- bars: binomiale n=20 p=0.5, k da 4 a 16 -->
+  <g fill="#C9A961" stroke="#1A1A1A" stroke-width="1.5">
+    <rect x="76"  y="333" width="40" height="7"/>
+    <rect x="124" y="318" width="40" height="22"/>
+    <rect x="172" y="285" width="40" height="55"/>
+    <rect x="220" y="231" width="40" height="109"/>
+    <rect x="268" y="163" width="40" height="177"/>
+    <rect x="316" y="104" width="40" height="236"/>
+    <rect x="364" y="80"  width="40" height="260"/>
+    <rect x="412" y="104" width="40" height="236"/>
+    <rect x="460" y="163" width="40" height="177"/>
+    <rect x="508" y="231" width="40" height="109"/>
+    <rect x="556" y="285" width="40" height="55"/>
+    <rect x="604" y="318" width="40" height="22"/>
+    <rect x="652" y="333" width="40" height="7"/>
+  </g>
+  <!-- gaussiana -->
+  <path d="M96,333 L120,327 L144,319 L168,306 L192,287 L216,264 L240,234 L264,201 L288,166 L312,132 L336,105 L360,86 L384,80 L408,86 L432,105 L456,132 L480,166 L504,201 L528,234 L552,264 L576,287 L600,306 L624,319 L648,327 L672,333"
+        fill="none" stroke="#B5532C" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+  <!-- asse -->
+  <line x1="60" y1="340" x2="708" y2="340" stroke="#1A1A1A" stroke-width="1.5"/>
+  <g font-family="sans-serif" font-size="12" fill="#1A1A1A" text-anchor="middle">
+    <text x="96"  y="360">4</text>
+    <text x="192" y="360">6</text>
+    <text x="288" y="360">8</text>
+    <text x="384" y="360">10</text>
+    <text x="480" y="360">12</text>
+    <text x="576" y="360">14</text>
+    <text x="672" y="360">16</text>
+  </g>
+  <text x="384" y="388" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#5E5852">numero di teste su 20 lanci</text>
+  <!-- legenda -->
+  <rect x="60" y="34" width="16" height="16" fill="#C9A961" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="84" y="47" font-family="sans-serif" font-size="13" fill="#1A1A1A">binomiale (n=20, p=0,5)</text>
+  <line x1="60" y1="76" x2="76" y2="76" stroke="#B5532C" stroke-width="2"/>
+  <text x="84" y="81" font-family="sans-serif" font-size="13" fill="#1A1A1A">gaussiana (μ=10, σ≈2,24)</text>
+</svg>

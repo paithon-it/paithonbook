@@ -1,0 +1,38 @@
+<svg viewBox="0 0 760 400" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Cronologia dei paradigmi dominanti dell'AI in tre ere: nell'era della simulazione la quota di apprendimento per rinforzo è alta, cala nell'era dei dati umani centrata su imitazione e RLHF, e risale nell'era dell'esperienza con ricompense che arrivano dal mondo">
+  <rect x="0" y="0" width="760" height="400" fill="#F8F5EE"/>
+  <text x="380" y="34" text-anchor="middle" font-family="sans-serif" font-size="17" font-weight="bold" fill="#1A1A1A">Tre ere dell'AI, secondo Silver e Sutton</text>
+
+  <!-- asse Y -->
+  <line x1="90" y1="70" x2="90" y2="310" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="46" y="195" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#5E5852" transform="rotate(-90 46 195)">quota del campo dedicata all'esperienza (RL)</text>
+
+  <!-- asse X -->
+  <line x1="90" y1="310" x2="720" y2="310" stroke="#1A1A1A" stroke-width="1.5"/>
+  <path d="M720 310 L 710 305 L 710 315 Z" fill="#1A1A1A"/>
+  <text x="716" y="332" text-anchor="end" font-family="sans-serif" font-size="12" fill="#5E5852">tempo</text>
+
+  <!-- divisori delle ere -->
+  <line x1="300" y1="70" x2="300" y2="310" stroke="#2D5A5C" stroke-width="1.2" stroke-dasharray="4 5"/>
+  <line x1="510" y1="70" x2="510" y2="310" stroke="#2D5A5C" stroke-width="1.2" stroke-dasharray="4 5"/>
+
+  <!-- curva della quota RL -->
+  <path d="M95 150 C 160 100, 225 100, 275 118 C 320 132, 345 250, 400 262 C 445 272, 495 268, 540 222 C 600 152, 660 100, 715 80" fill="none" stroke="#B5532C" stroke-width="3.5" stroke-linecap="round"/>
+
+  <!-- punti chiave -->
+  <circle cx="255" cy="105" r="5" fill="#C9A961" stroke="#1A1A1A" stroke-width="1"/>
+  <circle cx="415" cy="263" r="5" fill="#C9A961" stroke="#1A1A1A" stroke-width="1"/>
+  <circle cx="700" cy="86" r="5" fill="#C9A961" stroke="#1A1A1A" stroke-width="1"/>
+
+  <!-- etichette ere -->
+  <text x="195" y="352" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#2D5A5C">era della simulazione</text>
+  <text x="195" y="372" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#5E5852">auto-gioco, reward chiaro</text>
+  <text x="405" y="352" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#2D5A5C">era dei dati umani</text>
+  <text x="405" y="372" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#5E5852">imitazione, RLHF</text>
+  <text x="615" y="352" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#B5532C">era dell'esperienza</text>
+  <text x="615" y="372" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#5E5852">reward dal mondo</text>
+
+  <!-- annotazioni sulla curva -->
+  <text x="255" y="90" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#1A1A1A">AlphaGo, AlphaZero</text>
+  <text x="415" y="288" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#1A1A1A">i grandi LLM</text>
+  <text x="678" y="72" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#1A1A1A">agenti nel mondo</text>
+</svg>

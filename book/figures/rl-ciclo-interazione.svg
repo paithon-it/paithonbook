@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 340" width="100%" font-family="Inter, system-ui, -apple-system, sans-serif">
+  <defs>
+    <marker id="rl-arrow-terra" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#B5532C"/>
+    </marker>
+    <marker id="rl-arrow-teal" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#2D5A5C"/>
+    </marker>
+  </defs>
+
+  <!-- Agente -->
+  <rect x="60" y="120" width="180" height="100" rx="14" fill="#F8F5EE" stroke="#B5532C" stroke-width="3"/>
+  <text x="150" y="164" text-anchor="middle" font-size="27" font-weight="700" fill="#1A1A1A">Agente</text>
+  <text x="150" y="192" text-anchor="middle" font-size="14" fill="#5E5852">chi decide</text>
+
+  <!-- Ambiente -->
+  <rect x="480" y="120" width="180" height="100" rx="14" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="3"/>
+  <text x="570" y="164" text-anchor="middle" font-size="27" font-weight="700" fill="#1A1A1A">Ambiente</text>
+  <text x="570" y="192" text-anchor="middle" font-size="14" fill="#5E5852">il mondo</text>
+
+  <!-- Freccia superiore: Agente -> Ambiente (Azione) -->
+  <path d="M 240 140 C 315 66, 405 66, 480 140" fill="none" stroke="#B5532C" stroke-width="3" marker-end="url(#rl-arrow-terra)"/>
+  <text x="360" y="56" text-anchor="middle" font-size="18" font-weight="600" fill="#B5532C">Azione <tspan font-style="italic">a</tspan><tspan font-size="13" dy="4">t</tspan></text>
+
+  <!-- Freccia inferiore: Ambiente -> Agente (Stato + Ricompensa) -->
+  <path d="M 480 200 C 405 274, 315 274, 240 200" fill="none" stroke="#2D5A5C" stroke-width="3" marker-end="url(#rl-arrow-teal)"/>
+  <text x="360" y="292" text-anchor="middle" font-size="18" font-weight="600" fill="#2D5A5C">Nuovo stato <tspan font-style="italic">s</tspan><tspan font-size="13" dy="4">t+1</tspan></text>
+  <text x="360" y="316" text-anchor="middle" font-size="18" font-weight="600" fill="#C9A961">Ricompensa <tspan font-style="italic">r</tspan><tspan font-size="13" dy="4">t+1</tspan></text>
+</svg>

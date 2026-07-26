@@ -1,0 +1,20 @@
+# Il .gitignore del repository pubblico, scritto da strumenti/pubblica.py.
+#
+# È corto perché di là non si lavora: quel repository contiene il libro
+# pubblicato, e le uniche cose da ignorare sono ciò che una build o un
+# interprete lasciano per terra.
+
+# Build del libro
+_build/
+.teachbooks/
+
+# Python
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.venv/
+venv/
+.env
+
+# Sistema
+.DS_Store

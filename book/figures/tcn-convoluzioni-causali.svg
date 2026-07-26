@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  paithon book - figura: rete convoluzionale temporale (TCN) con
+  convoluzioni causali DILATATE. In basso una fila di ingressi nel tempo
+  (ocra). Sopra tre strati di nodi (teal); le connessioni saltano indietro
+  con dilatazione 1, 2, 4 e vanno SOLO verso il passato: nessun arco dal
+  futuro (causalita'). Il cono ombreggiato mostra il campo recettivo che
+  cresce in modo esponenziale: con kernel 2 e tre strati un solo nodo di
+  uscita (terracotta, in alto a destra) dipende da 2^3 = 8 istanti passati.
+  Palette-locked, fondo trasparente, tratti scuri leggibili in dark mode.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 440" role="img"
+     aria-label="Schema di una rete convoluzionale temporale con convoluzioni causali dilatate. In basso otto nodi di ingresso disposti lungo l'asse del tempo, dall'istante t meno sette all'istante t. Sopra, tre strati di nodi collegati da archi che saltano sempre all'indietro, verso il passato, con dilatazione crescente uno, due e quattro. Nessun arco punta verso il futuro. Il singolo nodo di uscita in alto a destra, evidenziato in terracotta, riceve informazione da tutti e otto gli ingressi: il campo recettivo, mostrato come cono ombreggiato, e' pari a due elevato alla tre uguale otto istanti.">
+  <style>
+    .cone  { fill:#2D5A5C; fill-opacity:0.09; stroke:none; }
+    .inp   { fill:#C9A961; stroke:#1A1A1A; stroke-width:1.4; }
+    .inpd  { fill:#C9A961; fill-opacity:0.28; stroke:#1A1A1A; stroke-width:1; stroke-opacity:0.4; }
+    .hid   { fill:#2D5A5C; }
+    .out   { fill:#B5532C; }
+    .edge  { fill:none; stroke:#1A1A1A; stroke-width:2; }
+    .axis  { stroke:#1A1A1A; stroke-width:1.5; }
+    .brace { fill:none; stroke:#B5532C; stroke-width:1.8; }
+    .ttl   { font-family:Fraunces, Georgia, serif; font-size:17px; font-style:italic; fill:#1A1A1A; }
+    .sub   { font-family:Inter, system-ui, sans-serif; font-size:12.5px; fill:#1A1A1A; fill-opacity:0.7; }
+    .dlbl  { font-family:Inter, system-ui, sans-serif; font-size:14px; font-weight:700; fill:#2D5A5C; text-anchor:end; }
+    .tlbl  { font-family:Inter, system-ui, sans-serif; font-size:12px; fill:#1A1A1A; fill-opacity:0.75; text-anchor:middle; }
+    .cap   { font-family:Inter, system-ui, sans-serif; font-size:12.5px; fill:#B5532C; font-weight:600; text-anchor:middle; }
+    .pred  { font-family:Inter, system-ui, sans-serif; font-size:13px; font-weight:700; fill:#B5532C; text-anchor:middle; }
+  </style>
+
+  <!-- titolo -->
+  <text class="ttl" x="40" y="34">Convoluzioni causali dilatate</text>
+  <text class="sub" x="40" y="54">solo verso il passato &#183; campo recettivo esponenziale</text>
+
+  <!-- cono del campo recettivo (apice = uscita, base = gli 8 ingressi) -->
+  <polygon class="cone" points="685,96 90,366 685,366"/>
+
+  <!-- ================= ARCHI (tutti verso il passato: sinistra o dritto) ================= -->
+  <!-- strato di uscita <- strato 2  (dilatazione 4) -->
+  <line class="edge" x1="685" y1="96" x2="685" y2="186"/>
+  <line class="edge" x1="685" y1="96" x2="345" y2="186"/>
+  <!-- strato 2 <- strato 1  (dilatazione 2) -->
+  <line class="edge" x1="685" y1="186" x2="685" y2="276"/>
+  <line class="edge" x1="685" y1="186" x2="515" y2="276"/>
+  <line class="edge" x1="345" y1="186" x2="345" y2="276"/>
+  <line class="edge" x1="345" y1="186" x2="175" y2="276"/>
+  <!-- strato 1 <- ingressi  (dilatazione 1) -->
+  <line class="edge" x1="685" y1="276" x2="685" y2="366"/>
+  <line class="edge" x1="685" y1="276" x2="600" y2="366"/>
+  <line class="edge" x1="515" y1="276" x2="515" y2="366"/>
+  <line class="edge" x1="515" y1="276" x2="430" y2="366"/>
+  <line class="edge" x1="345" y1="276" x2="345" y2="366"/>
+  <line class="edge" x1="345" y1="276" x2="260" y2="366"/>
+  <line class="edge" x1="175" y1="276" x2="175" y2="366"/>
+  <line class="edge" x1="175" y1="276" x2="90"  y2="366"/>
+
+  <!-- ================= NODI ================= -->
+  <!-- ingressi (ocra), tutti nel campo recettivo -->
+  <circle class="inp" cx="90"  cy="366" r="13"/>
+  <circle class="inp" cx="175" cy="366" r="13"/>
+  <circle class="inp" cx="260" cy="366" r="13"/>
+  <circle class="inp" cx="345" cy="366" r="13"/>
+  <circle class="inp" cx="430" cy="366" r="13"/>
+  <circle class="inp" cx="515" cy="366" r="13"/>
+  <circle class="inp" cx="600" cy="366" r="13"/>
+  <circle class="inp" cx="685" cy="366" r="13"/>
+
+  <!-- strato 1 (teal) -->
+  <circle class="hid" cx="175" cy="276" r="14"/>
+  <circle class="hid" cx="345" cy="276" r="14"/>
+  <circle class="hid" cx="515" cy="276" r="14"/>
+  <circle class="hid" cx="685" cy="276" r="14"/>
+
+  <!-- strato 2 (teal) -->
+  <circle class="hid" cx="345" cy="186" r="14"/>
+  <circle class="hid" cx="685" cy="186" r="14"/>
+
+  <!-- uscita (terracotta) -->
+  <circle class="out" cx="685" cy="96" r="16"/>
+  <text class="pred" x="685" y="68">previsione &#375;</text>
+
+  <!-- etichette dilatazione (a destra di ogni fascio di archi) -->
+  <text class="dlbl" x="732" y="146">d = 4</text>
+  <text class="dlbl" x="732" y="236">d = 2</text>
+  <text class="dlbl" x="732" y="326">d = 1</text>
+
+  <!-- ================= ASSE DEL TEMPO ================= -->
+  <text class="tlbl" x="90"  y="393">t&#8722;7</text>
+  <text class="tlbl" x="175" y="393">t&#8722;6</text>
+  <text class="tlbl" x="260" y="393">t&#8722;5</text>
+  <text class="tlbl" x="345" y="393">t&#8722;4</text>
+  <text class="tlbl" x="430" y="393">t&#8722;3</text>
+  <text class="tlbl" x="515" y="393">t&#8722;2</text>
+  <text class="tlbl" x="600" y="393">t&#8722;1</text>
+  <text class="tlbl" x="685" y="393">t</text>
+
+  <!-- graffa del campo recettivo -->
+  <path class="brace" d="M 90,410 L 90,416 L 685,416 L 685,410"/>
+  <text class="cap" x="387" y="434">campo recettivo: 8 = 2&#179; istanti passati</text>
+</svg>

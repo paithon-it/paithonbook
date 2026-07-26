@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  paithon book - figura: decomposizione di una serie temporale in quattro
+  pannelli impilati che condividono l'asse del tempo.
+  Dall'alto: serie osservata (terracotta), trend (teal), stagionalita (ocra),
+  residuo (barrette warm-black attorno allo zero).
+  Palette-locked: terracotta #B5532C, teal #2D5A5C, ocra #C9A961,
+  warm-black #1A1A1A. Fondo trasparente (light e dark).
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 540" width="100%" role="img"
+     aria-label="Quattro pannelli impilati che condividono l'asse del tempo. Dall'alto: la serie osservata con tendenza e oscillazione; il trend, una linea liscia crescente; la stagionalita, un'onda periodica regolare; il residuo, piccole barrette attorno allo zero.">
+  <style>
+    .frame { fill:none; stroke:#8B847C; stroke-width:1; opacity:0.55; }
+    .base  { stroke:#8B847C; stroke-width:1; opacity:0.6; }
+    .obs   { fill:none; stroke:#B5532C; stroke-width:2.4; stroke-linejoin:round; stroke-linecap:round; }
+    .trend { fill:none; stroke:#2D5A5C; stroke-width:2.6; stroke-linejoin:round; stroke-linecap:round; }
+    .seas  { fill:none; stroke:#C9A961; stroke-width:2.4; stroke-linejoin:round; stroke-linecap:round; }
+    .stem  { stroke:#1A1A1A; stroke-width:2; stroke-linecap:round; }
+    .lbl   { font-family:Inter, system-ui, sans-serif; font-size:15px; font-weight:600; fill:#1A1A1A; text-anchor:end; }
+    .op    { font-family:Fraunces, Georgia, serif; font-size:20px; fill:#8B847C; text-anchor:middle; }
+    .cap   { font-family:Inter, system-ui, sans-serif; font-size:12px; fill:#5E5852; }
+  </style>
+
+  <!-- riquadri dei pannelli -->
+  <rect class="frame" x="120" y="30"  width="586" height="124"/>
+  <rect class="frame" x="120" y="164" width="586" height="124"/>
+  <rect class="frame" x="120" y="298" width="586" height="124"/>
+  <rect class="frame" x="120" y="435" width="586" height="96"/>
+
+  <!-- etichette dei pannelli -->
+  <text class="lbl" x="108" y="96">Serie osservata</text>
+  <text class="lbl" x="108" y="230">Trend</text>
+  <text class="lbl" x="108" y="364">Stagionalità</text>
+  <text class="lbl" x="108" y="487">Residuo</text>
+
+  <!-- operatori di scomposizione additiva: osservata = trend + stagionale + residuo -->
+  <text class="op" x="413" y="162">=</text>
+  <text class="op" x="413" y="296">+</text>
+  <text class="op" x="413" y="432">+</text>
+
+  <!-- 1. serie osservata (terracotta) -->
+  <polyline class="obs" points="130.0,128.8 142.1,117.7 154.3,99.9 166.4,103.7 178.5,98.6 190.6,108.5 202.8,123.7 214.9,127.6 227.0,142.0 239.1,137.9 251.3,138.5 263.4,127.8 275.5,109.2 287.7,89.6 299.8,89.7 311.9,83.4 324.0,79.2 336.2,81.8 348.3,98.0 360.4,111.3 372.6,110.0 384.7,125.6 396.8,108.8 408.9,106.8 421.1,95.4 433.2,82.1 445.3,68.9 457.4,56.6 469.6,67.8 481.7,69.2 493.8,79.0 506.0,93.6 518.1,98.4 530.2,107.3 542.3,102.6 554.5,90.1 566.6,69.4 578.7,59.5 590.9,50.8 603.0,42.0 615.1,45.7 627.2,55.4 639.4,58.7 651.5,70.7 663.6,84.8 675.7,81.7 687.9,77.7 700.0,62.1"/>
+
+  <!-- 2. trend (teal) -->
+  <polyline class="trend" points="130.0,276.0 142.1,273.9 154.3,271.7 166.4,269.6 178.5,267.5 190.6,265.4 202.8,263.2 214.9,261.1 227.0,259.0 239.1,256.9 251.3,254.7 263.4,252.6 275.5,250.5 287.7,248.3 299.8,246.2 311.9,244.1 324.0,242.0 336.2,239.8 348.3,237.7 360.4,235.6 372.6,233.4 384.7,231.3 396.8,229.2 408.9,227.1 421.1,224.9 433.2,222.8 445.3,220.7 457.4,218.6 469.6,216.4 481.7,214.3 493.8,212.2 506.0,210.0 518.1,207.9 530.2,205.8 542.3,203.7 554.5,201.5 566.6,199.4 578.7,197.3 590.9,195.1 603.0,193.0 615.1,190.9 627.2,188.8 639.4,186.6 651.5,184.5 663.6,182.4 675.7,180.3 687.9,178.1 700.0,176.0"/>
+
+  <!-- 3. stagionalità (ocra) -->
+  <polyline class="seas" points="130.0,360.0 142.1,335.0 154.3,316.7 166.4,310.0 178.5,316.7 190.6,335.0 202.8,360.0 214.9,385.0 227.0,403.3 239.1,410.0 251.3,403.3 263.4,385.0 275.5,360.0 287.7,335.0 299.8,316.7 311.9,310.0 324.0,316.7 336.2,335.0 348.3,360.0 360.4,385.0 372.6,403.3 384.7,410.0 396.8,403.3 408.9,385.0 421.1,360.0 433.2,335.0 445.3,316.7 457.4,310.0 469.6,316.7 481.7,335.0 493.8,360.0 506.0,385.0 518.1,403.3 530.2,410.0 542.3,403.3 554.5,385.0 566.6,360.0 578.7,335.0 590.9,316.7 603.0,310.0 615.1,316.7 627.2,335.0 639.4,360.0 651.5,385.0 663.6,403.3 675.7,410.0 687.9,403.3 700.0,385.0"/>
+
+  <!-- 4. residuo (barrette warm-black attorno allo zero) -->
+  <line class="base" x1="120" y1="483" x2="706" y2="483"/>
+  <g class="stem">
+    <line x1="130.0" y1="483.0" x2="130.0" y2="498.5"/>
+    <line x1="142.1" y1="483.0" x2="142.1" y2="513.8"/>
+    <line x1="154.3" y1="483.0" x2="154.3" y2="469.7"/>
+    <line x1="166.4" y1="483.0" x2="166.4" y2="520.7"/>
+    <line x1="178.5" y1="483.0" x2="178.5" y2="479.8"/>
+    <line x1="190.6" y1="483.0" x2="190.6" y2="494.8"/>
+    <line x1="202.8" y1="483.0" x2="202.8" y2="522.0"/>
+    <line x1="214.9" y1="483.0" x2="214.9" y2="482.3"/>
+    <line x1="227.0" y1="483.0" x2="227.0" y2="523.8"/>
+    <line x1="239.1" y1="483.0" x2="239.1" y2="488.9"/>
+    <line x1="251.3" y1="483.0" x2="251.3" y2="520.9"/>
+    <line x1="263.4" y1="483.0" x2="263.4" y2="519.1"/>
+    <line x1="275.5" y1="483.0" x2="275.5" y2="489.7"/>
+    <line x1="287.7" y1="483.0" x2="287.7" y2="454.2"/>
+    <line x1="299.8" y1="483.0" x2="299.8" y2="516.2"/>
+    <line x1="311.9" y1="483.0" x2="311.9" y2="507.4"/>
+    <line x1="324.0" y1="483.0" x2="324.0" y2="471.8"/>
+    <line x1="336.2" y1="483.0" x2="336.2" y2="443.5"/>
+    <line x1="348.3" y1="483.0" x2="348.3" y2="476.2"/>
+    <line x1="360.4" y1="483.0" x2="360.4" y2="492.1"/>
+    <line x1="372.6" y1="483.0" x2="372.6" y2="441.0"/>
+    <line x1="384.7" y1="483.0" x2="384.7" y2="523.0"/>
+    <line x1="396.8" y1="483.0" x2="396.8" y2="451.4"/>
+    <line x1="408.9" y1="483.0" x2="408.9" y2="501.6"/>
+    <line x1="421.1" y1="483.0" x2="421.1" y2="514.4"/>
+    <line x1="433.2" y1="483.0" x2="433.2" y2="516.7"/>
+    <line x1="445.3" y1="483.0" x2="445.3" y2="499.9"/>
+    <line x1="457.4" y1="483.0" x2="457.4" y2="455.1"/>
+    <line x1="469.6" y1="483.0" x2="469.6" y2="511.2"/>
+    <line x1="481.7" y1="483.0" x2="481.7" y2="475.8"/>
+    <line x1="493.8" y1="483.0" x2="493.8" y2="470.7"/>
+    <line x1="506.0" y1="483.0" x2="506.0" y2="494.3"/>
+    <line x1="518.1" y1="483.0" x2="518.1" y2="478.8"/>
+    <line x1="530.2" y1="483.0" x2="530.2" y2="521.6"/>
+    <line x1="542.3" y1="483.0" x2="542.3" y2="521.8"/>
+    <line x1="554.5" y1="483.0" x2="554.5" y2="508.9"/>
+    <line x1="566.6" y1="483.0" x2="566.6" y2="467.1"/>
+    <line x1="578.7" y1="483.0" x2="578.7" y2="489.4"/>
+    <line x1="590.9" y1="483.0" x2="590.9" y2="499.4"/>
+    <line x1="603.0" y1="483.0" x2="603.0" y2="475.5"/>
+    <line x1="615.1" y1="483.0" x2="615.1" y2="487.1"/>
+    <line x1="627.2" y1="483.0" x2="627.2" y2="500.7"/>
+    <line x1="639.4" y1="483.0" x2="639.4" y2="457.0"/>
+    <line x1="651.5" y1="483.0" x2="651.5" y2="465.5"/>
+    <line x1="663.6" y1="483.0" x2="663.6" y2="505.6"/>
+    <line x1="675.7" y1="483.0" x2="675.7" y2="476.4"/>
+    <line x1="687.9" y1="483.0" x2="687.9" y2="480.8"/>
+    <line x1="700.0" y1="483.0" x2="700.0" y2="449.9"/>
+  </g>
+
+  <!-- asse del tempo condiviso -->
+  <text class="cap" x="700" y="527" text-anchor="end">tempo &#8594;</text>
+</svg>

@@ -1,0 +1,21 @@
+{#-
+  Logo compatto nella barra dell'articolo, subito dopo il pulsante che apre la
+  sidebar. Serve su schermo piccolo: lì la sidebar è chiusa, quindi il logo
+  vero non si vede e la barra resta un mezzo metro di vuoto fra l'hamburger e
+  le icone. Sopra il breakpoint della sidebar il CSS lo nasconde
+  (`_static/pt-formato.css`), perché il logo in sidebar c'è già.
+
+  Registrato via `article_header_start` in `_config.yml`. Le due varianti
+  usano le classi `only-light` / `only-dark` del tema, che commutano con
+  `data-theme`. Il lockup è quello "in linea" — «book» sulla stessa riga —
+  prodotto da `scripts/genera-logo-book.py`.
+-#}
+<div class="header-article-item pt-logo-barra">
+  <a href="{{ pathto(root_doc if root_doc is defined else master_doc) }}"
+     title="Torna all'inizio del libro" aria-label="paithon book, inizio del libro">
+    <img src="{{ pathto('_static/logo-inline-light.svg', 1) }}"
+         class="pt-logo-barra__img only-light" alt="paithon book">
+    <img src="{{ pathto('_static/logo-inline-dark.svg', 1) }}"
+         class="pt-logo-barra__img only-dark" alt="paithon book">
+  </a>
+</div>

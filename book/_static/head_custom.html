@@ -1,0 +1,140 @@
+<!-- PAITHON BOOK - Custom Head Elements -->
+
+<!-- Tema SCURO di default al primo accesso. Rispetta la scelta dell'utente se
+     poi cambia col toggle nativo (localStorage). Setta subito data-theme per
+     evitare il flash; i token brand commutano da soli su [data-theme="dark"]. -->
+<script>
+  (function () {
+    var KEYS = ['mode', 'theme'];
+    var stored = null;
+    try {
+      for (var i = 0; i < KEYS.length; i++) {
+        var v = localStorage.getItem(KEYS[i]);
+        if (v) { stored = v; break; }
+      }
+      if (stored === null) {                 // primo accesso: default scuro
+        stored = 'dark';
+        for (var j = 0; j < KEYS.length; j++) {
+          try { localStorage.setItem(KEYS[j], 'dark'); } catch (e) {}
+        }
+      }
+    } catch (e) { stored = 'dark'; }
+    var dark = stored === 'dark' ||
+      (stored === 'auto' && window.matchMedia &&
+       window.matchMedia('(prefers-color-scheme: dark)').matches);
+    var root = document.documentElement;
+    root.dataset.theme = dark ? 'dark' : 'light';
+    root.dataset.mode = stored;
+  })();
+</script>
+
+<!-- Livello di lettura (Elementare / Superiore) scelto dal lettore. Si applica
+     subito su <html> perché l'icona in barra non sfarfalli; ad applicarlo alle
+     tab ci pensa _static/pt-formato.js quando il DOM è pronto. -->
+<script>
+  (function () {
+    try {
+      var livello = localStorage.getItem('pt-livello');
+      if ('superiore' === livello || 'elementare' === livello) {
+        document.documentElement.dataset.ptLivello = livello;
+      }
+    } catch (e) { /* niente localStorage: si resta su elementare */ }
+  })();
+</script>
+
+<!-- Coordinate della pagina, lette da _static/pt-formato.js per costruire il
+     link "Segnala" quando il lettore seleziona un pezzo di testo: repo, ramo
+     e percorso del file sorgente di QUESTA pagina dentro il repository. -->
+<meta name="pt-repo-url" content="{{ theme_repository_url | default('', true) }}">
+<meta name="pt-repo-branch" content="{{ theme_repository_branch | default('main', true) }}">
+<meta name="pt-page-source" content="{{ theme_path_to_docs | default('', true) }}{{ pagename }}{{ page_source_suffix }}">
+
+<!-- Pagina del magazine che raccoglie un passaggio selezionato qui e ci apre
+     l'assistente di lettura (shortcode [paithon_libro] nel repo paithon). Il
+     libro è statico e non può autenticare nessuno: là il lettore è loggato a
+     casa sua, quindi niente CORS e niente cookie di terze parti.
+
+     INTERRUTTORE: vuoto = la voce "Chiedi all'AI" non compare affatto, ed è
+     giusto tenerlo vuoto finché la pagina che riceve il passaggio non esiste:
+     un pulsante che porta in un vicolo cieco è peggio di nessun pulsante. -->
+<meta name="pt-lettura-url" content="">
+
+<!-- Google Fonts paithon: Fraunces (display), Inter (body), JetBrains Mono (code) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,800&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<!-- Open Graph Meta Tags for Social Sharing -->
+<meta property="og:site_name" content="Paithon Book">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Paithon Book — Il Libro di Intelligenza Artificiale che spiega due volte.">
+<meta property="og:description" content="Machine Learning, Deep Learning e Reinforcement Learning con Python. In italiano, gratis, in aggiornamento continuo.">
+<meta property="og:url" content="https://book.paithon.it/main/">
+<meta property="og:image" content="https://book.paithon.it/main/_static/social/og-book.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="paithon book — Il Libro di Intelligenza Artificiale che spiega due volte.">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Paithon Book — Il Libro di Intelligenza Artificiale che spiega due volte.">
+<meta name="twitter:image" content="https://book.paithon.it/main/_static/social/og-book.png">
+<meta name="twitter:image:alt" content="paithon book — Il Libro di Intelligenza Artificiale che spiega due volte.">
+<meta name="twitter:description" content="Machine Learning, Deep Learning e Reinforcement Learning con Python. In italiano, gratis, in aggiornamento continuo.">
+
+<!-- SEO Meta Tags -->
+<meta name="description" content="Libro di Intelligenza Artificiale in italiano, su due livelli: Elementare per chi parte da zero, Superiore per la trattazione formale. Machine Learning, Deep Learning e Reinforcement Learning con Python. Online, gratuito, in aggiornamento continuo.">
+<meta name="keywords" content="AI, intelligenza artificiale, machine learning, deep learning, Python, italiano, libro gratuito, transformers, neural networks">
+<meta name="author" content="Paithon.it">
+<meta name="language" content="Italian">
+
+<!-- Favicon improvements -->
+<link rel="apple-touch-icon" sizes="180x180" href="{{ pathto('_static/figures/logo.png', 1) }}">
+
+<!-- Theme color for mobile browsers -->
+<meta name="theme-color" content="#B5532C">
+<meta name="msapplication-navbutton-color" content="#B5532C">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+<!-- Performance: DNS prefetch -->
+<link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+<link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+
+<!-- Accessibility: Skip to content link -->
+<style>
+  .skip-to-content {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: var(--primary-color, #B5532C);
+    color: white;
+    padding: 8px 16px;
+    text-decoration: none;
+    border-radius: 0 0 4px 0;
+    z-index: 10000;
+    font-weight: 600;
+  }
+  .skip-to-content:focus {
+    top: 0;
+  }
+</style>
+
+<!-- Structured Data for SEO -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Book",
+  "name": "Paithon Book",
+  "author": {
+    "@type": "Organization",
+    "name": "Paithon.it"
+  },
+  "description": "Libro di Intelligenza Artificiale in italiano su due livelli, Elementare e Superiore: Machine Learning, Deep Learning e Reinforcement Learning con Python.",
+  "url": "https://book.paithon.it/main/",
+  "inLanguage": "it-IT",
+  "license": "https://creativecommons.org/licenses/by-nc-nd/4.0/",
+  "genre": ["Computer Science", "Artificial Intelligence", "Education"],
+  "keywords": "AI, machine learning, deep learning, Python, intelligenza artificiale"
+}
+</script>

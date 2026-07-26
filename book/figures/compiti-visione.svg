@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  paithon book - figura: i quattro compiti della visione artificiale a
+  confronto sulla stessa scena (due gatti e una palla).
+  Pannelli: classificazione (etichetta unica), rilevamento (riquadri),
+  segmentazione semantica (colore per categoria), segmentazione di istanza
+  (colore per oggetto). Palette-locked: terracotta #B5532C, teal #2D5A5C,
+  ocra #C9A961, warm-black #1A1A1A, neutri warm. Fondo trasparente
+  (leggibile in light e dark). Nessun colore fuori palette.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+     viewBox="0 0 660 660" role="img"
+     aria-label="Quattro pannelli con la stessa scena di due gatti e una palla. Classificazione: una sola etichetta gatto per tutta l'immagine. Rilevamento: un riquadro etichettato attorno a ogni oggetto. Segmentazione semantica: i due gatti dello stesso colore, la palla di un altro. Segmentazione di istanza: ogni oggetto di un colore diverso.">
+  <defs>
+    <symbol id="cat" viewBox="0 0 100 120">
+      <ellipse cx="45" cy="82" rx="30" ry="36" fill="currentColor"/>
+      <path d="M72,96 C94,92 94,54 80,50 C90,62 82,90 68,86 Z" fill="currentColor"/>
+      <circle cx="45" cy="42" r="23" fill="currentColor"/>
+      <polygon points="27,26 44,26 34,3" fill="currentColor"/>
+      <polygon points="46,26 63,26 56,3" fill="currentColor"/>
+    </symbol>
+  </defs>
+  <style>
+    .pt-title { font-family:Fraunces, Georgia, serif; font-size:15px; font-weight:600; fill:#1A1A1A; text-anchor:middle; }
+    .pt-sub   { font-family:Inter, system-ui, sans-serif; font-size:11.5px; font-style:italic; fill:#5E5852; text-anchor:middle; }
+    .pt-obj   { font-family:Inter, system-ui, sans-serif; font-size:12px; font-weight:600; fill:#1A1A1A; text-anchor:middle; }
+    .pt-tag   { font-family:Inter, system-ui, sans-serif; font-size:11px; font-weight:600; fill:#F8F5EE; text-anchor:middle; }
+    .pt-pill  { font-family:Inter, system-ui, sans-serif; font-size:15px; font-weight:600; fill:#F8F5EE; text-anchor:middle; }
+    .ground   { stroke:#C9C2B4; stroke-width:3; stroke-linecap:round; }
+  </style>
+
+  <!-- ============================================================= -->
+  <!-- PANNELLO A - CLASSIFICAZIONE (in alto a sinistra)             -->
+  <!-- ============================================================= -->
+  <text class="pt-title" x="171" y="46">Classificazione</text>
+  <text class="pt-sub"   x="171" y="66">un'etichetta per l'intera immagine</text>
+  <rect x="35" y="76" width="272" height="224" rx="6" fill="none" stroke="#C9C2B4" stroke-width="1.5"/>
+  <g transform="translate(36,78)">
+    <line class="ground" x1="8" y1="206" x2="262" y2="206"/>
+    <use href="#cat" xlink:href="#cat" x="18"  y="72"  width="112" height="134" style="color:#C9C2B4"/>
+    <use href="#cat" xlink:href="#cat" x="132" y="104" width="90"  height="108" style="color:#C9C2B4"/>
+    <circle cx="240" cy="186" r="19" fill="#C9C2B4"/>
+    <rect x="95" y="8" width="82" height="28" rx="14" fill="#B5532C"/>
+    <text class="pt-pill" x="136" y="27">gatto</text>
+  </g>
+
+  <!-- ============================================================= -->
+  <!-- PANNELLO B - RILEVAMENTO / DETECTION (in alto a destra)       -->
+  <!-- ============================================================= -->
+  <text class="pt-title" x="511" y="46">Object detection</text>
+  <text class="pt-sub"   x="511" y="66">un riquadro per ogni oggetto</text>
+  <rect x="375" y="76" width="272" height="224" rx="6" fill="none" stroke="#C9C2B4" stroke-width="1.5"/>
+  <g transform="translate(376,78)">
+    <line class="ground" x1="8" y1="206" x2="262" y2="206"/>
+    <use href="#cat" xlink:href="#cat" x="18"  y="72"  width="112" height="134" style="color:#C9C2B4"/>
+    <use href="#cat" xlink:href="#cat" x="132" y="104" width="90"  height="108" style="color:#C9C2B4"/>
+    <circle cx="240" cy="186" r="19" fill="#C9C2B4"/>
+    <!-- box gatto 1 -->
+    <rect x="32" y="72" width="95" height="134" fill="none" stroke="#B5532C" stroke-width="2.5"/>
+    <rect x="32" y="57" width="42" height="16" fill="#B5532C"/>
+    <text class="pt-tag" x="53" y="69">gatto</text>
+    <!-- box gatto 2 -->
+    <rect x="140" y="104" width="78" height="102" fill="none" stroke="#B5532C" stroke-width="2.5"/>
+    <rect x="140" y="89" width="42" height="16" fill="#B5532C"/>
+    <text class="pt-tag" x="161" y="101">gatto</text>
+    <!-- box palla -->
+    <rect x="219" y="164" width="44" height="42" fill="none" stroke="#2D5A5C" stroke-width="2.5"/>
+    <rect x="219" y="149" width="38" height="16" fill="#2D5A5C"/>
+    <text class="pt-tag" x="238" y="161">palla</text>
+  </g>
+
+  <!-- ============================================================= -->
+  <!-- PANNELLO C - SEGMENTAZIONE SEMANTICA (in basso a sinistra)    -->
+  <!-- ============================================================= -->
+  <text class="pt-title" x="171" y="386">Segmentazione semantica</text>
+  <text class="pt-sub"   x="171" y="406">un colore per categoria</text>
+  <rect x="35" y="416" width="272" height="224" rx="6" fill="none" stroke="#C9C2B4" stroke-width="1.5"/>
+  <g transform="translate(36,418)">
+    <line class="ground" x1="8" y1="206" x2="262" y2="206"/>
+    <use href="#cat" xlink:href="#cat" x="18"  y="72"  width="112" height="134" style="color:#B5532C"/>
+    <use href="#cat" xlink:href="#cat" x="132" y="104" width="90"  height="108" style="color:#B5532C"/>
+    <circle cx="240" cy="186" r="19" fill="#2D5A5C"/>
+    <text class="pt-obj" x="74"  y="64">gatto</text>
+    <text class="pt-obj" x="177" y="96">gatto</text>
+    <text class="pt-obj" x="240" y="158">palla</text>
+  </g>
+
+  <!-- ============================================================= -->
+  <!-- PANNELLO D - SEGMENTAZIONE DI ISTANZA (in basso a destra)     -->
+  <!-- ============================================================= -->
+  <text class="pt-title" x="511" y="386">Segmentazione di istanza</text>
+  <text class="pt-sub"   x="511" y="406">un colore per ogni oggetto</text>
+  <rect x="375" y="416" width="272" height="224" rx="6" fill="none" stroke="#C9C2B4" stroke-width="1.5"/>
+  <g transform="translate(376,418)">
+    <line class="ground" x1="8" y1="206" x2="262" y2="206"/>
+    <use href="#cat" xlink:href="#cat" x="18"  y="72"  width="112" height="134" style="color:#B5532C"/>
+    <use href="#cat" xlink:href="#cat" x="132" y="104" width="90"  height="108" style="color:#C9A961"/>
+    <circle cx="240" cy="186" r="19" fill="#2D5A5C"/>
+    <text class="pt-obj" x="74"  y="64">gatto 1</text>
+    <text class="pt-obj" x="177" y="96">gatto 2</text>
+    <text class="pt-obj" x="240" y="158">palla</text>
+  </g>
+</svg>

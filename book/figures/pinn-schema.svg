@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 450" role="img" aria-label="Schema di una PINN: le coordinate x e t entrano in una rete MLP che produce la soluzione candidata u; da u partono due rami, quello di autograd che calcola le derivate rispetto all'input e compone il residuo dell'equazione, e quello dei dati e delle condizioni iniziali; i due rami confluiscono nella loss totale, che con la backpropagation aggiorna i pesi della rete.">
+  <defs>
+    <marker id="freccia-pinn" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#5E5852"/>
+    </marker>
+    <marker id="freccia-pinn-ocra" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#C9A961"/>
+    </marker>
+    <marker id="freccia-pinn-terra" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#B5532C"/>
+    </marker>
+  </defs>
+
+  <!-- input: le coordinate -->
+  <rect x="18" y="185" width="92" height="60" rx="8" fill="#1A1A1A" fill-opacity="0.10" stroke="#1A1A1A" stroke-width="2"/>
+  <text x="64" y="212" text-anchor="middle" font-family="Inter, sans-serif" font-size="15" fill="#1A1A1A">(x, t)</text>
+  <text x="64" y="232" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#5E5852">coordinate</text>
+
+  <line x1="110" y1="215" x2="148" y2="215" stroke="#5E5852" stroke-width="2" marker-end="url(#freccia-pinn)"/>
+
+  <!-- la rete MLP (teal) -->
+  <rect x="152" y="155" width="168" height="120" rx="8" fill="#2D5A5C" fill-opacity="0.12" stroke="#2D5A5C" stroke-width="2.5"/>
+  <text x="236" y="178" text-anchor="middle" font-family="Inter, sans-serif" font-size="13.5" font-weight="700" fill="#2D5A5C">rete MLP</text>
+  <!-- tre strati stilizzati di neuroni -->
+  <circle cx="196" cy="200" r="7" fill="#2D5A5C" fill-opacity="0.15" stroke="#2D5A5C" stroke-width="2"/>
+  <circle cx="196" cy="222" r="7" fill="#2D5A5C" fill-opacity="0.15" stroke="#2D5A5C" stroke-width="2"/>
+  <circle cx="196" cy="244" r="7" fill="#2D5A5C" fill-opacity="0.15" stroke="#2D5A5C" stroke-width="2"/>
+  <circle cx="236" cy="200" r="7" fill="#2D5A5C" fill-opacity="0.15" stroke="#2D5A5C" stroke-width="2"/>
+  <circle cx="236" cy="222" r="7" fill="#2D5A5C" fill-opacity="0.15" stroke="#2D5A5C" stroke-width="2"/>
+  <circle cx="236" cy="244" r="7" fill="#2D5A5C" fill-opacity="0.15" stroke="#2D5A5C" stroke-width="2"/>
+  <circle cx="276" cy="200" r="7" fill="#2D5A5C" fill-opacity="0.15" stroke="#2D5A5C" stroke-width="2"/>
+  <circle cx="276" cy="222" r="7" fill="#2D5A5C" fill-opacity="0.15" stroke="#2D5A5C" stroke-width="2"/>
+  <circle cx="276" cy="244" r="7" fill="#2D5A5C" fill-opacity="0.15" stroke="#2D5A5C" stroke-width="2"/>
+  <text x="236" y="266" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" fill="#5E5852">attivazioni tanh</text>
+
+  <line x1="320" y1="215" x2="358" y2="215" stroke="#5E5852" stroke-width="2" marker-end="url(#freccia-pinn)"/>
+
+  <!-- la soluzione candidata -->
+  <rect x="362" y="185" width="112" height="60" rx="8" fill="#1A1A1A" fill-opacity="0.10" stroke="#1A1A1A" stroke-width="2"/>
+  <text x="418" y="212" text-anchor="middle" font-family="Inter, sans-serif" font-size="15" fill="#1A1A1A">u<tspan dy="4" font-size="10.5">&#952;</tspan><tspan dy="-4">(x, t)</tspan></text>
+  <text x="418" y="232" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#5E5852">soluzione candidata</text>
+
+  <!-- ramo autograd (ocra), verso l'alto -->
+  <line x1="452" y1="185" x2="534" y2="122" stroke="#C9A961" stroke-width="2.5" marker-end="url(#freccia-pinn-ocra)"/>
+  <rect x="540" y="42" width="212" height="86" rx="8" fill="#C9A961" fill-opacity="0.15" stroke="#C9A961" stroke-width="2.5"/>
+  <text x="646" y="66" text-anchor="middle" font-family="Inter, sans-serif" font-size="13.5" font-weight="700" fill="#1A1A1A">autograd &#8594; residuo</text>
+  <text x="646" y="88" text-anchor="middle" font-family="Inter, sans-serif" font-size="12.5" fill="#1A1A1A">&#8706;u/&#8706;t, &#8706;&#178;u/&#8706;x&#178;, &#8230;</text>
+  <text x="646" y="108" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#5E5852">quanto u viola l'equazione</text>
+  <text x="382" y="140" font-family="Inter, sans-serif" font-size="11" fill="#5E5852">derivate rispetto</text>
+  <text x="382" y="155" font-family="Inter, sans-serif" font-size="11" fill="#5E5852">all'input</text>
+
+  <!-- ramo dati e condizioni (grigio caldo), verso il basso -->
+  <line x1="452" y1="245" x2="534" y2="308" stroke="#5E5852" stroke-width="2.5" marker-end="url(#freccia-pinn)"/>
+  <rect x="540" y="302" width="212" height="86" rx="8" fill="#5E5852" fill-opacity="0.10" stroke="#5E5852" stroke-width="2"/>
+  <text x="646" y="326" text-anchor="middle" font-family="Inter, sans-serif" font-size="13.5" font-weight="700" fill="#1A1A1A">dati e condizioni</text>
+  <text x="646" y="348" text-anchor="middle" font-family="Inter, sans-serif" font-size="12.5" fill="#1A1A1A">u(0) = u&#8320;, u&#8242;(0) = v&#8320;</text>
+  <text x="646" y="368" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#5E5852">+ eventuali misure</text>
+
+  <!-- confluenza nella loss (terracotta) -->
+  <line x1="752" y1="100" x2="812" y2="176" stroke="#B5532C" stroke-width="2.5" marker-end="url(#freccia-pinn-terra)"/>
+  <line x1="752" y1="330" x2="812" y2="254" stroke="#B5532C" stroke-width="2.5" marker-end="url(#freccia-pinn-terra)"/>
+  <rect x="770" y="180" width="112" height="70" rx="8" fill="#B5532C" fill-opacity="0.15" stroke="#B5532C" stroke-width="2.5"/>
+  <text x="826" y="206" text-anchor="middle" font-family="Inter, sans-serif" font-size="13.5" font-weight="700" fill="#B5532C">loss totale</text>
+  <text x="826" y="228" text-anchor="middle" font-family="Inter, sans-serif" font-size="12.5" fill="#1A1A1A">&#8466; = fisica + dati</text>
+
+  <!-- retroazione: la backpropagation aggiorna i pesi -->
+  <path d="M 826 250 C 826 424, 236 424, 236 282" fill="none" stroke="#5E5852" stroke-width="1.8" stroke-dasharray="6 5" marker-end="url(#freccia-pinn)"/>
+  <text x="450" y="435" text-anchor="middle" font-family="Inter, sans-serif" font-size="11.5" fill="#5E5852">backpropagation: aggiorna i pesi &#952; della rete</text>
+</svg>

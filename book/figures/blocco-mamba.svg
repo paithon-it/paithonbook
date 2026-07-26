@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 620" font-family="'Inter', -apple-system, Segoe UI, sans-serif" role="img" aria-label="Il blocco Mamba: l'ingresso passa in una proiezione che lo espande e lo divide in due rami. Il ramo principale attraversa una convoluzione causale 1D, un'attivazione SiLU e lo state space model selettivo S6; il ramo parallelo attraversa una SiLU e fa da gate. I due rami si moltiplicano, il risultato passa in una proiezione d'uscita e si somma alla connessione residua.">
+  <defs>
+    <marker id="bm-dark" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1A1A1A"/>
+    </marker>
+    <marker id="bm-terra" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#B5532C"/>
+    </marker>
+  </defs>
+
+  <!-- connessione residua (dietro) -->
+  <path d="M238,566 H438 V118 H245" fill="none" stroke="#B5532C" stroke-width="2.5" stroke-dasharray="7 5" marker-end="url(#bm-terra)"/>
+  <text x="446" y="345" font-size="12.5" fill="#B5532C" font-weight="600" transform="rotate(90 446 345)">connessione residua</text>
+
+  <!-- input -->
+  <circle cx="230" cy="566" r="9" fill="#C9A961"/>
+  <text x="212" y="571" font-size="14" text-anchor="end" fill="#1A1A1A">x</text>
+  <line x1="230" y1="557" x2="230" y2="530" stroke="#1A1A1A" stroke-width="1.8" marker-end="url(#bm-dark)"/>
+
+  <!-- proiezione in -->
+  <rect x="150" y="496" width="160" height="32" rx="7" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2.2"/>
+  <text x="230" y="516" font-size="13" text-anchor="middle" fill="#2D5A5C" font-weight="600">Proiezione d'ingresso</text>
+
+  <!-- split -->
+  <line x1="205" y1="496" x2="150" y2="468" stroke="#1A1A1A" stroke-width="1.8" marker-end="url(#bm-dark)"/>
+  <line x1="255" y1="496" x2="322" y2="466" stroke="#1A1A1A" stroke-width="1.8" marker-end="url(#bm-dark)"/>
+
+  <!-- ===== ramo principale ===== -->
+  <!-- conv1d -->
+  <rect x="81" y="432" width="138" height="32" rx="7" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2.2"/>
+  <text x="150" y="452" font-size="12.5" text-anchor="middle" fill="#2D5A5C" font-weight="600">Conv1D causale</text>
+  <line x1="150" y1="432" x2="150" y2="401" stroke="#1A1A1A" stroke-width="1.8" marker-end="url(#bm-dark)"/>
+  <!-- SiLU -->
+  <rect x="83" y="369" width="134" height="30" rx="7" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2.2"/>
+  <text x="150" y="388" font-size="12.5" text-anchor="middle" fill="#2D5A5C" font-weight="600">SiLU</text>
+  <line x1="150" y1="369" x2="150" y2="335" stroke="#1A1A1A" stroke-width="1.8" marker-end="url(#bm-dark)"/>
+  <!-- SSM selettivo (il cuore) -->
+  <rect x="76" y="291" width="148" height="44" rx="8" fill="#F8F5EE" stroke="#B5532C" stroke-width="3"/>
+  <text x="150" y="311" font-size="13" text-anchor="middle" fill="#B5532C" font-weight="700">SSM selettivo</text>
+  <text x="150" y="327" font-size="11.5" text-anchor="middle" fill="#B5532C">(S6, parametri da x)</text>
+  <!-- verso il gate -->
+  <path d="M150,291 V240 H215" fill="none" stroke="#1A1A1A" stroke-width="1.8" marker-end="url(#bm-dark)"/>
+
+  <!-- ===== ramo gate ===== -->
+  <rect x="262" y="433" width="120" height="30" rx="7" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2.2"/>
+  <text x="322" y="452" font-size="12.5" text-anchor="middle" fill="#2D5A5C" font-weight="600">SiLU (gate)</text>
+  <path d="M322,433 V240 H245" fill="none" stroke="#1A1A1A" stroke-width="1.8" marker-end="url(#bm-dark)"/>
+
+  <!-- moltiplicazione (gating) -->
+  <circle cx="230" cy="240" r="15" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="2"/>
+  <text x="230" y="246" font-size="17" text-anchor="middle" fill="#1A1A1A" font-weight="700">&#8857;</text>
+  <line x1="230" y1="225" x2="230" y2="194" stroke="#1A1A1A" stroke-width="1.8" marker-end="url(#bm-dark)"/>
+
+  <!-- proiezione out -->
+  <rect x="150" y="162" width="160" height="32" rx="7" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2.2"/>
+  <text x="230" y="182" font-size="13" text-anchor="middle" fill="#2D5A5C" font-weight="600">Proiezione d'uscita</text>
+  <line x1="230" y1="162" x2="230" y2="133" stroke="#1A1A1A" stroke-width="1.8" marker-end="url(#bm-dark)"/>
+
+  <!-- somma residua -->
+  <circle cx="230" cy="118" r="15" fill="#F8F5EE" stroke="#B5532C" stroke-width="2"/>
+  <text x="230" y="124" font-size="17" text-anchor="middle" fill="#B5532C" font-weight="700">&#8853;</text>
+  <line x1="230" y1="103" x2="230" y2="76" stroke="#1A1A1A" stroke-width="1.8" marker-end="url(#bm-dark)"/>
+
+  <!-- output -->
+  <circle cx="230" cy="66" r="9" fill="#2D5A5C"/>
+  <text x="212" y="71" font-size="14" text-anchor="end" fill="#1A1A1A">y</text>
+
+  <!-- titolo -->
+  <text x="120" y="40" font-size="16" fill="#1A1A1A" font-weight="700">Il blocco Mamba</text>
+  <text x="120" y="59" font-size="12" fill="#5E5852">fonde SSM selettivo e gated MLP in un unico blocco</text>
+</svg>

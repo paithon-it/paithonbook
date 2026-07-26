@@ -1,0 +1,62 @@
+<svg viewBox="0 0 720 420" width="100%" role="img" aria-label="Sei riquadri collegati in un anello: problema, dati, modello, addestramento, valutazione, uso. Una freccia di ritorno dalla valutazione al modello indica il ciclo di miglioramento." xmlns="http://www.w3.org/2000/svg">
+  <rect x="0" y="0" width="720" height="420" fill="#F8F5EE"/>
+  <defs>
+    <marker id="fArrK" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#1A1A1A"/></marker>
+    <marker id="fArrT" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#B5532C"/></marker>
+  </defs>
+
+  <text x="360" y="44" font-family="Fraunces, Georgia, serif" font-size="21" font-weight="600" fill="#1A1A1A" text-anchor="middle">Il flusso di lavoro, sei stazioni</text>
+
+  <!-- ============ riga superiore: 1 problema, 2 dati, 3 modello ============ -->
+  <rect x="40" y="80" width="180" height="74" rx="8" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.8"/>
+  <circle cx="66" cy="106" r="12" fill="#2D5A5C"/>
+  <text x="66" y="111" font-family="Inter, sans-serif" font-size="13" font-weight="bold" fill="#F8F5EE" text-anchor="middle">1</text>
+  <text x="86" y="111" font-family="Inter, sans-serif" font-size="14" font-weight="bold" fill="#1A1A1A">Il problema</text>
+  <text x="60" y="136" font-family="Inter, sans-serif" font-size="11.5" fill="#5A524A">che cosa vuoi predire?</text>
+
+  <rect x="270" y="80" width="180" height="74" rx="8" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.8"/>
+  <circle cx="296" cy="106" r="12" fill="#2D5A5C"/>
+  <text x="296" y="111" font-family="Inter, sans-serif" font-size="13" font-weight="bold" fill="#F8F5EE" text-anchor="middle">2</text>
+  <text x="316" y="111" font-family="Inter, sans-serif" font-size="14" font-weight="bold" fill="#1A1A1A">I dati</text>
+  <text x="290" y="136" font-family="Inter, sans-serif" font-size="11.5" fill="#5A524A">train / validation / test</text>
+
+  <rect x="500" y="80" width="180" height="74" rx="8" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.8"/>
+  <circle cx="526" cy="106" r="12" fill="#2D5A5C"/>
+  <text x="526" y="111" font-family="Inter, sans-serif" font-size="13" font-weight="bold" fill="#F8F5EE" text-anchor="middle">3</text>
+  <text x="546" y="111" font-family="Inter, sans-serif" font-size="14" font-weight="bold" fill="#1A1A1A">Il modello</text>
+  <text x="520" y="136" font-family="Inter, sans-serif" font-size="11.5" fill="#5A524A">nn.Module e la loss</text>
+
+  <!-- ============ riga inferiore: 4 addestramento, 5 valutazione, 6 uso ============ -->
+  <rect x="500" y="250" width="180" height="74" rx="8" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.8"/>
+  <circle cx="526" cy="276" r="12" fill="#2D5A5C"/>
+  <text x="526" y="281" font-family="Inter, sans-serif" font-size="13" font-weight="bold" fill="#F8F5EE" text-anchor="middle">4</text>
+  <text x="546" y="281" font-family="Inter, sans-serif" font-size="14" font-weight="bold" fill="#1A1A1A">Addestramento</text>
+  <text x="520" y="306" font-family="Inter, sans-serif" font-size="11.5" fill="#5A524A">il loop dei cinque passi</text>
+
+  <rect x="270" y="250" width="180" height="74" rx="8" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.8"/>
+  <circle cx="296" cy="276" r="12" fill="#2D5A5C"/>
+  <text x="296" y="281" font-family="Inter, sans-serif" font-size="13" font-weight="bold" fill="#F8F5EE" text-anchor="middle">5</text>
+  <text x="316" y="281" font-family="Inter, sans-serif" font-size="14" font-weight="bold" fill="#1A1A1A">Valutazione</text>
+  <text x="290" y="306" font-family="Inter, sans-serif" font-size="11.5" fill="#5A524A">su dati mai visti</text>
+
+  <rect x="40" y="250" width="180" height="74" rx="8" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.8"/>
+  <circle cx="66" cy="276" r="12" fill="#2D5A5C"/>
+  <text x="66" y="281" font-family="Inter, sans-serif" font-size="13" font-weight="bold" fill="#F8F5EE" text-anchor="middle">6</text>
+  <text x="86" y="281" font-family="Inter, sans-serif" font-size="14" font-weight="bold" fill="#1A1A1A">Salvare e usare</text>
+  <text x="60" y="306" font-family="Inter, sans-serif" font-size="11.5" fill="#5A524A">lo state_dict, poi l'uso</text>
+
+  <!-- ============ frecce del percorso ============ -->
+  <line x1="222" y1="117" x2="264" y2="117" stroke="#1A1A1A" stroke-width="1.8" marker-end="url(#fArrK)"/>
+  <line x1="452" y1="117" x2="494" y2="117" stroke="#1A1A1A" stroke-width="1.8" marker-end="url(#fArrK)"/>
+  <line x1="590" y1="156" x2="590" y2="244" stroke="#1A1A1A" stroke-width="1.8" marker-end="url(#fArrK)"/>
+  <line x1="498" y1="287" x2="456" y2="287" stroke="#1A1A1A" stroke-width="1.8" marker-end="url(#fArrK)"/>
+  <line x1="268" y1="287" x2="226" y2="287" stroke="#1A1A1A" stroke-width="1.8" marker-end="url(#fArrK)"/>
+
+  <!-- ============ ciclo di miglioramento: valutazione -> modello ============ -->
+  <path d="M 360 248 C 378 206, 450 198, 528 158" fill="none" stroke="#B5532C" stroke-width="2" stroke-dasharray="7 5" marker-end="url(#fArrT)"/>
+  <text x="336" y="196" font-family="Inter, sans-serif" font-size="12" font-weight="600" fill="#B5532C" text-anchor="end">non va? si cambia</text>
+  <text x="336" y="213" font-family="Inter, sans-serif" font-size="12" font-weight="600" fill="#B5532C" text-anchor="end">una cosa sola e si riprova</text>
+
+  <!-- ============ nota a piede ============ -->
+  <text x="360" y="372" font-family="Inter, sans-serif" font-size="12" fill="#5A524A" text-anchor="middle">Le stazioni 3–5 si ripetono decine di volte: è lì che si consuma il tempo di un progetto.</text>
+</svg>

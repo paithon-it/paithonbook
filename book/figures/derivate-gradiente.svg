@@ -1,0 +1,31 @@
+<svg viewBox="0 0 720 400" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Superficie della loss vista dall'alto come curve di livello, con il percorso a passi della discesa del gradiente verso il minimo">
+  <defs>
+    <marker id="gd-terra" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#B5532C"/></marker>
+    <marker id="gd-ocra" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#C9A961"/></marker>
+  </defs>
+  <rect x="0" y="0" width="720" height="400" fill="#F8F5EE"/>
+  <text x="360" y="30" text-anchor="middle" font-family="sans-serif" font-size="15" fill="#1A1A1A">la superficie della loss vista dall'alto</text>
+  <g fill="none" stroke="#2D5A5C" stroke-width="1.5">
+    <ellipse cx="340" cy="210" rx="290" ry="140"/>
+    <ellipse cx="340" cy="210" rx="228" ry="108" opacity="0.85"/>
+    <ellipse cx="340" cy="210" rx="168" ry="78" opacity="0.7"/>
+    <ellipse cx="340" cy="210" rx="110" ry="50" opacity="0.55"/>
+    <ellipse cx="340" cy="210" rx="56" ry="24" opacity="0.4"/>
+  </g>
+  <text x="620" y="330" font-family="sans-serif" font-size="12" fill="#2D5A5C">loss alta</text>
+  <text x="352" y="176" font-family="sans-serif" font-size="12" fill="#2D5A5C">loss bassa</text>
+  <g stroke="#B5532C" stroke-width="2" fill="none">
+    <line x1="600" y1="120" x2="474" y2="188" marker-end="url(#gd-terra)"/>
+    <line x1="474" y1="188" x2="438" y2="152" marker-end="url(#gd-terra)"/>
+    <line x1="438" y1="152" x2="388" y2="212" marker-end="url(#gd-terra)"/>
+    <line x1="388" y1="212" x2="362" y2="192" marker-end="url(#gd-terra)"/>
+    <line x1="362" y1="192" x2="344" y2="208" marker-end="url(#gd-terra)"/>
+  </g>
+  <circle cx="600" cy="120" r="6" fill="#B5532C"/>
+  <text x="612" y="112" font-family="sans-serif" font-size="12" fill="#B5532C">partenza (parametri iniziali)</text>
+  <line x1="600" y1="120" x2="548" y2="148" stroke="#C9A961" stroke-width="2" stroke-dasharray="4 4" marker-end="url(#gd-ocra)"/>
+  <text x="500" y="105" font-family="sans-serif" font-size="12" fill="#C9A961">−∇L: la discesa più ripida</text>
+  <circle cx="340" cy="210" r="6" fill="#1A1A1A"/>
+  <text x="330" y="238" font-family="sans-serif" font-size="12" fill="#1A1A1A">minimo</text>
+  <text x="40" y="378" font-family="sans-serif" font-size="13" fill="#5E5852">ogni segmento è un passo: pendenza misurata, passo contro pendenza, ripetere</text>
+</svg>

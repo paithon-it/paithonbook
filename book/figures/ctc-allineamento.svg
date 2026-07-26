@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 320" font-family="'Inter', -apple-system, Segoe UI, sans-serif" role="img" aria-label="Sette frame audio adiacenti attraversati da una forma d'onda; sotto ogni frame un simbolo emesso dalla rete: P A A L vuoto L A. Una freccia con l'etichetta collassa i ripetuti e rimuovi i vuoti porta alla parola finale PALLA.">
+  <defs>
+    <marker id="ctc-terra" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#B5532C"/>
+    </marker>
+    <marker id="ctc-dark" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1A1A1A"/>
+    </marker>
+  </defs>
+
+  <!-- etichetta in alto -->
+  <text x="76" y="26" font-size="13" fill="#5E5852">segnale audio suddiviso in frame (&#8776; 25 ms l'uno)</text>
+
+  <!-- 7 frame adiacenti (colonne) -->
+  <g fill="#F8F5EE" stroke="#C9A961" stroke-width="2">
+    <rect x="76"  y="40" width="64" height="44"/>
+    <rect x="140" y="40" width="64" height="44"/>
+    <rect x="204" y="40" width="64" height="44"/>
+    <rect x="268" y="40" width="64" height="44"/>
+    <rect x="332" y="40" width="64" height="44"/>
+    <rect x="396" y="40" width="64" height="44"/>
+    <rect x="460" y="40" width="64" height="44"/>
+  </g>
+
+  <!-- forma d'onda che attraversa i frame -->
+  <polyline fill="none" stroke="#2D5A5C" stroke-width="2" stroke-linejoin="round"
+    points="80,62 96,50 112,70 128,54 144,66 160,48 176,68 192,58 208,52 224,72 240,56 256,64 272,50 288,68 304,58 320,54 336,70 352,52 368,66 384,50 400,68 416,58 432,64 448,52 464,70 480,56 496,64 512,54 520,62"/>
+
+  <!-- frecce dai frame ai simboli -->
+  <g stroke="#1A1A1A" stroke-width="1.5">
+    <line x1="108" y1="90" x2="108" y2="122" marker-end="url(#ctc-dark)"/>
+    <line x1="172" y1="90" x2="172" y2="122" marker-end="url(#ctc-dark)"/>
+    <line x1="236" y1="90" x2="236" y2="122" marker-end="url(#ctc-dark)"/>
+    <line x1="300" y1="90" x2="300" y2="122" marker-end="url(#ctc-dark)"/>
+    <line x1="364" y1="90" x2="364" y2="122" marker-end="url(#ctc-dark)"/>
+    <line x1="428" y1="90" x2="428" y2="122" marker-end="url(#ctc-dark)"/>
+    <line x1="492" y1="90" x2="492" y2="122" marker-end="url(#ctc-dark)"/>
+  </g>
+
+  <!-- simboli emessi per frame -->
+  <g font-size="26" font-weight="700" text-anchor="middle" fill="#1A1A1A">
+    <text x="108" y="152">P</text>
+    <text x="172" y="152">A</text>
+    <text x="236" y="152">A</text>
+    <text x="300" y="152">L</text>
+    <text x="364" y="152" font-size="24" fill="#8B847C">&#8709;</text>
+    <text x="428" y="152">L</text>
+    <text x="492" y="152">A</text>
+  </g>
+
+  <!-- freccia di collasso -->
+  <line x1="300" y1="166" x2="300" y2="208" stroke="#B5532C" stroke-width="3" marker-end="url(#ctc-terra)"/>
+  <text x="330" y="182" font-size="13" fill="#5E5852">collassa i simboli ripetuti,</text>
+  <text x="330" y="199" font-size="13" fill="#5E5852">poi rimuovi i vuoti &#8709;</text>
+
+  <!-- parola finale -->
+  <rect x="195" y="216" width="210" height="52" rx="10" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2.5"/>
+  <text x="300" y="251" font-size="32" font-weight="700" text-anchor="middle" fill="#2D5A5C" letter-spacing="6">PALLA</text>
+
+  <!-- legenda -->
+  <text x="76" y="298" font-size="12" fill="#8B847C">&#8709; = simbolo &#171;vuoto&#187; (blank): non produce alcun carattere</text>
+</svg>

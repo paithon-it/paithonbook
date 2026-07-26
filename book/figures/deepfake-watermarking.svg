@@ -1,0 +1,32 @@
+<svg viewBox="0 0 760 400" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Schema: la firma statistica di un watermark nel testo generato">
+  <rect x="0" y="0" width="760" height="400" fill="#F8F5EE"/>
+  <text x="380" y="34" text-anchor="middle" font-family="sans-serif" font-size="17" font-weight="bold" fill="#1A1A1A">Una firma statistica: parole "verdi" in eccesso</text>
+
+  <!-- Left: natural text -->
+  <text x="190" y="70" text-anchor="middle" font-family="sans-serif" font-size="14" font-weight="bold" fill="#1A1A1A">Testo naturale</text>
+  <line x1="70" y1="300" x2="310" y2="300" stroke="#1A1A1A" stroke-width="1.5"/>
+  <rect x="82" y="200" width="26" height="100" fill="#C9A961" stroke="#1A1A1A" stroke-width="1.5"/>
+  <rect x="118" y="196" width="26" height="104" fill="#1A1A1A"/>
+  <rect x="154" y="204" width="26" height="96" fill="#C9A961" stroke="#1A1A1A" stroke-width="1.5"/>
+  <rect x="190" y="198" width="26" height="102" fill="#1A1A1A"/>
+  <rect x="226" y="202" width="26" height="98" fill="#C9A961" stroke="#1A1A1A" stroke-width="1.5"/>
+  <rect x="262" y="200" width="26" height="100" fill="#1A1A1A"/>
+  <text x="190" y="326" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#5E5852">verdi circa 50%: nessuna traccia</text>
+
+  <!-- Right: watermarked text -->
+  <text x="570" y="70" text-anchor="middle" font-family="sans-serif" font-size="14" font-weight="bold" fill="#2D5A5C">Testo con watermark</text>
+  <line x1="450" y1="300" x2="690" y2="300" stroke="#1A1A1A" stroke-width="1.5"/>
+  <rect x="462" y="150" width="26" height="150" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="1.5"/>
+  <rect x="498" y="232" width="26" height="68" fill="#1A1A1A"/>
+  <rect x="534" y="158" width="26" height="142" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="1.5"/>
+  <rect x="570" y="238" width="26" height="62" fill="#1A1A1A"/>
+  <rect x="606" y="146" width="26" height="154" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="1.5"/>
+  <rect x="642" y="242" width="26" height="58" fill="#1A1A1A"/>
+  <text x="570" y="326" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#2D5A5C">verdi circa 70%: eccesso rilevabile</text>
+
+  <!-- legend -->
+  <rect x="250" y="356" width="16" height="16" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="274" y="369" font-family="sans-serif" font-size="12" fill="#1A1A1A">parole della "lista verde"</text>
+  <rect x="470" y="356" width="16" height="16" fill="#1A1A1A"/>
+  <text x="494" y="369" font-family="sans-serif" font-size="12" fill="#1A1A1A">parole della "lista rossa"</text>
+</svg>

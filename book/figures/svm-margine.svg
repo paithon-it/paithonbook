@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  paithon book - figura: il margine massimo di una SVM.
+  Due classi (cerchi teal vs quadrati terracotta) separate da un iperpiano
+  (linea warm-black continua) e da due rette di margine parallele (tratteggiate)
+  che delimitano il "corridoio". I vettori di supporto - i punti che toccano le
+  rette di margine - sono cerchiati in ocra. Una doppia freccia misura la
+  larghezza del corridoio con l'etichetta 2/||w||. Palette-locked, fondo
+  trasparente (leggibile in dark mode).
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 380" role="img"
+     aria-label="Piano con due classi di punti: cerchi in teal in alto a sinistra, quadrati in terracotta in basso a destra. Una linea nera continua e' l'iperpiano separatore; due rette parallele tratteggiate delimitano il corridoio, o margine. I punti che toccano le rette di margine, i vettori di supporto, sono cerchiati in ocra. Una doppia freccia trasversale misura la larghezza del corridoio, etichettata due su norma di w.">
+  <defs>
+    <marker id="pt-m-arrow" viewBox="0 0 10 10" refX="5" refY="5"
+            markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1A1A1A"/>
+    </marker>
+  </defs>
+  <style>
+    .plane  { stroke:#1A1A1A; stroke-width:2.6; }
+    .margin { stroke:#5E5852; stroke-width:1.6; stroke-dasharray:6 5; }
+    .teal   { fill:#2D5A5C; }
+    .terra  { fill:#B5532C; }
+    .sv     { fill:none; stroke:#C9A961; stroke-width:2.6; }
+    .meas   { stroke:#1A1A1A; stroke-width:1.4; }
+    .lbl    { font-family:Inter, system-ui, sans-serif; font-size:14px; fill:#5E5852; }
+    .lblp   { font-family:Inter, system-ui, sans-serif; font-size:13px; font-weight:600; }
+    .lblm   { font-family:Inter, system-ui, sans-serif; font-size:15px; font-weight:600; fill:#1A1A1A; }
+  </style>
+
+  <!-- rette di margine (tratteggiate) -->
+  <line class="margin" x1="75"  y1="269" x2="355" y2="49"/>
+  <line class="margin" x1="125" y1="331" x2="405" y2="111"/>
+
+  <!-- iperpiano separatore (continuo) -->
+  <line class="plane" x1="100" y1="300" x2="380" y2="80"/>
+
+  <!-- punti non di supporto: classe teal (cerchi), lato in alto a sinistra -->
+  <circle class="teal" cx="120" cy="180" r="7"/>
+  <circle class="teal" cx="150" cy="120" r="7"/>
+  <circle class="teal" cx="95"  cy="235" r="7"/>
+  <circle class="teal" cx="210" cy="95"  r="7"/>
+
+  <!-- punti non di supporto: classe terracotta (quadrati), lato in basso a destra -->
+  <rect class="terra" x="293" y="293" width="14" height="14"/>
+  <rect class="terra" x="353" y="248" width="14" height="14"/>
+  <rect class="terra" x="243" y="318" width="14" height="14"/>
+  <rect class="terra" x="388" y="198" width="14" height="14"/>
+
+  <!-- vettori di supporto teal (sulla retta di margine superiore) -->
+  <circle class="teal" cx="173" cy="192" r="7"/>
+  <circle class="sv"   cx="173" cy="192" r="12"/>
+  <circle class="teal" cx="249" cy="133" r="7"/>
+  <circle class="sv"   cx="249" cy="133" r="12"/>
+
+  <!-- vettori di supporto terracotta (sulla retta di margine inferiore) -->
+  <rect class="terra" x="230" y="236" width="14" height="14"/>
+  <circle class="sv"  cx="237" cy="243" r="13"/>
+  <rect class="terra" x="308" y="174" width="14" height="14"/>
+  <circle class="sv"  cx="315" cy="181" r="13"/>
+
+  <!-- doppia freccia: larghezza del margine (da margine a margine attraverso l'iperpiano) -->
+  <line class="meas" x1="277" y1="111" x2="327" y2="173"
+        marker-start="url(#pt-m-arrow)" marker-end="url(#pt-m-arrow)"/>
+  <text class="lblm" x="333" y="140">2 / &#8741;w&#8741;</text>
+
+  <!-- etichette -->
+  <text class="lblp" x="368" y="70" fill="#1A1A1A" text-anchor="end">iperpiano</text>
+  <text class="lbl"  x="60"  y="300">margine</text>
+  <text class="lblp" x="150" y="360" fill="#C9A961">vettori di supporto (cerchiati)</text>
+</svg>

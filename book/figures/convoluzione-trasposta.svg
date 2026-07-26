@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  paithon book - figura: convoluzione trasposta.
+  Una mappa 2x2 (valori 1, 2, 3, 4, ognuno in un colore della palette) viene
+  espansa da un kernel 2x2 di tutti 1 con stride 2 in una mappa 4x4: ogni
+  valore "timbra" un blocco 2x2 dello stesso colore. Palette-locked, celle su
+  fondo cream: leggibile in light e dark mode. Nessun colore fuori palette.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 320" role="img"
+     aria-label="Una mappa due per due con i valori 1, 2, 3 e 4, ciascuno in un colore diverso, viene espansa da una convoluzione trasposta con kernel due per due di tutti uno e stride 2 in una mappa quattro per quattro, dove ogni valore diventa un blocco due per due dello stesso colore.">
+  <style>
+    .lbl { font-family:Inter, system-ui, sans-serif; font-size:14px; fill:#1A1A1A; }
+    .leg { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#5E5852; }
+    .num { font-family:Inter, system-ui, sans-serif; font-size:20px; font-weight:600; fill:#1A1A1A; }
+    .numS{ font-family:Inter, system-ui, sans-serif; font-size:15px; font-weight:600; fill:#1A1A1A; }
+  </style>
+  <defs>
+    <marker id="freccia-ct" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#5E5852"/>
+    </marker>
+  </defs>
+
+  <!-- mappa 2x2 -->
+  <rect x="60" y="80" width="128" height="128" fill="#F8F5EE"/>
+  <rect x="60"  y="80"  width="64" height="64" fill="#2D5A5C" fill-opacity="0.20" stroke="#1A1A1A" stroke-width="1.2"/>
+  <rect x="124" y="80"  width="64" height="64" fill="#B5532C" fill-opacity="0.20" stroke="#1A1A1A" stroke-width="1.2"/>
+  <rect x="60"  y="144" width="64" height="64" fill="#C9A961" fill-opacity="0.30" stroke="#1A1A1A" stroke-width="1.2"/>
+  <rect x="124" y="144" width="64" height="64" fill="#5E5852" fill-opacity="0.25" stroke="#1A1A1A" stroke-width="1.2"/>
+  <text class="num" x="92"  y="119" text-anchor="middle">1</text>
+  <text class="num" x="156" y="119" text-anchor="middle">2</text>
+  <text class="num" x="92"  y="183" text-anchor="middle">3</text>
+  <text class="num" x="156" y="183" text-anchor="middle">4</text>
+  <text class="lbl" x="124" y="236" text-anchor="middle">mappa 2×2</text>
+
+  <!-- kernel (timbro) -->
+  <text class="leg" x="334" y="52" text-anchor="middle">timbro (kernel) 2×2</text>
+  <rect x="300" y="64" width="68" height="68" fill="#F8F5EE"/>
+  <rect x="300" y="64" width="34" height="34" fill="none" stroke="#1A1A1A" stroke-width="1.2"/>
+  <rect x="334" y="64" width="34" height="34" fill="none" stroke="#1A1A1A" stroke-width="1.2"/>
+  <rect x="300" y="98" width="34" height="34" fill="none" stroke="#1A1A1A" stroke-width="1.2"/>
+  <rect x="334" y="98" width="34" height="34" fill="none" stroke="#1A1A1A" stroke-width="1.2"/>
+  <text class="numS" x="317" y="86"  text-anchor="middle">1</text>
+  <text class="numS" x="351" y="86"  text-anchor="middle">1</text>
+  <text class="numS" x="317" y="120" text-anchor="middle">1</text>
+  <text class="numS" x="351" y="120" text-anchor="middle">1</text>
+
+  <!-- freccia -->
+  <line x1="200" y1="160" x2="452" y2="160" stroke="#5E5852" stroke-width="2" marker-end="url(#freccia-ct)"/>
+  <text class="leg" x="326" y="184" text-anchor="middle">stride 2</text>
+
+  <!-- mappa 4x4 -->
+  <rect x="470" y="48" width="192" height="192" fill="#F8F5EE"/>
+  <!-- blocco del valore 1 (teal) -->
+  <rect x="470" y="48"  width="48" height="48" fill="#2D5A5C" fill-opacity="0.20" stroke="#1A1A1A" stroke-width="0.8"/>
+  <rect x="518" y="48"  width="48" height="48" fill="#2D5A5C" fill-opacity="0.20" stroke="#1A1A1A" stroke-width="0.8"/>
+  <rect x="470" y="96"  width="48" height="48" fill="#2D5A5C" fill-opacity="0.20" stroke="#1A1A1A" stroke-width="0.8"/>
+  <rect x="518" y="96"  width="48" height="48" fill="#2D5A5C" fill-opacity="0.20" stroke="#1A1A1A" stroke-width="0.8"/>
+  <!-- blocco del valore 2 (terracotta) -->
+  <rect x="566" y="48"  width="48" height="48" fill="#B5532C" fill-opacity="0.20" stroke="#1A1A1A" stroke-width="0.8"/>
+  <rect x="614" y="48"  width="48" height="48" fill="#B5532C" fill-opacity="0.20" stroke="#1A1A1A" stroke-width="0.8"/>
+  <rect x="566" y="96"  width="48" height="48" fill="#B5532C" fill-opacity="0.20" stroke="#1A1A1A" stroke-width="0.8"/>
+  <rect x="614" y="96"  width="48" height="48" fill="#B5532C" fill-opacity="0.20" stroke="#1A1A1A" stroke-width="0.8"/>
+  <!-- blocco del valore 3 (ocra) -->
+  <rect x="470" y="144" width="48" height="48" fill="#C9A961" fill-opacity="0.30" stroke="#1A1A1A" stroke-width="0.8"/>
+  <rect x="518" y="144" width="48" height="48" fill="#C9A961" fill-opacity="0.30" stroke="#1A1A1A" stroke-width="0.8"/>
+  <rect x="470" y="192" width="48" height="48" fill="#C9A961" fill-opacity="0.30" stroke="#1A1A1A" stroke-width="0.8"/>
+  <rect x="518" y="192" width="48" height="48" fill="#C9A961" fill-opacity="0.30" stroke="#1A1A1A" stroke-width="0.8"/>
+  <!-- blocco del valore 4 (grigio caldo) -->
+  <rect x="566" y="144" width="48" height="48" fill="#5E5852" fill-opacity="0.25" stroke="#1A1A1A" stroke-width="0.8"/>
+  <rect x="614" y="144" width="48" height="48" fill="#5E5852" fill-opacity="0.25" stroke="#1A1A1A" stroke-width="0.8"/>
+  <rect x="566" y="192" width="48" height="48" fill="#5E5852" fill-opacity="0.25" stroke="#1A1A1A" stroke-width="0.8"/>
+  <rect x="614" y="192" width="48" height="48" fill="#5E5852" fill-opacity="0.25" stroke="#1A1A1A" stroke-width="0.8"/>
+  <!-- contorni dei blocchi -->
+  <rect x="470" y="48"  width="96" height="96" fill="none" stroke="#2D5A5C" stroke-width="2.5"/>
+  <rect x="566" y="48"  width="96" height="96" fill="none" stroke="#B5532C" stroke-width="2.5"/>
+  <rect x="470" y="144" width="96" height="96" fill="none" stroke="#C9A961" stroke-width="2.5"/>
+  <rect x="566" y="144" width="96" height="96" fill="none" stroke="#5E5852" stroke-width="2.5"/>
+  <!-- valori -->
+  <text class="numS" x="494" y="78"  text-anchor="middle">1</text>
+  <text class="numS" x="542" y="78"  text-anchor="middle">1</text>
+  <text class="numS" x="590" y="78"  text-anchor="middle">2</text>
+  <text class="numS" x="638" y="78"  text-anchor="middle">2</text>
+  <text class="numS" x="494" y="126" text-anchor="middle">1</text>
+  <text class="numS" x="542" y="126" text-anchor="middle">1</text>
+  <text class="numS" x="590" y="126" text-anchor="middle">2</text>
+  <text class="numS" x="638" y="126" text-anchor="middle">2</text>
+  <text class="numS" x="494" y="174" text-anchor="middle">3</text>
+  <text class="numS" x="542" y="174" text-anchor="middle">3</text>
+  <text class="numS" x="590" y="174" text-anchor="middle">4</text>
+  <text class="numS" x="638" y="174" text-anchor="middle">4</text>
+  <text class="numS" x="494" y="222" text-anchor="middle">3</text>
+  <text class="numS" x="542" y="222" text-anchor="middle">3</text>
+  <text class="numS" x="590" y="222" text-anchor="middle">4</text>
+  <text class="numS" x="638" y="222" text-anchor="middle">4</text>
+  <text class="lbl" x="566" y="268" text-anchor="middle">mappa 4×4</text>
+</svg>

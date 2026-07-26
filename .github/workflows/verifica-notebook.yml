@@ -1,0 +1,64 @@
+# Verifica dei notebook — contro le versioni DICHIARATE.
+#
+# Il libro offre "Esegui il codice" sulle pagine che hanno un notebook in
+# `notebooks/`. Offrire "esegui" e consegnare un errore è peggio che non
+# offrirlo, quindi qui i notebook vengono RIGENERATI dalle pagine e le loro
+# celle ESEGUITE davvero. Se una si rompe, il job fallisce.
+#
+# Le versioni arrivano da `requirements-notebook.txt`, fissate. È deliberato:
+# così un job rosso significa «hai cambiato il libro», non «nel frattempo una
+# libreria ha cambiato API». Al secondo mestiere pensa
+# `sentinella-librerie.yml`, che prova le versioni più recenti una volta a
+# settimana.
+#
+# Non tocca la pubblicazione del libro: quella è `call-deploy-book.yml`.
+
+name: Verifica dei notebook
+
+on:
+  push:
+    paths:
+      - 'book/**/*.md'
+      - 'notebooks/**'
+      - 'scripts/genera-notebook.py'
+      - 'requirements-notebook.txt'
+      - '.github/workflows/verifica-notebook.yml'
+  pull_request:
+    paths:
+      - 'book/**/*.md'
+      - 'notebooks/**'
+      - 'scripts/genera-notebook.py'
+      - 'requirements-notebook.txt'
+  workflow_dispatch:
+
+jobs:
+  verifica:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: requirements-notebook.txt
+
+      # torch dall'indice CPU: la ruota completa porterebbe i pacchetti CUDA
+      # (oltre 2 GB) per niente, qui non c'è nessuna GPU.
+      - name: Librerie, alle versioni dichiarate
+        run: |
+          pip install --quiet \
+            --extra-index-url https://download.pytorch.org/whl/cpu \
+            -r requirements-notebook.txt
+
+      # `--esistenti`: si verifica quello che si pubblica, non tutto il libro.
+      # MPLBACKEND=Agg: matplotlib senza schermo, altrimenti plt.show() protesta.
+      - name: Rigenera i notebook ed esegui le celle
+        env:
+          MPLBACKEND: Agg
+        run: python3 scripts/genera-notebook.py --verifica --esistenti --severo
+
+      # Se rigenerando qualcosa cambia, i file committati erano vecchi: qualcuno
+      # ha modificato il codice in una pagina senza rifare il notebook.
+      - name: I notebook committati sono aggiornati?
+        run: git diff --exit-code -- notebooks book/_config.yml

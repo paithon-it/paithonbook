@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 520" width="100%" role="img" aria-label="Mappa a quadranti: apertura dei modelli sull'asse orizzontale, capacità sull'asse verticale">
+  <rect x="0" y="0" width="700" height="520" fill="#F8F5EE"/>
+  <!-- axes -->
+  <line x1="350" y1="40" x2="350" y2="460" stroke="#1A1A1A" stroke-width="2"/>
+  <line x1="60" y1="250" x2="640" y2="250" stroke="#1A1A1A" stroke-width="2"/>
+  <!-- axis labels -->
+  <text x="350" y="26" font-family="sans-serif" font-size="14" fill="#1A1A1A" text-anchor="middle" font-weight="bold">capacità alta</text>
+  <text x="350" y="486" font-family="sans-serif" font-size="14" fill="#1A1A1A" text-anchor="middle" font-weight="bold">capacità contenuta</text>
+  <text x="70" y="242" font-family="sans-serif" font-size="14" fill="#1A1A1A" text-anchor="start" font-weight="bold">chiuso (API)</text>
+  <text x="630" y="242" font-family="sans-serif" font-size="14" fill="#1A1A1A" text-anchor="end" font-weight="bold">open weights</text>
+  <!-- quadrant tints -->
+  <rect x="72" y="52" width="266" height="186" fill="#2D5A5C" opacity="0.08"/>
+  <rect x="362" y="52" width="266" height="186" fill="#B5532C" opacity="0.08"/>
+  <rect x="72" y="262" width="266" height="186" fill="#C9A961" opacity="0.10"/>
+  <rect x="362" y="262" width="266" height="186" fill="#C9A961" opacity="0.10"/>
+  <!-- top-left: closed frontier -->
+  <circle cx="150" cy="110" r="9" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="168" y="115" font-family="sans-serif" font-size="13" fill="#1A1A1A">GPT (OpenAI)</text>
+  <circle cx="140" cy="150" r="9" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="158" y="155" font-family="sans-serif" font-size="13" fill="#1A1A1A">Claude (Anthropic)</text>
+  <circle cx="165" cy="190" r="9" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="183" y="195" font-family="sans-serif" font-size="13" fill="#1A1A1A">Gemini (Google)</text>
+  <!-- top-right: open frontier -->
+  <circle cx="560" cy="105" r="9" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="545" y="110" font-family="sans-serif" font-size="13" fill="#1A1A1A" text-anchor="end">DeepSeek (MIT)</text>
+  <circle cx="510" cy="150" r="9" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="495" y="155" font-family="sans-serif" font-size="13" fill="#1A1A1A" text-anchor="end">Qwen (Alibaba)</text>
+  <circle cx="470" cy="195" r="9" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="455" y="200" font-family="sans-serif" font-size="13" fill="#1A1A1A" text-anchor="end">Llama (licenza propria)</text>
+  <!-- bottom-right: open small -->
+  <circle cx="450" cy="310" r="7" fill="#C9A961" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="465" y="315" font-family="sans-serif" font-size="13" fill="#1A1A1A">Gemma (Google)</text>
+  <circle cx="480" cy="355" r="7" fill="#C9A961" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="495" y="360" font-family="sans-serif" font-size="13" fill="#1A1A1A">Mistral (Apache 2.0)</text>
+  <circle cx="430" cy="400" r="7" fill="#C9A961" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="445" y="405" font-family="sans-serif" font-size="13" fill="#1A1A1A">Phi (Microsoft)</text>
+  <!-- bottom-left: closed small -->
+  <text x="205" y="355" font-family="sans-serif" font-size="13" fill="#5E5852" text-anchor="middle" font-style="italic">modelli "mini" via API</text>
+  <text x="205" y="375" font-family="sans-serif" font-size="13" fill="#5E5852" text-anchor="middle" font-style="italic">(veloci, economici, chiusi)</text>
+</svg>

@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 420" width="100%" role="img" aria-label="Confronto tra discesa senza momentum, che oscilla da parete a parete, e con momentum, piu diretta verso il minimo in una valle stretta e allungata">
+  <defs>
+    <marker id="freccia-terracotta" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#B5532C"/>
+    </marker>
+    <marker id="freccia-teal" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#2D5A5C"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="640" height="420" fill="#F8F5EE"/>
+
+  <!-- Curve di livello: valle stretta e allungata (ellissi larghe in x, strette in y) -->
+  <g fill="none" stroke="#5E5852" stroke-opacity="0.4" stroke-width="1.6">
+    <ellipse cx="432" cy="190" rx="200" ry="82"/>
+    <ellipse cx="432" cy="190" rx="150" ry="61"/>
+    <ellipse cx="432" cy="190" rx="100" ry="41"/>
+    <ellipse cx="432" cy="190" rx="52" ry="22"/>
+  </g>
+
+  <!-- Minimo -->
+  <circle cx="432" cy="190" r="6" fill="#C9A961" stroke="#1A1A1A" stroke-width="1.4"/>
+  <text x="432" y="216" text-anchor="middle" font-family="Inter, Helvetica, Arial, sans-serif" font-size="14" fill="#1A1A1A">minimo</text>
+
+  <!-- Traiettoria SENZA momentum: oscilla da parete a parete -->
+  <polyline points="150,108 198,262 244,120 296,258 338,128 380,246 408,152 426,222 432,190"
+            fill="none" stroke="#B5532C" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"
+            marker-end="url(#freccia-terracotta)"/>
+  <g fill="#B5532C">
+    <circle cx="150" cy="108" r="3.4"/>
+    <circle cx="198" cy="262" r="3.4"/>
+    <circle cx="244" cy="120" r="3.4"/>
+    <circle cx="296" cy="258" r="3.4"/>
+    <circle cx="338" cy="128" r="3.4"/>
+    <circle cx="380" cy="246" r="3.4"/>
+    <circle cx="408" cy="152" r="3.4"/>
+    <circle cx="426" cy="222" r="3.4"/>
+  </g>
+
+  <!-- Traiettoria CON momentum: piu diretta -->
+  <path d="M150,108 C 214,158 300,186 360,190 C 396,192 416,190 430,190"
+        fill="none" stroke="#2D5A5C" stroke-width="3" stroke-linecap="round"
+        marker-end="url(#freccia-teal)"/>
+  <g fill="#2D5A5C">
+    <circle cx="150" cy="108" r="3.6"/>
+    <circle cx="246" cy="166" r="3.6"/>
+    <circle cx="330" cy="188" r="3.6"/>
+    <circle cx="392" cy="191" r="3.6"/>
+  </g>
+
+  <!-- Punto di partenza comune -->
+  <circle cx="150" cy="108" r="5" fill="#1A1A1A"/>
+  <text x="142" y="100" text-anchor="end" font-family="Inter, Helvetica, Arial, sans-serif" font-size="13" fill="#1A1A1A">partenza</text>
+
+  <!-- Legenda -->
+  <g font-family="Inter, Helvetica, Arial, sans-serif" font-size="14">
+    <line x1="40" y1="356" x2="74" y2="356" stroke="#B5532C" stroke-width="3"/>
+    <text x="82" y="361" fill="#1A1A1A">senza momentum</text>
+    <line x1="330" y1="356" x2="364" y2="356" stroke="#2D5A5C" stroke-width="3"/>
+    <text x="372" y="361" fill="#1A1A1A">con momentum</text>
+  </g>
+
+  <text x="320" y="394" text-anchor="middle" font-family="Inter, Helvetica, Arial, sans-serif" font-size="13" fill="#5E5852">Le ellissi sono le curve di livello di una valle stretta e allungata.</text>
+</svg>

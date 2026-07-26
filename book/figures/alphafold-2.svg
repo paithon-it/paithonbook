@@ -1,0 +1,51 @@
+<svg viewBox="0 0 560 300" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Schema del funzionamento di AlphaFold 2: dalla sequenza e dall'allineamento multiplo, attraverso l'Evoformer e il modulo di struttura, alla struttura tridimensionale">
+  <defs>
+    <marker id="ah2" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#1A1A1A"/></marker>
+  </defs>
+  <rect x="0" y="0" width="560" height="300" fill="#F8F5EE"/>
+  <!-- sequenza -->
+  <g font-family="sans-serif" font-size="12" text-anchor="middle">
+    <g stroke="#1A1A1A" stroke-width="1.5" fill="#F8F5EE">
+      <rect x="20" y="40" width="22" height="22"/><rect x="42" y="40" width="22" height="22"/>
+      <rect x="64" y="40" width="22" height="22"/><rect x="86" y="40" width="22" height="22"/>
+      <rect x="108" y="40" width="22" height="22"/><rect x="130" y="40" width="22" height="22"/>
+      <rect x="152" y="40" width="22" height="22"/><rect x="174" y="40" width="22" height="22"/>
+    </g>
+    <g fill="#2D5A5C">
+      <text x="31" y="56">M</text><text x="53" y="56">K</text><text x="75" y="56">T</text><text x="97" y="56">A</text>
+      <text x="119" y="56">Y</text><text x="141" y="56">R</text><text x="163" y="56">L</text><text x="185" y="56">V</text>
+    </g>
+  </g>
+  <!-- MSA -->
+  <g stroke="#1A1A1A" stroke-width="1">
+    <rect x="20" y="80" width="176" height="80" fill="#F8F5EE" stroke-width="1.5"/>
+    <rect x="20" y="80" width="22" height="16" fill="#C9A961"/><rect x="86" y="80" width="22" height="16" fill="#B5532C"/>
+    <rect x="42" y="96" width="22" height="16" fill="#2D5A5C"/><rect x="152" y="96" width="22" height="16" fill="#C9A961"/>
+    <rect x="108" y="112" width="22" height="16" fill="#B5532C"/><rect x="20" y="128" width="22" height="16" fill="#2D5A5C"/>
+    <rect x="130" y="144" width="22" height="16" fill="#C9A961"/><rect x="64" y="144" width="22" height="16" fill="#B5532C"/>
+    <line x1="42" y1="80" x2="42" y2="160"/><line x1="64" y1="80" x2="64" y2="160"/><line x1="86" y1="80" x2="86" y2="160"/>
+    <line x1="108" y1="80" x2="108" y2="160"/><line x1="130" y1="80" x2="130" y2="160"/><line x1="152" y1="80" x2="152" y2="160"/><line x1="174" y1="80" x2="174" y2="160"/>
+    <line x1="20" y1="96" x2="196" y2="96"/><line x1="20" y1="112" x2="196" y2="112"/><line x1="20" y1="128" x2="196" y2="128"/><line x1="20" y1="144" x2="196" y2="144"/>
+  </g>
+  <text x="108" y="182" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">sequenza + allineamento (MSA)</text>
+  <!-- arrow to Evoformer -->
+  <line x1="200" y1="97" x2="234" y2="97" stroke="#1A1A1A" stroke-width="1.8" marker-end="url(#ah2)"/>
+  <!-- Evoformer -->
+  <rect x="238" y="70" width="118" height="54" rx="6" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2"/>
+  <text x="297" y="102" text-anchor="middle" font-family="sans-serif" font-size="14" fill="#1A1A1A">Evoformer</text>
+  <!-- arrow down -->
+  <line x1="297" y1="126" x2="297" y2="150" stroke="#1A1A1A" stroke-width="1.8" marker-end="url(#ah2)"/>
+  <!-- modulo struttura -->
+  <rect x="238" y="152" width="118" height="54" rx="6" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2"/>
+  <text x="297" y="176" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#1A1A1A">modulo di</text>
+  <text x="297" y="193" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#1A1A1A">struttura</text>
+  <!-- arrow to 3D -->
+  <line x1="358" y1="179" x2="398" y2="179" stroke="#1A1A1A" stroke-width="1.8" marker-end="url(#ah2)"/>
+  <!-- struttura 3D -->
+  <path d="M412,150 C 424,108 470,110 468,152 C 466,188 428,182 444,208 C 458,228 522,214 520,164 C 519,134 496,126 502,156" fill="none" stroke="#B5532C" stroke-width="2.2" stroke-linecap="round"/>
+  <g fill="#2D5A5C" stroke="#1A1A1A" stroke-width="1">
+    <circle cx="412" cy="150" r="5"/><circle cx="468" cy="120" r="5"/><circle cx="468" cy="176" r="5"/>
+    <circle cx="500" cy="156" r="5"/><circle cx="518" cy="170" r="5"/><circle cx="444" cy="208" r="5"/>
+  </g>
+  <text x="470" y="252" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">struttura 3D</text>
+</svg>

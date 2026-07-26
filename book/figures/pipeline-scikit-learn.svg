@@ -1,0 +1,32 @@
+<svg viewBox="0 0 800 300" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Schema: la Pipeline come catena di trasformazioni dal dato grezzo alla previsione">
+  <rect x="0" y="0" width="800" height="300" fill="#F8F5EE"/>
+  <text x="400" y="32" text-anchor="middle" font-family="sans-serif" font-size="17" font-weight="bold" fill="#1A1A1A">La Pipeline: una catena di trasformazioni</text>
+  <rect x="30" y="105" width="120" height="70" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="2"/>
+  <text x="90" y="135" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#1A1A1A">Dati grezzi</text>
+  <text x="90" y="155" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#1A1A1A">mancanti, scale miste</text>
+  <line x1="150" y1="140" x2="188" y2="140" stroke="#1A1A1A" stroke-width="2"/>
+  <polygon points="188,140 176,134 176,146" fill="#1A1A1A"/>
+  <rect x="175" y="70" width="450" height="150" fill="none" stroke="#B5532C" stroke-width="2" stroke-dasharray="6,4"/>
+  <text x="400" y="62" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#B5532C">Pipeline (un unico stimatore)</text>
+  <rect x="195" y="105" width="120" height="70" fill="#C9A961" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="255" y="135" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#1A1A1A">Imputer</text>
+  <text x="255" y="155" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#1A1A1A">riempie i mancanti</text>
+  <line x1="315" y1="140" x2="348" y2="140" stroke="#1A1A1A" stroke-width="2"/>
+  <polygon points="348,140 336,134 336,146" fill="#1A1A1A"/>
+  <rect x="355" y="105" width="120" height="70" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="415" y="135" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#F8F5EE">Scaler</text>
+  <text x="415" y="155" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#F8F5EE">uniforma le scale</text>
+  <line x1="475" y1="140" x2="508" y2="140" stroke="#1A1A1A" stroke-width="2"/>
+  <polygon points="508,140 496,134 496,146" fill="#1A1A1A"/>
+  <rect x="515" y="105" width="90" height="70" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="560" y="135" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#F8F5EE">Modello</text>
+  <text x="560" y="155" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#F8F5EE">predittore</text>
+  <line x1="625" y1="140" x2="663" y2="140" stroke="#1A1A1A" stroke-width="2"/>
+  <polygon points="663,140 651,134 651,146" fill="#1A1A1A"/>
+  <rect x="650" y="105" width="120" height="70" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2"/>
+  <text x="710" y="135" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#1A1A1A">Previsione</text>
+  <text x="710" y="155" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#1A1A1A">classi o valori</text>
+  <text x="255" y="250" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#2D5A5C">fit(X_train): ogni anello IMPARA e trasforma</text>
+  <text x="560" y="250" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#B5532C">predict(X_test): ogni anello APPLICA soltanto</text>
+  <line x1="400" y1="238" x2="400" y2="258" stroke="#1A1A1A" stroke-width="1.5"/>
+</svg>

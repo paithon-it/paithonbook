@@ -1,0 +1,49 @@
+<svg viewBox="0 0 760 320" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Il ciclo di DQN: lo schermo diventa ingresso della rete Q, che stima il valore di ogni azione; l'azione scelta produce un reward che torna indietro a correggere le stime della rete">
+  <rect x="0" y="0" width="760" height="320" fill="#F8F5EE"/>
+  <text x="380" y="34" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="bold" fill="#1A1A1A">Dallo schermo all'azione, e ritorno</text>
+
+  <!-- schermo -->
+  <rect x="26" y="96" width="128" height="112" rx="6" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="2"/>
+  <rect x="40" y="110" width="100" height="70" fill="#1A1A1A"/>
+  <rect x="52" y="120" width="16" height="8" fill="#B5532C"/>
+  <rect x="74" y="120" width="16" height="8" fill="#C9A961"/>
+  <rect x="96" y="120" width="16" height="8" fill="#2D5A5C"/>
+  <rect x="118" y="120" width="12" height="8" fill="#B5532C"/>
+  <rect x="90" y="150" width="8" height="8" fill="#F8F5EE"/>
+  <rect x="72" y="168" width="34" height="6" fill="#C9A961"/>
+  <text x="90" y="200" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#1A1A1A">schermo</text>
+  <text x="90" y="224" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#1A1A1A">84×84 pixel</text>
+
+  <!-- freccia 1 -->
+  <line x1="156" y1="152" x2="216" y2="152" stroke="#1A1A1A" stroke-width="2"/>
+  <path d="M216 152 L 206 147 L 206 157 Z" fill="#1A1A1A"/>
+
+  <!-- rete Q -->
+  <rect x="220" y="112" width="164" height="80" rx="6" fill="#2D5A5C"/>
+  <text x="302" y="146" text-anchor="middle" font-family="sans-serif" font-size="15" font-weight="bold" fill="#F8F5EE">rete Q</text>
+  <text x="302" y="168" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#F8F5EE">stima il valore</text>
+  <text x="302" y="182" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#F8F5EE">di ogni azione</text>
+
+  <!-- freccia 2 -->
+  <line x1="386" y1="152" x2="446" y2="152" stroke="#1A1A1A" stroke-width="2"/>
+  <path d="M446 152 L 436 147 L 436 157 Z" fill="#1A1A1A"/>
+
+  <!-- azione -->
+  <rect x="450" y="122" width="140" height="60" rx="6" fill="#C9A961"/>
+  <text x="520" y="150" text-anchor="middle" font-family="sans-serif" font-size="15" font-weight="bold" fill="#1A1A1A">azione</text>
+  <text x="520" y="170" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#1A1A1A">muovi ← / →</text>
+
+  <!-- freccia 3 -->
+  <line x1="592" y1="152" x2="640" y2="152" stroke="#1A1A1A" stroke-width="2"/>
+  <path d="M640 152 L 630 147 L 630 157 Z" fill="#1A1A1A"/>
+
+  <!-- reward -->
+  <rect x="644" y="122" width="96" height="60" rx="6" fill="#B5532C"/>
+  <text x="692" y="148" text-anchor="middle" font-family="sans-serif" font-size="14" font-weight="bold" fill="#F8F5EE">reward</text>
+  <text x="692" y="168" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#F8F5EE">+punteggio</text>
+
+  <!-- feedback dashed -->
+  <path d="M692 182 L 692 268 L 302 268 L 302 196" fill="none" stroke="#1A1A1A" stroke-width="1.5" stroke-dasharray="6 5"/>
+  <path d="M302 196 L 297 206 L 307 206 Z" fill="#1A1A1A"/>
+  <text x="497" y="290" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">il reward corregge le stime della rete: si impara indietro nel tempo</text>
+</svg>

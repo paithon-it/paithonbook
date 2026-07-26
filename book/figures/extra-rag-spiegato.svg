@@ -1,0 +1,58 @@
+<svg viewBox="0 0 760 300" width="100%" role="img" aria-label="Pipeline RAG: documenti, chunking, embedding, vector store, retrieval, LLM, risposta con citazioni" xmlns="http://www.w3.org/2000/svg">
+  <rect x="0" y="0" width="760" height="300" fill="#F8F5EE"/>
+  <defs>
+    <marker id="fr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L8,4.5 L0,9 Z" fill="#1A1A1A"/>
+    </marker>
+  </defs>
+
+  <!-- fase 1: indicizzazione -->
+  <text x="30" y="40" font-family="sans-serif" font-size="12" fill="#5E5852">FASE 1 · INDICIZZAZIONE (una volta)</text>
+  <rect x="30" y="55" width="110" height="60" rx="6" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2"/>
+  <text x="85" y="82" font-family="sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">Documenti</text>
+  <text x="85" y="100" font-family="sans-serif" font-size="11" fill="#5E5852" text-anchor="middle">PDF, wiki, ticket</text>
+
+  <rect x="180" y="55" width="100" height="60" rx="6" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2"/>
+  <text x="230" y="82" font-family="sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">Chunk</text>
+  <text x="230" y="100" font-family="sans-serif" font-size="11" fill="#5E5852" text-anchor="middle">blocchi brevi</text>
+
+  <rect x="320" y="55" width="100" height="60" rx="6" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2"/>
+  <text x="370" y="82" font-family="sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">Embedding</text>
+  <text x="370" y="100" font-family="sans-serif" font-size="11" fill="#5E5852" text-anchor="middle">testo → vettore</text>
+
+  <rect x="460" y="55" width="110" height="60" rx="6" fill="#2D5A5C"/>
+  <text x="515" y="82" font-family="sans-serif" font-size="13" fill="#F8F5EE" text-anchor="middle">Vector store</text>
+  <text x="515" y="100" font-family="sans-serif" font-size="11" fill="#C9C2B4" text-anchor="middle">indice dei vicini</text>
+
+  <line x1="140" y1="85" x2="172" y2="85" stroke="#1A1A1A" stroke-width="1.5" marker-end="url(#fr)"/>
+  <line x1="280" y1="85" x2="312" y2="85" stroke="#1A1A1A" stroke-width="1.5" marker-end="url(#fr)"/>
+  <line x1="420" y1="85" x2="452" y2="85" stroke="#1A1A1A" stroke-width="1.5" marker-end="url(#fr)"/>
+
+  <!-- fase 2: query -->
+  <text x="30" y="185" font-family="sans-serif" font-size="12" fill="#5E5852">FASE 2 · A OGNI DOMANDA</text>
+  <rect x="30" y="200" width="110" height="60" rx="6" fill="#F8F5EE" stroke="#C9A961" stroke-width="2"/>
+  <text x="85" y="227" font-family="sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">Domanda</text>
+  <text x="85" y="245" font-family="sans-serif" font-size="11" fill="#5E5852" text-anchor="middle">→ vettore</text>
+
+  <rect x="180" y="200" width="120" height="60" rx="6" fill="#F8F5EE" stroke="#C9A961" stroke-width="2"/>
+  <text x="240" y="227" font-family="sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">Retrieval</text>
+  <text x="240" y="245" font-family="sans-serif" font-size="11" fill="#5E5852" text-anchor="middle">chunk più vicini</text>
+
+  <rect x="340" y="200" width="110" height="60" rx="6" fill="#B5532C"/>
+  <text x="395" y="227" font-family="sans-serif" font-size="13" fill="#F8F5EE" text-anchor="middle">LLM</text>
+  <text x="395" y="245" font-family="sans-serif" font-size="11" fill="#F8F5EE" text-anchor="middle">domanda + fonti</text>
+
+  <rect x="490" y="200" width="140" height="60" rx="6" fill="#F8F5EE" stroke="#B5532C" stroke-width="2"/>
+  <text x="560" y="227" font-family="sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">Risposta</text>
+  <text x="560" y="245" font-family="sans-serif" font-size="11" fill="#5E5852" text-anchor="middle">con citazioni [1][2]</text>
+
+  <line x1="140" y1="230" x2="172" y2="230" stroke="#1A1A1A" stroke-width="1.5" marker-end="url(#fr)"/>
+  <line x1="300" y1="230" x2="332" y2="230" stroke="#1A1A1A" stroke-width="1.5" marker-end="url(#fr)"/>
+  <line x1="450" y1="230" x2="482" y2="230" stroke="#1A1A1A" stroke-width="1.5" marker-end="url(#fr)"/>
+
+  <!-- collegamento tra le fasi -->
+  <line x1="515" y1="115" x2="515" y2="150" stroke="#2D5A5C" stroke-width="1.5"/>
+  <line x1="515" y1="150" x2="240" y2="150" stroke="#2D5A5C" stroke-width="1.5"/>
+  <line x1="240" y1="150" x2="240" y2="192" stroke="#2D5A5C" stroke-width="1.5" marker-end="url(#fr)"/>
+  <text x="260" y="145" font-family="sans-serif" font-size="11" fill="#2D5A5C">il retrieval interroga l'indice</text>
+</svg>

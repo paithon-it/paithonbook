@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  paithon book - figura: k-means contro DBSCAN su dati a "due lune".
+  A SINISTRA k-means: due centroidi (X warm-black) e un confine rettilineo
+  (tratteggio neutro) che TAGLIA MALE le due lune, mescolando i colori.
+  A DESTRA DBSCAN: segue la densita, colora correttamente ogni luna (teal e
+  terracotta) e marca due punti isolati come rumore (grigio). Palette-locked,
+  fondo trasparente, leggibile anche in dark mode.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 740 420" role="img"
+     aria-label="Confronto tra due metodi di clustering su un insieme di dati a forma di due lune intrecciate. Nel pannello di sinistra, k-means: due centroidi segnati con una X e una retta di separazione tratteggiata dividono i punti in meta sinistra e meta destra, tagliando a meta ciascuna delle due lune, che risultano cosi colorate in modo misto e scorretto. Nel pannello di destra, DBSCAN: ogni luna e colorata in modo uniforme e corretto, una in teal e una in terracotta, seguendo la densita dei punti; due punti isolati sono segnati in grigio come rumore.">
+  <style>
+    .cA   { fill:#2D5A5C; }
+    .cB   { fill:#B5532C; }
+    .noise{ fill:#8B847C; }
+    .bnd  { stroke:#5E5852; stroke-width:2; stroke-dasharray:6 5; }
+    .cen  { stroke:#1A1A1A; stroke-width:3.2; stroke-linecap:round; }
+    .ttl  { font-family:"Fraunces", Georgia, serif; font-size:19px; fill:#1A1A1A; text-anchor:middle; }
+    .sub  { font-family:Inter, system-ui, sans-serif; font-size:12.5px; fill:#5E5852; text-anchor:middle; }
+    .tag  { font-family:Inter, system-ui, sans-serif; font-size:12px; fill:#5E5852; }
+  </style>
+
+  <!-- ===================== PANNELLO SINISTRO: k-means ===================== -->
+  <text class="ttl" x="175" y="42">k-means</text>
+  <text class="sub" x="175" y="62">taglia le lune per meta</text>
+
+  <!-- confine rettilineo di k-means -->
+  <line class="bnd" x1="175" y1="98" x2="175" y2="356"/>
+
+  <!-- luna 1 (arco superiore): meta sinistra teal, meta destra terracotta -->
+  <circle class="cB" cx="220" cy="210" r="5"/>
+  <circle class="cB" cx="208" cy="165" r="5"/>
+  <circle class="cB" cx="175" cy="132" r="5"/>
+  <circle class="cA" cx="130" cy="120" r="5"/>
+  <circle class="cA" cx="85"  cy="132" r="5"/>
+  <circle class="cA" cx="52"  cy="165" r="5"/>
+  <circle class="cA" cx="40"  cy="210" r="5"/>
+  <!-- luna 2 (arco inferiore): meta sinistra teal, meta destra terracotta -->
+  <circle class="cA" cx="130" cy="250" r="5"/>
+  <circle class="cA" cx="142" cy="295" r="5"/>
+  <circle class="cB" cx="175" cy="328" r="5"/>
+  <circle class="cB" cx="220" cy="340" r="5"/>
+  <circle class="cB" cx="265" cy="328" r="5"/>
+  <circle class="cB" cx="298" cy="295" r="5"/>
+  <circle class="cB" cx="310" cy="250" r="5"/>
+
+  <!-- centroidi (X) -->
+  <g class="cen">
+    <line x1="90" y1="189" x2="104" y2="201"/>
+    <line x1="104" y1="189" x2="90" y2="201"/>
+    <line x1="227" y1="250" x2="241" y2="262"/>
+    <line x1="241" y1="250" x2="227" y2="262"/>
+  </g>
+  <text class="tag" x="60" y="185" text-anchor="middle">centroide</text>
+
+  <!-- ===================== PANNELLO DESTRO: DBSCAN ===================== -->
+  <text class="ttl" x="535" y="42">DBSCAN</text>
+  <text class="sub" x="535" y="62">segue la densita</text>
+
+  <!-- luna 1: tutta teal -->
+  <circle class="cA" cx="580" cy="210" r="5"/>
+  <circle class="cA" cx="568" cy="165" r="5"/>
+  <circle class="cA" cx="535" cy="132" r="5"/>
+  <circle class="cA" cx="490" cy="120" r="5"/>
+  <circle class="cA" cx="445" cy="132" r="5"/>
+  <circle class="cA" cx="412" cy="165" r="5"/>
+  <circle class="cA" cx="400" cy="210" r="5"/>
+  <!-- luna 2: tutta terracotta -->
+  <circle class="cB" cx="490" cy="250" r="5"/>
+  <circle class="cB" cx="502" cy="295" r="5"/>
+  <circle class="cB" cx="535" cy="328" r="5"/>
+  <circle class="cB" cx="580" cy="340" r="5"/>
+  <circle class="cB" cx="625" cy="328" r="5"/>
+  <circle class="cB" cx="658" cy="295" r="5"/>
+  <circle class="cB" cx="670" cy="250" r="5"/>
+
+  <!-- rumore: due punti isolati, grigio -->
+  <circle class="noise" cx="640" cy="150" r="4.5"/>
+  <circle class="noise" cx="452" cy="330" r="4.5"/>
+  <text class="tag" x="655" y="140" fill="#8B847C">rumore</text>
+  <text class="tag" x="452" y="356" text-anchor="middle" fill="#8B847C">rumore</text>
+</svg>

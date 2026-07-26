@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  paithon book — figura: il neurone artificiale (percettrone).
+  Ingressi x1..xn, ciascuno con un peso w1..wn, confluiscono in un
+  sommatore Sigma (che aggiunge il bias b); il risultato attraversa una
+  funzione di attivazione a gradino e produce l'uscita y.
+  Palette-locked: ingressi teal, sommatore terracotta, attivazione ocra,
+  tratti e testo warm-black/grigi warm, riempimenti cream. Fondo
+  trasparente (leggibile in light e dark). Nessun colore fuori palette.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 300" role="img"
+     aria-label="Neurone artificiale: gli ingressi x1, x2, fino a xn sono moltiplicati per i pesi w1, w2, wn e sommati in un nodo sigma, che aggiunge il bias b; la somma pesata passa in una funzione di attivazione a gradino e genera l'uscita y">
+  <style>
+    .node  { fill:#F8F5EE; }
+    .wire  { stroke:#5E5852; stroke-width:2; fill:none; }
+    .xlbl  { font-family:Fraunces, Georgia, serif; font-size:18px; font-weight:600; fill:#1A1A1A; }
+    .wlbl  { font-family:Inter, system-ui, sans-serif; font-size:13px; font-style:italic; fill:#B5532C; }
+    .cap   { font-family:Inter, system-ui, sans-serif; font-size:12px; fill:#5E5852; }
+    .sig   { font-family:Georgia, serif; font-size:34px; fill:#B5532C; }
+    .step  { stroke:#1A1A1A; stroke-width:2.5; fill:none; }
+  </style>
+
+  <!-- fili ingresso -> sommatore, con etichette dei pesi -->
+  <line class="wire" x1="96"  y1="66"  x2="292" y2="140"/>
+  <line class="wire" x1="96"  y1="126" x2="292" y2="150"/>
+  <line class="wire" x1="96"  y1="234" x2="292" y2="162"/>
+  <text class="wlbl" x="150" y="78">w&#8321;</text>
+  <text class="wlbl" x="156" y="122">w&#8322;</text>
+  <text class="wlbl" x="150" y="204">w&#8345;</text>
+
+  <!-- ingressi -->
+  <circle class="node" cx="72" cy="66"  r="24" stroke="#2D5A5C" stroke-width="2.5"/>
+  <circle class="node" cx="72" cy="126" r="24" stroke="#2D5A5C" stroke-width="2.5"/>
+  <circle class="node" cx="72" cy="234" r="24" stroke="#2D5A5C" stroke-width="2.5"/>
+  <text class="xlbl" x="72" y="72"  text-anchor="middle">x&#8321;</text>
+  <text class="xlbl" x="72" y="132" text-anchor="middle">x&#8322;</text>
+  <text class="xlbl" x="72" y="240" text-anchor="middle">x&#8345;</text>
+  <text x="72" y="188" text-anchor="middle" font-family="Georgia, serif" font-size="22px" fill="#8B847C">&#8942;</text>
+  <text class="cap" x="72" y="284" text-anchor="middle">ingressi</text>
+
+  <!-- bias in ingresso dall'alto -->
+  <line class="wire" x1="330" y1="66" x2="330" y2="108" stroke="#C9A961"/>
+  <polygon points="330,112 325,102 335,102" fill="#C9A961"/>
+  <text class="xlbl" x="330" y="58" text-anchor="middle" fill="#1A1A1A">b</text>
+  <text class="cap" x="356" y="62">bias</text>
+
+  <!-- sommatore Sigma -->
+  <circle class="node" cx="330" cy="150" r="40" stroke="#B5532C" stroke-width="3"/>
+  <text class="sig" x="330" y="162" text-anchor="middle">&#931;</text>
+  <text class="cap" x="330" y="212" text-anchor="middle">somma pesata</text>
+
+  <!-- Sigma -> attivazione -->
+  <line class="wire" x1="370" y1="150" x2="424" y2="150"/>
+  <polygon points="430,150 420,145 420,155" fill="#5E5852"/>
+
+  <!-- funzione di attivazione (gradino) -->
+  <rect class="node" x="434" y="110" width="118" height="80" rx="6" stroke="#C9A961" stroke-width="2.5"/>
+  <line class="step" x1="450" y1="172" x2="493" y2="172"/>
+  <line class="step" x1="493" y1="172" x2="493" y2="128"/>
+  <line class="step" x1="493" y1="128" x2="536" y2="128"/>
+  <text class="cap" x="493" y="208" text-anchor="middle">attivazione</text>
+
+  <!-- attivazione -> uscita -->
+  <line class="wire" x1="552" y1="150" x2="600" y2="150"/>
+  <polygon points="606,150 596,145 596,155" fill="#5E5852"/>
+  <text class="xlbl" x="622" y="156" text-anchor="middle">&#375;</text>
+  <text class="cap" x="622" y="184" text-anchor="middle">uscita</text>
+</svg>

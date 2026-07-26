@@ -1,0 +1,41 @@
+<svg viewBox="0 0 720 300" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Tre pannelli mostrano i centroidi di K-means che migrano dalla posizione casuale iniziale al centro dei cluster">
+  <rect x="0" y="0" width="720" height="300" fill="#F8F5EE"/>
+  <!-- Pannello 1: inizializzazione -->
+  <g>
+    <rect x="15" y="40" width="210" height="210" fill="none" stroke="#1A1A1A" stroke-width="1.5"/>
+    <text x="120" y="28" font-family="sans-serif" font-size="14" fill="#1A1A1A" text-anchor="middle">1. Inizio casuale</text>
+    <!-- cluster alto-sx -->
+    <circle cx="55" cy="85" r="5" fill="#C9A961"/><circle cx="75" cy="70" r="5" fill="#C9A961"/><circle cx="70" cy="100" r="5" fill="#C9A961"/><circle cx="90" cy="88" r="5" fill="#C9A961"/>
+    <!-- cluster basso-dx -->
+    <circle cx="160" cy="190" r="5" fill="#C9A961"/><circle cx="180" cy="205" r="5" fill="#C9A961"/><circle cx="170" cy="220" r="5" fill="#C9A961"/><circle cx="195" cy="195" r="5" fill="#C9A961"/>
+    <!-- centroidi casuali -->
+    <path d="M 130 60 l 7 7 m 0 -7 l -7 7" stroke="#B5532C" stroke-width="2" fill="none"/>
+    <path d="M 60 230 l 7 7 m 0 -7 l -7 7" stroke="#2D5A5C" stroke-width="2" fill="none"/>
+  </g>
+  <!-- Pannello 2: migrazione -->
+  <g>
+    <rect x="255" y="40" width="210" height="210" fill="none" stroke="#1A1A1A" stroke-width="1.5"/>
+    <text x="360" y="28" font-family="sans-serif" font-size="14" fill="#1A1A1A" text-anchor="middle">2. I centroidi migrano</text>
+    <circle cx="295" cy="85" r="5" fill="#B5532C"/><circle cx="315" cy="70" r="5" fill="#B5532C"/><circle cx="310" cy="100" r="5" fill="#B5532C"/><circle cx="330" cy="88" r="5" fill="#B5532C"/>
+    <circle cx="400" cy="190" r="5" fill="#2D5A5C"/><circle cx="420" cy="205" r="5" fill="#2D5A5C"/><circle cx="410" cy="220" r="5" fill="#2D5A5C"/><circle cx="435" cy="195" r="5" fill="#2D5A5C"/>
+    <!-- frecce di migrazione -->
+    <line x1="370" y1="62" x2="330" y2="80" stroke="#B5532C" stroke-width="2" stroke-dasharray="4 3"/>
+    <path d="M 330 80 l 9 -5 m -9 5 l 10 2" stroke="#B5532C" stroke-width="2" fill="none"/>
+    <line x1="300" y1="228" x2="400" y2="206" stroke="#2D5A5C" stroke-width="2" stroke-dasharray="4 3"/>
+    <path d="M 400 206 l -10 -2 m 10 2 l -8 6" stroke="#2D5A5C" stroke-width="2" fill="none"/>
+    <path d="M 366 55 l 7 7 m 0 -7 l -7 7" stroke="#B5532C" stroke-width="2" fill="none"/>
+    <path d="M 296 224 l 7 7 m 0 -7 l -7 7" stroke="#2D5A5C" stroke-width="2" fill="none"/>
+  </g>
+  <!-- Pannello 3: convergenza -->
+  <g>
+    <rect x="495" y="40" width="210" height="210" fill="none" stroke="#1A1A1A" stroke-width="1.5"/>
+    <text x="600" y="28" font-family="sans-serif" font-size="14" fill="#1A1A1A" text-anchor="middle">3. Convergenza</text>
+    <circle cx="535" cy="85" r="5" fill="#B5532C"/><circle cx="555" cy="70" r="5" fill="#B5532C"/><circle cx="550" cy="100" r="5" fill="#B5532C"/><circle cx="570" cy="88" r="5" fill="#B5532C"/>
+    <circle cx="640" cy="190" r="5" fill="#2D5A5C"/><circle cx="660" cy="205" r="5" fill="#2D5A5C"/><circle cx="650" cy="220" r="5" fill="#2D5A5C"/><circle cx="675" cy="195" r="5" fill="#2D5A5C"/>
+    <path d="M 549 82 l 7 7 m 0 -7 l -7 7" stroke="#B5532C" stroke-width="2.5" fill="none"/>
+    <path d="M 652 199 l 7 7 m 0 -7 l -7 7" stroke="#2D5A5C" stroke-width="2.5" fill="none"/>
+    <circle cx="552.5" cy="85.5" r="16" fill="none" stroke="#B5532C" stroke-width="1.5" stroke-dasharray="3 3"/>
+    <circle cx="655.5" cy="202.5" r="16" fill="none" stroke="#2D5A5C" stroke-width="1.5" stroke-dasharray="3 3"/>
+  </g>
+  <text x="360" y="280" font-family="sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">✕ = centroide · a ogni iterazione si sposta nella media dei punti assegnati</text>
+</svg>

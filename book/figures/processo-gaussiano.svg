@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 400" role="img" aria-label="Regressione con processo gaussiano: sei punti osservati, la curva media a posteriori e una banda di incertezza che si stringe in prossimita dei punti e si allarga dove mancano dati; due curve campione plausibili corrono dentro la banda.">
+  <defs>
+    <marker id="freccia-gp" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#5E5852"/>
+    </marker>
+  </defs>
+
+  <!-- legenda -->
+  <line x1="70" y1="24" x2="102" y2="24" stroke="#2D5A5C" stroke-width="3"/>
+  <text x="110" y="28" font-family="Inter, sans-serif" font-size="12.5" fill="#1A1A1A">media a posteriori</text>
+  <rect x="250" y="16" width="32" height="16" fill="#2D5A5C" fill-opacity="0.14" stroke="#2D5A5C" stroke-opacity="0.4" stroke-width="1"/>
+  <text x="290" y="28" font-family="Inter, sans-serif" font-size="12.5" fill="#1A1A1A">incertezza (±2σ)</text>
+  <circle cx="430" cy="24" r="5" fill="#B5532C" stroke="#F8F5EE" stroke-width="1.5"/>
+  <text x="442" y="28" font-family="Inter, sans-serif" font-size="12.5" fill="#1A1A1A">punti osservati</text>
+  <line x1="565" y1="24" x2="597" y2="24" stroke="#C9A961" stroke-width="1.8"/>
+  <text x="605" y="28" font-family="Inter, sans-serif" font-size="12.5" fill="#1A1A1A">curve plausibili</text>
+
+  <!-- assi -->
+  <line x1="60" y1="340" x2="730" y2="340" stroke="#5E5852" stroke-width="1.5" marker-end="url(#freccia-gp)"/>
+  <line x1="60" y1="340" x2="60" y2="52" stroke="#5E5852" stroke-width="1.5" marker-end="url(#freccia-gp)"/>
+  <text x="726" y="362" text-anchor="end" font-family="Inter, sans-serif" font-size="13" font-style="italic" fill="#5E5852">x</text>
+  <text x="44" y="60" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-style="italic" fill="#5E5852">f(x)</text>
+
+  <!-- banda di incertezza -->
+  <path d="M 70 195
+           C 95 201, 106 206, 120 202
+           C 150 193, 160 158, 180 142
+           C 205 124, 235 112, 260 112
+           C 290 113, 312 133, 330 151
+           C 358 176, 380 179, 405 183
+           C 435 188, 462 242, 480 251
+           C 503 259, 537 237, 560 221
+           C 612 190, 668 132, 720 80
+           L 720 220
+           C 680 225, 615 250, 560 239
+           C 537 253, 505 276, 480 269
+           C 460 266, 430 290, 405 263
+           C 380 258, 352 200, 330 169
+           C 312 151, 290 128, 260 128
+           C 235 129, 205 140, 180 158
+           C 162 172, 148 214, 120 218
+           C 106 220, 88 260, 70 305
+           Z"
+        fill="#2D5A5C" fill-opacity="0.14" stroke="#2D5A5C" stroke-opacity="0.35" stroke-width="1"/>
+
+  <!-- curve campione plausibili -->
+  <path d="M 70 215 C 95 210, 105 208, 120 206
+           C 150 196, 160 162, 180 147
+           C 205 128, 235 116, 260 117
+           C 290 118, 312 137, 330 156
+           C 360 185, 385 205, 405 200
+           C 435 195, 460 250, 480 256
+           C 505 262, 535 240, 560 226
+           C 615 195, 670 155, 720 105"
+        fill="none" stroke="#C9A961" stroke-width="1.8" stroke-opacity="0.9"/>
+  <path d="M 70 280 C 95 250, 106 218, 120 213
+           C 150 200, 162 160, 180 152
+           C 205 132, 235 122, 260 123
+           C 290 124, 312 142, 330 163
+           C 358 205, 380 245, 405 248
+           C 435 252, 462 268, 480 264
+           C 503 268, 537 246, 560 234
+           C 612 215, 668 230, 720 200"
+        fill="none" stroke="#C9A961" stroke-width="1.8" stroke-opacity="0.9" stroke-dasharray="6 4"/>
+
+  <!-- curva media a posteriori -->
+  <path d="M 70 250 C 90 235, 100 222, 120 210
+           C 145 195, 160 165, 180 150
+           C 205 132, 235 120, 260 120
+           C 290 121, 310 140, 330 160
+           C 380 205, 430 250, 480 260
+           C 505 264, 535 245, 560 230
+           C 610 200, 670 175, 720 150"
+        fill="none" stroke="#2D5A5C" stroke-width="3"/>
+
+  <!-- punti osservati (leggermente fuori dalla media: c'e rumore) -->
+  <circle cx="120" cy="206" r="5.5" fill="#B5532C" stroke="#F8F5EE" stroke-width="1.5"/>
+  <circle cx="180" cy="154" r="5.5" fill="#B5532C" stroke="#F8F5EE" stroke-width="1.5"/>
+  <circle cx="260" cy="117" r="5.5" fill="#B5532C" stroke="#F8F5EE" stroke-width="1.5"/>
+  <circle cx="330" cy="164" r="5.5" fill="#B5532C" stroke="#F8F5EE" stroke-width="1.5"/>
+  <circle cx="480" cy="256" r="5.5" fill="#B5532C" stroke="#F8F5EE" stroke-width="1.5"/>
+  <circle cx="560" cy="233" r="5.5" fill="#B5532C" stroke="#F8F5EE" stroke-width="1.5"/>
+
+  <!-- annotazioni -->
+  <text x="215" y="88" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" font-style="italic" fill="#5E5852">vicino ai dati la banda si stringe</text>
+  <line x1="222" y1="94" x2="240" y2="108" stroke="#5E5852" stroke-width="1"/>
+  <text x="640" y="315" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" font-style="italic" fill="#5E5852">lontano dai dati si riapre</text>
+  <line x1="648" y1="303" x2="662" y2="262" stroke="#5E5852" stroke-width="1"/>
+</svg>

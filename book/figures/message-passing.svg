@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  paithon book - figura: il message passing in un colpo d'occhio.
+  In alto: un nodo centrale v (terracotta) riceve i MESSAGGI dai suoi vicini
+  (teal, a sinistra); le frecce entranti confluiscono in un blocco "aggrega"
+  (ocra, funzione invariante all'ordine: somma o media) e poi in un blocco
+  "aggiorna" (teal), che unisce lo stato precedente del nodo e produce il suo
+  nuovo stato. In basso: impilando due strati il campo recettivo cresce dai
+  vicini diretti (1 salto) ai vicini-dei-vicini (2 salti). Palette-locked,
+  fondo trasparente, leggibile anche in dark mode.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 560" role="img"
+     aria-label="Schema del message passing. In alto tre nodi vicini a sinistra inviano frecce, i messaggi, verso un riquadro aggrega, che effettua una somma o media invariante all'ordine; da qui una freccia entra in un riquadro aggiorna, in cui confluisce anche lo stato precedente del nodo centrale; l'uscita e il nuovo stato del nodo centrale, evidenziato in terracotta. In basso due pannelli mostrano che con un solo strato il nodo raggiunge i vicini diretti a un salto, mentre con due strati raggiunge anche i vicini dei vicini a due salti.">
+  <defs>
+    <marker id="mp-arrow" viewBox="0 0 10 10" refX="8.5" refY="5"
+            markerWidth="7.5" markerHeight="7.5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1A1A1A"/>
+    </marker>
+    <marker id="mp-arrow-n" viewBox="0 0 10 10" refX="8.5" refY="5"
+            markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#5E5852"/>
+    </marker>
+  </defs>
+  <style>
+    .nbr    { fill:#2D5A5C; }
+    .ctr    { fill:#B5532C; }
+    .ctrold { fill:#B5532C; fill-opacity:0.45; }
+    .grey   { fill:#8B847C; }
+    .edge   { stroke:#8B847C; stroke-width:2; }
+    .msg    { fill:none; stroke:#1A1A1A; stroke-width:2.4; }
+    .flow   { fill:none; stroke:#1A1A1A; stroke-width:2.8; }
+    .aggr   { fill:#C9A961; fill-opacity:0.22; stroke:#C9A961; stroke-width:2.6; }
+    .updt   { fill:#2D5A5C; fill-opacity:0.14; stroke:#2D5A5C; stroke-width:2.6; }
+    .field  { fill:#C9A961; fill-opacity:0.14; stroke:#C9A961; stroke-width:1.6; stroke-dasharray:5 5; }
+    .lbl    { font-family:Inter, system-ui, sans-serif; font-size:15px; fill:#1A1A1A; }
+    .lbls   { font-family:Inter, system-ui, sans-serif; font-size:12.5px; fill:#5E5852; }
+    .box    { font-family:Inter, system-ui, sans-serif; font-size:16px; font-weight:700; text-anchor:middle; }
+    .nodet  { font-family:Inter, system-ui, sans-serif; font-size:13px; font-weight:700; fill:#F8F5EE; text-anchor:middle; }
+    .cap    { font-family:Inter, system-ui, sans-serif; font-size:12.5px; fill:#5E5852; text-anchor:middle; }
+    .ttl    { font-family:Fraunces, Georgia, serif; font-size:16px; font-style:italic; fill:#1A1A1A; text-anchor:middle; }
+  </style>
+
+  <!-- ===================== ALTO: un passo di message passing ===================== -->
+
+  <!-- etichetta colonna vicini -->
+  <text class="lbls" x="82" y="42" text-anchor="middle">vicini di v</text>
+  <text class="lbls" x="82" y="60" text-anchor="middle" font-style="italic">N(v)</text>
+
+  <!-- nodi vicini -->
+  <circle class="nbr" cx="82"  cy="95"  r="24"/>
+  <circle class="nbr" cx="62"  cy="168" r="24"/>
+  <circle class="nbr" cx="82"  cy="241" r="24"/>
+  <text class="nodet" x="82" y="100">u1</text>
+  <text class="nodet" x="62" y="173">u2</text>
+  <text class="nodet" x="82" y="246">u3</text>
+
+  <!-- messaggi: frecce entranti che confluiscono nel blocco aggrega -->
+  <path class="msg" d="M 106,98  C 160,110 190,130 226,150" marker-end="url(#mp-arrow)"/>
+  <path class="msg" d="M 86,168  C 150,168 185,168 226,168" marker-end="url(#mp-arrow)"/>
+  <path class="msg" d="M 106,238 C 160,226 190,206 226,186" marker-end="url(#mp-arrow)"/>
+  <text class="lbls" x="150" y="120" text-anchor="middle" fill="#B5532C" font-weight="600">messaggi</text>
+
+  <!-- blocco aggrega -->
+  <rect class="aggr" x="230" y="128" width="118" height="82" rx="10"/>
+  <text class="box"  x="289" y="162" fill="#1A1A1A">aggrega</text>
+  <text class="cap"  x="289" y="184">somma / media</text>
+
+  <!-- freccia aggrega -> aggiorna -->
+  <path class="flow" d="M 348,169 L 416,169" marker-end="url(#mp-arrow)"/>
+
+  <!-- blocco aggiorna -->
+  <rect class="updt" x="420" y="128" width="118" height="82" rx="10"/>
+  <text class="box"  x="479" y="162" fill="#1A1A1A">aggiorna</text>
+  <text class="cap"  x="479" y="184">W, poi σ</text>
+
+  <!-- stato precedente del nodo centrale che entra in aggiorna -->
+  <circle class="ctrold" cx="479" cy="300" r="24"/>
+  <text class="nodet" x="479" y="305" fill="#1A1A1A">v</text>
+  <text class="lbls" x="527" y="300">stato precedente</text>
+  <text class="lbls" x="527" y="318" font-style="italic">h_v al passo k-1</text>
+  <path class="flow" d="M 479,276 L 479,212" marker-end="url(#mp-arrow)"/>
+
+  <!-- freccia aggiorna -> nuovo stato -->
+  <path class="flow" d="M 538,169 L 620,169" marker-end="url(#mp-arrow)"/>
+
+  <!-- nodo centrale, nuovo stato -->
+  <circle class="ctr" cx="672" cy="169" r="33"/>
+  <text class="nodet" x="672" y="175" font-size="17">v</text>
+  <text class="lbls" x="672" y="228" text-anchor="middle" fill="#B5532C" font-weight="600">nuovo stato</text>
+  <text class="lbls" x="672" y="246" text-anchor="middle" font-style="italic">h_v al passo k</text>
+
+  <!-- ===================== divisorio ===================== -->
+  <line x1="40" y1="368" x2="740" y2="368" stroke="#8B847C" stroke-width="1.5"/>
+
+  <!-- ===================== BASSO: campo recettivo che cresce ===================== -->
+  <text class="ttl" x="390" y="398">Impila due strati e il campo recettivo cresce di un salto</text>
+
+  <!-- Pannello A: 1 strato -->
+  <ellipse class="field" cx="180" cy="470" rx="82" ry="52"/>
+  <!-- archi -->
+  <line class="edge" x1="205" y1="470" x2="150" y2="440"/>
+  <line class="edge" x1="205" y1="470" x2="150" y2="500"/>
+  <line class="edge" x1="150" y1="440" x2="98"  y2="428"/>
+  <line class="edge" x1="150" y1="500" x2="98"  y2="512"/>
+  <!-- nodi -->
+  <circle class="grey" cx="98"  cy="428" r="14"/>
+  <circle class="grey" cx="98"  cy="512" r="14"/>
+  <circle class="nbr"  cx="150" cy="440" r="14"/>
+  <circle class="nbr"  cx="150" cy="500" r="14"/>
+  <circle class="ctr"  cx="205" cy="470" r="17"/>
+  <text class="nodet" x="205" y="475">v</text>
+  <text class="cap" x="180" y="547">1 strato: solo i vicini diretti (1 salto)</text>
+
+  <!-- freccia fra i pannelli -->
+  <path class="flow" d="M 300,470 L 388,470" marker-end="url(#mp-arrow)" stroke="#5E5852"/>
+  <text class="lbls" x="344" y="458" text-anchor="middle">+1 strato</text>
+
+  <!-- Pannello B: 2 strati -->
+  <ellipse class="field" cx="512" cy="470" rx="108" ry="60"/>
+  <!-- archi -->
+  <line class="edge" x1="565" y1="470" x2="510" y2="440"/>
+  <line class="edge" x1="565" y1="470" x2="510" y2="500"/>
+  <line class="edge" x1="510" y1="440" x2="458" y2="428"/>
+  <line class="edge" x1="510" y1="500" x2="458" y2="512"/>
+  <!-- nodi (tutti raggiunti) -->
+  <circle class="nbr" cx="458" cy="428" r="14"/>
+  <circle class="nbr" cx="458" cy="512" r="14"/>
+  <circle class="nbr" cx="510" cy="440" r="14"/>
+  <circle class="nbr" cx="510" cy="500" r="14"/>
+  <circle class="ctr" cx="565" cy="470" r="17"/>
+  <text class="nodet" x="565" y="475">v</text>
+  <text class="cap" x="512" y="547">2 strati: anche i vicini dei vicini (2 salti)</text>
+</svg>

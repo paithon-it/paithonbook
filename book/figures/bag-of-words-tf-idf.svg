@@ -1,0 +1,36 @@
+<svg viewBox="0 0 720 300" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Schema: un documento di testo viene trasformato in un vettore di conteggi delle parole">
+  <rect x="0" y="0" width="720" height="300" fill="#F8F5EE"/>
+  <!-- documento -->
+  <rect x="30" y="60" width="200" height="180" rx="6" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="2"/>
+  <text x="130" y="45" font-family="sans-serif" font-size="14" font-weight="bold" fill="#1A1A1A" text-anchor="middle">Documento</text>
+  <line x1="50" y1="90" x2="210" y2="90" stroke="#C9A961" stroke-width="2"/>
+  <line x1="50" y1="115" x2="190" y2="115" stroke="#8B847C" stroke-width="1.5"/>
+  <line x1="50" y1="140" x2="205" y2="140" stroke="#8B847C" stroke-width="1.5"/>
+  <line x1="50" y1="165" x2="180" y2="165" stroke="#B5532C" stroke-width="2"/>
+  <line x1="50" y1="190" x2="200" y2="190" stroke="#8B847C" stroke-width="1.5"/>
+  <line x1="50" y1="215" x2="150" y2="215" stroke="#2D5A5C" stroke-width="2"/>
+  <!-- freccia -->
+  <line x1="250" y1="150" x2="330" y2="150" stroke="#1A1A1A" stroke-width="2"/>
+  <polygon points="330,150 318,143 318,157" fill="#1A1A1A"/>
+  <text x="290" y="135" font-family="sans-serif" font-size="12" fill="#5E5852" text-anchor="middle">conta</text>
+  <!-- vettore di conteggi -->
+  <text x="520" y="45" font-family="sans-serif" font-size="14" font-weight="bold" fill="#1A1A1A" text-anchor="middle">Vettore di conteggi</text>
+  <g font-family="sans-serif" font-size="13" fill="#1A1A1A">
+    <text x="360" y="87" text-anchor="start">rete</text>
+    <rect x="440" y="72" width="120" height="22" fill="#B5532C"/>
+    <text x="570" y="87" fill="#5E5852">3</text>
+    <text x="360" y="122" text-anchor="start">dati</text>
+    <rect x="440" y="107" width="160" height="22" fill="#2D5A5C"/>
+    <text x="610" y="122" fill="#5E5852">4</text>
+    <text x="360" y="157" text-anchor="start">modello</text>
+    <rect x="440" y="142" width="80" height="22" fill="#C9A961"/>
+    <text x="530" y="157" fill="#5E5852">2</text>
+    <text x="360" y="192" text-anchor="start">gatto</text>
+    <rect x="440" y="177" width="40" height="22" fill="#B5532C"/>
+    <text x="490" y="192" fill="#5E5852">1</text>
+    <text x="360" y="227" text-anchor="start">spread</text>
+    <rect x="440" y="212" width="4" height="22" fill="#8B847C"/>
+    <text x="456" y="227" fill="#5E5852">0</text>
+  </g>
+  <text x="360" y="270" font-family="sans-serif" font-size="12" fill="#5E5852">… e così via per tutte le ~50.000 parole del vocabolario (quasi tutte a 0)</text>
+</svg>

@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 460" role="img" aria-label="Il ciclo di vita di un modello disegnato come un anello chiuso di cinque nodi collegati da frecce in senso orario: Dati, Addestramento, Valutazione, Deploy, Monitoraggio. Una freccia terracotta chiude l'anello riportando dal Monitoraggio ai Dati, con l'etichetta drift: quando i dati cambiano, il ciclo ricomincia.">
+  <defs>
+    <marker id="mlops-arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7.5" markerHeight="7.5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#C9A961"/>
+    </marker>
+    <marker id="mlops-arrow-drift" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7.5" markerHeight="7.5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#B5532C"/>
+    </marker>
+  </defs>
+
+  <!-- archi del ciclo (senso orario) -->
+  <path d="M387.1,84.2 A165,165 0 0 1 442.6,124.6" fill="none" stroke="#C9A961" stroke-width="3" marker-end="url(#mlops-arrow)"/>
+  <path d="M484.1,252.3 A165,165 0 0 1 462.9,317.5" fill="none" stroke="#C9A961" stroke-width="3" marker-end="url(#mlops-arrow)"/>
+  <path d="M354.3,396.4 A165,165 0 0 1 285.7,396.4" fill="none" stroke="#C9A961" stroke-width="3" marker-end="url(#mlops-arrow)"/>
+  <path d="M177.1,317.5 A165,165 0 0 1 155.8,252.3" fill="none" stroke="#C9A961" stroke-width="3" marker-end="url(#mlops-arrow)"/>
+
+  <!-- arco di ritorno: il drift chiude l'anello (Monitoraggio -> Dati) -->
+  <path d="M197.4,124.6 A165,165 0 0 1 252.9,84.2" fill="none" stroke="#B5532C" stroke-width="3" stroke-dasharray="7 5" marker-end="url(#mlops-arrow-drift)"/>
+  <text x="196" y="66" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" font-weight="700" fill="#B5532C">drift</text>
+  <text x="196" y="82" text-anchor="middle" font-family="Inter, sans-serif" font-size="11.5" fill="#5E5852">i dati cambiano</text>
+
+  <!-- centro -->
+  <text x="320" y="230" text-anchor="middle" font-family="Georgia, serif" font-size="24" font-weight="700" fill="#C9A961">MLOps</text>
+  <text x="320" y="252" text-anchor="middle" font-family="Inter, sans-serif" font-size="12.5" fill="#5E5852">un anello, non una linea retta</text>
+
+  <!-- nodo 1: Dati (in alto) -->
+  <rect x="255" y="45" width="130" height="50" rx="9" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2.5"/>
+  <text x="320" y="68" text-anchor="middle" font-family="Inter, sans-serif" font-size="16" font-weight="700" fill="#1A1A1A">Dati</text>
+  <text x="320" y="84" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#5E5852">raccolta e feature</text>
+
+  <!-- nodo 2: Addestramento (in alto a destra) -->
+  <rect x="412" y="159" width="130" height="50" rx="9" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2.5"/>
+  <text x="477" y="182" text-anchor="middle" font-family="Inter, sans-serif" font-size="16" font-weight="700" fill="#1A1A1A">Addestramento</text>
+  <text x="477" y="198" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#5E5852">training</text>
+
+  <!-- nodo 3: Valutazione (in basso a destra) -->
+  <rect x="352" y="343" width="130" height="50" rx="9" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2.5"/>
+  <text x="417" y="366" text-anchor="middle" font-family="Inter, sans-serif" font-size="16" font-weight="700" fill="#1A1A1A">Valutazione</text>
+  <text x="417" y="382" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#5E5852">metriche e test</text>
+
+  <!-- nodo 4: Deploy (in basso a sinistra) -->
+  <rect x="158" y="343" width="130" height="50" rx="9" fill="#F8F5EE" stroke="#B5532C" stroke-width="2.5"/>
+  <text x="223" y="366" text-anchor="middle" font-family="Inter, sans-serif" font-size="16" font-weight="700" fill="#1A1A1A">Deploy</text>
+  <text x="223" y="382" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#5E5852">serving</text>
+
+  <!-- nodo 5: Monitoraggio (in alto a sinistra) -->
+  <rect x="98" y="159" width="130" height="50" rx="9" fill="#F8F5EE" stroke="#B5532C" stroke-width="2.5"/>
+  <text x="163" y="182" text-anchor="middle" font-family="Inter, sans-serif" font-size="16" font-weight="700" fill="#1A1A1A">Monitoraggio</text>
+  <text x="163" y="198" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#5E5852">in produzione</text>
+</svg>

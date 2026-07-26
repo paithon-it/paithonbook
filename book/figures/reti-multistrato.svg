@@ -1,0 +1,36 @@
+<svg viewBox="0 0 720 300" width="100%" role="img" aria-label="Tre pannelli: confine lineare di un neurone, regione poligonale di uno strato nascosto, confine curvo di una rete profonda" xmlns="http://www.w3.org/2000/svg">
+  <rect x="0" y="0" width="720" height="300" fill="#F8F5EE"/>
+  <text x="120" y="38" font-family="sans-serif" font-size="14" fill="#1A1A1A" text-anchor="middle">1 neurone</text>
+  <rect x="20" y="52" width="200" height="200" fill="none" stroke="#1A1A1A" stroke-width="1.5"/>
+  <polygon points="20,252 220,132 220,252" fill="#B5532C" fill-opacity="0.15"/>
+  <line x1="20" y1="252" x2="220" y2="132" stroke="#B5532C" stroke-width="2"/>
+  <circle cx="70" cy="110" r="5" fill="none" stroke="#2D5A5C" stroke-width="1.5"/>
+  <circle cx="130" cy="90" r="5" fill="none" stroke="#2D5A5C" stroke-width="1.5"/>
+  <circle cx="150" cy="220" r="5" fill="#B5532C"/>
+  <circle cx="190" cy="200" r="5" fill="#B5532C"/>
+  <text x="120" y="278" font-family="sans-serif" font-size="12" fill="#1A1A1A" text-anchor="middle">una retta</text>
+
+  <text x="245" y="160" font-family="sans-serif" font-size="18" fill="#1A1A1A" text-anchor="middle">&#8594;</text>
+
+  <text x="360" y="38" font-family="sans-serif" font-size="14" fill="#1A1A1A" text-anchor="middle">1 strato nascosto</text>
+  <rect x="260" y="52" width="200" height="200" fill="none" stroke="#1A1A1A" stroke-width="1.5"/>
+  <polygon points="360,90 300,210 420,210" fill="#2D5A5C" fill-opacity="0.18"/>
+  <line x1="280" y1="250" x2="400" y2="70" stroke="#2D5A5C" stroke-width="1.5"/>
+  <line x1="320" y1="70" x2="440" y2="250" stroke="#2D5A5C" stroke-width="1.5"/>
+  <line x1="270" y1="210" x2="450" y2="210" stroke="#2D5A5C" stroke-width="1.5"/>
+  <circle cx="360" cy="170" r="5" fill="#B5532C"/>
+  <circle cx="290" cy="100" r="5" fill="none" stroke="#2D5A5C" stroke-width="1.5"/>
+  <circle cx="430" cy="120" r="5" fill="none" stroke="#2D5A5C" stroke-width="1.5"/>
+  <text x="360" y="278" font-family="sans-serif" font-size="12" fill="#1A1A1A" text-anchor="middle">rette combinate in una regione</text>
+
+  <text x="485" y="160" font-family="sans-serif" font-size="18" fill="#1A1A1A" text-anchor="middle">&#8594;</text>
+
+  <text x="600" y="38" font-family="sans-serif" font-size="14" fill="#1A1A1A" text-anchor="middle">pi&#249; strati</text>
+  <rect x="500" y="52" width="200" height="200" fill="none" stroke="#1A1A1A" stroke-width="1.5"/>
+  <path d="M 545 200 C 520 150, 560 85, 610 95 C 665 105, 685 150, 655 185 C 640 205, 660 225, 620 232 C 580 239, 565 235, 545 200 Z" fill="#C9A961" fill-opacity="0.25" stroke="#B5532C" stroke-width="2"/>
+  <circle cx="600" cy="150" r="5" fill="#B5532C"/>
+  <circle cx="630" cy="200" r="5" fill="#B5532C"/>
+  <circle cx="530" cy="90" r="5" fill="none" stroke="#2D5A5C" stroke-width="1.5"/>
+  <circle cx="670" cy="80" r="5" fill="none" stroke="#2D5A5C" stroke-width="1.5"/>
+  <text x="600" y="278" font-family="sans-serif" font-size="12" fill="#1A1A1A" text-anchor="middle">regioni composte in confini arbitrari</text>
+</svg>

@@ -1,0 +1,41 @@
+<svg viewBox="0 0 760 400" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Confronto tra la pipeline RLHF in tre passi e la pipeline DPO in un passo solo">
+  <rect x="0" y="0" width="760" height="400" fill="#F8F5EE"/>
+  <text x="380" y="30" text-anchor="middle" font-family="sans-serif" font-size="17" font-weight="bold" fill="#1A1A1A">RLHF vs DPO: stesso obiettivo, due tappe in meno</text>
+  <!-- RLHF row -->
+  <text x="30" y="80" font-family="sans-serif" font-size="14" font-weight="bold" fill="#2D5A5C">RLHF</text>
+  <rect x="30" y="95" width="170" height="60" rx="9" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2"/>
+  <text x="115" y="120" text-anchor="middle" font-family="sans-serif" font-size="12.5" fill="#1A1A1A">Dati di preferenza</text>
+  <text x="115" y="138" text-anchor="middle" font-family="sans-serif" font-size="11.5" fill="#5E5852">A preferita a B</text>
+  <line x1="200" y1="125" x2="240" y2="125" stroke="#1A1A1A" stroke-width="2"/>
+  <polygon points="240,120 250,125 240,130" fill="#1A1A1A"/>
+  <rect x="252" y="95" width="170" height="60" rx="9" fill="#F8F5EE" stroke="#C9A961" stroke-width="2"/>
+  <text x="337" y="120" text-anchor="middle" font-family="sans-serif" font-size="12.5" fill="#1A1A1A">Reward model</text>
+  <text x="337" y="138" text-anchor="middle" font-family="sans-serif" font-size="11.5" fill="#5E5852">modello separato</text>
+  <line x1="422" y1="125" x2="462" y2="125" stroke="#1A1A1A" stroke-width="2"/>
+  <polygon points="462,120 472,125 462,130" fill="#1A1A1A"/>
+  <rect x="474" y="95" width="170" height="60" rx="9" fill="#F8F5EE" stroke="#C9A961" stroke-width="2"/>
+  <text x="559" y="120" text-anchor="middle" font-family="sans-serif" font-size="12.5" fill="#1A1A1A">RL con PPO</text>
+  <text x="559" y="138" text-anchor="middle" font-family="sans-serif" font-size="11.5" fill="#5E5852">genera, valuta, aggiorna</text>
+  <line x1="644" y1="125" x2="684" y2="125" stroke="#1A1A1A" stroke-width="2"/>
+  <polygon points="684,120 694,125 684,130" fill="#1A1A1A"/>
+  <rect x="696" y="103" width="44" height="44" rx="9" fill="#2D5A5C"/>
+  <text x="718" y="130" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#F8F5EE">LLM</text>
+  <text x="337" y="185" text-anchor="middle" font-family="sans-serif" font-size="11.5" fill="#5E5852">fino a 4 modelli in memoria · campionamento a ogni passo · training instabile</text>
+  <!-- DPO row -->
+  <text x="30" y="245" font-family="sans-serif" font-size="14" font-weight="bold" fill="#B5532C">DPO</text>
+  <rect x="30" y="260" width="170" height="60" rx="9" fill="#F8F5EE" stroke="#B5532C" stroke-width="2"/>
+  <text x="115" y="285" text-anchor="middle" font-family="sans-serif" font-size="12.5" fill="#1A1A1A">Dati di preferenza</text>
+  <text x="115" y="303" text-anchor="middle" font-family="sans-serif" font-size="11.5" fill="#5E5852">gli stessi di sopra</text>
+  <line x1="200" y1="290" x2="462" y2="290" stroke="#B5532C" stroke-width="2"/>
+  <polygon points="462,285 472,290 462,295" fill="#B5532C"/>
+  <text x="336" y="280" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#B5532C">una sola loss di classificazione</text>
+  <rect x="474" y="260" width="170" height="60" rx="9" fill="#B5532C"/>
+  <text x="559" y="285" text-anchor="middle" font-family="sans-serif" font-size="12.5" fill="#F8F5EE">Training diretto</text>
+  <text x="559" y="303" text-anchor="middle" font-family="sans-serif" font-size="11.5" fill="#F8F5EE">reward implicito</text>
+  <line x1="644" y1="290" x2="684" y2="290" stroke="#1A1A1A" stroke-width="2"/>
+  <polygon points="684,285 694,290 684,295" fill="#1A1A1A"/>
+  <rect x="696" y="268" width="44" height="44" rx="9" fill="#B5532C"/>
+  <text x="718" y="295" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#F8F5EE">LLM</text>
+  <text x="337" y="350" text-anchor="middle" font-family="sans-serif" font-size="11.5" fill="#5E5852">2 modelli in memoria (policy + riferimento) · nessuna generazione durante il training</text>
+  <text x="380" y="385" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#5E5852">Le due tappe centrali dell'RLHF collassano in un'unica passata supervisionata.</text>
+</svg>

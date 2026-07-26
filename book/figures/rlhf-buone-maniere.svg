@@ -1,0 +1,38 @@
+<svg viewBox="0 0 760 360" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Pipeline RLHF in tre fasi: preferenze umane, reward model, reinforcement learning">
+  <rect x="0" y="0" width="760" height="360" fill="#F8F5EE"/>
+  <text x="380" y="32" text-anchor="middle" font-family="sans-serif" font-size="17" font-weight="bold" fill="#1A1A1A">La pipeline RLHF: preferenze → reward → rinforzo</text>
+  <!-- Fase 1: preferenze -->
+  <rect x="30" y="70" width="210" height="180" rx="10" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2"/>
+  <text x="135" y="98" text-anchor="middle" font-family="sans-serif" font-size="14" font-weight="bold" fill="#2D5A5C">1. Preferenze umane</text>
+  <rect x="55" y="115" width="160" height="34" rx="6" fill="#F8F5EE" stroke="#C9C2B4" stroke-width="1.5"/>
+  <text x="135" y="137" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">Risposta A</text>
+  <rect x="55" y="160" width="160" height="34" rx="6" fill="#F8F5EE" stroke="#C9C2B4" stroke-width="1.5"/>
+  <text x="135" y="182" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">Risposta B</text>
+  <text x="230" y="137" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#B5532C">✓</text>
+  <text x="135" y="225" text-anchor="middle" font-family="sans-serif" font-size="11.5" fill="#5E5852">l'annotatore sceglie A</text>
+  <!-- Freccia 1 -->
+  <line x1="248" y1="160" x2="288" y2="160" stroke="#1A1A1A" stroke-width="2"/>
+  <polygon points="288,155 298,160 288,165" fill="#1A1A1A"/>
+  <!-- Fase 2: reward model -->
+  <rect x="300" y="70" width="190" height="180" rx="10" fill="#F8F5EE" stroke="#C9A961" stroke-width="2"/>
+  <text x="395" y="98" text-anchor="middle" font-family="sans-serif" font-size="14" font-weight="bold" fill="#1A1A1A">2. Reward model</text>
+  <circle cx="395" cy="160" r="38" fill="#C9A961" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="395" y="157" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">giudice</text>
+  <text x="395" y="173" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">appreso</text>
+  <text x="395" y="228" text-anchor="middle" font-family="sans-serif" font-size="11.5" fill="#5E5852">risposta → punteggio</text>
+  <!-- Freccia 2 -->
+  <line x1="498" y1="160" x2="538" y2="160" stroke="#1A1A1A" stroke-width="2"/>
+  <polygon points="538,155 548,160 538,165" fill="#1A1A1A"/>
+  <!-- Fase 3: RL -->
+  <rect x="550" y="70" width="185" height="180" rx="10" fill="#F8F5EE" stroke="#B5532C" stroke-width="2"/>
+  <text x="642" y="98" text-anchor="middle" font-family="sans-serif" font-size="14" font-weight="bold" fill="#B5532C">3. Rinforzo (PPO)</text>
+  <rect x="577" y="120" width="130" height="40" rx="8" fill="#B5532C"/>
+  <text x="642" y="145" text-anchor="middle" font-family="sans-serif" font-size="12.5" fill="#F8F5EE">policy = LLM</text>
+  <text x="642" y="196" text-anchor="middle" font-family="sans-serif" font-size="11.5" fill="#5E5852">massimizza il punteggio,</text>
+  <text x="642" y="212" text-anchor="middle" font-family="sans-serif" font-size="11.5" fill="#5E5852">vincolo KL sul modello base</text>
+  <!-- Loop di feedback -->
+  <path d="M 642 250 L 642 300 L 395 300 L 395 254" fill="none" stroke="#2D5A5C" stroke-width="2" stroke-dasharray="6 4"/>
+  <polygon points="390,254 395,244 400,254" fill="#2D5A5C"/>
+  <text x="518" y="292" text-anchor="middle" font-family="sans-serif" font-size="11.5" fill="#2D5A5C">nuove risposte da valutare</text>
+  <text x="380" y="338" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#5E5852">Il giudizio umano viene compresso in un modello, che guida l'ottimizzazione su scala.</text>
+</svg>

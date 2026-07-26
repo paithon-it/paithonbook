@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 750 250" font-family="Inter, system-ui, sans-serif" role="img" aria-label="Blocco denso con tre strati: archi di concatenazione portano l'input e l'uscita di ogni strato a tutti i nodi di concatenazione successivi, dove le feature vengono affiancate lungo i canali prima di entrare nello strato seguente.">
+  <defs>
+    <marker id="fnera" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#1A1A1A"/>
+    </marker>
+    <marker id="fterra" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#B5532C"/>
+    </marker>
+    <marker id="fteal" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#2D5A5C"/>
+    </marker>
+    <marker id="focra" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#C9A961"/>
+    </marker>
+  </defs>
+
+  <!-- archi di concatenazione: da x0 (terracotta) -->
+  <path d="M60 144 Q138 76 210 138" fill="none" stroke="#B5532C" stroke-width="2.4" marker-end="url(#fterra)"/>
+  <path d="M60 142 Q230 20 397 137" fill="none" stroke="#B5532C" stroke-width="2.4" marker-end="url(#fterra)"/>
+  <path d="M60 140 Q328 -30 593 134" fill="none" stroke="#B5532C" stroke-width="2.4" marker-end="url(#fterra)"/>
+
+  <!-- archi da x1 (teal) -->
+  <path d="M186 144 Q300 58 407 134" fill="none" stroke="#2D5A5C" stroke-width="2.4" marker-end="url(#fteal)"/>
+  <path d="M186 142 Q392 24 599 133" fill="none" stroke="#2D5A5C" stroke-width="2.4" marker-end="url(#fteal)"/>
+
+  <!-- arco da x2 (ocra) -->
+  <path d="M374 144 Q484 66 586 138" fill="none" stroke="#C9A961" stroke-width="2.6" marker-end="url(#focra)"/>
+
+  <!-- input x0 -->
+  <text x="24" y="156" font-size="16" font-style="italic" font-weight="700" fill="#1A1A1A">x<tspan dy="3" font-size="11">0</tspan></text>
+  <line x1="44" y1="150" x2="76" y2="150" stroke="#1A1A1A" stroke-width="2.5" marker-end="url(#fnera)"/>
+  <circle cx="60" cy="150" r="3.5" fill="#B5532C"/>
+
+  <!-- strato H1 -->
+  <rect x="80" y="126" width="92" height="48" rx="6" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="2.5"/>
+  <text x="96" y="156" font-size="14" fill="#1A1A1A">strato <tspan font-style="italic">H</tspan><tspan dy="3" font-size="10">1</tspan></text>
+
+  <!-- H1 -> concat 1, con presa x1 -->
+  <line x1="172" y1="150" x2="201" y2="150" stroke="#1A1A1A" stroke-width="2.5" marker-end="url(#fnera)"/>
+  <circle cx="186" cy="150" r="3.5" fill="#2D5A5C"/>
+  <text x="181" y="176" font-size="13" font-style="italic" font-weight="700" fill="#2D5A5C">x<tspan dy="3" font-size="9.5">1</tspan></text>
+
+  <!-- nodo concatenazione 1 -->
+  <circle cx="222" cy="150" r="17" fill="#C9A961" stroke="#1A1A1A" stroke-width="2.5"/>
+  <line x1="218.5" y1="142.5" x2="218.5" y2="157.5" stroke="#1A1A1A" stroke-width="2.2"/>
+  <line x1="225.5" y1="142.5" x2="225.5" y2="157.5" stroke="#1A1A1A" stroke-width="2.2"/>
+
+  <!-- concat 1 -> strato H2 -->
+  <line x1="239" y1="150" x2="264" y2="150" stroke="#1A1A1A" stroke-width="2.5" marker-end="url(#fnera)"/>
+  <rect x="268" y="126" width="92" height="48" rx="6" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="2.5"/>
+  <text x="284" y="156" font-size="14" fill="#1A1A1A">strato <tspan font-style="italic">H</tspan><tspan dy="3" font-size="10">2</tspan></text>
+  <text x="217" y="196" font-size="12" fill="#5E5852">ogni strato aggiunge <tspan font-style="italic">k</tspan> mappe nuove</text>
+
+  <!-- H2 -> concat 2, con presa x2 -->
+  <line x1="360" y1="150" x2="389" y2="150" stroke="#1A1A1A" stroke-width="2.5" marker-end="url(#fnera)"/>
+  <circle cx="374" cy="150" r="3.5" fill="#C9A961"/>
+  <text x="369" y="176" font-size="13" font-style="italic" font-weight="700" fill="#C9A961">x<tspan dy="3" font-size="9.5">2</tspan></text>
+
+  <!-- nodo concatenazione 2 -->
+  <circle cx="410" cy="150" r="17" fill="#C9A961" stroke="#1A1A1A" stroke-width="2.5"/>
+  <line x1="406.5" y1="142.5" x2="406.5" y2="157.5" stroke="#1A1A1A" stroke-width="2.2"/>
+  <line x1="413.5" y1="142.5" x2="413.5" y2="157.5" stroke="#1A1A1A" stroke-width="2.2"/>
+
+  <!-- concat 2 -> strato H3 -->
+  <line x1="427" y1="150" x2="452" y2="150" stroke="#1A1A1A" stroke-width="2.5" marker-end="url(#fnera)"/>
+  <rect x="456" y="126" width="92" height="48" rx="6" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="2.5"/>
+  <text x="472" y="156" font-size="14" fill="#1A1A1A">strato <tspan font-style="italic">H</tspan><tspan dy="3" font-size="10">3</tspan></text>
+
+  <!-- H3 -> concat 3 -->
+  <line x1="548" y1="150" x2="577" y2="150" stroke="#1A1A1A" stroke-width="2.5" marker-end="url(#fnera)"/>
+  <circle cx="563" cy="150" r="3.5" fill="#1A1A1A"/>
+  <text x="558" y="176" font-size="13" font-style="italic" font-weight="700" fill="#1A1A1A">x<tspan dy="3" font-size="9.5">3</tspan></text>
+
+  <!-- nodo concatenazione 3 -->
+  <circle cx="598" cy="150" r="17" fill="#C9A961" stroke="#1A1A1A" stroke-width="2.5"/>
+  <line x1="594.5" y1="142.5" x2="594.5" y2="157.5" stroke="#1A1A1A" stroke-width="2.2"/>
+  <line x1="601.5" y1="142.5" x2="601.5" y2="157.5" stroke="#1A1A1A" stroke-width="2.2"/>
+
+  <!-- uscita del blocco -->
+  <line x1="615" y1="150" x2="644" y2="150" stroke="#1A1A1A" stroke-width="2.5" marker-end="url(#fnera)"/>
+  <text x="650" y="146" font-size="12.5" fill="#1A1A1A">[<tspan font-style="italic">x</tspan><tspan dy="3" font-size="9.5">0</tspan><tspan dy="-3">, </tspan><tspan font-style="italic">x</tspan><tspan dy="3" font-size="9.5">1</tspan><tspan dy="-3">, </tspan><tspan font-style="italic">x</tspan><tspan dy="3" font-size="9.5">2</tspan><tspan dy="-3">, </tspan><tspan font-style="italic">x</tspan><tspan dy="3" font-size="9.5">3</tspan><tspan dy="-3">]</tspan></text>
+  <text x="650" y="168" font-size="11.5" fill="#5E5852">uscita del blocco</text>
+
+  <!-- legenda -->
+  <circle cx="150" cy="222" r="10" fill="#C9A961" stroke="#1A1A1A" stroke-width="2"/>
+  <line x1="147" y1="217" x2="147" y2="227" stroke="#1A1A1A" stroke-width="2"/>
+  <line x1="153" y1="217" x2="153" y2="227" stroke="#1A1A1A" stroke-width="2"/>
+  <text x="168" y="227" font-size="12.5" fill="#5E5852">= concatenazione dei canali: le feature si affiancano, non si sommano</text>
+</svg>

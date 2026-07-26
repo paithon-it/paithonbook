@@ -1,0 +1,37 @@
+<svg viewBox="0 0 720 300" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Pipeline di sentiment analysis: dal testo grezzo alla polarità">
+  <rect x="0" y="0" width="720" height="300" fill="#F8F5EE"/>
+  <text x="360" y="32" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#1A1A1A" font-weight="bold">Da testo a polarità: la pipeline</text>
+  <!-- box 1: testo -->
+  <rect x="20" y="90" width="150" height="110" rx="8" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="2"/>
+  <text x="95" y="118" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#1A1A1A" font-weight="bold">Testo grezzo</text>
+  <text x="95" y="145" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#1A1A1A">"Servizio lento,</text>
+  <text x="95" y="162" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#1A1A1A">cibo immangiabile,</text>
+  <text x="95" y="179" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#1A1A1A">mai più."</text>
+  <!-- freccia 1 -->
+  <line x1="170" y1="145" x2="215" y2="145" stroke="#1A1A1A" stroke-width="2"/>
+  <path d="M215 145 l-10 -6 v12 z" fill="#1A1A1A"/>
+  <!-- box 2: vettore TF-IDF -->
+  <rect x="220" y="90" width="150" height="110" rx="8" fill="#C9A961" stroke="#1A1A1A" stroke-width="2"/>
+  <text x="295" y="118" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#1A1A1A" font-weight="bold">Vettore TF-IDF</text>
+  <text x="295" y="145" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#1A1A1A">lento → 0.48</text>
+  <text x="295" y="162" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#1A1A1A">immangiabile → 0.71</text>
+  <text x="295" y="179" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#1A1A1A">cibo → 0.09</text>
+  <!-- freccia 2 -->
+  <line x1="370" y1="145" x2="415" y2="145" stroke="#1A1A1A" stroke-width="2"/>
+  <path d="M415 145 l-10 -6 v12 z" fill="#1A1A1A"/>
+  <!-- box 3: classificatore -->
+  <rect x="420" y="90" width="150" height="110" rx="8" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="2"/>
+  <text x="495" y="130" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#F8F5EE" font-weight="bold">Regressione</text>
+  <text x="495" y="150" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#F8F5EE" font-weight="bold">logistica</text>
+  <text x="495" y="178" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#F8F5EE">somma pesata + soglia</text>
+  <!-- freccia 3 -->
+  <line x1="570" y1="145" x2="615" y2="145" stroke="#1A1A1A" stroke-width="2"/>
+  <path d="M615 145 l-10 -6 v12 z" fill="#1A1A1A"/>
+  <!-- polarità -->
+  <rect x="620" y="98" width="85" height="40" rx="20" fill="#F8F5EE" stroke="#B5532C" stroke-width="2"/>
+  <text x="662" y="123" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#B5532C" font-weight="bold">negativo</text>
+  <rect x="620" y="152" width="85" height="40" rx="20" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2" stroke-dasharray="5 4"/>
+  <text x="662" y="177" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#2D5A5C">positivo</text>
+  <!-- didascalia interna -->
+  <text x="360" y="262" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">Le parole distintive pesano molto, quelle comuni quasi nulla: la polarità emerge dalla somma.</text>
+</svg>

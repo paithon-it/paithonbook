@@ -1,0 +1,51 @@
+<svg viewBox="0 0 800 320" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Schema seq2seq: le parole di una frase vengono compresse in un unico vettore di contesto, da cui il decoder genera la traduzione">
+  <rect x="0" y="0" width="800" height="320" fill="#F8F5EE"/>
+  <text x="400" y="30" font-family="sans-serif" font-size="15" font-weight="bold" fill="#1A1A1A" text-anchor="middle">La frase intera compressa in un punto</text>
+  <!-- input words -->
+  <g font-family="sans-serif" font-size="13" text-anchor="middle">
+    <rect x="30" y="60" width="90" height="34" rx="4" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2"/>
+    <text x="75" y="82" fill="#1A1A1A">il</text>
+    <rect x="140" y="60" width="90" height="34" rx="4" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2"/>
+    <text x="185" y="82" fill="#1A1A1A">gatto</text>
+    <rect x="250" y="60" width="90" height="34" rx="4" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2"/>
+    <text x="295" y="82" fill="#1A1A1A">dorme</text>
+    <rect x="360" y="60" width="90" height="34" rx="4" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2"/>
+    <text x="405" y="82" fill="#1A1A1A">sul</text>
+    <rect x="470" y="60" width="90" height="34" rx="4" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2"/>
+    <text x="515" y="82" fill="#1A1A1A">divano</text>
+  </g>
+  <text x="640" y="82" font-family="sans-serif" font-size="12" fill="#2D5A5C">encoder legge →</text>
+  <!-- funnel lines to single vector -->
+  <g stroke="#C9A961" stroke-width="1.5" fill="none">
+    <line x1="75" y1="94" x2="395" y2="170"/>
+    <line x1="185" y1="94" x2="398" y2="170"/>
+    <line x1="295" y1="94" x2="400" y2="170"/>
+    <line x1="405" y1="94" x2="402" y2="170"/>
+    <line x1="515" y1="94" x2="405" y2="170"/>
+  </g>
+  <!-- context vector -->
+  <circle cx="400" cy="185" r="16" fill="#B5532C" stroke="#1A1A1A" stroke-width="2"/>
+  <text x="400" y="222" font-family="sans-serif" font-size="12" fill="#B5532C" text-anchor="middle" font-weight="bold">vettore di contesto (dimensione fissa)</text>
+  <!-- funnel lines from vector to output -->
+  <g stroke="#C9A961" stroke-width="1.5" fill="none">
+    <line x1="395" y1="200" x2="105" y2="256"/>
+    <line x1="398" y1="200" x2="230" y2="256"/>
+    <line x1="400" y1="200" x2="355" y2="256"/>
+    <line x1="402" y1="200" x2="480" y2="256"/>
+    <line x1="405" y1="200" x2="605" y2="256"/>
+  </g>
+  <!-- output words -->
+  <g font-family="sans-serif" font-size="13" text-anchor="middle">
+    <rect x="60" y="258" width="90" height="34" rx="4" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="1.5"/>
+    <text x="105" y="280" fill="#F8F5EE">the</text>
+    <rect x="185" y="258" width="90" height="34" rx="4" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="1.5"/>
+    <text x="230" y="280" fill="#F8F5EE">cat</text>
+    <rect x="310" y="258" width="90" height="34" rx="4" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="1.5"/>
+    <text x="355" y="280" fill="#F8F5EE">sleeps</text>
+    <rect x="435" y="258" width="90" height="34" rx="4" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="1.5"/>
+    <text x="480" y="280" fill="#F8F5EE">on the</text>
+    <rect x="560" y="258" width="90" height="34" rx="4" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="1.5"/>
+    <text x="605" y="280" fill="#F8F5EE">sofa</text>
+  </g>
+  <text x="700" y="280" font-family="sans-serif" font-size="12" fill="#2D5A5C">← decoder</text>
+</svg>

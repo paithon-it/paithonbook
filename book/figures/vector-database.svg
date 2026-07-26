@@ -1,0 +1,53 @@
+<svg viewBox="0 0 680 400" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Struttura di HNSW: tre strati sovrapposti. In cima pochi nodi con collegamenti lunghi, in basso molti nodi con collegamenti corti. Il percorso di ricerca parte dallo strato alto, fa grandi balzi e scende verso lo strato basso avvicinandosi al punto cercato">
+  <rect x="0" y="0" width="680" height="400" fill="#F8F5EE"/>
+  <!-- Strato 2 (alto, rado) -->
+  <text x="40" y="55" font-family="sans-serif" font-size="12" fill="#1A1A1A" text-anchor="middle">strato 2</text>
+  <line x1="120" y1="55" x2="360" y2="55" stroke="#C9A961" stroke-width="1.5"/>
+  <line x1="360" y1="55" x2="560" y2="55" stroke="#C9A961" stroke-width="1.5"/>
+  <circle cx="120" cy="55" r="7" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.5"/>
+  <circle cx="360" cy="55" r="7" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.5"/>
+  <circle cx="560" cy="55" r="7" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.5"/>
+  <!-- entry point -->
+  <text x="120" y="35" font-family="sans-serif" font-size="11" fill="#2D5A5C" text-anchor="middle">ingresso</text>
+  <!-- Strato 1 (medio) -->
+  <text x="40" y="175" font-family="sans-serif" font-size="12" fill="#1A1A1A" text-anchor="middle">strato 1</text>
+  <line x1="120" y1="175" x2="230" y2="175" stroke="#C9A961" stroke-width="1.5"/>
+  <line x1="230" y1="175" x2="360" y2="175" stroke="#C9A961" stroke-width="1.5"/>
+  <line x1="360" y1="175" x2="470" y2="175" stroke="#C9A961" stroke-width="1.5"/>
+  <line x1="470" y1="175" x2="560" y2="175" stroke="#C9A961" stroke-width="1.5"/>
+  <circle cx="120" cy="175" r="7" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.5"/>
+  <circle cx="230" cy="175" r="7" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.5"/>
+  <circle cx="360" cy="175" r="7" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.5"/>
+  <circle cx="470" cy="175" r="7" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.5"/>
+  <circle cx="560" cy="175" r="7" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.5"/>
+  <!-- Strato 0 (basso, denso) -->
+  <text x="40" y="300" font-family="sans-serif" font-size="12" fill="#1A1A1A" text-anchor="middle">strato 0</text>
+  <line x1="90" y1="300" x2="160" y2="300" stroke="#C9A961" stroke-width="1.5"/>
+  <line x1="160" y1="300" x2="230" y2="300" stroke="#C9A961" stroke-width="1.5"/>
+  <line x1="230" y1="300" x2="300" y2="300" stroke="#C9A961" stroke-width="1.5"/>
+  <line x1="300" y1="300" x2="360" y2="300" stroke="#C9A961" stroke-width="1.5"/>
+  <line x1="360" y1="300" x2="420" y2="300" stroke="#C9A961" stroke-width="1.5"/>
+  <line x1="420" y1="300" x2="470" y2="300" stroke="#C9A961" stroke-width="1.5"/>
+  <line x1="470" y1="300" x2="530" y2="300" stroke="#C9A961" stroke-width="1.5"/>
+  <line x1="530" y1="300" x2="600" y2="300" stroke="#C9A961" stroke-width="1.5"/>
+  <circle cx="90" cy="300" r="6" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.5"/>
+  <circle cx="160" cy="300" r="6" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.5"/>
+  <circle cx="230" cy="300" r="6" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.5"/>
+  <circle cx="300" cy="300" r="6" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.5"/>
+  <circle cx="360" cy="300" r="6" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.5"/>
+  <circle cx="420" cy="300" r="6" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.5"/>
+  <circle cx="470" cy="300" r="6" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5"/>
+  <circle cx="530" cy="300" r="6" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.5"/>
+  <circle cx="600" cy="300" r="6" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.5"/>
+  <!-- percorso di ricerca: discesa fra gli strati -->
+  <line x1="120" y1="62" x2="120" y2="168" stroke="#2D5A5C" stroke-width="2" stroke-dasharray="4 3"/>
+  <line x1="120" y1="175" x2="360" y2="175" stroke="#2D5A5C" stroke-width="2.5"/>
+  <line x1="360" y1="182" x2="470" y2="293" stroke="#2D5A5C" stroke-width="2" stroke-dasharray="4 3"/>
+  <line x1="470" y1="300" x2="470" y2="300" stroke="#2D5A5C" stroke-width="2.5"/>
+  <!-- meta -->
+  <text x="470" y="330" font-family="sans-serif" font-size="11" fill="#B5532C" text-anchor="middle">più vicino</text>
+  <!-- legenda -->
+  <line x1="150" y1="365" x2="185" y2="365" stroke="#2D5A5C" stroke-width="2.5"/>
+  <text x="260" y="369" font-family="sans-serif" font-size="12" fill="#1A1A1A" text-anchor="middle">percorso di ricerca</text>
+  <text x="470" y="369" font-family="sans-serif" font-size="12" fill="#1A1A1A" text-anchor="middle">grandi balzi in alto, passi corti in basso</text>
+</svg>

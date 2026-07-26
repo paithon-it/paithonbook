@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  paithon book — figura: broadcasting in NumPy. Una riga (1x4, teal) e una
+  colonna (3x1, terracotta) si "espandono" virtualmente, ripetendosi lungo
+  la dimensione mancante, per formare una matrice 3x4 (risultato, warm-black).
+  Le celle piene sono i dati reali; le celle tratteggiate sono le copie
+  virtuali (nessun dato viene davvero duplicato in memoria).
+  Palette-locked: teal/terracotta/warm-black su cream, neutri warm per label.
+  Fondo trasparente (leggibile in light e dark).
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 270" role="img"
+     aria-label="Diagramma del broadcasting: una riga 1 per 4 si ripete verso il basso e una colonna 3 per 1 si ripete verso destra, sommandosi in una matrice 3 per 4.">
+  <style>
+    .realA { fill:#F8F5EE; stroke:#2D5A5C; stroke-width:2.2; }
+    .ghostA{ fill:none;    stroke:#2D5A5C; stroke-width:1.4; stroke-dasharray:3 4; opacity:.6; }
+    .realB { fill:#F8F5EE; stroke:#B5532C; stroke-width:2.2; }
+    .ghostB{ fill:none;    stroke:#B5532C; stroke-width:1.4; stroke-dasharray:3 4; opacity:.6; }
+    .cellC { fill:#F8F5EE; stroke:#1A1A1A; stroke-width:1.8; }
+    .num   { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#1A1A1A; text-anchor:middle; }
+    .numg  { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#8B847C; text-anchor:middle; }
+    .lbl   { font-family:Fraunces, Georgia, serif; font-size:14px; font-weight:600; fill:#1A1A1A; text-anchor:middle; }
+    .op    { font-family:Fraunces, Georgia, serif; font-size:26px; fill:#5E5852; text-anchor:middle; }
+    .cap   { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#5E5852; text-anchor:middle; }
+    .capb  { fill:#1A1A1A; font-weight:600; }
+  </style>
+
+  <!-- etichette -->
+  <text class="lbl" x="98"  y="80">riga (1&#215;4)</text>
+  <text class="lbl" x="278" y="80">colonna (3&#215;1)</text>
+  <text class="lbl" x="460" y="80">risultato (3&#215;4)</text>
+
+  <!-- ===== Grid A: la riga si ripete verso il basso ===== -->
+  <!-- riga reale -->
+  <rect class="realA" x="30"  y="96" width="34" height="34"/>
+  <rect class="realA" x="64"  y="96" width="34" height="34"/>
+  <rect class="realA" x="98"  y="96" width="34" height="34"/>
+  <rect class="realA" x="132" y="96" width="34" height="34"/>
+  <text class="num" x="47"  y="118">10</text>
+  <text class="num" x="81"  y="118">20</text>
+  <text class="num" x="115" y="118">30</text>
+  <text class="num" x="149" y="118">40</text>
+  <!-- copie virtuali -->
+  <rect class="ghostA" x="30"  y="130" width="34" height="34"/>
+  <rect class="ghostA" x="64"  y="130" width="34" height="34"/>
+  <rect class="ghostA" x="98"  y="130" width="34" height="34"/>
+  <rect class="ghostA" x="132" y="130" width="34" height="34"/>
+  <rect class="ghostA" x="30"  y="164" width="34" height="34"/>
+  <rect class="ghostA" x="64"  y="164" width="34" height="34"/>
+  <rect class="ghostA" x="98"  y="164" width="34" height="34"/>
+  <rect class="ghostA" x="132" y="164" width="34" height="34"/>
+  <text class="numg" x="47"  y="152">10</text>
+  <text class="numg" x="81"  y="152">20</text>
+  <text class="numg" x="115" y="152">30</text>
+  <text class="numg" x="149" y="152">40</text>
+  <text class="numg" x="47"  y="186">10</text>
+  <text class="numg" x="81"  y="186">20</text>
+  <text class="numg" x="115" y="186">30</text>
+  <text class="numg" x="149" y="186">40</text>
+
+  <text class="op" x="188" y="156">+</text>
+
+  <!-- ===== Grid B: la colonna si ripete verso destra ===== -->
+  <!-- colonna reale -->
+  <rect class="realB" x="210" y="96"  width="34" height="34"/>
+  <rect class="realB" x="210" y="130" width="34" height="34"/>
+  <rect class="realB" x="210" y="164" width="34" height="34"/>
+  <text class="num" x="227" y="118">1</text>
+  <text class="num" x="227" y="152">2</text>
+  <text class="num" x="227" y="186">3</text>
+  <!-- copie virtuali -->
+  <rect class="ghostB" x="244" y="96"  width="34" height="34"/>
+  <rect class="ghostB" x="278" y="96"  width="34" height="34"/>
+  <rect class="ghostB" x="312" y="96"  width="34" height="34"/>
+  <rect class="ghostB" x="244" y="130" width="34" height="34"/>
+  <rect class="ghostB" x="278" y="130" width="34" height="34"/>
+  <rect class="ghostB" x="312" y="130" width="34" height="34"/>
+  <rect class="ghostB" x="244" y="164" width="34" height="34"/>
+  <rect class="ghostB" x="278" y="164" width="34" height="34"/>
+  <rect class="ghostB" x="312" y="164" width="34" height="34"/>
+  <text class="numg" x="261" y="118">1</text>
+  <text class="numg" x="295" y="118">1</text>
+  <text class="numg" x="329" y="118">1</text>
+  <text class="numg" x="261" y="152">2</text>
+  <text class="numg" x="295" y="152">2</text>
+  <text class="numg" x="329" y="152">2</text>
+  <text class="numg" x="261" y="186">3</text>
+  <text class="numg" x="295" y="186">3</text>
+  <text class="numg" x="329" y="186">3</text>
+
+  <text class="op" x="369" y="156">=</text>
+
+  <!-- ===== Grid C: risultato 3x4 ===== -->
+  <rect class="cellC" x="392" y="96"  width="34" height="34"/>
+  <rect class="cellC" x="426" y="96"  width="34" height="34"/>
+  <rect class="cellC" x="460" y="96"  width="34" height="34"/>
+  <rect class="cellC" x="494" y="96"  width="34" height="34"/>
+  <rect class="cellC" x="392" y="130" width="34" height="34"/>
+  <rect class="cellC" x="426" y="130" width="34" height="34"/>
+  <rect class="cellC" x="460" y="130" width="34" height="34"/>
+  <rect class="cellC" x="494" y="130" width="34" height="34"/>
+  <rect class="cellC" x="392" y="164" width="34" height="34"/>
+  <rect class="cellC" x="426" y="164" width="34" height="34"/>
+  <rect class="cellC" x="460" y="164" width="34" height="34"/>
+  <rect class="cellC" x="494" y="164" width="34" height="34"/>
+  <text class="num" x="409" y="118">11</text>
+  <text class="num" x="443" y="118">21</text>
+  <text class="num" x="477" y="118">31</text>
+  <text class="num" x="511" y="118">41</text>
+  <text class="num" x="409" y="152">12</text>
+  <text class="num" x="443" y="152">22</text>
+  <text class="num" x="477" y="152">32</text>
+  <text class="num" x="511" y="152">42</text>
+  <text class="num" x="409" y="186">13</text>
+  <text class="num" x="443" y="186">23</text>
+  <text class="num" x="477" y="186">33</text>
+  <text class="num" x="511" y="186">43</text>
+
+  <!-- didascalia interna -->
+  <text class="cap" x="280" y="234">Le celle piene sono i dati reali; quelle <tspan class="capb">tratteggiate</tspan> sono copie virtuali.</text>
+  <text class="cap" x="280" y="252">La riga scorre lungo le righe, la colonna lungo le colonne: nessun dato viene duplicato.</text>
+</svg>

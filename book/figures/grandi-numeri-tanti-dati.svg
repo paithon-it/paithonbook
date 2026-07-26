@@ -1,0 +1,16 @@
+<svg viewBox="0 0 720 400" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Grafico della media osservata che oscilla molto con pochi dati e converge verso il valore vero al crescere delle osservazioni">
+  <rect width="720" height="400" fill="#F8F5EE"/>
+  <line x1="60" y1="360" x2="680" y2="360" stroke="#1A1A1A" stroke-width="2"/>
+  <line x1="60" y1="360" x2="60" y2="30" stroke="#1A1A1A" stroke-width="2"/>
+  <text x="680" y="384" font-family="sans-serif" font-size="14" fill="#1A1A1A" text-anchor="end">numero di osservazioni n</text>
+  <text x="50" y="46" font-family="sans-serif" font-size="13" fill="#1A1A1A" text-anchor="end">1</text>
+  <text x="50" y="205" font-family="sans-serif" font-size="13" fill="#1A1A1A" text-anchor="end">0,5</text>
+  <text x="50" y="356" font-family="sans-serif" font-size="13" fill="#1A1A1A" text-anchor="end">0</text>
+  <line x1="60" y1="200" x2="680" y2="200" stroke="#C9A961" stroke-width="2" stroke-dasharray="7 5"/>
+  <path d="M60,50 C220,135 440,178 670,191" fill="none" stroke="#2D5A5C" stroke-width="1.5" stroke-dasharray="3 5"/>
+  <path d="M60,350 C220,265 440,222 670,209" fill="none" stroke="#2D5A5C" stroke-width="1.5" stroke-dasharray="3 5"/>
+  <path d="M60,60 L85,330 L110,120 L135,290 L160,160 L185,265 L210,170 L235,245 L260,180 L285,232 L310,185 L335,222 L360,190 L385,215 L410,192 L435,211 L460,195 L485,208 L510,197 L535,206 L560,198 L585,204 L610,199 L635,202 L670,200" fill="none" stroke="#B5532C" stroke-width="2"/>
+  <text x="120" y="70" font-family="sans-serif" font-size="14" fill="#B5532C">media osservata</text>
+  <text x="560" y="185" font-family="sans-serif" font-size="14" fill="#1A1A1A">valore vero</text>
+  <text x="430" y="140" font-family="sans-serif" font-size="13" fill="#2D5A5C">errore tipico ~ 1/√n</text>
+</svg>

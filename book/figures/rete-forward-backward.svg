@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  paithon book — figura: una rete neurale a strati con i due movimenti
+  dell'addestramento. In alto la freccia del FORWARD pass (terracotta):
+  i dati avanzano da sinistra a destra, strato per strato, fino alla
+  previsione. In basso la freccia del BACKWARD pass (teal): il gradiente
+  dell'errore si propaga a ritroso verso gli strati iniziali. Nodi cream,
+  bordi color-coded (input teal, strati nascosti ocra, uscita terracotta),
+  connessioni in grigio warm. Palette-locked, fondo trasparente (leggibile
+  in light e dark). Nessun colore fuori palette.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 384" role="img"
+     aria-label="Rete neurale a quattro strati: input, due strati nascosti e uscita. Una freccia in alto (forward) indica i dati che avanzano da sinistra a destra fino alla previsione; una freccia in basso (backward) indica il gradiente dell'errore che si propaga a ritroso, da destra verso gli strati iniziali a sinistra.">
+  <style>
+    .edge  { stroke:#C9C2B4; stroke-width:1; opacity:.6; }
+    .node  { fill:#F8F5EE; stroke-width:2.5; }
+    .flow  { font-family:Fraunces, Georgia, serif; font-size:16px; font-weight:600; }
+    .lbl   { font-family:Inter, system-ui, sans-serif; font-size:12px; fill:#5E5852; }
+  </style>
+
+  <!-- connessioni input -> strato 1 -->
+  <g class="edge">
+    <line x1="110" y1="135" x2="300" y2="117"/><line x1="110" y1="135" x2="300" y2="169"/><line x1="110" y1="135" x2="300" y2="221"/><line x1="110" y1="135" x2="300" y2="273"/>
+    <line x1="110" y1="195" x2="300" y2="117"/><line x1="110" y1="195" x2="300" y2="169"/><line x1="110" y1="195" x2="300" y2="221"/><line x1="110" y1="195" x2="300" y2="273"/>
+    <line x1="110" y1="255" x2="300" y2="117"/><line x1="110" y1="255" x2="300" y2="169"/><line x1="110" y1="255" x2="300" y2="221"/><line x1="110" y1="255" x2="300" y2="273"/>
+  </g>
+  <!-- connessioni strato 1 -> strato 2 -->
+  <g class="edge">
+    <line x1="300" y1="117" x2="490" y2="117"/><line x1="300" y1="117" x2="490" y2="169"/><line x1="300" y1="117" x2="490" y2="221"/><line x1="300" y1="117" x2="490" y2="273"/>
+    <line x1="300" y1="169" x2="490" y2="117"/><line x1="300" y1="169" x2="490" y2="169"/><line x1="300" y1="169" x2="490" y2="221"/><line x1="300" y1="169" x2="490" y2="273"/>
+    <line x1="300" y1="221" x2="490" y2="117"/><line x1="300" y1="221" x2="490" y2="169"/><line x1="300" y1="221" x2="490" y2="221"/><line x1="300" y1="221" x2="490" y2="273"/>
+    <line x1="300" y1="273" x2="490" y2="117"/><line x1="300" y1="273" x2="490" y2="169"/><line x1="300" y1="273" x2="490" y2="221"/><line x1="300" y1="273" x2="490" y2="273"/>
+  </g>
+  <!-- connessioni strato 2 -> uscita -->
+  <g class="edge">
+    <line x1="490" y1="117" x2="650" y2="165"/><line x1="490" y1="117" x2="650" y2="225"/>
+    <line x1="490" y1="169" x2="650" y2="165"/><line x1="490" y1="169" x2="650" y2="225"/>
+    <line x1="490" y1="221" x2="650" y2="165"/><line x1="490" y1="221" x2="650" y2="225"/>
+    <line x1="490" y1="273" x2="650" y2="165"/><line x1="490" y1="273" x2="650" y2="225"/>
+  </g>
+
+  <!-- nodi: input (teal) -->
+  <circle class="node" cx="110" cy="135" r="15" stroke="#2D5A5C"/>
+  <circle class="node" cx="110" cy="195" r="15" stroke="#2D5A5C"/>
+  <circle class="node" cx="110" cy="255" r="15" stroke="#2D5A5C"/>
+  <!-- strato nascosto 1 (ocra) -->
+  <circle class="node" cx="300" cy="117" r="15" stroke="#C9A961"/>
+  <circle class="node" cx="300" cy="169" r="15" stroke="#C9A961"/>
+  <circle class="node" cx="300" cy="221" r="15" stroke="#C9A961"/>
+  <circle class="node" cx="300" cy="273" r="15" stroke="#C9A961"/>
+  <!-- strato nascosto 2 (ocra) -->
+  <circle class="node" cx="490" cy="117" r="15" stroke="#C9A961"/>
+  <circle class="node" cx="490" cy="169" r="15" stroke="#C9A961"/>
+  <circle class="node" cx="490" cy="221" r="15" stroke="#C9A961"/>
+  <circle class="node" cx="490" cy="273" r="15" stroke="#C9A961"/>
+  <!-- uscita (terracotta) -->
+  <circle class="node" cx="650" cy="165" r="15" stroke="#B5532C"/>
+  <circle class="node" cx="650" cy="225" r="15" stroke="#B5532C"/>
+
+  <!-- etichette strati -->
+  <text class="lbl" x="110" y="312" text-anchor="middle">input</text>
+  <text class="lbl" x="300" y="312" text-anchor="middle">nascosto</text>
+  <text class="lbl" x="490" y="312" text-anchor="middle">nascosto</text>
+  <text class="lbl" x="650" y="312" text-anchor="middle">uscita &#375;</text>
+
+  <!-- FORWARD: freccia in alto, verso destra (terracotta) -->
+  <line x1="90" y1="44" x2="655" y2="44" stroke="#B5532C" stroke-width="4" stroke-linecap="round"/>
+  <polygon points="668,44 653,37 653,51" fill="#B5532C"/>
+  <text class="flow" x="372" y="30" text-anchor="middle" fill="#B5532C">forward &#183; i dati avanzano</text>
+
+  <!-- BACKWARD: freccia in basso, verso sinistra (teal) -->
+  <line x1="655" y1="345" x2="90" y2="345" stroke="#2D5A5C" stroke-width="4" stroke-linecap="round"/>
+  <polygon points="77,345 92,338 92,352" fill="#2D5A5C"/>
+  <text class="flow" x="372" y="368" text-anchor="middle" fill="#2D5A5C">backward &#183; il gradiente torna indietro</text>
+</svg>

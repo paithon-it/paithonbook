@@ -1,0 +1,69 @@
+<svg viewBox="0 0 760 360" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Schema encoder-decoder: l'encoder legge le parole inglesi e le comprime in un vettore di contesto, il decoder lo espande generando le parole francesi una alla volta">
+  <defs>
+    <marker id="s2s-teal" markerWidth="9" markerHeight="9" refX="6.5" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#2D5A5C"/></marker>
+    <marker id="s2s-terra" markerWidth="9" markerHeight="9" refX="6.5" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#B5532C"/></marker>
+    <marker id="s2s-ocra" markerWidth="9" markerHeight="9" refX="6.5" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#C9A961"/></marker>
+  </defs>
+  <rect x="0" y="0" width="760" height="360" fill="#F8F5EE"/>
+  <text x="30" y="34" font-family="sans-serif" font-size="15" font-weight="700" fill="#1A1A1A">ENCODER</text>
+  <text x="600" y="34" font-family="sans-serif" font-size="15" font-weight="700" fill="#1A1A1A">DECODER</text>
+
+  <!-- Encoder cells -->
+  <g fill="none" stroke="#2D5A5C" stroke-width="2">
+    <rect x="40" y="120" width="70" height="52" rx="8"/>
+    <rect x="140" y="120" width="70" height="52" rx="8"/>
+    <rect x="240" y="120" width="70" height="52" rx="8"/>
+  </g>
+  <!-- horizontal state flow encoder -->
+  <g stroke="#2D5A5C" stroke-width="2" fill="none">
+    <line x1="110" y1="146" x2="140" y2="146" marker-end="url(#s2s-teal)"/>
+    <line x1="210" y1="146" x2="240" y2="146" marker-end="url(#s2s-teal)"/>
+  </g>
+  <!-- input tokens -->
+  <g font-family="sans-serif" font-size="14" fill="#1A1A1A" text-anchor="middle">
+    <rect x="48" y="250" width="54" height="34" rx="6" fill="none" stroke="#C9A961" stroke-width="1.5"/>
+    <text x="75" y="272">the</text>
+    <rect x="148" y="250" width="54" height="34" rx="6" fill="none" stroke="#C9A961" stroke-width="1.5"/>
+    <text x="175" y="272">cat</text>
+    <rect x="248" y="250" width="54" height="34" rx="6" fill="none" stroke="#C9A961" stroke-width="1.5"/>
+    <text x="275" y="272">sleeps</text>
+  </g>
+  <g stroke="#C9A961" stroke-width="2" fill="none">
+    <line x1="75" y1="250" x2="75" y2="176" marker-end="url(#s2s-ocra)"/>
+    <line x1="175" y1="250" x2="175" y2="176" marker-end="url(#s2s-ocra)"/>
+    <line x1="275" y1="250" x2="275" y2="176" marker-end="url(#s2s-ocra)"/>
+  </g>
+
+  <!-- context vector -->
+  <line x1="310" y1="146" x2="360" y2="146" stroke="#2D5A5C" stroke-width="2" fill="none" marker-end="url(#s2s-teal)"/>
+  <rect x="362" y="112" width="80" height="68" rx="10" fill="#1A1A1A"/>
+  <text x="402" y="140" font-family="sans-serif" font-size="12" fill="#F8F5EE" text-anchor="middle">vettore</text>
+  <text x="402" y="158" font-family="sans-serif" font-size="12" fill="#F8F5EE" text-anchor="middle">di</text>
+  <text x="402" y="176" font-family="sans-serif" font-size="12" fill="#F8F5EE" text-anchor="middle">contesto</text>
+  <line x1="442" y1="146" x2="492" y2="146" stroke="#B5532C" stroke-width="2" fill="none" marker-end="url(#s2s-terra)"/>
+
+  <!-- Decoder cells -->
+  <g fill="none" stroke="#B5532C" stroke-width="2">
+    <rect x="494" y="120" width="70" height="52" rx="8"/>
+    <rect x="594" y="120" width="70" height="52" rx="8"/>
+    <rect x="694" y="120" width="60" height="52" rx="8"/>
+  </g>
+  <g stroke="#B5532C" stroke-width="2" fill="none">
+    <line x1="564" y1="146" x2="594" y2="146" marker-end="url(#s2s-terra)"/>
+    <line x1="664" y1="146" x2="694" y2="146" marker-end="url(#s2s-terra)"/>
+  </g>
+  <!-- output tokens -->
+  <g stroke="#B5532C" stroke-width="2" fill="none">
+    <line x1="529" y1="120" x2="529" y2="90" marker-end="url(#s2s-terra)"/>
+    <line x1="629" y1="120" x2="629" y2="90" marker-end="url(#s2s-terra)"/>
+    <line x1="724" y1="120" x2="724" y2="90" marker-end="url(#s2s-terra)"/>
+  </g>
+  <g font-family="sans-serif" font-size="14" fill="#1A1A1A" text-anchor="middle">
+    <rect x="502" y="56" width="54" height="34" rx="6" fill="none" stroke="#2D5A5C" stroke-width="1.5"/>
+    <text x="529" y="78">le</text>
+    <rect x="602" y="56" width="54" height="34" rx="6" fill="none" stroke="#2D5A5C" stroke-width="1.5"/>
+    <text x="629" y="78">chat</text>
+    <rect x="697" y="56" width="54" height="34" rx="6" fill="none" stroke="#2D5A5C" stroke-width="1.5"/>
+    <text x="724" y="78">dort</text>
+  </g>
+</svg>

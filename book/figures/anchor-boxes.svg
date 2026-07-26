@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  paithon book - figura: anchor box.
+  Griglia su un'immagine con un pedone stilizzato; su un punto della griglia
+  sono centrate tre ancore di forma diversa: alta e stretta (terracotta, la
+  piu simile al pedone), bassa e larga (teal, tratteggiata), quadrata (ocra,
+  tratteggiata). Palette-locked, fondo trasparente: leggibile in light e
+  dark mode. Nessun colore fuori palette.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 400" role="img"
+     aria-label="Griglia sovrapposta a un'immagine con un pedone stilizzato. Su un punto della griglia sono centrate tre ancore: una alta e stretta in terracotta che ricalca il pedone, una bassa e larga in teal e una quadrata in ocra, entrambe tratteggiate. La rete sceglie l'ancora piu simile e predice solo piccole correzioni.">
+  <style>
+    .lbl  { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#1A1A1A; }
+    .lblB { font-family:Inter, system-ui, sans-serif; font-size:13px; font-weight:700; }
+    .leg  { font-family:Inter, system-ui, sans-serif; font-size:12.5px; fill:#5E5852; }
+  </style>
+
+  <!-- area immagine -->
+  <rect x="40" y="40" width="440" height="320" rx="8" fill="#F8F5EE" stroke="#5E5852" stroke-width="1.5"/>
+
+  <!-- griglia -->
+  <g stroke="#C9A961" stroke-width="1" opacity="0.6">
+    <line x1="95"  y1="40" x2="95"  y2="360"/>
+    <line x1="150" y1="40" x2="150" y2="360"/>
+    <line x1="205" y1="40" x2="205" y2="360"/>
+    <line x1="260" y1="40" x2="260" y2="360"/>
+    <line x1="315" y1="40" x2="315" y2="360"/>
+    <line x1="370" y1="40" x2="370" y2="360"/>
+    <line x1="425" y1="40" x2="425" y2="360"/>
+    <line x1="40" y1="95"  x2="480" y2="95"/>
+    <line x1="40" y1="150" x2="480" y2="150"/>
+    <line x1="40" y1="205" x2="480" y2="205"/>
+    <line x1="40" y1="260" x2="480" y2="260"/>
+    <line x1="40" y1="315" x2="480" y2="315"/>
+  </g>
+
+  <!-- pedone stilizzato -->
+  <circle cx="260" cy="140" r="14" fill="#5E5852" fill-opacity="0.45"/>
+  <rect x="246" y="158" width="28" height="105" rx="13" fill="#5E5852" fill-opacity="0.45"/>
+
+  <!-- ancora bassa e larga (auto) -->
+  <rect x="160" y="160" width="200" height="90" fill="none" stroke="#2D5A5C" stroke-width="2" stroke-dasharray="7 5"/>
+  <!-- ancora quadrata -->
+  <rect x="195" y="140" width="130" height="130" fill="none" stroke="#C9A961" stroke-width="2" stroke-dasharray="7 5"/>
+  <!-- ancora alta e stretta: la piu simile -->
+  <rect x="223" y="120" width="74" height="170" fill="#B5532C" fill-opacity="0.07" stroke="#B5532C" stroke-width="3"/>
+
+  <!-- punto della griglia -->
+  <circle cx="260" cy="205" r="6" fill="#1A1A1A" stroke="#F8F5EE" stroke-width="1.5"/>
+
+  <!-- legenda -->
+  <circle cx="524" cy="81" r="6" fill="#1A1A1A"/>
+  <text class="lbl" x="542" y="86">punto della griglia</text>
+
+  <rect x="516" y="110" width="18" height="36" fill="#B5532C" fill-opacity="0.07" stroke="#B5532C" stroke-width="2.5"/>
+  <text class="lblB" x="544" y="124" fill="#B5532C">ancora alta e stretta</text>
+  <text class="leg" x="544" y="142">la più simile al pedone</text>
+
+  <rect x="508" y="174" width="36" height="18" fill="none" stroke="#2D5A5C" stroke-width="2" stroke-dasharray="6 4"/>
+  <text class="lbl" x="554" y="184">ancora bassa e larga</text>
+  <text class="leg" x="554" y="202">(adatta a un'auto)</text>
+
+  <rect x="514" y="230" width="24" height="24" fill="none" stroke="#C9A961" stroke-width="2" stroke-dasharray="6 4"/>
+  <text class="lbl" x="548" y="246">ancora quadrata</text>
+
+  <text class="leg" x="510" y="300">La rete sceglie l'ancora più simile</text>
+  <text class="leg" x="510" y="318">e predice solo piccole correzioni.</text>
+</svg>

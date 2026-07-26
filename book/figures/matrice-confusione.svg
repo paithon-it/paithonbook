@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  paithon book — figura: matrice di confusione 2x2.
+  Colonne = valore reale (Positivo/Negativo), righe = predizione del
+  modello (Positivo/Negativo). Diagonale corretta (VP, VN) con bordo teal;
+  errori (FP, FN) con bordo terracotta. Celle cream, testo warm-black e
+  grigi warm. Palette-locked, fondo trasparente (leggibile light e dark).
+  Nessun colore fuori palette.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 390" role="img"
+     aria-label="Matrice di confusione due per due. Colonne: valore reale positivo e negativo. Righe: predizione del modello positiva e negativa. In alto a sinistra i Veri Positivi, in alto a destra i Falsi Positivi, in basso a sinistra i Falsi Negativi, in basso a destra i Veri Negativi. La diagonale principale, con VP e VN, rappresenta le predizioni corrette.">
+  <style>
+    .cell   { fill:#F8F5EE; }
+    .big    { font-family:Fraunces, Georgia, serif; font-size:30px; font-weight:700; }
+    .small  { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#5E5852; }
+    .head   { font-family:Inter, system-ui, sans-serif; font-size:15px; font-weight:600; fill:#1A1A1A; }
+    .super  { font-family:Fraunces, Georgia, serif; font-size:16px; font-weight:600; fill:#5E5852; }
+    .ok     { stroke:#2D5A5C; }
+    .err    { stroke:#B5532C; }
+  </style>
+
+  <!-- intestazione colonne: valore reale -->
+  <text class="super" x="330" y="42" text-anchor="middle">Valore reale</text>
+  <text class="head"  x="255" y="92" text-anchor="middle">Positivo</text>
+  <text class="head"  x="405" y="92" text-anchor="middle">Negativo</text>
+
+  <!-- intestazione righe: predizione (verticale) -->
+  <text class="super" x="42" y="225" text-anchor="middle"
+        transform="rotate(-90 42 225)">Predizione</text>
+  <text class="head"  x="150" y="177" text-anchor="end">Positivo</text>
+  <text class="head"  x="150" y="282" text-anchor="end">Negativo</text>
+
+  <!-- riga 1, col 1: Veri Positivi (corretto) -->
+  <rect class="cell ok"  x="180" y="120" width="150" height="105" rx="8" stroke-width="3"/>
+  <text class="big"    x="255" y="170" text-anchor="middle" fill="#2D5A5C">VP</text>
+  <text class="small"  x="255" y="195" text-anchor="middle">Veri Positivi</text>
+
+  <!-- riga 1, col 2: Falsi Positivi (errore) -->
+  <rect class="cell err" x="330" y="120" width="150" height="105" rx="8" stroke-width="3"/>
+  <text class="big"    x="405" y="170" text-anchor="middle" fill="#B5532C">FP</text>
+  <text class="small"  x="405" y="195" text-anchor="middle">Falsi Positivi</text>
+
+  <!-- riga 2, col 1: Falsi Negativi (errore) -->
+  <rect class="cell err" x="180" y="225" width="150" height="105" rx="8" stroke-width="3"/>
+  <text class="big"    x="255" y="275" text-anchor="middle" fill="#B5532C">FN</text>
+  <text class="small"  x="255" y="300" text-anchor="middle">Falsi Negativi</text>
+
+  <!-- riga 2, col 2: Veri Negativi (corretto) -->
+  <rect class="cell ok"  x="330" y="225" width="150" height="105" rx="8" stroke-width="3"/>
+  <text class="big"    x="405" y="275" text-anchor="middle" fill="#2D5A5C">VN</text>
+  <text class="small"  x="405" y="300" text-anchor="middle">Veri Negativi</text>
+
+  <!-- nota sulla diagonale corretta -->
+  <text class="small" x="330" y="360" text-anchor="middle" font-style="italic">
+    La diagonale VP&#8211;VN sono le predizioni corrette.
+  </text>
+</svg>

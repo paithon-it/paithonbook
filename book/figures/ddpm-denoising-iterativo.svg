@@ -1,0 +1,60 @@
+<svg viewBox="0 0 680 320" width="100%" role="img" aria-label="Schema del processo di diffusione: da un'immagine nitida a rumore puro tramite aggiunta di rumore, e ritorno tramite denoising iterativo della rete" xmlns="http://www.w3.org/2000/svg" font-family="sans-serif">
+  <rect x="0" y="0" width="680" height="320" fill="#F8F5EE"/>
+  <text x="24" y="30" font-size="17" font-weight="700" fill="#1A1A1A">Diffusione: distruggere è fissato, ricostruire si impara</text>
+
+  <!-- forward arrow -->
+  <line x1="60" y1="70" x2="620" y2="70" stroke="#B5532C" stroke-width="2"/>
+  <polygon points="620,70 610,65 610,75" fill="#B5532C"/>
+  <text x="340" y="60" font-size="13" fill="#B5532C" text-anchor="middle">processo diretto q — aggiungi rumore (nessun apprendimento)</text>
+
+  <!-- five frames -->
+  <g stroke="#1A1A1A" stroke-width="1.5" fill="#F8F5EE">
+    <rect x="52" y="110" width="88" height="88" rx="4"/>
+    <rect x="188" y="110" width="88" height="88" rx="4"/>
+    <rect x="324" y="110" width="88" height="88" rx="4"/>
+    <rect x="460" y="110" width="88" height="88" rx="4"/>
+    <rect x="596" y="110" width="88" height="88" rx="4"/>
+  </g>
+
+  <!-- frame 0: clean shape (mountain + sun) -->
+  <g>
+    <polyline points="60,190 84,150 100,172 116,142 132,190" fill="none" stroke="#2D5A5C" stroke-width="2"/>
+    <circle cx="120" cy="128" r="7" fill="#C9A961"/>
+  </g>
+  <!-- frame 1: faint shape + some noise -->
+  <g>
+    <polyline points="196,190 220,152 236,172 252,146 268,190" fill="none" stroke="#2D5A5C" stroke-width="1.5" opacity="0.7"/>
+    <g fill="#1A1A1A"><circle cx="210" cy="132" r="1.6"/><circle cx="244" cy="126" r="1.6"/><circle cx="230" cy="160" r="1.6"/><circle cx="258" cy="176" r="1.6"/><circle cx="205" cy="168" r="1.6"/></g>
+  </g>
+  <!-- frame 2: heavier noise, ghost shape -->
+  <g>
+    <polyline points="332,190 356,158 372,174 388,152 404,190" fill="none" stroke="#2D5A5C" stroke-width="1.5" opacity="0.35"/>
+    <g fill="#1A1A1A"><circle cx="342" cy="128" r="1.6"/><circle cx="368" cy="138" r="1.6"/><circle cx="392" cy="126" r="1.6"/><circle cx="350" cy="160" r="1.6"/><circle cx="380" cy="168" r="1.6"/><circle cx="398" cy="178" r="1.6"/><circle cx="336" cy="182" r="1.6"/><circle cx="360" cy="150" r="1.6"/><circle cx="374" cy="184" r="1.6"/></g>
+  </g>
+  <!-- frame 3: almost pure noise -->
+  <g fill="#1A1A1A">
+    <circle cx="470" cy="124" r="1.6"/><circle cx="486" cy="132" r="1.6"/><circle cx="502" cy="122" r="1.6"/><circle cx="518" cy="130" r="1.6"/><circle cx="534" cy="126" r="1.6"/>
+    <circle cx="476" cy="148" r="1.6"/><circle cx="494" cy="156" r="1.6"/><circle cx="510" cy="146" r="1.6"/><circle cx="528" cy="154" r="1.6"/><circle cx="466" cy="162" r="1.6"/>
+    <circle cx="484" cy="172" r="1.6"/><circle cx="500" cy="180" r="1.6"/><circle cx="516" cy="170" r="1.6"/><circle cx="532" cy="182" r="1.6"/><circle cx="472" cy="186" r="1.6"/>
+  </g>
+  <!-- frame 4: pure noise -->
+  <g fill="#1A1A1A">
+    <circle cx="606" cy="122" r="1.6"/><circle cx="622" cy="130" r="1.6"/><circle cx="638" cy="124" r="1.6"/><circle cx="654" cy="132" r="1.6"/><circle cx="670" cy="126" r="1.6"/>
+    <circle cx="612" cy="146" r="1.6"/><circle cx="630" cy="154" r="1.6"/><circle cx="646" cy="144" r="1.6"/><circle cx="662" cy="152" r="1.6"/><circle cx="602" cy="160" r="1.6"/>
+    <circle cx="620" cy="172" r="1.6"/><circle cx="636" cy="180" r="1.6"/><circle cx="652" cy="170" r="1.6"/><circle cx="668" cy="182" r="1.6"/><circle cx="608" cy="186" r="1.6"/>
+  </g>
+
+  <!-- labels -->
+  <g font-size="13" fill="#1A1A1A" text-anchor="middle">
+    <text x="96" y="220">x₀ (immagine)</text>
+    <text x="232" y="220">x₁</text>
+    <text x="368" y="220">x₂</text>
+    <text x="504" y="220">…</text>
+    <text x="640" y="220">x_T (rumore)</text>
+  </g>
+
+  <!-- reverse arrow -->
+  <line x1="620" y1="256" x2="60" y2="256" stroke="#2D5A5C" stroke-width="2"/>
+  <polygon points="60,256 70,251 70,261" fill="#2D5A5C"/>
+  <text x="340" y="278" font-size="13" fill="#2D5A5C" text-anchor="middle">processo inverso p_θ — la rete impara a togliere il rumore, un passo alla volta</text>
+</svg>

@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 460" role="img" aria-label="Pipeline di Stable Diffusion: un'immagine 512 per 512 per 3 entra nell'encoder VAE che la comprime in un latente 64 per 64 per 4; nello spazio latente una U-Net toglie il rumore passo dopo passo, guidata dal prompt che entra via cross-attention dopo il text encoder CLIP; il decoder VAE riporta il latente ripulito ai pixel.">
+  <defs>
+    <marker id="freccia-ld" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#5E5852"/>
+    </marker>
+    <marker id="freccia-ld-t" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#B5532C"/>
+    </marker>
+  </defs>
+
+  <!-- immagine di partenza -->
+  <rect x="18" y="120" width="96" height="90" rx="8" fill="#F8F5EE" fill-opacity="0.12" stroke="#1A1A1A" stroke-width="2"/>
+  <circle cx="44" cy="146" r="9" fill="none" stroke="#5E5852" stroke-width="2"/>
+  <polyline points="30,196 55,160 70,178 82,162 102,196" fill="none" stroke="#5E5852" stroke-width="2" stroke-linejoin="round"/>
+  <text x="66" y="232" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" fill="#1A1A1A">immagine</text>
+  <text x="66" y="249" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#5E5852">512 &#215; 512 &#215; 3</text>
+  <text x="66" y="265" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#5E5852">786.432 numeri</text>
+
+  <line x1="118" y1="165" x2="146" y2="165" stroke="#5E5852" stroke-width="2" marker-end="url(#freccia-ld)"/>
+
+  <!-- encoder VAE -->
+  <polygon points="150,116 234,146 234,184 150,214" fill="#2D5A5C" fill-opacity="0.12" stroke="#2D5A5C" stroke-width="2" stroke-linejoin="round"/>
+  <text x="192" y="236" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#2D5A5C">encoder</text>
+  <text x="192" y="252" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#5E5852">(VAE)</text>
+
+  <line x1="238" y1="165" x2="258" y2="165" stroke="#5E5852" stroke-width="2" marker-end="url(#freccia-ld)"/>
+
+  <!-- spazio latente -->
+  <rect x="262" y="48" width="356" height="250" rx="8" fill="#C9A961" fill-opacity="0.12" stroke="#C9A961" stroke-width="2.5"/>
+  <text x="440" y="74" text-anchor="middle" font-family="Inter, sans-serif" font-size="14.5" font-weight="700" fill="#1A1A1A">spazio latente: z, 64 &#215; 64 &#215; 4</text>
+  <text x="440" y="93" text-anchor="middle" font-family="Inter, sans-serif" font-size="11.5" fill="#5E5852">16.384 numeri: 48 volte meno</text>
+
+  <!-- latente rumoroso -->
+  <rect x="286" y="133" width="64" height="64" rx="8" fill="none" stroke="#5E5852" stroke-width="2"/>
+  <circle cx="299" cy="147" r="1.8" fill="#5E5852"/>
+  <circle cx="317" cy="141" r="1.8" fill="#5E5852"/>
+  <circle cx="336" cy="150" r="1.8" fill="#5E5852"/>
+  <circle cx="305" cy="163" r="1.8" fill="#5E5852"/>
+  <circle cx="326" cy="168" r="1.8" fill="#5E5852"/>
+  <circle cx="341" cy="178" r="1.8" fill="#5E5852"/>
+  <circle cx="296" cy="182" r="1.8" fill="#5E5852"/>
+  <circle cx="315" cy="187" r="1.8" fill="#5E5852"/>
+  <circle cx="332" cy="159" r="1.8" fill="#5E5852"/>
+  <circle cx="308" cy="176" r="1.8" fill="#5E5852"/>
+  <text x="318" y="215" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#5E5852">z rumoroso</text>
+  <text x="318" y="230" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" fill="#5E5852">(in generazione: neve pura)</text>
+
+  <line x1="354" y1="165" x2="376" y2="165" stroke="#5E5852" stroke-width="2" marker-end="url(#freccia-ld)"/>
+
+  <!-- U-Net -->
+  <rect x="380" y="125" width="120" height="80" rx="8" fill="#F8F5EE" fill-opacity="0.12" stroke="#1A1A1A" stroke-width="2.5"/>
+  <text x="440" y="160" text-anchor="middle" font-family="Inter, sans-serif" font-size="14.5" font-weight="700" fill="#1A1A1A">U-Net</text>
+  <text x="440" y="180" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#5E5852">toglie il rumore</text>
+  <path d="M 425 121 C 425 102, 475 102, 475 119" fill="none" stroke="#5E5852" stroke-width="1.8" marker-end="url(#freccia-ld)"/>
+  <text x="484" y="112" font-family="Inter, sans-serif" font-size="10.5" fill="#5E5852">&#215; T passi</text>
+
+  <line x1="504" y1="165" x2="526" y2="165" stroke="#5E5852" stroke-width="2" marker-end="url(#freccia-ld)"/>
+
+  <!-- latente ripulito -->
+  <rect x="530" y="133" width="64" height="64" rx="8" fill="none" stroke="#5E5852" stroke-width="2"/>
+  <circle cx="562" cy="170" r="12" fill="none" stroke="#5E5852" stroke-width="2"/>
+  <polygon points="552,161 554,147 562,156" fill="none" stroke="#5E5852" stroke-width="2" stroke-linejoin="round"/>
+  <polygon points="572,161 570,147 562,156" fill="none" stroke="#5E5852" stroke-width="2" stroke-linejoin="round"/>
+  <text x="562" y="215" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#5E5852">z ripulito</text>
+
+  <!-- cross-attention dal testo -->
+  <line x1="420" y1="352" x2="420" y2="210" stroke="#B5532C" stroke-width="2.5" marker-end="url(#freccia-ld-t)"/>
+  <text x="432" y="264" font-family="Inter, sans-serif" font-size="12" font-weight="700" fill="#B5532C">cross-attention</text>
+  <text x="432" y="281" font-family="Inter, sans-serif" font-size="11" fill="#5E5852">Q dal latente, K e V dal testo</text>
+
+  <line x1="622" y1="165" x2="642" y2="165" stroke="#5E5852" stroke-width="2" marker-end="url(#freccia-ld)"/>
+
+  <!-- decoder VAE -->
+  <polygon points="646,146 730,116 730,214 646,184" fill="#2D5A5C" fill-opacity="0.12" stroke="#2D5A5C" stroke-width="2" stroke-linejoin="round"/>
+  <text x="688" y="236" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#2D5A5C">decoder</text>
+  <text x="688" y="252" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#5E5852">(VAE)</text>
+
+  <line x1="734" y1="165" x2="762" y2="165" stroke="#5E5852" stroke-width="2" marker-end="url(#freccia-ld)"/>
+
+  <!-- immagine generata -->
+  <rect x="766" y="120" width="96" height="90" rx="8" fill="#F8F5EE" fill-opacity="0.12" stroke="#1A1A1A" stroke-width="2"/>
+  <circle cx="814" cy="172" r="16" fill="none" stroke="#B5532C" stroke-width="2"/>
+  <polygon points="801,161 803,142 814,153" fill="none" stroke="#B5532C" stroke-width="2" stroke-linejoin="round"/>
+  <polygon points="827,161 825,142 814,153" fill="none" stroke="#B5532C" stroke-width="2" stroke-linejoin="round"/>
+  <text x="814" y="232" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" fill="#1A1A1A">immagine generata</text>
+  <text x="814" y="249" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#5E5852">512 &#215; 512 &#215; 3</text>
+
+  <!-- prompt -->
+  <rect x="30" y="356" width="250" height="54" rx="8" fill="#B5532C" fill-opacity="0.10" stroke="#B5532C" stroke-width="2"/>
+  <text x="155" y="379" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" font-style="italic" fill="#1A1A1A">&#171;un gatto nero che salta</text>
+  <text x="155" y="396" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" font-style="italic" fill="#1A1A1A">sul muro, in acquerello&#187;</text>
+  <text x="155" y="428" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#5E5852">prompt</text>
+
+  <line x1="284" y1="383" x2="326" y2="383" stroke="#B5532C" stroke-width="2" marker-end="url(#freccia-ld-t)"/>
+
+  <!-- text encoder CLIP -->
+  <rect x="330" y="359" width="180" height="48" rx="8" fill="#B5532C" fill-opacity="0.10" stroke="#B5532C" stroke-width="2"/>
+  <text x="420" y="379" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#1A1A1A">text encoder</text>
+  <text x="420" y="397" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#B5532C">CLIP</text>
+
+  <!-- didascalia interna -->
+  <text x="440" y="450" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#5E5852">la diffusione lavora nello spazio compresso: i pixel si toccano solo all'inizio e alla fine</text>
+</svg>

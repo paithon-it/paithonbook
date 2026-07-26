@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 480" role="img" aria-label="Anatomia di un agente: al centro il MODELLO (LLM), che ragiona; a sinistra la MEMORIA (contesto e memoria esterna), a destra gli STRUMENTI (web, codice, API); in basso l'AMBIENTE. Due frecce curve formano il ciclo: osserva porta dall'ambiente al modello, agisci porta dal modello all'ambiente, e il ciclo ricomincia.">
+  <defs>
+    <marker id="fn-ag" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1A1A1A"/>
+    </marker>
+    <marker id="ft-ag" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#B5532C"/>
+    </marker>
+    <marker id="fte-ag" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#2D5A5C"/>
+    </marker>
+  </defs>
+
+  <!-- passo 2: ragiona (etichetta sopra il modello) -->
+  <text x="410" y="82" text-anchor="middle" font-family="Inter, sans-serif" font-size="12.5" font-weight="700" fill="#B5532C">2 &#183; ragiona</text>
+
+  <!-- MODELLO (LLM), il cervello -->
+  <rect x="260" y="94" width="300" height="94" rx="10" fill="#B5532C" fill-opacity="0.14" stroke="#B5532C" stroke-width="2.5"/>
+  <text x="410" y="136" text-anchor="middle" font-family="Inter, sans-serif" font-size="17" font-weight="700" fill="#1A1A1A">MODELLO (LLM)</text>
+  <text x="410" y="160" text-anchor="middle" font-family="Inter, sans-serif" font-size="11.5" fill="#5E5852">il cervello: ragiona e sceglie</text>
+  <text x="410" y="175" text-anchor="middle" font-family="Inter, sans-serif" font-size="11.5" fill="#5E5852">la prossima azione</text>
+
+  <!-- MEMORIA -->
+  <rect x="40" y="102" width="178" height="80" rx="10" fill="#C9A961" fill-opacity="0.16" stroke="#C9A961" stroke-width="2.5"/>
+  <text x="129" y="138" text-anchor="middle" font-family="Inter, sans-serif" font-size="15" font-weight="700" fill="#1A1A1A">MEMORIA</text>
+  <text x="129" y="158" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#5E5852">contesto +</text>
+  <text x="129" y="172" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#5E5852">memoria esterna</text>
+
+  <!-- STRUMENTI -->
+  <rect x="602" y="102" width="178" height="80" rx="10" fill="#2D5A5C" fill-opacity="0.12" stroke="#2D5A5C" stroke-width="2.5"/>
+  <text x="691" y="138" text-anchor="middle" font-family="Inter, sans-serif" font-size="15" font-weight="700" fill="#1A1A1A">STRUMENTI</text>
+  <text x="691" y="158" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#5E5852">web &#183; codice &#183; API</text>
+  <text x="691" y="172" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#5E5852">&#171;le mani&#187;</text>
+
+  <!-- MEMORIA <-> MODELLO -->
+  <line x1="220" y1="130" x2="258" y2="130" stroke="#1A1A1A" stroke-width="1.8" marker-end="url(#fn-ag)"/>
+  <line x1="258" y1="152" x2="220" y2="152" stroke="#1A1A1A" stroke-width="1.8" marker-end="url(#fn-ag)"/>
+
+  <!-- MODELLO <-> STRUMENTI -->
+  <line x1="562" y1="130" x2="600" y2="130" stroke="#1A1A1A" stroke-width="1.8" marker-end="url(#fn-ag)"/>
+  <line x1="600" y1="152" x2="562" y2="152" stroke="#1A1A1A" stroke-width="1.8" marker-end="url(#fn-ag)"/>
+
+  <!-- AMBIENTE -->
+  <rect x="276" y="356" width="268" height="84" rx="10" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="2"/>
+  <text x="410" y="392" text-anchor="middle" font-family="Inter, sans-serif" font-size="15" font-weight="700" fill="#1A1A1A">AMBIENTE</text>
+  <text x="410" y="413" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#5E5852">il mondo su cui agisce:</text>
+  <text x="410" y="427" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#5E5852">pagine web, file, servizi</text>
+
+  <!-- ciclo: osserva (AMBIENTE -> MODELLO, a sinistra) -->
+  <path d="M 322 356 C 200 306, 200 240, 332 190" fill="none" stroke="#2D5A5C" stroke-width="2.5" marker-end="url(#fte-ag)"/>
+  <text x="150" y="262" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#2D5A5C">1 &#183; osserva</text>
+  <text x="150" y="280" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" fill="#5E5852">percepisce il risultato</text>
+
+  <!-- ciclo: agisci (MODELLO -> AMBIENTE, a destra) -->
+  <path d="M 498 190 C 620 240, 620 306, 498 356" fill="none" stroke="#B5532C" stroke-width="2.5" marker-end="url(#ft-ag)"/>
+  <text x="672" y="262" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#B5532C">3 &#183; agisci</text>
+  <text x="672" y="280" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" fill="#5E5852">esegue un'azione</text>
+
+  <!-- didascalia interna -->
+  <text x="410" y="466" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#5E5852">un ciclo che si ripete: osserva &#8594; ragiona &#8594; agisci &#8594; e di nuovo osserva&#8230;</text>
+</svg>

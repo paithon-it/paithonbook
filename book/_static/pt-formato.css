@@ -1,0 +1,377 @@
+/* =========================================================================
+   PAITHON BOOK — FORMATO
+   Scheda del repository sopra l'indice, logo compatto in barra, e le azioni
+   che compaiono selezionando un pezzo di testo.
+
+   I colori arrivano tutti dai token del brand (book/_static/brand/tokens.css):
+   il tema scuro ridefinisce le stesse variabili, quindi qui non serve un solo
+   blocco `[data-theme="dark"]`.
+   ========================================================================= */
+
+/* -------------------------------------------------------------------------
+   Barra in alto: restano ricerca e chiaro/scuro.
+   Il pulsante "tutto schermo" è già disattivato da `use_fullscreen_button:
+   false` in _config.yml; la regola qui sotto è la rete di sicurezza nel caso
+   una versione del tema lo reintroduca — sul sito non funziona.
+   ------------------------------------------------------------------------- */
+.bd-header-article .fullscreen-button,
+.header-article-items .fullscreen-button,
+button.fullscreen-button {
+  display: none !important;
+}
+
+/* -------------------------------------------------------------------------
+   Logo compatto nella barra dell'articolo (template pt-logo-compatto.html).
+   Compare SOLO dove la sidebar è chiusa — sotto il breakpoint `lg` del tema,
+   992px: sopra, il logo della sidebar è già lì e questo sarebbe un doppione.
+   ------------------------------------------------------------------------- */
+.pt-logo-barra {
+  display: none;
+}
+
+@media (max-width: 991.98px) {
+  .pt-logo-barra {
+    display: flex;
+    align-items: center;
+    min-width: 0;          /* si lascia comprimere prima di spingere le icone */
+    margin-left: 0.35rem;
+  }
+
+  .pt-logo-barra a {
+    display: flex;
+    align-items: center;
+    text-decoration: none !important;
+  }
+
+  .pt-logo-barra__img {
+    height: 24px;
+    width: auto;
+    max-width: 100%;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+  }
+
+  /* La freccia "link esterno" di custom.js qui non c'entra niente. */
+  .pt-logo-barra .external-icon {
+    display: none;
+  }
+}
+
+@media (max-width: 380px) {
+  .pt-logo-barra__img {
+    height: 20px;
+  }
+}
+
+/* -------------------------------------------------------------------------
+   1. Scheda del repository (template _templates/pt-repo-card.html)
+   ------------------------------------------------------------------------- */
+.pt-repo-card {
+  margin: 0.25rem 0.5rem 1rem;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid var(--pt-border, #E2DCC9);
+  border-radius: 6px;
+  background: var(--pt-bg-elev, #FBF9F2);
+  font-family: var(--pt-font-body, system-ui, sans-serif);
+}
+
+.pt-repo-card__main {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--pt-fg, #1A1714) !important;
+  text-decoration: none !important;
+}
+
+.pt-repo-card__main:hover {
+  color: var(--pt-accent, #A44B28) !important;
+}
+
+/* La freccia "link esterno" iniettata da custom.js qui sarebbe rumore. */
+.pt-repo-card .external-icon {
+  display: none;
+}
+
+.pt-repo-card__mark {
+  flex: 0 0 auto;
+  opacity: 0.85;
+}
+
+.pt-repo-card__text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.pt-repo-card__label {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--pt-fg-subtle, #6A645B);
+}
+
+.pt-repo-card__slug {
+  font-family: var(--pt-font-mono, ui-monospace, monospace);
+  font-size: 0.8rem;
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pt-repo-card__stats {
+  display: flex;
+  gap: 0.9rem;
+  margin-top: 0.55rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--pt-border, #E2DCC9);
+  font-size: 0.72rem;
+  color: var(--pt-fg-subtle, #6A645B);
+}
+
+.pt-repo-card__stat {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.pt-repo-card__stat svg {
+  opacity: 0.7;
+}
+
+.pt-repo-card__stat-label {
+  opacity: 0.8;
+}
+
+.pt-repo-card__issues {
+  display: block;
+  margin-top: 0.55rem;
+  font-size: 0.72rem;
+  color: var(--pt-fg-subtle, #6A645B) !important;
+  text-decoration: none !important;
+  border-bottom: 1px dotted var(--pt-border-strong, #C5BEAA);
+  width: fit-content;
+}
+
+.pt-repo-card__issues:hover {
+  color: var(--pt-accent, #A44B28) !important;
+  border-bottom-color: var(--pt-accent, #A44B28);
+}
+
+/* -------------------------------------------------------------------------
+   2. Azioni sulla selezione: "Chiedi all'AI" e "Segnala"
+   ------------------------------------------------------------------------- */
+.pt-azioni {
+  position: fixed;
+  z-index: 1200;
+  display: inline-flex;
+  align-items: stretch;
+  overflow: hidden;                /* le voci non sbordano dagli angoli tondi */
+  border: 1px solid var(--pt-accent, #A44B28);
+  border-radius: 999px;
+  background: var(--pt-accent, #A44B28);
+  font-family: var(--pt-font-body, system-ui, sans-serif);
+  box-shadow: 0 6px 18px rgba(26, 23, 20, 0.22);
+
+  /* La visibilità è governata SOLO dall'attributo `hidden` (regola qui sotto),
+     mai dall'opacità: una transizione di opacità non avanza dove il browser
+     non produce fotogrammi — scheda in secondo piano, rendering headless,
+     throttling aggressivo — e la pillola resterebbe invisibile per sempre.
+     Qui l'animazione è puro ornamento: se non parte, si perde uno scarto di
+     quattro pixel e nient'altro. */
+  transform: translateY(4px) scale(0.97);
+  transition: transform 0.14s ease;
+}
+
+/* `display: inline-flex` qui sopra vince sul `[hidden] { display: none }` dello
+   user-agent (stessa specificità, ma è una regola d'autore): senza questa
+   riga la pillola a opacità zero resterebbe nel flusso e continuerebbe a
+   intercettare i click nel punto dove era comparsa l'ultima volta. */
+.pt-azioni[hidden] {
+  display: none !important;
+}
+
+.pt-azioni--visibile {
+  transform: translateY(0) scale(1);
+}
+
+.pt-azioni__voce {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.8rem;
+  border: 0;
+  background: transparent;
+  color: #F8F5EE;
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 0.12s ease;
+}
+
+/* Un filo di separazione fra le due voci, non un bordo pieno. */
+.pt-azioni__voce + .pt-azioni__voce {
+  box-shadow: inset 1px 0 0 rgba(248, 245, 238, 0.28);
+}
+
+.pt-azioni__voce:hover {
+  background: var(--pt-accent-hover, #9A4222);
+}
+
+.pt-azioni__voce:focus-visible {
+  outline: 2px solid var(--pt-fg, #1A1714);
+  outline-offset: 2px;
+}
+
+.pt-azioni__voce svg {
+  flex: 0 0 auto;
+}
+
+/* Il minimo tap target imposto da custom.js a tutti i bottoni qui sformerebbe
+   la pillola: la si riporta all'altezza del testo. */
+.pt-azioni,
+.pt-azioni__voce {
+  min-height: 0 !important;
+}
+
+/* Variante ancorata: su touch la pillola vive in basso al centro, fuori dai
+   piedi del menu di selezione di sistema. C'è spazio, quindi l'etichetta
+   resta: una matita sola non si capirebbe. */
+.pt-azioni--ancorata {
+  left: 50%;
+  top: auto !important;
+  bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  transform: translate(-50%, 4px) scale(0.97);
+}
+
+/* Con le dita i bersagli devono essere piu' grandi: il padding cresce sulle
+   voci, non sul contenitore, altrimenti la pillola si sforma. */
+.pt-azioni--ancorata .pt-azioni__voce {
+  padding: 0.7rem 1rem;
+  font-size: 0.85rem;
+}
+
+.pt-azioni--ancorata.pt-azioni--visibile {
+  transform: translate(-50%, 0) scale(1);
+}
+
+@media print {
+  .pt-azioni,
+  .pt-repo-card {
+    display: none !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pt-azioni {
+    transition: none;
+  }
+}
+
+/* -------------------------------------------------------------------------
+   3. Interruttore del livello di lettura (template pt-livello.html)
+   L'icona commuta su `data-pt-livello` di <html>, come sole e luna del tema.
+   ------------------------------------------------------------------------- */
+.pt-livello__bottone {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.pt-livello__icona {
+  display: none;
+}
+
+html:not([data-pt-livello="superiore"]) .pt-livello__icona--elementare,
+html[data-pt-livello="superiore"] .pt-livello__icona--superiore {
+  display: block;
+}
+
+.pt-livello__testo {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+/* Su schermo piccolo la barra ospita già il logo: resta la sola icona, con
+   il nome del livello nel `title` e nell'aria-label. */
+@media (max-width: 991.98px) {
+  .pt-livello__testo {
+    display: none;
+  }
+}
+
+/* Un filo d'aria a sinistra: e' l'ultimo della fila e non deve incollarsi
+   all'icona precedente. */
+.pt-livello {
+  margin-left: 0.15rem;
+}
+
+/* I colori sono quelli delle linguette (tabs-enhanced.css): Elementare verde
+   petrolio, Superiore terracotta. Passano dagli alias del tema — quindi in
+   dark mode diventano da soli le varianti più chiare, #5BA39C e #E27B52, che
+   sul fondo scuro si leggono. Le barrette usano `currentColor`, quindi basta
+   colorare il pulsante perché seguano icona e parola. */
+html:not([data-pt-livello="superiore"]) .pt-livello__bottone {
+  color: var(--accent-color, #1F5E58);
+}
+
+html[data-pt-livello="superiore"] .pt-livello__bottone {
+  color: var(--primary-color, #A44B28);
+}
+
+/* -------------------------------------------------------------------------
+   4. "Esegui il codice" (template pt-notebook.html): porta il notebook
+   compagno della pagina su Colab. Compare solo dove il notebook esiste.
+   ------------------------------------------------------------------------- */
+.pt-notebook {
+  display: flex;
+  align-items: center;
+  margin-left: 0.5rem;
+  min-width: 0;
+}
+
+.pt-notebook__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.28rem 0.65rem;
+  border: 1px solid var(--pt-border-strong, #C5BEAA);
+  border-radius: 999px;
+  color: var(--pt-fg-muted, #5A524A) !important;
+  font-family: var(--pt-font-body, system-ui, sans-serif);
+  font-size: 0.72rem;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  text-decoration: none !important;
+  transition: color 0.14s ease, border-color 0.14s ease;
+}
+
+.pt-notebook__link:hover {
+  color: var(--pt-accent, #A44B28) !important;
+  border-color: var(--pt-accent, #A44B28);
+}
+
+/* La freccia "link esterno" di custom.js qui è rumore. */
+.pt-notebook .external-icon {
+  display: none;
+}
+
+/* Su schermo piccolo la barra ha già hamburger e logo: resta il solo triangolo,
+   col titolo che spiega. */
+@media (max-width: 767.98px) {
+  .pt-notebook__testo {
+    display: none;
+  }
+
+  .pt-notebook__link {
+    padding: 0.3rem 0.42rem;
+  }
+}

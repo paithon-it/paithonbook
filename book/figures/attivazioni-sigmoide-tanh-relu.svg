@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  paithon book - figura: tre funzioni di attivazione affiancate sullo stesso
+  piano cartesiano, nello stile dei grafici del libro. Pannello 1 sigmoide
+  (terracotta): curva a S che sale da 0 a 1 e satura ai due estremi.
+  Pannello 2 tanh (teal): stessa S ma centrata nello zero, da -1 a 1.
+  Pannello 3 ReLU (ocra): piatta a zero per x<0, poi retta a 45 gradi per x>0.
+  Palette-locked, assi neutri warm, linee di riferimento tratteggiate.
+  Fondo trasparente (leggibile in light e dark).
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 232" role="img"
+     aria-label="Tre grafici affiancati di funzioni di attivazione. A sinistra la sigmoide: una curva a S in terracotta che parte quasi appiattita sullo zero, sale ripida attorno all'origine e si appiattisce verso il valore uno. Al centro la tangente iperbolica: la stessa curva a S in teal, ma centrata nell'origine, che va da meno uno a piu uno. A destra la ReLU: una linea in ocra piatta sullo zero per le x negative, che poi risale come una retta inclinata per le x positive.">
+  <style>
+    .axis  { stroke:#8B847C; stroke-width:1.4; }
+    .ref   { stroke:#C9C2B4; stroke-width:1; stroke-dasharray:3 4; opacity:.85; }
+    .ttl   { font-family:Fraunces, Georgia, serif; font-size:15px; font-weight:700; fill:#1A1A1A; text-anchor:middle; }
+    .tick  { font-family:Inter, system-ui, sans-serif; font-size:11px; fill:#5E5852; }
+    .cap   { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#5E5852; text-anchor:middle; }
+    .cap b { fill:#1A1A1A; }
+    .sig   { fill:none; stroke:#B5532C; stroke-width:3; stroke-linecap:round; stroke-linejoin:round; }
+    .tan   { fill:none; stroke:#2D5A5C; stroke-width:3; stroke-linecap:round; stroke-linejoin:round; }
+    .rel   { fill:none; stroke:#C9A961; stroke-width:3.2; stroke-linecap:round; stroke-linejoin:round; }
+  </style>
+
+  <!-- ===== Pannello 1: Sigmoide ===== -->
+  <g transform="translate(0,0)">
+    <text class="ttl" x="115" y="24">Sigmoide &#963;</text>
+    <!-- linea di riferimento y=1 -->
+    <line class="ref" x1="40" y1="50" x2="190" y2="50"/>
+    <text class="tick" x="118" y="53">1</text>
+    <!-- assi: x in basso (y=150), y a x=115 -->
+    <line class="axis" x1="40" y1="150" x2="200" y2="150"/>
+    <line class="axis" x1="115" y1="40" x2="115" y2="162"/>
+    <polygon points="200,150 191,146 191,154" fill="#8B847C"/>
+    <polygon points="115,38 111,48 119,48" fill="#8B847C"/>
+    <text class="tick" x="104" y="163">0</text>
+    <!-- curva sigmoide -->
+    <polyline class="sig" points="40,149.8 65,148.2 77.5,145.3 83.8,142.4 90,138.1 96.3,131.8 102.5,123.1 108.8,112.3 115,100 121.3,87.8 127.5,76.9 133.8,68.2 140,61.9 146.3,57.6 152.5,54.7 165,51.8 190,50.3"/>
+  </g>
+
+  <!-- ===== Pannello 2: Tanh ===== -->
+  <g transform="translate(220,0)">
+    <text class="ttl" x="115" y="24">Tanh</text>
+    <!-- riferimenti y=1 e y=-1 -->
+    <line class="ref" x1="40" y1="50" x2="190" y2="50"/>
+    <line class="ref" x1="40" y1="140" x2="190" y2="140"/>
+    <text class="tick" x="118" y="49">1</text>
+    <text class="tick" x="118" y="152">-1</text>
+    <!-- assi: x al centro (y=95), y a x=115 -->
+    <line class="axis" x1="40" y1="95" x2="200" y2="95"/>
+    <line class="axis" x1="115" y1="40" x2="115" y2="162"/>
+    <polygon points="200,95 191,91 191,99" fill="#8B847C"/>
+    <polygon points="115,38 111,48 119,48" fill="#8B847C"/>
+    <text class="tick" x="104" y="108">0</text>
+    <!-- curva tanh -->
+    <polyline class="tan" points="40,140 65,140 77.5,139.8 90,138.4 96.3,135.7 102.5,129.3 108.8,115.8 115,95 121.3,74.2 127.5,60.7 133.8,54.3 140,51.6 152.5,50.2 165,50 190,50"/>
+  </g>
+
+  <!-- ===== Pannello 3: ReLU ===== -->
+  <g transform="translate(440,0)">
+    <text class="ttl" x="115" y="24">ReLU</text>
+    <!-- assi: x in basso (y=150), y a x=115 -->
+    <line class="axis" x1="40" y1="150" x2="200" y2="150"/>
+    <line class="axis" x1="115" y1="40" x2="115" y2="162"/>
+    <polygon points="200,150 191,146 191,154" fill="#8B847C"/>
+    <polygon points="115,38 111,48 119,48" fill="#8B847C"/>
+    <text class="tick" x="104" y="163">0</text>
+    <!-- curva ReLU: piatta a zero, poi retta -->
+    <polyline class="rel" points="40,150 115,150 190,51"/>
+  </g>
+
+  <text class="cap" x="330" y="222">Tre non linearita a confronto: la sigmoide <tspan font-weight="700" fill="#1A1A1A">satura</tspan> tra 0 e 1, la tanh e <tspan font-weight="700" fill="#1A1A1A">centrata nello zero</tspan>, la ReLU lascia passare solo la <tspan font-weight="700" fill="#1A1A1A">parte positiva</tspan>.</text>
+</svg>

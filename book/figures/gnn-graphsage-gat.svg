@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  paithon book - figura: due modi di aggregare i vicini in una GNN.
+  A SINISTRA GraphSAGE: un nodo centrale (ocra) con sei vicini; solo tre sono
+  CAMPIONATI (pieni, in teal, archi solidi), gli altri tre sono sbiaditi
+  (grigio, archi tratteggiati chiari) -> se ne aggrega solo un sottoinsieme.
+  A DESTRA GAT: lo stesso nodo con gli stessi sei vicini, ma gli archi hanno
+  SPESSORE diverso, proporzionale al peso di attenzione alpha_ij (terracotta):
+  un vicino conta molto piu degli altri. Etichette in basso: «campionamento»
+  vs «attenzione». Palette-locked, fondo trasparente.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 400" role="img"
+     aria-label="Confronto di due strategie di aggregazione dei vicini. A sinistra GraphSAGE: un nodo centrale color ocra circondato da sei vicini; solo tre di essi, in teal, sono campionati e collegati da archi pieni, mentre gli altri tre sono sbiaditi in grigio con archi tratteggiati, a indicare che se ne usa solo un sottoinsieme. A destra la rete ad attenzione GAT: lo stesso nodo con gli stessi sei vicini, ma gli archi hanno spessori diversi, in terracotta, proporzionali al peso di attenzione: un vicino ha l'arco molto piu spesso e conta piu degli altri. In basso, le etichette campionamento a sinistra e attenzione a destra.">
+  <style>
+    .node   { fill:#F8F5EE; stroke:#1A1A1A; stroke-width:2; }
+    .hub    { fill:#C9A961; stroke:#1A1A1A; stroke-width:2.5; }
+    .samp   { fill:#2D5A5C; stroke:#1A1A1A; stroke-width:2; }
+    .faded  { fill:#F8F5EE; stroke:#8B847C; stroke-width:1.5; }
+    .esamp  { stroke:#2D5A5C; stroke-width:3; }
+    .efade  { stroke:#8B847C; stroke-width:1.5; stroke-dasharray:4 4; }
+    .eatt   { stroke:#B5532C; stroke-linecap:round; }
+    .hublbl { font-family:Inter, system-ui, sans-serif; font-size:16px; font-weight:700; fill:#1A1A1A; text-anchor:middle; }
+    .fadelbl{ font-family:Inter, system-ui, sans-serif; font-size:15px; font-weight:600; fill:#F8F5EE; text-anchor:middle; }
+    .title  { font-family:Fraunces, Georgia, serif; font-size:19px; font-weight:600; fill:#1A1A1A; text-anchor:middle; }
+    .cap    { font-family:Inter, system-ui, sans-serif; font-size:15px; font-weight:600; text-anchor:middle; }
+  </style>
+
+  <!-- ============ SINISTRA: GraphSAGE ============ -->
+  <text class="title" x="180" y="42">GraphSAGE</text>
+
+  <!-- archi: vicini campionati (teal, solidi) e sbiaditi (grigio, tratteggiati) -->
+  <!-- vicini a 60, 180, 300 gradi = campionati ; 0, 120, 240 = sbiaditi -->
+  <line class="efade" x1="180" y1="205" x2="295"   y2="205"/>
+  <line class="esamp" x1="180" y1="205" x2="237.5" y2="105.4"/>
+  <line class="efade" x1="180" y1="205" x2="122.5" y2="105.4"/>
+  <line class="esamp" x1="180" y1="205" x2="65"    y2="205"/>
+  <line class="efade" x1="180" y1="205" x2="122.5" y2="304.6"/>
+  <line class="esamp" x1="180" y1="205" x2="237.5" y2="304.6"/>
+
+  <!-- vicini sbiaditi -->
+  <circle class="faded" cx="295"   cy="205"   r="16"/>
+  <circle class="faded" cx="122.5" cy="105.4" r="16"/>
+  <circle class="faded" cx="122.5" cy="304.6" r="16"/>
+  <!-- vicini campionati -->
+  <circle class="samp"  cx="237.5" cy="105.4" r="17"/>
+  <circle class="samp"  cx="65"    cy="205"   r="17"/>
+  <circle class="samp"  cx="237.5" cy="304.6" r="17"/>
+  <!-- nodo centrale -->
+  <circle class="hub" cx="180" cy="205" r="20"/>
+  <text class="hublbl" x="180" y="211">v</text>
+
+  <text class="cap" x="180" y="378" fill="#2D5A5C">campionamento</text>
+
+  <!-- separatore verticale leggero -->
+  <line x1="360" y1="60" x2="360" y2="350" stroke="#8B847C" stroke-width="1" stroke-dasharray="2 6"/>
+
+  <!-- ============ DESTRA: GAT ============ -->
+  <text class="title" x="540" y="42">GAT</text>
+
+  <!-- archi ad attenzione: spessore proporzionale al peso alpha_ij (terracotta) -->
+  <!-- vicino a 120 gradi = dominante -->
+  <line class="eatt" x1="540" y1="205" x2="655"   y2="205"   stroke-width="2.5"/>
+  <line class="eatt" x1="540" y1="205" x2="597.5" y2="105.4" stroke-width="5"/>
+  <line class="eatt" x1="540" y1="205" x2="482.5" y2="105.4" stroke-width="8"/>
+  <line class="eatt" x1="540" y1="205" x2="425"   y2="205"   stroke-width="2"/>
+  <line class="eatt" x1="540" y1="205" x2="482.5" y2="304.6" stroke-width="1.5"/>
+  <line class="eatt" x1="540" y1="205" x2="597.5" y2="304.6" stroke-width="4"/>
+
+  <!-- tutti i vicini presenti (nessuno scartato): nodi neutri -->
+  <circle class="node" cx="655"   cy="205"   r="16"/>
+  <circle class="node" cx="597.5" cy="105.4" r="16"/>
+  <circle class="node" cx="482.5" cy="105.4" r="16"/>
+  <circle class="node" cx="425"   cy="205"   r="16"/>
+  <circle class="node" cx="482.5" cy="304.6" r="16"/>
+  <circle class="node" cx="597.5" cy="304.6" r="16"/>
+  <!-- nodo centrale -->
+  <circle class="hub" cx="540" cy="205" r="20"/>
+  <text class="hublbl" x="540" y="211">v</text>
+
+  <text class="cap" x="540" y="378" fill="#B5532C">attenzione</text>
+</svg>

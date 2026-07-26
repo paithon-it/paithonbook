@@ -1,0 +1,142 @@
+title: Paithon Book
+author: paithon.it © Copyright 2024. Questo lavoro è licenziato sotto la
+        <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" rel="license noopener noreferrer">
+        CC BY-NC-ND 4.0
+        </a>
+        <img style="height:1.05em!important;width:auto;margin:0 0 0 4px!important;vertical-align:-0.18em!important;box-shadow:none!important;border-radius:0!important;"
+        src="https://mirrors.creativecommons.org/presskit/icons/cc.svg" alt="cc">
+        <img style="height:1.05em!important;width:auto;margin:0 0 0 4px!important;vertical-align:-0.18em!important;box-shadow:none!important;border-radius:0!important;"
+        src="https://mirrors.creativecommons.org/presskit/icons/by.svg" alt="by">
+        <img style="height:1.05em!important;width:auto;margin:0 0 0 4px!important;vertical-align:-0.18em!important;box-shadow:none!important;border-radius:0!important;"
+        src="https://mirrors.creativecommons.org/presskit/icons/nc-eu.svg" alt="nc-eu">
+        <img style="height:1.05em!important;width:auto;margin:0 0 0 4px!important;vertical-align:-0.18em!important;box-shadow:none!important;border-radius:0!important;"
+        src="https://mirrors.creativecommons.org/presskit/icons/nd.svg" alt="nd">
+logo: _static/logo-light.svg #lockup bollo tribar + wordmark "paithon" (fallback; le varianti light/dark sono in html_theme_options.logo)
+copyright: CC BY-NC-ND 4.0
+
+only_build_toc_files: true
+
+execute:
+  execute_notebooks: "auto"
+
+html:
+  favicon : "figures/favicon.svg"
+  baseurl : "https://book.paithon.it/main"
+  home_page_in_navbar: false
+  use_multitoc_numbering: false
+  extra_navbar: |
+      <div>
+          <script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="paithon.it" data-color="#B5532C" data-emoji="🍕"  data-font="Cookie" data-text="Offrimi una pizza" data-outline-color="#1A1A1A" data-font-color="#ffffff" data-coffee-color="#C9A961" ></script>
+      </div>
+
+sphinx:
+  config:
+    html_css_files:
+    - custom.css
+    - tabs-enhanced.css
+    - pt-formato.css
+    html_js_files:
+    - https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js
+    - custom.js
+    - pt-formato.js
+
+    # Sidebar sinistra: la scheda del repository sta SOPRA l'indice, come su
+    # learnpytorch.io (Material for MkDocs). L'elenco replica il default di
+    # sphinx-book-theme (navbar-logo, icon-links, search-button-field,
+    # sbt-sidebar-nav) con `pt-repo-card.html` inserito dopo il logo.
+    html_sidebars:
+      "**":
+      - navbar-logo.html
+      - pt-repo-card.html
+      - icon-links.html
+      - search-button-field.html
+      - sbt-sidebar-nav.html
+
+    # Elenco delle pagine che hanno un notebook compagno in `notebooks/`.
+    # SCRITTO da `scripts/genera-notebook.py`: non modificare a mano. Serve al
+    # template `pt-notebook.html`, che il disco non può guardarlo.
+    html_context:
+      pt_notebooks:
+      - AIResponsabile
+      - Agenti
+      - Audio
+      - DeepReinforcementLearning
+      - GraphNeuralNetwork
+      - Interpretabilita
+      - MLOps
+      - MachineLearning
+      - Matematica
+      - ModelliDiffusione
+      - NaturalLanguageProcessing
+      - PINN
+      - PyTorch
+      - Python
+      - SerieTemporali
+      - SistemiRaccomandazione
+      - Transformers
+      - WorldModels
+
+    templates_path:
+    - _templates
+    - _static
+
+    mathjax_path: https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+    thebe_config:
+      use_thebe_lite: true
+      exclude_patterns: ["**/_*.yml", "**/*.md", "**/*.ipynb"]
+    html_theme_options:
+      # Logo theme-aware: lockup bollo tribar + wordmark "paithon" (Fraunces
+      # 800 vettorializzato) con "book" su una seconda riga, allineata a
+      # destra, in Fraunces SemiBold — anch'essa vettoriale. La variante dark
+      # usa inchiostro osso, così il wordmark resta leggibile sul fondo
+      # quasi-nero del tema scuro. Si rigenera con
+      # `python3 scripts/genera-logo-book.py`.
+      logo:
+        image_light: _static/logo-light.svg
+        image_dark: _static/logo-dark.svg
+        alt_text: paithon book
+      repository_url: "https://github.com/paithon-it/paithonbook" #add your own repo URL here
+      repository_branch: main
+      path_to_docs: book/
+      # Nella barra in alto restano solo le due icone che servono davvero:
+      # ricerca e chiaro/scuro. Il repository e le issue vivono nella scheda
+      # in cima alla sidebar; per segnalare un errore si seleziona il testo
+      # (vedi _static/pt-formato.js). Il pulsante "tutto schermo" è tolto:
+      # sul sito non funzionava.
+      # Barra dell'articolo: dopo il pulsante della sidebar si infila il logo
+      # compatto, che su schermo piccolo riempie il vuoto fra l'hamburger e le
+      # icone (e riporta all'inizio del libro). Il primo template è il default
+      # del tema: va ripetuto, altrimenti si perde.
+      article_header_start:
+      - toggle-primary-sidebar.html
+      - pt-logo-compatto.html
+      # "Esegui il codice": compare solo sulle pagine elencate in
+      # html_context.pt_notebooks, cioè quelle con un notebook compagno.
+      - pt-notebook.html
+      # A destra l'interruttore del livello di lettura (Elementare /
+      # Superiore) per tutto il libro, DOPO i pulsanti del tema: messo prima
+      # finiva appiccicato al logo su schermo piccolo e sembrava farne parte.
+      # Il primo template è il default del tema — va ripetuto o si perde.
+      article_header_end:
+      - article-header-buttons.html
+      - pt-livello.html
+      use_fullscreen_button: false
+      use_download_button: false
+      use_edit_page_button: false
+      use_repository_button: false
+      use_issues_button: false
+      navigation_with_keys: true
+      show_toc_level: 2
+      show_nav_level: 2
+      navigation_depth: 3
+      launch_buttons:
+        thebe: true
+        colab_url: "https://colab.research.google.com"
+    html_show_copyright: false
+  extra_extensions:
+    - sphinx.ext.imgconverter
+    - jupyterbook_patches
+    - sphinx_inline_tabs
+
+bibtex_bibfiles: 
+  - references.bib

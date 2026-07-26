@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 470" role="img" aria-label="Paesaggio di energia di una rete di Hopfield: una curva con tre valli; i minimi, segnati in teal, sono i ricordi memorizzati; una pallina ocra etichettata ricordo parziale o rumoroso parte da un punto alto della curva e una freccia terracotta tratteggiata la accompagna nel fondo della valle piu vicina. Asse verticale: energia E; asse orizzontale: stato della rete.">
+  <defs>
+    <marker id="freccia-energia" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#5E5852"/>
+    </marker>
+    <marker id="freccia-discesa" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7.5" markerHeight="7.5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#B5532C"/>
+    </marker>
+  </defs>
+
+  <!-- assi -->
+  <line x1="70" y1="410" x2="70" y2="66" stroke="#5E5852" stroke-width="2" marker-end="url(#freccia-energia)"/>
+  <line x1="70" y1="410" x2="784" y2="410" stroke="#5E5852" stroke-width="2" marker-end="url(#freccia-energia)"/>
+  <text x="86" y="76" font-family="Inter, sans-serif" font-size="14" font-weight="700" fill="#1A1A1A">energia E</text>
+  <text x="427" y="440" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" font-weight="700" fill="#1A1A1A">stato della rete</text>
+
+  <!-- paesaggio di energia: tre valli scavate dai ricordi -->
+  <path d="M 96 150
+           C 134 150, 167 330, 205 330
+           C 243 330, 267 185, 305 185
+           C 343 185, 382 365, 420 365
+           C 458 365, 502 165, 540 165
+           C 578 165, 617 320, 655 320
+           C 693 320, 722 130, 756 130"
+        fill="none" stroke="#1A1A1A" stroke-width="2.5"/>
+
+  <!-- minimi = ricordi memorizzati (teal) -->
+  <circle cx="205" cy="330" r="7" fill="#2D5A5C" fill-opacity="0.15" stroke="#2D5A5C" stroke-width="2.5"/>
+  <circle cx="420" cy="365" r="7" fill="#2D5A5C" stroke="#2D5A5C" stroke-width="2.5"/>
+  <circle cx="655" cy="320" r="7" fill="#2D5A5C" fill-opacity="0.15" stroke="#2D5A5C" stroke-width="2.5"/>
+  <text x="205" y="358" text-anchor="middle" font-family="Inter, sans-serif" font-size="12.5" font-weight="700" fill="#2D5A5C">ricordo A</text>
+  <text x="420" y="393" text-anchor="middle" font-family="Inter, sans-serif" font-size="12.5" font-weight="700" fill="#2D5A5C">ricordo B</text>
+  <text x="655" y="348" text-anchor="middle" font-family="Inter, sans-serif" font-size="12.5" font-weight="700" fill="#2D5A5C">ricordo C</text>
+  <text x="205" y="374" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#5E5852">(pattern memorizzati: i minimi dell'energia)</text>
+
+  <!-- pallina: lo stato iniziale corrotto, in alto sul fianco della valle -->
+  <circle cx="341" cy="221" r="12" fill="#C9A961" fill-opacity="0.9" stroke="#1A1A1A" stroke-width="2"/>
+  <text x="330" y="152" text-anchor="middle" font-family="Inter, sans-serif" font-size="12.5" font-weight="700" fill="#1A1A1A">ricordo parziale / rumoroso</text>
+  <text x="330" y="168" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#5E5852">(stato iniziale: energia alta)</text>
+  <line x1="333" y1="176" x2="338" y2="203" stroke="#C9A961" stroke-width="2"/>
+
+  <!-- discesa: ogni aggiornamento abbassa E, verso la valle piu vicina -->
+  <path d="M 355 243 C 378 280, 396 322, 409 351"
+        fill="none" stroke="#B5532C" stroke-width="2.5" stroke-dasharray="6 5"
+        marker-end="url(#freccia-discesa)"/>
+  <text x="475" y="273" font-family="Inter, sans-serif" font-size="12.5" font-weight="700" fill="#B5532C">ogni aggiornamento</text>
+  <text x="475" y="289" font-family="Inter, sans-serif" font-size="12.5" font-weight="700" fill="#B5532C">fa scendere l'energia</text>
+
+  <!-- didascalia interna -->
+  <text x="427" y="462" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#5E5852">il richiamo della memoria: dallo stato corrotto la rete scivola nel minimo pi&#249; vicino, e il ricordo si completa</text>
+</svg>

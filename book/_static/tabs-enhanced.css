@@ -1,0 +1,191 @@
+/**
+ * PAITHON BOOK — TABS Elementare/Superiore
+ *
+ * Selettori REALI di sphinx-inline-tabs (l'estensione usata dal libro):
+ *   div.tab-set > (input.tab-input + label.tab-label + div.tab-content)*
+ * Convenzione editoriale del libro: il primo tab e' SEMPRE "Elementare"
+ * (teal), il secondo "Superiore" (terracotta). Gli stili per livello si
+ * agganciano quindi a :nth-of-type, senza dipendere dal testo del label.
+ * Tutti i colori passano dai token brand (var(--pt-*) via alias), quindi
+ * light/dark commutano da soli.
+ */
+
+/* ===== CONTENITORE ===== */
+.tab-set {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 2.5rem auto;
+  max-width: var(--measure, 50rem);
+  background: var(--bg-main);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+/* Radio nascosti ma raggiungibili da tastiera */
+.tab-set > .tab-input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ===== LINGUETTE ===== */
+.tab-set > .tab-label {
+  flex: 1 1 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  margin: 0;
+  padding: 0.8rem 1.25rem;
+  cursor: pointer;
+  user-select: none;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-light);
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+  border-top: 3px solid transparent;
+  transition: color var(--transition-fast, 0.15s),
+              background var(--transition-fast, 0.15s),
+              border-color var(--transition-fast, 0.15s);
+}
+
+/* Pallino di livello: sostituisce le vecchie emoji fuori baseline.
+   E' un elemento flex, quindi perfettamente centrato col testo. */
+.tab-set > .tab-label::before {
+  content: "";
+  width: 0.5em;
+  height: 0.5em;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.4;
+  flex: none;
+}
+
+/* Hover per livello (1 = Elementare/teal, 2 = Superiore/terracotta) */
+.tab-set > .tab-label:nth-of-type(1):hover {
+  color: var(--accent-color);
+  background: rgba(45, 90, 92, 0.07);
+}
+
+.tab-set > .tab-label:nth-of-type(2):hover {
+  color: var(--primary-color);
+  background: rgba(181, 83, 44, 0.07);
+}
+
+/* Linguetta attiva: colore pieno del livello + filo superiore */
+.tab-set > .tab-input:checked + .tab-label {
+  background: var(--bg-main);
+  border-bottom-color: transparent;
+}
+
+.tab-set > .tab-input:checked + .tab-label::before {
+  opacity: 1;
+}
+
+.tab-set > .tab-input:nth-of-type(1):checked + .tab-label {
+  color: var(--accent-color);
+  border-top-color: var(--accent-color);
+}
+
+.tab-set > .tab-input:nth-of-type(2):checked + .tab-label {
+  color: var(--primary-color);
+  border-top-color: var(--primary-color);
+}
+
+/* Focus da tastiera, accessibile */
+.tab-set > .tab-input:focus-visible + .tab-label {
+  outline: 3px solid var(--accent-ocra);
+  outline-offset: -3px;
+}
+
+/* ===== PANNELLI ===== */
+.tab-set > .tab-content {
+  order: 99;              /* i label restano tutti in prima riga */
+  width: 100%;
+  display: none;
+  padding: 1.6rem 1.9rem;
+  background: var(--bg-main);
+}
+
+.tab-set > .tab-input:checked + .tab-label + .tab-content {
+  display: block;
+}
+
+/* Filo di livello lungo il bordo sinistro del contenuto */
+.tab-set > .tab-input:nth-of-type(1):checked + .tab-label + .tab-content {
+  box-shadow: inset 3px 0 0 var(--accent-color);
+}
+
+.tab-set > .tab-input:nth-of-type(2):checked + .tab-label + .tab-content {
+  box-shadow: inset 3px 0 0 var(--primary-color);
+}
+
+/* Contenuto: niente margini orfani ai bordi */
+.tab-set > .tab-content > p:first-child,
+.tab-set > .tab-content > .math:first-child {
+  margin-top: 0;
+}
+
+.tab-set > .tab-content > :last-child {
+  margin-bottom: 0;
+}
+
+/* Il testo dentro le tab sfrutta tutta la larghezza del pannello
+   (la misura e' gia' data dal contenitore) */
+.tab-set > .tab-content p,
+.tab-set > .tab-content ul,
+.tab-set > .tab-content ol {
+  max-width: none;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 767px) {
+  .tab-set {
+    margin: 1.75rem 0;
+    border-radius: 10px;
+  }
+
+  .tab-set > .tab-label {
+    padding: 0.7rem 0.75rem;
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+  }
+
+  .tab-set > .tab-content {
+    padding: 1.15rem 1.15rem;
+  }
+}
+
+/* ===== STAMPA: mostra entrambi i livelli, uno dopo l'altro ===== */
+@media print {
+  .tab-set {
+    box-shadow: none;
+    border: 1px solid #1A1A1A;
+  }
+
+  .tab-set > .tab-label {
+    border: none;
+    background: none;
+    justify-content: flex-start;
+    font-weight: 700;
+  }
+
+  .tab-set > .tab-content {
+    display: block !important;
+    box-shadow: none !important;
+    page-break-inside: avoid;
+  }
+}
+
+/* ===== MOVIMENTO RIDOTTO ===== */
+@media (prefers-reduced-motion: reduce) {
+  .tab-set > .tab-label {
+    transition: none;
+  }
+}

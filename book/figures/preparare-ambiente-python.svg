@@ -1,0 +1,49 @@
+<svg viewBox="0 0 720 440" width="100%" role="img" aria-label="Anatomia di un setup Python: il sistema operativo con Python 3.12, la cartella di progetto con l'ambiente virtuale e le librerie, e l'IDE che punta all'interprete dell'ambiente" xmlns="http://www.w3.org/2000/svg">
+  <rect x="0" y="0" width="720" height="440" fill="#F8F5EE"/>
+  <defs>
+    <marker id="fr201" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#1A1A1A"/></marker>
+  </defs>
+  <text x="360" y="34" font-family="sans-serif" font-size="18" font-weight="bold" fill="#1A1A1A" text-anchor="middle">Anatomia di un setup</text>
+
+  <!-- Sistema operativo -->
+  <rect x="60" y="360" width="600" height="52" rx="8" fill="#1A1A1A"/>
+  <text x="360" y="384" font-family="sans-serif" font-size="14" fill="#F8F5EE" text-anchor="middle">Sistema operativo</text>
+  <text x="360" y="402" font-family="sans-serif" font-size="12" fill="#C9C2B4" text-anchor="middle">Python 3.12 installato una sola volta, a livello globale</text>
+
+  <!-- Cartella progetto -->
+  <rect x="230" y="70" width="430" height="260" rx="10" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="2"/>
+  <text x="250" y="98" font-family="sans-serif" font-size="14" font-weight="bold" fill="#1A1A1A">progetto-ml/</text>
+
+  <!-- script -->
+  <rect x="250" y="112" width="180" height="36" rx="6" fill="#F8F5EE" stroke="#C9A961" stroke-width="2"/>
+  <text x="340" y="135" font-family="sans-serif" font-size="12" fill="#1A1A1A" text-anchor="middle">collaudo.py</text>
+  <rect x="250" y="156" width="180" height="36" rx="6" fill="#F8F5EE" stroke="#C9A961" stroke-width="2"/>
+  <text x="340" y="179" font-family="sans-serif" font-size="12" fill="#1A1A1A" text-anchor="middle">requirements.txt</text>
+
+  <!-- venv -->
+  <rect x="250" y="206" width="390" height="108" rx="8" fill="#2D5A5C"/>
+  <text x="266" y="230" font-family="sans-serif" font-size="13" font-weight="bold" fill="#F8F5EE">.venv/  — ambiente virtuale</text>
+  <rect x="266" y="242" width="110" height="28" rx="14" fill="#F8F5EE"/>
+  <text x="321" y="261" font-family="sans-serif" font-size="11" fill="#1A1A1A" text-anchor="middle">interprete</text>
+  <rect x="266" y="276" width="80" height="26" rx="13" fill="#C9A961"/>
+  <text x="306" y="293" font-family="sans-serif" font-size="11" fill="#1A1A1A" text-anchor="middle">numpy</text>
+  <rect x="352" y="276" width="80" height="26" rx="13" fill="#C9A961"/>
+  <text x="392" y="293" font-family="sans-serif" font-size="11" fill="#1A1A1A" text-anchor="middle">pandas</text>
+  <rect x="438" y="276" width="92" height="26" rx="13" fill="#C9A961"/>
+  <text x="484" y="293" font-family="sans-serif" font-size="11" fill="#1A1A1A" text-anchor="middle">matplotlib</text>
+  <rect x="536" y="276" width="96" height="26" rx="13" fill="#C9A961"/>
+  <text x="584" y="293" font-family="sans-serif" font-size="11" fill="#1A1A1A" text-anchor="middle">scikit-learn</text>
+
+  <!-- IDE -->
+  <rect x="60" y="120" width="130" height="120" rx="10" fill="#B5532C"/>
+  <text x="125" y="165" font-family="sans-serif" font-size="14" font-weight="bold" fill="#F8F5EE" text-anchor="middle">IDE</text>
+  <text x="125" y="186" font-family="sans-serif" font-size="12" fill="#F8F5EE" text-anchor="middle">VS Code /</text>
+  <text x="125" y="203" font-family="sans-serif" font-size="12" fill="#F8F5EE" text-anchor="middle">PyCharm</text>
+
+  <!-- frecce -->
+  <line x1="190" y1="220" x2="244" y2="252" stroke="#1A1A1A" stroke-width="2" marker-end="url(#fr201)"/>
+  <text x="150" y="262" font-family="sans-serif" font-size="11" fill="#5E5852">usa l'interprete</text>
+  <text x="150" y="277" font-family="sans-serif" font-size="11" fill="#5E5852">di .venv</text>
+  <line x1="445" y1="354" x2="445" y2="320" stroke="#1A1A1A" stroke-width="2" marker-end="url(#fr201)"/>
+  <text x="458" y="344" font-family="sans-serif" font-size="11" fill="#5E5852">python -m venv .venv</text>
+</svg>

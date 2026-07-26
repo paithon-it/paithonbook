@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  paithon book — figura: la fine del "free lunch" (andamento schematico).
+  Asse x = anno; asse y = scala logaritmica qualitativa. Due curve: il numero
+  di transistor (ocra) continua a salire, la frequenza di clock / prestazione
+  di un singolo core (terracotta) sale insieme fino a circa il 2004-2005 e poi
+  si appiattisce. Un marcatore verticale segna il 2005; un riquadro spiega che
+  i transistor "in piu" diventano piu core: il futuro e parallelo.
+  Palette-locked: ocra, terracotta, teal, warm-black, cream. Backing cream.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 430" role="img"
+     aria-label="Grafico schematico in scala logaritmica. L'asse orizzontale e l'anno, dal 1990 al 2020; il verticale una scala logaritmica qualitativa. Una linea ocra, il numero di transistor, sale in modo costante per tutto l'intervallo. Una linea terracotta, la frequenza di clock ovvero la prestazione di un singolo core, sale insieme alla prima fino a circa il 2005, poi si appiattisce quasi orizzontale. Una linea verticale tratteggiata segna il 2005 con l'etichetta 'il free lunch finisce'. Un riquadro in basso spiega che i transistor in piu diventano piu core, e il futuro e parallelo.">
+  <style>
+    .frame  { stroke:#1A1A1A; stroke-width:1.6; opacity:0.55; fill:none; }
+    .tran   { stroke:#C9A961; stroke-width:3.6; fill:none; stroke-linejoin:round; stroke-linecap:round; }
+    .clock  { stroke:#B5532C; stroke-width:3.6; fill:none; stroke-linejoin:round; stroke-linecap:round; }
+    .mark   { stroke:#2D5A5C; stroke-width:1.6; stroke-dasharray:4 5; opacity:0.7; }
+    .axlbl  { font-family:Inter, system-ui, sans-serif; font-size:13px; font-weight:600; fill:#1A1A1A; opacity:0.8; }
+    .tick   { font-family:Inter, system-ui, sans-serif; font-size:11.5px; fill:#1A1A1A; opacity:0.6; }
+    .leg    { font-family:Inter, system-ui, sans-serif; font-size:12.5px; font-weight:600; fill:#1A1A1A; }
+    .noteT  { font-family:Inter, system-ui, sans-serif; font-size:12px; font-weight:600; fill:#C9A961; }
+    .noteC  { font-family:Inter, system-ui, sans-serif; font-size:12px; font-weight:600; fill:#B5532C; }
+    .markl  { font-family:Inter, system-ui, sans-serif; font-size:12px; font-weight:700; fill:#2D5A5C; }
+    .call   { font-family:Inter, system-ui, sans-serif; font-size:12.5px; font-weight:700; fill:#2D5A5C; }
+    .together { font-family:Inter, system-ui, sans-serif; font-size:11px; font-weight:600; fill:#1A1A1A; opacity:0.55; }
+  </style>
+
+  <!-- backing cream (leggibile anche in dark mode) -->
+  <rect x="6" y="6" width="708" height="418" rx="14" fill="#F8F5EE" stroke="#1A1A1A" stroke-opacity="0.12" stroke-width="1.5"/>
+
+  <!-- assi -->
+  <line class="frame" x1="100" y1="66"  x2="100" y2="330"/>
+  <line class="frame" x1="100" y1="330" x2="662" y2="330"/>
+  <polygon points="100,56 94,72 106,72" fill="#1A1A1A" fill-opacity="0.55"/>
+  <polygon points="672,330 656,324 656,336" fill="#1A1A1A" fill-opacity="0.55"/>
+
+  <!-- etichette assi -->
+  <text class="axlbl" x="380" y="366" text-anchor="middle">anno →</text>
+  <text class="axlbl" x="42" y="198" text-anchor="middle" transform="rotate(-90 42 198)">scala logaritmica →</text>
+
+  <!-- tick anni -->
+  <text class="tick" x="100" y="348" text-anchor="middle">1990</text>
+  <text class="tick" x="283" y="348" text-anchor="middle">2000</text>
+  <text class="tick" x="467" y="348" text-anchor="middle">2010</text>
+  <text class="tick" x="650" y="348" text-anchor="middle">2020</text>
+
+  <!-- marcatore 2005 -->
+  <line class="mark" x1="375" y1="72" x2="375" y2="330"/>
+  <text class="markl" x="375" y="62" text-anchor="middle">≈ 2005: il «free lunch» finisce</text>
+
+  <!-- transistor (ocra): salita costante su tutto l'intervallo -->
+  <polyline class="tran" points="100,300 650,88"/>
+  <!-- clock (terracotta): sale insieme fino al 2005, poi si appiattisce -->
+  <polyline class="clock" points="100,300 375,196 500,190 650,184"/>
+
+  <!-- "crescono insieme" lungo il tratto condiviso -->
+  <text class="together" x="205" y="240" transform="rotate(-21 205 240)">crescono insieme</text>
+
+  <!-- note di curva -->
+  <text class="noteT" x="600" y="82" text-anchor="middle">i transistor</text>
+  <text class="noteT" x="600" y="98" text-anchor="middle" font-weight="400">continuano</text>
+  <text class="noteC" x="560" y="176" text-anchor="middle">la frequenza si ferma</text>
+
+  <!-- legenda (in alto a sinistra, area libera) -->
+  <rect x="120" y="96" width="18" height="4" rx="2" fill="#C9A961"/>
+  <text class="leg" x="146" y="103">numero di transistor</text>
+  <rect x="120" y="118" width="18" height="4" rx="2" fill="#B5532C"/>
+  <text class="leg" x="146" y="125">frequenza di clock (velocità di un core)</text>
+
+  <!-- riquadro conclusivo -->
+  <rect x="366" y="284" width="286" height="34" rx="8" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="1.6" stroke-opacity="0.8"/>
+  <text class="call" x="509" y="305" text-anchor="middle">i transistor in più → più core: il futuro è parallelo</text>
+</svg>

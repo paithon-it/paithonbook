@@ -1,0 +1,60 @@
+<svg viewBox="0 0 760 400" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Confronto tra la memoria sparsa di una lista Python e la memoria contigua di un array NumPy">
+  <rect x="0" y="0" width="760" height="400" fill="#F8F5EE"/>
+  <text x="30" y="38" font-family="sans-serif" font-size="17" font-weight="bold" fill="#1A1A1A">Lista Python — memoria sparsa</text>
+  <!-- lista: fila di puntatori -->
+  <g stroke="#1A1A1A" stroke-width="1.5">
+    <rect x="30" y="55" width="52" height="40" fill="#C9A961"/>
+    <rect x="82" y="55" width="52" height="40" fill="#C9A961"/>
+    <rect x="134" y="55" width="52" height="40" fill="#C9A961"/>
+    <rect x="186" y="55" width="52" height="40" fill="#C9A961"/>
+  </g>
+  <text x="56" y="80" font-family="sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">ptr</text>
+  <text x="108" y="80" font-family="sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">ptr</text>
+  <text x="160" y="80" font-family="sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">ptr</text>
+  <text x="212" y="80" font-family="sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">ptr</text>
+  <!-- oggetti sparsi -->
+  <g stroke="#B5532C" stroke-width="2" fill="#F8F5EE">
+    <rect x="320" y="60" width="90" height="38"/>
+    <rect x="520" y="100" width="90" height="38"/>
+    <rect x="380" y="150" width="90" height="38"/>
+    <rect x="600" y="45" width="90" height="38"/>
+  </g>
+  <text x="365" y="84" font-family="sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">int 1</text>
+  <text x="565" y="124" font-family="sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">int 2</text>
+  <text x="425" y="174" font-family="sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">int 3</text>
+  <text x="645" y="69" font-family="sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">int 4</text>
+  <!-- frecce dai puntatori agli oggetti -->
+  <g stroke="#2D5A5C" stroke-width="1.5" fill="none">
+    <path d="M 82 75 C 200 75, 260 78, 318 78"/>
+    <path d="M 134 95 C 300 200, 450 130, 518 120"/>
+    <path d="M 186 95 C 260 170, 320 168, 378 168"/>
+    <path d="M 238 75 C 400 20, 520 40, 598 60"/>
+  </g>
+  <g fill="#2D5A5C">
+    <path d="M 318 78 l -9 -4 v 8 z"/>
+    <path d="M 518 120 l -10 -1 l 4 8 z"/>
+    <path d="M 378 168 l -9 -4 v 8 z"/>
+    <path d="M 598 60 l -10 -1 l 6 7 z"/>
+  </g>
+  <text x="30" y="232" font-family="sans-serif" font-size="13" fill="#1A1A1A">4 salti in zone diverse della RAM: la CPU aspetta a ogni salto</text>
+
+  <line x1="30" y1="252" x2="730" y2="252" stroke="#1A1A1A" stroke-width="1.5" stroke-dasharray="6 5"/>
+
+  <text x="30" y="286" font-family="sans-serif" font-size="17" font-weight="bold" fill="#1A1A1A">Array NumPy — memoria contigua</text>
+  <g stroke="#1A1A1A" stroke-width="1.5">
+    <rect x="30" y="302" width="80" height="44" fill="#2D5A5C"/>
+    <rect x="110" y="302" width="80" height="44" fill="#2D5A5C"/>
+    <rect x="190" y="302" width="80" height="44" fill="#2D5A5C"/>
+    <rect x="270" y="302" width="80" height="44" fill="#2D5A5C"/>
+  </g>
+  <g font-family="sans-serif" font-size="14" fill="#F8F5EE" text-anchor="middle">
+    <text x="70" y="329">1</text>
+    <text x="150" y="329">2</text>
+    <text x="230" y="329">3</text>
+    <text x="310" y="329">4</text>
+  </g>
+  <path d="M 30 358 h 320" stroke="#B5532C" stroke-width="2" fill="none"/>
+  <path d="M 350 358 l -9 -4 v 8 z" fill="#B5532C"/>
+  <text x="365" y="362" font-family="sans-serif" font-size="13" fill="#B5532C">una sola lettura sequenziale</text>
+  <text x="30" y="388" font-family="sans-serif" font-size="13" fill="#1A1A1A">Valori uno accanto all'altro, stesso dtype: la CPU li carica a blocchi, senza salti</text>
+</svg>

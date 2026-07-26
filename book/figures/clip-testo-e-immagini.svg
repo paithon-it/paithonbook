@@ -1,0 +1,59 @@
+<svg viewBox="0 0 660 430" width="100%" role="img" aria-label="Schema di CLIP: encoder di immagini e di testo producono vettori confrontati in una matrice di similarita, la cui diagonale segna le coppie corrette" xmlns="http://www.w3.org/2000/svg" font-family="sans-serif">
+  <rect x="0" y="0" width="660" height="430" fill="#F8F5EE"/>
+  <text x="24" y="32" font-size="17" font-weight="700" fill="#1A1A1A">Una matrice di similarità: la diagonale sono le coppie giuste</text>
+
+  <!-- text encoder band -->
+  <rect x="322" y="66" width="216" height="26" rx="6" fill="none" stroke="#2D5A5C" stroke-width="2"/>
+  <text x="430" y="84" font-size="13" fill="#2D5A5C" text-anchor="middle">text encoder →</text>
+
+  <!-- column headers: three text snippets -->
+  <g stroke="#1A1A1A" stroke-width="1.5">
+    <rect x="340" y="104" width="56" height="30" rx="4" fill="#F8F5EE"/>
+    <rect x="412" y="104" width="56" height="30" rx="4" fill="#F8F5EE"/>
+    <rect x="484" y="104" width="56" height="30" rx="4" fill="#F8F5EE"/>
+  </g>
+  <g stroke="#8B847C" stroke-width="1.5">
+    <line x1="346" y1="113" x2="384" y2="113"/><line x1="346" y1="120" x2="378" y2="120"/><line x1="346" y1="127" x2="382" y2="127"/>
+    <line x1="418" y1="113" x2="456" y2="113"/><line x1="418" y1="120" x2="450" y2="120"/><line x1="418" y1="127" x2="454" y2="127"/>
+    <line x1="490" y1="113" x2="528" y2="113"/><line x1="490" y1="120" x2="522" y2="120"/><line x1="490" y1="127" x2="526" y2="127"/>
+  </g>
+
+  <!-- image encoder band -->
+  <rect x="66" y="152" width="26" height="216" rx="6" fill="none" stroke="#2D5A5C" stroke-width="2"/>
+  <text x="79" y="260" font-size="13" fill="#2D5A5C" text-anchor="middle" transform="rotate(-90 79 260)">image encoder ↓</text>
+
+  <!-- row headers: three image icons -->
+  <g stroke="#1A1A1A" stroke-width="1.5" fill="#F8F5EE">
+    <rect x="104" y="158" width="40" height="34" rx="4"/>
+    <rect x="104" y="230" width="40" height="34" rx="4"/>
+    <rect x="104" y="302" width="40" height="34" rx="4"/>
+  </g>
+  <g fill="none" stroke="#2D5A5C" stroke-width="1.5">
+    <polyline points="108,188 118,174 126,182 134,168 140,188"/>
+    <polyline points="108,260 118,246 126,254 134,240 140,260"/>
+    <polyline points="108,332 118,318 126,326 134,312 140,332"/>
+  </g>
+
+  <!-- grid 3x3 -->
+  <g>
+    <!-- row 0 -->
+    <rect x="340" y="152" width="60" height="60" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5"/>
+    <rect x="412" y="152" width="60" height="60" fill="#F8F5EE" stroke="#C9C2B4" stroke-width="1.5"/>
+    <rect x="484" y="152" width="60" height="60" fill="#F8F5EE" stroke="#C9C2B4" stroke-width="1.5"/>
+    <!-- row 1 -->
+    <rect x="340" y="224" width="60" height="60" fill="#F8F5EE" stroke="#C9C2B4" stroke-width="1.5"/>
+    <rect x="412" y="224" width="60" height="60" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5"/>
+    <rect x="484" y="224" width="60" height="60" fill="#F8F5EE" stroke="#C9C2B4" stroke-width="1.5"/>
+    <!-- row 2 -->
+    <rect x="340" y="296" width="60" height="60" fill="#F8F5EE" stroke="#C9C2B4" stroke-width="1.5"/>
+    <rect x="412" y="296" width="60" height="60" fill="#F8F5EE" stroke="#C9C2B4" stroke-width="1.5"/>
+    <rect x="484" y="296" width="60" height="60" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5"/>
+  </g>
+  <g fill="#F8F5EE" font-size="20" font-weight="700" text-anchor="middle">
+    <text x="370" y="190">●</text><text x="442" y="262">●</text><text x="514" y="334">●</text>
+  </g>
+
+  <!-- legend -->
+  <rect x="340" y="386" width="18" height="18" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="366" y="400" font-size="13" fill="#1A1A1A">coppia corretta (alta similarità) — tutto il resto va spinto in basso</text>
+</svg>

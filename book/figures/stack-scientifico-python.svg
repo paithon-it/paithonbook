@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  paithon book — figura: lo stack scientifico di Python come strati
+  sovrapposti. Ogni libreria poggia su quella sotto: Python (base) →
+  NumPy → Pandas/Matplotlib/scikit-learn → PyTorch e TensorFlow.
+  Palette-locked: box color cream, bordi terracotta/teal/ocra/warm-black,
+  testo warm-black e grigi warm. Fondo trasparente (leggibile in light e
+  dark). Nessun colore fuori palette.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 350" role="img"
+     aria-label="Diagramma a strati dello stack scientifico di Python: alla base Python, sopra NumPy, poi Pandas Matplotlib e scikit-learn, in cima PyTorch e TensorFlow">
+  <style>
+    .box   { fill:#F8F5EE; }
+    .name  { font-family:Fraunces, Georgia, serif; font-size:18px; font-weight:600; fill:#1A1A1A; }
+    .desc  { font-family:Inter, system-ui, sans-serif; font-size:12px; fill:#5E5852; }
+    .conn  { stroke:#8B847C; stroke-width:1.5; stroke-dasharray:3 4; }
+  </style>
+
+  <!-- connettori: ogni strato poggia su quello sotto -->
+  <line class="conn" x1="250" y1="272" x2="250" y2="250"/>
+  <polygon points="250,246 245,256 255,256" fill="#8B847C"/>
+  <line class="conn" x1="250" y1="194" x2="250" y2="172"/>
+  <polygon points="250,168 245,178 255,178" fill="#8B847C"/>
+  <line class="conn" x1="250" y1="106" x2="250" y2="84"/>
+  <polygon points="250,80 245,90 255,90" fill="#8B847C"/>
+
+  <!-- Strato 3 (deep learning): PyTorch e TensorFlow -->
+  <rect class="box" x="30"  y="24" width="212" height="54" rx="6" stroke="#B5532C" stroke-width="2.5"/>
+  <text class="name" x="136" y="50"  text-anchor="middle">PyTorch</text>
+  <text class="desc" x="136" y="68"  text-anchor="middle">reti neurali (Meta) &#183; usato nel libro</text>
+  <rect class="box" x="258" y="24" width="212" height="54" rx="6" stroke="#B5532C" stroke-width="2.5"/>
+  <text class="name" x="364" y="50"  text-anchor="middle">TensorFlow</text>
+  <text class="desc" x="364" y="68"  text-anchor="middle">reti neurali (Google)</text>
+
+  <!-- Strato 2: Pandas, Matplotlib, scikit-learn -->
+  <rect class="box" x="30"  y="108" width="136" height="58" rx="6" stroke="#C9A961" stroke-width="2.5"/>
+  <text class="name" x="98"  y="135" text-anchor="middle">Pandas</text>
+  <text class="desc" x="98"  y="153" text-anchor="middle">dati tabellari</text>
+  <rect class="box" x="182" y="108" width="136" height="58" rx="6" stroke="#C9A961" stroke-width="2.5"/>
+  <text class="name" x="250" y="135" text-anchor="middle">Matplotlib</text>
+  <text class="desc" x="250" y="153" text-anchor="middle">grafici</text>
+  <rect class="box" x="334" y="108" width="136" height="58" rx="6" stroke="#C9A961" stroke-width="2.5"/>
+  <text class="name" x="402" y="135" text-anchor="middle">scikit-learn</text>
+  <text class="desc" x="402" y="153" text-anchor="middle">ML classico</text>
+
+  <!-- Strato 1: NumPy -->
+  <rect class="box" x="30"  y="196" width="440" height="54" rx="6" stroke="#2D5A5C" stroke-width="2.5"/>
+  <text class="name" x="250" y="222" text-anchor="middle">NumPy</text>
+  <text class="desc" x="250" y="240" text-anchor="middle">array numerici &#183; algebra lineare veloce</text>
+
+  <!-- Strato 0: il linguaggio -->
+  <rect class="box" x="30"  y="272" width="440" height="54" rx="6" stroke="#1A1A1A" stroke-width="3"/>
+  <text class="name" x="250" y="298" text-anchor="middle">Python</text>
+  <text class="desc" x="250" y="316" text-anchor="middle">il linguaggio di base &#183; legge come pseudocodice</text>
+</svg>
