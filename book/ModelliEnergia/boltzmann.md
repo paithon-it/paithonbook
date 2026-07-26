@@ -1,10 +1,10 @@
 # Alzare la temperatura: le macchine di Boltzmann
 
 La pallina di Hopfield ha un difetto di fabbrica: può solo scendere. Se
-l'indizio la deposita sul pendio sbagliato, finisce nella valle sbagliata — o
-in un ricordo fantasma — e da lì non esce più. E c'è un limite più profondo:
-la rete *ricorda*, ma non *inventa*; i suoi neuroni coincidono con i pixel
-del pattern, senza spazio per rappresentazioni interne. A metà anni Ottanta
+l'indizio la deposita sul pendio sbagliato, finisce nella valle sbagliata (o
+in un ricordo fantasma) e da lì non esce più. E c'è un limite più profondo: la
+rete *ricorda*, ma non *inventa*; i suoi neuroni coincidono con i pixel del
+pattern, senza spazio per rappresentazioni interne. A metà anni Ottanta
 Geoffrey Hinton e Terrence Sejnowski, con David Ackley, propongono la
 **macchina di Boltzmann** {cite}`ackley1985learning`, che aggiunge alla rete
 di Hopfield esattamente due ingredienti: la **temperatura** e i **neuroni
@@ -15,16 +15,15 @@ configurazioni.
 
 `````{tab} Elementare
 
-La temperatura è una scossa. Immagina la pallina ferma in una conca che non
-è la valle giusta: se il paesaggio resta immobile, non ne uscirà mai. Ora
-scuoti tutto, come una biglia in una scatola da scarpe: con scossoni forti
-la biglia salta fuori anche dalle valli profonde e gira dappertutto; con
-scossoni deboli resta confinata nei fondovalle. Il trucco è scuotere forte
-all'inizio e sempre più piano — è la mossa del fabbro, che scalda il metallo
-e lo lascia raffreddare lentamente perché gli atomi trovino da soli la
-disposizione migliore — così la biglia ha modo di uscire dalle conche
-mediocri finché può, e di assestarsi in una valle profonda quando la calma
-torna.
+La temperatura è una scossa. Immagina la pallina ferma in una conca che non è
+la valle giusta: se il paesaggio resta immobile, non ne uscirà mai. Ora scuoti
+tutto, come una biglia in una scatola da scarpe: con scossoni forti la biglia
+salta fuori anche dalle valli profonde e gira dappertutto; con scossoni deboli
+resta confinata nei fondovalle. Il trucco è scuotere forte all'inizio e sempre
+più piano (è la mossa del fabbro, che scalda il metallo e lo lascia
+raffreddare lentamente perché gli atomi trovino da soli la disposizione
+migliore), così la biglia ha modo di uscire dalle conche mediocri finché può, e
+di assestarsi in una valle profonda quando la calma torna.
 
 I neuroni nascosti, invece, sono taccuini interni: neuroni che non
 corrispondono a nessun pixel del dato ma servono alla rete per annotare
@@ -65,13 +64,12 @@ P(s) = \frac{e^{-E(s)/T}}{Z},
 Z = \sum_{s'} e^{-E(s')/T},
 $$
 
-dove $Z$ — la **funzione di partizione** — somma su tutti i $2^N$ stati
+dove $Z$ (la **funzione di partizione**) somma su tutti i $2^N$ stati
 possibili: è lei che rende la rete un vero modello probabilistico, ed è lei
 che costerà carissima. I neuroni si dividono in **visibili** (dove si
-presentano i dati) e **nascosti** (variabili latenti che catturano
-regolarità di ordine superiore). L'apprendimento massimizza la
-verosimiglianza dei dati sui visibili, e il gradiente ha una forma di
-contrasto di rara eleganza:
+presentano i dati) e **nascosti** (variabili latenti che catturano regolarità
+di ordine superiore). L'apprendimento massimizza la verosimiglianza dei dati
+sui visibili, e il gradiente ha una forma di contrasto di rara eleganza:
 
 $$
 \Delta w_{ij} \;\propto\; \langle s_i s_j \rangle_{\text{dati}}
@@ -94,31 +92,30 @@ La via d'uscita arriva quasi vent'anni dopo, ed è di nuovo di Hinton: la
 **contrastive divergence** {cite}`hinton2002training`. L'idea è rinunciare al
 sogno completo: invece di far girare la catena fino all'equilibrio, la si fa
 partire *dai dati* e la si ferma dopo un solo passo (o pochi), usando quel
-sogno appena abbozzato come surrogato della fase negativa. Il gradiente che
-ne esce è distorto, ma in pratica funziona — soprattutto sulle **macchine di
+sogno appena abbozzato come surrogato della fase negativa. Il gradiente che ne
+esce è distorto, ma in pratica funziona, soprattutto sulle **macchine di
 Boltzmann ristrette** (RBM), la variante in cui i collegamenti esistono solo
 tra strato visibile e strato nascosto, così che ogni strato si campiona in
 blocco, in parallelo.
 
-Il compromesso ha un difetto noto: partendo sempre dai dati, la catena
-esplora solo i dintorni di ciò che ha già visto, e le regioni in cui il
-modello mette per sbaglio molta probabilità restano inesplorate — nessuno
-va a farvi salire l'energia. Il rimedio più semplice è la **persistent
-contrastive divergence** {cite}`tieleman2008training`: non far ripartire la
-catena dai dati a ogni passo, ma tenerne una che prosegue da dove era
-arrivata, così che nel corso dell'addestramento il «sogno» abbia il tempo di
-allontanarsi e visitare il paesaggio. È un'idea che ritroveremo intatta, con
-un serbatoio di campioni al posto della singola catena, negli EBM sulle
-immagini di quindici anni dopo.
+Il compromesso ha un difetto noto: partendo sempre dai dati, la catena esplora
+solo i dintorni di ciò che ha già visto, e le regioni in cui il modello mette
+per sbaglio molta probabilità restano inesplorate: nessuno va a farvi salire
+l'energia. Il rimedio più semplice è la **persistent contrastive divergence**
+{cite}`tieleman2008training`: non far ripartire la catena dai dati a ogni
+passo, ma tenerne una che prosegue da dove era arrivata, così che nel corso
+dell'addestramento il «sogno» abbia il tempo di allontanarsi e visitare il
+paesaggio. È un'idea che ritroveremo intatta, con un serbatoio di campioni al
+posto della singola catena, negli EBM sulle immagini di quindici anni dopo.
 
 Fu proprio la coppia RBM più contrastive divergence, impilata strato su
 strato, a rimettere in moto il deep learning a metà anni Duemila, quando
 addestrare reti profonde sembrava impossibile: un ruolo storico che va
-riconosciuto con onestà, insieme al suo epilogo — di lì a pochi anni ReLU,
-GPU e dataset più grandi avrebbero reso quel pre-training superfluo, e oggi
-le RBM non si usano quasi più. Il *linguaggio* con cui erano scritte, invece,
-è vivo e vegeto: nella prossima sezione si vede perché, e quanto costi
-davvero la $Z$ che qui è appena comparsa.
+riconosciuto con onestà, insieme al suo epilogo: di lì a pochi anni ReLU, GPU
+e dataset più grandi avrebbero reso quel pre-training superfluo, e oggi le RBM
+non si usano quasi più. Il *linguaggio* con cui erano scritte, invece, è vivo
+e vegeto: nella prossima sezione si vede perché, e quanto costi davvero la $Z$
+che qui è appena comparsa.
 
 ```{admonition} Da ricordare
 :class: important
@@ -136,5 +133,5 @@ davvero la $Z$ che qui è appena comparsa.
   a uno o pochi passi partendo dai dati; la **persistent CD**
   {cite}`tieleman2008training` la fa proseguire fra un aggiornamento e
   l'altro. RBM e CD hanno avuto un ruolo storico nel far ripartire il deep
-  learning, e oggi sono quasi solo storia — il linguaggio dell'energia no.
+  learning, e oggi sono quasi solo storia; il linguaggio dell'energia no.
 ```

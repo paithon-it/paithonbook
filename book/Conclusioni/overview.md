@@ -1,6 +1,6 @@
 # Conclusioni
 
-Siamo partiti, nell'introduzione, da una frase di Joseph Weizenbaum: l'intelligenza artificiale è "straordinariamente resistente al tentativo di una precisa definizione". Dopo trenta capitoli — dall'algebra lineare alle reti che generano immagini, dagli alberi di decisione agli agenti che usano strumenti, dai kernel CUDA alle domande su chi risponde quando un modello sbaglia — quella resistenza non è scomparsa. Ma ora abbiamo qualcosa che all'inizio non avevamo: gli strumenti per capire *come* queste macchine funzionano davvero, e per distinguere ciò che sanno fare da ciò che sembrano fare. Vale la pena ripercorrere la strada all'indietro, per vedere il disegno che i singoli capitoli, da vicino, non lasciavano intravedere.
+Siamo partiti, nell'introduzione, da una frase di Joseph Weizenbaum: l'intelligenza artificiale è "straordinariamente resistente al tentativo di una precisa definizione". Dopo {{ n_capitoli_meno_uno_lettere }} capitoli — dall'algebra lineare alle reti che generano immagini, dagli alberi di decisione agli agenti che usano strumenti, dai kernel CUDA alle domande su chi risponde quando un modello sbaglia — quella resistenza non è scomparsa. Ma ora abbiamo qualcosa che all'inizio non avevamo: gli strumenti per capire *come* queste macchine funzionano davvero, e per distinguere ciò che sanno fare da ciò che sembrano fare. Vale la pena ripercorrere la strada all'indietro, per vedere il disegno che i singoli capitoli, da vicino, non lasciavano intravedere.
 
 ## Il percorso, guardato dall'alto
 

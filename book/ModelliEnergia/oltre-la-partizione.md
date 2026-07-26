@@ -2,7 +2,7 @@
 
 Nella sezione precedente è comparso, quasi di sfuggita, il personaggio che
 domina questo capitolo: la funzione di partizione. Vale la pena guardarlo in
-faccia, perché è lui a dettare tutto ciò che segue — e perché la sua
+faccia, perché è lui a dettare tutto ciò che segue, e perché la sua
 intrattabilità non è una difficoltà tecnica fra le tante, è un muro.
 
 Una rete di 25 neuroni binari, come quella della memoria associativa, ha
@@ -25,17 +25,17 @@ valle per valle. La funzione di partizione è la misura dell'intero
 continente: è ciò che trasforma un'altezza in una percentuale.
 
 Il problema è che il continente, qui, è grande quanto tutte le immagini
-possibili. Non lo si percorre. E allora si può fare una di tre cose:
-*campionarlo* — mandare esploratori a caso e accontentarsi di quello che
-riportano; *evitarlo* — accorgersi che per molte domande la percentuale non
-serve, basta la pendenza sotto i piedi; oppure *aggirarlo con un trucco* —
+possibili. Non lo si percorre. E allora si può fare una di tre cose.
+*Campionarlo* (mandare esploratori a caso e accontentarsi di quello che
+riportano). *Evitarlo* (accorgersi che per molte domande la percentuale non
+serve: basta la pendenza sotto i piedi). Oppure *aggirarlo con un trucco*:
 sostituire la domanda «quanto è probabile questo?» con «questo viene dai dati
 o l'ho inventato io?», che è una domanda da rispondere sì o no, e per le
 domande sì o no sappiamo addestrare un classificatore da trent'anni.
 
-Le tre strade esistono tutte e tre, hanno tutte e tre un nome, e la seconda —
-la meno intuitiva — è quella che nel giro di un decennio ha prodotto i
-modelli di diffusione del capitolo precedente.
+Le tre strade esistono tutte e tre, hanno tutte e tre un nome, e la seconda
+(la meno intuitiva) è quella che nel giro di un decennio ha prodotto i modelli
+di diffusione del capitolo precedente.
 
 `````
 
@@ -59,10 +59,10 @@ per calcolarlo bisogna saper campionare da $p_\theta$, cioè dal modello che
 stiamo ancora addestrando.
 
 Il tutorial di LeCun {cite}`lecun2006tutorial` legge la stessa formula in
-chiave energetica, e la lettura è illuminante: il termine contrastivo
-«solleva l'energia di ogni risposta con una forza proporzionale alla sua
-verosimiglianza sotto il modello», e tutte le tecniche di approssimazione —
-Monte Carlo, metodi variazionali — si possono vedere come **strategie diverse
+chiave energetica, e la lettura è illuminante: il termine contrastivo «solleva
+l'energia di ogni risposta con una forza proporzionale alla sua
+verosimiglianza sotto il modello», e tutte le tecniche di approssimazione
+(Monte Carlo, metodi variazionali) si possono vedere come **strategie diverse
 per scegliere quali risposte tirare su**. Le tre sezioni che seguono sono, in
 questa luce, tre risposte alla stessa domanda: chi solleviamo, e come?
 
@@ -91,9 +91,9 @@ ogni punto *è* la probabilità che il paesaggio definisce.
 
 Questo è il punto elegante della faccenda: per far vibrare e scendere la
 pallina serve solo la pendenza locale, quella sotto i suoi piedi. La misura
-dell'intero continente — la costante che non sappiamo calcolare — non entra
-mai nella discesa, perché una costante non ha pendenza. Campionare non
-richiede di normalizzare.
+dell'intero continente (la costante che non sappiamo calcolare) non entra mai
+nella discesa, perché una costante non ha pendenza. Campionare non richiede di
+normalizzare.
 
 Il prezzo è il tempo. Se due valli sono separate da una montagna alta, la
 pallina può restare intrappolata a lungo da una parte, e la fotografia che
@@ -115,24 +115,24 @@ dove $\epsilon > 0$ è il passo e $z_k$ il rumore gaussiano. Per
 $\epsilon \to 0$ e $k \to \infty$ la distribuzione di $x_k$ converge a
 $p_\theta \propto e^{-E_\theta}$. Si noti che compare **solo**
 $\nabla_x E_\theta$: la costante $\log Z(\theta)$, non dipendendo da $x$, ha
-gradiente nullo. Il campionamento non ha mai bisogno della normalizzazione —
-è l'osservazione su cui poggia tutto il resto della sezione.
+gradiente nullo. Il campionamento non ha mai bisogno della normalizzazione: è
+l'osservazione su cui poggia tutto il resto della sezione.
 
 La versione stocastica su minibatch, che sostituisce il gradiente esatto con
 quello stimato, è la *stochastic gradient Langevin dynamics*
-{cite}`welling2011bayesian`: mezzo passo di discesa e mezzo di rumore, con
-il passo che decresce. Nella pratica degli EBM la catena si tronca dopo
-poche decine di passi (*short-run MCMC*) e si conservano i campioni in un
-serbatoio da cui ripartire — l'erede diretto della persistent contrastive
-divergence della sezione precedente.
+{cite}`welling2011bayesian`: mezzo passo di discesa e mezzo di rumore, con il
+passo che decresce. Nella pratica degli EBM la catena si tronca dopo poche
+decine di passi (*short-run MCMC*) e si conservano i campioni in un serbatoio
+da cui ripartire, l'erede diretto della persistent contrastive divergence
+della sezione precedente.
 
 `````
 
-Il codice che segue costruisce l'energia a doppia buca
-$E(x) = (x^2 - 1)^2$ — due minimi in $x = \pm 1$, una barriera in mezzo — e
-ne campiona con Langevin, senza mai calcolare $Z$. Alla fine, per pura
-verifica, $Z$ viene calcolata per quadratura numerica: in una dimensione si
-può, ed è l'unico modo per sapere se il campionamento ha detto il vero.
+Il codice che segue costruisce l'energia a doppia buca $E(x) = (x^2 - 1)^2$
+(due minimi in $x = \pm 1$, una barriera in mezzo) e ne campiona con Langevin,
+senza mai calcolare $Z$. Alla fine, per pura verifica, $Z$ viene calcolata per
+quadratura numerica: in una dimensione si può, ed è l'unico modo per sapere se
+il campionamento ha detto il vero.
 
 ```python
 import numpy as np
@@ -188,11 +188,11 @@ frazione x>0 (campioni) = 0.497   (esatto 0.500)
 Le due colonne coincidono alla terza cifra: le catene hanno ricostruito la
 distribuzione senza che $Z$ sia mai entrata nel ciclo. Vale la pena notare
 *perché* qui funziona così bene, per non trarne una lezione sbagliata: la
-barriera fra le due buche è alta un'unità di energia — bassa — e le catene
-sono ventimila e indipendenti. Alzando la barriera, o passando a mille
-dimensioni dove le valli sono separate da creste lunghissime, la stessa
-procedura darebbe una fotografia sbilanciata, e nessuno se ne accorgerebbe:
-in alta dimensione la colonna «esatto» non si può stampare.
+barriera fra le due buche è alta un'unità di energia (bassa) e le catene sono
+ventimila e indipendenti. Alzando la barriera, o passando a mille dimensioni
+dove le valli sono separate da creste lunghissime, la stessa procedura darebbe
+una fotografia sbilanciata, e nessuno se ne accorgerebbe: in alta dimensione
+la colonna «esatto» non si può stampare.
 
 ## Seconda via: imparare la pendenza, non la probabilità
 
@@ -206,19 +206,19 @@ nella derivata.
 `````{tab} Elementare
 
 Immagina di dover descrivere un paesaggio a qualcuno che non lo vedrà mai.
-Puoi dirgli, per ogni punto, «qui c'è il 3% della pioggia» — e per farlo devi
-aver misurato tutto il continente. Oppure puoi dirgli, per ogni punto, «da
-qui si scende verso nord-est, con questa pendenza». La seconda descrizione
-non richiede di conoscere il continente: è tutta locale. Eppure basta a
-ricostruire la forma del paesaggio, a meno di quanto sta in alto o in basso
-in assoluto — che per generare non serve.
+Puoi dirgli, per ogni punto, «qui c'è il 3% della pioggia», e per farlo devi
+aver misurato tutto il continente. Oppure puoi dirgli, per ogni punto, «da qui
+si scende verso nord-est, con questa pendenza». La seconda descrizione non
+richiede di conoscere il continente: è tutta locale. Eppure basta a
+ricostruire la forma del paesaggio, a meno di quanto sta in alto o in basso in
+assoluto, che per generare non serve.
 
 La pendenza del paesaggio di probabilità ha un nome tecnico, **score**, ed è
-la stessa parola che compare nel capitolo sui modelli di diffusione. Non è
-una coincidenza: è la stessa cosa. Insegnare a una rete la pendenza in ogni
-punto, invece della percentuale, è ciò che rende addestrabile un generatore
-di immagini — e ciò che ha tolto di mezzo, per quella strada, il problema
-della normalizzazione.
+la stessa parola che compare nel capitolo sui modelli di diffusione. Non è una
+coincidenza: è la stessa cosa. Insegnare a una rete la pendenza in ogni punto,
+invece della percentuale, è ciò che rende addestrabile un generatore di
+immagini, e ciò che ha tolto di mezzo, per quella strada, il problema della
+normalizzazione.
 
 `````
 
@@ -241,8 +241,8 @@ J(\theta) = \frac{1}{2}\,
 \right\rVert^2,
 $$
 
-che a prima vista è inservibile — lo score dei dati non lo conosciamo — ma
-che un'integrazione per parti trasforma in una quantità calcolabile su un
+che a prima vista è inservibile (lo score dei dati non lo conosciamo) ma che
+un'integrazione per parti trasforma in una quantità calcolabile su un
 campione:
 
 $$
@@ -263,25 +263,24 @@ costanti, ad addestrare un *denoising autoencoder*
 {cite}`vincent2011connection`. Con $\tilde{x} = x + \sigma \varepsilon$ e
 $\varepsilon \sim \mathcal{N}(0, I)$, il bersaglio dello score sul dato
 perturbato è noto in forma chiusa,
-$\nabla_{\tilde{x}} \log q_\sigma(\tilde{x} \mid x)
-= -(\tilde{x} - x)/\sigma^2 = -\varepsilon/\sigma$, e l'obiettivo diventa una
-regressione: predire il rumore iniettato. È il **denoising score matching**,
-niente hessiana e niente MCMC — ed è, riga per riga, la loss dei modelli di
-diffusione del capitolo precedente {cite}`song2021score`.
+$\nabla_{\tilde{x}} \log q_\sigma(\tilde{x} \mid x) = -(\tilde{x} - x)/\sigma^2 = -\varepsilon/\sigma$,
+e l'obiettivo diventa una regressione: predire il rumore iniettato. È il
+**denoising score matching**, niente hessiana e niente MCMC, ed è, riga per
+riga, la loss dei modelli di diffusione del capitolo precedente
+{cite}`song2021score`.
 
 `````
 
-Qui conviene fermarsi un istante, perché il cerchio che si chiude è largo.
-La loss di DDPM — predire il rumore aggiunto a un'immagine — nasce nel
-capitolo sulla diffusione come una scelta pratica e felice. Vista da questo
-capitolo è la soluzione di un problema vecchio di vent'anni: come stimare un
-modello non normalizzato senza mai calcolare $Z$. I modelli di diffusione
-sono, in questa luce, modelli a energia addestrati per score matching — con
-una differenza tecnica che vale la pena dire per onestà: non imparano una
-$E_\theta$ scalare per poi derivarla, imparano **direttamente** il campo
-vettoriale dello score. Guadagnano in stabilità e perdono la garanzia che
-quel campo sia il gradiente di qualcosa; a chi genera immagini, non è mai
-importato.
+Qui conviene fermarsi un istante, perché il cerchio che si chiude è largo. La
+loss di DDPM (predire il rumore aggiunto a un'immagine) nasce nel capitolo
+sulla diffusione come una scelta pratica e felice. Vista da questo capitolo è
+la soluzione di un problema vecchio di vent'anni: come stimare un modello non
+normalizzato senza mai calcolare $Z$. I modelli di diffusione sono, in questa
+luce, modelli a energia addestrati per score matching, con una differenza
+tecnica che vale la pena dire per onestà: non imparano una $E_\theta$ scalare
+per poi derivarla, imparano **direttamente** il campo vettoriale dello score.
+Guadagnano in stabilità e perdono la garanzia che quel campo sia il gradiente
+di qualcosa; a chi genera immagini, non è mai importato.
 
 ## Terza via: trasformare la densità in una domanda sì o no
 
@@ -295,11 +294,11 @@ siamo bravi {cite}`gutmann2010noise`.
 
 Invece di chiedere al modello «quanto è probabile questa immagine?», gli si
 chiede: «questa l'ho presa dal mondo o l'ho fabbricata io?». Si mescolano
-esempi veri e finti — questi ultimi generati da una sorgente di rumore di cui
-sappiamo tutto — e si addestra il modello a smistarli. Per riuscirci, il
-modello deve implicitamente sapere quanto ogni esempio è tipico dei dati:
-la conoscenza che serviva sta tutta lì dentro, ma è arrivata rispondendo a
-una domanda facile.
+esempi veri e finti (questi ultimi generati da una sorgente di rumore di cui
+sappiamo tutto) e si addestra il modello a smistarli. Per riuscirci, il
+modello deve implicitamente sapere quanto ogni esempio è tipico dei dati: la
+conoscenza che serviva sta tutta lì dentro, ma è arrivata rispondendo a una
+domanda facile.
 
 Se suona familiare, è perché lo è: è la stessa mossa del discriminatore delle
 GAN, ed è la stessa del *negative sampling* con cui si addestrano gli
@@ -325,8 +324,8 @@ e si massimizza la log-verosimiglianza di questa classificazione binaria. La
 mossa decisiva è che $\log Z$ viene trattata come un **parametro in più**,
 stimato insieme agli altri: il modello non normalizzato
 $\log p_\theta(x) = -E_\theta(x) - c$ impara anche $c$, perché al
-classificatore la costante *serve* per calibrarsi — al contrario della
-massima verosimiglianza, dove sarebbe stata assorbita e persa
+classificatore la costante *serve* per calibrarsi, al contrario della massima
+verosimiglianza, dove sarebbe stata assorbita e persa
 {cite}`gutmann2010noise`.
 
 Il *negative sampling* di word2vec {cite}`mikolov2013efficient` è una
@@ -363,8 +362,8 @@ densità.
 Tre modi di non pagare il conto, e nessuno dei tre gratis. Resta una quarta
 possibilità, la più radicale, che è anche la tesi del prossimo paragrafo del
 capitolo: **non chiedere mai la probabilità**. Se ciò che serve è decidere,
-ordinare, pianificare — non stampare percentuali — l'energia basta da sola, e
-il conto non si apre nemmeno.
+ordinare, pianificare (non stampare percentuali), l'energia basta da sola, e il
+conto non si apre nemmeno.
 
 ```{admonition} Da ricordare
 :class: important
@@ -376,7 +375,7 @@ il conto non si apre nemmeno.
   modello): è la seconda a richiedere di saper campionare da $p_\theta$.
 - **Langevin**:
   $x_{k+1} = x_k - \frac{\epsilon}{2}\nabla_x E_\theta(x_k) + \sqrt{\epsilon} z_k$.
-  Usa solo $\nabla_x E$, mai $Z$ — nell'esempio a doppia buca ricostruisce la
+  Usa solo $\nabla_x E$, mai $Z$: nell'esempio a doppia buca ricostruisce la
   distribuzione esatta alla terza cifra.
 - **Score matching** {cite}`hyvarinen2005estimation` confronta i gradienti
   invece delle densità; la forma **denoising** {cite}`vincent2011connection`

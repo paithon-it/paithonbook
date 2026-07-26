@@ -16,6 +16,8 @@ toglierli di mezzo prima di rileggere:
   ref/doc    riferimenti interni a target inesistenti
   figure     file in book/figures/ che nessuno richiama
   toc        file sotto book/ non elencati in _toc.yml
+  landing    schede di intro.md che non corrispondono ai capitoli del _toc.yml
+             (mancanti, di troppo, fuori ordine, o col numero scritto a mano)
   avanti     rimandi in avanti ("vedremo", "prossima sezione") — solo elenco,
              la verifica resta umana
 
@@ -87,7 +89,7 @@ def main():
     ap.add_argument("--solo", help="controlli da eseguire, separati da virgola")
     args = ap.parse_args()
     attivi = set(args.solo.split(",")) if args.solo else {
-        "numref", "cite", "ref", "figure", "toc", "avanti"}
+        "numref", "cite", "ref", "figure", "toc", "landing", "avanti"}
 
     testi = sorgenti()
     problemi = defaultdict(list)
@@ -147,6 +149,32 @@ def main():
                 if stem not in elencati and f not in elencati:
                     problemi["file non nel _toc.yml"].append(f)
 
+    if "landing" in attivi:
+        # La griglia della landing e' l'indice del libro scritto a mano: i
+        # numeri li conta il CSS (contatore `pt-scheda`), ma che ci sia una
+        # scheda per capitolo, nello stesso ordine, non lo controlla nessuno.
+        toc = LIBRO / "_toc.yml"
+        landing = LIBRO / "intro.md"
+        if toc.is_file() and landing.is_file():
+            testo_toc = toc.read_text(encoding="utf-8")
+            # capitoli = voci a due spazi di rientro (le sezioni ne hanno quattro)
+            capitoli = [f for f in re.findall(r"^  - file:\s*(\S+)", testo_toc, re.M)
+                        if "/" in f]
+            attese = [re.sub(r"\.(md|ipynb)$", ".html", f) for f in capitoli]
+            testo_landing = landing.read_text(encoding="utf-8")
+            schede = re.findall(r'class="pt-card"\s+href="([^"]+)"', testo_landing)
+            for mancante in [a for a in attese if a not in schede]:
+                problemi["capitoli senza scheda nella landing"].append(mancante)
+            for extra in [s for s in schede if s not in attese]:
+                problemi["schede della landing senza capitolo"].append(extra)
+            if schede != attese and not (set(schede) ^ set(attese)):
+                problemi["schede della landing fuori ordine"].append(
+                    "l'ordine delle schede non e' quello del _toc.yml")
+            for numero in re.findall(r'<span class="pt-card-num">([^<]+)</span>',
+                                     testo_landing):
+                problemi["numero scritto a mano nella scheda"].append(
+                    f"«{numero}» — lo conta il CSS, lo <span> va lasciato vuoto")
+
     if "avanti" in attivi:
         for f, t in testi.items():
             for frase in RX["avanti"].findall(t):
@@ -157,7 +185,12 @@ def main():
 
     ordine = ["numref senza :name:", "cite senza voce nel .bib",
               "ref/doc senza target", "figure mai richiamate",
-              "file non nel _toc.yml", "rimandi in avanti (da leggere)"]
+              "file non nel _toc.yml",
+              "capitoli senza scheda nella landing",
+              "schede della landing senza capitolo",
+              "schede della landing fuori ordine",
+              "numero scritto a mano nella scheda",
+              "rimandi in avanti (da leggere)"]
     totale = 0
     for k in ordine:
         v = problemi.get(k)

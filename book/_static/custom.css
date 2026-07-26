@@ -1202,6 +1202,11 @@ html[data-theme="dark"] p.copyright img {
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 1rem;
   margin: 2.5rem 0 3rem;
+  /* Il numero della scheda lo conta il CSS, non la mano: le schede stanno
+     nell'ordine del `_toc.yml`, e un capitolo infilato in mezzo non lascia
+     dietro di sé una scia di numeri sbagliati da correggere a uno a uno. È lo
+     stesso contatore che numera l'indice di sinistra. */
+  counter-reset: pt-scheda;
 }
 
 a.pt-card {
@@ -1226,6 +1231,8 @@ a.pt-card:hover {
   border-bottom-color: var(--primary-color);
 }
 
+/* Lo <span> resta — è la prima riga della scheda e porta la sua tipografia —
+   ma è vuoto nel sorgente: il numero è il suo ::before. */
 .pt-card-num {
   font-family: var(--font-heading);
   font-weight: 800;
@@ -1233,6 +1240,11 @@ a.pt-card:hover {
   line-height: 1;
   color: var(--accent-ocra);
   letter-spacing: -0.02em;
+}
+
+.pt-card-num::before {
+  counter-increment: pt-scheda;
+  content: counter(pt-scheda, decimal-leading-zero);
 }
 
 .pt-card-title {

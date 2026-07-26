@@ -1,23 +1,23 @@
 # La memoria associativa di Hopfield
 
 La memoria di un computer funziona per **indirizzo**: ogni dato abita in una
-casella numerata, e per recuperarlo bisogna conoscere il numero esatto —
-sbagli una cifra e ottieni un dato qualsiasi. La memoria umana funziona per
+casella numerata, e per recuperarlo bisogna conoscere il numero esatto, sbagli
+una cifra e ottieni un dato qualsiasi. La memoria umana funziona per
 **contenuto**: bastano tre note stonate fischiettate da un passante per farti
 riaffiorare l'intera canzone, un profumo per restituirti una cucina di
 trent'anni fa, mezza faccia intravista da un autobus per completare nome e
 cognome. Non forniamo indirizzi: forniamo *frammenti*, e il ricordo si
 completa da solo. I tecnici la chiamano **memoria associativa**.
 
-Nel 1982 John Hopfield — un fisico della materia condensata prestato alla
-biologia, dal 1980 al California Institute of Technology — mostra come
+Nel 1982 John Hopfield (un fisico della materia condensata prestato alla
+biologia, dal 1980 al California Institute of Technology) mostra come
 costruirne una con neuroni artificiali {cite}`hopfield1982neural`. La sua
 mossa è quella di un fisico: notare che un gruppo di neuroni binari, ciascuno
 «acceso» o «spento», collegati da pesi simmetrici, è matematicamente identico
 a un materiale magnetico in cui ogni atomo ha uno spin che punta in su o in
 giù e sente l'influenza dei vicini. E di sistemi così la fisica sa tutto, a
-partire dalla domanda giusta: qual è l'energia di ogni configurazione, e
-verso dove scende?
+partire dalla domanda giusta: qual è l'energia di ogni configurazione, e verso
+dove scende?
 
 ```{figure} ../figures/energia-paesaggio.svg
 :name: fig-energia-paesaggio
@@ -31,31 +31,31 @@ vicino.
 
 La {numref}`fig-energia-paesaggio` contiene, in un solo disegno, tutta l'idea:
 i ricordi sono valli, lo stato attuale della rete è una pallina, e la fisica
-del sistema — l'energia che può solo scendere — fa il lavoro di richiamo al
+del sistema (l'energia che può solo scendere) fa il lavoro di richiamo al
 posto nostro.
 
 `````{tab} Elementare
 
 Ogni ricordo che la rete ha memorizzato scava una valle nel paesaggio della
 figura. Lo stato della rete in un dato momento è una pallina appoggiata da
-qualche parte su quel profilo. Dare alla rete un indizio — un ricordo
-parziale, o rovinato — significa posare la pallina in un punto alto del
-pendio, vicino a una valle ma non sul fondo. Poi non c'è altro da fare: la
-pallina rotola, e può soltanto scendere, finché si ferma nel punto più basso
-nei paraggi. Se l'indizio somigliava al ricordo B più che agli altri, il
-fondo più vicino è proprio la valle di B: arrivarci *è* ricordare, con tutti
-i dettagli che l'indizio non conteneva. La melodia stonata del passante ti
-deposita sul fianco della valle della canzone giusta, e la discesa fa il
-resto: il ricordo non lo *cerchi*, ci *cadi dentro*.
+qualche parte su quel profilo. Dare alla rete un indizio (un ricordo parziale,
+o rovinato) significa posare la pallina in un punto alto del pendio, vicino a
+una valle ma non sul fondo. Poi non c'è altro da fare: la pallina rotola, e
+può soltanto scendere, finché si ferma nel punto più basso nei paraggi. Se
+l'indizio somigliava al ricordo B più che agli altri, il fondo più vicino è
+proprio la valle di B: arrivarci *è* ricordare, con tutti i dettagli che
+l'indizio non conteneva. La melodia stonata del passante ti deposita sul
+fianco della valle della canzone giusta, e la discesa fa il resto: il ricordo
+non lo *cerchi*, ci *cadi dentro*.
 
-Due avvertenze oneste. Primo: la pallina scende nella valle più *vicina*,
-non necessariamente in quella *giusta* — un indizio troppo rovinato può
-depositarti sul pendio sbagliato, e da lì si finisce nel ricordo sbagliato
-con la stessa naturalezza. Secondo: il paesaggio ha una capienza. Se provi a
-scavare troppe valli in poco spazio, i fianchi si fondono e compaiono conche
-a metà strada tra due ricordi: «ricordi fantasma» che nessuno ha mai
-memorizzato. Una rete con 25 neuroni, come quella che costruiremo tra poco,
-regge tre o quattro ricordi: oltre, va in confusione tutta insieme.
+Due avvertenze oneste. Primo: la pallina scende nella valle più *vicina*, non
+necessariamente in quella *giusta*: un indizio troppo rovinato può depositarti
+sul pendio sbagliato, e da lì si finisce nel ricordo sbagliato con la stessa
+naturalezza. Secondo: il paesaggio ha una capienza. Se provi a scavare troppe
+valli in poco spazio, i fianchi si fondono e compaiono conche a metà strada
+tra due ricordi: «ricordi fantasma» che nessuno ha mai memorizzato. Una rete
+con 25 neuroni, come quella che costruiremo tra poco, regge tre o quattro
+ricordi: oltre, va in confusione tutta insieme.
 
 `````
 
@@ -69,43 +69,41 @@ $$
 E(s) = -\frac{1}{2}\, s^\top W s = -\frac{1}{2} \sum_{i \neq j} w_{ij}\, s_i s_j,
 $$
 
-dove $W$ è la matrice dei pesi e la somma percorre tutte le coppie di
-neuroni: una coppia collegata da peso positivo abbassa l'energia quando i due
-neuroni concordano, e la alza quando discordano (per pesi negativi vale
-l'opposto). La dinamica è l'**aggiornamento asincrono**: si sceglie un
-neurone $i$, si calcola il suo campo locale $h_i = \sum_j w_{ij} s_j$ e si
-pone $s_i \leftarrow \operatorname{sign}(h_i)$, lasciando tutto il resto
-fermo. Se il neurone cambia segno, l'energia varia di
-$\Delta E = -2\,|h_i| < 0$: **ogni aggiornamento la fa scendere o la lascia
-invariata, mai salire**. Poiché gli stati sono in numero finito ($2^N$) ed
-$E$ è limitata dal basso, la discesa termina in un punto fisso — un minimo
-locale dell'energia. È qui che serve la simmetria dei pesi: senza di essa
-non esisterebbe alcuna funzione che la dinamica fa scendere, e la rete
-potrebbe girare in tondo per sempre.
+dove $W$ è la matrice dei pesi e la somma percorre tutte le coppie di neuroni:
+una coppia collegata da peso positivo abbassa l'energia quando i due neuroni
+concordano, e la alza quando discordano (per pesi negativi vale l'opposto). La
+dinamica è l'**aggiornamento asincrono**: si sceglie un neurone $i$, si
+calcola il suo campo locale $h_i = \sum_j w_{ij} s_j$ e si pone
+$s_i \leftarrow \operatorname{sign}(h_i)$, lasciando tutto il resto fermo. Se
+il neurone cambia segno, l'energia varia di $\Delta E = -2\,|h_i| < 0$: **ogni
+aggiornamento la fa scendere o la lascia invariata, mai salire**. Poiché gli
+stati sono in numero finito ($2^N$) ed $E$ è limitata dal basso, la discesa
+termina in un punto fisso, un minimo locale dell'energia. È qui che serve la
+simmetria dei pesi: senza di essa non esisterebbe alcuna funzione che la
+dinamica fa scendere, e la rete potrebbe girare in tondo per sempre.
 
 Le valli si scolpiscono con la **regola di Hebb**, dal neuropsicologo Donald
-Hebb che nel 1949 la propose per le sinapsi biologiche — l'idea che sarebbe
-poi stata riassunta nello slogan «i neuroni che si attivano insieme si
-legano insieme». Per memorizzare i pattern
-$\xi^1, \dots, \xi^P$, ciascuno un vettore di $\pm 1$:
+Hebb che nel 1949 la propose per le sinapsi biologiche (l'idea che sarebbe poi
+stata riassunta nello slogan «i neuroni che si attivano insieme si legano
+insieme»). Per memorizzare i pattern $\xi^1, \dots, \xi^P$, ciascuno un
+vettore di $\pm 1$:
 
 $$
 w_{ij} = \frac{1}{N} \sum_{\mu=1}^{P} \xi_i^{\mu}\, \xi_j^{\mu}
 \qquad (i \neq j),
 $$
 
-dove $\xi_i^{\mu}$ è l'$i$-esimo bit del pattern $\mu$: ogni pattern
-rafforza i legami tra i propri bit concordi, e così diventa (con alta
-probabilità, se i pattern sono quasi ortogonali) un minimo locale di $E$.
-La capienza però è limitata: l'analisi di meccanica statistica di Daniel
-Amit, Hanoch Gutfreund e Haim Sompolinsky {cite}`amit1985storing`, con i
-metodi dei vetri di spin, mostra che la memoria associativa esiste solo per
-$P < \alpha_c N$ con $\alpha_c \approx 0{,}14$ — il valore raffinato dagli
-sviluppi successivi è $0{,}138$ — tollerando una piccola frazione di bit
-errati nel richiamo. Oltre quella soglia il recupero non degrada dolcemente:
-collassa. E anche sotto soglia il
-paesaggio contiene minimi non richiesti: gli opposti $-\xi^{\mu}$ di ogni
-pattern e miscele spurie di tre o più ricordi.
+dove $\xi_i^{\mu}$ è l'$i$-esimo bit del pattern $\mu$: ogni pattern rafforza
+i legami tra i propri bit concordi, e così diventa (con alta probabilità, se i
+pattern sono quasi ortogonali) un minimo locale di $E$. La capienza però è
+limitata: l'analisi di meccanica statistica di Daniel Amit, Hanoch Gutfreund e
+Haim Sompolinsky {cite}`amit1985storing`, con i metodi dei vetri di spin,
+mostra che la memoria associativa esiste solo per $P < \alpha_c N$ con
+$\alpha_c \approx 0{,}14$ (il valore raffinato dagli sviluppi successivi è
+$0{,}138$), tollerando una piccola frazione di bit errati nel richiamo. Oltre
+quella soglia il recupero non degrada dolcemente: collassa. E anche sotto
+soglia il paesaggio contiene minimi non richiesti: gli opposti $-\xi^{\mu}$ di
+ogni pattern e miscele spurie di tre o più ricordi.
 
 `````
 
@@ -214,15 +212,14 @@ T:  E = -2.08 -> -11.20  (recuperato)
 
 Vale la pena notare tre dettagli del codice, perché sono la teoria in forma
 eseguibile: la diagonale di $W$ è azzerata (niente auto-connessioni), i
-neuroni si aggiornano *uno alla volta* in ordine casuale (la discesa
-asincrona che non fa mai salire $E$), e il ciclo si ferma quando nessun
-neurone vuole più cambiare — un minimo locale, cioè un ricordo. Onestà
-statistica: con tre pattern su 25 neuroni siamo proprio al limite della
-capienza $0{,}138 \times 25 \approx 3{,}4$; le tre lettere sono state scelte
-quasi ortogonali tra loro, e con corruzioni casuali diverse dal seme fissato
-il recupero perfetto riesce circa nove volte su dieci. Nelle altre, la
-pallina finisce in un minimo spurio: il limite non è nel codice, è nella
-matematica.
+neuroni si aggiornano *uno alla volta* in ordine casuale (la discesa asincrona
+che non fa mai salire $E$), e il ciclo si ferma quando nessun neurone vuole
+più cambiare: un minimo locale, cioè un ricordo. Onestà statistica: con tre
+pattern su 25 neuroni siamo proprio al limite della capienza
+$0{,}138 \times 25 \approx 3{,}4$; le tre lettere sono state scelte quasi
+ortogonali tra loro, e con corruzioni casuali diverse dal seme fissato il
+recupero perfetto riesce circa nove volte su dieci. Nelle altre, la pallina
+finisce in un minimo spurio: il limite non è nel codice, è nella matematica.
 
 ```{admonition} Da ricordare
 :class: important
@@ -230,7 +227,7 @@ matematica.
   indirizzo: il ricordo si completa da solo.
 - Nella **rete di Hopfield** {cite}`hopfield1982neural` i ricordi sono minimi
   dell'energia $E(s) = -\tfrac{1}{2}\, s^\top W s$; la regola di Hebb scava le
-  valli e l'aggiornamento asincrono — che non fa mai salire $E$ — completa i
+  valli e l'aggiornamento asincrono (che non fa mai salire $E$) completa i
   ricordi corrotti scendendo nel minimo più vicino.
 - La **capienza** è di circa il 14% del numero di neuroni
   ($\alpha_c \approx 0{,}138$) {cite}`amit1985storing`, e oltre soglia il

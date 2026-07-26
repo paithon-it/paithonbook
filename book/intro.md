@@ -31,161 +31,161 @@ Questa versione online del libro **è gratuita** ed **in continuo aggiornamento*
 
 ## Il percorso
 
-Trentuno capitoli, dall'alfabeto (Python e matematica) alle frontiere (Transformer, modelli di diffusione, agenti LLM, generazione audio, produzione con l'MLOps). Ogni capitolo si legge da solo, ma l'ordine è pensato per costruire un mattone alla volta.
+{{ n_capitoli_lettere|capitalize }} capitoli, dall'alfabeto (Python e matematica) alle frontiere (Transformer, modelli di diffusione, agenti LLM, generazione audio, produzione con l'MLOps). Ogni capitolo si legge da solo, ma l'ordine è pensato per costruire un mattone alla volta.
 
 <div class="pt-chapters">
   <a class="pt-card" href="Introduzione/overview.html">
-    <span class="pt-card-num">01</span>
+    <span class="pt-card-num"></span>
     <span class="pt-card-title">Introduzione</span>
     <span class="pt-card-desc">Che cos'è l'intelligenza artificiale, da ELIZA a oggi — e il primo programma da eseguire.</span>
   </a>
   <a class="pt-card" href="Python/overview.html">
-    <span class="pt-card-num">02</span>
+    <span class="pt-card-num"></span>
     <span class="pt-card-title">Python</span>
     <span class="pt-card-desc">Il linguaggio dell'AI: basi, NumPy, pandas e matplotlib.</span>
   </a>
   <a class="pt-card" href="Matematica/overview.html">
-    <span class="pt-card-num">03</span>
+    <span class="pt-card-num"></span>
     <span class="pt-card-title">Richiami di matematica</span>
     <span class="pt-card-desc">Algebra lineare, ottimizzazione, probabilità, teoria dell'informazione, analisi numerica.</span>
   </a>
   <a class="pt-card" href="MachineLearning/overview.html">
-    <span class="pt-card-num">04</span>
+    <span class="pt-card-num"></span>
     <span class="pt-card-title">Machine Learning</span>
     <span class="pt-card-desc">Imparare dai dati: modelli supervisionati, overfitting, metriche, iperparametri.</span>
   </a>
   <a class="pt-card" href="RetiNeurali/overview.html">
-    <span class="pt-card-num">05</span>
+    <span class="pt-card-num"></span>
     <span class="pt-card-title">Reti Neurali</span>
     <span class="pt-card-desc">Dal percettrone alla backpropagation: come una rete impara davvero.</span>
   </a>
   <a class="pt-card" href="PyTorch/overview.html">
-    <span class="pt-card-num">06</span>
+    <span class="pt-card-num"></span>
     <span class="pt-card-title">PyTorch</span>
     <span class="pt-card-desc">Tensori, autograd, moduli e training loop: il framework del libro.</span>
   </a>
   <a class="pt-card" href="GPU/overview.html">
-    <span class="pt-card-num">07</span>
+    <span class="pt-card-num"></span>
     <span class="pt-card-title">GPU e calcolo parallelo</span>
     <span class="pt-card-desc">Sotto il cofano dell'hardware: architettura, memoria, kernel, GEMM e tensor core, Flash Attention e parallelismo su più GPU.</span>
   </a>
   <a class="pt-card" href="DeepLearning/overview.html">
-    <span class="pt-card-num">08</span>
+    <span class="pt-card-num"></span>
     <span class="pt-card-title">Deep Learning</span>
     <span class="pt-card-desc">Reti convoluzionali, ottimizzazione, regolarizzazione e architetture storiche.</span>
   </a>
   <a class="pt-card" href="VisioneArtificiale/overview.html">
-    <span class="pt-card-num">09</span>
+    <span class="pt-card-num"></span>
     <span class="pt-card-title">Visione Artificiale</span>
     <span class="pt-card-desc">Classificare, riconoscere, segmentare: le macchine che vedono.</span>
   </a>
   <a class="pt-card" href="ReinforcementLearning/overview.html">
-    <span class="pt-card-num">10</span>
+    <span class="pt-card-num"></span>
     <span class="pt-card-title">Reinforcement Learning</span>
     <span class="pt-card-desc">Imparare per tentativi: MDP, funzioni di valore e Q-learning.</span>
   </a>
   <a class="pt-card" href="DeepReinforcementLearning/overview.html">
-    <span class="pt-card-num">11</span>
+    <span class="pt-card-num"></span>
     <span class="pt-card-title">Deep Reinforcement Learning</span>
     <span class="pt-card-desc">Quando il RL incontra le reti profonde: DQN e policy gradient.</span>
   </a>
   <a class="pt-card" href="NaturalLanguageProcessing/overview.html">
-    <span class="pt-card-num">12</span>
+    <span class="pt-card-num"></span>
     <span class="pt-card-title">Natural Language Processing</span>
     <span class="pt-card-desc">Dal testo ai numeri: token, embedding, reti ricorrenti, traduzione e attenzione.</span>
   </a>
   <a class="pt-card" href="Transformers/overview.html">
-    <span class="pt-card-num">13</span>
+    <span class="pt-card-num"></span>
     <span class="pt-card-title">Transformers</span>
     <span class="pt-card-desc">L'architettura che ha cambiato tutto: self-attention, GPT, BERT e multimodalità.</span>
   </a>
   <a class="pt-card" href="AttenzioneLineare/overview.html">
-    <span class="pt-card-num">14</span>
+    <span class="pt-card-num"></span>
     <span class="pt-card-title">Attenzione lineare</span>
     <span class="pt-card-desc">Oltre il costo quadratico: dal trucco del kernel alla delta rule, con RetNet, RWKV e xLSTM.</span>
   </a>
   <a class="pt-card" href="StateSpaceModel/overview.html">
-    <span class="pt-card-num">15</span>
+    <span class="pt-card-num"></span>
     <span class="pt-card-title">State Space Model</span>
     <span class="pt-card-desc">Da S4 a Mamba: sequenze a tempo lineare dai sistemi dinamici, fino a Mamba-2 e Mamba-3.</span>
   </a>
   <a class="pt-card" href="Agenti/overview.html">
-    <span class="pt-card-num">16</span>
+    <span class="pt-card-num"></span>
     <span class="pt-card-title">Agenti e applicazioni LLM</span>
     <span class="pt-card-desc">Quando gli LLM agiscono: tool use e ReAct, RAG avanzato, context engineering, valutazione.</span>
   </a>
   <a class="pt-card" href="IngegneriaLLM/overview.html">
-    <span class="pt-card-num">17</span>
+    <span class="pt-card-num"></span>
     <span class="pt-card-title">Prompt, contesto e loop</span>
     <span class="pt-card-desc">Programmare gli LLM a parole su tre livelli concentrici: prompt engineering, context engineering e loop engineering.</span>
   </a>
   <a class="pt-card" href="Audio/overview.html">
-    <span class="pt-card-num">18</span>
+    <span class="pt-card-num"></span>
     <span class="pt-card-title">Audio oltre la voce</span>
     <span class="pt-card-desc">Dallo spettrogramma alla generazione: AudioSet, wav2vec, codec neurali, MusicGen.</span>
   </a>
   <a class="pt-card" href="SpeechRecognition/overview.html">
-    <span class="pt-card-num">19</span>
+    <span class="pt-card-num"></span>
     <span class="pt-card-title">Speech Recognition</span>
     <span class="pt-card-desc">Dalla voce al testo e ritorno: allineamento, CTC, Whisper, sintesi vocale.</span>
   </a>
   <a class="pt-card" href="GAN/overview.html">
-    <span class="pt-card-num">20</span>
+    <span class="pt-card-num"></span>
     <span class="pt-card-title">GAN</span>
     <span class="pt-card-desc">Due reti che si sfidano: il gioco avversario che genera immagini.</span>
   </a>
   <a class="pt-card" href="ModelliDiffusione/overview.html">
-    <span class="pt-card-num">21</span>
+    <span class="pt-card-num"></span>
     <span class="pt-card-title">Modelli di Diffusione</span>
     <span class="pt-card-desc">Rumore e ritorno: da DDPM a Stable Diffusion e ai Diffusion Transformer.</span>
   </a>
   <a class="pt-card" href="ModelliEnergia/overview.html">
-    <span class="pt-card-num">22</span>
+    <span class="pt-card-num"></span>
     <span class="pt-card-title">Modelli a energia</span>
     <span class="pt-card-desc">Il paesaggio invece della probabilit&agrave;: da Hopfield e Boltzmann allo score matching, la lingua in cui sono scritte diffusione e JEPA.</span>
   </a>
   <a class="pt-card" href="WorldModels/overview.html">
-    <span class="pt-card-num">23</span>
+    <span class="pt-card-num"></span>
     <span class="pt-card-title">World Model</span>
     <span class="pt-card-desc">Simulatori interni della realtà: dai sogni di Ha &amp; Schmidhuber alla via di LeCun (JEPA).</span>
   </a>
   <a class="pt-card" href="GraphNeuralNetwork/overview.html">
-    <span class="pt-card-num">24</span>
+    <span class="pt-card-num"></span>
     <span class="pt-card-title">Graph Neural Network</span>
     <span class="pt-card-desc">Reti che imparano su dati a grafo: message passing, GCN, GraphSAGE e GAT — dalle molecole alla scoperta di farmaci e alle raccomandazioni.</span>
   </a>
   <a class="pt-card" href="SistemiRaccomandazione/overview.html">
-    <span class="pt-card-num">25</span>
+    <span class="pt-card-num"></span>
     <span class="pt-card-title">Sistemi di Raccomandazione</span>
     <span class="pt-card-desc">Dal Netflix Prize alla raccomandazione neurale: i modelli che scelgono per noi.</span>
   </a>
   <a class="pt-card" href="SerieTemporali/overview.html">
-    <span class="pt-card-num">26</span>
+    <span class="pt-card-num"></span>
     <span class="pt-card-title">Serie temporali</span>
     <span class="pt-card-desc">Prevedere dal passato: decomposizione e modelli classici (ARIMA, Holt-Winters), validazione temporale e metriche, forecasting neurale (TCN, DeepAR, N-BEATS, Transformer e foundation model).</span>
   </a>
   <a class="pt-card" href="PINN/overview.html">
-    <span class="pt-card-num">27</span>
+    <span class="pt-card-num"></span>
     <span class="pt-card-title">Physics-Informed Neural Networks</span>
     <span class="pt-card-desc">Le leggi della fisica dentro la loss: reti che rispettano le equazioni differenziali.</span>
   </a>
   <a class="pt-card" href="MLOps/overview.html">
-    <span class="pt-card-num">28</span>
+    <span class="pt-card-num"></span>
     <span class="pt-card-title">MLOps</span>
     <span class="pt-card-desc">Il capitolo conclusivo: dal notebook alla produzione — versioning, serving, monitoraggio del drift, LLMOps e deploy.</span>
   </a>
   <a class="pt-card" href="Interpretabilita/overview.html">
-    <span class="pt-card-num">29</span>
+    <span class="pt-card-num"></span>
     <span class="pt-card-title">Interpretabilità e XAI</span>
     <span class="pt-card-desc">Aprire la scatola nera: modelli trasparenti e importanza delle feature, spiegazioni locali (LIME, SHAP, controfattuali), attribuzione (Grad-CAM, integrated gradients) e interpretabilità meccanicistica.</span>
   </a>
   <a class="pt-card" href="AIResponsabile/overview.html">
-    <span class="pt-card-num">30</span>
+    <span class="pt-card-num"></span>
     <span class="pt-card-title">AI responsabile</span>
     <span class="pt-card-desc">Equità e bias algoritmico, privacy (differential privacy, federated learning) e robustezza agli attacchi avversari, allineamento (RLHF, DPO) e governance (l'AI Act europeo).</span>
   </a>
   <a class="pt-card" href="Conclusioni/overview.html">
-    <span class="pt-card-num">31</span>
+    <span class="pt-card-num"></span>
     <span class="pt-card-title">Conclusioni</span>
     <span class="pt-card-desc">Bilancio del viaggio e letture per proseguire.</span>
   </a>

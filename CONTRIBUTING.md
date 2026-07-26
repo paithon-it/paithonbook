@@ -66,6 +66,12 @@ In pratica, scrivendo una pagina:
   `````
   ``````
 
+- **niente lineette** (`—`): non sono nello stile del libro. Un inciso che si
+  potrebbe togliere va fra parentesi, un concetto racchiuso dentro la frase fra
+  virgole, una spiegazione dopo i due punti, due proposizioni che si oppongono
+  separate dal punto e virgola; per una digressione più lunga, una nota a piè
+  di pagina (`[^nota]`). Restano il trattino d'unione e la lineetta breve degli
+  intervalli (`2020–2023`);
 - **formule** in LaTeX (`$…$` in linea, `$$…$$` in blocco), con i simboli
   spiegati subito dopo. Notazione coerente col resto del libro: matrici e
   vettori maiuscoli ($X$, $W$), scalari minuscoli, $\hat{y}$ per le
@@ -85,6 +91,10 @@ In pratica, scrivendo una pagina:
   sinistra): un capitolo nuovo va dentro la parte a cui appartiene. Ogni voce
   porta anche un `title:` breve — è l'etichetta nell'indice, dove un titolo
   lungo andrebbe a capo due volte; il titolo esteso resta l'H1 della pagina.
+  Un capitolo nuovo vuole anche la sua scheda nella griglia di `book/intro.md`:
+  il **numero** non si scrive (lo conta il CSS, lo `<span class="pt-card-num">`
+  resta vuoto), e `python3 scripts/coerenza.py --solo landing` dice se una
+  scheda manca o è fuori ordine.
 
 Una cosa che il libro **non** ospita: la cronaca. Classifiche, benchmark,
 prezzi, "questo modello supera quell'altro" invecchiano dentro un testo che si

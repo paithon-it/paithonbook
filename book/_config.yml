@@ -138,5 +138,12 @@ sphinx:
     - jupyterbook_patches
     - sphinx_inline_tabs
 
+  # Quanti capitoli ha il libro non si scrive a mano: `_ext/pt_conteggi.py` lo
+  # legge dal `_toc.yml` e lo mette a disposizione del testo come sostituzione
+  # MyST — `{{ n_capitoli_lettere }}` nella landing, `{{ n_capitoli_meno_uno_lettere }}`
+  # nelle conclusioni. I percorsi sono relativi a questo file.
+  local_extensions:
+    pt_conteggi: _ext
+
 bibtex_bibfiles: 
   - references.bib

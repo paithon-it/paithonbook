@@ -7,20 +7,19 @@ correntemente. Uno è dichiarato, gli altri due no.
 
 ## Il ritorno dichiarato: EBM sulle immagini
 
-Il ritorno esplicito arriva nel 2019, quando Yilun Du e Igor Mordatch
-mostrano che un modello a energia si può addestrare su immagini vere con gli
-strumenti della sezione sulla partizione: una rete convoluzionale nel ruolo
-di $E_\theta$, campioni negativi prodotti per **dinamica di Langevin**, e un
+Il ritorno esplicito arriva nel 2019, quando Yilun Du e Igor Mordatch mostrano
+che un modello a energia si può addestrare su immagini vere con gli strumenti
+della sezione sulla partizione: una rete convoluzionale nel ruolo di
+$E_\theta$, campioni negativi prodotti per **dinamica di Langevin**, e un
 serbatoio di campioni da cui le catene ripartono invece di ricominciare da
-zero — la persistent contrastive divergence, trent'anni dopo, su CIFAR-10
+zero: la persistent contrastive divergence, trent'anni dopo, su CIFAR-10
 {cite}`du2019implicit`. La qualità dei campioni supera quella degli altri
-modelli a verosimiglianza e si avvicina — senza raggiungerla — a quella delle
+modelli a verosimiglianza e si avvicina (senza raggiungerla) a quella delle
 GAN dell'epoca; ma il valore del lavoro è mostrare che la famiglia è viva, e
-mettere in luce
-la proprietà che le è tipica: un solo modello serve a generare, a completare
-immagini parziali, a segnalare anomalie e a comporre concetti sommando
-energie, perché tutte queste cose sono la stessa cosa — cercare un minimo,
-con vincoli diversi.
+mettere in luce la proprietà che le è tipica: un solo modello serve a
+generare, a completare immagini parziali, a segnalare anomalie e a comporre
+concetti sommando energie, perché tutte queste cose sono la stessa cosa:
+cercare un minimo, con vincoli diversi.
 
 L'anno dopo arriva l'osservazione che ribalta la prospettiva. Will Grathwohl
 e colleghi notano che **un classificatore è già un modello a energia**, e
@@ -33,16 +32,16 @@ numeri: uno per classe, tanto più alto quanto più la rete crede in quella
 classe. Di solito quei numeri si normalizzano e si legge la classe vincente,
 buttando via il resto. Ma dentro c'è di più: se sommi in modo opportuno tutti
 i punteggi di un'immagine, ottieni una misura di quanto *quell'immagine* sia
-tipica nel suo insieme — non quale classe sia, ma se sia un'immagine
+tipica nel suo insieme: non quale classe sia, ma se sia un'immagine
 plausibile. Cioè, esattamente, un'energia.
 
 Il seguito è la parte interessante. Addestrando la stessa rete a fare bene
-tutte e due le cose — riconoscere la classe *e* dare energia bassa alle
-immagini plausibili — si ottiene un classificatore che sbaglia con più
-prudenza: quando è incerto lo dice, riconosce di trovarsi davanti a
-qualcosa che non ha mai visto, ed è più difficile da ingannare con immagini
-manipolate. La misura di quanto una cosa è plausibile, che sembrava un lusso
-per generare, si rivela utile per non prendere abbagli.
+tutte e due le cose (riconoscere la classe *e* dare energia bassa alle
+immagini plausibili) si ottiene un classificatore che sbaglia con più
+prudenza: quando è incerto lo dice, riconosce di trovarsi davanti a qualcosa
+che non ha mai visto, ed è più difficile da ingannare con immagini manipolate.
+La misura di quanto una cosa è plausibile, che sembrava un lusso per generare,
+si rivela utile per non prendere abbagli.
 
 `````
 
@@ -63,17 +62,16 @@ $$
 
 da cui l'energia marginale
 $E_\theta(x) = -\operatorname{logsumexp}_y f_\theta(x)[y]$
-{cite}`grathwohl2020your`. La softmax è invariante alla traslazione dei
-logit, quindi questa informazione — il livello assoluto, non le differenze —
-è precisamente ciò che l'addestramento standard *butta via*. JEM (*Joint
+{cite}`grathwohl2020your`. La softmax è invariante alla traslazione dei logit,
+quindi questa informazione (il livello assoluto, non le differenze) è
+precisamente ciò che l'addestramento standard *butta via*. JEM (*Joint
 Energy-based Model*) la recupera addestrando la rete sulla fattorizzazione
 $\log p_\theta(x, y) = \log p_\theta(y \mid x) + \log p_\theta(x)$: il primo
-termine è la solita cross-entropy, il secondo è un EBM addestrato con
-Langevin e serbatoio, come in {cite}`du2019implicit`. Il risultato riportato
-è un classificatore con calibrazione migliore, rilevamento di fuori
-distribuzione più affidabile e maggiore robustezza agli attacchi avversari —
-al prezzo di un addestramento più fragile, che è il difetto ereditario di
-tutta la famiglia.
+termine è la solita cross-entropy, il secondo è un EBM addestrato con Langevin
+e serbatoio, come in {cite}`du2019implicit`. Il risultato riportato è un
+classificatore con calibrazione migliore, rilevamento di fuori distribuzione
+più affidabile e maggiore robustezza agli attacchi avversari, al prezzo di un
+addestramento più fragile, che è il difetto ereditario di tutta la famiglia.
 
 `````
 
@@ -82,32 +80,32 @@ tutta la famiglia.
 Il primo lo abbiamo già incontrato nella sezione sulla partizione, e vale la
 pena ripeterlo perché è il ponte più solido di tutto il capitolo: **i modelli
 di diffusione sono modelli a energia che hanno smesso di dirlo**. La loss con
-cui si addestrano è denoising score matching {cite}`vincent2011connection`,
-il campo che imparano è lo score $\nabla_x \log p(x) = -\nabla_x E(x)$, e il
-campionamento — togliere rumore un passo alla volta — è una discesa rumorosa
+cui si addestrano è denoising score matching {cite}`vincent2011connection`, il
+campo che imparano è lo score $\nabla_x \log p(x) = -\nabla_x E(x)$, e il
+campionamento (togliere rumore un passo alla volta) è una discesa rumorosa
 lungo un paesaggio di energia, parente stretta della dinamica di Langevin
 {cite}`song2021score`. La differenza, l'abbiamo detta: imparano il campo
 vettoriale direttamente, senza passare da una $E_\theta$ scalare.
 
 Il secondo è più sorprendente, e chiude un cerchio con il capitolo sui
-Transformer. Le reti di Hopfield **moderne** — stati continui, energia
-riprogettata — hanno capacità esponenziale nel numero di neuroni e una regola
+Transformer. Le reti di Hopfield **moderne** (stati continui, energia
+riprogettata) hanno capacità esponenziale nel numero di neuroni e una regola
 di aggiornamento che coincide, formula alla mano, con la *scaled dot-product
 attention* {cite}`ramsauer2021hopfield`. Il paper si intitola, non a caso,
 *Hopfield Networks is All You Need*, e rilegge l'attenzione di
 {cite}`vaswani2017attention` come il richiamo di una memoria associativa: le
 query sono indizi, le coppie key–value i ricordi, e un passo di attenzione è
-un passo di discesa verso il ricordo più compatibile. La memoria del 1982 e
-il meccanismo che regge i modelli di linguaggio parlano, matematicamente, la
+un passo di discesa verso il ricordo più compatibile. La memoria del 1982 e il
+meccanismo che regge i modelli di linguaggio parlano, matematicamente, la
 stessa lingua.
 
 ## Le quattro rinunce
 
 Chi ha seguito le conferenze di Yann LeCun degli ultimi anni conosce la sua
 slide di chiusura: quattro righe, ciascuna una rinuncia, ciascuna con la sua
-alternativa. Vale la pena metterle in fila, perché sono la mappa del
-programma di ricerca in cui questo capitolo si inserisce — e perché tre delle
-quattro toccano cose che il libro ha già trattato.
+alternativa. Vale la pena metterle in fila, perché sono la mappa del programma
+di ricerca in cui questo capitolo si inserisce, e perché tre delle quattro
+toccano cose che il libro ha già trattato.
 
 ```{figure} ../figures/quattro-rinunce.svg
 :name: fig-quattro-rinunce
@@ -119,29 +117,29 @@ L'argomento esteso è in *A Path Towards Autonomous Machine Intelligence*
 {cite}`lecun2022path`; la seconda riga è la tesi di questo capitolo.
 ```
 
-La **seconda** riga — abbandonare il modello probabilistico in favore dei
-modelli a energia — è quella su cui l'argomento tecnico è più solido, ed è
+La **seconda** riga (abbandonare il modello probabilistico in favore dei
+modelli a energia) è quella su cui l'argomento tecnico è più solido, ed è
 tutto in questo capitolo: $Z$ non è cara, è impossibile, e moltissimi compiti
-non l'hanno mai richiesta. La **terza** — abbandonare i metodi contrastivi in
-favore di quelli regolarizzati — è la scelta discussa nella sezione
-precedente, ed è una questione di ricerca aperta con risultati da entrambe le
-parti: l'apprendimento contrastivo ha prodotto sistemi che funzionano molto
-bene, e i metodi regolarizzati sono la scommessa che quei sistemi non
-reggeranno alla dimensionalità del video. La **quarta** — sostituire il
-reinforcement learning con il controllo predittivo basato su modello — dice,
-nel lessico dei capitoli sull'apprendimento per rinforzo, di pianificare
-dentro un modello del mondo invece di imparare per tentativi, e di ricorrere
-al RL solo per correggere il modello quando la previsione sbaglia.
+non l'hanno mai richiesta. La **terza** (abbandonare i metodi contrastivi in
+favore di quelli regolarizzati) è la scelta discussa nella sezione precedente,
+ed è una questione di ricerca aperta con risultati da entrambe le parti:
+l'apprendimento contrastivo ha prodotto sistemi che funzionano molto bene, e i
+metodi regolarizzati sono la scommessa che quei sistemi non reggeranno alla
+dimensionalità del video. La **quarta** (sostituire il reinforcement learning
+con il controllo predittivo basato su modello) dice, nel lessico dei capitoli
+sull'apprendimento per rinforzo, di pianificare dentro un modello del mondo
+invece di imparare per tentativi, e di ricorrere al RL solo per correggere il
+modello quando la previsione sbaglia.
 
 La **prima** riga è la più contestata, e non conviene nasconderlo. Rinunciare
 ai modelli generativi in favore delle architetture a incorporamento congiunto
 è una tesi sul modo giusto di costruire un *modello del mondo*, non un
 verdetto sulla generazione in quanto tale: mentre la slide circolava, i
 modelli generativi hanno prodotto i migliori generatori di immagini che
-conosciamo — di diffusione, cioè, come questo capitolo ha mostrato, modelli a
-energia — e i modelli linguistici che hanno cambiato il dibattito pubblico.
-L'argomento di LeCun non è che quei sistemi non funzionino; è che predire
-ogni pixel spende capacità sull'imprevedibile, e che per prevedere il mondo
+conosciamo (di diffusione, cioè, come questo capitolo ha mostrato, modelli a
+energia) e i modelli linguistici che hanno cambiato il dibattito pubblico.
+L'argomento di LeCun non è che quei sistemi non funzionino; è che predire ogni
+pixel spende capacità sull'imprevedibile, e che per prevedere il mondo
 convenga predire nello spazio delle rappresentazioni. È una previsione sul
 futuro della ricerca, e come tutte le previsioni va tenuta distinta dai
 risultati che abbiamo in mano. Il capitolo che segue la prende sul serio
