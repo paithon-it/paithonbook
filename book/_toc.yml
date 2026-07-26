@@ -1,187 +1,386 @@
 format: jb-book
 root: intro.md
 
-chapters:
-- file: Introduzione/overview.md
-  sections:
-  - file: Introduzione/massimo_comune_divisore.ipynb
-  - file: Introduzione/applicazioni.md
-  - file: Introduzione/conclusione.md
-- file: Python/overview.md
-  sections:
-  - file: Python/basi.md
-  - file: Python/numpy.md
-  - file: Python/pandas-matplotlib.md
-- file: Matematica/overview.md
-  sections:
-  - file: Matematica/algebra-lineare.md
-  - file: Matematica/analisi-ottimizzazione.md
-  - file: Matematica/probabilita-statistica.md
-  - file: Matematica/teoria-informazione.md
-  - file: Matematica/analisi-numerica.md
-- file: MachineLearning/overview.md
-  sections:
-  - file: MachineLearning/apprendimento-supervisionato.md
-  - file: MachineLearning/overfitting-validazione.md
-  - file: MachineLearning/metriche.md
-  - file: MachineLearning/iperparametri.md
-  - file: MachineLearning/alberi-ensemble.md
-  - file: MachineLearning/svm.md
-  - file: MachineLearning/riduzione-clustering.md
-  - file: MachineLearning/dati-che-cambiano.md
-  - file: MachineLearning/processi-gaussiani.md
-- file: RetiNeurali/overview.md
-  sections:
-  - file: RetiNeurali/percettrone.md
-  - file: RetiNeurali/funzioni-attivazione.md
-  - file: RetiNeurali/backpropagation.md
-- file: PyTorch/overview.md
-  sections:
-  - file: PyTorch/tensori.md
-  - file: PyTorch/moduli.md
-  - file: PyTorch/addestramento.md
-  - file: PyTorch/flusso-di-lavoro.md
-  - file: PyTorch/dati-su-misura.md
-  - file: PyTorch/errori-comuni.md
-  - file: PyTorch/dal-notebook-agli-script.md
-  - file: PyTorch/replicare-un-paper.md
-  - file: PyTorch/prestazioni.md
-- file: GPU/overview.md
-  sections:
-  - file: GPU/architettura-gpu.md
-  - file: GPU/gerarchia-memoria.md
-  - file: GPU/kernel-e-cuda.md
-  - file: GPU/gemm-e-tensor-core.md
-  - file: GPU/flash-attention.md
-  - file: GPU/parallelismo-distribuito.md
-- file: DeepLearning/overview.md
-  sections:
-  - file: DeepLearning/reti-convoluzionali.md
-  - file: DeepLearning/ottimizzazione-regolarizzazione.md
-  - file: DeepLearning/architetture-storiche.md
-- file: VisioneArtificiale/overview.md
-  sections:
-  - file: VisioneArtificiale/classificazione-transfer.md
-  - file: VisioneArtificiale/data-augmentation.md
-  - file: VisioneArtificiale/detection-segmentazione.md
-  - file: VisioneArtificiale/style-transfer.md
-- file: ReinforcementLearning/overview.md
-  sections:
-  - file: ReinforcementLearning/mdp-valore.md
-  - file: ReinforcementLearning/q-learning.md
-- file: DeepReinforcementLearning/overview.md
-  sections:
-  - file: DeepReinforcementLearning/dqn.md
-  - file: DeepReinforcementLearning/policy-gradient.md
-  - file: DeepReinforcementLearning/controllo-continuo.md
-  - file: DeepReinforcementLearning/model-based.md
-  - file: DeepReinforcementLearning/offline-rl.md
-  - file: DeepReinforcementLearning/esplorazione-e-ricompensa.md
-- file: NaturalLanguageProcessing/overview.md
-  sections:
-  - file: NaturalLanguageProcessing/strumenti-classici.md
-  - file: NaturalLanguageProcessing/rappresentare-testo.md
-  - file: NaturalLanguageProcessing/classificazione-testo.md
-  - file: NaturalLanguageProcessing/modelli-ngram.md
-  - file: NaturalLanguageProcessing/modelli-sequenza.md
-  - file: NaturalLanguageProcessing/seq2seq-traduzione.md
-  - file: NaturalLanguageProcessing/etichettare-sequenze.md
-  - file: NaturalLanguageProcessing/struttura-frase.md
-  - file: NaturalLanguageProcessing/dialogo-chatbot.md
-- file: Transformers/overview.md
-  sections:
-  - file: Transformers/attenzione.md
-  - file: Transformers/architettura.md
-  - file: Transformers/confronti.md
-  - file: Transformers/esempi.md
-  - file: Transformers/multimodalita.md
-  - file: Transformers/llm.md
-  - file: Transformers/post-training.md
-  - file: Transformers/rag.md
-  - file: Transformers/tendenzefuture.md
-- file: AttenzioneLineare/overview.md
-  sections:
-  - file: AttenzioneLineare/dalla-softmax-alla-ricorrenza.md
-  - file: AttenzioneLineare/scrivere-nella-memoria.md
-  - file: AttenzioneLineare/architetture-lineari.md
-  - file: AttenzioneLineare/linear-attention-ricorrenza.ipynb
-- file: StateSpaceModel/overview.md
-  sections:
-  - file: StateSpaceModel/dai-sistemi-dinamici-a-s4.md
-  - file: StateSpaceModel/mamba.md
-  - file: StateSpaceModel/dualita-e-mamba-2-3.md
-  - file: StateSpaceModel/panorama-e-limiti.md
-- file: Agenti/overview.md
-  sections:
-  - file: Agenti/agenti-e-tool-use.md
-  - file: Agenti/rag-avanzato.md
-  - file: Agenti/context-engineering.md
-  - file: Agenti/architetture-e-valutazione.md
-- file: IngegneriaLLM/overview.md
-  sections:
-  - file: IngegneriaLLM/prompt-engineering.md
-  - file: IngegneriaLLM/context-engineering.md
-  - file: IngegneriaLLM/loop-engineering.md
-- file: Audio/overview.md
-  sections:
-  - file: Audio/dal-suono-alle-feature.md
-  - file: Audio/classificazione-audio.md
-  - file: Audio/rappresentazioni-auto-supervisionate.md
-  - file: Audio/codec-neurali.md
-  - file: Audio/generazione-audio.md
-- file: SpeechRecognition/overview.md
-  sections:
-  - file: SpeechRecognition/modelli-asr.md
-  - file: SpeechRecognition/sintesi-vocale.md
-- file: GAN/overview.md
-  sections:
-  - file: GAN/come-funziona.md
-  - file: GAN/applicazioni-evoluzioni.md
-- file: ModelliDiffusione/overview.md
-  sections:
-  - file: ModelliDiffusione/come-funziona.md
-  - file: ModelliDiffusione/stable-diffusion.md
-  - file: ModelliDiffusione/diffusion-transformer.md
-- file: WorldModels/overview.md
-  sections:
-  - file: WorldModels/mondi-in-miniatura.md
-  - file: WorldModels/reti-energia.md
-  - file: WorldModels/jepa.md
-  - file: WorldModels/simulatori-e-dibattito.md
-- file: GraphNeuralNetwork/overview.md
-  sections:
-  - file: GraphNeuralNetwork/dati-a-grafo.md
-  - file: GraphNeuralNetwork/message-passing.md
-  - file: GraphNeuralNetwork/architetture-applicazioni.md
-- file: SistemiRaccomandazione/overview.md
-  sections:
-  - file: SistemiRaccomandazione/filtraggio-collaborativo.md
-  - file: SistemiRaccomandazione/raccomandazione-neurale.md
-- file: SerieTemporali/overview.md
-  sections:
-  - file: SerieTemporali/componenti-e-classici.md
-  - file: SerieTemporali/validazione-e-feature.md
-  - file: SerieTemporali/forecasting-neurale.md
-- file: PINN/overview.md
-  sections:
-  - file: PINN/come-funziona.md
-  - file: PINN/applicazioni-limiti.md
-- file: MLOps/overview.md
-  sections:
-  - file: MLOps/dal-notebook-alla-produzione.md
-  - file: MLOps/dati-e-pipeline.md
-  - file: MLOps/deployment-e-serving.md
-  - file: MLOps/monitoring-e-drift.md
-  - file: MLOps/llmops.md
-- file: Interpretabilita/overview.md
-  sections:
-  - file: Interpretabilita/modelli-trasparenti-e-importanza.md
-  - file: Interpretabilita/spiegazioni-locali.md
-  - file: Interpretabilita/attribuzione-e-meccanicistica.md
-- file: AIResponsabile/overview.md
-  sections:
-  - file: AIResponsabile/equita-e-bias.md
-  - file: AIResponsabile/privacy-e-robustezza.md
-  - file: AIResponsabile/allineamento-e-governance.md
-- file: Conclusioni/overview.md
-- file: references.md
+# I capitoli sono raggruppati in PARTI: la `caption` diventa l'intestazione
+# che spezza l'indice di sinistra (trenta voci di fila non si scandivano).
+# L'ordine dei capitoli NON cambia — le parti sono gruppi contigui — quindi la
+# numerazione della landing (`intro.md`) resta valida, ed e' la stessa che
+# `custom.css` stampa accanto a ogni capitolo nell'indice.
+#
+# `title:` e' l'etichetta BREVE nell'indice e nei pulsanti sfoglia: la pagina
+# conserva il proprio titolo esteso (l'H1). Serve perche' nella colonna di
+# sinistra un titolo lungo va a capo due o tre volte e la lista diventa un muro.
+
+parts:
+- caption: Fondamenta
+  chapters:
+  - file: Introduzione/overview.md
+    title: Introduzione
+    sections:
+    - file: Introduzione/massimo_comune_divisore.ipynb
+      title: Python e l'AI
+    - file: Introduzione/applicazioni.md
+      title: Robotica e AI
+    - file: Introduzione/conclusione.md
+      title: Conclusione
+  - file: Python/overview.md
+    title: Python
+    sections:
+    - file: Python/basi.md
+      title: Le basi di Python
+    - file: Python/numpy.md
+      title: NumPy
+    - file: Python/pandas-matplotlib.md
+      title: Pandas e Matplotlib
+  - file: Matematica/overview.md
+    title: Matematica
+    sections:
+    - file: Matematica/algebra-lineare.md
+      title: Algebra lineare
+    - file: Matematica/analisi-ottimizzazione.md
+      title: Analisi e ottimizzazione
+    - file: Matematica/probabilita-statistica.md
+      title: Probabilità e statistica
+    - file: Matematica/teoria-informazione.md
+      title: Teoria dell'informazione
+    - file: Matematica/analisi-numerica.md
+      title: Analisi numerica
+
+- caption: Imparare dai dati
+  chapters:
+  - file: MachineLearning/overview.md
+    title: Machine Learning
+    sections:
+    - file: MachineLearning/apprendimento-supervisionato.md
+      title: Apprendimento supervisionato
+    - file: MachineLearning/overfitting-validazione.md
+      title: Overfitting e validazione
+    - file: MachineLearning/metriche.md
+      title: Valutare un modello
+    - file: MachineLearning/iperparametri.md
+      title: Trovare gli iperparametri
+    - file: MachineLearning/alberi-ensemble.md
+      title: Alberi e metodi ensemble
+    - file: MachineLearning/svm.md
+      title: Support Vector Machine
+    - file: MachineLearning/riduzione-clustering.md
+      title: Riduzione e clustering
+    - file: MachineLearning/dati-che-cambiano.md
+      title: Quando i dati cambiano
+    - file: MachineLearning/processi-gaussiani.md
+      title: Processi gaussiani
+  - file: RetiNeurali/overview.md
+    title: Reti neurali
+    sections:
+    - file: RetiNeurali/percettrone.md
+      title: Il percettrone
+    - file: RetiNeurali/funzioni-attivazione.md
+      title: Funzioni di attivazione
+    - file: RetiNeurali/backpropagation.md
+      title: Backpropagation
+
+- caption: Strumenti e hardware
+  chapters:
+  - file: PyTorch/overview.md
+    title: PyTorch
+    sections:
+    - file: PyTorch/tensori.md
+      title: Tensori e autograd
+    - file: PyTorch/moduli.md
+      title: Moduli
+    - file: PyTorch/addestramento.md
+      title: Il training loop
+    - file: PyTorch/flusso-di-lavoro.md
+      title: Il flusso di lavoro
+    - file: PyTorch/dati-su-misura.md
+      title: Dati su misura
+    - file: PyTorch/errori-comuni.md
+      title: I tre errori più comuni
+    - file: PyTorch/dal-notebook-agli-script.md
+      title: Dal notebook agli script
+    - file: PyTorch/replicare-un-paper.md
+      title: Replicare un paper
+    - file: PyTorch/prestazioni.md
+      title: Prestazioni e scala
+  - file: GPU/overview.md
+    title: GPU e calcolo parallelo
+    sections:
+    - file: GPU/architettura-gpu.md
+      title: Dentro la GPU
+    - file: GPU/gerarchia-memoria.md
+      title: La memoria
+    - file: GPU/kernel-e-cuda.md
+      title: Kernel e CUDA
+    - file: GPU/gemm-e-tensor-core.md
+      title: GEMM e tensor core
+    - file: GPU/flash-attention.md
+      title: Flash Attention
+    - file: GPU/parallelismo-distribuito.md
+      title: Parallelismo distribuito
+
+- caption: Deep learning e visione
+  chapters:
+  - file: DeepLearning/overview.md
+    title: Deep Learning
+    sections:
+    - file: DeepLearning/reti-convoluzionali.md
+      title: Reti convoluzionali (CNN)
+    - file: DeepLearning/ottimizzazione-regolarizzazione.md
+      title: Far funzionare le reti profonde
+    - file: DeepLearning/architetture-storiche.md
+      title: Architetture storiche
+  - file: VisioneArtificiale/overview.md
+    title: Visione artificiale
+    sections:
+    - file: VisioneArtificiale/classificazione-transfer.md
+      title: Classificazione e transfer learning
+    - file: VisioneArtificiale/data-augmentation.md
+      title: Data augmentation
+    - file: VisioneArtificiale/detection-segmentazione.md
+      title: Detection e segmentazione
+    - file: VisioneArtificiale/style-transfer.md
+      title: Neural style transfer
+
+- caption: Apprendimento per rinforzo
+  chapters:
+  - file: ReinforcementLearning/overview.md
+    title: Reinforcement Learning
+    sections:
+    - file: ReinforcementLearning/mdp-valore.md
+      title: MDP e funzioni valore
+    - file: ReinforcementLearning/q-learning.md
+      title: Q-learning e differenze temporali
+  - file: DeepReinforcementLearning/overview.md
+    title: Deep Reinforcement Learning
+    sections:
+    - file: DeepReinforcementLearning/dqn.md
+      title: Deep Q-Network (DQN)
+    - file: DeepReinforcementLearning/policy-gradient.md
+      title: Gradiente di policy
+    - file: DeepReinforcementLearning/controllo-continuo.md
+      title: Controllo continuo
+    - file: DeepReinforcementLearning/model-based.md
+      title: RL basato su modello
+    - file: DeepReinforcementLearning/offline-rl.md
+      title: Offline RL
+    - file: DeepReinforcementLearning/esplorazione-e-ricompensa.md
+      title: Esplorazione e ricompensa
+
+- caption: Linguaggio e sequenze
+  chapters:
+  - file: NaturalLanguageProcessing/overview.md
+    title: Natural Language Processing
+    sections:
+    - file: NaturalLanguageProcessing/strumenti-classici.md
+      title: La cassetta degli attrezzi
+    - file: NaturalLanguageProcessing/rappresentare-testo.md
+      title: Rappresentare il testo
+    - file: NaturalLanguageProcessing/classificazione-testo.md
+      title: Classificare il testo
+    - file: NaturalLanguageProcessing/modelli-ngram.md
+      title: Modelli n-gram
+    - file: NaturalLanguageProcessing/modelli-sequenza.md
+      title: Modelli di sequenza
+    - file: NaturalLanguageProcessing/seq2seq-traduzione.md
+      title: Tradurre con le reti
+    - file: NaturalLanguageProcessing/etichettare-sequenze.md
+      title: POS tagging ed entità
+    - file: NaturalLanguageProcessing/struttura-frase.md
+      title: Sintassi e parsing
+    - file: NaturalLanguageProcessing/dialogo-chatbot.md
+      title: Dialogo e chatbot
+  - file: Transformers/overview.md
+    title: Transformer
+    sections:
+    - file: Transformers/attenzione.md
+      title: Il meccanismo di attenzione
+    - file: Transformers/architettura.md
+      title: La struttura del Transformer
+    - file: Transformers/confronti.md
+      title: Confronto coi modelli precedenti
+    - file: Transformers/esempi.md
+      title: Esempi pratici
+    - file: Transformers/multimodalita.md
+      title: Multimodalità
+    - file: Transformers/llm.md
+      title: I grandi modelli linguistici
+    - file: Transformers/post-training.md
+      title: Dopo il pre-addestramento
+    - file: Transformers/rag.md
+      title: Retrieval e RAG
+    - file: Transformers/tendenzefuture.md
+      title: Tendenze e limiti
+  - file: AttenzioneLineare/overview.md
+    title: Attenzione lineare
+    sections:
+    - file: AttenzioneLineare/dalla-softmax-alla-ricorrenza.md
+      title: Dalla softmax alla ricorrenza
+    - file: AttenzioneLineare/scrivere-nella-memoria.md
+      title: Scrivere nella memoria
+    - file: AttenzioneLineare/architetture-lineari.md
+      title: Architetture lineari
+    - file: AttenzioneLineare/linear-attention-ricorrenza.ipynb
+      title: Verifica numerica
+  - file: StateSpaceModel/overview.md
+    title: State Space Model
+    sections:
+    - file: StateSpaceModel/dai-sistemi-dinamici-a-s4.md
+      title: Dai sistemi dinamici a S4
+    - file: StateSpaceModel/mamba.md
+      title: Mamba
+    - file: StateSpaceModel/dualita-e-mamba-2-3.md
+      title: Mamba-2 e Mamba-3
+    - file: StateSpaceModel/panorama-e-limiti.md
+      title: Panorama e limiti
+
+- caption: Lavorare con gli LLM
+  chapters:
+  - file: Agenti/overview.md
+    title: Agenti
+    sections:
+    - file: Agenti/agenti-e-tool-use.md
+      title: Il ciclo dell'agente
+    - file: Agenti/rag-avanzato.md
+      title: RAG avanzato
+    - file: Agenti/context-engineering.md
+      title: Il contesto è l'interfaccia
+    - file: Agenti/architetture-e-valutazione.md
+      title: Architetture e valutazione
+  - file: IngegneriaLLM/overview.md
+    title: Prompt, contesto e loop
+    sections:
+    - file: IngegneriaLLM/prompt-engineering.md
+      title: Prompt engineering
+    - file: IngegneriaLLM/context-engineering.md
+      title: Context engineering
+    - file: IngegneriaLLM/loop-engineering.md
+      title: Loop engineering
+
+- caption: Suono e voce
+  chapters:
+  - file: Audio/overview.md
+    title: Audio oltre la voce
+    sections:
+    - file: Audio/dal-suono-alle-feature.md
+      title: Dal suono alle feature
+    - file: Audio/classificazione-audio.md
+      title: Riconoscere i suoni
+    - file: Audio/rappresentazioni-auto-supervisionate.md
+      title: Imparare senza etichette
+    - file: Audio/codec-neurali.md
+      title: Codec neurali
+    - file: Audio/generazione-audio.md
+      title: Generare suono e musica
+  - file: SpeechRecognition/overview.md
+    title: Speech Recognition
+    sections:
+    - file: SpeechRecognition/modelli-asr.md
+      title: I modelli di riconoscimento
+    - file: SpeechRecognition/sintesi-vocale.md
+      title: Sintesi vocale
+
+- caption: Modelli generativi
+  chapters:
+  - file: GAN/overview.md
+    title: GAN
+    sections:
+    - file: GAN/come-funziona.md
+      title: L'addestramento avversario
+    - file: GAN/applicazioni-evoluzioni.md
+      title: Evoluzioni e applicazioni
+  - file: ModelliDiffusione/overview.md
+    title: Modelli di diffusione
+    sections:
+    - file: ModelliDiffusione/come-funziona.md
+      title: Come funziona la diffusione
+    - file: ModelliDiffusione/stable-diffusion.md
+      title: Stable Diffusion
+    - file: ModelliDiffusione/diffusion-transformer.md
+      title: Diffusion Transformer (DiT)
+  - file: WorldModels/overview.md
+    title: World Model
+    sections:
+    - file: WorldModels/mondi-in-miniatura.md
+      title: Mondi in miniatura
+    - file: WorldModels/reti-energia.md
+      title: Reti a energia
+    - file: WorldModels/jepa.md
+      title: La via di LeCun (JEPA)
+    - file: WorldModels/simulatori-e-dibattito.md
+      title: Simulare il mondo
+
+- caption: Altri dati, altri domini
+  chapters:
+  - file: GraphNeuralNetwork/overview.md
+    title: Graph Neural Network
+    sections:
+    - file: GraphNeuralNetwork/dati-a-grafo.md
+      title: Il mondo come grafo
+    - file: GraphNeuralNetwork/message-passing.md
+      title: Message passing
+    - file: GraphNeuralNetwork/architetture-applicazioni.md
+      title: GraphSAGE, GAT e applicazioni
+  - file: SistemiRaccomandazione/overview.md
+    title: Sistemi di raccomandazione
+    sections:
+    - file: SistemiRaccomandazione/filtraggio-collaborativo.md
+      title: Il filtraggio collaborativo
+    - file: SistemiRaccomandazione/raccomandazione-neurale.md
+      title: La raccomandazione neurale
+  - file: SerieTemporali/overview.md
+    title: Serie temporali
+    sections:
+    - file: SerieTemporali/componenti-e-classici.md
+      title: Componenti e modelli classici
+    - file: SerieTemporali/validazione-e-feature.md
+      title: Validazione e feature
+    - file: SerieTemporali/forecasting-neurale.md
+      title: Forecasting neurale
+  - file: PINN/overview.md
+    title: 'PINN: reti e fisica'
+    sections:
+    - file: PINN/come-funziona.md
+      title: La legge dentro la loss
+    - file: PINN/applicazioni-limiti.md
+      title: Dove la fisica aiuta
+
+- caption: Produzione e responsabilità
+  chapters:
+  - file: MLOps/overview.md
+    title: MLOps
+    sections:
+    - file: MLOps/dal-notebook-alla-produzione.md
+      title: Dal notebook alla produzione
+    - file: MLOps/dati-e-pipeline.md
+      title: Dati e pipeline
+    - file: MLOps/deployment-e-serving.md
+      title: Servire un modello
+    - file: MLOps/monitoring-e-drift.md
+      title: Monitoraggio e drift
+    - file: MLOps/llmops.md
+      title: LLMOps
+  - file: Interpretabilita/overview.md
+    title: Interpretabilità
+    sections:
+    - file: Interpretabilita/modelli-trasparenti-e-importanza.md
+      title: Modelli trasparenti
+    - file: Interpretabilita/spiegazioni-locali.md
+      title: Spiegazioni locali
+    - file: Interpretabilita/attribuzione-e-meccanicistica.md
+      title: Attribuzione e meccanicistica
+  - file: AIResponsabile/overview.md
+    title: AI responsabile
+    sections:
+    - file: AIResponsabile/equita-e-bias.md
+      title: Equità e bias
+    - file: AIResponsabile/privacy-e-robustezza.md
+      title: Privacy e robustezza
+    - file: AIResponsabile/allineamento-e-governance.md
+      title: Allineamento e governance
+
+- caption: Chiusura
+  chapters:
+  - file: Conclusioni/overview.md
+    title: Conclusioni
+  - file: references.md
+    title: Bibliografia

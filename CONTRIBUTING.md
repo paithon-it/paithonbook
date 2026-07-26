@@ -80,7 +80,11 @@ In pratica, scrivendo una pagina:
   anche in tema scuro. Niente immagini generate da AI, niente stock, niente
   gradienti. Se una figura non aggiunge comprensione, non serve;
 - **ogni nuovo file va aggiunto a `book/_toc.yml`**, altrimenti non viene
-  nemmeno costruito (`only_build_toc_files: true`).
+  nemmeno costruito (`only_build_toc_files: true`). Il toc raggruppa i
+  capitoli in parti (`parts:` con `caption:`, sono i blocchi dell'indice di
+  sinistra): un capitolo nuovo va dentro la parte a cui appartiene. Ogni voce
+  porta anche un `title:` breve — è l'etichetta nell'indice, dove un titolo
+  lungo andrebbe a capo due volte; il titolo esteso resta l'H1 della pagina.
 
 Una cosa che il libro **non** ospita: la cronaca. Classifiche, benchmark,
 prezzi, "questo modello supera quell'altro" invecchiano dentro un testo che si

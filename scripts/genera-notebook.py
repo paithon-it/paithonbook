@@ -142,8 +142,13 @@ TRIPLE = chr(39) * 3
 def capitoli() -> dict[str, list[pathlib.Path]]:
     """{nome del capitolo: pagine, nell'ordine del toc}."""
     toc = yaml.safe_load((LIBRO / "_toc.yml").read_text())
+    # Il toc raggruppa i capitoli in `parts` (con la caption che intesta
+    # l'indice); la forma piatta `chapters` resta accettata perche' e' quella
+    # di jb-book senza parti — le parti qui non contano, contano i capitoli.
+    elenco = [c for p in toc.get("parts", []) for c in p["chapters"]] \
+        or toc.get("chapters", [])
     fuori: dict[str, list[pathlib.Path]] = {}
-    for cap in toc["chapters"]:
+    for cap in elenco:
         if "/" not in cap["file"]:          # references.md e simili: non capitoli
             continue
         files = [cap["file"]] + [s["file"] for s in cap.get("sections", [])]

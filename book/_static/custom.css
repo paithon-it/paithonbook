@@ -1454,3 +1454,126 @@ html[data-pt-livello="superiore"] .pt-livello-inline .pt-livello__icona--superio
 }
 
 
+/* ============================================================
+   INDICE DI SINISTRA: PARTI, NUMERI, GERARCHIA
+   ============================================================
+   Trenta capitoli in fila, tutti dello stesso peso e coi titoli lunghi che
+   andavano a capo due volte, erano un muro: si scorreva senza sapere dove si
+   era. Tre interventi, tutti e tre nella sola colonna di sinistra.
+
+   1. Le PARTI del `_toc.yml` (`caption:`) spezzano la lista in blocchi
+      tematici — è la stessa idea delle parti di un libro a stampa.
+   2. Ogni capitolo porta il proprio NUMERO, lo stesso delle schede della
+      landing. Lo conta il CSS: il contatore vive su `nav.bd-links` e ogni
+      `li.toctree-l1` lo incrementa in ordine di documento, quindi attraversa
+      le liste separate delle parti e NON riparte da 1 a ogni intestazione.
+      Farlo qui invece che con `numbered:` del toc è deliberato: i numeri
+      restano un fatto di navigazione e non entrano nei titoli delle pagine né
+      nei `{numref}` delle figure.
+   3. Le sezioni di un capitolo rientrano sotto una linea che le lega al
+      capitolo, e restano più smorzate: la gerarchia si vede senza leggere.
+
+   La bibliografia è l'unica voce dell'indice senza numero — non è un
+   capitolo. Niente `::before`, quindi niente incremento: i capitoli restano
+   1–30 anche con lei in fondo. */
+
+nav.bd-links {
+  counter-reset: pt-capitolo;
+}
+
+/* Le liste dell'indice non sono prosa, ma ereditavano le regole degli elenchi
+   del testo (`ul, ol { margin: 2rem auto; max-width: … }`): 2rem di buco fra
+   l'intestazione di parte e il primo capitolo, e — peggio — i margini `auto`,
+   che centravano le liste corte facendo ballare il rientro da una parte
+   all'altra. Qui l'indice torna a filo, e il respiro lo danno le regole di
+   sotto, voce per voce. */
+nav.bd-links ul {
+  margin: 0;
+  padding-left: 0;
+  max-width: none;
+}
+
+nav.bd-links li {
+  margin: 0.15rem 0;
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+/* --- Intestazione di parte --- */
+nav.bd-links p.caption {
+  margin: 1.8rem 0 0.5rem;
+  padding: 1.05rem 0.65rem 0;
+  border-top: 1px solid var(--border-color);
+  font-family: var(--font-heading);
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: var(--accent-color);
+}
+
+/* La prima parte sta sotto la ricerca: niente riga di separazione, sarebbe
+   una seconda cornice a un dito da quella della scheda del repository. */
+nav.bd-links p.caption:first-child {
+  margin-top: 0.2rem;
+  padding-top: 0;
+  border-top: 0;
+}
+
+/* --- Capitolo: numero + titolo --- */
+/* Griglia a due colonne invece di un semplice `::before` inline: se il titolo
+   va a capo, la seconda riga resta allineata al titolo e non sotto il numero. */
+nav.bd-links li.toctree-l1 > a.reference {
+  display: grid;
+  grid-template-columns: 1.9em 1fr;
+  align-items: baseline;
+  padding: 0.3rem 0.65rem;
+  font-size: 1rem;
+  line-height: 1.4;
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+nav.bd-links li.toctree-l1 > a.reference::before {
+  counter-increment: pt-capitolo;
+  content: counter(pt-capitolo, decimal-leading-zero);
+  font-family: var(--font-mono);
+  font-size: 0.76em;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  color: var(--accent-ocra);
+}
+
+/* La bibliografia non è un capitolo: nessun numero, e soprattutto nessun
+   incremento — i capitoli restano 1–30 con lei in fondo. Il `::before` resta
+   però in piedi, vuoto: serve a tenere occupata la prima colonna della
+   griglia, altrimenti il titolo ci finisce dentro e va a capo ogni due
+   lettere. */
+nav.bd-links li.toctree-l1 > a.reference[href$="references.html"]::before {
+  content: "";
+  counter-increment: none;
+}
+
+nav.bd-links li.toctree-l1 > a.reference:hover {
+  color: var(--primary-dark);
+}
+
+nav.bd-links li.toctree-l1.current > a.reference,
+nav.bd-links li.toctree-l1.current > a.reference::before {
+  color: var(--primary-color);
+}
+
+/* --- Sezioni: rientrate, legate al capitolo da una linea --- */
+nav.bd-links li.toctree-l1 > details > ul {
+  margin: 0.15rem 0 0.7rem 1.05rem;
+  padding-left: 0.7rem;
+  border-left: 1px solid var(--border-strong);
+}
+
+nav.bd-links li.toctree-l2 > a.reference {
+  font-size: 0.94rem;
+  line-height: 1.4;
+}
+
+
