@@ -136,6 +136,8 @@ parts:
       title: Classificazione e transfer learning
     - file: VisioneArtificiale/data-augmentation.md
       title: Data augmentation
+    - file: VisioneArtificiale/senza-etichette.md
+      title: Imparare senza etichette
     - file: VisioneArtificiale/detection-segmentazione.md
       title: Detection e segmentazione
     - file: VisioneArtificiale/style-transfer.md
@@ -175,6 +177,8 @@ parts:
       title: La cassetta degli attrezzi
     - file: NaturalLanguageProcessing/rappresentare-testo.md
       title: Rappresentare il testo
+    - file: NaturalLanguageProcessing/tokenizzatori.md
+      title: Come si spezza il testo
     - file: NaturalLanguageProcessing/classificazione-testo.md
       title: Classificare il testo
     - file: NaturalLanguageProcessing/modelli-ngram.md
@@ -204,6 +208,8 @@ parts:
       title: Multimodalità
     - file: Transformers/llm.md
       title: I grandi modelli linguistici
+    - file: Transformers/mixture-of-experts.md
+      title: Mixture of Experts
     - file: Transformers/post-training.md
       title: Dopo il pre-addestramento
     - file: Transformers/rag.md
@@ -396,6 +402,8 @@ parts:
       title: Monitoraggio e drift
     - file: MLOps/llmops.md
       title: LLMOps
+    - file: MLOps/metriche-di-servizio.md
+      title: Misurare un servizio
   - file: Interpretabilita/overview.md
     title: Interpretabilità
     sections:
@@ -412,6 +420,8 @@ parts:
       title: Equità e bias
     - file: AIResponsabile/privacy-e-robustezza.md
       title: Privacy e robustezza
+    - file: AIResponsabile/sicurezza-llm.md
+      title: Attaccare e difendere un LLM
     - file: AIResponsabile/allineamento-e-governance.md
       title: Allineamento e governance
 

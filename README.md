@@ -43,11 +43,11 @@ I due livelli si alternano nello stesso capitolo: si può leggere tutto all'Elem
 | 6 | **PyTorch** | Tensori, autograd, `nn.Module`, training loop, prestazioni e scala |
 | 7 | **GPU e calcolo parallelo** | Sotto il cofano: architettura ed esecuzione, gerarchia di memoria, kernel e Triton, GEMM e tensor core, Flash Attention, parallelismo dati/tensor/pipeline e FSDP |
 | 8 | **Deep Learning** | Reti convoluzionali, ottimizzazione e regolarizzazione, architetture storiche |
-| 9 | **Visione Artificiale** | Classificazione e transfer learning, data augmentation, detection e segmentazione, style transfer |
+| 9 | **Visione Artificiale** | Classificazione e transfer learning, data augmentation, apprendimento auto-supervisionato (SimCLR, MoCo, BYOL, DINO, MAE), detection e segmentazione, style transfer |
 | 10 | **Reinforcement Learning** | MDP, value/policy iteration, Q-learning |
 | 11 | **Deep Reinforcement Learning** | DQN e policy gradient, actor-critic (A2C/A3C/PPO), controllo continuo (DDPG/TD3/SAC), RL basato su modello (MuZero, Dreamer), offline RL (Decision Transformer), esplorazione e reward hacking |
-| 12 | **Natural Language Processing** | Strumenti classici, embedding, classificazione, n-gram, RNN/LSTM, seq2seq, POS/NER, parsing, dialogo |
-| 13 | **Transformers** | Self-attention, architettura, GPT/BERT/ViT/CLIP, LLM e scaling, post-training (RLHF/DPO), RAG |
+| 12 | **Natural Language Processing** | Strumenti classici, embedding, tokenizzatori a sotto-parole (BPE, WordPiece, SentencePiece), classificazione, n-gram, RNN/LSTM, seq2seq, POS/NER, parsing, dialogo |
+| 13 | **Transformers** | Self-attention, architettura, Mixture of Experts, GPT/BERT/ViT/CLIP, LLM e scaling, post-training (RLHF/DPO), RAG |
 | 14 | **Attenzione lineare** | Dall'attenzione quadratica alla ricorrenza lineare; delta rule e gate; DeltaNet, GLA, RetNet, RWKV, xLSTM |
 | 15 | **State Space Model** | Dai sistemi dinamici a S4; Mamba e il selective scan; dualità SSD, Mamba-2 e Mamba-3; ibridi e limiti |
 | 16 | **Visione e linguaggio** | Modelli che vedono e parlano: addestramento contrastivo (CLIP, SigLIP), connettori (Flamingo, Q-Former, proiettore), fusione precoce e vocabolario comune, il costo del dettaglio (tessere, documenti), allucinazione visiva e azioni come token |
@@ -64,9 +64,9 @@ I due livelli si alternano nello stesso capitolo: si può leggere tutto all'Elem
 | 27 | **Sistemi di Raccomandazione** | Dal Netflix Prize alla matrix factorization e alla raccomandazione neurale |
 | 28 | **Serie temporali** | Prevedere dal passato: decomposizione, ARIMA e Holt-Winters, validazione temporale e metriche (MASE, pinball loss), forecasting neurale (TCN, DeepAR, N-BEATS, Transformer, foundation model) |
 | 29 | **Physics-Informed Neural Networks** | Le equazioni differenziali dentro la loss; operatori neurali |
-| 30 | **MLOps** | Dal notebook alla produzione: versionamento, pipeline di dati, serving e quantizzazione, monitoraggio del drift, LLMOps e deploy |
+| 30 | **MLOps** | Dal notebook alla produzione: versionamento, pipeline di dati, serving e quantizzazione, metriche di servizio (TTFT, TPOT, goodput), monitoraggio del drift, LLMOps e deploy |
 | 31 | **Interpretabilità e XAI** | Aprire la scatola nera: modelli trasparenti, importanza delle feature, LIME/SHAP/controfattuali, Grad-CAM e integrated gradients, interpretabilità meccanicistica |
-| 32 | **AI responsabile** | Equità e bias, privacy (differential privacy, federated learning) e robustezza agli attacchi avversari, allineamento (RLHF/DPO) e governance (l'AI Act europeo) |
+| 32 | **AI responsabile** | Equità e bias, privacy (differential privacy, federated learning) e robustezza agli attacchi avversari, sicurezza degli LLM (prompt injection, jailbreak, red teaming), allineamento (RLHF/DPO) e governance (l'AI Act europeo) |
 | 33 | **Conclusioni** | Bilancio e letture per proseguire |
 
 Il framework di riferimento per tutto il codice è **PyTorch** (con NumPy e

@@ -1,0 +1,498 @@
+# Misurare la generazione: TTFT, TPOT e goodput
+
+Nel 1968, in un articolo intitolato *Response Time in Man-Computer
+Conversational Transactions*, Robert B. Miller (ricercatore dell'IBM di
+Poughkeepsie) cataloga i tempi di risposta che una persona tollera quando
+dialoga con una macchina. Venticinque anni dopo Jakob Nielsen ne distilla, in
+*Usability Engineering*, tre soglie diventate proverbiali: entro
+**0,1 secondi** la risposta sembra istantanea, entro **1 secondo** il filo del
+pensiero non si spezza, oltre **10 secondi** l'attenzione se ne va altrove.
+Numeri che hanno retto mezzo secolo, perché non misurano un computer: misurano
+una persona.
+
+C'è però un presupposto nascosto, e i modelli generativi lo mandano in pezzi.
+Miller dà per scontato che la risposta sia un **evento**, l'istante in cui la
+macchina consegna il risultato. Per un classificatore è ancora così, e la
+latenza è un numero solo, il tempo fra la domanda e la risposta; la sezione sul
+deployment ci ha insegnato a prometterlo per percentili. Ma un modello che
+genera token non consegna niente in un istante: consegna un pezzo alla volta,
+per secondi, e mentre consegna il lettore sta già leggendo. La domanda «quanto
+ci mette?» ha smesso di avere una risposta sola, e non è una sottigliezza:
+tutte le tecniche della sezione precedente (continuous batching,
+PagedAttention, speculative decoding, quantizzazione) si valutano male se le si
+misura con il metro sbagliato. Prima di ottimizzare bisogna decidere che cosa
+vuol dire, per questo servizio, *andare veloce*.
+
+## Scomporre la latenza
+
+La generazione ha due fasi, incontrate nel capitolo sui Transformer parlando di
+KV cache. Nella prima il modello legge il **prompt**, tutti i token insieme in
+una sola passata, e produce le key e le value che finiranno in cache: è il
+**prefill**. Nella seconda genera un token alla volta, ciascuno condizionato ai
+precedenti: è il **decode**, la fase memory-bound su cui è costruita l'intera
+sezione precedente. Le due metriche di base cadono esattamente su questa
+frattura.
+
+`````{tab} Elementare
+
+Pensa a un menù degustazione. Due cose diverse ti fanno impazientire, e non
+vanno confuse: **quanto aspetti la prima portata** (sei seduto davanti a un
+tavolo vuoto e non succede niente) e **ogni quanto arrivano le portate dopo**
+(se si susseguono a ritmo la serata scorre, se fra una e l'altra passano venti
+minuti ti innervosisci, anche a parità di durata totale).
+
+Nella generazione di testo è identico. La prima attesa si chiama **TTFT**
+(*time to first token*): il tempo che passa da quando premi invio a quando
+compare la prima parola. La seconda si chiama **TPOT** (*time per output
+token*): la pausa media fra una parola e la successiva.
+
+Mettiamoci dei numeri. TTFT di 350 millisecondi, TPOT di 25 millisecondi,
+risposta lunga 200 token. Il primo token arriva dopo 0,350 secondi; poi ne
+mancano 199, uno ogni 0,025 secondi, cioè 4,975 secondi. In tutto **5,325
+secondi**. E il testo scorre sotto gli occhi a uno diviso 25 millisecondi, cioè
+**40 token al secondo**.
+
+`````
+
+`````{tab} Superiore
+
+Siano $\text{TTFT}$ il tempo dalla ricezione della richiesta all'emissione del
+primo token, $\text{TPOT}$ il tempo medio fra due token consecutivi della
+stessa risposta e $N_{\text{out}}$ il numero di token generati. La latenza
+totale si ricompone come
+
+$$
+T = \text{TTFT} + (N_{\text{out}} - 1)\cdot \text{TPOT},
+$$
+
+dove $N_{\text{out}} - 1$ conta gli intervalli fra token, uno in meno dei token
+stessi. Invertendo si ha la definizione con cui il TPOT si misura davvero,
+$\text{TPOT} = (T - \text{TTFT}) / (N_{\text{out}} - 1)$. La grandezza percepita
+non è $T$ ma la **velocità di scorrimento** $1/\text{TPOT}$, in token al
+secondo.
+
+Con $\text{TTFT} = 0{,}350$ s, $\text{TPOT} = 0{,}025$ s e
+$N_{\text{out}} = 200$: $T = 0{,}350 + 199 \times 0{,}025 = 5{,}325$ s, con uno
+scorrimento di $1/0{,}025 = 40$ token/s. Il rapporto
+$N_{\text{out}}/T = 200/5{,}325 \approx 37{,}6$ token/s è invece il throughput
+medio della *richiesta*: ingloba l'attesa iniziale e non descrive nessun istante
+dell'esperienza.
+
+Il TPOT è però una media, mentre ciò che l'utente vive è la distribuzione degli
+intervalli, la **ITL** (*inter-token latency*): coincidono solo se il flusso è
+regolare. Un singolo intervallo da due secondi in mezzo a duecento da 20
+millisecondi sposta il TPOT di dieci millisecondi e rovina la risposta, e per
+questo va sorvegliata anche l'ITL massima per richiesta.
+
+`````
+
+Che le due metriche non siano intercambiabili si vede spendendo la stessa
+latenza totale in due modi. Un sistema con TTFT di 0,350 s e TPOT di 25 ms
+impiega 5,325 secondi per 200 token; un secondo con TTFT di 2,340 s e TPOT di
+15 ms impiega $2{,}340 + 199 \times 0{,}015 = 5{,}325$ secondi, identici al
+millesimo. Ma il primo comincia a scrivere quasi subito e scorre a 40 token/s,
+il secondo lascia lo schermo bianco per oltre due secondi e poi sputa il testo
+a 67 token/s. Con un numero solo sarebbero indistinguibili.
+
+Il secondo, per giunta, spreca la sua velocità. Un lettore adulto legge qualche
+parola al secondo, che con i tokenizzatori in uso fa un ordine di grandezza di
+5–10 token al secondo: superata di qualche volta quella soglia il testo compare
+comunque più in fretta di quanto lo si legga, e accelerare ancora il TPOT non si
+vede più. Il TTFT invece si sente sempre, perché è tempo in cui non succede
+niente. È il primo criterio di progetto: **oltre una certa soglia il TPOT smette
+di essere percepibile, il TTFT no**.
+
+## Prefill e decode sono due mestieri diversi
+
+Fin qui la scomposizione sembra contabile. Non lo è: le due metriche misurano
+fasi che stressano la GPU in modo opposto, ed è questa la chiave di tutto il
+resto.
+
+`````{tab} Elementare
+
+Immagina una fotocopiatrice industriale che, per stampare anche una sola
+pagina, deve prima scaldarsi per un minuto. Con duemila pagine da copiare quel
+minuto si spalma su duemila fogli e non lo noti; con una pagina sola aspetti un
+minuto per un foglio, e la macchina passa quasi tutto il tempo a scaldarsi.
+
+Il prefill è il primo caso: il modello legge tutte le parole del prompt in una
+volta, quindi «scaldare la macchina» (portare i miliardi di numeri del modello
+dalla memoria ai circuiti di calcolo) è ripagato da un mucchio di lavoro utile.
+Il decode è il secondo: per una parola sola bisogna rileggere tutto il modello,
+e i circuiti restano quasi fermi ad aspettare. Sono due lavori che non
+convivono bene sulla stessa macchina nello stesso momento: se, mentre venti
+persone ricevono la risposta parola per parola, arriva qualcuno con un prompt
+lunghissimo, la fotocopiatrice si dedica a quello e gli altri vedono il testo
+bloccarsi a metà frase. Un singhiozzo.
+
+`````
+
+`````{tab} Superiore
+
+Riprendiamo l'**intensità aritmetica** del modello roofline, vista nel capitolo
+sulla GPU: quanti FLOP si eseguono per ogni byte letto dalla memoria. Per un
+modello da $N_p$ parametri il costo di una passata in avanti è circa $2 N_p$
+FLOP **per token** elaborato, mentre i pesi in 16 bit occupano $2 N_p$ byte e
+vanno letti una volta sola per passata. Se una passata elabora $n_{\text{tok}}$
+token insieme:
+
+$$
+I \approx \frac{2 N_p \, n_{\text{tok}}}{2 N_p} = n_{\text{tok}}
+\quad \text{FLOP/byte},
+$$
+
+dove $I$ è l'intensità aritmetica e $n_{\text{tok}}$ il numero di token che
+viaggiano nella stessa passata (trascurando KV cache e attenzione, che spostano
+il conto ma non la conclusione). Si noti che $n_{\text{tok}}$ conta i *token*,
+non le richieste: è la stessa quantità in prefill e in decode, ma la si riempie
+in due modi diversi. Le due fasi cadono così ai due lati del ginocchio del
+roofline, che sulle schede da datacenter sta fra qualche decina e qualche
+centinaio di FLOP/byte:
+
+- **prefill**: un prompt di 2.048 token dà $I \approx 2048$ FLOP/byte, ben oltre
+  il ginocchio. È **compute-bound**, e il tempo cresce all'incirca linearmente
+  con la lunghezza del prompt (finché il termine quadratico dell'attenzione
+  resta minoritario rispetto a quello lineare degli strati densi): ecco perché
+  il TTFT è dominato da quella.
+- **decode**: una sequenza sola dà $I \approx 1$ FLOP/byte, profondamente
+  **memory-bound** come stabilito nella sezione precedente. Il batching serve
+  proprio a spostare $I$ verso destra: 64 sequenze insieme, un token ciascuna,
+  portano l'intensità a circa 64 FLOP/byte.
+
+Quando le due fasi condividono la GPU nella stessa iterazione dello scheduler,
+la lunga si mangia la corta. Un prefill da 8.000 token può occupare la scheda
+per centinaia di millisecondi, e ogni sequenza in decode aspetta quel tempo
+prima del token successivo: **head-of-line blocking** classico, con la coda
+dell'ITL che si allunga e la p99 del TPOT che peggiora mentre la media resta
+accettabile {cite}`agrawal2024taming`.
+
+`````
+
+Contro questo scontro si sono affermati due rimedi, che risolvono lo stesso
+problema con filosofie opposte: uno fa convivere meglio le due fasi, l'altro le
+separa.
+
+`````{tab} Elementare
+
+Il primo rimedio è quello della cassa del supermercato. Se arriva un cliente col
+carrello pieno, la cassiera non gli passa tutta la spesa in un colpo lasciando
+in attesa chi ha in mano solo il pane: gli passa una decina di articoli, poi
+serve chi ha il pane, poi altri dieci, e così via. Il carrello finisce un po'
+più tardi, ma nessuno resta fermo a lungo. Applicato ai modelli si chiama
+**chunked prefill**: il prompt lungo viene spezzato in pezzi, e fra un pezzo e
+l'altro si infilano i passi di generazione di tutti gli altri.
+
+Il secondo è più radicale: **due reparti separati**. Un gruppo di macchine legge
+solo i prompt, un altro genera solo le risposte, ciascuno organizzato per il
+proprio mestiere. È la **disaggregazione**, e il prezzo è che gli appunti presi
+leggendo (la KV cache) vanno trasferiti dal primo reparto al secondo, il che
+costa tempo e cavi veloci.
+
+`````
+
+`````{tab} Superiore
+
+Il **chunked prefill** {cite}`agrawal2024taming` sostituisce lo scheduling per
+richiesta con uno scheduling a **budget di token per iterazione**: un prefill di
+$P$ token è spezzato in $\lceil P/c \rceil$ pezzi di dimensione $c$, e a ogni
+iterazione lo scheduler compone un batch con un pezzo di prefill più tutte le
+sequenze in decode pronte. L'idea nasce in Sarathi, che accosta i *chunked
+prefill* a decodifiche «a rimorchio» (*piggybacked*); Sarathi-Serve battezza
+*stall-free batching* lo scheduling che ne risulta, quello che non sospende mai
+le generazioni in corso. Il guadagno è doppio: il decode non si ferma mai per
+più del tempo di un pezzo, e il pezzo di prefill riempie di lavoro
+compute-bound un'iterazione che sarebbe stata memory-bound.
+
+Il parametro $c$ è un compromesso esplicito fra le due metriche. Con $c$ grande
+il prefill finisce prima (TTFT più basso) ma il singhiozzo si allunga (TPOT
+peggiore); con $c$ piccolo vale il contrario, e in più il pezzo $k$-esimo deve
+rileggere la KV cache dei pezzi $1, \dots, k-1$, quindi spezzare troppo fa
+ricomparire il traffico di memoria che il prefill evitava. Un ordine di
+grandezza: 8.000 token in pezzi da 512 danno
+$\lceil 8000/512 \rceil = 16$ iterazioni, e uno stallo massimo che dura quanto
+un pezzo invece che quanto l'intero prompt, cioè quasi sedici volte meno.
+
+La **disaggregazione** {cite}`zhong2024distserve` prende la strada opposta:
+istanze distinte per prefill e decode, ciascuna dimensionata e parallelizzata
+per il proprio collo di bottiglia (il prefill vuole calcolo e batch di token, il
+decode vuole banda e batch di sequenze). Nessuna interferisce con l'altra, e i
+due obiettivi di servizio si regolano in modo indipendente. Il costo è il
+**trasferimento della KV cache** fra i due nodi, proporzionale alla lunghezza
+del prompt: su interconnessioni veloci (NVLink, InfiniBand) resta una frazione
+del tempo di prefill, su reti lente diventa il nuovo collo di bottiglia. E
+servono abbastanza richieste per tenere pieni due gruppi di GPU: sotto una certa
+scala, due reparti mezzi vuoti costano più di uno pieno.
+
+`````
+
+## Il goodput, ovvero contare solo ciò che è servito bene
+
+Con queste metriche in mano si può dire perché il **throughput** da solo
+inganna: conta le richieste servite nell'unità di tempo, e non chiede *come*
+siano state servite. Il termine che ripara il difetto lo prendiamo in prestito
+dalle reti, dove **goodput** indica da sempre i byte davvero utili
+all'applicazione, al netto di ritrasmissioni e intestazioni.
+
+`````{tab} Elementare
+
+Un ristorante che stipa duecento coperti a sera, ma dove metà dei clienti
+aspetta il primo piatto quaranta minuti e se ne va prima del dolce, non sta
+servendo duecento coperti: ne serve cento e ne scontenta altrettanti. Se il
+proprietario guarda solo il numero dei coperti, il conto gli torna e continuerà
+a stipare.
+
+Il **throughput** è il numero dei coperti: quante richieste il sistema ha
+sfornato in un secondo. Il **goodput** è il numero dei clienti serviti *bene*:
+si contano solo le richieste che hanno rispettato le promesse fatte, per esempio
+«il primo token entro mezzo secondo e gli altri a non più di 50 millisecondi
+l'uno dall'altro». La differenza non è filosofica: allargare il batch (servire
+più richieste nella stessa infornata) fa quasi sempre salire il throughput,
+perché la GPU lavora su più cose insieme, ma allunga l'attesa di ciascuno
+finché comincia a sfondare gli obiettivi. Il throughput sale mentre il goodput
+crolla: si servono più persone, e se ne accontentano meno.
+
+`````
+
+`````{tab} Superiore
+
+Siano $\tau_{\text{f}}$ e $\tau_{\text{p}}$ le soglie dichiarate per TTFT e
+TPOT, e $R$ le richieste completate in una finestra di durata $T$. Il goodput è
+
+$$
+G = \frac{1}{T}\sum_{i=1}^{R}
+\mathbb{1}\!\left[\text{TTFT}_i \le \tau_{\text{f}}
+\ \wedge\ \text{TPOT}_i \le \tau_{\text{p}}\right],
+$$
+
+dove $\mathbb{1}[\cdot]$ vale $1$ se la richiesta $i$ rispetta **entrambe** le
+soglie e $0$ altrimenti. Il throughput è la stessa somma senza l'indicatore,
+$R/T$: il goodput è dunque il throughput moltiplicato per la frazione conforme,
+e non può mai superarlo. Nella pianificazione della capacità se ne usa la
+variante duale, quella con cui il termine si è diffuso nella letteratura sul
+serving degli LLM {cite}`zhong2024distserve`: il **massimo tasso di richieste al
+secondo per GPU** che mantiene la conformità sopra una quota fissata (per
+esempio il $90\%$). Definito così è la metrica su cui si dimensiona il servizio,
+perché tiene insieme il costo (le GPU) e la promessa (le soglie).
+
+Due avvertenze. Il goodput dipende dalle soglie, quindi non è confrontabile fra
+sistemi che ne dichiarano di diverse: è un numero interno, non un vanto da
+comunicato. E il throughput misurato in **token al secondo** inganna più di
+quello in richieste al secondo, perché somma i token di prefill a quelli di
+decode: un carico di prompt lunghi e risposte corte produce un numero
+spettacolare senza che nessun utente veda il testo scorrere più in fretta.
+
+`````
+
+Vale la pena vederlo su due configurazioni dello stesso sistema, con obiettivi
+di 500 ms sul TTFT e 50 ms sul TPOT. Le cifre che seguono escono dalla
+simulazione di poche righe più avanti, non da una misura sul campo: servono a
+mostrare la forma del fenomeno, non a stimarne l'entità su un modello
+particolare. La prima configurazione serve un batch da 16 sequenze: smaltisce
+20,0 richieste al secondo e ne tiene il 92,5% dentro entrambe le soglie, per un
+goodput di 18,5. La seconda allarga il batch a 64: il throughput sale a 32,0
+richieste al secondo, il $60\%$ in più, ma la frazione conforme scende al 49,4%
+e il goodput cade a 15,8, quasi il $15\%$ in meno della prima. Il grafico del
+throughput dice che la seconda configurazione è migliore; quello del goodput
+dice il contrario, e ha ragione lui.
+
+## Le medie mentono, e qui in tre modi
+
+La sezione sul deployment ha già stabilito che uno SLA si scrive sui percentili
+alti (p95, p99) e non sulla media, e «Sorvegliare un modello vivo» li ha messi
+in cima al cruscotto. Qui la regola vale doppio, per tre ragioni specifiche
+della generazione.
+
+La prima è che i percentili vanno riportati **per ciascuna metrica**, non sulla
+latenza complessiva: la p99 del TTFT e quella del TPOT si degradano per cause
+diverse (prompt lunghi e code in ingresso la prima, batch troppo grandi e
+prefill intrusi la seconda) e un numero aggregato le confonde.
+
+La seconda è che le code si compongono. Un agente, come abbiamo visto nel
+capitolo dedicato, concatena parecchie chiamate per rispondere una volta: se
+ciascuna ha l'$1\%$ di probabilità di finire nella coda lenta, la probabilità
+che *almeno una* di venti ci finisca è $1 - 0{,}99^{20} \approx 18\%$. Una p99
+rassicurante sul singolo passo diventa un utente scontento su cinque
+sull'intera interazione.
+
+La terza si vede nell'esempio appena fatto: a batch 64 il TTFT **medio** è 457
+ms, dentro l'obiettivo di 500 ms, mentre la p99 è 893 ms, quasi il doppio. Chi
+riportasse la media direbbe in buona fede che il sistema rispetta la promessa, e
+sarebbe smentito da una richiesta su cento. Vale la regola operativa: **una
+media che migliora mentre la p99 peggiora è un peggioramento**, da trattare come
+una regressione. È il primo livello del cruscotto di «Sorvegliare un modello
+vivo» (salute del servizio: latenza, errori, uptime), declinato sulle due
+latenze che la generazione ha invece di una.
+
+## La leva che resta: riusare il prefisso
+
+Scelte le tecniche di serving e sistemato lo scheduling fra prefill e decode,
+quale leva resta per abbassare il TTFT? Una soprattutto, e non riguarda il
+modello ma il traffico: nei sistemi reali le richieste **non sono
+indipendenti**, condividono l'inizio del prompt.
+
+`````{tab} Elementare
+
+Pensa a uno studio notarile dove ogni atto comincia con le stesse quattro pagine
+di premesse, e solo dalla quinta si parla del caso. Un copista che ricopiasse
+ogni atto da capo riscriverebbe quelle pagine centinaia di volte: basta tenerne
+una copia pronta e ricopiare solo il seguito.
+
+Nei sistemi che servono modelli generativi succede esattamente questo, e tre
+casi coprono quasi tutto il traffico. L'istruzione di sistema (le righe che
+spiegano al modello come comportarsi) è identica per tutti gli utenti. Un
+documento allegato su cui si fanno dieci domande è lo stesso dieci volte. E
+soprattutto una conversazione: al decimo turno il prompt è tutta la
+conversazione più l'ultima domanda, e i primi nove turni li abbiamo già letti
+nove volte.
+
+Gli appunti che il modello prende su un pezzo di testo dipendono solo da quel
+pezzo e da ciò che lo precede: se l'inizio è identico, gli appunti sull'inizio
+sono identici. I conti della conversazione lo dicono meglio di ogni argomento.
+Poniamo che ogni turno aggiunga 200 token (la domanda più la risposta), così che
+al primo turno il modello ne legga 200, al secondo 400, al terzo 600 e via
+salendo. In dieci turni, rileggere tutto ogni volta costa
+$200 \times (1+2+\dots+10) = 11\,000$ token di lettura; riusare gli appunti
+significa leggerne 200 per turno, cioè $200 \times 10 = 2\,000$ in tutto,
+cinque volte e mezzo di meno. A venti turni il rapporto sale a dieci e mezzo, e
+continua a crescere: più lunga è la conversazione, più conviene.
+
+`````
+
+`````{tab} Superiore
+
+Nell'attenzione causale la coppia $(K, V)$ della posizione $j$ dipende solo dai
+token $1, \dots, j$. Due richieste che condividono un prefisso hanno quindi, per
+quelle posizioni, una KV cache **bit a bit identica**, a parità di pesi,
+precisione, eventuale adattatore LoRA e codifica posizionale. La chiave del
+riuso è la sequenza esatta di **identificativi di token**, non la stringa.
+
+Il meccanismo di riferimento è la **RadixAttention** di SGLang
+{cite}`zheng2024sglang`: la cache non è una tabella piatta ma un **albero dei
+prefissi** compresso (un radix tree) i cui archi sono sequenze di token e i cui
+nodi puntano ai blocchi di KV cache. Una richiesta nuova cammina sull'albero
+finché i token coincidono, riusa i blocchi trovati e calcola il prefill solo per
+la coda non trovata; il ramo nuovo si innesta e resta disponibile per le
+richieste successive. Lo sfratto è a politica LRU con un conteggio dei
+riferimenti, così che i blocchi in uso non vengano rimossi, e lo scheduler può
+ordinare la coda per affinità di prefisso, in modo da massimizzare i colpi a
+cache prima che i rami vengano sfrattati.
+
+Il legame con la sezione precedente è diretto: la condivisione è possibile
+*perché* la KV cache è già paginata in blocchi di taglia fissa con una block
+table {cite}`kwon2023efficient`. Condividere significa far puntare due block
+table allo stesso blocco fisico e incrementare un contatore, la stessa idea di
+*copy-on-write* dei sistemi operativi; RadixAttention aggiunge l'indice che
+rende la condivisione sistematica **fra richieste diverse nel tempo**, non solo
+fra sequenze compresenti nello stesso batch. L'effetto sul TTFT è quasi
+proporzionale alla frazione di prompt trovata in cache, e in una conversazione
+di $n$ turni da $m$ token ciascuno (il prompt del turno $k$ è lungo $k\,m$) il
+prefill totale (dove $n$ è il numero di turni e $m$ i token che ciascuno
+aggiunge) scende da $m\,n(n+1)/2$ a $m\,n$: da quadratico a lineare nei turni,
+con un risparmio di un fattore $(n+1)/2$.
+
+`````
+
+Una cautela va aggiunta, perché riguarda la sicurezza e non le prestazioni. La
+cache dei prefissi è una **superficie condivisa fra utenti diversi**, e il TTFT
+diventa esso stesso un segnale osservabile: se un sistema riusa i prefissi fra
+clienti distinti, una risposta anormalmente rapida a un prompt tentato rivela
+che *qualcun altro* ha già inviato quel testo. È un canale laterale a base di
+tempo, della stessa famiglia degli attacchi che il capitolo sull'AI responsabile
+affronterà parlando di privacy, e le difese sono di progetto, non di taratura:
+partizionare la cache per cliente e condividere solo i prefissi dichiarati
+pubblici, tipicamente l'istruzione di sistema del prodotto. Stessa disciplina
+per la correttezza: una cache che ignori modello, adattatore e precisione con
+cui i blocchi sono stati calcolati restituisce gli appunti di un altro modello,
+e nessuno se ne accorge.
+
+## Misurare in venti righe
+
+Il codice qui sotto prende, per ogni richiesta di una finestra di dieci secondi,
+il suo TTFT e il suo TPOT (qui simulati con una lognormale, la forma tipica
+delle latenze: compatta al centro, con una coda lunga a destra) e ne ricava
+throughput, goodput e percentili.
+
+```python
+import numpy as np
+
+rng = np.random.default_rng(0)
+
+SLO_TTFT, SLO_TPOT = 0.500, 0.050   # obiettivi dichiarati: 500 ms e 50 ms
+FINESTRA = 10.0                     # secondi di traffico osservato
+
+def misura(nome, n, ttft_mediano, tpot_mediano, sigma=0.35):
+    """Simula n richieste servite nella finestra e ne riassume le metriche."""
+    ttft = rng.lognormal(np.log(ttft_mediano), sigma, n)  # code lunghe a destra
+    tpot = rng.lognormal(np.log(tpot_mediano), sigma, n)
+    ok = (ttft <= SLO_TTFT) & (tpot <= SLO_TPOT)          # richiesta "buona"
+    p50, p95, p99 = np.percentile(ttft, [50, 95, 99]) * 1000
+    print(f"{nome:<9}{n / FINESTRA:8.1f}{ok.sum() / FINESTRA:9.1f}{ok.mean():10.1%}"
+          f"{ttft.mean() * 1000:9.0f}{p50:7.0f}{p95:7.0f}{p99:7.0f}")
+
+print(f"{'config':<9}{'ric/s':>8}{'good/s':>9}{'conformi':>10}"
+      f"{'TTFTmed':>9}{'p50':>7}{'p95':>7}{'p99':>7}")
+misura("batch 16", 200, 0.28, 0.028)
+misura("batch 64", 320, 0.43, 0.043)
+```
+
+L'output è la tabella dell'esempio di poco fa:
+
+```text
+config      ric/s   good/s  conformi  TTFTmed    p50    p95    p99
+batch 16     20.0     18.5     92.5%      297    285    486    530
+batch 64     32.0     15.8     49.4%      457    429    729    893
+```
+
+Il throughput cresce del $60\%$ (da 20,0 a 32,0) e il goodput cala di quasi il
+$15\%$ (da 18,5 a 15,8): allargare il batch ha peggiorato il servizio mentre
+migliorava il numero che di solito si guarda. La media del TTFT resta sotto i
+500 ms in entrambe le configurazioni e da sola non segnala niente; la p99 passa
+da 530 a 893 ms e racconta la verità. Le stesse righe, girate su misure reali e
+ripetute a ogni finestra, sono lo scheletro di un cruscotto.
+
+## Che cosa vuol dire funzionare
+
+Queste metriche non sono contabilità da presentare a fine mese: sono la
+**definizione operativa** di cosa vuol dire, per questo servizio, funzionare.
+Sceglierle equivale a decidere quali richieste contano e quali no, e ogni
+ottimizzazione successiva si muoverà nella direzione che quella scelta indica.
+Un sistema tarato sul throughput diventerà bravissimo a servire molte richieste
+male; uno tarato sul TTFT medio diventerà bravissimo a nascondere la coda lenta
+a chi guarda i grafici. È lo stesso avvertimento già dato sulle metriche di un
+classificatore e sui surrogati del giudizio umano: ottimizzare contro una misura
+sbagliata non produce un fallimento rumoroso, produce un successo apparente.
+
+```{admonition} Da ricordare
+:class: important
+- Per un modello che genera, la latenza non è un numero solo: si scompone in
+  **TTFT** (attesa del primo token, dominata dal **prefill** e quindi dalla
+  lunghezza del prompt) e **TPOT** o **ITL** (pausa fra token successivi, la
+  fase **decode** memory-bound), e si ricompone come
+  $T = \text{TTFT} + (N_{\text{out}} - 1)\,\text{TPOT}$. La velocità percepita è
+  $1/\text{TPOT}$.
+- **Prefill e decode sono mestieri opposti**: l'intensità aritmetica è pari al
+  numero di token elaborati insieme, quindi il prefill è compute-bound e il
+  decode memory-bound. Sulla stessa GPU l'uno blocca l'altro; i rimedi sono il
+  **chunked prefill** {cite}`agrawal2024taming`, che spezza il prompt e lo
+  intercala ai passi di decode, e la **disaggregazione**
+  {cite}`zhong2024distserve`, che li manda su GPU diverse al prezzo di
+  trasferire la KV cache.
+- Il **goodput** conta solo le richieste servite **entro gli obiettivi
+  dichiarati**: allargare il batch alza il throughput e può abbassare il goodput
+  (nell'esempio $+60\%$ di richieste servite e $-15\%$ di richieste servite
+  *bene*). È la misura che rende visibile il compromesso fra throughput e
+  latenza.
+- **Le medie mentono**: p50, p95 e p99 vanno riportati per ciascuna metrica; le
+  code si compongono lungo le catene di chiamate
+  ($1 - 0{,}99^{20} \approx 18\%$ con venti passi); una media che migliora
+  mentre la p99 peggiora è una regressione.
+- Il **riuso del prefisso** è la leva che resta: istruzione di sistema,
+  documenti allegati e cronologia di conversazione rendono identica una parte
+  della KV cache. Un **albero dei prefissi** {cite}`zheng2024sglang` la condivide
+  fra richieste diverse (possibile perché la cache è già paginata in blocchi
+  {cite}`kwon2023efficient`) e in una conversazione porta il prefill totale da
+  quadratico a lineare nei turni.
+- La cache condivisa è però una **superficie fra utenti**: un TTFT anormalmente
+  basso rivela che quel prefisso era già stato inviato da qualcuno. Si partiziona
+  per cliente e si condividono solo i prefissi pubblici.
+```

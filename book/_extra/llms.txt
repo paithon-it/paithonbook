@@ -78,6 +78,7 @@ della sezione e URL), non si ridistribuisce il testo.
 - [Visione artificiale](https://book.paithon.it/main/VisioneArtificiale/overview.html): Nel 1966, al MIT, Seymour Papert affidò a uno studente un compito per l'estate: collegare una telecamera a un computer e insegnargli a descrivere quello che vedeva.
   - [Classificazione e transfer learning](https://book.paithon.it/main/VisioneArtificiale/classificazione-transfer.html)
   - [Data augmentation](https://book.paithon.it/main/VisioneArtificiale/data-augmentation.html)
+  - [Imparare senza etichette](https://book.paithon.it/main/VisioneArtificiale/senza-etichette.html)
   - [Detection e segmentazione](https://book.paithon.it/main/VisioneArtificiale/detection-segmentazione.html)
   - [Neural style transfer](https://book.paithon.it/main/VisioneArtificiale/style-transfer.html)
 
@@ -99,6 +100,7 @@ della sezione e URL), non si ridistribuisce il testo.
 - [Natural Language Processing](https://book.paithon.it/main/NaturalLanguageProcessing/overview.html): Nel 1954 un gruppo di ricercatori di IBM e della Georgetown University annunciò al mondo una traduzione automatica dal russo all'inglese: sessanta frasi, tradotte da un calcolatore, davanti alla…
   - [La cassetta degli attrezzi](https://book.paithon.it/main/NaturalLanguageProcessing/strumenti-classici.html)
   - [Rappresentare il testo](https://book.paithon.it/main/NaturalLanguageProcessing/rappresentare-testo.html)
+  - [Come si spezza il testo](https://book.paithon.it/main/NaturalLanguageProcessing/tokenizzatori.html)
   - [Classificare il testo](https://book.paithon.it/main/NaturalLanguageProcessing/classificazione-testo.html)
   - [Modelli n-gram](https://book.paithon.it/main/NaturalLanguageProcessing/modelli-ngram.html)
   - [Modelli di sequenza](https://book.paithon.it/main/NaturalLanguageProcessing/modelli-sequenza.html)
@@ -113,6 +115,7 @@ della sezione e URL), non si ridistribuisce il testo.
   - [Esempi pratici](https://book.paithon.it/main/Transformers/esempi.html)
   - [Multimodalità](https://book.paithon.it/main/Transformers/multimodalita.html)
   - [I grandi modelli linguistici](https://book.paithon.it/main/Transformers/llm.html)
+  - [Mixture of Experts](https://book.paithon.it/main/Transformers/mixture-of-experts.html)
   - [Dopo il pre-addestramento](https://book.paithon.it/main/Transformers/post-training.html)
   - [Retrieval e RAG](https://book.paithon.it/main/Transformers/rag.html)
   - [Tendenze e limiti](https://book.paithon.it/main/Transformers/tendenzefuture.html)
@@ -126,7 +129,7 @@ della sezione e URL), non si ridistribuisce il testo.
   - [Mamba](https://book.paithon.it/main/StateSpaceModel/mamba.html)
   - [Mamba-2 e Mamba-3](https://book.paithon.it/main/StateSpaceModel/dualita-e-mamba-2-3.html)
   - [Panorama e limiti](https://book.paithon.it/main/StateSpaceModel/panorama-e-limiti.html)
-- [Visione e linguaggio](https://book.paithon.it/main/VisioneLinguaggio/overview.html): Il 7 luglio 1966, al Project MAC del MIT, Seymour Papert batte a macchina un promemoria di tre pagine intestato Vision Memo No. 100.
+- [Visione e linguaggio](https://book.paithon.it/main/VisioneLinguaggio/overview.html): Il 7 luglio 1966, al Project MAC del MIT, il gruppo di intelligenza artificiale diffonde un promemoria di sei pagine intestato Vision Memo. No. 100.
   - [Allineare due spazi](https://book.paithon.it/main/VisioneLinguaggio/allineare-due-spazi.html)
   - [Innestare gli occhi](https://book.paithon.it/main/VisioneLinguaggio/innestare-gli-occhi.html)
   - [Fusione precoce e tardiva](https://book.paithon.it/main/VisioneLinguaggio/fusione-precoce-tardiva.html)
@@ -208,6 +211,7 @@ della sezione e URL), non si ridistribuisce il testo.
   - [Servire un modello](https://book.paithon.it/main/MLOps/deployment-e-serving.html)
   - [Monitoraggio e drift](https://book.paithon.it/main/MLOps/monitoring-e-drift.html)
   - [LLMOps](https://book.paithon.it/main/MLOps/llmops.html)
+  - [Misurare un servizio](https://book.paithon.it/main/MLOps/metriche-di-servizio.html)
 - [Interpretabilità](https://book.paithon.it/main/Interpretabilita/overview.html): Nel 2016 tre ricercatori dell'Università di Washington (Marco Túlio Ribeiro, Sameer Singh e Carlos Guestrin) addestrarono un classificatore a distinguere le foto di husky da quelle di lupo.
   - [Modelli trasparenti](https://book.paithon.it/main/Interpretabilita/modelli-trasparenti-e-importanza.html)
   - [Spiegazioni locali](https://book.paithon.it/main/Interpretabilita/spiegazioni-locali.html)
@@ -215,6 +219,7 @@ della sezione e URL), non si ridistribuisce il testo.
 - [AI responsabile](https://book.paithon.it/main/AIResponsabile/overview.html): Nel maggio del 2016 la redazione investigativa di ProPublica pubblica un'inchiesta destinata a diventare un caso di scuola .
   - [Equità e bias](https://book.paithon.it/main/AIResponsabile/equita-e-bias.html)
   - [Privacy e robustezza](https://book.paithon.it/main/AIResponsabile/privacy-e-robustezza.html)
+  - [Attaccare e difendere un LLM](https://book.paithon.it/main/AIResponsabile/sicurezza-llm.html)
   - [Allineamento e governance](https://book.paithon.it/main/AIResponsabile/allineamento-e-governance.html)
 
 ## Chiusura

@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://book.paithon.it/main/intro.html</loc>
-    <lastmod>2026-07-26T10:33:44+00:00</lastmod>
+    <lastmod>2026-07-30T21:11:14+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/Introduzione/overview.html</loc>
@@ -213,6 +213,9 @@
     <lastmod>2026-07-26T10:19:44+00:00</lastmod>
   </url>
   <url>
+    <loc>https://book.paithon.it/main/VisioneArtificiale/senza-etichette.html</loc>
+  </url>
+  <url>
     <loc>https://book.paithon.it/main/VisioneArtificiale/detection-segmentazione.html</loc>
     <lastmod>2026-07-26T10:19:44+00:00</lastmod>
   </url>
@@ -273,6 +276,9 @@
     <lastmod>2026-07-26T10:19:44+00:00</lastmod>
   </url>
   <url>
+    <loc>https://book.paithon.it/main/NaturalLanguageProcessing/tokenizzatori.html</loc>
+  </url>
+  <url>
     <loc>https://book.paithon.it/main/NaturalLanguageProcessing/classificazione-testo.html</loc>
     <lastmod>2026-07-26T10:19:44+00:00</lastmod>
   </url>
@@ -322,11 +328,15 @@
   </url>
   <url>
     <loc>https://book.paithon.it/main/Transformers/multimodalita.html</loc>
-    <lastmod>2026-07-26T10:19:44+00:00</lastmod>
+    <lastmod>2026-07-30T21:11:14+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/Transformers/llm.html</loc>
     <lastmod>2026-07-26T10:19:44+00:00</lastmod>
+  </url>
+  <url>
+    <loc>https://book.paithon.it/main/Transformers/mixture-of-experts.html</loc>
+    <lastmod>2026-07-30T22:41:17+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/Transformers/post-training.html</loc>
@@ -382,21 +392,27 @@
   </url>
   <url>
     <loc>https://book.paithon.it/main/VisioneLinguaggio/overview.html</loc>
+    <lastmod>2026-07-30T21:11:14+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/VisioneLinguaggio/allineare-due-spazi.html</loc>
+    <lastmod>2026-07-30T21:11:14+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/VisioneLinguaggio/innestare-gli-occhi.html</loc>
+    <lastmod>2026-07-30T21:11:14+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/VisioneLinguaggio/fusione-precoce-tardiva.html</loc>
+    <lastmod>2026-07-30T21:11:14+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/VisioneLinguaggio/risoluzione-e-dettaglio.html</loc>
+    <lastmod>2026-07-30T21:11:14+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/VisioneLinguaggio/vedere-quel-che-non-ce.html</loc>
+    <lastmod>2026-07-30T21:11:14+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/Agenti/overview.html</loc>
@@ -416,7 +432,7 @@
   </url>
   <url>
     <loc>https://book.paithon.it/main/Agenti/architetture-e-valutazione.html</loc>
-    <lastmod>2026-07-26T10:19:44+00:00</lastmod>
+    <lastmod>2026-07-30T21:11:14+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/IngegneriaLLM/overview.html</loc>
@@ -436,21 +452,27 @@
   </url>
   <url>
     <loc>https://book.paithon.it/main/SistemiMultiAgente/overview.html</loc>
+    <lastmod>2026-07-30T21:11:14+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/SistemiMultiAgente/costo-del-coordinamento.html</loc>
+    <lastmod>2026-07-30T21:11:14+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/SistemiMultiAgente/topologie.html</loc>
+    <lastmod>2026-07-30T21:11:14+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/SistemiMultiAgente/protocolli-e-consenso.html</loc>
+    <lastmod>2026-07-30T21:11:14+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/SistemiMultiAgente/imparare-insieme.html</loc>
+    <lastmod>2026-07-30T21:11:14+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/SistemiMultiAgente/sciami-e-simulazioni.html</loc>
+    <lastmod>2026-07-30T21:11:14+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/Audio/overview.html</loc>
@@ -637,6 +659,9 @@
     <lastmod>2026-07-26T10:19:44+00:00</lastmod>
   </url>
   <url>
+    <loc>https://book.paithon.it/main/MLOps/metriche-di-servizio.html</loc>
+  </url>
+  <url>
     <loc>https://book.paithon.it/main/Interpretabilita/overview.html</loc>
     <lastmod>2026-07-26T10:19:44+00:00</lastmod>
   </url>
@@ -663,6 +688,9 @@
   <url>
     <loc>https://book.paithon.it/main/AIResponsabile/privacy-e-robustezza.html</loc>
     <lastmod>2026-07-26T10:19:44+00:00</lastmod>
+  </url>
+  <url>
+    <loc>https://book.paithon.it/main/AIResponsabile/sicurezza-llm.html</loc>
   </url>
   <url>
     <loc>https://book.paithon.it/main/AIResponsabile/allineamento-e-governance.html</loc>

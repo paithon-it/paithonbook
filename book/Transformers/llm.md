@@ -507,7 +507,10 @@ capitale della Francia?» può rispondere «Qual è la capitale della Spagna? Qu
 completare la lista è probabilissimo. Trasformare il completatore in un
 interlocutore che risponde, segue istruzioni e rifiuta le richieste dannose
 richiede una seconda fase di addestramento, con ricette proprie: è il
-**post-training**, tema della prossima sezione.
+**post-training**, e ha una sezione tutta sua poco più avanti. Prima però
+conviene fermarsi su un'idea architetturale che le leggi di scala rendono
+inevitabile: se crescere conviene ma il conto per token no, si può far crescere
+il modello *senza* far crescere il calcolo che ogni token attraversa.
 
 ```{admonition} Da ricordare
 :class: important
