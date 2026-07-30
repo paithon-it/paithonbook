@@ -50,22 +50,24 @@ I due livelli si alternano nello stesso capitolo: si può leggere tutto all'Elem
 | 13 | **Transformers** | Self-attention, architettura, GPT/BERT/ViT/CLIP, LLM e scaling, post-training (RLHF/DPO), RAG |
 | 14 | **Attenzione lineare** | Dall'attenzione quadratica alla ricorrenza lineare; delta rule e gate; DeltaNet, GLA, RetNet, RWKV, xLSTM |
 | 15 | **State Space Model** | Dai sistemi dinamici a S4; Mamba e il selective scan; dualità SSD, Mamba-2 e Mamba-3; ibridi e limiti |
-| 16 | **Agenti e applicazioni LLM** | Tool use e ReAct, RAG avanzato (HyDE, reranking, Self-RAG), context engineering, architetture multi-agente e valutazione |
-| 17 | **Prompt, contesto e loop** | Programmare gli LLM a parole su tre livelli concentrici: prompt engineering (ruoli, few-shot, chain-of-thought, self-consistency), context engineering (le quattro mosse, i guasti del contesto, il PRP), loop engineering (il ciclo con validation gate, split maker/checker, governance) |
-| 18 | **Audio oltre la voce** | Dal suono alle feature (spettrogramma, mel, MFCC), classificazione (AudioSet, AST), rappresentazioni auto-supervisionate (wav2vec 2.0, HuBERT), codec neurali (VQ-VAE, RVQ, EnCodec), generazione (WaveNet, AudioLM, MusicGen) |
-| 19 | **Speech Recognition** | Dalla voce al testo: allineamento e CTC, modelli con attenzione, Whisper, sintesi vocale (TTS) |
-| 20 | **Generative Adversarial Network** | Il gioco avversario, applicazioni ed evoluzioni |
-| 21 | **Modelli di Diffusione** | Da DDPM a Stable Diffusion e ai Diffusion Transformer (DiT, Sora) |
-| 22 | **Modelli a energia** | Il paesaggio invece della probabilità: memoria associativa di Hopfield, macchine di Boltzmann e contrastive divergence, i modi di aggirare la funzione di partizione (Langevin, score matching, NCE), la cornice di LeCun, EBM di oggi (IGEBM, JEM) |
-| 23 | **World Model** | Simulatori interni: Ha & Schmidhuber, Dreamer, la via di LeCun (JEPA), simulatori video e dibattito |
-| 24 | **Graph Neural Network** | Dati relazionali e message passing: GCN, GraphSAGE, GAT; node embedding, applicazioni (molecole, raccomandazione, frodi, traffico) e limiti (oversmoothing) |
-| 25 | **Sistemi di Raccomandazione** | Dal Netflix Prize alla matrix factorization e alla raccomandazione neurale |
-| 26 | **Serie temporali** | Prevedere dal passato: decomposizione, ARIMA e Holt-Winters, validazione temporale e metriche (MASE, pinball loss), forecasting neurale (TCN, DeepAR, N-BEATS, Transformer, foundation model) |
-| 27 | **Physics-Informed Neural Networks** | Le equazioni differenziali dentro la loss; operatori neurali |
-| 28 | **MLOps** | Dal notebook alla produzione: versionamento, pipeline di dati, serving e quantizzazione, monitoraggio del drift, LLMOps e deploy |
-| 29 | **Interpretabilità e XAI** | Aprire la scatola nera: modelli trasparenti, importanza delle feature, LIME/SHAP/controfattuali, Grad-CAM e integrated gradients, interpretabilità meccanicistica |
-| 30 | **AI responsabile** | Equità e bias, privacy (differential privacy, federated learning) e robustezza agli attacchi avversari, allineamento (RLHF/DPO) e governance (l'AI Act europeo) |
-| 31 | **Conclusioni** | Bilancio e letture per proseguire |
+| 16 | **Visione e linguaggio** | Modelli che vedono e parlano: addestramento contrastivo (CLIP, SigLIP), connettori (Flamingo, Q-Former, proiettore), fusione precoce e vocabolario comune, il costo del dettaglio (tessere, documenti), allucinazione visiva e azioni come token |
+| 17 | **Agenti e applicazioni LLM** | Tool use e ReAct, RAG avanzato (HyDE, reranking, Self-RAG), context engineering, architetture multi-agente e valutazione |
+| 18 | **Prompt, contesto e loop** | Programmare gli LLM a parole su tre livelli concentrici: prompt engineering (ruoli, few-shot, chain-of-thought, self-consistency), context engineering (le quattro mosse, i guasti del contesto, il PRP), loop engineering (il ciclo con validation gate, split maker/checker, governance) |
+| 19 | **Sistemi multi-agente** | Quando gli agenti sono molti: il costo del coordinamento (Amdahl, composizione degli errori), topologie (supervisore, lavagna, mercato), protocolli e consenso (Condorcet, dibattito, bizantini), MARL e self-play, sciami (ACO, PSO) e società simulate |
+| 20 | **Audio oltre la voce** | Dal suono alle feature (spettrogramma, mel, MFCC), classificazione (AudioSet, AST), rappresentazioni auto-supervisionate (wav2vec 2.0, HuBERT), codec neurali (VQ-VAE, RVQ, EnCodec), generazione (WaveNet, AudioLM, MusicGen) |
+| 21 | **Speech Recognition** | Dalla voce al testo: allineamento e CTC, modelli con attenzione, Whisper, sintesi vocale (TTS) |
+| 22 | **Generative Adversarial Network** | Il gioco avversario, applicazioni ed evoluzioni |
+| 23 | **Modelli di Diffusione** | Da DDPM a Stable Diffusion e ai Diffusion Transformer (DiT, Sora) |
+| 24 | **Modelli a energia** | Il paesaggio invece della probabilità: memoria associativa di Hopfield, macchine di Boltzmann e contrastive divergence, i modi di aggirare la funzione di partizione (Langevin, score matching, NCE), la cornice di LeCun, EBM di oggi (IGEBM, JEM) |
+| 25 | **World Model** | Simulatori interni: Ha & Schmidhuber, Dreamer, la via di LeCun (JEPA), simulatori video e dibattito |
+| 26 | **Graph Neural Network** | Dati relazionali e message passing: GCN, GraphSAGE, GAT; node embedding, applicazioni (molecole, raccomandazione, frodi, traffico) e limiti (oversmoothing) |
+| 27 | **Sistemi di Raccomandazione** | Dal Netflix Prize alla matrix factorization e alla raccomandazione neurale |
+| 28 | **Serie temporali** | Prevedere dal passato: decomposizione, ARIMA e Holt-Winters, validazione temporale e metriche (MASE, pinball loss), forecasting neurale (TCN, DeepAR, N-BEATS, Transformer, foundation model) |
+| 29 | **Physics-Informed Neural Networks** | Le equazioni differenziali dentro la loss; operatori neurali |
+| 30 | **MLOps** | Dal notebook alla produzione: versionamento, pipeline di dati, serving e quantizzazione, monitoraggio del drift, LLMOps e deploy |
+| 31 | **Interpretabilità e XAI** | Aprire la scatola nera: modelli trasparenti, importanza delle feature, LIME/SHAP/controfattuali, Grad-CAM e integrated gradients, interpretabilità meccanicistica |
+| 32 | **AI responsabile** | Equità e bias, privacy (differential privacy, federated learning) e robustezza agli attacchi avversari, allineamento (RLHF/DPO) e governance (l'AI Act europeo) |
+| 33 | **Conclusioni** | Bilancio e letture per proseguire |
 
 Il framework di riferimento per tutto il codice è **PyTorch** (con NumPy e
 scikit-learn dove appropriato). Due capitoli (Introduzione e Attenzione

@@ -1,0 +1,17 @@
+# Il libro e' pubblico e si puo' indicizzare, tutto quanto.
+#
+# Anche i crawler degli assistenti (ClaudeBot, GPTBot, PerplexityBot,
+# Google-Extended, Applebot-Extended) sono ammessi di proposito: sono
+# il canale da cui il libro viene citato quando qualcuno chiede una
+# cosa che il libro spiega.
+#
+# Le pagine esistono a piu' indirizzi (la radice, /main/, l'alias
+# /book/) perche' il workflow costruisce ogni branch in una cartella
+# sua e ricopia il primario nella radice. NON si bloccano qui: a
+# consolidarle c'e' il <link rel="canonical">, che punta sempre a
+# /main/. Bloccarle impedirebbe di leggere proprio quel canonical.
+
+User-agent: *
+Allow: /
+
+Sitemap: https://book.paithon.it/sitemap.xml

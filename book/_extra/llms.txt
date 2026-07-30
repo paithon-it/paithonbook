@@ -1,0 +1,223 @@
+# Paithon Book
+
+> Libro di Intelligenza Artificiale in italiano, su due livelli: Elementare per chi parte da zero, Superiore per la trattazione formale. Machine Learning, Deep Learning e Reinforcement Learning con Python. Online, gratuito, in aggiornamento continuo.
+
+Di Francesco Messina, su book.paithon.it. Ogni concetto e' scritto due
+volte, su due livelli che il lettore sceglie da un interruttore:
+**Elementare** (analogia concreta, nessun prerequisito) e **Superiore**
+(definizioni, formule, complessita'). Il framework e' PyTorch.
+
+Cosa NON c'e', per scelta: benchmark, classifiche, prezzi e novita' del
+mese. Il libro spiega i meccanismi, che restano veri; la cronaca sta sul
+magazine paithon.it. Se cercate «quale modello e' il migliore oggi»,
+questo non e' il posto.
+
+Licenza CC BY-NC-ND 4.0: si cita e si parafrasa attribuendo (titolo
+della sezione e URL), non si ridistribuisce il testo.
+
+## Fondamenta
+
+- [Introduzione](https://book.paithon.it/main/Introduzione/overview.html): Come direbbe Joseph Weizenbaum, informatico tedesco emigrato negli Stati Uniti, professore al MIT e creatore di ELIZA, il primo chatbot della storia, un programma che già a metà degli anni Sessanta…
+  - [Python e l'AI](https://book.paithon.it/main/Introduzione/massimo_comune_divisore.html)
+  - [Robotica e AI](https://book.paithon.it/main/Introduzione/applicazioni.html)
+  - [Conclusione](https://book.paithon.it/main/Introduzione/conclusione.html)
+- [Python](https://book.paithon.it/main/Python/overview.html): Nel Natale del 1989 un programmatore olandese, Guido van Rossum, si annoia. Gli uffici del centro di ricerca dove lavora ad Amsterdam sono chiusi per le feste, e lui riempie il tempo scrivendo, per…
+  - [Le basi di Python](https://book.paithon.it/main/Python/basi.html)
+  - [NumPy](https://book.paithon.it/main/Python/numpy.html)
+  - [Pandas e Matplotlib](https://book.paithon.it/main/Python/pandas-matplotlib.html)
+- [Matematica](https://book.paithon.it/main/Matematica/overview.html): C'è un equivoco tenace da sciogliere prima di cominciare: per usare il machine learning non serve essere matematici, ma per capirlo serve riconoscere le poche idee matematiche che vi ritornano di…
+  - [Algebra lineare](https://book.paithon.it/main/Matematica/algebra-lineare.html)
+  - [Analisi e ottimizzazione](https://book.paithon.it/main/Matematica/analisi-ottimizzazione.html)
+  - [Probabilità e statistica](https://book.paithon.it/main/Matematica/probabilita-statistica.html)
+  - [Teoria dell'informazione](https://book.paithon.it/main/Matematica/teoria-informazione.html)
+  - [Analisi numerica](https://book.paithon.it/main/Matematica/analisi-numerica.html)
+
+## Imparare dai dati
+
+- [Machine Learning](https://book.paithon.it/main/MachineLearning/overview.html): Nel 1959 un ingegnere dell'IBM di nome Arthur Samuel pubblicò un articolo dal titolo modesto (Some Studies in Machine Learning Using the Game of Checkers ) che oggi suona profetico.
+  - [Apprendimento supervisionato](https://book.paithon.it/main/MachineLearning/apprendimento-supervisionato.html)
+  - [Overfitting e validazione](https://book.paithon.it/main/MachineLearning/overfitting-validazione.html)
+  - [Valutare un modello](https://book.paithon.it/main/MachineLearning/metriche.html)
+  - [Trovare gli iperparametri](https://book.paithon.it/main/MachineLearning/iperparametri.html)
+  - [Alberi e metodi ensemble](https://book.paithon.it/main/MachineLearning/alberi-ensemble.html)
+  - [Support Vector Machine](https://book.paithon.it/main/MachineLearning/svm.html)
+  - [Riduzione e clustering](https://book.paithon.it/main/MachineLearning/riduzione-clustering.html)
+  - [Quando i dati cambiano](https://book.paithon.it/main/MachineLearning/dati-che-cambiano.html)
+  - [Processi gaussiani](https://book.paithon.it/main/MachineLearning/processi-gaussiani.html)
+- [Reti neurali](https://book.paithon.it/main/RetiNeurali/overview.html): C'è un'immagine che accompagna le reti neurali fin dal loro battesimo: quella del cervello. Miliardi di cellule che si scambiano segnali, e da quel brulichio emergono la memoria, il linguaggio, il…
+  - [Il percettrone](https://book.paithon.it/main/RetiNeurali/percettrone.html)
+  - [Funzioni di attivazione](https://book.paithon.it/main/RetiNeurali/funzioni-attivazione.html)
+  - [Backpropagation](https://book.paithon.it/main/RetiNeurali/backpropagation.html)
+
+## Strumenti e hardware
+
+- [PyTorch](https://book.paithon.it/main/PyTorch/overview.html): C'è stato un periodo, tra il 2011 e il 2016, in cui per fare deep learning all'avanguardia conveniva imparare Lua, un linguaggio di scripting nato in Brasile e famoso soprattutto per gli addon di…
+  - [Tensori e autograd](https://book.paithon.it/main/PyTorch/tensori.html)
+  - [Moduli](https://book.paithon.it/main/PyTorch/moduli.html)
+  - [Il training loop](https://book.paithon.it/main/PyTorch/addestramento.html)
+  - [Il flusso di lavoro](https://book.paithon.it/main/PyTorch/flusso-di-lavoro.html)
+  - [Dati su misura](https://book.paithon.it/main/PyTorch/dati-su-misura.html)
+  - [I tre errori più comuni](https://book.paithon.it/main/PyTorch/errori-comuni.html)
+  - [Dal notebook agli script](https://book.paithon.it/main/PyTorch/dal-notebook-agli-script.html)
+  - [Replicare un paper](https://book.paithon.it/main/PyTorch/replicare-un-paper.html)
+  - [Prestazioni e scala](https://book.paithon.it/main/PyTorch/prestazioni.html)
+- [GPU e calcolo parallelo](https://book.paithon.it/main/GPU/overview.html): Per trent'anni i programmatori hanno goduto di un privilegio che sembrava una legge di natura: bastava aspettare.
+  - [Dentro la GPU](https://book.paithon.it/main/GPU/architettura-gpu.html)
+  - [La memoria](https://book.paithon.it/main/GPU/gerarchia-memoria.html)
+  - [Kernel e CUDA](https://book.paithon.it/main/GPU/kernel-e-cuda.html)
+  - [GEMM e tensor core](https://book.paithon.it/main/GPU/gemm-e-tensor-core.html)
+  - [Flash Attention](https://book.paithon.it/main/GPU/flash-attention.html)
+  - [Parallelismo distribuito](https://book.paithon.it/main/GPU/parallelismo-distribuito.html)
+
+## Deep learning e visione
+
+- [Deep Learning](https://book.paithon.it/main/DeepLearning/overview.html): Nel 1959 due neuroscienziati, David Hubel e Torsten Wiesel , infilarono un sottile elettrodo nella corteccia visiva di un gatto e proiettarono forme luminose davanti ai suoi occhi.
+  - [Reti convoluzionali (CNN)](https://book.paithon.it/main/DeepLearning/reti-convoluzionali.html)
+  - [Far funzionare le reti profonde](https://book.paithon.it/main/DeepLearning/ottimizzazione-regolarizzazione.html)
+  - [Architetture storiche](https://book.paithon.it/main/DeepLearning/architetture-storiche.html)
+- [Visione artificiale](https://book.paithon.it/main/VisioneArtificiale/overview.html): Nel 1966, al MIT, Seymour Papert affidò a uno studente un compito per l'estate: collegare una telecamera a un computer e insegnargli a descrivere quello che vedeva.
+  - [Classificazione e transfer learning](https://book.paithon.it/main/VisioneArtificiale/classificazione-transfer.html)
+  - [Data augmentation](https://book.paithon.it/main/VisioneArtificiale/data-augmentation.html)
+  - [Detection e segmentazione](https://book.paithon.it/main/VisioneArtificiale/detection-segmentazione.html)
+  - [Neural style transfer](https://book.paithon.it/main/VisioneArtificiale/style-transfer.html)
+
+## Apprendimento per rinforzo
+
+- [Reinforcement Learning](https://book.paithon.it/main/ReinforcementLearning/overview.html): Nessuno insegna a un bambino a camminare elencandogli la sequenza esatta di contrazioni muscolari. Il bambino ci prova, oscilla, cade, si rialza, fa un passo e cade di nuovo.
+  - [MDP e funzioni valore](https://book.paithon.it/main/ReinforcementLearning/mdp-valore.html)
+  - [Q-learning e differenze temporali](https://book.paithon.it/main/ReinforcementLearning/q-learning.html)
+- [Deep Reinforcement Learning](https://book.paithon.it/main/DeepReinforcementLearning/overview.html): Nel 2013 un laboratorio londinese ancora poco noto, DeepMind, pubblica un risultato che sembra un giochino e invece è uno spartiacque: una rete neurale impara a giocare a Breakout, il classico dei…
+  - [Deep Q-Network (DQN)](https://book.paithon.it/main/DeepReinforcementLearning/dqn.html)
+  - [Gradiente di policy](https://book.paithon.it/main/DeepReinforcementLearning/policy-gradient.html)
+  - [Controllo continuo](https://book.paithon.it/main/DeepReinforcementLearning/controllo-continuo.html)
+  - [RL basato su modello](https://book.paithon.it/main/DeepReinforcementLearning/model-based.html)
+  - [Offline RL](https://book.paithon.it/main/DeepReinforcementLearning/offline-rl.html)
+  - [Esplorazione e ricompensa](https://book.paithon.it/main/DeepReinforcementLearning/esplorazione-e-ricompensa.html)
+
+## Linguaggio e sequenze
+
+- [Natural Language Processing](https://book.paithon.it/main/NaturalLanguageProcessing/overview.html): Nel 1954 un gruppo di ricercatori di IBM e della Georgetown University annunciò al mondo una traduzione automatica dal russo all'inglese: sessanta frasi, tradotte da un calcolatore, davanti alla…
+  - [La cassetta degli attrezzi](https://book.paithon.it/main/NaturalLanguageProcessing/strumenti-classici.html)
+  - [Rappresentare il testo](https://book.paithon.it/main/NaturalLanguageProcessing/rappresentare-testo.html)
+  - [Classificare il testo](https://book.paithon.it/main/NaturalLanguageProcessing/classificazione-testo.html)
+  - [Modelli n-gram](https://book.paithon.it/main/NaturalLanguageProcessing/modelli-ngram.html)
+  - [Modelli di sequenza](https://book.paithon.it/main/NaturalLanguageProcessing/modelli-sequenza.html)
+  - [Tradurre con le reti](https://book.paithon.it/main/NaturalLanguageProcessing/seq2seq-traduzione.html)
+  - [POS tagging ed entità](https://book.paithon.it/main/NaturalLanguageProcessing/etichettare-sequenze.html)
+  - [Sintassi e parsing](https://book.paithon.it/main/NaturalLanguageProcessing/struttura-frase.html)
+  - [Dialogo e chatbot](https://book.paithon.it/main/NaturalLanguageProcessing/dialogo-chatbot.html)
+- [Transformer](https://book.paithon.it/main/Transformers/overview.html): Nell'estate del 2017 otto ricercatori di Google pubblicano un paper dal titolo che suona come una battuta: Attention Is All You Need ; "l'attenzione è tutto ciò che serve", eco del ritornello dei…
+  - [Il meccanismo di attenzione](https://book.paithon.it/main/Transformers/attenzione.html)
+  - [La struttura del Transformer](https://book.paithon.it/main/Transformers/architettura.html)
+  - [Confronto coi modelli precedenti](https://book.paithon.it/main/Transformers/confronti.html)
+  - [Esempi pratici](https://book.paithon.it/main/Transformers/esempi.html)
+  - [Multimodalità](https://book.paithon.it/main/Transformers/multimodalita.html)
+  - [I grandi modelli linguistici](https://book.paithon.it/main/Transformers/llm.html)
+  - [Dopo il pre-addestramento](https://book.paithon.it/main/Transformers/post-training.html)
+  - [Retrieval e RAG](https://book.paithon.it/main/Transformers/rag.html)
+  - [Tendenze e limiti](https://book.paithon.it/main/Transformers/tendenzefuture.html)
+- [Attenzione lineare](https://book.paithon.it/main/AttenzioneLineare/overview.html): Nel 2020, mentre il mondo dell'intelligenza artificiale celebrava i Transformer come la rottura definitiva con il passato ricorrente, quattro ricercatori (Katharopoulos, Vyas, Pappas e Fleuret, tra…
+  - [Dalla softmax alla ricorrenza](https://book.paithon.it/main/AttenzioneLineare/dalla-softmax-alla-ricorrenza.html)
+  - [Scrivere nella memoria](https://book.paithon.it/main/AttenzioneLineare/scrivere-nella-memoria.html)
+  - [Architetture lineari](https://book.paithon.it/main/AttenzioneLineare/architetture-lineari.html)
+  - [Verifica numerica](https://book.paithon.it/main/AttenzioneLineare/linear-attention-ricorrenza.html)
+- [State Space Model](https://book.paithon.it/main/StateSpaceModel/overview.html): C'è un'idea che l'ingegneria usa da oltre mezzo secolo per descrivere qualunque sistema che evolve nel tempo: un termostato, la traiettoria di un razzo, un circuito elettrico.
+  - [Dai sistemi dinamici a S4](https://book.paithon.it/main/StateSpaceModel/dai-sistemi-dinamici-a-s4.html)
+  - [Mamba](https://book.paithon.it/main/StateSpaceModel/mamba.html)
+  - [Mamba-2 e Mamba-3](https://book.paithon.it/main/StateSpaceModel/dualita-e-mamba-2-3.html)
+  - [Panorama e limiti](https://book.paithon.it/main/StateSpaceModel/panorama-e-limiti.html)
+- [Visione e linguaggio](https://book.paithon.it/main/VisioneLinguaggio/overview.html): Il 7 luglio 1966, al Project MAC del MIT, Seymour Papert batte a macchina un promemoria di tre pagine intestato Vision Memo No. 100.
+  - [Allineare due spazi](https://book.paithon.it/main/VisioneLinguaggio/allineare-due-spazi.html)
+  - [Innestare gli occhi](https://book.paithon.it/main/VisioneLinguaggio/innestare-gli-occhi.html)
+  - [Fusione precoce e tardiva](https://book.paithon.it/main/VisioneLinguaggio/fusione-precoce-tardiva.html)
+  - [Il costo del dettaglio](https://book.paithon.it/main/VisioneLinguaggio/risoluzione-e-dettaglio.html)
+  - [Vedere quel che non c'è](https://book.paithon.it/main/VisioneLinguaggio/vedere-quel-che-non-ce.html)
+
+## Lavorare con gli LLM
+
+- [Agenti](https://book.paithon.it/main/Agenti/overview.html): Abbiamo lasciato il modello di linguaggio così: gli scrivi una domanda, lui completa il testo con la risposta più probabile.
+  - [Il ciclo dell'agente](https://book.paithon.it/main/Agenti/agenti-e-tool-use.html)
+  - [RAG avanzato](https://book.paithon.it/main/Agenti/rag-avanzato.html)
+  - [Il contesto è l'interfaccia](https://book.paithon.it/main/Agenti/context-engineering.html)
+  - [Architetture e valutazione](https://book.paithon.it/main/Agenti/architetture-e-valutazione.html)
+- [Prompt, contesto e loop](https://book.paithon.it/main/IngegneriaLLM/overview.html): Nel giugno 2025 Andrej Karpathy (tra i fondatori di OpenAI, per anni a capo dell'intelligenza artificiale in Tesla) ha reso popolare un nome per un mestiere che esisteva già ma non si sapeva ancora…
+  - [Prompt engineering](https://book.paithon.it/main/IngegneriaLLM/prompt-engineering.html)
+  - [Context engineering](https://book.paithon.it/main/IngegneriaLLM/context-engineering.html)
+  - [Loop engineering](https://book.paithon.it/main/IngegneriaLLM/loop-engineering.html)
+- [Sistemi multi-agente](https://book.paithon.it/main/SistemiMultiAgente/overview.html): Chi attraversa Roma in un pomeriggio d'inverno lo ha visto almeno una volta: poco prima del tramonto migliaia di storni arrivano dalla campagna e sopra gli alberi del posatoio disegnano forme che si…
+  - [Il costo del coordinamento](https://book.paithon.it/main/SistemiMultiAgente/costo-del-coordinamento.html)
+  - [Chi parla con chi](https://book.paithon.it/main/SistemiMultiAgente/topologie.html)
+  - [Protocolli e consenso](https://book.paithon.it/main/SistemiMultiAgente/protocolli-e-consenso.html)
+  - [Imparare insieme](https://book.paithon.it/main/SistemiMultiAgente/imparare-insieme.html)
+  - [Sciami e simulazioni](https://book.paithon.it/main/SistemiMultiAgente/sciami-e-simulazioni.html)
+
+## Suono e voce
+
+- [Audio oltre la voce](https://book.paithon.it/main/Audio/overview.html): Un mattino di primavera, punti il telefono verso una siepe e apri un'applicazione. Un merlo canta, invisibile tra le foglie, e sullo schermo compare un nome: Turdus merula.
+  - [Dal suono alle feature](https://book.paithon.it/main/Audio/dal-suono-alle-feature.html)
+  - [Riconoscere i suoni](https://book.paithon.it/main/Audio/classificazione-audio.html)
+  - [Imparare senza etichette](https://book.paithon.it/main/Audio/rappresentazioni-auto-supervisionate.html)
+  - [Codec neurali](https://book.paithon.it/main/Audio/codec-neurali.html)
+  - [Generare suono e musica](https://book.paithon.it/main/Audio/generazione-audio.html)
+- [Speech Recognition](https://book.paithon.it/main/SpeechRecognition/overview.html): Nel 1952, nei laboratori della Bell Telephone, un apparecchio ingombrante fatto di valvole e relè imparò a riconoscere le cifre da zero a nove pronunciate ad alta voce.
+  - [I modelli di riconoscimento](https://book.paithon.it/main/SpeechRecognition/modelli-asr.html)
+  - [Sintesi vocale](https://book.paithon.it/main/SpeechRecognition/sintesi-vocale.html)
+
+## Energia e generazione
+
+- [GAN](https://book.paithon.it/main/GAN/overview.html): La leggenda (perché ormai è una leggenda) la colloca in un bar di Montréal, i Trois Brasseurs, nel 2014. Ian Goodfellow, dottorando nel laboratorio di Yoshua Bengio, festeggia con alcuni colleghi.
+  - [L'addestramento avversario](https://book.paithon.it/main/GAN/come-funziona.html)
+  - [Evoluzioni e applicazioni](https://book.paithon.it/main/GAN/applicazioni-evoluzioni.html)
+- [Modelli di diffusione](https://book.paithon.it/main/ModelliDiffusione/overview.html): Versa una goccia d'inchiostro in un bicchiere d'acqua e guarda. Prima un filamento scuro, poi volute sempre più sottili, e in pochi minuti l'acqua è tutta di un azzurro pallido e uniforme.
+  - [Come funziona la diffusione](https://book.paithon.it/main/ModelliDiffusione/come-funziona.html)
+  - [Stable Diffusion](https://book.paithon.it/main/ModelliDiffusione/stable-diffusion.html)
+  - [Diffusion Transformer (DiT)](https://book.paithon.it/main/ModelliDiffusione/diffusion-transformer.html)
+- [Modelli a energia](https://book.paithon.it/main/ModelliEnergia/overview.html): L'8 ottobre 2024 l'Accademia reale svedese delle scienze annuncia il premio Nobel per la fisica: va a John Hopfield e Geoffrey Hinton «per scoperte e invenzioni fondamentali che rendono possibile…
+  - [Memoria associativa](https://book.paithon.it/main/ModelliEnergia/memoria-associativa.html)
+  - [Macchine di Boltzmann](https://book.paithon.it/main/ModelliEnergia/boltzmann.html)
+  - [Oltre la partizione](https://book.paithon.it/main/ModelliEnergia/oltre-la-partizione.html)
+  - [Energia come compatibilità](https://book.paithon.it/main/ModelliEnergia/energia-come-compatibilita.html)
+  - [Paesaggi di oggi](https://book.paithon.it/main/ModelliEnergia/paesaggi-di-oggi.html)
+- [World Model](https://book.paithon.it/main/WorldModels/overview.html): «Un gatto di casa ha molto più senso comune e comprensione del mondo di qualunque LLM.» A scriverlo, all'inizio del 2023, non è uno scettico qualsiasi ma Yann LeCun (premio Turing 2018, uno dei…
+  - [Mondi in miniatura](https://book.paithon.it/main/WorldModels/mondi-in-miniatura.html)
+  - [La via di LeCun (JEPA)](https://book.paithon.it/main/WorldModels/jepa.html)
+  - [Simulare il mondo](https://book.paithon.it/main/WorldModels/simulatori-e-dibattito.html)
+
+## Altri dati, altri domini
+
+- [Graph Neural Network](https://book.paithon.it/main/GraphNeuralNetwork/overview.html): Nell'estate del 1736 la città prussiana di Königsberg (oggi Kaliningrad, in Russia) aveva un passatempo cittadino.
+  - [Il mondo come grafo](https://book.paithon.it/main/GraphNeuralNetwork/dati-a-grafo.html)
+  - [Message passing](https://book.paithon.it/main/GraphNeuralNetwork/message-passing.html)
+  - [GraphSAGE, GAT e applicazioni](https://book.paithon.it/main/GraphNeuralNetwork/architetture-applicazioni.html)
+- [Sistemi di raccomandazione](https://book.paithon.it/main/SistemiRaccomandazione/overview.html): Il 2 ottobre 2006 Netflix (che allora campava spedendo DVD per posta) pubblica un annuncio senza precedenti: un milione di dollari a chiunque riesca a migliorare del 10% il suo sistema di…
+  - [Il filtraggio collaborativo](https://book.paithon.it/main/SistemiRaccomandazione/filtraggio-collaborativo.html)
+  - [La raccomandazione neurale](https://book.paithon.it/main/SistemiRaccomandazione/raccomandazione-neurale.html)
+- [Serie temporali](https://book.paithon.it/main/SerieTemporali/overview.html): Negli anni Settanta dell'Ottocento, in un laboratorio di Glasgow, William Thomson (che il mondo avrebbe conosciuto come Lord Kelvin) costruì una macchina di ottone, corde e pulegge che prevedeva le…
+  - [Componenti e modelli classici](https://book.paithon.it/main/SerieTemporali/componenti-e-classici.html)
+  - [Validazione e feature](https://book.paithon.it/main/SerieTemporali/validazione-e-feature.html)
+  - [Forecasting neurale](https://book.paithon.it/main/SerieTemporali/forecasting-neurale.html)
+- [PINN: reti e fisica](https://book.paithon.it/main/PINN/overview.html): La notte del 23 settembre 1846 l'astronomo Johann Galle punta il telescopio dell'Osservatorio di Berlino verso un punto preciso del cielo, indicato in una lettera arrivata quel giorno da Parigi.
+  - [La legge dentro la loss](https://book.paithon.it/main/PINN/come-funziona.html)
+  - [Dove la fisica aiuta](https://book.paithon.it/main/PINN/applicazioni-limiti.html)
+
+## Produzione e responsabilità
+
+- [MLOps](https://book.paithon.it/main/MLOps/overview.html): C'è una figura, in un articolo del 2015, che vale da sola un capitolo intero. La disegnano alcuni ingegneri di Google (David Sculley e colleghi) per una conferenza di apprendimento automatico .
+  - [Dal notebook alla produzione](https://book.paithon.it/main/MLOps/dal-notebook-alla-produzione.html)
+  - [Dati e pipeline](https://book.paithon.it/main/MLOps/dati-e-pipeline.html)
+  - [Servire un modello](https://book.paithon.it/main/MLOps/deployment-e-serving.html)
+  - [Monitoraggio e drift](https://book.paithon.it/main/MLOps/monitoring-e-drift.html)
+  - [LLMOps](https://book.paithon.it/main/MLOps/llmops.html)
+- [Interpretabilità](https://book.paithon.it/main/Interpretabilita/overview.html): Nel 2016 tre ricercatori dell'Università di Washington (Marco Túlio Ribeiro, Sameer Singh e Carlos Guestrin) addestrarono un classificatore a distinguere le foto di husky da quelle di lupo.
+  - [Modelli trasparenti](https://book.paithon.it/main/Interpretabilita/modelli-trasparenti-e-importanza.html)
+  - [Spiegazioni locali](https://book.paithon.it/main/Interpretabilita/spiegazioni-locali.html)
+  - [Attribuzione e meccanicistica](https://book.paithon.it/main/Interpretabilita/attribuzione-e-meccanicistica.html)
+- [AI responsabile](https://book.paithon.it/main/AIResponsabile/overview.html): Nel maggio del 2016 la redazione investigativa di ProPublica pubblica un'inchiesta destinata a diventare un caso di scuola .
+  - [Equità e bias](https://book.paithon.it/main/AIResponsabile/equita-e-bias.html)
+  - [Privacy e robustezza](https://book.paithon.it/main/AIResponsabile/privacy-e-robustezza.html)
+  - [Allineamento e governance](https://book.paithon.it/main/AIResponsabile/allineamento-e-governance.html)
+
+## Chiusura
+
+- [Conclusioni](https://book.paithon.it/main/Conclusioni/overview.html): Siamo partiti, nell'introduzione, da una frase di Joseph Weizenbaum: l'intelligenza artificiale è "straordinariamente resistente al tentativo di una precisa definizione".
+- [Bibliografia](https://book.paithon.it/main/references.html): Le opere citate nel libro, in ordine alfabetico. Nel testo le citazioni compaiono come rimandi tra parentesi quadre: ogni rimando porta qui.

@@ -1,0 +1,179 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 590" role="img" aria-label="Tre architetture affiancate che collegano lo stesso encoder visivo congelato allo stesso modello di linguaggio congelato, e differiscono solo per il pezzo che sta in mezzo. A sinistra la cross-attention gated di Flamingo: un Perceiver Resampler produce 64 token e li inietta dentro il modello di linguaggio attraverso due nuovi strati di cross-attention gated inseriti fra i blocchi congelati; il connettore vale miliardi di parametri. Al centro il Q-Former di BLIP-2: 32 query apprese interrogano l'immagine e ne escono 32 token che entrano in testa al prompt; il connettore vale 188 milioni di parametri. A destra il proiettore di LLaVA: una matrice porta ogni patch nello spazio dei token, 576 token entrano in testa al prompt e il connettore vale 4 milioni di parametri. In tutte e tre l'encoder visivo e il modello di linguaggio sono disegnati con contorno tratteggiato perch&#233; restano congelati, mentre il pezzo che si addestra &#232; in terracotta piena.">
+  <defs>
+    <marker id="fr-conn" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1A1A1A"/>
+    </marker>
+    <marker id="fr-conn-t" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#B5532C"/>
+    </marker>
+  </defs>
+
+  <!-- separatori fra le tre colonne -->
+  <g stroke="#C9A961" stroke-width="1" stroke-dasharray="4 6" stroke-opacity="0.6">
+    <line x1="307" y1="14" x2="307" y2="548"/>
+    <line x1="612" y1="14" x2="612" y2="548"/>
+  </g>
+
+  <!-- =================== COLONNA A: FLAMINGO =================== -->
+  <text x="155" y="22" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" font-weight="700" fill="#1A1A1A">cross-attention gated</text>
+  <text x="155" y="40" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#2D5A5C">Flamingo, 2022</text>
+
+  <text x="155" y="66" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#1A1A1A">testo generato</text>
+  <line x1="155" y1="92" x2="155" y2="74" stroke="#1A1A1A" stroke-width="2" marker-end="url(#fr-conn)"/>
+
+  <rect x="55" y="92" width="200" height="160" rx="8" fill="#C9A961" fill-opacity="0.12" stroke="#1A1A1A" stroke-width="2" stroke-dasharray="7 5"/>
+  <text x="155" y="110" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" font-weight="700" fill="#1A1A1A">modello di linguaggio</text>
+  <g fill="#C9A961" fill-opacity="0.28" stroke="#1A1A1A" stroke-width="1.2">
+    <rect x="65" y="120" width="180" height="20" rx="3"/>
+    <rect x="65" y="170" width="180" height="20" rx="3"/>
+    <rect x="65" y="220" width="180" height="20" rx="3"/>
+  </g>
+  <g fill="#B5532C" stroke="#1A1A1A" stroke-width="1.2">
+    <rect x="65" y="145" width="180" height="20" rx="3"/>
+    <rect x="65" y="195" width="180" height="20" rx="3"/>
+  </g>
+  <g font-family="Inter, sans-serif" font-size="9.5" fill="#1A1A1A" text-anchor="middle">
+    <text x="155" y="134">blocco LM congelato</text>
+    <text x="155" y="184">blocco LM congelato</text>
+    <text x="155" y="234">blocco LM congelato</text>
+  </g>
+  <g font-family="Inter, sans-serif" font-size="9.5" font-weight="700" fill="#F8F5EE" text-anchor="middle">
+    <text x="155" y="159">cross-attention gated</text>
+    <text x="155" y="209">cross-attention gated</text>
+  </g>
+
+  <!-- iniezione dei token visivi dentro i due strati nuovi -->
+  <path d="M43,306 H33 V155" fill="none" stroke="#B5532C" stroke-width="2"/>
+  <line x1="33" y1="205" x2="53" y2="205" stroke="#B5532C" stroke-width="2" marker-end="url(#fr-conn-t)"/>
+  <line x1="33" y1="155" x2="53" y2="155" stroke="#B5532C" stroke-width="2" marker-end="url(#fr-conn-t)"/>
+
+  <!-- prompt -->
+  <line x1="200" y1="300" x2="200" y2="254" stroke="#1A1A1A" stroke-width="2" marker-end="url(#fr-conn)"/>
+  <text x="200" y="316" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" fill="#1A1A1A">prompt</text>
+
+  <rect x="43" y="292" width="118" height="52" rx="7" fill="#B5532C" fill-opacity="0.16" stroke="#B5532C" stroke-width="2.5"/>
+  <text x="102" y="311" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" font-weight="700" fill="#1A1A1A">Perceiver</text>
+  <text x="102" y="325" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" font-weight="700" fill="#1A1A1A">Resampler</text>
+  <text x="102" y="339" text-anchor="middle" font-family="Inter, sans-serif" font-size="9.5" fill="#2D5A5C">64 token fissi</text>
+
+  <line x1="102" y1="400" x2="102" y2="344" stroke="#1A1A1A" stroke-width="2" marker-end="url(#fr-conn)"/>
+
+  <rect x="55" y="400" width="200" height="54" rx="8" fill="#2D5A5C" fill-opacity="0.12" stroke="#2D5A5C" stroke-width="2" stroke-dasharray="7 5"/>
+  <text x="155" y="420" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" font-weight="700" fill="#1A1A1A">encoder visivo</text>
+  <text x="155" y="438" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" fill="#2D5A5C">congelato</text>
+
+  <line x1="155" y1="474" x2="155" y2="456" stroke="#1A1A1A" stroke-width="2" marker-end="url(#fr-conn)"/>
+  <rect x="125" y="474" width="60" height="44" rx="5" fill="#C9A961" fill-opacity="0.14" stroke="#1A1A1A" stroke-width="1.8"/>
+  <circle cx="171" cy="486" r="5" fill="#C9A961"/>
+  <polyline points="131,512 145,492 154,503 163,489 179,512" fill="none" stroke="#B5532C" stroke-width="2" stroke-linejoin="round"/>
+
+  <text x="155" y="540" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" fill="#1A1A1A">connettore: miliardi di parametri</text>
+
+  <!-- =================== COLONNA B: BLIP-2 =================== -->
+  <text x="460" y="22" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" font-weight="700" fill="#1A1A1A">query apprese</text>
+  <text x="460" y="40" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#2D5A5C">Q-Former, BLIP-2, 2023</text>
+
+  <text x="460" y="66" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#1A1A1A">testo generato</text>
+  <line x1="460" y1="92" x2="460" y2="74" stroke="#1A1A1A" stroke-width="2" marker-end="url(#fr-conn)"/>
+
+  <rect x="360" y="92" width="200" height="160" rx="8" fill="#C9A961" fill-opacity="0.12" stroke="#1A1A1A" stroke-width="2" stroke-dasharray="7 5"/>
+  <text x="460" y="110" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" font-weight="700" fill="#1A1A1A">modello di linguaggio</text>
+  <g fill="#C9A961" fill-opacity="0.28" stroke="#1A1A1A" stroke-width="1.2">
+    <rect x="370" y="120" width="180" height="20" rx="3"/>
+    <rect x="370" y="145" width="180" height="20" rx="3"/>
+    <rect x="370" y="170" width="180" height="20" rx="3"/>
+    <rect x="370" y="195" width="180" height="20" rx="3"/>
+    <rect x="370" y="220" width="180" height="20" rx="3"/>
+  </g>
+  <g font-family="Inter, sans-serif" font-size="9.5" fill="#1A1A1A" text-anchor="middle">
+    <text x="460" y="134">blocco LM congelato</text>
+    <text x="460" y="159">blocco LM congelato</text>
+    <text x="460" y="184">blocco LM congelato</text>
+    <text x="460" y="209">blocco LM congelato</text>
+    <text x="460" y="234">blocco LM congelato</text>
+  </g>
+
+  <line x1="460" y1="286" x2="460" y2="254" stroke="#B5532C" stroke-width="2" marker-end="url(#fr-conn-t)"/>
+  <text x="472" y="272" font-family="Inter, sans-serif" font-size="10.5" fill="#B5532C">32 token</text>
+
+  <line x1="565" y1="300" x2="565" y2="254" stroke="#1A1A1A" stroke-width="2" marker-end="url(#fr-conn)"/>
+  <text x="565" y="316" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" fill="#1A1A1A">prompt</text>
+
+  <rect x="380" y="286" width="160" height="80" rx="7" fill="#B5532C" fill-opacity="0.16" stroke="#B5532C" stroke-width="2.5"/>
+  <text x="460" y="308" text-anchor="middle" font-family="Inter, sans-serif" font-size="11.5" font-weight="700" fill="#1A1A1A">Q-Former</text>
+  <g fill="#B5532C">
+    <circle cx="410" cy="330" r="5.5"/>
+    <circle cx="430" cy="330" r="5.5"/>
+    <circle cx="450" cy="330" r="5.5"/>
+    <circle cx="470" cy="330" r="5.5"/>
+    <circle cx="490" cy="330" r="5.5"/>
+    <circle cx="510" cy="330" r="5.5"/>
+  </g>
+  <text x="460" y="356" text-anchor="middle" font-family="Inter, sans-serif" font-size="9.5" fill="#2D5A5C">32 query apprese</text>
+
+  <line x1="460" y1="400" x2="460" y2="366" stroke="#1A1A1A" stroke-width="2" marker-end="url(#fr-conn)"/>
+
+  <rect x="360" y="400" width="200" height="54" rx="8" fill="#2D5A5C" fill-opacity="0.12" stroke="#2D5A5C" stroke-width="2" stroke-dasharray="7 5"/>
+  <text x="460" y="420" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" font-weight="700" fill="#1A1A1A">encoder visivo</text>
+  <text x="460" y="438" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" fill="#2D5A5C">congelato</text>
+
+  <line x1="460" y1="474" x2="460" y2="456" stroke="#1A1A1A" stroke-width="2" marker-end="url(#fr-conn)"/>
+  <rect x="430" y="474" width="60" height="44" rx="5" fill="#C9A961" fill-opacity="0.14" stroke="#1A1A1A" stroke-width="1.8"/>
+  <circle cx="476" cy="486" r="5" fill="#C9A961"/>
+  <polyline points="436,512 450,492 459,503 468,489 484,512" fill="none" stroke="#B5532C" stroke-width="2" stroke-linejoin="round"/>
+
+  <text x="460" y="540" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" fill="#1A1A1A">connettore: 188 milioni di parametri</text>
+
+  <!-- =================== COLONNA C: LLAVA =================== -->
+  <text x="765" y="22" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" font-weight="700" fill="#1A1A1A">proiettore</text>
+  <text x="765" y="40" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#2D5A5C">LLaVA, 2023</text>
+
+  <text x="765" y="66" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#1A1A1A">testo generato</text>
+  <line x1="765" y1="92" x2="765" y2="74" stroke="#1A1A1A" stroke-width="2" marker-end="url(#fr-conn)"/>
+
+  <rect x="665" y="92" width="200" height="160" rx="8" fill="#C9A961" fill-opacity="0.12" stroke="#1A1A1A" stroke-width="2" stroke-dasharray="7 5"/>
+  <text x="765" y="110" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" font-weight="700" fill="#1A1A1A">modello di linguaggio</text>
+  <g fill="#C9A961" fill-opacity="0.28" stroke="#1A1A1A" stroke-width="1.2">
+    <rect x="675" y="120" width="180" height="20" rx="3"/>
+    <rect x="675" y="145" width="180" height="20" rx="3"/>
+    <rect x="675" y="170" width="180" height="20" rx="3"/>
+    <rect x="675" y="195" width="180" height="20" rx="3"/>
+    <rect x="675" y="220" width="180" height="20" rx="3"/>
+  </g>
+  <g font-family="Inter, sans-serif" font-size="9.5" fill="#1A1A1A" text-anchor="middle">
+    <text x="765" y="134">blocco LM congelato</text>
+    <text x="765" y="159">blocco LM congelato</text>
+    <text x="765" y="184">blocco LM congelato</text>
+    <text x="765" y="209">blocco LM congelato</text>
+    <text x="765" y="234">blocco LM congelato</text>
+  </g>
+
+  <line x1="765" y1="302" x2="765" y2="254" stroke="#B5532C" stroke-width="2" marker-end="url(#fr-conn-t)"/>
+  <text x="777" y="282" font-family="Inter, sans-serif" font-size="10.5" fill="#B5532C">576 token</text>
+
+  <line x1="868" y1="300" x2="868" y2="254" stroke="#1A1A1A" stroke-width="2" marker-end="url(#fr-conn)"/>
+  <text x="868" y="316" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" fill="#1A1A1A">prompt</text>
+
+  <rect x="685" y="302" width="160" height="42" rx="7" fill="#B5532C" fill-opacity="0.16" stroke="#B5532C" stroke-width="2.5"/>
+  <text x="765" y="320" text-anchor="middle" font-family="Inter, sans-serif" font-size="11.5" font-weight="700" fill="#1A1A1A">proiettore</text>
+  <text x="765" y="335" text-anchor="middle" font-family="Inter, sans-serif" font-size="9.5" fill="#2D5A5C">una patch, un token</text>
+
+  <line x1="765" y1="400" x2="765" y2="344" stroke="#1A1A1A" stroke-width="2" marker-end="url(#fr-conn)"/>
+
+  <rect x="665" y="400" width="200" height="54" rx="8" fill="#2D5A5C" fill-opacity="0.12" stroke="#2D5A5C" stroke-width="2" stroke-dasharray="7 5"/>
+  <text x="765" y="420" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" font-weight="700" fill="#1A1A1A">encoder visivo</text>
+  <text x="765" y="438" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" fill="#2D5A5C">congelato</text>
+
+  <line x1="765" y1="474" x2="765" y2="456" stroke="#1A1A1A" stroke-width="2" marker-end="url(#fr-conn)"/>
+  <rect x="735" y="474" width="60" height="44" rx="5" fill="#C9A961" fill-opacity="0.14" stroke="#1A1A1A" stroke-width="1.8"/>
+  <circle cx="781" cy="486" r="5" fill="#C9A961"/>
+  <polyline points="741,512 755,492 764,503 773,489 789,512" fill="none" stroke="#B5532C" stroke-width="2" stroke-linejoin="round"/>
+
+  <text x="765" y="540" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" fill="#1A1A1A">connettore: 4 milioni di parametri</text>
+
+  <!-- =================== LEGENDA =================== -->
+  <rect x="228" y="564" width="16" height="14" rx="2" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.2"/>
+  <text x="252" y="576" font-family="Inter, sans-serif" font-size="11" fill="#1A1A1A">si addestra</text>
+  <rect x="392" y="564" width="16" height="14" rx="2" fill="none" stroke="#1A1A1A" stroke-width="1.6" stroke-dasharray="4 3"/>
+  <text x="416" y="576" font-family="Inter, sans-serif" font-size="11" fill="#1A1A1A">congelato: l&#8217;encoder visivo e il modello di linguaggio</text>
+</svg>

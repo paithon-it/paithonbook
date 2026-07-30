@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 320" role="img" aria-label="Cinque topologie di coordinamento fra agenti disegnate come piccoli grafi affiancati: supervisore e lavoratori (una stella con il supervisore al centro e tre lavoratori che non si parlano fra loro), catena (quattro nodi in fila collegati da frecce a senso unico), gerarchia (un albero con radice, due nodi intermedi e quattro foglie), lavagna condivisa (quattro nodi collegati da frecce bidirezionali a un rettangolo centrale e a nient'altro), mercato (un banditore collegato a tre offerenti, con una linea tratteggiata verso due di loro e una freccia piena verso il terzo, quello a cui il compito viene assegnato)">
+  <defs>
+    <marker id="ptv" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="9" refX="9" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 Z" fill="#1A1A1A"/>
+    </marker>
+    <marker id="ptr" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="9" refX="0" refY="4.5" orient="auto">
+      <path d="M9,0 L0,4.5 L9,9 Z" fill="#1A1A1A"/>
+    </marker>
+    <marker id="ptt" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="10" refX="10" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#B5532C"/>
+    </marker>
+  </defs>
+
+  <!-- ============ 1. supervisore e lavoratori (stella) ============ -->
+  <line x1="110" y1="62" x2="50"  y2="200" stroke="#1A1A1A" stroke-width="2"/>
+  <line x1="110" y1="62" x2="110" y2="200" stroke="#1A1A1A" stroke-width="2"/>
+  <line x1="110" y1="62" x2="170" y2="200" stroke="#1A1A1A" stroke-width="2"/>
+  <circle cx="50"  cy="200" r="14" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2.5"/>
+  <circle cx="110" cy="200" r="14" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2.5"/>
+  <circle cx="170" cy="200" r="14" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2.5"/>
+  <circle cx="110" cy="62"  r="18" fill="#F8F5EE" stroke="#B5532C" stroke-width="3.5"/>
+  <text x="110" y="282" font-family="Inter, sans-serif" font-size="16" font-weight="700" fill="#1A1A1A" text-anchor="middle">supervisore</text>
+  <text x="110" y="302" font-family="Inter, sans-serif" font-size="16" font-weight="700" fill="#1A1A1A" text-anchor="middle">e lavoratori</text>
+
+  <!-- ============ 2. catena ============ -->
+  <line x1="330" y1="69"  x2="330" y2="101" stroke="#B5532C" stroke-width="2.5" marker-end="url(#ptt)"/>
+  <line x1="330" y1="129" x2="330" y2="161" stroke="#B5532C" stroke-width="2.5" marker-end="url(#ptt)"/>
+  <line x1="330" y1="189" x2="330" y2="221" stroke="#B5532C" stroke-width="2.5" marker-end="url(#ptt)"/>
+  <circle cx="330" cy="54"  r="13" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2.5"/>
+  <circle cx="330" cy="114" r="13" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2.5"/>
+  <circle cx="330" cy="174" r="13" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2.5"/>
+  <circle cx="330" cy="234" r="13" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2.5"/>
+  <text x="330" y="282" font-family="Inter, sans-serif" font-size="16" font-weight="700" fill="#1A1A1A" text-anchor="middle">catena</text>
+
+  <!-- ============ 3. gerarchia ============ -->
+  <line x1="550" y1="58"  x2="505" y2="148" stroke="#1A1A1A" stroke-width="2"/>
+  <line x1="550" y1="58"  x2="595" y2="148" stroke="#1A1A1A" stroke-width="2"/>
+  <line x1="505" y1="148" x2="478" y2="228" stroke="#1A1A1A" stroke-width="2"/>
+  <line x1="505" y1="148" x2="532" y2="228" stroke="#1A1A1A" stroke-width="2"/>
+  <line x1="595" y1="148" x2="568" y2="228" stroke="#1A1A1A" stroke-width="2"/>
+  <line x1="595" y1="148" x2="622" y2="228" stroke="#1A1A1A" stroke-width="2"/>
+  <circle cx="478" cy="228" r="11" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2.5"/>
+  <circle cx="532" cy="228" r="11" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2.5"/>
+  <circle cx="568" cy="228" r="11" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2.5"/>
+  <circle cx="622" cy="228" r="11" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2.5"/>
+  <circle cx="505" cy="148" r="14" fill="#F8F5EE" stroke="#C9A961" stroke-width="3"/>
+  <circle cx="595" cy="148" r="14" fill="#F8F5EE" stroke="#C9A961" stroke-width="3"/>
+  <circle cx="550" cy="58"  r="18" fill="#F8F5EE" stroke="#B5532C" stroke-width="3.5"/>
+  <text x="550" y="282" font-family="Inter, sans-serif" font-size="16" font-weight="700" fill="#1A1A1A" text-anchor="middle">gerarchia</text>
+
+  <!-- ============ 4. lavagna condivisa ============ -->
+  <line x1="770" y1="71"  x2="770" y2="112" stroke="#1A1A1A" stroke-width="2" marker-start="url(#ptr)" marker-end="url(#ptv)"/>
+  <line x1="770" y1="217" x2="770" y2="176" stroke="#1A1A1A" stroke-width="2" marker-start="url(#ptr)" marker-end="url(#ptv)"/>
+  <line x1="691" y1="144" x2="732" y2="144" stroke="#1A1A1A" stroke-width="2" marker-start="url(#ptr)" marker-end="url(#ptv)"/>
+  <line x1="847" y1="144" x2="808" y2="144" stroke="#1A1A1A" stroke-width="2" marker-start="url(#ptr)" marker-end="url(#ptv)"/>
+  <rect x="734" y="114" width="72" height="60" rx="4" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="2.5"/>
+  <line x1="746" y1="130" x2="794" y2="130" stroke="#C9A961" stroke-width="3"/>
+  <line x1="746" y1="144" x2="794" y2="144" stroke="#C9A961" stroke-width="3"/>
+  <line x1="746" y1="158" x2="778" y2="158" stroke="#C9A961" stroke-width="3"/>
+  <circle cx="770" cy="56"  r="13" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2.5"/>
+  <circle cx="770" cy="232" r="13" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2.5"/>
+  <circle cx="676" cy="144" r="13" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2.5"/>
+  <circle cx="862" cy="144" r="13" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2.5"/>
+  <text x="770" y="282" font-family="Inter, sans-serif" font-size="16" font-weight="700" fill="#1A1A1A" text-anchor="middle">lavagna</text>
+  <text x="770" y="302" font-family="Inter, sans-serif" font-size="16" font-weight="700" fill="#1A1A1A" text-anchor="middle">condivisa</text>
+
+  <!-- ============ 5. mercato (contract net) ============ -->
+  <line x1="990" y1="62" x2="935" y2="192" stroke="#1A1A1A" stroke-width="2" stroke-dasharray="6 5"/>
+  <line x1="990" y1="62" x2="990" y2="226" stroke="#1A1A1A" stroke-width="2" stroke-dasharray="6 5"/>
+  <line x1="990" y1="78" x2="1036" y2="176" stroke="#B5532C" stroke-width="3.5" marker-end="url(#ptt)"/>
+  <circle cx="935"  cy="192" r="14" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2.5"/>
+  <circle cx="990"  cy="226" r="14" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2.5"/>
+  <circle cx="1045" cy="192" r="14" fill="#F8F5EE" stroke="#B5532C" stroke-width="3"/>
+  <circle cx="990"  cy="62"  r="18" fill="#F8F5EE" stroke="#B5532C" stroke-width="3.5"/>
+  <text x="990" y="282" font-family="Inter, sans-serif" font-size="16" font-weight="700" fill="#1A1A1A" text-anchor="middle">mercato</text>
+</svg>

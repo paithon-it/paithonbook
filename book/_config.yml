@@ -31,6 +31,23 @@ html:
 
 sphinx:
   config:
+    # Il libro e' in italiano e finora non lo diceva: `<html lang="en">` e
+    # `docsearch:language: en` su tutte le pagine. Conta per i motori di
+    # ricerca, per gli assistenti che citano e per gli screen reader. Effetto
+    # collaterale voluto: le etichette del tema passano all'italiano (Search ->
+    # Cerca, previous/next -> precedente/successivo). Le etichette che
+    # `pt-formato.js` scrive a mano («Torna su») non cambiano, le imposta lui.
+    language: it
+
+    # Ricopiata tal quale nella radice della build: robots.txt, sitemap.xml e
+    # llms.txt, che li scrive `scripts/genera-radice.py` dal `_toc.yml`.
+    # Arrivano alla radice del DOMINIO (dove robots.txt conta) perche' il
+    # workflow ricopia il branch primario nella radice del sito: e' la
+    # variabile di repository BEHAVIOR_PRIMARY=copy. Vedi il docstring dello
+    # script.
+    html_extra_path:
+    - _extra
+
     html_css_files:
     - custom.css
     - tabs-enhanced.css
@@ -142,8 +159,13 @@ sphinx:
   # legge dal `_toc.yml` e lo mette a disposizione del testo come sostituzione
   # MyST — `{{ n_capitoli_lettere }}` nella landing, `{{ n_capitoli_meno_uno_lettere }}`
   # nelle conclusioni. I percorsi sono relativi a questo file.
+  # `pt_meta` mette nel contesto del template la descrizione di QUESTA pagina
+  # (il suo primo paragrafo), che `_static/head_custom.html` usa per og:title,
+  # og:description e i dati strutturati: prima erano identici su tutte e 160 le
+  # pagine.
   local_extensions:
     pt_conteggi: _ext
+    pt_meta: _ext
 
 bibtex_bibfiles: 
   - references.bib

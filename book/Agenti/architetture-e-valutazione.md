@@ -130,6 +130,12 @@ il gusto della squadra.
 
 `````
 
+Questa è l'idea; i meccanismi con cui una squadra di agenti si organizza
+davvero (quanto costa il coordinamento e quando lo ripaga, quale grafo di
+comunicazione conviene, come ci si mette d'accordo quando i partecipanti non
+sono affidabili, e come si può *imparare* a coordinarsi invece di essere
+programmati per farlo) hanno un capitolo dedicato più avanti.
+
 ## La memoria che dura
 
 C'è un ingrediente che finora abbiamo lasciato ai margini: la **memoria a

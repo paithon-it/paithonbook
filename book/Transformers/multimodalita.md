@@ -74,6 +74,14 @@ qualunque dato riducibile a una **sequenza di token** (parole, patch,
 frammenti audio) è terreno di gioco per l'attenzione.
 `````
 
+Qui ci fermiamo al principio, che è il filo di questo capitolo: tutto ciò che
+si riduce a una sequenza di token è terreno dell'attenzione. Come si costruisca
+davvero un modello che vede e parla è un'altra storia, e ha un capitolo suo più
+avanti: allineare due spazi separati senza fonderli, innestare un occhio su un
+modello di linguaggio già addestrato, oppure dare a pixel e parole un unico
+vocabolario sono tre risposte diverse alla stessa domanda, e ciascuna si paga
+in modo diverso.
+
 ## Fuori dal linguaggio: AlphaFold 2 e la forma delle proteine
 
 Il caso più clamoroso di attenzione applicata a un dominio che con il testo non

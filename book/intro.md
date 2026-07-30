@@ -102,7 +102,11 @@ delta rule, con RetNet, RWKV e xLSTM.</span> </a> <a class="pt-card"
 href="StateSpaceModel/overview.html"> <span class="pt-card-num"></span> <span
 class="pt-card-title">State Space Model</span> <span class="pt-card-desc">Da
 S4 a Mamba: sequenze a tempo lineare dai sistemi dinamici, fino a Mamba-2 e
-Mamba-3.</span> </a> <a class="pt-card" href="Agenti/overview.html"> <span
+Mamba-3.</span> </a> <a class="pt-card" href="VisioneLinguaggio/overview.html">
+<span class="pt-card-num"></span> <span class="pt-card-title">Visione e
+linguaggio</span> <span class="pt-card-desc">Modelli che vedono e parlano:
+addestramento contrastivo, connettori, fusione precoce e il costo del
+dettaglio.</span> </a> <a class="pt-card" href="Agenti/overview.html"> <span
 class="pt-card-num"></span> <span class="pt-card-title">Agenti e applicazioni
 LLM</span> <span class="pt-card-desc">Quando gli LLM agiscono: tool use e
 ReAct, RAG avanzato, context engineering, valutazione.</span> </a> <a
@@ -110,7 +114,12 @@ class="pt-card" href="IngegneriaLLM/overview.html"> <span
 class="pt-card-num"></span> <span class="pt-card-title">Prompt, contesto e
 loop</span> <span class="pt-card-desc">Programmare gli LLM a parole su tre
 livelli concentrici: prompt engineering, context engineering e loop
-engineering.</span> </a> <a class="pt-card" href="Audio/overview.html"> <span
+engineering.</span> </a> <a class="pt-card"
+href="SistemiMultiAgente/overview.html"> <span class="pt-card-num"></span>
+<span class="pt-card-title">Sistemi multi-agente</span> <span
+class="pt-card-desc">Quando gli agenti sono molti: costo del coordinamento,
+topologie, consenso, apprendimento per rinforzo multi-agente e sciami.</span>
+</a> <a class="pt-card" href="Audio/overview.html"> <span
 class="pt-card-num"></span> <span class="pt-card-title">Audio oltre la
 voce</span> <span class="pt-card-desc">Dallo spettrogramma alla generazione:
 AudioSet, wav2vec, codec neurali, MusicGen.</span> </a> <a class="pt-card"

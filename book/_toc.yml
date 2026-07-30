@@ -232,6 +232,19 @@ parts:
       title: Mamba-2 e Mamba-3
     - file: StateSpaceModel/panorama-e-limiti.md
       title: Panorama e limiti
+  - file: VisioneLinguaggio/overview.md
+    title: Visione e linguaggio
+    sections:
+    - file: VisioneLinguaggio/allineare-due-spazi.md
+      title: Allineare due spazi
+    - file: VisioneLinguaggio/innestare-gli-occhi.md
+      title: Innestare gli occhi
+    - file: VisioneLinguaggio/fusione-precoce-tardiva.md
+      title: Fusione precoce e tardiva
+    - file: VisioneLinguaggio/risoluzione-e-dettaglio.md
+      title: Il costo del dettaglio
+    - file: VisioneLinguaggio/vedere-quel-che-non-ce.md
+      title: Vedere quel che non c'è
 
 - caption: Lavorare con gli LLM
   chapters:
@@ -255,6 +268,19 @@ parts:
       title: Context engineering
     - file: IngegneriaLLM/loop-engineering.md
       title: Loop engineering
+  - file: SistemiMultiAgente/overview.md
+    title: Sistemi multi-agente
+    sections:
+    - file: SistemiMultiAgente/costo-del-coordinamento.md
+      title: Il costo del coordinamento
+    - file: SistemiMultiAgente/topologie.md
+      title: Chi parla con chi
+    - file: SistemiMultiAgente/protocolli-e-consenso.md
+      title: Protocolli e consenso
+    - file: SistemiMultiAgente/imparare-insieme.md
+      title: Imparare insieme
+    - file: SistemiMultiAgente/sciami-e-simulazioni.md
+      title: Sciami e simulazioni
 
 - caption: Suono e voce
   chapters:

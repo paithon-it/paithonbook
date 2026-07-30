@@ -1,0 +1,119 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 410" role="img" aria-label="A sinistra due torri: un'immagine entra nell'encoder immagine e una didascalia entra nell'encoder testo; ciascuno produce un vettore normalizzato. Le due frecce convergono in uno spazio condiviso, disegnato come una sfera unitaria su cui i due vettori sono vicini. A destra una matrice quattro per quattro di similarita coseno fra le quattro immagini e le quattro didascalie del batch: le celle della diagonale, che sono le coppie vere, sono piene di terracotta e portano i valori piu alti; tutte le altre celle, i negativi, sono chiare e portano valori bassi.">
+  <defs>
+    <marker id="fr-vlm" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1A1A1A"/>
+    </marker>
+    <marker id="fr-vlm-t" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#B5532C"/>
+    </marker>
+    <marker id="fr-vlm-v" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#2D5A5C"/>
+    </marker>
+  </defs>
+
+  <!-- ============ TORRE IMMAGINE ============ -->
+  <rect x="24" y="70" width="94" height="76" rx="8" fill="#C9A961" fill-opacity="0.14" stroke="#1A1A1A" stroke-width="2"/>
+  <circle cx="98" cy="90" r="7" fill="#C9A961"/>
+  <polyline points="34,136 56,104 70,122 84,100 108,136" fill="none" stroke="#B5532C" stroke-width="2.5" stroke-linejoin="round"/>
+  <text x="71" y="164" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#1A1A1A">immagine</text>
+
+  <line x1="118" y1="108" x2="154" y2="108" stroke="#1A1A1A" stroke-width="2" marker-end="url(#fr-vlm)"/>
+
+  <rect x="158" y="68" width="134" height="80" rx="8" fill="#B5532C" fill-opacity="0.14" stroke="#B5532C" stroke-width="2.5"/>
+  <text x="225" y="103" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#1A1A1A">encoder immagine</text>
+  <text x="225" y="124" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" fill="#2D5A5C">ViT o CNN</text>
+
+  <line x1="292" y1="108" x2="326" y2="108" stroke="#1A1A1A" stroke-width="2" marker-end="url(#fr-vlm)"/>
+
+  <rect x="330" y="90" width="52" height="36" rx="8" fill="#B5532C" fill-opacity="0.14" stroke="#B5532C" stroke-width="2"/>
+  <text x="356" y="113" text-anchor="middle" font-family="Inter, sans-serif" font-size="13.5" fill="#1A1A1A">I<tspan dy="4" font-size="10">i</tspan></text>
+
+  <!-- ============ TORRE TESTO ============ -->
+  <rect x="24" y="280" width="94" height="76" rx="8" fill="#2D5A5C" fill-opacity="0.10" stroke="#1A1A1A" stroke-width="2"/>
+  <g stroke="#2D5A5C" stroke-width="2.5" stroke-linecap="round">
+    <line x1="38" y1="300" x2="104" y2="300"/>
+    <line x1="38" y1="314" x2="92" y2="314"/>
+    <line x1="38" y1="328" x2="100" y2="328"/>
+    <line x1="38" y1="342" x2="76" y2="342"/>
+  </g>
+  <text x="71" y="374" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#1A1A1A">didascalia</text>
+
+  <line x1="118" y1="318" x2="154" y2="318" stroke="#1A1A1A" stroke-width="2" marker-end="url(#fr-vlm)"/>
+
+  <rect x="158" y="278" width="134" height="80" rx="8" fill="#2D5A5C" fill-opacity="0.12" stroke="#2D5A5C" stroke-width="2.5"/>
+  <text x="225" y="313" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#1A1A1A">encoder testo</text>
+  <text x="225" y="334" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" fill="#2D5A5C">Transformer</text>
+
+  <line x1="292" y1="318" x2="326" y2="318" stroke="#1A1A1A" stroke-width="2" marker-end="url(#fr-vlm)"/>
+
+  <rect x="330" y="300" width="52" height="36" rx="8" fill="#2D5A5C" fill-opacity="0.14" stroke="#2D5A5C" stroke-width="2"/>
+  <text x="356" y="323" text-anchor="middle" font-family="Inter, sans-serif" font-size="13.5" fill="#1A1A1A">T<tspan dy="4" font-size="10">j</tspan></text>
+
+  <!-- ============ SPAZIO CONDIVISO ============ -->
+  <text x="470" y="128" text-anchor="middle" font-family="Inter, sans-serif" font-size="12.5" font-weight="700" fill="#1A1A1A">spazio condiviso</text>
+  <circle cx="470" cy="215" r="76" fill="none" stroke="#C9A961" stroke-width="2" stroke-dasharray="8 6"/>
+
+  <line x1="384" y1="118" x2="416" y2="166" stroke="#B5532C" stroke-width="2" marker-end="url(#fr-vlm-t)"/>
+  <line x1="384" y1="308" x2="416" y2="262" stroke="#2D5A5C" stroke-width="2" marker-end="url(#fr-vlm-v)"/>
+
+  <circle cx="470" cy="218" r="44" fill="none" stroke="#1A1A1A" stroke-width="1.5" stroke-opacity="0.35"/>
+  <line x1="470" y1="218" x2="506" y2="192" stroke="#B5532C" stroke-width="2.5" marker-end="url(#fr-vlm-t)"/>
+  <line x1="470" y1="218" x2="500" y2="185" stroke="#2D5A5C" stroke-width="2.5" marker-end="url(#fr-vlm-v)"/>
+  <text x="470" y="285" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#2D5A5C">vettori di norma 1</text>
+
+  <line x1="550" y1="215" x2="600" y2="215" stroke="#1A1A1A" stroke-width="2" marker-end="url(#fr-vlm)"/>
+
+  <!-- ============ MATRICE N x N ============ -->
+  <text x="740" y="84" text-anchor="middle" font-family="Inter, sans-serif" font-size="12.5" font-weight="700" fill="#1A1A1A">similarit&#224; coseno, N &#215; N</text>
+
+  <g font-family="Inter, sans-serif" font-size="12" fill="#1A1A1A" text-anchor="middle">
+    <text x="662" y="107">T<tspan dy="3" font-size="9">1</tspan></text>
+    <text x="714" y="107">T<tspan dy="3" font-size="9">2</tspan></text>
+    <text x="766" y="107">T<tspan dy="3" font-size="9">3</tspan></text>
+    <text x="818" y="107">T<tspan dy="3" font-size="9">4</tspan></text>
+  </g>
+  <g font-family="Inter, sans-serif" font-size="12" fill="#1A1A1A" text-anchor="end">
+    <text x="628" y="149">I<tspan dy="3" font-size="9">1</tspan></text>
+    <text x="628" y="201">I<tspan dy="3" font-size="9">2</tspan></text>
+    <text x="628" y="253">I<tspan dy="3" font-size="9">3</tspan></text>
+    <text x="628" y="305">I<tspan dy="3" font-size="9">4</tspan></text>
+  </g>
+
+  <!-- celle fuori diagonale -->
+  <g fill="#2D5A5C" fill-opacity="0.08" stroke="#1A1A1A" stroke-width="1.2" stroke-opacity="0.3">
+    <rect x="688" y="118" width="52" height="52"/><rect x="740" y="118" width="52" height="52"/><rect x="792" y="118" width="52" height="52"/>
+    <rect x="636" y="170" width="52" height="52"/><rect x="740" y="170" width="52" height="52"/><rect x="792" y="170" width="52" height="52"/>
+    <rect x="636" y="222" width="52" height="52"/><rect x="688" y="222" width="52" height="52"/><rect x="792" y="222" width="52" height="52"/>
+    <rect x="636" y="274" width="52" height="52"/><rect x="688" y="274" width="52" height="52"/><rect x="740" y="274" width="52" height="52"/>
+  </g>
+
+  <!-- celle della diagonale: le coppie vere -->
+  <g fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5">
+    <rect x="636" y="118" width="52" height="52"/>
+    <rect x="688" y="170" width="52" height="52"/>
+    <rect x="740" y="222" width="52" height="52"/>
+    <rect x="792" y="274" width="52" height="52"/>
+  </g>
+
+  <!-- valori fuori diagonale -->
+  <g font-family="Inter, sans-serif" font-size="11.5" fill="#1A1A1A" text-anchor="middle">
+    <text x="714" y="148">0,10</text><text x="766" y="148">0,05</text><text x="818" y="148">0,02</text>
+    <text x="662" y="200">0,08</text><text x="766" y="200">0,12</text><text x="818" y="200">0,04</text>
+    <text x="662" y="252">0,04</text><text x="714" y="252">0,15</text><text x="818" y="252">0,09</text>
+    <text x="662" y="304">0,06</text><text x="714" y="304">0,03</text><text x="766" y="304">0,10</text>
+  </g>
+
+  <!-- valori sulla diagonale -->
+  <g font-family="Inter, sans-serif" font-size="12" font-weight="700" fill="#F8F5EE" text-anchor="middle">
+    <text x="662" y="148">0,30</text>
+    <text x="714" y="200">0,28</text>
+    <text x="766" y="252">0,32</text>
+    <text x="818" y="304">0,26</text>
+  </g>
+
+  <!-- legenda -->
+  <rect x="636" y="346" width="16" height="16" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="660" y="359" font-family="Inter, sans-serif" font-size="11.5" fill="#1A1A1A">coppie vere: la loss le spinge in alto</text>
+  <rect x="636" y="372" width="16" height="16" fill="#2D5A5C" fill-opacity="0.08" stroke="#1A1A1A" stroke-width="1.2" stroke-opacity="0.3"/>
+  <text x="660" y="385" font-family="Inter, sans-serif" font-size="11.5" fill="#1A1A1A">negativi del batch: la loss le spinge in basso</text>
+</svg>
