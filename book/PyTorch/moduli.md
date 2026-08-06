@@ -151,6 +151,21 @@ addestrarlo serve prima di tutto un modo di misurare *quanto sbaglia*: la
 funzione di perdita, o **loss**. `torch.nn` le offre come moduli pronti; le
 due che useremo più spesso coprono i due grandi casi.
 
+```{figure} ../figures/loss-function-cosa-ottimizziamo.svg
+:name: fig-mse-vs-crossentropy
+:alt: "Due curve a confronto. L'errore quadratico medio cresce come una parabola all'allontanarsi della predizione dal valore vero, penalizzando poco gli errori piccoli. La cross-entropy invece diverge: quando il modello assegna probabilità quasi nulla alla classe giusta, la penalità tende all'infinito."
+:width: 96%
+
+Due forme, due caratteri. La parabola perdona gli errori piccoli; la
+cross-entropy non perdona la sicurezza sbagliata, e cresce senza limite quando
+il modello esclude la risposta giusta.
+```
+
+Il comportamento agli estremi mostrato in {numref}`fig-mse-vs-crossentropy` è
+la ragione della scelta, più della matematica che le distingue. In
+classificazione ciò che deve fare male non è sbagliare di poco, è essere
+convinti del contrario: la cross-entropy è costruita esattamente per questo.
+
 ```python
 loss_regressione = nn.MSELoss()            # per predire numeri continui
 loss_classi = nn.CrossEntropyLoss()        # per scegliere tra classi

@@ -96,6 +96,20 @@ infinite architetture.
 
 ## Dove sta andando
 
+```{figure} ../figures/scaling-laws-2020.svg
+:name: fig-leggi-di-scala-tre
+:alt: "Tre grafici affiancati, tutti in scala logaritmica su entrambi gli assi. In ciascuno la loss cala come una retta discendente al crescere rispettivamente della potenza di calcolo, della quantità di dati e del numero di parametri: nessuna delle tre curve mostra un ginocchio o un punto di arresto nell'intervallo misurato."
+:width: 100%
+
+Tre risorse, tre rette. Su scala logaritmica una retta vuol dire che per
+guadagnare ancora un poco bisogna moltiplicare, non aggiungere.
+```
+
+L'assenza di un ginocchio in {numref}`fig-leggi-di-scala-tre` è ciò che ha
+orientato un decennio di ricerca, ed è anche il suo limite di validità: le
+rette descrivono l'intervallo misurato e non promettono niente oltre. È bene
+tenerlo a mente leggendo le pagine che seguono.
+
 Questo capitolo, nella sua prima stesura, indicava come "direzioni future" i
 foundation model, la multimodalità e gli agenti. Nel frattempo sono diventati
 tre capitoli di questo libro. È il modo più onesto di dire quanto corre il
@@ -135,6 +149,22 @@ E una direzione che è più una scommessa che una tendenza: i **modelli del mond
 ## Una nota onesta
 
 Sarebbe disonesto chiudere con il solo entusiasmo. Questi sistemi hanno limiti strutturali, non incidenti temporanei.
+
+```{figure} ../figures/open-weights-vs-closed.svg
+:name: fig-aperti-chiusi
+:alt: "Mappa a quadranti: sull'asse orizzontale il grado di apertura di un modello, dai pesi scaricabili da chiunque ai sistemi accessibili solo via API; sull'asse verticale la capacità. I modelli si distribuiscono in entrambe le metà, senza che una delle due domini l'altra."
+:width: 92%
+
+Due assi indipendenti. Aperto non vuol dire debole e chiuso non vuol dire
+potente: sono scelte di distribuzione, e cambiano chi può verificare cosa.
+```
+
+L'indipendenza dei due assi in {numref}`fig-aperti-chiusi` ha una conseguenza
+che riguarda direttamente i limiti appena elencati. Su un modello di cui si
+possono scaricare i pesi, chiunque può misurare, sondare e smentire; su uno
+raggiungibile solo da un'interfaccia, le stesse verifiche dipendono dal
+permesso di chi lo ospita, e questo è un fatto sulla conoscenza, non sul
+mercato.
 
 `````{tab} Elementare
 Un modello linguistico non "sa" le cose: prevede la parola più probabile dopo

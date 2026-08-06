@@ -95,6 +95,21 @@ organizzativo: la catena deve essere **riproducibile** (rieseguendola sugli
 stessi dati grezzi si riottiene lo stesso dataset) e **orchestrata** (i
 passaggi si succedono in un ordine dichiarato, non a mano in un notebook).
 
+```{figure} ../figures/feature-engineering.svg
+:name: fig-feature-engineering
+:alt: "Catena in tre blocchi: i dati grezzi entrano nel blocco di feature engineering, che li trasforma nelle variabili con cui il modello lavora, e solo queste ultime raggiungono il modello. Il modello non vede mai i dati grezzi."
+:width: 90%
+
+Il modello non vede i dati: vede le feature. Tutto ciò che si decide nel
+blocco di mezzo è il mondo dentro cui il modello dovrà cavarsela.
+```
+
+La freccia a senso unico di {numref}`fig-feature-engineering` è il motivo per
+cui questa catena va versionata come si versiona il codice. Se cambia il modo
+di costruire una feature, il modello addestrato prima e quello addestrato dopo
+non stanno più guardando la stessa cosa, e nessun confronto fra i due punteggi
+significa niente.
+
 `````{tab} Elementare
 
 Pensa a una catena di montaggio: la materia prima entra da un'estremità e a

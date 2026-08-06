@@ -8,6 +8,21 @@ con onestà: capire *perché* ha vinto, e anche *dove* non vince affatto.
 
 ## Tre generazioni di memoria
 
+```{figure} ../figures/rnn-reti-con-memoria.svg
+:name: fig-rnn-srotolamento
+:alt: "A sinistra una cella ricorrente con una freccia che rientra su sé stessa, il cappio dello stato. A destra la stessa cella srotolata nel tempo in tre copie identiche, ciascuna che riceve una parola e passa lo stato alla successiva: sono la stessa cella, con gli stessi pesi, applicata a istanti diversi."
+:width: 96%
+
+Il cappio e il suo srotolamento. Le tre copie a destra non sono tre reti: sono
+la stessa, riusata a ogni passo, ed è per questo che una RNN funziona su
+sequenze di lunghezza qualsiasi.
+```
+
+L'equivalenza di {numref}`fig-rnn-srotolamento` è anche la radice del problema
+che questa sezione racconta. Se lo stato attraversa la stessa moltiplicazione
+a ogni passo, dopo cento passi quel fattore è stato applicato cento volte, e
+un numero poco più piccolo di uno diventa quasi zero.
+
 `````{tab} Elementare
 Le **RNN** leggono una parola alla volta portandosi dietro un riassunto
 mentale, che però sbiadisce in fretta: alla fine di un paragrafo lungo,

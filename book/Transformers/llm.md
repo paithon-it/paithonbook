@@ -143,6 +143,22 @@ Gopher (280 miliardi di parametri, circa 300 miliardi di token). Col senno del
 regola prescriverebbe circa 3.500 miliardi di token, contro i 300 effettivi.
 `````
 
+```{figure} ../figures/chinchilla-2022.svg
+:name: fig-chinchilla
+:alt: "Due barre che ripartiscono lo stesso budget di calcolo in modo diverso. Gopher spende in 280 miliardi di parametri e 300 miliardi di token: molta capacità, poca esperienza. Chinchilla spende in 70 miliardi di parametri e 1.400 miliardi di token: meno capacità, molta più esperienza."
+:width: 90%
+
+Lo stesso budget, due modi di spenderlo. Chinchilla è quattro volte più
+piccolo di Gopher e ha letto quasi cinque volte di più: a parità di calcolo,
+vince il secondo.
+```
+
+Il confronto di {numref}`fig-chinchilla` è il motivo per cui «quanti
+parametri ha?» ha smesso di essere una domanda sensata da sola. Un numero di
+parametri dice quanta capacità c'è, non quanta ne è stata riempita, e due
+modelli con lo stesso cartellino possono aver letto quantità di testo
+incomparabili.
+
 Una parola di prudenza sulle cosiddette **capacità emergenti**. È stato
 osservato (Jason Wei e colleghi, 2022) che certe abilità (fare aritmetica a
 più cifre, seguire istruzioni composte) sembrano comparire *all'improvviso*
@@ -154,6 +170,21 @@ dibattito è aperto; quello che le leggi di scala garantiscono è il
 miglioramento della *predizione del token successivo*, non la comparsa di
 specifiche abilità a date prestabilite. Diffidare di chi vende certezze in una
 direzione o nell'altra.
+
+```{figure} ../figures/emergent-abilities.svg
+:name: fig-capacita-emergenti
+:alt: "Due grafici affiancati che misurano lo stesso modello al crescere della scala. A sinistra, con una metrica discontinua come la risposta esatta sì o no, la curva resta piatta e poi salta di colpo: sembra un'abilità comparsa all'improvviso. A destra, con una metrica continua come la distanza di edit, la stessa crescita appare come un miglioramento graduale e regolare."
+:width: 100%
+
+Lo stesso modello, due righelli. Il gradino di sinistra non è nei dati: è
+nella metrica, che assegna zero a una risposta quasi giusta finché non diventa
+esatta.
+```
+
+{numref}`fig-capacita-emergenti` mostra da dove nasce l'equivoco. Una metrica
+tutto-o-niente tiene a zero il punteggio finché il modello non azzecca
+l'ultima cifra, e poi lo fa scattare a uno: il salto è reale sul grafico e
+inventato nel modello, che nel frattempo stava migliorando piano.
 
 ## Generare: l'arte di scegliere la parola dopo
 
@@ -330,7 +361,22 @@ costi molto diversi.
 Abbiamo visto, nella sezione su GPT, BERT e T5, la scoperta sorprendente di
 GPT-3: descrivere un compito nel prompt (magari con due o tre esempi svolti)
 basta spesso a farglielo eseguire, senza aggiornare un solo peso
-{cite}`brown2020language`. Vale la pena soffermarsi su quanto è strano. Per
+{cite}`brown2020language`.
+
+```{figure} ../figures/gpt-2-2019.svg
+:name: fig-gpt2-multitask
+:alt: "Al centro un unico modello linguistico, addestrato soltanto a prevedere la parola successiva. Da esso si diramano più compiti diversi (rispondere a domande, riassumere, tradurre) che il modello esegue senza essere stato addestrato specificamente su nessuno di essi."
+:width: 96%
+
+Un solo obiettivo, molti compiti. Nessuno ha insegnato a questo modello a
+riassumere: il riassunto era già dentro l'esercizio di prevedere la parola
+dopo, su un web che contiene testi e i loro riassunti.
+```
+
+L'osservazione di {numref}`fig-gpt2-multitask` precede GPT-3 e ne spiega la
+premessa. Se il corpus è abbastanza vasto, contiene già esempi impliciti di
+quasi ogni compito linguistico, e un modello che lo prevede bene ha dovuto,
+per forza, imparare a farli. Vale la pena soffermarsi su quanto è strano. Per
 tutto il libro, "adattare un modello" ha significato addestrarlo:
 retropropagazione, gradienti, epoche. Qui no: il compito viene *descritto in
 italiano* (o in inglese), e il modello, completando il testo nel modo più
@@ -364,7 +410,22 @@ stato a lungo MMLU (Hendrycks e colleghi, 2021), domande a scelta multipla su
 57 materie, dal diritto alla fisica.
 
 I benchmark vanno però letti con un sospetto specifico: la **contaminazione**
-dei dati di test. Se il modello ha studiato l'intero web, è probabile che
+dei dati di test.
+
+```{figure} ../figures/benchmark-llm-come-si-bara.svg
+:name: fig-contaminazione
+:alt: "Un grande insieme, i dati di addestramento raccolti dal web, e un piccolo insieme, le domande del benchmark. I due si sovrappongono in una zona evidenziata: le domande di test che compaiono anche nel corpus di addestramento. Su quella zona il punteggio misura ciò che il modello ricorda, non ciò che sa fare."
+:width: 88%
+
+La zona di sovrapposizione è il problema. Non serve malafede perché si formi:
+basta che il benchmark sia pubblico e il corpus sia il web.
+```
+
+Come si vede in {numref}`fig-contaminazione`, la contaminazione non è un
+imbroglio ma una conseguenza quasi inevitabile del modo in cui si raccolgono i
+dati. Ed è per questo che è difficile da escludere: per dimostrare che una
+domanda *non* è nel corpus bisognerebbe poterlo ispezionare tutto, e chi
+pubblica un punteggio quasi mai pubblica anche i dati. Se il modello ha studiato l'intero web, è probabile che
 abbia già *visto* le domande del test, che quindi misura la memoria, non la
 competenza. Non è un rischio teorico: gli stessi autori di GPT-3 dedicano al
 problema un'analisi accurata, e ammettono che, per un bug nella procedura di

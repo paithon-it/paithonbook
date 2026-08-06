@@ -32,6 +32,23 @@ posizione rielabora per conto suo), e che la seconda, pur essendo la parte
 concettualmente più semplice, contiene circa due terzi dei parametri di ogni
 strato: è lì che risiede gran parte della capacità del modello.
 
+```{figure} ../figures/mixture-of-experts.svg
+:name: fig-moe-layer
+:alt: "Schema di uno strato Mixture of Experts: un token entra in un router, che fra otto esperti disponibili ne seleziona due; solo i due esperti scelti elaborano il token, e le loro uscite vengono combinate in un'unica uscita. I sei esperti non selezionati restano inattivi."
+:width: 88%
+
+Otto esperti, due al lavoro. Il modello contiene tutti i parametri degli otto,
+ma per ogni singolo token ne attraversa soltanto due: da qui il divorzio fra
+quanto un modello è grande e quanto costa farlo girare.
+```
+
+È il divorzio illustrato in {numref}`fig-moe-layer` a rendere interessante
+tutto il resto della sezione. Finché capacità e calcolo crescono insieme,
+l'unico modo di avere un modello più capace è pagarlo a ogni token; separarli
+apre una terza via, e il prezzo di quella via (un router che può sbagliare, e
+memoria per esperti che quasi sempre stanno fermi) è l'argomento delle pagine
+che seguono.
+
 L'idea sta in una riga: **sostituire l'unica rete feed-forward di ogni strato
 con $N$ copie indipendenti**, gli *esperti*, e aggiungere davanti un piccolo
 **router** che per ogni token ne sceglie $k$, di solito uno o due.

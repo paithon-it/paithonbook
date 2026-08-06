@@ -16,6 +16,21 @@ assegnandole un valore con `=`, e non devi mai dichiarare in anticipo di che
 tipo è: il linguaggio deduce da sé se sta maneggiando un numero, del testo o
 un valore di verità.
 
+```{figure} ../figures/numeri-stringhe-liste.svg
+:name: fig-tre-contenitori
+:alt: "Tre rappresentazioni affiancate: il numero come una scatolina sigillata che contiene un solo valore; la stringa come una catena di caselle, una per carattere, che si possono leggere ma non riscrivere; la lista come una fila di caselle numerate a partire da zero, che si possono sia leggere sia sostituire."
+:width: 96%
+
+Tre forme di contenitore. La differenza che conta non è cosa contengono ma se
+si può cambiarne il contenuto: la lista sì, la stringa no.
+```
+
+La distinzione mostrata in {numref}`fig-tre-contenitori` tornerà spesso, con
+il nome di **mutabilità**, ed è all'origine di parecchi errori dei primi
+giorni. Una stringa che sembra modificata è in realtà una stringa nuova;
+una lista passata a una funzione, invece, è la stessa lista, e se quella la
+modifica la modifica per tutti.
+
 ```python
 eta = 34             # int   -> un numero intero
 temperatura = 36.6   # float -> un numero con la virgola
@@ -89,6 +104,21 @@ Quattro contenitori bastano per il 90% del lavoro. Si distinguono per due
 domande: gli elementi hanno un ordine? e si possono modificare dopo la
 creazione?
 
+```{figure} ../figures/tuple-dizionari-set.svg
+:name: fig-scelta-contenitore
+:alt: "Tabella decisionale con una riga per contenitore, lista, tupla, dizionario e set, e una colonna per ciascuna proprietà: se mantiene l'ordine, se si può modificare dopo la creazione, se ammette duplicati e come vi si accede, per posizione o per chiave."
+:width: 96%
+
+Le quattro righe rispondono alle due domande qui sopra. Scegliere il
+contenitore è rispondere a quelle, non ricordare a memoria quale si usa di
+solito.
+```
+
+La colonna della modificabilità in {numref}`fig-scelta-contenitore` è quella
+che decide più spesso. Un contenitore immutabile può fare da chiave in un
+dizionario e non può essere cambiato per sbaglio da una funzione a cui lo si
+passa: sono due garanzie, non due limitazioni.
+
 ```python
 numeri = [3, 1, 4, 1, 5]                 # list: ordinata, modificabile
 punto  = (45.46, 9.19)                   # tuple: ordinata, immutabile
@@ -144,6 +174,20 @@ len(unici)           # quanti elementi    -> 3
 Qui si vede la scelta di stile più visibile di Python: i blocchi non hanno
 parentesi graffe, ma sono delimitati dall'**indentazione**. Due punti, poi si
 va a capo e si rientra. Il rientro non è cosmesi: è sintassi.
+
+```{figure} ../figures/controllo-di-flusso.svg
+:name: fig-controllo-di-flusso
+:alt: "Diagramma di flusso di un ciclo: dall'inizio si arriva a un rombo di condizione; se la condizione è vera si entra nel corpo del ciclo, si esegue l'aggiornamento e si torna alla condizione; se è falsa si esce. Il corpo e l'aggiornamento sono racchiusi in un blocco rientrato."
+:width: 62%
+
+Il ciclo come figura. Il rientro nel codice disegna esattamente il riquadro
+che qui è tracciato: dice dove il corpo comincia e dove finisce.
+```
+
+Il rombo di {numref}`fig-controllo-di-flusso` è il punto in cui si annidano
+quasi tutti i cicli infiniti dei primi giorni. Se dentro il corpo non c'è
+niente che avvicini la condizione al diventare falsa, la freccia di ritorno
+non porta da nessuna parte, e il programma gira per sempre senza dare errore.
 
 ```python
 voto = 27
@@ -211,6 +255,21 @@ Una funzione impacchetta un pezzo di logica dietro un nome, così lo riusi senza
 riscriverlo. Si definisce con `def`, riceve degli argomenti e restituisce un
 risultato con `return`.
 
+```{figure} ../figures/funzioni-args-kwargs-lambda.svg
+:name: fig-funzione-scatola
+:alt: "Una funzione disegnata come una scatola: a sinistra entrano gli argomenti, dentro sta il corpo che li elabora, e a destra esce il valore di ritorno. Chi chiama la funzione vede soltanto ciò che entra e ciò che esce, non quello che accade dentro."
+:width: 78%
+
+La funzione come scatola. Chi la usa deve conoscere solo i due lati, cosa
+darle e cosa ne ottiene; il corpo può cambiare senza che nessuno se ne
+accorga.
+```
+
+La linea che in {numref}`fig-funzione-scatola` separa il dentro dal fuori è
+tutto il valore delle funzioni, e vale ben oltre Python. Finché i due lati
+restano gli stessi, il corpo si può riscrivere, ottimizzare o correggere senza
+toccare una riga del codice che la chiama.
+
 ```python
 def area_rettangolo(base, altezza):
     return base * altezza
@@ -272,6 +331,21 @@ Costruire una lista trasformando un'altra è talmente comune che Python ha una
 sintassi dedicata. Il ciclo esplicito funziona, ma la *comprehension* dice la
 stessa cosa in una riga, e i pythonisti la leggono a colpo d'occhio:
 
+```{figure} ../figures/codice-pythonic-stile.svg
+:name: fig-stile-pythonico
+:alt: "Due versioni dello stesso programma affiancate. A sinistra la versione goffa: un ciclo che scorre gli indici, crea una lista vuota e vi aggiunge un elemento alla volta, in quattro righe. A destra la versione idiomatica: la stessa cosa in una list comprehension di una riga, che si legge come la frase che descrive il risultato."
+:width: 100%
+
+Lo stesso risultato, due modi di dirlo. La versione di destra non è più corta
+per vezzo: nomina il risultato invece di descrivere la procedura per
+ottenerlo.
+```
+
+La differenza di {numref}`fig-stile-pythonico` è ciò che si intende con
+«pythonico», parola che altrimenti suona come una questione di gusto. Non lo
+è: la comprehension si legge come una frase dichiarativa, e chi la scorre non
+deve simulare il ciclo nella testa per capire cosa produrrà.
+
 ```python
 # la via lunga
 quadrati = []
@@ -293,6 +367,21 @@ Si legge quasi in italiano: "il quadrato di `n`, per ogni `n` da 0 a 9, se `n`
 In Python *tutto* è un oggetto: numeri, stringhe, liste, perfino le funzioni.
 Quando ti servono oggetti su misura, definisci una **classe**: uno stampo che
 descrive quali dati un oggetto contiene e cosa sa fare.
+
+```{figure} ../figures/oop-classi-attributi-metodi.svg
+:name: fig-classe-istanze
+:alt: "A sinistra la classe Sensore, disegnata come uno stampo che elenca gli attributi e i metodi senza valori. A destra tre istanze prodotte dallo stampo: hanno la stessa struttura ma valori diversi negli attributi, e condividono gli stessi metodi."
+:width: 92%
+
+Uno stampo e tre pezzi. La classe dice quali dati esistono e cosa si può
+fare; ogni istanza porta i propri valori, mentre i metodi restano quelli
+della classe.
+```
+
+La divisione di {numref}`fig-classe-istanze` è ciò che si intende quando si
+dice che una classe è «uno stampo»: la struttura si scrive una volta, i valori
+tante. Ed è anche il motivo per cui i metodi ricevono `self` come primo
+argomento, che è il pezzo su cui stanno lavorando.
 
 ```python
 class Punto:
@@ -339,6 +428,21 @@ verrà.
 Più avanti nel libro incontrerai righe come `@torch.no_grad()` sopra la
 definizione di una funzione. Vale la pena sapere cosa fanno: la sintassi
 compare spesso e sembra magica solo finché non si guarda sotto.
+
+```{figure} ../figures/decorator-property.svg
+:name: fig-decoratore
+:alt: "Schema di una funzione avvolta da un decoratore: gli argomenti entrano nel wrapper esterno, che esegue del codice prima, chiama la funzione originale racchiusa al suo interno, esegue del codice dopo, e infine restituisce il risultato al chiamante."
+:width: 88%
+
+Un decoratore è un involucro. La funzione originale resta intatta al centro:
+quello che cambia è che chi la chiama passa prima e dopo per il codice
+dell'involucro.
+```
+
+Guardando {numref}`fig-decoratore` si capisce perché la `@` non sia una parola
+chiave speciale ma solo una scorciatoia di scrittura: `@qualcosa` sopra una
+funzione significa «prendi questa funzione, passala a `qualcosa`, e tieni ciò
+che torna al suo posto».
 
 `````{tab} Elementare
 

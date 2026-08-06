@@ -120,7 +120,23 @@ prezzo di una generazione sequenziale più lenta.
 
 Nel settembre 2022 OpenAI rilascia **Whisper**: un unico Transformer
 encoder-decoder che riceve lo spettrogramma log-mel e produce direttamente il
-testo. La sua forza non è tanto l'architettura quanto i dati: 680.000 ore di
+testo.
+
+```{figure} ../figures/come-funziona-whisper.svg
+:name: fig-whisper
+:alt: "Catena in cinque stadi: l'onda sonora in ingresso diventa uno spettrogramma, che entra in un encoder Transformer; l'uscita dell'encoder alimenta un decoder, che emette i token di testo uno dopo l'altro. Non ci sono moduli separati per il dizionario di pronuncia o per il modello di linguaggio."
+:width: 96%
+
+La catena di Whisper, tutta qui. Fra lo spettrogramma e il testo non c'è
+nessuno stadio con regole scritte a mano: encoder e decoder sono addestrati
+insieme, in un pezzo solo.
+```
+
+Quello che manca in {numref}`fig-whisper` conta quanto quello che c'è. La
+pipeline classica aveva un modello acustico, un dizionario di pronuncia e un
+modello di linguaggio, ciascuno costruito e messo a punto per una lingua;
+qui gli stessi compiti restano, ma sono distribuiti nei pesi e appresi dai
+dati, e questo è il motivo per cui un modello solo copre novanta lingue. La sua forza non è tanto l'architettura quanto i dati: 680.000 ore di
 audio raccolte dal web con etichettatura debole (trascrizioni prese così
 com'erano, senza revisione umana) in oltre novanta lingue. Con lo stesso
 modello Whisper trascrive, traduce verso l'inglese e riconosce la lingua,

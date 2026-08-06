@@ -16,6 +16,21 @@ sequenza di valori con un'etichetta ciascuno (l'*indice*). Un **DataFrame** è
 una tabella intera: tante Series affiancate che condividono lo stesso indice
 di riga.
 
+```{figure} ../figures/pandas-series-dataframe.svg
+:name: fig-series-dataframe
+:alt: "Schema di un DataFrame: una tabella con i nomi delle colonne in alto e l'indice di riga evidenziato sul lato sinistro. A destra, una singola colonna viene estratta dalla tabella e mostrata come Series, che conserva lo stesso indice di riga della tabella da cui proviene."
+:width: 94%
+
+Una colonna staccata da un DataFrame è una Series, e si porta dietro
+l'indice. È quell'indice condiviso a permettere di riallineare i dati senza
+badare all'ordine delle righe.
+```
+
+La parte da fissare in {numref}`fig-series-dataframe` è la colonna evidenziata
+a sinistra. L'indice non è un numero di riga qualunque: è l'etichetta con cui
+pandas riconosce ogni riga, e resta attaccata ai dati quando si filtra, si
+ordina o si estrae una colonna.
+
 `````{tab} Elementare
 
 Immagina un foglio Excel. Ogni colonna ha un'intestazione ("età", "città",
@@ -121,6 +136,20 @@ grandezza, suddivisa per categoria?* Spesa media per città, numero di ordini
 per mese, errore medio per classe. È il pattern **split-apply-combine**: dividi
 i dati in gruppi, applichi una funzione a ciascuno, ricomponi il risultato.
 
+```{figure} ../figures/pandas-selezione-filtri-groupby.svg
+:name: fig-split-apply-combine
+:alt: "Una tabella unica viene divisa in tre gruppi secondo il valore di una colonna; su ciascun gruppo si applica la stessa funzione di aggregazione, che lo riduce a un solo valore; i tre valori vengono infine ricomposti in una tabella nuova, con una riga per gruppo."
+:width: 100%
+
+Le tre mosse in fila. La tabella finale ha una riga per gruppo, e la colonna
+su cui si è diviso è diventata il suo indice.
+```
+
+L'ultimo passaggio di {numref}`fig-split-apply-combine` è quello che si tende
+a dimenticare: dopo un `groupby` la colonna di raggruppamento non è più una
+colonna, è l'indice. Da lì in poi si seleziona per etichetta, non per valore,
+e questo spiega gran parte dei sorprendenti `KeyError` che seguono.
+
 ```python
 df.groupby("citta")["spesa"].mean()    # spesa media per città
 df.groupby("citta").agg(
@@ -163,6 +192,21 @@ I dati reali sono quasi sempre incompleti: un campo non compilato, un sensore
 spento, una risposta saltata. Pandas rappresenta questi buchi con `NaN` (*Not
 a Number*), e ignorarli non è un'opzione: un solo `NaN` può propagarsi e
 avvelenare un intero calcolo.
+
+```{figure} ../figures/gestire-dati-mancanti.svg
+:name: fig-dati-mancanti
+:alt: "La stessa tabella con alcune celle vuote, trattata in tre modi affiancati. Nel primo le righe incomplete vengono eliminate e la tabella si accorcia. Nel secondo i buchi vengono riempiti con un valore fisso, la media della colonna. Nel terzo il valore mancante viene ricostruito dal contesto, cioè dalle altre colonne della stessa riga."
+:width: 100%
+
+Tre modi di rispondere alla stessa cella vuota. Nessuno è neutro: il primo
+butta anche i dati buoni della riga, il secondo inventa un valore plausibile,
+il terzo lo inventa con più cura.
+```
+
+Vale la pena guardare {numref}`fig-dati-mancanti` ricordando che una casella
+vuota è essa stessa un'informazione. Se manca perché il sensore era spento, è
+un caso; se manca perché la domanda era imbarazzante, il fatto che manchi dice
+qualcosa, e riempirla con la media cancella proprio quel qualcosa.
 
 `````{tab} Elementare
 
@@ -225,6 +269,22 @@ di queste patologie emerge dai numeri riassuntivi: solo l'occhio le coglie.
 Matplotlib è lo strumento per farlo. Tre grafici bastano per l'esplorazione
 iniziale: la **dispersione** per due variabili, l'**istogramma** per la
 distribuzione di una, la **linea** per un andamento nel tempo.
+
+```{figure} ../figures/matplotlib-primi-grafici.svg
+:name: fig-anatomia-figura
+:alt: "Un grafico Matplotlib annotato con i nomi delle sue parti: la Figure è il foglio che contiene tutto, gli Axes sono l'area di disegno delimitata dai due assi, e su di essi sono marcati il titolo, le etichette degli assi, i tick con i loro valori, la legenda e le linee tracciate."
+:width: 96%
+
+I nomi delle parti. La distinzione che serve subito è fra la **Figure**, cioè
+il foglio, e gli **Axes**, cioè il riquadro dove si disegna: quasi tutti i
+metodi appartengono ai secondi.
+```
+
+Conviene imparare i nomi di {numref}`fig-anatomia-figura` prima di scrivere il
+primo grafico, perché la documentazione di Matplotlib li dà per noti, e perché
+l'errore più comune dei primi tempi (chiamare un metodo sulla Figure quando
+serviva sugli Axes) diventa leggibile appena si sa che sono due oggetti
+distinti.
 
 ```python
 import matplotlib.pyplot as plt

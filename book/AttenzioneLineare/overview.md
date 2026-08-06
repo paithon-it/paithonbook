@@ -21,6 +21,21 @@ possiamo riscriverla come una ricorrenza a **stato di dimensione fissa**
 (costo lineare in addestramento, memoria costante in inferenza) senza
 rinunciare del tutto a ciò che l'aveva resa vincente.
 
+```{figure} ../figures/kv-cache-generazione.svg
+:name: fig-kv-cache-cresce
+:alt: "Sequenza di passi di generazione affiancati. A ogni token prodotto, la cache delle chiavi e dei valori si allunga di una colonna, e il blocco di memoria occupato cresce di passo in passo senza mai liberarsi, fino a dominare l'occupazione."
+:width: 96%
+
+La cache che non smette di crescere. Ogni token generato ne aggiunge un pezzo,
+e quel pezzo resta: la memoria occupata non dipende dal modello ma da quanto
+si è scritto finora.
+```
+
+{numref}`fig-kv-cache-cresce` è il muro in una figura, ed è il motivo per cui
+tutto questo capitolo esiste. Una ricorrenza a stato fisso non fa crescere
+niente: comprime il passato in una memoria di taglia costante, e la domanda
+diventa quanto si perde nel comprimerlo.
+
 ## Il compromesso che tutti inseguono
 
 `````{tab} Elementare

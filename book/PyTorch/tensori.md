@@ -175,6 +175,22 @@ $\mathcal{L}$, e per farlo serve il suo gradiente. Calcolarlo a mano per una
 rete con milioni di pesi è impensabile: qui entra la **differenziazione
 automatica** (*autodiff*), il vero cuore di PyTorch.
 
+```{figure} ../figures/extra-backpropagation-spiegata.svg
+:name: fig-autograd-due-passate
+:alt: "Una rete a tre strati percorsa in due sensi. Le frecce di andata vanno dall'ingresso all'uscita e calcolano le attivazioni; le frecce di ritorno vanno dall'uscita all'ingresso e propagano il gradiente, riusando i valori memorizzati durante l'andata."
+:width: 96%
+
+I due sensi di marcia. L'andata calcola e *ricorda*; il ritorno riusa quei
+valori memorizzati, ed è per questo che il gradiente costa all'incirca quanto
+una seconda passata e non quanto milioni di derivate separate.
+```
+
+La memoria implicita in {numref}`fig-autograd-due-passate` spiega un
+comportamento di PyTorch che altrimenti sorprende: perché un forward pass
+consumi RAM crescente con la profondità, e perché `torch.no_grad()` la
+liberi. Se non chiederete mai il gradiente, quei valori intermedi non serve
+tenerli.
+
 ```python
 x = torch.tensor(3.0, requires_grad=True)   # "osserva questo tensore"
 

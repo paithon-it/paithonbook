@@ -173,6 +173,22 @@ esiste il «quasi passato». I test devono passare, il linter non deve
 protestare, i tipi devono tornare: *prima* di considerare fatto il lavoro, non
 dopo averlo già spedito.
 
+```{figure} ../figures/codex-2021.svg
+:name: fig-codice-verificato
+:alt: "Una descrizione in linguaggio naturale entra nel modello, che genera del codice Python. Il codice non viene accettato così com'è: viene eseguito contro una batteria di test, e solo se li supera è considerato corretto; altrimenti si torna indietro a rigenerare."
+:width: 96%
+
+Il cancello, applicato al codice. Il modello propone; a decidere se la
+proposta vale è l'esecuzione dei test, che è un giudizio esterno e non
+opinabile.
+```
+
+La ragione per cui la programmazione è il terreno d'elezione di questi loop si
+legge in {numref}`fig-codice-verificato`: esiste un oracolo automatico e
+gratuito. Nei domini dove quell'oracolo manca (scrivere una relazione,
+progettare un'interfaccia) il cancello va costruito a mano, ed è lì che il
+loop engineering diventa difficile.
+
 Questa idea ha una radice accademica precisa, in due lavori che il capitolo
 sugli Agenti ha già introdotto e che qui rileggiamo dal lato del loop. ReAct
 {cite}`yao2023react` ha mostrato che intrecciare **ragionamento e azione**
@@ -283,6 +299,21 @@ la `verifica` è la vera suite di test, ma l'ossatura è questa.
 Fin qui la parte esaltante. Ora quella onesta, perché un loop mal governato è
 uno strumento per sbagliare più in fretta. Tre problemi vanno guardati in
 faccia.
+
+```{figure} ../figures/swe-bench-agenti-programmano.svg
+:name: fig-swe-bench
+:alt: "Catena di valutazione: da una issue reale di GitHub e dal codice del repository si parte, l'agente produce una patch, la patch viene applicata e sottoposta ai test del progetto, e il verdetto è binario, la issue è risolta oppure no."
+:width: 100%
+
+Un banco di prova che non ammette interpretazioni. Il compito viene da una
+issue vera, il giudizio dai test che il progetto già aveva: nessuno dei due
+l'ha scritto chi valuta.
+```
+
+Il pregio di {numref}`fig-swe-bench` è anche il suo limite, e vale la pena
+dirlo qui fra i problemi. Un banco di prova così misura ciò che i test
+sanno vedere: una patch che li supera peggiorando la leggibilità o
+introducendo un debito passa lo stesso, e nessuna percentuale lo registra.
 
 Il primo è **aritmetico**, e lo abbiamo già incontrato negli Agenti: gli errori
 si accumulano lungo il ciclo. Se a ogni passo la probabilità di *non* introdurre

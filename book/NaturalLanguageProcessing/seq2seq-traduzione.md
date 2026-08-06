@@ -139,6 +139,20 @@ print(h.shape)    # torch.Size([4, 1, 128]): 2 strati x 2 direzioni
 
 ## Comprimere una frase in un vettore
 
+```{figure} ../figures/seq2seq-2014.svg
+:name: fig-encoder-decoder
+:alt: "Schema encoder-decoder: l'encoder legge una a una le parole della frase inglese e le comprime in un unico vettore di contesto; da quel vettore il decoder genera le parole italiane una dopo l'altra, riusando a ogni passo la parola appena prodotta."
+:width: 100%
+
+Due reti e un vettore in mezzo. L'encoder finisce di leggere prima che il
+decoder cominci a scrivere: fra i due passa solo quel vettore, e nient'altro.
+```
+
+Il «nient'altro» di {numref}`fig-encoder-decoder` è il fatto architetturale
+da cui discendono le due sezioni successive. Finché l'unico canale fra le due
+reti è un vettore di dimensione fissa, la lunghezza della frase da tradurre
+non cambia lo spazio disponibile per rappresentarla.
+
 Torniamo alla traduzione. Nel 2014 due gruppi, Cho e colleghi a Montréal
 {cite}`cho2014learning` (lo stesso paper che introduce la GRU) e Sutskever,
 Vinyals e Le a Google {cite}`sutskever2014sequence`, arrivano alla stessa
@@ -195,7 +209,23 @@ visibilmente al crescere della lunghezza della frase.
 ## Tornare a guardare: la nascita dell'attenzione
 
 La soluzione arriva nel giro di pochi mesi, da Dzmitry Bahdanau, Kyunghyun Cho
-e Yoshua Bengio {cite}`bahdanau2015neural`. La domanda giusta è: perché
+e Yoshua Bengio {cite}`bahdanau2015neural`.
+
+```{figure} ../figures/attention-prima-dei-transformer.svg
+:name: fig-allineamento-traduzione
+:alt: "Una griglia di allineamento fra le parole della frase inglese, sulle colonne, e le parole italiane generate, sulle righe. Le celle più scure indicano dove il decoder ha guardato di più a ogni passo: la diagonale è marcata ma non perfetta, e in un punto due parole italiane si collegano a una sola inglese."
+:width: 88%
+
+L'allineamento che nessuno ha annotato. La griglia non è stata insegnata al
+modello: è il sottoprodotto dei pesi di attenzione, che si possono leggere
+dopo l'addestramento.
+```
+
+Il fatto che la diagonale di {numref}`fig-allineamento-traduzione` sia
+imperfetta è la notizia, non un difetto. Dove le due lingue ordinano le parole
+in modo diverso l'allineamento si spezza e attraversa la griglia, ed è
+esattamente il caso che un decoder costretto a leggere in ordine non poteva
+gestire. La domanda giusta è: perché
 costringere il decoder a lavorare a memoria? La frase sorgente è ancora lì,
 con tutti gli stati che l'encoder ha prodotto leggendo ogni parola. Basta
 lasciare che il decoder, a ogni passo, **torni a guardarli tutti**: dando a
@@ -331,6 +361,23 @@ quelli grigi le potature: il ramo spesso è la traduzione che la strategia
 greedy non avrebbe mai trovato.
 
 ## 2016: la traduzione neurale entra in produzione
+
+```{figure} ../figures/traduzione-automatica-da-regole-a-llm.svg
+:name: fig-paradigmi-traduzione
+:alt: "Linea del tempo con i quattro paradigmi della traduzione automatica: i sistemi a regole scritte da linguisti, i metodi statistici basati su corpora paralleli, la traduzione neurale con encoder-decoder e attenzione, e infine i modelli linguistici generalisti che traducono senza essere stati costruiti per farlo."
+:width: 100%
+
+Quattro modi di tradurre, in settant'anni. A ogni passaggio si sposta chi
+fornisce la conoscenza della lingua: prima il linguista, poi il corpus, poi il
+modello addestrato apposta, infine un modello che non era stato pensato per
+questo.
+```
+
+L'ultimo passaggio di {numref}`fig-paradigmi-traduzione` è il più singolare, e
+il libro lo incontrerà nel capitolo sui Transformer: la traduzione ha smesso di
+essere un compito con un'architettura propria ed è diventata una delle cose
+che un modello generalista sa fare. Qui però siamo alla terza tappa, ed è
+quella che ha portato la traduzione neurale in produzione.
 
 Questa storia ha una data di consegna. Nel settembre 2016 Google annuncia GNMT
 (*Google Neural Machine Translation*) {cite}`wu2016google`: un encoder–decoder

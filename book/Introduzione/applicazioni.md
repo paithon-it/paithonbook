@@ -32,6 +32,21 @@ cammina. È il gioco “acqua–fuochino” portato all’estremo: nessuna istru
 solo un segnale che dice *così va meglio, così va peggio*.
 `````
 
+```{figure} ../figures/reinforcement-learning-agenti-stati-azioni.svg
+:name: fig-agente-ambiente
+:alt: "Anello fra due blocchi: l'agente invia un'azione all'ambiente; l'ambiente restituisce all'agente il nuovo stato e una ricompensa numerica, e il giro ricomincia. Nessun altro canale collega i due: tutto ciò che l'agente sa del mondo passa da stato e ricompensa."
+:width: 88%
+
+Il giro che regge tutti gli ultimi capitoli. Fra agente e ambiente passano
+solo due cose in un verso e una nell'altro: nessuno spiega mai all'agente
+*perché* la ricompensa sia arrivata.
+```
+
+La povertà del canale in {numref}`fig-agente-ambiente` è ciò che rende il
+problema difficile e interessante. Un numero solo, per giunta spesso in
+ritardo di molte mosse rispetto alla scelta che l'ha causato, è tutta
+l'istruzione che l'agente riceve.
+
 `````{tab} Superiore
 Nel formalismo che svilupperemo negli ultimi capitoli: un **agente** osserva
 lo stato $s_t$ dell’ambiente, sceglie un’azione $a_t$ secondo una

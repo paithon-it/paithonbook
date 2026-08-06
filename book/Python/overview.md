@@ -125,6 +125,21 @@ adotta l'array come struttura dati comune.
 
 Python si può usare in tre modi, di crescente comodità per chi sperimenta.
 
+```{figure} ../figures/preparare-ambiente-python.svg
+:name: fig-ambiente-python
+:alt: "Anatomia di un ambiente di lavoro: il sistema operativo con la sua installazione di Python; dentro, la cartella del progetto, che contiene un ambiente virtuale isolato con le proprie librerie e la propria versione degli strumenti, separato dal Python di sistema."
+:width: 92%
+
+L'ambiente virtuale è una scatola dentro il progetto. Le librerie che installa
+non escono da lì, e due progetti sulla stessa macchina possono usare versioni
+diverse della stessa libreria senza incontrarsi.
+```
+
+La separazione di {numref}`fig-ambiente-python` risparmia la classe di
+problemi più frustrante per chi comincia: un aggiornamento fatto per un
+progetto che rompe silenziosamente un altro. Il Python di sistema resta
+intoccato, e cestinare un progetto significa cestinare anche il suo ambiente.
+
 `````{tab} Elementare
 
 Il modo più diretto è l'**interprete interattivo**: apri una finestra, scrivi

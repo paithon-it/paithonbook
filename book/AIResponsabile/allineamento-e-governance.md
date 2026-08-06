@@ -29,6 +29,22 @@ reinforcement learning e, per gli LLM, nel post-training dei Transformer, dove
 va sotto il nome di **reward hacking**: quando ottimizzi un *surrogato* del tuo
 vero obiettivo, prima o poi ottieni il surrogato e perdi l'obiettivo.
 
+```{figure} ../figures/problema-allineamento.svg
+:name: fig-problema-allineamento
+:alt: "Schema in tre riquadri incolonnati: l'intenzione umana («vinci la gara») viene tradotta in una metrica dichiarata («massimizza i punti»), che l'addestramento trasforma in un obiettivo appreso («gira in tondo sui bonus»). Fra il primo e il secondo riquadro è marcato il primo scarto, la metrica cattura l'intenzione?; fra il secondo e il terzo il secondo scarto, il modello persegue davvero la metrica? In basso il comportamento previsto (taglia il traguardo) contro quello reale (punteggio massimo, gara mai finita)."
+:width: 92%
+
+Due traduzioni, due occasioni di sbagliare. Dall'intenzione alla metrica
+traduciamo noi; dalla metrica al comportamento traduce l'addestramento, e
+nessuno dei due passaggi è fedele per definizione.
+```
+
+{numref}`fig-problema-allineamento` mostra perché il problema non si risolve
+scrivendo una metrica migliore: gli scarti sono due, e stanno in punti
+diversi. Il primo lo apriamo noi quando mettiamo in numeri un desiderio; il
+secondo si apre da sé mentre il modello impara, e non è detto che ce ne
+accorgiamo guardando il punteggio, che nel frattempo sale.
+
 `````{tab} Elementare
 
 È la vecchia storia del genio della lampada. Chiedi «rendimi l'uomo più ricco
@@ -136,6 +152,22 @@ loss supervisionata sulle coppie preferita/scartata, saltando del tutto il
 reward model esplicito e il reinforcement learning. Stessa destinazione, senza
 l'impalcatura.
 
+```{figure} ../figures/dpo-allineare-senza-reward-model.svg
+:name: fig-rlhf-vs-dpo
+:alt: "Confronto fra due pipeline che partono dagli stessi dati di preferenza (A preferita a B). In alto RLHF in tre stadi: i dati addestrano un reward model separato, che fa da giudice in un ciclo di reinforcement learning con PPO, che aggiorna l'LLM; a margine il costo, fino a quattro modelli in memoria, campionamento a ogni passo, addestramento instabile. In basso DPO in un solo stadio: gli stessi dati alimentano direttamente una loss di classificazione che aggiorna l'LLM, con due soli modelli in memoria."
+:width: 100%
+
+La stessa destinazione, due tappe in meno. La DPO non raccoglie preferenze
+diverse: usa le stesse, e si accorge che il reward model esplicito era un
+passaggio intermedio di cui si può fare a meno.
+```
+
+Il confronto di {numref}`fig-rlhf-vs-dpo` spiega la fortuna della DPO meglio
+di qualsiasi argomento teorico: la colonna di destra elenca cosa si smette di
+tenere in piedi. Quattro modelli in memoria diventano due, il campionamento a
+ogni passo sparisce, e con esso sparisce l'instabilità che rendeva l'RLHF un
+mestiere per pochi laboratori.
+
 C'è però un limite che nessuna delle due tocca: le preferenze restano
 **umane**, e raccoglierne a sufficienza (specie sui temi delicati della
 sicurezza) è lento e costoso. Il tassello nuovo prova a ridurre proprio
@@ -188,11 +220,43 @@ scrive comunque qualcuno, e *quali* principi non è una scelta tecnica.
 
 `````
 
+```{figure} ../figures/constitutional-ai-2022.svg
+:name: fig-constitutional-ai
+:alt: "Ciclo chiuso: una costituzione, cioè un elenco di principi in linguaggio naturale, alimenta il modello, che critica sé stesso a partire da una risposta iniziale e la riscrive; la risposta rivista diventa feedback, cioè dato di training, e riaddestra il modello. Una nota precisa che nessuna etichetta umana sull'innocuità entra nel ciclo."
+:width: 82%
+
+Il ciclo si chiude senza passare da una persona. L'unico ingresso umano è la
+costituzione, in alto: poche righe di principi, scritte una volta, al posto di
+migliaia di giudizi su singole risposte.
+```
+
+Guardando {numref}`fig-constitutional-ai` si vede dove è finito il lavoro
+umano: non è sparito, si è spostato a monte e si è ridotto di volume. È un
+buon affare in termini di costo e un cambio di natura del problema, perché
+rivedere dieci principi scritti è un'operazione che si può discutere in
+pubblico, mentre rivedere diecimila giudizi individuali no.
+
 ## I rischi degli LLM
 
 Allineare non elimina i pericoli; li rende gestibili, non nulli. Vale la pena
 nominarli con precisione, perché appartengono a famiglie diverse e chiedono
 difese diverse.
+
+```{figure} ../figures/allucinazioni-perche-modelli-inventano.svg
+:name: fig-allucinazioni
+:alt: "Il prompt «La capitale dell'Australia è…» entra nel modello, che produce una distribuzione di probabilità sul token successivo: Sydney 0,42, Canberra 0,35, Melbourne 0,15, altro 0,08. Accanto, separato e non collegato da alcuna freccia, un riquadro rappresenta il mondo reale e i fatti verificati: il modello non lo consulta."
+:width: 92%
+
+Perché un modello inventa. La freccia che manca è quella verso i fatti: il
+token si sceglie per probabilità, e «Sydney» è più probabile di «Canberra»
+perché compare più spesso, non perché sia la risposta giusta.
+```
+
+La freccia assente in {numref}`fig-allucinazioni` spiega perché le
+allucinazioni non siano un difetto da correggere ma una conseguenza del
+meccanismo. Il modello non sta consultando niente e sbagliando: sta facendo
+esattamente ciò per cui è addestrato, cioè scegliere la continuazione
+plausibile, e la plausibilità non è la verità.
 
 `````{tab} Elementare
 
@@ -237,6 +301,21 @@ Se non possiamo garantire che un modello sia sicuro, possiamo almeno *provare a
 romperlo prima che lo faccia il mondo*. Qui la sicurezza dell'AI prende in
 prestito il vocabolario della sicurezza informatica.
 
+```{figure} ../figures/red-teaming.svg
+:name: fig-red-teaming
+:alt: "Ciclo chiuso in quattro stazioni disposte ad anello: 1 policy (cosa il modello non deve fare), 2 attacco (jailbreak, injection, attacchi automatizzati), 3 scoperta (falle documentate e classificate), 4 patch (fine-tuning, filtri, system prompt). Una freccia riporta dalla patch all'attacco, con la nota che ogni patch invita un nuovo attacco."
+:width: 78%
+
+Il red teaming non è un collaudo che si supera una volta: è un anello. La
+freccia di ritorno è la parte onesta del disegno, perché ogni correzione
+cambia la superficie d'attacco invece di eliminarla.
+```
+
+L'anello di {numref}`fig-red-teaming` comincia dalla policy, e non è un
+dettaglio burocratico: senza aver scritto prima *cosa* il modello non deve
+fare, un attacco riuscito non si distingue da una risposta insolita, e non c'è
+modo di dire se la patch abbia funzionato.
+
 `````{tab} Elementare
 
 Prima di aprire un ponte al traffico non ci si limita a guardarlo: gli si
@@ -279,6 +358,23 @@ come obbligo per i modelli più capaci.
 Gli strumenti tecnici non bastano da soli: servono regole condivise su *chi*
 può fare *cosa*, e chi risponde quando qualcosa va storto. Qui l'Europa ha fatto
 la prima mossa di portata mondiale.
+
+```{figure} ../figures/ai-act-guida-pratica.svg
+:name: fig-ai-act-rischio
+:alt: "Piramide a quattro gradini con i livelli di rischio dell'AI Act. In cima, rischio inaccettabile: divieto totale, social scoring e manipolazione. Sotto, alto rischio: conformità completa, log, sorveglianza umana, marchio CE. Più giù, rischio limitato: solo trasparenza, «stai parlando con un'AI». Alla base, rischio minimo: nessun obbligo specifico, ed è dove sta la maggioranza dei prodotti."
+:width: 80%
+
+La piramide del rischio. La forma conta quanto i contenuti: gli obblighi
+pesanti stanno in cima, dove i casi sono pochi, e la base larga (quasi tutto
+ciò che si costruisce) non ha obblighi specifici.
+```
+
+Vale la pena leggere {numref}`fig-ai-act-rischio` dal basso. La lettura
+corrente («l'Europa regola l'AI») suggerisce un peso uniforme, mentre la
+piramide dice il contrario: la regola morde in proporzione al danno possibile,
+e per la maggior parte dei sistemi non morde affatto. Sapere in quale gradino
+cade ciò che si sta costruendo è il primo esercizio di conformità, e spesso
+anche l'ultimo.
 
 `````{tab} Elementare
 

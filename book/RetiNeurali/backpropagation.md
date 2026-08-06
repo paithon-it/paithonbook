@@ -164,6 +164,21 @@ ogni peso, si aggiunge un fattore alla volta a un prodotto già calcolato.
 Il gradiente indica, per ogni peso, la direzione in cui la loss *cresce*. Per
 farla calare basta muoversi nel verso opposto, a piccoli passi.
 
+```{figure} ../figures/discesa-gradiente-da-zero.svg
+:name: fig-discesa-passi
+:alt: "Una curva di loss a forma di valle percorsa da una successione di punti: partendo in alto su un fianco, ogni passo scende verso il minimo, e i passi si accorciano man mano che la pendenza diminuisce, addensandosi vicino al fondo."
+:width: 88%
+
+I passi si accorciano da soli. Nessuno li rimpicciolisce: la lunghezza è
+proporzionale alla pendenza, e vicino al minimo la pendenza è quasi nulla.
+```
+
+L'addensarsi dei punti in {numref}`fig-discesa-passi` è una proprietà comoda e
+insieme un problema. Comoda perché l'algoritmo rallenta da sé arrivando a
+destinazione, senza che nessuno glielo dica; problema perché rallenta
+altrettanto sui tratti piatti che *non* sono il minimo, ed è lo scenario di
+plateau e selle già incontrato nel capitolo di matematica.
+
 `````{tab} Elementare
 
 Immagina di essere su una collina, nella nebbia, e di voler scendere a valle.
@@ -207,6 +222,21 @@ sembrerebbe un difetto, aiuta la rete a scavalcare i minimi poco profondi.
 
 Più la rete è profonda, più il gradiente deve viaggiare lontano per
 raggiungere i primi strati, e lungo il tragitto può degradarsi.
+
+```{figure} ../figures/vanishing-exploding-gradients.svg
+:name: fig-gradienti-svaniscono
+:alt: "Cinque strati affiancati e, sopra di essi, l'ampiezza del gradiente che torna indietro dall'uscita verso l'ingresso: alta al quinto strato, si dimezza a ogni passaggio fino a essere quasi invisibile al primo. Una freccia in basso indica la direzione della retropropagazione, da destra verso sinistra."
+:width: 92%
+
+Il gradiente si spegne tornando indietro. Gli strati vicini all'uscita
+ricevono un segnale forte e imparano; i primi, che dovrebbero costruire le
+rappresentazioni di base, quasi non lo sentono.
+```
+
+C'è un dettaglio crudele in {numref}`fig-gradienti-svaniscono`: la rete non
+smette di addestrarsi, e la loss continua a calare. A imparare sono gli ultimi
+strati, che si arrangiano su rappresentazioni iniziali rimaste quasi a caso.
+Dal di fuori sembra addestramento; dal di dentro, metà della rete è ferma.
 
 `````{tab} Elementare
 

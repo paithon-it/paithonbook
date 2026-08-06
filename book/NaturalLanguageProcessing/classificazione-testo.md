@@ -49,7 +49,21 @@ machine learning.
 
 L'idea di Naive Bayes è quella del detective che non ha la prova regina ma
 tanti piccoli indizi: nessuna parola, da sola, dimostra che un'email è spam,
-ma ogni parola *sposta* un po' il sospetto. Il modello fa votare tutti gli
+ma ogni parola *sposta* un po' il sospetto.
+
+```{figure} ../figures/naive-bayes-filtro-antispam.svg
+:name: fig-naive-bayes-spam
+:alt: "Le parole di una email, ciascuna con il proprio peso a favore o contro l'ipotesi di spam, confluiscono in un blocco centrale che applica il teorema di Bayes; dal blocco esce un'unica probabilità che il messaggio sia spam."
+:width: 92%
+
+Nessun indizio decide da solo. Ogni parola porta il proprio piccolo peso al
+calcolo, e il verdetto è la probabilità che ne risulta.
+```
+
+In {numref}`fig-naive-bayes-spam` si vede anche dove sta l'ingenuità che dà il
+nome al metodo: le frecce entrano nel calcolo tutte allo stesso modo, senza
+mai incontrarsi fra loro. «Offerta» e «gratis» in una stessa frase valgono
+quanto le stesse due parole in capo opposto al messaggio. Il modello fa votare tutti gli
 indizi e sceglie l'etichetta che raccoglie più voti. L'aggettivo *naive*,
 "ingenuo", è dichiarato nel nome: ogni parola vota per conto suo, come se le
 altre non esistessero.
@@ -139,7 +153,21 @@ etichettati, e per decenni è stato il cuore dei filtri antispam reali.
 ## Alla prova: il sentiment delle recensioni
 
 Il banco di prova classico della classificazione è la **sentiment analysis**:
-decidere se un testo esprime un giudizio positivo o negativo. Lo studio che
+decidere se un testo esprime un giudizio positivo o negativo.
+
+```{figure} ../figures/sentiment-analysis-python.svg
+:name: fig-pipeline-sentiment
+:alt: "Catena in quattro stadi: il testo grezzo della recensione viene tokenizzato, i token diventano un vettore di caratteristiche, il classificatore assegna un punteggio e in uscita si legge la polarità, positiva o negativa."
+:width: 96%
+
+La catena, dal testo alla polarità. Ogni stadio è sostituibile: cambiare
+tokenizzatore o classificatore non cambia la forma della pipeline.
+```
+
+La modularità di {numref}`fig-pipeline-sentiment` è il motivo per cui questo
+compito è rimasto un banco di prova per vent'anni. Si può tenere fisso tutto
+e cambiare un solo stadio, ed è così che si confrontano metodi lontanissimi
+fra loro, dal conteggio di parole del 2002 ai modelli di oggi. Lo studio che
 aprì il filone è del 2002: Pang, Lee e Vaithyanathan presero 1.400 recensioni
 di film (700 entusiaste e 700 stroncature) e confrontarono Naive Bayes, un
 modello log-lineare parente stretto della regressione logistica e le support
@@ -334,7 +362,23 @@ nell'era dei Transformer.
 
 Come si misura un classificatore di testi? Con gli strumenti già costruiti nel
 capitolo sul machine learning: la matrice di confusione, la precision, la
-recall e la loro sintesi $F_1$. Non li ripetiamo; ricordiamo solo il tranello
+recall e la loro sintesi $F_1$.
+
+```{figure} ../figures/precision-recall-f1.svg
+:name: fig-quattro-caselle
+:alt: "Matrice di confusione due per due con veri positivi, falsi positivi, falsi negativi e veri negativi. Accanto, due riquadri indicano quali caselle entrano nella precision (i positivi predetti) e quali nella recall (i positivi reali), mostrando che le due metriche leggono la stessa matrice lungo direzioni perpendicolari."
+:width: 96%
+
+Le stesse quattro caselle, lette in due versi. La precision divide per una
+colonna, la recall per una riga: da qui il fatto che migliorare l'una
+peggiori quasi sempre l'altra.
+```
+
+Il promemoria di {numref}`fig-quattro-caselle` serve perché nel testo la
+scelta fra le due direzioni è quasi sempre asimmetrica. In un filtro
+antispam un falso positivo (una mail buona cestinata) costa molto più di un
+falso negativo, e la metrica da guardare discende da quel costo, non da una
+convenzione. Non li ripetiamo; ricordiamo solo il tranello
 che lì avevamo battezzato "l'accuratezza inganna", perché nel testo è la
 regola più che l'eccezione: le classi sono quasi sempre **sbilanciate**. Se
 solo un'email su cento è spam, il filtro pigro che risponde sempre "legittima"

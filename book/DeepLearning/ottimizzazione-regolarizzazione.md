@@ -77,6 +77,22 @@ Se il prodotto di tanti fattori decide se il segnale svanisce o esplode, il
 punto di partenza conta enormemente. Inizializzare i pesi con la scala
 sbagliata condanna la rete prima ancora del primo aggiornamento.
 
+```{figure} ../figures/inizializzazione-pesi.svg
+:name: fig-inizializzazione
+:alt: "Grafico della varianza del segnale strato dopo strato, con tre curve. Con pesi iniziali troppo grandi la varianza cresce di strato in strato ed esplode; con pesi troppo piccoli collassa verso lo zero; con la scala calibrata resta costante lungo tutta la profondità della rete."
+:width: 92%
+
+Tre inizializzazioni, tre destini, e nessun addestramento ancora avvenuto. La
+curva piatta è l'obiettivo: la varianza del segnale deve attraversare la rete
+senza gonfiarsi né spegnersi.
+```
+
+Il fatto che le tre curve di {numref}`fig-inizializzazione` divergano *prima*
+del primo aggiornamento è ciò che rende l'inizializzazione un problema a sé.
+Non è una scorciatoia per convergere prima: con la scala sbagliata la rete non
+converge affatto, perché il gradiente che dovrebbe correggerla è già
+degenerato al primo passaggio.
+
 `````{tab} Elementare
 
 L'idea è tenere costante il "volume" del segnale mentre attraversa gli strati:
@@ -119,6 +135,22 @@ Anche partendo bene, durante l'addestramento la distribuzione delle
 attivazioni si sposta di continuo: ogni aggiornamento cambia gli input dello
 strato successivo, che deve inseguire un bersaglio mobile. La *batch
 normalization* stabilizza questo bersaglio.
+
+```{figure} ../figures/batch-normalization-2015.svg
+:name: fig-batch-norm
+:alt: "A sinistra tre distribuzioni delle attivazioni provenienti da batch diversi, spostate l'una rispetto all'altra e di larghezza diversa. Al centro una stazione di batch normalization sottrae la media e divide per la deviazione standard, poi riapplica i parametri appresi gamma e beta. A destra le tre distribuzioni escono centrate in zero e con la stessa dispersione."
+:width: 96%
+
+Da tre distribuzioni che vagano a tre distribuzioni sovrapposte. I parametri
+$\gamma$ e $\beta$ in coda servono a restituire alla rete la libertà che la
+normalizzazione le ha appena tolto.
+```
+
+La coda di {numref}`fig-batch-norm` è la parte che spesso si salta e che
+invece conta. Normalizzare e basta imporrebbe a ogni strato una distribuzione
+decisa da noi; $\gamma$ e $\beta$ sono addestrabili, e permettono alla rete di
+spostare e riscalare il risultato se le conviene, anche fino ad annullare la
+normalizzazione.
 
 `````{tab} Elementare
 

@@ -311,6 +311,20 @@ $$
 cioè l'inverso della probabilità della frase, riportato «per scommessa» dalla
 media geometrica: la stessa quantità $2^H$ di allora, solo riscritta.
 
+```{figure} ../figures/perplexity-sorpresa-modello.svg
+:name: fig-perplessita-frase
+:alt: "Una frase scritta token per token, e sopra ciascun token la probabilità che il modello gli aveva assegnato: barre alte sulle parole prevedibili, barre basse su quelle sorprendenti. In fondo le singole sorprese si combinano nella perplessità dell'intera frase."
+:width: 96%
+
+La perplessità nasce parola per parola. Il numero finale è la media
+geometrica delle sorprese, e nessuna singola parola lo determina da sola.
+```
+
+{numref}`fig-perplessita-frase` mostra anche il limite della misura. Le parole
+rare, che sono quelle su cui si gioca la qualità di un testo, sono anche le
+più rare: entrano nella media poche volte, e un modello può avere una buona
+perplessità complessiva inciampando proprio lì.
+
 Facciamo i conti sul corpus giocattolo. Il bigramma MLE dava alla frase «il
 gatto nero salta sul muro» probabilità $0{,}125$ in 7 scommesse (sei parole
 più la chiusura di frase):

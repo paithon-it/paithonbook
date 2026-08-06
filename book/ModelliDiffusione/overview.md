@@ -102,6 +102,21 @@ limite variazionale a questa forma, è il tema della prossima sezione.
 
 ## Una parabola in tre atti
 
+```{figure} ../figures/ddpm-denoising-iterativo.svg
+:name: fig-ddpm-passi
+:alt: "Catena lunga di stati intermedi fra un'immagine nitida e il rumore puro: procedendo verso destra ogni passo aggiunge un poco di rumore, procedendo verso sinistra la rete ne toglie un poco. Nessuno dei due sensi salta stati: il percorso è fatto di moltissimi passi piccoli."
+:width: 100%
+
+Il contributo del 2020 in una figura: tanti passi piccoli invece di pochi
+grandi. Ogni passo chiede alla rete un compito facile, e la difficoltà si
+distribuisce sull'intera catena.
+```
+
+Quello che {numref}`fig-ddpm-passi` rende evidente è anche il costo del
+metodo, che la sezione sui Diffusion Transformer riprenderà. Se la generazione
+è una catena di centinaia di passi, generare un'immagine significa
+attraversare la rete centinaia di volte, non una.
+
 Le idee, in questo mestiere, raramente vincono al primo colpo. Il paper del
 2015 dimostra che il meccanismo funziona, ma su immagini piccole e con una
 qualità che non impensierisce nessuno: sono gli anni in cui le GAN, nate
@@ -136,6 +151,21 @@ Poi c'è l'epilogo che non è più storia della ricerca ma storia e basta: il
       creativo, su cui torneremo.
 
 ## Il falsario e il restauratore
+
+```{figure} ../figures/modelli-diffusione.svg
+:name: fig-dal-rumore-all-immagine
+:alt: "Quattro riquadri in fila, da rumore puro a immagine nitida. La freccia in alto, verso destra, marca il processo di generazione che toglie rumore un passo alla volta; la freccia in basso, verso sinistra, marca il processo di corruzione che lo aggiunge e che non si impara."
+:width: 100%
+
+Le due frecce del capitolo. Quella in basso è una ricetta fissa e si può
+calcolare; quella in alto è l'unica cosa che una rete deve imparare.
+```
+
+L'asimmetria di {numref}`fig-dal-rumore-all-immagine` è la ragione per cui il
+metodo funziona. Poiché l'andata è nota, per ogni immagine del dataset si può
+fabbricare gratis un numero illimitato di esempi di allenamento («ecco questa
+immagine con un tot di rumore: toglilo»), e il ritorno diventa un problema
+supervisionato ordinario.
 
 Nel capitolo precedente avevamo lasciato le GAN con un annuncio: verso il 2021
 il primato generativo cambia mano. Questo capitolo è il pagamento di quella

@@ -80,6 +80,21 @@ La stabilità di $e^x$ sotto derivazione è ciò che rende quei conti trattabili
 Un modello reale non ha un parametro solo, ne ha milioni, e la loss dipende da
 tutti insieme. Ci serve la derivata "una direzione alla volta".
 
+```{figure} ../figures/derivate-gradiente.svg
+:name: fig-curve-di-livello
+:alt: "Una superficie di loss vista dall'alto, disegnata come curve di livello concentriche attorno a un minimo. Sopra di essa il percorso della discesa del gradiente: una successione di passi che in ogni punto imbocca la direzione perpendicolare alla curva di livello, cioè quella di massima pendenza, avvicinandosi progressivamente al centro."
+:width: 88%
+
+La stessa superficie vista dall'alto. Il gradiente in ogni punto è
+perpendicolare alla curva di livello che ci passa: è la direzione in cui la
+loss cambia più in fretta.
+```
+
+La perpendicolarità visibile in {numref}`fig-curve-di-livello` non è un
+dettaglio grafico ma la definizione stessa del gradiente, e spiega perché il
+percorso zigzaghi in una valle allungata: la direzione più ripida punta verso
+il fianco più vicino, non verso il fondo.
+
 `````{tab} Elementare
 
 La **derivata parziale** è semplice: tieni fermi tutti i parametri tranne uno
@@ -115,6 +130,21 @@ Una rete neurale è una funzione dentro una funzione dentro una funzione: strati
 impilati, ognuno che riceve l'uscita del precedente. Per sapere come un peso
 del primo strato influenza il costo finale servono le derivate delle funzioni
 composte.
+
+```{figure} ../figures/chain-rule.svg
+:name: fig-regola-catena
+:alt: "In alto una catena di funzioni annidate: x entra in f, l'uscita di f entra in g, quella di g entra in h e si arriva alla loss. In basso il percorso inverso: a ogni anello è associata la sua derivata locale, f primo uguale 2, g primo uguale 3, h primo uguale 0,5, e le tre si moltiplicano fra loro dando una derivata totale di 3. Una nota chiude: ogni anello conosce solo il proprio tratto, il prodotto conosce la catena intera."
+:width: 92%
+
+La regola della catena in un numero. Nessun anello sa dove porti la catena:
+conosce solo quanto amplifica ciò che gli arriva, e il prodotto di quegli
+effetti locali dà l'effetto complessivo.
+```
+
+L'ultima riga di {numref}`fig-regola-catena` è tutto il backpropagation in
+una frase. Il calcolo si può fare localmente, anello per anello, senza che
+nessuno abbia in testa la funzione intera: è questo che rende derivabile una
+rete da milioni di parametri con lo stesso sforzo per ogni peso.
 
 `````{tab} Elementare
 
@@ -164,6 +194,23 @@ si accorciano avvicinandosi al minimo, dove la pendenza (e quindi il passo)
 tende a zero.
 ```
 
+La scodella è il caso gentile. Appena la valle si allunga in una direzione, la
+ricetta «vai dove è più ripido» smette di puntare verso il fondo.
+
+```{figure} ../figures/sgd-momentum.svg
+:name: fig-valle-allungata
+:alt: "Curve di livello di una valle stretta e allungata, percorsa da due traiettorie. Senza momentum il percorso zigzaga da una parete all'altra e avanza poco lungo l'asse della valle. Con il momentum le oscillazioni laterali si cancellano fra loro e la traiettoria scorre diritta verso il minimo."
+:width: 96%
+
+Perché il momento aiuta. Le componenti che cambiano segno a ogni passo si
+elidono sommandosi; quella che punta sempre nella stessa direzione si accumula.
+```
+
+Il meccanismo di {numref}`fig-valle-allungata` è più semplice dell'analogia fisica
+con cui si racconta di solito. Non serve immaginare una pallina con
+un'inerzia: basta osservare che mediare gli ultimi gradienti cancella ciò che
+oscilla e conserva ciò che è costante.
+
 `````{tab} Elementare
 
 Cammini verso il basso e a ogni passo scegli la direzione di discesa. La
@@ -195,6 +242,22 @@ moderni come Adam.
 ## Minimi locali, globali e la resa del deep learning
 
 La discesa del gradiente scende sempre. Ma "in fondo a cosa", esattamente?
+
+```{figure} ../figures/minimi-locali-plateau-sella.svg
+:name: fig-paesaggio-loss
+:alt: "Profilo stilizzato di una superficie di loss percorsa da sinistra a destra: un tratto quasi orizzontale segnato come plateau, una conca poco profonda segnata come minimo locale, un punto di flesso segnato come punto di sella e infine la conca più profonda, il minimo globale. Una nota avverte che nei punti piatti, plateau e sella, il segnale di discesa quasi scompare."
+:width: 92%
+
+I quattro luoghi dove una pallina che segue il gradiente può fermarsi o
+rallentare. Solo l'ultimo è quello che vorremmo, e nulla nel gradiente dice
+alla pallina in quale dei quattro si trova.
+```
+
+Il guaio, guardando {numref}`fig-paesaggio-loss`, non sono tanto i minimi
+locali quanto le zone piatte. In un minimo locale il gradiente è nullo e
+l'ottimizzazione si ferma, il che almeno si nota; su un plateau o vicino a una
+sella il gradiente è quasi nullo, l'addestramento procede lentissimo e non
+c'è modo di distinguerlo, dall'esterno, da un problema difficile.
 
 `````{tab} Elementare
 

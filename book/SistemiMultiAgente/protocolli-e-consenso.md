@@ -27,6 +27,21 @@ Cominciamo dalla forma. In un sistema multi-agente il testo che passa da un
 partecipante all'altro non è prosa: è una mossa dentro una partita, e come ogni
 mossa ha un *tipo*.
 
+```{figure} ../figures/anatomia-agente-ai.svg
+:name: fig-ciclo-percezione-azione
+:alt: "Ciclo chiuso in quattro stazioni disposte ad anello: percezione, decisione, azione e osservazione, con al centro la memoria collegata a ciascuna delle quattro. Ogni stazione legge dalla memoria e vi scrive, e il giro ricomincia dalla percezione."
+:width: 84%
+
+Il singolo agente, prima di metterne insieme molti. La memoria al centro è ciò
+che distingue un agente da una funzione: fra un giro e il successivo qualcosa
+resta.
+```
+
+Vale la pena tenere {numref}`fig-ciclo-percezione-azione` come unità di misura
+per tutto il capitolo. Ogni partecipante a un protocollo è uno di questi
+anelli, e i messaggi che si scambiano entrano dalla stazione «percezione» ed
+escono da quella «azione»: parlare, per un agente, è agire.
+
 `````{tab} Elementare
 
 Immagina tre biglietti attaccati al frigorifero. Sul primo c'è scritto «il

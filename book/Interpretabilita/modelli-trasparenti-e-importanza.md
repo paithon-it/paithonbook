@@ -26,10 +26,40 @@ dell'intero campo il riferimento è il manuale di Molnar
 
 ## Modelli trasparenti per costruzione
 
+```{figure} ../figures/alberi-di-decisione.svg
+:name: fig-albero-percorso
+:alt: "Un albero di decisione con la radice in alto: a ogni nodo una domanda su una singola feature con soglia, e due rami a seconda della risposta; scendendo si arriva a una foglia che porta la predizione. Un percorso dalla radice a una foglia è evidenziato."
+:width: 90%
+
+La spiegazione è il percorso. Per sapere perché un esempio ha ricevuto quella
+risposta si leggono le domande incontrate scendendo, e sono poche.
+```
+
+{numref}`fig-albero-percorso` mostra una forma di trasparenza diversa da
+quella dei modelli lineari, e per certi versi più forte. Un modello lineare
+spiega con dei pesi, che valgono per tutti gli esempi insieme; un albero
+spiega *questo* esempio con una catena di condizioni verificabili una per una.
+
 Alcuni modelli non hanno bisogno di essere spiegati: *sono* la loro
 spiegazione. La regressione lineare e quella logistica, incontrate nel
 capitolo sul machine learning, ne sono l'esempio più puro: la predizione è una
 somma pesata delle feature, e i pesi *sono* la storia che il modello racconta.
+
+```{figure} ../figures/regressione-lineare.svg
+:name: fig-retta-residui
+:alt: "Una nube di punti attraversata da una retta di regressione. Da ciascun punto scende o sale un segmento verticale fino alla retta: sono i residui, cioè la parte che il modello non spiega. La retta è quella che rende più piccola la somma dei loro quadrati."
+:width: 84%
+
+La retta e ciò che le sfugge. I segmenti verticali sono i residui: il modello
+sceglie la retta che li rende complessivamente più corti, e li lascia in bella
+vista.
+```
+
+C'è una qualità di {numref}`fig-retta-residui` che le reti profonde non hanno,
+ed è il motivo di questa sezione: l'errore è *localizzato*. Si vede quale
+punto il modello sbaglia e di quanto, e la regola che ha usato è una sola riga
+di somma. Trasparente non vuol dire accurato, vuol dire che non c'è niente da
+scoprire dopo.
 
 `````{tab} Elementare
 
@@ -125,6 +155,22 @@ progetto.
 `````
 
 ## L'importanza delle feature: quali colonne contano
+
+```{figure} ../figures/feature-selection.svg
+:name: fig-feature-selection
+:alt: "A sinistra un grafico a barre con il punteggio di importanza di otto feature, ordinate dalla più alta alla più bassa, e una soglia orizzontale che ne separa tre in alto dalle cinque sotto. A destra il dataset ridotto alle sole tre feature che superano la soglia."
+:width: 100%
+
+Dalla classifica al taglio. La parte delicata non è ordinare le feature ma
+decidere dove passa la riga, perché quella soglia non la suggerisce nessun
+dato.
+```
+
+La distinzione che {numref}`fig-feature-selection` rende evidente è fra
+*misurare* e *decidere*. Una classifica di importanza è un fatto misurabile;
+la soglia è una scelta, e va giustificata con qualcosa d'altro (il costo di
+raccogliere una colonna, un vincolo di interpretabilità, una prova che il
+modello ridotto non peggiora).
 
 Passiamo agli strumenti che interrogano un modello già addestrato, quale che
 sia. La prima domanda, la più naturale, è: **su quali colonne si regge?**

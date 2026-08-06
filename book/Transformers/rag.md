@@ -104,6 +104,21 @@ posto).
 
 ## Quando le parole non bastano: il retrieval denso
 
+```{figure} ../figures/word2vec-2013.svg
+:name: fig-aritmetica-vettori
+:alt: "Piano con i vettori di quattro parole, uomo, re, donna e regina, disposti ai vertici di un parallelogramma: la differenza fra re e uomo è lo stesso spostamento che porta da donna a regina, e sommando quello spostamento a donna si arriva vicino a regina."
+:width: 84%
+
+Il significato come geometria. Se una relazione fra due parole è uno
+spostamento nello spazio, allora lo stesso spostamento applicato altrove
+produce la relazione analoga.
+```
+
+La proprietà di {numref}`fig-aritmetica-vettori` è ciò che rende possibile il
+recupero denso di questa sezione. Se parole con significati vicini finiscono
+vicine nello spazio, allora cercare diventa una questione di distanza, e non
+serve più che la query e il documento condividano le stesse parole.
+
 L'indice invertito ha un difetto congenito: cerca **parole**, non significati.
 Nell'overview del capitolo sul NLP avevamo elencato i sinonimi tra le insidie
 della lingua: «auto», «macchina» e «vettura» indicano lo stesso oggetto. Ma

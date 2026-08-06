@@ -226,6 +226,22 @@ Lipman e colleghi {cite}`lipman2023flow` (la formulazione con
 interpolazioni lineari è dovuta anche a Xingchao Liu e colleghi, sempre
 del 2023). L'idea merita le due lenti.
 
+```{figure} ../figures/flow-matching-traiettorie-dritte.svg
+:name: fig-traiettorie-dritte
+:alt: "Due percorsi che uniscono gli stessi due estremi, il rumore e l'immagine. Il primo, della diffusione classica, è una linea tortuosa che serpeggia e richiede moltissimi passi brevi per essere seguita senza errore. Il secondo, del flow matching, è quasi un segmento rettilineo, e bastano pochi passi lunghi per percorrerlo."
+:width: 92%
+
+Stessi estremi, due strade. Su una linea dritta si può camminare a grandi
+falcate senza uscire di strada; su una tortuosa no, e i passi devono essere
+tanti e piccoli.
+```
+
+{numref}`fig-traiettorie-dritte` dice anche perché il guadagno sia in
+*campionamento* e non in qualità. Il numero di passi necessari non dipende da
+quanto la meta sia lontana ma da quanto il percorso curvi: raddrizzarlo non
+cambia dove si arriva, cambia quante volte bisogna fermarsi a chiedere la
+direzione.
+
 `````{tab} Elementare
 
 Il restauratore di questo capitolo toglie la neve un velo alla volta:

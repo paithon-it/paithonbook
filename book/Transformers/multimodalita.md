@@ -14,6 +14,21 @@ I tre grandi capostipiti si distinguono per come vengono **pre-addestrati**:
 quale esercizio fanno, su miliardi di frasi, prima di essere rifiniti su un
 compito specifico.
 
+```{figure} ../figures/bert-vs-gpt.svg
+:name: fig-bert-vs-gpt
+:alt: "Confronto fra due matrici di attenzione sulla stessa frase. In BERT l'attenzione è bidirezionale: ogni parola può guardare tutte le altre, prima e dopo di sé, e la matrice è piena. In GPT l'attenzione è causale: ogni parola vede solo sé stessa e quelle che la precedono, e la metà superiore della matrice è oscurata."
+:width: 96%
+
+La stessa frase, due permessi di lettura. Non cambia l'architettura: cambia
+cosa ogni parola ha il diritto di guardare, e da lì discende tutto il resto.
+```
+
+{numref}`fig-bert-vs-gpt` spiega perché i due modelli finiscano a fare
+mestieri diversi. Chi può guardare anche a destra capisce meglio una frase che
+ha già davanti (classificare, estrarre, rispondere su un testo dato); chi vede
+solo a sinistra è costretto a indovinare il seguito, ed è esattamente
+l'esercizio che serve per generare.
+
 `````{tab} Elementare
 Immagina tre studenti con tre metodi diversi. **GPT** studia coprendo con la
 mano il resto della pagina: legge "Il gatto nero salta sul..." e prova a
@@ -45,6 +60,20 @@ learning* che avevamo visto per le immagini, arrivato al linguaggio).
 `````
 
 ## Oltre il testo: Vision Transformer e modelli multimodali
+
+```{figure} ../figures/vit-transformer-immagini.svg
+:name: fig-vit
+:alt: "Un'immagine viene divisa in una griglia di patch quadrate; le patch vengono messe in fila come una sequenza, proiettate in vettori e date in pasto a un encoder Transformer, la cui uscita produce la classe dell'immagine."
+:width: 96%
+
+Il Vision Transformer non inventa un meccanismo nuovo: taglia l'immagine in
+tessere e le tratta come parole. Da lì in poi è lo stesso encoder del testo.
+```
+
+Il passaggio mostrato in {numref}`fig-vit` è meno innocente di quanto sembri.
+Tagliare e mettere in fila butta via ciò che una convoluzione dava per
+scontato, cioè che i pixel vicini siano imparentati: il ViT quella parentela
+deve impararla dai dati, e infatti ha bisogno di molti più esempi per farlo.
 
 `````{tab} Elementare
 E le immagini? Il trucco è di una semplicità disarmante: si taglia la foto in
@@ -88,6 +117,21 @@ Il caso più clamoroso di attenzione applicata a un dominio che con il testo non
 c'entra nulla è arrivato nel novembre 2020, a CASP14: **AlphaFold 2** predice la
 struttura tridimensionale delle proteine con un'accuratezza vicina a quella dei
 metodi sperimentali, chiudendo di fatto un problema aperto da mezzo secolo.
+
+```{figure} ../figures/alphafold-2.svg
+:name: fig-alphafold
+:alt: "Catena di elaborazione di AlphaFold 2: dalla sequenza di amminoacidi e dall'allineamento multiplo di sequenze evolutivamente imparentate si passa all'Evoformer, che fa scambiare informazione fra la rappresentazione delle sequenze e quella delle coppie di residui; il modulo struttura converte infine il risultato in coordinate tridimensionali."
+:width: 100%
+
+I due ingressi contano quanto l'architettura. Oltre alla sequenza da ripiegare,
+AlphaFold legge l'allineamento con le proteine imparentate: l'evoluzione ha già
+fatto milioni di esperimenti, e quelli sono i dati.
+```
+
+Il blocco centrale di {numref}`fig-alphafold` è dove l'attenzione fa il suo
+mestiere. Due residui lontani nella sequenza possono trovarsi vicini nello
+spazio, ed è esattamente il tipo di relazione a lungo raggio che le
+convoluzioni faticano a vedere e che l'attenzione tratta come un caso normale.
 
 `````{tab} Elementare
 

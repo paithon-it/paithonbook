@@ -62,6 +62,21 @@ La prima idea è la scommessa architettonica che rovescia quella della CPU.
 Invece di costruire pochi processori velocissimi, la GPU ne mette migliaia,
 ciascuno lento e limitato, ma tutti attivi nello stesso istante.
 
+```{figure} ../figures/deep-learning-gpu.svg
+:name: fig-hardware-e-modelli
+:alt: "Due linee del tempo parallele dal 1958 al 2020. Sopra, l'evoluzione dell'hardware disponibile, dai primi calcolatori alle GPU programmabili. Sotto, l'evoluzione dei modelli, dal percettrone alle reti profonde: ogni salto dei modelli segue di poco un salto dell'hardware."
+:width: 100%
+
+Due storie che si inseguono. Le idee di rete profonda erano quasi tutte già
+scritte quando l'hardware non c'era: a cambiare, e a cambiare tutto, è stato
+il secondo binario.
+```
+
+L'allineamento di {numref}`fig-hardware-e-modelli` è il motivo per cui questo
+capitolo esiste in un libro di machine learning. Non si tratta di curiosità
+sistemistica: per lunghi tratti della storia dell'AI il limite non è stato
+capire cosa fare, ma poterlo calcolare.
+
 `````{tab} Elementare
 Puoi affidare un lavoro a un genio solitario, capace di risolvere in fretta
 qualunque problema difficile, oppure a una folla di persone comuni, ognuna
@@ -97,6 +112,20 @@ La seconda idea è meno intuitiva, e proprio per questo va detta subito: il limi
 di una GPU, molto più spesso di quanto si creda, non è *quanti conti* sa fare, ma
 *quanti byte* le arrivano da calcolare. Le migliaia di core sono la parte facile;
 tenerle rifornite è l'ingegneria vera.
+
+```{figure} ../figures/gpu-cloud-vs-on-premise.svg
+:name: fig-pareggio-cloud
+:alt: "Grafico con le ore di GPU usate al mese in ascissa e il costo mensile in ordinata. La retta del cloud parte da zero e sale proporzionalmente all'uso; quella dell'hardware proprio parte alta, per l'acquisto, e poi cresce poco. Le due si incrociano in un punto di pareggio, oltre il quale conviene possedere la scheda."
+:width: 90%
+
+Due rette e un incrocio. Il cloud non è più caro né più economico in assoluto:
+lo diventa a seconda di quante ore al mese la scheda resta accesa.
+```
+
+Il punto di pareggio in {numref}`fig-pareggio-cloud` è un conto che conviene
+fare prima di affezionarsi a una risposta. Per un uso saltuario la retta piatta
+dell'hardware proprio è quasi tutta costo fisso sprecato; per un
+addestramento continuo, il noleggio diventa la voce di spesa dominante.
 
 `````{tab} Elementare
 Immagina un cuoco fulmineo che potrebbe sfornare cento piatti al minuto, se

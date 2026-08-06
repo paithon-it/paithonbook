@@ -170,6 +170,22 @@ lui capisce benissimo.
 Da questo unico difetto discendono due attacchi che vengono spesso confusi e
 che invece hanno geometrie diverse, e quindi difese e gravità diverse.
 
+```{figure} ../figures/jailbreak-e-prompt-injection.svg
+:name: fig-jailbreak-injection
+:alt: "Due schemi affiancati. A sinistra il jailbreak, attacco diretto: l'utente coincide con l'attaccante, manda un prompt manipolato al modello e ne aggira le regole; un solo attore, davanti allo schermo. A destra la prompt injection, attacco iniettato: l'utente è la vittima, un attaccante distinto nasconde un'istruzione dentro un contenuto esterno, il modello la legge ed esegue l'ordine iniettato; l'attaccante non parla mai col modello, lascia l'ordine nei dati."
+:width: 100%
+
+Due geometrie diverse. A sinistra chi attacca e chi usa il sistema sono la
+stessa persona; a destra sono due, e quella che parla col modello è la vittima.
+```
+
+Il confronto di {numref}`fig-jailbreak-injection` chiarisce perché le difese
+non si scambino. Contro il jailbreak si può irrigidire il modello, perché
+l'avversario è dall'altra parte dello schermo e chiede. Contro la prompt
+injection irrigidire il modello serve poco: l'ordine ostile entra insieme ai
+dati che il sistema *deve* leggere, e chi lo ha scritto non è mai in
+conversazione.
+
 Nel **jailbreak** è l'utente stesso a spingere: vuole dal modello un
 comportamento che chi lo ha addestrato ha cercato di escludere, e lo cerca
 riformulando la propria richiesta. La vittima, semmai, è chi ha messo il

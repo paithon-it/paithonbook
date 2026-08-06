@@ -65,6 +65,21 @@ database, in file audio con le etichette in un foglio a parte (o appena
 servono più informazioni della sola classe), si scrive la propria classe. È
 meno lavoro di quanto sembri: il contratto è di **tre metodi**.
 
+```{figure} ../figures/ereditarieta-polimorfismo.svg
+:name: fig-ereditarieta-dataset
+:alt: "Gerarchia di classi: in cima una classe base che definisce un metodo di validazione comune; sotto, tre sottoclassi che la ereditano e ridefiniscono ciascuna il proprio metodo di caricamento, uno per le immagini, uno per il CSV, uno per l'audio. Chi le usa chiama sempre gli stessi metodi, senza sapere quale sottoclasse ha davanti."
+:width: 92%
+
+Una base, tre specializzazioni. Chi consuma i dati non sa da dove vengano:
+chiama sempre gli stessi tre metodi, e ogni sottoclasse decide come
+rispondere.
+```
+
+È esattamente il meccanismo di {numref}`fig-ereditarieta-dataset` che permette
+al `DataLoader` di funzionare con qualunque `Dataset` senza saperne nulla.
+Finché la vostra classe rispetta il contratto dei tre metodi, per il resto di
+PyTorch è indistinguibile da `ImageFolder`.
+
 ```python
 import pathlib
 import torch

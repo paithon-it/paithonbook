@@ -113,6 +113,22 @@ La soluzione, proposta da Sepp Hochreiter e Jürgen Schmidhuber
 L'intuizione: dare alla cella una memoria protetta, e insegnarle a decidere
 (con dei «cancelli») cosa scrivere, cosa cancellare e cosa leggere.
 
+```{figure} ../figures/lstm-gru-cancelli-memoria.svg
+:name: fig-cella-lstm
+:alt: "Schema interno di una cella LSTM: lo stato della cella attraversa il disegno da sinistra a destra come una linea quasi diretta; tre cancelli regolati da sigmoidi intervengono su di essa, il gate di dimenticanza che cancella, quello di ingresso che scrive e quello di uscita che decide cosa leggere verso lo stato nascosto."
+:width: 88%
+
+I tre cancelli della LSTM. La linea che attraversa la cella da parte a parte è
+la memoria protetta: i cancelli la modificano poco per volta, invece di
+riscriverla da capo a ogni passo.
+```
+
+Il dettaglio decisivo di {numref}`fig-cella-lstm` è la linea orizzontale che
+passa da sinistra a destra quasi indisturbata. In una RNN semplice lo stato
+viene rimoltiplicato a ogni passo, e per questo svanisce o esplode; qui la
+strada principale è fatta di somme, e il gradiente ci può viaggiare sopra per
+molti passi senza spegnersi.
+
 `````{tab} Elementare
 
 Immagina che il foglietto dei riassunti abbia ora tre interruttori. Il primo

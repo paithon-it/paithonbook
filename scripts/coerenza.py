@@ -106,6 +106,27 @@ def main():
                 if r.strip() not in nomi:
                     problemi["numref senza :name:"].append(f"{f}  ->  {r}")
 
+        # Due difetti che la build non segnala e che si trovano solo contando.
+        # I target di Sphinx sono GLOBALI: due figure diverse con lo stesso
+        # :name: si costruiscono senza un avviso, e uno dei due {numref}
+        # stampa il numero dell'altra. Lo stesso file richiamato da due
+        # `{figure}` produce invece due figure numerate diverse con la stessa
+        # immagine, che al lettore sembra una svista, e di solito lo e'.
+        dove_nome, dove_file = defaultdict(list), defaultdict(list)
+        for f, t in testi.items():
+            for n in RX["name"].findall(t):
+                dove_nome[n].append(f)
+            for g in RX["fig_uso"].findall(t):
+                dove_file[g].append(f)
+        for n, dove in sorted(dove_nome.items()):
+            if len(dove) > 1:
+                problemi[":name: usato piu' volte"].append(
+                    f"{n}  ->  {', '.join(dove)}")
+        for g, dove in sorted(dove_file.items()):
+            if len(dove) > 1:
+                problemi["stessa figura richiamata piu' volte"].append(
+                    f"{g}  ->  {', '.join(dove)}")
+
     if "ref" in attivi:
         for f, t in testi.items():
             for r in RX["ref"].findall(t) + RX["doc"].findall(t):
@@ -133,9 +154,24 @@ def main():
         usate = set()
         for t in testi.values():
             usate |= set(RX["fig_uso"].findall(t)) | set(RX["img_uso"].findall(t))
+        # Non tutto ciò che sta in figures/ lo richiama una `{figure}`: la
+        # favicon la nomina `_config.yml`, e un template può linkare un'icona.
+        # Cercarle solo nelle pagine le farebbe risultare orfane per sempre.
+        for extra in [LIBRO / "_config.yml", *(LIBRO / "_templates").rglob("*.html"),
+                      *(LIBRO / "_static").glob("*.html")]:
+            if extra.is_file():
+                testo = extra.read_text(encoding="utf-8", errors="replace")
+                usate |= {m for m in re.findall(r"figures/([\w.-]+)", testo)}
         for p in sorted((LIBRO / "figures").glob("*")):
-            if p.is_file() and p.name not in usate:
-                problemi["figure mai richiamate"].append(p.name)
+            if not p.is_file() or p.name in usate:
+                continue
+            # `<nome>-striscia.png` e' il fermo immagine che in impaginazione
+            # sostituisce `<nome>.gif`: per progetto non lo richiama nessuno,
+            # e segnalarlo ogni volta insegna solo a ignorare l'elenco.
+            if p.name.endswith("-striscia.png"):
+                if f"{p.name[:-len('-striscia.png')]}.gif" in usate:
+                    continue
+            problemi["figure mai richiamate"].append(p.name)
 
     if "toc" in attivi:
         toc = (LIBRO / "_toc.yml")
@@ -183,7 +219,12 @@ def main():
                 problemi["rimandi in avanti (da leggere)"].append(
                     f"{f}: …{m.group(0).strip()[:110]}")
 
-    ordine = ["numref senza :name:", "cite senza voce nel .bib",
+    # `ordine` non e' solo l'ordine di stampa: e' anche il filtro. Una chiave
+    # che non compare qui viene calcolata e poi buttata via in silenzio, ed e'
+    # esattamente quel che e' successo ai due controlli sui doppioni.
+    ordine = ["numref senza :name:", ":name: usato piu' volte",
+              "stessa figura richiamata piu' volte",
+              "cite senza voce nel .bib",
               "ref/doc senza target", "figure mai richiamate",
               "file non nel _toc.yml",
               "capitoli senza scheda nella landing",

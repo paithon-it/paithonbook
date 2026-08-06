@@ -27,6 +27,22 @@ più misure, più *feature*) meglio è. Sorprendentemente, oltre una certa sogli
 nostra intuizione, allenata a due o tre dimensioni, non prevede. Il fenomeno
 ha un nome quasi teatrale: la **maledizione della dimensionalità**.
 
+```{figure} ../figures/maledizione-dimensionalita.svg
+:name: fig-maledizione-dimensionalita
+:alt: "Tre pannelli mostrano quanto volume occupa la sfera inscritta nel cubo al crescere delle dimensioni: il 78,5% in due dimensioni, il 52,4% in tre, e una frazione minuscola in dieci. All'aumentare delle dimensioni quasi tutto il volume del cubo si concentra negli angoli, lontano dal centro."
+:width: 100%
+
+Dove finisce lo spazio. La sfera è il centro, gli angoli sono la periferia: in
+dieci dimensioni la periferia è praticamente tutto, e i punti si trovano
+quasi sempre lì, lontani gli uni dagli altri.
+```
+
+Il conto di {numref}`fig-maledizione-dimensionalita` ha una conseguenza che
+tocca ogni algoritmo basato sulle distanze. Se i punti finiscono tutti lontani
+fra loro e a distanze simili, «il vicino più vicino» smette di voler dire
+qualcosa: la differenza fra il primo e il centesimo vicino si assottiglia fino
+a sparire nel rumore.
+
 `````{tab} Elementare
 
 Immagina di cercare un amico. In una **strada** (una dimensione) è facile:
@@ -230,6 +246,21 @@ una mappa in 2D: le più note sono **t-SNE** (van der Maaten e Hinton, 2008)
 {cite}`maaten2008visualizing` e **UMAP** (McInnes, Healy e Melville, 2018)
 {cite}`mcinnes2018umap`.
 
+```{figure} ../figures/tsne-umap.svg
+:name: fig-tsne-umap
+:alt: "A sinistra un groviglio di punti in 784 dimensioni, con le classi intrecciate e le distanze illeggibili. Una freccia di proiezione, etichettata t-SNE e UMAP, porta a destra, dove la stessa informazione appare come una mappa piatta in due dimensioni con tre gruppi ben separati; una nota precisa che sono i vicinati a essere preservati."
+:width: 96%
+
+Da un groviglio a una mappa. Ciò che queste tecniche promettono di conservare
+sono i *vicinati*, cioè chi sta vicino a chi, non le distanze assolute né la
+posizione dei gruppi fra loro.
+```
+
+Quella promessa limitata di {numref}`fig-tsne-umap` è anche l'avvertenza
+d'uso: su una mappa t-SNE la dimensione di un gruppo e la distanza fra due
+gruppi non vogliono dire quasi niente, e leggerle come se fossero misure è
+l'errore più comune che si fa con queste figure.
+
 `````{tab} Elementare
 
 Immagina di dover disegnare su un foglio la mappa delle amicizie di una
@@ -305,6 +336,21 @@ l'algoritmo. Il metodo più celebre è **k-means**, il cui algoritmo iterativo �
 dovuto a Stuart Lloyd (formulato ai Bell Labs nel 1957, pubblicato nel 1982)
 {cite}`lloyd1982least`; il nome «$k$-means» compare in James MacQueen nel 1967
 {cite}`macqueen1967some`.
+
+```{figure} ../figures/k-means-raggruppare-senza-etichette.svg
+:name: fig-kmeans-migrazione
+:alt: "Tre pannelli in sequenza sulla stessa nube di punti. Nel primo i centroidi, segnati con una x, sono in posizione casuale e le assegnazioni sono sbagliate. Nel secondo i centroidi si sono spostati verso il centro dei rispettivi gruppi. Nel terzo hanno raggiunto la convergenza e i gruppi sono corretti. Una nota spiega che a ogni iterazione il centroide si sposta nella media dei punti che gli sono stati assegnati."
+:width: 100%
+
+Le due mosse di k-means, ripetute. Ogni punto va al centroide più vicino, poi
+ogni centroide va nel mezzo dei punti che gli sono toccati: da un inizio a
+caso si arriva ai gruppi in poche iterazioni.
+```
+
+Guardando {numref}`fig-kmeans-migrazione` si capisce anche la fragilità
+dell'algoritmo: il primo pannello è casuale, e da inizi diversi si può
+convergere a soluzioni diverse. È il motivo per cui in pratica k-means si fa
+ripartire più volte, tenendo la soluzione migliore.
 
 `````{tab} Elementare
 
@@ -445,6 +491,22 @@ un'idea diversa da «un centro e tutto ciò che gli sta attorno». **DBSCAN**
 (Ester, Kriegel, Sander e Xu, 1996) {cite}`ester1996density` cambia
 prospettiva: un cluster è una **regione densa** di punti, e le regioni dense
 sono separate da zone quasi vuote.
+
+```{figure} ../figures/dbscan-clustering-gerarchico.svg
+:name: fig-dbscan-dendrogramma
+:alt: "A sinistra DBSCAN su due cluster di forma irregolare: i punti sono distinti in core, che hanno abbastanza vicini, border, che stanno ai margini di un cluster, e rumore, isolati e non assegnati a nessun gruppo. A destra un dendrogramma del clustering gerarchico, con una linea di taglio orizzontale che determina quanti gruppi si ottengono."
+:width: 100%
+
+Due modi di non dover dire quanti gruppi cercare. DBSCAN lo deduce dalla
+densità e ammette che alcuni punti non appartengano a nessuno; il gerarchico
+li ordina tutti e lascia la scelta all'altezza del taglio.
+```
+
+La categoria «rumore» in {numref}`fig-dbscan-dendrogramma` è la differenza
+pratica più importante rispetto a k-means. Là ogni punto finisce per forza in
+un gruppo, anche quello isolato in mezzo al nulla, che trascina il centroide;
+qui un punto può restare fuori, e i cluster non vengono deformati da chi non
+c'entra.
 
 `````{tab} Elementare
 

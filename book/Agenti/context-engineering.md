@@ -107,6 +107,23 @@ conclusivo su LLMOps. Un prompt gonfio è una bolletta più salata e una
 risposta più lenta. Riempire la finestra fino all'orlo «per sicurezza» è quasi
 sempre un cattivo affare.
 
+```{figure} ../figures/context-window.svg
+:name: fig-context-window
+:alt: "Una barra orizzontale rappresenta il budget di token di una finestra di contesto, ripartita in segmenti di ampiezza diversa: il system prompt, le descrizioni degli strumenti, la cronologia della conversazione, i documenti recuperati e lo spazio che resta per la risposta."
+:width: 92%
+
+La finestra come budget da ripartire. Ogni segmento toglie spazio agli altri,
+e l'ultimo (lo spazio per la risposta) è quello che si dimentica di contare
+finché il modello non la tronca a metà.
+```
+
+Messa così, come in {numref}`fig-context-window`, la finestra smette di
+sembrare un limite tecnico e diventa quello che è davvero: un **budget**. E
+come ogni budget si può spendere bene o male, perché le voci competono fra
+loro. Una descrizione di strumento scritta larga, una cronologia che nessuno
+pota mai, dieci documenti recuperati dove ne bastavano tre: nessuna di queste
+è un errore in sé, ma insieme mangiano lo spazio della risposta.
+
 C'è di peggio, e va contro l'intuizione: **anche quando lo spazio ci sarebbe,
 riempirlo può danneggiare la risposta**. Nel 2024 Nelson Liu e colleghi lo
 hanno misurato in un lavoro dal titolo eloquente, *Lost in the Middle*

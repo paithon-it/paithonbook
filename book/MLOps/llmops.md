@@ -30,6 +30,20 @@ dal **generarne l'output**, un token alla volta, in modo autoregressivo: la
 stessa generazione che abbiamo studiato nel capitolo sui Transformer, ora
 vista dal lato di chi paga la bolletta.
 
+```{figure} ../figures/modelli-locali-ollama.svg
+:name: fig-cosa-entra-in-memoria
+:alt: "Barre orizzontali che indicano, per diverse quantità di memoria disponibile, quali taglie di modello riescono a girarci con una quantizzazione a 4 bit: dalle poche unità di miliardi di parametri su una scheda modesta fino alle decine su hardware da datacentre."
+:width: 96%
+
+La domanda pratica che precede ogni altra. Non «quale modello è migliore», ma
+«quale entra», perché sotto quella soglia nessuna ottimizzazione serve.
+```
+
+Il vincolo di {numref}`fig-cosa-entra-in-memoria` viene prima di tutte le
+tecniche di questa sezione, e ne fissa l'ordine. Prima si stabilisce cosa
+entra nella memoria che si ha, poi si discute di quanto vada veloce: un
+modello che non ci sta non è lento, semplicemente non parte.
+
 `````{tab} Elementare
 
 Fin qui servire un modello era come guidare un'automobile: la accendi, parte,
@@ -73,7 +87,23 @@ conseguenza salvifica: se leggere i pesi è il collo di bottiglia, e leggerli
 *una volta* serve a produrre un token per una sequenza, allora leggerli una
 volta per servire *molte* sequenze insieme è quasi gratis. Servire tanti
 utenti in parallelo (il **batching**) non è un lusso, è il modo in cui un LLM
-diventa economicamente sostenibile. Ma qui si scontra con la KV cache: ogni
+diventa economicamente sostenibile.
+
+```{figure} ../figures/servire-un-llm-vllm-continuous-batching.svg
+:name: fig-continuous-batching
+:alt: "Confronto fra due modi di riempire la GPU nel tempo. Con il batching statico le richieste partono insieme e il gruppo si libera solo quando la più lunga ha finito: chi termina prima lascia il posto vuoto. Con il continuous batching ogni posto che si libera viene subito riempito da una richiesta in coda, e la GPU resta occupata."
+:width: 100%
+
+Lo stesso hardware, due modi di riempirlo. Nel batching statico i buchi bianchi
+sono GPU pagata e non usata; nel continuous batching una richiesta entra non
+appena un posto si libera.
+```
+
+Il difetto che {numref}`fig-continuous-batching` mette in evidenza nasce da
+una particolarità della generazione: le risposte non durano tutte uguale, e
+non si sa in anticipo quanto dureranno. Un gruppo che deve aspettare il più
+lento è quindi la regola, non l'eccezione, e in un batch grande basta una
+risposta lunga per tenere fermi tutti gli altri. Ma qui si scontra con la KV cache: ogni
 sequenza nel batch porta con sé la propria cache, che cresce di token in token
 in modo imprevedibile, e la memoria della GPU finisce in fretta.
 
@@ -130,6 +160,22 @@ dal prodotto.
 
 C'è una seconda strada per accelerare la generazione, ortogonale al batching, e
 ha una proprietà rara: **non cambia di una virgola l'output**.
+
+```{figure} ../figures/speculative-decoding-2024.svg
+:name: fig-speculative-decoding
+:alt: "In alto un modello bozza, piccolo e veloce, genera in sequenza quattro token candidati. In basso il modello grande li verifica tutti insieme in un'unica passata parallela: accetta i primi tre, che coincidono con quello che avrebbe prodotto lui, e corregge il quarto, scartando i candidati successivi."
+:width: 100%
+
+Indovinare è più veloce che verificare, e verificare in blocco è più veloce
+che generare uno per uno. Se il piccolo azzecca, il grande incassa tre token
+al prezzo di uno; se sbaglia, la sua correzione è quella giusta comunque.
+```
+
+La proprietà rara annunciata sopra si legge nella metà inferiore di
+{numref}`fig-speculative-decoding`: il modello grande non si fida mai del
+piccolo, lo *controlla*. Ciò che viene accettato è solo ciò che il grande
+avrebbe prodotto da sé, e per questo il risultato è identico, token per token,
+a quello della generazione normale. Cambia il tempo, non il testo.
 
 `````{tab} Elementare
 
@@ -213,6 +259,22 @@ scorrere a ogni token); secondo, riaddestrare un modello da centinaia di
 miliardi di parametri è fuori portata per quasi tutti, e quindi la
 quantizzazione deve avvenire **dopo** l'addestramento, senza toccare la
 ricetta originale.
+
+```{figure} ../figures/quantizzazione-modelli.svg
+:name: fig-quantizzazione-memoria
+:alt: "Barre che confrontano la memoria occupata dallo stesso modello da 7 miliardi di parametri a precisioni diverse: circa 28 gigabyte a 32 bit, 14 a 16 bit, 7 a 8 bit e 3,5 a 4 bit. Accanto a ciascuna, il tipo di scheda su cui quel modello entra."
+:width: 92%
+
+Lo stesso modello, quattro ingombri. La colonna a destra è quella che decide
+davvero: sotto una certa soglia il modello smette di stare su una scheda da
+gioco e comincia a richiederne una da datacentre.
+```
+
+Il salto raccontato in {numref}`fig-quantizzazione-memoria` è discreto, non
+continuo, ed è per questo che la quantizzazione conta più di quanto un
+risparmio del 75% suggerisca. Non si tratta di pagare meno: si tratta di
+entrare o non entrare nella memoria che si ha, e fra i due casi non c'è una
+via di mezzo.
 
 `````{tab} Elementare
 
@@ -320,6 +382,22 @@ visti nel capitolo sui Transformer, ma vanno letti col sospetto della
 **contaminazione** dei dati di test. E soprattutto: per una richiesta aperta
 («scrivi una mail di scuse al cliente») non esiste *la* risposta giusta con
 cui confrontarsi.
+
+```{figure} ../figures/llm-as-judge.svg
+:name: fig-llm-giudice
+:alt: "La stessa domanda viene posta a due modelli diversi, che producono due risposte. Le due risposte, insieme alla domanda, vengono passate a un terzo modello che fa da giudice e dichiara quale preferisce. Nessun riferimento assoluto entra nel confronto: si stabilisce solo un ordine fra le due."
+:width: 92%
+
+Nessuna risposta giusta, solo un confronto. Il giudice non dice se una
+risposta è corretta: dice quale delle due preferisce, ed è una domanda a cui
+si può rispondere anche quando la prima non ha risposta.
+```
+
+Il cambio di domanda in {numref}`fig-llm-giudice` è ciò che rende il metodo
+praticabile, e insieme ciò che ne fissa i limiti. Un ordine fra due risposte
+si può stabilire senza un riferimento assoluto; ma un giudice che *preferisce*
+porta con sé i propri gusti, ed è il motivo per cui i bias elencati qui sotto
+non sono difetti di implementazione, bensì conseguenze del confronto stesso.
 
 `````{tab} Elementare
 

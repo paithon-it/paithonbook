@@ -24,7 +24,23 @@ valere tutte insieme.
 
 Il pregiudizio algoritmico non nasce dal codice, che è cieco e indifferente:
 nasce a monte, nei dati e nelle scelte con cui li abbiamo raccolti ed
-etichettati. La letteratura (per esempio la rassegna di Mehrabi e colleghi
+etichettati.
+
+```{figure} ../figures/bias-nei-modelli.svg
+:name: fig-ciclo-del-bias
+:alt: "Catena che si chiude ad anello: i dati storici, che portano già le disparità del passato, entrano nel modello, che le amplifica; il modello produce decisioni che riproducono la disparità nel mondo; e quelle decisioni diventano i dati storici del giro successivo."
+:width: 92%
+
+Il bias non attraversa il modello e si ferma: torna indietro. Le decisioni di
+oggi diventano i dati di domani, e il giro seguente parte da una disparità un
+po' più marcata.
+```
+
+La freccia di ritorno in {numref}`fig-ciclo-del-bias` è la ragione per cui il
+problema non si risolve una volta sola. Un sistema che seleziona candidati
+genera i dati sulle assunzioni future: se ha escluso un gruppo, il prossimo
+addestramento troverà davvero meno esempi di successo in quel gruppo, e avrà
+ragione a diffidarne. Il pregiudizio si fabbrica le proprie prove. La letteratura (per esempio la rassegna di Mehrabi e colleghi
 {cite}`mehrabi2021survey`) distingue alcune sorgenti ricorrenti.
 
 `````{tab} Elementare

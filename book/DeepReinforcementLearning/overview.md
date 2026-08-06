@@ -102,6 +102,22 @@ che il capitolo affronterà entrambe.
 
 ## La svolta: da Atari a AlphaGo
 
+```{figure} ../figures/dqn-atari-2015.svg
+:name: fig-dqn-atari
+:alt: "Ciclo di DQN: i pixel dello schermo del gioco entrano in una rete convoluzionale che stima il valore Q di ciascuna azione possibile; si sceglie l'azione col valore più alto, l'emulatore la esegue e restituisce il fotogramma successivo e la ricompensa, che rientrano nel ciclo. Un blocco laterale rappresenta la memoria delle esperienze passate da cui si ripesca per addestrare."
+:width: 100%
+
+Dai pixel all'azione, senza niente in mezzo. Alla rete non si dice cosa sia
+una navicella o un mattoncino: riceve lo schermo grezzo, come lo riceve una
+persona.
+```
+
+Il blocco laterale di {numref}`fig-dqn-atari` è quello che rende stabile tutto
+il resto, e la sezione sul prezzo da pagare ci tornerà sopra. Addestrare sui
+fotogrammi nell'ordine in cui arrivano significa dare alla rete esempi
+consecutivi e quindi molto simili; ripescarli a caso da una memoria spezza
+quella correlazione.
+
 Quel primo lavoro, *Playing Atari with Deep Reinforcement Learning* (Mnih e
 colleghi, 2013), diventa nel 2015 un articolo su *Nature*, *Human-level
 control through deep reinforcement learning*: **un'unica architettura**, senza

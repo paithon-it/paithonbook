@@ -12,6 +12,21 @@ nulla su cui scrivere.
 
 ## Comprimere imparando
 
+```{figure} ../figures/autoencoder-comprimere-per-capire.svg
+:name: fig-autoencoder-clessidra
+:alt: "Schema a clessidra: l'ingresso attraversa l'encoder, che lo restringe progressivamente fino a uno spazio latente molto più piccolo; da lì il decoder lo riespande fino a ricostruire un'uscita della stessa forma dell'ingresso. La strozzatura centrale è il punto più stretto della figura."
+:width: 88%
+
+La strozzatura è il compito. Se l'uscita deve somigliare all'ingresso ma in
+mezzo c'è un collo molto più stretto, la rete è costretta a tenere solo ciò
+che serve a ricostruire.
+```
+
+La forma di {numref}`fig-autoencoder-clessidra` è quella di ogni codice
+imparato, e il resto della sezione non fa che stringere e disciplinare quel
+collo centrale. Vale la pena notare che nessuno dice alla rete *cosa* buttare:
+glielo impone la larghezza della strozzatura, e il resto lo decide lei.
+
 La parola *codec* non è nuova. Ogni volta che ascoltate un brano in streaming
 o salvate un vocale, un codec ha ridotto l'audio a una frazione della sua
 dimensione. Il più famoso, l'**MP3** (standardizzato nel 1993), comprime

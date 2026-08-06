@@ -231,6 +231,22 @@ Uno script che dà un risultato diverso a ogni esecuzione non è un esperimento.
 Il minimo indispensabile sta in poche righe, che vanno chiamate **prima** di
 creare modello e `DataLoader`.
 
+```{figure} ../figures/salvare-ricaricare-confrontare-modelli.svg
+:name: fig-serializzazione
+:alt: "Ciclo di serializzazione: dal modello addestrato si salva lo state_dict su disco, insieme alla configurazione e al seme; per ricaricarlo si ricostruisce prima l'architettura e poi vi si caricano i pesi. Un ramo laterale mostra il confronto fra due checkpoint diversi sulla stessa metrica."
+:width: 96%
+
+Salvare i pesi non basta. Lo `state_dict` è solo un dizionario di numeri: per
+rimetterlo al suo posto serve un'architettura identica, e quindi la
+configurazione va salvata insieme.
+```
+
+L'asimmetria di {numref}`fig-serializzazione` è la fonte del più comune errore
+di ricaricamento. Il salvataggio parte da un oggetto vivo e produce numeri; il
+ricaricamento deve fare il contrario, e i numeri da soli non sanno dire in che
+forma andavano. È per questo che configurazione e seme viaggiano nello stesso
+checkpoint.
+
 ```python
 # utils.py
 import random

@@ -61,6 +61,23 @@ del 2014 (più vecchia della diffusione moderna e persino delle GAN) e tornerà
 più avanti nel libro. Qui ci serve l'essenziale: che cosa fa e perché rende lo
 spazio latente un posto dove si può lavorare.
 
+```{figure} ../figures/vae-auto-encoding-variational-bayes.svg
+:name: fig-vae
+:alt: "Schema del variational autoencoder: l'immagine entra nell'encoder, che non produce un punto ma una media e una deviazione standard; da quella distribuzione si campiona un punto nello spazio latente; il decoder riceve il punto campionato e ricostruisce l'immagine. La perdita somma il termine di ricostruzione e il termine che tiene la distribuzione vicina al prior."
+:width: 100%
+
+Le due uscite dell'encoder sono il punto. Non un codice ma una media e una
+larghezza: è quella larghezza a costringere codici vicini a decodificarsi in
+immagini simili.
+```
+
+Il campionamento in mezzo a {numref}`fig-vae` è ciò che distingue un VAE da un
+autoencoder qualunque, e ha una conseguenza pratica precisa: siccome
+l'addestramento vede ogni volta un punto leggermente diverso, il decoder è
+costretto a funzionare su tutto un intorno, non su un punto solo. Lo spazio
+latente ne esce continuo, ed è la premessa perché la diffusione ci si possa
+muovere dentro.
+
 `````{tab} Elementare
 
 Immagina l'archivista di un museo pieno di quadri enormi. Per ogni quadro

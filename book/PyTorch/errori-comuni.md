@@ -225,6 +225,20 @@ I tre grandi errori si annunciano con un messaggio. I prossimi sono peggiori,
 perché **non danno nessun errore**: il codice gira, la loss scende poco o non
 scende affatto, e non c'è niente di rosso da leggere.
 
+```{figure} ../figures/overfitting-memoria.svg
+:name: fig-curva-nervosa
+:alt: "Una nube di punti attraversata da due curve. La prima è semplice e coglie la tendenza generale, lasciando i punti sparsi attorno a sé. La seconda è nervosa e passa esattamente per ogni punto, comprese le oscillazioni che sono soltanto rumore."
+:width: 92%
+
+La curva che passa per tutti i punti non ha capito meglio: ha memorizzato. Sul
+training set il suo errore è zero, ed è proprio questo a doverci insospettire.
+```
+
+{numref}`fig-curva-nervosa` è la forma grafica dell'errore silenzioso più
+comune di tutti, quello che chiude questa lista: una loss di addestramento che
+scende benissimo mentre quella di validazione risale. Il codice funziona, non
+c'è niente da correggere in PyTorch, e proprio per questo lo si scopre tardi.
+
 - **`optimizer.zero_grad()` dimenticato.** I gradienti si accumulano: ogni
   passo userebbe la somma di tutti i precedenti. L'addestramento sembra
   partire, poi diverge.

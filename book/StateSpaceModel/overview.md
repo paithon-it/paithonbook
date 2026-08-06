@@ -65,7 +65,23 @@ sull'attenzione lineare, raggiunta però dalla teoria dei segnali.
 L'attenzione lineare e gli *state space model* nascono da mondi diversi (l'una
 dal meccanismo di attenzione, gli altri dai sistemi dinamici) ma convergono
 sullo stesso oggetto: una **ricorrenza lineare a stato fisso**, addestrabile
-in parallelo e capace di generare a memoria costante. Non è una coincidenza
+in parallelo e capace di generare a memoria costante.
+
+```{figure} ../figures/mamba-2023.svg
+:name: fig-attenzione-vs-ssm
+:alt: "Due schemi affiancati sulla stessa sequenza di token. A sinistra l'attenzione: ogni token è collegato a tutti gli altri, e il numero di connessioni cresce col quadrato della lunghezza. A destra lo state space model selettivo: i token sono collegati in catena a uno stato che si aggiorna passando da uno al successivo, e la dimensione di quello stato non cambia con la lunghezza."
+:width: 100%
+
+Due modi di portarsi dietro il passato. L'attenzione lo tiene tutto e lo
+riguarda; la ricorrenza lo riassume in uno stato di taglia fissa e ci scrive
+sopra.
+```
+
+Il confronto di {numref}`fig-attenzione-vs-ssm` mostra anche dove sta il
+prezzo. Un riassunto di taglia fissa deve, prima o poi, dimenticare qualcosa;
+la parola **selettivo** che compare nel nome è la risposta a questa obiezione,
+ed è il tema del capitolo: decidere *cosa* scrivere nello stato in funzione di
+ciò che sta arrivando. Non è una coincidenza
 superficiale. Alla fine del capitolo, con **Mamba-2** {cite}`dao2024mamba2`,
 vedremo che la parentela è esatta: un *state space model* di forma opportuna
 *è* un'attenzione mascherata. Le due famiglie che raccontiamo in due capitoli

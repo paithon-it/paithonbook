@@ -299,7 +299,21 @@ dice il contrario, e ha ragione lui.
 
 La sezione sul deployment ha già stabilito che uno SLA si scrive sui percentili
 alti (p95, p99) e non sulla media, e «Sorvegliare un modello vivo» li ha messi
-in cima al cruscotto. Qui la regola vale doppio, per tre ragioni specifiche
+in cima al cruscotto.
+
+```{figure} ../figures/costo-api-llm-guida-prezzi.svg
+:name: fig-costo-per-caso-uso
+:alt: "Barre orizzontali che confrontano il costo per mille operazioni in quattro casi d'uso diversi, da una classificazione breve fino a un'elaborazione lunga con molto contesto: l'ordine di grandezza cambia di oltre duecento volte fra il primo e l'ultimo, pur trattandosi dello stesso modello."
+:width: 96%
+
+Lo stesso modello, costi incomparabili. A cambiare non è il prezzo per token
+ma quanti token servono, e quello lo decide come è fatta la richiesta.
+```
+
+Il divario di {numref}`fig-costo-per-caso-uso` va letto insieme alle metriche
+di questa sezione perché è la stessa grandezza vista da un'altra parte: i
+token che si pagano sono gli stessi che occupano la finestra, riempiono la KV
+cache e allungano la latenza. Ottimizzare l'una cosa ottimizza le altre. Qui la regola vale doppio, per tre ragioni specifiche
 della generazione.
 
 La prima è che i percentili vanno riportati **per ciascuna metrica**, non sulla

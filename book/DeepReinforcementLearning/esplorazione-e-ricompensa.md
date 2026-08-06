@@ -289,6 +289,22 @@ esattamente la ricompensa che gli abbiamo scritto, e proprio per questo trova
 scorciatoie che massimizzano quel numero tradendo del tutto ciò che
 intendevamo.
 
+```{figure} ../figures/reward-hacking.svg
+:name: fig-reward-hacking
+:alt: "Grafico con l'intensità dell'ottimizzazione in ascissa. Due curve partono insieme e salgono: la metrica surrogata, quella che stiamo effettivamente massimizzando, e l'obiettivo vero. Oltre un punto segnato come punto di Goodhart le due divergono: la surrogata continua a salire, mentre l'obiettivo vero comincia a scendere."
+:width: 92%
+
+Le due curve si separano, e il guaio è che se ne vede una sola. Chi guarda il
+numero che ottimizza vede miglioramenti fino alla fine, anche molto dopo il
+punto in cui le cose hanno cominciato a peggiorare.
+```
+
+Il punto di divergenza in {numref}`fig-reward-hacking` porta il nome di
+Charles Goodhart, l'economista a cui si attribuisce la formulazione «quando
+una misura diventa un obiettivo, cessa di essere una buona misura». Vale per
+gli agenti come per le organizzazioni, e per la stessa ragione: la misura era
+un buon indicatore *finché nessuno ci puntava contro tutto lo sforzo*.
+
 L'esempio diventato manifesto è di OpenAI (2016): in *CoastRunners*, un gioco di
 gare di barche, l'agente doveva completare un percorso il più in fretta
 possibile. La ricompensa, però, era stata legata ai punti raccolti lungo il

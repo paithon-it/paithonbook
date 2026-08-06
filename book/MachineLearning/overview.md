@@ -202,6 +202,19 @@ y_pred = modello.predict(X_test)    # previsione su dati mai visti in training
 
 ## Perché questo capitolo non è archeologia
 
+```{figure} ../figures/ml-classico-batte-deep-learning.svg
+:name: fig-tabellari-vs-non-strutturati
+:alt: "Due domini affiancati. A sinistra i dati tabellari, righe e colonne con significati eterogenei, dove i metodi classici basati su alberi restano competitivi. A destra i dati non strutturati, immagini, audio e testo, dove il deep learning domina perché le caratteristiche utili vanno costruite e non sono già nelle colonne."
+:width: 100%
+
+Non c'è un vincitore assoluto, c'è un confine. A sinistra le colonne
+*sono già* le caratteristiche buone; a destra vanno estratte dai pixel o dai
+campioni, ed è lì che le reti profonde non hanno rivali.
+```
+
+Il confine tracciato in {numref}`fig-tabellari-vs-non-strutturati` è quello
+che la scena qui sotto ignora ogni volta.
+
 C'è una scena che si ripete in ogni team alle prime armi. Arriva un problema
 (prevedere quali clienti abbandoneranno il servizio, a partire da una tabella
 di età, contratti, consumi, reclami) e qualcuno propone subito una rete

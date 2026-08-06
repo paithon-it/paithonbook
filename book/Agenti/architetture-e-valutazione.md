@@ -79,7 +79,22 @@ la realtà lo smentisce.
 Finora un agente, un modello. Ma se un compito ha nature diverse (pianificare,
 scrivere codice, criticarlo), perché affidarlo a un solo generalista? Nasce
 l'idea dei **sistemi multi-agente**: più agenti, ciascuno con un **ruolo
-specializzato**, che si passano il lavoro e conversano tra loro. Un
+specializzato**, che si passano il lavoro e conversano tra loro.
+
+```{figure} ../figures/sistemi-multi-agente.svg
+:name: fig-orchestratore-worker
+:alt: "Uno schema gerarchico: in alto un agente orchestratore riceve il compito e lo suddivide, delegandolo a tre agenti worker disposti sotto di lui. Ciascun worker ha i propri strumenti e lavora sul proprio pezzo; i risultati risalgono all'orchestratore, che li ricompone nella risposta finale."
+:width: 90%
+
+Uno che divide, tre che eseguono. La specializzazione non sta nel modello, che
+può essere lo stesso per tutti: sta nelle istruzioni e negli strumenti che
+ciascun ruolo riceve.
+```
+
+C'è una precisazione che {numref}`fig-orchestratore-worker` aiuta a fare, e
+che conviene fare presto: gli agenti del disegno possono essere lo stesso
+modello chiamato più volte con prompt diversi. «Multi-agente» descrive come è
+organizzato il lavoro, non quanti modelli si stanno pagando. Un
 *pianificatore* scompone il compito, un *esecutore* lo svolge, un *critico*
 rilegge il risultato e segnala gli errori, e il giro ricomincia finché il
 critico è soddisfatto.

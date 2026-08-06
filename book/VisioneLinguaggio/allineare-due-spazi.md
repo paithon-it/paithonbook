@@ -33,6 +33,21 @@ non è più assegnare un'etichetta: è appaiare. Dato un mucchietto di immagini 
 il mucchietto mescolato delle loro didascalie, il modello deve dire chi va con
 chi.
 
+```{figure} ../figures/clip-testo-e-immagini.svg
+:name: fig-clip-matrice
+:alt: "Un gruppo di immagini passa nell'encoder visivo e un gruppo di didascalie nell'encoder testuale; i due insiemi di vettori vengono confrontati a due a due in una matrice di similarità. Le celle sulla diagonale, che corrispondono agli abbinamenti corretti, vanno massimizzate; tutte le altre, gli abbinamenti sbagliati, vanno minimizzate."
+:width: 96%
+
+La matrice è il compito. Ogni riga porta con sé una risposta giusta e tante
+sbagliate, e sono queste ultime, gratuite e numerose, a fare il grosso del
+lavoro.
+```
+
+Il conto di {numref}`fig-clip-matrice` spiega perché la dimensione del batch
+conti tanto, tema della sezione più avanti. Con $N$ coppie si ottengono $N$
+esempi positivi e $N^2 - N$ negativi: raddoppiare il batch non raddoppia il
+segnale, lo quadruplica.
+
 `````{tab} Elementare
 
 Immagina un tavolo con quattro fotografie e, in disordine, quattro didascalie

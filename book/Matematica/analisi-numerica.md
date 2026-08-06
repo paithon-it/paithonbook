@@ -21,6 +21,22 @@ che produce `NaN`.
 
 ## La virgola mobile: un budget fisso di cifre
 
+```{figure} ../figures/float16-precisione-stabilita-numerica.svg
+:name: fig-formati-virgola-mobile
+:alt: "Tre barre che mostrano come si spartiscono i bit in tre formati. Il float32 ha un bit di segno, 8 bit di esponente (la portata) e 23 bit di mantissa (la precisione). Il float16 ha 5 bit di esponente e 10 di mantissa, con portata ridotta a un massimo di circa 65.504. Il bfloat16 ha 8 bit di esponente, la stessa portata del float32, e solo 7 bit di mantissa, cioè una grana più grossa."
+:width: 96%
+
+Lo stesso budget di sedici bit, speso in due modi. Il float16 tiene la
+precisione e perde la portata; il bfloat16 fa il contrario, e per addestrare
+una rete è quasi sempre il baratto giusto.
+```
+
+La distinzione di {numref}`fig-formati-virgola-mobile` fra **portata** e
+**precisione** attraversa tutta questa sezione: l'esponente dice fin dove si
+può arrivare, la mantissa con quanta finezza. Sono due budget separati, e i
+guai che vedremo (overflow, cancellazione) nascono dall'esaurirsi ora
+dell'uno, ora dell'altro.
+
 `````{tab} Elementare
 
 Pensa al display di una calcolatrice tascabile: può mostrare solo una decina

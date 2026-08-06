@@ -306,6 +306,22 @@ levenshtein("gatot", "gatto") # 2
 
 ## Dal refuso al correttore: l'idea del canale rumoroso
 
+```{figure} ../figures/nlp-classico-era-llm.svg
+:name: fig-nlp-classico-vs-llm
+:alt: "Due approcci affiancati allo stesso problema. A sinistra la pipeline classica: una catena di stadi separati, ciascuno costruito e messo a punto a mano, dalla normalizzazione all'analisi fino alla risposta. A destra l'approccio a prompt: un solo modello che riceve l'istruzione in linguaggio naturale e produce direttamente la risposta."
+:width: 100%
+
+Due modi di risolvere lo stesso compito. La colonna di sinistra non è
+obsoleta: è ispezionabile stadio per stadio, e quando serve sapere *perché* è
+uscita una certa risposta, resta l'unica delle due che lo dice.
+```
+
+Vale la pena tenere {numref}`fig-nlp-classico-vs-llm` in mente leggendo questa
+sezione, perché il confronto non è fra vecchio e nuovo ma fra trasparente e
+opaco. Gli strumenti che seguono si spiegano in una riga e si correggono a
+mano; è per questo che sopravvivono dentro sistemi moderni, nei punti in cui
+serve una garanzia e non una probabilità.
+
 Con la distanza di edit in mano, il correttore ortografico è a un passo. Ma il
 passo è più sottile di «suggerisci la parola più vicina». Se digito «cassa»,
 era un refuso per *casa*, per *cassia*, o era proprio *cassa*? La cornice

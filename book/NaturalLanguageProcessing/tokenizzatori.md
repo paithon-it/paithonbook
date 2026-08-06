@@ -99,6 +99,21 @@ sostituiscila ovunque con un byte inutilizzato, annota la sostituzione in una
 tabella, ripeti. Alla fine il file è più corto e la tabella dice come
 ricostruirlo. Il nome che Gage gli dà è **byte pair encoding**, BPE.
 
+```{figure} ../figures/tokenizzazione-bpe.svg
+:name: fig-tokenizzazione-bpe
+:alt: "Catena in tre stadi. La parola «straordinariamente», che nel vocabolario non esiste per intero, viene spezzata in tre sottoparole; ciascuna sottoparola viene poi convertita nel proprio identificativo numerico, e il modello riceve i tre numeri."
+:width: 92%
+
+Cosa arriva davvero al modello. Una parola lunga e rara non entra nel
+vocabolario intera: si ricompone da pezzi che ci sono, e ogni pezzo diventa un
+numero.
+```
+
+La catena di {numref}`fig-tokenizzazione-bpe` chiarisce un equivoco diffuso:
+il modello non vede mai le parole, né i caratteri. Vede identificativi
+numerici, e il confine fra un identificativo e l'altro lo ha deciso un
+algoritmo di frequenze, non la grammatica.
+
 Una ventina d'anni dopo, nel 2015, Rico Sennrich, Barry Haddow e Alexandra Birch
 {cite}`sennrich2016neural` si accorgono che quell'algoritmo di compressione
 risolve un problema completamente diverso: la traduzione automatica delle
@@ -605,7 +620,20 @@ forzano la segmentazione delle cifre, una per una o a gruppi fissi di tre,
 proprio per restituire al modello una griglia regolare.
 
 **Secondo: l'italiano costa più token dell'inglese, a parità di significato.**
-Anche questa è aritmetica di fusioni. Se il corpus su cui il tokenizzatore è
+
+```{figure} ../figures/italiano-costa-piu-token.svg
+:name: fig-italiano-token
+:alt: "La stessa frase scritta in inglese e in italiano, con i confini di token marcati sopra ciascuna. Nella versione inglese le parole restano quasi tutte intere e i token sono pochi; nella versione italiana molte parole risultano spezzate in due o tre pezzi, e il conto totale dei token è sensibilmente più alto."
+:width: 96%
+
+Stessa frase, due conti diversi. Le parole italiane si frammentano perché il
+vocabolario è stato costruito su un corpus in prevalenza inglese, e i posti se
+li sono presi le sottostringhe inglesi.
+```
+
+Come mostra {numref}`fig-italiano-token`, il costo non è metaforico: si paga
+a token, in denaro e in finestra di contesto. Anche questa è aritmetica di
+fusioni. Se il corpus su cui il tokenizzatore è
 stato addestrato è in prevalenza inglese, le fusioni che "pagano" sono le
 sottostringhe inglesi, e i posti nel vocabolario finiscono lì. Le parole
 italiane vengono allora ricostruite con pezzi presi in prestito, e si

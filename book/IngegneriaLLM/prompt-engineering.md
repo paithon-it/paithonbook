@@ -97,7 +97,21 @@ reale: esempi «recitati» che condizionano lo stile della risposta.
 ## Le due manopole del campionamento
 
 Il prompt decide *cosa* chiedi; due impostazioni decidono *come* il modello
-sceglie le parole mentre risponde: la **temperatura** e il **top_p**. Nel
+sceglie le parole mentre risponde: la **temperatura** e il **top_p**.
+
+```{figure} ../figures/temperature-top-p-beam-search.svg
+:name: fig-due-manopole
+:alt: "La stessa distribuzione sulla parola successiva, trattata dalle due manopole in modi diversi. Il top_p taglia la coda, tenendo solo i token che insieme raggiungono la probabilità cumulata scelta; la temperatura invece riscala l'intera distribuzione, appiattendola o rendendola più appuntita senza escludere nessuno."
+:width: 96%
+
+Due manopole, due gesti diversi. Una taglia, l'altra riscala: si possono usare
+insieme perché non fanno la stessa cosa.
+```
+
+La distinzione di {numref}`fig-due-manopole` è quella che si perde più spesso
+in pratica, e porta a girare entrambe le manopole nella stessa direzione
+sperando in un effetto doppio. Il top_p decide *chi può essere scelto*, la
+temperatura *quanto pesano* quelli rimasti. Nel
 capitolo sui Transformer abbiamo studiato la matematica del *decoding*, come
 da una distribuzione di probabilità sulla prossima parola si campiona un
 token, e come la temperatura riscala quella distribuzione. Qui non la
@@ -141,7 +155,23 @@ confronto con *top-k* e *beam search* sono nel capitolo sui Transformer.
 ## Zero-shot, one-shot, few-shot: gli esempi come condizionamento
 
 La leva più potente del prompt engineering è anche la più semplice: **mostrare
-al modello degli esempi svolti**. La differenza tra chiedere a freddo e chiedere
+al modello degli esempi svolti**.
+
+```{figure} ../figures/gpt-3-2020.svg
+:name: fig-few-shot
+:alt: "Un prompt contiene tre esempi svolti, ciascuno nella forma ingresso freccia uscita, seguiti da una nuova domanda lasciata senza risposta. L'intero prompt entra nel modello, i cui pesi sono marcati come congelati, e ne esce la risposta. Nessun aggiornamento dei parametri avviene in questo processo."
+:width: 92%
+
+Imparare senza imparare. Gli esempi non addestrano niente: restano nel prompt,
+il modello li rilegge insieme alla domanda, e i pesi sono gli stessi prima e
+dopo.
+```
+
+L'etichetta «congelati» in {numref}`fig-few-shot` è la ragione per cui questa
+tecnica è di *ingegneria* e non di addestramento. Il modello non ha imparato
+il compito: ha riconosciuto uno schema nel testo che sta leggendo e lo ha
+proseguito. Ed è anche il limite, perché gli esempi occupano contesto a ogni
+singola chiamata, e si pagano ogni volta. La differenza tra chiedere a freddo e chiedere
 dopo aver mostrato due o tre casi risolti è spesso la differenza tra una risposta
 sbagliata e una giusta.
 
@@ -203,6 +233,22 @@ scrive «17 × 24 = 17 × 20 + 17 × 4 = 340 + 68 = 408», arriva alla risposta
 giusta molto più spesso. È l'idea della **chain-of-thought** (Wei et al., 2022)
 {cite}`wei2022chain`: far generare al modello i passaggi intermedi del
 ragionamento *prima* della conclusione.
+
+```{figure} ../figures/chain-of-thought.svg
+:name: fig-chain-of-thought
+:alt: "Due percorsi a confronto sulla stessa domanda. In alto la risposta diretta: dalla domanda si va subito a un numero, che è sbagliato. In basso la catena di pensiero: la domanda passa per due passaggi intermedi scritti per esteso, e solo dopo si arriva alla risposta, che è corretta."
+:width: 94%
+
+La differenza non è nel modello ma in quanto gli si lascia scrivere. I
+passaggi intermedi diventano contesto su cui appoggiare il passo successivo,
+invece di dover indovinare tutto in un colpo.
+```
+
+C'è una lettura di {numref}`fig-chain-of-thought` che vale più della tecnica:
+il modello produce un token alla volta, e ogni token che scrive rientra fra
+quelli che rilegge. Lasciarlo scrivere i passaggi non è una cortesia verso di
+lui né verso di noi: gli concede più passi di calcolo per arrivare alla
+risposta.
 
 `````{tab} Elementare
 
@@ -326,6 +372,21 @@ il resto del programma, che ha bisogno di campi, ed è ciò che rende il prompt
 un mattone di software vero, non un giocattolo conversazionale.
 
 ## Buone pratiche, in breve
+
+```{figure} ../figures/prompt-engineering-le-prove.svg
+:name: fig-prove-prompting
+:alt: "Le tecniche di prompting disposte su una scala secondo la forza dell'evidenza che le sostiene: in alto quelle con risultati replicati su più modelli e benchmark, come gli esempi few-shot e la catena di pensiero; scendendo, tecniche con evidenza parziale; in fondo le formule diffuse sui social senza alcuna verifica sistematica."
+:width: 92%
+
+Non tutte le tecniche hanno lo stesso sostegno. La scala non dice cosa
+funziona sempre: dice quanto è stato misurato, che è una domanda diversa e più
+utile.
+```
+
+La distinzione di {numref}`fig-prove-prompting` è ciò che separa questa
+disciplina dal folklore che le è cresciuto attorno. Una tecnica in fondo alla
+scala non è necessariamente inutile; è non verificata, e la differenza conta
+quando bisogna decidere su cosa investire tempo.
 
 Dietro le tecniche c'è un pugno di principi che la guida DAIR.AI ripete, e che
 valgono più di ogni «prompt segreto»:

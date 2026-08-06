@@ -15,6 +15,21 @@ foto c'è un gatto" a "il gatto sta in *quel* rettangolo". Il compito si chiama
 **object detection**: per ogni oggetto presente, la rete deve produrre insieme
 un riquadro e un'etichetta.
 
+```{figure} ../figures/classification-detection-segmentation.svg
+:name: fig-tre-uscite
+:alt: "La stessa fotografia trattata da tre compiti diversi. Nella classificazione l'uscita è una sola etichetta per l'intera immagine. Nella detection sono uno o più riquadri, ciascuno con la sua etichetta. Nella segmentazione è una maschera che segue il contorno esatto di ogni oggetto, pixel per pixel."
+:width: 100%
+
+Stessa foto, tre uscite. Salendo da sinistra a destra cresce la precisione
+della risposta e, con essa, il costo di annotare i dati per addestrarla.
+```
+
+La progressione di {numref}`fig-tre-uscite` va letta anche al contrario, cioè
+dal lato dei dati. Un'etichetta per foto la scrive chiunque in un secondo; un
+riquadro richiede di trascinare il mouse; una maschera pixel per pixel costa
+minuti a immagine. È spesso questo, e non l'architettura, a decidere quale dei
+tre compiti si può davvero affrontare.
+
 `````{tab} Elementare
 
 Immagina di cerchiare con un pennarello ogni oggetto interessante in una foto
@@ -49,6 +64,20 @@ architetturale della detection.
 
 Storicamente i rilevatori si dividono in due famiglie, e la differenza è un
 classico compromesso tra **accuratezza e velocità**.
+
+```{figure} ../figures/yolo-2016.svg
+:name: fig-yolo
+:alt: "Un'immagine coperta da una griglia sette per sette entra una sola volta in una rete convoluzionale, che produce direttamente i riquadri degli oggetti con le rispettive classi. Non c'è nessuna fase separata di proposta delle regioni: ogni cella della griglia è responsabile degli oggetti il cui centro le cade dentro."
+:width: 92%
+
+L'approccio a stadio singolo. La griglia non è una ricerca: è una divisione di
+responsabilità decisa in anticipo, e la rete la attraversa una volta sola.
+```
+
+Ciò che {numref}`fig-yolo` rende evidente è cosa si guadagna e cosa si perde.
+Guardare l'immagine una volta sola è quello che rende possibile il tempo
+reale; il prezzo è che ogni cella ha un numero fisso di riquadri da offrire, e
+oggetti piccoli e ammassati nella stessa cella se li contendono.
 
 `````{tab} Elementare
 
@@ -194,6 +223,21 @@ localizzano con precisione, non solo che indovinano la classe.
 Il riquadro è comodo ma grossolano: attorno a un pedone c'è sempre un rettangolo
 pieno di sfondo. Quando serve il contorno esatto, pixel per pixel, si passa alla
 **segmentazione**. Qui vanno distinti due sapori.
+
+```{figure} ../figures/u-net-clessidra-con-skip.svg
+:name: fig-unet
+:alt: "Schema a forma di U: il braccio discendente di sinistra riduce progressivamente la risoluzione aumentando il numero di canali, in fondo c'è il collo di bottiglia, e il braccio ascendente di destra recupera la risoluzione. Fra livelli corrispondenti dei due bracci corrono connessioni orizzontali tratteggiate, le skip connection."
+:width: 88%
+
+La clessidra della U-Net. Scendendo si capisce *cosa* c'è nell'immagine e si
+perde *dove*; le connessioni orizzontali riportano il «dove» dal ramo di
+discesa a quello di risalita.
+```
+
+Le linee tratteggiate di {numref}`fig-unet` risolvono un conflitto specifico
+della segmentazione. Riconoscere richiede di allontanarsi dai pixel;
+disegnare un contorno esatto richiede di starci attaccati. La U-Net non
+sceglie: fa entrambe le cose su due rami, e li ricuce a ogni livello.
 
 `````{tab} Elementare
 

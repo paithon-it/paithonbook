@@ -179,6 +179,22 @@ Il modello che nasce da questa storia è il **percettrone multistrato** (MLP,
 l'uscita di uno strato è l'ingresso del prossimo
 ({numref}`fig-percettrone-multistrato`).
 
+```{figure} ../figures/reti-multistrato.svg
+:name: fig-confini-multistrato
+:alt: "Tre pannelli sulla stessa nube di punti. Con un solo neurone il confine di decisione è una retta. Con uno strato nascosto diventa una regione poligonale, ottenuta combinando più rette. Con due strati nascosti il confine si fa curvo e può racchiudere forme qualsiasi."
+:width: 100%
+
+Cosa si guadagna aggiungendo strati. Non potenza di calcolo: forme di confine.
+Ogni strato in più permette di comporre i confini del precedente in figure che
+prima erano irraggiungibili.
+```
+
+La progressione di {numref}`fig-confini-multistrato` è la risposta visiva allo
+scandalo dello XOR raccontato poco sopra. Il problema del percettrone non era
+che imparasse male: era che una retta sola non può separare quei quattro
+punti, per quanto bene la si posizioni. Serviva un secondo strato, non un
+addestramento migliore.
+
 ```{figure} ../figures/percettrone-multistrato.svg
 :name: fig-percettrone-multistrato
 :alt: Diagramma di un percettrone multistrato con tre nodi di input, quattro nodi nello strato nascosto e due nodi di output, tutti collegati tra strati adiacenti.

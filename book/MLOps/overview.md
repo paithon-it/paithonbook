@@ -189,9 +189,20 @@ questa la ragione strutturale per cui il ciclo è un anello e non un segmento.
 
 ## Perché non basta il notebook
 
-Il capitolo dà per acquisito tutto ciò che serve a *costruire* un modello: la
-teoria dei capitoli precedenti e gli strumenti di **PyTorch**, `torch.nn`,
-`torch.optim`, il `DataLoader` (visti nel capitolo dedicato). Il notebook che
+```{figure} ../figures/dal-notebook-alla-produzione.svg
+:name: fig-cinque-tappe
+:alt: "Cinque tappe in fila dal notebook alla produzione: l'esperimento nel notebook, l'estrazione in script versionati, il confezionamento in un artefatto riproducibile, il rilascio dietro un servizio e infine la sorveglianza continua. Solo la prima tappa è quella che di solito si considera «il lavoro»."
+:width: 100%
+
+Il notebook è la prima delle cinque caselle, non l'ultima. Le quattro che
+seguono non aggiungono intelligenza al modello: aggiungono le condizioni
+perché quell'intelligenza serva a qualcuno.
+```
+
+La proporzione di {numref}`fig-cinque-tappe` è il messaggio dell'intero
+capitolo. Il capitolo dà per acquisito tutto ciò che serve a *costruire* un
+modello: la teoria dei capitoli precedenti e gli strumenti di **PyTorch**,
+`torch.nn`, `torch.optim`, il `DataLoader` (visti nel capitolo dedicato). Il notebook che
 addestra una rete e ne stampa l'accuratezza è, a tutti gli effetti, il punto
 di partenza di questo capitolo, non un traguardo.
 

@@ -38,6 +38,20 @@ umane (reward model + RL, oppure la scorciatoia DPO che salta il giudice).
 
 ## Studiare gli esempi svolti: l'instruction tuning
 
+```{figure} ../figures/instruction-tuning.svg
+:name: fig-instruction-tuning
+:alt: "Lo stesso prompt dato a due modelli. Il modello base lo prosegue come farebbe un testo trovato sul web, generando altre domande simili invece di rispondere. Il modello dopo instruction tuning lo interpreta come una consegna ed esegue, producendo la risposta richiesta."
+:width: 96%
+
+Stesso prompt, due comportamenti. Il modello base non è più ignorante: sta
+facendo esattamente ciò per cui era stato addestrato, cioè proseguire il
+testo. L'instruction tuning gli insegna che quel testo era un ordine.
+```
+
+La differenza mostrata in {numref}`fig-instruction-tuning` è la ragione per
+cui il post-training esiste: fra un modello che completa e un assistente che
+esegue non c'è più conoscenza, c'è una diversa interpretazione della richiesta.
+
 Il primo passo si chiama **SFT** (*supervised fine-tuning*), o *instruction
 tuning*: si raccoglie un dataset di coppie (istruzione, risposta) scritte da
 persone, «Riassumi questo articolo» seguito da un buon riassunto, «Traduci in
@@ -102,6 +116,22 @@ un modello da $7$ miliardi di parametri a $32$ bit occupa circa $26$ GB solo
 per i pesi (quattro byte a parametro) e l'addestramento ne richiede il triplo
 abbondante fra gradienti e stati dell'ottimizzatore. Fuori dai laboratori,
 quasi nessuno può permetterselo.
+
+```{figure} ../figures/lora-fine-tuning-efficiente.svg
+:name: fig-lora
+:alt: "Schema di LoRA: la matrice dei pesi pre-addestrati W resta congelata e riceve l'ingresso; accanto a essa due matrici piccole e addestrabili, A e B, formano un percorso parallelo a basso rango. Le uscite dei due rami si sommano prima di proseguire. Solo A e B ricevono gradiente."
+:width: 78%
+
+LoRA non tocca $W$: gli affianca una scorciatoia stretta. Il ramo parallelo ha
+pochi parametri perché passa da un collo di bottiglia, e solo quelli si
+addestrano.
+```
+
+La forma di {numref}`fig-lora` spiega anche perché l'adattamento si possa
+*staccare*. Se ciò che si è imparato vive tutto in $A$ e $B$, e $W$ è rimasta
+identica, allora un adattamento è un file piccolo che si aggiunge o si toglie:
+lo stesso modello base può servire compiti diversi cambiando solo il ramo
+laterale.
 
 `````{tab} Elementare
 
@@ -171,7 +201,22 @@ L'idea non nasce con i modelli di linguaggio. Nel 2017 Christiano e colleghi
 mortale all'indietro (un comportamento per cui nessuno sa scrivere una
 funzione di ricompensa a mano) mostrando a un valutatore umano coppie di brevi
 video e chiedendogli solo: *quale dei due somiglia di più a un salto mortale?*
-Bastarono circa 900 confronti, meno di un'ora di tempo umano. La tecnica si
+Bastarono circa 900 confronti, meno di un'ora di tempo umano.
+
+```{figure} ../figures/deep-rl-human-preferences-2017.svg
+:name: fig-preferenze-umane
+:alt: "Ciclo chiuso in quattro stazioni: l'agente di reinforcement learning genera coppie di traiettorie; una persona guarda le due e sceglie la preferita; da queste scelte un modello di ricompensa impara a dare punteggi; il modello di ricompensa restituisce all'agente una ricompensa predetta, che lo riaddestra, e il giro ricomincia."
+:width: 90%
+
+Il giro che sostituisce la funzione di ricompensa scritta a mano. La persona
+non spiega mai cosa sia un salto mortale: si limita a preferire, e il modello
+di ricompensa deduce il resto.
+```
+
+Il passaggio decisivo di {numref}`fig-preferenze-umane` è il modello di
+ricompensa in mezzo. Senza di lui ogni passo di addestramento richiederebbe
+un giudizio umano, il che è impraticabile; con lui i confronti servono a
+insegnare *una volta* un giudice artificiale, che poi lavora quanto serve. La tecnica si
 chiama **RLHF** (*Reinforcement Learning from Human Feedback*), e con
 InstructGPT {cite}`ouyang2022training` viene applicata in grande al
 linguaggio, in due tempi: prima i confronti umani addestrano un **reward
@@ -375,7 +420,21 @@ conosci a memoria).
 ## Pensare prima di rispondere: il calcolo al momento dell'inferenza
 
 C'è un terzo asse, ortogonale ai primi due: invece di (o oltre a) migliorare
-i *pesi*, si può spendere più *calcolo al momento della risposta*. La chiave
+i *pesi*, si può spendere più *calcolo al momento della risposta*.
+
+```{figure} ../figures/reasoning-test-time-compute.svg
+:name: fig-test-time-compute
+:alt: "Grafico con il tempo di riflessione concesso al modello in ascissa e l'accuratezza in ordinata. La curva di un modello che risponde subito resta piatta: concedergli più tempo non cambia nulla. La curva di un modello addestrato a ragionare sale invece al crescere del tempo, continuando a migliorare ben oltre il punto in cui l'altra si è fermata."
+:width: 92%
+
+Un secondo asse su cui spendere. La curva piatta è il punto: dare più tempo
+non basta, il modello deve essere stato addestrato a usarlo.
+```
+
+Le due curve di {numref}`fig-test-time-compute` distinguono due cose che si
+confondono facilmente. Non è che «pensare di più» aiuti sempre: aiuta se il
+modello ha imparato a spendere quei token in passaggi che si costruiscono
+l'uno sull'altro. Altrimenti il tempo in più produce solo testo in più. La chiave
 di volta è la **chain-of-thought** («catena di pensiero»), documentata da Wei
 e colleghi nel 2022 {cite}`wei2022chain`: per i problemi che richiedono più
 passaggi, far generare al modello il ragionamento intermedio prima della

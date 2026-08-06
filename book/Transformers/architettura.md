@@ -8,6 +8,21 @@ gatto salta sul muro"). Per farlo combina due torri di blocchi identici
 facile da sottovalutare: un modo per dire alla rete *in che ordine* stanno le
 parole.
 
+```{figure} ../figures/architettura-transformer.svg
+:name: fig-blocco-transformer
+:alt: "Schema annotato di un blocco Transformer: l'ingresso attraversa la multi-head attention, si somma a sé stesso attraverso una connessione residua e passa per una normalizzazione; il risultato attraversa la rete feed-forward, con una seconda connessione residua e una seconda normalizzazione, prima di uscire verso il blocco successivo."
+:width: 62%
+
+Il blocco che si ripete. Attenzione e rete feed-forward sono i due mestieri;
+le connessioni residue e le normalizzazioni sono l'impalcatura che permette di
+impilarne decine senza che l'addestramento si rompa.
+```
+
+Conviene fissare {numref}`fig-blocco-transformer` prima di scendere nei
+dettagli, perché tutto il capitolo gira attorno a questa figura: encoder e
+decoder non sono due macchine diverse, sono due pile dello stesso blocco,
+montate in modo leggermente diverso.
+
 ## L'encoder: la torre che legge
 
 `````{tab} Elementare
@@ -91,6 +106,21 @@ parole: se mescolassi "il gatto morde il cane" in "il cane morde il gatto", i
 prodotti scalari tra le parole non cambierebbero, e il significato sì. Le RNN
 l'ordine ce l'avevano gratis (leggevano in fila); il Transformer deve
 aggiungerlo esplicitamente.
+
+```{figure} ../figures/positional-encoding.svg
+:name: fig-positional-encoding
+:alt: "Più onde sinusoidali sovrapposte, di frequenza decrescente: le prime oscillano rapidamente, le ultime lentamente. Letta in verticale a una data posizione, la combinazione dei valori delle diverse onde forma la firma numerica di quella posizione."
+:width: 88%
+
+Le frequenze del positional encoding. Nessuna onda da sola dice dove siamo;
+lette insieme in una colonna danno a ogni posizione una firma diversa da tutte
+le altre.
+```
+
+Il motivo di usare tante frequenze invece di un semplice contatore si legge in
+{numref}`fig-positional-encoding`: le onde lente distinguono le regioni
+lontane della frase, quelle veloci distinguono i vicini immediati. Una sola
+scala non saprebbe fare entrambe le cose.
 
 `````{tab} Elementare
 La soluzione è dare a ogni parola un "posto numerato", come a teatro: prima di

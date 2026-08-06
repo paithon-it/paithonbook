@@ -10,6 +10,21 @@ che fa l'apprendimento supervisionato: mostragli abbastanza coppie
 
 ## Imparare una funzione dagli esempi
 
+```{figure} ../figures/feature-label-tipi-dati-ml.svg
+:name: fig-tipi-di-feature
+:alt: "I tre tipi di feature affiancati con un esempio ciascuno: numerica, come i metri quadri, su cui hanno senso somme e differenze; categorica, come il quartiere, dove i valori sono nomi senza ordine; ordinale, come la classe energetica, dove esiste un ordine ma non una distanza."
+:width: 96%
+
+Tre tipi di colonna, tre cose che si possono fare con i numeri. Confonderli è
+l'errore che porta un modello a calcolare la media fra «Milano» e «Roma».
+```
+
+La distinzione di {numref}`fig-tipi-di-feature` è la prima decisione di ogni
+progetto e non la prende il modello: la prende chi prepara i dati. Una colonna
+categorica codificata come intero diventa, per il modello, una colonna
+numerica a tutti gli effetti, con un ordine e delle distanze che nessuno
+intendeva metterci.
+
 Riprendiamo il vettore delle caratteristiche del capitolo di algebra lineare:
 ogni appartamento è un vettore $X$ (metri quadri, stanze, piano), e a ciascuno
 associamo un'etichetta $y$ (il prezzo). Il "supervisore" è proprio quella
@@ -131,6 +146,21 @@ $310\,000$, ma "spam sì/no" vive solo tra $0$ e $1$. La **regressione
 logistica** (che, malgrado il nome, classifica) risolve il problema
 schiacciando l'uscita lineare dentro l'intervallo $(0,1)$.
 
+```{figure} ../figures/regressione-logistica.svg
+:name: fig-sigmoide-soglia
+:alt: "La curva sigmoide che sale da zero a uno, con una linea orizzontale tratteggiata alla soglia di 0,5. I punti che cadono sotto la soglia sono assegnati alla classe 0, quelli sopra alla classe 1; vicino alla soglia la curva è ripida, agli estremi si appiattisce."
+:width: 84%
+
+Dalla retta alla probabilità. La sigmoide non decide: produce un numero fra
+zero e uno, e la decisione arriva dopo, quando si sceglie dove tagliare.
+```
+
+La separazione fra i due gesti in {numref}`fig-sigmoide-soglia` conta più di
+quanto sembri, e tornerà nel capitolo sulle metriche. Il modello produce una
+probabilità; la soglia a $0{,}5$ è una convenzione, non un risultato, e
+spostarla è il modo più economico di scambiare falsi positivi con falsi
+negativi senza riaddestrare niente.
+
 `````{tab} Elementare
 
 Prima calcoliamo un punteggio lineare, come nella regressione. Poi lo facciamo
@@ -166,6 +196,21 @@ si accorda con l'interpretazione probabilistica e mantiene la loss convessa.
 ## k-NN: chiedi ai vicini
 
 Non tutti i modelli imparano dei parametri. Alcuni si limitano a *ricordare*.
+
+```{figure} ../figures/knn-classificare-per-somiglianza.svg
+:name: fig-knn
+:alt: "Un piano con punti di due classi già etichettati. Un punto nuovo, di classe ignota, è al centro di un cerchio che racchiude i suoi cinque vicini più prossimi: tre appartengono a una classe e due all'altra, e il punto nuovo riceve l'etichetta della maggioranza."
+:width: 80%
+
+Nessun addestramento, solo un conteggio. La classe del punto nuovo è quella
+che vince fra i suoi $k$ vicini, e cambiare $k$ può cambiare il verdetto.
+```
+
+Il cerchio disegnato in {numref}`fig-knn` è tutta la scelta di progetto:
+allargandolo si includono vicini più lontani, e la decisione diventa più
+stabile ma meno sensibile alle strutture locali. Con $k=1$ il modello ripete
+il vicino più prossimo, rumore compreso; con $k$ pari al numero di esempi,
+risponde sempre la classe più frequente.
 
 `````{tab} Elementare
 

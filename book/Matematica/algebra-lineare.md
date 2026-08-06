@@ -8,6 +8,21 @@ una **matrice**. L'algebra lineare è la grammatica di queste pile.
 
 ## Vettori: dati e direzioni
 
+```{figure} ../figures/vettori-e-matrici.svg
+:name: fig-somma-vettori
+:alt: "Piano cartesiano con due vettori disegnati come frecce che partono dall'origine. La loro somma è una terza freccia, e un parallelogramma tratteggiato costruito sui primi due mostra che il vertice opposto all'origine è proprio l'estremo della somma."
+:width: 80%
+
+Il vettore ha due letture, e la figura le tiene insieme: una coppia di numeri
+e una freccia. Sommare due liste di numeri e comporre due spostamenti sono la
+stessa operazione.
+```
+
+La doppia lettura di {numref}`fig-somma-vettori` è il motivo per cui l'algebra
+lineare serve al machine learning. I dati arrivano come liste di numeri, e
+appena li si guarda come frecce diventano disponibili parole che sui numeri
+non avevano senso: direzione, distanza, angolo.
+
 `````{tab} Elementare
 
 Un vettore è semplicemente una lista ordinata di numeri. Se descrivo un
@@ -263,6 +278,21 @@ con $Q$ ortogonale e $\Lambda$ diagonale. Le matrici di covarianza sono
 simmetriche, ed è precisamente questa decomposizione che la **PCA** calcola:
 gli autovettori danno le direzioni di massima varianza, gli autovalori quanta
 varianza c'è lungo ciascuna.
+
+```{figure} ../figures/pca-in-pratica.svg
+:name: fig-pca-assi-principali
+:alt: "Una nube di punti allungata in diagonale, con sovrapposti i due assi principali: il primo orientato lungo la direzione in cui i punti si sparpagliano di più, il secondo perpendicolare a esso e molto più corto, lungo la direzione di varianza minima."
+:width: 82%
+
+Gli autovettori della covarianza, disegnati. Il primo asse non è né
+l'orizzontale né la verticale: è la direzione che i dati stessi indicano.
+```
+
+{numref}`fig-pca-assi-principali` mostra perché la PCA sia una faccenda di
+autovettori e non di scelta fra le colonne originali. Le direzioni buone
+quasi mai coincidono con gli assi in cui i dati sono stati registrati; il
+teorema spettrale garantisce che esistano, siano ortogonali fra loro, e si
+possano ordinare per quanta varianza catturano.
 
 L'iterazione chiarisce il resto: $A^k\mathbf{v} = \lambda^k\mathbf{v}$, quindi
 il comportamento asintotico di un sistema iterato è governato dall'autovalore

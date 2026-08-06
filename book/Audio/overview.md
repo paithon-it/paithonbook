@@ -116,8 +116,19 @@ oggetto che sappiamo trattare come un'immagine.
 
 ## L'idea nuova: l'audio come sequenza di token
 
+```{figure} ../figures/whisper-2022.svg
+:name: fig-whisper-pipeline
+:alt: "Catena in quattro stadi: la forma d'onda dell'audio viene convertita in uno spettrogramma log-mel, che entra in un encoder Transformer; il decoder legge l'uscita dell'encoder e produce i token di testo uno dopo l'altro, fino alla trascrizione completa."
+:width: 100%
+
+Il percorso più battuto: l'onda diventa immagine, l'immagine diventa testo.
+Lo spettrogramma resta una tabella di numeri continui, ed è il punto che la
+prossima sezione mette in discussione.
+```
+
 C'è però un secondo modo di guardare l'audio, ed è il vero filo conduttore di
-questo capitolo. Lo spettrogramma è un'immagine di numeri *continui*. Ma se
+questo capitolo. Lo spettrogramma di {numref}`fig-whisper-pipeline` è
+un'immagine di numeri *continui*. Ma se
 riuscissimo a trasformare un suono in una sequenza di **simboli discreti**
 (come le lettere di un testo, o le parole di una frase), allora tutto
 l'armamentario che abbiamo costruito per il linguaggio diventerebbe di colpo

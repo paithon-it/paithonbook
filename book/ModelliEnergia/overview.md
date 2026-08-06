@@ -26,6 +26,21 @@ a una domanda senza essere costretti a rispondere, insieme, a tutte le altre.
 
 ## Un numero al posto di una probabilità
 
+```{figure} ../figures/oltre-il-gradiente.svg
+:name: fig-paesaggio-energia
+:alt: "Un paesaggio di energia con più valli di profondità diversa. Una pallina che segue soltanto la discesa resta intrappolata nella prima valle che incontra, poco profonda. Una traiettoria tratteggiata mostra invece un percorso che accetta di risalire ogni tanto e riesce così a raggiungere la valle più profonda."
+:width: 92%
+
+Il paesaggio che dà il nome al capitolo. Se la plausibilità è un'altitudine,
+cercare la risposta migliore diventa un problema di esplorazione, e chi scende
+soltanto si ferma presto.
+```
+
+Il percorso tratteggiato di {numref}`fig-paesaggio-energia` anticipa una
+differenza di mentalità che attraversa tutto il capitolo. Dove i modelli visti
+finora *ottimizzano*, questi **campionano**: accettano di peggiorare per un
+tratto, perché è l'unico modo di uscire da una valle e vederne un'altra.
+
 Un modello probabilistico, per dire quanto è verosimile una risposta, deve
 tenere il conto di tutte le risposte possibili: le probabilità sommano a uno,
 e quell'uno è un vincolo globale. Un modello a energia rinuncia al vincolo.

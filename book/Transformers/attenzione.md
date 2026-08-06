@@ -15,6 +15,22 @@ Per ogni parola da elaborare, l'attenzione produce una versione "arricchita
 dal contesto": una media pesata delle informazioni di tutte le parole della
 frase, dove i pesi dicono quanto ognuna è rilevante.
 
+```{figure} ../figures/seq2seq-collo-di-bottiglia.svg
+:name: fig-collo-di-bottiglia
+:alt: "Schema di un seq2seq senza attenzione: le parole della frase in ingresso entrano una alla volta nell'encoder e vengono compresse in un unico vettore di contesto, disegnato come una strozzatura; da quel solo vettore il decoder deve generare tutta la traduzione, parola dopo parola."
+:width: 92%
+
+Il collo di bottiglia che l'attenzione viene a sciogliere. Tutta la frase
+d'origine deve passare per un vettore solo, e più la frase è lunga più quel
+vettore deve dimenticare.
+```
+
+{numref}`fig-collo-di-bottiglia` è il problema da cui nasce tutto. Se il
+decoder può guardare solo un riassunto, la prima parola della frase e
+l'ultima competono per lo stesso spazio; l'attenzione toglie la strozzatura
+lasciando che ogni passo della generazione vada a rileggersi *tutte* le
+parole d'origine, pesandole di volta in volta.
+
 `````{tab} Elementare
 Prendi la frase del libro: "Il gatto nero salta sul muro". Il modello sta
 elaborando la parola "salta" e si chiede: chi salta? Come un lettore con
@@ -53,6 +69,22 @@ diventino così grandi da saturare la softmax e azzerarne i gradienti. L'output
 rappresentazione contestuale calcolata in un unico prodotto tra matrici, per
 tutte le posizioni insieme.
 `````
+
+```{figure} ../figures/attention-is-all-you-need.svg
+:name: fig-qkv
+:alt: "Un token in ingresso viene proiettato in tre vettori distinti: Query, Key e Value. Il prodotto scalare fra la Query e le Key di tutti i token produce i punteggi di rilevanza, che una softmax trasforma in pesi; i pesi moltiplicano i rispettivi Value e la loro somma è l'uscita per quel token."
+:width: 92%
+
+I tre ruoli di ogni parola. La Query è la domanda che pone, la Key l'etichetta
+con cui si fa trovare, il Value ciò che offre a chi la seleziona: la stessa
+parola li ricopre tutti e tre insieme.
+```
+
+La separazione dei tre ruoli in {numref}`fig-qkv` è ciò che rende
+l'attenzione più di una semplice somiglianza. Se ci fosse un solo vettore per
+parola, «cercare» ed «essere trovati» sarebbero la stessa operazione; con
+Query e Key distinte, una parola può cercare qualcosa di molto diverso da ciò
+che offre.
 
 ## Multi-Head Attention: più letture in parallelo
 

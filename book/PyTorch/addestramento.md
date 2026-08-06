@@ -15,6 +15,21 @@ mettere le mani.
 Eccole, le cinque righe. Tutto il resto della sezione non fa che spiegarle e
 metterle al lavoro su un problema vero.
 
+```{figure} ../figures/adam-ottimizzatore.svg
+:name: fig-adam-passo-per-peso
+:alt: "Confronto fra due ottimizzatori sugli stessi pesi. Con SGD tutti i parametri ricevono lo stesso learning rate, indipendentemente da quanto sia grande il loro gradiente. Con Adam il passo effettivo di ciascun peso è scalato dalla radice della media dei suoi gradienti passati: i pesi con gradienti grandi fanno passi corti, quelli con gradienti piccoli passi più lunghi."
+:width: 96%
+
+Un learning rate per ciascuno. Adam non sceglie una velocità migliore: ne
+sceglie una diversa per ogni parametro, in base a quanto quel parametro si è
+mosso finora.
+```
+
+La differenza mostrata in {numref}`fig-adam-passo-per-peso` è il motivo per
+cui `Adam` è quasi sempre il primo ottimizzatore da provare. Con SGD il
+learning rate va tarato bene perché è uno solo per tutti; con Adam il valore
+di partenza è meno critico, perché ciascun peso lo riscala per conto proprio.
+
 ```{code-block} python
 :class: pt-non-eseguibile
 

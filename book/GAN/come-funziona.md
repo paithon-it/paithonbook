@@ -70,6 +70,20 @@ Messi uno di fronte all'altro, $G$ e $D$ compongono l'architettura completa dell
 Architettura di una GAN. Il generatore $G$ trasforma il rumore $z$ in un dato sintetico; il discriminatore $D$ riceve dati reali e sintetici e stima la probabilità che siano autentici. I gradienti dell'errore di $D$ retroagiscono su entrambe le reti.
 ```
 
+```{figure} ../figures/gan-2014.svg
+:name: fig-gan-circuito
+:alt: "Circuito di una GAN: il rumore casuale z entra nel generatore G, che produce un campione falso; il discriminatore D riceve sia campioni reali dal dataset sia il falso, e per ciascuno decide se è vero o finto; il suo verdetto torna indietro come segnale di apprendimento sia a D sia a G."
+:width: 96%
+
+Il circuito completo. La freccia di ritorno verso il generatore è il punto:
+G non vede mai i dati reali, impara soltanto da quanto bene ha ingannato D.
+```
+
+Vale la pena fermarsi su cosa {numref}`fig-gan-circuito` *non* collega. Fra i
+dati reali e il generatore non passa nessuna freccia: G non li copia né li
+confronta, e tutto ciò che sa del mondo gli arriva filtrato dal giudizio del
+discriminatore. È una scelta di progetto elegante e, come vedremo, fragile.
+
 ## Il gioco minimax
 
 Le due reti non ottimizzano due funzioni scollegate: condividono un'**unica** funzione di valore, che uno vuole massimizzare e l'altro minimizzare.

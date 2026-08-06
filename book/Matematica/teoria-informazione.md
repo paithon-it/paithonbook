@@ -132,6 +132,22 @@ Fin qui una sola distribuzione. Ma nel machine learning ce ne sono sempre
 **modello** crede vera, che chiamiamo $q$. Serve un modo per misurare quanto la
 seconda sbaglia rispetto alla prima.
 
+```{figure} ../figures/cross-entropy-kl-divergence.svg
+:name: fig-cross-entropia-kl
+:alt: "Due distribuzioni disegnate sugli stessi assi: p, la realtà, e q, il modello, che le somiglia ma è spostata e di forma diversa. L'area fra le due curve rappresenta lo scarto, cioè quanto costa in più descrivere i dati usando le credenze del modello invece della distribuzione vera."
+:width: 88%
+
+Le due curve e ciò che le separa. La cross-entropia misura il costo totale di
+descrivere $p$ usando $q$; la divergenza KL misura solo il sovrapprezzo, cioè
+quanto si paga in più rispetto a conoscere $p$.
+```
+
+La distinzione che {numref}`fig-cross-entropia-kl` rende visiva spiega perché
+in pratica si minimizzi la cross-entropia e non la KL. Le due differiscono per
+l'entropia di $p$, che è una proprietà dei dati e non dipende dal modello:
+minimizzare l'una o l'altra porta agli stessi pesi, ma la prima non richiede
+di conoscere $p$.
+
 `````{tab} Elementare
 
 Il codice Morse assegna il segnale più corto (un punto) alla E, che in inglese
@@ -222,6 +238,21 @@ che useremo nei capitoli sulle reti neurali e su PyTorch.
 
 Dall'entropia si ricava una misura più parlante, cara a chi costruisce modelli
 di linguaggio.
+
+```{figure} ../figures/entropia-di-shannon.svg
+:name: fig-entropia-due-monete
+:alt: "Due monete a confronto. Quella equa, con probabilità 50 e 50, ha entropia pari a 1 bit: il massimo possibile per due esiti. Quella truccata, 90 contro 10, ha entropia 0,47 bit: sapendo che esce quasi sempre testa, ogni lancio informa meno della metà."
+:width: 92%
+
+L'entropia misura quanto c'è da imparare. Una moneta prevedibile porta poca
+informazione a ogni lancio, e la perplessità traduce quel numero in «quante
+facce ha il dado equivalente».
+```
+
+Il salto da {numref}`fig-entropia-due-monete` alla perplessità è una
+riscrittura, non un concetto nuovo: $2^1 = 2$ facce per la moneta equa, $2^{0,47}
+\approx 1{,}4$ per quella truccata. Il secondo numero dice, in modo più
+intuitivo del primo, che quella moneta è poco più che decisa.
 
 `````{tab} Elementare
 

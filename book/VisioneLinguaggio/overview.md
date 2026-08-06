@@ -83,6 +83,22 @@ il lettore la conosce già: il **Vision Transformer**
 {cite}`dosovitskiy2021image` del capitolo sui Transformer. Vale la pena
 richiamarne il gesto, perché tutto il resto ci poggia sopra.
 
+```{figure} ../figures/vit-2020.svg
+:name: fig-vit-patch-token
+:alt: "Un'immagine viene divisa in una griglia di patch quadrate; ogni patch viene appiattita e proiettata in un vettore, a cui si somma una codifica di posizione che ne registra il posto nella griglia; la sequenza risultante entra in un encoder Transformer come se fosse una frase."
+:width: 100%
+
+Il gesto da richiamare. La codifica di posizione è la parte da non perdere:
+senza, la sequenza sarebbe un mucchio di tessere e l'immagine non avrebbe più
+un sopra e un sotto.
+```
+
+Il passaggio di {numref}`fig-vit-patch-token` merita di essere fissato perché
+è la premessa di tutto il capitolo. Una volta che l'immagine è diventata una
+sequenza di vettori, la domanda «come si mettono insieme testo e immagine»
+smette di riguardare due materie diverse: sono due sequenze, e le sequenze
+sappiamo già come si combinano.
+
 `````{tab} Elementare
 
 Si taglia la foto a tessere quadrate, come un mosaico, e si mettono le tessere

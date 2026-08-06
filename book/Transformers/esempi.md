@@ -14,6 +14,22 @@ Il compito per cui il Transformer è nato: l'encoder legge la frase di
 partenza, il decoder scrive quella d'arrivo, la cross-attention le tiene
 allineate.
 
+```{figure} ../figures/t5-2019.svg
+:name: fig-t5-text-to-text
+:alt: "Quattro compiti diversi (traduzione, giudizio di accettabilità grammaticale, somiglianza fra due frasi e riassunto) entrano nello stesso modello scritti come testo, ciascuno preceduto da un prefisso che dice di quale compito si tratta; da tutti e quattro esce testo. Nessuna testa specializzata per compito compare nello schema."
+:width: 100%
+
+Un solo formato per tutto. T5 non aggiunge una testa per ogni compito: mette
+il nome del compito davanti alla frase, e la risposta esce come testo anche
+quando è un voto o un'etichetta.
+```
+
+L'idea di {numref}`fig-t5-text-to-text` sembra un dettaglio ingegneristico e
+invece anticipa il modo in cui oggi si usano i modelli di linguaggio. Se ogni
+compito si può scrivere come testo in ingresso e testo in uscita, allora
+cambiare compito non richiede di cambiare il modello: basta cambiare quello
+che gli si scrive davanti, che è esattamente ciò che chiamiamo prompt.
+
 `````{tab} Elementare
 Segui il viaggio di "The cat sits on the mat". Prima la frase viene spezzata
 in mattoncini (le parole o pezzi di parola: i *token*) e l'encoder la legge

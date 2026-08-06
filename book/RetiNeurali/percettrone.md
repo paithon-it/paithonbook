@@ -107,6 +107,20 @@ pesi? L'intuizione di Rosenblatt è di lasciarli trovare alla macchina, un
 esempio alla volta. Le si mostra un input di cui conosciamo la risposta giusta
 $y$; se sbaglia, si correggono i pesi nella direzione che riduce l'errore.
 
+```{figure} ../figures/perceptron-adaline-da-zero.svg
+:name: fig-neurone-con-retroazione
+:alt: "Schema di un neurone artificiale percorso in due sensi: in avanti gli ingressi vengono pesati, sommati e passati alla funzione a gradino che produce l'uscita; all'indietro, il confronto fra uscita e risposta attesa genera una correzione che torna sui pesi."
+:width: 88%
+
+Lo stesso neurone, con la freccia di ritorno. È quella a fare la differenza
+fra un circuito che calcola e un modello che impara.
+```
+
+La freccia di ritorno in {numref}`fig-neurone-con-retroazione` è, in miniatura,
+tutto ciò che questo libro chiamerà addestramento. Cambierà la funzione al
+posto del gradino, cambierà il modo di calcolare la correzione, ma lo schema
+resta: si misura lo scarto dalla risposta attesa e lo si rimanda sui pesi.
+
 ```{figure} ../figures/percettrone-impara.svg
 :name: fig-percettrone-impara
 :alt: "Animazione: una retta di separazione parte con l'inclinazione sbagliata e, a ogni punto classificato male, ruota; dopo quattro correzioni i punti terracotta e quelli teal sono da parti opposte."
@@ -181,6 +195,21 @@ print(gradino(X @ w + b))                   # -> [0 0 0 1]: ha imparato la AND
 ```
 
 ## Il muro dello XOR
+
+```{figure} ../figures/perceptron-primo-inverno-ai.svg
+:name: fig-inverni-ai
+:alt: "In alto lo schema del neurone artificiale di Rosenblatt; sotto, una linea del tempo che segna l'entusiasmo iniziale degli anni Cinquanta e Sessanta, il crollo dei finanziamenti dopo il 1969 e il secondo inverno degli anni Ottanta, con in mezzo i periodi di ripresa."
+:width: 100%
+
+Un limite matematico e le sue conseguenze storiche. La dimostrazione di
+Minsky e Papert riguardava un modello a uno strato; il gelo che ne seguì
+colpì l'intero campo.
+```
+
+La sproporzione visibile in {numref}`fig-inverni-ai` fra la portata del
+risultato e l'ampiezza della reazione è una lezione che vale oltre questa
+storia. Il teorema era corretto e limitato; la sua lettura pubblica fu che le
+reti neurali non funzionavano, e servirono quindici anni per rimediare.
 
 E qui torna il conto lasciato in sospeso. Nel 1969 Marvin Minsky e Seymour
 Papert, nel libro *Perceptrons*, mostrano un limite che sembra insormontabile.

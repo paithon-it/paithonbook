@@ -112,6 +112,22 @@ codice.
 
 ## Perché il tema esplode adesso
 
+```{figure} ../figures/rischio-esistenziale-dibattito.svg
+:name: fig-spettro-rischio
+:alt: "Uno spettro orizzontale delle posizioni sul rischio esistenziale posto dall'AI: a un estremo chi lo considera la minaccia prioritaria, all'altro chi lo giudica una distrazione dai danni già in corso, e in mezzo le posizioni intermedie che assegnano peso diverso ai due tipi di danno."
+:width: 100%
+
+Il dibattito non è fra allarmisti e negazionisti. Le posizioni si distribuiscono
+con continuità, e la differenza vera è quanto peso si dà ai danni futuri
+rispetto a quelli già misurabili oggi.
+```
+
+{numref}`fig-spettro-rischio` serve a inquadrare cosa questo capitolo fa e
+cosa non fa. Di tutto lo spettro, qui si trattano i danni che si possono
+misurare adesso, perché sono quelli su cui esistono metodi, metriche e
+correzioni; le posizioni agli estremi sono legittime e restano fuori, non
+perché irrilevanti ma perché non sono materia tecnica.
+
 I pregiudizi nei sistemi automatici non sono una scoperta del 2016: se ne
 discuteva già negli anni Novanta. Ciò che è cambiato è la scala. Fino a poco
 fa un modello sbagliato era un problema locale; oggi lo stesso modello prende

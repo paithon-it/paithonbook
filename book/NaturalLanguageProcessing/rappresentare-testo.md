@@ -52,6 +52,22 @@ byte.
 Abbiamo i token. Il modo più ingenuo di dar loro un numero è la codifica
 **one-hot**.
 
+```{figure} ../figures/one-hot-label-encoding.svg
+:name: fig-one-hot
+:alt: "La stessa colonna di categorie codificata in due modi. Con l'ordinal encoding diventa una sola colonna di interi, che però introduce un ordine e delle distanze fra categorie che non ne hanno. Con il one-hot diventa una colonna per categoria, riempita di zeri e con un solo uno: tutte le categorie restano equidistanti."
+:width: 96%
+
+Due codifiche, due significati impliciti. Gli interi dicono che una categoria
+viene prima di un'altra e dista il doppio da una terza; il one-hot non dice
+niente di tutto questo, ed è il suo pregio.
+```
+
+Il confronto di {numref}`fig-one-hot` spiega perché si accetti lo spreco. Una
+colonna per parola è un'enormità con un vocabolario da decine di migliaia di
+voci; ma la codifica compatta introdurrebbe un ordine inventato, e un modello
+che vede numeri cerca sempre relazioni fra numeri, comprese quelle che nessuno
+intendeva metterci.
+
 `````{tab} Elementare
 
 Immagina una lunghissima pulsantiera con un interruttore per ogni parola del
@@ -88,6 +104,21 @@ $|V|$ è dell'ordine di $10^5$–$10^6$: i vettori sono enormi e sparsissimi.
 Per rappresentare un intero documento (non una sola parola) sommiamo i token
 in un **sacchetto di parole** (*bag-of-words*): buttiamo via l'ordine e
 teniamo solo le frequenze.
+
+```{figure} ../figures/bag-of-words-tf-idf.svg
+:name: fig-bag-of-words
+:alt: "Un breve documento di testo viene trasformato in un vettore: ogni posizione del vettore corrisponde a una parola del vocabolario, e il valore è il numero di volte che quella parola compare nel documento. Le parole assenti lasciano zeri, e l'ordine originale del testo non è più ricostruibile."
+:width: 92%
+
+Il documento diventa un vettore di conteggi. Il testo di partenza non si può
+più ricostruire: dell'ordine delle parole non resta traccia, e «il cane morde
+l'uomo» dà lo stesso vettore di «l'uomo morde il cane».
+```
+
+L'esempio in coda a {numref}`fig-bag-of-words` è la misura esatta di cosa si
+butta via. Per molti compiti non è grave (per capire se una recensione è
+positiva, le parole contano più del loro ordine) ma è bene sapere che la
+perdita c'è, ed è totale: nessun modello a valle potrà recuperarla.
 
 `````{tab} Elementare
 
@@ -141,6 +172,21 @@ John Firth nel 1957 la riassunse così: *"You shall know a word by the company
 it keeps"*, conoscerai una parola dalla compagnia che frequenta. Parole che
 appaiono in contesti simili hanno significati simili. Se lo facciamo dire ai
 numeri, otteniamo gli **word embedding**.
+
+```{figure} ../figures/word2vec-parola-dal-contesto.svg
+:name: fig-finestra-contesto
+:alt: "Una finestra scorre lungo una frase, evidenziando una parola centrale e le parole che la circondano a destra e a sinistra. Dall'insieme dei contesti raccolti scorrendo tutto il testo si ricava il vettore della parola centrale; parole che ricorrono in contesti simili finiscono con vettori simili."
+:width: 94%
+
+La frase di Firth resa procedura. Nessuno dice al modello cosa significhi una
+parola: gli si fa vedere in quali compagnie compare, migliaia di volte, e il
+vettore è il riassunto di quelle compagnie.
+```
+
+Vale la pena notare cosa {numref}`fig-finestra-contesto` non usa: nessun
+dizionario, nessuna annotazione, nessuna persona che spieghi il significato.
+Serve solo del testo, e questo è il motivo per cui gli embedding si poterono
+addestrare su corpora enormi quando le risorse annotate erano scarse.
 
 `````{tab} Elementare
 

@@ -67,6 +67,22 @@ il modello sta memorizzando.
 Underfitting e overfitting sono le due facce di un'unica tensione, che ha un nome
 classico: il **compromesso bias-varianza** (*bias-variance tradeoff*).
 
+```{figure} ../figures/bias-varianza.svg
+:name: fig-bias-varianza
+:alt: "Quattro bersagli disposti in una griglia due per due, con le colonne per varianza bassa e alta e le righe per bias basso e alto. Con bias e varianza bassi i colpi sono raccolti al centro; con varianza alta e bias basso sono sparsi ma centrati in media; con bias alto e varianza bassa sono raccolti ma spostati dal centro; con entrambi alti sono sparsi e spostati."
+:width: 78%
+
+I quattro casi sul bersaglio. Il bias è di quanto si è spostato il gruppo dei
+colpi; la varianza è quanto il gruppo è largo. Sono due difetti diversi e si
+correggono in modi opposti.
+```
+
+Il bersaglio in basso a sinistra di {numref}`fig-bias-varianza`, colpi
+raccolti ma tutti fuori centro, è il più insidioso: un modello del genere è
+molto *coerente*, dà quasi sempre la stessa risposta, e la coerenza si scambia
+facilmente per affidabilità. Aggiungere dati non lo aggiusta, perché il
+problema non è l'incertezza ma la mira.
+
 `````{tab} Elementare
 
 Immagina di ripetere l'esperimento: raccogli molte volte un nuovo campione di
@@ -112,6 +128,23 @@ Per accorgersi dell'overfitting bisogna misurare l'errore su dati che il modello
 **non ha usato** per imparare. Da qui la regola d'oro: si divide il dataset in
 tre parti, ciascuna con un compito distinto.
 
+```{figure} ../figures/train-test-split-scaling-outlier.svg
+:name: fig-split-e-scaler
+:alt: "Il dataset viene diviso in una parte di training e una di test. Lo scaler viene tarato soltanto sulla parte di training, calcolandone media e deviazione standard, e poi applicato a entrambe le parti. Una freccia barrata segnala l'errore da evitare: tarare lo scaler sull'intero dataset prima della divisione."
+:width: 96%
+
+La freccia barrata è l'errore che non si vede. Se lo scaler guarda anche il
+test per calcolare la media, un pezzo di informazione del test è già entrato
+nell'addestramento.
+```
+
+Quella di {numref}`fig-split-e-scaler` è la forma più insidiosa di **data
+leakage**, perché non produce nessun errore e nessun avviso: produce solo un
+punteggio un po' più alto del vero. La regola pratica che ne discende è secca:
+qualunque cosa impari dai dati (uno scaler, un'imputazione, una selezione di
+feature) va tarata dentro il training e applicata al resto, mai prima della
+divisione.
+
 - **Training set**: i dati su cui il modello impara i parametri $\theta$.
 - **Validation set**, i dati su cui si scelgono gli *iperparametri*, cioè le
   scelte di contorno che non si imparano dai dati: quanto complesso può essere
@@ -147,6 +180,21 @@ Mettere da parte un validation set fisso ha un difetto: con pochi dati, la stima
 dipende troppo da *quali* esempi sono finiti nel validation. La
 **k-fold cross-validation** aggira il problema riutilizzando i dati con
 intelligenza.
+
+```{figure} ../figures/cross-validation-il-test-che-non-bara.svg
+:name: fig-cross-validation
+:alt: "Cinque righe, una per giro. In ciascuna, i dati sono divisi in cinque blocchi: uno fa da test e gli altri quattro da training, e il blocco di test scorre di una posizione a ogni riga, dal primo al quinto. A destra di ogni riga il punteggio ottenuto in quel giro. In fondo, il risultato è la media dei cinque punteggi con la loro deviazione standard."
+:width: 92%
+
+Il blocco di test ruota. Alla fine ogni esempio ha fatto da test esattamente
+una volta, e il risultato non è un numero ma un numero con la sua
+variabilità.
+```
+
+La riga finale di {numref}`fig-cross-validation` è la parte che si tende a
+buttare via: la deviazione standard fra i cinque giri. Se due modelli
+distano meno di quella, la classifica fra loro dipende da come sono caduti i
+blocchi, non da quale sia migliore.
 
 `````{tab} Elementare
 
@@ -197,6 +245,23 @@ Un modo diretto per contrastare l'overfitting è impedire al modello di diventar
 troppo "estremo". La **regolarizzazione** aggiunge alla loss un termine di
 penalità che cresce con la grandezza dei parametri: il modello paga un prezzo
 ogni volta che alza troppo i pesi, e quindi lo fa solo se ne vale davvero la pena.
+
+```{figure} ../figures/regolarizzazione-l1-l2.svg
+:name: fig-l1-l2
+:alt: "Due piani con i pesi w1 e w2 sugli assi. A sinistra la L1: la regione ammessa è un rombo con i vertici sugli assi, e le curve di livello dell'errore lo toccano proprio in un vertice, dove w1 è esattamente zero. A destra la L2: la regione è un cerchio, e il punto di contatto cade in una posizione qualsiasi del bordo, dove entrambi i pesi sono piccoli ma nessuno è zero."
+:width: 96%
+
+La differenza sta negli spigoli. Il rombo della L1 ha i vertici sugli assi, e
+un vertice è il punto che una curva di livello incontra per primo: da lì i
+pesi esattamente nulli. Il cerchio della L2 non ha spigoli, e non privilegia
+nessuna direzione.
+```
+
+{numref}`fig-l1-l2` spiega con la geometria quello che di solito si impara
+come una regola da mandare a memoria («la L1 fa selezione di variabili, la L2
+no»). Non è una proprietà misteriosa della norma: è la forma della regione
+ammessa, e il fatto che un rombo tocchi gli assi mentre un cerchio li sfiora
+solo per caso.
 
 `````{tab} Elementare
 
@@ -266,6 +331,22 @@ modelli linguistici moderni hanno miliardi di parametri, molti più degli
 esempi di addestramento, memorizzano perfettamente il training set, e
 generalizzano.
 
+```{figure} ../figures/double-descent.svg
+:name: fig-double-descent
+:alt: "Grafico con la capacità del modello, cioè il numero di parametri, in ascissa e l'errore in ordinata. L'errore di training scende e resta a zero. L'errore di test disegna prima la classica U del regime classico, con un minimo, poi risale fino a un picco in corrispondenza della soglia di interpolazione, e infine riscende in una seconda discesa nel regime sovraparametrizzato."
+:width: 96%
+
+La U non è sbagliata: è solo il primo tratto. Oltre il picco, dove il modello
+ha appena abbastanza capacità per memorizzare tutto, la curva riscende invece
+di continuare a salire.
+```
+
+Il punto interessante di {numref}`fig-double-descent` è il **picco**, non le
+discese. Sta dove il modello ha esattamente la capacità necessaria per
+interpolare i dati e nessuna di più: è costretto a una sola soluzione, e
+quella soluzione è pessima. Con più capacità le soluzioni tornano a essere
+tante, e fra tante l'addestramento ne sceglie una regolare.
+
 `````{tab} Elementare
 
 Qualcuno ha fatto la cosa che i manuali sconsigliavano: ha continuato a
@@ -326,6 +407,22 @@ di validazione solo perché il modello sembra troppo grande.**
 La doppia discesa dice *che* le reti sovradimensionate generalizzano. Resta la
 domanda su *perché*, e c'è un risultato che offre una risposta diversa e
 sorprendentemente concreta.
+
+```{figure} ../figures/lottery-ticket-hypothesis.svg
+:name: fig-biglietto-vincente
+:alt: "A sinistra una rete densa con tutte le sue connessioni disegnate in grigio. A destra la stessa rete con evidenziato un sottoinsieme molto più piccolo di connessioni e nodi, il biglietto vincente, che addestrato da solo a partire dalla propria inizializzazione originale raggiunge la stessa accuratezza della rete intera."
+:width: 96%
+
+Dentro la rete grande ce n'è una piccola che basta. Il punto non è che si può
+potare a posteriori: è che quella sottorete funziona solo se riparte dai *suoi*
+pesi iniziali, quelli che aveva nella rete grande.
+```
+
+La condizione in coda a {numref}`fig-biglietto-vincente` è ciò che rende
+l'ipotesi interessante invece che ovvia. Se si riprende la stessa sottorete e
+la si inizializza da capo a caso, non impara altrettanto bene: il biglietto
+non è la forma della sottorete, è la coppia fra la forma e i numeri con cui è
+nata. Sovradimensionare, in questa lettura, serve a comprare molti biglietti.
 
 `````{tab} Elementare
 

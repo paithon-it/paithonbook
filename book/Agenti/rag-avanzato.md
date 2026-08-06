@@ -21,7 +21,38 @@ ciclo (facendo decidere al modello se e quando cercare). Chiudiamo con la
 domanda che tiene onesto tutto il resto: come si misura se un sistema RAG
 funziona davvero.
 
+```{figure} ../figures/rag-avanzato.svg
+:name: fig-rag-avanzato
+:alt: "Pipeline di RAG avanzato da sinistra a destra: la domanda dell'utente viene prima riscritta, poi cercata in parallelo con una ricerca densa (vettoriale) e una sparsa (per parole chiave); i due elenchi di risultati confluiscono in una fusione che produce una lista unica di candidati; un reranker li riordina per precisione e solo i primi passano al modello linguistico, che genera la risposta."
+:width: 100%
+
+La pipeline per intero. Rispetto alla RAG di base cambiano tre cose: la
+domanda non va a cercare com'è arrivata, la ricerca è doppia (densa e per
+parole chiave) e fra il recupero e il modello si interpone un riordino.
+```
+
+Conviene tenere {numref}`fig-rag-avanzato` sott'occhio mentre si legge il
+resto: ogni sezione che segue è uno di questi blocchi, e il punto è sempre lo
+stesso. Il recupero grezzo deve essere **generoso** (meglio cento candidati
+mediocri che dieci scelti male, perché ciò che non entra qui è perduto per
+sempre) e ciò che viene dopo deve essere **severo**, perché al modello arrivi
+poco e buono.
+
 ## Migliorare la domanda: query rewriting ed espansione
+
+```{figure} ../figures/extra-rag-spiegato.svg
+:name: fig-rag-due-fasi
+:alt: "Pipeline RAG divisa in due fasi. La prima, di indicizzazione, si esegue una volta sola: i documenti vengono spezzati in blocchi, ogni blocco convertito in un vettore e depositato in un archivio di vettori. La seconda, a ogni domanda: la domanda diventa un vettore, si recuperano i blocchi più vicini, e questi entrano nel prompt del modello, che risponde citando le fonti."
+:width: 100%
+
+Due fasi con tempi diversi. L'indicizzazione si paga una volta e si riusa
+sempre; il recupero si paga a ogni domanda, ed è lì che si gioca la latenza.
+```
+
+La separazione di {numref}`fig-rag-due-fasi` è quella che conviene tenere in
+testa leggendo il resto della sezione: le tecniche che seguono intervengono
+quasi tutte nella seconda fase, dove il costo è ricorrente e i margini di
+miglioramento si moltiplicano per ogni domanda ricevuta.
 
 La prima leva è quella a cui si pensa per ultimi, perché sembra fuori dal
 nostro controllo: la domanda. Il retrieval denso presume che la query
@@ -95,6 +126,23 @@ diverse liste.
 `````
 
 ## Riordinare i candidati: il reranking
+
+```{figure} ../figures/vector-database.svg
+:name: fig-hnsw
+:alt: "Struttura HNSW a tre strati sovrapposti. In cima pochi nodi collegati da archi lunghi, che permettono di attraversare rapidamente lo spazio; scendendo, i nodi si infittiscono e gli archi si accorciano; in basso tutti i punti, con collegamenti solo fra vicini. La ricerca scende di strato in strato, raffinando via via."
+:width: 92%
+
+Come si cerca fra milioni di vettori senza confrontarli tutti. Gli strati alti
+servono ad arrivare nella zona giusta con pochi salti; quelli bassi a trovare
+il vicino esatto.
+```
+
+Prima di riordinare bisogna aver recuperato, e {numref}`fig-hnsw` mostra come
+lo fa un archivio vettoriale vero: non confrontando la domanda con tutti i
+passaggi, che sarebbe corretto e impraticabile, ma scendendo per strati. La
+ricerca approssimata rinuncia alla garanzia di trovare *sempre* il vicino
+migliore, in cambio di un tempo che cresce con il logaritmo, ed è anche il
+motivo per cui il recupero grezzo va tenuto generoso.
 
 La seconda leva agisce a valle del recupero. Nella sezione «Cercare per
 rispondere» avevamo già distinto due architetture: il **bi-encoder**, che

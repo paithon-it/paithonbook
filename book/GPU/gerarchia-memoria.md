@@ -138,7 +138,21 @@ satura la GPU e uno che la lascia mezza spenta.
 ## Caricare una volta, servire in tanti
 
 C'è un secondo modo di risparmiare banda, complementare al primo: non
-ri-leggere dalla HBM ciò che ti serve più volte. Se un blocco di dati verrà
+ri-leggere dalla HBM ciò che ti serve più volte.
+
+```{figure} ../figures/flashattention-2022.svg
+:name: fig-flashattention-blocchi
+:alt: "Le matrici Q, K e V dell'attenzione sono divise in blocchi. Un blocco per volta viene caricato dalla memoria HBM nella shared memory, dove il calcolo dell'attenzione viene svolto per intero su quel blocco; il risultato parziale viene accumulato e il blocco successivo prende il suo posto. La grande matrice dei punteggi non viene mai scritta per intero in HBM."
+:width: 100%
+
+Il risparmio sta in ciò che non si scrive. La matrice dei punteggi esiste solo
+a pezzi, dentro la shared memory, e non tocca mai la memoria grande.
+```
+
+{numref}`fig-flashattention-blocchi` è l'esempio più celebre del principio di
+questa sezione, e la sezione dedicata più avanti lo riprende nei dettagli.
+Vale la pena notare fin d'ora che l'algoritmo non fa *meno* conti: ne fa
+esattamente gli stessi, muovendo molti meno byte. Se un blocco di dati verrà
 usato da molti thread, conviene portarlo *una sola volta* nella shared memory
 (il ripiano condiviso della scrivania) e da lì servirlo a tutti.
 

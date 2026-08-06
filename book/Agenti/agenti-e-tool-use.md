@@ -37,6 +37,37 @@ argomento `"4831 * 7092"`»). Il sistema che ospita il modello intercetta la
 richiesta, esegue davvero la funzione, e restituisce il risultato al modello
 come nuovo pezzo di contesto. Solo allora il modello continua.
 
+```{figure} ../figures/function-calling-llm-strumenti.svg
+:name: fig-function-calling
+:alt: "Schema del function calling in tre passi: l'utente chiede «che tempo fa?», il modello decide se e quale strumento usare ed emette una richiesta tool_use con la funzione get_weather e l'argomento Bologna; il codice dell'applicazione esegue la funzione e restituisce un tool_result con «18 gradi, sereno»; il modello produce infine la risposta in linguaggio naturale. Il giro fra richiesta e risultato può ripetersi più volte."
+:width: 90%
+
+Il giro del function calling. Il modello non esegue mai niente: chiede, e
+l'esecuzione resta nel codice di chi lo ospita. I passi 1 e 2 possono
+ripetersi più volte prima che arrivi la risposta finale.
+```
+
+La divisione dei compiti che si vede in {numref}`fig-function-calling` è la
+ragione per cui il tool use è insieme potente e governabile: il modello
+propone, il codice dispone. Chi ospita il modello decide quali funzioni
+esistono, le valida prima di eseguirle e può rifiutarsi; il modello non ha mai
+in mano l'esecuzione, solo la richiesta.
+
+```{figure} ../figures/mcp-spiegato.svg
+:name: fig-mcp
+:alt: "Architettura a tre livelli: un host che contiene il modello e due client; ciascun client parla, tramite un protocollo comune, con un server distinto; ogni server espone i propri strumenti e le proprie risorse verso ciò che gestisce, un filesystem in un caso e un database nell'altro."
+:width: 100%
+
+Lo stesso catalogo, ma standardizzato. Il modello non impara un modo diverso
+di parlare con ogni sistema: parla un protocollo solo, e a tradurlo è il
+server dall'altra parte.
+```
+
+Il salto di {numref}`fig-mcp` rispetto al catalogo scritto a mano è di scala,
+non di meccanismo: sotto resta il giro appena descritto. Cambia chi scrive le
+descrizioni degli strumenti, che diventano responsabilità di chi espone il
+sistema invece che di chi costruisce l'agente.
+
 `````{tab} Elementare
 
 Immagina un dirigente competente ma con una regola personale: non fa mai i
@@ -95,6 +126,22 @@ con esempi. Ma nel 2023 un gruppo di Meta AI ha mostrato che il modello può
 impararlo **da solo**, senza che nessuno annoti a mano le chiamate: è
 Toolformer {cite}`schick2023toolformer`.
 
+```{figure} ../figures/toolformer-2023.svg
+:name: fig-toolformer
+:alt: "Schema di Toolformer: mentre genera la frase «400 su 1400, cioè il…» il modello arriva a un punto di decisione, chiamo un tool? Se la risposta è no continua a scrivere la parola successiva; se è sì emette Calculator(400/1400), lo strumento esterno calcola 0.29 e il risultato rientra nella frase, che riprende come «400 su 1400, cioè il 29%»."
+:width: 88%
+
+Toolformer decide *dentro* la frase. Al punto di decisione il modello può
+proseguire normalmente oppure inserire una chiamata: il risultato torna nel
+testo e la generazione riparte da lì, come se il numero l'avesse scritto lui.
+```
+
+Il dettaglio da guardare in {numref}`fig-toolformer` è dove sta la chiamata:
+non prima o dopo il testo, ma **dentro**, in mezzo a una parola e l'altra. È
+questo che rende sensato il criterio di apprendimento che segue: se
+l'inserzione è interna alla frase, si può misurare se aiuta a scrivere il
+seguito.
+
 `````{tab} Elementare
 
 Come impara un bambino a usare la calcolatrice? Provando. Fa un conto a mente,
@@ -151,6 +198,21 @@ che torna indietro). Il modello genera un pensiero, poi un'azione; il sistema
 esegue e restituisce l'osservazione; il modello legge l'osservazione, genera
 il pensiero successivo, e così via, in un loop, fino a produrre la risposta
 finale.
+
+```{figure} ../figures/react-2022.svg
+:name: fig-react
+:alt: "Il ciclo ReAct come sequenza verticale: un PENSIERO («mi serve il film d'esordio del regista, lo cerco»), un'AZIONE (cerca con il nome del regista), un'OSSERVAZIONE («ha esordito con un film, ma manca l'anno»); poi un secondo giro con un nuovo pensiero, l'azione di cercare il titolo del film e l'osservazione «uscito nel 1994, ora posso rispondere». Una parentesi laterale marca un giro del ciclo."
+:width: 62%
+
+Due giri di ReAct su una domanda che nessuna singola ricerca risolve. Ogni
+osservazione non chiude il problema: lo restringe, e il pensiero successivo
+riparte da lì.
+```
+
+L'esempio di {numref}`fig-react` mostra perché il loop serva davvero: la
+domanda richiede due fatti, e il secondo si può cercare solo dopo aver
+ottenuto il primo. Un sistema che agisse una volta sola non avrebbe modo di
+formulare la seconda ricerca, perché non saprebbe ancora cosa cercare.
 
 Perché conviene far ragionare il modello *ad alta voce* tra un'azione e
 l'altra? Perché è la stessa lezione della chain-of-thought incontrata nel

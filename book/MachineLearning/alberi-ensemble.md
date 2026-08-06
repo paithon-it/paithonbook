@@ -199,6 +199,21 @@ tendono a elidersi. È la **saggezza della folla**, e i metodi *ensemble* la
 mettono al lavoro: invece di un modello solo, ne addestrano molti e ne
 combinano le risposte.
 
+```{figure} ../figures/ensemble-modelli-deboli.svg
+:name: fig-voto-di-maggioranza
+:alt: "Cinque modelli deboli, ciascuno appena migliore del caso, ricevono lo stesso esempio e votano; alcuni sbagliano, ma i loro errori cadono su risposte diverse mentre i corretti convergono sulla stessa. Il voto di maggioranza produce la risposta giusta."
+:width: 92%
+
+Perché il voto funzioni servono errori *diversi*. I tre che azzeccano
+concordano; i due che sbagliano sbagliano in due modi differenti, e da soli
+non fanno maggioranza.
+```
+
+La condizione nascosta in {numref}`fig-voto-di-maggioranza` è quella che tutto
+il resto della sezione cerca di ottenere. Se i cinque modelli sbagliassero
+sugli stessi esempi e nello stesso modo, la media non correggerebbe niente:
+riprodurrebbe l'errore comune con più sicurezza di prima.
+
 Ci sono due strategie profondamente diverse per farlo, e conviene tenerle
 distinte fin da subito ({numref}`fig-bagging-vs-boosting`): il **bagging**
 addestra i modelli *in parallelo*, indipendenti l'uno dall'altro, e ne fa la
@@ -270,6 +285,20 @@ rimuove.
 La **foresta casuale** (*random forest*), sempre di Breiman, nel 2001
 {cite}`breiman2001random`, aggiunge al bagging una seconda dose di casualità,
 mirata proprio ad abbassare quella correlazione $\rho$ che frena il bagging.
+
+```{figure} ../figures/random-forest.svg
+:name: fig-foresta-voto
+:alt: "Molti alberi di decisione affiancati, ciascuno cresciuto su un campione diverso dei dati e su un sottoinsieme diverso delle feature; ognuno emette la propria predizione, e le predizioni confluiscono in un voto di maggioranza che produce il verdetto finale."
+:width: 96%
+
+La foresta al lavoro. La diversità qui non è un caso fortunato: è costruita
+apposta, dando a ogni albero dati diversi e feature diverse fra cui scegliere.
+```
+
+Il secondo sorteggio illustrato in {numref}`fig-foresta-voto`, quello sulle
+feature, è il contributo specifico di Breiman. Senza, tutti gli alberi
+sceglierebbero per prima la stessa colonna dominante e si somiglierebbero
+troppo; togliendogliela a turno, sono costretti a scoprire strade diverse.
 
 `````{tab} Elementare
 

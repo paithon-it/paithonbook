@@ -22,6 +22,20 @@ capitolo.
 
 ## Programmare a parole
 
+```{figure} ../figures/cos-e-davvero-un-llm.svg
+:name: fig-cos-e-un-llm
+:alt: "Una sequenza di testo entra nel modello, che restituisce una distribuzione di probabilità su tutte le possibili parole successive. Il modello non produce una risposta ma una graduatoria: la risposta nasce dopo, scegliendo un elemento da quella graduatoria."
+:width: 92%
+
+Cosa restituisce davvero un LLM. Non una frase: una distribuzione sulla parola
+dopo. Tutto ciò che sembra dialogo è questo passaggio, ripetuto.
+```
+
+Tenere presente {numref}`fig-cos-e-un-llm` cambia il modo di leggere tutto il
+capitolo. Se l'oggetto è una distribuzione condizionata dal testo che precede,
+allora «programmare a parole» non è una metafora: è il modo letterale di
+spostare quella distribuzione, ed è l'unico che si abbia senza toccare i pesi.
+
 La tesi è semplice da enunciare e ricca di conseguenze. Con un LLM già
 addestrato (un modello «istruito», che sa già leggere e scrivere), noi non
 programmiamo più toccando i **pesi**: quelli sono congelati, li ha fissati
@@ -161,6 +175,22 @@ La parola *engineering* non è un vezzo. Segnala un cambio di atteggiamento
 verso qualcosa che, agli inizi, veniva trattato come stregoneria: la caccia
 alla formula segreta, alla parola che «sblocca» il modello. Chiamarla
 ingegneria vuol dire ammettere tre cose poco romantiche ma vere.
+
+```{figure} ../figures/fine-tuning-rag-o-prompt.svg
+:name: fig-quale-leva
+:alt: "Albero di decisione che parte dal problema. Se al modello mancano fatti o documenti propri, la risposta è il RAG. Altrimenti, se serve un formato o uno stile costante, è il fine-tuning. Altrimenti si resta sul prompt, che è la leva più economica e la prima da provare."
+:width: 92%
+
+Tre leve, in ordine di costo. La prima domanda non è «quale tecnica è
+migliore» ma «cosa manca davvero», e le tre risposte portano a strumenti
+diversi.
+```
+
+L'ordine delle domande in {numref}`fig-quale-leva` è già una posizione
+ingegneristica, ed è la prima delle tre cose poco romantiche. Si comincia
+dalla leva che costa meno e si sale solo se serve: il fine-tuning non è più
+avanzato del prompt, è più caro, e va giustificato da qualcosa che il prompt
+non poteva dare.
 
 `````{tab} Elementare
 

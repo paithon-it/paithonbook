@@ -74,6 +74,21 @@ proprio è una frazione minima; tutto il resto è raccogliere dati, ripulirli,
 trasformarli, distribuire il modello e sorvegliarlo. E soprattutto: non è una
 linea retta con un traguardo, ma un **ciclo** che si percorre molte volte.
 
+```{figure} ../figures/cicd-machine-learning.svg
+:name: fig-cicd-ml
+:alt: "Pipeline di integrazione continua per il machine learning: da una pull request si passa a build e test del codice, poi all'addestramento del modello, alla valutazione contro una soglia e infine al rilascio. Se la valutazione non supera la soglia la pipeline si ferma e il modello non viene rilasciato."
+:width: 100%
+
+La stessa automazione del software, con uno stadio in più. Fra i test e il
+rilascio si interpone una valutazione del modello, e anche quella è un
+cancello che può dire di no.
+```
+
+Lo stadio aggiunto in {numref}`fig-cicd-ml` è la differenza fra il rilascio di
+un programma e quello di un modello. Il codice o compila o no; un modello
+compila sempre, e può essere semplicemente peggiore del precedente. Senza una
+soglia scritta prima, non c'è modo automatico di accorgersene.
+
 Uno studio di ingegneria del software condotto in Microsoft {cite}`amershi2019software`
 mette in fila le fasi ricorrenti di un progetto di machine learning:
 

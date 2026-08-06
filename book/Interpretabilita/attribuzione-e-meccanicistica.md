@@ -237,6 +237,37 @@ aperta) punta più in alto: **fare reverse-engineering** dei calcoli interni,
 come si smonta un circuito elettronico per capire cosa fa ciascun componente.
 È l'**interpretabilità meccanicistica**.
 
+```{figure} ../figures/toy-models-superposition.svg
+:name: fig-superposizione
+:alt: "Due piani a due dimensioni. Nel primo, con feature dense, i due assi interni ospitano due sole feature, ortogonali fra loro, una per direzione. Nel secondo, con feature sparse, gli stessi due assi ospitano cinque feature disposte a raggiera: non sono ortogonali, si sovrappongono, ma poiché raramente sono attive insieme il modello riesce comunque a distinguerle."
+:width: 92%
+
+La sovrapposizione. Due dimensioni possono rappresentare più di due cose, a
+patto che quelle cose si accendano di rado e quasi mai insieme.
+```
+
+{numref}`fig-superposizione` spiega perché smontare una rete sia difficile
+oltre il previsto. La speranza naturale è che ogni neurone corrisponda a un
+concetto; se invece i concetti sono più delle dimensioni e ci convivono a
+raggiera, il singolo neurone risponde a un miscuglio di cose senza rapporto
+fra loro, ed è esattamente ciò che si osserva guardando dentro i modelli.
+
+```{figure} ../figures/interpretabilita-scatola-nera.svg
+:name: fig-sparse-autoencoder
+:alt: "A sinistra uno strato di attivazioni rappresentato come un fascio di direzioni aggrovigliate, in cui ogni neurone mescola più concetti. Una freccia attraversa uno sparse autoencoder, che proietta le stesse attivazioni in uno spazio molto più ampio ma con pochissime unità attive per volta. A destra le feature risultanti, ciascuna corrispondente a un concetto leggibile."
+:width: 96%
+
+La mossa che scioglie il groviglio. Si passa a uno spazio più largo di quello
+di partenza, imponendo che pochissime unità siano accese insieme: la
+sovrapposizione si srotola in feature che si possono leggere una per una.
+```
+
+La direzione di {numref}`fig-sparse-autoencoder` sembra paradossale (per
+capire meglio si aumentano le dimensioni) e invece è la conseguenza diretta
+della figura precedente. Se il problema è che troppe cose stanno in troppo
+poco spazio, la cura è dare più spazio, e imporre con la sparsità che ciascuna
+si prenda la propria direzione invece di dividerla con altre.
+
 `````{tab} Elementare
 
 Finora abbiamo trattato la rete come una scatola su cui bussare da fuori: le

@@ -89,7 +89,22 @@ $z \in \mathbb{R}^{32}$ è il codice latente e la seconda uguaglianza è il
 *trucco della riparametrizzazione*, che rende campionabile e derivabile il
 passaggio. L'addestramento massimizza l'ELBO, ricostruzione più
 regolarizzazione KL verso la prior $\mathcal{N}(0, I)$, come visto nel
-capitolo sui Modelli di Diffusione; qui non lo rideriviamo. Nel paper V viene
+capitolo sui Modelli di Diffusione; qui non lo rideriviamo.
+
+```{figure} ../figures/vae-autoencoder-che-immaginano.svg
+:name: fig-latente-campionabile
+:alt: "Lo spazio latente di un VAE disegnato come un insieme di nuvole gaussiane parzialmente sovrapposte, una per ciascun esempio codificato. Un punto viene campionato in una zona intermedia, che non corrisponde a nessun esempio visto, e il decoder lo trasforma comunque in un'immagine plausibile."
+:width: 92%
+
+Perché le nuvole si sovrappongono. Codificando ogni fotogramma in una
+distribuzione invece che in un punto, lo spazio resta pieno: anche i punti
+mai visti decodificano in qualcosa di sensato.
+```
+
+La proprietà mostrata in {numref}`fig-latente-campionabile` è ciò che rende V
+utilizzabile da M. Se il latente avesse buchi, la ricorrenza che immagina il
+fotogramma successivo produrrebbe presto un codice a cui non corrisponde
+nessuna immagine, e il sogno si spezzerebbe dopo pochi passi. Nel paper V viene
 addestrato *per primo*, in modo non supervisionato, su fotogrammi raccolti da
 una policy casuale; il decoder serve solo in addestramento. Su *CarRacing* V
 pesa circa 4,3 milioni di parametri.

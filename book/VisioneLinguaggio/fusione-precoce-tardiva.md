@@ -45,6 +45,21 @@ Sui pixel si fa esattamente la stessa cosa, cambiando solo che cosa entra
 nell'encoder. Il gesto è quello: comprimere, arrotondare al prototipo più
 vicino, tenere l'indice.
 
+```{figure} ../figures/vq-vae-rappresentazioni-discrete.svg
+:name: fig-vq-vae
+:alt: "L'immagine entra in un encoder che produce una griglia di vettori continui. Accanto, il codebook appreso elenca un numero finito di vettori-prototipo. Ogni vettore della griglia viene sostituito dal prototipo più vicino, e di ciascuno resta soltanto l'indice: la griglia di vettori diventa così una griglia di numeri interi."
+:width: 100%
+
+Da grandezza continua ad alfabeto. L'arrotondamento al prototipo più vicino è
+tutto il trucco: perde qualcosa, ma trasforma un'immagine in una sequenza di
+numeri interi, cioè in qualcosa che un modello di linguaggio sa leggere.
+```
+
+Il passaggio che conta in {numref}`fig-vq-vae` è l'ultimo, quando del vettore
+resta solo l'indice. Da lì in poi un'immagine e una frase sono la stessa cosa
+per il modello, sequenze di simboli da un vocabolario finito, ed è questo che
+rende pensabile trattarle nello stesso Transformer.
+
 `````{tab} Elementare
 
 Immagina un mosaicista con un magazzino di tessere. Non ha tutti i colori del

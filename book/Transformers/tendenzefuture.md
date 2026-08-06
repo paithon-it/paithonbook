@@ -8,6 +8,22 @@ mai è stato così chiaro quanto costa farla funzionare.
 
 ## Dove punta la ricerca
 
+```{figure} ../figures/distillazione-insegnante-allievo.svg
+:name: fig-distillazione
+:alt: "Un modello maestro, grande, riceve un input e produce non una sola risposta ma una distribuzione di probabilità su tutte le risposte possibili. Un modello allievo, molto più piccolo, viene addestrato a riprodurre quella distribuzione intera invece della sola risposta corretta."
+:width: 92%
+
+Perché imparare dal maestro batta imparare dalle etichette. L'etichetta dice
+solo qual è la risposta giusta; la distribuzione del maestro dice anche quali
+errori erano quasi ragionevoli, e quella è informazione in più.
+```
+
+Il dettaglio di {numref}`fig-distillazione` che spiega il metodo è la forma
+di ciò che passa dal maestro all'allievo. Non è la risposta, è l'intera
+graduatoria: fra «gatto» e «lince» il maestro esita, fra «gatto» e «camion»
+no, e l'allievo impara anche questa geometria, che nessuna etichetta secca
+gli avrebbe insegnato.
+
 `````{tab} Elementare
 Tre cantieri, su tutti. Il primo è **fare di più con meno**: i grandi modelli
 sono motori potentissimi che consumano moltissimo, e buona parte della ricerca

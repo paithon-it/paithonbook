@@ -111,6 +111,22 @@ Come mostra {numref}`fig-transfer`, teniamo la **base convoluzionale**
 addestrata su ImageNet e ci attacchiamo sopra una **testa** nuova, dimensionata
 sulle nostre classi. Restano due modi di procedere.
 
+```{figure} ../figures/pooling-e-gerarchie.svg
+:name: fig-gerarchia-pooling
+:alt: "Una rete convoluzionale attraversata da sinistra a destra: le griglie delle attivazioni si rimpiccioliscono a ogni stadio mentre il numero di canali cresce. In parallelo, ciò che gli strati rilevano passa dai bordi e dalle linee orientate alle forme composte, fino a parti riconoscibili di oggetti."
+:width: 100%
+
+Le griglie si rimpiccioliscono, il significato cresce. Perdere risoluzione non
+è un effetto collaterale del pooling: è il modo in cui la rete smette di
+guardare i pixel e comincia a guardare le cose.
+```
+
+Il doppio movimento di {numref}`fig-gerarchia-pooling` spiega perché il
+transfer learning funzioni. Gli strati iniziali riconoscono bordi e texture,
+che sono gli stessi in qualunque fotografia del mondo; solo gli ultimi
+imparano cose specifiche del compito, ed è per questo che si può riusare tutto
+il resto.
+
 ## Congelare o rifinire: feature extraction vs fine-tuning
 
 `````{tab} Elementare

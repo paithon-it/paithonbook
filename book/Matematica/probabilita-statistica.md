@@ -49,6 +49,22 @@ $P(A\cup B)=P(A)+P(B)-P(A\cap B)$.
 
 Spesso non ci interessa l'esito grezzo, ma un numero che gli associamo.
 
+```{figure} ../figures/variabili-aleatorie-momenti-percentili.svg
+:name: fig-densita-percentili
+:alt: "Due grafici affiancati sulla stessa distribuzione asimmetrica. A sinistra la densità di probabilità, con media e mediana segnate e l'area sotto la curva fino al novantacinquesimo percentile evidenziata. A destra la funzione di ripartizione, che sale da zero a uno, e su cui lo stesso percentile si legge come l'ascissa a cui la curva raggiunge 0,95."
+:width: 100%
+
+La stessa variabile, due modi di guardarla. Sulla densità un percentile è
+un'area; sulla ripartizione è un punto, e questo è il motivo per cui i
+percentili si leggono sulla seconda.
+```
+
+La corrispondenza fra i due grafici di {numref}`fig-densita-percentili` è
+comoda da avere in testa quando si passerà alle metriche di servizio. Dire
+«il novantacinquesimo percentile della latenza» significa scegliere
+un'ordinata sulla curva di destra e leggere l'ascissa: una domanda che sulla
+densità richiederebbe di integrare.
+
 `````{tab} Elementare
 
 Una **variabile aleatoria** è un numero il cui valore dipende dal caso. Se lancio
@@ -80,6 +96,20 @@ l'informazione cumulata fino a $x$.
 
 Due numeri riassumono una distribuzione: dove sta il suo centro e quanto è
 dispersa attorno ad esso.
+
+```{figure} ../figures/media-mediana-moda-varianza-numpy.svg
+:name: fig-centro-larghezza
+:alt: "Una distribuzione asimmetrica, con la coda allungata a destra, annotata con tre indicatori di centro che cadono in punti diversi: la moda sul picco, la mediana poco più a destra e la media ancora più a destra, tirata dalla coda. Sotto, un segmento marca la deviazione standard attorno alla media."
+:width: 92%
+
+Tre centri per la stessa distribuzione. Su una curva simmetrica coinciderebbero;
+su una asimmetrica no, e la media è quella che la coda sposta di più.
+```
+
+L'ordine in cui i tre indicatori compaiono in {numref}`fig-centro-larghezza`
+non è casuale ed è un buon promemoria pratico: quando media e mediana si
+allontanano molto, la distribuzione ha una coda, e riassumerla con la sola
+media descrive un valore tipico che quasi nessuno osserva.
 
 `````{tab} Elementare
 
@@ -183,6 +213,25 @@ prima è che la distribuzione di partenza è **la più piatta possibile**, e la
 campana arriva lo stesso: è questo il senso di *quale che sia*. La seconda è
 che $n=3$ (tre soli addendi) basta già a renderla riconoscibile.
 
+Lo stesso fenomeno si vede con le monete, ed è il caso che ricorre più spesso
+nel libro: contare i successi in una serie di prove «sì/no» indipendenti.
+
+```{figure} ../figures/gaussiana-ovunque-distribuzioni-ai.svg
+:name: fig-conteggio-successi
+:alt: "Istogramma del numero di teste su venti lanci di una moneta equa: una serie di barre discrete, più alte al centro attorno a dieci e via via più basse verso gli estremi. Sovrapposta alle barre, la curva normale con la stessa media e la stessa varianza le segue quasi esattamente."
+:width: 90%
+
+Barre discrete, curva continua. Il conteggio dei successi può valere solo
+numeri interi, eppure la campana continua lo approssima già bene con venti
+prove.
+```
+
+L'accordo mostrato in {numref}`fig-conteggio-successi` è ciò che autorizza
+un'abitudine diffusa: trattare come gaussiana l'accuratezza misurata su un
+test set, che è esattamente un conteggio di successi su prove indipendenti.
+È l'approssimazione su cui poggiano gli intervalli di confidenza che vedremo
+fra poco.
+
 ## Aggiornare le credenze: il teorema di Bayes
 
 Fin qui abbiamo calcolato probabilità "in avanti". Ma spesso il problema è
@@ -224,12 +273,45 @@ sbilanciate.
 
 `````
 
+Che il prior domini si vede meglio spostandolo. Teniamo lo stesso test
+($99\%$ di sensibilità, $5\%$ di falsi positivi) e rendiamo la malattia dieci
+volte più rara, una persona su mille invece di una su cento.
+
+```{figure} ../figures/teorema-bayes-test-medici.svg
+:name: fig-bayes-test
+:alt: "Diagramma ad albero su una popolazione di 10.000 persone sottoposte a screening, con prevalenza dello 0,1%: si dividono in 10 malate e 9.990 sane. Delle 10 malate, il 99% risulta positivo, circa 10 positivi veri e nessun falso negativo. Delle 9.990 sane, il 5% risulta positivo per errore, circa 500 falsi positivi, e le restanti 9.490 negative. In basso il conto: su circa 510 positivi totali, i malati veri sono 10, cioè circa il 2%."
+:width: 96%
+
+Lo stesso test su una malattia dieci volte più rara. I falsi positivi non
+cambiano di molto (vengono dai sani, che sono tanti); i positivi veri sì, e la
+probabilità di essere davvero malati crolla dal $17\%$ al $2\%$.
+```
+
+Il test non è peggiorato di una virgola fra {numref}`fig-bayes-test` e
+l'esempio di prima: sono cambiati i malati. È la ragione per cui la stessa
+identica prova diagnostica va interpretata diversamente in uno screening di
+massa e in un reparto, dove chi arriva è già stato selezionato dai sintomi.
+
 ## La legge dei grandi numeri: perché servono tanti dati
 
 Un casinò perde in continuazione. A ogni tavolo di roulette qualcuno vince, e
 il banco paga. Eppure nessun casinò è mai fallito per la roulette: su una
 singola puntata il margine è minuscolo e il caso domina, su milioni di puntate
 il caso si spegne e resta solo il margine.
+
+```{figure} ../figures/grandi-numeri-tanti-dati.svg
+:name: fig-legge-grandi-numeri
+:alt: "Grafico della media osservata al crescere del numero di prove: nelle prime decine oscilla ampiamente sopra e sotto il valore vero, poi le oscillazioni si restringono progressivamente e la curva si assesta sulla linea orizzontale del valore atteso, senza però toccarla esattamente."
+:width: 92%
+
+Le oscillazioni non spariscono: si restringono. È una differenza che conta,
+perché nessun numero di prove rende la media *uguale* al valore vero.
+```
+
+La forma a imbuto di {numref}`fig-legge-grandi-numeri` è la stessa che governa
+quanti dati servono per addestrare o per valutare un modello. Le oscillazioni
+si stringono come $1/\sqrt{n}$: per dimezzare l'incertezza di una misura non
+bastano il doppio dei dati, ne servono quattro volte tanti.
 
 `````{tab} Elementare
 
@@ -284,6 +366,22 @@ $n$ conta molto meno di quanto dica il conteggio delle righe.
 Un modello nuovo raggiunge l'$87{,}2\%$ di accuratezza sul test set, il vecchio
 si fermava all'$86{,}8\%$. Il team festeggia. Ma se il test set ha $500$
 esempi, quattro decimi di punto sono **due risposte esatte in più**. Due.
+
+```{figure} ../figures/intervalli-di-confidenza.svg
+:name: fig-intervalli-confidenza
+:alt: "Tre modelli su un asse dell'accuratezza da 80 a 92 per cento, ciascuno con la sua stima puntuale e una barra d'errore. Il modello A sta all'87,2% e il modello B all'86,8%: le loro barre si sovrappongono ampiamente, e una nota dice che con intervalli sovrapposti non c'è un vincitore. Il modello C sta all'81,0%, con la barra nettamente staccata dalle altre due."
+:width: 90%
+
+Le stesse tre misure, con l'incertezza disegnata. A e B non sono
+distinguibili: la differenza fra loro è più piccola di quanto la misura possa
+risolvere. C invece è davvero peggiore.
+```
+
+{numref}`fig-intervalli-confidenza` mostra cosa si compra con una barra
+d'errore: la capacità di dire «non lo so». Senza, una classifica si può
+sempre stilare, e sembrerà informativa anche quando ordina rumore; con la
+barra, alcune coppie restano semplicemente a pari merito, che è la risposta
+corretta.
 
 `````{tab} Elementare
 
@@ -343,6 +441,22 @@ imbarazzante, e un modello addestrato su questi dati imparerebbe la relazione
 senza esitare. Nessuno però propone di vietare il gelato: dietro entrambe le
 curve c'è una terza cosa, il caldo.
 
+```{figure} ../figures/correlazione-non-causalita.svg
+:name: fig-confonditore
+:alt: "Grafo causale con tre nodi. Dal caldo estivo, indicato come confonditore Z, partono due frecce di causa: una verso i gelati venduti (X) e una verso gli annegamenti (Y). Fra X e Y non c'è alcuna freccia, ma una linea tratteggiata etichettata correlazione spuria. In basso la chiave di lettura: X e Y si muovono insieme solo perché Z muove entrambi."
+:width: 82%
+
+Il confonditore, disegnato. Fra gelati e annegamenti non passa nessuna
+freccia: il legame che si misura nei dati è tutto riflesso di quello che
+ciascuno dei due ha con il caldo.
+```
+
+Vale la pena notare cosa *non* c'è in {numref}`fig-confonditore`: la freccia
+fra $X$ e $Y$. I dati da soli non la disegnano né la cancellano, perché
+correlazione e causalità lasciano sui numeri la stessa traccia. A distinguerle
+serve qualcosa che nei dati non c'è: un intervento (cambiare $X$ e guardare
+$Y$) oppure una conoscenza del dominio che dica quale freccia è plausibile.
+
 `````{tab} Elementare
 
 La correlazione misura il **co-movimento**: quanto due grandezze tendono a
@@ -400,6 +514,21 @@ distribuzione; non basta per **decidere** un intervento.
 Resta un'ultima domanda: cosa c'entra tutto questo con l'*addestrare* un modello?
 Il ponte si chiama **massima verosimiglianza** (*maximum likelihood estimation*,
 MLE).
+
+```{figure} ../figures/massima-verosimiglianza.svg
+:name: fig-verosimiglianza
+:alt: "Due curve di verosimiglianza sovrapposte, in funzione della probabilità p di ottenere testa. La prima viene da 7 teste su 10 lanci ed è larga e piatta; la seconda da 70 teste su 100 ed è molto più stretta. Entrambe hanno il massimo nello stesso punto, p uguale a 0,7."
+:width: 90%
+
+Stessa proporzione, due quantità di prove. Il punto più alto non si sposta; a
+cambiare è quanto la curva sia stretta, cioè quanto ci si può contare.
+```
+
+Le due curve di {numref}`fig-verosimiglianza` dicono ciò che la sola stima non
+dice. Con dieci lanci molti valori di $p$ spiegano l'osservazione quasi
+altrettanto bene; con cento, no. La stima puntuale è identica, ma la seconda è
+un'affermazione molto più forte, e a misurare la differenza è la larghezza
+della curva.
 
 `````{tab} Elementare
 

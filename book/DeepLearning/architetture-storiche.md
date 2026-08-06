@@ -49,6 +49,22 @@ non compare nemmeno tra le prime cinque proposte) del 15,3%, contro il 26% del
 secondo classificato, che usava ancora tecniche "artigianali". Fu il momento
 in cui il resto del campo capì che il deep learning funzionava.
 
+```{figure} ../figures/alexnet-2012.svg
+:name: fig-alexnet
+:alt: "In alto, lo stack di AlexNet: otto strati addestrabili, prima i convolutivi poi i densi, distribuiti su due GPU che lavorano in parallelo, con la nota di due schede GTX 580 per circa sei giorni di addestramento. In basso, il confronto dell'errore top-5 su ImageNet: 26,2% per i metodi costruiti a mano, 15,3% per AlexNet."
+:width: 96%
+
+Profondità più GPU. Il salto dell'errore in basso è la parte che fece
+notizia; la riga sopra, due schede da gioco per sei giorni, è quella che rese
+l'esperimento ripetibile da chiunque.
+```
+
+Il dettaglio di {numref}`fig-alexnet` che vale più della classifica è la
+divisione fra due GPU. Non era una scelta di eleganza ma di necessità (la
+memoria di una scheda sola non bastava) e per farla gli autori dovettero
+spezzare la rete a metà: il primo caso in cui l'hardware disponibile ha
+disegnato l'architettura, e non l'ultimo.
+
 `````{tab} Elementare
 AlexNet è, in fondo, una LeNet cresciuta: molti più strati, molte più
 "lenti", e per la prima volta addestrata su schede grafiche (GPU) invece che su

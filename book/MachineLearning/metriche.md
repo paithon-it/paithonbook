@@ -85,6 +85,21 @@ la metrica lo pesa come un centesimo del totale.
 Diagnosticare non basta. Un modello antifrode che non ha mai segnalato una
 frode resta al $99\%$ di accuratezza finché nessuno guarda altrove.
 
+```{figure} ../figures/classi-sbilanciate.svg
+:name: fig-classi-sbilanciate
+:alt: "Una griglia di cento punti rappresenta un dataset sbilanciato 99 a 1: novantanove negativi e un solo positivo, evidenziato. Una nota indica che il modello che risponde sempre «negativo» sbaglia soltanto su quell'unico punto, ottenendo il 99% di accuratezza e uno 0% di recall."
+:width: 78%
+
+Il punto solo, in mezzo agli altri novantanove. Un modello che lo ignora
+sbaglia una volta su cento e sembra ottimo; eppure ha mancato l'unica cosa che
+gli era stata chiesta di trovare.
+```
+
+{numref}`fig-classi-sbilanciate` rende visibile perché l'accuratezza non sia
+sbagliata, ma inservibile qui: misura una media su cento casi, mentre il
+valore del modello si gioca tutto su uno. Le metriche delle prossime pagine
+esistono per guardare quel punto invece della media.
+
 `````{tab} Elementare
 
 Tre leve, in ordine di quanto conviene provarle.
@@ -196,6 +211,21 @@ Molti classificatori non restituiscono un secco "sì/no" ma una probabilità;
 siamo noi a fissare la **soglia** oltre la quale dichiarare positivo. Cambiare
 soglia cambia l'equilibrio tra i due errori, e la curva ROC visualizza tutti
 questi equilibri in un colpo solo.
+
+```{figure} ../figures/roc-auc-valutare-a-ogni-soglia.svg
+:name: fig-curva-roc
+:alt: "Piano con il tasso di falsi positivi in ascissa e il tasso di veri positivi in ordinata. La diagonale rappresenta il caso, con area sotto la curva pari a 0,5. Sopra di essa, la curva di un buon modello con area circa 0,9 si inarca verso l'angolo in alto a sinistra; tre punti segnati lungo la curva corrispondono a soglia alta, media e bassa. L'area sotto la curva è l'AUC."
+:width: 76%
+
+Ogni punto della curva è una soglia diversa dello stesso modello. Muoversi
+lungo la curva non migliora il modello: sceglie quale dei due errori si
+preferisce pagare.
+```
+
+La diagonale di {numref}`fig-curva-roc` è il termine di paragone che rende
+leggibile tutto il resto: è ciò che otterrebbe un modello che tira a
+indovinare. L'AUC misura quanto la curva se ne stacca, ed è un numero solo
+proprio perché riassume *tutte* le soglie, senza che se ne debba fissare una.
 
 `````{tab} Elementare
 

@@ -153,6 +153,22 @@ rendono l'addestramento più stabile e sfruttano le CPU multi-core. **PPO**
 (*Proximal Policy Optimization* {cite}`schulman2017proximal`) è oggi lo
 standard di fatto, per robustezza e semplicità.
 
+```{figure} ../figures/ppo-2017.svg
+:name: fig-ppo-clipping
+:alt: "Dalla policy vecchia, al centro, si dipartono due frecce. La prima è un passo breve che resta dentro una fascia consentita disegnata attorno al punto di partenza, e viene accettata. La seconda è un salto lungo che esce dalla fascia: l'aggiornamento viene tagliato al bordo, e oltre quel bordo non porta più alcun vantaggio."
+:width: 84%
+
+Il guinzaglio di PPO. Non impedisce di migliorare: toglie il premio a chi
+prova a migliorare troppo in una volta, e così l'aggiornamento resta vicino
+alla policy che ha generato i dati.
+```
+
+Il taglio disegnato in {numref}`fig-ppo-clipping` esiste perché i dati
+invecchiano in fretta. Le esperienze raccolte sono state generate dalla policy
+vecchia, e valgono a stimare il gradiente solo finché la nuova le somiglia; un
+passo troppo lungo userebbe dati che non descrivono più il comportamento
+dell'agente.
+
 `````{tab} Elementare
 
 Il rischio, quando aggiorni una strategia, è esagerare: un solo passo troppo
@@ -187,7 +203,23 @@ Torniamo alla mossa 37. AlphaGo {cite}`silver2016mastering` non era un solo
 algoritmo, ma una sintesi: una rete di policy che proponeva mosse promettenti,
 una rete di valore che stimava chi fosse in vantaggio, e una **ricerca ad
 albero Monte Carlo** (MCTS) che usava entrambe per esplorare in profondità solo
-le linee più sensate. Le reti erano state addestrate prima su partite umane,
+le linee più sensate.
+
+```{figure} ../figures/alphago-2016.svg
+:name: fig-alphago
+:alt: "Ciclo chiuso: il self-play genera partite che il sistema gioca contro sé stesso; dalle partite si addestrano due reti, quella di policy che propone le mosse e quella di valore che stima chi sta vincendo; le due reti guidano a loro volta una ricerca ad albero Monte Carlo, che gioca meglio di entrambe e produce le partite del giro successivo."
+:width: 92%
+
+Il giro che si alimenta da solo. La ricerca ad albero gioca meglio delle reti
+che la guidano, e le partite che ne escono diventano il materiale con cui
+quelle reti migliorano.
+```
+
+Il ciclo di {numref}`fig-alphago` è il motivo per cui AlphaZero poté fare a
+meno delle partite umane. Se la ricerca produce mosse migliori di quelle che
+le reti sanno proporre, allora il sistema ha una fonte di supervisione interna:
+non gli serve un maestro, gli basta giocare contro sé stesso e imparare da
+dove la ricerca lo ha portato. Le reti erano state addestrate prima su partite umane,
 poi affinate con RL giocando contro se stesse.
 
 Un anno dopo, **AlphaZero** {cite}`silver2017mastering` elimina persino le
@@ -202,6 +234,21 @@ reti profonde.
 
 Lo stesso meccanismo (aumentare la probabilità di ciò che riceve un giudizio
 positivo) è oggi al cuore dell'addestramento dei modelli linguistici.
+
+```{figure} ../figures/instructgpt-2022.svg
+:name: fig-instructgpt
+:alt: "Schema in tre stadi: alcune persone ordinano per preferenza più risposte allo stesso prompt; da questi ordinamenti si addestra un reward model che impara ad assegnare punteggi; il reward model guida infine l'ottimizzazione della policy del modello linguistico, che genera, viene valutata e aggiornata."
+:width: 100%
+
+Il giudizio umano che diventa un numero. Le persone non danno voti: mettono in
+fila delle risposte, ed è il reward model a tradurre quell'ordine in un
+punteggio che l'ottimizzazione sa usare.
+```
+
+Il dettaglio di {numref}`fig-instructgpt` che vale la pena notare è il primo
+stadio: alle persone si chiede di **ordinare**, non di valutare. Confrontare
+due risposte è un giudizio che gli esseri umani danno con buona coerenza fra
+loro; assegnare un voto da uno a dieci molto meno, e su scale diverse.
 Nell'**RLHF** (*Reinforcement Learning from Human Feedback*; Christiano et
 al., 2017; {cite}`ouyang2022training`) le risposte del modello sono
 l'"azione", dei valutatori umani indicano quali preferiscono, e le loro

@@ -16,6 +16,22 @@ La versione più diretta dell'idea si chiama filtraggio collaborativo *a
 vicini* (*neighborhood-based*), e viene in due simmetrie: partire dagli
 utenti simili, o dagli oggetti simili.
 
+```{figure} ../figures/recommender-collaborative-filtering.svg
+:name: fig-matrice-voti
+:alt: "Matrice con gli utenti sulle righe e i film sulle colonne, e nelle celle i voti già espressi. Una cella è evidenziata come incognita: il voto che l'utente darebbe a un film che non ha visto. Le righe degli utenti con gusti simili sono marcate, e sono quelle da cui si ricava la stima."
+:width: 92%
+
+Il compito, in una griglia. Quasi tutte le celle sono vuote, e prevederne una
+significa guardare le righe di chi ha votato in modo simile per i film che
+entrambi hanno visto.
+```
+
+Il vuoto di {numref}`fig-matrice-voti` è la difficoltà vera, non un dettaglio
+di rappresentazione. In un catalogo reale ogni utente ha visto una frazione
+minuscola dei titoli, quindi due utenti qualsiasi hanno pochissimi film in
+comune su cui misurare la somiglianza: è da qui che nasce il bisogno dei
+fattori latenti della prossima sezione.
+
 `````{tab} Elementare
 
 **Da utente a utente.** Per consigliare un film ad Anna, cerco i suoi

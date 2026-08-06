@@ -91,7 +91,22 @@ una richiesta per volta, subito (conta la *latenza*).
 
 Nel regime online (il più comune e il più esigente) il modello vive dietro un
 **endpoint**: un indirizzo a cui altri programmi mandano una richiesta (di
-solito in JSON, via HTTP) e da cui ricevono la risposta. Chi chiama non sa e
+solito in JSON, via HTTP) e da cui ricevono la risposta.
+
+```{figure} ../figures/docker-per-data-scientist.svg
+:name: fig-immagine-container-volume
+:alt: "Tre oggetti distinti e il loro rapporto: l'immagine, una fotografia immutabile dell'ambiente con il codice e le dipendenze; il container, un'istanza in esecuzione di quell'immagine, che si può creare e distruggere; il volume, uno spazio di memoria persistente montato nel container, che sopravvive alla sua distruzione."
+:width: 96%
+
+Tre cose che si confondono di continuo. L'immagine non cambia, il container è
+usa e getta, e tutto ciò che deve sopravvivere sta nel volume.
+```
+
+La distinzione di {numref}`fig-immagine-container-volume` è ciò che rende un
+servizio riproducibile: se l'immagine contiene l'ambiente per intero, la stessa
+identica versione del modello gira sul portatile di chi sviluppa e sul server
+di produzione. Il container si può buttare e ricreare senza pensarci, ed è
+esattamente il presupposto di ogni strategia di rilascio. Chi chiama non sa e
 non deve sapere che dentro c'è una rete neurale: vede solo un servizio che,
 dati certi ingressi, restituisce una previsione. Il programma che tiene il
 modello in memoria e traduce le richieste in chiamate al `forward` si chiama
@@ -262,6 +277,20 @@ Ottimizzato il servizio, resta la domanda più scomoda: che cosa **promettere**
 a chi lo userà? La promessa si scrive in un **SLA** (*Service Level
 Agreement*), e il punto delicato è che va misurata con l'onestà giusta: la
 media, qui, è una bugia gentile.
+
+```{figure} ../figures/latency-vs-throughput.svg
+:name: fig-latenza-throughput
+:alt: "Curva che lega throughput e latenza al variare della dimensione del batch. Ingrandendo il batch il throughput cresce rapidamente e poi si appiattisce, mentre la latenza della singola richiesta continua a salire: non esiste un punto che ottimizzi entrambi, solo un tratto in cui il guadagno di throughput vale l'attesa aggiunta."
+:width: 90%
+
+Le due grandezze tirano in direzioni opposte. Batch grandi servono più utenti
+al secondo; ciascuno di loro aspetta di più.
+```
+
+Il tratto piatto a destra in {numref}`fig-latenza-throughput` è quello da
+riconoscere: oltre quel punto si continua a pagare in attesa senza più
+guadagnare in capacità. Dove fermarsi non lo decide la curva ma la promessa
+che si è scritta nell'SLA, ed è questo il senso di sceglierla prima.
 
 `````{tab} Elementare
 

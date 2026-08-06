@@ -33,6 +33,20 @@ all'automobile.
 
 ## Dal completare testo all'agire
 
+```{figure} ../figures/rag-lewis-2020.svg
+:name: fig-rag-lewis
+:alt: "Schema del RAG originale: la domanda entra in un retriever che consulta un indice costruito su Wikipedia e ne estrae i passaggi più rilevanti; domanda e passaggi entrano insieme nel generatore, che produce la risposta. Retriever e generatore sono addestrati insieme, come un unico modello."
+:width: 96%
+
+Il primo passo fuori dai pesi. La conoscenza non sta più solo nel modello:
+una parte vive in un archivio che si può aggiornare senza riaddestrare niente.
+```
+
+{numref}`fig-rag-lewis` è il precedente diretto di tutto questo capitolo, ed è
+utile vederlo prima di parlare di agenti. Un modello che consulta un archivio
+fa già una cosa che il completamento puro non fa: sospende la risposta, va a
+prendere qualcosa fuori di sé, e solo dopo conclude.
+
 Perché il completamento di testo, da solo, non basta? Perché rispondere è un
 atto unico e chiuso, mentre agire nel mondo è un processo: richiede più mosse
 in sequenza, ognuna decisa alla luce di come è andata la precedente. Comprare

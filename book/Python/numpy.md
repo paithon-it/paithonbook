@@ -15,6 +15,22 @@ addestra i modelli.
 
 Python ha già le liste. Perché inventare un altro contenitore di numeri?
 
+```{figure} ../figures/numpy-array-vs-liste.svg
+:name: fig-array-vs-lista
+:alt: "Due rappresentazioni della memoria a confronto. In alto una lista Python: una sequenza di puntatori, ciascuno che rimanda a un oggetto numerico collocato altrove, sparso nella memoria. In basso un array NumPy: i valori sono scritti uno dopo l'altro in un blocco contiguo, senza intermediari."
+:width: 92%
+
+Dove stanno davvero i numeri. La lista tiene indirizzi e insegue un oggetto
+per volta; l'array tiene i valori di fila, e il processore può leggerli a
+blocchi.
+```
+
+La differenza di {numref}`fig-array-vs-lista` non è di eleganza ma di
+velocità, e spiega da sola quasi tutto ciò che segue. Sommare due liste
+significa saltare da un capo all'altro della memoria a ogni elemento; sommare
+due array significa scorrere due nastri affiancati, che è esattamente
+l'operazione per cui il processore è costruito.
+
 `````{tab} Elementare
 
 Una lista Python è un contenitore *generico*: può tenere insieme un numero, una
@@ -73,6 +89,21 @@ minimo di ogni lavoro scientifico serio.
 
 Su un array si "affonda la mano" con le stesse parentesi quadre delle liste, ma
 con più potenza: si indicizzano più assi insieme, separati da virgola.
+
+```{figure} ../figures/numpy-indexing-reshape-vettoriale.svg
+:name: fig-slicing-numpy
+:alt: "Un array di quattro righe per sei colonne disegnato come griglia, con tre selezioni evidenziate su copie affiancate: un'intera riga, un'intera colonna e una sottomatrice rettangolare presa incrociando un intervallo di righe e uno di colonne."
+:width: 96%
+
+Lo slicing visto sulla griglia. Il primo indice sceglie fra le righe, il
+secondo fra le colonne, e i due tagli si incrociano: quel che resta è la
+selezione.
+```
+
+Conviene tenere a mente, guardando {numref}`fig-slicing-numpy`, che nessuna
+delle tre selezioni copia i dati. Sono **viste** sullo stesso array in
+memoria, e scriverci dentro modifica l'originale: è la differenza più
+insidiosa rispetto allo slicing delle liste, che invece copia.
 
 ```python
 x = np.array([10, 20, 30, 40, 50])

@@ -25,6 +25,22 @@ addestramento. E come ogni compressione con perdite, a volte conserva un
 dettaglio per intero invece di riassumerlo. Quando quel dettaglio è
 un'informazione personale, la memorizzazione diventa una falla di privacy.
 
+```{figure} ../figures/gdpr-e-llm.svg
+:name: fig-flusso-dati-personali
+:alt: "Il percorso di un dato personale dentro un sistema basato su LLM: raccolta, inserimento nel corpus di addestramento, presenza nei pesi del modello, comparsa nel prompt a uso dell'utente e infine nei log delle conversazioni. A ogni passaggio è indicata la base giuridica che lo dovrebbe giustificare."
+:width: 100%
+
+Un dato personale attraversa più stazioni di quante se ne contino a occhio.
+Ciascuna ha bisogno di una giustificazione propria: il consenso raccolto per
+la prima non copre automaticamente l'ultima.
+```
+
+Il punto che {numref}`fig-flusso-dati-personali` rende difficile da aggirare è
+la stazione centrale, i pesi. Nelle altre il dato si può cancellare; da lì,
+una volta che l'addestramento è finito, non si toglie senza riaddestrare, ed è
+il motivo per cui il «diritto alla cancellazione» è tecnicamente scomodo
+proprio dove sarebbe più necessario.
+
 `````{tab} Elementare
 
 Immagina uno studente che, invece di capire la materia, impari il libro a
@@ -395,6 +411,21 @@ prendere sul serio la provenienza dei dati di addestramento.
 La provenienza vale anche dall'altro capo del tubo. Se un modello genera testo,
 immagini o voce indistinguibili dal vero, come si riconosce a posteriori che
 sono stati generati?
+
+```{figure} ../figures/deepfake-watermarking.svg
+:name: fig-watermarking-testo
+:alt: "Confronto fra due righe di testo in cui ogni parola è colorata secondo l'appartenenza a una lista verde o a una lista rossa. Nel testo naturale le parole verdi sono circa la metà e non lasciano traccia. Nel testo con watermark le parole verdi sono circa il settanta per cento: un eccesso statistico rilevabile."
+:width: 90%
+
+La filigrana su un testo è uno sbilanciamento. Nessuna parola, presa da sola,
+è sospetta: è la proporzione sull'intero brano a non essere quella del caso.
+```
+
+{numref}`fig-watermarking-testo` mostra anche il limite del metodo, oltre al
+suo funzionamento. Se la firma è statistica, serve una quantità di testo
+sufficiente perché lo sbilanciamento si distingua dal caso: su una frase corta
+non c'è niente da misurare, e riscrivere il brano con parole proprie diluisce
+l'eccesso fino a cancellarlo.
 
 `````{tab} Elementare
 
