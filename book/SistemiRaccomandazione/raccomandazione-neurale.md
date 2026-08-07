@@ -78,6 +78,97 @@ di volte più economico da calcolare su un catalogo di milioni di titoli. Su
 dati densi e ricchi di feature le reti ripagano; sul filtraggio collaborativo
 puro, il vecchio prodotto scalare ben tarato resta un avversario durissimo.
 
+## La matrice è un grafo
+
+C'è un secondo modo di superare il prodotto scalare, e non passa dal rendere
+più furbo il giudice: passa dal dargli più cose da guardare. Per vederlo basta
+riscrivere lo stesso dato in un'altra forma.
+
+`````{tab} Elementare
+
+La tabella utenti per film si può disegnare invece che tabulare. Metti tutti
+gli utenti in una colonna di pallini a sinistra, tutti i film in una colonna a
+destra, e tira una linea ogni volta che qualcuno ha visto qualcosa. Non hai
+aggiunto né tolto niente: è lo stesso dato, disegnato. Ma adesso si vede una
+cosa che nella tabella era nascosta, e cioè che **raccomandare vuol dire
+indovinare le linee che ancora non ci sono**.
+
+Vista così, la fattorizzazione guarda pochissimo: per giudicare una coppia
+utente-film usa solo le linee che partono da quei due pallini. Il filtraggio
+per vicinato del capitolo precedente arriva un passo più in là (da te, ai film
+che hai visto, alle persone che li hanno visti). E poi? Perché fermarsi a due
+passi? Un film può somigliarti perché piace a gente che ha gusti simili ai
+tuoi, e quella somiglianza si scopre camminando sul disegno per tre, quattro
+passi. Il grafo permette di raccogliere quel segnale lontano; la tabella no,
+perché lì i passi non si vedono.
+
+`````
+
+`````{tab} Superiore
+
+La matrice di interazione $R \in \{0,1\}^{m \times n}$ è la matrice di
+adiacenza di un grafo **bipartito** utente-oggetto, a meno di riscriverla in
+forma simmetrica:
+
+$$
+A = \begin{pmatrix} 0 & R \\ R^\top & 0 \end{pmatrix} .
+$$
+
+Su un grafo si può propagare, ed è esattamente il *message passing* del
+capitolo sulle reti neurali su grafo. Nella forma più nuda, l'embedding di un
+utente al passo $k+1$ è la media normalizzata degli embedding degli oggetti con
+cui ha interagito, e viceversa:
+
+$$
+e_u^{(k+1)} = \sum_{i \in \mathcal{N}(u)}
+\frac{1}{\sqrt{|\mathcal{N}(u)|\,|\mathcal{N}(i)|}}\; e_i^{(k)},
+\qquad
+e_i^{(k+1)} = \sum_{u \in \mathcal{N}(i)}
+\frac{1}{\sqrt{|\mathcal{N}(i)|\,|\mathcal{N}(u)|}}\; e_u^{(k)} .
+$$
+
+Il coefficiente è la stessa normalizzazione simmetrica della GCN, e la stessa
+lettura vale qui: un utente che ha visto tutto, o un film visto da tutti,
+contano meno per singolo arco. Impilare $K$ strati significa raccogliere
+segnale da $K$ salti di distanza.
+
+Il primo modello a farlo sul serio è **NGCF** {cite}`wang2019neural`, che
+ricalca la GCN completa: trasformazione lineare, non linearità, propagazione.
+**LightGCN** {cite}`he2020lightgcn` toglie i primi due e tiene solo il terzo,
+combinando poi gli strati con pesi uniformi
+$e_u = \sum_{k=0}^{K} \frac{1}{K+1} e_u^{(k)}$ e tornando al prodotto scalare
+per il punteggio. Solo embedding e propagazione: nessun peso da imparare oltre
+alla tabella iniziale. Funziona meglio, e costa molto meno.
+
+`````
+
+La morale è la stessa del paragrafo su Rendle, e vale la pena metterla in
+fila, perché due volte di seguito in questo capitolo la stessa cosa si è
+rivelata vera: **quel che serviva non era più capacità espressiva, era il
+giusto bias induttivo**. NCF aggiunge una rete al posto del prodotto scalare e
+non guadagna; LightGCN toglie la rete e tiene la propagazione, e guadagna. La
+propagazione sul grafo, in fondo, è un modo di dire al modello una cosa che il
+prodotto scalare non sa: *chi ha visto cose simili alle tue va ascoltato,
+anche a più di un passo di distanza*.
+
+Il grafo dà anche una risposta parziale al problema dell'avvio a freddo visto
+alla fine della sezione precedente. Un oggetto nuovo, nella matrice, è una
+riga vuota, e da una riga vuota non si estrae niente. In un grafo, invece,
+nulla vieta di aggiungere nodi che non siano né utenti né oggetti: il regista,
+il genere, l'attore protagonista, il tag. Un film appena uscito ha zero archi
+verso gli utenti ma già i suoi archi verso gli attributi, e la propagazione gli
+consegna un embedding sensato prima ancora che qualcuno lo guardi. Il grafo
+smette di essere bipartito e diventa **eterogeneo**, con tipi diversi di nodo e
+di arco.
+
+Che questo sia il modo giusto di vedere il problema non è una tesi di questo
+capitolo: è la definizione. Raccomandare **è** *link prediction* su un grafo
+utente-oggetto, cioè prevedere gli archi mancanti, ed è il motivo per cui i
+sistemi industriali su cataloghi enormi sono oggi costruiti così. Il caso più
+noto, **PinSage** {cite}`ying2018graph`, è raccontato nel capitolo sulle reti
+neurali su grafo insieme al campionamento dei vicini che lo rende praticabile
+a scala web.
+
 ## Imparare a ordinare: BPR
 
 Il vero salto concettuale della raccomandazione moderna non è architetturale
@@ -268,6 +359,10 @@ posizione giusta per pretendere che funzioni bene.
 - Il **NCF** sostituisce il prodotto scalare con un MLP sulla concatenazione
   degli embedding: più espressivo in teoria, ma un prodotto scalare ben tarato
   resta un avversario durissimo (l'espressività non è gratis).
+- La matrice di interazione **è** il grafo bipartito utente-oggetto, e
+  raccomandare è **link prediction**: prevedere gli archi mancanti. Propagare
+  sul grafo raccoglie segnale a più salti; **LightGCN** mostra che basta la
+  propagazione, senza rete sopra.
 - Con feedback implicito si impara a **ordinare**, non a prevedere voti:
   la loss **BPR** $-\log\sigma(\hat{x}_{uv}-\hat{x}_{uw})$ chiede solo che
   l'item scelto superi quello ignorato.

@@ -86,6 +86,7 @@ della sezione e URL), non si ridistribuisce il testo.
 
 - [Reinforcement Learning](https://book.paithon.it/main/ReinforcementLearning/overview.html): Nessuno insegna a un bambino a camminare elencandogli la sequenza esatta di contrazioni muscolari. Il bambino ci prova, oscilla, cade, si rialza, fa un passo e cade di nuovo.
   - [MDP e funzioni valore](https://book.paithon.it/main/ReinforcementLearning/mdp-valore.html)
+  - [I metodi Monte Carlo](https://book.paithon.it/main/ReinforcementLearning/monte-carlo.html)
   - [Q-learning e differenze temporali](https://book.paithon.it/main/ReinforcementLearning/q-learning.html)
 - [Deep Reinforcement Learning](https://book.paithon.it/main/DeepReinforcementLearning/overview.html): Nel 2013 un laboratorio londinese ancora poco noto, DeepMind, pubblica un risultato che sembra un giochino e invece è uno spartiacque: una rete neurale impara a giocare a Breakout, il classico dei…
   - [Deep Q-Network (DQN)](https://book.paithon.it/main/DeepReinforcementLearning/dqn.html)
@@ -114,6 +115,7 @@ della sezione e URL), non si ridistribuisce il testo.
   - [Confronto coi modelli precedenti](https://book.paithon.it/main/Transformers/confronti.html)
   - [Esempi pratici](https://book.paithon.it/main/Transformers/esempi.html)
   - [Multimodalità](https://book.paithon.it/main/Transformers/multimodalita.html)
+  - [Una rete, cento lingue](https://book.paithon.it/main/Transformers/multilingua.html)
   - [I grandi modelli linguistici](https://book.paithon.it/main/Transformers/llm.html)
   - [Mixture of Experts](https://book.paithon.it/main/Transformers/mixture-of-experts.html)
   - [Dopo il pre-addestramento](https://book.paithon.it/main/Transformers/post-training.html)

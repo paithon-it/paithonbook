@@ -190,7 +190,12 @@ $$
 
 dove $\rho_t = \dfrac{\pi_\theta(a_t\mid s_t)}{\pi_{\theta_{\text{old}}}(a_t\mid s_t)}$
 è il rapporto tra la nuova e la vecchia policy, e $\epsilon$ (tipicamente
-$0{,}2$) fissa quanto le è concesso spostarsi. Il *clipping* annulla
+$0{,}2$) fissa quanto le è concesso spostarsi. Quel rapporto non è un
+espediente inventato qui: è il **rapporto di importance sampling** incontrato
+nel capitolo precedente, quello che permette di valutare una policy con dati
+generati da un'altra, troncato a un passo solo. E il suo difetto è lo stesso
+già visto là: può assumere valori enormi e mandare in aria la stima. Il
+*clipping* annulla
 l'incentivo a spingere $\rho_t$ fuori dall'intervallo $[1-\epsilon,1+\epsilon]$:
 la policy migliora a piccoli passi controllati, senza gli aggiornamenti
 distruttivi che affliggevano i primi metodi.

@@ -4,7 +4,13 @@ Immagina di imparare un videogioco senza manuale. Premi tasti, il personaggio si
 
 ## Imparare senza aspettare la fine: le differenze temporali
 
-Una prima idea, ingenua, sarebbe: gioca una partita intera, guarda quanti punti hai totalizzato, e usa quel totale per giudicare tutte le mosse fatte. Funziona, ma è lento e spreca informazione. L'apprendimento per **differenze temporali** (*temporal-difference*, TD), introdotto da Richard Sutton nel 1988, propone invece di aggiornare le stime *durante* l'episodio, a ogni singolo passo.
+La sezione precedente ha seguito una strada fino in fondo: gioca la partita
+intera, guarda quanti punti hai totalizzato e usa quel totale per giudicare
+tutte le mosse fatte. Funziona, ed è corretta in media, ma costa: bisogna
+attendere la fine, e il totale di una singola partita è un numero ballerino.
+L'apprendimento per **differenze temporali** (*temporal-difference*, TD),
+introdotto da Richard Sutton nel 1988, propone invece di aggiornare le stime
+*durante* l'episodio, a ogni singolo passo.
 
 `````{tab} Elementare
 
@@ -20,7 +26,7 @@ $$
 V(s) \leftarrow V(s) + \alpha\,\underbrace{\big[\,r + \gamma\,V(s') - V(s)\,\big]}_{\text{errore TD}\;\delta} .
 $$
 
-Qui $\alpha \in (0,1]$ è il **learning rate**, $\gamma \in [0,1)$ il **fattore di sconto** e $\delta$ l'**errore TD**. Il termine $r + \gamma V(s')$ è una stima aggiornata di $V(s)$ costruita *usando la stima successiva* $V(s')$: questa dipendenza da una stima per aggiornarne un'altra si chiama *bootstrapping*, ed è ciò che distingue il TD dai metodi Monte Carlo, che attendono la fine dell'episodio.
+Qui $\alpha \in (0,1]$ è il **learning rate**, $\gamma \in [0,1)$ il **fattore di sconto** e $\delta$ l'**errore TD**. Il termine $r + \gamma V(s')$ è una stima aggiornata di $V(s)$ costruita *usando la stima successiva* $V(s')$: questa dipendenza da una stima per aggiornarne un'altra si chiama *bootstrapping*, ed è esattamente ciò che i metodi Monte Carlo della sezione precedente non fanno. Il bersaglio non è più il ritorno osservato $G_t$ ma una sua approssimazione a un passo: si guadagna in varianza (un solo termine casuale invece di una somma lunga) e si perde in correttezza, perché $V(s')$ è a sua volta una stima, e all'inizio è sbagliata.
 
 `````
 
@@ -177,6 +183,95 @@ dato $(s,a)$ restituisce $r$ e $s'$, è omesso qui, ma è ciò che, ripetuto per
 migliaia di episodi, riempie la tabella e fa emergere le frecce della
 {numref}`fig-labirinto`.
 
+## Fra un passo e la fine: $n$ passi e TD($\lambda$)
+
+Torniamo un momento alla macchia che si allarga all'indietro dalla meta. Il
+Q-learning la fa retrocedere **di una casella per episodio**, perché il suo
+bersaglio guarda avanti di un passo solo. Monte Carlo, all'estremo opposto,
+usa il ritorno intero e in un solo episodio informa tutte le caselle
+attraversate, ma con un numero rumoroso. Detta così, la scelta sembra fra due
+poli. Non lo è: fra i due c'è un continuo, e si attraversa con una manopola.
+
+`````{tab} Elementare
+
+La domanda è: **quanti passi guardo prima di fidarmi della mia stima?** Uno
+solo (e allora ho il TD), tutti fino alla fine (e allora ho Monte Carlo),
+oppure tre, o dieci.
+
+Guardare pochi passi dà una correzione stabile ma quasi sempre un po'
+sbagliata, perché si appoggia a una stima che a inizio addestramento non vale
+niente. Guardare fino in fondo dà una correzione sempre onesta ma ballerina.
+Guardarne una manciata, in pratica, batte quasi sempre entrambi gli estremi.
+
+C'è anche un modo elegante di non scegliere: fare la **media di tutte le
+lunghezze**, dando più peso a quelle corte e via via meno a quelle lunghe. Il
+peso decresce come gli interessi composti, e la manopola che decide quanto in
+fretta si chiama $\lambda$. Con $\lambda = 0$ resta solo il passo singolo, con
+$\lambda = 1$ resta il ritorno intero, in mezzo c'è tutto il resto.
+
+`````
+
+`````{tab} Superiore
+
+Il **ritorno a $n$ passi** tronca la somma dopo $n$ ricompense vere e chiude
+con la stima corrente:
+
+$$
+G_{t:t+n} = r_{t+1} + \gamma\, r_{t+2} + \cdots + \gamma^{n-1} r_{t+n}
++ \gamma^{n} V(S_{t+n}),
+$$
+
+e l'aggiornamento è il solito $V(S_t) \leftarrow V(S_t) + \alpha\,[\,G_{t:t+n}
+- V(S_t)\,]$. Per $n=1$ si ritrova TD(0); per $n$ pari o superiore alla durata
+dell'episodio il termine con $V$ sparisce e resta il ritorno Monte Carlo.
+Il compromesso è quello classico fra distorsione e varianza: $n$ piccolo poca
+varianza e molta distorsione, $n$ grande il contrario. Nei banchi di prova di
+Sutton e Barto l'ottimo sta quasi sempre a valori intermedi, non agli estremi
+{cite}`sutton2018reinforcement`.
+
+Il **$\lambda$-return** evita di dover scegliere $n$: è la media geometrica
+pesata di *tutti* i ritorni a $n$ passi,
+
+$$
+G_t^{\lambda} = (1-\lambda) \sum_{n=1}^{\infty} \lambda^{\,n-1}\, G_{t:t+n},
+\qquad \lambda \in [0,1],
+$$
+
+con $\lambda = 0$ che restituisce TD(0) e $\lambda = 1$ Monte Carlo. Scritta
+così sembra impraticabile, perché richiede di conoscere il futuro. Le
+**tracce di eleggibilità** la rendono calcolabile in avanti e con memoria
+costante: si tiene un vettore $z$ che segna quali stati sono «in attesa di
+credito»,
+
+$$
+z_t(s) = \gamma\lambda\, z_{t-1}(s) + \mathbb{1}[S_t = s],
+$$
+
+cioè la traccia di uno stato sale di $1$ quando lo si visita e sfuma di
+$\gamma\lambda$ a ogni passo successivo. A ogni istante si calcola **un solo**
+errore TD $\delta_t$ e lo si distribuisce a tutti gli stati in proporzione
+alla loro traccia: $V(s) \leftarrow V(s) + \alpha\,\delta_t\, z_t(s)$. Una
+ricompensa inattesa corregge così in un colpo tutta la scia di stati che
+l'hanno preceduta, i più recenti di più. È la stessa cosa del $\lambda$-return
+(*vista in avanti* e *vista all'indietro* coincidono, esattamente sotto
+opportune varianti) ma si calcola online, senza aspettare la fine
+{cite}`sutton2018reinforcement`.
+
+`````
+
+Sul labirinto la differenza si vede a occhio: con le tracce, il primo episodio
+che tocca la meta non illumina solo l'ultima casella, illumina tutta la strada
+percorsa, in dissolvenza. Il che, detto in modo meno pittoresco, è il motivo
+per cui i metodi multi-passo imparano più in fretta quando le ricompense sono
+rare.
+
+Questa manopola non è un residuo storico. Nel deep reinforcement learning il
+*vantaggio* che guiderà l'attore è, nella sua forma più semplice, proprio
+l'errore TD a un passo, e la tecnica standard per calcolarlo (il *generalized
+advantage estimation*, che accompagna PPO) è questa identica media pesata con
+questo identico $\lambda$: si sceglie quanta distorsione accettare in cambio di
+quanta varianza risparmiare.
+
 ```{admonition} Da ricordare
 :class: important
 - Il **temporal-difference** aggiorna le stime a ogni passo usando la stima
@@ -188,4 +283,8 @@ migliaia di episodi, riempie la tabella e fa emergere le frecce della
   strategia **ε-greedy** bilancia esplorazione e sfruttamento.
 - **SARSA** è la variante *on-policy* ($\gamma\,Q(s',a')$ al posto del massimo):
   più prudente, valuta la politica che segue davvero.
+- TD e Monte Carlo sono i due estremi di un continuo: il ritorno a **$n$
+  passi** sta in mezzo, e il **$\lambda$-return** li media tutti. Le **tracce
+  di eleggibilità** lo rendono calcolabile online, distribuendo un solo errore
+  TD su tutta la scia degli stati appena visitati.
 ```

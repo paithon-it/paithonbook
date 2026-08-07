@@ -301,7 +301,8 @@ antibiotici, efficace contro ceppi resistenti a ogni farmaco noto (pubblicato
 su *Cell*).
 
 **Raccomandazione su grafo.** Il caso industriale più celebre è **PinSage**, il
-sistema che Pinterest mette in produzione nel 2018 (Ying e colleghi) per
+sistema che Pinterest mette in produzione nel 2018
+{cite}`ying2018graph` per
 suggerire contenuti su un grafo bipartito di miliardi di *pin* e bacheche.
 PinSage è, nella sostanza, un GraphSAGE portato a scala web: campiona i vicini
 con brevi cammini casuali e li aggrega, girando su un grafo di tre miliardi di

@@ -59,7 +59,10 @@ completa (encoder, decoder, positional encoding), cioè come i blocchi di
 attenzione si montano in una rete vera. Un confronto onesto con i **modelli
 precedenti** (RNN, LSTM, GRU), inclusi i punti dove il Transformer è più
 debole. Poi gli **esempi pratici**, le famiglie di modelli (GPT, BERT, T5),
-l'estensione a immagini e **multimodalità**. Da lì, tre approfondimenti sul
+l'estensione a immagini e **multimodalità**, e che cosa succede quando lo
+stesso modello impara **cento lingue insieme** (compreso il fatto, tutt'altro
+che ovvio, che si possa rifinire un modello in inglese e usarlo in italiano).
+Da lì, tre approfondimenti sul
 presente: i **grandi modelli linguistici** (le leggi di scala, come si genera
 il testo davvero), il **post-training** (istruzioni, preferenze umane,
 allineamento: come un modello di linguaggio diventa un assistente) e il

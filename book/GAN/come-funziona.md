@@ -204,6 +204,108 @@ L'eleganza teorica delle GAN convive con una fama meritata di addestramento capr
 
 `````
 
+## La loss non dice niente: come si misura una GAN
+
+C'è una domanda che a questo punto è inevitabile, e la risposta non è affatto
+ovvia: **come si fa a sapere se sta funzionando?**
+
+In tutto il resto del libro la risposta è la stessa: si guarda la loss su un
+insieme di validazione, e se scende va bene. Qui non funziona, per un motivo
+strutturale. Le due loss non misurano la qualità: misurano **chi dei due sta
+vincendo in questo momento**. Se la loss del generatore scende può voler dire
+che genera meglio, oppure soltanto che il discriminatore si è indebolito. Al
+punto di equilibrio teorico, quando i campioni sono perfetti, il
+discriminatore tira a indovinare e le loss si assestano su valori che non
+distinguono un capolavoro da un disastro. Guardare le immagini a occhio, per
+contro, non scala e soprattutto **non vede il mode collapse**: mille immagini
+bellissime e tutte uguali sembrano un successo, una per volta.
+
+Servono metriche che giudichino una **distribuzione** invece di un campione, e
+la strada che si è imposta è obliqua: usare una rete già addestrata a
+riconoscere immagini (storicamente Inception, addestrata su ImageNet) come
+strumento di misura.
+
+`````{tab} Elementare
+
+Il primo tentativo, l'**Inception Score**, chiede due cose insieme a un
+giudice esterno che sa riconoscere gli oggetti. Primo: guardando una singola
+immagine generata, il giudice deve saper dire con sicurezza cos'è («questo è
+un cane», non «forse un cane, forse un divano»); se esita, l'immagine è
+informe. Secondo: guardando tutte le immagini generate insieme, deve trovarci
+soggetti diversi; se sono tutti cani, c'è mode collapse. Un punteggio alto
+significa immagini nitide e varie.
+
+Il difetto salta all'occhio appena lo si dice: in questa misura **le immagini
+vere non entrano mai**. Un generatore potrebbe produrre cani nitidi e assortiti
+che non somigliano a nessun cane esistente, e prendere un bel voto.
+
+Il **FID** ripara proprio questo. Invece di interrogare il giudice sul nome
+dell'oggetto, gli si sbircia dentro: si prendono i numeri che la rete calcola
+a metà strada, quelli che descrivono l'immagine senza ancora nominarla, e si
+guarda la **nuvola** che formano. Una nuvola per le immagini vere, una per
+quelle generate. Se le due nuvole si sovrappongono, il generatore ha imparato;
+se stanno in due posti diversi, no; e se quella generata è molto più stretta
+dell'altra, il generatore sta ripetendo poche cose. Il FID è la distanza fra
+le due nuvole, e più è **basso**, meglio è.
+
+`````
+
+`````{tab} Superiore
+
+L'**Inception Score** {cite}`salimans2016improved` combina le due richieste in
+un'unica quantità:
+
+$$
+\text{IS} = \exp\Big( \mathbb{E}_{x \sim p_G}\big[\, D_{\text{KL}}
+\big( p(y \mid x)\,\|\,p(y) \big) \,\big] \Big),
+$$
+
+dove $p(y\mid x)$ è la distribuzione sulle classi che il classificatore assegna
+al campione $x$ e $p(y) = \mathbb{E}_{x\sim p_G}[p(y\mid x)]$ è la marginale
+sull'intero insieme generato. La divergenza KL è grande quando la prima è
+concentrata (campione riconoscibile) e la seconda è piatta (insieme vario): le
+due richieste della tab precedente, in una formula. Si valuta tipicamente su
+decine di migliaia di campioni. I limiti sono noti: non usa mai $p_{\text{dati}}$,
+è cieco alla varietà *dentro* una classe, e dipende dalle mille classi di
+ImageNet, il che lo rende poco sensato fuori dalle immagini naturali.
+
+La **Fréchet Inception Distance** {cite}`heusel2017gans` abbandona le classi e
+lavora sulle attivazioni di uno strato intermedio (il vettore da $2048$
+componenti del *pooling* finale di Inception). Si approssimano le due
+popolazioni di attivazioni, reali e generate, con due gaussiane
+$\mathcal{N}(\mu_r, \Sigma_r)$ e $\mathcal{N}(\mu_g, \Sigma_g)$, e si misura la
+distanza di Fréchet fra le due, che per gaussiane ha forma chiusa:
+
+$$
+\text{FID} = \lVert \mu_r - \mu_g \rVert_2^2
++ \operatorname{Tr}\!\Big( \Sigma_r + \Sigma_g
+- 2\big(\Sigma_r \Sigma_g\big)^{1/2} \Big).
+$$
+
+Il primo termine confronta i centri delle due nuvole, il secondo la loro forma:
+è quest'ultimo a cogliere il mode collapse, perché una distribuzione collassata
+ha covarianza troppo piccola e paga anche se il centro è azzeccato. Il FID
+correla meglio dell'IS con il giudizio umano ed è oggi lo standard di fatto.
+
+Restano tre avvertenze da tenere a mente quando si leggono due FID a
+confronto. È **distorto verso l'alto con pochi campioni**, quindi due valori
+calcolati su numerosità diverse non si confrontano. Dipende dai dettagli
+implementativi (come si ridimensionano le immagini, quale versione di Inception,
+quale interpolazione), al punto che numeri presi da paper diversi vanno
+maneggiati con prudenza. E resta un giudizio dato da un classificatore
+addestrato su fotografie: su volti, radiografie o disegni misura qualcosa,
+ma non esattamente ciò che dice di misurare.
+
+`````
+
+Vale la pena fissare un punto che tornerà: queste due misure non giudicano
+un'immagine, giudicano un **insieme** di immagini contro un altro insieme. Non
+esiste il FID di una foto. È la conseguenza tecnica di ciò che una GAN cerca
+di fare, cioè avvicinare $p_G$ a $p_{\text{dati}}$: si valuta l'obiettivo
+dichiarato, non il singolo prodotto. Il FID sarà anche l'unità di misura con
+cui, nel capitolo sui modelli di diffusione, la nuova famiglia dimostrerà di
+aver superato le GAN.
+
 ## Accorgimenti pratici (cenni)
 
 La ricerca successiva ha prodotto una cassetta degli attrezzi per domare l'addestramento. Solo alcuni titoli, che approfondiremo: adottare architetture convoluzionali disciplinate come nelle **DCGAN** {cite}`radford2016unsupervised`; cambiare la funzione di costo con la **Wasserstein GAN** {cite}`arjovsky2017wasserstein`, che sostituisce la probabilità con una distanza dal comportamento più regolare, spesso accoppiata al *gradient penalty*; usare *label smoothing*, *minibatch discrimination* e aggiornamenti bilanciati per tenere in equilibrio i due giocatori. Nessuno di questi trucchi è una bacchetta magica: l'addestramento avversario resta un'arte oltre che una scienza, ma è proprio da questa tensione che nascono i risultati più sorprendenti del deep learning generativo.
@@ -213,4 +315,10 @@ La ricerca successiva ha prodotto una cassetta degli attrezzi per domare l'addes
 - Una GAN è un **duello** tra due reti: il generatore $G$ trasforma rumore in dati sintetici, il discriminatore $D$ stima la probabilità che un dato sia reale.
 - Condividono un'unica **funzione di valore minimax**: $G$ la minimizza, $D$ la massimizza; l'equilibrio si ha quando $p_G = p_{\text{dati}}$ e $D(x)=\tfrac12$.
 - L'addestramento è **alternato** e notoriamente instabile: attenzione a *mode collapse*, gradienti che svaniscono e mancata convergenza.
+- **La loss non misura la qualità**: dice solo chi sta vincendo. Si valuta
+  confrontando *distribuzioni*, con l'**Inception Score** (nitidezza e varietà
+  secondo un classificatore, ma senza mai guardare i dati veri) e soprattutto
+  con il **FID**, la distanza fra la nuvola delle attivazioni reali e quella
+  delle generate: più basso è meglio, e la parte sulle covarianze è quella che
+  smaschera il mode collapse.
 ```

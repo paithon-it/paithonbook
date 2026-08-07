@@ -406,10 +406,16 @@ iteration e policy iteration richiedono di conoscere il modello dell'ambiente,
 cioè le funzioni $P$ e $R$. È pianificare un viaggio con la mappa già in mano.
 Ma il robot del nostro labirinto la mappa non ce l'ha, e il mondo reale quasi
 mai la consegna: nessuno fornisce a un agente le probabilità di transizione
-del traffico o di una partita a Go. Quando il modello manca resta una sola
-strada: stimare i valori *dall'esperienza*, una mossa e una sorpresa alla
-volta. È esattamente ciò che fa il **Q-learning**, protagonista della prossima
-sezione.
+del traffico o di una partita a Go.
+
+Quando il modello manca resta una sola strada: stimare i valori
+*dall'esperienza*. E ci sono due modi di percorrerla, che le prossime due
+sezioni prendono in ordine. Il primo è il più diretto che si possa immaginare:
+giocare partite intere e fare la media di com'è andata, senza chiedere niente
+a nessuno. Sono i **metodi Monte Carlo**. Il secondo non aspetta la fine della
+partita e corregge la stima a ogni passo, usando la stima successiva come
+bersaglio provvisorio: è l'apprendimento per **differenze temporali**, e il suo
+esemplare più famoso è il **Q-learning**.
 
 ```{admonition} Da ricordare
 :class: important
@@ -423,5 +429,6 @@ sezione.
   definisce in modo ricorsivo, ed è la base di ogni algoritmo di RL.
 - Con il modello ($P$ e $R$) noto, **value iteration** e **policy iteration**
   calcolano valori e policy ottimi iterando Bellman; quando il modello manca
-  bisogna imparare dall'esperienza: è il Q-learning.
+  bisogna imparare dall'esperienza, coi metodi Monte Carlo o con le differenze
+  temporali.
 ```

@@ -129,9 +129,9 @@ Diffusion Probabilistic Models* {cite}`ho2020denoising`: addestramento ridotto
 a «indovina il rumore», architettura U-Net {cite}`ronneberger2015u` in
 prestito dalla visione artificiale, e campioni che per la prima volta reggono
 il confronto con le migliori GAN: su CIFAR-10 un FID di 3,17, allora lo stato
-dell'arte (il FID, *Fréchet Inception Distance*, è la metrica standard della
-generazione di immagini: misura la distanza statistica tra immagini generate e
-immagini reali, e più è basso meglio è). Il terzo atto arriva un anno dopo, e
+dell'arte (il FID, la *Fréchet Inception Distance* definita nel capitolo sulle
+GAN, misura quanto la nuvola delle immagini generate somiglia a quella delle
+immagini vere: più è basso, meglio è). Il terzo atto arriva un anno dopo, e
 il titolo dice tutto: *Diffusion Models Beat GANs on Image Synthesis*
 {cite}`dhariwal2021diffusion`. Su ImageNet la diffusione supera le GAN
 migliori non solo in qualità, ma anche in **diversità** dei campioni.

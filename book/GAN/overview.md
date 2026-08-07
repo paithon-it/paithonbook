@@ -147,7 +147,9 @@ convincenti. Ragione in più per capirne bene il funzionamento.
 Dall'intuizione passiamo alla pratica. Nelle prossime sezioni vedremo
 **l'architettura** del Generatore e del Discriminatore e come collegarli; la
 **funzione di perdita** e il ciclo di addestramento alternato, con le sue
-insidie (instabilità, *mode collapse*) e i trucchi per domarle; le
+insidie (instabilità, *mode collapse*) e i trucchi per domarle; il problema,
+tutt'altro che ovvio, di **misurare** se una GAN sta funzionando, visto che la
+sua loss non lo dice; le
 **varianti** che hanno fatto la storia, DCGAN, le GAN condizionali, fino a
 StyleGAN; e infine un'**implementazione in PyTorch**, dove costruiremo una GAN
 che impara a generare cifre manoscritte partendo, letteralmente, dal rumore.

@@ -150,6 +150,8 @@ parts:
     sections:
     - file: ReinforcementLearning/mdp-valore.md
       title: MDP e funzioni valore
+    - file: ReinforcementLearning/monte-carlo.md
+      title: I metodi Monte Carlo
     - file: ReinforcementLearning/q-learning.md
       title: Q-learning e differenze temporali
   - file: DeepReinforcementLearning/overview.md
@@ -206,6 +208,8 @@ parts:
       title: Esempi pratici
     - file: Transformers/multimodalita.md
       title: Multimodalità
+    - file: Transformers/multilingua.md
+      title: Una rete, cento lingue
     - file: Transformers/llm.md
       title: I grandi modelli linguistici
     - file: Transformers/mixture-of-experts.md

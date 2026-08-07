@@ -167,8 +167,9 @@ Due sezioni, dall'idea classica a quella neurale. Nella prima incontreremo il
 film che ami tu, ha amato anche…) poi nella versione che ha vinto il Netflix
 Prize, la fattorizzazione di matrici con i suoi fattori latenti, che
 implementeremo in PyTorch con `nn.Embedding`. Nella seconda porteremo le reti
-neurali dentro il problema: il Neural Collaborative Filtering, il passaggio
-dal prevedere voti all'**imparare a ordinare** (la loss BPR e le metriche di
-ranking), un cenno alla raccomandazione sequenziale e alle architetture
-industriali a due stadi, e una riflessione finale su cosa succede quando il
-suggerimento diventa pilotaggio.
+neurali dentro il problema: il Neural Collaborative Filtering, la lettura
+della matrice come **grafo bipartito** (dove raccomandare diventa prevedere
+gli archi che mancano), il passaggio dal prevedere voti all'**imparare a
+ordinare** (la loss BPR e le metriche di ranking), un cenno alla
+raccomandazione sequenziale e alle architetture industriali a due stadi, e una
+riflessione finale su cosa succede quando il suggerimento diventa pilotaggio.

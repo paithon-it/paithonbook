@@ -389,6 +389,13 @@ traduzione calano in media del 60% sulle principali coppie di lingue. Per la
 prima volta le reti ricorrenti che abbiamo studiato traducono, ogni giorno,
 per centinaia di milioni di persone.
 
+Questa storia ha anche un seguito che il capitolo sui Transformer riprende per
+intero. Pochi mesi dopo, invece di un modello per coppia di lingue, lo stesso
+gruppo ne addestra **uno solo** su tutte le coppie insieme, e scopre che
+traduce anche fra due lingue che non ha mai visto appaiate
+{cite}`johnson2017google`: è il primo indizio che dentro una rete addestrata su
+molte lingue si formi qualcosa di simile a una lingua franca interna.
+
 Ma il rattoppo si stava già mangiando il vestito. Se l'attenzione permette a
 ogni parola generata di guardare direttamente tutte le parole sorgente, a cosa
 serve ancora far scorrere uno stato passo dopo passo? Nel 2017 un gruppo di
