@@ -365,9 +365,26 @@ meno.
 - **Oversmoothing.** Li, Han e Wu (2018) mostrano che uno strato GCN è, in
   sostanza, un passo di *smoothing* laplaciano: iterandolo molte volte le feature
   dei nodi convergono verso un punto fisso che dipende dai gradi e non dai nodi,
-  rendendoli indistinguibili. È la ragione teorica per cui, oltre pochi strati,
-  l'accuratezza crolla; si mitiga con connessioni residuali, normalizzazioni ad
-  hoc o salti tra strati, ma il fenomeno resta il vincolo pratico alla profondità.
+  rendendoli indistinguibili. La derivazione spettrale della sezione sul message
+  passing lo rende meccanico: $\hat{A}$ ha autovalori in $[-1,1]$ con il massimo
+  pari a $1$, quindi $\hat{A}^K$ spegne tutte le componenti tranne quella lungo
+  l'autovettore dominante, che è $\tilde{D}^{1/2}\mathbf{1}$ e non distingue un
+  nodo dall'altro. È la ragione teorica per cui, oltre pochi strati,
+  l'accuratezza crolla. I rimedi hanno nomi e forme precise, e vale la pena
+  averli in mente perché sono tre risposte diverse alla stessa domanda.
+  **Highway GCN** (Rahimi e colleghi, 2018) mette un *gate* per strato che
+  decide quanto del vecchio stato lasciar passare accanto al nuovo, e nei loro
+  esperimenti le prestazioni smettono di migliorare attorno ai quattro strati.
+  **Jumping Knowledge Network** (Xu e colleghi, 2018) parte da
+  un'osservazione diversa, cioè che nodi diversi vogliono campi recettivi
+  diversi (un hub satura in due salti, un nodo periferico no), e quindi invece
+  di prendere l'uscita dell'ultimo strato le **concatena tutte**, lasciando che
+  sia il modello a scegliere la profondità nodo per nodo. **DeepGCN** (Li e
+  colleghi, 2019) importa di peso residui e connessioni dense da ResNet e
+  DenseNet contro i gradienti che svaniscono, e aggiunge un vicinato
+  **dilatato** (si prendono i vicini saltandone alcuni) contro l'oversmoothing:
+  con questa ricetta arrivano a 56 strati su nuvole di punti. Restano
+  eccezioni, però: il vincolo pratico alla profondità è ancora la regola.
 - **Over-squashing.** Alon e Yahav (2021) osservano che il campo recettivo di un
   nodo cresce esponenzialmente con il numero di strati, mentre il vettore che lo
   riassume ha dimensione fissa: l'informazione proveniente da nodi distanti viene

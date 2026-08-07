@@ -328,7 +328,11 @@ passaggi irrilevanti che confondono il modello. Danneggia quando una sola
 tornata di ricerca non basta, perché la risposta richiede di incrociare due
 fatti che stanno in documenti diversi e che nessuna singola query trova
 insieme. La terza leva rompe la rigidità: lascia che sia il **modello** a
-decidere se, quando e quante volte cercare.
+decidere se, quando e quante volte cercare. (Esiste anche una quarta via a
+quel problema di composizione, che non passa da più tornate di ricerca ma dal
+cambiare la forma dell'archivio: se i fatti stanno su un grafo invece che in
+paragrafi, incrociarne due è percorrere due archi. Il capitolo sulle reti
+neurali su grafo la riprende parlando di knowledge graph.)
 
 `````{tab} Elementare
 

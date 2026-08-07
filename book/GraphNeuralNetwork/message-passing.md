@@ -192,6 +192,145 @@ numero piccolo di strati e si addestra come una qualunque rete profonda.
 
 `````
 
+### Da dove viene $\hat{A}$: la convoluzione sullo spettro del grafo
+
+Quella frase, «cade naturalmente dai polinomi di Čebyšëv», è stata finora un
+assegno che non abbiamo coperto. Vale la pena coprirlo, perché la derivazione
+è breve e in fondo c'è un premio: spiega da sola il difetto più famoso delle
+GNN.
+
+`````{tab} Elementare
+
+Su un'immagine sappiamo che cos'è una frequenza: bassa vuol dire zone di
+colore che cambiano piano, alta vuol dire dettagli fitti e bordi netti. Un
+filtro che «sfoca» toglie le alte e tiene le basse.
+
+Su un grafo la stessa parola ha un senso preciso, e basta cambiare che cosa si
+guarda: una configurazione di numeri sui nodi è a **bassa frequenza** se nodi
+collegati portano valori simili, ad **alta frequenza** se lungo ogni arco il
+valore salta. Il caso estremo di bassa frequenza è «tutti lo stesso numero»;
+quello di alta frequenza è una scacchiera, dove ogni vicino ha il segno
+opposto.
+
+Una volta stabilito questo, si può copiare tutto il mestiere dell'elaborazione
+dei segnali: decomporre il segnale sui nodi nelle sue frequenze, moltiplicare
+ciascuna per un coefficiente, ricomporre. È esattamente ciò che i primi lavori
+sulle reti convoluzionali su grafo hanno fatto, e il conto costava carissimo.
+La GCN è quello che resta dopo aver tagliato tutto il superfluo: e quel che
+resta è un filtro che **attenua le alte frequenze**, cioè che smussa le
+differenze fra vicini.
+
+Tenete a mente questa frase, perché torna fra due pagine con un'aria molto
+meno amichevole.
+
+`````
+
+`````{tab} Superiore
+
+Si parte dal **laplaciano normalizzato** del grafo,
+
+$$
+L = I_N - D^{-1/2} A D^{-1/2} = U \Lambda U^\top ,
+$$
+
+simmetrico e semidefinito positivo, quindi diagonalizzabile con autovettori
+ortonormali $U$ e autovalori reali $\lambda_i \in [0, 2]$.
+
+Che gli autovalori siano «frequenze» non è un'analogia vaga: si legge dal
+quoziente di Rayleigh, che per il laplaciano normalizzato vale
+
+$$
+x^\top L x = \frac{1}{2} \sum_{(u,v) \in E}
+\left( \frac{x_u}{\sqrt{d_u}} - \frac{x_v}{\sqrt{d_v}} \right)^{\!2} .
+$$
+
+È una somma di quadrati di **differenze lungo gli archi**: un autovettore con
+$\lambda$ piccolo varia poco fra nodi collegati, uno con $\lambda$ grande
+alterna. Su una griglia regolare gli autovettori del laplaciano sono seni e
+coseni, e questa costruzione si riduce alla trasformata di Fourier di sempre.
+
+Definita la trasformata come $\hat{x} = U^\top x$, un filtro è una
+moltiplicazione punto per punto nello spettro e un ritorno indietro:
+
+$$
+g_\theta \star x = U\, g_\theta(\Lambda)\, U^\top x ,
+$$
+
+che è la rete spettrale di Bruna e colleghi {cite}`bruna2014spectral`. Ha due
+difetti fatali: richiede la diagonalizzazione di $L$, cioè $O(N^3)$, e i filtri
+appresi non sono **localizzati**, perché un $g_\theta(\Lambda)$ arbitrario
+mescola nodi a distanza qualunque.
+
+Entrambi si curano con lo stesso trucco: approssimare $g_\theta$ con un
+**polinomio** di grado $K$, e in particolare con i polinomi di Čebyšëv
+{cite}`hammond2011wavelets`,
+
+$$
+g_\theta(\Lambda) \approx \sum_{k=0}^{K} \theta_k\, T_k(\tilde{\Lambda}),
+\qquad \tilde{\Lambda} = \frac{2}{\lambda_{\max}}\Lambda - I_N ,
+$$
+
+con $T_k(x) = 2x\,T_{k-1}(x) - T_{k-2}(x)$, $T_0 = 1$, $T_1 = x$. Il guadagno è
+doppio e vale la pena vederlo bene. Primo, poiché
+$U f(\Lambda) U^\top = f(L)$ per qualunque polinomio $f$, gli autovettori
+spariscono dal conto: restano prodotti fra la matrice sparsa $L$ e un vettore,
+cioè $O(|E|)$ invece di $O(N^3)$. Secondo, una potenza $L^k$ è non nulla in
+$(u,v)$ solo se esiste un cammino di lunghezza $\le k$ fra $u$ e $v$: un
+polinomio di grado $K$ è quindi automaticamente **$K$-localizzato**, tocca
+soltanto i vicini entro $K$ salti. È ChebNet {cite}`defferrard2016convolutional`,
+ed è già una GNN: la localizzazione, che nella lettura spaziale era il punto di
+partenza, qui *emerge* dal troncamento.
+
+L'ultimo passo è di Kipf e Welling {cite}`kipf2017semi`, e consiste nel
+rinunciare a quasi tutto. Si pone $K = 1$ (un solo salto per strato, la
+profondità la darà lo stack) e si approssima $\lambda_{\max} \approx 2$, il che
+manda $\tilde{L} = \frac{2}{\lambda_{\max}} L - I_N$ in
+$-D^{-1/2} A D^{-1/2}$. Restano due parametri liberi:
+
+$$
+g_{\theta'} \star x \approx \theta'_0\, x + \theta'_1 \big(- D^{-1/2} A D^{-1/2}\big) x .
+$$
+
+Legandoli con $\theta = \theta'_0 = -\theta'_1$, per ridurre l'overfitting e i
+parametri a uno solo per canale, si ottiene
+
+$$
+g_{\theta} \star x \approx \theta \big( I_N + D^{-1/2} A D^{-1/2} \big) x .
+$$
+
+La matrice fra parentesi ha autovalori in $[0, 2]$ e applicarla ripetutamente
+fa esplodere i valori: da qui il *renormalization trick*, cioè sostituirla con
+$\hat{A} = \tilde{D}^{-1/2}\tilde{A}\tilde{D}^{-1/2}$ dove
+$\tilde{A} = A + I_N$ e $\tilde{D}$ è la matrice dei gradi di $\tilde{A}$. È la
+formula della GCN, e l'assegno è coperto: la normalizzazione simmetrica non era
+una scelta di comodo, è quel che resta di una convoluzione spettrale dopo due
+approssimazioni.
+
+`````
+
+Il premio annunciato arriva adesso. Chiamiamo $\lambda_i(\hat{A})$ gli
+autovalori dell'operatore appena ottenuto: stanno in $[-1, 1]$, il più grande
+vale esattamente $1$, e il suo autovettore è $\tilde{D}^{1/2}\mathbf{1}$, cioè
+la radice dei gradi. Uno strato GCN (a meno di $W$ e della non linearità) è la
+moltiplicazione per $\hat{A}$; $K$ strati sono $\hat{A}^K$. Ma elevare a
+potenza una matrice moltiplica i suoi autovalori, e ogni autovalore di modulo
+minore di $1$ **svanisce**: dopo abbastanza strati sopravvive solo la
+componente lungo l'autovettore dominante, che è la stessa per tutti i nodi a
+meno del loro grado.
+
+Sulla catena di quattro nodi che useremo fra poco, con $X = (1,2,3,4)^\top$, i
+quattro autovalori di $\hat{A}$ valgono $1$, $0{,}729$, $0{,}167$ e $-0{,}229$.
+Applicando $\hat{A}$ venti volte, il rapporto fra il valore di ogni nodo e la
+radice del suo grado è $1{,}571$, $1{,}572$, $1{,}574$, $1{,}575$: i quattro
+nodi, che partivano da valori distinti, sono diventati indistinguibili. Dopo
+cento applicazioni sono identici fino alla quarta cifra.
+
+Questo è l'**oversmoothing** di cui la sezione sui limiti parlerà come di un
+fenomeno osservato, e adesso sappiamo che non è una sfortuna sperimentale: è
+l'inevitabile conseguenza di applicare molte volte un filtro passa-basso. Non
+c'è nulla da aggiustare nell'implementazione. C'è da decidere quanti strati
+mettere, oppure cambiare l'operatore.
+
 ## Un passo di propagazione, coi numeri
 
 Vale più di mille formule vedere i conti tornare. Prendiamo un grafo a quattro
@@ -465,8 +604,16 @@ delle Graph Attention Network.
   e tiene gli autovalori in $[-1,1]$, stabilizzando le scale attraverso gli
   strati; discende dai filtri spettrali di Čebyšëv
   {cite}`defferrard2016convolutional`.
+- Sul grafo le **frequenze** hanno un senso preciso: un segnale è a bassa
+  frequenza se nodi collegati portano valori simili, e gli autovalori del
+  laplaciano le misurano. Una convoluzione spettrale costa $O(N^3)$; troncarla
+  a un polinomio di Čebyšëv di grado $K$ la rende sparsa e **$K$-localizzata**,
+  e il caso $K=1$ con $\lambda_{\max}\approx 2$ **è** la GCN.
 - Impilare $K$ strati dà a ogni nodo un **campo recettivo a $K$ salti**, l'esatto
-  analogo della profondità nelle CNN; troppa profondità causa *over-smoothing*.
+  analogo della profondità nelle CNN. Ma uno strato GCN è un **filtro
+  passa-basso**, e applicarlo molte volte lascia sopravvivere solo
+  l'autovettore dominante di $\hat{A}$: è l'*over-smoothing*, e non è un
+  incidente ma una conseguenza algebrica.
 - L'addestramento tipico è la **classificazione dei nodi
   semi-supervisionata** (Cora): cross-entropia sui soli nodi etichettati, ma
   gradienti che fluiscono su tutto il grafo, con la solita discesa del gradiente.

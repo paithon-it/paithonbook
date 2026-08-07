@@ -73,6 +73,38 @@ memoria e tempo: più veloci, ma con meno cifre di margine.
 
 `````
 
+```{admonition} Quando un bit si gira da solo
+:class: seealso
+
+Il primo bit di quella rappresentazione è il **segno**. Vale la pena fermarsi
+un attimo su che cosa significa, perché è un caso in cui la struttura del
+formato ha una conseguenza che di solito non si associa alla matematica.
+
+I bit in memoria non sono eterni. Una particella ionizzante, un disturbo
+elettromagnetico, una cella difettosa: ogni tanto un bit si ribalta senza che
+nessuno lo abbia chiesto. Su un computer da scrivania è un evento raro; su
+decine di migliaia di acceleratori che macinano per settimane, diventa
+un'occorrenza ordinaria, e i grandi operatori la trattano come tale.
+
+Se il bit che si gira è l'ultimo della mantissa, l'effetto è invisibile: il
+numero cambia nella settima cifra. Se è il **primo**, un peso che valeva
+$0{,}5$ diventa $-0{,}5$, e il segno di un contributo si rovescia in mezzo
+alla rete. Su una rete profonda l'effetto non resta locale, perché quel valore
+alimenta lo strato successivo: la letteratura riporta che un singolo bit
+ribaltato in un punto sensibile può far crollare l'accuratezza di un
+classificatore su ImageNet dal $76\%$ a meno del $10\%$.
+
+La differenza rispetto al software tradizionale è che qui **non si vede**. Un
+bit sbagliato in un programma normale di solito produce un crash o un risultato
+palesemente assurdo; in una rete produce una risposta plausibile e sbagliata,
+indistinguibile da una risposta giusta se non si conosce quella giusta. È il
+motivo per cui il tema ha un nome tutto suo, *corruzione silenziosa dei dati*,
+e per cui la robustezza di un sistema di ML ha due facce distinte: quella ai
+**dati** (deriva, esempi avversari, discussa nel capitolo sull'AI
+responsabile) e quella all'**hardware**, che non riguarda il modello ma il
+silicio su cui gira.
+```
+
 ## Overflow e underflow: i bordi del mondo rappresentabile
 
 Il budget di cifre ha due confini. Oltre il più grande numero rappresentabile

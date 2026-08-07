@@ -200,6 +200,68 @@ che una `nn.Linear` o una convoluzione girano su una GPU recente in mezza
 precisione.
 `````
 
+## L'altra strada: far scorrere i dati invece dei conti
+
+Il tiling e i tensor core sono la risposta della GPU a una domanda che si può
+affrontare anche in un modo completamente diverso, e vale la pena vederlo
+perché mette in prospettiva tutto il capitolo. La domanda è sempre quella: come
+si moltiplicano due matrici muovendo il meno possibile.
+
+`````{tab} Elementare
+
+Nella GPU il dato sta fermo in memoria e i calcolatori vanno a prenderlo. Il
+tiling serve a ridurre i viaggi, ma i viaggi ci sono.
+
+L'idea opposta è tenere fermi i calcolatori e far **scorrere** i dati
+attraverso di loro, come su un nastro trasportatore. Si dispone una griglia di
+piccole unità, ognuna capace solo di «moltiplica e somma al totale che ho già».
+I numeri della prima matrice entrano da sinistra e attraversano la griglia riga
+per riga; quelli della seconda entrano dall'alto e la attraversano colonna per
+colonna. A ogni battito, ogni unità prende i due numeri che le sono arrivati,
+li moltiplica, li aggiunge al proprio totale, e li **passa al vicino**.
+
+Il guadagno è tutto lì, in quel «passa al vicino»: un numero letto una volta
+sola dalla memoria attraversa un'intera riga e un'intera colonna, servendo
+decine di unità senza essere mai riletto. Si chiama **array sistolico** perché
+i dati pulsano attraverso la griglia come il sangue spinto dal cuore, e il nome
+lo scelse chi lo inventò, alla Carnegie Mellon, alla fine degli anni Settanta.
+
+`````
+
+`````{tab} Superiore
+
+Un **array sistolico** {cite}`kung1982why` è una griglia di elementi di
+elaborazione identici, ciascuno collegato soltanto ai vicini immediati e
+capace di una sola operazione: moltiplicare due ingressi, sommarli a un
+accumulatore interno, e propagare gli ingressi ai vicini al ciclo successivo.
+Non c'è memoria condivisa, non c'è arbitraggio, non c'è un file di registri da
+indirizzare: il movimento dei dati è cablato nella topologia.
+
+Per il prodotto $C = AB$ con la variante *weight stationary*, i pesi restano
+caricati negli elementi e le attivazioni scorrono; ogni valore letto una volta
+dalla memoria esterna viene riusato lungo tutta una dimensione dell'array. Il
+riuso non è ottenuto da una cache che *spera* di essere colpita, ma dalla
+geometria.
+
+La prima TPU di Google {cite}`jouppi2017datacenter` è la realizzazione più
+nota: un array $256 \times 256$, cioè $65\,536$ moltiplicazioni-accumulo per
+ciclo di clock in una sola unità (le generazioni successive usano più unità
+$128 \times 128$). Il confronto con la GPU non è «chi calcola di più»
+ma «chi si muove di meno», ed è per questo che gli acceleratori dedicati
+guadagnano soprattutto in **energia per operazione**, un tema che il capitolo
+su MLOps riprende quando si tratta di pagare la bolletta.
+
+Il prezzo della specializzazione è la rigidità. Un array sistolico è bravo
+esattamente a una cosa. Se la matrice è più piccola dell'array, gran parte
+degli elementi calcola zeri; se l'operazione non è un GEMM (una convoluzione
+sparsa, un gather irregolare, un'operazione elemento per elemento), la
+struttura non serve e bisogna uscire dall'array. La GPU, con la sua gerarchia
+di memoria programmabile e i suoi CUDA core generici, perde in efficienza di
+picco e guadagna in tutto il resto: è la stessa tensione fra lepre e formicaio
+della prima sezione, spostata di un livello.
+
+`````
+
 ## In pratica: forme «tonde» e mezza precisione
 
 Chiudiamo con un'onestà dovuta. Quasi certamente non scriverai mai un GEMM a
@@ -244,6 +306,11 @@ GEMM è il primo, e più puro, esempio di una lezione che tornerà a ogni pagina
   accumulo $D = AB + C$ per colpo di clock, in **precisione mista**
   {cite}`micikevicius2018mixed` (ingressi 16 bit, accumulo 32 bit): circa un
   ordine di grandezza di throughput in più. `cuBLAS`/`cuDNN` li usano da soli.
+- L'**array sistolico** {cite}`kung1982why` risolve lo stesso problema
+  dall'altro capo: invece di andare a prendere i dati, li fa **scorrere** fra
+  unità adiacenti, e il riuso è nella geometria invece che in una cache. È la
+  scelta della TPU {cite}`jouppi2017datacenter`: massima efficienza sul GEMM,
+  rigidità su tutto il resto.
 - Raramente scriverai un GEMM a mano, ma capire il tiling spiega perché le
   forme «tonde» (multipli di 8/16) e la mezza precisione vanno più veloci.
 - Riuso in shared memory + tensor core: la stessa ricetta tornerà, applicata

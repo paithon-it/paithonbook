@@ -148,6 +148,8 @@ parts:
   - file: ReinforcementLearning/overview.md
     title: Reinforcement Learning
     sections:
+    - file: ReinforcementLearning/banditi.md
+      title: I bandit a più braccia
     - file: ReinforcementLearning/mdp-valore.md
       title: MDP e funzioni valore
     - file: ReinforcementLearning/monte-carlo.md
@@ -365,6 +367,8 @@ parts:
       title: Il mondo come grafo
     - file: GraphNeuralNetwork/message-passing.md
       title: Message passing
+    - file: GraphNeuralNetwork/knowledge-graph.md
+      title: I knowledge graph
     - file: GraphNeuralNetwork/architetture-applicazioni.md
       title: GraphSAGE, GAT e applicazioni
   - file: SistemiRaccomandazione/overview.md
@@ -408,6 +412,8 @@ parts:
       title: LLMOps
     - file: MLOps/metriche-di-servizio.md
       title: Misurare un servizio
+    - file: MLOps/energia-e-impronta.md
+      title: Il conto in energia
   - file: Interpretabilita/overview.md
     title: Interpretabilità
     sections:

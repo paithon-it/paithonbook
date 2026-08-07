@@ -50,7 +50,7 @@
   </url>
   <url>
     <loc>https://book.paithon.it/main/Matematica/probabilita-statistica.html</loc>
-    <lastmod>2026-08-05T22:53:16+00:00</lastmod>
+    <lastmod>2026-08-07T22:29:47+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/Matematica/teoria-informazione.html</loc>
@@ -58,7 +58,7 @@
   </url>
   <url>
     <loc>https://book.paithon.it/main/Matematica/analisi-numerica.html</loc>
-    <lastmod>2026-08-05T21:53:21+00:00</lastmod>
+    <lastmod>2026-08-07T22:29:47+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/MachineLearning/overview.html</loc>
@@ -78,7 +78,7 @@
   </url>
   <url>
     <loc>https://book.paithon.it/main/MachineLearning/iperparametri.html</loc>
-    <lastmod>2026-07-26T10:19:44+00:00</lastmod>
+    <lastmod>2026-08-07T12:30:00+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/MachineLearning/alberi-ensemble.html</loc>
@@ -142,7 +142,7 @@
   </url>
   <url>
     <loc>https://book.paithon.it/main/PyTorch/errori-comuni.html</loc>
-    <lastmod>2026-08-06T07:37:14+00:00</lastmod>
+    <lastmod>2026-08-07T12:29:38+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/PyTorch/dal-notebook-agli-script.html</loc>
@@ -158,7 +158,7 @@
   </url>
   <url>
     <loc>https://book.paithon.it/main/GPU/overview.html</loc>
-    <lastmod>2026-08-06T07:38:46+00:00</lastmod>
+    <lastmod>2026-08-07T21:41:32+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/GPU/architettura-gpu.html</loc>
@@ -174,7 +174,7 @@
   </url>
   <url>
     <loc>https://book.paithon.it/main/GPU/gemm-e-tensor-core.html</loc>
-    <lastmod>2026-07-26T10:19:44+00:00</lastmod>
+    <lastmod>2026-08-07T21:41:32+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/GPU/flash-attention.html</loc>
@@ -202,7 +202,7 @@
   </url>
   <url>
     <loc>https://book.paithon.it/main/VisioneArtificiale/overview.html</loc>
-    <lastmod>2026-07-26T10:19:44+00:00</lastmod>
+    <lastmod>2026-08-07T22:29:47+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/VisioneArtificiale/classificazione-transfer.html</loc>
@@ -226,11 +226,15 @@
   </url>
   <url>
     <loc>https://book.paithon.it/main/ReinforcementLearning/overview.html</loc>
-    <lastmod>2026-07-26T10:19:44+00:00</lastmod>
+    <lastmod>2026-08-07T12:30:00+00:00</lastmod>
+  </url>
+  <url>
+    <loc>https://book.paithon.it/main/ReinforcementLearning/banditi.html</loc>
+    <lastmod>2026-08-07T12:30:00+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/ReinforcementLearning/mdp-valore.html</loc>
-    <lastmod>2026-08-06T22:03:18+00:00</lastmod>
+    <lastmod>2026-08-07T12:30:00+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/ReinforcementLearning/monte-carlo.html</loc>
@@ -246,11 +250,11 @@
   </url>
   <url>
     <loc>https://book.paithon.it/main/DeepReinforcementLearning/dqn.html</loc>
-    <lastmod>2026-07-26T10:19:44+00:00</lastmod>
+    <lastmod>2026-08-07T22:29:47+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/DeepReinforcementLearning/policy-gradient.html</loc>
-    <lastmod>2026-08-06T22:03:18+00:00</lastmod>
+    <lastmod>2026-08-07T12:30:00+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/DeepReinforcementLearning/controllo-continuo.html</loc>
@@ -326,7 +330,7 @@
   </url>
   <url>
     <loc>https://book.paithon.it/main/Transformers/confronti.html</loc>
-    <lastmod>2026-08-05T22:38:01+00:00</lastmod>
+    <lastmod>2026-08-07T22:31:50+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/Transformers/esempi.html</loc>
@@ -434,7 +438,7 @@
   </url>
   <url>
     <loc>https://book.paithon.it/main/Agenti/rag-avanzato.html</loc>
-    <lastmod>2026-08-06T07:42:25+00:00</lastmod>
+    <lastmod>2026-08-07T21:45:24+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/Agenti/context-engineering.html</loc>
@@ -482,7 +486,7 @@
   </url>
   <url>
     <loc>https://book.paithon.it/main/SistemiMultiAgente/sciami-e-simulazioni.html</loc>
-    <lastmod>2026-07-30T21:11:14+00:00</lastmod>
+    <lastmod>2026-08-07T21:41:32+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/Audio/overview.html</loc>
@@ -590,7 +594,7 @@
   </url>
   <url>
     <loc>https://book.paithon.it/main/GraphNeuralNetwork/overview.html</loc>
-    <lastmod>2026-07-26T10:19:44+00:00</lastmod>
+    <lastmod>2026-08-07T22:31:50+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/GraphNeuralNetwork/dati-a-grafo.html</loc>
@@ -598,11 +602,15 @@
   </url>
   <url>
     <loc>https://book.paithon.it/main/GraphNeuralNetwork/message-passing.html</loc>
-    <lastmod>2026-07-26T10:19:44+00:00</lastmod>
+    <lastmod>2026-08-07T12:30:30+00:00</lastmod>
+  </url>
+  <url>
+    <loc>https://book.paithon.it/main/GraphNeuralNetwork/knowledge-graph.html</loc>
+    <lastmod>2026-08-07T21:45:24+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/GraphNeuralNetwork/architetture-applicazioni.html</loc>
-    <lastmod>2026-08-06T22:03:34+00:00</lastmod>
+    <lastmod>2026-08-07T22:29:47+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/SistemiRaccomandazione/overview.html</loc>
@@ -646,7 +654,7 @@
   </url>
   <url>
     <loc>https://book.paithon.it/main/MLOps/overview.html</loc>
-    <lastmod>2026-08-06T07:38:46+00:00</lastmod>
+    <lastmod>2026-08-07T21:41:32+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/MLOps/dal-notebook-alla-produzione.html</loc>
@@ -673,6 +681,10 @@
     <lastmod>2026-08-05T22:45:13+00:00</lastmod>
   </url>
   <url>
+    <loc>https://book.paithon.it/main/MLOps/energia-e-impronta.html</loc>
+    <lastmod>2026-08-07T21:41:32+00:00</lastmod>
+  </url>
+  <url>
     <loc>https://book.paithon.it/main/Interpretabilita/overview.html</loc>
     <lastmod>2026-07-26T10:19:44+00:00</lastmod>
   </url>
@@ -682,11 +694,11 @@
   </url>
   <url>
     <loc>https://book.paithon.it/main/Interpretabilita/spiegazioni-locali.html</loc>
-    <lastmod>2026-07-26T10:19:44+00:00</lastmod>
+    <lastmod>2026-08-07T22:29:47+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/Interpretabilita/attribuzione-e-meccanicistica.html</loc>
-    <lastmod>2026-08-05T22:03:54+00:00</lastmod>
+    <lastmod>2026-08-07T22:29:47+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/AIResponsabile/overview.html</loc>

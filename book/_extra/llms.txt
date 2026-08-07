@@ -85,6 +85,7 @@ della sezione e URL), non si ridistribuisce il testo.
 ## Apprendimento per rinforzo
 
 - [Reinforcement Learning](https://book.paithon.it/main/ReinforcementLearning/overview.html): Nessuno insegna a un bambino a camminare elencandogli la sequenza esatta di contrazioni muscolari. Il bambino ci prova, oscilla, cade, si rialza, fa un passo e cade di nuovo.
+  - [I bandit a più braccia](https://book.paithon.it/main/ReinforcementLearning/banditi.html)
   - [MDP e funzioni valore](https://book.paithon.it/main/ReinforcementLearning/mdp-valore.html)
   - [I metodi Monte Carlo](https://book.paithon.it/main/ReinforcementLearning/monte-carlo.html)
   - [Q-learning e differenze temporali](https://book.paithon.it/main/ReinforcementLearning/q-learning.html)
@@ -193,6 +194,7 @@ della sezione e URL), non si ridistribuisce il testo.
 - [Graph Neural Network](https://book.paithon.it/main/GraphNeuralNetwork/overview.html): Nell'estate del 1736 la città prussiana di Königsberg (oggi Kaliningrad, in Russia) aveva un passatempo cittadino.
   - [Il mondo come grafo](https://book.paithon.it/main/GraphNeuralNetwork/dati-a-grafo.html)
   - [Message passing](https://book.paithon.it/main/GraphNeuralNetwork/message-passing.html)
+  - [I knowledge graph](https://book.paithon.it/main/GraphNeuralNetwork/knowledge-graph.html)
   - [GraphSAGE, GAT e applicazioni](https://book.paithon.it/main/GraphNeuralNetwork/architetture-applicazioni.html)
 - [Sistemi di raccomandazione](https://book.paithon.it/main/SistemiRaccomandazione/overview.html): Il 2 ottobre 2006 Netflix (che allora campava spedendo DVD per posta) pubblica un annuncio senza precedenti: un milione di dollari a chiunque riesca a migliorare del 10% il suo sistema di…
   - [Il filtraggio collaborativo](https://book.paithon.it/main/SistemiRaccomandazione/filtraggio-collaborativo.html)
@@ -214,6 +216,7 @@ della sezione e URL), non si ridistribuisce il testo.
   - [Monitoraggio e drift](https://book.paithon.it/main/MLOps/monitoring-e-drift.html)
   - [LLMOps](https://book.paithon.it/main/MLOps/llmops.html)
   - [Misurare un servizio](https://book.paithon.it/main/MLOps/metriche-di-servizio.html)
+  - [Il conto in energia](https://book.paithon.it/main/MLOps/energia-e-impronta.html)
 - [Interpretabilità](https://book.paithon.it/main/Interpretabilita/overview.html): Nel 2016 tre ricercatori dell'Università di Washington (Marco Túlio Ribeiro, Sameer Singh e Carlos Guestrin) addestrarono un classificatore a distinguere le foto di husky da quelle di lupo.
   - [Modelli trasparenti](https://book.paithon.it/main/Interpretabilita/modelli-trasparenti-e-importanza.html)
   - [Spiegazioni locali](https://book.paithon.it/main/Interpretabilita/spiegazioni-locali.html)

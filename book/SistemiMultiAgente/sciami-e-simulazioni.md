@@ -296,6 +296,159 @@ meccanica: un sistema che va solo dove è già andato bene smette di cercare.
 
 `````
 
+## Rimescolare invece di muoversi: gli algoritmi genetici
+
+Formiche e particelle si **spostano**: c'è uno spazio, e ogni individuo ha una
+posizione che aggiorna. La terza famiglia di questa cassetta degli attrezzi
+rinuncia anche a quello, e cambia il verbo. Gli individui non si muovono: si
+**riproducono**.
+
+`````{tab} Elementare
+
+Immagina di dover riempire uno zaino scegliendo fra venti oggetti, ognuno con
+un peso e un valore, senza superare il limite di carico. Non c'è nessuna
+pendenza da seguire: le soluzioni non sono punti su una collina, sono elenchi
+di sì e no, e non esiste un «poco più a destra».
+
+Un algoritmo genetico parte da una popolazione di zaini riempiti a caso, quasi
+tutti mediocri, e ripete tre gesti che vengono dalla biologia.
+
+**Selezione.** Chi vale di più ha più probabilità di fare figli. Il modo più
+semplice è il torneo: si pescano due individui a caso e passa il migliore.
+
+**Incrocio.** Da due genitori si fa un figlio prendendo la prima metà
+dell'elenco dall'uno e la seconda dall'altro. È il gesto che le formiche e le
+particelle non hanno, ed è quello che dà il nome alla famiglia.
+
+**Mutazione.** Ogni tanto, a caso, si ribalta una scelta: un oggetto che c'era
+esce, uno che non c'era entra. Serve a non restare prigionieri del materiale
+genetico di partenza, ed è la stessa funzione dell'evaporazione nelle formiche
+e dell'inerzia nelle particelle.
+
+L'incrocio nasconde una scommessa, e conviene dirla, perché è il punto in cui
+questi algoritmi funzionano o falliscono: **si sta assumendo che una buona
+soluzione sia fatta di buoni pezzi**, e che i pezzi di due soluzioni decenti,
+mescolati, possano darne una migliore. Sullo zaino l'assunzione regge (un buon
+sottoinsieme di oggetti resta buono accanto a un altro). Su un problema dove
+il valore dipende da tutte le scelte insieme, e spezzare l'elenco a metà
+distrugge il senso di entrambe le metà, l'incrocio è solo rumore costoso.
+
+`````
+
+`````{tab} Superiore
+
+Il quadro lo fissa John Holland {cite}`holland1975adaptation` nel 1975.
+Una soluzione candidata è codificata come una stringa (il *genotipo*, nel caso
+più semplice binaria) e la funzione obiettivo diventa la *fitness*. A ogni
+generazione si applicano tre operatori:
+
+- **selezione**, che campiona i genitori con probabilità crescente nella
+  fitness (proporzionale alla fitness, cioè la «roulette», oppure per torneo,
+  che è più robusto perché dipende solo dall'*ordine* e non dalla scala dei
+  valori);
+- **crossover**, che ricombina due genotipi (a un punto, a due punti,
+  uniforme);
+- **mutazione**, che perturba ogni gene con probabilità piccola.
+
+Si aggiunge quasi sempre l'**elitismo**, cioè il trasferimento diretto del
+migliore alla generazione successiva, senza il quale la ricerca può peggiorare
+da una generazione all'altra.
+
+La giustificazione classica dell'incrocio è l'ipotesi dei *building block*:
+schemi parziali corti e buoni verrebbero propagati e combinati. È
+un'argomentazione euristica più che un teorema, e il suo limite ha un nome
+preciso, **epistasi**: quando il contributo di un gene dipende fortemente dagli
+altri, spezzare il genotipo distrugge proprio l'informazione che si voleva
+trasmettere, e il crossover degrada a mutazione macroscopica. La codifica non
+è quindi un dettaglio implementativo: **è il progetto dell'algoritmo**, perché
+decide quali pezzi sono separabili.
+
+Rispetto alle altre due famiglie della sezione, la differenza operativa è che
+lo spazio non deve avere una metrica. PSO ha bisogno di sommare posizioni e
+velocità, quindi di uno spazio vettoriale; un algoritmo genetico ha bisogno
+solo di saper ricombinare e perturbare, e questo lo rende applicabile a
+permutazioni, alberi, grafi e programmi. Il caso in cui l'individuo è un
+programma si chiama *programmazione genetica*.
+
+Un secondo vantaggio distintivo, che né il gradiente né le altre metaeuristiche
+danno gratis, è l'ottimizzazione **multi-obiettivo**. Poiché la popolazione è
+un insieme e non un punto, la si può far convergere non su un ottimo ma
+sull'intero **fronte di Pareto** dei compromessi fra obiettivi in conflitto
+(accuratezza contro latenza, prestazione contro consumo): è ciò che fa NSGA-II
+{cite}`deb2002fast`, ordinando la popolazione per dominanza invece che per un
+punteggio scalare. Con un metodo a singolo punto bisognerebbe fissare i pesi
+degli obiettivi in anticipo e rilanciare la ricerca per ogni compromesso.
+
+`````
+
+Lo zaino non è un esempio scelto a caso: è il tipo di problema su cui la
+discesa del gradiente non ha proprio dove appoggiarsi. Nel codice che segue
+l'istanza è fissata, e poiché ha solo venti oggetti possiamo permetterci il
+lusso di conoscere la risposta vera, enumerando tutte le combinazioni: così
+l'algoritmo si può giudicare invece che ammirare.
+
+```python
+import numpy as np
+from itertools import product
+
+# --- l'istanza: 20 oggetti, uno zaino che regge 60 kg (fissata una volta) ---
+istanza = np.random.default_rng(7)
+N, CAPIENZA = 20, 60
+peso   = istanza.integers(4, 20, N)
+valore = istanza.integers(5, 40, N)
+
+def bonta(pop):                      # quanto vale uno zaino; 0 se sfonda il limite
+    return np.where(pop @ peso <= CAPIENZA, pop @ valore, 0)
+
+def genetico(seme, POP=60, GEN=80, P_MUT=0.03):
+    rng = np.random.default_rng(seme)
+    pop = rng.integers(0, 2, size=(POP, N))          # una popolazione di zaini a caso
+    for _ in range(GEN):
+        f = bonta(pop)
+        elite = pop[f.argmax()].copy()               # il migliore non si perde mai
+        s = rng.integers(0, POP, size=(POP, 2))      # selezione: torneo a due
+        genitori = np.where((f[s[:, 0]] >= f[s[:, 1]])[:, None], pop[s[:, 0]], pop[s[:, 1]])
+        taglio = rng.integers(1, N, size=(POP, 1))   # incrocio a un punto:
+        maschera = np.arange(N)[None, :] < taglio    # meta' da un genitore, meta' dall'altro
+        figli = np.where(maschera, genitori, genitori[rng.permutation(POP)])
+        figli ^= (rng.random((POP, N)) < P_MUT)      # mutazione: qualche bit ribaltato
+        figli[0] = elite
+        pop = figli
+    return int(bonta(pop).max())
+
+esiti = [genetico(s) for s in range(10)]
+ottimo = max(sum(v for v, b in zip(valore, c) if b)
+             for c in product([0, 1], repeat=N)
+             if sum(p for p, b in zip(peso, c) if b) <= CAPIENZA)
+
+print("dieci esecuzioni:", esiti)
+print("ottimo vero (forza bruta su 2^20 = 1 048 576 combinazioni):", ottimo)
+print(f"quante volte lo trova: {esiti.count(ottimo)}/10, con 4800 zaini provati su un milione")
+
+# dieci esecuzioni: [228, 228, 228, 228, 224, 228, 228, 228, 228, 224]
+# ottimo vero (forza bruta su 2^20 = 1 048 576 combinazioni): 228
+# quante volte lo trova: 8/10, con 4800 zaini provati su un milione
+```
+
+Il risultato dice due cose insieme, e vanno tenute insieme. La prima è che
+provando meno di mezzo per cento delle combinazioni si arriva otto volte su
+dieci all'ottimo esatto, e le altre due volte al $98\%$ di esso: per un
+problema in cui non esiste alcuna pendenza da seguire, è molto. La seconda è
+che quel «otto volte su dieci» non si può eliminare. Un algoritmo genetico non
+dà garanzie, e soprattutto **non dice quanto gli è mancato**: qui lo sappiamo
+solo perché venti oggetti si possono enumerare a mano. Con quaranta oggetti il
+confronto non esisterebbe, e la risposta trovata avrebbe esattamente lo stesso
+aspetto.
+
+Nel machine learning questa famiglia compare in due punti. Il primo è la
+**ricerca di architetture**: la rete base di EfficientNet, ricordata nel
+capitolo sul deep learning, viene da una ricerca automatica, e una delle due
+strade principali per farla è evolutiva {cite}`real2019regularized`, con
+architetture che mutano e si ricombinano invece di essere disegnate. Il
+secondo è ovunque l'obiettivo non sia derivabile: scegliere iperparametri
+discreti, potare una rete decidendo *quali* pezzi togliere, ottimizzare una
+pipeline di preelaborazione.
+
 ## Perché non usare il gradiente
 
 Sia le formiche sia le particelle hanno una proprietà che va guardata in faccia:
@@ -626,6 +779,17 @@ ciascuno, ma che cosa può scrivere ciascuno, a chi, quando, e chi decide dopo.
   {cite}`reynolds1987flocks`, ogni particella combina inerzia, attrazione verso
   il proprio miglior punto e verso il miglior punto del gruppo. Il sorpasso è
   voluto: senza inerzia il metodo smette di trovare gli ottimi buoni.
+- Gli **algoritmi genetici** {cite}`holland1975adaptation` cambiano verbo: gli
+  individui non si spostano, si ricombinano (selezione, incrocio, mutazione,
+  più l'elitismo). L'incrocio è una scommessa esplicita, che una buona
+  soluzione sia fatta di buoni pezzi separabili, e cade quando i geni
+  interagiscono troppo (*epistasi*): la **codifica è il progetto**
+  dell'algoritmo. In cambio non serve una metrica sullo spazio, quindi si
+  applica a permutazioni, alberi e programmi, e la popolazione permette di
+  inseguire un intero **fronte di Pareto** invece di un punto solo
+  {cite}`deb2002fast`. Sullo zaino a venti oggetti trova l'ottimo esatto otto
+  volte su dieci provando meno di mezzo per cento delle combinazioni, e non
+  dice mai quanto gli è mancato.
 - Questi metodi **non usano il gradiente**, quindi servono dove il gradiente non
   esiste, non si calcola o non informa (funzioni non differenziabili,
   valutazioni rumorose, spazi combinatori), e pagano in valutazioni della

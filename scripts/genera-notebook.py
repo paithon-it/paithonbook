@@ -129,8 +129,14 @@ def versioni_dichiarate() -> tuple[str, str]:
 
 
 RE_SEMPLICE = re.compile(r"^```python\n(.*?)^```", re.S | re.M)
+# Le righe di opzione (`:class:`, `:emphasize-lines:`) vanno consumate UNA
+# ALLA VOLTA: `[^\S\n]` è "spazio ma non a capo" e `[^\n]` "qualsiasi cosa
+# tranne a capo". Con `\s*:.*\n` e il flag re.S il punto matcha anche gli a
+# capo, e il gruppo delle opzioni si mangiava tutto il corpo del blocco: la
+# cella usciva vuota. Silenzioso, perché un notebook con una cella vuota si
+# apre lo stesso.
 RE_DIRETTIVA = re.compile(
-    r"^```\{code-block\}\s+python\n((?:\s*:.*\n)*)(.*?)^```", re.S | re.M
+    r"^```\{code-block\}\s+python\n((?:[^\S\n]*:[^\n]*\n)*)(.*?)^```", re.S | re.M
 )
 RE_TITOLO = re.compile(r"^(#{1,4})\s+(.*)$", re.M)
 

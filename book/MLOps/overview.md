@@ -216,8 +216,7 @@ mondo cambia. Ognuna di queste mancanze è una sezione di questo capitolo.
 
 ## Come è organizzato il capitolo
 
-Le cinque sezioni che seguono percorrono l'anello e ne sciolgono i nodi, uno
-per uno.
+Le sezioni che seguono percorrono l'anello e ne sciolgono i nodi, uno per uno.
 
 - **Dal notebook alla produzione**, che cosa cambia quando si esce
   dall'ambiente di sperimentazione: riproducibilità, versionamento degli
@@ -238,6 +237,13 @@ per uno.
   linguistici: modelli che non si addestrano ma si *interrogano*, valutazione
   senza una risposta giusta univoca, costi per *token*, *prompt* e recupero di
   informazioni come nuovi artefatti da versionare.
+- **Misurare un servizio**, che cosa vuol dire davvero «veloce» quando la
+  risposta arriva un pezzo alla volta: TTFT, TPOT, il *goodput* e perché le
+  medie mentono.
+- **Il conto in energia**, l'unica voce che non si dichiara quasi mai: dove
+  finiscono i joule (nel movimento dei dati, non nei conti), come si arriva
+  dai joule ai grammi di anidride carbonica, e perché per un modello servito a
+  lungo l'inferenza pesa più dell'addestramento.
 
 ```{admonition} Da ricordare
 :class: important

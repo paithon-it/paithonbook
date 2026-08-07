@@ -157,8 +157,11 @@ immenso: un risultato che molti si aspettavano lontano un decennio.
 
 ## Come è organizzato questo capitolo
 
-Partiamo dalle fondamenta appena introdotte (MDP, ritorno, funzioni di valore)
-e le rendiamo algoritmo con i metodi classici (programmazione dinamica, Monte
+Cominciamo da una versione del problema spogliata di tutto tranne il dilemma
+appena descritto: i **bandit a più braccia**, dove non c'è nessuno stato e
+l'unica domanda è quale leva tirare. Poi rimettiamo lo stato al suo posto con
+le fondamenta appena introdotte (MDP, ritorno, funzioni di valore) e le
+rendiamo algoritmo con i metodi classici (programmazione dinamica, Monte
 Carlo, differenza temporale, Q-learning). Da lì il passo verso il **deep
 reinforcement learning**, dove reti neurali stimano le funzioni di valore o
 direttamente la politica, è naturale: lo affrontiamo nel capitolo successivo,

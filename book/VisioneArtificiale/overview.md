@@ -55,6 +55,80 @@ costruzione.
 
 `````
 
+## Perché è difficile: la distanza fra pixel e significato
+
+Fra la griglia di numeri e la parola «gatto» c'è un salto che vale la pena
+misurare prima di provare a colmarlo, perché ogni tecnica dei prossimi
+capitoli è la risposta a una voce precisa di questo elenco.
+
+`````{tab} Elementare
+
+Il problema non è che i numeri siano tanti. È che **lo stesso gatto produce
+griglie di numeri completamente diverse**, e due gatti diversi possono
+produrne di molto simili. Sette modi in cui questo accade.
+
+**Punto di vista.** Lo stesso animale visto di fronte, di lato o dall'alto non
+ha un solo pixel in comune con sé stesso.
+
+**Scala.** Vicino occupa tutta l'immagine, lontano una manciata di pixel.
+
+**Deformazione.** Un gatto è un oggetto morbido: accucciato, in salto o
+disteso è la stessa cosa con una forma diversa.
+
+**Occlusione.** Metà del gatto è dietro il divano, e la rete deve rispondere
+lo stesso.
+
+**Illuminazione.** In controluce i valori dei pixel si ribaltano; al tramonto
+tutta la scena vira all'arancione.
+
+**Sfondo confuso.** Un gatto tigrato su un tappeto a righe: i confini che noi
+vediamo senza pensarci il computer li deve inferire.
+
+**Variazione dentro la classe.** Un siamese e un persiano condividono
+l'etichetta e quasi nient'altro.
+
+Tenete a mente l'elenco, perché tornerà voce per voce. La convoluzione, che
+scorre lo stesso filtro dappertutto, è la risposta strutturale a una di queste
+(un gatto è un gatto ovunque stia nell'immagine). La *data augmentation* del
+capitolo seguente è, letteralmente, l'elenco riletto come ricettario: ruotare
+contro il punto di vista, ritagliare contro la scala, cancellare rettangoli
+contro l'occlusione, alterare la luminosità contro l'illuminazione. Non è un
+insieme di trucchi: è un modo di dire alla rete quali cambiamenti **non**
+devono cambiare la risposta.
+
+`````
+
+`````{tab} Superiore
+
+Il salto si chiama **divario semantico**: fra la rappresentazione numerica
+$X \in \mathbb{R}^{C\times H\times W}$ e la categoria semantica non c'è nessuna
+relazione semplice, e in particolare nessuna relazione che si possa scrivere
+guardando i valori dei pixel uno per uno.
+
+Formulato con precisione, il compito è imparare una funzione
+$f: \mathbb{R}^{C\times H\times W} \to \{1,\dots,K\}$ che sia **invariante** a
+un gruppo di trasformazioni di *nuisance* (traslazione, scala, rotazione
+limitata, cambi fotometrici, occlusioni parziali) e allo stesso tempo
+**discriminativa** rispetto alle differenze fra classi, che sono spesso
+molto più piccole, nella metrica dei pixel, delle variazioni da ignorare. Due
+immagini della stessa classe possono avere distanza euclidea maggiore di due
+immagini di classi diverse: è il motivo per cui un classificatore a vicini più
+prossimi sui pixel grezzi funziona male, e la sezione sui filtri disegnati a
+mano racconta il primo tentativo di rimediare.
+
+Le invarianze si ottengono in tre modi, che il resto del capitolo percorre
+tutti. **Per architettura**: la condivisione dei pesi della convoluzione dà
+l'equivarianza alla traslazione, e il pooling una tolleranza locale alle
+piccole traslazioni. **Per dati**: la *data augmentation* espone il modello
+alle trasformazioni che deve ignorare, ed è un modo di iniettare
+un'invarianza senza cablarla nell'architettura. **Per addestramento**:
+l'apprendimento auto-supervisionato costruisce il compito proprio a partire
+dalla scelta di quali trasformazioni debbano lasciare invariata la
+rappresentazione, e lì la scelta delle trasformazioni **è** la definizione del
+problema.
+
+`````
+
 ## I compiti della visione
 
 Avere i numeri è solo l'inizio. La domanda vera è: *che cosa chiediamo al modello

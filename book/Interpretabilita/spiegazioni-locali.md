@@ -319,6 +319,129 @@ usa.
 
 `````
 
+## Regole invece di pesi: gli anchor
+
+LIME e SHAP consegnano un elenco di feature con dei numeri accanto, e per
+leggerlo bisogna saper leggere dei pesi. C'è una forma di spiegazione locale
+che non chiede questo sforzo, ed è la più antica che esista: una **regola**.
+
+`````{tab} Elementare
+
+Un **anchor** (àncora) è una spiegazione della forma:
+
+> «Finché il reddito supera i 30 000 € **e** non ci sono insolvenze negli
+> ultimi due anni, questo modello dice sì, qualunque cosa facciano le altre
+> feature.»
+
+La differenza con LIME non è di stile, è di sostanza. LIME dice quanto ogni
+feature ha pesato *in questo caso*; un anchor dice **fin dove** la risposta
+resta la stessa. La prima è una descrizione, la seconda è una promessa
+verificabile: si può prendere la regola, cercare altri casi che la
+soddisfano, e controllare se il modello risponde davvero sempre allo stesso
+modo.
+
+Da qui le due misure che accompagnano ogni anchor. La **precisione** dice
+quanto spesso la regola azzecca la risposta del modello; la **copertura** dice
+su quale porzione dei casi la regola si applica. Le due tirano in direzioni
+opposte: una regola con dieci condizioni sarà quasi sempre esatta e varrà
+quasi per nessuno; una con una condizione sola varrà per molti e sbaglierà
+spesso. Un buon anchor è la regola più corta che mantiene la precisione
+richiesta.
+
+`````
+
+`````{tab} Superiore
+
+Gli **anchor** {cite}`ribeiro2018anchors` sono degli stessi autori di LIME, e
+nascono per rispondere a un difetto dichiarato di quel metodo: un modello
+lineare locale non dice **dove finisce** la sua validità, e il lettore non ha
+modo di sapere se l'approssimazione regge un pixel più in là o mezzo dataset.
+
+Un anchor è un predicato $A$ sull'istanza (una congiunzione di condizioni
+sulle feature) tale che, campionando perturbazioni $z$ da una distribuzione
+$\mathcal{D}$ condizionata al fatto che $A$ resti soddisfatto, il modello
+mantenga la stessa predizione con alta probabilità:
+
+$$
+\operatorname{prec}(A) = \mathbb{E}_{z \sim \mathcal{D}(\cdot \mid A)}
+\big[\, \mathbb{1}[\,f(z) = f(x)\,] \,\big] \;\ge\; \tau ,
+$$
+
+tipicamente con $\tau = 0{,}95$. Fra tutti i predicati che soddisfano il
+vincolo si cerca quello di **copertura** massima,
+$\operatorname{cov}(A) = \mathbb{E}_{z\sim\mathcal{D}}[\mathbb{1}[A(z)]]$. La
+ricerca procede aggiungendo una condizione alla volta e stimando la precisione
+per campionamento; poiché ogni valutazione costa, il problema di quale
+candidato affinare è formulato come *best-arm identification*, cioè quello che
+i bandit del capitolo sul reinforcement learning risolvono.
+
+Il guadagno rispetto a LIME è la **fedeltà dichiarata**: un anchor non
+approssima, delimita, e la sua precisione è un numero misurato invece che una
+speranza. Il prezzo è che su feature continue e ad alta dimensione le regole
+diventano lunghe o la copertura crolla, e su dati non tabellari (immagini,
+testo) bisogna prima definire che cosa sia una «condizione», il che riporta
+tutti i problemi di rappresentazione di LIME.
+
+`````
+
+## Quel che manca: i negativi pertinenti
+
+I controfattuali chiedono che cosa cambiare. C'è una domanda gemella e
+asimmetrica che vale la pena distinguere, perché risponde a un dubbio diverso:
+non «che cosa devo cambiare», ma «che cosa, di ciò che **non** c'è, sta
+determinando la risposta».
+
+`````{tab} Elementare
+
+Prendi una cifra scritta a mano che il modello classifica come un $3$. Due
+domande diverse.
+
+La prima: quali tratti dell'immagine **bastano** perché resti un $3$? Se si
+cancella tutto il resto e restano solo quelli, la risposta non cambia. Sono i
+**positivi pertinenti**: il minimo indispensabile presente.
+
+La seconda: quale tratto, se ci **fosse**, la farebbe diventare un $8$? Un
+piccolo arco a sinistra, che chiuda le due pance. Quel tratto è un **negativo
+pertinente**: non c'è nell'immagine, e la sua assenza è parte del motivo per
+cui la risposta è $3$ e non $8$.
+
+È la differenza fra dire «è un tre per via di questi tratti» e «è un tre e non
+un otto perché manca questo». La seconda è il modo in cui le persone
+spiegano davvero le cose, e in medicina è la forma standard del ragionamento:
+una diagnosi si regge tanto sui sintomi presenti quanto su quelli **attesi e
+assenti**.
+
+`````
+
+`````{tab} Superiore
+
+Il **Contrastive Explanation Method** {cite}`dhurandhar2018explanations`
+formalizza le due nozioni cercando, attorno all'istanza $x_0$, due
+perturbazioni minime di segno opposto.
+
+Il **positivo pertinente** è la porzione minima di $x_0$ che, da sola,
+conserva la classificazione: si cerca $\delta$ sparso tale che
+$f(\delta)$ dia la stessa classe di $f(x_0)$, con $\delta$ contenuto in $x_0$.
+Il **negativo pertinente** è la perturbazione minima **additiva** che cambia
+la classe: si cerca $\delta$ tale che $f(x_0 + \delta)$ dia una classe diversa,
+con $\delta$ di norma minima.
+
+La formulazione usa una regolarizzazione elastica ($L_1$ più $L_2$) per
+ottenere perturbazioni sparse e interpretabili, e opzionalmente un
+autoencoder addestrato sui dati come termine di penalità, che spinge la
+soluzione a restare sulla varietà dei dati plausibili invece di finire in una
+zona dello spazio che nessun esempio reale abita. È lo stesso vincolo di
+plausibilità già incontrato per i controfattuali, imposto qui in modo
+esplicito.
+
+La parentela con la sezione precedente è stretta e conviene esplicitarla: il
+negativo pertinente **è** un controfattuale, cercato però solo fra le
+perturbazioni additive e presentato come «ciò che manca» invece che come «ciò
+che cambierebbe». Il positivo pertinente, invece, non ha analogo fra i metodi
+visti finora: è l'unico che risponda a «che cosa basta».
+
+`````
+
 ## In pratica: i valori di Shapley con NumPy
 
 La libreria `shap` calcola tutto questo in poche righe, ma per capire davvero
@@ -405,4 +528,13 @@ tutti gli ordini (sono $n!$) ma si campionano, o si usa TreeSHAP se il modello
   minima e azionabile che ribalterebbe la decisione; sono lo stesso problema
   matematico degli **esempi avversari** {cite}`goodfellow2015explaining`, con
   intento opposto: spiegare invece di ingannare.
+- Gli **anchor** {cite}`ribeiro2018anchors` sostituiscono i pesi con una
+  **regola** e ne dichiarano i limiti: *precisione* (quanto spesso la regola
+  azzecca il modello) e *copertura* (su quanti casi si applica). Dicono **fin
+  dove** la risposta non cambia, cosa che LIME non fa.
+- Il **CEM** {cite}`dhurandhar2018explanations` distingue i **positivi
+  pertinenti** (che cosa basta perché la risposta sia questa) dai **negativi
+  pertinenti** (che cosa, assente, la tiene ferma). Il negativo pertinente è un
+  controfattuale additivo; il positivo pertinente non ha analoghi fra gli altri
+  metodi.
 ```

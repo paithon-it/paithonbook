@@ -91,7 +91,12 @@ $$
 \theta \leftarrow \theta + \alpha\, \nabla_\theta \log \pi_\theta(a_t \mid s_t)\, G_t ,
 $$
 
-con $\alpha$ il passo di apprendimento. Il punto debole è la **varianza**:
+con $\alpha$ il passo di apprendimento. Chi ha letto la sezione sui bandit
+riconosce la struttura: il *bandit a gradiente* era esattamente questo, in un
+mondo con un solo stato, dove la softmax sulle preferenze $H(a)$ faceva le
+veci di $\pi_\theta(a\mid s)$. Anche il rimedio che segue è già comparso là.
+
+Il punto debole è la **varianza**:
 $G_t$ dipende dall'intero seguito casuale della partita, e le stime risultano
 rumorose e lente a convergere.
 

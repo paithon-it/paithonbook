@@ -262,6 +262,170 @@ c'è niente da correggere in PyTorch, e proprio per questo lo si scopre tardi.
   rende impossibile confrontare le predizioni con le etichette in un ordine
   stabile, e ogni valutazione racconta una storia leggermente diversa.
 
+## Il grafico è il messaggio d'errore
+
+Per gli errori rumorosi c'è il traceback. Per quelli silenziosi c'è un
+grafico, ed è l'unico strumento diagnostico che si userà tutti i giorni per
+il resto della carriera: le due curve della loss, addestramento e validazione,
+epoca per epoca.
+
+Una premessa che sembra banale e non lo è: **quel grafico va guardato
+dall'epoca uno, non alla fine**. Aspettare il termine dell'addestramento per
+tracciare le curve significa, su un modello serio, scoprire dopo sei ore una
+cosa che era leggibile dopo due epoche. Il costo di stampare due numeri a fine
+epoca e disegnarli è nullo; il costo di non farlo è una notte di GPU.
+
+```{figure} ../figures/curve-di-addestramento.svg
+:name: fig-curve-diagnosi
+:alt: "Quattro grafici della loss per epoca, ciascuno con la curva di addestramento e quella di validazione: nel primo restano entrambe alte e piatte, nel secondo scendono insieme con un divario stabile, nel terzo quella di addestramento continua a scendere mentre quella di validazione risale dopo un minimo segnato, nel quarto oscillano entrambe senza una tendenza chiara."
+:width: 95%
+
+Quattro forme e quattro diagnosi. La forma della coppia di curve dice più del
+valore finale della loss, ed è il motivo per cui va disegnata mentre
+l'addestramento gira.
+```
+
+Le quattro forme di {numref}`fig-curve-diagnosi` coprono quasi tutto ciò che
+capita.
+
+**Non impara.** Le curve restano alte e piatte. Qui conviene guardare da
+vicino *quanto* piatte, perché la distinzione è diagnostica. Se la loss è
+**esattamente** identica epoca dopo epoca, non è un problema di
+apprendimento: è un bug, e i sospetti sono pochi (manca `optimizer.step()`,
+il learning rate è zero, i parametri sono congelati da un
+`requires_grad=False` di troppo, oppure la loss che si retropropaga non è
+collegata all'uscita del modello). Se invece scende pochissimo ma scende, è
+**sottoadattamento**: il modello non ha abbastanza capacità, o il passo è
+troppo corto, o le feature non contengono l'informazione richiesta.
+
+**Sano.** Entrambe scendono, la validazione sta un po' sopra, e il divario fra
+le due resta più o meno costante. Un divario c'è quasi sempre e non è una
+malattia: quello che si sorveglia è se **si allarga**.
+
+**Sovradattamento.** L'addestramento continua a scendere, la validazione tocca
+un minimo e risale. È la forma già incontrata parlando di
+[quando fermarsi](addestramento.md), con l'arresto anticipato come rimedio, e
+non la ripetiamo qui. Vale però un'avvertenza: nel regime dei modelli molto
+sovraparametrizzati quella risalita può non essere la fine della storia, come
+racconta la sezione sulla doppia discesa nel capitolo di machine learning.
+
+**Passo troppo lungo.** Le curve oscillano vistosamente, magari con una
+tendenza generale al ribasso ma con salti che la coprono. L'ottimizzatore sta
+scavalcando il minimo a ogni passo, oppure il gradiente è talmente rumoroso da
+non indicare più una direzione stabile.
+
+`````{tab} Elementare
+
+La regoletta operativa, in ordine di ciò che conviene provare.
+
+Curva piatta come un tavolo: è un bug, cercalo nel ciclo di addestramento
+prima di toccare qualsiasi iperparametro. Curva che scende appena: alza il
+learning rate (di un fattore tre, non del dieci per cento) e, se non basta,
+ingrandisci il modello. Curva che salta: abbassa il learning rate (di un
+fattore tre) o aumenta la dimensione del batch, che è l'altro modo di rendere
+meno rumoroso il gradiente. Divario che si allarga: servono i freni, cioè
+regolarizzazione, data augmentation o semplicemente fermarsi prima.
+
+E un collaudo che vale i cinque minuti che costa, da fare **prima** di lanciare
+l'addestramento vero: prendi un solo mucchietto di esempi, una decina, e
+addestra su quello finché la loss non arriva quasi a zero. Se un modello non
+riesce a imparare a memoria dieci esempi, non c'è iperparametro che lo salverà
+su cinquantamila: c'è un errore da qualche parte, e lo stai cercando nel posto
+sbagliato.
+
+`````
+
+`````{tab} Superiore
+
+Il learning rate lascia una firma riconoscibile, e conviene imparare a
+leggerla perché è l'iperparametro che si tocca per primo. Troppo alto: la loss
+esplode o resta alta e irregolare (nel caso estremo diventa `nan`). Alto: cala
+in fretta nelle prime iterazioni e poi si assesta su un valore mediocre,
+perché il passo è troppo lungo per entrare nella conca. Troppo basso: scende
+in modo quasi lineare e lentissimo, senza mai piegare. Giusto: cala rapidamente
+e continua a migliorare. Poiché la scala giusta cambia di ordini di grandezza
+fra un problema e l'altro, la si esplora moltiplicando o dividendo per tre,
+non aggiustandola di percentuali.
+
+Il rumore delle curve ha due sorgenti distinte, che si distinguono da come si
+comporta l'oscillazione. Il **passo** troppo lungo produce oscillazioni che non
+si riducono aumentando la dimensione del batch; il **rumore del gradiente**
+scala invece come $1/\sqrt{B}$ con la dimensione $B$ del batch, quindi
+quadruplicare il batch dimezza l'ampiezza. Se raddoppiare $B$ calma
+visibilmente le curve, era rumore di campionamento; se non cambia nulla, è il
+passo.
+
+Il collaudo canonico prima di ogni addestramento serio è **sovradattare di
+proposito un batch solo**: si prendono otto o dieci esempi, si disattiva ogni
+regolarizzazione e si addestra su quelli per qualche centinaio di iterazioni.
+Un modello sano arriva a una loss praticamente nulla, perché memorizzare dieci
+esempi è alla portata di qualunque rete. Se non ci riesce, il difetto non è nei
+dati né negli iperparametri ma nella catena: etichette disallineate rispetto
+agli ingressi, una trasformazione che distrugge il segnale, una loss calcolata
+sulla cosa sbagliata, un gradiente che non arriva a tutti i parametri. È il
+test più economico del mestiere e quasi nessuno lo fa.
+
+`````
+
+### Quando la validazione va meglio dell'addestramento
+
+C'è una forma che confonde chiunque la incontri la prima volta: la curva di
+validazione sta **sotto** quella di addestramento. Sembra impossibile, perché
+il modello i dati di addestramento li ha visti e quelli di validazione no.
+Quasi sempre non c'è nulla di rotto, e le spiegazioni sono quattro.
+
+1. **Si stanno confrontando due misure prese in momenti diversi.** La loss di
+   addestramento che si stampa è di solito la media su tutti i batch
+   dell'epoca, calcolata *mentre* i pesi cambiavano, e quindi include anche i
+   pesi peggiori di inizio epoca. Quella di validazione è calcolata alla fine,
+   con i pesi migliori. Nelle prime epoche, quando il miglioramento dentro una
+   singola epoca è grande, questo basta da solo a invertire l'ordine.
+2. **La regolarizzazione è attiva solo in addestramento.** Il dropout spegne
+   neuroni e la data augmentation deforma gli esempi durante il training e non
+   in valutazione: la rete che produce la loss di addestramento è una rete
+   handicappata, quella che produce la validazione no.
+3. **Il set di validazione è più facile.** Può capitare per caso con split
+   piccoli, o sistematicamente se la separazione non è stata casuale (i casi
+   difficili concentrati da una parte sola).
+4. **Si è addestrato poco.** Nelle prime epoche il modello non ha ancora
+   memorizzato niente, quindi non ha alcun vantaggio sui dati visti.
+
+Le prime due si verificano in un minuto: si ricalcola la loss di addestramento
+a fine epoca con `model.eval()`, sugli stessi pesi con cui si misura la
+validazione. Se il paradosso sparisce, non c'era.
+
+```{code-block} python
+:class: pt-non-eseguibile
+
+# Registrare la storia costa due liste, e senza storia non c'e' diagnosi.
+storia = {"train": [], "val": []}
+
+for epoca in range(n_epoche):
+    modello.train()
+    somma, n = 0.0, 0
+    for X, y in loader_train:
+        ...                                   # i cinque passi soliti
+        somma += perdita.item() * X.size(0)   # .item(): niente grafo in memoria
+        n += X.size(0)
+    storia["train"].append(somma / n)
+
+    modello.eval()                            # niente dropout, niente augmentation
+    with torch.no_grad():
+        somma, n = 0.0, 0
+        for X, y in loader_val:
+            somma += loss_fn(modello(X), y).item() * X.size(0)
+            n += X.size(0)
+    storia["val"].append(somma / n)
+
+    # stampare a ogni epoca, non alla fine: e' tutto il punto
+    print(f"epoca {epoca:3d}  train {storia['train'][-1]:.4f}  val {storia['val'][-1]:.4f}")
+
+import matplotlib.pyplot as plt
+plt.plot(storia["train"], label="addestramento")
+plt.plot(storia["val"], label="validazione", linestyle="--")
+plt.xlabel("epoche"); plt.ylabel("loss"); plt.legend()
+```
+
 ```{admonition} Da ricordare
 :class: important
 - Un tensore ha **forma, tipo e dispositivo**: quasi ogni `RuntimeError` di
@@ -281,4 +445,14 @@ c'è niente da correggere in PyTorch, e proprio per questo lo si scopre tardi.
 - Gli errori peggiori sono quelli **silenziosi**: `zero_grad` mancante,
   softmax doppia, `eval()` dimenticato, `.item()` dimenticato
   nell'accumulo.
+- Per gli errori silenziosi il messaggio d'errore è **la coppia di curve**, e
+  va disegnata dall'epoca uno. Piatta come un tavolo: è un bug. Scende appena:
+  passo corto o modello piccolo. Salta: passo lungo o batch piccolo. Divario
+  che si allarga: servono i freni.
+- **Sovradattare di proposito un batch da dieci esempi** è il collaudo più
+  economico che esista: se il modello non ci riesce, il difetto è nella
+  catena, non negli iperparametri.
+- La validazione **sotto** l'addestramento di solito non è un guasto: la loss
+  di training è una media presa mentre i pesi cambiavano, e dropout e
+  augmentation penalizzano solo il training.
 ```

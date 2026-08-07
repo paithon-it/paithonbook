@@ -65,11 +65,90 @@ e uno strato denso; l'uscita è un valore $Q$ per ogni azione. L'agente sceglie
 l'azione con il valore più alto.
 ```
 
-## Due accorgimenti per non far esplodere l'addestramento
+## Perché divergeva: la triade fatale
 
 Sostituire la tabella con una rete sembra ovvio, ma per anni non aveva
-funzionato: l'addestramento divergeva. Il merito di DQN è aver introdotto due
-trucchi che rendono stabile ciò che prima era instabile.
+funzionato: l'addestramento divergeva. E non divergeva per sfortuna, né per un
+learning rate sbagliato. Prima dei due trucchi che lo hanno reso praticabile
+vale la pena capire da che cosa lo hanno salvato, perché è un risultato
+preciso e sorprendentemente pulito.
+
+`````{tab} Elementare
+
+Ci sono tre ingredienti in gioco, ognuno dei quali, preso da solo, è
+innocuo e anzi utile.
+
+Il primo è l'**approssimazione**: una rete al posto della tabella, cioè
+sacrificare la precisione su ogni singolo stato in cambio della capacità di
+generalizzare. Il secondo è il **bootstrapping**: aggiornare una stima usando
+un'altra stima invece di aspettare la fine della partita, che è la mossa che
+distingue il TD da Monte Carlo. Il terzo è l'**off-policy**: imparare la
+strategia migliore mentre se ne gioca un'altra, esplorativa, ed è quello che
+rende il Q-learning così comodo.
+
+Il risultato, dovuto a Sutton e Barto, è che due qualunque di questi tre si
+possono avere insieme senza problemi. **Tutti e tre insieme no**: la
+combinazione può divergere, cioè i valori possono crescere senza limite invece
+di assestarsi. La chiamano **triade fatale**, e la parte inquietante è che non
+serve nemmeno un ambiente sconosciuto o rumoroso: si dimostra su un esempio
+con sette stati, dove tutte le ricompense valgono zero e la risposta giusta è
+«tutto vale zero». La rete ha la capacità di rappresentare esattamente quella
+risposta, e ciononostante i pesi partono e non tornano più.
+
+Perché succede, in una frase: la rete non aggiorna solo lo stato su cui sta
+imparando, aggiorna anche tutti quelli che le somigliano; se il bersaglio di
+quell'aggiornamento è calcolato usando proprio uno di quegli stati, la
+correzione si autoalimenta. E l'off-policy toglie l'ultima protezione, perché
+gli stati su cui la rete si allena non sono nelle proporzioni in cui li
+incontrerebbe la strategia che sta imparando.
+
+`````
+
+`````{tab} Superiore
+
+La **triade fatale** {cite}`sutton2018reinforcement` è la coesistenza di:
+
+1. **approssimazione di funzione**, cioè una rappresentazione parametrica che
+   generalizza fra stati invece di trattarli come voci indipendenti;
+2. **bootstrapping**, cioè bersagli che contengono stime correnti (TD,
+   programmazione dinamica) invece dei soli ritorni osservati;
+3. **addestramento off-policy**, cioè una distribuzione degli aggiornamenti
+   diversa da quella indotta dalla policy che si sta valutando.
+
+Con due qualsiasi dei tre la convergenza si può garantire; con tutti e tre no,
+e la divergenza si osserva già nel caso della sola **predizione**, senza
+controllo né miglioramento della policy. Non dipende nemmeno
+dall'incertezza sull'ambiente: si manifesta identica nella programmazione
+dinamica, dove il modello è noto per intero.
+
+Il **controesempio di Baird** lo esibisce in forma minima: sette stati, due
+azioni, ricompensa sempre nulla, $\gamma = 0{,}99$, e una policy di
+comportamento che visita gli stati in modo uniforme mentre la policy bersaglio
+ne concentra tutta la massa su uno solo. La funzione valore vera è
+identicamente zero ed è **esattamente rappresentabile** dai parametri
+disponibili; il TD semi-gradiente, ciononostante, fa divergere i pesi. La
+ragione tecnica è che l'aggiornamento semi-gradiente non è il gradiente di
+nessuna funzione obiettivo (si deriva rispetto alla stima ma non rispetto al
+bersaglio, che pure dipende dai parametri), quindi non c'è nessuna quantità
+che scenda in modo garantito.
+
+Sutton e Barto passano poi in rassegna i tre elementi chiedendosi a quale si
+possa rinunciare, ed è la lettura più utile per chi progetta. All'**approssimazione**
+no: senza, non si scala. Al **bootstrapping** si può, usando Monte Carlo, e si
+paga in efficienza computazionale (bisogna conservare tutto fino alla fine
+dell'episodio) e in efficienza di dati. All'**off-policy** si può, sostituendo
+il Q-learning con Sarsa, e si perde la possibilità di imparare da un archivio
+di esperienze altrui, che è però proprio la premessa del replay buffer.
+
+DQN non rinuncia a nessuno dei tre. Fa un'altra cosa: **rende gli ultimi due
+meno velenosi**, il che spiega perché i due accorgimenti che seguono siano
+esattamente due e non uno o tre.
+
+`````
+
+## Due accorgimenti per non far esplodere l'addestramento
+
+I trucchi di DQN si leggono allora come attacchi mirati a due degli anelli.
 
 ### Experience replay
 
@@ -201,8 +280,14 @@ hanno guidato la ricerca successiva.
 :class: important
 - **DQN** sostituisce la tabella $Q$ con una rete neurale $Q(s,a;\theta)$ che
   mappa i pixel dello stato ai valori delle azioni.
+- Divergeva per una ragione precisa, la **triade fatale**: approssimazione,
+  bootstrapping e off-policy insieme possono far esplodere i valori. Due
+  qualsiasi dei tre sono sicuri, tutti e tre no, e il **controesempio di
+  Baird** lo mostra su sette stati con ricompense tutte nulle, dove la
+  soluzione esatta è rappresentabile e i pesi divergono lo stesso.
 - Due accorgimenti lo rendono stabile: l'**experience replay** (memoria di
   transizioni campionate a caso) e la **rete-target** (bersaglio congelato).
+  Non rinunciano a nessuno dei tre anelli: ne attenuano due.
 - Il risultato storico (Mnih et al., 2015): livello umano su molti giochi
   Atari partendo dai soli pixel. Restano limiti di efficienza, azioni discrete
   e ricompense rade.

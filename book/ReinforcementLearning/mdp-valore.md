@@ -8,6 +8,12 @@ agiscono, osservano cosa succede, incassano una ricompensa e correggono il
 tiro. Non c'è un insegnante che sussurra la risposta giusta a ogni passo; c'è
 solo un ambiente che reagisce.
 
+La sezione precedente aveva tolto di mezzo proprio questo pezzo: nel bandit
+ogni tiro è a sé, e la leva scelta adesso non cambia in nulla la situazione del
+tiro successivo. Qui invece la pedalata storta *sposta* la bicicletta, e ciò
+che si potrà fare fra un istante dipende da cosa si è fatto ora. Rimettere lo
+stato al suo posto costa una notazione in più e regala il problema vero.
+
 Per trasformare questa intuizione in matematica serve un'impalcatura precisa.
 Quell'impalcatura, formalizzata da Richard Bellman nel 1957 e diventata la
 spina dorsale del testo di riferimento di Sutton e Barto

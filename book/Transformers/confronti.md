@@ -80,7 +80,22 @@ contesto limitate dei grandi modelli, e una vasta letteratura di rimedi:
 attenzione **sparsa** o a finestre locali (Longformer, BigBird),
 approssimazioni a rango basso o kernel (Linformer, Performer), e
 ottimizzazioni esatte ma efficienti in memoria come FlashAttention, che
-riorganizza il calcolo per sfruttare la gerarchia di memoria delle GPU. In
+riorganizza il calcolo per sfruttare la gerarchia di memoria delle GPU.
+
+Vale la pena dire da dove viene il primo di quei rimedi, perché è un cambio di
+punto di vista più che un trucco. La matrice di attenzione è la matrice di
+adiacenza di un **grafo completo** sui token, e ridurne il costo è un problema
+di **sparsificazione di grafi**. Longformer {cite}`beltagy2020longformer`
+toglie archi tenendo una finestra scorrevole attorno a ogni token, qualche
+finestra dilatata per allargare la portata, e un pugno di **token globali**
+collegati a tutti (nel question answering, quelli della domanda): il costo
+scende da $O(n^2)$ a $O(n w)$. BigBird {cite}`zaheer2020big` prende la stessa
+strada dichiarando la cosa: combina una finestra ad anello (un grafo «piccolo
+mondo» alla Watts-Strogatz), archi **casuali** alla Erdős-Rényi e token
+globali, e dimostra che il modello risultante resta un approssimatore
+universale di funzioni su sequenze. Il capitolo sulle reti neurali su grafo
+riprende questa lettura dall'altro capo, mostrando che la self-attention è
+message passing su un grafo completo. In
 inferenza, inoltre, la generazione autoregressiva resta sequenziale token
 per token: il parallelismo del Transformer è un vantaggio soprattutto in
 addestramento.

@@ -855,6 +855,22 @@ html[data-theme="dark"] {
   --pst-heading-color: var(--pt-fg);
   --pst-color-inline-code: var(--pt-accent-hover);
   --pst-color-target: rgba(201, 169, 97, 0.35);
+
+  /* La famiglia dei fondini, che prima mancava. Il tema non tiene un colore
+   * solo per ruolo ma una coppia (tinta piena + `-bg`, il rettangolo dietro),
+   * e i `-bg` erano rimasti quelli di fabbrica: VIOLA (#e0c7ff in light,
+   * #341a61 in dark) per il secondary, MAGENTA per l'accent. Si vedevano dove
+   * capitava che il tema li usasse — l'indice di destra, un admonition, la
+   * riga di tabella sotto il puntatore — cioè in punti che nessuno controlla
+   * di proposito. Mapparli tutti costa cinque righe e chiude la classe: la
+   * palette del libro non ha viola, quindi qualunque residuo è un difetto. */
+  --pst-color-primary-bg: var(--pt-tint-accent);
+  --pst-color-secondary-bg: var(--pt-tint-accent-2);
+  --pst-color-accent: var(--pt-accent-3);
+  --pst-color-accent-bg: var(--pt-tint-accent-3);
+  --pst-color-table-row-hover-bg: var(--pt-bg-tint);
+  --pst-color-inline-code-links: var(--pt-accent-2);
+
   --pst-font-family-base: var(--font-body);
   --pst-font-family-heading: var(--font-heading);
   --pst-font-family-monospace: var(--font-mono);

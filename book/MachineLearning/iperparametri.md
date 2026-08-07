@@ -148,7 +148,10 @@ $1/\eta$ e moltiplica per $\eta$ il budget individuale. I round sono
 $\lfloor \log_\eta n \rfloor + 1$ e ognuno costa circa $n \cdot r$: per
 $n=81$, $r=1$, $\eta=3$, 405 epoche-modello contro le $81 \times 81 = 6\,561$
 della valutazione completa. L'analisi inquadra il problema come *best-arm
-identification* in un bandit non stocastico: basta che le classifiche parziali
+identification* in un **bandit** non stocastico (la famiglia di problemi che il
+capitolo sul reinforcement learning introduce per prima, dove ogni
+configurazione è una leva e addestrarla per un'epoca è un tiro): basta che le
+classifiche parziali
 siano abbastanza indicative di quelle finali, ed è proprio questa l'ipotesi
 fragile, perché una configurazione a convergenza lenta viene eliminata da
 giovane. **Hyperband** {cite}`li2018hyperband` aggira il dilemma tra molte

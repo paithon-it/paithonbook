@@ -199,7 +199,7 @@ test si incontrano grafi mai visti in addestramento.
 
 ## La mappa del capitolo
 
-Il capitolo procede in tre tappe, dal dato all'architettura.
+Il capitolo procede dal dato all'architettura.
 
 - **Il mondo come grafo**. Come si mette un problema «in forma di grafo»: cosa
   sono nodi, archi e le loro *feature*; grafi diretti e non diretti, pesati,
@@ -209,6 +209,11 @@ Il capitolo procede in tre tappe, dal dato all'architettura.
   sua forma generale, e la derivazione della *Graph Convolutional Network*: il
   modello che ha fatto delle GNN uno strumento pratico, presentato nel 2017 da
   Thomas Kipf e Max Welling.
+- **I knowledge graph**. Che cosa cambia quando gli archi hanno un'etichetta e
+  sono **fatti**: le triple, l'assunzione di mondo aperto (un arco che manca
+  vuol dire «non lo so»), le entità come vettori e le relazioni come
+  traslazioni, e a che serve poter rispondere **navigando** invece che
+  recuperando.
 - **Oltre la GCN: GraphSAGE, GAT e applicazioni**. Le varianti che hanno reso
   le GNN utilizzabili su scala reale, *GraphSAGE*, che campiona i vicini per
   scalare a grafi enormi, e la *Graph Attention Network* (GAT), che pesa i
@@ -216,9 +221,9 @@ Il capitolo procede in tre tappe, dal dato all'architettura.
   carrellata di applicazioni, dalla chimica alla frode, dalle mappe ai sistemi
   di raccomandazione.
 
-## Due fili che tornano
+## Tre fili che tornano
 
-Vale la pena legare esplicitamente questo capitolo a due che il libro ha già
+Vale la pena legare esplicitamente questo capitolo a tre che il libro ha già
 percorso.
 
 Il primo è la **convoluzione**. Nel capitolo sul deep learning abbiamo visto
@@ -238,6 +243,28 @@ utente-item). La *link prediction* su questo grafo è, letteralmente, il
 problema della raccomandazione: prevedere gli archi che ancora non ci sono.
 Non è un caso che le GNN siano oggi il motore dei sistemi di raccomandazione
 dei grandi servizi. Il capitolo dedicato le riprenderà da vicino.
+
+Il terzo filo è il meno ovvio dei tre e il più utile, perché porta a un
+capitolo che sembrava parlare d'altro. Nel Transformer ogni parola calcola la
+propria nuova rappresentazione come **somma pesata di quelle di tutte le
+altre**, con pesi appresi. Detto così è una frase su un'architettura per il
+linguaggio; riletta con il vocabolario di questo capitolo è la definizione di
+un passo di message passing, con l'unica particolarità che il grafo è
+**completo**: ogni token è collegato a ogni altro, e i coefficienti di
+attenzione sono i pesi degli archi.
+
+Non è un'analogia costruita a posteriori. Le rassegne che hanno unificato il
+campo lo dicono esplicitamente: il quadro delle *message passing neural
+network* {cite}`gilmer2017neural` copre le GNN, quello delle *non-local
+neural network* {cite}`wang2018non` copre i metodi «in stile self-attention»
+compresi il Transformer e la GAT, e le *graph network* di Battaglia e colleghi
+{cite}`battaglia2018relational` li tengono insieme in un'unica formulazione.
+Ne discende una lettura che vale in entrambe le direzioni: la GAT, che
+incontreremo fra poco, è la self-attention applicata a un grafo sparso invece
+che completo; e un Transformer è una GNN che ha rinunciato alla struttura,
+pagando in costo quadratico la libertà di non doverla conoscere. Da lì si
+capisce anche perché tanta ricerca sull'efficienza dell'attenzione somigli a
+teoria dei grafi: renderla sparsa vuol dire, letteralmente, togliere archi.
 
 ```{admonition} Da ricordare
 :class: important

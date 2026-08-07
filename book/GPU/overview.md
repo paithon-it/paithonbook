@@ -173,9 +173,10 @@ GPU fino a come si addestrano i modelli che non entrano in una scheda sola.
   lo si scrive (un mini-esempio in **Triton**), il modello CUDA/SIMT e perché
   **fondere** più operazioni in un kernel solo taglia i viaggi in memoria.
 - **GEMM: la moltiplicazione di matrici, spremuta**, la routine su cui ogni
-  rete spende il grosso del tempo: il **tiling** che la rende veloce e i
+  rete spende il grosso del tempo: il **tiling** che la rende veloce, i
   **tensor core** che eseguono un intero prodotto tra piccole matrici per
-  colpo di clock.
+  colpo di clock, e l'**array sistolico**, cioè la scelta opposta fatta dagli
+  acceleratori dedicati.
 - **Flash Attention: l'attenzione che non spreca memoria**, l'attenzione
   riorganizzata per non scrivere mai la matrice $N \times N$: **tiling** e
   **online softmax**, l'esempio più limpido di calcolo *IO-aware*, fino alla

@@ -509,6 +509,84 @@ distribuzione; non basta per **decidere** un intervento.
 
 `````
 
+### Tre gradini: vedere, fare, immaginare
+
+Le tre strutture appena elencate si sistemano dentro una cornice più larga, che
+vale la pena avere in testa perché rimette in fila cose che questo libro
+incontra in capitoli lontanissimi fra loro. La propone Judea Pearl, e la chiama
+**scala della causalità** {cite}`pearl2018book`.
+
+`````{tab} Elementare
+
+I gradini sono tre, e ognuno risponde a un tipo di domanda che il gradino
+sotto non sa nemmeno formulare.
+
+**Vedere.** «Fra chi compra il gelato, quanti annegano?» È una domanda
+sull'associazione: si guardano i dati e si contano. Tutto ciò che si fa con una
+regressione, un classificatore o una tabella pivot sta qui.
+
+**Fare.** «Se vietassi il gelato, gli annegamenti calerebbero?» Non è la stessa
+domanda, e non si risponde con gli stessi dati. Osservare chi compra il gelato
+non è come *far comprare* il gelato a qualcuno scelto a caso: nel secondo caso
+si è tagliata la freccia che va dal caldo alla decisione d'acquisto. È il
+motivo per cui esistono gli esperimenti randomizzati.
+
+**Immaginare.** «Quel bagnante che è annegato, si sarebbe salvato se non fosse
+uscito quel giorno?» Riguarda un caso singolo e un mondo che non è accaduto.
+Non basta nemmeno l'esperimento, perché l'esperimento dice cosa succede in
+media, non cosa sarebbe successo a *lui*.
+
+Pearl osserva, e vale la pena riportarlo, che i modelli addestrati sui dati
+stanno quasi tutti sul primo gradino, e ci stanno benissimo: «la civetta è un
+buon cacciatore senza capire perché il topo vada da A a B». Predire non
+richiede capire. Il punto è sapere quale domanda si sta facendo, perché salire
+un gradino richiede sempre qualcosa che nei dati non c'è.
+
+`````
+
+`````{tab} Superiore
+
+I tre livelli si distinguono formalmente dall'oggetto probabilistico che
+sanno esprimere.
+
+1. **Associazione**: $P(y \mid x)$, cioè condizionare. È tutto ciò che si
+   ottiene osservando, e include correlazione, regressione e ogni modello
+   predittivo di questo libro.
+2. **Intervento**: $P(y \mid do(x))$, dove l'operatore $do$ denota
+   l'imposizione di $X = x$ dall'esterno, che nel grafo causale corrisponde a
+   **recidere tutti gli archi entranti** in $X$. In generale
+   $P(y \mid do(x)) \neq P(y \mid x)$, e la differenza è esattamente il
+   contributo dei confondenti.
+3. **Controfattuale**: $P(y_x \mid x', y')$, la probabilità che $Y$ sarebbe
+   stato $y$ sotto $X = x$, **dato che** in realtà si è osservato $x'$ e $y'$.
+   Richiede un modello strutturale completo, non solo il grafo.
+
+Il risultato che rende la scala operativa e non solo tassonomica è che
+condizioni grafiche esplicite (il *criterio di backdoor*, il *do-calculus*)
+dicono **quando** una quantità di livello 2 è calcolabile a partire da soli
+dati osservativi di livello 1, e con quale aggiustamento. Non sempre lo è: se i
+confondenti rilevanti non sono osservati, nessuna quantità di dati basta, ed è
+una impossibilità di principio, non un limite di campione.
+
+La conseguenza per chi costruisce sistemi è che il gradino di una domanda
+determina che dati servono. Chiedere «quali clienti abbandoneranno» è
+livello 1 e un classificatore basta; chiedere «quali clienti abbandoneranno
+*se non li chiamiamo*» è livello 2, e un classificatore addestrato su dati in
+cui le chiamate erano decise da qualcuno risponde alla domanda sbagliata con
+grande sicurezza.
+
+`````
+
+I tre gradini etichettano cose che il libro affronta separatamente, e conviene
+tenerne una mappa. Al primo stanno la regressione e l'importanza delle feature
+del capitolo sull'interpretabilità. Al secondo stanno i **test A/B** e i
+rilasci controllati del capitolo su MLOps, che sono interventi randomizzati
+travestiti da ingegneria, e ci sta anche il reinforcement learning, dove
+l'agente **agisce** e quindi genera da sé la distribuzione che osserva. Al
+terzo stanno le **spiegazioni controfattuali**, che chiedono che cosa sarebbe
+successo con un reddito diverso. Non è una gerarchia di merito: è una gerarchia
+di **cosa serve avere** per rispondere.
+
 ## Dalla probabilità all'apprendimento
 
 Resta un'ultima domanda: cosa c'entra tutto questo con l'*addestrare* un modello?

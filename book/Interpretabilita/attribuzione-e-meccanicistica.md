@@ -198,6 +198,78 @@ a quella componente. È l'assioma che verificheremo numericamente più avanti.
 
 `````
 
+## Le mappe dicono dove, non che cosa
+
+Tre metodi, tre mappe sempre più pulite. Prima di andare avanti conviene
+fermarsi e chiedersi una cosa che le mappe, per come sono fatte, non
+suggeriscono da sole: **una mappa di importanza è una spiegazione?**
+
+Ci sono due obiezioni, e sono di natura diversa. La prima riguarda cosa una
+mappa può dire in linea di principio; la seconda, più grave, riguarda se stia
+davvero parlando del modello.
+
+`````{tab} Elementare
+
+La prima obiezione la mette bene Cynthia Rudin: sapere **dove** la rete
+guarda dentro l'immagine non dice **che cosa** stia facendo con quella parte.
+Una mappa che si accende sul muso del cane è compatibile con «la rete
+riconosce la forma di un muso», ma anche con «la rete ha imparato che in
+quella zona c'è di solito una texture di pelo», o con «quel pezzo di immagine
+è semplicemente ad alto contrasto». La salienza dice ciò che la rete *vede*,
+non ciò che la rete *pensa*.
+
+La seconda obiezione è più radicale ed è arrivata da un esperimento tanto
+semplice quanto crudele. Prendi una rete addestrata, produci la sua mappa, poi
+**cancella quello che ha imparato**: randomizza i pesi, strato per strato, e
+rifai la mappa. Se la mappa fosse una spiegazione del modello, dovrebbe
+disintegrarsi, perché il modello non c'è più. Per diversi metodi popolari, la
+mappa cambia pochissimo, e resta riconoscibile come una sagoma dell'oggetto.
+
+La conclusione è spiacevole e va detta: quelle mappe stavano in buona parte
+descrivendo l'**immagine**, non la rete. Somigliavano a un rilevatore di
+bordi, e siccome un rilevatore di bordi su una foto di cane accende il cane,
+sembravano sensate.
+
+`````
+
+`````{tab} Superiore
+
+L'obiezione di Rudin {cite}`rudin2019stop` è che una mappa di salienza è
+compatibile con troppe spiegazioni diverse dello stesso comportamento: è
+un'informazione sulla *posizione* dell'evidenza, non sul calcolo che la usa.
+Nei contesti ad alto rischio, sostiene, questo la rende inadatta a sostituire
+un modello intrinsecamente interpretabile.
+
+La seconda obiezione è empirica e ha una forma metodologica importante: sono i
+**controlli di sanità** di Adebayo e colleghi {cite}`adebayo2018sanity`. Il
+ragionamento è che un metodo di attribuzione, per essere utile, deve almeno
+essere **sensibile** alle cose da cui la predizione dipende. Da qui due test.
+
+Nel *model parameter randomization test* si randomizzano progressivamente i
+pesi del modello, dall'ultimo strato verso il primo, confrontando ogni volta la
+mappa con quella originale. Nel *data randomization test* si riaddestra il
+modello su etichette permutate a caso, cosicché abbia necessariamente
+memorizzato rumore, e si confronta la mappa con quella del modello addestrato
+sulle etichette vere.
+
+Un metodo che superi i test deve cambiare drasticamente in entrambi i casi.
+Diversi metodi molto usati non lo fanno, e le loro mappe restano visivamente
+simili all'originale: si comportano, per usare l'espressione degli autori, come
+un rilevatore di bordi indipendente dal modello. Metodi come le saliency
+semplici e Grad-CAM se la cavano meglio di altri, ma il punto metodologico
+resta, ed è quello che vale la pena portarsi via: **la plausibilità visiva di
+una spiegazione non è una prova della sua fedeltà**, e un occhio umano non
+distingue le due cose. Un metodo di attribuzione va sottoposto a un test che
+possa farlo fallire, esattamente come un modello.
+
+`````
+
+Il che non rende inutili le mappe: le ricolloca. Sono strumenti di
+**esplorazione** (dove guardare, quali ipotesi formulare, quale scorciatoia
+sospettare in un dataset) e non certificati di funzionamento. La sezione
+seguente mostra che lo stesso identico dubbio, con la stessa struttura, si è
+posto per l'oggetto che sembrava metterne al riparo: i pesi di attenzione.
+
 ## L'attenzione è una spiegazione?
 
 C'è una tentazione naturale, per chi lavora con i Transformer del capitolo
@@ -216,6 +288,35 @@ più stretti l'attenzione conserva un valore esplicativo. La morale operativa è
 di **cautela**: i pesi di attenzione sono un indizio suggestivo, non una
 prova; una heatmap di attenzione va letta come una traccia, non come una
 confessione.
+
+C'è però una domanda tecnica che precede quella filosofica, e che di solito
+viene saltata: **la matrice di attenzione di quale strato?** Un Transformer ne
+ha decine, impilate, e guardarne una sola è come giudicare una catena di
+montaggio da una sola stazione. Abnar e Zuidema {cite}`abnar2020quantifying`
+mostrano che la composizione non è affatto banale, per una ragione che il
+capitolo sui Transformer ha già messo in evidenza: le **connessioni
+residuali**. A ogni blocco il valore di un token non viene sostituito da ciò
+che l'attenzione gli porta, ma sommato ad esso; quindi una parte
+dell'informazione che arriva allo strato $l+1$ non è passata dall'attenzione di
+quel livello, ma è scivolata lungo la scorciatoia.
+
+Il rimedio proposto è di tenerne conto e poi comporre. Si corregge la matrice
+di attenzione di ogni strato mescolandola con l'identità, che rappresenta
+appunto il passaggio diretto,
+
+$$
+A^{(l)} = \tfrac{1}{2} W^{(l)}_{\text{att}} + \tfrac{1}{2} I ,
+$$
+
+e si moltiplicano gli strati fra loro per ottenere quanto di ogni token di
+ingresso è finito in ogni posizione all'altezza voluta. È l'**attention
+rollout**. La variante *attention flow* tratta la stessa struttura come un
+grafo orientato aciclico e calcola il flusso massimo dal token di ingresso a
+quello di arrivo, che è più costoso e tiene conto dei colli di bottiglia lungo
+il cammino. In entrambi i casi il risultato è una mappa sui **token
+d'ingresso**, cioè finalmente confrontabile con le attribuzioni delle sezioni
+precedenti, e visibilmente diversa (spesso più sensata) della matrice del
+singolo strato che si è tentati di visualizzare.
 
 Un approccio complementare, più controllato, è il **probing**. L'idea: se una
 rappresentazione interna «sa» qualcosa (poniamo, la parte del discorso di una
@@ -432,9 +533,18 @@ volevamo poter vedere.
   gradiente lungo il cammino dalla baseline all'input: fondati su assiomi
   (sensibilità, invarianza all'implementazione), risolvono la saturazione e
   soddisfano la **completezza**, $\sum_i \mathrm{IG}_i = f(x) - f(x')$.
+- Una mappa dice **dove**, non **che cosa** {cite}`rudin2019stop`, e i
+  **controlli di sanità** {cite}`adebayo2018sanity` mostrano che per diversi
+  metodi popolari la mappa cambia pochissimo randomizzando i pesi del modello:
+  descriveva l'immagine, non la rete. La plausibilità visiva di una spiegazione
+  non è una prova della sua fedeltà.
 - I **pesi di attenzione** non sono di per sé una spiegazione affidabile
-  (dibattito *«Attention is not Explanation»*, 2019); il **probing** con
-  classificatori lineari mappa dove sta l'informazione negli strati interni.
+  (dibattito *«Attention is not Explanation»*, 2019). E prima ancora c'è un
+  problema tecnico: comporre gli strati richiede di tener conto delle
+  connessioni residuali, che è ciò che fanno **attention rollout** e
+  *attention flow* {cite}`abnar2020quantifying`. Il **probing** con
+  classificatori lineari mappa invece dove sta l'informazione negli strati
+  interni.
 - L'**interpretabilità meccanicistica** (circuiti {cite}`olah2020zoom` e
   feature monosemantiche via sparse autoencoder
   {cite}`bricken2023monosemanticity`) punta a fare reverse-engineering dei
