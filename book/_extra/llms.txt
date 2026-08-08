@@ -232,3 +232,4 @@ della sezione e URL), non si ridistribuisce il testo.
 
 - [Conclusioni](https://book.paithon.it/main/Conclusioni/overview.html): Siamo partiti, nell'introduzione, da una frase di Joseph Weizenbaum: l'intelligenza artificiale è "straordinariamente resistente al tentativo di una precisa definizione".
 - [Bibliografia](https://book.paithon.it/main/references.html): Le opere citate nel libro, in ordine alfabetico. Nel testo le citazioni compaiono come rimandi tra parentesi quadre: ogni rimando porta qui.
+- [Aggiornamenti](https://book.paithon.it/main/aggiornamenti.html): Questo libro non esce e finisce: cambia. Una sezione si aggiunge, un conto sbagliato si corregge, una spiegazione che non ha funzionato si riscrive.

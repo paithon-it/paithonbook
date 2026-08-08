@@ -20,6 +20,10 @@ nel tono.
 
 👉 **Leggilo qui: [book.paithon.it](https://book.paithon.it/main/)**
 
+Il libro cambia: le sezioni nuove e le correzioni sono registrate, versione per
+versione, in
+[Aggiornamenti](https://book.paithon.it/main/aggiornamenti.html).
+
 ## Due livelli di lettura
 
 Ogni concetto chiave è spiegato due volte, con un sistema di schede affiancate:

@@ -39,6 +39,8 @@ Addentrarsi le prime volte nel mondo del Machine Learning e dell'Intelligenza Ar
 
 Questa versione online del libro **è gratuita** ed **in continuo aggiornamento** per stare al passo con le innovazioni del campo: aggiungiamo regolarmente sezioni, argomenti ed esempi in Python. Il codice del libro usa **PyTorch**, NumPy e scikit-learn. Dove in alto compare **Esegui il codice**, la pagina ha un notebook compagno che si apre su Colab con le sue celle in ordine; due capitoli hanno anche un notebook proprio, con l'icona 🚀. Altrove il codice si legge qui e si copia nel proprio editor.
 
+Che cosa è cambiato, e quando, sta scritto: {doc}`Aggiornamenti </aggiornamenti>` è il registro delle sezioni nuove e delle correzioni, una voce per pubblicazione, con il link alla pagina toccata. Questa è la versione **{{ versione }}** ({{ data_versione }}).
+
 ---
 
 ## Il percorso

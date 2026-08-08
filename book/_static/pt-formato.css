@@ -144,6 +144,22 @@ button.fullscreen-button {
   opacity: 0.8;
 }
 
+/* La versione del libro: informativa, non un invito a cliccare, quindi niente
+   sottolineatura fino al passaggio del mouse. */
+.pt-repo-card__versione {
+  display: block;
+  margin-top: 0.55rem;
+  font-family: var(--pt-font-mono, ui-monospace, monospace);
+  font-size: 0.68rem;
+  color: var(--pt-fg-subtle, #6A645B) !important;
+  text-decoration: none !important;
+  width: fit-content;
+}
+
+.pt-repo-card__versione:hover {
+  color: var(--pt-accent, #A44B28) !important;
+}
+
 .pt-repo-card__issues {
   display: block;
   margin-top: 0.55rem;

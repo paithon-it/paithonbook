@@ -135,6 +135,13 @@ coautore: il credito segue la correzione.
 Se ci vuole qualche giorno, non è disinteresse: è che una correzione entra
 quando il capitolo intorno regge ancora.
 
+Ogni pubblicazione lascia una voce nella pagina **Aggiornamenti** del libro,
+con il numero di versione, la data e il link alle pagine toccate: di lì si
+vede quando una segnalazione è diventata una correzione online. Il registro è
+`book/_dati/aggiornamenti.yml` e la pagina la scrive
+`python3 scripts/genera-aggiornamenti.py`; una pull request non deve
+aggiornarli, ci pensa chi pubblica.
+
 ## Licenza dei contributi
 
 Serve chiarirlo, perché i testi del libro sono sotto **CC BY-NC-ND 4.0**: una

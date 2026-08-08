@@ -1,4 +1,4 @@
-"""Quanti capitoli ha il libro: si conta una volta sola, e la conta il `_toc.yml`.
+"""I numeri del libro che non si scrivono a mano: i capitoli e la versione.
 
 Il numero dei capitoli era scritto a lettere in due punti di prosa — la landing
 («Trentuno capitoli, dall'alfabeto…») e le conclusioni («Dopo trenta
@@ -24,14 +24,32 @@ Si registra da `_config.yml`:
 Conta le voci di primo livello del toc che stanno in una cartella
 (`Python/overview.md`): `references.md` non è un capitolo e resta fuori,
 esattamente come nella griglia della landing.
+
+## E la versione, che è la stessa storia
+
+Il numero di versione del libro sta in un posto solo, la voce in cima a
+`_dati/aggiornamenti.yml`, che è la fonte della pagina degli aggiornamenti.
+Da lì arriva al testo:
+
+    {{ versione }}        ->  1.0.0
+    {{ data_versione }}   ->  8 agosto 2026
+
+e al tema come `pt_versione` / `pt_data_versione` nel contesto dei template,
+dove lo usa `_templates/pt-repo-card.html` per stampare la versione in cima
+all'indice, su ogni pagina. Scriverlo a mano in tre posti vorrebbe dire, fra
+tre mesi, leggerne tre diversi.
 """
 
+import datetime
 import pathlib
 
 import yaml
 from sphinx.util import logging
 
 logger = logging.getLogger(__name__)
+
+MESI = ("gennaio", "febbraio", "marzo", "aprile", "maggio", "giugno", "luglio",
+        "agosto", "settembre", "ottobre", "novembre", "dicembre")
 
 UNITA = ("zero", "uno", "due", "tre", "quattro",
          "cinque", "sei", "sette", "otto", "nove")
@@ -74,6 +92,25 @@ def conta_capitoli(percorso_toc: pathlib.Path) -> int:
     return sum(1 for c in voci if "/" in str(c.get("file", "")))
 
 
+def versione_corrente(percorso: pathlib.Path) -> dict[str, str]:
+    """La voce in cima al registro: numero e data, già in italiano.
+
+    La data la legge PyYAML come `datetime.date`; se qualcuno la scrive fra
+    virgolette arriva come stringa, e allora si stampa com'è invece di
+    inventarsi un mese.
+    """
+    dati = yaml.safe_load(percorso.read_text(encoding="utf-8")) or {}
+    versioni = dati.get("versioni") or []
+    if not versioni:
+        return {}
+    prima = versioni[0]
+    giorno = prima.get("data")
+    esteso = (f"{giorno.day} {MESI[giorno.month - 1]} {giorno.year}"
+              if isinstance(giorno, datetime.date) else str(giorno or ""))
+    return {"versione": str(prima.get("versione", "")),
+            "data_versione": esteso}
+
+
 def aggiungi_sostituzioni(app, config):
     percorso_toc = pathlib.Path(app.srcdir) / "_toc.yml"
     try:
@@ -92,6 +129,24 @@ def aggiungi_sostituzioni(app, config):
         "n_capitoli_meno_uno": n - 1,
         "n_capitoli_meno_uno_lettere": in_lettere(n - 1),
     }
+
+    # La versione è facoltativa per costruzione: se il registro manca o è
+    # illeggibile il libro si costruisce lo stesso, semplicemente senza numero.
+    percorso_registro = pathlib.Path(app.srcdir) / "_dati" / "aggiornamenti.yml"
+    try:
+        marca = versione_corrente(percorso_registro)
+    except Exception as errore:      # noqa: BLE001
+        logger.warning("pt_conteggi: registro delle versioni illeggibile (%s)",
+                       errore)
+        marca = {}
+    if marca.get("versione"):
+        valori.update(marca)
+        contesto = dict(getattr(config, "html_context", None) or {})
+        contesto["pt_versione"] = marca["versione"]
+        contesto["pt_data_versione"] = marca["data_versione"]
+        config.html_context = contesto
+        logger.info("pt_conteggi: versione %s (%s)",
+                    marca["versione"], marca["data_versione"])
     # Le sostituzioni scritte a mano nel `_config.yml`, se un giorno ce ne
     # saranno, vincono: qui si aggiunge, non si sovrascrive il file.
     esistenti = dict(getattr(config, "myst_substitutions", None) or {})

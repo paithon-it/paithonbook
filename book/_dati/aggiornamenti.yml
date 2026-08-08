@@ -1,0 +1,166 @@
+# Il registro degli aggiornamenti del libro: una voce per pubblicazione.
+#
+# È la FONTE. La pagina `book/aggiornamenti.md` la scrive
+# `scripts/genera-aggiornamenti.py` da qui, e il numero della voce in cima
+# diventa la versione del libro ovunque compaia: la landing, la scheda in cima
+# all'indice, l'oggetto del commit di pubblicazione.
+#
+#     python3 scripts/genera-aggiornamenti.py             # riscrive la pagina
+#     python3 scripts/genera-aggiornamenti.py --verifica  # è allineata?
+#
+# ## Il numero
+#
+# Tre cifre, `impianto.sezioni.correzioni`:
+#
+#   la PRIMA  sale quando cambia l'impianto (una parte nuova nell'indice, un
+#             riordino che cambia il percorso di lettura, la licenza);
+#   la SECONDA quando arriva un capitolo o una sezione;
+#   la TERZA  quando si corregge o si rifinisce quello che c'è già.
+#
+# Chi sale azzera le cifre alla sua destra. Se una pubblicazione porta sia
+# sezioni nuove sia correzioni, sale la seconda e la terza torna a zero: il
+# numero dice la cosa più grossa che è successa, l'elenco dice tutto il resto.
+#
+# ## Una versione è una pubblicazione
+#
+# Non un commit e non un push. Qui dentro si lavora tutti i giorni e si
+# committa a metà lavoro; il libro pubblicato cambia quando lo si pubblica con
+# `strumenti/pubblica.py`, ed è quello il momento in cui si aggiunge una voce
+# qui sopra e si rigenera la pagina.
+#
+# ## Una voce
+#
+#   tipo    nuovo | ampliato | corretto | impianto
+#   pagina  il file, com'è scritto nel `_toc.yml` (facoltativo: una voce può
+#           riguardare tutto il libro). Il titolo del link NON si scrive qui,
+#           lo prende il generatore dal `_toc.yml`: così non può divergere.
+#   testo   una o due frasi su che cosa è cambiato, non su che cosa c'è
+#           scritto nella pagina. Chi legge questa pagina vuole sapere se gli
+#           conviene tornare a leggere.
+
+versioni:
+
+- versione: "1.0.0"
+  data: 2026-08-08
+  titolo: Il libro prende un numero
+  nota: >
+    La 1.0.0 non è il primo giorno del libro: il primo commit è del giugno
+    2024 e la storia breve è in fondo a questa pagina. È il primo giorno in
+    cui il libro ha un numero, e il punto da cui si contano i cambiamenti.
+    L'elenco qui sotto è il lavoro di agosto 2026, l'ultimo mese prima che il
+    registro cominciasse.
+  voci:
+
+  - tipo: nuovo
+    pagina: Matematica/matematica-llm.md
+    testo: >
+      Gli strumenti dei capitoli di matematica messi all'opera su una cosa
+      sola: un token che entra in un modello linguistico ed esce dall'altra
+      parte. Nasce da un'osservazione di Joseph Breeden, che rileggendo la
+      letteratura sui modelli linguistici scopre che il muro non era la
+      matematica ma il vocabolario preso in prestito da mestieri diversi.
+
+  - tipo: nuovo
+    pagina: ReinforcementLearning/banditi.md
+    testo: >
+      Il dilemma fra esplorare e sfruttare nella forma più pura che esista,
+      dalla domanda che Thompson si pone nel 1933 sulle sperimentazioni
+      cliniche. Arriva prima degli MDP, perché qui manca tutto il resto e si
+      vede solo quello.
+
+  - tipo: nuovo
+    pagina: ReinforcementLearning/monte-carlo.md
+    testo: >
+      Imparare giocando fino in fondo, senza la mappa dell'ambiente: il passo
+      che mancava fra la value iteration, che la mappa la pretende, e il
+      Q-learning. Comincia da Ulam e dai suoi solitari a Los Alamos.
+
+  - tipo: nuovo
+    pagina: GraphNeuralNetwork/knowledge-graph.md
+    testo: >
+      Quando gli archi di un grafo non sono collegamenti ma fatti, con un
+      verso e un nome. Da *things, not strings* di Google alle rappresentazioni
+      di entità e relazioni.
+
+  - tipo: nuovo
+    pagina: Transformers/multilingua.md
+    testo: >
+      Un modello solo per cento lingue: vocabolari condivisi, trasferimento
+      fra lingue lontane e il prezzo che si paga a metterle tutte nello stesso
+      spazio. Riprende il filo della traduzione neurale, che si era fermato al
+      2016.
+
+  - tipo: nuovo
+    pagina: MLOps/energia-e-impronta.md
+    testo: >
+      Di un modello si dichiara quasi tutto (parametri, FLOP, accuratezza,
+      millisecondi) tranne quanta energia costa. Come si misura, e perché il
+      numero cambia di un ordine di grandezza a seconda di dove lo si misura.
+
+  - tipo: ampliato
+    pagina: GraphNeuralNetwork/message-passing.md
+    testo: >
+      Da dove viene la matrice di adiacenza normalizzata, e perché
+      l'oversmoothing non è un difetto da correggere ma la conseguenza di come
+      il message passing è fatto.
+
+  - tipo: ampliato
+    pagina: Transformers/confronti.md
+    testo: >
+      Il terzo filo del confronto: la self-attention è message passing su un
+      grafo completo, e il capitolo sulle graph neural network e questo si
+      parlano.
+
+  - tipo: ampliato
+    pagina: GAN/come-funziona.md
+    testo: >
+      Come si misura una GAN, che è la domanda che l'addestramento avversario
+      lascia aperta: Inception Score, FID, e che cosa nessuno dei due vede.
+
+  - tipo: ampliato
+    pagina: GPU/gemm-e-tensor-core.md
+    testo: >
+      L'array sistolico: la forma di circuito che sta dentro un tensor core, e
+      perché moltiplicare matrici in hardware somiglia a una catena di
+      montaggio.
+
+  - tipo: ampliato
+    pagina: PyTorch/errori-comuni.md
+    testo: >
+      Leggere le curve di addestramento: quali forme dicono overfitting, quali
+      un learning rate sbagliato, quali un errore nei dati.
+
+  - tipo: ampliato
+    pagina: Python/pandas-matplotlib.md
+    testo: >
+      I quattro tipi di join fra due tabelle e la griglia di subplot, due cose
+      che il capitolo usava senza averle spiegate.
+
+  - tipo: ampliato
+    testo: >
+      Ogni capitolo si chiude con un riquadro «Da ricordare», scritto sui due
+      livelli come il resto del libro: cinque righe per rileggere un capitolo
+      in un minuto, o per capire se vale la pena aprirlo.
+
+  - tipo: corretto
+    testo: >
+      Tutti i capitoli riletti a tre lenti (i fatti sulle fonti primarie, i
+      conti rifatti a mano, il codice eseguito davvero) e corretti dove
+      serviva: date, attribuzioni, esempi numerici, notazione.
+
+  - tipo: corretto
+    testo: >
+      Il codice dei blocchi Python è stato eseguito e i notebook compagni (il
+      pulsante «Esegui il codice») rigenerati dalle pagine corrette: quello
+      che si legge e quello che gira su Colab sono di nuovo la stessa cosa.
+
+  - tipo: impianto
+    testo: >
+      Il tema perde il viola rimasto dalle impostazioni di fabbrica nei
+      fondini delle schede: la palette del libro è quella, e adesso lo è
+      ovunque.
+
+  - tipo: impianto
+    testo: >
+      Questa pagina, e con lei il numero di versione che compare in cima
+      all'indice e nella prima pagina del libro.

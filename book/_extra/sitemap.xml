@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://book.paithon.it/main/intro.html</loc>
-    <lastmod>2026-08-08T14:16:06+00:00</lastmod>
+    <lastmod>2026-08-08T19:59:50+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/Introduzione/overview.html</loc>
@@ -731,5 +731,9 @@
   <url>
     <loc>https://book.paithon.it/main/references.html</loc>
     <lastmod>2026-07-18T11:41:23+00:00</lastmod>
+  </url>
+  <url>
+    <loc>https://book.paithon.it/main/aggiornamenti.html</loc>
+    <lastmod>2026-08-08T19:59:50+00:00</lastmod>
   </url>
 </urlset>

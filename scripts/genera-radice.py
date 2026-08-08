@@ -132,8 +132,17 @@ def prima_frase(percorso: Path, limite: int = 165) -> str:
     else:
         righe = percorso.read_text(encoding="utf-8").splitlines()
 
-    pila, paragrafo = [], []
+    # Un commento HTML su piu' righe: la prima riga cade da se' (comincia per
+    # `<`), le altre no, e senza questo la descrizione di una pagina generata
+    # diventava l'avviso «non modificare a mano».
+    pila, paragrafo, commento = [], [], False
     for riga in righe:
+        if commento:
+            commento = "-->" not in riga
+            continue
+        if riga.lstrip().startswith("<!--") and "-->" not in riga:
+            commento = True
+            continue
         fence = RX_FENCE.match(riga)
         if fence:
             n = len(fence.group(1))

@@ -41,6 +41,16 @@
       <span class="pt-repo-card__stat-label">fork</span>
     </span>
   </div>
+  {#- La versione del libro, che qui e' anche il modo di dire che il libro
+      cambia. Il numero arriva da `_ext/pt_conteggi.py`, che lo legge dalla
+      voce in cima a `_dati/aggiornamenti.yml`: non si scrive in nessun
+      template. Se manca, la riga non compare e la scheda resta com'era. -#}
+  {%- if pt_versione %}
+  <a class="pt-repo-card__versione" href="{{ pathto('aggiornamenti') }}"
+     title="Che cosa è cambiato, e quando">
+    versione {{ pt_versione }} · {{ pt_data_versione }}
+  </a>
+  {%- endif %}
   <a class="pt-repo-card__issues"
      href="{{ theme_repository_url }}/issues/new"
      target="_blank" rel="noopener noreferrer">

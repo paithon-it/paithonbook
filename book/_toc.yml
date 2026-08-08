@@ -443,3 +443,5 @@ parts:
     title: Conclusioni
   - file: references.md
     title: Bibliografia
+  - file: aggiornamenti.md
+    title: Aggiornamenti
