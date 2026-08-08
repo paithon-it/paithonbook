@@ -48,6 +48,20 @@
 
 versioni:
 
+- versione: "1.1.2"
+  data: 2026-08-08
+  voci:
+
+  - tipo: corretto
+    pagina: Introduzione/overview.md
+    testo: >
+      La massima di Weizenbaum con cui si apre il libro era tradotta alla
+      lettera: «si dice che spiegare significhi spiegare via», che in italiano
+      non vuol dire niente, perché *to explain away* è un verbo frasale che
+      l'italiano non ha. Adesso dice «dissolvere», e una nota riporta
+      l'originale inglese per chi vuole controllare. Il richiamo nelle
+      conclusioni la segue.
+
 - versione: "1.1.1"
   data: 2026-08-08
   voci:
@@ -111,7 +125,7 @@ versioni:
       Le conclusioni dicevano di essere partite da una frase di Weizenbaum
       sull'intelligenza artificiale «straordinariamente resistente al
       tentativo di una precisa definizione». L'introduzione però apre su
-      un'altra frase, «si dice che spiegare significhi spiegare via», e della
+      un'altra frase, «si dice che spiegare significhi dissolvere», e della
       prima non si trova riscontro in nessuna fonte primaria: il richiamo
       adesso cita l'apertura vera.
 

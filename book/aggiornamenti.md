@@ -38,6 +38,14 @@ Una versione corrisponde a una **pubblicazione**, non a una giornata di
 lavoro: il libro si scrive tutti i giorni e si pubblica quando un pezzo sta in
 piedi.
 
+(v1-1-2)=
+
+## 1.1.2 · 8 agosto 2026
+
+### Correzioni
+
+- {doc}`Introduzione </Introduzione/overview>`. La massima di Weizenbaum con cui si apre il libro era tradotta alla lettera: «si dice che spiegare significhi spiegare via», che in italiano non vuol dire niente, perché *to explain away* è un verbo frasale che l'italiano non ha. Adesso dice «dissolvere», e una nota riporta l'originale inglese per chi vuole controllare. Il richiamo nelle conclusioni la segue.
+
 (v1-1-1)=
 
 ## 1.1.1 · 8 agosto 2026
@@ -65,7 +73,7 @@ piedi.
 ### Correzioni
 
 - I numeri dei capitoli nell'indice di sinistra li prendeva anche chi capitolo non è: la pagina degli aggiornamenti compariva come se fosse il trentaquattresimo. Adesso il numero ce l'hanno i capitoli e basta, ed è lo stesso che portano le schede in prima pagina.
-- {doc}`Conclusioni </Conclusioni/overview>`. Le conclusioni dicevano di essere partite da una frase di Weizenbaum sull'intelligenza artificiale «straordinariamente resistente al tentativo di una precisa definizione». L'introduzione però apre su un'altra frase, «si dice che spiegare significhi spiegare via», e della prima non si trova riscontro in nessuna fonte primaria: il richiamo adesso cita l'apertura vera.
+- {doc}`Conclusioni </Conclusioni/overview>`. Le conclusioni dicevano di essere partite da una frase di Weizenbaum sull'intelligenza artificiale «straordinariamente resistente al tentativo di una precisa definizione». L'introduzione però apre su un'altra frase, «si dice che spiegare significhi dissolvere», e della prima non si trova riscontro in nessuna fonte primaria: il richiamo adesso cita l'apertura vera.
 
 ### Impianto
 

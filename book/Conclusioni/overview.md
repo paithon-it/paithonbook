@@ -1,7 +1,7 @@
 # Conclusioni
 
 Siamo partiti, nell'introduzione, da una frase di Joseph Weizenbaum: "si dice
-che spiegare significhi spiegare via" {cite}`weizenbaum1966eliza`. Dopo
+che spiegare significhi dissolvere" {cite}`weizenbaum1966eliza`. Dopo
 {{ n_capitoli_meno_uno_lettere }} capitoli, dall'algebra lineare alle reti che
 generano immagini, dagli alberi di decisione agli agenti che usano strumenti,
 dai kernel CUDA alle domande su chi risponde quando un modello sbaglia,

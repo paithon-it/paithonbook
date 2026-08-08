@@ -6,7 +6,13 @@ già a metà degli anni Sessanta permetteva a un essere umano di conversare per
 iscritto con una macchina, apriva così l’articolo in cui lo presentava al
 mondo {cite}`weizenbaum1966eliza`:
 
->Si dice che spiegare significhi spiegare via.
+>Si dice che spiegare significhi dissolvere.[^spiegare-via]
+
+[^spiegare-via]: «It is said that to explain is to explain away»,
+    nell'originale. *To explain away* è un verbo frasale che l'italiano non
+    ha: vuol dire spiegare una cosa fino a toglierle ogni mistero, e con
+    quello ogni importanza. La riga dopo, nell'articolo, è «its magic
+    crumbles away»: l'incanto si sgretola.
 
 Nei programmi che sembrano intelligenti, osservava, questa massima si compie alla perfezione: finché il meccanismo resta nascosto la macchina appare prodigiosa; appena qualcuno lo spiega, l’incanto si sgretola. Eppure Weizenbaum, che voleva dimostrare la superficialità della comunicazione tra uomo e macchina, rimase estremamente sorpreso dal numero di persone che attribuivano sentimenti umani al suo programma. Ma siamo sicuri che sia solo una semplice lista di istruzioni quella da lui creata? O c’è qualcosa di più? Se è un semplice programma, perché attribuirgli una parola così ricca di significato come l’*intelligenza*?
 

@@ -231,6 +231,6 @@ della sezione e URL), non si ridistribuisce il testo.
 
 ## Chiusura
 
-- [Conclusioni](https://book.paithon.it/main/Conclusioni/overview.html): Siamo partiti, nell'introduzione, da una frase di Joseph Weizenbaum: "si dice che spiegare significhi spiegare via" .
+- [Conclusioni](https://book.paithon.it/main/Conclusioni/overview.html): Siamo partiti, nell'introduzione, da una frase di Joseph Weizenbaum: "si dice che spiegare significhi dissolvere" .
 - [Bibliografia](https://book.paithon.it/main/references.html): Le opere citate nel libro, in ordine alfabetico. Nel testo le citazioni compaiono come rimandi tra parentesi quadre: ogni rimando porta qui.
 - [Aggiornamenti](https://book.paithon.it/main/aggiornamenti.html): Questo libro non esce e finisce: cambia. Una sezione si aggiunge, un conto sbagliato si corregge, una spiegazione che non ha funzionato si riscrive.
