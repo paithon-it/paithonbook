@@ -117,10 +117,12 @@ piedi.
 CODA = """\
 ## Prima della 1.0
 
-Il libro si comincia a scrivere nel 2018, e per anni vive dove vivono i libri:
-in un manoscritto, e poi a stampa. Il repository è più giovane di sei anni,
-quindi le date qui sotto non sono la storia del *libro*: sono la storia della
-**versione online**, cioè i giorni in cui il testo è arrivato qui dentro.
+Il libro nasce nel 2019, scritto per uscire su carta con un editore. Non è
+successo, e il manoscritto è rimasto in un cassetto: la prima forma in cui
+questo testo è arrivato a qualcuno è quella che stai leggendo. Il repository è
+più giovane di cinque anni, quindi le date qui sotto non sono la storia del
+*libro*: sono la storia della sua **versione online**, cioè i giorni in cui il
+testo è arrivato qui dentro.
 
 Il 13 giugno 2024 nasce l'impianto Jupyter Book, con la licenza CC BY-NC-ND e
 le prime pagine: l'introduzione, il capitolo su Python e, quattro giorni dopo,
@@ -128,11 +130,11 @@ i due livelli di lettura, che sono poi diventati la regola di tutto il resto.
 Nell'ottobre del 2025 si allarga il capitolo sui Transformer. Poi si ferma.
 
 Riparte nel luglio del 2026, e in tre settimane diventa un'altra cosa: prima
-l'ossatura dell'edizione a stampa (matematica, machine learning, reti neurali,
-deep learning, visione artificiale, NLP, GAN, reinforcement learning, speech
-recognition), poi, uno dietro l'altro, i capitoli che a stampa non c'erano, da
-PyTorch e le GPU fino agli agenti, ai modelli di diffusione, agli state space
-model, ai sistemi multi-agente.
+l'ossatura del manoscritto (matematica, machine learning, reti neurali, deep
+learning, visione artificiale, NLP, GAN, reinforcement learning, speech
+recognition), poi, uno dietro l'altro, i capitoli che nel 2019 non potevano
+esserci, da PyTorch e le GPU fino agli agenti, ai modelli di diffusione, agli
+state space model, ai sistemi multi-agente.
 
 Agosto 2026 è il mese della rilettura: ogni capitolo ripassato sui fatti, sui
 conti e sul codice, i notebook compagni riallineati alle pagine, le figure che
@@ -142,9 +144,6 @@ chiudere i buchi che la rilettura aveva trovato.
 Nessuna di queste tappe ha un numero di versione, e non gliene diamo uno
 adesso: non erano pubblicazioni, erano lavoro. Il registro comincia dalla
 1.0.0.
-
-E la numerazione riguarda questa versione online, non il libro: l'edizione a
-stampa è un'altra cosa, con un'altra storia, e non si conta qui.
 """
 
 
@@ -152,11 +151,46 @@ stampa è un'altra cosa, con un'altra storia, e non si conta qui.
 # la fonte
 # --------------------------------------------------------------------------
 
+class LettoreSevero(yaml.SafeLoader):
+    """Un YAML con due chiavi uguali nella stessa mappa e' un errore, non un
+    aggiornamento silenzioso.
+
+    PyYAML tiene l'ultima e non dice niente: una modifica che perde per strada
+    un `- versione:` fonde due voci in una, e quella sopra sparisce dal
+    registro senza che nulla fallisca. E' successo, e da qui non si vedeva.
+    """
+
+
+def _mappa_senza_doppioni(lettore, nodo, deep=False):
+    viste = set()
+    for chiave, _ in nodo.value:
+        nome = lettore.construct_object(chiave, deep=True)
+        if nome in viste:
+            raise yaml.constructor.ConstructorError(
+                None, None, f"chiave ripetuta nella stessa voce: {nome!r}",
+                chiave.start_mark)
+        viste.add(nome)
+    return yaml.SafeLoader.construct_mapping(lettore, nodo, deep=deep)
+
+
+LettoreSevero.add_constructor(
+    yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, _mappa_senza_doppioni)
+
+
 def carica() -> list[dict]:
-    dati = yaml.safe_load(FONTE.read_text(encoding="utf-8")) or {}
+    try:
+        dati = yaml.load(FONTE.read_text(encoding="utf-8"), LettoreSevero) or {}
+    except yaml.YAMLError as errore:
+        raise SystemExit(f"{FONTE.relative_to(RADICE)}: {errore}")
     versioni = dati.get("versioni") or []
     if not versioni:
         raise SystemExit(f"{FONTE.relative_to(RADICE)}: nessuna versione.")
+
+    numeri = [str(v.get("versione", "")) for v in versioni]
+    if len(set(numeri)) != len(numeri):
+        raise SystemExit("numeri di versione ripetuti nel registro: "
+                         + ", ".join(sorted(n for n in set(numeri)
+                                            if numeri.count(n) > 1)))
     return versioni
 
 

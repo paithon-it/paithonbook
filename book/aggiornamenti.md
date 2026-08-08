@@ -38,13 +38,21 @@ Una versione corrisponde a una **pubblicazione**, non a una giornata di
 lavoro: il libro si scrive tutti i giorni e si pubblica quando un pezzo sta in
 piedi.
 
+(v1-0-3)=
+
+## 1.0.3 · 8 agosto 2026
+
+### Correzioni
+
+- La storia in fondo a questa pagina dava per esistente un'edizione a stampa, e la usava come metro per dire quali capitoli fossero «aggiunti». Il libro era scritto per uscire su carta, ma su carta non è mai uscito: il metro è il manoscritto del 2019, e la prima forma pubblica di questo testo è quella che si sta leggendo.
+
 (v1-0-2)=
 
 ## 1.0.2 · 8 agosto 2026
 
 ### Correzioni
 
-- La storia in fondo a questa pagina faceva cominciare il libro nel giugno 2024, che è la data del primo commit: il libro si comincia a scrivere nel 2018, e quello che nasce nel 2024 è la versione online. La nota di copyright, che diceva la stessa cosa, adesso parte dal 2018.
+- La storia in fondo a questa pagina faceva cominciare il libro nel giugno 2024, che è la data del primo commit: il libro nasce nel 2019, e quello che nasce nel 2024 è la sua versione online. La nota di copyright, che diceva la stessa cosa, adesso parte dal 2019.
 
 (v1-0-1)=
 
@@ -60,7 +68,7 @@ piedi.
 
 *Il libro prende un numero*
 
-La 1.0.0 non è il primo giorno del libro, che si comincia a scrivere nel 2018 (la storia breve è in fondo a questa pagina): è il primo giorno in cui il libro ha un numero, e il punto da cui si contano i cambiamenti. L'elenco qui sotto è il lavoro di agosto 2026, l'ultimo mese prima che il registro cominciasse.
+La 1.0.0 non è il primo giorno del libro, che nasce nel 2019 (la storia breve è in fondo a questa pagina): è il primo giorno in cui il libro ha un numero, e il punto da cui si contano i cambiamenti. L'elenco qui sotto è il lavoro di agosto 2026, l'ultimo mese prima che il registro cominciasse.
 
 ### Sezioni nuove
 
@@ -93,10 +101,12 @@ La 1.0.0 non è il primo giorno del libro, che si comincia a scrivere nel 2018 (
 
 ## Prima della 1.0
 
-Il libro si comincia a scrivere nel 2018, e per anni vive dove vivono i libri:
-in un manoscritto, e poi a stampa. Il repository è più giovane di sei anni,
-quindi le date qui sotto non sono la storia del *libro*: sono la storia della
-**versione online**, cioè i giorni in cui il testo è arrivato qui dentro.
+Il libro nasce nel 2019, scritto per uscire su carta con un editore. Non è
+successo, e il manoscritto è rimasto in un cassetto: la prima forma in cui
+questo testo è arrivato a qualcuno è quella che stai leggendo. Il repository è
+più giovane di cinque anni, quindi le date qui sotto non sono la storia del
+*libro*: sono la storia della sua **versione online**, cioè i giorni in cui il
+testo è arrivato qui dentro.
 
 Il 13 giugno 2024 nasce l'impianto Jupyter Book, con la licenza CC BY-NC-ND e
 le prime pagine: l'introduzione, il capitolo su Python e, quattro giorni dopo,
@@ -104,11 +114,11 @@ i due livelli di lettura, che sono poi diventati la regola di tutto il resto.
 Nell'ottobre del 2025 si allarga il capitolo sui Transformer. Poi si ferma.
 
 Riparte nel luglio del 2026, e in tre settimane diventa un'altra cosa: prima
-l'ossatura dell'edizione a stampa (matematica, machine learning, reti neurali,
-deep learning, visione artificiale, NLP, GAN, reinforcement learning, speech
-recognition), poi, uno dietro l'altro, i capitoli che a stampa non c'erano, da
-PyTorch e le GPU fino agli agenti, ai modelli di diffusione, agli state space
-model, ai sistemi multi-agente.
+l'ossatura del manoscritto (matematica, machine learning, reti neurali, deep
+learning, visione artificiale, NLP, GAN, reinforcement learning, speech
+recognition), poi, uno dietro l'altro, i capitoli che nel 2019 non potevano
+esserci, da PyTorch e le GPU fino agli agenti, ai modelli di diffusione, agli
+state space model, ai sistemi multi-agente.
 
 Agosto 2026 è il mese della rilettura: ogni capitolo ripassato sui fatti, sui
 conti e sul codice, i notebook compagni riallineati alle pagine, le figure che
@@ -118,6 +128,3 @@ chiudere i buchi che la rilettura aveva trovato.
 Nessuna di queste tappe ha un numero di versione, e non gliene diamo uno
 adesso: non erano pubblicazioni, erano lavoro. Il registro comincia dalla
 1.0.0.
-
-E la numerazione riguarda questa versione online, non il libro: l'edizione a
-stampa è un'altra cosa, con un'altra storia, e non si conta qui.

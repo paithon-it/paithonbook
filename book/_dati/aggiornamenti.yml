@@ -40,6 +40,18 @@
 
 versioni:
 
+- versione: "1.0.3"
+  data: 2026-08-08
+  voci:
+
+  - tipo: corretto
+    testo: >
+      La storia in fondo a questa pagina dava per esistente un'edizione a
+      stampa, e la usava come metro per dire quali capitoli fossero
+      «aggiunti». Il libro era scritto per uscire su carta, ma su carta non è
+      mai uscito: il metro è il manoscritto del 2019, e la prima forma
+      pubblica di questo testo è quella che si sta leggendo.
+
 - versione: "1.0.2"
   data: 2026-08-08
   voci:
@@ -47,9 +59,9 @@ versioni:
   - tipo: corretto
     testo: >
       La storia in fondo a questa pagina faceva cominciare il libro nel giugno
-      2024, che è la data del primo commit: il libro si comincia a scrivere
-      nel 2018, e quello che nasce nel 2024 è la versione online. La nota di
-      copyright, che diceva la stessa cosa, adesso parte dal 2018.
+      2024, che è la data del primo commit: il libro nasce nel 2019, e quello
+      che nasce nel 2024 è la sua versione online. La nota di copyright, che
+      diceva la stessa cosa, adesso parte dal 2019.
 
 - versione: "1.0.1"
   data: 2026-08-08
@@ -67,8 +79,8 @@ versioni:
   data: 2026-08-08
   titolo: Il libro prende un numero
   nota: >
-    La 1.0.0 non è il primo giorno del libro, che si comincia a scrivere nel
-    2018 (la storia breve è in fondo a questa pagina): è il primo giorno in
+    La 1.0.0 non è il primo giorno del libro, che nasce nel 2019 (la storia
+    breve è in fondo a questa pagina): è il primo giorno in
     cui il libro ha un numero, e il punto da cui si contano i cambiamenti.
     L'elenco qui sotto è il lavoro di agosto 2026, l'ultimo mese prima che il
     registro cominciasse.

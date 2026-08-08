@@ -146,4 +146,4 @@ propria.
 Per contribuire (e per la concessione che serve, dato che la licenza dei testi
 vieta le opere derivate), vedi [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
-© 2018–2026 Francesco Messina · [paithon.it](https://www.paithon.it)
+© 2019–2026 Francesco Messina · [paithon.it](https://www.paithon.it)
