@@ -45,6 +45,8 @@ parts:
       title: Teoria dell'informazione
     - file: Matematica/analisi-numerica.md
       title: Analisi numerica
+    - file: Matematica/matematica-llm.md
+      title: La matematica di un LLM
 
 - caption: Imparare dai dati
   chapters:

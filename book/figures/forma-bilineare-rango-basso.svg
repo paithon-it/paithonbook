@@ -1,0 +1,50 @@
+<svg viewBox="0 0 760 420" width="100%" role="img" aria-label="A sinistra un quadrato grande etichettato M, di lato d, che rappresenta la matrice di tutte le affinità possibili fra caratteristiche; a destra lo stesso quadrato è mostrato come prodotto di due rettangoli sottili, alti k e larghi d, le trasposte delle due matrici di proiezione. Sotto, il conteggio dei numeri da imparare: circa 151 milioni per il quadrato pieno, circa 3,1 milioni per i due rettangoli." xmlns="http://www.w3.org/2000/svg">
+  <rect x="0" y="0" width="760" height="420" fill="#F8F5EE"/>
+  <defs>
+    <marker id="bfArr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#C9A961"/></marker>
+  </defs>
+
+  <!-- quadrato M: la forma bilineare piena -->
+  <rect x="90" y="96" width="170" height="170" fill="#B5532C" fill-opacity="0.16" stroke="#B5532C" stroke-width="2"/>
+  <text x="175" y="188" font-family="serif" font-size="34" font-style="italic" fill="#B5532C" text-anchor="middle">M</text>
+  <text x="175" y="212" font-family="sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">rango ≤ k</text>
+
+  <!-- quote del quadrato -->
+  <line x1="90" y1="80" x2="260" y2="80" stroke="#C9A961" stroke-width="1.5" marker-start="url(#bfArr)" marker-end="url(#bfArr)"/>
+  <text x="175" y="70" font-family="serif" font-size="16" font-style="italic" fill="#1A1A1A" text-anchor="middle">d</text>
+  <line x1="72" y1="96" x2="72" y2="266" stroke="#C9A961" stroke-width="1.5" marker-start="url(#bfArr)" marker-end="url(#bfArr)"/>
+  <text x="58" y="187" font-family="serif" font-size="16" font-style="italic" fill="#1A1A1A" text-anchor="middle">d</text>
+
+  <!-- uguale -->
+  <text x="292" y="196" font-family="sans-serif" font-size="28" fill="#1A1A1A" text-anchor="middle">=</text>
+
+  <!-- fattore alto e stretto: la trasposta di W^A -->
+  <rect x="330" y="96" width="38" height="170" fill="#2D5A5C" fill-opacity="0.18" stroke="#2D5A5C" stroke-width="2"/>
+  <text x="349" y="188" font-family="serif" font-size="20" font-style="italic" fill="#2D5A5C" text-anchor="middle" transform="rotate(-90 349 188)">W<tspan dy="-8" font-size="12" font-style="normal">A⊤</tspan></text>
+  <line x1="330" y1="80" x2="368" y2="80" stroke="#C9A961" stroke-width="1.5" marker-start="url(#bfArr)" marker-end="url(#bfArr)"/>
+  <text x="349" y="70" font-family="serif" font-size="16" font-style="italic" fill="#1A1A1A" text-anchor="middle">k</text>
+
+  <!-- moltiplicato -->
+  <circle cx="392" cy="115" r="4.5" fill="#1A1A1A"/>
+
+  <!-- fattore basso e largo: W^B -->
+  <rect x="414" y="96" width="170" height="38" fill="#2D5A5C" fill-opacity="0.18" stroke="#2D5A5C" stroke-width="2"/>
+  <text x="499" y="122" font-family="serif" font-size="20" font-style="italic" fill="#2D5A5C" text-anchor="middle">W<tspan dy="-8" font-size="12" font-style="normal">B</tspan></text>
+  <line x1="414" y1="80" x2="584" y2="80" stroke="#C9A961" stroke-width="1.5" marker-start="url(#bfArr)" marker-end="url(#bfArr)"/>
+  <text x="499" y="70" font-family="serif" font-size="16" font-style="italic" fill="#1A1A1A" text-anchor="middle">d</text>
+  <line x1="602" y1="96" x2="602" y2="134" stroke="#C9A961" stroke-width="1.5" marker-start="url(#bfArr)" marker-end="url(#bfArr)"/>
+  <text x="616" y="121" font-family="serif" font-size="16" font-style="italic" fill="#1A1A1A" text-anchor="middle">k</text>
+
+  <!-- conteggi -->
+  <line x1="90" y1="300" x2="260" y2="300" stroke="#B5532C" stroke-width="2"/>
+  <text x="175" y="326" font-family="sans-serif" font-size="14" fill="#1A1A1A" text-anchor="middle">d × d</text>
+  <text x="175" y="350" font-family="sans-serif" font-size="16" font-weight="bold" fill="#B5532C" text-anchor="middle">151 milioni</text>
+  <text x="175" y="372" font-family="sans-serif" font-size="12" fill="#1A1A1A" text-anchor="middle">numeri da imparare</text>
+
+  <line x1="330" y1="300" x2="584" y2="300" stroke="#2D5A5C" stroke-width="2"/>
+  <text x="457" y="326" font-family="sans-serif" font-size="14" fill="#1A1A1A" text-anchor="middle">2 × k × d</text>
+  <text x="457" y="350" font-family="sans-serif" font-size="16" font-weight="bold" fill="#2D5A5C" text-anchor="middle">3,1 milioni</text>
+  <text x="457" y="372" font-family="sans-serif" font-size="12" fill="#1A1A1A" text-anchor="middle">quarantotto volte meno</text>
+
+  <text x="337" y="404" font-family="sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">con i valori di GPT-3: d = 12 288, k = 128</text>
+</svg>

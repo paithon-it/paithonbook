@@ -122,7 +122,9 @@ cioè proprio l'ottimo bayesiano della mistura descritta sopra. Secondo: sostitu
 
 Poiché i due obiettivi sono in conflitto, non si può ottimizzarli in un colpo solo. Si procede **a turni**, con discesa del gradiente stocastica: un passo per $D$, un passo per $G$, e così via. Mentre si aggiorna una rete, i parametri dell'altra restano congelati.
 
-```python
+```{code-block} python
+:class: pt-non-eseguibile
+
 import torch
 from torch import nn
 

@@ -509,7 +509,9 @@ Il pezzo che conta davvero, però, non è la classe: è come i token visivi
 raggiungono il decoder. Non passano da una porta di servizio, entrano dalla
 stessa porta delle parole.
 
-```python
+```{code-block} python
+:class: pt-non-eseguibile
+
 # encoder e llm sono pre-addestrati e congelati; si addestra solo il proiettore
 for modulo in (encoder, llm):
     for p in modulo.parameters():

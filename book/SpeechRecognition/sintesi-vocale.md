@@ -347,9 +347,12 @@ usiamo Tacotron 2 con un vocoder WaveRNN (un parente autoregressivo
 alleggerito di WaveNet) per pronunciare la traduzione del nostro esempio
 ricorrente:
 
-```python
+```{code-block} python
+:class: pt-lento
+
 import torch
 import torchaudio
+import soundfile as sf
 
 # bundle preaddestrato: Tacotron 2 (da caratteri) + vocoder WaveRNN,
 # voce inglese femminile (dataset LJSpeech)
@@ -366,8 +369,8 @@ with torch.inference_mode():
     mel, mel_len, _ = tacotron2.infer(token, lunghezze)
     onda, onda_len = vocoder(mel, mel_len)
 
-# salva il risultato: onda ha forma (batch, campioni)
-torchaudio.save("gatto.wav", onda[0:1].cpu(), sample_rate=vocoder.sample_rate)
+# salva il risultato: onda ha forma (batch, campioni), qui se ne prende il primo
+sf.write("gatto.wav", onda[0].cpu().numpy(), vocoder.sample_rate)
 print(onda.shape, vocoder.sample_rate)  # es. torch.Size([1, ...]) e 22050
 ```
 

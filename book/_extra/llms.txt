@@ -31,6 +31,7 @@ della sezione e URL), non si ridistribuisce il testo.
   - [Probabilità e statistica](https://book.paithon.it/main/Matematica/probabilita-statistica.html)
   - [Teoria dell'informazione](https://book.paithon.it/main/Matematica/teoria-informazione.html)
   - [Analisi numerica](https://book.paithon.it/main/Matematica/analisi-numerica.html)
+  - [La matematica di un LLM](https://book.paithon.it/main/Matematica/matematica-llm.html)
 
 ## Imparare dai dati
 

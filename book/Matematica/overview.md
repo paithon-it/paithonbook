@@ -49,6 +49,9 @@ nel risultato.
   le distribuzioni ricorrenti, il teorema di Bayes.
 - **Analisi numerica**, cosa cambia quando i numeri hanno una precisione
   finita: stabilità, overflow, il trucco del *log-sum-exp*.
+- **La matematica di un modello linguistico**: le quattro voci rimesse
+  insieme. Un LLM smontato con i soli attrezzi di questo capitolo, che sono
+  poi gli unici che servono.
 
 Ogni sezione segue la regola del libro: una spiegazione **Elementare** con
 un'analogia concreta, e una **Superiore** con la notazione e le formule per
