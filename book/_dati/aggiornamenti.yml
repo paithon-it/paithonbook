@@ -40,6 +40,17 @@
 
 versioni:
 
+- versione: "1.0.2"
+  data: 2026-08-08
+  voci:
+
+  - tipo: corretto
+    testo: >
+      La storia in fondo a questa pagina faceva cominciare il libro nel giugno
+      2024, che è la data del primo commit: il libro si comincia a scrivere
+      nel 2018, e quello che nasce nel 2024 è la versione online. La nota di
+      copyright, che diceva la stessa cosa, adesso parte dal 2018.
+
 - versione: "1.0.1"
   data: 2026-08-08
   voci:
@@ -56,8 +67,8 @@ versioni:
   data: 2026-08-08
   titolo: Il libro prende un numero
   nota: >
-    La 1.0.0 non è il primo giorno del libro: il primo commit è del giugno
-    2024 e la storia breve è in fondo a questa pagina. È il primo giorno in
+    La 1.0.0 non è il primo giorno del libro, che si comincia a scrivere nel
+    2018 (la storia breve è in fondo a questa pagina): è il primo giorno in
     cui il libro ha un numero, e il punto da cui si contano i cambiamenti.
     L'elenco qui sotto è il lavoro di agosto 2026, l'ultimo mese prima che il
     registro cominciasse.

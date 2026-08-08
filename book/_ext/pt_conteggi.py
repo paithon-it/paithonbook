@@ -8,12 +8,16 @@ Qui la fonte diventa una sola, l'indice, e il testo la interpola con le
 sostituzioni MyST (attive per default in Jupyter Book, `parse.
 myst_enable_extensions`):
 
-    {{ n_capitoli }}                   ->  31
-    {{ n_capitoli_lettere }}           ->  trentuno
-    {{ n_capitoli_meno_uno_lettere }}  ->  trenta
+    {{ n_capitoli }}                   ->  il numero, in cifre
+    {{ n_capitoli_lettere }}           ->  lo stesso, in lettere
+    {{ n_capitoli_meno_uno_lettere }}  ->  uno in meno, in lettere
 
 L'ultima è quella che serve alle conclusioni, che sono l'ultimo capitolo e
 quindi ne hanno davanti uno in meno.
+
+Il valore di oggi qui non c'è apposta: era «31 / trentuno / trenta», è rimasto
+fermo mentre i capitoli crescevano, ed è esattamente il difetto che questo
+modulo esiste per togliere. Per saperlo si chiama `conta_capitoli()`.
 
 Si registra da `_config.yml`:
 

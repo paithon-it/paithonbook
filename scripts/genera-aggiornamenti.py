@@ -117,11 +117,15 @@ piedi.
 CODA = """\
 ## Prima della 1.0
 
-Il libro comincia il 13 giugno 2024, con l'impianto Jupyter Book, la licenza
-CC BY-NC-ND e le prime pagine: l'introduzione, il capitolo su Python e, quattro
-giorni dopo, i due livelli di lettura che sono poi diventati la regola di tutto
-il resto. Nell'ottobre del 2025 si allarga il capitolo sui Transformer. Poi si
-ferma.
+Il libro si comincia a scrivere nel 2018, e per anni vive dove vivono i libri:
+in un manoscritto, e poi a stampa. Il repository è più giovane di sei anni,
+quindi le date qui sotto non sono la storia del *libro*: sono la storia della
+**versione online**, cioè i giorni in cui il testo è arrivato qui dentro.
+
+Il 13 giugno 2024 nasce l'impianto Jupyter Book, con la licenza CC BY-NC-ND e
+le prime pagine: l'introduzione, il capitolo su Python e, quattro giorni dopo,
+i due livelli di lettura, che sono poi diventati la regola di tutto il resto.
+Nell'ottobre del 2025 si allarga il capitolo sui Transformer. Poi si ferma.
 
 Riparte nel luglio del 2026, e in tre settimane diventa un'altra cosa: prima
 l'ossatura dell'edizione a stampa (matematica, machine learning, reti neurali,
@@ -138,6 +142,9 @@ chiudere i buchi che la rilettura aveva trovato.
 Nessuna di queste tappe ha un numero di versione, e non gliene diamo uno
 adesso: non erano pubblicazioni, erano lavoro. Il registro comincia dalla
 1.0.0.
+
+E la numerazione riguarda questa versione online, non il libro: l'edizione a
+stampa è un'altra cosa, con un'altra storia, e non si conta qui.
 """
 
 

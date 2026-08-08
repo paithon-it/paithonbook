@@ -38,6 +38,14 @@ Una versione corrisponde a una **pubblicazione**, non a una giornata di
 lavoro: il libro si scrive tutti i giorni e si pubblica quando un pezzo sta in
 piedi.
 
+(v1-0-2)=
+
+## 1.0.2 · 8 agosto 2026
+
+### Correzioni
+
+- La storia in fondo a questa pagina faceva cominciare il libro nel giugno 2024, che è la data del primo commit: il libro si comincia a scrivere nel 2018, e quello che nasce nel 2024 è la versione online. La nota di copyright, che diceva la stessa cosa, adesso parte dal 2018.
+
 (v1-0-1)=
 
 ## 1.0.1 · 8 agosto 2026
@@ -52,7 +60,7 @@ piedi.
 
 *Il libro prende un numero*
 
-La 1.0.0 non è il primo giorno del libro: il primo commit è del giugno 2024 e la storia breve è in fondo a questa pagina. È il primo giorno in cui il libro ha un numero, e il punto da cui si contano i cambiamenti. L'elenco qui sotto è il lavoro di agosto 2026, l'ultimo mese prima che il registro cominciasse.
+La 1.0.0 non è il primo giorno del libro, che si comincia a scrivere nel 2018 (la storia breve è in fondo a questa pagina): è il primo giorno in cui il libro ha un numero, e il punto da cui si contano i cambiamenti. L'elenco qui sotto è il lavoro di agosto 2026, l'ultimo mese prima che il registro cominciasse.
 
 ### Sezioni nuove
 
@@ -85,11 +93,15 @@ La 1.0.0 non è il primo giorno del libro: il primo commit è del giugno 2024 e 
 
 ## Prima della 1.0
 
-Il libro comincia il 13 giugno 2024, con l'impianto Jupyter Book, la licenza
-CC BY-NC-ND e le prime pagine: l'introduzione, il capitolo su Python e, quattro
-giorni dopo, i due livelli di lettura che sono poi diventati la regola di tutto
-il resto. Nell'ottobre del 2025 si allarga il capitolo sui Transformer. Poi si
-ferma.
+Il libro si comincia a scrivere nel 2018, e per anni vive dove vivono i libri:
+in un manoscritto, e poi a stampa. Il repository è più giovane di sei anni,
+quindi le date qui sotto non sono la storia del *libro*: sono la storia della
+**versione online**, cioè i giorni in cui il testo è arrivato qui dentro.
+
+Il 13 giugno 2024 nasce l'impianto Jupyter Book, con la licenza CC BY-NC-ND e
+le prime pagine: l'introduzione, il capitolo su Python e, quattro giorni dopo,
+i due livelli di lettura, che sono poi diventati la regola di tutto il resto.
+Nell'ottobre del 2025 si allarga il capitolo sui Transformer. Poi si ferma.
 
 Riparte nel luglio del 2026, e in tre settimane diventa un'altra cosa: prima
 l'ossatura dell'edizione a stampa (matematica, machine learning, reti neurali,
@@ -106,3 +118,6 @@ chiudere i buchi che la rilettura aveva trovato.
 Nessuna di queste tappe ha un numero di versione, e non gliene diamo uno
 adesso: non erano pubblicazioni, erano lavoro. Il registro comincia dalla
 1.0.0.
+
+E la numerazione riguarda questa versione online, non il libro: l'edizione a
+stampa è un'altra cosa, con un'altra storia, e non si conta qui.
