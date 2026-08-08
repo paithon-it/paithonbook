@@ -48,6 +48,21 @@
 
 versioni:
 
+- versione: "1.1.3"
+  data: 2026-08-08
+  voci:
+
+  # Senza `pagina`: la landing è la radice del toc, non una sua voce, e il
+  # generatore (giustamente) non sa da dove prendere il titolo del link.
+  - tipo: corretto
+    testo: >
+      L'epigrafe in prima pagina era una frase attribuita a Marcus du Sautoy
+      che si trova solo sugli aggregatori di citazioni: nessuno di loro dice
+      da quale libro o intervista venga, e la traduzione italiana lasciava in
+      dubbio chi guardasse che cosa. Al suo posto una riga di Calvino,
+      riscontrata sul testo delle «Lezioni americane», che dice quello che
+      questo libro prova a fare: leggero non vuol dire vago.
+
 - versione: "1.1.2"
   data: 2026-08-08
   voci:

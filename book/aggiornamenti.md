@@ -38,6 +38,14 @@ Una versione corrisponde a una **pubblicazione**, non a una giornata di
 lavoro: il libro si scrive tutti i giorni e si pubblica quando un pezzo sta in
 piedi.
 
+(v1-1-3)=
+
+## 1.1.3 · 8 agosto 2026
+
+### Correzioni
+
+- L'epigrafe in prima pagina era una frase attribuita a Marcus du Sautoy che si trova solo sugli aggregatori di citazioni: nessuno di loro dice da quale libro o intervista venga, e la traduzione italiana lasciava in dubbio chi guardasse che cosa. Al suo posto una riga di Calvino, riscontrata sul testo delle «Lezioni americane», che dice quello che questo libro prova a fare: leggero non vuol dire vago.
+
 (v1-1-2)=
 
 ## 1.1.2 · 8 agosto 2026
