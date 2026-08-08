@@ -276,16 +276,44 @@ Ne parleremo nel capitolo sulle GAN, nella sezione sulle evoluzioni. Ma l'idea
 di fondo (contenuto e stile come statistiche diverse dentro una stessa rete)
 nasce qui, da una passeggiata sul Neckar.
 
+`````{tab} Elementare
+
+```{admonition} Da ricordare
+:class: important
+- Qui **non si addestra la rete**: il critico d'arte (una rete che ha già
+  imparato a vedere) non cambia mai idea, e a essere ritoccata centinaia di
+  volte è la **tela**, cioè l'immagine stessa.
+- Il **contenuto** (*cosa* c'è: la casa, il cipresso) si legge negli strati
+  profondi della rete; lo **stile** (*come* è dipinto) sta nel conteggio di
+  quali motivi elementari compaiono insieme, la carta d'identità della mano del
+  pittore, che non dipende da dove quei motivi si trovino nell'immagine.
+- Il giudizio da migliorare somma due voci, fedeltà al soggetto e fedeltà alla
+  pennellata, pesate da due manopole: alzando quella dello stile le pennellate
+  prendono il sopravvento, alzando quella del contenuto la foto resta quasi
+  intatta.
+- Chi ha fretta fa la fatica **una volta sola**: invece di ritoccare la tela
+  per ogni foto, addestra una rete apposta per un solo stile, e da quel momento
+  dipingere una foto qualunque è questione di un istante, abbastanza da stare
+  dietro anche a un video. Il prezzo è che per un altro stile serve un altro
+  addestramento.
+```
+
+`````
+
+`````{tab} Superiore
+
 ```{admonition} Da ricordare
 :class: important
 - Nel neural style transfer **non si addestra la rete**: i pesi della VGG
   restano congelati e il gradiente scende **sui pixel** dell'immagine.
 - Il **contenuto** vive nelle attivazioni degli strati profondi (*cosa* c'è);
   lo **stile** nelle correlazioni tra canali, riassunte dalla **matrice di
-  Gram** $G = F F^{\top}$ (*come* è dipinto).
+  Gram** $G = FF^{\top}$ (*come* è dipinto).
 - La loss è composita:
   $\mathcal{L} = \alpha\,\mathcal{L}_{\text{contenuto}} + \beta\,\mathcal{L}_{\text{stile}}$,
   con $\alpha$ e $\beta$ a bilanciare fedeltà e pennellata.
 - Il **fast style transfer** sposta il costo nell'addestramento di una rete
   feed-forward: stile applicato in una sola passata, in tempo reale.
 ```
+
+`````

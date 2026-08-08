@@ -146,14 +146,18 @@ distribuzione anziché un valore. Il modello stima
 
 $$
 P(z_{t+1} \mid a_t, z_t, h_t)
-= \sum_{k=1}^{K} \pi_k(h_t)\,
-\mathcal{N}\!\big(z_{t+1};\, \mu_k(h_t),\, \sigma_k^2(h_t)\big),
+= \prod_{i=1}^{32} \sum_{k=1}^{K} \pi_{k,i}(h_t)\,
+\mathcal{N}\!\big(z_{t+1,i};\, \mu_{k,i}(h_t),\, \sigma_{k,i}^2(h_t)\big),
 $$
 
 dove $h_t$ è lo stato nascosto della LSTM dopo aver letto la storia fino al
-passo $t$, $a_t$ è l'azione, $K = 5$ è il numero di componenti della miscela,
-i pesi $\pi_k$ (una softmax, sommano a 1) dicono quanto è probabile ciascuna
-«versione del futuro», e $\mu_k$, $\sigma_k$ ne danno centro e incertezza.
+passo $t$, $a_t$ è l'azione e $z_{t+1,i}$ è la $i$-esima delle 32 componenti
+del prossimo codice: ognuna ha la *propria* miscela di $K = 5$ gaussiane, con
+pesi $\pi_{k,i}$ (una softmax, sommano a 1) e con $\mu_{k,i}$, $\sigma_{k,i}$
+a darne centro e incertezza. La fattorizzazione nel prodotto dice che le
+scelte di componente sono indipendenti dimensione per dimensione: il modello
+non pesa cinque «versioni del futuro» preconfezionate, ne può comporre
+$5^{32}$ combinando le alternative di ogni componente.
 L'addestramento minimizza la log-verosimiglianza negativa dei codici osservati
 nelle partite raccolte; su *Doom*, M predice anche la probabilità che
 l'episodio finisca (l'agente muore). Su *CarRacing* M pesa in tutto poco più

@@ -1,14 +1,21 @@
 # Aprire la scatola nera
 
 Nel 2016 tre ricercatori dell'Università di Washington (Marco Túlio Ribeiro,
-Sameer Singh e Carlos Guestrin) addestrarono un classificatore a distinguere
-le foto di **husky** da quelle di **lupo**. Sul set di prova il modello andava
-benissimo, con un'accuratezza da fare invidia. Poi gli chiesero di *mostrare*
-su cosa si basava, e la risposta fu imbarazzante: guardava la **neve**. Nelle
-immagini di addestramento i lupi comparivano quasi sempre su sfondo innevato,
-gli husky quasi mai; la rete aveva imparato una scorciatoia («c'è neve →
-lupo») che con l'animale non c'entrava nulla {cite}`ribeiro2016why`. Un
-rilevatore di neve travestito da riconoscitore di canidi.
+Sameer Singh e Carlos Guestrin) addestrarono di proposito un classificatore
+truccato a distinguere le foto di **husky** da quelle di **lupo**: scelsero a
+mano le venti immagini di addestramento in modo che tutti i lupi comparissero
+su sfondo innevato e nessun husky lo facesse. Come previsto, la rete imparò
+una scorciatoia («c'è neve → lupo») che con l'animale non c'entrava nulla: un
+rilevatore di neve travestito da riconoscitore di canidi. Poi mostrarono dieci
+sue predizioni, errori compresi, a ventisette studenti di machine learning,
+chiedendo se il modello fosse affidabile e come pensavano che decidesse:
+senza altro in mano, in dieci dissero di fidarsi, e meno della metà sospettò
+della neve. Quando comparvero le *spiegazioni*, che evidenziavano su quali
+pixel si basava ogni risposta, l'inganno crollò: i fiduciosi scesero a tre, e
+venticinque studenti su ventisette indicarono la neve {cite}`ribeiro2016why`.
+L'esperimento era costruito apposta per dimostrare una cosa: senza una
+spiegazione, nemmeno gli addetti ai lavori si accorgono di un modello che
+funziona per la ragione sbagliata.
 
 La storia ha un antenato illustre. All'inizio del Novecento, a Berlino, un
 cavallo di nome **Hans il Sapiente** sembrava saper contare: gli si chiedeva
@@ -42,9 +49,10 @@ il cavallo Hans: risposte «giuste» ottenute con il trucco sbagliato.
 
 Aprire la scatola nera vuol dire proprio questo: chiedere al modello non solo
 *cosa* ha deciso, ma *su cosa* si è basato. Nel caso degli husky e dei lupi,
-la spiegazione ha rivelato che il modello «vedeva» la neve e non il muso: un
-errore che nessuna misura di accuratezza sul set di prova avrebbe mai
-smascherato, perché anche nel test i lupi stavano sulla neve.
+guardare le risposte non bastava: il modello ne azzeccava tante, e per capire
+che «vedeva» la neve e non il muso bisognava vedere su quali pixel poggiava.
+Contare quante volte un modello ha ragione non dice mai *perché* ha ragione, e
+un modello può averla per il motivo sbagliato.
 
 `````
 
@@ -227,23 +235,32 @@ una spiegazione bella e infedele ci fa fidare di un modello che non lo merita.
 
 `````{tab} Superiore
 
-Una spiegazione post-hoc costruisce un modello surrogato $g$, interpretabile, che
-approssima la scatola nera $f$ in un intorno del punto di interesse. La sua
-qualità si misura con la **fedeltà locale**: il grado di accordo tra $g$ e $f$
-sui punti $x'$ campionati vicino a $x_0$,
+Una famiglia importante di spiegazioni post-hoc costruisce un modello
+surrogato $g$, interpretabile, che approssima la scatola nera $f$ in un
+intorno del punto di interesse. La sua qualità si misura con la **fedeltà
+locale**, cioè quanto $g$ e $f$ concordano sui punti $x'$ campionati vicino a
+$x_0$. La si quantifica per il suo rovescio, misurando quanto i due
+*discordano*:
 
 $$
-\mathrm{fedelt\grave{a}}(g; x_0) = \mathbb{E}_{x' \sim \pi_{x_0}}
-\big[\, \mathbb{1}\!\left(g(x') = f(x')\right) \,\big],
+\mathrm{infedelt\grave{a}}(g; x_0) = \mathbb{E}_{x' \sim \pi_{x_0}}
+\big[\, \ell\!\left(g(x'),\, f(x')\right) \,\big],
 $$
 
-dove $\pi_{x_0}$ è una distribuzione di prossimità centrata su $x_0$ e
-$\mathbb{1}(\cdot)$ vale 1 quando surrogato e modello concordano. Una fedeltà
-alta *sull'intorno* non garantisce nulla *globalmente*, ed è del tutto
+dove $\pi_{x_0}$ è una distribuzione di prossimità centrata su $x_0$ e $\ell$
+una loss adatta al tipo di uscita: l'indicatrice di disaccordo per etichette
+discrete, uno scarto quadratico per probabilità o punteggi continui. La
+quantità cresce quando la fedeltà cala: tanto più è piccola, tanto più $g$ è
+fedele a $f$ in quell'intorno (all'estremo, vale zero se il surrogato riproduce
+esattamente la scatola nera sui punti campionati). Una fedeltà alta
+*sull'intorno* non garantisce nulla *globalmente*, ed è del tutto
 scorrelata dalla **plausibilità**: quanto la spiegazione appare sensata a un
 umano. Nulla vieta a un surrogato di essere plausibile e infedele, o fedele e
-controintuitivo. È il difetto costitutivo di ogni spiegazione post-hoc:
-approssima, e un'approssimazione può ingannare.
+controintuitivo. È il difetto costitutivo dei metodi a surrogato: approssimano,
+e un'approssimazione può ingannare. Non tutto il post-hoc è fatto così
+(l'importanza per permutazione, i controfattuali e le attribuzioni che vedremo
+interrogano $f$ direttamente, senza copie di mezzo), ma la distinzione tra
+plausibilità e fedeltà vale per ogni spiegazione, comunque prodotta.
 
 `````
 
@@ -290,8 +307,10 @@ chip per capirne la logica.
 Un filo, sopra a tutto, tiene insieme il capitolo con quello sull'**AI
 responsabile**: aprire la scatola nera non è un vezzo accademico, ma il primo
 passo per costruire sistemi di cui potersi fidare, e da poter contestare
-quando sbagliano. Il classificatore che guardava la neve non era un modello
-cattivo: era un modello di cui nessuno aveva ancora guardato dentro.
+quando sbagliano. Il classificatore che guardava la neve era stato truccato
+apposta, per dimostrare quanto è facile non accorgersene: i modelli veri
+arrivano da soli alla stessa scorciatoia, e l'unico modo di scoprirlo è
+guardarci dentro.
 
 ```{admonition} Da ricordare
 :class: important
@@ -304,8 +323,9 @@ cattivo: era un modello di cui nessuno aveva ancora guardato dentro.
 - Tre assi ordinano il campo: **intrinseca vs post-hoc**, **globale vs locale**,
   **model-specific vs model-agnostic**. Sono largamente indipendenti.
 - **Plausibilità ≠ fedeltà**: una spiegazione post-hoc può convincere senza
-  aderire a come il modello decide davvero. È il rischio strutturale
-  dell'approssimazione a posteriori.
+  aderire a come il modello decide davvero. È il rischio di ogni racconto
+  costruito dopo, a decisione presa, e cresce quando a essere letto non è il
+  modello vero ma una sua copia semplificata.
 - Il dibattito: Rudin invita a **usare modelli interpretabili** per le decisioni
   ad alto rischio invece di spiegare scatole nere; sui dati non strutturati il
   post-hoc resta l'unica finestra. In ogni caso, spiegazioni **valutate con

@@ -93,9 +93,17 @@ scala»: Triton è il linguaggio in cui `torch.compile`, tramite il suo
 compilatore TorchInductor, **genera** i kernel fusi. Impararne la forma
 significa vedere, dal di dentro, cosa fabbrica quella riga di `torch.compile`.
 
-Ecco un kernel che calcola in un colpo solo $y = \max(0,\; a x + b)$, una
-moltiplicazione per uno scalare, una somma e una ReLU, il genere di catena che
-ricorre ovunque nelle reti:
+Ecco un kernel che calcola in un colpo solo $y = \max(0,\; a x + b)$. In
+parole povere: prendi ogni numero della lista, moltiplicalo per $a$, aggiungi
+$b$ e, se il risultato viene negativo, sostituiscilo con uno zero. Con $a = 2$
+e $b = 1$: da $3$ esce $7$; da $-4$ uscirebbe $-7$, che diventa $0$.
+Quell'ultima mossa («se è sotto zero, metti zero») è la ReLU incontrata nel
+capitolo sulle reti neurali, e la catena moltiplica-somma-ReLU ricorre ovunque
+nelle reti. Che cosa calcola il kernel, insomma, lo abbiamo appena detto senza
+simboli; il codice si può anche solo guardare da lontano, cogliendone la taglia
+(una decina di righe). La scheda Elementare qui sotto spiega proprio perché un
+kernel Triton riesca a stare in così poche righe; la lettura riga per riga sta
+nella scheda Superiore.
 
 ```python
 import torch
@@ -123,18 +131,6 @@ def fused_relu(x, a, b):
     return out
 ```
 
-Riga per riga: il decoratore `@triton.jit` dice a Triton di compilare la
-funzione in un kernel per GPU. `tl.program_id(axis=0)` è l'analogo del
-`blockIdx` di prima: l'identità di *questa* istanza del programma. Da lì
-`offsets` costruisce, con `tl.arange`, l'elenco degli indici di cui l'istanza
-si occupa; `mask` marca quelli validi (gli altri, oltre la fine dell'array,
-verranno ignorati); `tl.load` legge dalla memoria solo le posizioni valide,
-`tl.maximum(a * x + b, 0.0)` fa tutti i conti *sui dati appena caricati*, e
-`tl.store` scrive il risultato. La funzione `fused_relu` sotto è il
-**lancio**: alloca l'uscita, calcola quante istanze servono (`triton.cdiv`, la
-divisione arrotondata per eccesso) e invoca il kernel con la sintassi
-`fused_kernel[grid](...)`.
-
 `````{tab} Elementare
 
 C'è una differenza di *taglia* rispetto all'esercito di prima, e vale la pena
@@ -150,6 +146,18 @@ in una pagina di codice di basso livello.
 `````
 
 `````{tab} Superiore
+
+Riga per riga: il decoratore `@triton.jit` dice a Triton di compilare la
+funzione in un kernel per GPU. `tl.program_id(axis=0)` è l'analogo del
+`blockIdx` di prima: l'identità di *questa* istanza del programma. Da lì
+`offsets` costruisce, con `tl.arange`, l'elenco degli indici di cui l'istanza
+si occupa; `mask` marca quelli validi (gli altri, oltre la fine dell'array,
+verranno ignorati); `tl.load` legge dalla memoria solo le posizioni valide,
+`tl.maximum(a * x + b, 0.0)` fa tutti i conti *sui dati appena caricati*, e
+`tl.store` scrive il risultato. La funzione `fused_relu` sotto è il
+**lancio**: alloca l'uscita, calcola quante istanze servono (`triton.cdiv`, la
+divisione arrotondata per eccesso) e invoca il kernel con la sintassi
+`fused_kernel[grid](...)`.
 
 Il salto di astrazione è preciso: un *program instance* di Triton (un `pid`)
 non è un thread, ma elabora un intero **blocco** di `BLOCK_SIZE` elementi. Il
@@ -218,6 +226,28 @@ Con questo in mente, si capisce cosa succede *davvero* sotto ogni riga di
 PyTorch, e perché `torch.compile` sposti il cronometro. Sono due strade
 diverse dal codice ai kernel.
 
+`````{tab} Elementare
+
+Torniamo alle telefonate per piazzare gli ordini. La prima strada, quella di
+partenza (si chiama *eager*, «impaziente»), esegue il tuo programma una riga
+alla volta: ogni riga è una telefonata, un ordine piazzato e subito eseguito.
+È comodissima: vedi il risultato di ogni passo appena lo scrivi, e se
+qualcosa va storto capisci subito quale riga è stata. Ma paghi il conto
+appena visto: una telefonata e un viaggio in memoria per ogni riga.
+
+La seconda strada è quella della riga `torch.compile`: invece di telefonare
+ordine per ordine, consegni alla cucina la ricetta intera. PyTorch se la
+legge tutta *prima* di cominciare, nota i passaggi che si possono fare in un
+colpo solo e li riscrive da sé come ordini unici, esattamente il lavoro di
+fusione di questa sezione. I piatti davvero impegnativi restano affidati agli
+specialisti (kernel scritti a mano dal costruttore della GPU); tutto il
+contorno di piccole operazioni viene accorpato. Meno telefonate, meno viaggi,
+stesso identico risultato.
+
+`````
+
+`````{tab} Superiore
+
 In modalità **eager**, quella di default, ogni operazione tensoriale viene
 smistata (*dispatch*) al proprio kernel già compilato, uno per uno,
 nell'ordine in cui la scrivi. Le operazioni pesanti non le esegue PyTorch con
@@ -238,6 +268,8 @@ in eager sarebbero stati dieci kernel e dieci viaggi in memoria) vengono
 sulla HBM, la GPU meglio sfamata. La riga `model = torch.compile(model)` non è
 magia: è questa fabbrica di kernel fusi che si mette in moto, e i kernel che
 sforna sono scritti nel linguaggio che abbiamo appena letto.
+
+`````
 
 ```{admonition} Da ricordare
 :class: important

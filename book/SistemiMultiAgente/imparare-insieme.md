@@ -208,22 +208,54 @@ squadra**. Il fattore di sinistra riguarda solo $i$; quello di destra riguarda
 tutti. L'agente $i$ vede il proprio ritocco moltiplicato per un numero a cui
 hanno contribuito anche gli altri $N-1$.
 
-Quantifichiamo. Se il ritorno si scompone in contributi indipendenti
-$G = \sum_j g^j$ con $\mathrm{Var}(g^j) = \sigma^2$ per ogni $j$, il segnale che
-interessa a $i$ è $g^i$ mentre il rumore che gli arriva addosso è la somma degli
-altri, di varianza $(N-1)\sigma^2$. Il rapporto segnale-rumore, misurato in
-deviazioni standard, vale
+Quantifichiamo, su un modello dichiaratamente di comodo: lo stimatore così
+com'è, senza alcuna baseline, e un ritorno che si scompone in contributi
+indipendenti $G = \sum_j g^j$ con $\mathrm{Var}(g^j) = \sigma^2$ per ogni $j$.
+Il segnale che interessa a $i$ è $g^i$ mentre il rumore che gli arriva addosso
+è la somma degli altri, di varianza $(N-1)\sigma^2$. Il rapporto
+segnale-rumore, misurato in deviazioni standard, vale
 
 $$
 \frac{\sigma}{\sigma\sqrt{N-1}} \;=\; \frac{1}{\sqrt{N-1}},
 $$
 
-e si degrada quindi come la radice del numero di compagni: con nove compagni
-(dieci agenti in tutto) il segnale utile è **un terzo** di quello che sarebbe
-stato da soli, e con cento compagni un decimo. È il **passeggero a scrocco** in
+e sotto quelle ipotesi si degrada come la radice del numero di compagni: con
+nove compagni (dieci agenti in tutto) il segnale utile è **un terzo** di quello
+che sarebbe stato da soli, e con cento compagni un decimo. Il modello additivo
+è, si noti, il caso *facile*, quello in cui il credito sarebbe in linea di
+principio separabile: già lì lo stimatore ingenuo affoga, e nei casi in cui i
+contributi si intrecciano non va meglio. È il **passeggero a scrocco** in
 forma di gradiente, e la cosa da notare è che nessuno bara: il problema non è
 la disonestà di un agente, è che l'informazione che distinguerebbe l'utile dal
 passivo non arriva a destinazione.
+
+Quel rumore ha un antidoto parziale ma diretto: una **baseline
+controfattuale**. Invece di moltiplicare il gradiente per il ritorno di tutti,
+si sottrae al valore dell'azione congiunta quello che la squadra avrebbe
+ottenuto se $i$ avesse giocato una mossa media, a mosse degli altri
+**fissate**:
+
+$$
+A^i\big(s, a^1,\dots,a^N\big) \;=\; Q\big(s, a^1,\dots,a^N\big)
+\;-\; \sum_{b}\pi^i\big(b \mid \bar{o}^i\big)\,
+Q\big(s, (a^{-i}, b)\big),
+$$
+
+dove $s$ è lo stato globale, disponibile solo in addestramento, $a^{-i}$ le
+azioni di tutti tranne $i$, $\bar{o}^i$ la storia locale di $i$ e la somma
+corre sulle sue azioni possibili $b$. È l'idea di COMA
+{cite}`foerster2018counterfactual`, ed è il vantaggio dell'architettura
+actor-critic ricalcolato sull'asse strutturale invece che su quello temporale.
+
+Conviene però dire con precisione che cosa si guadagna, perché la formula
+promette meno di quanto sembri. Il termine sottratto non dipende da $a^i$,
+quindi è una baseline legittima (non altera il valore atteso del gradiente) e
+toglie di mezzo la parte di ritorno che $i$ incasserebbe comunque, cioè
+esattamente il rumore contato sopra. Ma $A^i$ resta in generale una funzione
+anche delle azioni $a^{-i}$: il valore congiunto non si scompone, ed è solo nel
+modello additivo di comodo di poco fa che la differenza collassa sul solo
+$g^i$. Quello che la baseline controfattuale garantisce è la **riduzione della
+varianza**, non l'isolamento del contributo di $i$.
 
 `````
 
@@ -232,8 +264,16 @@ invece di risolverlo: ricompense individuali scritte a mano sono il terreno di
 coltura del *reward hacking* già visto nel deep reinforcement learning, e un
 agente che ottimizza la propria può danneggiare la squadra in perfetta buona
 fede. La strada che ha funzionato è l'opposta: tenere una ricompensa sola e
-imparare a **scomporre il valore**, cioè stimare quanto ciascuno ha contribuito
-invece di dichiararlo. Con questo la sezione salda anche un debito lasciato
+ricavarne il merito di ciascuno, invece di dichiararlo in anticipo. Le vie sono
+due. La prima misura **per differenza**: si confronta com'è andata con come
+sarebbe andata se quel membro, al posto della mossa che ha fatto, ne avesse
+fatta una qualsiasi fra le sue solite, lasciando ferme quelle degli altri;
+sulla relazione di gruppo, è chiedersi che voto avrebbe preso lo stesso lavoro
+se uno dei cinque avesse scritto la sua parte come gli capita. La seconda impara a
+**scomporre il valore**, cioè a stimare quanto ciascuno ha contribuito
+partendo dal solo risultato di squadra: è la via che il resto della sezione
+segue, perché si porta dietro anche il modo di addestrare insieme e poi giocare
+ognuno per conto proprio. Con questo la sezione salda anche un debito lasciato
 aperto dalle topologie, dove attribuire una colpa lungo una gerarchia era
 rimasto un problema senza rimedio.
 
@@ -665,6 +705,61 @@ ciò che girerà sul robot o dentro il processo. L'ultima è l'addestramento:
 osservazioni e il secondo la lista di tutte le azioni. Quel critico non esiste
 la domenica.
 
+`````{tab} Elementare
+
+```{admonition} Da ricordare
+:class: important
+- Quando più agenti imparano insieme, per ciascuno il mondo **non sta fermo**:
+  è la scorciatoia che risparmiava dieci minuti finché eri l'unico a
+  conoscerla, e che adesso è la coda. La stessa mossa nella stessa situazione
+  rende diversamente non per sfortuna ma perché gli altri sono migliorati, e le
+  garanzie di convergenza viste nel reinforcement learning, che presuppongono un
+  mondo fisso, non valgono più.
+- Se poi ciascuno vede solo il proprio pezzo (la squadra di soccorso nel fumo,
+  senza radio) tutto il coordinamento va deciso **prima** di entrare, e i piani
+  da confrontare esplodono: bastano due soccorritori, due cose da vedere, due da
+  fare e cinque passi per superare i quattro miliardi di miliardi di coppie di
+  piani. Non esiste, ed è dimostrato, un modo di risolvere davvero questo
+  problema in tempo utile, e nemmeno di approssimarlo bene
+  {cite}`oliehoek2016concise`: nessuno risolve, tutti approssimano.
+- Al merito **nel tempo** (quale mossa della sequenza ha prodotto il premio) se
+  ne aggiunge uno **fra compagni**: con un voto solo per tutta la squadra, come
+  nel lavoro di gruppo a scuola, chi è sparito registra lo stesso otto degli
+  altri e quindi non impara niente, e chi ha lavorato non distingue il proprio
+  contributo dal rumore dei compagni; più sono, meno si sente. Il rimedio è
+  misurare ciascuno **per differenza**: che voto avrebbe preso lo stesso lavoro
+  se lui, al posto della mossa che ha fatto, ne avesse fatta una qualsiasi fra
+  le sue solite e gli altri no {cite}`foerster2018counterfactual`. Abbassa il
+  rumore, non isola il merito del singolo.
+- La ricetta che funziona è **CTDE**: informazione privilegiata in allenamento,
+  occhi veri in partita. L'allenatore ha la ripresa dall'alto e il terzino, la
+  domenica, ha solo il proprio sguardo. Un giudice che conosce le mosse di tutti
+  dà giudizi che non scadono quando i compagni cambiano abitudini
+  {cite}`lowe2017multi`; e se la ricompensa è una sola, si impara un voto per
+  giocatore più una regola per comporli, con il vincolo che alzare il proprio
+  voto non possa far scendere quello di squadra {cite}`rashid2018qmix`, così
+  ciascuno sceglie da solo la mossa migliore. Il prezzo è che restano fuori le
+  situazioni in cui bisogna accordarsi su una convenzione arbitraria (tutti a
+  destra o tutti a sinistra). Un metodo semplice, regolato con cura, va misurato
+  prima di sostituirlo con uno complicato {cite}`yu2022surprising`.
+- Il **self-play** vale perché l'esercizio giusto se lo costruisce da solo:
+  l'avversario è forte quanto te, sempre, essendo te. È la linea che va da
+  AlphaGo {cite}`silver2016mastering` ad AlphaGo Zero
+  {cite}`silver2017mastering`, che parte dalle sole regole del gioco.
+- Ma dove non esiste un più forte in assoluto (sasso, carta, forbici)
+  allenarsi contro l'ultima versione di sé **gira in tondo**: si vince sempre
+  contro la versione precedente, si perde sempre contro quella di due
+  generazioni prima, e la curva dei progressi è un'illusione ottica prodotta dal
+  metro di misura. Il rimedio è allenarsi contro il **mucchio** di tutte le
+  versioni passate: è la *league* di AlphaStar {cite}`vinyals2019grandmaster`,
+  con i campioni, gli specialisti pagati per trovare il punto debole di
+  qualcuno, e tutte le versioni congelate del passato.
+```
+
+`````
+
+`````{tab} Superiore
+
 ```{admonition} Da ricordare
 :class: important
 - Con più agenti che imparano insieme, per ciascuno l'ambiente **non è
@@ -679,9 +774,15 @@ la domenica.
   risolve: tutti approssimano.
 - All'assegnazione **temporale** del merito se ne aggiunge una
   **strutturale**: con ricompensa comune il gradiente del singolo è moltiplicato
-  per il ritorno di tutti, e il rapporto segnale-rumore va come
+  per il ritorno di tutti, e quel che ha fatto lui resta sepolto sotto quel che
+  hanno fatto i compagni. Nel caso di comodo in cui i contributi semplicemente
+  si sommano e sono indipendenti, il rapporto fra segnale e rumore scende come
   $1/\sqrt{N-1}$ (un terzo con dieci agenti). È il **passeggero a scrocco** in
-  forma di gradiente.
+  forma di gradiente. Il rimedio è misurare ciascuno **per differenza**:
+  confrontare com'è andata con come sarebbe andata se lui, al posto della sua
+  mossa, ne avesse fatta una qualsiasi fra le solite, e gli altri no. È la
+  mossa di COMA {cite}`foerster2018counterfactual`, che abbatte quel rumore
+  senza però isolare il contributo del singolo.
 - La ricetta che funziona è **CTDE**: informazione privilegiata in addestramento,
   osservazione vera in esecuzione. **MADDPG** {cite}`lowe2017multi` dà a ogni
   agente un critico che vede le azioni di tutti, e condizionando su quelle la
@@ -702,3 +803,5 @@ la domenica.
   {cite}`vinyals2019grandmaster`, con agenti principali, sfruttatori e tutte le
   versioni congelate del passato.
 ```
+
+`````

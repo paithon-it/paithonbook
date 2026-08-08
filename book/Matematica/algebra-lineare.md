@@ -296,12 +296,16 @@ possano ordinare per quanta varianza catturano.
 
 L'iterazione chiarisce il resto: $A^k\mathbf{v} = \lambda^k\mathbf{v}$, quindi
 il comportamento asintotico di un sistema iterato è governato dall'autovalore
-di modulo massimo (il *raggio spettrale*). Se $\rho(A)>1$ le componenti
-divergono, se $\rho(A)<1$ collassano a zero: la lettura in una riga dei
-gradienti che esplodono o svaniscono nelle reti profonde. Lo stesso argomento,
-applicato alla matrice dei link del web, è il **PageRank**: l'ordinamento
-delle pagine è l'autovettore associato all'autovalore $1$, l'unica direzione
-che quella trasformazione lascia esattamente com'è.
+di modulo massimo (il *raggio spettrale*). Se $\rho(A)<1$ ogni vettore
+collassa a zero; se $\rho(A)>1$ diverge ogni vettore generico, cioè con
+componente non nulla lungo l'autodirezione dominante: la lettura in una riga
+dei gradienti che esplodono o svaniscono nelle reti profonde. Lo stesso
+argomento, applicato alla matrice dei link del web (resa stocastica per
+colonne e corretta con il *teletrasporto* del fattore di smorzamento), è il
+**PageRank**: sotto quelle ipotesi il teorema di Perron–Frobenius garantisce
+che l'autovalore $1$ sia semplice e dominante, e l'ordinamento delle pagine è
+il suo autovettore, l'unica direzione che la trasformazione lascia esattamente
+com'è.
 
 `````
 
@@ -368,14 +372,41 @@ L'operatore `@` è il prodotto matriciale: la stessa notazione vale per
 prodotto scalare, matrice-vettore e matrice-matrice, perché per NumPy sono
 tutti casi della stessa operazione.
 
+`````{tab} Elementare
+```{admonition} Da ricordare
+:class: important
+- Un **vettore** è una lista ordinata di numeri che descrive un esempio
+  (l'appartamento: metri quadri, stanze, piano); una **matrice** è una tabella
+  che impila tanti esempi oppure li trasforma, ed è la mossa che ogni strato di
+  una rete ripete sui dati che riceve.
+- Il **prodotto scalare** moltiplica due liste voce per voce e somma tutto,
+  come lo scontrino della spesa (le quantità per i prezzi, e viene fuori il
+  totale). Il numero che ne esce dice se i due vettori vanno d'accordo: grande
+  se puntano dalla stessa parte, zero se sono perpendicolari, negativo se
+  opposti. È il conto che fa un singolo neurone.
+- Gli **autovettori** sono le venature del legno di una matrice: le direzioni
+  che la trasformazione non devia, e lungo cui si limita ad allungare o
+  accorciare di un fattore fisso. Ripetuta cento volte, come in una rete
+  profonda, quella moltiplicazione si accumula: un fattore poco sopra l'uno fa
+  esplodere tutto, uno poco sotto lo fa svanire.
+- La **norma** è la lunghezza di una freccia (il teorema di Pitagora sulle sue
+  componenti) e serve soprattutto a misurare l'**errore** di un modello:
+  quanto è lunga la differenza fra la risposta giusta e la previsione.
+```
+`````
+
+`````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
 - Un vettore rappresenta un esempio (le sue *feature*); una matrice impila
   esempi oppure trasforma i dati.
 - Il **prodotto scalare** misura l'allineamento tra due vettori ed è il cuore
   del singolo neurone: $\mathbf{w}^\top\mathbf{x}+b$.
-- Gli **autovettori** sono le direzioni che una matrice non devia, e i loro
-  **autovalori** dicono di quanto le allunga: iterati, spiegano perché i
-  gradienti esplodono o svaniscono.
-- La **norma** misura lunghezze e, soprattutto, l'**errore** di un modello.
+- Gli **autovettori** sono le direzioni che una matrice non devia
+  ($A\mathbf{v}=\lambda\mathbf{v}$), e i loro **autovalori** dicono di
+  quanto le allunga: iterati ($A^k\mathbf{v}=\lambda^k\mathbf{v}$),
+  spiegano perché i gradienti esplodono o svaniscono.
+- La **norma** $\lVert\mathbf{x}\rVert_2=\sqrt{\mathbf{x}^\top\mathbf{x}}$
+  misura lunghezze e, soprattutto, l'**errore** di un modello.
 ```
+`````

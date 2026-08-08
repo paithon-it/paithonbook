@@ -79,8 +79,9 @@ il neurone cambia segno, l'energia varia di $\Delta E = -2\,|h_i| < 0$: **ogni
 aggiornamento la fa scendere o la lascia invariata, mai salire**. Poiché gli
 stati sono in numero finito ($2^N$) ed $E$ è limitata dal basso, la discesa
 termina in un punto fisso, un minimo locale dell'energia. È qui che serve la
-simmetria dei pesi: senza di essa non esisterebbe alcuna funzione che la
-dinamica fa scendere, e la rete potrebbe girare in tondo per sempre.
+simmetria dei pesi: è lei a garantire che questa $E$ scenda a ogni
+aggiornamento. Senza simmetria la garanzia cade, e alcune reti asimmetriche
+si mettono davvero a girare in tondo, senza fermarsi mai.
 
 Le valli si scolpiscono con la **regola di Hebb**, dal neuropsicologo Donald
 Hebb che nel 1949 la propose per le sinapsi biologiche (l'idea che sarebbe poi
@@ -221,14 +222,37 @@ ortogonali tra loro, e con corruzioni casuali diverse dal seme fissato il
 recupero perfetto riesce circa nove volte su dieci. Nelle altre, la pallina
 finisce in un minimo spurio: il limite non è nel codice, è nella matematica.
 
+`````{tab} Elementare
+```{admonition} Da ricordare
+:class: important
+- Una **memoria associativa** si interroga con un frammento, non con un
+  indirizzo: tre note fischiettate da un passante e la canzone riaffiora
+  intera.
+- Nella **rete di Hopfield** ogni ricordo memorizzato è una valle scavata nel
+  paesaggio. L'indizio dice dove posare la pallina, la pallina rotola (può
+  soltanto scendere) e il fondo in cui si ferma è il ricordo completo: la
+  regola che scava le valli si limita a legare fra loro i pixel che nei
+  ricordi vanno d'accordo.
+- La **capienza** è di circa il 14% del numero di neuroni: venticinque
+  neuroni reggono tre o quattro ricordi, e oltre quella soglia il richiamo non
+  peggiora un poco alla volta, crolla tutto insieme. Nel paesaggio compaiono
+  anche conche a metà strada fra due ricordi, che nessuno ha mai memorizzato.
+- La pallina finisce nella valle più *vicina*, non necessariamente in quella
+  giusta. E la rete ricorda soltanto: non inventa, e può solo scendere. Sono i
+  due limiti che la prossima sezione affronta con la temperatura e i neuroni
+  nascosti.
+```
+`````
+
+`````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
 - Una **memoria associativa** si interroga con un frammento, non con un
   indirizzo: il ricordo si completa da solo.
 - Nella **rete di Hopfield** {cite}`hopfield1982neural` i ricordi sono minimi
-  dell'energia $E(s) = -\tfrac{1}{2}\, s^\top W s$; la regola di Hebb scava le
-  valli e l'aggiornamento asincrono (che non fa mai salire $E$) completa i
-  ricordi corrotti scendendo nel minimo più vicino.
+  dell'energia $E(\mathbf{s}) = -\tfrac{1}{2}\, \mathbf{s}^\top W \mathbf{s}$;
+  la regola di Hebb scava le valli e l'aggiornamento asincrono (che non fa mai
+  salire $E$) completa i ricordi corrotti scendendo nel minimo più vicino.
 - La **capienza** è di circa il 14% del numero di neuroni
   ($\alpha_c \approx 0{,}138$) {cite}`amit1985storing`, e oltre soglia il
   richiamo non degrada: collassa. Il paesaggio ospita anche
@@ -236,3 +260,4 @@ finisce in un minimo spurio: il limite non è nel codice, è nella matematica.
 - La rete *ricorda* ma non *inventa*, e può solo scendere: due limiti che la
   prossima sezione affronta con la temperatura e i neuroni nascosti.
 ```
+`````

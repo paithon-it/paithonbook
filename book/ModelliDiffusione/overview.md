@@ -107,8 +107,8 @@ limite variazionale a questa forma, è il tema della prossima sezione.
 :alt: "Catena lunga di stati intermedi fra un'immagine nitida e il rumore puro: procedendo verso destra ogni passo aggiunge un poco di rumore, procedendo verso sinistra la rete ne toglie un poco. Nessuno dei due sensi salta stati: il percorso è fatto di moltissimi passi piccoli."
 :width: 100%
 
-Il contributo del 2020 in una figura: tanti passi piccoli invece di pochi
-grandi. Ogni passo chiede alla rete un compito facile, e la difficoltà si
+L'idea di fondo, quella del 2015, in una figura: tanti passi piccoli invece
+di pochi grandi. Ogni passo chiede alla rete un compito facile, e la difficoltà si
 distribuisce sull'intera catena.
 ```
 
@@ -244,6 +244,35 @@ sostituisce la U-Net con un Transformer su patch (la stessa ricetta che,
 estesa ai video, sta dietro a generatori come Sora). Il cerchio, per chi
 arriva dal capitolo sui Transformer, si chiude.
 
+`````{tab} Elementare
+
+```{admonition} Da ricordare
+:class: important
+- Un **modello di diffusione** impara a proiettare al contrario il film di una
+  rovina: l'andata (aggiungere un pizzico di disturbo mille volte, finché non
+  resta che neve televisiva) è una ricetta fissa che sa eseguire un dado; il
+  ritorno (sollevare una velatura di disturbo alla volta) è l'unica cosa che
+  si apprende. L'idea viene da un'osservazione di fisica: disfare è facile,
+  rifare per caso è così improbabile da non accadere mai.
+- **DDPM** rende l'addestramento facile perché non chiede il capolavoro ma una
+  cosa umile: «dimmi che aspetto aveva il disturbo che ho aggiunto». La
+  risposta esatta la conosciamo sempre, visto che il disturbo l'abbiamo messo
+  noi: è come studiare su un libro di esercizi con le soluzioni in fondo.
+- Dal 2021 la diffusione **supera le GAN** in qualità e in varietà dei
+  risultati; nel 2022, con DALL·E 2, Imagen, Midjourney e soprattutto Stable
+  Diffusion, scaricabile da chiunque, diventa un fenomeno di massa.
+- Rispetto alle GAN: niente duello fra falsario e detective, quindi niente
+  allenamenti che si incartano e nessun rifugio in un unico quadro vincente.
+  Il conto si paga in attesa: il falsario dipinge in una pennellata sola, il
+  restauratore ripete la pulitura centinaia di volte.
+- Nel resto del capitolo: DDPM in dettaglio, la diffusione **latente** di
+  Stable Diffusion, i **diffusion Transformer** e i modelli video.
+```
+
+`````
+
+`````{tab} Superiore
+
 ```{admonition} Da ricordare
 :class: important
 - Un **modello di diffusione** impara a invertire una degradazione:
@@ -253,8 +282,8 @@ arriva dal capitolo sui Transformer, si chiude.
   {cite}`sohl2015deep`.
 - **DDPM** {cite}`ho2020denoising` riduce l'addestramento a una regressione,
   predire il rumore iniettato, loss
-  $\mathbb{E}\lVert\epsilon - \epsilon_\theta(x_t,t)\rVert^2$, stabile come un
-  problema supervisionato.
+  $\mathbb{E}\lVert\epsilon - \epsilon_\theta(\mathbf{x}_t,t)\rVert^2$,
+  stabile come un problema supervisionato.
 - Nel 2021 la diffusione **supera le GAN** in qualità e diversità
   {cite}`dhariwal2021diffusion`; nel 2022, con DALL·E 2, Imagen, Midjourney
   e lo Stable Diffusion open source {cite}`rombach2022high`, diventa un
@@ -264,3 +293,5 @@ arriva dal capitolo sui Transformer, si chiude.
 - Nel resto del capitolo: DDPM in dettaglio, la diffusione **latente** di
   Stable Diffusion, i **diffusion Transformer** (DiT) e i modelli video.
 ```
+
+`````

@@ -30,14 +30,14 @@ che aspetto ha una foto di gatto, e può cucinarne di nuove all'infinito.
 
 `````{tab} Superiore
 
-Un modello discriminativo apprende la probabilità condizionata $p(y \mid X)$
-di un'etichetta $y$ dato l'input $X$. Un modello **generativo** apprende,
-esplicitamente o implicitamente, la distribuzione dei dati $p_{\text{data}}(X)$,
-così da poterne campionare nuovi esempi $X \sim p_{\text{model}}$. Una GAN la
-apprende in modo *implicito*: non stima una densità in forma chiusa, ma
-costruisce un **campionatore** $G(z)$ che trasforma un rumore semplice
-$z \sim p_z$ (tipicamente gaussiano) in campioni indistinguibili da quelli
-reali.
+Un modello discriminativo apprende la probabilità condizionata $p(y \mid x)$
+di un'etichetta $y$ dato l'input $x$. Un modello **generativo** apprende,
+esplicitamente o implicitamente, la distribuzione dei dati $p_{\text{dati}}(x)$,
+così da poterne campionare esempi nuovi. Una GAN la apprende in modo
+*implicito*: non stima una densità in forma chiusa, ma costruisce un
+**campionatore** $G(z)$ che trasforma un rumore semplice $z \sim p_z$
+(tipicamente gaussiano) in campioni indistinguibili da quelli reali; la
+distribuzione da cui questi campioni provengono si indica con $p_G$.
 
 `````
 
@@ -108,16 +108,16 @@ valore $V(D,G)$:
 
 $$
 \min_{G}\ \max_{D}\ V(D,G) =
-\mathbb{E}_{X\sim p_{\text{data}}}\!\big[\log D(X)\big]
+\mathbb{E}_{x\sim p_{\text{dati}}}\!\big[\log D(x)\big]
 + \mathbb{E}_{z\sim p_z}\!\big[\log\big(1 - D(G(z))\big)\big].
 $$
 
-Qui $X\sim p_{\text{data}}$ è un campione reale, $z\sim p_z$ è il rumore in
-ingresso a $G$, $D(X)$ è la probabilità stimata che l'input sia autentico. Il
+Qui $x\sim p_{\text{dati}}$ è un campione reale, $z\sim p_z$ è il rumore in
+ingresso a $G$, $D(x)$ è la probabilità stimata che l'input sia autentico. Il
 Discriminatore *massimizza* $V$ (assegna probabilità alta ai veri, bassa ai
 falsi $G(z)$); il Generatore *minimizza* il secondo termine, cioè spinge
 $D(G(z))$ verso $1$. All'ottimo teorico si ha
-$p_{\text{model}}=p_{\text{data}}$ e $D(X)=\tfrac{1}{2}$ ovunque: l'esperto
+$p_G=p_{\text{dati}}$ e $D(x)=\tfrac{1}{2}$ sul supporto dei dati: l'esperto
 non sa più decidere. In pratica l'equilibrio è delicato: instabilità
 dell'addestramento e *mode collapse* (il Generatore che produce sempre la
 stessa immagine vincente) sono i due grattacapi ricorrenti, che affronteremo
@@ -146,10 +146,13 @@ convincenti. Ragione in più per capirne bene il funzionamento.
 
 Dall'intuizione passiamo alla pratica. Nelle prossime sezioni vedremo
 **l'architettura** del Generatore e del Discriminatore e come collegarli; la
-**funzione di perdita** e il ciclo di addestramento alternato, con le sue
-insidie (instabilità, *mode collapse*) e i trucchi per domarle; il problema,
-tutt'altro che ovvio, di **misurare** se una GAN sta funzionando, visto che la
-sua loss non lo dice; le
-**varianti** che hanno fatto la storia, DCGAN, le GAN condizionali, fino a
-StyleGAN; e infine un'**implementazione in PyTorch**, dove costruiremo una GAN
-che impara a generare cifre manoscritte partendo, letteralmente, dal rumore.
+**funzione di perdita** e il ciclo di addestramento alternato, scritto riga
+per riga in PyTorch, con le sue insidie (instabilità, *mode collapse*) e i
+trucchi per domarle; il problema, tutt'altro che ovvio, di **misurare** se una
+GAN sta funzionando, visto che la sua loss non lo dice; e le **varianti** che
+hanno fatto la storia, DCGAN, le GAN condizionali, fino a StyleGAN, per
+chiudere sul passaggio di testimone ai **modelli di diffusione**: un altro modo
+di far disegnare le macchine, che invece di far competere due reti insegna a
+una sola rete a ricavare l'immagine da una macchia di puro rumore,
+ripulendola un poco alla volta. È la famiglia che dal 2021 ha tolto alle GAN il
+primato, e ha un capitolo tutto suo.

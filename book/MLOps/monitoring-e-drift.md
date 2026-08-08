@@ -102,11 +102,12 @@ interessa il gesto operativo: come ci si *accorge* che uno di questi shift è
 in corso, in produzione, mentre accade.
 
 Lo strumento l'abbiamo già incontrato: il **classificatore-detective**.
-Addestrare un modello a distinguere i dati di ieri da quelli di oggi; se non ci
-riesce (AUC vicina a $0{,}5$) le due finestre sono indistinguibili e possiamo
-stare tranquilli, se ci riesce bene lo shift è arrivato. Lì era una diagnosi *una
-tantum*; per l'impianto in produzione va reso una **sorveglianza continua**, e
-questo richiede tre decisioni operative.
+Addestrare un modello a distinguere i dati di ieri da quelli di oggi; se ci
+riesce bene lo shift è arrivato, se non ci riesce (AUC vicina a $0{,}5$) le due
+finestre sono indistinguibili *per lui*. È una rassicurazione, non una prova:
+un cambiamento su una *feature* che il detective non guarda gli passa sotto il
+naso. Lì era una diagnosi *una tantum*; per l'impianto in produzione va reso
+una **sorveglianza continua**, e questo richiede tre decisioni operative.
 
 `````{tab} Elementare
 
@@ -134,11 +135,12 @@ Le tre decisioni sono:
   ultime $N$ richieste, o le richieste dell'ultimo giorno. Finestre corte
   reagiscono in fretta ma sono rumorose; finestre lunghe sono stabili ma
   lente.
-- **Soglia sull'indicatore**. L'AUC del detective è un numero tra $0{,}5$ e
-  $1$: si sceglie una soglia (per esempio $0{,}65$) oltre la quale scatta
-  l'allarme. La soglia si calibra sul tasso di **falsi allarmi** accettabile,
-  perché per rumore campionario l'AUC è quasi mai esattamente $0{,}5$ anche
-  senza alcuno shift.
+- **Soglia sull'indicatore**. L'AUC del detective va da circa $0{,}5$
+  (finestre che quel classificatore non distingue) a $1$ (perfettamente
+  separabili); per rumore campionario, senza alcuno shift, oscilla attorno a
+  $0{,}5$, anche sotto. Si sceglie quindi una soglia (per esempio $0{,}65$)
+  oltre la quale scatta l'allarme, calibrata sul tasso di **falsi allarmi**
+  accettabile.
 - **Test per singola *feature***. Il detective è un test *multivariato*: dice
   *se* qualcosa è cambiato, non *cosa*. Per localizzare si affianca un test
   *univariato* colonna per colonna, tipicamente il test di
@@ -197,7 +199,7 @@ if auc > SOGLIA:
         sospetta = "  <-- sospetta" if p < 0.01 else ""
         print(f"  feature {j}: KS={stat:.3f}  p={p:.1e}{sospetta}")
 else:
-    print("Nessun drift rilevabile: le due finestre sono indistinguibili.")
+    print("Nessun drift rilevabile: il detective non distingue le finestre.")
 ```
 
 L'output stampa `AUC detective = 0.775`, ben oltre la soglia di $0{,}65$:
@@ -377,5 +379,3 @@ modello serve.
   (confronto statistico), tutti poggiati sul modello **versionato** per un
   rollback immediato.
 ```
-</content>
-</invoke>

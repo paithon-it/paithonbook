@@ -57,10 +57,14 @@ tutte.
 Ogni utente $u$ è rappresentato dalla riga $R_u$ della matrice dei voti, un
 vettore con una componente per film (quasi tutte mancanti). La somiglianza
 tra due utenti è la **similarità del coseno** incontrata nel capitolo di
-richiami, sezione *Algebra lineare*, calcolata sulle sole componenti co-votate:
+richiami, sezione *Algebra lineare*, ristretta all'insieme $I_{uv}$ dei film
+votati da entrambi (sui vettori interi, pieni di componenti mancanti, non
+sarebbe nemmeno definita):
 
 $$
-\mathrm{sim}(u,v) \;=\; \frac{R_u^\top R_v}{\lVert R_u\rVert\,\lVert R_v\rVert} .
+\mathrm{sim}(u,v) \;=\;
+\frac{\sum_{i \in I_{uv}} r_{ui}\, r_{vi}}
+{\sqrt{\sum_{i \in I_{uv}} r_{ui}^2}\;\sqrt{\sum_{i \in I_{uv}} r_{vi}^2}} .
 $$
 
 Il voto previsto per l'utente $u$ sul film $i$ è la media dei voti dei vicini,
@@ -72,10 +76,29 @@ $$
 $$
 
 dove $N_i(u)$ è l'insieme dei $k$ utenti più simili a $u$ tra quelli che
-hanno votato $i$, e $r_{vi}$ è il voto del vicino $v$. Un raffinamento
-standard sottrae a ogni utente la propria media (c'è chi dà 5 a tutto e chi
-non supera mai il 3), il che equivale a usare la correlazione di Pearson. La
-variante **item-based** applica le stesse formule alle *colonne* della
+hanno votato $i$, e $r_{vi}$ è il voto del vicino $v$.
+
+Questa forma media voti grezzi, e i voti grezzi non sono confrontabili da
+persona a persona: c'è chi dà 5 a tutto e chi non supera mai il 3. Sottrarre a
+ciascuno la propria media è il correttivo standard, e si applica in **due
+punti indipendenti**, che conviene non confondere. Nella *predizione* si media
+lo scarto di ogni vicino dalla propria media, e il risultato si riporta sulla
+scala di $u$:
+
+$$
+\hat{r}_{ui} \;=\; \bar{r}_u \;+\;
+\frac{\sum_{v \in N_i(u)} \mathrm{sim}(u,v)\,\big(r_{vi} - \bar{r}_v\big)}
+{\sum_{v \in N_i(u)} \lvert \mathrm{sim}(u,v)\rvert} .
+$$
+
+Nella *similarità*, invece, centrare cambia la metrica, e le cambia il nome:
+se la media sottratta è calcolata sui soli film di $I_{uv}$ si ottiene
+esattamente la correlazione di Pearson; se è la media di *tutti* i voti
+dell'utente si ottiene il coseno centrato (*mean-centered cosine*), variante
+vicina ma distinta. Le due centrature sono ortogonali: si possono adottare
+entrambe, una sola, o nessuna.
+
+La variante **item-based** applica le stesse formule alle *colonne* della
 matrice: similarità tra film, previsione come media dei voti di $u$ sui film
 simili a $i$. In produzione è spesso preferita: le similarità tra oggetti
 sono più stabili nel tempo e precalcolabili, e il costo per singola
@@ -175,9 +198,12 @@ stessa struttura, triple (utente, film, voto), così il codice gira senza
 scaricare nulla; per usare MovieLens basterebbe sostituire la generazione con
 la lettura del file dei voti.
 
-Il modello è la traduzione letterale della formula: due tabelle di
-`nn.Embedding` per i fattori latenti, due per i bias, e un prodotto scalare
-nel `forward`.
+Il modello è la traduzione letterale dell'idea appena vista. Un
+`nn.Embedding` è una tabella con una riga di numeri per ogni utente (o per
+ogni film): la sua "scheda di manopole". Due tabelle tengono i fattori
+latenti, due i bias (la tendenza di ciascuno a votare, o a essere votato,
+sopra o sotto la media), e il confronto tra le schede è il prodotto scalare
+nel `forward`: moltiplicazione voce per voce, poi somma.
 
 ```python
 import torch
@@ -223,10 +249,43 @@ voti = (3 + 1.2 * affinita / affinita.std()).clamp(1, 5)  # scala 1-5
 loader = DataLoader(TensorDataset(u, i, voti), batch_size=256, shuffle=True)
 ```
 
-L'addestramento è un normale ciclo PyTorch con MSE; la regolarizzazione
-$\lambda$ della formula è affidata al `weight_decay` dell'ottimizzatore (che,
-a differenza della formula classica, penalizza a ogni passo *tutti* i fattori
-e non solo quelli del batch, per i nostri scopi la differenza è irrilevante).
+L'addestramento è un normale ciclo PyTorch: a ogni giro completo sui voti (un
+giro si chiama **epoca**) il modello prevede, l'errore quadratico medio (la
+MSE incontrata nel capitolo di Machine Learning) misura di quanto sbaglia, e
+l'ottimizzatore ritocca le schede. Il freno che impedisce ai numeri delle
+schede di crescere a dismisura pur di imparare i voti a memoria (nella scheda
+Superiore qui sopra è il termine $\lambda$ della loss) è affidato al
+`weight_decay` dell'ottimizzatore.
+
+Su quel freno conviene essere precisi, perché il codice non fa esattamente
+quello che promette la riga qui sopra.
+
+`````{tab} Elementare
+
+Il freno del codice e il freno di cui parlavamo non sono la stessa identica
+cosa. Quello del codice stringe a ogni passo *tutti* i numeri del modello,
+compresi quelli che andrebbero lasciati liberi di andare dove vogliono, e
+quanto stringe dipende anche da come sta lavorando in quel momento la
+procedura che aggiorna i numeri. Su un esempio piccolo come questo la
+differenza non si vede nei risultati. Vale però la pena saperlo: fra la
+formula scritta su carta e le righe che girano davvero c'è quasi sempre un
+piccolo scarto, e chi scrive il codice è l'unico che può accorgersene.
+
+`````
+
+`````{tab} Superiore
+
+Tre scostamenti dalla formula, piccoli ma reali. Il `weight_decay` penalizza a
+ogni passo *tutti* i fattori, non i soli $P_u, Q_i$ che compaiono nel batch.
+Tocca anche la media globale $\mu$, che il regolarizzatore della loss non
+include, e la attira verso zero invece che verso la media dei voti. E in Adam
+la penalità entra nel gradiente, dove viene riscalata dai momenti adattivi:
+non coincide quindi con un termine $L_2$ sommato alla loss, che è
+l'osservazione da cui nasce AdamW {cite}`loshchilov2019decoupled`. Per gli
+scopi di questo esempio la differenza è irrilevante; chi la volesse annullare
+esclude $\mu$ dalla penalità con i *param group* e passa a `torch.optim.AdamW`.
+
+`````
 
 ```python
 modello = FattorizzazioneMatrici(n_utenti, n_film, k=8)
@@ -296,16 +355,44 @@ correggere una volta per tutte.
 
 `````
 
+`````{tab} Elementare
+
+```{admonition} Da ricordare
+:class: important
+- Il filtraggio collaborativo è «chiedere all'amico giusto» reso calcolabile:
+  prevede i gusti di una persona dai giudizi di chi le somiglia (oppure dai
+  voti che lei stessa ha dato a film votati in modo simile), guardando solo la
+  tabella dei voti: né trama, né genere, né regista.
+- La **fattorizzazione** riassume ogni persona e ogni film in una scheda di
+  poche manopole, e prevede il voto confrontando le due schede voce per voce,
+  corretto da quanto quella persona vota alto in generale e da quanto quel film
+  è apprezzato in generale. Le manopole non le sceglie nessuno: le trova
+  l'algoritmo dai soli voti già dati (le celle vuote sono incognite, non zeri),
+  con un freno che gli impedisce di imparare quei voti a memoria.
+- In PyTorch sono due tabelle di schede e un confronto voce per voce: poche
+  righe, la stessa idea che ha vinto il Netflix Prize.
+- Due limiti restano: di chi è appena arrivato non si sa nulla, e il libraio
+  che consiglia in base agli acquisti passati è muto (**partenza a freddo**);
+  i titoli già molto votati si consigliano da soli, e il capolavoro di nicchia
+  con dodici voti entusiasti resta invisibile (**dittatura della popolarità**).
+```
+
+`````
+
+`````{tab} Superiore
+
 ```{admonition} Da ricordare
 :class: important
 - Il filtraggio collaborativo prevede i gusti di un utente dai giudizi degli
   utenti (o degli oggetti) simili, usando solo la matrice dei voti: nessuna
   informazione sui contenuti.
 - La **fattorizzazione di matrici** comprime la matrice in fattori latenti:
-  $\hat{r}_{ui} = \mu + b_u + b_i + P_u^\top Q_i$, con loss MSE regolarizzata
-  **sui soli voti osservati**.
+  $\hat{r}_{ui} = \mu + b_u + b_i + P_u^\top Q_i$, con loss
+  MSE regolarizzata **sui soli voti osservati**.
 - In PyTorch il modello è due `nn.Embedding` e un prodotto scalare: poche
   righe, la stessa idea che ha vinto il Netflix Prize.
 - Limiti strutturali: **cold start** (nessuna interazione, nessun consiglio)
   e **bias di popolarità** (la coda lunga resta invisibile).
 ```
+
+`````

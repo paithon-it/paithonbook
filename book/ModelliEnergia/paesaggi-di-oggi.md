@@ -12,14 +12,15 @@ che un modello a energia si può addestrare su immagini vere con gli strumenti
 della sezione sulla partizione: una rete convoluzionale nel ruolo di
 $E_\theta$, campioni negativi prodotti per **dinamica di Langevin**, e un
 serbatoio di campioni da cui le catene ripartono invece di ricominciare da
-zero: la persistent contrastive divergence, trent'anni dopo, su CIFAR-10
-{cite}`du2019implicit`. La qualità dei campioni supera quella degli altri
-modelli a verosimiglianza e si avvicina (senza raggiungerla) a quella delle
-GAN dell'epoca; ma il valore del lavoro è mostrare che la famiglia è viva, e
-mettere in luce la proprietà che le è tipica: un solo modello serve a
-generare, a completare immagini parziali, a segnalare anomalie e a comporre
-concetti sommando energie, perché tutte queste cose sono la stessa cosa:
-cercare un minimo, con vincoli diversi.
+zero: la persistent contrastive divergence che Tieleman aveva proposto nel
+2008 per le macchine di Boltzmann ristrette {cite}`tieleman2008training`,
+undici anni dopo e su CIFAR-10 {cite}`du2019implicit`. La qualità dei
+campioni supera quella degli altri modelli a verosimiglianza e si avvicina
+(senza raggiungerla) a quella delle GAN dell'epoca; ma il valore del lavoro è
+mostrare che la famiglia è viva, e mettere in luce la proprietà che le è
+tipica: un solo modello serve a generare, a completare immagini parziali, a
+segnalare anomalie e a comporre concetti sommando energie, perché tutte queste
+cose sono la stessa cosa: cercare un minimo, con vincoli diversi.
 
 L'anno dopo arriva l'osservazione che ribalta la prospettiva. Will Grathwohl
 e colleghi notano che **un classificatore è già un modello a energia**, e
@@ -80,12 +81,25 @@ addestramento più fragile, che è il difetto ereditario di tutta la famiglia.
 Il primo lo abbiamo già incontrato nella sezione sulla partizione, e vale la
 pena ripeterlo perché è il ponte più solido di tutto il capitolo: **i modelli
 di diffusione sono modelli a energia che hanno smesso di dirlo**. La loss con
-cui si addestrano è denoising score matching {cite}`vincent2011connection`, il
-campo che imparano è lo score $\nabla_x \log p(x) = -\nabla_x E(x)$, e il
-campionamento (togliere rumore un passo alla volta) è una discesa rumorosa
-lungo un paesaggio di energia, parente stretta della dinamica di Langevin
-{cite}`song2021score`. La differenza, l'abbiamo detta: imparano il campo
-vettoriale direttamente, senza passare da una $E_\theta$ scalare.
+cui si addestrano è denoising score matching {cite}`vincent2011connection`.
+Quello che imparano, però, non è la pendenza di un paesaggio solo. Un modello
+di diffusione parte da un'immagine di puro rumore e la ripulisce un poco alla
+volta, e a ogni grado di sporco corrisponde un paesaggio diverso: quando
+l'immagine è ancora tutta rumore il paesaggio è liscio, con poche valli larghe
+in cui è difficile sbagliare direzione; man mano che si pulisce diventa più
+dettagliato, con valli più strette, quelle che distinguono un volto
+dall'altro. In formule, per ogni livello di rumore $t$ il campo imparato è
+$\nabla_x \log p_t(x) = -\nabla_x E_t(x)$, e generare (togliere rumore un
+passo alla volta) è una discesa rumorosa lungo quella successione di paesaggi,
+parente stretta della dinamica di Langevin {cite}`song2021score`.
+
+Attraversarli in fila, invece di rotolare in uno solo, è anche il rimedio al
+guaio della prima via: una pallina lasciata subito nel paesaggio più
+dettagliato si fermerebbe nella prima conca che incontra, mentre partire da
+quello liscio la porta prima nella regione giusta e solo dopo nei particolari.
+La differenza con un modello a energia dichiarato, l'abbiamo detta: qui si
+impara il campo vettoriale direttamente, senza passare da una $E_\theta$
+scalare.
 
 Il secondo è più sorprendente, e chiude un cerchio con il capitolo sui
 Transformer. Le reti di Hopfield **moderne** (stati continui, energia
@@ -146,18 +160,53 @@ risultati che abbiamo in mano. Il capitolo che segue la prende sul serio
 proprio perché la tratta così: come una scommessa argomentata, con i suoi
 risultati e i suoi limiti, non come una profezia.
 
+`````{tab} Elementare
+```{admonition} Da ricordare
+:class: important
+- Un paesaggio si può scavare anche su **immagini vere**, e allora un solo
+  modello fa quattro mestieri: genera, completa un'immagine a cui manca un
+  pezzo, segnala quello che è fuori posto e mescola concetti. Sono la stessa
+  cosa: cercare il punto più basso, con vincoli diversi.
+- Un **classificatore è già un modello a energia** senza saperlo: sommando nel
+  modo giusto i punteggi che dà alle classi si ottiene quanto quell'immagine
+  è plausibile, non quale classe sia. Addestrarlo a fare bene anche questo lo
+  rende più prudente: dice quando è incerto, riconosce le cose mai viste ed è
+  più difficile da ingannare.
+- I **modelli di diffusione** sono modelli a energia che non lo dichiarano:
+  imparano la pendenza di un paesaggio per ogni grado di sporco, e ripulire
+  un'immagine è scendere lungo quella fila di paesaggi, dal più liscio (dove
+  è difficile sbagliare direzione) al più dettagliato.
+- Le **reti di Hopfield di oggi** tengono in memoria molti più ricordi di
+  quelle del 1982, e il modo in cui li richiamano è, conto alla mano,
+  l'attenzione dei Transformer: la domanda fa da indizio, e in memoria ci sono
+  i ricordi.
+- Le **quattro rinunce** di Yann LeCun: via i modelli che rifanno il dato
+  pezzo per pezzo (meglio reti che si limitano a confrontare due riassunti,
+  invece di ridisegnare ogni pixel), via le probabilità (meglio l'energia), via il
+  mostrare al modello anche gli esempi sbagliati perché impari a respingerli
+  (meglio costruirlo in modo che non possa dire di sì a tutto, come stringere
+  la porta invece di istruire il buttafuori), via l'imparare per tentativi
+  (meglio pianificare dentro un modello del mondo). La seconda è la tesi di
+  questo capitolo; la prima resta una scommessa, e il capitolo sui modelli del
+  mondo la discute per quello che è.
+```
+`````
+
+`````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
 - Gli **EBM sulle immagini** {cite}`du2019implicit` addestrano una rete come
   $E_\theta$ con campioni negativi da Langevin e un serbatoio persistente: un
   solo modello genera, completa, rileva anomalie e compone concetti.
 - **JEM** {cite}`grathwohl2020your`: un classificatore è già un EBM, con
-  $E_\theta(x) = -\operatorname{logsumexp}_y f_\theta(x)[y]$. Addestrarlo
-  anche come tale migliora calibrazione, rilevamento del fuori distribuzione
-  e robustezza.
+  $E_\theta(\mathbf{x}) = -\operatorname{logsumexp}_y f_\theta(\mathbf{x})[y]$.
+  Addestrarlo anche come tale migliora calibrazione, rilevamento del fuori
+  distribuzione e robustezza.
 - I **modelli di diffusione** sono modelli a energia che non lo dichiarano:
-  loss di denoising score matching, campo dello score $-\nabla_x E$,
-  campionamento parente di Langevin.
+  loss di denoising score matching, campo dello score
+  $-\nabla_{\mathbf{x}} E_t(\mathbf{x})$ a ogni livello di rumore $t$,
+  campionamento parente di Langevin lungo la successione di paesaggi, dal più
+  liscio al più dettagliato.
 - Le **Hopfield moderne** {cite}`ramsauer2021hopfield` hanno capacità
   esponenziale e una regola di aggiornamento identica all'attenzione dei
   Transformer.
@@ -167,3 +216,4 @@ risultati e i suoi limiti, non come una profezia.
   capitolo; la prima resta una scommessa, e il capitolo sui world model la
   discute per quello che è.
 ```
+`````

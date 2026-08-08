@@ -297,7 +297,7 @@ dice il contrario, e ha ragione lui.
 
 ## Le medie mentono, e qui in tre modi
 
-La sezione sul deployment ha già stabilito che uno SLA si scrive sui percentili
+La sezione sul deployment ha già stabilito che uno SLO si scrive sui percentili
 alti (p95, p99) e non sulla media, e «Sorvegliare un modello vivo» li ha messi
 in cima al cruscotto.
 
@@ -476,6 +476,45 @@ a chi guarda i grafici. È lo stesso avvertimento già dato sulle metriche di un
 classificatore e sui surrogati del giudizio umano: ottimizzare contro una misura
 sbagliata non produce un fallimento rumoroso, produce un successo apparente.
 
+`````{tab} Elementare
+```{admonition} Da ricordare
+:class: important
+- Per un modello che genera testo la velocità **non è un numero solo**, come al
+  menù degustazione: c'è l'attesa della prima parola (**TTFT**), che dipende da
+  quanto è lungo il prompt da leggere, e la pausa fra una parola e la
+  successiva (**TPOT**), cioè il ritmo con cui il testo scorre. Due sistemi che
+  finiscono nello stesso istante possono essere l'uno piacevole e l'altro
+  irritante.
+- **Leggere il prompt e generare le parole sono due lavori opposti**: leggere
+  tiene la macchina piena di lavoro utile, generare la costringe a scaldarsi
+  ogni volta per un foglio solo. Sulla stessa scheda l'uno blocca l'altro, e i
+  rimedi sono due: spezzare il prompt lungo in pezzi e infilare fra un pezzo e
+  l'altro le parole di tutti gli altri (la cassa che alterna il carrello e chi
+  ha in mano solo il pane), oppure separare i reparti, al prezzo di trasferire
+  gli appunti presi leggendo.
+- Il **goodput** conta solo le richieste servite **entro le promesse
+  dichiarate**. Servirne di più in una volta alza il numero dei coperti e
+  abbassa quello dei clienti contenti: nell'esempio, $+60\%$ di richieste
+  servite e $-15\%$ di richieste servite *bene*.
+- **Le medie mentono**: si guardano i percentili alti (p95 e p99, cioè il caso
+  peggiore su venti e su cento), riportati separatamente per ciascuna delle due
+  attese. E le lentezze si sommano lungo una catena di chiamate: se una su
+  cento è lenta, su venti chiamate di fila la probabilità che almeno una lo sia
+  arriva al $18\%$. Una media che migliora mentre il caso peggiore peggiora è
+  un peggioramento.
+- La leva che resta è **riusare l'inizio**: istruzione di sistema, documento
+  allegato e cronologia della conversazione si ripetono identici a ogni
+  richiesta, come le pagine di premesse dello studio notarile. Tenerne gli
+  appunti già pronti e ricopiare solo il seguito accorcia l'attesa della prima
+  parola, e più la conversazione è lunga più conviene.
+- Quegli appunti però sono **condivisi fra utenti diversi**: una risposta
+  anormalmente rapida rivela che qualcun altro aveva già inviato quel testo. Si
+  tengono separati per cliente e si condivide solo ciò che è dichiaratamente
+  pubblico.
+```
+`````
+
+`````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
 - Per un modello che genera, la latenza non è un numero solo: si scompone in
@@ -510,3 +549,4 @@ sbagliata non produce un fallimento rumoroso, produce un successo apparente.
   basso rivela che quel prefisso era già stato inviato da qualcuno. Si partiziona
   per cliente e si condividono solo i prefissi pubblici.
 ```
+`````

@@ -181,8 +181,9 @@ posizione tempo–frequenza; da lì in poi è il consueto stack di
 *self-attention* del capitolo sui Transformer. Il vantaggio è il campo
 recettivo globale fin dal primo strato: ogni patch può pesare qualunque altra,
 mentre una CNN allarga la propria vista solo strato dopo strato. Sul benchmark
-AudioSet completo l'AST raggiunge una mAP di $0{,}485$, superando le migliori
-CNN dell'epoca.
+AudioSet completo l'AST raggiunge una mAP di $0{,}459$ con un singolo modello
+($0{,}485$ in ensemble), superando le migliori CNN dell'epoca a parità di
+configurazione.
 
 Onestà d'obbligo, la stessa del capitolo sui Transformer: rinunciare alla
 convoluzione significa rinunciare al suo *bias induttivo* di località, e quel

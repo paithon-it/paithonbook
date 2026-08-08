@@ -132,9 +132,11 @@ Sul ricampionamento vale un'avvertenza che si dimentica spesso: **va applicato
 solo al training set, dentro la cross-validation**. Ricampionare prima dello
 split significa che copie sintetiche dello stesso positivo finiscono sia in
 train sia in validation: il modello riconosce esempi che ha già visto e la
-stima delle prestazioni diventa ottimistica in modo invisibile. In scikit-learn
-questo si ottiene mettendo il campionatore dentro una `Pipeline`, non
-applicandolo al dataset.
+stima delle prestazioni diventa ottimistica in modo invisibile. In pratica lo
+si ottiene con la libreria **imbalanced-learn** (è sua sia l'implementazione di
+SMOTE sia una `Pipeline` compatibile con scikit-learn): il campionatore va
+messo dentro quella pipeline, non applicato al dataset prima; la `Pipeline` di
+scikit-learn, da sola, non ammette passi che cambiano il numero di esempi.
 
 Un secondo punto: il ricampionamento **distorce le probabilità predette**. Un
 modello addestrato su dati riequilibrati stima $P(y=1\mid x)$ rispetto alla

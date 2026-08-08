@@ -75,6 +75,14 @@ strutture annidate a profondità arbitraria (parentesi bilanciate, subordinate
 dentro subordinate). Per la sintassi delle lingue naturali servono strumenti
 più potenti, o, come vedremo, modelli che la imparano dai dati.
 
+Una cautela pratica prima di scendere al codice: il teorema, e con esso la
+garanzia di tempo lineare, riguarda i motori che compilano davvero l'automa,
+come `grep` o RE2. Il modulo `re` di Python, che useremo tra poco, procede
+invece per *backtracking*, e i suoi costrutti aggiuntivi (le *backreference*)
+descrivono anche linguaggi che regolari non sono: fuori dalla portata del
+teorema, il costo non è più garantito, e su pattern patologici come `(a+)+$`
+applicato a un input ostile il tempo può degradare fino a essere esponenziale.
+
 `````
 
 In Python le espressioni regolari vivono nel modulo `re`. Mettiamo alla prova

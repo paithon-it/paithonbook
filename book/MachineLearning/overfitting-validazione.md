@@ -102,10 +102,12 @@ bravo modellista cerca il punto di mezzo.
 
 `````{tab} Superiore
 
-Per un target $y = f(x) + \varepsilon$ con rumore di varianza $\sigma^2$,
-l'errore quadratico atteso di una previsione $\hat{f}(x)$, mediato sui possibili
-insiemi di addestramento e sul rumore del punto di test, si decompone in tre
-termini:
+Per un target $y = f(x) + \varepsilon$, con rumore a media nulla
+($\mathbb{E}[\varepsilon]=0$), varianza $\sigma^2$ e indipendente dal campione
+di addestramento, l'errore quadratico atteso di una previsione $\hat{f}(x)$, a
+$x$ fissato, mediato sui possibili insiemi di addestramento e sul rumore del
+punto di test, si decompone in tre termini (sono proprio quelle ipotesi a far
+sparire i doppi prodotti):
 
 $$
 \mathbb{E}\big[(y-\hat{f}(x))^2\big]
@@ -310,9 +312,11 @@ automatico di feature.
 ## Il rasoio di Occam
 
 Sotto tutto questo c'è un principio antico. Nel XIV secolo il frate francescano
-**Guglielmo di Occam** enunciò quello che oggi chiamiamo il *rasoio*: *entia non
-sunt multiplicanda praeter necessitatem*, non moltiplicare le entità oltre il
-necessario. Tradotto per noi: **a parità di capacità di spiegare i dati, scegli
+**Guglielmo di Occam** enunciò quello che oggi chiamiamo il *rasoio*, riassunto
+poi nella formula *entia non sunt multiplicanda praeter necessitatem*, non
+moltiplicare le entità oltre il necessario (la frase esatta, per la cronaca,
+non compare nei suoi scritti: la coniò un commentatore del Seicento). Tradotto
+per noi: **a parità di capacità di spiegare i dati, scegli
 il modello più semplice**.
 
 La regolarizzazione non è altro che il rasoio di Occam scritto in formule: quel
@@ -326,10 +330,12 @@ eleganza estetica: è ciò che permette di generalizzare.
 
 C'è un punto in cui il quadro appena disegnato entra in tensione con la
 pratica del deep learning, e vale la pena affrontarlo invece di ignorarlo. La
-curva a U dice: oltre una certa capacità l'errore di test risale. Eppure i
-modelli linguistici moderni hanno miliardi di parametri, molti più degli
-esempi di addestramento, memorizzano perfettamente il training set, e
-generalizzano.
+curva a U dice: oltre una certa capacità l'errore di test risale. Eppure una
+grande rete neurale che riconosce immagini (una rete è un modello fatto a
+strati, il protagonista dei prossimi capitoli) ha milioni di parametri contro
+le poche decine di migliaia di esempi su cui la si addestra: azzera l'errore di
+training, il che significa memorizzare ogni esempio rumore compreso, e
+ciononostante generalizza.
 
 ```{figure} ../figures/double-descent.svg
 :name: fig-double-descent
@@ -366,10 +372,10 @@ tende verso le soluzioni «più lisce» fra quelle disponibili. Avere parametri 
 eccesso non è più libertà di sbagliare, è **libertà di scegliere una soluzione
 gentile**.
 
-Un'immagine: far passare una curva per venti punti. Con un polinomio di grado
-esattamente venti la curva è obbligata, e fra un punto e l'altro impazzisce. Con
-molta più libertà puoi scegliere, fra le infinite curve che passano per quei
-punti, la meno tormentata.
+Un'immagine: far passare una curva per venti punti. Con una curva che ha venti
+numeri da scegliere, uno per ogni punto, non c'è margine: la curva è obbligata,
+e fra un punto e l'altro impazzisce. Con molta più libertà puoi scegliere, fra
+le infinite curve che passano per quei punti, la meno tormentata.
 
 `````
 

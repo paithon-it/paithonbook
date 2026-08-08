@@ -178,11 +178,19 @@ L'architettura è poi evoluta in due tappe. **RWKV-5/6**, nome in codice
 **data-dipendente**: in Finch (v6) il fattore di oblio è generato dall'input,
 avvicinando RWKV alla GLA. **RWKV-7**, nome in codice *Goose*
 {cite}`peng2025rwkv7`, compie il salto più netto: adotta una **delta rule
-generalizzata**, con un tasso di apprendimento appreso in contesto e una
-sostituzione dei valori più flessibile. La fonte non ne fornisce la formula in
-forma chiusa, quindi la descriviamo a parole: la transizione di stato passa
-dal semplice decadimento a un fattore di tipo **gated-delta** (la stessa
-famiglia dell'ultima riga della tabella unificante). Questo dà a RWKV-7 una
+generalizzata**, con l'evoluzione di stato (nella convenzione del capitolo)
+
+$$
+S_t = S_{t-1}\,\big(\operatorname{Diag}(w_t) - \hat{\kappa}_t\,(a_t \odot \hat{\kappa}_t)^\top\big) + v_t\, \tilde{k}_t^\top ,
+$$
+
+dove $w_t$ è un decadimento vettoriale, un valore per canale (l'erede del gate
+diagonale di Finch), $\hat{\kappa}_t$ è una chiave di *rimozione* normalizzata
+e disaccoppiata dalla chiave di scrittura $\tilde{k}_t$, e $a_t$ è un tasso di
+apprendimento **appreso in contesto**, anch'esso canale per canale. La
+transizione di stato è dunque un fattore diagonale più una correzione di rango
+uno: un **gated-delta**, la stessa famiglia dell'ultima riga della tabella
+unificante. Questo dà a RWKV-7 una
 capacità di *state tracking* che le versioni precedenti non avevano: gli
 autori mostrano che riconosce tutti i linguaggi regolari pur mantenendo
 l'addestramento parallelo, e argomentano che, sotto le congetture standard
@@ -200,11 +208,16 @@ può crescere fuori dai recinti industriali.
 
 ## xLSTM: il ritorno di Hochreiter
 
-La terza architettura ha il sapore di un ritorno. Nel capitolo sull'NLP
-abbiamo studiato la **LSTM** {cite}`hochreiter1997long`: la cella con lo stato
-di memoria $c_t$ e i tre gate (*forget*, *input*, *output*) che negli anni
-Novanta risolse il problema del gradiente che svanisce e per un decennio ha
-dominato l'elaborazione delle sequenze. Nel 2024 uno dei suoi due inventori,
+La terza architettura ha il sapore di un ritorno. Nel capitolo sull'NLP abbiamo
+studiato la **LSTM** {cite}`hochreiter1997long`, la cella con uno stato di
+memoria $c_t$ governato da alcuni interruttori, i *gate*: è la cella che negli
+anni Novanta risolse il problema del gradiente che svanisce e che per un
+decennio ha dominato l'elaborazione delle sequenze. All'inizio i gate erano
+due, uno per far entrare l'informazione (*input*) e uno per farla uscire
+(*output*). Il terzo, quello che lascia sbiadire la memoria vecchia
+(*forget*), arriva nel 2000 con Gers, Schmidhuber e Cummins
+{cite}`gers2000learning`, ed è la forma a tre gate che oggi tutti chiamano
+LSTM. Nel 2024 uno dei suoi due inventori,
 **Sepp Hochreiter**, torna sulla propria creatura e la aggiorna per l'era dei
 Transformer. Il risultato è **xLSTM**, di Beck e colleghi, presentato a
 NeurIPS 2024 {cite}`beck2024xlstm`.
@@ -332,12 +345,58 @@ attenzione a molti strati lineari. Ma questi limiti, e il modo in cui
 l'ecosistema li sta affrontando, si capiscono meglio dopo aver visto anche
 l'altra metà della famiglia: li riprenderemo alla fine del prossimo capitolo.
 
+`````{tab} Elementare
+
+```{admonition} Da ricordare
+:class: important
+- **RetNet** {cite}`sun2023retnet` toglie la normalizzazione dell'attenzione e la
+  sostituisce con un **peso che sbiadisce con la distanza**, sempre lo stesso:
+  quanto conta una parola dipende solo da quanto è lontana. È la somma dei voti
+  della classe, con le interrogazioni recenti che pesano più delle vecchie, e si
+  può fare nei tre modi che danno lo stesso totale: tutto insieme (per addestrare
+  in fretta), uno alla volta tenendo un totale corrente (per generare, a costo
+  fisso per parola), a blocchi (per i testi lunghissimi).
+- Quel ritmo di sbiadimento, però, è **deciso a priori e uguale per ogni
+  parola**: la forma più grossolana di oblio, cieca al contenuto, all'opposto
+  dello sbiadimento che nella sezione precedente si regolava da sé, parola per
+  parola e zona per zona della lavagna.
+- **RWKV** {cite}`peng2023rwkv`, progetto aperto di comunità, alterna due
+  blocchi: uno mescola l'informazione fra le parole (il mestiere
+  dell'attenzione), l'altro rimescola fra loro i numeri con cui è scritta una
+  singola parola. È la stessa ricetta cucinata in due modi: in addestramento
+  lavora come una catena di montaggio in parallelo, in uso serve un piatto alla
+  volta tenendo un riassunto di taglia fissa.
+- Le sue versioni successive {cite}`peng2024eagle` {cite}`peng2025rwkv7` salgono
+  gli stessi gradini della sezione precedente: prima uno sbiadimento fissato una
+  volta per tutte, poi deciso parola per parola, infine una versione che, prima
+  di scrivere, corregge quello che c'è già.
+- **xLSTM** {cite}`beck2024xlstm` riapre la bottega della vecchia LSTM di
+  Hochreiter {cite}`hochreiter1997long`, il magazziniere con un solo scaffale e
+  tre interruttori. Rimette interruttori più decisi (che spalancano o chiudono
+  di colpo, tenuti a bada da un accorgimento di calcolo perché non esplodano) e
+  apre due botteghe: quella con l'unico scaffale, che si riempie una casella
+  alla volta, e quella con un **archivio a griglia**, che si riempie tutto
+  insieme in parallelo. Un modello da sette miliardi di parametri costruito solo
+  su quest'ultima {cite}`beck2025xlstm7b` mostra che la formula regge alla scala
+  dei grandi modelli.
+- Il filo comune: le tre architetture di questa sezione, e quelle della
+  precedente, sono la stessa cosa: un riassunto di taglia fissa aggiornato
+  parola per parola. A cambiare è **solo il modo in cui la memoria di ieri
+  sopravvive a oggi**. Il prossimo capitolo arriverà allo stesso motore partendo
+  da tutt'altra strada.
+```
+
+`````
+
+`````{tab} Superiore
+
 ```{admonition} Da ricordare
 :class: important
 - **RetNet** {cite}`sun2023retnet` sostituisce la softmax con un **decadimento
   esponenziale fisso** $\gamma$ e offre lo stesso calcolo in **tre forme
-  equivalenti**: parallela (addestramento), ricorrente $S_t = \gamma S_{t-1} +
-  v_t k_t^\top$ (inferenza $O(1)$ per token), chunkwise (contesto lungo). È
+  equivalenti**: parallela (addestramento), ricorrente
+  $S_t = \gamma S_{t-1} + \mathbf{v}_t \mathbf{k}_t^\top$
+  (inferenza $O(1)$ per token), chunkwise (contesto lungo). È
   multi-scala: ogni testa usa un $\gamma$ diverso.
 - Il decadimento di RetNet è **scalare, fisso e data-indipendente**: la forma più
   grossolana di oblio, all'opposto dei gate appresi di Mamba-2 e GLA.
@@ -352,7 +411,9 @@ l'altra metà della famiglia: li riprenderemo alla fine del prossimo capitolo.
 - **xLSTM** {cite}`beck2024xlstm` aggiorna la LSTM di Hochreiter
   {cite}`hochreiter1997long` con **gating esponenziale** (stabilizzato in scala
   log) e due celle: **sLSTM** (memoria scalare, non parallelizzabile) e **mLSTM**
-  (memoria matriciale $C_t = f_t C_{t-1} + i_t v_t k_t^\top$, parallelizzabile,
+  (memoria matriciale
+  $C_t = f_t C_{t-1} + i_t \mathbf{v}_t \mathbf{k}_t^\top$,
+  parallelizzabile,
   di fatto una gated linear attention). **xLSTM-7B** {cite}`beck2025xlstm7b` la
   porta alla scala dei grandi modelli.
 - Il filo comune: RetNet, RWKV e xLSTM (con GLA e DeltaNet) sono la stessa
@@ -360,3 +421,5 @@ l'altra metà della famiglia: li riprenderemo alla fine del prossimo capitolo.
   State Space Model del prossimo capitolo arriveranno allo stesso punto da
   un'altra strada, e Mamba-2 dimostrerà che sono la stessa cosa.
 ```
+
+`````

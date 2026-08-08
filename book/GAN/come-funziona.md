@@ -1,14 +1,12 @@
 # Come funziona l'addestramento avversario
 
-Nel 2014, in un pub di Montréal, Ian Goodfellow discute con alcuni colleghi un problema che sembra senza uscita: come far *generare* a una rete neurale immagini nuove e credibili. Le idee sul tavolo gli paiono troppo macchinose. Quella sera torna a casa e prova un'intuizione opposta: e se, invece di dire a una rete quanto è "giusto" ogni pixel, la mettessimo semplicemente in competizione con un'altra rete che ha il compito di smascherarla? Il codice funziona quasi al primo tentativo. Nasce così l'idea delle **Generative Adversarial Networks** (GAN), descritta nel paper *Generative Adversarial Nets* {cite}`goodfellow2014generative`.
+Dell'idea nata quella sera a Montréal si è già detto in apertura di capitolo; qui la smontiamo pezzo per pezzo.
 
-Il cuore dell'idea è un duello. Due reti neurali giocano una contro l'altra, e migliorano proprio perché si ostacolano a vicenda.
+Il modo consueto di insegnare a una rete a produrre un'immagine è dirle, punto per punto, quanto la sua uscita si discosta da un'immagine vera che le mettiamo accanto: questo puntino doveva essere più scuro, quest'altro più chiaro. Il metodo funziona finché l'originale ce l'abbiamo sotto mano; ma per *inventare* un'immagine nuova l'originale non esiste, e non c'è niente con cui fare il confronto. Le **Generative Adversarial Networks** (GAN), descritte nel paper *Generative Adversarial Nets* {cite}`goodfellow2014generative`, cambiano giudice: al posto del confronto punto per punto mettono una seconda rete, il cui unico mestiere è smascherare la prima.
 
-## Il falsario e il detective
+## Il falsario e l'esperto, tradotti in reti
 
-Goodfellow usa un'immagine che vale la pena tenere a mente per tutto il capitolo. Immagina un **falsario** che stampa banconote contraffatte e un **detective** che deve distinguere le false dalle vere. All'inizio il falsario è maldestro e il detective lo smaschera subito. Ma ogni volta che viene scoperto, il falsario impara qualcosa e produce banconote un po' migliori; e ogni volta il detective affina il suo occhio. Se il gioco procede a lungo e ad armi pari, alla fine le banconote false diventano indistinguibili dalle vere.
-
-Nelle GAN il falsario è il **generatore** $G$, il detective è il **discriminatore** $D$.
+La metafora dell'apertura si traduce così in due reti con un nome: il falsario che dipinge quadri contraffatti è il **generatore** $G$, l'esperto d'arte che deve smascherarlo è il **discriminatore** $D$. Da qui in avanti li chiamiamo con questi nomi, e ci occupiamo di come sono fatti dentro e di come si allenano a vicenda.
 
 ## Il generatore: dal rumore al dato
 
@@ -39,7 +37,7 @@ Il discriminatore fa il mestiere opposto, e più familiare: è un classificatore
 
 `````{tab} Elementare
 
-$D$ è il detective. Riceve un dato, a volte vero (pescato dal dataset), a
+$D$ è l'esperto d'arte. Riceve un dato, a volte vero (pescato dal dataset), a
 volte falso (sfornato da $G$), e deve rispondere a una sola domanda: *è
 autentico?* La sua risposta è un numero tra $0$ e $1$, una specie di livello
 di fiducia: vicino a $1$ significa "sono quasi certo che sia reale", vicino a
@@ -50,10 +48,10 @@ ingannare.
 
 `````{tab} Superiore
 
-Il discriminatore è una funzione $D(x;\theta_D)\in[0,1]$ che stima la probabilità che $x$ provenga dai dati reali anziché da $G$:
+Il discriminatore è una funzione $D(x;\theta_D)\in[0,1]$ che stima la probabilità che $x$ provenga dai dati reali anziché da $G$. La formalizzazione passa da una mistura: il campione arriva metà delle volte dal dataset e metà dal generatore, e $D$ stima la probabilità *a posteriori* che la sorgente sia quella reale, visto il campione:
 
 $$
-D(x) \approx \Pr[\,x \sim p_{\text{dati}}\,] .
+D(x) \approx P(\text{reale} \mid x) .
 $$
 
 È un classificatore addestrato con la consueta *cross-entropy* binaria: vuole assegnare $D(x)\to 1$ agli esempi reali e $D(G(z))\to 0$ a quelli sintetici. L'uscita in $[0,1]$ si ottiene applicando una sigmoide al punteggio grezzo (il *logit*) dell'ultimo strato; nell'implementazione, come d'abitudine in PyTorch, la sigmoide sarà assorbita dentro la loss (`nn.BCEWithLogitsLoss`) per stabilità numerica.
@@ -90,12 +88,12 @@ Le due reti non ottimizzano due funzioni scollegate: condividono un'**unica** fu
 
 `````{tab} Elementare
 
-Immagina un punteggio unico del gioco. Il detective guadagna punti ogni volta
+Immagina un punteggio unico del gioco. L'esperto guadagna punti ogni volta
 che indovina; il falsario "vince" ogni volta che gli fa perdere punti. Quello
 che è un bene per uno è un male per l'altro: è un gioco a somma (quasi) nulla.
 Non esiste un traguardo fisso da raggiungere: esiste un *equilibrio*, il punto
 in cui nessuno dei due riesce più a migliorare a spese dell'altro. Lì il
-falsario è così bravo che il detective, per quanto si sforzi, può solo tirare
+falsario è così bravo che l'esperto, per quanto si sforzi, può solo tirare
 a indovinare.
 
 `````
@@ -110,7 +108,13 @@ $$
 + \mathbb{E}_{z\sim p_z}\big[\log\big(1 - D(G(z))\big)\big] .
 $$
 
-Qui $p_{\text{dati}}$ è la distribuzione dei dati reali, $p_z$ il prior del rumore, $D(x)$ la probabilità stimata di autenticità e $G(z)$ il campione generato. $D$ massimizza $V$ (vuole $D(x)$ grande sui reali e $1-D(G(z))$ grande sui falsi); $G$ minimizza il secondo termine (vuole $D(G(z))\to 1$). Goodfellow dimostra che, con capacità e dati sufficienti, l'ottimo globale si raggiunge quando $p_G = p_{\text{dati}}$, e in quel punto $D(x)=\tfrac{1}{2}$ ovunque: il detective non sa più distinguere.
+Qui $p_{\text{dati}}$ è la distribuzione dei dati reali, $p_z$ il prior del rumore, $D(x)$ la probabilità stimata di autenticità e $G(z)$ il campione generato. $D$ massimizza $V$ (vuole $D(x)$ grande sui reali e $1-D(G(z))$ grande sui falsi); $G$ minimizza il secondo termine (vuole $D(G(z))\to 1$). La dimostrazione di Goodfellow sta in due passaggi che vale la pena avere sott'occhio. Primo: per $G$ fissato, il discriminatore che massimizza $V$ è
+
+$$
+D^*(x) = \frac{p_{\text{dati}}(x)}{p_{\text{dati}}(x) + p_G(x)},
+$$
+
+cioè proprio l'ottimo bayesiano della mistura descritta sopra. Secondo: sostituendo $D^*$ in $V$ si ottiene $V(D^*,G) = -\log 4 + 2\,\mathrm{JSD}\big(p_{\text{dati}} \,\|\, p_G\big)$, dove $\mathrm{JSD}$ è la divergenza di Jensen-Shannon, non negativa e nulla se e solo se le due distribuzioni coincidono. Con capacità e dati sufficienti, l'ottimo globale si raggiunge dunque se e solo se $p_G = p_{\text{dati}}$, e in quel punto $D^*(x)=\tfrac{1}{2}$ sul supporto dei dati: l'esperto non sa più distinguere.
 
 `````
 
@@ -125,13 +129,15 @@ from torch import nn
 # G e D sono due nn.Module, ciascuno con il proprio ottimizzatore
 # (opt_G e opt_D): aggiornare l'uno non tocca i pesi dell'altro
 criterio = nn.BCEWithLogitsLoss()        # sigmoide inclusa nella loss
-uni  = torch.ones(batch_size, 1)         # etichette "reale"
-zeri = torch.zeros(batch_size, 1)        # etichette "falso"
 
 for epoca in range(n_epoche):
     for batch_reale in loader:
+        n = batch_reale.size(0)          # quanti esempi ci sono in questo gruppo
+        uni  = torch.ones(n, 1)          # etichette "reale"
+        zeri = torch.zeros(n, 1)         # etichette "falso"
+
         # 1) Passo del discriminatore: distinguere reale da falso
-        z = torch.randn(batch_size, dim_rumore)  # rumore
+        z = torch.randn(n, dim_rumore)   # rumore
         falsi = G(z).detach()            # campioni sintetici, staccati da G
         loss_D = (criterio(D(batch_reale), uni)   # spinge D(x) -> 1
                   + criterio(D(falsi), zeri))     # spinge D(G(z)) -> 0
@@ -140,7 +146,7 @@ for epoca in range(n_epoche):
         opt_D.step()
 
         # 2) Passo del generatore: ingannare D (si aggiorna solo G)
-        z = torch.randn(batch_size, dim_rumore)
+        z = torch.randn(n, dim_rumore)
         loss_G = criterio(D(G(z)), uni)  # vuole D(G(z)) -> 1
         opt_G.zero_grad()
         loss_G.backward()
@@ -151,17 +157,24 @@ Due dettagli del codice contengono tutta la logica del gioco: il modo in cui i d
 
 `````{tab} Elementare
 
-Primo dettaglio: quando si allena il detective sui falsi, quei falsi vengono
+Prima dei due dettagli, una parola sulla riga con la `n`. I dati non si danno
+in pasto alla rete uno per volta ma a gruppetti, e l'ultimo gruppo di ogni giro
+può risultare più corto degli altri (se gli esempi sono $1000$ e i gruppi da
+$64$, l'ultimo ne contiene $40$). La `n` conta quanti esempi ci sono davvero nel
+gruppo di turno, e serve a preparare esattamente altrettante etichette "vero" e
+"falso": una in meno o una in più e il conto dell'errore non torna.
+
+Primo dettaglio: quando si allena l'esperto sui falsi, quei falsi vengono
 "staccati" dal falsario (è la parola `.detach()` nel codice): il giudizio
 serve a correggere solo chi giudica, non chi ha dipinto. E quando è il turno
 del falsario, l'aggiornamento tocca solo i pesi suoi: ognuno impara nel
 proprio turno, come da regolamento; è il "congelamento" descritto sopra, che
 in PyTorch si scrive in una parola.
 
-Secondo dettaglio: nel suo turno, il falsario chiede al detective di trattare
+Secondo dettaglio: nel suo turno, il falsario chiede all'esperto di trattare
 i propri falsi come "reali" e impara da quanto il verdetto se ne discosta. È
 una versione più *generosa* del gioco: dà al falsario lezioni chiare proprio
-all'inizio, quando i suoi quadri sono pessimi e il detective li respinge con
+all'inizio, quando i suoi quadri sono pessimi e l'esperto li respinge con
 totale sicurezza. Senza questo trucco (già suggerito nel paper del 2014), il
 principiante non riceverebbe quasi nessun insegnamento e resterebbe maldestro
 per sempre.
@@ -191,14 +204,14 @@ L'eleganza teorica delle GAN convive con una fama meritata di addestramento capr
 `````{tab} Elementare
 
 - **Instabilità.** I due giocatori si rincorrono senza mai fermarsi: migliora uno, l'altro peggiora, e il punteggio oscilla invece di stabilizzarsi. È come due lottatori troppo forti che si sbilanciano a vicenda.
-- **Mode collapse.** Il falsario scopre *un solo* falso che inganna sempre il detective e si limita a rifarlo. Risultato: $G$ genera sempre la stessa immagine (o pochissime varianti), buttando via tutta la varietà dei dati reali.
+- **Mode collapse.** Il falsario scopre *un solo* falso che inganna sempre l'esperto e si limita a rifarlo. Risultato: $G$ genera sempre la stessa immagine (o pochissime varianti), buttando via tutta la varietà dei dati reali.
 - **Mancata convergenza.** A volte il gioco non trova mai un equilibrio: le immagini oscillano, degenerano, o non migliorano più.
 
 `````
 
 `````{tab} Superiore
 
-- **Instabilità.** L'ottimizzazione simultanea di un gioco minimax non equivale a minimizzare una singola funzione: la dinamica può divergere o entrare in cicli limite. Se $D$ diventa troppo accurato, $D(G(z))\to 0$ e i gradienti verso $G$ si annullano (*vanishing gradients*); se è troppo debole, non fornisce segnale utile.
+- **Instabilità.** L'ottimizzazione simultanea di un gioco minimax non equivale a minimizzare una singola funzione: la dinamica può divergere o entrare in cicli limite. Se $D$ diventa troppo accurato si ha $D(G(z))\to 0$, e con l'obiettivo minimax originale questo annulla i gradienti verso $G$ (*vanishing gradients*); la non-saturating loss vista sopra scongiura l'annullamento, ma con un discriminatore quasi ottimo lo paga in aggiornamenti instabili e ad alta varianza {cite}`arjovsky2017towards`. Se invece $D$ è troppo debole, non fornisce segnale utile.
 - **Mode collapse.** $G$ mappa molti $z$ diversi su una stessa uscita $\tilde{x}$: $p_G$ collassa su pochi modi di $p_{\text{dati}}$. Formalmente minimizza il proprio obiettivo locale ignorando la copertura dell'intera distribuzione.
 - **Mancata convergenza.** L'equilibrio di Nash del gioco non è garantito raggiungibile con la sola discesa del gradiente; i parametri possono orbitare indefinitamente attorno all'ottimo senza stabilizzarsi.
 
@@ -308,13 +321,73 @@ aver superato le GAN.
 
 ## Accorgimenti pratici (cenni)
 
-La ricerca successiva ha prodotto una cassetta degli attrezzi per domare l'addestramento. Solo alcuni titoli, che approfondiremo: adottare architetture convoluzionali disciplinate come nelle **DCGAN** {cite}`radford2016unsupervised`; cambiare la funzione di costo con la **Wasserstein GAN** {cite}`arjovsky2017wasserstein`, che sostituisce la probabilità con una distanza dal comportamento più regolare, spesso accoppiata al *gradient penalty*; usare *label smoothing*, *minibatch discrimination* e aggiornamenti bilanciati per tenere in equilibrio i due giocatori. Nessuno di questi trucchi è una bacchetta magica: l'addestramento avversario resta un'arte oltre che una scienza, ma è proprio da questa tensione che nascono i risultati più sorprendenti del deep learning generativo.
+La ricerca successiva ha prodotto una cassetta degli attrezzi per domare
+l'addestramento. Qui ne diamo solo i titoli, e sono cenni (della sola DCGAN
+riparleremo nella prossima sezione); il filo che li unisce è che si può
+intervenire su tre cose diverse.
+
+Si può cambiare **com'è fatta** ciascuna delle due reti, adottando
+l'architettura convoluzionale disciplinata delle **DCGAN**
+{cite}`radford2016unsupervised`.
+
+Si può cambiare **come si misura** la distanza fra i falsi e i veri: è la
+strada della **Wasserstein GAN** {cite}`arjovsky2017wasserstein`, che al posto
+della probabilità "è autentico o no" usa una misura di distanza dal
+comportamento più regolare, cioè che cala e cresce con dolcezza invece di
+saltare da un estremo all'altro (spesso accompagnata da un termine, il
+*gradient penalty*, che impedisce all'esperto di reagire in modo troppo brusco
+a piccole differenze).
+
+E si può cambiare **il regolamento del duello**: chiedere all'esperto di non
+essere mai sicuro al cento per cento, ma di fermarsi a "reale al novanta"
+(*label smoothing*), perché un giudice mai del tutto certo dà lezioni più
+utili; fargli guardare i falsi a gruppi invece che uno per volta
+(*minibatch discrimination*), così che un falsario che ripete sempre lo stesso
+quadro venga smascherato proprio per la ripetizione; dosare i turni delle due
+reti perché nessuna delle due prenda troppo vantaggio sull'altra.
+
+Nessuno di questi trucchi è una bacchetta magica: l'addestramento avversario
+resta un'arte oltre che una scienza, ma è proprio da questa tensione che
+nascono i risultati più sorprendenti del deep learning generativo.
+
+`````{tab} Elementare
+
+```{admonition} Da ricordare
+:class: important
+- Una GAN è un **duello** fra due reti: il falsario parte da una manciata di
+  numeri casuali e ne ricava un dato che sembri autentico, l'esperto guarda un
+  dato e dice quanto lo crede vero.
+- Giocano un **punteggio unico**: quello che è un bene per uno è un male per
+  l'altro. L'equilibrio arriva quando i falsi non si distinguono più dai veri,
+  e lì l'esperto può soltanto tirare a indovinare.
+- Si allenano **a turni**, un passo ciascuno, ed è un addestramento
+  capriccioso: attenzione al *mode collapse* (il falsario trova un solo quadro
+  che inganna sempre e si limita a rifarlo) e alla mancata convergenza. Che il
+  principiante resti senza lezioni quando l'esperto è troppo bravo si evita
+  chiedendogli, nel suo turno, di far passare i propri falsi per veri; il
+  prezzo sono correzioni più sbalzate.
+- **Il conto dell'errore non misura la qualità**: dice solo chi dei due sta
+  vincendo. Si giudica confrontando *insiemi* di immagini, mai una alla volta:
+  con l'**Inception Score** (nitidezza e varietà secondo un giudice esterno,
+  che però le immagini vere non le guarda mai) e soprattutto con il **FID**,
+  la distanza fra la nuvola delle immagini vere e quella delle generate: più è
+  basso, meglio è, ed è la parte che confronta la forma delle due nuvole a
+  smascherare il mode collapse.
+```
+
+`````
+
+`````{tab} Superiore
 
 ```{admonition} Da ricordare
 :class: important
 - Una GAN è un **duello** tra due reti: il generatore $G$ trasforma rumore in dati sintetici, il discriminatore $D$ stima la probabilità che un dato sia reale.
-- Condividono un'unica **funzione di valore minimax**: $G$ la minimizza, $D$ la massimizza; l'equilibrio si ha quando $p_G = p_{\text{dati}}$ e $D(x)=\tfrac12$.
-- L'addestramento è **alternato** e notoriamente instabile: attenzione a *mode collapse*, gradienti che svaniscono e mancata convergenza.
+- Condividono un'unica **funzione di valore minimax**: $G$ la minimizza, $D$ la massimizza; l'equilibrio si ha quando $p_G = p_{\text{dati}}$, e lì il discriminatore ottimo vale $D^*(x)=\tfrac12$ sul supporto dei dati.
+- L'addestramento è **alternato** e notoriamente instabile: attenzione al
+  *mode collapse* e alla mancata convergenza. I gradienti che svaniscono, invece,
+  riguardano l'obiettivo minimax originale: la *non-saturating loss* usata nel
+  codice li evita, al prezzo di aggiornamenti ad alta varianza quando $D$ è
+  quasi ottimo.
 - **La loss non misura la qualità**: dice solo chi sta vincendo. Si valuta
   confrontando *distribuzioni*, con l'**Inception Score** (nitidezza e varietà
   secondo un classificatore, ma senza mai guardare i dati veri) e soprattutto
@@ -322,3 +395,5 @@ La ricerca successiva ha prodotto una cassetta degli attrezzi per domare l'addes
   delle generate: più basso è meglio, e la parte sulle covarianze è quella che
   smaschera il mode collapse.
 ```
+
+`````

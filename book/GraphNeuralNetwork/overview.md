@@ -4,9 +4,8 @@ Nell'estate del 1736 la città prussiana di Königsberg (oggi Kaliningrad, in
 Russia) aveva un passatempo cittadino. Il fiume Pregel la divideva in quattro
 lembi di terra, due sponde e due isole, cuciti insieme da sette ponti; e la
 domanda che circolava era se esistesse una passeggiata che attraversasse ogni
-ponte **una e una sola volta**, tornando al punto di partenza. Nessuno ci
-riusciva, ma nessuno sapeva dire se fosse davvero impossibile o solo
-difficile.
+ponte **una e una sola volta**. Nessuno ci riusciva, ma nessuno sapeva dire se
+fosse davvero impossibile o solo difficile.
 
 A rispondere fu il matematico svizzero Leonhard Euler. La sua mossa geniale
 non fu camminare di più, ma buttare via la mappa. Le distanze, la forma delle
@@ -88,7 +87,7 @@ né una griglia né una sequenza, e serve un'idea nuova.
 
 Formalmente un grafo è una coppia $G = (V, E)$, dove $V$ è l'insieme dei nodi
 e $E \subseteq V \times V$ quello degli archi. Lo si rappresenta spesso con la
-**matrice di adiacenza** $A \in \{0,1\}^{n \times n}$ (con $n = |V|$), in cui
+**matrice di adiacenza** $A \in \{0,1\}^{N \times N}$ (con $N = |V|$), in cui
 $A_{ij} = 1$ se esiste l'arco $(i,j)$. Ma questa rappresentazione nasconde
 un'insidia: $A$ dipende dall'**ordine** con cui numeriamo i nodi. Rietichettare
 i nodi con una permutazione $P$ trasforma $A$ in $P A P^\top$ senza cambiare il
@@ -101,7 +100,7 @@ hanno per la traslazione e che le GNN devono avere per la permutazione.
 A ciò si aggiungono due irregolarità che rompono le architetture a griglia: il
 **grado** dei nodi è variabile ($\deg(v)$ diverso da nodo a nodo), quindi non
 esiste un «vicinato di dimensione fissa» su cui far scorrere un filtro; e la
-dimensione $n$ del grafo cambia da esempio a esempio, quindi il modello deve
+dimensione $N$ del grafo cambia da esempio a esempio, quindi il modello deve
 funzionare su grafi di taglia qualunque con gli **stessi** parametri
 $\theta$.
 
@@ -113,12 +112,13 @@ La soluzione è tanto semplice da enunciare quanto potente nelle conseguenze:
 
 > imparare una **rappresentazione** (un vettore di numeri) per ogni nodo, per
 > ogni arco o per l'intero grafo, facendo **propagare l'informazione lungo gli
-> archi**: in modo differenziabile, così che l'intera cosa si addestri >
-end-to-end con la discesa del gradiente.
+> archi**: in modo differenziabile, così che l'intera cosa si addestri
+> end-to-end con la discesa del gradiente.
 
 L'idea di far girare una rete neurale direttamente su un grafo non è nuova:
-risale al modello di Franco Scarselli e colleghi, ricercatori italiani, del
-2009 {cite}`scarselli2009graph`. È diventata però centrale nell'ultimo decennio,
+risale al modello del gruppo di Siena di Franco Scarselli e Marco Gori,
+proposto a metà anni Duemila e pubblicato in forma estesa nel 2009
+{cite}`scarselli2009graph`. È diventata però centrale nell'ultimo decennio,
 quando si è capito come renderla efficiente e scalabile
 {cite}`hamilton2020graph`.
 

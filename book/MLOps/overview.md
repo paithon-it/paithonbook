@@ -1,7 +1,7 @@
 # MLOps: mettere i modelli in produzione
 
 C'è una figura, in un articolo del 2015, che vale da sola un capitolo intero.
-La disegnano alcuni ingegneri di Google (David Sculley e colleghi) per una
+La disegnano alcuni ingegneri di Google (D. Sculley e colleghi) per una
 conferenza di apprendimento automatico {cite}`sculley2015hidden`. Al centro
 del foglio c'è un rettangolino nero, minuscolo, con dentro due parole: *codice
 ML*. È l'unico pezzo di cui parlano di solito i libri, i corsi, i paper: il

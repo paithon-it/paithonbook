@@ -220,14 +220,43 @@ mfcc = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=13)
 print(S_db.shape, mfcc.shape)  # (bande, tempo) e (coefficienti, tempo)
 ```
 
+`````{tab} Elementare
+
 ```{admonition} Da ricordare
 :class: important
-- Un suono digitale è una sequenza di numeri (**ampiezza nel tempo**), ottenuta
-  campionando la membrana del microfono.
-- Il **teorema di Nyquist** impone $f_s > 2 f_{\max}$: sotto quella soglia
-  compare l'aliasing.
-- La **trasformata di Fourier** passa dal tempo alle frequenze; applicata a
-  finestre brevi (STFT) produce lo **spettrogramma**, l'immagine del suono.
-- **Scala mel** e **MFCC** comprimono lo spettro imitando l'orecchio: feature
-  più piccole e robuste che rendono più facile il compito del modello.
+- Per un computer un suono è una lunghissima lista di numeri: la posizione
+  della membrana del microfono, annotata migliaia di volte al secondo come fa
+  un sismografo.
+- Bisogna misurare almeno il **doppio** di volte rispetto alla vibrazione più
+  rapida che vogliamo catturare: sotto quella soglia il suono si deforma, come
+  la ruota che nei film sembra girare al contrario.
+- La **trasformata di Fourier** è il prisma che scompone l'onda nelle sue
+  frequenze pure; applicata a tante finestrelle brevi una dopo l'altra dà lo
+  **spettrogramma**, l'immagine del suono (tempo in orizzontale, frequenze in
+  verticale).
+- La **scala mel** e gli **MFCC** rileggono quell'immagine come la sente un
+  orecchio (preciso sui suoni gravi, approssimativo sugli acuti) e la
+  riassumono in pochi numeri per finestrella: meno dati, ma quelli che contano
+  davvero, e il modello ha un compito più facile.
 ```
+
+`````
+
+`````{tab} Superiore
+
+```{admonition} Da ricordare
+:class: important
+- Un suono digitale è una sequenza di numeri (**ampiezza nel tempo**),
+  $x[n] = x(nT_s)$: campionamento del tempo e quantizzazione dell'ampiezza (PCM
+  a 16 bit).
+- Il **teorema di Nyquist** impone $f_s > 2 f_{\max}$: sotto quella soglia
+  compare l'aliasing, e serve un filtro passa-basso *prima* di campionare.
+- La **trasformata di Fourier** passa dal tempo alle frequenze (DFT, calcolata
+  con la FFT in $O(N\log N)$); applicata a finestre brevi (STFT) produce lo
+  **spettrogramma**, l'immagine del suono.
+- **Scala mel** e **MFCC** (banco di filtri, logaritmo delle energie di banda,
+  DCT, primi $\sim 13$ coefficienti) comprimono lo spettro imitando l'orecchio:
+  feature più piccole e robuste che rendono più facile il compito del modello.
+```
+
+`````

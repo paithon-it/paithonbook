@@ -71,13 +71,35 @@ via dei token, qui sotto, aggira.
 
 `````
 
-La compansione $\mu$-law merita un esperimento, perché spiega da sola perché
-otto bit bastino. L'orecchio è sensibile alle variazioni *relative* del suono:
-un fruscio debole va reso con la stessa cura di un colpo forte. La
-quantizzazione lineare, con i suoi gradini tutti uguali, spreca precisione sui
-suoni forti e ne lascia troppo poca ai deboli. La $\mu$-law comprime il segnale
-con un logaritmo *prima* di quantizzare, dedicando più livelli alle ampiezze
-piccole; in decodifica si applica la trasformazione inversa. La formula è
+La compansione $\mu$-law merita una sosta, perché è il trucco che permette a
+WaveNet di descrivere ogni puntino dell'onda scegliendolo fra appena $256$
+valori possibili. Il punto di partenza è una proprietà dell'orecchio: siamo
+sensibili alle variazioni *relative* del suono, e un fruscio debole va
+conservato con la stessa cura di un colpo forte.
+
+`````{tab} Elementare
+
+Immagina di misurare le altezze dell'onda con un righello a tacche. Se le
+tacche sono tutte alla stessa distanza, i suoni forti ne hanno d'avanzo e i
+sussurri finiscono schiacciati fra una tacca e l'altra: arrotondati male,
+escono dal disegno coperti da un fruscio. Il trucco della $\mu$-law è spostare
+le tacche: fitte dove il suono è debole, più rade dove è forte, così ogni
+suono viene arrotondato con la cura che merita. In una prova su una nota che
+sfuma nel silenzio, il righello con le tacche spostate restituisce l'onda
+quasi intatta proprio nelle code più delicate, dove quello a tacche uguali la
+affoga nel fruscio. E per WaveNet c'è un guadagno in più: indovinare ogni
+puntino scegliendolo fra $256$ possibilità è un test a crocette gestibile; fra
+le sessantacinquemila di una registrazione a piena risoluzione non lo sarebbe.
+
+`````
+
+`````{tab} Superiore
+
+La quantizzazione lineare, con i suoi gradini tutti uguali, spreca precisione
+sui suoni forti e ne lascia troppo poca ai deboli. La $\mu$-law comprime il
+segnale con un logaritmo *prima* di quantizzare, dedicando più livelli alle
+ampiezze piccole; in decodifica si applica la trasformazione inversa. La
+formula è
 
 $$
 F(a) = \operatorname{sign}(a)\,
@@ -137,8 +159,20 @@ confronto per finestre (l'**SNR segmentale**, che misura il rapporto
 segnale/rumore mediando su spezzoni di $20$ ms e quindi pesa allo stesso modo
 i tratti forti e quelli deboli) premia nettamente la $\mu$-law: dieci decibel
 di vantaggio, tutti guadagnati sulle code sommesse dove la quantizzazione
-lineare annega il suono nel rumore di gradino. È il motivo per cui WaveNet
-lavora su otto bit e non su sedici: percettivamente non serve di più.
+lineare annega il suono nel rumore di gradino. La ragione per cui WaveNet si
+ferma a $8$ bit, dichiarata nel paper, è però computazionale prima che
+percettiva: una softmax su $256$ classi è trattabile, una sui $65\,536$
+livelli dei $16$ bit no; la compansione serve a rendere quel risparmio quasi
+indolore sul parlato. Non è un pranzo gratis: i successori ad alta fedeltà
+torneranno ai $16$ bit, ma per strade diverse. Parallel WaveNet abbandona la
+softmax e modella il campione con una **miscela di logistiche**, una densità
+continua che non ha bisogno di una classe per livello; WaveRNN resta invece
+sulla softmax e la **sdoppia**, una sugli $8$ bit più significativi (la parte
+*grossolana*) e una sugli $8$ meno significativi (la parte *fine*),
+condizionata sulla prima: due distribuzioni da $256$ classi al posto di una da
+$65\,536$.
+
+`````
 
 ## La svolta: generare token, non campioni
 
@@ -156,11 +190,16 @@ Con l'audio ridotto a token, la generazione cambia natura. Non serve più una
 rete su misura per le onde: basta un **Transformer** che li produca in
 sequenza (esattamente il ciclo di generazione autoregressiva visto per gli
 LLM, dove il token prodotto rientra come input e si ricomincia) e poi il
-*decoder* del codec li ritrasforma in suono. Il primo sistema a mostrare la
-potenza di questa idea è **AudioLM** {cite}`borsos2023audiolm`, di Google, nel
-2022: il titolo stesso, *a Language Modeling Approach to Audio Generation*,
-dichiara il programma. Il suo contributo chiave è capire che *un solo* tipo di
-token non basta.
+*decoder* del codec li ritrasforma in suono. La via dei token ha un
+precursore: già nel 2020 **Jukebox** {cite}`dhariwal2020jukebox`, di OpenAI,
+riduceva la musica a token e li faceva scrivere in sequenza a un Transformer,
+arrivando a minuti di canzone con tanto di voce, anche se su quella durata la
+struttura del brano si sfilacciava. Ma il sistema che porta la ricetta a
+maturazione è **AudioLM** {cite}`borsos2023audiolm`, di Google, nel 2022: il
+titolo stesso, *a Language Modeling Approach to Audio Generation*, dichiara il
+programma. Il suo contributo chiave non è l'idea in sé, ma capire che *un
+solo* tipo di token non basta: ne servono due, uno che tenga la struttura del
+pezzo e uno che ne porti il suono.
 
 `````{tab} Elementare
 
@@ -185,7 +224,9 @@ risultato ha insieme le due qualità che, prese da sole, si escludevano:
 
 `````{tab} Superiore
 
-AudioLM impiega due famiglie di token con ruoli complementari. I **token
+La novità di AudioLM sta proprio qui: è il primo sistema a combinare i **token
+semantici** di un modello auto-supervisionato con i **token acustici** di un
+codec neurale, due famiglie con ruoli complementari. I **token
 semantici** provengono da un modello auto-supervisionato della famiglia vista
 nella sezione precedente, nel paper, w2v-BERT, parente stretto di wav2vec 2.0
 e HuBERT: catturano il contenuto fonetico e la struttura a lungo termine, ma
@@ -205,7 +246,12 @@ $$
 dove $s = (s_1, s_2, \dots)$ sono i token semantici e $y = (y_1, y_2, \dots)$
 gli acustici: un primo Transformer genera l'intera sequenza semantica
 $s$ (la struttura), un secondo genera quella acustica $y$ *condizionata* su
-$s$ (il suono). Perché separare? Perché i due obiettivi tirano in direzioni
+$s$ (il suono). Nel paper la fase acustica è a sua volta spezzata in due lungo
+i livelli della RVQ, uno stadio *grossolano* sui primi codebook e uno *fine*
+sui restanti: tre Transformer in cascata in tutto. E va notato che l'indice
+$t$ scorre su due griglie diverse: token semantici e acustici hanno frequenze
+di frame differenti, quindi le sequenze $s$ e $y$ non sono allineate una a
+una. Perché separare? Perché i due obiettivi tirano in direzioni
 opposte. Predire direttamente i token acustici darebbe fedeltà ma, senza una
 guida a lungo termine, la generazione perde il filo dopo pochi secondi;
 predire solo i semantici darebbe coerenza ma un suono povero. La cascata mette
@@ -253,22 +299,23 @@ parallelo senza fingere che siano indipendenti.
 `````{tab} Superiore
 
 EnCodec usa la **quantizzazione vettoriale residua** (RVQ): ogni frame è
-codificato da $K$ codebook in cascata, dove il codebook $k$ quantizza il
-*residuo* lasciato dai precedenti. Il risultato è che ogni passo temporale $t$
-non ha un token ma $K$ token paralleli $(c_t^1, \dots, c_t^K)$: nel setup base
-di MusicGen, $K = 4$. Un modello autoregressivo deve decidere in quale ordine
+codificato da $N$ codebook in cascata (la $N$ della sezione sui codec), dove
+ciascun codebook quantizza il *residuo* lasciato dai precedenti. Il risultato
+è che ogni passo temporale $t$
+non ha un token ma $N$ token paralleli $(c_t^1, \dots, c_t^N)$: nel setup base
+di MusicGen, $N = 4$. Un modello autoregressivo deve decidere in quale ordine
 attraversare questa griglia tempo × codebook. Le due opzioni ingenue sono
 entrambe cattive: la **linearizzazione** completa
 ($c_1^1, c_1^2, c_1^3, c_1^4, c_2^1, \dots$) moltiplica la lunghezza della
-sequenza per $K$, con costo quadratico che esplode; la predizione **totalmente
-parallela** (tutti i $K$ token di un frame in un colpo) è veloce ma assume
+sequenza per $N$, con costo quadratico che esplode; la predizione **totalmente
+parallela** (tutti gli $N$ token di un frame in un colpo) è veloce ma assume
 l'indipendenza tra codebook, che è falsa; il residuo dipende per costruzione
 da ciò che lo precede. MusicGen adotta invece un **pattern di interleaving**
 dei codebook, in particolare uno schema a **ritardo** (*delay*) che sfasa i
 flussi di un passo: al tempo $t$ il modello predice
 $c_t^1, c_{t-1}^2, c_{t-2}^3, c_{t-3}^4$. Così ogni token può condizionarsi
 sui codebook di livello inferiore già emessi, e la sequenza cresce solo di
-poche posizioni invece che di un fattore $K$. Il testo entra come
+poche posizioni invece che di un fattore $N$. Il testo entra come
 condizionamento: una descrizione codificata da un encoder testuale (un T5)
 guida il Transformer via cross-attention, esattamente come un prompt guida un
 generatore di immagini a diffusione. Un unico modello, un unico passaggio di
@@ -325,9 +372,10 @@ più che altrove, le regole del gioco sono ancora tutte da scrivere.
   **acustici** (dettaglio del suono, dal codec), per avere insieme **coerenza** e
   **fedeltà**.
 - **MusicGen** {cite}`copet2023simple` genera i token di EnCodec con un **solo**
-  Transformer condizionato dal **testo**, gestendo i $K$ flussi paralleli della
-  **RVQ** con un pattern di interleaving a ritardo invece di linearizzarli o
-  fingerli indipendenti.
+  Transformer condizionato dal **testo**. A ogni istante il codec produce
+  quattro token sovrapposti: MusicGen li **sfasa di un passo** l'uno dall'altro,
+  come le voci di un canone che entrano una dopo l'altra, invece di metterli
+  tutti in fila (lento) o di produrli insieme fingendoli indipendenti (falso).
 - Anche la **diffusione** genera audio (su spettrogramma o su latenti). I limiti
   aperti: **coerenza a lungo termine** fragile, **artefatti**, e soprattutto le
   questioni di **copyright e consenso** sulla musica di addestramento e sullo

@@ -52,7 +52,7 @@ si bara sulle proporzioni, e si bara in modo controllato.
 **mBERT** ha esattamente l'architettura di BERT {cite}`devlin2019bert` e
 l'esercizio di BERT (*masked language modeling*: mascherare circa il 15% dei
 token e predirli). Cambiano solo i dati, le Wikipedia di 104 lingue, e il
-vocabolario, un unico WordPiece da circa 110 000 pezzi condiviso fra tutte.
+vocabolario, un unico WordPiece da circa 120 000 pezzi condiviso fra tutte.
 Nessun identificativo di lingua in ingresso, nessun corpus parallelo, nessun
 termine di perdita che chieda di allineare qualcosa. Lo chiameremo
 $\text{mMLM}$, per distinguerlo dal MLM monolingue: è la stessa funzione,
@@ -314,6 +314,40 @@ fa il resto. La copertura linguistica dei modelli è, in buona misura, la
 mappa di quali lingue hanno un'abbondante presenza scritta online, che non è la
 mappa di quali lingue si parlano.
 
+`````{tab} Elementare
+```{admonition} Da ricordare
+:class: important
+- Un modello **multilingue** non ha niente di speciale nell'architettura:
+  stesso esercizio a buchi, cento Wikipedia nel pentolone al posto di una, e
+  una sola **scatola di mattoncini** (i pezzi di parola) per tutte le lingue.
+  Siccome l'inglese sommergerebbe le altre, si bara sulle dosi in modo
+  controllato: alle lingue piccole si dà più turni di quanti ne avrebbero, e
+  le proporzioni si appiattiscono verso il pari.
+- L'**allineamento fra lingue emerge da solo**: nessuno mostra mai al modello
+  una frase accanto alla sua traduzione, eppure le due finiscono vicine.
+  Perché, non si sa fino in fondo: i pezzi di parola in comune aiutano ma non
+  sono indispensabili (toglierli di proposito costa poco), contano più i piani
+  della torre che i lettori in parallelo, e c'è chi sostiene che il modello
+  allinei per avarizia, perché tenere cento lingue separate costerebbe più
+  memoria di quanta ne abbia.
+- Lo si può anche chiedere apertamente, in due modi: coprire parole in una
+  frase **e** nella sua traduzione messe una dopo l'altra, così che per
+  indovinarle convenga sbirciare nell'altra lingua; oppure dare a due lettori
+  un mucchietto di frasi e il mucchietto mescolato delle loro traduzioni e
+  chiedere di appaiarle, esattamente come si fa con immagini e didascalie nel
+  capitolo su visione e linguaggio.
+- Il motivo pratico di tutto questo è **rifinire in inglese e usare in
+  italiano**, senza un solo esempio etichettato in italiano. Due avvertenze:
+  la rifinitura **consuma** l'allineamento (i pesi che si spostano per
+  imparare il compito sono gli stessi che tenevano vicine le lingue), e il
+  salto riesce meglio fra lingue costruite allo stesso modo.
+- La **maledizione della multilingualità**: lo spazio è una coperta corta.
+  Oltre un certo numero di lingue, ognuna in più peggiora un po' tutte le
+  altre, e l'unico rimedio pieno è un modello più grande.
+```
+`````
+
+`````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
 - Un modello **multilingue** si ottiene senza cambiare nulla
@@ -337,3 +371,4 @@ mappa di quali lingue si parlano.
   numero di lingue ognuna in più peggiora tutte le altre. È un vincolo di
   capacità, e l'unico rimedio pieno è un modello più grande.
 ```
+`````

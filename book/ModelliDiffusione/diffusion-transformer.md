@@ -60,7 +60,9 @@ L'ingresso è il latente rumoroso $z_t \in \mathbb{R}^{32 \times 32 \times 4}$
 (immagini $256 \times 256$ compresse dal VAE con fattore $f = 8$). Il
 *patchify* lo suddivide in patch quadrate di lato $p$ e proietta linearmente
 ciascuna in un embedding di dimensione $d$: si ottiene una sequenza di
-$T = (32/p)^2$ token, a cui si somma un positional encoding (sinusoidale
+$N = (32/p)^2$ token (usiamo $N$, perché in questo capitolo $T$ è già il
+numero di passi di diffusione), a cui si somma un positional encoding
+(sinusoidale
 bidimensionale, fisso) che ne registra la posizione nella griglia. Segue una
 pila di blocchi Transformer del tutto standard (multi-head self-attention più
 MLP, con residual e layer normalization, come nel capitolo sui Transformer) e
@@ -70,8 +72,8 @@ poi in un tensore della stessa forma dell'ingresso: la rete resta una
 $\epsilon_\theta(z_t, t)$, cambia solo ciò che ha dentro.
 
 Il lato $p$ della patch è la manopola del calcolo: con $p = 2$ i token sono
-256, con $p = 4$ sono 64, con $p = 8$ sono 16. Dimezzare $p$ quadruplica i
-token e, con essi, almeno quadruplica il costo di una passata a parità di
+$N = 256$, con $p = 4$ sono 64, con $p = 8$ sono 16. Dimezzare $p$ quadruplica
+i token e, con essi, almeno quadruplica il costo di una passata a parità di
 parametri, e l'attenzione, quadratica nel numero di token, cresce ancora più
 in fretta. Da qui la nomenclatura del paper: quattro taglie (DiT-S, B, L, XL)
 per tre patch (/8, /4, /2), dodici modelli che, vedremo tra poco, sono il vero
@@ -159,7 +161,8 @@ poter pianificare l'investimento.
 
 In cima alla curva, il modello più grande con le patch più piccole: DiT-XL/2,
 675 milioni di parametri, che su ImageNet $256 \times 256$ condizionato alla
-classe raggiunge un FID di 2,27 (meglio di tutti i modelli di diffusione
+classe raggiunge un FID di 2,27, misurato con classifier-free guidance come
+per i concorrenti del confronto (meglio di tutti i modelli di diffusione
 precedenti, compresi quelli con U-Net di Dhariwal e Nichol
 {cite}`dhariwal2021diffusion` e il latent diffusion di Rombach e colleghi
 {cite}`rombach2022high`). La U-Net, dunque, non era essenziale: il suo
@@ -349,7 +352,7 @@ class BloccoDiT(nn.Module):
         nn.init.zeros_(self.manopole.bias)
 
     def forward(self, x, c):
-        # x: (B, T, d) token del latente; c: (B, d) tempo + classe
+        # x: (B, N, d) token del latente; c: (B, d) tempo + classe
         b1, g1, a1, b2, g2, a2 = self.manopole(c).chunk(6, dim=1)  # 6 x (B, d)
         h = self.norm1(x) * (1 + g1.unsqueeze(1)) + b1.unsqueeze(1)
         att, _ = self.attn(h, h, h, need_weights=False)
@@ -441,8 +444,8 @@ attraversato senza fermarci.
   con inizializzazione a zero (ogni blocco parte come identità).
 - Risultato chiave: il **FID scende con i Gflops** in modo regolare, comunque
   li si spenda, le leggi di scala {cite}`kaplan2020scaling` arrivano alla
-  diffusione; DiT-XL/2 (675 milioni di parametri) tocca FID 2,27 su ImageNet
-  $256 \times 256$.
+  diffusione; DiT-XL/2 (675 milioni di parametri) tocca FID 2,27, con
+  classifier-free guidance, su ImageNet $256 \times 256$.
 - **Sora** {cite}`brooks2024video` dichiara un diffusion transformer su
   *spacetime patches* di video compressi, con qualità che cresce col
   calcolo: la ricetta DiT estesa al tempo. Se ciò faccia dei video

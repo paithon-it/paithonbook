@@ -7,7 +7,8 @@ anni dopo, siti come *thispersondoesnotexist.com* servono a ripetizione volti
 fotorealistici di persone che non esistono. In mezzo c'è la storia di questo
 capitolo: una sequenza di idee (quasi una all'anno) che ha trasformato
 un'intuizione fragile in una delle famiglie di modelli generativi più
-influenti del decennio. Ripercorriamola.
+influenti del decennio. Ripercorriamola, seguendo il filo delle idee più che
+il calendario.
 
 ## DCGAN: dare occhi alla rete
 
@@ -29,7 +30,7 @@ La DCGAN codifica una serie di scelte architetturali diventate standard: il gene
 
 ## Conditional GAN: prendere il controllo
 
-Una GAN base genera "qualcosa di plausibile", ma non possiamo chiederle *cosa*. La **conditional GAN** {cite}`mirza2014conditional` aggiunge il timone: si passa alla rete anche un'etichetta, e la generazione la rispetta.
+Una GAN base genera "qualcosa di plausibile", ma non possiamo chiederle *cosa*. La **conditional GAN** {cite}`mirza2014conditional`, proposta già a fine 2014, pochi mesi dopo il paper originale, aggiunge il timone: si passa alla rete anche un'etichetta, e la generazione la rispetta.
 
 `````{tab} Elementare
 Insieme al rumore casuale forniamo un'informazione in più, per esempio "voglio
@@ -44,16 +45,25 @@ ordinare su misura.
 Si condiziona il gioco minimax su una variabile ausiliaria $y$ (la classe, o un vettore qualsiasi):
 
 $$
-\min_{G}\max_{D}\;\mathbb{E}_{x}\big[\log D(x\mid y)\big]
-+\mathbb{E}_{z}\big[\log\big(1-D(G(z\mid y))\big)\big].
+\min_{G}\max_{D}\;\mathbb{E}_{(x,y)\sim p_{\text{dati}}(x,y)}\big[\log D(x,y)\big]
++\mathbb{E}_{y\sim p_y,\;z\sim p_z}\big[\log\big(1-D(G(z,y),\,y)\big)\big].
 $$
 
-Qui $z$ è il rumore latente, $y$ la condizione fornita a entrambe le reti,
-$G(z\mid y)$ il campione generato coerente con $y$. Il condizionamento è il
-seme concettuale di quasi tutto ciò che segue: la traduzione
-immagine-a-immagine, e in ultima analisi il *text-to-image*, non sono altro
-che GAN (o modelli generativi) condizionati su un input sempre più ricco (da
-un'etichetta discreta a un'intera frase).
+Qui $p_{\text{dati}}(x,y)$ è la distribuzione **congiunta** di dato e
+condizione, scritta con gli argomenti espliciti proprio per distinguerla dalla
+marginale sui soli dati che nel resto del capitolo abbiamo indicato con
+$p_{\text{dati}}$; $p_y$ è la distribuzione delle condizioni e $z$ il rumore
+latente. Entrambe le reti ricevono $y$ come ingresso aggiuntivo, e per questo
+lo scriviamo come secondo argomento: $G(z,y)$ è il campione generato coerente
+con $y$, e $D(x,y)$ il giudizio del discriminatore sulla coppia. Il paper di
+Mirza e Osindero usa la barra ($D(x\mid y)$), ma quella barra non denota una
+probabilità condizionata: è solo un ingresso in più, e la virgola lo dice senza
+ambiguità.
+
+Il condizionamento è il seme concettuale di quasi tutto ciò che segue: la
+traduzione immagine-a-immagine, e in ultima analisi il *text-to-image*, non
+sono altro che GAN (o modelli generativi) condizionati su un input sempre più
+ricco (da un'etichetta discreta a un'intera frase).
 `````
 
 ## StyleGAN: il fotorealismo
@@ -123,13 +133,23 @@ addestramento e diversità dei campioni; le GAN soffrivano di training
 instabile e *mode collapse*. L'idea è opposta a quella avversaria: si insegna
 alla rete a rimuovere gradualmente il rumore da un'immagine, partendo dal
 rumore puro fino all'immagine. Su questa base nascono **Stable Diffusion**
-({cite}`rombach2022high`, che sposta la diffusione in uno spazio latente
-compresso, rendendola leggera) e **DALL·E 2** (OpenAI, 2022): condizionati sul
-testo, oggi rappresentano lo stato dell'arte generativo.
+{cite}`rombach2022high` e **DALL·E 2** (OpenAI, 2022): a entrambi si descrive a
+parole quello che si vuole ("un gatto nero seduto su un muro al tramonto") e
+loro lo disegnano, ed è così che la generazione di immagini su richiesta è
+arrivata al grande pubblico. Stable Diffusion in più fa il lavoro di
+ripulitura non sull'immagine a grandezza naturale ma su una sua versione
+ridotta e compatta, che occupa molta meno memoria: è la ragione per cui gira
+anche su un computer di casa. Del meccanismo parleremo nel capitolo dedicato
+alla diffusione.
 
-Le GAN non sono scomparse (il loro campionamento in un solo passaggio resta
-imbattibile per velocità, e ibridi GAN-diffusione sono un'area viva) ma il
-centro di gravità si è spostato.
+Le GAN non sono scomparse, e il motivo è la velocità: una GAN produce
+l'immagine in un colpo solo, un unico passaggio attraverso il generatore,
+mentre la diffusione parte dal rumore e lo ripulisce un po' per volta,
+ripetendo l'operazione decine di volte. Il vantaggio era così evidente che la
+ricerca sulla diffusione ha passato anni a rincorrerlo, imparando a ottenere lo
+stesso risultato in pochi passi invece che in molti; e per riuscirci ha spesso
+rimesso in gioco un discriminatore, cioè proprio l'idea avversaria di questo
+capitolo. Ma il centro di gravità si è spostato.
 
 ```{admonition} Nota etica: i deepfake
 :class: warning
@@ -146,5 +166,5 @@ insieme.
 :class: important
 - La **DCGAN** porta la convoluzione nelle GAN; la **conditional GAN** aggiunge il controllo tramite un'etichetta $y$.
 - **StyleGAN** raggiunge il fotorealismo dei volti; **pix2pix** e **CycleGAN** fanno traduzione immagine-a-immagine (la seconda senza coppie, grazie alla *cycle-consistency*).
-- Dal 2021 i **modelli di diffusione** (Stable Diffusion, DALL·E) sono lo stato dell'arte, ma le GAN restano rilevanti per velocità e ibridi.
+- Dal 2021 i **modelli di diffusione** (Stable Diffusion, DALL·E 2) raccolgono il testimone della generazione di immagini; le GAN restano rilevanti per velocità e ibridi.
 ```

@@ -17,7 +17,7 @@ della sezione e URL), non si ridistribuisce il testo.
 
 ## Fondamenta
 
-- [Introduzione](https://book.paithon.it/main/Introduzione/overview.html): Come direbbe Joseph Weizenbaum, informatico tedesco emigrato negli Stati Uniti, professore al MIT e creatore di ELIZA, il primo chatbot della storia, un programma che già a metà degli anni Sessanta…
+- [Introduzione](https://book.paithon.it/main/Introduzione/overview.html): Joseph Weizenbaum, informatico tedesco emigrato negli Stati Uniti, professore al MIT e creatore di ELIZA, il primo chatbot della storia, un programma che già a metà degli anni Sessanta permetteva a…
   - [Python e l'AI](https://book.paithon.it/main/Introduzione/massimo_comune_divisore.html)
   - [Robotica e AI](https://book.paithon.it/main/Introduzione/applicazioni.html)
   - [Conclusione](https://book.paithon.it/main/Introduzione/conclusione.html)
@@ -75,7 +75,7 @@ della sezione e URL), non si ridistribuisce il testo.
   - [Reti convoluzionali (CNN)](https://book.paithon.it/main/DeepLearning/reti-convoluzionali.html)
   - [Far funzionare le reti profonde](https://book.paithon.it/main/DeepLearning/ottimizzazione-regolarizzazione.html)
   - [Architetture storiche](https://book.paithon.it/main/DeepLearning/architetture-storiche.html)
-- [Visione artificiale](https://book.paithon.it/main/VisioneArtificiale/overview.html): Nel 1966, al MIT, Seymour Papert affidò a uno studente un compito per l'estate: collegare una telecamera a un computer e insegnargli a descrivere quello che vedeva.
+- [Visione artificiale](https://book.paithon.it/main/VisioneArtificiale/overview.html): Nel 1966, al MIT, Seymour Papert affidò a un gruppo di studenti un compito per l'estate: collegare una telecamera a un computer e insegnargli a descrivere quello che vedeva.
   - [Classificazione e transfer learning](https://book.paithon.it/main/VisioneArtificiale/classificazione-transfer.html)
   - [Data augmentation](https://book.paithon.it/main/VisioneArtificiale/data-augmentation.html)
   - [Imparare senza etichette](https://book.paithon.it/main/VisioneArtificiale/senza-etichette.html)
@@ -199,7 +199,7 @@ della sezione e URL), non si ridistribuisce il testo.
 - [Sistemi di raccomandazione](https://book.paithon.it/main/SistemiRaccomandazione/overview.html): Il 2 ottobre 2006 Netflix (che allora campava spedendo DVD per posta) pubblica un annuncio senza precedenti: un milione di dollari a chiunque riesca a migliorare del 10% il suo sistema di…
   - [Il filtraggio collaborativo](https://book.paithon.it/main/SistemiRaccomandazione/filtraggio-collaborativo.html)
   - [La raccomandazione neurale](https://book.paithon.it/main/SistemiRaccomandazione/raccomandazione-neurale.html)
-- [Serie temporali](https://book.paithon.it/main/SerieTemporali/overview.html): Negli anni Settanta dell'Ottocento, in un laboratorio di Glasgow, William Thomson (che il mondo avrebbe conosciuto come Lord Kelvin) costruì una macchina di ottone, corde e pulegge che prevedeva le…
+- [Serie temporali](https://book.paithon.it/main/SerieTemporali/overview.html): Negli anni Settanta dell'Ottocento William Thomson, professore a Glasgow (il mondo lo avrebbe conosciuto come Lord Kelvin), fece costruire a Londra una macchina di ottone, corde e pulegge che…
   - [Componenti e modelli classici](https://book.paithon.it/main/SerieTemporali/componenti-e-classici.html)
   - [Validazione e feature](https://book.paithon.it/main/SerieTemporali/validazione-e-feature.html)
   - [Forecasting neurale](https://book.paithon.it/main/SerieTemporali/forecasting-neurale.html)
@@ -209,7 +209,7 @@ della sezione e URL), non si ridistribuisce il testo.
 
 ## Produzione e responsabilità
 
-- [MLOps](https://book.paithon.it/main/MLOps/overview.html): C'è una figura, in un articolo del 2015, che vale da sola un capitolo intero. La disegnano alcuni ingegneri di Google (David Sculley e colleghi) per una conferenza di apprendimento automatico .
+- [MLOps](https://book.paithon.it/main/MLOps/overview.html): C'è una figura, in un articolo del 2015, che vale da sola un capitolo intero. La disegnano alcuni ingegneri di Google (D. Sculley e colleghi) per una conferenza di apprendimento automatico .
   - [Dal notebook alla produzione](https://book.paithon.it/main/MLOps/dal-notebook-alla-produzione.html)
   - [Dati e pipeline](https://book.paithon.it/main/MLOps/dati-e-pipeline.html)
   - [Servire un modello](https://book.paithon.it/main/MLOps/deployment-e-serving.html)
@@ -217,7 +217,7 @@ della sezione e URL), non si ridistribuisce il testo.
   - [LLMOps](https://book.paithon.it/main/MLOps/llmops.html)
   - [Misurare un servizio](https://book.paithon.it/main/MLOps/metriche-di-servizio.html)
   - [Il conto in energia](https://book.paithon.it/main/MLOps/energia-e-impronta.html)
-- [Interpretabilità](https://book.paithon.it/main/Interpretabilita/overview.html): Nel 2016 tre ricercatori dell'Università di Washington (Marco Túlio Ribeiro, Sameer Singh e Carlos Guestrin) addestrarono un classificatore a distinguere le foto di husky da quelle di lupo.
+- [Interpretabilità](https://book.paithon.it/main/Interpretabilita/overview.html): Nel 2016 tre ricercatori dell'Università di Washington (Marco Túlio Ribeiro, Sameer Singh e Carlos Guestrin) addestrarono di proposito un classificatore truccato a distinguere le foto di husky da…
   - [Modelli trasparenti](https://book.paithon.it/main/Interpretabilita/modelli-trasparenti-e-importanza.html)
   - [Spiegazioni locali](https://book.paithon.it/main/Interpretabilita/spiegazioni-locali.html)
   - [Attribuzione e meccanicistica](https://book.paithon.it/main/Interpretabilita/attribuzione-e-meccanicistica.html)

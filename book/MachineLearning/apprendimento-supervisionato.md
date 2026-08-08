@@ -131,11 +131,16 @@ $$
 = \frac{1}{m}\sum_{i=1}^{m}\big(W^\top X^{(i)} + b - y^{(i)}\big)^2 .
 $$
 
-$\mathcal{L}$ è convessa in $(W,b)$: ha un unico minimo, raggiungibile in
-forma chiusa con le equazioni normali oppure, su grandi dataset, con la
-discesa del gradiente. Elevare al quadrato penalizza fortemente gli errori
-grossi e rende la loss differenziabile ovunque: due proprietà che tornano
-comode.
+$\mathcal{L}$ è convessa in $(W,b)$: niente minimi locali in cui restare
+intrappolati. Se le colonne della matrice dei dati, insieme alla colonna
+costante del bias, sono linearmente indipendenti, il minimo è anche unico e si
+raggiunge in forma chiusa con le equazioni normali; con feature collineari (una
+feature costante basta, perché replica la colonna del bias), o con meno esempi
+che feature, i punti di minimo diventano infiniti (un intero sottospazio, tutti
+con lo stesso valore della loss) e le equazioni normali degenerano. Su grandi
+dataset, in ogni caso, si preferisce la discesa del gradiente. Elevare al
+quadrato penalizza fortemente gli errori grossi e rende la loss differenziabile
+ovunque: due proprietà che tornano comode.
 
 `````
 

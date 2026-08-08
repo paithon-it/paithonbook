@@ -90,8 +90,11 @@ correlazione con la rarefazione ($n_c^{-1/3}$ contro $r_1$: $R^2 = 0{,}0002$).
 Il raggio segue la densità, il grado no: in media
 $n_c = 6{,}5 \pm 0{,}9$ (errore standard) {cite}`ballerini2008interaction`. Nel
 linguaggio delle Graph Neural Network, la regola metrica costruisce un grafo a
-raggio fisso e la topologica un grafo dei $k$ vicini più prossimi: il secondo ha
-grado costante per costruzione e non cambia affatto se tutte le distanze
+raggio fisso e la topologica il grafo **diretto** dei $k$ vicini più prossimi,
+in cui ogni nodo sceglie i propri $k$ archi uscenti: il grado uscente è
+costante per costruzione (quello entrante no, perché la scelta non va
+ricambiata: io guardo te senza che tu debba guardare me, che è la natura stessa
+dell'interazione fra storni) e il grafo non cambia affatto se tutte le distanze
 vengono riscalate.
 
 `````

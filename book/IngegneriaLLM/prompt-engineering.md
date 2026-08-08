@@ -110,8 +110,10 @@ insieme perché non fanno la stessa cosa.
 
 La distinzione di {numref}`fig-due-manopole` è quella che si perde più spesso
 in pratica, e porta a girare entrambe le manopole nella stessa direzione
-sperando in un effetto doppio. Il top_p decide *chi può essere scelto*, la
-temperatura *quanto pesano* quelli rimasti. Nel
+sperando in un effetto doppio. La temperatura decide *quanto pesano* i
+candidati, il top_p *chi può essere scelto*, e l'ordine in cui agiscono è
+questo: prima si gira la temperatura, che cambia il peso di tutti i candidati;
+poi il top_p taglia via i meno probabili da quella classifica già ripesata. Nel
 capitolo sui Transformer abbiamo studiato la matematica del *decoding*, come
 da una distribuzione di probabilità sulla prossima parola si campiona un
 token, e come la temperatura riscala quella distribuzione. Qui non la
@@ -140,7 +142,7 @@ cambia una manopola per volta, non tutte e due insieme.
 La **temperatura** $T$ riscala i logit prima della softmax: $T \to 0$
 concentra la massa sull'argmax (*greedy*, deterministico a meno di pareggi),
 $T > 1$ appiattisce la distribuzione aumentando l'entropia del campionamento.
-Il **top_p** (*nucleus sampling*, Holtzman et al., 2020) tronca invece la
+Il **top_p** (*nucleus sampling* {cite}`holtzman2020curious`) tronca invece la
 distribuzione al più piccolo insieme di token la cui probabilità cumulata
 raggiunge la soglia $p$, ridistribuendo la massa su quel nucleo: adatta
 dinamicamente il numero di candidati alla forma della distribuzione, cosa che
@@ -212,7 +214,13 @@ learning**, la capacità (documentata su larga scala da Brown e colleghi con
 GPT-3 {cite}`brown2020language`) di apprendere un compito dai soli esempi
 presenti nel contesto, senza fine-tuning. La formalizzazione (la stima
 $\arg\max_y P(y \mid I, (x_1,y_1),\dots,(x_k,y_k), x)$) è quella già vista nel
-capitolo sugli Agenti: qui basti ricordare che gli esempi agiscono come
+capitolo sugli Agenti, con un caveat: quell'argmax sull'intera sequenza è
+un'idealizzazione che il decoding reale al più approssima (il greedy massimizza
+token per token, senza garanzie sulla sequenza; il campionamento non massimizza
+affatto, e restituisce un campione da $P$ soltanto per $T = 1$ e senza
+troncamento: a $T \neq 1$ campiona dalla distribuzione temperata
+$\propto P^{1/T}$, e con il top_p da quella troncata al nucleo). Qui basti
+ricordare che gli esempi agiscono come
 **condizionamento**, spostando la distribuzione condizionata del modello verso
 lo stile e il formato mostrati, non come dati d'addestramento. Alcune
 avvertenze empiriche contano nella pratica: la **scelta** degli esempi, il
@@ -317,8 +325,10 @@ la risposta della $i$-esima catena. L'intuizione statistica: le derivazioni
 corrette tendono a convergere sulla stessa risposta, mentre gli errori sono
 idiosincratici e si sparpagliano, così il voto le premia. Il metodo migliora
 sensibilmente l'accuratezza su benchmark di ragionamento aritmetico e logico
-rispetto alla singola catena; il prezzo è lineare: $N$ generazioni invece di
-una, quindi $N$ volte il costo in token e latenza. È un compromesso di puro
+rispetto alla singola catena; il prezzo è lineare nel calcolo: $N$ generazioni
+invece di una, quindi $N$ volte il costo in token, mentre la latenza resta
+circa quella di una singola generazione se le catene, indipendenti per
+costruzione, si campionano in parallelo. È un compromesso di puro
 context/compute engineering: si compra affidabilità spendendo campioni.
 
 `````

@@ -205,9 +205,13 @@ ancorati alla realtà: l'errore non fa in tempo ad accumularsi.
 
 Se il modello sbaglia in media di una quantità $\epsilon$ a ogni passo e gli
 errori non si cancellano, lo scarto fra la traiettoria immaginata e quella
-reale cresce all'incirca in proporzione all'orizzonte $k$ del rollout. È il
-**compounding error**, e impone un compromesso: rollout lunghi danno più
-segnale di allenamento ma sempre meno affidabile.
+reale cresce *almeno* in proporzione all'orizzonte $k$ del rollout; e la
+proporzionalità è il caso benevolo, valido quando la dinamica non amplifica le
+perturbazioni. Ogni passo, infatti, parte da uno stato già sbagliato: se la
+dinamica ingigantisce gli scostamenti, l'errore si moltiplica di passo in
+passo e la crescita in $k$ diventa esponenziale. È il **compounding error**, e
+impone un compromesso: rollout lunghi danno più segnale di allenamento ma
+sempre meno affidabile.
 
 **MBPO** (*Model-Based Policy Optimization*, Janner et al., 2019
 {cite}`janner2019trust`) risolve il compromesso con un'idea nel titolo del
@@ -245,8 +249,8 @@ guardando le partite, e (dettaglio cruciale) non si fa un modello che
 ridisegna la scacchiera pezzo per pezzo, ma solo un modello «da stratega».
 Immagina un maestro che ragiona per sensazioni: non visualizza ogni pedone
 dopo dieci mosse, ma tiene in testa quel tanto che gli serve per rispondere a
-tre domande («questa mossa mi avvicina alla vittoria)? chi è in vantaggio? che
-ricompensa arriva ora?». MuZero impara questo riassunto astratto, il minimo
+tre domande («questa mossa mi avvicina alla vittoria? chi è in vantaggio? che
+ricompensa arriva ora?»). MuZero impara questo riassunto astratto, il minimo
 per pianificare, e butta via il resto; poi, lì dentro, esplora a fondo le
 linee più promettenti prima di decidere.
 
@@ -272,7 +276,8 @@ addestrato a ricostruire l'osservazione. Non c'è alcuna pressione a
 rappresentare i pixel; il latente deve solo contenere ciò che serve a predire
 *policy, valore e ricompensa*: le tre quantità utili alla pianificazione. Su
 questo modello latente MuZero esegue una **ricerca ad albero Monte Carlo**
-(MCTS), la stessa idea di AlphaGo/AlphaZero {cite}`silver2017mastering`, ma
+(MCTS), la stessa idea di AlphaGo {cite}`silver2016mastering` e del suo
+successore AlphaZero {cite}`silver2018general`, ma
 srotolata dentro il modello appreso anziché su un simulatore dato. Il
 risultato: prestazioni pari ad AlphaZero su Go, scacchi e shogi *senza*
 riceverne le regole, e stato dell'arte sul benchmark Atari; dove un modello
@@ -381,6 +386,37 @@ campioni costano poco. Non c'è un vincitore assoluto: c'è una manopola, e
 sapere dove metterla (quanta fiducia concedere al sogno) è oggi materia di
 ricerca aperta.
 
+`````{tab} Elementare
+```{admonition} Da ricordare
+:class: important
+- Un agente **model-free** impara solo schiantandosi per davvero; uno
+  **model-based** si costruisce prima in testa un simulatore del mondo e le
+  manovre le prova lì dentro, gratis. Guadagna in esperienza risparmiata,
+  rischia di allenarsi su un'auto che non esiste.
+- **Dyna** (Sutton, 1990) è il capostipite: dopo ogni mossa vera l'agente
+  aggiusta le sue valutazioni e si annota che cosa è successo, poi si concede
+  qualche "ripasso" pescando a caso fra le transizioni annotate. Una mossa
+  vera, tanti ripassi immaginati, e la ricompensa si propaga all'indietro
+  molto più in fretta.
+- Immaginare lontano è il gioco del telefono senza fili: ogni previsione parte
+  da una precedente già un po' sbagliata e l'errore si gonfia a ogni passaggio.
+  La cura trovata dai ricercatori nel 2019 è tenere i sogni **corti** e farli
+  partire da situazioni davvero visitate, così l'errore non fa in tempo ad
+  accumularsi.
+- **MuZero** (2020) le regole del gioco se le costruisce da solo guardando le
+  partite, e non si fa un modello che ridisegna la scacchiera pezzo per pezzo:
+  tiene solo il riassunto che serve a rispondere a "chi è in vantaggio, che
+  ricompensa arriva ora, quale mossa conviene". Lì dentro esplora a fondo le
+  linee promettenti prima di decidere. È l'erede di AlphaZero, che invece le
+  regole le riceveva già scritte.
+- **Dreamer** allena il pilota interamente dentro il sogno, e DreamerV3 se la
+  cava con la stessa configurazione su oltre 150 compiti diversi. Il limite di
+  fondo non sparisce: una strategia vale quanto il mondo immaginario in cui è
+  cresciuta, e prima o poi ne trova e ne sfrutta le crepe.
+```
+`````
+
+`````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
 - **Model-free** impara provando per davvero; **model-based** apprende prima la
@@ -400,3 +436,4 @@ ricerca aperta.
   latente; DreamerV3 è generalista su oltre 150 compiti. Il limite di fondo
   resta uno: la policy è buona quanto il modello in cui è cresciuta.
 ```
+`````

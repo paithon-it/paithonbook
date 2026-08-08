@@ -287,21 +287,26 @@ dove $p(x)$ è la distribuzione softmax del router sul token $x$, $f_i$ è la
 conteggio), $P_i$ la **probabilità media** che il router gli ha assegnato (una
 quantità continua) e $\alpha$ il peso della penalità, $10^{-2}$ nel paper.
 
-Perché quel prodotto è minimo sul carico uniforme? Entrambi i vettori $f$ e
-$P$ stanno sul simplesso ($\sum_i f_i = \sum_i P_i = 1$) e sono **allineati**
-per costruzione, perché l'instradamento segue l'$\arg\max$ delle stesse
-probabilità che compongono $P$: gli esperti con $P_i$ alto sono quelli con
-$f_i$ alto. Il prodotto scalare si comporta quindi come $\sum_i P_i^2$, e per
-la disuguaglianza di Cauchy-Schwarz
+Perché quel prodotto spinge verso il carico uniforme? Entrambi i vettori $f$ e
+$P$ stanno sul simplesso ($\sum_i f_i = \sum_i P_i = 1$) e tendono a essere
+**allineati**, perché l'instradamento segue l'$\arg\max$ delle stesse
+probabilità che compongono $P$: gli esperti con $P_i$ alto sono di norma
+quelli con $f_i$ alto. In quel regime il prodotto scalare si comporta come
+$\sum_i P_i^2$, e per la disuguaglianza di Cauchy-Schwarz
 
 $$
 \sum_{i=1}^{N} P_i^2 \;\ge\; \frac{1}{N},
 $$
 
 con uguaglianza se e solo se la distribuzione è uniforme. Moltiplicando per
-$N$ si ottiene un termine che vale $1$ nel caso ideale e cresce man mano che
-il carico si concentra. Un esempio con $N = 4$ e $T = 8$ token, con cinque
-token al primo esperto, due al secondo, uno al terzo e nessuno al quarto:
+$N$ si ottiene un termine che vale $1$ sul carico uniforme e cresce man mano
+che il carico si concentra. È un argomento euristico, non un teorema: con
+punteggi quasi in pareggio l'allineamento fra $f$ e $P$ si allenta, ed
+esistono configurazioni non uniformi in cui il termine scende sotto $1$.
+Fedus e colleghi, del resto, presentano la loss come un *incentivo* al
+bilanciamento, non come una garanzia. Un esempio con $N = 4$ e $T = 8$
+token, con cinque token al primo esperto, due al secondo, uno al terzo e
+nessuno al quarto:
 $f = (0{,}625;\ 0{,}25;\ 0{,}125;\ 0)$ e
 $P = (0{,}55;\ 0{,}25;\ 0{,}15;\ 0{,}05)$ danno
 $4 \times 0{,}425 = 1{,}70$, contro l'$1{,}00$ del caso uniforme.
@@ -317,8 +322,12 @@ $$
 cioè una spinta verso il basso **proporzionale al carico già ricevuto**. Gli
 esperti affollati si vedono abbassare i punteggi in proporzione a quanto sono
 affollati; quelli vuoti non ricevono alcuna spinta negativa e risalgono per
-differenza. La penalità è lineare in $P$, e questo la rende ben condizionata:
-non introduce minimi locali propri.
+differenza. A instradamento fissato la penalità è lineare in $P$, e in quel
+regime è ben condizionata: il gradiente non dipende da dove ci si trova sul
+simplesso. È una linearità locale, però, non globale: $f$ dipende dagli stessi
+parametri del router, e quando l'instradamento cambia cambia anche il
+coefficiente della penalità, il che riporta il paesaggio della loss ausiliaria
+fra le cose che si osservano, non fra quelle che si dimostrano.
 
 `````
 
@@ -566,6 +575,47 @@ Denso o sparso, quello che esce dal pre-addestramento resta un completatore di
 testo, e per trasformarlo in un interlocutore serve la fase successiva, il
 **post-training**, di cui parla la sezione che segue.
 
+`````{tab} Elementare
+```{admonition} Da ricordare
+:class: important
+- La miscela di esperti prende il momento di **lavoro individuale** di ogni
+  strato (quello dove sta la maggior parte di ciò che il modello ha imparato:
+  due terzi buoni) e lo moltiplica: molti blocchi in parallelo, gli esperti,
+  più uno **smistatore** che per ogni parola ne sceglie uno o due. Un modello
+  così non si racconta con un numero solo: uno dice quanto **sa**, cioè quanta
+  memoria occupa; l'altro quanto **fatica** su ogni parola, cioè quanto costa
+  farlo scrivere.
+- Lo smistatore dà un voto a ciascun esperto, tiene i migliori e mescola le
+  loro risposte in proporzione ai voti (il $62\%$ di uno, il $38\%$
+  dell'altro). La scelta in sé è un taglio netto, e da un taglio non si impara
+  nulla: lo smistatore migliora guardando **com'è andata a chi ha mandato il
+  pezzo**, cioè attraverso le proporzioni della miscela.
+- Lasciato a sé, lo smistatore **collassa**: manda tutto ai soliti due o tre,
+  che lavorando migliorano ancora, mentre gli altri non toccano un articolo e
+  non impareranno mai. La cura è amministrativa: una voce in più nella pagella
+  del modello che punisce lo sbilanciamento (un incentivo, non una garanzia).
+  C'è poi un tetto ai pezzi che un esperto accetta per turno: quelli in
+  eccesso attraversano lo strato **senza essere lavorati**, in silenzio.
+- Si risparmia **fatica**, non **spazio**: i redattori fermi prendono lo
+  stipendio e occupano una scrivania lo stesso. Quando stanno in edifici
+  diversi il costo si sposta sul viavai, perché ogni articolo attraversa la
+  città per arrivare al suo specialista e poi torna indietro. E quando il
+  modello scrive, il tempo se ne va più ad andare a prendere quello che sa che
+  a fare i conti: uno che sa moltissimo e fatica poco su ogni parola attacca
+  il lato sbagliato del problema, e resta pesante da far girare.
+- L'idea è del 1991 {cite}`jacobs1991adaptive`, ma allora ogni pezzo passava
+  per tutti gli esperti e delle loro risposte si faceva la media: un buon modo
+  di organizzare il lavoro, non di risparmiarlo. Il salto è del 2017
+  {cite}`shazeer2017outrageously`, quando si calcolano davvero solo gli
+  esperti scelti; poi Switch Transformer {cite}`fedus2022switch` mostra che
+  **uno solo per parola** basta e semplifica tutto.
+- «Esperti» è una metafora comoda: quello in cui ciascuno si specializza è
+  raramente riconoscibile, e questi modelli sono più delicati da rifinire su
+  compiti piccoli.
+```
+`````
+
+`````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
 - La mixture of experts sostituisce la **rete feed-forward** di uno strato con
@@ -574,15 +624,18 @@ testo, e per trasformarlo in un interlocutore serve la fase successiva, il
   **parametri totali** (la memoria) e **parametri attivi** (il calcolo per
   token).
 - Il router è uno strato lineare:
-  $G(x) = \operatorname{softmax}(\text{top-}k(W_g x))$ e
-  $y = \sum_{i \in \text{top-}k} G(x)_i E_i(x)$. La selezione è discreta e non
-  differenziabile: il gradiente arriva al router **attraverso i pesi**
-  $G(x)_i$ degli esperti scelti.
+  $G(\mathbf{x}) = \operatorname{softmax}(\text{top-}k(W_g \mathbf{x}))$
+  e $\mathbf{y} = \sum_{i \in \text{top-}k} G(\mathbf{x})_i E_i(\mathbf{x})$.
+  La selezione è discreta e non differenziabile: il gradiente arriva al router
+  **attraverso i pesi** $G(\mathbf{x})_i$ degli esperti scelti.
 - Senza contromisure il router **collassa** su pochi esperti, in un circolo
   che si rinforza da solo. La cura è una **loss ausiliaria**
-  $\alpha N \sum_i f_i P_i$ {cite}`fedus2022switch`, minima (e pari a 1) sul
-  carico uniforme; la **capacità** limita i token per esperto e quelli in
-  eccesso attraversano lo strato immutati grazie alla connessione residua.
+  $\alpha N \sum_i f_i P_i$ {cite}`fedus2022switch`, che resta bassa quando il
+  lavoro è distribuito in parti uguali e cresce quando si concentra su pochi
+  esperti (un incentivo, non una garanzia: l'argomento regge finché
+  l'$\arg\max$ tiene allineati $f$ e $P$); la **capacità** limita i token per
+  esperto e quelli in eccesso attraversano lo strato immutati grazie alla
+  connessione residua.
 - Si risparmia **calcolo**, non **memoria**: tutti gli esperti devono
   risiedere da qualche parte. In addestramento il costo si sposta sulla
   comunicazione (**expert parallelism**, all-to-all); in inferenza resta il
@@ -597,3 +650,4 @@ testo, e per trasformarlo in un interlocutore serve la fase successiva, il
   interpretabile, e i modelli sparsi sono più delicati da rifinire su compiti
   piccoli.
 ```
+`````

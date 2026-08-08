@@ -75,7 +75,10 @@ abbiamo accettato numeri a precisione finita, qui si accetta un continuo fatto
 a punti (una **griglia** su $x$ e $t$, con le derivate rimpiazzate da
 **differenze finite**, rapporti incrementali a passo piccolo ma non nullo).
 Più fitta la griglia, migliore l'approssimazione e più salato il conto:
-proibitivo con molte dimensioni o geometrie irregolari.
+proibitivo quando le variabili indipendenti sono molte, perché il numero di
+nodi cresce esponenzialmente con la dimensione. Su una geometria irregolare
+il problema è di altra natura: elementi finiti e volumi finiti la trattano
+benissimo, ma la griglia va costruita su misura, ed è un lavoro a sé.
 
 `````
 
@@ -128,8 +131,12 @@ $$
 r_\theta(x_j, t_j)^2}_{\text{fisica}},
 $$
 
-dove $(x_i, t_i, u_i)$ sono le $N_d$ misure disponibili (incluse condizioni
-iniziali e al contorno), i $(x_j, t_j)$ sono $N_c$ **punti di collocazione**
+dove $(x_i, t_i, u_i)$ sono le $N_d$ misure disponibili, incluse le
+condizioni iniziali e al contorno quando prescrivono il valore di $u$
+(quelle sulle derivate, come un flusso imposto agli estremi della sbarra,
+entrano con un termine analogo costruito via differenziazione automatica,
+come faremo per $u'(0)$ nella prossima sezione); i $(x_j, t_j)$ sono $N_c$
+**punti di collocazione**
 estratti a caso nel dominio (nessuna griglia) e $\lambda$ bilancia i due
 termini. Il tocco elegante è il calcolo delle derivate di $u_\theta$ rispetto
 agli *ingressi*: le fornisce la **differenziazione automatica**, la stessa
@@ -145,12 +152,16 @@ discretizzazione da scegliere.
 
 Tre proprietà rendono la ricetta interessante, tutte figlie della stessa
 radice: la soluzione non vive più su una griglia, ma dentro una funzione
-continua interrogabile ovunque. Primo: **niente griglia**. I punti di
-collocazione si spargono a pioggia anche in domini dalla forma impossibile (il
-condotto di un'aorta, il profilo di un'ala), dove costruire una buona griglia
-è un mestiere a sé. Secondo: **dati scarsi**. Dove il laboratorio arriva con
-tre sensori, la legge riempie i vuoti con l'unico filo coerente con
-l'equazione. Terzo, il più sorprendente: i **problemi inversi**.
+continua interrogabile ovunque. Primo: **niente griglia da costruire**. I
+punti di collocazione si spargono a pioggia anche in domini dalla forma
+complicata (il condotto di un'aorta, il profilo di un'ala): non che i metodi
+classici non ci arrivino, ci arrivano da decenni, ma prima devono coprire
+quella forma di una griglia fatta su misura, che è un mestiere a sé. E la
+stessa proprietà si estende a un dominio con molte variabili, dove una
+griglia non è costosa: è impossibile. Secondo: **dati scarsi**. Dove il
+laboratorio arriva con tre sensori, la legge riempie i vuoti con l'unico
+filo coerente con l'equazione. Terzo, il più sorprendente: i **problemi
+inversi**.
 
 `````{tab} Elementare
 
@@ -192,9 +203,15 @@ restano più veloci, più accurati e con garanzie di convergenza che
 un'ottimizzazione non convessa non può offrire; una PINN può richiedere minuti
 di addestramento dove un solutore maturo impiega millisecondi, e a volte
 fallisce senza preavviso {cite}`karniadakis2021physics`. Il loro territorio è
-un altro: dove dati e leggi vanno fusi nella stessa stima, dove la geometria
-mette in crisi le griglie, dove il problema è inverso. Lì i solutori classici
-arrancano, e la penna di Le Verrier torna a scrivere.
+un altro: dove dati e leggi vanno fusi nella stessa stima, dove le variabili
+sono troppe perché una griglia stia in piedi, dove il problema è inverso. Lì
+i solutori classici arrancano, e la penna di Le Verrier torna a scrivere.
+
+Una forma complicata, da sola, non basta a metterli in crisi: un'aorta o
+un'ala i metodi classici le calcolano tutti i giorni. Quello che costa è
+preparare la griglia che ricopre quella forma, un lavoro lungo e da esperti.
+La PINN quel lavoro se lo risparmia, ed è un vantaggio vero, ma di comodità,
+non di possibilità.
 
 ## Come è organizzato il capitolo
 
@@ -204,20 +221,62 @@ fino al problema inverso con un coefficiente che fingeremo di non conoscere.
 Chiuderemo con le applicazioni reali (fluidodinamica, clima, biomedicina) e
 una mappa onesta dei limiti: quando convengono, quando no.
 
+`````{tab} Elementare
+
+```{admonition} Da ricordare
+:class: important
+- Un'**equazione differenziale** non dice dov'è una grandezza ma **come
+  cambia** (il caffè si raffredda tanto più in fretta quanto più è caldo).
+  Sapendo da dove si parte, e cosa succede ai bordi quando conta anche lo
+  spazio, la storia è determinata tutta. Vale per le equazioni ben educate
+  che incontreremo qui, il caffè e la molla; per certe equazioni difficili,
+  come quelle che descrivono un fluido nello spazio, che una risposta unica
+  esista sempre nessuno l'ha ancora dimostrato.
+- I metodi classici **spezzettano** il problema: riempiono il dominio di una
+  fitta rete di puntini e avanzano da un puntino all'altro. Sono accurati e
+  velocissimi, e se la cavano anche con forme complicate; ma quella rete va
+  costruita su misura, e quando le grandezze in gioco sono molte il numero di
+  puntini esplode.
+- Una **PINN** usa una rete neurale come curva candidata e la corregge con
+  due esaminatori: il righello, che la tiene vicina alle (poche) misure, e il
+  controllo della regola in punti scelti a caso, i **punti di collocazione**,
+  dove ogni violazione costa punti {cite}`raissi2019physics`. Le pendenze che
+  servono per verificare la regola gliele dà lo stesso meccanismo con cui la
+  rete si addestra: esatte, e senza nessuna rete di puntini.
+- Punti di forza: dati scarsi ma legge nota, molte grandezze in gioco, domini
+  dalla forma complicata senza una griglia da costruire, e i **problemi
+  inversi** (il pezzo di regola che manca diventa una manopola che
+  l'addestramento regola da sé).
+- Onestà: sui problemi standard i metodi classici restano superiori; le PINN
+  si affiancano, non li sostituiscono {cite}`karniadakis2021physics`.
+```
+
+`````
+
+`````{tab} Superiore
+
 ```{admonition} Da ricordare
 :class: important
 - Un'**equazione differenziale** non dice dov'è una grandezza ma **come
   cambia**; con condizioni iniziali e al contorno questo basta a determinarla
-  (ODE: una variabile indipendente; PDE: più di una).
-- I solutori classici **discretizzano**: differenze finite su una griglia
-  (accurati e veloci, ma in difficoltà su geometrie irregolari e molte
-  dimensioni).
+  (ODE: una variabile indipendente; PDE: più di una). Vale per le equazioni
+  ben educate che risolveremo qui, il caffè e la molla; per certe equazioni
+  difficili, come quelle dei fluidi in tre dimensioni, che una soluzione
+  unica esista sempre nessuno l'ha ancora dimostrato.
+- I solutori classici **discretizzano**: differenze finite o elementi finiti
+  su una griglia (accurati, veloci e a loro agio anche su forme complicate;
+  ma la griglia va costruita su misura, e con molte variabili il conto
+  diventa proibitivo).
 - Una **PINN** usa una rete $u_\theta(x,t)$ come candidata soluzione, con una
   loss doppia: aderenza ai (pochi) dati più penalità sul **residuo fisico**
-  nei punti di collocazione {cite}`raissi2019physics`; derivate dalla
+  $r_\theta = \partial_t u_\theta - \alpha\,\partial_{xx} u_\theta$ nei punti
+  di collocazione {cite}`raissi2019physics`; derivate dalla
   **differenziazione automatica**, esatte e senza griglia.
-- Punti di forza: dati scarsi ma leggi note, domini irregolari, **problemi
-  inversi** (il parametro ignoto diventa una variabile addestrabile).
+- Punti di forza: dati scarsi ma leggi note, molte variabili, domini dalla
+  forma complicata senza dover costruire una griglia, **problemi inversi**
+  (il parametro ignoto diventa una variabile addestrabile).
 - Onestà: sui problemi standard i solutori classici restano superiori; le
   PINN sono un complemento, non un rimpiazzo {cite}`karniadakis2021physics`.
 ```
+
+`````

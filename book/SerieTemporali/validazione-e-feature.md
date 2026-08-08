@@ -87,7 +87,10 @@ come mostra la {numref}`fig-walk-forward-validazione`.
 
 `````{tab} Superiore
 
-Sia la serie $y_1, \dots, y_n$. Fissato un training minimo e un orizzonte $h$, il
+Sia la serie $y_1, \dots, y_n$. In questa sezione la indichiamo con $y$
+anziché con $x$: la serie diventa il *target* di un problema supervisionato,
+e le previsioni si scrivono $\hat{y}$, come nel resto del libro. Fissato un
+training minimo e un orizzonte $h$, il
 walk-forward produce una sequenza di coppie $(\text{train}, \text{test})$ in cui
 il blocco di test cade sempre dopo il blocco di train. Nella variante
 **espansa** l'$i$-esima iterazione addestra su $y_1, \dots, y_{t_i}$ e valuta su
@@ -124,7 +127,7 @@ temperatura. Servono metriche che si possano confrontare tra serie diverse.
 
 Il primo tentativo è misurare l'errore in **percentuale**: sbagliare di 500 su
 50 000 è l'1%, su 500 è il 100%. Questa è la **MAPE**, l'errore percentuale
-medio. Comoda da spiegare, ma con tre difetti seri. Se il valore vero è
+medio. Comoda da spiegare, ma con due difetti seri. Se il valore vero è
 **zero** (un giorno senza vendite), si divide per zero e la metrica esplode.
 Ed è **asimmetrica**: prevedere troppo alto o troppo basso non costa uguale, e
 alla lunga premia i modelli timidi che sottostimano.
@@ -157,10 +160,11 @@ $$
 \frac{\lvert y_t-\hat{y}_t\rvert}{(\lvert y_t\rvert+\lvert\hat{y}_t\rvert)/2}.
 $$
 
-La MAPE è indefinita per $y_t=0$ ed è asimmetrica: la sottostima ($\hat{y}_t<y_t$)
-è limitata al $100\%$, la sovrastima no, così la metrica favorisce chi
-sottoprevede. La sMAPE mette la somma dei due valori al denominatore per limitare
-il problema, ma malgrado il nome resta anch'essa non del tutto simmetrica.
+La MAPE è indefinita per $y_t=0$ ed è asimmetrica: per serie e previsioni non
+negative la sottostima ($\hat{y}_t<y_t$) è limitata al $100\%$, la sovrastima
+no, così la metrica favorisce chi sottoprevede. La sMAPE mette la somma dei due
+valori al denominatore per limitare il problema, ma malgrado il nome resta
+anch'essa non del tutto simmetrica.
 
 La **MASE** (*Mean Absolute Scaled Error*), proposta da Rob Hyndman e Anne
 Koehler nel 2006, scala l'errore del modello sull'errore *in-sample* del naive
@@ -210,9 +214,9 @@ classiche {cite}`hyndman2021forecasting` sono:
   osservato**, $\hat{y}_{t+h}=y_t$. Sorprendentemente forte sulle serie quasi
   casuali (i prezzi finanziari, per dire).
 - **Naive stagionale**: si ripete il valore dello **stesso istante del periodo
-  precedente**, $\hat{y}_{t+h}=y_{t+h-m}$: le vendite di questo dicembre sono
-  quelle dello scorso dicembre. È la baseline da battere ogni volta che c'è
-  stagionalità.
+  precedente**, $\hat{y}_{t+h}=y_{t+h-m}$, e su orizzonti più lunghi si ricicla
+  l'ultimo ciclo osservato: le vendite di questo dicembre sono quelle dello
+  scorso dicembre. È la baseline da battere ogni volta che c'è stagionalità.
 - **Drift**: come il naive, ma con una **retta di tendenza** stimata dai due
   estremi della serie, $\hat{y}_{t+h}=y_t+h\cdot\frac{y_t-y_1}{t-1}$: prolunga il
   segmento che unisce il primo e l'ultimo punto.

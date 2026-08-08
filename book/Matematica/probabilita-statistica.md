@@ -185,10 +185,15 @@ $$
 
 dove $\mu$ è la media (il centro della campana) e $\sigma$ la deviazione
 standard (la sua larghezza). Perché è così onnipresente? Per il **teorema del
-limite centrale** (de Moivre, Laplace, poi Lyapunov): la somma (o la media) di
-tante variabili aleatorie indipendenti e a varianza finita, *quale che sia* la
-loro distribuzione di partenza, tende a una normale al crescere del numero di
-termini. È il motivo per cui gli errori di misura si modellano gaussiani e per
+limite centrale** (de Moivre, Laplace, poi Lyapunov): se $X_1,\dots,X_n$ sono
+i.i.d. con media $\mu$ e varianza $\sigma^2$ finita e non nulla, posto
+$S_n = X_1 + \dots + X_n$, la somma standardizzata
+$(S_n - n\mu)/(\sigma\sqrt{n})$ converge in distribuzione a
+$\mathcal{N}(0,1)$, *quale che sia* la distribuzione di partenza; in pratica,
+per $n$ grande, $S_n$ si approssima bene con $\mathcal{N}(n\mu,\,n\sigma^2)$.
+(Per variabili indipendenti ma non identicamente distribuite servono
+condizioni in più, come quella di Lindeberg o di Lyapunov.) È il motivo per
+cui gli errori di misura si modellano gaussiani e per
 cui il rumore e l'inizializzazione dei pesi nelle reti neurali sono spesso
 normali.
 
@@ -203,9 +208,10 @@ detto a parole sembra una promessa e guardato sembra un trucco.
 :width: 90%
 
 Un dado è **piatto**: nessuna faccia è più probabile di un'altra. Eppure la
-somma di tre dadi, ripetuta seicento volte, si dispone da sé lungo la campana,
-e la curva sovrapposta non è adattata ai dati: è la
-$\mathcal{N}(n\mu,\, n\sigma^2)$ che il teorema prevede prima di tirare.
+somma di tre dadi, ripetuta seicento volte, si dispone da sé lungo la campana.
+La curva sovrapposta non è stata adattata alle barre: è la curva che il teorema
+prevede prima ancora di tirare i dadi (la $\mathcal{N}(n\mu,\, n\sigma^2)$), e
+i dadi le danno ragione.
 ```
 
 Due cose valgono più della formula, nella {numref}`fig-limite-centrale`. La
@@ -488,7 +494,10 @@ $$
 $$
 
 e misura la sola dipendenza **lineare**: $\rho=0$ non implica indipendenza;
-una relazione a parabola ha correlazione nulla e dipendenza perfetta.
+se $X$ è distribuita in modo simmetrico attorno allo zero, $Y=X^2$ ha
+correlazione nulla con $X$ e dipendenza perfetta. (La simmetria è essenziale:
+per $X$ uniforme su $[0,1]$ la stessa parabola dà una correlazione vicina a
+$0{,}97$.)
 
 Le strutture da tenere distinte:
 
@@ -625,7 +634,7 @@ Dati esempi indipendenti $x^{(1)},\dots,x^{(m)}$, la **verosimiglianza** dei
 parametri $\theta$ è
 
 $$
-\mathcal{L}(\theta)=\prod_{i=1}^{m} p\big(x^{(i)};\theta\big),
+L(\theta)=\prod_{i=1}^{m} p\big(x^{(i)};\theta\big),
 $$
 
 e la stima di massima verosimiglianza è
@@ -634,9 +643,15 @@ $$
 \hat{\theta}=\arg\max_{\theta}\ \sum_{i=1}^{m}\log p\big(x^{(i)};\theta\big),
 $$
 
-dove il logaritmo trasforma il prodotto in somma, numericamente più stabile. Il
-punto cruciale: massimizzare la log-verosimiglianza sotto ipotesi gaussiana
-equivale a **minimizzare l'errore quadratico medio**, e sotto ipotesi di
+dove il logaritmo trasforma il prodotto in somma, numericamente più stabile.
+(Scriviamo $L$ e non $\mathcal{L}$: la $\mathcal{L}$ calligrafica in questo
+libro è la loss, che si minimizza; la verosimiglianza si massimizza, e le due
+si incontrano nella log-verosimiglianza negativa,
+$\mathcal{L}(\theta)=-\log L(\theta)$ a meno di costanti.) Il punto cruciale:
+per un modello di regressione che descrive $y$ dato $x$ come una gaussiana
+centrata sulla predizione, $p(y \mid x;\theta)=\mathcal{N}(\hat{y},\sigma^2)$
+con varianza fissa, massimizzare la log-verosimiglianza equivale a
+**minimizzare l'errore quadratico medio**; sotto ipotesi di
 Bernoulli/categoriche equivale a minimizzare la **cross-entropy**. Le loss
 $\mathcal{L}$ che incontreremo nel resto del libro non sono scelte arbitrarie:
 sono verosimiglianze travestite.
@@ -668,6 +683,38 @@ posterior = sensibilita * prevalenza / p_pos
 print(posterior)       # ~0.167: solo il 17% dei positivi e' davvero malato
 ```
 
+`````{tab} Elementare
+```{admonition} Da ricordare
+:class: important
+- La probabilità misura l'incertezza; una **variabile aleatoria** le dà un
+  numero (le teste su dieci lanci), e per riassumerla bastano quasi sempre due
+  cose: il risultato medio che ci si aspetta a lungo andare e quanto
+  tipicamente ci si allontana da quel centro.
+- La **curva a campana** compare ovunque perché tante piccole cause casuali che
+  si sommano la producono da sé, anche partendo da dadi in cui nessuna faccia è
+  favorita. Regola pratica: circa il $68\%$ dei casi cade entro uno scarto
+  tipico dalla media, circa il $95\%$ entro due.
+- Un risultato positivo va sempre letto insieme a quanto la cosa cercata è
+  rara: con una malattia che colpisce una persona su cento, anche un test molto
+  buono produce più falsi allarmi che malati veri (solo il $17\%$ circa dei
+  positivi è davvero malato). È il **teorema di Bayes** al lavoro.
+- La media di tante osservazioni si assesta sul valore vero, ma le oscillazioni
+  si stringono con calma: per dimezzare l'incertezza non basta il doppio dei
+  dati, ne servono quattro volte tanti.
+- Un'accuratezza è una **stima**, come un sondaggio elettorale: su $500$ esempi
+  vale circa $3$ punti in più o in meno, e differenze più piccole di così sono
+  rumore, non progresso.
+- Due grandezze che salgono e scendono insieme (i gelati e gli annegamenti)
+  bastano a **prevedere** finché il mondo resta com'è, non a **decidere** un
+  intervento: dietro le due curve c'è una causa comune, il caldo, e vietare il
+  gelato non salverebbe nessuno.
+- Imparare, per un modello, è girare le manopole dei parametri finché i dati
+  osservati diventano i meno sorprendenti possibile: le funzioni di costo più
+  usate sono questa stessa idea, scritta in un altro modo.
+```
+`````
+
+`````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
 - La probabilità misura l'incertezza; una **variabile aleatoria** le dà un
@@ -686,3 +733,4 @@ print(posterior)       # ~0.167: solo il 17% dei positivi e' davvero malato
 - La **massima verosimiglianza** è il ponte fra probabilità e apprendimento:
   minimizzare MSE o cross-entropy è massimizzare una verosimiglianza.
 ```
+`````

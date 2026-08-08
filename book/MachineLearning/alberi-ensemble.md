@@ -381,22 +381,25 @@ l'idea di AdaBoost e la inquadra come una **discesa del gradiente nello spazio
 delle funzioni**. Il modello è additivo, costruito passo dopo passo:
 
 $$
-F_M(x) = \sum_{m=1}^{M} \nu\, h_m(x) ,
+F_M(x) = F_0 + \sum_{t=1}^{M} \nu\, h_t(x) ,
 $$
 
-dove $h_m$ è l'albero aggiunto al passo $m$ e $\nu \in (0,1]$ è il **learning
-rate**. A ogni passo si vorrebbe muovere la funzione corrente $F_{m-1}$ nella
-direzione che riduce di più la loss $\mathcal{L}$; quella direzione, valutata su
-ciascun esempio, è l'opposto del gradiente
+dove $F_0$ è la costante che da sola minimizza la loss sui dati (per la loss
+quadratica, la media dei target), $h_t$ è l'albero aggiunto al passo $t$ e
+$\nu \in (0,1]$ è il **learning rate**. A ogni passo si vorrebbe muovere la
+funzione corrente $F_{t-1}$ nella direzione che riduce di più la loss
+$\mathcal{L}$; quella direzione, valutata su ciascun esempio, è l'opposto del
+gradiente
 
 $$
-r_i^{(m)} = -\left[\frac{\partial \mathcal{L}(y_i, F(x_i))}{\partial F(x_i)}\right]_{F = F_{m-1}} ,
+r_i^{(t)} = -\left[\frac{\partial \mathcal{L}(y_i, F(x_i))}{\partial F(x_i)}\right]_{F = F_{t-1}} ,
 $$
 
-detto **pseudo-residuo**. Il nuovo albero $h_m$ viene addestrato per
+detto **pseudo-residuo**. Il nuovo albero $h_t$ viene addestrato per
 approssimare proprio questi pseudo-residui. Nel caso della loss quadratica
 $\mathcal{L} = \tfrac{1}{2}(y - F)^2$ il gradiente si riduce a $r_i = y_i -
-F_{m-1}(x_i)$: cioè, semplicemente, l'**errore residuo** ancora da spiegare.
+F_{t-1}(x_i)$: cioè, semplicemente, l'**errore residuo** ancora da spiegare
+(al primo passo, lo scarto dalla media $F_0$).
 Detto a parole: ogni albero fitta ciò che i precedenti hanno sbagliato. AdaBoost
 è il caso particolare che si ottiene scegliendo la *exponential loss*.
 
@@ -527,5 +530,3 @@ alle reti.
   overfittare); il secondo cura il **bias** (più accurato, ma va frenato con
   **learning rate** basso ed **early stopping**).
 ```
-</content>
-</invoke>

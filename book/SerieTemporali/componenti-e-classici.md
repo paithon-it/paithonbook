@@ -237,17 +237,44 @@ di fondo resta sempre quella verso $\mu$.
 ## Da AR ad ARIMA: media mobile, integrazione, stagionalità
 
 L'AR è metà della storia. L'altra metà guarda non ai valori passati, ma agli
-**errori** passati. Il modello a **media mobile** MA($q$) è
+**urti** passati: è il modello a **media mobile**, sigla MA. Da non confondere
+con la «media mobile» usata per lisciare un grafico: qui è una media *degli
+imprevisti*, non dei valori.
+
+`````{tab} Elementare
+
+Pensa a un urto imprevisto: una gita scolastica che svuota la gelateria, uno
+sciopero che blocca i voli. L'effetto non si esaurisce il giorno stesso: si fa
+sentire ancora domani, un po' meno dopodomani, e poi svanisce. Un modello a
+media mobile dice proprio questo: il valore di oggi è il livello normale, più
+la sorpresa di oggi, più l'eco (sempre più debole) delle sorprese degli ultimi
+giorni.
+
+Le due memorie si possono usare insieme: quella dei valori (l'AR appena visto)
+e quella degli urti (il MA). E siccome le serie vere hanno quasi sempre una
+tendenza, prima la si raddrizza col trucco già incontrato, sostituire ogni
+valore con la variazione rispetto al giorno prima, e poi si modella ciò che
+resta. Il tutto insieme si chiama **ARIMA**, il modello di punta di Box e
+Jenkins: dietro la sigla ci sono solo tre conteggi, quanti valori passati
+guardare, quante volte raddrizzare la serie, per quanti giorni far durare
+l'eco degli urti. Se c'è anche una stagionalità, si rifà lo stesso gioco sul
+calendario (dicembre si confronta con lo scorso dicembre): è la variante
+**SARIMA**. Le sigle piene di lettere e numeri che si incontrano nei manuali
+non sono che questi conteggi messi in fila.
+
+`````
+
+`````{tab} Superiore
+
+Il modello a **media mobile** MA($q$) è
 
 $$
 x_t = \mu + \varepsilon_t + \theta_1 \varepsilon_{t-1} + \dots + \theta_q \varepsilon_{t-q},
 $$
 
 dove $\varepsilon_{t-i}$ sono le scosse casuali dei passi precedenti e
-$\theta_1,\dots,\theta_q$ i loro pesi. L'interpretazione: un urto di oggi non si
-esaurisce subito, ma continua a farsi sentire per $q$ passi prima di svanire. Da
-non confondere con la «media mobile» usata per lisciare un grafico: qui è una
-media *degli shock*, non dei valori.
+$\theta_1,\dots,\theta_q$ i loro pesi: un urto di oggi non si esaurisce
+subito, ma continua a farsi sentire per $q$ passi prima di svanire.
 
 Mettendo insieme le due idee si ottiene l'**ARMA($p,q$)**, che spiega il valore
 odierno con $p$ valori passati e $q$ errori passati. Ma l'ARMA vive solo su
@@ -269,6 +296,8 @@ ordini AR, di differenziazione e MA *stagionali*, e $m$ è la lunghezza del cicl
 Un SARIMA$(1,1,1)(1,1,1)_{12}$ è, ancora oggi, un ottimo punto di partenza per
 una serie mensile con trend e stagionalità annuale.
 
+`````
+
 ## Lisciamento esponenziale: da SES a Holt-Winters
 
 La famiglia ARIMA modella la memoria della serie in modo esplicito. Una seconda
@@ -282,8 +311,9 @@ di più e quelli lontani sempre meno.
 Per indovinare le vendite di domani potresti fare la media di tutti i giorni
 passati. Ma il mese scorso conta davvero quanto ieri? No. Il lisciamento
 esponenziale fa una media *pesata*, in cui ieri pesa molto, l'altro ieri un po'
-meno, la settimana scorsa ancora meno, e così via a scendere. I pesi si
-dimezzano man mano che si va indietro, come l'eco di un suono che si spegne.
+meno, la settimana scorsa ancora meno, e così via a scendere. A ogni passo
+indietro il peso si riduce di una stessa frazione, come l'eco di un suono che
+si spegne.
 
 La versione base tiene conto solo del **livello** (dove sta la serie ora). Ma se
 la serie sale con costanza, ti serve anche una stima di *quanto* sale: aggiungi
@@ -306,10 +336,13 @@ $$
 \hat{x}_{t+1} = \ell_t,
 $$
 
-con $\alpha \in (0,1)$ il fattore di lisciamento. Srotolando la ricorsione,
-$\hat{x}_{t+1} = \alpha \sum_{j\ge 0} (1-\alpha)^j x_{t-j}$: i pesi
-$\alpha(1-\alpha)^j$ **decadono esponenzialmente** e sommano a $1$. Con
-$\alpha = 0{,}3$ valgono $0{,}30,\ 0{,}21,\ 0{,}147,\ \dots$
+con $\alpha \in (0,1)$ il fattore di lisciamento. Srotolando la ricorsione
+fino all'inizio della serie,
+$\ell_t = \alpha \sum_{j=0}^{t-1} (1-\alpha)^j x_{t-j} + (1-\alpha)^t \ell_0$:
+i pesi $\alpha(1-\alpha)^j$ **decadono esponenzialmente** e, per $t$ grande
+(quando il peso residuo dell'inizializzazione $\ell_0$ è ormai trascurabile),
+la loro somma tende a $1$. Con $\alpha = 0{,}3$ valgono
+$0{,}30,\ 0{,}21,\ 0{,}147,\ \dots$
 
 Il metodo di **Holt** aggiunge una componente di trend $b_t$:
 
@@ -326,13 +359,16 @@ $$
 \begin{aligned}
 \ell_t &= \alpha\,(x_t - s_{t-m}) + (1-\alpha)(\ell_{t-1}+b_{t-1}), \\
 b_t &= \beta\,(\ell_t - \ell_{t-1}) + (1-\beta)\,b_{t-1}, \\
-s_t &= \gamma\,(x_t - \ell_t) + (1-\gamma)\,s_{t-m},
+s_t &= \gamma\,(x_t - \ell_{t-1} - b_{t-1}) + (1-\gamma)\,s_{t-m},
 \end{aligned}
 \qquad
-\hat{x}_{t+h} = \ell_t + h\,b_t + s_{t+h-m}.
+\hat{x}_{t+h} = \ell_t + h\,b_t + s_{t+h-m(k+1)},
 $$
 
-I tre fattori $\alpha,\beta,\gamma \in (0,1)$ regolano quanto in fretta livello,
+dove $k = \lfloor (h-1)/m \rfloor$: l'indice stagionale ricicla sempre
+l'ultimo ciclo stimato, così anche oltre un periodo intero ($h > m$) la
+previsione non riferisce mai stagioni non ancora osservate. I tre fattori
+$\alpha,\beta,\gamma \in (0,1)$ regolano quanto in fretta livello,
 trend e stagionalità si adeguano ai dati nuovi. Questi metodi hanno una veste
 moderna nei modelli **ETS** (*Error, Trend, Seasonal*) in forma spazio-stato,
 che aggiungono un'interpretazione probabilistica e intervalli di previsione
@@ -413,6 +449,47 @@ sezione successiva affronta una domanda che finora abbiamo aggirato (come si
 trasformano le serie in feature per i modelli tabulari già incontrati nel
 capitolo sul Machine Learning.
 
+`````{tab} Elementare
+
+```{admonition} Da ricordare
+:class: important
+- **Scomporre** una serie vuol dire leggerla come la bolletta della luce: il
+  **canone** di fondo (il trend), la **stagione** che torna ogni anno uguale
+  (la stagionalità) e l'**imprevisto** che non segue regole (il residuo). La
+  stagione può aggiungere sempre la stessa cifra (caso **additivo**) oppure una
+  percentuale, e allora cresce insieme al giro d'affari (caso
+  **moltiplicativo**): in gelateria, «d'estate 35 mila euro in più» contro
+  «d'estate il $78\%$ in più».
+- Quasi tutti i modelli classici pretendono una serie **stazionaria**, che balli
+  sempre allo stesso modo: la si ottiene sostituendo ogni valore con la
+  **variazione** rispetto al precedente, che toglie la tendenza in un colpo
+  solo. Per capire che memoria resta si guardano due grafici a barre: l'**ACF**
+  (la funzione di autocorrelazione), quanto oggi assomiglia ai giorni passati, e
+  la **PACF** (l'autocorrelazione parziale), quanto ci assomiglia al netto degli
+  effetti a catena (il nonno e il nipote, scontato il padre). Finché le barre
+  restano alte, quel passato pesa ancora; da dove si schiacciano quasi a zero,
+  guardare più indietro non serve.
+- Ci sono due memorie. Quella dei **valori** passati (l'autoregressione: domani
+  somiglia a oggi, con un rientro verso la media) e quella degli **urti**
+  passati (la media mobile: lo sciopero si fa sentire ancora domani, meno
+  dopodomani). **ARIMA** le usa insieme su una serie già raddrizzata, e dietro
+  la sigla ci sono solo tre conteggi; **SARIMA** rifà lo stesso gioco sul
+  calendario, confrontando dicembre con lo scorso dicembre
+  {cite}`box2015time`.
+- Il **lisciamento esponenziale** è una media del passato in cui ieri pesa
+  molto e ogni passo indietro pesa una frazione in meno, come l'eco di un suono
+  che si spegne. Tre gradini: solo il livello, poi livello più tendenza, poi
+  anche la stagione, e con tutti e tre il metodo si chiama Holt-Winters.
+- I classici sono **robusti, si accontentano di poche osservazioni e si
+  spiegano a chi deve decidere**: nelle competizioni M restano una **linea di
+  base** durissima da battere. Prima si supera quella, poi si tira in ballo il
+  deep learning {cite}`hyndman2021forecasting`.
+```
+
+`````
+
+`````{tab} Superiore
+
 ```{admonition} Da ricordare
 :class: important
 - La **decomposizione** separa una serie in **trend**, **stagionalità** e
@@ -433,3 +510,5 @@ capitolo sul Machine Learning.
   competizioni M restano una **linea di base** durissima da battere. Prima si
   supera quella, poi si passa al deep learning {cite}`hyndman2021forecasting`.
 ```
+
+`````

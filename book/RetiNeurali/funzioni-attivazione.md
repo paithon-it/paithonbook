@@ -50,9 +50,11 @@ $$
 La composizione collassa in un unico strato lineare con pesi $W'$ e bias
 $\mathbf{b}'$: la profondità è illusoria. Introducendo una non linearità $g$
 tra gli strati, $\hat{\mathbf{y}} = W_2\,g(W_1\mathbf{x}+\mathbf{b}_1)+\mathbf{b}_2$,
-la fattorizzazione salta e la rete diventa un **approssimatore universale**
-(Cybenko, 1989; Hornik, 1991): con abbastanza neuroni può avvicinare qualunque
-funzione continua.
+la fattorizzazione salta e la rete diventa un **approssimatore universale**:
+con abbastanza neuroni può avvicinare, con errore arbitrariamente piccolo,
+qualunque funzione continua su un insieme compatto
+({cite}`cybenko1989approximation` per attivazioni sigmoidali;
+{cite}`leshno1993multilayer` per ogni $g$ non polinomiale, ReLU compresa).
 
 `````
 
@@ -99,9 +101,12 @@ $$
 $$
 
 La derivata è massima nell'origine, dove vale solo $0{,}25$, e tende a $0$ per
-$|x|\to\infty$ (le code sature). Nel *backpropagation* il gradiente attraversa
-gli strati moltiplicandosi: catene di fattori $\le 0{,}25$ collassano
-esponenzialmente. È il celebre problema del **gradiente che svanisce**
+$|x|\to\infty$ (le code sature). Nel *backpropagation* il gradiente che
+attraversa uno strato viene moltiplicato per $\sigma'$ *e* per la matrice dei
+pesi: con pesi di norma moderata, quella delle inizializzazioni standard, il
+fattore complessivo per strato resta sotto $1$ e il prodotto collassa
+esponenzialmente con la profondità. È il celebre problema del **gradiente che
+svanisce**
 (*vanishing gradient*), studiato da Hochreiter (1991) e Bengio
 {cite}`bengio1994learning`: nelle
 reti profonde gli strati vicini all'ingresso smettono di ricevere segnale e non

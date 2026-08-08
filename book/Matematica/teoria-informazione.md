@@ -332,6 +332,35 @@ print(H_pq, kl)
 print(2**entropia(equa), 2**entropia(dado))   # 2.0  6.0
 ```
 
+`````{tab} Elementare
+```{admonition} Da ricordare
+:class: important
+- L'informazione è **sorpresa**: una notizia scontata (domani sorge il sole)
+  non informa, una rara sì. Si misura in **bit**, e un bit è una domanda ben
+  posta, con risposta sì o no.
+- L'**entropia** è la sorpresa media di una sorgente: 1 bit a lancio per la
+  moneta equa, circa 0,47 per quella truccata che dà testa nove volte su dieci,
+  circa 2,585 per il dado a sei facce. Massima quando tutti gli esiti sono
+  ugualmente possibili, nulla quando l'esito è già deciso in partenza.
+- La **cross-entropia** è quanto costa scrivere i messaggi con il codice
+  sbagliato (il Morse tarato sull'inglese, usato per l'italiano); i bit pagati
+  in più rispetto al codice giusto, cioè lo spreco puro, sono la **divergenza
+  di Kullback–Leibler**: mai negativa, zero solo se il modello indovina la
+  realtà, e diversa a seconda del verso in cui si sbaglia (perciò non è una
+  distanza).
+- Addestrare un classificatore rendendo la risposta giusta sempre meno
+  sorprendente, avvicinare le credenze del modello alla realtà e scegliere i
+  parametri che rendono i dati più plausibili sono tre nomi per la stessa
+  operazione.
+- La **perplessità** traduce l'entropia in facce del dado: quante alternative
+  ugualmente probabili darebbero la stessa incertezza (2 per la moneta equa, 6
+  per il dado). La ritroveremo nei modelli di linguaggio. E l'entropia è il
+  limite invalicabile della compressione: sotto quella soglia nessun programma
+  comprime senza perdere qualcosa.
+```
+`````
+
+`````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
 - L'informazione è **sorpresa**: un esito di probabilità $p$ vale $-\log_2 p$
@@ -348,3 +377,4 @@ print(2**entropia(equa), 2**entropia(dado))   # 2.0  6.0
   ritroveremo nei modelli di linguaggio. E l'entropia è il limite invalicabile
   della compressione senza perdite.
 ```
+`````

@@ -24,7 +24,10 @@ identica per un modello con dieci parametri e per uno con mille miliardi.
 
 Poi le reti neurali hanno cambiato la scala, e abbiamo dovuto guardare anche sotto il cofano: con PyTorch abbiamo impilato strati e scritto a mano il training loop, e col capitolo sulla [GPU](../GPU/overview.md) abbiamo visto perché una moltiplicazione di matrici è veloce solo se la memoria collabora. Le reti convoluzionali hanno insegnato alle macchine a vedere (ImageNet, 2012, è lo spartiacque); i modelli di sequenza e i Transformer {cite}`vaswani2017attention` a leggere e scrivere; e poi il suono, la voce, i grafi, le serie temporali, le equazioni della fisica. Sono i capitoli in cui la stessa matematica cambia mestiere a seconda della forma dei dati.
 
-Il terzo tratto è quello che, dal 2020 in poi, ha spostato il campo. I modelli
+Il terzo tratto non viene dopo il secondo in ordine di tempo: nasce in
+parallelo, a metà degli anni Dieci, e prende velocità dal 2020. Viene dopo
+perché cambia la domanda, da riconoscere quello che c'è a generarlo e a
+decidere cosa farne. I modelli
 generativi: dalle GAN alla diffusione, e i [modelli a
 energia](../ModelliEnergia/overview.md) che, guardati da vicino, sono la
 stessa cosa scritta in un'altra lingua, e il reinforcement learning, dove
@@ -38,7 +41,7 @@ mondo](../WorldModels/overview.md) che provano a immaginarne le conseguenze.
 E poi gli ultimi capitoli, che non parlano di architetture ma di **mestiere**: portare un modello in produzione e tenerlo in vita ([MLOps](../MLOps/overview.md)), aprirlo per capire perché ha deciso così ([interpretabilità](../Interpretabilita/overview.md)), e rispondere delle sue conseguenze ([AI responsabile](../AIResponsabile/overview.md)). Non sono appendici morali messe in fondo per buona educazione: sono la parte del lavoro che decide se quello che hai costruito serve a qualcuno o fa danni.
 
 Argomenti diversissimi, e in mezzo settant'anni di storia: dal percettrone di
-Rosenblatt del 1957 ai modelli di oggi. Eppure, sotto, sempre le stesse tre
+Rosenblatt del 1958 ai modelli di oggi. Eppure, sotto, sempre le stesse tre
 idee.
 
 ## Tre fili, un solo tessuto
@@ -56,7 +59,7 @@ stanno attorno a tutto.
 
 Se dovessimo comprimere l'intero libro in tre parole, sarebbero **dati**, **rappresentazioni** e **ottimizzazione** ({numref}`fig-fili-conduttori`). Sono i fili che attraversano ogni capitolo, dal più elementare al più avanzato.
 
-I **dati** sono il carburante: nessun modello sa più di ciò che ha visto. Le **rappresentazioni apprese** sono il cuore della rivoluzione degli ultimi quindici anni.
+I **dati** sono il carburante: nessun modello sa più di ciò che ha visto. Le **rappresentazioni apprese** sono il cuore della rivoluzione del deep learning.
 
 `````{tab} Elementare
 Per decenni, per far riconoscere un gatto a un computer, un esperto doveva
@@ -89,12 +92,20 @@ $$
 dove $\theta$ sono i parametri, $\mathcal{L}$ la funzione di costo, $\ell$ la
 perdita sul singolo esempio, $f_\theta$ il modello, e $X^{(i)}$, $y^{(i)}$
 l'input e il target dell'$i$-esimo degli $m$ esempi di addestramento. Cambia
-$f_\theta$ (regressione lineare, rete convoluzionale, Transformer) ma la
-macchina che risolve resta la discesa del gradiente stocastica. Tre idee,
-infinite architetture.
+$f_\theta$ e, per i modelli differenziabili (dalla regressione lineare al
+Transformer), la macchina che risolve è la discesa del gradiente stocastica;
+alberi, SVM e clustering hanno risolutori propri, ma sempre al servizio di un
+obiettivo da minimizzare. Tre idee, infinite architetture.
 `````
 
 ## Dove sta andando
+
+I tre grafici qui sotto rispondono a una domanda semplice: quanto migliora un
+modello se gli diamo più potenza di calcolo, più dati o più parametri, cioè
+le manopole da regolare? Ogni retta mostra l'errore che il modello commette (la
+*loss*: più è bassa, meglio è) al crescere di una delle tre risorse. E in
+nessuno dei tre compare un "ginocchio", cioè un punto in cui il miglioramento
+si ferma, almeno fin dove le misure arrivano.
 
 ```{figure} ../figures/scaling-laws-2020.svg
 :name: fig-leggi-di-scala-tre
@@ -102,13 +113,15 @@ infinite architetture.
 :width: 100%
 
 Tre risorse, tre rette. Su scala logaritmica una retta vuol dire che per
-guadagnare ancora un poco bisogna moltiplicare, non aggiungere.
+guadagnare ancora un poco bisogna moltiplicare, non aggiungere. E una retta
+scende così solo se le altre due risorse ci sono in abbondanza: se ne manca
+una, il miglioramento si ferma lì, per colpa di quella.
 ```
 
 L'assenza di un ginocchio in {numref}`fig-leggi-di-scala-tre` è ciò che ha
-orientato un decennio di ricerca, ed è anche il suo limite di validità: le
-rette descrivono l'intervallo misurato e non promettono niente oltre. È bene
-tenerlo a mente leggendo le pagine che seguono.
+orientato un decennio di ricerca, ed è anche il suo limite: quelle rette
+raccontano solo il tratto che qualcuno ha davvero provato, e più in là nessuno
+sa. È bene tenerlo a mente leggendo le pagine che seguono.
 
 Questo capitolo, nella sua prima stesura, indicava come "direzioni future" i
 foundation model, la multimodalità e gli agenti. Nel frattempo sono diventati
@@ -131,15 +144,21 @@ le prestazioni migliorano in modo prevedibile con dati e calcolo, ma non
 promettono che *scalare* basti a risolvere tutto, e i quattro fronti aperti
 sono, non per caso, quelli in cui scalare non basta.
 
-**L'efficienza dell'attenzione.** Il costo quadratico in lunghezza è il
-vincolo economico dell'intero settore: da qui l'attenzione lineare, i modelli
-a spazio di stati e le architetture ibride, che riscrivono lo stesso calcolo
-come una ricorrenza a memoria costante. **La comprensione del modello**:
-l'interpretabilità meccanicistica prova a leggere i circuiti dentro i pesi, e
-resta l'unico strumento che distingue una risposta corretta da una risposta
-corretta *per il motivo giusto*. **L'affidabilità degli agenti**: comporre più
-passi moltiplica le probabilità di errore, e la ricerca sulla valutazione
-degli agenti è ancora giovane quanto gli agenti stessi. **Il conto fisico**:
+**L'efficienza dell'attenzione.** Sui contesti lunghi il costo quadratico
+dell'attenzione (e la cache di chiavi e valori, che in inferenza cresce con
+la lunghezza) diventa il vincolo economico dominante: da qui l'attenzione
+lineare e i modelli a spazio di stati, che sostituiscono l'attenzione softmax
+con calcoli in forma ricorrente, il cui stato occupa una memoria costante
+nella lunghezza. Le architetture ibride alternano i due tipi di strato, e
+restano quindi quadratiche a tratti. **La
+comprensione del modello**: l'interpretabilità meccanicistica prova a leggere
+i circuiti dentro i pesi, ed è lo strumento più diretto per distinguere una
+risposta corretta da una risposta corretta *per il motivo giusto*, perché
+guarda dentro il modello invece di fermarsi al comportamento.
+**L'affidabilità degli agenti**: componendo più passi le probabilità di
+successo si moltiplicano, quindi quella di fallire cresce con il numero dei
+passi, e la ricerca sulla valutazione degli agenti è ancora giovane quanto
+gli agenti stessi. **Il conto fisico**:
 energia, acqua, silicio e la concentrazione di tutto questo in pochi attori
 (un problema di politica industriale travestito da problema tecnico).
 
@@ -176,7 +195,7 @@ potente non è uno strumento neutrale.
 `````
 
 `````{tab} Superiore
-Un modello generativo massimizza la verosimiglianza dei dati, non la verità: la fluidità del testo è scorrelata dalla sua correttezza, da cui i problemi di calibrazione e le allucinazioni. I *bias* non sono un bug ma una proprietà attesa dell'apprendimento statistico da dati non rappresentativi {cite}`bender2021dangers`. A valle restano questioni aperte: impatto ambientale dell'addestramento, concentrazione di potere in pochi attori, effetti sul lavoro e sull'informazione. L'AI Act europeo (2024) è un primo tentativo di regolazione. Il fact-check umano, per noi, non è opzionale.
+Un modello linguistico è pre-addestrato a massimizzare la verosimiglianza del testo, non la verità: la fluidità di una frase non ne garantisce la correttezza. A peggiorare le cose, la confidenza che il modello esprime è spesso mal calibrata; da qui le allucinazioni sicure di sé. I *bias* non sono un bug ma una proprietà attesa dell'apprendimento statistico da dati non rappresentativi {cite}`bender2021dangers`. A valle restano questioni aperte: impatto ambientale dell'addestramento, concentrazione di potere in pochi attori, effetti sul lavoro e sull'informazione. L'AI Act europeo (2024) è un primo tentativo di regolazione. Il fact-check umano, per noi, non è opzionale.
 `````
 
 ## Come continuare a imparare
@@ -213,6 +232,35 @@ resto è pratica.
 
 Buon lavoro. E, come si dice qui, *in bocca al lupo*.
 
+`````{tab} Elementare
+```{admonition} Da ricordare
+:class: important
+- Tutto il libro poggia su tre idee ricorrenti: i **dati** (nessun modello sa
+  più di ciò che ha visto), le **rappresentazioni apprese** (le "lenti" che la
+  rete si costruisce da sola, invece di farsele suggerire) e
+  l'**ottimizzazione** (le manopole del mixer, regolate un pochino alla volta).
+- Addestrare vuol dire quasi sempre la stessa cosa: misurare quanto il modello
+  ha sbagliato e spostare ogni manopola nella direzione che riduce l'errore,
+  finché non c'è più molto da guadagnare.
+- Quelle che in un libro come questo si chiamano "frontiere" invecchiano in
+  fretta: il modello di fondazione (uno solo, enorme, riadattato a mille
+  compiti), i modelli che capiscono testo, immagini e suono tutti insieme e gli
+  agenti erano previsioni, oggi sono capitoli. Restano varianti delle stesse
+  tre idee, non magia.
+- I fronti davvero aperti sono quelli in cui **fare più grande non basta**: il
+  costo dei testi lunghissimi, il capire *perché* un modello ha risposto così,
+  la fiducia in un agente che lavora da solo per venti passi.
+- Potenza e responsabilità crescono insieme: i fatti inventati con sicurezza e
+  i pregiudizi ereditati dai dati sono limiti strutturali, e verificare a mano
+  quello che il modello dice non è opzionale.
+- Gli ultimi capitoli non parlano di architetture ma di **mestiere**, portare
+  un modello in produzione, aprirlo per capire, rispondere delle sue
+  conseguenze: è la parte che decide se quello che hai costruito serve o fa
+  danni.
+```
+`````
+
+`````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
 - Tutto il libro poggia su tre idee ricorrenti: **dati**, **rappresentazioni apprese** e **ottimizzazione**.
@@ -224,3 +272,4 @@ Buon lavoro. E, come si dice qui, *in bocca al lupo*.
   produzione, interpretabilità, responsabilità: è la parte che decide se
   quello che hai costruito serve o fa danni.
 ```
+`````

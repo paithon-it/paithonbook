@@ -1,6 +1,6 @@
 # Visione artificiale: far vedere le macchine
 
-Nel 1966, al MIT, Seymour Papert affidò a uno studente un compito per
+Nel 1966, al MIT, Seymour Papert affidò a un gruppo di studenti un compito per
 l'estate: collegare una telecamera a un computer e insegnargli a descrivere
 quello che vedeva. Il progetto si chiamava, con ottimismo, *Summer Vision
 Project*. L'idea di fondo era che un problema tanto naturale (noi vediamo
@@ -107,7 +107,7 @@ guardando i valori dei pixel uno per uno.
 
 Formulato con precisione, il compito è imparare una funzione
 $f: \mathbb{R}^{C\times H\times W} \to \{1,\dots,K\}$ che sia **invariante** a
-un gruppo di trasformazioni di *nuisance* (traslazione, scala, rotazione
+una famiglia di trasformazioni di *nuisance* (traslazione, scala, rotazione
 limitata, cambi fotometrici, occlusioni parziali) e allo stesso tempo
 **discriminativa** rispetto alle differenze fra classi, che sono spesso
 molto più piccole, nella metrica dei pixel, delle variazioni da ignorare. Due
@@ -248,10 +248,36 @@ il *transfer learning*, che consente di riusare reti già addestrate su
 ImageNet per i nostri problemi con pochi dati. L'obiettivo non è solo capire
 come funzionano: è metterle al lavoro, con PyTorch, sulle nostre immagini.
 
+`````{tab} Elementare
+
 ```{admonition} Da ricordare
 :class: important
-- Per un computer un'immagine è un **tensore** $X \in \mathbb{R}^{C \times H \times W}$:
-  una griglia di numeri, non di oggetti.
+- Per un computer un'immagine è un **foglio a quadretti pieno di numeri**: ogni
+  quadretto (un **pixel**) dice quanto quel puntino è chiaro o scuro, oppure
+  quanto rosso, verde e blu contiene. Dentro non ci sono gatti né cieli: solo
+  numeri, e il mestiere della visione artificiale è trovarci delle regolarità.
+- I quattro compiti classici (**classificazione, rilevamento, segmentazione
+  semantica e di istanza**) chiedono risposte via via più precise: una parola
+  per tutta la foto, un riquadro attorno a ogni oggetto, un colore per ogni
+  pixel secondo la categoria, fino a distinguere un gatto dall'altro.
+- La grande transizione: prima erano gli esperti a scrivere a mano le regole
+  per trovare bordi, angoli e forme; poi si è lasciato che fosse la rete a
+  costruirsi da sola i propri rilevatori, guardando milioni di esempi. Il
+  momento simbolo è la vittoria di AlexNet alla gara di ImageNet nel 2012.
+- Senza le grandi raccolte di immagini già etichettate (**ImageNet**, **COCO**)
+  niente di tutto questo sarebbe stato possibile: contano quanto una buona
+  architettura.
+```
+
+`````
+
+`````{tab} Superiore
+
+```{admonition} Da ricordare
+:class: important
+- Per un computer un'immagine è un **tensore**
+  $X \in \mathbb{R}^{C \times H \times W}$: una griglia di numeri, non
+  di oggetti.
 - I quattro compiti classici (**classificazione, rilevamento, segmentazione
   semantica e di istanza**) differiscono per la forma dell'output,
   dall'etichetta unica alla maschera per singolo oggetto.
@@ -260,3 +286,5 @@ come funzionano: è metterle al lavoro, con PyTorch, sulle nostre immagini.
 - Senza i grandi dataset (**ImageNet**, **COCO**) niente di tutto questo sarebbe
   stato possibile.
 ```
+
+`````

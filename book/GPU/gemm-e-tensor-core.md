@@ -52,12 +52,17 @@ $$
 I_\text{naive} = \frac{2 M N K}{4 \cdot 2 M N K} = \frac{1}{4} \ \text{FLOP/byte},
 $$
 
-*indipendente dalla taglia delle matrici*. Sul roofline della sezione «La
-memoria: il vero collo di bottiglia» è un punto incollato in basso a sinistra:
-profondamente memory-bound. La radice dello spreco è la ri-lettura: la stessa
-riga di $A$ torna dalla HBM per ognuna delle $N$ colonne di $C$, la stessa
-colonna di $B$ per ognuna delle $M$ righe. Si spostano montagne di byte per
-rileggere all'infinito gli stessi numeri.
+*indipendente dalla taglia delle matrici*. Il conto assume il modello più
+crudo: ogni lettura emessa viene servita dalla HBM, senza cache di mezzo.
+Nella realtà la L2 e il broadcast dentro il warp recuperano una parte del
+riuso, e il kernel ingenuo fa un po' meglio di $\tfrac14$; ma è un riuso
+*sperato*, affidato alla cache, mentre il tiling che segue lo rende
+*garantito* dal programma. Sul roofline della sezione «La
+memoria: il vero collo di bottiglia» è comunque un punto incollato in basso a
+sinistra: profondamente memory-bound. La radice dello spreco è la ri-lettura:
+la stessa riga di $A$ torna dalla HBM per ognuna delle $N$ colonne di $C$, la
+stessa colonna di $B$ per ognuna delle $M$ righe. Si spostano montagne di byte
+per rileggere all'infinito gli stessi numeri.
 `````
 
 ## Tiling: portare gli ingredienti sul tavolo una volta sola
@@ -188,8 +193,10 @@ su tessere dell'ordine di $4 \times 4$ (l'operazione è esposta al
 programmatore, a livello di warp, su tessere $16 \times 16$). Il cuore è la
 **precisione mista** {cite}`micikevicius2018mixed`: gli ingressi $A$ e $B$
 sono a 16 bit (`float16` sulla V100; le architetture successive, da Ampere in
-poi, aggiungono anche `bfloat16`), ma l'accumulo di $C$ e $D$ resta a
-`float32`, così la somma di molti prodotti non degrada. È, non a caso, la
+poi, aggiungono anche `bfloat16`), mentre l'accumulo di $C$ e $D$ può restare
+a `float32`: è la modalità dell'addestramento in precisione mista, così la
+somma di molti prodotti non degrada (il silicio offre anche l'accumulo a 16
+bit, usato talvolta in inferenza). È, non a caso, la
 forma «generale» del GEMM delle BLAS ($C \leftarrow \alpha A B + \beta C$,
 moltiplica *e* accumula) cablata nel silicio. Il guadagno è di circa un ordine
 di grandezza sul throughput di matmul rispetto ai CUDA core normali: è
@@ -266,7 +273,7 @@ della prima sezione, spostata di un livello.
 
 Chiudiamo con un'onestà dovuta. Quasi certamente non scriverai mai un GEMM a
 mano: librerie come cuBLAS e cuDNN, e generatori come **CUTLASS** o **Triton**
-{cite}`tillet2019triton` (che incontreremo nella sezione sui kernel) lo fanno
+{cite}`tillet2019triton` (che abbiamo incontrato nella sezione sui kernel) lo fanno
 meglio di quanto potrebbe chiunque, sfruttando tiling multilivello e tensor
 core in modi che cambiano a ogni architettura. Perché allora capire il tiling?
 Perché spiega due regole pratiche che spostano davvero il cronometro, e che
@@ -296,8 +303,10 @@ GEMM è il primo, e più puro, esempio di una lezione che tornerà a ogni pagina
   prodotto $C = A B$ con $A$ di forma $(M,K)$ e $B$ di forma $(K,N)$ costa circa
   $2 M N K$ FLOP.
 - La versione **ingenua** rilegge dalla HBM le stesse righe e colonne
-  all'infinito: intensità aritmetica fissa a $\tfrac14$ FLOP/byte,
-  indipendente dalla taglia, profondamente **memory-bound**.
+  all'infinito: nel modello senza cache l'intensità aritmetica resta ferma a
+  $\tfrac14$ FLOP/byte, indipendente dalla taglia (nella realtà la L2 recupera
+  qualcosa, ma è riuso *sperato*, non garantito dal programma). In ogni caso,
+  profondamente **memory-bound**.
 - Il **tiling** spezza $C$ in tessere e carica i blocchi di $A$ e $B$ in
   **shared memory** una volta sola, riusandoli: con tessere $T \times T$
   l'intensità sale a circa $T/4$ FLOP/byte, e sul roofline il GEMM scivola verso

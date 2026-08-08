@@ -129,11 +129,13 @@ campionamento casuale e quindi `shuffle`. L'alternativa è `IterableDataset`
 di messaggi, dataset che non stanno su disco), dove il campionamento casuale
 non è possibile e lo shuffling si approssima con un buffer.
 
-Due cose vanno sapute su `__getitem__`. La prima: viene eseguito nei
-**processi worker**, non nel processo principale, quindi tutto ciò che tocca
-deve essere serializzabile (`pickle`) e non deve essere un handle già aperto;
-un connettore a database o un file HDF5 aperto in `__init__` e usato nel
-`__getitem__` è la causa classica dei crash con `num_workers > 0`. Si apre
+Due cose vanno sapute su `__getitem__`. La prima: con `num_workers > 0` viene
+eseguito nei **processi worker**, non in quello principale (col default,
+`num_workers=0`, tutto resta nel processo principale). Ai worker viene passato
+l'oggetto `Dataset` stesso, che sulle piattaforme ad avvio *spawn* deve quindi
+essere serializzabile (`pickle`); e un handle già aperto in `__init__` e usato
+nel `__getitem__` (un connettore a database, un file HDF5) è la causa classica
+dei crash con `num_workers > 0`, qualunque sia il modo di avvio. Si apre
 *pigramente*, al primo accesso, dentro il worker. La seconda: deve restituire
 tensori (o tipi che il *collate* di default sa impilare); il default gestisce
 tensori, numeri, stringhe, dizionari e tuple annidate, ma pretende che tutti

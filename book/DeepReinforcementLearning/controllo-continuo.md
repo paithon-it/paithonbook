@@ -1,6 +1,7 @@
 # Controllo continuo: DDPG, TD3, SAC
 
-Un joystick Atari ha nove posizioni: su, giù, le diagonali, il centro. Il Deep
+Un joystick Atari ha nove posizioni: su, giù, sinistra, destra, le quattro
+diagonali, il centro. Il Deep
 Q-Network sceglie fra queste con un `argmax`, confrontando i valori di un
 pugno di azioni. Ma prova a immaginare un braccio robotico con sette
 articolazioni, o un robot a quattro zampe che deve imparare a camminare. A
@@ -223,7 +224,7 @@ A parità di ricompensa attesa, preferisce la condotta più varia, quella che
 mantiene aperte più opzioni. Immagina di andare al lavoro sempre per la stessa
 strada perché "funziona": non scoprirai mai la scorciatoia. Un pendolare che
 ogni tanto cambia percorso, senza perdere troppo tempo, resta pronto a cogliere
-la via migliore quando si presenta. Questa preferizione per la varietà si
+la via migliore quando si presenta. Questa preferenza per la varietà si
 regola con una manopola, la "temperatura": alta, l'agente esplora molto; bassa,
 si concentra sul premio. SAC di solito gira quella manopola da solo, adattandola
 durante l'addestramento.
@@ -332,6 +333,37 @@ fisici, calibrazione, adattamento sul campo) è un problema di ricerca ancora
 aperto, e ci ricorda che l'algoritmo di controllo è solo un pezzo del percorso
 che porta un robot a muoversi nel mondo.
 
+`````{tab} Elementare
+```{admonition} Da ricordare
+:class: important
+- Nel **controllo continuo** l'azione non è una voce da scegliere in un menu,
+  è una quantità da dosare (quanta forza a ciascun motore) e il menu ha
+  infinite righe: scorrerle tutte, come fa DQN, non si può. La via d'uscita è
+  affiancare al giudice che assegna i voti un **attore** che propone
+  direttamente la mossa; al giudice resta da dire se è buona e da che parte
+  ritoccarla.
+- **DDPG** insegna all'attore a seguire la *pendenza* indicata dal critico,
+  come chi sale una collina con la bussola invece che a tentoni; riusa il
+  quaderno delle esperienze passate e le copie congelate delle reti ereditate
+  da DQN, ed esplora aggiungendo un po' di rumore casuale alle proprie mosse.
+- DDPG è nervoso e si lascia illudere dai voti troppo alti. **TD3** lo
+  corregge con tre accorgimenti: due giudici invece di uno, e ci si regola sul
+  più prudente; l'attore cambia strategia una volta ogni due aggiornamenti dei
+  giudici; il voto di riferimento viene sfumato con un pizzico di rumore, così
+  l'attore non si aggrappa a un picco stretto e probabilmente illusorio.
+- **SAC** cambia l'obiettivo del gioco: non solo il massimo premio, ma il
+  massimo premio *restando il più imprevedibile possibile*, come il pendolare
+  che ogni tanto cambia strada e per questo scopre la scorciatoia. Quanto
+  contare la varietà è una manopola, che di solito l'algoritmo gira da sé.
+- Riusare le esperienze già vissute fa imparare con molti meno tentativi
+  (decisivo quando ogni prova consuma un robot vero), ma rende l'addestramento
+  più delicato da tarare rispetto a PPO. E resta lo scarto fra simulatore e
+  mondo fisico: una strategia perfetta in simulazione può inciampare al primo
+  passo reale.
+```
+`````
+
+`````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
 - Nel **controllo continuo** l'azione è un vettore reale: l'`argmax` di DQN è
@@ -349,3 +381,4 @@ che porta un robot a muoversi nel mondo.
 - Off-policy significa **efficienza nei campioni** ma minore **stabilità** di
   PPO; e resta il **sim-to-real gap**, lo scarto tra simulazione e mondo fisico.
 ```
+`````

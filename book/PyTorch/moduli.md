@@ -190,23 +190,27 @@ probabilità (la softmax) la fa lei, al suo interno.
 
 `````{tab} Superiore
 Per la regressione, `nn.MSELoss` calcola
-$\mathcal{L} = \frac{1}{N}\sum_{i=1}^{N} (\hat{y}_i - y_i)^2$.
-Per la classificazione a $K$ classi, `nn.CrossEntropyLoss` combina in un solo
-modulo `LogSoftmax` e `NLLLoss`: dati i logit $z_i$ e la classe vera $c$,
+$\mathcal{L} = \frac{1}{N}\sum_{i=1}^{N} (\hat{y}_i - y_i)^2$, dove l'indice
+$i$ scorre gli $N$ esempi del batch. Per la classificazione a $K$ classi,
+`nn.CrossEntropyLoss` combina in un solo modulo `LogSoftmax` e `NLLLoss`: dati
+i logit $z_1, \dots, z_K$ e la classe vera $c$ di un singolo esempio,
 
 $$
 \mathcal{L} = -\log \hat{y}_c,
 \qquad
-\hat{y}_i = \frac{e^{z_i}}{\sum_{j=1}^{K} e^{z_j}} .
+\hat{y}_k = \frac{e^{z_k}}{\sum_{j=1}^{K} e^{z_j}} .
 $$
 
-Applicarla ai logit, e non a probabilità già normalizzate, non è un capriccio:
-il calcolo congiunto del logaritmo e della softmax è numericamente più stabile
-(evita underflow con il *log-sum-exp trick*) e per questo l'ultimo strato del
-modello **non** deve avere la softmax. Se servono le probabilità (per leggere
-l'output, non per addestrare), si applica `torch.softmax(logits, dim=1)` a
-valle. Con etichette intere il target ha shape $(N,)$ e dtype `int64`, non
-serve il one-hot.
+dove qui $k$ e $j$ scorrono le $K$ classi, non gli esempi. Come per la MSE,
+sul batch il modulo restituisce la **media** di questi termini sugli $N$
+esempi (`reduction='mean'`, il default): è il "numero solo" del codice qui
+sopra. Applicarla ai logit, e non a probabilità già normalizzate, non è un
+capriccio: il calcolo congiunto del logaritmo e della softmax è numericamente
+più stabile (evita underflow con il *log-sum-exp trick*), e per questo
+l'ultimo strato del modello **non** deve avere la softmax. Se servono le
+probabilità (per leggere l'output, non per addestrare), si applica
+`torch.softmax(logits, dim=1)` a valle. Con etichette intere il target ha
+shape $(N,)$ e dtype `int64`, non serve il one-hot.
 `````
 
 ```{admonition} Da ricordare

@@ -99,16 +99,21 @@ controllo umano) che può lasciar proseguire il giro oppure fermarlo.
 Un capobottega non è un'idea astratta: è fatto di attrezzi concreti. Il repo
 *loop-engineering* di Cobus Greyling raccoglie il repertorio ormai ricorrente di
 chi questi cicli li costruisce sul serio. Vale la pena elencarlo, perché ogni
-voce risponde a un problema pratico che il ciclo esterno pone.
+voce risponde a un problema pratico che il ciclo esterno pone. Gli esempi
+vengono quasi tutti dal mondo di chi programma, che di questi loop è il primo
+cantiere: dove compare un attrezzo del mestiere, accanto c'è la sua traduzione
+in parole comuni.
 
-- **Automazione e scheduling.** Il loop ha una *cadenza*: un cron che lo avvia
-  ogni notte, un webhook che lo sveglia a ogni commit, una coda che gli passa
-  compiti. Senza cadenza non c'è ciclo, c'è solo un comando che qualcuno
-  lancia a mano.
-- **Worktree isolati.** Ogni giro lavora in una copia separata del repository
-  (in git, un *worktree*): così più esecuzioni girano **in parallelo senza
-  pestarsi i piedi**, e un giro che fa danni li fa in un recinto, non sul ramo
-  principale.
+- **Automazione e scheduling.** Il loop ha una *cadenza*: una sveglia
+  programmata (un *cron*) che lo avvia ogni notte, un campanello (un *webhook*)
+  che lo sveglia ogni volta che qualcuno consegna una modifica, una coda che
+  gli passa compiti. Senza cadenza non c'è ciclo, c'è solo un comando che
+  qualcuno lancia a mano.
+- **Worktree isolati.** Ogni giro lavora in una copia separata del progetto.
+  Così più esecuzioni girano **in parallelo senza pestarsi i piedi**, e un giro
+  che fa danni li fa in un recinto, non sulla copia buona. Il programma che
+  custodisce il codice e la sua storia si chiama git; nel suo gergo, quella
+  copia separata è un *worktree*.
 - **Skill e prompt riusabili.** Le istruzioni non si riscrivono ogni volta: si
   impacchettano in *skill* versionate, richiamabili per nome. È il **prompt
   come codice** del context engineering, portato al livello del loop.
@@ -120,9 +125,12 @@ voce risponde a un problema pratico che il ciclo esterno pone.
   arrivati, un `LOOP.md` con il piano e le decisioni. Sono la memoria a lungo
   termine dell'agente, discussa negli Agenti, qui in forma di file leggibili
   anche da un umano.
-- **Integrazione con strumenti esterni.** Il loop non è un monologo: apre pull
-  request, commenta ticket, chiama servizi via **MCP**, muove `git`. È così che
-  il ciclo tocca il mondo invece di limitarsi a produrre testo.
+- **Integrazione con strumenti esterni.** Il loop non è un monologo: propone
+  modifiche da far approvare (le *pull request*), commenta le segnalazioni
+  aperte (i *ticket*), chiama servizi esterni tramite un protocollo apposito
+  (l'**MCP**, *Model Context Protocol*), registra il lavoro nella storia del
+  progetto con `git`. È così che il ciclo tocca il mondo invece di limitarsi a
+  produrre testo.
 
 Nessuno di questi attrezzi è «intelligente». Sono impalcatura, e come tutta la
 buona impalcatura, è ciò che tiene in piedi la parte intelligente.
@@ -192,9 +200,14 @@ loop engineering diventa difficile.
 Questa idea ha una radice accademica precisa, in due lavori che il capitolo
 sugli Agenti ha già introdotto e che qui rileggiamo dal lato del loop. ReAct
 {cite}`yao2023react` ha mostrato che intrecciare **ragionamento e azione**
-(pensare a parole *e* usare strumenti) rende l'agente più affidabile del
-ragionamento puro (la chain-of-thought {cite}`wei2022chain`) o dell'azione
-pura. Reflexion {cite}`shinn2023reflexion` ha aggiunto il tassello mancante:
+(pensare a parole *e* usare strumenti) rende più del solo agire. E siccome ogni
+pensiero è legato a ciò che gli strumenti hanno davvero riportato, ReAct si
+inventa meno cose del ragionamento lasciato a sé stesso, cioè della
+chain-of-thought {cite}`wei2022chain`, che pensa a voce alta senza mai andare a
+controllare. Questo non vuol dire che ReAct la batta sempre: in certe prove (le
+domande che richiedono più ricerche in fila) la chain-of-thought resta avanti,
+e il risultato migliore arriva dai due metodi usati insieme. Reflexion
+{cite}`shinn2023reflexion` ha aggiunto il tassello mancante:
 dopo un fallimento, l'agente **riflette a parole** sul proprio errore, scrive
 quella riflessione in memoria e la usa per condizionare il tentativo
 successivo. È esattamente la stazione «rifletti» del nostro ciclo.
@@ -317,8 +330,9 @@ introducendo un debito passa lo stesso, e nessuna percentuale lo registra.
 
 Il primo è **aritmetico**, e lo abbiamo già incontrato negli Agenti: gli errori
 si accumulano lungo il ciclo. Se a ogni passo la probabilità di *non* introdurre
-un errore non rilevato è $1 - p$, la probabilità che il loop attraversi $n$
-passi pulito è
+un errore non rilevato è $1 - p$, e se ogni passo sbaglia per conto proprio,
+con lo stesso rischio $p$ tutte le volte, la probabilità che il loop attraversi
+$n$ passi pulito è
 
 $$
 P(\text{pulito}) = (1 - p)^n,
@@ -327,9 +341,14 @@ $$
 dove $p$ è la probabilità d'errore per passo e $n$ il numero di passi del
 ciclo. Il prodotto crolla in fretta: con $p = 0{,}05$ e $n = 20$,
 $P(\text{pulito}) \approx 0{,}36$; due giri su tre inciampano da qualche
-parte. È la ragione matematica per cui il **cancello di verifica** non è un
-lusso: alzando l'affidabilità effettiva di ogni passo, tiene il prodotto
-lontano dallo zero.
+parte. Il conto però regge solo finché ogni passo sbaglia per conto suo, e nei
+loop veri non è così: il *context poisoning* visto nel context engineering fa
+sì che uno sbaglio ne tiri dietro altri. Quando gli errori vengono a grappoli
+il prodotto smette di essere la risposta esatta (i giri tendono a dividersi fra
+del tutto puliti e rovinati in blocco), quindi prendilo per quello che è, un
+conto all'ingrosso e non una regola sicura. Resta la ragione per cui il
+**cancello di verifica** non è un lusso: alzando l'affidabilità effettiva di
+ogni passo, tiene il prodotto lontano dallo zero.
 
 `````{tab} Elementare
 
@@ -353,7 +372,7 @@ quando le metriche lo giustificano:
 - **L2, fix assistiti.** Il loop produce la modifica (una pull request, una
   patch) ma non la integra: c'è un **cancello umano** che rivede e fonde. È il
   regime di gran lunga più comune in produzione.
-- **L3: non presidiato.** Il loop integra da solo, ma **dentro i confini** di
+- **L3, non presidiato.** Il loop integra da solo, ma **dentro i confini** di
   una *allow-list* (quali file, quali comandi, quali repository) e sotto
   monitoraggio continuo. Vi si sale solo dopo che L2 ha dato numeri buoni.
 

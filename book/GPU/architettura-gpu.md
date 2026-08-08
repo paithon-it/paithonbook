@@ -77,7 +77,8 @@ circa $2nmp$ operazioni tutte indipendenti.
 
 Vista da lontano, una GPU sembra un blocco unico. Da vicino è un insieme di
 unità quasi autonome, gli **Streaming Multiprocessor** (SM): sono le officine in
-cui il lavoro viene davvero eseguito. Una GPU moderna ne ha alcune decine, e la
+cui il lavoro viene davvero eseguito. Una GPU moderna ne ha da qualche decina a
+oltre un centinaio, e la
 sua potenza cresce, prima di tutto, moltiplicando gli SM.
 
 Ogni SM è una piccola macchina completa. Contiene:
@@ -93,9 +94,10 @@ Ogni SM è una piccola macchina completa. Contiene:
   perché è la chiave delle prestazioni.
 
 Gli ordini di grandezza aiutano a fissare le proporzioni, senza inseguire il
-numero esatto di un modello specifico (che cambia a ogni generazione):
-**decine di SM** per GPU, per un totale di **migliaia di CUDA core**, capaci
-di tenere in volo **decine di migliaia di thread** contemporaneamente. Questa
+numero esatto di un modello specifico (che cambia a ogni generazione): **da
+parecchie decine a oltre un centinaio di SM** per GPU, per un totale di
+**migliaia o decine di migliaia di CUDA core**, capaci
+di tenere in volo **centinaia di migliaia di thread** contemporaneamente. Questa
 scala è la ragione dei numeri visti nel capitolo su PyTorch (le decine di
 migliaia di miliardi di operazioni in virgola mobile al secondo) e il motivo
 per cui la GPU divora le moltiplicazioni tra matrici delle reti neurali.
@@ -266,8 +268,9 @@ prossima sezione.
   (pochi core complessi, finisce in fretta il singolo compito), la GPU è
   *throughput-oriented* (migliaia di ALU semplici, smaltisce montagne di
   conti identici e indipendenti).
-- La GPU è una federazione di **Streaming Multiprocessor** (SM): decine di SM,
-  migliaia di CUDA core, decine di migliaia di thread residenti. Ogni SM ha
+- La GPU è una federazione di **Streaming Multiprocessor** (SM): da parecchie
+  decine a oltre un centinaio di SM, per un totale di migliaia o decine di
+  migliaia di CUDA core e centinaia di migliaia di thread residenti. Ogni SM ha
   ALU, warp scheduler, un grande register file e la shared memory.
 - Il programmatore lancia una **griglia** di **blocchi** di **thread**;
   l'hardware assegna ogni blocco a uno SM e lo esegue in **warp da 32

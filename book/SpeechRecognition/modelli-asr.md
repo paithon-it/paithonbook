@@ -11,11 +11,13 @@ in cui si costruiscono questi modelli.
 ## Il problema dell'allineamento
 
 Prima di dare in pasto l'audio a una rete, lo trasformiamo in uno
-**spettrogramma**: tagliamo il segnale in finestrelle di circa 25 millisecondi
-(i *frame*) e per ciascuna misuriamo quanta energia c'è a ogni frequenza. Un
-secondo di parlato diventa così un centinaio di frame. La trascrizione,
-invece, è lunga poche decine di caratteri. Due sequenze di lunghezza molto
-diversa, e nessuno ci dice quale frame corrisponde a quale lettera.
+**spettrogramma**: tagliamo il segnale in finestrelle di circa 25
+millisecondi, una nuova ogni 10 millisecondi (così si sovrappongono, e nessun
+suono cade in mezzo a due tagli), e per ciascuna misuriamo quanta energia c'è
+a ogni frequenza. Ogni finestrella è un *frame*, e un secondo di parlato
+diventa così un centinaio di frame. La trascrizione, invece, è lunga poche
+decine di caratteri. Due sequenze di lunghezza molto diversa, e nessuno ci
+dice quale frame corrisponde a quale lettera.
 
 `````{tab} Elementare
 Immagina di dover sottotitolare un video a orecchio, senza conoscere i tempi.
@@ -28,9 +30,11 @@ pezzetti di audio ai pochi caratteri del testo.
 
 `````{tab} Superiore
 Abbiamo un input $X = (x_1, \dots, x_T)$ di $T$ frame e un target
-$\mathbf{y} = (y_1, \dots, y_U)$ di $U$ token (caratteri o sotto-parole), con
-$T \gg U$. L'allineamento è **monotono** (l'audio scorre in avanti come il
-testo) ma **sconosciuto**: non abbiamo etichette frame per frame. Segmentare a
+$y = (y_1, \dots, y_U)$ di $U$ token (caratteri o sotto-parole): è la
+trascrizione che nella panoramica chiamavamo $W$, vista qui come sequenza di
+simboli. Con $T \gg U$, l'allineamento è **monotono** (l'audio scorre in
+avanti come il testo) ma **sconosciuto**: non abbiamo etichette frame per
+frame. Segmentare a
 mano milioni di ore per dire «da qui a qui c'è una a» è impraticabile. Serve un
 modello che impari l'allineamento *da solo*, dalla sola coppia
 (audio, trascrizione).
@@ -58,7 +62,7 @@ sequenza: prima unisce i caratteri uguali consecutivi, poi elimina i vuoti
 
 `````{tab} Elementare
 Molti modi di etichettare i frame danno la stessa parola. Per «PALLA» va bene
-`P A A L ∅ L A`, ma anche `P P A L ∅ L L A`: entrambi, dopo aver unito i doppioni
+`P A A L ∅ L A`, ma anche `P P A L ∅ L A`: entrambi, dopo aver unito i doppioni
 e tolto i vuoti, diventano `PALLA`. La CTC non sceglie *un* allineamento
 giusto: li considera tutti insieme e premia la rete se la loro somma punta
 verso la trascrizione corretta. Nota il trucco del vuoto: senza il ∅ in mezzo,
@@ -66,20 +70,22 @@ le due «L» si fonderebbero in una sola.
 `````
 
 `````{tab} Superiore
-La probabilità di una trascrizione $\mathbf{y}$ è la somma su tutti i percorsi
+La probabilità di una trascrizione $y$ è la somma su tutti i percorsi
 frame-level $\pi$ che, collassati, la producono:
 
 $$
-p(\mathbf{y} \mid X) = \sum_{\pi \,\in\, \mathcal{B}^{-1}(\mathbf{y})}
+p(y \mid X) = \sum_{\pi \,\in\, \mathcal{B}^{-1}(y)}
 \prod_{t=1}^{T} p_t(\pi_t \mid X),
 $$
 
 dove $\pi = (\pi_1, \dots, \pi_T)$ è un allineamento a livello di frame,
 $p_t(\pi_t \mid X)$ è la probabilità che la rete assegna al simbolo $\pi_t$ al
 frame $t$, e $\mathcal{B}$ è la funzione di collasso. La somma ha un numero
-esponenziale di termini, ma si calcola in tempo lineare con un algoritmo di
-programmazione dinamica *forward-backward*. Si addestra minimizzando
-$\mathcal{L} = -\log p(\mathbf{y} \mid X)$. Il limite noto: la CTC assume che le
+esponenziale di termini, ma si calcola in tempo $O(T \cdot U)$ (lineare nella
+lunghezza dell'audio, a trascrizione fissata) con l'algoritmo di
+programmazione dinamica *forward-backward*, che lavora sul reticolo dei
+$2U+1$ simboli della trascrizione estesa con i blank. Si addestra minimizzando
+$\mathcal{L} = -\log p(y \mid X)$. Il limite noto: la CTC assume che le
 predizioni ai vari frame siano **condizionatamente indipendenti** dato $X$,
 quindi non modella bene le dipendenze fra i caratteri in uscita.
 `````
@@ -103,17 +109,20 @@ di ciò che ha sentito. Il modello fa lo stesso: genera un carattere, si
 
 `````{tab} Superiore
 Al passo $i$ il decoder costruisce un vettore di contesto come media pesata
-degli stati dell'encoder $\mathbf{h}_j$:
+degli stati dell'encoder $h_j$:
 
 $$
-\mathbf{c}_i = \sum_{j=1}^{T} \alpha_{ij}\,\mathbf{h}_j,
+c_i = \sum_{j=1}^{T_{\text{enc}}} \alpha_{ij}\,h_j,
 \qquad \sum_j \alpha_{ij} = 1,
 $$
 
-dove i pesi di attenzione $\alpha_{ij}$ dicono quanto il frame $j$ conta per
-produrre il token $i$-esimo. A differenza della CTC, il decoder condiziona ogni
-token su quelli già emessi: modella cioè le dipendenze del testo in uscita, al
-prezzo di una generazione sequenziale più lenta.
+dove i pesi di attenzione $\alpha_{ij}$ dicono quanto lo stato $j$ conta per
+produrre il token $i$-esimo, e $T_{\text{enc}} \le T$ è il numero di stati
+dell'encoder: l'encoder tipicamente sottocampiona l'asse temporale (in LAS di
+un fattore 8), proprio per rendere trattabile l'attenzione su sequenze lunghe.
+A differenza della CTC, il decoder condiziona ogni token su quelli già emessi:
+modella cioè le dipendenze del testo in uscita, al prezzo di una generazione
+sequenziale più lenta.
 `````
 
 ## Whisper e i Transformer end-to-end
@@ -136,15 +145,23 @@ Quello che manca in {numref}`fig-whisper` conta quanto quello che c'è. La
 pipeline classica aveva un modello acustico, un dizionario di pronuncia e un
 modello di linguaggio, ciascuno costruito e messo a punto per una lingua;
 qui gli stessi compiti restano, ma sono distribuiti nei pesi e appresi dai
-dati, e questo è il motivo per cui un modello solo copre novanta lingue. La sua forza non è tanto l'architettura quanto i dati: 680.000 ore di
-audio raccolte dal web con etichettatura debole (trascrizioni prese così
-com'erano, senza revisione umana) in oltre novanta lingue. Con lo stesso
-modello Whisper trascrive, traduce verso l'inglese e riconosce la lingua,
-guidato da istruzioni speciali (*token*), inserite nel decoder. È robusto ad
-accenti e rumore e ha reso obsoleta la vecchia pipeline a stadi (estrazione
-feature, modello acustico, dizionario di pronuncia, modello di linguaggio). I
-limiti restano onesti: su silenzi lunghi può «allucinare» testo o ripetersi in
-loop.
+dati, e questo è il motivo per cui un modello solo copre novanta lingue. La
+sua forza non è tanto l'architettura quanto i dati: 680.000 ore di audio
+raccolte dal web con etichettatura debole (trascrizioni prese così com'erano,
+senza revisione umana) in oltre novanta lingue. Con lo stesso modello Whisper
+trascrive, traduce verso l'inglese e riconosce la lingua, guidato da istruzioni
+speciali (*token*) inserite nel decoder. È robusto ad accenti e rumore.
+
+Non è però Whisper ad aver mandato in pensione la catena a stadi: il passaggio
+a una rete sola era cominciato anni prima, con la CTC e con i modelli ad
+attenzione delle due sezioni precedenti, e Whisper ne è la vetrina più
+visibile. La vecchia catena, del resto, non è sparita: dove le parole
+da riconoscere sono poche e note in anticipo (i comandi di un centralino
+telefonico, i codici letti ad alta voce in un magazzino) e la risposta deve
+arrivare in una frazione di secondo, i sistemi a stadi restano in servizio,
+perché sono più piccoli, più veloci e più facili da vincolare a un elenco di
+parole ammesse. Anche i limiti di Whisper restano onesti: su silenzi lunghi
+può «allucinare» testo o ripetersi in loop.
 
 ## Il modello di linguaggio, il correttore silenzioso
 

@@ -6,13 +6,17 @@ dei vicini, trasformazione lineare, non linearità) e già classifica i nodi di
 un grafo meglio di quanto facessero i cammini casuali. Ma quella eleganza si
 paga con due limiti che, su un grafo vero, diventano subito ingombranti.
 
-Il primo è che la GCN, così com'è formulata, è **transduttiva**: la
-normalizzazione $\hat{A} = \tilde{D}^{-1/2}\tilde{A}\,\tilde{D}^{-1/2}$ va
-calcolata sull'intera matrice di adiacenza, il grafo intero, fissato una volta
-per tutte. Arriva un nodo nuovo (un utente che si iscrive oggi a un social) e
-bisogna in linea di principio rifare i conti su tutto. Il secondo è di
-**scala**: ad ogni strato ogni nodo somma *tutti* i suoi vicini, e i vicini
-dei vicini, e così via; su un grafo di miliardi di archi, dove qualche
+Il primo è che la GCN, così come Kipf e Welling la addestrano, è
+**transduttiva**: si addestra su tutto il grafo in una volta sola, quel grafo
+lì e nessun altro, e non dice cosa fare con i nodi che arrivano dopo. Pensa a
+un utente che si iscrive oggi a un social: quando la rete è stata addestrata
+lui non c'era, e per lui non esiste una risposta già pronta. Non è colpa della
+formula, perché i pesi appresi si applicherebbero tali e quali anche a lui: un
+nodo in più cambia l'elenco di chi è collegato a chi soltanto lì attorno, dove
+arrivano i suoi archi. È la ricetta di addestramento a presupporre di avere
+davanti l'intero grafo. Il secondo limite è di **scala**: ad ogni strato ogni
+nodo somma *tutti* i suoi vicini, e i vicini dei vicini, e così via; su un
+grafo di miliardi di archi, dove qualche
 nodo-celebrità ha milioni di connessioni, questa somma esplode. Questa sezione
 racconta le due idee che hanno tolto la GNN dal laboratorio e l'hanno messa in
 produzione da Pinterest a Google Maps (*GraphSAGE* e la *Graph Attention
@@ -151,34 +155,43 @@ $h_i$ le feature del nodo $i$ e $W$ una trasformazione lineare condivisa:
 
 $$
 \alpha_{ij} = \frac{\exp\!\Big(\mathrm{LeakyReLU}\big(\mathbf{a}^{\top}[\,W h_i \,\|\, W h_j\,]\big)\Big)}
-{\sum_{k \in \mathcal{N}(i)} \exp\!\Big(\mathrm{LeakyReLU}\big(\mathbf{a}^{\top}[\,W h_i \,\|\, W h_k\,]\big)\Big)},
+{\sum_{k \in \mathcal{N}(i) \cup \{i\}} \exp\!\Big(\mathrm{LeakyReLU}\big(\mathbf{a}^{\top}[\,W h_i \,\|\, W h_k\,]\big)\Big)},
 \qquad
-h_i' = \sigma\!\Big(\sum_{j \in \mathcal{N}(i)} \alpha_{ij}\, W h_j\Big),
+h_i' = \sigma\!\Big(\sum_{j \in \mathcal{N}(i) \cup \{i\}} \alpha_{ij}\, W h_j\Big),
 $$
 
-dove $\|$ è la concatenazione, $\mathbf{a}$ è un vettore di parametri appreso,
+dove il vicinato, come nel paper, comprende il nodo stesso ($j$ corre su
+$\mathcal{N}(i) \cup \{i\}$): senza questo cappio il nodo dimenticherebbe la
+propria feature, il difetto che i *self-loop* della GCN erano nati per
+evitare. Qui $\|$ è la concatenazione, $\mathbf{a}$ è un vettore di parametri appreso,
 $\mathrm{LeakyReLU}$ la non linearità usata sul punteggio (pendenza $0{,}2$ per
 gli ingressi negativi) e $\sigma$ quella finale. Il coefficiente $\alpha_{ij}$
 dice **quanto il nodo $i$ pesa il vicino $j$**; la softmax garantisce
-$\sum_{j \in \mathcal{N}(i)} \alpha_{ij} = 1$. Rispetto alla *scaled dot-product
+$\sum_{j \in \mathcal{N}(i) \cup \{i\}} \alpha_{ij} = 1$. Rispetto alla *scaled dot-product
 attention* dei Transformer cambia solo il modo di calcolare il punteggio (qui
 una piccola rete con $\mathbf{a}$ e la $\mathrm{LeakyReLU}$, lì il prodotto
 scalare query·key riscalato); l'ossatura «pesi softmax, media pesata dei value»
 è la stessa.
 
 Un esempio a mano. Un nodo $i$ ha tre vicini, e i punteggi (dopo la
-$\mathrm{LeakyReLU}$) valgono $e_{i1}=2$, $e_{i2}=1$, $e_{i3}=0$. La softmax dà
+$\mathrm{LeakyReLU}$) valgono $e_{i1}=2$, $e_{i2}=1$, $e_{i3}=0$; il cappio,
+cioè il punteggio che il nodo assegna a sé stesso, vale $e_{ii}=1$. La softmax
+corre su tutti e quattro i termini, e il denominatore è
+$e^{2}+e^{1}+e^{0}+e^{1} = 13{,}83$:
 
 $$
-\alpha_{i1} = \frac{e^{2}}{e^{2}+e^{1}+e^{0}} = \frac{7{,}39}{11{,}11} \approx 0{,}67,
+\alpha_{i1} = \frac{7{,}39}{13{,}83} \approx 0{,}53,
 \quad
-\alpha_{i2} = \frac{2{,}72}{11{,}11} \approx 0{,}24,
+\alpha_{i2} = \frac{2{,}72}{13{,}83} \approx 0{,}20,
 \quad
-\alpha_{i3} = \frac{1}{11{,}11} \approx 0{,}09,
+\alpha_{i3} = \frac{1}{13{,}83} \approx 0{,}07,
+\quad
+\alpha_{ii} = \frac{2{,}72}{13{,}83} \approx 0{,}20 .
 $$
 
-e i tre pesi sommano a $1$ come devono: il primo vicino domina l'aggregazione
-(due terzi del peso), il terzo è quasi ignorato. Come nei Transformer, si
+I quattro pesi sommano a $1$ come devono: il primo vicino domina
+l'aggregazione (poco più della metà), il terzo è quasi ignorato, e un quinto
+del nuovo stato se lo prende il nodo stesso. Come nei Transformer, si
 usano più **teste** in parallelo (*multi-head*): $K$ meccanismi di attenzione
 indipendenti, i cui risultati si concatenano negli strati intermedi e si
 mediano nello strato finale; così il modello può pesare i vicini secondo
@@ -229,12 +242,11 @@ in cui elenchi i giocatori, che è proprio ciò che ci serve su un grafo.
 
 Sembrano equivalenti, ma non lo sono, e la differenza è più profonda di quanto
 sembri. La media e il massimo **dimenticano quanti** sono i nodi; la somma no.
-Un esempio: una molecola con due gruppi ossidrili e una con un solo gruppo
-ossidrilo, a parità di tutto il resto, sono molecole diverse, e possono
-comportarsi in modo diverso. Se i due nodi «ossidrile» hanno lo stesso vettore
-$b$, la **somma** dà $2b$ nel primo caso e $b$ nel secondo: li distingue. La
-**media** dà $b$ in entrambi i casi, il **massimo** pure: confondono le due
-molecole. Contare, a volte, è tutto.
+L'esempio più pulito: due molecole i cui atomi, agli occhi della rete, portano
+tutti lo stesso vettore $b$, ma una ne ha tre e l'altra sei. Sono molecole
+diverse, e possono comportarsi in modo diverso. La **somma** dà $3b$ nella
+prima e $6b$ nella seconda: le distingue. La **media** dà $b$ in entrambi i
+casi, il **massimo** pure: le confondono. Contare, a volte, è tutto.
 
 `````
 
@@ -256,8 +268,8 @@ iterativamente i nodi impastando la propria etichetta con il *multinsieme*
 delle etichette dei vicini: è esattamente la struttura del message passing. Xu
 et al. dimostrano che **nessuna GNN a message passing può distinguere due
 grafi che il test WL dichiara indistinguibili** (è il tetto teorico) e che una
-GNN lo raggiunge solo se la sua aggregazione è **iniettiva** sul multinsieme
-dei vicini. Da qui la gerarchia:
+GNN raggiunge quel tetto se la sua aggregazione è **iniettiva** sul
+multinsieme dei vicini. Da qui la gerarchia:
 
 $$
 \text{somma} \;\succ\; \text{media} \;\succ\; \text{massimo},
@@ -420,6 +432,46 @@ punto in cui convoluzione, attenzione e apprendimento di rappresentazioni si
 ritrovano, sotto un'unica lente (quella, geometrica, delle simmetrie del
 dato).
 
+`````{tab} Elementare
+
+```{admonition} Da ricordare
+:class: important
+- **GraphSAGE** impara la **ricetta** con cui si costruisce la descrizione di un
+  nodo, non la descrizione già fatta: una ricetta la si applica anche a chi non
+  c'era durante l'addestramento (l'utente iscritto stamattina) e a reti diverse
+  da quella su cui si è imparato, ed è questo che si chiama modo **induttivo**.
+  In più, invece di ascoltare tutti i vicini ne pesca a caso un numero fisso
+  (venticinque, per dire) e mescola solo quelli: come ci si fa un'idea di un
+  quartiere intervistandone un campione a sorte, invece di bussare a ogni porta.
+- La **GAT** passa l'evidenziatore sui vicini: prima decide, vicino per vicino,
+  quanto pesarlo (a ognuno un voto tra 0 e 1, e i voti sommano a 1), poi fa la
+  media pesata con quei voti, che non scrive nessuno a mano ma impara la rete. È
+  la stessa attenzione dei Transformer, dove però ogni parola guarda tutte le
+  altre: qui ogni nodo guarda solo i vicini a cui è davvero collegato.
+- Per un verdetto sull'**intero grafo** («questa molecola è tossica?») i valori
+  di tutti i nodi vanno ridotti a uno solo, come si ricava il voto di una squadra
+  dai voti dei giocatori: sommandoli, mediandoli o prendendo il massimo. La
+  **somma** è la scelta più fine perché è l'unica che ricorda **quanti** sono i
+  nodi: se gli atomi di due molecole portano tutti lo stesso valore, ma una
+  molecola ne ha tre e l'altra sei, la somma dà il triplo di quel valore nella
+  prima e il sestuplo nella seconda, mentre la media e il massimo danno lo stesso
+  risultato per entrambe e le confondono.
+- Applicazioni reali: farmaci (**halicin**, 2020), raccomandazione (**PinSage**
+  di Pinterest, 2018), rilevamento frodi, tempi di percorrenza in **Google Maps**
+  (DeepMind, 2020–21), simulazioni di fluidi e previsioni meteo.
+- Limiti aperti: troppi strati appiattiscono i nodi fino a renderli
+  indistinguibili (**oversmoothing**), l'informazione che sta lontana si perde
+  passando per imbuti stretti (**over-squashing**), i grafi da miliardi di
+  collegamenti restano cari da addestrare, e quasi tutte queste reti danno per
+  scontato che chi è collegato si somigli (gli amici hanno gusti simili): nelle
+  reti dove vale il contrario, dove chi è connesso è diverso, rendono molto meno.
+  In pratica le GNN restano **basse**, due o tre strati, di rado quattro.
+```
+
+`````
+
+`````{tab} Superiore
+
 ```{admonition} Da ricordare
 :class: important
 - **GraphSAGE** rende la GNN **induttiva** (impara *funzioni* di aggregazione, non
@@ -442,3 +494,5 @@ dato).
   **over-squashing** (informazione lontana schiacciata), **scalabilità**,
   **eterofilia**. In pratica le GNN restano **basse**, 2–4 strati.
 ```
+
+`````

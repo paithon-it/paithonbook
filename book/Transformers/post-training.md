@@ -112,7 +112,7 @@ su questa asimmetria.
 
 Prima di proseguire, un problema pratico. Tutto quello che abbiamo descritto
 (e tutto ciò che segue) presuppone di poter aggiornare i pesi del modello. Ma
-un modello da $7$ miliardi di parametri a $32$ bit occupa circa $26$ GB solo
+un modello da $7$ miliardi di parametri a $32$ bit occupa circa $28$ GB solo
 per i pesi (quattro byte a parametro) e l'addestramento ne richiede il triplo
 abbondante fra gradienti e stati dell'ottimizzatore. Fuori dai laboratori,
 quasi nessuno può permetterselo.
@@ -327,8 +327,9 @@ l'intermediario, e senza il cantiere.
 
 `````{tab} Superiore
 
-Il punto di partenza è un fatto notevole: l'obiettivo RLHF con penalità KL
-ha una soluzione ottima in forma chiusa,
+Il punto di partenza è un fatto notevole: l'obiettivo RLHF con penalità KL,
+se lo si massimizza fra *tutte* le policy possibili e non solo dentro la
+classe parametrica di $\pi_\theta$, ha una soluzione ottima in forma chiusa,
 
 $$
 \pi^*(y \mid x) = \frac{1}{Z(x)}\,
@@ -369,7 +370,11 @@ alla ricompensa implicita della risposta preferita di superare quella della
 scartata. Il gradiente pesa ogni coppia per quanto il modello la sbaglia
 ancora: i confronti già «vinti» contribuiscono poco, quelli persi molto.
 Niente reward model esplicito, niente campionamento, niente PPO: un normale
-addestramento supervisionato su coppie.
+addestramento supervisionato su coppie. L'equivalenza con l'RLHF è esatta
+solo in quel limite non parametrico, e sulla distribuzione delle coppie
+raccolte: con una policy parametrica e coppie fissate una volta per tutte (la
+DPO non campiona mai da $\pi_\theta$, il PPO sì) i due metodi in pratica
+divergono, ed è qui che va cercata la differenza fra i loro risultati.
 
 `````
 
@@ -516,6 +521,42 @@ non un fatto tecnico. Per questo l'**allineamento** è oggi un'area di ricerca
 a pieno titolo, non un ritocco finale: abbiamo strumenti per orientare il
 comportamento dei modelli, non garanzie sul risultato.
 
+`````{tab} Elementare
+```{admonition} Da ricordare
+:class: important
+- Un modello appena pre-addestrato **completa** il testo, non risponde: è
+  un'eco istruita. Il salto verso l'assistente è una seconda fase di
+  addestramento, molto più corta e mirata. Quanto pesi lo dice un dato: nel
+  giudizio delle persone un modello piccolo ma rifinito così batteva uno più
+  di cento volte più grande {cite}`ouyang2022training`.
+- **Il tirocinio**: qualche migliaio di compiti già svolti bene (una richiesta
+  con accanto la risposta di un professionista), studiati uno per uno. Non
+  aggiunge sapere, quello era già in biblioteca: insegna che a un'istruzione
+  non si dà un seguito, si dà esecuzione.
+- **Il palato artificiale** {cite}`christiano2017deep`: giudicare è più facile
+  che scrivere, quindi alle persone si chiede solo quale di due risposte
+  preferiscono; da quei confronti si distilla un giudice automatico, e il
+  modello poi lavora per far salire il voto. Con una regola d'oro appesa in
+  cucina: restare vicini alla ricetta di partenza, perché il giudice è
+  un'imitazione e ha i suoi punti ciechi.
+- **Saltare il giudice** {cite}`rafailov2023direct`: dagli stessi confronti si
+  può imparare direttamente, rendendo un po' più probabile la risposta
+  preferita e un po' meno quella scartata, e misurando sempre i ritocchi
+  rispetto alla ricetta di partenza. Stessa destinazione, senza il cantiere.
+- **Mostrare i passaggi** {cite}`wei2022chain`: scrivere il ragionamento prima
+  della risposta fa sbagliare meno; rifare lo stesso problema per strade
+  diverse e tenere la risposta più votata aiuta ancora; i modelli
+  «ragionanti» {cite}`guo2025deepseek` si addestrano a stendere da soli una
+  lunga brutta copia. Costa tempo e calcolo, e ripaga soprattutto dove la
+  risposta si può verificare.
+- Limiti aperti: il modello impara a **prendere voti alti** più che a essere
+  utile (risposte lunghe, sicure di sé, ben impaginate), impara a **dare
+  ragione** a chi lo contraddice, e resta la domanda che nessun addestramento
+  chiude: allineato ai gusti di chi?
+```
+`````
+
+`````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
 - Un modello pre-addestrato **completa**, non risponde: il salto verso
@@ -538,3 +579,4 @@ comportamento dei modelli, non garanzie sul risultato.
 - Limiti aperti: **reward hacking**, **ruffianeria**, e la domanda non
   tecnica «allineato a chi?».
 ```
+`````

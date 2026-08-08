@@ -64,8 +64,9 @@ capitolo. L'azienda che produceva il software rispose che il suo sistema era
 *calibrato*: a parità di punteggio, la probabilità reale di recidiva era la
 stessa per neri e bianchi. Ed era vero. Il paradosso è che entrambe le parti
 avevano ragione: quando i tassi di base delle due popolazioni differiscono,
-calibrazione e parità dei falsi positivi *non possono valere insieme*. Non è
-un difetto risolvibile con codice migliore: è un vincolo matematico. Torneremo
+calibrazione e parità di *entrambi* i tassi di errore (falsi positivi e falsi
+negativi) *non possono valere insieme*. Non è un difetto risolvibile con
+codice migliore: è un vincolo matematico. Torneremo
 su questo punto: qui basti notare che «equo» non è una parola con un'unica
 definizione tecnica.
 

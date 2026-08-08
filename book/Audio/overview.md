@@ -3,11 +3,11 @@
 Un mattino di primavera, punti il telefono verso una siepe e apri
 un'applicazione. Un merlo canta, invisibile tra le foglie, e sullo schermo
 compare un nome: *Turdus merula*. L'app si chiama **BirdNET**, nasce dal
-laboratorio di ornitologia della Cornell University, e fa una cosa che
-cinquant'anni fa sarebbe sembrata magia: riconosce centinaia di specie di
-uccelli dal solo canto (un compito che a un umano richiede anni di orecchio
-allenato). Nessuna parola, nessuna frase: solo un fischio modulato, e un
-modello che sa a chi appartiene.
+laboratorio di ornitologia della Cornell University insieme al Politecnico di
+Chemnitz, e fa una cosa che cinquant'anni fa sarebbe sembrata magia: riconosce
+centinaia di specie di uccelli dal solo canto (un compito che a un umano
+richiede anni di orecchio allenato). Nessuna parola, nessuna frase: solo un
+fischio modulato, e un modello che sa a chi appartiene.
 
 Il canto degli uccelli è solo un angolo di un mondo enorme. C'è la musica che
 un modello genera su richiesta, un brano al pianoforte che non è mai stato
@@ -20,10 +20,10 @@ motore, capisce che un cuscinetto sta per cedere. Tutto questo è **audio**, ed
 Quanto è grande questo mondo? Un'idea la dà **AudioSet**
 {cite}`gemmeke2017audioset`, il dataset con cui Google, nel 2017, ha provato a
 mettere ordine: oltre due milioni di clip da dieci secondi estratte da
-YouTube, etichettate a mano su un'ontologia di **527 classi** di suoni (dal
-latrato di un cane al colpo di tosse, dal fruscio della pioggia al suono di
-una chitarra elettrica). È la prova che il suono ambientale ha una grammatica
-sua, ricca e strutturata, che non passa dalle parole.
+YouTube, etichettate a mano su **527 classi** di suoni (dal latrato di un cane
+al colpo di tosse, dal fruscio della pioggia al suono di una chitarra
+elettrica). È la prova che il suono ambientale ha una grammatica sua, ricca e
+strutturata, che non passa dalle parole.
 
 Il capitolo sullo Speech Recognition, che viene subito dopo, si dedicherà a un
 caso particolare e cruciale: la voce, dal parlato al testo e ritorno

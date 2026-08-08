@@ -73,14 +73,25 @@ dalle transizioni osservate; spesso si apprende anche un modello della
 ricompensa $r_\theta(s_t, a_t)$. Un modello così abilita tre operazioni:
 **predizione** (srotolare traiettorie future senza toccare l'ambiente),
 **pianificazione** (cercare, tra le traiettorie immaginate, quella con il
-ritorno più alto) e **contrafattuali** («cosa *sarebbe* successo se avessi
-agito diversamente?»). C'è però un dettaglio che occuperà mezzo capitolo: nel
-mondo reale lo stato non si osserva. Si osservano pixel, suoni, letture di
+ritorno più alto) e **simulazione di alternative** («e se agissi
+diversamente?»). Su quest'ultima una precisazione da manuale di causalità:
+ri-simulare da $s_t$ con un'altra azione è, nel lessico di Pearl, un
+*intervento* nel modello; il contrafattuale in senso stretto («cosa *sarebbe*
+successo in *quella* traiettoria») chiederebbe invece di tenere fisso il caso
+già uscito (di riusare cioè la stessa realizzazione del rumore esogeno di
+quella traiettoria, non di ri-estrarlo) e di ri-simulare cambiando la sola
+azione; le due cose coincidono solo se la dinamica è deterministica. C'è però
+un dettaglio che occuperà mezzo capitolo: nel mondo reale lo stato non si
+osserva. Si osservano pixel, suoni, letture di
 sensori: un'osservazione $x_t$ ad alta dimensione e piena di dettagli
 irrilevanti. I world model moderni imparano perciò uno **stato latente**
-compatto $z_t = f_\phi(x_t)$, con $f_\phi$ un encoder appreso, e simulano lì:
-$p_\theta(z_{t+1} \mid z_t, a_t)$. Che cosa debba finire in $z_t$ (e che cosa
-sia giusto lasciar fuori) è una delle domande centrali del capitolo.
+compatto $z_t = f_\phi(x_{1:t})$, con $f_\phi$ un encoder appreso, e simulano
+lì: $p_\theta(z_{t+1} \mid z_t, a_t)$. Il pedice $1{:}t$ non è un dettaglio:
+da un solo fotogramma mancherebbero, per dire, le velocità, e nessuna
+transizione su $z_t$ sarebbe ben definita; per questo i sistemi che
+incontreremo aggregano la storia con uno stato ricorrente (la memoria $h_t$
+della prossima sezione). Che cosa debba finire in $z_t$ (e che cosa sia
+giusto lasciar fuori) è una delle domande centrali del capitolo.
 
 `````
 
@@ -225,12 +236,52 @@ ambienti interattivi giocabili) e la domanda con cui il capitolo chiude,
 onestamente aperta: generare video plausibili significa aver capito la fisica,
 o soltanto saperla imitare?
 
+`````{tab} Elementare
+
+```{admonition} Da ricordare
+:class: important
+- Un **world model** è il cinema interiore di cui parlavamo: un simulatore
+  dell'ambiente che la macchina si costruisce da sé, e che le serve per
+  prevedere cosa succede, scegliere la mossa e provare alternative senza
+  pagarle davvero. L'idea del «modello in scala ridotta della realtà» è di
+  Kenneth Craik (1943).
+- Chi non ha il simulatore impara schiantandosi nel mondo vero; chi ce l'ha si
+  allena nella propria immaginazione, come i piloti prima di salire su un
+  aereo. La seconda strada costa incomparabilmente meno esperienza (ai
+  programmi che imparano a giocare senza simulatore servono milioni di partite
+  a *Breakout*, a te bastano pochi minuti), ma ha un prezzo: se il simulatore
+  è impreciso ci si allena a vincere un gioco che non esiste, e l'imprecisione
+  si somma quanto più lontano si prova a guardare.
+- Il **senso comune** non è un elenco di fatti, è un repertorio di previsioni
+  (le cose non sostenute cadono, quel che è nascosto continua a esistere) che
+  i bambini costruiscono guardando. Nessuno etichetta niente: il maestro è il
+  futuro, e la lezione arriva quando il mondo smentisce la previsione.
+- Per LeCun un modello che indovina una parola alla volta non basta: serve un
+  sistema che immagini il mondo, non solo il racconto del mondo. È una
+  **posizione** autorevole dentro un dibattito aperto, non un verdetto: altri
+  ricercatori sostengono che, per azzeccare le parole, quei modelli un modello
+  del mondo se lo siano già costruito dentro, per quanto rudimentale.
+- Il percorso del capitolo, in tre tappe. Prima i **mondi in miniatura**: il
+  programma che impara a giocare allenandosi dentro il proprio sogno, e i suoi
+  eredi (i *Dreamer*, che di sogno vivono quasi soltanto). Poi la strada di
+  LeCun, che invece di immaginare il mondo immagine per immagine lo immagina
+  **per idee**, cioè prevede a grandi linee cosa ci sarà, non ogni singolo
+  puntino dello schermo (la sigla è **JEPA**). Infine i programmi che sanno
+  generare video, e la domanda con cui il capitolo si chiude: chi sa girare il
+  filmato giusto ha capito come funziona il mondo, o è solo bravissimo a
+  imitarlo?
+```
+
+`````
+
+`````{tab} Superiore
+
 ```{admonition} Da ricordare
 :class: important
 - Un **world model** è un simulatore interno *appreso* dell'ambiente,
-  $p_\theta(s_{t+1} \mid s_t, a_t)$: serve a prevedere, pianificare e
-  ragionare sui contrafattuali senza provare tutto per davvero. L'idea del
-  «modello in scala ridotta della realtà» risale a Kenneth Craik (1943).
+  $p_\theta(s_{t+1} \mid s_t, a_t)$: serve a prevedere, pianificare e provare
+  azioni diverse senza farle per davvero. L'idea del «modello in scala
+  ridotta della realtà» risale a Kenneth Craik (1943).
 - **Model-free** prova nel mondo, **model-based** prova nell'immaginazione: il
   secondo promette enorme efficienza nei campioni (DQN: decine di milioni di
   fotogrammi; un umano: minuti), al prezzo del *model bias*; l'errore del
@@ -246,3 +297,5 @@ o soltanto saperla imitare?
   JEPA → simulatori video generativi e dibattito. Il linguaggio dell'energia,
   su cui poggia la JEPA, è quello del capitolo precedente.
 ```
+
+`````

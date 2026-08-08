@@ -112,11 +112,17 @@ x_{k+1} = x_k - \frac{\epsilon}{2}\, \nabla_x E_\theta(x_k) + \sqrt{\epsilon}\, 
 $$
 
 dove $\epsilon > 0$ è il passo e $z_k$ il rumore gaussiano. Per
-$\epsilon \to 0$ e $k \to \infty$ la distribuzione di $x_k$ converge a
-$p_\theta \propto e^{-E_\theta}$. Si noti che compare **solo**
-$\nabla_x E_\theta$: la costante $\log Z(\theta)$, non dipendendo da $x$, ha
-gradiente nullo. Il campionamento non ha mai bisogno della normalizzazione: è
-l'osservazione su cui poggia tutto il resto della sezione.
+$k \to \infty$, con $\epsilon \to 0$ e $k\epsilon \to \infty$ (il passo si
+accorcia, ma il tempo totale percorso dalla catena deve crescere senza
+limite), la distribuzione di $x_k$ converge a
+$p_\theta \propto e^{-E_\theta}$. A passo fissato, com'è nel codice qui sotto
+e nella pratica degli EBM, la catena si assesta invece su una distribuzione
+leggermente distorta, con un errore dell'ordine di $\epsilon$: lo
+eliminerebbe un test di accettazione alla Metropolis (la variante MALA), a
+cui di solito si rinuncia in cambio della semplicità. Si noti che compare
+**solo** $\nabla_x E_\theta$: la costante $\log Z(\theta)$, non dipendendo da
+$x$, ha gradiente nullo. Il campionamento non ha mai bisogno della
+normalizzazione: è l'osservazione su cui poggia tutto il resto della sezione.
 
 La versione stocastica su minibatch, che sostituisce il gradiente esatto con
 quello stimato, è la *stochastic gradient Langevin dynamics*
@@ -185,19 +191,30 @@ frazione x>0 (campioni) = 0.497   (esatto 0.500)
  [+1.5,+2.0)     0.012    0.011
 ```
 
-Le due colonne coincidono alla terza cifra: le catene hanno ricostruito la
-distribuzione senza che $Z$ sia mai entrata nel ciclo. Vale la pena notare
-*perché* qui funziona così bene, per non trarne una lezione sbagliata: la
-barriera fra le due buche è alta un'unità di energia (bassa) e le catene sono
-ventimila e indipendenti. Alzando la barriera, o passando a mille dimensioni
-dove le valli sono separate da creste lunghissime, la stessa procedura darebbe
-una fotografia sbilanciata, e nessuno se ne accorgerebbe: in alta dimensione
-la colonna «esatto» non si può stampare.
+Le due colonne coincidono entro pochi millesimi (lo scarto più largo è di
+0,006, nel bin centrale): le catene hanno ricostruito la distribuzione senza
+che $Z$ sia mai entrata nel ciclo. Quell'ultimo millesimo, però, non è rumore
+statistico: è il bias di passo finito di cui sopra. Con ventimila campioni
+l'incertezza statistica su un bin vale circa 0,003, e lo scarto non solo la
+supera: non cambia segno e si riduce accorciando $\epsilon$ a tempo totale
+costante. A $k\epsilon = 20$ e ventimila catene, lo scarto sul bin
+$[-0{,}5;\,+0{,}5)$ passa da $+0{,}0055$ con $\epsilon = 0{,}01$ a
+$+0{,}0041$ con $\epsilon = 0{,}002$ e a $+0{,}0007$ con
+$\epsilon = 0{,}0005$: la barriera resta sistematicamente sovrappesata, ed è
+esattamente ciò che correggerebbe il test di accettazione di Metropolis.
+
+Vale la pena notare anche *perché* qui funziona così bene, per non trarne una
+lezione sbagliata: la barriera fra le due buche è alta un'unità di energia
+(bassa) e le catene sono ventimila e indipendenti. Alzando la barriera, o
+passando a mille dimensioni dove le valli sono separate da creste
+lunghissime, la stessa procedura darebbe una fotografia sbilanciata, e nessuno
+se ne accorgerebbe: in alta dimensione la colonna «esatto» non si può
+stampare.
 
 ## Seconda via: imparare la pendenza, non la probabilità
 
 Se il campionamento è costoso perché insegue $p_\theta$, si può cambiare
-bersaglio. Aki Hyvärinen, nel 2005, propone di non confrontare più le
+bersaglio. Aapo Hyvärinen, nel 2005, propone di non confrontare più le
 *densità* ma i loro **gradienti rispetto ai dati**
 {cite}`hyvarinen2005estimation`. È una mossa che sembra un dettaglio ed è una
 liberazione: la costante di normalizzazione, che non dipende da $x$, sparisce
@@ -242,7 +259,9 @@ J(\theta) = \frac{1}{2}\,
 $$
 
 che a prima vista è inservibile (lo score dei dati non lo conosciamo) ma che
-un'integrazione per parti trasforma in una quantità calcolabile su un
+un'integrazione per parti, lecita sotto condizioni di regolarità e di
+decadimento all'infinito delle densità in gioco (qui sempre assunte, come in
+{cite}`hyvarinen2005estimation`), trasforma in una quantità calcolabile su un
 campione:
 
 $$
@@ -285,7 +304,7 @@ di qualcosa; a chi genera immagini, non è mai importato.
 ## Terza via: trasformare la densità in una domanda sì o no
 
 La terza strada è la più obliqua e ha il fascino delle idee che spostano il
-problema invece di risolverlo. Michael Gutmann e Aki Hyvärinen, nel 2010,
+problema invece di risolverlo. Michael Gutmann e Aapo Hyvärinen, nel 2010,
 osservano che stimare una densità è difficile, ma **distinguere** i dati veri
 da rumore fabbricato da noi è un problema di classificazione, e a classificare
 siamo bravi {cite}`gutmann2010noise`.
@@ -311,8 +330,11 @@ il nome lasci pensare.
 
 La **noise-contrastive estimation** (NCE) affianca ai dati un rumore di
 riferimento $p_n$ noto e campionabile, e addestra un classificatore logistico
-a distinguere le due sorgenti. Con un campione di dati e $\nu$ campioni di
-rumore per ogni dato, la probabilità a posteriori che $x$ venga dai dati è
+a distinguere le due sorgenti. Il lavoro del 2010 {cite}`gutmann2010noise`
+tratta il caso con tanti campioni di rumore quanti dati ($\nu = 1$); nella
+formulazione generale, che gli stessi autori danno due anni dopo sul *Journal
+of Machine Learning Research*, con $\nu$ campioni di rumore per ogni dato la
+probabilità a posteriori che $x$ venga dai dati è
 
 $$
 P(\text{dati} \mid x)
@@ -328,10 +350,11 @@ classificatore la costante *serve* per calibrarsi, al contrario della massima
 verosimiglianza, dove sarebbe stata assorbita e persa
 {cite}`gutmann2010noise`.
 
-Il *negative sampling* di word2vec {cite}`mikolov2013efficient` è una
-semplificazione di questa idea, e il discriminatore delle GAN ne è cugino
-stretto: in tutti e tre i casi si impara un rapporto fra densità, non una
-densità.
+Il *negative sampling* di word2vec {cite}`mikolov2013distributed` (il secondo
+dei due articoli word2vec: il primo usava la softmax gerarchica) è una
+semplificazione dichiarata di questa idea, e il
+discriminatore delle GAN ne è cugino stretto: in tutti e tre i casi si impara
+un rapporto fra densità, non una densità.
 
 `````
 
@@ -365,6 +388,38 @@ capitolo: **non chiedere mai la probabilità**. Se ciò che serve è decidere,
 ordinare, pianificare (non stampare percentuali), l'energia basta da sola, e il
 conto non si apre nemmeno.
 
+`````{tab} Elementare
+```{admonition} Da ricordare
+:class: important
+- Misurare l'intero continente non è caro, è impossibile. Cento interruttori
+  accesi o spenti danno un numero di configurazioni lungo trentuno cifre: a un
+  miliardo di configurazioni al secondo servirebbero quasi tremila volte
+  l'età dell'universo, e cento interruttori sono un'immagine in bianco e nero
+  di dieci pixel per dieci.
+- Imparare vuol dire abbassare il paesaggio dove stanno i dati veri e alzarlo
+  dove il modello immagina male. Il primo gesto è facile, i dati ce li
+  abbiamo; il secondo no, perché per sapere che cosa il modello immagina
+  bisogna prima fargli produrre qualcosa.
+- **Prima via, campionare.** La pallina su un tavolo che vibra scende ma ogni
+  tanto risale, cambia valle e alla lunga passa più tempo in basso che in
+  cima: le serve soltanto la pendenza sotto i piedi, mai la misura del
+  continente. Nell'esempio a due valli ricostruisce le proporzioni giuste
+  entro pochi millesimi; il prezzo è il tempo, e le montagne alte che la
+  tengono prigioniera da una parte sola.
+- **Seconda via, la pendenza.** Invece di dire quanta pioggia tocca a ogni
+  punto, si dice da che parte si scende e quanto ripido: una descrizione tutta
+  locale, che basta a ricostruire la forma del paesaggio. Insegnata su dati
+  sporcati apposta, diventa il compito «indovina il rumore che ti ho aggiunto»,
+  cioè quello che imparano i modelli di diffusione.
+- **Terza via, la domanda sì o no.** Al posto di «quanto è probabile questo?»
+  si chiede «viene dal mondo o l'ho fabbricato io?», e si addestra il modello
+  a smistare i veri dai finti. Funziona, ma dipende dal rumore che gli si
+  mette davanti: se è troppo diverso dai dati, il gioco diventa facile e non
+  si impara niente.
+```
+`````
+
+`````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
 - $Z$ non è cara: è impossibile. Con $N = 100$ variabili binarie gli stati
@@ -374,9 +429,9 @@ conto non si apre nemmeno.
   l'energia sui dati) e una **fase negativa** (la rialza sui campioni del
   modello): è la seconda a richiedere di saper campionare da $p_\theta$.
 - **Langevin**:
-  $x_{k+1} = x_k - \frac{\epsilon}{2}\nabla_x E_\theta(x_k) + \sqrt{\epsilon} z_k$.
-  Usa solo $\nabla_x E$, mai $Z$: nell'esempio a doppia buca ricostruisce la
-  distribuzione esatta alla terza cifra.
+  $\mathbf{x}_{k+1} = \mathbf{x}_k - \frac{\epsilon}{2}\nabla_{\mathbf{x}} E_\theta(\mathbf{x}_k) + \sqrt{\epsilon}\, \mathbf{z}_k$.
+  Usa solo $\nabla_{\mathbf{x}} E$, mai $Z$: nell'esempio a doppia buca
+  ricostruisce la distribuzione esatta entro pochi millesimi.
 - **Score matching** {cite}`hyvarinen2005estimation` confronta i gradienti
   invece delle densità; la forma **denoising** {cite}`vincent2011connection`
   la riduce a una regressione sul rumore ed è la loss dei modelli di
@@ -385,3 +440,4 @@ conto non si apre nemmeno.
   classificazione dati contro rumore, con $\log Z$ come parametro. Il
   *negative sampling* di word2vec è suo discendente.
 ```
+`````

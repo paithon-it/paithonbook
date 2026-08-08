@@ -178,8 +178,9 @@ dove $\tau$ è la distribuzione sulle trasformazioni ammesse. In altre parole
 risposta giusta in $n$ punti isolati, la esige su interi intorni, e questo
 spinge $f_\theta$ verso funzioni *invarianti* alle trasformazioni scelte (un
 vincolo che riduce l'overfitting esattamente come farebbe un termine di
-regolarizzazione). È l'idea del *vicinal risk minimization* (apprendere non
-dai punti, ma dai loro dintorni) che tra poco vedremo portata alle estreme
+regolarizzazione). È l'idea del *vicinal risk minimization*, formulata da
+Chapelle, Weston, Bottou e Vapnik {cite}`chapelle2000vicinal` (apprendere non
+dai punti, ma dai loro dintorni), che tra poco vedremo portata alle estreme
 conseguenze da mixup {cite}`zhang2018mixup`.
 `````
 

@@ -5,8 +5,8 @@ DeepMind mostrò un video destinato a diventare storico: un unico programma che
 imparava a giocare a diversi videogiochi Atari (*Breakout*, *Pong*, *Space
 Invaders*) senza che nessuno gli avesse spiegato le regole. L'algoritmo
 riceveva solo ciò che vedrebbe un ragazzino davanti al cabinato: i pixel dello
-schermo e il punteggio. Da lì, per tentativi, arrivava a giocare meglio di un
-umano esperto {cite}`mnih2013playing`. Due anni dopo il risultato finì sulla
+schermo e il punteggio. Da lì, per tentativi, su alcuni di quei giochi
+arrivava a superare un umano esperto {cite}`mnih2013playing`. Due anni dopo il risultato finì sulla
 copertina di *Nature* {cite}`mnih2015human`. Quel programma si chiama **Deep
 Q-Network**, DQN.
 
@@ -86,8 +86,8 @@ distingue il TD da Monte Carlo. Il terzo è l'**off-policy**: imparare la
 strategia migliore mentre se ne gioca un'altra, esplorativa, ed è quello che
 rende il Q-learning così comodo.
 
-Il risultato, dovuto a Sutton e Barto, è che due qualunque di questi tre si
-possono avere insieme senza problemi. **Tutti e tre insieme no**: la
+Il risultato, dovuto a Sutton e Barto, è che con due qualunque di questi tre
+l'instabilità si può evitare. **Tutti e tre insieme no**: la
 combinazione può divergere, cioè i valori possono crescere senza limite invece
 di assestarsi. La chiamano **triade fatale**, e la parte inquietante è che non
 serve nemmeno un ambiente sconosciuto o rumoroso: si dimostra su un esempio
@@ -115,7 +115,7 @@ La **triade fatale** {cite}`sutton2018reinforcement` è la coesistenza di:
 3. **addestramento off-policy**, cioè una distribuzione degli aggiornamenti
    diversa da quella indotta dalla policy che si sta valutando.
 
-Con due qualsiasi dei tre la convergenza si può garantire; con tutti e tre no,
+Con due soli dei tre l'instabilità si può evitare; con tutti e tre no,
 e la divergenza si osserva già nel caso della sola **predizione**, senza
 controllo né miglioramento della policy. Non dipende nemmeno
 dall'incertezza sull'ambiente: si manifesta identica nella programmazione
@@ -126,11 +126,17 @@ azioni, ricompensa sempre nulla, $\gamma = 0{,}99$, e una policy di
 comportamento che visita gli stati in modo uniforme mentre la policy bersaglio
 ne concentra tutta la massa su uno solo. La funzione valore vera è
 identicamente zero ed è **esattamente rappresentabile** dai parametri
-disponibili; il TD semi-gradiente, ciononostante, fa divergere i pesi. La
-ragione tecnica è che l'aggiornamento semi-gradiente non è il gradiente di
+disponibili; il TD semi-gradiente, ciononostante, fa divergere i pesi. Il
+fattore decisivo è la **distribuzione degli aggiornamenti**: uniforme sugli
+stati, mentre la policy bersaglio li visiterebbe in proporzioni tutte diverse.
+Non basta osservare che l'aggiornamento semi-gradiente non è il gradiente di
 nessuna funzione obiettivo (si deriva rispetto alla stima ma non rispetto al
-bersaglio, che pure dipende dai parametri), quindi non c'è nessuna quantità
-che scenda in modo garantito.
+bersaglio, che pure dipende dai parametri): lo stesso aggiornamento, con
+approssimatore lineare e sotto la distribuzione on-policy, converge, come
+dimostrarono Tsitsiklis e Van Roy nel 1997. Ed è a quel caso, lineare e
+on-policy, che si fermano le garanzie di convergenza note: con approssimatori
+non lineari come le reti si conoscono controesempi di divergenza perfino
+on-policy.
 
 Sutton e Barto passano poi in rassegna i tre elementi chiedendosi a quale si
 possa rinunciare, ed è la lettura più utile per chi progetta. All'**approssimazione**
@@ -276,13 +282,42 @@ hanno guidato la ricerca successiva.
   (il famigerato *Montezuma's Revenge*), DQN sostanzialmente fallisce: senza
   segnale, non c'è nulla da inseguire.
 
+`````{tab} Elementare
+```{admonition} Da ricordare
+:class: important
+- **DQN** butta via lo schedario che aveva un cartellino per ogni schermata e
+  ci mette una rete neurale: guarda i pixel e dice a colpo d'occhio quanto
+  vale ciascuna mossa, anche su schermate mai viste prima.
+- Per anni un'idea così divergeva, e per una ragione precisa, la **triade
+  fatale**: una rete al posto della tabella, stime aggiornate a partire da
+  altre stime, e una strategia imparata mentre se ne gioca un'altra. Due
+  qualunque dei tre convivono senza danni, tutti e tre insieme no: i valori
+  possono crescere senza fermarsi. Il **controesempio di Baird** lo mostra su
+  sette stati in cui non si guadagna mai nulla e la risposta giusta ("tutto
+  vale zero") la rete saprebbe rappresentare alla perfezione: i pesi partono
+  lo stesso.
+- Due accorgimenti lo rendono stabile: il **quaderno degli appunti** (ogni
+  esperienza viene annotata e ripescata a caso, così l'agente mescola
+  situazioni lontane invece di rileggere cento volte la stessa pagina) e la
+  **copia congelata** della rete, che tiene fermo il bersaglio abbastanza a
+  lungo perché lo si possa raggiungere. Nessuno dei tre ingredienti sparisce:
+  due vengono addolciti.
+- Il risultato storico del 2015: un solo programma, con gli stessi
+  settaggi, arriva al livello di un tester umano professionista su molti
+  giochi Atari partendo dai soli pixel. Restano i limiti: servono quantità
+  enormi di partite, le mosse devono essere poche e distinte, e dove il
+  punteggio arriva di rado l'agente resta senza nulla da inseguire.
+```
+`````
+
+`````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
 - **DQN** sostituisce la tabella $Q$ con una rete neurale $Q(s,a;\theta)$ che
   mappa i pixel dello stato ai valori delle azioni.
 - Divergeva per una ragione precisa, la **triade fatale**: approssimazione,
-  bootstrapping e off-policy insieme possono far esplodere i valori. Due
-  qualsiasi dei tre sono sicuri, tutti e tre no, e il **controesempio di
+  bootstrapping e off-policy insieme possono far esplodere i valori. Con due
+  soli dei tre l'instabilità si può evitare, con tutti e tre no, e il **controesempio di
   Baird** lo mostra su sette stati con ricompense tutte nulle, dove la
   soluzione esatta è rappresentabile e i pesi divergono lo stesso.
 - Due accorgimenti lo rendono stabile: l'**experience replay** (memoria di
@@ -292,3 +327,4 @@ hanno guidato la ricerca successiva.
   Atari partendo dai soli pixel. Restano limiti di efficienza, azioni discrete
   e ricompense rade.
 ```
+`````

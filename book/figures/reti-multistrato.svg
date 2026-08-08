@@ -27,7 +27,10 @@
 
   <text x="600" y="38" font-family="sans-serif" font-size="14" fill="#1A1A1A" text-anchor="middle">pi&#249; strati</text>
   <rect x="500" y="52" width="200" height="200" fill="none" stroke="#1A1A1A" stroke-width="1.5"/>
-  <path d="M 545 200 C 520 150, 560 85, 610 95 C 665 105, 685 150, 655 185 C 640 205, 660 225, 620 232 C 580 239, 565 235, 545 200 Z" fill="#C9A961" fill-opacity="0.25" stroke="#B5532C" stroke-width="2"/>
+  <!-- Con la ReLU il confine resta poligonale, solo sempre piu' fitto: venti
+       lati che da lontano sembrano una curva, ma spigoli sono e spigoli
+       restano. Disegnarlo curvo direbbe una cosa falsa. -->
+  <polygon points="545,200 537,169 543,139 558,113 582,97 610,95 639,105 658,121 668,141 667,163 655,185 649,197 648,208 645,218 638,226 620,232 599,235 582,234 569,228 557,217" fill="#C9A961" fill-opacity="0.25" stroke="#B5532C" stroke-width="2" stroke-linejoin="round"/>
   <circle cx="600" cy="150" r="5" fill="#B5532C"/>
   <circle cx="630" cy="200" r="5" fill="#B5532C"/>
   <circle cx="530" cy="90" r="5" fill="none" stroke="#2D5A5C" stroke-width="1.5"/>

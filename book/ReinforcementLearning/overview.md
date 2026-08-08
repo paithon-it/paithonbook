@@ -43,14 +43,15 @@ chiama **politica** (*policy*): è tutto ciò che l'agente cerca di migliorare.
 `````{tab} Superiore
 
 Formalmente l'interazione è un **processo decisionale di Markov** (*Markov
-Decision Process*, MDP). A ogni passo $t$ l'agente osserva lo stato $s_t$,
-sceglie un'azione $a_t$ secondo la sua politica $\pi(a \mid s)$, e l'ambiente
-transita in $s_{t+1}$ restituendo una ricompensa scalare $r_{t+1}$. L'obiettivo
-è massimizzare non la ricompensa immediata ma il **ritorno** (*return*)
-scontato:
+Decision Process*, MDP). A ogni passo $t$ l'agente osserva lo stato $S_t$,
+sceglie un'azione $A_t$ secondo la sua politica $\pi(a \mid s)$, e l'ambiente
+transita in $S_{t+1}$ restituendo una ricompensa scalare $R_{t+1}$ (maiuscole
+per le variabili aleatorie, minuscole $s$, $a$, $r$ per i loro valori: è la
+convenzione che terremo in tutto il capitolo). L'obiettivo è massimizzare non
+la ricompensa immediata ma il **ritorno** (*return*) scontato:
 
 $$
-G_t = \sum_{k=0}^{\infty} \gamma^{k}\, r_{t+1+k},
+G_t = \sum_{k=0}^{\infty} \gamma^{k}\, R_{t+1+k},
 \qquad \gamma \in [0,1) .
 $$
 
@@ -58,7 +59,7 @@ Qui $\gamma$ è il **fattore di sconto**: vicino a $1$ l'agente è lungimirante 
 dà peso al futuro lontano; vicino a $0$ è miope e insegue solo il premio
 immediato. Cercare la politica ottima $\pi^{*}$ significa massimizzare
 $\mathbb{E}_\pi[G_t]$, e quasi tutti gli algoritmi lo fanno stimando funzioni di
-valore come $Q^\pi(s,a) = \mathbb{E}_\pi[G_t \mid s_t=s,\, a_t=a]$, il ritorno
+valore come $Q^\pi(s,a) = \mathbb{E}_\pi[G_t \mid S_t=s,\, A_t=a]$, il ritorno
 atteso partendo da $s$, giocando $a$ e poi seguendo $\pi$.
 
 `````
@@ -94,8 +95,8 @@ merito temporale si affronta con i metodi a **differenza temporale**
 in premio immediato più valore scontato dello stato futuro:
 
 $$
-Q^{*}(s,a) = \mathbb{E}\!\left[\, r_{t+1} + \gamma \max_{a'} Q^{*}(s_{t+1}, a')
-\,\right] .
+Q^{*}(s,a) = \mathbb{E}\!\left[\, R_{t+1} + \gamma \max_{a'} Q^{*}(S_{t+1}, a')
+\;\middle|\; S_t = s,\ A_t = a \,\right] .
 $$
 
 Aggiornare $Q$ verso il lato destro di questa uguaglianza è, in sostanza, ciò
@@ -125,9 +126,9 @@ probabilità $1-\varepsilon$ l'agente sceglie l'azione stimata migliore, con
 probabilità $\varepsilon$ ne prende una a caso.
 
 $$
-a_t =
+A_t =
 \begin{cases}
-\arg\max_a Q(s_t, a) & \text{con probabilità } 1-\varepsilon, \\
+\arg\max_a Q(S_t, a) & \text{con probabilità } 1-\varepsilon, \\
 \text{azione casuale} & \text{con probabilità } \varepsilon .
 \end{cases}
 $$

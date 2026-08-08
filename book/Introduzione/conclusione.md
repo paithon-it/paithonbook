@@ -10,12 +10,12 @@ della produzione, è difficile pensare a un settore che l’AI non abbia già
 trasformato o non stia per trasformare: l’informazione, i social network, la
 pubblicità, la politica, l’automotive, la sanità. Qualche esempio concreto.
 DeepMind, uno dei principali laboratori di ricerca sull’intelligenza
-artificiale, ha usato le proprie reti neurali per ridurre di circa il 40%
+artificiale, ha usato le proprie reti neurali per ridurre fino al 40%
 l’energia impiegata nel raffreddamento dei centri di elaborazione dati di
 Google. Nella telemedicina, un algoritmo basato su reti neurali rileva le
 aritmie cardiache a partire dal solo elettrocardiogramma, mentre in sala
-operatoria i robot chirurgici consentono incisioni molto più precise di quelle
-effettuate dall’uomo. E ancora: AlphaFold, sempre di DeepMind, ha imparato a
+operatoria i robot chirurgici aiutano la mano del medico a compiere incisioni
+più precise e meno invasive. E ancora: AlphaFold, sempre di DeepMind, ha imparato a
 prevedere la forma tridimensionale delle proteine; conoscerla permette agli
 scienziati di comprenderne il ruolo all’interno del corpo, e di studiare le
 malattie che si ritiene siano causate da proteine “mal ripiegate”, come

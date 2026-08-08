@@ -285,7 +285,9 @@ elimina in corsa le prove peggiori.
 Tre avvertenze, prima di chiudere. La prima è il **costo**: ogni punto dello
 spazio di ricerca vale $k$ addestramenti completi, e nessun algoritmo elimina
 questo fattore (lo spende meglio). Griglia e caso almeno si parallelizzano
-senza sforzo; l'ottimizzazione bayesiana, sequenziale per natura, no. La
+senza sforzo; l'ottimizzazione bayesiana si parallelizza peggio: le varianti
+batch esistono (già Snoek e colleghi ne proponevano una
+{cite}`snoek2012practical`), ma pagano in efficienza per prova. La
 seconda è la **riproducibilità**: una ricerca casuale senza seme fissato (il
 *seed*: `random_state` nel codice sopra) cambia esito a ogni esecuzione, e un
 confronto tra metodi che non dichiari spazio di ricerca e budget non è un

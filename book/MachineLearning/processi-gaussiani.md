@@ -36,8 +36,8 @@ misura che facciamo è un chiodo piantato nel tavolo: da quel momento tutti i
 fili devono passare lì vicino, quasi toccarlo. Vicino ai chiodi il fascio è
 costretto, i fili quasi si sovrappongono; lontano dai chiodi si riapre a
 ventaglio, perché nulla lo vincola. La previsione del processo gaussiano è
-doppia: *dove passa in media il fascio* (la stima) e *quanto è largo lì* (l'incertezza).
-È esattamente la previsione «tra 21 e 27»: stretta dove abbiamo
+doppia: *dove passa in media il fascio* (la stima) e *quanto è largo lì*
+(l'incertezza). È esattamente la previsione «tra 21 e 27»: stretta dove abbiamo
 misurato, larga dove stiamo tirando a indovinare.
 
 `````
@@ -47,14 +47,14 @@ misurato, larga dove stiamo tirando a indovinare.
 Un processo gaussiano è una distribuzione di probabilità **sulle funzioni**:
 
 $$
-f \sim \mathcal{GP}\big(m(x),\, k(x, x')\big),
+f \sim \mathcal{GP}\big(\mu(X),\, k(X, X')\big),
 $$
 
-dove $m(x)$ è la funzione media (spesso posta a zero dopo aver centrato i
-dati) e $k(x, x')$ è la funzione di covarianza, o **kernel**. La proprietà che
-lo definisce: per *qualunque* insieme finito di punti $x_1, \dots, x_n$, il
-vettore dei valori $\big(f(x_1), \dots, f(x_n)\big)$ ha distribuzione
-gaussiana multivariata, con medie $m(x_i)$ e covarianze $k(x_i, x_j)$. È un
+dove $\mu(X)$ è la funzione media (spesso posta a zero dopo aver centrato i
+dati) e $k(X, X')$ è la funzione di covarianza, o **kernel**. La proprietà che
+lo definisce: per *qualunque* insieme finito di $q$ punti $X_1, \dots, X_q$, il
+vettore dei valori $\big(f(X_1), \dots, f(X_q)\big)$ ha distribuzione
+gaussiana multivariata, con medie $\mu(X_i)$ e covarianze $k(X_i, X_j)$. È un
 *prior* sulle funzioni: prima di vedere i dati, tutte le curve coerenti con il
 kernel sono possibili; condizionare sulle osservazioni (lo vedremo tra poco)
 restringe il fascio, e il risultato è ancora un processo gaussiano
@@ -91,7 +91,7 @@ in fretta).
 Il kernel più usato è l'**RBF** (*Radial Basis Function*, o gaussiano):
 
 $$
-k(x, x') = \sigma^2 \exp\!\left(-\frac{\lVert x - x'\rVert^2}{2\ell^2}\right),
+k(X, X') = \sigma^2 \exp\!\left(-\frac{\lVert X - X'\rVert^2}{2\ell^2}\right),
 $$
 
 dove $\sigma^2$ è la varianza di segnale (l'ampiezza tipica delle oscillazioni
@@ -130,9 +130,10 @@ che alza la mano e ammette di non avere dati per rispondere.
 
 `````{tab} Superiore
 
-Siano $X$ gli $n$ punti di addestramento con osservazioni rumorose $y$, e
-$X_*$ gli $n_*$ punti dove vogliamo predire. Il posteriore è gaussiano con
-media e covarianza in forma chiusa {cite}`rasmussen2006gaussian`:
+Siano $X$ gli $m$ punti di addestramento $X_1, \dots, X_m$ con osservazioni
+rumorose $y$ (la solita $m$ del capitolo: il numero di esempi), e $X_*$ gli
+$m_*$ punti dove vogliamo predire. Il posteriore è gaussiano con media e
+covarianza in forma chiusa {cite}`rasmussen2006gaussian`:
 
 $$
 \mu_* = K_*^\top \big(K + \sigma_n^2 I\big)^{-1} y,
@@ -140,8 +141,8 @@ $$
 \Sigma_* = K_{**} - K_*^\top \big(K + \sigma_n^2 I\big)^{-1} K_*,
 $$
 
-dove $K \in \mathbb{R}^{n \times n}$ è la matrice del kernel tra i punti di
-addestramento ($K_{ij} = k(x_i, x_j)$), $K_* \in \mathbb{R}^{n \times n_*}$
+dove $K \in \mathbb{R}^{m \times m}$ è la matrice del kernel tra i punti di
+addestramento ($K_{ij} = k(X_i, X_j)$), $K_* \in \mathbb{R}^{m \times m_*}$
 quella tra addestramento e punti nuovi, $K_{**}$ quella tra i punti nuovi,
 $\sigma_n^2$ la varianza del rumore di misura e $I$ la matrice identità. Le
 due formule si leggono bene. La media $\mu_*$ è una **combinazione pesata
@@ -223,13 +224,14 @@ addestreremo mai un processo gaussiano sulle foto di tutto internet.
 `````{tab} Superiore
 
 Il collo di bottiglia è l'inversione (in pratica, la fattorizzazione di
-Cholesky) di $K + \sigma_n^2 I$: costo $O(n^3)$ in tempo e $O(n^2)$ in
-memoria. Oltre qualche decina di migliaia di punti il metodo esatto diventa
-proibitivo. Esistono approssimazioni *sparse*, si riassume il dataset con
-$p \ll n$ punti "induttori", scendendo a $O(n p^2)$, ma pagano in fedeltà
-proprio sulla merce di casa: la qualità delle incertezze. A ciò si aggiunge la
-sensibilità alla scelta del kernel, che incorpora ipotesi forti (con l'RBF, la
-regolarità infinita) da verificare sul problema reale.
+Cholesky) di $K + \sigma_n^2 I$: costo $O(m^3)$ in tempo e $O(m^2)$ in
+memoria, il caso peggiore dell'$O(m^2)$–$O(m^3)$ visto per la SVM con kernel,
+e qui senza sconti. Oltre qualche decina di migliaia di punti il metodo
+esatto diventa proibitivo. Esistono approssimazioni *sparse*, si riassume il
+dataset con $p \ll m$ punti "induttori", scendendo a $O(m p^2)$, ma pagano in
+fedeltà proprio sulla merce di casa: la qualità delle incertezze. A ciò si
+aggiunge la sensibilità alla scelta del kernel, che incorpora ipotesi forti
+(con l'RBF, la regolarità infinita) da verificare sul problema reale.
 
 `````
 
@@ -253,7 +255,8 @@ aperto il cofano del suo motore.
   un'osservazione.
 - La **banda d'incertezza** si stringe sui punti osservati e si riapre dove i
   dati mancano: il modello dichiara quanto non sa.
-- Costo $O(n^3)$: improponibile sui grandi dataset, perfetto con **pochi dati
-  costosi** (esperimenti, simulazioni, ottimizzazione bayesiana degli
-  iperparametri).
+- Il costo cresce come il **cubo del numero di esempi**: raddoppiare i dati
+  costa otto volte il tempo. Improponibile sui grandi dataset, perfetto con
+  **pochi dati costosi** (esperimenti, simulazioni, ottimizzazione bayesiana
+  degli iperparametri).
 ```

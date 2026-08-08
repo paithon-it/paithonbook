@@ -372,7 +372,13 @@ $$
 
 dove $\rho$ è la correlazione fra i giudizi di due votanti qualsiasi. Con
 $\rho = 0{,}5$, mille agenti valgono **due** votanti indipendenti; con
-$\rho = 0{,}2$ ne valgono cinque. È la stessa aritmetica che governa gli
+$\rho = 0{,}2$ ne valgono cinque. Il numero va preso per quello che è, un
+ordine di grandezza: il conto è esatto per la varianza della media, mentre
+l'accuratezza della maggioranza su voti binari non è determinata dalla sola
+correlazione a coppie (due meccanismi di correlazione con la stessa $\rho$
+possono dare curve $P_n$ diverse, e il modello a trappole qui sopra è appunto
+un meccanismo particolare). Il messaggio qualitativo però non cambia: la curva
+si appiattisce. È la stessa aritmetica che governa gli
 *ensemble* nel capitolo di machine learning, dove il guadagno del bagging viene
 dalla decorrelazione e non dal numero di alberi. La conseguenza per chi
 progetta è una sola: finché $\rho$ non si misura, il numero di agenti che si
@@ -684,7 +690,8 @@ sbagliata.
 - **L'ipotesi crolla fra agenti identici.** Dieci istanze dello stesso modello
   sono un votante interrogato dieci volte: con una frazione $\lambda$ di errori
   sistematici il voto ha un tetto $1-\lambda$ ($0{,}80$ contro l'$1$ promesso),
-  e con correlazione $\rho$ il numero efficace di votanti si ferma a $1/\rho$.
+  e con correlazione $\rho$ il numero efficace di votanti si ferma, come ordine
+  di grandezza, a $1/\rho$.
   Il voto non aumenta la correttezza, aumenta la **confidenza**: su nove agenti
   concordi, il 45% delle unanimità è sbagliato.
 - Un po' di indipendenza si compra: campionare a temperatura, imporre percorsi

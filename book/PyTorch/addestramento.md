@@ -13,11 +13,18 @@ mettere le mani.
 ## Il rito: i cinque passi
 
 Eccole, le cinque righe. Tutto il resto della sezione non fa che spiegarle e
-metterle al lavoro su un problema vero.
+metterle al lavoro su un problema vero. Prima, due parole che nel codice
+compaiono senza presentazioni. L'**ottimizzatore** è il pezzo che a ogni giro
+corregge i pesi del modello; il **learning rate** è la sua manopola
+principale, e decide quanto è grande ogni correzione: un passo corto impara
+piano ma non sbaglia strada, un passo lungo va veloce ma rischia di scavalcare
+il punto buono. L'ottimizzatore più semplice si chiama **SGD** e usa lo stesso
+passo per tutti i pesi; **Adam** è quello che si prova per primo in quasi ogni
+progetto, per la ragione che mostra {numref}`fig-adam-passo-per-peso`.
 
 ```{figure} ../figures/adam-ottimizzatore.svg
 :name: fig-adam-passo-per-peso
-:alt: "Confronto fra due ottimizzatori sugli stessi pesi. Con SGD tutti i parametri ricevono lo stesso learning rate, indipendentemente da quanto sia grande il loro gradiente. Con Adam il passo effettivo di ciascun peso è scalato dalla radice della media dei suoi gradienti passati: i pesi con gradienti grandi fanno passi corti, quelli con gradienti piccoli passi più lunghi."
+:alt: "Confronto fra due ottimizzatori sugli stessi pesi. Con SGD tutti i parametri si muovono con lo stesso passo, grande o piccolo che sia stata finora la loro correzione. Con Adam ogni peso ha il passo suo, calcolato da quanto quel peso si è mosso nelle correzioni precedenti: chi si è mosso molto rallenta, chi si è mosso poco accelera."
 :width: 96%
 
 Un learning rate per ciascuno. Adam non sceglie una velocità migliore: ne
@@ -206,14 +213,14 @@ registratore acceso tutto è più veloce e leggero.
 doppia personalità": `nn.Dropout` (attivo solo in training) e `nn.BatchNorm`
 (statistiche del batch in training, medie mobili in valutazione) sono i due
 casi principali. `torch.no_grad()` è un context manager che sospende la
-costruzione del grafo autograd: dimezza circa la memoria e accelera
-l'inferenza, perché non vengono salvati i valori intermedi per un `backward()`
-che non arriverà mai. Sono due meccanismi indipendenti e servono entrambi:
-`eval()` senza `no_grad()` dà predizioni corrette ma spreca memoria;
-`no_grad()` senza `eval()` lascia il dropout acceso e falsa le predizioni. Il
-nostro MLP non ha né dropout né batch norm, quindi qui `eval()` è tecnicamente
-superfluo, ma scriverlo sempre è un'abitudine che evita bug sottili appena il
-modello cresce.
+costruzione del grafo autograd: non vengono salvati i valori intermedi per un
+`backward()` che non arriverà mai, con un risparmio di memoria che cresce con
+la profondità della rete, e l'inferenza accelera. Sono due meccanismi
+indipendenti e servono entrambi: `eval()` senza `no_grad()` dà predizioni
+corrette ma spreca memoria; `no_grad()` senza `eval()` lascia il dropout
+acceso e falsa le predizioni. Il nostro MLP non ha né dropout né batch norm,
+quindi qui `eval()` è tecnicamente superfluo, ma scriverlo sempre è
+un'abitudine che evita bug sottili appena il modello cresce.
 `````
 
 ## Quando fermarsi: la validazione

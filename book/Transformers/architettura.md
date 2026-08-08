@@ -46,9 +46,11 @@ $d_{\text{model}} = 512$), ciascuno con due sotto-strati:
 2. **Feed-Forward Network (FFN)**: una rete completamente connessa applicata
    *indipendentemente e identicamente* a ogni posizione.
 
-Ogni sotto-strato è avvolto da residual connection e layer normalization,
+Ogni sotto-strato è avvolto da residual connection e layer normalization nella
+forma Post-LN dell'articolo originale,
 $\text{LayerNorm}(x + \text{SubLayer}(x))$, come visto nella sezione
-precedente. Si noti la divisione dei ruoli: l'attenzione *mescola*
+precedente (dove si è detto anche perché i modelli successivi preferiscono il
+Pre-LN). Si noti la divisione dei ruoli: l'attenzione *mescola*
 informazione tra le posizioni, la FFN la *trasforma* posizione per posizione;
 è l'alternanza dei due movimenti, ripetuta per $N$ strati, a costruire
 rappresentazioni via via più astratte.
@@ -197,6 +199,27 @@ della versione classica. Stessi parametri, risultati migliori a parità di
 addestramento.
 `````
 
+`````{tab} Elementare
+```{admonition} Da ricordare
+:class: important
+- Il Transformer originale è fatto di **due torri**: una legge la frase di
+  partenza, l'altra scrive la traduzione. Sei piani ciascuna, tutti uguali.
+- Ogni piano alterna una **riunione** (con l'attenzione, ogni parola ascolta
+  tutte le altre; a condurla sono otto lettori in parallelo, ognuno attento a
+  un tipo di legame) e un **lavoro individuale** (ogni parola rielabora per
+  conto suo quello che ha sentito). Attorno a entrambi i momenti c'è
+  l'impalcatura che permette di impilare tanti piani senza che
+  l'addestramento si rompa.
+- La torre che scrive ha una regola ferrea, **non si sbircia avanti**: mentre
+  produce la quarta parola può guardare solo le prime tre. E a ogni passo
+  consulta quello che l'altra torre ha capito della frase originale.
+- L'attenzione da sola non sa in che ordine stanno le parole: a ciascuna viene
+  sommato prima un **posto numerato**, la firma della sua posizione (calcolata
+  a tavolino nel paper, imparata dal modello in quelli successivi).
+```
+`````
+
+`````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
 - Il Transformer originale è **encoder–decoder**: $N = 6$ strati per torre,
@@ -209,3 +232,4 @@ addestramento.
 - L'attenzione ignora l'ordine: il **positional encoding** (sinusoidale nel
   paper, appreso o relativo nei modelli successivi) lo reintroduce.
 ```
+`````

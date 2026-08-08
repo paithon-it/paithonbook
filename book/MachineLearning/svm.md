@@ -63,8 +63,10 @@ $$
 
 la stessa che descriveva il confine di decisione della regressione logistica:
 $W$ è il vettore che dà l'orientamento della frontiera e $b$ la sposta avanti
-o indietro. Un punto nuovo si classifica guardando il *segno* di
-$W^\top X + b$: positivo di qua, negativo di là. La novità della SVM non è
+o indietro. La scrittura $W^\top X$ si legge in parole semplici: moltiplica
+ogni caratteristica di $X$ per il suo peso in $W$ e somma tutto; ne esce un
+punteggio, come nella regressione. Un punto nuovo si classifica guardando il
+*segno* di quel punteggio più $b$: positivo di qua, negativo di là. La novità della SVM non è
 questa formula, è il criterio con cui sceglie $W$ e $b$: non una frontiera
 qualsiasi, ma quella che lascia il vuoto più ampio attorno a sé. Più il
 corridoio è largo, più il classificatore è robusto.
@@ -107,7 +109,29 @@ locali in cui restare intrappolati.
 
 ### Un esempio con i numeri
 
-Mettiamo in fila numeri concreti in due dimensioni. Prendiamo quattro punti:
+Mettiamo in fila numeri concreti, in due dimensioni: quattro punti, due per
+classe, tutti su una diagonale.
+
+`````{tab} Elementare
+
+Quattro case lungo una strada in diagonale: due del quartiere blu, a $(0,0)$ e
+$(-1,-1)$, e due del quartiere rosso, a $(2,2)$ e $(3,3)$. Le due case più
+vicine fra loro, una per quartiere, sono $(0,0)$ e $(2,2)$: sono loro a
+decidere tutto. Il corridoio più largo possibile è quello che va dall'una
+all'altra, e il confine passa esattamente a metà strada, per il punto
+$(1,1)$, messo di traverso rispetto alla diagonale. La larghezza del corridoio
+è la distanza fra le due case, circa $2{,}8$.
+
+E le altre due case, quelle più arretrate? Prova a cancellarle dal foglio: il
+confine non si sposta di un millimetro, perché non toccano il corridoio. Le
+due case sul bordo sono i **vettori di supporto**: reggono da sole l'intera
+soluzione.
+
+`````
+
+`````{tab} Superiore
+
+Prendiamo quattro punti:
 
 | punto | coordinate | classe $y_i$ |
 |-------|------------|--------------|
@@ -118,7 +142,10 @@ Mettiamo in fila numeri concreti in due dimensioni. Prendiamo quattro punti:
 
 I punti stanno tutti sulla diagonale. Per simmetria l'iperpiano di massimo
 margine è perpendicolare alla diagonale e passa a metà strada tra $X_1$ e
-$X_2$, cioè per il punto $(1,1)$. La soluzione è
+$X_2$, cioè per il punto $(1,1)$: questo fissa la *direzione* di $W$, che è
+quella della diagonale $(1,1)$. La *scala* la fissa la convenzione
+$W^\top X + b = \pm 1$ sui punti di margine, e i due vincoli (in $X_1$ e in
+$X_2$) danno
 
 $$
 W = (0{,}5,\ 0{,}5), \qquad b = -1.
@@ -148,6 +175,8 @@ $\sqrt{2^2+2^2}=\sqrt{8}=2\sqrt{2}$: i due vettori di supporto, uno per
 classe, si affacciano sui bordi opposti dello stesso corridoio. Nota il punto
 cruciale: cancellare $X_3$ e $X_4$ non cambia nulla; la soluzione dipende solo
 dai due punti sul bordo.
+
+`````
 
 ## Quando i dati non sono perfetti: il margine morbido
 
@@ -211,7 +240,10 @@ coefficiente della penalità $\lVert W\rVert^2$ è $1/(2C)$, quindi **$C$ è
 l'inverso della forza di regolarizzazione**. $C$ grande → penalità debole →
 margine stretto, varianza alta; $C$ piccolo → penalità forte → margine largo,
 bias più alto. È la stessa manopola $\lambda$ della sezione sull'overfitting,
-letta al contrario: $\lambda \approx 1/(2C)$.
+letta al contrario; con un'avvertenza di normalizzazione: la loss Ridge era
+*mediata* sugli $m$ esempi, la hinge qui è *sommata*, e a parità di
+convenzione l'identificazione esatta è $\lambda = 1/(2Cm)$, cioè a meno di un
+fattore pari alla taglia del dataset.
 
 `````
 
@@ -294,6 +326,25 @@ prodotti scalari in quello spazio senza costruirlo mai.
 Come illustra {numref}`fig-svm-kernel`, ciò che era un anello inseparabile
 diventa, dopo la mappa, un problema lineare banale. Il parametro $\gamma$ del
 kernel RBF merita un commento: è il **raggio d'influenza** di ogni punto.
+
+`````{tab} Elementare
+
+Pensa a ogni punto come a un lampione acceso di notte: illumina bene chi gli
+sta accanto, sempre meno chi si allontana, per niente chi è lontano. Il kernel
+misura proprio questa «luce» su una scala da $0$ a $1$, dove $1$ vuol dire
+«stesso punto». Chiamiamo *portata* del lampione la distanza alla quale la luce
+è scesa a poco più di un terzo, cioè $0{,}37$: diciamo un metro e mezzo. Chi
+sta a un metro e mezzo si vede ancora; chi sta al doppio, a tre metri, riceve
+appena due centesimi di luce ($0{,}02$), e per lui è già buio. La manopola
+$\gamma$ decide quanto è stretto il cono di luce: $\gamma$ grande, luce corta,
+e la frontiera viene frastagliata perché ogni punto comanda solo nel suo
+cortile (rischio di imparare il rumore); $\gamma$ piccolo, luce lunga, e la
+frontiera esce morbida.
+
+`````
+
+`````{tab} Superiore
+
 Vediamolo con i numeri, scegliendo $\gamma = 0{,}5$:
 
 - due punti *vicini*, $X=(2,2)$ e $Z=(3,3)$, distano
@@ -306,8 +357,12 @@ Vediamolo con i numeri, scegliendo $\gamma = 0{,}5$:
 Con $\gamma$ grande la campana si stringe, ogni punto influenza solo i vicinissimi
 e la frontiera si fa frastagliata (varianza alta, rischio overfitting); con
 $\gamma$ piccolo la campana si allarga, l'influenza è a lungo raggio e la
-frontiera si liscia. Insieme a $C$, il parametro $\gamma$ è l'altra manopola da
-tarare per validazione.
+frontiera si liscia.
+
+`````
+
+Insieme a $C$, il parametro $\gamma$ è l'altra manopola da tarare per
+validazione.
 
 ## Non solo classificare: la regressione con le SVM
 
@@ -450,22 +505,62 @@ La solita grammatica `fit`/`predict` regge anche qui. Per la SVM con kernel la
 coppia di iperparametri da tarare per validazione è $(C, \gamma)$: una ricerca
 su griglia con la cross-validation della sezione sull'overfitting è la prassi.
 
+`````{tab} Elementare
+
+```{admonition} Da ricordare
+:class: important
+- La **SVM** sceglie, tra le infinite linee che separano due classi, la più
+  prudente: quella che lascia il **corridoio più largo** possibile fra i due
+  quartieri. A reggere il confine sono solo i pochi punti che ne toccano i
+  bordi, i **vettori di supporto**: gli altri si possono cancellare dal foglio
+  e il confine non si sposta di un millimetro.
+- Il **margine morbido** mette in conto qualche sconfinamento, e una manopola
+  decide quanto è severa: severa, il corridoio si stringe pur di accontentare
+  quasi tutti (e si rischia di inseguire il rumore); indulgente, il corridoio
+  si allarga ed è più robusto. I punti già comodamente fuori dal corridoio non
+  pesano affatto: a reggere il confine restano sempre e solo le poche case sul
+  bordo.
+- Il **kernel trick** rende curva la frontiera: gli stessi punti si guardano in
+  uno spazio con una dimensione in più, e lì tornano separabili da un taglio
+  dritto. È il bersaglio sollevato in aria, ogni punto tanto più in alto quanto
+  più è lontano dal centro, finché una lastra di vetro orizzontale divide il
+  centro dall'anello: i punti non sono cambiati, è cambiato il posto da cui li
+  guardiamo. Il modo più usato di misurare quanto due punti si somigliano è
+  quello «a lampione», dove ogni punto illumina i vicini: luce corta, frontiera
+  frastagliata; luce lunga, frontiera morbida.
+- La stessa idea serve anche a **prevedere numeri** (un tubo di tolleranza
+  attorno alla curva: finché il punto ci sta dentro, l'errore conta zero) e a
+  **riconoscere le anomalie** (un recinto attorno ai dati normali, e chi cade
+  fuori è sospetto, senza aver mai visto una frode).
+- In pratica: portare **sempre** tutte le caratteristiche alla stessa scala,
+  perché la SVM ragiona per distanze; e ricordare che il conto cresce assai più
+  in fretta del numero di esempi, tanto che oltre le decine di migliaia la SVM
+  con kernel diventa impraticabile.
+```
+
+`````
+
+`````{tab} Superiore
+
 ```{admonition} Da ricordare
 :class: important
 - La **SVM** sceglie, tra le infinite frontiere che separano due classi, quella
-  a **margine massimo**: il corridoio $2/\lVert W\rVert$ più largo. La soluzione
-  dipende solo dai **vettori di supporto**, i pochi punti sul bordo.
+  a **margine massimo**: il corridoio $2/\lVert W\rVert$ più largo. La
+  soluzione dipende solo dai **vettori di supporto**, i pochi punti sul bordo.
 - Il **margine morbido** ammette violazioni $\xi_i$ pagate dal parametro $C$,
   l'**inverso** della forza di regolarizzazione: $C$ grande → margine stretto
   (overfitting), $C$ piccolo → margine largo. La perdita è la **hinge loss**,
   parente della log-loss ma piatta oltre il margine.
 - Il **kernel trick** rende non lineare la SVM: mappa i dati in uno spazio più
   ampio dove diventano separabili, calcolando i prodotti scalari con un
-  **kernel** $k(X,Z)=\phi(X)^\top\phi(Z)$ senza costruirlo. Kernel principali:
-  lineare, polinomiale, RBF (parametro $\gamma$ = raggio d'influenza).
+  **kernel** $k(X,Z)=\phi(X)^\top\phi(Z)$
+  senza costruirlo. Kernel principali: lineare, polinomiale, RBF (parametro
+  $\gamma$ = raggio d'influenza).
 - La **SVR** regredisce con un tubo $\epsilon$-insensitive; la **one-class SVM**
   ($\nu$ = frazione di anomalie attese) impara la regione dei dati normali per
   la **novelty/anomaly detection**, senza vedere esempi anomali.
 - In pratica: **standardizzare sempre** le feature; il costo $O(m^2)$–$O(m^3)$
   sconsiglia la SVM con kernel oltre le decine di migliaia di esempi.
 ```
+
+`````

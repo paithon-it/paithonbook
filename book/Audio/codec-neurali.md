@@ -39,9 +39,10 @@ imparano, non si adattano ai dati.
 Un codec **neurale** ribalta l'approccio. Invece di scrivere le regole, le fa
 **imparare** a una rete. La struttura è quella di un **autoencoder** (la stessa
 idea di compressione appresa che ritroveremo, per le immagini, nella diffusione
-latente): un **encoder** che comprime l'input in una rappresentazione compatta,
-e un **decoder** che da quella rappresentazione cerca di ricostruire l'originale. I due si addestrano *insieme*, con un'unica
-regola: la ricostruzione deve somigliare all'ingresso.
+latente): un **encoder** che comprime l'input in una rappresentazione
+compatta, e un **decoder** che da quella rappresentazione cerca di ricostruire
+l'originale. I due si addestrano *insieme*, con un'unica regola: la
+ricostruzione deve somigliare all'ingresso.
 
 `````{tab} Elementare
 
@@ -66,13 +67,13 @@ all'alfabeto.
 `````{tab} Superiore
 
 Un codec neurale è un autoencoder addestrato per la ricostruzione. L'encoder
-$E$ mappa la forma d'onda $x$ in una sequenza di vettori latenti
-$z = E(x)$ a **frequenza di frame** molto più bassa del tasso di campionamento
+$E$ mappa la forma d'onda $X$ in una sequenza di vettori latenti
+$z = E(X)$ a **frequenza di frame** molto più bassa del tasso di campionamento
 (un vettore ogni poche centinaia di campioni); il decoder $D$ ricostruisce
-$\hat{x} = D(z)$. L'obiettivo minimizza una perdita di ricostruzione, spesso
+$\hat{X} = D(z)$. L'obiettivo minimizza una perdita di ricostruzione, spesso
 combinando errore nel dominio del tempo e nello spettro (multi-scala
 tempo–frequenza), ed è tipicamente affiancato da un **discriminatore** in stile
-GAN che spinge $\hat{x}$ a suonare realistico, non solo a minimizzare l'errore
+GAN che spinge $\hat{X}$ a suonare realistico, non solo a minimizzare l'errore
 medio.
 
 Fin qui è compressione con rappresentazione **continua**: $z$ è un vettore di
@@ -212,8 +213,12 @@ $$
 La ricostruzione finale è la somma dei prototipi scelti,
 $q(z) = \sum_{i=1}^{N} e_{k_i^\star}^{(i)}$, e il token di quel frame diventa la
 tupla di indici $(k_1^\star, \dots, k_N^\star)$: **$N$ flussi paralleli** di
-interi. Poiché ogni stadio quantizza ciò che è avanzato, l'errore di
-ricostruzione decresce in modo monotòno con $N$.
+interi. Ogni stadio quantizza ciò che è avanzato, ma questo da solo non basta
+a garantire un miglioramento: l'errore non può crescere con $N$ se ogni
+codebook contiene il vettore nullo, perché scegliere lo zero equivale a non
+correggere (è il motivo per cui, nell'esempio in NumPy più avanti, il secondo
+codebook lo include). In pratica, con codebook appresi sui dati, l'errore
+decresce a ogni stadio.
 
 Il conto del **bitrate** è pulito. Con $N$ quantizzatori, codebook di $K$ voci
 ciascuno e frequenza di frame $f_r$:
@@ -225,8 +230,9 @@ $$
 dove $\log_2 K$ sono i bit per indice. EnCodec a $24$ kHz usa codebook di
 $K = 1024$ voci ($10$ bit) a $f_r = 75$ frame al secondo: con $N = 8$
 quantizzatori si ottengono $8 \cdot 10 \cdot 75 = 6000$ bit/s, cioè **6
-kbps**, contro i 128 kbps e più di un MP3 di buona qualità, a fedeltà
-comparabile. Variando $N$ si sceglie il compromesso: da $1{,}5$ kbps ($N=2$)
+kbps**: nelle prove d'ascolto del paper, una qualità percepita comparabile a
+quella di un MP3 a 64 kbps, con circa un decimo dei bit. Variando $N$ si
+sceglie il compromesso: da $1{,}5$ kbps ($N=2$)
 fino a $24$ kbps ($N=32$).
 
 `````
@@ -263,8 +269,8 @@ import numpy as np
 
 rng = np.random.default_rng(0)
 
-# Un piccolo "batch" di vettori latenti 2D da quantizzare
-X = rng.uniform(-1, 1, size=(6, 2)).round(2)
+# Un piccolo "batch" di vettori latenti 2D da quantizzare (le z dell'encoder)
+Z = rng.uniform(-1, 1, size=(6, 2)).round(2)
 
 # Primo codebook: 4 prototipi grossolani (K = 4)
 C1 = np.array([[-0.5, -0.5],
@@ -292,19 +298,19 @@ def mse(A, B):
 
 
 # --- Stadio 1: quantizzo il vettore ---
-idx1, q1 = quantizza(X, C1)
+idx1, q1 = quantizza(Z, C1)
 ric1 = q1                       # ricostruzione con 1 solo stadio
 
 # --- Stadio 2: quantizzo il RESIDUO ---
-residuo = X - q1
+residuo = Z - q1
 idx2, q2 = quantizza(residuo, C2)
 ric2 = q1 + q2                  # ricostruzione con 2 stadi
 
-print("vettori da quantizzare:\n", X)
+print("vettori da quantizzare:\n", Z)
 print("token stadio 1:", idx1.tolist())
 print("token stadio 2:", idx2.tolist())
-print(f"MSE con 1 quantizzatore: {mse(X, ric1):.4f}")
-print(f"MSE con 2 quantizzatori: {mse(X, ric2):.4f}")
+print(f"MSE con 1 quantizzatore: {mse(Z, ric1):.4f}")
+print(f"MSE con 2 quantizzatori: {mse(Z, ric2):.4f}")
 ```
 
 L'output mostra i due «flussi» di token e, soprattutto, l'errore che cala

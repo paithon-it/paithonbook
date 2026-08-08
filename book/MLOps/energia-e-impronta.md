@@ -115,15 +115,23 @@ I tre fattori si governano con leve diverse e da attori diversi. $E_{\text{IT}}$
 progetta il centro dati (nelle strutture efficienti sta fra $1{,}1$ e $1{,}3$,
 in quelle mal progettate supera $2$, e la differenza è quasi tutta
 raffreddamento); $I_{\text{rete}}$ è la leva di chi sceglie **dove** e
-**quando** eseguire, e varia di oltre un ordine di grandezza fra reti diverse e
-fra ore diverse della stessa rete.
+**quando** eseguire, e varia di oltre un ordine di grandezza fra reti diverse,
+e di alcune volte fra ore diverse della stessa rete.
 
-L'analisi di Patterson e colleghi {cite}`patterson2021carbon` mostra che i
-fattori non sono comparabili per ampiezza: le scelte di collocazione e di
-hardware possono valere, insieme, ordini di grandezza, mentre l'ottimizzazione
-del codice raramente supera il fattore due o tre. Il che ribalta l'intuizione
-di chi lavora al modello, e va detto con onestà: la leva più grossa non è quasi
-mai la nostra.
+L'analisi di Patterson e colleghi {cite}`patterson2021carbon` mette in fila le
+ampiezze, e non sono affatto uguali fra loro. Pesa di più la scelta del
+**modello**: una rete grande ma ad attivazione **sparsa** può consumare meno di
+un decimo di una densa a parità di qualità, cioè circa dieci volte meno. Le sta
+vicina la **collocazione geografica**, cioè in quale rete elettrica si esegue
+il lavoro, che sposta le emissioni di un fattore fra cinque e dieci, anche
+restando dentro lo stesso paese e la stessa organizzazione. Più sotto vengono
+le altre due leve, che il paper tiene distinte: l'**hardware** specializzato
+per il machine learning rende da due a cinque volte più di un sistema generico,
+e un centro dati progettato bene è da 1,4 a 2 volte più efficiente di uno
+tipico (è il PUE di poco fa). La lezione va detta con onestà: la leva di chi
+modella esiste ed è la più grande, ma sta nella **scelta del modello**, non
+nella micro-ottimizzazione del codice, che sposta molto meno; e la scelta del
+luogo, che non è del team di modellazione, le sta quasi alla pari.
 
 `````
 
@@ -205,12 +213,13 @@ pesa più di anni di funzionamento.
 
 ## Che cosa si può fare, e che cosa non funziona
 
-Tirando le somme, le leve sono cinque, in ordine decrescente di quanto in
-media spostano: **dove** si esegue (l'intensità di carbonio della rete),
-**quando** si esegue per i lavori differibili, **su cosa** si esegue (un
-acceleratore adatto contro uno generico), **quanto** modello serve davvero
-(un modello dieci volte più piccolo che basta allo scopo batte qualunque
-micro-ottimizzazione), e infine **come** è scritto il codice.
+Tirando le somme, le leve sono cinque, e le prime due contano più delle altre:
+**quanto** modello serve davvero (un modello sparso invece che denso, o dieci
+volte più piccolo, che basti comunque allo scopo, batte qualunque
+micro-ottimizzazione) e **dove** si esegue, cioè l'intensità di carbonio della
+rete elettrica. Vengono poi, nell'ordine, **su cosa** si esegue (un
+acceleratore adatto contro uno generico), **quando** si esegue per i lavori
+differibili, e infine **come** è scritto il codice.
 
 Due avvertenze finali, che valgono più di molte buone intenzioni.
 
@@ -227,6 +236,34 @@ misura seria si fa in casa propria, con i contatori dell'hardware che si ha,
 esattamente come per la latenza. Il resto è ordine di grandezza, ed è già
 molto.
 
+`````{tab} Elementare
+```{admonition} Da ricordare
+:class: important
+- L'energia non se ne va nei conti ma nel **movimento dei dati**: fare una
+  moltiplicazione costa pochissimo, andare a prendere i due numeri nella
+  memoria esterna costa centinaia di volte tanto. È la stessa frase del
+  capitolo sulle GPU (il collo di bottiglia non sono i conti, sono i byte)
+  riletta con la bolletta in mano: andare più veloci e consumare meno sono la
+  stessa cosa.
+- L'impronta finale è il prodotto di **tre fattori**: l'energia che consumano i
+  calcolatori, il sovrapprezzo dell'edificio (raffreddamento e perdite, dal
+  dieci per cento fino a più del doppio) e quanto sporca è l'elettricità di
+  quella rete, che cambia di dieci volte fra un luogo e l'altro e di alcune
+  volte fra un'ora e l'altra della stessa rete.
+- **Rispondere costa più che addestrare**, quando il modello resta in servizio
+  a lungo: rimpicciolirlo, servire più richieste in una volta sola e riusare
+  ciò che è già stato calcolato sono leve ambientali oltre che economiche.
+- Un chip ha già un'impronta **prima di essere acceso** (fabbricazione):
+  trascurabile per un acceleratore che macina calcoli sempre, dominante per un
+  oggetto che si accende di rado. Là conviene consumare meno, qui durare di
+  più.
+- Le cifre pubblicate sono quasi tutte stime, con ipotesi che raramente sono
+  dichiarate: si misura in casa propria. E l'efficienza da sola non basta,
+  perché finora ogni risparmio è stato reinvestito in modelli più grandi.
+```
+`````
+
+`````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
 - L'energia non se ne va nei conti ma nel **movimento dei dati**: leggere un
@@ -238,7 +275,7 @@ molto.
   $\text{gCO}_2\text{e} = E_{\text{IT}} \times \text{PUE} \times I_{\text{rete}}$:
   il **PUE** misura il costo dell'edificio (da $1{,}1$ a oltre $2$, quasi tutto
   raffreddamento), l'**intensità di rete** varia di oltre un ordine di
-  grandezza fra luoghi e fra ore.
+  grandezza fra luoghi, e di alcune volte fra le ore della stessa rete.
 - **L'inferenza supera l'addestramento** quando il modello è servito a lungo:
   quantizzazione, distillazione, *batching* e cache del prefisso sono leve
   ambientali oltre che economiche.
@@ -249,3 +286,4 @@ molto.
   casa propria. E l'efficienza da sola non basta, perché storicamente il
   risparmio è stato reinvestito in modelli più grandi.
 ```
+`````

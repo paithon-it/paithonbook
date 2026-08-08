@@ -452,6 +452,46 @@ alla struttura della frase. È l'analisi sintattica, tema della prossima
 sezione, e i suoi mattoni sono esattamente le etichette POS che abbiamo
 imparato a mettere.
 
+`````{tab} Elementare
+```{admonition} Da ricordare
+:class: important
+- Il **POS tagging** dà a ogni parola il suo mestiere nella frase (nome,
+  verbo, articolo): la lista condivisa fra le lingue è quella dei 17 mestieri
+  di Universal Dependencies. Le parole con due mestieri («porta», «ancora»)
+  sono una minoranza del vocabolario ma tornano di continuo nei testi, e a
+  decidere quale sia in servizio è sempre il contesto.
+- Il **NER** cerca persone, luoghi, organizzazioni e date. Lo **schema BIO** è
+  il modo di dettare al telefono dove passa l'evidenziatore, con tre soli
+  segnali per parola (qui comincio, qui continuo, qui la penna è sollevata):
+  così due persone di fila restano due persone e non diventano una sola.
+- Lo **HMM** è la recita dietro la tenda: le parole sono le battute che senti,
+  le categorie grammaticali gli attori che non vedi, e si passano la scena
+  secondo abitudini fisse, ciascuno con il proprio copione di parole tipiche.
+  I due libretti di abitudini si imparano contando su frasi già etichettate a
+  mano. La stessa macchina, con i suoni al posto delle categorie, ha retto il
+  riconoscimento vocale per trent'anni.
+- **Viterbi** è il navigatore che a ogni incrocio, per ogni corsia, conserva
+  solo il modo migliore di arrivarci e butta via gli altri: invece di provare
+  miliardi di percorsi ne visita poche centinaia di caselle, e trova comunque
+  il percorso migliore in assoluto, garantito.
+- Alla recita dietro la tenda sono poi succeduti metodi che non raccontano più
+  come parole ed etichette nascano insieme: si allenano soltanto a scegliere
+  l'etichetta giusta, e possono guardare indizi che alla recita sfuggono (la
+  maiuscola iniziale, la fine della parola, un trattino). Per trovare il
+  percorso migliore, però, chiamano ancora il navigatore.
+- Il tagger neurale legge la frase nei due sensi e produce un'etichetta per
+  ogni parola, non una per l'intera frase; leggere anche all'indietro è lecito
+  perché il testo è già lì tutto intero. Oggi il NER migliore si ottiene
+  rifinendo un modello già addestrato (BERT).
+- Come si dà il voto: per le parti del discorso si contano le parole
+  etichettate bene, ma il numero va letto con prudenza: anche dando a ogni
+  parola la sua etichetta più frequente si arriva già a voti alti, ed è il 97%
+  che è difficile, non il 90%. Per le entità si giudica a evidenziature
+  intere, confini e colore compresi, perché mezza persona non serve a nessuno.
+```
+`````
+
+`````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
 - Il **POS tagging** assegna a ogni parola la sua categoria grammaticale:
@@ -476,3 +516,4 @@ imparato a mettere.
   92%), **F1 a livello di entità** con exact match per il NER; perché mezza
   entità è un'entità sbagliata.
 ```
+`````

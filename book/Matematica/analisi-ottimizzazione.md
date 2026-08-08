@@ -273,7 +273,10 @@ buon posto ma non il migliore.
 
 Una funzione è **convessa** se il segmento che unisce due punti qualsiasi del
 suo grafico sta sopra la curva; per una funzione convessa ogni minimo locale è
-anche globale, e la discesa del gradiente trova l'ottimo. Le loss del deep
+anche globale, e la discesa del gradiente converge all'ottimo, purché il
+learning rate sia abbastanza piccolo rispetto alla curvatura: con un passo
+troppo lungo si diverge anche in una scodella perfetta, come mostrerà tra poco
+l'esperimento con `eta = 1.1`. Le loss del deep
 learning, però, sono quasi sempre **non convesse**: nessuna garanzia. La buona
 notizia empirica è che per reti molto grandi i minimi locali "buoni" sono
 tantissimi e quasi equivalenti al globale; gli ostacoli veri sono più i punti
@@ -308,6 +311,30 @@ Cambia `eta` e osserva: con un valore piccolo (`0.01`) la convergenza rallenta,
 con uno troppo grande (`1.1`) $\theta$ diverge oscillando. È la stessa dinamica,
 in scala minima, che governa l'addestramento di una rete con miliardi di pesi.
 
+`````{tab} Elementare
+```{admonition} Da ricordare
+:class: important
+- La **derivata** misura la pendenza: di quanto cambia l'uscita se muovo di
+  poco l'ingresso, come il tachimetro dice quanto in fretta cambia la
+  posizione. Dove il terreno è piatto (in cima a una gobba, in fondo a una
+  conca) vale zero.
+- Il **gradiente** mette in fila la pendenza rispetto a ogni parametro preso da
+  solo, una manopola alla volta: indica la direzione in cui il costo cresce più
+  in fretta, e per scendere si va nel verso opposto.
+- La **discesa del gradiente** è l'escursionista nella nebbia: un passo verso il
+  basso, si risente la pendenza, si ripete. La lunghezza del passo si chiama
+  **learning rate** ed è la scelta delicata: troppo lungo e si rimbalza da una
+  parete all'altra, troppo corto e si arriva dopo un'eternità.
+- La **regola della catena** moltiplica fra loro le pendenze anello per anello,
+  come ingranaggi che si trascinano: è così che la correzione risale
+  dall'uscita fino ai primi strati (il *backpropagation*).
+- Il paesaggio di una rete profonda non è una scodella liscia ma una catena
+  montuosa: nessuno garantisce che si arrivi al fondo più basso, e in pratica
+  una conca abbastanza profonda basta quasi sempre.
+```
+`````
+
+`````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
 - La **derivata** misura la pendenza: di quanto cambia l'uscita se muovo di
@@ -322,3 +349,4 @@ in scala minima, che governa l'addestramento di una rete con miliardi di pesi.
 - In deep learning la loss non è convessa, ma un minimo "abbastanza buono"
   basta quasi sempre.
 ```
+`````

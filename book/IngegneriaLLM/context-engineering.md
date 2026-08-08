@@ -121,8 +121,11 @@ Le quattro operazioni, in termini di ingegneria del contesto:
   lungo termine. Esempio: l'agente salva su un file il piano che sta seguendo,
   invece di riportarlo in ogni prompt.
 - **Select**, recuperare *dentro* la finestra soltanto ciò che serve al passo
-  corrente: è il **RAG** {cite}`lewis2020retrieval` per i documenti, ma anche
-  il recupero della memoria giusta o della descrizione dello strumento giusto.
+  corrente: per i documenti è il recupero in-context, discendente del **RAG**
+  di Lewis e colleghi {cite}`lewis2020retrieval` (che però addestrava
+  congiuntamente retriever e generatore, mentre qui i pesi restano congelati);
+  ma è anche il recupero della memoria giusta o della descrizione dello
+  strumento giusto.
   Esempio: su una domanda di fatturazione, si iniettano le tre pagine di
   policy pertinenti, non l'intero manuale.
 - **Compress**, ridurre i token di ciò che *deve* restare: riassunto
@@ -181,12 +184,16 @@ invece di lasciarlo crescere all'infinito.
 
 `````{tab} Superiore
 
-*Distraction* e *confusion* hanno una radice comune che conosciamo già: il
-**lost in the middle** {cite}`liu2024lost` e, più in generale, la **diluizione
-dell'attenzione**. Man mano che il contesto si allunga, il segnale rilevante
-si distribuisce su più token e la capacità del modello di isolarlo cala:
-l'abbiamo misurato nel capitolo sugli Agenti, dove la curva di accuratezza in
-funzione della posizione dell'informazione ha la forma a U. *Distraction* è il
+Per *distraction* e *confusion* una lettura possibile (interpretativa: le
+mette insieme chi scrive, non la letteratura) è la **diluizione
+dell'attenzione**: man mano che il contesto si allunga, il segnale rilevante
+si distribuisce su più token e la capacità del modello di isolarlo cala. Le
+evidenze dietro questa lettura restano però distinte: il **lost in the
+middle** {cite}`liu2024lost` misura un effetto di *posizione* (la curva di
+accuratezza in funzione di dove sta l'informazione ha la forma a U, come visto
+nel capitolo sugli Agenti), mentre la *distraction* del catalogo nasce da
+osservazioni sulla *lunghezza*: oltre una certa mole di cronologia il modello
+tende a fissarsi sui propri passi passati. *Distraction* è il
 caso in cui il segnale utile è annegato nella cronologia; *confusion* quello
 in cui token irrilevanti ma «vicini» al compito attirano indebitamente
 l'attenzione. Il *poisoning* è di natura diversa (è un problema di
@@ -272,11 +279,16 @@ testo: è un sistema, e va progettata come tale.
   strumenti). L'estremità «campi / neural fields» è **frontiera speculativa**, non
   risultato consolidato: va detto.
 - Quattro mosse per governare il contesto: **write** (fuori dalla finestra),
-  **select** (recuperare il pertinente, RAG {cite}`lewis2020retrieval`),
-  **compress** (riassumere/potare), **isolate** (partizionare tra sotto-agenti).
+  **select** (andare a prendere solo ciò che serve al passo corrente, il gesto
+  che sta anche dietro ai sistemi che recuperano documenti prima di rispondere
+  {cite}`lewis2020retrieval`), **compress** (riassumere/potare), **isolate**
+  (partizionare tra sotto-agenti).
 - Quattro guasti (catalogo di Breunig): **poisoning** (un errore che si sedimenta
-  e si autoalimenta), **distraction** e **confusion** (imparentati col *lost in
-  the middle* {cite}`liu2024lost`), **clash** (contesto contraddittorio).
+  e si autoalimenta), **distraction** e **confusion** (che qui abbiamo letto
+  insieme come diluizione dell'attenzione, ma è una lettura di chi scrive: le
+  evidenze restano distinte, il *lost in the middle* {cite}`liu2024lost`
+  riguarda la **posizione** dell'informazione, la distraction la **lunghezza**
+  della cronologia), **clash** (contesto contraddittorio).
 - Il **PRP** rende il context engineering una **procedura ripetibile**: regole,
   esempi, documentazione e **validation gate**. Quest'ultimo anticipa il **loop
   engineering** della prossima sezione: verificare l'esito e reiterare.

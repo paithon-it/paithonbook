@@ -115,9 +115,10 @@ solito.
 ```
 
 La colonna della modificabilità in {numref}`fig-scelta-contenitore` è quella
-che decide più spesso. Un contenitore immutabile può fare da chiave in un
-dizionario e non può essere cambiato per sbaglio da una funzione a cui lo si
-passa: sono due garanzie, non due limitazioni.
+che decide più spesso. Un contenitore immutabile non può essere cambiato per
+sbaglio da una funzione a cui lo si passa e, se anche i valori che contiene
+sono immutabili, può fare da chiave in un dizionario: sono due garanzie, non
+due limitazioni.
 
 ```python
 numeri = [3, 1, 4, 1, 5]                 # list: ordinata, modificabile
@@ -151,12 +152,17 @@ Le analogie aiutano ({numref}`fig-strutture-dati`):
 `````{tab} Superiore
 
 La differenza tecnica è **mutabilità** e **hashabilità**. `list`, `dict` e
-`set` sono mutabili; `tuple` è immutabile (e quindi *hashable*, perciò usabile
-come chiave di dizionario). `dict` e `set` sono tabelle hash: l'accesso e il
-test di appartenenza sono in media $O(1)$, contro l'$O(n)$ della ricerca
-lineare in una lista. Le chiavi di un `dict` e gli elementi di un `set` devono
-essere hashable, cioè immutabili: motivo per cui una lista non può stare in un
-set, ma una tupla sì.
+`set` sono mutabili; `tuple` è immutabile, ed è *hashable* solo se lo sono
+anche i suoi elementi: solo in quel caso può fare da chiave di dizionario.
+`dict` e `set` sono tabelle hash: l'accesso e il test di appartenenza sono in
+media $O(1)$, contro l'$O(n)$ della ricerca lineare in una lista. Le chiavi di
+un `dict` e gli elementi di un `set` devono essere hashable, cioè avere un
+hash che non cambia nel tempo. Per i tipi built-in la proprietà coincide in
+pratica con l'immutabilità (una tupla che contiene una lista, per esempio,
+non è hashable), ed è il motivo per cui una lista non può stare in un set ma
+una tupla di numeri sì; fuori dai built-in la coincidenza cade, perché
+un'istanza di una classe definita dall'utente è mutabile ed è hashable per
+default (l'hash deriva dall'identità dell'oggetto).
 
 `````
 

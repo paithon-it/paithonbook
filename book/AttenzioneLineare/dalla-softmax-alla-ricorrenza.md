@@ -58,10 +58,14 @@ prezzo per ottenerlo è rinunciare alla softmax così com'è.
 
 Nell'attenzione dei Transformer {cite}`vaswani2017attention` l'uscita (non
 normalizzata) per la query $i$ è una somma dei value pesati dalla somiglianza
-esponenziale $\exp(q_i^\top k_j)$. Il guaio è che quell'esponenziale *non si
-spezza*: non esiste un modo di scriverlo come prodotto di una funzione della
-sola $q_i$ per una funzione della sola $k_j$, e quindi va valutato per ogni
-coppia $(i,j)$ (la matrice $n \times n$).
+esponenziale $\exp(q_i^\top k_j)$ (il fattore di scala $1/\sqrt{d}$ lo
+consideriamo assorbito in query e chiavi). Il guaio è che quell'esponenziale
+*non si spezza*: non esiste una fattorizzazione esatta **a dimensione finita**
+in un prodotto di una funzione della sola $q_i$ per una funzione della sola
+$k_j$. Una feature map che lo riproduca c'è, ma con infinite componenti, e in
+pratica la si può solo approssimare: è la strada delle *random features* del
+Performer {cite}`choromanski2021performer`. Restando esatti, quindi,
+l'esponenziale va valutato per ogni coppia $(i,j)$: la matrice $n \times n$.
 
 L'idea di Katharopoulos e colleghi {cite}`katharopoulos2020transformers` è
 sostituire la somiglianza con una che *si spezza*, cioè un prodotto scalare fra
@@ -210,12 +214,35 @@ raccolgono la stessa informazione in modi opposti: la KV cache la conserva tutta
 e paga in memoria che cresce; lo stato-matrice la comprime in un foglio di
 taglia fissa.
 
-Una nota di cautela sulla notazione, che ci servirà nel resto del capitolo:
-Katharopoulos (e, poco dopo, i lavori sui *fast weight*) tengono il
-normalizzatore $z_t$. Diverse varianti più recenti vi rinunciano del tutto,
-normalizzando invece le key (le riportano tutte a lunghezza uno) e aggiungendo
-una *layer normalization* in uscita: due impostazioni diverse, che è meglio
-non mescolare. Nelle prossime sezioni terremo distinte le due scuole.
+Una nota prima di proseguire. Nelle prossime sezioni le stesse formule le
+scriveremo in una forma un po' più snella di quella vista qui: è una scelta di
+comodo, non un altro modello.
+
+`````{tab} Elementare
+
+Chi lavora su questi modelli scrive lo stesso meccanismo con qualche
+accorgimento in più o in meno. Alcuni tengono la divisione finale, quella che
+trasforma la somma in una media; altri la tolgono, perché ogni tanto dava
+numeri capricciosi, e rimettono in riga i conti in un altro modo. L'idea del
+foglio-registro non cambia di una virgola: cambia soltanto il modo di tenere i
+numeri entro grandezze ragionevoli. L'unica accortezza è non mescolare le due
+scritture, e infatti da qui in avanti ne useremo una sola.
+
+`````
+
+`````{tab} Superiore
+
+Katharopoulos tiene il normalizzatore $z_t$: la lettura è una media pesata e
+$z_t^\top \phi(q_t)$ ne è il denominatore. Già i lavori sui *fast weight* di
+poco successivi lo abbandonano, giudicandolo instabile (quell'accumulatore può
+crescere senza controllo), e normalizzano invece chiavi e query trasformate; le
+varianti più recenti vi rinunciano del tutto, riportando le key a norma unitaria
+e aggiungendo una *layer normalization* in uscita. Impostazioni diverse, che è
+meglio non mescolare: nelle prossime sezioni terremo distinte le due scuole e,
+parlando delle architetture moderne, useremo la seconda, cioè feature map
+$\phi$ posta all'identità e nessun $z_t$ nelle formule.
+
+`````
 
 ## Addestrare in parallelo, generare in ricorrenza
 
@@ -264,12 +291,20 @@ ogni parola generata.
 
 `````{tab} Superiore
 
-**In addestramento** si usa la forma parallela. La somma cumulativa
-$S_t = \sum_{i\le t} v_i\,\phi(k_i)^\top$ è un *prefix sum* (una somma
-progressiva): l'operazione è associativa, quindi non serve affatto procedere
-in fila token per token; la si calcola su tutta la sequenza in parallelo, come
-un prodotto fra matrici mascherato dalla causalità. Si sfrutta il parallelismo
-delle GPU esattamente come farebbe un Transformer.
+**In addestramento** si usa la forma parallela, e qui serve un momento di
+onestà sui costi. La strada più diretta è il prodotto fra matrici *mascherato*
+dalla causalità, $\big(\phi(Q)\,\phi(K)^\top \odot M\big)V$ con $M$ la
+maschera triangolare: parallelo esattamente come un Transformer, ma la
+maschera impedisce di ri-associare il prodotto e si torna a pagare
+$O(n^2 d)$.
+L'alternativa è srotolare la somma cumulativa
+$S_t = \sum_{i\le t} v_i\,\phi(k_i)^\top$ come *prefix sum* (una somma
+progressiva): l'operazione è associativa, quindi si calcola con uno *scan*
+parallelo a costo $O(n d^2)$, lineare, ma con un parallelismo meno amichevole
+per le GPU. Nessuna delle due forme dà insieme le due cose; la conciliazione
+usata in pratica è il calcolo **a blocchi** (*chunkwise*): parallelo dentro
+ogni blocco, ricorrente fra un blocco e l'altro, costo lineare. Lo
+ritroveremo, formalizzato, in RetNet e DeltaNet.
 
 **In inferenza autoregressiva** si usa la forma ricorrente: si aggiorna $S_t$
 sul posto e si legge $o_t$, con costo $O(d^2)$ per token e memoria $O(d^2)$
@@ -358,27 +393,63 @@ tenerlo eterno) e un modo per **correggere** invece di sommare alla cieca
 già prevede per quella key, la cosiddetta *regola delta*). Sono esattamente i
 due fili della prossima sezione.
 
+`````{tab} Elementare
+
+```{admonition} Da ricordare
+:class: important
+- Far parlare ogni parola con tutte le altre è un'esplosione di conversazioni:
+  mille parole sono quasi mezzo milione di scambi. Sostituire quel confronto a
+  due a due con un **registro riassuntivo**, che ciascuno aggiorna una volta
+  sola, porta il conto a mille aggiornamenti: da esplosivo a proporzionale alla
+  lunghezza del testo.
+- Il registro è un **foglio di dimensione fissa**: ogni parola ci scrive la
+  propria informazione sotto la propria etichetta, e per rispondere a una
+  domanda lo si rilegge, invece di rovistare nella pila degli scontrini.
+- Letto parola per parola, quel foglio è il riassunto di una vecchia rete
+  ricorrente: si aggiorna sommando, costa sempre lo stesso a ogni parola e non
+  cresce mai, che si sia alla decima o alla milionesima. È l'ironia del titolo
+  *Transformers are RNNs* (Katharopoulos e colleghi, 2020).
+- Stesso risultato, **due modi di ottenerlo**: tutto insieme quando il testo c'è
+  già (correggere un tema, cioè addestrare) e una parola alla volta quando il
+  testo si sta inventando (scriverlo, cioè generare), senza la pila che si
+  allunga. La stessa doppia natura tornerà con gli State Space Model.
+- Il difetto del registro: somma e basta, non cancella e non corregge. Le
+  etichette che si possono tenere ben distinte sono tante quanto lo spazio del
+  foglio; oltre quella soglia le scritte si sovrappongono, i contributi si
+  confondono e ritrovare il dettaglio esatto diventa impossibile.
+- I due rimedi delle sezioni successive: un modo per **sbiadire** ciò che è
+  vecchio e un modo per **correggere** invece di sommare alla cieca.
+```
+
+`````
+
+`````{tab} Superiore
+
 ```{admonition} Da ricordare
 :class: important
 - La softmax dei Transformer costa $O(n^2)$ perché non si fattorizza;
-  sostituirla con una somiglianza $\text{sim}(q,k)=\phi(q)^\top\phi(k)$ e
+  sostituirla con una somiglianza
+  $\text{sim}(\mathbf{q},\mathbf{k})=\phi(\mathbf{q})^\top\phi(\mathbf{k})$ e
   ri-associare il prodotto porta il costo a $O(n d^2)$, cioè **lineare** nella
   lunghezza.
-- Il calcolo si condensa in uno **stato-matrice** $S = \sum_j v_j\,\phi(k_j)^\top$
+- Il calcolo si condensa in uno **stato-matrice**
+  $S = \sum_j \mathbf{v}_j\,\phi(\mathbf{k}_j)^\top$
   di dimensione fissa $d \times d$: una memoria chiave→valore che si legge con
-  $S\,\phi(q)$.
+  $S\,\phi(\mathbf{q})$.
 - In forma causale è una **ricorrenza**,
-  $S_t = S_{t-1} + v_t\,\phi(k_t)^\top$: cioè una **RNN a stato matriciale**
+  $S_t = S_{t-1} + \mathbf{v}_t\,\phi(\mathbf{k}_t)^\top$:
+  cioè una **RNN a stato matriciale**
   con transizione lineare (l'identità), aggiornamento $O(d^2)$ per token e
   memoria **costante**; da cui l'ironia di *Transformers are RNNs*
   (Katharopoulos et al., 2020).
-- Stessa funzione, **due forme**: parallela per addestrare (si sfruttano le
-  GPU come nei Transformer), ricorrente per generare a memoria costante, senza
-  la KV cache che invece cresce. La stessa dualità tornerà per gli State Space
-  Model.
+- Stessa funzione, **due forme**: parallela per addestrare, ricorrente per
+  generare a memoria costante, senza la KV cache che invece cresce. La stessa
+  dualità tornerà per gli State Space Model.
 - Il difetto dell'accumulo puro: non dimentica e non corregge. In dimensione
   $d$ non stanno più di $d$ chiavi ortogonali; oltre quella soglia le
   associazioni interferiscono (**crosstalk**) e il richiamo esatto degrada.
 - I due rimedi (un **gate** che dimentica e una **regola delta** che corregge
   invece di sommare) sono il filo delle sezioni successive.
 ```
+
+`````

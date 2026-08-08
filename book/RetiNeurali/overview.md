@@ -80,10 +80,11 @@ scritto la regola: l'ha ricavata dai dati.
 Il percettrone produce una decisione binaria
 
 $$
-\hat{y} = \operatorname{sign}(\mathbf{w}^\top \mathbf{x} + b),
+\hat{y} = g(\mathbf{w}^\top \mathbf{x} + b),
 $$
 
-e aggiorna i parametri con la **regola di apprendimento del percettrone**, per
+dove $g$ è la funzione a gradino ($g(z)=1$ se $z\ge 0$, $0$ altrimenti), e
+aggiorna i parametri con la **regola di apprendimento del percettrone**, per
 ogni esempio $(\mathbf{x}, y)$ classificato male:
 
 $$
@@ -92,7 +93,7 @@ $$
 b \leftarrow b + \eta\,(y - \hat{y}),
 $$
 
-dove $y\in\{-1,+1\}$ è l'etichetta corretta, $\hat{y}$ la predizione ed
+dove $y\in\{0,1\}$ è l'etichetta corretta, $\hat{y}$ la predizione ed
 $\eta>0$ il **tasso di apprendimento**. Rosenblatt dimostrò il *teorema di
 convergenza*: se i dati sono linearmente separabili, questa regola trova in un
 numero finito di passi un iperpiano che li separa. Il guaio è tutto in quel
@@ -181,12 +182,14 @@ l'uscita di uno strato è l'ingresso del prossimo
 
 ```{figure} ../figures/reti-multistrato.svg
 :name: fig-confini-multistrato
-:alt: "Tre pannelli sulla stessa nube di punti. Con un solo neurone il confine di decisione è una retta. Con uno strato nascosto diventa una regione poligonale, ottenuta combinando più rette. Con due strati nascosti il confine si fa curvo e può racchiudere forme qualsiasi."
+:alt: "Tre pannelli sulla stessa nube di punti. Con un solo neurone il confine di decisione è una retta. Con uno strato nascosto diventa una regione poligonale, ottenuta combinando più rette. Con più strati le regioni si compongono in una figura chiusa a molti lati, che da lontano sembra una curva ma conserva gli spigoli."
 :width: 100%
 
-Cosa si guadagna aggiungendo strati. Non potenza di calcolo: forme di confine.
-Ogni strato in più permette di comporre i confini del precedente in figure che
-prima erano irraggiungibili.
+Tre pannelli sulla stessa nube di punti. Un neurone solo può separarla con una
+retta; uno strato nascosto mette insieme più rette e ritaglia una regione;
+aggiungendo strati le regioni si combinano fra loro e il confine segue la
+forma dei dati sempre più da vicino. Quello che si guadagna è soprattutto
+risparmio: gli stessi confini si ottengono con molti meno neuroni.
 ```
 
 La progressione di {numref}`fig-confini-multistrato` è la risposta visiva allo
@@ -232,12 +235,23 @@ Qui $W^{(1)}\in\mathbb{R}^{4\times 3}$ e $W^{(2)}\in\mathbb{R}^{2\times 4}$ sono
 le matrici dei pesi, $\mathbf{b}^{(1)}, \mathbf{b}^{(2)}$ i bias, $\sigma$ la
 non linearità nascosta (tipicamente ReLU) e $\varphi$ l'attivazione d'uscita
 (per esempio softmax). È l'impilamento di trasformazioni lineari e non lineari
-a dare la potenza: il *teorema di approssimazione universale*
-({cite}`cybenko1989approximation`; {cite}`hornik1991approximation`)
-garantisce che una rete con un solo strato nascosto abbastanza
-ampio può approssimare qualunque funzione continua su un insieme compatto. La
-non linearità $\sigma$ è essenziale: senza di essa, due strati lineari
-collasserebbero in uno solo.
+a dare la potenza: il *teorema di approssimazione universale* garantisce che
+una rete con un solo strato nascosto abbastanza ampio può approssimare, con
+errore arbitrariamente piccolo, qualunque funzione continua su un insieme
+compatto. Dimostrato prima per attivazioni limitate, come la sigmoide
+({cite}`cybenko1989approximation`; {cite}`hornik1991approximation`), vale per
+ogni $\sigma$ non polinomiale, ReLU compresa ({cite}`leshno1993multilayer`).
+È però un teorema di esistenza: dice che i pesi giusti ci sono, non che la
+discesa del gradiente li trovi. La non linearità $\sigma$ è essenziale: senza
+di essa, due strati lineari collasserebbero in uno solo.
+
+Il teorema chiarisce anche come leggere {numref}`fig-confini-multistrato`: la
+profondità non sblocca confini altrimenti irraggiungibili, riduce il numero di
+neuroni che servono per ottenerli. Il terzo pannello è disegnato con gli
+spigoli per una ragione: con la ReLU la rete è lineare a tratti e il confine
+resta un poligono, con sempre più lati man mano che gli strati si accumulano,
+finché da lontano sembra una curva. Curvo alla lettera lo è solo con
+attivazioni derivabili come la sigmoide o la tangente iperbolica.
 
 `````
 

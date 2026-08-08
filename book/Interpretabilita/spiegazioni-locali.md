@@ -1,13 +1,14 @@
 # Spiegazioni locali: LIME, SHAP e controfattuali
 
-Nel 1953 un matematico della RAND Corporation, **Lloyd Shapley**, si pose una
-domanda che con l'intelligenza artificiale non c'entrava nulla: se un gruppo
+Nel 1953 un giovane matematico di Princeton, di lì a poco in forza alla RAND
+Corporation, **Lloyd Shapley**, si pose una domanda che con l'intelligenza
+artificiale non c'entrava nulla: se un gruppo
 di persone collabora a un'impresa e ne ricava un guadagno, come si divide il
 merito «in modo equo» tra chi ha partecipato? Alcuni contano di più, alcuni
 solo in combinazione con altri; non basta guardare cosa fa ciascuno da solo.
 Shapley diede una risposta con quattro proprietà così ragionevoli da
-risultare, in un certo senso, l'unica possibile. Mezzo secolo dopo avrebbe
-vinto il premio Nobel per l'economia: non per questa formula, per la verità,
+risultare, in un certo senso, l'unica possibile. Quasi sessant'anni dopo
+avrebbe vinto il premio Nobel per l'economia: non per questa formula, per la verità,
 ma per un altro filone dei suoi studi di teoria dei giochi, quello sugli
 abbinamenti stabili. Non poteva immaginare che la sua idea sarebbe diventata,
 nel 2017, lo strumento più usato al mondo per spiegare la singola decisione di
@@ -51,8 +52,8 @@ motivazione è geometrica: la superficie decisionale di un modello complesso
 può essere globalmente inintelligibile ma **localmente regolare**, cioè bene
 approssimabile da un modello semplice in un intorno abbastanza piccolo di
 $x_0$ (l'analogo di linearizzare una funzione differenziabile con il suo piano
-tangente). Ne discende il criterio di qualità già introdotto nella prima
-sezione, la **fedeltà locale**: una spiegazione è buona se il surrogato
+tangente). Ne discende il criterio di qualità già introdotto in apertura di
+capitolo, la **fedeltà locale**: una spiegazione è buona se il surrogato
 interpretabile concorda con $f$ sui punti campionati vicino a $x_0$, senza
 alcuna pretesa di valere lontano da lì. Cambia anche l'oggetto restituito: non
 più una classifica di feature valida ovunque, ma un vettore di
@@ -186,6 +187,15 @@ soddisfa quattro assiomi:
 - **Additività**: i valori di Shapley di una somma di modelli sono la somma
   dei valori; è la proprietà che rende trattabili gli ensemble.
 
+Un'avvertenza che la letteratura ha imparato a proprie spese: la funzione $v$
+non è data, va **scelta**, e la scelta conta. Le feature fuori da $S$ si
+possono marginalizzare sulla loro distribuzione (variante *interventista*),
+condizionare a quelle presenti (variante *condizionale*) o fissare a un
+riferimento $r$ (variante *baseline*, dove $v(\varnothing) = f(r)$): le tre
+scelte producono attribuzioni diverse per lo stesso modello e lo stesso punto
+(Sundararajan e Najmi, 2020), e gli assiomi garantiscono l'unicità solo *a $v$
+fissata*.
+
 Sull'esempio dei due giocatori, con $v(\varnothing)=10$, $v(\{1\})=30$,
 $v(\{2\})=20$, $v(\{1,2\})=50$, la formula dà $\phi_1 = 25$ e $\phi_2 = 15$, in
 accordo con la media sugli ordini, e $\phi_1 + \phi_2 = 40 = v(N) - v(\varnothing)$
@@ -232,10 +242,14 @@ coalizioni: campionando sottoinsiemi $S$ e pesandoli con il **kernel di
 Shapley** $\pi(S) = \frac{n-1}{\binom{n}{|S|}\,|S|\,(n - |S|)}$, la soluzione
 ai minimi quadrati converge ai valori di Shapley; è la scelta di pesi che
 distingue SHAP da LIME, i cui pesi euristici non hanno questa garanzia.
-TreeSHAP (introdotto in un lavoro successivo degli stessi autori) calcola
-invece i valori **esatti** per i modelli ad albero in $O(T L D^2)$ ($T$
+TreeSHAP (introdotto in un lavoro successivo degli stessi autori) elimina
+invece il campionamento per i modelli ad albero, con costo $O(T L D^2)$ ($T$
 alberi, $L$ foglie, $D$ profondità), propagando lungo l'albero le popolazioni
-delle coalizioni.
+delle coalizioni. I valori sono **esatti** rispetto alla $v$ che
+l'implementazione adotta: la variante *path-dependent* stima $v$ dalle
+popolazioni dei nodi dell'albero e non riproduce la marginalizzazione pura;
+la variante *interventional* la calcola davvero, rispetto a un insieme di
+riferimento esplicito.
 
 Il vantaggio teorico è la **consistenza**: se si modifica il modello così che
 una feature contribuisca di più in ogni coalizione, il suo valore SHAP non può
@@ -295,14 +309,18 @@ Wachter e colleghi cercano un punto $x'$ che ottenga l'esito desiderato $y'$
 restando il più vicino possibile all'istanza originale $x_0$, minimizzando
 
 $$
-\operatorname*{arg\,min}_{x'}\; \big(f(x') - y'\big)^2
-   + \lambda\, d(x', x_0),
+\operatorname*{arg\,min}_{x'}\; \lambda\,\big(f(x') - y'\big)^2
+   + d(x', x_0),
 $$
 
 dove il primo termine spinge la predizione verso il valore-bersaglio $y'$ (la
-soglia di approvazione), $d$ è una distanza che misura quanto $x'$ si discosta
-da $x_0$ (spesso una $L_1$ per ottenere modifiche **sparse**, che toccano
-poche feature) e $\lambda$ bilancia i due obiettivi. Estensioni successive
+soglia di approvazione) e $d$ misura quanto $x'$ si discosta da $x_0$: nel
+paper è una distanza di Manhattan ($L_1$) pesata, feature per feature, con la
+deviazione assoluta mediana, che favorisce modifiche **sparse** e rende
+confrontabili scale diverse. Il moltiplicatore $\lambda$ non è un compromesso
+da regolare a mano: lo si fa **crescere** finché la predizione non rientra in
+una tolleranza fissata attorno a $y'$, così che il primo termine agisca da
+vincolo e, sotto quel vincolo, si minimizzi la distanza. Estensioni successive
 aggiungono vincoli di **plausibilità** (restare sul supporto dei dati) e di
 **azionabilità** (non modificare feature immutabili come l'età o l'etnia).
 
@@ -437,8 +455,11 @@ esplicito.
 La parentela con la sezione precedente è stretta e conviene esplicitarla: il
 negativo pertinente **è** un controfattuale, cercato però solo fra le
 perturbazioni additive e presentato come «ciò che manca» invece che come «ciò
-che cambierebbe». Il positivo pertinente, invece, non ha analogo fra i metodi
-visti finora: è l'unico che risponda a «che cosa basta».
+che cambierebbe». Il positivo pertinente, invece, è parente dell'anchor, ma
+risponde alla domanda «che cosa basta» in un altro modo: un anchor fissa
+alcune condizioni e lascia che tutte le altre feature varino liberamente; il
+positivo pertinente spegne tutto il resto sulla baseline e cerca la porzione
+minima dell'input che conserva la classe da sola.
 
 `````
 
@@ -447,9 +468,13 @@ visti finora: è l'unico che risponda a «che cosa basta».
 La libreria `shap` calcola tutto questo in poche righe, ma per capire davvero
 cosa c'è sotto conviene ricostruire i valori di Shapley **a mano**, con la
 definizione per forza bruta: la media dei contributi marginali su tutti gli
-ordini. Il codice qui sotto usa solo NumPy. Il modello giocattolo ha
-un'**interazione** (la terza feature conta solo insieme alla prima) proprio
-per vedere come Shapley se la cava con i contributi non additivi.
+ordini. Il codice qui sotto usa solo NumPy e, per le feature assenti, adotta
+la scelta più semplice, la variante *baseline*: le spegne su un riferimento
+$r$ (qui l'origine), cosicché il valore base è $f(r)$ e l'efficienza da
+verificare diventa $\sum_i \phi_i = f(x) - f(r)$. Il modello
+giocattolo ha un'**interazione** (la terza feature conta solo insieme alla
+prima) proprio per vedere come Shapley se la cava con i contributi non
+additivi.
 
 ```python
 import itertools
@@ -501,8 +526,9 @@ $2$ e nessuna interazione, prende $2{,}0$: tutto suo. Il termine d'interazione
 $x_0 x_2$, che vale $1$, viene **spartito equamente** tra le due feature che
 lo producono: mezzo punto alla feature 0 (che così arriva a $1{,}5$: il suo
 $1$ più $0{,}5$) e mezzo alla feature 2 (che da sola non farebbe nulla, e
-infatti prende solo $0{,}5$). È la simmetria all'opera: nessuna delle due può
-rivendicare l'interazione più dell'altra. E la somma
+infatti prende solo $0{,}5$). È la **simmetria** all'opera: in quel termine le
+due feature fanno esattamente lo stesso mestiere, e chi contribuisce allo
+stesso modo riceve lo stesso. E la somma
 $1{,}5 + 2{,}0 + 0{,}5 = 4{,}0$ coincide con $f(x) - f(\text{base})$:
 l'**efficienza** è verificata numericamente. Nella pratica non si enumerano
 tutti gli ordini (sono $n!$) ma si campionano, o si usa TreeSHAP se il modello
@@ -516,10 +542,14 @@ tutti gli ordini (sono $n!$) ma si campionano, o si usa TreeSHAP se il modello
 - **LIME** {cite}`ribeiro2016why` approssima il modello con un **surrogato
   lineare** adattato a punti perturbati attorno a $x_0$ e pesati per prossimità;
   è model-agnostic ma **instabile** e sensibile alla larghezza del vicinato.
-- I **valori di Shapley** (teoria dei giochi, 1953) ripartiscono lo scarto
-  $f(x_0) - \mathbb{E}[f]$ tra le feature come media dei **contributi marginali**
-  su tutti gli ordini; sono l'unica attribuzione che soddisfa **efficienza,
-  simmetria, giocatore nullo e additività**.
+- I **valori di Shapley** (teoria dei giochi, 1953) ripartiscono fra le feature
+  lo scarto fra la predizione $f(x_0)$ e un **valore base**, cioè quanto
+  risponde il modello quando delle feature non sa nulla; la quota di ciascuna è
+  la media dei suoi **contributi marginali** su tutti gli ordini di ingresso.
+  Sono l'unica attribuzione che soddisfa **efficienza, simmetria, giocatore
+  nullo e additività**, una volta stabilito che cosa significa «non far sapere»
+  una feature al modello: deciderlo in un modo o nell'altro sposta il valore
+  base, e con esso le attribuzioni.
 - **SHAP** {cite}`lundberg2017unified` li stima in modo efficiente,
   **KernelSHAP** (agnostico) e **TreeSHAP** (esatto per gli alberi), con la
   proprietà di **consistenza**; si legge col grafico a cascata (*waterfall*),
@@ -535,6 +565,7 @@ tutti gli ordini (sono $n!$) ma si campionano, o si usa TreeSHAP se il modello
 - Il **CEM** {cite}`dhurandhar2018explanations` distingue i **positivi
   pertinenti** (che cosa basta perché la risposta sia questa) dai **negativi
   pertinenti** (che cosa, assente, la tiene ferma). Il negativo pertinente è un
-  controfattuale additivo; il positivo pertinente non ha analoghi fra gli altri
-  metodi.
+  controfattuale additivo; il positivo pertinente è la porzione minima che
+  basta da sola, col resto cancellato, mentre un anchor fissa alcune condizioni
+  e lascia variare tutto il resto.
 ```

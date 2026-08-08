@@ -94,8 +94,11 @@ $$
 con $\epsilon \sim \mathcal{N}(0, I)$; qui $\bar{\alpha}_t$ è la frazione di
 segnale originale sopravvissuta al passo $t$ e $1-\bar{\alpha}_t$ la varianza
 del rumore accumulato. La forma chiusa esiste perché la somma di gaussiane
-indipendenti è ancora gaussiana (richiami di statistica): componendo $t$
-passi, le varianze si sommano e i coefficienti si moltiplicano. E i dosaggi
+indipendenti è ancora gaussiana (richiami di statistica): componendo un passo
+dopo l'altro, i coefficienti del segnale si moltiplicano e la varianza si
+accumula secondo la ricorrenza $v_t = \alpha_t\, v_{t-1} + \beta_t$ (ogni
+iniezione viene attenuata da tutti i passi successivi, non sommata tale e
+quale), la cui soluzione è appunto $1-\bar{\alpha}_t$. E i dosaggi
 sono calibrati perché la scala resti stabile: se $x_0$ ha varianza unitaria,
 $\mathrm{Var}(x_t) = \bar{\alpha}_t + (1-\bar{\alpha}_t) = 1$ a ogni passo (il
 processo è *variance-preserving*). Con lo schedule di DDPM,
@@ -277,10 +280,19 @@ due linguaggi diversi.
 
 **Da dove viene la loss.** Come per ogni modello a variabili latenti, la
 log-verosimiglianza $\log p_\theta(x_0)$ (l'*evidenza*) non è calcolabile
-direttamente, ma ammette un limite inferiore variazionale (ELBO) che si
-decompone in una somma di divergenze KL, una per ogni passo della catena:
-ciascuna confronta il vero inverso $q(x_{t-1} \mid x_t, x_0)$, gaussiano e
-noto in forma chiusa, con quello appreso $p_\theta(x_{t-1} \mid x_t)$. Tra
+direttamente, ma ammette un limite inferiore variazionale (ELBO). Nella
+convenzione del libro, dove $\mathcal{L}$ si minimizza, si lavora con il suo
+opposto, $\mathcal{L}_{\text{var}} = -\mathrm{ELBO}$ (un limite *superiore*
+sulla log-verosimiglianza negativa), ed è questa quantità che si decompone in
+$T-1$ divergenze KL, una per ciascun passo interno della catena, più due
+termini di bordo: una ricostruzione $-\log p_\theta(x_0 \mid x_1)$ e
+un confronto sul prior, $D_{KL}\big(q(x_T \mid x_0)\,\|\,p(x_T)\big)$, che
+non contiene parametri e si può ignorare. Ogni KL confronta il **posteriore
+condizionato al dato**, $q(x_{t-1} \mid x_t, x_0)$, con il passo appreso
+$p_\theta(x_{t-1} \mid x_t)$; attenzione a non confonderlo con l'inverso vero
+$q(x_{t-1} \mid x_t)$ incontrato sopra, gaussiano solo per approssimazione:
+condizionando anche su $x_0$, la distribuzione diventa gaussiana *esatta* e
+nota in forma chiusa. Tra
 gaussiane, ogni KL si riduce a una distanza quadratica tra medie; con la
 riparametrizzazione di $\mu_\theta$ vista sopra, ogni termine diventa
 $\lVert \epsilon - \epsilon_\theta \rVert^2$ moltiplicato per un peso
@@ -289,11 +301,17 @@ pesi posti a 1: non più un bound esatto, ma una sua versione ripesata che
 nella pratica produce campioni migliori {cite}`ho2020denoising`.
 
 **Cosa impara la rete.** Dalla forma chiusa dell'andata segue
-$\nabla_{x_t} \log q(x_t \mid x_0) = -\epsilon / \sqrt{1-\bar{\alpha}_t}$:
-a meno di un fattore di scala, predire il rumore equivale a stimare
+$\nabla_{x_t} \log q(x_t \mid x_0) = -\epsilon / \sqrt{1-\bar{\alpha}_t}$: il
+rumore iniettato è, a meno di un fattore, il punteggio della densità
+*condizionata al dato di partenza*. Il passaggio alla densità marginale
+$q(x_t)$ non è un corollario ma un risultato a sé: il minimo della loss
+quadratica è la media condizionata
+$\epsilon^*(x_t, t) = \mathbb{E}[\epsilon \mid x_t]$, e si può dimostrare (è
+il *denoising score matching* di Vincent {cite}`vincent2011connection`) che
+essa vale
 
 $$
-\epsilon_\theta(x_t, t) \approx -\sqrt{1-\bar{\alpha}_t}\;
+\epsilon^*(x_t, t) = -\sqrt{1-\bar{\alpha}_t}\;
 \nabla_{x_t} \log q(x_t),
 $$
 
@@ -366,26 +384,52 @@ requisiti: entra un'immagine, esce una «immagine» (la mappa del rumore
 stimato, pixel per pixel, alla stessa risoluzione). È un compito
 *image-to-image*, e il capitolo sulla visione artificiale ci ha già dato lo
 strumento su misura: la **U-Net** di Ronneberger, Fischer e Brox
-{cite}`ronneberger2015u`, nata nel 2015 per segmentare immagini biomediche. La
-stessa rete che là colorava ogni pixel con la sua classe, qui gli attribuisce
-la sua quota di rumore: un encoder che comprime, un decoder che riespande, e
-le *skip connections* che traghettano i dettagli fini dalla discesa alla
-risalita; preziose, perché il rumore è per sua natura un dettaglio ad alta
-frequenza.
+{cite}`ronneberger2015u`, nata nel 2015 per segmentare immagini biomediche.
+
+`````{tab} Elementare
+
+Nel capitolo sulla visione artificiale la U-Net imparava a dire, pixel per
+pixel, «questo è cellula, questo è sfondo»; il nostro restauratore le fa fare
+lo stesso identico gesto, ma la risposta ora è «ecco quanta neve c'è su
+questo pixel». Il suo trucco è guardare la foto due volte: prima fa qualche
+passo indietro, e da lontano il pulviscolo sparisce e restano le forme
+grandi; poi si riavvicina per scrivere la risposta punto per punto. E siccome
+allontanandosi i dettagli minuti andrebbero perduti (e il disturbo è fatto
+proprio di dettagli minuti), la rete tiene dei ponti diretti fra l'andata e
+il ritorno, che li traghettano intatti.
+
+Resta da dirle a che punto della scala sta lavorando. Il numero del passo
+entra come un'etichetta attaccata alla foto: «questo è il livello 700 su
+1000». Così una sola rete serve tutti i livelli di rovina: quando la neve è
+tanta sgrossa le forme, quando è poca rifinisce i dettagli.
+
+`````
+
+`````{tab} Superiore
+
+La stessa rete che nella segmentazione colorava ogni pixel con la sua classe,
+qui gli attribuisce la sua quota di rumore: un encoder che comprime, un
+decoder che riespande, e le *skip connections* che traghettano i dettagli
+fini dalla discesa alla risalita; preziose, perché il rumore è per sua natura
+un dettaglio ad alta frequenza.
 
 Resta da iniettare il tempo. Il passo $t$ entra nella rete come **embedding
 sinusoidale** (lo stesso trucco degli encoding di posizione dei Transformer
 {cite}`vaswani2017attention`, con $t$ al posto della posizione nella frase)
 trasformato da un piccolo MLP e sommato alle feature di *ogni* blocco della
-U-Net. Così una sola rete serve tutti i mille livelli di rumore: $t$ le dice a
-quale punto della scala sta lavorando, se sgrossare forme globali (rumore
+U-Net. Così una sola rete serve tutti i mille livelli di rumore: $t$ le dice
+a quale punto della scala sta lavorando, se sgrossare forme globali (rumore
 alto) o rifinire texture (rumore basso). La U-Net di DDPM aggiunge infine
 blocchi di self-attention alle risoluzioni più basse, dove i pixel sono pochi
-e guardarli tutti insieme costa poco. Teniamo a mente questa composizione
-(convoluzioni più attenzione più embedding del tempo), perché è un equilibrio
-provvisorio: più avanti nel capitolo vedremo l'architettura DiT sostituire
-l'intera U-Net con un Transformer che lavora su patch, come già accaduto nella
-visione con i ViT {cite}`dosovitskiy2021image`.
+e guardarli tutti insieme costa poco.
+
+`````
+
+Teniamo a mente questa composizione (una rete di visione, più il tempo cucito
+addosso), perché è un equilibrio provvisorio: più avanti nel capitolo vedremo
+l'architettura DiT sostituire l'intera U-Net con un Transformer che lavora su
+patch, come già accaduto nella visione con i ViT
+{cite}`dosovitskiy2021image`.
 
 ## La diffusione in miniatura: una spirale di punti
 
@@ -395,6 +439,12 @@ vederci dentro. Useremo punti del piano disposti a spirale: ogni «dato» è una
 coppia di coordinate, e la diffusione li disperderà in una nuvola gaussiana
 per poi imparare a ridisporli. Gli ingredienti sono *esattamente* quelli delle
 immagini; cambia solo la taglia.
+
+E se non hai mai programmato, nessun obbligo di leggere le righe una per una:
+i quattro blocchi che seguono sono, nell'ordine, i quattro pezzi del racconto
+(la spirale e la ricetta per rovinarla, la rete che indovina il disturbo, il
+mazzo di carte dell'addestramento, la scala scesa mille volte), e il testo
+fra un blocco e l'altro dice tutto quello che serve.
 
 Prima i dati e la ricetta dell'andata:
 
@@ -461,7 +511,7 @@ un minibatch, un livello di rumore a caso per ciascun punto, il rumore
 modello = PredittoreRumore()
 ottimizzatore = torch.optim.Adam(modello.parameters(), lr=2e-3)
 
-for passo in range(4000):
+for passo in range(30000):
     idx = torch.randint(0, n, (256,))         # minibatch di 256 punti
     batch = x0[idx]                           # (256, 2)
     t = torch.randint(0, T, (256,))           # un livello di rumore per esempio
@@ -472,8 +522,8 @@ for passo in range(4000):
     ottimizzatore.zero_grad()
     loss.backward()
     ottimizzatore.step()
-    if passo % 1000 == 0:
-        print(f"passo {passo:4d}  loss {loss.item():.3f}")
+    if passo % 5000 == 0:
+        print(f"passo {passo:5d}  loss {loss.item():.3f}")
 ```
 
 Infine il campionamento ancestrale: neve gaussiana in ingresso, mille
@@ -500,35 +550,81 @@ print(nuovi.shape)   # torch.Size([1000, 2]): punti nuovi, disposti a spirale
 ```
 
 Disegnando `nuovi` con un grafico a dispersione si vede la spirale riemergere
-dalla nuvola gaussiana: punti *nuovi*, non copie del training set. Due
+dalla nuvola gaussiana: punti *nuovi*, non copie del training set (se la
+forma esce solo abbozzata, quasi sempre l'addestramento è stato troppo breve:
+con poche migliaia di passi la nuvola non si è ancora decisa, i trentamila
+del ciclo servono davvero). Due
 esperimenti valgono la pena: interrompere il campionamento a metà strada, per
 vedere la forma «mezza decisa»; e passare da questi punti alle immagini, dove
 l'unica modifica sostanziale è sostituire l'MLP con una U-Net e le coppie di
 coordinate con griglie di pixel; schedule, loss e cicli restano identici,
 carattere per carattere.
 
+`````{tab} Elementare
+
 ```{admonition} Da ricordare
 :class: important
-- L'**andata** è fissa: $q(x_t \mid x_{t-1}) =
-  \mathcal{N}(\sqrt{1-\beta_t}\,x_{t-1},\ \beta_t I)$ con schedule
-  $\beta_t$; la forma chiusa $x_t = \sqrt{\bar{\alpha}_t}\,x_0 +
-  \sqrt{1-\bar{\alpha}_t}\,\epsilon$ salta da $x_0$ a qualunque passo, e
-  $x_T$ è rumore gaussiano puro.
-- La rete $\epsilon_\theta(x_t, t)$ impara a predire **il rumore**, non
-  l'immagine: bersaglio a scala costante per ogni $t$, loss MSE
+- L'**andata** non si impara, è una ricetta fissa: a ogni passo il valore di
+  ogni pixel si attenua un pochino e riceve un pizzico di disturbo casuale,
+  come nella tazza sempre piena in cui a ogni giro un cucchiaino di caffè
+  lascia il posto a uno di latte. Dopo mille giri resta solo neve televisiva,
+  e c'è una scorciatoia per arrivare a un livello di rovina qualsiasi senza
+  ripercorrere i passi uno per uno.
+- La rete impara a indicare **il disturbo**, non l'immagine pulita: è una
+  domanda dello stesso tipo a ogni livello di rovina, e la risposta esatta la
+  conosciamo sempre, perché il disturbo l'abbiamo fabbricato noi (il mazzo di
+  carte con le soluzioni sul retro). Chi conosce il disturbo ricava
+  l'immagine con una sottrazione.
+- **Generare** vuol dire partire da una schermata di neve mai vista e
+  ripetere mille volte tre mosse: chiedi alla rete il disturbo, togline un
+  velo, aggiungi un pizzico di neve fresca (tranne all'ultimo passo, dove si
+  pulisce e basta).
+- Sotto il cofano la rete sta imparando una **bussola**: in ogni punto della
+  mappa sterminata delle immagini possibili, la freccia che indica come
+  ritoccare l'immagine per renderla un po' più credibile. Le due scuole che
+  hanno lavorato in parallelo per anni («insegniamo a togliere il rumore» e
+  «insegniamo la freccia») stavano costruendo lo stesso oggetto.
+- **DDIM** è il restauratore esperto: lo stesso modello già addestrato,
+  nessun riaddestramento, ma solo venti o cinquanta gradini scelti e mano
+  ferma, senza scossoni casuali. In cambio il procedimento diventa
+  ripetibile: dalla stessa neve iniziale esce sempre la stessa immagine.
+- La rete che indovina il disturbo è la **U-Net** già vista nella
+  segmentazione, che guarda la foto da lontano e poi da vicino tenendo dei
+  ponti fra le due viste; il numero del passo entra come un'etichetta
+  attaccata alla foto. Più avanti nel capitolo un Transformer prenderà il suo
+  posto.
+```
+
+`````
+
+`````{tab} Superiore
+
+```{admonition} Da ricordare
+:class: important
+- L'**andata** è fissa: $q(\mathbf{x}_t \mid \mathbf{x}_{t-1}) =
+  \mathcal{N}(\sqrt{1-\beta_t}\,\mathbf{x}_{t-1},\ \beta_t I)$ con
+  schedule $\beta_t$; la forma chiusa $\mathbf{x}_t =
+  \sqrt{\bar{\alpha}_t}\,\mathbf{x}_0 + \sqrt{1-\bar{\alpha}_t}\,\epsilon$
+  salta da $\mathbf{x}_0$ a qualunque passo, e $\mathbf{x}_T$ è rumore
+  gaussiano puro.
+- La rete $\epsilon_\theta(\mathbf{x}_t, t)$ impara a predire **il rumore**,
+  non l'immagine: bersaglio a scala costante per ogni $t$, loss MSE
   $\mathbb{E}\lVert\epsilon - \epsilon_\theta\rVert^2$ {cite}`ho2020denoising`
   (una regressione, stabile come un problema supervisionato).
-- Generare = partire da $x_T \sim \mathcal{N}(0,I)$ e risalire la catena in
-  $T$ passi: a ogni passo si toglie il rumore stimato e si aggiunge un
-  pizzico di rumore fresco (tranne all'ultimo).
-- Sotto il cofano: la loss è un **ELBO ripesato**, e predire il rumore
-  equivale a stimare lo **score** $\nabla_x \log q(x_t)$; DDPM e modelli
-  score-based sono due discretizzazioni della stessa SDE
+- Generare = partire da $\mathbf{x}_T \sim \mathcal{N}(0,I)$ e
+  risalire la catena in $T$ passi: a ogni passo si toglie il rumore stimato e
+  si aggiunge un pizzico di rumore fresco (tranne all'ultimo).
+- Sotto il cofano: la loss è una versione ripesata di $-\mathrm{ELBO}$
+  (il **bound variazionale** da minimizzare), e predire il rumore
+  equivale a stimare lo **score** $\nabla_{\mathbf{x}_t} \log q(\mathbf{x}_t)$;
+  DDPM e modelli score-based sono due discretizzazioni della stessa SDE
   {cite}`song2021score`.
 - **DDIM** {cite}`song2021denoising`: stesso modello, campionamento
   deterministico su 20–50 passi; possibile perché la loss dipende solo dalle
-  marginali $q(x_t \mid x_0)$, non dalla catena markoviana.
+  marginali $q(\mathbf{x}_t \mid \mathbf{x}_0)$, non dalla catena markoviana.
 - $\epsilon_\theta$ è una **U-Net** {cite}`ronneberger2015u` (la stessa della
   segmentazione) con il passo $t$ iniettato come embedding sinusoidale; nella
   sezione su DiT verrà sostituita da un Transformer.
 ```
+
+`````

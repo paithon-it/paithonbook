@@ -173,9 +173,11 @@ import numpy as np
 
 
 def fissa_seed(seed: int = 42) -> None:
-    """Rende ripetibile ogni sorgente di casualita' del programma."""
+    """Fissa le sorgenti legacy di casualita': il modulo random e NumPy globale."""
     random.seed(seed)
     np.random.seed(seed)
+    # i Generator moderni di NumPy ricevono il seme alla creazione:
+    #   rng = np.random.default_rng(seed)
     # in PyTorch si aggiungerebbe: torch.manual_seed(seed)
 ```
 
@@ -258,11 +260,12 @@ software normale.
 Il debito tecnico è come costruire una casa di fretta: per consegnare in tempo
 salti qualche fondamenta, e per un po' la casa sta in piedi. Ma ogni
 scorciatoia è un prestito: prima o poi va restituito, con gli interessi, sotto
-forma di crepe da riparare. Il machine learning, dice quel paper, è «la carta
-di credito ad alto tasso del debito tecnico»: fa spendere pochissimo oggi (un
-notebook, qualche riga di *incollaggio* per far parlare i pezzi) e il conto
-arriva salatissimo dopo, quando quei pezzi vanno mantenuti per anni. Il motivo
-profondo è che un modello dipende dai **dati**, non solo dal codice: e i dati
+forma di crepe da riparare. Lo stesso gruppo, un anno prima, aveva intitolato
+un articolo così: il machine learning è «la carta di credito ad alto tasso del
+debito tecnico». Fa spendere pochissimo oggi (un notebook, qualche riga di
+*incollaggio* per far parlare i pezzi) e il conto arriva salatissimo dopo,
+quando quei pezzi vanno mantenuti per anni. Il motivo profondo è che un modello
+dipende dai **dati**, non solo dal codice: e i dati
 cambiano da soli, senza che nessuno tocchi una riga. Cambiare *qualsiasi* cosa
 può cambiare *tutto*.
 

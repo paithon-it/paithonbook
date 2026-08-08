@@ -118,14 +118,22 @@ Le tre idee che seguono spendono l'esplorazione meglio.
 ### Valori iniziali ottimisti
 
 L'idea più economica non aggiunge una riga di codice: cambia solo il valore da
-cui partono le stime.
+cui partono le stime, e chiede in cambio un passo fisso.
 
 Sul banco di prova i valori veri stanno attorno allo zero. Se inizializziamo
-tutte le stime a $+5$, ogni leva promette molto più di quanto mantenga: qualunque
-leva si tiri, la ricompensa **delude** e la sua stima scende sotto quelle delle
-leve non ancora provate. L'agente, pur restando avido, gira su tutte le leve
-per il semplice fatto di rimanere sistematicamente deluso. Sul banco di prova
-arriva all'**86,6%**, il risultato migliore delle strategie qui elencate.
+tutte le stime a $+5$, ogni leva promette molto più di quanto mantenga:
+qualunque leva si tiri, la ricompensa **delude** e la sua stima scende sotto
+quelle delle leve non ancora provate. L'agente, pur restando avido, gira su
+tutte le leve per il semplice fatto di rimanere sistematicamente deluso.
+
+Perché la delusione duri, però, il passo va tenuto **fisso** (nel codice più
+sotto vale $0{,}1$, come nell'esperimento di Sutton e Barto). Se invece il
+passo è "uno diviso il numero di tiri", cioè se la stima è la media di tutti i
+tiri, il primo tiro cancella da solo l'ottimismo: la stima salta subito addosso
+alla ricompensa appena vista, e il vantaggio quasi sparisce (si scende al
+71,3%, peggio della leva a caso una volta ogni dieci). Con il passo fisso, sul
+banco di prova si arriva all'**86,6%**, il risultato migliore delle strategie
+qui elencate.
 
 È un trucco, però, e conviene dire perché. L'ottimismo si esaurisce: dopo che
 tutte le leve sono state provate abbastanza, la spinta a esplorare sparisce.
@@ -145,7 +153,7 @@ provato una volta sola, per cui non sappiamo davvero niente. Le prime non
 meritano un altro tiro, le seconde sì.
 
 L'idea è aggiungere alla stima di ogni leva un **bonus di ignoranza**: quanto
-più raramente l'ho tirata, tanto più genoroso è il bonus. Poi si sceglie, senza
+più raramente l'ho tirata, tanto più generoso è il bonus. Poi si sceglie, senza
 dadi, la leva con la somma più alta. Una leva mediocre ma poco esplorata può
 vincere il confronto proprio grazie al bonus; ogni volta che la si tira il
 bonus cala, finché la sua mediocrità non emerge e smette di essere scelta.
@@ -175,19 +183,29 @@ azione valesse il massimo compatibile con i dati raccolti, e lasciare che siano
 i dati a smentire.
 
 Il decadimento logaritmico non è decorativo. Lai e Robbins
-{cite}`lai1985asymptotically` dimostrano che, per questa classe di problemi,
-nessun algoritmo può avere un **rimpianto**
+{cite}`lai1985asymptotically` dimostrano che nessun algoritmo buono su *tutte*
+le istanze del problema (con rimpianto sub-polinomiale qualunque siano i
+valori delle leve: la clausola esclude scorciatoie come tirare sempre la
+stessa leva, che trionfa quando quella leva è la migliore e affonda su tutte
+le altre istanze) può avere un **rimpianto**
 
 $$
 \mathcal{R}_T = T \max_a q_*(a) - \mathbb{E}\!\left[\sum_{t=1}^{T} R_t\right]
 $$
 
-che cresca meno che logaritmicamente in $T$: perdere qualcosa è inevitabile,
-la domanda è solo quanto. Auer, Cesa-Bianchi e Fischer
-{cite}`auer2002finite` mostrano che UCB1 raggiunge quel limite, con una
-garanzia valida a ogni istante finito e non solo asintoticamente. Confrontato:
-$\varepsilon$-greedy con $\varepsilon$ costante ha rimpianto **lineare**,
-perché continua a sbagliare una frazione fissa delle volte per sempre.
+che cresca, asintoticamente, meno che logaritmicamente in $T$: perdere
+qualcosa è inevitabile, la domanda è solo quanto. Auer, Cesa-Bianchi e
+Fischer {cite}`auer2002finite` mostrano che UCB1 raggiunge quella crescita
+logaritmica con una garanzia valida a ogni istante finito, non solo
+asintoticamente; resta però sopra la costante ottima di Lai e Robbins (la
+raggiungono varianti più fini, come KL-UCB), e il teorema assume ricompense
+limitate, un'ipotesi che il banco di prova gaussiano di queste pagine, a
+rigore, non rispetta.
+
+Per confronto, $\varepsilon$-greedy con $\varepsilon$ costante ha rimpianto
+**lineare** in $T$, perché continua a sbagliare una frazione fissa delle volte
+per sempre: è la differenza fra un'esplorazione che si dosa e una che non si
+spegne mai.
 
 Sul banco di prova, con $c = 2$, UCB sceglie la leva migliore l'**85,9%** delle
 volte. Il limite pratico è che la formula presuppone un problema stazionario e
@@ -246,8 +264,11 @@ baseline**, il metodo a gradiente di policy del capitolo sul deep
 reinforcement learning, nel caso degenere di un solo stato. La stessa
 struttura (una distribuzione parametrica sulle azioni, un aggiornamento
 proporzionale alla ricompensa scostata da un riferimento) che là si scriverà
-come $\nabla_\theta \log \pi_\theta(a\mid s)\,A_t$, con il vantaggio $A_t$ al
-posto di $R_t - \bar{R}_t$. Il *vantaggio* dell'actor-critic nasce qui, e nasce
+come $\nabla_\theta \log \pi_\theta(a\mid s)\,\hat{A}_t$, con il vantaggio
+$\hat{A}_t$ al posto di $R_t - \bar{R}_t$ (il cappello lo mettiamo qui per non
+confondere il vantaggio con l'azione $A_t$ delle formule precedenti; nel
+capitolo di deep RL, dove l'ambiguità non c'è, si scriverà $A_t$). Il
+*vantaggio* dell'actor-critic nasce qui, e nasce
 per la stessa ragione: ridurre la varianza senza spostare la media del
 gradiente.
 
@@ -312,7 +333,7 @@ volta su cento impiega dieci volte più tempo a farsi un'idea di tutte le leve,
 e alla fine supererà $\varepsilon = 0{,}1$, che invece continuerà per sempre a
 buttare un tiro su dieci. La classifica dipende da quanto è lunga la partita, e
 questa è una morale generale: **un iperparametro di esplorazione si sceglie
-guardando l'orizzonte**, non la prima mille tiri.
+guardando l'orizzonte**, non i primi mille tiri.
 
 Il bandit a gradiente ha una struttura diversa e sta in un blocco a sé, dove si
 vede anche l'esperimento sulla baseline.
@@ -400,10 +421,11 @@ prossima sezione.
 - L'agente **avido** si chiude in una convinzione mai verificata (36,7% di
   scelte ottime sul banco di prova standard); $\varepsilon$-greedy lo risolve
   a costo zero (80,2%) ma esplora **a casaccio**.
-- **Valori iniziali ottimisti** (86,6%): esplorazione gratis, ma si esaurisce e
-  non serve sui problemi non stazionari. **UCB** (85,9%): esplora in proporzione
-  all'incertezza, e raggiunge il rimpianto logaritmico che Lai e Robbins
-  dimostrano essere il minimo possibile.
+- **Valori iniziali ottimisti** (86,6%, con passo fisso): esplorazione gratis,
+  ma si esaurisce e non serve sui problemi non stazionari. **UCB** (85,9%):
+  esplora di più le leve di cui sa di meno, e quello che perde per farlo
+  cresce con il ritmo più lento possibile per una strategia che debba
+  funzionare su qualunque insieme di leve (Lai e Robbins).
 - Il **bandit a gradiente** impara preferenze invece di valori, ed è REINFORCE
   con baseline in miniatura. La baseline non è un dettaglio: traslando le
   ricompense di $+4$, senza di essa si passa dall'84% al 48%.

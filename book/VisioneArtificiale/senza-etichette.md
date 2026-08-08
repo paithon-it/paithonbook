@@ -25,8 +25,9 @@ Il meccanismo generale si chiama apprendimento **auto-supervisionato**, e la
 definizione sta in una riga: si inventa un compito (un **pretesto**, *pretext
 task*) la cui risposta corretta è ricavabile dai dati stessi, senza che nessuno
 la scriva. Risolverlo non interessa a nessuno; interessa quello che il modello è
-costretto a capire per riuscirci, e che resta nell'encoder quando il pretesto si
-butta via. È un'idea che il libro ritroverà in ogni dominio: nel capitolo sui
+costretto a capire per riuscirci, e che resta nell'**encoder** (la parte della
+rete che trasforma l'immagine in una lista di numeri, il suo riassunto interno)
+quando il pretesto si butta via. È un'idea che il libro ritroverà in ogni dominio: nel capitolo sui
 Transformer regge il pretraining dei modelli di linguaggio, in quello sull'audio
 fa imparare a wav2vec 2.0 e a HuBERT la struttura del parlato da migliaia di ore
 mai trascritte.
@@ -60,7 +61,7 @@ conosciamo per costruzione, perché i due ritagli li abbiamo fatti noi. Eppure
 per vincere bisogna capire parecchio, che muso e coda appartengono allo stesso
 animale, che quel pelo e quel muro stanno insieme, che la luce della scena è la
 stessa. Bisogna farsi un'idea di *che cosa* raffigura ogni ritaglio, perché è
-l'unico modo di riconoscere il gemello fra centonovantanove estranei.
+l'unico modo di riconoscere il gemello in mezzo a centonovantotto estranei.
 
 `````
 
@@ -373,8 +374,10 @@ su $\theta$, mentre i parametri target seguono la solita media mobile,
 $\xi \leftarrow m\, \xi + (1-m)\, \theta$, con $m$ inizializzato a $0{,}996$ e
 portato verso uno durante l'addestramento.
 
-Il punto è che la soluzione costante, pur essendo un minimo della perdita, non è
-raggiungibile dalla dinamica del sistema, per due asimmetrie. La prima: il ramo
+Il punto è che la soluzione costante, pur essendo un minimo della perdita,
+empiricamente non viene mai raggiunta, e a tenerne lontana la dinamica sono, per
+quanto mostrano le analisi teoriche disponibili (condotte su modelli lineari
+semplificati {cite}`tian2021understanding`), due asimmetrie. La prima: il ramo
 target non riceve gradiente (**stop-gradient**), non può «accordarsi» con
 l'altro e si limita a inseguirlo in ritardo. La seconda: la testa $q_\theta$ è
 presente da un lato solo, quindi l'obiettivo effettivo dell'encoder online non è
@@ -386,8 +389,9 @@ molto discussa, che attribuiva l'anti-collasso alla batch normalization
 (statistiche calcolate sul batch, quindi un contrasto implicito fra immagini), è
 stata smentita dagli autori stessi di BYOL, riaddestrandolo con una
 normalizzazione che del batch non sa nulla {cite}`richemond2020byol`. Il
-meccanismo è dinamico: non una forza repulsiva, ma una traiettoria di
-ottimizzazione che non passa per il punto degenere.
+meccanismo, per quanto se ne è capito, è dinamico: non una forza repulsiva, ma
+una traiettoria di ottimizzazione che, nei fatti, non passa per il punto
+degenere; una dimostrazione per il caso generale ancora non c'è.
 
 `````
 
@@ -525,8 +529,23 @@ estrapolazione locale, senza alcuna rappresentazione semantica; per lo stesso
 motivo il testo, discreto e denso di informazione, si accontenta del 15% di BERT
 {cite}`devlin2019bert`, e il parlato sta nel mezzo (wav2vec 2.0 maschera circa
 la metà dei tratti). E poiché l'encoder elabora solo il 25% dei token, il costo
-del passaggio in avanti scende in proporzione: il compito diventa più difficile
-e il pretraining più rapido a parità di architettura.
+del passaggio in avanti scende **all'incirca in proporzione**, e appena di più.
+Vale la pena essere precisi, perché il quadratico dell'attenzione fa spesso dire
+più di quanto sia vero: in un blocco Transformer quasi tutte le moltiplicazioni
+(proiezioni $Q$, $K$, $V$, proiezione d'uscita, MLP) sono **lineari** in $N$, e
+solo il prodotto $N \times N$ fra query e chiavi è quadratico. È quest'ultimo, e
+soltanto lui, a scendere a un sedicesimo passando da $N$ a $N/4$; ma alle taglie
+in gioco pesa poco. Contando i FLOP di un blocco come $24Nd^2$ (parte lineare)
+più $4N^2d$ (parte quadratica), per un ViT-B/16 con $N = 196$ patch e
+$d = 768$ il termine quadratico è circa il 4% del totale, per un ViT-L
+($d = 1024$) il 3%: passando da $N = 196$ a $N = 49$ il blocco scende al 24%
+del costo iniziale, cioè poco meno di un quarto, non a un sedicesimo. Gli autori
+misurano un
+pretraining complessivamente tre o più volte più rapido a parità di
+architettura, e il fattore è minore di quattro per una ragione precisa: il
+numero misurato è il tempo di addestramento nel suo complesso, e il decoder, che
+la sequenza la riceve completa, dal mascheramento non guadagna nulla. Resta il
+punto: il compito diventa più difficile e insieme più economico.
 
 La differenza di fondo rispetto ai metodi contrastivi è **dove** finisce la
 difficoltà. Là stava nelle trasformazioni scelte a mano, cioè nelle invarianze
@@ -541,10 +560,33 @@ generative.
 
 ## Come si capisce se ha funzionato
 
-Un modello addestrato così non classifica niente: produce vettori. Come si
-misura se quei vettori sono buoni? Rifinirlo su un compito etichettato e
-guardare l'accuratezza finale non basta, perché quel numero mescola la qualità
-della rappresentazione di partenza e l'efficacia del fine-tuning.
+Un modello addestrato così non classifica niente: di ogni immagine dà soltanto
+il suo riassunto interno, la lista di numeri di cui si diceva all'inizio. Come
+si misura se quei riassunti sono buoni? Rifinire il modello su un compito con le
+etichette e guardare quanto ci prende alla fine non basta, perché quel numero
+mescola due cose diverse: quanto era buono il riassunto di partenza e quanto è
+andata bene la rifinitura.
+
+`````{tab} Elementare
+
+Lo strumento standard si chiama **sondaggio lineare**, ed è un esame con le
+mani legate. Si prende l'encoder e lo si blocca: da qui in poi non impara più
+nulla. Poi gli si affianca un giudice fatto apposta debole: un classificatore
+così semplice che da solo non saprebbe riconoscere niente, perché tutto quello
+che sa fare è tracciare una linea dritta fra i riassunti che l'encoder produce
+(i gatti di qua, i cani di là), aiutandosi con le etichette di un piccolo
+dataset di prova. Se un giudice così sprovveduto supera l'esame, il merito non
+può essere suo: vuol dire che nei riassunti dell'encoder gatti e cani erano
+**già** separati. La debolezza del giudice è la garanzia dell'esame.
+
+C'è però un limite: l'esame promuove solo ciò che si separa con una linea
+dritta. Un encoder potrebbe aver capito tutto e averlo scritto in una forma più
+contorta, che la linea dritta non sa leggere; l'esame lo boccerebbe lo stesso.
+Per questo nessun voto, da solo, chiude la questione.
+
+`````
+
+`````{tab} Superiore
 
 Lo strumento standard è il **sondaggio lineare** (*linear probing*): si congela
 completamente l'encoder, si buttano via testa di proiezione e decoder, e sopra
@@ -566,14 +608,18 @@ Lo strumento incorpora un'ipotesi su come la rappresentazione verrà usata, e pe
 questo gli si affianca spesso una sonda ancora più spartana, la classificazione
 a $k$ vicini più prossimi, che non addestra proprio niente.
 
-La prova più severa è però un'altra: il **trasferimento a compiti diversi**.
-Rilevamento e segmentazione, di cui questo capitolo si occupa a parte, chiedono
-alla rappresentazione di essere informativa *posizione per posizione*, non solo
-in media sull'immagine. Un encoder che vince la sonda lineare in classificazione
-e poi non regge come *backbone* di un rilevatore ha imparato una
-rappresentazione buona per una domanda sola. È il criterio che conta, perché è
-il motivo per cui pre-addestriamo: non risolvere il pretesto, ma avere un punto
-di partenza utile a compiti che al momento del pretraining non conoscevamo.
+`````
+
+La prova più severa è però un'altra: **cambiare compito**. Rilevamento e
+segmentazione, di cui questo capitolo si occupa a parte, non chiedono di dire
+che cosa c'è nella foto, chiedono di dire *dove*: e per rispondere non basta un
+riassunto che descriva bene l'immagine tutta insieme, ne serve uno che resti
+preciso zona per zona, angolo per angolo. Un encoder che supera l'esame con la
+linea dritta sulla classificazione, e poi messo a fare da base di un rilevatore
+non regge, ha imparato un riassunto buono per una domanda sola. È il criterio
+che conta, perché è il motivo per cui addestriamo in anticipo: non risolvere il
+pretesto, ma avere un punto di partenza utile per compiti che, mentre ci
+addestravamo, non sapevamo nemmeno quali sarebbero stati.
 
 ## Tre modi di rendere difficile un compito facile
 

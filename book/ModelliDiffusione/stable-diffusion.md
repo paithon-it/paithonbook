@@ -109,14 +109,16 @@ possibile.
 Un VAE è una coppia di reti. L'**encoder** mappa il dato $x$ non in un punto
 ma in una distribuzione sul latente,
 $q_\phi(z \mid x) = \mathcal{N}\big(z;\, \mu_\phi(x),\, \sigma_\phi^2(x)\, I\big)$;
-il **decoder** definisce $p_\theta(x \mid z)$, la ricostruzione a partire
-dal codice. Sul latente si
+il **decoder** definisce $p_\psi(x \mid z)$, la ricostruzione a partire
+dal codice (scriviamo $\psi$ per i suoi parametri perché in questo capitolo
+$\theta$ è già impegnato dalla rete di diffusione $\epsilon_\theta$: sono due
+reti distinte, addestrate separatamente). Sul latente si
 impone un prior semplice, $p(z) = \mathcal{N}(0, I)$. L'addestramento
 massimizza l'**ELBO** (*evidence lower bound*):
 
 $$
-\mathcal{L}(\theta, \phi; x) =
-\mathbb{E}_{q_\phi(z \mid x)}\!\big[\log p_\theta(x \mid z)\big]
+\mathrm{ELBO}(\psi, \phi; x) =
+\mathbb{E}_{q_\phi(z \mid x)}\!\big[\log p_\psi(x \mid z)\big]
 - D_{KL}\!\big(q_\phi(z \mid x) \,\|\, p(z)\big),
 $$
 
@@ -125,7 +127,9 @@ divergenza di Kullback–Leibler vista nei richiami di matematica) penalizza gli
 encoder che si allontanano dal prior. È questo secondo termine a rendere lo
 spazio latente **continuo** (input simili, codici vicini) e **campionabile**
 (ogni regione con probabilità apprezzabile sotto il prior decodifica in un
-dato plausibile). La derivazione dell'ELBO come limite inferiore della
+dato plausibile). Nella convenzione del libro, dove $\mathcal{L}$ si
+minimizza, la loss corrispondente è $\mathcal{L} = -\mathrm{ELBO}$. La
+derivazione dell'ELBO come limite inferiore della
 log-verosimiglianza è nel paper originale {cite}`kingma2014auto`; qui ci basta
 il ruolo funzionale dei due termini.
 
@@ -220,12 +224,13 @@ $$
 \mathrm{Attention}(Q, K, V) =
 \mathrm{softmax}\!\left(\frac{QK^T}{\sqrt{d_k}}\right)V,
 \qquad
-Q = W_Q\, \varphi(z_t), \quad K = W_K\, \tau(c), \quad V = W_V\, \tau(c),
+Q = \varphi(z_t)\, W_Q, \quad K = \tau(c)\, W_K, \quad V = \tau(c)\, W_V,
 $$
 
 dove $\varphi(z_t)$ sono le mappe di attivazione intermedie della U-Net
 appiattite in sequenza, $\tau(c)$ gli embedding del prompt e $W_Q$, $W_K$,
-$W_V$ proiezioni apprese. Come nel decoder del Transformer originale, le
+$W_V$ proiezioni apprese, che moltiplicano a destra le sequenze secondo la
+convenzione per righe (un token per riga) di quel capitolo. Come nel decoder del Transformer originale, le
 query vengono da chi genera e le key/value dalla sorgente da consultare:
 solo che qui chi genera è un'immagine e la sorgente è una frase.
 
@@ -302,9 +307,13 @@ recupera la predizione condizionata, con $w > 1$ ci si spinge *oltre*, nella
 direzione che separa il condizionato dal non condizionato (nella
 parametrizzazione originale di Ho e Salimans il coefficiente è scritto
 $1 + w$; la sostanza non cambia). L'interpretazione: la differenza tra le due
-predizioni approssima, a meno di un fattore di scala, il gradiente di
-$\log p(c \mid z_t)$ (ciò che la *classifier guidance* di
-{cite}`dhariwal2021diffusion` otteneva addestrando un classificatore esterno)
+predizioni approssima
+$-\sqrt{1-\bar{\alpha}_t}\,\nabla_{z_t} \log p(c \mid z_t)$, con il fattore
+*negativo* che lega $\epsilon$ e score nella sezione sotto il cofano: la
+differenza punta nel verso opposto al gradiente, ed è proprio sommandola alla
+predizione di rumore (che il campionatore poi sottrae) che si sale su
+$\log p(c \mid z_t)$. È ciò che la *classifier guidance* di
+{cite}`dhariwal2021diffusion` otteneva addestrando un classificatore esterno;
 qui il classificatore è implicito, gratis.
 
 Il prezzo è duplice. Computazionale: due valutazioni della U-Net per ogni
@@ -406,7 +415,7 @@ risolvibili solo con la tecnica.
   models* {cite}`rombach2022high` spostano la diffusione in uno spazio
   compresso ($64 \times 64 \times 4$: 48 volte meno).
 - Il traslocatore è il **variational autoencoder** {cite}`kingma2014auto`:
-  encoder $q_\phi(z \mid x)$ e decoder $p_\theta(x \mid z)$ addestrati
+  encoder $q_\phi(z \mid x)$ e decoder $p_\psi(x \mid z)$ addestrati
   sull'ELBO, che rende il latente continuo e campionabile. In Stable
   Diffusion è addestrato prima e poi congelato.
 - La ricetta: encoder → diffusione con U-Net nel latente → decoder; il prompt,

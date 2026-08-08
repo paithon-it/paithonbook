@@ -65,7 +65,7 @@ ogni nodo. Un grafo, insomma, è fatto di due cose insieme: una **struttura**
 
 Un grafo è una coppia $G = (V, E)$, dove $V$ è l'insieme dei nodi ($N = |V|$) ed
 $E \subseteq V \times V$ l'insieme degli archi. La struttura si codifica nella
-**matrice di adiacenza** $A \in \mathbb{R}^{N \times N}$:
+**matrice di adiacenza** $A \in \{0,1\}^{N \times N}$:
 
 $$
 A_{ij} =
@@ -77,7 +77,8 @@ $$
 
 Se il grafo è **non diretto** allora $A_{ij} = A_{ji}$, cioè $A$ è simmetrica
 ($A = A^\top$); se è **diretto** non lo è in generale. In un grafo **pesato** lo
-0/1 è sostituito dal peso $w_{ij} \in \mathbb{R}$ dell'arco. Le **feature dei
+0/1 è sostituito dal peso $w_{ij} \in \mathbb{R}$ dell'arco, e $A$ diventa una
+matrice reale. Le **feature dei
 nodi** si impilano nella matrice $X \in \mathbb{R}^{N \times F}$, la cui riga
 $i$-esima è il vettore $x_i \in \mathbb{R}^F$ delle $F$ caratteristiche del nodo
 $i$; eventuali feature di arco si raccolgono in un tensore analogo indicizzato
@@ -160,11 +161,13 @@ le uscite si permutano *insieme* agli ingressi. Progettare architetture che
 incorporano questa simmetria come *bias induttivo* (anziché sperare che la
 rete la impari a forza di esempi) è il cuore del programma della *geometric
 deep learning* {cite}`bronstein2021geometric`, che legge sotto un'unica lente
-CNN (invarianza a traslazione sulla griglia) e GNN (invarianza a permutazione
-sul grafo). A ciò si aggiungono due irregolarità: il **grado variabile** (ogni
-nodo ha un numero diverso di vicini, quindi niente kernel di dimensione fissa)
-e la **taglia variabile** ($N$ cambia da grafo a grafo, mentre una rete densa
-vuole un input di dimensione fissata). Sono esattamente i vincoli che il
+CNN (equivarianza a traslazione degli strati convolutivi, con l'invarianza che
+arriva solo dal pooling globale finale) e GNN (equivarianza o invarianza a
+permutazione sul grafo). A ciò si aggiungono due irregolarità: il **grado
+variabile** (ogni nodo ha un numero diverso di vicini, quindi niente kernel di
+dimensione fissa) e la **taglia variabile** ($N$ cambia da grafo a grafo,
+mentre una rete densa vuole un input di dimensione fissata). Sono
+esattamente i vincoli che il
 *message passing* della prossima sezione risolverà con un'operazione locale,
 condivisa e simmetrica.
 

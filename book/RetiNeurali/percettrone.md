@@ -267,6 +267,28 @@ incapace di XOR. È qui che entrano funzioni come la ReLU o la sigmoide, e con
 esse il percettrone multistrato (MLP) e l'algoritmo che lo addestra, la
 *backpropagation*: il tema dei prossimi capitoli.
 
+`````{tab} Elementare
+
+```{admonition} Da ricordare
+:class: important
+- Un neurone artificiale è un pezzo di aritmetica: dà a ogni indizio in
+  ingresso un **peso**, somma tutto, aggiunge la propria indole di partenza
+  (il **bias**) e passa il totale a un interruttore che risponde sì o no.
+- Il percettrone **impara sbagliando**: quando azzecca non tocca niente, quando
+  dice "no" e doveva dire "sì" alza un po' i pesi degli ingressi attivi, e
+  viceversa. Le correzioni sono piccole e si ripetono su tutti gli esempi.
+- Un neurone solo sa tracciare **una riga dritta** fra le due classi: se quella
+  riga esiste la trova, ma sullo **XOR** non esiste, perché i casi da separare
+  stanno negli angoli opposti del quadrato.
+- Per piegare la frontiera servono più neuroni impilati in **strati** e, fra
+  uno strato e l'altro, un passaggio che non sia una semplice riga: è il ponte
+  verso le reti neurali profonde.
+```
+
+`````
+
+`````{tab} Superiore
+
 ```{admonition} Da ricordare
 :class: important
 - Un neurone artificiale calcola una **somma pesata** degli ingressi più un
@@ -279,3 +301,5 @@ esse il percettrone multistrato (MLP) e l'algoritmo che lo addestra, la
 - Servono **strati nascosti** e **non linearità** per superare quel limite: è
   il ponte verso le reti neurali profonde.
 ```
+
+`````

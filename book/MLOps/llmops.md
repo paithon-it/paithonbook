@@ -3,7 +3,7 @@
 Il 30 novembre 2022 OpenAI mette online ChatGPT. Cinque giorni dopo Sam Altman
 annota su Twitter che ha superato il milione di utenti; poco più tardi, alla
 domanda su quanto costi tutto questo, risponde con due parole diventate
-celebri (*eye-watering*, «da far venire il mal di testa») e stima qualche
+celebri (*eye-watering*, «da far venire le lacrime agli occhi»: da capogiro) e stima qualche
 centesimo di dollaro per conversazione. Il dettaglio interessante è quello che
 *non* dice: il modello dietro ChatGPT, un GPT-3.5, era già addestrato e
 allineato da mesi. La cosa nuova, quella che teneva svegli gli ingegneri, non
@@ -28,7 +28,10 @@ caricare i pesi una volta e rispondere in fretta. Con un LLM il baricentro si
 sposta. Il costo e la latenza non sono dominati dal *caricare* il modello, ma
 dal **generarne l'output**, un token alla volta, in modo autoregressivo: la
 stessa generazione che abbiamo studiato nel capitolo sui Transformer, ora
-vista dal lato di chi paga la bolletta.
+vista dal lato di chi paga la bolletta. Il **token**, vale la pena
+ricordarlo, è il pezzetto di testo (una parola corta, o un frammento di
+parola) che il modello legge e scrive come unità: da qui in avanti si conta
+tutto così, i tempi come i costi.
 
 ```{figure} ../figures/modelli-locali-ollama.svg
 :name: fig-cosa-entra-in-memoria
@@ -209,8 +212,9 @@ sbaglia sempre, si torna al ritmo del revisore: mai peggio.
 
 `````{tab} Superiore
 
-Il metodo è dovuto a Leviathan, Kalman e Matias (Google Research, 2022–23) e,
-indipendentemente, a Chen e colleghi. Il passo è:
+Il metodo è dovuto a Leviathan, Kalman e Matias di Google Research
+{cite}`leviathan2023fast` e, indipendentemente, a Chen e colleghi di DeepMind
+{cite}`chen2023accelerating`. Il passo è:
 
 1. il modello bozza $q$ genera $\gamma$ token in autoregressione;
 2. il modello target $p$ valuta le $\gamma+1$ posizioni **in parallelo**, in
@@ -225,8 +229,10 @@ distribuzione dei token emessi è identica a quella del solo modello target.
 Non è un'approssimazione che scambia qualità per velocità: è la stessa uscita,
 più in fretta.
 
-Il guadagno dipende dal **tasso di accettazione** $\alpha$: il numero atteso di
-token per passata è
+Il guadagno dipende dal **tasso di accettazione** $\alpha$: sotto l'ipotesi
+semplificatrice (dichiarata dagli autori) che le accettazioni siano
+indipendenti con tasso costante $\alpha$, il numero atteso di token per
+passata è
 
 $$
 \frac{1-\alpha^{\gamma+1}}{1-\alpha},

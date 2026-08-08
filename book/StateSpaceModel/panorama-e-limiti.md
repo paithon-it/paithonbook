@@ -26,7 +26,7 @@ $S_t \in \mathbb{R}^{d\times d}$, una memoria che associa **chiavi a valori**;
 si scrive per prodotto esterno e si legge per proiezione:
 
 $$
-S_t = (\text{transizione}_t)\, S_{t-1} + v_t\, k_t^\top,
+S_t = S_{t-1}\, (\text{transizione}_t) + v_t\, k_t^\top,
 \qquad
 o_t = S_t\, q_t,
 $$
@@ -35,7 +35,11 @@ dove $q_t, k_t, v_t$ sono query, chiave e valore del token $t$ (gli stessi
 introdotti nell'attenzione dei Transformer) e $v_t k_t^\top$ è la nuova coppia
 scritta in memoria. Tutto il resto, da RetNet a Mamba, è una scelta su quel
 fattore di **transizione** che moltiplica lo stato di ieri prima di
-aggiungergli oggi.
+aggiungergli oggi. Moltiplica **a destra**, e non è un dettaglio di scrittura:
+con lo stato fatto di colonne indicizzate dalle chiavi, è da quel lato che il
+fattore agisce sui canali di chiave (e che $I - \beta_t k_t k_t^\top$ cancella
+la traccia lasciata da $k_t$); a sinistra sbiadirebbe i canali dei valori, che
+è un'altra cosa.
 
 `````{tab} Elementare
 
@@ -65,8 +69,8 @@ più calcolo e più memoria a ogni passo, $O(d^2)$ per l'aggiornamento. È la
 manopola della capacità grezza.
 
 **2. La struttura della transizione.** È la vera firma di ogni architettura, e
-la tabella unificante del capitolo precedente la ordinava per espressività
-crescente:
+la tabella unificante del capitolo precedente la metteva in fila per struttura
+via via più ricca:
 
 $$
 \underbrace{I}_{\text{lin. attn}}
@@ -86,9 +90,16 @@ non si dimentica nulla) al decadimento scalare uniforme, a quello diagonale
 per-canale, alla correzione mirata di Householder che *cancella* la vecchia
 associazione prima di scrivere la nuova, fino alla combinazione dei due
 (decadimento globale *più* correzione mirata) del Gated DeltaNet
-{cite}`yang2024gateddelta`. Ogni gradino compra più capacità di *state
-tracking* e di *recall* preciso, al costo di una transizione più complicata da
-rendere parallelizzabile.
+{cite}`yang2024gateddelta`. Una precisazione: i primi tre gradini sono
+nidificati (ciascuno contiene il precedente come caso particolare), ma il
+passo da $\mathrm{Diag}(\alpha_t)$ alla delta rule non è un'inclusione: un
+decadimento diagonale generico e la correzione mirata di Householder sono
+capacità **complementari**, nessuna delle due contiene l'altra, e il Gated
+DeltaNet esiste proprio per unirle. Lungo tutta la catena, però, il conto è lo
+stesso: si paga in complessità della transizione (via via più difficile da
+rendere parallelizzabile) ciò che si guadagna in *state tracking* e in *recall*
+preciso, un guadagno che nei primi tre gradini si accumula per inclusione e
+negli ultimi due si somma per complementarità.
 
 **3. Il grado di dipendenza dai dati.** La transizione può essere **fissa**
 (scelta a priori, uguale per ogni token, come il $\gamma$ di RetNet o il
@@ -250,21 +261,72 @@ esterno, una transizione che decide cosa dimenticare, due forme dello stesso
 calcolo) non insegue le mode: le legge, e riconosce lo stesso scheletro sotto
 il prossimo nome che farà rumore.
 
+`````{tab} Elementare
+
+```{admonition} Da ricordare
+:class: important
+- **Una sola famiglia**: attenzione lineare (RetNet, GLA, DeltaNet, RWKV,
+  xLSTM) e *state space model* (S4, Mamba) sono lo stesso apparecchio, una
+  memoria di taglia fissa che a ogni parola scrive una voce nuova e rilegge le
+  vecchie. Si addestrano tutti insieme, in parallelo, e generano una parola
+  alla volta con una memoria che non cresce mai.
+- **Tre manopole di progetto**: quanto è grande la memoria (la capacità
+  grezza); **come sbiadisce il passato** quando arriva il presente (non
+  dimenticare nulla, sbiadire tutto in blocco, sbiadire cassetto per cassetto,
+  oppure cancellare di mira la vecchia voce che sta per essere riscritta); e se
+  queste scelte sono fisse per ogni parola oppure decise dalla parola stessa,
+  che è ciò che compra il ragionamento basato sul contenuto. Sbiadire cassetto
+  per cassetto e cancellare di mira la vecchia voce non sono uno il
+  perfezionamento dell'altro, fanno cose diverse, e c'è un'architettura che le
+  usa tutt'e due insieme: si chiama **Gated DeltaNet**, cioè DeltaNet con in
+  più la manopola dello sbiadire.
+- **La dualità** di Mamba-2 {cite}`dao2024mamba2` dimostra che uno *state space
+  model* che sbiadisce tutto in blocco è esattamente un'attenzione lineare che
+  guarda solo all'indietro: le due famiglie sono due viste della stessa cosa.
+- **Il limite onesto**: una memoria che non cresce è un quaderno di appunti, non
+  una biblioteca. Va benissimo per il senso del discorso, ma se dopo mille
+  pagine chiedi di **citare alla lettera** una frase di pagina 900, il quaderno
+  non ce l'ha: l'aveva riassunta, non trascritta. L'attenzione piena conserva
+  ogni parola letta e su quel compito resta superiore, al prezzo di uno scaffale
+  che cresce senza fine. Si misura con due prove fatte apposta: nascondere una
+  frase in un testo lunghissimo e chiedere di ripescarla (è *l'ago nel
+  pagliaio*), e riempire la memoria di centinaia di coppie nome-numero per poi
+  chiedere a bruciapelo il numero di un nome qualsiasi.
+- **Gli ibridi** sono lo stato dell'arte: pochi strati di attenzione piena (gli
+  archivisti, che ripescano la citazione esatta quando serve) intervallati a
+  molti strati a memoria fissa (i cronisti, che tengono il filo a costo basso).
+  Fanno così Jamba {cite}`lieber2024jamba`, Samba {cite}`ren2024samba` e le
+  varianti ibride di Gated DeltaNet {cite}`yang2024gateddelta` e Mamba-2.
+- **Prospettiva sobria**: non un «killer dei Transformer» ma un **ecosistema
+  misto**. Le ricorrenze lineari danno il meglio sui testi lunghissimi, quando
+  la memoria deve restare costante, sui dati che arrivano in flusso continuo e
+  sui dispositivi con poca memoria. Nessuna architettura vince per sempre: chi
+  conosce le idee semplici riconosce lo stesso scheletro sotto ogni nuovo nome.
+```
+
+`````
+
+`````{tab} Superiore
+
 ```{admonition} Da ricordare
 :class: important
 - **Una sola famiglia**: attenzione lineare (RetNet, GLA, DeltaNet, RWKV, xLSTM)
   e *state space model* (S4, Mamba) sono tutte **RNN lineari a stato fisso**
-  $S_t = (\text{transizione}_t)\, S_{t-1} + v_t k_t^\top$, con lettura
-  $o_t = S_t q_t$. Si addestrano in parallelo, fanno inferenza ricorrente a
-  memoria costante per token.
+  $S_t = S_{t-1}\, (\text{transizione}_t) +
+  \mathbf{v}_t \mathbf{k}_t^\top$, con lettura
+  $\mathbf{o}_t = S_t \mathbf{q}_t$. Si addestrano in parallelo, fanno
+  inferenza ricorrente a memoria costante per token.
 - **Tre manopole di progetto**: la dimensione dello stato (capacità), la
-  struttura della transizione ($I \to \alpha_t I \to \mathrm{Diag}(\alpha_t) \to
-  I-\beta_t k_t k_t^\top \to \alpha_t(I-\beta_t k_t k_t^\top)$, per espressività
-  crescente), e quanto è data-dipendente (fisso vs generato dall'input, che
-  compra il ragionamento basato sul contenuto).
+  struttura della transizione ($I \to \alpha_t I \to
+  \mathrm{Diag}(\alpha_t) \to I-\beta_t \mathbf{k}_t \mathbf{k}_t^\top
+  \to \alpha_t(I-\beta_t \mathbf{k}_t \mathbf{k}_t^\top)$, via via più
+  ricca, ma non è una scala in cui ogni gradino contiene il precedente: gli
+  ultimi due modi di aggiornare la memoria fanno cose diverse, e l'ultimo
+  gradino li mette insieme), e quanto è data-dipendente (fisso vs generato
+  dall'input, che compra il ragionamento basato sul contenuto).
 - **La dualità SSD** di Mamba-2 {cite}`dao2024mamba2` dimostra che un SSM a
-  transizione scalare ($\alpha_t I$) è esattamente un'attenzione lineare
-  mascherata: SSM e attenzione lineare sono due viste della stessa cosa.
+  transizione scalare ($\alpha_t I$) è esattamente un'attenzione
+  lineare mascherata: SSM e attenzione lineare sono due viste della stessa cosa.
 - **Il limite onesto**: uno stato di dimensione fissa è un **collo di
   bottiglia** per il *recall associativo esatto* su contesti lunghissimi.
   L'attenzione piena, che conserva ogni token nella KV cache, resta superiore
@@ -281,3 +343,5 @@ il prossimo nome che farà rumore.
   poca memoria. Nessuna architettura vince per sempre: chi conosce le idee
   semplici riconosce lo stesso scheletro sotto ogni nuovo nome.
 ```
+
+`````

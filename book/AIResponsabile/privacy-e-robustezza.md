@@ -61,14 +61,16 @@ dell'ospedale» può essere di per sé un'informazione sensibile.
 `````{tab} Superiore
 
 I due attacchi hanno nomi precisi. Il **membership inference attack**,
-formalizzato da Shokri e colleghi (2017), decide se un dato campione $X$
+formalizzato da Shokri e colleghi {cite}`shokri2017membership`, decide se un
+dato campione $X$
 apparteneva o meno all'insieme di addestramento, sfruttando il divario di
 comportamento del modello tra ciò che ha visto e ciò che non ha visto:
 tipicamente una loss più bassa, o una confidenza più alta, sugli esempi di
 training. È l'evidenza empirica dell'*overfitting* discusso nel capitolo di
 Machine Learning, qui riletto come vulnerabilità: più un modello si adatta ai
 singoli esempi, più li lascia riconoscere. L'**estrazione di dati di
-addestramento** è più aggressiva: Carlini e colleghi (2021) mostrarono che da
+addestramento** è più aggressiva: Carlini e colleghi
+{cite}`carlini2021extracting` mostrarono che da
 GPT-2 si potevano recuperare *verbatim* sequenze memorizzate (nomi, recapiti,
 frammenti di codice) presenti anche una sola manciata di volte nel corpus. La
 memorizzazione cresce con la dimensione del modello e con la ripetizione del
@@ -101,7 +103,7 @@ collettiva sopravvive.
 
 La privacy differenziale è questa idea resa una garanzia numerica: al risultato
 di un calcolo sui dati si aggiunge un pizzico di caso, *calibrato* in modo che
-la presenza o assenza di una singola persona non sposti quasi nulla. Un solo
+la presenza o assenza di una singola persona non sposti quasi nulla. Una sola
 manopola, chiamata $\varepsilon$ (epsilon), regola il compromesso: piccola vuol
 dire più rumore e più privacy, grande vuol dire meno rumore e più precisione ma
 meno protezione.
@@ -125,8 +127,10 @@ persona può moltiplicare la probabilità di *qualunque* esito al più per
 $e^{\varepsilon}$: con $\varepsilon = 0{,}5$ il fattore è
 $e^{0{,}5}\approx 1{,}65$, uno scarto modesto. Una versione rilassata, la
 **$(\varepsilon,\delta)$-DP**, ammette un termine additivo $+\,\delta$ con
-$\delta$ piccolissimo (la probabilità che la garanzia salti) ed è quella che
-serve per i meccanismi gaussiani usati nel deep learning.
+$\delta$ piccolissimo: un margine sulla disuguaglianza, che si può leggere
+informalmente come una piccola probabilità di eccezione (la lettura precisa è
+un po' più debole di così), ed è la versione che serve per i meccanismi
+gaussiani usati nel deep learning.
 
 Come si ottiene? Con il **meccanismo di Laplace**. Data una funzione numerica
 $f$, se ne misura la *sensibilità* $\Delta f = \max_{D,D'} \lVert f(D)-f(D')\rVert_1$,
@@ -265,7 +269,7 @@ $$
 Il vantaggio è duplice: i dati grezzi restano sul dispositivo e comunicare i
 pesi ogni tanto costa molto meno che spedire i dati ad ogni passo. Ma
 attenzione a non dichiarare vittoria troppo presto: **i gradienti perdono
-informazione**. Lavori successivi (Zhu e colleghi, 2019) hanno mostrato che da
+informazione**. Zhu e colleghi {cite}`zhu2019deep` hanno mostrato che da
 un aggiornamento condiviso si possono talvolta *ricostruire* gli esempi che
 l'hanno prodotto. Il federated learning va perciò combinato con la privacy
 differenziale (rumore sugli aggiornamenti) e con l'aggregazione sicura, che
@@ -277,7 +281,8 @@ Decentrare i dati riduce il rischio, non lo azzera.
 ## Esempi avversari: ingannare la rete a comando
 
 Passiamo dalla discrezione alla fragilità. Nel 2013 Szegedy e colleghi
-scoprirono una proprietà sconcertante delle reti neurali: si può prendere
+{cite}`szegedy2014intriguing` scoprirono una proprietà sconcertante delle reti
+neurali: si può prendere
 un'immagine classificata correttamente, aggiungerle una perturbazione così
 piccola da essere **invisibile all'occhio**, e far cambiare idea alla rete con
 altissima sicurezza. Due anni dopo Goodfellow, Shlens e Szegedy spiegarono il
@@ -383,13 +388,13 @@ cambiare la risposta: un perimetro piccolo ma sicuro.
 `````{tab} Superiore
 
 L'onestà impone di ricordare che molte difese euristiche proposte dopo il 2015
-sono state poi aggirate: Athalye e colleghi (2018) mostrarono che davano una
-falsa sicurezza per *gradient masking* (offuscavano il gradiente invece di
+sono state poi aggirate: Athalye e colleghi {cite}`athalye2018obfuscated`
+mostrarono che davano una falsa sicurezza per *gradient masking* (offuscavano il gradiente invece di
 rimuovere la vulnerabilità) e cadevano appena l'attaccante lo ricostruiva.
 L'adversarial training con PGD è tra i pochi ad aver retto. In parallelo si è
 sviluppata la **robustezza certificata**, che fornisce garanzie dimostrabili:
-il *randomized smoothing* (Cohen e colleghi, 2019), per esempio, costruisce da
-qualsiasi classificatore una versione «lisciata» per cui si prova un raggio
+il *randomized smoothing* di Cohen e colleghi {cite}`cohen2019certified`, per
+esempio, costruisce da qualsiasi classificatore una versione «lisciata» per cui si prova un raggio
 $\ell_2$ entro cui la predizione è invariante. Le certificazioni coprono raggi
 ancora modesti, ma spostano il terreno da «non sono riuscito a romperla» a «si
 dimostra che non si rompe».
@@ -400,8 +405,8 @@ il **data poisoning**, in cui l'attaccante inietta esempi malevoli nel dataset
 per degradare il modello o piazzarvi una **backdoor**; un innesco segreto (un
 piccolo adesivo su un segnale stradale, una parola-chiave in un testo) che, se
 presente, fa scattare a comando una risposta scelta dall'attaccante, mentre su
-tutti gli altri input il modello si comporta normalmente (Gu e colleghi,
-2017). Chi controlla i dati, controlla il modello: un'altra ragione per
+tutti gli altri input il modello si comporta normalmente
+{cite}`gu2017badnets`. Chi controlla i dati, controlla il modello: un'altra ragione per
 prendere sul serio la provenienza dei dati di addestramento.
 
 `````
@@ -457,18 +462,19 @@ bias ai logit dei verdi. Il testo resta fluido perché le alternative plausibili
 sono molte; ma su una sequenza lunga la frazione di token verdi si scosta dal
 $50\%$ atteso in modo statisticamente rilevabile. Il rilevatore non deve
 conoscere il testo originale: gli basta ricalcolare le liste e fare un test
-d'ipotesi (Kirchenbauer e colleghi, 2023).
+d'ipotesi (Kirchenbauer e colleghi {cite}`kirchenbauer2023watermark`).
 
 Ed è anche il punto debole: **una parafrasi distrugge la marca**. Basta far
 riscrivere il testo a un altro modello e la partizione verde/rossa si dissolve.
 Sulle immagini, ridimensionamento, ritaglio, ricompressione o una foto dello
 schermo erodono il segnale; i metadati C2PA li cancella uno screenshot.
 
-C'è poi un limite di natura teorica, non di implementazione: oltre una certa
-qualità del contenuto, nessun watermark può essere insieme impercettibile e
-robusto contro un avversario determinato. Se il falso è indistinguibile dal
-vero per un essere umano, esiste sempre una trasformazione che ne preserva il
-significato e cancella la marca.
+C'è poi un limite di natura teorica, non di implementazione. Zhang e colleghi
+{cite}`zhang2023watermarks` dimostrano che, sotto ipotesi plausibili
+sull'avversario (sa giudicare la qualità di un contenuto e sa perturbarlo
+restando fra le versioni equivalenti), nessun watermark può essere insieme
+impercettibile e robusto: si può sempre costruire una sequenza di
+trasformazioni che preserva il significato e cancella la marca.
 
 La conclusione onesta è la stessa della crittografia applicata: il watermarking
 non stabilisce cosa è vero, **alza il costo di far passare il sintetico per
@@ -479,12 +485,15 @@ più della refurtiva.
 
 ## FGSM in pratica, con NumPy
 
-Per toccare con mano il fenomeno non serve una rete profonda: basta un
-classificatore lineare, ed è anzi il caso in cui la matematica è più
-trasparente. Addestriamo una regressione logistica giocattolo, poi costruiamo la
-perturbazione FGSM su un esempio che il modello classifica *bene*, e osserviamo
-la predizione ribaltarsi. Il gradiente della cross-entropia rispetto all'input,
-per la logistica, è semplicemente $(\hat{y}-y)\,W$.
+Per toccare con mano il fenomeno non serve una rete profonda: basta il più
+semplice dei classificatori, una regressione logistica giocattolo (un
+modellino che, dato un esempio con trenta caratteristiche numeriche, stima una
+probabilità). L'esperimento: scegliamo un caso che il modello azzecca con
+sicurezza, poi spostiamo ogni caratteristica di un soffio, tutte nella
+direzione che danneggia di più il modello (le mille dita di prima, qui sono
+trenta), e guardiamo la predizione ribaltarsi. Il codice si può anche solo
+leggere: i commenti dicono cosa fa ogni blocco, e il verdetto sta nelle righe
+stampate alla fine.
 
 ```python
 import numpy as np
@@ -534,16 +543,39 @@ avversario: p(classe 1) = 0.190  ->  predice 0  (sbagliato)
 perturbazione: 0.15 per feature; norma L2 = 0.82 contro 6.00 dell'input
 ```
 
-Il modello passa da una confidenza dell'$89\%$ nella classe corretta al
-$19\%$, sbagliando, con una perturbazione la cui norma è meno di un settimo di
-quella dell'input. E qui si vede la spiegazione *lineare* di Goodfellow: lungo
-la direzione $\operatorname{sign}(W)$, il punteggio si sposta di
-$\varepsilon\,\lVert W\rVert_1$, una quantità che cresce con il numero di
-dimensioni. In alta dimensione (dove vivono immagini e testi) bastano tante
+Il modello passa da una fiducia dell'$89\%$ nella risposta giusta a una
+risposta sbagliata, e la spinta complessiva, misurata come lunghezza (l'ultima
+riga stampata), vale meno di un settimo di quella dell'input.
+
+`````{tab} Elementare
+
+Perché spostamenti così piccoli bastano? Perché sono tanti e tutti d'accordo.
+Ogni caratteristica si muove appena, ma tutte e trenta si muovono nel verso
+che fa salire l'errore del modello, e trenta soffi concordi sono una spinta
+vera. Con le immagini va anche peggio: le caratteristiche sono i pixel, cioè
+centinaia di migliaia, e più dita premono, meno forte deve premere ciascuna. È
+il motivo per cui al panda dell'esempio famoso è bastato un rumore invisibile.
+
+`````
+
+`````{tab} Superiore
+
+Il gradiente della cross-entropia rispetto all'input, per la regressione
+logistica, è semplicemente $(\hat{y}-y)\,W$: è la riga `grad_x` del codice. E
+il risultato mostra la spiegazione *lineare* di Goodfellow: il passo si muove
+lungo $\operatorname{sign}\!\big((\hat{y}-y)\,W\big)$ e sposta il punteggio
+(il logit) di $\varepsilon\,\lVert W\rVert_1$ in modulo, sempre nel verso che
+fa crescere la loss. Nell'esempio $y=1$ e $\hat{y}<y$, quindi la direzione è
+$-\operatorname{sign}(W)$ e il logit *cala* di
+$\varepsilon\,\lVert W\rVert_1 = 3{,}54$: quanto basta a far scendere la
+probabilità da $0{,}890$ a $0{,}190$. È una quantità che cresce con il numero
+di dimensioni. In alta dimensione (dove vivono immagini e testi) bastano tante
 piccole spinte concordi per scavallare il confine. La stessa formula in
 PyTorch si scriverebbe con `x.requires_grad_(True)`, un passaggio
 `loss.backward()` e `x + eps * x.grad.sign()`: identica idea, gradiente
 rispetto all'input calcolato in automatico.
+
+`````
 
 ```{admonition} Da ricordare
 :class: important

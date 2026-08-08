@@ -65,12 +65,15 @@ $$
 
 con transizione $\alpha_t I$ (uno scalare per l'identità). La SSD mostra che
 questa è *precisamente* la forma cui si riduce un SSM quando si impone
-$A = a_t I$: una matrice di stato scalare per l'identità. Basta identificare i
-ruoli. Lo stato dell'SSM per una testa a dimensione $P$ è la matrice
-$S_t \in \mathbb{R}^{P\times N}$; la matrice d'ingresso $B_t\in\mathbb{R}^{N}$
-fa da **chiave** $k_t$, l'ingresso $x_t\in\mathbb{R}^{P}$ fa da **valore** $v_t$,
-la matrice d'uscita $C_t\in\mathbb{R}^{N}$ fa da **query** $q_t$, e lo scalare
-$a_t$ è il gate $\alpha_t$. La ricorrenza dell'SSM,
+$A = aI$, con $a$ scalare fisso (uno per testa): la discretizzazione fa il
+resto, perché la transizione discreta diventa $\bar A_t = a_t I$ con
+$a_t = e^{\Delta_t a}$, data-dipendente attraverso $\Delta_t$. Basta
+identificare i ruoli. Lo stato dell'SSM per una testa a dimensione $P$ è la
+matrice $S_t \in \mathbb{R}^{P\times N}$; la matrice d'ingresso
+$B_t\in\mathbb{R}^{N}$ fa da **chiave** $k_t$, l'ingresso
+$x_t\in\mathbb{R}^{P}$ fa da **valore** $v_t$, la matrice d'uscita
+$C_t\in\mathbb{R}^{N}$ fa da **query** $q_t$, e lo scalare $a_t$ è il gate
+$\alpha_t$. La ricorrenza dell'SSM,
 
 $$
 S_t = a_t\, S_{t-1} + x_t\, B_t^\top, \qquad y_t = S_t\, C_t,
@@ -102,10 +105,10 @@ Questa è, alla lettera, un'attenzione mascherata: la stessa
 $\mathrm{softmax}(QK^\top)V$ dei Transformer {cite}`vaswani2017attention`, con
 la softmax rimpiazzata dalla maschera $L$. La matrice $L$ ha una struttura
 particolare, detta **1-semiseparabile**: ogni suo blocco interamente contenuto
-nel triangolo inferiore ha rango uno, perché ogni elemento si fattorizza nei
-prodotti cumulati degli $a_t$. È questa struttura a fare da ponte: i sistemi a
-spazio di stati con transizione scalare *sono* le attenzioni con maschera
-semiseparabile.
+nel triangolo inferiore ha rango al più uno, perché ogni elemento si
+fattorizza nei prodotti cumulati degli $a_t$. È questa struttura a fare da
+ponte: i sistemi a spazio di stati con transizione scalare *sono* le attenzioni
+con maschera semiseparabile.
 
 `````
 
@@ -128,9 +131,10 @@ la matrice $L\times L$ mascherata (la vista «attenzione»). Non è un'analogia:
 La dualità non sarebbe che un'eleganza teorica se non pagasse in velocità.
 Paga, e la chiave è una restrizione apparentemente minima. Mamba-1 usava una
 matrice di stato $A$ diagonale con $N$ valori **distinti** per canale; Mamba-2
-impone che siano tutti **uguali**: $A = a_t I$, uno scalare per l'identità.
-Sembra una perdita di espressività, ed è ciò che rende l'algoritmo esprimibile
-come pura moltiplicazione di matrici.
+impone che siano tutti **uguali**: $A = aI$, uno scalare per l'identità, da cui
+una transizione discreta $\bar A_t = a_t I$. Sembra una perdita di
+espressività, ed è ciò che rende l'algoritmo esprimibile come pura
+moltiplicazione di matrici.
 
 `````{tab} Elementare
 
@@ -163,22 +167,22 @@ quello di Mamba-1 è invece una ricorrenza associativa fatta di moltiplicazioni
 elemento per elemento e somme: parallelizzabile in $O(\log L)$ passi, ma su unità
 generiche, molto meno dense di FLOP. Sta usando la frazione lenta della GPU.
 
-Con $A = a_t I$ l'algoritmo pratico non forma davvero l'intera matrice
-$L\times L$ (sarebbe $O(L^2)$ in memoria). Si adotta una **decomposizione a
-blocchi** (*chunked scan*): la sequenza si spezza in blocchi di lunghezza $C$;
-dentro ciascun blocco si calcola la forma quadratica, attention-like, come un
-prodotto di matrici sui tensor core; tra un blocco e il successivo si passa
-solo lo **stato** riassuntivo, con un termine di rango basso, in forma
-ricorrente. Si interpola così tra le due viste della dualità (quadratica
-dentro il blocco, lineare tra i blocchi) e il costo scende a $O(LC)$ tenendo
-il grosso del lavoro su moltiplicazioni di matrici. Ne seguono tre vantaggi
-concreti: il livello SSD è $2$–$8\times$ più veloce del selective scan di
-Mamba-1; la struttura è **multi-head** come l'attenzione (dimensione di testa
-$P$ tipicamente $64$ o $128$); e lo stato può crescere di un ordine di
+Con la transizione $\bar A_t = a_t I$ l'algoritmo pratico non forma davvero
+l'intera matrice $L\times L$ (sarebbe $O(L^2)$ in memoria). Si adotta una
+**decomposizione a blocchi** (*chunked scan*): la sequenza si spezza in blocchi
+di lunghezza $C$; dentro ciascun blocco si calcola la forma quadratica,
+attention-like, come un prodotto di matrici sui tensor core; tra un blocco e il
+successivo si passa solo lo **stato** riassuntivo, con un termine di rango
+basso, in forma ricorrente. Si interpola così tra le due viste della dualità
+(quadratica dentro il blocco, lineare tra i blocchi) e il costo scende a $O(LC)$
+tenendo il grosso del lavoro su moltiplicazioni di matrici. Ne seguono tre
+vantaggi concreti: il livello SSD è $2$–$8\times$ più veloce del selective scan
+di Mamba-1; la struttura è **multi-head** come l'attenzione (dimensione di
+testa $P$ tipicamente $64$ o $128$); e lo stato può crescere di un ordine di
 grandezza (da $N=16$ in Mamba-1 a $N$ dell'ordine di $64$–$256$ e oltre in
 Mamba-2), perché una memoria più grande, ora, non costa in velocità. Uno stato
-più capiente è direttamente più memoria associativa: meno *crosstalk*,
-richiamo più preciso.
+più capiente è direttamente più memoria associativa: meno *crosstalk*, richiamo
+più preciso.
 
 `````
 
@@ -206,32 +210,38 @@ continuo in una ricorrenza, che avevamo introdotto all'inizio del capitolo.
 `````{tab} Elementare
 
 Ricordiamo il problema: un sistema che scorre nel tempo va «campionato» a
-intervalli, e bisogna indovinare cosa succede *tra* un campione e l'altro.
-Mamba usava la regola più semplice, che tiene l'ingresso costante
-nell'intervallo: un gradino. È come approssimare l'area sotto una curva con
-dei rettangoli: rapido, ma con un errore che si accumula.
+intervalli, e bisogna indovinare cosa succede *tra* un campione e l'altro. Il
+punto delicato è quanto di ciò che entra in quel tratto finisce nella memoria,
+ed è un'area sotto una curva. Mamba la calcola nel modo più sbrigativo, a
+**rettangoli**: prende il valore all'inizio del tratto e lo moltiplica per la
+durata, come se restasse quello fino in fondo. Rapido, ma con un errore che a
+ogni passo si accumula.
 
-Mamba-3 usa una regola più accurata, che approssima quel tratto con un
-**trapezio** invece che con un rettangolo: la stessa idea della regola del
-trapezio che si incontra in analisi numerica. L'errore a ogni passo è più
-piccolo, e la conseguenza pratica è curiosa: Mamba-1 e Mamba-2 avevano
-bisogno, prima dell'SSM, di una **piccola convoluzione causale** (un
-mini-filtro che mescola qualche token vicino) per funzionare bene. Con la
-discretizzazione più precisa, quel pezzo aggiuntivo diventa **opzionale**: il
-modello lavora bene anche senza. Una regola migliore per fare i conti, e una
-stampella in meno.
+Mamba-3 rifà lo stesso conto a **trapezi**: invece del solo valore iniziale usa
+la media fra inizio e fine del tratto, che è la regola del trapezio che si
+incontra in analisi numerica. L'errore a ogni passo è più piccolo, e la
+conseguenza pratica è curiosa: Mamba-1 e Mamba-2 avevano bisogno, prima
+dell'SSM, di una **piccola convoluzione causale** (un mini-filtro che mescola
+qualche token vicino) per funzionare bene. Con la discretizzazione più precisa,
+quel pezzo aggiuntivo diventa **opzionale**: il modello lavora bene anche
+senza. Una regola migliore per fare i conti, e una stampella in meno.
 
 `````
 
 `````{tab} Superiore
 
-Mamba e Mamba-2 discretizzano con lo **zero-order hold**, che equivale a
-un'integrazione del prim'ordine (Eulero): l'errore locale su un passo
-$\Delta t$ è dell'ordine di $O(\Delta t^2)$. Mamba-3 adotta una
-discretizzazione **esponenziale-trapezoidale**, un'integrazione del
-second'ordine che stima il tratto con la media dei valori agli estremi (la
-regola del trapezio applicata alla dinamica): l'errore locale scende a
-$O(\Delta t^3)$. La conseguenza riportata nel paper è che la **short causal
+Mamba e Mamba-2 discretizzano la transizione con lo **zero-order hold**, che
+per la parte di stato è esatto ($\bar A_t = \exp(\Delta_t A)$, come visto a
+inizio capitolo); il termine d'ingresso, però, viene semplificato al
+prim'ordine (Eulero): $\bar B_t = \Delta_t B_t$, con un errore locale
+dell'ordine di $O(\Delta t^2)$ sul passo. È su questo pezzo che interviene
+Mamba-3, con una discretizzazione **esponenziale-trapezoidale**:
+un'integrazione del second'ordine che stima il contributo dell'ingresso con la
+media dei valori agli estremi dell'intervallo (la regola del trapezio
+applicata alla dinamica), e l'errore locale scende a $O(\Delta t^3)$. Non è la
+trasformazione bilineare di S4, che approssima l'esponenziale di $A$: qui il
+trapezio agisce sul termine d'ingresso data-dipendente, mentre la transizione
+resta esponenziale. La conseguenza riportata nel paper è che la **short causal
 convolution** posta prima dell'SSM (presente in tutti i blocchi Mamba
 precedenti come stabilizzatore) diventa **opzionale** senza perdita di
 qualità: la discretizzazione più fine recupera da sola l'effetto di
@@ -285,17 +295,38 @@ di una dinamica di stato complessa.
 
 `````
 
-La terza novità è più ingegneristica. Mamba-2 e i suoi predecessori sono,
-nella loro forma base, sistemi a **singolo ingresso e singola uscita** (SISO):
-ogni canale evolve con un proprio stato scalare, indipendente. Mamba-3 propone
-una formulazione **MIMO** (*multi-input multi-output*), in cui più ingressi e
-più uscite condividono lo stesso stato attraverso matrici $B$ e $C$ non più
+La terza novità è più ingegneristica.
+
+`````{tab} Elementare
+
+Finora ogni corsia del modello (ogni canale) teneva un piccolo taccuino tutto
+suo, e i taccuini non si parlavano. Mamba-3 fa condividere a più corsie un
+taccuino comune, più capiente. Il vantaggio sta nel modo di lavorare delle
+schede grafiche: andare a prendere i dati in memoria costa più che farci i
+conti sopra, quindi conviene, a ogni viaggio, portare a casa più lavoro utile.
+Con il taccuino condiviso ogni lettura serve più corsie in un colpo solo, e il
+risultato pratico è una qualità un po' migliore **senza** rallentare la
+generazione: l'attesa tra una parola prodotta e la successiva resta la stessa.
+
+`````
+
+`````{tab} Superiore
+
+Mamba-2 e i suoi predecessori sono, nella loro forma base, sistemi a **singolo
+ingresso e singola uscita** (SISO): ogni canale evolve con un proprio stato,
+indipendente, e $B_t$ e $C_t$ sono vettori. Mamba-3 propone una formulazione
+**MIMO** (*multi-input multi-output*, come per S5), in cui più ingressi e più
+uscite condividono lo stesso stato attraverso matrici $B$ e $C$ non più
 vettoriali ma di rango maggiore. L'effetto tecnico è aumentare l'**intensità
 aritmetica** (il numero di operazioni per ogni byte letto dalla memoria) che è
 proprio ciò che tiene occupati i tensor core: si fa più lavoro utile per ogni
 accesso in memoria. Il guadagno pratico riportato è qualità migliore **senza**
 aumentare la latenza di decodifica, cioè senza rallentare la generazione token
-per token. In coerenza con la cautela dovuta a un lavoro appena uscito, ci
+per token.
+
+`````
+
+In coerenza con la cautela dovuta a un lavoro appena uscito, ci
 fermiamo alle novità qualitative: la direzione è chiara (stato più accurato,
 più espressivo e meglio calibrato sull'hardware), mentre i numeri esatti
 andranno confermati man mano che il modello viene ripreso e riprodotto.
@@ -318,12 +349,13 @@ funzione dell'ingresso: il sistema diventa **selettivo**, sa filtrare il
 rilevante dall'irrilevante, ma perde il kernel di convoluzione e deve
 affidarsi allo scan; veloce, però lontano dai tensor core.
 
-Poi **Mamba-2**, che riconcilia l'SSM con l'attenzione. La dualità dello
-spazio degli stati mostra che la versione a transizione scalare è
-un'attenzione mascherata semiseparabile; la restrizione $A = a_t I$ trasforma
-il calcolo in moltiplicazioni di matrici, riaccende i tensor core, allarga lo
-stato e lo organizza a teste. È il punto in cui le due strade di questo libro
-(attenzione lineare e sistemi dinamici) si rivelano una sola.
+Poi **Mamba-2**, che riconcilia l'SSM con l'attenzione. La dualità dello spazio
+degli stati mostra che la versione a transizione scalare è un'attenzione
+mascherata semiseparabile; la restrizione $A = aI$ (da cui la transizione
+$\bar A_t = a_t I$) trasforma il calcolo in moltiplicazioni di matrici,
+riaccende i tensor core, allarga lo stato e lo organizza a teste. È il punto in
+cui le due strade di questo libro (attenzione lineare e sistemi dinamici) si
+rivelano una sola.
 
 Infine **Mamba-3**, che non cambia l'impianto ma ne raffina la dinamica:
 discretizzazione trapezoidale più accurata (che rende opzionale la
@@ -336,31 +368,77 @@ modo in cui lo stato evolve: è la parabola di una singola, ostinata idea
 avvicina un po' di più al meglio dei Transformer senza rinunciare al costo
 lineare.
 
+`````{tab} Elementare
+
+```{admonition} Da ricordare
+:class: important
+- **Mamba-2** nasce da un problema pratico: dentro la scheda grafica c'è una
+  pressa specializzata che sa fare una cosa sola, moltiplicare matrici, ed è lì
+  che sta quasi tutta la potenza disponibile. Il calcolo passo dopo passo di
+  Mamba-1, fatto di operazioni minute, la lasciava spenta.
+- La **dualità stato-attenzione** (Dao e Gu, 2024) è il ponte esplicito con il
+  capitolo sull'attenzione: appena si sceglie la versione più semplice dello
+  stato (tutte le corsie di una testa sbiadiscono allo stesso ritmo), un SSM
+  **è** un'attenzione che guarda solo all'indietro, dove ogni confronto fra due
+  parole è pesato da quanto è sopravvissuto nel frattempo. Due dialetti della
+  stessa lingua: lo stesso conto si fa passo dopo passo, oppure formando la
+  grande tabella dei confronti.
+- È lo stesso gradino che nello «zoo» delle ricorrenze del capitolo precedente
+  portava già il nome di Mamba-2: le due strade, dall'attenzione e dai sistemi
+  dinamici, arrivano allo stesso posto.
+- Quella piccola rinuncia dà ai conti la forma che la pressa accetta: tutto
+  diventa moltiplicazione di matrici. Il livello gira dalle due alle otto volte
+  più in fretta, la memoria si organizza a **teste multiple** come
+  l'attenzione, e lo stato può crescere di molto (da una manciata di numeri per
+  canale a diverse decine o centinaia).
+- **Mamba-3** (Lahoti et al., 2026) non cambia l'impianto, ne raffina la
+  dinamica con tre mosse: i conti sull'intervallo rifatti a **trapezi** invece
+  che a rettangoli (e il mini-filtro che stava prima dell'SSM diventa
+  **opzionale**), uno stato che oltre a sbiadire sa **ruotare**, come una
+  lancetta su un quadrante (utile per contare e tenere il segno, ed è la stessa
+  idea con cui i Transformer codificano la posizione ruotando), e un taccuino di
+  memoria **condiviso** fra più corsie (più qualità senza rallentare la
+  generazione). Lavoro recente: la direzione è solida, le cifre da confermare.
+- L'arco **S4 → Mamba → Mamba-2 → Mamba-3**: da un sistema che tratta ogni
+  token con la stessa regola e ricorda a lungo, a uno che sceglie cosa
+  ricordare, a uno riconciliato con l'attenzione e veloce, a uno raffinato nel
+  modo in cui la memoria evolve (sempre la stessa idea: comprimere il passato in
+  un riassunto che non cresce mai).
+```
+
+`````
+
+`````{tab} Superiore
+
 ```{admonition} Da ricordare
 :class: important
 - **Mamba-2** nasce da un problema pratico: lo scan di Mamba-1 non usa i
-  **tensor core** della GPU, l'hardware dedicato a moltiplicare matrici, e lascia
-  gran parte della potenza inutilizzata.
+  **tensor core** della GPU, l'hardware dedicato a moltiplicare matrici, e
+  lascia gran parte della potenza inutilizzata.
 - La **State Space Duality** (Dao e Gu, ICML 2024) è il ponte esplicito con il
-  capitolo sull'attenzione: un SSM con matrice di stato $A = a_t I$ (scalare per
-  l'identità) è **esattamente** un'attenzione mascherata, con una maschera
-  causale $1$-semiseparabile. La stessa funzione ha una forma lineare/ricorrente
-  $O(L)$ e una quadratica/attention-like.
-- È lo stesso gradino (il decadimento scalare $\alpha_t I$) che occupava la
-  riga «Mamba-2» nello «zoo» delle ricorrenze lineari: le due strade,
-  dall'attenzione e dai sistemi dinamici, arrivano allo stesso posto.
-- La restrizione $A = a_t I$ (diagonale tutta uguale, mentre Mamba-1 aveva valori
-  distinti) rende il calcolo pura **moltiplicazione di matrici**: livello
-  $2$–$8\times$ più veloce, struttura **multi-head**, stato molto più grande (da
-  $N=16$ a $64$–$256$ e oltre).
+  capitolo sull'attenzione: un SSM con $A = aI$, cioè con
+  transizione discreta $\bar{A}_t = a_t I$ (uno scalare per
+  l'identità), è **esattamente** un'attenzione mascherata, con una maschera
+  causale $1$-semiseparabile. La stessa funzione ha una forma
+  lineare/ricorrente $O(L)$ e una quadratica/attention-like.
+- È lo stesso gradino (il decadimento scalare $\alpha_t I$) che
+  occupava la riga «Mamba-2» nello «zoo» delle ricorrenze lineari: le due
+  strade, dall'attenzione e dai sistemi dinamici, arrivano allo stesso posto.
+- La restrizione $A = aI$ (diagonale tutta uguale, mentre
+  Mamba-1 aveva valori distinti) rende il calcolo pura **moltiplicazione di
+  matrici**: livello $2$–$8\times$ più veloce, struttura **multi-head**, stato
+  molto più grande (da $N=16$ a $64$–$256$ e oltre).
 - **Mamba-3** (Lahoti et al., ICLR 2026, Oral) raffina la dinamica con tre mosse:
   discretizzazione **trapezoidale** (secondo ordine, che rende opzionale la
   convoluzione causale), stato **complesso** con aggiornamenti **rotazionali**
   (migliore *state tracking*, con un legame formale al **RoPE** data-dipendente
-  su $B$ e $C$), e formulazione **MIMO** (più qualità senza aumentare la latenza
-  di decodifica). Lavoro recente: novità qualitative solide, cifre da confermare.
+  su $B$ e $C$), e formulazione **MIMO** (più qualità senza
+  aumentare la latenza di decodifica). Lavoro recente: novità qualitative
+  solide, cifre da confermare.
 - L'arco **S4 → Mamba → Mamba-2 → Mamba-3**: da tempo-invariante a lungo
   raggio, a selettivo, a riconciliato con l'attenzione e veloce, a raffinato
   nella dinamica (sempre la stessa idea di comprimere il passato in uno stato
   di dimensione fissa).
 ```
+
+`````

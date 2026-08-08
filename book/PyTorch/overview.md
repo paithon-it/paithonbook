@@ -132,9 +132,14 @@ print(x.grad)                              # dy/dx = 2x + 2 -> tensor(8.)
 ```
 
 Nessuna sessione da aprire, nessun grafo da compilare: tre righe di algebra e
-una derivata calcolata da sola. Se il valore `8.0` ti torna (la derivata di
-$x^2 + 2x$ è $2x + 2$, che in $x = 3$ vale $8$), hai già visto in miniatura il
-meccanismo che addestra ogni rete neurale di questo libro.
+una **derivata** calcolata da sola. Se il termine non ti dice niente, basta
+questo: la derivata misura quanto cambia il risultato quando l'ingresso si
+sposta di un soffio, e qui dice che attorno a $x = 3$ il valore di $y$ cresce
+$8$ volte più in fretta di $x$. È il numero che il commento nel codice chiama
+**gradiente** e che PyTorch deposita in `x.grad`; chi ricorda le regole del
+capitolo di richiami matematici può verificarlo (la derivata di $x^2 + 2x$ è
+$2x + 2$, che in $x = 3$ vale $8$). In miniatura, è il meccanismo che addestra
+ogni rete neurale di questo libro.
 
 ## Come è organizzato il capitolo
 

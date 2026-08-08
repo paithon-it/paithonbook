@@ -55,8 +55,9 @@ cresce quadraticamente, e con essa il traffico verso la HBM.
 
 Sul roofline questa è l'operazione tipicamente **memory-bound**: le parti pesanti
 del calcolo (i due matmul $QK^\top$ e $PV$) hanno buona intensità aritmetica, ma
-la softmax e la scrittura/rilettura della matrice $N \times N$ sono
-elemento-per-elemento, a bassissima intensità, e trascinano l'intera operazione
+in mezzo stanno operazioni a bassissima intensità (gli esponenziali e le
+riduzioni per riga della softmax, le scritture e riletture della matrice
+$N \times N$) che trascinano l'intera operazione
 contro il tetto di banda. Non serve una GPU più potente nei FLOP: serve *non
 spostare* quei byte.
 `````
@@ -108,10 +109,21 @@ Formalmente, si spezzano $Q$, $K$, $V$ in blocchi di righe. Per un blocco di
 query, si itera sui blocchi $(K_j, V_j)$: si carica $K_j, V_j$ in **shared
 memory**, si calcola il tile di punteggi $S_j = Q K_j^\top/\sqrt{d_k}$, e si
 aggiorna l'output *sul posto*, senza mai scrivere l'intera matrice $S$ in HBM.
-La memoria on-chip trattiene solo i tile correnti; la HBM vede scorrere $K,V$
-una volta sola. Il costo in FLOP resta $O(N^2 d_k)$ (non tocchiamo i conti) ma
-il traffico verso la HBM scende da $O(N^2)$ a $O(N)$, ed è ciò che conta su un
-carico memory-bound. È l'idea del tiling in shared memory del GEMM, applicata
+(Quest'ordine dei cicli, con il blocco di query fermo e $K,V$ che scorrono, è
+quello reso canonico dalla seconda versione dell'algoritmo, che incontreremo a
+breve; l'articolo del 2022 li annidava al contrario, ma l'idea non cambia.) La
+memoria on-chip trattiene solo i tile correnti; la HBM vede scorrere $K,V$ una
+volta per ogni blocco di query, e la matrice $S$ mai. Il costo in FLOP resta
+$O(N^2 d_k)$ (non tocchiamo i conti), ma la **memoria extra** scende da
+$O(N^2)$ a $O(N)$: da scrivere restano solo l'output e le statistiche di riga.
+Anche il traffico verso la HBM crolla: il paper lo conta in
+$\Theta(N^2 d_k^2 / M)$ accessi, dove $M$ è la taglia della memoria on-chip,
+contro il $\Theta(N d_k + N^2)$ dell'attenzione standard. Resta quadratico in
+$N$, ma diviso per un fattore $M/d_k^2$ che, con una SRAM on-chip di qualche
+decina di migliaia di elementi per SM, vale qualche unità con $d_k = 128$ e
+più di una decina con $d_k = 64$ (il paper si limita a dire che $d_k^2$ è
+molte volte più piccolo di $M$). È un fattore che su un carico memory-bound
+conta. È l'idea del tiling in shared memory del GEMM, applicata
 all'attenzione: caricare una volta, riusare in tanti, non tornare al
 magazzino.
 
@@ -283,14 +295,47 @@ quello con cui abbiamo aperto il capitolo: le migliaia di core semplici sono
 la parte facile; l'ingegneria vera è tenerle sfamate.
 `````
 
+`````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
-- L'attenzione materializza due matrici $N \times N$ ($S = QK^\top/\sqrt{d_k}$
-  e $P = \text{softmax}(S)$): $O(N^2)$ memoria e traffico HBM. Il collo di
-  bottiglia è la **memoria**, non i FLOP: è **memory-bound**.
+- Per confrontare ogni parola con ogni altra, l'attenzione costruisce una
+  tabella grande quanto il testo per il testo: raddoppia le parole e la tabella
+  quadruplica. Il tempo però non se ne va nei conti: se ne va nei **viaggi** fra
+  il magazzino lento e il tavolo di lavoro veloce.
+- **FlashAttention** {cite}`dao2022flashattention` quella tabella non la scrive
+  mai: tiene ferma sul tavolo una manciata di parole e fa scorrere le altre a
+  **blocchetti**, uno per volta, buttando via ogni blocchetto appena usato. Il
+  risultato non è un'approssimazione: è lo stesso identico numero di prima.
+- A rendere possibile il lavoro a blocchetti è la **online softmax**, il gesto
+  della maestra che corregge dieci compiti per volta: due foglietti (il totale
+  finora e il valore più grande visto finora), aggiornati a ogni mucchietto,
+  e alla fine le stesse percentuali del calcolo in un colpo unico.
+- Il guadagno: la memoria non cresce più con il quadrato della lunghezza del
+  testo ma in proporzione ad essa, e sulle sequenze lunghe (dove prima la GPU
+  si fermava per memoria esaurita) il salto è grande; è la ragione per cui oggi
+  si può dare in pasto a un modello un contratto di cento pagine. Una seconda
+  versione, **FlashAttention-2** {cite}`dao2023flashattention2`, ripartisce
+  ancora meglio il lavoro. In PyTorch basta chiamare
+  `scaled_dot_product_attention`.
+- I kernel più veloci di oggi (i dati che viaggiano dal magazzino *mentre* si
+  lavora, tavoli di lavoro sempre più potenti che usano numeri più corti, operai
+  con ruoli fissi fra chi porta i pezzi e chi li monta) girano tutti attorno
+  alla stessa idea: **nascondere il movimento dei dati** dietro il calcolo, così
+  che nessuno resti fermo ad aspettare.
+```
+`````
+
+`````{tab} Superiore
+```{admonition} Da ricordare
+:class: important
+- L'attenzione materializza due matrici $N \times N$
+  ($S = QK^\top/\sqrt{d_k}$ e
+  $P = \text{softmax}(S)$): $O(N^2)$ memoria e traffico HBM.
+  Il collo di bottiglia è la **memoria**, non i FLOP: è **memory-bound**.
 - **FlashAttention** {cite}`dao2022flashattention` è **IO-aware**: con il
-  **tiling** di $Q,K,V$ in shared memory e la **online softmax** non scrive mai
-  la matrice $N \times N$ in HBM. Il risultato è **esatto**, non approssimato.
+  **tiling** di $Q,K,V$ in shared memory e la
+  **online softmax** non scrive mai la matrice $N \times N$ in HBM. Il risultato
+  è **esatto**, non approssimato.
 - La **online softmax** normalizza i punteggi a blocchi tenendo due scalari di
   stato (massimo corrente $m$ e somma corrente $l$) e ri-scalando ciò che ha
   già sommato quando compare un massimo nuovo: dà gli stessi pesi del calcolo
@@ -303,3 +348,4 @@ la parte facile; l'ingegneria vera è tenerle sfamate.
   core e formati come FP8, **warp specialization**) è tutta una variazione sullo
   stesso tema: **nascondere il movimento dei dati** dietro il calcolo.
 ```
+`````

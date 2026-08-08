@@ -42,7 +42,7 @@ modello acustico e infine in onda sonora dal vocoder.
 ```
 
 Perché tante tappe? Un secondo di parlato contiene decine di migliaia di
-campioni audio, ma solo un'ottantina di colonne di mel-spettrogramma: è molto
+campioni audio, ma solo un centinaio di colonne di mel-spettrogramma: è molto
 più facile per un modello decidere prima *che suoni* produrre e *con che
 ritmo* (poche colonne compatte), e lasciare a uno specialista (il *vocoder*)
 il compito di aggiungere il dettaglio fine dell'onda. Ma prima ancora dei
@@ -93,9 +93,9 @@ rete, che un sistema commerciale si gioca le figuracce.
 
 ## Dal grafema al fonema
 
-Finora il capitolo ha parlato di «suoni» e di formanti senza mai dare loro un
-nome preciso. Per la sintesi serve farlo, perché le lettere (i *grafemi*), non
-corrispondono ai suoni una a una.
+Finora il capitolo ha parlato di «suoni» senza mai dare loro un nome preciso.
+Per la sintesi serve farlo, perché le lettere (i *grafemi*) non corrispondono
+ai suoni una a una.
 
 `````{tab} Elementare
 
@@ -209,14 +209,15 @@ $M = (m_1, \dots, m_T)$, con $m_t \in \mathbb{R}^{80}$ (80 bande mel), una
 colonna alla volta:
 
 $$
-p(M \mid x) = \prod_{t=1}^{T} p(m_t \mid m_1, \dots, m_{t-1}, x),
+m_t = f_\theta(m_1, \dots, m_{t-1}, x),
 $$
 
-dove ogni fattore è condizionato da un vettore di contesto calcolato con
-l'attenzione di Bahdanau vista nella traduzione (in variante
-*location-sensitive*, che tiene traccia di dove ha già guardato per favorire
-un avanzamento monotono sul testo). La loss è l'errore quadratico sui frame
-mel, più un predittore di stop che decide quando la frase è finita. Nei test
+una funzione autoregressiva ma **deterministica**: niente densità da
+massimizzare, la loss è l'errore quadratico sui frame mel, più un predittore
+di stop che decide quando la frase è finita. Ogni passo è condizionato da un
+vettore di contesto calcolato con l'attenzione di Bahdanau vista nella
+traduzione (in variante *location-sensitive*, che tiene traccia di dove ha
+già guardato per favorire un avanzamento monotono sul testo). Nei test
 d'ascolto il sistema completo raggiunge un MOS di 4,53 contro il 4,58 del
 parlato registrato da professionisti. FastSpeech 2 elimina l'autoregressione
 con un *variance adaptor* a tre rami: un predittore di **durate** stima quanti
@@ -270,7 +271,7 @@ limite è strutturale: $T'$ passi sequenziali, cioè oltre ventimila per un
 secondo di audio a 22.050 Hz. HiFi-GAN {cite}`kong2020hifi` sostituisce
 l'autoregressione con un gioco avversario nel senso esatto del capitolo sulle
 GAN: il generatore è una pila di convoluzioni trasposte che sovracampiona il
-mel fino alla frequenza dell'onda; i discriminatori sono due famiglie;
+mel fino alla frequenza dell'onda; i discriminatori sono due famiglie:
 *multi-period*, che riorganizzano l'onda per periodi diversi per coglierne le
 periodicità, e *multi-scale*, che la ascoltano a risoluzioni diverse. Alla
 loss avversaria si sommano una *feature matching loss* e una loss L1 tra i

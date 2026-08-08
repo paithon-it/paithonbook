@@ -79,9 +79,9 @@ schedario. La sua bravura non sta nel *sapere* tutto, ma nel **capire quale
 attrezzo serve** e nell'usarlo bene.
 
 Il tool use è esattamente questo. Al modello diamo un elenco di attrezzi,
-ognuno con un'etichetta che dice a cosa serve: «calcolatrice (fa i conti
-esatti», «motore di ricerca) trova pagine aggiornate», «archivio (cerca un
-dato»). Quando arriva una domanda, il modello non prova a rispondere di
+ognuno con un'etichetta che dice a cosa serve: «calcolatrice: fa i conti
+esatti», «motore di ricerca: trova pagine aggiornate», «archivio: cerca un
+dato». Quando arriva una domanda, il modello non prova a rispondere di
 pancia: sceglie l'attrezzo giusto, scrive cosa infilarci dentro, aspetta il
 risultato e lo usa. Un modello che sa dire «questo non lo so a memoria, ma so
 *chi* lo sa» è più affidabile di uno che indovina sempre.

@@ -226,10 +226,13 @@ un processo per GPU e assegna a ciascuno la propria identità.
 ```{code-block} python
 :class: pt-non-eseguibile
 
-# SCHEMA, si lancia con: torchrun --nproc_per_node=4 addestra.py import os
-import torch.distributed as dist from torch.nn.parallel import
-DistributedDataParallel as DDP from torch.utils.data import DataLoader from
-torch.utils.data.distributed import DistributedSampler
+# SCHEMA, si lancia con: torchrun --nproc_per_node=4 addestra.py
+import os
+import torch
+import torch.distributed as dist
+from torch.nn.parallel import DistributedDataParallel as DDP
+from torch.utils.data import DataLoader
+from torch.utils.data.distributed import DistributedSampler
 
 dist.init_process_group("nccl")                 # collega i 4 processi
 rank = int(os.environ["LOCAL_RANK"])            # chi sono io? (0, 1, 2 o 3)

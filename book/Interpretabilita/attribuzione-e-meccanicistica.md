@@ -1,15 +1,17 @@
 # Dentro le reti profonde: attribuzione e interpretabilità meccanicistica
 
 C'è un esperimento diventato un piccolo classico della cattiva coscienza del
-machine learning. Un classificatore addestrato a distinguere lupi da husky
-sembrava funzionare benissimo, finché qualcuno non andò a guardare *dove*
-posava lo sguardo: non sul muso, non sulle orecchie, ma sullo **sfondo**. Gli
-husky del dataset erano quasi sempre fotografati sulla neve, i lupi no. La rete
-non aveva imparato a riconoscere un lupo: aveva imparato a riconoscere la neve.
-Funzionava per la ragione sbagliata, e nessuno se ne sarebbe accorto senza
-aprire la scatola.
+machine learning: il rilevatore di neve dell'apertura di capitolo. Un
+classificatore di lupi e husky truccato a tavolino (tutti i lupi
+dell'addestramento sulla neve, nessun husky) per misurare se qualcuno se ne
+accorgeva; e senza spiegazioni la maggioranza degli studenti non ci arrivò.
+Poi le spiegazioni mostrarono *dove* il modello posava lo sguardo: non sul
+muso, non sulle orecchie, ma sullo **sfondo**. La rete non aveva imparato a
+riconoscere un lupo: aveva imparato a riconoscere la neve. Funzionava per la
+ragione sbagliata, e a guardare solo le sue risposte quasi nessuno lo avrebbe
+detto.
 
-Nella sezione precedente abbiamo visto modelli **interpretabili per
+Nella prima sezione del capitolo abbiamo visto modelli **interpretabili per
 costruzione**: una regressione lineare ci consegna un coefficiente per ogni
 variabile, e quel numero *è* la spiegazione (leggibile a occhio nudo, come nel
 capitolo sul Machine Learning classico). Una rete profonda no. Ha milioni di
@@ -138,8 +140,9 @@ nel 2017, hanno affrontato la questione partendo non da un'euristica ma da due
 **assiomi**: proprietà che una buona spiegazione *deve* soddisfare
 {cite}`sundararajan2017axiomatic`.
 
-Il primo è la **sensibilità**: se cambiando una variabile la predizione
-cambia, quella variabile deve ricevere attribuzione non nulla. Il secondo è
+Il primo è la **sensibilità**: se basta cambiare una variabile perché la
+risposta del modello cambi, quella variabile deve ricevere una quota di merito
+diversa da zero. Il secondo è
 l'**invarianza all'implementazione**: due reti che calcolano la stessa
 funzione matematica, con architetture diverse, devono ricevere le stesse
 attribuzioni (la spiegazione riguarda *cosa* la rete calcola, non *come* lo
@@ -167,8 +170,15 @@ totale sullo scontrino.
 
 `````{tab} Superiore
 
-Sia $x'$ la baseline (per un'immagine, tipicamente il nero, $x' = 0$) e $x$
-l'ingresso da spiegare. Gli *Integrated Gradients* integrano il gradiente lungo
+Sia $x'$ la **baseline**, il punto di riferimento «neutro» rispetto a cui si
+misura il contributo (per un'immagine, tipicamente il nero, $x' = 0$), e $x$
+l'ingresso da spiegare. In forma precisa, l'assioma di **sensibilità** chiede
+che se $x$ e $x'$ differiscono in una sola componente e $f(x) \neq f(x')$,
+quella componente riceva attribuzione non nulla: è proprio ciò che il gradiente
+valutato nel solo punto $x$ non garantisce, perché in regime di saturazione è
+quasi zero anche quando quella componente è la ragione dell'uscita.
+
+Gli *Integrated Gradients* integrano il gradiente lungo
 il segmento rettilineo da $x'$ a $x$:
 
 $$
@@ -275,11 +285,14 @@ posto per l'oggetto che sembrava metterne al riparo: i pesi di attenzione.
 C'è una tentazione naturale, per chi lavora con i Transformer del capitolo
 dedicato: i pesi di **attenzione** {cite}`vaswani2017attention` sono già lì,
 belli normalizzati, e sembrano dire su quali parole il modello si è
-concentrato. Perché non usarli come spiegazione, gratis?
+concentrato. Vale la pena richiamare in una riga di che si tratta: per
+decidere che cosa fare di una parola, il modello distribuisce una specie di
+sguardo sulle altre parole della frase, dando a ciascuna un peso; quei pesi
+sono l'attenzione. Perché non usarli come spiegazione, gratis?
 
 La comunità ci ha discusso a lungo. Nel 2019 Jain e Wallace, con un articolo
 dal titolo programmatico *«Attention is not Explanation»*, hanno mostrato che
-spesso si possono costruire distribuzioni di attenzione **molto diverse** che
+spesso si possono costruire pesi di attenzione **molto diversi** che
 portano alla **stessa** predizione: se più configurazioni dei pesi danno lo
 stesso verdetto, nessuna di esse può essere *la* spiegazione. Altri (Wiegreffe
 e Pinter, sempre nel 2019, con la replica *«Attention is not not
@@ -290,15 +303,41 @@ prova; una heatmap di attenzione va letta come una traccia, non come una
 confessione.
 
 C'è però una domanda tecnica che precede quella filosofica, e che di solito
-viene saltata: **la matrice di attenzione di quale strato?** Un Transformer ne
-ha decine, impilate, e guardarne una sola è come giudicare una catena di
-montaggio da una sola stazione. Abnar e Zuidema {cite}`abnar2020quantifying`
-mostrano che la composizione non è affatto banale, per una ragione che il
-capitolo sui Transformer ha già messo in evidenza: le **connessioni
-residuali**. A ogni blocco il valore di un token non viene sostituito da ciò
-che l'attenzione gli porta, ma sommato ad esso; quindi una parte
-dell'informazione che arriva allo strato $l+1$ non è passata dall'attenzione di
-quel livello, ma è scivolata lungo la scorciatoia.
+viene saltata: **l'attenzione di quale strato?** Un Transformer ne ha decine,
+impilati, e guardarne uno solo è come giudicare una catena di montaggio da una
+sola stazione.
+
+`````{tab} Elementare
+
+Il problema è che, a ogni piano della pila, una parte dell'informazione non
+passa affatto dall'attenzione: prende una **scorciatoia** e scivola dritta al
+piano di sopra (sono le connessioni residuali del capitolo sui Transformer).
+Quindi i pesi di un singolo strato raccontano solo un pezzo del viaggio: per
+sapere quanto ogni parola d'ingresso ha influenzato il risultato in cima
+bisogna seguire l'intero percorso, scorciatoie comprese, piano dopo piano. Gli
+strumenti che fanno questo conto si chiamano **attention rollout** e
+**attention flow**, e restituiscono una mappa sulle parole di partenza, spesso
+più sensata di quella del singolo strato.
+
+C'è infine un attrezzo complementare, il **probing** (sondaggio): per scoprire
+se a un certo piano della rete è scritta una data informazione (per esempio,
+se una parola è un nome o un verbo), si prova a leggerla da lì con lo
+strumento più semplice che c'è, un piccolo classificatore addestrato apposta.
+Se ci riesce, l'informazione a quel piano c'è; se fallisce, non c'è, o non è
+scritta in modo semplice. Con un'avvertenza: uno strumento di lettura troppo
+bravo rischia di indovinare da sé ciò che doveva soltanto leggere.
+
+`````
+
+`````{tab} Superiore
+
+Abnar e Zuidema {cite}`abnar2020quantifying` mostrano che la composizione fra
+strati non è affatto banale, per una ragione che il capitolo sui Transformer
+ha già messo in evidenza: le **connessioni residuali**. A ogni blocco il
+valore di un token non viene sostituito da ciò che l'attenzione gli porta, ma
+sommato ad esso; quindi una parte dell'informazione che arriva allo strato
+$l+1$ non è passata dall'attenzione di quel livello, ma è scivolata lungo la
+scorciatoia.
 
 Il rimedio proposto è di tenerne conto e poi comporre. Si corregge la matrice
 di attenzione di ogni strato mescolandola con l'identità, che rappresenta
@@ -329,6 +368,8 @@ un modo economico per mappare *dove*, nella pila di strati, emergono le varie
 proprietà, con l'avvertenza, discussa da Alain e Bengio e da altri, che un
 probe troppo potente rischia di *imparare* lui la proprietà invece di
 limitarsi a leggerla.
+
+`````
 
 ## Interpretabilità meccanicistica: fare reverse-engineering dei circuiti
 
@@ -399,9 +440,11 @@ che codificano un concetto) e i *circuiti* che le collegano; sottografi di
 neuroni e pesi che implementano un calcolo interpretabile, come i rilevatori
 di curve nelle prime reti di visione.
 
-L'ostacolo teorico è la **sovrapposizione** (*superposition*): una rete con
-$n$ neuroni può rappresentare molte più di $n$ feature sfruttando direzioni
-quasi ortogonali in $\mathbb{R}^n$, purché ciascuna feature sia rara. La
+L'ostacolo teorico è la **sovrapposizione** (*superposition*), studiata a
+fondo da Elhage e colleghi nei *Toy Models of Superposition* (Anthropic, 2022)
+{cite}`elhage2022toy`: una rete con $n$ neuroni può rappresentare molte più di
+$n$ feature sfruttando direzioni quasi ortogonali in $\mathbb{R}^n$, purché
+ciascuna feature sia rara. La
 conseguenza pratica è la **polisemanticità**: un singolo neurone risponde a
 stimoli non correlati, e diventa illeggibile. Bricken e colleghi, in *Towards
 Monosemanticity* (Anthropic, 2023), affrontano il problema con uno **sparse
@@ -430,12 +473,18 @@ scientifica e l'interpretabilità come strumento di controllo.
 ## Integrated Gradients coi numeri: un esempio eseguibile
 
 Vale più di mille formule vedere la completezza tornare al centesimo. Prendiamo
-una funzione giocattolo di due variabili che **satura**, per riprodurre proprio
-il caso in cui il gradiente locale mente: $f(x) = \tanh(w^\top x)$ con
-$w = (2, -1)$. Nel punto $x = (2, 1)$ si ha $w^\top x = 3$, e $\tanh(3) \approx
-0{,}995$: siamo nella parte piatta, dove la derivata è quasi nulla. Un solo
-gradiente direbbe «qui non conta niente»; gli Integrated Gradients, integrando
-dal nero, recuperano l'intero contributo.
+una funzione giocattolo di due variabili costruita apposta per **saturare**,
+cioè per riprodurre il caso in cui il gradiente locale mente. È la solita somma
+pesata di un neurone (due volte la prima variabile, meno una volta la seconda)
+passata dentro la **tangente iperbolica** $\tanh$, una funzione che schiaccia:
+sale ripida vicino allo zero e si appiattisce man mano che l'uscita si avvicina
+a 1, come la sigmoide del capitolo sulle reti neurali. In formule,
+$f(x) = \tanh(w^\top x)$ con $w = (2, -1)$, dove $w^\top x$ è appunto la somma
+pesata. Nel punto $x = (2, 1)$ essa vale $2 \cdot 2 - 1 \cdot 1 = 3$, e
+$\tanh(3) \approx 0{,}995$: siamo sulla parte piatta della curva, dove la
+pendenza è quasi nulla. Un solo gradiente direbbe «qui non conta niente»; gli
+Integrated Gradients, integrando dalla baseline tutta a zero, recuperano
+l'intero contributo.
 
 ```python
 import numpy as np
@@ -480,10 +529,13 @@ seconda ($w_2 = -1 < 0$) lo tira giù, esattamente come ci si aspetta.
 
 ## Uno sketch di Grad-CAM in PyTorch
 
-Su una rete vera, Grad-CAM si costruisce agganciando due *hook* all'ultimo
-strato convoluzionale: uno cattura le attivazioni in avanti, l'altro i gradienti
-all'indietro. Ecco lo scheletro su una ResNet-18 di `torchvision`, con l'API
-reale.
+Su una rete vera, Grad-CAM si costruisce agganciando due *hook* allo stadio
+convoluzionale finale: uno cattura le attivazioni in avanti, l'altro i
+gradienti all'indietro. In una ResNet il punto giusto è l'**uscita dell'ultimo
+blocco** di `layer4`, dopo la somma residuale: è lì che agganciano le
+implementazioni di riferimento, perché fermarsi a una convoluzione interna al
+blocco ignorerebbe il contributo della scorciatoia. Ecco lo scheletro su una
+ResNet-18 di `torchvision`, con l'API reale.
 
 ```python
 import torch
@@ -491,7 +543,7 @@ import torch.nn.functional as F
 from torchvision import models
 
 model = models.resnet18(weights=models.ResNet18_Weights.IMAGENET1K_V1).eval()
-target = model.layer4[-1].conv2          # ultimo strato convoluzionale
+target = model.layer4[-1]                # ultimo blocco: uscita post-residuo
 
 att, grad = {}, {}
 target.register_forward_hook(lambda m, i, o: att.__setitem__("v", o.detach()))
@@ -520,6 +572,49 @@ visualizzarla. Su un'immagine di cane la macchia calda cadrebbe sul muso; su
 un husky del dataset ingannevole, sulla neve, ed è precisamente questo che
 volevamo poter vedere.
 
+`````{tab} Elementare
+
+```{admonition} Da ricordare
+:class: important
+- Una rete profonda non ha numeri leggibili come i coefficienti di un modello
+  lineare. Per capirla si cambia domanda: quanto ha pesato *questo* pezzo
+  dell'ingresso su *questa* decisione? Si misura di quanto cambierebbe la
+  risposta toccandolo appena.
+- Le **saliency maps** (Simonyan e colleghi, 2014) danno questi colpetti pixel
+  per pixel: informative ma rumorose, e valide solo attorno a quella foto.
+  **Grad-CAM** (Selvaraju e colleghi, 2017) accende invece i «faretti»
+  dell'ultimo strato convoluzionale in proporzione a quanto contano per la
+  classe: più grossolana, ma pulita e affidabile nel dire *dove* la rete ha
+  guardato.
+- Gli **Integrated Gradients** (Sundararajan e colleghi, 2017) partono da
+  un'immagine neutra e arrivano a quella vera per tappe, registrando la
+  reazione lungo tutta la salita: così vedono anche i contributi che
+  all'arrivo, ormai satura, la rete non segnala più. La somma delle quote fa
+  esattamente il salto di fiducia fra le due immagini, come un conto di cena
+  che torna al centesimo.
+- Una mappa dice **dove**, non **che cosa** (Cynthia Rudin): sapere quale zona
+  la rete guarda non dice che cosa ci trovi. E i **controlli di sanità**
+  (Adebayo e colleghi, 2018) mostrano che, cancellando ciò che il modello ha
+  imparato, per parecchi metodi la mappa resta quasi identica: descriveva
+  l'immagine, non la rete. Una spiegazione che sembra sensata non è per questo
+  fedele.
+- I **pesi di attenzione** sono un indizio, non una prova: pesi molto diversi
+  possono portare alla stessa risposta. E guardare un solo strato non basta,
+  perché una parte dell'informazione salta l'attenzione e prende la scorciatoia
+  verso il piano di sopra; **attention rollout** e *attention flow* rifanno il
+  conto lungo tutta la pila. Il **probing** risponde a un'altra domanda: a
+  quale piano è scritta una certa informazione.
+- L'**interpretabilità meccanicistica** apre la scatola e prova a ricostruire i
+  circuiti con cui la rete calcola, sciogliendo la **sovrapposizione** (troppi
+  concetti nella stessa scatola, un neurone che si accende per cose scollegate)
+  con gli *sparse autoencoder*. Campo giovane, ma centrale per la sicurezza dei
+  modelli grandi.
+```
+
+`````
+
+`````{tab} Superiore
+
 ```{admonition} Da ricordare
 :class: important
 - Le reti profonde non hanno coefficienti leggibili: l'**attribuzione** usa il
@@ -532,7 +627,8 @@ volevamo poter vedere.
 - Gli **Integrated Gradients** {cite}`sundararajan2017axiomatic` integrano il
   gradiente lungo il cammino dalla baseline all'input: fondati su assiomi
   (sensibilità, invarianza all'implementazione), risolvono la saturazione e
-  soddisfano la **completezza**, $\sum_i \mathrm{IG}_i = f(x) - f(x')$.
+  soddisfano la **completezza**,
+  $\sum_i \mathrm{IG}_i = f(\mathbf{x}) - f(\mathbf{x}')$.
 - Una mappa dice **dove**, non **che cosa** {cite}`rudin2019stop`, e i
   **controlli di sanità** {cite}`adebayo2018sanity` mostrano che per diversi
   metodi popolari la mappa cambia pochissimo randomizzando i pesi del modello:
@@ -550,3 +646,5 @@ volevamo poter vedere.
   {cite}`bricken2023monosemanticity`) punta a fare reverse-engineering dei
   calcoli interni. Campo giovane, ma centrale per la sicurezza degli LLM.
 ```
+
+`````

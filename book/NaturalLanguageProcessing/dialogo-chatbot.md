@@ -29,11 +29,14 @@ conversazione non è una collana di frasi indipendenti: è un'attività
 *congiunta*, con regole sue che rispettiamo senza accorgercene. Per vederle
 basta origliare una telefonata qualsiasi:
 
->: Ristorante Da Mario, buonasera. >: Buonasera. Vorrei prenotare un tavolo
-per domani. >: Certo. Quanti siete? >: Quattro. Se possibile all'aperto. >:
-Mh-mh… all'aperto ne è rimasto uno solo, alle otto. Va bene? >: Perfetto, lo
-prendiamo. >: Un tavolo per quattro, domani alle otto, all'aperto. A che nome?
->: Rossi.
+> - Ristorante Da Mario, buonasera.
+> - Buonasera. Vorrei prenotare un tavolo per domani.
+> - Certo. Quanti siete?
+> - Quattro. Se possibile all'aperto.
+> - Mh-mh… all'aperto ne è rimasto uno solo, alle otto. Va bene?
+> - Perfetto, lo prendiamo.
+> - Un tavolo per quattro, domani alle otto, all'aperto. A che nome?
+> - Rossi.
 
 Otto battute banali. Eppure, sotto la superficie, succedono almeno quattro
 cose che nessuna delle frasi, presa da sola, contiene.

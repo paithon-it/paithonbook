@@ -382,8 +382,9 @@ neurali della prossima sezione.
 
 I limiti del modello n-gram sono strutturali, non di taratura:
 
-- **Crescita esponenziale dei parametri.** I contesti possibili sono
-  $|V|^{\,n-1}$: con un vocabolario di 50.000 parole, i bigrammi possibili
+- **Crescita esponenziale dei parametri.** Gli n-gram possibili sono
+  $|V|^{\,n}$ (i contesti sono $|V|^{\,n-1}$, ciascuno con $|V|$
+  continuazioni): con un vocabolario di 50.000 parole, i bigrammi possibili
   sono $2{,}5 \times 10^9$ e i trigrammi $1{,}25 \times 10^{14}$. Oltre
   $n = 4$ o $5$, nessun corpus basta: la sparsità vince su qualunque
   smoothing.
@@ -510,6 +511,44 @@ somiglino. La prossima sezione riparte esattamente da qui: la stessa
 scommessa sulla parola successiva, affidata però a una rete che porta con
 sé, parola dopo parola, un riassunto dell'intera frase.
 
+`````{tab} Elementare
+```{admonition} Da ricordare
+:class: important
+- Un **modello di linguaggio** scommette su quale parola viene dopo, e la
+  probabilità di una frase intera è il prodotto di tutte quelle scommesse in
+  fila. L'idea nasce con Markov, che nel 1913 conta a matita le lettere
+  dell'*Onegin*, e con le «approssimazioni» di Shannon del 1948, costruite
+  sfogliando libri a caso.
+- Il patto degli **n-gram**: fingere che conti solo l'ultima parola letta
+  (le coppie, il bigramma) o le ultime due (le terne, il trigramma), perché
+  una frase intera non si ripete quasi mai e di lei non si potrebbe contare
+  niente. Le scommesse stanno in un quaderno, una pagina per parola, con
+  sopra le parole che l'hanno seguita e quante volte.
+- Una coppia mai vista vale zero, e uno zero azzera l'intera frase: il modello
+  confonde «mai visto» con «impossibile». Il rimedio più semplice è la
+  **regola del $+1$** (un conteggio regalato a tutti), ma con un vocabolario
+  vero diventa una patrimoniale che consegna quasi tutto ai fantasmi. Meglio
+  **mescolare** il giudizio della coppia con quello della parola singola, o
+  **ripiegare** sulla seconda quando la prima manca; e meglio ancora, con
+  **Kneser–Ney**, chiedersi non quante volte una parola è comparsa ma in
+  quanti posti diversi («Francisco» è frequentissimo ma non va da nessuna
+  parte senza «San»).
+- La **perplessità** è la pagella: il numero di facce del dado con cui il
+  modello esita a ogni scommessa, e più è basso meglio scommette. Va misurata
+  su testo mai letto in addestramento, altrimenti si sta barando.
+- Un n-gram sa anche **generare**, tirando il suo dado truccato una parola
+  alla volta: il risultato suona giusto da vicino e non porta da nessuna
+  parte da lontano, perché la memoria è da pesce rosso. Allungarla riempie il
+  quaderno di pagine bianche, e comunque per il quaderno «gatto» e «micio»
+  restano due estranei: sono le due ragioni che portano alle reti della
+  prossima sezione.
+- Gli n-gram **non sono morti**: le tastiere che suggeriscono la parola, la
+  spalla del riconoscimento vocale, un metro di paragone velocissimo che gira
+  su qualunque computer, senza GPU.
+```
+`````
+
+`````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
 - Un **modello di linguaggio** assegna una probabilità a una frase
@@ -533,3 +572,4 @@ sé, parola dopo parola, un riassunto dell'intera frase.
 - Gli n-gram **non sono morti**: tastiere predittive, fusione col modello
   acustico nell'ASR, baseline velocissime senza GPU.
 ```
+`````

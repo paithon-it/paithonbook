@@ -1,16 +1,18 @@
 # Robotica e AI
 
-La robotica e l’intelligenza artificiale vengono spesso confuse, ma non sono affatto la stessa cosa: in realtà, i due campi sono quasi completamente separati e hanno scopi molto diversi. Il modo più semplice per capire la differenza è pensare al corpo umano, in cui convivono il fisico e la mente; o a uno smartphone, composto dall’elettronica (touchscreen, antenne, processore) e dal sistema operativo che la governa (iOS o Android). La robotica costruisce il corpo; l’intelligenza artificiale prova a costruirne la mente.
+La robotica e l’intelligenza artificiale vengono spesso confuse, ma non sono affatto la stessa cosa: sono due campi distinti, con oggetti diversi, anche se oggi profondamente intrecciati. Il modo più semplice per capire la differenza è pensare al corpo umano, in cui convivono il fisico e la mente; o a uno smartphone, composto dall’elettronica (touchscreen, antenne, processore) e dal sistema operativo che la governa (iOS o Android). La robotica costruisce il corpo; l’intelligenza artificiale prova a costruirne la mente. E come nel corpo umano, i due lavorano di continuo insieme: un robot moderno percepisce, riconosce e pianifica con tecniche che sono AI a tutti gli effetti.
 
-In generale, un robot è un dispositivo meccanico che si muove nello spazio
-autonomamente, eseguendo azioni quanto più possibile simili a quelle che erano
-le intenzioni del suo “creatore”. Difatti, la robotica si concentra
-maggiormente sulla meccanica del movimento e sul controllo della forza da
-applicare agli oggetti al fine di manipolarli. E non pensiamo solamente agli
-“umanoidi”, cioè ai robot con sembianze umane: sono robot anche i bracci
-meccanici delle catene di montaggio, i rover in esplorazione su Marte, perfino
-le semplici lavatrici che ognuno di noi utilizza in casa, o una casa stessa,
-se possiede un minimo di domotica, cioè impianti capaci di regolarsi da soli.
+In generale, un robot è una macchina che percepisce l’ambiente fisico e
+agisce su di esso attraverso degli **attuatori** (motori, ruote, bracci,
+pinze), eseguendo azioni quanto più possibile simili a quelle che erano le
+intenzioni del suo “creatore”. Difatti, la robotica si concentra maggiormente
+sulla meccanica del movimento e sul controllo della forza da applicare agli
+oggetti al fine di manipolarli. E non pensiamo solamente agli “umanoidi”,
+cioè ai robot con sembianze umane: sono robot anche i bracci meccanici delle
+catene di montaggio, i rover in esplorazione su Marte, perfino le semplici
+lavatrici che ognuno di noi utilizza in casa, o una casa stessa, se possiede
+un minimo di domotica, cioè impianti capaci di regolarsi da soli. Per essere
+un robot non serve spostarsi; basta sentire e agire.
 
 Esiste però un ponte tra i due mondi, ed è una branca dell’intelligenza
 artificiale che va sotto il nome di **Reinforcement Learning** (in italiano,
@@ -32,21 +34,6 @@ cammina. È il gioco “acqua–fuochino” portato all’estremo: nessuna istru
 solo un segnale che dice *così va meglio, così va peggio*.
 `````
 
-```{figure} ../figures/reinforcement-learning-agenti-stati-azioni.svg
-:name: fig-agente-ambiente
-:alt: "Anello fra due blocchi: l'agente invia un'azione all'ambiente; l'ambiente restituisce all'agente il nuovo stato e una ricompensa numerica, e il giro ricomincia. Nessun altro canale collega i due: tutto ciò che l'agente sa del mondo passa da stato e ricompensa."
-:width: 88%
-
-Il giro che regge tutti gli ultimi capitoli. Fra agente e ambiente passano
-solo due cose in un verso e una nell'altro: nessuno spiega mai all'agente
-*perché* la ricompensa sia arrivata.
-```
-
-La povertà del canale in {numref}`fig-agente-ambiente` è ciò che rende il
-problema difficile e interessante. Un numero solo, per giunta spesso in
-ritardo di molte mosse rispetto alla scelta che l'ha causato, è tutta
-l'istruzione che l'agente riceve.
-
 `````{tab} Superiore
 Nel formalismo che svilupperemo negli ultimi capitoli: un **agente** osserva
 lo stato $s_t$ dell’ambiente, sceglie un’azione $a_t$ secondo una
@@ -59,6 +46,30 @@ simulazione, con il passaggio al robot fisico (*sim-to-real*) come problema
 aperto. Tutti questi termini avranno il loro capitolo: qui basta la sagoma
 del meccanismo.
 `````
+
+Di questa storia conviene fissare subito i tre nomi, perché torneranno in
+tutti gli ultimi capitoli. Si chiama **agente** chi decide, cioè il robot
+dell’esempio; **ambiente** tutto il resto con cui l’agente ha a che fare (il
+pavimento, la gravità, il cronometro che conta i secondi in piedi); e
+**ricompensa** il punteggio che l’ambiente gli restituisce dopo ogni mossa.
+Il disegno qui sotto mette in fila queste tre parole e nient’altro.
+
+```{figure} ../figures/reinforcement-learning-agenti-stati-azioni.svg
+:name: fig-agente-ambiente
+:alt: "Anello fra due blocchi: l'agente invia un'azione all'ambiente; l'ambiente restituisce all'agente il nuovo stato e una ricompensa numerica, e il giro ricomincia. Nessun altro canale collega i due: tutto ciò che l'agente sa del mondo passa da stato e ricompensa."
+:width: 88%
+
+Il giro che regge tutti gli ultimi capitoli: l’agente manda la sua mossa,
+l’ambiente risponde con la nuova situazione e con la ricompensa, e si
+ricomincia. Non passa altro: nessuno spiega mai all’agente *perché* quella
+ricompensa sia arrivata.
+```
+
+Tra i due, come mostra {numref}`fig-agente-ambiente`, passa pochissimo, ed è
+proprio questo a rendere il problema difficile e interessante: un numero solo,
+per giunta spesso in ritardo di molte mosse rispetto alla scelta che l’ha
+causato, è tutto quello che l’agente riceve per capire come comportarsi. Mai
+una spiegazione, mai la mossa giusta scritta da qualche parte.
 
 E quando la “mente” artificiale entra in un corpo meccanico, i risultati si vedono: rover marziani che scelgono da soli il percorso evitando le rocce, robot chirurgici che aiutano il medico a eseguire incisioni più precise e meno invasive di quelle di una mano umana, magazzini in cui flotte di carrelli autonomi si coordinano senza scontrarsi.
 

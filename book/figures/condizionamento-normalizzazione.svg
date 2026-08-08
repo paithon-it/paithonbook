@@ -3,12 +3,15 @@
   paithon book — figura: perche' normalizzare aiuta l'ottimizzazione.
   A sinistra dati grezzi (curve di livello allungate, problema mal
   condizionato): la discesa del gradiente rimbalza a zig-zag. A destra dati
-  standardizzati (curve circolari, ben condizionato): discesa diretta.
+  standardizzati (curve quasi tonde, ben condizionato): discesa quasi diretta.
+  Le curve di destra restano ellissi appena oblique, non cerchi: la
+  standardizzazione pareggia le scale ma non scorrela le feature, e il testo
+  lo dice (per curve davvero circolari servirebbe il whitening).
   Palette-locked: teal per le curve di livello, terracotta per il cammino,
   ocra per il minimo, neutri warm per assi/label. Fondo trasparente.
 -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 340" role="img"
-     aria-label="Confronto tra la discesa del gradiente su curve di livello allungate (dati grezzi, cammino a zig-zag) e su curve circolari (dati standardizzati, cammino diretto).">
+     aria-label="Confronto tra la discesa del gradiente su curve di livello allungate (dati grezzi, cammino a zig-zag) e su curve quasi tonde (dati standardizzati, cammino quasi diretto).">
   <style>
     .lvl   { fill:none; stroke:#2D5A5C; stroke-width:1.6; opacity:.75; }
     .path  { fill:none; stroke:#B5532C; stroke-width:2.6; stroke-linecap:round; stroke-linejoin:round; }
@@ -47,11 +50,13 @@
   <line class="axis" x1="352" y1="290" x2="622" y2="290"/>
   <line class="axis" x1="352" y1="290" x2="352" y2="52"/>
 
-  <!-- curve di livello circolari -->
-  <circle class="lvl" cx="486" cy="180" r="108"/>
-  <circle class="lvl" cx="486" cy="180" r="80"/>
-  <circle class="lvl" cx="486" cy="180" r="52"/>
-  <circle class="lvl" cx="486" cy="180" r="26"/>
+  <!-- curve di livello quasi tonde: ellissi appena oblique, non cerchi -->
+  <g transform="rotate(-20 486 180)">
+    <ellipse class="lvl" cx="486" cy="180" rx="116" ry="99"/>
+    <ellipse class="lvl" cx="486" cy="180" rx="86"  ry="73"/>
+    <ellipse class="lvl" cx="486" cy="180" rx="56"  ry="48"/>
+    <ellipse class="lvl" cx="486" cy="180" rx="28"  ry="24"/>
+  </g>
 
   <!-- cammino diretto del gradiente -->
   <polyline class="path" points="392,92 448,140 476,166 486,180"/>

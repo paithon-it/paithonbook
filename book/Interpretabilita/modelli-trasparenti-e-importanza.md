@@ -227,10 +227,15 @@ richiede solo il forward del modello e un insieme etichettato.
 
 Due accortezze. La misura va calcolata su dati **held-out**: sul *training* essa
 racconta quanto il modello si è appoggiato a $x_j$ per memorizzare, non quanto
-quella feature aiuti a generalizzare. E con feature **correlate** la
-permutazione crea combinazioni irrealistiche e può *sottostimare* l'importanza
-(il modello recupera l'informazione dalla colonna gemella non permutata):
-un limite che condivideremo con i metodi basati sulla marginalizzazione.
+quella feature aiuti a generalizzare. E le feature **correlate** portano due
+guai distinti, che conviene non confondere. Il primo: il modello recupera
+l'informazione dalla colonna gemella non permutata, e l'importanza, spartita
+fra le due, risulta *sottostimata*. Il secondo: la permutazione crea
+combinazioni irrealistiche (un'altezza da adulto con un peso da bambino) su
+cui il modello viene interrogato fuori dal supporto dei dati, e l'errore così
+gonfiato può *sovrastimare* l'importanza delle feature coinvolte (Hooker,
+Mentch e Zhou, 2021): la stessa patologia di estrapolazione che ritroveremo
+nel PDP.
 
 `````
 
@@ -414,6 +419,45 @@ il modello» con «causa del fenomeno» è l'errore che trasforma uno strumento 
 *debug* in una fonte di decisioni sbagliate. L'interpretabilità apre la
 scatola: sta a noi non leggerci dentro più di quel che c'è.
 
+`````{tab} Elementare
+
+```{admonition} Da ricordare
+:class: important
+- I **modelli trasparenti** (lineari e logistici, alberi, **modelli additivi
+  generalizzati**, che disegnano una curva leggibile per ogni caratteristica,
+  sistemi a regole) sono già la propria spiegazione: nel modello che stima il
+  prezzo di una casa ogni coefficiente è un cartellino col prezzo appeso a una
+  caratteristica, e la predizione si legge come una ricevuta, voce per voce; in
+  un albero la spiegazione è il percorso di domande che porta alla risposta. Il
+  presunto scambio fra accuratezza e chiarezza **non vale sempre**, e sui dati
+  a righe e colonne spesso non vale affatto.
+- La **permutation importance** (Breiman, 2001) rimescola i valori di una sola
+  colonna e guarda quanto peggiora il modello: se rimescolando il reddito le
+  risposte giuste scendono dal $90\%$ al $72\%$, quella colonna vale 18 punti.
+  Funziona con qualunque modello, va misurata su dati che il modello non ha mai
+  visto in addestramento e ripetuta più volte, facendo la media.
+- L'importanza **da impurità** degli alberi arriva gratis con l'addestramento
+  ma è **distorta**: premia le colonne con tanti valori diversi (che offrono
+  moltissime soglie fra cui scegliere) e penalizza quelle con due o tre valori,
+  ed è calcolata sui dati di addestramento. Meglio fidarsi della permutazione.
+- Sapere quanto una colonna conta non dice **come** agisce. Il **PDP** riscrive
+  a tutti lo stesso valore («e se aveste tutti quarant'anni?») e fa la media
+  delle predizioni; l'**ICE** disegna una curva per ogni esempio e rivela i
+  casi in cui l'effetto è opposto da persona a persona e la media lo nasconde.
+  Attenzione quando due colonne vanno sempre insieme (l'altezza e il peso, per
+  dire): riscrivendone una sola, il PDP finisce per chiedere al modello cosa
+  pensa di persone che non esistono, alte due metri e pesanti cinquanta chili,
+  e la curva che ne esce inganna.
+- L'importanza dice **che** una colonna pesa sulle predizioni, non come agisce
+  né che ne sia la **causa**: il reddito può contare solo perché fa da spia del
+  quartiere. È l'errore della regola sugli asmatici; il panorama completo è nel
+  manuale di Molnar.
+```
+
+`````
+
+`````{tab} Superiore
+
 ```{admonition} Da ricordare
 :class: important
 - I **modelli trasparenti** (lineari/logistici, alberi, GAM, regole) sono la
@@ -434,3 +478,5 @@ scatola: sta a noi non leggerci dentro più di quel che c'è.
   Correlazione nel modello non è causazione nel mondo. Panoramica completa in
   Molnar {cite}`molnar2022interpretable`.
 ```
+
+`````

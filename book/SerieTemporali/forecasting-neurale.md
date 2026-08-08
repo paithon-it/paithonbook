@@ -1,17 +1,18 @@
 # Forecasting neurale: da RNN ai Transformer e ai foundation model
 
-Verso la fine degli anni Dieci, in Amazon si presentava un problema di scala
+Nella seconda metà degli anni Dieci, in Amazon si presentava un problema di scala
 brutale: prevedere la domanda di *centinaia di milioni* di prodotti, ognuno
 con la sua piccola storia di vendite (spesso corta, spesso a scatti, a volte
 fatta di zeri interrotti da un picco). La ricetta classica direbbe: un modello
 ARIMA per prodotto. Ma stimarne cento milioni è impraticabile, e la maggior
 parte di quelle serie è troppo breve e rumorosa perché un modello su misura ci
-capisca qualcosa. Nel 2020 un gruppo di ricercatori propose un'inversione di
-prospettiva {cite}`salinas2020deepar`: e se, invece di un modello per serie,
-addestrassimo *una sola rete su tutte le serie insieme*, lasciando che
-ciascuna impari dai pattern delle altre? È questa idea (il modello
-**globale**) a segnare il passaggio dal forecasting statistico a quello
-neurale.
+capisca qualcosa. Nel 2017 un gruppo di ricercatori dell'azienda propose
+un'inversione di prospettiva {cite}`salinas2020deepar` (l'articolo circolò
+subito online, ma fu stampato su una rivista scientifica solo tre anni dopo,
+nel 2020): e se, invece di un modello per serie, addestrassimo *una sola rete
+su tutte le serie insieme*, lasciando che ciascuna impari dai pattern delle
+altre? È questa idea (il modello **globale**) a segnare il passaggio dal
+forecasting statistico a quello neurale.
 
 Le sezioni precedenti hanno costruito la cassetta degli attrezzi classica
 (ARIMA, Holt-Winters) e hanno insistito su un punto scomodo: quei metodi di
@@ -101,8 +102,9 @@ Nel 2018 Shaojie Bai, Zico Kolter e Vladlen Koltun pubblicarono un confronto
 sistematico tra reti ricorrenti e reti convoluzionali sulle sequenze, e la
 conclusione fece rumore: su un ampio ventaglio di compiti una semplice rete
 convoluzionale, opportunamente adattata, eguagliava o superava le LSTM
-{cite}`bai2018empirical`. La chiamarono **Temporal Convolutional Network**
-(TCN). Due accorgimenti la rendono adatta al tempo, e la
+{cite}`bai2018empirical`. La chiamarono, riprendendo un nome che altri
+ricercatori usavano già, **Temporal Convolutional Network** (TCN). Due
+accorgimenti la rendono adatta al tempo, e la
 {numref}`fig-tcn-convoluzioni-causali` li mostra insieme.
 
 ```{figure} ../figures/tcn-convoluzioni-causali.svg
@@ -188,22 +190,28 @@ numero *con la sua incertezza*.
 
 `````{tab} Superiore
 
-A ogni passo la rete emette i **parametri** $\theta_t$ di una distribuzione di
-verosimiglianza $p(x_t \mid \theta_t)$: una gaussiana $\theta_t=(\mu_t,\sigma_t)$
+A ogni passo la rete emette i **parametri** $\lambda_t$ di una distribuzione di
+verosimiglianza $p(x_t \mid \lambda_t)$: una gaussiana $\lambda_t=(\mu_t,\sigma_t)$
 per dati reali, una **binomiale negativa** per conteggi non negativi (come le
-vendite). L'addestramento massimizza la log-verosimiglianza su tutte le serie,
+vendite). La loss è la log-verosimiglianza cambiata di segno, sommata su tutte
+le serie,
 
 $$
-\mathcal{L}(\Phi) = \sum_{i=1}^{N} \sum_{t} \log p\big(x^{(i)}_t \mid
-\theta_t\big), \qquad \theta_t = g_\Phi\big(h^{(i)}_t\big),
+\mathcal{L}(\theta) = -\sum_{i=1}^{N} \sum_{t} \log p\big(x^{(i)}_t \mid
+\lambda^{(i)}_t\big), \qquad \lambda^{(i)}_t = g_\theta\big(h^{(i)}_t\big),
 $$
 
-dove $h^{(i)}_t$ è lo stato nascosto della LSTM per la serie $i$ e $\Phi$ i
-parametri *condivisi* fra tutte le serie. La previsione multi-passo avviene per
-**campionamento ancestrale**: si estrae $\hat{x}_{t+1}\sim p(\cdot\mid
-\theta_{t+1})$, lo si reinietta come input, si ripete fino all'orizzonte; molte
-traiettorie così ottenute forniscono, per ogni passo, i **quantili** della
-previsione. Nessuna formula chiusa per gli intervalli: è Monte Carlo.
+dove $h^{(i)}_t$ è lo stato nascosto della LSTM per la serie $i$,
+$\lambda^{(i)}_t$ i parametri d'emissione che ne discendono (quindi anch'essi
+propri di quella serie) e $\theta$ i parametri *condivisi* fra tutte le serie:
+minimizzarla equivale a massimizzare la verosimiglianza dei dati. La
+previsione multi-passo
+avviene per **campionamento ancestrale**, e siccome si lavora su una serie alla
+volta l'indice $i$ resta d'ora in poi sottinteso: si estrae
+$\hat{x}_{t+1}\sim p(\cdot\mid \lambda_{t+1})$, lo si reinietta come input, si
+ripete fino all'orizzonte; molte traiettorie così ottenute forniscono, per ogni
+passo, i **quantili** della previsione. Nessuna formula chiusa per gli
+intervalli: è Monte Carlo.
 
 `````
 
@@ -446,9 +454,9 @@ PyTorch: si taglia la serie in coppie (finestra passata, valore successivo)
 mai mescolando futuro e passato) si passano le finestre al modello e si
 minimizza l'errore quadratico con `nn.MSELoss` e un ottimizzatore come
 `torch.optim.Adam`. Sostituire la testa lineare con due uscite
-$(\mu, \log\sigma)$ e la MSE con la log-verosimiglianza gaussiana basta a
-trasformare questa TCN in un forecaster **probabilistico**, nello spirito di
-DeepAR.
+$(\mu, \log\sigma)$ e la MSE con la log-verosimiglianza gaussiana cambiata di
+segno basta a trasformare questa TCN in un forecaster **probabilistico**,
+nello spirito di DeepAR.
 
 Dalle reti ricorrenti ai foundation model, il filo che attraversa tutta la
 sezione è duplice: le architetture cambiano, ma restano validi due

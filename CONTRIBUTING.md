@@ -74,9 +74,13 @@ In pratica, scrivendo una pagina:
   nota a piè di pagina (`[^nota]`). Restano il trattino d'unione e la lineetta
   breve degli intervalli (`2020–2023`);
 - **formule** in LaTeX (`$…$` in linea, `$$…$$` in blocco), con i simboli
-  spiegati subito dopo. Notazione coerente col resto del libro: matrici e
-  vettori maiuscoli ($X$, $W$), scalari minuscoli, $\hat{y}$ per le
-  predizioni, $\mathcal{L}$ per la loss, $\theta$ per i parametri;
+  spiegati subito dopo. Notazione coerente col resto del libro, su tre
+  livelli: matrici in maiuscolo grassetto ($\mathbf{X}$, $\mathbf{W}$),
+  vettori in minuscolo grassetto ($\mathbf{x}$, $\mathbf{w}$), scalari e
+  indici in minuscolo tondo ($x_i$, $n$); poi $\hat{y}$ per le predizioni,
+  $\mathcal{L}$ per la loss, $\theta$ per i parametri. Il grassetto non è un
+  vezzo tipografico: dice che l'oggetto ha più di una componente, e distingue
+  un vettore da uno scalare;
 - **codice**: Python idiomatico ed eseguibile, commenti in italiano e brevi.
   Il framework di deep learning del libro è **PyTorch**: niente
   Keras/TensorFlow, che possono comparire solo come citazione storica o

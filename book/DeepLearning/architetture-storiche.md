@@ -4,9 +4,11 @@ Ogni autunno, tra il 2010 e il 2017, i laboratori di visione artificiale di
 mezzo mondo si sfidavano su **ImageNet**: oltre un milione di fotografie da
 classificare in mille categorie, dal cane pastore alla tazza da caffè. C'era
 una classifica, e quella classifica racconta una storia. Nel 2011 l'errore del
-sistema migliore era intorno al 26%; nel 2015 era sceso sotto il 4%, meglio di
-un essere umano messo alla prova sullo stesso compito. In quattro anni un
-problema considerato durissimo è stato quasi chiuso.
+sistema migliore era intorno al 26%; nel 2015 era sceso sotto il 4%, meglio
+del 5,1% sbagliato da una persona che si era allenata a fare esattamente lo
+stesso lavoro, cioè a mettere l'etichetta giusta sulle stesse
+fotografie[^annotatore]. In quattro anni un problema considerato durissimo è
+stato quasi chiuso.
 
 Dietro quel crollo non ci sono soltanto "più dati e computer più potenti". C'è
 una manciata di **architetture** (modi diversi di impilare gli strati di una
@@ -15,11 +17,14 @@ perché conoscerle significa capire come si progetta una rete profonda.
 
 ## LeNet-5: dove tutto comincia
 
-Molto prima di ImageNet, alla fine degli anni '90, **Yann LeCun** e colleghi
-ai Bell Labs progettavano reti per leggere i codici di avviamento postale e le
-cifre scritte a mano sugli assegni bancari. Il loro modello, **LeNet-5**
-{cite}`lecun1998gradient`, è la prima rete convoluzionale davvero
-funzionante su un compito reale.
+Molto prima di ImageNet, a partire dalla fine degli anni '80, **Yann LeCun**
+e colleghi ai Bell Labs progettavano reti per leggere i codici di avviamento
+postale e le cifre scritte a mano sugli assegni bancari. Una loro rete più
+semplice, costruita nel 1989, leggeva già i codici postali scritti a mano
+sulle buste della posta americana[^zip1989], ed è il primo caso in cui una
+rete di questo tipo ha davvero funzionato su un lavoro vero e non su un
+esercizio da laboratorio. **LeNet-5** {cite}`lecun1998gradient` è quella arrivata dopo, la
+più matura della serie, ed è la versione che si studia ancora oggi.
 
 `````{tab} Elementare
 Immagina una piccola lente che scorre sull'immagine di una cifra, un pezzetto
@@ -183,7 +188,13 @@ Restava un muro. Impilando strati oltre una certa soglia, le reti non solo
 smettevano di migliorare: peggioravano, e non per overfitting; sbagliavano di
 più anche sui dati di addestramento. Questo **problema di degradazione** viene
 risolto da **ResNet** {cite}`he2016deep` di He, Zhang, Ren e Sun, che porta la
-profondità a 152 strati e l'errore su ImageNet al 3,57%.
+profondità a 152 strati e vince l'edizione 2015 di ImageNet. Una singola
+ResNet-152 scende intorno al 4,5% di errore top-5; il record che chiude la
+competizione, il 3,57%, non lo fa una rete sola ma un gruppo di sei reti
+residue interrogate tutte insieme, che poi mettono ai voti le loro risposte
+(si chiama *ensemble*, ed è un trucco che funziona quasi sempre: reti
+addestrate in modo leggermente diverso sbagliano su immagini diverse, e la
+media degli errori è più bassa di ciascuno).
 
 ```{figure} ../figures/residuo-skip-connection.svg
 :name: fig-skip-connection
@@ -345,6 +356,36 @@ dentro la rete. I dati sono il carburante, ma la forma del motore decide
 quanto lontano si arriva, ed è una lezione che vale ancora oggi, dai
 Transformer in poi.
 
+`````{tab} Elementare
+```{admonition} Da ricordare
+:class: important
+- **LeNet-5** (1998): la piccola lente che scorre sull'immagine un pezzetto
+  alla volta, sempre la stessa in ogni punto, e impara a leggere le cifre
+  scritte a mano.
+- **AlexNet** (2012): la stessa idea cresciuta (molti più strati, molte più
+  lenti), addestrata su schede grafiche e con qualche trucco per non imparare
+  a memoria; nel 2012 vince ImageNet e convince tutti.
+- **NiN** (2013): una lente che guarda un solo punto ma legge tutte le
+  opinioni raccolte lì e le fonde; e un finale che, invece di un enorme
+  ufficio di neuroni, tiene una mappa per categoria e premia la più accesa.
+- **VGG** (2014): il principio del mattoncino Lego, tante lenti piccole e
+  uguali impilate una dopo l'altra al posto di poche lenti grandi.
+- **Inception/GoogLeNet** (2014): guardare lo stesso punto con lenti di misure
+  diverse nello stesso istante, tenendo basso il conto grazie alla lente che
+  guarda un punto solo.
+- **ResNet** (2015): la scorciatoia che porta l'input intatto fino all'uscita,
+  dove viene ri-sommato; al blocco resta da imparare solo la correzione, e
+  così si addestrano reti di centinaia di strati.
+- **DenseNet** (2017): non una scorciatoia ma tutte, come una chat di gruppo
+  in cui ogni strato ha sotto gli occhi l'intera conversazione (pochi pesi,
+  molta memoria).
+- Dopo l'artigianato, il metodo: EfficientNet fa crescere insieme profondità,
+  larghezza e dimensione delle immagini come gli ingredienti di una torta; e
+  la ricerca automatica delle architetture disegna la rete al posto nostro.
+```
+`````
+
+`````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
 - **LeNet-5** (1998): la convoluzione che legge le cifre (connettività locale,
@@ -363,3 +404,13 @@ Transformer in poi.
   crescere insieme profondità, larghezza e risoluzione; la *neural
   architecture search* automatizza il progetto.
 ```
+`````
+
+[^zip1989]: Il sistema riconosceva le cifre dei codici postali ritagliate
+    dalle buste dal servizio postale statunitense
+    {cite}`lecun1989backpropagation`.
+
+[^annotatore]: Il 5,1% è la prova di una persona sola, Andrej Karpathy, che
+    nel 2014 si addestrò al compito e si misurò contro le reti. Un
+    esperimento serio ma con un solo partecipante: va letto come ordine di
+    grandezza, non come misura della "prestazione umana" in generale.

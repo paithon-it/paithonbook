@@ -106,7 +106,8 @@ l'energia. Il rimedio più semplice è la **persistent contrastive divergence**
 passo, ma tenerne una che prosegue da dove era arrivata, così che nel corso
 dell'addestramento il «sogno» abbia il tempo di allontanarsi e visitare il
 paesaggio. È un'idea che ritroveremo intatta, con un serbatoio di campioni al
-posto della singola catena, negli EBM sulle immagini di quindici anni dopo.
+posto della singola catena, negli EBM sulle immagini di una decina d'anni
+dopo.
 
 Fu proprio la coppia RBM più contrastive divergence, impilata strato su
 strato, a rimettere in moto il deep learning a metà anni Duemila, quando

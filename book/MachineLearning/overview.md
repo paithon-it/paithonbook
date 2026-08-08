@@ -135,7 +135,9 @@ l'essenza) e i sistemi che rilevano anomalie in una transazione.
 **Apprendimento per rinforzo.** Non ci sono né etichette né dataset fisso: c'è
 un **agente** che compie azioni in un ambiente e riceve, di tanto in tanto, una
 **ricompensa**. L'agente impara per tentativi la strategia che massimizza la
-ricompensa nel tempo. È così che AlphaGo di DeepMind ha imparato il Go (2016), e
+ricompensa nel tempo. È un ingrediente essenziale di come AlphaGo di DeepMind
+ha imparato il Go (2016, in coppia con l'apprendimento supervisionato su
+partite umane; la versione Zero del 2017 imparò col solo rinforzo), e
 in fondo è proprio ciò che faceva il programma di dama di Samuel: giocare,
 vedere l'esito, e correggere la propria strategia. Vincere era la ricompensa.
 
@@ -278,10 +280,36 @@ spesso che quella baseline sia già la risposta.
 
 `````
 
+`````{tab} Elementare
+
+```{admonition} Da ricordare
+:class: important
+- Nel machine learning **non si scrivono le regole**: si danno migliaia di
+  esempi già etichettati (le email marchiate «spam» e «non spam») e le regole
+  emergono da sole dai dati.
+- Su **dati in tabella**, con pochi esempi o quando la decisione va spiegata a
+  un cliente o a un regolatore, i metodi di questo capitolo battono ancora
+  regolarmente il deep learning: fra le colonne di una tabella non c'è quella
+  vicinanza che le reti profonde sanno sfruttare fra pixel o fra parole.
+- Un programma **impara** (Mitchell) se, facendo pratica, diventa più bravo in
+  un compito e questo «più bravo» si può misurare: servono il **compito**,
+  l'**esperienza** e la **misura**.
+- Tre modi di imparare: con le **soluzioni a fianco** (supervisionato), senza
+  etichette, cercando una struttura nascosta (non supervisionato), per
+  tentativi e ricompense (per rinforzo).
+- Il flusso (dati, feature, modello, valutazione, deploy) è un **ciclo**: la
+  valutazione rimanda indietro, e si ricomincia il giro.
+```
+
+`````
+
+`````{tab} Superiore
+
 ```{admonition} Da ricordare
 :class: important
 - Nel machine learning **non si scrivono le regole**: si forniscono esempi e le
-  regole emergono dai dati (parametri $\theta$).
+  regole emergono dai dati, cioè si stimano i parametri $\theta$ minimizzando
+  una loss $\mathcal{L}$ sugli esempi osservati.
 - Su **dati tabulari**, con pochi esempi o quando serve spiegare la decisione,
   i metodi di questo capitolo battono ancora regolarmente il deep learning.
 - Un programma **impara** (Mitchell) se la sua performance $P$ su un compito $T$
@@ -291,3 +319,5 @@ spesso che quella baseline sia già la risposta.
 - Il flusso (dati, feature, modello, valutazione, deploy) è un **ciclo**: la
   valutazione rimanda indietro, e si itera.
 ```
+
+`````

@@ -193,7 +193,7 @@ CQL insegna esattamente questa prudenza alla rete dei voti. A ogni
 aggiornamento aggiunge due spinte: **abbassa** i voti delle azioni fuori dal
 dataset e **alza** quelli delle azioni davvero presenti. Il risultato è un
 sistema di voti *conservativo* (pessimista su tutto ciò che non ha visto) che
-per costruzione non sopravvaluta mai l'ignoto. Perde forse qualche occasione
+difficilmente si fa abbagliare dall'ignoto. Perde forse qualche occasione
 buona ma nascosta; in cambio non si getta mai in un burrone che non ha mai
 esplorato.
 
@@ -218,9 +218,12 @@ pratica una softmax sui $Q$ stessi, o l'uniforme), $\hat{\mathcal{B}}Q$ è il
 target di Bellman e $\alpha>0$ dosa la conservatività. Il primo termine tira
 *giù* i $Q$ delle azioni pescate da $\mu$ (tipicamente OOD), mentre il secondo
 li tira *su* sulle azioni realmente presenti in $\mathcal{D}$. Kumar e
-colleghi dimostrano che, per $\alpha$ abbastanza grande, la $Q$ così ottenuta
-è un **limite inferiore** del vero valore della policy: mai una sovrastima. La
-prudenza sull'ignoto diventa una garanzia formale, non un'euristica.
+colleghi dimostrano che, per $\alpha$ abbastanza grande e con $\mu$ agganciata
+alla policy che si sta valutando, il **valore atteso** delle azioni sotto la
+$Q$ così ottenuta minora in ogni stato il vero valore della policy: un limite
+inferiore *in valore*, non punto per punto (la singola stima $Q(s,a)$ può
+ancora eccedere quella vera). La prudenza sull'ignoto resta comunque una
+garanzia formale, non un'euristica.
 
 `````
 
@@ -228,10 +231,30 @@ prudenza sull'ignoto diventa una garanzia formale, non un'euristica.
 
 CQL valuta ancora le azioni OOD, salvo poi penalizzarle. Nel 2022 Ilya
 Kostrikov, Ashvin Nair e Sergey Levine portano l'idea alle estreme conseguenze
-con **IQL** (*Implicit Q-Learning*) {cite}`kostrikov2022offline`: costruire una
-policy migliore di $\pi_\beta$ *senza mai interrogare la $Q$ su un'azione che non
-sia nel dataset*. Se non guardi mai fuori, non puoi essere ingannato da ciò che
-c'è fuori.
+con **IQL** (*Implicit Q-Learning*) {cite}`kostrikov2022offline`: costruire
+una policy migliore di quella che ha raccolto i dati *senza mai interrogare la
+rete dei voti su un'azione che non sia nel dataset*. Se non guardi mai fuori,
+non puoi essere ingannato da ciò che c'è fuori.
+
+`````{tab} Elementare
+
+Come si fa a scegliere bene senza mai considerare piatti mai cucinati? IQL
+cambia la domanda che rivolge ai quaderni. Non chiede più «quanto varrebbe
+questa ricetta ipotetica?», che è la domanda da cui nascono i voti di
+fantasia: chiede «nelle serate come questa, quanto hanno reso le ricette
+*migliori* fra quelle davvero provate?». È come giudicare il potenziale di una
+cucina dai suoi piatti più riusciti, senza fantasticare su menù mai esistiti.
+
+Con quel metro («il meglio di ciò che è stato fatto qui») si rileggono poi le
+pagine del diario: le mosse che hanno reso più del solito nella loro
+situazione vengono imitate di più, le altre di meno. Dall'inizio alla fine,
+nessuna azione fuori dal diario viene mai nemmeno nominata: dove gli altri
+metodi mettono recinti o penalità, IQL toglie proprio l'occasione di
+sbagliare.
+
+`````
+
+`````{tab} Superiore
 
 Il trucco sta nel sostituire il $\max_{a'} Q(s',a')$ (che costringe a spaziare
 su tutte le azioni) con una funzione valore $V(s')$ stimata in modo obliquo,
@@ -257,7 +280,12 @@ verso l'alto della distribuzione dei $Q$ nel dataset. Il target di $\mathcal{L}_
 usa $V(s')$, **non** un massimo su azioni arbitrarie: ecco perché nessuna azione
 OOD viene mai valutata. La policy si estrae infine per *advantage-weighted
 regression*, imitando le azioni del dataset pesate per il loro vantaggio
-$Q(s,a)-V(s)$. Il nucleo della loss expectile è una manciata di righe in PyTorch:
+$Q(s,a)-V(s)$.
+
+`````
+
+Il nucleo di IQL, in PyTorch, è una perdita volutamente sbilanciata, che tira
+la stima del «meglio già fatto» verso l'alto dei voti realmente osservati:
 
 ```python
 import torch
@@ -349,6 +377,36 @@ CQL. Imparare da dati fissi, dalla terapia intensiva agli assistenti
 conversazionali, pone sempre la stessa domanda: quanto possiamo fidarci di ciò
 che non abbiamo mai visto?
 
+`````{tab} Elementare
+```{admonition} Da ricordare
+:class: important
+- Il **RL offline** impara da un archivio chiuso di esperienze già accadute,
+  come i quaderni di ricette della nonna: qualcun altro ha agito e ha lasciato
+  scritto com'è andata. Nessun assaggio nuovo, nessuna prova sul campo.
+- Il metodo classico, applicato così com'è, fallisce quasi sempre. L'agente
+  cerca sempre il voto più alto, e i voti più alti finiscono per capitare
+  proprio sulle mosse mai provate, quelle su cui il modello può solo tirare a
+  indovinare (il risotto al peperoncino da dieci e lode). Nessuna prova può
+  smentire quel voto gonfiato, che anzi contagia le stime vicine.
+- **BCQ** costruisce un recinto: valuta solo le mosse plausibili secondo
+  l'archivio, generate imitando chi i dati li ha raccolti. **CQL** non vieta
+  nulla, insegna prudenza: abbassa i voti di ciò che non è mai stato provato e
+  alza quelli di ciò che è documentato, così l'ignoto non batte mai sulla
+  carta il conosciuto. **IQL** toglie proprio l'occasione di sbagliare: chiede
+  solo quanto hanno reso, in situazioni come questa, le mosse migliori fra
+  quelle davvero fatte, e non nomina mai un'azione fuori dal diario.
+- Il **Decision Transformer** cambia domanda: tratta la partita come una frase
+  da completare e si allena sui diari a predire la mossa successiva. Gli si
+  dice anche quanto punteggio si vuole ancora totalizzare, e lui produce le
+  mosse che di solito portano lì. Nessun voto da stimare, quindi nessun voto
+  gonfiato.
+- Anche le preferenze umane con cui si allineano i modelli linguistici sono un
+  archivio chiuso: stesso problema, e stesso rimedio, cioè restare vicini a
+  ciò che l'archivio contiene davvero.
+```
+`````
+
+`````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
 - Il **RL offline** (batch RL) impara da un dataset fisso di transizioni
@@ -371,3 +429,4 @@ che non abbiamo mai visto?
   problema, stessi rimedi (restare vicini alla distribuzione dei dati
   {cite}`ouyang2022training`).
 ```
+`````

@@ -46,7 +46,7 @@ J(\theta) = \mathbb{E}_{\tau \sim \pi_\theta}\big[ R(\tau) \big],
 $$
 
 dove $\tau=(s_0,a_0,r_0,s_1,\dots)$ è una *traiettoria* generata seguendo la
-policy, $r_t$ è la ricompensa al passo $t$ e $\gamma\in[0,1]$ è il fattore di
+policy, $r_t$ è la ricompensa al passo $t$ e $\gamma\in[0,1)$ è il fattore di
 sconto, che pesa meno il futuro lontano. Rispetto ai metodi basati sul valore,
 ottimizzare $\pi_\theta$ direttamente gestisce con naturalezza gli spazi di
 azioni continui e le policy stocastiche.
@@ -91,7 +91,12 @@ $$
 \theta \leftarrow \theta + \alpha\, \nabla_\theta \log \pi_\theta(a_t \mid s_t)\, G_t ,
 $$
 
-con $\alpha$ il passo di apprendimento. Chi ha letto la sezione sui bandit
+con $\alpha$ il passo di apprendimento. Un'avvertenza di rigore: il gradiente
+esatto dell'obiettivo scontato conterrebbe un fattore $\gamma^{\,t}$ davanti a
+ciascun addendo della somma; la prassi, che seguiamo qui, lo omette, ottenendo
+una direzione leggermente distorta rispetto a $\nabla_\theta J(\theta)$ ma che
+non soffoca il segnale dei passi lontani nel tempo. Chi ha letto la sezione
+sui bandit
 riconosce la struttura: il *bandit a gradiente* era esattamente questo, in un
 mondo con un solo stato, dove la softmax sulle preferenze $H(a)$ faceva le
 veci di $\pi_\theta(a\mid s)$. Anche il rimedio che segue è già comparso là.
@@ -141,10 +146,13 @@ $$
 
 $A_t$ misura di quanto l'azione compiuta ha superato le *aspettative*
 codificate dal critico: è positivo se l'esito è stato migliore del previsto. La
-regola diventa $\nabla_\theta \log\pi_\theta(a_t\mid s_t)\,A_t$, con varianza
-molto più bassa perché $V_\phi(s_t)$ funge da *baseline*. Attore e critico si
-addestrano insieme: il critico affina le sue stime, l'attore le usa come
-segnale.
+regola diventa $\nabla_\theta \log\pi_\theta(a_t\mid s_t)\,A_t$, e la varianza
+scende per due vie che conviene distinguere. Sottrarre la *baseline*
+$V_\phi(s_t)$ non distorce il gradiente; sostituire il ritorno $G_t$ con
+$r_t+\gamma V_\phi(s_{t+1})$ è invece *bootstrapping*, e rende la stima
+distorta finché il critico è impreciso. Si scambia varianza con *bias*: è il
+compromesso al cuore dell'actor-critic. Attore e critico si addestrano
+insieme: il critico affina le sue stime, l'attore le usa come segnale.
 
 `````
 
@@ -225,20 +233,21 @@ che la guidano, e le partite che ne escono diventano il materiale con cui
 quelle reti migliorano.
 ```
 
-Il ciclo di {numref}`fig-alphago` è il motivo per cui AlphaZero poté fare a
-meno delle partite umane. Se la ricerca produce mosse migliori di quelle che
+Il ciclo di {numref}`fig-alphago` è il motivo per cui i suoi successori
+poterono fare a meno delle partite umane. Se la ricerca produce mosse migliori di quelle che
 le reti sanno proporre, allora il sistema ha una fonte di supervisione interna:
 non gli serve un maestro, gli basta giocare contro sé stesso e imparare da
 dove la ricerca lo ha portato. Le reti erano state addestrate prima su partite umane,
 poi affinate con RL giocando contro se stesse.
 
-Un anno dopo, **AlphaZero** {cite}`silver2017mastering` elimina persino le
-partite
-umane: parte dalle sole regole del gioco e impara *tabula rasa*, dal nulla,
-soltanto affrontando copie di sé. La stessa architettura padroneggia Go,
-scacchi e shogi, superando i migliori programmi specializzati. È la
-dimostrazione più limpida di cosa nasce dall'unione di RL, ricerca ad albero e
-reti profonde.
+Un anno dopo, **AlphaGo Zero** {cite}`silver2017mastering` elimina persino le
+partite umane: parte dalle sole regole del Go e impara *tabula rasa*, dal
+nulla, soltanto affrontando copie di sé, fino a battere nettamente la versione
+che aveva sconfitto Lee Sedol. Nel 2018 **AlphaZero** {cite}`silver2018general`
+generalizza la ricetta: la stessa architettura, senza ritocchi per gioco,
+padroneggia Go, scacchi e shogi, superando i migliori programmi
+specializzati. È la dimostrazione più limpida di cosa nasce dall'unione di RL,
+ricerca ad albero e reti profonde.
 
 ## Un ultimo salto: allineare i modelli linguistici
 
@@ -268,6 +277,30 @@ verso ciò che gli umani apprezzano. La stessa idea che ha portato una macchina
 a giocare la mossa 37 aiuta oggi un assistente a rispondere in modo utile e
 onesto.
 
+`````{tab} Elementare
+```{admonition} Da ricordare
+:class: important
+- I metodi a gradiente di policy imparano **direttamente a decidere**: invece
+  di dare un voto a ogni mossa e poi scegliere la migliore, regolano la
+  *tendenza* dell'agente, come si allena un cane rendendo più probabili i
+  comportamenti che hanno fruttato un premio. È la via naturale quando le
+  mosse possibili non sono un menu di poche voci.
+- **REINFORCE** è il "prova e ricorda": si gioca una partita intera e, se è
+  andata bene, si rende più probabile tutto ciò che si è fatto. Semplice, ma
+  lento e altalenante, perché il giudizio arriva solo alla fine.
+- **Actor-Critic** affianca al giocatore un allenatore a bordo campo che
+  commenta ogni mossa ("meglio del previsto", "peggio del previsto"):
+  l'apprendimento diventa più rapido e più stabile. **A3C** fa giocare molti
+  attori in parallelo; **PPO** cambia la strategia solo di poco per volta
+  (passi piccoli e prudenti, ma tanti) ed è oggi lo standard.
+- **AlphaGo** e **AlphaZero** uniscono la strategia, la stima di chi sta
+  vincendo e l'esplorazione ad albero delle mosse; con l'**RLHF** lo stesso
+  meccanismo, guidato dalle preferenze delle persone, allinea i modelli
+  linguistici.
+```
+`````
+
+`````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
 - I metodi a gradiente di policy apprendono **direttamente**
@@ -280,3 +313,4 @@ onesto.
 - **AlphaGo/AlphaZero** uniscono policy, valore e ricerca ad albero; **RLHF**
   applica PPO all'allineamento degli LLM.
 ```
+`````

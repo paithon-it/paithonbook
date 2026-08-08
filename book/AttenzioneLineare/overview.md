@@ -2,7 +2,8 @@
 
 Nel 2020, mentre il mondo dell'intelligenza artificiale celebrava i
 Transformer come la rottura definitiva con il passato ricorrente, quattro
-ricercatori (Katharopoulos, Vyas, Pappas e Fleuret, tra l'Idiap e l'EPFL)
+ricercatori (Katharopoulos, Vyas, Pappas e Fleuret, tra l'Idiap, l'EPFL e la
+University of Washington)
 pubblicano un articolo dal titolo che suona come una provocazione:
 *Transformers are RNNs* {cite}`katharopoulos2020transformers`. La tesi è tanto
 semplice quanto spiazzante. Togliete al meccanismo di attenzione la sua
@@ -18,7 +19,7 @@ sequenza, perché ogni parola guarda tutte le altre, e in generazione una
 cui sbattono i contesti lunghi. La provocazione di Katharopoulos indica una
 via per aggirarlo: se l'attenzione, spogliata della softmax, è una RNN, allora
 possiamo riscriverla come una ricorrenza a **stato di dimensione fissa**
-(costo lineare in addestramento, memoria costante in inferenza) senza
+(costo lineare nella lunghezza, memoria costante in generazione) senza
 rinunciare del tutto a ciò che l'aveva resa vincente.
 
 ```{figure} ../figures/kv-cache-generazione.svg
@@ -67,7 +68,8 @@ passo $t$ dipende dal passo $t-1$: niente parallelismo lungo la sequenza.
 
 L'attenzione lineare vive nel punto d'incontro: espone **due forme
 equivalenti** dello stesso calcolo. Una forma *parallela*, per addestrare
-sull'intera sequenza sfruttando le GPU; e una forma *ricorrente*, per generare
+sull'intera sequenza sfruttando le GPU (in pratica, come vedremo, spezzata a
+blocchi per tenere il costo lineare); e una forma *ricorrente*, per generare
 a costo e memoria costanti per token: nessuna *cache* che si gonfia. È la
 proprietà che inseguono, con ingredienti diversi, tutte le architetture di
 questi due capitoli.
@@ -81,7 +83,7 @@ tutti questi modelli sono **reti ricorrenti lineari** con uno stato di dimension
 fissa, aggiornato a ogni token da una ricorrenza della forma
 
 $$
-S_t = (\text{transizione}_t)\, S_{t-1} + (\text{scrittura}_t).
+S_t = S_{t-1}\,(\text{transizione}_t) + (\text{scrittura}_t).
 $$
 
 Lo stato $S_t$ è una piccola matrice (una memoria che associa chiavi a valori)
@@ -109,6 +111,34 @@ stesso principio. Chiude un breve **notebook** in cui verifichiamo con NumPy,
 in poche righe, che la forma parallela e quella ricorrente calcolano davvero
 la stessa funzione.
 
+`````{tab} Elementare
+
+```{admonition} Da ricordare
+:class: important
+- Tolta la softmax, quella normalizzazione che pesa ogni parola contro tutte le
+  altre, il Transformer si riscopre una **rete ricorrente**
+  {cite}`katharopoulos2020transformers`: legge una parola alla volta portandosi
+  dietro un riassunto di dimensione sempre uguale.
+- È la via per aggirare i due conti che i Transformer pagano sui testi lunghi:
+  il lavoro che cresce a valanga con la lunghezza, e la memoria di appoggio che
+  si allunga a ogni parola generata.
+- Il compromesso che tutta la famiglia insegue: la **velocità di addestramento**
+  dei Transformer *e* il **basso costo in lettura** delle vecchie reti
+  ricorrenti, perché lo stesso calcolo si può fare in due modi equivalenti,
+  tutto insieme oppure una parola alla volta.
+- Tesi unificante dei due capitoli: sono tutti modelli che tengono un riassunto
+  di taglia fissa e lo aggiornano a ogni parola; a cambiare, dall'uno all'altro,
+  è **come si aggiorna quel riassunto**: chi si limita ad aggiungere, chi impara
+  a dimenticare, chi corregge ciò che è già scritto.
+- Il percorso: come l'attenzione diventa economica, poi come si scrive meglio nel
+  riassunto (dimenticare e correggere), infine le architetture concrete (RetNet,
+  RWKV, xLSTM).
+```
+
+`````
+
+`````{tab} Superiore
+
 ```{admonition} Da ricordare
 :class: important
 - Togliendo la softmax, l'attenzione diventa una **rete ricorrente** a stato
@@ -118,9 +148,12 @@ la stessa funzione.
   i Transformer *e* **inferenza a memoria costante** come le RNN, grazie a due
   forme equivalenti (parallela e ricorrente) dello stesso calcolo.
 - Tesi unificante dei due capitoli: sono tutte **RNN lineari** con stato di
-  dimensione fissa, $S_t = (\text{transizione}_t)\,S_{t-1} + (\text{scrittura}_t)$;
+  dimensione fissa,
+  $S_t = S_{t-1}\,(\text{transizione}_t) + (\text{scrittura}_t)$;
   cambia solo la **transizione di stato**.
 - Il percorso: dall'attenzione lineare (kernel e ricorrenza) → a come scrivere
   meglio nella memoria (gate e delta rule) → alle architetture concrete (RetNet,
   RWKV, xLSTM).
 ```
+
+`````

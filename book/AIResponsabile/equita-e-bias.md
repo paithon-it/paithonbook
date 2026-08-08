@@ -194,24 +194,31 @@ di COMPAS invocava a propria difesa.
 
 ## Il risultato di impossibilità
 
-Arriviamo al nodo. Le tre richieste appena viste non sono capricci in
-conflitto per caso: sono **matematicamente incompatibili** ogni volta che i
-gruppi partono da tassi di base diversi. Lo hanno dimostrato, in modo
+Arriviamo al nodo. Le richieste appena viste non entrano in conflitto per
+caso: sono **matematicamente incompatibili** ogni volta che i gruppi partono
+da tassi di base diversi. Lo hanno dimostrato, in modo
 indipendente e quasi simultaneo, Alexandra Chouldechova
 {cite}`chouldechova2017fair` e (con un teorema gemello sui punteggi di
-rischio) Jon Kleinberg, Sendhil Mullainathan e Manish Raghavan (2016).
+rischio) Jon Kleinberg, Sendhil Mullainathan e Manish Raghavan
+{cite}`kleinberg2017inherent`.
 
 `````{tab} Elementare
 
 Immagina due gruppi in cui l'esito che vogliamo prevedere è, nella realtà, più
 frequente in uno che nell'altro: non per colpa di nessuno, semplicemente perché
-i *tassi di base* differiscono. Ora pretendi due cose ragionevoli insieme. Uno:
+i *tassi di base* differiscono. Ora pretendi tre cose ragionevoli insieme. Uno:
 che un punteggio «alto» significhi lo stesso rischio reale per tutti
 (calibrazione). Due: che il modello generi la stessa quota di falsi allarmi in
-ogni gruppo (parte dell'equalized odds).
+ogni gruppo. Tre: che in ogni gruppo sfugga la stessa quota di chi meritava il
+sì (i mancati allarmi). La seconda e la terza richiesta sono le due metà
+dell'equalized odds vista sopra, la richiesta di sbagliare allo stesso modo su
+tutti, qui guardata da vicino nei suoi due tipi di errore.
 
-Il teorema dice: non puoi. Se i tassi di base sono diversi, garantire la prima
-costringe la seconda a saltare, e viceversa. Non è un bug da correggere con
+Il teorema dice: non puoi. Se i tassi di base sono diversi, queste tre garanzie
+non stanno insieme: qualunque due tu scelga di assicurare, la terza salta. E la
+richiesta rimasta fuori, la stessa quota di sì in ogni gruppo (parità
+demografica), non si salva da sé: con tassi di base diversi litiga a sua volta
+con entrambe le altre. Non è un bug da correggere con
 codice migliore o più dati: è un vincolo dell'aritmetica, come chiedere a un
 rettangolo di avere area 12 e perimetro 10 con lati interi (semplicemente non
 esiste). È il cuore della disputa su COMPAS: l'inchiesta di ProPublica
@@ -255,10 +262,23 @@ $$
 Stesso valore predittivo, stesso tasso di veri positivi, eppure il tasso di
 falsi positivi è tre volte più alto nel gruppo con prevalenza maggiore:
 $0{,}30$ contro $0{,}10$. È esattamente la forma del caso COMPAS
-{cite}`angwin2016machine`. Kleinberg, Mullainathan e Raghavan (2016) provano
-la versione per i punteggi continui: calibrazione, bilanciamento della classe
+{cite}`angwin2016machine`. Kleinberg, Mullainathan e Raghavan
+{cite}`kleinberg2017inherent` provano la versione per i punteggi continui: calibrazione, bilanciamento della classe
 positiva e bilanciamento della classe negativa coesistono solo nei casi
 degeneri (prevalenze identiche o predizione perfetta).
+
+Una precisazione sulla forma del conflitto. Il «due su tre» appena visto vale
+per la terna $\{\text{VPP},\ \text{FNR},\ \text{FPR}\}$, cioè per la
+calibrazione affiancata alle *due metà* dell'equalized odds. Per la terna dei
+criteri statistici (*independence*, *separation*, *sufficiency*) il risultato è
+più severo, come riassumono Barocas, Hardt e Narayanan in *Fairness and Machine
+Learning* (2019): sono incompatibili già **a due a due**, fuori dai casi
+degeneri. Independence e separation coesistono solo se $A \perp Y$ oppure
+$\hat{Y} \perp Y$; independence e sufficiency solo se $A \perp Y$; separation e
+sufficiency solo se $A \perp Y$ o la predizione è perfetta. Con tassi di base
+diversi, cioè con $A \not\perp Y$, nessuna coppia si salva: le sole vie
+d'uscita sono le due degeneri, un modello che non predice nulla
+($\hat{Y} \perp Y$) o un modello che non sbaglia mai.
 
 `````
 
@@ -287,8 +307,9 @@ che qualcuno considera essa stessa una forma di disparità di trattamento.
 `````{tab} Superiore
 
 - **Pre-processing.** Si trasforma il dataset prima dell'addestramento:
-  *reweighting* (pesi $w_i$ per esempio, calcolati così da rendere $\hat{Y}$
-  indipendente da $A$ nel campione pesato), ricampionamento dei gruppi
+  *reweighting* (pesi $w_i$ per esempio, calcolati così da rendere $Y$
+  indipendente da $A$ nel campione pesato; l'effetto sperato a valle è un
+  classificatore più vicino alla parità demografica), ricampionamento dei gruppi
   sotto-rappresentati, o rimozione/decorrelazione delle feature che fungono da
   *proxy* dell'attributo protetto. Vantaggio: agnostico al modello a valle.
 - **In-processing.** Si modifica l'obiettivo di addestramento aggiungendo un
@@ -356,12 +377,34 @@ tale e quale.
 
 ## Il conflitto, coi numeri
 
-Chiudiamo il cerchio con un esperimento riproducibile. Costruiamo un punteggio
-di rischio **calibrato per costruzione**, l'etichetta reale è estratta con
-probabilità pari al punteggio, $P(Y=1\mid S=s)=s$, identica in entrambi i
-gruppi, ma con **tassi di base diversi**, ottenuti da distribuzioni di
-punteggio diverse. Poi applichiamo la stessa soglia a tutti e leggiamo i tassi
-gruppo per gruppo.
+Chiudiamo il cerchio con un esperimento riproducibile. Inventiamo due gruppi
+di persone e diamo a ciascuna un punteggio di rischio onesto **per
+costruzione**: se il punteggio dice $0{,}7$, l'esito accade davvero sette
+volte su dieci, in entrambi i gruppi allo stesso modo (è la calibrazione di
+prima). L'unica differenza è che l'esito è complessivamente più frequente in
+un gruppo che nell'altro: i tassi di base diversi da cui parte il teorema. Poi
+applichiamo la stessa soglia a tutti e contiamo gli errori gruppo per gruppo.
+
+`````{tab} Elementare
+
+Nel codice qui sotto il punteggio fa da dado truccato: se una persona ha
+punteggio $0{,}7$, tiriamo un dado che dice sì sette volte su dieci, e quello
+che esce diventa il suo esito reale. Il dado funziona nello stesso modo per
+tutti; a cambiare fra i due gruppi è soltanto quanti punteggi alti girano.
+
+`````
+
+`````{tab} Superiore
+
+L'etichetta reale è estratta con probabilità pari al punteggio,
+$P(Y=1\mid S=s)=s$, identica nei due gruppi: il punteggio è calibrato per
+costruzione. A differire è la sola distribuzione marginale di $S$ (due Beta di
+media $0{,}50$ e $0{,}33$), e con essa la prevalenza $p=\mathbb{E}[S]$.
+
+`````
+
+Il codice si può anche solo leggere: i commenti
+dicono cosa fa ogni riga, e il verdetto sta nei numeri stampati alla fine.
 
 ```python
 import numpy as np
@@ -371,7 +414,7 @@ rng = np.random.default_rng(0)
 def genera_gruppo(n, alpha, beta):
     # Il punteggio è calibrato per costruzione: P(Y=1 | S=s) = s
     s = rng.beta(alpha, beta, size=n)          # punteggio in [0,1]
-    y = (rng.random(n) < s).astype(int)        # etichetta vera ~ Bernoulli(s)
+    y = (rng.random(n) < s).astype(int)        # etichetta vera: 1 con probabilità s
     return s, y
 
 # Gruppo A: rischio di base più alto; Gruppo B: più basso
@@ -414,16 +457,23 @@ Calibrazione (bin di score -> frazione reale di positivi):
   Gruppo B: [0.0,0.2)->0.13  [0.2,0.4)->0.29  [0.4,0.6)->0.48  [0.6,0.8)->0.67  [0.8,1.0)->0.81
 ```
 
+Le colonne dicono, per ciascun gruppo: quanto è frequente davvero l'esito
+(`base`), a quante persone il modello dice sì (`selection`), la quota di sì
+giusti fra chi meritava il sì (`TPR`), la quota di falsi allarmi (`FPR`) e
+quanti dei sì del modello erano giusti (`VPP`).
+
 Le due curve di calibrazione sono **essenzialmente identiche**: in ogni fascia
 di punteggio, la frazione reale di positivi è pressoché la stessa fra i gruppi
 (e coincide con il punteggio medio della fascia, come impone la calibrazione
-per costruzione). La calibrazione, cioè, *vale*. Eppure il tasso di falsi
-positivi è tre volte più alto nel Gruppo A ($0{,}346$ contro $0{,}110$) e
-anche il TPR diverge nettamente ($0{,}658$ contro $0{,}348$): l'equalized odds
-è platealmente violata. Non c'è nessun errore nel codice: è l'impossibilità
+per costruzione). La calibrazione, cioè, *vale*. Eppure la quota di falsi
+allarmi è tre volte più alta nel Gruppo A ($0{,}346$ contro $0{,}110$), e anche
+la quota di sì giusti fra chi meritava il sì (il TPR) diverge nettamente
+($0{,}658$ contro $0{,}348$). Le due metà dell'equalized odds, cioè della
+richiesta di sbagliare allo stesso modo in tutti i gruppi, saltano entrambe.
+Non c'è nessun errore nel codice: è l'impossibilità
 della sezione precedente che si materializza in numeri. Cambiare la soglia
-sposta i tassi, ma non li può allineare *tutti* insieme finché le prevalenze
-restano $0{,}50$ e $0{,}33$.
+sposta i tassi, ma non li può allineare *tutti* insieme finché le frequenze di
+base restano $0{,}50$ e $0{,}33$.
 
 ## Nessuna metrica è «quella giusta»
 

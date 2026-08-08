@@ -12,8 +12,8 @@ andava a perdere i soldi presi in prestito dai parenti
 
 L'idea è tutta lì, e serve esattamente al punto in cui la sezione precedente
 si è fermata. La *value iteration* sa calcolare i valori, ma pretende la mappa
-dell'ambiente: le probabilità di transizione $P$ e le ricompense $R$. Se la
-mappa non c'è, resta una via che non chiede nulla a nessuno: far vivere
+dell'ambiente: le probabilità di transizione $P$ e le ricompense attese $r$.
+Se la mappa non c'è, resta una via che non chiede nulla a nessuno: far vivere
 all'agente molte partite intere, guardare come sono andate, e fare la media.
 
 ## Giocare, e poi fare la media
@@ -304,10 +304,11 @@ Il compromesso fra i due è una lezione statistica che vale oltre il RL.
 L'ordinario è **non distorto** ma la sua varianza può essere illimitata,
 perché un rapporto può valere dieci o mille e moltiplicare un singolo ritorno
 per quella cifra. Il pesato è **distorto** (la distorsione svanisce al crescere
-dei campioni) ma il peso di un singolo ritorno non supera mai $1$, e la sua
-varianza converge a zero anche quando quella dei rapporti è infinita, un
-risultato di Precup, Sutton e Dasgupta. In pratica si preferisce quasi sempre
-il pesato {cite}`sutton2018reinforcement`.
+dei campioni) ma il peso di un singolo ritorno non supera mai $1$ e, purché i
+ritorni siano limitati, la sua varianza converge a zero anche quando quella
+dei rapporti è infinita: un risultato del 2001 di Precup, Sutton e Dasgupta.
+In pratica si preferisce quasi sempre il pesato
+{cite}`sutton2018reinforcement`.
 
 `````
 
@@ -331,8 +332,8 @@ l'off-policy su traiettorie lunghe è fragile.
 :class: seealso
 Il rapporto $\rho$ non resta in questa sezione.
 
-- Nel **PPO** è il rapporto $\rho_t = \pi_\theta(a_t\mid s_t) /
-  \pi_{\theta_\text{old}}(a_t\mid s_t)$ fra la policy nuova e quella che ha
+- Nel **PPO** è il rapporto $\rho_t = \pi_\theta(A_t\mid S_t) /
+  \pi_{\theta_\text{old}}(A_t\mid S_t)$ fra la policy nuova e quella che ha
   raccolto i dati: lo stesso oggetto, troncato a un passo. Il *clipping* di PPO
   è, letteralmente, un tetto messo a quel peso perché non esploda.
 - Nell'**offline RL** l'archivio è tutto ciò che c'è, la policy di
@@ -379,6 +380,48 @@ vuota: i metodi a $n$ passi e le tracce di eleggibilità la riempiono con
 continuità, dal TD puro al Monte Carlo puro, regolando una sola manopola. Ne
 diremo alla fine della prossima sezione.
 
+`````{tab} Elementare
+
+```{admonition} Da ricordare
+:class: important
+- Un metodo **Monte Carlo** stima quanto vale una situazione nel modo più
+  diretto che ci sia: si giocano molte partite intere, e per ogni situazione
+  attraversata ci si segna sul quaderno quanto si è raccolto **da lì in
+  avanti**. Il valore è la media di quelle righe. Nessuna mappa dell'ambiente,
+  solo partite giocate fino in fondo.
+- Rispetto al metodo della sezione precedente cambia **che cosa bisogna
+  sapere**: quello guarda un passo avanti in tutte le direzioni possibili e
+  pretende la mappa dell'ambiente, Monte Carlo guarda in una direzione sola ma
+  fino in fondo e non pretende niente. Basta saper giocare, non saper
+  descrivere il gioco. E se interessano poche situazioni, si giocano partite
+  solo da quelle, senza passare in rassegna tutte le altre.
+- Ogni situazione si giudica per conto suo, su quello che è successo davvero:
+  un voto sbagliato non contagia le caselle vicine, perché nessuno lo usa per
+  calcolare il proprio. Il prezzo sono i due difetti dichiarati fin dall'inizio:
+  i numeri ballano parecchio (una partita sola è una somma di tanti colpi di
+  fortuna) e non si scrive niente finché la partita non è finita.
+- Per **migliorare** la strategia, e non solo misurarla, l'agente deve
+  continuare a giocare mosse che non crede le migliori: se non le prova più,
+  quella colonna del quaderno resta per sempre al voto sbagliato del primo
+  tentativo.
+- Si può giudicare una strategia con partite giocate da un'altra, purché le si
+  **pesi** invece di contarle tutte uguali: una partita che la strategia da
+  giudicare avrebbe giocato spesso e l'altra di rado conta molto, una che la
+  prima non farebbe mai non conta niente. Il peso è solo il rapporto fra quanto
+  erano probabili quelle mosse per l'una e per l'altra, e per questo non serve
+  sapere nulla dell'ambiente. Serve però che l'archivio contenga tutto ciò che
+  la strategia da giudicare potrebbe fare.
+- I pesi però sono fragili: bastano poche mosse perché diventino minuscoli o
+  enormi (tre mosse tirate a sorte e indovinate pesano già otto volte tanto, e
+  una sola mossa che la strategia da giudicare non farebbe mai manda a zero
+  tutto il resto della partita). Giudicare le partite di un altro funziona
+  bene sulle partite corte, e diventa traballante su quelle lunghe.
+```
+
+`````
+
+`````{tab} Superiore
+
 ```{admonition} Da ricordare
 :class: important
 - Un metodo **Monte Carlo** stima il valore di uno stato come **media dei
@@ -399,3 +442,5 @@ diremo alla fine della prossima sezione.
 - La variante **pesata** dell'importance sampling è distorta ma molto più
   stabile di quella ordinaria, e in pratica si preferisce.
 ```
+
+`````

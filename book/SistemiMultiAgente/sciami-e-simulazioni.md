@@ -753,6 +753,76 @@ sempre o si fossilizza sul primo tentativo. E vale per la squadra di agenti che
 avete in mente di costruire: la domanda utile non è quale modello mettere dentro
 ciascuno, ma che cosa può scrivere ciascuno, a chi, quando, e chi decide dopo.
 
+`````{tab} Elementare
+
+```{admonition} Da ricordare
+:class: important
+- Prima dei modelli di linguaggio il multi-agente era soprattutto
+  **ottimizzazione**: tante unità quasi banali, nessuno che comanda, e una
+  soluzione che emerge dall'interazione. Il capostipite è l'**ottimizzazione a
+  colonia di formiche** {cite}`dorigo1996ant`, nata al Politecnico di Milano fra
+  il 1991 e il 1992 (un articolo di convegno e la tesi di dottorato di Marco
+  Dorigo). Fra due strade verso lo stesso cibo, quella corta si percorre più
+  spesso e accumula più traccia: è il tempo a fare la misura, senza che nessuna
+  formica confronti niente. E si lascia traccia in quantità proporzionale a
+  quanto è buono il giro appena finito, così la traccia registra il merito e non
+  il traffico.
+- L'**evaporazione è l'esplorazione**. Se ogni sera metà della traccia se ne va
+  da sola, una strada che continua a essere usata non se ne accorge e una strada
+  abbandonata sparisce in una settimana; quanto lentamente evapora dice per
+  quanti giri il gruppo ricorda. Senza evaporazione la prima strada trovata per
+  caso resta la più marcata per sempre e la colonia si fossilizza.
+- La memoria del gruppo non sta negli individui, sta nell'**ambiente**: è la
+  **stigmergia**, cioè la lavagna condivisa della sezione sulle topologie. Una
+  squadra di agenti che si coordina lasciando file in una cartella comune fa
+  esattamente questo, con gli stessi problemi (chi scrive mentre un altro
+  scrive, chi ha messo lì una certa cosa, e che cosa fa dimenticare allo stato
+  comune ciò che non serve più).
+- Nello **sciame di particelle** {cite}`kennedy1995particle`, nato togliendo
+  pezzi a una simulazione di stormo {cite}`reynolds1987flocks`, ognuno cerca il
+  punto più basso della valle nella nebbia tirando un po' verso il proprio
+  ricordo, un po' verso il punto migliore che ha trovato il gruppo, e un po'
+  dritto per dove stava già andando. È quest'ultima spinta a far superare il
+  punto migliore conosciuto e a guardare appena più in là: senza, il metodo
+  smette di trovare i minimi buoni.
+- Gli **algoritmi genetici** {cite}`holland1975adaptation` cambiano verbo: gli
+  individui non si spostano, si riproducono (selezione, incrocio, mutazione, più
+  il migliore che passa sempre alla generazione dopo). L'incrocio è una
+  scommessa dichiarata, che una buona soluzione sia fatta di buoni pezzi
+  staccabili, e cade quando ogni scelta dipende troppo da tutte le altre: **come
+  si scrive la soluzione è il progetto** dell'algoritmo. In cambio a questi
+  algoritmi non serve nessuna pendenza da seguire: basta saper mescolare due
+  soluzioni e cambiarne un pezzo a caso. Va bene quindi anche una soluzione che
+  è un elenco di sì e no, come gli oggetti da mettere nello zaino, o un ordine,
+  come la sequenza in cui visitare venti città. E siccome in gara non c'è un
+  candidato solo ma una popolazione intera, sparsa, è più probabile che qualcuno
+  sia partito vicino alla risposta giusta. Sullo zaino a venti oggetti trova la
+  risposta esatta otto volte su dieci provando meno di mezzo per cento delle
+  combinazioni, e non dice mai quanto gli è mancato.
+- Questi metodi **non sentono la pendenza**: provano un punto e misurano la
+  quota. Servono dove la pendenza non c'è, non si calcola o non informa
+  (terreni pieni di buche, misure rumorose, scelte in cui non ci si può
+  spostare di un millimetro, come l'ordine in cui visitare venti città), e si
+  pagano in tentativi: sulla valle piena di conche dell'esempio lo sciame trova
+  il fondo vero in $277$ prove su $300$ con $1830$ tentativi, la discesa del
+  gradiente una volta su trecento. Quando le variabili sono tantissime il
+  rapporto si rovescia, e non sono un'alternativa generale.
+- Nelle **società simulate** {cite}`park2023generative` il pezzo da capire è
+  come si scelgono i ricordi da rimettere davanti all'agente: quanto è recente,
+  quanto è importante, quanto c'entra con quello che sta facendo, e i tre
+  criteri vanno messi **sulla stessa scala** prima di sommarli, altrimenti vince
+  sempre quello con i numeri più grandi. Le riflessioni scattano per accumulo di
+  cose importanti, non a orologio, e rientrano in memoria. Ma quegli agenti
+  producono comportamenti **credibili** (*believable*), che è ciò che un modello
+  di linguaggio sa fare per costruzione e non una scoperta sul comportamento
+  umano: valgono come **generatore di ipotesi**, non come **prova**, perché sono
+  convincenti proprio in quanto il modello è addestrato a convincere.
+```
+
+`````
+
+`````{tab} Superiore
+
 ```{admonition} Da ricordare
 :class: important
 - Prima degli LLM il multi-agente era soprattutto **ottimizzazione**: molte
@@ -807,3 +877,5 @@ ciascuno, ma che cosa può scrivere ciascuno, a chi, quando, e chi decide dopo.
   ipotesi**, prive di valore come **prova**, perché sono convincenti proprio in
   quanto il modello è addestrato a convincere.
 ```
+
+`````

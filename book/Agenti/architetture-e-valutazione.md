@@ -281,17 +281,22 @@ confonde questi casi, e per capire davvero *dove* un agente rompe serve la
 traccia.
 
 Sotto tutto c'è la fragilità dei **compiti lunghi**, già incontrata:
-l'accumulo di errori. Se a ogni passo la probabilità di sbagliare la mossa è
-$p$, la probabilità di attraversare $n$ passi senza incidenti è
+l'accumulo di errori. Un modellino illustrativo: se a ogni passo la
+probabilità di sbagliare la mossa è $p$, e i passi sono indipendenti, la
+probabilità di una traiettoria di $n$ passi senza un solo errore è
 
 $$
-P(\text{successo}) \le (1 - p)^n,
+P(\text{traiettoria senza errori}) = (1 - p)^n,
 $$
 
-che precipita al crescere di $n$: con $p = 0{,}1$, dieci passi danno già
-$(0{,}9)^{10} \approx 0{,}35$. Non basta essere bravi a un passo, bisogna
-esserlo per molti di fila, ed è la ragione strutturale per cui i tassi di
-successo sui compiti lunghi restano modesti. Alla misura del *cosa* si
+che precipita al crescere di $n$: con $p = 0{,}1$, dieci passi lasciano appena
+$(0{,}9)^{10} \approx 0{,}35$. Le due ipotesi vanno dichiarate: i passi reali
+non sono indipendenti, e non ogni errore è fatale (la riflessione e il
+re-planning esistono proprio per recuperarne una parte, e allora il tasso di
+successo può superare questa cifra). Ma la morale del modellino regge: non
+basta essere bravi a un passo, bisogna esserlo per molti di fila, ed è la
+ragione strutturale per cui i tassi di successo sui compiti lunghi restano
+modesti. Alla misura del *cosa* si
 affianca poi quella del *quanto*: token consumati, latenza, numero di chiamate
 a strumenti; perché un agente sostenibile non è solo quello che riesce, ma
 quello che riesce a un costo accettabile.
@@ -345,9 +350,9 @@ I benchmark seri costruiscono proprio su queste idee. **AgentBench**
 {cite}`liu2023agentbench` mette gli LLM alla prova come agenti in **otto
 ambienti diversi** (un sistema operativo da manovrare, un database da
 interrogare, una casa simulata, un negozio online da navigare, e altri) e
-misura quanti compiti ciascun modello porta a termine. Il verdetto è un utile
-bagno di umiltà: anche i modelli migliori restano lontani dal risolverli
-tutti, e il divario con i modelli a pesi aperti è ampio. **SWE-bench**
+misura quanti compiti ciascun modello porta a termine. Il verdetto era un
+utile bagno di umiltà: alla pubblicazione, nel 2023, anche i modelli migliori
+restavano lontani dal risolverli tutti. **SWE-bench**
 {cite}`jimenez2024swebench` alza ancora l'asticella con 2.294 segnalazioni di
 errore prese da progetti reali su GitHub: risolvere l'issue significa produrre
 una modifica al codice che fa passare i test del progetto. Al momento della
@@ -411,7 +416,10 @@ esattamente con gli strumenti di questa sezione.
   **SWE-bench** {cite}`jimenez2024swebench` (issue reali di GitHub) mostrano
   tassi di successo inizialmente modesti: un promemoria di onestà. In
   produzione valgono i **guardrail** e l'**LLM-as-a-judge** di LLMOps.
-- Gli errori si **accumulano** sui compiti lunghi ($P(\text{successo}) \le
-  (1-p)^n$): gli agenti sono promettenti ma fragili, e restano un'area
-  **giovane** {cite}`xi2023rise`. Misurare più che sperare.
+- Gli errori si **accumulano** sui compiti lunghi: *se* i passi sono
+  indipendenti, una traiettoria senza errori ha probabilità $(1-p)^n$, che
+  precipita con $n$ (nel modellino illustrativo; nella pratica i passi sono
+  correlati e riflessione e re-planning ne recuperano una parte). Gli agenti sono
+  promettenti ma fragili, e restano un'area **giovane** {cite}`xi2023rise`.
+  Misurare più che sperare.
 ```

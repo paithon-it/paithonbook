@@ -153,7 +153,7 @@ $$
 Le triple false $\mathcal{G}^-$ non esistono in natura, per l'assunzione di
 mondo aperto: si **fabbricano corrompendo** quelle vere, cioè sostituendo la
 testa o la coda con un'entità pescata a caso. È l'equivalente, per i grafi, del
-*negative sampling* di word2vec {cite}`mikolov2013efficient`, e la parentela
+*negative sampling* di word2vec {cite}`mikolov2013distributed`, e la parentela
 non è casuale: entrambi trasformano un problema con soli positivi in un
 problema di discriminazione.
 
@@ -188,8 +188,11 @@ imponendo che le $W_r$ siano combinazioni di poche matrici di base condivise, il
 che è una forma di condivisione dei pesi fra relazioni simili. La differenza
 rispetto a TransE è che qui l'embedding di un'entità **si calcola** dal suo
 vicinato invece di essere una riga di tabella: è la stessa differenza fra
-DeepWalk e le GNN vista all'inizio del capitolo, e porta con sé lo stesso
-vantaggio, cioè l'induttività.
+DeepWalk e le GNN vista all'inizio del capitolo. Il vantaggio
+dell'induttività, però, arriva solo se i nodi portano feature proprie da cui
+partire: nel paper originale le entità non ne hanno, lo stato iniziale è a sua
+volta un embedding appreso per ciascuna entità, e senza quella riga di tabella
+un'entità mai vista resta fuori, esattamente come in TransE.
 
 `````
 

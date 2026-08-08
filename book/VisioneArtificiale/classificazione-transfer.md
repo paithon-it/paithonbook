@@ -31,8 +31,9 @@ alto.
 
 `````{tab} Superiore
 
-L'input è un tensore $X \in \mathbb{R}^{c\times h\times w}$ (canali, altezza,
-larghezza: l'ordine *channels-first* di PyTorch). Una successione di blocchi convoluzione + non linearità + pooling lo
+L'input è un tensore $X \in \mathbb{R}^{C\times H\times W}$ (canali, altezza,
+larghezza: l'ordine *channels-first* di PyTorch, lo stesso dell'inizio del
+capitolo). Una successione di blocchi convoluzione + non linearità + pooling lo
 trasforma in una *feature map* sempre più piccola nello spazio ma più ricca in
 profondità. Un *global average pooling* la riduce a un vettore
 $\mathbf{z}\in\mathbb{R}^d$, che uno strato *fully-connected* con **softmax**
@@ -146,14 +147,21 @@ rete già sapeva.
 Nella **feature extraction** congeliamo l'intera base con
 `requires_grad_(False)`: autograd smette di calcolarne i gradienti, i
 parametri $\theta_{\text{base}}$ restano fissi e all'ottimizzatore
-consegniamo solo la testa $\theta_{\text{head}}$. Nel **fine-tuning**
-riattiviamo il gradiente sugli strati alti della base e riprendiamo
-l'ottimizzazione con un learning rate **molto basso** (tipicamente $10^{-5}$
-contro $10^{-3}$): passi grandi sovrascriverebbero le rappresentazioni utili.
-Due accortezze: si scongelano solo gli strati alti (i bassi sono i più
-generici) e i layer di *Batch Normalization* si tengono in modalità
-valutazione (`.eval()`), per non destabilizzare con i piccoli batch del
-fine-tuning le statistiche apprese su ImageNet.
+consegniamo solo la testa $\theta_{\text{head}}$. Attenzione però ai layer di
+*Batch Normalization*: le loro statistiche correnti (media e varianza) sono
+**buffer**, non parametri, e in modalità `train()` si aggiornano a ogni
+forward, con o senza autograd. Una base «congelata» solo con
+`requires_grad_(False)` deriva quindi comunque verso il nuovo dominio: per
+fermarla davvero, i moduli BatchNorm vanno messi in modalità valutazione
+(`.eval()`).
+
+Nel **fine-tuning** riattiviamo il gradiente sugli strati alti della base e
+riprendiamo l'ottimizzazione con un learning rate **molto basso** (tipicamente
+$10^{-5}$ contro $10^{-3}$): passi grandi sovrascriverebbero le
+rappresentazioni utili. Due accortezze: si scongelano solo gli strati alti (i
+bassi sono i più generici) e i BatchNorm restano anche qui in `.eval()`, per
+non destabilizzare con i piccoli batch del fine-tuning le statistiche apprese
+su ImageNet.
 
 `````
 
@@ -176,6 +184,12 @@ preprocess = pesi.transforms()   # resize+crop a 224x224, normalizzazione ImageN
 # 2. Feature extraction: si congela tutta la base...
 for p in model.parameters():
     p.requires_grad_(False)
+
+# ...compresi i BatchNorm: le loro statistiche sono buffer, non parametri,
+# e in train() si aggiornerebbero comunque. Da ripetere dopo ogni model.train().
+for m in model.modules():
+    if isinstance(m, nn.BatchNorm2d):
+        m.eval()
 
 # ...e si sostituisce la testa: dalle 1000 classi ImageNet alle nostre 5
 model.fc = nn.Linear(model.fc.in_features, 5)   # nuova, addestrabile
@@ -214,6 +228,9 @@ bello del transfer learning.
 - Addestrare da zero è spesso proibitivo: servono troppi **dati** e troppo
   **tempo**. Il transfer learning riusa una base già addestrata su ImageNet.
 - **Feature extraction**: base congelata, si allena solo la testa (veloce,
-  pochi dati). **Fine-tuning**: si scongelano gli strati alti con learning
-  rate piccolo (più preciso, più dati).
+  pochi dati). Congelarla davvero vuol dire due cose, non una: togliere i
+  gradienti *e* mettere i BatchNorm in `.eval()`, perché le loro statistiche
+  sono buffer e in `train()` deriverebbero comunque verso il nuovo dominio.
+  **Fine-tuning**: si scongelano gli strati alti con learning rate piccolo
+  (più preciso, più dati), BatchNorm sempre in `.eval()`.
 ```

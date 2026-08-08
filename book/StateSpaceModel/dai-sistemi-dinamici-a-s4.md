@@ -133,7 +133,11 @@ $$
 Qui $\exp(\cdot)$ è l'esponenziale **di matrice**, non elemento per elemento.
 Se $A$ è diagonale, ogni suo autovalore $a$ si discretizza per conto suo:
 $\bar{a} = e^{\Delta a}$ e $\bar{b} = \frac{e^{\Delta a}-1}{a}\,b$, ben definito
-anche nel limite $a\to 0$. È la formula usata da Mamba.
+anche nel limite $a\to 0$. È la scelta di Mamba, con una precisazione: lo ZOH
+vale per la transizione, $\bar{A} = \exp(\Delta A)$, mentre per l'ingresso
+l'implementazione adotta la semplificazione al prim'ordine (Eulero)
+$\bar{B} = \Delta B$, che dello ZOH è il troncamento per $\Delta$ piccolo. La
+ritroveremo nel codice della prossima sezione.
 
 La **trasformazione bilineare** approssima invece l'esponenziale con la sua
 frazione razionale del primo ordine (la regola del trapezio), ottenendo
@@ -326,6 +330,31 @@ l'attenzione sulle sequenze lunghe. Ma tra quel risultato e Mamba (il modello
 che porta gli SSM sul linguaggio in modo convincente) ci sono alcune tappe che
 vale la pena nominare, perché ognuna smonta un pezzo del problema.
 
+`````{tab} Elementare
+
+Tre modelli, tre pezzi del problema. **S5** (2023) semplifica la macchina di
+S4 e, soprattutto, dimostra che la forma «passo dopo passo» non è condannata a
+essere lenta: organizzando i calcoli in modo furbo (si combinano i passi a
+coppie, poi a gruppi di quattro, di otto, e così via) anche la ricorrenza si
+può svolgere quasi tutta in parallelo. È il trucco che Mamba erediterà.
+
+**H3** (2023) affronta invece la memoria «a richiamo»: ritrovare più avanti
+una cosa già letta ("chi era il soggetto di quella frase?"). I modelli di
+questa famiglia, trattando ogni parola con la stessa regola, faticavano a
+farlo; H3 li aiuta accoppiando due memorie e un rubinetto che dosa il flusso
+tra l'una e l'altra, così il modello riesce a trattenere un'informazione
+finché gli serve.
+
+**Hyena** (2023), infine, prova la via più diretta: se l'ingrediente vincente
+è un filtro lungo che scorre su tutta la frase (come quelli visti nel capitolo
+sulle reti convoluzionali, ma lunghi quanto l'intero testo), tanto vale
+imparare direttamente il filtro, senza passare dal sistema dinamico. Funziona
+quasi come l'attenzione, costando molto meno.
+
+`````
+
+`````{tab} Superiore
+
 **S5** (Smith, Warrington e Linderman, ICLR 2023, {cite}`smith2023s5`)
 semplifica S4 su due fronti. Primo: usa un unico SSM **MIMO** (a più ingressi
 e più uscite) con matrice $A$ **diagonale**, invece di tanti SSM scalari
@@ -358,6 +387,8 @@ calcolano l'uscita come convoluzione lunga, entrambi girano in tempo
 $O(L \log L)$ con la FFT. Hyena mostra che si può avvicinare la qualità
 dell'attenzione senza attenzione, con sole convoluzioni.
 
+`````
+
 Restava un limite comune a tutti: essendo LTI, questi modelli trattano ogni
 token allo stesso modo, incapaci di *scegliere* cosa ricordare in base al
 contenuto. Chi legge una parola importante e chi legge una virgola aggiornano
@@ -365,27 +396,82 @@ lo stato con la stessa regola fissa. Rompere questo vincolo (rendere il
 sistema **tempo-variante**, capace di selezionare) è il passo che porta a
 Mamba, ed è il tema della prossima sezione.
 
+`````{tab} Elementare
+
 ```{admonition} Da ricordare
 :class: important
-- Un **SSM** nasce da un sistema dinamico continuo $h'(t)=A\,h(t)+B\,u(t)$,
-  $y(t)=C\,h(t)$: lo **stato** $h$ è una fotografia compatta del passato, con
-  $A$ dinamica interna, $B$ ingresso, $C$ uscita. È l'altra strada verso il
-  tempo lineare, complementare all'attenzione lineare del capitolo precedente.
+- Un **SSM** nasce da un sistema che evolve nel tempo, come la vasca con il
+  rubinetto aperto e lo scarico socchiuso: il livello dell'acqua è lo **stato**,
+  una fotografia compatta del passato che basta a prevedere il futuro. Tre
+  ingredienti: come lo stato cala da solo, come l'ingresso lo alza, come si
+  legge l'uscita. È l'altra strada verso un modello che regge i testi lunghi
+  senza che il costo esploda, complementare all'attenzione lineare del capitolo
+  precedente.
+- Per usarlo su una sequenza (parole, campioni audio) bisogna **misurare a
+  intervalli regolari** e indovinare cosa succede *tra* un campione e il
+  successivo. Le ricette non sono una sola e non vanno confuse: **S4 immagina
+  quel tratto come un trapezio**; **Mamba tiene l'ingresso fermo per tutto
+  l'intervallo** (è lo *zero-order hold*, la tenuta di ordine zero). Per quanto
+  di ciò che entra finisce nella memoria, però, Mamba si accontenta del conto
+  più sbrigativo, a rettangoli: è il pezzo che Mamba-3 rifarà a trapezi.
+- Finché le regole **non cambiano da un passo all'altro**, lo stesso calcolo si
+  può fare in due modi: **passo dopo passo** (un token alla volta, con una
+  memoria che non cresce mai: economico per generare) oppure **tutto insieme**,
+  come un unico filtro lungo che scorre sulla sequenza (parallelo: perfetto per
+  addestrare sulle GPU). Si allena nel secondo modo, si usa nel primo: la stessa
+  dualità vista con l'attenzione lineare.
+- L'equivalenza regge **solo** finché quelle regole restano fisse: Mamba le farà
+  dipendere da ciò che legge, e allora resterà solo il modo passo dopo passo.
+- **HiPPO** (Gu et al., 2020) è il modo principiato di riassumere una storia
+  lunghissima in pochi numeri, come appunti a più livelli su un romanzo: è ciò
+  che dà memoria a lungo raggio a uno stato piccolo. **S4** (2022) rende il
+  conto efficiente dando alla macchina una forma regolare, ed è il primo a
+  risolvere Path-X (sequenze da $16\,384$ elementi), la prova più dura della
+  gara sulle dipendenze a lunghissimo raggio, Long Range Arena.
+- Le tappe verso il linguaggio: **S5** (mostra che anche il passo dopo passo si
+  può svolgere quasi tutto in parallelo), **H3** (due memorie e un rubinetto,
+  per ritrovare a distanza una cosa già letta), **Hyena** (impara direttamente
+  il filtro lungo). Preparano Mamba.
+```
+
+`````
+
+`````{tab} Superiore
+
+```{admonition} Da ricordare
+:class: important
+- Un **SSM** nasce da un sistema dinamico continuo
+  $\mathbf{h}'(t)=A\,\mathbf{h}(t)+B\,u(t)$,
+  $y(t)=C\,\mathbf{h}(t)$: lo **stato** $\mathbf{h}$ è una fotografia
+  compatta del passato, con $A$ dinamica interna, $B$
+  ingresso, $C$ uscita. È l'altra strada verso il tempo lineare,
+  complementare all'attenzione lineare del capitolo precedente.
 - Per usarlo su sequenze discrete serve un passo $\Delta$ di
-  **discretizzazione**. Attenzione: **S4 usa la bilineare**, **Mamba usa lo
-  ZOH** ($\bar{A}=\exp(\Delta A)$) (due regole diverse, da non confondere).
+  **discretizzazione**: una regola per indovinare cosa succede *tra* un campione
+  e il successivo. Di regole ce n'è più d'una e non vanno confuse. **S4 usa la
+  bilineare** (immagina quel tratto come un trapezio); **Mamba usa lo
+  *zero-order hold*** (ZOH: l'ingresso resta fermo per tutto l'intervallo), che
+  gli dà la transizione $\bar{A}=\exp(\Delta A)$. Per il
+  termine d'ingresso, però, l'implementazione di Mamba si accontenta del conto a
+  rettangoli, $\bar{B}=\Delta B$ (il metodo di Eulero, cioè lo
+  ZOH troncato al prim'ordine): è il pezzo che Mamba-3 rifarà a trapezi.
 - Se il sistema discretizzato è **tempo-invariante** (LTI), la stessa funzione
-  ha due forme equivalenti: **ricorrente** $h_t=\bar{A}h_{t-1}+\bar{B}x_t$
+  ha due forme equivalenti: **ricorrente**
+  $\mathbf{h}_t=\bar{A}\mathbf{h}_{t-1}+\bar{B}x_t$
   (inferenza $O(1)$ per passo) e **convoluzionale** $y=x*\bar{K}$
   (addestramento parallelo). Si allena convoluzionale, si inferisce
   ricorrente: la stessa dualità vista con l'attenzione lineare.
-- Questa equivalenza vale **solo** se $\bar{A},\bar{B},C$ sono costanti: Mamba la
-  romperà rendendoli dipendenti dall'ingresso, e allora resterà solo lo scan.
-- **HiPPO** (Gu et al., 2020) sceglie $A$ proiettando la storia su polinomi
-  ortogonali: è ciò che dà memoria a lungo raggio a uno stato piccolo. **S4**
-  (2022) rende il calcolo efficiente con una struttura **diagonale + basso
-  rango** e risolve per primo Path-X (sequenze da 16k) su Long Range Arena.
+- Questa equivalenza vale **solo** se $\bar{A},\bar{B},
+  C$ sono costanti: Mamba la romperà rendendoli dipendenti
+  dall'ingresso, e allora resterà solo lo scan.
+- **HiPPO** (Gu et al., 2020) sceglie $A$ proiettando la storia su
+  polinomi ortogonali: è ciò che dà memoria a lungo raggio a uno stato piccolo.
+  **S4** (2022) rende il calcolo efficiente con una struttura **diagonale +
+  basso rango** e risolve per primo Path-X (sequenze da 16k) su Long Range
+  Arena.
 - Le tappe verso il linguaggio: **S5** (SSM MIMO + parallel scan), **H3** (due
   SSM + gating per il recall associativo), **Hyena** (convoluzioni lunghe
   implicite). Preparano Mamba.
 ```
+
+`````

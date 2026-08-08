@@ -1,7 +1,7 @@
 # Il futuro nei numeri: serie temporali e forecasting
 
-Negli anni Settanta dell'Ottocento, in un laboratorio di Glasgow, William
-Thomson (che il mondo avrebbe conosciuto come Lord Kelvin) costruì una
+Negli anni Settanta dell'Ottocento William Thomson, professore a Glasgow (il
+mondo lo avrebbe conosciuto come Lord Kelvin), fece costruire a Londra una
 macchina di ottone, corde e pulegge che prevedeva le maree. Non con la magia:
 osservando anni di misure del livello del mare, Kelvin lo aveva scomposto
 nella somma di tante oscillazioni regolari (quella lunare, quella solare,
@@ -154,21 +154,30 @@ def autocorr(x, lag):
     x = x - x.mean()
     return np.sum(x[lag:] * x[:-lag]) / np.sum(x * x)
 
-print(f"autocorrelazione a lag 1:  {autocorr(serie, 1):.3f}")
-print(f"autocorrelazione a lag 12: {autocorr(serie, 12):.3f}")
+print(f"autocorrelazione a lag 1:   {autocorr(serie, 1):.3f}")
+
+# per isolare la stagionalità, togliamo prima la tendenza
+# (la linea che segue la salita), che gonfierebbe ogni confronto
+detrend = serie - np.polyval(np.polyfit(t, serie, 1), t)
+print(f"senza tendenza, a lag 6:    {autocorr(detrend, 6):.3f}")
+print(f"senza tendenza, a lag 12:   {autocorr(detrend, 12):.3f}")
 
 # rimescolando l'ordine, la dipendenza temporale svanisce
 mescolata = rng.permutation(serie)
-print(f"lag 1 dopo lo shuffle:     {autocorr(mescolata, 1):.3f}")
+print(f"lag 1 dopo lo shuffle:      {autocorr(mescolata, 1):.3f}")
 ```
 
-Sulla serie ordinata l'autocorrelazione a un passo è **vicina a 1** (ogni
-valore anticipa quasi perfettamente il successivo) e quella a dodici passi
-resta alta, perché la stagionalità riporta il fenomeno allo stesso punto del
-ciclo. Ma appena rimescoliamo le date, il coefficiente **crolla verso lo
-zero**: la permutazione ha cancellato l'unica cosa che rendeva prevedibile la
-serie. È il motivo profondo per cui, nel forecasting, **non si può mescolare
-futuro e passato**, né nell'addestramento né, soprattutto, nella validazione.
+Sulla serie ordinata l'autocorrelazione a un passo è **vicina a 1**: ogni
+valore anticipa quasi perfettamente il successivo. Per leggere la stagionalità
+da sola bisogna prima togliere la tendenza, che altrimenti terrebbe alta
+l'autocorrelazione a qualunque distanza nel tempo; fatto questo, il contrasto è
+netto: a sei passi (mezzo ciclo: estate contro inverno) la correlazione è
+fortemente **negativa**, a dodici torna **alta**, perché la stagionalità
+riporta il fenomeno allo stesso punto del ciclo. Ma appena rimescoliamo le
+date, il coefficiente **crolla verso lo zero**: la permutazione ha cancellato
+l'unica cosa che rendeva prevedibile la serie. È il motivo profondo per cui,
+nel forecasting, **non si può mescolare futuro e passato**, né
+nell'addestramento né, soprattutto, nella validazione.
 Torneremo su questo punto nella sezione dedicata alla validazione temporale;
 per ora basti la regola: si addestra sul passato, si verifica sul futuro, mai
 il contrario.
@@ -209,7 +218,9 @@ cioè media e varianza costanti e autocovarianza $\gamma(k)$ funzione **solo**
 del divario $k$ tra due istanti, non della loro posizione assoluta. È
 l'ipotesi su cui poggia l'intera famiglia dei modelli ARMA. Le serie reali la
 violano in tre modi ricorrenti: una **tendenza** rende $\mu$ variabile nel
-tempo, la **stagionalità** rende $\gamma$ periodica, un **cambio di regime**
+tempo, la **stagionalità** rende $\mu$ periodica (e, quando è stocastica
+anziché deterministica, fa dipendere l'autocovarianza dalla posizione $t$
+oltre che dal divario $k$), un **cambio di regime**
 (rottura strutturale) altera $\mu$, $\sigma^2$ o entrambi da un certo istante
 in poi. La strategia standard è ricondurre la serie alla stazionarietà
 (tipicamente con la **differenziazione**, $\nabla x_t = x_t - x_{t-1}$, che

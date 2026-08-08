@@ -56,13 +56,24 @@ $$
 dove $[\,\cdot\,;\,\cdot\,]$ è la concatenazione dei due vettori,
 $f_{\theta}$ un MLP con attivazioni ReLU e $\sigma$ la sigmoide, che
 schiaccia l'uscita in $(0,1)$: il modello è pensato per feedback implicito,
-e $\hat{y}_{ui}$ si legge come probabilità di interazione. Il paper propone
-anche una variante che affianca i due mondi (*NeuMF*): un ramo con il
-prodotto elemento per elemento degli embedding e un ramo MLP, fusi
+e $\hat{y}_{ui}$ si legge come probabilità di interazione.
+
+Una parola sui simboli, prima di andare avanti. Il cappello indica sempre la
+predizione, ma la lettera sotto cambia con il compito, e in questo capitolo
+seguiamo quella dei paper d'origine: $\hat{r}_{ui}$ per un voto da prevedere
+(fattorizzazione), $\hat{y}_{ui}$ per una probabilità di interazione (NCF),
+$\hat{x}_{ui}$ per un punteggio di ranking (BPR), dove conta solo l'ordine e
+non il valore assoluto.
+
+Il paper propone anche una variante che affianca i due mondi (*NeuMF*): un
+ramo con il prodotto elemento per elemento degli embedding e un ramo MLP, fusi
 nell'ultimo strato. In linea di principio l'MLP, per il teorema di
-approssimazione universale {cite}`hornik1991approximation`, può
-rappresentare qualunque interazione tra i fattori; se poi la *impari*
-davvero da dati sparsi è un'altra faccenda.
+approssimazione universale {cite}`hornik1991approximation` (nella versione di
+Leshno et al. {cite}`leshno1993multilayer`, che copre attivazioni illimitate
+come la ReLU), può approssimare con precisione arbitraria, su un compatto,
+qualunque interazione continua tra i fattori; ma approssimare non è
+rappresentare esattamente, e se poi la *impari* davvero da dati sparsi è
+un'altra faccenda ancora.
 
 `````
 
@@ -116,7 +127,7 @@ $$
 
 Su un grafo si può propagare, ed è esattamente il *message passing* del
 capitolo sulle reti neurali su grafo. Nella forma più nuda, l'embedding di un
-utente al passo $k+1$ è la media normalizzata degli embedding degli oggetti con
+utente al passo $k+1$ è una somma pesata degli embedding degli oggetti con
 cui ha interagito, e viceversa:
 
 $$
@@ -127,13 +138,16 @@ e_i^{(k+1)} = \sum_{u \in \mathcal{N}(i)}
 \frac{1}{\sqrt{|\mathcal{N}(i)|\,|\mathcal{N}(u)|}}\; e_u^{(k)} .
 $$
 
-Il coefficiente è la stessa normalizzazione simmetrica della GCN, e la stessa
-lettura vale qui: un utente che ha visto tutto, o un film visto da tutti,
-contano meno per singolo arco. Impilare $K$ strati significa raccogliere
-segnale da $K$ salti di distanza.
+Il peso è la stessa normalizzazione simmetrica dei gradi vista per la GCN
+(non una media: i coefficienti non sommano a uno), e la stessa lettura vale
+qui: un utente che ha visto tutto, o un film visto da tutti, contano meno per
+singolo arco. Impilare $K$ strati significa raccogliere segnale da $K$ salti
+di distanza.
 
-Il primo modello a farlo sul serio è **NGCF** {cite}`wang2019neural`, che
-ricalca la GCN completa: trasformazione lineare, non linearità, propagazione.
+L'idea è nell'aria dal 2017, quando GC-MC {cite}`vandenberg2017graph` formulò
+il completamento della matrice come convoluzione sul grafo bipartito; la tappa
+canonica è **NGCF** {cite}`wang2019neural`, che ricalca la GCN completa:
+trasformazione lineare, non linearità, propagazione.
 **LightGCN** {cite}`he2020lightgcn` toglie i primi due e tiene solo il terzo,
 combinando poi gli strati con pesi uniformi
 $e_u = \sum_{k=0}^{K} \frac{1}{K+1} e_u^{(k)}$ e tornando al prodotto scalare
@@ -196,8 +210,17 @@ libro; serve solo che l'ordine sia giusto.
 
 `````{tab} Superiore
 
-Sia $\hat{x}_{ui}$ il punteggio che un modello qualunque (tipicamente una
-fattorizzazione, $\hat{x}_{ui} = P_u^\top Q_i$) assegna alla coppia $(u,i)$.
+Sia $\hat{x}_{ui}$ il punteggio che un modello qualunque assegna alla coppia
+$(u,i)$: nel paper è una fattorizzazione ridotta al solo prodotto scalare,
+$\hat{x}_{ui} = P_u^\top Q_i$, senza nessuno dei termini additivi della
+sezione precedente. Due dei tre spariscono da sé, perché BPR confronta sempre
+due item *dello stesso* utente e nella differenza $\mu$ e $b_u$ si elidono. Il
+bias di item no: sopravvive come $b_v - b_w$, e viene tolto per scelta, perché
+è la stessa quantità per tutti gli utenti, cioè la parte *non* personalizzata
+dell'ordinamento (la P di *Personalized*). Rimetterlo è legittimo e varie
+implementazioni lo fanno, al prezzo di una classifica che per un utente senza
+storia collassa su quella dei titoli più popolari.
+
 BPR costruisce triple $(u, v, w)$: un utente $u$, un item $v$ con cui ha
 interagito, un item $w$ campionato tra quelli mai toccati. La loss chiede che
 $v$ superi $w$:
@@ -212,7 +235,11 @@ dove $\sigma$ è la sigmoide e $\theta$ raccoglie tutti i parametri del
 modello. La lettura probabilistica è elegante:
 $\sigma(\hat{x}_{uv} - \hat{x}_{uw})$ è la probabilità, secondo il modello,
 che $u$ preferisca $v$ a $w$; la loss è la log-verosimiglianza negativa di
-aver ordinato bene tutte le coppie. Conta solo la *differenza* dei punteggi,
+aver ordinato bene tutte le coppie, assunte indipendenti tra loro (senza
+questa ipotesi il prodotto delle sigmoidi non sarebbe una verosimiglianza). E
+il termine $\lambda\,\lVert\theta\rVert^2$ non è una regolarizzazione
+qualsiasi: nel paper nasce come prior gaussiano sui parametri di una stima
+MAP, ed è lì la "B" di *Bayesian*. Conta solo la *differenza* dei punteggi,
 non il loro valore assoluto. E il gradiente ha il comportamento giusto: coppie
 già ben ordinate con margine ampio contribuiscono quasi zero, coppie invertite
 spingono forte. In pratica i negativi $w$ si campionano a caso a ogni passo,
@@ -234,7 +261,9 @@ def loss_bpr(x_uv, x_uw):
     # x_uv: punteggi (utente, item visto) · x_uw: (utente, item ignorato)
     return -torch.log(torch.sigmoid(x_uv - x_uw)).mean()
 
-# nel ciclo di addestramento: v = item con interazione, w = negativi casuali
+# nel ciclo di addestramento: v = item con cui l'utente ha interagito,
+# w = item pescato a caso in tutto il catalogo. Ogni tanto capiterà un item
+# che l'utente aveva già preso: succede così di rado che lo lasciamo passare
 w = torch.randint(0, n_film, v.shape)          # campionamento dei negativi
 loss = loss_bpr(modello(u, v), modello(u, w))  # stesso modello di prima
 ```
@@ -303,10 +332,10 @@ d'oro oggi e rumore tra un mese. La **raccomandazione sequenziale** tratta la
 storia dell'utente come una frase da continuare: prevedere la prossima
 interazione come si prevede la prossima parola. Non a caso il settore ha
 seguito la stessa parabola del NLP: prima le reti ricorrenti, poi
-l'auto-attenzione, con modelli come SASRec e BERT4Rec che sono Transformer in
-tutto e per tutto, dove il "vocabolario" è il catalogo. Gli strumenti li avete
-già visti nei capitoli sul NLP e sui Transformer; qui cambia solo cosa c'è al
-posto delle parole.
+l'auto-attenzione, con modelli come SASRec {cite}`kang2018self` e BERT4Rec
+{cite}`sun2019bert4rec` che sono Transformer in tutto e per tutto, dove il
+"vocabolario" è il catalogo. Gli strumenti li avete già visti nei capitoli sul
+NLP e sui Transformer; qui cambia solo cosa c'è al posto delle parole.
 
 ## Come lo fa l'industria
 
@@ -322,9 +351,10 @@ offline, e a richiesta basta una ricerca dei vicini più prossimi
 della sezione precedente, riabilitato dall'efficienza). Il secondo stadio, il
 *ranking*, applica ai soli sopravvissuti un modello ricco quanto si vuole, con
 centinaia di feature di contesto (ora, dispositivo, storia recente). Questa
-architettura, descritta pubblicamente dagli ingegneri di YouTube nel 2016, è
-oggi lo standard di fatto, e gran parte del lavoro vero, va detto, non è nel
-modello ma nell'infrastruttura che lo tiene fresco.
+architettura, descritta pubblicamente dagli ingegneri di YouTube nel 2016
+{cite}`covington2016deep`, è oggi lo standard di fatto, e gran parte del
+lavoro vero, va detto, non è nel modello ma nell'infrastruttura che lo tiene
+fresco.
 
 ## Suggerire o pilotare?
 
@@ -354,6 +384,40 @@ Nessuna di queste è una soluzione definitiva. Ma un ingegnere che sa *come*
 funziona la macchina (e ora lo sapete) è esattamente la persona nella
 posizione giusta per pretendere che funzioni bene.
 
+`````{tab} Elementare
+
+```{admonition} Da ricordare
+:class: important
+- Il **NCF** cambia il giudice: invece di confrontare le due schede voce per
+  voce con una regola fissa, le incolla una sotto l'altra e lascia decidere a
+  una piccola rete. In teoria vede combinazioni che il confronto voce per voce
+  non coglie; alla prova dei fatti il vecchio confronto, tarato con cura, resta
+  un avversario durissimo: più libertà non è gratis.
+- La tabella dei voti si può disegnare: utenti da una parte, film dall'altra,
+  una linea per ogni visione. Raccomandare vuol dire **indovinare le linee che
+  ancora non ci sono**. Camminando sul disegno per più passi si raccoglie anche
+  il segnale lontano, e **LightGCN** mostra che per farlo non serve una rete
+  sopra: basta camminare.
+- Quando non ci sono voti ma solo ciò che l'utente ha guardato, non si prevede
+  un numero, si sistema una vetrina: ciò che ha scelto deve stare più in alto
+  di un titolo preso a caso fra i mille che ha ignorato (**BPR**). Conta
+  l'ordine, non quanto gli piace ogni titolo.
+- Una classifica si misura su quanti dei consigli mostrati sono azzeccati
+  (**precision**), su quanti dei titoli buoni ha ritrovato (**recall**) e su
+  quanto in alto li ha messi (**NDCG**), come un giornale che sceglie bene la
+  prima pagina.
+- I sistemi veri lavorano in **due tempi**: un primo filtro rapido e grossolano
+  che da milioni di titoli ne tiene qualche centinaio, poi un giudizio accurato
+  sui soli superstiti.
+- Il metro che scegli plasma il sistema, e chi lo usa: premiato sui minuti di
+  visione, imparerà tutto ciò che trattiene. Il confine tra suggerire e
+  pilotare passa da lì.
+```
+
+`````
+
+`````{tab} Superiore
+
 ```{admonition} Da ricordare
 :class: important
 - Il **NCF** sostituisce il prodotto scalare con un MLP sulla concatenazione
@@ -373,3 +437,5 @@ posizione giusta per pretendere che funzioni bene.
 - La metrica scelta plasma il comportamento del sistema, e degli utenti: il
   confine tra suggerire e pilotare passa dalla funzione obiettivo.
 ```
+
+`````

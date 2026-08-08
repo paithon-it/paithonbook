@@ -32,9 +32,13 @@ dopo. Tutto ciò che sembra dialogo è questo passaggio, ripetuto.
 ```
 
 Tenere presente {numref}`fig-cos-e-un-llm` cambia il modo di leggere tutto il
-capitolo. Se l'oggetto è una distribuzione condizionata dal testo che precede,
-allora «programmare a parole» non è una metafora: è il modo letterale di
-spostare quella distribuzione, ed è l'unico che si abbia senza toccare i pesi.
+capitolo. «Distribuzione» è una parola da statistici per una cosa semplice:
+una classifica di parole candidate, ciascuna con la sua percentuale (dopo «il
+gatto nero salta sul» potrebbe dire: muro 41%, tetto 20%, divano 3%), e la
+risposta nasce pescando da quella classifica. Se l'oggetto è questa
+classifica, condizionata dal testo che precede, allora «programmare a parole»
+non è una metafora: è il modo letterale di spostarla, ed è l'unico che si
+abbia senza toccare i pesi.
 
 La tesi è semplice da enunciare e ricca di conseguenze. Con un LLM già
 addestrato (un modello «istruito», che sa già leggere e scrivere), noi non
@@ -48,7 +52,7 @@ cambierebbe riscrivere una funzione.
 
 Pensa a un collaboratore bravissimo e velocissimo, che ha letto mezza
 biblioteca, ma che è appena arrivato e non sa nulla del *tuo* lavoro. Non puoi
-mandarlo a scuola: è già «finito», impara-non-impara più di così. Quello che
+mandarlo a scuola: è già «finito», non impara più di così. Quello che
 puoi fare è **parlargli bene**. Se gli dici «occupati dei clienti» otterrai
 una cosa; se gli lasci un foglio con il ruolo, tre esempi di risposte giuste e
 il tono da tenere, ne otterrai un'altra, molto migliore: stesso collaboratore,
@@ -68,15 +72,18 @@ minimizzando una loss $\mathcal{L}$ su dei dati: il programma emerge
 dall'ottimizzazione, non dalla penna del programmatore. Il **Software 3.0**
 sposta di nuovo il piano: $\theta$ resta *fisso* (il modello pre-addestrato non
 si tocca) e ciò che varia è il **contesto** $C$ passato in ingresso. Il sistema
-calcola
+genera
 
 $$
-\hat{y} = f_{\theta}(C),
+\hat{y} \sim P_{\theta}(\,\cdot \mid C),
 $$
 
-dove $f_{\theta}$ è il modello congelato, $C$ è tutto il testo che gli
-forniamo (istruzioni, esempi, documenti, cronologia) e $\hat{y}$ la risposta
-generata. Programmare significa progettare $C$. Il meccanismo che rende
+dove $P_{\theta}$ è la distribuzione condizionata calcolata dal modello
+congelato, $C$ è tutto il testo che gli forniamo (istruzioni, esempi,
+documenti, cronologia) e $\hat{y}$ la risposta, *campionata* da quella
+distribuzione, eventualmente riscalata e troncata dai parametri di decoding
+(temperatura, top_p) che vedremo nella sezione sul prompt: a temperatura non
+nulla, lo stesso $C$ può dare risposte diverse. Programmare significa progettare $C$. Il meccanismo che rende
 possibile tutto questo è l'**in-context learning**, isolato su larga scala da
 Brown e colleghi nel lavoro su GPT-3 {cite}`brown2020language`: bastano poche
 coppie richiesta → risposta nel contesto (il *few-shot*), perché il modello
@@ -152,16 +159,18 @@ d'istruzione; è un *sottoinsieme* del **contesto** $C$, che è l'intero payload
 $C = [\,\text{system}, \text{esempi}, \text{memoria}, \text{documenti},
 \text{strumenti}, \text{prompt}\,]$ montato prima della chiamata. Il contesto, a
 sua volta, è ciò che il **loop** produce e consuma a ogni iterazione: detto
-$C_t$ il contesto al passo $t$ e $o_t$ l'osservazione di ritorno (l'output del
-modello, il risultato di uno strumento), il ciclo è
+$C_t$ il contesto al passo $t$, $M_t$ la memoria esterna e $o_t$
+l'osservazione di ritorno (l'output del modello su $C_t$, il risultato di uno
+strumento), il ciclo è
 
 $$
-C_{t+1} = g\!\left(C_t,\; o_t\right),
+\left(C_{t+1},\; M_{t+1}\right) = g\!\left(C_t,\; M_t,\; o_t\right),
 $$
 
-dove $g$ è la politica che aggiorna la finestra: aggiunge l'osservazione
-utile, comprime o scarta la cronologia superflua, reinietta dalla memoria
-esterna ciò che serve al passo dopo. Ottimizzare il singolo prompt senza
+dove $g$ è la politica che aggiorna finestra e memoria: aggiunge
+l'osservazione utile, comprime o scarta la cronologia superflua, scrive nella
+memoria esterna ciò che va conservato e ne reinietta ciò che serve al passo
+dopo. Ottimizzare il singolo prompt senza
 governare $g$ significa curare un fotogramma e ignorare il film: il prompt
 vive un istante, il loop dura quanto il compito. Ecco perché i tre livelli non
 sono alternativi ma **annidati**, e perché conviene affrontarli dal piccolo al

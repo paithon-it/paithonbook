@@ -39,14 +39,19 @@ Indichiamo con $a^{[0]} = x$ l'input. Per ogni strato $l = 1, \dots, L$ il
 forward pass calcola una combinazione lineare seguita da una non linearità:
 
 $$
-z^{[l]} = W^{[l]} a^{[l-1]} + b^{[l]}, \qquad a^{[l]} = \sigma\!\left(z^{[l]}\right).
+z^{[l]} = W^{[l]} a^{[l-1]} + b^{[l]}, \qquad
+a^{[l]} = \sigma\!\left(z^{[l]}\right) \;\; (l < L), \qquad
+a^{[L]} = \varphi\!\left(z^{[L]}\right).
 $$
 
 Qui $W^{[l]}$ è la matrice dei pesi dello strato $l$, $b^{[l]}$ il vettore di
-bias, $\sigma$ la funzione di attivazione (per esempio la ReLU, $\sigma(z)=\max(0,z)$),
-$z^{[l]}$ la pre-attivazione e $a^{[l]}$ l'attivazione. L'uscita finale è la
-previsione $\hat{y} = a^{[L]}$. Ogni strato non è che il prodotto matrice-vettore
-già incontrato in algebra lineare, "avvolto" in una non linearità.
+bias, $z^{[l]}$ la pre-attivazione e $a^{[l]}$ l'attivazione. Come
+nell'overview, $\sigma$ è l'attivazione degli strati nascosti (per esempio la
+ReLU, $\sigma(z)=\max(0,z)$) e $\varphi$ quella dello strato d'uscita, che di
+norma è un'altra: softmax per la classificazione, identità per la regressione.
+L'uscita finale è la previsione $\hat{y} = a^{[L]}$. Ogni strato non è che il
+prodotto matrice-vettore già incontrato in algebra lineare, "avvolto" in una
+non linearità.
 
 `````
 
@@ -121,11 +126,13 @@ fine ogni singolo peso sa in che direzione muoversi per far calare la loss.
 `````{tab} Superiore
 
 Il meccanismo è la **regola della catena** applicata a ritroso (→ la deriviamo
-nel capitolo di Matematica). Definiamo il segnale d'errore $\delta^{[l]}$ e lo
+nel capitolo di Matematica). Scriviamo tutto per un **singolo esempio**: il
+gradiente della loss media di un mini-batch è la media di questi contributi,
+uno per esempio. Definiamo il segnale d'errore $\delta^{[l]}$ e lo
 propaghiamo dallo strato d'uscita verso l'input:
 
 $$
-\delta^{[L]} = \nabla_{a^{[L]}} \mathcal{L} \;\odot\; \sigma'\!\left(z^{[L]}\right),
+\delta^{[L]} = \nabla_{a^{[L]}} \mathcal{L} \;\odot\; \varphi'\!\left(z^{[L]}\right),
 \qquad
 \delta^{[l]} = \left(W^{[l+1]}\right)^{\!\top} \delta^{[l+1]} \;\odot\; \sigma'\!\left(z^{[l]}\right).
 $$
@@ -138,8 +145,13 @@ $$
 \frac{\partial \mathcal{L}}{\partial b^{[l]}} = \delta^{[l]} .
 $$
 
-Il simbolo $\odot$ è il prodotto elemento per elemento (Hadamard) e $\sigma'$ la
-derivata dell'attivazione. Il punto cruciale: ogni $\delta^{[l]}$ riusa
+Il simbolo $\odot$ è il prodotto elemento per elemento (Hadamard), $\sigma'$ e
+$\varphi'$ le derivate delle due attivazioni: la scrittura con $\odot$
+presuppone quindi un'attivazione applicata componente per componente. La
+softmax, cioè la $\varphi$ tipica della classificazione, non lo è (ogni
+uscita dipende da tutti i logit), ma accoppiata alla cross-entropia il conto
+si semplifica e il termine d'uscita diventa $\delta^{[L]} = \hat{y} - y$: è la
+combinazione che i framework implementano. Il punto cruciale: ogni $\delta^{[l]}$ riusa
 $\delta^{[l+1]}$, così un solo passaggio all'indietro basta a calcolare tutti i
 gradienti. È questo che rende l'addestramento praticabile su reti enormi.
 
@@ -253,9 +265,10 @@ il messaggio integro fino in fondo.
 `````{tab} Superiore
 
 Il gradiente verso i primi strati è un prodotto di molti fattori (le Jacobiane
-strato per strato). Se questi fattori sono in media $<1$, il prodotto tende a
-zero esponenzialmente con la profondità (*vanishing gradient*); se sono $>1$,
-diverge (*exploding gradient*): analisi resa celebre da Hochreiter (1991) e da
+strato per strato, la cui "grandezza" si misura con i valori singolari). Se
+questi fattori restano sistematicamente sotto $1$, il prodotto tende a zero
+esponenzialmente con la profondità (*vanishing gradient*); se restano
+sistematicamente sopra, diverge (*exploding gradient*): analisi resa celebre da Hochreiter (1991) e da
 Bengio et al. (1994) sulle reti ricorrenti. I rimedi standard: attivazioni
 **ReLU** al posto della sigmoide (Glorot et al., 2011), **inizializzazione**
 accorta dei pesi (Xavier/He), **batch normalization** {cite}`ioffe2015batch`,
@@ -302,6 +315,31 @@ tornare indietro il gradiente, `optimizer.step()` aggiorna i pesi. Venti
 epoche, e la rete ha imparato. Il prossimo capitolo è dedicato proprio a
 questo codice: lo riprenderemo riga per riga.
 
+`````{tab} Elementare
+
+```{admonition} Da ricordare
+:class: important
+- Il **forward pass** è la catena di montaggio: i dati passano di postazione in
+  postazione, ognuna li mescola con le proprie manopole, e all'ultima esce la
+  previsione. La **loss** dice quanto quella previsione è lontana dalla verità.
+- La **backpropagation** riparte dal fondo e chiede a ogni strato quanto ha
+  contribuito all'errore: la risposta di uno serve a calcolare quella dello
+  strato prima, e un solo giro all'indietro basta per tutte le manopole.
+- Poi ogni manopola si sposta di poco nel verso che fa calare la loss: è la
+  **discesa del gradiente**, e la lunghezza del passo (il **learning rate**)
+  decide se si scende a valle, se si rimbalza o se non si arriva mai.
+- Si procede a piccoli gruppi di esempi (i **mini-batch**), ripassando più volte
+  su tutti i dati (le **epoche**). Nelle reti molto profonde il messaggio che
+  torna indietro è un telefono senza fili: può affievolirsi fino a non insegnare
+  più niente ai primi strati, oppure amplificarsi fino a diventare assordante e
+  mandare tutto in tilt. Per questo una rete profonda va progettata apposta per
+  far arrivare il messaggio integro fino in fondo.
+```
+
+`````
+
+`````{tab} Superiore
+
 ```{admonition} Da ricordare
 :class: important
 - Il **forward pass** trasforma i dati in una previsione, strato per strato; la
@@ -315,3 +353,5 @@ questo codice: lo riprenderemo riga per riga.
   possono **svanire o esplodere**, ed è per questo che esistono ReLU,
   inizializzazioni accorte, batch norm e connessioni residue.
 ```
+
+`````

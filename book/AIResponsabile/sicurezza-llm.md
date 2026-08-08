@@ -59,7 +59,7 @@ questa non viene dal padrone di casa».
 Formalmente il modello calcola
 
 $$
-\hat{y} = f_{\theta}\big(x^{\text{sys}} \;\Vert\; x^{\text{usr}} \;\Vert\; x^{\text{dati}}\big),
+\hat{y} = f_{\theta}\big(X^{\text{sys}} \;\Vert\; X^{\text{usr}} \;\Vert\; X^{\text{dati}}\big),
 $$
 
 dove $\theta$ sono i pesi, $\Vert$ è la concatenazione e i tre blocchi sono il
@@ -67,8 +67,8 @@ prompt di sistema, il turno dell'utente e il testo recuperato da terzi. Il
 punto è ciò che nella formula **non compare**: un secondo argomento $\tau$ che
 porti, token per token, la provenienza. La gerarchia *system > user* incontrata
 nel capitolo sull'ingegneria degli LLM esiste, ma è una *disposizione appresa*
-a dare più peso a certe posizioni della sequenza, non un controllo di accesso:
-è morbida per costruzione, perché è statistica.
+a dare più peso ai segmenti delimitati dai marcatori di ruolo, non un
+controllo di accesso: è morbida per costruzione, perché è statistica.
 
 La famiglia di guasti è nota da decenni agli informatici, e chiamarla per nome
 aiuta a non trattare il fenomeno come una stranezza dell'AI. È la **confusione
@@ -488,11 +488,15 @@ non può stare *dentro* il modello, lo si mette *fra* le chiamate.
 
 ## Cercare i guasti prima che li trovi qualcun altro
 
-Resta il metodo con cui si scopre cosa non va. La sezione sull'allineamento e
-la governance ha già nominato il **red teaming** e le **evals**, e ne ha
-fissato la divisione dei compiti: la ricerca manuale scopre le categorie nuove,
-la suite ripetibile controlla che le vecchie non tornino. Su questa materia la
-divisione si vede benissimo, perché quasi tutte le famiglie di attacco
+Resta il metodo con cui si scopre cosa non va. Due nomi vanno presentati,
+perché la prossima sezione, sull'allineamento e la governance, li riprenderà
+in generale: il **red teaming** è il mestiere di chi attacca il proprio
+sistema apposta, per trovare le falle prima che le trovi qualcun altro; le
+**evals** (da *evaluation*) sono esami ripetibili, liste di prove con un voto,
+per controllare che le falle già corrette non tornino. La divisione dei
+compiti è questa: la ricerca manuale scopre le categorie nuove, la suite
+ripetibile controlla le vecchie. Su questa materia la divisione si vede
+benissimo, perché quasi tutte le famiglie di attacco
 descritte qui sopra le ha trovate una persona, non un generatore. Quello che
 vale la pena guardare da vicino è il meccanismo della metà automatica, l'unica
 che si può mettere in una pipeline e far girare su un sistema che cambia ogni
@@ -512,8 +516,9 @@ limiti già visti per l'*LLM-as-a-judge* nel capitolo di MLOps: è un surrogato,
 ha i suoi bias, e ottimizzare troppo contro di lui produce un sistema bravo a
 superare il giudice.
 
-Il limite di metodo è già stato enunciato in generale (passare le prove
-dimostra l'assenza dei fallimenti *cercati*), e qui morde più che altrove per
+Il limite di metodo vale per ogni collaudo, e la sezione successiva lo
+enuncerà in generale: passare le prove dimostra l'assenza dei fallimenti
+*cercati*, non la sicurezza in assoluto. Qui morde più che altrove per
 una ragione precisa: **un red team trova ciò che cerca**, cioè genera i
 tentativi dalle categorie che conosce, mentre l'ingresso è prosa libera e le
 formulazioni possibili non hanno un confine. È la **generalizzazione
@@ -528,7 +533,7 @@ descritte qui è una dimostrazione, e non lo diventa mettendole insieme: la
 formula da cui siamo partiti non ha un argomento per la provenienza, e finché
 non ce l'ha, qualunque separazione fra istruzioni e dati che avvenga *dentro*
 il modello è una separazione appresa, cioè probabile e non garantita. Una
-difesa strutturale richiederebbe una funzione $f_\theta(x, \tau)$ in cui a ogni
+difesa strutturale richiederebbe una funzione $f_\theta(X, \tau)$ in cui a ogni
 token sia associata un'etichetta $\tau_i \in \{\text{fidato},
 \text{non fidato}\}$, e richiederebbe soprattutto di **dimostrare**
 l'invarianza del comportamento rispetto alle istruzioni contenute nelle
@@ -547,13 +552,56 @@ garanzia, la si cerca **fuori** dal modello: in un componente che non si lascia
 persuadere, perché non legge il testo che dovrebbe convincerlo. Il modello si
 può rendere bravo; il confine bisogna costruirlo altrove.
 
+`````{tab} Elementare
+
+```{admonition} Da ricordare
+:class: important
+- Il difetto è **nel canale**: al modello arriva un testo solo, in cui le
+  istruzioni di chi gestisce il servizio, la domanda dell'utente e la pagina
+  appena scaricata stanno in fila senza un cartello che dica da dove vengono.
+  È il guaio di chi detta una lettera al telefono, ed è il guaio del fischietto
+  nella cornetta: parole che diventano ordini perché passano di lì dove passano
+  gli ordini.
+- **Jailbreak** e **prompt injection** hanno vittime diverse: nel primo è
+  l'utente a insistere per farsi dare quello che il fornitore vieta; nella
+  seconda l'ordine lo ha lasciato un estraneo dentro un documento, la vittima è
+  l'utente in buona fede, e chi attacca non ha bisogno di parlare con il
+  sistema.
+- Addestrare un modello a rifiutare è assumere un ottimo portiere, non
+  installare una porta blindata: la sua fermezza dipende da come gli si
+  presentano le cose, e vacilla quando due doveri tirano in direzioni opposte o
+  quando la richiesta arriva in una forma che nel suo addestramento non era mai
+  capitata. Anche la memoria lunga, che serve a imparare dagli esempi messi nel
+  testo, è una via d'ingresso: bastano abbastanza esempi finti.
+- L'ordine nascosto nei dati diventa **danno vero** quando l'assistente ha le
+  chiavi: servono tre ingredienti insieme, l'accesso a qualcosa che vale, la
+  lettura di roba scritta da estranei e un modo per mandare qualcosa fuori.
+  Se ci sono tutti e tre, la fuga di dati non deve rompere niente, deve solo
+  farsi eseguire.
+- Le difese, in ordine di quanto reggono: le raccomandazioni scritte nel prompt
+  (utili, ma non sono un confine), un secondo controllo che ispeziona quello che
+  entra e quello che esce (al prezzo di attese in più e di blocchi ingiusti), i
+  **permessi ridotti** con un pezzo di programma che decide al posto del modello
+  (l'unica che cambia la gravità di ciò che può succedere), la lavorazione
+  separata dei testi non fidati.
+- Attaccare il proprio sistema apposta va fatto, e va reso ripetibile: a mano
+  per scoprire, in automatico per non tornare indietro. Ma si trova quello che
+  si cerca, e «nessun tentativo riuscito» non vuol dire sicuro. Quando serve
+  davvero una garanzia, sta fuori dal modello.
+```
+
+`````
+
+`````{tab} Superiore
+
 ```{admonition} Da ricordare
 :class: important
 - Il difetto è **nel canale**: il modello riceve un'unica sequenza,
-  $f_\theta(x^{\text{sys}} \Vert x^{\text{usr}} \Vert x^{\text{dati}})$, senza
-  alcun argomento che porti la **provenienza**. È la stessa famiglia della SQL
-  injection e della segnalazione in banda: dati che diventano comandi perché
-  viaggiano dove viaggiano i comandi.
+  $f_\theta(X^{\text{sys}} \Vert X^{\text{usr}} \Vert
+  X^{\text{dati}})$, senza alcun argomento che porti la
+  **provenienza**. È la stessa famiglia della SQL injection e della
+  segnalazione in banda: dati che diventano comandi perché viaggiano dove
+  viaggiano i comandi.
 - **Jailbreak** e **prompt injection** hanno vittime diverse: nel primo è
   l'utente a forzare le regole del fornitore; nella seconda l'istruzione arriva
   da un terzo nascosta nei dati, la vittima è l'utente legittimo e
@@ -578,3 +626,5 @@ può rendere bravo; il confine bisogna costruirlo altrove.
   di risultati non è prova di sicurezza. La garanzia, quando serve, sta fuori
   dal modello.
 ```
+
+`````

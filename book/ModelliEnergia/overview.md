@@ -94,8 +94,9 @@ Z(\theta) = \int e^{-E_\theta(x')}\, dx',
 $$
 
 dove $Z(\theta)$ è la **funzione di partizione**, l'integrale (o la somma, nel
-caso discreto) su *tutto* lo spazio delle configurazioni. Ogni energia
-definisce una densità, e ogni densità strettamente positiva si riscrive come
+caso discreto) su *tutto* lo spazio delle configurazioni. Ogni energia per
+cui quell'integrale è finito definisce una densità, e ogni densità
+strettamente positiva si riscrive come
 energia, $E_\theta(x) = -\log p_\theta(x) + \text{cost.}$: le due descrizioni
 sono equivalenti *sulla carta*. Non lo sono nei conti. $Z(\theta)$ è il
 termine che nessuno sa calcolare quando $x$ è un'immagine, e metà di questo
@@ -109,17 +110,23 @@ tutt'altro che ovvia, che moltissimi compiti non ne hanno mai avuto bisogno.
 Perché lo stesso oggetto continua a riaffiorare sotto nomi diversi, e finché
 lo si incontra un pezzo per volta non lo si riconosce.
 
-Lo *score* dei modelli di diffusione (il gradiente della log-densità
-$\nabla_x \log p(x)$, che il capitolo precedente stima con una rete) è
-esattamente $-\nabla_x E(x)$: generare per denoising progressivo *è* scendere
-lungo un paesaggio di energia partendo dal rumore. Le architetture JEPA del
-prossimo capitolo sono energie non normalizzate che giudicano la compatibilità
-fra un pezzo di mondo osservato e uno da predire. Le reti di Hopfield
-«moderne» hanno una regola di aggiornamento che coincide, formula alla mano,
-con l'attenzione dei Transformer {cite}`ramsauer2021hopfield`. E il programma
-che LeCun ripete da anni in fondo alle sue conferenze contiene, come seconda
-delle quattro rinunce, «abbandonare il modello probabilistico in favore dei
-modelli a energia» {cite}`lecun2022path`.
+Prendiamo i modelli di diffusione del capitolo precedente. Generano partendo
+da un'immagine tutta sporca di rumore e pulendola un poco alla volta, e ogni
+passo di pulitura ha il suo paesaggio: all'inizio liscio, con poche valli
+larghe, poi via via più dettagliato. La grandezza che quei modelli imparano si
+chiama *score* (il gradiente della log-densità al livello di rumore $t$) ed è
+esattamente $-\nabla_x E_t(x)$: la pendenza del paesaggio di energia di quel
+passo. Generare per denoising progressivo *è* scendere lungo quella
+successione di paesaggi.
+
+Le architetture JEPA del prossimo capitolo sono energie non normalizzate che
+giudicano la compatibilità fra un pezzo di mondo osservato e uno da predire.
+Le reti di Hopfield «moderne» hanno una regola di aggiornamento che coincide,
+formula alla mano, con l'attenzione dei Transformer
+{cite}`ramsauer2021hopfield`. E il programma che LeCun ripete da anni in fondo
+alle sue conferenze contiene, come seconda delle quattro rinunce, «abbandonare
+il modello probabilistico in favore dei modelli a energia»
+{cite}`lecun2022path`.
 
 Quattro cose che sembravano quattro. Sono una sola, e questo capitolo la
 guarda in faccia.
@@ -152,21 +159,48 @@ classificatore che era un modello a energia senza saperlo
 conferenze, discusse per quello che sono: un programma di ricerca, non un
 verdetto.
 
+`````{tab} Elementare
+```{admonition} Da ricordare
+:class: important
+- Un **modello a energia** è una carta geografica in rilievo di tutte le
+  risposte possibili: ogni risposta ha la sua altezza, bassa se è sensata e
+  alta se è assurda. Rispondere significa lasciar rotolare una pallina e
+  guardare in che valle si ferma; imparare significa scavare le valli nei
+  punti giusti.
+- Le percentuali costano care: per dire onestamente «70% gatto» bisogna aver
+  pesato tutto quello che gatto non è. Il paesaggio non lo chiede mai: per
+  sapere quale di due risposte torna di più bastano due altezze messe a
+  confronto. Quel conto di tutto il resto del mondo, che nessuno riesce a
+  fare, è l'ostacolo con cui si scontra metà del capitolo.
+- Il **premio Nobel per la fisica del 2024** a Hopfield e Hinton ha ricordato
+  a tutti che questo modo di ragionare non se n'è mai andato: i generatori di
+  immagini del capitolo precedente ripuliscono il rumore seguendo la pendenza
+  di un paesaggio, e le reti di Hopfield di oggi fanno, con altri nomi, quello
+  che fa l'attenzione dei Transformer.
+- Nelle prossime pagine: la memoria che si ripara da sola, le reti che
+  imparano scaldandosi e raffreddandosi, i modi di girare intorno al conto
+  impossibile, e i paesaggi che si usano oggi.
+```
+`````
+
+`````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
 - Un **modello a energia** assegna un numero a ogni configurazione (basso se
   plausibile, alto se no) e risponde cercando il minimo:
-  $\hat{y} = \arg\min_y E_\theta(x, y)$. Niente probabilità da far sommare a
-  uno.
+  $\hat{y} = \arg\min_y E_\theta(\mathbf{x}, y)$. Niente probabilità da far
+  sommare a uno.
 - Energia e probabilità sono legate dalla distribuzione di Gibbs–Boltzmann,
-  $p_\theta(x) = e^{-E_\theta(x)}/Z(\theta)$. Il ponte si paga con la
-  **funzione di partizione** $Z(\theta)$, intrattabile in alta dimensione: è
-  il personaggio contro cui si scontra metà del capitolo.
+  $p_\theta(\mathbf{x}) = e^{-E_\theta(\mathbf{x})}/Z(\theta)$. Il ponte si
+  paga con la **funzione di partizione** $Z(\theta)$, intrattabile in alta
+  dimensione: è il personaggio contro cui si scontra metà del capitolo.
 - Il premio **Nobel per la fisica 2024** a Hopfield e Hinton ha riportato
   alla luce un filone che non se n'era mai andato: lo *score* della
-  diffusione è $-\nabla_x E$, la JEPA è un'energia non normalizzata, le
-  Hopfield moderne sono l'attenzione dei Transformer.
+  diffusione è $-\nabla_{\mathbf{x}} E_t$, una pendenza per ogni livello di
+  rumore; la JEPA è un'energia non normalizzata; le Hopfield moderne sono
+  l'attenzione dei Transformer.
 - Nel resto del capitolo: memoria associativa, macchine di Boltzmann e
   contrastive divergence, i modi di aggirare $Z$, la cornice
   dell'*energy-based learning* e i modelli a energia di oggi.
 ```
+`````

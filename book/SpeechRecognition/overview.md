@@ -87,13 +87,15 @@ $$
 \underbrace{P(W)}_{\text{modello di linguaggio}}.
 $$
 
-Il **modello acustico** $P(X \mid W)$ misura quanto i suoni osservati siano
-compatibili con una data sequenza di parole; storicamente era un *Hidden Markov
-Model* con emissioni modellate da misture di gaussiane (GMM). Il **modello di
+(Il denominatore $P(X)$ di Bayes è sparito legittimamente: non dipende da $W$,
+quindi non altera l'argmax.) Il **modello acustico** $P(X \mid W)$ misura
+quanto i suoni osservati siano compatibili con una data sequenza di parole;
+storicamente era un *Hidden Markov Model* con emissioni modellate da misture
+di gaussiane (GMM). Il **modello di
 linguaggio** $P(W)$ assegna una probabilità a priori alle frasi ($n$-grammi,
 oggi reti neurali) ed è quello che disambigua gli omofoni. Dal 2012 le reti
-neurali profonde sostituiscono le GMM nel modello acustico (Hinton et al.,
-2012), tagliando in modo netto il tasso di errore.
+neurali profonde sostituiscono le GMM nel modello acustico
+{cite}`hinton2012deep`, tagliando in modo netto il tasso di errore.
 
 `````
 
@@ -142,11 +144,15 @@ originale.
 
 Il segnale continuo viene diviso in **frame** sovrapposti (finestre di circa
 25 ms, una ogni 10 ms). Su ogni frame si calcola lo spettro con la trasformata
-di Fourier a tempo breve, lo si filtra su scala **Mel** (che imita la
-sensibilità non lineare dell'orecchio umano) e lo si comprime nei **MFCC**
-(*Mel-Frequency Cepstral Coefficients*): un vettore $x_t \in \mathbb{R}^{d}$ di
-poche decine di componenti per frame. È la matrice $X$ così ottenuta a entrare
-nel modello acustico.
+di Fourier a tempo breve e lo si filtra su scala **Mel** (che imita la
+sensibilità non lineare dell'orecchio umano); il logaritmo delle energie di
+banda dà il *log-mel*, e una trasformata coseno discreta (DCT), che decorrela
+i coefficienti, lo comprime nei **MFCC** (*Mel-Frequency Cepstral
+Coefficients*): un vettore $x_t \in \mathbb{R}^{d}$ di poche decine di
+componenti per frame. I sistemi neurali end-to-end, Whisper compreso, si
+fermano di solito al log-mel (la decorrelazione serviva alle covarianze
+diagonali delle GMM); in entrambi i casi è la matrice $X$ così ottenuta a
+entrare nel modello acustico.
 
 `````
 

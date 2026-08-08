@@ -6,14 +6,18 @@ passaggio giusto («Il gatto nero salta sul muro del giardino») con similarità
 quasi perfetta. Ma al secondo posto si era intrufolato un impostore, «Il gatto
 dorme accanto ai fornelli»: vicino per tema, muto sulla domanda. Era il
 **quasi-pertinente**, e non era un incidente di percorso. Era il sintomo di un
-limite di fondo che avevamo enunciato senza troppi giri di parole: il recall
-del retriever è il **tetto** dell'intero sistema. Ciò che la ricerca non porta
-a galla, la risposta non potrà mai contenere, per quanto bravo sia il
-generatore a valle {cite}`lewis2020retrieval`.
+limite di fondo che avevamo enunciato senza troppi giri di parole: ciò che la
+ricerca non porta a galla, la risposta non potrà mai contenerlo, per quanto
+bravo sia il modello che poi la scrive. In una parola, il *recall* (la quota
+dei passaggi giusti che la ricerca riesce a ripescare) è il **tetto**
+dell'intero sistema {cite}`lewis2020retrieval`.
 
-La RAG di base, così come l'abbiamo costruita (recupero denso con un
-bi-encoder, coseno, top-$k$, prompt aumentato {cite}`karpukhin2020dense`) è un
-ottimo punto di partenza e un pessimo punto di arrivo. Questa sezione
+La RAG di base, così come l'abbiamo costruita, faceva tre gesti: trasformava
+domanda e passaggi in punti su una mappa del significato, prendeva i pochi
+passaggi più vicini alla domanda (quanti, lo decidiamo noi: diciamo i primi
+cinque) e li incollava nel foglietto di istruzioni che si dà al modello, il
+*prompt*, prima di fargli scrivere la risposta {cite}`karpukhin2020dense`. È
+un ottimo punto di partenza e un pessimo punto di arrivo. Questa sezione
 raccoglie le tecniche che spingono quel tetto più in alto: intervengono sulle
 tre giunture della pipeline; **prima** di cercare (migliorando la domanda),
 **dopo** aver cercato (riordinando i candidati), e **attorno** all'intero
@@ -102,26 +106,34 @@ Embeddings* {cite}`gao2023hyde`) e risolve un problema geometrico preciso: la
 **asimmetria** tra query e documenti. Una domanda («su cosa salta il gatto?»)
 e il passaggio che la soddisfa («il gatto salta sul muro») sono testi di forma
 diversa, e un bi-encoder addestrato genericamente può collocarli non così
-vicini quanto vorremmo. HyDE aggira l'ostacolo: invece di codificare la query,
-chiede a un LLM di generare un documento *ipotetico* di risposta
-$\tilde{d} = \mathrm{LLM}(q)$ e cerca con l'embedding di quello,
+vicini quanto vorremmo. HyDE aggira l'ostacolo: chiede a un LLM di generare
+$N$ documenti *ipotetici* di risposta e interroga l'indice con la media dei
+loro embedding e di quello della query,
 
 $$
-v_{\text{ricerca}} = E_p(\tilde{d}), \qquad \tilde{d} = \mathrm{LLM}(q),
+v_{\text{ricerca}} = \frac{1}{N+1} \Big( \sum_{i=1}^{N} E_p(\tilde{d}_i) + E_p(q) \Big),
+\qquad \tilde{d}_i \sim \mathrm{LLM}(\,\cdot \mid q\,),
 $$
 
-dove $q$ è la domanda, $\tilde{d}$ la risposta ipotetica generata, $E_p$
-l'encoder dei passaggi (lo stesso che ha indicizzato l'archivio) e
+dove $q$ è la domanda, le $\tilde{d}_i$ sono $N$ risposte ipotetiche
+**campionate indipendentemente** dal modello condizionato sulla domanda (il
+campionamento è essenziale: con una decodifica deterministica le $N$
+generazioni coinciderebbero e la media collasserebbe su un solo embedding),
+$E_p$ l'encoder dei passaggi (lo stesso che ha indicizzato l'archivio, e che
+qui codifica anche la query, trattata come un documento in più) e
 $v_{\text{ricerca}}$ il vettore con cui si interroga l'indice. L'intuizione è
-che $\tilde{d}$, pur potendo contenere errori fattuali, vive nello **spazio
-delle risposte** (la stessa regione dove abitano i passaggi veri) e ci
-somiglia più di quanto ci somigli la domanda. In pratica $\tilde{d}$ è
-generato dall'LLM e poi **codificato** con l'encoder dei documenti, non con
-quello delle query: le allucinazioni del modello non finiscono nella risposta
-finale, servono solo da esca per il recupero. Le riscritture multi-query si
-formalizzano invece come unione dei risultati, spesso fusi con la **reciprocal
-rank fusion**, che somma per ogni documento i reciproci del suo rango nelle
-diverse liste.
+che le $\tilde{d}_i$, pur potendo contenere errori fattuali, vivono nello
+**spazio delle risposte** (la stessa regione dove abitano i passaggi veri) e
+ci somigliano più di quanto ci somigli la domanda; tenere anche la query nella
+media àncora comunque la ricerca a ciò che l'utente ha chiesto davvero. In
+pratica i documenti ipotetici sono generati dall'LLM e poi **codificati** con
+l'encoder dei documenti: le allucinazioni del modello non finiscono nella
+risposta finale, servono solo da esca per il recupero. Le riscritture
+multi-query si formalizzano invece come unione dei risultati, spesso fusi con
+la **reciprocal rank fusion** {cite}`cormack2009reciprocal`: a ogni documento
+si assegna il punteggio $\sum 1/(c + r)$, sommando sui ranghi $r$ che occupa
+nelle diverse liste, dove $c$ è una costante di smorzamento ($60$
+nell'articolo originale) che evita di sovrappesare i primissimi posti.
 
 `````
 
@@ -139,10 +151,12 @@ il vicino esatto.
 
 Prima di riordinare bisogna aver recuperato, e {numref}`fig-hnsw` mostra come
 lo fa un archivio vettoriale vero: non confrontando la domanda con tutti i
-passaggi, che sarebbe corretto e impraticabile, ma scendendo per strati. La
-ricerca approssimata rinuncia alla garanzia di trovare *sempre* il vicino
-migliore, in cambio di un tempo che cresce con il logaritmo, ed è anche il
-motivo per cui il recupero grezzo va tenuto generoso.
+passaggi a uno a uno, che sarebbe esatto e impraticabile, ma per scale
+successive, come si cerca un indirizzo in una città (prima il quartiere, poi
+l'isolato, poi il numero civico). Si rinuncia così alla garanzia di trovare
+*sempre* il vicino migliore, in cambio di una ricerca incomparabilmente più
+rapida; ed è un altro motivo per cui il recupero grezzo va tenuto generoso,
+perché per strada qualche buon candidato si perde.
 
 La seconda leva agisce a valle del recupero. Nella sezione «Cercare per
 rispondere» avevamo già distinto due architetture: il **bi-encoder**, che
@@ -154,7 +168,8 @@ accurato, ma troppo costoso per scandagliare milioni di documenti. La
 soluzione, l'avevamo anticipata, è usarli **in due stadi**.
 
 Il primo stadio, il bi-encoder, fa il grosso: spazza l'intero archivio e
-restituisce non i $k$ finali, ma molti più candidati grezzi (cinquanta, cento)
+restituisce non i pochi passaggi che finiranno sotto gli occhi del modello, ma
+molti più candidati grezzi (cinquanta, cento)
 tra cui, si spera, ci sono anche i migliori. Il secondo stadio, il
 **reranker** cross-encoder, si applica *solo* a quella rosa ristretta e la
 riordina con cura, promuovendo i passaggi che davvero rispondono e affondando
@@ -177,14 +192,24 @@ rovinoso; applicarlo ai cinquanta scremati è esattamente il punto giusto.
 
 `````{tab} Superiore
 
+La struttura che rende possibile la ricerca «per scale» della figura è
+**HNSW** {cite}`malkov2020hnsw` (*Hierarchical Navigable Small World*): un
+grafo a strati in cui quelli alti tengono pochi nodi con archi lunghi, buoni
+per attraversare in fretta lo spazio, e quelli bassi tutti i punti con archi
+solo fra vicini. La discesa strato per strato è una ricerca *approssimata*: in
+cambio della garanzia di esattezza, gli autori misurano empiricamente un tempo
+di ricerca che cresce come il **logaritmo** del numero di vettori, cioè
+raddoppiare l'archivio costa un pugno di confronti in più, non il doppio.
+
 Formalmente il primo stadio ordina l'archivio con la similarità del bi-encoder
-$E_q(q)^\top E_p(d)$ e ne trattiene i primi $N \gg k$; il secondo riordina
+$E_q(q)^\top E_p(d)$ e ne trattiene i primi $N$; il secondo riordina
 questi $N$ con il punteggio del cross-encoder
 $\mathrm{score}(q, d) = \mathrm{CrossEnc}([q; d])$, dove $[q; d]$ è la
 concatenazione dei due testi data in input a un unico Transformer, e tiene i
-primi $k$. Il costo del reranking è $N$ inferenze di cross-encoder per query:
-accettabile con $N$ nell'ordine delle decine o centinaia, proibitivo
-sull'intero archivio.
+primi $k$, cioè i passaggi che entreranno davvero nel prompt del generatore
+(si sceglie $N \gg k$: tipicamente $N$ nell'ordine delle decine o centinaia,
+$k$ pochi). Il costo del reranking è $N$ inferenze di cross-encoder per query:
+accettabile con quei valori di $N$, proibitivo sull'intero archivio.
 
 Tra i due estremi esiste una via di mezzo elegante: l'**interazione tardiva**
 di **ColBERT** {cite}`khattab2020colbert`. Invece di collassare ogni testo in
@@ -433,9 +458,13 @@ del contesto** misurano la qualità del recupero a monte: quanti dei passaggi
 recuperati sono rilevanti (precision) e quanti dei rilevanti sono stati
 recuperati (recall); quest'ultimo è proprio il *tetto* da cui siamo partiti.
 Il quadro operativo di riferimento è **RAGAS** {cite}`es2024ragas`, che
-calcola queste metriche **senza risposte di riferimento** (*reference-free*),
-affidandole a un LLM che fa da giudice: è comodo perché non richiede un
-dataset etichettato a mano, ma eredita in blocco i limiti
+nell'articolo originale propone tre metriche **senza risposte di riferimento**
+(*reference-free*): fedeltà, pertinenza della risposta e rilevanza del
+contesto (una precision), affidate a un LLM che fa da giudice. La recall del
+contesto fa eccezione: per contare i rilevanti *mancati* serve una risposta di
+riferimento annotata, e infatti la libreria la calcola solo se gliene si dà
+una. Il reference-free è comodo perché non richiede un dataset etichettato a
+mano, ma eredita in blocco i limiti
 dell'**LLM-as-a-judge** che vedremo nel capitolo conclusivo sull'MLOps (il
 *position bias*, il *verbosity bias*, l'auto-preferenza) e va perciò calibrato
 contro un campione di giudizi umani, mai preso per oracolo.
@@ -464,7 +493,8 @@ chi la usa dal dovere di scegliere bene cosa mettere nell'archivio.
   *ipotetica* e cerca con quella, perché vive nello spazio dei documenti veri
   più vicino della domanda.
 - **Reranking in due stadi**: il **bi-encoder** recupera tanti candidati grezzi
-  (veloce), un **cross-encoder** riordina i primi $N$ (preciso ma costoso).
+  (veloce), un **cross-encoder** riordina solo quella rosa ristretta (preciso
+  ma costoso).
   **ColBERT** {cite}`khattab2020colbert` è la via di mezzo, con MaxSim
   token-a-token ed embedding precalcolabili. Nel codice il reranking scaccia il
   quasi-pertinente dai primi posti.
@@ -474,8 +504,9 @@ chi la usa dal dovere di scegliere bene cosa mettere nell'archivio.
   volte (multi-hop). Ogni giro in più costa **latenza e denaro**.
 - **Valutare**: **fedeltà**/*groundedness* (la risposta è supportata dai
   passaggi?), pertinenza della risposta, precision/recall del contesto.
-  **RAGAS** {cite}`es2024ragas` le stima con un LLM-giudice, con i bias
-  dell'**LLM-as-a-judge** del capitolo sull'MLOps.
+  **RAGAS** {cite}`es2024ragas` stima le prime tre senza risposte di
+  riferimento, con un LLM-giudice (la recall del contesto vuole una risposta
+  annotata) e con i bias dell'**LLM-as-a-judge** del capitolo sull'MLOps.
 - Fedeltà **non è** verità: una risposta fedele a un documento sbagliato è
   sbagliata, e una citazione corretta non salva una risposta che travisa la
   fonte.

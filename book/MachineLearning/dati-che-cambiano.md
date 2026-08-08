@@ -60,9 +60,17 @@ Formalmente, assumiamo che le coppie $(X^{(i)}, y^{(i)})$ del training e
 quelle che il modello vedrà in produzione siano estratte in modo
 **indipendente e identicamente distribuito** (i.i.d.) da un'unica
 distribuzione congiunta $P(X, y)$. Sotto questa ipotesi l'errore misurato sul
-campione converge, per la legge dei grandi numeri, all'errore atteso:
-minimizzare la loss empirica è una buona approssimazione del minimizzare il
-rischio vero.
+campione converge, per la legge dei grandi numeri, all'errore atteso di
+qualunque modello *fissato in anticipo*. Perché la stessa garanzia valga per
+il modello scelto minimizzando sui dati serve di più: che la classe di ipotesi
+abbia capacità limitata (in gergo, la convergenza *uniforme* della teoria
+dell'apprendimento statistico). È lo stesso controllo della complessità
+incontrato con l'overfitting, che di quella garanzia è appunto il
+controesempio: quando la capacità non è limitata, l'errore sul campione può
+essere azzerato senza che questo dica più nulla sull'errore atteso. Quando
+invece valgono entrambe le condizioni, campionamento i.i.d. e capacità
+limitata, minimizzare la loss empirica è una buona approssimazione del
+minimizzare il rischio vero.
 
 Quando le due distribuzioni divergono,
 $P_{\text{train}}(X, y) \neq P_{\text{test}}(X, y)$, si parla di **dataset

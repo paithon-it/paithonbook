@@ -13,7 +13,11 @@ grafo rispetto a qualunque suo ingresso. Se gli chiediamo la derivata
 dell'uscita della rete **rispetto all'input**, otteniamo qualcosa che finora
 non ci era mai servito: data una rete $u_\theta(t)$ che riceve un istante $t$
 e restituisce un numero, possiamo calcolare $u_\theta'(t)$ e $u_\theta''(t)$
-in qualunque punto, esatte a meno della precisione di macchina. La rete smette
+in qualunque punto, esatte a meno della precisione di macchina. (Gli apici
+sono la notazione delle derivate, e in parole semplici dicono questo: $u'$ è
+la **pendenza** della curva in quell'istante, quanto in fretta sale o
+scende; $u''$ è la sua **curvatura**, quanto in fretta cambia la pendenza
+stessa.) La rete smette
 di essere soltanto una scatola addestrabile: diventa una **funzione
 derivabile**, un oggetto matematico a pieno titolo. E a una funzione
 derivabile si può chiedere di rispettare un'equazione differenziale.
@@ -64,13 +68,17 @@ $$
 \mathcal{L}(\theta) =
 \underbrace{\frac{1}{N_c} \sum_{j=1}^{N_c} r_\theta(t_j)^2}_{\text{fisica}}
 \;+\;
-\lambda \underbrace{\Big[ \big(u_\theta(0) - u_0\big)^2
+\lambda_0 \underbrace{\Big[ \big(u_\theta(0) - u_0\big)^2
 + \big(u_\theta'(0) - v_0\big)^2 \Big]}_{\text{condizioni iniziali}},
 $$
 
 dove i $t_j$ sono gli $N_c$ **punti di collocazione** (istanti sparsi nel
 dominio, casuali o equispaziati, nei quali esigiamo il rispetto
-dell'equazione) e $\lambda > 0$ bilancia i due termini. Per una PDE su un
+dell'equazione) e $\lambda_0 > 0$ bilancia i due termini. Lo chiamiamo
+$\lambda_0$, e non $\lambda$, perché non è lo stesso peso della loss vista in
+apertura di capitolo: là $\lambda$ moltiplicava il termine di fisica, qui il
+peso sta sulle condizioni iniziali. Dove metterlo è convenzione; ciò che
+conta è il rapporto fra i termini. Per una PDE su un
 dominio spaziale si aggiunge un termine identico per le **condizioni al
 contorno**, con punti campionati sul bordo; e se esistono misure $(t_i, u_i)$
 si aggiunge il termine dati
@@ -82,10 +90,33 @@ incrementali né passo di discretizzazione.
 
 Un dettaglio che sembra pedante e non lo è: il termine di fisica, da solo,
 ha un minimo banale, perché la funzione $u \equiv 0$ risolve l'equazione
-omogenea con residuo nullo ovunque. Sono le condizioni iniziali a
-selezionare *la* soluzione tra le infinite; per questo in pratica si sceglie
-$\lambda$ ben maggiore di 1: quelle due condizioni sono l'unico ancoraggio,
-e vanno difese dal peso schiacciante degli altri termini.
+omogenea con residuo nullo ovunque. Il termine sulle condizioni iniziali
+serve dunque a **selezionare**, dentro la famiglia delle soluzioni
+dell'equazione (per una lineare del secondo ordine come quella della prossima
+sezione, uno spazio a due dimensioni), proprio la nostra: senza di esso nulla
+distingue la traiettoria che parte da $u(0)=1$ da quella che se ne sta ferma
+a zero.
+Attenzione però a non promettere troppo: nemmeno con quel termine il
+minimizzatore della loss è unico in senso stretto. Con $N_c$ punti di
+collocazione *finiti*, infinite funzioni annullano il residuo **in quei
+punti** e rispettano le due condizioni iniziali; la soluzione vera è l'unico
+minimo globale se ci si restringe alle soluzioni dell'equazione, ovvero nel
+limite in cui il residuo è controllato su tutto il dominio e non solo sul
+campione. Nel mezzo ci pensa la regolarità della rete, che non può oscillare
+selvaggiamente fra un punto di collocazione e il successivo: ecco perché i
+punti vanno abbastanza fitti rispetto alle scale della soluzione.
+
+Perché allora in pratica si sceglie $\lambda_0$ ben maggiore di 1? Non per
+selezionare il minimo, ma per raggiungerlo. La ragione non è un conteggio
+(entrambi i termini sono medie, e infittire i punti di collocazione non
+sposta la bilancia): è che il residuo si ottiene applicando alla rete degli
+**operatori differenziali**, e i gradienti che tornano indietro da quel ramo
+hanno ampiezze tipiche di ordini di grandezza superiori a quelli del termine
+sulle condizioni iniziali. Il flusso del gradiente diventa rigido, i pesi si
+muovono quasi solo nella direzione dettata dalla fisica e la discesa trascura
+il suo unico ancoraggio. Riequilibrare i pesi, a mano o con schemi adattativi
+che stimano quelle ampiezze durante l'addestramento, compensa lo squilibrio
+{cite}`wang2021understanding`.
 
 `````
 
@@ -146,10 +177,11 @@ neppure un punto, tranne la partenza.
 `````{tab} Superiore
 
 È un'equazione lineare del secondo ordine a coefficienti costanti: si
-risolve con l'equazione caratteristica $m\lambda^2 + c\lambda + k = 0$,
-ovvero $\lambda^2 + 0{,}4\,\lambda + 4 = 0$. Il discriminante è negativo
+risolve con l'equazione caratteristica $m s^2 + c s + k = 0$,
+ovvero $s^2 + 0{,}4\,s + 4 = 0$ (la lettera $s$, e non $r$, che in questo
+capitolo è già il residuo). Il discriminante è negativo
 ($0{,}16 - 16 < 0$): radici complesse coniugate
-$\lambda = -\gamma \pm i\,\omega_d$, con
+$s = -\gamma \pm i\,\omega_d$, con
 
 $$
 \gamma = \frac{c}{2m} = 0{,}2,
@@ -270,10 +302,15 @@ for epoca in range(30_000):
 ```
 
 Il primo argomento nuovo è `torch.ones_like(u)`: `u` è una colonna di 200
-valori, uno per punto di collocazione, e autograd (che di suo calcola prodotti
-vettore–jacobiana) con un vettore di uni restituisce in un colpo solo tutte le
-200 derivate. Poiché ogni $u_j$ dipende soltanto dal suo $t_j$, non c'è alcuna
+valori, uno per punto di collocazione, e il vettore di uni dice ad autograd
+«dammi la derivata di ciascuno», tutte le 200 in un colpo solo[^vjp]. Poiché
+ogni $u_j$ dipende soltanto dal suo $t_j$, non c'è alcuna
 mescolanza: nella colonna `u_t` la riga $j$ è esattamente $u_\theta'(t_j)$.
+
+[^vjp]: Per la precisione, quello che autograd calcola nativamente è un
+    prodotto vettore–jacobiana $v^\top J$: qui $v$ è il vettore di uni e la
+    jacobiana è diagonale (ogni uscita dipende da un solo ingresso), quindi
+    il prodotto restituisce esattamente la colonna delle derivate.
 
 Il secondo è `create_graph=True`, e senza non funzionerebbe niente: chiede ad
 autograd di *registrare anche il calcolo della derivata*, così che la derivata
@@ -285,11 +322,16 @@ calcolo delle derivate per arrivare fino ai pesi. È una derivata di una
 derivata (il registratore che registra sé stesso) ed è il motivo per cui ogni
 epoca di una PINN costa più di un'epoca di regressione ordinaria.
 
-Notare infine il peso $100$ sulla `loss_iniziale`: come detto sopra, il
-termine di fisica da solo sarebbe felicissimo con la soluzione nulla
-$u \equiv 0$; le due condizioni iniziali sono l'unica cosa che gliela vieta, e
-vanno protette. Trentamila epoche di Adam {cite}`kingma2015adam` dopo, il
-verdetto, confrontando con la soluzione analitica calcolata in NumPy:
+Notare infine il peso $100$ davanti alla `loss_iniziale`. Senza di esso
+resterebbe aperta una scorciatoia imbarazzante: una curva piatta, ferma sullo
+zero per sempre, rispetta la regola della molla in ogni punto (un peso fermo
+al centro, senza nessuno che lo sposti, resta fermo) e quindi dal primo
+termine non prende nemmeno una penalità. A vietare quella scorciatoia ci sono
+solo le due condizioni di partenza, che però da sole tirano poco: riguardano
+un istante soltanto, mentre l'altro termine tira sull'intera curva e finisce
+per dettare quasi da solo come cambiare i pesi. Moltiplicarle per 100 serve a
+dare loro voce. Trentamila epoche di Adam {cite}`kingma2015adam` dopo, ecco
+il verdetto, confrontando con la soluzione analitica calcolata in NumPy:
 
 ```python
 # La soluzione analitica, per dare i voti alla rete
@@ -356,9 +398,14 @@ qualunque punto.
 
 Quanto alla storia, un'onestà dovuta: l'idea non nasce nel 2019. Isaac
 Lagaris, Aristidis Likas e Dimitrios Fotiadis pubblicano nel 1998 un metodo
-che è, a tutti gli effetti, questo {cite}`lagaris1998artificial`: MLP come
+che è, in sostanza, questo {cite}`lagaris1998artificial`: MLP come
 soluzioni di prova di ODE e PDE, addestrati a minimizzare il residuo sui punti
-di collocazione. Ma nel 1998 le derivate della rete andavano ricavate con
+di collocazione. Con una differenza che merita di essere annotata: Lagaris
+costruiva la soluzione di prova in modo che condizioni iniziali e al contorno
+fossero soddisfatte *esattamente*, per costruzione, e restava da minimizzare
+il solo residuo; la PINN le impone invece come penalità nella loss, una
+scelta che semplifica il metodo ma che, come vedremo nella prossima sezione,
+ha un costo. Ma nel 1998 le derivate della rete andavano ricavate con
 formule scritte a mano, caso per caso, e l'ottimizzazione girava su CPU
 dell'epoca: l'idea restò di nicchia per vent'anni. Quando Maziar Raissi, Paris
 Perdikaris e George Karniadakis la rilanciano nel 2019
@@ -394,8 +441,10 @@ loss_dati = ((rete(t_oss) - u_oss) ** 2).mean()
 loss = loss_fisica + 100.0 * loss_dati
 ```
 
-dove `t_oss` e `u_oss` sono i tensori delle misure. Non è cambiato nulla
-nel meccanismo: `k_appreso` è entrato nella lista dei parametri
+dove `t_oss` e `u_oss` sono i tensori delle misure. E la `loss_iniziale`?
+Non serve più: l'ancoraggio che prima spettava alle condizioni iniziali ora
+lo danno le 25 misure, e il loro termine ne prende il posto (e il peso). Non
+è cambiato nulla nel meccanismo: `k_appreso` è entrato nella lista dei parametri
 dell'ottimizzatore, il gradiente della loss scende anche lungo di lui, e a
 ogni passo Adam aggiusta insieme la curva *e* la legge, finché le due cose
 non vanno d'accordo con le osservazioni. Partendo dal valore volutamente
@@ -410,6 +459,50 @@ del decesso, il geofisico che deduce la struttura del sottosuolo dalle onde
 sismiche, l'ingegnere che stima l'usura di un componente dai sensori; la
 famiglia di problemi in cui le PINN non hanno rivali comodi. La prossima
 sezione è dedicata a loro.
+
+`````{tab} Elementare
+
+```{admonition} Da ricordare
+:class: important
+- Il colpo di scena: lo stesso meccanismo che finora diceva di quanto
+  ritoccare ciascun peso sa dire anche **quanto la curva della rete sale o
+  scende**, e quanto in fretta cambia quella pendenza, in qualunque istante e
+  senza approssimazioni. La rete smette di essere una scatola e diventa una
+  curva regolare, alla quale si può chiedere di rispettare una regola.
+- Il punteggio da abbassare somma due voci: le violazioni della regola nei
+  punti di controllo aperti a caso (i **punti di collocazione**) e gli scarti
+  sulla partenza, cioè il punto da cui si parte e la pendenza con cui si
+  parte (per un problema esteso nello spazio, anche cosa succede ai bordi).
+  Se ci sono misure, entrano come terza voce. Alla partenza si dà più peso,
+  perché è l'unico ancoraggio che c'è.
+- **La curva dev'essere liscia**: se è fatta di segmenti dritti incollati
+  uno dopo l'altro, come quelli che escono dalla ReLU, non ha curvatura da
+  nessuna parte, e il professore non vedrebbe più il pezzo più importante
+  della regola. Per questo qui si torna alla vecchia S centrata nello zero,
+  che invece piega dolcemente dappertutto.
+- **Il registratore deve annotare anche i propri conti.** Per sapere quanto
+  la curva sale in un istante gli si chiede di riavvolgere i calcoli; ma
+  quella pendenza serve poi altre due volte, per ricavarne la curvatura e per
+  far arrivare la correzione fino ai pesi. Quindi, con un'apposita opzione,
+  gli si dice di tenere memoria anche del conto della pendenza. È il motivo
+  per cui un giro di addestramento di una PINN costa più di uno normale.
+- Sulla molla con attrito (massa 1, attrito 0,4, rigidezza 4) la rete ricalca
+  la curva vera, un'oscillazione ogni 3,2 secondi circa e ampiezza scesa a
+  circa un settimo dopo 10 secondi, senza aver mai visto un solo valore della
+  soluzione oltre la partenza.
+- Non è unire i puntini (di puntini non ce n'è nessuno) e non è un conto
+  fatto a passettini su una griglia di istanti: quello che resta alla fine è
+  una **curva intera**, che risponde a qualunque istante le si chieda, anche
+  a 3,7 secondi, anche in mezzo a due punti qualsiasi, senza tabelle da
+  interpolare.
+- **Problema inverso**: se un pezzo della regola manca (quanto è rigida la
+  molla), diventa una manopola in più che l'addestramento gira insieme alla
+  curva, bastano poche misure rumorose. È la mossa che rende uniche le PINN.
+```
+
+`````
+
+`````{tab} Superiore
 
 ```{admonition} Da ricordare
 :class: important
@@ -435,3 +528,5 @@ sezione è dedicata a loro.
   per stimarlo da poche misure rumorose, insieme alla soluzione. È la mossa
   che rende uniche le PINN.
 ```
+
+`````

@@ -1,15 +1,16 @@
 # Introduzione
 
-Come direbbe Joseph Weizenbaum, informatico tedesco emigrato negli Stati
-Uniti, professore al MIT e creatore di ELIZA, il primo *chatbot* della storia,
-un programma che già a metà degli anni Sessanta permetteva a un essere umano
-di conversare per iscritto con una macchina {cite}`weizenbaum1966eliza`:
+Joseph Weizenbaum, informatico tedesco emigrato negli Stati Uniti, professore
+al MIT e creatore di ELIZA, il primo *chatbot* della storia, un programma che
+già a metà degli anni Sessanta permetteva a un essere umano di conversare per
+iscritto con una macchina, apriva così l’articolo in cui lo presentava al
+mondo {cite}`weizenbaum1966eliza`:
 
->L’intelligenza artificiale è straordinariamente resistente al tentativo di una precisa definizione.
+>Si dice che spiegare significhi spiegare via.
 
-Weizenbaum, che voleva dimostrare la superficialità della comunicazione tra uomo e macchina, rimase estremamente sorpreso dal numero di persone che attribuivano sentimenti umani al suo programma. Ma siamo sicuri che sia solo una semplice lista di istruzioni quella da lui creata? O c’è qualcosa di più? Se è un semplice programma, perché attribuirgli una parola così ricca di significato come l’*intelligenza*?
+Nei programmi che sembrano intelligenti, osservava, questa massima si compie alla perfezione: finché il meccanismo resta nascosto la macchina appare prodigiosa; appena qualcuno lo spiega, l’incanto si sgretola. Eppure Weizenbaum, che voleva dimostrare la superficialità della comunicazione tra uomo e macchina, rimase estremamente sorpreso dal numero di persone che attribuivano sentimenti umani al suo programma. Ma siamo sicuri che sia solo una semplice lista di istruzioni quella da lui creata? O c’è qualcosa di più? Se è un semplice programma, perché attribuirgli una parola così ricca di significato come l’*intelligenza*?
 
-E poi, cos’è questa intelligenza artificiale (o **AI** dall’inglese *Artificial Intelligence*), che così velocemente, anno dopo anno, perfezionamento dopo perfezionamento, sfugge inesorabilmente ad una “*precisa definizione*”?
+E poi, cos’è questa intelligenza artificiale (o **AI** dall’inglese *Artificial Intelligence*), che così velocemente, anno dopo anno, perfezionamento dopo perfezionamento, sembra sfuggire inesorabilmente a ogni tentativo di definizione precisa?
 
 ## Le Origini dell'Intelligenza Artificiale
 
@@ -44,7 +45,7 @@ ostacoli sul percorso. Il suo nome è ARGO e nel giugno 1998, nella prova
 “MilleMiglia in Automatico”, percorse quasi 2.000 km di strade e autostrade
 italiane guidando in autonomia per oltre il 90% del tragitto.
 
-Nel 2010 il gruppo di Broggi è riuscito a far guidare autonomamente delle auto dall’Italia… alla Cina! La sfida si chiamava VIAC (VisLab Intercontinental Autonomous Challenge) e ha coinvolto quattro veicoli su un viaggio di quasi 16.000 chilometri (9.900 miglia) da Parma a Shanghai, percorso in larga parte senza intervento umano.
+Nel 2010 il gruppo di Broggi è riuscito a far guidare autonomamente delle auto dall’Italia… alla Cina! La sfida si chiamava VIAC (VisLab Intercontinental Autonomous Challenge) e ha coinvolto quattro veicoli su un viaggio di circa 13.000 chilometri da Parma a Shanghai, percorso in larga parte senza intervento umano.
 
 Del resto, i pensatori si interrogano su queste idee da millenni. Aristotele, nel IV secolo a.C., fu il primo a formulare un insieme preciso di leggi che governano la parte razionale della mente: sviluppò un sistema basato sui sillogismi che, in teoria, consentiva a chiunque di ottenere meccanicamente le conclusioni a partire dalle premesse. Hobbes, nel Seicento, ipotizzò che il ragionamento umano avesse a che fare con meccanismi simili al calcolo numerico, come se noi “eseguissimo” addizioni e sottrazioni nei nostri pensieri. Pascal scrisse che la “macchina aritmetica” produce effetti che sembrano più vicini al pensiero di tutte le azioni degli animali, e costruì la Pascalina, una delle prime macchine calcolatrici (la prima in assoluto risulta essere quella di Wilhelm Schickard, nel 1623). Infine, Cartesio fornì la prima discussione chiara sulla distinzione tra mente e materia.
 
@@ -78,19 +79,28 @@ sia la macchina a scoprire come.
 
 `````{tab} Superiore
 Formalmente, si descrive il comportamento del sistema con dei parametri
-$\theta$ e si definisce una funzione da ottimizzare: un’utilità $J(\theta)$
-da massimizzare oppure, in modo equivalente, una perdita (*loss*)
-$\mathcal{L}(\theta)$ da minimizzare,
+$\theta$ e se ne misura la qualità con un’utilità attesa
 
 $$
-\theta^\star = \arg\max_{\theta} J(\theta)
-\qquad \text{ovvero} \qquad
-\theta^\star = \arg\min_{\theta} \mathcal{L}(\theta),
+J(\theta) = \mathbb{E}\!\left[\, U \mid \theta \,\right],
 $$
 
-dove $\theta^\star$ è la configurazione ottima dei parametri. È la cornice
+dove $U$ è il punteggio ottenuto in una singola situazione e la media
+$\mathbb{E}$ è presa su ciò che il sistema incontrerà: i dati che vedrà, o
+l’ambiente in cui agirà. Massimizzare $J$ equivale a minimizzare la perdita
+(*loss*) $\mathcal{L}(\theta) = -J(\theta)$ e, assumendo che un ottimo
+esista, si cerca
+
+$$
+\theta^\star \in \arg\max_{\theta} J(\theta) = \arg\min_{\theta} \mathcal{L}(\theta),
+$$
+
+dove $\theta^\star$ è una configurazione ottima dei parametri. È la cornice
 dell’**agente razionale**: un sistema che sceglie le azioni che massimizzano
-l’utilità attesa, date le informazioni disponibili. Il resto del libro è una
+l’utilità attesa, date le informazioni disponibili. Qui l’ottimizzazione
+agisce sui parametri, non direttamente sulle azioni, ma il ponte è corto:
+$\theta$ determina il comportamento del sistema, e la configurazione ottima
+dei parametri induce le scelte migliori. Il resto del libro è una
 serie di variazioni su questo tema: la regressione minimizza un errore
 quadratico medio, la classificazione una cross-entropy, il reinforcement
 learning massimizza una ricompensa cumulata attesa. Cambiano $\mathcal{L}$ e
@@ -119,8 +129,8 @@ funziona è quella da $4 \times 4$. Il trucco di Euclide per trovarlo è
 elegante: dividi il numero grande per il piccolo e guarda il **resto**. $12$
 diviso $8$ dà resto $4$; ora ripeti con $8$ e $4$: resto $0$. Appena compare
 il resto zero, l’ultimo divisore usato (qui $4$) è il MCD. Niente elenchi di
-divisori, niente tentativi: due divisioni e hai finito, che i numeri siano
-piccoli o lunghi cento cifre.
+divisori, niente tentativi: due divisioni e hai finito; e anche con numeri
+lunghi cento cifre ne bastano poche centinaia, non miliardi.
 `````
 
 `````{tab} Superiore
@@ -128,8 +138,10 @@ L’algoritmo sfrutta l’identità
 $\mathrm{MCD}(a, b) = \mathrm{MCD}(b,\, a \bmod b)$, con caso base
 $\mathrm{MCD}(a, 0) = a$, dove $a \bmod b$ è il resto della divisione intera.
 La correttezza segue dal fatto che ogni divisore comune di $a$ e $b$ divide
-anche $a \bmod b = a - \lfloor a/b \rfloor\, b$, quindi l’insieme dei divisori
-comuni (e dunque il massimo) è invariante a ogni passo. Per $a=12$, $b=8$:
+anche $a \bmod b = a - \lfloor a/b \rfloor\, b$ e che, viceversa, ogni
+divisore comune di $b$ e $a \bmod b$ divide
+$a = \lfloor a/b \rfloor\, b + (a \bmod b)$: i due insiemi di divisori comuni
+coincidono, quindi il massimo è invariante a ogni passo. Per $a=12$, $b=8$:
 $(12, 8) \to (8, 4) \to (4, 0) \Rightarrow 4$. Il numero di passi è
 $O(\log \min(a, b))$: il caso peggiore si ha con due numeri di Fibonacci
 consecutivi (teorema di Lamé, 1844). È per questa efficienza (non solo per

@@ -100,9 +100,12 @@ $$
 
 un prodotto di $k$ fattori. Se questi fattori hanno norma tipicamente minore di
 1, il prodotto tende a $0$ in modo esponenziale (**gradiente che svanisce**,
-*vanishing gradient*); se maggiore di 1, esplode. Bengio, Simard e Frasconi lo
-dimostrarono formalmente nel 1994: le RNN «semplici» non riescono ad apprendere
-dipendenze su molti passi.
+*vanishing gradient*); se maggiore di 1, il gradiente *può* crescere fino a
+esplodere. La norma dei fattori, infatti, dà solo un maggiorante del prodotto:
+che sia maggiore di 1 è condizione necessaria perché il gradiente esploda, non
+sufficiente {cite}`pascanu2013difficulty`. Che le RNN «semplici» non riescano ad apprendere dipendenze su
+molti passi è un risultato dimostrato formalmente già nel 1994 da Yoshua
+Bengio, Patrice Simard e Paolo Frasconi {cite}`bengio1994learning`.
 
 `````
 

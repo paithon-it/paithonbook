@@ -79,23 +79,40 @@ un'immagine sfocata che non corrisponde a *nessun* futuro reale; è la ragione
 per cui la predizione video nei pixel produce fantasmi lattiginosi. La
 proposta di {cite}`lecun2022path` è la **JEPA** (*Joint-Embedding Predictive
 Architecture*): due encoder mappano contesto e target nello spazio delle
-rappresentazioni, $s_x = f_\theta(x)$ e $s_y = \bar{f}_{\bar{\theta}}(y)$, e
-un **predictor** $g_\phi$ opera interamente lì:
+rappresentazioni, $s_x = f_\phi(x)$ e $s_y = \bar{f}_{\bar{\phi}}(y)$, e
+un **predictor** $g_\theta$ opera interamente lì:
 
 $$
-E(x, y) = \big\lVert\, g_\phi(s_x, z) - s_y \,\big\rVert_2^2,
+E(x, y, z) = \big\lVert\, g_\theta(s_x, z) - s_y \,\big\rVert_2^2,
+\qquad
+F(x, y) = \min_{z} E(x, y, z),
 $$
 
-dove $E$ è l'energia della coppia, $z$ è un'eventuale variabile latente che
-assorbe la molteplicità dei futuri (quale dei tanti esiti plausibili si è
-realizzato), e $\theta$, $\bar{\theta}$, $\phi$ sono i parametri dei due
-encoder e del predictor. Il collegamento con il capitolo precedente è
-letterale: una JEPA **è** un modello a energia non normalizzato; la
-compatibilità tra presente e futuro è l'errore di predizione nello spazio
-latente, l'inferenza è la solita $\arg\min$, e della funzione di partizione
-non c'è alcun bisogno. La libertà nuova sta nell'encoder del target: poiché
-$y$ non va ricostruito ma solo *rappresentato*, $\bar{f}$ può legittimamente
-buttare via informazione. I gradi di libertà imprevedibili e irrilevanti (le
+dove $z$ è una variabile latente che assorbe la molteplicità dei futuri
+(quale dei tanti esiti plausibili si è realizzato) e $\phi$, $\bar{\phi}$,
+$\theta$ sono i parametri dei due encoder e del predictor. L'energia della
+*coppia* è la seconda quantità, $F$: si sceglie la $z$ che spiega meglio il
+futuro osservato, e quel minimo misura la compatibilità tra $x$ e $y$. Il
+collegamento con il capitolo precedente è letterale: una JEPA **è** un
+modello a energia non normalizzato; la compatibilità tra presente e futuro è
+l'errore di predizione nello spazio latente, l'inferenza è la solita
+$\arg\min$ (qui, il minimo su $z$), e della funzione di partizione non c'è
+alcun bisogno.
+
+Una precisazione, perché altrimenti quel $\min_z$ resta un debito: $z$ è la
+forma **generale** dello schema proposto nel 2022, non la ricetta che poi è
+stata implementata. I due sistemi che vedremo in questa sezione (I-JEPA per
+le immagini, V-JEPA per i video) istanziano il caso **senza latente**: il
+predictor è deterministico, $g_\theta(s_x)$, quindi $F(x, y) = E(x, y)$ e non
+c'è alcun minimo da calcolare, né in addestramento né a inferenza. Quel poco
+di «quale futuro» che serve è passato al predictor come informazione
+esplicita (i token posizionali che dicono *dove* prevedere), non inferito
+come variabile nascosta. Una JEPA con $z$ vero, capace di produrre più esiti
+plausibili invece di uno solo, resta al momento programma di ricerca.
+
+La libertà nuova sta nell'encoder del target: poiché $y$ non va ricostruito
+ma solo *rappresentato*, $\bar{f}$ può legittimamente buttare via
+informazione. I gradi di libertà imprevedibili e irrilevanti (le
 foglie, i riflessi) possono semplicemente non arrivare nello spazio in cui si
 calcola la loss: è una scelta d'architettura, non una speranza.
 
@@ -162,11 +179,13 @@ retropropagazione ma mantenuto come **media mobile esponenziale** (EMA,
 *exponential moving average*) dei pesi dell'encoder di contesto:
 
 $$
-\bar{\theta} \;\leftarrow\; \tau\, \bar{\theta} + (1 - \tau)\, \theta,
+\bar{\phi} \;\leftarrow\; m\, \bar{\phi} + (1 - m)\, \phi,
 $$
 
-dove $\theta$ sono i pesi dell'encoder di contesto, $\bar{\theta}$ quelli
-dell'encoder target e $\tau$ un momento vicino a 1 (in I-JEPA parte da 0,996):
+dove $\phi$ sono i pesi dell'encoder di contesto, $\bar{\phi}$ quelli
+dell'encoder target e $m$ un momento vicino a 1 (in I-JEPA parte da 0,996;
+nei paper questo coefficiente si chiama $\tau$, un simbolo che in questo
+capitolo è già occupato dalla temperatura del sogno):
 a ogni passo il target si sposta di una frazione millesimale verso l'encoder
 corrente. All'EMA si accompagna lo **stop-gradient**: la loss non si propaga
 mai attraverso il ramo del target, che è puro riferimento. La coppia EMA +
@@ -270,7 +289,7 @@ catalogo di texture.
 
 Nel giugno 2025 arriva il passo successivo, ed è quello che riporta tutta
 questa storia al punto di partenza del capitolo: usare il modello per *agire*.
-**V-JEPA 2** {cite}`assran2025vjepa` scala la ricetta (un encoder da 1,2
+**V-JEPA 2** {cite}`assran2025vjepa` scala la ricetta (un modello da 1,2
 miliardi di parametri, pre-addestrato su oltre un milione di ore di video da
 internet) e i numeri di comprensione salgono di conseguenza: 77,3% su
 Something-Something-v2, stato dell'arte nell'anticipazione delle azioni su
@@ -403,12 +422,12 @@ for p in encoder_target.parameters():
     p.requires_grad_(False)          # stop-gradient: il bersaglio non si allena
 
 @torch.no_grad()
-def aggiorna_target(tau=0.996):
+def aggiorna_target(m=0.996):
     """EMA: il target insegue lentamente l'encoder. È l'anti-collasso:
     non ricevendo gradiente, non può 'mettersi d'accordo' con l'encoder
     per appiattire tutti gli embedding sulla stessa costante."""
     for p, p_t in zip(encoder.parameters(), encoder_target.parameters()):
-        p_t.mul_(tau).add_((1.0 - tau) * p)
+        p_t.mul_(m).add_((1.0 - m) * p)
 
 opt = torch.optim.Adam(
     list(encoder.parameters()) + list(predictor.parameters()), lr=1e-3)

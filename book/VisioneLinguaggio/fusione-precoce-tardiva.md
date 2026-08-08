@@ -126,9 +126,10 @@ prossima sezione, sulla risoluzione).
 
 Con i token visivi in mano possiamo dare alle due parole del titolo un
 significato preciso. La differenza fra fusione **tardiva** e fusione
-**precoce** non è quanta informazione si scambiano le due modalità: è a quale
-profondità della rete cominciano a scambiarsela, e se condividono o no i
-parametri che le elaborano.
+**precoce** non è quanta informazione si scambiano immagine e testo: è quanto
+presto cominciano a scambiarsela, e se a maneggiarle sia un pezzo solo di rete
+o due pezzi diversi, cresciuti separati. Le due redazioni qui sotto sono i due
+casi.
 
 `````{tab} Elementare
 
@@ -157,6 +158,12 @@ insieme, con la stessa testa.
 `````
 
 `````{tab} Superiore
+
+L'overview contava tre profondità di fusione; qui ne bastano due, perché ai
+fini di questa sezione i connettori (la via che l'overview chiamava
+*intermedia*) ricadono dal lato tardivo: i pesi che elaborano le due modalità
+restano quelli di due modelli pre-addestrati per conto proprio, e lo strato di
+uscita produce soltanto token di testo.
 
 **Fusione tardiva.** Due encoder addestrati separatamente producono
 rappresentazioni che si incontrano vicino all'uscita. Nel caso estremo,

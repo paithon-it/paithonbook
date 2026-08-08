@@ -165,6 +165,38 @@ print(vec.get_feature_names_out())  # il vocabolario appreso
 print(X.toarray())                  # pesi TF-IDF per ciascun documento
 ```
 
+I numeri che compaiono a schermo non sono però quelli del TF-IDF «da
+manuale»: la libreria ne usa una variante, per ragioni pratiche. La sostanza
+non cambia (le parole rare pesano più di quelle comuni), i decimali sì.
+
+`````{tab} Elementare
+
+La variante serve a due cose. La prima è non trovarsi mai a dividere per zero
+quando una parola compare in pochissimi documenti. La seconda è mettere sulla
+stessa scala documenti di lunghezza diversa, così che un testo lungo non
+risulti più «pesante» solo perché contiene più parole. Il risultato è che
+anche le parole presenti in tutti i documenti si portano dietro un po' di
+peso, invece di sparire del tutto: poco male, perché quello che conta è che le
+parole rare ne abbiano di più.
+
+`````
+
+`````{tab} Superiore
+
+`scikit-learn` non applica la formula qui sopra alla lettera: usa un idf
+*lisciato*, $\ln\frac{1+N}{1+\text{df}(t)} + 1$, e normalizza poi in $L^2$ il
+vettore di ogni documento. Il «$+1$» finale ha una conseguenza da tenere a
+mente: un termine presente in tutti i documenti non si annulla, come vorrebbe
+$\log(N/\text{df})$, ma conserva idf pari a $1$. Nel corpus giocattolo qui
+sopra ($N = 2$) non è affatto un residuo trascurabile: nel primo documento
+*il* esce con peso $0{,}318$ contro lo $0{,}447$ di *gatto*, cioè circa il
+71% del peso di un termine che compare in un solo documento. Il divario si
+apre solo al crescere del corpus, perché l'idf del termine onnipresente resta
+fisso a $1$ mentre quello del termine raro cresce come
+$\ln\frac{1+N}{2} + 1$.
+
+`````
+
 ## Vettori densi: i word embedding
 
 Il salto concettuale arriva nel 2013. L'idea guida è vecchia, il linguista
@@ -254,8 +286,8 @@ $$
 dove $\mathbf{z}_g \in \mathbb{R}^{d}$ è il vettore appreso per l'n-gramma
 $g$. Due conseguenze pratiche: le parole **out-of-vocabulary** restano
 rappresentabili sommando i soli n-grammi, e nelle lingue morfologicamente
-ricche le forme flesse di una stessa radice condividono parametri (Bojanowski
-et al). misurano i guadagni maggiori proprio su lingue molto flessive come
+ricche le forme flesse di una stessa radice condividono parametri; Bojanowski
+e colleghi misurano i guadagni maggiori proprio su lingue molto flessive come
 ceco e tedesco {cite}`bojanowski2017enriching`.
 
 `````

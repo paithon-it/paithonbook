@@ -228,12 +228,19 @@ dipende da *perché* quel dato manca.
 
 `````{tab} Superiore
 
+Una precisazione sul contenitore: `NaN` è la rappresentazione dei mancanti
+per i `float` (e un solo `NaN` forza a `float64` una colonna di interi, come
+si nota da `df.info()`); le colonne di date usano `NaT` e i dtype *nullable*
+di Pandas usano `pd.NA`.
+
 La strategia dipende dal meccanismo di mancanza (MCAR, MAR, MNAR nella
-tassonomia di Rubin): eliminare righe è lecito e non introduce distorsioni
-solo se i dati mancano *completamente a caso*. L'imputazione con media o
-mediana è semplice ma comprime la varianza e ignora le correlazioni tra
-variabili; alternative più fedeli sono l'imputazione tramite modello (es.
-$k$-NN o regressione, `sklearn.impute.KNNImputer`) o l'imputazione multipla.
+tassonomia di Rubin): se i dati mancano *completamente a caso* (MCAR) è
+garantito che eliminare le righe incomplete non introduca distorsioni, e in
+una regressione l'eliminazione resta lecita anche quando la mancanza dipende
+solo dalle covariate e non dalla risposta. L'imputazione con media o mediana
+è semplice ma comprime la varianza e ignora le correlazioni tra variabili;
+alternative più fedeli sono l'imputazione tramite modello (es. $k$-NN o
+regressione, `sklearn.impute.KNNImputer`) o l'imputazione multipla.
 Regola d'oro: qualsiasi imputazione va **stimata solo sul training set** e poi
 applicata al test set, per non far trapelare informazione (*data leakage*).
 

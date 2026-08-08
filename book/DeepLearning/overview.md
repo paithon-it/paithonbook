@@ -47,7 +47,8 @@ $$
 f_\theta = f_L \circ f_{L-1} \circ \dots \circ f_1 ,
 $$
 
-dove ogni $f_\ell(Z) = \sigma(W_\ell Z + b_\ell)$ ha i suoi pesi $W_\ell$, e
+dove tipicamente $f_\ell(Z) = \sigma(W_\ell Z + b_\ell)$ ha i suoi pesi
+$W_\ell$ (ma incontreremo anche strati di altra forma, come il pooling), e
 tutti i parametri $\theta$ vengono ottimizzati insieme minimizzando la loss
 $\mathcal{L}$ per retropropagazione (*end-to-end*). L'estrazione delle feature
 non è più a monte e fissa: è parte del modello e viene appresa. È ciò che si
@@ -112,8 +113,10 @@ dataset enorme, si riusano quasi invariati su problemi nuovi.
 ## Perché proprio adesso
 
 C'è un dettaglio che spiazza chi arriva al deep learning da profano: la
-retropropagazione, l'algoritmo che addestra queste reti, è del 1986 (Rumelhart,
-Hinton e Williams). Se l'algoritmo esisteva da decenni, perché il deep learning
+retropropagazione, l'algoritmo che addestra queste reti, fu resa celebre nel
+1986 da Rumelhart, Hinton e Williams {cite}`rumelhart1986learning`, e l'idea è
+ancora più vecchia[^backprop-storia].
+Se l'algoritmo esisteva da decenni, perché il deep learning
 è esploso solo dopo il 2012? Perché servivano tre ingredienti tutti insieme:
 **dati**, **potenza di calcolo** e **algoritmi maturi**. Il momento-simbolo è
 l'autunno del 2012, la competizione ImageNet.
@@ -159,10 +162,12 @@ combinazione, alla scala giusta.
 
 Resta un'obiezione teorica seria. Il **teorema di approssimazione universale**
 ({cite}`cybenko1989approximation`; {cite}`hornik1991approximation`) dimostra
-che basta *un solo* strato nascosto, purché abbastanza ampio, per approssimare
-qualunque funzione continua, cioè per imitare, con la precisione voluta,
-qualunque regola che leghi ingressi e uscite senza salti bruschi. Se una rete
-"piatta" e larga è già universale, perché impilare tanti strati?
+che basta *un solo* strato nascosto, purché abbastanza ampio e purché la
+funzione di attivazione non sia un polinomio (la condizione conta davvero: se
+lo fosse, la rete saprebbe produrre solo polinomi), per approssimare qualunque
+funzione continua, cioè per imitare, con la precisione voluta, qualunque
+regola che leghi ingressi e uscite senza salti bruschi. Se una rete "piatta" e
+larga è già universale, perché impilare tanti strati?
 
 `````{tab} Elementare
 
@@ -180,15 +185,22 @@ funzioni, invece di riscrivere sempre tutto il codice a mano.
 
 `````{tab} Superiore
 
-Il teorema garantisce che per ogni funzione continua $f:[0,1]^n\to\mathbb{R}$ e
+Il teorema garantisce che, se l'attivazione $\sigma$ è continua e non
+polinomiale (l'ipotesi è essenziale: la soddisfano la sigmoide e la ReLU
+{cite}`leshno1993multilayer`, non un $\sigma$ polinomiale, che produrrebbe
+solo polinomi), per ogni funzione continua $f:[0,1]^n\to\mathbb{R}$ e
 ogni $\varepsilon>0$ esiste una rete a un solo strato nascosto
 
 $$
-g(X) = \sum_{i=1}^{N} v_i\,\sigma\!\big(W_i^\top X + b_i\big)
+g(\mathbf{x}) = \sum_{i=1}^{N} v_i\,\sigma\!\big(\mathbf{w}_i^\top \mathbf{x} + b_i\big)
 \qquad\text{tale che}\qquad
-\sup_{X}\,\lvert f(X) - g(X)\rvert < \varepsilon .
+\sup_{\mathbf{x} \in [0,1]^n}\,\lvert f(\mathbf{x}) - g(\mathbf{x})\rvert < \varepsilon ,
 $$
 
+dove $\mathbf{x} \in [0,1]^n$ è il singolo esempio in ingresso (un vettore,
+non una matrice di dati), $\mathbf{w}_i \in \mathbb{R}^n$ è il vettore dei
+pesi del neurone $i$-esimo, $b_i$ il suo bias e $v_i$ il peso con cui
+contribuisce all'uscita.
 Il punto è che $N$, il numero di neuroni, può crescere in modo **esponenziale**.
 Esistono famiglie di funzioni rappresentabili da reti profonde con un numero di
 neuroni *polinomiale* nella profondità, ma che richiedono larghezza
@@ -233,6 +245,17 @@ oggetti della {numref}`fig-gerarchia-feature`, resa in poche righe.
   un livello di astrazione per strato.
 - È esploso dopo il 2012 (ImageNet, AlexNet) grazie alla triade **dati + GPU +
   algoritmi**, non a una singola idea nuova.
-- Una rete larga e piatta è universale in teoria, ma la **profondità** ottiene
-  la stessa espressività con molti meno neuroni: comporre conviene.
+- Una rete larga e piatta è universale in teoria (con un'attivazione non
+  polinomiale), ma la **profondità** ottiene la stessa espressività con molti
+  meno neuroni: comporre conviene.
 ```
+
+[^backprop-storia]: Il conto che sta sotto la retropropagazione (partire
+    dall'errore in fondo alla rete e risalire all'indietro, strato per strato,
+    per sapere quanto ciascun peso ha contribuito) era già noto ai matematici
+    dal 1970, quando Seppo Linnainmaa lo descrisse in tutta generalità: è
+    quella che oggi si chiama *differenziazione automatica in modalità
+    inversa*. Paul Werbos la applicò alle reti neurali nel 1981, e a metà anni
+    Ottanta fu riscoperta per conto proprio da LeCun e da Parker. Il merito
+    del 1986 è averla mostrata al mondo, con esperimenti convincenti, nel
+    posto giusto: un articolo su *Nature*.

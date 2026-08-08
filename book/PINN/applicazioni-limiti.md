@@ -164,8 +164,9 @@ l'uno peggiora l'altro, e il peso $\lambda$ ne stabilisce a mano il
 compromesso. Peggio: il termine fisico contiene operatori differenziali di
 ordine alto (derivate seconde, a volte quarte) che rendono il problema **mal
 condizionato**, nel senso preciso visto nei richiami di analisi numerica (il
-numero di condizionamento dell'Hessiano esplode) e la discesa rallenta o si
-blocca. Krishnapriyan et al. {cite}`krishnapriyan2021characterizing` mostrano
+numero di condizionamento dell'Hessiano esplode
+{cite}`deryck2024operator`) e la discesa rallenta o si blocca. Krishnapriyan
+et al. {cite}`krishnapriyan2021characterizing` mostrano
 che è proprio la regolarizzazione soft (imporre la PDE come penalità anziché
 come vincolo esatto) a deformare il paesaggio, e propongono rimedi come la
 *curriculum regularization* (partire da una versione addolcita dell'equazione
@@ -194,17 +195,33 @@ dettagli che contano.
 
 `````{tab} Superiore
 
-Il fenomeno, noto anche come *frequency principle*, è che una rete a strati
+Il fenomeno, documentato da Rahaman et al. {cite}`rahaman2019spectral` e
+noto anche come *frequency principle* {cite}`xu2020frequency`, è che una
+rete a strati
 densi apprende le componenti di Fourier a bassa frequenza in poche iterazioni
 e quelle ad alta frequenza in un numero di iterazioni molto maggiore: la
 velocità di apprendimento decresce con la frequenza. Per una PINN è un
 problema strutturale, perché molte soluzioni interessanti (fronti ripidi,
 strati limite, regimi turbolenti), vivono proprio nelle alte frequenze. Si
 mitiga con accorgimenti (*Fourier features* in ingresso, funzioni di
-attivazione periodiche, riscalamenti) ma resta una ragione di fondo per cui le
-PDE **stiff** (con scale temporali molto diverse tra loro) e gli **orizzonti
-temporali lunghi** mettono le PINN in seria difficoltà: l'errore si accumula
-passo dopo passo e la rete non riesce a inseguire la dinamica rapida.
+attivazione periodiche, riscalamenti) ma resta la ragione per cui le PDE
+**stiff**, dove convivono scale temporali molto diverse e la componente
+veloce è per definizione quella ad alta frequenza, sono terreno ostile: la
+rete impara in fretta la parte lenta e arranca proprio sull'altra.
+
+Sugli **orizzonti temporali lunghi** agisce invece un secondo modo di
+fallire, da tenere distinto dal primo: non è lo spectral bias detto in altre
+parole, è un meccanismo indipendente. Non è nemmeno un accumulo di
+errore passo dopo passo (quella è la malattia degli integratori sequenziali,
+e qui di passi non ce ne sono: l'ottimizzazione è globale nel tempo). È che
+la loss, sommando residui su punti sparsi in tutto il dominio, non impone
+alcun **ordine causale**: nulla obbliga la rete a sistemare prima l'inizio
+dell'intervallo e poi il resto, e l'informazione delle condizioni iniziali
+non viene propagata in avanti nel tempo. Il residuo può così restare piccolo
+mentre la rete collassa su una dinamica banale, plausibile punto per punto e
+sbagliata nel complesso. È proprio il difetto che la decomposizione
+sequenziale nel tempo di Krishnapriyan et al., vista poco sopra, va a
+correggere.
 
 `````
 
@@ -216,8 +233,8 @@ ordini di grandezza, più accurati, e portano in dote garanzie di convergenza
 che un'ottimizzazione non convessa non potrà mai offrire. Una PINN che impiega
 minuti dove un solutore maturo impiega millisecondi, e che ogni tanto fallisce
 senza preavviso, non è un progresso: è un passo indietro. Le PINN convengono
-dove i classici arrancano (dati e leggi da fondere, geometrie che mandano in
-crisi le griglie, problemi inversi) non altrove.
+dove i classici arrancano (dati e leggi da fondere, dimensioni troppe per
+qualunque griglia, problemi inversi) non altrove.
 
 ## Oltre le PINN: imparare il mestiere, non il compito
 
@@ -249,7 +266,8 @@ l'ingresso non è un vettore ma una funzione intera (il campo delle condizioni
 iniziali, dei coefficienti, della sorgente) e l'uscita è la funzione
 soluzione. Due architetture hanno segnato il campo. Il **DeepONet** di Lu,
 Jin, Pang, Zhang e Karniadakis {cite}`lu2021learning` poggia sul teorema di
-approssimazione universale *degli operatori*: una rete *branch* codifica la
+approssimazione universale *degli operatori*, dimostrato da Tianping Chen e
+Hong Chen nel 1995 {cite}`chen1995universal`: una rete *branch* codifica la
 funzione d'ingresso campionata su un insieme di sensori, una rete *trunk*
 codifica il punto di query, e il loro prodotto scalare dà il valore della
 soluzione lì. Il **Fourier Neural Operator** di Li, Kovachki, Azizzadenesheli,

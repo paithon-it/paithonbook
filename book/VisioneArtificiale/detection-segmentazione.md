@@ -45,16 +45,25 @@ tracciare la cornice e *cosa* c'è dentro.
 
 Per ogni oggetto la rete predice un vettore
 $(x, y, w, h, c, p)$: le coordinate del centro e le dimensioni del riquadro,
-la classe $c$ e una confidenza $p \in [0,1]$. L'addestramento minimizza una
-loss composita che somma un termine di **localizzazione** (errore sulle
-coordinate, tipicamente *smooth L1* o una IoU-loss) e un termine di
-**classificazione** (cross-entropy sulla classe):
+la classe $c$ e una confidenza $p \in [0,1]$ che stima se nel riquadro c'è
+davvero un oggetto. L'addestramento minimizza una loss composita che somma un
+termine di **localizzazione** (errore sulle coordinate, tipicamente
+*smooth L1* o una IoU-loss), un termine di **classificazione** (cross-entropy
+sulla classe) e un termine di **objectness** che supervisiona la confidenza,
+spingendola verso uno dove un oggetto c'è e verso zero sullo sfondo:
 
 $$
-\mathcal{L} = \mathcal{L}_{\text{cls}} + \lambda \,\mathcal{L}_{\text{box}} .
+\mathcal{L} = \mathcal{L}_{\text{obj}} + \mathcal{L}_{\text{cls}} + \lambda \,\mathcal{L}_{\text{box}} .
 $$
 
-Il coefficiente $\lambda$ bilancia i due obiettivi. Un'immagine può contenere un
+Il coefficiente $\lambda$ bilancia localizzazione e riconoscimento. Questa è
+la parametrizzazione di YOLO; nella famiglia Faster R-CNN il termine di
+objectness non sparisce, si sposta. Nel **primo** stadio, la *Region Proposal
+Network* di cui parla la prossima sezione, è proprio una objectness: ogni ancora
+viene classificata in binario come oggetto o sfondo, e il termine di regressione
+è attivo solo sulle ancore positive. Manca invece dalla testa del **secondo**
+stadio, dove la confidenza coincide con il punteggio softmax della classe perché
+lì lo sfondo è trattato come una classe in più. Un'immagine può contenere un
 numero variabile di oggetti: gestire questa cardinalità ignota è il vero nodo
 architetturale della detection.
 
@@ -198,6 +207,13 @@ esempio con i quadretti: se le due cornici ne condividono 30 e, messe insieme,
 ne coprono 60, la IoU è $30/60 = 0{,}5$. Di solito si dice che una predizione
 è "giusta" proprio se la IoU supera **0,5**: metà o più di sovrapposizione.
 
+Contando quante predizioni sono "giuste" su un intero archivio di foto si
+ricava il voto complessivo di un rilevatore, la **mAP**: sta per *mean Average
+Precision*, cioè "precisione media", ed è un numero fra 0 e 1 che riassume in
+un colpo solo quanto spesso il rilevatore azzecca insieme la cornice e il nome,
+su tutte le categorie. Più è alto, meglio è, ed è il numero con cui due
+rilevatori si confrontano senza doverli guardare foto per foto.
+
 `````
 
 `````{tab} Superiore
@@ -208,8 +224,12 @@ $$
 \text{IoU} = \frac{|A \cap B|}{|A \cup B|} \in [0,1] .
 $$
 
-Fissata una soglia (ad esempio $\text{IoU} \ge 0{,}5$), ogni predizione diventa
-un **vero positivo** o un **falso positivo**. Da qui si costruisce la curva
+Fissata una soglia (ad esempio $\text{IoU} \ge 0{,}5$), le predizioni si
+scorrono in ordine di confidenza decrescente: una predizione è un **vero
+positivo** se supera la soglia con un oggetto reale non ancora assegnato, e
+quell'oggetto viene «consumato». Ogni oggetto reale si accoppia cioè a **una
+sola** predizione, e i duplicati, per quanto ben sovrapposti, contano come
+**falsi positivi**. Da qui si costruisce la curva
 *precision–recall* per ciascuna classe: la sua area sotto la curva è l'**Average
 Precision** (AP). La **mean Average Precision** (mAP) ne fa la media sulle
 classi. Il benchmark COCO irrigidisce la metrica mediando la mAP su dieci soglie
@@ -217,6 +237,18 @@ di IoU, da $0{,}5$ a $0{,}95$ a passi di $0{,}05$: premia i modelli che
 localizzano con precisione, non solo che indovinano la classe.
 
 `````
+
+Prima del verdetto, però, serve un passaggio di pulizia. La rete non produce
+un riquadro per oggetto: ne produce migliaia (con nove ancore per posizione, i
+conti si fanno presto), e attorno a ogni oggetto se ne accumulano decine quasi
+identici, ciascuno con la sua confidenza. La **non-maximum suppression** (NMS)
+li sfoltisce con una regola semplice: si ordinano i riquadri per confidenza,
+si tiene il più sicuro e si scartano tutti quelli che gli si sovrappongono
+troppo (IoU sopra una soglia), poi si ripete sui rimasti finché non c'è più
+niente da esaminare. È il passo finale, quasi mai disegnato negli schemi, di
+praticamente ogni rilevatore, da Faster R-CNN a YOLO e SSD: senza, ogni
+oggetto arriverebbe alla valutazione con un grappolo di doppioni, e tutti
+tranne uno conterebbero come errori.
 
 ## Segmentare: dal riquadro alla sagoma
 
@@ -370,8 +402,12 @@ contorno esatto.
   stadio** (YOLO, SSD) più veloci (un compromesso accuratezza/velocità).
 - Le **anchor box** danno alla rete riquadri di partenza a più scale e
   proporzioni: si predicono piccoli **offset**, non riquadri dal nulla.
-- La **IoU** misura la sovrapposizione riquadro-realtà; la **mAP** riassume la
-  qualità complessiva del rilevatore.
+- La **IoU** misura la sovrapposizione riquadro-realtà; la **mAP** (*mean
+  Average Precision*) riassume in un numero solo la qualità complessiva del
+  rilevatore, e nel farlo accoppia ogni oggetto a una sola predizione: i
+  doppioni contano come errori.
+- Prima della valutazione la **non-maximum suppression** sfoltisce i doppioni:
+  si tiene il riquadro più confidente e si scartano quelli troppo sovrapposti.
 - **Semantica** (FCN, U-Net) etichetta ogni pixel; **istanza** (Mask R-CNN)
   separa anche i singoli oggetti.
 - La **convoluzione trasposta** riporta le mappe a piena risoluzione con un

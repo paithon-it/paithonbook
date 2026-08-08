@@ -85,9 +85,9 @@ una cosa e la fa bene. Non serve ancora capire ogni termine di questo elenco:
   i risultati.
 - **scikit-learn**, machine learning *classico*: regressione, alberi, SVM,
   clustering, metriche, tutto dietro un'API uniforme `fit` / `predict`.
-- **PyTorch** (Meta, 2016), deep learning: reti neurali, differenziazione
-  automatica, addestramento su GPU. È il framework di questo libro; il suo
-  concorrente storico è **TensorFlow** (Google, 2015).
+- **PyTorch** (Facebook AI Research, 2016; oggi Meta), deep learning: reti
+  neurali, differenziazione automatica, addestramento su GPU. È il framework
+  di questo libro; il suo concorrente storico è **TensorFlow** (Google, 2015).
 
 ```{figure} ../figures/stack-scientifico-python.svg
 :name: fig-stack-python
@@ -113,11 +113,12 @@ eseguire.
 
 La differenza si chiama **vettorizzazione**. Un `ndarray` di NumPy è un blocco
 di memoria contigua e tipizzata: le operazioni elemento-per-elemento sono
-delegate a cicli in C ottimizzati (spesso con librerie BLAS e istruzioni
-SIMD), evitando l'*overhead* dell'interprete Python su ogni iterazione. Il
-risultato tipico è un codice più conciso e uno o due ordini di grandezza più
-veloce del ciclo Python equivalente: la ragione per cui l'intero ecosistema
-adotta l'array come struttura dati comune.
+delegate a cicli in C ottimizzati (spesso con istruzioni SIMD), evitando
+l'*overhead* dell'interprete Python su ogni iterazione; i prodotti tra
+matrici passano invece per librerie BLAS dedicate. Il risultato tipico è un
+codice più conciso e due o tre ordini di grandezza più veloce del ciclo
+Python equivalente: la ragione per cui l'intero ecosistema adotta l'array
+come struttura dati comune.
 
 `````
 

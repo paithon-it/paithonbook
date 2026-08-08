@@ -52,13 +52,14 @@ Un `ndarray` è un blocco di memoria **contiguo, omogeneo e tipizzato**
 (`dtype`, per esempio `float64` o `int32`), corredato da una *forma* (`shape`)
 e da un insieme di *stride* che dicono di quanti byte spostarsi per passare
 all'elemento successivo lungo ogni asse. Questa struttura permette due cose.
-Primo: molte viste (*slice*, `reshape`, trasposizione) sono ricalcoli di
-stride a costo zero, senza copiare i dati. Secondo: le operazioni
-elemento-per-elemento sono delegate a cicli in C compilati e vettorizzati
-(istruzioni SIMD), che saltano l'*overhead* dell'interprete su ogni
-iterazione; l'algebra lineare vera e propria (i prodotti tra matrici) passa
-invece per librerie BLAS ottimizzate. È la differenza tra `float` scatolati
-sparsi nella heap e un array C nudo.
+Primo: slice e trasposizione sono sempre *viste*, ricalcoli di stride a costo
+zero senza copia dei dati; `reshape` lo è quando la disposizione in memoria lo
+consente, altrimenti copia. Secondo: le operazioni elemento-per-elemento
+sono delegate a cicli in C compilati e vettorizzati (istruzioni SIMD), che
+saltano l'*overhead* dell'interprete su ogni iterazione; l'algebra lineare
+vera e propria (i prodotti tra matrici) passa invece per librerie BLAS
+ottimizzate. È la differenza tra `float` scatolati sparsi nella heap e un
+array C nudo.
 
 `````
 
@@ -144,7 +145,7 @@ Una condizione come `x > 25` produce una **maschera booleana**, un array di
 dove la maschera è `True`, restituendo un array 1-D (una *copia*, non una
 vista). La stessa maschera funziona in assegnazione, `x[mask] = 0`, e si
 compone con gli operatori logici *bitwise* `&`, `|`, `~` (non `and`/`or`, che
-su array sono ambigui) ciascun confronto tra parentesi:
+su array sono ambigui), con ciascun confronto tra parentesi:
 
 ```python
 x[(x > 15) & (x < 45)]    # elementi in (15, 45)
@@ -226,15 +227,19 @@ def raddoppia_loop(v):          # la versione "a mano"
         out[i] = 2 * v[i]
     return out
 
-%timeit raddoppia_loop(x)       # ~centinaia di millisecondi
-%timeit 2 * x                   # ~pochi millisecondi
+%timeit raddoppia_loop(x)       # ~100 millisecondi
+%timeit 2 * x                   # ~0,2 millisecondi
 ```
+
+Le ultime due righe non sono Python: `%timeit` è un comando dei notebook (una
+*magic* di IPython) che cronometra un'istruzione ripetendola molte volte e
+riportando il tempo migliore. In un normale file `.py` non funziona: lì si usa
+il modulo `timeit` della libreria standard.
 
 `````{tab} Elementare
 
-Le due righe fanno la stessa cosa (raddoppiare un milione di numeri) ma la
-seconda è tipicamente **decine o centinaia di volte più veloce** (`%timeit` è
-il cronometro dei notebook: misura quanto impiega un'istruzione). Il ciclo
+Le due misure riguardano la stessa cosa (raddoppiare un milione di numeri) ma
+la seconda strada è tipicamente **centinaia di volte più veloce**. Il ciclo
 Python paga un piccolo pedaggio a ogni giro; `2 * x` fa lavorare direttamente
 il motore in C su tutto il blocco. La regola d'oro con NumPy: *se stai
 scrivendo un `for` su un array, quasi sempre esiste un modo per non
@@ -244,12 +249,13 @@ scriverlo*.
 
 `````{tab} Superiore
 
-Il divario è di uno o due ordini di grandezza e nasce dall'*overhead*
-dell'interprete: ogni iterazione in Python comporta controllo di tipo,
-allocazione di oggetti e dispatch dinamico. La forma vettorizzata sposta il
-ciclo dentro codice C compilato che opera su memoria contigua, con buona
-località di cache e, dove disponibile, vettorizzazione SIMD. Non è gratis
-all'infinito: la vettorizzazione può aumentare l'uso di memoria (array
+Il divario è di due o tre ordini di grandezza (sull'esempio qui sopra: circa
+$100$ ms il ciclo, circa $0{,}2$ ms la forma vettorizzata) e nasce
+dall'*overhead* dell'interprete: ogni iterazione in Python comporta controllo
+di tipo, allocazione di oggetti e dispatch dinamico. La forma vettorizzata
+sposta il ciclo dentro codice C compilato che opera su memoria contigua, con
+buona località di cache e, dove disponibile, vettorizzazione SIMD. Non è
+gratis all'infinito: la vettorizzazione può aumentare l'uso di memoria (array
 temporanei intermedi) e non copre bene ogni algoritmo intrinsecamente
 sequenziale, ma per l'algebra dei dati è quasi sempre la scelta giusta.
 
@@ -294,7 +300,8 @@ di volte.
 - Il **broadcasting** allinea le forme da destra ed espande gli assi di
   dimensione $1$: somma forme diverse senza copiare dati.
 - **Vettorizzare** (sostituire un `for` con un'operazione sull'array) rende il
-  codice più corto e uno o due ordini di grandezza più veloce.
+  codice più corto e da cento a mille volte più veloce (due o tre ordini di
+  grandezza).
 - Prodotti e algebra lineare vivono in `@` e `np.linalg`: per i sistemi usa
   `solve`, non l'inversa.
 ```

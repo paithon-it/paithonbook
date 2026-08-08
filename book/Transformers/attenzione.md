@@ -151,10 +151,17 @@ $$
 
 attorno a ogni sotto-strato (attenzione o feed-forward). La connessione
 residuale (la stessa idea delle ResNet che abbiamo visto nel capitolo sul deep
-learning) offre al gradiente un cammino diretto verso gli strati iniziali,
-contrastando il gradiente che svanisce; la layer normalization stabilizza
-media e varianza delle attivazioni a ogni posizione, rendendo l'addestramento
-meno sensibile a learning rate e inizializzazione.
+learning) offre al gradiente un cammino quasi diretto verso gli strati
+iniziali, contrastando il gradiente che svanisce; la layer normalization
+stabilizza media e varianza delle attivazioni a ogni posizione, rendendo
+l'addestramento meno sensibile a learning rate e inizializzazione. «Quasi»,
+perché in questa formulazione (detta *Post-LN*, quella del 2017) la
+normalizzazione sta proprio sul ramo della scorciatoia, e il gradiente la
+attraversa a ogni strato: i modelli successivi la spostano prima del
+sotto-strato, $x + \text{SubLayer}(\text{LayerNorm}(x))$, il cosiddetto
+*Pre-LN*, ed è lì che il cammino identità diventa davvero pulito (Xiong e
+colleghi, 2020, mostrano che senza questo spostamento serve un riscaldamento
+graduale del learning rate per addestrare stabilmente).
 `````
 
 ```{admonition} Da ricordare
@@ -166,7 +173,10 @@ meno sensibile a learning rate e inizializzazione.
   fissati a mano ma appresi.
 - La **Multi-Head Attention** esegue più attenzioni in parallelo ($h = 8$ nel
   modello originale), ciascuna libera di specializzarsi su relazioni diverse.
-- **Residual connection** e **layer normalization**,
-  $\text{LayerNorm}(x + \text{SubLayer}(x))$, tengono addestrabili le pile
-  profonde di blocchi.
+- **Residual connection** e **layer normalization** tengono addestrabili le
+  pile profonde di blocchi. L'articolo del 2017 le combina come
+  $\text{LayerNorm}(x + \text{SubLayer}(x))$ (*Post-LN*); i modelli successivi
+  normalizzano prima del sotto-strato,
+  $x + \text{SubLayer}(\text{LayerNorm}(x))$ (*Pre-LN*), ed è così che la
+  scorciatoia resta davvero libera.
 ```

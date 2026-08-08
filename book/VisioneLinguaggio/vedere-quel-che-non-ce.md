@@ -59,10 +59,13 @@ $$
 \underbrace{\log \frac{p_\theta\big(y_t \mid y_{<t}, E(I)\big)}{p_\theta\big(y_t \mid y_{<t}\big)}}_{\text{contributo visivo}},
 $$
 
-dove il primo addendo è ciò che il modello direbbe a occhi chiusi (la
-distribuzione del solo testo, quella che si ottiene marginalizzando l'immagine)
-e il secondo è la **mutua informazione puntuale** fra il token e l'immagine,
-dato il prefisso.
+dove il primo addendo è ciò che il modello direbbe a occhi chiusi. L'identità
+è algebrica e vale sempre; le etichette dei due addendi chiedono un'ipotesi in
+più. La rete interrogata senza immagine non calcola il marginale vero
+$\mathbb{E}_I\big[p_\theta(y_t \mid y_{<t}, E(I))\big]$: è un altro percorso
+di calcolo, mai addestrato a marginalizzare. Nella misura in cui lo
+approssima, il primo addendo stima il priore linguistico e il secondo la
+**mutua informazione puntuale** fra il token e l'immagine, dato il prefisso.
 La riduzione della perdita che il condizionamento sull'immagine può al più
 produrre è la mutua informazione condizionata $\mathcal{I}(Y_t; I \mid Y_{<t})$:
 dove la didascalia è già prevedibile dal solo testo, quella quantità è piccola,
@@ -345,7 +348,8 @@ in tre punti diversi della catena: i dati, la decodifica, l'uscita.
 
 **Ancorare la risposta a ciò che si vede.** Invece di chiedere al modello *che
 cosa* c'è, gli si chiede anche *dove*: il nome dell'oggetto accompagnato dalle
-coordinate del riquadro che lo contiene, emesse come token. Il come è noto: si
+coordinate del riquadro che lo contiene, emesse come token
+{cite}`chen2023shikra, peng2023kosmos`. Il come è noto: si
 normalizzano le coordinate in $[0,1]$, si taglia l'intervallo in un numero fisso
 di gradini e si dà a ogni gradino un simbolo del vocabolario. È lo stesso gesto
 già visto per i token d'immagine (un continuo tagliato in un numero finito di
@@ -385,8 +389,8 @@ tempo per ogni parola scritta.
 
 Detti $\ell_\theta$ i logit del modello, $x$ il prompt testuale, $I$ l'immagine
 e $I'$ una sua versione priva di informazione (nessuna immagine, oppure
-un'immagine degradata con rumore), la decodifica contrastiva sceglie il token
-successivo secondo
+un'immagine degradata con rumore), la decodifica contrastiva visiva
+{cite}`leng2024mitigating` sceglie il token successivo secondo
 
 $$
 \ell_{\text{cd}}(y_t) = (1 + \alpha)\,\ell_\theta\big(y_t \mid y_{<t}, x, I\big)
@@ -406,8 +410,10 @@ pratica intorno a $0{,}1$) è la soglia di plausibilità che impedisce alla
 sottrazione di promuovere token del tutto improbabili. Vale la pena notare che
 la differenza dei due logit è, a meno delle costanti di normalizzazione, proprio
 il **contributo visivo** isolato nella scomposizione all'inizio della sezione:
-si sta decodificando sulla mutua informazione puntuale invece che sulla
-probabilità totale.
+si sta decodificando su una **stima** della mutua informazione puntuale invece
+che sulla probabilità totale, con la stessa approssimazione di allora, resa
+qui ancora più larga quando $I'$ è un'immagine degradata e non l'assenza
+dell'immagine.
 
 I limiti seguono dalla stessa lettura. È una toppa in decodifica: non aggiunge
 informazione, ridistribuisce quella che c'è. Se la distinzione che serve è già
@@ -422,7 +428,8 @@ forchetta c'è: si scambia un tipo di errore con l'altro.
 **Una seconda passata.** Il terzo rimedio prende la risposta già scritta, la
 scompone in affermazioni elementari («c'è un piatto», «c'è una forchetta», «la
 forchetta è a sinistra del piatto») e verifica ciascuna con l'immagine in mano,
-riscrivendo o togliendo quelle che non passano. La forma delle domande di
+riscrivendo o togliendo quelle che non passano {cite}`yin2023woodpecker`. La
+forma delle domande di
 verifica è, letteralmente, quella binaria di POPE: il protocollo di valutazione
 diventa un componente del sistema. Il costo è la latenza, moltiplicata per il
 numero di affermazioni; e il difetto è più

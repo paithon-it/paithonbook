@@ -160,7 +160,8 @@ AlphaFold impara a leggere quella traccia e a trasformarla in geometria.
 `````{tab} Superiore
 
 Il sistema lavora su due rappresentazioni tenute in dialogo dall'**Evoformer**,
-una pila di blocchi di attenzione:
+una pila di blocchi che alternano attenzione e aggiornamenti moltiplicativi
+sui triangoli:
 
 - l'**allineamento multiplo di sequenze** (MSA), la stessa proteina in molte
   specie, da cui emerge il segnale di co-evoluzione;
@@ -170,11 +171,12 @@ una pila di blocchi di attenzione:
 Le due si aggiornano a vicenda a ogni blocco: quel che si scopre nell'MSA
 raffina le coppie, e viceversa. Sulla rappresentazione di coppia agisce la
 **triangle attention**, che aggiorna $(i,j)$ guardando i cammini attraverso un
-terzo residuo $k$. Serve a imporre un vincolo che l'attenzione ordinaria
-ignorerebbe: le distanze devono rispettare la **disuguaglianza triangolare**,
-perché sono distanze in uno spazio reale, non affinità arbitrarie. È il punto
-in cui la geometria entra nell'architettura invece di essere lasciata alla
-funzione di costo.
+terzo residuo $k$. Serve a rendere esprimibile un vincolo che l'attenzione
+ordinaria non vede: le distanze devono rispettare la **disuguaglianza
+triangolare**, perché sono distanze in uno spazio reale, non affinità
+arbitrarie. L'architettura non impone il vincolo: lo rende rappresentabile,
+facendo dipendere ogni arco dagli altri due lati del triangolo. Che venga poi
+rispettato è cosa che la rete impara dai dati, non una garanzia strutturale.
 
 Il **modulo di struttura** finale produce le coordinate atomiche trattando ogni
 residuo come un sistema di riferimento rigido, e il tutto viene ripassato più

@@ -183,9 +183,9 @@ spiegazione semplice: dice "esegui `main()` **solo** se qualcuno ha lanciato
 questo file direttamente, non se un altro file mi ha importato". Senza,
 importare `train.py` da un test o da un altro script farebbe partire un intero
 addestramento come effetto collaterale. E c'è un motivo più concreto: su
-Windows e su macOS il `DataLoader` con più *worker* riavvia il modulo in ogni
-processo figlio, e senza quella riga si otterrebbe una moltiplicazione infinita
-di addestramenti.
+Windows e su macOS il `DataLoader` con più *worker* riesegue il modulo in ogni
+processo figlio, e senza quella riga ogni figlio farebbe ripartire
+l'addestramento da capo; Python se ne accorge e blocca tutto con un errore.
 
 L'ultima riga di `main()` salva, insieme ai pesi, anche i nomi delle classi e
 gli argomenti usati. È il gesto che distingue un modello utile da un file

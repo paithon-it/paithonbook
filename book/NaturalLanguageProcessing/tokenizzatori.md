@@ -441,10 +441,13 @@ l'unità ottenuta combinandone due esistenti che **aumenta di più la
 verosimiglianza dei dati** sotto il modello di linguaggio. Nella forma in cui
 l'algoritmo si è poi diffuso quel modello è un **unigramma**, cioè un modello
 che assegna a una segmentazione $x = (x_1, \dots, x_\ell)$ la probabilità
-$P(x) = \prod_i p(x_i)$ con $p$ stimata per frequenza relativa. Fondere $a$ e
-$b$ in un simbolo unico cambia la log-verosimiglianza di una quantità che, a
-meno di termini costanti rispetto alla coppia, è la log-probabilità puntuale
-congiunta meno quelle marginali. Il criterio operativo che ne deriva è
+$P(x) = \prod_i p(x_i)$ con $p$ stimata per frequenza relativa. Sotto questo
+modello, il guadagno esatto di log-verosimiglianza di una fusione cresce
+(circa) come $\mathrm{freq}(ab)$ volte il logaritmo di quanto la coppia è più
+frequente del previsto: pesa cioè anche *quante volte* la fusione si applica.
+Il criterio adottato in pratica lascia cadere quel peso e valuta il guadagno
+*per occorrenza*; un'euristica ispirata alla verosimiglianza, più che una sua
+conseguenza:
 
 $$
 (a^\star, b^\star) \;=\;

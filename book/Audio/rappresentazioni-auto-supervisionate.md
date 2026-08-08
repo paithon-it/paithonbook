@@ -54,15 +54,17 @@ grosso (*com'è fatto* il parlato) è già stato imparato gratis.
 `````{tab} Superiore
 
 Formalmente disponiamo di un grande insieme di audio non etichettato
-$\mathcal{U}$ (decine di migliaia di ore) e di un piccolo insieme etichettato
-$\mathcal{L} = \{(X^{(i)}, \mathbf{y}^{(i)})\}$, con
-$|\mathcal{L}| \ll |\mathcal{U}|$. Il pretraining ottimizza su $\mathcal{U}$
+$\mathcal{D}_U$ (decine di migliaia di ore) e di un piccolo insieme
+etichettato $\mathcal{D}_L = \{(X^{(i)}, \mathbf{y}^{(i)})\}$, con
+$|\mathcal{D}_L| \ll |\mathcal{D}_U|$ (il simbolo $\mathcal{L}$ resta
+riservato, come nel resto del libro, alle funzioni di perdita che incontreremo
+tra poco). Il pretraining ottimizza su $\mathcal{D}_U$
 un obiettivo che non richiede $\mathbf{y}$, un **pretesto** (*pretext task*)
 costruito dai dati stessi, per apprendere un encoder $f_\theta$ che mappa la
 forma d'onda in rappresentazioni contestuali. Il fine-tuning aggiunge sopra
 $f_\theta$ una testa leggera (per l'ASR, tipicamente uno strato con perdita
 **CTC**, che vedremo nel capitolo sullo Speech Recognition) e la addestra su
-$\mathcal{L}$, aggiornando eventualmente anche $\theta$.
+$\mathcal{D}_L$, aggiornando eventualmente anche $\theta$.
 
 Il punto empirico che rende il tutto interessante è la **curva di efficienza
 dei dati**: partendo da un encoder pre-addestrato, il WER a valle crolla con
@@ -75,10 +77,11 @@ visione, trasferita al dominio del suono.
 ## wav2vec 2.0: mascherare il suono
 
 Il primo modello a rendere questa idea pienamente convincente per il parlato è
-**wav2vec 2.0**, di Alexei Baevski e colleghi a Meta AI nel 2020
-{cite}`baevski2020wav2vec`. La ricetta ricalca il «gioco della parola coperta»
-che nel testo ha reso grande BERT (il *cloze test*, riempire il buco in una
-frase) ma applicato a pezzetti di suono invece che a parole.
+**wav2vec 2.0**, di Alexei Baevski e colleghi a Facebook AI (il laboratorio
+che oggi si chiama Meta AI) nel 2020 {cite}`baevski2020wav2vec`. La ricetta
+ricalca il «gioco della parola coperta» che nel testo ha reso grande BERT (il
+*cloze test*, riempire il buco in una frase) ma applicato a pezzetti di suono
+invece che a parole.
 
 `````{tab} Elementare
 
@@ -179,7 +182,7 @@ scelto: 0 (0 = unita' giusta)
 
 L'obiettivo contrastivo di wav2vec 2.0 funziona, ma ha una fragilità: dipende
 da quanto sono «buoni» i bersagli quantizzati, e definirli bene è delicato.
-Nel 2021 Wei-Ning Hsu e colleghi, sempre a Meta AI, propongono con **HuBERT**
+Nel 2021 Wei-Ning Hsu e colleghi, sempre a Facebook AI, propongono con **HuBERT**
 (*Hidden-Unit BERT*) una strada diversa e sorprendentemente semplice
 {cite}`hsu2021hubert`: invece di riconoscere l'unità giusta tra distrattori,
 darsi da soli delle **pseudo-etichette** e imparare a predirle, esattamente

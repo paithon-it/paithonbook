@@ -406,6 +406,36 @@ ricorrenza, resta solo il meccanismo che avete appena visto nascere, promosso
 da comprimario a protagonista. Come, di preciso, è il tema del capitolo sui
 **Transformer**.
 
+`````{tab} Elementare
+```{admonition} Da ricordare
+:class: important
+- Un **modello di linguaggio** scommette sulla parola successiva, e la sua
+  pagella è la **perplessità**: quante facce ha il dado con cui esita a ogni
+  passo. Più è bassa, più il modello ha ristretto le alternative.
+- Le **RNN bidirezionali** rileggono la frase nei due sensi insieme, come un
+  giallo di cui si conosce già il colpevole: preziose per *capire* un testo
+  che esiste tutto intero, inutilizzabili per *scriverne* uno, perché mentre
+  si scrive le parole future non ci sono ancora.
+- **Seq2seq** è l'interprete senza appunti: una rete (l'encoder) ascolta
+  l'intera frase di partenza e la tiene in un unico ricordo, una seconda (il
+  decoder) la ridice nell'altra lingua partendo da lì. Se la frase è lunga,
+  in quel ricordo non ci sta tutto: è il collo di bottiglia.
+- L'**attenzione di Bahdanau** mette il testo sul tavolo dell'interprete: per
+  ogni parola che pronuncia, un'occhiata al punto che serve adesso, con
+  un'attenzione che si sposta a ogni passo e che nessuno gli ha insegnato dove
+  posare. In regalo si ottiene l'allineamento fra le parole delle due lingue,
+  ed è la stessa idea che nei Transformer diventerà protagonista.
+- Prendere ogni volta la parola più probabile è **miope**, perché la strada
+  che parte peggio può arrivare meglio: la **beam search** tiene aperte le
+  poche strade più promettenti e decide qualche passo più avanti (con una
+  correzione che le impedisce di preferire sempre le frasi corte).
+- Nel 2016 la traduzione neurale entra in produzione con GNMT di Google; nel
+  2017 *Attention Is All You Need* manda in soffitta la lettura passo dopo
+  passo e tiene solo l'attenzione.
+```
+`````
+
+`````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
 - Un **modello di linguaggio** assegna probabilità alla parola successiva; la
@@ -426,3 +456,4 @@ da comprimario a protagonista. Come, di preciso, è il tema del capitolo sui
 - Nel 2016 la traduzione neurale entra in produzione con GNMT; nel 2017
   *Attention Is All You Need* fa cadere la ricorrenza.
 ```
+`````

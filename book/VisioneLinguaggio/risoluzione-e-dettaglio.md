@@ -112,7 +112,10 @@ c'è informazione.
 Conviene ragionare in **pixel per millimetro** e confrontarli con la scala del
 segnale da leggere. Un A4 alto $297$ mm, ridotto a un lato lungo di $L$ pixel,
 dà $L/297$ px/mm; una maiuscola di un corpo da 9-10 punti è alta fra $2$ e
-$2{,}5$ mm, e nella tabella prendiamo il caso più favorevole, $2$ mm.
+$2{,}5$ mm, e nella tabella prendiamo l'estremo basso, $2$ mm. La scelta non
+decide l'esito: anche la maiuscola più alta, $2{,}5$ mm, a $224$ pixel resta
+sotto i due pixel ($1{,}9$), quindi la conclusione regge pure nel caso più
+favorevole alla lettura.
 
 | lato lungo | px/mm | maiuscola | una patch da 14 px |
 |---|---|---|---|

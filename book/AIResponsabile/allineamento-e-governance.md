@@ -68,8 +68,9 @@ interessa, $r^*$. L'**inner alignment** riguarda ciò che il modello finisce
 per perseguire *internamente* una volta addestrato: anche con una specifica
 perfetta, un sistema ottimizzato su una distribuzione può interiorizzare un
 obiettivo che generalizza male fuori da essa (*goal misgeneralization*). Sul
-primo pesa la **legge di Goodhart**: «quando una misura diventa un obiettivo,
-cessa di essere una buona misura». Formalmente, ottimizziamo un proxy
+primo pesa la **legge di Goodhart**, nella formulazione resa celebre da
+Marilyn Strathern: «quando una misura diventa un obiettivo, cessa di essere
+una buona misura». Formalmente, ottimizziamo un proxy
 $\tilde{r} \approx r^*$; ma $\arg\max_y \tilde{r}(y)$ e $\arg\max_y r^*(y)$
 non coincidono, e la differenza $\tilde{r} - r^*$ (trascurabile sui casi
 tipici) viene *amplificata* proprio dalla ricerca del massimo, che spinge il
@@ -269,8 +270,9 @@ tipo sono gli **attacchi**: qualcuno costruisce apposta l'input per far
 comportare male il modello. Con un gioco di ruolo astuto lo si convince ad
 aggirare le sue regole (*jailbreak*); oppure si nasconde un ordine dentro un
 testo che il modello deve solo leggere (una pagina web, una mail) e lui lo
-scambia per un comando legittimo (*prompt injection*), come già discusso nel
-capitolo sul programmare gli LLM. La differenza pratica conta: per gli errori
+scambia per un comando legittimo (*prompt injection*), come racconta per
+esteso la sezione su come si attacca e si difende un modello di linguaggio.
+La differenza pratica conta: per gli errori
 onesti la difesa è verificare a valle; per gli attacchi è difendere un
 perimetro contro un avversario che ci prova apposta.
 
@@ -286,7 +288,8 @@ e **prompt injection** sono invece problemi **avversari**: sfruttano il fatto
 che la gerarchia *system > user* è morbida e che il modello non distingue in
 modo affidabile *istruzioni* da *dati*. La prompt injection in particolare
 (testo non fidato che entra nel contesto e viene interpretato come comando) è
-l'analogo dell'SQL injection, e nei sistemi agentici (con accesso a strumenti,
+l'analogo dell'SQL injection, come ha mostrato in dettaglio la sezione su
+come si attacca e si difende un modello di linguaggio, e nei sistemi agentici (con accesso a strumenti,
 mail, file) è oggi il rischio di sicurezza più concreto. Sopra tutto sta la
 questione dell'**uso duale**: le stesse capacità che rendono un modello utile
 per chimica, biologia o codice possono assistere chi vuole nuocere. Non è un
@@ -421,7 +424,7 @@ di uso generale: per tutti valgono obblighi di documentazione tecnica,
 informazione agli sviluppatori a valle e sintesi pubblica dei dati di
 addestramento; per quelli con **rischio sistemico** (presunto oltre una soglia
 di calcolo di addestramento di $10^{25}$ FLOP) si aggiungono valutazione del
-modello, **adversarial testing** (il red-teaming della sezione precedente),
+modello, **adversarial testing** (il red-teaming visto poco sopra),
 mitigazione dei rischi sistemici, cybersicurezza e segnalazione degli
 incidenti gravi. Le sanzioni per le pratiche vietate arrivano fino a 35
 milioni di euro o al 7% del fatturato mondiale annuo. Sull'altra sponda

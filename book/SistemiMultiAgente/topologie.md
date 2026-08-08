@@ -262,8 +262,14 @@ $\lambda \in (0,1)$ dell'informazione rilevante, in cima ne arriva
 $\lambda^{D}$. Il punto non è il valore preciso (nessuno sa misurare $\lambda$
 su un riassunto in linguaggio naturale) ma la forma: la perdita è
 **esponenziale nella profondità**, mentre il guadagno sul diametro è
-logaritmico. Alzare $b$ e abbassare $D$ è quasi sempre la scelta giusta, ed è
-il contrario di ciò che suggerisce l'istinto organizzativo.
+logaritmico. Preso da solo, questo modello spingerebbe $b$ all'assurdo: con
+$b = N-1$ e $D = 1$ si è ricostruita la stella, che la pagina precedente ha
+appena dichiarato insostenibile. Il termine che manca è il carico del singolo
+supervisore, la finestra $c_0 + b\,\bar{m}$ vista per la stella, che cresce
+linearmente in $b$: l'ottimo bilancia la perdita esponenziale in $D$ contro
+quel carico lineare, e la regola operativa che ne esce è alzare $b$ **finché
+la finestra di ciascun supervisore regge**, e abbassare $D$ di conseguenza.
+È il contrario di ciò che suggerisce l'istinto organizzativo.
 
 Il secondo costo è formale quanto il primo: la gerarchia rende difficile
 l'**assegnazione del merito** (e della colpa). Attribuire un esito sbagliato a
@@ -584,9 +590,13 @@ scomponi, distribuisci, ricomponi, e il costo del centro è un prezzo onesto per
 avere un posto solo dove sta la verità. Un compito i cui passi sono
 **strettamente sequenziali** e verificabili uno per uno chiede una **catena**,
 con un cancello dentro ogni anello. Un compito **troppo grande per un
-supervisore solo** chiede una **gerarchia**, tenuta larga e bassa, perché la
-perdita per riassunto è esponenziale nella profondità e il guadagno è
-logaritmico. Un compito in cui contributi **eterogenei** devono incontrarsi
+supervisore solo** chiede una **gerarchia**, tenuta più larga che alta perché
+la perdita per riassunto è esponenziale nella profondità mentre il guadagno sul
+diametro è solo logaritmico; ma «più larga» ha un limite, ed è quanto ciascun
+capo intermedio riesce a leggere, cioè la finestra $c_0 + b\,\bar{m}$ già vista
+per la stella. Si allarga la ramificazione finché quella regge, e non oltre:
+oltre si è semplicemente rifatta la stella, con i suoi guai.
+Un compito in cui contributi **eterogenei** devono incontrarsi
 senza un ordine stabilito in anticipo chiede una **lavagna**. Un compito in cui
 **non si sa chi sa fare cosa** chiede un **mercato**, purché i pezzi messi a
 bando siano grandi abbastanza da ripagare il bando.
@@ -614,8 +624,11 @@ verifica, è nel frattempo un ottimo posto dove aspettare.
 - **Gerarchia**: catena e gerarchia sono lo stesso albero con ramificazione
   diversa, e alzare $b$ porta il diametro da lineare a logaritmico ($6$ contro
   $14$ su quindici agenti). Paga con la perdita per riassunto, **esponenziale**
-  nella profondità, e con la responsabilità diluita: larga e bassa, non stretta
-  e alta. Il nodo più carico è un capo intermedio, non la radice.
+  nella profondità, e con la responsabilità diluita: conviene quindi allargare
+  la ramificazione e abbassare i livelli, ma solo finché la finestra
+  $c_0 + b\,\bar{m}$ di ogni supervisore regge, perché spinta all'estremo la
+  regola ricostruisce la stella. Il nodo più carico è un capo intermedio, non
+  la radice.
 - **Lavagna condivisa**: nata con **Hearsay-II** alla Carnegie Mellon per la
   comprensione del parlato, dove acustica, lessico, sintassi e semantica devono
   contribuire senza un ordine prestabilito {cite}`erman1980hearsay`. Ottimizza

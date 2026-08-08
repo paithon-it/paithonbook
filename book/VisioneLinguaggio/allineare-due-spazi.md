@@ -44,9 +44,13 @@ lavoro.
 ```
 
 Il conto di {numref}`fig-clip-matrice` spiega perché la dimensione del batch
-conti tanto, tema della sezione più avanti. Con $N$ coppie si ottengono $N$
-esempi positivi e $N^2 - N$ negativi: raddoppiare il batch non raddoppia il
-segnale, lo quadruplica.
+conti tanto, tema della sezione più avanti. Con $N$ coppie ogni riga porta una
+risposta giusta e $N - 1$ sbagliate: raddoppiare il batch raddoppia le
+alternative sbagliate che ogni immagine deve scartare, e l'esame si fa più
+difficile. Le celle da riempire, però, sono $N^2$, e raddoppiando il batch
+diventano quattro volte tante. Da una parte la difficoltà dell'esame, che
+cresce del doppio; dall'altra il lavoro di calcolo per prepararlo, che cresce
+di quattro volte. È questa forbice a rendere cari i batch molto grandi.
 
 `````{tab} Elementare
 
@@ -79,13 +83,17 @@ Transformer con maschera causale, da cui si preleva la rappresentazione
 dell'ultimo token. Le uscite vengono **normalizzate**,
 
 $$
-I_i = \frac{f_{\text{img}}(x_i)}{\lVert f_{\text{img}}(x_i) \rVert_2},
+I_i = \frac{f_{\text{img}}(\tilde{I}_i)}{\lVert f_{\text{img}}(\tilde{I}_i) \rVert_2},
 \qquad
 T_j = \frac{f_{\text{txt}}(t_j)}{\lVert f_{\text{txt}}(t_j) \rVert_2},
 $$
 
-dove $x_i$ è l'immagine $i$-esima del batch, $t_j$ la didascalia $j$-esima e
-$I_i, T_j \in \mathbb{R}^d$ i due embedding, che vivono così sulla sfera
+dove $\tilde{I}_i$ è l'immagine $i$-esima del batch (il tensore grezzo, quello
+che l'overview chiamava $I$), $t_j$ la didascalia $j$-esima e
+$I_i, T_j \in \mathbb{R}^d$ i due embedding. Adottiamo per questa sezione la
+notazione del paper di CLIP, in cui $I$ e $T$ denotano gli embedding
+normalizzati e non i dati grezzi: da qui in poi $I_i$ è un vettore, non un
+reticolo di pixel. I due embedding vivono così sulla sfera
 unitaria: il loro prodotto scalare $\langle I_i, T_j \rangle$ è esattamente il
 coseno dell'angolo fra i due, un numero in $[-1, 1]$.
 
@@ -203,26 +211,55 @@ credibili.
 ## Quattro coppie, fatte a mano
 
 Conviene vedere i numeri, perché la temperatura fa una differenza che a parole
-non si apprezza. Prendiamo un batch minuscolo, $N = 4$, con similarità coseno
-plausibili per un modello a metà addestramento (le coppie vere intorno a
-$0{,}3$, le altre fra $0$ e $0{,}15$):
+non si apprezza. Prendiamo un batch minuscolo, $N = 4$: quattro immagini e le
+loro quattro didascalie. Nella tabella qui sotto le righe $I_1 \dots I_4$ sono
+le quattro immagini, le colonne $T_1 \dots T_4$ le quattro didascalie, e ogni
+cella dice quanto quell'immagine e quella didascalia si somigliano; in
+grassetto le quattro coppie vere. I valori sono plausibili per un modello a
+metà addestramento (le coppie vere intorno a $0{,}3$, le altre fra $0$ e
+$0{,}15$):
 
-| $\langle I_i, T_j \rangle$ | $T_1$ | $T_2$ | $T_3$ | $T_4$ |
+| somiglianza | $T_1$ | $T_2$ | $T_3$ | $T_4$ |
 |---|---|---|---|---|
 | $I_1$ | **0,30** | 0,10 | 0,05 | 0,02 |
 | $I_2$ | 0,08 | **0,28** | 0,12 | 0,04 |
 | $I_3$ | 0,04 | 0,15 | **0,32** | 0,09 |
 | $I_4$ | 0,06 | 0,03 | 0,10 | **0,26** |
 
-Con la temperatura di partenza di CLIP, $\tau = 0{,}07$, i valori della prima
-riga diventano logit dividendo per $\tau$: $0{,}30/0{,}07 = 4{,}29$, poi
-$1{,}43$, $0{,}71$ e $0{,}29$. Esponenziando si ottengono $72{,}7$, $4{,}17$,
-$2{,}04$ e $1{,}33$, la cui somma è $80{,}2$; le probabilità sono quindi
-$0{,}906$, $0{,}052$, $0{,}025$ e $0{,}017$, e il costo della riga è
-$-\log 0{,}906 = 0{,}099$ (i logaritmi qui sono naturali, come vuole la forma
-esponenziale della softmax). Ripetendo per le altre tre righe e mediando, la
-loss in direzione immagine → testo vale $0{,}147$; quella sulle colonne
-$0{,}148$; la loss simmetrica $0{,}148$.
+`````{tab} Elementare
+
+Guarda la prima riga: la coppia giusta somiglia $0{,}30$, la migliore delle
+sbagliate $0{,}10$. Differenze piccole, e il mestiere della **temperatura** è
+decidere quanto pesano: è una manopola che amplifica le differenze fra i
+punteggi prima di trasformarli in percentuali di fiducia, e più è bassa, più
+amplifica.
+
+Con la temperatura di partenza di CLIP, che è bassa ($0{,}07$), quel piccolo
+vantaggio viene ingigantito: alla coppia giusta va il 91% della fiducia, e la
+riga costa appena $0{,}099$ (il metro è quello di prima: tanta fiducia alla
+risposta giusta, costo basso). Facendo la media sulle quattro righe, e poi
+anche sulle colonne, il costo complessivo è $0{,}148$.
+
+Ora alziamo la manopola a $0{,}5$, senza toccare una sola somiglianza.
+L'amplificazione quasi sparisce: alla coppia giusta va il 35% della fiducia e
+alle tre sbagliate poco meno, fra il 20 e il 24. Il costo sale a $1{,}082$;
+per confronto, tirare a caso fra quattro didascalie costerebbe $1{,}386$.
+Stessa tabella, stesso ordine corretto: con la manopola alta si paga quasi
+quanto tirando a caso, con quella bassa un decimo.
+
+`````
+
+`````{tab} Superiore
+
+Con la temperatura di partenza di CLIP, $\tau = 0{,}07$, le similarità coseno
+della prima riga diventano logit dividendo per $\tau$:
+$0{,}30/0{,}07 = 4{,}29$, poi $1{,}43$, $0{,}71$ e $0{,}29$. Esponenziando si
+ottengono $72{,}7$, $4{,}17$, $2{,}04$ e $1{,}33$, la cui somma è $80{,}2$; le
+probabilità sono quindi $0{,}906$, $0{,}052$, $0{,}025$ e $0{,}017$, e il
+costo della riga è $-\log 0{,}906 = 0{,}099$ (i logaritmi qui sono naturali,
+come vuole la forma esponenziale della softmax). Ripetendo per le altre tre
+righe e mediando, la loss in direzione immagine → testo vale $0{,}147$; quella
+sulle colonne $0{,}148$; la loss simmetrica $0{,}148$.
 
 Ora rifacciamo il conto **senza cambiare una sola similarità**, solo alzando la
 temperatura a $\tau = 0{,}5$. La prima riga diventa $0{,}351$, $0{,}235$,
@@ -231,6 +268,8 @@ loss simmetrica sale a $1{,}082$. Per confronto, un modello che tirasse a caso
 fra quattro didascalie pagherebbe $\log 4 = 1{,}386$. Con $\tau = 0{,}5$ questa
 matrice, che pure è ordinata correttamente, costa quasi quanto tirare a caso;
 con $\tau = 0{,}07$ ne costa circa un decimo.
+
+`````
 
 ## Perché la temperatura e il batch non sono dettagli
 

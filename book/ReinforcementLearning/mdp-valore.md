@@ -43,7 +43,7 @@ scopre muovendosi.
 Un MDP è la quintupla
 
 $$
-\mathcal{M} = (\mathcal{S}, \mathcal{A}, P, R, \gamma).
+\mathcal{M} = (\mathcal{S}, \mathcal{A}, P, r, \gamma).
 $$
 
 $\mathcal{S}$ è l'insieme degli stati, $\mathcal{A}$ quello delle azioni. La
@@ -54,9 +54,17 @@ P(s' \mid s, a) = \Pr(S_{t+1} = s' \mid S_t = s,\ A_t = a),
 $$
 
 cioè la probabilità di finire in $s'$ eseguendo l'azione $a$ nello stato $s$.
-$R(s,a)$ è la ricompensa attesa e $\gamma \in [0,1)$ il fattore di sconto (fra
-poco). Le transizioni sono *stocastiche*: la stessa azione può condurre in
-stati diversi.
+La **ricompensa attesa** è
+
+$$
+r(s,a) = \mathbb{E}[\,R_{t+1} \mid S_t = s,\ A_t = a\,],
+$$
+
+minuscola perché, a differenza della ricompensa aleatoria $R_{t+1}$ che
+l'ambiente estrae a ogni passo, è una funzione deterministica di stato e
+azione: è la convenzione annunciata nella panoramica del capitolo. Infine
+$\gamma \in [0,1)$ è il fattore di sconto (fra poco). Le transizioni sono
+*stocastiche*: la stessa azione può condurre in stati diversi.
 
 `````
 
@@ -148,8 +156,8 @@ premio immediato), vicino a 1 è lungimirante.
 Il **ritorno** al tempo $t$ è la somma scontata delle ricompense future:
 
 $$
-G_t = r_{t+1} + \gamma\, r_{t+2} + \gamma^2 r_{t+3} + \cdots
-= \sum_{k=0}^{\infty} \gamma^k\, r_{t+k+1}.
+G_t = R_{t+1} + \gamma\, R_{t+2} + \gamma^2 R_{t+3} + \cdots
+= \sum_{k=0}^{\infty} \gamma^k\, R_{t+k+1}.
 $$
 
 Con $0 \le \gamma < 1$ la serie converge anche su orizzonti infiniti (le
@@ -233,11 +241,11 @@ all'uscita è alto perché *l'uscita* vale molto; quel valore poi
 
 `````{tab} Superiore
 
-Spezzando il ritorno come $G_t = r_{t+1} + \gamma\, G_{t+1}$ e prendendo
+Spezzando il ritorno come $G_t = R_{t+1} + \gamma\, G_{t+1}$ e prendendo
 l'attesa si ottiene l'**equazione di Bellman** per $V^\pi$:
 
 $$
-V^\pi(s) = \mathbb{E}_\pi\!\left[\, r_{t+1} + \gamma\, V^\pi(S_{t+1})
+V^\pi(s) = \mathbb{E}_\pi\!\left[\, R_{t+1} + \gamma\, V^\pi(S_{t+1})
 \;\middle|\; S_t = s \,\right],
 $$
 
@@ -245,7 +253,7 @@ che, esplicitando policy e transizioni, diventa
 
 $$
 V^\pi(s) = \sum_{a} \pi(a\mid s) \sum_{s'} P(s'\mid s,a)
-\big[\,R(s,a) + \gamma\, V^\pi(s')\,\big].
+\big[\,r(s,a) + \gamma\, V^\pi(s')\,\big].
 $$
 
 È un sistema di equazioni lineari: una relazione di consistenza fra il valore
@@ -283,13 +291,13 @@ Partendo da una stima arbitraria $V_0$ (tipicamente nulla), si itera
 
 $$
 V_{k+1}(s) = \max_{a} \sum_{s'} P(s'\mid s,a)
-\big[\,R(s,a) + \gamma\, V_k(s')\,\big],
+\big[\,r(s,a) + \gamma\, V_k(s')\,\big],
 $$
 
 dove $V_k$ è la stima dei valori al passo $k$: è l'equazione di Bellman con un
 $\max$ sulle azioni al posto della media pesata dalla policy. Il punto fisso è
 l'**equazione di ottimalità di Bellman**,
-$V^*(s) = \max_a \sum_{s'} P(s'\mid s,a)\big[R(s,a) + \gamma\, V^*(s')\big]$,
+$V^*(s) = \max_a \sum_{s'} P(s'\mid s,a)\big[r(s,a) + \gamma\, V^*(s')\big]$,
 dove $V^*$ è il valore della migliore policy possibile. La convergenza è
 garantita: l'operatore di aggiornamento è una **contrazione** di fattore
 $\gamma$ nella norma del massimo (a ogni passo la distanza da $V^*$ si riduce
@@ -382,7 +390,7 @@ policy *greedy* rispetto ai valori appena calcolati,
 
 $$
 \pi'(s) = \arg\max_{a} \sum_{s'} P(s'\mid s,a)
-\big[\,R(s,a) + \gamma\, V^\pi(s')\,\big].
+\big[\,r(s,a) + \gamma\, V^\pi(s')\,\big].
 $$
 
 Il *policy improvement theorem* garantisce $V^{\pi'}(s) \ge V^\pi(s)$ in ogni
@@ -409,7 +417,7 @@ C'è però un dettaglio che finora abbiamo dato per scontato, ed è enorme. Per
 fare quei conti ("ricompensa della mossa più valore dello stato d'arrivo"),
 bisogna *sapere in anticipo* dove porta ogni mossa e quanto paga: value
 iteration e policy iteration richiedono di conoscere il modello dell'ambiente,
-cioè le funzioni $P$ e $R$. È pianificare un viaggio con la mappa già in mano.
+cioè le funzioni $P$ e $r$. È pianificare un viaggio con la mappa già in mano.
 Ma il robot del nostro labirinto la mappa non ce l'ha, e il mondo reale quasi
 mai la consegna: nessuno fornisce a un agente le probabilità di transizione
 del traffico o di una partita a Go.
@@ -423,9 +431,38 @@ partita e corregge la stima a ogni passo, usando la stima successiva come
 bersaglio provvisorio: è l'apprendimento per **differenze temporali**, e il suo
 esemplare più famoso è il **Q-learning**.
 
+`````{tab} Elementare
+
 ```{admonition} Da ricordare
 :class: important
-- Un **MDP** $(\mathcal{S},\mathcal{A},P,R,\gamma)$ formalizza un agente che
+- Tutto il reinforcement learning sta dentro un giro solo: l'agente si trova in
+  una situazione (il robot in una casella del labirinto), sceglie una mossa,
+  finisce da qualche parte e incassa un punteggio. Poi si ricomincia.
+- La situazione deve **bastare da sola**: come la foto di una partita a
+  scacchi, deve dire tutto ciò che serve per decidere, senza che occorra sapere
+  come ci si è arrivati. Se non basta, si allarga l'inquadratura.
+- La **strategia** è l'abitudine dell'agente (in questa casella vado a destra),
+  eventualmente truccata come un dado quando conviene provare altro. E il
+  futuro pesa meno del presente: dieci euro oggi valgono più di dieci euro
+  l'anno prossimo, e il fattore di sconto misura questa impazienza.
+- Il **valore** di una casella è il punteggio che ci si aspetta di raccogliere
+  da lì in avanti; il valore di una mossa fa lo stesso fissando anche la prima
+  mossa. Ogni valore si appoggia al successivo come i pioli di una scala: è
+  così che il premio dell'uscita risale il labirinto, una casella per volta.
+- Se la mappa è nota (dove porta ogni mossa e quanto paga), ci sono due
+  ricette: aggiornare i numeri di tutte le caselle finché smettono di muoversi,
+  oppure alternare pagella e correzione come un allenatore. Quando la mappa
+  manca bisogna imparare giocando: partite intere (Monte Carlo) o correzioni a
+  ogni passo (differenze temporali).
+```
+
+`````
+
+`````{tab} Superiore
+
+```{admonition} Da ricordare
+:class: important
+- Un **MDP** $(\mathcal{S},\mathcal{A},P,r,\gamma)$ formalizza un agente che
   sceglie azioni, transita fra stati e raccoglie ricompense.
 - La **proprietà di Markov**: il futuro dipende solo dallo stato presente, non
   dall'intera storia.
@@ -433,8 +470,10 @@ esemplare più famoso è il **Q-learning**.
   pesa il futuro con $\gamma$.
 - $V^\pi$ e $Q^\pi$ misurano il ritorno *atteso*; l'**equazione di Bellman** li
   definisce in modo ricorsivo, ed è la base di ogni algoritmo di RL.
-- Con il modello ($P$ e $R$) noto, **value iteration** e **policy iteration**
+- Con il modello ($P$ e $r$) noto, **value iteration** e **policy iteration**
   calcolano valori e policy ottimi iterando Bellman; quando il modello manca
   bisogna imparare dall'esperienza, coi metodi Monte Carlo o con le differenze
   temporali.
 ```
+
+`````

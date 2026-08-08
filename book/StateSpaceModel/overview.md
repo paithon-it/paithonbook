@@ -120,8 +120,8 @@ entrambi i capitoli, l'onesto collo di bottiglia dello stato fisso, e gli
   ricorrente (inferenza a costo costante) e convoluzionale (addestramento
   parallelo) (la stessa dualità dell'attenzione lineare, da un'altra strada).
 - **Mamba** {cite}`gu2023mamba` rompe l'invarianza temporale con la
-  **selettività**; **Mamba-2** {cite}`dao2024mamba2` mostra che un SSM è
-  un'attenzione mascherata: le due famiglie coincidono.
+  **selettività**; **Mamba-2** {cite}`dao2024mamba2` mostra che un SSM di forma
+  opportuna *è* un'attenzione mascherata: le due famiglie coincidono.
 - Il percorso: dai sistemi dinamici a S4 → Mamba (selezione e scan) → la dualità
   (Mamba-2 e Mamba-3) → panorama, limiti e ibridi.
 ```

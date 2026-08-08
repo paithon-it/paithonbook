@@ -68,7 +68,11 @@ verificare sono pubblicati.
 
 La prima equazione del paper costruisce la sequenza di ingresso: l'immagine
 viene tagliata in quadratini, ognuno viene proiettato in un vettore, si
-aggiunge un token speciale e le posizioni.
+aggiunge un token speciale e le posizioni. Eccola come appare sull'articolo;
+non serve decifrarla simbolo per simbolo, perché dice in notazione compatta
+esattamente la frase appena letta (le parentesi mettono in fila i quadratini,
+$\mathbf{E}$ li proietta, la somma finale aggiunge le posizioni), e tradurla
+in codice è il lavoro di questa sezione.
 
 $$
 \mathbf{z}_0 = [\, \mathbf{x}_{\text{class}} ;\;
@@ -146,9 +150,11 @@ da `nn.Linear`, che materializza un tensore intermedio molto più grande.
 
 **Token di classe e posizioni.** Entrambi sono `nn.Parameter`, cioè imparati:
 $\mathbf{x}_{\text{class}}$ è la sonda da cui l'equazione 4 legge l'uscita, e
-le codifiche di posizione sono *apprese* (non sinusoidali come nel Transformer
-originale {cite}`vaswani2017attention`); il ViT verifica sperimentalmente che
-la differenza è trascurabile. Due conseguenze pratiche. La prima: la lunghezza
+le codifiche di posizione sono *apprese*, non sinusoidali come nel Transformer
+originale {cite}`vaswani2017attention` (dove gli autori avevano verificato che
+i due tipi danno risultati quasi identici); l'ablazione del ViT confronta
+invece varianti tutte apprese (1-D, 2-D, relative) e trova differenze
+trascurabili. Due conseguenze pratiche. La prima: la lunghezza
 di $\mathbf{E}_{\text{pos}}$ è legata alla risoluzione, quindi cambiare la
 dimensione dell'immagine richiede di **interpolare** le codifiche, non basta
 riallocarle. La seconda: l'alternativa al token di classe è il *global average

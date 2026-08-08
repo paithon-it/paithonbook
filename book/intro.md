@@ -161,9 +161,9 @@ class="pt-card" href="PINN/overview.html"> <span class="pt-card-num"></span>
 class="pt-card-desc">Le leggi della fisica dentro la loss: reti che rispettano
 le equazioni differenziali.</span> </a> <a class="pt-card"
 href="MLOps/overview.html"> <span class="pt-card-num"></span> <span
-class="pt-card-title">MLOps</span> <span class="pt-card-desc">Il capitolo
-conclusivo: dal notebook alla produzione, versioning, serving, monitoraggio
-del drift, LLMOps e deploy.</span> </a> <a class="pt-card"
+class="pt-card-title">MLOps</span> <span class="pt-card-desc">Dal notebook
+alla produzione: versioning, serving, monitoraggio del drift, LLMOps e
+deploy.</span> </a> <a class="pt-card"
 href="Interpretabilita/overview.html"> <span class="pt-card-num"></span> <span
 class="pt-card-title">Interpretabilità e XAI</span> <span
 class="pt-card-desc">Aprire la scatola nera: modelli trasparenti e importanza
@@ -237,7 +237,7 @@ f(x) = \begin{cases}
 $$
 
 Questa funzione prende un input $x$ e restituisce $x$ se $x$ è positivo; altrimenti, restituisce zero. \
-La ReLU è ampiamente utilizzata nelle reti neurali perché introduce una non linearità essenziale con una derivata costante per i valori positivi di $x$, il che rende più efficiente il calcolo della *backpropagation* durante la fase di addestramento.
+La ReLU è ampiamente utilizzata nelle reti neurali perché introduce una non linearità essenziale e la sua derivata vale esattamente $1$ per $x > 0$: durante la *backpropagation* il gradiente attraversa gli strati senza attenuarsi, evitando la saturazione che affligge sigmoide e tangente iperbolica. In $x = 0$ la funzione non è derivabile (il grafico ha un punto angoloso); il sottodifferenziale è l'intervallo $[0, 1]$ e nella pratica, PyTorch compreso, si adotta la convenzione $f'(0) = 0$.
 
 ````
 

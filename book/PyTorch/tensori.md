@@ -97,7 +97,7 @@ a + b            # tensor([11., 22., 33.])
 a * b            # prodotto elemento per elemento
 a.sum()          # tensor(6.)  -> calcolato SUBITO
 a @ b            # prodotto scalare: 1·10 + 2·20 + 3·30 = tensor(140.)
-a.reshape(3, 1)  # stessa memoria, nuova forma: colonna 3x1
+a.reshape(3, 1)  # nuova forma: gli stessi numeri in colonna, 3x1
 ```
 
 `````{tab} Elementare
@@ -122,9 +122,13 @@ stesse di NumPy, gli assi si allineano da destra e le dimensioni compatibili
 vettore $(4,)$ produce una $(3, 4)$. Il prodotto matriciale è `@` (ovvero
 `torch.matmul`), con la stessa semantica di NumPy anche sui vettori rank-1:
 `a @ b` tra due vettori è direttamente il prodotto scalare, senza bisogno di
-reshape. Molte operazioni esistono in variante *in-place* col suffisso
-underscore (`t.add_(1)`, `t.zero_()`): risparmiano memoria ma, come vedremo,
-vanno evitate sui tensori tracciati da autograd.
+reshape. A proposito di `reshape`: restituisce una **vista** (stessa memoria,
+solo un modo diverso di leggerla) quando la disposizione dei dati lo permette,
+e altrimenti copia in silenzio; `t.view(...)` la vista la pretende, e su un
+tensore non contiguo solleva un errore invece di copiare. Molte operazioni
+esistono in variante *in-place* col suffisso underscore (`t.add_(1)`,
+`t.zero_()`): risparmiano memoria ma, come vedremo, vanno evitate sui tensori
+tracciati da autograd.
 
 `````
 
@@ -170,10 +174,14 @@ deep learning. Il codice resta identico; cambia solo la velocità.
 
 ## Autograd: la derivata calcolata da sola
 
-Addestrare una rete significa cercare i parametri che minimizzano la loss
-$\mathcal{L}$, e per farlo serve il suo gradiente. Calcolarlo a mano per una
-rete con milioni di pesi è impensabile: qui entra la **differenziazione
-automatica** (*autodiff*), il vero cuore di PyTorch.
+Addestrare una rete significa girare le sue tante manopole interne (i
+**parametri**, cioè i pesi) finché l'errore che commette, quello che il
+mestiere chiama *loss* e scrive $\mathcal{L}$, non diventa piccolo. Per sapere
+da che parte girare ciascuna manopola serve il **gradiente**: la derivata
+dell'errore rispetto a ogni parametro, che dice se aumentandolo l'errore sale
+o scende, e di quanto. Calcolarlo a mano per una rete con milioni di pesi è
+impensabile: qui entra la **differenziazione automatica** (*autodiff*), il
+vero cuore di PyTorch.
 
 ```{figure} ../figures/extra-backpropagation-spiegata.svg
 :name: fig-autograd-due-passate
@@ -236,8 +244,10 @@ precedente: un'unica passata all'indietro calcola il gradiente rispetto a
 *tutti* i parametri in tempo proporzionale a quello della passata in avanti.
 
 Tre dettagli operativi che incontreremo di continuo. I gradienti si
-**accumulano**: una seconda `backward()` somma in `x.grad` invece di
-sovrascrivere, per questo il training loop azzera i gradienti a ogni passo. Il
+**accumulano**: una `backward()` successiva, su un nuovo forward, somma in
+`x.grad` invece di sovrascrivere (ripetere la *stessa* chiamata sullo stesso
+grafo, invece, solleva un errore, salvo `retain_graph=True`), per questo il
+training loop azzera i gradienti a ogni passo. Il
 blocco `with torch.no_grad():` sospende la registrazione; indispensabile in
 valutazione, quando i gradienti non servono e il grafo sarebbe solo memoria
 sprecata. Infine `t.detach()` restituisce una vista del tensore staccata dal

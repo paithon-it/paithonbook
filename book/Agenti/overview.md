@@ -14,8 +14,12 @@ aprono una richiesta di modifica (una *pull request*) su un progetto software
 vero. L'esempio più spietato di questo salto è **SWE-bench**
 {cite}`jimenez2024swebench`: 2.294 segnalazioni di errore (*issue*) prese da
 progetti reali su GitHub. Al sistema si dà la segnalazione del bug e il codice
-del progetto; deve produrre la modifica che lo risolve: la stessa che, nella
-realtà, ha poi scritto uno sviluppatore in carne e ossa. È un compito che
+del progetto; deve produrre una modifica che lo risolva davvero. A giudicarlo
+non c'è una persona, ma i **test** del progetto: dei controlli automatici che
+il computer fa girare per vedere se il programma funziona ancora. Sono gli
+stessi test che, quando il bug fu risolto per davvero, dissero «a posto» alla
+correzione scritta da uno sviluppatore in carne e ossa. È un
+compito che
 nessun completamento di testo, per quanto fluente, chiude in un colpo solo:
 bisogna trovare i file giusti, provare, sbagliare, rileggere il messaggio
 d'errore, correggere. I primi sistemi ci riuscivano in una **piccola
@@ -89,10 +93,13 @@ finale. A ogni passo:
 
 dove $\oplus$ denota la concatenazione al contesto e il ciclo termina quando il
 modello emette un'azione speciale di «risposta finale» o si raggiunge un limite
-di passi. La differenza cruciale con il reinforcement learning classico è che
-qui la policy non è appresa con ricompense ed episodi: è un modello di
-linguaggio pre-addestrato, guidato da istruzioni in linguaggio naturale. Non
-ottimizziamo $\theta$; scriviamo il *prompt*.
+di passi. La differenza cruciale con il reinforcement learning classico sta in
+chi fa cosa: chi costruisce l'agente, di norma, non ottimizza $\theta$. La
+policy è un modello di linguaggio già addestrato (spesso proprio con
+ricompense ed episodi, nel post-training che gli ha insegnato a seguire
+istruzioni e a usare strumenti) e qui il suo comportamento si governa con
+istruzioni in linguaggio naturale: non si aggiornano i pesi, si scrive il
+*prompt*.
 
 `````
 
@@ -225,9 +232,10 @@ l'obiettivo»: il prompt diventa la specifica del comportamento dell'agente.
 su LLM sono un'area **giovane e in rapido movimento** {cite}`xi2023rise`, senza
 un impianto teorico consolidato e con più euristiche che garanzie. E c'è un
 problema strutturale: gli errori si **accumulano lungo il loop**. Se a ogni
-passo il modello ha una probabilità $p$ di sbagliare la mossa, la probabilità
-di arrivare in fondo a un compito di $n$ passi senza incidenti scala come
-$(1-p)^n$, che precipita al crescere di $n$. È una delle ragioni per cui
+passo il modello ha una probabilità $p$ di sbagliare la mossa, e i passi sono
+indipendenti, la probabilità di attraversare un compito di $n$ passi senza un
+solo errore scala come $(1-p)^n$, che precipita al crescere di $n$. È una
+delle ragioni per cui
 compiti lunghi come quelli di SWE-bench {cite}`jimenez2024swebench` restano
 difficili: non basta essere bravi a un passo, bisogna esserlo per molti passi
 di fila.

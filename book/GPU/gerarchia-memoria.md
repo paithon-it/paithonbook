@@ -15,8 +15,8 @@ sotto mano, poi restano fermi ad aspettare i prossimi. Abbiamo visto che i
 occupata con altro lavoro pronto; ma quel trucco *nasconde* l'attesa, non
 fabbrica dati più in fretta. La **banda** (quanti byte al secondo la memoria
 riesce davvero a consegnare) è finita, ed è lei, non la potenza di calcolo, a
-decidere il destino di moltissimi programmi. È il «muro della banda» del
-titolo: puoi anche raddoppiare i core, ma se i byte non arrivano, i core in
+decidere il destino di moltissimi programmi. È il «muro della banda»: puoi
+anche raddoppiare i core, ma se i byte non arrivano, i core in
 più restano a girarsi i pollici.
 
 Per capire dove i byte si perdono bisogna conoscere la geografia della memoria
@@ -164,8 +164,7 @@ tavolo comune all'inizio, e lasciare che tutti la consultino lì, a portata di
 mano, per tutto il tempo. Il viaggio in magazzino (la lettura dalla memoria
 lontana) si paga una volta sola invece di decine. Questo «carica una volta,
 riusa in tanti» è il segreto di quasi tutti i kernel veloci, e sarà il cuore
-della prossima sezione, quando vedremo come si moltiplicano due matrici sul
-serio.
+della sezione in cui vedremo come si moltiplicano due matrici sul serio.
 `````
 
 `````{tab} Superiore

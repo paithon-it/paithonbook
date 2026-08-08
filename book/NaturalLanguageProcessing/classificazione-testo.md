@@ -404,9 +404,9 @@ il verdetto si spiega da solo, parola per parola. I limiti però sono seri. Il
 contesto: «imprevedibile» è un complimento per la trama di un film e un'accusa
 per i freni di un'auto, ma nel dizionario ha un solo segno. E la negazione:
 «non è affatto male» contiene due parole da piatto negativo («non» e «male»)
-eppure è un complimento. È lo stesso esempio che abbiamo visto nel capitolo
+eppure è un complimento. È lo stesso esempio che ritroveremo nel capitolo
 sui Transformer: lì il modello, leggendo la frase intera con l'attenzione, lo
-risolve; un conteggio di parole isolate, per costruzione, non può.
+risolverà; un conteggio di parole isolate, per costruzione, non può.
 
 `````
 
@@ -436,6 +436,40 @@ plausibile una sequenza, e scommettere sulla parola che viene dopo. È il
 modello di linguaggio n-gram della prossima sezione, dove ritroveremo un
 vecchio amico appena conosciuto: il +1 di Laplace.
 
+`````{tab} Elementare
+```{admonition} Da ricordare
+:class: important
+- **Classificare un testo** vuol dire assegnargli un'etichetta fra poche già
+  decise (spam o no, recensione entusiasta o stroncatura, lingua, autore): un
+  problema risolto già nel 1964 sui Federalist Papers, contando le parole
+  «invisibili» che ognuno usa a modo suo senza accorgersene.
+- **Naive Bayes** fa votare le parole: ogni parola porta il suo piccolo
+  indizio, i voti si moltiplicano fra loro e vince l'ipotesi con il punteggio
+  più alto. È ingenuo perché ogni parola vota come se le altre non
+  esistessero, e funziona lo stesso. Perché una parola mai vista non azzeri
+  tutto, si regala **un conteggio in più a ogni parola**: la regola del $+1$
+  di Laplace.
+- La **regressione logistica** è la bilancia a due piatti: ogni parola butta
+  un pesetto da una parte o dall'altra, i pesetti li impara dagli esempi già
+  etichettati, e la curva a S traduce il totale in una probabilità (con più di
+  due etichette, un punteggio per etichetta).
+- I **due periti** davanti ai quadri: il primo (Naive Bayes) studia com'è
+  fatto un quadro tipico di ciascun pittore, il secondo (la regressione
+  logistica) impara solo i dettagli che li distinguono. Il primo se la cava
+  con pochissimi esempi ma conta due volte gli indizi che viaggiano in coppia;
+  il secondo se ne accorge e spartisce il peso, e vince quando gli esempi
+  abbondano.
+- Per giudicare il giudice servono le misure del capitolo sul machine learning
+  (quante delle segnalazioni sono giuste, quante ne ha trovate) e non la
+  percentuale secca di risposte esatte: se lo spam è una email su cento, chi
+  risponde sempre «legittima» ne azzecca il $99\%$ senza aver fermato niente.
+- I **lessici di sentiment**, dizionari di parole con il loro segno, non
+  chiedono nessun esempio già giudicato, ma sono ciechi al contesto e alla
+  negazione: «non è affatto male» resta il controesempio da ricordare.
+```
+`````
+
+`````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
 - **Classificare un testo** = assegnargli un'etichetta tra poche prefissate
@@ -459,3 +493,4 @@ vecchio amico appena conosciuto: il +1 di Laplace.
   a contesto e negazione: «non è affatto male» resta il controesempio da
   ricordare.
 ```
+`````

@@ -53,8 +53,12 @@ La parte sorprendente: l'agente può muoversi anche a casaccio, sbagliando di pr
 Definiamo la funzione azione-valore ottima $Q^*(s,a)$ come la ricompensa scontata attesa se in $s$ eseguiamo $a$ e poi seguiamo la politica ottima. Soddisfa l'equazione di ottimalità di Bellman
 
 $$
-Q^*(s,a) = \mathbb{E}\big[\,r + \gamma \max_{a'} Q^*(s',a')\,\big].
+Q^*(s,a) = \mathbb{E}\big[\,R_{t+1} + \gamma \max_{a'} Q^*(S_{t+1},a')
+\;\big|\; S_t = s,\ A_t = a\,\big],
 $$
+
+dove l'attesa è sulla ricompensa e sullo stato d'arrivo,
+$S_{t+1} \sim P(\cdot \mid s, a)$.
 
 Il Q-learning è **off-policy** perché il suo *target* usa $\max_{a'} Q(s',a')$
 (il valore dell'azione *migliore* nello stato successivo) indipendentemente da
@@ -104,7 +108,7 @@ a =
 \end{cases}
 $$
 
-Un $\varepsilon$ costante garantisce esplorazione perpetua; in pratica si usa un *decay*, ad esempio $\varepsilon_t = \varepsilon_0\,\lambda^t$ con $\lambda<1$, per convergere gradualmente allo sfruttamento puro. La scelta di $\varepsilon$ regola il compromesso *exploration–exploitation*, uno dei nodi teorici centrali del reinforcement learning.
+Un $\varepsilon$ costante garantisce esplorazione perpetua; in pratica si usa un *decay*, spesso esponenziale, per convergere gradualmente allo sfruttamento puro. Un decadimento esponenziale, però, sacrifica la garanzia teorica: la convergenza appena citata vuole ogni coppia $(s,a)$ visitata infinite volte, e per assicurarlo serve $\sum_t \varepsilon_t = \infty$, per esempio $\varepsilon_t \propto 1/t$ (la condizione detta GLIE); con un $\varepsilon$ che si spegne esponenzialmente le mosse esplorative sono quasi certamente in numero finito. In pratica lo scambio si accetta. La scelta di $\varepsilon$ regola il compromesso *exploration–exploitation*, uno dei nodi teorici centrali del reinforcement learning.
 
 `````
 
@@ -217,7 +221,7 @@ Il **ritorno a $n$ passi** tronca la somma dopo $n$ ricompense vere e chiude
 con la stima corrente:
 
 $$
-G_{t:t+n} = r_{t+1} + \gamma\, r_{t+2} + \cdots + \gamma^{n-1} r_{t+n}
+G_{t:t+n} = R_{t+1} + \gamma\, R_{t+2} + \cdots + \gamma^{n-1} R_{t+n}
 + \gamma^{n} V(S_{t+n}),
 $$
 
@@ -229,15 +233,19 @@ varianza e molta distorsione, $n$ grande il contrario. Nei banchi di prova di
 Sutton e Barto l'ottimo sta quasi sempre a valori intermedi, non agli estremi
 {cite}`sutton2018reinforcement`.
 
-Il **$\lambda$-return** evita di dover scegliere $n$: è la media geometrica
-pesata di *tutti* i ritorni a $n$ passi,
+Il **$\lambda$-return** evita di dover scegliere $n$: è la media pesata di
+*tutti* i ritorni a $n$ passi, con pesi che decadono geometricamente,
 
 $$
 G_t^{\lambda} = (1-\lambda) \sum_{n=1}^{\infty} \lambda^{\,n-1}\, G_{t:t+n},
 \qquad \lambda \in [0,1],
 $$
 
-con $\lambda = 0$ che restituisce TD(0) e $\lambda = 1$ Monte Carlo. Scritta
+con $\lambda = 0$ che restituisce TD(0). E $\lambda = 1$? In un episodio che
+termina al passo $T$ tutti i ritorni con $n \ge T-t$ coincidono con il ritorno
+intero $G_t$; raccogliendone i pesi, la coda della somma si compatta in un
+termine $\lambda^{\,T-t-1}\, G_t$, che a $\lambda = 1$ è l'unico a
+sopravvivere: si ritrova Monte Carlo. Scritta
 così sembra impraticabile, perché richiede di conoscere il futuro. Le
 **tracce di eleggibilità** la rendono calcolabile in avanti e con memoria
 costante: si tiene un vettore $z$ che segna quali stati sono «in attesa di
@@ -272,6 +280,42 @@ advantage estimation*, che accompagna PPO) è questa identica media pesata con
 questo identico $\lambda$: si sceglie quanta distorsione accettare in cambio di
 quanta varianza risparmiare.
 
+`````{tab} Elementare
+
+```{admonition} Da ricordare
+:class: important
+- Le **differenze temporali** correggono la stima durante il viaggio, non
+  all'arrivo: come il navigatore che dopo mezz'ora rivede il tempo che manca,
+  si usa la stima più recente per aggiustare quella vecchia, un pezzetto alla
+  volta.
+- Il **Q-learning** tiene una tabella di voti (una riga per situazione, una
+  colonna per mossa) e la corregge giocando: nuovo voto uguale vecchio voto più
+  un po' della sorpresa. Impara quali sarebbero le mosse migliori anche mentre
+  si muove a casaccio per esplorare, cioè impara una cosa mentre ne fa
+  un'altra.
+- Nella correzione ci sono due manopole: una decide quanto dare retta alla
+  sorpresa dell'ultimo passo (piccola vuol dire passi cauti), l'altra quanto
+  pesa il futuro rispetto al premio immediato. E c'è la ricetta ε-greedy per il
+  dilemma del ristorante: quasi sempre la mossa col voto più alto, ogni tanto
+  una a caso per scoprire di meglio.
+- **SARSA** valuta le mosse mettendo in conto che ogni tanto esplorerà davvero
+  e sbaglierà: sul bordo del burrone si tiene a distanza di sicurezza, mentre
+  il Q-learning cammina sull'orlo perché in teoria non cadrebbe mai.
+- Guardare avanti un passo solo o fino alla fine della partita sono i due
+  estremi di un continuo: una manciata di passi in genere batte entrambi, e si
+  può anche non scegliere, facendo la media di tutte le lunghezze con più peso
+  alle corte. Quella media si tiene aggiornata **mentre si gioca**, senza
+  aspettare la fine: basta ricordare quali situazioni si sono appena
+  attraversate, con un ricordo che sfuma a ogni passo. Così una ricompensa a
+  sorpresa corregge in un colpo tutta la scia alle spalle, le più recenti di
+  più: nel labirinto, il primo episodio che tocca la meta non illumina solo
+  l'ultima casella, illumina tutta la strada percorsa, in dissolvenza.
+```
+
+`````
+
+`````{tab} Superiore
+
 ```{admonition} Da ricordare
 :class: important
 - Il **temporal-difference** aggiorna le stime a ogni passo usando la stima
@@ -288,3 +332,5 @@ quanta varianza risparmiare.
   di eleggibilità** lo rendono calcolabile online, distribuendo un solo errore
   TD su tutta la scia degli stati appena visitati.
 ```
+
+`````

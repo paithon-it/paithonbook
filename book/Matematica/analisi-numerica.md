@@ -61,13 +61,15 @@ x = \pm\, (1 + f)\cdot 2^{e},
 $$
 
 dove $f$ è la **mantissa** (le cifre significative, con $0 \le f < 1$) ed $e$
-l'**esponente** (la scala). Il formato `float32` spende 1 bit di segno, 8 di esponente e 23 di
-mantissa; il `float64` (doppia precisione) ne dà 52 alla mantissa. La
-granularità relativa è l'**epsilon macchina** $\varepsilon$: il più piccolo
-$\varepsilon$ tale che $1 + \varepsilon \neq 1$ in memoria, pari a
-$\approx 1{,}19\cdot10^{-7}$ per `float32` e $\approx 2{,}22\cdot10^{-16}$ per
-`float64`. Ogni operazione arrotonda al numero rappresentabile più vicino, con
-errore relativo limitato da $\varepsilon$. Le reti neurali si addestrano
+l'**esponente** (la scala). Il formato `float32` spende 1 bit di segno, 8 di
+esponente e 23 di mantissa; il `float64` (doppia precisione) ne dà 52 alla
+mantissa. La granularità relativa è l'**epsilon macchina** $\varepsilon$: la
+distanza fra $1$ e il numero rappresentabile immediatamente successivo, pari a
+$2^{-23}\approx 1{,}19\cdot10^{-7}$ per `float32` e
+$2^{-52}\approx 2{,}22\cdot10^{-16}$ per `float64`. Ogni operazione arrotonda
+al numero rappresentabile più vicino, e l'errore relativo che ne deriva è
+limitato dall'**unità di arrotondamento** $u=\varepsilon/2$ (metà del gradino,
+perché si arrotonda all'estremo più vicino). Le reti neurali si addestrano
 spesso in precisione ridotta (`float32` o perfino `float16`) per risparmiare
 memoria e tempo: più veloci, ma con meno cifre di margine.
 
@@ -90,9 +92,9 @@ Se il bit che si gira è l'ultimo della mantissa, l'effetto è invisibile: il
 numero cambia nella settima cifra. Se è il **primo**, un peso che valeva
 $0{,}5$ diventa $-0{,}5$, e il segno di un contributo si rovescia in mezzo
 alla rete. Su una rete profonda l'effetto non resta locale, perché quel valore
-alimenta lo strato successivo: la letteratura riporta che un singolo bit
-ribaltato in un punto sensibile può far crollare l'accuratezza di un
-classificatore su ImageNet dal $76\%$ a meno del $10\%$.
+alimenta lo strato successivo: un singolo bit ribaltato in un punto sensibile
+può far crollare l'accuratezza di un classificatore su ImageNet (il $76\%$ di
+una ResNet50) fino ai livelli del tiro a caso {cite}`hong2019terminal`.
 
 La differenza rispetto al software tradizionale è che qui **non si vede**. Un
 bit sbagliato in un programma normale di solito produce un crash o un risultato
@@ -208,8 +210,10 @@ quantità piccola come differenza di due quantità grandi.
 Il caso da manuale è la varianza con la formula "ingenua"
 $\operatorname{Var}(x)=\overline{x^2}-\bar{x}^2$: con dati grandi e varianza
 piccola i due termini sono quasi uguali e la sottrazione perde quasi tutte le
-cifre significative (può perfino dare un valore negativo). Le librerie usano
-invece l'algoritmo di **Welford** a passata singola, numericamente stabile.
+cifre significative (può perfino dare un valore negativo). Le librerie evitano
+la formula ingenua: NumPy calcola prima la media e poi la media degli scarti
+quadratici, in due passate; quando i dati arrivano in flusso e di passata se ne
+può fare una sola, si usa l'algoritmo di **Welford**, numericamente stabile.
 Regola generale: riformula le espressioni per non sottrarre grandezze vicine;
 la stessa quantità matematica può avere condizionamenti numerici molto diversi
 a seconda di *come* la si calcola.
@@ -243,17 +247,22 @@ prodotti dentro la rete stanno su scale lontanissime (invito all'overflow) e
 la superficie della *loss* si allunga in una valle stretta, mal condizionata.
 La discesa del gradiente vi rimbalza da una parete all'altra a zig-zag,
 convergendo con lentezza esasperante. Standardizzare rende le curve di livello
-più tonde: il gradiente punta dritto verso il minimo
-({numref}`fig-condizionamento`).
+molto più tonde: il gradiente punta quasi dritto verso il minimo
+({numref}`fig-condizionamento`). Non è una cura completa, perché mette tutte le
+feature sulla stessa scala ma non cambia il modo in cui si somigliano fra loro:
+se due di esse crescono e calano quasi sempre insieme, la valle resta un po'
+storta e qualche zig-zag la discesa lo fa ancora. Resta il rimedio più
+economico che ci sia: due righe di codice, e il problema è molto meglio
+condizionato di prima.
 
 ```{figure} ../figures/condizionamento-normalizzazione.svg
 :name: fig-condizionamento
-:alt: A sinistra curve di livello allungate con un cammino del gradiente a zig-zag; a destra curve circolari con un cammino diretto verso il minimo.
+:alt: A sinistra curve di livello molto allungate, con il cammino del gradiente che rimbalza a zig-zag fra le pareti della valle; a destra le stesse curve diventate quasi tonde, con un cammino quasi dritto verso il minimo.
 :width: 92%
 
 Con dati grezzi (sinistra) la loss forma una valle stretta e il gradiente
 rimbalza a zig-zag; standardizzando (destra) le curve di livello diventano
-circolari e la discesa punta dritta al minimo.
+molto più tonde e la discesa punta quasi dritta al minimo.
 ```
 
 ```python

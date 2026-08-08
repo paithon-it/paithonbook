@@ -157,8 +157,28 @@ $Z = X\,U_k$, dove $U_k$ raccoglie i primi $k$ autovettori in colonna.
 
 `````
 
-Vale la pena vedere i conti su un esempio minuscolo, in due dimensioni, per
-poi proiettare su una sola.
+Vale la pena vedere lo stesso meccanismo su un esempio minuscolo: quattro
+punti in due dimensioni, da proiettare su una sola.
+
+`````{tab} Elementare
+
+Disegna quattro punti su un foglio a quadretti: $(2,2)$ e $(-2,-2)$ sulla
+diagonale che sale, $(1,-1)$ e $(-1,1)$ su quella che scende. Lo «stormo» è
+chiaramente più allungato lungo la diagonale che sale: i due punti che ci
+stanno sopra sono i più lontani dal centro. Se misuriamo la dispersione (la
+varianza di prima) nelle due direzioni, lungo la diagonale che sale vale $4$
+e lungo l'altra vale $1$: la prima direzione, da sola, cattura $4$ su $5$,
+cioè l'$80\%$ del totale.
+
+Proiettare significa far cadere ogni punto, come un'ombra, sulla diagonale
+che sale. I due punti che già ci stavano sopra conservano tutta la loro
+distanza; gli altri due cadono entrambi sul centro, e la loro (piccola)
+differenza va persa. Risultato: ogni punto è descritto da un numero solo
+invece che da due, e abbiamo tenuto i quattro quinti dell'informazione.
+
+`````
+
+`````{tab} Superiore
 
 Prendiamo quattro punti già centrati (media nulla), così da saltare la
 sottrazione della media:
@@ -213,9 +233,14 @@ $$
 
 I due punti «fuori diagonale» collassano a $0$ (stavano interamente lungo la
 direzione scartata $u_2$), mentre i due «in diagonale» conservano tutta la
-loro distanza. La {numref}`fig-pca-proiezione` mostra la stessa idea su una
-nuvola più fitta: l'asse lungo è $u_1$, quello corto $u_2$, e proiettare
-significa lasciar cadere ogni punto perpendicolarmente sull'asse lungo.
+loro distanza.
+
+`````
+
+La {numref}`fig-pca-proiezione` mostra la stessa idea su una
+nuvola più fitta: l'asse lungo è la prima componente, quello corto la
+seconda, e proiettare significa lasciar cadere ogni punto perpendicolarmente
+sull'asse lungo.
 
 ```{figure} ../figures/pca-proiezione.svg
 :name: fig-pca-proiezione
@@ -229,12 +254,15 @@ PC1 comprime i dati da due dimensioni a una, perdendo poco.
 
 A cosa serve, in concreto? A **comprimere** i dati (meno numeri da salvare e
 da dare in pasto ai modelli); a **visualizzare** in due o tre dimensioni
-dataset con centinaia di feature; a **denoising**, perché il rumore casuale
-tende a finire nelle ultime componenti a bassa varianza, che scartando
-ripuliamo il segnale. Il limite, cruciale, è che la PCA è **lineare**: sa solo
-ruotare e proiettare lungo assi dritti. Se la struttura interessante dei dati
-è curva (un rotolo arrotolato su sé stesso, due spirali intrecciate), la PCA
-la appiattisce e la rovina. Per quei casi servono metodi non lineari.
+dataset con centinaia di feature; a **ripulirli dal rumore** (*denoising*): le
+differenze vere tra un esempio e l'altro si concentrano nelle prime componenti,
+mentre nelle ultime resta quasi soltanto confusione, e buttare via quelle
+direzioni lascia un dato più pulito. La confusione che si era mescolata alle
+prime componenti, però, resta lì: la PCA non la sa distinguere. Il limite
+cruciale è che la PCA è **lineare**, sa solo ruotare e proiettare lungo assi
+dritti. Se la struttura interessante dei dati è curva (un rotolo arrotolato su
+sé stesso, due spirali intrecciate), la PCA la appiattisce e la rovina. Per
+quei casi servono metodi non lineari.
 
 ## t-SNE e UMAP: vedere in due dimensioni ciò che vive in mille
 
@@ -287,11 +315,11 @@ Ottimi per l'occhio, pessimi per il righello.
 
 t-SNE modella le vicinanze come probabilità. Nello spazio originale la
 somiglianza tra i punti $i$ e $j$ è una gaussiana sulla loro distanza,
-$p_{j\mid i} \propto \exp(-\lVert x_i - x_j\rVert^2 / 2\sigma_i^2)$, con
+$p_{j\mid i} \propto \exp(-\lVert X_i - X_j\rVert^2 / 2\sigma_i^2)$, con
 $\sigma_i$ tarato localmente da un iperparametro, la *perplexity*. Nello
 spazio ridotto usa invece una $t$ di Student a un grado di libertà (con code
 pesanti, che evitano l'affollamento al centro),
-$q_{ij} \propto (1 + \lVert y_i - y_j\rVert^2)^{-1}$, e dispone i punti $y_i$
+$q_{ij} \propto (1 + \lVert Z_i - Z_j\rVert^2)^{-1}$, e dispone i punti $Z_i$
 minimizzando la divergenza di Kullback–Leibler $\mathrm{KL}(P \Vert Q)$ tra le
 due distribuzioni. Poiché la KL pesa molto le vicinanze e poco le lontananze,
 t-SNE **preserva la struttura locale** ma distorce quella globale: distanze
@@ -379,18 +407,18 @@ $\mu_1, \dots, \mu_k$ e l'assegnazione dei punti che minimizzano l'**inerzia**
 (somma delle distanze quadrate dai rispettivi centroidi):
 
 $$
-\mathcal{L}(\mu, c) = \sum_{i=1}^{m} \bigl\lVert x_i - \mu_{c_i} \bigr\rVert^2,
+\mathcal{L}(\mu, c) = \sum_{i=1}^{m} \bigl\lVert X_i - \mu_{c_i} \bigr\rVert^2,
 $$
 
-dove $c_i \in \{1, \dots, k\}$ è il cluster assegnato al punto $x_i$. L'algoritmo
+dove $c_i \in \{1, \dots, k\}$ è il cluster assegnato al punto $X_i$. L'algoritmo
 di Lloyd minimizza $\mathcal{L}$ alternando due passi di coordinate:
 
 $$
 \textbf{assegnazione:}\quad
-c_i = \arg\min_{j} \lVert x_i - \mu_j \rVert^2,
+c_i = \arg\min_{j} \lVert X_i - \mu_j \rVert^2,
 \qquad
 \textbf{aggiornamento:}\quad
-\mu_j = \frac{1}{|C_j|} \sum_{i \in C_j} x_i .
+\mu_j = \frac{1}{|C_j|} \sum_{i \in C_j} X_i .
 $$
 
 Ciascun passo non aumenta mai $\mathcal{L}$, quindi la procedura converge, ma

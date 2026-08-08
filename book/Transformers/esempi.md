@@ -39,7 +39,7 @@ alla volta: quando deve produrre "gatto" il suo evidenziatore punta su "cat",
 quando produce "siede" punta su "sits". Non è un dizionario che sostituisce
 parola per parola: è più simile a un traduttore che legge tutta la frase, la
 capisce, e la riscrive, infatti se la frase fosse "The cat sits on the
-*bank*", saprebbe scegliere tra "panchina" e "banca" guardando il contesto.
+*bank*", saprebbe scegliere tra "riva" e "banca" guardando il contesto.
 `````
 
 `````{tab} Superiore

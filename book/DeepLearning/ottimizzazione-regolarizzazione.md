@@ -181,7 +181,8 @@ restituiscono alla rete la libertà di rappresentare qualsiasi scala, inclusa
 l'identità. In inferenza si usano media e varianza mobili accumulate durante
 il training, non le statistiche del singolo batch. Ioffe e Szegedy la
 introdussero per contrastare l'*internal covariate shift*; l'effetto pratico è
-un panorama della loss più liscio e percorribile.
+un panorama della loss più liscio e percorribile
+{cite}`santurkar2018batchnorm`.
 
 `````
 
@@ -281,7 +282,7 @@ v_t = \beta\,v_{t-1} + (1-\beta)\,g_t,
 \theta_t = \theta_{t-1} - \eta\,v_t,
 $$
 
-tipicamente $\beta = 0{,}9$. **Adagrad** {cite}`duchi2011adaptive` normalizza
+tipicamente $\beta = 0{,}9$.[^momentum-pytorch] **Adagrad** {cite}`duchi2011adaptive` normalizza
 per la scala di ciascun parametro sommando i quadrati di tutti i gradienti
 visti finora:
 
@@ -391,3 +392,12 @@ for epoca in range(50):
   **AdamW** se si usa il weight decay; un **learning rate schedule** che
   decade nel tempo rifinisce la convergenza.
 ```
+
+[^momentum-pytorch]: Attenzione a trasferire la formula nel codice:
+    `torch.optim.SGD` usa la convenzione classica $v_t = \beta\,v_{t-1} + g_t$,
+    senza il fattore $(1-\beta)$. La sua $v_t$ è quindi $1/(1-\beta)$ volte la
+    nostra, e le due forme producono la stessa traiettoria solo passando a
+    `lr` il valore $\eta\,(1-\beta)$, cioè **dividendo** il learning rate per
+    $10$ quando $\beta=0{,}9$: a parità di learning rate, il passo di PyTorch
+    è dieci volte più lungo. Qui adottiamo la media mobile esponenziale perché è la
+    stessa che ritroveremo tra poco in Adam.

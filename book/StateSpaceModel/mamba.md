@@ -18,13 +18,13 @@ si applica ovunque) ma è anche la sua cecità: un SSM LTI non può
 cadere. Tratta la parola importante e la parola di riempimento esattamente
 allo stesso modo.
 
-L'idea di Mamba, proposta da Albert Gu e Tri Dao in un preprint del 2023
-{cite}`gu2023mamba`, è tanto semplice da enunciare quanto delicata da
-realizzare: rendere l'SSM **selettivo**. Lasciare cioè che i parametri della
-ricorrenza dipendano dall'input, così che il modello possa decidere, token per
-token, cosa propagare e cosa dimenticare. È lo stesso salto che nel capitolo
-precedente separava il decadimento fisso di RetNet dai gate appresi della GLA,
-ma raggiunto dall'altra sponda, quella dei sistemi dinamici.
+L'idea di Mamba, proposta da Albert Gu e Tri Dao nel 2023 {cite}`gu2023mamba`,
+è tanto semplice da enunciare quanto delicata da realizzare: rendere l'SSM
+**selettivo**. Lasciare cioè che i parametri della ricorrenza dipendano
+dall'input, così che il modello possa decidere, token per token, cosa propagare
+e cosa dimenticare. È lo stesso salto che nel capitolo precedente separava il
+decadimento fisso di RetNet dai gate appresi della GLA, ma raggiunto dall'altra
+sponda, quella dei sistemi dinamici.
 
 ## La selettività (S6)
 
@@ -301,7 +301,7 @@ e su sequenze di DNA.
 
 `````{tab} Superiore
 
-I risultati riportati nel preprint sono, in sintesi:
+I risultati riportati nell'articolo sono, in sintesi:
 
 - **Costo lineare** nella lunghezza della sequenza, in tempo e memoria, contro il
   costo quadratico dell'attenzione piena.
@@ -316,14 +316,21 @@ I risultati riportati nel preprint sono, in sintesi:
 
 `````
 
-Un'ultima onestà, che vale come promemoria e come ponte. Mamba è un **preprint
-del 2023**: la sua sede di pubblicazione non è confermata, e come sempre nella
-ricerca recente non tutto ciò che il primo articolo annuncia si è retto
-intatto alla prova del tempo. Lo *scan* selettivo, in particolare, non
-sfruttava appieno le unità di calcolo matriciale delle GPU: un dettaglio
-ingegneristico che sembra minore ma pesa parecchio in pratica. E lo stato di
-dimensione fissa, che è la forza di Mamba in efficienza, resta il suo limite
-quando serve ritrovare un dettaglio preciso in un contesto molto lungo. Sono
+Un'ultima onestà, che vale come promemoria e come ponte. Mamba ha avuto un
+percorso editoriale movimentato. L'articolo comparve alla fine del 2023 come
+*preprint*: messo online a disposizione di tutti prima che qualcuno lo avesse
+giudicato. Il giudizio, nella ricerca, lo danno le riviste e i convegni, che
+affidano ogni lavoro ad altri studiosi del campo; e il primo convegno a cui
+Mamba fu sottoposto, ICLR, nel 2024 lo respinse, con un rifiuto che fece
+discutere. Pochi mesi dopo un altro convegno, COLM, lo ha accettato e gli ha
+assegnato un premio come uno dei lavori migliori dell'anno. Il vaglio, quindi,
+c'è stato; resta valida la cautela sui singoli numeri, perché come sempre nella
+ricerca recente non tutto ciò che il primo articolo annuncia si è retto intatto
+alla prova del tempo. Lo *scan* selettivo, in particolare, non sfruttava
+appieno le unità di calcolo matriciale delle GPU: un dettaglio ingegneristico
+che sembra minore ma pesa parecchio in pratica. E lo stato di dimensione fissa,
+che è la forza di Mamba in efficienza, resta il suo limite quando serve
+ritrovare un dettaglio preciso in un contesto molto lungo. Sono
 proprio questi i nodi che la sezione successiva scioglie: Mamba-2 riscrive il
 selective scan come una moltiplicazione di matrici (recuperando i *tensor
 core* della GPU) e, nel farlo, svela una parentela inattesa. Perché dietro
@@ -348,7 +355,7 @@ stessa cosa.
   scan** (lavoro $O(L)$, tempo parallelo $\log L$). Le ottimizzazioni
   hardware-aware (*kernel fusion* in SRAM e **ricomputazione** nel backward)
   evitano di materializzare lo stato espanso in HBM.
-- Il **blocco Mamba** {cite}`fu2023h3` fonde il blocco H3 con un *gated MLP*
+- Il **blocco Mamba** fonde il blocco H3 {cite}`fu2023h3` con un *gated MLP*
   ($E=2$): proiezione in ingresso → Conv1d causale → SiLU → SSM selettivo →
   gating moltiplicativo con ramo parallelo (SiLU) → proiezione in uscita, con
   normalizzazione e residui. Un solo tipo di blocco, senza attenzione né MLP a
@@ -356,5 +363,8 @@ stessa cosa.
 - Cosa ottiene: **tempo lineare** nella lunghezza, inferenza $\sim 5\times$ più
   veloce dei Transformer, scaling fino a $\sim 10^6$ passi, un Mamba-3B alla pari
   con Transformer di taglia doppia, e risultati forti anche su audio e genomica.
-  Resta un preprint 2023, con i limiti che Mamba-2 affronterà.
+  Uscito nel 2023 come articolo non ancora giudicato da nessuno (*preprint*),
+  respinto dal convegno ICLR nel 2024 e pubblicato lo stesso anno al convegno
+  COLM, che lo ha premiato (*Outstanding Paper*), con i limiti che Mamba-2
+  affronterà.
 ```

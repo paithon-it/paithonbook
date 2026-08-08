@@ -183,11 +183,14 @@ cross-attention dense*.
 
 A monte, il **Perceiver Resampler** risolve il problema del formato variabile.
 È un modulo di attenzione con $K$ latenti appresi
-$L \in \mathbb{R}^{K \times d}$ (nel lavoro, $K = 64$) che fanno da query su
-tutte le feature visive disponibili, appiattite in un'unica sequenza:
-$\mathrm{XAttn}(L, Z) \in \mathbb{R}^{K \times d}$. Qualunque sia $N$ (una sola
-immagine, oppure le feature spazio-temporali di un video) l'uscita ha sempre $K$
-righe, e il costo a valle diventa indipendente dalla risoluzione e dalla durata.
+$L \in \mathbb{R}^{K \times d}$ (nel lavoro, $K = 64$) che fanno da query;
+chiavi e valori vengono dalla concatenazione $[Z; L]$ delle feature visive,
+appiattite in un'unica sequenza, con i latenti stessi, che quindi attendono
+anche a sé: $\mathrm{XAttn}(L, [Z; L]) \in \mathbb{R}^{K \times d}$, ripetuta
+per qualche strato con un feed-forward dopo ciascuno. Qualunque sia $N$ (una
+sola immagine, oppure le feature spazio-temporali di un video) l'uscita ha
+sempre $K$ righe, e il costo a valle diventa indipendente dalla risoluzione e
+dalla durata.
 
 Il conto dei parametri, però, è severo: gli strati aggiunti sono blocchi di
 attenzione a dimensione piena distribuiti lungo tutta la pila, e nella variante
@@ -552,6 +555,51 @@ moltiplicarli significa pagare il fattore quadratico calcolato all'inizio. Il
 conto del dettaglio è il vero limite pratico di tutto quello che abbiamo visto
 qui.
 
+`````{tab} Elementare
+
+```{admonition} Da ricordare
+:class: important
+- Il connettore nasce da un problema di soldi: i modelli che sanno guardare una
+  foto (la tagliano in tessere e descrivono ogni tessera con una lista di
+  numeri) e quelli che sanno scrivere esistono già, e dietro ciascuno ci sono
+  mesi di calcolo, quindi si cerca **il pezzo più piccolo da addestrare** perché
+  comincino a parlarsi.
+  Tenere fermi i due modelli è anche una garanzia: riaddestrarli farebbe loro
+  dimenticare per strada una parte di quello che sapevano fare.
+- Al pezzo in mezzo si chiedono due cose insieme: **tradurre** la descrizione di
+  una tessera d'immagine nel formato che il modello di linguaggio si aspetta, e
+  **decidere quante** tessere consegnargli. La seconda non è un dettaglio: ogni
+  tessera occupa posto come una parola, e il lavoro dell'attenzione cresce con
+  il quadrato dei pezzi messi in fila.
+- **Strati nuovi dentro il modello congelato** {cite}`alayrac2022flamingo`: si
+  inseriscono strati in cui il testo chiede e l'immagine risponde, collegati con
+  una manopola del volume che parte da zero, così al primo istante il modello
+  suona esattamente come prima; davanti a loro un pezzo riduce qualunque
+  immagine (o video) a 64 vettori sempre, un modulo con 64 righe da compilare
+  prima di sapere che cosa vi verrà cercato dentro.
+- **Questionario fisso** {cite}`li2023blip2`: 32 domande scritte una volta per
+  tutte in addestramento vengono poste a ogni foto, e ne escono 32 risposte: dai
+  257 vettori con cui la foto era stata descritta si scende a 32, e siccome ogni
+  risposta è anche un po' più corta, al modello di linguaggio arrivano circa
+  undici volte meno numeri. **Tabella di conversione**
+  {cite}`liu2023visual`: una tessera entra, un token esce, nessun riassunto
+  (circa quattro milioni di caselle, poi una ventina di milioni con due tabelle
+  in fila).
+- Ha prevalso il più semplice, e la ragione è di principio: **riassumere vuol
+  dire scegliere prima di sapere qual è la domanda**. Meglio il fascicolo intero
+  lasciato sulla scrivania: si paga in posto occupato, ma a scegliere è il
+  modello di linguaggio, quando la domanda è già arrivata.
+- L'addestramento è in **due tempi**: prima il solo connettore su coppie
+  immagine-didascalia (imparare dove scrivere), poi dialoghi sulle immagini, con
+  il modello di linguaggio libero di cambiare. I dialoghi del primo LLaVA li ha
+  scritti un modello di solo testo, che le foto non le aveva mai viste: materiale
+  inventato che ha funzionato, ma che passa anche i difetti di chi l'ha scritto.
+```
+
+`````
+
+`````{tab} Superiore
+
 ```{admonition} Da ricordare
 :class: important
 - Il connettore nasce da una domanda economica: encoder visivi e modelli di
@@ -582,3 +630,5 @@ qui.
   un modello di solo testo a partire da didascalie e riquadri: dati sintetici
   che funzionano, ma che trasmettono anche i difetti del generatore.
 ```
+
+`````

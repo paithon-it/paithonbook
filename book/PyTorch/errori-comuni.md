@@ -95,8 +95,15 @@ RuntimeError: expected scalar type Float but found Byte
 RuntimeError: expected scalar type Long but found Float
 ```
 
-Il secondo errore riguarda il `dtype`. PyTorch, a differenza di NumPy, non
-converte quasi mai i tipi da solo: preferisce fermarsi piuttosto che indovinare.
+Il secondo errore riguarda il `dtype`, cioè il tipo di numero con cui il
+tensore è scritto: interi (il $3$) oppure decimali (il $3{,}0$). Quando somma
+o moltiplica due tensori numero per numero, PyTorch converte da sé quello
+"più stretto" nel tipo dell'altro, con le stesse regole di NumPy; ma nel
+prodotto fra matrici e dentro gli strati `nn` (i casi dei due messaggi qui
+sopra) il tipo se lo aspetta preciso, e preferisce fermarsi piuttosto che
+indovinare quale volevamo. Preciso non vuol dire uguale per tutti: il primo
+messaggio nasce da un tensore che deve essere decimale e non lo è, il secondo
+dal caso opposto, un'etichetta scritta come decimale dove ci vuole un intero.
 
 `````{tab} Elementare
 Un'immagine appena letta da un file è fatta di numeri interi da $0$ a $255$: è

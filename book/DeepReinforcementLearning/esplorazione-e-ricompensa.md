@@ -185,8 +185,9 @@ Sugli stati già visti molte volte il predictor ha imparato a riprodurre la
 target e l'errore è basso; su uno stato mai incontrato non ha idea di cosa
 produrrà la rete casuale, e l'errore (cioè la novità) è alto. RND fu il primo
 metodo a superare la prestazione media umana su Montezuma's Revenge senza
-ricorrere a dimostrazioni umane né allo stato interno dell'emulatore: quel
-punteggio zero, dopo tre anni, era finalmente battuto.
+ricorrere a dimostrazioni umane né allo stato interno dell'emulatore: il
+punteggio zero del DQN era già stato scalfito dagli pseudo-conteggi, ma ora,
+tre anni dopo, anche la media umana era superata.
 
 `````
 
@@ -272,10 +273,19 @@ $$
 
 con $\gamma$ il fattore di sconto. Il risultato chiave è che la policy ottima
 dell'MDP modellato coincide con quella dell'MDP originale, *per qualunque*
-$\Phi$: la garanzia deriva dal fatto che, lungo una traiettoria, la somma
-scontata dei termini $F$ è telescopica e dipende solo dagli estremi, non dal
-percorso. Su un ciclo chiuso il contributo netto è nullo, quindi nessun
-comportamento "in tondo" viene premiato per errore. Lo shaping accelera
+$\Phi$: la garanzia deriva da un argomento telescopico. Nella somma scontata
+dei termini $F$ ogni potenziale intermedio compare una volta col segno più e
+una col segno meno, e di una traiettoria di $T$ passi sopravvivono i soli due
+termini di bordo, $-\Phi(s_0) + \gamma^{T}\Phi(s_T)$. Il secondo svanisce nei
+due casi che interessano: a orizzonte infinito con $\gamma<1$ e $\Phi$
+limitata, perché $\gamma^{T}\Phi(s_T)\to 0$; nei task episodici con la
+convenzione (quella di Ng, Harada e Russell) $\Phi(s)=0$ sugli stati
+terminali. Resta allora il solo $-\Phi(s_0)$: un
+contributo che dipende dallo stato di partenza e non dal percorso, identico
+quindi per tutte le policy. Nel caso non scontato ($\gamma=1$) l'argomento ha
+il corollario intuitivo della quota: un ciclo chiuso frutta esattamente zero;
+con $\gamma<1$ i cicli non sono più esattamente nulli, ma l'invarianza resta,
+perché a garantirla è il telescopio. Lo shaping accelera
 l'apprendimento rendendo il segnale più denso, senza spostare l'obiettivo
 (si veda {cite}`sutton2018reinforcement`).
 

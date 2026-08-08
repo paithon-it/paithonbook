@@ -205,10 +205,12 @@ oltre, fino agli **interi**: la **quantizzazione** a `int8`
 prima di spedirla. Perdi un filo di nitidezza (se ci fai molto caso), ma il
 file pesa un quarto e parte in un lampo. Quantizzare un modello è la stessa
 idea applicata ai suoi numeri. I pesi, di norma, sono decimali finissimi
-(tante cifre dopo la virgola); la quantizzazione li riscrive come **numeri
-interi grossolani**, da 0 a 255 livelli. Ne guadagni quattro volte in
-leggerezza e spesso un bel taglio di velocità; ne perdi un pizzico di
-precisione. Il patto conviene quasi sempre: nella maggior parte dei modelli
+(tante cifre dopo la virgola): possono valere qualunque cosa. Quantizzare vuol
+dire smettere di ammettere qualunque valore e tenerne pronti soltanto 256, come
+i gradini di una scala; ogni peso viene arrotondato al gradino più vicino, e al
+suo posto si scrive il **numero del gradino**, che è un intero piccolo. Ne
+guadagni quattro volte in leggerezza e spesso un bel taglio di velocità; ne
+perdi un pizzico di precisione. Il patto conviene quasi sempre: nella maggior parte dei modelli
 l'accuratezza cala di una frazione di punto percentuale, un prezzo minuscolo
 per un modello quattro volte più piccolo che gira anche su un telefono.
 
@@ -274,9 +276,13 @@ dipende dal modello e non è mai garantito trascurabile a priori.
 ## Latenza e throughput: cosa promettere
 
 Ottimizzato il servizio, resta la domanda più scomoda: che cosa **promettere**
-a chi lo userà? La promessa si scrive in un **SLA** (*Service Level
-Agreement*), e il punto delicato è che va misurata con l'onestà giusta: la
-media, qui, è una bugia gentile.
+a chi lo userà? Di promesse ce ne sono due, e conviene non confonderle. C'è la
+promessa che i tecnici si danno da soli, il bersaglio che si impegnano a
+centrare (in gergo si chiama **SLO**, *Service Level Objective*), e c'è il
+contratto firmato con il cliente, che su quel bersaglio si appoggia e stabilisce
+le conseguenze se la promessa salta (quello è lo **SLA**, *Service Level
+Agreement*). Qui parliamo della prima, del bersaglio che il team si dà, e il
+punto delicato è come lo si misura: la media, qui, è una bugia gentile.
 
 ```{figure} ../figures/latency-vs-throughput.svg
 :name: fig-latenza-throughput
@@ -289,8 +295,8 @@ al secondo; ciascuno di loro aspetta di più.
 
 Il tratto piatto a destra in {numref}`fig-latenza-throughput` è quello da
 riconoscere: oltre quel punto si continua a pagare in attesa senza più
-guadagnare in capacità. Dove fermarsi non lo decide la curva ma la promessa
-che si è scritta nell'SLA, ed è questo il senso di sceglierla prima.
+guadagnare in capacità. Dove fermarsi non lo decide la curva ma il bersaglio
+che il team si è dato (lo SLO), ed è questo il senso di sceglierlo prima.
 
 `````{tab} Elementare
 
@@ -312,7 +318,7 @@ Si descrive la latenza con i suoi **percentili**, non con la media. La p50
 **p99** i tempi entro cui ne risponde il 95% e il 99%. La *coda* della
 distribuzione, la p99, la p99.9: è ciò che governa l'esperienza reale sotto
 carico, perché in un sistema che compone più servizi anche una piccola
-frazione di richieste lente si propaga e degrada l'insieme. Un SLA serio si
+frazione di richieste lente si propaga e degrada l'insieme. Uno SLO serio si
 scrive sui percentili alti: «p99 sotto i 200 ms», non «latenza media 80 ms»,
 che nasconde la coda.
 
@@ -321,7 +327,7 @@ secondo), che con la latenza forma il classico compromesso: più batch grandi
 alzano il throughput ma allungano la coda della latenza. Il terzo è economico,
 il **costo per richiesta** (tempo di calcolo moltiplicato per il prezzo
 dell'hardware) che spesso è il vero vincolo di progetto: un modello che
-rispetta lo SLA ma costa dieci volte troppo per richiesta non è dispiegabile
+rispetta lo SLO ma costa dieci volte troppo per richiesta non è dispiegabile
 {cite}`huyen2022designing`.
 
 `````
@@ -353,8 +359,10 @@ misurare prima di fidarsi.
   `int8`** con la mappa affine $r = S(q - Z)$ {cite}`jacob2018quantization`: circa
   4× di memoria in meno al prezzo di un piccolo calo di accuratezza, **da
   misurare** sempre.
-- Un **SLA** si scrive sui **percentili alti** della latenza (p95, p99), non sulla
-  media, e va bilanciato con **throughput** e **costo per richiesta**.
+- Il bersaglio che il team si dà (lo **SLO**) si scrive sui **percentili alti**
+  della latenza (p95, p99), non sulla media, e va bilanciato con **throughput** e
+  **costo per richiesta**; il contratto firmato con il cliente (lo **SLA**) si
+  appoggia a quel bersaglio.
 - Le nuove versioni si rilasciano per gradi (*canary*, *shadow*, A/B) per non
   rompere niente in produzione.
 ```
