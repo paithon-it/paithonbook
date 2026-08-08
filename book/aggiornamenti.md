@@ -38,6 +38,31 @@ Una versione corrisponde a una **pubblicazione**, non a una giornata di
 lavoro: il libro si scrive tutti i giorni e si pubblica quando un pezzo sta in
 piedi.
 
+(v1-1-0)=
+
+## 1.1.0 · 8 agosto 2026
+
+*Il libro ha una prefazione*
+
+È saltata fuori la bozza del 2019, quella mandata a un editore: indice di quindici capitoli e una sola parte scritta, la prefazione. Quasi tutto quello che diceva era già nel libro, sparso fra l'introduzione e la sua conclusione. Mancava la prefazione in quanto tale, cioè l'unica pagina in cui l'autore parla in prima persona.
+
+### Sezioni nuove
+
+- {doc}`Prefazione </prefazione>`. Perché questo libro esiste, perché nel 2019 doveva uscire su carta e non è uscito, e perché è stata una fortuna: quell'indice non nominava i Transformer e prometteva TensorFlow. Si legge in tre minuti, prima dell'introduzione, e non è un capitolo: la numerazione degli altri resta quella di prima.
+
+### Pagine ampliate
+
+- {doc}`Conclusione </Introduzione/conclusione>` (Introduzione). La citazione di Andrew Ng sull'AI come «nuova elettricità» arrivava senza rincorsa. Adesso davanti c'è la genealogia a cui allude: le tecnologie che non risolvono un problema, ma cambiano il modo in cui si risolvono tutti gli altri.
+
+### Correzioni
+
+- I numeri dei capitoli nell'indice di sinistra li prendeva anche chi capitolo non è: la pagina degli aggiornamenti compariva come se fosse il trentaquattresimo. Adesso il numero ce l'hanno i capitoli e basta, ed è lo stesso che portano le schede in prima pagina.
+- {doc}`Conclusioni </Conclusioni/overview>`. Le conclusioni dicevano di essere partite da una frase di Weizenbaum sull'intelligenza artificiale «straordinariamente resistente al tentativo di una precisa definizione». L'introduzione però apre su un'altra frase, «si dice che spiegare significhi spiegare via», e della prima non si trova riscontro in nessuna fonte primaria: il richiamo adesso cita l'apertura vera.
+
+### Impianto
+
+- Nell'indice di sinistra ogni capitolo tiene le proprie sezioni chiuse, e il comando per aprirle senza entrare nel capitolo era un'icona di dodici pixel dello stesso colore del testo: c'era, ma non la trovava nessuno, e per sapere che cosa copriva un capitolo bisognava aprirlo e tornare indietro. Adesso è un comando vero, alto quanto la riga e in teal, che si accende al passaggio.
+
 (v1-0-3)=
 
 ## 1.0.3 · 8 agosto 2026

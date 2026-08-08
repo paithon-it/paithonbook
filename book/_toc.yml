@@ -14,6 +14,14 @@ root: intro.md
 parts:
 - caption: Fondamenta
   chapters:
+  # La prefazione sta in radice, non in una cartella, e questo non e' un
+  # dettaglio di ordine: `conta_capitoli()` e l'asse `landing` di
+  # `coerenza.py` chiamano capitolo una voce di primo livello che sta dentro
+  # una cartella, quindi di qui non passa. Non entra nel conteggio dei
+  # capitoli, non vuole una scheda nella landing e non sposta la numerazione,
+  # esattamente come `references.md` e `aggiornamenti.md`.
+  - file: prefazione.md
+    title: Prefazione
   - file: Introduzione/overview.md
     title: Introduzione
     sections:

@@ -144,7 +144,15 @@ sphinx:
       use_issues_button: false
       navigation_with_keys: true
       show_toc_level: 2
-      show_nav_level: 2
+      # Quanti livelli dell'indice di sinistra restano APERTI da soli. Qui c'era
+      # `show_nav_level: 2`, che è di pydata-sphinx-theme: questo tema è
+      # sphinx-book-theme e legge `show_navbar_depth`, quindi quella riga non
+      # ha mai fatto niente e l'indice si è sempre comportato come adesso.
+      # Resta 1 apposta: aperto è il capitolo che si sta leggendo, gli altri si
+      # aprono sul posto col comando a destra della riga (vedi custom.css,
+      # «Il comando per aprire un capitolo»). A 2 si aprirebbero tutti, e
+      # l'indice passerebbe da una quarantina di righe a quasi duecento.
+      show_navbar_depth: 1
       navigation_depth: 3
       launch_buttons:
         thebe: true

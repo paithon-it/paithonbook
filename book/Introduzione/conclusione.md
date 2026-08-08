@@ -1,7 +1,15 @@
 # Conclusione
 
 Abbiamo iniziato il capitolo con una citazione e concludiamo allo stesso modo.
-Come direbbe Andrew Ng, professore all’Università di Stanford e autore di uno dei corsi più apprezzati sul Deep Learning (gratuitamente fruibile sulla piattaforma Coursera):
+
+Ogni tanto arriva una tecnologia che non risolve un problema, ma cambia il
+modo in cui si risolvono tutti gli altri: la macchina a vapore, l’elettricità,
+il computer, Internet. Non si riconoscono dal mestiere che svolgono, perché non
+ne svolgono uno solo; si riconoscono da quanti mestieri diversi finiscono per
+attraversare. È la compagnia in cui molti collocano l’intelligenza artificiale,
+e la formula più fortunata è di Andrew Ng, professore all’Università di
+Stanford e autore di uno dei corsi più apprezzati sul Deep Learning
+(gratuitamente fruibile sulla piattaforma Coursera):
 
 > L’intelligenza artificiale è la nuova elettricità.
 

@@ -1492,22 +1492,19 @@ html[data-pt-livello="superiore"] .pt-livello-inline .pt-livello__icona--superio
    1. Le PARTI del `_toc.yml` (`caption:`) spezzano la lista in blocchi
       tematici — è la stessa idea delle parti di un libro a stampa.
    2. Ogni capitolo porta il proprio NUMERO, lo stesso delle schede della
-      landing. Lo conta il CSS: il contatore vive su `nav.bd-links` e ogni
-      `li.toctree-l1` lo incrementa in ordine di documento, quindi attraversa
-      le liste separate delle parti e NON riparte da 1 a ogni intestazione.
-      Farlo qui invece che con `numbered:` del toc è deliberato: i numeri
-      restano un fatto di navigazione e non entrano nei titoli delle pagine né
-      nei `{numref}` delle figure.
+      landing. Lo conta `numeraCapitoli()` in `custom.js`, che lo scrive in
+      `data-pt-numero`, e qui si stampa: il conto attraversa le liste separate
+      delle parti e NON riparte da 1 a ogni intestazione. Farlo così invece
+      che con `numbered:` del toc è deliberato: i numeri restano un fatto di
+      navigazione e non entrano nei titoli delle pagine né nei `{numref}`
+      delle figure. Perché non lo conti il CSS, che ci ha provato e ha
+      sbagliato, sta scritto nel docstring di quella funzione.
    3. Le sezioni di un capitolo rientrano sotto una linea che le lega al
       capitolo, e restano più smorzate: la gerarchia si vede senza leggere.
 
-   La bibliografia è l'unica voce dell'indice senza numero — non è un
-   capitolo. Niente `::before`, quindi niente incremento: i capitoli restano
-   1–30 anche con lei in fondo. */
-
-nav.bd-links {
-  counter-reset: pt-capitolo;
-}
+   Le voci dell'indice senza numero sono quelle che non sono capitoli, cioè
+   quelle che nel toc stanno in radice e non in una cartella: la prefazione in
+   cima, la bibliografia e gli aggiornamenti in fondo. */
 
 /* Le liste dell'indice non sono prosa, ma ereditavano le regole degli elenchi
    del testo (`ul, ol { margin: 2rem auto; max-width: … }`): 2rem di buco fra
@@ -1563,24 +1560,31 @@ nav.bd-links li.toctree-l1 > a.reference {
   color: var(--text-color);
 }
 
+/* Il numero lo scrive `custom.js` in `data-pt-numero`, e qui si stampa. Il
+   `::before` resta su OGNI voce di primo livello, anche su quelle che il
+   numero non ce l'hanno: tiene occupata la prima colonna della griglia,
+   altrimenti il titolo ci finisce dentro e va a capo ogni due lettere.
+   `attr()` su un attributo assente rende stringa vuota, che è esattamente il
+   segnaposto che serve.
+
+   Contarli qui col contatore CSS non funzionava. Il contatore si incrementa
+   su ogni `li.toctree-l1`, e le pagine che nel toc stanno in radice non sono
+   capitoli: la bibliografia era esclusa a mano, ma la pagina degli
+   aggiornamenti, arrivata dopo, si è numerata da sé e nell'indice compariva
+   come il capitolo 34. Con la prefazione sarebbe stato peggio, perché sta in
+   cima: avrebbe preso lo 01 spingendo avanti di uno tutti i capitoli, cioè
+   disallineando l'indice dalle schede della landing, che i loro numeri li
+   contano per conto proprio. E la lista di eccezioni non si poteva nemmeno
+   scrivere bene: Sphinx marca la voce della pagina corrente con `href="#"`,
+   quindi un selettore sul nome del file sbaglia proprio il capitolo che si
+   sta leggendo. In JavaScript l'URL si risolve, in CSS no. */
 nav.bd-links li.toctree-l1 > a.reference::before {
-  counter-increment: pt-capitolo;
-  content: counter(pt-capitolo, decimal-leading-zero);
+  content: attr(data-pt-numero);
   font-family: var(--font-mono);
   font-size: 0.76em;
   font-weight: 500;
   font-variant-numeric: tabular-nums;
   color: var(--accent-ocra);
-}
-
-/* La bibliografia non è un capitolo: nessun numero, e soprattutto nessun
-   incremento — i capitoli restano 1–30 con lei in fondo. Il `::before` resta
-   però in piedi, vuoto: serve a tenere occupata la prima colonna della
-   griglia, altrimenti il titolo ci finisce dentro e va a capo ogni due
-   lettere. */
-nav.bd-links li.toctree-l1 > a.reference[href$="references.html"]::before {
-  content: "";
-  counter-increment: none;
 }
 
 nav.bd-links li.toctree-l1 > a.reference:hover {
@@ -1602,6 +1606,51 @@ nav.bd-links li.toctree-l1 > details > ul {
 nav.bd-links li.toctree-l2 > a.reference {
   font-size: 0.94rem;
   line-height: 1.4;
+}
+
+/* --- Il comando per aprire un capitolo senza entrarci --- */
+/* Le sezioni di un capitolo nell'indice ci sono sempre, chiuse dentro un
+   `<details>`, e il tema il comando per aprirle lo mette: un chevron in una
+   gronda di 30px in cima a destra della riga (`position:absolute`), con sul
+   titolo il margine che gliela lascia libera. Il difetto era che non si
+   vedeva: 12px di icona nello stesso grigio del testo, in fondo alla riga.
+   Chi non lo trovava concludeva che le sezioni di un capitolo si potessero
+   guardare solo entrandoci, e per sapere che cosa copre un capitolo doveva
+   aprirlo e tornare indietro.
+
+   Qui il chevron diventa un controllo: alto quanto la riga (quindi il
+   bersaglio è tutta la fascia destra, non un quadratino), in teal, e con il
+   fondo che si accende quando il dito o il mouse passano sulla riga. Aperto
+   resta acceso, e a girarlo ci pensa già il tema. Il titolo continua a
+   portare alla pagina del capitolo: le due cose non si pestano i piedi
+   perché occupano due pezzi diversi della riga. */
+nav.bd-links li.toctree-l1 > details > summary .toctree-toggle {
+  height: 2.05rem;
+  border-radius: 6px;
+  color: var(--accent-color);
+  opacity: 0.7;
+  transition: opacity 0.15s ease, background-color 0.15s ease;
+}
+
+nav.bd-links li.toctree-l1 > details > summary .toctree-toggle .fa-chevron-down {
+  font-size: 0.86rem;
+}
+
+nav.bd-links li.toctree-l1:hover > details > summary .toctree-toggle,
+nav.bd-links li.toctree-l1 > details > summary:hover .toctree-toggle,
+nav.bd-links li.toctree-l1 > details[open] > summary .toctree-toggle {
+  opacity: 1;
+}
+
+nav.bd-links li.toctree-l1 > details > summary:hover .toctree-toggle {
+  background-color: var(--bg-secondary);
+}
+
+/* Il capitolo che si sta leggendo: il comando prende il colore del titolo,
+   così la riga corrente resta una cosa sola. */
+nav.bd-links li.toctree-l1.current > details > summary .toctree-toggle {
+  color: var(--primary-color);
+  opacity: 1;
 }
 
 

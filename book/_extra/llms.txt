@@ -17,6 +17,7 @@ della sezione e URL), non si ridistribuisce il testo.
 
 ## Fondamenta
 
+- [Prefazione](https://book.paithon.it/main/prefazione.html): Questo libro è stato scritto una prima volta nel 2019, per uscire su carta. Aveva un indice di quindici capitoli, una copertina provvisoria e una prefazione, che è più o meno il testo che stai…
 - [Introduzione](https://book.paithon.it/main/Introduzione/overview.html): Joseph Weizenbaum, informatico tedesco emigrato negli Stati Uniti, professore al MIT e creatore di ELIZA, il primo chatbot della storia, un programma che già a metà degli anni Sessanta permetteva a…
   - [Python e l'AI](https://book.paithon.it/main/Introduzione/massimo_comune_divisore.html)
   - [Robotica e AI](https://book.paithon.it/main/Introduzione/applicazioni.html)
@@ -230,6 +231,6 @@ della sezione e URL), non si ridistribuisce il testo.
 
 ## Chiusura
 
-- [Conclusioni](https://book.paithon.it/main/Conclusioni/overview.html): Siamo partiti, nell'introduzione, da una frase di Joseph Weizenbaum: l'intelligenza artificiale è "straordinariamente resistente al tentativo di una precisa definizione".
+- [Conclusioni](https://book.paithon.it/main/Conclusioni/overview.html): Siamo partiti, nell'introduzione, da una frase di Joseph Weizenbaum: "si dice che spiegare significhi spiegare via" .
 - [Bibliografia](https://book.paithon.it/main/references.html): Le opere citate nel libro, in ordine alfabetico. Nel testo le citazioni compaiono come rimandi tra parentesi quadre: ogni rimando porta qui.
 - [Aggiornamenti](https://book.paithon.it/main/aggiornamenti.html): Questo libro non esce e finisce: cambia. Una sezione si aggiunge, un conto sbagliato si corregge, una spiegazione che non ha funzionato si riscrive.

@@ -155,6 +155,55 @@
   }
 
   // ===== IMPROVED SIDEBAR NAVIGATION =====
+  // ===== NUMERI DEI CAPITOLI NELL'INDICE DI SINISTRA =====
+  /**
+   * Scrive in `data-pt-numero` il numero progressivo di ogni CAPITOLO
+   * dell'indice di sinistra; a stamparlo poi e' il `::before` in custom.css.
+   *
+   * Capitolo, qui, vuol dire quello che vuol dire nel `_toc.yml`: una
+   * cartella con dentro il suo `overview.md`. Prefazione, bibliografia e
+   * aggiornamenti stanno in radice e non sono capitoli, quindi non prendono
+   * un numero ne' lo consumano. E' lo stesso criterio di `conta_capitoli()`
+   * e dell'asse `landing` di `coerenza.py`: i numeri dell'indice e quelli
+   * delle schede della landing devono venire dallo stesso conto, altrimenti
+   * la stessa pagina si chiama 3 di qua e 4 di la'.
+   *
+   * Perche' non lo fa il CSS, che sarebbe il posto naturale e dove stava
+   * fino a ieri: il contatore CSS si incrementa su OGNI voce di primo
+   * livello, e le pagine che capitoli non sono andavano tolte a mano, una per
+   * una, per nome di file. Una lista di eccezioni si dimentica (la pagina
+   * degli aggiornamenti, arrivata dopo, si era numerata da se' e nell'indice
+   * compariva come il capitolo 34) e, soprattutto, non si puo' scrivere
+   * giusta: Sphinx marca la voce della pagina corrente con `href="#"`, quindi
+   * qualunque selettore sul nome del file sbaglia proprio il capitolo che si
+   * sta leggendo. Qui invece `voce.href` e' l'URL gia' risolto dal browser,
+   * che per `href="#"` e' quello della pagina corrente: il criterio regge su
+   * tutte le pagine.
+   *
+   * Da sapere se un giorno un capitolo non si chiamera' `overview.md`: quel
+   * capitolo resterebbe senza numero, in silenzio. La convenzione e' scritta
+   * in CLAUDE.md, ma qui non c'e' niente che la faccia rispettare.
+   */
+  function numeraCapitoli() {
+    const indice = document.querySelector('nav.bd-links');
+    if (!indice) return;
+
+    let numero = 0;
+    indice.querySelectorAll('li.toctree-l1 > a.reference').forEach(voce => {
+      let percorso;
+      try {
+        percorso = new URL(voce.href, window.location.href).pathname;
+      } catch (e) {
+        return;
+      }
+      // Una cartella, poi `overview.html`: `/main/Matematica/overview.html`
+      // si', `/main/prefazione.html` no.
+      if (!/\/[^/]+\/overview\.html$/.test(percorso)) return;
+      numero += 1;
+      voce.dataset.ptNumero = String(numero).padStart(2, '0');
+    });
+  }
+
   function improveSidebarNav() {
     const sidebar = document.querySelector('.bd-sidebar');
     if (!sidebar) return;
@@ -293,6 +342,7 @@
     makeTablesResponsive();
     setupLazyLoading();
     setupKeyboardShortcuts();
+    numeraCapitoli();
     improveSidebarNav();
     setupSidebarWidening();
     improveMobileTouch();

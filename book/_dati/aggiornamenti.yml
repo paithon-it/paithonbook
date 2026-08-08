@@ -28,6 +28,14 @@
 # `strumenti/pubblica.py`, ed è quello il momento in cui si aggiunge una voce
 # qui sopra e si rigenera la pagina.
 #
+# ## Una voce pubblicata si corregge
+#
+# Se una voce dice una cosa sbagliata la si riscrive dov'è, anche se è già
+# uscita: **quello che si legge deve essere giusto, sempre**, e un registro che
+# conserva un errore per rispetto della propria storia sta servendo se stesso
+# invece del lettore. Quello che non si riscrive è il numero: la correzione che
+# va online è una pubblicazione, quindi una versione nuova, con la sua voce.
+#
 # ## Una voce
 #
 #   tipo    nuovo | ampliato | corretto | impianto
@@ -39,6 +47,60 @@
 #           conviene tornare a leggere.
 
 versioni:
+
+- versione: "1.1.0"
+  data: 2026-08-08
+  titolo: Il libro ha una prefazione
+  nota: >
+    È saltata fuori la bozza del 2019, quella mandata a un editore: indice di
+    quindici capitoli e una sola parte scritta, la prefazione. Quasi tutto
+    quello che diceva era già nel libro, sparso fra l'introduzione e la sua
+    conclusione. Mancava la prefazione in quanto tale, cioè l'unica pagina in
+    cui l'autore parla in prima persona.
+  voci:
+
+  - tipo: nuovo
+    pagina: prefazione.md
+    testo: >
+      Perché questo libro esiste, perché nel 2019 doveva uscire su carta e non
+      è uscito, e perché è stata una fortuna: quell'indice non nominava i
+      Transformer e prometteva TensorFlow. Si legge in tre minuti, prima
+      dell'introduzione, e non è un capitolo: la numerazione degli altri resta
+      quella di prima.
+
+  - tipo: ampliato
+    pagina: Introduzione/conclusione.md
+    testo: >
+      La citazione di Andrew Ng sull'AI come «nuova elettricità» arrivava
+      senza rincorsa. Adesso davanti c'è la genealogia a cui allude: le
+      tecnologie che non risolvono un problema, ma cambiano il modo in cui si
+      risolvono tutti gli altri.
+
+  - tipo: impianto
+    testo: >
+      Nell'indice di sinistra ogni capitolo tiene le proprie sezioni chiuse, e
+      il comando per aprirle senza entrare nel capitolo era un'icona di dodici
+      pixel dello stesso colore del testo: c'era, ma non la trovava nessuno, e
+      per sapere che cosa copriva un capitolo bisognava aprirlo e tornare
+      indietro. Adesso è un comando vero, alto quanto la riga e in teal, che si
+      accende al passaggio.
+
+  - tipo: corretto
+    testo: >
+      I numeri dei capitoli nell'indice di sinistra li prendeva anche chi
+      capitolo non è: la pagina degli aggiornamenti compariva come se fosse il
+      trentaquattresimo. Adesso il numero ce l'hanno i capitoli e basta, ed è
+      lo stesso che portano le schede in prima pagina.
+
+  - tipo: corretto
+    pagina: Conclusioni/overview.md
+    testo: >
+      Le conclusioni dicevano di essere partite da una frase di Weizenbaum
+      sull'intelligenza artificiale «straordinariamente resistente al
+      tentativo di una precisa definizione». L'introduzione però apre su
+      un'altra frase, «si dice che spiegare significhi spiegare via», e della
+      prima non si trova riscontro in nessuna fonte primaria: il richiamo
+      adesso cita l'apertura vera.
 
 - versione: "1.0.3"
   data: 2026-08-08
