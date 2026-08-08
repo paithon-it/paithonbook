@@ -48,6 +48,19 @@
 
 versioni:
 
+- versione: "1.1.1"
+  data: 2026-08-08
+  voci:
+
+  - tipo: corretto
+    pagina: prefazione.md
+    testo: >
+      L'ultima riga della prefazione diceva, come nel 2019, «genera paura e
+      alimenta false notizie»; adesso dice «false speranze». Il non sapere
+      come funziona una macchina non produce solo timore: produce anche
+      l'attesa che sappia fare cose che non sa fare. Sono la stessa ignoranza,
+      vista dai due lati.
+
 - versione: "1.1.0"
   data: 2026-08-08
   titolo: Il libro ha una prefazione

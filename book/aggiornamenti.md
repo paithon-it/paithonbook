@@ -38,6 +38,14 @@ Una versione corrisponde a una **pubblicazione**, non a una giornata di
 lavoro: il libro si scrive tutti i giorni e si pubblica quando un pezzo sta in
 piedi.
 
+(v1-1-1)=
+
+## 1.1.1 · 8 agosto 2026
+
+### Correzioni
+
+- {doc}`Prefazione </prefazione>`. L'ultima riga della prefazione diceva, come nel 2019, «genera paura e alimenta false notizie»; adesso dice «false speranze». Il non sapere come funziona una macchina non produce solo timore: produce anche l'attesa che sappia fare cose che non sa fare. Sono la stessa ignoranza, vista dai due lati.
+
 (v1-1-0)=
 
 ## 1.1.0 · 8 agosto 2026

@@ -34,7 +34,7 @@ strumenti utili a sviluppare un'idea di business, un applicativo intelligente,
 o semplicemente a riconoscere l'intelligenza artificiale nelle tecnologie di
 oggi e di domani.
 
-Perché è il non conoscere ciò che genera paura e alimenta false notizie.
+Perché è il non conoscere ciò che genera paura e alimenta false speranze.
 
 ```{raw} html
 <p class="text-right mt-2"><em>Francesco Messina</em></p>
