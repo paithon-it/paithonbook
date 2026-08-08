@@ -40,6 +40,18 @@
 
 versioni:
 
+- versione: "1.0.1"
+  data: 2026-08-08
+  voci:
+
+  - tipo: corretto
+    testo: >
+      La bibliografia e questa pagina si presentavano ai motori di ricerca e
+      alle anteprime dei link condivisi con il titolo e la descrizione della
+      copertina, come se fossero la prima pagina del libro: adesso ognuna
+      porta i propri. Riguardava le voci di primo livello dell'indice, che
+      sono le uniche a non avere un capitolo sopra di sé.
+
 - versione: "1.0.0"
   data: 2026-08-08
   titolo: Il libro prende un numero

@@ -75,17 +75,20 @@
     - `pageurl` lo mette Sphinx da `html.baseurl`: e' lo stesso indirizzo del
       `<link rel="canonical">`, quindi le copie del sito (la radice, /main/,
       l'alias /book/) dichiarano tutte lo stesso URL, che e' il punto.
-    - la landing (`parents` vuoto) tiene le righe curate del libro: la sua
-      apertura parla dell'interruttore dei livelli e come descrizione non
-      direbbe niente. -#}
+    - la landing tiene le righe curate del libro: la sua apertura parla
+      dell'interruttore dei livelli e come descrizione non direbbe niente.
+      «Landing» qui vuol dire *il documento radice*, e si riconosce dal nome.
+      Prima si riconosceva da `parents` vuoto, che pero' e' vuoto anche per le
+      voci di primo livello del toc: la bibliografia e il registro degli
+      aggiornamenti si presentavano a Google e a chi condivideva il link come
+      se fossero la copertina del libro. -#}
 {%- set pt_claim = 'Paithon Book: Il Libro di Intelligenza Artificiale che spiega due volte.' -%}
 {%- set pt_sommario_libro = 'Libro di Intelligenza Artificiale in italiano, su due livelli: Elementare per chi parte da zero, Superiore per la trattazione formale. Machine Learning, Deep Learning e Reinforcement Learning con Python. Online, gratuito, in aggiornamento continuo.' -%}
 {#- Le pagine di servizio del tema (l'indice dei termini, la ricerca) non sono
     contenuto: nessun dato strutturato e `noindex`, o finiscono nei risultati al
-    posto di una sezione. Non hanno `parents`, quindi senza questo passerebbero
-    per la landing. -#}
+    posto di una sezione. -#}
 {%- set pt_servizio = pagename in ('genindex', 'search', 'py-modindex') -%}
-{%- set pt_home = not parents | default([], true) -%}
+{%- set pt_home = pagename == (master_doc | default('intro', true)) -%}
 {%- set pt_titolo_pagina = title | default('', true) | striptags | trim -%}
 {%- set pt_titolo = pt_claim if (pt_home or not pt_titolo_pagina) else pt_titolo_pagina ~ ' · Paithon Book' -%}
 {%- set pt_sommario = pt_sommario_libro if (pt_home or not pt_descrizione | default('', true)) else pt_descrizione -%}

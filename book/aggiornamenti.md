@@ -38,6 +38,14 @@ Una versione corrisponde a una **pubblicazione**, non a una giornata di
 lavoro: il libro si scrive tutti i giorni e si pubblica quando un pezzo sta in
 piedi.
 
+(v1-0-1)=
+
+## 1.0.1 · 8 agosto 2026
+
+### Correzioni
+
+- La bibliografia e questa pagina si presentavano ai motori di ricerca e alle anteprime dei link condivisi con il titolo e la descrizione della copertina, come se fossero la prima pagina del libro: adesso ognuna porta i propri. Riguardava le voci di primo livello dell'indice, che sono le uniche a non avere un capitolo sopra di sé.
+
 (v1-0-0)=
 
 ## 1.0.0 · 8 agosto 2026
