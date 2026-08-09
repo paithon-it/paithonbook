@@ -38,6 +38,15 @@ Una versione corrisponde a una **pubblicazione**, non a una giornata di
 lavoro: il libro si scrive tutti i giorni e si pubblica quando un pezzo sta in
 piedi.
 
+(v1-1-6)=
+
+## 1.1.6 · 9 agosto 2026
+
+### Correzioni
+
+- Le figure erano numerate di fila su tutto il libro, e si era arrivati a «Fig. 302»: un numero che non dice in che punto del libro si stia guardando. Adesso portano il numero del capitolo, «Fig. 3.2» come in un libro, e i rimandi nel testo lo seguono. Il numero del capitolo è lo stesso che si legge nell'indice e in prima pagina, così le due numerazioni non possono discordare.
+- La figura ingrandita si apre come sta nella finestra e non già zoomata: prima si vede tutto il disegno, poi si sceglie dove guardare da vicino.
+
 (v1-1-5)=
 
 ## 1.1.5 · 9 agosto 2026

@@ -171,9 +171,16 @@ sphinx:
   # (il suo primo paragrafo), che `_static/head_custom.html` usa per og:title,
   # og:description e i dati strutturati: prima erano identici su tutte e 160 le
   # pagine.
+  # `pt_figure` numera figure, tabelle e blocchi di codice per capitolo
+  # («Fig. 3.2»): il contatore di Sphinx e' unico per tutto il libro ed era
+  # arrivato a Fig. 302, un numero che non dice dove si sta guardando. Il
+  # numero di capitolo lo prende dal `_toc.yml`, la stessa fonte della landing
+  # e del contatore dell'indice, cosi' le due numerazioni non possono
+  # divergere.
   local_extensions:
     pt_conteggi: _ext
     pt_meta: _ext
+    pt_figure: _ext
 
 bibtex_bibfiles: 
   - references.bib

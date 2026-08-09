@@ -489,30 +489,10 @@
       disegna();
     }
 
-    // La scala a cui il visore si APRE, che non e' sempre "adattata".
-    //
-    // Una figura larga 760 unita' in un telefono verticale, contenuta, esce
-    // larga 390: esattamente quanto la colonna da cui si e' arrivati. Il
-    // visore non avrebbe aggiunto niente e il testo dentro sarebbe rimasto
-    // illeggibile come prima. Si parte percio' dal disegno a grandezza
-    // naturale, una unita' del viewBox per pixel, che e' la misura per cui e'
-    // stato disegnato; dove la finestra e' gia' piu' larga non c'e' niente da
-    // ingrandire e "naturale" coincide con "adattata".
-    //
-    // La larghezza naturale non si puo' chiedere all'immagine: le SVG del
-    // libro dichiarano `width="100%"` e nessuna altezza, quindi non hanno una
-    // dimensione intrinseca e `naturalWidth` risponde 300, il default del
-    // CSS, per tutte quante (le PROPORZIONI invece sono giuste, ed e' su
-    // quelle che si regge il resto). Il numero qui sotto e' la larghezza
-    // tipica di quei disegni, che stanno fra le 640 e le 820 unita' col testo
-    // fra le 11 e le 16: a 760 un'etichetta da 12 esce a 12 pixel veri.
-    const LENTE_DISEGNO = 760;
-
-    function scalaDiApertura() {
-      const { w } = riquadroDisegno();
-      if (!w) return LENTE_MIN;
-      return Math.min(LENTE_MAX, Math.max(LENTE_MIN, LENTE_DISEGNO / w));
-    }
+    // Il visore si apre SEMPRE adattato alla finestra: prima si vede tutta la
+    // figura, poi si decide dove guardare da vicino. Aprire gia' ingranditi
+    // fa risparmiare un gesto e costa l'orientamento, che su un diagramma e'
+    // il primo pezzo di informazione.
 
     // La figura non si porta fuori dalla finestra: oltre il bordo non c'e'
     // niente da guardare, e ritrovarla costa piu' che averla spostata.
@@ -579,15 +559,13 @@
       document.documentElement.classList.add('pt-lente-aperta');
       visore.showModal();
 
-      // `naturalWidth` esiste solo a immagine caricata, e la scala di apertura
-      // si calcola da quello: si parte adattati e ci si sistema appena il
-      // browser sa quanto e' grande il disegno. Le figure sono gia' nella
-      // cache della pagina, quindi il salto non si vede.
+      // Il riquadro del disegno lo si conosce solo a immagine caricata, e da
+      // quello dipendono i limiti dello spostamento: si ridisegna al `load`,
+      // non solo adesso. Le figure sono gia' nella cache della pagina, quindi
+      // non c'e' nessuna attesa da vedere.
       reimposta();
-      const sistema = () => { scala = scalaDiApertura(); tx = 0; ty = 0; disegna(); };
-      img.onload = sistema;
+      img.onload = reimposta;
       img.src = link.getAttribute('href');
-      if (img.complete && img.naturalWidth) sistema();
     }
 
     figure.forEach(link => {
