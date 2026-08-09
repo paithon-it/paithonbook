@@ -83,7 +83,7 @@ copiare.
 
 - **Sorgente**: `book/`, Markdown [MyST](https://myst-parser.readthedocs.io/)
   e notebook Jupyter, indice in `book/_toc.yml`.
-- **Figure**: SVG geometriche disegnate a mano in `book/figures/`, su palette fissa (terracotta `#B5532C`, teal `#2D5A5C`, ocra `#C9A961`, warm-black `#1A1A1A`, cream `#F8F5EE`). Niente immagini generate, niente stock.
+- **Figure**: SVG geometriche disegnate a mano in `book/figures/`, su palette fissa (terracotta `#B5532C`, teal `#2D5A5C`, ocra `#C9A961`, warm-black `#1A1A1A`, cream `#F8F5EE`). Niente immagini generate, niente stock. Sono numerate per capitolo (`Fig. 3.2`) e il numero non si scrive a mano: lo calcola `book/_ext/pt_figure.py` dall'indice. Toccandole si aprono a schermo intero, perché in una colonna da telefono le etichette dentro un diagramma diventano illeggibili.
 - **Tema**: la firma visiva arriva dal submodule [`paithon-it/brand`](https://github.com/paithon-it) (`book/_static/brand`), con light/dark mode automatica.
 - **Bibliografia**: `book/references.bib`, citata nel testo capitolo per capitolo.
 - **Deploy**: a ogni push su `book/` GitHub Actions ricostruisce e pubblica il libro (`.github/workflows/call-deploy-book.yml`).
@@ -91,7 +91,7 @@ copiare.
 ## Costruire il libro in locale
 
 ```bash
-# 1. Clona il repo (con il submodule del tema)
+# 1. Clona il repo (con il submodule del tema, o resti senza firma visiva)
 git clone --recurse-submodules https://github.com/paithon-it/paithonbook.git
 cd paithonbook
 
@@ -101,13 +101,40 @@ pip install -r requirements.txt
 # 3. Costruisci
 jb build book
 
-# 4. Servi in locale
-python -m http.server 8080
-# poi apri http://localhost:8080/book/_build/html/
+# 4. Guarda il risultato
+python -m http.server 8080 --directory book/_build/html
+# poi apri http://localhost:8080/
 ```
 
-Se qualcosa non torna: `jb clean book && jb build book` ricostruisce da zero.
-Non serve buildare in locale per contribuire: il CI costruisce a ogni push.
+Circa 190 pagine in un minuto. I notebook non vengono rieseguiti a ogni build
+(`execute_notebooks: auto` esegue solo quelli che non hanno gli output
+salvati), quindi il tempo è quasi tutto Sphinx.
+
+Se una modifica non compare, la prima sospettata è la cache: `jb clean book`
+ricostruisce da zero, e `jb build book --all` rifà tutte le pagine senza
+buttare via l'ambiente.
+
+**Installate dal `requirements.txt`, non a mano.** `pip install jupyter-book`
+oggi vi darebbe la **2**, che non è la versione successiva di questo strumento
+ma un altro programma (si chiama mystmd, non usa Sphinx e con il
+`_config.yml` di questo libro non c'entra niente). Il `requirements.txt`
+installa `teachbooks`, che vincola la serie giusta.
+
+### Quando conviene buildare
+
+Per correggere un refuso non serve: la CI costruisce a ogni push. Serve invece
+quando la domanda riguarda qualcosa che il sorgente non dice, e sono più cose
+di quante sembri:
+
+- **che numero prende una figura.** Sono numerate per capitolo (`Fig. 3.2`) da
+  un'estensione che riscrive i contatori di Sphinx: nel sorgente il numero non
+  c'è, e finché non si builda non esiste;
+- **se un `{numref}` o un `{cite}` risolve.** Un riferimento a un'ancora
+  sbagliata non è un errore di sintassi: la pagina si costruisce lo stesso e il
+  link esce morto. Per stanarli, `jb build book -n --all` segnala ogni
+  riferimento che non trova destinazione (oggi non ne segnala nessuno);
+- **come viene una pagina stampata**, che è un rendering diverso da quello a
+  schermo e con regole proprie.
 
 ## Contribuire
 

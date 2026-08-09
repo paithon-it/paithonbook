@@ -773,18 +773,97 @@ html {
   outline-offset: 2px;
 }
 
-/* ===== PRINT STYLES ===== */
+/* ===== STAMPA =====
+ *
+ * Il libro nasce SCURO, ed è il caso normale, non l'eccezione: chi stampa
+ * stampa da lì. Senza questo blocco il foglio usciva nero con l'aurora
+ * accesa, il titolo della pagina nero su nero (lo mette il tema in un blocco
+ * da sola stampa, pensato per la carta bianca) e le figure invertite. E con
+ * gli sfondi disattivati, che è il default di ogni browser, restava del testo
+ * color osso su carta bianca: niente.
+ *
+ * La cura non è dipingere pezzo per pezzo: si riportano i TOKEN ai valori
+ * chiari, e tutto il resto del foglio di stile li segue da sé, comprese le
+ * regole che qui non si nominano.
+ */
 @media print {
+  :root,
+  html,
+  html[data-theme="dark"],
+  html[data-theme="light"] {
+    --pt-bg:            #FFFFFF;   /* carta vera, non osso: è già bianca lei */
+    --pt-bg-elev:       #FFFFFF;
+    --pt-bg-deep:       #FFFFFF;
+    --pt-bg-elev-warm:  #F4F4F4;
+    --pt-bg-tint-soft:  #F4F4F4;
+    --pt-bg-tint:       #EDEDED;
+    --pt-fg:            #000000;
+    --pt-fg-muted:      #333333;
+    --pt-fg-subtle:     #444444;
+    --pt-border:        #CCCCCC;
+    --pt-border-strong: #999999;
+    /* in tema scuro gli accenti schiariscono per reggere il fondo nero; su
+       carta bianca quelle varianti sono slavate, quindi tornano le originali */
+    --pt-accent:        #A44B28;
+    --pt-accent-hover:  #9A4222;
+    --pt-accent-2:      #1F5E58;
+    --pt-accent-3:      #8A6F2E;
+
+    background: #FFFFFF !important;
+    color: #000000 !important;
+  }
+
+  body,
+  .bd-container,
+  .bd-main,
+  .bd-content,
+  .bd-article-container,
+  article.bd-article {
+    background: #FFFFFF !important;
+    color: #000000 !important;
+  }
+
+  /* L'aurora vive su tre layer fissi (brand/aurora.css) e in stampa non è
+     atmosfera, è toner. */
+  html::before,
+  body::before,
+  body::after {
+    display: none !important;
+    content: none !important;
+  }
+
+  /* Il tema inverte le immagini in dark (`image_dark_mode.css`). Sul foglio
+     l'inversione va tolta, o le figure escono in negativo. */
+  html[data-theme="dark"] img,
+  html[data-theme="dark"] img:not(.only-dark):not(.dark-light),
+  img {
+    filter: none !important;
+  }
+
   body {
-    font-size: 12pt;
-    line-height: 1.5;
+    font-size: 11pt;
+    line-height: 1.45;
+  }
+
+  /* Il titolo che il tema stampa in testa alla pagina (`#jb-print-docs-body`)
+     è nero per costruzione: senza il fondo bianco qui sopra spariva. */
+  #jb-print-docs-body h1 {
+    color: #000000 !important;
   }
 
   .bd-sidebar,
+  .bd-sidebar-primary,
+  .bd-sidebar-secondary,
   .navbar,
+  .bd-header,
+  .bd-header-article,
+  .prev-next-area,
+  .reading-progress,          /* la striscia di avanzamento, da custom.js */
+  .pt-figura-segno,
+  #pst-back-to-top,
   button,
   .btn {
-    display: none;
+    display: none !important;
   }
 
   .bd-main .bd-content {
@@ -793,13 +872,59 @@ html {
   }
 
   a {
-    color: black;
+    color: #000000 !important;
     text-decoration: underline;
   }
 
-  img {
+  /* I due livelli si stampano tutti e due: sul foglio non c'è niente da
+     aprire, e un libro che spiega due volte, stampato, deve spiegare due
+     volte. Ma affiancate in cima le linguette sembrano pulsanti e non dicono
+     dove finisce un livello e comincia l'altro, così spariscono e al loro
+     posto ogni pannello prende la sua intestazione.
+     L'ordine è quello, sempre: Elementare primo e Superiore secondo è la
+     convenzione del libro, la stessa su cui si reggono i colori in
+     tabs-enhanced.css. */
+  .tab-set > .tab-label {
+    display: none !important;
+  }
+
+  .tab-set > .tab-content {
+    display: block !important;
+    break-inside: avoid;
+    padding-top: 0.4rem;
+  }
+
+  .tab-set > .tab-content::before {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-family: var(--pt-font-body, sans-serif);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #444444;
+    border-bottom: 1px solid #CCCCCC;
+    padding-bottom: 0.25rem;
+    break-after: avoid;
+  }
+
+  .tab-set > .tab-input:nth-of-type(1) + .tab-label + .tab-content::before {
+    content: "Elementare";
+  }
+
+  .tab-set > .tab-input:nth-of-type(2) + .tab-label + .tab-content::before {
+    content: "Superiore";
+  }
+
+  img, figure, table, pre {
     max-width: 100%;
+    break-inside: avoid;
     page-break-inside: avoid;
+  }
+
+  h1, h2, h3, h4 {
+    break-after: avoid;
+    page-break-after: avoid;
   }
 }
 
@@ -1173,7 +1298,14 @@ blockquote.epigraph::before {
   pointer-events: none;
 }
 
-/* Attribuzione ("— Marcus du Sautoy"): sobria, non in corsivo. */
+/* Attribuzione ("— Marcus du Sautoy"): sobria, non in corsivo.
+   Il primo selettore è quello di sphinx-book-theme, ripetuto per batterlo: là
+   dentro l'attribuzione prende `#6C757D`, il grigio di Bootstrap, e con
+   quattro tag più una classe vinceva su `blockquote p.attribution`. Non era
+   una questione di gusto: quel grigio dà 4.16:1 sul fondo scuro e 4.15:1 su
+   quello chiaro, sotto il 4.5:1 che WCAG AA chiede a un testo di 18px, e la
+   riga sotto una citazione è proprio quella che dice chi l'ha detta. */
+blockquote div > p + p.attribution,
 blockquote .attribution,
 blockquote p.attribution {
   display: block;

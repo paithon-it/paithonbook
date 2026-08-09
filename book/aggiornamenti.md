@@ -38,6 +38,15 @@ Una versione corrisponde a una **pubblicazione**, non a una giornata di
 lavoro: il libro si scrive tutti i giorni e si pubblica quando un pezzo sta in
 piedi.
 
+(v1-1-7)=
+
+## 1.1.7 · 9 agosto 2026
+
+### Correzioni
+
+- Il libro si legge scuro, ma si stampava scuro anche lui: pagine nere, figure in negativo e, con gli sfondi disattivati come fa ogni browser, testo chiarissimo su carta bianca, cioè niente. Adesso la stampa esce sempre chiara, qualunque tema si stia usando, e i due livelli di lettura finiscono tutti e due sul foglio, ciascuno col suo nome sopra: su carta non c'è niente da aprire.
+- La riga che dice chi ha pronunciato una citazione era di un grigio troppo chiaro per il fondo su cui stava, sotto il minimo di leggibilità raccomandato. Adesso usa il grigio del libro, in entrambi i temi.
+
 (v1-1-6)=
 
 ## 1.1.6 · 9 agosto 2026
