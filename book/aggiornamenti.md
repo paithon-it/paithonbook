@@ -44,7 +44,7 @@ piedi.
 
 ### Correzioni
 
-- L'epigrafe in prima pagina era una frase attribuita a Marcus du Sautoy che si trova solo sugli aggregatori di citazioni: nessuno di loro dice da quale libro o intervista venga, e la traduzione italiana lasciava in dubbio chi guardasse che cosa. Al suo posto una riga di Calvino, riscontrata sul testo delle «Lezioni americane», che dice quello che questo libro prova a fare: leggero non vuol dire vago.
+- L'epigrafe in prima pagina era una frase attribuita a Marcus du Sautoy che si trova solo sugli aggregatori di citazioni: nessuno di loro dice da quale libro o intervista venga, e la traduzione italiana lasciava in dubbio chi guardasse che cosa. Al suo posto due righe di Alan Turing, riscontrate sul testo di «Computing Machinery and Intelligence» del 1950, dove la strada per l'intelligenza non è simulare una mente adulta: è simularne una che impara.
 
 (v1-1-2)=
 
