@@ -19,7 +19,18 @@ jobs:
     # gli stessi workflow: senza questa guardia proverebbe a pubblicare Pages da
     # la', e il deploy ha una sola destinazione.
     if: github.repository == 'paithon-it/paithonbook'
-    uses: TeachBooks/deploy-book-workflow/.github/workflows/deploy-book.yml@main
+    # Ancorato a un tag, non a `@main`. Il reusable e' di terzi e `main` si
+    # muove: cinque commit fra marzo e maggio 2026, l'ultimo per cambiare la
+    # versione di un'azione di deploy. Finche' sono manutenzioni va bene, ma
+    # dentro quel workflow c'e' il comando che costruisce il libro
+    # (`teachbooks build book/`), e il giorno che TeachBooks passa a Jupyter
+    # Book 2 — che non e' un aggiornamento, e' un altro programma — la build
+    # cambierebbe senza che qui nessuno abbia toccato niente, e lo si
+    # scoprirebbe da un sito che si comporta diversamente.
+    # La v1.1.12 e' del 19 maggio 2026 ed e' esattamente quella che girava
+    # prima di questo pin: il deploy non cambia, cambia solo che da ora in poi
+    # aggiornarlo e' una decisione che si prende, non una che capita.
+    uses: TeachBooks/deploy-book-workflow/.github/workflows/deploy-book.yml@v1.1.12
     # NIENTE `secrets: inherit`: il submodule `book/_static/brand` è PUBBLICO,
     # quindi il checkout lo clona col GITHUB_TOKEN di default — nessun GH_PAT
     # serve. Non ereditando i secret, il reusable non raccoglie un eventuale
