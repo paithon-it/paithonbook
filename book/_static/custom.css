@@ -37,13 +37,30 @@
   --font-heading: var(--pt-font-display);
   --font-mono:    var(--pt-font-mono);
 
-  /* Layout — locale al book. Alla Tufte: container AMPIO, ma la prosa resta a
-     una misura leggibile (--measure, ~73ch) e centrata; codice, tabelle e
-     figure rompono a piena larghezza del container. */
+  /* Layout — locale al book. UNA COLONNA SOLA: la misura di lettura vale per
+     tutto il contenuto (prosa, codice, figure, tabelle, tab, riquadri), che
+     così condivide un unico bordo sinistro. Prima la misura stava su `p` e
+     sui titoli, e il resto riempiva il container: nella stessa pagina c'erano
+     tre bordi sinistri diversi, e a 1280px la figura rientrava di 94px
+     rispetto al testo.
+     La misura è in `ch` e non in rem perché deve seguire il corpo del testo:
+     così i caratteri per riga restano gli stessi a ogni larghezza di schermo,
+     che è la cosa che decide se un testo si legge. Sotto i 68ch comanda lo
+     schermo e la misura non morde. */
   --content-max-width: 1120px;
-  --measure: 50rem;
+  --measure: 68ch;
   --sidebar-width: 300px;
   --spacing-unit: 1.5rem;
+
+  /* Corpo del testo e margine laterale: una scala continua, non quattro
+     scaglioni che si contraddicono. Prima erano 20px da desktop, 16px da
+     tablet, 19px da telefono e 18px da telefono piccolo — il tablet aveva il
+     testo PIÙ PICCOLO di tutti — e la riga passava da 26 caratteri a 360px a
+     75 a 768px e poi tornava a 47 a 1280px. Adesso il corpo va da ~17.4px a
+     ~20.5px senza salti e, con --measure a fare da tetto, la riga sale da 36
+     a 70 caratteri in modo monotono. */
+  --pt-corpo:   clamp(1.09rem, 1.03rem + 0.27vw, 1.28rem);
+  --pt-margine: clamp(1.15rem, 0.60rem + 2.20vw, 3rem);
 
   /* Ombre e transizioni — da brand */
   --shadow-sm: var(--pt-shadow-sm);
@@ -63,11 +80,17 @@
  */
 
 /* ===== TIPOGRAFIA SUPER LEGGIBILE ===== */
+/*
+ * L'interlinea segue la lunghezza della riga, non il contrario: riga corta
+ * (telefono, ~38 caratteri) vuole un'interlinea stretta, riga lunga
+ * (desktop, ~70) una larga. Qui era l'opposto — 1.8 su telefono e 1.7 da
+ * desktop — e su schermo stretto il testo si sparpagliava.
+ */
 body {
   font-family: var(--font-body);
-  line-height: 1.7;
+  line-height: 1.62;
   color: var(--text-color);
-  font-size: 20px;
+  font-size: var(--pt-corpo);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
@@ -75,7 +98,15 @@ body {
   font-weight: 400;
 }
 
-/* Titoli display Fraunces — voce editoriale espressiva */
+@media (min-width: 48em) {
+  body { line-height: 1.72; }
+}
+
+/* Titoli display Fraunces — voce editoriale espressiva.
+   Le misure sono fluide come il corpo: prima ogni scaglione di media query
+   ridichiarava i sei livelli, e fra un breakpoint e l'altro la gerarchia si
+   scomponeva (h4 arrivava a sfiorare h3). Niente `max-width` qui: la colonna
+   la decide `article.bd-article`, una volta per tutto il contenuto. */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
   font-weight: 600;
@@ -83,15 +114,13 @@ h1, h2, h3, h4, h5, h6 {
   line-height: 1.15;
   margin-top: 3rem;
   margin-bottom: 1.25rem;
-  margin-left: auto;
-  margin-right: auto;
-  max-width: var(--measure);
   color: var(--text-color);
   letter-spacing: -0.015em;
+  text-wrap: balance;          /* i titoli lunghi non lasciano una parola sola in fondo */
 }
 
 h1 {
-  font-size: 3.2rem;
+  font-size: clamp(2.1rem, 1.50rem + 2.60vw, 3.2rem);
   font-weight: 800;
   letter-spacing: -0.025em;
   margin-top: 0;
@@ -100,47 +129,50 @@ h1 {
 }
 
 h2 {
-  font-size: 2.25rem;
+  font-size: clamp(1.60rem, 1.28rem + 1.40vw, 2.25rem);
   font-weight: 600;
   letter-spacing: -0.02em;
   padding-bottom: 0.6rem;
   border-bottom: 2px solid var(--border-strong);
-  margin-top: 3.5rem;
-  margin-bottom: 1.75rem;
+  margin-top: 3.25rem;
+  margin-bottom: 1.6rem;
 }
 
 h3 {
-  font-size: 1.7rem;
+  font-size: clamp(1.35rem, 1.15rem + 0.85vw, 1.70rem);
   color: var(--text-color);
-  margin-top: 2.75rem;
-  margin-bottom: 1.1rem;
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
 }
 
 h4 {
-  font-size: 1.6rem;
-  margin-top: 2.5rem;
+  font-size: clamp(1.18rem, 1.06rem + 0.50vw, 1.45rem);
+  margin-top: 2.25rem;
 }
 
 h5 {
-  font-size: 1.35rem;
+  font-size: clamp(1.05rem, 1.00rem + 0.25vw, 1.25rem);
   margin-top: 2rem;
 }
 
-/* Paragrafi - SPAZIATURA GENEROSA */
+/* Paragrafi. Il corpo lo decide `body`: qui `1.1em` moltiplicava quella
+   misura, e dentro una lista o un riquadro i moltiplicatori si sommavano. */
 p {
-  margin: 0 auto 2rem;
-  max-width: var(--measure);
-  line-height: 1.75;
-  font-size: 1.1em;
+  margin: 0 0 1.4em;
+  font-size: 1em;
 }
 
-/* Primo paragrafo dopo titolo - PIÙ GRANDE */
-h1 + p,
-h2 + p,
-h3 + p {
-  font-size: 1.2em;
-  line-height: 1.85;
-  margin-top: 1.5rem;
+/* Il paragrafo d'apertura del capitolo (quello col capolettera) resta un filo
+   più grande, ma solo dove c'è larghezza per sostenerlo: su telefono
+   l'ingrandimento accorciava la riga proprio dove era già corta. Dopo h2 e h3
+   non ingrandisce più niente: era un dettaglio che si ripeteva dieci volte
+   per pagina e non segnalava più nessun inizio. */
+@media (min-width: 48em) {
+  h1 + p {
+    font-size: 1.08em;
+    line-height: 1.7;
+    margin-top: 1.25rem;
+  }
 }
 
 /* Link */
@@ -182,10 +214,51 @@ body,
   max-width: 100%;
 }
 
+/*
+ * `.bd-content` non è la colonna di lettura: è la riga che tiene INSIEME
+ * l'articolo e il sommario di destra. Un `max-width` fisso qui non si limita
+ * a limitare, sfora: a 1280px la sidebar di sinistra ne prende 256 e restano
+ * 1024, ma il blocco ne pretendeva 1120 e il sommario «Contenuti» finiva 96px
+ * fuori dallo schermo, tagliato a metà parola. Il `min(…, 100%)` è tutta la
+ * correzione; il `min-width: 0` più sotto serve perché un figlio flex, senza,
+ * si rifiuta di restringersi sotto il proprio contenuto.
+ */
 .bd-main .bd-content {
-  max-width: var(--content-max-width);
+  max-width: min(var(--content-max-width), 100%);
   margin: 0 auto;
-  padding: 3rem 3rem;
+  padding: 2.5rem var(--pt-margine) 3rem;
+}
+
+/*
+ * La colonna di lettura, dichiarata UNA VOLTA e per tutto ciò che sta
+ * nell'articolo. Prosa, blocchi di codice, figure, tabelle, riquadri e
+ * linguette hanno da qui in poi lo stesso bordo sinistro e la stessa
+ * larghezza, per costruzione e non per coincidenza.
+ */
+.bd-article-container {
+  min-width: 0;
+}
+
+/* Un URL lungo, un nome di funzione, una chiave di dizionario: su una colonna
+   da telefono una parola che non si spezza allarga la pagina e porta fuori
+   schermo tutto il resto. `break-word` spezza solo quando non c'è alternativa,
+   quindi non intacca la giustezza del testo normale. */
+.bd-article {
+  overflow-wrap: break-word;
+}
+
+/*
+ * Il `width: 100%` non è ridondante: `.bd-article-container` è un contenitore
+ * flex, e su un elemento flex un margine `auto` spegne lo stiramento e lo fa
+ * restringere al proprio contenuto. Senza questa riga l'articolo prendeva la
+ * larghezza della tabella più larga della pagina — 748px dentro un telefono
+ * da 390 — e si portava fuori schermo tutto il resto.
+ */
+article.bd-article,
+.prev-next-footer .prev-next-area {
+  width: 100%;
+  max-width: var(--measure);
+  margin-inline: auto;
 }
 
 /* Spaziatura extra tra sezioni */
@@ -403,28 +476,90 @@ img {
 }
 
 figure {
-  margin: 2rem 0;
+  margin: 2.5rem 0;
   text-align: center;
+}
+
+/* Il tema mette 10px di padding laterale sulla figura: bastavano a far
+   rientrare immagine e didascalia rispetto al paragrafo sopra. */
+.bd-article figure {
+  padding-inline: 0;
+}
+
+/*
+ * La figura sta a filo di colonna, come il testo. Il `:width:` della
+ * direttiva MyST diventa uno `style="width: 92%"` sull'`<img>`, che il
+ * browser centra: la figura rientrava rispetto al paragrafo sopra (di 20px su
+ * telefono, di 94px a 1280) e la didascalia, che è sorella dell'immagine e
+ * non figlia, restava più larga della figura che descrive. Tre bordi diversi
+ * a distanza di due righe.
+ * Le larghezze dichiarate nel libro stanno quasi tutte fra il 78% e il 100%:
+ * quella variazione non porta informazione, è il residuo di trecento
+ * decisioni prese una alla volta. Qui vanno tutte a piena colonna — sono SVG,
+ * scalano senza perdere niente, e la colonna è comunque limitata a --measure.
+ * I raster (le GIF di Manim) non si ingrandiscono oltre il naturale: `width`
+ * li stirerebbe.
+ */
+/* `!important` perché la larghezza della direttiva finisce in uno
+   `style="width: 92%"` sull'elemento, e un attributo inline batte qualunque
+   foglio di stile: è l'unico modo di riprendersi quella decisione senza
+   passare a mano su trecento figure. */
+.bd-article figure img {
+  width: 100% !important;
+  height: auto;
+  margin-block: 0;
+}
+
+.bd-article figure img:not([src$=".svg"]) {
+  width: auto !important;
+  max-width: 100%;
+}
+
+/* Il link che Sphinx avvolge intorno all'immagine ("apri l'originale") è un
+   inline: senza questo la figura eredita l'interlinea e si porta dietro
+   qualche pixel di discesa sotto il bordo inferiore. */
+.bd-article figure a.image-reference {
+  display: block;
+  line-height: 0;
 }
 
 figcaption {
   font-style: italic;
   color: var(--text-light);
-  margin-top: 0.5rem;
-  font-size: 0.9rem;
+  margin-top: 0.75rem;
+  font-size: 0.88em;
+  line-height: 1.5;
+  text-align: left;
+}
+
+/* La didascalia sta a filo dell'immagine che descrive: il tema le dà un
+   rientro proprio, e bastavano quei sei pixel a farla sembrare appesa. */
+.bd-article figcaption,
+.bd-article figcaption > p {
+  padding-inline: 0;
+  margin-inline: 0;
+}
+
+.bd-article figcaption > p:last-child {
+  margin-bottom: 0;
 }
 
 /* ===== LISTE - SUPER LEGGIBILI ===== */
+/* Il rientro dell'elenco è quello che serve a ospitare il pallino, non un
+   margine editoriale: a 2.5rem su una colonna da telefono si mangiava un
+   settimo della riga. */
 ul, ol {
-  padding-left: 2.5rem;
-  margin: 2rem auto;
-  max-width: var(--measure);
+  padding-left: 1.5rem;
+  margin: 1.4em 0;
+}
+
+@media (min-width: 48em) {
+  ul, ol { padding-left: 1.9rem; }
 }
 
 li {
-  margin: 1rem 0;
-  line-height: 1.9;
-  font-size: 1.1em;
+  margin: 0.5em 0;
+  font-size: 1em;
 }
 
 li::marker {
@@ -435,13 +570,23 @@ li::marker {
 /* Liste annidate */
 li > ul,
 li > ol {
-  margin-top: 0.75rem;
-  margin-bottom: 0.75rem;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
 }
 
-/* Miglior distanziamento tra punti elenco */
+/* Un punto elenco di una riga e uno di cinque non vogliono la stessa aria:
+   la voce lunga si stacca da sola, quella corta va tenuta vicina alle sorelle
+   o l'elenco smette di leggersi come un elenco. */
 li + li {
-  margin-top: 0.75rem;
+  margin-top: 0.55em;
+}
+
+li > p {
+  margin-bottom: 0.7em;
+}
+
+li > p:last-child {
+  margin-bottom: 0;
 }
 
 /* ===== HEADER E NAVBAR ===== */
@@ -521,148 +666,84 @@ nav a {
   background: var(--primary-dark);
 }
 
-/* ===== RESPONSIVE DESIGN ===== */
+/* ===== SCHERMO STRETTO =====
+ *
+ * Qui c'erano tre scaglioni (1024, 767, 480) che ridichiaravano corpo,
+ * interlinea e i sei livelli di titolo, e si contraddicevano: il tablet
+ * finiva col testo più piccolo del telefono. Adesso corpo, titoli e margini
+ * sono fluidi e continui, e in questa sezione resta soltanto quello che
+ * cambia DAVVERO di natura su schermo stretto — cioè le cose che su una
+ * colonna larga stanno in orizzontale e su una stretta no.
+ */
 
-/* Tablet (768px - 1024px) */
-@media (max-width: 1024px) {
-  body {
-    font-size: 16px;
-  }
-
-  h1 { font-size: 2rem; }
-  h2 { font-size: 1.75rem; }
-  h3 { font-size: 1.4rem; }
-
-  .bd-main .bd-content {
-    padding: 1.5rem 1rem;
-  }
-
-  .bd-sidebar {
-    width: 240px;
-  }
-}
-
-/* Mobile (max 767px) - LEGGIBILITÀ MANTENUTA */
-@media (max-width: 767px) {
-  body {
-    font-size: 19px;
-    line-height: 1.8;
-  }
-
-  h1 {
-    font-size: 2.5rem;
-    margin-top: 1.5rem;
-    margin-bottom: 1.5rem;
-  }
-
-  h2 {
-    font-size: 2rem;
-    margin-top: 3rem;
-    margin-bottom: 1.5rem;
-  }
-
-  h3 {
-    font-size: 1.65rem;
-    margin-top: 2.5rem;
-  }
-
-  h4 { font-size: 1.35rem; }
-
-  .bd-main .bd-content {
-    padding: 2rem 1.5rem;
-    max-width: 100%;
-  }
-
-  p {
-    margin-bottom: 1.75rem;
-    font-size: 1.05em;
-  }
-
-  /* Sidebar mobile */
-  .bd-sidebar {
-    width: 100%;
-    border-right: none;
-    border-bottom: 1px solid var(--border-color);
-  }
-
-  /* Tabs mobile friendly */
-  .sphinx-tabs-tab {
-    padding: 0.6rem 1rem;
-    font-size: 0.9rem;
-  }
-
-  .sphinx-tabs-panel {
-    padding: 1rem;
-  }
-
-  /* Code blocks mobile */
-  pre {
-    padding: 1rem;
-    font-size: 0.85rem;
-  }
-
-  /* Tables mobile */
-  table {
-    font-size: 0.9rem;
-  }
-
-  th, td {
-    padding: 0.75rem 0.5rem;
-  }
-
-  /* Immagini mobile */
-  img {
-    margin: 1rem 0;
-  }
-
-  /* Liste mobile */
-  ul, ol {
-    padding-left: 1.5rem;
-  }
-
-  /* Admonitions mobile */
+@media (max-width: 47.99em) {
+  /* I riquadri stringono i fianchi: il loro padding è spazio tolto alla riga,
+     e su telefono la riga non ne ha da dare. */
   .admonition {
-    padding: 1rem;
+    padding: 1rem 1.1rem;
+    margin: 1.75rem 0;
+    border-radius: 8px;
+  }
+
+  .admonition-title {
+    font-size: 1.05em;
+    margin-bottom: 0.8rem;
+  }
+
+  pre {
+    padding: 0.9rem 1rem;
+    border-radius: 8px;
     margin: 1.5rem 0;
   }
+
+  /* La tabella non si stringe: si fa scorrere (il contenitore lo mette
+     custom.js). Rimpicciolire il testo di una tabella per farcela stare è il
+     modo sicuro di renderla illeggibile due volte. */
+  table {
+    font-size: 0.92em;
+  }
+
+  th { padding: 0.8rem 0.7rem; }
+  td { padding: 0.7rem 0.7rem; }
+
+  figure {
+    margin: 1.75rem 0;
+  }
+
+  /* Il capolettera vale su una riga da settanta caratteri, non da trentotto:
+     lì tre righe di rientro spostavano metà del primo paragrafo e il testo
+     sembrava disallineato. Resta, ma alto due righe. */
+  .bd-content h1 + p::first-letter,
+  .bd-article h1 + p::first-letter {
+    font-size: 2.6em;
+    line-height: 0.78;
+  }
+
+  /* Niente sfora la sidebar a scomparsa: il bottone "Ricarica la mia energia"
+     è un iframe di terze parti largo 258px con `white-space: nowrap`, e su un
+     telefono da 360px usciva dallo schermo trascinandosi dietro la pagina. */
+  .bd-sidebar-primary {
+    overflow-x: clip;
+  }
 }
 
-/* Small mobile (max 480px) - LEGGIBILITÀ MANTENUTA */
-@media (max-width: 480px) {
-  body {
-    font-size: 18px;
-    line-height: 1.75;
+/* Telefoni stretti: cade anche il margine di cortesia sui blocchi che hanno
+   un fondo proprio, che a 360px valeva più della cornice. */
+@media (max-width: 25em) {
+  pre {
+    padding: 0.8rem 0.85rem;
   }
 
-  h1 {
-    font-size: 2.15rem;
-    margin-top: 1rem;
+  .admonition {
+    padding: 0.9rem 1rem;
   }
+}
 
-  h2 {
-    font-size: 1.8rem;
-    margin-top: 2.5rem;
-  }
-
-  h3 {
-    font-size: 1.5rem;
-    margin-top: 2rem;
-  }
-
-  h4 { font-size: 1.3rem; }
-
-  .bd-main .bd-content {
-    padding: 1.5rem 1rem;
-  }
-
-  p {
-    margin-bottom: 1.5rem;
-  }
-
-  .sphinx-tabs-tab {
-    padding: 0.5rem 0.75rem;
-    font-size: 0.85rem;
-  }
+/* Il bottone di sostegno non detta la larghezza della pagina, mai. */
+.bmc-btn,
+.bmc-btn-container,
+[data-name="bmc-button"] {
+  max-width: 100% !important;
 }
 
 /* ===== ANIMAZIONI E TRANSIZIONI ===== */
@@ -727,26 +808,40 @@ html {
   -webkit-tap-highlight-color: transparent;
 }
 
-img, video {
-  will-change: transform;
-}
+/* `will-change: transform` su OGNI immagine e video era una promessa che il
+   browser prende sul serio: promuove ciascuno a un layer di composizione
+   proprio e ci tiene la memoria. Su una pagina con venti figure, e su un
+   telefono, è il contrario di un'ottimizzazione. Le figure del libro non si
+   trasformano mai. */
 
 /* ===== BLOCKQUOTES / EPIGRAFI — pull-quote editoriale ===== */
 /* Niente lastra scura: un velo caldo appena percettibile + filo terracotta,
    così l'aurora respira dietro la citazione anche in dark mode. */
+/* Il rientro della citazione è fluido: 2.3rem fissi a sinistra e 1.9rem a
+   destra toglievano 67px a una colonna da telefono che ne ha 321, e la
+   citazione si leggeva a venticinque caratteri per riga — la metà del testo
+   che la circonda. Anche l'ingrandimento (1.15em) vale solo dove c'è
+   larghezza per reggerlo. */
 blockquote {
   position: relative;
   margin: 2.5rem 0 3rem;
-  padding: 1.35rem 1.9rem 1.35rem 2.3rem;
+  padding: 1.25rem clamp(1rem, 0.55rem + 1.8vw, 1.9rem)
+           1.25rem clamp(1.15rem, 0.6rem + 2.2vw, 2.3rem);
   border: none;
   border-left: 3px solid var(--primary-color);
   background: color-mix(in srgb, var(--primary-color) 7%, transparent);
-  font-size: 1.15em;
-  line-height: 1.85;
+  line-height: 1.7;
   font-style: italic;
   color: var(--text-color);
   border-radius: 0 12px 12px 0;
   box-shadow: none;
+}
+
+@media (min-width: 48em) {
+  blockquote {
+    font-size: 1.12em;
+    line-height: 1.8;
+  }
 }
 
 blockquote p {
@@ -1340,7 +1435,11 @@ mjx-container[display="true"] {
    (robusto rispetto al meccanismo esatto del tema). Transizione morbida,
    in sincrono con lo scorrimento della sidebar. */
 
-/* Le transizioni valgono sempre: rendono fluido anche il ritorno. */
+/* Le transizioni valgono sempre: rendono fluido anche il ritorno. Ora la
+   colonna è una sola, quindi c'è un solo `max-width` da far scorrere: quello
+   dell'articolo. Prima la transizione era ripetuta su ogni paragrafo, ogni
+   voce di elenco e ogni titolo della pagina — centinaia di elementi che
+   animavano la stessa identica misura. */
 body {
   transition: font-size var(--transition-normal, 0.35s) ease;
 }
@@ -1348,9 +1447,7 @@ body {
   transition: max-width var(--transition-normal, 0.35s) ease,
               padding var(--transition-normal, 0.35s) ease;
 }
-.bd-content p,
-.bd-content li,
-.bd-content h1, .bd-content h2, .bd-content h3, .bd-content h4, .bd-content h5 {
+article.bd-article {
   transition: max-width var(--transition-normal, 0.35s) ease;
 }
 
@@ -1359,19 +1456,20 @@ body {
    piena, quindi non tocchiamo nulla. */
 @media (min-width: 1025px) {
   html.pt-sidebar-collapsed {
-    --measure: 54rem;            /* ~73ch → ~79ch: colonna un filo più larga */
+    --measure: 74ch;             /* ~70 caratteri per riga → ~76 */
     --content-max-width: 1220px; /* usa lo spazio liberato dalla sidebar */
   }
   html.pt-sidebar-collapsed body {
-    font-size: 21px;             /* prosa: 20px → 21px (i paragrafi sono 1.1em) */
+    /* Un filo più grande, non un salto: la colonna è cresciuta, e la riga
+       resta nella stessa forchetta di caratteri. */
+    font-size: calc(var(--pt-corpo) * 1.04);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   body,
   .bd-main .bd-content,
-  .bd-content p, .bd-content li,
-  .bd-content h1, .bd-content h2, .bd-content h3, .bd-content h4, .bd-content h5 {
+  article.bd-article {
     transition: none;
   }
 }

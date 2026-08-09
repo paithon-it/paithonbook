@@ -30,9 +30,9 @@ quotidiana o la trattazione formale con le formule. La scelta vale per tutto
 il libro e si cambia quando vuoi.
 
 ```{epigraph}
-Invece di cercare di produrre un programma che simuli la mente adulta, perché non provare piuttosto a produrne uno che simuli quella di un bambino? Se poi lo si sottoponesse a un opportuno percorso di istruzione, si otterrebbe il cervello adulto.
+Invece di cercare di produrre un programma che simuli la mente adulta, perché non provare piuttosto a produrne uno che simuli quella di un bambino?
 
-<p class="attribution">Alan Turing, <i>Computing Machinery and Intelligence</i>, 1950 (traduzione nostra)</p>
+<p class="attribution">Alan Turing, <i>Computing Machinery and Intelligence</i>,&nbsp;1950</p>
 ```
 
 Addentrarsi le prime volte nel mondo del Machine Learning e dell'Intelligenza Artificiale con Python può sembrare una sfida complessa, ma con la giusta guida può diventare un viaggio affascinante e gratificante. Paithon Book è qui per rendere questo percorso più semplice e accessibile, offrendo risorse chiare e pratiche, tutte in italiano, per chiunque voglia imparare, indipendentemente dal proprio livello di partenza.

@@ -11,11 +11,15 @@
  */
 
 /* ===== CONTENITORE ===== */
+/* Niente `max-width` proprio: la colonna la decide `article.bd-article` in
+   custom.css, ed è la stessa per prosa, codice, figure e linguette. Qui
+   c'era `var(--measure)` con `margin: auto`, che centrava il blocco delle
+   tab dentro una colonna a volte più larga: le linguette partivano da un
+   bordo sinistro e il paragrafo sopra da un altro. */
 .tab-set {
   display: flex;
   flex-wrap: wrap;
-  margin: 2.5rem auto;
-  max-width: var(--measure, 50rem);
+  margin: 2.5rem 0;
   background: var(--bg-main);
   border: 1px solid var(--border-color);
   border-radius: 12px;
@@ -105,11 +109,16 @@
 }
 
 /* ===== PANNELLI ===== */
+/* Il rientro del pannello è fluido: 1.9rem fissi per lato toglievano 60px a
+   una colonna da telefono di 321, e dentro le linguette si leggeva a trenta
+   caratteri per riga contro i trentacinque del testo intorno. Un riquadro non
+   deve stringere la lettura più di quanto la separi. */
 .tab-set > .tab-content {
   order: 99;              /* i label restano tutti in prima riga */
   width: 100%;
   display: none;
-  padding: 1.6rem 1.9rem;
+  padding: clamp(1rem, 0.70rem + 1.20vw, 1.6rem)
+           clamp(1rem, 0.55rem + 1.80vw, 1.9rem);
   background: var(--bg-main);
 }
 

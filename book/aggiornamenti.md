@@ -38,13 +38,22 @@ Una versione corrisponde a una **pubblicazione**, non a una giornata di
 lavoro: il libro si scrive tutti i giorni e si pubblica quando un pezzo sta in
 piedi.
 
+(v1-1-4)=
+
+## 1.1.4 · 9 agosto 2026
+
+### Correzioni
+
+- Il libro si leggeva peggio sullo schermo che sulla carta, e su un telefono era peggio che altrove. La misura della riga, che è il numero di caratteri che si attraversano prima di tornare a capo, saltava da ventisei su un telefono a settantacinque su un tablet: nel primo caso quattro parole per riga, nel secondo una riga così lunga che tornando indietro si perde il rigo. Ora il corpo del testo cresce con lo schermo senza scalini, la riga resta fra i trentacinque e i settanta caratteri a ogni larghezza, e l'interlinea segue la lunghezza della riga invece di contraddirla. Cambia solo come il testo è messo in pagina: le parole sono le stesse.
+- Nella stessa pagina il testo, i blocchi di codice, le figure e le tabelle partivano da tre margini sinistri diversi, e una figura poteva rientrare di quasi cento pixel rispetto al paragrafo che la annunciava, con la didascalia più larga della figura che descrive. Adesso la colonna di lettura è una sola e vale per tutto quello che ci sta dentro. Su uno schermo da portatile l'indice di destra, quello della pagina corrente, finiva mezzo fuori dallo schermo e si leggeva tagliato a metà parola: ora ci sta.
+
 (v1-1-3)=
 
 ## 1.1.3 · 8 agosto 2026
 
 ### Correzioni
 
-- L'epigrafe in prima pagina era una frase attribuita a Marcus du Sautoy che si trova solo sugli aggregatori di citazioni: nessuno di loro dice da quale libro o intervista venga, e la traduzione italiana lasciava in dubbio chi guardasse che cosa. Al suo posto due righe di Alan Turing, riscontrate sul testo di «Computing Machinery and Intelligence» del 1950, dove la strada per l'intelligenza non è simulare una mente adulta: è simularne una che impara.
+- L'epigrafe in prima pagina era una frase attribuita a Marcus du Sautoy che si trova solo sugli aggregatori di citazioni: nessuno di loro dice da quale libro o intervista venga, e la traduzione italiana lasciava in dubbio chi guardasse che cosa. Al suo posto la domanda con cui Alan Turing apre il discorso sulle macchine che imparano, riscontrata sul testo di «Computing Machinery and Intelligence» del 1950: la strada per l'intelligenza non è simulare una mente adulta, è simularne una che impara.
 
 (v1-1-2)=
 
