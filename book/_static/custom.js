@@ -302,6 +302,325 @@
     evaluate(); // stato iniziale
   }
 
+  // ===== LA LENTE: LA FIGURA A SCHERMO INTERO, INGRANDIBILE =====
+  //
+  // Le figure del libro sono diagrammi con del testo dentro, disegnato intorno
+  // ai 13px su un viewBox largo: nella colonna di un telefono quel testo
+  // scende sotto i sei pixel e la figura si vede ma non si legge.
+  //
+  // Sphinx avvolge gia' ogni immagine di figura in un link all'originale: qui
+  // si intercetta quel link. Senza JavaScript resta il link di prima e
+  // funziona come prima, che e' la ragione per cui non si costruisce un
+  // bersaglio nuovo.
+  const LENTE_MIN = 1;        // "adattata alla finestra"
+  const LENTE_MAX = 8;
+  const LENTE_DOPPIO_TAP = 2.5;
+
+  function setupLente() {
+    const figure = document.querySelectorAll(
+      '.bd-article figure a.image-reference, .bd-article figure a.reference.internal.image-reference');
+    if (!figure.length) return;
+
+    let visore = null, scena = null, img = null, didascalia = null, etichetta = null;
+    let scala = 1, tx = 0, ty = 0;
+    const puntatori = new Map();
+    let pizzicoAvvio = null;     // {dist, scala, cx, cy}
+    let trascina = null;         // {x, y, tx, ty}
+    let ultimoTap = 0;
+    let haTrascinato = false;
+
+    function costruisci() {
+      visore = document.createElement('dialog');
+      visore.className = 'pt-lente';
+      visore.innerHTML = `
+        <div class="pt-lente__scena" data-pt-scena>
+          <img class="pt-lente__figura" alt="" data-pt-figura>
+        </div>
+        <div class="pt-lente__barra">
+          <button type="button" class="pt-lente__comando" data-pt-zoom="-1"
+                  aria-label="Rimpicciolisci">&minus;</button>
+          <span class="pt-lente__scala" data-pt-scala aria-live="polite">100%</span>
+          <button type="button" class="pt-lente__comando" data-pt-zoom="1"
+                  aria-label="Ingrandisci">+</button>
+          <button type="button" class="pt-lente__comando" data-pt-zoom="0"
+                  aria-label="Torna alla dimensione della finestra">Adatta</button>
+          <span class="pt-lente__spazio"></span>
+          <button type="button" class="pt-lente__comando" data-pt-chiudi
+                  aria-label="Chiudi">&#10005;</button>
+        </div>
+        <div class="pt-lente__didascalia" data-pt-didascalia></div>`;
+      document.body.appendChild(visore);
+
+      scena = visore.querySelector('[data-pt-scena]');
+      img = visore.querySelector('[data-pt-figura]');
+      didascalia = visore.querySelector('[data-pt-didascalia]');
+      etichetta = visore.querySelector('[data-pt-scala]');
+
+      visore.addEventListener('click', e => {
+        const zoom = e.target.closest('[data-pt-zoom]');
+        if (zoom) {
+          const v = Number(zoom.dataset.ptZoom);
+          if (v === 0) reimposta();
+          else applica(scala * (v > 0 ? 1.4 : 1 / 1.4));
+          return;
+        }
+        if (e.target.closest('[data-pt-chiudi]')) { visore.close(); return; }
+        // Il velo. Tre cose devono NON chiudere, e tutte e tre sono successe
+        // davvero alla prima prova:
+        //   - la fine di un trascinamento. `setPointerCapture` dirotta alla
+        //     scena anche il click composito, quindi spostare la figura
+        //     arrivava qui e la chiudeva in faccia a chi la stava guardando;
+        //   - un tocco mentre la figura e' ingrandita: li si sta esplorando,
+        //     e il dito che si appoggia non e' una richiesta di uscire;
+        //   - il primo dei due tocchi di un doppio tap, che altrimenti chiude
+        //     prima che il secondo arrivi.
+        // Resta quello che si vuole dire davvero con un click nel vuoto
+        // intorno al disegno: ho finito.
+        if (e.target === scena || e.target === img) {
+          if (haTrascinato || scala > LENTE_MIN + 0.01) return;
+          if (dentroIlDisegno(e.clientX, e.clientY)) return;
+          visore.close();
+        }
+      });
+
+      // `close` scatta anche quando chiude Esc, che e' del <dialog> e non
+      // passa da qui: la pulizia va agganciata all'evento, non al bottone.
+      visore.addEventListener('close', () => {
+        document.documentElement.classList.remove('pt-lente-aperta');
+        img.removeAttribute('src');
+      });
+
+      scena.addEventListener('wheel', e => {
+        e.preventDefault();
+        const p = puntoRelativo(e.clientX, e.clientY);
+        applica(scala * (e.deltaY < 0 ? 1.12 : 1 / 1.12), p);
+      }, { passive: false });
+
+      scena.addEventListener('pointerdown', e => {
+        scena.setPointerCapture(e.pointerId);
+        puntatori.set(e.pointerId, { x: e.clientX, y: e.clientY });
+        if (puntatori.size === 2) {
+          const [a, b] = [...puntatori.values()];
+          pizzicoAvvio = {
+            dist: Math.hypot(a.x - b.x, a.y - b.y) || 1,
+            scala,
+            centro: puntoRelativo((a.x + b.x) / 2, (a.y + b.y) / 2),
+          };
+          trascina = null;
+        } else if (puntatori.size === 1) {
+          trascina = { x: e.clientX, y: e.clientY, tx, ty };
+          haTrascinato = false;
+        }
+      });
+
+      scena.addEventListener('pointermove', e => {
+        if (!puntatori.has(e.pointerId)) return;
+        puntatori.set(e.pointerId, { x: e.clientX, y: e.clientY });
+
+        if (puntatori.size === 2 && pizzicoAvvio) {
+          const [a, b] = [...puntatori.values()];
+          const d = Math.hypot(a.x - b.x, a.y - b.y) || 1;
+          applica(pizzicoAvvio.scala * (d / pizzicoAvvio.dist), pizzicoAvvio.centro);
+        } else if (trascina && puntatori.size === 1) {
+          if (Math.hypot(e.clientX - trascina.x, e.clientY - trascina.y) > 8) {
+            haTrascinato = true;
+            scena.dataset.ptTrascina = 'si';
+          }
+          tx = trascina.tx + (e.clientX - trascina.x);
+          ty = trascina.ty + (e.clientY - trascina.y);
+          disegna();
+        }
+      });
+
+      const sufine = e => {
+        puntatori.delete(e.pointerId);
+        if (puntatori.size < 2) pizzicoAvvio = null;
+        if (puntatori.size === 0) {
+          delete scena.dataset.ptTrascina;
+          // doppio tocco: alterna fra adattata e ingrandita, sul punto toccato
+          const ora = Date.now();
+          const fermo = trascina &&
+                Math.hypot(e.clientX - trascina.x, e.clientY - trascina.y) < 8;
+          if (fermo && ora - ultimoTap < 320) {
+            if (scala > LENTE_MIN + 0.01) reimposta();
+            else applica(LENTE_DOPPIO_TAP, puntoRelativo(e.clientX, e.clientY));
+            ultimoTap = 0;
+          } else if (fermo) {
+            ultimoTap = ora;
+          }
+          trascina = null;
+        }
+      };
+      scena.addEventListener('pointerup', sufine);
+      scena.addEventListener('pointercancel', sufine);
+
+      visore.addEventListener('keydown', e => {
+        if (e.key === '+' || e.key === '=') { applica(scala * 1.4); e.preventDefault(); }
+        else if (e.key === '-') { applica(scala / 1.4); e.preventDefault(); }
+        else if (e.key === '0') { reimposta(); e.preventDefault(); }
+      });
+
+      window.addEventListener('resize', () => { if (visore.open) reimposta(); });
+    }
+
+    // Coordinate del puntatore rispetto al CENTRO della scena: e' l'origine
+    // della trasformazione, e ragionare in quel sistema evita di rincorrere
+    // gli offset a ogni calcolo.
+    function puntoRelativo(cx, cy) {
+      const r = scena.getBoundingClientRect();
+      return { x: cx - (r.left + r.width / 2), y: cy - (r.top + r.height / 2) };
+    }
+
+    // Zoom "focale": il punto sotto le dita resta sotto le dita. Un punto p
+    // dello schermo sta sull'immagine in u = (p - t)/s; imporre che u non
+    // cambi passando da s a s' da' t' = p - (p - t)·s'/s.
+    function applica(nuova, fuoco) {
+      const s = Math.min(LENTE_MAX, Math.max(LENTE_MIN, nuova));
+      const p = fuoco || { x: 0, y: 0 };
+      tx = p.x - (p.x - tx) * (s / scala);
+      ty = p.y - (p.y - ty) * (s / scala);
+      scala = s;
+      disegna();
+    }
+
+    // "Adatta" vuol dire adattata alla finestra, ed e' il minimo consentito.
+    function reimposta() {
+      scala = LENTE_MIN; tx = 0; ty = 0;
+      disegna();
+    }
+
+    // La scala a cui il visore si APRE, che non e' sempre "adattata".
+    //
+    // Una figura larga 760 unita' in un telefono verticale, contenuta, esce
+    // larga 390: esattamente quanto la colonna da cui si e' arrivati. Il
+    // visore non avrebbe aggiunto niente e il testo dentro sarebbe rimasto
+    // illeggibile come prima. Si parte percio' dal disegno a grandezza
+    // naturale, una unita' del viewBox per pixel, che e' la misura per cui e'
+    // stato disegnato; dove la finestra e' gia' piu' larga non c'e' niente da
+    // ingrandire e "naturale" coincide con "adattata".
+    //
+    // La larghezza naturale non si puo' chiedere all'immagine: le SVG del
+    // libro dichiarano `width="100%"` e nessuna altezza, quindi non hanno una
+    // dimensione intrinseca e `naturalWidth` risponde 300, il default del
+    // CSS, per tutte quante (le PROPORZIONI invece sono giuste, ed e' su
+    // quelle che si regge il resto). Il numero qui sotto e' la larghezza
+    // tipica di quei disegni, che stanno fra le 640 e le 820 unita' col testo
+    // fra le 11 e le 16: a 760 un'etichetta da 12 esce a 12 pixel veri.
+    const LENTE_DISEGNO = 760;
+
+    function scalaDiApertura() {
+      const { w } = riquadroDisegno();
+      if (!w) return LENTE_MIN;
+      return Math.min(LENTE_MAX, Math.max(LENTE_MIN, LENTE_DISEGNO / w));
+    }
+
+    // La figura non si porta fuori dalla finestra: oltre il bordo non c'e'
+    // niente da guardare, e ritrovarla costa piu' che averla spostata.
+    //
+    // Il riquadro dell'<img> e' grande quanto la scena, ma il disegno dentro
+    // e' quello che `object-fit: contain` ci fa stare: limitare sul riquadro
+    // lascerebbe trascinare la figura dentro due bande vuote. Le proporzioni
+    // arrivano da naturalWidth/naturalHeight, che per una SVG il browser
+    // ricava dal viewBox; se non le sa (0), il riquadro e' il ripiego.
+    // Il rettangolo davvero occupato dal disegno, in coordinate di finestra.
+    // L'<img> e' grande quanto la scena, il disegno no: intorno restano due
+    // bande vuote, ed e' li che un click vuol dire "chiudi".
+    function riquadroDisegno() {
+      const s = scena.getBoundingClientRect();
+      let w = s.width, h = s.height;
+      const nw = img.naturalWidth, nh = img.naturalHeight;
+      if (nw > 0 && nh > 0) {
+        const proporzioni = nw / nh;
+        w = Math.min(s.width, s.height * proporzioni);
+        h = w / proporzioni;
+      }
+      const cx = s.left + s.width / 2 + tx;
+      const cy = s.top + s.height / 2 + ty;
+      return { s, w, h, cx, cy, dw: w * scala, dh: h * scala };
+    }
+
+    function dentroIlDisegno(x, y) {
+      const r = riquadroDisegno();
+      return Math.abs(x - r.cx) <= r.dw / 2 && Math.abs(y - r.cy) <= r.dh / 2;
+    }
+
+    function limita() {
+      const { s, w, h } = riquadroDisegno();
+      const maxX = Math.max(0, (w * scala - s.width) / 2);
+      const maxY = Math.max(0, (h * scala - s.height) / 2);
+      tx = Math.min(maxX, Math.max(-maxX, tx));
+      ty = Math.min(maxY, Math.max(-maxY, ty));
+    }
+
+    function disegna() {
+      limita();
+      img.style.transform = `translate(${tx}px, ${ty}px) scale(${scala})`;
+      etichetta.textContent = Math.round(scala * 100) + '%';
+      scena.style.cursor = scala > LENTE_MIN + 0.01 ? 'grab' : 'default';
+    }
+
+    // La didascalia senza il suo ancoraggio: Sphinx infila in coda a ogni
+    // `figcaption` un link "#" per copiarne l'indirizzo, e `textContent` se lo
+    // porta dietro. Nel visore diventava un cancelletto appeso al punto
+    // finale.
+    function testoDidascalia(figura) {
+      const cap = figura?.querySelector('figcaption');
+      if (!cap) return '';
+      const copia = cap.cloneNode(true);
+      copia.querySelectorAll('.headerlink').forEach(a => a.remove());
+      return copia.textContent.replace(/\s+/g, ' ').trim();
+    }
+
+    function apri(link) {
+      if (!visore) costruisci();
+      const dentro = link.querySelector('img');
+      img.alt = dentro ? dentro.getAttribute('alt') || '' : '';
+      didascalia.textContent = testoDidascalia(link.closest('figure'));
+      document.documentElement.classList.add('pt-lente-aperta');
+      visore.showModal();
+
+      // `naturalWidth` esiste solo a immagine caricata, e la scala di apertura
+      // si calcola da quello: si parte adattati e ci si sistema appena il
+      // browser sa quanto e' grande il disegno. Le figure sono gia' nella
+      // cache della pagina, quindi il salto non si vede.
+      reimposta();
+      const sistema = () => { scala = scalaDiApertura(); tx = 0; ty = 0; disegna(); };
+      img.onload = sistema;
+      img.src = link.getAttribute('href');
+      if (img.complete && img.naturalWidth) sistema();
+    }
+
+    figure.forEach(link => {
+      if (link.dataset.ptLente) return;
+      link.dataset.ptLente = 'si';
+
+      if (!link.querySelector('.pt-figura-segno')) {
+        const segno = document.createElement('span');
+        segno.className = 'pt-figura-segno';
+        segno.setAttribute('aria-hidden', 'true');
+        segno.innerHTML =
+          '<svg viewBox="0 0 16 16" width="15" height="15" focusable="false">' +
+          '<circle cx="7" cy="7" r="4.6" fill="none" stroke="currentColor" stroke-width="1.5"/>' +
+          '<path d="M10.4 10.4 L14 14" stroke="currentColor" stroke-width="1.6" ' +
+          'stroke-linecap="round"/>' +
+          '<path d="M5 7h4M7 5v4" stroke="currentColor" stroke-width="1.3" ' +
+          'stroke-linecap="round"/></svg>';
+        link.appendChild(segno);
+      }
+
+      link.setAttribute('aria-label',
+        'Apri la figura a schermo intero' + (link.title ? ': ' + link.title : ''));
+
+      link.addEventListener('click', e => {
+        // Un click con un modificatore vuole aprire in una scheda: e' un'altra
+        // intenzione, e portargliela via sarebbe una prepotenza.
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+        e.preventDefault();
+        apri(link);
+      });
+    });
+  }
+
   // ===== PERFORMANCE: REDUCE MOTION FOR ACCESSIBILITY =====
   function respectReducedMotion() {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -346,6 +665,7 @@
     improveSidebarNav();
     setupSidebarWidening();
     improveMobileTouch();
+    setupLente();
     respectReducedMotion();
 
     console.log('✨ Paithon Book UI enhancements loaded');
@@ -355,14 +675,26 @@
   init();
 
   // Re-run some features on dynamic content changes (for SPAs)
-  const observer = new MutationObserver(debounce(() => {
-    markExternalLinks();
-    makeTablesResponsive();
-  }, 500));
+  //
+  // Questo file è caricato nell'`<head>`, quindi qui `document.body` può
+  // essere ancora nullo: `observe(null)` lancia, e l'eccezione zittiva
+  // l'osservatore per tutta la vita della pagina — le tabelle aggiunte da
+  // Thebe restavano senza il loro contenitore scorrevole, e nessuno lo
+  // sapeva perché l'errore usciva in console e basta. `init()` la sua guardia
+  // ce l'aveva già; questo pezzo era rimasto fuori.
+  function osservaContenutoDinamico() {
+    const observer = new MutationObserver(debounce(() => {
+      markExternalLinks();
+      makeTablesResponsive();
+    }, 500));
 
-  observer.observe(document.body, {
-    childList: true,
-    subtree: true
-  });
+    observer.observe(document.body, { childList: true, subtree: true });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', osservaContenutoDinamico);
+  } else {
+    osservaContenutoDinamico();
+  }
 
 })();

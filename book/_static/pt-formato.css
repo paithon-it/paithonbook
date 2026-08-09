@@ -391,3 +391,227 @@ html[data-pt-livello="superiore"] .pt-livello__bottone {
     padding: 0.3rem 0.42rem;
   }
 }
+
+/* -------------------------------------------------------------------------
+   5. La lente: la figura a schermo intero, ingrandibile (custom.js)
+
+   Le figure del libro sono diagrammi con del testo dentro (nomi di layer,
+   etichette degli assi, formule), disegnato intorno ai 13px su un `viewBox`
+   largo. Schiacciato nella colonna di un telefono quel testo scende sotto i
+   sei pixel: la figura si vede, non si legge, e un `{numref}` che la richiama
+   dal testo va a vuoto. Qui si tocca e si apre a schermo intero, con lo zoom.
+
+   Il meccanismo esisteva già a metà: Sphinx avvolge ogni immagine di figura in
+   un link all'originale. Restava invisibile, e apriva una scheda nuova. La
+   lente intercetta quel link; senza JavaScript il link resta quello di prima e
+   funziona come prima.
+   ------------------------------------------------------------------------- */
+
+/* --- Il segnale sulla figura --------------------------------------------- */
+/* Una figura che si può aprire deve dirlo, o non la apre nessuno. Su desktop
+   compare passandoci sopra; dove non esiste un puntatore resta sempre visibile,
+   perché lì non c'è nessun "sopra" in cui farlo comparire. */
+.bd-article figure a.image-reference {
+  position: relative;
+  display: block;
+  cursor: zoom-in;
+}
+
+.pt-figura-segno {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  border: 1px solid var(--pt-border, #E2DCC9);
+  background: var(--pt-bg-elev, #FBF9F2);
+  color: var(--pt-fg-muted, #5A524A);
+  box-shadow: 0 1px 4px rgba(26, 23, 20, 0.16);
+  opacity: 0;
+  transition: opacity 0.16s ease, color 0.16s ease, border-color 0.16s ease;
+  pointer-events: none;          /* il bersaglio è il link, non il bollo */
+}
+
+@media (hover: hover) {
+  figure a.image-reference:hover .pt-figura-segno,
+  figure a.image-reference:focus-visible .pt-figura-segno {
+    opacity: 1;
+    color: var(--pt-accent, #A44B28);
+    border-color: var(--pt-accent, #A44B28);
+  }
+}
+
+@media (hover: none) {
+  .pt-figura-segno {
+    opacity: 0.85;
+  }
+}
+
+/* --- Il visore ------------------------------------------------------------ */
+/* È un <dialog> aperto con showModal(): da lì arrivano gratis la chiusura con
+   Esc, il focus che non scappa dietro al velo e il ::backdrop. */
+dialog.pt-lente {
+  width: 100vw;
+  max-width: 100vw;
+  height: 100dvh;
+  max-height: 100dvh;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: var(--pt-bg, #F8F5EE);
+  color: var(--pt-fg, #1A1714);
+  overflow: hidden;
+}
+
+dialog.pt-lente::backdrop {
+  background: rgba(26, 23, 20, 0.82);
+}
+
+.pt-lente__scena {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  /* I gesti li governa custom.js: senza questo il browser interpreta il
+     trascinamento come uno scorrimento della pagina sotto e la figura scappa
+     via mentre la si sposta. */
+  touch-action: none;
+  cursor: grab;
+}
+
+.pt-lente__scena[data-pt-trascina="si"] {
+  cursor: grabbing;
+}
+
+/* `width`/`height` espliciti, non `max-*`: le SVG del libro dichiarano
+   `width="100%"` e nessuna altezza, quindi non hanno una dimensione
+   intrinseca da cui il browser possa dedurre il riquadro, e dentro un
+   contenitore flex collasserebbero al default di 300px. Con il riquadro pari
+   alla scena ci pensa `object-fit: contain` a rispettare le proporzioni.
+   Il tema inverte già le immagini in tema scuro (`image_dark_mode.css`), e
+   questa è un `img` come le altre: la figura nel visore si vede come nella
+   pagina, senza che qui serva ripetere niente. */
+.pt-lente__figura {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transform-origin: center center;
+  will-change: transform;        /* qui la trasformazione c'è davvero */
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* --- La barra del visore -------------------------------------------------- */
+.pt-lente__barra {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.6rem 0.7rem;
+  background: linear-gradient(to bottom,
+              color-mix(in srgb, var(--pt-bg, #F8F5EE) 92%, transparent),
+              transparent);
+}
+
+.pt-lente__spazio {
+  flex: 1 1 auto;
+}
+
+/* 2.75rem = 44px, il bersaglio minimo per un dito. Su una barra di comandi
+   che si usa quasi solo col dito non ha senso partire più piccoli e allargare
+   dopo. */
+.pt-lente__comando {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.75rem;
+  height: 2.75rem;
+  padding: 0 0.6rem;
+  border: 1px solid var(--pt-border, #E2DCC9);
+  border-radius: 8px;
+  background: var(--pt-bg-elev, #FBF9F2);
+  color: var(--pt-fg, #1A1714);
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  transition: border-color 0.14s ease, color 0.14s ease;
+}
+
+.pt-lente__comando:hover {
+  border-color: var(--pt-accent, #A44B28);
+  color: var(--pt-accent, #A44B28);
+}
+
+.pt-lente__comando:focus-visible {
+  outline: 2px solid var(--pt-accent, #A44B28);
+  outline-offset: 2px;
+}
+
+.pt-lente__scala {
+  min-width: 3.4rem;
+  font-family: var(--pt-font-mono, ui-monospace, monospace);
+  font-size: 0.78rem;
+  color: var(--pt-fg-muted, #5A524A);
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+/* --- La didascalia -------------------------------------------------------- */
+/* Resta sotto la figura anche qui: una figura senza la sua frase è un disegno,
+   e nel libro è un'affermazione. */
+.pt-lente__didascalia {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  max-height: 30dvh;
+  overflow-y: auto;
+  padding: 0.9rem clamp(1rem, 4vw, 2rem) calc(0.9rem + env(safe-area-inset-bottom, 0px));
+  background: linear-gradient(to top,
+              color-mix(in srgb, var(--pt-bg, #F8F5EE) 94%, transparent) 60%,
+              transparent);
+  font-family: var(--pt-font-body, system-ui, sans-serif);
+  font-size: 0.86rem;
+  font-style: italic;
+  line-height: 1.5;
+  color: var(--pt-fg-muted, #5A524A);
+}
+
+.pt-lente__didascalia:empty {
+  display: none;
+}
+
+/* Mentre il visore è aperto la pagina sotto non scorre: su telefono, senza,
+   il trascinamento che finisce fuori dalla figura si propaga e alla chiusura
+   ci si ritrova in un altro punto del capitolo. */
+html.pt-lente-aperta,
+html.pt-lente-aperta body {
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pt-figura-segno,
+  .pt-lente__comando {
+    transition: none;
+  }
+}
+
+@media print {
+  dialog.pt-lente,
+  .pt-figura-segno {
+    display: none !important;
+  }
+}

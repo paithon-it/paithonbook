@@ -48,6 +48,21 @@
 
 versioni:
 
+- versione: "1.1.5"
+  data: 2026-08-09
+  voci:
+
+  - tipo: corretto
+    testo: >
+      Le figure del libro sono diagrammi, e dentro hanno del testo: i nomi dei
+      passaggi, le etichette, le formule. Su un telefono quel testo finiva
+      sotto i sei pixel, cioè si vedeva la figura ma non si leggeva, e quando
+      una pagina rimandava a una figura il rimando andava a vuoto. Adesso la
+      figura si tocca e si apre a schermo intero, alla grandezza per cui è
+      stata disegnata: si allarga con due dita, si sposta trascinandola, si
+      chiude con un tocco fuori. Da tastiera fanno lo stesso i tasti più, meno
+      e zero, e si esce con Esc.
+
 - versione: "1.1.4"
   data: 2026-08-09
   voci:

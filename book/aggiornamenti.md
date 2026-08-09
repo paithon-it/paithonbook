@@ -38,6 +38,14 @@ Una versione corrisponde a una **pubblicazione**, non a una giornata di
 lavoro: il libro si scrive tutti i giorni e si pubblica quando un pezzo sta in
 piedi.
 
+(v1-1-5)=
+
+## 1.1.5 · 9 agosto 2026
+
+### Correzioni
+
+- Le figure del libro sono diagrammi, e dentro hanno del testo: i nomi dei passaggi, le etichette, le formule. Su un telefono quel testo finiva sotto i sei pixel, cioè si vedeva la figura ma non si leggeva, e quando una pagina rimandava a una figura il rimando andava a vuoto. Adesso la figura si tocca e si apre a schermo intero, alla grandezza per cui è stata disegnata: si allarga con due dita, si sposta trascinandola, si chiude con un tocco fuori. Da tastiera fanno lo stesso i tasti più, meno e zero, e si esce con Esc.
+
 (v1-1-4)=
 
 ## 1.1.4 · 9 agosto 2026
