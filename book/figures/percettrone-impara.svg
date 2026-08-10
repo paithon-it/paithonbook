@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  paithon book — figura animata: la regola del percettrone
-  Generata da animazioni/svg/percettrone-impara.py — non modificare a mano.
+  paithon book, figura animata: la regola del percettrone
+  Generata da animazioni/svg/percettrone-impara.py: non modificare a mano.
   Palette-locked, fondo trasparente, animazione in CSS puro (nessuno script).
   Lo stato di riposo è quello finale: chi non anima (stampa, PDF,
   prefers-reduced-motion) vede la figura conclusa.
@@ -13,13 +13,13 @@
     .ax  { stroke:#C5BEAA; stroke-width:2; fill:none; }
     .axc { stroke:#E2DCC9; stroke-width:1.5; }
     .lbl { font-family:Inter, system-ui, sans-serif; font-size:15px; fill:#1A1A1A; }
-    .lbs { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#5E5852; }
+    .lbs { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#5A524A; }
     .ttl { font-family:Fraunces, Georgia, serif; font-size:16px; font-style:italic; fill:#1A1A1A; }
     .pt  { stroke:#F8F5EE; }
     .pos { fill:#B5532C; stroke:#B5532C; }
     .neg { fill:#2D5A5C; stroke:#2D5A5C; }
     .sep { stroke:#1A1A1A; stroke-width:3; }
-    .eti { font-family:Inter, system-ui, sans-serif; font-size:15px; fill:#5E5852; opacity:0; }
+    .eti { font-family:Inter, system-ui, sans-serif; font-size:15px; fill:#5A524A; opacity:0; }
     #retta { animation:ruota var(--d) infinite; transform-box:view-box; }
         @keyframes ruota{0.00%{transform:translate(274.0px,230.0px) rotate(119.1deg)}11.00%{transform:translate(274.0px,230.0px) rotate(119.1deg)}20.00%{transform:translate(290.2px,248.1px) rotate(138.2deg)}31.00%{transform:translate(290.2px,248.1px) rotate(138.2deg)}40.00%{transform:translate(290.1px,288.4px) rotate(164.6deg)}51.00%{transform:translate(290.1px,288.4px) rotate(164.6deg)}60.00%{transform:translate(272.0px,254.5px) rotate(-175.4deg)}71.00%{transform:translate(272.0px,254.5px) rotate(-175.4deg)}80.00%{transform:translate(274.0px,230.0px) rotate(-151.6deg)}91.00%{transform:translate(274.0px,230.0px) rotate(-151.6deg)}100.00%{transform:translate(274.0px,230.0px) rotate(-151.6deg)}}
     @keyframes lampo1{0.00%{stroke-width:1;stroke-opacity:0}18.80%{stroke-width:1;stroke-opacity:0}20.00%{stroke-width:12;stroke-opacity:0.4}31.00%{stroke-width:1;stroke-opacity:0}100.00%{stroke-width:1;stroke-opacity:0}}

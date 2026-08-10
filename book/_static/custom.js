@@ -599,51 +599,9 @@
     });
   }
 
-  // ===== SI STAMPA SEMPRE IN CHIARO =====
-  //
-  // Il libro nasce scuro ed e' il caso normale, non l'eccezione: chi stampa
-  // stampa da li'. Il foglio usciva nero, con le figure in negativo e il
-  // titolo che il tema mette in testa (nero per costruzione) invisibile.
-  //
-  // Il CSS di stampa riporta i token ai valori chiari, ma non arriva
-  // dappertutto: la colorazione del codice la scrive Pygments in un foglio
-  // suo, agganciato a `data-theme="dark"`, e combatterla a colpi di
-  // `!important` vorrebbe dire riscrivere una tavolozza intera e tenerla
-  // allineata per sempre. Qui si cambia il tema per la durata della stampa e
-  // lo si rimette com'era: una riga sola, e TUTTO segue — Pygments, le
-  // immagini, i token, comprese le regole che nessuno ha previsto.
-  //
-  // Il CSS resta come rete: senza JavaScript la stampa e' comunque chiara.
-  function stampaSempreChiara() {
-    const radice = document.documentElement;
-    let precedente = null;
-
-    const prima = () => {
-      if (precedente !== null) return;            // due eventi, un solo scambio
-      precedente = radice.dataset.theme || '';
-      radice.dataset.theme = 'light';
-    };
-    const dopo = () => {
-      if (precedente === null) return;
-      if (precedente) radice.dataset.theme = precedente;
-      else delete radice.dataset.theme;
-      precedente = null;
-    };
-
-    window.addEventListener('beforeprint', prima);
-    window.addEventListener('afterprint', dopo);
-
-    // Safari non ha mai emesso beforeprint/afterprint: li' l'unico segnale e'
-    // il media query che diventa vero.
-    if (window.matchMedia) {
-      const mq = window.matchMedia('print');
-      if (mq.addEventListener) {
-        mq.addEventListener('change', e => (e.matches ? prima() : dopo()));
-      } else if (mq.addListener) {
-        mq.addListener(e => (e.matches ? prima() : dopo()));
-      }
-    }
-  }
+  // Lo scambio di tema per la stampa stava qui. Ora e' in `brand/print.js`,
+  // caricato da `_config.yml`: e' la stessa ricetta che serve al sito, che
+  // nasce scuro come il libro, e una ricetta sola non puo' divergere.
 
   // ===== PERFORMANCE: REDUCE MOTION FOR ACCESSIBILITY =====
   function respectReducedMotion() {
@@ -690,7 +648,6 @@
     setupSidebarWidening();
     improveMobileTouch();
     setupLente();
-    stampaSempreChiara();
     respectReducedMotion();
 
     console.log('✨ Paithon Book UI enhancements loaded');

@@ -346,6 +346,199 @@ scalare.
 
 `````
 
+## Dalla parola alla frase: gli embedding di frase
+
+Tutto quello che abbiamo costruito finora dà un vettore per **parola**. Ma
+quasi tutto ciò che si vuole fare davvero riguarda testi interi: trovare i
+documenti che rispondono a una domanda, accorgersi che due segnalazioni sono
+la stessa, raggruppare le recensioni per tema, dare a un modello linguistico i
+passaggi giusti da leggere. Serve un vettore per **frase**, e ottenerlo non è
+altrettanto ovvio.
+
+`````{tab} Elementare
+
+La prima idea che viene in mente è anche la più ragionevole: prendere i vettori
+delle parole della frase e farne la media. Funziona sorprendentemente bene come
+punto di partenza, e ha due difetti che si vedono subito.
+
+Il primo è che **l'ordine sparisce**. «Il cane morde l'uomo» e «l'uomo morde il
+cane» contengono le stesse parole, quindi hanno la stessa media, quindi per la
+macchina sono la stessa frase. Il secondo è che le parole piccole pesano quanto
+le altre, e certe parole piccole ribaltano tutto: «il film mi è piaciuto» e «il
+film non mi è piaciuto» differiscono per un «non» che nella media si perde.
+
+Con i Transformer il problema sembra risolto, perché quei modelli l'ordine lo
+tengono. Ma c'è una sorpresa: **un BERT preso così com'è dà vettori di frase
+mediocri**. Il motivo è semplice e vale la pena farci caso, perché è una
+lezione generale: BERT è stato addestrato a indovinare parole mancanti, non a
+mettere vicine due frasi che vogliono dire la stessa cosa. Nessuno gli ha mai
+chiesto di farlo, e infatti non lo fa bene. Se vuoi che uno spazio abbia una
+certa proprietà, quella proprietà devi addestrarla.
+
+Da qui l'idea, che è vecchia e bellissima: invece di insegnare al modello
+*che cosa* è una frase, gli si insegna **quali frasi vanno vicine**. Gli si
+mostrano triplette, un'ancora, una frase che vuol dire la stessa cosa e una che
+vuol dire altro, e gli si chiede una cosa sola: fai in modo che la prima
+distanza sia minore della seconda. Ripetuto su milioni di triplette, lo spazio
+si riorganizza da solo, e alla fine «vicino» significa «di argomento simile».
+
+La rete che fa questo lavoro si chiama **siamese** perché è una sola rete usata
+più volte: la stessa identica, con gli stessi pesi, applicata all'ancora, alla
+frase simile e a quella diversa. È essenziale che sia la stessa, altrimenti i
+vettori finirebbero in spazi diversi e confrontarli non vorrebbe dire niente.
+
+Il guadagno pratico è enorme, e gli autori di Sentence-BERT lo misurano:
+trovare la coppia più simile fra diecimila frasi richiede circa **65 ore** se
+per ogni coppia si deve far girare un BERT sulle due frasi insieme, e circa
+**cinque secondi** se ogni frase ha già il suo vettore e basta confrontare
+numeri. È la differenza fra un'idea e un prodotto.
+
+`````
+
+`````{tab} Superiore
+
+La *media dei vettori di parola* è una baseline seria (con pesatura
+inversa alla frequenza regge il confronto con molti metodi neurali), ma è
+**invariante alla permutazione**, quindi cieca alla sintassi, e diluisce le
+parole di funzione che ne rovesciano il senso.
+
+Con un encoder contestuale il problema si sposta ma non sparisce. Prendere il
+vettore del token `[CLS]` di un BERT pre-addestrato, o la media dei suoi token,
+dà rappresentazioni **peggiori** della media di GloVe su compiti di similarità
+semantica: `[CLS]` è ottimizzato per il *next sentence prediction* e per
+essere rifinito, non per vivere in uno spazio metrico. La lezione è generale:
+**la geometria di uno spazio latente riflette l'obiettivo con cui è stato
+addestrato**, e la similarità del coseno non è una proprietà che si ottiene
+per caso.
+
+**Sentence-BERT** {cite}`reimers2019sentence` risolve il problema con una
+struttura **siamese**: lo stesso encoder $f_\theta$ (pesi condivisi, non due
+reti gemelle) applicato a ciascun ingresso, un *pooling* sui token (la media
+funziona meglio del `[CLS]`) e un obiettivo che agisce sulle **distanze**.
+
+Le funzioni obiettivo di questa famiglia, il *metric learning*, sono tre e
+conviene distinguerle.
+
+La **contrastive loss** lavora su coppie: avvicina le simili, allontana le
+dissimili fino a un margine $m$, e oltre quel margine smette di spingere
+(altrimenti spenderebbe capacità a separare cose già separate).
+
+La **triplet loss** lavora su terne $(a, p, n)$, ancora, positivo, negativo, e
+chiede una disuguaglianza **relativa**:
+
+$$
+\mathcal{L} = \max\big(0,\; m + d(a, p) - d(a, n)\big),
+$$
+
+cioè «il positivo deve stare più vicino del negativo, e di almeno $m$». È più
+robusta della contrastive perché non impone distanze assolute, che sarebbero
+arbitrarie, ma solo un ordinamento.
+
+La **multiple negatives ranking loss** (o InfoNCE, la stessa forma incontrata
+in *Imparare senza etichette* per SimCLR e in *Allineare due spazi* per CLIP)
+usa come negativi tutti gli altri elementi del batch:
+
+$$
+\mathcal{L} = -\log \frac{\exp(\mathrm{sim}(a, p)/\tau)}
+{\sum_{j} \exp(\mathrm{sim}(a, p_j)/\tau)} .
+$$
+
+È oggi la scelta prevalente, perché un batch da 1024 fornisce 1023 negativi
+gratis a ogni esempio, ed è precisamente la ricetta degli *in-batch negatives*
+che il capitolo su RAG attribuisce a DPR {cite}`karpukhin2020dense`.
+
+Due avvertenze pratiche che separano un modello che funziona da uno che no.
+La prima è la **scelta dei negativi**: quelli presi a caso diventano presto
+banali (due testi su argomenti scorrelati sono facilissimi da separare, e la
+loss va a zero senza aver insegnato niente), per cui si passa ai *hard
+negatives*, cercati apposta fra i quasi-simili, tipicamente scavandoli con un
+modello precedente. La seconda è il rischio opposto, il **collasso**: nulla
+vieta alla rete di mandare tutte le frasi di un argomento esattamente nello
+stesso punto, che azzera la loss e distrugge ogni distinzione fine.
+Temperatura, margine e regolarizzazione servono a governare quel compromesso.
+
+Infine una nota che chiude il cerchio con il capitolo su RAG: la similarità del
+coseno misura **«si somigliano»**, non **«questo risponde a quella»**. Una
+domanda e la sua risposta spesso non si somigliano affatto, e infatti si
+addestrano due torri distinte, $E_q$ ed $E_p$, con positivi che sono coppie
+domanda-passaggio e non coppie di parafrasi. Cambia il compito, cambiano i
+positivi, cambia lo spazio.
+
+`````
+
+Che l'addestramento *riorganizzi lo spazio* si può guardare da vicino su
+vettori finti, senza scaricare nessun modello: partiamo da coordinate casuali,
+in cui gli argomenti non sono affatto separati, e lasciamo lavorare una triplet
+loss.
+
+```python
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+
+torch.manual_seed(0)
+
+# Uno spazio di partenza che NON separa gli argomenti: quattro argomenti,
+# trentadue "frasi" ciascuno, coordinate casuali. È il caso di un encoder
+# che non è mai stato addestrato alla somiglianza.
+N_ARG, PER_ARG, D = 4, 32, 16
+argomento = torch.arange(N_ARG).repeat_interleave(PER_ARG)
+grezzi = torch.randn(N_ARG * PER_ARG, D)
+indici = [torch.nonzero(argomento == k).flatten() for k in range(N_ARG)]
+
+def coseni(V):
+    """Coseno medio dentro l'argomento e fra argomenti diversi."""
+    V = F.normalize(V, dim=-1)
+    S = V @ V.T
+    stesso = argomento[:, None] == argomento[None, :]
+    stesso.fill_diagonal_(False)
+    return S[stesso].mean().item(), S[~stesso].mean().item()
+
+def sorteggia(n):
+    """Una tripletta per riga: ancora, un simile, un diverso."""
+    a = torch.randint(0, len(grezzi), (n,))
+    ka = argomento[a]
+    p = torch.stack([indici[k][torch.randint(0, PER_ARG, (1,))][0] for k in ka])
+    kn = (ka + torch.randint(1, N_ARG, (n,))) % N_ARG      # un argomento diverso
+    neg = torch.stack([indici[k][torch.randint(0, PER_ARG, (1,))][0] for k in kn])
+    return a, p, neg
+
+# La "torre": UNA sola rete, applicata a tutti e tre gli ingressi.
+# I pesi condivisi sono ciò che rende la rete siamese.
+torre = nn.Sequential(nn.Linear(D, 32), nn.ReLU(), nn.Linear(32, D))
+ott = torch.optim.Adam(torre.parameters(), lr=1e-2)
+MARGINE = 0.3
+
+for _ in range(400):
+    a, p, neg = sorteggia(128)
+    A, P, N = (F.normalize(torre(grezzi[i]), dim=-1) for i in (a, p, neg))
+    # l'ancora deve stare più vicina al positivo che al negativo, e non di
+    # poco: almeno di un margine. Chi già rispetta il margine non contribuisce.
+    perdita = F.relu(MARGINE - (A * P).sum(-1) + (A * N).sum(-1)).mean()
+    ott.zero_grad(); perdita.backward(); ott.step()
+
+for etichetta, V in [("prima", grezzi), ("dopo ", torre(grezzi).detach())]:
+    dentro, fuori = coseni(V)
+    print(f"{etichetta}: coseno dentro l'argomento {dentro:+.3f}, "
+          f"fra argomenti diversi {fuori:+.3f}, distacco {dentro - fuori:+.3f}")
+```
+
+All'inizio il distacco è $-0{,}004$: dentro e fuori si somigliano allo stesso
+modo, cioè lo spazio non sa niente degli argomenti, ed è esattamente la
+situazione di un encoder mai addestrato alla somiglianza. Dopo quattrocento
+passi il coseno interno sale a $+0{,}876$ e quello esterno scende a $-0{,}261$.
+Nessuno ha detto alla rete quali fossero gli argomenti né dove metterli: le
+sono state date solo delle terne e una disuguaglianza da rispettare, e la
+geometria si è riorganizzata da sé.
+
+Vale la pena guardare anche il rovescio: $0{,}876$ **dentro** l'argomento è
+tanto, e siamo vicini al caso in cui le frasi di uno stesso tema collassano
+tutte nello stesso punto. Andrebbe benissimo per separare quattro temi, e
+malissimo per distinguere due sfumature dentro lo stesso tema. È il compromesso
+che in un modello vero si governa con negativi difficili e temperatura, e la
+ragione per cui un modello di embedding va scelto guardando il compito, non la
+classifica.
+
 ```{admonition} Da ricordare
 :class: important
 - **Tokenizzare** spezza il testo in unità; i sistemi moderni usano token
@@ -358,4 +551,15 @@ scalare.
 - **fastText** somma i vettori degli *n-grammi di caratteri*: dà un vettore
   anche alle parole mai viste e sfrutta la morfologia; un aiuto concreto per
   lingue flessive come l'italiano.
+- Per un vettore di **frase** la media dei vettori di parola è una baseline
+  onesta ma cieca all'ordine; e un BERT preso così com'è dà embedding di frase
+  mediocri, perché **è stato addestrato ad altro**. La similarità va
+  addestrata: reti **siamesi** (un solo encoder a pesi condivisi) e obiettivi
+  sulle distanze (contrastive, **triplet**, in-batch negatives).
+- La scelta dei **negativi** decide il risultato: quelli casuali diventano
+  presto banali, quelli difficili insegnano; e il rischio opposto è il
+  **collasso** di tutto un argomento in un punto.
+- Attenzione a cosa si misura: il coseno dice «si somigliano», non «questo
+  risponde a quella». È il motivo per cui il retrieval usa **due torri**,
+  domande da una parte e passaggi dall'altra.
 ```

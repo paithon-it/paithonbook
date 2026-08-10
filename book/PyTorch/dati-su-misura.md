@@ -256,7 +256,9 @@ si litiga soltanto. Il modo di scegliere è misurare, non indovinare.
 `````
 
 `````{tab} Superiore
-`num_workers=k` avvia $k$ processi (non thread: si aggira il GIL) che eseguono
+`num_workers=k` avvia $k$ processi (non thread: il GIL, spiegato nel capitolo
+su Python, serializzerebbe proprio il codice Python puro del *preprocessing*,
+che è il lavoro da parallelizzare qui) che eseguono
 `__getitem__` e il *collate* in parallelo, riempiendo una coda da cui il
 processo principale preleva. `prefetch_factor` (default 2) regola quanti batch
 ogni worker tiene pronti in anticipo: la memoria occupata cresce come

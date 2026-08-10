@@ -453,6 +453,130 @@ In sintesi: se cerchi robustezza con poco sforzo, parti dalla random forest; se
 cerchi l'ultimo punto di accuratezza e sei disposto a mettere a punto learning
 rate ed early stopping, passa al gradient boosting.
 
+## Combinare modelli diversi: voto e stacking
+
+Bagging e boosting combinano **molte copie dello stesso tipo di modello**.
+Resta la domanda che si pone chiunque abbia provato tre algoritmi diversi e li
+veda arrivare a punteggi simili: si possono mettere insieme *quelli*?
+
+`````{tab} Elementare
+
+Sì, e in due modi, che si distinguono per chi decide come pesare i pareri.
+
+Il primo è il **voto**. Ogni modello dice la sua e vince la maggioranza. C'è
+una variante che quasi sempre funziona meglio: invece di contare i voti secchi
+si mediano le **probabilità**, così un modello sicurissimo pesa più di uno che
+era incerto. Contare i voti butta via l'informazione più utile, cioè quanto
+ciascuno ci credeva.
+
+Il secondo è lo **stacking**, e l'idea è più ambiziosa: invece di decidere noi
+come pesare i modelli, **si addestra un modello a farlo**. Sopra i predittori
+di base si mette un ultimo modello, di solito semplicissimo, che riceve in
+ingresso le loro predizioni e impara quando fidarsi di chi. Può scoprire che il
+primo è affidabile sui casi facili e il secondo sui casi rari, cosa che una
+media fissa non può fare.
+
+C'è una regola che sembra un dettaglio tecnico ed è invece tutto il punto: il
+combinatore va addestrato su **predizioni che i modelli di base non hanno mai
+visto in addestramento**. Se gli si danno le predizioni sui dati con cui quei
+modelli si sono allenati, lui vedrà tutti bravissimi, e si fiderà proprio di
+chi ha imparato a memoria. È lo stesso principio del test che non si tocca,
+applicato un piano più in su.
+
+E la condizione perché tutto questo serva a qualcosa: i modelli devono
+**sbagliare in modi diversi**. Tre modelli che sbagliano sugli stessi casi non
+si correggono a vicenda, e combinarli non porta nulla. È la stessa ragione per
+cui una random forest decorrela gli alberi invece di limitarsi a fare la media.
+
+`````
+
+`````{tab} Superiore
+
+Il **voting** aggrega $M$ modelli eterogenei $f_1,\dots,f_M$. Nella forma
+*hard* si prende la moda delle etichette predette; nella forma *soft* la media
+(eventualmente pesata) delle probabilità,
+$\hat{p}(y\mid \mathbf{x}) = \frac{1}{M}\sum_m \hat{p}_m(y\mid \mathbf{x})$,
+seguita da un $\arg\max$. Il *soft voting* domina di norma perché conserva la
+confidenza, che nel voto duro viene scartata: ma richiede probabilità
+**comparabili** fra i modelli, e modelli mal calibrati possono peggiorarlo.
+
+Lo **stacking** {cite}`wolpert1992stacked` sostituisce la regola fissa con un
+**meta-modello** $g$ addestrato su $\hat{\mathbf{z}} = (f_1(\mathbf{x}), \dots,
+f_M(\mathbf{x}))$. La regola critica è che le $\hat{\mathbf{z}}$ di
+addestramento siano **fuori campione**: si genera una matrice di predizioni per
+*cross-validation* (per ogni fold, i modelli di base sono addestrati sugli
+altri fold e predicono su quello tenuto fuori), e su quella si addestra $g$.
+Senza questa precauzione il meta-modello osserva le predizioni *in-sample* dei
+modelli di base, che sono ottimisticamente buone in misura proporzionale a
+quanto ciascuno sovradatta, e impara a pesare la memorizzazione.
+
+Come meta-modello si sceglie tipicamente qualcosa di **semplice** (una
+regressione logistica, spesso regolarizzata): la capacità serve sotto, non
+sopra, e un combinatore flessibile sovradatta la matrice delle predizioni, che
+ha poche colonne e forte collinearità.
+
+La condizione di efficacia è la stessa che regge tutti gli ensemble e si legge
+nella scomposizione **ambiguità-errore**: l'errore di una media è l'errore
+medio dei membri meno la loro **diversità**. Combinare aiuta nella misura in
+cui i modelli sono decorrelati negli errori, e non aiuta affatto se sono
+d'accordo anche quando sbagliano.
+
+`````
+
+Vale la pena vedere che cosa succede davvero, perché il risultato non è quello
+che ci si aspetta.
+
+```python
+from sklearn.datasets import make_classification
+from sklearn.ensemble import (RandomForestClassifier, StackingClassifier,
+                              VotingClassifier)
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
+from sklearn.naive_bayes import GaussianNB
+from sklearn.neighbors import KNeighborsClassifier
+
+X, y = make_classification(n_samples=3000, n_features=20, n_informative=8,
+                           class_sep=0.7, random_state=0)
+X_tr, X_te, y_tr, y_te = train_test_split(X, y, test_size=0.3, random_state=0)
+
+# tre modelli che sbagliano in modi DIVERSI: è questa la condizione
+base = [("foresta", RandomForestClassifier(n_estimators=200, random_state=0)),
+        ("vicini",  KNeighborsClassifier(n_neighbors=15)),
+        ("bayes",   GaussianNB())]
+
+for nome, m in base:
+    print(f"{nome:<12} {m.fit(X_tr, y_tr).score(X_te, y_te):.4f}")
+
+duro = VotingClassifier(base, voting="hard").fit(X_tr, y_tr)
+morbido = VotingClassifier(base, voting="soft").fit(X_tr, y_tr)
+# il combinatore si addestra su predizioni FUORI CAMPIONE (cv=5): senza,
+# imparerebbe a fidarsi di chi ha memorizzato il training set
+pila = StackingClassifier(base, final_estimator=LogisticRegression(),
+                          cv=5).fit(X_tr, y_tr)
+
+print(f"{'voto duro':<12} {duro.score(X_te, y_te):.4f}")
+print(f"{'voto morbido':<12} {morbido.score(X_te, y_te):.4f}")
+print(f"{'stacking':<12} {pila.score(X_te, y_te):.4f}")
+```
+
+I singoli arrivano a $0{,}8933$ (foresta), $0{,}8889$ (vicini) e $0{,}8156$
+(Bayes ingenuo). Poi:
+
+- il **voto duro** dà $0{,}8867$ e quello **morbido** $0{,}8822$: entrambi
+  **peggio del miglior singolo modello**;
+- lo **stacking** dà $0{,}9089$, cioè un punto e mezzo sopra il migliore.
+
+La differenza ha un nome, ed è il terzo modello. Il Bayes ingenuo è nettamente
+il più debole, e in una media conta quanto gli altri: li tira giù. Lo stacking
+invece **impara** che di quel modello ci si può fidare poco, e gli assegna un
+peso piccolo. È il vantaggio strutturale di far decidere i pesi ai dati invece
+che fissarli a priori, e la ragione per cui, in un ensemble eterogeneo, la
+media semplice è una scommessa sulla qualità uniforme dei membri.
+
+Non è però un invito a impilare tutto: il guadagno qui è di un punto e mezzo,
+pagato con quattro modelli da addestrare e da mantenere, e una
+cross-validation interna. In produzione quel conto va fatto.
+
 ## In pratica, con scikit-learn
 
 L'interfaccia `fit`/`predict` è la stessa vista per gli altri modelli
@@ -536,4 +660,13 @@ alle reti.
 - **Bagging vs boosting**: il primo cura la **varianza** (robusto, difficile da
   overfittare); il secondo cura il **bias** (più accurato, ma va frenato con
   **learning rate** basso ed **early stopping**).
+- Per combinare modelli **di tipo diverso** ci sono il **voto** (meglio quello
+  *morbido*, che media le probabilità invece di contare le etichette) e lo
+  **stacking**, che addestra un meta-modello a pesare i predittori di base. Il
+  meta-modello va addestrato su predizioni **fuori campione**, altrimenti
+  impara a fidarsi di chi ha memorizzato.
+- La condizione perché un ensemble serva è che i membri **sbaglino in modo
+  diverso**: l'errore di una media è l'errore medio meno la **diversità**. Con
+  un membro debole il voto peggiora e lo stacking regge, perché impara a
+  pesarlo poco.
 ```

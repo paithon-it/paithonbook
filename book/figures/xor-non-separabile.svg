@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  paithon book — figura animata: lo XOR non è separabile linearmente
-  Generata da animazioni/svg/xor-non-separabile.py — non modificare a mano.
+  paithon book, figura animata: lo XOR non è separabile linearmente
+  Generata da animazioni/svg/xor-non-separabile.py: non modificare a mano.
   Palette-locked, fondo trasparente, animazione in CSS puro (nessuno script).
   Lo stato di riposo è quello finale: chi non anima (stampa, PDF,
   prefers-reduced-motion) vede la figura conclusa.
@@ -13,7 +13,7 @@
     .ax  { stroke:#C5BEAA; stroke-width:2; fill:none; }
     .axc { stroke:#E2DCC9; stroke-width:1.5; }
     .lbl { font-family:Inter, system-ui, sans-serif; font-size:15px; fill:#1A1A1A; }
-    .lbs { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#5E5852; }
+    .lbs { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#5A524A; }
     .ttl { font-family:Fraunces, Georgia, serif; font-size:16px; font-style:italic; fill:#1A1A1A; }
     .pt  { stroke:#F8F5EE; }
     .pos { fill:#B5532C; stroke:#B5532C; }

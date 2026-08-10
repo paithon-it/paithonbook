@@ -139,6 +139,8 @@ parts:
       title: Far funzionare le reti profonde
     - file: DeepLearning/architetture-storiche.md
       title: Architetture storiche
+    - file: DeepLearning/multi-compito.md
+      title: Una rete, molti compiti
   - file: VisioneArtificiale/overview.md
     title: Visione artificiale
     sections:
@@ -150,6 +152,10 @@ parts:
       title: Imparare senza etichette
     - file: VisioneArtificiale/detection-segmentazione.md
       title: Detection e segmentazione
+    - file: VisioneArtificiale/geometria-e-profondita.md
+      title: Geometria e profondità
+    - file: VisioneArtificiale/rendering-neurale.md
+      title: NeRF e splatting
     - file: VisioneArtificiale/style-transfer.md
       title: Neural style transfer
 
@@ -177,6 +183,8 @@ parts:
       title: Controllo continuo
     - file: DeepReinforcementLearning/model-based.md
       title: RL basato su modello
+    - file: DeepReinforcementLearning/imitazione.md
+      title: Imparare guardando
     - file: DeepReinforcementLearning/offline-rl.md
       title: Offline RL
     - file: DeepReinforcementLearning/esplorazione-e-ricompensa.md

@@ -340,9 +340,14 @@ auto-attenzione mascherata descritta nel capitolo sui Transformer) predice in
 modo autoregressivo l'azione $a_t$ condizionando sui token precedenti, cioè su
 return desiderato, stati e azioni fino a $s_t$. L'addestramento è puramente
 **supervisionato**: minimizza l'errore (cross-entropy per azioni discrete, MSE
-per continue) tra l'azione predetta e quella nel dataset. Non compaiono né
+per continue) tra l'azione predetta e quella nel dataset. È clonazione
+comportamentale, nel senso della sezione precedente, con in più il
+condizionamento sul ritorno desiderato. Non compaiono né
 equazione di Bellman, né bootstrapping, né operatore $\max$, e quindi neppure
-la sovrastima delle azioni OOD che affligge il Q-learning offline.
+la sovrastima delle azioni OOD che affligge il Q-learning offline. In cambio
+eredita la fragilità della clonazione: la distribuzione degli stati resta
+quella di chi ha prodotto il dataset, non quella indotta dalla politica
+appresa.
 
 In fase di controllo si fissa un return-to-go iniziale $\hat{R}_1$ desiderato, si
 osserva lo stato, si genera l'azione; a ogni passo si decrementa il return-to-go

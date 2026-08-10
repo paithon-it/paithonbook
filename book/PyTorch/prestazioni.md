@@ -216,7 +216,9 @@ comunicazione NCCL, e l'all-reduce eseguito *durante* il backward, a pacchetti
 diventa $K$ volte quello per replica: al crescere di $K$ va spesso ritoccato
 il learning rate. Il vecchio `DataParallel` (processo unico, multi-thread)
 sopravvive nei tutorial ma è sconsigliato dalla documentazione stessa: il GIL
-di Python e lo sbilanciamento sulla GPU 0 ne fanno un reperto storico.
+di Python (un thread alla volta esegue bytecode, come si è visto nel capitolo
+su Python) e lo sbilanciamento sulla GPU 0 ne fanno un reperto storico. DDP
+gira un processo per GPU proprio per questo: un GIL a testa.
 `````
 
 In codice, DDP è uno schema più che una libreria da imparare. Lo snippet che

@@ -77,11 +77,14 @@ della sezione e URL), non si ridistribuisce il testo.
   - [Reti convoluzionali (CNN)](https://book.paithon.it/main/DeepLearning/reti-convoluzionali.html)
   - [Far funzionare le reti profonde](https://book.paithon.it/main/DeepLearning/ottimizzazione-regolarizzazione.html)
   - [Architetture storiche](https://book.paithon.it/main/DeepLearning/architetture-storiche.html)
+  - [Una rete, molti compiti](https://book.paithon.it/main/DeepLearning/multi-compito.html)
 - [Visione artificiale](https://book.paithon.it/main/VisioneArtificiale/overview.html): Nel 1966, al MIT, Seymour Papert affidò a un gruppo di studenti un compito per l'estate: collegare una telecamera a un computer e insegnargli a descrivere quello che vedeva.
   - [Classificazione e transfer learning](https://book.paithon.it/main/VisioneArtificiale/classificazione-transfer.html)
   - [Data augmentation](https://book.paithon.it/main/VisioneArtificiale/data-augmentation.html)
   - [Imparare senza etichette](https://book.paithon.it/main/VisioneArtificiale/senza-etichette.html)
   - [Detection e segmentazione](https://book.paithon.it/main/VisioneArtificiale/detection-segmentazione.html)
+  - [Geometria e profondità](https://book.paithon.it/main/VisioneArtificiale/geometria-e-profondita.html)
+  - [NeRF e splatting](https://book.paithon.it/main/VisioneArtificiale/rendering-neurale.html)
   - [Neural style transfer](https://book.paithon.it/main/VisioneArtificiale/style-transfer.html)
 
 ## Apprendimento per rinforzo
@@ -96,6 +99,7 @@ della sezione e URL), non si ridistribuisce il testo.
   - [Gradiente di policy](https://book.paithon.it/main/DeepReinforcementLearning/policy-gradient.html)
   - [Controllo continuo](https://book.paithon.it/main/DeepReinforcementLearning/controllo-continuo.html)
   - [RL basato su modello](https://book.paithon.it/main/DeepReinforcementLearning/model-based.html)
+  - [Imparare guardando](https://book.paithon.it/main/DeepReinforcementLearning/imitazione.html)
   - [Offline RL](https://book.paithon.it/main/DeepReinforcementLearning/offline-rl.html)
   - [Esplorazione e ricompensa](https://book.paithon.it/main/DeepReinforcementLearning/esplorazione-e-ricompensa.html)
 

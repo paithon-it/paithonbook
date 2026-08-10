@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  paithon book - figura: il vincolo epipolare.
+  In alto le due immagini: a sinistra un punto marcato, a destra la retta su
+  cui quel punto deve trovarsi, con tre candidati. In basso il perche': dal
+  centro della prima fotocamera parte un raggio, i punti a profondita' diversa
+  lungo quel raggio sono tutti compatibili con lo stesso pixel, e le loro
+  proiezioni nella seconda fotocamera cadono tutte sulla stessa retta.
+  Palette-locked, fondo trasparente: leggibile in light e dark mode.
+  Nessun colore fuori palette.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 500" role="img"
+     aria-label="In alto due immagini affiancate: nella sinistra un solo punto evidenziato, nella destra una retta tratteggiata con tre punti candidati sopra. In basso lo schema che lo spiega: dal centro ottico della prima fotocamera parte un raggio, e tre punti a profondita' crescente lungo quel raggio proiettano nella seconda fotocamera in tre posizioni diverse ma allineate. Cercare la corrispondenza significa percorrere quella retta invece di tutta l'immagine.">
+  <style>
+    .lbl  { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#1A1A1A; }
+    .lblB { font-family:Inter, system-ui, sans-serif; font-size:13px; font-weight:700; fill:#1A1A1A; }
+    .leg  { font-family:Inter, system-ui, sans-serif; font-size:12px; fill:#5E5852; }
+    .ttl  { font-family:Fraunces, Georgia, serif; font-size:14px; font-weight:600; fill:#1A1A1A; }
+    .mth  { font-family:Georgia, serif; font-size:13px; font-style:italic; fill:#1A1A1A; }
+  </style>
+
+  <!-- ============ fascia alta: le due immagini ============ -->
+  <text class="ttl" x="60" y="24">Immagine sinistra</text>
+  <text class="ttl" x="470" y="24">Immagine destra</text>
+
+  <rect x="60" y="34" width="230" height="130" rx="6" fill="#F8F5EE" stroke="#5E5852" stroke-width="1.5"/>
+  <rect x="470" y="34" width="230" height="130" rx="6" fill="#F8F5EE" stroke="#5E5852" stroke-width="1.5"/>
+
+  <!-- il punto scelto a sinistra -->
+  <circle cx="168" cy="96" r="6" fill="#B5532C"/>
+  <text class="mth" x="178" y="92">x</text>
+  <text class="leg" x="188" y="95">L</text>
+  <text class="leg" x="60" y="182">un pixel qualsiasi</text>
+
+  <!-- la retta epipolare a destra, con i tre candidati -->
+  <line x1="492" y1="140" x2="682" y2="52" stroke="#2D5A5C" stroke-width="2" stroke-dasharray="7 4"/>
+  <circle cx="530" cy="122" r="5" fill="#2D5A5C"/>
+  <circle cx="587" cy="96" r="5" fill="#2D5A5C"/>
+  <circle cx="644" cy="70" r="5" fill="#2D5A5C"/>
+  <text class="leg" x="470" y="182">sta su questa retta, e su nessun altro punto</text>
+
+  <!-- freccia fra le due immagini -->
+  <path d="M 305 99 L 452 99" stroke="#C9A961" stroke-width="2" fill="none"
+        marker-end="url(#punta)"/>
+  <defs>
+    <marker id="punta" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#C9A961"/>
+    </marker>
+    <marker id="puntaScura" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#5E5852"/>
+    </marker>
+  </defs>
+
+  <line x1="30" y1="205" x2="730" y2="205" stroke="#C9A961" stroke-width="1" opacity="0.55"/>
+  <text class="ttl" x="30" y="232">Perche': i punti a profondita' diversa lungo un raggio</text>
+
+  <!-- ============ schema basso ============ -->
+
+  <!-- fotocamera sinistra -->
+  <path d="M 80 380 L 108 366 L 108 394 Z" fill="#B5532C"/>
+  <circle cx="80" cy="380" r="4.5" fill="#1A1A1A"/>
+  <text class="mth" x="46" y="400">O</text>
+  <text class="leg" x="58" y="403">L</text>
+
+  <!-- raggio dal centro sinistro -->
+  <line x1="80" y1="380" x2="452" y2="208" stroke="#B5532C" stroke-width="2"/>
+
+  <!-- i tre punti candidati sul raggio -->
+  <circle cx="210" cy="320" r="6" fill="#B5532C"/>
+  <circle cx="301" cy="278" r="6" fill="#B5532C"/>
+  <circle cx="392" cy="236" r="6" fill="#B5532C"/>
+  <text class="mth" x="196" y="345">P</text>
+  <text class="leg" x="207" y="348">1</text>
+  <text class="mth" x="287" y="303">P</text>
+  <text class="leg" x="298" y="306">2</text>
+  <text class="mth" x="378" y="261">P</text>
+  <text class="leg" x="389" y="264">3</text>
+
+  <!-- raggi verso la fotocamera destra, spezzati sul piano immagine -->
+  <g stroke="#2D5A5C" stroke-width="1.6" fill="none" opacity="0.9">
+    <line x1="210" y1="320" x2="700" y2="350"/>
+    <line x1="301" y1="278" x2="700" y2="350"/>
+    <line x1="392" y1="236" x2="700" y2="350"/>
+  </g>
+
+  <!-- piano immagine destro, visto di taglio -->
+  <line x1="520" y1="230" x2="580" y2="410" stroke="#1A1A1A" stroke-width="3.5"/>
+  <text class="leg" x="588" y="404">piano immagine</text>
+  <text class="leg" x="588" y="420">visto di taglio</text>
+
+  <!-- le tre proiezioni, allineate per costruzione -->
+  <circle cx="540" cy="291" r="5.5" fill="#2D5A5C"/>
+  <circle cx="551" cy="323" r="5.5" fill="#2D5A5C"/>
+  <circle cx="557" cy="341" r="5.5" fill="#2D5A5C"/>
+
+  <!-- fotocamera destra -->
+  <path d="M 700 350 L 672 336 L 672 364 Z" fill="#2D5A5C"/>
+  <circle cx="700" cy="350" r="4.5" fill="#1A1A1A"/>
+  <text class="mth" x="706" y="380">O</text>
+  <text class="leg" x="718" y="383">R</text>
+
+  <!-- base fra i due centri -->
+  <line x1="80" y1="380" x2="700" y2="350" stroke="#C9A961" stroke-width="1.4"
+        stroke-dasharray="5 5"/>
+  <text class="leg" x="330" y="392">base (la distanza fra le due fotocamere)</text>
+
+  <!-- nota -->
+  <text class="leg" x="30" y="470">Tutti i punti del raggio arancione producono lo stesso pixel a sinistra: la prima immagine, da sola, non sa quale sia.</text>
+  <text class="leg" x="30" y="488">A destra pero' cadono in posti diversi, e allineati. Da qui la ricerca: non un piano di pixel, una retta.</text>
+</svg>

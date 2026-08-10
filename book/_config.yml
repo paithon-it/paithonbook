@@ -56,6 +56,10 @@ sphinx:
     - https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js
     - custom.js
     - pt-formato.js
+    # Lo scambio di tema per la stampa. Sta nel brand perche' serve identico
+    # al sito, che nasce scuro come il libro: il CSS da solo non arriva alla
+    # tavolozza del codice, che pende da data-theme.
+    - brand/print.js
 
     # Sidebar sinistra: la scheda del repository sta SOPRA l'indice, come su
     # learnpytorch.io (Material for MkDocs). L'elenco replica il default di
@@ -77,6 +81,7 @@ sphinx:
       - AIResponsabile
       - Agenti
       - Audio
+      - DeepLearning
       - DeepReinforcementLearning
       - GraphNeuralNetwork
       - Interpretabilita
@@ -88,9 +93,13 @@ sphinx:
       - PINN
       - PyTorch
       - Python
+      - ReinforcementLearning
       - SerieTemporali
+      - SistemiMultiAgente
       - SistemiRaccomandazione
       - Transformers
+      - VisioneArtificiale
+      - VisioneLinguaggio
       - WorldModels
 
     templates_path:

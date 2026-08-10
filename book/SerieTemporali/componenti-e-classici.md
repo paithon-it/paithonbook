@@ -298,6 +298,259 @@ una serie mensile con trend e stagionalità annuale.
 
 `````
 
+## Scegliere l'ordine, e poi verificare i residui
+
+Sappiamo che cos'è un ARIMA($p,d,q$). Resta la domanda pratica, che è quella
+che si pone chiunque abbia una serie davanti: **quali numeri ci metto dentro, e
+come faccio a sapere se il modello che ne esce va bene?** La risposta è una
+procedura, ed è la spina dorsale metodologica di tutta la famiglia.
+
+`````{tab} Elementare
+
+La ricetta dei manuali dice di leggere due grafici, il correlogramma e la sua
+versione parziale, e dedurne gli ordini. Funziona sui casi da libro di testo, e
+sulle serie vere quasi mai: quando ci sono insieme la memoria dei valori e
+quella degli urti, entrambi i grafici scendono lentamente e non si legge
+niente.
+
+Allora si fa la cosa onesta: **si provano tutte le combinazioni** entro un
+limite ragionevole, si stimano tutti quei modelli (sono pochi e costano poco) e
+si sceglie con un criterio che tenga conto di due cose insieme, quanto bene il
+modello spiega i dati e quanti parametri ha usato per farlo. Aggiungere
+parametri migliora sempre l'aderenza ai dati visti, quindi senza una penalità
+si finirebbe per scegliere sempre il modello più grosso, che è il modo classico
+di imparare a memoria.
+
+Fatta la scelta, però, non si è finito. Manca il passo che quasi tutti saltano,
+ed è quello che dice se il modello è *utile*: **guardare quello che resta**.
+Un modello buono ha spremuto dalla serie tutta la regolarità che c'era, quindi
+ciò che avanza, la differenza fra previsto e osservato, deve essere
+indistinguibile dal caso. Se in quello che avanza si vede ancora una
+regolarità, vuol dire che il modello se l'è lasciata sfuggire, e va cambiato.
+
+C'è un modo elegante di dirlo: **il modello sbagliato lo si riconosce dai suoi
+errori, non dalle sue previsioni**. Le previsioni sembrano sempre plausibili;
+gli errori, se guardati, confessano.
+
+`````
+
+`````{tab} Superiore
+
+La procedura è quella di Box e Jenkins nella forma che si usa oggi, in tre
+tempi.
+
+**1. Rendere stazionaria la serie.** Si testa (ADF, KPSS), si differenzia il
+necessario, si fissa $d$ (e $D$ per la parte stagionale). Sovradifferenziare è
+un errore reale e riconoscibile: introduce autocorrelazione negativa artificiale
+al ritardo 1 e gonfia la varianza.
+
+**2. Scegliere gli ordini con un criterio di informazione.** Si stimano tutte
+le combinazioni di $(p,q)$ entro una griglia e si prende quella che minimizza
+l'**AIC**:
+
+$$
+\mathrm{AIC} = 2k - 2\ln \hat{L},
+$$
+
+dove $\hat{L}$ è la massima verosimiglianza raggiunta e $k$ il numero di
+parametri. Il primo termine penalizza la complessità, il secondo premia
+l'aderenza: è lo stesso compromesso bias-varianza del capitolo sul Machine
+Learning, espresso in valuta di verosimiglianza invece che di errore su un set
+di validazione. Il **BIC** ($k\ln m - 2\ln\hat L$) penalizza di più al crescere
+delle osservazioni e tende a scegliere modelli più piccoli.
+
+Una nota che vale più della formula: **l'AIC è una quantità relativa**. Il suo
+valore assoluto non significa nulla, contano solo le differenze, e differenze
+sotto le due unità non sono evidenza di niente.
+
+**3. Verificare i residui.** Se il modello ha catturato la struttura, i residui
+$\hat\varepsilon_t = x_t - \hat x_t$ devono essere **rumore bianco**: media
+nulla, varianza costante, nessuna autocorrelazione. Due strumenti, uno
+qualitativo e uno quantitativo.
+
+Il **Q-Q plot** confronta i quantili empirici dei residui con quelli di una
+normale: se stanno su una retta, la distribuzione è normale come si assume. È
+veloce e resta un giudizio a occhio.
+
+Il **test di Ljung-Box** è quantitativo e testa congiuntamente le prime $h$
+autocorrelazioni dei residui:
+
+$$
+Q = m(m+2) \sum_{k=1}^{h} \frac{\hat\rho_k^2}{m-k},
+$$
+
+con $m$ il numero di osservazioni e $\hat\rho_k$ l'autocorrelazione campionaria
+al ritardo $k$. Sotto l'ipotesi nulla di **assenza** di autocorrelazione, $Q$
+si distribuisce come una $\chi^2$. Attenzione al verso, perché è
+controintuitivo: qui **si spera di non rifiutare**. Un $p$-value alto significa
+«non c'è evidenza di struttura residua», cioè il modello va bene; un $p$-value
+basso significa che qualcosa è rimasto fuori.
+
+Vale la pena essere precisi su cosa questo dimostra e cosa no. Non rifiutare
+l'ipotesi nulla **non prova** che i residui siano rumore bianco: prova solo che
+il test, con quei dati, non ha trovato prove del contrario. È la stessa
+asimmetria di ogni test d'ipotesi, e la ragione per cui la diagnostica non
+sostituisce la validazione su dati futuri, che il capitolo affronta nella
+sezione seguente.
+
+`````
+
+Il ciclo, in una riga: **stima, seleziona, verifica, e se i residui non sono
+bianchi torna indietro**. È la stessa disciplina che nel Machine Learning
+separa il training dalla validazione, applicata a un oggetto diverso.
+
+### In pratica: l'AIC sceglie, Ljung-Box giudica
+
+Si può vedere l'intera procedura su una serie di cui **conosciamo la risposta**,
+perché la generiamo noi da un ARMA(2,1).
+
+```python
+import warnings
+import numpy as np
+from statsmodels.tsa.arima_process import ArmaProcess
+from statsmodels.tsa.arima.model import ARIMA
+from statsmodels.stats.diagnostic import acorr_ljungbox
+
+warnings.simplefilter("ignore")     # le convergenze borderline qui non interessano
+
+# Una serie generata da un ARMA(2,1) NOTO: la risposta giusta la sappiamo.
+processo = ArmaProcess(ar=np.r_[1, -0.6, -0.25], ma=np.r_[1, 0.4])
+
+def scegli(serie):
+    """Stima tutte le combinazioni fino a ordine 3 e le ordina per AIC."""
+    esiti = []
+    for p in range(4):
+        for q in range(4):
+            try:
+                esiti.append((ARIMA(serie, order=(p, 0, q)).fit().aic, p, q))
+            except Exception:
+                continue
+    return sorted(esiti)
+
+for n in (600, 2000):
+    rng = np.random.default_rng(0)
+    serie = processo.generate_sample(nsample=n, distrvs=rng.standard_normal)
+    classifica = scegli(serie)
+    print(f"\ncon {n} osservazioni (il vero modello è ARMA(2,1)):")
+    for aic, p, q in classifica[:3]:
+        print(f"   ARMA({p},{q})   AIC = {aic:8.1f}   (+{aic - classifica[0][0]:.1f})")
+
+    p, q = classifica[0][1], classifica[0][2]
+    residui = ARIMA(serie, order=(p, 0, q)).fit().resid
+    pv = acorr_ljungbox(residui, lags=[10], return_df=True)["lb_pvalue"].iloc[0]
+    print(f"   Ljung-Box sul modello scelto: p = {pv:.3f}  ->  "
+          f"{'residui indistinguibili dal rumore' if pv > 0.05 else 'resta struttura'}")
+
+# e su un modello deliberatamente troppo povero?
+pv = acorr_ljungbox(ARIMA(serie, order=(0, 0, 0)).fit().resid,
+                    lags=[10], return_df=True)["lb_pvalue"].iloc[0]
+print(f"\nLjung-Box su un modello vuoto (0,0,0): p = {pv:.1e}  ->  resta struttura")
+```
+
+Il risultato è più istruttivo di quello che ci si aspetterebbe, ed è il motivo
+per cui vale la pena eseguirlo invece di raccontarlo.
+
+Con **600 osservazioni l'AIC sbaglia**: sceglie un ARMA(1,1) invece del vero
+ARMA(2,1). Ma guardate i margini, $+0{,}4$ e $+1{,}5$ per il secondo e il
+terzo: sono differenze che non significano niente, e i tre modelli sono
+statisticamente indistinguibili. Il Ljung-Box sul modello scelto dà
+$p = 0{,}706$, cioè i residui **sono** rumore bianco. Il modello «sbagliato»
+va benissimo, ed è la lezione centrale: l'obiettivo non è indovinare il modello
+vero (che sulle serie reali non esiste), è trovarne uno che non lasci
+struttura fuori.
+
+Con 2000 osservazioni l'AIC trova l'ordine giusto, e il secondo classificato è
+ancora lì a $+0{,}6$. Sul modello vuoto, infine, il $p$-value crolla a zero:
+il test vede benissimo la struttura rimasta fuori, ed è esattamente il suo
+mestiere.
+
+## Il mondo entra nella serie: SARIMAX e VAR
+
+Fin qui la serie ha spiegato sé stessa con il proprio passato. Ma il gelataio
+sa che le vendite dipendono dal meteo, e il negoziante che dipendono dalle
+promozioni. Come entrano, quelle informazioni?
+
+`````{tab} Elementare
+
+Le strade sono due, e rispondono a due situazioni diverse.
+
+La prima: hai **una serie da prevedere** e altre informazioni che la
+influenzano ma che non ti interessa prevedere (la temperatura, i giorni di
+festa, il prezzo di listino). Quelle si chiamano variabili **esogene**, cioè
+«che vengono da fuori», e si aggiungono al modello come contributi che si
+sommano a quello che la serie già spiega da sola. La sigla diventa SARIMAX, e
+la X finale sta proprio per quelle variabili esterne.
+
+C'è una trappola che si scopre sempre troppo tardi, e vale la pena saperla
+prima. Per prevedere le vendite di domani con il meteo, ti serve il meteo **di
+domani**, che non hai. Quindi o è una cosa che si conosce in anticipo per
+costruzione (il calendario, i giorni di chiusura, una promozione già decisa),
+oppure va prevista a sua volta, e allora nella previsione finale entrano due
+errori invece di uno. Le variabili esogene che aiutano davvero sono quasi
+sempre quelle del primo tipo.
+
+La seconda strada: hai **più serie che si influenzano a vicenda** e vuoi
+prevederle tutte insieme (il reddito e i consumi, la domanda e il prezzo). Qui
+non c'è una principale e delle comparse: ognuna dipende dal proprio passato e
+da quello delle altre. È il modello vettoriale, VAR.
+
+Il VAR però ha una condizione di validità che non va data per scontata: che
+quelle serie **si aiutino davvero** a prevedersi. Esiste un test per
+verificarlo, e prende il nome dall'economista Clive Granger. Con un avvertimento
+grosso quanto il test, di cui parliamo subito.
+
+`````
+
+`````{tab} Superiore
+
+**SARIMAX** aggiunge al SARIMA una componente di regressione su $r$ variabili
+esogene $\mathbf{z}_t$:
+
+$$
+x_t = \boldsymbol{\beta}^\top \mathbf{z}_t + \eta_t ,
+$$
+
+dove $\eta_t$ segue un SARIMA($p,d,q$)($P,D,Q$)$_m$. Si legge bene così: una
+regressione ordinaria il cui **errore non è indipendente** ma ha esso stesso
+una struttura temporale, il che è precisamente la ragione per cui una
+regressione lineare ordinaria su dati temporali dà coefficienti con errori
+standard sbagliati.
+
+Il vincolo operativo da tenere a mente: per una previsione a orizzonte $h$
+servono i valori $\mathbf{z}_{T+1},\dots,\mathbf{z}_{T+h}$. O sono **noti per
+costruzione** (calendario, festività, promozioni pianificate), o vanno previsti,
+e la loro incertezza si propaga a quella finale senza che gli intervalli
+standard ne tengano conto.
+
+Il modello **VAR($p$)** tratta invece $d$ serie come un vettore
+$\mathbf{x}_t \in \mathbb{R}^d$:
+
+$$
+\mathbf{x}_t = \mathbf{c} + \mathbf{A}_1 \mathbf{x}_{t-1} + \dots +
+\mathbf{A}_p \mathbf{x}_{t-p} + \boldsymbol{\varepsilon}_t ,
+$$
+
+con $\mathbf{A}_i$ matrici $d \times d$. Il numero di parametri cresce come
+$pd^2$, il che spiega perché il VAR sia praticabile su poche serie e diventi
+subito ingestibile su molte.
+
+Il **test di causalità di Granger** verifica se i ritardi di una serie
+migliorano significativamente la previsione di un'altra rispetto ai soli
+ritardi di quest'ultima: è un test $F$ fra due regressioni annidate, l'ipotesi
+nulla è che i coefficienti aggiuntivi siano tutti nulli, e richiede serie
+stazionarie. Va fatto in entrambe le direzioni, perché è asimmetrico.
+
+E qui va detto forte, perché il nome ha prodotto mezzo secolo di equivoci: la
+**causalità di Granger non è causalità**. È **precedenza predittiva**, e
+soltanto quella. Due serie guidate da una terza causa comune non osservata si
+«Granger-causano» a vicenda allegramente; e una causa vera che agisce più in
+fretta del passo di campionamento non viene rilevata affatto. Il test dice «il
+passato di $A$ aiuta a prevedere $B$», che è un'affermazione sui dati, non sul
+mondo. La scala della causalità che il capitolo sull'interpretabilità richiama
+serve esattamente a tenere separate queste due cose.
+
+`````
+
 ## Lisciamento esponenziale: da SES a Holt-Winters
 
 La famiglia ARIMA modella la memoria della serie in modo esplicito. Una seconda
@@ -476,6 +729,16 @@ capitolo sul Machine Learning.
   la sigla ci sono solo tre conteggi; **SARIMA** rifà lo stesso gioco sul
   calendario, confrontando dicembre con lo scorso dicembre
   {cite}`box2015time`.
+- Gli ordini non si indovinano guardando i grafici: **si provano tutte le
+  combinazioni** e si sceglie con un criterio che pesa insieme quanto il
+  modello spiega e quanti parametri ha speso (l'**AIC**). Poi, e questo è il
+  passo che quasi tutti saltano, **si guarda quello che resta**: se negli
+  errori si vede ancora una regolarità, il modello se l'è lasciata sfuggire.
+  Il modello sbagliato si riconosce dai suoi errori, non dalle sue previsioni.
+- Le informazioni esterne entrano in due modi. Come variabili **esogene** in un
+  SARIMAX (il meteo, le promozioni), con la trappola che per prevedere domani
+  serve il loro valore di domani; oppure, se più serie si influenzano a
+  vicenda, prevedendole tutte insieme con un **VAR**.
 - Il **lisciamento esponenziale** è una media del passato in cui ieri pesa
   molto e ogni passo indietro pesa una frazione in meno, come l'eco di un suono
   che si spegne. Tre gradini: solo il livello, poi livello più tendenza, poi
@@ -503,6 +766,17 @@ capitolo sul Machine Learning.
 - **AR($p$)** spiega il valore con i $p$ passati; **MA($q$)** con i $q$ errori
   passati; **ARIMA($p,d,q$)** unisce i due sulla serie differenziata $d$ volte,
   e **SARIMA** aggiunge i termini stagionali al ritardo $m$ {cite}`box2015time`.
+- La **procedura** è in tre tempi: stazionarizzare (fissando $d$), scegliere
+  $(p,q)$ minimizzando l'**AIC** $= 2k - 2\ln\hat L$ su una griglia, verificare
+  che i residui siano **rumore bianco** con il Q-Q plot e il test di
+  **Ljung-Box**. Attenzione al verso del test: qui si spera di **non**
+  rifiutare, e l'AIC è una quantità **relativa**, differenze sotto le due unità
+  non dicono niente.
+- **SARIMAX** aggiunge variabili **esogene** (una regressione il cui errore ha
+  a sua volta struttura temporale), al prezzo di doverne conoscere i valori
+  futuri. **VAR($p$)** modella $d$ serie insieme, con $pd^2$ parametri, ed è
+  valido solo se le serie si aiutano a vicenda: lo verifica il test di
+  **Granger**, che però misura **precedenza predittiva**, non causalità.
 - Il **lisciamento esponenziale** pesa il passato con pesi che **decadono
   esponenzialmente**: SES (solo livello), Holt (livello + trend), Holt-Winters
   (livello + trend + stagionalità).

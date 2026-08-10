@@ -151,7 +151,9 @@ entrambi gli approcci insieme, e fanno decidere ai risultati.
 
 `````{tab} Superiore
 
-L'architettura standard è il **bi-encoder**: due encoder Transformer (o uno
+L'architettura standard è il **bi-encoder**, cioè la struttura siamese
+descritta in *Rappresentare il testo* applicata a due tipi di ingresso
+diversi: due encoder Transformer (o uno
 condiviso), $E_q$ per le query ed $E_p$ per i passaggi, producono vettori in
 $\mathbb{R}^d$, e la rilevanza è il prodotto scalare
 $\mathrm{sim}(q, d) = E_q(q)^\top E_p(d)$, che coincide con la **similarità

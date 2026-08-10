@@ -293,6 +293,135 @@ parsimoniose, ma una ResNet di pari accuratezza resta in genere più leggera da
 addestrare.
 `````
 
+## Separare lo spazio dai canali: la convoluzione che sta in un telefono
+
+Fin qui la corsa è stata verso l'alto: più strati, più connessioni, più
+accuratezza, e pazienza per il costo. Attorno al 2016 una parte della ricerca
+gira la domanda: **a parità di accuratezza, quanto poco si può spendere?** Non
+è una curiosità da risparmiatori, è la condizione perché la visione artificiale
+esca dai centri di calcolo ed entri in un telefono, in una telecamera, in
+un'automobile. La risposta più fruttuosa nasce da un'osservazione sulla
+convoluzione stessa.
+
+`````{tab} Elementare
+Una convoluzione ordinaria fa due lavori in una volta sola, e non ce ne
+accorgiamo perché li fa insieme. Il primo è **guardarsi intorno**: prendere un
+quadratino di $3\times3$ pixel e cercarci una forma. Il secondo è **mettere
+d'accordo i canali**: combinare quello che dicono tutte le opinioni raccolte in
+quel punto (il bordo, il colore, la trama) in una nuova opinione.
+
+L'idea è di smettere di farli insieme. Prima si guarda intorno, ma **un canale
+per volta**: ogni opinione viene esaminata nel suo quadratino, per conto suo,
+senza mescolarsi con le altre. Poi, separatamente, si mettono d'accordo i
+canali con una lente che guarda un solo punto: è la convoluzione $1\times1$ di
+*Network in Network*, che abbiamo incontrato poco fa e che qui trova il suo
+impiego più importante.
+
+Il risultato ha la stessa forma di prima, ma costa **quasi nove volte meno**. E
+il motivo per cui costa meno è semplice: nella versione ordinaria ogni
+combinazione «quale pixel del quadratino» per «quale canale di partenza» per
+«quale canale di arrivo» ha il suo peso, e quei tre elenchi si moltiplicano fra
+loro. Separando, due dei tre si **sommano** invece di moltiplicarsi.
+
+È il tipo di risparmio che non si ottiene tagliando qualcosa, ma accorgendosi
+che si stava pagando due volte. Su questo mattone sono costruite quasi tutte le
+reti che girano sui telefoni.
+`````
+
+`````{tab} Superiore
+Una convoluzione standard $k \times k$ da $C_{\text{in}}$ a $C_{\text{out}}$
+canali ha $k^2 C_{\text{in}} C_{\text{out}}$ pesi e costa, per pixel d'uscita,
+altrettante moltiplicazioni-accumulo. La **convoluzione separabile in
+profondità** (*depthwise separable*) la fattorizza in due passi:
+
+1. **depthwise**: una convoluzione $k \times k$ applicata **a ciascun canale
+   indipendentemente** (in PyTorch, `groups=C_in`), con $k^2 C_{\text{in}}$
+   pesi. Filtra nello spazio senza mescolare i canali;
+2. **pointwise**: una convoluzione $1 \times 1$ da $C_{\text{in}}$ a
+   $C_{\text{out}}$, con $C_{\text{in}} C_{\text{out}}$ pesi. Mescola i canali
+   senza guardare i vicini.
+
+Il rapporto fra i due costi è
+
+$$
+\frac{k^2 C_{\text{in}} C_{\text{out}}}
+{k^2 C_{\text{in}} + C_{\text{in}} C_{\text{out}}}
+= \frac{k^2 C_{\text{out}}}{k^2 + C_{\text{out}}}
+\;\xrightarrow[\;C_{\text{out}} \to \infty\;]{}\; k^2 ,
+$$
+
+cioè il risparmio tende a $k^2$ ($9$ per i filtri $3\times3$ e si avvicina già
+molto a quel limite con qualche decina di canali in uscita). Da notare che è la
+**fattorizzazione** a produrre il guadagno, non un taglio: il tensore d'uscita
+ha esattamente la stessa forma, e ciò che si perde è l'espressività delle
+combinazioni spazio-canale congiunte, che l'esperienza mostra essere in gran
+parte ridondanti.
+
+L'idea circolava da tempo, ma è **MobileNet** {cite}`howard2017mobilenets` a
+farne l'ossatura di una famiglia di reti pensate per il calcolo su dispositivo,
+con due manopole esplicite (un moltiplicatore di larghezza e uno di
+risoluzione) per scendere lungo la curva costo-accuratezza. **Xception**
+{cite}`chollet2017xception` porta la stessa idea al limite dentro un'architettura
+in stile Inception, leggendola come l'ipotesi estrema che correlazioni spaziali
+e correlazioni fra canali si possano trattare del tutto separatamente.
+
+**MobileNetV2** {cite}`sandler2018mobilenetv2` aggiunge il pezzo che manca e
+che è arrivato fino a oggi: il **residuo invertito** con **collo di bottiglia
+lineare**. Il blocco *espande* i canali con una $1\times1$, applica la
+depthwise nello spazio espanso, poi *ricomprime* con un'altra $1\times1$
+**senza non-linearità finale** (perché una ReLU su uno spazio a poche
+dimensioni distrugge informazione che non si recupera), e la connessione
+residua collega i due estremi stretti anziché quelli larghi, che è l'opposto di
+ResNet e serve a tenere basso il consumo di memoria. Quel blocco si chiama
+**MBConv**, ed è il mattone di cui è fatta la rete base di EfficientNet, che
+incontriamo qui sotto.
+
+Una variazione sul tema merita una riga, perché mostra che la stessa economia
+si può ottenere altrimenti: il *Fire module* di **SqueezeNet**
+{cite}`iandola2016squeezenet` alterna uno strato di *squeeze* a $1\times1$ che
+strozza i canali e uno di *expand* che li riapre con un misto di $1\times1$ e
+$3\times3$, arrivando all'accuratezza di AlexNet con cinquanta volte meno
+parametri.
+`````
+
+Il conto si verifica in poche righe, ed è utile farlo perché il numero che ne
+esce è meno ovvio della formula.
+
+```python
+import torch
+import torch.nn as nn
+
+C_IN, C_OUT, K, H, W = 64, 128, 3, 56, 56
+x = torch.randn(1, C_IN, H, W)
+
+# convoluzione ordinaria: ogni filtro guarda tutti i canali in una volta sola
+ordinaria = nn.Conv2d(C_IN, C_OUT, K, padding=1, bias=False)
+
+# separabile: prima la parte spaziale, un filtro per canale (groups=C_IN),
+# poi la parte fra i canali, una 1x1 che li rimescola
+separabile = nn.Sequential(
+    nn.Conv2d(C_IN, C_IN, K, padding=1, groups=C_IN, bias=False),   # depthwise
+    nn.Conv2d(C_IN, C_OUT, 1, bias=False),                          # pointwise
+)
+
+def parametri(m):
+    return sum(p.numel() for p in m.parameters())
+
+print("stessa forma in uscita:", ordinaria(x).shape == separabile(x).shape,
+      tuple(separabile(x).shape))
+print(f"parametri, ordinaria : {parametri(ordinaria):>8,}")
+print(f"parametri, separabile: {parametri(separabile):>8,}")
+print(f"risparmio            : {parametri(ordinaria) / parametri(separabile):.2f}x")
+
+teorico = (K * K * C_OUT) / (K * K + C_OUT)
+print(f"previsto dalla formula: {teorico:.2f}x   (limite: {K * K}x)")
+```
+
+Da $73\,728$ pesi a $8\,768$, cioè **$8{,}41$ volte meno**, con il tensore
+d'uscita di forma identica. E il numero misurato coincide con quello previsto
+dalla formula fino all'ultima cifra, perché qui non c'è niente di empirico: è
+aritmetica.
+
 ## Progettare architetture: dall'artigianato al metodo
 
 Vista da vicino, la stagione 2012–2016 è stata artigianato d'alta scuola:
@@ -379,6 +508,10 @@ Transformer in poi.
 - **DenseNet** (2017): non una scorciatoia ma tutte, come una chat di gruppo
   in cui ogni strato ha sotto gli occhi l'intera conversazione (pochi pesi,
   molta memoria).
+- La **convoluzione separabile** (MobileNet, 2017) smette di fare due lavori
+  insieme: prima guarda intorno un canale per volta, poi mette d'accordo i
+  canali con la lente che guarda un punto solo. Stessa forma in uscita, quasi
+  nove volte meno pesi: è il mattone delle reti che stanno in un telefono.
 - Dopo l'artigianato, il metodo: EfficientNet fa crescere insieme profondità,
   larghezza e dimensione delle immagini come gli ingredienti di una torta; e
   la ricerca automatica delle architetture disegna la rete al posto nostro.
@@ -400,6 +533,12 @@ Transformer in poi.
   rende addestrabili reti di centinaia di strati.
 - **DenseNet** (2017): ogni strato riceve, concatenate, le feature di
   **tutti** i precedenti (pochi parametri, molta memoria).
+- La **convoluzione separabile in profondità** (MobileNet, Xception) fattorizza
+  la convoluzione in *depthwise* ($k^2 C_{\text{in}}$ pesi) più *pointwise*
+  $1\times1$ ($C_{\text{in}}C_{\text{out}}$): il costo scende di un fattore
+  $k^2 C_{\text{out}} / (k^2 + C_{\text{out}}) \to k^2$. MobileNetV2 vi
+  aggiunge il **residuo invertito** con collo di bottiglia lineare
+  (**MBConv**), che è il blocco base di EfficientNet.
 - Dopo l'artigianato, il metodo: il **compound scaling** di EfficientNet fa
   crescere insieme profondità, larghezza e risoluzione; la *neural
   architecture search* automatizza il progetto.

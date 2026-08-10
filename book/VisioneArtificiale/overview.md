@@ -184,6 +184,16 @@ questione di secondi, tracciare una maschera pixel-perfetta richiede minuti.
 
 `````
 
+Questi quattro compiti hanno una cosa in comune: rispondono tutti alla domanda
+«che cosa», e lo fanno **dentro il piano dell'immagine**. Il riquadro di un
+rilevatore dice dove sta un oggetto in pixel, non a quanti metri. Esiste però
+una seconda famiglia di domande, che il capitolo affronta più avanti e che
+richiede strumenti diversi: **dove sono le cose nello spazio**, quanto sono
+lontane, come si muovono, che forma hanno. Lì la risposta non si trova
+guardando meglio una fotografia, perché la profondità non è nascosta
+nell'immagine: è andata perduta nel momento dello scatto, e va ricostruita da
+più viste o indovinata con un modello di come è fatto il mondo.
+
 ## Dai filtri disegnati a mano alle feature imparate
 
 Per decenni la strategia fu ovvia quanto faticosa: se vuoi trovare un bordo,
@@ -248,6 +258,15 @@ il *transfer learning*, che consente di riusare reti già addestrate su
 ImageNet per i nostri problemi con pochi dati. L'obiettivo non è solo capire
 come funzionano: è metterle al lavoro, con PyTorch, sulle nostre immagini.
 
+Le ultime sezioni cambiano domanda e passano dal «che cosa» al «dove»: la
+**geometria** che lega una fotografia alla scena da cui viene, e che permette
+di ricavare la profondità da due viste o dal movimento, e i **campi di
+radianza**, con cui una scena si rappresenta addestrando una funzione invece
+di ricostruire una superficie. Sono la parte della visione artificiale che le
+reti non hanno sostituito ma su cui hanno costruito, ed è anche la più antica:
+il modello di fotocamera che useremo lo dimostrò Brunelleschi nel Quattrocento
+con una tavoletta forata.
+
 `````{tab} Elementare
 
 ```{admonition} Da ricordare
@@ -267,6 +286,11 @@ come funzionano: è metterle al lavoro, con PyTorch, sulle nostre immagini.
 - Senza le grandi raccolte di immagini già etichettate (**ImageNet**, **COCO**)
   niente di tutto questo sarebbe stato possibile: contano quanto una buona
   architettura.
+- A quei compiti se ne aggiunge una famiglia diversa, che chiede **dove** sono
+  le cose e non solo che cosa sono. Lì la difficoltà è di natura opposta: la
+  distanza non è nascosta nella foto, è stata cancellata dallo scatto, e si
+  recupera confrontando più immagini o affidandosi a ciò che il modello ha
+  imparato su come è fatto il mondo.
 ```
 
 `````
@@ -285,6 +309,11 @@ come funzionano: è metterle al lavoro, con PyTorch, sulle nostre immagini.
   alle **feature imparate** dalle CNN: la svolta è AlexNet su ImageNet (2012).
 - Senza i grandi dataset (**ImageNet**, **COCO**) niente di tutto questo sarebbe
   stato possibile.
+- Accanto ai quattro compiti c'è la **visione geometrica**, che stima posizioni
+  e distanze invece di categorie. La proiezione prospettica non è invertibile
+  (un pixel determina una direzione, non un punto), quindi la profondità si
+  ricostruisce da più viste con vincoli esatti, oppure si stima da una vista
+  sola con un prior appreso.
 ```
 
 `````

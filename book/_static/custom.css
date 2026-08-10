@@ -7,6 +7,14 @@
 @import "brand/tokens.css";
 /* Sfondo "aurora" condiviso col sito paithon — stessa fonte, stessi token. */
 @import "brand/aurora.css";
+/*
+ * La stampa. Il nucleo (token riportati ai valori chiari, @page, orfane e
+ * vedove, il codice a capo) sta nel brand perché serve identico al sito, che
+ * nasce scuro come il libro. Quello che i token non raggiungono lo prende
+ * `brand/print.js`, caricato da `_config.yml`. Qui sotto restano solo le
+ * regole che nominano selettori di Sphinx.
+ */
+@import "brand/print.css";
 
 /* ===== VARIABILI CSS - OTTIMIZZATE PER LEGGIBILITÀ MASSIMA ===== */
 /*
@@ -775,44 +783,19 @@ html {
 
 /* ===== STAMPA =====
  *
- * Il libro nasce SCURO, ed è il caso normale, non l'eccezione: chi stampa
- * stampa da lì. Senza questo blocco il foglio usciva nero con l'aurora
- * accesa, il titolo della pagina nero su nero (lo mette il tema in un blocco
- * da sola stampa, pensato per la carta bianca) e le figure invertite. E con
- * gli sfondi disattivati, che è il default di ogni browser, restava del testo
- * color osso su carta bianca: niente.
+ * Il grosso è in `brand/print.css`, importato in cima a questo file: i token
+ * riportati ai valori chiari (ed è quella la cura, non dipingere pezzo per
+ * pezzo: tutto il resto del foglio di stile li segue da sé), l'aurora spenta,
+ * l'inversione delle immagini tolta, @page, orfane e vedove, il codice a capo.
+ * Sta là perché il sito ne ha bisogno identico: nasce scuro come il libro.
+ * Quello che nemmeno i token raggiungono, cioè la tavolozza di Pygments, lo
+ * prende `brand/print.js`, che scambia il tema per la durata della stampa.
  *
- * La cura non è dipingere pezzo per pezzo: si riportano i TOKEN ai valori
- * chiari, e tutto il resto del foglio di stile li segue da sé, comprese le
- * regole che qui non si nominano.
+ * Qui restano solo le regole che nominano selettori di Sphinx, più due
+ * scostamenti voluti dai valori del brand, ciascuno col suo perché. Arrivano
+ * dopo l'@import, quindi vincono.
  */
 @media print {
-  :root,
-  html,
-  html[data-theme="dark"],
-  html[data-theme="light"] {
-    --pt-bg:            #FFFFFF;   /* carta vera, non osso: è già bianca lei */
-    --pt-bg-elev:       #FFFFFF;
-    --pt-bg-deep:       #FFFFFF;
-    --pt-bg-elev-warm:  #F4F4F4;
-    --pt-bg-tint-soft:  #F4F4F4;
-    --pt-bg-tint:       #EDEDED;
-    --pt-fg:            #000000;
-    --pt-fg-muted:      #333333;
-    --pt-fg-subtle:     #444444;
-    --pt-border:        #CCCCCC;
-    --pt-border-strong: #999999;
-    /* in tema scuro gli accenti schiariscono per reggere il fondo nero; su
-       carta bianca quelle varianti sono slavate, quindi tornano le originali */
-    --pt-accent:        #A44B28;
-    --pt-accent-hover:  #9A4222;
-    --pt-accent-2:      #1F5E58;
-    --pt-accent-3:      #8A6F2E;
-
-    background: #FFFFFF !important;
-    color: #000000 !important;
-  }
-
   body,
   .bd-container,
   .bd-main,
@@ -823,30 +806,30 @@ html {
     color: #000000 !important;
   }
 
-  /* L'aurora vive su tre layer fissi (brand/aurora.css) e in stampa non è
-     atmosfera, è toner. */
-  html::before,
-  body::before,
-  body::after {
-    display: none !important;
-    content: none !important;
-  }
-
-  /* Il tema inverte le immagini in dark (`image_dark_mode.css`). Sul foglio
-     l'inversione va tolta, o le figure escono in negativo. */
-  html[data-theme="dark"] img,
-  html[data-theme="dark"] img:not(.only-dark):not(.dark-light),
-  img {
+  /* Il tema inverte le immagini in dark (`image_dark_mode.css`) con un
+     selettore più specifico di quello del brand: qui lo si eguaglia, o
+     l'inversione resta e le figure escono in negativo. */
+  html[data-theme="dark"] img:not(.only-dark):not(.dark-light) {
     filter: none !important;
   }
 
+  /* Il contenitore che Pygments si colora da sé (`.highlight`, fondo #2b2b2b
+     in dark). Il brand sbianca `pre` e `code`, che sono elementi e valgono
+     ovunque, ma questa è una classe di Sphinx e va nominata qui. Conta solo
+     senza JavaScript: con `print.js` il tema è già chiaro. */
+  html[data-theme="dark"] .highlight {
+    background: #FFFFFF !important;
+  }
+
+  /* Scostamento 1: interlinea 1.45 invece di 1.5. Misurata sul PDF a A4, è
+     quella su cui è tarata l'impaginazione verificata (11 pagine, colonna di
+     429pt su 596 con margini pari). */
   body {
-    font-size: 11pt;
     line-height: 1.45;
   }
 
   /* Il titolo che il tema stampa in testa alla pagina (`#jb-print-docs-body`)
-     è nero per costruzione: senza il fondo bianco qui sopra spariva. */
+     è nero per costruzione: senza il fondo bianco del brand spariva. */
   #jb-print-docs-body h1 {
     color: #000000 !important;
   }
@@ -860,9 +843,7 @@ html {
   .prev-next-area,
   .reading-progress,          /* la striscia di avanzamento, da custom.js */
   .pt-figura-segno,
-  #pst-back-to-top,
-  button,
-  .btn {
+  #pst-back-to-top {
     display: none !important;
   }
 
@@ -871,6 +852,10 @@ html {
     padding: 0;
   }
 
+  /* Scostamento 2: i link restano sottolineati. Il brand li smonta perché in
+     un articolo l'URL si stampa fra parentesi; qui no (sarebbero centinaia di
+     riferimenti interni), quindi la sottolineatura è l'unico segno che lì
+     c'era un rimando. */
   a {
     color: #000000 !important;
     text-decoration: underline;

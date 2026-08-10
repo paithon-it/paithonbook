@@ -573,7 +573,10 @@ $x = (x_1,\dots,x_\ell)$ di una stringa la probabilità $P(x) = \prod_i p(x_i)$,
 ma qui la verosimiglianza di una stringa $s$ è la somma su tutte le
 segmentazioni possibili, $P(s) = \sum_{x \in S(s)} P(x)$. Le $p(x_i)$ si
 stimano con
-l'algoritmo EM; poi, per ogni token, si calcola quanto la verosimiglianza
+l'algoritmo EM (lo stesso delle misture gaussiane, nel capitolo sul Machine
+Learning: qui la variabile che renderebbe facile la stima e non si osserva non
+è l'identità della componente, è la segmentazione);
+poi, per ogni token, si calcola quanto la verosimiglianza
 totale calerebbe rimuovendolo, e si elimina la frazione di token meno utili.
 Si itera fino alla taglia voluta. La segmentazione di una stringa nuova è
 quella di massima probabilità, trovata con Viterbi in tempo lineare nella

@@ -620,6 +620,140 @@ scelta produce alberi molto diversi:
 In pratica: `single` se ti aspetti strutture filiformi, `Ward` come punto di
 partenza ragionevole in tutti gli altri casi.
 
+## Misture gaussiane: dal gruppo alla distribuzione
+
+Tutti i metodi visti finora rispondono alla stessa domanda («a quale gruppo
+appartiene questo punto?») dando la stessa forma di risposta: un nome, secco.
+C'è un'altra famiglia che risponde con una **probabilità**, e nel farlo cambia
+anche cosa impara di ciascun gruppo.
+
+`````{tab} Elementare
+
+Torna sul difetto di k-means che abbiamo già incontrato: preferisce i gruppi
+tondi e della stessa taglia, perché tutto ciò che sa di un gruppo è **dove sta
+il suo centro**. Se un gruppo è una nuvola allungata e uno è una pallina
+stretta, il centro da solo non basta a distinguerli, e i punti sul confine
+finiscono dalla parte sbagliata.
+
+Le **misture gaussiane** cambiano due cose insieme.
+
+La prima: di ogni gruppo non imparano solo il centro, ma anche la **forma**.
+Quanto è largo, quanto è allungato, in che direzione è orientato. Un gruppo
+non è più un puntino, è una macchia con un suo profilo.
+
+La seconda: l'appartenenza smette di essere un sì o un no. Ogni punto riceve
+una risposta come «sono al 90% del gruppo A e al 10% del gruppo B». Per i
+punti nel cuore di una nuvola la risposta sarà quasi certa; per quelli sul
+confine sarà divisa, ed è giusto che lo sia, perché sul confine l'incertezza
+c'è davvero. Chi decide una strategia commerciale su quei clienti farebbe bene
+a saperlo, invece di ricevere un'etichetta che finge una sicurezza inesistente.
+
+Come si impara tutto questo? Con un ragionamento circolare che si scioglie
+girandolo. *Se* sapessi a quale gruppo appartiene ogni punto, calcolare centro
+e forma di ogni gruppo sarebbe una media. *Se* conoscessi centri e forme,
+calcolare l'appartenenza di ogni punto sarebbe un confronto. Non sai né l'una
+né l'altra cosa, quindi tiri a indovinare e poi alterni: aggiorni le
+appartenenze usando le forme attuali, aggiorni le forme usando le appartenenze
+attuali, e ripeti. Ogni giro la spiegazione dei dati migliora un pochino,
+finché smette di migliorare.
+
+Quel ciclo si chiama **algoritmo EM** ed è una delle idee più riusate di tutta
+la statistica: lo stesso schema, sotto altri nomi, fa funzionare i vecchi
+sistemi di riconoscimento vocale e uno dei tokenizzatori che il libro
+incontrerà più avanti.
+
+`````
+
+`````{tab} Superiore
+
+Un **modello di mistura gaussiana** (*Gaussian Mixture Model*, GMM) è un
+modello **generativo**: assume che ogni punto sia stato prodotto scegliendo
+prima una componente e poi campionando dalla sua gaussiana. La densità è
+
+$$
+p(\mathbf{x}) = \sum_{k=1}^{K} \pi_k \,
+\mathcal{N}(\mathbf{x} \mid \boldsymbol{\mu}_k, \boldsymbol{\Sigma}_k),
+\qquad \pi_k \geq 0, \;\; \sum_k \pi_k = 1,
+$$
+
+con $\pi_k$ i pesi di mistura, $\boldsymbol{\mu}_k$ le medie e
+$\boldsymbol{\Sigma}_k$ le covarianze, che sono ciò che k-means non ha. Il
+parametro da stimare è $\theta = \{\pi_k, \boldsymbol{\mu}_k,
+\boldsymbol{\Sigma}_k\}$, per massima verosimiglianza:
+
+$$
+\log p(\mathbf{X} \mid \theta) = \sum_{i=1}^{m} \log \sum_{k=1}^{K} \pi_k\,
+\mathcal{N}(\mathbf{x}^{(i)} \mid \boldsymbol{\mu}_k, \boldsymbol{\Sigma}_k).
+$$
+
+Il logaritmo di una somma non si separa, e annullando il gradiente non si
+ottiene una forma chiusa. Il rimedio è introdurre una **variabile latente**
+$z^{(i)} \in \{1,\dots,K\}$, l'identità della componente che ha generato il
+punto: se le $z^{(i)}$ fossero note, la stima sarebbe immediata.
+
+L'algoritmo **EM**, formalizzato da Dempster, Laird e Rubin nel 1977
+{cite}`dempster1977maximum`, alterna due passi.
+
+**Passo E** (*expectation*): a parametri fissi, calcola le
+**responsabilità**, cioè la posteriore di ogni componente su ogni punto,
+
+$$
+\gamma_{ik} = p(z^{(i)} = k \mid \mathbf{x}^{(i)}) =
+\frac{\pi_k \, \mathcal{N}(\mathbf{x}^{(i)} \mid \boldsymbol{\mu}_k,
+\boldsymbol{\Sigma}_k)}
+{\sum_{j} \pi_j \, \mathcal{N}(\mathbf{x}^{(i)} \mid \boldsymbol{\mu}_j,
+\boldsymbol{\Sigma}_j)} .
+$$
+
+**Passo M** (*maximization*): a responsabilità fisse, ristima i parametri con
+medie pesate, dove il peso è la responsabilità e $m_k = \sum_i \gamma_{ik}$ è
+la massa della componente:
+
+$$
+\boldsymbol{\mu}_k = \frac{1}{m_k}\sum_i \gamma_{ik}\,\mathbf{x}^{(i)},
+\qquad
+\boldsymbol{\Sigma}_k = \frac{1}{m_k}\sum_i \gamma_{ik}
+(\mathbf{x}^{(i)} - \boldsymbol{\mu}_k)(\mathbf{x}^{(i)} -
+\boldsymbol{\mu}_k)^\top,
+\qquad
+\pi_k = \frac{m_k}{m}.
+$$
+
+La proprietà che rende EM un algoritmo e non un'euristica: **la verosimiglianza
+non decresce mai**, perché ogni iterazione massimizza una funzione che sta
+sotto di essa e la tocca nel punto corrente. Non garantisce l'ottimo globale
+(la verosimiglianza è multimodale, e da inizializzazioni diverse si arriva a
+soluzioni diverse: per questo si inizializza tipicamente con k-means e si
+riparte più volte), garantisce la monotonia.
+
+Due letture che pagano nel resto del libro. La prima: **k-means è il caso
+limite** di EM su una mistura con covarianze $\sigma^2\mathbf{I}$ e
+$\sigma^2 \to 0$, dove le responsabilità collassano su 0 e 1. L'assegnazione
+dura non è un metodo diverso, è la versione degenere di quella morbida, e la
+preferenza di k-means per gruppi sferici è scritta in quella $\mathbf{I}$. La
+seconda: essendo generativo, un GMM restituisce una **densità**, quindi serve
+anche a quello che il clustering non fa, cioè segnalare i punti improbabili.
+È uno dei rilevatori di anomalie di riferimento, e riaggancia il capitolo sui
+dati che cambiano.
+
+Poiché il modello ha una verosimiglianza, il numero di componenti si sceglie
+con un criterio di informazione invece che a occhio. **BIC** e **AIC**
+sommano alla log-verosimiglianza una penalità sul numero di parametri, e si
+prende il $K$ che li minimizza: una risposta più difendibile del gomito o
+della silhouette, che sono diagnostiche geometriche senza un modello sotto.
+
+`````
+
+L'algoritmo EM merita di essere riconosciuto quando ricompare, perché ricompare
+spesso e sotto altri nomi. Il capitolo sul riconoscimento vocale racconta i
+sistemi **HMM-GMM** che hanno dominato l'ASR per trent'anni: le GMM sono
+queste, e il loro addestramento è EM. Il capitolo sui tokenizzatori descrive
+il modello **Unigram** di SentencePiece, che pota il vocabolario stimando le
+probabilità dei pezzi: anche lì il motore è EM, con la segmentazione al posto
+dell'identità della componente. Lo schema è sempre lo stesso, e conviene
+tenerlo come sagoma: *quando la cosa che renderebbe facile la stima è proprio
+quella che non osservi, stimala e alterna*.
+
 ## In pratica, con scikit-learn
 
 Come per l'apprendimento supervisionato, in scikit-learn ogni tecnica è poche
@@ -658,6 +792,54 @@ etichette restituite dal clustering sono **arbitrarie**: il «cluster 0» di
 k-means non ha alcun significato intrinseco, è solo un nome; due esecuzioni
 possono scambiare i numeri senza che nulla sia cambiato.
 
+La differenza fra assegnazione dura e morbida non è teorica: si vede su due
+gruppi allungati e vicini, esattamente il caso in cui il centro da solo non
+basta.
+
+```python
+import numpy as np
+from sklearn.cluster import KMeans
+from sklearn.mixture import GaussianMixture
+
+rng = np.random.default_rng(1)
+# due nuvole allungate nella stessa direzione, vicine fra loro
+forma = [[4.0, 0.0], [0.0, 0.15]]
+X = np.vstack([rng.multivariate_normal([0.0, 0.0], forma, 300),
+               rng.multivariate_normal([1.0, 2.2], forma, 300)])
+vero = np.r_[np.zeros(300), np.ones(300)]
+
+def concordanza(a, b):
+    """Quota di punti d'accordo, a meno di uno scambio dei nomi dei cluster."""
+    return max((a == b).mean(), (a != b).mean())
+
+km = KMeans(n_clusters=2, n_init=10, random_state=0).fit_predict(X)
+gm = GaussianMixture(n_components=2, covariance_type="full",
+                     random_state=0).fit(X)
+
+print(f"k-means           : {concordanza(km, vero):.3f}")
+print(f"mistura gaussiana : {concordanza(gm.predict(X), vero):.3f}")
+
+# l'assegnazione morbida: quanto ogni punto appartiene a ciascun gruppo
+incerti = (gm.predict_proba(X).max(axis=1) < 0.9).sum()
+print(f"punti su cui il modello resta incerto: {incerti} su {len(X)}")
+
+# quanti gruppi? con una verosimiglianza sotto, lo dice il BIC
+for k in range(1, 6):
+    bic = GaussianMixture(n_components=k, covariance_type="full",
+                          random_state=0).fit(X).bic(X)
+    print(f"  k={k}  BIC={bic:9.1f}")
+```
+
+k-means si ferma a $0{,}663$, appena sopra il tirare a caso: le due nuvole sono
+allungate, e la frontiera a metà strada fra i due centri le taglia di
+traverso. La mistura arriva a $0{,}997$, perché ha imparato che i gruppi sono
+larghi in una direzione e stretti nell'altra. Restano **cinque punti** su
+seicento su cui il modello non si sbilancia oltre il 90%, e sono quelli in
+mezzo: non è un difetto, è l'unica risposta onesta lì. Il BIC, infine, tocca
+il minimo esattamente a $k=2$: avendo un modello probabilistico sotto, il
+numero dei gruppi si sceglie con un criterio invece che con un giudizio a
+occhio sul grafico.
+
 ```{admonition} Da ricordare
 :class: important
 - L'apprendimento **non supervisionato** lavora su dati **senza etichette**
@@ -677,4 +859,13 @@ possono scambiare i numeri senza che nulla sia cambiato.
 - **DBSCAN** raggruppa per **densità** ($\varepsilon$, $\mathrm{minPts}$):
   trova cluster di forma arbitraria, marca il **rumore** e non richiede $k$;
   il **clustering gerarchico** offre un dendrogramma da tagliare a piacere.
+- Le **misture gaussiane** imparano di ogni gruppo non solo il centro ma la
+  **forma** (la covarianza), e assegnano una **probabilità** invece di
+  un'etichetta secca. Si stimano con l'**algoritmo EM**, che alterna il calcolo
+  delle responsabilità (passo E) e la ristima dei parametri (passo M) e
+  garantisce che la verosimiglianza non decresca. **k-means è il caso limite**
+  di questo schema con covarianze sferiche che tendono a zero.
+- Avendo un modello probabilistico sotto, una mistura dà una **densità**
+  (quindi serve anche per le anomalie) e permette di scegliere il numero di
+  componenti con **BIC** o **AIC** invece che a occhio.
 ```

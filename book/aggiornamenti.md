@@ -38,6 +38,27 @@ Una versione corrisponde a una **pubblicazione**, non a una giornata di
 lavoro: il libro si scrive tutti i giorni e si pubblica quando un pezzo sta in
 piedi.
 
+(v1-2-0)=
+
+## 1.2.0 · 10 agosto 2026
+
+### Sezioni nuove
+
+- {doc}`Geometria e profondità </VisioneArtificiale/geometria-e-profondita>` (Visione artificiale). Il capitolo sulla visione parlava solo di reti applicate alle immagini, e lasciava fuori la metà geometrica del campo: come si forma un'immagine e come si recupera la distanza che lo scatto ha buttato via. Dal modello di fotocamera dimostrato da Brunelleschi con una tavoletta forata al vincolo epipolare, alla profondità dalla disparità, al flusso ottico, fino alla profondità stimata da una sola immagine. Il codice non illustra, verifica: il residuo epipolare vale un decimillesimo di miliardesimo di miliardesimo.
+- {doc}`NeRF e splatting </VisioneArtificiale/rendering-neurale>` (Visione artificiale). NeRF e splatting gaussiano: una scena rappresentata addestrando una funzione invece di ricostruire una superficie. Come il rendering volumetrico differenziabile faccia emergere la geometria dalle sole fotografie, perché senza codifica posizionale esca solo nebbia (è lo stesso limite descritto nel capitolo sulle PINN) e perché le pose delle fotocamere restino un ingresso obbligatorio, che arriva dalla sezione precedente.
+- {doc}`Una rete, molti compiti </DeepLearning/multi-compito>` (Deep Learning). Addestrare una rete su più compiti insieme, che il libro faceva già in mezza dozzina di posti senza chiamarlo per nome. Perché un compito in più possa aiutare quello che ci interessa, e perché possa anche danneggiarlo: misurato, un compito imparentato toglie il 65% dell'errore e uno estraneo ne aggiunge il 25%.
+- {doc}`Imparare guardando </DeepReinforcementLearning/imitazione>` (Deep Reinforcement Learning). Imparare guardando qualcuno che sa già fare la cosa, che è il pezzo che mancava fra il reinforcement learning e l'addestramento degli assistenti conversazionali. E il suo problema caratteristico: gli errori non si sommano, si compongono, e più il maestro è bravo meno insegna a rimediare, perché non si trova mai nella condizione di doverlo fare.
+
+### Pagine ampliate
+
+- {doc}`Riduzione e clustering </MachineLearning/riduzione-clustering>` (Machine Learning). Le misture gaussiane e l'algoritmo EM, che due capitoli più avanti (i tokenizzatori e il riconoscimento vocale) davano già per noti senza che fossero mai stati spiegati. Assegnare una probabilità invece di un'etichetta, imparare la forma di un gruppo e non solo il suo centro, e scegliere quanti gruppi con un criterio invece che a occhio.
+- {doc}`Gradiente di policy </DeepReinforcementLearning/policy-gradient>` (Deep Reinforcement Learning). La ricerca ad albero Monte Carlo, che il libro invocava quattro volte come spiegazione di AlphaGo e MuZero senza averla mai insegnata. Le sue quattro mosse, il perché si sceglie la mossa più visitata e non quella con la media migliore, e il fatto che la formula che le fa scoprire dove guardare è la stessa dei bandit a più braccia.
+- {doc}`Le basi di Python </Python/basi>` (Python). Il GIL, cioè perché in Python i thread aiutano quando si aspetta e non quando si calcola. Serviva: il capitolo su PyTorch lo usava due volte come spiegazione di scelte importanti, dando per noto un termine mai introdotto.
+- {doc}`Rappresentare il testo </NaturalLanguageProcessing/rappresentare-testo>` (Natural Language Processing). Come si ottiene un vettore per una frase intera, e non solo per le singole parole. Il capitolo si fermava alla parola, e intanto due capitoli sul recupero di documenti poggiavano su modelli di embedding mai spiegati. Con la sorpresa che regge la sezione: un BERT preso così com'è dà vettori di frase mediocri, perché è stato addestrato ad altro.
+- {doc}`Architetture storiche </DeepLearning/architetture-storiche>` (Deep Learning). La convoluzione separabile in profondità, cioè il mattone di cui è fatta EfficientNet, che il capitolo raccontava senza averlo mai descritto. Stessa forma in uscita, quasi nove volte meno pesi: è la ragione per cui la visione artificiale sta in un telefono.
+- {doc}`Componenti e modelli classici </SerieTemporali/componenti-e-classici>` (Serie temporali). La procedura che mancava: come si scelgono i numeri di un modello ARIMA e come si verifica che vada bene, guardando quello che resta invece delle previsioni. Più i due modi in cui le informazioni esterne entrano in una serie, il meteo e le promozioni da una parte, le serie che si influenzano a vicenda dall'altra.
+- {doc}`Alberi e metodi ensemble </MachineLearning/alberi-ensemble>` (Machine Learning). Come si combinano modelli di tipo diverso, per voto o addestrando un modello a pesarli. Con un risultato che spiazza e che è misurato nella pagina: il voto peggiora rispetto al miglior modello singolo, e l'alternativa lo supera.
+
 (v1-1-7)=
 
 ## 1.1.7 · 9 agosto 2026

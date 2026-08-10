@@ -44,6 +44,12 @@ Esempi di riferimento: `.claude/skills/anima-manim/esempi/`.
 
 ## La strada SVG
 
+Come per Manim, il motore vive nel brand, in `book/_static/brand/motion/`
+(`paithon_svg.py`, accanto a `paithon_anim.py`): è la stessa cartella che monta
+il sito, e si modifica nel repo `brand`. Qui restano i generatori e `genera.py`,
+che tiene l'unica cosa che sa del libro, cioè che le figure vanno in
+`book/figures/`.
+
 Un file `.py` per figura in `animazioni/svg/`, che espone `NOME`, `TITOLO` e
 `costruisci() -> Figura`. La matematica resta in Python — l'algoritmo gira
 davvero — ma in uscita non ci sono pixel: qualche `@keyframes` CSS su pochi

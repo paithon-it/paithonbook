@@ -577,6 +577,158 @@ ed è la stessa identica cosa del decoratore `@torch.no_grad()` visto sopra: la
 differenza è solo l'ambito (il decoratore avvolge un'intera funzione, `with`
 avvolge un blocco). Molte API offrono entrambe le forme proprio per questo.
 
+## Un solo alla volta: il GIL
+
+C'è un fatto su Python che non si può non conoscere, perché spiega scelte che
+il libro farà più avanti senza spiegarle di nuovo: perché il caricatore di dati
+di PyTorch avvia **processi** e non thread, e perché il modo più ovvio di usare
+più GPU è sconsigliato dalla documentazione stessa.
+
+`````{tab} Elementare
+
+Un computer moderno ha molti nuclei di calcolo, e viene naturale pensare che
+per andare più veloci basti dividere il lavoro fra loro. In Python la cosa non
+funziona come ci si aspetta, e la ragione ha un nome: il **GIL**, il *global
+interpreter lock*, che si può tradurre come «il lucchetto dell'interprete».
+
+L'immagine giusta è una cucina professionale con un solo coltello. Puoi
+assumere quattro cuochi, ma il coltello è uno: mentre uno taglia, gli altri
+tre aspettano il loro turno. Assumerne altri non fa uscire i piatti più in
+fretta, anzi li rallenta un po', perché il coltello va passato di mano.
+
+Il coltello, qui, è il permesso di eseguire istruzioni Python: **un thread alla
+volta**. Da cui la regola pratica, che è tutto ciò che serve ricordare:
+
+- se il lavoro è **aspettare** (scaricare pagine, leggere file, interrogare un
+  database), i thread aiutano eccome: mentre uno aspetta posa il coltello, e
+  gli altri lavorano;
+- se il lavoro è **calcolare**, i thread non servono a niente. Per usare
+  davvero più nuclei bisogna avviare **processi** separati, che sono cucine
+  diverse, ciascuna con il suo coltello.
+
+I processi hanno un prezzo: non condividono la memoria, quindi tutto ciò che si
+scambiano va impacchettato, spedito e riaperto dall'altra parte. Per questo si
+avviano una volta sola e si tengono, invece di crearne uno per ogni pezzetto di
+lavoro.
+
+E c'è un'ultima cosa, che è il motivo per cui in pratica il problema si sente
+molto meno di quanto questa spiegazione faccia temere: quando il conto vero
+avviene dentro NumPy o PyTorch, quelle librerie **posano il coltello** prima di
+mettersi a calcolare, perché il calcolo lo fanno in C e non hanno bisogno
+dell'interprete. Nel codice che conta per questo libro, insomma, il lucchetto è
+aperto quasi sempre.
+
+`````
+
+`````{tab} Superiore
+
+Il **Global Interpreter Lock** è un mutex nell'implementazione di riferimento
+di Python (CPython) che protegge lo stato interno dell'interprete, in
+particolare il conteggio dei riferimenti usato dal garbage collector. La sua
+conseguenza è netta: **un solo thread per processo esegue bytecode Python in
+un dato istante**. Non è una proprietà del linguaggio, è una scelta di
+implementazione (Jython e IronPython non ce l'hanno), ma è la scelta
+dell'interprete che tutti usano.
+
+Le tre vie alla concorrenza in Python vanno quindi tenute distinte, perché
+risolvono problemi diversi:
+
+- **`threading`**: thread veri del sistema operativo, memoria condivisa,
+  serializzati dal GIL sul bytecode. Il GIL viene però rilasciato durante le
+  operazioni di I/O bloccanti e dentro le estensioni C che lo dichiarano.
+  Utile per lavoro **I/O-bound**, inutile per quello **CPU-bound**.
+- **`multiprocessing`**: processi separati, ciascuno con il proprio interprete
+  e il proprio GIL, quindi parallelismo reale sui nuclei. Il costo è che la
+  memoria non è condivisa: gli argomenti e i risultati attraversano una
+  serializzazione (`pickle`), che per tensori grandi può dominare il guadagno.
+- **`asyncio`**: un solo thread, multitasking **cooperativo** su un ciclo di
+  eventi. Un `await` cede il controllo esplicitamente. Nessun parallelismo di
+  calcolo, ma scala a decine di migliaia di attese contemporanee senza il costo
+  di altrettanti thread. È il modello dei server, ed è quello dei client verso
+  le API dei modelli, dove il tempo se ne va aspettando la rete.
+
+La ragione per cui il GIL, in pratica, morde meno di quanto sembri: **NumPy e
+PyTorch lo rilasciano** durante le operazioni pesanti, che girano in codice C o
+in kernel BLAS/CUDA già multi-thread al loro interno. Una moltiplicazione fra
+matrici usa tutti i nuclei anche da un solo thread Python. Il GIL torna a
+mordere sul codice Python puro: i cicli sui campioni, la decodifica delle
+immagini, il *preprocessing*. È esattamente lì che il `DataLoader` di PyTorch
+avvia processi con `num_workers`, e la stessa ragione per cui `DataParallel`,
+che pilota più GPU da un solo processo, è sconsigliato in favore di
+`DistributedDataParallel`, che ne usa uno per GPU.
+
+```{admonition} Il GIL non è per sempre
+:class: note
+Con la **PEP 703** il GIL sta diventando opzionale. CPython 3.13 ha introdotto
+una *build* sperimentale senza GIL (*free-threading*); con la **PEP 779**
+quella build passa da sperimentale a ufficialmente supportata in CPython 3.14,
+pur non essendo ancora quella predefinita, con un costo residuo dell'ordine
+del 5-10% sul codice a thread singolo. Farne il default è una terza fase
+annunciata ma non ancora datata. È materia in movimento: quel che resta vero,
+e che vale la pena portarsi via, è la **distinzione** fra lavoro che aspetta e
+lavoro che calcola, e il fatto che condividere memoria e condividere nuclei
+sono due problemi diversi.
+```
+
+`````
+
+Si può vedere in una decina di righe, ed è il tipo di misura che val la pena
+fare una volta con le proprie mani.
+
+```python
+import multiprocessing as mp
+import sys
+import time
+from concurrent.futures import ThreadPoolExecutor
+
+def calcola(n):
+    """Lavoro puro di CPU: nessun file, nessuna rete, solo somme."""
+    return sum(i * i for i in range(n))
+
+def aspetta(_):
+    """Lavoro puro di attesa: il processore non fa niente."""
+    time.sleep(0.25)
+
+def durata(funzione, lavori, thread=None):
+    t0 = time.perf_counter()
+    if thread is None:
+        [funzione(x) for x in lavori]
+    else:
+        with ThreadPoolExecutor(thread) as ex:
+            list(ex.map(funzione, lavori))
+    return time.perf_counter() - t0
+
+CPU = [2_000_000] * 4
+ATTESE = [None] * 4
+
+print(f"CPU, in sequenza     : {durata(calcola, CPU):.2f} s")
+print(f"CPU, con 4 thread    : {durata(calcola, CPU, thread=4):.2f} s")
+print(f"attesa, in sequenza  : {durata(aspetta, ATTESE):.2f} s")
+print(f"attesa, con 4 thread : {durata(aspetta, ATTESE, thread=4):.2f} s")
+
+# I processi hanno ciascuno il proprio interprete, quindi il proprio GIL.
+def lavoratore(n, coda):
+    coda.put(calcola(n))
+
+t0 = time.perf_counter()
+ctx = mp.get_context("fork")    # su Windows serve "spawn", e la funzione in un modulo
+coda = ctx.Queue()
+processi = [ctx.Process(target=lavoratore, args=(n, coda)) for n in CPU]
+[p.start() for p in processi]
+risultati = [coda.get() for _ in CPU]
+[p.join() for p in processi]
+print(f"CPU, con 4 processi  : {time.perf_counter() - t0:.2f} s")
+print("GIL attivo:", getattr(sys, "_is_gil_enabled", lambda: True)())
+```
+
+I numeri assoluti dipendono dalla macchina, le proporzioni no, e sono tre.
+Sul lavoro di CPU i quattro thread **non guadagnano niente**, anzi finiscono
+leggermente più lenti della versione in sequenza: il tempo in più è il costo di
+passarsi il lucchetto. Sull'attesa gli stessi quattro thread scendono a un
+quarto esatto del tempo, perché lì il lucchetto è posato e nessuno si ostacola.
+Con i processi il lavoro di CPU accelera davvero, quanto lo permettono i nuclei
+disponibili. Tre righe di output, e la regola resta in mente.
+
 ```{admonition} Da ricordare
 :class: important
 - Python è **dinamicamente tipizzato**: assegni un valore e il tipo si deduce
@@ -595,4 +747,11 @@ avvolge un blocco). Molte API offrono entrambe le forme proprio per questo.
   `@cronometra` è solo `f = cronometra(f)`. `with` fa la stessa cosa su un
   blocco invece che su una funzione, e garantisce la pulizia anche in caso di
   errore.
+- Il **GIL** lascia eseguire codice Python a **un thread alla volta**: i thread
+  aiutano quando il lavoro è *aspettare* (rete, disco), non quando è
+  *calcolare*. Per usare più nuclei servono **processi**, che però non
+  condividono la memoria e devono serializzare ciò che si scambiano;
+  `asyncio` è la terza via, un solo thread che gestisce molte attese. NumPy e
+  PyTorch **rilasciano il GIL** durante i conti pesanti, ed è per questo che in
+  pratica morde molto meno di quanto sembri.
 ```

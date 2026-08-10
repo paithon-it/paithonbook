@@ -106,6 +106,7 @@ PACCHETTI = {
     "triton": "triton",
     "torch_geometric": "torch-geometric",
     "gymnasium": "gymnasium",
+    "statsmodels": "statsmodels",
 }
 
 # Le versioni dichiarate: finiscono in testa a ogni notebook, così chi lo apre
@@ -438,7 +439,22 @@ def aggiorna_manifesto() -> None:
     print(f"  manifesto in _config.yml: {len(presenti)} capitoli")
 
 
+FLAG = ("--verifica", "--esistenti", "--severo")
+
+
 def main() -> None:
+    # Un flag scritto male non deve passare inosservato. Senza questo controllo
+    # qualunque cosa cominci per `--` veniva tolta dagli argomenti posizionali e
+    # ignorata, quindi `--help` (o `--esitenti`) non era un errore: era il
+    # comando senza flag, cioè quello che rigenera **tutti** i capitoli. Il
+    # default silenzioso era l'azione più ampia disponibile.
+    ignoti = [a for a in sys.argv[1:] if a.startswith("--") and a not in FLAG]
+    if ignoti:
+        print(f"  opzione sconosciuta: {' '.join(ignoti)}")
+        print(f"  quelle che esistono: {' '.join(FLAG)}")
+        print(f"  la guida sta in cima a {pathlib.Path(__file__).name}")
+        sys.exit(2)
+
     argomenti = [a for a in sys.argv[1:] if not a.startswith("--")]
     con_verifica = "--verifica" in sys.argv
     solo_esistenti = "--esistenti" in sys.argv

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  paithon book - figura: come si rende un pixel con un campo di radianza.
+  Dalla fotocamera parte un raggio che attraversa il volume della scena; lungo
+  il raggio si campionano dei punti; ogni punto, con la direzione di vista,
+  entra in una piccola rete che restituisce colore e densita'; i campioni si
+  compongono in ordine di profondita' e danno il colore di un pixel, che si
+  confronta con la foto vera. Il gradiente torna indietro per la stessa strada.
+  Palette-locked, fondo trasparente: leggibile in light e dark mode.
+  Nessun colore fuori palette.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 430" role="img"
+     aria-label="Da una fotocamera parte un raggio che attraversa un volume tratteggiato contenente un oggetto. Lungo il raggio sono segnati sette punti di campionamento: quelli nell'aria sono piccoli e vuoti, quelli sulla superficie dell'oggetto sono grandi e pieni. Ogni campione, insieme alla direzione di vista, entra in una piccola rete che restituisce un colore e una densita'. I campioni vengono composti in ordine di profondita' e producono il colore di un singolo pixel, confrontato con il pixel della fotografia vera: la differenza e' la loss, e il gradiente torna indietro lungo la stessa strada.">
+  <style>
+    .lbl  { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#1A1A1A; }
+    .lblB { font-family:Inter, system-ui, sans-serif; font-size:13px; font-weight:700; fill:#1A1A1A; }
+    .leg  { font-family:Inter, system-ui, sans-serif; font-size:12px; fill:#5E5852; }
+    .ttl  { font-family:Fraunces, Georgia, serif; font-size:14px; font-weight:600; fill:#1A1A1A; }
+    .mth  { font-family:Georgia, serif; font-size:13px; font-style:italic; fill:#1A1A1A; }
+  </style>
+  <defs>
+    <marker id="frecciaOcra" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#C9A961"/>
+    </marker>
+    <marker id="frecciaScura" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="6.5" markerHeight="6.5" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#5E5852"/>
+    </marker>
+  </defs>
+
+  <!-- fotocamera -->
+  <path d="M 62 235 L 92 220 L 92 250 Z" fill="#B5532C"/>
+  <circle cx="62" cy="235" r="4.5" fill="#1A1A1A"/>
+  <text class="leg" x="34" y="272">fotocamera</text>
+  <text class="leg" x="40" y="288">(posa nota)</text>
+
+  <!-- volume della scena -->
+  <rect x="200" y="88" width="230" height="240" rx="8" fill="none"
+        stroke="#5E5852" stroke-width="1.4" stroke-dasharray="6 5"/>
+  <text class="leg" x="200" y="80">il volume della scena</text>
+
+  <!-- oggetto dentro il volume -->
+  <path d="M 330 250 C 318 210, 348 176, 380 180 C 412 184, 420 224, 404 252
+           C 390 276, 348 282, 330 250 Z"
+        fill="#2D5A5C" opacity="0.30" stroke="#2D5A5C" stroke-width="1.6"/>
+
+  <!-- raggio -->
+  <line x1="62" y1="235" x2="470" y2="179" stroke="#B5532C" stroke-width="2"/>
+
+  <!-- campioni: piccoli e vuoti nell'aria, grandi e pieni sulla superficie -->
+  <circle cx="220" cy="214" r="3.2" fill="none" stroke="#B5532C" stroke-width="1.6"/>
+  <circle cx="255" cy="210" r="3.2" fill="none" stroke="#B5532C" stroke-width="1.6"/>
+  <circle cx="290" cy="205" r="3.2" fill="none" stroke="#B5532C" stroke-width="1.6"/>
+  <circle cx="325" cy="200" r="3.6" fill="none" stroke="#B5532C" stroke-width="1.8"/>
+  <circle cx="360" cy="195" r="6.5" fill="#B5532C"/>
+  <circle cx="395" cy="190" r="6.5" fill="#B5532C"/>
+  <circle cx="425" cy="186" r="3.2" fill="none" stroke="#B5532C" stroke-width="1.6"/>
+
+  <text class="leg" x="196" y="240">densita' quasi nulla: aria</text>
+  <text class="leg" x="344" y="160">densita' alta: c'e' materia</text>
+
+  <!-- dal campione alla rete -->
+  <path d="M 400 214 C 452 250, 470 250, 500 232" stroke="#C9A961" stroke-width="1.8"
+        fill="none" marker-end="url(#frecciaOcra)"/>
+
+  <!-- la rete -->
+  <rect x="502" y="176" width="120" height="86" rx="8" fill="#F8F5EE"
+        stroke="#1A1A1A" stroke-width="1.8"/>
+  <text class="lblB" x="540" y="212">piccola</text>
+  <text class="lblB" x="547" y="230">rete</text>
+  <text class="leg" x="500" y="166">un solo MLP per l'intera scena</text>
+
+  <!-- ingresso e uscita della rete -->
+  <text class="mth" x="452" y="292">(x, y, z)</text>
+  <text class="leg" x="452" y="308">piu' la direzione</text>
+  <text class="mth" x="636" y="204">colore</text>
+  <text class="mth" x="636" y="224">densita'</text>
+  <line x1="624" y1="212" x2="632" y2="212" stroke="#5E5852" stroke-width="1.4"/>
+
+  <!-- composizione lungo il raggio -->
+  <path d="M 470 340 L 660 340" stroke="#5E5852" stroke-width="1.6" fill="none"
+        marker-end="url(#frecciaScura)"/>
+  <text class="leg" x="470" y="332">i campioni si sommano in ordine di profondita'</text>
+
+  <!-- pixel reso -->
+  <rect x="666" y="326" width="28" height="28" rx="3" fill="#B5532C"
+        stroke="#1A1A1A" stroke-width="1.4"/>
+  <text class="leg" x="642" y="374">pixel reso</text>
+
+  <!-- confronto con la foto -->
+  <rect x="666" y="386" width="28" height="28" rx="3" fill="#C9A961"
+        stroke="#1A1A1A" stroke-width="1.4"/>
+  <text class="leg" x="556" y="406">pixel della foto vera</text>
+  <line x1="680" y1="358" x2="680" y2="384" stroke="#5E5852" stroke-width="1.4"
+        stroke-dasharray="3 3"/>
+
+  <!-- il gradiente torna indietro -->
+  <path d="M 660 402 C 420 424, 200 420, 96 342" stroke="#2D5A5C" stroke-width="1.8"
+        fill="none" stroke-dasharray="7 4" marker-end="url(#frecciaScura)"/>
+  <text class="leg" x="240" y="424">la differenza e' la loss, e il gradiente torna indietro fin dentro la rete</text>
+</svg>

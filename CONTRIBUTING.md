@@ -90,6 +90,13 @@ In pratica, scrivendo una pagina:
   `#2D5A5C`, ocra `#C9A961`, warm-black `#1A1A1A`, cream `#F8F5EE`), leggibili
   anche in tema scuro. Niente immagini generate da AI, niente stock, niente
   gradienti. Se una figura non aggiunge comprensione, non serve;
+- **la firma visiva non si modifica da qui**: colori, tipografia, sfondo
+  animato, regole di stampa e lo stile delle figure animate vivono in
+  `book/_static/brand`, che è un submodule del design system condiviso col
+  sito paithon.it. Una PR che ci scrive dentro, o che ne aggira un valore
+  hard-codando un colore in `_static/custom.css`, non può essere accettata:
+  vale solo per il libro e il sito resterebbe indietro. Se pensi che un token
+  vada cambiato, aprine una issue e ne parliamo;
 - **ogni nuovo file va aggiunto a `book/_toc.yml`**, altrimenti non viene
   nemmeno costruito (`only_build_toc_files: true`). Il toc raggruppa i
   capitoli in parti (`parts:` con `caption:`, sono i blocchi dell'indice di

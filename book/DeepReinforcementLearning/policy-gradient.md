@@ -215,12 +215,187 @@ distruttivi che affliggevano i primi metodi.
 
 `````
 
+## Pensare prima di agire: la ricerca ad albero Monte Carlo
+
+Finora la policy ha sempre risposto d'istinto: stato dentro, azione fuori, un
+passaggio nella rete. Ma un giocatore forte, prima di muovere, **pensa**:
+prova mentalmente qualche continuazione, valuta dove porta, sceglie. Quel
+pensare ha un algoritmo, si chiama **ricerca ad albero Monte Carlo** (MCTS), e
+il libro lo nominerà spesso da qui in avanti (AlphaGo, AlphaZero, MuZero, e i
+modelli linguistici che ragionano esplorando più strade). Vale la pena vederlo
+una volta per bene, anche perché è un vecchio amico travestito.
+
+`````{tab} Elementare
+
+Il problema è che le continuazioni sono troppe. Agli scacchi, dopo tre mosse a
+testa, i seguiti sono milioni; nel Go, molti di più. Esaminarle tutte è
+impossibile, quindi bisogna guardare a fondo **solo dove conviene**. Ma per
+sapere dove conviene bisognerebbe aver già guardato. È lo stesso dilemma dei
+bandit a più braccia: sfruttare quello che sembra buono, o esplorare quello di
+cui si sa poco?
+
+MCTS lo risolve costruendo un albero delle possibilità **a poco a poco**,
+ripetendo migliaia di volte lo stesso giro di quattro mosse:
+
+1. **Selezione.** Si scende dall'inizio seguendo, a ogni bivio, la mossa che
+   ha il punteggio migliore, dove «migliore» mette insieme quanto ha reso
+   finora e quanto poco è stata provata.
+2. **Espansione.** Quando si arriva a un bivio con una mossa mai tentata, si
+   aggiunge quel ramo all'albero.
+3. **Simulazione.** Da lì si tira dritto fino alla fine della partita, in fretta
+   e alla buona (nella versione originale, a caso), solo per farsi un'idea
+   grezza di come va a finire.
+4. **Risalita.** Il risultato torna indietro lungo la strada percorsa, e ogni
+   nodo attraversato aggiorna la propria media e il proprio conteggio.
+
+Il bello è che l'albero cresce **storto, e di proposito**: profondissimo sulle
+linee promettenti, largo appena un dito su quelle che non convincono. Nessuno
+gli ha detto quali fossero: lo ha scoperto giocandoci.
+
+E la mossa da fare, alla fine, non è quella con la media migliore: è quella
+**più visitata**. Sembra strano, ed è più solido: una media alta può venire da
+due prove fortunate, mentre un ramo visitato mille volte ha resistito a mille
+occasioni di essere abbandonato.
+
+`````
+
+`````{tab} Superiore
+
+La formulazione standard è **UCT** (*Upper Confidence bounds applied to
+Trees*), di Kocsis e Szepesvári {cite}`kocsis2006bandit`, costruita sopra il
+framework di ricerca di Coulom {cite}`coulom2006efficient`. L'idea è di
+trattare **ogni nodo come un bandit indipendente** sulle sue mosse, e in fase
+di selezione scegliere
+
+$$
+a^\star = \arg\max_a \left[\, Q(s,a) + c \sqrt{\frac{\ln N(s)}{N(s,a)}}
+\,\right],
+$$
+
+dove $N(s)$ è il numero di visite al nodo, $N(s,a)$ quelle al figlio, e
+$Q(s,a) = W(s,a)/N(s,a)$ la media dei ritorni osservati passando di lì. È
+**letteralmente UCB1**, la formula della sezione sui bandit, applicata a ogni
+bivio: stesso ottimismo di fronte all'incertezza, stesso decadimento
+logaritmico. Il contributo di UCT è mostrare che applicandola ricorsivamente
+la stima alla radice converge a quella minimax, con garanzie sull'errore di
+campionamento.
+
+La risalita aggiorna $N$ e $W$ lungo il cammino; nei giochi a due giocatori il
+ritorno si alterna di segno a ogni livello, perché ciò che è buono per me è
+cattivo per l'avversario.
+
+**AlphaGo e AlphaZero cambiano due dei quattro passi**, ed è lì che entrano le
+reti. Il termine di esplorazione diventa **PUCT**, pesato da una probabilità a
+priori fornita dalla rete di policy,
+
+$$
+U(s,a) = c_{\text{puct}}\, P(s,a)\,
+\frac{\sqrt{\sum_b N(s,b)}}{1 + N(s,a)},
+$$
+
+così che la ricerca guardi per prime le mosse che la rete considera plausibili
+invece di trattarle tutte alla pari. E la **simulazione casuale sparisce**:
+al suo posto la rete di valore $v_\theta(s)$ stima direttamente chi sta
+vincendo, il che elimina il rumore delle partite giocate a caso, che era il
+tallone d'Achille del metodo pre-2016.
+
+Il risultato è quello che rende possibile il ciclo di *self-play*: **la ricerca
+gioca meglio delle reti che la guidano**. La distribuzione delle visite alla
+radice, normalizzata, è una policy migliorata rispetto a $P(s,\cdot)$, e
+diventa il bersaglio su cui la rete si addestra. MCTS, in questa lettura, è un
+**operatore di miglioramento della policy**: lo stesso ruolo che nella
+programmazione dinamica ha il passo di *policy improvement*, ottenuto con la
+ricerca invece che con un massimo esatto.
+
+`````
+
+L'idea è più generale del gioco da tavolo, ed è il motivo per cui conviene
+averla in tasca: **quando si può simulare, si può pensare**. MuZero la usa
+senza conoscere le regole, imparando un modello latente su cui cercare; il
+capitolo sul RL basato su modello ci torna sopra; e i modelli linguistici che
+esplorano più catene di ragionamento prima di rispondere fanno, con altri
+nomi, la stessa cosa.
+
+### In pratica: le visite si concentrano
+
+Che l'albero cresca storto non è un modo di dire, ed è la cosa più facile da
+verificare. Prendiamo un albero giocattolo di profondità quattro con sedici
+foglie di valore noto e nascondiamo la migliore in mezzo alle altre.
+
+```python
+import math
+import numpy as np
+
+# Un albero giocattolo: profondità 4, due mosse per nodo, 16 foglie.
+# I valori delle foglie li conosciamo, così sappiamo qual è la risposta giusta.
+PROFONDITA, RAMI = 4, 2
+rng = np.random.default_rng(7)
+valori_foglie = rng.uniform(0, 1, RAMI ** PROFONDITA)
+valori_foglie[6] = 0.98                      # la foglia buona, nascosta in mezzo
+migliore = int(valori_foglie.argmax())
+PRIME = (RAMI ** PROFONDITA - 1) // (RAMI - 1)   # indice della prima foglia
+
+def figli(nodo):
+    return [nodo * RAMI + 1 + k for k in range(RAMI)]
+
+def foglia(nodo):
+    return nodo >= PRIME
+
+N, W = {0: 0}, {0: 0}                        # visite e somma dei ritorni
+
+def uct(nodo, c=1.4):
+    """UCB1 applicato a un bivio dell'albero: è la formula della sezione bandit."""
+    padre = N[nodo]
+    def punteggio(f):
+        if N.get(f, 0) == 0:
+            return float("inf")              # mai provato: massimamente urgente
+        return W[f] / N[f] + c * math.sqrt(math.log(padre) / N[f])
+    return max(figli(nodo), key=punteggio)
+
+def simula(nodo):
+    """Discesa a caso fino a una foglia: la stima grezza di questo nodo."""
+    while not foglia(nodo):
+        nodo = int(rng.choice(figli(nodo)))
+    return valori_foglie[nodo - PRIME]
+
+for _ in range(2000):
+    nodo, cammino = 0, [0]
+    while not foglia(nodo) and all(N.get(f, 0) > 0 for f in figli(nodo)):
+        nodo = uct(nodo)                                          # 1. SELEZIONE
+        cammino.append(nodo)
+    if not foglia(nodo):
+        nodo = next(f for f in figli(nodo) if N.get(f, 0) == 0)   # 2. ESPANSIONE
+        cammino.append(nodo)
+        N[nodo] = W[nodo] = 0
+    ritorno = simula(nodo)                                        # 3. SIMULAZIONE
+    for n in cammino:                                             # 4. RISALITA
+        N[n] += 1
+        W[n] += ritorno
+
+print("visite ai due rami dalla radice:", [N[f] for f in figli(0)])
+print("valore medio dei due rami      :", [round(float(W[f] / N[f]), 3)
+                                           for f in figli(0)])
+
+visite_foglie = np.array([N.get(PRIME + i, 0) for i in range(RAMI ** PROFONDITA)])
+print(f"foglia migliore: {migliore} (valore {valori_foglie[migliore]:.2f})")
+print(f"quota delle visite andata lì: "
+      f"{visite_foglie[migliore] / visite_foglie.sum():.1%}")
+print(f"tirando a caso sarebbe stata: {1 / len(valori_foglie):.1%}")
+```
+
+Dalla radice, il ramo che porta alla foglia buona riceve **1922 visite su
+2000** e l'altro 78: dopo poche decine di prove la ricerca ha smesso di
+sprecare tempo di là. In fondo all'albero, il **58%** di tutte le visite
+finisce sulla foglia migliore, contro il $6{,}2\%$ che le toccherebbe tirando a
+caso. Nessuno ha detto all'algoritmo dove guardare, e la formula che gliel'ha
+fatto scoprire è la stessa che nel capitolo sui bandit sceglieva fra due leve.
+
 ## Da AlphaGo ad AlphaZero
 
 Torniamo alla mossa 37. AlphaGo {cite}`silver2016mastering` non era un solo
 algoritmo, ma una sintesi: una rete di policy che proponeva mosse promettenti,
-una rete di valore che stimava chi fosse in vantaggio, e una **ricerca ad
-albero Monte Carlo** (MCTS) che usava entrambe per esplorare in profondità solo
+una rete di valore che stimava chi fosse in vantaggio, e la ricerca ad albero
+Monte Carlo appena vista, che usava entrambe per esplorare in profondità solo
 le linee più sensate.
 
 ```{figure} ../figures/alphago-2016.svg
@@ -293,8 +468,14 @@ onesto.
   l'apprendimento diventa più rapido e più stabile. **A3C** fa giocare molti
   attori in parallelo; **PPO** cambia la strategia solo di poco per volta
   (passi piccoli e prudenti, ma tanti) ed è oggi lo standard.
+- La **ricerca ad albero Monte Carlo** è il "pensare prima di muovere":
+  migliaia di volte si scende nell'albero delle possibilità scegliendo dove
+  conviene, si prova un ramo nuovo, si tira fino alla fine e si riporta
+  indietro il risultato. L'albero cresce **storto di proposito**, profondo
+  dove promette e appena accennato altrove, e la mossa scelta è la **più
+  visitata**, non quella con la media più alta.
 - **AlphaGo** e **AlphaZero** uniscono la strategia, la stima di chi sta
-  vincendo e l'esplorazione ad albero delle mosse; con l'**RLHF** lo stesso
+  vincendo e quella esplorazione ad albero; con l'**RLHF** lo stesso
   meccanismo, guidato dalle preferenze delle persone, allinea i modelli
   linguistici.
 ```
@@ -310,6 +491,12 @@ onesto.
 - **Actor-Critic** aggiunge un critico $V_\phi(s)$ che fornisce il *vantaggio*
   $A_t$, riducendo la varianza. **A3C** parallelizza gli attori; **PPO** limita
   i passi con il *clipping* ed è lo standard attuale.
+- **MCTS/UCT** applica UCB1 a ogni nodo dell'albero,
+  $Q(s,a) + c\sqrt{\ln N(s)/N(s,a)}$, e alterna selezione, espansione,
+  simulazione e risalita. AlphaZero sostituisce il termine di esplorazione con
+  **PUCT**, pesato dalla policy a priori, e la simulazione casuale con la rete
+  di valore. La distribuzione delle visite alla radice è una **policy
+  migliorata**: è l'operatore che rende possibile il *self-play*.
 - **AlphaGo/AlphaZero** uniscono policy, valore e ricerca ad albero; **RLHF**
   applica PPO all'allineamento degli LLM.
 ```
