@@ -53,6 +53,73 @@ utili e meno dannosi, che è oggi un'area di ricerca a pieno titolo, non un
 ritocco finale.
 `````
 
+## Pensare più a lungo sulle cose difficili
+
+C'è un filone che vale la pena isolare, perché nasce da un'osservazione così
+semplice da sembrare ingenua e perché la sua storia insegna qualcosa su come
+procede questo campo.
+
+`````{tab} Elementare
+
+Un Transformer fa **sempre lo stesso numero di passaggi**. Che gli si chieda
+quanto fa due più due o di sbrogliare un ragionamento in dieci mosse, il testo
+attraversa esattamente gli stessi strati, e quindi riceve la stessa quantità di
+calcolo. Detta così suona strana, perché non è affatto come funzioniamo noi:
+sulle cose facili rispondiamo a colpo, sulle difficili ci fermiamo a pensare.
+
+L'idea, allora, è di lasciare che il modello decida **quanto pensare**, e nel
+2018 qualcuno ci provò: invece di impilare strati tutti diversi, se ne usa uno
+solo applicato più volte di fila (diventa una specie di ricorrenza, non nel
+tempo ma in profondità), e a ogni giro ogni parola può dire «io ho finito» e
+smettere, mentre le altre continuano.
+
+All'epoca non prese piede. È tornata attuale adesso, per una strada
+inaspettata: i modelli che «ragionano» prima di rispondere fanno, in fondo, la
+stessa cosa, cioè spendere più calcolo sulle domande difficili. Solo che lo
+fanno **scrivendo** il ragionamento, un passo alla volta in parole, invece di
+girare più volte dentro sé stessi in silenzio. Quale delle due strade sia la
+migliore è una questione aperta: la prima è più economica, la seconda si può
+leggere.
+
+`````
+
+`````{tab} Superiore
+
+Il **Universal Transformer** {cite}`dehghani2019universal` sostituisce gli $N$
+strati distinti con **un solo blocco applicato ricorrentemente in profondità**,
+cioè con i pesi legati fra le iterazioni. La motivazione dichiarata è
+recuperare il *bias induttivo* ricorrente che il Transformer aveva buttato via
+insieme alla ricorrenza temporale, e che serve sui compiti a struttura
+gerarchica e sulla generalizzazione a lunghezze non viste in addestramento.
+
+Sopra ci mettono l'**Adaptive Computation Time** di Graves: a ogni iterazione,
+per **ogni posizione**, una piccola unità emette una probabilità di
+arresto; le posizioni che si fermano vengono copiate invariate mentre le altre
+continuano a essere aggiornate, e una penalità sul numero di passi (il *ponder
+cost*) impedisce di pensare all'infinito. Il calcolo diventa così
+**condizionato all'ingresso** invece che fissato dall'architettura.
+
+Vale la pena essere precisi su un punto che il titolo lascia intuire: legare i
+pesi e iterare rende il modello **computazionalmente universale** in un senso
+tecnico. Un Transformer standard esegue un numero di passi sequenziali
+indipendente dalla lunghezza dell'ingresso, il che lo rende Turing-incompleto;
+una ricorrenza in profondità con numero di passi dipendente dai dati toglie
+quel limite.
+
+L'idea è rimasta a lungo marginale e oggi è di nuovo centrale, arrivata però
+dall'altra parte. I modelli che **ragionano** allocando più calcolo in
+inferenza fanno la stessa cosa nello **spazio dei token** invece che nello
+spazio latente: generano una catena di passi intermedi, e più il problema è
+difficile più ne generano. Le due vie hanno un compromesso opposto e non
+risolto. Il calcolo latente è più economico (nessun token da produrre e
+rileggere) e **non è ispezionabile**; quello in token costa di più, è più
+facile da addestrare con la supervisione esistente, e lascia una traccia che si
+può leggere, il che nel capitolo sull'interpretabilità è tutt'altro che un
+dettaglio. Che la traccia sia poi una descrizione *fedele* del calcolo svolto è
+una domanda a sé, e la risposta corrente è: non necessariamente.
+
+`````
+
 ## I limiti che restano
 
 Un elenco onesto, da tenere accanto agli entusiasmi:
@@ -87,6 +154,13 @@ legge.
 - La ricerca punta su **efficienza** (distillazione, quantizzazione, esperti
   selettivi), **contesto lungo** (attenzioni economiche, state space model) e
   **multimodalità**.
+- Un Transformer spende **lo stesso calcolo** su ogni ingresso, facile o
+  difficile che sia. L'**Universal Transformer** (2018) provò a togliere quel
+  vincolo legando i pesi fra gli strati e lasciando che ogni posizione decida
+  quando fermarsi. Non prese piede allora, ed è tornata attuale dalla parte
+  opposta: i modelli che ragionano spendono più calcolo sulle domande difficili
+  **scrivendo** i passi invece di girare in silenzio. La prima strada costa
+  meno, la seconda si può leggere.
 - I limiti sono strutturali: costi concentrati, bias dei dati,
   allucinazioni, e una comprensione ancora dibattuta di cosa i modelli
   sappiano davvero.

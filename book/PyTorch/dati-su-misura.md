@@ -406,6 +406,25 @@ leggono in blocco (`.npy`, WebDataset, LMDB) invece di milioni di piccoli file;
 spostare le trasformazioni pesanti sulla GPU. Il capitolo sulle
 [prestazioni](prestazioni.md) riprende il discorso dal lato del calcolo.
 
+Sul terzo rimedio vale la pena essere precisi, perché la ragione non è quella
+che si immagina. Su una collezione grande il costo dominante non è decodificare
+i file, è **aprirli**: ogni `open()` è una chiamata di sistema e un accesso ai
+metadati del filesystem, e un milione di file piccoli produce un milione di
+accessi minuscoli e sparsi, che è lo schema peggiore per qualunque disco e
+disastroso su uno storage di rete. Impacchettarli in pochi archivi letti in
+sequenza sposta il lavoro dove l'hardware è veloce.
+
+E c'è un secondo motivo per fare quel passaggio, che si paga una volta e serve
+per sempre: mentre si scorre il dataset per impacchettarlo, si calcolano
+**media e deviazione standard per canale**, i due vettori di tre numeri che
+servono a `Normalize`. Sono statistiche del *training set* e vanno calcolate
+solo su quello (calcolarle su tutto è la stessa forma di *leakage* dello scaler
+tarato prima dello split, vista nel capitolo sul Machine Learning). Con un
+modello pre-addestrato si usano invece quelle del dataset originale, ed è il
+motivo per cui `EfficientNet_B0_Weights.DEFAULT.transforms()` porta con sé i
+numeri di ImageNet: le feature apprese si aspettano ingressi centrati come lo
+erano allora.
+
 ```{admonition} Da ricordare
 :class: important
 - Un `Dataset` è un contratto di **tre metodi**: `__init__` (lavoro pesante,

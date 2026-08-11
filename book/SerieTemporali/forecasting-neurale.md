@@ -42,6 +42,35 @@ singolo numero ma una **stima dell'incertezza**. Se invece hai una sola serie,
 pulita e lunga, i classici restano spesso la scelta migliore, e comunque la
 prima da provare.
 
+C'è poi una terza famiglia, che sta in mezzo e che vale la pena conoscere prima
+di aprire il capitolo neurale, perché su moltissimi problemi aziendali basta.
+L'idea è di non modellare il **processo** che genera la serie, ma di
+**interpolare una curva**: si scrive la serie come somma di pezzi
+interpretabili (una tendenza di fondo, una o più stagionalità, l'effetto delle
+festività) e si stimano i pezzi.
+
+$$
+y(t) = g(t) + s(t) + h(t) + \varepsilon_t .
+$$
+
+La tendenza $g(t)$ è una spezzata, cioè una retta che può cambiare pendenza in
+alcuni punti di svolta; le stagionalità $s(t)$ sono **serie di Fourier
+troncate**, il che è il pezzo furbo, perché ne permette **più d'una
+sovrapposta** (la settimana lavorativa e il ciclo annuale insieme) e permette
+di regolarne la flessibilità scegliendo quanti termini tenere; le festività
+$h(t)$ sono effetti puntuali su date dichiarate. È l'impianto di Prophet, ed è
+il motivo della sua diffusione: si stima in fretta, è robusto ai buchi e agli
+*outlier*, e ogni componente si può guardare e discutere con chi non fa questo
+mestiere.
+
+Il punto teorico che rende questa famiglia diversa dalle altre due, e che
+conviene tenere a mente, è che **non c'è dipendenza temporale nel modello**: il
+valore di domani non è funzione di quello di oggi, come nell'ARIMA, ma solo del
+*tempo* come variabile. Non è un processo stocastico, è una curva interpolata.
+Da qui vengono insieme il pregio (i buchi non rompono niente, perché non c'è
+nessuna catena da interrompere) e il limite (non sfrutta l'autocorrelazione a
+breve, che su serie molto correlate è proprio l'informazione più preziosa).
+
 `````
 
 `````{tab} Superiore

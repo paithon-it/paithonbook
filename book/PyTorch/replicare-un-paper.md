@@ -349,6 +349,30 @@ comunità ha risposto con i *reproducibility checklist* adottati dalle grandi
 conferenze, che chiedono agli autori di dichiarare esattamente questi punti
 {cite}`pineau2021improving`.
 
+### Il diario, che è la metà che nessuno scrive
+
+«Si registra» merita più di due parole, perché è la pratica che distingue tre
+giorni di lavoro da tre giorni di lavoro buttati. La forma minima è una riga
+per esperimento, scritta **prima** di lanciarlo:
+
+> *Esperimento 7. Ipotesi: la differenza viene dal warmup, che nel paper è di
+> 10k passi e nel mio di 500. Cambio solo quello. Mi aspetto che la loss
+> iniziale smetta di impennarsi. Esito: …*
+
+Tre proprietà rendono utile questo rito, e tolta una delle tre non funziona più.
+**Una cosa alla volta**, altrimenti il risultato non attribuisce il merito a
+nessuno dei due cambi. **L'ipotesi prima del risultato**, perché scritta dopo si
+adatta sempre a ciò che è successo, e si finisce per credere di aver capito. E
+soprattutto **si annota anche quello che non ha funzionato**: è la metà che
+nessuno scrive, ed è l'unica che impedisce di riprovare fra due settimane la
+stessa cosa senza ricordarsene.
+
+Gli strumenti che tracciano gli esperimenti (nel capitolo su MLOps) rendono
+tutto questo cercabile e condivisibile, e non c'è ragione di non usarli. Ma
+registrano bene i **parametri** e i **numeri**, e non registrano l'unica cosa
+che non si può ricostruire dopo: **perché** si era provato. Quella va scritta a
+mano.
+
 ```{admonition} Onestà intellettuale
 :class: note
 "Non sono riuscito a riprodurre il risultato" è un esito legittimo, e vale la

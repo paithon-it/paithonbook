@@ -74,7 +74,20 @@ dimensione del gradiente: al crescere di $K$ tende a una costante, cioè è
 **ottimale in banda** (cresce solo la latenza, non il traffico per GPU). È
 proprio quella latenza, proporzionale a $K$, il motivo per cui a molti nodi
 NCCL abbandona l'anello per schemi ad albero (*double binary tree*), che la
-contengono senza sacrificare la banda. Come
+contengono senza sacrificare la banda.
+
+Vale la pena dire da che cosa l'anello ha preso il posto, perché il confronto
+spiega la sua fortuna. Lo schema precedente era il **parameter server**: uno o
+più nodi dedicati custodiscono i pesi, tutti gli altri ci mandano i gradienti e
+ne rileggono i pesi aggiornati. È semplice, sopporta bene i lavoratori lenti
+(in versione asincrona non si aspetta nessuno) ed è tuttora sensato quando i
+nodi sono eterogenei o inaffidabili. Ma il traffico che attraversa il server
+cresce **linearmente con $K$**, e con esso il tempo, perché quel nodo è un
+collo di bottiglia di banda che non si può allargare aggiungendo macchine.
+L'anello non ha un centro: nessun nodo vede più traffico degli altri, e il
+costo per GPU smette di dipendere da quante sono. È la stessa ragione per cui,
+nei sistemi distribuiti, si preferisce un protocollo fra pari a uno che passa
+da un coordinatore, ogni volta che il coordinatore non serve. Come
 già ricordato nella sezione «Prestazioni e scala», in
 `DistributedDataParallel` questo all-reduce è eseguito *durante* il
 `backward`, a pacchetti (*bucket*), così che la comunicazione si sovrapponga

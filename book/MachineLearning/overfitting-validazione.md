@@ -124,6 +124,77 @@ il minimo è il modello ottimale.
 
 `````
 
+### Distinguerli in pratica: le curve di apprendimento
+
+Bias e varianza, finora, sono una spiegazione. C'è un modo di **misurarli**, e
+risponde alla domanda che costa di più in un progetto vero: *conviene
+raccogliere altri dati, o cambiare modello?*
+
+Si tracciano due curve, l'errore sull'addestramento e quello sulla validazione,
+non contro la complessità del modello ma contro **la quantità di dati usata**.
+La forma che assumono dice quale dei due mali si ha davanti.
+
+- Le due curve **si avvicinano e si fermano in alto**: il modello sbaglia
+  quanto sui dati che ha visto quanto su quelli che non ha visto, ed è già al
+  suo limite. È **bias**. Altri dati non servono a niente: serve più capacità.
+- Fra le due resta un **divario largo**, e quella di validazione sta ancora
+  scendendo: il modello ha imparato bene ciò che ha visto e generalizza meno. È
+  **varianza**, e qui altri dati aiutano davvero.
+
+Sono cinque righe di scikit-learn, e vale la pena eseguirle perché il verdetto
+è netto.
+
+```python
+import numpy as np
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import learning_curve
+
+rng = np.random.default_rng(0)
+n = 3000
+X = rng.normal(size=(n, 6))
+y = np.sin(2 * X[:, 0]) + X[:, 1] ** 2 - X[:, 2] + rng.normal(0, 0.3, n)  # non lineare
+
+taglie = np.linspace(0.05, 1.0, 8)
+for nome, modello in [("lineare (troppo semplice)", LinearRegression()),
+                      ("foresta (abbastanza ricca)",
+                       RandomForestRegressor(n_estimators=120, random_state=0))]:
+    m, tr, va = learning_curve(modello, X, y, train_sizes=taglie, cv=5,
+                               scoring="neg_mean_squared_error", random_state=0)
+    tr, va = -tr.mean(1), -va.mean(1)
+    print(f"\n{nome}")
+    print(f"  con {m[0]:>4} esempi: train {tr[0]:.3f}  validazione {va[0]:.3f}"
+          f"  divario {va[0]-tr[0]:+.3f}")
+    print(f"  con {m[-1]:>4} esempi: train {tr[-1]:.3f}  validazione {va[-1]:.3f}"
+          f"  divario {va[-1]-tr[-1]:+.3f}")
+```
+
+Il modello lineare, passando da 120 a 2400 esempi, chiude il divario a
+$+0{,}013$: le due curve si sono **toccate**, e si sono toccate a un errore di
+$2{,}3$, che è alto. Da notare il dettaglio controintuitivo: l'errore di
+*addestramento* è **peggiorato** (da $1{,}5$ a $2{,}3$), perché con pochi dati
+anche una retta riesce a passarci in mezzo, e con tanti no. Quel modello ha
+dato tutto quello che aveva; altri diecimila esempi non sposterebbero nulla.
+
+La foresta arriva a $0{,}031$ sull'addestramento e $0{,}215$ in validazione,
+con un divario di $+0{,}185$ ancora aperto. Diagnosi opposta e ricetta opposta:
+qui i dati in più pagano.
+
+Il valore di questa diagnostica è che si fa **prima** di spendere. Raccogliere
+o etichettare dati è la voce più cara di quasi ogni progetto, e queste due
+curve dicono in un pomeriggio se quella spesa avrà un effetto.
+
+```{admonition} Due curve diverse con lo stesso nome
+:class: note
+Attenzione a non confonderle con le curve che si guardano durante
+l'addestramento di una rete, dove sull'asse orizzontale ci sono le **epoche**:
+quelle diagnosticano l'andamento di *quella* sessione (learning rate sbagliato,
+overfitting che comincia, quando fermarsi) e sono trattate nel capitolo su
+PyTorch. Qui l'asse orizzontale è la **quantità di dati**, e la domanda è
+diversa: non «come sta andando questo addestramento» ma «questo modello, con
+più dati, andrebbe meglio».
+```
+
 ## Train, validation e test: perché il test non si tocca
 
 Per accorgersi dell'overfitting bisogna misurare l'errore su dati che il modello
@@ -173,6 +244,24 @@ set esiste proprio per assorbire tutte le decisioni intermedie e preservare
 l'imparzialità del test. Suddivisioni tipiche: $60/20/20$ o $80/10/10$. La
 selezione dei modelli avviene su training + validation; il test resta un
 osservatore neutrale che entra in scena solo a giochi fatti.
+
+Due precisazioni operative che fanno la differenza fra una stima onesta e una
+che sembra tale. La prima riguarda **come** si divide: il taglio puramente
+casuale è affidabile solo se il dataset è grande, e su dataset piccoli o con
+categorie rare produce insiemi che non si somigliano. Il rimedio è il
+**campionamento stratificato**, che preserva in ciascuna parte le proporzioni
+della variabile che conta (la classe da predire, o una covariata importante):
+è il `stratify=` di `train_test_split` e la `StratifiedKFold` della sezione
+seguente. Nel caso estremo, un test set che non contiene un solo esempio della
+classe rara non misura la cosa che interessa.
+
+La seconda è che il test si sporca anche **soltanto guardandolo**. È il *data
+snooping bias*: se si ispeziona il test per decidere quali feature costruire,
+quale trasformazione applicare o quale famiglia di modelli provare, quelle
+decisioni sono state prese sui dati d'esame, e il numero finale è ottimista
+anche se il modello non li ha mai visti in addestramento. La disciplina
+corretta è mettere da parte il test **come primo gesto**, prima ancora
+dell'analisi esplorativa.
 
 `````
 
@@ -306,6 +395,15 @@ la manopola del compromesso bias-varianza, e la si sceglie per
 cross-validation. La geometria spigolosa della norma $\ell_1$ è ciò che rende
 *sparse* le soluzioni del Lasso, annullando interi coefficienti: un selettore
 automatico di feature.
+
+L'**Elastic Net** somma le due penalità,
+$\lambda\big(\alpha\sum_j|\theta_j| + \tfrac{1-\alpha}{2}\sum_j\theta_j^2\big)$,
+e non è un compromesso pigro: rimedia a un difetto preciso del Lasso. Fra due
+feature fortemente correlate il Lasso ne tiene **una sola**, scelta in modo
+instabile (basta cambiare il campione perché scelga l'altra), mentre il termine
+$\ell_2$ le fa entrare o uscire **insieme**, il cosiddetto *grouping effect*.
+Con feature molte e correlate, che è il caso normale sui dati reali, è la
+scelta di partenza più sensata delle due pure.
 
 `````
 

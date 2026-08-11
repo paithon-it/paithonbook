@@ -98,7 +98,37 @@ mondo» alla Watts-Strogatz), archi **casuali** alla Erdős-Rényi e token
 globali, e dimostra che il modello risultante resta un approssimatore
 universale di funzioni su sequenze. Il capitolo sulle reti neurali su grafo
 riprende questa lettura dall'altro capo, mostrando che la self-attention è
-message passing su un grafo completo. In
+message passing su un grafo completo, e ne trae la conseguenza: i **Graph
+Transformer** applicano questo modello a un grafo qualunque, e per non perdere
+la topologia devono reintrodurla come codifica posizionale, che si scopre
+essere la generalizzazione esatta delle sinusoidi viste qui.
+
+Longformer e BigBird decidono **in anticipo** quali archi tenere, in base alla
+posizione. Il **Reformer** {cite}`kitaev2020reformer` sceglie la terza strada,
+e cioè non deciderlo affatto: **lascia che siano i dati a dire quali coppie
+contano**. L'osservazione di partenza è che dopo la softmax quasi tutta la
+massa di attenzione va su pochissime chiavi, quindi calcolare l'intera matrice
+è sprecare lavoro su valori destinati a essere quasi zero; e le chiavi che
+contano sono quelle con prodotto scalare grande, cioè quelle *vicine* alla
+query. Trovare i vicini senza confrontarli tutti è un problema classico, e la
+risposta classica è l'**hashing sensibile alla località** (LSH): una funzione
+che manda vettori simili nello stesso secchiello con alta probabilità. Si
+raggruppano query e chiavi per secchiello, si calcola l'attenzione piena solo
+dentro ciascun secchiello, e il costo scende da $O(L^2)$ a $O(L \log L)$. Il
+prezzo è che l'hashing sbaglia: si ripete con più funzioni indipendenti per
+ridurre la probabilità di perdere una coppia importante, e la sparsità non è
+più garantita ma probabilistica.
+
+Il secondo ingrediente del Reformer non riguarda l'attenzione ma la memoria, e
+merita di essere ricordato perché è trasversale: gli **strati reversibili**.
+In una rete ordinaria la retropropagazione ha bisogno delle attivazioni di
+ogni strato, quindi la memoria cresce con la profondità. Se però ogni strato è
+costruito in modo da poter essere **invertito** (dalle uscite si ricalcolano
+gli ingressi), quelle attivazioni non serve tenerle: si buttano e si
+ricostruiscono all'indietro quando servono. È il baratto **memoria contro
+calcolo** che l'ingegneria del deep learning ripropone a ogni scala, dalla
+ricomputazione delle attivazioni al modo in cui FlashAttention evita di
+materializzare la matrice di attenzione. In
 inferenza, inoltre, la generazione autoregressiva resta sequenziale token
 per token: il parallelismo del Transformer è un vantaggio soprattutto in
 addestramento.
@@ -127,6 +157,11 @@ necessariamente il campionato eterno.
 - Il prezzo è il costo **quadratico** $O(n^2)$ nella lunghezza della
   sequenza: da qui finestre di contesto limitate e la ricerca su attenzioni
   efficienti.
+- Ridurre quel costo vuol dire **togliere archi** da un grafo completo, e le
+  strade sono tre: uno schema **fisso** deciso in anticipo (Longformer,
+  BigBird), una scelta **guidata dai dati** con l'hashing sensibile alla
+  località (**Reformer**, da $O(L^2)$ a $O(L\log L)$), oppure rinunciare del
+  tutto alla softmax e **fattorizzarla** (il capitolo sull'attenzione lineare).
 - Nessuna architettura vince per sempre: attenzione lineare e *state space
   model* (i due capitoli che seguono) rimettono in gioco idee ricorrenti
   proprio dove l'attenzione costa troppo.

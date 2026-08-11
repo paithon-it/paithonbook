@@ -414,6 +414,137 @@ meno.
 
 `````
 
+## Graph Transformer: togliere il vincolo del vicinato
+
+Molti dei limiti appena elencati hanno la stessa radice: il message passing
+fa parlare **solo i nodi collegati**, quindi l'informazione lontana deve
+attraversare molti strati, e strada facendo si appiattisce (oversmoothing) o si
+strozza (over-squashing). Viene naturale chiedersi cosa succeda a togliere quel
+vincolo, e la risposta arriva dall'altro capo del libro.
+
+`````{tab} Elementare
+
+Il capitolo sui Transformer ha già detto che la self-attention è, di fatto,
+message passing su un **grafo completo**: ogni token parla con tutti gli altri.
+Se è così, la strada per un grafo è ovvia: mettiamoci un Transformer sopra e
+lasciamo che ogni nodo parli con ogni altro, senza aspettare che il messaggio
+faccia il giro lungo lungo gli archi.
+
+C'è però un guaio che si vede subito: **se tutti parlano con tutti, il grafo
+non conta più niente**. Un Transformer applicato all'elenco dei nodi darebbe
+lo stesso risultato se gli archi fossero altri, o se non ce ne fosse nessuno.
+Abbiamo tolto il problema e con esso l'informazione.
+
+Ed è lo stesso identico problema che i Transformer avevano con le frasi:
+l'attenzione non sa in che ordine stiano le parole, e la soluzione fu dare a
+ogni posizione una firma numerica costruita con delle onde. Qui serve
+l'equivalente: **dare a ogni nodo una firma che dica dove sta nel grafo**, e
+poi lasciar parlare tutti con tutti.
+
+E adesso viene la parte bella, che questo capitolo ha già preparato senza
+dirlo. Quelle firme esistono, e le abbiamo già incontrate: sono gli
+**autovettori del laplaciano**, quelli che parlando di convoluzione spettrale
+avevamo chiamato le «frequenze» del grafo. Su una catena di nodi, si era detto,
+quegli autovettori *sono* seni e coseni. Il che vuol dire che la firma
+posizionale dei Transformer non è un caso particolare né una scelta
+arbitraria: è **questa stessa costruzione**, applicata al grafo più semplice
+che esista, cioè una fila.
+
+`````
+
+`````{tab} Superiore
+
+Un **Graph Transformer** sostituisce l'aggregazione sui vicini con
+un'attenzione su **tutte** le coppie di nodi. Il beneficio è strutturale:
+ogni nodo raggiunge ogni altro in **un solo passo**, quindi l'over-squashing
+sparisce per costruzione e non serve profondità per avere portata. Il costo
+altrettanto: $O(N^2)$ nel numero di nodi, che su un grafo da milioni di nodi
+non è praticabile senza le stesse approssimazioni sparse viste nel capitolo sui
+Transformer (e il cerchio si chiude, perché quelle approssimazioni erano
+descritte proprio come sparsificazione di un grafo).
+
+Il problema da risolvere è che l'attenzione piena è **invariante alle
+permutazioni** dei nodi e quindi cieca alla topologia: senza informazione
+aggiuntiva, il modello non distingue un anello da una stella. La struttura va
+reiniettata, e le due strade sono quelle che il capitolo sui Transformer già
+conosce.
+
+La prima è una **codifica posizionale**: si calcolano i primi $k$ autovettori
+non banali del laplaciano normalizzato $L = U\Lambda U^\top$ e si concatena la
+riga $i$-esima di $U_{:,1:k}$ alle feature del nodo $i$
+{cite}`dwivedi2020generalization`. La giustificazione è quella già stabilita in
+questo capitolo: gli autovettori sono i modi di variazione del grafo ordinati
+per frequenza, e su un grafo a catena si riducono alle sinusoidi del
+Transformer originale. **Il positional encoding sinusoidale è il caso
+particolare di questa costruzione su una sequenza.**
+
+Due avvertenze pratiche, entrambe reali. Gli autovettori sono definiti **a meno
+del segno** ($-\mathbf{u}$ è altrettanto valido), e su autovalori ripetuti a
+meno di una rotazione dentro l'autospazio: si rimedia campionando il segno a
+caso in addestramento, così il modello impara a non dipenderne. E la
+decomposizione costa $O(N^3)$, quindi si calcola una volta sola in
+preprocessing e solo per i primi $k$ autovettori.
+
+La seconda strada è il **bias di attenzione**: invece di aggiungere qualcosa
+ai nodi, si modifica il punteggio di attenzione fra due nodi in funzione della
+loro relazione. È la scelta di **Graphormer** {cite}`ying2021transformers`, che
+somma ai logit un termine appreso dipendente dalla **distanza sul grafo** fra i
+due nodi (più un termine sul grado e uno sugli archi lungo il cammino).
+Formalmente è una variante di attenzione relativa, la stessa famiglia di idee
+delle codifiche posizionali relative sulle sequenze, e gli autori mostrano che
+con questi accorgimenti molte GNN classiche diventano **casi particolari** del
+modello.
+
+Le due strade non sono alternative: l'impostazione oggi prevalente le combina,
+tenendo un ramo di message passing **accanto** all'attenzione globale, così che
+il primo curi la struttura locale e la seconda la portata
+{cite}`rampasek2022recipe`. È il riconoscimento onesto che il vicinato non era
+un difetto da rimuovere ma un *prior* utile, e che quello che mancava era un
+canale per il lontano.
+
+`````
+
+L'affermazione centrale, che gli autovettori del laplaciano generalizzino le
+sinusoidi, non va presa sulla fiducia: si verifica in dieci righe su una catena
+di nodi, che è una sequenza travestita da grafo.
+
+```python
+import numpy as np
+
+N = 16
+# grafo a catena: 0-1-2-...-15. È una sequenza travestita da grafo.
+A = np.diag(np.ones(N - 1), 1) + np.diag(np.ones(N - 1), -1)
+d = A.sum(1)
+L = np.eye(N) - A / np.sqrt(np.outer(d, d))          # laplaciano normalizzato
+val, vec = np.linalg.eigh(L)
+
+# i primi autovettori non banali dovrebbero essere sinusoidi
+for k in (1, 2, 3):
+    t = np.arange(N)
+    onda = np.cos(np.pi * k * (t + 0.5) / N)
+    onda /= np.linalg.norm(onda)
+    print(f"autovettore {k}: |correlazione| con cos(pi*{k}*n/N) = "
+          f"{abs(vec[:, k] @ onda):.4f}   (autovalore {val[k]:.3f})")
+
+print("\ngli autovalori crescono:", np.round(val[:5], 3))
+# l'ambiguità di segno: -v è un autovettore altrettanto valido
+print("il segno è arbitrario: -v risolve la stessa equazione ->",
+      np.allclose(L @ (-vec[:, 1]), val[1] * (-vec[:, 1])))
+```
+
+Le correlazioni valgono $0{,}989$, $0{,}985$ e $0{,}979$: i primi autovettori
+del laplaciano di una catena **sono** le prime tre sinusoidi, e gli autovalori
+crescono con la frequenza, esattamente come promesso dalla lettura spettrale.
+Non fanno $1{,}000$ per una ragione precisa e non per rumore numerico: il
+laplaciano **normalizzato** pesa ogni nodo per il suo grado, e i due nodi agli
+estremi della catena hanno un vicino invece di due, il che deforma leggermente
+l'onda ai bordi.
+
+L'ultima riga conferma l'ambiguità di segno: la stessa equazione è soddisfatta
+da $\mathbf{u}$ e da $-\mathbf{u}$, e nessuna delle due è «quella giusta». Chi
+usa queste firme come codifica posizionale deve conviverci, ed è il motivo per
+cui in addestramento se ne campiona il segno a caso.
+
 ## L'ecosistema, e dove andare da qui
 
 Chi voglia mettere le mani in pasta non parte da zero: due librerie coprono
@@ -466,6 +597,12 @@ dato).
   scontato che chi è collegato si somigli (gli amici hanno gusti simili): nelle
   reti dove vale il contrario, dove chi è connesso è diverso, rendono molto meno.
   In pratica le GNN restano **basse**, due o tre strati, di rado quattro.
+- I **Graph Transformer** tolgono il vincolo del vicinato e lasciano parlare
+  ogni nodo con ogni altro, il che risolve di colpo il problema della distanza.
+  Ma così il grafo non conta più: bisogna ridarlo, dando a ogni nodo una firma
+  che dica dove sta. Quelle firme sono gli **autovettori del laplaciano**, cioè
+  le stesse onde che nei Transformer segnano la posizione delle parole in una
+  frase.
 ```
 
 `````
@@ -493,6 +630,17 @@ dato).
 - Limiti aperti: **oversmoothing** (troppi strati → nodi indistinguibili),
   **over-squashing** (informazione lontana schiacciata), **scalabilità**,
   **eterofilia**. In pratica le GNN restano **basse**, 2–4 strati.
+- Un **Graph Transformer** sostituisce l'aggregazione sui vicini con
+  l'attenzione su tutte le coppie: ogni nodo raggiunge ogni altro in un passo
+  (fine dell'over-squashing), al costo di $O(N^2)$ e della perdita della
+  topologia, perché l'attenzione piena è invariante alle permutazioni. La
+  struttura si reinietta come **codifica posizionale** con i primi autovettori
+  del laplaciano (definiti a meno del **segno**, che in addestramento si
+  campiona) oppure come **bias di attenzione** dipendente dalla distanza sul
+  grafo (**Graphormer**). Sulla catena quegli autovettori si riducono alle
+  sinusoidi: **il positional encoding del Transformer è il caso particolare su
+  una sequenza**. Le impostazioni attuali tengono i due canali insieme, message
+  passing per il locale e attenzione per il lontano.
 ```
 
 `````

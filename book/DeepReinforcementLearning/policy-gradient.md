@@ -213,6 +213,35 @@ l'incentivo a spingere $\rho_t$ fuori dall'intervallo $[1-\epsilon,1+\epsilon]$:
 la policy migliora a piccoli passi controllati, senza gli aggiornamenti
 distruttivi che affliggevano i primi metodi.
 
+Detto così il tosaggio sembra un trucco, e invece è l'approssimazione
+economica di un'idea precisa che lo precede. **TRPO** (*Trust Region Policy
+Optimization*) pone il problema come massimizzazione **vincolata**: si
+massimizza lo stesso obiettivo con importance sampling, ma imponendo che la
+nuova policy resti vicina alla vecchia in **divergenza di Kullback-Leibler**,
+
+$$
+\max_\theta\ \mathbb{E}\big[\rho_t A_t\big]
+\quad \text{soggetto a} \quad
+\mathbb{E}\big[D_{\mathrm{KL}}(\pi_{\theta_{\text{old}}} \,\|\, \pi_\theta)\big]
+\le \delta .
+$$
+
+Il vincolo definisce una **regione di fiducia**, cioè l'intorno entro il quale
+l'approssimazione lineare dell'obiettivo è ancora credibile. La ragione per cui
+serve è quella che il capitolo ha già raccontato con la metafora del
+guinzaglio: una policy non è un modello supervisionato qualunque, perché
+determina i dati che raccoglierà, e un passo troppo lungo non produce un errore
+recuperabile ma una policy che smette di visitare gli stati utili.
+
+Il prezzo di TRPO è computazionale: risolvere quel vincolo richiede
+un'approssimazione del secondo ordine con la matrice di informazione di Fisher,
+gestita con gradiente coniugato e ricerca di linea. Funziona, ed è pesante e
+scomodo da implementare. PPO osserva che l'effetto che si vuole (non
+allontanarsi troppo) si ottiene quasi tutto con un `min` e un `clip` dentro un
+normale ottimizzatore del primo ordine. È il motivo per cui ha vinto: **non è
+più corretto di TRPO, è abbastanza corretto e infinitamente più semplice**, e
+in ingegneria quello è di solito il tipo di vittoria che conta.
+
 `````
 
 ## Pensare prima di agire: la ricerca ad albero Monte Carlo

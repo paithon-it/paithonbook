@@ -381,6 +381,62 @@ for epoca in range(50):
     scheduler.step(loss_val)                          # decide se ridurre il passo
 ```
 
+C'è però un pezzo dello schedule che non sta alla fine ma **all'inizio**, e che
+si incontra in ogni ricetta di addestramento moderna: il **warmup**. Invece di
+partire subito da $\eta_0$, si sale da (quasi) zero fino a $\eta_0$ nell'arco
+dei primi qualche centinaio o migliaio di passi, e solo dopo comincia il
+decadimento.
+
+`````{tab} Elementare
+
+Sembra un capriccio, e ha una ragione precisa. Gli ottimizzatori moderni non
+usano il gradiente grezzo: lo confrontano con una media di quelli visti finora,
+per capire quanto quel gradiente sia affidabile e quanto grande fare il passo.
+Ma **all'inizio quella media è fatta di due o tre numeri**, quindi è rumorosa,
+e la stima può risultare sballata di parecchio.
+
+Il guaio è che i primi passi sono anche i più pericolosi: la rete è ancora
+disordinata, e un passo troppo lungo in una direzione sbagliata può portarla in
+una regione da cui non si riprende, con le attivazioni saturate o i pesi troppo
+grandi. Partire piano è un modo di **non prendere decisioni importanti mentre
+si è ignoranti**: si fanno passetti finché le statistiche non si assestano, e
+poi si va.
+
+`````
+
+`````{tab} Superiore
+
+Adam normalizza il gradiente per la radice della stima del secondo momento,
+$\hat{v}_t$. Nei primi passi quella stima è calcolata su pochissimi campioni ed
+è ad alta varianza, quindi il rapporto $\hat{m}_t/\sqrt{\hat{v}_t}$ può
+assumere valori molto più grandi del previsto: il passo effettivo è
+enormemente più variabile di $\eta$. La correzione del bias di Adam sistema la
+media ma non la **varianza** della stima, ed è questa la diagnosi che motiva il
+warmup come riduttore di varianza nella fase iniziale.
+
+Si somma a due fattori che agiscono nella stessa direzione. Con batch grandi il
+learning rate viene scalato verso l'alto (regola lineare), e quel valore alto è
+proprio ciò che all'inizio si vuole evitare. E nei Transformer *post-LN* la
+norma è dopo il blocco residuo, il che produce gradienti molto grandi negli
+strati alti a inizio addestramento; è il motivo per cui la ricetta originale
+prevedeva warmup obbligatorio, e per cui l'adozione del *pre-LN* lo ha reso
+meno critico ma non inutile.
+
+La forma standard è lineare crescente per $T_w$ passi e poi coseno decrescente:
+
+$$
+\eta_t = \begin{cases}
+\eta_0 \dfrac{t}{T_w}, & t \le T_w,\\[2ex]
+\eta_{\min} + \dfrac{\eta_0-\eta_{\min}}{2}
+\left(1 + \cos\dfrac{\pi (t-T_w)}{T-T_w}\right), & t > T_w,
+\end{cases}
+$$
+
+ed è quella che si trova, con nomi diversi, in quasi ogni configurazione di
+addestramento su larga scala.
+
+`````
+
 ```{admonition} Da ricordare
 :class: important
 - I gradienti **svaniscono o esplodono** perché la backpropagation moltiplica
@@ -391,6 +447,11 @@ for epoca in range(50):
 - **Adam** (momentum + passo adattivo) è il punto di partenza sensato,
   **AdamW** se si usa il weight decay; un **learning rate schedule** che
   decade nel tempo rifinisce la convergenza.
+- Lo schedule comincia però **salendo**: il **warmup** porta il learning rate
+  da quasi zero a $\eta_0$ nei primi passi, perché lì le statistiche dei
+  momenti di Adam sono stimate su pochissimi campioni e il passo effettivo ha
+  varianza altissima, proprio quando la rete è più fragile. Poi si decade, di
+  norma a coseno.
 ```
 
 [^momentum-pytorch]: Attenzione a trasferire la formula nel codice:

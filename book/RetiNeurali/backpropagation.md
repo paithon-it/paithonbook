@@ -85,6 +85,33 @@ $\mathcal{L} = -\sum_{k} y_k \log \hat{y}_k$. In entrambi i casi $\mathcal{L}$ �
 una funzione dei parametri $\theta = \{W^{[l]}, b^{[l]}\}$: cambiando i pesi
 cambia la loss, e il nostro obiettivo è trovare i $\theta$ che la minimizzano.
 
+Che per la classificazione si «preferisca» la cross-entropia merita una
+ragione, e non è solo che si accorda con l'interpretazione probabilistica. È
+meccanica, e riguarda proprio il gradiente. Con un'uscita sigmoide
+$\hat{y} = \sigma(z)$ e la MSE, la derivata rispetto a $z$ porta un fattore
+$\sigma'(z)$:
+
+$$
+\frac{\partial}{\partial z}\,\tfrac{1}{2}(\sigma(z)-y)^2
+= (\sigma(z)-y)\,\sigma'(z).
+$$
+
+Ma $\sigma'(z) = \sigma(z)(1-\sigma(z))$ vale quasi zero agli estremi, cioè
+**proprio quando il neurone è sicuro e sbagliato**: il modello che ha torto
+marcio è quello che impara più lentamente, che è l'esatto contrario di quel che
+serve. Con la cross-entropia quel fattore si semplifica:
+
+$$
+\frac{\partial}{\partial z}\Big[-y\log\sigma(z) - (1-y)\log(1-\sigma(z))\Big]
+= \sigma(z) - y,
+$$
+
+e il gradiente diventa **proporzionale all'errore**: più si sbaglia, più si
+corregge. È lo stesso fenomeno di saturazione che nella sezione sulle funzioni
+di attivazione motivava l'abbandono della sigmoide, visto però dal lato della
+loss invece che da quello dell'attivazione: la scelta della funzione di costo
+non è una convenzione, è ciò che decide se il gradiente sopravvive.
+
 `````
 
 ## L'idea della backpropagation

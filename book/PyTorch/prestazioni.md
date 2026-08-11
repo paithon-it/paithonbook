@@ -127,6 +127,86 @@ sicuri (le moltiplicazioni tra matrici) e dove no (somme lunghe, softmax).
 Su una GPU recente si può usare `dtype=torch.bfloat16` e togliere del tutto
 il `GradScaler`: due righe in meno e stessa sostanza.
 
+## Misurare davvero: la coda asincrona
+
+Prima di ottimizzare qualcosa bisogna saperlo misurare, e qui c'è una trappola
+in cui cade praticamente chiunque la prima volta.
+
+`````{tab} Elementare
+
+Quando scrivi un'operazione su GPU, Python **non aspetta che venga eseguita**.
+La mette in coda e prosegue subito con la riga successiva. È il motivo per cui
+la GPU riesce a stare occupata: mentre lavora su un'operazione, il programma le
+sta già preparando le prossime.
+
+La conseguenza è che un cronometro attorno a un pezzo di codice misura il tempo
+di **accodare** le operazioni, non quello di eseguirle. È così che nascono i
+confronti assurdi, del tipo «PyTorch è mille volte più veloce di NumPy»: non è
+veloce, è che non ha ancora fatto niente.
+
+Per misurare sul serio bisogna dire esplicitamente «fermati qui finché la GPU
+non ha finito». Vale anche al contrario, quando si legge un risultato: se una
+riga sembra lentissima, spesso non è lei a essere lenta, è la prima che ha
+avuto bisogno del risultato e ha dovuto aspettare tutta la coda accumulata
+prima.
+
+`````
+
+`````{tab} Superiore
+
+Le chiamate CUDA sono **asincrone rispetto all'host**: vengono inserite in uno
+*stream* e ritornano immediatamente. La sincronizzazione avviene solo in punti
+precisi, e conviene conoscerli perché sono anche i punti dove il codice
+rallenta senza motivo apparente: un `.item()`, un `.cpu()`, una `print` del
+tensore, un `if` che dipende da un valore calcolato sulla GPU. Ognuno di questi
+è una barriera implicita, ed è il motivo per cui loggare la loss a ogni passo
+può costare parecchio.
+
+Per cronometrare correttamente serve `torch.cuda.synchronize()` **prima** di
+far partire il cronometro (per svuotare la coda pregressa) e **dopo** il blocco
+da misurare. In alternativa si usano i `torch.cuda.Event`, che si registrano
+nello stream e misurano sul lato GPU senza bloccare l'host, ed è ciò che fanno
+i profiler seri.
+
+Da qui anche un pattern utile: `tensore.to(device, non_blocking=True)`
+sovrappone il trasferimento al calcolo, ma **solo** se la memoria sorgente è
+*pinned* (bloccata in pagine non swappabili), che è ciò che fa
+`pin_memory=True` nel `DataLoader`. Senza quella condizione l'opzione non ha
+effetto, ed è una delle micro-ottimizzazioni più spesso copiate senza le sue
+premesse.
+
+`````
+
+```python
+import time
+import torch
+
+dispositivo = "cuda" if torch.cuda.is_available() else "cpu"
+A = torch.randn(1024, 1024, device=dispositivo)
+
+def cronometra(sincronizza):
+    if dispositivo == "cuda":
+        torch.cuda.synchronize()          # parti da una coda vuota
+    t0 = time.perf_counter()
+    for _ in range(10):
+        B = A @ A
+    if sincronizza and dispositivo == "cuda":
+        torch.cuda.synchronize()          # aspetta che la GPU abbia finito DAVVERO
+    return time.perf_counter() - t0
+
+print(f"dispositivo: {dispositivo}")
+print(f"senza synchronize: {cronometra(False) * 1000:8.2f} ms")
+print(f"con synchronize  : {cronometra(True) * 1000:8.2f} ms")
+if dispositivo == "cpu":
+    print("(su CPU non c'è coda asincrona: i due numeri coincidono, ed è giusto così)")
+```
+
+Su CPU i due numeri si equivalgono, perché non c'è nessuna coda: è il controllo
+negativo, e serve a mostrare che la differenza non è un artefatto del modo di
+misurare. Su una GPU, invece, la prima riga stampa un tempo assurdamente
+piccolo e la seconda quello vero. Se si esegue questo capitolo su Colab con
+l'acceleratore attivo, è il primo esperimento da rifare.
+
 ## Una riga per compilare: `torch.compile`
 
 Il paradigma define-by-run visto nell'apertura del capitolo ha un costo:

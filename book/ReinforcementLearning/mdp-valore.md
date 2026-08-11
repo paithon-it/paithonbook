@@ -103,6 +103,25 @@ stato (aggiungendo variabili, o una finestra di osservazioni recenti), finché
 la proprietà vale: è esattamente ciò che farà il DQN impilando quattro frame
 consecutivi di un videogioco per catturare le velocità.
 
+Vale la pena dare un nome a quel caso, perché è la regola e non l'eccezione.
+Quando l'agente non osserva lo stato ma solo una sua **funzione parziale e
+rumorosa**, il modello si chiama **POMDP** (*Partially Observable MDP*): oltre
+a stati, azioni e ricompense c'è un insieme di **osservazioni** e una
+distribuzione $P(o \mid s)$ che dice cosa si riesce a vedere. Un robot con
+sensori limitati, un sistema di raccomandazione che non conosce l'umore
+dell'utente, un giocatore di poker che non vede le carte altrui: tutti POMDP.
+
+Il fatto scomodo è che in un POMDP **la policy ottima non può dipendere solo
+dall'osservazione corrente**. La soluzione teorica è ragionare su una
+distribuzione di probabilità sugli stati possibili (il *belief state*), che
+però vive in uno spazio continuo anche quando gli stati sono pochi, e rende il
+problema molto più duro. In pratica si fa una delle due cose, ed entrambe
+compaiono in questo libro: si **impila una finestra** di osservazioni recenti,
+come il DQN con i quattro fotogrammi, oppure si dà all'agente una **memoria**,
+cioè una rete ricorrente il cui stato nascosto fa da riassunto approssimato di
+tutto ciò che si è visto finora. Quando nei capitoli successivi si vedrà una
+policy con dentro una LSTM, la ragione è questa.
+
 `````
 
 ## La policy: la strategia dell'agente

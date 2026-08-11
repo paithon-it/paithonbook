@@ -169,6 +169,18 @@ L'*early stopping* (che vedremo all'opera nel capitolo su PyTorch) è il caso
 limite di questa idea: un torneo con un solo iscritto, che si ritira quando la
 validazione smette di migliorare.
 
+Un dettaglio pratico che separa il torneo del libro da quello che gira davvero
+nei cluster: il successive halving come lo abbiamo descritto è **sincrono**,
+cioè per potare aspetta che tutte le configurazioni di un turno siano finite.
+Su una macchina sola non cambia niente; su cento macchine è uno spreco, perché
+tutte restano ferme finché non arriva l'ultima, e basta una configurazione
+lenta a bloccare il turno. La versione **asincrona** (nota come ASHA) toglie la
+barriera: appena una configurazione raggiunge la soglia di budget del suo
+livello e risulta abbastanza buona rispetto a quelle già arrivate lì, viene
+**promossa subito**, e la macchina che si libera prende il lavoro successivo.
+Si accetta di decidere con informazione parziale in cambio di non lasciare
+nessuno fermo, ed è quasi sempre il baratto giusto.
+
 ## Cercare con giudizio: l'ottimizzazione bayesiana
 
 Griglia, caso e tornei condividono un ultimo difetto, il più profondo: ogni

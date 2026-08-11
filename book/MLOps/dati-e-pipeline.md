@@ -149,6 +149,90 @@ affidabile.
 
 `````
 
+### In che formato stanno i dati, e perché conta
+
+C'è una decisione che si prende all'inizio, che sembra tecnica e non lo è: come
+i dati stanno scritti su disco fra uno stadio e il successivo. Il CSV è la
+scelta di default di tutti, ed è quasi sempre quella sbagliata.
+
+`````{tab} Elementare
+
+Immagina un archivio di ottanta informazioni per ogni cliente, e un milione di
+clienti. Puoi conservarlo in due modi. **Per riga**, cioè una scheda per
+cliente con tutte le sue ottanta voci in fila: è il CSV, ed è comodo se ti
+serve tutta la scheda di un cliente. Oppure **per colonna**, cioè un elenco di
+tutte le età, poi un elenco di tutte le città, e così via.
+
+Quale conviene dipende da cosa fai. E quello che si fa per addestrare un
+modello è sempre lo stesso: leggere **tre colonne su ottanta**, per tutti. Con
+l'archivio per riga devi attraversare l'intero milione di schede e scartare il
+$96\%$ di ciò che leggi. Con quello per colonna prendi solo i tre elenchi che
+ti servono e il resto non lo tocchi nemmeno.
+
+C'è un secondo guadagno, meno ovvio e spesso più grosso: **valori simili stanno
+vicini**. In una colonna di città ci sono migliaia di «Milano» di fila, in una
+di date ci sono numeri che crescono di poco alla volta. Roba del genere si
+comprime benissimo, mentre in una scheda per riga ogni valore è circondato da
+valori di natura diversa e la compressione ha poco da mordere.
+
+Il formato per colonna più usato si chiama **Parquet**, e in più tiene i tipi
+delle colonne (che il CSV non ha: per lui è tutto testo, ed è il motivo per cui
+un codice postale che comincia per zero si trasforma in un numero e perde lo
+zero).
+
+Poi c'è **Arrow**, che risolve un problema diverso: non come i dati stanno sul
+disco, ma come stanno **in memoria**. Se due programmi diversi si accordano
+sulla stessa disposizione in memoria, passarsi una tabella non costa nulla:
+non c'è niente da convertire, si punta allo stesso pezzo di memoria. È il
+motivo per cui compare ovunque, sotto strumenti che apparentemente non hanno
+niente in comune.
+
+`````
+
+`````{tab} Superiore
+
+Un formato **orientato alle righe** (CSV, JSON Lines, Avro) memorizza i record
+uno dopo l'altro; uno **orientato alle colonne** (**Parquet**, ORC) memorizza
+insieme tutti i valori di una stessa colonna. La differenza produce tre effetti
+che contano tutti in un carico di lavoro analitico.
+
+**Projection pushdown**: leggere $k$ colonne su $d$ costa in proporzione a $k$
+e non a $d$, perché le altre non vengono nemmeno toccate su disco. Nei carichi
+di ML, dove si leggono poche colonne di tabelle larghe, è la voce dominante.
+
+**Compressione**: dentro una colonna i valori sono omogenei per tipo e spesso
+per contenuto, il che abilita codifiche specializzate (dizionario per le
+categorie a bassa cardinalità, run-length per i valori ripetuti, delta per i
+timestamp) prima ancora della compressione generica. Rapporti di cinque o dieci
+volte rispetto al CSV equivalente sono ordinari.
+
+**Predicate pushdown**: Parquet memorizza per ogni gruppo di righe le
+statistiche di ciascuna colonna (minimo, massimo, conteggio dei nulli), quindi
+un filtro `data > 2026-01-01` può **saltare interi blocchi** senza
+decomprimerli.
+
+A questo si aggiunge una cosa che il CSV strutturalmente non ha: uno **schema**
+con i tipi. Un CSV è testo, e ogni lettore riscopre i tipi per euristica, il
+che è la sorgente di una classe intera di bug silenziosi (l'identificativo con
+gli zeri iniziali letto come intero, la data interpretata secondo la
+convenzione locale, il campo vuoto che diventa `NaN` oppure la stringa
+`"NA"` a seconda del lettore).
+
+**Apache Arrow** risolve un problema ortogonale: è una specifica di
+rappresentazione **in memoria**, colonnare, indipendente dal linguaggio. Il suo
+valore è l'eliminazione della **serializzazione** ai confini: due processi, o
+due librerie in linguaggi diversi, che parlano Arrow si scambiano una tabella
+senza copiarla né convertirla. È la ragione per cui lo stesso formato compare
+sotto motori che non si somigliano affatto, ed è anche il motore dietro
+l'accelerazione delle operazioni di Pandas quando si sceglie il backend Arrow
+al posto di quello NumPy, che per le stringhe fa una differenza sostanziale.
+
+La regola pratica, sintetica: **CSV per scambiare con un umano, Parquet per
+tutto il resto**; e se una tabella attraversa un confine di processo o di
+linguaggio, Arrow.
+
+`````
+
 ## Il feature store
 
 C'è un punto della pipeline che merita un discorso a sé: le **feature**. Una
@@ -427,6 +511,13 @@ esattamente questo: dargli un contratto, e farlo rispettare.
   resa **riproducibile e orchestrata** (un DAG di stadi idempotenti), per non
   degenerare nella *pipeline jungle*; automatizzarla per intero è il cuore della
   CD4ML {cite}`sato2019continuous`.
+- Il **formato** in cui i dati stanno fra uno stadio e l'altro non è un
+  dettaglio: un formato **colonnare** (**Parquet**) legge solo le colonne che
+  servono, comprime molto meglio perché i valori simili sono vicini, salta
+  interi blocchi grazie alle statistiche, e ha uno **schema con i tipi** che al
+  CSV manca. **Arrow** fa la stessa cosa **in memoria**, e serve a passarsi una
+  tabella fra processi o linguaggi senza convertirla. CSV per un umano,
+  Parquet per tutto il resto.
 - Il **feature store** centralizza la definizione delle feature: stessa ricetta
   in addestramento (*offline*) e in produzione (*online*), riuso tra modelli,
   freschezza e **point-in-time correctness** contro il *leakage* temporale.

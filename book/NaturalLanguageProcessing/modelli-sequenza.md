@@ -66,6 +66,25 @@ tutta la sequenza (*weight sharing*). L'addestramento avviene con la
 *backpropagation through time*, cioè la retropropagazione applicata alla rete
 srotolata.
 
+Srotolare, però, ha un costo: la rete srotolata su una sequenza di mille passi
+è una rete profonda mille strati, e per retropropagare bisogna tenere in
+memoria tutte le attivazioni intermedie. Su un testo lungo, o su un flusso che
+non finisce mai, la cosa non sta in piedi. Il rimedio si chiama **BPTT
+troncato**: si spezza la sequenza in blocchi di lunghezza fissa (tipicamente
+qualche decina di passi), si retropropaga dentro un blocco e **si stacca lo
+stato nascosto** al confine, passandolo al blocco successivo come un valore
+qualunque, senza la sua storia. In PyTorch è letteralmente una chiamata,
+`h = h.detach()`.
+
+Il prezzo è dichiarato ed è la ragione per cui vale la pena conoscerlo: il
+gradiente non attraversa mai il confine, quindi **la rete non può imparare
+dipendenze più lunghe del blocco**. Lo stato in avanti sì, continua a
+propagarsi e a portare informazione; è il segnale di apprendimento che si
+ferma. Quando si legge che una ricorrente «fatica sulle dipendenze lunghe»,
+una parte del problema è matematica (il gradiente che svanisce, argomento della
+prossima sezione) e una parte è questa, cioè una scelta di ingegneria presa per
+far entrare l'addestramento in memoria.
+
 `````
 
 ## Quando la memoria si dissolve

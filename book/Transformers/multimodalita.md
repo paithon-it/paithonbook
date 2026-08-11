@@ -40,6 +40,16 @@ frasi, meno a scriverle). **T5** trasforma ogni compito in un tema: "traduci:
 ...", "riassumi: ...", e la risposta è sempre un testo (un formato unico per
 tutti gli esercizi). Quando ChatGPT ti risponde, sotto c'è il metodo di GPT:
 indovinare la parola successiva, solo con miliardi di esempi alle spalle.
+
+C'è un quarto modo di studiare, meno noto e istruttivo, che nasce da
+un'obiezione all'esercizio a buchi: se si cancella una parola su sette, per sei
+parole su sette la rete **non impara niente**, perché non le viene chiesto
+nulla. **ELECTRA** cambia il gioco: invece di cancellare, *sostituisce* qualche
+parola con un'alternativa plausibile, prodotta da un modellino apposta, e poi
+chiede alla rete grande di fare il correttore di bozze, dicendo per **ogni**
+parola se è quella originale o un'intrusa. Il compito è più povero (una
+risposta sì/no invece di indovinare una parola fra decine di migliaia) ma
+riguarda tutto il testo, e a parità di calcolo si impara molto di più.
 `````
 
 `````{tab} Superiore
@@ -57,6 +67,28 @@ task NLP come *text-to-text*, mostrando che un solo formato copre traduzione,
 sintesi, classificazione. La lezione comune: pre-addestramento
 auto-supervisionato su corpora enormi + adattamento leggero (il *transfer
 learning* che avevamo visto per le immagini, arrivato al linguaggio).
+
+**ELECTRA** {cite}`clark2020electra` attacca l'inefficienza del masked language
+modeling: mascherando il $15\%$ dei token, il segnale di addestramento arriva
+solo da quel $15\%$. La sostituisce con la ***replaced token detection***. Un
+**generatore** piccolo (un MLM ordinario) rimpiazza i token mascherati con
+campioni plausibili; il **discriminatore**, che è ELECTRA, riceve la sequenza
+così corrotta e classifica **ogni posizione** come originale o sostituita. Il
+segnale viene da tutta la sequenza, il compito binario è più economico del
+softmax sul vocabolario, e a valle si getta il generatore e si rifinisce il
+discriminatore. Gli autori riportano che un modello addestrato su una sola GPU
+per quattro giorni supera GPT su GLUE pur avendo usato trenta volte meno
+calcolo, e che alla scala grande si eguagliano RoBERTa e XLNet con meno di un
+quarto del loro.
+
+La somiglianza con una **GAN** è dichiarata dagli autori stessi, e istruttiva
+soprattutto per dove si rompe: il generatore **non** è addestrato a ingannare
+il discriminatore (è addestrato con la sua verosimiglianza, come un normale
+MLM), non c'è vettore di rumore in ingresso, e quando produce per caso il token
+giusto quello viene etichettato come *originale* e non come falso. È
+un'architettura avversaria nella forma e cooperativa nella sostanza, e chi ha
+letto il capitolo sulle GAN riconoscerà quanto di quella instabilità venga
+proprio dal pezzo che qui è stato tolto.
 `````
 
 ## Oltre il testo: Vision Transformer e modelli multimodali
@@ -218,6 +250,10 @@ dettagli:
   come text-to-text.
 - La ricetta comune è **pre-addestramento** auto-supervisionato su corpora
   enormi + adattamento (fine-tuning o prompt).
+- **ELECTRA** mostra che l'obiettivo conta quanto l'architettura: sostituire
+  qualche token e far dire alla rete, **per ogni posizione**, se è originale o
+  intrusa, dà segnale su tutta la sequenza invece che sul solo $15\%$
+  mascherato, e a parità di calcolo rende molto di più.
 - **ViT** tratta l'immagine come una frase di tessere $16\times16$; i modelli
   **multimodali** (CLIP, GPT-4) allineano testo e immagini.
 - Costi computazionali, bias nei dati e allucinazioni sono limiti

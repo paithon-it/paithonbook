@@ -86,6 +86,30 @@ parola, «cercare» ed «essere trovati» sarebbero la stessa operazione; con
 Query e Key distinte, una parola può cercare qualcosa di molto diverso da ciò
 che offre.
 
+```{admonition} Un antenato: le reti a memoria
+:class: note
+Interrogare un archivio con una domanda, pesare quanto ciascun elemento le
+risponde, e restituire la miscela pesata di ciò che quegli elementi contengono:
+questa struttura è stata inventata prima dei Transformer, e per un altro scopo.
+
+A metà degli anni Dieci le **memory network** affrontavano il problema di far
+ragionare una rete su un elenco di fatti («Maria è andata in cucina. Giovanni
+ha preso il latte. Dov'è il latte?»). La rete teneva i fatti in una **memoria
+esplicita**, confrontava la domanda con ciascuno di essi, ne ricavava una
+distribuzione di attenzione, e leggeva la memoria pesando con quella. Poi
+ripeteva, usando il risultato come nuova domanda: erano i *hop*, cioè i salti
+di ragionamento, che permettevano di concatenare due fatti per rispondere a una
+domanda che nessuno dei due risolveva da solo.
+
+Due cose da portarsi via. La prima è che quel softmax sui fatti **è**
+l'attenzione, con la sola differenza che qui l'archivio è la sequenza stessa
+invece di un magazzino a parte. La seconda è che la struttura
+interrogazione-contro-archivio, con la memoria tenuta fuori dai pesi della
+rete, è esattamente la forma dei sistemi che nel capitolo su RAG recuperano
+documenti prima di rispondere. Un'idea messa da parte perché la sua epoca non
+aveva né i dati né l'hardware, e tornata due volte sotto altri nomi.
+```
+
 ## Multi-Head Attention: più letture in parallelo
 
 Una sola "passata di evidenziatore" costringe la rete a comprimere in un

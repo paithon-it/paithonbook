@@ -306,6 +306,76 @@ possibili e segnalano un modello peggiore della semplice media.
 
 `````
 
+## Quando il target ha un ordine ma non una distanza
+
+Fra la categoria e il numero c'è un caso intermedio che si incontra spesso e
+che quasi sempre viene trattato male: il target **ordinale**. La fascia d'età,
+le stelle di una recensione, la classe energetica, la gravità di una diagnosi:
+sono categorie, ma **in fila**.
+
+`````{tab} Elementare
+
+Il libro ha già incontrato l'ordinalità come proprietà di una *feature*, cioè
+di un dato in ingresso. Qui è la cosa da **predire** a essere ordinata, e
+cambia quale errore conta.
+
+Se il modello deve stimare la fascia d'età e la risposta giusta è «30-40»,
+rispondere «40-50» è uno sbaglio piccolo e rispondere «over 70» è uno sbaglio
+grosso. L'accuratezza secca non lo sa: per lei sono due errori identici, e un
+modello che sbaglia sempre di una fascia sembra pessimo quanto uno che spara a
+caso. Peggio, se si sceglie il modello con l'accuratezza, si può finire per
+preferire proprio quello che sbaglia di più.
+
+Due rimedi, a seconda di quanto si vuole essere precisi. Il più semplice è
+contare giusta anche la risposta **adiacente**, dicendo esplicitamente che si
+sta misurando così. Il più solido è usare una misura che **pesa gli errori in
+base a quanto sono lontani**, e che quindi punisce lo scambio fra due fasce
+vicine molto meno di quello fra la prima e l'ultima.
+
+La terza via è cambiare problema: se le classi hanno un ordine, si può
+predire un numero e poi tagliarlo in fasce, trattandolo come una regressione.
+Funziona bene quando le fasce sono davvero equidistanti, e male quando non lo
+sono (fra «lieve» e «moderato» può esserci molta meno distanza che fra
+«moderato» e «grave»).
+
+`````
+
+`````{tab} Superiore
+
+Un target ordinale ha $K$ classi con un ordine totale ma **senza una metrica**
+data: sappiamo che $c_1 \prec c_2 \prec c_3$ ma non che la distanza fra le
+prime due sia pari a quella fra le seconde. Trattarlo come nominale butta via
+l'ordine; trattarlo come numerico gli impone una distanza che non ha.
+
+Sul fronte delle **metriche**, l'accuratezza è insensibile all'ordine. Una
+correzione grossolana ma usata è l'accuratezza *one-off*, che conta corretta
+anche la classe adiacente ($|\hat{y}-y| \leq 1$): utile per dichiarare quanto
+un sistema è «quasi giusto», ma arbitraria, perché la soglia a uno non ha
+giustificazione. La misura di riferimento è il **kappa di Cohen pesato
+quadraticamente**,
+
+$$
+\kappa_w = 1 - \frac{\sum_{ij} w_{ij}\, O_{ij}}{\sum_{ij} w_{ij}\, E_{ij}},
+\qquad w_{ij} = \frac{(i-j)^2}{(K-1)^2},
+$$
+
+dove $O$ è la matrice di confusione osservata ed $E$ quella attesa per caso
+date le marginali. I pesi quadratici fanno pagare l'errore in proporzione al
+**quadrato** della distanza fra le classi, e la normalizzazione per $E$
+corregge per l'accordo dovuto al caso, il che la rende robusta anche a classi
+molto sbilanciate. È la metrica scelta da diverse competizioni su diagnosi a
+stadi, per esattamente questa ragione.
+
+Sul fronte del **modello**, la soluzione elegante è la **regressione
+ordinale**: invece di $K$ probabilità indipendenti si stima una variabile
+latente continua e $K-1$ soglie, e la probabilità cumulata
+$P(y \leq k) = \sigma(\tau_k - f(\mathbf{x}))$ è monotona per costruzione. Il
+vantaggio pratico rispetto alla regressione seguita da arrotondamento è che le
+soglie sono **apprese** invece che imposte equidistanti, quindi il modello può
+scoprire che fra due classi c'è poco spazio e fra altre due molto.
+
+`````
+
 ## Scegliere la metrica giusta
 
 Non esiste "la" metrica migliore: esiste quella allineata al problema. Il
