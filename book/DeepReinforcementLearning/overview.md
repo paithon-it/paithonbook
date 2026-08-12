@@ -39,7 +39,7 @@ Un fotogramma di gioco, ridotto come nell'esperimento originale a $84\times84$
 pixel in $256$ livelli di grigio, ha
 
 $$
-|S| = 256^{\,84\times 84} = 256^{7056}
+|\mathcal{S}| = 256^{\,84\times 84} = 256^{7056}
 $$
 
 stati possibili: un numero con migliaia di cifre, incommensurabilmente più
@@ -53,10 +53,12 @@ dati per visitarli tutti esisteranno mai. Il problema non è l'algoritmo, è la
 ## L'idea: una rete al posto della tabella
 
 La svolta concettuale è semplice da enunciare. Se non possiamo *elencare* il
-valore di ogni stato, proviamo ad **approssimarlo** con una funzione che
-*generalizza*: stati simili (schermate simili), dovrebbero ricevere giudizi
-simili. E quale strumento sappiamo essere bravissimo a leggere immagini ed
-estrarne una risposta? Una rete neurale, in particolare convoluzionale
+valore di ogni schermata, proviamo a **calcolarlo sul momento** con qualcosa che
+sappia **generalizzare**, cioè rispondere anche su un caso mai visto perché
+somiglia a casi già visti: schermate simili dovrebbero ricevere giudizi simili.
+E quale strumento sappiamo essere bravissimo a leggere immagini ed estrarne una
+risposta? Una rete neurale, e in particolare una rete **convoluzionale**, il
+tipo di rete costruito apposta per guardare immagini
 ({numref}`fig-drl-pixel-to-q`).
 
 ```{figure} ../figures/drl-pixel-to-q.svg
@@ -65,8 +67,9 @@ estrarne una risposta? Una rete neurale, in particolare convoluzionale
 :width: 90%
 
 Dal pixel alla decisione. La rete riceve lo schermo grezzo e restituisce, in
-un colpo solo, il valore stimato $Q(s,a)$ di ogni mossa disponibile: si sceglie
-quella col valore più alto.
+un colpo solo, un voto per ciascuna mossa disponibile: si sceglie quella col
+voto più alto. Nel disegno quel voto è scritto $Q(s,a)$, che si legge «quanto
+vale la mossa $a$ nella situazione $s$».
 ```
 
 `````{tab} Elementare
@@ -104,7 +107,7 @@ che il capitolo affronterà entrambe.
 
 ```{figure} ../figures/dqn-atari-2015.svg
 :name: fig-dqn-atari
-:alt: "Ciclo di DQN: i pixel dello schermo del gioco entrano in una rete convoluzionale che stima il valore Q di ciascuna azione possibile; si sceglie l'azione col valore più alto, l'emulatore la esegue e restituisce il fotogramma successivo e la ricompensa, che rientrano nel ciclo. Un blocco laterale rappresenta la memoria delle esperienze passate da cui si ripesca per addestrare."
+:alt: "Ciclo di DQN: i pixel dello schermo del gioco entrano in una rete convoluzionale che stima il valore Q di ciascuna azione possibile; si sceglie l'azione col valore più alto, l'emulatore la esegue e restituisce la ricompensa. La transizione appena vissuta non viene usata subito: un percorso tratteggiato la porta in un blocco a parte, la memoria delle esperienze, da cui si ripescano a caso i ricordi con cui si addestra la rete."
 :width: 100%
 
 Dai pixel all'azione, senza niente in mezzo. Alla rete non si dice cosa sia
@@ -112,11 +115,12 @@ una navicella o un mattoncino: riceve lo schermo grezzo, come lo riceve una
 persona.
 ```
 
-Il blocco laterale di {numref}`fig-dqn-atari` è quello che rende stabile tutto
-il resto, e la sezione sul prezzo da pagare ci tornerà sopra. Addestrare sui
-fotogrammi nell'ordine in cui arrivano significa dare alla rete esempi
-consecutivi e quindi molto simili; ripescarli a caso da una memoria spezza
-quella correlazione.
+Il blocco laterale di {numref}`fig-dqn-atari`, la memoria delle esperienze, è
+quello che rende stabile tutto il resto, e la sezione sul prezzo da pagare ci
+tornerà sopra. Addestrare sui fotogrammi nell'ordine in cui arrivano significa
+dare alla rete esempi consecutivi, e quindi quasi identici fra loro; ripescarli
+a caso dalla memoria li rimescola, e la rete torna a vedere situazioni diverse
+una dall'altra.
 
 Quel primo lavoro, *Playing Atari with Deep Reinforcement Learning* (Mnih e
 colleghi, 2013), diventa nel 2015 un articolo su *Nature*, *Human-level
@@ -125,10 +129,12 @@ ritocchi specifici per gioco, raggiunge o supera il livello di un giocatore
 umano professionista in molti dei 49 titoli Atari testati. È la prova che
 pixel grezzi e ricompensa scarna bastano.
 
-L'anno dopo arriva il colpo che raggiunge il grande pubblico: **AlphaGo**
-(Silver e colleghi, *Nature* 2016) batte per 4 a 1 il campione Lee Sedol nel
-Go, un gioco con più configurazioni che atomi nell'universo, a lungo
-considerato fuori portata per le macchine. Deep reinforcement learning e
+L'anno dopo arriva il colpo che raggiunge il grande pubblico. L'articolo su
+*Nature* del gennaio 2016 (Silver e colleghi) presenta **AlphaGo** e la
+vittoria per 5 a 0 sul campione europeo Fan Hui; due mesi più tardi, a Seul,
+lo stesso programma batte per 4 a 1 Lee Sedol, fra i più forti giocatori al
+mondo. Il Go, un gioco con più configurazioni che atomi nell'universo, era a
+lungo considerato fuori portata per le macchine. Deep reinforcement learning e
 ricerca ad albero, insieme. Il deep RL smette di essere una curiosità da
 laboratorio.
 
@@ -164,18 +170,29 @@ la versione di *Nature* usava circa $50$ milioni di fotogrammi per titolo. La
 
 ## Come è organizzato il capitolo
 
-Partiremo dal **DQN** e dai suoi ingredienti stabilizzanti (experience replay
-e rete target) costruendo un agente che gioca a un ambiente Atari con
-`gymnasium` e PyTorch. Vedremo poi i miglioramenti più influenti (Double DQN,
-Dueling, replay prioritizzato). Cambieremo quindi famiglia con i metodi a
-**gradiente di policy** e gli approcci **actor-critic** (A2C, A3C, PPO). Da lì
-apriremo la cassetta degli attrezzi del deep RL moderno: il **controllo
-continuo** per la robotica (DDPG, TD3, SAC), l'apprendimento **basato su
-modello** che impara a pianificare (da Dyna a MuZero e Dreamer), l'**offline
-RL** che impara da dati già raccolti senza mai interagire (fino al Decision
-Transformer), e il nodo dell'**esplorazione** con ricompense sparse, con
-l'insidia del *reward hacking*, che ci accompagnerà fino al capitolo sull'AI
-responsabile. Chiuderemo tornando al filo che unisce tutto: la ricerca dietro
-ad AlphaGo e ai suoi successori. L'obiettivo non è collezionare acronimi, ma
-capire *perché* ciascun pezzo esiste: quale fragilità dell'idea precedente è
-venuto a curare.
+Il percorso segue le domande, non gli acronimi: di ogni pezzo interessa *perché*
+esiste, cioè quale fragilità del pezzo precedente è venuto a curare.
+
+Si comincia dal **DQN**, la rete che prende il posto della tabella, e dai due
+accorgimenti che le impediscono di esplodere: la memoria delle esperienze e la
+copia congelata. Poi si cambia famiglia. Invece di dare un voto a ogni mossa e
+scegliere la migliore, si può imparare **direttamente a decidere**: è la strada
+dei metodi a *gradiente di policy*, e passa per l'idea di affiancare al
+giocatore un giudice, per l'algoritmo che oggi si usa quasi sempre (PPO), per la
+ricerca ad albero che sta dietro ad AlphaGo, e per il modo in cui si addestrano
+oggi gli assistenti conversazionali. Quella strada serve subito, perché nel
+**controllo continuo** (un braccio robotico, uno sterzo) le mosse non sono un
+menu di poche voci e la ricetta del DQN non si applica più.
+
+Le tre sezioni che seguono attaccano tutte lo stesso problema, cioè che
+l'esperienza costa. Il RL **basato su modello** fa provare all'agente le mosse
+nella propria testa prima che nel mondo. L'**imitazione** salta i tentativi ed
+errori: si guarda qualcuno che il compito lo sa già fare, e si scopre perché non
+basta. L'**offline RL** impara da un archivio di esperienze altrui senza mai
+agire, che è l'unica strada quando sbagliare è pericoloso, in terapia intensiva
+come al volante.
+
+Si chiude sull'**esplorazione**: cosa fare quando la ricompensa arriva così di
+rado che non c'è nulla da inseguire, e cosa succede quando l'agente ottimizza
+*troppo* bene una ricompensa scritta male. Quest'ultima insidia, il *reward
+hacking*, è il ponte verso il capitolo sull'AI responsabile.

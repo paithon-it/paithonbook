@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  paithon book — figura: una rete neurale a strati con i due movimenti
+  paithon book, figura: una rete neurale a strati con i due movimenti
   dell'addestramento. In alto la freccia del FORWARD pass (terracotta):
   i dati avanzano da sinistra a destra, strato per strato, fino alla
   previsione. In basso la freccia del BACKWARD pass (teal): il gradiente

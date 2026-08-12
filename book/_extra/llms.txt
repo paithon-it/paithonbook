@@ -17,8 +17,8 @@ della sezione e URL), non si ridistribuisce il testo.
 
 ## Fondamenta
 
-- [Prefazione](https://book.paithon.it/main/prefazione.html): Questo libro è stato scritto una prima volta nel 2019, per uscire su carta. Aveva un indice di quindici capitoli, una copertina provvisoria e una prefazione, che è più o meno il testo che stai…
-- [Introduzione](https://book.paithon.it/main/Introduzione/overview.html): Joseph Weizenbaum, informatico tedesco emigrato negli Stati Uniti, professore al MIT e creatore di ELIZA, il primo chatbot della storia, un programma che già a metà degli anni Sessanta permetteva a…
+- [Prefazione](https://book.paithon.it/main/prefazione.html): Questo libro è stato scritto una prima volta nel 2019, per uscire su carta. Aveva un indice di quattordici capitoli, una copertina provvisoria e questa prefazione, che in quell'indice era la voce…
+- [Introduzione](https://book.paithon.it/main/Introduzione/overview.html): Joseph Weizenbaum era un informatico tedesco emigrato negli Stati Uniti e professore al MIT. Nel 1966 presentò al mondo ELIZA, il primo chatbot della storia: un programma con cui si poteva…
   - [Python e l'AI](https://book.paithon.it/main/Introduzione/massimo_comune_divisore.html)
   - [Robotica e AI](https://book.paithon.it/main/Introduzione/applicazioni.html)
   - [Conclusione](https://book.paithon.it/main/Introduzione/conclusione.html)
@@ -116,7 +116,7 @@ della sezione e URL), non si ridistribuisce il testo.
   - [POS tagging ed entità](https://book.paithon.it/main/NaturalLanguageProcessing/etichettare-sequenze.html)
   - [Sintassi e parsing](https://book.paithon.it/main/NaturalLanguageProcessing/struttura-frase.html)
   - [Dialogo e chatbot](https://book.paithon.it/main/NaturalLanguageProcessing/dialogo-chatbot.html)
-- [Transformer](https://book.paithon.it/main/Transformers/overview.html): Nell'estate del 2017 otto ricercatori di Google pubblicano un paper dal titolo che suona come una battuta: Attention Is All You Need ; "l'attenzione è tutto ciò che serve", eco del ritornello dei…
+- [Transformer](https://book.paithon.it/main/Transformers/overview.html): Nell'estate del 2017 otto ricercatori, tutti passati per Google Brain e Google Research, pubblicano un paper (un articolo scientifico: il modo in cui chi fa ricerca racconta agli altri quello che ha…
   - [Il meccanismo di attenzione](https://book.paithon.it/main/Transformers/attenzione.html)
   - [La struttura del Transformer](https://book.paithon.it/main/Transformers/architettura.html)
   - [Confronto coi modelli precedenti](https://book.paithon.it/main/Transformers/confronti.html)
@@ -171,7 +171,7 @@ della sezione e URL), non si ridistribuisce il testo.
   - [Imparare senza etichette](https://book.paithon.it/main/Audio/rappresentazioni-auto-supervisionate.html)
   - [Codec neurali](https://book.paithon.it/main/Audio/codec-neurali.html)
   - [Generare suono e musica](https://book.paithon.it/main/Audio/generazione-audio.html)
-- [Speech Recognition](https://book.paithon.it/main/SpeechRecognition/overview.html): Nel 1952, nei laboratori della Bell Telephone, un apparecchio ingombrante fatto di valvole e relè imparò a riconoscere le cifre da zero a nove pronunciate ad alta voce.
+- [Speech Recognition](https://book.paithon.it/main/SpeechRecognition/overview.html): Nel 1952, nei laboratori della Bell Telephone, un apparecchio ingombrante fatto di valvole e relè (l'elettronica di allora: bulbi di vetro incandescenti e interruttori che scattano da soli) imparò a…
   - [I modelli di riconoscimento](https://book.paithon.it/main/SpeechRecognition/modelli-asr.html)
   - [Sintesi vocale](https://book.paithon.it/main/SpeechRecognition/sintesi-vocale.html)
 
@@ -190,14 +190,14 @@ della sezione e URL), non si ridistribuisce il testo.
   - [Oltre la partizione](https://book.paithon.it/main/ModelliEnergia/oltre-la-partizione.html)
   - [Energia come compatibilità](https://book.paithon.it/main/ModelliEnergia/energia-come-compatibilita.html)
   - [Paesaggi di oggi](https://book.paithon.it/main/ModelliEnergia/paesaggi-di-oggi.html)
-- [World Model](https://book.paithon.it/main/WorldModels/overview.html): «Un gatto di casa ha molto più senso comune e comprensione del mondo di qualunque LLM.» A scriverlo, all'inizio del 2023, non è uno scettico qualsiasi ma Yann LeCun (premio Turing 2018, uno dei…
+- [World Model](https://book.paithon.it/main/WorldModels/overview.html): Un gatto di casa ha molto più senso comune e comprensione del mondo di qualunque modello di linguaggio.
   - [Mondi in miniatura](https://book.paithon.it/main/WorldModels/mondi-in-miniatura.html)
   - [La via di LeCun (JEPA)](https://book.paithon.it/main/WorldModels/jepa.html)
   - [Simulare il mondo](https://book.paithon.it/main/WorldModels/simulatori-e-dibattito.html)
 
 ## Altri dati, altri domini
 
-- [Graph Neural Network](https://book.paithon.it/main/GraphNeuralNetwork/overview.html): Nell'estate del 1736 la città prussiana di Königsberg (oggi Kaliningrad, in Russia) aveva un passatempo cittadino.
+- [Graph Neural Network](https://book.paithon.it/main/GraphNeuralNetwork/overview.html): Nella Königsberg del primo Settecento (oggi Kaliningrad, in Russia) c'era un passatempo cittadino. Il fiume Pregel divideva la città prussiana in quattro lembi di terra, due sponde e due isole,…
   - [Il mondo come grafo](https://book.paithon.it/main/GraphNeuralNetwork/dati-a-grafo.html)
   - [Message passing](https://book.paithon.it/main/GraphNeuralNetwork/message-passing.html)
   - [I knowledge graph](https://book.paithon.it/main/GraphNeuralNetwork/knowledge-graph.html)

@@ -27,7 +27,8 @@ vuol dire, per questo servizio, *andare veloce*.
 
 La generazione ha due fasi, incontrate nel capitolo sui Transformer parlando di
 KV cache. Nella prima il modello legge il **prompt**, tutti i token insieme in
-una sola passata, e produce le key e le value che finiranno in cache: è il
+una sola passata, e si prende gli appunti su ciò che ha letto (le *key* e le
+*value* che finiscono in cache): è il
 **prefill**. Nella seconda genera un token alla volta, ciascuno condizionato ai
 precedenti: è il **decode**, la fase memory-bound su cui è costruita l'intera
 sezione precedente. Le due metriche di base cadono esattamente su questa
@@ -265,7 +266,14 @@ G = \frac{1}{T}\sum_{i=1}^{R}
 $$
 
 dove $\mathbb{1}[\cdot]$ vale $1$ se la richiesta $i$ rispetta **entrambe** le
-soglie e $0$ altrimenti. Il throughput è la stessa somma senza l'indicatore,
+soglie e $0$ altrimenti. Costruito così, però, il goodput eredita il difetto
+del TPOT, che è una media: la richiesta con duecento intervalli da 20 ms e uno
+da due secondi ha $\text{TPOT} = 29{,}85$ ms, quindi passa una soglia
+$\tau_{\text{p}} = 50$ ms e viene contata fra quelle servite bene, benché
+l'utente l'abbia vista bloccarsi a metà frase. La stessa costruzione con
+$\max_i \text{ITL}$ al posto del TPOT dà un goodput più severo e più aderente
+all'esperienza, ed è quello che si sorveglia quando la fluidità conta. Il
+throughput è la stessa somma senza l'indicatore,
 $R/T$: il goodput è dunque il throughput moltiplicato per la frazione conforme,
 e non può mai superarlo. Nella pianificazione della capacità se ne usa la
 variante duale, quella con cui il termine si è diffuso nella letteratura sul
@@ -286,8 +294,12 @@ spettacolare senza che nessun utente veda il testo scorrere più in fretta.
 Vale la pena vederlo su due configurazioni dello stesso sistema, con obiettivi
 di 500 ms sul TTFT e 50 ms sul TPOT. Le cifre che seguono escono dalla
 simulazione di poche righe più avanti, non da una misura sul campo: servono a
-mostrare la forma del fenomeno, non a stimarne l'entità su un modello
-particolare. La prima configurazione serve un batch da 16 sequenze: smaltisce
+mostrare il rapporto fra throughput, frazione conforme e goodput, non a
+stimare l'entità del fenomeno su un modello particolare. Nella simulazione,
+per giunta, le latenze traslano in blocco quando il batch cresce, mentre in un
+sistema vero la coda si allarga anche in proporzione, perché chi si accoda
+dietro un batch grande aspetta un tempo che dipende da dove capita. La prima
+configurazione serve un batch da 16 sequenze: smaltisce
 20,0 richieste al secondo e ne tiene il 92,5% dentro entrambe le soglie, per un
 goodput di 18,5. La seconda allarga il batch a 64: il throughput sale a 32,0
 richieste al secondo, il $60\%$ in più, ma la frazione conforme scende al 49,4%
@@ -303,37 +315,60 @@ in cima al cruscotto.
 
 ```{figure} ../figures/costo-api-llm-guida-prezzi.svg
 :name: fig-costo-per-caso-uso
-:alt: "Barre orizzontali che confrontano il costo per mille operazioni in quattro casi d'uso diversi, da una classificazione breve fino a un'elaborazione lunga con molto contesto: l'ordine di grandezza cambia di oltre duecento volte fra il primo e l'ultimo, pur trattandosi dello stesso modello."
+:alt: "Barre orizzontali che confrontano il costo per mille operazioni in quattro casi d'uso diversi, da una classificazione breve fino a un'elaborazione lunga con molto contesto: fra il primo e l'ultimo il costo cambia di circa quattrocento volte, pur trattandosi dello stesso modello."
 :width: 96%
 
 Lo stesso modello, costi incomparabili. A cambiare non è il prezzo per token
 ma quanti token servono, e quello lo decide come è fatta la richiesta.
 ```
 
-Il divario di {numref}`fig-costo-per-caso-uso` va letto insieme alle metriche
-di questa sezione perché è la stessa grandezza vista da un'altra parte: i
-token che si pagano sono gli stessi che occupano la finestra, riempiono la KV
-cache e allungano la latenza. Ottimizzare l'una cosa ottimizza le altre. Qui la regola vale doppio, per tre ragioni specifiche
-della generazione.
+Il divario di {numref}`fig-costo-per-caso-uso` dice una cosa sola, e non
+riguarda i listini: quello che fa il costo è **quanti token servono**, cioè
+quanto testo entra e quanto ne esce, e quello lo decide la forma della
+richiesta. Classificare una frase manda poche parole e ne riceve una;
+riassumere un documento lungo ne manda migliaia; una conversazione le rimanda
+tutte a ogni turno. È la stessa grandezza di cui parla questa sezione, vista
+dal lato del conto invece che da quello del tempo: i token che si pagano sono
+gli stessi che occupano la finestra, riempiono la KV cache e allungano la
+latenza, e ottimizzare l'una cosa ottimizza le altre. Sul tempo, poi, la regola
+dei percentili vale doppio, per tre ragioni specifiche della generazione.
 
 La prima è che i percentili vanno riportati **per ciascuna metrica**, non sulla
 latenza complessiva: la p99 del TTFT e quella del TPOT si degradano per cause
 diverse (prompt lunghi e code in ingresso la prima, batch troppo grandi e
 prefill intrusi la seconda) e un numero aggregato le confonde.
 
-La seconda è che le code si compongono. Un agente, come abbiamo visto nel
-capitolo dedicato, concatena parecchie chiamate per rispondere una volta: se
-ciascuna ha l'$1\%$ di probabilità di finire nella coda lenta, la probabilità
-che *almeno una* di venti ci finisca è $1 - 0{,}99^{20} \approx 18\%$. Una p99
+La seconda è che le code si compongono, e *come* si compongono dipende dalla
+forma del sistema. Il caso che morde è quello in cui una risposta aspetta molte
+chiamate lanciate **insieme**: il recupero di venti frammenti di documento, un
+gruppo di strumenti interrogati in parallelo. Lì si aspetta la più lenta di
+tutte, e la lentezza di una sola si trasferisce intera all'insieme. Se ciascuna
+ha l'$1\%$ di probabilità di finire nella coda lenta, la probabilità che
+*almeno una* delle venti ci finisca è $1 - 0{,}99^{20} \approx 18\%$: si calcola
+la probabilità che vadano bene tutte e venti ($0{,}99$ moltiplicato per sé
+stesso venti volte, cioè circa l'$82\%$) e la si toglie da uno. Una p99
 rassicurante sul singolo passo diventa un utente scontento su cinque
-sull'intera interazione.
+sull'intera interazione, ed è l'argomento di Dean e Barroso
+{cite}`dean2013tail`: in un sistema che si dirama, i percentili alti contano
+più di qualunque media.
+
+Nel caso opposto l'effetto si rovescia, e conviene saperlo per non applicare il
+conto dove non vale. Un agente che concatena venti chiamate **una dopo
+l'altra** non aspetta la più lenta: somma i tempi, e sommando si compensa (il
+passo sfortunato è annacquato dagli altri diciannove), tanto che la coda del
+totale risulta più stretta di quella del singolo passo. Lì il problema non è la
+coda, è il **budget totale**, venti volte più grande, che sfonda lo SLO da
+solo.
 
 La terza si vede nell'esempio appena fatto: a batch 64 il TTFT **medio** è 457
-ms, dentro l'obiettivo di 500 ms, mentre la p99 è 893 ms, quasi il doppio. Chi
-riportasse la media direbbe in buona fede che il sistema rispetta la promessa, e
-sarebbe smentito da una richiesta su cento. Vale la regola operativa: **una
-media che migliora mentre la p99 peggiora è un peggioramento**, da trattare come
-una regressione. È il primo livello del cruscotto di «Sorvegliare un modello
+ms, dentro l'obiettivo di 500 ms, mentre la p99 è 893 ms, quasi il doppio.
+Peggiorano entrambe, ma una sola delle due attraversa la riga che conta: chi
+riportasse la media direbbe in buona fede che il sistema rispetta la promessa,
+e sarebbe smentito da una richiesta su cento. È il modo più comune in cui un
+cruscotto verde copre un servizio in rosso. Vale poi, a maggior ragione, il
+caso che qui non si vede e che in produzione capita: **una media che migliora
+mentre la p99 peggiora è un peggioramento**, da trattare come una regressione.
+È il primo livello del cruscotto di «Sorvegliare un modello
 vivo» (salute del servizio: latenza, errori, uptime), declinato sulle due
 latenze che la generazione ha invece di una.
 
@@ -374,7 +409,7 @@ continua a crescere: più lunga è la conversazione, più conviene.
 
 `````{tab} Superiore
 
-Nell'attenzione causale la coppia $(K, V)$ della posizione $j$ dipende solo dai
+Nell'attenzione causale la coppia $(\mathbf{k}, \mathbf{v})$ della posizione $j$ dipende solo dai
 token $1, \dots, j$. Due richieste che condividono un prefisso hanno quindi, per
 quelle posizioni, una KV cache **bit a bit identica**, a parità di pesi,
 precisione, eventuale adattatore LoRA e codifica posizionale. La chiave del
@@ -415,9 +450,10 @@ tempo, della stessa famiglia degli attacchi che il capitolo sull'AI responsabile
 affronterà parlando di privacy, e le difese sono di progetto, non di taratura:
 partizionare la cache per cliente e condividere solo i prefissi dichiarati
 pubblici, tipicamente l'istruzione di sistema del prodotto. Stessa disciplina
-per la correttezza: una cache che ignori modello, adattatore e precisione con
-cui i blocchi sono stati calcolati restituisce gli appunti di un altro modello,
-e nessuno se ne accorge.
+per la correttezza: una cache che ignori con quale modello, con quale
+*adattatore* (i pochi pesi aggiunti per specializzarlo, la LoRA vista nel
+capitolo sui Transformer) e con quale precisione i blocchi sono stati
+calcolati restituisce gli appunti di un altro modello, e nessuno se ne accorge.
 
 ## Misurare in venti righe
 
@@ -498,10 +534,10 @@ sbagliata non produce un fallimento rumoroso, produce un successo apparente.
   servite e $-15\%$ di richieste servite *bene*.
 - **Le medie mentono**: si guardano i percentili alti (p95 e p99, cioè il caso
   peggiore su venti e su cento), riportati separatamente per ciascuna delle due
-  attese. E le lentezze si sommano lungo una catena di chiamate: se una su
-  cento è lenta, su venti chiamate di fila la probabilità che almeno una lo sia
-  arriva al $18\%$. Una media che migliora mentre il caso peggiore peggiora è
-  un peggioramento.
+  attese. E quando una risposta aspetta venti richieste **lanciate insieme**, si
+  aspetta la più lenta: se una su cento è lenta, la probabilità che almeno una
+  delle venti lo sia arriva al $18\%$. Una media che migliora mentre il caso
+  peggiore peggiora è un peggioramento.
 - La leva che resta è **riusare l'inizio**: istruzione di sistema, documento
   allegato e cronologia della conversazione si ripetono identici a ogni
   richiesta, come le pagine di premesse dello studio notarile. Tenerne gli
@@ -535,10 +571,12 @@ sbagliata non produce un fallimento rumoroso, produce un successo apparente.
   (nell'esempio $+60\%$ di richieste servite e $-15\%$ di richieste servite
   *bene*). È la misura che rende visibile il compromesso fra throughput e
   latenza.
-- **Le medie mentono**: p50, p95 e p99 vanno riportati per ciascuna metrica; le
-  code si compongono lungo le catene di chiamate
-  ($1 - 0{,}99^{20} \approx 18\%$ con venti passi); una media che migliora
-  mentre la p99 peggiora è una regressione.
+- **Le medie mentono**: p50, p95 e p99 vanno riportati per ciascuna metrica. Le
+  code si compongono nel **fan-out**, dove si aspetta la più lenta di $n$
+  chiamate parallele ($1 - 0{,}99^{20} \approx 18\%$ con venti)
+  {cite}`dean2013tail`; in una **catena sequenziale** invece si sommano e la
+  coda relativa si stringe, ma sfonda lo SLO il budget totale. Una media che
+  migliora mentre la p99 peggiora è una regressione.
 - Il **riuso del prefisso** è la leva che resta: istruzione di sistema,
   documenti allegati e cronologia di conversazione rendono identica una parte
   della KV cache. Un **albero dei prefissi** {cite}`zheng2024sglang` la condivide

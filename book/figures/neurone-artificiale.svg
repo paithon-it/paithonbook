@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  paithon book — figura: il neurone artificiale (percettrone).
+  paithon book, figura: il neurone artificiale (percettrone).
   Ingressi x1..xn, ciascuno con un peso w1..wn, confluiscono in un
   sommatore Sigma (che aggiunge il bias b); il risultato attraversa una
   funzione di attivazione a gradino e produce l'uscita y.

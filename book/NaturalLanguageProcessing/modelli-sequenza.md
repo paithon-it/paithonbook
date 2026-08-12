@@ -8,10 +8,12 @@ muro» non è un sacchetto di parole mescolabili a piacere: l'ordine *è* il
 significato.
 
 Un modello che vuole capire o generare testo deve quindi fare due cose che una
-comune rete *feed-forward* non sa fare: trattare l'input come una **sequenza**
-di lunghezza variabile, e portarsi dietro una **memoria del contesto** man mano
-che avanza. Questo capitolo racconta come, tra gli anni Ottanta e il 2017, si è
-passati dalle prime reti con memoria fino alla vigilia dei Transformer.
+rete come quelle viste finora non sa fare (le si chiama *feed-forward*, «che va
+solo in avanti», perché il segnale le attraversa da un capo all'altro senza
+tornare mai indietro): trattare l'input come una **sequenza** di lunghezza
+variabile, e portarsi dietro una **memoria del contesto** man mano che avanza.
+Questa sezione racconta come, tra gli anni Ottanta e il 2017, si è passati
+dalle prime reti con memoria fino alla vigilia dei Transformer.
 
 ## Le reti ricorrenti: una memoria che scorre nel tempo
 
@@ -27,8 +29,10 @@ riassume «tutto ciò che ho letto finora».
 :width: 95%
 
 Una RNN «srotolata» nel tempo. È **sempre la stessa cella** (stessi pesi)
-applicata a ogni passo: riceve l'input $x_t$ e lo stato precedente $h_{t-1}$,
-produce il nuovo stato $h_t$ e una predizione $\hat{y}_t$.
+applicata a ogni passo: riceve la parola di turno e il riassunto di tutto
+quello che è venuto prima, e produce il riassunto aggiornato più una
+predizione. Nella notazione delle formule: entrano $\mathbf{x}_t$ e
+$\mathbf{h}_{t-1}$, escono $\mathbf{h}_t$ e $\hat{\mathbf{y}}_t$.
 ```
 
 Il modo migliore per capirla è «srotolarla», come in {numref}`fig-rnn-srotolata`:
@@ -49,22 +53,22 @@ impara un gesto diverso per ogni parola, ne impara uno solo e lo riusa.
 
 `````{tab} Superiore
 
-A ogni passo temporale $t$ la cella combina l'input corrente $x_t$ con lo stato
-precedente $h_{t-1}$ tramite una trasformazione lineare seguita da una non
-linearità:
+A ogni passo temporale $t$ la cella combina l'input corrente $\mathbf{x}_t$ con
+lo stato precedente $\mathbf{h}_{t-1}$ tramite una trasformazione lineare
+seguita da una non linearità:
 
 $$
-h_t = \tanh\!\left(W_{hh}\,h_{t-1} + W_{xh}\,x_t + b_h\right),
+\mathbf{h}_t = \tanh\!\left(\mathbf{W}_{hh}\,\mathbf{h}_{t-1} + \mathbf{W}_{xh}\,\mathbf{x}_t + \mathbf{b}_h\right),
 \qquad
-\hat{y}_t = W_{hy}\,h_t .
+\hat{\mathbf{y}}_t = \mathbf{W}_{hy}\,\mathbf{h}_t .
 $$
 
-Qui $h_t \in \mathbb{R}^d$ è lo stato nascosto, $x_t$ l'input al passo $t$,
-mentre $W_{hh}, W_{xh}, W_{hy}$ sono matrici di pesi e $b_h$ il bias. Il punto
-cruciale è che **queste matrici non dipendono da $t$**: sono *condivise* su
-tutta la sequenza (*weight sharing*). L'addestramento avviene con la
-*backpropagation through time*, cioè la retropropagazione applicata alla rete
-srotolata.
+Qui $\mathbf{h}_t \in \mathbb{R}^d$ è lo stato nascosto, $\mathbf{x}_t$ l'input
+al passo $t$, mentre $\mathbf{W}_{hh}, \mathbf{W}_{xh}, \mathbf{W}_{hy}$ sono
+matrici di pesi e $\mathbf{b}_h$ il bias. Il punto cruciale è che **queste
+matrici non dipendono da $t$**: sono *condivise* su tutta la sequenza (*weight
+sharing*). L'addestramento avviene con la *backpropagation through time*, cioè
+la retropropagazione applicata alla rete srotolata.
 
 Srotolare, però, ha un costo: la rete srotolata su una sequenza di mille passi
 è una rete profonda mille strati, e per retropropagare bisogna tenere in
@@ -113,8 +117,8 @@ lontano si ottiene moltiplicando molte matrici jacobiane in cascata. Il termine
 critico ha la forma
 
 $$
-\frac{\partial h_t}{\partial h_{t-k}}
-= \prod_{i=t-k+1}^{t} \frac{\partial h_i}{\partial h_{i-1}} ,
+\frac{\partial \mathbf{h}_t}{\partial \mathbf{h}_{t-k}}
+= \prod_{i=t-k+1}^{t} \frac{\partial \mathbf{h}_i}{\partial \mathbf{h}_{i-1}} ,
 $$
 
 un prodotto di $k$ fattori. Se questi fattori hanno norma tipicamente minore di
@@ -132,8 +136,18 @@ Bengio, Patrice Simard e Paolo Frasconi {cite}`bengio1994learning`.
 
 La soluzione, proposta da Sepp Hochreiter e Jürgen Schmidhuber
 {cite}`hochreiter1997long`, è la **LSTM** (*Long Short-Term Memory*).
-L'intuizione: dare alla cella una memoria protetta, e insegnarle a decidere
-(con dei «cancelli») cosa scrivere, cosa cancellare e cosa leggere.
+L'intuizione: dare alla cella una memoria protetta (un anello in cui il segnale
+gira senza attenuarsi, che gli autori chiamano *constant error carousel*) e due
+cancelli che decidono che cosa scriverci dentro e che cosa leggerne.
+
+Il terzo cancello, quello che decide che cosa **cancellare**, non c'era nel
+lavoro del 1997 e arriva tre anni dopo, con Felix Gers, Jürgen Schmidhuber e
+Fred Cummins {cite}`gers2000learning`. Nasce da un difetto scoperto all'uso, ed
+è il rovescio esatto del problema di partenza: su un flusso che non finisce mai
+(un testo che continua, un segnale che arriva senza sosta) una memoria che non
+si azzera mai satura, e la cella smette di essere sensibile a qualunque novità.
+La forma con tre cancelli è quella che oggi si chiama LSTM senz'altra
+specificazione, ed è quella che segue.
 
 ```{figure} ../figures/lstm-gru-cancelli-memoria.svg
 :name: fig-cella-lstm
@@ -146,10 +160,18 @@ riscriverla da capo a ogni passo.
 ```
 
 Il dettaglio decisivo di {numref}`fig-cella-lstm` è la linea orizzontale che
-passa da sinistra a destra quasi indisturbata. In una RNN semplice lo stato
-viene rimoltiplicato a ogni passo, e per questo svanisce o esplode; qui la
-strada principale è fatta di somme, e il gradiente ci può viaggiare sopra per
-molti passi senza spegnersi.
+passa da sinistra a destra quasi indisturbata, e conviene dire perché sia
+decisiva. Una rete impara correggendo i propri numeri, e per correggerli deve
+poter risalire all'indietro fino al punto in cui l'errore è nato: quel segnale
+di ritorno si chiama **gradiente**, ed è il segnale che dice a ogni pezzo della
+rete quanto e in che verso spostarsi. In una RNN semplice il riassunto viene
+rimoltiplicato per gli stessi numeri a ogni passo, e ripetere una
+moltiplicazione cento volte porta o a zero o all'infinito, come succede a
+$0{,}9$ elevato a cento (quasi zero) e a $1{,}1$ elevato a cento (un numero
+enorme): il segnale di ritorno o si spegne o esplode, e la rete non impara più
+niente sulle cose lontane. Nella LSTM la strada principale è fatta invece di
+**somme**, e su una somma il segnale di ritorno passa senza attenuarsi: può
+viaggiare all'indietro per molti passi restando leggibile.
 
 `````{tab} Elementare
 
@@ -161,35 +183,48 @@ importante («stiamo parlando di *chiavi*, plurale») può restare intatta per
 molte righe, finché serve, senza essere sovrascritta. La rete impara da sola
 quando aprire e chiudere ogni interruttore.
 
+Una curiosità che dice qualcosa su come si fa ricerca: nella prima versione, del
+1997, gli interruttori erano due, annota e mostra. Il terzo, quello che
+dimentica, sembrava superfluo (perché mai insegnare a una memoria a
+cancellarsi?) e fu aggiunto solo tre anni dopo, quando ci si accorse che su un
+testo che non finisce mai il foglietto si riempie e non c'è più spazio per
+niente di nuovo. Saper dimenticare, si scoprì, è parte del saper ricordare.
+
 `````
 
 `````{tab} Superiore
 
-La LSTM affianca allo stato nascosto $h_t$ uno **stato di cella** $c_t$, la
-memoria a lungo termine. Tre gate (*forget* $f_t$, *input* $i_t$, *output*
-$o_t$) sono vettori in $[0,1]$ prodotti da una sigmoide $\sigma$:
+La LSTM affianca allo stato nascosto $\mathbf{h}_t$ uno **stato di cella**
+$\mathbf{c}_t$, la memoria a lungo termine. I gate sono vettori in $[0,1]$
+prodotti da una sigmoide $\sigma$; nella formulazione del 1997 erano due,
+*input* $\mathbf{i}_t$ e *output* $\mathbf{o}_t$, e la memoria si aggiornava
+per pura addizione, senza poter mai essere svuotata:
+$\mathbf{c}_t = \mathbf{c}_{t-1} + \mathbf{i}_t \odot \tilde{\mathbf{c}}_t$,
+con $\tilde{\mathbf{c}}_t$ la memoria candidata definita qui sotto. La versione
+con il *forget gate* $\mathbf{f}_t$ {cite}`gers2000learning`, quella che segue,
+è la forma canonica di oggi:
 
 $$
-f_t = \sigma(W_f[h_{t-1},x_t]+b_f), \quad
-i_t = \sigma(W_i[h_{t-1},x_t]+b_i), \quad
-o_t = \sigma(W_o[h_{t-1},x_t]+b_o).
+\mathbf{f}_t = \sigma(\mathbf{W}_f[\mathbf{h}_{t-1},\mathbf{x}_t]+\mathbf{b}_f), \quad
+\mathbf{i}_t = \sigma(\mathbf{W}_i[\mathbf{h}_{t-1},\mathbf{x}_t]+\mathbf{b}_i), \quad
+\mathbf{o}_t = \sigma(\mathbf{W}_o[\mathbf{h}_{t-1},\mathbf{x}_t]+\mathbf{b}_o).
 $$
 
 L'aggiornamento della memoria è quasi additivo, ed è questo a tenere vivo il
 gradiente:
 
 $$
-c_t = f_t \odot c_{t-1} + i_t \odot \tilde{c}_t,
+\mathbf{c}_t = \mathbf{f}_t \odot \mathbf{c}_{t-1} + \mathbf{i}_t \odot \tilde{\mathbf{c}}_t,
 \qquad
-h_t = o_t \odot \tanh(c_t),
+\mathbf{h}_t = \mathbf{o}_t \odot \tanh(\mathbf{c}_t),
 $$
 
-dove $\tilde{c}_t = \tanh(W_c[h_{t-1},x_t]+b_c)$ è la memoria candidata e
-$\odot$ è il prodotto elemento per elemento. La **GRU** (*Gated Recurrent
-Unit*, {cite}`cho2014learning`) è una variante più snella con due soli gate
-(*update*
-e *reset*) e nessuno stato di cella separato: spesso rende quanto la LSTM con
-meno parametri.
+dove
+$\tilde{\mathbf{c}}_t = \tanh(\mathbf{W}_c[\mathbf{h}_{t-1},\mathbf{x}_t]+\mathbf{b}_c)$
+è la memoria candidata e $\odot$ è il prodotto elemento per elemento. La
+**GRU** (*Gated Recurrent Unit*, {cite}`cho2014learning`) è una variante più
+snella con due soli gate (*update* e *reset*) e nessuno stato di cella
+separato: spesso rende quanto la LSTM con meno parametri.
 
 `````
 
@@ -242,13 +277,13 @@ turno.
 
 `````{tab} Superiore
 
-La ricorrenza $h_t = f(h_{t-1}, x_t)$ è intrinsecamente **sequenziale**: il
-calcolo su una sequenza di lunghezza $n$ richiede $O(n)$ passi che non possono
-essere parallelizzati lungo l'asse temporale. Questo mal si sposa con le GPU,
-progettate per eseguire in parallelo enormi moltiplicazioni tra matrici.
-Inoltre il segnale tra due token distanti deve attraversare $O(n)$ celle, il
-che rende ancora arduo (pur mitigato dai gate) l'apprendimento di dipendenze
-molto lunghe.
+La ricorrenza $\mathbf{h}_t = f(\mathbf{h}_{t-1}, \mathbf{x}_t)$ è
+intrinsecamente **sequenziale**: il calcolo su una sequenza di lunghezza $n$
+richiede $O(n)$ passi che non possono essere parallelizzati lungo l'asse
+temporale. Questo mal si sposa con le GPU, progettate per eseguire in parallelo
+enormi moltiplicazioni tra matrici. Inoltre il segnale tra due token distanti
+deve attraversare $O(n)$ celle, il che rende ancora arduo (pur mitigato dai
+gate) l'apprendimento di dipendenze molto lunghe.
 
 `````
 
@@ -270,16 +305,45 @@ intero capitolo. Le RNN, LSTM e GRU restano però fondamentali: sono il modo
 più limpido per capire cosa significhi «memoria del contesto», e sopravvivono
 là dove i dati arrivano in streaming o le risorse sono scarse.
 
+`````{tab} Elementare
+```{admonition} Da ricordare
+:class: important
+- Il testo è una **sequenza**: l'ordine è significato, e per capirlo serve
+  ricordare quello che si è già letto.
+- Il **foglietto dei riassunti**: una rete ricorrente legge una parola alla
+  volta e a ogni parola riscrive un foglietto che riassume tutto il pregresso.
+  È sempre la stessa mano a riscriverlo, e per questo la rete resta piccola
+  anche su testi lunghissimi.
+- Ogni riscrittura però perde un pochino del vecchio, e dopo cento righe di
+  pagina uno non resta quasi niente: sono le **dipendenze lontane** che si
+  dissolvono.
+- La **LSTM** aggiunge al foglietto tre interruttori (dimentica, annota,
+  mostra) e una memoria protetta che non viene riscritta da capo a ogni passo:
+  così un'informazione può restare intatta finché serve. Curiosamente
+  l'interruttore che *dimentica* è arrivato tre anni dopo gli altri due, ed è
+  il più importante quando il testo non finisce mai.
+- Il limite che resta non è di memoria ma di **tempo**: una rete ricorrente
+  legge in fila, e per fare il passo cento deve aver fatto il novantanove. È
+  una catena di montaggio con una postazione sola, e non c'è computer che la
+  possa mandare più veloce. È il collo di bottiglia che i **Transformer**
+  toglieranno di mezzo.
+```
+`````
+
+`````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
 - Il testo è una **sequenza**: l'ordine è significato, e serve **memoria del
   contesto**.
 - Una **RNN** riusa la stessa cella a ogni passo, facendo scorrere lo stato
-  nascosto $h_t$ nel tempo.
+  nascosto $\mathbf{h}_t$ nel tempo.
 - Le RNN semplici soffrono il **gradiente che svanisce**: dimenticano le
   dipendenze a lungo termine.
 - **LSTM** e **GRU** introducono i **gate**, che decidono cosa ricordare e cosa
-  dimenticare, proteggendo la memoria.
+  dimenticare, proteggendo la memoria. L'architettura del 1997
+  {cite}`hochreiter1997long` ne aveva due; il *forget gate* è del 2000
+  {cite}`gers2000learning`.
 - Il limite residuo è la **sequenzialità** (poca parallelizzazione): è ciò che
   i **Transformer**, con l'attenzione, superano.
 ```
+`````

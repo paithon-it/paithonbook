@@ -2,7 +2,8 @@
 
 Apri il registro delle modifiche (la cronologia di `git`) di un sistema di
 rilevamento frodi in produzione. Il codice del modello è quasi fermo: qualche
-commit al mese, una libreria aggiornata, un iperparametro ritoccato. Poi
+riga nuova al mese, ciascuna depositata con la sua data e il suo perché (un
+*commit*), una libreria aggiornata, un iperparametro ritoccato. Poi
 guarda i dati che quel codice ingoia: milioni di transazioni ogni giorno, mai
 due uguali, con nuovi negozi, nuovi importi, nuove truffe che ieri non
 esistevano. Il codice è il fiume; i dati sono la piena. Nel software
@@ -13,7 +14,9 @@ sorveglia) è il codice. Nel machine learning il codice è spesso la parte
 Da questa asimmetria nasce un'idea che negli ultimi anni ha un nome:
 **data-centric AI**. La provocazione, resa popolare da Andrew Ng intorno al
 2021, è semplice: abbiamo passato un decennio a limare architetture per rubare
-un decimale di accuratezza a un *benchmark*, mentre il guadagno più grande,
+un decimale di accuratezza a un *benchmark* (una prova standard su cui i
+modelli si confrontano, come un compito in classe uguale per tutti), mentre
+il guadagno più grande,
 nei sistemi reali, si ottiene quasi sempre migliorando i *dati* (etichette più
 coerenti, esempi più rappresentativi, meno rumore). Se è così, i dati non
 possono restare un allegato del codice: vanno trattati come **cittadini di
@@ -88,9 +91,11 @@ una catena di trasformazioni. Si **estrae** il dato grezzo da una o più
 sorgenti (un database, un flusso di eventi, dei file); si **pulisce** (valori
 mancanti, duplicati, formati incoerenti); si costruiscono le **feature**, cioè
 le variabili in cui il modello «vede» il mondo; e solo alla fine si
-**addestra**. Ognuno di questi passaggi usa gli strumenti che già conosciamo
-(le maschere booleane e i `groupby` di Pandas, la vettorizzazione di NumPy
-visti nel capitolo su Python) ma il salto di qualità non è tecnico, è
+**addestra**. Una catena del genere si chiama **pipeline**, che alla lettera è
+una conduttura: il dato entra da un capo, attraversa una stazione dopo
+l'altra e ne esce pronto. Ognuno di questi passaggi usa gli strumenti di
+manipolazione dei dati del capitolo su Python (i filtri e i raggruppamenti di
+Pandas, la vettorizzazione di NumPy) ma il salto di qualità non è tecnico, è
 organizzativo: la catena deve essere **riproducibile** (rieseguendola sugli
 stessi dati grezzi si riottiene lo stesso dataset) e **orchestrata** (i
 passaggi si succedono in un ordine dichiarato, non a mano in un notebook).
@@ -166,8 +171,8 @@ tutte le età, poi un elenco di tutte le città, e così via.
 Quale conviene dipende da cosa fai. E quello che si fa per addestrare un
 modello è sempre lo stesso: leggere **tre colonne su ottanta**, per tutti. Con
 l'archivio per riga devi attraversare l'intero milione di schede e scartare il
-$96\%$ di ciò che leggi. Con quello per colonna prendi solo i tre elenchi che
-ti servono e il resto non lo tocchi nemmeno.
+$96\%$ di ciò che leggi (77 voci buttate ogni 80). Con quello per colonna
+prendi solo i tre elenchi che ti servono e il resto non lo tocchi nemmeno.
 
 C'è un secondo guadagno, meno ovvio e spesso più grosso: **valori simili stanno
 vicini**. In una colonna di città ci sono migliaia di «Milano» di fila, in una
@@ -181,7 +186,10 @@ un codice postale che comincia per zero si trasforma in un numero e perde lo
 zero).
 
 Poi c'è **Arrow**, che risolve un problema diverso: non come i dati stanno sul
-disco, ma come stanno **in memoria**. Se due programmi diversi si accordano
+disco, ma come stanno **in memoria**. Sono due posti diversi dentro un
+computer: il disco è l'armadio, dove le cose restano anche a macchina spenta;
+la memoria è il tavolo su cui le tiri fuori per lavorarci, molto più veloce e
+molto più piccolo. Se due programmi diversi si accordano
 sulla stessa disposizione in memoria, passarsi una tabella non costa nulla:
 non c'è niente da convertire, si punta allo stesso pezzo di memoria. È il
 motivo per cui compare ovunque, sotto strumenti che apparentemente non hanno
@@ -203,8 +211,13 @@ di ML, dove si leggono poche colonne di tabelle larghe, è la voce dominante.
 **Compressione**: dentro una colonna i valori sono omogenei per tipo e spesso
 per contenuto, il che abilita codifiche specializzate (dizionario per le
 categorie a bassa cardinalità, run-length per i valori ripetuti, delta per i
-timestamp) prima ancora della compressione generica. Rapporti di cinque o dieci
-volte rispetto al CSV equivalente sono ordinari.
+timestamp) prima ancora della compressione generica. Rapporti fra **due e
+dieci volte** rispetto al CSV equivalente sono ordinari, e la posizione dentro
+quell'intervallo la decidono proprio le codifiche appena elencate: una tabella
+di colonne categoriche a bassa cardinalità o ordinate sta in alto (e può
+superare il dieci), una di float casuali crolla verso il due, e una tabella
+mista come quelle su cui si addestra di solito sta nel mezzo, attorno a tre o
+quattro.
 
 **Predicate pushdown**: Parquet memorizza per ogni gruppo di righe le
 statistiche di ciascuna colonna (minimo, massimo, conteggio dei nulli), quindi
@@ -223,9 +236,11 @@ rappresentazione **in memoria**, colonnare, indipendente dal linguaggio. Il suo
 valore è l'eliminazione della **serializzazione** ai confini: due processi, o
 due librerie in linguaggi diversi, che parlano Arrow si scambiano una tabella
 senza copiarla né convertirla. È la ragione per cui lo stesso formato compare
-sotto motori che non si somigliano affatto, ed è anche il motore dietro
-l'accelerazione delle operazioni di Pandas quando si sceglie il backend Arrow
-al posto di quello NumPy, che per le stringhe fa una differenza sostanziale.
+sotto motori che non si somigliano affatto, ed è anche il motore dietro il tipo
+stringa di Pandas, che da pandas 3.0 è un tipo dedicato e, se PyArrow è
+installato, è **Arrow di serie**: la differenza sulle colonne testuali (che con
+il vecchio `object` di NumPy era sostanziale) non è più un'opzione da attivare,
+è il comportamento normale della libreria.
 
 La regola pratica, sintetica: **CSV per scambiare con un umano, Parquet per
 tutto il resto**; e se una tabella attraversa un confine di processo o di
@@ -288,7 +303,9 @@ store esiste come componente dedicato.
 
 Arriviamo così al bug più classico e più costoso di tutta la disciplina,
 quello che il feature store esiste per prevenire: il **training–serving
-skew**. Si verifica quando una feature è calcolata in un modo durante
+skew**, alla lettera «lo storto fra addestramento e servizio» (*skew* è la
+sbilenchezza, lo scostamento fra due cose che dovrebbero coincidere). Si
+verifica quando una feature è calcolata in un modo durante
 l'addestramento e in un modo *anche solo leggermente diverso* durante il
 servizio. Il modello, tarato sui numeri del training, riceve in produzione
 numeri che vogliono dire un'altra cosa, e sbaglia in silenzio, senza che
@@ -298,13 +315,23 @@ nessuna eccezione venga sollevata.
 
 È come tarare una bilancia in grammi e poi, senza dirlo a nessuno, pesarci
 sopra in once. Nessun errore lampeggia sullo schermo: i numeri arrivano,
-sembrano plausibili, e il risultato è semplicemente sbagliato. Il caso da
-manuale è la **normalizzazione**. In addestramento si «centra» ogni feature
-sottraendo la sua media e dividendo per la sua deviazione (per portarle tutte
-a una scala confrontabile), calcolando media e deviazione sull'intero dataset.
-In produzione, per una svista, qualcuno le ricalcola sul *singolo lotto* di
-dati in arrivo, e un lotto tutto di importi alti, ricentrato su sé stesso,
-sembra improvvisamente «normale». Vediamolo con i numeri.
+sembrano plausibili, e il risultato è semplicemente sbagliato.
+
+Il caso da manuale è la **normalizzazione**, il gesto con cui si porta ogni
+variabile su una scala confrontabile prima di darla al modello. Invece del
+valore grezzo, al modello si dice quanto quel valore sta sopra o sotto la
+media di tutti gli altri: così un importo in euro e un'età in anni diventano
+paragonabili. La media va calcolata una volta sola, sui dati di addestramento,
+e poi congelata: fa parte del modello quanto i pesi.
+
+In produzione, per una svista, qualcuno la ricalcola sul *singolo lotto*
+appena arrivato, ed è lì che il pavimento cede. In addestramento «alto» voleva
+dire «più della media di tutti»; se la media la si rifà sul gruppetto appena
+arrivato, e quel gruppetto è fatto di soli importi alti, nessuno di loro è più
+sopra la media: sono tutti normali. Il modello smette di insospettirsi proprio
+del lotto più sospetto che gli sia mai capitato. Il codice qui sotto mette in
+scena le due versioni, la corretta e la bacata, e il paragrafo che lo segue
+racconta com'è andata a finire.
 
 `````
 
@@ -402,8 +429,9 @@ stesso, e verifica quattro cose. Lo **schema**: ci sono tutte le colonne
 attese, e del tipo giusto (un'età è un numero, non la parola «trenta»)? Il
 **range**: i valori sono plausibili (un'età tra 0 e 120, un importo non
 negativo)? I **valori mancanti**: quante caselle sono vuote, e possiamo
-permettercelo? Le **distribuzioni**: la media, la varianza, le proporzioni delle
-categorie somigliano a quelle di ieri? Le prime tre si controllano su ogni
+permettercelo? Le **distribuzioni**: i numeri di oggi somigliano a quelli di
+ieri, come valore tipico e come quanto sono sparpagliati, e le categorie
+arrivano nelle stesse proporzioni? Le prime tre si controllano su ogni
 singolo record; l'ultima solo guardando tanti record insieme.
 
 `````
@@ -496,6 +524,48 @@ questa: dichiarare cosa ci si aspetta dai dati, e verificarlo prima di
 fidarsene. Trattare i dati da cittadini di prima classe significa, alla fine,
 esattamente questo: dargli un contratto, e farlo rispettare.
 
+Un'ultima avvertenza, perché riguarda proprio il controllo che la funzione
+promette di fare. In Python `bool` è un sottotipo di `int`, quindi
+`isinstance(True, int)` è vero e un campo `eta` valorizzato `True` passa sia il
+controllo di tipo sia quello di intervallo ($0 \le \text{True} \le 120$). È
+esattamente il caso che si presenta quando una colonna binaria viene letta come
+booleana da un lettore e come intera da un altro, cioè la classe di bug
+silenziosi che il CSV senza schema produce a getto continuo. Un controllo
+severo confronta il tipo esatto (`type(valore) is regole["tipo"]`) invece di
+accettarne i sottotipi.
+
+`````{tab} Elementare
+```{admonition} Da ricordare
+:class: important
+- Nel machine learning il codice sta quasi fermo e i **dati** sono la piena:
+  per questo si conservano, si controllano e si sorvegliano con la stessa cura
+  che di solito si riserva al programma.
+- **Versionare i dati** vuol dire tenere la cronologia di una tabella come
+  quella di un documento condiviso, senza duplicare montagne di file: si passa
+  il dataset in un tritatutto che ne ricava un codicino, e si conserva quello.
+  Se cambia anche un pixel, il codicino cambia del tutto.
+- Una **pipeline** è una catena di montaggio per i dati: stazioni collegate,
+  ognuna con un compito, sempre nello stesso ordine, senza ritocchi a mano che
+  non lascino traccia. Altrimenti diventa una giungla di tubature che nessuno
+  sa più dove portino.
+- Il **formato** in cui i dati aspettano fra una stazione e l'altra non è un
+  dettaglio: l'archivio **per colonna** (**Parquet**) legge solo le poche voci
+  che servono invece di attraversare tutte le schede, e si comprime molto
+  meglio perché mette vicini valori che si somigliano. Il CSV va bene per
+  passare una tabella a una persona, non per il resto.
+- Il bug più costoso del mestiere è calcolare una stessa informazione in un
+  modo mentre si impara e in un modo appena diverso mentre si risponde: nessun
+  errore compare a schermo, solo predizioni sbagliate. La cura è definirla in
+  un posto solo (la **dispensa comune**, il *feature store*) e usarla di lì da
+  tutte e due le parti.
+- I dati in ingresso si **controllano alla porta**, come la merce al
+  ricevimento di un supermercato: ci sono tutte le colonne? i valori sono
+  plausibili? quante caselle sono vuote? Chi non passa il controllo finisce in
+  un registro, non dentro il modello.
+```
+`````
+
+`````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
 - Nel ML il codice è spesso la parte stabile e i **dati** la parte viva:
@@ -529,4 +599,7 @@ esattamente questo: dargli un contratto, e farlo rispettare.
   distribuzioni) è un asse della **ML Test Score** {cite}`breck2017ml`. I
   controlli puntuali fermano il record malformato; quelli distribuzionali
   sfumano nel monitoraggio del *dataset shift* {cite}`quinonero2009dataset`.
+  Attenzione al controllo di tipo: `isinstance` accetta i sottotipi, e in
+  Python `bool` è un `int`.
 ```
+`````

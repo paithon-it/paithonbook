@@ -3,15 +3,18 @@
 La pallina di Hopfield ha un difetto di fabbrica: può solo scendere. Se
 l'indizio la deposita sul pendio sbagliato, finisce nella valle sbagliata (o
 in un ricordo fantasma) e da lì non esce più. E c'è un limite più profondo: la
-rete *ricorda*, ma non *inventa*; i suoi neuroni coincidono con i pixel del
-pattern, senza spazio per rappresentazioni interne. A metà anni Ottanta
-Geoffrey Hinton e Terrence Sejnowski, con David Ackley, propongono la
+rete *ricorda*, ma non *inventa*; i suoi neuroni coincidono uno a uno con i
+pixel del ricordo, e non gliene resta nessuno libero per annotarsi qualcosa di
+suo (non ha spazio, si dice, per **rappresentazioni interne**). A metà anni
+Ottanta Geoffrey Hinton e Terrence Sejnowski, con David Ackley, propongono la
 **macchina di Boltzmann** {cite}`ackley1985learning`, che aggiunge alla rete
 di Hopfield esattamente due ingredienti: la **temperatura** e i **neuroni
 nascosti**. Il nome è un omaggio a Ludwig Boltzmann, uno dei padri della
-meccanica statistica: come vedremo, all'equilibrio la rete visita gli stati
-con le stesse probabilità con cui un sistema fisico caldo visita le proprie
-configurazioni.
+meccanica statistica, e non è un omaggio generico: lasciata scuotere
+abbastanza a lungo, questa rete passa in ogni configurazione la stessa
+frazione di tempo che la fisica prevede per un materiale caldo. E il tempo che
+ci passa *è* la probabilità che le assegna. È la porta da cui, in questa
+sezione, un'altezza diventa una percentuale.
 
 `````{tab} Elementare
 
@@ -59,9 +62,9 @@ simulata*). All'equilibrio termico la rete visita gli stati secondo la
 distribuzione di Boltzmann–Gibbs
 
 $$
-P(s) = \frac{e^{-E(s)/T}}{Z},
+P(\mathbf{s}) = \frac{e^{-E(\mathbf{s})/T}}{Z},
 \qquad
-Z = \sum_{s'} e^{-E(s')/T},
+Z = \sum_{\mathbf{s}'} e^{-E(\mathbf{s}')/T},
 $$
 
 dove $Z$ (la **funzione di partizione**) somma su tutti i $2^N$ stati
@@ -79,38 +82,96 @@ $$
 dove il primo termine è la correlazione media tra i neuroni $i$ e $j$ con i
 visibili bloccati sui dati (fase positiva, la «veglia») e il secondo la
 stessa correlazione con la rete libera di campionare da sé (fase negativa,
-il «sogno»). Il problema pratico è tutto nel secondo termine: stimarlo
-richiede di portare all'equilibrio una catena di Markov su uno spazio
-esponenziale, per *ogni* passo di gradiente. È questo doppio ciclo a rendere
-l'algoritmo originale inutilizzabile oltre i problemi giocattolo.
+il «sogno»). Nella macchina di Boltzmann originale, a connettività generale,
+il problema non è solo il secondo termine: lo sono tutti e due. Con i visibili
+bloccati sui dati la media $\langle s_i s_j \rangle_{\text{dati}}$ non ha
+forma chiusa, perché le unità nascoste sono interconnesse fra loro, e va
+stimata anch'essa portando una catena all'equilibrio, per *ogni* vettore
+d'addestramento. Ackley, Hinton e Sejnowski, nell'esperimento 40-10-40 del
+loro articolo, ricuociono la rete una volta con ciascuno dei quaranta vettori
+bloccati e altrettante volte a rete libera, per ogni passo di gradiente: la
+fase positiva costa perfino di più della negativa, perché va rifatta dato per
+dato. È questo doppio ciclo a rendere l'algoritmo originale inutilizzabile
+oltre i problemi giocattolo, ed è metà di quel doppio ciclo che l'RBM, fra
+poco, farà sparire.
 
 `````
 
 ## Il sogno abbreviato: contrastive divergence
 
 La via d'uscita arriva quasi vent'anni dopo, ed è di nuovo di Hinton: la
-**contrastive divergence** {cite}`hinton2002training`. L'idea è rinunciare al
-sogno completo: invece di far girare la catena fino all'equilibrio, la si fa
-partire *dai dati* e la si ferma dopo un solo passo (o pochi), usando quel
-sogno appena abbozzato come surrogato della fase negativa. Il gradiente che ne
-esce è distorto, ma in pratica funziona, soprattutto sulle **macchine di
-Boltzmann ristrette** (RBM), la variante in cui i collegamenti esistono solo
-tra strato visibile e strato nascosto, così che ogni strato si campiona in
-blocco, in parallelo.
+**contrastive divergence** {cite}`hinton2002training`. In una riga: rinunciare
+al sogno completo. Invece di lasciar sognare la macchina finché il sogno non
+si assesta, la si fa partire da una cosa vera e le si concede un istante solo
+di fantasia.
 
-Il compromesso ha un difetto noto: partendo sempre dai dati, la catena esplora
-solo i dintorni di ciò che ha già visto, e le regioni in cui il modello mette
-per sbaglio molta probabilità restano inesplorate: nessuno va a farvi salire
-l'energia. Il rimedio più semplice è la **persistent contrastive divergence**
-{cite}`tieleman2008training`: non far ripartire la catena dai dati a ogni
-passo, ma tenerne una che prosegue da dove era arrivata, così che nel corso
-dell'addestramento il «sogno» abbia il tempo di allontanarsi e visitare il
-paesaggio. È un'idea che ritroveremo intatta, con un serbatoio di campioni al
-posto della singola catena, negli EBM sulle immagini di una decina d'anni
-dopo.
+`````{tab} Elementare
+
+Il guaio, si diceva, era il sogno: per farlo «per bene» la macchina deve
+sognare finché il sogno non si assesta, e ci mette un tempo che non abbiamo.
+Allora si bara, e si bara in due modi.
+
+Il primo è quello appena detto: invece di lasciarla partire dal nulla, le si
+mette davanti una cosa vera e le si concede un istante solo di fantasia. Il
+sogno che ne esce è appena abbozzato, costa un attimo invece di un'eternità, e
+basta lo stesso. Il difetto è prevedibile: partendo sempre da cose vere, la
+macchina non va mai a curiosare nelle regioni in cui si sbaglia di grosso, e
+quelle regioni restano sbagliate perché nessuno ci va ad alzare il terreno.
+
+Il secondo modo rimedia proprio a questo, e non costa niente di più: non far
+ricominciare il sogno da capo ogni volta, ma lasciar continuare quello di
+prima. Un po' per volta il sogno si allontana e finisce anche nei posti dove
+la macchina si illude.
+
+C'è un prezzo, ed è meglio saperlo che credere di aver trovato una scorciatoia
+gratis: con il sogno abbreviato la macchina non sta più migliorando nessuna
+misura precisa, e quel che si guadagna in velocità si perde in garanzie. In
+pratica, sulle reti di allora, funzionava benissimo.
+
+`````
+
+`````{tab} Superiore
+
+Invece di far girare la catena fino all'equilibrio, la si fa partire *dai
+dati* e la si ferma dopo un solo passo (o pochi), usando quel sogno appena
+abbozzato come surrogato della fase negativa. Funziona soprattutto sulle
+**macchine di Boltzmann ristrette** (RBM), la variante in cui i collegamenti
+esistono solo tra strato visibile e strato nascosto: lì i nascosti sono
+indipendenti fra loro dati i visibili (e viceversa), quindi la fase positiva
+ha forma chiusa e ogni strato si campiona in blocco, in parallelo. È l'RBM a
+riparare la metà cara di cui sopra; la contrastive divergence accorcia
+l'altra.
+
+Sulla natura di quell'aggiornamento conviene essere precisi, perché la formula
+abbreviata non è «il gradiente giusto, con un errore». Sutskever e Tieleman
+dimostrano che l'aggiornamento CD1 per RBM binarie **non è il gradiente di
+alcuna funzione** {cite}`sutskever2010convergence`: non esiste un obiettivo di
+cui sia una stima distorta, non converge al massimo di verosimiglianza, e si
+possono costruire casi in cui cicla all'infinito invece di fermarsi. Il
+perimetro dell'enunciato è stretto e istruttivo: se la catena è di Langevin lo
+stesso aggiornamento *diventa* il gradiente dello score matching (la prossima
+sezione), e se campiona una componente a caso dalla condizionale diventa
+quello della pseudo-verosimiglianza. È proprio nel caso comune, Gibbs su RBM
+binarie, che non è il gradiente di niente. In pratica funzionava lo stesso: è
+uno di quei casi in cui un campo ha usato per anni uno strumento senza la
+proprietà che gli attribuiva.
+
+Il compromesso ha un secondo difetto, questo intuitivo: partendo sempre dai
+dati, la catena esplora solo i dintorni di ciò che ha già visto, e le regioni
+in cui il modello mette per sbaglio molta probabilità restano inesplorate,
+perché nessuno va a farvi salire l'energia. Il rimedio più semplice è la
+**persistent contrastive divergence** {cite}`tieleman2008training`: non far
+ripartire la catena dai dati a ogni passo, ma tenerne una che prosegue da dove
+era arrivata, così che nel corso dell'addestramento il «sogno» abbia il tempo
+di allontanarsi e di visitare il paesaggio. È un'idea che ritroveremo intatta,
+con un serbatoio di campioni al posto della singola catena, nei modelli a
+energia sulle immagini di una decina d'anni dopo.
+
+`````
 
 Fu proprio la coppia RBM più contrastive divergence, impilata strato su
-strato, a rimettere in moto il deep learning a metà anni Duemila, quando
+strato {cite}`hinton2006fast`, a rimettere in moto il deep learning a metà
+anni Duemila, quando
 addestrare reti profonde sembrava impossibile: un ruolo storico che va
 riconosciuto con onestà, insieme al suo epilogo: di lì a pochi anni ReLU, GPU
 e dataset più grandi avrebbero reso quel pre-training superfluo, e oggi le RBM
@@ -118,6 +179,34 @@ non si usano quasi più. Il *linguaggio* con cui erano scritte, invece, è vivo
 e vegeto: nella prossima sezione si vede perché, e quanto costi davvero la $Z$
 che qui è appena comparsa.
 
+`````{tab} Elementare
+```{admonition} Da ricordare
+:class: important
+- La **macchina di Boltzmann** aggiunge alla rete di Hopfield due cose: la
+  possibilità di risalire ogni tanto (si scuote il paesaggio, e quella scossa
+  si chiama **temperatura**) e qualche neurone in più che non corrisponde a
+  nessun pixel, buono per annotarsi le regolarità del dato.
+- Si scuote forte all'inizio e sempre più piano, come il fabbro che scalda il
+  metallo e lo lascia raffreddare adagio: così la pallina esce dalle conche
+  mediocri finché può, e si assesta in una valle profonda quando la calma
+  torna.
+- Imparare è un confronto fra **veglia e sogno**: si guarda che cosa succede
+  nella rete quando le si mostrano i dati veri, poi che cosa succede quando la
+  si lascia fantasticare da sola, e si ritoccano i legami per rinforzare la
+  prima e indebolire la seconda. Si smette quando i sogni sono
+  indistinguibili dalla veglia.
+- Il guaio è il sogno: farlo per bene costa un tempo che non c'è. La
+  **contrastive divergence** bara, concedendo alla macchina un istante solo di
+  fantasia a partire da una cosa vera. Funziona, ma è una scorciatoia, non una
+  soluzione: nessuno sa più che cosa la macchina stia esattamente migliorando.
+- Da qui in avanti l'altezza del paesaggio diventa una percentuale, e per
+  trasformarla servirebbe la misura dell'intero continente. Quel conto ha un
+  nome, **funzione di partizione**, ed è il personaggio a cui è intitolata la
+  prossima sezione.
+```
+`````
+
+`````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
 - La **macchina di Boltzmann** {cite}`ackley1985learning` aggiunge a Hopfield
@@ -125,14 +214,18 @@ che qui è appena comparsa.
   risalire e uscire dai minimi sbagliati) e i **neuroni nascosti**
   (rappresentazioni interne, non solo pixel).
 - All'equilibrio la rete campiona dalla distribuzione di Boltzmann–Gibbs
-  $P(s) = e^{-E(s)/T}/Z$: da qui in avanti l'energia definisce una
+  $P(\mathbf{s}) = e^{-E(\mathbf{s})/T}/Z$: da qui in avanti l'energia definisce una
   probabilità, e con essa arriva la **funzione di partizione** $Z$.
 - L'apprendimento è un **contrasto** fra fase positiva (dati) e fase negativa
-  (campioni del modello). La seconda richiede una catena di Markov portata
-  all'equilibrio a ogni passo: è il collo di bottiglia.
+  (campioni del modello). Nella macchina originale entrambe richiedono una
+  catena portata all'equilibrio, e la positiva va rifatta per ogni dato:
+  l'RBM rende chiusa la prima, e resta la seconda come collo di bottiglia.
 - La **contrastive divergence** {cite}`hinton2002training` accorcia la catena
   a uno o pochi passi partendo dai dati; la **persistent CD**
   {cite}`tieleman2008training` la fa proseguire fra un aggiornamento e
-  l'altro. RBM e CD hanno avuto un ruolo storico nel far ripartire il deep
+  l'altro. L'aggiornamento CD1 non è il gradiente di nessuna funzione
+  {cite}`sutskever2010convergence`: funziona in pratica, senza garanzie di
+  convergenza. RBM e CD hanno avuto un ruolo storico nel far ripartire il deep
   learning, e oggi sono quasi solo storia; il linguaggio dell'energia no.
 ```
+`````

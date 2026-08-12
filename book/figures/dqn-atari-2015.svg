@@ -1,7 +1,16 @@
-<svg viewBox="0 0 760 320" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Il ciclo di DQN: lo schermo diventa ingresso della rete Q, che stima il valore di ogni azione; l'azione scelta produce un reward che torna indietro a correggere le stime della rete">
-  <rect x="0" y="0" width="760" height="320" fill="#F8F5EE"/>
+<svg viewBox="0 0 760 400" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Il ciclo di DQN: lo schermo diventa ingresso della rete Q, che stima il valore di ogni azione; l'azione scelta produce una ricompensa, e la transizione finisce in una memoria delle esperienze da cui si ripesca a caso per addestrare la rete">
+  <rect x="0" y="0" width="760" height="400" fill="#F8F5EE"/>
   <text x="380" y="34" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="bold" fill="#1A1A1A">Dallo schermo all'azione, e ritorno</text>
 
+  <!-- la memoria delle esperienze: il blocco laterale di cui parla il testo -->
+  <rect x="220" y="70" width="164" height="58" rx="6" fill="#F8F5EE" stroke="#B5532C" stroke-width="2" stroke-dasharray="7 5"/>
+  <text x="302" y="94" text-anchor="middle" font-family="sans-serif" font-size="13.5" font-weight="bold" fill="#B5532C">memoria delle esperienze</text>
+  <text x="302" y="114" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#1A1A1A">un milione di transizioni</text>
+  <line x1="302" y1="128" x2="302" y2="166" stroke="#B5532C" stroke-width="2"/>
+  <path d="M302 176 L 296 164 L 308 164 Z" fill="#B5532C"/>
+  <text x="314" y="152" font-family="sans-serif" font-size="11" fill="#B5532C">si ripesca a caso</text>
+
+  <g transform="translate(0,64)">
   <!-- schermo -->
   <rect x="26" y="96" width="128" height="112" rx="6" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="2"/>
   <rect x="40" y="110" width="100" height="70" fill="#1A1A1A"/>
@@ -37,13 +46,15 @@
   <line x1="592" y1="152" x2="640" y2="152" stroke="#1A1A1A" stroke-width="2"/>
   <path d="M640 152 L 630 147 L 630 157 Z" fill="#1A1A1A"/>
 
-  <!-- reward -->
+  <!-- ricompensa -->
   <rect x="644" y="122" width="96" height="60" rx="6" fill="#B5532C"/>
-  <text x="692" y="148" text-anchor="middle" font-family="sans-serif" font-size="14" font-weight="bold" fill="#F8F5EE">reward</text>
+  <text x="692" y="148" text-anchor="middle" font-family="sans-serif" font-size="14" font-weight="bold" fill="#F8F5EE">ricompensa</text>
   <text x="692" y="168" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#F8F5EE">+punteggio</text>
 
-  <!-- feedback dashed -->
-  <path d="M692 182 L 692 268 L 302 268 L 302 196" fill="none" stroke="#1A1A1A" stroke-width="1.5" stroke-dasharray="6 5"/>
-  <path d="M302 196 L 297 206 L 307 206 Z" fill="#1A1A1A"/>
-  <text x="497" y="290" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">il reward corregge le stime della rete: si impara indietro nel tempo</text>
+  </g>
+
+  <!-- la transizione appena vissuta torna indietro e finisce in memoria -->
+  <path d="M692 246 L 692 340 L 176 340 L 176 99 L 214 99" fill="none" stroke="#1A1A1A" stroke-width="1.5" stroke-dasharray="6 5"/>
+  <path d="M214 99 L 204 94 L 204 104 Z" fill="#1A1A1A"/>
+  <text x="440" y="362" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">ogni transizione (stato, azione, ricompensa, stato dopo) viene messa da parte, non usata subito</text>
 </svg>

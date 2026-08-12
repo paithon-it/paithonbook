@@ -3,18 +3,26 @@
 Per trent'anni i programmatori hanno goduto di un privilegio che sembrava una
 legge di natura: bastava aspettare. Un programma lento oggi sarebbe stato
 veloce l'anno seguente, senza toccare una riga di codice, perché i processori
-alzavano la loro frequenza di clock a ritmo regolare: il «pasto gratis». Poi,
-intorno al 2004, il pasto finì. La regola empirica che per decenni aveva
-permesso di rimpicciolire i transistor e alzare il clock a consumi costanti
-(lo *scaling di Dennard*) smise di valere: spingere ancora la frequenza
+alzavano la loro **frequenza di clock** a ritmo regolare. Il clock è il
+metronomo del chip: un *tic* che scandisce le operazioni una dopo l'altra, e
+che in un processore moderno batte qualche miliardo di volte al secondo. Farlo
+battere più in fretta faceva andare più in fretta ogni programma già scritto:
+il «pasto gratis». Poi, intorno al 2004, il pasto finì. La regola empirica che
+per decenni aveva permesso di rimpicciolire i **transistor** (i minuscoli
+interruttori di cui un chip è fatto: più sono piccoli, più ne stanno nello
+stesso quadratino di silicio) e alzare il clock a consumi costanti (lo
+*scaling di Dennard*) smise di valere: spingere ancora la frequenza
 significava dissipare troppo calore, e i chip si schiantarono contro un muro
 fisico, il *power wall*. Nel 2004 Intel rinunciò ai processori che avrebbero
 dovuto correre a frequenze sempre più alte; nel 2005 Herb Sutter mise la cosa
 nero su bianco in un saggio dal titolo diventato celebre, *The Free Lunch Is
 Over*. La morale era semplice e spiazzante: da lì in avanti, per andare più
-veloci non si sarebbe più potuto contare su un core più rapido, ma solo su
-*più core che lavorano insieme*. Il futuro, scriveva Sutter, era parallelo
-({numref}`fig-free-lunch`).
+veloci non si sarebbe più potuto contare su un **core** più rapido, ma solo su
+*più core che lavorano insieme*. Un core è un calcolatore completo in
+miniatura, capace di eseguire un'istruzione alla volta: fino a quel momento i
+chip ne avevano uno, o pochi, e li facevano correre sempre di più; da lì in
+avanti ne avrebbero messi tanti, ciascuno alla velocità di prima. Il futuro,
+scriveva Sutter, era parallelo ({numref}`fig-free-lunch`).
 
 ```{figure} ../figures/free-lunch-parallelismo.svg
 :name: fig-free-lunch
@@ -33,8 +41,8 @@ mestiere che con l'intelligenza artificiale sembrava non c'entrare nulla:
 disegnare i videogiochi. La *Graphics Processing Unit* era nata per la
 **rasterizzazione**, trasformare triangoli in milioni di pixel colorati decine
 di volte al secondo: un lavoro fatto di conti identici e indipendenti, il
-paradiso del parallelismo. Nel 2007 NVIDIA aprì quei chip al calcolo generico
-con **CUDA** {cite}`nickolls2008scalable`, e la stessa folla di esecutori che
+paradiso del parallelismo. Nel 2006-2007 NVIDIA aprì quei chip al calcolo
+generico con **CUDA** {cite}`nickolls2008scalable`, e la stessa folla di esecutori che
 coloriva pixel si rivelò perfetta per un altro compito fatto di conti identici
 e indipendenti: addestrare reti neurali. Nel 2012 la conferma arrivò a
 sorpresa da una gara di riconoscimento di immagini, ImageNet, vinta da
@@ -44,9 +52,12 @@ videogiocatori, come racconta la sezione «Prestazioni e scala»
 non si sono più lasciati.
 
 Questo capitolo è, appunto, l'approfondimento «sotto il cofano» di quella
-sezione. Lì abbiamo imparato i *gesti*: `.to(device)`, la precisione mista con
-`autocast`, la riga di `torch.compile`, il parallelismo dati con
-`DistributedDataParallel`, e li abbiamo giustificati a grandi linee, con
+sezione. Lì abbiamo imparato i *gesti*, cioè le poche righe di codice da
+scrivere: spostare i dati sulla scheda (`.to(device)`), far lavorare la rete
+con numeri più corti e più svelti da leggere (la precisione mista di
+`autocast`), lasciare che PyTorch riscriva da sé il programma in una forma più
+efficiente (`torch.compile`), spartire gli esempi fra più schede
+(`DistributedDataParallel`). Li abbiamo giustificati a grandi linee, con
 l'analogia della GPU come squadra di operai semplici. Qui apriamo il cofano:
 *perché* quei gesti funzionano, cosa succede davvero nel silicio quando una
 rete gira, e fin dove si può spingere l'hardware. Non serve saper programmare
@@ -84,7 +95,8 @@ capace di fare solo un conticino elementare ma tutte insieme, nello stesso
 momento. Per un problema che cambia di continuo (decisioni, eccezioni,
 imprevisti), vince il genio: è la CPU. Ma per una montagna di conti tutti
 uguali e indipendenti vince la folla, perché non serve intelligenza, serve
-manodopera. Un solo strato di una rete neurale su un vassoio di esempi sono
+manodopera. Un solo strato di una rete neurale su un vassoio di esempi (il
+*mini-batch*: il mazzetto di esempi che la rete guarda in una volta sola) sono
 decine di milioni di moltiplicazioni identiche: il lavoro perfetto per la
 folla. La GPU è quella folla, e la sezione sull'architettura entra nel
 dettaglio di come è organizzata, in squadre che si coprono i tempi morti a
@@ -110,22 +122,12 @@ dettagli di questo modello: Streaming Multiprocessor, warp, SIMT, occupancy.
 
 La seconda idea è meno intuitiva, e proprio per questo va detta subito: il limite
 di una GPU, molto più spesso di quanto si creda, non è *quanti conti* sa fare, ma
-*quanti byte* le arrivano da calcolare. Le migliaia di core sono la parte facile;
-tenerle rifornite è l'ingegneria vera.
-
-```{figure} ../figures/gpu-cloud-vs-on-premise.svg
-:name: fig-pareggio-cloud
-:alt: "Grafico con le ore di GPU usate al mese in ascissa e il costo mensile in ordinata. La retta del cloud parte da zero e sale proporzionalmente all'uso; quella dell'hardware proprio parte alta, per l'acquisto, e poi cresce poco. Le due si incrociano in un punto di pareggio, oltre il quale conviene possedere la scheda."
-:width: 90%
-
-Due rette e un incrocio. Il cloud non è più caro né più economico in assoluto:
-lo diventa a seconda di quante ore al mese la scheda resta accesa.
-```
-
-Il punto di pareggio in {numref}`fig-pareggio-cloud` è un conto che conviene
-fare prima di affezionarsi a una risposta. Per un uso saltuario la retta piatta
-dell'hardware proprio è quasi tutta costo fisso sprecato; per un
-addestramento continuo, il noleggio diventa la voce di spesa dominante.
+*quanti byte* le arrivano da calcolare. Un **byte** è la scatoletta in cui sta
+un pezzetto di informazione: uno dei numeri che una rete neurale macina ne
+occupa due o quattro, un miliardo di byte fa un gigabyte, e la memoria di una
+scheda si misura in decine di gigabyte. I byte sono la stoffa di cui i dati
+sono fatti, e portarli fin sotto ai core costa tempo. Le migliaia di core sono
+la parte facile; tenerle rifornite è l'ingegneria vera.
 
 `````{tab} Elementare
 Immagina un cuoco fulmineo che potrebbe sfornare cento piatti al minuto, se
@@ -160,31 +162,68 @@ più vicino possibile ai core.
 ## Come è organizzato il capitolo
 
 Le sei sezioni scendono, un gradino alla volta, dal modello di esecuzione della
-GPU fino a come si addestrano i modelli che non entrano in una scheda sola.
+GPU fino a come si addestrano i modelli che non entrano in una scheda sola. I
+nomi tecnici qui sotto non vanno capiti adesso: ciascuno ha accanto, fra
+parentesi, la cosa che significa, ed è quella la promessa della sezione.
 
-- **Dentro la GPU: come è fatta e come esegue** (la scommessa opposta a quella
-  della CPU, gli **Streaming Multiprocessor**, la gerarchia
-  griglia–blocco–**warp**, il modello **SIMT** e l'**occupancy** con cui la
-  GPU copre le attese tenendo in volo migliaia di thread).
-- **La memoria: il vero collo di bottiglia**; la piramide dai registri alla
-  HBM, gli accessi **coalescenti**, il riuso in shared memory e il modello
-  **roofline** che dice se un calcolo è limitato dai byte o dai conti.
-- **Kernel: dare ordini a migliaia di thread**, che cos'è un *kernel* e come
-  lo si scrive (un mini-esempio in **Triton**), il modello CUDA/SIMT e perché
-  **fondere** più operazioni in un kernel solo taglia i viaggi in memoria.
-- **GEMM: la moltiplicazione di matrici, spremuta**, la routine su cui ogni
-  rete spende il grosso del tempo: il **tiling** che la rende veloce, i
-  **tensor core** che eseguono un intero prodotto tra piccole matrici per
-  colpo di clock, e l'**array sistolico**, cioè la scelta opposta fatta dagli
-  acceleratori dedicati.
-- **Flash Attention: l'attenzione che non spreca memoria**, l'attenzione
-  riorganizzata per non scrivere mai la matrice $N \times N$: **tiling** e
-  **online softmax**, l'esempio più limpido di calcolo *IO-aware*, fino alla
-  frontiera dei kernel di oggi.
-- **Oltre una GPU: parallelismo distribuito**, quando un modello non entra in
-  una scheda sola: parallelismo dati, tensor e pipeline, lo *sharding* di
-  **ZeRO/FSDP**, e come si combinano nei modelli di frontiera.
+- **Dentro la GPU: come è fatta e come esegue**. La scommessa opposta a quella
+  della CPU; gli **Streaming Multiprocessor** (le officine autonome in cui la
+  GPU è divisa), la gerarchia griglia–blocco–**warp** (l'organizzazione dei
+  lavoratori in operazione, squadre e plotoni da 32), il modello **SIMT** (un
+  ordine solo, trentadue esecuzioni) e l'**occupancy** (quanti gruppi la GPU
+  tiene pronti per coprire le attese).
+- **La memoria: il vero collo di bottiglia**. La piramide dai registri alla
+  **HBM** (la memoria grande della scheda), gli accessi **coalescenti**
+  (chiedere i dati in fila invece che sparsi), il riuso in shared memory e il
+  modello **roofline**, il grafico che dice se un calcolo è limitato dai byte
+  o dai conti.
+- **Kernel: dare ordini a migliaia di thread**. Che cos'è un *kernel* (il
+  programmino che gira sulla GPU) e come lo si scrive, con un mini-esempio in
+  **Triton** (un modo di scriverlo in Python); e perché **fondere** più
+  operazioni in un kernel solo taglia i viaggi in memoria.
+- **GEMM: la moltiplicazione di matrici, spremuta**. La routine su cui ogni
+  rete spende il grosso del tempo: il **tiling** (portare i dati sul tavolo di
+  lavoro una volta sola) che la rende veloce, i **tensor core** che eseguono
+  un intero prodotto tra piccole matrici per colpo di clock, e l'**array
+  sistolico**, cioè la scelta opposta fatta dagli acceleratori dedicati.
+- **Flash Attention: l'attenzione che non spreca memoria**. L'attenzione dei
+  Transformer riorganizzata per non scrivere mai la grande tabella dei
+  confronti fra parole: di nuovo **tiling**, più la **online softmax** (fare
+  le percentuali a rate, senza aver visto tutti i numeri), fino alla frontiera
+  dei kernel di oggi.
+- **Oltre una GPU: parallelismo distribuito**. Quando un modello non entra in
+  una scheda sola: spartire gli esempi, le matrici o gli strati fra più
+  schede, lo *sharding* di **ZeRO/FSDP** (nessuna scheda tiene il modello
+  intero) e come queste strategie si combinano nei modelli di frontiera.
 
+`````{tab} Elementare
+```{admonition} Da ricordare
+:class: important
+- Il **«pasto gratis» è finito**: da metà anni Duemila un singolo calcolatore
+  in miniatura (un *core*) non diventa più veloce da solo, e per correre
+  bisogna metterne tanti a lavorare insieme. La GPU è il chip fatto così: nata
+  per disegnare i videogiochi, aperta ai conti di ogni tipo da CUDA
+  {cite}`nickolls2008scalable`, e sposata al deep learning quando AlexNet vinse
+  ImageNet su due schede da videogiocatore {cite}`krizhevsky2012imagenet`.
+- **Il genio contro la folla**: la GPU rinuncia ad avere pochi esecutori
+  velocissimi e ne mette moltissimi lenti. È un pessimo affare per un lavoro
+  che cambia a ogni passo, ed è l'affare perfetto per milioni di conti tutti
+  uguali, che è esattamente ciò di cui una rete neurale è fatta.
+- Il vero collo di bottiglia non è quasi mai fare i conti: è **portare i
+  numeri** dalla memoria fin sotto ai calcolatori. Il cuoco è veloce, la
+  dispensa è lontana.
+- Da qui il filo conduttore di tutto il capitolo, che tornerà con nomi diversi
+  in ogni sezione: **fare più conti con ogni carico di ingredienti**, e tenere
+  gli ingredienti il più vicino possibile a chi cucina.
+- Questo capitolo è il «sotto il cofano» della sezione «Prestazioni e scala»:
+  non serve saper programmare una GPU per usarla (PyTorch lo fa al posto tuo),
+  ma sapere come è fatta spiega perché un addestramento va veloce o lento.
+- Quando **una scheda non basta**, il lavoro si spartisce fra più schede: è
+  così che nascono i modelli di cui leggiamo i nomi ogni settimana.
+```
+`````
+
+`````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
 - Il **«free lunch» è finito**: da metà anni 2000 un core non diventa più
@@ -208,3 +247,4 @@ GPU fino a come si addestrano i modelli che non entrano in una scheda sola.
 - Quando **una GPU non basta**, il lavoro si divide su più schede (parallelismo
   dati, tensor, pipeline, sharding): è così che nascono i modelli di frontiera.
 ```
+`````

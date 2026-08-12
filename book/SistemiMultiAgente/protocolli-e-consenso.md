@@ -29,12 +29,13 @@ mossa ha un *tipo*.
 
 ```{figure} ../figures/anatomia-agente-ai.svg
 :name: fig-ciclo-percezione-azione
-:alt: "Ciclo chiuso in quattro stazioni disposte ad anello: percezione, decisione, azione e osservazione, con al centro la memoria collegata a ciascuna delle quattro. Ogni stazione legge dalla memoria e vi scrive, e il giro ricomincia dalla percezione."
+:alt: "Ciclo chiuso in quattro stazioni disposte ad anello: percezione, decisione, azione e osservazione, unite l'una alla successiva da quattro frecce, e al centro dell'anello la memoria. Il giro ricomincia dalla percezione."
 :width: 84%
 
-Il singolo agente, prima di metterne insieme molti. La memoria al centro è ciò
-che distingue un agente da una funzione: fra un giro e il successivo qualcosa
-resta.
+Il singolo agente, prima di metterne insieme molti. Un programma qualunque
+riceve qualcosa, restituisce qualcosa e alla chiamata dopo ha dimenticato tutto;
+un agente no, e la memoria disegnata al centro è esattamente ciò che li
+distingue: fra un giro e il successivo qualcosa resta.
 ```
 
 Vale la pena tenere {numref}`fig-ciclo-percezione-azione` come unità di misura
@@ -92,11 +93,13 @@ colleghi nell'ambito del Knowledge Sharing Effort finanziato dalla DARPA, e
 poi **FIPA-ACL**, lo standard della Foundation for Intelligent Physical Agents
 nata nel 1996, stabiliscono che ogni messaggio fra agenti porti in chiaro la
 propria **performativa**. Non è una convenzione stilistica: è un campo
-obbligatorio, scelto in un elenco finito (ventidue voci nella libreria degli
-atti comunicativi di FIPA: `inform`, `request`, `agree`, `refuse`, `propose`,
-`accept-proposal`, `failure`, `not-understood` e le altre), accanto a
-mittente, destinatario, contenuto, identificativo della conversazione e
-riferimento al messaggio a cui si risponde.
+obbligatorio, scelto in un elenco finito, accanto a mittente, destinatario,
+contenuto, identificativo della conversazione e riferimento al messaggio a cui
+si risponde. La libreria degli atti comunicativi di FIPA ne conta ventidue, e i
+nomi dicono già tutto: `inform` («ti informo che»), `request` («ti chiedo di»),
+`agree` («va bene, lo faccio»), `refuse` («no»), `failure` («ci ho provato e non
+ci sono riuscito»), `not-understood` («non ho capito che cosa vuoi»), e altre
+sedici sulla stessa falsariga.
 
 Perché conta oggi, che gli agenti sono modelli di linguaggio e la prosa libera
 gli riesce benissimo? Perché la prosa libera non si verifica. Se un agente
@@ -104,8 +107,11 @@ scrive «ci penso io, più tardi», nessun programma può stabilire se ha accett
 un incarico o se sta rimandando, e a fine esecuzione nessuno può dire a macchina
 se quella richiesta ha avuto risposta, se quell'impegno è stato onorato, se
 quella proposta è stata accettata o ignorata. Tipizzare i messaggi trasforma la
-conversazione in una **macchina a stati ispezionabile**, che si registra, si
-riesegue e si controlla. Bastano poche righe.
+conversazione in una **macchina a stati ispezionabile**: un oggetto che in ogni
+momento si trova in uno di pochi stati dichiarati («ho chiesto e aspetto», «ha
+accettato e non ha ancora consegnato», «chiuso») e che passa da uno all'altro
+soltanto con le mosse previste, così che si registra, si riesegue e si
+controlla. Bastano poche righe.
 
 ```python
 from dataclasses import dataclass
@@ -194,8 +200,8 @@ visibile.
 È lo stesso movimento dell'**output strutturato** del capitolo sull'ingegneria
 degli LLM: si restringe la forma di ciò che il modello può produrre in cambio
 della possibilità di controllarlo a macchina. Cambia la scala. Il *validation
-gate* del loop engineering è un predicato su una singola uscita; un protocollo
-è un predicato sull'**intera conversazione**: non «questa risposta è ben
+gate* del loop engineering è un controllo su una singola risposta; un protocollo
+è un controllo sull'**intera conversazione**: non «questa risposta è ben
 formata», ma «questo scambio, dal primo messaggio all'ultimo, è una partita
 legale».
 
@@ -309,9 +315,9 @@ loro. Se l'accordo sugli errori è alto, i voti non erano indipendenti e la
 formula di Condorcet non si applica.
 
 Mettiamo dei numeri, con il modello più semplice che catturi il fenomeno. Una
-frazione $\lambda$ delle domande sono *trappole*: contengono la caratteristica
-che manda fuori strada quel modello, e su di esse sbagliano tutti gli agenti
-insieme. Sulle altre gli errori sono indipendenti come vuole Condorcet.
+parte delle domande sono *trappole*: contengono la caratteristica che manda
+fuori strada quel modello, e su di esse sbagliano tutti gli agenti insieme.
+Sulle altre gli errori sono indipendenti come vuole Condorcet.
 
 `````{tab} Elementare
 
@@ -333,8 +339,16 @@ C'è di peggio, ed è la parte che dovrebbe far paura. Sulle trappole i nove
 agenti non sbagliano un po' ciascuno per conto suo: rispondono la stessa cosa
 sbagliata, **all'unanimità**. Se usi l'accordo come misura di fiducia (nove su
 nove, andiamo tranquilli) stai leggendo il segnale più forte proprio nel
-momento in cui è più falso. Fai il conto: quando tutti e nove concordano,
-quasi una volta su due (il 45%) concordano su una risposta sbagliata.
+momento in cui è più falso.
+
+Il conto si fa su cento domande, e conviene farlo perché è la cosa più
+spaventosa della sezione. Venti di quelle cento sono trappole, e lì tutti e nove
+rispondono la stessa cosa sbagliata: venti unanimità, tutte sbagliate. Delle
+altre ottanta, quante sono quelle in cui tutti e nove ci prendono? Ciascuno ci
+prende sette volte su otto, e perché ci prendano tutti e nove insieme bisogna
+moltiplicare sette ottavi per sé stesso nove volte, che fa poco più di trenta
+volte su cento: ventiquattro domande sulle ottanta. In tutto quarantaquattro
+unanimità, di cui venti sbagliate. **Quasi una su due.**
 
 `````
 
@@ -450,8 +464,9 @@ firme in calce non lo è.
 
 L'indipendenza, però, non è tutto o niente: un po' se ne può comprare, e ogni
 modo di comprarla ha il suo prezzo. Si può **campionare a temperatura non
-nulla** invece di decodificare in modo greedy, così che i percorsi di
-generazione divergano. Si può chiedere esplicitamente **percorsi di
+nulla**, cioè lasciare che il modello, parola per parola, non prenda sempre la
+più probabile ma peschi ogni tanto fra quelle che le stanno vicino, così che i
+percorsi di generazione divergano. Si può chiedere esplicitamente **percorsi di
 ragionamento diversi** (risolvi per stima, poi per calcolo esatto, poi
 verificando all'indietro). Si può **cambiare il modo in cui la domanda è
 posta**, riformulandola o riordinando le opzioni, che è anche il modo di
@@ -460,18 +475,22 @@ possibile, **cambiare modello**: è l'intervento che decorrela di più, perché
 tocca i pesi e non solo il campionamento, ed è anche il più caro da gestire.
 
 È esattamente il meccanismo della **self-consistency**
-{cite}`wang2023selfconsistency`: invece di prendere l'unica catena di
-ragionamento prodotta dalla decodifica greedy, se ne campionano molte e si
-marginalizza sul ragionamento, tenendo la risposta finale più frequente.
-Funziona, e funziona per la ragione che questa sezione ha appena messo in
-formula: il campionamento **decorrela parzialmente** i percorsi. Vale la pena
-insistere sull'avverbio. I percorsi campionati condividono il modello, quindi
-$\rho$ scende ma non va a zero, il tetto $1-\lambda$ resta dov'è, e il
-guadagno reale è sempre inferiore a quello che il conto di Condorcet
-promette. Chi progetta un sistema di voto dovrebbe misurare $P_n$ per $n$
-crescente e guardare dove la curva **si appiattisce**: quel plateau è la stima
-empirica del tetto, ed è il numero che dice quando smettere di pagare agenti in
-più.
+{cite}`wang2023selfconsistency`: invece di tenersi l'unico ragionamento che il
+modello produce quando lo si costringe a scegliere sempre la parola più
+probabile, se ne fanno produrre molti diversi e si tiene la risposta finale che
+compare più spesso, buttando via i ragionamenti che ci hanno portato. Funziona,
+e funziona per la ragione che questa sezione ha appena messo in conto: variare
+il modo di generare **decorrela parzialmente** i percorsi. Vale la pena
+insistere sull'avverbio. Quei percorsi escono tutti dallo stesso modello, quindi
+la somiglianza fra gli errori si abbassa ma non arriva a zero, il tetto resta
+dov'era, e il guadagno reale è sempre inferiore a quello che il conto di
+Condorcet promette.
+
+Ne discende la cosa pratica da fare, che è una sola e costa una serata. Invece
+di scegliere il numero di agenti a intuito, si misura quanto ci prende il gruppo
+al crescere del numero di votanti, e si guarda **dove la curva smette di
+salire**. Il punto in cui si appiattisce è la stima empirica del tetto, ed è il
+numero che dice quando smettere di pagare agenti in più.
 
 ## Dibattere invece di votare
 
@@ -535,10 +554,11 @@ interessi opposti, hanno scelto di contestare.
 
 Due avvertenze, e sono sostanziali. La prima: il risultato vale con gioco
 ottimale e giudice affidabile, cioè capace di valutare correttamente l'ultimo
-passaggio conteso. Un giudice sensibile alla lunghezza, alla sicurezza del
-tono o alla ripetizione (gli stessi bias documentati per l'*LLM-as-a-judge*
-nella sezione su LLMOps) rompe l'ipotesi, e il gioco premia la persuasione
-invece della verità. La seconda riguarda proprio questo capitolo: due
+passaggio conteso. Un giudice sensibile alla **posizione** dell'intervento, alla
+sua **lunghezza** o alla somiglianza con il proprio stile (sono esattamente i
+tre bias documentati per l'*LLM-as-a-judge* nella sezione su LLMOps: *position*,
+*verbosity* e *self-enhancement*) rompe l'ipotesi, e il gioco premia la
+persuasione invece della verità. La seconda riguarda proprio questo capitolo: due
 dibattenti istanziati dallo **stesso modello** ereditano la correlazione della
 sezione precedente. Se entrambi condividono lo stesso errore sistematico,
 nessuno dei due lo contesta, l'errore non entra mai nel dibattito e il giudice
@@ -581,6 +601,34 @@ bugiardo servono almeno quattro partecipanti, per due almeno sette, per tre
 almeno dieci. Non è che non si è ancora trovato l'algoritmo giusto: è
 dimostrato che non esiste.
 
+E con quattro, che cosa cambia? Che ciascuno, prima di decidere, chiede a
+**tutti** gli altri che cosa hanno sentito, mette insieme le risposte e prende
+quella che compare più volte. Guarda i due casi. Se a mentire è il comandante,
+i tre luogotenenti leali si scambiano le tre versioni che hanno ricevuto e si
+ritrovano in mano tutti e tre lo stesso identico mucchietto: da un mucchietto
+uguale tirano fuori la stessa conclusione, qualunque essa sia, e attaccare
+tutti insieme o ritirarsi tutti insieme era proprio l'obiettivo. Se invece a
+mentire è un luogotenente, i due leali hanno l'ordine vero due volte (ricevuto
+dal comandante e confermato l'un l'altro) e la bugia una volta sola: vince
+l'ordine vero. Con tre partecipanti quel mucchietto è di due sole risposte, una
+per parte, e non c'è modo di far comparire qualcosa due volte: è tutta lì la
+differenza.
+
+C'è però un secondo muro, e sta prima di questo. Finora abbiamo dato per buona
+una cosa che sembra ovvia e non lo è: che ci si accorga quando un generale
+**non** risponde. Ma come fai ad accorgertene? Aspetti. E se dopo un'ora non è
+arrivato niente non sai se il messaggero è morto o se è solo in ritardo: da dove
+sei tu, un compagno fermo e un compagno lento sono la stessa identica cosa. Nel
+1985 tre informatici hanno dimostrato che senza un tempo massimo garantito per
+consegnare un messaggio basta che **uno solo** dei partecipanti possa fermarsi,
+senza mentire e senza fare niente di male, perché nessuna procedura fissata in
+anticipo possa garantire che gli altri si mettano d'accordo
+{cite}`fischer1985impossibility`. Ecco perché i sistemi veri, prima ancora di
+preoccuparsi dei bugiardi, comprano un orologio: decidono di aspettare al
+massimo tanto e di considerare morto chi non ha risposto entro quel tanto,
+sapendo benissimo che ogni tanto dichiareranno morto qualcuno che era soltanto
+lento. È il prezzo, e si paga volentieri.
+
 `````
 
 `````{tab} Superiore
@@ -606,10 +654,48 @@ ipotesi cambia il limite: con **messaggi firmati**, cioè con firme non
 falsificabili e verificabili da chiunque, il vincolo dei due terzi cade e
 l'algoritmo $\mathrm{SM}(f)$ risolve il problema per qualunque $f$ purché
 $n \ge f+2$ (sotto quella soglia i luogotenenti leali sono al più uno, e le due
-condizioni valgono a vuoto). È un punto di metodo che vale ben oltre i
-generali: un risultato di impossibilità non dice «impossibile», dice
-«impossibile **sotto queste ipotesi**», e il lavoro dell'ingegnere è capire
-quale ipotesi si può comprare.
+condizioni valgono a vuoto).
+
+Delle tre ipotesi orali conviene però fermarsi sulla terza, perché non è un
+dettaglio tecnico: è un'ipotesi sul **tempo**, travestita. Sono gli autori
+stessi a scioglierla, quando passano ai sistemi reali. L'assenza di un messaggio
+si può rilevare in un modo solo, cioè constatando che non è arrivato entro un
+tempo prefissato, e questo richiede che esista un tempo massimo entro il quale
+un messaggio viene prodotto e consegnato. A3 è, alla lettera, l'ipotesi di
+**sincronia**.
+
+Tolta quella, il quadro cambia di natura, e per una ragione che con i traditori
+non c'entra niente. Il risultato di Fischer, Lynch e Paterson del 1985
+{cite}`fischer1985impossibility` dice che in un sistema **asincrono**, dove non
+esiste alcun limite noto ai ritardi di consegna né alla velocità relativa dei
+processi, nessun protocollo deterministico risolve il consenso se anche un solo
+processo può guastarsi, e guastarsi nel modo più mite immaginabile: fermandosi.
+Nessuna malizia, nessun messaggio contraddittorio, nessuna coalizione di
+traditori. Un processo che tace, e basta. La ragione, in una riga, è che in un
+sistema asincrono un processo fermo e un processo lento sono
+**indistinguibili**: chi aspetta non può sapere se sta aspettando invano, e un
+protocollo che decida comunque si lascia portare a decidere male da un ritardo
+abbastanza sfortunato.
+
+FLP è il più forte dei due risultati, perché chiede meno, e il muro vero del
+consenso distribuito è quello, non $3f+1$: la soglia dei due terzi è ciò che si
+paga **dopo** aver comprato l'ipotesi che FLP nega. Le monete con cui la si
+compra sono tre, e sono tutte e tre in uso. La **sincronia parziale**, cioè i
+timeout: si scommette su un tempo massimo, e si accetta di sbagliare quando la
+scommessa salta. La **randomizzazione**, che rinuncia alla terminazione certa e
+si tiene quella con probabilità $1$. E i **rilevatori di guasti**, cioè un
+oracolo esterno, necessariamente fallibile, che dichiara chi è morto. Paxos
+{cite}`lamport1998part` e Raft {cite}`ongaro2014raft`, i due algoritmi con cui
+si tiene coerente qualunque base di dati replicata, comprano la prima: la
+coerenza la garantiscono sempre, decidere entro un tempo dato no, e quando la
+rete si comporta male smettono di avanzare invece di sbagliare.
+
+È un punto di metodo che vale ben oltre i generali: un risultato di
+impossibilità non dice «impossibile», dice «impossibile **sotto queste
+ipotesi**», e il lavoro dell'ingegnere è capire quale ipotesi si può comprare.
+Qui le ipotesi da comprare sono due, a due prezzi diversi: la sincronia si paga
+in latenza e in falsi allarmi, la lealtà dei partecipanti si paga in
+partecipanti, tre volte tanti quanti sono i bugiardi che si vogliono tollerare.
 
 `````
 
@@ -674,6 +760,64 @@ di una risposta giusta. Un sistema in cui il disaccordo emerge ed è
 ispezionabile è migliore di uno che converge in silenzio sulla risposta
 sbagliata.
 
+`````{tab} Elementare
+
+```{admonition} Da ricordare
+:class: important
+- Un messaggio fra agenti ha un **contenuto** e, separato da quello, **quello
+  che fa**: dare una notizia, chiedere qualcosa, prendersi un impegno,
+  rifiutare. Sono i tre biglietti sul frigorifero, che dicono quasi la stessa
+  cosa e assegnano tre responsabilità diverse. Scriverlo sul biglietto invece di
+  lasciarlo indovinare permette a un programma di dire, a fine giornata, se una
+  richiesta ha avuto risposta e se un impegno è stato onorato. Il capostipite di
+  questi protocolli è il **Contract Net** {cite}`smith1980contract`, cioè bando,
+  offerta, aggiudicazione.
+- **Condorcet**: se tre persone ci prendono sette volte su dieci ciascuna e
+  decidono a maggioranza, il gruppo ci prende quasi otto volte su dieci, e con
+  nove il novanta per cento. Ma se ciascuna ci prende meno della metà delle
+  volte, votare *peggiora* le cose. Il voto non aggiunge competenza: amplifica
+  quella che c'è, nel bene e nel male.
+- **Fra agenti identici l'ipotesi crolla.** Dieci copie dello stesso modello con
+  le stesse istruzioni non sono dieci votanti, sono un votante interrogato dieci
+  volte: sulle domande che mandano fuori strada quel modello sbagliano tutte
+  insieme e allo stesso modo, e su quelle il voto non corregge, certifica. Il
+  voto non aumenta la correttezza, aumenta la **confidenza**: su nove agenti
+  concordi, quasi una unanimità su due è sbagliata.
+- Un po' di indipendenza si compra: far generare le risposte in modo meno
+  prevedibile, chiedere strade di ragionamento diverse, riformulare la domanda,
+  cambiare modello. È il motivo per cui la **self-consistency**
+  {cite}`wang2023selfconsistency` funziona; il guadagno però resta sempre sotto
+  a quello promesso, e il modo di scoprire quanti agenti servono è misurare dove
+  la curva smette di salire.
+- Il **dibattito** {cite}`irving2018ai` sfrutta il fatto che controllare è più
+  facile che trovare: il giudice non deve essere più bravo dei due contendenti,
+  deve solo saper valutare l'ultimo passaggio contestato. Regge finché il
+  giudice riconosce un argomento fallace da uno valido, e due contendenti nati
+  dallo stesso modello si portano dietro gli stessi punti ciechi: il dibattito
+  rende visibile il disaccordo che c'è, non crea quello che manca.
+- I **generali bizantini** {cite}`lamport1982byzantine`: se qualcuno può dire
+  cose diverse a persone diverse, per tollerare un bugiardo servono almeno
+  quattro partecipanti, per due sette, per tre dieci, ed è dimostrato che con
+  meno non si può. Un agente **guasto** tace e lo si becca aspettando; uno
+  **bugiardo** risponde in tempo, con garbo, e dice il falso, come un modello che
+  produce una citazione inesistente con la stessa disinvoltura di quelle vere.
+  Contro di lui aggiungere copie non serve a niente: serve un riscontro esterno,
+  cioè qualcosa che si possa controllare senza passare dalla sua parola.
+- E prima ancora dei bugiardi c'è il tempo. Se nessuno garantisce entro quanto
+  un messaggio arriva, un partecipante fermo e uno lento sono la stessa cosa
+  vista da fuori, e basta che **uno solo** possa fermarsi perché nessuna
+  procedura decisa in anticipo garantisca l'accordo
+  {cite}`fischer1985impossibility`. I sistemi veri comprano un orologio: aspetto
+  al massimo tanto, e chi non risponde lo do per morto, sapendo che ogni tanto
+  sbaglierò.
+- E il consenso garantisce l'**accordo**, mai la **verità**: un gruppo può
+  ritirarsi tutto insieme, ordinatamente, dalla parte sbagliata.
+```
+
+`````
+
+`````{tab} Superiore
+
 ```{admonition} Da ricordare
 :class: important
 - Un messaggio fra agenti ha un **contenuto** e una **forza illocutoria** (che
@@ -705,8 +849,20 @@ sbagliata.
   ereditano la stessa correlazione.
 - I **generali bizantini** {cite}`lamport1982byzantine`: con soli messaggi
   orali servono $n \ge 3f+1$ partecipanti per tollerarne $f$ che mentono (con
-  firme il vincolo cade). Un agente **guasto** tace e lo becca un timeout; uno
-  **bizantino** risponde in modo plausibile e falso, come un LLM che allucina
-  con sicurezza: contro di lui la ridondanza non serve, serve un riscontro
-  esterno. E il consenso garantisce l'**accordo**, mai la **verità**.
+  firme il vincolo cade a $n \ge f+2$). Un agente **guasto** tace e lo becca un
+  timeout; uno **bizantino** risponde in modo plausibile e falso, come un LLM che
+  allucina con sicurezza: contro di lui la ridondanza non serve, serve un
+  riscontro esterno.
+- Sotto quel risultato ce n'è uno **più forte**, ed è il muro vero. L'ipotesi A3
+  di Lamport, «l'assenza di un messaggio è rilevabile», è l'ipotesi di
+  **sincronia** travestita; toltala, **FLP** {cite}`fischer1985impossibility`
+  dice che in un sistema asincrono nessun protocollo deterministico risolve il
+  consenso se anche un solo processo può fermarsi, perché un processo fermo e uno
+  lento sono indistinguibili. La soglia $3f+1$ è ciò che si paga *dopo* aver
+  comprato la sincronia; le monete sono timeout, randomizzazione e rilevatori di
+  guasti, e Paxos {cite}`lamport1998part` e Raft {cite}`ongaro2014raft` comprano
+  la prima.
+- E il consenso garantisce l'**accordo**, mai la **verità**.
 ```
+
+`````

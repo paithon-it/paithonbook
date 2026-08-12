@@ -2,10 +2,12 @@
 
 Intorno al 2016 il deep learning aveva già conquistato la visione e stava
 conquistando il linguaggio, e la domanda era nell'aria: perché la
-raccomandazione dovrebbe accontentarsi di un prodotto scalare? Un prodotto
-scalare è pur sempre una funzione fissa e piuttosto rigida; le reti neurali,
-lo sappiamo dal capitolo sulle reti, possono approssimare funzioni molto più
-generali. Il paper che diede forma alla domanda è *Neural Collaborative
+raccomandazione dovrebbe accontentarsi di un prodotto scalare? Confrontare due
+schede voce per voce è pur sempre una regola di calcolo fissa e piuttosto
+rigida, decisa a tavolino da chi ha scritto il modello; una rete neurale,
+invece, sa imitare con la precisione che si vuole qualunque regola leghi
+ingressi e uscite senza salti bruschi, come racconta la panoramica del capitolo
+sul Deep Learning. Il paper che diede forma alla domanda è *Neural Collaborative
 Filtering* {cite}`he2017neural`. La risposta, come vedremo, è più
 interessante di un semplice "sì": è un piccolo caso di studio su cosa
 significa davvero "più potente" in machine learning.
@@ -22,8 +24,11 @@ film) e sostituire solo l'ultimo passo, il prodotto scalare, con una rete che
 :alt: Gli identificativi di utente e film passano da due tabelle di embedding, i due vettori vengono concatenati e un percettrone multistrato produce il punteggio di affinità.
 :width: 95%
 
-L'architettura NCF: gli embedding di utente e film vengono concatenati e un
-MLP, al posto del prodotto scalare, produce il punteggio di affinità.
+L'architettura NCF: le schede di numeri dell'utente e del film vengono
+incollate una sotto l'altra (*concatenate*) e passate a un percettrone
+multistrato (MLP), che al posto del confronto voce per voce produce il
+punteggio di affinità. Nel modello quel punteggio passa poi per una sigmoide,
+che lo schiaccia fra zero e uno perché si legga come una probabilità.
 ```
 
 `````{tab} Elementare
@@ -45,12 +50,12 @@ coppie.
 
 `````{tab} Superiore
 
-Con gli embedding $P_u, Q_i \in \mathbb{R}^k$ della sezione precedente, il
-NCF sostituisce il prodotto scalare con un percettrone multistrato applicato
-alla concatenazione:
+Con gli embedding $\mathbf{p}_u, \mathbf{q}_i \in \mathbb{R}^k$ della sezione
+precedente, il NCF sostituisce il prodotto scalare con un percettrone
+multistrato applicato alla concatenazione:
 
 $$
-\hat{y}_{ui} \;=\; \sigma\!\Big( f_{\theta}\big([\,P_u \,;\, Q_i\,]\big) \Big) ,
+\hat{y}_{ui} \;=\; \sigma\!\Big( f_{\theta}\big([\,\mathbf{p}_u \,;\, \mathbf{q}_i\,]\big) \Big) ,
 $$
 
 dove $[\,\cdot\,;\,\cdot\,]$ è la concatenazione dei due vettori,
@@ -66,8 +71,16 @@ $\hat{x}_{ui}$ per un punteggio di ranking (BPR), dove conta solo l'ordine e
 non il valore assoluto.
 
 Il paper propone anche una variante che affianca i due mondi (*NeuMF*): un
-ramo con il prodotto elemento per elemento degli embedding e un ramo MLP, fusi
-nell'ultimo strato. In linea di principio l'MLP, per il teorema di
+ramo con il prodotto elemento per elemento e un ramo MLP, **ciascuno con la
+propria coppia di tabelle di embedding**, fusi concatenando l'ultimo strato
+nascosto. Che le tabelle siano separate non è un dettaglio implementativo, ed è
+il paper stesso ad argomentarlo: condividerle costringerebbe i due rami alla
+stessa dimensione degli embedding, e gli autori scrivono che questo potrebbe
+limitare le prestazioni del modello fuso. La
+conseguenza da tenere a mente è che NeuMF ha il doppio dei parametri di
+embedding di una fattorizzazione a parità di $k$, quindi il confronto fra i due
+non è a parità di capacità: cosa che rende il risultato di Rendle, fra poco,
+ancora più netto. In linea di principio l'MLP, per il teorema di
 approssimazione universale {cite}`hornik1991approximation` (nella versione di
 Leshno et al. {cite}`leshno1993multilayer`, che copre attivazioni illimitate
 come la ReLU), può approssimare con precisione arbitraria, su un compatto,
@@ -77,16 +90,35 @@ un'altra faccenda ancora.
 
 `````
 
-Qui serve una dose di onestà intellettuale. Nel 2020 Steffen Rendle e colleghi
-{cite}`rendle2020neural` hanno rifatto i conti sugli stessi benchmark del
-paper originale, e hanno trovato che un semplice prodotto scalare, con
-iperparametri scelti con cura, batte l'MLP, e che per una rete imparare a
-riprodurre un prodotto scalare da dati sparsi è sorprendentemente difficile.
-La morale non è "le reti non servono", ma qualcosa di più fine: più capacità
-espressiva non è gratis, e il prodotto scalare non è una rigidità arbitraria
-bensì un ottimo *bias induttivo* per questo problema, oltre a essere migliaia
-di volte più economico da calcolare su un catalogo di milioni di titoli. Su
-dati densi e ricchi di feature le reti ripagano; sul filtraggio collaborativo
+Qui serve una dose di onestà intellettuale, e non riguarda un paper solo. Nel
+2019 tre ricercatori del Politecnico di Milano hanno provato a rifare i conti
+di diciotto metodi neurali per la raccomandazione presentati alle conferenze
+principali {cite}`dacrema2019are`: solo sette si sono lasciati riprodurre con
+uno sforzo ragionevole, e di quei sette **sei venivano spesso battuti da metodi
+molto più semplici**, i vicini della sezione precedente o tecniche su grafo; il
+settimo batteva le baseline ma non un metodo lineare, non neurale, tarato con
+cura. Il lavoro ha vinto il premio come miglior articolo dell'anno, e ha
+spostato la domanda che si fa a un risultato nuovo: non «funziona?» ma «meglio
+di che cosa, tarato da chi?». L'anno dopo Steffen Rendle e colleghi
+{cite}`rendle2020neural` hanno fatto la stessa operazione proprio sul NCF,
+sugli stessi benchmark del paper originale, e hanno trovato che un semplice
+prodotto scalare, con iperparametri scelti con cura, batte l'MLP, e che per una
+rete imparare a riprodurre un prodotto scalare da dati sparsi è
+sorprendentemente difficile.
+
+La morale non è «le reti non servono», ma qualcosa di più fine, e conviene
+dirla in italiano prima che in gergo: **più libertà non è gratis**. Lasciare al
+modello la libertà di scoprire da sé come confrontare due schede sembra un
+regalo, e invece gli toglie l'unica cosa che sapeva già di sicuro, cioè che le
+voci vanno confrontate a coppie. Il confronto voce per voce non è una rigidità
+arbitraria: è un'ipotesi giusta sul problema, e su dati scarsi un'ipotesi
+giusta vale più di mille parametri in più. Ed è anche l'unica forma che permette
+di **non** calcolare un punteggio per ogni titolo del catalogo, e su cataloghi
+da milioni di titoli è questo, più della qualità, a decidere se il sistema sta
+in piedi (ci torniamo in fondo al capitolo). Su dati fitti, cioè il contrario
+della tabella quasi vuota di prima, e ricchi di informazioni di contorno
+sull'utente e sull'oggetto (l'ora, il dispositivo, il prezzo, il genere: si
+chiamano *feature*) le reti ripagano; sul filtraggio collaborativo
 puro, il vecchio prodotto scalare ben tarato resta un avversario durissimo.
 
 ## La matrice è un grafo
@@ -99,7 +131,9 @@ riscrivere lo stesso dato in un'altra forma.
 
 La tabella utenti per film si può disegnare invece che tabulare. Metti tutti
 gli utenti in una colonna di pallini a sinistra, tutti i film in una colonna a
-destra, e tira una linea ogni volta che qualcuno ha visto qualcosa. Non hai
+destra, e tira una linea ogni volta che qualcuno ha visto qualcosa. I pallini
+sono i *nodi* e le linee gli *archi*: sono le parole del capitolo precedente,
+quello sui grafi, e da qui in avanti il testo userà quelle. Non hai
 aggiunto né tolto niente: è lo stesso dato, disegnato. Ma adesso si vede una
 cosa che nella tabella era nascosta, e cioè che **raccomandare vuol dire
 indovinare le linee che ancora non ci sono**.
@@ -113,36 +147,49 @@ tuoi, e quella somiglianza si scopre camminando sul disegno per tre, quattro
 passi. Il grafo permette di raccogliere quel segnale lontano; la tabella no,
 perché lì i passi non si vedono.
 
+Camminare così ha un nome, **propagazione**: a ogni passo ogni pallino si
+riscrive mescolando ciò che gli arriva dai pallini a cui è collegato, e dopo
+tre o quattro passi ha in pancia anche notizie che vengono da lontano. E c'è un
+modello del 2020, **LightGCN**, famoso proprio perché non fa altro: niente rete
+neurale sopra, solo il camminare, ripetuto qualche volta e rimesso insieme alla
+fine.
+
 `````
 
 `````{tab} Superiore
 
-La matrice di interazione $R \in \{0,1\}^{m \times n}$ è la matrice di
-adiacenza di un grafo **bipartito** utente-oggetto, a meno di riscriverla in
-forma simmetrica:
+La matrice di interazione $\mathbf{R} \in \{0,1\}^{n \times m}$, dove $n$ è il
+numero degli utenti e $m$ quello degli oggetti (le stesse lettere della figura
+della sezione precedente), è la matrice di adiacenza di un grafo **bipartito**
+utente-oggetto, a meno di riscriverla in forma simmetrica:
 
 $$
-A = \begin{pmatrix} 0 & R \\ R^\top & 0 \end{pmatrix} .
+\mathbf{A} = \begin{pmatrix} \mathbf{0} & \mathbf{R} \\ \mathbf{R}^\top & \mathbf{0} \end{pmatrix} .
 $$
 
 Su un grafo si può propagare, ed è esattamente il *message passing* del
 capitolo sulle reti neurali su grafo. Nella forma più nuda, l'embedding di un
-utente al passo $k+1$ è una somma pesata degli embedding degli oggetti con
+utente al passo $\ell+1$ è una somma pesata degli embedding degli oggetti con
 cui ha interagito, e viceversa:
 
 $$
-e_u^{(k+1)} = \sum_{i \in \mathcal{N}(u)}
-\frac{1}{\sqrt{|\mathcal{N}(u)|\,|\mathcal{N}(i)|}}\; e_i^{(k)},
+\mathbf{e}_u^{(\ell+1)} = \sum_{i \in \mathcal{N}(u)}
+\frac{1}{\sqrt{|\mathcal{N}(u)|\,|\mathcal{N}(i)|}}\; \mathbf{e}_i^{(\ell)},
 \qquad
-e_i^{(k+1)} = \sum_{u \in \mathcal{N}(i)}
-\frac{1}{\sqrt{|\mathcal{N}(i)|\,|\mathcal{N}(u)|}}\; e_u^{(k)} .
+\mathbf{e}_i^{(\ell+1)} = \sum_{u \in \mathcal{N}(i)}
+\frac{1}{\sqrt{|\mathcal{N}(i)|\,|\mathcal{N}(u)|}}\; \mathbf{e}_u^{(\ell)} .
 $$
 
 Il peso è la stessa normalizzazione simmetrica dei gradi vista per la GCN
-(non una media: i coefficienti non sommano a uno), e la stessa lettura vale
-qui: un utente che ha visto tutto, o un film visto da tutti, contano meno per
-singolo arco. Impilare $K$ strati significa raccogliere segnale da $K$ salti
-di distanza.
+(non una media: i coefficienti non sommano a uno), con una differenza da non
+scavalcare: la GCN del capitolo sui grafi normalizza
+$\tilde{\mathbf{A}} = \mathbf{A} + \mathbf{I}$, cioè con i cappi, e qui la somma
+corre sui soli $\mathcal{N}(u)$, senza cappio. Non è una svista dei paper:
+LightGCN scarta le *self-connection* per scelta dichiarata, mostrando che la
+combinazione finale degli strati (che include lo strato $0$) ne cattura già
+l'effetto. La lettura per il resto è la stessa: un utente che ha visto tutto, o
+un film visto da tutti, contano meno per singolo arco. Impilare $L$ strati
+significa raccogliere segnale da $L$ salti di distanza.
 
 L'idea è nell'aria dal 2017, quando GC-MC {cite}`vandenberg2017graph` formulò
 il completamento della matrice come convoluzione sul grafo bipartito; la tappa
@@ -150,38 +197,56 @@ canonica è **NGCF** {cite}`wang2019neural`, che ricalca la GCN completa:
 trasformazione lineare, non linearità, propagazione.
 **LightGCN** {cite}`he2020lightgcn` toglie i primi due e tiene solo il terzo,
 combinando poi gli strati con pesi uniformi
-$e_u = \sum_{k=0}^{K} \frac{1}{K+1} e_u^{(k)}$ e tornando al prodotto scalare
-per il punteggio. Solo embedding e propagazione: nessun peso da imparare oltre
-alla tabella iniziale. Funziona meglio, e costa molto meno.
+$\mathbf{e}_u = \sum_{\ell=0}^{L} \frac{1}{L+1} \mathbf{e}_u^{(\ell)}$ e
+tornando al prodotto scalare per il punteggio. Solo embedding e propagazione:
+nessun peso da imparare oltre alla tabella iniziale. Costa molto meno, e
+funziona meglio **di NGCF**: circa il 16% di miglioramento relativo medio, a
+parità di protocollo sperimentale. È il termine di paragone da tenere a mente,
+perché è interno alla famiglia dei metodi a grafo: il paper non sta dicendo che
+LightGCN batte una fattorizzazione ben tarata, sta dicendo che togliere pezzi a
+NGCF lo migliora. Detto altrimenti, è il prodotto scalare della sezione
+precedente ad avere resistito anche qui.
 
 `````
 
-La morale è la stessa del paragrafo su Rendle, e vale la pena metterla in
-fila, perché due volte di seguito in questo capitolo la stessa cosa si è
-rivelata vera: **quel che serviva non era più capacità espressiva, era il
-giusto bias induttivo**. NCF aggiunge una rete al posto del prodotto scalare e
-non guadagna; LightGCN toglie la rete e tiene la propagazione, e guadagna. La
-propagazione sul grafo, in fondo, è un modo di dire al modello una cosa che il
-prodotto scalare non sa: *chi ha visto cose simili alle tue va ascoltato,
-anche a più di un passo di distanza*.
+La morale somiglia a quella del paragrafo su Rendle, e vale la pena metterle in
+fila, ma con una precisazione che conta e che di solito si salta: i due episodi
+non hanno lo stesso peso probatorio. Il primo è una rivalutazione indipendente,
+che ha ritarato i concorrenti e li ha fatti correre di nuovo; il secondo è un
+metodo che riporta i propri risultati, e i propri risultati li riportano tutti.
+Detto questo, la direzione è la stessa, ed è quella già incontrata: **più
+libertà non è gratis**. NCF aggiunge una rete al posto del confronto voce per
+voce e non guadagna; LightGCN toglie la rete e tiene la propagazione, e
+guadagna. Camminare sul grafo, in fondo, è un modo di dire al modello una cosa
+che il confronto voce per voce non sa: *chi ha visto cose simili alle tue va
+ascoltato, anche a più di un passo di distanza*. Non è più potenza di calcolo:
+è un'ipotesi migliore su come è fatto il problema.
 
-Il grafo dà anche una risposta parziale al problema dell'avvio a freddo visto
-alla fine della sezione precedente. Un oggetto nuovo, nella matrice, è una
-riga vuota, e da una riga vuota non si estrae niente. In un grafo, invece,
-nulla vieta di aggiungere nodi che non siano né utenti né oggetti: il regista,
-il genere, l'attore protagonista, il tag. Un film appena uscito ha zero archi
-verso gli utenti ma già i suoi archi verso gli attributi, e la propagazione gli
-consegna un embedding sensato prima ancora che qualcuno lo guardi. Il grafo
-smette di essere bipartito e diventa **eterogeneo**, con tipi diversi di nodo e
-di arco.
+Il disegno dà anche una risposta parziale alla partenza a freddo, il muro
+contro cui la sezione precedente si era fermata, e vale la pena guardarla bene
+perché è una delle idee più eleganti del capitolo.
 
-Che questo sia il modo giusto di vedere il problema non è una tesi di questo
-capitolo: è la definizione. Raccomandare **è** *link prediction* su un grafo
-utente-oggetto, cioè prevedere gli archi mancanti, ed è il motivo per cui i
-sistemi industriali su cataloghi enormi sono oggi costruiti così. Il caso più
+Nella tabella, un film appena uscito è una riga vuota, e da una riga vuota non
+si estrae niente: fine del discorso. Nel disegno no, perché nel disegno nulla
+obbliga i pallini a essere solo persone e film. Si possono aggiungere pallini
+di un altro colore: il regista, il genere, l'attore protagonista, l'etichetta
+messa da qualcuno. Un film uscito ieri non ha ancora nessuna linea verso gli
+spettatori, ma ha già le sue linee verso il regista e verso gli attori, e
+quelle bastano: camminando su di esse il film raccoglie qualcosa da tutti gli
+altri film dello stesso regista, e si presenta al sistema con una scheda
+sensata prima ancora che qualcuno lo guardi. Un film senza spettatori non è un
+film sconosciuto: è un film di cui sappiamo tutto tranne la cosa che ci
+interessa. Un grafo con più tipi di pallini e di linee si dice **eterogeneo**.
+
+Riformulare la raccomandazione come *link prediction*, cioè come il compito di
+prevedere gli archi che mancano, non è un gioco di parole: è la lettura che
+rende disponibile tutto l'armamentario delle reti su grafo, e il caso più
 noto, **PinSage** {cite}`ying2018graph`, è raccontato nel capitolo sulle reti
 neurali su grafo insieme al campionamento dei vicini che lo rende praticabile
-a scala web.
+a scala web. Non è però *la definizione* del problema, ed è bene non prenderla
+per tale: le due sezioni che seguono ne mostrano i limiti da due lati diversi,
+perché un grafo statico non ha un orologio, e i sistemi che girano davvero
+restano organizzati intorno al confronto fra due schede.
 
 ## Imparare a ordinare: BPR
 
@@ -206,20 +271,35 @@ confronti a coppie produce una classifica personale senza che nessuno abbia
 mai dato un voto. Nota la finezza: non serve decidere *quanto* gli piace ogni
 libro; serve solo che l'ordine sia giusto.
 
+Una domanda onesta, a questo punto, ed è la prima che viene in mente: e se il
+libro pescato a caso era proprio uno che gli sarebbe piaciuto, e che non ha
+comprato solo perché non l'ha mai visto? Succede, e per un istante lo stiamo
+spingendo giù per sbaglio. Il gioco regge lo stesso, per due motivi. Il primo è
+che su un catalogo grande capita di rado, e più il catalogo è grande più capita
+di rado (nel codice qui sotto lo evitiamo del tutto, almeno per i libri che
+quel cliente ha già preso). Il secondo, che conta di più: ogni singolo
+confronto sposta la vetrina di pochissimo, quindi dopo milioni di confronti
+resta impressa la regolarità, non lo sbaglio di uno di essi. È il motivo per
+cui questo metodo vuole tantissimi confronti approssimativi e non pochi giudizi
+precisi.
+
 `````
 
 `````{tab} Superiore
 
 Sia $\hat{x}_{ui}$ il punteggio che un modello qualunque assegna alla coppia
 $(u,i)$: nel paper è una fattorizzazione ridotta al solo prodotto scalare,
-$\hat{x}_{ui} = P_u^\top Q_i$, senza nessuno dei termini additivi della
-sezione precedente. Due dei tre spariscono da sé, perché BPR confronta sempre
-due item *dello stesso* utente e nella differenza $\mu$ e $b_u$ si elidono. Il
-bias di item no: sopravvive come $b_v - b_w$, e viene tolto per scelta, perché
-è la stessa quantità per tutti gli utenti, cioè la parte *non* personalizzata
-dell'ordinamento (la P di *Personalized*). Rimetterlo è legittimo e varie
-implementazioni lo fanno, al prezzo di una classifica che per un utente senza
-storia collassa su quella dei titoli più popolari.
+$\hat{x}_{ui} = \mathbf{p}_u^\top \mathbf{q}_i$, senza nessuno dei termini
+additivi della sezione precedente. Due dei tre spariscono da sé, perché BPR
+confronta sempre due item *dello stesso* utente e nella differenza $\mu$ e $b_u$
+si elidono. Il bias di item no: sopravvive come $b_v - b_w$, e nel paper
+semplicemente non c'è. Un modo naturale di leggere quell'assenza (il paper non
+la discute) è che quel termine è la stessa quantità per tutti gli utenti, cioè
+la parte *non* personalizzata dell'ordinamento: la P di *Personalized*.
+Rimetterlo è legittimo e varie implementazioni lo fanno, al prezzo di una
+classifica che per un utente senza storia collassa su quella dei titoli più
+popolari, che è però anche il meglio che si possa fare quando di quell'utente
+non si sa nulla.
 
 BPR costruisce triple $(u, v, w)$: un utente $u$, un item $v$ con cui ha
 interagito, un item $w$ campionato tra quelli mai toccati. La loss chiede che
@@ -255,18 +335,36 @@ della sezione precedente senza toccarlo:
 ```{code-block} python
 :class: pt-non-eseguibile
 
+import random
 import torch
+import torch.nn.functional as F
 
 def loss_bpr(x_uv, x_uw):
     # x_uv: punteggi (utente, item visto) · x_uw: (utente, item ignorato)
-    return -torch.log(torch.sigmoid(x_uv - x_uw)).mean()
+    return -F.logsigmoid(x_uv - x_uw).mean()
 
-# nel ciclo di addestramento: v = item con cui l'utente ha interagito,
-# w = item pescato a caso in tutto il catalogo. Ogni tanto capiterà un item
-# che l'utente aveva già preso: succede così di rado che lo lasciamo passare
-w = torch.randint(0, n_film, v.shape)          # campionamento dei negativi
+def pesca_negativo(utente, positivi, n_film):
+    """Un item che `utente` non ha mai toccato: si pesca finché non ne esce uno."""
+    w = random.randrange(n_film)
+    while (utente, w) in positivi:   # `positivi`: il set delle coppie note
+        w = random.randrange(n_film)
+    return w
+
+# nel ciclo di addestramento: v = item con cui l'utente ha interagito, w = item
+# mai toccato da quell'utente. Pescandolo a caso in tutto il catalogo ogni
+# tanto uscirebbe un positivo: su una matrice piena al 5-10%, come i dataset da
+# banco di prova, una volta su dieci o venti. Costa poco ripescare.
+w = torch.tensor([pesca_negativo(int(x), positivi, n_film) for x in u])
 loss = loss_bpr(modello(u, v), modello(u, w))  # stesso modello di prima
 ```
+
+Quella riga di loss, detta in italiano: guarda di quanto il libro comprato sta
+sopra a quello ignorato, e trasforma quel margine in una spinta. Se il comprato
+sta già molto sopra, la spinta è quasi zero e la vetrina non si muove; se sta
+sotto, la spinta cresce, e cresce tanto più quanto è sotto. La forma esatta
+(`F.logsigmoid`, cioè il logaritmo della sigmoide scritto in un colpo solo)
+serve solo a rendere quella curva liscia e stabile: scritta come logaritmo *di*
+una sigmoide calcolata a parte, con margini molto negativi darebbe infinito.
 
 ## Misurare una classifica
 
@@ -275,12 +373,22 @@ sui voti non dice nulla sulla qualità di una vetrina. Le metriche di ranking
 guardano la lista dei primi $k$ suggerimenti, perché è l'unica cosa che
 l'utente vedrà.
 
+Prima del metro, però, c'è una domanda che si salta quasi sempre e che pesa più
+del metro: **su che cosa si misura**. Nessuno può dire se ti sarebbe piaciuto
+un titolo che non hai mai visto, quindi si procede per finta: si prende la
+storia di un utente, si **nasconde** una parte di ciò che ha davvero guardato,
+si addestra il modello su quel che resta, e poi si guarda quanti dei titoli
+nascosti il modello rimette in cima alla lista. I titoli nascosti sono il metro
+di verità: si sa che gli interessavano, perché li ha guardati, e si sa che il
+modello non li ha visti, perché glieli abbiamo tolti noi. È un trucco, e come
+tutti i trucchi funziona finché si ricorda che è un trucco.
+
 `````{tab} Elementare
 
-Supponi che il sistema ti mostri 10 titoli, e che 3 ti sarebbero davvero
-piaciuti. La **precision@10** è la frazione di consigli azzeccati:
-$3/10 = 0{,}3$. Se i titoli che ti sarebbero piaciuti erano 6 in tutto nel
-catalogo, il **recall@10** misura quanti ne ha ritrovati: $3/6 = 0{,}5$. Le
+Supponi che i titoli nascosti fossero 6, che il sistema te ne mostri 10, e che
+3 dei 10 fossero fra i nascosti. La **precision@10** è la frazione di consigli
+azzeccati: $3/10 = 0{,}3$. Il **recall@10** misura invece quanti dei 6 ne ha
+ritrovati: $3/6 = 0{,}5$. Le
 due metriche tirano in direzioni opposte: sparare consigli a raffica alza il
 recall e affonda la precision.
 
@@ -288,7 +396,9 @@ C'è però un dettaglio che entrambe ignorano: *dove* stanno i colpi
 azzeccati. Un successo al primo posto vale più di uno al decimo, perché al
 decimo posto forse non arrivi mai. La **NDCG** è la metrica che ne tiene
 conto: premia le classifiche che mettono i titoli giusti in cima, come un
-giornale che sceglie bene la prima pagina.
+giornale che sceglie bene la prima pagina. Il nome non vuol dire niente in
+italiano, sono le iniziali di quattro parole inglesi: è un'etichetta, non una
+sigla da decifrare.
 
 `````
 
@@ -311,14 +421,50 @@ $$
 \mathrm{NDCG@}k \;=\; \frac{\mathrm{DCG@}k}{\mathrm{IDCG@}k} \in [0,1],
 $$
 
-dove $\mathrm{rel}_j$ è la rilevanza dell'item in posizione $j$ (binaria o
-graduata) e $\mathrm{IDCG@}k$ è la DCG della classifica ideale, che normalizza
-il punteggio tra utenti con numeri diversi di item rilevanti. Lo sconto
-logaritmico penalizza dolcemente: la posizione 2 vale
-$1/\log_2 3 \approx 0{,}63$ della posizione 1. Tutte queste metriche si
-mediano sugli utenti; e tutte ereditano il difetto della valutazione offline:
-misurano il recupero di interazioni passate, avvenute sotto l'esposizione del
-vecchio sistema, non il gradimento futuro.
+dove $\mathrm{rel}_j$ è la rilevanza dell'item in posizione $j$ (binaria qui;
+per la rilevanza graduata la convenzione prevalente in *information retrieval*
+mette $2^{\mathrm{rel}_j} - 1$ al numeratore, e le due forme coincidono solo
+nel caso binario) e $\mathrm{IDCG@}k$ è la DCG della classifica ideale, che
+normalizza il punteggio tra utenti con numeri diversi di item rilevanti. Lo
+sconto logaritmico penalizza dolcemente: la posizione 2 vale
+$1/\log_2 3 \approx 0{,}63$ della posizione 1. Quando il test ha **un solo**
+item rilevante per utente, che è il caso del protocollo *leave-one-out* con cui
+è valutato NCF, la recall@k degenera nella *hit rate* HR@k ed è con quel nome
+che la si trova nei paper; la metrica naturale diventa allora la **MRR**
+(*mean reciprocal rank*), $\frac{1}{|\mathcal{U}|}\sum_u 1/\mathrm{rank}_u$,
+che il capitolo non usa ma che il lettore incontrerà.
+
+Tutte queste metriche si mediano sugli utenti; e tutte ereditano il difetto
+della valutazione offline: misurano il recupero di interazioni passate,
+avvenute sotto l'esposizione del vecchio sistema, non il gradimento futuro.
+
+**Come si nasconde.** «Nascondere una parte delle interazioni» sotto-specifica
+la decisione che sposta i risultati più di qualunque scelta di modello, e le
+opzioni in uso sono tre, con costi diversi. *Split casuale sulle interazioni*:
+comodo, ed è la scelta maggioritaria in letteratura, ma mette
+nell'addestramento interazioni **successive** a quelle di test, cioè addestra
+il modello su un futuro che al momento della predizione non esisteva; è una
+fuga di informazione, e gonfia i numeri {cite}`ji2023critical`.
+*Leave-one-out* sull'ultima interazione di ciascun utente: rispetta la
+cronologia del singolo utente, non quella globale, perché il modello vede
+comunque il futuro degli altri. *Taglio a un istante globale*: l'unico che
+riproduce la situazione di produzione, ed è di gran lunga il più severo, perché
+fa emergere gli utenti che al momento della predizione non avevano ancora
+storia. La differenza non è di livello ma di ordine: sui benchmark classici,
+passando da split casuale a temporale, l'ordine fra una fattorizzazione e la
+banale classifica dei più popolari può rovesciarsi, in buona parte proprio per
+via di quegli utenti freddi.
+
+**Su quanti candidati.** Seconda decisione tacita, e stessa morale. La
+definizione data qui suppone di ordinare l'intero catalogo non interagito; in
+pratica quasi nessuno lo fa, perché costa, e si ordina l'item di test contro
+poche decine o centinaia di negativi campionati (è, alla lettera, il protocollo
+con cui sono prodotti i numeri di NCF: 100 negativi per utente). Le due
+quantità portano lo stesso nome e differiscono di un fattore quattro o più; ma
+il guaio peggiore è che il gonfiamento **non è uguale per tutti i modelli**,
+quindi la metrica campionata può invertire l'ordine fra due sistemi
+{cite}`krichene2020sampled`. Leggendo un Recall@10 in un paper, conviene sempre
+cercare prima su quanti candidati è stato calcolato.
 
 `````
 
@@ -331,41 +477,105 @@ qualche giorno, una persona diversa: sacco a pelo e fornelletto sono consigli
 d'oro oggi e rumore tra un mese. La **raccomandazione sequenziale** tratta la
 storia dell'utente come una frase da continuare: prevedere la prossima
 interazione come si prevede la prossima parola. Non a caso il settore ha
-seguito la stessa parabola del NLP: prima le reti ricorrenti, poi
-l'auto-attenzione, con modelli come SASRec {cite}`kang2018self` e BERT4Rec
+seguito la stessa parabola del NLP: prima le reti ricorrenti, con GRU4Rec
+{cite}`hidasi2016session`, poi l'auto-attenzione, con SASRec
+{cite}`kang2018self` e BERT4Rec
 {cite}`sun2019bert4rec` che sono Transformer in tutto e per tutto, dove il
-"vocabolario" è il catalogo. Gli strumenti li avete già visti nei capitoli sul
-NLP e sui Transformer; qui cambia solo cosa c'è al posto delle parole.
+"vocabolario" è il catalogo. Quei quattro nomi propri sono lì per essere
+riconosciuti se li incontrate, non per essere imparati: la cosa da portarsi via
+è una sola, cioè che la storia recente pesa più di quella vecchia e che i
+modelli del linguaggio sanno già trattare le sequenze. Gli strumenti li avete
+già visti nei capitoli sul
+NLP e sui Transformer; qui cambia solo cosa c'è al posto delle parole. E vale
+l'avvertenza di poche pagine fa: che i modelli si susseguano in ordine di
+pubblicazione non vuol dire che si susseguano in ordine di qualità, e per
+saperlo servono le riprove indipendenti, non gli annunci.
 
 ## Come lo fa l'industria
 
-Un'ultima dose di realismo. Nessuna piattaforma calcola un punteggio raffinato
-per milioni di titoli a ogni visita: i sistemi reali lavorano **a due stadi**.
-Il primo, il *retrieval*, screma il catalogo da milioni a qualche centinaio di
-candidati con un modello volutamente semplice, lo schema dominante è la
-**two-tower**: due reti separate producono l'una l'embedding dell'utente,
-l'altra quello dell'item, e il punteggio è il loro prodotto scalare. La
-separazione è il punto: gli embedding degli item si precalcolano tutti
-offline, e a richiesta basta una ricerca dei vicini più prossimi
-(approssimata) nello spazio degli embedding (il prodotto scalare "rigido"
-della sezione precedente, riabilitato dall'efficienza). Il secondo stadio, il
-*ranking*, applica ai soli sopravvissuti un modello ricco quanto si vuole, con
-centinaia di feature di contesto (ora, dispositivo, storia recente). Questa
-architettura, descritta pubblicamente dagli ingegneri di YouTube nel 2016
-{cite}`covington2016deep`, è oggi lo standard di fatto, e gran parte del
-lavoro vero, va detto, non è nel modello ma nell'infrastruttura che lo tiene
-fresco.
+Un'ultima dose di realismo, ed è la sezione che racconta cosa succede davvero
+nei due secondi fra il momento in cui apri l'app e il momento in cui compare la
+prima riga di suggerimenti. Nessuna piattaforma calcola un punteggio
+raffinato per milioni di titoli a ogni visita: i sistemi reali lavorano **a due
+stadi**, e li descrissero pubblicamente gli ingegneri di YouTube nel 2016
+{cite}`covington2016deep`.
+
+`````{tab} Elementare
+
+Immagina un concorso con un milione di iscritti e una giuria di dieci persone.
+Nessuna giuria può ascoltare un milione di candidati: si fa una scrematura
+rapidissima e grossolana, che da un milione ne tiene qualche centinaio, e poi
+la giuria vera ascolta solo quelli. Chi consiglia i video fa la stessa cosa, e
+la fa da capo ogni volta che apri l'app, in una frazione di secondo.
+
+**Il primo tempo** è la scrematura, e deve essere velocissima, quindi il lavoro
+grosso è già stato fatto la notte prima: per ogni titolo del catalogo la scheda
+di numeri è già lì, calcolata e messa in cassetto. Quando arrivi tu, si calcola
+solo la *tua* scheda, e poi si cerca nel cassetto quali schede di titoli le
+somigliano di più. Questa ricerca è **approssimata** nel senso che non le
+guarda tutte: usa un indice che scarta a colpo d'occhio le regioni sbagliate,
+sbagliando ogni tanto qualche titolo per essere mille volte più veloce, ed è un
+baratto che a questo stadio conviene sempre. È anche il momento in cui il
+vecchio confronto voce per voce si prende la rivincita: è l'unica forma di
+punteggio che permette di preparare tutto in anticipo così.
+
+**Il secondo tempo** è la giuria: sulle poche centinaia di superstiti si può
+finalmente spendere, e lì entra tutto ciò che il primo tempo non poteva
+guardare, cioè che ore sono, da che dispositivo stai guardando, cosa hai visto
+dieci minuti fa. È qui che si decide l'ordine di quello che vedi.
+
+E una cosa che sorprende sempre: il lavoro difficile, in un sistema del genere,
+non è quasi mai il modello. È l'impianto che tiene tutto aggiornato, perché un
+cassetto di schede vecchie di una settimana consiglia benissimo la settimana
+scorsa.
+
+`````
+
+`````{tab} Superiore
+
+Il primo stadio, il *retrieval*, screma il catalogo da milioni a qualche
+centinaio di candidati con un modello volutamente semplice. Lo schema dominante
+oggi è la **two-tower**: due reti separate producono l'una l'embedding
+dell'utente, l'altra quello dell'item a partire dalle sue feature, e il
+punteggio è il loro prodotto scalare. La separazione è il punto: gli embedding
+degli item si precalcolano tutti offline, e a richiesta basta una ricerca dei
+vicini più prossimi approssimata (ANN) nello spazio degli embedding, cioè il
+prodotto scalare "rigido" della sezione precedente, riabilitato
+dall'efficienza. Il secondo stadio, il *ranking*, applica ai soli sopravvissuti
+un modello ricco quanto si vuole, con centinaia di feature di contesto (ora,
+dispositivo, storia recente).
+
+Vale la pena separare le attribuzioni, perché la letteratura le confonde
+spesso. Covington et al. 2016 descrivono i **due stadi** e il recupero per
+prodotto scalare con vicini approssimati, e in quel paper il modello di
+candidate generation è una rete sola, sull'utente: i vettori dei video sono i
+**pesi dello strato softmax di uscita**, non l'uscita di una seconda torre. La
+two-tower propriamente detta, con una rete anche sul lato item e la correzione
+del bias di campionamento che la rende addestrabile su cataloghi enormi, si
+afferma negli anni successivi {cite}`yi2019sampling`. La differenza non è
+terminologica: una torre che legge le *feature* dell'item sa dare un embedding
+anche a un item mai visto, un peso appreso per identificativo no, ed è
+esattamente la partenza a freddo di cui il capitolo si occupa a lungo.
+
+`````
+
+Vale per entrambi i livelli la stessa chiusa: gran parte del lavoro vero, in un
+sistema di raccomandazione industriale, non è nel modello ma nell'infrastruttura
+che lo tiene fresco.
 
 ## Suggerire o pilotare?
 
 Chiudiamo con la domanda che questo capitolo si porta dietro fin dalla matrice
-vuota: un sistema che decide cosa vedi, e impara da ciò che vedi, ti sta
-*servendo* o ti sta *plasmando*? Nel 2011 l'attivista Eli Pariser ha dato un
-nome alla paura: *filter bubble*, la bolla in cui l'algoritmo, inseguendo i
-tuoi click, ti mostra sempre più di ciò che già pensi. La ricerca empirica
-successiva ha restituito un quadro più sfumato (per molti utenti la
-raccomandazione *allarga* il consumo rispetto al fai-da-te, e le bolle più
-ermetiche spesso ce le costruiamo da soli) ma il meccanismo di fondo è reale,
+vuota, la stessa annunciata nella prima pagina: un sistema che decide cosa
+vedi, e impara da ciò che vedi, ti sta *servendo* o ti sta *plasmando*? Nel
+2011 l'attivista Eli Pariser ha dato un nome alla paura
+{cite}`pariser2011filter`: *filter bubble*, la bolla in cui l'algoritmo,
+inseguendo i tuoi click, ti mostra sempre più di ciò che già pensi. Gli studi
+empirici hanno poi restituito un quadro meno netto: sul consumo di notizie
+online, per esempio, i canali algoritmici risultano associati a una maggiore
+distanza ideologica media fra le persone e, contemporaneamente, a una maggiore
+esposizione di ciascuno al lato politico che preferisce meno
+{cite}`flaxman2016filter`. Il meccanismo di fondo però è reale,
 ed è il feedback loop già incontrato: il modello impara da dati che il modello
 stesso ha filtrato, come discusso nella sezione *Quando i dati cambiano* del
 capitolo di Machine Learning.
@@ -373,7 +583,8 @@ capitolo di Machine Learning.
 Il punto critico non è la tecnica, è la metrica. Un sistema addestrato a
 massimizzare i minuti di visione imparerà, con perfetta onestà matematica,
 tutto ciò che trattiene: inclusi l'indignazione e il sensazionalismo, se
-trattengono. Chi sceglie la funzione obiettivo sceglie, in ultima analisi, il
+trattengono. Chi sceglie il metro su cui il sistema viene premiato (la
+**funzione obiettivo**, come si dice in gergo) sceglie, in ultima analisi, il
 comportamento che il sistema coltiverà nei suoi utenti: è qui che passa il
 confine tra suggerire e pilotare. Le contromisure esistono e sono concrete:
 metriche di diversità e serendipità accanto all'accuratezza, controlli
@@ -382,7 +593,13 @@ il Digital Services Act impone alle grandi piattaforme di offrire almeno una
 versione del loro sistema di raccomandazione non basata sulla profilazione).
 Nessuna di queste è una soluzione definitiva. Ma un ingegnere che sa *come*
 funziona la macchina (e ora lo sapete) è esattamente la persona nella
-posizione giusta per pretendere che funzioni bene.
+posizione giusta per pretendere che funzioni bene. E lo è, per un'altra via,
+anche chi la macchina la subisce e basta: sapere che il consiglio nasce da un
+confronto fra schede di numeri senza nome, che la lista è già stata scremata
+prima che tu arrivassi, e che il sistema insegue il metro su cui è stato
+premiato, è ciò che trasforma «me l'ha consigliato l'app» in una frase che si
+può discutere. Da questa parte dello schermo non si progetta niente, ma si può
+smettere di prendere la vetrina per il catalogo.
 
 `````{tab} Elementare
 
@@ -392,7 +609,10 @@ posizione giusta per pretendere che funzioni bene.
   voce con una regola fissa, le incolla una sotto l'altra e lascia decidere a
   una piccola rete. In teoria vede combinazioni che il confronto voce per voce
   non coglie; alla prova dei fatti il vecchio confronto, tarato con cura, resta
-  un avversario durissimo: più libertà non è gratis.
+  un avversario durissimo: più libertà non è gratis. E non è un caso isolato:
+  quando si è provato a rifare i conti di diciotto metodi neurali, sette si
+  sono lasciati riprodurre e sei di quei sette perdevano contro metodi molto
+  più semplici.
 - La tabella dei voti si può disegnare: utenti da una parte, film dall'altra,
   una linea per ogni visione. Raccomandare vuol dire **indovinare le linee che
   ancora non ci sono**. Camminando sul disegno per più passi si raccoglie anche
@@ -405,7 +625,10 @@ posizione giusta per pretendere che funzioni bene.
 - Una classifica si misura su quanti dei consigli mostrati sono azzeccati
   (**precision**), su quanti dei titoli buoni ha ritrovato (**recall**) e su
   quanto in alto li ha messi (**NDCG**), come un giornale che sceglie bene la
-  prima pagina.
+  prima pagina. Ma prima ancora conta **su che cosa** si misura: si nasconde
+  una parte di ciò che l'utente ha davvero guardato e si controlla se il
+  modello la ritrova. Cambiare il modo di nascondere può ribaltare la
+  classifica dei metodi, ed è la parte più fragile del mestiere.
 - I sistemi veri lavorano in **due tempi**: un primo filtro rapido e grossolano
   che da milioni di titoli ne tiene qualche centinaio, poi un giudizio accurato
   sui soli superstiti.
@@ -422,18 +645,29 @@ posizione giusta per pretendere che funzioni bene.
 :class: important
 - Il **NCF** sostituisce il prodotto scalare con un MLP sulla concatenazione
   degli embedding: più espressivo in teoria, ma un prodotto scalare ben tarato
-  resta un avversario durissimo (l'espressività non è gratis).
-- La matrice di interazione **è** il grafo bipartito utente-oggetto, e
-  raccomandare è **link prediction**: prevedere gli archi mancanti. Propagare
+  resta un avversario durissimo. Il prodotto scalare è un ottimo *bias
+  induttivo* per questo problema, e su dati sparsi un buon bias induttivo vale
+  più di parametri in più. Che il fenomeno sia sistemico, e non aneddotico, lo
+  documenta la riproducibilità mancata di 11 metodi neurali su 18.
+- La matrice di interazione **è** il grafo bipartito utente-oggetto, e leggerla
+  come **link prediction** (prevedere gli archi mancanti) è una riformulazione
+  feconda, non la definizione del problema. Propagare
   sul grafo raccoglie segnale a più salti; **LightGCN** mostra che basta la
-  propagazione, senza rete sopra.
+  propagazione, senza rete sopra, e il suo +16% è misurato su NGCF, non su una
+  fattorizzazione ritarata.
 - Con feedback implicito si impara a **ordinare**, non a prevedere voti:
   la loss **BPR** $-\log\sigma(\hat{x}_{uv}-\hat{x}_{uw})$ chiede solo che
-  l'item scelto superi quello ignorato.
+  l'item scelto superi quello ignorato (in codice, `-F.logsigmoid(·)`, che non
+  esplode).
 - Le classifiche si misurano con **precision@k**, **recall@k** e **NDCG**,
-  che premia i successi in cima alla lista.
-- I sistemi reali sono a **due stadi**: retrieval con two-tower e vicini
-  approssimati, poi ranking fine sui candidati superstiti.
+  che premia i successi in cima alla lista. Due decisioni tacite le governano:
+  **come** si costruisce il test (casuale, leave-one-out, taglio temporale) e
+  **su quanti candidati** si ordina (catalogo intero o negativi campionati).
+  Entrambe possono invertire l'ordine fra due modelli.
+- I sistemi reali sono a **due stadi**: retrieval con vicini approssimati su
+  embedding precalcolati, poi ranking fine sui candidati superstiti. I due
+  stadi sono di Covington et al. 2016; la **two-tower** con una rete anche sul
+  lato item, che è quella che dà un embedding a un item mai visto, viene dopo.
 - La metrica scelta plasma il comportamento del sistema, e degli utenti: il
   confine tra suggerire e pilotare passa dalla funzione obiettivo.
 ```

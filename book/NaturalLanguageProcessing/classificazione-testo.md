@@ -63,22 +63,37 @@ calcolo, e il verdetto è la probabilità che ne risulta.
 In {numref}`fig-naive-bayes-spam` si vede anche dove sta l'ingenuità che dà il
 nome al metodo: le frecce entrano nel calcolo tutte allo stesso modo, senza
 mai incontrarsi fra loro. «Offerta» e «gratis» in una stessa frase valgono
-quanto le stesse due parole in capo opposto al messaggio. Il modello fa votare tutti gli
-indizi e sceglie l'etichetta che raccoglie più voti. L'aggettivo *naive*,
-"ingenuo", è dichiarato nel nome: ogni parola vota per conto suo, come se le
-altre non esistessero.
+quanto le stesse due parole in capo opposto al messaggio. Il modello fa votare
+tutti gli indizi e sceglie l'etichetta che raccoglie più voti. L'aggettivo
+*naive*, "ingenuo", è dichiarato nel nome: ogni parola vota per conto suo, come
+se le altre non esistessero.
 
 `````{tab} Elementare
 
-Costruiamo un mini-filtro antispam con carta e penna. Nel nostro archivio ci
-sono 10 email già lette: 4 sono spam, 6 legittime. Contiamo due parole
-sospette:
+Il conto che segue ha un nome, **regola di Bayes**, e serve a una cosa sola:
+girare una domanda. Noi vorremmo sapere «quant'è probabile che questa email sia
+spam, visto che dentro c'è scritto "gratis"?», ma dall'archivio sappiamo
+contare solo l'opposto, «fra le email che *erano* spam, quante contenevano
+"gratis"?». La regola di Bayes dice come passare dalla seconda alla prima, e in
+cambio chiede una sola informazione in più: quanto sono frequenti le spam in
+generale. È il teorema del Settecento che risolse i Federalist Papers, e lo
+useremo senza nemmeno scriverlo.
+
+Costruiamo dunque un mini-filtro antispam con carta e penna. Nel nostro
+archivio ci sono 10 email già lette: 4 sono spam, 6 legittime. Contiamo due
+parole sospette:
 
 - «gratis» compare in 3 delle 4 spam, e in 1 delle 6 legittime;
 - «offerta» compare in 2 delle 4 spam, e in 1 delle 6 legittime.
 
 Arriva una nuova email che contiene sia «gratis» sia «offerta». Ogni ipotesi
-raccoglie i suoi voti, moltiplicandoli:
+raccoglie i suoi voti, moltiplicandoli. Perché moltiplicare e non sommare? Per
+la stessa ragione per cui, lanciando due monete, la probabilità di fare testa
+tutte e due le volte è una su due **per** una su due, cioè una su quattro, e
+non una su due più una su due (che darebbe la certezza, il che è assurdo). Due
+cose che devono capitare insieme si moltiplicano, e qui le cose che devono
+capitare insieme sono «l'email contiene *gratis*» e «l'email contiene
+*offerta*». Ecco i due conti:
 
 - **voto per "spam"**: la quota di spam nell'archivio (4 su 10, cioè 0,4)
   per la frequenza di «gratis» nelle spam (3 su 4, cioè 0,75) per quella di
@@ -94,6 +109,13 @@ l'intera ipotesi crollerebbe per colpa di una parola sola. Il rimedio è quasi
 comico nella sua semplicità: si regala **un conteggio in più a tutte le
 parole**, così nessuna resta a zero. È la "regola del +1" di Laplace, e la
 ritroveremo presto.
+
+Un'ultima avvertenza, per non restare spiazzati fra due pagine. Qui abbiamo
+contato *in quante email* una parola compare (3 spam su 4). C'è un secondo modo
+di contare, altrettanto legittimo e più diffuso: quante volte la parola compare
+in tutto, sul totale delle parole di quella classe. È quello che userà il
+programma di `scikit-learn` più avanti. L'idea non cambia di una virgola, i
+decimali sì.
 
 `````
 
@@ -143,6 +165,19 @@ minuscole va in *underflow*, perciò in pratica si lavora nello spazio dei
 logaritmi, massimizzando $\log P(c) + \sum_i \log P(w_i \mid c)$; il prodotto
 diventa una somma e l'argmax non cambia, perché il logaritmo è monotono.
 
+Una precisazione sul modello, perché la formula qui sopra ne individua uno solo
+di due. Dividendo le occorrenze di $w$ per il **totale dei token** della classe
+si ottiene il Naive Bayes **multinomiale**, quello che il codice della prossima
+pagina usa (`MultinomialNB`) e quello adatto quando conta *quante volte* una
+parola compare. Esiste anche la variante di **Bernoulli**, in cui $P(w \mid c)$
+è la frazione di **documenti** della classe che contengono $w$, e ogni parola
+del vocabolario porta un contributo anche quando è assente. È lo stimatore con
+cui è stato svolto il filtro a mano dell'altro livello («gratis» in 3 spam su
+4, non 3 occorrenze su tutti i token delle spam): due ricette diverse, e i
+numeri di un conto non si ottengono con la formula dell'altro. La variante di
+Bernoulli è preferibile quando interessa la presenza e non la quantità (testi
+molto corti, vocabolari piccoli) e in `scikit-learn` si chiama `BernoulliNB`.
+
 `````
 
 L'ipotesi di indipendenza è linguisticamente falsa (le parole si tirano a
@@ -170,8 +205,10 @@ e cambiare un solo stadio, ed è così che si confrontano metodi lontanissimi
 fra loro, dal conteggio di parole del 2002 ai modelli di oggi. Lo studio che
 aprì il filone è del 2002: Pang, Lee e Vaithyanathan presero 1.400 recensioni
 di film (700 entusiaste e 700 stroncature) e confrontarono Naive Bayes, un
-modello log-lineare parente stretto della regressione logistica e le support
-vector machine {cite}`pang2002thumbs`. Due risultati restano istruttivi: i
+modello log-lineare parente stretto della regressione logistica e le *support
+vector machine*, un terzo metodo che nel capitolo sul machine learning cerca il
+confine più largo possibile fra due gruppi di esempi
+{cite}`pang2002thumbs`. Due risultati restano istruttivi: i
 modelli appresi dai dati arrivavano intorno all'80% di accuratezza, ben sopra
 le liste di parole positive e negative compilate a mano; e il sentiment si
 rivelò più difficile della classificazione per argomento, perché il giudizio
@@ -228,31 +265,42 @@ decidiamo noi; li impara il modello dagli esempi etichettati, aggiustandoli un
 po' alla volta finché i verdetti tornano. Dopo l'addestramento potremmo
 trovare, per dire: «splendido» +2,0, «sorprende» +1,5, «noia» −2,2,
 «delusione» −2,5. La frase «un film splendido, che sorprende» totalizza
-$2{,}0 + 1{,}5 = 3{,}5$ sul piatto positivo; la curva a S della **sigmoide**
-(la stessa incontrata nel capitolo sul machine learning) traduce il punteggio
-in una probabilità: circa 0,97. Se le etichette possibili sono più di due (per
-esempio lo sportello giusto tra reclami, fatturazione e informazioni), al
-posto della sigmoide c'è la softmax delle reti neurali: un punteggio per
-etichetta, e tutte le probabilità che sommano a uno.
+$2{,}0 + 1{,}5 = 3{,}5$ sul piatto positivo.
+
+Resta da tradurre quel 3,5 in una probabilità, e a farlo è una regola fissa,
+sempre la stessa, che si chiama **sigmoide** (la curva a S del capitolo sul
+machine learning): manda lo zero esattamente a metà, cioè a 0,5, spinge i
+punteggi positivi verso 1 e quelli negativi verso 0, senza mai arrivare né
+all'uno né all'altro. Più il punteggio è alto, più il risultato si avvicina a
+1. A 3,5 la regola risponde circa 0,97: molto convinta, ma non certa. Se le
+etichette possibili sono più di due (per esempio lo sportello giusto fra
+reclami, fatturazione e informazioni) al posto della sigmoide c'è la sua
+sorella maggiore, la **softmax**: un punteggio per ogni etichetta, e i
+punteggi trasformati in probabilità che sommano a uno.
 
 `````
 
 `````{tab} Superiore
 
-Il documento è un vettore $X \in \mathbb{R}^{|V|}$: conteggi o pesi TF-IDF. Il
-modello calcola il punteggio lineare e lo schiaccia con la sigmoide:
+Il documento è un vettore $\mathbf{x} \in \mathbb{R}^{|V|}$: conteggi o pesi
+TF-IDF. Il modello calcola il punteggio lineare e lo schiaccia con la sigmoide:
 
 $$
-z = W^\top X + b,
+z = \mathbf{w}^\top \mathbf{x} + b,
 \qquad
-\hat{y} = \sigma(z) = \frac{1}{1 + e^{-z}} = P(y = 1 \mid X),
+\hat{y} = \sigma(z) = \frac{1}{1 + e^{-z}} = P(y = 1 \mid \mathbf{x}),
 $$
 
-dove $W \in \mathbb{R}^{|V|}$ è il vettore dei pesi (uno per parola: il segno
-dice la direzione, il modulo la forza dell'indizio), $b$ il bias e $\hat{y}$
-la probabilità della classe positiva. Per $K$ classi si passa a una matrice di
-pesi e alla softmax, $\hat{y} = \mathrm{softmax}(W X + b)$, vista nel capitolo
-sulle reti neurali. I parametri si stimano minimizzando la cross-entropia
+dove $\mathbf{w} \in \mathbb{R}^{|V|}$ è il vettore dei pesi (uno per parola:
+il segno dice la direzione, il modulo la forza dell'indizio), $b$ il bias, $z$
+e $\hat{y}$ due scalari, il punteggio e la probabilità della classe positiva.
+È la stessa formula del percettrone nel capitolo sulle reti neurali, con la
+stessa grafia: minuscolo grassetto per i vettori. Per $K$ classi i pesi
+diventano una **matrice** $\mathbf{W} \in \mathbb{R}^{K \times |V|}$ e la
+sigmoide lascia il posto alla softmax,
+$\hat{\mathbf{y}} = \mathrm{softmax}(\mathbf{W}\mathbf{x} + \mathbf{b})$, con
+$\hat{\mathbf{y}} \in \mathbb{R}^{K}$ il vettore delle probabilità. I parametri
+si stimano minimizzando la cross-entropia
 $\mathcal{L}$ con la discesa del gradiente (non esiste una soluzione in forma
 chiusa) tipicamente con una regolarizzazione L2 che scoraggia pesi estremi su
 parole rare. Un vantaggio pratico: le feature non devono essere solo parole.
@@ -340,10 +388,16 @@ with torch.no_grad():
     print(torch.sigmoid(modello(X_nuove)).squeeze())  # probabilita' "positiva"
 ```
 
-`BCEWithLogitsLoss` fonde sigmoide e cross-entropia in un'unica operazione
-numericamente stabile: per questo il modello restituisce il punteggio grezzo
-(il *logit*) e la sigmoide si applica solo al momento di leggere le
-probabilità. E i pesi imparati si possono interrogare, parola per parola:
+Tradotto per chi il codice lo scavalca: `nn.Linear` è la bilancia (un peso per
+parola più il bias), il ciclo `for` è l'addestramento, cioè trecento passaggi in
+cui i pesi vengono spostati un pochino nella direzione che fa sbagliare di meno,
+e il *logit* è il punteggio grezzo della bilancia, quel 3,5 di prima: il numero
+che la curva a S non ha ancora trasformato in probabilità.
+`BCEWithLogitsLoss` fonde sigmoide e misura dell'errore in un'unica operazione
+numericamente più stabile (fare i due passi separati, su numeri molto grandi o
+molto piccoli, perde precisione): per questo il modello restituisce il logit e
+la sigmoide si applica solo al momento di leggere le probabilità. E i pesi
+imparati si possono interrogare, parola per parola:
 
 ```python
 pesi = modello.weight.detach().squeeze()
@@ -362,29 +416,34 @@ nell'era dei Transformer.
 
 Come si misura un classificatore di testi? Con gli strumenti già costruiti nel
 capitolo sul machine learning: la matrice di confusione, la precision, la
-recall e la loro sintesi $F_1$.
+recall e la loro sintesi $F_1$. Le due parole inglesi sono quelle che si
+trovano ovunque, e vale la pena ridirle nel modo più corto possibile: di quello
+che il sistema ha segnalato, quanto era davvero da segnalare (**precision**)? E
+di quello che andava segnalato, quanto ne ha trovato (**recall**)? La prima
+misura gli abbagli, la seconda le omissioni; $F_1$ è la loro sintesi in un
+numero solo.
 
 ```{figure} ../figures/precision-recall-f1.svg
 :name: fig-quattro-caselle
 :alt: "Matrice di confusione due per due con veri positivi, falsi positivi, falsi negativi e veri negativi. Accanto, due riquadri indicano quali caselle entrano nella precision (i positivi predetti) e quali nella recall (i positivi reali), mostrando che le due metriche leggono la stessa matrice lungo direzioni perpendicolari."
 :width: 96%
 
-Le stesse quattro caselle, lette in due versi. La precision divide per una
-colonna, la recall per una riga: da qui il fatto che migliorare l'una
-peggiori quasi sempre l'altra.
+Le stesse quattro caselle, lette in due versi. Della roba segnalata, quanta era
+giusta (è la precision, e sulla matrice è una colonna); di quella da segnalare,
+quanta ne è stata trovata (è la recall, ed è una riga). Da qui il fatto che
+migliorare l'una peggiori quasi sempre l'altra.
 ```
 
-Il promemoria di {numref}`fig-quattro-caselle` serve perché nel testo la
-scelta fra le due direzioni è quasi sempre asimmetrica. In un filtro
-antispam un falso positivo (una mail buona cestinata) costa molto più di un
-falso negativo, e la metrica da guardare discende da quel costo, non da una
-convenzione. Non li ripetiamo; ricordiamo solo il tranello
-che lì avevamo battezzato "l'accuratezza inganna", perché nel testo è la
+Il promemoria di {numref}`fig-quattro-caselle` serve perché nel testo la scelta
+fra le due direzioni è quasi sempre asimmetrica: in un filtro antispam un falso
+positivo (una mail buona cestinata) costa molto più di un falso negativo (uno
+spam sfuggito), quindi è la precision a comandare, e la metrica da guardare
+discende da quel costo, non da una convenzione. Precision, recall e $F_1$ non
+li ridefiniamo qui; ricordiamo solo il tranello che nel capitolo sul machine
+learning avevamo battezzato "l'accuratezza inganna", perché nel testo è la
 regola più che l'eccezione: le classi sono quasi sempre **sbilanciate**. Se
 solo un'email su cento è spam, il filtro pigro che risponde sempre "legittima"
-sfoggia il 99% di accuratezza senza aver fermato nulla; e tra i due errori
-possibili, un falso positivo (un'email importante nel cestino), costa più di
-uno spam sfuggito, quindi è la precision a comandare. Quale metrica
+sfoggia il 99% di accuratezza senza aver fermato nulla. Quale metrica
 privilegiare non è un dettaglio tecnico: è la definizione di "successo" per
 quel particolare giudice.
 

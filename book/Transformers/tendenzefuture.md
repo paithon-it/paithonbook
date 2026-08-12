@@ -99,12 +99,25 @@ continuano a essere aggiornate, e una penalità sul numero di passi (il *ponder
 cost*) impedisce di pensare all'infinito. Il calcolo diventa così
 **condizionato all'ingresso** invece che fissato dall'architettura.
 
-Vale la pena essere precisi su un punto che il titolo lascia intuire: legare i
-pesi e iterare rende il modello **computazionalmente universale** in un senso
-tecnico. Un Transformer standard esegue un numero di passi sequenziali
-indipendente dalla lunghezza dell'ingresso, il che lo rende Turing-incompleto;
-una ricorrenza in profondità con numero di passi dipendente dai dati toglie
-quel limite.
+Vale la pena essere precisi su un punto che il titolo lascia intuire, e
+altrettanto precisi su quanto quel punto sia solido. Gli autori dimostrano che
+legare i pesi e iterare rende il modello **Turing-completo**, ma la loro stessa
+formulazione lo dice **sotto certe ipotesi**, e l'ipotesi che porta il peso è
+la solita: un numero di passi non limitato a priori. Il ragionamento è che un
+Transformer standard esegue un numero di passi sequenziali fissato
+dall'architettura, mentre una ricorrenza in profondità lo fa dipendere dai dati.
+
+Sarebbe però scorretto presentare la Turing-incompletezza del Transformer
+standard come un fatto assodato, perché la letteratura contiene anche il
+risultato opposto: Pérez, Barceló e Marinković dimostrano che il Transformer
+encoder-decoder è Turing-completo, con precisione aritmetica arbitraria e un
+numero **illimitato di passi di decodifica**. E quell'ultima ipotesi è
+esattamente la generazione autoregressiva, cioè la seconda strada di cui parla
+il paragrafo qui sotto. Le due prove non si contraddicono, cambiano le ipotesi;
+ma la morale da portarsi via è che «quanti passi può fare» conta più di «come
+sono legati i pesi», e che una frase secca sull'espressività di
+un'architettura, senza le sue ipotesi accanto, è quasi sempre una frase
+sbagliata.
 
 L'idea è rimasta a lungo marginale e oggi è di nuovo centrale, arrivata però
 dall'altra parte. I modelli che **ragionano** allocando più calcolo in
@@ -130,10 +143,11 @@ Un elenco onesto, da tenere accanto agli entusiasmi:
 - **Dati**: i corpora del web si stanno esaurendo come fonte "gratuita" di
   testo di qualità, e portano con sé bias e contenuti problematici che i
   modelli assorbono.
-- **Affidabilità**: le allucinazioni (risposte fluenti ma false) derivano
-  dalla natura stessa del modello autoregressivo, che ottimizza la
-  plausibilità, non la verità; mitigarle (con il recupero di fonti esterne, la
-  verifica, la calibrazione) è un problema aperto.
+- **Affidabilità**: le allucinazioni (risposte fluenti ma false) derivano dal
+  mestiere stesso di questi modelli, che è scrivere una parola alla volta
+  scegliendo ogni volta la continuazione più probabile; probabile non vuol dire
+  vero, e nulla nel meccanismo distingue le due cose. Mitigarle (con il
+  recupero di fonti esterne, la verifica, la calibrazione) è un problema aperto.
 - **Comprensione**: su cosa i modelli *capiscano* davvero il dibattito
   scientifico è tutt'altro che chiuso; prudenza nell'attribuire loro
   intenzioni o ragionamento è una virtù, oltre che buona epistemologia.
@@ -141,9 +155,14 @@ Un elenco onesto, da tenere accanto agli entusiasmi:
 ## Il posto dei Transformer in questo libro
 
 Con questo capitolo si chiude un tratto del percorso tecnico del libro: dai
-neuroni del percettrone all'attenzione, ogni pezzo dei Transformer (tensori,
-gradienti, softmax, embedding, training loop) è un concetto che hai già
-incontrato nei capitoli precedenti, montato in una configurazione nuova. È la
+neuroni del percettrone all'attenzione, ogni pezzo dei Transformer è un
+concetto che hai già incontrato, montato in una configurazione nuova.
+L'evidenziatore che pesa le parole, il posto numerato che dice l'ordine, la
+riunione e il lavoro individuale che si alternano piano dopo piano, la mappa
+del significato dove le cose simili stanno vicine, il provare-e-correggere che
+sistema i numeri un'inezia alla volta: chi ha letto le pagine tecniche
+riconoscerà gli stessi oggetti sotto i loro nomi propri (attenzione, positional
+encoding, feed-forward, embedding, discesa del gradiente). È la
 lezione migliore di questa storia: le "rivoluzioni" dell'AI, viste da vicino,
 sono quasi sempre ricombinazioni ingegnose di idee semplici, rese possibili da
 più dati e più calcolo. Chi conosce le idee semplici non insegue le mode: le
@@ -151,9 +170,12 @@ legge.
 
 ```{admonition} Da ricordare
 :class: important
-- La ricerca punta su **efficienza** (distillazione, quantizzazione, esperti
-  selettivi), **contesto lungo** (attenzioni economiche, state space model) e
-  **multimodalità**.
+- La ricerca punta su **efficienza** (la *distillazione*, cioè l'apprendista
+  che impara dal maestro; la *quantizzazione*, cioè scrivere ogni numero con
+  meno cifre per farlo stare in un telefono; e i modelli che tengono acceso solo
+  un pezzo di sé per ogni parola), **contesto lungo** (modi più economici di
+  far parlare fra loro le parti di un testo, fino agli *state space model*) e
+  **multimodalità** (leggere, guardare e ascoltare con lo stesso meccanismo).
 - Un Transformer spende **lo stesso calcolo** su ogni ingresso, facile o
   difficile che sia. L'**Universal Transformer** (2018) provò a togliere quel
   vincolo legando i pesi fra gli strati e lasciando che ogni posizione decida
@@ -161,9 +183,10 @@ legge.
   opposta: i modelli che ragionano spendono più calcolo sulle domande difficili
   **scrivendo** i passi invece di girare in silenzio. La prima strada costa
   meno, la seconda si può leggere.
-- I limiti sono strutturali: costi concentrati, bias dei dati,
-  allucinazioni, e una comprensione ancora dibattuta di cosa i modelli
-  sappiano davvero.
+- I limiti sono strutturali: costi concentrati, bias dei dati, e il fatto che
+  un modello che sceglie ogni volta la continuazione più probabile non ha modo
+  di distinguere il probabile dal vero. Su che cosa questi modelli
+  «capiscano» davvero il dibattito è tutt'altro che chiuso.
 - Tutti gli ingredienti dei Transformer li hai già studiati in questo libro:
   ciò che è nuovo è la composizione, non i mattoni.
 ```

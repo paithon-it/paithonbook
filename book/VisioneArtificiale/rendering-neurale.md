@@ -1,10 +1,12 @@
 # Scene che si addestrano: NeRF e splatting
 
 Nel 1999, per la scena in cui Neo schiva i proiettili piegandosi all'indietro
-mentre la telecamera gli gira attorno, i fratelli Wachowski non avevano nessun
-trucco software: avevano un anello di macchine fotografiche vere, montate su
-una struttura, che scattavano in sequenza. Se la telecamera doveva passare per
-un punto, in quel punto ci doveva essere una macchina fotografica. Il
+mentre la telecamera gli gira attorno, le sorelle Wachowski avevano un anello
+di macchine fotografiche vere, montate su una struttura, che scattavano in
+sequenza. Il computer c'entrava eccome (fra uno scatto e l'altro i fotogrammi
+mancanti venivano interpolati, e sfondi e raccordi erano ricostruiti in
+digitale), ma il vincolo che conta era fisico: se la telecamera doveva passare
+per un punto, in quel punto ci doveva essere una macchina fotografica. Il
 *bullet time* costò una sala di posa e un impianto costruito apposta, ed è la
 risposta di forza bruta a una domanda che la visione artificiale si pone da
 sempre: **come si ottiene l'immagine da un punto di vista in cui nessuno è
@@ -15,14 +17,19 @@ quella della sezione precedente. Là partivamo dalle immagini per ricavare la
 geometria; qui vogliamo tornare alle immagini, da posizioni nuove. Per
 trent'anni la strada è stata una sola: ricostruire un modello tridimensionale
 (una superficie fatta di triangoli, con le fotografie incollate sopra come
-texture) e poi renderizzarlo con la grafica tradizionale. Funziona, e fallisce
+texture) e poi **renderizzarlo**, cioè calcolare che aspetto avrebbe visto da
+una certa posizione, con la grafica tradizionale. Funziona, e fallisce
 esattamente dove il mondo non è fatto di superfici nette: capelli, foglie,
 fumo, vetro, riflessi.
 
 Nel 2020 un articolo di sei autori di Berkeley, San Diego e Google propose di
 smettere di ricostruire l'oggetto e di **addestrare una funzione**
-{cite}`mildenhall2020nerf`. L'idea è tanto semplice da sembrare ingenua, e ha
-riscritto un campo intero in un paio d'anni.
+{cite}`mildenhall2020nerf`. Il metodo si chiama **NeRF**, dall'inglese *neural
+radiance field*, cioè «campo di radianza neurale»: *radianza* è il termine
+tecnico per la luce che parte da un punto in una certa direzione, e *campo*
+vuol dire che quel valore è definito in ogni punto dello spazio, come la
+temperatura dentro una stanza. L'idea è tanto semplice da sembrare ingenua, e
+ha riscritto un campo intero in un paio d'anni.
 
 ## La scena non è un oggetto, è una funzione
 
@@ -92,6 +99,15 @@ Avere una funzione che risponde punto per punto non basta: bisogna trasformare
 quelle risposte in un'immagine. Il passaggio è la parte più importante di
 tutto il meccanismo, e non è una rete: è fisica ottocentesca.
 
+Una parola del titolo conviene tradurla subito, perché è il perno di tutto il
+resto. **Differenziabile** vuol dire che di ogni numero in gioco si può sempre
+chiedere: «se questo fosse un pochino più grande, il risultato finale come
+cambierebbe?», e la risposta non è un'opinione, si calcola. È la condizione che
+permette di partire da un pixel venuto male e risalire la catena all'indietro
+fino a chi lo ha prodotto, per correggerlo. Dove quella domanda non ha risposta
+(perché qualcosa fa un salto brusco, o perché c'è una decisione secca del tipo
+«qui mi fermo») la strada all'indietro si interrompe.
+
 ```{figure} ../figures/nerf-campo-di-radianza.svg
 :name: fig-nerf-rendering
 :alt: "Da una fotocamera parte un raggio che attraversa un volume tratteggiato contenente un oggetto. Lungo il raggio sono segnati sette punti di campionamento: quelli nell'aria sono piccoli e vuoti, quelli sulla superficie dell'oggetto sono grandi e pieni. Ogni campione, insieme alla direzione di vista, entra in una piccola rete che restituisce un colore e una densità. I campioni vengono composti in ordine di profondità e producono il colore di un singolo pixel, confrontato con il pixel della fotografia vera."
@@ -99,8 +115,9 @@ tutto il meccanismo, e non è una rete: è fisica ottocentesca.
 
 Il ciclo che addestra un campo di radianza. Per ogni pixel si lancia un raggio,
 si campionano dei punti, si interroga la rete, si compone il risultato in
-ordine di profondità e si confronta con la foto vera. Ogni passaggio è
-derivabile, quindi il gradiente rifà la strada all'indietro.
+ordine di profondità e si confronta con la foto vera. Di ogni passaggio si sa
+come cambierebbe il risultato cambiando un numero, quindi la correzione rifà
+la strada all'indietro.
 ```
 
 `````{tab} Elementare
@@ -119,10 +136,11 @@ conta pieno, il secondo conta per quel che passa del primo, e così via.
 
 Ecco il punto decisivo: **tutta questa procedura è fatta di somme e
 moltiplicazioni**. Non c'è nessun passaggio brusco, nessuna decisione del tipo
-«qui c'è una superficie, quindi mi fermo». E una catena di somme e
-moltiplicazioni si può derivare: se il pixel calcolato è troppo scuro, si può
-risalire all'indietro e capire quali punti dovevano essere più chiari, o meno
-densi, e correggere la rete di conseguenza.
+«qui c'è una superficie, quindi mi fermo». E di una catena di somme e
+moltiplicazioni si sa sempre rispondere alla domanda di prima («e se questo
+numero fosse un pochino più grande?»): se il pixel calcolato è troppo scuro, si
+risale all'indietro, si capisce quali punti dovevano essere più chiari o meno
+densi, e si corregge la rete di conseguenza.
 
 L'addestramento è quindi banale da descrivere: rendi un pixel, confrontalo con
 la foto vera, misura la differenza, correggi. Ripeti per milioni di pixel
@@ -165,7 +183,10 @@ discreta è esattamente il "sopra" di Porter e Duff, con l'opacità ricavata
 dalla densità. I pesi $w_i = T_i \alpha_i$ formano una distribuzione lungo il
 raggio, e la loro massa $\sum_i w_i$ è l'opacità totale, mentre $\sum_i w_i
 t_i$ è la profondità attesa: **una mappa di profondità si ottiene gratis**,
-senza averla mai addestrata.
+senza averla mai addestrata. Attenzione però che quella è una somma pesata, non
+una media: i $w_i$ sommano a uno solo se il raggio è completamente opaco, e
+dove non lo è la profondità va divisa per $\sum_i w_i$, altrimenti risulta
+sistematicamente più corta del vero.
 
 La loss è la più elementare possibile, l'errore quadratico sui pixel resi
 rispetto a quelli osservati, sommato sui raggi di un batch:
@@ -206,8 +227,9 @@ subito; il bordo netto fra il muro e la finestra, o la trama del legno, quasi
 mai. Il risultato è una scena giusta ma smarrita nella nebbia.
 
 Il rimedio è sorprendente: invece di dare alla rete le coordinate, le si danno
-**molte onde di quelle coordinate**, con frequenze via via più alte, seni e
-coseni raddoppiati a ogni passo. Due punti vicinissimi, che come numeri
+**molte onde di quelle coordinate**. Onde regolari come quelle disegnate su un
+sismografo (in matematica si chiamano seno e coseno), e a ogni passo se ne
+aggiunge una fitta il doppio della precedente. Due punti vicinissimi, che come numeri
 grezzi si somigliano quasi del tutto, sulle onde ad alta frequenza diventano
 subito diversi, e la rete può finalmente distinguerli.
 
@@ -292,8 +314,8 @@ risolvono**: si lasciano. Il gradiente medio di due punti che collidono è
 dominato da quello dove c'è densità, perché la regione vuota contribuisce
 poco alla loss, e i livelli a risoluzione diversa collidono in modi diversi,
 quindi l'ambiguità di un livello viene sciolta dagli altri. Il risultato è un
-addestramento di ordini di grandezza più veloce, con qualità paragonabile, e
-rendering a decine di millisecondi per fotogramma in alta definizione.
+addestramento di ordini di grandezza più veloce, con qualità paragonabile, e un
+fotogramma in alta definizione reso in una manciata di millisecondi.
 
 Vale la pena leggerlo per quello che è: una parte sostanziale della
 rappresentazione si è spostata dai **pesi** a una **struttura dati esplicita e
@@ -343,15 +365,26 @@ coefficienti di armoniche sferiche per il colore dipendente dalla direzione
 La proiezione di una gaussiana 3D sul piano immagine è ancora una gaussiana
 2D, il che rende il rendering una **rasterizzazione** invece di un *ray
 marching*: si ordina per profondità, si compone con la stessa formula di
-$\alpha$-blending vista sopra, e si sfrutta appieno l'hardware grafico. Gli
+$\alpha$-blending vista sopra, e si sfrutta appieno l'hardware grafico. Con una
+precisazione che il metodo non nasconde: sotto la prospettiva vera, che divide
+per $Z$, l'immagine di una gaussiana non è una gaussiana. Lo diventa se la
+proiezione si **linearizza localmente**, e la covarianza proiettata è allora
+$\boldsymbol{\Sigma}' = \mathbf{J}\mathbf{W}\boldsymbol{\Sigma}\mathbf{W}^\top
+\mathbf{J}^\top$, dove $\mathbf{W}$ è la trasformazione di vista e $\mathbf{J}$
+lo jacobiano dell'approssimazione affine della proiezione (è la ricetta dello
+*splatting* con filtro ellittico della grafica volumetrica). È l'unica
+approssimazione del metodo, e si vede ai bordi dell'inquadratura, dove la
+linearizzazione è peggiore. Gli
 autori riportano sintesi di nuove viste in tempo reale ($\geq$ 30 fotogrammi
 al secondo) a risoluzione 1080p, con qualità allo stato dell'arte e tempi di
 addestramento competitivi.
 
 L'ottimizzazione alterna discesa del gradiente sui parametri e un
 **controllo adattivo della densità**: le gaussiane con gradiente di posizione
-grande vengono clonate (se piccole, la scena è sotto-ricostruita) o divise (se
-grandi, la scena è sotto-rappresentata), e quelle quasi trasparenti vengono
+grande vengono clonate (se piccole, la scena è **sotto**-ricostruita: manca
+geometria e serve coprirla) o divise (se grandi, la scena è
+**sovra**-ricostruita: una sola gaussiana copre un'area larga dentro cui c'è
+dettaglio da articolare), e quelle quasi trasparenti vengono
 rimosse. È una rappresentazione **esplicita** che si comporta come una
 continua, e chiude il cerchio: il pendolo torna verso le primitive
 geometriche, ma con la loss differenziabile del rendering neurale.
@@ -384,7 +417,8 @@ stata sostituita, è diventata l'infrastruttura su cui il metodo poggia.
 - **Le scene sono statiche.** Estendere al tempo (persone che si muovono,
   foglie che oscillano) è possibile ed è materia di ricerca attiva, ma
   aggiunge una dimensione a un problema già mal posto.
-- **Modificare è difficile.** Una mesh si modifica: si sposta un vertice, si
+- **Modificare è difficile.** Una **mesh** (l'elenco di triangoli di cui si
+  diceva all'inizio) si modifica: si sposta un vertice, si
   cambia una texture. Un campo di radianza è una funzione appresa, e "sposta
   quella sedia" non è un'operazione che abbia un senso ovvio. Lo splatting,
   essendo esplicito, sta un po' meglio, ed è una delle ragioni della sua
@@ -437,16 +471,66 @@ print("massa con la nebbia:", round(float(pesi2.sum()), 4),
 ```
 
 Tre numeri da leggere con attenzione. La **massa dei pesi** vale $0{,}9975$:
-quasi tutta la luce viene fermata, e il $0{,}25\%$ che passa non è un errore
-numerico, è $e^{-\sigma \delta} = e^{-6}$, cioè quanto resta davvero di un
-raggio dopo aver attraversato quello spessore. La **profondità attesa** vale
-$3{,}99$ m senza che nessuno abbia mai calcolato una profondità: è la media
-delle distanze pesata dai $w_i$, ed è il modo in cui da un campo di radianza si
-estrae una mappa di profondità. Nel caso della nebbia, infine, il picco dei
+quasi tutta la luce viene fermata dalla superficie, e il $0{,}25\%$ che passa
+non è un errore di calcolo. È quanto resta davvero di un raggio dopo aver
+attraversato uno strato di quello spessore, e segue una legge fisica: la luce
+superstite cala di un fattore fisso per ogni tratto percorso, il che si scrive
+con l'esponenziale $e^{-\sigma \delta}$, dove $\sigma = 60$ è la densità del
+campione e $\delta = 0{,}1$ m il suo spessore. Qui il prodotto vale $6$, e
+$e^{-6} = 0{,}0025$.
+
+La **profondità attesa** vale $3{,}99$ m senza che nessuno abbia mai calcolato
+una profondità: è la **somma** delle distanze pesata dai $w_i$, ed è il modo in
+cui da un campo di radianza si estrae gratis una mappa di profondità. Non viene
+esattamente quattro, e la ragione merita di essere detta: i pesi sommano a
+$0{,}9975$ e non a uno, quindi quella somma resta un filo corta. Dividendola
+per la massa dei pesi si ottiene esattamente $4{,}00$ m, cioè dove la
+superficie sta davvero. È per questo che in pratica le mappe di profondità si
+normalizzano: dove la scena è semitrasparente, non farlo le accorcia
+sistematicamente.
+
+Nel caso della nebbia, infine, il picco dei
 pesi vale $0{,}044$ contro $0{,}9975$: i pesi si spalmano lungo tutto il
 raggio invece di concentrarsi, che è esattamente la firma numerica di
 "nessuna superficie qui", e la ragione per cui questi metodi rendono bene il
 fumo e la foschia, dove una mesh non saprebbe che pesci pigliare.
+
+`````{tab} Elementare
+
+```{admonition} Da ricordare
+:class: important
+- Un **campo di radianza** non è un elenco di triangoli, è una **risposta a una
+  domanda**: «da qui, guardando di là, che colore vedo, e c'è qualcosa di
+  solido?». A rispondere è una piccola rete, addestrata **su quella scena sola**
+  e su nient'altro: finito l'addestramento, quella rete *è* quella scena.
+- Il colore di un pixel si ottiene lanciando un raggio e sommando i colori dei
+  punti che incontra, ciascuno per quel che pesa: conta poco chi è trasparente,
+  e conta poco anche chi sta dietro a qualcosa di opaco. È lo stesso conto di
+  più vetrate sovrapposte, o della nebbia.
+- Di ogni passaggio del conto si sa dire come cambierebbe il risultato
+  cambiando un numero: perciò basta confrontare il pixel calcolato con la foto
+  vera e correggere all'indietro. Nessuno dice mai alla rete dove sono le
+  superfici: la forma compare da sola, perché è l'unica che mette d'accordo
+  tutte le fotografie insieme.
+- Se alla rete si danno le coordinate nude, la scena esce sfocata: bisogna
+  darle **molte onde** di quelle coordinate, sempre più fitte, così che due
+  punti vicini smettano di somigliarsi. È lo stesso trucco della codifica
+  posizionale dei Transformer.
+- I tempi sono crollati in due mosse: affiancare alla rete una **tabella di
+  appunti** indicizzata per posizione, così che la rete possa essere minuscola;
+  e poi smettere di cercare la materia lungo i raggi, rappresentandola come
+  milioni di **granelli sfumati** da proiettare sullo schermo (è quello che le
+  schede grafiche sanno fare da trent'anni).
+- Serve sapere **dove stava e da che parte guardava** ogni fotocamera, e lo dice
+  la sezione precedente: se quelle posizioni sono sbagliate, il risultato non è
+  impreciso, è una nuvola confusa.
+- Questi metodi **non capiscono** la scena: la sanno rifare. Non sanno che c'è
+  una sedia, né che il tavolo continua dietro il vaso.
+```
+
+`````
+
+`````{tab} Superiore
 
 ```{admonition} Da ricordare
 :class: important
@@ -455,7 +539,9 @@ fumo e la foschia, dove una mesh non saprebbe che pesci pigliare.
   di triangoli: continua, senza risoluzione, e addestrata **su una scena sola**.
 - Il colore di un pixel si ottiene per **composizione volumetrica** lungo un
   raggio, $\hat{C} = \sum_i T_i \alpha_i \mathbf{c}_i$: legge di
-  Beer-Lambert, cioè l'$\alpha$-blending della grafica.
+  Beer-Lambert, cioè l'$\alpha$-blending della grafica. I pesi $w_i = T_i
+  \alpha_i$ danno gratis anche la profondità, purché si ricordi che è una somma
+  pesata e va normalizzata per la loro massa.
 - Tutta la catena è **differenziabile**, quindi basta confrontare i pixel resi
   con le foto vere: la geometria emerge da sola, come unica spiegazione
   coerente con tutte le immagini insieme. Nessuno la supervisiona.
@@ -465,7 +551,8 @@ fumo e la foschia, dove una mesh non saprebbe che pesci pigliare.
 - Il costo è crollato spostando la rappresentazione dai pesi a una struttura
   dati addestrabile (**Instant-NGP**, codifica hash multirisoluzione) e poi
   passando dai raggi ai granelli (**3D Gaussian Splatting**), che rasterizza
-  invece di marciare e rende in tempo reale.
+  invece di marciare e rende in tempo reale, al prezzo di linearizzare
+  localmente la prospettiva.
 - Le **pose** delle fotocamere restano un ingresso obbligatorio, e vengono
   dalla *structure from motion*: la geometria classica non è stata sostituita,
   è diventata l'infrastruttura.
@@ -473,3 +560,5 @@ fumo e la foschia, dove una mesh non saprebbe che pesci pigliare.
   un'interpolazione eccellente fra le viste osservate, non un modello del
   mondo.
 ```
+
+`````

@@ -6,7 +6,8 @@ un'inchiesta destinata a diventare un caso di scuola
 tribunali statunitensi che assegna a ogni imputato un punteggio di rischio: la
 probabilità, stimata da un algoritmo, che quella persona torni a delinquere.
 Non è un dettaglio burocratico: quei punteggi finiscono sotto gli occhi dei
-giudici quando decidono su cauzione, libertà vigilata, entità della pena.
+giudici quando decidono se una persona aspetterà il processo a casa o in
+carcere, se concedere la libertà vigilata, quanti anni di pena dare.
 Julia Angwin e i suoi colleghi ricostruiscono i punteggi di oltre settemila
 imputati della contea di Broward, in Florida, e li confrontano con ciò che è
 successo davvero nei due anni successivi. Il risultato è netto: tra gli
@@ -15,11 +16,23 @@ etichettati «ad alto rischio» quasi il doppio delle volte rispetto ai bianchi.
 La macchina, pensata per essere più imparziale di un giudice in carne e ossa,
 aveva ereditato un pregiudizio.
 
-Due anni dopo, in un laboratorio del MIT, la ricercatrice Joy Buolamwini si
-imbatte in un problema più intimo: i sistemi commerciali di analisi del volto
-non riconoscono la sua faccia. Funzionano, ma solo se indossa una maschera
-bianca. Con Timnit Gebru misura il fenomeno in modo sistematico su tre prodotti
-in commercio, nello studio *Gender Shades* {cite}`buolamwini2018gender`: gli
+Ereditato da dove, se nessuno lo aveva scritto? Da ciò che c'era scritto nei
+dati, ed è un punto che conviene mettere subito perché regge tutto il capitolo.
+Un sistema del genere non impara chi ha commesso un reato: quel dato non esiste
+in nessun archivio. Impara chi è **stato arrestato**, che è un'altra cosa. Se
+in un quartiere passano più pattuglie, lì risultano più reati anche quando non
+ce ne sono di più, e chi ci abita entra nello storico con più precedenti. Il
+modello legge quel registro e ne ricava una regolarità che sui dati è vera e
+sulle persone è ingiusta. Ci torneremo, perché la cosa è più profonda di quanto
+sembri: pesa sui numeri stessi su cui poggiano i risultati matematici di questo
+capitolo.
+
+Un anno prima, in un laboratorio del MIT, la ricercatrice Joy Buolamwini si era
+imbattuta in un problema più intimo: i sistemi commerciali di analisi del volto
+non riconoscevano la sua faccia. Funzionavano, ma solo se indossava una maschera
+bianca. Nel 2018, con Timnit Gebru, misura il fenomeno in modo sistematico su
+tre prodotti in commercio, nello studio *Gender Shades*
+{cite}`buolamwini2018gender`: gli
 stessi sistemi che sbagliano a classificare il genere in meno di un caso su
 cento per gli uomini dalla pelle chiara arrivano a sbagliare in oltre un terzo
 dei casi per le donne dalla pelle scura. Non un errore casuale, distribuito a
@@ -40,10 +53,18 @@ bambino non lo prevedeva. Un modello di intelligenza artificiale funziona così:
 impara da esempi, e se gli esempi ritraggono soprattutto un certo tipo di
 persone, funzionerà bene su quelle e peggio su tutte le altre. Il
 riconoscimento facciale allenato per lo più su volti chiari sbaglia di più sui
-volti scuri; l'algoritmo dei tribunali allenato su una storia giudiziaria piena
-di disparità le ripropone. Non serve un programmatore in malafede: basta uno
-specchio. Il modello riflette il mondo che gli abbiamo dato da guardare, difetti
-compresi.
+volti scuri: gli altri quasi non li ha visti.
+
+Nel caso del tribunale il guasto è di un secondo tipo, e vale la pena non
+confonderli, perché è quello che porta fuori strada. Lì i dati sugli imputati
+neri non mancavano affatto: erano tanti. Il problema è che dicevano un'altra
+cosa da quella che sembrava. Nel registro non c'è scritto «ha commesso un
+reato», c'è scritto «è stato arrestato», e chi viene arrestato dipende anche da
+dove passano le pattuglie. È come giudicare quali quartieri sono più rumorosi
+contando le segnalazioni al comune: misuri anche, e forse soprattutto, chi ha
+l'abitudine di segnalare. Non serve un programmatore in malafede: basta uno
+specchio, e uno specchio storto. Il modello riflette il mondo che gli abbiamo
+dato da guardare, difetti compresi.
 
 `````
 
@@ -60,28 +81,46 @@ per gli imputati neri contro il $23{,}5\%$ per i bianchi
 {cite}`angwin2016machine`.
 
 Il caso COMPAS nasconde però una sottigliezza che ritroveremo per tutto il
-capitolo. L'azienda che produceva il software rispose che il suo sistema era
-*calibrato*: a parità di punteggio, la probabilità reale di recidiva era la
-stessa per neri e bianchi. Ed era vero. Il paradosso è che entrambe le parti
-avevano ragione: quando i tassi di base delle due popolazioni differiscono,
-calibrazione e parità di *entrambi* i tassi di errore (falsi positivi e falsi
-negativi) *non possono valere insieme*. Non è un difetto risolvibile con
-codice migliore: è un vincolo matematico. Torneremo
-su questo punto: qui basti notare che «equo» non è una parola con un'unica
-definizione tecnica.
+capitolo. Northpointe, l'azienda che produceva il software (oggi Equivant),
+rispose con un rapporto il cui titolo è già l'argomento tecnico della disputa:
+*COMPAS Risk Scales: Demonstrating Accuracy Equity and **Predictive Parity***
+{cite}`dieterich2016compas`. A parità di punteggio assegnato, la quota di chi
+veniva davvero riarrestato era la stessa per neri e bianchi. Ed era vero. Il
+paradosso è che entrambe le parti avevano ragione, e la ragione è un teorema:
+quando i tassi di base delle due popolazioni differiscono, la **parità del
+valore predittivo** rivendicata dall'azienda e la parità di *entrambi* i tassi
+di errore misurata da ProPublica non possono valere insieme
+{cite}`chouldechova2017fair`. Non è un difetto risolvibile con codice migliore:
+è un vincolo aritmetico.
+
+Due avvertenze, che la sezione sull'equità svilupperà. La prima: «parità del
+valore predittivo» non è sinonimo di «calibrazione», e i teoremi che si citano
+in questa materia sono tre e dicono cose diverse. La seconda: quei tassi di
+base sono tassi di **riarresto**, non di reato, cioè le grandezze già toccate
+dal bias di misura di cui sopra. Qui basti notare che «equo» non è una parola
+con un'unica definizione tecnica.
 
 `````
 
 In Europa la reazione a questi problemi è stata anche normativa, e ci riguarda
-da vicino. Il **Garante per la protezione dei dati personali** italiano nel 2023
-è stata la prima autorità occidentale a sospendere temporaneamente ChatGPT,
-imponendone lo stop finché OpenAI non ebbe chiarito basi giuridiche e tutele per
-gli utenti. E soprattutto l'Unione Europea ha approvato nel 2024 il primo
-regolamento orizzontale al mondo sull'intelligenza artificiale, l'**AI Act**
-{cite}`euaiact2024`: una legge che non guarda alla tecnologia in astratto ma
-al *rischio* che ciascun impiego comporta per le persone. Ci torneremo; per ora
-ci dice che l'AI responsabile non è più solo un tema da conferenza accademica,
-ma materia di diritto.
+da vicino. Nel marzo del 2023 il **Garante per la protezione dei dati
+personali** italiano è stata la prima autorità occidentale a fermare ChatGPT, e
+vale la pena dire *perché*, visto che un'autorità non spegne un servizio per
+capriccio: contestava che agli utenti non fosse stato spiegato quali dati
+venissero raccolti né in base a quale diritto li si usasse per addestrare il
+modello, e che non ci fosse alcun controllo dell'età di chi lo usava. Il
+servizio tornò disponibile qualche settimana dopo, con un'informativa e uno
+sbarramento sull'età.
+
+E soprattutto l'Unione Europea ha approvato nel 2024 il primo regolamento
+**orizzontale** al mondo sull'intelligenza artificiale, l'**AI Act**
+{cite}`euaiact2024`: orizzontale vuol dire che vale per tutti i settori
+insieme, invece di essere una regola per la sanità, una per le banche e una per
+i trasporti. La sua idea portante è di guardare anzitutto al *rischio* che
+ciascun impiego comporta per le persone, più che alla tecnologia in astratto (e
+vedremo, parlando dei modelli generalisti, dove questa idea ha dovuto piegarsi).
+Ci torneremo; per ora ci dice che l'AI responsabile non è più solo un tema da
+conferenza accademica, ma materia di diritto.
 
 ## Che cosa vuol dire «responsabile»
 
@@ -89,11 +128,14 @@ ma materia di diritto.
 intrecciate. Conviene nominarle subito, perché sono l'ossatura del capitolo.
 
 - **Equità (*fairness*)**: il modello non deve sistematicamente svantaggiare
-  gruppi di persone in base a genere, etnia, età o altre caratteristiche
-  protette. È il filo che lega COMPAS e *Gender Shades*.
+  gruppi di persone in base a genere, etnia, età o altre **caratteristiche
+  protette**. L'espressione viene dal diritto e indica i tratti su cui la legge
+  vieta di discriminare: «protette» non vuol dire che il problema non possa
+  succedere, vuol dire che quando succede è illecito. È il filo che lega COMPAS
+  e *Gender Shades*.
 - **Privacy**: i modelli si nutrono di dati, spesso personali. Proteggerli
-  significa impedire che un sistema riveli (direttamente o per inferenza) chi
-  c'era nei dati di addestramento.
+  significa impedire che un sistema riveli chi c'era nei dati di addestramento:
+  o dicendolo apertamente, o lasciandolo indovinare da come si comporta.
 - **Robustezza e sicurezza**: un modello dovrebbe comportarsi in modo
   prevedibile anche di fronte a input insoliti o *deliberatamente* costruiti per
   ingannarlo. È il territorio degli **attacchi avversari**.
@@ -102,32 +144,31 @@ intrecciate. Conviene nominarle subito, perché sono l'ossatura del capitolo.
   la trattiamo come uno strumento al servizio della responsabilità, non come fine
   a sé.
 - **Allineamento (*alignment*)**: fare in modo che il comportamento di un
-  sistema (specialmente di uno potente e generalista) corrisponda davvero alle
-  intenzioni e ai valori di chi lo usa, e non a una loro caricatura letterale.
-- **Governance**: le regole, gli audit, le responsabilità legali. Chi risponde
-  quando un modello sbaglia? L'AI Act è un primo tentativo di risposta.
+  sistema corrisponda davvero a ciò che chi lo usa intendeva, e non alla lettera
+  di come gliel'ha detto. È il guaio del genio della lampada, che esaudisce il
+  desiderio esattamente come lo hai pronunciato: si dice *allineato* un sistema
+  quando quello che fa e quello che volevamo si sovrappongono.
+- **Governance**: le regole, le verifiche indipendenti, le responsabilità
+  legali. Chi risponde quando un modello sbaglia? L'AI Act è un primo tentativo
+  di risposta.
 
-Nessuna di queste dimensioni si compra con una singola metrica o una singola
-libreria. Sono proprietà del *sistema nel suo contesto d'uso*, non del solo
-codice.
+Nessuna di queste dimensioni si ottiene con un numero da tenere d'occhio o con
+un pezzo di software da installare. Sono proprietà del *sistema nel suo
+contesto d'uso*, non del solo codice.
 
 ## Perché il tema esplode adesso
 
-```{figure} ../figures/rischio-esistenziale-dibattito.svg
-:name: fig-spettro-rischio
-:alt: "Uno spettro orizzontale delle posizioni sul rischio esistenziale posto dall'AI: a un estremo chi lo considera la minaccia prioritaria, all'altro chi lo giudica una distrazione dai danni già in corso, e in mezzo le posizioni intermedie che assegnano peso diverso ai due tipi di danno."
-:width: 100%
-
-Il dibattito non è fra allarmisti e negazionisti. Le posizioni si distribuiscono
-con continuità, e la differenza vera è quanto peso si dà ai danni futuri
-rispetto a quelli già misurabili oggi.
-```
-
-{numref}`fig-spettro-rischio` serve a inquadrare cosa questo capitolo fa e
-cosa non fa. Di tutto lo spettro, qui si trattano i danni che si possono
-misurare adesso, perché sono quelli su cui esistono metodi, metriche e
-correzioni; le posizioni agli estremi sono legittime e restano fuori, non
-perché irrilevanti ma perché non sono materia tecnica.
+Conviene dire subito che cosa questo capitolo fa e cosa non fa, perché la prima
+cosa che viene in mente sentendo «pericoli dell'intelligenza artificiale» è
+spesso quella dei film. C'è chi ritiene che un giorno una macchina molto più
+capace di noi possa sfuggirci di mano in modo irreparabile: è il **rischio
+esistenziale**, e su quanto sia vicino, o se sia una preoccupazione sensata, le
+opinioni degli esperti vanno da «è fantascienza» a «bisogna fermare tutto».
+Qui non ne parliamo, e non perché sia una domanda sciocca: perché non esistono
+ancora metodi per misurarlo, e questo è un libro su ciò che si sa fare. Ci
+occupiamo dei danni che si possono misurare adesso, quelli su cui esistono
+metriche e correzioni. Il dibattito fra le due preoccupazioni, che è vivo e
+serio, lo riprendiamo alla fine del capitolo, dove parliamo delle regole.
 
 I pregiudizi nei sistemi automatici non sono una scoperta del 2016: se ne
 discuteva già negli anni Novanta. Ciò che è cambiato è la scala. Fino a poco
@@ -155,10 +196,10 @@ ecco perché il problema è diventato urgente proprio adesso.
 
 Tre spostamenti quantitativi hanno reso il tema ineludibile.
 
-1. **Potenza**. I modelli moderni hanno da centinaia di milioni a centinaia di
-   miliardi di parametri: catturano regolarità sottili nei dati, comprese
-   quelle che *vorremmo* non imparassero (le correlazioni spurie tra
-   caratteristiche protette ed esito).
+1. **Potenza**. I modelli in uso hanno da centinaia di milioni di parametri in
+   su: catturano regolarità sottili nei dati, comprese quelle che *vorremmo*
+   non imparassero (le correlazioni spurie tra caratteristiche protette ed
+   esito).
 2. **Diffusione**. Lo stesso modello viene servito a scala di popolazione. Un
    *bias* con effetto trascurabile sul singolo caso diventa, per la legge dei
    grandi numeri, un effetto sistematico su interi gruppi sociali: proprio i
@@ -178,10 +219,17 @@ Il resto del capitolo procede lungo tre assi, dagli effetti più visibili a
 quelli più strutturali.
 
 Prima l'**equità e i *bias***: da dove nasce un pregiudizio (dai dati, dalle
-etichette, dalla scelta stessa dell'obiettivo), come lo si *misura* (riusando
-la matrice di confusione e le metriche di errore già viste nel capitolo di
-Machine Learning, applicate però *separatamente a ogni gruppo*) e quali
+etichette, dalla scelta stessa dell'obiettivo), come lo si *misura* e quali
 tecniche provano a mitigarlo, senza illudersi che esista una cura definitiva.
+Per misurarlo non serve niente di nuovo: si riusa la tabella a quattro caselle
+del capitolo di Machine Learning (quella del rilevatore di fumo: c'era davvero
+un incendio o no, ha suonato o no), che lì si chiama **matrice di confusione**.
+L'unica differenza, ma è quella decisiva, è che qui la si compila
+*separatamente per ogni gruppo* e poi si confrontano i risultati. Ricorrono due
+misure che quel capitolo ha già presentato: la quota di casi veri che il
+sistema riesce a prendere (il **tasso di veri positivi**, che è la stessa cosa
+che là si chiama *recall*) e la quota di falsi allarmi sui casi che veri non
+erano (il **tasso di falsi positivi**).
 
 Poi **privacy, robustezza e sicurezza**: come un modello può, senza volerlo,
 lasciar trapelare i dati su cui è stato addestrato; e come un avversario possa
@@ -202,6 +250,16 @@ Decidere *quale* nozione di equità far valere, *quanto* rischio è tollerabile,
 *chi* paga quando un modello danneggia qualcuno: sono scelte sociali e
 politiche, che nessuna formula risolve al posto nostro.
 
+Ce n'è una che viene prima di tutte, e che un capitolo tecnico rischia di
+saltare: **chi ha deciso di mettere lì quel sistema, e perché**. Un tribunale
+non compra un software di punteggi perché sia più giusto di un giudice: lo
+compra perché costa meno e va più veloce, e perché un numero è più facile da
+difendere in un fascicolo di una motivazione. Tenere presente quel passo dice
+che «come rendo equo il modello» non è sempre la prima domanda: a volte lo è
+«questo compito va dato a un modello?», e la risposta legittima può essere no.
+Non è una domanda che si chiude con una metrica, ma lasciarla fuori significa
+dare per scontata proprio la decisione che ha causato tutto il resto.
+
 `````{tab} Elementare
 
 Pensa a dividere una torta «in modo giusto». Fette identiche per tutti? Fette
@@ -219,19 +277,23 @@ resta un atto di responsabilità umana.
 
 `````{tab} Superiore
 
-La torta ha una controparte formale, ed è il risultato di impossibilità che
-già affiorava nel caso COMPAS. Fissato un classificatore con punteggi di
-rischio, tre criteri di equità ragionevoli, **calibrazione** (a parità di
-punteggio, stessa probabilità reale di esito tra i gruppi), **bilanciamento
-dei falsi positivi** e **bilanciamento dei falsi negativi**, non possono in
-generale essere soddisfatti tutti insieme, se non nei casi degeneri, quando i
-tassi di base dei gruppi differiscono. In termini della matrice di confusione
-del capitolo di Machine Learning: non si può appiattire il divario di **tasso
-di falsi positivi** tra i gruppi e allo stesso tempo mantenere il medesimo
-valore predittivo dei punteggi. La scelta di *quale* criterio privilegiare non
-discende dai dati: è normativa. La statistica delimita lo spazio delle opzioni
-e ne espone i costi; qual è il compromesso «giusto» è una domanda di valori,
-che va posta esplicitamente e non nascosta dentro una funzione obiettivo.
+La torta ha una controparte formale, ed è il risultato di impossibilità che già
+affiorava nel caso COMPAS. Nella forma che serve qui: fissato un classificatore
+con punteggi di rischio, la **parità del valore predittivo** (a parità di
+predizione positiva, stessa probabilità reale di esito nei due gruppi), la
+parità dei **falsi positivi** e la parità dei **falsi negativi** non possono in
+generale valere tutte e tre insieme quando i tassi di base dei gruppi
+differiscono, se non nei casi degeneri {cite}`chouldechova2017fair`. Due se ne
+tengono sempre: è la terza a saltare. La sezione sull'equità mostra l'identità
+algebrica da cui discende, e distingue questo enunciato dagli altri due che gli
+somigliano e che vengono regolarmente confusi con esso.
+
+La scelta di *quale* criterio privilegiare non discende dai dati: è normativa.
+La statistica delimita lo spazio delle opzioni e ne espone i costi; qual è il
+compromesso «giusto» è una domanda di valori, che va posta esplicitamente e non
+nascosta dentro una funzione obiettivo. E, come si è visto sopra, nemmeno le
+premesse del conflitto sono neutrali: i tassi di base che rendono il teorema
+mordente sono misure, e una misura può essere a sua volta distorta.
 
 `````
 
@@ -239,20 +301,58 @@ Con questo spirito (tecnico dove la tecnica basta, esplicito dove non basta),
 entriamo nel merito, cominciando da dove tutto è iniziato in apertura:
 l'equità e i pregiudizi che si annidano nei dati.
 
+`````{tab} Elementare
+
+```{admonition} Da ricordare
+:class: important
+- Un modello **non è neutro**: impara dagli esempi che gli diamo, e si porta
+  dietro la storia storta che c'è dentro. Due casi da tenere a mente: il
+  software dei tribunali americani, che etichettava «ad alto rischio» quasi il
+  doppio degli imputati neri innocui rispetto ai bianchi; e i riconoscitori di
+  volti, che sbagliavano quasi mai sugli uomini dalla pelle chiara e in oltre
+  un caso su tre sulle donne dalla pelle scura.
+- Il pregiudizio entra in due modi diversi, e vanno tenuti separati: perché di
+  un gruppo ci sono **pochi esempi**, oppure perché quello che è scritto nei
+  dati **non è la cosa che credevamo** (nel registro c'è «arrestato», non «ha
+  commesso un reato»).
+- **AI responsabile** è un ombrello che copre sei cose: equità, privacy,
+  robustezza e sicurezza, trasparenza, allineamento (che il sistema faccia
+  quello che intendevamo, non la lettera di quel che gli abbiamo detto) e
+  regole.
+- Perché adesso: i modelli sono potenti, uno solo serve milioni di persone, e
+  quasi nessuno sa spiegare perché ha risposto così. Tutte e tre insieme.
+- «Giusto» non è una parola sola. Come per la torta da dividere, ci sono più
+  idee di equità tutte ragionevoli, e spesso **non si possono avere insieme**:
+  quale pretendere è una scelta che spetta alle persone, non alla matematica.
+- E prima ancora: qualcuno ha deciso di mettere lì quel sistema. Chiedersi
+  *perché* è parte del mestiere, non una digressione.
+```
+
+`````
+
+`````{tab} Superiore
+
 ```{admonition} Da ricordare
 :class: important
 - Un modello **non è neutro**: impara dai dati e ne eredita storia, punti ciechi
-  e disuguaglianze. COMPAS (falsi positivi quasi doppi per gli imputati neri) e
+  e disuguaglianze. COMPAS (falsi positivi $44{,}9\%$ contro $23{,}5\%$) e
   *Gender Shades* (errore fino al $34{,}7\%$ sulle donne dalla pelle scura contro
-  meno dell'$1\%$ sugli uomini dalla pelle chiara) sono i casi-simbolo.
+  lo $0{,}8\%$ sugli uomini dalla pelle chiara) sono i casi-simbolo.
 - **AI responsabile** è un ombrello: equità, privacy, robustezza/sicurezza,
   trasparenza (l'interpretabilità come strumento), allineamento, governance.
 - Il tema è urgente **adesso** per tre spostamenti insieme (modelli potenti,
   diffusi a scala di popolazione, opachi) con impatto reale su credito,
   giustizia, sanità e lavoro: gli usi «ad alto rischio» dell'**AI Act**
   europeo del 2024.
-- Molte definizioni di equità sono **matematicamente incompatibili** quando i
-  tassi di base differiscono: non si può avere tutto insieme.
+- Diverse definizioni di equità sono **matematicamente incompatibili** quando i
+  **tassi di base** (la frequenza reale dell'esito in ciascun gruppo)
+  differiscono: parità del valore predittivo, dei falsi positivi e dei falsi
+  negativi valgono due alla volta {cite}`chouldechova2017fair`. E quei tassi
+  di base sono a loro volta grandezze *misurate*, non date di natura.
 - Perciò l'AI responsabile è anche una **scelta sociale e politica**, non solo
-  tecnica: la matematica mostra i compromessi, sceglierli spetta a noi.
+  tecnica: la matematica mostra i compromessi, sceglierli spetta a noi. La
+  domanda a monte, *se* quel compito vada affidato a un modello, non è tecnica
+  affatto.
 ```
+
+`````

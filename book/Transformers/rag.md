@@ -27,7 +27,12 @@ primo mestiere, il più antico.
 ## Trovare l'ago: l'information retrieval
 
 Il problema è presto detto: data una richiesta (una **query**) trovare, in una
-collezione che può contenere milioni di documenti, i pochi che servono. È il
+collezione che può contenere milioni di documenti, i pochi che servono. La
+parola *query* è la stessa incontrata nel meccanismo di attenzione, dove era la
+domanda che una parola pone alle altre; qui è la domanda che si pone a un
+archivio. Non è un caso che si chiamino uguale, ed è anzi il filo di tutta la
+sezione: interrogare, confrontare, pesare le risposte è sempre lo stesso gesto,
+una volta dentro una frase e una volta dentro una biblioteca. È il
 problema dei motori di ricerca, ma è nato ben prima del web, nelle biblioteche
 digitalizzate degli anni Sessanta e Settanta. E la prima domanda è di pura
 ingegneria: come si cerca in milioni di documenti *senza leggerli tutti* a
@@ -47,9 +52,13 @@ L'**indice invertito** dei motori di ricerca è la stessa idea in scala: per
 «gatto muro» il motore prende le due liste, le interseca, e ottiene i
 documenti che contengono entrambe le parole, senza aprirne nessuno.
 
-Restano magari mille documenti: quali mostrare per primi? Qui tornano i pesi
-del capitolo sul NLP: le parole **rare** contano di più («muro» dice più di
-«il», è il principio del TF-IDF). E il buon senso aggiunge due correzioni.
+Restano magari mille documenti: quali mostrare per primi? Serve dare
+un'importanza diversa alle parole della domanda, e la regola più antica è che
+le parole **rare** contano di più: «muro» dice molto di più di «il», che sta
+dappertutto. (Una nota per non confondersi: nei libri questa importanza si
+chiama «peso», che è la stessa parola usata per i numeri che una rete impara.
+Sono due cose diverse chiamate uguale, e capita spesso.) E il buon senso
+aggiunge due correzioni.
 Primo: se «gatto» compare dieci volte, il documento non è dieci volte più
 pertinente di uno in cui compare una volta; dopo un po' il tema è chiaro, le
 ripetizioni in più aggiungono briciole. Secondo: un documento lunghissimo
@@ -82,7 +91,14 @@ versione levigata,
 $\mathrm{idf}(t) = \log\frac{N - \mathrm{df}(t) + 0{,}5}{\mathrm{df}(t) + 0{,}5}$,
 con $N$ documenti totali e $\mathrm{df}(t)$ quelli contenenti $t$; $|d|$ è la
 lunghezza del documento e $\bar{\ell}$ la lunghezza media nella collezione;
-$k_1$ e $b$ sono due manopole.
+$k_1$ e $b$ sono due manopole. Un avviso a chi la implementa: così scritta,
+l'idf diventa **negativa** per ogni termine presente in più di metà della
+collezione (basta che $\mathrm{df}(t) > N/2$), e un contributo negativo
+significa che contenere il termine *peggiora* il punteggio. È un'anomalia nota,
+che le implementazioni correnti (Lucene, e quindi quasi tutti i BM25 in
+produzione) evitano usando
+$\log\!\big(1 + \frac{N - \mathrm{df}(t) + 0{,}5}{\mathrm{df}(t) + 0{,}5}\big)$,
+sempre positiva e con lo stesso ordinamento nei casi utili.
 
 La frazione è il cuore della formula, e codifica la **saturazione** della term
 frequency: cresce con $\mathrm{tf}$ ma tende al tetto $k_1 + 1$. Con il valore
@@ -104,28 +120,35 @@ posto).
 
 ## Quando le parole non bastano: il retrieval denso
 
+L'indice invertito ha un difetto congenito: cerca **parole**, non significati.
+Chi scrive «abitazione» non trova il documento che dice «casa». Il rimedio è la
+stessa **mappa del significato** incontrata parlando delle cento lingue: ogni
+parola, e poi ogni frase, diventa un punto su una mappa, con la regola che
+cose che vogliono dire cose simili finiscono in punti vicini. Su una mappa del
+genere si possono perfino fare dei conti, ed è quello che mostra la figura qui
+sotto.
+
 ```{figure} ../figures/word2vec-2013.svg
 :name: fig-aritmetica-vettori
 :alt: "Piano con i vettori di quattro parole, uomo, re, donna e regina, disposti ai vertici di un parallelogramma: la differenza fra re e uomo è lo stesso spostamento che porta da donna a regina, e sommando quello spostamento a donna si arriva vicino a regina."
 :width: 84%
 
-Il significato come geometria. Se una relazione fra due parole è uno
-spostamento nello spazio, allora lo stesso spostamento applicato altrove
-produce la relazione analoga.
+Il significato come geometria. Sulla mappa, andare da «uomo» a «re» è lo stesso
+spostamento che porta da «donna» a «regina»: la relazione «la versione regale
+di» è diventata una direzione.
 ```
 
 La proprietà di {numref}`fig-aritmetica-vettori` è ciò che rende possibile il
 recupero denso di questa sezione. Se parole con significati vicini finiscono
-vicine nello spazio, allora cercare diventa una questione di distanza, e non
-serve più che la query e il documento condividano le stesse parole.
+in punti vicini, allora cercare diventa una questione di distanza, e non
+serve più che la domanda e il documento condividano le stesse parole.
 
-L'indice invertito ha un difetto congenito: cerca **parole**, non significati.
 Nell'overview del capitolo sul NLP avevamo elencato i sinonimi tra le insidie
 della lingua: «auto», «macchina» e «vettura» indicano lo stesso oggetto. Ma
 per un indice invertito sono tre chiavi diverse: la query «manutenzione della
 vettura» non troverà mai il documento che parla solo di «tagliando dell'auto»,
-perché non condividono una sola parola. Il rimedio lo abbiamo già in mano dal
-capitolo sul NLP: gli **embedding**, la mappa geometrica del significato.
+perché non condividono una sola parola. Il rimedio ha un nome, ed è quello che
+il capitolo sul NLP dà agli indirizzi su quella mappa: gli **embedding**.
 
 `````{tab} Elementare
 
@@ -155,8 +178,9 @@ L'architettura standard è il **bi-encoder**, cioè la struttura siamese
 descritta in *Rappresentare il testo* applicata a due tipi di ingresso
 diversi: due encoder Transformer (o uno
 condiviso), $E_q$ per le query ed $E_p$ per i passaggi, producono vettori in
-$\mathbb{R}^d$, e la rilevanza è il prodotto scalare
-$\mathrm{sim}(q, d) = E_q(q)^\top E_p(d)$, che coincide con la **similarità
+$\mathbb{R}^d$, e la rilevanza fra una query $q$ e un passaggio $p$ è il
+prodotto scalare
+$\mathrm{sim}(q, p) = E_q(q)^\top E_p(p)$, che coincide con la **similarità
 del coseno**, già incontrata in *Algebra lineare*, quando i vettori sono
 normalizzati. Il vantaggio computazionale è decisivo: gli embedding dei
 passaggi si calcolano **una volta sola**, offline; a query time restano una
@@ -183,10 +207,12 @@ accurato ma troppo costoso per scandagliare l'archivio, quindi si usa come
 
 ## Rispondere: il question answering
 
-Cercare non basta: il retriever restituisce passaggi, non risposte.
-Trasformare un testo trovato in una risposta alla domanda è il compito che
-nell'overview del capitolo sul NLP avevamo chiamato **question answering**:
-uno dei quattro classici. Ha avuto persino il suo momento televisivo: nel
+Cercare non basta: la parte che cerca (in inglese il *retriever*, che è la
+parola che si trova scritta ovunque e che qui traduciamo con «il cercatore»)
+restituisce passaggi, non risposte. Trasformare un testo trovato in una
+risposta alla domanda è il compito che nell'overview del capitolo sul NLP
+avevamo chiamato **question answering**, uno dei compiti classici della
+disciplina. Ha avuto persino il suo momento televisivo: nel
 febbraio 2011 Watson di IBM, un sistema costruito proprio su ricerca più
 analisi della domanda, batté i campioni umani del quiz *Jeopardy!*.
 
@@ -313,12 +339,19 @@ dietro, e perché è una mitigazione, non una cura.
 
 ## Un retriever denso in miniatura
 
-Chiudiamo con il codice. Costruiamo un retriever denso completo (embedding,
+Chiudiamo con il codice. Costruiamo un cercatore denso completo (embedding,
 similarità del coseno, top-$k$, prompt aumentato) su un archivio di sei
 passaggi. Gli embedding sono fittizi ma didattici: quattro dimensioni
 leggibili (gatti, muri e casa, automobili, cucina) al posto delle centinaia di
 dimensioni opache di un encoder vero. Tutto il resto è identico a un sistema
 reale.
+
+Una riga per chi legge al livello Elementare e vuole comunque capire i numeri
+che escono. La **similarità del coseno** è un modo di misurare quanto due punti
+della mappa del significato «puntano nella stessa direzione»: dà $1$ quando la
+direzione è identica, $0$ quando non hanno niente a che vedere, e valori
+intermedi in mezzo. Si legge come una percentuale di somiglianza, ed è tutto
+quel che serve per leggere l'uscita del programma.
 
 ```python
 import torch
@@ -372,10 +405,11 @@ L'output della ricerca merita un momento di attenzione:
 0.78  Il gatto dorme accanto ai fornelli.
 ```
 
-Il primo passaggio è quello giusto, con similarità quasi perfetta. Ma guarda
-il secondo: parla di gatti, ed è per questo geometricamente *vicino* alla
-domanda, eppure **non risponde**. È il quasi-pertinente, l'insidia tipica del
-retrieval denso: la vicinanza di tema non è pertinenza alla domanda. Nei
+Il primo passaggio è quello giusto, con una somiglianza di $0{,}99$, cioè
+quasi perfetta. Ma guarda il secondo, che sta a $0{,}78$: parla di gatti, ed è
+per questo *vicino* alla domanda sulla mappa, eppure **non risponde**. È il
+quasi-pertinente, l'insidia tipica del retrieval denso: la vicinanza di tema
+non è pertinenza alla domanda. Nei
 sistemi reali è qui che interviene il reranker, e per questo la consegna nel
 prompt dice «usando *solo* i passaggi»: il generatore deve appoggiarsi al
 passaggio [1] e avere la disciplina di ignorare il [2].

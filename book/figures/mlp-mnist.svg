@@ -16,27 +16,27 @@
 
   <!-- Box 1: Input -->
   <rect x="180" y="30" width="260" height="56" rx="10" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2.5"/>
-  <text x="310" y="63" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="15" font-weight="600" fill="#1A1A1A">Input — immagine 28×28</text>
+  <text x="310" y="63" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="15" font-weight="600" fill="#1A1A1A">Input: immagine 28×28</text>
   <text x="470" y="63" text-anchor="start" font-family="'JetBrains Mono', monospace" font-size="13" fill="#5E5852">(28, 28)</text>
 
   <!-- Box 2: Flatten -->
   <rect x="180" y="118" width="260" height="56" rx="10" fill="#F8F5EE" stroke="#8B847C" stroke-width="2.5"/>
-  <text x="310" y="151" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="15" font-weight="600" fill="#1A1A1A">Flatten — srotola</text>
+  <text x="310" y="151" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="15" font-weight="600" fill="#1A1A1A">Flatten: srotola</text>
   <text x="470" y="151" text-anchor="start" font-family="'JetBrains Mono', monospace" font-size="13" fill="#5E5852">(784,)</text>
 
   <!-- Box 3: Dense 128 -->
   <rect x="180" y="206" width="260" height="56" rx="10" fill="#F8F5EE" stroke="#B5532C" stroke-width="2.5"/>
-  <text x="310" y="239" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="15" font-weight="600" fill="#1A1A1A">Linear(784, 128) — ReLU</text>
+  <text x="310" y="239" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="15" font-weight="600" fill="#1A1A1A">Linear(784, 128) → ReLU</text>
   <text x="470" y="239" text-anchor="start" font-family="'JetBrains Mono', monospace" font-size="13" fill="#5E5852">(128,)</text>
 
   <!-- Box 4: Dense 10 -->
   <rect x="180" y="294" width="260" height="56" rx="10" fill="#F8F5EE" stroke="#B5532C" stroke-width="2.5"/>
-  <text x="310" y="327" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="15" font-weight="600" fill="#1A1A1A">Linear(128, 10) — logit</text>
+  <text x="310" y="327" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="15" font-weight="600" fill="#1A1A1A">Linear(128, 10) → logit</text>
   <text x="470" y="327" text-anchor="start" font-family="'JetBrains Mono', monospace" font-size="13" fill="#5E5852">(10,)</text>
 
   <!-- Box 5: Output -->
   <rect x="180" y="382" width="260" height="56" rx="10" fill="#F8F5EE" stroke="#C9A961" stroke-width="2.5"/>
-  <text x="310" y="415" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="15" font-weight="600" fill="#1A1A1A">Output — 10 punteggi → softmax</text>
+  <text x="310" y="415" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="15" font-weight="600" fill="#1A1A1A">Output: 10 punteggi → softmax</text>
 
   <!-- Etichetta laterale: la pila Sequential -->
   <line x1="150" y1="30" x2="150" y2="438" stroke="#C9C2B4" stroke-width="2"/>

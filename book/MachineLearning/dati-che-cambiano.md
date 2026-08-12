@@ -20,11 +20,15 @@ Google Flu* (la "parabola", nel senso del racconto che ammonisce
 {cite}`lazer2014parable`). Nell'agosto 2015 Google chiuse il servizio.
 
 Che cosa era andato storto? Il modello non si era rotto: era **invecchiato**.
-Il modo di cercare in rete era cambiato, Google stessa aggiornava di continuo
-il motore, e il completamento automatico suggeriva ricerche sull'influenza
-anche a chi stava benissimo; i giornali parlavano di epidemia e la gente
-cercava per curiosità, non per febbre. Il modello, tarato sul mondo del 2008,
-continuava a leggere il presente con gli occhiali di allora. Questa sezione
+Il modo di cercare in rete era cambiato, e Google stessa aggiornava il motore:
+dal giugno 2011 cominciò a **proporre altri termini da cercare** (a chi
+chiedeva dell'influenza suggeriva di cercarne le cure), dal febbraio 2012 a
+**rispondere alle ricerche sui sintomi con le diagnosi possibili** (chi cercava
+«febbre» o «tosse» si vedeva proporre l'influenza). Erano due spinte verso
+l'influenza che arrivavano anche a chi stava benissimo; e intanto i giornali
+parlavano di epidemia e la gente cercava per curiosità, non per febbre. Il
+modello, tarato sul mondo del 2008, continuava a leggere il presente con gli
+occhiali di allora. Questa sezione
 parla esattamente di questo: che cosa succede quando i dati che un modello
 incontra non somigliano più a quelli su cui è stato addestrato.
 
@@ -33,7 +37,10 @@ incontra non somigliano più a quelli su cui è stato addestrato.
 C'è un'assunzione che regge, in silenzio, ogni pagina scritta finora: che i
 dati di addestramento e i dati che il modello incontrerà dopo siano fatti
 *della stessa pasta* (pescati, per così dire, dalla stessa urna). Ha un nome
-tecnico, **ipotesi i.i.d.**, e finché vale tutto l'impianto che abbiamo
+tecnico, **ipotesi i.i.d.**, che è la sigla di «indipendenti e identicamente
+distribuiti»: ogni esempio pescato senza che gli altri lo condizionino
+(*indipendenti*) e tutti dalla stessa urna (*identicamente distribuiti*).
+Finché vale, tutto l'impianto che abbiamo
 costruito funziona. Il problema è che nessuno ha firmato un contratto con il
 mondo perché continui a valere.
 
@@ -56,8 +63,8 @@ era cambiata, e nessuno aveva avvisato il modello.
 
 `````{tab} Superiore
 
-Formalmente, assumiamo che le coppie $(X^{(i)}, y^{(i)})$ del training e
-quelle che il modello vedrà in produzione siano estratte in modo
+Formalmente, assumiamo che le coppie $(\mathbf{x}^{(i)}, y^{(i)})$ del
+training e quelle che il modello vedrà in produzione siano estratte in modo
 **indipendente e identicamente distribuito** (i.i.d.) da un'unica
 distribuzione congiunta $P(X, y)$. Sotto questa ipotesi l'errore misurato sul
 campione converge, per la legge dei grandi numeri, all'errore atteso di
@@ -96,7 +103,13 @@ Non tutti i cambiamenti sono uguali. La letteratura ne distingue tre famiglie
 {cite}`quinonero2009dataset`, e vale la pena impararle con esempi quotidiani,
 perché la diagnosi giusta suggerisce il rimedio giusto.
 {numref}`fig-distribution-shift` mostra il caso più semplice da visualizzare:
-i dati nuovi arrivano in una zona che l'addestramento ha quasi ignorato.
+i dati nuovi arrivano in una zona che l'addestramento ha quasi ignorato. Il
+grafico va letto in un modo nuovo rispetto a quelli visti finora, dove i punti
+erano esempi: qui sull'asse orizzontale c'è il valore di una caratteristica e
+sulla verticale **quanto spesso** quel valore capita, così che dove la curva è
+alta ci sono tanti esempi e dove è schiacciata quasi nessuno. Due curve
+sfalsate vogliono dire che i valori frequenti ieri non sono quelli frequenti
+oggi.
 
 ```{figure} ../figures/distribution-shift.svg
 :name: fig-distribution-shift
@@ -239,18 +252,19 @@ frequenti in produzione ma rari in addestramento contino di più,
 
 $$
 \mathcal{L}_w(\theta) = \frac{1}{m} \sum_{i=1}^{m}
-w\big(X^{(i)}\big)\, \mathcal{L}\big(f_\theta(X^{(i)}),\, y^{(i)}\big),
+w\big(\mathbf{x}^{(i)}\big)\,
+\mathcal{L}\big(f_\theta(\mathbf{x}^{(i)}),\, y^{(i)}\big),
 \qquad
-w(x) = \frac{p_{\text{test}}(x)}{p_{\text{train}}(x)},
+w(\mathbf{x}) = \frac{p_{\text{test}}(\mathbf{x})}{p_{\text{train}}(\mathbf{x})},
 $$
 
-dove $w(x)$ è il rapporto tra la densità degli input in produzione e quella in
-addestramento e $m$ è il numero di esempi. In teoria, minimizzare
+dove $w(\mathbf{x})$ è il rapporto tra la densità degli input in produzione e
+quella in addestramento e $m$ è il numero di esempi. In teoria, minimizzare
 $\mathcal{L}_w$ equivale a minimizzare l'errore atteso sotto
 $P_{\text{test}}$. In pratica i limiti sono seri: vale solo se $P(y \mid X)$
 non cambia; richiede che i supporti si sovrappongano, dove
-$p_{\text{train}}(x) = 0$ ma $p_{\text{test}}(x) > 0$ nessun peso può
-inventare esempi mai raccolti; e stimare il rapporto di densità in alta
+$p_{\text{train}}(\mathbf{x}) = 0$ ma $p_{\text{test}}(\mathbf{x}) > 0$ nessun
+peso può inventare esempi mai raccolti; e stimare il rapporto di densità in alta
 dimensione è difficile, con pesi enormi su pochi esempi che fanno esplodere la
 varianza. Correzioni analoghe esistono per il *label shift*, ripesando per
 classi. Complementare a tutto questo è l'**out-of-distribution detection**:
@@ -304,6 +318,41 @@ già espressi e cementa nei dati le proprie distorsioni. Ci torneremo nel
 capitolo sui sistemi di raccomandazione, dove il circuito di retroazione non è
 un effetto collaterale ma la struttura stessa del problema.
 
+`````{tab} Elementare
+
+```{admonition} Da ricordare
+:class: important
+- Tutto il libro poggia su un'ipotesi tacita: che i dati di ieri e quelli di
+  domani vengano **dalla stessa urna**. Il mondo non ha firmato quel contratto.
+- Tre modi in cui l'urna cambia, e vanno distinti perché chiedono rimedi
+  diversi: **cambiano le domande** (l'app che riconosce le piante, addestrata
+  d'estate e usata d'inverno: le foto sono altre, ma un abete resta un abete);
+  **cambiano le proporzioni delle risposte** (la malattia rara che diventa
+  un'epidemia: i sintomi sono gli stessi, la loro frequenza no); **cambia la
+  regola** (le parole che nel 2005 gridavano truffa e oggi arrivano da un
+  negozio serio). L'ultimo è il peggiore, perché nessuna quantità di dati
+  vecchi può insegnare una regola nuova.
+- La **validazione classica non protegge**, perché studio, prove ed esame sono
+  tre ritagli della stessa vecchia fotografia: è guidare guardando lo
+  specchietto retrovisore. Se i dati hanno una data, la prova onesta è
+  addestrare sul passato e verificare sul futuro.
+- I rimedi che funzionano non sono formule ma abitudini: **sorvegliare** il
+  modello mentre lavora (gli ingressi somigliano a quelli di ieri? le risposte
+  sono cambiate di colpo?), **riaddestrarlo** ogni tanto su dati recenti,
+  **giudicarlo su dati freschi**. E dargli il permesso di dire «non lo so».
+- Attenzione a quando è il modello stesso a **fabbricare i dati di domani**: se
+  mostra solo certi contenuti, vedrà solo clic su quelli; se nega il prestito,
+  non saprà mai chi avrebbe restituito. Da lì in avanti non guarda più il
+  mondo, guarda le conseguenze delle proprie decisioni.
+- **Google Flu Trends** è la parabola da ricordare: un modello eccellente sul
+  passato può invecchiare in silenzio, restando bravissimo agli esami che si dà
+  da solo.
+```
+
+`````
+
+`````{tab} Superiore
+
 ```{admonition} Da ricordare
 :class: important
 - Tutto il libro poggia su un'ipotesi tacita: dati di addestramento e dati
@@ -311,7 +360,9 @@ un effetto collaterale ma la struttura stessa del problema.
   firmato quel contratto.
 - Tre famiglie di **dataset shift**: *covariate shift* (cambia $P(X)$: le
   domande), *label shift* (cambia $P(y)$: le proporzioni delle risposte),
-  *concept shift* (cambia $P(y \mid X)$: la regola stessa).
+  *concept shift* (cambia $P(y \mid X)$, cioè la regola stessa; la barra
+  verticale si legge «dato», quindi $P(y \mid X)$ è la probabilità della
+  risposta *dato* l'input).
 - La **validazione classica non protegge**: validation e test sono ritagli
   dello stesso passato. Con dati temporali, meglio lo split temporale.
 - Rimedi onesti: **monitoraggio in produzione**, **retraining periodico**,
@@ -323,3 +374,5 @@ un effetto collaterale ma la struttura stessa del problema.
 - Google Flu Trends resta la parabola di riferimento: un modello eccellente
   sul passato può invecchiare in silenzio {cite}`lazer2014parable`.
 ```
+
+`````

@@ -6,9 +6,17 @@ mestiere che esisteva già ma non si sapeva ancora come chiamare. Su X ha
 scritto che preferisce di gran lunga il termine **context engineering** a
 «prompt engineering», e lo ha definito così: l'arte e insieme la scienza,
 delicata, di riempire la finestra di contesto con *la giusta informazione per
-il passo successivo* {cite}`karpathy2025context`. Poche parole, ma pesano. Non
-dicono «trova la frase magica»: dicono che il lavoro è *riempire bene una
-finestra*, e farlo passo dopo passo.
+il passo successivo* {cite}`karpathy2025context`.
+
+Conviene fermarsi sulla parola che regge la frase, perché tornerà in ogni
+pagina del capitolo. La **finestra di contesto** è il tetto di testo che un
+modello riesce a leggere in una volta sola: tutto ciò che vogliamo che sappia,
+prima di rispondere, deve starci dentro, e quando è piena qualcosa va tolto
+per far posto. Non è una metafora, è un limite di progetto del modello, ed è
+la ragione per cui riempirla bene è un mestiere. Detto questo, la definizione
+di Karpathy si legge da sé: poche parole, ma pesano. Non dicono «trova la
+frase magica»: dicono che il lavoro è *riempire bene una finestra*, e farlo
+passo dopo passo.
 
 Karpathy aveva preparato il terreno da tempo. Anni prima aveva parlato di
 **Software 2.0**: nei sistemi di apprendimento automatico il programma non lo
@@ -16,44 +24,53 @@ scrive più una persona riga per riga, lo si *addestra*, e il codice sono i
 pesi della rete. Nel 2025 ha aggiunto un terzo capitolo, il **Software 3.0**,
 osservando che oggi, con i grandi modelli linguistici, «si programma in
 inglese»: il prompt *è* il programma, scritto in lingua naturale invece che in
-Python. È un'immagine forte, e come tutte le immagini forti va presa con
-prudenza; ma coglie qualcosa di vero, ed è il punto di partenza di questo
-capitolo.
+Python. («In inglese» sta per «in lingua umana»: l'italiano va altrettanto
+bene, e infatti tutti gli esempi di questo capitolo sono in italiano.) È
+un'immagine forte, e come tutte le immagini forti va presa con prudenza; ma
+coglie qualcosa di vero, ed è il punto di partenza di questo capitolo.
 
 ## Programmare a parole
 
 ```{figure} ../figures/cos-e-davvero-un-llm.svg
 :name: fig-cos-e-un-llm
-:alt: "Una sequenza di testo entra nel modello, che restituisce una distribuzione di probabilità su tutte le possibili parole successive. Il modello non produce una risposta ma una graduatoria: la risposta nasce dopo, scegliendo un elemento da quella graduatoria."
+:alt: "La frase «Il gatto nero salta sul» entra nel modello, seguita da una casella vuota con un punto interrogativo. Il modello restituisce una graduatoria di parole con la loro probabilità: muro 41 per cento, tetto 20, ramo 11, divano 3, tavolo 2, e un 23 per cento distribuito su tutto il resto del vocabolario. Il modello non produce una risposta ma questa graduatoria: la risposta nasce dopo, pescandone un elemento."
 :width: 92%
 
-Cosa restituisce davvero un LLM. Non una frase: una distribuzione sulla parola
-dopo. Tutto ciò che sembra dialogo è questo passaggio, ripetuto.
+Cosa restituisce davvero un LLM. Non una frase: una classifica di parole
+possibili, ciascuna con la sua probabilità. Tutto ciò che sembra dialogo è
+questo passaggio, ripetuto.
 ```
 
 Tenere presente {numref}`fig-cos-e-un-llm` cambia il modo di leggere tutto il
 capitolo. «Distribuzione» è una parola da statistici per una cosa semplice:
 una classifica di parole candidate, ciascuna con la sua percentuale (dopo «il
 gatto nero salta sul» potrebbe dire: muro 41%, tetto 20%, divano 3%), e la
-risposta nasce pescando da quella classifica. Se l'oggetto è questa
-classifica, condizionata dal testo che precede, allora «programmare a parole»
-non è una metafora: è il modo letterale di spostarla, ed è l'unico che si
-abbia senza toccare i pesi.
+risposta nasce pescando da quella classifica. Nella figura le voci si chiamano
+*token*, che è il pezzo di parola con cui il modello lavora davvero, come
+abbiamo visto nel capitolo sul linguaggio naturale; qui diremo «parola» per
+comodità, e la sostanza non cambia. Se l'oggetto è questa classifica,
+condizionata dal testo che precede, allora «programmare a parole» non è una
+metafora: è il modo letterale di spostarla, ed è l'unico che si abbia senza
+toccare i pesi.
 
 La tesi è semplice da enunciare e ricca di conseguenze. Con un LLM già
 addestrato (un modello «istruito», che sa già leggere e scrivere), noi non
 programmiamo più toccando i **pesi**: quelli sono congelati, li ha fissati
-l'addestramento. Programmiamo con le **parole**, cioè con il testo che gli
-mettiamo davanti prima di chiedergli una risposta. Cambiare quel testo cambia
-il comportamento del sistema tanto quanto, nel software tradizionale,
-cambierebbe riscrivere una funzione.
+l'addestramento. «Congelati» non vuol dire immutabili per sempre: riaprirli e
+proseguire l'addestramento sui propri dati si può, si chiama **fine-tuning**,
+e fra poco vedremo perché è la leva più cara delle tre. Vuol dire che nel modo
+di lavorare di cui parla questo capitolo restano fermi. Programmiamo con le
+**parole**, cioè con il testo che gli mettiamo davanti prima di chiedergli una
+risposta. Cambiare quel testo cambia il comportamento del sistema tanto
+quanto, nel software tradizionale, cambierebbe riscrivere una funzione.
 
 `````{tab} Elementare
 
 Pensa a un collaboratore bravissimo e velocissimo, che ha letto mezza
-biblioteca, ma che è appena arrivato e non sa nulla del *tuo* lavoro. Non puoi
-mandarlo a scuola: è già «finito», non impara più di così. Quello che
-puoi fare è **parlargli bene**. Se gli dici «occupati dei clienti» otterrai
+biblioteca, ma che è appena arrivato e non sa nulla del *tuo* lavoro. A scuola
+lo puoi anche rimandare, ma è una faccenda lunga e costosa, e la vedremo fra
+poco. Quello che puoi fare subito, ogni giorno, gratis, è **parlargli bene**.
+Se gli dici «occupati dei clienti» otterrai
 una cosa; se gli lasci un foglio con il ruolo, tre esempi di risposte giuste e
 il tono da tenere, ne otterrai un'altra, molto migliore: stesso collaboratore,
 stesso cervello, solo parole diverse. Ecco cosa vuol dire «programmare a
@@ -83,7 +100,8 @@ congelato, $C$ è tutto il testo che gli forniamo (istruzioni, esempi,
 documenti, cronologia) e $\hat{y}$ la risposta, *campionata* da quella
 distribuzione, eventualmente riscalata e troncata dai parametri di decoding
 (temperatura, top_p) che vedremo nella sezione sul prompt: a temperatura non
-nulla, lo stesso $C$ può dare risposte diverse. Programmare significa progettare $C$. Il meccanismo che rende
+nulla, lo stesso $C$ può dare risposte diverse (e non solo a temperatura non
+nulla, come vedremo lì). Programmare significa progettare $C$. Il meccanismo che rende
 possibile tutto questo è l'**in-context learning**, isolato su larga scala da
 Brown e colleghi nel lavoro su GPT-3 {cite}`brown2020language`: bastano poche
 coppie richiesta → risposta nel contesto (il *few-shot*), perché il modello
@@ -97,9 +115,10 @@ avviene nel testo.
 Detto così, sembra che il tutto si riduca a scrivere una buona frase. È
 l'equivoco da cui bisogna liberarsi subito, ed è la ragione per cui la
 terminologia è cambiata. Nelle applicazioni serie il testo che diamo al modello
-non è una frase: è un **payload** montato dal programma, fatto di parti con
-ruoli diversi. E questo payload va costruito, misurato e ricostruito a ogni
-passo. Da qui i tre livelli del capitolo.
+non è una frase: è un **payload**, cioè un carico montato dal programma, fatto
+di parti con ruoli diversi che il programma mette insieme poco prima di
+spedirlo. E questo carico va costruito, misurato e ricostruito a ogni passo.
+Da qui i tre livelli del capitolo.
 
 ## Tre cerchi concentrici
 
@@ -126,10 +145,16 @@ dove si comincia.
 Il secondo cerchio, che racchiude il primo, è il **context engineering**:
 l'intera finestra come **sistema**. Qui il prompt dell'utente è solo un pezzo.
 Ci sono le istruzioni di fondo, gli esempi, la memoria di ciò che si è detto
-prima, i documenti recuperati da un archivio, le descrizioni degli strumenti a
-disposizione. Il lavoro non è più «scrivere una frase» ma **decidere cosa
-mettere nella finestra, in quale ordine, entro quale budget**: perché la
-finestra è finita e ogni parola costa.
+prima, i documenti recuperati da un archivio, le descrizioni degli
+**strumenti** a disposizione: le operazioni che il modello può chiedere al
+programma di eseguire per lui (cercare sul web, interrogare un archivio,
+mandare una mail), viste nel capitolo sugli agenti. Il lavoro non è più
+«scrivere una frase» ma **decidere cosa mettere nella finestra, in quale
+ordine, entro quale budget**: perché la finestra è finita, e perché il testo
+si paga a quantità. Chi chiama un modello da un programma riceve una fattura
+proporzionale al testo che gli manda e a quello che riceve indietro: nella
+chat che si usa gratis quel conto lo paga qualcun altro, ma esiste, ed è il
+vincolo attorno a cui gira tutto il secondo cerchio.
 
 Il terzo cerchio, il più esterno, è il **loop engineering**: il **processo**.
 Un LLM che lavora davvero (un agente, come abbiamo visto nel capitolo
@@ -187,19 +212,25 @@ ingegneria vuol dire ammettere tre cose poco romantiche ma vere.
 
 ```{figure} ../figures/fine-tuning-rag-o-prompt.svg
 :name: fig-quale-leva
-:alt: "Albero di decisione che parte dal problema. Se al modello mancano fatti o documenti propri, la risposta è il RAG. Altrimenti, se serve un formato o uno stile costante, è il fine-tuning. Altrimenti si resta sul prompt, che è la leva più economica e la prima da provare."
-:width: 92%
+:alt: "Albero di decisione che parte dal problema e passa subito dal prompt, indicato come la leva più economica e la prima da provare. Solo se il prompt non basta si scende alle due domande successive: se al modello mancano fatti o documenti propri la risposta è il RAG; se invece serve un comportamento costante che il prompt non riesce a tenere, è il fine-tuning; altrimenti si torna a riscrivere il prompt e a misurare."
+:width: 88%
 
-Tre leve, in ordine di costo. La prima domanda non è «quale tecnica è
-migliore» ma «cosa manca davvero», e le tre risposte portano a strumenti
-diversi.
+Tre leve, in ordine di costo, ed è l'ordine in cui si provano. La prima
+domanda non è «quale tecnica è migliore» ma «il prompt ha già fallito?»; solo
+dopo viene «cosa manca davvero».
 ```
 
 L'ordine delle domande in {numref}`fig-quale-leva` è già una posizione
 ingegneristica, ed è la prima delle tre cose poco romantiche. Si comincia
 dalla leva che costa meno e si sale solo se serve: il fine-tuning non è più
 avanzato del prompt, è più caro, e va giustificato da qualcosa che il prompt
-non poteva dare.
+non poteva dare. Le due leve che stanno sopra al prompt le abbiamo già
+incontrate altrove nel libro, e qui basta il nome: il **RAG** (*retrieval
+augmented generation*) va a pescare i documenti pertinenti da un archivio e
+glieli mette davanti al momento della domanda, quindi serve quando al modello
+mancano dei *fatti*; il **fine-tuning** riapre i pesi e li aggiusta su esempi
+propri, quindi serve quando manca un *comportamento* che nessuna istruzione
+riesce a tenere ferma.
 
 `````{tab} Elementare
 
@@ -254,7 +285,9 @@ Il capitolo segue i tre cerchi, dal centro verso l'esterno.
 - **Context engineering: la finestra come sistema**, l'intero payload come
   oggetto da progettare: cosa entra nella finestra, in quale ordine, entro
   quale budget. Ne abbiamo già visto la **meccanica** (il *context builder*
-  come problema di zaino, il *lost in the middle* {cite}`liu2024lost`, le
+  come problema di zaino, cioè scegliere cosa mettere in uno spazio che non
+  basta per tutto; il *lost in the middle* {cite}`liu2024lost`, cioè la
+  tendenza a trascurare quel che sta in mezzo a un testo lungo; le
   forme di memoria) nella sezione «context engineering» del capitolo sugli
   **agenti**; qui la riprendiamo dall'angolazione del *progetto*, non del
   ciclo agentico, senza ripeterne la costruzione.
@@ -263,6 +296,37 @@ Il capitolo segue i tre cerchi, dal centro verso l'esterno.
   e stato tenuto fuori dalla finestra: il cerchio più esterno, quello che fa
   la differenza tra un LLM che risponde e un sistema che porta a termine un
   compito.
+
+`````{tab} Elementare
+
+```{admonition} Da ricordare
+:class: important
+- Un modello già addestrato non si cambia più: quello che si cambia è **ciò che
+  gli si mette davanti da leggere**. Programmare a parole vuol dire questo, e
+  Karpathy lo ha chiamato «programmare in inglese» (cioè in lingua umana:
+  l'italiano va uguale).
+- Il trucco per cui funziona è che **gli esempi contano**. Mostrargli due o tre
+  casi già risolti dentro il messaggio lo orienta verso il compito, senza che
+  lui abbia imparato niente di nuovo: alla fine della risposta è esattamente
+  com'era prima.
+- Ci sono **tre cerchi**, uno dentro l'altro: il singolo **messaggio** che
+  scrivi, tutto quello che il modello ha davanti mentre risponde (il
+  **contesto**), e la **conversazione** o il processo che ripete la cosa più
+  volte correggendo il tiro (il **loop**).
+- Si chiama ingegneria e non magia per tre ragioni concrete: c'è un **limite**
+  (nella finestra ci sta solo una certa quantità di testo, e il testo si paga),
+  si **prova e si confronta** invece di fidarsi a occhio, e si **tiene traccia**
+  di cosa si è cambiato, così quando le risposte peggiorano si sa perché.
+- È un mestiere **giovane**: più regole del pollice che leggi. Nessuna frase
+  garantisce un risultato; le pratiche buone spostano le probabilità, non
+  comandano la macchina. Chi promette certezze sta vendendo qualcosa.
+- Il capitolo va **dal centro verso l'esterno**: prima il messaggio, poi la
+  finestra, poi il ciclo.
+```
+
+`````
+
+`````{tab} Superiore
 
 ```{admonition} Da ricordare
 :class: important
@@ -289,3 +353,5 @@ Il capitolo segue i tre cerchi, dal centro verso l'esterno.
   rimandando alla sezione «context engineering» del capitolo sugli **agenti**
   per la meccanica del budget, che qui non si ripete.
 ```
+
+`````

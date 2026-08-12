@@ -1,18 +1,29 @@
 # Trovare gli iperparametri
 
-Nel dicembre 2017, dal palco di NIPS (oggi NeurIPS) (la più importante
-conferenza mondiale di machine learning) Ali Rahimi pronunciò una frase
-destinata a far discutere per mesi: «il machine learning è diventato
-alchimia». Non ce l'aveva con i modelli, che funzionano, ma con il modo in cui
-li mettiamo a punto: ricette tramandate di laboratorio in laboratorio, dosi
-aggiustate a occhio, risultati che arrivano senza che nessuno sappia spiegare
-fino in fondo perché. Il bersaglio della provocazione erano soprattutto loro:
-gli **iperparametri**.
+Nel dicembre 2017, dal palco di NIPS, la più importante conferenza mondiale di
+machine learning (oggi si chiama NeurIPS), Ali Rahimi ritirò un premio per un
+lavoro di dieci anni prima e ne approfittò per dire una cosa scomoda: «il
+machine learning è diventato alchimia». Non ce l'aveva con i risultati, che ci
+sono: ce l'aveva con le fondamenta. Perché la discesa del gradiente funzioni
+non lo sappiamo davvero, mostrò, esibendo un problema minuscolo in cui
+l'ottimizzazione si inchioda pur avendo pendenze tutt'altro che nulle; di che
+cosa faccia esattamente uno degli ingredienti che tutti mettevano nelle reti
+«come disciplina non sappiamo quasi niente»; e i sistemi che costruiamo si
+rompono in modi che non ci spieghiamo, come quella volta che cambiando il modo
+di arrotondare i numeri dentro una libreria l'errore passò dal 25% al 99%.
 
-Ogni modello ha manopole che nessun addestramento gira da solo: il passo della
-discesa del gradiente (il *learning rate*), la profondità di un albero o il
-numero di strati di una rete, la forza $\lambda$ del freno di
-regolarizzazione. Il gradiente aggiusta i parametri $\theta$, ma le manopole
+Gli **iperparametri**, in quel discorso, non erano nominati nemmeno una volta.
+Ma se c'è un posto in cui l'alchimia si vede a occhio nudo sono loro: ricette
+tramandate di laboratorio in laboratorio, dosi aggiustate a occhio, risultati
+che arrivano senza che nessuno sappia spiegare fino in fondo perché.
+
+Un iperparametro è una **scelta che facciamo noi prima di cominciare e che
+l'addestramento non cambia**. Sono le manopole del modello, e nessun
+addestramento le gira da solo: quanto è lungo il passo della discesa del
+gradiente (il *learning rate* della sezione sull'apprendimento supervisionato),
+quanto in profondità può crescere un albero o quanti strati ha una rete, quanto
+è tirato il freno alla memorizzazione (la $\lambda$ della regolarizzazione).
+L'addestramento aggiusta i parametri, cioè i numeri interni; le manopole
 restano dove le abbiamo messe noi, e da dove le mettiamo dipende, spesso in
 modo drammatico, la qualità del risultato. Nella sezione su overfitting e
 validazione abbiamo già stabilito *dove* giudicare queste scelte: sul
@@ -104,7 +115,8 @@ $N^{1/d}$ distinti su ciascun asse, mentre $N$ punti casuali ne proiettano $N$
 {cite}`bergstra2012random`. C'è anche una garanzia indipendente da $d$: se
 esiste una regione "buona" che copre il 5% del volume dello spazio di ricerca,
 la probabilità che $n$ estrazioni indipendenti la manchino tutte è
-$(1-0{,}05)^n$; con $n = 60$ si ottiene $1 - 0{,}95^{60} \approx 0{,}95$;
+$(1-0{,}05)^n = 0{,}95^n$; quindi la probabilità di centrarla **almeno una
+volta** è il complementare, $1 - 0{,}95^n$, che per $n = 60$ vale $0{,}954$:
 sessanta prove la centrano con il 95% di confidenza, in qualunque dimensione.
 (Vale *se* una tale regione esiste ed è così larga: è un'ipotesi sul problema,
 non una promessa.) In pratica contano anche le distribuzioni: per i parametri
@@ -117,10 +129,16 @@ con cui cade tra $10^{-2}$ e $10^{-1}$.
 ## Tornei a eliminazione: successive halving e Hyperband
 
 Griglia e caso condividono uno spreco: dedicano lo **stesso budget** a ogni
-candidato, anche a quelli che dopo due epoche sono già palesemente senza
-speranza. Gli approcci *multi-fidelity* ribaltano la logica: valutazioni
+candidato, anche a quelli che dopo pochissimo allenamento sono già palesemente
+senza speranza. Gli approcci *multi-fidelity* ribaltano la logica: valutazioni
 economiche e approssimate per scremare, valutazioni costose e accurate solo per
 i migliori. Come un torneo a eliminazione diretta.
+
+L'unità di misura di tutta questa sezione è l'**epoca**: una passata completa
+sull'insieme di addestramento, cioè il modello che ha visto una volta ciascuno
+dei suoi esempi. Un addestramento serio ne fa decine o centinaia, e il costo di
+una ricerca si conta in epoche esattamente come il costo di un viaggio si conta
+in litri.
 
 `````{tab} Elementare
 
@@ -141,7 +159,11 @@ tanto tempo a testa fin dall'inizio).
 
 `````{tab} Superiore
 
-Il *successive halving* {cite}`jamieson2016non` con fattore di eliminazione
+Il *successive halving* è di Karnin, Koren e Somekh (ICML 2013)
+{cite}`karnin2013almost`, che lo introdussero per il bandit stocastico a pura
+esplorazione; Jamieson e Talwalkar {cite}`jamieson2016non` ne definiscono la
+variante **non stocastica** e la portano agli iperparametri, ed è la forma che
+si usa qui. Con fattore di eliminazione
 $\eta$ (tipicamente 3): date $n$ configurazioni con budget iniziale $r$
 ciascuna (epoche, o frazione del dataset), a ogni round tiene le migliori
 $1/\eta$ e moltiplica per $\eta$ il budget individuale. I round sono
@@ -170,16 +192,19 @@ limite di questa idea: un torneo con un solo iscritto, che si ritira quando la
 validazione smette di migliorare.
 
 Un dettaglio pratico che separa il torneo del libro da quello che gira davvero
-nei cluster: il successive halving come lo abbiamo descritto è **sincrono**,
-cioè per potare aspetta che tutte le configurazioni di un turno siano finite.
-Su una macchina sola non cambia niente; su cento macchine è uno spreco, perché
-tutte restano ferme finché non arriva l'ultima, e basta una configurazione
-lenta a bloccare il turno. La versione **asincrona** (nota come ASHA) toglie la
-barriera: appena una configurazione raggiunge la soglia di budget del suo
-livello e risulta abbastanza buona rispetto a quelle già arrivate lì, viene
-**promossa subito**, e la macchina che si libera prende il lavoro successivo.
-Si accetta di decidere con informazione parziale in cambio di non lasciare
-nessuno fermo, ed è quasi sempre il baratto giusto.
+in un centro di calcolo. Il successive halving come lo abbiamo descritto è
+**sincrono**: per decidere chi passa il turno aspetta che *tutte* le
+configurazioni di quel turno abbiano finito, come una gara in cui la
+premiazione si fa solo quando è arrivato anche l'ultimo. Su una macchina sola
+non cambia niente, perché le prove si fanno comunque una per volta; su cento
+macchine in parallelo è uno spreco, perché novantanove restano a girarsi i
+pollici aspettando la centesima, e basta una configurazione lenta a bloccare
+tutto. La versione **asincrona** (nota come ASHA) toglie la barriera: appena
+una configurazione ha consumato il budget del suo turno ed è abbastanza buona
+rispetto a quelle già arrivate lì, viene **promossa subito**, e la macchina che
+si libera prende il lavoro successivo. Si accetta di decidere con informazione
+parziale in cambio di non lasciare nessuno fermo, ed è quasi sempre il baratto
+giusto.
 
 ## Cercare con giudizio: l'ottimizzazione bayesiana
 
@@ -250,9 +275,13 @@ scikit-learn offre le due strategie di base con la stessa interfaccia:
 `GridSearchCV` e `RandomizedSearchCV` incapsulano il ciclo "prova una
 configurazione, valutala in cross-validation, tieni la migliore". Le proviamo
 su un classificatore SVC, una *support vector machine*, che qui usiamo come
-scatola nera: ci basta sapere che ha due manopole delicate, `C` e `gamma`,
-entrambe parametri di scala (sul piccolo dataset di cifre manoscritte incluso
-in scikit-learn).
+scatola nera: ci basta sapere che ha due manopole delicate, `C` e `gamma`. Sono
+entrambe **parametri di scala**, e vuol dire che quello che conta è il loro
+ordine di grandezza, non la differenza fra un valore e l'altro: fra $0{,}001$ e
+$0{,}01$ c'è lo stesso salto che fra $1$ e $10$, mentre fra $1$ e $1{,}5$ non
+c'è quasi niente. È per questo che i loro valori si provano moltiplicandoli per
+dieci ogni volta invece che sommando una costante. (Il dataset è quello delle
+cifre manoscritte incluso in scikit-learn.)
 
 ```python
 from scipy.stats import loguniform
@@ -300,10 +329,14 @@ questo fattore (lo spende meglio). Griglia e caso almeno si parallelizzano
 senza sforzo; l'ottimizzazione bayesiana si parallelizza peggio: le varianti
 batch esistono (già Snoek e colleghi ne proponevano una
 {cite}`snoek2012practical`), ma pagano in efficienza per prova. La
-seconda è la **riproducibilità**: una ricerca casuale senza seme fissato (il
-*seed*: `random_state` nel codice sopra) cambia esito a ogni esecuzione, e un
-confronto tra metodi che non dichiari spazio di ricerca e budget non è un
-confronto (è aneddotica). La terza è la più subdola.
+seconda è la **riproducibilità**. Un computer non sa tirare a caso davvero:
+produce numeri che *sembrano* casuali partendo da un numero iniziale, il
+**seme** (in inglese *seed*, il `random_state` del codice qui sopra). Stesso
+seme, stessa sequenza di numeri «a caso», stesso risultato domani e sul
+computer di un altro; seme non fissato, esito diverso a ogni esecuzione, e
+allora nessuno può ripetere il tuo esperimento, nemmeno tu. E un confronto fra
+metodi che non dichiari spazio di ricerca e budget non è un confronto (è
+aneddotica). La terza avvertenza è la più subdola.
 
 `````{tab} Elementare
 
@@ -333,6 +366,42 @@ che è il prodotto dei due anelli.
 
 `````
 
+Le tre avvertenze hanno un'unica morale, ed è il modo migliore di chiudere il
+cerchio aperto da Rahimi: **una ricerca degli iperparametri è essa stessa un
+addestramento**, e come ogni addestramento può imparare a memoria. Chi la
+tratta come tale, dichiarando spazio di ricerca, budget e semi, e tenendo il
+test chiuso fino all'ultimo, ha già tolto dall'alchimia la parte che faceva più
+danno.
+
+`````{tab} Elementare
+
+```{admonition} Da ricordare
+:class: important
+- Un **iperparametro** è una manopola che giriamo noi prima di cominciare e che
+  l'addestramento non tocca. Si sceglie provando, e si giudica sui dati di
+  prova, mai su quelli d'esame.
+- Provare **tutte le combinazioni** è la cosa più ovvia e la meno praticabile:
+  la macchina del caffè con quattro manopole a cinque livelli chiede 3 125
+  assaggi. Ogni manopola in più *moltiplica* le prove.
+- Provarle **a caso** conviene quasi sempre, ed è la cosa che sorprende di più:
+  se una sola manopola conta davvero (la sintonia, non il volume), nove
+  tentativi a caso provano nove sintonie diverse, mentre nove disposti in
+  griglia ne provano tre.
+- I **tornei a eliminazione** danno a tutti un allenamento breve, poi solo ai
+  migliori uno lungo: si spende dove serve. Il rischio è tagliare fuori i
+  «diesel», quelli che partono piano e finirebbero forte.
+- Il metodo più furbo **impara dalle prove già fatte**, come il geologo che
+  sceglie dove scavare il prossimo pozzo: un po' dove la mappa promette bene,
+  un po' dove la mappa è ancora bianca.
+- Il punteggio del vincitore è **troppo bello**: fra mille che lanciano una
+  moneta, qualcuno fa nove teste per fortuna. Il numero da raccontare al mondo
+  si misura una volta sola, alla fine, sui dati d'esame rimasti intatti.
+```
+
+`````
+
+`````{tab} Superiore
+
 ```{admonition} Da ricordare
 :class: important
 - Gli iperparametri non si imparano con il gradiente: si **cercano**, e si
@@ -343,10 +412,13 @@ che è il prodotto dei due anelli.
   dimensione: vince quando poche manopole contano davvero
   {cite}`bergstra2012random`. Parametri di scala in log-uniforme.
 - **Successive halving** e **Hyperband** sono tornei a eliminazione: poco
-  budget a molti, molto budget a pochi {cite}`jamieson2016non,li2018hyperband`.
+  budget a molti, molto budget a pochi
+  {cite}`karnin2013almost,jamieson2016non,li2018hyperband`.
 - L'**ottimizzazione bayesiana** usa un surrogato (tipicamente un processo
   gaussiano) e una funzione di acquisizione per imparare dalle prove passate
   {cite}`snoek2012practical`.
 - Il punteggio del vincitore è **ottimista**: numero finale solo dal test
   intatto, seed fissati, spazio e budget dichiarati.
 ```
+
+`````

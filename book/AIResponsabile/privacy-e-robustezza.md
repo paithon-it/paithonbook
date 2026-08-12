@@ -1,8 +1,8 @@
 # Privacy e robustezza: dati protetti e attacchi avversari
 
-Nel 2021 un gruppo di ricercatori guidato da Nicholas Carlini pose a GPT-2 (il
+Nel 2021 un gruppo di ricercatori guidato da Nicholas Carlini diede a GPT-2 (il
 modello linguistico di OpenAI addestrato su un'enorme raccolta di testi del
-web) un gran numero di inneschi, e si mise a leggere le risposte. In mezzo al
+web) un gran numero di frasi da cui partire, e si mise a leggere le risposte. In mezzo al
 mare di frasi plausibili ne trovarono alcune che *non erano* plausibili: erano
 *vere*. Il modello sputava, parola per parola, il nome completo di una persona
 reale, il suo indirizzo, un numero di telefono, un'email: informazioni
@@ -21,25 +21,49 @@ onestamente.
 ## I modelli ricordano più di quanto vorremmo
 
 Un modello di machine learning è, in fondo, una compressione dei suoi dati di
-addestramento. E come ogni compressione con perdite, a volte conserva un
-dettaglio per intero invece di riassumerlo. Quando quel dettaglio è
-un'informazione personale, la memorizzazione diventa una falla di privacy.
+addestramento: come un archivio compresso, tiene molte più cose di quante ne
+occupi. E come ogni compressione **con perdite** (quella di una foto salvata
+male, che riemerge sgranata: si butta via qualche dettaglio in cambio di spazio)
+a volte conserva un dettaglio per intero invece di riassumerlo. Quando quel
+dettaglio è un'informazione personale, la memorizzazione diventa una falla di
+privacy.
+
+In Europa questo non è solo un problema tecnico, perché esiste una legge che
+dice che cosa si può fare con i dati di una persona: il **GDPR**, il
+regolamento generale sulla protezione dei dati, in vigore dal 2016 e
+applicabile dal 2018 {cite}`eugdpr2016`. Due sue idee servono a leggere il
+resto di questa sezione. La prima è che per trattare i dati di qualcuno bisogna
+avere una **base giuridica**, cioè una ragione fra quelle che la legge ammette
+(il consenso della persona, l'esecuzione di un contratto, oppure il *legittimo
+interesse* di chi tratta i dati, che va però motivato e messo per iscritto). La
+seconda è che alla persona restano attaccati dei **diritti** che può esercitare
+in qualunque momento: farsi dire quali suoi dati ci sono (accesso, art. 15),
+farli correggere (rettifica, art. 16), farli cancellare (cancellazione, art.
+17), opporsi al trattamento (art. 21).
 
 ```{figure} ../figures/gdpr-e-llm.svg
 :name: fig-flusso-dati-personali
-:alt: "Il percorso di un dato personale dentro un sistema basato su LLM: raccolta, inserimento nel corpus di addestramento, presenza nei pesi del modello, comparsa nel prompt a uso dell'utente e infine nei log delle conversazioni. A ogni passaggio è indicata la base giuridica che lo dovrebbe giustificare."
+:alt: "Il percorso di un dato personale dentro un sistema basato su LLM, in quattro stazioni: raccolta, addestramento (dove i dati diventano pesi del modello), inferenza (il prompt che contiene dati personali) e output. Sotto le prime due stazioni è indicata la base giuridica che le dovrebbe giustificare: legittimo interesse per la raccolta, contratto o consenso per il servizio. In basso i quattro diritti dell'interessato: accesso, rettifica, cancellazione, opposizione."
 :width: 100%
 
-Un dato personale attraversa più stazioni di quante se ne contino a occhio.
-Ciascuna ha bisogno di una giustificazione propria: il consenso raccolto per
-la prima non copre automaticamente l'ultima.
+Le stazioni che un dato personale attraversa, e la legge che le accompagna. La
+raccolta e l'uso per un servizio hanno bisogno di ragioni diverse: quella buona
+per la prima non vale automaticamente per l'altra. E i quattro diritti in basso
+seguono il dato per tutto il percorso.
 ```
 
 Il punto che {numref}`fig-flusso-dati-personali` rende difficile da aggirare è
-la stazione centrale, i pesi. Nelle altre il dato si può cancellare; da lì,
-una volta che l'addestramento è finito, non si toglie senza riaddestrare, ed è
-il motivo per cui il «diritto alla cancellazione» è tecnicamente scomodo
-proprio dove sarebbe più necessario.
+la seconda stazione, dove i dati diventano **pesi**. Nelle altre il dato è un
+dato: sta in un archivio, si trova e si cancella. Nei pesi non c'è più, e
+c'è ancora: è stato sciolto dentro milioni di numeri, e una volta finito
+l'addestramento non lo si toglie senza rifare tutto da capo. È il motivo per cui
+il diritto alla cancellazione, che esiste ed è esercitabile, è tecnicamente
+scomodo proprio nel punto in cui servirebbe di più. La conseguenza pratica per
+chi usa questi sistemi è meno consolante di quanto piacerebbe: si può chiedere a
+un fornitore di cancellare i propri dati dagli archivi e dallo storico delle
+conversazioni, e in Europa il fornitore deve rispondere; ma se quei dati sono
+già finiti dentro un modello addestrato, quel modello resta com'è. Vale la pena
+saperlo prima di scrivere qualcosa, non dopo.
 
 `````{tab} Elementare
 
@@ -62,7 +86,7 @@ dell'ospedale» può essere di per sé un'informazione sensibile.
 
 I due attacchi hanno nomi precisi. Il **membership inference attack**,
 formalizzato da Shokri e colleghi {cite}`shokri2017membership`, decide se un
-dato campione $X$
+dato campione $\mathbf{x}$
 apparteneva o meno all'insieme di addestramento, sfruttando il divario di
 comportamento del modello tra ciò che ha visto e ciò che non ha visto:
 tipicamente una loss più bassa, o una confidenza più alta, sugli esempi di
@@ -96,10 +120,15 @@ C'è un vecchio trucco per fare sondaggi su domande imbarazzanti («hai mai
 evaso le tasse?») senza mettere in imbarazzo nessuno. Prima di rispondere,
 ognuno lancia in segreto una moneta: se esce testa dice la verità, se esce
 croce risponde a caso. Ora, se qualcuno ha detto «sì», tu non puoi accusarlo:
-forse è solo la moneta. Eppure, su mille persone, il rumore delle monete si
-media e la percentuale vera di evasori salta comunque fuori con buona
-precisione. Ogni individuo ha la sua *negabilità plausibile*; la statistica
-collettiva sopravvive.
+forse è solo la moneta. Eppure la percentuale vera di evasori salta comunque
+fuori, e non per magia: basta fare il conto. Su mille persone, circa cinquecento
+hanno detto la verità e circa cinquecento hanno risposto a caso; di queste
+ultime, metà avrà detto «sì» per puro effetto del secondo lancio, cioè
+duecentocinquanta. Se i «sì» totali sono quattrocento, i «sì» sinceri sono
+$400 - 250 = 150$, su cinquecento persone sincere: il $30\%$. Il rumore si può
+sottrarre in media proprio perché sappiamo *quanto* ne abbiamo messo, mentre
+non sappiamo a chi sia toccato. Ogni individuo ha la sua *negabilità
+plausibile*; la statistica collettiva sopravvive.
 
 La privacy differenziale è questa idea resa una garanzia numerica: al risultato
 di un calcolo sui dati si aggiunge un pizzico di caso, *calibrato* in modo che
@@ -113,32 +142,34 @@ meno protezione.
 `````{tab} Superiore
 
 Un meccanismo randomizzato $\mathcal{M}$ soddisfa la **$\varepsilon$-privacy
-differenziale** se, per ogni coppia di dataset $D$ e $D'$ che differiscono per un
-solo individuo e per ogni insieme di esiti $S$,
+differenziale** se, per ogni coppia di dataset $\mathcal{D}$ e $\mathcal{D}'$
+che differiscono per un solo individuo e per ogni insieme di esiti
+$\mathcal{S}$,
 
 $$
-\Pr[\mathcal{M}(D) \in S] \;\le\; e^{\varepsilon}\,\Pr[\mathcal{M}(D') \in S].
+\Pr[\mathcal{M}(\mathcal{D}) \in \mathcal{S}] \;\le\; e^{\varepsilon}\,\Pr[\mathcal{M}(\mathcal{D}') \in \mathcal{S}].
 $$
 
-Qui $\mathcal{M}$ è la procedura (randomizzata) che produce l'output; $D$ e
-$D'$ sono *dataset vicini*, identici a meno di una riga; $\varepsilon \ge 0$ è
-il **budget di privacy**. La disuguaglianza dice che aggiungere o togliere una
-persona può moltiplicare la probabilità di *qualunque* esito al più per
-$e^{\varepsilon}$: con $\varepsilon = 0{,}5$ il fattore è
+Qui $\mathcal{M}$ è la procedura (randomizzata) che produce l'output;
+$\mathcal{D}$ e $\mathcal{D}'$ sono *dataset vicini*, identici a meno di una
+riga; $\varepsilon \ge 0$ è il **budget di privacy**. La disuguaglianza dice che
+aggiungere o togliere una persona può moltiplicare la probabilità di *qualunque*
+esito al più per $e^{\varepsilon}$: con $\varepsilon = 0{,}5$ il fattore è
 $e^{0{,}5}\approx 1{,}65$, uno scarto modesto. Una versione rilassata, la
 **$(\varepsilon,\delta)$-DP**, ammette un termine additivo $+\,\delta$ con
 $\delta$ piccolissimo: un margine sulla disuguaglianza, che si può leggere
-informalmente come una piccola probabilità di eccezione (la lettura precisa è
-un po' più debole di così), ed è la versione che serve per i meccanismi
-gaussiani usati nel deep learning.
+informalmente come una piccola probabilità di eccezione (la lettura precisa è un
+po' più debole di così), ed è la versione che serve per i meccanismi gaussiani
+usati nel deep learning.
 
 Come si ottiene? Con il **meccanismo di Laplace**. Data una funzione numerica
-$f$, se ne misura la *sensibilità* $\Delta f = \max_{D,D'} \lVert f(D)-f(D')\rVert_1$,
+$f$, se ne misura la *sensibilità*
+$\Delta f = \max_{\mathcal{D},\mathcal{D}'} \lVert f(\mathcal{D})-f(\mathcal{D}')\rVert_1$,
 cioè quanto al massimo un singolo individuo può farne variare il valore; poi si
 restituisce
 
 $$
-\mathcal{M}(D) = f(D) + \mathrm{Lap}\!\left(\frac{\Delta f}{\varepsilon}\right),
+\mathcal{M}(\mathcal{D}) = f(\mathcal{D}) + \mathrm{Lap}\!\left(\frac{\Delta f}{\varepsilon}\right),
 $$
 
 rumore estratto da una distribuzione di Laplace di scala $b = \Delta f/\varepsilon$.
@@ -147,16 +178,46 @@ va aggiunto. Il risultato garantisce esattamente $\varepsilon$-DP.
 
 `````
 
-Un esempio concreto vale la definizione. Vogliamo pubblicare **quanti**
-dipendenti di un'azienda guadagnano oltre una certa soglia: un conteggio.
-Aggiungere o togliere una persona cambia il conteggio al massimo di $1$,
-dunque la sensibilità è $\Delta f = 1$. Scegliamo $\varepsilon = 0{,}5$: la
-scala del rumore è $b = \Delta f / \varepsilon = 1/0{,}5 = 2$. Se il conteggio
-vero è $42$, pubblichiamo $42$ più un numero estratto da $\mathrm{Lap}(0, 2)$:
-il più delle volte cade entro $\pm 3$, così l'utente legge $43$ o $40$ invece
-di $42$. La statistica resta utile, ma nessuno può dedurre dal risultato se
-*una specifica persona* fosse o meno nel conteggio: entrambi i mondi (con lei,
-senza di lei) producono numeri quasi indistinguibili.
+Un esempio concreto vale la definizione, e conviene partire da *perché* un
+conteggio esatto sia già un problema. Vogliamo pubblicare quanti dipendenti di
+un'azienda guadagnano oltre una certa soglia. Se pubblichiamo il numero esatto,
+$42$, e il mese dopo una persona se ne va e il numero pubblicato diventa $41$,
+abbiamo appena detto a chiunque tenesse il conto quanto guadagnava quella
+persona. Nessuno ha diffuso il suo stipendio: è bastato pubblicare due volte una
+statistica che sembrava innocua.
+
+Il rimedio è pubblicare il conteggio *sporcato*, e la quantità di sporco si
+ricava da quanto un singolo può cambiarlo: una persona in più o in meno sposta
+il conteggio al massimo di uno. In notazione, la sensibilità è $\Delta f = 1$;
+scegliendo $\varepsilon = 0{,}5$, il rumore ha scala
+$b = \Delta f / \varepsilon = 1/0{,}5 = 2$, cioè al $42$ si somma un valore
+estratto da $\mathrm{Lap}(0, 2)$, che è la distribuzione di Laplace vista sopra.
+
+Quanto sporco è, in pratica? Lo scarto cade entro $\pm 3$ circa tre volte su
+quattro, ma non sempre, e vale la pena guardare i cinque tiri qui sotto invece
+di fidarsi della media: due volte su cinque lo scarto supera le cinque unità. È
+il prezzo di $\varepsilon = 0{,}5$ su un conteggio piccolo, e si vede a occhio.
+
+Resta da dire con precisione **che cosa** si è comprato, perché la formula
+rassicurante («adesso nessuno può sapere se quella persona c'era») è più forte
+del vero, e non è quello che la privacy differenziale promette. Anzi: quella
+garanzia lì, «dal risultato non si impara nulla su nessuno», è dimostrabilmente
+irraggiungibile, perché un dato pubblicato che non insegna niente a nessuno non
+serve a niente {cite}`dwork2014algorithmic`. Quello che si compra è un limite
+all'inferenza, non un'impossibilità: chi guarda il numero pubblicato può
+cambiare idea sulla presenza di quella persona, ma di poco, al più di un
+fattore $e^{\varepsilon}$, che con $\varepsilon = 0{,}5$ vale $1{,}65$, cioè
+meno del 65% in più di quanto credesse prima.
+
+E c'è una seconda cosa da cui la privacy differenziale non protegge, ed è
+quella che sorprende chi la incontra per la prima volta: le conclusioni
+**sulla popolazione**. Se uno studio protetto conclude che il fumo causa il
+cancro, un fumatore ne subisce le conseguenze (l'assicurazione che alza il
+premio, per esempio) tanto se era nello studio quanto se non c'era. La privacy
+differenziale non lo impedisce e non pretende di farlo: dice soltanto che la
+*sua partecipazione* non ha cambiato quasi nulla. È una distinzione sottile e
+va tenuta, perché è il confine esatto fra ciò che questa tecnica garantisce e
+ciò che le viene attribuito.
 
 In `numpy` il meccanismo sta in tre righe, ed è eseguibile così com'è:
 
@@ -175,12 +236,14 @@ print("vero:", vero, " privati:", np.round(stime, 1))
 # vero: 42  privati: [42.6 40.8 37.  35.2 44. ]
 ```
 
-### Dalla statistica al deep learning: DP-SGD
+### Portare la privacy dentro l'addestramento
 
-Un conteggio è facile; una rete neurale con milioni di parametri, addestrata per
-discesa del gradiente, è un'altra storia. La ricetta che ha reso praticabile la
-privacy differenziale nel deep learning è la **DP-SGD** di Abadi e colleghi
-{cite}`abadi2016deep`, e modifica la solita discesa del gradiente in due punti.
+Un conteggio è facile; una rete neurale con milioni di parametri, addestrata a
+piccoli passi come racconta il capitolo sulle reti neurali, è un'altra storia.
+La ricetta che ha reso praticabile la privacy differenziale nel deep learning è
+la **DP-SGD** di Abadi e colleghi {cite}`abadi2016deep` (le lettere stanno per
+*differentially private stochastic gradient descent*: la discesa del gradiente
+di sempre, con la privacy differenziale incorporata), e cambia due cose sole.
 
 `````{tab} Elementare
 
@@ -200,34 +263,47 @@ accuratezza, com'è giusto: la privacy non è mai gratis.
 `````{tab} Superiore
 
 Ad ogni passo, su un minibatch, DP-SGD calcola il gradiente della loss **per
-ogni esempio separatamente**, $g_i = \nabla_\theta \mathcal{L}(\theta, X^{(i)}, y^{(i)})$,
-e lo sottopone a due operazioni. Il **clipping per-esempio** limita la norma di
+ogni esempio separatamente**,
+$\mathbf{g}_i = \nabla_\theta \mathcal{L}(\theta, \mathbf{x}^{(i)}, y^{(i)})$, e
+lo sottopone a due operazioni. Il **clipping per-esempio** limita la norma di
 ciascun gradiente a una soglia $C$,
 
 $$
-\bar{g}_i = g_i \,/\, \max\!\left(1,\ \frac{\lVert g_i \rVert_2}{C}\right),
+\bar{\mathbf{g}}_i = \mathbf{g}_i \,/\, \max\!\left(1,\ \frac{\lVert \mathbf{g}_i \rVert_2}{C}\right),
 $$
 
 così nessun campione può influire oltre $C$; poi si aggiunge **rumore gaussiano**
 alla somma e si media,
 
 $$
-\tilde{g} = \frac{1}{B}\left( \sum_{i} \bar{g}_i
-   + \mathcal{N}\!\big(0,\ \sigma^2 C^2 I\big)\right),
+\tilde{\mathbf{g}} = \frac{1}{B}\left( \sum_{i} \bar{\mathbf{g}}_i
+   + \mathcal{N}\!\big(\mathbf{0},\ \sigma^2 C^2 \mathbf{I}\big)\right),
 \qquad
-\theta \leftarrow \theta - \eta\,\tilde{g}.
+\theta \leftarrow \theta - \eta\,\tilde{\mathbf{g}}.
 $$
 
 Qui $B$ è la dimensione del batch, $\sigma$ il *moltiplicatore di rumore*,
-$\eta$ il passo di apprendimento e $I$ l'identità. Il clipping fissa la
+$\eta$ il passo di apprendimento e $\mathbf{I}$ l'identità. Il clipping fissa la
 sensibilità del passo (nessun esempio la fa esplodere), il rumore gaussiano
 fornisce la garanzia; componendo i molti passi con il *moments accountant*
 introdotto nello stesso lavoro si ottiene un budget $(\varepsilon,\delta)$
 complessivo. Il **compromesso privacy/utilità** è concreto: Abadi e colleghi
 addestrano su MNIST con un budget dell'ordine di $\varepsilon \approx 8$
-arrivando attorno al $97\%$ di accuratezza (qualche punto sotto un modello non
-privato) e la qualità cala via via che si stringe $\varepsilon$. Più privacy,
-meno accuratezza: la manopola è sempre la stessa.
+arrivando attorno al $97\%$ di accuratezza, poco più di un punto sotto la stessa
+architettura senza privacy ($98{,}3\%$), e la qualità cala via via che si
+stringe $\varepsilon$ ($95\%$ a $\varepsilon = 2$, $90\%$ a
+$\varepsilon = 0{,}5$).
+
+Vale però la pena leggere quel $\varepsilon \approx 8$ con la scala costruita
+sopra, perché è il punto in cui la privacy differenziale smette di essere una
+garanzia e diventa una casella spuntata. Il fattore in gioco non è più
+$e^{0{,}5} \approx 1{,}65$: è $e^{8} \approx 3000$. Formalmente, la presenza di
+una singola persona può moltiplicare per tremila la plausibilità di un esito, il
+che come promessa vale poco più di un rito. Non è un difetto del lavoro di
+Abadi, che è esplicito sui suoi numeri; è la cosa da sapere quando si legge
+«questo sistema usa la privacy differenziale» senza il valore accanto, perché i
+budget dei sistemi in produzione stanno spesso lì o sopra. Più privacy, meno
+accuratezza: la manopola è sempre la stessa, e va guardato dove è girata.
 
 `````
 
@@ -280,14 +356,30 @@ Decentrare i dati riduce il rischio, non lo azzera.
 
 ## Esempi avversari: ingannare la rete a comando
 
-Passiamo dalla discrezione alla fragilità. Nel 2013 Szegedy e colleghi
-{cite}`szegedy2014intriguing` scoprirono una proprietà sconcertante delle reti
-neurali: si può prendere
-un'immagine classificata correttamente, aggiungerle una perturbazione così
-piccola da essere **invisibile all'occhio**, e far cambiare idea alla rete con
-altissima sicurezza. Due anni dopo Goodfellow, Shlens e Szegedy spiegarono il
-fenomeno e ne diedero la ricetta più semplice {cite}`goodfellow2015explaining`.
-Il loro esempio è diventato un'icona, e lo riproduce schematicamente la
+Passiamo dalla discrezione alla fragilità. Un avviso prima di cominciare, perché
+riguarda un simbolo. In letteratura il raggio della perturbazione ammessa si
+scrive $\varepsilon$, cioè con **la stessa lettera** che qui sopra era il budget
+di privacy differenziale: sono le notazioni standard di due campi diversi, che
+in un libro come questo finiscono nella stessa pagina. Qui la perturbazione la
+chiamiamo $\rho$, perché la $\varepsilon$ della privacy è dentro il nome delle
+sue definizioni ($\varepsilon$-DP) e rinominare quella sarebbe peggio. Quando
+leggerai un articolo sugli esempi avversari, la $\rho$ di queste pagine lì si
+chiamerà $\varepsilon$.
+
+Lo stesso incrocio capita, più avanti, con $\delta$, e lì il rimedio è un altro:
+la perturbazione è un **vettore** e si scrive $\boldsymbol{\delta}$, mentre il
+margine della $(\varepsilon,\delta)$-DP è un numero e resta tondo. Due
+collisioni, due soluzioni diverse, e la ragione è la stessa: si rinomina ciò che
+si può rinominare senza rompere un nome proprio, e dove non si può si usa la
+forma dei simboli.
+
+Nel 2013 Szegedy e colleghi {cite}`szegedy2014intriguing` scoprirono una
+proprietà sconcertante delle reti neurali: si può prendere un'immagine
+classificata correttamente, aggiungerle una perturbazione così piccola da essere
+**invisibile all'occhio**, e far cambiare idea alla rete con altissima
+sicurezza. L'anno dopo Goodfellow, Shlens e Szegedy spiegarono il fenomeno e ne
+diedero la ricetta più semplice {cite}`goodfellow2015explaining`. Il loro
+esempio è diventato un'icona, e lo riproduce schematicamente la
 {numref}`fig-esempio-avversario`.
 
 ```{figure} ../figures/esempio-avversario.svg
@@ -295,12 +387,19 @@ Il loro esempio è diventato un'icona, e lo riproduce schematicamente la
 :alt: Tre riquadri in fila collegati da un piu e da un uguale. Nel primo una sagoma stilizzata di panda con etichetta panda 58 per cento. Nel secondo una griglia di rumore impercettibile etichettata epsilon per il segno del gradiente. Nel terzo la stessa identica sagoma di panda con l'etichetta errata gibbone 99 per cento in terracotta.
 :width: 100%
 
-La ricetta di un esempio avversario. All'immagine di un panda, riconosciuta
-con il $57{,}7\%$ di confidenza, si somma un rumore impercettibile
-($\varepsilon$ per il segno del gradiente) e la *stessa* immagine viene
-classificata «gibbone» con il $99{,}3\%$ di confidenza. A occhio nudo le due
-immagini sono identiche.
+La ricetta di un esempio avversario. All'immagine di un panda, riconosciuta con
+il $57{,}7\%$ di confidenza, si somma un rumore impercettibile: il riquadro di
+mezzo è quel rumore, e non è casuale, è la mappa di dove spingere ciascun pixel
+per danneggiare al massimo il modello. La *stessa* immagine viene poi
+classificata «gibbone» (una scimmia) con il $99{,}3\%$ di confidenza. A occhio
+nudo le due immagini sono identiche.
 ```
+
+Vale la pena fermarsi su un dettaglio che di solito passa: il modello era sicuro
+al $58\%$ quando aveva ragione, ed è sicuro al $99\%$ quando ha torto. La
+confidenza che stampa non è una misura di quanto sia affidabile, ed è una delle
+ragioni per cui non ci si può appoggiare a quel numero come se fosse una
+garanzia.
 
 `````{tab} Elementare
 
@@ -325,35 +424,40 @@ nell'addestramento) la si deriva rispetto all'**input**, e ci si muove nella
 direzione che la *aumenta*:
 
 $$
-X_{\text{adv}} = X + \varepsilon \cdot \operatorname{sign}\!\big(\nabla_X \mathcal{L}(\theta, X, y)\big).
+\mathbf{x}_{\text{adv}} = \mathbf{x} + \rho \cdot \operatorname{sign}\!\big(\nabla_{\mathbf{x}} \mathcal{L}(\theta, \mathbf{x}, y)\big).
 $$
 
-Qui $X$ è l'input, $y$ l'etichetta vera, $\mathcal{L}$ la loss, $\theta$ i
-pesi (congelati), e $\nabla_X \mathcal{L}$ il gradiente della loss *rispetto
-all'input*; $\operatorname{sign}(\cdot)$ ne prende il segno componente per
-componente e $\varepsilon$ è il budget di perturbazione, cioè la massima
-variazione ammessa per singola componente (una norma $\ell_\infty$). Prendere
-il solo segno assegna a ogni componente lo stesso spostamento
-$\pm\varepsilon$: la perturbazione è impercettibile per pixel, ma allineata al
+Qui $\mathbf{x}$ è l'input, $y$ l'etichetta vera, $\mathcal{L}$ la loss,
+$\theta$ i pesi (congelati), e $\nabla_{\mathbf{x}} \mathcal{L}$ il gradiente
+della loss *rispetto all'input*; $\operatorname{sign}(\cdot)$ ne prende il segno
+componente per componente e $\rho$ è il budget di perturbazione, cioè la
+massima variazione ammessa per singola componente (una norma $\ell_\infty$).
+Prendere il solo segno assegna a ogni componente lo stesso spostamento
+$\pm\rho$: la perturbazione è impercettibile per pixel, ma allineata al
 gradiente e quindi massimamente dannosa. Nell'esempio originale bastava
-$\varepsilon = 0{,}007$ (uno scarto sotto la soglia di quantizzazione a 8 bit)
-per far passare il panda ($57{,}7\%$) a gibbone ($99{,}3\%$).
+$\rho = 0{,}007$, che è **pari** al bit meno significativo di una
+codifica a 8 bit, cioè al più piccolo scarto rappresentabile in quell'immagine,
+per far passare il panda ($57{,}7\%$) a gibbone ($99{,}3\%$). Il dettaglio non è
+pedanteria: una perturbazione più piccola non sopravvivrebbe al salvataggio del
+file, quindi $0{,}007$ è il minimo che possa esistere, non un valore scelto
+sotto una soglia.
 
 FGSM è un unico passo, ed è per questo un attacco *debole*. La sua versione
 iterativa è la **Projected Gradient Descent** (PGD) di Madry e colleghi
 {cite}`madry2018towards`: si ripete il passo più volte con ampiezza $\alpha$
-piccola, riproiettando ogni volta dentro la palla di raggio $\varepsilon$ attorno
+piccola, riproiettando ogni volta dentro la palla di raggio $\rho$ attorno
 all'input originale,
 
 $$
-X^{t+1} = \Pi_{\mathcal{B}(X,\varepsilon)}\!\Big( X^{t} + \alpha \operatorname{sign}\!\big(\nabla_X \mathcal{L}(\theta, X^{t}, y)\big) \Big),
+\mathbf{x}^{t+1} = \Pi_{\mathcal{B}(\mathbf{x},\rho)}\!\Big( \mathbf{x}^{t} + \alpha \operatorname{sign}\!\big(\nabla_{\mathbf{x}} \mathcal{L}(\theta, \mathbf{x}^{t}, y)\big) \Big),
 $$
 
-dove $\Pi_{\mathcal{B}(X,\varepsilon)}$ è la proiezione sull'insieme delle
-perturbazioni ammesse (la palla $\ell_\infty$ di raggio $\varepsilon$ centrata in
-$X$). PGD è considerato l'attacco «di primo ordine» più forte e, soprattutto, la
-base della difesa: Madry inquadra la robustezza come un problema **min-max**,
-$\min_\theta \mathbb{E}_{(X,y)}\big[\max_{\delta \in \mathcal{B}(0,\varepsilon)} \mathcal{L}(\theta, X+\delta, y)\big]$,
+dove $\Pi_{\mathcal{B}(\mathbf{x},\rho)}$ è la proiezione sull'insieme
+delle perturbazioni ammesse (la palla $\ell_\infty$ di raggio $\rho$
+centrata in $\mathbf{x}$). PGD è considerato l'attacco «di primo ordine» più
+forte e, soprattutto, la base della difesa: Madry inquadra la robustezza come un
+problema **min-max**,
+$\min_\theta \mathbb{E}_{(\mathbf{x},y)}\big[\max_{\boldsymbol{\delta} \in \mathcal{B}(\mathbf{0},\rho)} \mathcal{L}(\theta, \mathbf{x}+\boldsymbol{\delta}, y)\big]$,
 in cui l'attaccante (il $\max$ interno, risolto da PGD) e il difensore (il
 $\min$ esterno, l'addestramento) giocano l'uno contro l'altro.
 
@@ -361,14 +465,20 @@ $\min$ esterno, l'addestramento) giocano l'uno contro l'altro.
 
 ## Difese e la corsa agli armamenti
 
-Se il $\max$ interno è l'attacco, il $\min$ esterno è la difesa. La strategia
-più efficace e concettualmente pulita è l'**adversarial training**: durante
-l'addestramento non si mostrano alla rete solo gli esempi puliti, ma anche le
-loro versioni avversarie, generate con PGD ad ogni passo. La rete impara così
-a classificare correttamente anche gli input perturbati. Funziona, ma ha un
-prezzo: è molto più costoso (ogni passo di addestramento contiene un piccolo
-attacco al suo interno) e migliora la robustezza a una certa soglia
-$\varepsilon$ spesso a scapito dell'accuratezza sugli esempi puliti.
+Il gioco ha due mosse: una cerca il modo peggiore di rovinare l'immagine,
+l'altra allena il modello proprio su quelle immagini rovinate. La seconda è la
+strategia più efficace e concettualmente pulita, e si chiama **adversarial
+training**: durante l'addestramento non si mostrano alla rete solo gli esempi
+puliti, ma anche le loro versioni sabotate, ricostruite a ogni passo con
+l'attacco più forte che si conosca (il metodo iterativo chiamato PGD, descritto
+poco sopra). La rete impara così a classificare correttamente anche gli input
+perturbati. Funziona, ma ha un prezzo: è molto più costoso, perché ogni passo di
+addestramento contiene un piccolo attacco al suo interno, e migliora la
+robustezza entro un certo raggio di perturbazione spesso a scapito
+dell'accuratezza sugli esempi intatti.
+
+E c'è una parola da maneggiare con cura, «robusto», perché da sola non vuol dire
+niente: vuol dire robusto *contro quale attacco* e *dentro quale perimetro*.
 
 `````{tab} Elementare
 
@@ -387,17 +497,37 @@ cambiare la risposta: un perimetro piccolo ma sicuro.
 
 `````{tab} Superiore
 
-L'onestà impone di ricordare che molte difese euristiche proposte dopo il 2015
-sono state poi aggirate: Athalye e colleghi {cite}`athalye2018obfuscated`
-mostrarono che davano una falsa sicurezza per *gradient masking* (offuscavano il gradiente invece di
-rimuovere la vulnerabilità) e cadevano appena l'attaccante lo ricostruiva.
-L'adversarial training con PGD è tra i pochi ad aver retto. In parallelo si è
-sviluppata la **robustezza certificata**, che fornisce garanzie dimostrabili:
-il *randomized smoothing* di Cohen e colleghi {cite}`cohen2019certified`, per
-esempio, costruisce da qualsiasi classificatore una versione «lisciata» per cui si prova un raggio
-$\ell_2$ entro cui la predizione è invariante. Le certificazioni coprono raggi
-ancora modesti, ma spostano il terreno da «non sono riuscito a romperla» a «si
-dimostra che non si rompe».
+Prima delle difese, una parola sul **modello di minaccia**, perché l'intera
+trattazione precedente vive dentro la palla $\ell_\infty$ e conviene sapere
+perché. Quel perimetro non descrive l'avversario: descrive ciò che è comodo
+trattare, perché è differenziabile, proiettabile e quindi ottimizzabile. Le
+perturbazioni che contano nel mondo non hanno norma $\ell_p$ piccola: una
+rotazione, un ritaglio, un'ombra, un adesivo su un segnale stradale, una frase
+riformulata. Un modello robusto a $\rho = 8/255$ non è per questo robusto
+a nessuna di quelle. Ne segue che «robusto» è sempre una proprietà relativa a un
+perimetro dichiarato e a un attacco misurato, mai un attributo del modello.
+
+Fatta questa premessa, l'onestà impone di ricordare che molte difese euristiche
+proposte dopo il 2015 sono state poi aggirate: Athalye e colleghi
+{cite}`athalye2018obfuscated` mostrarono che davano una falsa sicurezza per
+*gradient masking* (offuscavano il gradiente invece di rimuovere la
+vulnerabilità) e cadevano appena l'attaccante lo ricostruiva. L'adversarial
+training con PGD è tra i pochi ad aver retto, entro la palla in cui è stato
+misurato. In parallelo si è sviluppata la **robustezza certificata**, che
+fornisce garanzie dimostrabili: il *randomized smoothing* di Cohen e colleghi
+{cite}`cohen2019certified`, per esempio, costruisce da qualsiasi classificatore
+una versione «lisciata» per cui si prova un raggio $\ell_2$ entro cui la
+predizione è invariante.
+
+Anche qui la garanzia va letta per quello che è. Il teorema riguarda il
+classificatore lisciato, non quello di partenza; e siccome il lisciato non è
+calcolabile esattamente, predizione e raggio si stimano per campionamento
+Monte Carlo, con una procedura che può **astenersi** e la cui garanzia vale con
+probabilità almeno $1-\alpha$, dove $\alpha$ lo si sceglie. Non è un certificato
+deterministico come quelli che si ottengono propagando intervalli o limitando la
+costante di Lipschitz. Le certificazioni coprono raggi ancora modesti, ma
+spostano comunque il terreno da «non sono riuscito a romperla» a «si dimostra,
+salvo una probabilità di errore che scelgo io, che non si rompe».
 
 Gli esempi avversari agiscono in fase di *inferenza*, su un modello già
 addestrato. Esiste una minaccia gemella che agisce in fase di *addestramento*:
@@ -426,30 +556,53 @@ La filigrana su un testo è uno sbilanciamento. Nessuna parola, presa da sola,
 è sospetta: è la proporzione sull'intero brano a non essere quella del caso.
 ```
 
-{numref}`fig-watermarking-testo` mostra anche il limite del metodo, oltre al
-suo funzionamento. Se la firma è statistica, serve una quantità di testo
-sufficiente perché lo sbilanciamento si distingua dal caso: su una frase corta
-non c'è niente da misurare, e riscrivere il brano con parole proprie diluisce
-l'eccesso fino a cancellarlo.
+La regola del gioco che {numref}`fig-watermarking-testo` disegna è più semplice
+di quanto sembri, e conviene averla in mente prima di guardarla. Prima di
+scrivere ogni parola, il modello tira a sorte: divide in due metà tutte le
+parole che potrebbe usare, chiama «verdi» quelle di una metà e «rosse» quelle
+dell'altra, e poi sceglie un po' più spesso del normale fra le verdi. Il sorteggio
+non è casuale davvero: si può rifare, se si conosce il seme. Così chi vuole
+controllare un testo rifà tutti i sorteggi, riconta le parole verdi e vede se
+sono troppe. In un testo scritto da una persona sarebbero circa la metà, perché
+quel sorteggio la persona non lo conosceva.
+
+La figura mostra anche il limite del metodo, oltre al suo funzionamento. Se la
+firma è statistica, serve una quantità di testo sufficiente perché lo
+sbilanciamento si distingua dal caso: su una frase corta non c'è niente da
+misurare, e riscrivere il brano con parole proprie diluisce l'eccesso fino a
+cancellarlo.
 
 `````{tab} Elementare
 
-Due strade, complementari.
+Il trucco delle due liste ha un difetto che non dipende da chi attacca, e vale
+la pena vederlo perché è il più profondo dei tre. Funziona solo dove il modello
+aveva davvero una scelta. Se sta scrivendo qualcosa di quasi obbligato (il
+seguito di «Barack» è «Obama», e non c'è alternativa) allora o rispetta il
+sorteggio e scrive una sciocchezza, o scrive la parola giusta e non lascia
+traccia. Sul testo pieno di scelte, come un racconto, la marca si nasconde
+benissimo; su codice sorgente, citazioni, elenchi di numeri, quasi per niente.
 
-La **filigrana nascosta** (*watermarking*) altera il contenuto in modo
-impercettibile ma riconoscibile da chi possiede la chiave. Su un'immagine
-modifica di pochissimo migliaia di pixel, o le componenti in frequenza, secondo
-uno schema segreto: l'occhio non nota nulla, un rilevatore che conosce lo
-schema ritrova il pattern anche dopo una compressione moderata. SynthID di
-Google DeepMind applica questa idea a immagini, audio e video.
+Sulle **immagini** l'idea è la stessa ma i mezzi cambiano. La filigrana nascosta
+altera il contenuto in modo impercettibile ma riconoscibile da chi possiede la
+chiave: modifica di pochissimo migliaia di pixel secondo uno schema segreto, e
+lo fa in modo che l'occhio non noti nulla mentre un rilevatore che conosce lo
+schema ritrova il segno anche dopo una compressione moderata. SynthID di Google
+DeepMind applica questa idea a immagini, audio e video.
 
 La **provenienza dichiarata** fa l'opposto: invece di nascondere, allega. Lo
-standard **C2PA** attacca al file una scheda firmata crittograficamente: chi
-l'ha creato, con quale strumento, come è stato modificato.
+standard **C2PA** attacca al file una scheda con scritto chi l'ha creato, con
+quale strumento e come è stato modificato. La domanda ovvia è: e chi mi
+impedisce di scrivermela io, una scheda così, e attaccarla a un video falso
+dicendo che l'ha girato una televisione? La risposta sta in quel «firmata
+crittograficamente»: la scheda porta un sigillo che solo chi possiede una certa
+chiave segreta può produrre, e che chiunque può controllare senza possederla. Se
+il sigillo non torna, la scheda è falsa e si vede subito.
 
-La differenza pratica è netta e vale la pena tenerla a mente: **il watermark
-sopravvive a uno screenshot, i metadati C2PA no**; ma i metadati raccontano una
-storia ricca, mentre il watermark dice solo "sono artificiale".
+La differenza pratica è netta e vale la pena tenerla a mente: **la filigrana
+nascosta sopravvive a una foto dello schermo, la scheda allegata no**, perché
+una foto dello schermo copia i pixel e butta via tutto il resto. In compenso la
+scheda racconta una storia ricca, mentre la filigrana dice solo «sono
+artificiale».
 
 `````
 
@@ -457,12 +610,32 @@ storia ricca, mentre il watermark dice solo "sono artificiale".
 
 Sul testo il meccanismo è diverso e istruttivo. A ogni passo di generazione si
 partiziona pseudo-casualmente il vocabolario in una lista "verde" e una
-"rossa", con un seme derivato dai token precedenti, e si aggiunge un piccolo
-bias ai logit dei verdi. Il testo resta fluido perché le alternative plausibili
-sono molte; ma su una sequenza lunga la frazione di token verdi si scosta dal
-$50\%$ atteso in modo statisticamente rilevabile. Il rilevatore non deve
-conoscere il testo originale: gli basta ricalcolare le liste e fare un test
-d'ipotesi (Kirchenbauer e colleghi {cite}`kirchenbauer2023watermark`).
+"rossa", con un seme derivato dal **token precedente**, e si aggiunge un piccolo
+bias ai logit dei verdi. Il testo resta fluido dove le alternative
+plausibili sono molte; e su una sequenza lunga la frazione di token verdi si
+scosta dalla frazione attesa $\gamma$ (che è un parametro, non una costante: nel
+lavoro originale $0{,}5$, $0{,}25$ e $0{,}1$) in modo statisticamente
+rilevabile. Il rilevatore non deve conoscere il testo originale né avere accesso
+al modello: gli basta ricalcolare le liste e fare un test d'ipotesi
+(Kirchenbauer e colleghi {cite}`kirchenbauer2023watermark`).
+
+Che il seme dipenda dal solo token precedente non è un dettaglio implementativo:
+è **la** ragione della fragilità alla riscrittura di cui si parla fra poco,
+perché cambiare una parola invalida la lista di quella successiva.
+
+E c'è un limite più strutturale degli altri due, perché non dipende
+dall'attaccante ma dal testo: la marca si può nascondere soltanto dove il
+modello aveva davvero una scelta, cioè dove l'entropia della distribuzione sul
+token successivo è alta. Su testo a bassa entropia (codice, citazioni,
+completamenti quasi deterministici) o non si riesce a marcare, o si marca
+rompendo il testo, ed è il caso limite in cui «Barack» è seguito da «Obama»
+mentre «Obama» è finito nella lista rossa. Lo stesso lavoro lega esplicitamente
+il numero atteso di token verdi all'entropia media della sequenza: le sequenze
+ad alta entropia si rilevano con pochi token, quelle a bassa entropia ne
+richiedono molti di più. I due parametri del metodo (la quota verde $\gamma$ e
+l'entità del bias sui logit) comprano forza di rilevazione in cambio di qualità
+del testo, e il tetto che possono raggiungere lo fissa l'entropia, non la sola
+lunghezza.
 
 Ed è anche il punto debole: **una parafrasi distrugge la marca**. Basta far
 riscrivere il testo a un altro modello e la partizione verde/rossa si dissolve.
@@ -483,17 +656,26 @@ più della refurtiva.
 
 `````
 
-## FGSM in pratica, con NumPy
+## Le trenta dita, in pratica
 
 Per toccare con mano il fenomeno non serve una rete profonda: basta il più
 semplice dei classificatori, una regressione logistica giocattolo (un
 modellino che, dato un esempio con trenta caratteristiche numeriche, stima una
-probabilità). L'esperimento: scegliamo un caso che il modello azzecca con
-sicurezza, poi spostiamo ogni caratteristica di un soffio, tutte nella
-direzione che danneggia di più il modello (le mille dita di prima, qui sono
-trenta), e guardiamo la predizione ribaltarsi. Il codice si può anche solo
-leggere: i commenti dicono cosa fa ogni blocco, e il verdetto sta nelle righe
-stampate alla fine.
+probabilità). L'esperimento: scegliamo un caso che il modello azzecca, poi
+spostiamo ogni caratteristica di un soffio, tutte nella direzione che danneggia
+di più il modello (le mille dita di prima, qui sono trenta), e guardiamo la
+predizione ribaltarsi. Se non programmi, il codice si può saltare: quello che
+conta sono le righe stampate alla fine.
+
+Due dettagli del codice meritano di essere annunciati, perché sono lì proprio
+per evitare che l'esperimento si autoconvinca. Il primo: l'esempio non è
+scelto a mano, lo sceglie un criterio (il primo che il modello azzecca con una
+fiducia fra l'$85$ e il $95$ per cento), e la ragione è che un esempio su cui il
+modello è sicuro al $100\%$ questo attacco non lo ribalta, e sceglierne uno a
+caso avrebbe potuto nasconderlo. Il secondo: la parola «corretto» o «sbagliato»
+accanto a ogni riga la calcola il programma confrontando predizione ed etichetta
+vera, non è scritta a mano; se il ribaltamento non avvenisse, le righe lo
+direbbero.
 
 ```python
 import numpy as np
@@ -516,36 +698,60 @@ for _ in range(3000):
     w -= 0.2 * (X.T @ (p - y) / n)
     b -= 0.2 * np.mean(p - y)
 
-# --- un esempio classificato correttamente e con buona confidenza ---
-i = 1
+# --- scelta dell'esempio per criterio, non per indice: azzeccato e con
+#     fiducia alta ma non assoluta (a fiducia 1,00 questo attacco non basta) ---
+p_tutti = sigmoid(X @ w + b)
+azzeccati = (p_tutti > 0.5) == (y == 1)
+fiducia = np.maximum(p_tutti, 1 - p_tutti)
+i = np.flatnonzero(azzeccati & (fiducia > 0.85) & (fiducia < 0.95))[0]
+
 x, yt = X[i].copy(), y[i]
 p0 = sigmoid(x @ w + b)
 
 # --- FGSM: un passo lungo il segno del gradiente della loss rispetto a x ---
 grad_x = (p0 - yt) * w                      # dL/dx per la cross-entropy logistica
-eps = 0.15
-x_adv = x + eps * np.sign(grad_x)
+rho = 0.15
+x_adv = x + rho * np.sign(grad_x)
 p1 = sigmoid(x_adv @ w + b)
 
-print(f"vera etichetta y = {int(yt)}")
-print(f"originale:  p(classe 1) = {p0:.3f}  ->  predice {int(p0 > 0.5)}  (corretto)")
-print(f"avversario: p(classe 1) = {p1:.3f}  ->  predice {int(p1 > 0.5)}  (sbagliato)")
-print(f"perturbazione: {eps} per feature; norma L2 = {np.linalg.norm(x_adv - x):.2f}"
+def verdetto(p):                            # calcolato, non scritto a mano
+    return "corretto" if int(p > 0.5) == int(yt) else "SBAGLIATO"
+
+print(f"esempio scelto: i = {i},  vera etichetta y = {int(yt)}")
+print(f"originale:  p(classe 1) = {p0:.3f}  ->  predice {int(p0 > 0.5)}  ({verdetto(p0)})")
+print(f"avversario: p(classe 1) = {p1:.3f}  ->  predice {int(p1 > 0.5)}  ({verdetto(p1)})")
+print(f"perturbazione: {rho} per feature; norma L2 = {np.linalg.norm(x_adv - x):.2f}"
       f" contro {np.linalg.norm(x):.2f} dell'input")
+
+# --- lo stesso attacco su tutti gli esempi: quanti se ne ribaltano davvero? ---
+segni = np.sign((p_tutti - y)[:, None] * w)
+p_adv = sigmoid((X + rho * segni) @ w + b)
+ribaltati = azzeccati & ((p_adv > 0.5) != (y == 1))
+print(f"ribaltati {ribaltati.sum()} dei {azzeccati.sum()} esempi classificati bene"
+      f" ({100 * ribaltati.sum() / azzeccati.sum():.0f}%)")
 ```
 
 L'output mostra il ribaltamento:
 
 ```text
-vera etichetta y = 1
+esempio scelto: i = 1,  vera etichetta y = 1
 originale:  p(classe 1) = 0.890  ->  predice 1  (corretto)
-avversario: p(classe 1) = 0.190  ->  predice 0  (sbagliato)
+avversario: p(classe 1) = 0.190  ->  predice 0  (SBAGLIATO)
 perturbazione: 0.15 per feature; norma L2 = 0.82 contro 6.00 dell'input
+ribaltati 183 dei 443 esempi classificati bene (41%)
 ```
 
 Il modello passa da una fiducia dell'$89\%$ nella risposta giusta a una
-risposta sbagliata, e la spinta complessiva, misurata come lunghezza (l'ultima
+risposta sbagliata, e la spinta complessiva, misurata come lunghezza (la terza
 riga stampata), vale meno di un settimo di quella dell'input.
+
+L'ultima riga è quella che tiene onesto l'esempio, e va letta. Con questo
+budget di perturbazione l'attacco ribalta il $41\%$ degli esempi che il modello
+classificava bene: è una frazione, non una certezza. Gli altri resistono per lo
+più perché la loro fiducia di partenza è troppo alta perché uno spostamento di
+questa taglia basti a scavallare il confine. Il fenomeno è reale e non ha
+bisogno di essere gonfiato: che quattro casi su dieci si ribaltino con una
+spinta invisibile è già una notizia.
 
 `````{tab} Elementare
 
@@ -561,21 +767,61 @@ il motivo per cui al panda dell'esempio famoso è bastato un rumore invisibile.
 `````{tab} Superiore
 
 Il gradiente della cross-entropia rispetto all'input, per la regressione
-logistica, è semplicemente $(\hat{y}-y)\,W$: è la riga `grad_x` del codice. E
-il risultato mostra la spiegazione *lineare* di Goodfellow: il passo si muove
-lungo $\operatorname{sign}\!\big((\hat{y}-y)\,W\big)$ e sposta il punteggio
-(il logit) di $\varepsilon\,\lVert W\rVert_1$ in modulo, sempre nel verso che
-fa crescere la loss. Nell'esempio $y=1$ e $\hat{y}<y$, quindi la direzione è
-$-\operatorname{sign}(W)$ e il logit *cala* di
-$\varepsilon\,\lVert W\rVert_1 = 3{,}54$: quanto basta a far scendere la
-probabilità da $0{,}890$ a $0{,}190$. È una quantità che cresce con il numero
+logistica, è semplicemente $(\hat{y}-y)\,\mathbf{w}$: è la riga `grad_x` del
+codice. E il risultato mostra la spiegazione *lineare* di Goodfellow: il passo
+si muove lungo $\operatorname{sign}\!\big((\hat{y}-y)\,\mathbf{w}\big)$ e sposta
+il punteggio (il logit) di $\rho\,\lVert \mathbf{w}\rVert_1$ in modulo,
+sempre nel verso che fa crescere la loss. Nell'esempio $y=1$ e $\hat{y}<y$,
+quindi la direzione è $-\operatorname{sign}(\mathbf{w})$ e il logit *cala* di
+$\rho\,\lVert \mathbf{w}\rVert_1 = 3{,}54$: quanto basta a far scendere
+la probabilità da $0{,}890$ a $0{,}190$. È una quantità che cresce con il numero
 di dimensioni. In alta dimensione (dove vivono immagini e testi) bastano tante
-piccole spinte concordi per scavallare il confine. La stessa formula in
-PyTorch si scriverebbe con `x.requires_grad_(True)`, un passaggio
-`loss.backward()` e `x + eps * x.grad.sign()`: identica idea, gradiente
-rispetto all'input calcolato in automatico.
+piccole spinte concordi per scavallare il confine. La stessa formula in PyTorch
+si scriverebbe con `x.requires_grad_(True)`, un passaggio `loss.backward()` e
+`x + rho * x.grad.sign()`: identica idea, gradiente rispetto all'input calcolato
+in automatico.
 
 `````
+
+Privacy e robustezza si somigliano più di quanto la loro distanza di argomento
+faccia pensare: in entrambe non esiste la proprietà «al sicuro», esiste una
+garanzia con accanto il suo prezzo e il suo perimetro. È il criterio con cui
+leggere anche la sezione seguente, dove il perimetro non lo si può nemmeno
+disegnare dentro il modello.
+
+`````{tab} Elementare
+
+```{admonition} Da ricordare
+:class: important
+- I modelli **imparano a memoria** le cose rare o ripetute, come lo studente che
+  recita la pagina invece di ragionare. Due conseguenze: dandogli l'inizio di
+  una frase che c'era nei dati può completarla identica, e si può spesso
+  indovinare *se una certa persona era nei dati* osservando che il modello è
+  stranamente sicuro proprio sui suoi esempi.
+- In Europa una legge dice cosa si può fare con i dati di una persona, e le dà
+  il diritto di sapere quali dati ci sono, farli correggere e farli cancellare.
+  Il punto scomodo è che dai **pesi** del modello, una volta addestrato, non si
+  tolgono senza rifare tutto: si cancellano dagli archivi, non da lì.
+- Il trucco della **moneta lanciata prima di rispondere** protegge la singola
+  persona e lascia leggere il totale: si aggiunge un po' di caso, in quantità
+  nota. Una manopola decide quanto: più caso, più protezione e meno precisione.
+  Ma non promette che di te non si sappia più nulla, promette che la *tua
+  presenza* cambi poco le idee di chi guarda; e non ti protegge dalle
+  conclusioni sulla popolazione a cui appartieni.
+- Un'altra strada è **non raccogliere i dati affatto**: si manda il modello a
+  casa di chi li ha, ognuno lo allena un po' sui propri e rimanda indietro solo
+  quello che ha imparato. Riduce il rischio, non lo azzera.
+- Si può far sbagliare una rete a comando con **tante piccole spinte concordi**,
+  invisibili una per una. Difendersi è una rincorsa: al momento non esiste una
+  difesa definitiva, e «robusto» vuol sempre dire robusto contro un attacco
+  preciso e dentro un limite dichiarato.
+- Chi controlla i dati di addestramento può anche piazzarci dentro una parola
+  d'ordine segreta che, quando compare, fa fare al modello quel che vuole lui.
+```
+
+`````
+
+`````{tab} Superiore
 
 ```{admonition} Da ricordare
 :class: important
@@ -586,16 +832,28 @@ rispetto all'input calcolato in automatico.
 - La **privacy differenziale** {cite}`dwork2006calibrating` garantisce che
   l'output cambi al più di un fattore $e^{\varepsilon}$ se un individuo entra o
   esce dai dati, aggiungendo rumore (meccanismo di Laplace) calibrato alla
-  sensibilità. **DP-SGD** {cite}`abadi2016deep` la porta nel deep learning con
-  clipping per-esempio + rumore gaussiano, al prezzo di un po' di accuratezza.
+  sensibilità. È un **limite all'inferenza**, non un'impossibilità di dedurre
+  ({cite}`dwork2014algorithmic`: *nothing is learned* è irraggiungibile), e non
+  copre le inferenze sulla popolazione. Il valore di $\rho$ va sempre
+  guardato: $e^{0{,}5}\approx 1{,}65$, ma $e^{8}\approx 3000$.
+  **DP-SGD** {cite}`abadi2016deep` la porta nel deep learning con clipping
+  per-esempio + rumore gaussiano, a circa un punto di accuratezza su MNIST.
 - Il **federated learning** {cite}`mcmahan2017communication` porta il modello ai
   dati invece del contrario (FedAvg); ma i gradienti condivisi perdono
   informazione, e vanno protetti con DP e aggregazione sicura.
 - Gli **esempi avversari** {cite}`goodfellow2015explaining` ingannano una rete
-  con perturbazioni impercettibili: **FGSM** somma $\varepsilon$ per il segno del
+  con perturbazioni impercettibili: **FGSM** somma $\rho$ per il segno del
   gradiente della loss rispetto all'input; **PGD** {cite}`madry2018towards` ne è
-  la versione iterativa e la base dell'*adversarial training*.
+  la versione iterativa e la base dell'*adversarial training*. Attenzione al
+  simbolo: il raggio della perturbazione qui è $\rho$, mentre negli articoli si
+  scrive $\varepsilon$, che in questo capitolo è già il budget di privacy.
+- La palla $\ell_p$ è una comodità matematica, non il modello di minaccia: la
+  robustezza si dichiara sempre con accanto perimetro e attacco.
 - Non esiste difesa definitiva: è una **corsa agli armamenti**. La robustezza
-  certificata offre garanzie provate ma su raggi piccoli; *data poisoning* e
-  *backdoor* attaccano invece in fase di addestramento.
+  certificata offre garanzie provate ma su raggi piccoli, e nel caso del
+  *randomized smoothing* {cite}`cohen2019certified` sono garanzie probabilistiche
+  sul classificatore lisciato; *data poisoning* e *backdoor* attaccano invece in
+  fase di addestramento.
 ```
+
+`````

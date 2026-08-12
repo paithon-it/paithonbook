@@ -3,40 +3,45 @@
 Nella sezione precedente abbiamo costruito S4 e i suoi parenti: uno *state
 space model* nasce come sistema dinamico continuo e, una volta discretizzato,
 diventa una ricorrenza lineare a stato fisso,
-$h_t = \bar A\, h_{t-1} + \bar B\, x_t$, con la sua doppia natura (ricorrente
+$\mathbf{h}_t = \bar{\mathbf{A}}\, \mathbf{h}_{t-1} + \bar{\mathbf{B}}\, x_t$, con la sua doppia natura (ricorrente
 per l'inferenza, convoluzionale per l'addestramento). È una macchina potente e
 a lungo raggio. Ha però un limite di fondo, che finora abbiamo lasciato sullo
 sfondo: è **invariante nel tempo**.
 
 Invariante nel tempo, in gergo *lineare tempo-invariante* (LTI), vuol dire che
-i suoi parametri $\bar A, \bar B, C$ sono gli stessi a ogni passo. La stessa
+i suoi parametri $\bar{\mathbf{A}}, \bar{\mathbf{B}}, \mathbf{C}$ sono gli stessi a ogni passo. La stessa
 matrice di transizione governa il primo token e il millesimo; lo stesso filtro
 scorre su tutta la sequenza, indifferente a ciò che legge. È proprio questa
-rigidità a regalare a S4 la forma convoluzionale (un unico *kernel* fisso che
-si applica ovunque) ma è anche la sua cecità: un SSM LTI non può
-**scegliere**, in base al contenuto, su cosa concentrarsi e cosa lasciar
-cadere. Tratta la parola importante e la parola di riempimento esattamente
+rigidità a regalare a S4 la forma «tutto insieme» (un unico filtro fisso, in
+gergo *kernel*, che si applica ovunque) ma è anche la sua cecità: un SSM LTI
+non può **scegliere**, in base al contenuto, su cosa concentrarsi e cosa
+lasciar cadere. Tratta la parola importante e la parola di riempimento esattamente
 allo stesso modo.
 
 L'idea di Mamba, proposta da Albert Gu e Tri Dao nel 2023 {cite}`gu2023mamba`,
 è tanto semplice da enunciare quanto delicata da realizzare: rendere l'SSM
-**selettivo**. Lasciare cioè che i parametri della ricorrenza dipendano
-dall'input, così che il modello possa decidere, token per token, cosa propagare
-e cosa dimenticare. È lo stesso salto che nel capitolo precedente separava il
-decadimento fisso di RetNet dai gate appresi della GLA, ma raggiunto dall'altra
-sponda, quella dei sistemi dinamici.
+**selettivo**. Lasciare cioè che le regole della ricorrenza dipendano da ciò
+che entra, così che il modello possa decidere, parola per parola, cosa
+propagare e cosa dimenticare. È lo stesso salto che nel capitolo precedente
+separava le architetture in cui il passato sbiadisce sempre alla stessa
+velocità, decisa una volta per tutte, da quelle in cui è la parola in arrivo a
+decidere quanto sbiadire; qui ci arriviamo dall'altra sponda, quella dei
+sistemi dinamici.
 
 ## La selettività (S6)
 
 Il meccanismo di Mamba si chiama **S6**: è l'SSM di tipo S4 con in più la
-*selezione*, in cui i parametri diventano funzione del token. La conseguenza
-tecnica è importante e va guardata in faccia: se $\bar B$, $C$ e il passo di
-discretizzazione cambiano a ogni parola, il sistema non è più
-tempo-invariante. E un sistema tempo-variante non ha un kernel di convoluzione
-fisso: la forma convoluzionale, che era il segreto dell'addestramento veloce
-di S4, semplicemente non è più applicabile. Bisognerà procurarsi un'altra
-strada per parallelizzare, e sarà lo *scan* della prossima sezione. Ma prima
-il guadagno, che ripaga il sacrificio.
+*selezione*, in cui i parametri diventano funzione del token. Il nome inganna,
+perché sembra un gradino di una scala e non lo è: gli autori chiamano S6 «i
+modelli S4 con un meccanismo di selezione, calcolati con uno scan», mentre S5,
+incontrato fra le tappe verso il linguaggio, è il modello di un altro gruppo di
+ricerca, e dopo S6 non arriverà nessun S7. La conseguenza tecnica è importante
+e va guardata in faccia: se le regole cambiano a ogni parola, il sistema non è
+più invariante nel tempo. E un sistema che cambia regola strada facendo non ha
+un filtro unico: la forma «tutto insieme», che era il segreto
+dell'addestramento veloce di S4, semplicemente non è più applicabile. Bisognerà
+procurarsi un'altra strada per lavorare in parallelo, e sarà lo *scan* della
+prossima sezione. Ma prima il guadagno, che ripaga il sacrificio.
 
 `````{tab} Elementare
 
@@ -59,40 +64,42 @@ guardia attenta che valuta caso per caso.
 
 `````{tab} Superiore
 
-In un SSM LTI i parametri $(\bar A, \bar B, C, \Delta)$ sono costanti lungo la
-sequenza. Mamba li rende **funzioni dell'input**. Detta $x_t$ l'attivazione al
+In un SSM LTI i parametri $(\bar{\mathbf{A}}, \bar{\mathbf{B}}, \mathbf{C}, \Delta)$ sono costanti lungo la
+sequenza. Mamba li rende **funzioni dell'input**. Detta $\mathbf{x}_t$ l'attivazione al
 passo $t$ e $N$ la dimensione dello stato dell'SSM (per canale):
 
 $$
-B_t = \mathrm{Linear}_N(x_t),
+\mathbf{B}_t = \mathrm{Linear}_N(\mathbf{x}_t),
 \qquad
-C_t = \mathrm{Linear}_N(x_t),
+\mathbf{C}_t = \mathrm{Linear}_N(\mathbf{x}_t),
 \qquad
-\Delta_t = \mathrm{softplus}\!\big(p + \mathrm{Linear}_1(x_t)\big),
+\Delta_t = \mathrm{softplus}\!\big(p + \mathrm{Linear}_1(\mathbf{x}_t)\big),
 $$
 
-dove $\mathrm{Linear}_N$ proietta $x_t$ in un vettore di dimensione $N$, $p$ è un
+dove $\mathrm{Linear}_N$ proietta $\mathbf{x}_t$ in un vettore di dimensione $N$, $p$ è un
 parametro scalare appreso e $\mathrm{softplus}(z) = \log(1 + e^z)$ garantisce un
-passo $\Delta_t > 0$. La matrice $A$, diagonale, resta un **parametro fisso**: non
+passo $\Delta_t > 0$. La matrice $\mathbf{A}$, diagonale, resta un **parametro fisso**: non
 dipende dal token. Ma la discretizzazione (la scelta *zero-order hold* usata da
-Mamba, che nella sezione precedente ha dato $\bar A = \exp(\Delta A)$) fa passare
+Mamba, che nella sezione precedente ha dato $\bar{\mathbf{A}} = \exp(\Delta \mathbf{A})$) fa passare
 $\Delta_t$ *dentro* la transizione:
 
 $$
-\bar A_t = \exp(\Delta_t\, A),
+\bar{\mathbf{A}}_t = \exp(\Delta_t\, \mathbf{A}),
 \qquad
-h_t = \bar A_t\, h_{t-1} + \bar B_t\, x_t,
+\mathbf{h}_t = \bar{\mathbf{A}}_t\, \mathbf{h}_{t-1} + \bar{\mathbf{B}}_t\, x_t,
 \qquad
-y_t = C_t\, h_t,
+y_t = \mathbf{C}_t\, \mathbf{h}_t,
 $$
 
-dove $\bar A_t$ è la transizione discreta al passo $t$ e $\bar B_t$ è il termine
-di ingresso, entrambi ottenuti da $\Delta_t$. Poiché $\Delta_t$ dipende da $x_t$,
-anche $\bar A_t$ diventa **di fatto data-dipendente**, pur partendo da una $A$
+dove $\bar{\mathbf{A}}_t$ è la transizione discreta al passo $t$ e $\bar{\mathbf{B}}_t$ è il termine
+di ingresso, entrambi ottenuti da $\Delta_t$ (la ricorrenza è scritta per un
+canale: $x_t$ è la componente dell'attivazione $\mathbf{x}_t$ su quel canale, ed è
+un numero). Poiché $\Delta_t$ dipende da $\mathbf{x}_t$,
+anche $\bar{\mathbf{A}}_t$ diventa **di fatto data-dipendente**, pur partendo da una $\mathbf{A}$
 fissa: un $\Delta_t$ grande apre la memoria al nuovo token, un $\Delta_t$ vicino a
 zero la lascia scorrere via quasi immutata. Il prezzo è la perdita
 dell'invarianza temporale: non esiste più un unico kernel
-$\bar K = (C\bar B,\, C\bar A\bar B,\, \dots)$, perché $\bar A_t, \bar B_t, C_t$
+$\bar{\mathbf{K}} = (\mathbf{C}\bar{\mathbf{B}},\, \mathbf{C}\bar{\mathbf{A}}\bar{\mathbf{B}},\, \dots)$, perché $\bar{\mathbf{A}}_t, \bar{\mathbf{B}}_t, \mathbf{C}_t$
 cambiano a ogni passo. La forma convoluzionale svanisce; resta la sola forma
 ricorrente, e con essa il problema di come addestrarla in parallelo.
 
@@ -100,39 +107,63 @@ ricorrente, e con essa il problema di come addestrarla in parallelo.
 
 Il guadagno concettuale è quello che gli autori chiamano *ragionamento basato
 sul contenuto*. Un SSM invariante nel tempo può ricordare a lungo, ma non può
-**selezionare**: se gli si chiede di copiare solo certi token e ignorarne
-altri in base a ciò che sono (il compito di *selective copying*) inciampa,
+**selezionare**: se gli si chiede di copiare solo certe parole e ignorarne
+altre in base a ciò che sono (il compito di *selective copying*) inciampa,
 perché la sua dinamica è la stessa per tutti. Lo stesso vale per le *induction
 heads*, il meccanismo con cui un modello, visto una volta lo schema «A è
 seguito da B», lo completa la volta successiva: richiede di agganciare il
 presente a un preciso episodio passato, cioè di scegliere *cosa* propagare. La
 selettività di Mamba dà all'SSM proprio questa capacità di decisione che gli
-mancava. È lo stesso gesto che, nel capitolo precedente, i gate
-data-dipendenti conferivano alle attenzioni lineari: qui arriva vestito da
+mancava. È lo stesso gesto che, nel capitolo precedente, le valvole decise dai
+dati (i *gate*) conferivano alle attenzioni lineari: qui arriva vestito da
 sistema dinamico, ma la sostanza è la medesima.
 
 ## Lo scan hardware-aware
 
 Rinunciare alla convoluzione sembra un disastro per l'efficienza: la forma
-convoluzionale era ciò che rendeva S4 addestrabile in fretta. Per fortuna la
-ricorrenza lineare ha una proprietà che ci salva: è **associativa**. Comporre
-due passi di una ricorrenza lineare dà ancora un passo dello stesso tipo, e
-questo permette di calcolarla non uno alla volta da sinistra a destra, ma con
-un *parallel scan* (o *associative scan*): un algoritmo classico, che risale a
-Blelloch, capace di svolgere l'intera ricorrenza con lavoro totale $O(L)$ ma
-in tempo parallelo proporzionale a $\log L$, sfruttando a pieno le migliaia di
-core di una GPU. La convoluzione se n'è andata, ma il parallelismo resta.
+«tutto insieme» era ciò che rendeva S4 addestrabile in fretta. Per fortuna la
+ricorrenza lineare ha due proprietà che ci salvano, e conviene tenerle
+distinte. La prima è che **comporre due passi dà ancora un passo dello stesso
+tipo**: due aggiornamenti consecutivi si possono fondere in uno solo, che ha la
+stessa forma di ciascuno dei due. La seconda è che quella composizione è
+**associativa**, perché comporre funzioni lo è: raggruppare i passi in un modo
+o nell'altro dà lo stesso risultato. È la seconda a essere decisiva, perché
+autorizza a fondere i passi a coppie, poi a gruppi di quattro, di otto, invece
+di percorrerli in fila da sinistra a destra. Questo è il *parallel scan* (o
+*associative scan*: «scan» è la passata che percorre la sequenza accumulando i
+risultati parziali), un algoritmo classico che risale a Blelloch: svolge
+l'intera ricorrenza facendo lo stesso numero di operazioni, dell'ordine di $L$,
+ma in un numero di **turni** molto minore, che cresce come il logaritmo di $L$
+(raddoppiando la lunghezza si aggiunge un turno soltanto: da un migliaio di
+passi in fila si scende a una decina di turni). Ogni turno tiene occupati
+migliaia di core della GPU: quelli generici, però, non le sue unità dedicate a
+moltiplicare matrici, e in fondo alla pagina vedremo che è un problema. La
+convoluzione se n'è andata, ma il parallelismo resta.
 
 Non basta però la matematica: Mamba deve fare i conti con la **gerarchia di
 memoria** della scheda grafica, ed è qui che sta la parte «hardware-aware».
 
 `````{tab} Elementare
 
-Pensa a un contabile che deve tenere la somma corrente di una lunghissima
-lista di movimenti. Ha due posti dove lavorare: un foglietto sulla scrivania,
-piccolo ma a portata di mano, e un archivio in cantina, enorme ma lontano
-(ogni discesa in cantina costa tempo). Il modo stupido è scendere in archivio
-a ogni riga, per depositare e riprendere il totale. Il modo furbo è tenere il
+Prima lo *scan*, che è la parola inglese per «passata»: il modo di svolgere in
+fretta un conto che sembra doversi fare in fila. Immagina una classe che deve
+sommare mille numeri scritti alla lavagna. Un solo ragazzo che parte dal primo
+e va avanti impiega mille addizioni, una dopo l'altra: nessuno può aiutarlo,
+perché per fare la sua somma deve aspettare quella di prima. Se invece i
+ragazzi si mettono in coppia, e ogni coppia somma i suoi due numeri, in un
+colpo solo i mille numeri diventano cinquecento; poi cinquecento diventano
+duecentocinquanta, e così via. Dopo dieci giri si è arrivati in fondo. Il
+lavoro totale è lo stesso, ma il tempo di attesa crolla, perché a ogni giro
+lavorano tutti insieme. La ricorrenza di Mamba si può svolgere così: non è una
+somma, ma si comporta come una somma, nel senso che si può cominciare a
+raggruppare i passi da dove si vuole. Ed è per questo che perdere la forma
+«tutto insieme» non è la catastrofe che sembrava.
+
+Poi l'*hardware*. Pensa a un contabile che deve tenere la somma corrente di una
+lunghissima lista di movimenti. Ha due posti dove lavorare: un foglietto sulla
+scrivania, piccolo ma a portata di mano, e un archivio in cantina, enorme ma
+lontano (ogni discesa in cantina costa tempo). Il modo stupido è scendere in
+archivio a ogni riga, per depositare e riprendere il totale. Il modo furbo è tenere il
 foglietto sulla scrivania: ci scrivi sopra la somma corrente, la aggiorni
 movimento dopo movimento senza mai muoverti, e scendi in cantina una volta
 sola alla fine, per archiviare il totale.
@@ -150,20 +181,37 @@ rifare la somma costa meno che tenere in archivio migliaia di fogli).
 
 `````{tab} Superiore
 
-La GPU ha una memoria ad alta capacità ma lenta, la **HBM**, e una memoria
-molto più piccola e veloce, la **SRAM** on-chip. Il collo di bottiglia di una
-ricorrenza selettiva è che lo stato espanso ha forma $(B, L, D, N)$ (batch per
-lunghezza per canali per dimensione dello stato) e materializzarlo tutto in
-HBM sarebbe proibitivo in memoria e in banda. Mamba lo evita con la **fusione
-dei kernel** (*kernel fusion*): carica i parametri $(\Delta, A, B, C)$ dalla
-HBM alla SRAM, esegue *in* SRAM la discretizzazione e la ricorrenza tramite il
-parallel scan, e riporta in HBM soltanto l'output $y$ di dimensione
-$(B, L, D)$. Lo stato espanso non viene mai scritto nella memoria lenta: nasce
-e muore in SRAM.
+Conviene scrivere l'operatore dello scan, perché senza di lui resta un nome.
+Posto $h_t = a_t\,h_{t-1} + b_t$ (una singola componente dello stato: nel caso
+diagonale $a_t$ e $b_t$ sono le componenti corrispondenti di
+$\bar{\mathbf{A}}_t$ e di $\bar{\mathbf{B}}_t x_t$, e sono numeri), ogni passo è
+la coppia $(a_t, b_t)$ e comporne due dà
+
+$$
+(a_1, b_1) \bullet (a_2, b_2) = (a_2 a_1,\; a_2 b_1 + b_2),
+$$
+
+dove il fattore di sinistra è il passo che viene prima. La famiglia è dunque
+chiusa (il risultato è ancora una coppia dello stesso tipo) e l'operatore è
+**associativo**, perché lo è la composizione di funzioni: è questa seconda
+proprietà a permettere di riassociare l'albero dello scan. Non è invece
+commutativo, e non potrebbe esserlo: l'ordine dei fattori è l'ordine della
+sequenza.
+
+La GPU, dal canto suo, ha una memoria ad alta capacità ma lenta, la **HBM**, e
+una memoria molto più piccola e veloce, la **SRAM** on-chip. Il collo di
+bottiglia di una ricorrenza selettiva è che lo stato espanso ha forma
+$(\texttt{batch}, L, D, N)$ (batch per lunghezza per canali per dimensione
+dello stato) e materializzarlo tutto in HBM sarebbe proibitivo in memoria e in
+banda. Mamba lo evita con la **fusione dei kernel** (*kernel fusion*): carica i
+parametri $(\Delta, \mathbf{A}, \mathbf{B}, \mathbf{C})$ dalla HBM alla SRAM, esegue *in* SRAM la
+discretizzazione e la ricorrenza tramite il parallel scan, e riporta in HBM
+soltanto l'output $\mathbf{y}$ di dimensione $(\texttt{batch}, L, D)$. Lo stato espanso
+non viene mai scritto nella memoria lenta: nasce e muore in SRAM.
 
 A questo si aggiunge la **ricomputazione** (*recomputation*).
 Nell'addestramento, il passo all'indietro (*backward*) ha bisogno degli stati
-intermedi $h_t$ per calcolare i gradienti; salvarli tutti costerebbe memoria
+intermedi $\mathbf{h}_t$ per calcolare i gradienti; salvarli tutti costerebbe memoria
 quanto materializzare lo stato espanso. Mamba non li salva: li **ricalcola**
 durante il backward, rifacendo la ricorrenza. È lo stesso compromesso del
 *gradient checkpointing* (si spende un po' di calcolo in più per risparmiare
@@ -174,8 +222,11 @@ costo dello stato espanso in HBM.
 `````
 
 Vale la pena vedere, ridotta all'osso, la ricorrenza che lo scan calcola in
-fretta. Nella sua forma sequenziale (un token alla volta, come la scriverebbe
-una RNN) per un singolo canale è questa:
+fretta. Il codice che segue si può leggere anche senza saper programmare: le
+prime righe dicono che cosa entra, e il ciclo `for` (che vuol dire «per ogni
+passo, ripeti quanto segue») è la vasca da bagno di inizio capitolo, scritta in
+Python. A ogni giro il livello di prima viene ridotto un po', si aggiunge
+quello che entra adesso, e si legge il risultato.
 
 ```python
 import torch
@@ -188,8 +239,8 @@ def ssm_selettivo(x, A, B, C, delta):
     # B, C: (L, N)  generati da x, cambiano a ogni passo
     # delta: (L,)   passo di discretizzazione, generato da x
     L, N = B.shape
-    h = torch.zeros(N)
-    y = torch.empty(L)
+    h = torch.zeros(N, dtype=x.dtype, device=x.device)
+    y = torch.empty_like(x)
     for t in range(L):
         A_bar = torch.exp(delta[t] * A)   # A-bar_t = exp(delta_t A), diagonale
         B_bar = delta[t] * B[t]           # discretizzazione semplificata di B
@@ -199,33 +250,106 @@ def ssm_selettivo(x, A, B, C, delta):
 ```
 
 Il ciclo `for` è la forma ricorrente, quella dell'inferenza: costo e memoria
-costanti per token, un aggiornamento dopo l'altro. Il parallel scan calcola
-*esattamente lo stesso* vettore `y`, ma senza il ciclo sequenziale, sfruttando
-l'associatività per svolgere i passi in parallelo. È, ancora una volta, la doppia
-natura che accomuna tutta questa famiglia di modelli: una forma parallela per
-addestrare in fretta, una forma ricorrente a costo costante per generare.
+costanti per token, un aggiornamento dopo l'altro. Ma il capitolo ha promesso
+due volte che quel ciclo si può evitare, e le promesse conviene verificarle.
+
+La prima riguarda la sezione precedente: se le regole **non** cambiano da un
+passo all'altro, lo stesso risultato si ottiene con un filtro unico che scorre
+sulla sequenza. Congeliamo allora $\mathbf{B}$, $\mathbf{C}$ e $\Delta$, costruiamo il filtro
+$\bar{\mathbf{K}}$ e confrontiamo.
+
+```python
+torch.manual_seed(0)
+L, N = 12, 4
+x = torch.randn(L, dtype=torch.float64)
+A = -torch.rand(N, dtype=torch.float64) - 0.5      # autovalori negativi
+B_fisso = torch.randn(N, dtype=torch.float64)
+C_fisso = torch.randn(N, dtype=torch.float64)
+delta = torch.full((L,), 0.4, dtype=torch.float64)
+
+# stessi parametri a ogni passo: il sistema e' invariante nel tempo (LTI)
+y_ric = ssm_selettivo(x, A, B_fisso.repeat(L, 1), C_fisso.repeat(L, 1), delta)
+
+# il kernel K_j = C A-bar^j B-bar: quanto pesa ancora un ingresso di j passi fa
+A_bar = torch.exp(0.4 * A)
+B_bar = 0.4 * B_fisso
+K = torch.stack([(C_fisso * A_bar**j * B_bar).sum() for j in range(L)])
+
+# la convoluzione causale con quel kernel, scritta a mano
+y_conv = torch.stack([(K[: t + 1] * torch.flip(x[: t + 1], (0,))).sum()
+                      for t in range(L)])
+
+print("ricorrenza vs convoluzione, scarto massimo:",
+      (y_ric - y_conv).abs().max().item())
+```
+
+La seconda promessa è quella di questa sezione: anche quando le regole
+cambiano a ogni passo, e il filtro unico non esiste più, il *parallel scan*
+calcola **esattamente lo stesso** vettore `y` del ciclo, raggruppando i passi
+invece di percorrerli in fila.
+
+```python
+def scan_parallelo(a, b):
+    """Ricorrenza h_t = a_t h_{t-1} + b_t svolta a raddoppio.
+
+    Ogni passo e' la coppia (a_t, b_t), e comporne due da'
+    (a1, b1) . (a2, b2) = (a2 a1, a2 b1 + b2): l'operazione e'
+    associativa, quindi i passi si possono raggruppare a piacere.
+    """
+    a, b = a.clone(), b.clone()
+    salto = 1
+    while salto < a.shape[0]:
+        a_prec, b_prec = a[:-salto].clone(), b[:-salto].clone()
+        b[salto:] = a[salto:] * b_prec + b[salto:]
+        a[salto:] = a[salto:] * a_prec
+        salto *= 2          # 1, 2, 4, 8, ...: log L giri invece di L
+    return b                # b_t contiene ora h_t
+
+# parametri che cambiano a ogni passo: il sistema e' selettivo
+B = torch.randn(L, N, dtype=torch.float64)
+C = torch.randn(L, N, dtype=torch.float64)
+delta = torch.rand(L, dtype=torch.float64) * 0.5 + 0.1
+y_ciclo = ssm_selettivo(x, A, B, C, delta)
+
+A_bar = torch.exp(delta[:, None] * A)          # (L, N)
+B_bar = delta[:, None] * B * x[:, None]        # (L, N)
+H = scan_parallelo(A_bar, B_bar)               # tutti gli stati in una volta
+y_scan = (C * H).sum(dim=1)
+
+print("ciclo vs scan parallelo, scarto massimo:",
+      (y_ciclo - y_scan).abs().max().item())
+```
+
+Entrambi gli scarti sono dell'ordine di $10^{-16}$, cioè zero a meno
+dell'ultima cifra che un calcolatore riesce a rappresentare: le tre forme
+calcolano la stessa funzione. È, ancora una volta, la doppia natura che
+accomuna tutta questa famiglia di modelli: una forma parallela per addestrare
+in fretta, una forma ricorrente a costo costante per generare.
 
 ## Il blocco Mamba
 
 Il meccanismo selettivo è il motore; attorno gli serve una carrozzeria. Il
-**blocco Mamba** nasce fondendo due ingredienti già noti: il blocco H3
-{cite}`fu2023h3`, che per primo aveva adattato gli SSM al linguaggio circondando
-il nucleo ricorrente di una struttura di *gating* moltiplicativo, e il classico
-*gated MLP* dei Transformer. Il risultato è un unico blocco omogeneo, con un
-fattore di espansione $E = 2$ (le proiezioni interne raddoppiano la dimensione),
-che si impila su se stesso a formare l'intera rete. Non ci sono blocchi di
-attenzione, non ci sono strati *feed-forward* separati: un solo tipo di mattone,
-ripetuto.
+**blocco Mamba** nasce fondendo due pezzi già noti: il blocco H3
+{cite}`fu2023h3`, che per primo aveva adattato gli SSM al linguaggio mettendo
+attorno al nucleo ricorrente una valvola (la stessa idea del capitolo
+precedente: due rami che si moltiplicano, e uno regola quanto dell'altro lascia
+passare), e il *gated MLP*, cioè la versione con valvola dello strato di
+proiezione dei Transformer. Il risultato è un unico mattone omogeneo, che si
+impila su se stesso a formare l'intera rete: non si alternano blocchi di tipo
+diverso, come nei Transformer, ce n'è uno solo, ripetuto.
 
 ```{figure} ../figures/blocco-mamba.svg
 :name: fig-blocco-mamba
-:alt: Diagramma del blocco Mamba. Dal basso, l'ingresso si divide in due rami dopo una proiezione lineare. Il ramo principale attraversa in sequenza una convoluzione causale monodimensionale (Conv1d), un'attivazione SiLU e l'SSM selettivo (S6). Il ramo parallelo attraversa una sola attivazione SiLU. I due rami si incontrano in un gating moltiplicativo, il cui risultato passa per una proiezione lineare di uscita. Attorno al blocco, una connessione residua e una normalizzazione.
+:alt: Diagramma del blocco Mamba. Dal basso, l'ingresso si divide in due rami dopo una proiezione lineare. Il ramo principale attraversa in sequenza una convoluzione causale monodimensionale (Conv1d), un'attivazione SiLU e l'SSM selettivo (S6). Il ramo parallelo attraversa una sola attivazione SiLU. I due rami si incontrano in un gating moltiplicativo, il cui risultato passa per una proiezione lineare di uscita. Un tratteggio scavalca l'intero blocco e si richiude su un simbolo di somma: è la connessione residua.
 :width: 85%
 
-Il blocco Mamba: la proiezione in ingresso apre due rami. Quello principale
-passa per Conv1d causale, SiLU e SSM selettivo; quello parallelo per una SiLU
-che fa da *gate*. Il gating moltiplicativo li ricongiunge, poi la proiezione
-di uscita: il tutto avvolto da normalizzazione e connessione residua.
+Il blocco Mamba, che è l'unico tipo di stazione della catena e si ripete
+uguale decine di volte. In basso il pezzo in arrivo si sdoppia: la copia
+principale (a sinistra) passa per tre lavorazioni, la copia parallela (a
+destra) per una sola e diventa la valvola che regola quanto della prima
+lasciar passare. In alto le due si moltiplicano e una proiezione rimette il
+pezzo nella forma di partenza. Il tratteggio che scavalca tutto è la
+scorciatoia che fa arrivare il pezzo di partenza anche in cima.
 ```
 
 Seguiamo il percorso di {numref}`fig-blocco-mamba` dal basso verso l'alto.
@@ -249,12 +373,12 @@ fine.
 
 `````{tab} Superiore
 
-Detta $u$ l'attivazione in ingresso al blocco, il flusso è:
+Detta $\mathbf{u}$ l'attivazione in ingresso al blocco, il flusso è:
 
-1. **Proiezione in ingresso**: due proiezioni lineari espandono $u$ (fattore
-   $E=2$) in due rami, $x$ (principale) e $z$ (di *gating*).
+1. **Proiezione in ingresso**: due proiezioni lineari espandono $\mathbf{u}$ (fattore
+   $E=2$) in due rami, $\mathbf{x}$ (principale) e $\mathbf{z}$ (di *gating*).
 2. **Convoluzione causale 1D**: una `Conv1d` a finestra corta scorre sul ramo
-   $x$ lungo la dimensione temporale. È «causale» perché ogni posizione vede
+   $\mathbf{x}$ lungo la dimensione temporale. È «causale» perché ogni posizione vede
    solo il proprio passato immediato (nessuna fuga di informazione dal futuro)
    ed è la stessa idea di filtro che scorre vista per le reti convoluzionali,
    qui ridotta a una dimensione e a una manciata di passi. Fornisce un
@@ -263,9 +387,9 @@ Detta $u$ l'attivazione in ingresso al blocco, il flusso è:
    come *Swish*), la parente liscia della ReLU incontrata tra le funzioni di
    attivazione, dove $\sigma$ è la sigmoide.
 4. **SSM selettivo (S6)**: il ramo attraversa il nucleo della sezione precedente,
-   con $B_t, C_t, \Delta_t$ generati dall'input e calcolato via parallel scan.
+   con $\mathbf{B}_t, \mathbf{C}_t, \Delta_t$ generati dall'input e calcolato via parallel scan.
 5. **Gating moltiplicativo**: l'uscita dell'SSM viene moltiplicata elemento per
-   elemento dal ramo parallelo passato per SiLU, $y \odot \mathrm{SiLU}(z)$. È il
+   elemento dal ramo parallelo passato per SiLU, $\mathbf{y} \odot \mathrm{SiLU}(\mathbf{z})$. È il
    *gate* che regola, canale per canale, quanto dell'uscita ricorrente lasciar
    passare.
 6. **Proiezione in uscita**: una proiezione lineare riporta il risultato alla
@@ -286,33 +410,40 @@ cosa se ne ricava?
 
 `````{tab} Elementare
 
-Due cose, soprattutto. La prima è **velocità che non peggiora quando il testo
+Due cose, soprattutto. La prima è **il lavoro che non esplode quando il testo
 si allunga**: mentre un Transformer, per raddoppiare la lunghezza, quadruplica
-il lavoro, Mamba lo raddoppia soltanto (il costo cresce di pari passo con la
-sequenza, non più in fretta). Nella generazione parola per parola questo si
-traduce in un modello sensibilmente più scattante. La seconda è la
-**portata**: Mamba regge sequenze lunghissime, dell'ordine del milione di
-passi, là dove un Transformer soffocherebbe. E a parità di qualità pesa meno:
-un modello Mamba regge il confronto con Transformer grandi il doppio. Non solo
-testo, per giunta: la stessa ricetta dà buoni risultati anche su segnali audio
-e su sequenze di DNA.
+il lavoro, Mamba lo raddoppia soltanto. È questo, e nient'altro, che si intende
+quando in queste pagine si legge «costo **lineare**»: il lavoro cresce di pari
+passo con la lunghezza. Nella generazione parola per parola il vantaggio si
+sente, perché a ogni parola nuova il modello non deve rileggersi tutto quello
+che ha scritto finora: gli basta il suo riassunto, che è sempre della stessa
+misura.
+
+La seconda è la **portata**: Mamba regge sequenze lunghissime, dell'ordine del
+milione di passi. Per farsi un'idea di quanto sia, un passo qui è più o meno
+una parola, e un milione di parole sono una decina di romanzi. Non solo testo,
+per giunta: la stessa ricetta si applica ai segnali audio (dove un passo è un
+campione sonoro) e alle sequenze di DNA (dove un passo è una lettera del
+genoma), ed è un segno che il meccanismo non ha niente di specificamente
+linguistico.
 
 `````
 
 `````{tab} Superiore
 
-I risultati riportati nell'articolo sono, in sintesi:
+Il bilancio, in termini di meccanismi e non di classifiche:
 
-- **Costo lineare** nella lunghezza della sequenza, in tempo e memoria, contro il
-  costo quadratico dell'attenzione piena.
-- **Inferenza** con throughput circa $5\times$ superiore a quello di un
-  Transformer di taglia comparabile, grazie allo stato ricorrente a memoria
-  costante (nessuna cache chiave-valore che cresce con il contesto).
-- **Scaling** verificato fino a sequenze dell'ordine di $10^6$ passi.
-- Un **Mamba-3B** che eguaglia in qualità Transformer di taglia circa doppia sul
-  *language modeling*.
-- Risultati di primo piano anche fuori dal linguaggio, su **audio** e
-  **genomica**, a conferma che il meccanismo non è specifico del testo.
+- **Costo lineare** nella lunghezza della sequenza, in tempo e memoria, contro
+  il costo quadratico dell'attenzione piena.
+- **Inferenza a memoria costante**: lo stato ricorrente sostituisce la cache
+  chiave-valore, che in un Transformer cresce con il contesto e va riletta a
+  ogni token generato. È da qui che viene il vantaggio di throughput in
+  generazione.
+- **Scaling** verificato fino a sequenze dell'ordine di $10^6$ passi, cioè su
+  ordini di grandezza dove l'attenzione piena non è praticabile.
+- Il meccanismo non è specifico del testo: gli stessi blocchi si addestrano su
+  **audio** grezzo e su **genomica**, dove le sequenze sono lunghe e non hanno
+  una struttura a token discreti come il linguaggio.
 
 `````
 
@@ -324,11 +455,13 @@ affidano ogni lavoro ad altri studiosi del campo; e il primo convegno a cui
 Mamba fu sottoposto, ICLR, nel 2024 lo respinse, con un rifiuto che fece
 discutere. Pochi mesi dopo un altro convegno, COLM, lo ha accettato e gli ha
 assegnato un premio come uno dei lavori migliori dell'anno. Il vaglio, quindi,
-c'è stato; resta valida la cautela sui singoli numeri, perché come sempre nella
-ricerca recente non tutto ciò che il primo articolo annuncia si è retto intatto
-alla prova del tempo. Lo *scan* selettivo, in particolare, non sfruttava
-appieno le unità di calcolo matriciale delle GPU: un dettaglio ingegneristico
-che sembra minore ma pesa parecchio in pratica. E lo stato di dimensione fissa,
+c'è stato; e resta la ragione per cui in queste pagine i primati e le
+misure di velocità non li abbiamo riportati: come sempre nella ricerca recente,
+non tutto ciò che il primo articolo annuncia si regge intatto alla prova del
+tempo, mentre i meccanismi sì. Lo *scan* selettivo, in particolare, non
+sfruttava appieno le unità di calcolo matriciale delle GPU: un dettaglio
+ingegneristico che sembra minore ma pesa parecchio in pratica. E lo stato di
+dimensione fissa,
 che è la forza di Mamba in efficienza, resta il suo limite quando serve
 ritrovare un dettaglio preciso in un contesto molto lungo. Sono
 proprio questi i nodi che la sezione successiva scioglie: Mamba-2 riscrive il
@@ -338,33 +471,70 @@ l'SSM selettivo, vedremo, si nasconde di nuovo l'attenzione: le due famiglie
 che abbiamo raccontato da capitoli diversi sono, alla fine, due viste della
 stessa cosa.
 
+`````{tab} Elementare
+
+```{admonition} Da ricordare
+:class: important
+- S4 tratta ogni parola con la **stessa regola**: è un tornello. Ha memoria
+  lunga, ma non sa scegliere. **Mamba** {cite}`gu2023mamba` mette al suo posto
+  un buttafuori, che guarda in faccia chi passa e decide sul momento quanto
+  scriverne nel riassunto e quanto lasciar cadere. È questa la **selettività**.
+- Si paga un prezzo: se la regola cambia a ogni parola, non esiste più un
+  filtro unico, e il modo «tutto insieme» di fare i conti se ne va. Resta il
+  modo passo dopo passo.
+- Il prezzo si recupera con lo **scan**, cioè svolgendo la catena a gruppi
+  invece che in fila (a coppie, poi a quattro, poi a otto): le operazioni sono
+  le stesse, i turni di attesa crollano. In più Mamba tiene i conti nella
+  memoria piccola e vicina della scheda grafica, come il contabile che non
+  scende in cantina a ogni riga, e i risultati intermedi che gli serviranno
+  dopo li **rifà** invece di conservarli.
+- Il **blocco Mamba** è un'unica stazione, ripetuta decine di volte: il pezzo
+  si sdoppia, una copia passa per la lavorazione lunga (uno sguardo ai vicini,
+  un ammorbidimento, il cuore selettivo), l'altra fa da valvola, e alla fine
+  le due si moltiplicano. Niente attenzione, nessun altro tipo di stazione.
+- Cosa se ne ricava: **il lavoro cresce di pari passo con la lunghezza** (testo
+  doppio, lavoro doppio, non quadruplo), la memoria durante la generazione non
+  cresce mai, e si reggono sequenze dell'ordine del milione di passi, anche
+  fuori dal linguaggio (audio, DNA). Uscito nel 2023 come articolo non ancora
+  giudicato da nessuno (*preprint*), respinto dal convegno ICLR nel 2024 e
+  pubblicato lo stesso anno al convegno COLM, che lo ha premiato: è anche una
+  buona lezione su come funziona il giudizio nella ricerca.
+```
+
+`````
+
+`````{tab} Superiore
+
 ```{admonition} Da ricordare
 :class: important
 - S4 è **tempo-invariante** (LTI): stessi parametri a ogni passo, quindi un
   kernel di convoluzione fisso, ma nessuna capacità di scegliere in base al
   contenuto. **Mamba** {cite}`gu2023mamba` rende l'SSM **selettivo** (S6).
-- Nella selettività $B_t, C_t, \Delta_t$ diventano **funzione dell'input**; $A$
-  resta fissa, ma poiché $\bar A_t = \exp(\Delta_t A)$ e $\Delta_t$ dipende da
-  $x_t$, anche la transizione è di fatto data-dipendente. Si rompe l'invarianza
+- Nella selettività $\mathbf{B}_t, \mathbf{C}_t, \Delta_t$ diventano **funzione dell'input**; $\mathbf{A}$
+  resta fissa, ma poiché $\bar{\mathbf{A}}_t = \exp(\Delta_t \mathbf{A})$ e $\Delta_t$ dipende da
+  $\mathbf{x}_t$, anche la transizione è di fatto data-dipendente. Si rompe l'invarianza
   temporale: **niente più convoluzione**, serve uno scan.
 - Il guadagno è il **ragionamento basato sul contenuto** (*selective copying*,
   *induction heads*) che un SSM LTI non può fare. È lo stesso salto dei gate
   data-dipendenti delle attenzioni lineari, raggiunto dal versante dei sistemi
   dinamici.
-- La ricorrenza lineare è **associativa**, quindi si calcola con un **parallel
-  scan** (lavoro $O(L)$, tempo parallelo $\log L$). Le ottimizzazioni
-  hardware-aware (*kernel fusion* in SRAM e **ricomputazione** nel backward)
-  evitano di materializzare lo stato espanso in HBM.
+- Comporre due passi della ricorrenza dà un passo dello stesso tipo (la
+  famiglia è chiusa) e la composizione è **associativa**: da qui il **parallel
+  scan**, con lavoro $O(L)$ ma profondità $O(\log L)$, su unità generiche e non
+  sui tensor core. Le ottimizzazioni hardware-aware (*kernel fusion* in SRAM e
+  **ricomputazione** nel backward) evitano di materializzare lo stato espanso
+  in HBM.
 - Il **blocco Mamba** fonde il blocco H3 {cite}`fu2023h3` con un *gated MLP*
   ($E=2$): proiezione in ingresso → Conv1d causale → SiLU → SSM selettivo →
   gating moltiplicativo con ramo parallelo (SiLU) → proiezione in uscita, con
   normalizzazione e residui. Un solo tipo di blocco, senza attenzione né MLP a
   parte.
-- Cosa ottiene: **tempo lineare** nella lunghezza, inferenza $\sim 5\times$ più
-  veloce dei Transformer, scaling fino a $\sim 10^6$ passi, un Mamba-3B alla pari
-  con Transformer di taglia doppia, e risultati forti anche su audio e genomica.
-  Uscito nel 2023 come articolo non ancora giudicato da nessuno (*preprint*),
-  respinto dal convegno ICLR nel 2024 e pubblicato lo stesso anno al convegno
-  COLM, che lo ha premiato (*Outstanding Paper*), con i limiti che Mamba-2
-  affronterà.
+- Cosa ottiene: **tempo lineare** nella lunghezza, inferenza a **memoria
+  costante** (nessuna KV cache che cresce), scaling fino a $\sim 10^6$ passi, e
+  lo stesso impianto applicabile ad audio e genomica. Uscito nel 2023 come
+  articolo non ancora giudicato da nessuno (*preprint*), respinto dal convegno
+  ICLR nel 2024 e pubblicato lo stesso anno al convegno COLM, che lo ha premiato
+  (*Outstanding Paper*), con i limiti che Mamba-2 affronterà.
 ```
+
+`````

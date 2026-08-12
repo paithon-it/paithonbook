@@ -14,10 +14,10 @@ Da qui due mosse, ed è di queste che parla la sezione. La prima è
 è **comporre più agenti**, ciascuno con un mestiere, come si mette insieme una
 squadra. E dietro entrambe si nasconde la domanda più scomoda del campo,
 quella che nessuno ha davvero chiuso: come si fa a sapere se un agente
-**funziona davvero**? Valutare un modello che risponde è già difficile: lo
-vedremo nel capitolo conclusivo su LLMOps, con il testo aperto. Valutare un
-agente che *agisce*, in più passi, in un ambiente che cambia sotto i suoi
-piedi, lo è molto di più.
+**funziona davvero**? Valutare un modello che risponde è già difficile, quando
+la risposta è libera e non esiste una soluzione unica da confrontare: lo
+vedremo più avanti, nel capitolo su MLOps. Valutare un agente che *agisce*, in
+più passi, in un ambiente che cambia sotto i suoi piedi, lo è molto di più.
 
 ## Pianificare: scomporre il problema
 
@@ -83,11 +83,12 @@ specializzato**, che si passano il lavoro e conversano tra loro.
 
 ```{figure} ../figures/sistemi-multi-agente.svg
 :name: fig-orchestratore-worker
-:alt: "Uno schema gerarchico: in alto un agente orchestratore riceve il compito e lo suddivide, delegandolo a tre agenti worker disposti sotto di lui. Ciascun worker ha i propri strumenti e lavora sul proprio pezzo; i risultati risalgono all'orchestratore, che li ricompone nella risposta finale."
+:alt: "Uno schema gerarchico: in alto un agente orchestratore riceve il compito e lo suddivide, delegandolo a tre agenti esecutori disposti sotto di lui. Ciascun esecutore ha i propri strumenti e lavora sul proprio pezzo; i risultati risalgono all'orchestratore, che li ricompone nella risposta finale."
 :width: 90%
 
-Uno che divide, tre che eseguono. La specializzazione non sta nel modello, che
-può essere lo stesso per tutti: sta nelle istruzioni e negli strumenti che
+Uno che divide, tre che eseguono (nel disegno sono etichettati *worker*, che è
+il termine inglese per gli esecutori). La specializzazione non sta nel modello,
+che può essere lo stesso per tutti: sta nelle istruzioni e negli strumenti che
 ciascun ruolo riceve.
 ```
 
@@ -137,11 +138,15 @@ agente in più è contesto in più da riempire e generazioni in più da pagare: 
 costo cresce con il numero di partecipanti e con i giri di conversazione. E
 moltiplicare gli agenti moltiplica i **modi di sbagliare**: un fraintendimento
 che si propaga, due agenti che entrano in un ping-pong senza convergere,
-l'errore di uno che diventa la premessa dell'altro. La letteratura è ancora
-lontana da un verdetto netto su *quando* il multi-agente batta un singolo
-agente ben progettato {cite}`xi2023rise`; la regola prudente è: si aggiunge un
-ruolo solo quando risolve un problema che un agente solo non risolveva, non per
-il gusto della squadra.
+l'errore di uno che diventa la premessa dell'altro. Non è una preoccupazione
+di principio: passando al setaccio sette framework multi-agente su oltre
+duecento compiti, Cemri e colleghi {cite}`cemri2025why` trovano che i guadagni
+sui benchmark correnti sono spesso **modesti** rispetto a un singolo agente
+ben costruito, e che buona parte dei modi di fallire nasce dal
+**coordinamento** (specifiche ambigue fra i ruoli, agenti che si
+disallineano, nessuno che verifichi il risultato) e non dal singolo agente. La
+regola prudente è quella: si aggiunge un ruolo solo quando risolve un problema
+che un agente solo non risolveva, non per il gusto della squadra.
 
 `````
 
@@ -158,8 +163,9 @@ lungo termine**. La finestra di contesto è memoria di lavoro: capiente ma
 effimera, si svuota a fine sessione. Un agente che debba *ricordare*
 attraverso giorni e migliaia di eventi ha bisogno di un archivio esterno e di
 un modo intelligente per pescarci dentro. Il caso di studio più istruttivo è
-un piccolo esperimento del 2023 che sembra un videogioco: i **generative
-agents** di Park e colleghi {cite}`park2023generative`.
+un piccolo esperimento del 2023 che sembra un videogioco: gli **agenti
+generativi** di Park e colleghi {cite}`park2023generative`, che nel titolo
+originale si chiamano *generative agents*.
 
 Venticinque agenti abitano un paesino simulato, Smallville: si svegliano,
 fanno colazione, vanno al lavoro, si incontrano, chiacchierano. Nessuno ha
@@ -241,12 +247,18 @@ risultati diversi oggi e domani) e la stessa prova non è mai identica a se
 stessa.
 
 Servono quindi metriche di natura diversa da quelle di un modello che risponde e
-basta. Tre, soprattutto: il **tasso di successo** sul compito (l'ha portato a
-termine, sì o no?), la valutazione della **traiettoria** (*come* ci è arrivato:
-con quali mosse, quanto pulite, quante inutili?) e il **costo** con la
-**latenza** (quanti token, quanti secondi, quante chiamate a strumenti?). Un
-agente che risolve il compito ma consuma diecimila token e trenta passi non è
-«riuscito» allo stesso modo di uno che lo chiude in quattro.
+basta. Quattro, soprattutto: il **tasso di successo** sul compito (l'ha portato
+a termine, sì o no?), la valutazione della **traiettoria** (*come* ci è
+arrivato: con quali mosse, quanto pulite, quante inutili?), il **costo** con la
+**latenza**, cioè i secondi che l'utente aspetta (quanti token, quanti secondi,
+quante chiamate a strumenti?), e infine la **dispersione**, che è la
+conseguenza diretta della terza difficoltà appena elencata: se la stessa prova
+non è mai identica a se stessa, ogni compito va ripetuto più volte e ciò che si
+riporta non è un numero, ma un numero con la sua incertezza. Un agente che
+risolve il compito ma consuma diecimila token e trenta passi non è «riuscito»
+allo stesso modo di uno che lo chiude in quattro; e un agente che riesce tre
+volte su cinque non è distinguibile, da una passata sola, da uno che riesce
+sempre.
 
 `````{tab} Elementare
 
@@ -273,12 +285,18 @@ Il **tasso di successo** (*success rate*) è la frazione di compiti risolti su u
 insieme di prove: la metrica principe, ma grossolana, perché è un sì/no che
 ignora *come* si è arrivati e nasconde i successi fortunati. La **valutazione
 della traiettoria** (*trajectory evaluation*) guarda la sequenza di azioni:
-erano quelle giuste? ce n'erano di inutili o ridondanti? l'agente si è
-avvicinato all'obiettivo a ogni passo? Un agente può azzeccare la risposta per
-la strada sbagliata (giusto per caso) o sbagliarla dopo una traiettoria
-impeccabile (l'ultimo passo va storto): guardare solo il risultato finale
-confonde questi casi, e per capire davvero *dove* un agente rompe serve la
-traccia.
+erano quelle giuste? quante non hanno prodotto informazione nuova? e quando
+l'agente è finito in un vicolo cieco, se n'è accorto e ne è uscito? Va evitata
+la tentazione di chiedere che *ogni* passo avvicini all'obiettivo: sarebbe un
+criterio di progresso **monotono**, e punirebbe esattamente il comportamento
+maturo che questo capitolo raccomanda, cioè il re-planning quando un
+sotto-obiettivo fallisce, il tornare indietro dai rami che non promettono del
+Tree of Thoughts, il tentativo fallito che Reflexion usa per orientare il
+successivo. Il fallimento tipico di un loop non è il passo che allontana: è il
+passo che si ripete. Un agente può poi azzeccare la risposta per la strada
+sbagliata (giusto per caso) o sbagliarla dopo una traiettoria impeccabile
+(l'ultimo passo va storto): guardare solo il risultato finale confonde questi
+casi, e per capire davvero *dove* un agente rompe serve la traccia.
 
 Sotto tutto c'è la fragilità dei **compiti lunghi**, già incontrata:
 l'accumulo di errori. Un modellino illustrativo: se a ogni passo la
@@ -346,30 +364,59 @@ inciampato all'ultimo; un caso ben diverso da chi ha sbagliato tutto. Il tasso
 di successo da solo appiattisce queste differenze; costo e traiettoria le
 fanno riemergere.
 
+Detto questo, quei quattro numeri stampati vanno guardati con sospetto, ed è
+il difetto che il codice illustra suo malgrado: **cinque episodi non
+misurano niente**. Su tre successi su cinque, l'intervallo di confidenza al
+95% va dal 23% all'88%: quel «60%» è compatibile sia con un agente che
+fallisce tre volte su quattro, sia con uno che riesce quasi sempre. Per una
+barra d'errore di cinque punti attorno al 60% servirebbero circa
+**trecentosettanta** episodi. È la ragione per cui i benchmark seri di agenti
+riportano una dispersione, e non un numero solo.
+
 I benchmark seri costruiscono proprio su queste idee. **AgentBench**
 {cite}`liu2023agentbench` mette gli LLM alla prova come agenti in **otto
 ambienti diversi** (un sistema operativo da manovrare, un database da
 interrogare, una casa simulata, un negozio online da navigare, e altri) e
 misura quanti compiti ciascun modello porta a termine. Il verdetto era un
-utile bagno di umiltà: alla pubblicazione, nel 2023, anche i modelli migliori
-restavano lontani dal risolverli tutti. **SWE-bench**
+utile bagno di umiltà: alla pubblicazione, anche i modelli migliori restavano
+lontani dal risolverli tutti. **SWE-bench**
 {cite}`jimenez2024swebench` alza ancora l'asticella con 2.294 segnalazioni di
 errore prese da progetti reali su GitHub: risolvere l'issue significa produrre
 una modifica al codice che fa passare i test del progetto. Al momento della
-pubblicazione i sistemi migliori ne chiudevano **pochi punti percentuali**, un
-numero che da allora è salito parecchio, ma la lezione resta: i compiti lunghi
-e realistici sono duri, e un benchmark onesto lo mostra in cifre invece di
-nasconderlo.
+pubblicazione i sistemi migliori ne chiudevano **pochi punti percentuali**.
+
+La lezione, però, non è quella cifra, che una classifica sposta. Ed è qui che
+torna la promessa fatta all'inizio del capitolo: **un benchmark misura anche
+se stesso**. Riesaminando a mano i successi di SWE-bench, Aleithan e colleghi
+{cite}`aleithan2024swebenchplus` hanno trovato che circa una correzione
+riuscita su tre ($32{,}67\%$) non era stata risolta ma **letta**, perché la
+soluzione era già scritta nella segnalazione o nei commenti sotto; e che
+un'altra quota simile passava grazie a test troppo deboli per bocciare
+alcunché. Filtrate le istanze difettose, il risultato di un sistema noto
+scendeva dal $12{,}5\%$ al $4{,}0\%$: un fattore tre fra il numero pubblicato e
+quello che resta. È la ragione per cui esiste SWE-bench *Verified*, un
+sottoinsieme di cinquecento istanze rilette a mano.
+
+Niente di tutto ciò toglie valore al benchmark, che resta il migliore esempio
+di questo capitolo. Sposta però la morale: i compiti lunghi e realistici sono
+duri, e misurarli è duro quasi quanto risolverli. Un numero su un agente non è
+mai soltanto una proprietà dell'agente.
 
 C'è infine una faccia della valutazione che non è una metrica ma una rete di
 sicurezza. Un agente non solo *risponde*: *agisce*, e un'azione può fare danni
-(eseguire codice, spendere soldi, scrivere su un database). Valgono qui,
-rafforzati, gli stessi presidi che vedremo in LLMOps: i **guardrail** su
-ingresso e uscita che filtrano input malevoli e azioni pericolose, e
-l'**LLM-as-a-judge** come metro automatico; utile per punteggiare traiettorie
-su larga scala, ma con gli stessi bias (posizione, verbosità, auto-preferenza)
-di cui diffidare. La valutazione di un agente, come quella dell'output aperto,
-non è mai *solo* un numero: è un numero più un sistema di controlli attorno.
+(eseguire codice, spendere soldi, scrivere su un archivio). Valgono qui,
+rafforzati, gli stessi presidi che vedremo parlando di modelli messi in
+produzione. I **guardrail**, che prendono il nome dalle barriere di
+protezione delle strade, sono filtri su ciò che entra e su ciò che esce, e
+fermano sia le richieste ostili sia le azioni pericolose. E c'è
+l'**LLM-as-a-judge**, cioè un secondo modello promosso a esaminatore: utile
+per dare un voto a migliaia di traiettorie in poco tempo, purché si ricordi
+che ha delle **inclinazioni sistematiche** da cui non si libera. Tende a
+preferire quello che legge per primo (o per ultimo), a premiare le risposte
+lunghe perché sembrano più complete, e a dare ragione a se stesso quando è lui
+l'autore di ciò che sta giudicando. La valutazione di un agente, come quella
+di una risposta libera, non è mai *solo* un numero: è un numero più un sistema
+di controlli attorno.
 
 ## Uno sguardo onesto
 
@@ -392,6 +439,53 @@ paga, e diffidare di ogni numero troppo bello. La distanza tra un agente che
 *sembra* funzionare in una demo e uno di cui *fidarsi* in produzione si misura
 esattamente con gli strumenti di questa sezione.
 
+Sei righe per chiudere il capitolo.
+
+`````{tab} Elementare
+
+```{admonition} Da ricordare
+:class: important
+- Oltre al ciclo passo-passo, due mosse per i compiti grossi: scrivere **la
+  lista prima di entrare** (prima il piano dei sotto-compiti, poi
+  l'esecuzione) e mettere in fila **più agenti** con mestieri diversi (chi
+  progetta, chi costruisce, chi collauda). Il piano dà una visione d'insieme,
+  ma una lista scritta al buio va rifatta quando la realtà la smentisce.
+- Più teste non sono gratis e non sono sempre meglio: ogni agente in più è
+  lavoro da pagare e un modo in più di fraintendersi. Chi è andato a misurarlo
+  {cite}`cemri2025why` ha trovato guadagni spesso modesti, e ha trovato che si
+  sbaglia soprattutto nel **mettersi d'accordo**, non dentro il singolo agente.
+  Si aggiunge un ruolo solo quando risolve un problema vero.
+- La **memoria che dura** non è tenere tutto sott'occhio: è un diario tenuto
+  fuori, da cui si ripesca solo la pagina che conta adesso. Gli agenti di
+  Smallville {cite}`park2023generative` la ripescano con tre criteri (quanto è
+  **recente** il ricordo, quanto è **importante**, quanto **c'entra** con la
+  situazione di adesso) e ogni tanto si fermano a **riflettere**, ricavando
+  dagli appunti una conclusione più alta che riscrivono nel diario.
+- **Dare un voto** a un agente è più duro che darlo a un classificatore: non
+  c'è una risposta unica, il compito è fatto di molti passi e l'ambiente cambia
+  sotto i piedi. Servono il **tasso di successo**, uno sguardo alla **strada**
+  che ha fatto (non solo al risultato) e il conto di quanto è costato in tempo
+  e denaro. E una prova sola non basta: cinque tentativi non distinguono chi
+  riesce sempre da chi riesce a metà.
+- I banchi di prova **AgentBench** {cite}`liu2023agentbench` (otto ambienti
+  diversi) e **SWE-bench** {cite}`jimenez2024swebench` (segnalazioni di errore
+  vere) mostrano risultati inizialmente modesti: un promemoria di onestà. Ma un
+  benchmark misura anche se stesso: rileggendo a mano i successi di SWE-bench
+  si è scoperto che una correzione riuscita su tre non era stata risolta, era
+  stata **copiata** dalla segnalazione {cite}`aleithan2024swebenchplus`.
+- Gli errori si **sommano** sui compiti lunghi: se sbagli una mossa su dieci e
+  le mosse sono dieci, la probabilità di non sbagliarne nessuna è
+  $0{,}9^{10}$, cioè poco più di una volta su tre. Nella pratica va un po'
+  meglio, perché non tutti gli errori sono fatali e perché rileggersi e
+  ripianificare ne recuperano una parte. Gli agenti sono promettenti ma
+  fragili, e restano un campo **giovane** {cite}`xi2023rise`. Misurare più che
+  sperare.
+```
+
+`````
+
+`````{tab} Superiore
+
 ```{admonition} Da ricordare
 :class: important
 - Oltre il ReAct passo-passo, due mosse per i compiti complessi:
@@ -401,25 +495,34 @@ esattamente con gli strumenti di questa sezione.
   realtà lo smentisce.
 - I sistemi **multi-agente** (come nel framework **AutoGen**
   {cite}`wu2024autogen`, che li modella come una conversazione tra agenti) non
-  sono gratis né sempre migliori: più agenti significano più costo e più modi
-  di sbagliare. Si aggiunge un ruolo solo quando risolve un problema reale.
+  sono gratis né sempre migliori: i guadagni misurati sui benchmark correnti
+  sono spesso piccoli e i modi di fallire nascono in buona parte dal
+  **coordinamento** {cite}`cemri2025why`. Si aggiunge un ruolo solo quando
+  risolve un problema reale.
 - La **memoria a lungo termine** non è tenere tutto nel contesto: i
   **generative agents** {cite}`park2023generative` memorizzano fuori,
-  **recuperano** il pertinente (recency + importance + relevance) e
+  **recuperano** il pertinente combinando recenza, salienza e pertinenza, e
   **riflettono** condensando le memorie in astrazioni (lo stesso schema
   recupera-e-condensa del RAG).
 - **Valutare** un agente è più duro che valutare un classificatore: nessuna
   risposta unica, compito multi-passo, ambiente che cambia. Servono **tasso di
-  successo**, valutazione della **traiettoria** (non solo del risultato) e
-  **costo/latenza**.
+  successo**, valutazione della **traiettoria** (che non deve pretendere un
+  progresso monotono, o punirebbe il backtracking), **costo/latenza** e la
+  **dispersione** su ripetizioni: su $3/5$ l'intervallo di Wilson al 95% va dal
+  23% all'88%.
 - I benchmark **AgentBench** {cite}`liu2023agentbench` (otto ambienti) e
   **SWE-bench** {cite}`jimenez2024swebench` (issue reali di GitHub) mostrano
-  tassi di successo inizialmente modesti: un promemoria di onestà. In
-  produzione valgono i **guardrail** e l'**LLM-as-a-judge** di LLMOps.
+  tassi di successo inizialmente modesti, ma la cifra misura anche il
+  benchmark: SWE-Bench+ trova il $32{,}67\%$ di soluzioni già presenti nella
+  issue {cite}`aleithan2024swebenchplus`. In produzione valgono i **guardrail**
+  e l'**LLM-as-a-judge** di LLMOps, con i suoi bias.
 - Gli errori si **accumulano** sui compiti lunghi: *se* i passi sono
-  indipendenti, una traiettoria senza errori ha probabilità $(1-p)^n$, che
-  precipita con $n$ (nel modellino illustrativo; nella pratica i passi sono
-  correlati e riflessione e re-planning ne recuperano una parte). Gli agenti sono
+  indipendenti, una traiettoria senza errori ha probabilità $(1-p)^n$, dove $p$
+  è la probabilità di sbagliare un passo e $n$ il numero di passi, e precipita
+  con $n$ (nel modellino illustrativo; nella pratica i passi sono correlati e
+  riflessione e re-planning ne recuperano una parte). Gli agenti sono
   promettenti ma fragili, e restano un'area **giovane** {cite}`xi2023rise`.
   Misurare più che sperare.
 ```
+
+`````

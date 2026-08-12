@@ -21,25 +21,14 @@ inferenza un token alla volta a costo costante come una RNN.
 
 ## Un'unica famiglia
 
-Ricapitoliamo la convenzione che ci ha accompagnato. Lo stato è una matrice
-$S_t \in \mathbb{R}^{d\times d}$, una memoria che associa **chiavi a valori**;
-si scrive per prodotto esterno e si legge per proiezione:
-
-$$
-S_t = S_{t-1}\, (\text{transizione}_t) + v_t\, k_t^\top,
-\qquad
-o_t = S_t\, q_t,
-$$
-
-dove $q_t, k_t, v_t$ sono query, chiave e valore del token $t$ (gli stessi
-introdotti nell'attenzione dei Transformer) e $v_t k_t^\top$ è la nuova coppia
-scritta in memoria. Tutto il resto, da RetNet a Mamba, è una scelta su quel
-fattore di **transizione** che moltiplica lo stato di ieri prima di
-aggiungergli oggi. Moltiplica **a destra**, e non è un dettaglio di scrittura:
-con lo stato fatto di colonne indicizzate dalle chiavi, è da quel lato che il
-fattore agisce sui canali di chiave (e che $I - \beta_t k_t k_t^\top$ cancella
-la traccia lasciata da $k_t$); a sinistra sbiadirebbe i canali dei valori, che
-è un'altra cosa.
+Ricapitoliamo la convenzione che ci ha accompagnato. La memoria di tutte
+queste architetture funziona come uno schedario: a ogni parola si archivia una
+voce nuova, formata da un'**etichetta** e da un **contenuto**, e per rileggere
+si presenta un'etichetta e si riceve indietro ciò che le assomiglia di più.
+Prima di archiviare la voce nuova, però, quello che c'è già viene sbiadito un
+po': è la **transizione**, ed è l'unica cosa su cui le architetture di questi
+due capitoli sono davvero diverse fra loro. Da RetNet a Mamba, cambia come e
+quanto si sbiadisce, e chi lo decide.
 
 `````{tab} Elementare
 
@@ -60,6 +49,24 @@ manopole in posizioni diverse. Nomi e sigle diversi per un solo schema.
 
 `````{tab} Superiore
 
+In formule, lo stato è una matrice $\mathbf{S}_t \in \mathbb{R}^{d\times d}$, una
+memoria che associa **chiavi a valori**; si scrive per prodotto esterno e si
+legge per proiezione:
+
+$$
+\mathbf{S}_t = \mathbf{S}_{t-1}\, (\text{transizione}_t) + \mathbf{v}_t\, \mathbf{k}_t^\top,
+\qquad
+\mathbf{o}_t = \mathbf{S}_t\, \mathbf{q}_t,
+$$
+
+dove $\mathbf{q}_t, \mathbf{k}_t, \mathbf{v}_t$ sono query, chiave e valore del token $t$ (gli stessi
+introdotti nell'attenzione dei Transformer) e $\mathbf{v}_t \mathbf{k}_t^\top$ è la nuova coppia
+scritta in memoria. La transizione moltiplica **a destra**, e non è un
+dettaglio di scrittura: con lo stato fatto di colonne indicizzate dalle
+chiavi, è da quel lato che il fattore agisce sui canali di chiave (e che
+$\mathbf{I} - \beta_t \mathbf{k}_t \mathbf{k}_t^\top$ cancella la traccia lasciata da $\mathbf{k}_t$); a sinistra
+sbiadirebbe i canali dei valori, che è un'altra cosa.
+
 Gli assi di progetto sono tre, e ciascuno ha un prezzo e un guadagno.
 
 **1. La dimensione dello stato.** Quanto è grande $d$ (o, per gli SSM, la
@@ -73,15 +80,15 @@ la tabella unificante del capitolo precedente la metteva in fila per struttura
 via via più ricca:
 
 $$
-\underbrace{I}_{\text{lin. attn}}
+\underbrace{\mathbf{I}}_{\text{lin. attn}}
 \;\to\;
-\underbrace{\alpha_t I}_{\text{RetNet, Mamba-2}}
+\underbrace{\alpha_t \mathbf{I}}_{\text{RetNet, Mamba-2}}
 \;\to\;
 \underbrace{\mathrm{Diag}(\alpha_t)}_{\text{GLA}}
 \;\to\;
-\underbrace{I - \beta_t k_t k_t^\top}_{\text{DeltaNet}}
+\underbrace{\mathbf{I} - \beta_t \mathbf{k}_t \mathbf{k}_t^\top}_{\text{DeltaNet}}
 \;\to\;
-\underbrace{\alpha_t\,(I - \beta_t k_t k_t^\top)}_{\text{Gated DeltaNet}}
+\underbrace{\alpha_t\,(\mathbf{I} - \beta_t \mathbf{k}_t \mathbf{k}_t^\top)}_{\text{Gated DeltaNet}}
 $$
 
 dove $\alpha_t \in (0,1)$ è un fattore di **oblio** e $\beta_t \in (0,1)$ la
@@ -112,7 +119,7 @@ regolato una volta per tutte da una guardia che valuta caso per caso.
 
 Su questa mappa gli SSM non sono un'isola. La **dualità stato-attenzione** (SSD)
 di Mamba-2 {cite}`dao2024mamba2`, che abbiamo visto nella sezione su Mamba-2,
-dimostra che un SSM con transizione **scalare per identità** ($\alpha_t I$) è
+dimostra che un SSM con transizione **scalare per identità** ($\alpha_t \mathbf{I}$) è
 *esattamente* un'attenzione lineare mascherata: è la seconda riga della tabella,
 raggiunta dal versante dei sistemi dinamici invece che da quello
 dell'attenzione. Le due famiglie che abbiamo raccontato in capitoli separati
@@ -151,12 +158,18 @@ rinuncia al ricordo alla lettera di ogni singolo dettaglio.
 
 `````{tab} Superiore
 
-La ragione è di capacità d'informazione. Uno stato $S \in \mathbb{R}^{d\times
+La ragione è di capacità d'informazione. Uno stato $\mathbf{S} \in \mathbb{R}^{d\times
 d}$ ha un numero finito di gradi di libertà: come osservato già nel lavoro sui
-*fast weight programmer*, in dimensione $d$ non esistono più di $d$ direzioni
-mutuamente ortogonali, quindi oltre un certo numero di coppie chiave-valore
-distinte la memoria va in *sovraccarico* e le associazioni cominciano a
-interferire. L'attenzione piena non ha questo tetto: la sua «memoria» è la KV
+*fast weight programmer* {cite}`schlag2021linear`, in dimensione $d$ non
+esistono più di $d$ direzioni mutuamente ortogonali. Attenzione a come si legge
+questo limite, perché la lettura sbagliata è la più comoda: l'interferenza fra
+associazioni **non compare oltre una soglia**. Come si è visto nel capitolo
+precedente, con chiavi casuali il *crosstalk* cresce da subito, come
+$\sqrt{N/d}$ nel numero $N$ di coppie scritte, e intorno a $N \approx d$ vale
+ormai quanto il valore che si sta cercando. Non c'è un punto in cui la memoria
+«si riempie»: c'è un degrado continuo, che a un certo punto diventa
+intollerabile per il compito che si ha davanti. L'attenzione piena non ha
+questo tetto: la sua «memoria» è la KV
 cache, che conserva **tutte** le coppie chiave-valore dei token passati, al
 prezzo di crescere linearmente con la lunghezza (ed è quel prezzo a rendere il
 costo complessivo quadratico).
@@ -218,14 +231,13 @@ appare come variante ibrida sia del Gated DeltaNet {cite}`yang2024gateddelta`
 {cite}`dao2024mamba2`, il cui articolo studia esplicitamente l'aggiunta di
 pochi strati di attenzione a uno stack SSM.
 
-I numeri confermano la tendenza, con l'onestà d'obbligo sulle scale in gioco. Nei
-confronti riportati per il Gated DeltaNet a 1,3 miliardi di parametri su 100
-miliardi di token, le varianti ibride superano in media zero-shot sia un
-Transformer di riferimento sia lo stesso Samba, oltre alle baseline puramente
-ricorrenti. Il messaggio non è «l'ibrido vince sempre», ma qualcosa di
-più solido e più modesto: allo stato dell'arte attuale, **mescolare** poca
-attenzione e molta ricorrenza lineare è il compromesso che funziona meglio, più
-di ciascuna delle due famiglie presa da sola.
+La tendenza è la stessa in tutti questi lavori, e il messaggio non è «l'ibrido
+vince sempre»: è qualcosa di più solido e più modesto. I due ingredienti hanno
+punti di forza **complementari** (recall verbatim l'uno, costo e memoria
+costanti l'altro), e complementare vuol dire che mescolarli in proporzione
+sbilanciata (poca attenzione, molta ricorrenza) costa poco e rende quasi
+quanto l'attenzione piena. È il motivo per cui la ricetta ricompare, con
+dosaggi diversi, in architetture nate da gruppi che non si parlano.
 
 `````
 
@@ -240,9 +252,13 @@ nicchie diverse.
 Dove le ricorrenze lineari e gli SSM danno il meglio è chiaro, e sono
 territori di crescente importanza. Il **contesto lunghissimo**, dove il costo
 quadratico dell'attenzione piena diventa proibitivo e uno stato che non cresce
-è un enorme vantaggio. L'**inferenza a memoria costante**, senza una KV cache
-che si gonfia con ogni token generato: decisiva quando si serve il modello a
-molti utenti in parallelo. Gli scenari in **streaming**, dove i dati arrivano
+è un enorme vantaggio. L'**inferenza a memoria costante**: un Transformer, per
+non rileggersi tutto a ogni parola che scrive, tiene da parte quello che ha già
+calcolato (è la *KV cache*, l'archivio delle etichette e dei contenuti di tutte
+le parole viste), e quell'archivio si gonfia a ogni parola generata; qui non
+serve, e la memoria occupata resta quella. È una differenza decisiva quando si
+serve il modello a molti utenti in parallelo. Gli scenari in **streaming**,
+dove i dati arrivano
 in flusso continuo e non si può rileggere tutto da capo a ogni passo. E i
 **dispositivi con poca memoria** (telefoni, sistemi embedded), dove una
 memoria fissa e prevedibile vale più di qualche punto di qualità sul retrieval
@@ -256,10 +272,10 @@ proprio dove l'attenzione costa troppo, ed è la storia che questi due capitoli
 hanno raccontato per esteso. La lezione di fondo, però, è la stessa
 dell'intero libro: nessuna architettura vince per sempre. L'attenzione non ha
 «ucciso» le RNN, e le RNN lineari non uccideranno l'attenzione. Chi conosce le
-idee semplici che stanno sotto (una memoria che si scrive per prodotto
-esterno, una transizione che decide cosa dimenticare, due forme dello stesso
-calcolo) non insegue le mode: le legge, e riconosce lo stesso scheletro sotto
-il prossimo nome che farà rumore.
+idee semplici che stanno sotto (una memoria in cui ogni parola archivia una
+voce nuova, un modo di sbiadire il passato che decide cosa dimenticare, due
+forme dello stesso calcolo) non insegue le mode: le legge, e riconosce lo
+stesso scheletro sotto il prossimo nome che farà rumore.
 
 `````{tab} Elementare
 
@@ -312,26 +328,27 @@ il prossimo nome che farà rumore.
 :class: important
 - **Una sola famiglia**: attenzione lineare (RetNet, GLA, DeltaNet, RWKV, xLSTM)
   e *state space model* (S4, Mamba) sono tutte **RNN lineari a stato fisso**
-  $S_t = S_{t-1}\, (\text{transizione}_t) +
-  \mathbf{v}_t \mathbf{k}_t^\top$, con lettura
-  $\mathbf{o}_t = S_t \mathbf{q}_t$. Si addestrano in parallelo, fanno
+  $\mathbf{S}_t = \mathbf{S}_{t-1}\, (\text{transizione}_t) + \mathbf{v}_t \mathbf{k}_t^\top$, con lettura
+  $\mathbf{o}_t = \mathbf{S}_t \mathbf{q}_t$. Si addestrano in parallelo, fanno
   inferenza ricorrente a memoria costante per token.
 - **Tre manopole di progetto**: la dimensione dello stato (capacità), la
-  struttura della transizione ($I \to \alpha_t I \to
-  \mathrm{Diag}(\alpha_t) \to I-\beta_t \mathbf{k}_t \mathbf{k}_t^\top
-  \to \alpha_t(I-\beta_t \mathbf{k}_t \mathbf{k}_t^\top)$, via via più
+  struttura della transizione ($\mathbf{I} \to \alpha_t \mathbf{I} \to
+  \mathrm{Diag}(\alpha_t) \to \mathbf{I}-\beta_t \mathbf{k}_t \mathbf{k}_t^\top
+  \to \alpha_t(\mathbf{I}-\beta_t \mathbf{k}_t \mathbf{k}_t^\top)$, via via più
   ricca, ma non è una scala in cui ogni gradino contiene il precedente: gli
   ultimi due modi di aggiornare la memoria fanno cose diverse, e l'ultimo
   gradino li mette insieme), e quanto è data-dipendente (fisso vs generato
   dall'input, che compra il ragionamento basato sul contenuto).
 - **La dualità SSD** di Mamba-2 {cite}`dao2024mamba2` dimostra che un SSM a
-  transizione scalare ($\alpha_t I$) è esattamente un'attenzione
+  transizione scalare ($\alpha_t \mathbf{I}$) è esattamente un'attenzione
   lineare mascherata: SSM e attenzione lineare sono due viste della stessa cosa.
 - **Il limite onesto**: uno stato di dimensione fissa è un **collo di
-  bottiglia** per il *recall associativo esatto* su contesti lunghissimi.
-  L'attenzione piena, che conserva ogni token nella KV cache, resta superiore
-  sul retrieval verbatim (benchmark *needle in a haystack*, MQAR): al prezzo
-  del costo quadratico.
+  bottiglia** per il *recall associativo esatto* su contesti lunghissimi, e non
+  perché si riempia a una certa soglia: l'interferenza fra associazioni cresce
+  da subito, come $\sqrt{N/d}$, e intorno a $N\approx d$ coppie scritte vale
+  quanto il valore cercato. L'attenzione piena, che conserva ogni token nella
+  KV cache, resta superiore sul retrieval verbatim (benchmark *needle in a
+  haystack*, MQAR): al prezzo del costo quadratico.
 - **Gli ibridi** sono lo stato dell'arte: pochi strati di attenzione piena
   intervallati a molti strati lineari/SSM (Jamba {cite}`lieber2024jamba`, Samba
   {cite}`ren2024samba`, le varianti ibride di Gated DeltaNet

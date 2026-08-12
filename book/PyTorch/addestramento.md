@@ -18,9 +18,12 @@ compaiono senza presentazioni. L'**ottimizzatore** è il pezzo che a ogni giro
 corregge i pesi del modello; il **learning rate** è la sua manopola
 principale, e decide quanto è grande ogni correzione: un passo corto impara
 piano ma non sbaglia strada, un passo lungo va veloce ma rischia di scavalcare
-il punto buono. L'ottimizzatore più semplice si chiama **SGD** e usa lo stesso
-passo per tutti i pesi; **Adam** è quello che si prova per primo in quasi ogni
-progetto, per la ragione che mostra {numref}`fig-adam-passo-per-peso`.
+il punto buono. L'ottimizzatore più semplice si chiama **SGD** (dall'inglese
+*stochastic gradient descent*, discesa del gradiente a caso: «a caso» perché
+guarda ogni volta un pacchetto di esempi presi a sorte invece di tutti) e usa
+lo stesso passo per tutti i pesi; **Adam** è quello che si prova per primo in
+quasi ogni progetto, per la ragione che mostra
+{numref}`fig-adam-passo-per-peso`.
 
 ```{figure} ../figures/adam-ottimizzatore.svg
 :name: fig-adam-passo-per-peso
@@ -36,6 +39,10 @@ La differenza mostrata in {numref}`fig-adam-passo-per-peso` è il motivo per
 cui `Adam` è quasi sempre il primo ottimizzatore da provare. Con SGD il
 learning rate va tarato bene perché è uno solo per tutti; con Adam il valore
 di partenza è meno critico, perché ciascun peso lo riscala per conto proprio.
+
+Nel codice le cose hanno il nome inglese: `criterion` è la funzione di perdita,
+`dataloader` è il cameriere che porta i pacchetti di esempi (la prossima
+sezione lo costruisce), `optimizer` è l'ottimizzatore appena presentato.
 
 ```{code-block} python
 :class: pt-non-eseguibile
@@ -118,8 +125,11 @@ via di mezzo che tiene la cucina sempre piena.
 di immagini, un database) diventa una sorgente per il `DataLoader`, che
 aggiunge campionamento (`shuffle=True` rimescola gli indici a ogni epoca),
 *batching* (impila gli esempi lungo il primo asse: qui tensori
-$(64, 1, 28, 28)$), e caricamento parallelo (`num_workers`) con trasferimento
-asincrono verso la GPU (`pin_memory=True`). La `transform` `ToTensor()`
+$(64, 1, 28, 28)$), e caricamento parallelo (`num_workers`) con memoria
+*page-locked* (`pin_memory=True`), che è la **premessa** del trasferimento
+asincrono verso la GPU, non l'asincronia: quella richiede anche
+`non_blocking=True` nel `.to()`, come si vedrà in
+[prestazioni](prestazioni.md). La `transform` `ToTensor()`
 converte le immagini PIL in tensori `float32` con valori in $[0, 1]$ e layout
 channels-first $(C, H, W)$; per MNIST si può aggiungere
 `transforms.Normalize((0.1307,), (0.3081,))` (media e deviazione standard del
@@ -163,7 +173,7 @@ model = nn.Sequential(
 ).to(device)
 
 criterion = nn.CrossEntropyLoss()
-optimizer = optim.Adam(model.parameters(), lr=1e-3)
+optimizer = optim.Adam(model.parameters(), lr=1e-3)   # 1e-3 e' 0,001
 
 # --- addestramento ---
 for epoca in range(5):
@@ -183,14 +193,30 @@ for epoca in range(5):
         for X, y in test_loader:
             X, y = X.to(device), y.to(device)
             y_pred = model(X)
+            # per ogni immagine prendi il punteggio piu' alto -> la cifra scelta;
+            # confrontala con quella vera; conta i sì
             corretti += (y_pred.argmax(dim=1) == y).sum().item()
 
     print(f"epoca {epoca + 1}: accuratezza sul test {corretti / len(test_data):.3f}")
 ```
 
-Cinque epoche, meno di un minuto su un computer qualunque, e l'accuratezza
-sul test arriva attorno al **97–98%**: novantasette cifre su cento lette
-correttamente da $101\,770$ numeri che un'ora fa erano casuali.
+La riga che conta le risposte giuste merita di essere sciolta, perché è quella
+che produce il numero di cui il modello si vanta, e sta tutta in una riga sola.
+`y_pred` è una tabella con una riga per immagine e dieci punteggi per riga;
+`argmax(dim=1)` scorre ciascuna riga e restituisce la **posizione** del
+punteggio più alto, cioè la cifra che il modello ha scelto. Il confronto `== y`
+mette a fianco la risposta vera e produce una colonna di sì e no; `.sum()` conta
+i sì (che valgono uno) e `.item()` estrae quel conteggio come numero Python
+normale, da poter sommare al totale. Quattro gesti, quattro parole, e sono gli
+stessi quattro che torneranno in ogni programma del capitolo.
+
+Cinque epoche, e l'accuratezza sul test arriva attorno al **97–98%**:
+novantasette cifre su cento lette correttamente da $101\,770$ numeri che
+un'ora fa erano casuali. Il tempo dipende molto dalla macchina, e vale la pena
+dirlo per non lasciare aspettative sbagliate: su una GPU sono decine di
+secondi, su una CPU normale (quattro core, nient'altro di speciale) siamo
+nell'ordine dei minuti, sette in una misura fatta su questa macchina, che
+chiudeva a $97{,}5\%$.
 
 ## Studiare e dare l'esame: `train()` ed `eval()`
 
@@ -210,9 +236,20 @@ registratore acceso tutto è più veloce e leggero.
 
 `````{tab} Superiore
 `train()`/`eval()` commutano un flag che cambia il comportamento dei moduli "a
-doppia personalità": `nn.Dropout` (attivo solo in training) e `nn.BatchNorm`
-(statistiche del batch in training, medie mobili in valutazione) sono i due
-casi principali. `torch.no_grad()` è un context manager che sospende la
+doppia personalità": `nn.Dropout` (attivo solo in training) e le
+`nn.BatchNorm1d/2d/3d` (statistiche del batch in training, medie mobili in
+valutazione) sono i due casi principali. Attenzione a come si dice, perché la
+formulazione sbrigativa («`eval()` spegne dropout e batch norm») è falsa per la
+seconda: in `eval()` il dropout diventa davvero l'identità, la batch norm
+invece continua a normalizzare, solo che usa le medie mobili accumulate invece
+delle statistiche del batch corrente. Misurato su torch 2.13: un
+`nn.BatchNorm1d(3)` allenato su dati centrati attorno a $10$ e poi messo in
+`eval()` restituisce uscite di media $\approx 0$ a fronte di ingressi di media
+$\approx 10$. La differenza non è terminologica: chi crede che `eval()`
+disattivi la batch norm non capisce perché un modello valutato con un batch da
+un solo esempio funzioni benissimo in `eval()` (le medie mobili non dipendono
+dal batch) e produca `nan` in `train()` (la varianza di un esempio solo è
+zero). `torch.no_grad()` è un context manager che sospende la
 costruzione del grafo autograd: non vengono salvati i valori intermedi per un
 `backward()` che non arriverà mai, con un risparmio di memoria che cresce con
 la profondità della rete, e l'inferenza accelera. Sono due meccanismi
@@ -220,7 +257,12 @@ indipendenti e servono entrambi: `eval()` senza `no_grad()` dà predizioni
 corrette ma spreca memoria; `no_grad()` senza `eval()` lascia il dropout
 acceso e falsa le predizioni. Il nostro MLP non ha né dropout né batch norm,
 quindi qui `eval()` è tecnicamente superfluo, ma scriverlo sempre è
-un'abitudine che evita bug sottili appena il modello cresce.
+un'abitudine che evita bug sottili appena il modello cresce. Quando si fa
+soltanto inferenza esiste una forma più stretta di `no_grad()`,
+`torch.inference_mode()`, che oltre a non registrare rinuncia anche al
+*version counter* e al tracciamento delle viste: è leggermente più veloce, al
+prezzo che i tensori che produce non possono poi rientrare in un grafo
+autograd.
 `````
 
 ## Quando fermarsi: la validazione
@@ -259,8 +301,9 @@ validazione non migliora da $k$ epoche (la *patience*), si esce dal ciclo e si
 ricaricano i pesi dell'epoca migliore, salvati via via con `torch.save`. Ciò
 che Keras offriva come callback preconfezionate, in PyTorch sono sei righe di
 controllo di flusso, in cambio, nessun limite: fermarsi su una metrica
-composta, salvare solo a condizioni particolari, riprendere da checkpoint sono
-varianti banali dello stesso `if`. Il divario
+composta o salvare solo a condizioni particolari sono varianti banali dello
+stesso `if`. Riprendere da checkpoint no, ed è la trappola della sezione
+seguente: vuole anche lo stato dell'ottimizzatore. Il divario
 $\mathcal{L}_{\text{val}} - \mathcal{L}_{\text{train}}$ resta la bussola: se
 si allarga, servono i freni (regolarizzazione L2 via `weight_decay`
 dell'ottimizzatore, `nn.Dropout`) che approfondiremo nel capitolo sul deep
@@ -270,15 +313,26 @@ learning.
 ## Salvare il lavoro: lo `state_dict`
 
 Un modello addestrato va messo al sicuro. In PyTorch non si salva l'oggetto
-modello: si salva il suo **`state_dict`**, il dizionario di tutti i pesi.
+modello: si salva il suo **`state_dict`**, il dizionario che associa a ogni
+tensore del modello il suo nome. Dentro non ci sono solo i pesi imparati: ci
+sono anche i *buffer*, cioè i numeri che il modello si tiene da parte senza
+impararli (le medie mobili della batch norm, per esempio).
+
+Il motivo per cui non si salva l'oggetto intero è pratico. Salvare l'oggetto
+significherebbe mettere nel file anche la classe Python che lo descrive, e
+quella classe sta nel tuo codice, che intanto cambia: fra sei mesi il file
+proverebbe a ricostruire una classe che non esiste più con quel nome, o che
+esiste con un `forward` diverso. Salvando solo i numeri, il file resta leggibile
+finché sai ricostruire l'architettura, e l'architettura è scritta nel codice,
+dove si può leggere e correggere.
 
 ```python
-torch.save(model.state_dict(), "mnist_mlp.pt")     # salva i pesi
+torch.save(model.state_dict(), "mnist_mlp.pt")     # salva i numeri
 
 model2 = nn.Sequential(                            # stessa architettura...
-    nn.Flatten(), nn.Linear(784, 128), nn.ReLU(), nn.Linear(128, 10)
+    nn.Flatten(), nn.Linear(28 * 28, 128), nn.ReLU(), nn.Linear(128, 10)
 )
-model2.load_state_dict(torch.load("mnist_mlp.pt")) # ...pesi ricaricati
+model2.load_state_dict(torch.load("mnist_mlp.pt")) # ...numeri ricaricati
 model2.eval()                                      # pronto per l'uso
 ```
 
@@ -289,6 +343,91 @@ circolano i modelli pre-addestrati che riutilizzeremo nel capitolo sulla
 visione artificiale, quando un modello nato per un compito verrà rifinito
 (*fine-tuning*) su un altro.
 
+C'è però una distinzione da fare subito, perché costa una riga farla e giorni
+scoprirla dopo: **salvare per usare** e **salvare per riprendere** non sono la
+stessa cosa.
+
+`````{tab} Elementare
+Il file con i soli pesi serve a **usare** il modello: lo ricarichi, gli dai
+un'immagine, ti risponde. Non serve a **riprendere** l'addestramento dal punto
+in cui l'avevi interrotto.
+
+La ragione è che l'ottimizzatore, mentre corregge i pesi, si costruisce una
+memoria di come si sono mossi finora: è proprio quella memoria che gli permette
+di dare a ciascun peso il passo giusto. Ricaricare i pesi e ripartire con un
+ottimizzatore appena creato è come rimettere in corsa un ciclista da fermo, nel
+punto esatto in cui l'avevi lasciato: la posizione è quella giusta, ma lo
+slancio è perduto, e la prima pedalata è sbagliata. Misurato: il primo passo
+dopo una ripresa fatta così è quasi quattro volte più lungo di quello che
+sarebbe stato senza interruzione.
+
+Il rimedio costa una riga: nel file si mette anche lo stato
+dell'ottimizzatore, e al ritorno lo si ricarica.
+`````
+
+`````{tab} Superiore
+Con SGD nudo la questione è marginale; con `optim.Adam`, che è il default
+raccomandato all'inizio della sezione, i momenti $m$ e $v$ *sono* stato, e
+ripartire
+senza di essi non riprende la stessa traiettoria: la correzione bias del primo
+passo si ricalcola da $t = 1$, quindi il primo aggiornamento vale
+$\approx \eta$ pieno. Verificato su torch 2.13 (venti passi di Adam con
+$\eta = 0{,}1$, poi ripresa): il passo successivo misura $0{,}100$ senza lo
+stato dell'ottimizzatore contro $0{,}0256$ ricaricandolo, ed è esattamente il
+valore che si sarebbe avuto senza interruzione. Un fattore $3{,}9$, e nessun
+messaggio d'errore.
+
+Lo stesso vale per tutto ciò che ha uno `state_dict` e che il ciclo tocca:
+lo *scheduler* del learning rate, il `GradScaler` della precisione mista, il
+`sampler` distribuito. Un checkpoint completo è un dizionario, non un tensore.
+`````
+
+Ecco la forma minima, quella che si scrive una volta e si copia in ogni
+progetto:
+
+```python
+from torch import optim
+
+ottimizzatore = optim.Adam(model.parameters(), lr=1e-3)
+
+# checkpoint per RIPRENDERE: i pesi da soli non bastano
+torch.save({"epoca": 5,
+            "modello": model.state_dict(),
+            "ottimizzatore": ottimizzatore.state_dict()}, "checkpoint.pt")
+
+stato = torch.load("checkpoint.pt")
+model.load_state_dict(stato["modello"])
+ottimizzatore.load_state_dict(stato["ottimizzatore"])   # la riga che si dimentica
+print(f"ripresa dall'epoca {stato['epoca']}; lo stato dell'ottimizzatore "
+      f"ha le chiavi {list(stato['ottimizzatore'])}")
+```
+
+Il capitolo [dal notebook agli script](dal-notebook-agli-script.md) riprende
+questo file e ci aggiunge le altre due cose che servono a rileggerlo fra sei
+mesi: i nomi delle classi e la configurazione dell'esperimento.
+
+`````{tab} Elementare
+```{admonition} Da ricordare
+:class: important
+- Il **giro di addestramento** ha cinque passi fissi, sempre nello stesso
+  ordine: prevedi, misura l'errore, butta gli appunti del giro prima, capisci
+  in che direzione hai sbagliato, correggi. Il terzo passo serve perché
+  altrimenti gli appunti si sommano.
+- Gli esempi arrivano in **mucchietti** (i mini-batch): la dispensa
+  (`Dataset`) sa consegnarli uno per uno, il cameriere (`DataLoader`) li
+  mescola e li porta in tavola a vassoi.
+- Quando il modello **dà l'esame** si aziona `model.eval()`, e si aggiunge
+  `torch.no_grad()` per non prendere appunti inutili. Sono due interruttori
+  diversi e servono tutti e due.
+- Le due curve, quella dell'addestramento e quella della simulazione d'esame,
+  dicono quando è ora di **fermarsi**: quando la seconda smette di migliorare.
+- Del modello si salvano **i numeri**, non l'oggetto: l'architettura sta nel
+  codice. E per riprendere l'addestramento dove si era interrotto serve anche
+  la memoria dell'ottimizzatore, non solo i pesi.
+```
+`````
+
+`````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
 - Il **training loop** ha cinque passi fissi: forward → loss →
@@ -297,10 +436,14 @@ visione artificiale, quando un modello nato per un compito verrà rifinito
 - `Dataset` consegna gli esempi, `DataLoader` li rimescola e li impila in
   **mini-batch**: il gradiente sul batch è una stima rumorosa ma economica di
   quello vero.
-- In valutazione: `model.eval()` spegne dropout e batch norm,
-  `torch.no_grad()` spegne autograd (servono entrambi).
+- In valutazione: `model.eval()` spegne il dropout e passa la batch norm alle
+  **medie mobili** (non la spegne: continua a normalizzare); `torch.no_grad()`
+  sospende autograd. Servono entrambi.
 - Le curve di training e validazione diagnosticano l'**overfitting**;
   l'early stopping in PyTorch è un semplice `if` nel loop.
 - Si salva lo **`state_dict`** (`torch.save`/`load_state_dict`), non
-  l'oggetto: il modello è codice, i pesi sono dati.
+  l'oggetto: contiene parametri **e** buffer. Per *riprendere* servono anche
+  `ottimizzatore.state_dict()` e l'epoca; senza, con Adam il primo passo dopo
+  la ripresa è quello di un ottimizzatore appena nato.
 ```
+`````

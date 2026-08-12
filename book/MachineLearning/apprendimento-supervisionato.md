@@ -19,31 +19,77 @@ Tre tipi di colonna, tre cose che si possono fare con i numeri. Confonderli è
 l'errore che porta un modello a calcolare la media fra «Milano» e «Roma».
 ```
 
-La distinzione di {numref}`fig-tipi-di-feature` è la prima decisione di ogni
-progetto e non la prende il modello: la prende chi prepara i dati. Una colonna
-categorica codificata come intero diventa, per il modello, una colonna
-numerica a tutti gli effetti, con un ordine e delle distanze che nessuno
-intendeva metterci.
+I dati di partenza sono quasi sempre una **tabella**: una riga per esempio (un
+appartamento, un'email, un paziente) e una colonna per caratteristica. Ma non
+tutte le colonne sono fatte della stessa pasta, ed è la distinzione che mostra
+{numref}`fig-tipi-di-feature`:
 
-Riprendiamo il vettore delle caratteristiche del capitolo di algebra lineare:
-ogni appartamento è un vettore $X$ (metri quadri, stanze, piano), e a ciascuno
-associamo un'etichetta $y$ (il prezzo). Il "supervisore" è proprio quella
-$y$ nota: qualcuno, in passato, ha già registrato la risposta giusta.
+- una colonna **numerica** contiene numeri veri, su cui somme, differenze e
+  medie hanno un senso: i metri quadri di una casa, la sua età;
+- una colonna **categorica** contiene nomi, senza nessun ordine: il quartiere,
+  il colore, la marca. Milano e Roma non sono uno più dell'altro, e la loro
+  media non esiste;
+- una colonna **ordinale** sta in mezzo: i valori sono in fila (classe
+  energetica A, B, C; «lieve», «moderato», «grave») ma non sappiamo di quanto
+  disti uno dall'altro.
+
+Questa è la prima decisione di ogni progetto e non la prende il modello: la
+prende chi prepara i dati. Se al quartiere «Milano» assegniamo il numero 1 e a
+«Roma» il 2 per poterli dare in pasto a un programma (si dice **codificare**
+una colonna), quella colonna per il modello è numerica a tutti gli effetti: ci
+farà sopra medie e differenze, e crederà che Roma sia il doppio di Milano e che
+fra le due ci sia qualcosa a 1,5. È un ordine, e sono delle distanze, che
+nessuno intendeva metterci.
+
+Riprendiamo il vettore delle caratteristiche del capitolo di algebra lineare.
+Di ogni appartamento teniamo tre numeri in fila (metri quadri, stanze, piano):
+un elenco ordinato di numeri si chiama **vettore**, e lo scriviamo
+$\mathbf{x}$, in grassetto minuscolo, proprio per ricordare che non è un numero
+solo. A ciascun appartamento associamo poi un'etichetta $y$ (il prezzo). Il
+"supervisore" è proprio quella $y$ nota: qualcuno, in passato, ha già
+registrato la risposta giusta.
+
+```{admonition} Una colonna è una direzione, un esempio è un punto
+:class: tip
+Vale la pena piantare qui un chiodo che regge mezzo capitolo, perché da qui in
+avanti il libro dà per scontato che ci sia.
+
+Prendi una tabella con due sole colonne: metri quadri e prezzo. Puoi disegnarla
+su un foglio a quadretti, con i metri quadri sull'asse orizzontale e il prezzo
+su quello verticale: ogni appartamento diventa **un punto**, e la tabella
+diventa una nuvola di punti. Con tre colonne servirebbe una scatola invece di
+un foglio, e i punti starebbero sospesi in aria. Con quattro colonne non
+riusciamo più a disegnarla, e tuttavia i conti si fanno lo stesso, identici a
+prima: si continua a parlare di punti, di distanze fra punti, di rette che li
+separano.
+
+Quindi: **ogni colonna della tabella è una direzione dello spazio, ogni riga è
+un punto in quello spazio.** Una tabella con cento colonne descrive punti in
+uno spazio a cento dimensioni, e «dimensione» vuol dire esattamente questo,
+niente di più misterioso. Ridurre le dimensioni vorrà dire togliere direzioni;
+«spazio delle caratteristiche» sarà il nome di quello spazio lì; e frasi come
+«due esempi vicini» vorranno dire «due punti vicini», cioè due appartamenti
+simili in tutte le colonne insieme.
+```
 
 `````{tab} Elementare
 
-Abbiamo tante coppie *(descrizione, risposta)*: la descrizione è la nostra $X$,
-la risposta è la $y$. L'obiettivo è trovare una **regola** che, data una nuova
-descrizione, indovini la risposta. Chiamiamo questa regola $f$:
+Abbiamo tante coppie *(descrizione, risposta)*: la descrizione è la nostra
+$\mathbf{x}$, la risposta è la $y$. L'obiettivo è trovare una **regola** che,
+data una nuova descrizione, indovini la risposta. Chiamiamo questa regola $f$:
 
 $$
-\hat{y} = f(X)
+\hat{y} = f(\mathbf{x})
 $$
 
-Il cappello su $\hat{y}$ ricorda che è una *previsione*, non la verità: è la
-migliore ipotesi del modello. Imparare significa scegliere la $f$ che sbaglia
-il meno possibile sugli esempi che già conosciamo, sperando che se la cavi bene
-anche su quelli nuovi.
+Si legge così: dài la descrizione $\mathbf{x}$ alla regola $f$, e lei ti
+restituisce una risposta. È la stessa scrittura dei tasti di una calcolatrice
+(dài un numero a «radice quadrata» e ottieni un risultato), solo che qui quello
+che entra è un elenco di numeri e la regola è tutta da trovare. Il cappello su
+$\hat{y}$ ricorda che è una *previsione*, non la verità: è la migliore ipotesi
+del modello. Imparare significa scegliere la $f$ che sbaglia il meno possibile
+sugli esempi che già conosciamo, sperando che se la cavi bene anche su quelli
+nuovi.
 
 `````
 
@@ -52,17 +98,18 @@ anche su quelli nuovi.
 Partiamo da un insieme di addestramento di $m$ esempi etichettati,
 
 $$
-\mathcal{D} = \{(X^{(i)}, y^{(i)})\}_{i=1}^{m}, \qquad X^{(i)}\in\mathbb{R}^n,
+\mathcal{D} = \{(\mathbf{x}^{(i)}, y^{(i)})\}_{i=1}^{m},
+\qquad \mathbf{x}^{(i)}\in\mathbb{R}^n,
 $$
 
 e cerchiamo una funzione $f:\mathcal{X}\to\mathcal{Y}$ che approssimi la
-relazione ignota tra ingressi e uscite, con $\hat{y}=f(X)$. La qualità di $f$
-si misura con una **funzione di costo** (o *loss*) $\mathcal{L}$, e
+relazione ignota tra ingressi e uscite, con $\hat{y}=f(\mathbf{x})$. La qualità
+di $f$ si misura con una **funzione di costo** (o *loss*) $\mathcal{L}$, e
 l'addestramento è il problema di ottimizzazione
 
 $$
 \theta^\star = \arg\min_{\theta}\ \frac{1}{m}\sum_{i=1}^{m}
-\mathcal{L}\big(f_\theta(X^{(i)}),\, y^{(i)}\big),
+\mathcal{L}\big(f_\theta(\mathbf{x}^{(i)}),\, y^{(i)}\big),
 $$
 
 dove $\theta$ sono i parametri del modello. La natura di $\mathcal{Y}$
@@ -76,7 +123,8 @@ classificazione.
 Ciò che cambia tutto è il *tipo* di risposta. "Quanto costa questa casa?"
 chiede un numero su una scala continua: è **regressione**. "Questa email è
 spam, sì o no?" chiede un'etichetta da un insieme finito: è
-**classificazione**. Stesso impianto, imparare $f$ da coppie $(X, y)$, due
+**classificazione**. Stesso impianto, imparare $f$ da coppie
+$(\mathbf{x}, y)$, due
 geometrie diverse, come mostra {numref}`fig-regr-classif`: a sinistra
 cerchiamo una linea che *segua* i punti, a destra una linea che li *separi*.
 
@@ -91,9 +139,12 @@ Due volti dello stesso problema. Nella regressione (sinistra) la retta
 
 ## La regressione lineare: la retta di best fit
 
-Il modello più semplice, e sorprendentemente utile, ipotizza che la risposta
-sia una combinazione lineare delle caratteristiche: raddoppia i metri quadri e,
-grosso modo, il prezzo sale in proporzione.
+Il modello più semplice, e sorprendentemente utile, ipotizza che ogni
+caratteristica spinga la risposta in proporzione: raddoppia i metri quadri e,
+grosso modo, il prezzo raddoppia; una stanza in più vale sempre lo stesso
+tanto, che sia la seconda o la quinta. Ogni caratteristica ha il suo peso, si
+moltiplica e si somma, e nient'altro: in gergo, la risposta è una
+**combinazione lineare** delle caratteristiche.
 
 `````{tab} Elementare
 
@@ -113,6 +164,29 @@ buona? Guardiamo, per ogni casa, la distanza in verticale tra il prezzo vero e
 quello previsto, la eleviamo al quadrato (così gli errori non si annullano tra
 loro) e facciamo la media. Più questo numero è piccolo, migliore è la retta.
 
+Resta la domanda vera: **come la troviamo**, visto che di rette ce ne sono
+infinite e provarle tutte è impossibile? Non a caso, e nemmeno a tentativi
+ciechi. Si parte da una retta qualsiasi e la si aggiusta a piccoli passi.
+Immagina di essere su un fianco di collina in mezzo alla nebbia e di voler
+scendere: non vedi il fondovalle, ma con un piede senti da che parte il terreno
+scende, e fai un passo in quella direzione. Poi rifai la stessa cosa da dove sei
+arrivato, e così via, finché il terreno non è più in discesa da nessuna parte.
+
+Qui la collina è l'errore, e la posizione sul fianco sono i due numeri $w$ e
+$b$: cambiando $w$ e $b$ ci si sposta sul terreno, e l'altezza è quanto la
+retta sbaglia. La matematica sa dire, senza provare, da che parte l'errore
+cala: quella direzione si chiama **gradiente**, e la procedura che ripete il
+passo si chiama **discesa del gradiente**. Quanto è lungo il passo lo decidiamo
+noi, e non è un dettaglio: passi troppo corti impiegano un'eternità, passi
+troppo lunghi scavalcano il fondovalle e rimbalzano da un fianco all'altro.
+Quella lunghezza ha un nome che tornerà spesso, **learning rate** (il *tasso di
+apprendimento*), e ci sarà una sezione intera dedicata a come si sceglie.
+
+È il motore di quasi tutto l'apprendimento del libro, reti neurali comprese, e
+la ragione per cui in questo capitolo si insiste tanto sulla parola «errore»:
+l'errore non serve solo a dare un voto al modello, serve a dirgli da che parte
+andare.
+
 `````
 
 `````{tab} Superiore
@@ -120,18 +194,20 @@ loro) e facciamo la media. Più questo numero è piccolo, migliore è la retta.
 Con $n$ caratteristiche il modello diventa un prodotto scalare più un bias:
 
 $$
-\hat{y} = W^\top X + b .
+\hat{y} = \mathbf{w}^\top \mathbf{x} + b .
 $$
 
-I parametri $W\in\mathbb{R}^n$ e $b\in\mathbb{R}$ si stimano minimizzando
-l'**errore quadratico medio** (*Mean Squared Error*):
+I parametri $\mathbf{w}\in\mathbb{R}^n$ e $b\in\mathbb{R}$ si stimano
+minimizzando l'**errore quadratico medio** (*Mean Squared Error*):
 
 $$
-\mathcal{L}(W, b) = \frac{1}{m}\sum_{i=1}^{m}\big(\hat{y}^{(i)} - y^{(i)}\big)^2
-= \frac{1}{m}\sum_{i=1}^{m}\big(W^\top X^{(i)} + b - y^{(i)}\big)^2 .
+\mathcal{L}(\mathbf{w}, b)
+= \frac{1}{m}\sum_{i=1}^{m}\big(\hat{y}^{(i)} - y^{(i)}\big)^2
+= \frac{1}{m}\sum_{i=1}^{m}
+\big(\mathbf{w}^\top \mathbf{x}^{(i)} + b - y^{(i)}\big)^2 .
 $$
 
-$\mathcal{L}$ è convessa in $(W,b)$: niente minimi locali in cui restare
+$\mathcal{L}$ è convessa in $(\mathbf{w},b)$: niente minimi locali in cui restare
 intrappolati. Se le colonne della matrice dei dati, insieme alla colonna
 costante del bias, sono linearmente indipendenti, il minimo è anche unico e si
 raggiunge in forma chiusa con le equazioni normali; con feature collineari (una
@@ -146,10 +222,15 @@ ovunque: due proprietà che tornano comode.
 
 ## La regressione logistica: dal numero alla probabilità
 
-Per la classificazione la retta da sola non basta: un prezzo può valere
-$310\,000$, ma "spam sì/no" vive solo tra $0$ e $1$. La **regressione
+Per la classificazione la retta da sola non basta. Cominciamo col mettere in
+numeri la risposta: siccome un modello lavora solo su numeri, decidiamo per
+convenzione che «no» si scrive $0$ e «sì» si scrive $1$ (è una nostra scelta di
+scrittura, non una proprietà del mondo, e nulla cambierebbe scambiandole).
+Fatto questo, la differenza salta all'occhio: un prezzo può valere
+$310\,000$, mentre «spam sì/no» vive solo tra $0$ e $1$. La **regressione
 logistica** (che, malgrado il nome, classifica) risolve il problema
-schiacciando l'uscita lineare dentro l'intervallo $(0,1)$.
+schiacciando l'uscita lineare dentro l'intervallo $(0,1)$, e la si legge come
+la probabilità che la risposta sia «sì».
 
 ```{figure} ../figures/regressione-logistica.svg
 :name: fig-sigmoide-soglia
@@ -163,12 +244,17 @@ zero e uno, e la decisione arriva dopo, quando si sceglie dove tagliare.
 La separazione fra i due gesti in {numref}`fig-sigmoide-soglia` conta più di
 quanto sembri, e tornerà nel capitolo sulle metriche. Il modello produce una
 probabilità; la soglia a $0{,}5$ è una convenzione, non un risultato, e
-spostarla è il modo più economico di scambiare falsi positivi con falsi
-negativi senza riaddestrare niente.
+spostarla è il modo più economico di scegliere quale errore preferiamo pagare:
+abbassandola si segnalano più email come spam, quindi più messaggi buoni
+finiscono nel cestino ma meno spam passa; alzandola succede l'opposto. Nessuno
+dei due errori sparisce, si scambiano l'uno con l'altro, e la cosa notevole è
+che si può fare senza riaddestrare niente.
 
 `````{tab} Elementare
 
-Prima calcoliamo un punteggio lineare, come nella regressione. Poi lo facciamo
+Prima calcoliamo un punteggio lineare, come nella regressione: moltiplichiamo
+ogni caratteristica per il suo peso, sommiamo tutto e aggiungiamo il numero di
+partenza. Poi lo facciamo
 passare in una funzione a forma di "S", la **sigmoide**, che comprime qualsiasi
 numero in un valore tra $0$ e $1$: lo leggiamo come una *probabilità*. Un
 punteggio molto positivo esce vicino a $1$ ("quasi certo spam"), uno molto
@@ -179,17 +265,19 @@ confine, il punto in cui il modello è indeciso e cambia idea.
 
 `````{tab} Superiore
 
-Sia $z = W^\top X + b$ il punteggio lineare. La sigmoide (o logistica) è
+Sia $z = \mathbf{w}^\top \mathbf{x} + b$ il punteggio lineare. La sigmoide (o
+logistica) è
 
 $$
 \sigma(z) = \frac{1}{1 + e^{-z}} \in (0, 1),
 $$
 
-e interpretiamo $\hat{y} = \sigma(z)$ come $P(y=1 \mid X)$. La previsione di
-classe si ottiene con una soglia a $0{,}5$, che equivale a $z = 0$: l'insieme
+e interpretiamo $\hat{y} = \sigma(z)$ come $P(y=1 \mid \mathbf{x})$. La
+previsione di classe si ottiene con una soglia a $0{,}5$, che equivale a
+$z = 0$: l'insieme
 
 $$
-\{X : W^\top X + b = 0\}
+\{\mathbf{x} : \mathbf{w}^\top \mathbf{x} + b = 0\}
 $$
 
 è il **confine di decisione**, un iperpiano che divide lo spazio in due regioni.
@@ -214,8 +302,13 @@ che vince fra i suoi $k$ vicini, e cambiare $k$ può cambiare il verdetto.
 Il cerchio disegnato in {numref}`fig-knn` è tutta la scelta di progetto:
 allargandolo si includono vicini più lontani, e la decisione diventa più
 stabile ma meno sensibile alle strutture locali. Con $k=1$ il modello ripete
-il vicino più prossimo, rumore compreso; con $k$ pari al numero di esempi,
-risponde sempre la classe più frequente.
+il vicino più prossimo, **rumore** compreso. Vale la pena fermarsi su questa
+parola, perché da qui in avanti torna in ogni sezione: il rumore non ha niente
+a che fare con il suono, è tutto ciò che nei dati è accidente invece che
+regola. L'errore di chi ha misurato, la casa venduta a poco perché il
+proprietario aveva fretta, la giornata storta: cose che sono successe davvero e
+che non si ripeteranno. Con $k$ pari al numero di esempi, all'estremo opposto,
+il modello risponde sempre la classe più frequente.
 
 `````{tab} Elementare
 
@@ -231,8 +324,9 @@ numeri, li usa tutti.
 
 `````{tab} Superiore
 
-Dato un punto $X$, si ordinano gli esempi di addestramento per distanza,
-tipicamente euclidea, $\lVert X - X^{(i)}\rVert_2$, e si prendono i $k$ più
+Dato un punto $\mathbf{x}$, si ordinano gli esempi di addestramento per
+distanza, tipicamente euclidea,
+$\lVert \mathbf{x} - \mathbf{x}^{(i)}\rVert_2$, e si prendono i $k$ più
 vicini. In classificazione si assegna la classe di maggioranza; in regressione
 si fa la media dei loro $y^{(i)}$. Non esiste una fase di ottimizzazione: il
 costo si sposta interamente sulla previsione, $O(m)$ per query nella versione
@@ -253,12 +347,15 @@ qui sotto.
 
 ```{warning}
 **k-NN ha un nemico naturale: le troppe dimensioni.** Tutto il metodo poggia
-sull'idea che «vicino» voglia dire «simile». In alta dimensione quell'idea si
-sgretola: distribuendo punti a caso, le distanze fra tutte le coppie diventano
-quasi identiche, e lo scarto fra il vicino più prossimo e il più lontano si
-assottiglia fino a sparire. È come chiedere a qualcuno di indicare il migliore
-amico in una folla dove tutti stanno esattamente alla stessa distanza: la
-domanda perde senso, e il voto dei $k$ vicini diventa un voto casuale.
+sull'idea che «vicino» voglia dire «simile». Ricordando che ogni colonna della
+tabella è una direzione e ogni esempio un punto, «tante dimensioni» vuol dire
+semplicemente «tante colonne»: cento misure per ogni paziente, mille parole
+contate per ogni email. Lassù quell'idea si sgretola: distribuendo punti a
+caso, le distanze fra tutte le coppie diventano quasi identiche, e lo scarto
+fra il vicino più prossimo e il più lontano si assottiglia fino a sparire. È
+come chiedere a qualcuno di indicare il migliore amico in una folla dove tutti
+stanno esattamente alla stessa distanza: la domanda perde senso, e il voto dei
+$k$ vicini diventa un voto casuale.
 
 Per questo k-NN va quasi sempre preceduto da una riduzione della dimensionalità
 o da una selezione seria delle feature. Il fenomeno, con i conti, è la
@@ -300,12 +397,48 @@ La stessa forma (`fit` per imparare, `predict` per rispondere) vale per quasi
 tutti i modelli della libreria: è la grammatica comune che ci porteremo dietro
 per tutto il resto del libro.
 
+`````{tab} Elementare
+
 ```{admonition} Da ricordare
 :class: important
-- Supervisionato significa imparare $f:X\to y$ da **esempi già etichettati**.
+- **Supervisionato** vuol dire imparare da esempi che portano già con sé la
+  risposta giusta: tante coppie *(descrizione, risposta)*, e una regola da
+  trovare che leghi le une alle altre.
+- Ogni **colonna** della tabella è una direzione, ogni **riga** un punto in
+  quello spazio. Con due colonne il disegno sta su un foglio; con cento no, ma
+  i conti sono gli stessi, e «vicini» continua a voler dire «simili».
+- Se la risposta è un **numero** si cerca una retta che passi *in mezzo* ai
+  punti; se è un **sì o no** si cerca una linea che li *separi*, dopo aver
+  trasformato il punteggio in una probabilità e aver scelto dove tagliare.
+- La retta buona non si trova per tentativi: si parte da una qualsiasi e la si
+  sposta a piccoli passi nella direzione in cui l'errore cala (la **discesa del
+  gradiente**), decidendo quanto lunghi sono i passi.
+- Il **k-NN** non impara niente: tiene in memoria tutti gli esempi e, alla
+  domanda, fa votare i $k$ più simili. Semplicissimo, ma va in crisi quando le
+  colonne sono troppe, perché allora tutti i punti sono lontani uguale.
+- L'insidia di tutto il capitolo è imparare **a memoria** invece che capire
+  (l'*overfitting*): è la prossima sezione.
+```
+
+`````
+
+`````{tab} Superiore
+
+```{admonition} Da ricordare
+:class: important
+- Supervisionato significa imparare $f:\mathcal{X}\to\mathcal{Y}$ da **esempi
+  già etichettati**, minimizzando una loss $\mathcal{L}$ su $m$ coppie
+  $(\mathbf{x}^{(i)}, y^{(i)})$.
 - **Regressione** = uscita continua (MSE, retta di best fit); **classificazione**
-  = uscita discreta (sigmoide, confine di decisione).
+  = uscita discreta (sigmoide, confine di decisione $\mathbf{w}^\top\mathbf{x}+b=0$).
+- Il tipo di ogni colonna (numerica, categorica, ordinale) è una decisione di
+  chi prepara i dati: una categorica codificata come intero acquista un ordine
+  e delle distanze che nessuno intendeva metterci.
 - **k-NN** è non parametrico: non stima parametri, ricorda i dati e li fa votare.
+  Costo $O(m)$ per query, e la concentrazione delle distanze lo affossa in alta
+  dimensione.
 - Attenzione all'**overfitting**: imparare a memoria non è capire. Ne parliamo
   nella sezione dedicata.
 ```
+
+`````

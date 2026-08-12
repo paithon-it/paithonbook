@@ -34,5 +34,5 @@
   <!-- freccia di retroazione (riaddestra il modello) -->
   <path d="M 630 260 C 630 350, 360 360, 360 272" fill="none" stroke="#2D5A5C" stroke-width="1.5" stroke-dasharray="6 5"/>
   <polygon points="360,272 354,283 366,283" fill="#2D5A5C"/>
-  <text x="470" y="352" font-family="sans-serif" font-size="12" fill="#2D5A5C" text-anchor="middle">riaddestra il modello — nessuna etichetta umana sull'innocuità</text>
+  <text x="470" y="352" font-family="sans-serif" font-size="12" fill="#2D5A5C" text-anchor="middle">riaddestra il modello: nessuna etichetta umana sull'innocuità</text>
 </svg>

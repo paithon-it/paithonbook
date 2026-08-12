@@ -1,0 +1,42 @@
+<svg viewBox="0 0 720 316" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Schema: la stessa distribuzione sui token, riscalata dalla temperatura e troncata dal top_p, e il taglio del top_p che si sposta quando cambia la temperatura">
+  <rect x="0" y="0" width="720" height="316" fill="#F8F5EE"/>
+  <text x="360" y="30" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="bold" fill="#1A1A1A">Una distribuzione, due manopole</text>
+  <g font-family="sans-serif" font-size="12">
+    <text x="130" y="60" text-anchor="middle" font-size="13" font-weight="bold" fill="#1A1A1A">originale (T = 1)</text>
+    <line x1="40" y1="200" x2="220" y2="200" stroke="#1A1A1A" stroke-width="1.5"/>
+    <rect x="50" y="110" width="24" height="90" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="1.5"/>
+    <rect x="82" y="140" width="24" height="60" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="1.5"/>
+    <rect x="114" y="168" width="24" height="32" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="1.5"/>
+    <rect x="146" y="188" width="24" height="12" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="1.5"/>
+    <rect x="178" y="194" width="24" height="6" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="1.5"/>
+    <text x="130" y="222" text-anchor="middle" fill="#1A1A1A">token ordinati per probabilità</text>
+    <text x="130" y="240" text-anchor="middle" fill="#5A524A">45 · 30 · 16 · 6 · 3 per cento</text>
+  </g>
+  <g font-family="sans-serif" font-size="12">
+    <text x="360" y="60" text-anchor="middle" font-size="13" font-weight="bold" fill="#B5532C">temperatura alta (T = 2)</text>
+    <line x1="270" y1="200" x2="450" y2="200" stroke="#1A1A1A" stroke-width="1.5"/>
+    <rect x="280" y="134" width="24" height="66" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5"/>
+    <rect x="312" y="146" width="24" height="54" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5"/>
+    <rect x="344" y="161" width="24" height="39" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5"/>
+    <rect x="376" y="176" width="24" height="24" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5"/>
+    <rect x="408" y="183" width="24" height="17" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5"/>
+    <text x="360" y="222" text-anchor="middle" fill="#1A1A1A">riscala tutti, non esclude nessuno</text>
+    <text x="360" y="240" text-anchor="middle" fill="#5A524A">33 · 27 · 20 · 12 · 9 per cento</text>
+  </g>
+  <g font-family="sans-serif" font-size="12">
+    <text x="590" y="60" text-anchor="middle" font-size="13" font-weight="bold" fill="#2D5A5C">top_p = 0,9 (a T = 1)</text>
+    <line x1="500" y1="200" x2="680" y2="200" stroke="#1A1A1A" stroke-width="1.5"/>
+    <rect x="510" y="110" width="24" height="90" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="1.5"/>
+    <rect x="542" y="140" width="24" height="60" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="1.5"/>
+    <rect x="574" y="168" width="24" height="32" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="1.5"/>
+    <rect x="606" y="188" width="24" height="12" fill="#E2DCC9" stroke="#5A524A" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <rect x="638" y="194" width="24" height="6" fill="#E2DCC9" stroke="#5A524A" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <line x1="602" y1="96" x2="602" y2="206" stroke="#B5532C" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="602" y="88" text-anchor="middle" fill="#B5532C" font-weight="bold">cumulata 91%</text>
+    <text x="590" y="222" text-anchor="middle" fill="#1A1A1A">taglia: la coda va a zero</text>
+    <text x="590" y="240" text-anchor="middle" fill="#5A524A">3 token bastano a superare 0,9</text>
+  </g>
+  <line x1="40" y1="258" x2="680" y2="258" stroke="#C5BEAA" stroke-width="1.5"/>
+  <text x="360" y="280" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#1A1A1A">Ma non sono indipendenti: con lo stesso p = 0,9, a T = 1 il nucleo è di 3 token, a T = 2 di 4.</text>
+  <text x="360" y="298" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#B5532C">la temperatura sposta il taglio</text>
+</svg>

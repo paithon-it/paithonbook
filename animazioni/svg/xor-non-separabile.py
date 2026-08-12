@@ -12,32 +12,36 @@ from paithon_svg import *
 NOME = "xor-non-separabile"
 TITOLO = "lo XOR non è separabile linearmente"
 
-DATI = [((1.2, 1.2), 1), ((-1.2, -1.2), 1),      # stessa classe: diagonale
-        ((1.2, -1.2), -1), ((-1.2, 1.2), -1)]    # l'altra: antidiagonale
+# Il quadrato unitario, come il testo: (0,0) e (1,1) danno XOR 0, (0,1) e (1,0)
+# danno XOR 1. Il terracotta è la classe di uscita 1, come nella figura del
+# percettrone che il testo chiede di confrontare con questa.
+DATI = [((0, 1), 1), ((1, 0), 1),      # XOR = 1: antidiagonale
+        ((0, 0), 0), ((1, 1), 0)]      # XOR = 0: diagonale
 
 ANGOLI = [20, 65, 110, 155, 200]   # gli orientamenti provati, in gradi
 
 
 def prova(alpha_gradi):
-    """Errori di una retta per l'origine con normale ad angolo alpha."""
+    """Errori di una retta per il centro del quadrato, normale ad angolo alpha."""
     a = math.radians(alpha_gradi)
     w = (math.cos(a), math.sin(a))
-    sbagliati = [i for i, ((x, y), t) in enumerate(DATI)
-                 if t * (w[0] * x + w[1] * y) <= 0]
-    return w, sbagliati
+    b = -0.5 * (w[0] + w[1])           # la retta passa per il centro (0,5, 0,5)
+    sbagliati = [i for i, ((x, y), xor) in enumerate(DATI)
+                 if (1 if w[0] * x + w[1] * y + b >= 0 else 0) != xor]
+    return w, b, sbagliati
 
 
 def costruisci() -> Figura:
-    r = Riquadro(xmin=-1.9, xmax=1.9, ymin=-1.9, ymax=1.9)
+    r = Riquadro(xmin=-0.45, xmax=1.45, ymin=-0.45, ymax=1.45)
     stati = [(a, *prova(a)) for a in ANGOLI]
     n = len(stati)
 
-    peggio = min(len(s[2]) for s in stati)
+    peggio = min(len(s[3]) for s in stati)
     if peggio < 2:
         raise AssertionError(f"uno degli orientamenti sbaglia solo {peggio} punti: "
                              "con lo XOR non può succedere")
 
-    pose = [r.posa_retta(w, 0.0) for _, w, _ in stati]
+    pose = [r.posa_retta(w, b) for _, w, b, _ in stati]
     tappe = []
     for i, (px, py, ang) in enumerate(pose):
         t0, t1 = sosta(i, n)
@@ -52,10 +56,26 @@ def costruisci() -> Figura:
              f'transform="translate({px:.1f},{py:.1f}) rotate({ang:.1f})">'
              f'<line class="sep" x1="-620" y1="0" x2="620" y2="0"/></g></g>']
 
+    # le tacche: senza 0 e 1 sugli assi i quattro punti che il testo nomina per
+    # coordinate non si trovano nel disegno
+    # tacche sui bordi del riquadro, etichette all'interno: sugli assi
+    # finirebbero addosso ai quattro punti, che stanno proprio lì
+    giu, sin = r.y + r.alt, r.x
+    for v in (0, 1):
+        corpo += [
+            f'<line class="ax" x1="{r.sx(v):.1f}" y1="{giu - 6}" '
+            f'x2="{r.sx(v):.1f}" y2="{giu}"/>',
+            f'<text class="lbs" x="{r.sx(v):.1f}" y="{giu - 14}" '
+            f'text-anchor="middle">{v}</text>',
+            f'<line class="ax" x1="{sin}" y1="{r.sy(v):.1f}" '
+            f'x2="{sin + 6}" y2="{r.sy(v):.1f}"/>',
+            f'<text class="lbs" x="{sin + 12}" y="{r.sy(v) + 5:.1f}">{v}</text>',
+        ]
+
     # ogni punto si cerchia nelle fasi in cui è dalla parte sbagliata
-    for i, ((x, y), t) in enumerate(DATI):
-        fasi = [k for k, (_, _, sb) in enumerate(stati) if i in sb]
-        cls = "pos" if t > 0 else "neg"
+    for i, ((x, y), xor) in enumerate(DATI):
+        fasi = [k for k, (_, _, _, sb) in enumerate(stati) if i in sb]
+        cls = "pos" if xor else "neg"
         extra = ""
         if fasi:
             tappe_p = [(0.0, "stroke-opacity:0")]
@@ -68,7 +88,7 @@ def costruisci() -> Figura:
             tappe_p.append((100.0, "stroke-opacity:0"))
             tappe_p.sort(key=lambda x: x[0])
             anim.append(keyframes(f"err{i}", tappe_p))
-            fermo = ";stroke-opacity:0.55" if i in stati[-1][2] else ""
+            fermo = ";stroke-opacity:0.55" if i in stati[-1][3] else ""
             corpo.append(f'<circle class="err" cx="{r.sx(x):.1f}" cy="{r.sy(y):.1f}" '
                          f'r="9" style="animation:err{i} var(--d) infinite{fermo}"/>')
         corpo.append(f'<circle class="pt {cls}" cx="{r.sx(x):.1f}" cy="{r.sy(y):.1f}" '
@@ -82,9 +102,9 @@ def costruisci() -> Figura:
     lx = r.x + r.larg + 26
     corpo += [
         f'<circle class="pt pos" cx="{lx}" cy="{r.y + 20}" r="9"/>',
-        f'<text class="lbs" x="{lx + 18}" y="{r.y + 25}">XOR = 0</text>',
+        f'<text class="lbs" x="{lx + 18}" y="{r.y + 25}">XOR = 1</text>',
         f'<circle class="pt neg" cx="{lx}" cy="{r.y + 50}" r="9"/>',
-        f'<text class="lbs" x="{lx + 18}" y="{r.y + 55}">XOR = 1</text>',
+        f'<text class="lbs" x="{lx + 18}" y="{r.y + 55}">XOR = 0</text>',
     ]
 
     return Figura(

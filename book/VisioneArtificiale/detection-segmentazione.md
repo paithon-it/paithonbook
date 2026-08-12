@@ -50,13 +50,20 @@ davvero un oggetto. L'addestramento minimizza una loss composita che somma un
 termine di **localizzazione** (errore sulle coordinate, tipicamente
 *smooth L1* o una IoU-loss), un termine di **classificazione** (cross-entropy
 sulla classe) e un termine di **objectness** che supervisiona la confidenza,
-spingendola verso uno dove un oggetto c'è e verso zero sullo sfondo:
+spingendola verso l'alto dove un oggetto c'è e verso zero sullo sfondo (in
+YOLOv1 il bersaglio non è uno ma la IoU stessa fra riquadro predetto e
+riquadro vero, così che il punteggio incorpori già la qualità della
+localizzazione; dai successori in poi, semplicemente uno):
 
 $$
 \mathcal{L} = \mathcal{L}_{\text{obj}} + \mathcal{L}_{\text{cls}} + \lambda \,\mathcal{L}_{\text{box}} .
 $$
 
-Il coefficiente $\lambda$ bilancia localizzazione e riconoscimento. Questa è
+Il coefficiente $\lambda$ bilancia localizzazione e riconoscimento; YOLO ne usa
+in realtà due, e il secondo ($\lambda_{\text{noobj}} = 0{,}5$ contro
+$\lambda_{\text{coord}} = 5$) serve proprio a smorzare il contributo delle
+moltissime celle vuote, cioè è un primo rimedio a quello squilibrio
+oggetto/sfondo su cui torneremo con la *focal loss*. Questa è
 la parametrizzazione di YOLO; nella famiglia Faster R-CNN il termine di
 objectness non sparisce, si sposta. Nel **primo** stadio, la *Region Proposal
 Network* di cui parla la prossima sezione, è proprio una objectness: ogni ancora
@@ -206,13 +213,19 @@ cornici perfettamente combacianti, **0** che non si toccano nemmeno. Un
 esempio con i quadretti: se le due cornici ne condividono 30 e, messe insieme,
 ne coprono 60, la IoU è $30/60 = 0{,}5$. Di solito si dice che una predizione
 è "giusta" proprio se la IoU supera **0,5**: metà o più di sovrapposizione.
+Quel mezzo però non è una legge di natura, è una convenzione, e alzarla a 0,7
+o a 0,9 può cambiare la classifica fra due rilevatori: uno che indovina sempre
+la categoria ma disegna cornici approssimative peggiora molto più in fretta di
+uno preciso. Per questo i confronti seri non usano una soglia sola.
 
-Contando quante predizioni sono "giuste" su un intero archivio di foto si
-ricava il voto complessivo di un rilevatore, la **mAP**: sta per *mean Average
-Precision*, cioè "precisione media", ed è un numero fra 0 e 1 che riassume in
-un colpo solo quanto spesso il rilevatore azzecca insieme la cornice e il nome,
-su tutte le categorie. Più è alto, meglio è, ed è il numero con cui due
-rilevatori si confrontano senza doverli guardare foto per foto.
+Da qui si ricava il voto complessivo di un rilevatore, la **mAP**. La sigla sta
+per *mean Average Precision*, e le medie sono due, una dentro l'altra: prima si
+calcola un voto per **ogni categoria** (quanto bene il rilevatore se la cava
+sui gatti, quanto sulle biciclette), poi si fa la media di quei voti **sulle
+categorie**. È un numero fra 0 e 1 che riassume in un colpo solo quanto spesso
+il rilevatore azzecca insieme la cornice e il nome. Più è alto, meglio è, ed è
+il numero con cui due rilevatori si confrontano senza doverli guardare foto per
+foto.
 
 `````
 
@@ -230,8 +243,12 @@ positivo** se supera la soglia con un oggetto reale non ancora assegnato, e
 quell'oggetto viene «consumato». Ogni oggetto reale si accoppia cioè a **una
 sola** predizione, e i duplicati, per quanto ben sovrapposti, contano come
 **falsi positivi**. Da qui si costruisce la curva
-*precision–recall* per ciascuna classe: la sua area sotto la curva è l'**Average
-Precision** (AP). La **mean Average Precision** (mAP) ne fa la media sulle
+*precision–recall* per ciascuna classe: l'area sotto la sua **interpolata**
+(l'inviluppo monotono decrescente, campionato a 11 punti di recall nel VOC fino
+al 2009, a tutti i cambi di recall dal 2010, a 101 punti in COCO) è l'**Average
+Precision** (AP). La curva grezza è a denti di sega e nessuno la integra: è la
+scelta dell'interpolazione a rendere i numeri riproducibili fra
+implementazioni. La **mean Average Precision** (mAP) ne fa la media sulle
 classi. Il benchmark COCO irrigidisce la metrica mediando la mAP su dieci soglie
 di IoU, da $0{,}5$ a $0{,}95$ a passi di $0{,}05$: premia i modelli che
 localizzano con precisione, non solo che indovinano la classe.
@@ -239,8 +256,10 @@ localizzano con precisione, non solo che indovinano la classe.
 `````
 
 Prima del verdetto, però, serve un passaggio di pulizia. La rete non produce
-un riquadro per oggetto: ne produce migliaia (con nove ancore per posizione, i
-conti si fanno presto), e attorno a ogni oggetto se ne accumulano decine quasi
+un riquadro per oggetto: ne produce migliaia (Faster R-CNN, per esempio, tiene
+pronte nove cornici di partenza in ogni punto della griglia, tre taglie per tre
+proporzioni, e i punti della griglia sono migliaia), e attorno a ogni oggetto
+se ne accumulano decine quasi
 identici, ciascuno con la sua confidenza. La **non-maximum suppression** (NMS)
 li sfoltisce con una regola semplice: si ordinano i riquadri per confidenza,
 si tiene il più sicuro e si scartano tutti quelli che gli si sovrappongono
@@ -250,11 +269,30 @@ praticamente ogni rilevatore, da Faster R-CNN a YOLO e SSD: senza, ogni
 oggetto arriverebbe alla valutazione con un grappolo di doppioni, e tutti
 tranne uno conterebbero come errori.
 
+C'è però una terza via, che il problema lo toglie invece di risolverlo. Una
+famiglia di rilevatori inaugurata da DETR {cite}`carion2020end` chiede alla
+rete un numero fisso di risposte e, durante l'addestramento, le abbina agli
+oggetti veri **una a una**, come si formano le coppie in un ballo: ogni oggetto
+ha un solo inseguitore, quindi i doppioni non nascono affatto, e spariscono
+insieme sia le cornici di partenza sia la fase di pulizia. Il prezzo,
+storicamente, è stato un addestramento molto più lento ad assestarsi.
+
 ## Segmentare: dal riquadro alla sagoma
 
 Il riquadro è comodo ma grossolano: attorno a un pedone c'è sempre un rettangolo
 pieno di sfondo. Quando serve il contorno esatto, pixel per pixel, si passa alla
 **segmentazione**. Qui vanno distinti due sapori.
+
+Prima però conviene guardare la forma che quasi tutte le reti di segmentazione
+hanno preso, e che si chiama **U-Net** perché sullo schema disegna una U. Il
+problema da risolvere è questo: per capire *che cosa* c'è in una zona bisogna
+allontanarsi dai pixel e guardare largo, mentre per disegnarne il contorno
+esatto bisogna starci attaccati. Sono due esigenze opposte, e la U-Net non
+sceglie. Prima scende, rimpicciolendo l'immagine e capendo sempre meglio che
+cosa c'è; poi risale, tornando alla risoluzione di partenza per dire dove; e a
+ogni gradino della risalita si fa ripassare quello che aveva visto allo stesso
+gradino durante la discesa. Sono le connessioni orizzontali della figura, le
+**skip connection**: senza di quelle, il contorno tornerebbe su sfocato.
 
 ```{figure} ../figures/u-net-clessidra-con-skip.svg
 :name: fig-unet
@@ -266,10 +304,8 @@ perde *dove*; le connessioni orizzontali riportano il «dove» dal ramo di
 discesa a quello di risalita.
 ```
 
-Le linee tratteggiate di {numref}`fig-unet` risolvono un conflitto specifico
-della segmentazione. Riconoscere richiede di allontanarsi dai pixel;
-disegnare un contorno esatto richiede di starci attaccati. La U-Net non
-sceglie: fa entrambe le cose su due rami, e li ricuce a ogni livello.
+Le linee tratteggiate di {numref}`fig-unet` sono esattamente quel rammendo: la
+rete fa le due cose incompatibili su due rami, e li ricuce a ogni livello.
 
 `````{tab} Elementare
 
@@ -289,9 +325,14 @@ ma tenendo ogni personaggio con la sua tinta.
 La segmentazione **semantica** assegna a ogni pixel una classe. La svolta è la
 *Fully Convolutional Network* {cite}`long2015fully`, che sostituisce
 gli strati densi finali con convoluzioni e *upsampling* per produrre una mappa
-di classi a piena risoluzione. **U-Net** {cite}`ronneberger2015u`, nata per
-l'imaging biomedico, aggiunge le *skip connections* tra encoder e decoder,
-recuperando i dettagli fini persi nel *downsampling*.
+di classi a piena risoluzione, e che già introduce le *skip connections*: la
+sua seconda metà si intitola «Combining what and where» e fonde la predizione
+grossolana con gli strati a stride più fine (sono le varianti FCN-16s e FCN-8s,
+che dal modello base si distinguono solo per quante skip hanno). **U-Net**
+{cite}`ronneberger2015u`, nata per l'imaging biomedico e dello stesso anno, ne
+generalizza la forma: un decoder simmetrico che a ogni livello **concatena**
+l'intera mappa di feature dell'encoder, invece di sommare due mappe di
+punteggi di classe a due soli livelli.
 
 La segmentazione **di istanza** unisce detection e maschere: **Mask R-CNN**
 {cite}`he2017mask` estende Faster R-CNN con un terzo ramo che, per ciascuna
@@ -303,8 +344,12 @@ sagoma di ogni singola istanza.
 ## Risalire di risoluzione: la convoluzione trasposta
 
 Nelle reti di segmentazione c'è un passaggio rimasto nell'ombra. Convoluzioni
-e pooling *riducono* le mappe: dopo la metà della rete che comprime
-(l'**encoder**) un'immagine 512×512 può essersi ristretta a 16×16. Ma il
+e pooling *riducono* le **mappe**, cioè le griglie di numeri che ogni strato
+consegna al successivo: dopo il ramo discendente della U, quello che comprime,
+un'immagine 512×512 può essersi ristretta a 16×16. (È lo stesso ramo che nella
+sezione precedente abbiamo chiamato **encoder**: la parola vuol dire sempre «la
+parte che riassume», e qui il riassunto è una griglia piccola invece di una
+lista di numeri.) Ma il
 verdetto della segmentazione va dato pixel per pixel, alla risoluzione di
 partenza: serve una metà che riespanda, il **decoder**. Come si risale?
 L'operazione che la *Fully Convolutional Network* {cite}`long2015fully` ha
@@ -361,7 +406,13 @@ $$
 
 dove $i$ è il lato della mappa in ingresso, $k$ quello del kernel, $s$ lo
 stride e $p$ il padding. Nell'esempio della figura $i=2$, $k=2$, $s=2$,
-$p=0$, quindi $o = 2 \cdot 1 + 2 - 0 = 4$. Il nome viene dall'algebra: se si
+$p=0$, quindi $o = 2 \cdot 1 + 2 - 0 = 4$. La formula assume dilatazione 1 e
+`output_padding` nullo, e vale la pena capire perché quel parametro esista: la
+convoluzione diretta manda taglie di ingresso diverse nella stessa uscita (con
+$k=3$, $s=2$, $p=1$ sia un $7$ sia un $8$ diventano $4$), quindi la risalita
+non è univoca e la formula dà solo la più piccola delle partenze possibili. Chi
+la applica a una U-Net vera e trova le due metà della clessidra disallineate
+di un pixel ha trovato questo. Il nome viene dall'algebra: se si
 srotola l'input in un vettore, una convoluzione è la moltiplicazione per una
 matrice sparsa $C$; la trasposta moltiplica per $C^\top$, che riporta il
 vettore alla dimensione di partenza. È la stessa operazione con cui la
@@ -372,7 +423,12 @@ inverte solo la geometria. In PyTorch è `nn.ConvTranspose2d`.
 
 Una nota onesta: quando $k$ non è multiplo di $s$, i colpi di timbro si
 sovrappongono in modo disomogeneo e l'output mostra i tipici **artefatti a
-scacchiera** {cite}`odena2016deconvolution`. Per questo molte architetture
+scacchiera** {cite}`odena2016deconvolution`. Verrebbe da concludere che basti
+scegliere $k$ multiplo di $s$, ed è proprio la conclusione che la fonte citata
+smentisce: la scelta toglie la disomogeneità geometrica ma non gli artefatti,
+perché una rete impara volentieri kernel che li producono anche a
+sovrapposizione uniforme. È per questo, e non per la sola divisibilità, che
+molte architetture
 recenti preferiscono un
 upsampling fisso (bilineare o *nearest-neighbor*) seguito da una convoluzione
 ordinaria.
@@ -389,27 +445,74 @@ occhio si perderebbe. Nell'**industria**, un rilevatore su una linea di
 produzione individua il graffio o il pezzo mal assemblato prima che arrivi al
 cliente.
 
-Nessuno di questi sistemi è infallibile: una IoU del 90% resta un 10% di
-errore, e in medicina o alla guida quel margine va sempre soppesato con un
-occhio umano. Ma la traiettoria è chiara: dal *cosa*, al *dove*, fino al
-contorno esatto.
+Nessuno di questi sistemi è infallibile, e conviene dire con precisione dove
+sta il margine, perché la IoU non è un tasso di errore. Una maschera con IoU
+$0{,}9$ è una maschera buona, e lascia comunque fuori (o dentro) un decimo
+dell'area: su un nodulo, un decimo di volume è una differenza clinica. E
+soprattutto restano gli oggetti mancati del tutto, che in quel numero non
+compaiono affatto, perché la IoU si calcola solo sulle coppie che il sistema ha
+prodotto. In medicina o alla guida sono le due cose insieme, il contorno
+approssimato e l'oggetto non visto, a chiedere un occhio umano. Ma la
+traiettoria è chiara: dal *cosa*, al *dove*, fino al contorno esatto.
+
+`````{tab} Elementare
+
+```{admonition} Da ricordare
+:class: important
+- Il **rilevamento** non dice solo che cosa c'è in una foto: per ogni oggetto
+  disegna una cornice e ci scrive accanto il nome.
+- Due modi di farlo: **in due tempi** (prima si segnano le zone sospette, poi
+  si guarda con calma dentro ognuna) o **in un colpo solo** (una passata sola
+  sull'immagine sputa fuori cornici e nomi). Il primo è più preciso, il secondo
+  abbastanza rapido da stare dietro a un video.
+- Nessuno disegna le cornici dal nulla: come un corniciaio, la rete tiene
+  pronti alcuni **formati standard** in ogni punto dell'immagine e si limita a
+  ritoccare quello che ci va più vicino.
+- Per dire quanto una cornice ci ha preso si guarda **quanto si sovrappone** a
+  quella giusta: area in comune divisa per area totale, da 0 a 1. Il voto
+  complessivo di un rilevatore si ottiene calcolando un voto per ogni categoria
+  e poi facendone la media.
+- Attorno a ogni oggetto la rete produce decine di cornici quasi uguali: prima
+  del verdetto si tiene la più sicura e si buttano quelle che le si
+  sovrappongono troppo, altrimenti i doppioni conterebbero tutti come errori.
+- Quando la cornice non basta e serve la sagoma esatta si passa alla
+  **segmentazione**: colorare ogni pixel con la sua categoria, o addirittura
+  distinguere un pedone dall'altro. La forma tipica è la **U**: si scende per
+  capire che cosa c'è, si risale per dire dove, e a ogni gradino della risalita
+  si ripassa quello che si era visto scendendo.
+- Nessuno di questi sistemi è infallibile, e il margine è di due tipi: contorni
+  approssimati, e oggetti mancati del tutto (che nel punteggio della
+  sovrapposizione non compaiono nemmeno).
+```
+
+`````
+
+`````{tab} Superiore
 
 ```{admonition} Da ricordare
 :class: important
 - L'**object detection** predice per ogni oggetto un **riquadro** e una
   **classe** insieme.
 - Due famiglie: **due stadi** (R-CNN, Faster R-CNN) più accurate, **uno
-  stadio** (YOLO, SSD) più veloci (un compromesso accuratezza/velocità).
+  stadio** (YOLO, SSD) più veloci (un compromesso accuratezza/velocità); e una
+  terza via, i rilevatori a **predizione di insieme** (DETR), che con
+  l'abbinamento bipartito eliminano per costruzione sia le ancore sia l'NMS.
 - Le **anchor box** danno alla rete riquadri di partenza a più scale e
   proporzioni: si predicono piccoli **offset**, non riquadri dal nulla.
-- La **IoU** misura la sovrapposizione riquadro-realtà; la **mAP** (*mean
-  Average Precision*) riassume in un numero solo la qualità complessiva del
-  rilevatore, e nel farlo accoppia ogni oggetto a una sola predizione: i
-  doppioni contano come errori.
+- La **IoU** misura la sovrapposizione riquadro-realtà, non un tasso di errore;
+  la **mAP** (*mean Average Precision*) riassume in un numero solo la qualità
+  complessiva del rilevatore, e nel farlo accoppia ogni oggetto a una sola
+  predizione: i doppioni contano come errori.
 - Prima della valutazione la **non-maximum suppression** sfoltisce i doppioni:
   si tiene il riquadro più confidente e si scartano quelli troppo sovrapposti.
 - **Semantica** (FCN, U-Net) etichetta ogni pixel; **istanza** (Mask R-CNN)
-  separa anche i singoli oggetti.
+  separa anche i singoli oggetti. Le *skip connection* fra encoder e decoder
+  nascono con la FCN; la U-Net ne generalizza la forma concatenando a ogni
+  livello.
 - La **convoluzione trasposta** riporta le mappe a piena risoluzione con un
-  ingrandimento *appreso*: occhio agli artefatti a scacchiera.
+  ingrandimento *appreso*: occhio agli **artefatti a scacchiera** (le griglie
+  regolari che compaiono nell'uscita), che la sola divisibilità fra kernel e
+  stride non basta a evitare.
 ```
+
+`````

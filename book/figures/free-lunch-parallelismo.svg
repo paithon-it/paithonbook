@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  paithon book — figura: la fine del "free lunch" (andamento schematico).
+  paithon book, figura: la fine del "free lunch" (andamento schematico).
   Asse x = anno; asse y = scala logaritmica qualitativa. Due curve: il numero
   di transistor (ocra) continua a salire, la frequenza di clock / prestazione
   di un singolo core (terracotta) sale insieme fino a circa il 2004-2005 e poi

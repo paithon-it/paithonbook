@@ -30,7 +30,9 @@ Facciamo il gioco a voce: «Il gatto nero salta sul…». La maggior parte delle
 persone completa con «muro», qualcuno con «tetto» o «divano», nessuno con
 «marmellata». Un modello di linguaggio fa esattamente questa scommessa, ma con
 i numeri: «muro» 35%, «tetto» 25%, «divano» 10%, e giù fino a briciole di
-probabilità per le parole assurde. Come misurare se scommette bene? Con la
+probabilità per le parole assurde. (Le tre percentuali sono inventate qui per
+far vedere l'idea: in un modello vero escono dai conteggi, come nella sezione
+sugli *n-gram*.) Come misurare se scommette bene? Con la
 **perplessità**, che abbiamo incontrato nei richiami di matematica e già
 usata come pagella per gli *n-gram*: dice *come se* il modello, a ogni
 parola, tirasse un dado con un
@@ -51,12 +53,12 @@ P(w_1, \dots, w_n) = \prod_{t=1}^{n} P(w_t \mid w_1, \dots, w_{t-1}),
 $$
 
 dove $w_t$ è la parola al passo $t$. Una RNN implementa ciascun fattore in modo
-naturale: lo stato nascosto $h_{t-1}$ riassume il prefisso letto fin lì, e una
-softmax sul vocabolario produce la distribuzione
-$P(w_t \mid w_{<t}) = \mathrm{softmax}(W_{hy}\,h_{t-1})$. L'addestramento è
-la cross-entropia sulla parola successiva, e la qualità si misura con la
-**perplessità per parola**, vista nella sezione di teoria dell'informazione e
-già usata per valutare i modelli *n-gram*:
+naturale: lo stato nascosto $\mathbf{h}_{t-1}$ riassume il prefisso letto fin
+lì, e una softmax sul vocabolario produce la distribuzione
+$P(w_t \mid w_{<t}) = \mathrm{softmax}(\mathbf{W}_{hy}\,\mathbf{h}_{t-1})$.
+L'addestramento è la cross-entropia sulla parola successiva, e la qualità si
+misura con la **perplessità per parola**, vista nella sezione di teoria
+dell'informazione e già usata per valutare i modelli *n-gram*:
 
 $$
 \mathrm{PP} = 2^{H},
@@ -97,13 +99,14 @@ frase può essere bidirezionale, ma chi la *scrive* procede sempre in avanti.
 
 `````{tab} Superiore
 
-Una RNN bidirezionale mantiene due catene di stati indipendenti: una in
-avanti, $\overrightarrow{h}_t = f(\overrightarrow{h}_{t-1}, x_t)$, e una
-all'indietro, $\overleftarrow{h}_t = f'(\overleftarrow{h}_{t+1}, x_t)$. La
+Una RNN bidirezionale mantiene due catene di stati indipendenti: una in avanti,
+$\overrightarrow{\mathbf{h}}_t = f(\overrightarrow{\mathbf{h}}_{t-1}, x_t)$, e
+una all'indietro,
+$\overleftarrow{\mathbf{h}}_t = f'(\overleftarrow{\mathbf{h}}_{t+1}, x_t)$. La
 rappresentazione della posizione $t$ è la concatenazione
 
 $$
-h_t = [\overrightarrow{h}_t ; \overleftarrow{h}_t],
+\mathbf{h}_t = [\overrightarrow{\mathbf{h}}_t ; \overleftarrow{\mathbf{h}}_t],
 $$
 
 che condensa l'intera frase *vista da quella posizione*: prefisso e suffisso.
@@ -139,6 +142,16 @@ print(h.shape)    # torch.Size([4, 1, 128]): 2 strati x 2 direzioni
 
 ## Comprimere una frase in un vettore
 
+Torniamo alla traduzione. Nel 2014 due gruppi, Cho e colleghi a Montréal
+{cite}`cho2014learning` (lo stesso paper che introduce la GRU) e Sutskever,
+Vinyals e Le a Google {cite}`sutskever2014sequence`, arrivano alla stessa
+architettura, oggi nota come **encoder–decoder** o **seq2seq**. L'idea è di
+una semplicità disarmante: una prima rete ricorrente (l'*encoder*, «chi
+codifica») legge tutta la frase sorgente e la comprime nel suo stato finale, un
+unico **vettore di contesto**; una seconda rete (il *decoder*, «chi decodifica»)
+parte da quel vettore e genera la traduzione parola per parola, come un modello
+di linguaggio «condizionato» dalla frase di partenza.
+
 ```{figure} ../figures/seq2seq-2014.svg
 :name: fig-encoder-decoder
 :alt: "Schema encoder-decoder: l'encoder legge una a una le parole della frase inglese e le comprime in un unico vettore di contesto; da quel vettore il decoder genera le parole italiane una dopo l'altra, riusando a ogni passo la parola appena prodotta."
@@ -149,19 +162,11 @@ decoder cominci a scrivere: fra i due passa solo quel vettore, e nient'altro.
 ```
 
 Il «nient'altro» di {numref}`fig-encoder-decoder` è il fatto architetturale
-da cui discendono le due sezioni successive. Finché l'unico canale fra le due
-reti è un vettore di dimensione fissa, la lunghezza della frase da tradurre
-non cambia lo spazio disponibile per rappresentarla.
-
-Torniamo alla traduzione. Nel 2014 due gruppi, Cho e colleghi a Montréal
-{cite}`cho2014learning` (lo stesso paper che introduce la GRU) e Sutskever,
-Vinyals e Le a Google {cite}`sutskever2014sequence`, arrivano alla stessa
-architettura, oggi nota come **encoder–decoder** o **seq2seq**. L'idea è di
-una semplicità disarmante: una prima rete ricorrente (l'*encoder*) legge tutta
-la frase sorgente e la comprime nel suo stato finale, un unico **vettore di
-contesto**; una seconda rete (il *decoder*) parte da quel vettore e genera la
-traduzione parola per parola, come un modello di linguaggio «condizionato»
-dalla frase di partenza.
+da cui discendono le due sezioni successive, e conviene fissarlo. Quel vettore
+di contesto è una fila di numeri **di lunghezza decisa in anticipo**, mille per
+esempio, e resta di mille numeri sia che la frase da tradurre abbia cinque
+parole sia che ne abbia cinquanta: nessuno spazio in più per le frasi lunghe,
+per quanto ce ne sarebbe bisogno.
 
 `````{tab} Elementare
 
@@ -185,17 +190,54 @@ Il modello fattorizza la probabilità della frase di arrivo
 $y = (y_1, \dots, y_m)$ data quella di partenza $x = (x_1, \dots, x_n)$ come
 
 $$
-P(y \mid x) = \prod_{t=1}^{m} P(y_t \mid y_1, \dots, y_{t-1}, c),
+P(y \mid x) = \prod_{t=1}^{m} P(y_t \mid y_1, \dots, y_{t-1}, \mathbf{c}),
 \qquad
-c = h_n,
+\mathbf{c} = \mathbf{h}_n,
 $$
 
-dove $c$ è il vettore di contesto (lo stato finale dell'encoder) e ogni
-fattore è calcolato dal decoder, una RNN inizializzata da $c$ con softmax sul
-vocabolario di arrivo. Sutskever et al. usano LSTM a 4 strati con stati da
+dove $\mathbf{c}$ è il vettore di contesto (lo stato finale dell'encoder) e
+ogni fattore è calcolato dal decoder, una RNN inizializzata da $\mathbf{c}$ con
+softmax sul vocabolario di arrivo.
+
+I risultati che seguono si misurano in **BLEU** {cite}`papineni2002bleu`, il
+metro con cui la traduzione automatica si è confrontata per vent'anni, e vale
+la pena dire com'è fatto, perché tornerà anche nella sezione sul dialogo. BLEU
+confronta la traduzione candidata con uno o più riferimenti umani contando
+quanti $n$-grammi hanno in comune, per $n$ da 1 a 4. Due accorgimenti fanno
+tutto il lavoro. Il primo è il **clipping**: un $n$-gramma del candidato conta
+al massimo il numero di volte che compare nel riferimento, altrimenti «il il il
+il» otterrebbe precisione $1$. Il secondo è la **brevity penalty**,
+$\mathrm{BP} = \min\!\left(1,\, e^{1 - r/c}\right)$ con $c$ e $r$ le lunghezze
+in token del candidato e del riferimento, e serve perché BLEU è fatto di sole
+precisioni: un termine di *recall* non c'è (non esiste un modo ovvio di
+calcolarlo su più riferimenti insieme) e senza freno la traduzione più corta
+sarebbe sempre la migliore. Il punteggio è
+
+$$
+\mathrm{BLEU} = \mathrm{BP} \cdot
+\exp\!\left(\sum_{n=1}^{4} w_n \log p_n\right),
+$$
+
+dove $p_n$ è la precisione clippata degli $n$-grammi e $w_n = 1/4$ il peso
+uniforme dei quattro ordini. I limiti vanno detti subito, perché servono a
+leggere i numeri qui sotto: BLEU è definito **sul corpus** e non sulla singola
+frase (le $p_n$ si accumulano su tutto il test set, e su una frase sola un
+4-gramma mancante manda il punteggio a zero); dipende dalla tokenizzazione e
+dal numero di riferimenti, tanto che due punteggi si confrontano solo a
+protocollo identico, ed è la ragione per cui esiste `sacrebleu`; ed è cieco
+alla parafrasi corretta. Un punto di differenza è un segnale, non una
+sentenza.
+
+Sutskever et al. usano LSTM a 4 strati con stati da
 1000 dimensioni e riportano, sul benchmark WMT'14 inglese→francese, un BLEU di
 $34{,}8$ (con un ensemble di cinque modelli) contro il $33{,}3$ del sistema
-statistico a frasi di riferimento. L'aneddoto dell'inversione è documentato
+statistico a frasi di riferimento. Il confronto va letto per quello che è: il
+$33{,}3$ è il sistema di *riferimento*, non lo stato dell'arte, che su quel
+compito stava a $37{,}0$; la rete pura non lo raggiunge, e ci si avvicina
+($36{,}5$) solo quando la si usa per riordinare le mille ipotesi prodotte dal
+sistema statistico. Nel 2014 il neurale non ha ancora vinto: la data del
+sorpasso è il 2016, ed è la storia della prossima sezione. L'aneddoto
+dell'inversione è invece documentato
 nei numeri: invertire l'ordine delle parole sorgente fa scendere la
 perplessità di test da $5{,}8$ a $4{,}7$ e salire il BLEU da $25{,}9$ a
 $30{,}6$, perché accorcia le dipendenze tra le prime parole di $x$ e le prime
@@ -209,28 +251,30 @@ visibilmente al crescere della lunghezza della frase.
 ## Tornare a guardare: la nascita dell'attenzione
 
 La soluzione arriva nel giro di pochi mesi, da Dzmitry Bahdanau, Kyunghyun Cho
-e Yoshua Bengio {cite}`bahdanau2015neural`.
+e Yoshua Bengio {cite}`bahdanau2015neural`, e nasce da una domanda tanto ovvia
+quanto ben posta: perché costringere il decoder a lavorare a memoria? La frase
+sorgente è ancora lì, con tutti gli stati che l'encoder ha prodotto leggendo
+una parola dopo l'altra. Basta lasciare che il decoder, a ogni passo, **torni a
+guardarli tutti**, dando a ciascuno un peso diverso a seconda di quanto serve
+*adesso*. Questi pesi sono l'**attenzione**: un numero per ogni parola della
+frase di partenza, ricalcolato a ogni parola prodotta, che dice quanta parte
+dell'attenzione del decoder va lì.
 
 ```{figure} ../figures/attention-prima-dei-transformer.svg
 :name: fig-allineamento-traduzione
 :alt: "Una griglia di allineamento fra le parole della frase inglese, sulle colonne, e le parole italiane generate, sulle righe. Le celle più scure indicano dove il decoder ha guardato di più a ogni passo: la diagonale è marcata ma non perfetta, e in un punto due parole italiane si collegano a una sola inglese."
 :width: 88%
 
-L'allineamento che nessuno ha annotato. La griglia non è stata insegnata al
-modello: è il sottoprodotto dei pesi di attenzione, che si possono leggere
-dopo l'addestramento.
+L'allineamento che nessuno ha annotato. La griglia dice, per ogni parola
+prodotta, dove il modello ha guardato: nessuno gliel'ha insegnato, si legge a
+posteriori dai pesi che si è dato da solo.
 ```
 
 Il fatto che la diagonale di {numref}`fig-allineamento-traduzione` sia
 imperfetta è la notizia, non un difetto. Dove le due lingue ordinano le parole
 in modo diverso l'allineamento si spezza e attraversa la griglia, ed è
 esattamente il caso che un decoder costretto a leggere in ordine non poteva
-gestire. La domanda giusta è: perché
-costringere il decoder a lavorare a memoria? La frase sorgente è ancora lì,
-con tutti gli stati che l'encoder ha prodotto leggendo ogni parola. Basta
-lasciare che il decoder, a ogni passo, **torni a guardarli tutti**: dando a
-ciascuno un peso diverso a seconda di quanto serve *adesso*. Questi pesi sono
-l'**attenzione**.
+gestire.
 
 ```{figure} ../figures/seq2seq-attenzione.svg
 :name: fig-seq2seq-attenzione
@@ -263,37 +307,39 @@ l'allineamento tra le parole delle due lingue («cat» ↔ «gatto», «wall» �
 
 `````{tab} Superiore
 
-L'encoder (bidirezionale, così che ogni $h_j$ rappresenti la parola $j$ con
-tutto il suo contesto) produce gli stati $h_1, \dots, h_n$. Al passo $i$ il
-decoder, con stato $s_{i-1}$, calcola un punteggio di allineamento verso ogni
-posizione sorgente con una piccola rete a un solo strato nascosto:
+L'encoder (bidirezionale, così che ogni $\mathbf{h}_j$ rappresenti la parola
+$j$ con tutto il suo contesto) produce gli stati
+$\mathbf{h}_1, \dots, \mathbf{h}_n$. Al passo $i$ il decoder, con stato
+$\mathbf{s}_{i-1}$, calcola un punteggio di allineamento verso ogni posizione
+sorgente con una piccola rete a un solo strato nascosto:
 
 $$
-e_{ij} = v_a^{\top} \tanh\!\left(W_a\, s_{i-1} + U_a\, h_j\right),
+e_{ij} = \mathbf{v}_a^{\top} \tanh\!\left(\mathbf{W}_a\, \mathbf{s}_{i-1} + \mathbf{U}_a\, \mathbf{h}_j\right),
 $$
 
-dove $W_a$, $U_a$ e $v_a$ sono parametri appresi (è la cosiddetta attenzione
-**additiva**). I punteggi diventano pesi con una softmax, e i pesi definiscono
-un vettore di contesto *diverso a ogni passo*:
+dove $\mathbf{W}_a$, $\mathbf{U}_a$ e $\mathbf{v}_a$ sono parametri appresi (è
+la cosiddetta attenzione **additiva**). I punteggi diventano pesi con una
+softmax, e i pesi definiscono un vettore di contesto *diverso a ogni passo*:
 
 $$
 \alpha_{ij} = \frac{\exp(e_{ij})}{\sum_{k=1}^{n} \exp(e_{ik})},
 \qquad
-c_i = \sum_{j=1}^{n} \alpha_{ij}\, h_j,
+\mathbf{c}_i = \sum_{j=1}^{n} \alpha_{ij}\, \mathbf{h}_j,
 $$
 
 dove $\alpha_{ij}$ è quanto il passo di decodifica $i$ «guarda» la parola
-sorgente $j$ (i pesi sommano a 1) e $c_i$ è la media pesata degli stati
-dell'encoder, che entra nel calcolo di $s_i$ e della parola successiva. La
-matrice dei pesi $\alpha_{ij}$, visualizzata, è una mappa di allineamento tra
-le due frasi: appresa senza alcuna supervisione esplicita.
+sorgente $j$ (i pesi sommano a 1) e $\mathbf{c}_i$ è la media pesata degli
+stati dell'encoder, che entra nel calcolo di $\mathbf{s}_i$ e della parola
+successiva. La matrice dei pesi $\alpha_{ij}$, visualizzata, è una mappa di
+allineamento tra le due frasi: appresa senza alcuna supervisione esplicita.
 
 `````
 
 Vale la pena dirlo in modo esplicito: questa è **la stessa attenzione** che
 ritroveremo nel capitolo sui Transformer. Cambierà solo il modo di calcolare i
-punteggi (non più una piccola rete con la $\tanh$, ma un semplice prodotto
-scalare riscalato, la *scaled dot-product attention*) e cadrà l'impalcatura
+punteggi: non più una piccola rete addestrata apposta, ma un conto diretto e
+molto più economico fra le due file di numeri da confrontare (la *scaled
+dot-product attention*, che vedremo là). E cadrà l'impalcatura
 ricorrente attorno. L'idea di fondo, «una media pesata di tutti gli stati, con
 pesi softmax appresi», nasce qui, come rattoppo per la traduzione.
 
@@ -340,9 +386,14 @@ traduzione valori di $k$ tra 4 e 10 bastano quasi sempre. Un dettaglio
 pratico: essendo una somma di logaritmi negativi, il punteggio penalizza le
 frasi lunghe, e il decoder tenderebbe a traduzioni troppo corte. Si corregge
 con una **length penalty**, per esempio dividendo il punteggio per
-$|y|^{\alpha}$ con $\alpha \approx 0{,}6$–$0{,}7$: è la scelta, in una
-variante appena più elaborata, del sistema di traduzione di Google
-{cite}`wu2016google`.
+$|y|^{\alpha}$ con $\alpha \approx 0{,}6$–$0{,}7$. Il sistema di traduzione di
+Google {cite}`wu2016google` parte proprio da questa euristica e la sostituisce
+poi con una variante appena più elaborata,
+$lp(y) = \frac{(5+|y|)^{\alpha}}{6^{\alpha}}$, dove l'esponente agisce su
+$(5+|y|)$ e non su $|y|$: per questo il valore che gli autori usano,
+$\alpha = 0{,}2$, non è confrontabile con lo $0{,}65$ dell'euristica di
+partenza, ed è un dettaglio che vale la pena tenere a mente prima di citare
+«l'$\alpha$ di GNMT».
 
 `````
 
@@ -453,6 +504,11 @@ da comprimario a protagonista. Come, di preciso, è il tema del capitolo sui
 - In generazione la scelta **greedy** è miope; la **beam search** tiene
   aperte le $k$ ipotesi migliori (con una *length penalty* per non penalizzare
   le frasi lunghe).
+- **BLEU** {cite}`papineni2002bleu` è precisione di $n$-grammi con *clipping*,
+  frenata dalla *brevity penalty*: definito sul corpus, dipendente dal
+  protocollo, cieco alla parafrasi. Nel 2014 la rete pura ($34{,}8$) supera il
+  sistema statistico di riferimento ($33{,}3$) ma non lo stato dell'arte
+  ($37{,}0$).
 - Nel 2016 la traduzione neurale entra in produzione con GNMT; nel 2017
   *Attention Is All You Need* fa cadere la ricorrenza.
 ```

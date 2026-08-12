@@ -4,7 +4,10 @@ Ogni autunno, tra il 2010 e il 2017, i laboratori di visione artificiale di
 mezzo mondo si sfidavano su **ImageNet**: oltre un milione di fotografie da
 classificare in mille categorie, dal cane pastore alla tazza da caffè. C'era
 una classifica, e quella classifica racconta una storia. Nel 2011 l'errore del
-sistema migliore era intorno al 26%; nel 2015 era sceso sotto il 4%, meglio
+sistema migliore era intorno al 26%, dove «errore» vuol dire questo: su cento
+fotografie, in ventisei nemmeno una delle **cinque** risposte che il programma
+poteva proporre era quella giusta. Nel 2015 lo stesso errore era sceso sotto il
+4%, meglio
 del 5,1% sbagliato da una persona che si era allenata a fare esattamente lo
 stesso lavoro, cioè a mettere l'etichetta giusta sulle stesse
 fotografie[^annotatore]. In quattro anni un problema considerato durissimo è
@@ -42,7 +45,9 @@ seguiti da strati *fully-connected* per la classificazione finale, con
 attivazioni $\tanh$. Ha circa $60\,000$ parametri (minuscola per gli standard
 odierni) ed è addestrata con la *backpropagation* sul dataset di cifre
 manoscritte **MNIST**. Introduce già i tre principi delle CNN: connettività
-locale, condivisione dei pesi e invarianza approssimata alla traslazione.
+locale, condivisione dei pesi (da cui l'equivarianza alla traslazione) e
+sottocampionamento, che aggiunge una tolleranza approssimata a spostamenti e
+piccole deformazioni.
 `````
 
 ## AlexNet: la notte in cui il deep learning vinse
@@ -50,13 +55,18 @@ locale, condivisione dei pesi e invarianza approssimata alla traslazione.
 Per oltre un decennio le CNN restarono una curiosità. La svolta arriva nel
 2012, quando **AlexNet** {cite}`krizhevsky2012imagenet` vince la sfida
 ImageNet con un margine imbarazzante: un errore *top-5* (la risposta giusta
-non compare nemmeno tra le prime cinque proposte) del 15,3%, contro il 26% del
-secondo classificato, che usava ancora tecniche "artigianali". Fu il momento
-in cui il resto del campo capì che il deep learning funzionava.
+non compare nemmeno tra le prime cinque proposte) del 15,3%, contro il 26,2%
+del secondo classificato, che usava ancora tecniche "artigianali". Come
+succederà con ResNet qualche pagina più avanti, il numero della classifica è
+quello della **sottomissione**: il 15,3% è la media delle risposte di sette
+reti, due delle quali pre-addestrate su un archivio di immagini dieci volte più
+grande, mentre la singola rete descritta nell'articolo, quella di cui parlano i
+prossimi paragrafi, si ferma al 18,2%. Anche così il salto è tale che fu il
+momento in cui il resto del campo capì che il deep learning funzionava.
 
 ```{figure} ../figures/alexnet-2012.svg
 :name: fig-alexnet
-:alt: "In alto, lo stack di AlexNet: otto strati addestrabili, prima i convolutivi poi i densi, distribuiti su due GPU che lavorano in parallelo, con la nota di due schede GTX 580 per circa sei giorni di addestramento. In basso, il confronto dell'errore top-5 su ImageNet: 26,2% per i metodi costruiti a mano, 15,3% per AlexNet."
+:alt: "In alto, lo stack di AlexNet: otto strati addestrabili, prima i convolutivi poi i densi, distribuiti su due GPU che lavorano in parallelo, con la nota di due schede GTX 580 per circa sei giorni di addestramento. In basso, il confronto dell'errore top-5 delle sottomissioni a ImageNet: 26,2% per i metodi costruiti a mano, 15,3% per AlexNet."
 :width: 96%
 
 Profondità più GPU. Il salto dell'errore in basso è la parte che fece
@@ -93,7 +103,8 @@ scala giusta sul dataset giusto.
 Nel 2013, mentre il mondo digeriva la lezione di AlexNet, tre ricercatori
 della National University of Singapore (Min Lin, Qiang Chen e Shuicheng Yan)
 pubblicano un articolo dal titolo quasi ricorsivo: **Network in Network**
-(NiN) {cite}`lin2013network`. Non vince nessuna classifica, ma contiene due
+(NiN) {cite}`lin2013network`. Non compare nella classifica che stiamo seguendo,
+perché a ImageNet non partecipa, ma contiene due
 idee destinate a diventare equipaggiamento standard di quasi tutte le reti
 venute dopo.
 
@@ -189,12 +200,15 @@ smettevano di migliorare: peggioravano, e non per overfitting; sbagliavano di
 più anche sui dati di addestramento. Questo **problema di degradazione** viene
 risolto da **ResNet** {cite}`he2016deep` di He, Zhang, Ren e Sun, che porta la
 profondità a 152 strati e vince l'edizione 2015 di ImageNet. Una singola
-ResNet-152 scende intorno al 4,5% di errore top-5; il record che chiude la
-competizione, il 3,57%, non lo fa una rete sola ma un gruppo di sei reti
+ResNet-152 scende intorno al 4,5% di errore top-5; il 3,57% con cui vince
+l'edizione non lo fa una rete sola ma un gruppo di sei reti
 residue interrogate tutte insieme, che poi mettono ai voti le loro risposte
 (si chiama *ensemble*, ed è un trucco che funziona quasi sempre: reti
 addestrate in modo leggermente diverso sbagliano su immagini diverse, e la
-media degli errori è più bassa di ciascuno).
+media degli errori è più bassa di ciascuno). Non è la fine della corsa: la
+competizione andrà avanti fino al 2017 e l'errore scenderà ancora, fino al
+2,25% dell'ultima edizione, ma ormai la domanda interessante non era più
+quella.
 
 ```{figure} ../figures/residuo-skip-connection.svg
 :name: fig-skip-connection
@@ -220,17 +234,24 @@ Se $\mathcal{F}(\mathbf{x})$ è la trasformazione dei due strati interni, il
 blocco residuo calcola
 
 $$
-\mathbf{y} = \mathcal{F}(\mathbf{x}, \{W_i\}) + \mathbf{x},
+\mathbf{y} = \mathcal{F}(\mathbf{x}, \{\mathbf{W}_i\}) + \mathbf{x},
 $$
 
-dove $\mathbf{x}$ è l'input del blocco, $\{W_i\}$ i suoi pesi e $\mathbf{y}$
+dove $\mathbf{x}$ è l'input del blocco, $\{\mathbf{W}_i\}$ i suoi pesi e
+$\mathbf{y}$
 l'uscita (a cui si applica poi la non-linearità). Il blocco apprende il
 **residuo** $\mathcal{F} = \mathcal{H} - \mathbf{x}$ rispetto alla mappa
 desiderata $\mathcal{H}$: azzerare $\mathcal{F}$ per ottenere l'identità è
-facile, ricostruire l'identità da zero no. In più, il termine additivo
-$\mathbf{x}$ apre una via diretta al gradiente durante la
-*backpropagation*, mitigando la sua scomparsa e rendendo addestrabili reti di
-centinaia di strati.
+facile, ricostruire l'identità da zero no. In più il termine additivo
+$\mathbf{x}$ apre una via diretta al gradiente durante la *backpropagation*.
+
+Attenzione però a non usare quest'ultima osservazione come spiegazione della
+degradazione, che è l'inversione di causa più diffusa su ResNet: gli autori
+la escludono espressamente, perché le reti lisce con cui fanno il confronto
+erano addestrate con batch normalization e i loro gradienti all'indietro
+avevano norme sane. Il problema che le connessioni residue risolvono è di
+**ottimizzazione**, non di gradiente che svanisce; perché esattamente
+funzionino resta materia di studio.
 `````
 
 ## DenseNet: se una scorciatoia funziona, prendetele tutte
@@ -239,19 +260,23 @@ La connessione residua apre una strada, e nel 2017 un gruppo tra Cornell,
 Tsinghua e Facebook AI Research (Gao Huang, Zhuang Liu, Laurens van der Maaten
 e Kilian Weinberger) la percorre fino in fondo con **DenseNet**
 {cite}`huang2017densely`, premiata come miglior articolo, a pari merito con un
-altro lavoro, alla conferenza CVPR. Se ResNet *somma* l'input all'uscita
-($\mathbf{x} + \mathcal{F}(\mathbf{x})$), DenseNet *concatena*: dentro un
+altro lavoro, alla conferenza CVPR. Se ResNet **somma** l'input all'uscita del
+blocco, DenseNet li **affianca**: dentro un
 blocco denso ogni strato riceve le feature di **tutti** gli strati precedenti,
-affiancate una all'altra.
+messe una accanto all'altra invece che sommate (l'operazione si chiama
+*concatenazione*).
 
 ```{figure} ../figures/blocco-denso.svg
 :name: fig-blocco-denso
 :alt: "Blocco denso con tre strati: archi di concatenazione portano l'input e l'uscita di ogni strato a tutti i nodi di concatenazione successivi, dove le feature vengono affiancate lungo i canali prima di entrare nello strato seguente."
 :width: 100%
 
-Il blocco denso: ogni strato riceve, affiancate lungo i canali, le feature di
+Il blocco denso: ogni strato riceve, affiancate, le feature di
 tutti gli strati precedenti (non una sola scorciatoia come nel blocco residuo,
-ma tutte).
+ma tutte). Le mappe che uno strato produce, una per filtro, si chiamano
+**canali**: affiancarle vuol dire tenerle tutte una accanto all'altra invece di
+sommarle, e nel disegno ogni strato ne aggiunge $k$ di nuove alla pila che ha
+ricevuto.
 ```
 
 `````{tab} Elementare
@@ -422,6 +447,15 @@ d'uscita di forma identica. E il numero misurato coincide con quello previsto
 dalla formula fino all'ultima cifra, perché qui non c'è niente di empirico: è
 aritmetica.
 
+Un avvertimento su come si usa quel numero, perché è l'errore più comune di chi
+progetta reti per il telefono: il fattore nove sta nei pesi e nelle
+moltiplicazioni, **non nei secondi**. La parte che guarda un canale per volta
+fa pochissimi conti per ogni numero che deve andare a prendere in memoria,
+quindi il tempo se ne va nel trasferire i dati più che nel calcolarli, e su una
+macchina vera il guadagno misurato è una frazione di quello teorico, a volte
+nullo. È la ragione per cui le architetture per dispositivo si valutano
+cronometrandole, non contando le operazioni.
+
 ## Progettare architetture: dall'artigianato al metodo
 
 Vista da vicino, la stagione 2012–2016 è stata artigianato d'alta scuola:
@@ -468,7 +502,8 @@ architecture search** un algoritmo esplora lo spazio delle possibili
 architetture e seleziona le più promettenti; la rete base di EfficientNet è
 stata trovata proprio così, non disegnata a mano. E la storia non è finita:
 dal 2020 i **Vision Transformer** {cite}`dosovitskiy2021image`, reti basate
-sull'attenzione e nate per il linguaggio, hanno dimostrato di poter competere
+sull'**attenzione** (è il nome di un meccanismo preciso, non la parola di tutti
+i giorni) e nate per il linguaggio, hanno dimostrato di poter competere
 con le CNN quando i dati abbondano. Oggi in visione artificiale le due
 famiglie convivono e si scambiano idee; ne riparleremo nel capitolo dedicato
 ai Transformer.

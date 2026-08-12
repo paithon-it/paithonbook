@@ -1,10 +1,11 @@
 # Oltre la GCN: GraphSAGE, GAT e applicazioni
 
 La *Graph Convolutional Network* della sezione precedente è un piccolo
-miracolo di semplicità: un solo strato di message passing (media normalizzata
-dei vicini, trasformazione lineare, non linearità) e già classifica i nodi di
-un grafo meglio di quanto facessero i cammini casuali. Ma quella eleganza si
-paga con due limiti che, su un grafo vero, diventano subito ingombranti.
+miracolo di semplicità: un solo giro di passaparola (si mettono insieme i
+bigliettini dei vicini pesandoli, si riscrive il risultato con la ricetta
+appresa, si dà il ritocco finale) e già classifica i nodi di un grafo meglio di
+quanto facessero i cammini casuali. Ma quella eleganza si paga con due limiti
+che, su un grafo vero, diventano subito ingombranti.
 
 Il primo è che la GCN, così come Kipf e Welling la addestrano, è
 **transduttiva**: si addestra su tutto il grafo in una volta sola, quel grafo
@@ -61,41 +62,65 @@ GraphSAGE riscrive lo schema $\mathrm{AGGREGATE}$–$\mathrm{UPDATE}$ del messag
 passing in forma dichiaratamente induttiva. Al passo $k$, per ogni nodo $v$:
 
 $$
-h_{\mathcal{N}(v)}^{(k)} = \mathrm{AGGREGATE}_k\big(\{\, h_u^{(k-1)} : u \in \mathcal{S}(v) \,\}\big),
+\mathbf{h}_{\mathcal{N}(v)}^{(k)} = \mathrm{AGGREGATE}_k\big(\{\, \mathbf{h}_u^{(k-1)} : u \in \mathcal{S}(v) \,\}\big),
 \qquad
-h_v^{(k)} = \sigma\!\Big(W^{(k)} \big[\, h_v^{(k-1)} \;\|\; h_{\mathcal{N}(v)}^{(k)} \,\big]\Big),
+\mathbf{h}_v^{(k)} = \sigma\!\Big(\mathbf{W}^{(k)} \big[\, \mathbf{h}_v^{(k-1)} \;\|\; \mathbf{h}_{\mathcal{N}(v)}^{(k)} \,\big]\Big),
 $$
 
-dove $\|$ è la concatenazione, $\sigma$ una non linearità, $W^{(k)}$ i pesi
-condivisi dello strato $k$, e (cruciale)
+dove $\|$ è la concatenazione, $\sigma$ una non linearità, $\mathbf{W}^{(k)}$ i
+pesi condivisi dello strato $k$, e (cruciale)
 $\mathcal{S}(v) \subseteq \mathcal{N}(v)$ è un **sottoinsieme campionato
 uniformemente** dei vicini, di dimensione fissa. È il campionamento a rendere
 il costo per nodo indipendente dal grado: con $S$ vicini campionati per strato
 e $K$ strati, il sottografo che alimenta un nodo ha al più $S^K$ foglie,
-comunque grande sia il grafo. E poiché $W^{(k)}$ e le funzioni di aggregazione
-non dipendono da *quali* nodi si stia guardando ma solo dalle loro feature, il
-modello si applica di peso a nodi e grafi mai visti: l'inferenza su un nuovo
-nodo richiede solo di conoscerne il vicinato, non di riaddestrare.
+comunque grande sia il grafo. E poiché $\mathbf{W}^{(k)}$ e le funzioni di
+aggregazione non dipendono da *quali* nodi si stia guardando ma solo dalle loro
+feature, il modello si applica di peso a nodi e grafi mai visti: l'inferenza su
+un nuovo nodo richiede solo di conoscerne il vicinato, non di riaddestrare.
 
 La funzione $\mathrm{AGGREGATE}$ deve restare invariante all'ordine dei vicini;
 Hamilton et al. ne propongono tre varianti:
 
 - **mean**: la media (eventualmente pesata) dei vettori dei vicini. Con una
-  piccola modifica (concatenare non più, ma sommare $v$ ai suoi vicini prima
-  della media), si riottiene quasi esattamente la propagazione della GCN, che
-  diventa così un *caso particolare* di GraphSAGE.
-- **pool**: ogni vicino passa per uno stesso piccolo strato denso, poi si prende
-  il massimo elemento per elemento (*max-pooling*): $\max\{\sigma(W_{\text{pool}}\,h_u + b) : u \in \mathcal{S}(v)\}$.
+  piccola modifica (invece di concatenare, si somma $v$ ai suoi vicini prima
+  della media) si ottiene la **variante convoluzionale**, che gli autori stessi
+  descrivono come «un'approssimazione lineare grossolana» di una convoluzione
+  spettrale localizzata. Non è un caso particolare della GCN, ed è utile capire
+  perché: quella media è l'operatore
+  $\tilde{\mathbf{D}}^{-1}\tilde{\mathbf{A}}$, la normalizzazione **per righe**
+  che la sezione precedente aveva scartato in favore della simmetrica
+  $\hat{\mathbf{A}}$. Sulla catena di quattro nodi di quella sezione, con
+  $\mathbf{X} = (1,2,3,4)^\top$, i due operatori danno
+  $(1{,}500,\, 2{,}000,\, 3{,}000,\, 3{,}500)$ contro
+  $(1{,}316,\, 2{,}075,\, 3{,}300,\, 3{,}225)$: un 14% di scarto già sul primo
+  nodo.
+- **pool**: ogni vicino passa per uno stesso piccolo strato denso, poi si
+  prende il massimo elemento per elemento (*max-pooling*):
+  $\max\{\sigma(\mathbf{W}_{\text{pool}}\,\mathbf{h}_u + \mathbf{b}) : u \in \mathcal{S}(v)\}$.
   Simmetrico perché il massimo non dipende dall'ordine.
 - **LSTM**: più espressiva ma, di suo, sensibile all'ordine; la si rende
   utilizzabile applicandola a **permutazioni casuali** dei vicini.
 
+Vale la pena aggiungere una cosa che il risparmio di costo mette in ombra: il
+campionamento rende il forward **aleatorio**, e non nello stesso modo per i tre
+aggregatori. La media su un campione stima la media completa **senza
+distorsione**; il massimo su un campione è invece sistematicamente **più basso**
+del massimo vero, e la distorsione cresce col grado; una somma su campione
+sarebbe distorta di un fattore $S/\deg(v)$. Anche il caso non distorto smette di
+esserlo appena attraversa la non linearità (disuguaglianza di Jensen), ed è la
+ragione per cui esiste tutta la letteratura sulla riduzione della varianza nel
+campionamento su grafo. In pratica, a inferenza si preferisce il vicinato pieno
+quando il grado lo consente. Una precisazione minuta e utile: $\mathcal{S}(v)$
+non è propriamente un sottoinsieme, perché quando la dimensione del campione
+supera il grado si campiona **con reinserimento**.
+
 `````
 
 In PyTorch, con la libreria PyTorch Geometric, uno strato GraphSAGE è una riga;
-il campionamento dei vicini è delegato a un *loader* dedicato (`NeighborLoader`),
-così l'addestramento procede a mini-batch anche su grafi che non entrano in
-memoria:
+del campionamento dei vicini si occupa un componente apposito
+(`NeighborLoader`), che serve un pezzo di grafo alla volta invece dell'intero
+grafo, e permette così di addestrare anche quando il grafo, tutto insieme, non
+starebbe nella memoria della macchina:
 
 ```python
 import torch
@@ -112,6 +137,22 @@ class GraphSAGE(nn.Module):
     def forward(self, x, edge_index):
         x = torch.relu(self.conv1(x, edge_index))  # primo giro di vicinato
         return self.conv2(x, edge_index)           # secondo giro
+```
+
+La {numref}`fig-gnn-graphsage-gat` mette a confronto il modo di guardare il
+vicinato di GraphSAGE, che è quello appena descritto, con quello del modello
+della prossima sezione: nel pannello di sinistra si tengono solo alcuni vicini,
+scelti a sorte; in quello di destra si tengono tutti, ma pesati.
+
+```{figure} ../figures/gnn-graphsage-gat.svg
+:name: fig-gnn-graphsage-gat
+:alt: "A sinistra GraphSAGE: un nodo centrale con sei vicini, di cui solo tre campionati (pieni, archi solidi) e tre sbiaditi (archi tratteggiati); si aggrega solo il sottoinsieme campionato. A destra GAT: lo stesso nodo con gli stessi sei vicini tutti presenti, ma gli archi hanno spessore diverso, proporzionale al peso di attenzione: un vicino conta molto più degli altri."
+:width: 100%
+
+Due modi di guardare lo stesso vicinato. **GraphSAGE** (sinistra) ne
+*campiona* un sottoinsieme e lo aggrega alla pari, per scalare a grafi enormi.
+**GAT** (destra) tiene tutti i vicini ma li **pesa** con l'attenzione: più
+grosso è il tratto dell'arco, più quel vicino conta.
 ```
 
 ## GAT: non tutti i vicini contano uguale
@@ -131,8 +172,10 @@ modello ripassava tutte le altre e le colorava con intensità diversa, secondo
 quanto contavano. La GAT fa la stessa cosa, ma l'evidenziatore lo passa sui
 **vicini di un nodo nel grafo**. Quando aggiorna un nodo non fa più una media
 democratica: prima decide, vicino per vicino, *quanto* pesarlo (dà a ognuno un
-voto tra 0 e 1, e i voti sommano a 1) e poi fa la media *pesata* con quei
-voti. Il bello è che nessuno scrive a mano questi pesi: li impara la rete,
+voto tra 0 e 1, e i voti sommano a 1) e poi fa la media *pesata* con quei voti,
+cioè moltiplica ogni bigliettino per il voto del suo mittente prima di
+sommarli, così chi ha preso il voto più alto conta di più nel totale. Il bello
+è che nessuno scrive a mano questi pesi: li impara la rete,
 come ogni altro parametro. Nel pannello di destra della
 {numref}`fig-gnn-graphsage-gat` lo spessore di ogni arco è il peso di
 attenzione: un vicino, quello con l'arco più grosso, si prende la fetta più
@@ -150,28 +193,37 @@ in cui tutti sono vicini di tutti.
 `````{tab} Superiore
 
 In uno strato GAT ogni nodo calcola, verso ciascun vicino, un punteggio di
-attenzione, poi lo normalizza con una softmax sul vicinato. Con
-$h_i$ le feature del nodo $i$ e $W$ una trasformazione lineare condivisa:
+attenzione, poi lo normalizza con una softmax sul vicinato. Con $\mathbf{h}_i$
+le feature del nodo $i$ e $\mathbf{W}$ una trasformazione lineare condivisa:
 
 $$
-\alpha_{ij} = \frac{\exp\!\Big(\mathrm{LeakyReLU}\big(\mathbf{a}^{\top}[\,W h_i \,\|\, W h_j\,]\big)\Big)}
-{\sum_{k \in \mathcal{N}(i) \cup \{i\}} \exp\!\Big(\mathrm{LeakyReLU}\big(\mathbf{a}^{\top}[\,W h_i \,\|\, W h_k\,]\big)\Big)},
+\alpha_{ij} = \frac{\exp\!\Big(\mathrm{LeakyReLU}\big(\mathbf{a}^{\top}[\,\mathbf{W} \mathbf{h}_i \,\|\, \mathbf{W} \mathbf{h}_j\,]\big)\Big)}
+{\sum_{k \in \mathcal{N}(i) \cup \{i\}} \exp\!\Big(\mathrm{LeakyReLU}\big(\mathbf{a}^{\top}[\,\mathbf{W} \mathbf{h}_i \,\|\, \mathbf{W} \mathbf{h}_k\,]\big)\Big)},
 \qquad
-h_i' = \sigma\!\Big(\sum_{j \in \mathcal{N}(i) \cup \{i\}} \alpha_{ij}\, W h_j\Big),
+\mathbf{h}_i' = \sigma\!\Big(\sum_{j \in \mathcal{N}(i) \cup \{i\}} \alpha_{ij}\, \mathbf{W} \mathbf{h}_j\Big),
 $$
 
 dove il vicinato, come nel paper, comprende il nodo stesso ($j$ corre su
 $\mathcal{N}(i) \cup \{i\}$): senza questo cappio il nodo dimenticherebbe la
-propria feature, il difetto che i *self-loop* della GCN erano nati per
-evitare. Qui $\|$ è la concatenazione, $\mathbf{a}$ è un vettore di parametri appreso,
+propria feature, il difetto che i *self-loop* della GCN erano nati per evitare.
+Qui $\|$ è la concatenazione, $\mathbf{W} \in \mathbb{R}^{F \times F'}$ è la
+trasformazione lineare condivisa, $\mathbf{a} \in \mathbb{R}^{2F'}$ è un
+vettore di parametri appreso (la lunghezza è $2F'$ perché deve moltiplicare due
+vettori concatenati, ed è quel che rende il punteggio uno **scalare**),
 $\mathrm{LeakyReLU}$ la non linearità usata sul punteggio (pendenza $0{,}2$ per
 gli ingressi negativi) e $\sigma$ quella finale. Il coefficiente $\alpha_{ij}$
 dice **quanto il nodo $i$ pesa il vicino $j$**; la softmax garantisce
-$\sum_{j \in \mathcal{N}(i) \cup \{i\}} \alpha_{ij} = 1$. Rispetto alla *scaled dot-product
-attention* dei Transformer cambia solo il modo di calcolare il punteggio (qui
-una piccola rete con $\mathbf{a}$ e la $\mathrm{LeakyReLU}$, lì il prodotto
-scalare query·key riscalato); l'ossatura «pesi softmax, media pesata dei value»
-è la stessa.
+$\sum_{j \in \mathcal{N}(i) \cup \{i\}} \alpha_{ij} = 1$.
+
+Rispetto alla *scaled dot-product attention* dei Transformer l'ossatura «pesi
+softmax, media pesata» è la stessa, ma due cose cambiano. Cambia il modo di
+calcolare il punteggio (qui una piccola rete con $\mathbf{a}$ e la
+$\mathrm{LeakyReLU}$, lì il prodotto scalare query·key riscalato per
+$1/\sqrt{d_k}$, che è la ragione del nome *scaled*). E cambia il fatto che
+nella GAT **non esiste una proiezione separata per i *value***: la stessa
+$\mathbf{W}$ fa due mestieri, costruisce il punteggio e produce il vettore che
+poi viene mediato, mentre il Transformer tiene $\mathbf{W}_Q$, $\mathbf{W}_K$ e
+$\mathbf{W}_V$ distinte.
 
 Un esempio a mano. Un nodo $i$ ha tre vicini, e i punteggi (dopo la
 $\mathrm{LeakyReLU}$) valgono $e_{i1}=2$, $e_{i2}=1$, $e_{i3}=0$; il cappio,
@@ -199,16 +251,6 @@ criteri diversi contemporaneamente.
 
 `````
 
-```{figure} ../figures/gnn-graphsage-gat.svg
-:name: fig-gnn-graphsage-gat
-:alt: "A sinistra GraphSAGE: un nodo centrale con sei vicini, di cui solo tre campionati (pieni, archi solidi) e tre sbiaditi (archi tratteggiati); si aggrega solo il sottoinsieme campionato. A destra GAT: lo stesso nodo con gli stessi sei vicini tutti presenti, ma gli archi hanno spessore diverso, proporzionale al peso di attenzione: un vicino conta molto più degli altri."
-
-Due modi di guardare lo stesso vicinato. **GraphSAGE** (sinistra) ne
-*campiona* un sottoinsieme e lo aggrega alla pari, per scalare a grafi enormi.
-**GAT** (destra) tiene tutti i vicini ma li *pesa* con l'attenzione: lo
-spessore dell'arco è il coefficiente $\alpha_{ij}$.
-```
-
 Anche la GAT, in PyTorch Geometric, è uno strato pronto all'uso; l'argomento
 `heads` fissa il numero di teste di attenzione:
 
@@ -223,13 +265,15 @@ conv1 = GATConv(in_dim, hid_dim, heads=8, concat=True)
 conv2 = GATConv(hid_dim * 8, out_dim, heads=1, concat=False)
 ```
 
-## Dal nodo al grafo intero: readout e potere espressivo
+## Dal nodo al grafo intero: mettere insieme i nodi, e quanto si riesce a distinguere
 
-Finora abbiamo prodotto un vettore *per ogni nodo*. Ma i compiti a **livello
-di grafo** («questa molecola è tossica?», «questo composto uccide i batteri?»)
-chiedono un solo verdetto per l'intero grafo. Serve un passo in più:
-comprimere i tanti vettori dei nodi in **un** vettore del grafo. Questo passo
-si chiama **readout** (o *pooling* globale).
+Finora abbiamo prodotto una fila di numeri *per ogni nodo*. Ma i compiti a
+**livello di grafo** («questa molecola è tossica?», «questo composto uccide i
+batteri?») chiedono un solo verdetto per l'intero grafo. Serve un passo in più:
+comprimere le tante file di numeri dei nodi in **una** sola, quella del grafo.
+Questo passo si chiama **readout** (letteralmente «lettura finale», o *pooling*
+globale), e la scelta di come farlo non è un dettaglio: decide quali grafi
+diversi la rete riuscirà a distinguere fra loro.
 
 `````{tab} Elementare
 
@@ -243,54 +287,85 @@ in cui elenchi i giocatori, che è proprio ciò che ci serve su un grafo.
 Sembrano equivalenti, ma non lo sono, e la differenza è più profonda di quanto
 sembri. La media e il massimo **dimenticano quanti** sono i nodi; la somma no.
 L'esempio più pulito: due molecole i cui atomi, agli occhi della rete, portano
-tutti lo stesso vettore $b$, ma una ne ha tre e l'altra sei. Sono molecole
-diverse, e possono comportarsi in modo diverso. La **somma** dà $3b$ nella
-prima e $6b$ nella seconda: le distingue. La **media** dà $b$ in entrambi i
-casi, il **massimo** pure: le confondono. Contare, a volte, è tutto.
+tutti lo stesso vettore $\mathbf{b}$, ma una ne ha tre e l'altra sei. Sono
+molecole diverse, e possono comportarsi in modo diverso. La **somma** dà
+$3\mathbf{b}$ nella prima e $6\mathbf{b}$ nella seconda: le distingue. La
+**media** dà $\mathbf{b}$ in entrambi i casi, il **massimo** pure: le
+confondono. Contare, a volte, è tutto.
 
 `````
 
 `````{tab} Superiore
 
-Il readout aggrega l'insieme $\{h_v^{(K)} : v \in V\}$ in un vettore $h_G$ con
-un'operazione invariante a permutazione; tipicamente $h_G = \sum_v h_v^{(K)}$,
-oppure la media o il massimo. Esistono anche schemi di **pooling gerarchico**
-(per esempio *DiffPool*), che alternano message passing e fusione di gruppi di
-nodi in super-nodi, costruendo il vettore del grafo per livelli, come il
-pooling delle CNN accorpa regioni dell'immagine.
+Il readout aggrega l'insieme $\{\mathbf{h}_v^{(K)} : v \in V\}$ in un unico
+vettore $\mathbf{h}_G \in \mathbb{R}^{d_K}$ con un'operazione invariante a
+permutazione, che quindi accetta un numero variabile di vettori e ne
+restituisce sempre uno solo della stessa lunghezza; tipicamente
+$\mathbf{h}_G = \sum_v \mathbf{h}_v^{(K)}$, oppure la media o il massimo.
+Esistono anche schemi di **pooling gerarchico** (per esempio *DiffPool*), che
+alternano message passing e fusione di gruppi di nodi in super-nodi, costruendo
+il vettore del grafo per livelli, come il pooling delle CNN accorpa regioni
+dell'immagine.
 
 La scelta dell'aggregatore non è un dettaglio implementativo: decide il
 **potere espressivo** della rete, cioè quali grafi diversi essa riesce a
 distinguere. Il risultato di riferimento è di Xu, Hu, Leskovec e Jegelka nel
-2019 {cite}`xu2019powerful`, e lega le GNN a un classico test di
-**isomorfismo**: il test di Weisfeiler–Lehman (WL). Il test WL colora
-iterativamente i nodi impastando la propria etichetta con il *multinsieme*
-delle etichette dei vicini: è esattamente la struttura del message passing. Xu
-et al. dimostrano che **nessuna GNN a message passing può distinguere due
-grafi che il test WL dichiara indistinguibili** (è il tetto teorico) e che una
-GNN raggiunge quel tetto se la sua aggregazione è **iniettiva** sul
-multinsieme dei vicini. Da qui la gerarchia:
+2019 {cite}`xu2019powerful`, e lega le GNN a un classico test di isomorfismo,
+il **1-WL** di Weisfeiler–Lehman (noto anche come *color refinement*; la
+gerarchia $k$-WL, che il paper non usa, è strettamente più forte). Il test
+colora iterativamente i nodi impastando la propria etichetta con il
+*multinsieme* delle etichette dei vicini: è esattamente la struttura del
+message passing.
+
+Prima di enunciare il risultato conviene dire che cos'è 1-WL, perché il nome
+«test di isomorfismo» promette più di quel che mantiene: è un'**euristica
+incompleta**, e lo dichiara il paper stesso. Se due grafi ricevono colorazioni
+diverse allora non sono isomorfi; se le ricevono uguali non si può concludere
+niente. Il controesempio è elementare: un ciclo di sei nodi e due triangoli
+separati sono entrambi $2$-regolari, quindi con feature iniziali costanti ogni
+nodo ha lo stesso stato a ogni giro in tutti e due, e 1-WL li dichiara
+indistinguibili. Lo sono di conseguenza anche per **qualunque** GNN a message
+passing, con qualunque MLP: non è un limite di GIN, è il tetto.
+
+Xu et al. dimostrano appunto che **nessuna GNN a message passing può
+distinguere due grafi che 1-WL dichiara indistinguibili** (Lemma 2, il tetto
+teorico) e che una GNN raggiunge quel tetto (Teorema 3) se sono iniettive tutte
+e tre le funzioni in gioco: l'aggregazione sul **multinsieme** dei vicini, la
+**combinazione** con lo stato del nodo stesso, e il **readout** finale; e con
+abbastanza strati. Sopra tutto sta un'ipotesi che è facile perdere e che regge
+il resto: le feature d'ingresso provengono da un insieme **numerabile**. Da qui
+la gerarchia:
 
 $$
 \text{somma} \;\succ\; \text{media} \;\succ\; \text{massimo},
 $$
 
-dove $\succ$ significa «strettamente più espressiva». La somma conserva sia le
-feature sia la **molteplicità** (quanti vicini di ciascun tipo); la media
-conserva solo le proporzioni e perde il conteggio; il massimo tiene solo
-l'insieme dei tipi presenti, dimenticando anche le proporzioni. Su queste basi
-gli autori costruiscono la **Graph Isomorphism Network** (GIN), la cui regola di
-aggiornamento è deliberatamente semplice e iniettiva:
+dove $\succ$ va letto **nel quadro di Xu et al.**, cioè come una gerarchia fra
+le *informazioni* che i tre aggregatori conservano dopo una mappa appresa: la
+somma conserva il multinsieme (feature **e** molteplicità, quanti vicini di
+ciascun tipo); la media lo riduce alla distribuzione, e perde il conteggio; il
+massimo lo riduce all'insieme dei tipi presenti, e perde anche le proporzioni.
+Non è un ordine totale sui numeri reali presi nudi, ed è utile vedere perché in
+una riga: i multinsiemi $\{0, 2\}$ e $\{1, 1\}$ hanno la stessa somma e la
+stessa media, e massimi diversi. È esattamente l'ipotesi di numerabilità a
+rendere la catena vera nel quadro del paper.
+
+Su queste basi gli autori costruiscono la **Graph Isomorphism Network** (GIN),
+la cui regola di aggiornamento è deliberatamente semplice e iniettiva:
 
 $$
-h_v^{(k)} = \mathrm{MLP}^{(k)}\!\Big( \big(1 + \epsilon^{(k)}\big)\, h_v^{(k-1)} + \sum_{u \in \mathcal{N}(v)} h_u^{(k-1)} \Big),
+\mathbf{h}_v^{(k)} = \mathrm{MLP}^{(k)}\!\Big( \big(1 + \epsilon^{(k)}\big)\, \mathbf{h}_v^{(k-1)} + \sum_{u \in \mathcal{N}(v)} \mathbf{h}_u^{(k-1)} \Big),
 $$
 
-dove $\mathrm{MLP}^{(k)}$ è un piccolo percettrone multistrato ed
-$\epsilon^{(k)}$ uno scalare (appreso o fissato a 0) che dosa il peso del nodo
-rispetto ai vicini. La somma sui vicini, seguita da un MLP, è quanto basta
-perché GIN eguagli il potere del test WL: il massimo ottenibile da una GNN a
-message passing.
+dove $\mathrm{MLP}^{(k)} \colon \mathbb{R}^{d_{k-1}} \to \mathbb{R}^{d_k}$ è un
+piccolo percettrone multistrato ed $\epsilon^{(k)}$ uno scalare (appreso o
+fissato a 0) che dosa il peso del nodo rispetto ai vicini. Quel termine
+$(1+\epsilon^{(k)})\mathbf{h}_v^{(k-1)}$ è precisamente il modo in cui GIN si
+compra la seconda delle tre iniettività, quella della combinazione con lo stato
+proprio. La somma sui vicini, seguita da un MLP, è quanto basta perché GIN
+eguagli il potere di 1-WL: il massimo ottenibile da una GNN a message passing,
+con l'avvertenza detta sopra che quel massimo lascia fuori casi elementari come
+il ciclo contro i due triangoli.
 
 `````
 
@@ -303,14 +378,19 @@ mostrare dove le GNN, oggi, fanno la differenza.
 grafo (atomi nei nodi, legami negli archi) e prevederne una proprietà è un
 compito a livello di grafo. L'idea di leggere le molecole con reti su grafo
 risale ai *fingerprint molecolari neurali* di Duvenaud e colleghi del 2015
-{cite}`duvenaud2015convolutional`, che sostituiscono i descrittori chimici
-scritti a mano con un vettore appreso end-to-end. La punta di diamante è la
+{cite}`duvenaud2015convolutional`: prima di allora le caratteristiche di una
+molecola da dare in pasto a un modello (quanti anelli, quali gruppi chimici,
+che peso) le sceglieva un chimico a mano, una per una; il lavoro di Duvenaud le
+fa trovare alla rete, che dalla struttura della molecola ricava da sé la fila
+di numeri che la descrive. La punta di diamante è la
 scoperta di **halicin**, già raccontata nell'apertura del capitolo: nel 2020
 il gruppo di Jonathan Stokes e James Collins al MIT addestra una rete a
 message passing a prevedere l'attività antibatterica, la passa al setaccio su
 una libreria di composti e ne pesca uno che nessuno associava agli
-antibiotici, efficace contro ceppi resistenti a ogni farmaco noto (pubblicato
-su *Cell*).
+antibiotici, attivo a largo spettro (fra gli altri su *M. tuberculosis* e sulle
+enterobatteriacee resistenti ai carbapenemi) e in un modello murino di ferita
+anche su un isolato di *Acinetobacter baumannii* resistente a tutti gli
+antibiotici provati (pubblicato su *Cell*).
 
 **Raccomandazione su grafo.** Il caso industriale più celebre è **PinSage**, il
 sistema che Pinterest mette in produzione nel 2018
@@ -319,7 +399,7 @@ suggerire contenuti su un grafo bipartito di miliardi di *pin* e bacheche.
 PinSage è, nella sostanza, un GraphSAGE portato a scala web: campiona i vicini
 con brevi cammini casuali e li aggrega, girando su un grafo di tre miliardi di
 nodi. Come discusso nel capitolo sui sistemi di raccomandazione, raccomandare è
-*link prediction* su un grafo utente–oggetto, ed è lì che le GNN danno il meglio.
+*link prediction* su un grafo utente-prodotto, ed è lì che le GNN danno il meglio.
 
 **Rilevamento frodi.** Le transazioni finanziarie formano un grafo (conti nei
 nodi, pagamenti negli archi) e le frodi vivono nelle *relazioni*: anelli di
@@ -375,28 +455,29 @@ meno.
 `````{tab} Superiore
 
 - **Oversmoothing.** Li, Han e Wu (2018) mostrano che uno strato GCN è, in
-  sostanza, un passo di *smoothing* laplaciano: iterandolo molte volte le feature
-  dei nodi convergono verso un punto fisso che dipende dai gradi e non dai nodi,
-  rendendoli indistinguibili. La derivazione spettrale della sezione sul message
-  passing lo rende meccanico: $\hat{A}$ ha autovalori in $[-1,1]$ con il massimo
-  pari a $1$, quindi $\hat{A}^K$ spegne tutte le componenti tranne quella lungo
-  l'autovettore dominante, che è $\tilde{D}^{1/2}\mathbf{1}$ e non distingue un
-  nodo dall'altro. È la ragione teorica per cui, oltre pochi strati,
-  l'accuratezza crolla. I rimedi hanno nomi e forme precise, e vale la pena
-  averli in mente perché sono tre risposte diverse alla stessa domanda.
-  **Highway GCN** (Rahimi e colleghi, 2018) mette un *gate* per strato che
-  decide quanto del vecchio stato lasciar passare accanto al nuovo, e nei loro
-  esperimenti le prestazioni smettono di migliorare attorno ai quattro strati.
-  **Jumping Knowledge Network** (Xu e colleghi, 2018) parte da
-  un'osservazione diversa, cioè che nodi diversi vogliono campi recettivi
-  diversi (un hub satura in due salti, un nodo periferico no), e quindi invece
-  di prendere l'uscita dell'ultimo strato le **concatena tutte**, lasciando che
-  sia il modello a scegliere la profondità nodo per nodo. **DeepGCN** (Li e
-  colleghi, 2019) importa di peso residui e connessioni dense da ResNet e
-  DenseNet contro i gradienti che svaniscono, e aggiunge un vicinato
-  **dilatato** (si prendono i vicini saltandone alcuni) contro l'oversmoothing:
-  con questa ricetta arrivano a 56 strati su nuvole di punti. Restano
-  eccezioni, però: il vincolo pratico alla profondità è ancora la regola.
+  sostanza, un passo di *smoothing* laplaciano: iterandolo molte volte le
+  feature dei nodi convergono verso un punto fisso che dipende dai gradi e non
+  dai nodi, rendendoli indistinguibili. La derivazione spettrale della sezione
+  sul message passing lo rende meccanico: $\hat{\mathbf{A}}$ ha autovalori in
+  $[-1,1]$ con il massimo pari a $1$, quindi $\hat{\mathbf{A}}^K$ spegne tutte
+  le componenti tranne quella lungo l'autovettore dominante, che è
+  $\tilde{\mathbf{D}}^{1/2}\mathbf{1}$ e non distingue un nodo dall'altro. È la
+  ragione teorica per cui, oltre pochi strati, l'accuratezza crolla. I rimedi
+  hanno nomi e forme precise, e vale la pena averli in mente perché sono tre
+  risposte diverse alla stessa domanda. **Highway GCN** (Rahimi e colleghi,
+  2018) mette un *gate* per strato che decide quanto del vecchio stato lasciar
+  passare accanto al nuovo, e nei loro esperimenti le prestazioni smettono di
+  migliorare attorno ai quattro strati. **Jumping Knowledge Network** (Xu e
+  colleghi, 2018) parte da un'osservazione diversa, cioè che nodi diversi
+  vogliono campi recettivi diversi (un hub satura in due salti, un nodo
+  periferico no), e quindi invece di prendere l'uscita dell'ultimo strato le
+  **concatena tutte**, lasciando che sia il modello a scegliere la profondità
+  nodo per nodo. **DeepGCN** (Li e colleghi, 2019) importa di peso residui e
+  connessioni dense da ResNet e DenseNet contro i gradienti che svaniscono, e
+  aggiunge un vicinato **dilatato** (si prendono i vicini saltandone alcuni)
+  contro l'oversmoothing: con questa ricetta arrivano a 56 strati su nuvole di
+  punti. Restano eccezioni, però: il vincolo pratico alla profondità è ancora
+  la regola.
 - **Over-squashing.** Alon e Yahav (2021) osservano che il campo recettivo di un
   nodo cresce esponenzialmente con il numero di strati, mentre il vettore che lo
   riassume ha dimensione fissa: l'informazione proveniente da nodi distanti viene
@@ -416,11 +497,17 @@ meno.
 
 ## Graph Transformer: togliere il vincolo del vicinato
 
-Molti dei limiti appena elencati hanno la stessa radice: il message passing
+Uno dei limiti appena elencati ha una radice **topologica**: il message passing
 fa parlare **solo i nodi collegati**, quindi l'informazione lontana deve
-attraversare molti strati, e strada facendo si appiattisce (oversmoothing) o si
-strozza (over-squashing). Viene naturale chiedersi cosa succeda a togliere quel
-vincolo, e la risposta arriva dall'altro capo del libro.
+attraversare molti strati e si strozza nei colli di bottiglia del grafo (è
+l'over-squashing). Viene naturale chiedersi cosa succeda a togliere quel
+vincolo, e la risposta arriva dall'altro capo del libro. Anticipiamola: cura
+quello e non l'altro. L'oversmoothing non ha la stessa radice, perché non è una
+questione di distanza ma una proprietà dell'operatore, e togliere il vincolo
+del vicinato non lo attenua, lo **peggiora**: su un grafo completo con cappi
+l'operatore normalizzato ha il secondo autovalore esattamente **zero**, cioè un
+solo passo azzera ogni differenza fra i nodi (sulla catena di quattro nodi
+valeva $0{,}729$: più il grafo è connesso, più il collasso è rapido).
 
 `````{tab} Elementare
 
@@ -428,7 +515,7 @@ Il capitolo sui Transformer ha già detto che la self-attention è, di fatto,
 message passing su un **grafo completo**: ogni token parla con tutti gli altri.
 Se è così, la strada per un grafo è ovvia: mettiamoci un Transformer sopra e
 lasciamo che ogni nodo parli con ogni altro, senza aspettare che il messaggio
-faccia il giro lungo lungo gli archi.
+faccia tutto il giro lungo gli archi.
 
 C'è però un guaio che si vede subito: **se tutti parlano con tutti, il grafo
 non conta più niente**. Un Transformer applicato all'elenco dei nodi darebbe
@@ -442,13 +529,24 @@ l'equivalente: **dare a ogni nodo una firma che dica dove sta nel grafo**, e
 poi lasciar parlare tutti con tutti.
 
 E adesso viene la parte bella, che questo capitolo ha già preparato senza
-dirlo. Quelle firme esistono, e le abbiamo già incontrate: sono gli
-**autovettori del laplaciano**, quelli che parlando di convoluzione spettrale
-avevamo chiamato le «frequenze» del grafo. Su una catena di nodi, si era detto,
-quegli autovettori *sono* seni e coseni. Il che vuol dire che la firma
-posizionale dei Transformer non è un caso particolare né una scelta
-arbitraria: è **questa stessa costruzione**, applicata al grafo più semplice
-che esista, cioè una fila.
+dirlo. Quelle firme esistono, e le abbiamo già incontrate: sono le
+configurazioni di numeri sui nodi che nella sezione sul message passing abbiamo
+chiamato le **frequenze** del grafo, dalla più liscia (tutti lo stesso numero)
+alla più a scacchiera, e che là avevano preso il loro nome proprio di
+**autovettori del laplaciano**. La prima firma dice grossomodo «da che parte
+del grafo stai»; quelle dopo lo dicono con un dettaglio via via più fine. È
+questo il modo per dare a ogni nodo una posizione senza inventarsela: gliela dà
+la forma del grafo.
+
+E su una fila di nodi, cioè sul grafo più semplice che esista, quelle
+configurazioni sono **onde**, ordinate dalla più lenta alla più rapida: proprio
+come le onde con cui i Transformer segnano la posizione delle parole in una
+frase. Qui però conviene non tirare la corda più di quanto regga: sono onde
+**imparentate, non le stesse onde**. Le due famiglie si costruiscono in modi
+diversi e nessuna delle due si ottiene dall'altra. Quel che è vero, ed è già
+molto, è che la stessa idea (segnare una posizione con onde di frequenza
+crescente) qui non va scelta a mano, esce dalla forma del grafo, e funziona su
+un grafo qualunque invece che soltanto su una fila.
 
 `````
 
@@ -463,20 +561,50 @@ non è praticabile senza le stesse approssimazioni sparse viste nel capitolo sui
 Transformer (e il cerchio si chiude, perché quelle approssimazioni erano
 descritte proprio come sparsificazione di un grafo).
 
-Il problema da risolvere è che l'attenzione piena è **invariante alle
-permutazioni** dei nodi e quindi cieca alla topologia: senza informazione
-aggiuntiva, il modello non distingue un anello da una stella. La struttura va
-reiniettata, e le due strade sono quelle che il capitolo sui Transformer già
-conosce.
+Il problema da risolvere è che l'attenzione piena **non prende $\mathbf{A}$ in
+ingresso**: la sua uscita è funzione del solo multinsieme delle feature dei
+nodi, ed è quindi la stessa qualunque siano gli archi, o se non ce ne fosse
+nessuno. Senza informazione aggiuntiva il modello non distingue un anello da
+una stella. Vale la pena non attribuirlo all'invarianza alle permutazioni, che
+è un'altra cosa e che questo capitolo ha passato due sezioni a presentare come
+la proprietà *desiderabile*: anche una GNN è equivariante alle permutazioni, e
+non è affatto cieca alla topologia. Sono due simmetrie diverse. La GNN è
+equivariante rispetto al gruppo che permuta $(\mathbf{A}, \mathbf{X})$
+**insieme**; il Transformer nudo è invariante rispetto a un gruppo molto più
+grande, che permuta $\mathbf{X}$ e ignora $\mathbf{A}$. Non è un difetto di
+simmetria, è un'informazione che non entra, e la si deve reiniettare: le due
+strade sono quelle che il capitolo sui Transformer già conosce.
 
 La prima è una **codifica posizionale**: si calcolano i primi $k$ autovettori
-non banali del laplaciano normalizzato $L = U\Lambda U^\top$ e si concatena la
-riga $i$-esima di $U_{:,1:k}$ alle feature del nodo $i$
-{cite}`dwivedi2020generalization`. La giustificazione è quella già stabilita in
-questo capitolo: gli autovettori sono i modi di variazione del grafo ordinati
-per frequenza, e su un grafo a catena si riducono alle sinusoidi del
-Transformer originale. **Il positional encoding sinusoidale è il caso
-particolare di questa costruzione su una sequenza.**
+non banali del laplaciano normalizzato
+$\mathbf{L} = \mathbf{U}\boldsymbol{\Lambda} \mathbf{U}^\top$ e si prende la
+riga $i$-esima di $\mathbf{U}_{:,1:k}$ come firma del nodo $i$, che chiamiamo
+$\mathbf{p}_i$. Nel lavoro che ha introdotto la costruzione
+{cite}`dwivedi2020generalization` quella firma **si somma** alle feature del
+nodo dopo una proiezione lineare
+($\mathbf{p}_i^0 = \mathbf{C}^0\mathbf{p}_i + \mathbf{c}^0$ con
+$\mathbf{C}^0 \in \mathbb{R}^{d \times k}$, poi
+$\mathbf{h}_i^0 = \hat{\mathbf{h}}_i^0 + \mathbf{p}_i^0$), non si concatena: la
+proiezione serve proprio perché $k$ e $d$ non coincidono, ed è la stessa scelta
+fra sommare e concatenare che il capitolo sui Transformer discute per la
+codifica sinusoidale. Diverse implementazioni successive concatenano invece; e
+vale la pena notare che la codifica entra **solo allo strato d'ingresso**, non
+negli strati intermedi.
+
+La giustificazione è quella già stabilita in questo capitolo: gli autovettori
+sono i modi di variazione del grafo ordinati per frequenza, e su un grafo a
+catena sono sinusoidi. È in questo senso che la costruzione spettrale
+**generalizza a un grafo qualunque** l'idea della codifica posizionale
+sinusoidale, ed è esattamente ciò che gli autori rivendicano («*naturally
+generalize*»). Non è però un'identità, e conviene dire dove le due famiglie si
+separano, perché sono differenze misurabili: le frequenze degli autovettori del
+cammino sono $\pi k/N$, **spaziate linearmente** e legate alla lunghezza $N$,
+mentre quelle di Vaswani sono $10000^{-2i/d}$, **geometriche** e indipendenti
+dalla lunghezza (è la proprietà per cui il Transformer estrapola a frasi mai
+viste); sul cammino gli autovettori sono soli **coseni**, mentre la codifica
+sinusoidale accoppia un seno e un coseno per frequenza; e un autovettore è
+definito **a meno del segno**, una colonna di codifica posizionale no. Parenti
+stretti, insomma, non lo stesso oggetto.
 
 Due avvertenze pratiche, entrambe reali. Gli autovettori sono definiti **a meno
 del segno** ($-\mathbf{u}$ è altrettanto valido), e su autovalori ripetuti a
@@ -504,9 +632,12 @@ canale per il lontano.
 
 `````
 
-L'affermazione centrale, che gli autovettori del laplaciano generalizzino le
-sinusoidi, non va presa sulla fiducia: si verifica in dieci righe su una catena
-di nodi, che è una sequenza travestita da grafo.
+Niente di tutto questo va preso sulla fiducia, e non c'è bisogno di prenderlo:
+si verifica su una catena di nodi, che è una sequenza travestita da grafo. Il
+conto fa due cose distinte, ed è importante tenerle separate, perché è
+esattamente confondendole che si arriva a dire più del vero: mostra che gli
+autovettori del laplaciano di una catena *sono* sinusoidi ordinate per
+frequenza, e mostra che *non* sono quelle di Vaswani.
 
 ```python
 import numpy as np
@@ -518,32 +649,59 @@ d = A.sum(1)
 L = np.eye(N) - A / np.sqrt(np.outer(d, d))          # laplaciano normalizzato
 val, vec = np.linalg.eigh(L)
 
-# i primi autovettori non banali dovrebbero essere sinusoidi
+# 1. i primi autovettori non banali sono coseni, di frequenza crescente
+t = np.arange(N)
 for k in (1, 2, 3):
-    t = np.arange(N)
     onda = np.cos(np.pi * k * (t + 0.5) / N)
     onda /= np.linalg.norm(onda)
-    print(f"autovettore {k}: |correlazione| con cos(pi*{k}*n/N) = "
+    print(f"autovettore {k}: |somiglianza| con cos(pi*{k}*(n+0.5)/N) = "
           f"{abs(vec[:, k] @ onda):.4f}   (autovalore {val[k]:.3f})")
 
 print("\ngli autovalori crescono:", np.round(val[:5], 3))
 # l'ambiguità di segno: -v è un autovettore altrettanto valido
 print("il segno è arbitrario: -v risolve la stessa equazione ->",
       np.allclose(L @ (-vec[:, 1]), val[1] * (-vec[:, 1])))
+
+# 2. ma non sono la codifica posizionale del Transformer: confrontiamole
+d_model = 16
+omega = 10000.0 ** (-2 * np.arange(d_model // 2) / d_model)
+PE = np.concatenate([np.sin(np.outer(t, omega)), np.cos(np.outer(t, omega))], axis=1)
+PE = PE / np.linalg.norm(PE, axis=0)
+S = abs(PE.T @ vec)              # ogni colonna di PE contro ogni autovettore
+
+print("\nfrequenze degli autovettori (pi*k/N):", np.round(np.pi * np.arange(1, 5) / N, 3))
+print("frequenze di Vaswani (10000^-2i/d):  ", np.round(omega[:4], 3))
+print("colonne di PE piu' simili all'autovettore banale u0:",
+      int((S.argmax(1) == 0).sum()), "su", PE.shape[1])
+print(f"massima somiglianza con un autovettore non banale: {S[:, 1:].max():.3f}")
 ```
 
-Le correlazioni valgono $0{,}989$, $0{,}985$ e $0{,}979$: i primi autovettori
-del laplaciano di una catena **sono** le prime tre sinusoidi, e gli autovalori
-crescono con la frequenza, esattamente come promesso dalla lettura spettrale.
-Non fanno $1{,}000$ per una ragione precisa e non per rumore numerico: il
-laplaciano **normalizzato** pesa ogni nodo per il suo grado, e i due nodi agli
-estremi della catena hanno un vicino invece di due, il che deforma leggermente
-l'onda ai bordi.
+La prima metà del conto dà $0{,}9891$, $0{,}9851$ e $0{,}9785$: i primi tre
+autovettori del laplaciano di una catena **sono** i primi tre coseni, e gli
+autovalori crescono con la frequenza, esattamente come promesso dalla lettura
+spettrale. Non fanno $1{,}0000$ per una ragione precisa e non per rumore
+numerico: il laplaciano **normalizzato** pesa ogni nodo per il suo grado, e i
+due nodi agli estremi della catena hanno un vicino invece di due, il che
+deforma leggermente l'onda ai bordi (con il laplaciano non normalizzato
+$\mathbf{L} = \mathbf{D} - \mathbf{A}$ la corrispondenza è esatta, $1{,}0000$ su tutti e tre).
 
-L'ultima riga conferma l'ambiguità di segno: la stessa equazione è soddisfatta
-da $\mathbf{u}$ e da $-\mathbf{u}$, e nessuna delle due è «quella giusta». Chi
-usa queste firme come codifica posizionale deve conviverci, ed è il motivo per
-cui in addestramento se ne campiona il segno a caso.
+La seconda metà dice dove la parentela si ferma. Le frequenze degli autovettori
+sono $0{,}196$, $0{,}393$, $0{,}589$, $0{,}785$: crescono a passo costante, e
+il passo è $\pi/N$, cioè dipende da quanto è lunga la catena. Quelle di Vaswani
+sono $1{,}000$, $0{,}316$, $0{,}100$, $0{,}032$: calano geometricamente e non
+sanno niente di $N$, tanto che su una finestra di sedici posizioni le più basse
+sono così lente da risultare quasi piatte. La conseguenza si misura:
+**dodici colonne su sedici** della codifica del Transformer somigliano più che
+altro all'autovettore *banale*, quello costante, e nessuna coincide con un
+autovettore vero, la migliore somiglianza fermandosi a $0{,}916$. Due basi di
+onde su una linea, ordinate per frequenza, costruite in due modi diversi: la
+parentela è reale e utile, l'identità no.
+
+L'ultima riga della prima metà conferma l'ambiguità di segno: la stessa
+equazione è soddisfatta da $\mathbf{u}$ e da $-\mathbf{u}$, e nessuna delle due
+è «quella giusta». Chi usa queste firme come codifica posizionale deve
+conviverci, ed è il motivo per cui in addestramento se ne campiona il segno a
+caso.
 
 ## L'ecosistema, e dove andare da qui
 
@@ -557,7 +715,7 @@ CNN.
 
 Con questo si chiude il capitolo. Il filo, però, non si spezza: l'attenzione
 che qui pesa i vicini di un nodo è la stessa dei Transformer, e i grafi
-bipartiti utente–oggetto di questa sezione sono lo stesso oggetto del capitolo
+bipartiti utente-prodotto di questa sezione sono lo stesso oggetto del capitolo
 sui sistemi di raccomandazione. Le reti su grafo non sono un'isola: sono il
 punto in cui convoluzione, attenzione e apprendimento di rappresentazioni si
 ritrovano, sotto un'unica lente (quella, geometrica, delle simmetrie del
@@ -598,11 +756,14 @@ dato).
   reti dove vale il contrario, dove chi è connesso è diverso, rendono molto meno.
   In pratica le GNN restano **basse**, due o tre strati, di rado quattro.
 - I **Graph Transformer** tolgono il vincolo del vicinato e lasciano parlare
-  ogni nodo con ogni altro, il che risolve di colpo il problema della distanza.
-  Ma così il grafo non conta più: bisogna ridarlo, dando a ogni nodo una firma
-  che dica dove sta. Quelle firme sono gli **autovettori del laplaciano**, cioè
-  le stesse onde che nei Transformer segnano la posizione delle parole in una
-  frase.
+  ogni nodo con ogni altro: così l'informazione lontana non si perde più per
+  strada, ma il grafo smette di contare, perché un modello che collega tutti
+  con tutti non guarda mai chi è collegato a chi davvero. La struttura va
+  ridata, assegnando a ogni nodo una **firma** che dica dove sta nel grafo:
+  sono le configurazioni di numeri che qui abbiamo chiamato le frequenze del
+  grafo (gli **autovettori del laplaciano**), e su una fila di nodi sono onde
+  di frequenza crescente, **parenti** di quelle con cui i Transformer segnano
+  la posizione delle parole, non le stesse.
 ```
 
 `````
@@ -621,9 +782,12 @@ dato).
   qualunque anziché completo.
 - I compiti a **livello di grafo** richiedono un **readout** (somma, media,
   massimo). La **somma** è la più espressiva perché conserva la molteplicità dei
-  vicini: **GIN** la usa per eguagliare il test di isomorfismo di
-  **Weisfeiler–Lehman**, il tetto del potere espressivo di una GNN a message
-  passing.
+  vicini: **GIN** la usa per eguagliare il test **1-WL** di
+  **Weisfeiler–Lehman**, che è il tetto del potere espressivo di una GNN a
+  message passing. Il teorema chiede però tre iniettività (aggregazione,
+  combinazione, readout), abbastanza strati e feature da un insieme
+  numerabile; e quel tetto è un'euristica incompleta, che non distingue per
+  esempio un ciclo di sei nodi da due triangoli.
 - Applicazioni reali: farmaci (**halicin**, 2020), raccomandazione (**PinSage**,
   Pinterest 2018), rilevamento frodi, tempi di percorrenza in **Google Maps**
   (DeepMind, 2020–21), simulazioni fisiche e meteo.
@@ -632,15 +796,19 @@ dato).
   **eterofilia**. In pratica le GNN restano **basse**, 2–4 strati.
 - Un **Graph Transformer** sostituisce l'aggregazione sui vicini con
   l'attenzione su tutte le coppie: ogni nodo raggiunge ogni altro in un passo
-  (fine dell'over-squashing), al costo di $O(N^2)$ e della perdita della
-  topologia, perché l'attenzione piena è invariante alle permutazioni. La
+  (fine dell'over-squashing, **non** dell'oversmoothing, che sul grafo completo
+  peggiora perché lì $\lambda_2 = 0$), al costo di $O(N^2)$ e della perdita
+  della topologia, perché l'attenzione piena non prende $\mathbf{A}$ in ingresso. La
   struttura si reinietta come **codifica posizionale** con i primi autovettori
-  del laplaciano (definiti a meno del **segno**, che in addestramento si
-  campiona) oppure come **bias di attenzione** dipendente dalla distanza sul
-  grafo (**Graphormer**). Sulla catena quegli autovettori si riducono alle
-  sinusoidi: **il positional encoding del Transformer è il caso particolare su
-  una sequenza**. Le impostazioni attuali tengono i due canali insieme, message
-  passing per il locale e attenzione per il lontano.
+  del laplaciano, sommati alle feature dopo una proiezione lineare e solo allo
+  strato d'ingresso, e definiti a meno del **segno**, che in addestramento si
+  campiona; oppure come **bias di attenzione** dipendente dalla distanza sul
+  grafo (**Graphormer**). Sulla catena quegli autovettori sono sinusoidi, e in
+  questo senso la costruzione **generalizza** la codifica sinusoidale a un
+  grafo qualunque; non la contiene però come caso particolare, perché le
+  frequenze sono $\pi k/N$ e non $10000^{-2i/d}$. Le impostazioni attuali
+  tengono i due canali insieme, message passing per il locale e attenzione per
+  il lontano.
 ```
 
 `````

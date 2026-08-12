@@ -30,8 +30,11 @@ l'altro è la somma delle due.
 `````{tab} Superiore
 
 Formalizziamo con lo spazio campionario $\Omega$ e gli eventi come suoi
-sottoinsiemi $A\subseteq\Omega$. Una misura di probabilità soddisfa gli
-**assiomi di Kolmogorov** (1933):
+sottoinsiemi $A\subseteq\Omega$, presi in una famiglia $\mathcal{F}$ chiusa
+per complementare e unione numerabile (una $\sigma$-algebra): quando $\Omega$
+non è numerabile non tutti i sottoinsiemi si possono misurare, e la
+restrizione serve appena si passa alle variabili continue. Una misura di
+probabilità soddisfa gli **assiomi di Kolmogorov** (1933):
 
 $$
 P(A)\ge 0, \qquad P(\Omega)=1, \qquad
@@ -54,16 +57,25 @@ Spesso non ci interessa l'esito grezzo, ma un numero che gli associamo.
 :alt: "Due grafici affiancati sulla stessa distribuzione asimmetrica. A sinistra la densità di probabilità, con media e mediana segnate e l'area sotto la curva fino al novantacinquesimo percentile evidenziata. A destra la funzione di ripartizione, che sale da zero a uno, e su cui lo stesso percentile si legge come l'ascissa a cui la curva raggiunge 0,95."
 :width: 100%
 
-La stessa variabile, due modi di guardarla. Sulla densità un percentile è
-un'area; sulla ripartizione è un punto, e questo è il motivo per cui i
-percentili si leggono sulla seconda.
+La stessa variabile, due modi di guardarla. A sinistra la **densità**, che
+disegna quali valori escono spesso e quali di rado: lì la probabilità è
+l'*area* sotto la curva. A destra la **funzione di ripartizione**, che per
+ogni valore risponde alla domanda «quanta parte dei casi sta sotto questo
+numero?» e sale da $0$ a $1$: lì la stessa probabilità è l'*altezza* della
+curva, cioè un punto da leggere invece di un'area da calcolare.
 ```
 
-La corrispondenza fra i due grafici di {numref}`fig-densita-percentili` è
-comoda da avere in testa quando si passerà alle metriche di servizio. Dire
-«il novantacinquesimo percentile della latenza» significa scegliere
-un'ordinata sulla curva di destra e leggere l'ascissa: una domanda che sulla
-densità richiederebbe di integrare.
+La corrispondenza fra i due grafici di {numref}`fig-densita-percentili` non è
+un vezzo: risponde alla domanda che si fa più spesso su una misura, cioè
+«sotto quale valore cade il novantacinque per cento dei casi?». Quel valore si
+chiama **novantacinquesimo percentile**, e i percentili si leggono sul grafico
+di destra perché lì basta partire dall'altezza $0{,}95$ e scendere a leggere il
+numero corrispondente. Sul grafico di sinistra la stessa domanda vorrebbe che
+si calcolasse un'area, che è un conto e non una lettura. È l'abitudine dei
+tecnici che sorvegliano un servizio online: invece di dire «in media il sito
+risponde in mezzo secondo» dicono «il novantacinquesimo percentile del tempo
+di risposta è due secondi», che è un modo di parlare non della giornata
+tipica, ma di quanto vanno male le giornate storte.
 
 `````{tab} Elementare
 
@@ -94,16 +106,24 @@ l'informazione cumulata fino a $x$.
 
 ## Il centro e la larghezza
 
-Due numeri riassumono una distribuzione: dove sta il suo centro e quanto è
-dispersa attorno ad esso.
+Il quadro completo di come si comporta una grandezza casuale (quali valori
+escono, e con che frequenza ciascuno) si chiama la sua **distribuzione**: è la
+parola che d'ora in poi useremo per la curva o per l'elenco di probabilità
+appena visti, e ritorna in ogni pagina del libro. Quasi sempre non serve tutto
+il quadro: bastano due numeri, dove sta il centro della distribuzione e quanto
+è dispersa attorno a esso.
 
 ```{figure} ../figures/media-mediana-moda-varianza-numpy.svg
 :name: fig-centro-larghezza
 :alt: "Una distribuzione asimmetrica, con la coda allungata a destra, annotata con tre indicatori di centro che cadono in punti diversi: la moda sul picco, la mediana poco più a destra e la media ancora più a destra, tirata dalla coda. Sotto, un segmento marca la deviazione standard attorno alla media."
 :width: 92%
 
-Tre centri per la stessa distribuzione. Su una curva simmetrica coinciderebbero;
-su una asimmetrica no, e la media è quella che la coda sposta di più.
+Tre centri per la stessa distribuzione. La **moda** sta sul picco (il valore
+più frequente), la **mediana** taglia i casi a metà, la **media** è quella
+scolastica. Su una curva simmetrica coinciderebbero; qui no, perché la curva
+ha una **coda**, cioè si allunga da un lato con valori rari ma molto grandi, e
+la media è quella che la coda sposta di più: pochi stipendi altissimi alzano
+lo stipendio medio senza spostare quello di mezzo.
 ```
 
 L'ordine in cui i tre indicatori compaiono in {numref}`fig-centro-larghezza`
@@ -113,33 +133,55 @@ media descrive un valore tipico che quasi nessuno osserva.
 
 `````{tab} Elementare
 
-Il **valore atteso** $E[X]$ è la media dei valori possibili, ciascuno pesato
-dalla sua probabilità: è il risultato medio che ci aspettiamo "a lungo
+Il **valore atteso** $\mathbb{E}[X]$ è la media dei valori possibili, ciascuno
+pesato dalla sua probabilità: è il risultato medio che ci aspettiamo "a lungo
 andare". Per un dado onesto vale $\tfrac{1+2+3+4+5+6}{6}=3{,}5$: un numero che
 non uscirà mai in un singolo lancio, ma attorno al quale si assesta la media
 di tanti lanci. La **varianza** $\mathrm{Var}(X)$ misura invece quanto
 tipicamente ci si allontana dal centro: piccola se i valori sono raccolti,
 grande se sono sparpagliati. La sua radice quadrata, la **deviazione
 standard**, esprime quello scarto tipico nelle stesse unità dei valori: per il
-dado vale circa $1{,}7$ punti (in media, un lancio cade a un paio di punti dal
-centro $3{,}5$).
+dado vale circa $1{,}7$ punti, cioè rispetto al centro $3{,}5$ i risultati si
+sparpagliano tipicamente di un punto e mezzo o due.
 
 `````
 
 `````{tab} Superiore
 
-Per una variabile discreta, con $\mu=E[X]$:
+Per una variabile discreta, con $\mu=\mathbb{E}[X]$:
 
 $$
-E[X]=\sum_x x\,p(x), \qquad
-\mathrm{Var}(X)=E\big[(X-\mu)^2\big]=E[X^2]-\mu^2 ;
+\mathbb{E}[X]=\sum_x x\,p(x), \qquad
+\mathrm{Var}(X)=\mathbb{E}\big[(X-\mu)^2\big]=\mathbb{E}[X^2]-\mu^2 ;
 $$
 
 per una continua le somme diventano integrali. La **deviazione standard**
 $\sigma=\sqrt{\mathrm{Var}(X)}$ riporta la dispersione nelle stesse unità di $X$.
-Il valore atteso è lineare, $E[aX+b]=a\,E[X]+b$, proprietà che useremo di
-continuo. Per il dado: $E[X^2]=\tfrac{91}{6}\approx 15{,}17$, quindi
+Il valore atteso è lineare, $\mathbb{E}[aX+b]=a\,\mathbb{E}[X]+b$, proprietà
+che useremo di continuo. Per il dado:
+$\mathbb{E}[X^2]=\tfrac{91}{6}\approx 15{,}17$, quindi
 $\mathrm{Var}(X)=15{,}17-3{,}5^2\approx 2{,}92$ e $\sigma\approx 1{,}71$.
+
+**Una distinzione che il resto del libro dà per fatta.** $\mathrm{Var}(X)$ è
+una proprietà della *distribuzione*, e nei conti di sopra la si calcola perché
+la distribuzione è nota. Sui dati veri non lo è: la si **stima** da un
+campione $x_1,\dots,x_n$, ed è un'altra cosa, che si scrive $s^2$ e non
+$\mathrm{Var}(X)$. La media degli scarti quadratici
+$\frac{1}{n}\sum_i (x_i-\bar x)^2$ **sottostima** sistematicamente $\sigma^2$,
+perché $\bar x$ è stata calcolata sugli stessi dati e si adagia su di essi;
+dividere per $n-1$ (**correzione di Bessel**) rende lo stimatore non distorto:
+
+$$
+s^2 = \frac{1}{n-1}\sum_{i=1}^{n}(x_i - \bar{x})^2 .
+$$
+
+Il divisore $n$ è quello che esce dalla massima verosimiglianza di
+§«Dalla probabilità all'apprendimento», ed è esattamente il motivo per cui
+quello stimatore è distorto. Le librerie scelgono default diversi, e conviene
+saperlo prima di confrontare due numeri: `np.var` e `StandardScaler` di
+scikit-learn dividono per $n$ (`ddof=0`), `torch.var` divide per $n-1$
+(`correction=1`). Su otto osservazioni la differenza è del $14\%$; su
+diecimila è invisibile.
 
 `````
 
@@ -154,8 +196,12 @@ ciò che si accumula attorno a un valore medio.
 :alt: Curva a campana della distribuzione normale, con la media al centro e le bande a una e due deviazioni standard evidenziate.
 :width: 85%
 
-La distribuzione normale $\mathcal{N}(\mu,\sigma^2)$. Circa il $68\%$ della
-probabilità cade entro $\mu\pm\sigma$ e circa il $95\%$ entro $\mu\pm 2\sigma$.
+La distribuzione normale, che si abbrevia $\mathcal{N}(\mu,\sigma^2)$: le due
+lettere greche sono il centro della campana ($\mu$, «mu») e il suo scarto
+tipico ($\sigma$, «sigma»). Nella sigla lo scarto compare al quadrato solo per
+tradizione, perché è la *varianza* a essere elencata; la larghezza che si vede
+nel disegno resta $\sigma$. Circa il $68\%$ della probabilità cade entro
+$\mu\pm\sigma$ e circa il $95\%$ entro $\mu\pm 2\sigma$.
 ```
 
 `````{tab} Elementare
@@ -164,18 +210,38 @@ Una Bernoulli è una moneta, magari truccata: esce $1$ (successo) con probabilit
 $p$ e $0$ con probabilità $1-p$. Serve a modellare qualunque esito binario:
 click/non click, spam/non spam.
 
-La normale è la celebre **curva a campana** ({numref}`fig-curva-normale`):
+La normale, che si chiama anche **gaussiana** dal nome del matematico Carl
+Friedrich Gauss (i due nomi indicano la stessa identica cosa e nel libro si
+alternano), è la celebre **curva a campana** ({numref}`fig-curva-normale`):
 simmetrica, con la maggior parte dei valori stretti attorno alla media $\mu$ e
 code che si assottigliano ai lati. Vale una regola pratica utilissima, la
 "68–95": circa il $68\%$ dei casi cade entro una deviazione standard dalla media
 ($\mu\pm\sigma$), circa il $95\%$ entro due ($\mu\pm 2\sigma$). Altezze, errori di
 misura, rumore: in natura la campana è dappertutto.
 
+**Perché dappertutto?** C'è un risultato che lo spiega, e ha un nome
+importante: il **teorema del limite centrale**. Dice una cosa sorprendente:
+ogni volta che una grandezza è la *somma* di tanti piccoli contributi casuali
+e indipendenti fra loro, il risultato assomiglia a una campana, e questo
+succede **qualunque sia la forma dei singoli contributi**. L'altezza di una
+persona è la somma di centinaia di piccoli effetti (geni, alimentazione,
+salute da bambino): campana. L'errore di uno strumento è la somma di tante
+imprecisioni minuscole: campana. Il totale di tre dadi è la somma di tre
+numeri che, presi da soli, non hanno niente di campanulare (in un dado tutte
+le facce sono ugualmente probabili, il disegno sarebbe piatto): eppure il
+totale, sì.
+
+Attenzione a cosa il teorema promette e cosa no. Promette che, sommando
+abbastanza pezzi, la campana arriva. Non promette *quanto in fretta*: con i
+dadi bastano tre addendi, ma con ingredienti molto storti (per esempio un
+evento che capita una volta su cento) nemmeno trenta bastano, e la campana non
+si vede ancora.
+
 `````
 
 `````{tab} Superiore
 
-La Bernoulli$(p)$ ha $P(X{=}1)=p$, valore atteso $E[X]=p$ e varianza
+La Bernoulli$(p)$ ha $P(X{=}1)=p$, valore atteso $\mathbb{E}[X]=p$ e varianza
 $\mathrm{Var}(X)=p(1-p)$. La normale $\mathcal{N}(\mu,\sigma^2)$ ha densità
 
 $$
@@ -193,9 +259,25 @@ $\mathcal{N}(0,1)$, *quale che sia* la distribuzione di partenza; in pratica,
 per $n$ grande, $S_n$ si approssima bene con $\mathcal{N}(n\mu,\,n\sigma^2)$.
 (Per variabili indipendenti ma non identicamente distribuite servono
 condizioni in più, come quella di Lindeberg o di Lyapunov.) È il motivo per
-cui gli errori di misura si modellano gaussiani e per
-cui il rumore e l'inizializzazione dei pesi nelle reti neurali sono spesso
-normali.
+cui gli errori di misura si modellano gaussiani, e per cui in una rete neurale
+larga le pre-attivazioni di uno strato, che sono somme di molti contributi,
+tendono a essere gaussiane qualunque sia la distribuzione dei pesi. (Non è
+invece il motivo per cui si inizializzano i pesi in un modo o nell'altro: gli
+schemi standard derivano la **varianza** dell'inizializzazione, per conservare
+la scala delle attivazioni fra uno strato e l'altro, e non la famiglia, tanto
+che il default di PyTorch campiona da un'uniforme e non da una normale.)
+
+Il teorema dice **che** si converge, non **quanto in fretta**, e la seconda
+domanda ha una risposta separata: la disuguaglianza di Berry–Esseen limita la
+distanza dalla normale con
+$\sup_z |F_n(z)-\Phi(z)| \le C\,\rho_3 / (\sigma^3\sqrt{n})$, dove $\rho_3 =
+\mathbb{E}|X-\mu|^3$. È l'**asimmetria** della distribuzione di partenza a
+governare la velocità, non la sua "stranezza" percepita. Misurato con la
+statistica di Kolmogorov–Smirnov sulla somma standardizzata: partendo da un
+dado uniforme (asimmetria nulla) la distanza dalla normale è già $0{,}069$ con
+$n=3$; partendo da una Bernoulli$(0{,}01)$ resta $0{,}45$ a $n=30$, e da una
+lognormale$(0;\,2)$ resta $0{,}25$. Il caso «piatto» è il più gentile di tutti,
+non il più ostile.
 
 `````
 
@@ -209,15 +291,25 @@ detto a parole sembra una promessa e guardato sembra un trucco.
 
 Un dado è **piatto**: nessuna faccia è più probabile di un'altra. Eppure la
 somma di tre dadi, ripetuta seicento volte, si dispone da sé lungo la campana.
-La curva sovrapposta non è stata adattata alle barre: è la curva che il teorema
-prevede prima ancora di tirare i dadi (la $\mathcal{N}(n\mu,\, n\sigma^2)$), e
-i dadi le danno ragione.
+La curva sovrapposta non è stata disegnata sopra le barre a cose fatte: è la
+campana che il teorema prevede prima ancora di tirare i dadi, quella centrata
+sulla somma media dei tre e larga di conseguenza, e i dadi le danno ragione.
 ```
 
 Due cose valgono più della formula, nella {numref}`fig-limite-centrale`. La
-prima è che la distribuzione di partenza è **la più piatta possibile**, e la
-campana arriva lo stesso: è questo il senso di *quale che sia*. La seconda è
-che $n=3$ (tre soli addendi) basta già a renderla riconoscibile.
+prima è che la distribuzione di partenza non ha **niente** della campana:
+nessuna faccia è privilegiata, il disegno di un dado singolo sarebbe una
+fila di barre tutte uguali, e la campana arriva lo stesso. È questo il senso
+di «qualunque sia la forma dei singoli contributi».
+
+La seconda va detta con più cautela di quanto si faccia di solito. Qui bastano
+tre addendi, ma non è un merito del teorema: è un merito del dado, che è
+**simmetrico**, cioè non ha una coda più lunga dell'altra. La simmetria è
+esattamente la cosa che rende veloce la convergenza, ed è per questo che il
+caso più «piatto» è anche il più facile. Con una distribuzione di partenza
+molto sbilanciata (un evento che capita una volta su cento, un valore che ogni
+tanto è enorme) la campana non si vede nemmeno dopo trenta addendi. Il teorema
+promette l'arrivo, non il tempo di percorrenza.
 
 Lo stesso fenomeno si vede con le monete, ed è il caso che ricorre più spesso
 nel libro: contare i successi in una serie di prove «sì/no» indipendenti.
@@ -233,10 +325,13 @@ prove.
 ```
 
 L'accordo mostrato in {numref}`fig-conteggio-successi` è ciò che autorizza
-un'abitudine diffusa: trattare come gaussiana l'accuratezza misurata su un
-test set, che è esattamente un conteggio di successi su prove indipendenti.
-È l'approssimazione su cui poggiano gli intervalli di confidenza che vedremo
-fra poco.
+un'abitudine diffusa. Per sapere quanto vale un modello lo si prova su un
+gruppo di esempi tenuti da parte, mai visti durante l'addestramento (il **test
+set**), e si conta la percentuale di risposte esatte: quella percentuale si
+chiama **accuratezza**. Ma un conteggio di risposte esatte su prove
+indipendenti è la stessa cosa del conteggio di teste appena disegnato, quindi
+lo si può trattare come una campana. È l'approssimazione su cui poggiano gli
+intervalli di confidenza che vedremo fra poco.
 
 ## Aggiornare le credenze: il teorema di Bayes
 
@@ -343,7 +438,7 @@ raccolto male non migliora aggiungendone altro raccolto allo stesso modo.
 
 `````{tab} Superiore
 
-Siano $X_1,\dots,X_n$ variabili i.i.d. con media $\mu=E[X]$ finita. La media
+Siano $X_1,\dots,X_n$ variabili i.i.d. con media $\mu=\mathbb{E}[X]$ finita. La media
 campionaria $\bar{X}_n=\frac{1}{n}\sum_i X_i$ converge a $\mu$: in probabilità
 (legge **debole**) e quasi certamente (legge **forte**).
 
@@ -404,11 +499,24 @@ modello su $500$ esempi è come sondare $500$ elettori.
 Con $500$ esempi e un'accuratezza dell'$87\%$, il margine al $95\%$ è di circa
 **$\pm 3$ punti**: la stima onesta è "fra l'$84\%$ e il $90\%$". Il modello
 vecchio sta fra l'$83{,}8\%$ e l'$89{,}8\%$. I due intervalli si sovrappongono
-quasi per intero: quel miglioramento non è distinguibile dal rumore.
+quasi per intero: quel miglioramento non è distinguibile dal **rumore**, che è
+il nome che si dà alla parte di un risultato dovuta al caso e non al merito
+(niente a che vedere con i suoni: è un'immagine presa dalle
+telecomunicazioni).
 
-Il margine si stringe solo aumentando gli esempi, e lentamente: servono
-$5\,000$ esempi per scendere a circa $\pm 1$ punto, $50\,000$ per arrivare a
-$\pm 0{,}3$.
+Quel numero non piove dal cielo, e una regola pratica basta a rifarlo a mente:
+il margine, in punti percentuali, è circa $100/\sqrt{n}$ quando il modello è
+sul $50\%$, e un po' meno quando è più bravo di così, perché un modello che
+sbaglia poco ha anche meno modo di variare. Con $n=500$ fa circa $4{,}5$ punti
+al $50\%$ e circa $3$ all'$87\%$. Anche il «$95\%$» ha un significato preciso:
+non è la fiducia che riponiamo nel singolo numero, è la percentuale di volte
+in cui una procedura del genere, ripetuta su tanti campioni diversi, contiene
+davvero il valore giusto. Una volta su venti sbaglia, e questo è messo in
+conto.
+
+Il margine si stringe solo aumentando gli esempi, e lentamente, perché a
+comandare è la radice quadrata: servono $5\,000$ esempi per scendere a circa
+$\pm 1$ punto, $50\,000$ per arrivare a $\pm 0{,}3$.
 
 `````
 
@@ -452,13 +560,16 @@ curve c'è una terza cosa, il caldo.
 :alt: "Grafo causale con tre nodi. Dal caldo estivo, indicato come confonditore Z, partono due frecce di causa: una verso i gelati venduti (X) e una verso gli annegamenti (Y). Fra X e Y non c'è alcuna freccia, ma una linea tratteggiata etichettata correlazione spuria. In basso la chiave di lettura: X e Y si muovono insieme solo perché Z muove entrambi."
 :width: 82%
 
-Il confonditore, disegnato. Fra gelati e annegamenti non passa nessuna
-freccia: il legame che si misura nei dati è tutto riflesso di quello che
-ciascuno dei due ha con il caldo.
+Il **confondente**, disegnato (nel disegno è etichettato «confonditore Z»: i
+due nomi indicano la stessa cosa, e nel libro si usa il primo). Fra gelati e
+annegamenti non passa nessuna freccia: il legame che si misura nei dati è
+tutto riflesso di quello che ciascuno dei due ha con il caldo.
 ```
 
 Vale la pena notare cosa *non* c'è in {numref}`fig-confonditore`: la freccia
-fra $X$ e $Y$. I dati da soli non la disegnano né la cancellano, perché
+fra $X$ e $Y$, cioè fra i gelati e gli annegamenti (nel disegno le due lettere
+stanno per le due grandezze che si misurano, e $Z$ per la causa comune). I
+dati da soli non la disegnano né la cancellano, perché
 correlazione e causalità lasciano sui numeri la stessa traccia. A distinguerle
 serve qualcosa che nei dati non c'è: un intervento (cambiare $X$ e guardare
 $Y$) oppure una conoscenza del dominio che dica quale freccia è plausibile.
@@ -587,14 +698,26 @@ grande sicurezza.
 `````
 
 I tre gradini etichettano cose che il libro affronta separatamente, e conviene
-tenerne una mappa. Al primo stanno la regressione e l'importanza delle feature
-del capitolo sull'interpretabilità. Al secondo stanno i **test A/B** e i
-rilasci controllati del capitolo su MLOps, che sono interventi randomizzati
-travestiti da ingegneria, e ci sta anche il reinforcement learning, dove
-l'agente **agisce** e quindi genera da sé la distribuzione che osserva. Al
-terzo stanno le **spiegazioni controfattuali**, che chiedono che cosa sarebbe
-successo con un reddito diverso. Non è una gerarchia di merito: è una gerarchia
-di **cosa serve avere** per rispondere.
+tenerne una mappa, anche se i nomi che seguono arrivano da capitoli che devono
+ancora venire: qui servono solo come indirizzo.
+
+Al **primo** gradino sta tutto ciò che si limita a guardare i dati e a
+contare, cioè la gran parte del machine learning di questo libro.
+
+Al **secondo** stanno i modi di *provare* qualcosa sul mondo invece di
+osservarlo soltanto: i **test A/B**, dove si mostrano due versioni di un
+prodotto a due gruppi scelti a caso e si confrontano i risultati (ne parla il
+capitolo su MLOps, che è quello dedicato a far vivere i modelli in
+produzione), e il **reinforcement learning**, dove un programma non riceve i
+dati ma li produce agendo, e quindi decide da sé cosa finirà per osservare.
+
+Al **terzo** stanno le domande su ciò che non è successo: «a questo cliente il
+prestito è stato negato; glielo avrebbero dato con mille euro di reddito in
+più?». Si chiamano **spiegazioni controfattuali** e ne parla il capitolo
+sull'interpretabilità.
+
+Non è una gerarchia di merito: è una gerarchia di **cosa serve avere** per
+rispondere.
 
 ## Dalla probabilità all'apprendimento
 
@@ -620,11 +743,26 @@ della curva.
 `````{tab} Elementare
 
 Abbiamo dei dati e vogliamo scegliere i parametri che li rendono *meno
-sorprendenti possibile*. Lancio una moneta 10 volte e vedo 7 teste: quale valore
-di $p$ spiega meglio quel che ho osservato? Il valore $p=0{,}7$, perché è quello
-che rende l'osservazione più probabile. "Imparare", per un modello, è spesso
-esattamente questo: girare le manopole dei parametri finché i dati osservati
-diventano i più plausibili.
+sorprendenti possibile*. Lancio una moneta 10 volte e vedo 7 teste: quale
+valore di $p$ (la probabilità che esca testa) spiega meglio quel che ho
+osservato?
+
+Il modo di rispondere è provarli tutti e tenere il migliore. Se la moneta
+fosse equa, $p=0{,}5$, la probabilità di vedere proprio 7 teste su 10 è circa
+il $12\%$: possibile, non entusiasmante. Se fosse $p=0{,}6$ sale al $21\%$, se
+fosse $p=0{,}7$ arriva al $27\%$, e se fosse $p=0{,}8$ ridiscende al $20\%$.
+Il massimo cade a $0{,}7$, cioè esattamente sulla proporzione osservata, ed è
+questo che si intende quando si dice che $0{,}7$ è il valore «che rende
+l'osservazione più probabile».
+
+Quel «quanto è probabile l'osservazione, se il parametro valesse così» ha un
+nome, ed è il nome che compare nel titolo di questa sezione, nella figura e
+nel riquadro finale: si chiama **verosimiglianza**. La curva della figura è
+proprio questa: per ogni valore di $p$ sull'asse orizzontale, quanto sarebbe
+verosimile ciò che ho visto.
+
+"Imparare", per un modello, è spesso esattamente questo: girare le manopole
+dei parametri finché i dati osservati diventano i più plausibili.
 
 `````
 
@@ -643,13 +781,19 @@ $$
 \hat{\theta}=\arg\max_{\theta}\ \sum_{i=1}^{m}\log p\big(x^{(i)};\theta\big),
 $$
 
-dove il logaritmo trasforma il prodotto in somma, numericamente più stabile.
+Il passaggio dal prodotto alla somma dei logaritmi è lecito perché il
+logaritmo è **strettamente crescente**: applicarlo non sposta il punto di
+massimo, e i due problemi hanno lo stesso $\arg\max$. Che poi sommare sia
+anche numericamente più stabile che moltiplicare mille numeri piccoli è un
+secondo vantaggio, non la giustificazione.
+
 (Scriviamo $L$ e non $\mathcal{L}$: la $\mathcal{L}$ calligrafica in questo
 libro è la loss, che si minimizza; la verosimiglianza si massimizza, e le due
 si incontrano nella log-verosimiglianza negativa,
 $\mathcal{L}(\theta)=-\log L(\theta)$ a meno di costanti.) Il punto cruciale:
 per un modello di regressione che descrive $y$ dato $x$ come una gaussiana
-centrata sulla predizione, $p(y \mid x;\theta)=\mathcal{N}(\hat{y},\sigma^2)$
+centrata sulla predizione,
+$y \mid x \sim \mathcal{N}(\hat{y},\sigma^2)$
 con varianza fissa, massimizzare la log-verosimiglianza equivale a
 **minimizzare l'errore quadratico medio**; sotto ipotesi di
 Bernoulli/categoriche equivale a minimizzare la **cross-entropy**. Le loss
@@ -718,7 +862,11 @@ print(posterior)       # ~0.167: solo il 17% dei positivi e' davvero malato
 ```{admonition} Da ricordare
 :class: important
 - La probabilità misura l'incertezza; una **variabile aleatoria** le dà un
-  numero, e $E[X]$ e $\mathrm{Var}(X)$ ne riassumono centro e dispersione.
+  numero, e $\mathbb{E}[X]$ e $\mathrm{Var}(X)$ ne riassumono centro e
+  dispersione. Attenzione a non confondere la varianza *della distribuzione*
+  con la sua **stima dal campione**: quest'ultima è non distorta solo
+  dividendo per $n-1$ (correzione di **Bessel**), e le librerie scelgono
+  default diversi.
 - La **normale** compare ovunque per il teorema del limite centrale; la regola
   68–95 lega la deviazione standard $\sigma$ alle probabilità.
 - Il **teorema di Bayes** aggiorna le credenze alla luce dei dati: con classi

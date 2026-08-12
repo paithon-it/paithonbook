@@ -15,9 +15,23 @@ nella prossima lo addestreremo.
 ## `nn.Module`: il mattone di ogni rete
 
 In PyTorch qualunque pezzo di rete (un singolo strato, un blocco, il modello
-intero) è un **modulo**, cioè una classe che eredita da `nn.Module`. È la
+intero) è un **modulo**, cioè una classe che **eredita** da `nn.Module`. È la
 scelta di design più caratteristica della libreria: il modello non si
 "dichiara", si *scrive* come una normale classe Python.
+
+Le classi le abbiamo viste nel capitolo su Python con l'immagine dello stampo
+per biscotti: una classe è lo stampo, l'oggetto è il biscotto. *Ereditare*
+vuol dire partire da uno stampo che esiste già e aggiungergli qualcosa invece
+di intagliarne uno da zero: il nuovo stampo sa fare tutto quello che sapeva
+fare il vecchio, più ciò che gli abbiamo aggiunto. Nel codice l'eredità si
+scrive mettendo il nome dello stampo di partenza fra parentesi,
+`class MLP(nn.Module):`, e la prima riga del costruttore,
+`super().__init__()`, è la chiamata con cui lo stampo vecchio si prepara prima
+che noi ci aggiungiamo il nostro. Va scritta sempre, ed è la ragione per cui la
+si ritroverà, identica, in ogni modello del capitolo. Ciò che si eredita da
+`nn.Module` è molto: la contabilità dei pesi, lo spostamento su GPU, il
+salvataggio, l'aggancio ad autograd. Sono tutte cose che nessuno ha voglia di
+riscrivere ogni volta.
 
 ```python
 import torch
@@ -42,7 +56,11 @@ print(model)          # stampa la struttura dei sottomoduli
 `````{tab} Elementare
 Due metodi, due domande. In `__init__` rispondi a "**di quali pezzi è fatta**
 la rete?": qui uno strato che srotola l'immagine, uno nascosto da 128 neuroni
-e uno d'uscita da 10. In `forward` rispondi a "**che strada fanno i dati**?":
+e uno d'uscita da 10. I 784 in ingresso sono obbligati ($28 \times 28$, i pixel
+dell'immagine) e i 10 in uscita pure (le cifre da 0 a 9); il 128 nel mezzo no,
+l'abbiamo scelto noi. Un valore più grande dà una rete più capiente e più
+lenta, uno più piccolo il contrario: si prova, e più avanti vedremo come
+decidere. In `forward` rispondi a "**che strada fanno i dati**?":
 entra l'immagine, viene srotolata, passa per lo strato nascosto col suo filtro
 ReLU, esce come 10 punteggi (uno per cifra). Tutto qui: il resto (tenere
 traccia dei pesi, calcolare i gradienti) lo fa `nn.Module` per conto tuo. E
@@ -58,11 +76,12 @@ e `model.parameters()` restituisce l'iteratore su tutti i tensori addestrabili
 trasformazione affine
 
 $$
-\mathbf{h} = W\mathbf{x} + \mathbf{b},
+\mathbf{h} = \mathbf{W}\mathbf{x} + \mathbf{b},
 $$
 
-con $W \in \mathbb{R}^{u \times d}$ e $\mathbf{b} \in \mathbb{R}^{u}$ creati
-con `requires_grad=True`: autograd li traccia senza che si debba fare nulla.
+con $\mathbf{W} \in \mathbb{R}^{u \times d}$ e $\mathbf{b} \in \mathbb{R}^{u}$
+creati con `requires_grad=True`: autograd li traccia senza che si debba fare
+nulla.
 Si noti che l'attivazione non è "dentro" lo strato, come accade in altre
 librerie: è una funzione (`torch.relu`) o un modulo (`nn.ReLU`) applicato
 esplicitamente in `forward`; coerente con la filosofia "il modello è il
@@ -140,8 +159,9 @@ nascosto, $128 \cdot 10 + 10 = 1\,290$ per l'uscita.
 :width: 70%
 
 Il percettrone multistrato per MNIST: l'immagine viene srotolata in 784
-numeri, compressa a 128 attivazioni, infine proiettata su 10 punteggi (i
-*logit*), che la softmax (dentro la loss) trasforma in probabilità.
+numeri, compressa a 128 attivazioni, infine proiettata su 10 punteggi grezzi,
+uno per cifra. La softmax, che li trasforma in probabilità, non sta nel
+modello: dove sia è l'argomento della prossima sezione.
 ```
 
 ## Misurare l'errore: le funzioni di perdita
@@ -171,6 +191,7 @@ loss_regressione = nn.MSELoss()            # per predire numeri continui
 loss_classi = nn.CrossEntropyLoss()        # per scegliere tra classi
 
 # esempio: 2 immagini, 10 logit ciascuna, etichette vere 3 e 7
+# (2, 1, 28, 28) = 2 immagini, 1 canale (MNIST e' in scala di grigi), 28x28 pixel
 logits = model(torch.randn(2, 1, 28, 28))  # shape (2, 10)
 target = torch.tensor([3, 7])
 errore = loss_classi(logits, target)       # un numero solo: la loss media
@@ -213,15 +234,42 @@ probabilità (per leggere l'output, non per addestrare), si applica
 shape $(N,)$ e dtype `int64`, non serve il one-hot.
 `````
 
+Il modello esiste e sa dire quanto sbaglia. Manca chi usa quel numero per
+correggerlo, ed è l'argomento della sezione seguente.
+
+`````{tab} Elementare
+```{admonition} Da ricordare
+:class: important
+- Ogni pezzo di rete è un **modulo**: in `__init__` si elencano i componenti,
+  in `forward` si dice che strada fanno i dati. È normale codice Python, quindi
+  ci si può mettere un `print` per sbirciare.
+- **`nn.Sequential`** è la scorciatoia quando la rete è una catena di
+  montaggio; se ci sono rami o scorciatoie, si torna a scrivere `forward` a
+  mano.
+- Uno strato che collega $d$ ingressi a $u$ neuroni ha $u \cdot d + u$ numeri
+  da imparare: un peso per collegamento, più un aggiustamento per neurone. Il
+  conto dei parametri è il primo controllo da fare su qualunque modello, e si
+  fa a mente.
+- La **funzione di perdita** misura quanto il modello sbaglia: `nn.MSELoss`
+  quando la risposta è un numero, `nn.CrossEntropyLoss` quando è una scelta fra
+  categorie. A quest'ultima si danno i punteggi grezzi, non le probabilità: la
+  trasformazione la fa lei.
+```
+`````
+
+`````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
 - Ogni pezzo di rete è un **`nn.Module`**: in `__init__` i componenti, in
   `forward` la strada dei dati (normale Python, ispezionabile riga per riga).
 - **`nn.Sequential`** è la scorciatoia per le catene semplici; per topologie
   con rami si scrive il `forward` a mano.
-- `nn.Linear(d, u)` calcola $W\mathbf{x}+\mathbf{b}$ e ha $u \cdot d + u$
-  parametri; `model.parameters()` li consegna all'ottimizzatore.
+- `nn.Linear(d, u)` calcola $\mathbf{W}\mathbf{x}+\mathbf{b}$ e ha
+  $u \cdot d + u$ parametri; `model.parameters()` li consegna
+  all'ottimizzatore, il componente che nella prossima sezione applicherà le
+  correzioni.
 - Le loss sono moduli: `nn.MSELoss` per la regressione, `nn.CrossEntropyLoss`
   per la classificazione; quest'ultima **vuole i logit**, la softmax ce l'ha
   dentro.
 ```
+`````

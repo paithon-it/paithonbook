@@ -5,7 +5,7 @@
     </marker>
   </defs>
   <rect x="0" y="0" width="720" height="440" fill="#F8F5EE"/>
-  <text x="360" y="26" text-anchor="middle" font-family="sans-serif" font-size="15" font-weight="bold" fill="#1A1A1A">LoRA — l'aggiornamento a basso rango affianca il peso congelato</text>
+  <text x="360" y="26" text-anchor="middle" font-family="sans-serif" font-size="15" font-weight="bold" fill="#1A1A1A">LoRA: l'aggiornamento a basso rango affianca il peso congelato</text>
 
   <!-- output -->
   <text x="360" y="54" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#1A1A1A">h = W&#183;x + B&#183;A&#183;x</text>

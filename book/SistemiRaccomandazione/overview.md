@@ -2,7 +2,13 @@
 
 Il 2 ottobre 2006 Netflix (che allora campava spedendo DVD per posta) pubblica
 un annuncio senza precedenti: un milione di dollari a chiunque riesca a
-migliorare del 10% il suo sistema di raccomandazione, Cinematch. Per
+migliorare del 10% il suo sistema di raccomandazione, Cinematch. Del 10% *che
+cosa*, conviene dirlo subito, perché la gara si gioca tutta lì: dell'errore con
+cui il sistema prevede le stelle che un utente darà a un film. Il metro è il
+**RMSE**, la radice dell'errore quadratico medio incontrata nel capitolo di
+Machine Learning, sezione *Metriche*: si legge in stelle, e dice di quanto la
+previsione sbaglia in media. Cinematch stava a $0{,}9525$ stelle; l'assegno
+andava a chi scendeva sotto $0{,}8572$. Per
 partecipare basta scaricare un dataset che all'epoca sembra sterminato: poco
 più di 100 milioni di voti, da una a cinque stelle, dati da circa 480.000
 utenti anonimi a 17.770 film. La gara diventa un caso mondiale: migliaia di
@@ -16,17 +22,32 @@ consegna arrivata venti minuti più tardi.
 L'ironia arriva dopo, e vale come lezione per tutto il capitolo. Quella
 soluzione da un milione di dollari **non fu mai adottata per intero**: era un
 mosaico di oltre cento modelli combinati, troppo costoso da portare in
-produzione per il guadagno che prometteva; e nel frattempo il business stava
+produzione (cioè da far girare davvero, tutti i giorni, per i clienti veri) per
+il guadagno che prometteva; e nel frattempo il business stava
 migrando dai DVD allo streaming, dove prevedere il voto in stelle conta meno
 di prevedere che cosa guarderai stasera. In produzione finirono però due
 ingredienti emersi durante la gara, e uno dei due, la **fattorizzazione di
 matrici** {cite}`koren2009matrix`, è il protagonista di questo capitolo.
+Fattorizzare vuol dire scomporre in fattori, come si fa da sempre con i numeri
+($12 = 3 \times 4$): qui si scompone una tabella, e i fattori sono due tabelle
+strette al posto di una larghissima.
+
+Una parola sul nome, prima di partire, perché in italiano «raccomandazione»
+significa due cose e una delle due è la spintarella. Qui vale l'altra, quella
+del consiglio: raccomandare è consigliare, e un sistema di raccomandazione è
+una macchina che consiglia. Il senso brutto però non è del tutto fuori luogo, e
+il capitolo se ne accorge alla fine, quando la domanda diventa se una macchina
+che decide cosa vedi ti stia servendo o spingendo. Conviene leggere tutto il
+resto con quella domanda in mano.
 
 ## Non «qual è il film più bello», ma «quale piacerà a te»
 
 Un motore di ricerca risponde a una domanda che fai tu. Un sistema di
 raccomandazione risponde a una domanda che non hai fatto: *tra queste
-centomila cose, quali vale la pena mostrarti?* La differenza cruciale è che
+centomila cose, quali vale la pena mostrarti?* Quelle cose, nel gergo del
+settore, si chiamano **oggetti** (in inglese *item*): film, canzoni, prodotti,
+articoli, video, a seconda del catalogo; qui useremo spesso «film» perché
+l'esempio è quello, ma il discorso non cambia. La differenza cruciale è che
 non esiste una risposta valida per tutti.
 
 `````{tab} Elementare
@@ -59,6 +80,10 @@ $\mathcal{U}\times\mathcal{I}$.
 ## Il carburante: feedback esplicito e implicito
 
 Da dove impara, il libraio automatico? Da due tipi di segnale molto diversi.
+Entrambi si chiamano, quando si parla di tutti e due insieme, **interazioni**:
+ogni volta che una persona incontra un oggetto e lascia una traccia (un voto,
+un click, un acquisto, dieci minuti di visione, un brano saltato), quella
+traccia è un'interazione, ed è tutto ciò che il sistema ha in mano.
 
 `````{tab} Elementare
 
@@ -80,19 +105,19 @@ l'implicito domina i sistemi reali; per ambiguità, richiede più cautela.
 
 `````{tab} Superiore
 
-Il feedback **esplicito** produce una matrice di voti $R$ con entrate $r_{ui}$
-su scala ordinale (ad esempio $1$–$5$): segnale ad alta qualità ma
-estremamente scarso, e per di più **non mancante a caso**; gli utenti votano
-soprattutto ciò che hanno scelto di consumare, quindi le celle osservate sono
-un campione distorto. Il feedback **implicito** produce eventi unari o
-conteggi (click, acquisti, tempo di visione): copertura enormemente maggiore,
-ma niente segnale negativo esplicito. L'assenza di interazione confonde due
-casi indistinguibili («non gli piace» e «non l'ha mai visto») e questo cambia
-la formulazione del problema: non più regressione sul voto, ma *ranking* da
-osservazioni positive e non-osservazioni, come vedremo con BPR
-{cite}`rendle2009bpr`. Nei sistemi industriali l'implicito domina per volume
-(ordini di grandezza di differenza) e perché misura il comportamento
-effettivo, non quello dichiarato.
+Il feedback **esplicito** produce una matrice di voti $\mathbf{R}$ con entrate
+$r_{ui}$ su scala ordinale (ad esempio $1$–$5$): segnale ad alta qualità ma
+estremamente scarso, e per di più **non mancante a caso**
+{cite}`marlin2009collaborative`; gli utenti votano soprattutto ciò che hanno
+scelto di consumare, quindi le celle osservate sono un campione distorto. Il
+feedback **implicito** produce eventi unari o conteggi (click, acquisti, tempo
+di visione): copertura enormemente maggiore, ma niente segnale negativo
+esplicito. L'assenza di interazione confonde due casi indistinguibili («non gli
+piace» e «non l'ha mai visto») e questo cambia la formulazione del problema: non
+più regressione sul voto, ma *ranking* da osservazioni positive e
+non-osservazioni, come vedremo con BPR {cite}`rendle2009bpr`. Nei sistemi
+industriali l'implicito domina per volume (ordini di grandezza di differenza) e
+perché misura il comportamento effettivo, non quello dichiarato.
 
 `````
 
@@ -116,18 +141,22 @@ riempire quei buchi in modo sensato.
 :alt: Griglia di sei utenti per otto film in cui poche celle contengono un voto da uno a cinque e tutte le altre un punto interrogativo; una cella evidenziata in terracotta indica il voto da prevedere.
 :width: 90%
 
-La matrice utenti × film: poche celle osservate, un oceano di punti
-interrogativi. Prevedere il valore di una cella vuota (qui, il voto di Anna al
-film D) è l'intero problema.
+La matrice utenti × film: poche celle di cui conosciamo il voto (le cornici
+distinguono i voti alti, 4 e 5, dai bassi), un oceano di punti interrogativi.
+Prevedere il valore di una cella vuota (qui, il voto di Anna al film D) è
+l'intero problema.
 ```
 
 La seconda anomalia è che **non esiste una «risposta giusta» osservabile**.
 Un classificatore di cifre può essere confrontato con l'etichetta vera; qui
-la domanda è controfattuale: *se* ti avessimo mostrato quel film, ti sarebbe
-piaciuto? Per la stragrande maggioranza delle coppie utente–film questa
-risposta non verrà mai osservata, e la valutazione deve arrangiarsi con
+la domanda riguarda un fatto che non è avvenuto: *se* ti avessimo mostrato
+quel film, ti sarebbe piaciuto? (una domanda del genere si dice
+**controfattuale**). Per la stragrande maggioranza delle coppie utente–film
+questa risposta non verrà mai osservata, e la valutazione deve arrangiarsi con
 approssimazioni: nascondere una parte delle interazioni note e verificare se
-il modello le recupera.
+il modello le recupera. *Quale* parte si nasconde non è un dettaglio di
+procedura: è la decisione che sposta i risultati più di quasi ogni scelta di
+modello, e la riprenderemo quando parleremo di come si misura una classifica.
 
 La terza è la più insidiosa: **il sistema influenza i dati che raccoglie**.
 
@@ -162,14 +191,41 @@ non avrebbe scelto.
 
 ## Come è organizzato il capitolo
 
-Due sezioni, dall'idea classica a quella neurale. Nella prima incontreremo il
-**filtraggio collaborativo**: prima nella versione «a vicini» (chi ha amato i
-film che ami tu, ha amato anche…) poi nella versione che ha vinto il Netflix
-Prize, la fattorizzazione di matrici con i suoi fattori latenti, che
-implementeremo in PyTorch con `nn.Embedding`. Nella seconda porteremo le reti
-neurali dentro il problema: il Neural Collaborative Filtering, la lettura
-della matrice come **grafo bipartito** (dove raccomandare diventa prevedere
-gli archi che mancano), il passaggio dal prevedere voti all'**imparare a
-ordinare** (la loss BPR e le metriche di ranking), un cenno alla
-raccomandazione sequenziale e alle architetture industriali a due stadi, e una
-riflessione finale su cosa succede quando il suggerimento diventa pilotaggio.
+Due sezioni, dall'idea classica a quella neurale.
+
+La prima muove da un'idea che usiamo tutti i giorni senza chiamarla così:
+**chiedere all'amico giusto**. Vedremo come si rende calcolabile (il metodo si
+chiama *filtraggio collaborativo*), perché la versione ingenua si arena sul
+vuoto della tabella, e come se ne esce riassumendo persone e film in poche
+schede di numeri: è l'idea che ha vinto il Netflix Prize, e la scriveremo in
+PyTorch in una ventina di righe.
+
+La seconda porta le reti neurali dentro il problema, e la risposta non è quella
+che ci si aspetta. Proveremo a sostituire il confronto fra le schede con una
+rete (e vedremo che non conviene); ridisegneremo la tabella come un disegno di
+pallini e linee, dove consigliare vuol dire indovinare le linee che mancano;
+cambieremo obiettivo, perché quando non ci sono voti non si prevede un numero,
+si mette in ordine una vetrina, e allora serve anche un altro modo di misurare
+se la vetrina è buona. Chiuderemo con il funzionamento vero della macchina che
+ti consiglia i video, e con la domanda che le sta sotto: quando un consiglio
+smette di essere un consiglio.
+
+```{admonition} Da ricordare
+:class: important
+- Consigliare non è classificare: **non esiste una risposta valida per tutti**,
+  e lo stesso sistema deve produrre una classifica diversa per ogni persona.
+- Il carburante sono le **interazioni**: o dichiarate (le stelle, il pollice in
+  su: chiare ma rarissime) o lasciate senza pensarci (click, acquisti, minuti
+  di visione: abbondanti ma ambigue, perché un titolo ignorato non è una
+  bocciatura). Nei sistemi veri dominano le seconde.
+- Il dato di partenza è una **tabella quasi tutta vuota**: nel Netflix Prize
+  era piena all'1,2%, nei cataloghi di oggi si va sotto lo 0,1%. Consigliare
+  vuol dire riempire quei buchi in modo sensato.
+- **Non c'è una risposta giusta da guardare**: nessuno saprà mai se ti sarebbe
+  piaciuto il film che non hai visto, e per valutare si nasconde una parte di
+  ciò che si sa, per poi vedere se il modello la ritrova.
+- **Il sistema si fabbrica da solo i dati con cui impara**: mostra, e ciò che
+  mostra è ciò che verrà cliccato. È il cameriere che consiglia sempre gli
+  stessi tre piatti, ed è il problema che questo capitolo si porta dietro fino
+  all'ultima riga.
+```

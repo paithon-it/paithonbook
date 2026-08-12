@@ -43,8 +43,11 @@ La prima famiglia si chiama **contrastiva**. Si prende un'immagine e la si
 trasforma **due volte**, a caso e in modo indipendente: due ritagli diversi, due
 variazioni di colore, magari una sfocatura. Si ottengono due *viste* della
 stessa scena, e al modello si chiede una cosa sola: che le due viste della
-stessa immagine finiscano vicine nello spazio delle rappresentazioni, e lontane
-dalle viste di ogni altra immagine del batch. È la ricetta di SimCLR
+stessa immagine vengano descritte in modo simile fra loro, e diverso da come
+descrive le viste di tutte le altre immagini del gruppo che sta guardando in
+quel momento (il **batch**, cioè la manciata di esempi che si elaborano
+insieme). Quelle altre viste, i rivali da cui il gemello va distinto, hanno un
+nome che tornerà spesso: si chiamano i **negativi**. È la ricetta di SimCLR
 {cite}`chen2020simple`, il lavoro che nel 2020 ha mostrato quanto poco serva
 perché l'idea funzioni.
 
@@ -71,9 +74,10 @@ Sia $B = \{x_1, \dots, x_N\}$ un batch di $N$ immagini. Da ciascuna si
 campionano due trasformazioni indipendenti $T, T' \sim \mathcal{T}$, che
 producono le viste $\tilde{x} = T(x)$ e $\tilde{x}' = T'(x)$, in tutto $2N$. Un
 encoder $f_\theta$ (una ResNet, o un ViT) trasforma ogni vista nella
-rappresentazione $h = f_\theta(\tilde{x})$; una **testa di proiezione**
-$g_\phi$, un piccolo MLP, la porta in uno spazio più piccolo, $z = g_\phi(h)$,
-dove si calcola la perdita. A valle si riusa $h$, non $z$: la proiezione impara
+rappresentazione $\mathbf{h} = f_\theta(\tilde{x})$; una **testa di proiezione**
+$g_\phi$, un piccolo MLP, la porta in uno spazio più piccolo,
+$\mathbf{z} = g_\phi(\mathbf{h})$,
+dove si calcola la perdita. A valle si riusa $\mathbf{h}$, non $\mathbf{z}$: la proiezione impara
 a buttare via proprio l'informazione che la loss chiede di ignorare (il colore,
 la posizione del ritaglio) e a un compito diverso quell'informazione può
 servire.
@@ -84,14 +88,15 @@ coppia positiva $(i, j)$:
 
 $$
 \ell_{i,j} = -\log
-\frac{\exp\big(\mathrm{sim}(z_i, z_j)/\tau\big)}
+\frac{\exp\big(\mathrm{sim}(\mathbf{z}_i, \mathbf{z}_j)/\tau\big)}
 {\displaystyle\sum_{k=1}^{2N} \mathbb{1}_{[k \neq i]}\,
-\exp\big(\mathrm{sim}(z_i, z_k)/\tau\big)},
+\exp\big(\mathrm{sim}(\mathbf{z}_i, \mathbf{z}_k)/\tau\big)},
 \qquad
-\mathrm{sim}(u,v) = \frac{u^\top v}{\lVert u \rVert \, \lVert v \rVert},
+\mathrm{sim}(\mathbf{u},\mathbf{v}) = \frac{\mathbf{u}^\top \mathbf{v}}
+{\lVert \mathbf{u} \rVert \, \lVert \mathbf{v} \rVert},
 $$
 
-dove $z_i$ e $z_j$ sono le proiezioni delle due viste della stessa immagine,
+dove $\mathbf{z}_i$ e $\mathbf{z}_j$ sono le proiezioni delle due viste della stessa immagine,
 $\mathrm{sim}$ è la similarità coseno, $\tau > 0$ la temperatura e la somma al
 denominatore corre sulle altre $2N-1$ viste del batch, che fanno da
 **negativi**. La perdita totale è la media di $\ell_{i,j}$ su tutte le $2N$
@@ -246,10 +251,11 @@ pretesto non sta nei dati, sta nelle trasformazioni che abbiamo scelto.
 
 ## Il prezzo dei negativi
 
-Nella NT-Xent i negativi sono le altre viste dello **stesso batch**: una scelta
-comoda che diventa subito il vincolo dominante, perché più negativi ci sono più
-il compito è difficile e più il gradiente è informativo, e quindi il metodo
-chiede batch enormi. Il primo modo di uscirne è disaccoppiare le due cose:
+Fin qui i negativi sono i compagni di batch: i rivali del gemello sono le altre
+viste che stanno sul tavolo in quel preciso momento. È una scelta comoda che
+diventa subito il vincolo dominante, perché più rivali ci sono più il gioco è
+difficile e più il modello impara a ogni passo, e quindi il metodo chiede batch
+enormi. Il primo modo di uscirne è disaccoppiare le due cose:
 perché i negativi devono essere per forza i compagni di batch?
 
 `````{tab} Elementare
@@ -274,7 +280,7 @@ scatola resti confrontabile.
 
 **MoCo** {cite}`he2020momentum` riformula l'apprendimento contrastivo come la
 costruzione di un **dizionario dinamico**. La vista-ancora passa in un encoder
-$f_{\theta_q}$ che produce la *query* $q$; le altre viste passano in un secondo
+$f_{\theta_q}$ che produce la *query* $\mathbf{q}$; le altre viste passano in un secondo
 encoder $f_{\theta_k}$ che produce le *chiavi*, accumulate in una **coda** FIFO
 di dimensione fissa (nel lavoro originale $K = 65\,536$ elementi): a ogni passo
 si accodano le chiavi del mini-batch corrente e si scartano le più vecchie. La
@@ -300,18 +306,21 @@ mini-batch da $256$, la coda copre esattamente $256$ passi di addestramento).
 
 `````
 
-La copia lenta aggiornata per media mobile, che fa da riferimento senza ricevere
-gradiente, è la stessa costruzione che il libro incontra nel capitolo sui world
+La copia lenta, quella che si aggiorna di un millesimo alla volta (si chiama
+**media mobile**) e che fa da riferimento senza mai prendere punteggio, è la
+stessa costruzione che il libro incontra nel capitolo sui world
 model. Qui tiene coerente un dizionario di negativi; fra poco servirà a farne
 del tutto a meno.
 
 ## Toglierli del tutto
 
-Fin qui la logica sembrava inaggirabile: senza negativi, che cosa impedisce al
-modello di mandare *tutte* le immagini nello stesso punto? Due viste
-rappresentate identicamente danno perdita zero, quindi la soluzione costante è
-l'ottimo globale, ed è il **collasso**: il termine repulsivo della InfoNCE
-esiste apposta per renderlo impossibile. Nel 2020 BYOL
+Fin qui la logica sembrava inaggirabile. Se non c'è nessuno da cui distinguersi,
+che cosa impedisce al modello di descrivere *tutte* le immagini allo stesso
+identico modo? Sarebbe la risposta perfetta secondo il punteggio: due viste
+descritte in modo identico non lasciano niente da correggere, quindi il modello
+non ha nessun motivo di cercare oltre. Quella risposta vuota, che vince il gioco
+senza aver guardato niente, si chiama **collasso**, e i negativi esistono
+apposta per renderla impossibile. Nel 2020 BYOL
 {cite}`grill2020bootstrap` fa la cosa che secondo quel ragionamento non dovrebbe
 funzionare: elimina i negativi, tiene due reti e chiede a una di predire
 l'uscita dell'altra. E non collassa.
@@ -359,15 +368,16 @@ online e la proiezione della rete target, entrambe normalizzate:
 $$
 \mathcal{L}_{\theta,\xi} =
 \left\lVert
-\frac{q_\theta(z_\theta)}{\lVert q_\theta(z_\theta) \rVert_2}
-- \frac{z'_\xi}{\lVert z'_\xi \rVert_2}
+\frac{q_\theta(\mathbf{z}_\theta)}{\lVert q_\theta(\mathbf{z}_\theta) \rVert_2}
+- \frac{\mathbf{z}'_\xi}{\lVert \mathbf{z}'_\xi \rVert_2}
 \right\rVert_2^2
 = 2 - 2 \cdot
-\frac{\langle q_\theta(z_\theta),\, z'_\xi \rangle}
-{\lVert q_\theta(z_\theta) \rVert_2 \cdot \lVert z'_\xi \rVert_2},
+\frac{\langle q_\theta(\mathbf{z}_\theta),\, \mathbf{z}'_\xi \rangle}
+{\lVert q_\theta(\mathbf{z}_\theta) \rVert_2 \cdot \lVert \mathbf{z}'_\xi \rVert_2},
 $$
 
-dove $z_\theta$ è la proiezione della vista $v$ nella rete online, $z'_\xi$
+dove $\mathbf{z}_\theta$ è la proiezione della vista $v$ nella rete online,
+$\mathbf{z}'_\xi$
 quella della vista $v'$ nella rete target e $q_\theta$ la testa di predizione;
 la perdita si simmetrizza scambiando le due viste. Il gradiente scende **solo**
 su $\theta$, mentre i parametri target seguono la solita media mobile,
@@ -381,8 +391,8 @@ semplificati {cite}`tian2021understanding`), due asimmetrie. La prima: il ramo
 target non riceve gradiente (**stop-gradient**), non può «accordarsi» con
 l'altro e si limita a inseguirlo in ritardo. La seconda: la testa $q_\theta$ è
 presente da un lato solo, quindi l'obiettivo effettivo dell'encoder online non è
-produrre $z'_\xi$, è produrre qualcosa da cui $q_\theta$ *possa predire*
-$z'_\xi$, che è un vincolo più debole. Un lavoro successivo, SimSiam
+produrre $\mathbf{z}'_\xi$, è produrre qualcosa da cui $q_\theta$ *possa
+predire* $\mathbf{z}'_\xi$, che è un vincolo più debole. Un lavoro successivo, SimSiam
 {cite}`chen2021exploring`, ha isolato il pezzo indispensabile, lo stop-gradient,
 mostrando che la media mobile è utile ma non necessaria; e una prima spiegazione
 molto discussa, che attribuiva l'anti-collasso alla batch normalization
@@ -397,9 +407,12 @@ degenere; una dimostrazione per il caso generale ancora non c'è.
 
 ## Insegnare a sé stessi
 
-C'è un terzo modo di formulare la stessa idea, e cambia l'uscita che le due reti
-si scambiano: non un vettore da avvicinare, ma una **distribuzione di
-probabilità** da riprodurre. È lo schema della distillazione, con la
+C'è un terzo modo di formulare la stessa idea, e cambia quello che le due reti
+si scambiano: non più una scheda di numeri da far somigliare, ma una
+**ripartizione di fiducia** fra molte caselle, da riprodurre com'è (in termini
+tecnici, una *distribuzione di probabilità*). È lo schema della
+**distillazione**, cioè un modello che impara imitando le risposte di un altro
+invece delle etichette vere, con la
 particolarità che l'insegnante non è un modello più grande già addestrato, ma di
 nuovo la copia lenta dello studente. Da qui il nome, DINO
 {cite}`caron2021emerging`, contrazione di *self-distillation with no labels*.
@@ -407,7 +420,9 @@ nuovo la copia lenta dello studente. Da qui il nome, DINO
 `````{tab} Elementare
 
 Cambia la forma del compito. L'insegnante non compila più una scheda libera:
-sceglie fra un elenco fisso di, diciamo, sessantacinquemila caselle, e
+sceglie fra un elenco fisso di caselle (sessantacinquemila, nel lavoro
+originale: il numero è una scelta di progetto, e conviene che sia grande
+perché il modello possa fare distinzioni fini) e
 distribuisce la sua fiducia fra quelle («70% la casella 4012, 20% la 891, il
 resto sparso»). Le caselle non significano niente in partenza, nessuno ha detto
 che cosa sono: è il modello a decidere, addestrandosi, che cosa finisce dove.
@@ -455,14 +470,16 @@ globali (oltre metà dell'area) a entrambe le reti e alcuni ritagli locali
 piccoli solo allo studente, che deve dunque predire dalla parte il tutto.
 
 L'anti-collasso è affidato a due operazioni sull'uscita dell'insegnante che si
-oppongono l'una all'altra. Il **centering** sottrae un vettore $c$, aggiornato
-come media mobile della media del batch,
+oppongono l'una all'altra. Il **centering** sottrae un vettore $\mathbf{c}$,
+aggiornato come media mobile della media del batch,
 
 $$
-c \;\leftarrow\; m\, c + (1 - m)\, \frac{1}{B}\sum_{i=1}^{B} g_{\theta_t}(x_i),
+\mathbf{c} \;\leftarrow\; m\, \mathbf{c} + (1 - m)\,
+\frac{1}{N}\sum_{i=1}^{N} g_{\theta_t}(x_i),
 $$
 
-dove $B$ è la dimensione del batch e $m$ un coefficiente di media mobile: il
+dove $N$ è, come sopra, la dimensione del batch e $m$ un coefficiente di media
+mobile: il
 centro insegue la risposta media dell'insegnante e impedisce che una coordinata
 domini per tutte le immagini. Da solo, però, spinge verso la distribuzione
 uniforme. Lo **sharpening** fa l'opposto: la temperatura dell'insegnante è
@@ -631,8 +648,9 @@ distingue è **dove** mettono la difficoltà.
 
 I contrastivi la mettono nelle **trasformazioni**: il compito è facile per
 costruzione (riconoscere il gemello) e diventa difficile perché le due viste
-sono state rese diverse apposta, cioè perché le invarianze imposte sono
-conoscenza del dominio iniettata a mano. I generativi la mettono nella
+sono state rese diverse apposta. Siamo noi a decidere quali differenze il
+modello deve imparare a ignorare, e quella decisione è conoscenza nostra sul
+problema, messa a mano dentro il compito. I generativi la mettono nella
 **quantità di informazione tolta**: nessuna invarianza scelta da noi, una sola
 manopola, ma la perdita si paga nello spazio dei pixel, dove molta di quella
 difficoltà è irrilevante. I predittivi stanno in mezzo, e spostano l'attrito su
@@ -642,10 +660,47 @@ Da qui il libro prosegue in due direzioni che chiudono il cerchio. Nel capitolo
 sui world model la JEPA porta la difficoltà in un terzo posto ancora: si
 maschera come nel MAE, ma si predice la **rappresentazione** della parte
 nascosta invece dei suoi pixel, e le augmentation artigianali spariscono del
-tutto. Nel capitolo su visione e linguaggio il positivo non è più una seconda
-vista della stessa foto ma la sua **didascalia**: la loss è la stessa InfoNCE di
-questa sezione, e cambia soltanto da dove viene il segnale, dal fatto che
-qualcuno, pubblicando quell'immagine, ci ha scritto accanto che cosa c'era.
+tutto. Nel capitolo su visione e linguaggio il gemello da ritrovare non è più una
+seconda vista della stessa foto ma la sua **didascalia**: il gioco è lo stesso,
+identico anche nella formula, e cambia soltanto da dove viene il segnale, dal
+fatto che qualcuno, pubblicando quell'immagine, ci ha scritto accanto che cosa
+c'era.
+
+`````{tab} Elementare
+
+```{admonition} Da ricordare
+:class: important
+- Le etichette le scrivono delle persone, costano, e non bastano mai; le foto
+  senza etichetta sono infinite. L'idea è **inventare un gioco la cui risposta
+  giusta la conosciamo per costruzione**, senza che nessuno debba scriverla, e
+  tenere quello che il modello è stato costretto a capire per vincerlo.
+- Il gioco più semplice: ritagliare da ogni foto due pezzi e chiedere, in mezzo
+  a centinaia di ritagli mescolati, di **ritrovare il gemello**. Gli altri
+  ritagli, i rivali, si chiamano *negativi*.
+- Qui le deformazioni non servono più a non far imparare a memoria: **sono il
+  compito**. Scegliendole diciamo al modello a che cosa deve essere
+  indifferente, e ogni indizio che dimentichiamo di togliere diventa una
+  **scorciatoia**: senza disturbare i colori, due ritagli della stessa foto si
+  riconoscono dalla sola tinta media, e il modello vince senza aver capito
+  niente.
+- Avere tanti rivali è utile ma costa: si può tenerli in una **scatola-coda**,
+  alimentata da una copia lenta di sé stessi perché le descrizioni vecchie e
+  nuove restino confrontabili. Oppure toglierli del tutto, mettendo di fronte
+  un allievo e un insegnante che è una copia lenta dell'allievo: sorprende che
+  non collassi sulla risposta vuota, ma non collassa.
+- L'altra grande famiglia non chiede di riconoscere, chiede di **ricostruire**:
+  si copre tre quarti dell'immagine e si fa indovinare cosa c'era sotto. Tanto
+  serve, perché un pixel somiglia troppo ai suoi vicini: con pochi buchi basta
+  fare una media e non si impara nulla.
+- Per capire se ha funzionato si usa un **esame con le mani legate**: si blocca
+  il modello e gli si affianca un giudice così debole da non poter aggiungere
+  niente di suo. Se passa l'esame, il merito è del modello. La prova più severa
+  però è un'altra: cambiare compito.
+```
+
+`````
+
+`````{tab} Superiore
 
 ```{admonition} Da ricordare
 :class: important
@@ -678,3 +733,5 @@ qualcuno, pubblicando quell'immagine, ci ha scritto accanto che cosa c'era.
   Misura la separabilità lineare, non tutto; la prova più severa è il
   trasferimento a rilevamento e segmentazione.
 ```
+
+`````

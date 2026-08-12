@@ -72,7 +72,12 @@ In pratica, scrivendo una pagina:
   fra virgole, una spiegazione dopo i due punti, due proposizioni che si
   oppongono separate dal punto e virgola; per una digressione più lunga, una
   nota a piè di pagina (`[^nota]`). Restano il trattino d'unione e la lineetta
-  breve degli intervalli (`2020–2023`);
+  breve degli intervalli (`2020–2023`). Vale per **tutti e tre** i modi di
+  scriverla: il carattere lungo si vede scorrendo la pagina, le sue versioni in
+  ASCII no, e sono quelle che scappano più facilmente. Quindi niente nemmeno
+  `parola -- parola` né `parola - parola`. Se hai dubbi,
+  `python3 scripts/coerenza.py --solo lineette` te lo dice, e non segnala i
+  segni meno delle formule né le opzioni da riga di comando;
 - **formule** in LaTeX (`$…$` in linea, `$$…$$` in blocco), con i simboli
   spiegati subito dopo. Notazione coerente col resto del libro, su tre
   livelli: matrici in maiuscolo grassetto ($\mathbf{X}$, $\mathbf{W}$),

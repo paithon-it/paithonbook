@@ -5,23 +5,30 @@ gatto nero che salta su un muro, e ti risponderà con delle parole. Magari con
 delle ottime parole: la descrizione di un gatto nero che salta su un muro,
 scritta bene. Non è pigrizia e non è un rifiuto: è la forma dell'ultimo strato.
 Qualunque cosa quel modello abbia capito guardando, per uscire deve passare da
-una softmax su un vocabolario, e in quel vocabolario ci sono soltanto parole.
+un unico collo di bottiglia, la scelta di una voce da un elenco chiuso, il
+**vocabolario**; e in quell'elenco ci sono soltanto parole.
 
 Vale la pena guardarla in faccia, questa asimmetria, perché non è un dettaglio
-di implementazione. Un modello costruito innestando un encoder visivo su un
-modello di linguaggio, come quelli della sezione precedente
-{cite}`liu2023visual`, calcola
+di implementazione. Detta in una riga: il sistema ha un occhio in ingresso e una
+bocca in uscita, e nessuna mano. L'immagine entra, e serve a scegliere le parole;
+ma fra le cose che il modello sa produrre ci sono solo parole, perché solo di
+parole è fatto l'elenco da cui pesca.
+
+La stessa cosa, in formula, si vede a colpo d'occhio. Un modello costruito
+innestando un encoder visivo su un modello di linguaggio, come quelli della
+sezione precedente {cite}`liu2023visual`, calcola
 
 $$
-p_\theta(y_t \mid y_{<t},\, E(I)),
+p_\theta(y_t \mid y_{<t},\, E(\mathbf{I})),
 \qquad y_t \in V_{\text{testo}},
 $$
 
-dove $I$ è l'immagine, $E$ l'encoder visivo con il suo connettore, $y_t$ il
-token prodotto al passo $t$ e $V_{\text{testo}}$ il vocabolario di uscita.
-L'immagine sta a destra della barra verticale: è una **condizione**, non un
-valore che $y_t$ possa assumere. Il sistema ha un occhio in ingresso e una
-bocca in uscita, e nessuna mano.
+dove $\mathbf{I}$ è l'immagine, $E$ l'encoder visivo con il suo connettore, $y_t$ il
+token prodotto al passo $t$ e $V_{\text{testo}}$ il vocabolario di uscita. La
+barra verticale si legge «dato che», e separa due mestieri: a sinistra quel che
+il modello produce, a destra quel che gli è stato messo davanti per produrlo.
+L'immagine sta a destra: è una **condizione**, non un valore che $y_t$ possa
+assumere.
 
 Da qui la domanda ingenua che è anche quella giusta: e se anche l'immagine
 avesse i suoi token? Se in $V$ ci fossero, accanto alle parole, dei simboli che
@@ -35,11 +42,12 @@ L'attrezzo per costruire quei simboli non è nuovo in questo libro: lo abbiamo
 già montato per il suono, nella sezione sui **codec neurali** del capitolo
 sull'audio. Là il problema era identico nella forma: un'onda è una grandezza
 continua, un modello di linguaggio mangia simboli discreti, e un alfabeto per
-il suono in natura non esiste, va costruito. La risposta era la **vector
-quantization** del VQ-VAE {cite}`oord2017neural`: un elenco finito di
-vettori-prototipo (il *codebook*), ogni vettore latente sostituito dal
-prototipo più vicino, e di lui si conserva solo il numero di posizione. Quel
-numero è il token.
+il suono in natura non esiste, va costruito. La risposta era la
+**quantizzazione vettoriale** del VQ-VAE {cite}`oord2017neural`: si prepara un
+catalogo finito di file di numeri campione (il *codebook*), e ogni pezzetto di
+segnale, che l'encoder ha già ridotto a una fila di numeri, viene sostituito dal
+campione del catalogo che gli somiglia di più. Di quel pezzetto non si conserva
+la fila: si conserva il suo **numero di catalogo**. Quel numero è il token.
 
 Sui pixel si fa esattamente la stessa cosa, cambiando solo che cosa entra
 nell'encoder. Il gesto è quello: comprimere, arrotondare al prototipo più
@@ -71,9 +79,12 @@ quadratino, letti riga per riga come si legge una pagina.
 
 Facciamo il conto su una foto di 512 pixel per lato. I quadratini sono 32 per
 riga e 32 per colonna, in tutto 1.024, e altrettanti sono i numeri della lista.
-Per distinguere 8.192 tessere bastano 13 cifre binarie, quindi l'intera
-fotografia sta in 13.312 bit, poco più di 1,6 kilobyte, contro i 786 kilobyte
-della foto grezza: circa 470 volte meno. E il punto non è il risparmio (per
+Per scrivere un numero di catalogo fra 1 e 8.192 bastano 13 cifre di quelle che
+usa un calcolatore, che sono soltanto 0 e 1: con tredici di quelle cifre si
+contano infatti $2^{13} = 8.192$ cose diverse. Tredici cifre per 1.024 quadratini
+fanno 13.312 cifre in tutto, poco più di 1,6 kilobyte. La fotografia grezza,
+invece, ha 512 per 512 puntini e ciascuno porta tre numeri (rosso, verde e blu)
+da otto cifre l'uno: 786 kilobyte. Circa 470 volte meno. E il punto non è il risparmio (per
 quello esistono già i formati di compressione), è che adesso l'immagine è una
 **lista di simboli presi da un elenco fisso**, esattamente come una frase è una
 lista di parole prese da un dizionario. Da qui in poi, per una macchina che
@@ -89,12 +100,12 @@ fotografia non ha un verso di lettura, quell'ordine ce lo siamo inventato noi.
 
 `````{tab} Superiore
 
-Sia $C = \{e_1, \dots, e_K\}$ il codebook appreso e $z$ il vettore latente
-prodotto dall'encoder per una porzione di immagine. La quantizzazione è la
+Sia $\mathcal{C} = \{\mathbf{e}_1, \dots, \mathbf{e}_K\}$ il codebook appreso e $\mathbf{z}$ la fila di numeri
+prodotta dall'encoder per una porzione di immagine. La quantizzazione è la
 stessa vista per l'audio,
 
 $$
-k^\star = \arg\min_{k \in \{1, \dots, K\}} \lVert z - e_k \rVert^2,
+k^\star = \arg\min_{k \in \{1, \dots, K\}} \lVert \mathbf{z} - \mathbf{e}_k \rVert^2,
 $$
 
 con $k^\star$ token della porzione, e l'addestramento attraversa l'$\arg\min$
@@ -177,7 +188,7 @@ costruzione.
 
 **Fusione precoce.** Le due modalità diventano token dello stesso vocabolario
 $V$ **all'ingresso**, e da lì in avanti non esistono più due flussi: c'è una
-sequenza sola, $s = (s_1, \dots, s_n)$ con $s_t \in V$, che un unico
+sequenza sola, $\mathbf{s} = (s_1, \dots, s_n)$ con $s_t \in V$, che un unico
 Transformer attraversa dal primo strato all'ultimo con la stessa attenzione e
 gli stessi pesi. L'obiettivo è quello del capitolo sui modelli di linguaggio,
 senza aggiunte:
@@ -231,8 +242,10 @@ esistente: il pre-addestramento va rifatto da zero, su migliaia di miliardi di
 token.
 
 La seconda è più interessante, ed è che il modello che ne esce è **più difficile
-da addestrare**. Non «più lento»: instabile. Le curve divergono, e lo fanno
-tardi, quando una fetta importante del calcolo è già stata spesa.
+da addestrare**. Non «più lento»: instabile. La curva del costo, quella che
+durante l'addestramento dovrebbe scendere piano piano fino alla fine, a un certo
+punto schizza verso l'alto e non torna più; e lo fa tardi, quando una fetta
+importante del calcolo è già stata spesa.
 
 `````{tab} Elementare
 
@@ -264,12 +277,12 @@ di urlare.
 
 Il meccanismo documentato nel lavoro su Chameleon {cite}`chameleon2024mixed`
 parte da una proprietà innocua della softmax: è invariante per traslazione,
-$\mathrm{softmax}(z) = \mathrm{softmax}(z + c)$, e quindi il suo risultato non
+$\mathrm{softmax}(\mathbf{z}) = \mathrm{softmax}(\mathbf{z} + c)$, e quindi il suo risultato non
 dice nulla sul livello assoluto dei logit. Con pesi condivisi fra modalità
 dalle statistiche diverse, ciascuna può allora «competere» con l'altra alzando
 un po' la norma delle proprie attivazioni, senza che la funzione di perdita se
 ne accorga. Le norme di query e chiavi crescono, con esse i logit
-$QK^\top/\sqrt{d_k}$ che entrano nella softmax dell'attenzione, e quando quei
+$\mathbf{Q}\mathbf{K}^\top/\sqrt{d_k}$ che entrano nella softmax dell'attenzione, e quando quei
 valori escono dall'intervallo in cui l'aritmetica a precisione ridotta (bf16)
 rappresenta ancora qualcosa, l'addestramento diverge. La crescita è lenta, ed è
 questo a renderla insidiosa: nel lavoro citato il problema compare sopra gli 8
@@ -278,23 +291,24 @@ quando è già stato percorso un buon 20–30% dell'addestramento. È la ragione
 cui non lo si scopre addestrando modelli piccoli.
 
 Due accorgimenti, entrambi di normalizzazione, lo tengono a bada. Il primo è la
-**query-key normalization**: si normalizza $Q$ e $K$ *prima* del prodotto
+**query-key normalization**: si normalizzano $\mathbf{Q}$ e $\mathbf{K}$ *prima* del prodotto
 scalare,
 
 $$
-\mathrm{Attn}(Q, K, V) = \mathrm{softmax}\!\left(
-\frac{\mathrm{LN}(Q)\,\mathrm{LN}(K)^{\top}}{\sqrt{d_k}}\right) V,
+\mathrm{Attn}(\mathbf{Q}, \mathbf{K}, \mathbf{V}) = \mathrm{softmax}\!\left(
+\frac{\mathrm{LN}(\mathbf{Q})\,\mathrm{LN}(\mathbf{K})^{\top}}{\sqrt{d_k}}\right) \mathbf{V},
 $$
 
 dove $\mathrm{LN}$ è la layer normalization, $d_k$ la dimensione delle chiavi e
-$V$ sono qui i valori dell'attenzione (non il vocabolario di poco fa):
+$\mathbf{V}$ sono qui i valori dell'attenzione (il grassetto li distingue dal
+vocabolario $V$ di poco fa):
 i logit dell'attenzione smettono di dipendere dalla scala delle attivazioni, e
 la loro crescita è limitata alla sorgente. Il secondo riguarda **dove** stanno
 le normalizzazioni nel blocco. Nella disposizione *pre-norm* usuale il flusso
 residuo riceve l'uscita non normalizzata del sotto-strato,
-$x \leftarrow x + F(\mathrm{LN}(x))$, e nulla impedisce alla norma di $x$ di
+$\mathbf{x} \leftarrow \mathbf{x} + F(\mathrm{LN}(\mathbf{x}))$, e nulla impedisce alla norma di $\mathbf{x}$ di
 crescere strato dopo strato; spostando la normalizzazione a valle,
-$x \leftarrow x + \mathrm{LN}(F(x))$, quel che si somma al flusso residuo è
+$\mathbf{x} \leftarrow \mathbf{x} + \mathrm{LN}(F(\mathbf{x}))$, quel che si somma al flusso residuo è
 sempre di scala controllata. Nel lavoro citato la normalizzazione di query e
 chiavi serve a entrambe le taglie di modello: a quello da 7 miliardi di
 parametri basta affiancarle il dropout, mentre quello da 34 miliardi chiede la
@@ -343,9 +357,10 @@ alla volta, come si è visto nella sezione sul funzionamento della diffusione.
 Transfusion {cite}`zhou2024transfusion` prende sul serio l'ipotesi: un solo
 Transformer, un solo insieme di parametri, ma **due obiettivi diversi** a
 seconda del tipo di token che sta trattando. Sul testo, la predizione del token
-successivo di sempre. Sull'immagine, la diffusione: niente codebook, niente
-arrotondamento, le patch restano vettori continui (latenti di un autoencoder,
-come nella diffusione latente) e il modello impara a stimarne il rumore.
+successivo di sempre. Sull'immagine, la diffusione: niente catalogo, niente
+arrotondamento, le tessere restano file di numeri (per l'esattezza, la versione
+compressa che ne dà un altro modello, come nella diffusione latente) e quel che
+il modello impara è a indovinare il disturbo da togliere.
 
 `````{tab} Elementare
 
@@ -393,7 +408,7 @@ $$
 dove $\mathcal{L}_{\text{LM}}$ è la cross-entropia sul token successivo
 calcolata sulle sole posizioni testuali, $\mathcal{L}_{\text{DDPM}}$ è
 l'errore quadratico sul rumore stimato calcolato sulle sole posizioni visive
-(la $\mathbb{E}\lVert \epsilon - \epsilon_\theta(x_t, t) \rVert^2$ della sezione
+(la $\mathbb{E}\lVert \epsilon - \epsilon_\theta(\mathbf{x}_t, t) \rVert^2$ della sezione
 sulla diffusione) e $\lambda$ pesa il secondo rispetto al primo (nel lavoro
 originale $\lambda = 5$). Le due perdite non riguardano parametri diversi:
 attraversano gli stessi strati, e ogni peso del Transformer riceve gradienti da
@@ -504,6 +519,43 @@ ingegneria, giustificata quando serve un solo sistema al posto di due, e il
 connettore continuerà a vincere per la ragione più semplice del mondo: costa
 meno.
 
+`````{tab} Elementare
+
+```{admonition} Da ricordare
+:class: important
+- Un modello con l'occhio innestato ha **un occhio in ingresso e una bocca in
+  uscita, e nessuna mano**: l'immagine può entrare, ma quel che esce viene da un
+  elenco fatto di sole parole. Non disegna perché non ha simboli per dirlo.
+- Il **mosaicista con il catalogo** dà all'immagine i suoi simboli: si divide la
+  foto in quadratini, per ognuno si sceglie dal catalogo di 8.192 tessere quella
+  che gli somiglia di più, e della foto resta una lista di numeri di catalogo.
+  Da quel momento disegnare e scrivere sono lo stesso mestiere.
+- **Due redazioni.** Nella prima il fotografo passa un foglietto a chi scrive ed
+  esce di scena: da lì esce sempre e solo un testo. Nella seconda c'è una cassa
+  tipografica dove le lettere e le tessere stanno nelle caselle accanto, e chi
+  compone le prende con lo stesso gesto: quella redazione può produrre anche
+  un'immagine.
+- Il conto della seconda strada è doppio: bisogna rifare tutta la formazione da
+  capo, e i **due cantanti con un solo amplificatore** alzano la voce a turno
+  finché l'impianto fischia. Si cura mettendo un limitatore dove il segnale entra
+  nell'amplificatore, cioè togliendo a tutti la possibilità di urlare.
+- **Arrotondare butta via**: la tessera scelta a catalogo non è mai identica al
+  quadratino vero, e la differenza non torna più. Il primo a sparire è il
+  dettaglio sottile, cioè il testo scritto dentro una fotografia.
+- C'è una via di mezzo: una macchina sola che **scrive da sinistra a destra e
+  dipinge tutto insieme**, con due tecniche diverse per le due cose e nessun
+  arrotondamento. Il quadrato di `X` e di punti mostra la regola: le parole
+  guardano solo indietro, le tessere della stessa immagine si guardano tutte fra
+  loro, perché una fotografia non ha un verso di lettura.
+- La domanda aperta non è quale disegni meglio, ma se imparare a disegnare aiuti
+  a **capire**. Se sì, la lingua unica vale il suo costo; se no, vince l'innesto,
+  che costa meno.
+```
+
+`````
+
+`````{tab} Superiore
+
 ```{admonition} Da ricordare
 :class: important
 - Un modello che innesta un encoder visivo su un modello di linguaggio
@@ -536,3 +588,5 @@ meno.
   produca **trasferimento** fra capire e generare. Se sì, il vocabolario comune
   vale il suo costo; se no, l'innesto vince perché costa meno.
 ```
+
+`````

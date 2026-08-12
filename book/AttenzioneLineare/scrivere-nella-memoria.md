@@ -1,22 +1,42 @@
 # Scrivere meglio nella memoria: gate e delta rule
 
 Nella sezione precedente abbiamo scoperto che l'attenzione lineare è, sotto
-mentite spoglie, una rete ricorrente: al posto della cache di chiavi e valori
-che cresce a ogni parola, un'unica memoria $S$ di dimensione fissa (una
-matrice $d \times d$) che accumula ogni nuova coppia con un semplice prodotto
-esterno,
+mentite spoglie, una rete ricorrente: al posto dell'archivio di appunti che si
+allunga a ogni parola, un'unica memoria di dimensione fissa. Immaginatela come
+un registro che funziona da **rubrica**: ogni parola che passa vi aggiunge una
+voce «etichetta → informazione», sommandola a quelle che ci sono già, e per
+rispondere a una domanda la rubrica si rilegge invece di ripercorrere tutto il
+testo. È l'immagine che ci accompagnerà per tutta la sezione.
+
+`````{tab} Elementare
+
+Una precisazione sulla rubrica, perché è quella che rende conto di tutto il
+resto. La rubrica non ha una riga per contatto: ha un numero fisso di caselle,
+e ogni voce nuova si somma a quello che c'è già scritto. Quando le chiedi «che
+cosa corrisponde a questa etichetta?», lei non pesca una riga: risponde con un
+miscuglio, in cui pesa soprattutto l'informazione scritta sotto l'etichetta più
+somigliante, più un po' di tutte le altre. Finché le etichette sono ben diverse
+fra loro quel «po' di tutte le altre» è trascurabile, ed è per questo che il
+trucco funziona.
+
+`````
+
+`````{tab} Superiore
+
+In formule, e con la scrittura snella annunciata nella sezione precedente (che
+vale da qui a fine capitolo: la feature map $\phi$ è posta all'identità e il
+normalizzatore $\mathbf{z}_t$ non compare, secondo la seconda delle due scuole),
 
 $$
-S_t = S_{t-1} + v_t\, k_t^\top ,
+\mathbf{S}_t = \mathbf{S}_{t-1} + \mathbf{v}_t\, \mathbf{k}_t^\top ,
 $$
 
-e che si legge proiettandola sulla query, $o_t = S_t\, q_t$. Qui $k_t$, $v_t$ e
-$q_t$ sono le chiavi, i valori e le query che conosciamo dall'attenzione dei
-Transformer, e $S_t$ è la memoria dopo aver letto i primi $t$ token. Come
-annunciato nella sezione precedente, la formula è scritta nella forma più
-snella usata dalle architetture che stiamo per incontrare. Immaginate
-$S$ come un registro che funziona da rubrica: ogni riga della somma è una nuova
-voce «chiave → valore» scritta sopra le precedenti.
+letta proiettando lo stato sulla query, $\mathbf{o}_t = \mathbf{S}_t\, \mathbf{q}_t$. Qui $\mathbf{k}_t$, $\mathbf{v}_t$ e
+$\mathbf{q}_t$ sono le chiavi, i valori e le query che conosciamo dall'attenzione dei
+Transformer, $\mathbf{v}_t \mathbf{k}_t^\top$ è il prodotto esterno che scrive il valore sotto la
+sua chiave, e $\mathbf{S}_t$ è la memoria dopo aver letto i primi $t$ token.
+
+`````
 
 Il registro, però, ha due difetti che si vedono a occhio nudo. **Non
 dimentica**: ogni voce resta scritta per sempre, e con abbastanza token la
@@ -46,31 +66,41 @@ dieci passi una voce vale $0{,}9^{10} \approx 0{,}35$ di quanto valeva: circa
 un terzo. La lavagna così non si satura mai, perché fa spazio da sola buttando via
 il passato lontano.
 
-C'è però una raffinatezza. Sbiadire *tutto allo stesso ritmo* è grossolano:
-magari in una parte della lavagna c'è un dettaglio che servirà ancora fra mille
-parole, in un'altra solo appunti usa-e-getta. Meglio poter sbiadire **una zona
-della lavagna alla volta**: tenere nitida quella con le cose che contano
-(fattore $0{,}99$, quasi non svanisce) e cancellare in fretta quella degli
-appunti di servizio (fattore $0{,}5$, dimezza a ogni passo). È la differenza
-tra abbassare le luci di tutta la stanza e regolare ogni lampada
-singolarmente.
+Quel numero, lo $0{,}9$, non lo sceglie nessuno a mano parola per parola. Ci
+sono tre modi di deciderlo, ed è la scala su cui si dispongono i modelli di
+questa famiglia. Nel primo è **fissato una volta per tutte** quando il modello
+viene progettato, e non cambia mai (è la strada di RetNet, che incontreremo
+nella prossima sezione). Nel secondo il modello lo **calcola parola per
+parola** a partire da ciò che sta leggendo: davanti a una cosa importante
+sbiadisce poco, davanti a un intercalare sbiadisce molto (è la strada di
+Mamba-2, che è il modello a cavallo fra questo capitolo e il prossimo). Nessuno
+dei due, comunque, è un numero scritto a mano da una persona: è il modello ad
+avere imparato, durante l'addestramento, come sceglierlo.
+
+E c'è un terzo modo, il più fine. Sbiadire *tutta la lavagna allo stesso
+ritmo* è grossolano: magari in una parte della lavagna c'è un dettaglio che
+servirà ancora fra mille parole, in un'altra solo appunti usa-e-getta. Meglio
+poter sbiadire **una zona della lavagna alla volta**: tenere nitida quella con
+le cose che contano (fattore $0{,}99$, quasi non svanisce) e cancellare in
+fretta quella degli appunti di servizio (fattore $0{,}5$, dimezza a ogni
+passo). È la differenza tra abbassare le luci di tutta la stanza e regolare
+ogni lampada singolarmente, e il modello che lo fa si chiama **GLA**, sigla di
+*gated linear attention*: la troverete citata anche più avanti, ed è
+semplicemente questa, l'attenzione lineare con un interruttore per ogni zona
+della lavagna.
 
 `````
 
 `````{tab} Superiore
 
-Un promemoria di notazione, valido da qui a fine capitolo: la feature map
-$\phi$ è posta all'identità e il normalizzatore $z_t$ non compare, secondo la
-seconda delle due scuole distinte nella sezione precedente.
-
 La forma più semplice è il **decadimento scalare**: un unico numero
 $\alpha_t \in (0,1)$ moltiplica l'intera memoria,
 
 $$
-S_t = \alpha_t\, S_{t-1} + v_t\, k_t^\top ,
+\mathbf{S}_t = \alpha_t\, \mathbf{S}_{t-1} + \mathbf{v}_t\, \mathbf{k}_t^\top ,
 $$
 
-dove $\alpha_t$ è il gate di dimenticanza al passo $t$ e $v_t k_t^\top$ è la
+dove $\alpha_t$ è il gate di dimenticanza al passo $t$ e $\mathbf{v}_t \mathbf{k}_t^\top$ è la
 nuova voce scritta. È la ricorrenza di **RetNet** {cite}`sun2023retnet`, dove
 $\alpha_t = \gamma$ è una costante fissata a priori (data-*indipendente*),
 diversa per ciascuna testa così da coprire orizzonti temporali diversi; ed è
@@ -86,7 +116,7 @@ all'ICML 2024 {cite}`yang2024gla`, la rende molto più fine sostituendo lo
 scalare con un **gate diagonale**:
 
 $$
-S_t = S_{t-1}\, \operatorname{Diag}(\alpha_t) + v_t\, k_t^\top ,
+\mathbf{S}_t = \mathbf{S}_{t-1}\, \operatorname{Diag}(\alpha_t) + \mathbf{v}_t\, \mathbf{k}_t^\top ,
 $$
 
 dove ora $\alpha_t \in (0,1)^d$ è un *vettore* di gate, uno per canale di
@@ -94,9 +124,13 @@ chiave, e $\operatorname{Diag}(\alpha_t)$ è la matrice diagonale che ne fa i
 coefficienti (moltiplica lo stato da destra, come la transizione della delta
 rule che vedremo tra poco). Ogni colonna della memoria, cioè il canale della
 chiave $i$, decade al proprio ritmo: $\alpha_{t,i}\to 1$ conserva il canale $i$
-(nel limite si torna all'accumulo puro), $\alpha_{t,i}\to 0$ lo azzera. Il vettore è ricavato dall'input con una proiezione a **basso rango**
-(un collo di bottiglia stretto, dimensione 16) seguita da una sigmoide, così da
-generare $d$ gate distinti senza far esplodere il numero di parametri. La
+(nel limite si torna all'accumulo puro), $\alpha_{t,i}\to 0$ lo azzera. Il
+vettore è ricavato dall'input con una proiezione a **basso rango** (un collo di
+bottiglia stretto, dimensione 16) seguita da una sigmoide, così da generare $d$
+gate distinti senza far esplodere il numero di parametri; la sigmoide è poi
+elevata a $1/\tau$ con $\tau = 16$, una *temperatura* che spinge i gate verso
+1, cioè verso l'oblio lento, che è la molla di tutto il meccanismo:
+$\alpha_t = \sigma\big(\mathbf{x}_t \mathbf{W}^1_\alpha \mathbf{W}^2_\alpha + \mathbf{b}_\alpha\big)^{1/\tau}$. La
 gerarchia è chiara: scalare fisso (RetNet) $\to$ scalare data-dipendente
 (Mamba-2) $\to$ diagonale data-dipendente (GLA), dal più grossolano al più
 selettivo.
@@ -112,18 +146,21 @@ se quella voce contraddice ciò che c'è già.
 La seconda idea è più sottile e viene da lontano. Nel 2021 Schlag, Irie e
 Schmidhuber {cite}`schlag2021linear` osservano che il Transformer lineare è, a
 tutti gli effetti, un vecchio **fast weight programmer** degli anni Novanta di
-Schmidhuber: una rete «lenta» (i pesi appresi) che a ogni passo *programma* la
-memoria «veloce» $S$ scrivendoci sopra i prodotti esterni che si genera da sola.
-E se è una rete che si riprogramma, allora conviene programmarla bene: prima di
-scrivere, guardare cosa c'è già.
+Schmidhuber. Il nome dice che in queste reti convivono due memorie con due
+velocità diverse: una **lenta**, i pesi appresi durante l'addestramento, che
+cambiano nel corso di giorni di calcolo e poi restano fermi per sempre; e una
+**veloce**, il nostro registro, che cambia a ogni parola letta. La rete lenta
+non contiene le risposte: contiene le istruzioni con cui, mentre legge,
+riscrive al volo la memoria veloce. E se è una rete che si riprogramma da sé,
+allora conviene programmarla bene: prima di scrivere, guardare cosa c'è già.
 
 `````{tab} Elementare
 
 Torniamo alla rubrica. L'accumulo puro è chi, ogni volta che scopre un numero
 di telefono, aggiunge una riga nuova: anche se quel contatto era già in
 rubrica, magari con un numero sbagliato. Le righe si accavallano e chi
-consulta la rubrica trova una media confusa tra il numero vecchio e quello
-nuovo.
+consulta la rubrica si sente rispondere un miscuglio del numero vecchio e di
+quello nuovo, in cui non si riconosce più né l'uno né l'altro.
 
 La **delta rule** fa la cosa sensata: prima di scrivere, *cerca il contatto* e
 legge il numero attualmente memorizzato. Poi scrive soltanto la
@@ -137,6 +174,11 @@ Il parametro $\beta$ dosa quanto dare retta all'errore: con $\beta = 1$
 **ignoro** e lascio $7$. È esattamente come si corregge un tiro: non riparti
 da zero, aggiusti in proporzione a quanto hai sbagliato.
 
+Come per il fattore di sbiadimento della pagina precedente, quella manopola non
+la gira una persona: il modello la calcola da sé a ogni parola, in base a
+quello che sta leggendo, e a essere stato appreso durante l'addestramento è il
+modo di calcolarla.
+
 `````
 
 `````{tab} Superiore
@@ -145,17 +187,17 @@ Al passo $t$, prima di scrivere, si interroga la memoria con la *chiave*
 corrente e si ottiene il valore che essa già predice per quella chiave,
 
 $$
-\bar{v}_t = S_{t-1}\, k_t .
+\bar{\mathbf{v}}_t = \mathbf{S}_{t-1}\, \mathbf{k}_t .
 $$
 
-Qui $\bar{v}_t$ è la «vecchia risposta»: ciò che la rubrica restituisce oggi
-alla chiave $k_t$. La delta rule scrive allora soltanto l'**errore** $v_t -
-\bar{v}_t$, scalato da un *learning-rate* $\beta_t \in (0,1)$ appreso
-dinamicamente ($\beta_t = \sigma(w_\beta^\top x_t)$):
+Qui $\bar{\mathbf{v}}_t$ è la «vecchia risposta»: ciò che la rubrica restituisce oggi
+alla chiave $\mathbf{k}_t$. La delta rule scrive allora soltanto l'**errore** $\mathbf{v}_t -
+\bar{\mathbf{v}}_t$, scalato da un *learning-rate* $\beta_t \in (0,1)$ appreso
+dinamicamente ($\beta_t = \sigma(\mathbf{w}_\beta^\top \mathbf{x}_t)$):
 
 $$
-S_t = S_{t-1} + \beta_t\,(v_t - \bar{v}_t)\, k_t^\top
-    = S_{t-1} + \beta_t\,(v_t - S_{t-1} k_t)\, k_t^\top .
+\mathbf{S}_t = \mathbf{S}_{t-1} + \beta_t\,(\mathbf{v}_t - \bar{\mathbf{v}}_t)\, \mathbf{k}_t^\top
+    = \mathbf{S}_{t-1} + \beta_t\,(\mathbf{v}_t - \mathbf{S}_{t-1} \mathbf{k}_t)\, \mathbf{k}_t^\top .
 $$
 
 È la regola di **Widrow–Hoff** (o LMS), il mattone dell'apprendimento
@@ -163,46 +205,58 @@ adattivo. Raccogliendo i termini si ottiene una forma compatta ed elegante, la
 **Householder generalizzata**:
 
 $$
-S_t = S_{t-1}\,(I - \beta_t\, k_t k_t^\top) + \beta_t\, v_t\, k_t^\top ,
+\mathbf{S}_t = \mathbf{S}_{t-1}\,(\mathbf{I} - \beta_t\, \mathbf{k}_t \mathbf{k}_t^\top) + \beta_t\, \mathbf{v}_t\, \mathbf{k}_t^\top ,
 $$
 
-dove $I$ è l'identità e $k_t k_t^\top$ è il prodotto esterno della chiave con se
-stessa. Il fattore $(I - \beta_t k_t k_t^\top)$ agisce come una transizione di
-stato che **cancella la vecchia traccia lungo la direzione $k_t$** appena prima
+dove $\mathbf{I}$ è l'identità e $\mathbf{k}_t \mathbf{k}_t^\top$ è il prodotto esterno della chiave con se
+stessa. Il fattore $(\mathbf{I} - \beta_t \mathbf{k}_t \mathbf{k}_t^\top)$ agisce come una transizione di
+stato che **cancella la vecchia traccia lungo la direzione $\mathbf{k}_t$** appena prima
 di scriverci quella nuova: se $\beta_t = 1$ sovrascrive del tutto quella chiave,
 se $\beta_t = 0$ lascia la memoria intatta. Perché il fattore sia ben
 condizionato (autovalori in $[0,1]$) le chiavi vanno **normalizzate in norma
-$L_2$**, così che $k_t^\top k_t = 1$.
+$L_2$**, così che $\mathbf{k}_t^\top \mathbf{k}_t = 1$.
 
 Una precisazione su quanto anticipato nella sezione precedente: sono proprio
-Schlag e colleghi a compiere il primo passo della scuola «senza $z_t$».
+Schlag e colleghi a compiere il primo passo della scuola «senza $\mathbf{z}_t$».
 Mostrano che il **normalizzatore** di Katharopoulos (la somma delle chiavi
 trasformate) può crescere senza controllo e diventare instabile, e lo
 **scartano**, normalizzando invece per somma le chiavi e le query trasformate.
 La famiglia di ricorrenze che seguiamo qui (GLA, DeltaNet e le loro parenti)
-porta la rinuncia a compimento: normalizza le chiavi in $L_2$ e applica una
-LayerNorm all'uscita, ottenendo lo stesso effetto stabilizzante senza il
-termine $z_t$.
+porta la rinuncia a compimento: applica una LayerNorm all'uscita, e ottiene lo
+stesso effetto stabilizzante senza il termine $\mathbf{z}_t$. La strada, però, non è la
+stessa per tutte, ed è un dettaglio che vale la pena guardare: la
+normalizzazione $L_2$ delle chiavi è di **DeltaNet**, dove serve a tenere gli
+autovalori della transizione in $[0,1]$, cioè a fare della transizione una
+contrazione; in GLA le chiavi sono una proiezione lineare secca, e a tenere
+limitato lo stato è il gate $\alpha_t \in (0,1)^d$, cioè la contrazione è nella
+memoria e non nella trasformazione. Due vie diverse per lo stesso scopo.
 
 `````
 
-Resta un problema pratico, ed è serio. Il gate scalare o diagonale è una
-semplice **moltiplicazione per uno stato precedente**: srotolato lungo la
-sequenza diventa una somma cumulativa, e le somme cumulative si calcolano in
-parallelo. La delta rule no: il termine $S_{t-1} k_t$ dipende dall'intera
-memoria appena *prima* del passo $t$, quindi ogni aggiornamento aspetta il
-precedente. Per anni questo l'ha confinata a un giocattolo teorico, non
-addestrabile su sequenze lunghe. Nel 2024 **DeltaNet**, di Yang e colleghi
-(NeurIPS 2024) {cite}`yang2024deltanet`, l'ha sbloccata: un algoritmo
-**chunk-parallel** che spezza la sequenza in blocchi e, tramite una
-rappresentazione a matrici di rango basso (la cosiddetta forma *WY*), calcola
-il blocco in parallelo passando allo stato solo un riassunto compatto. La
-delta rule diventa così addestrabile alla scala dei modelli linguistici. E si
-vede dove ci si aspetta: quando il compito è ritrovare il valore giusto legato
-a una chiave incontrata prima (il numero di telefono del contatto giusto, per
-restare alla rubrica), DeltaNet fa meglio delle altre memorie a foglio unico di
-questo capitolo e si avvicina all'attenzione dei Transformer, che su quel
-terreno resta il metro di paragone perché non butta via niente.
+Resta un problema pratico, ed è serio. Sbiadire è un'operazione che si può
+anticipare: quanto resterà fra dieci parole di quello che scrivo adesso si sa
+già adesso, quindi il conto di tutte le parole si può distribuire su tante
+unità di calcolo che lavorano insieme. Correggere no: per sapere che cosa
+scrivere alla parola numero cento bisogna prima sapere che cosa la memoria
+risponde alla parola numero cento, e quello dipende da tutte le novantanove
+correzioni precedenti. Ogni passo aspetta quello prima, e una scheda grafica
+che potrebbe fare mille conti insieme ne fa uno.
+
+Il modello con la delta rule è dunque nato subito, ma nato lento: sono gli
+stessi Schlag, Irie e Schmidhuber a proporlo nel 2021 con il nome di
+**DeltaNet**, e ad addestrarlo davvero come modello linguistico, solo con un
+algoritmo che procede in fila lungo la sequenza, spreca le schede grafiche e
+non scala oltre le taglie piccole. Nel 2024 Yang e colleghi (NeurIPS 2024)
+{cite}`yang2024deltanet` lo sbloccano: un algoritmo **chunk-parallel** che
+spezza la sequenza in blocchi e, dentro ogni blocco, riesce a fare i conti
+tutti insieme passando allo stato soltanto un riassunto compatto (tecnicamente,
+una rappresentazione a matrici di rango basso, la cosiddetta forma *WY*). Da
+lì in avanti la delta rule è addestrabile alla scala dei modelli linguistici. E
+il guadagno si vede dove ci si aspetta: quando il compito è ritrovare il valore
+giusto legato a una chiave incontrata prima (il numero di telefono del contatto
+giusto, per restare alla rubrica), DeltaNet fa meglio delle altre memorie a
+foglio unico di questo capitolo e si avvicina all'attenzione dei Transformer,
+che su quel terreno resta il metro di paragone perché non butta via niente.
 
 ## Unire oblio e correzione: Gated DeltaNet
 
@@ -211,15 +265,40 @@ si fa naturale: perché scegliere? Il gate **svuota in fretta** la memoria, ma
 in modo **uniforme e indiscriminato**: non sa *cosa* sta buttando via. La
 delta rule fa **correzioni mirate** su singole chiavi, ma da sola **non
 svuota**: tende a lasciare la memoria piena di tracce, sia pure aggiustate.
-Yang, del MIT, con Kautz e Hatamizadeh di NVIDIA (2024)
-{cite}`yang2024gateddelta`, osservano che sono **complementari** e li mettono
+Yang, del MIT, con Kautz e Hatamizadeh di NVIDIA (ICLR 2025)
+{cite}`yang2024gateddelta` osserva che sono **complementari** e li mette
 insieme in **Gated DeltaNet**.
+
+`````{tab} Elementare
+
+Torniamo alla lavagna e alla rubrica, che qui diventano lo stesso oggetto.
+Ogni volta che arriva una parola nuova si fanno due gesti, in quest'ordine.
+Primo: si passa uno straccio su tutta la lavagna, che sbiadisce quello che
+c'era senza guardare cosa fosse. Secondo: si cerca la voce che riguarda la
+parola appena letta, si legge cosa dice adesso e si scrive sopra soltanto la
+correzione, come faceva la rubrica di Mario.
+
+I due gesti si occupano di due problemi diversi e non si pestano i piedi. Lo
+straccio fa spazio, e serve perché la lavagna non arrivi mai piena; la
+correzione tiene in ordine le voci che restano, e serve perché quello che c'è
+scritto sia giusto. Se si smette di passare lo straccio, resta la sola
+correzione: le voci sono precise, ma la lavagna a un certo punto si riempie. Se
+si smette di correggere, resta il solo straccio, e questa è la parte
+sorprendente: non si torna al registro che sommava e basta, si ottiene una
+lavagna che sbiadisce e non scrive più niente, perché nel meccanismo la stessa
+manopola dosa quanto correggere *e* quanto scrivere. Insieme, invece, i due
+gesti fanno il mestiere per intero: buttare via in fretta ciò che non serve e
+tenere in ordine ciò che si conserva.
+
+`````
+
+`````{tab} Superiore
 
 La ricorrenza combina i due fattori di transizione:
 
 $$
-S_t = S_{t-1}\big[\, \alpha_t\,(I - \beta_t\, k_t k_t^\top)\,\big]
-      + \beta_t\, v_t\, k_t^\top ,
+\mathbf{S}_t = \mathbf{S}_{t-1}\big[\, \alpha_t\,(\mathbf{I} - \beta_t\, \mathbf{k}_t \mathbf{k}_t^\top)\,\big]
+      + \beta_t\, \mathbf{v}_t\, \mathbf{k}_t^\top ,
 $$
 
 dove i due parametri hanno ruoli distinti e leggibili a colpo d'occhio:
@@ -231,12 +310,19 @@ dove i due parametri hanno ruoli distinti e leggibili a colpo d'occhio:
   correggere la chiave corrente, come nella sezione precedente.
 
 Con $\alpha_t \to 1$ si ritrova la pura delta rule (nessun oblio, sole
-correzioni); con $\beta_t \to 0$ si ritrova il puro gate scalare (nessuna
-correzione, solo oblio). Gated DeltaNet vive nel mezzo: dimentica in fretta ciò
-che non serve più *e* aggiusta con precisione ciò che tiene. La
+correzioni). Il limite $\beta_t \to 0$ va invece letto con attenzione, perché
+$\beta_t$ compare **anche nel termine di scrittura**: la transizione si riduce
+sì al puro gate scalare $\alpha_t \mathbf{I}$, ma con la correzione si spegne anche la
+scrittura, e quel che resta è $\mathbf{S}_t = \alpha_t \mathbf{S}_{t-1}$, una memoria che decade
+a zero senza registrare più nulla. La riga «Mamba-2 / RetNet» della tabella
+qui sotto si ritrova assorbendo $\beta_t$ nel valore, cioè scrivendo
+$\tilde{\mathbf{v}}_t = \beta_t \mathbf{v}_t$. Gated DeltaNet vive nel mezzo: dimentica in fretta
+ciò che non serve più *e* aggiusta con precisione ciò che tiene. La
 parallelizzazione lungo la sequenza si ottiene estendendo la stessa
 rappresentazione WY di DeltaNet, così che anche questa forma più ricca resti
 addestrabile su contesti lunghi.
+
+`````
 
 ## Tutto è regressione online
 
@@ -244,7 +330,14 @@ Fermiamoci a guardare cosa abbiamo costruito, perché qui il capitolo trova il
 suo climax concettuale. Accumulo, gate, delta rule, e la loro combinazione:
 sembrano trucchi diversi, ma sono lo **stesso gesto** visto da angolazioni
 diverse. E quel gesto ha un nome che conosciamo bene dal capitolo sul machine
-learning: è un passo di **minimi quadrati**.
+learning: è un passo di apprendimento.
+
+Il titolo della sezione lo dice con le parole di quel capitolo, e conviene
+scioglierle. **Regressione** è il mestiere di indovinare un numero a partire da
+un altro, quello della retta che si fa passare in mezzo a una nuvola di punti.
+**Online** vuol dire farlo mentre i dati arrivano, uno alla volta, senza poter
+tornare indietro a rileggerli. Tutto questo capitolo, dalla prima riga, ha
+descritto una macchina che fa esattamente questo.
 
 `````{tab} Elementare
 
@@ -253,14 +346,17 @@ che minimizza l'errore quadratico: la somma dei quadrati degli scarti tra
 valori veri e previsti. Facevamo tutto in una volta, con l'intero dataset
 sotto gli occhi.
 
-Una memoria associativa fa la stessa cosa, ma **un dato alla volta, mentre
-scorre**. Il suo compito è imparare a mappare ogni chiave nel suo valore: dato
-$k_t$, restituire $v_t$. A ogni token arriva una nuova coppia
-(chiave, valore) e la memoria fa **un piccolo passo** per predirla meglio, senza
-poter rileggere il passato. È la versione «in tempo reale» della retta di best
+La nostra rubrica fa la stessa cosa, ma **un dato alla volta, mentre scorre**.
+Il suo compito è imparare a rispondere bene: data un'etichetta, restituire
+l'informazione giusta. A ogni parola arriva una nuova coppia
+(etichetta, informazione) e la rubrica fa **un piccolo passo** per rispondere
+meglio, senza poter rileggere il passato. È la versione «in tempo reale» della
+retta di best
 fit: non risolvi il problema in blocco, lo aggiusti in continuazione a ogni
 esempio che passa. Ecco perché la delta rule assomigliava a correggere un tiro:
-è letteralmente un passo di discesa del gradiente.
+non *assomiglia* a imparare, è imparare, nell'unico modo in cui una macchina
+lo fa, cioè guardare di quanto ha sbagliato e spostarsi un po' in quella
+direzione.
 
 `````
 
@@ -269,34 +365,37 @@ esempio che passa. Ecco perché la delta rule assomigliava a correggere un tiro:
 Fissiamo, a ogni passo, l'obiettivo di **regressione online**
 
 $$
-\mathcal{L}_t(S) = \tfrac{1}{2}\,\lVert S\,k_t - v_t \rVert^2 ,
+\mathcal{L}_t(\mathbf{S}) = \tfrac{1}{2}\,\lVert \mathbf{S}\,\mathbf{k}_t - \mathbf{v}_t \rVert^2 ,
 $$
 
-cioè «mappare la chiave $k_t$ nel valore $v_t$», con $S$ la memoria da
-addestrare. Il suo gradiente rispetto a $S$ è
+cioè «mappare la chiave $\mathbf{k}_t$ nel valore $\mathbf{v}_t$», con $\mathbf{S}$ la memoria da
+addestrare. Il suo gradiente rispetto a $\mathbf{S}$ è
 
 $$
-\nabla_S\,\mathcal{L}_t = (S\,k_t - v_t)\, k_t^\top ,
+\nabla_{\mathbf{S}}\,\mathcal{L}_t = (\mathbf{S}\,\mathbf{k}_t - \mathbf{v}_t)\, \mathbf{k}_t^\top ,
 $$
 
 e un singolo passo di discesa del gradiente con learning-rate $\beta_t$,
-partendo da $S_{t-1}$, dà
+partendo da $\mathbf{S}_{t-1}$, dà
 
 $$
-S_t = S_{t-1} - \beta_t\,(S_{t-1} k_t - v_t)\, k_t^\top
-    = S_{t-1}\,(I - \beta_t\, k_t k_t^\top) + \beta_t\, v_t\, k_t^\top .
+\mathbf{S}_t = \mathbf{S}_{t-1} - \beta_t\,(\mathbf{S}_{t-1} \mathbf{k}_t - \mathbf{v}_t)\, \mathbf{k}_t^\top
+    = \mathbf{S}_{t-1}\,(\mathbf{I} - \beta_t\, \mathbf{k}_t \mathbf{k}_t^\top) + \beta_t\, \mathbf{v}_t\, \mathbf{k}_t^\top .
 $$
 
 È **esattamente** la delta rule di DeltaNet: il passo di gradiente *esatto*
 su $\mathcal{L}_t$. Le altre ricorrenze sono parenti meno fedeli dello stesso
-passo. L'accumulo puro dell'attenzione lineare scrive $v_t k_t^\top$ senza
+passo. L'accumulo puro dell'attenzione lineare scrive $\mathbf{v}_t \mathbf{k}_t^\top$ senza
 sottrarre ciò che la memoria già predice: equivale a trascurare il termine
-$S_{t-1} k_t$ nel gradiente, cioè a fare il passo esatto sull'obiettivo
-*linearizzato* $-v_t^\top S\, k_t$; coincide con il passo su $\mathcal{L}_t$
-solo quando la memoria non ha ancora nulla da dire sulla chiave corrente
-($S_{t-1} k_t = 0$, per esempio con chiavi mutuamente ortogonali). E il gate
+$\mathbf{S}_{t-1} \mathbf{k}_t$ nel gradiente, cioè a fare il passo esatto (a learning rate
+unitario) sull'obiettivo *linearizzato* $-\mathbf{v}_t^\top \mathbf{S}\, \mathbf{k}_t$. Con
+$\mathcal{L}_t$ coincide solo se valgono **due** condizioni: che la memoria non
+abbia ancora nulla da dire sulla chiave corrente ($\mathbf{S}_{t-1} \mathbf{k}_t = 0$, per
+esempio con chiavi mutuamente ortogonali) *e* che la scrittura sia a piena
+forza, $\beta_t = 1$. La prima da sola non basta: con chiavi ortonormali e
+$\beta_t = 0{,}5$ le due ricorrenze divergono già dopo pochi passi. E il gate
 $\alpha_t$ è, in questa lettura, un **weight decay adattivo**: la contrazione
-$S \leftarrow \alpha_t S$ che l'ottimizzazione applica per non lasciare che i
+$\mathbf{S} \leftarrow \alpha_t \mathbf{S}$ che l'ottimizzazione applica per non lasciare che i
 vecchi coefficienti si accumulino all'infinito, regolata token per token. Ogni
 RNN lineare che abbiamo incontrato è, dunque, un passo di ottimizzazione
 online sulla stessa famiglia di problemi ai minimi quadrati: a cambiare è
@@ -305,44 +404,69 @@ quanto fedelmente segue il gradiente di $\mathcal{L}_t$.
 `````
 
 La {numref}`fig-famiglia-ricorrenze-lineari` mette in fila lo «zoo» delle
-transizioni di stato: si parte dall'identità $I$ dell'accumulo puro e si sale in
-espressività un gradino alla volta, fino alla transizione gated-delta che le
-contiene tutte come casi particolari.
+memorie di questo capitolo: si parte da quella che tiene tutto e si sale un
+gradino alla volta, fino all'ultima, che le contiene tutte come casi
+particolari (basta spegnerle un pezzo per volta).
 
 ```{figure} ../figures/famiglia-ricorrenze-lineari.svg
 :name: fig-famiglia-ricorrenze-lineari
-:alt: Cinque riquadri in fila che mostrano la matrice di transizione di stato di ciascuna ricorrenza lineare, dalla più semplice alla più espressiva. Primo riquadro, attenzione lineare, matrice identità I con la diagonale piena e il resto vuoto. Secondo riquadro, Mamba-2 e RetNet, scalare alpha per identità, la diagonale uniforme scurita da un unico fattore. Terzo riquadro, GLA, diagonale Diag(alpha) con celle di intensità diversa lungo la diagonale. Quarto riquadro, DeltaNet, identità meno beta k k trasposto, con un blocco fuori diagonale che rappresenta la correzione householder. Quinto riquadro, Gated DeltaNet, alpha per parentesi identità meno beta k k trasposto, che combina il decadimento diagonale e il blocco di correzione.
+:alt: Cinque riquadri in fila che mostrano la matrice di transizione di stato di ciascuna ricorrenza lineare, dalla più semplice alla più espressiva. Primo riquadro, attenzione lineare, matrice identità I con la diagonale piena e il resto vuoto. Secondo riquadro, Mamba-2 e RetNet, scalare alpha per identità, la diagonale uniforme scurita da un unico fattore. Terzo riquadro, GLA e RWKV-6, diagonale Diag(alpha) con celle di intensità diversa lungo la diagonale. Quarto riquadro, DeltaNet, identità meno beta k k trasposto, con un blocco fuori diagonale che rappresenta la correzione householder. Quinto riquadro, Gated DeltaNet, alpha per parentesi identità meno beta k k trasposto, che combina il decadimento diagonale e il blocco di correzione.
 :width: 85%
 
-Lo «zoo» delle ricorrenze lineari, ordinato per espressività crescente della
-transizione di stato in $S_t = S_{t-1}\,(\text{transizione}_t) + v_t
-k_t^\top$: identità, scalare, diagonale, Householder e gated-delta. È il
-fattore che moltiplica $S_{t-1}$ a distinguerle (nelle due righe con la delta
-rule il termine di scrittura porta anche il fattore $\beta_t$).
+Lo «zoo» delle memorie di questo capitolo, in fila da quella che sa fare meno a
+quella che sa fare di più. In ogni riquadro c'è la regola con cui la memoria di
+ieri sopravvive a oggi: tenerla tutta, sbiadirla tutta uguale, sbiadirla zona
+per zona, cancellare la voce che si sta per riscrivere, e le ultime due cose
+insieme. Il resto del meccanismo non cambia mai.
 ```
 
-La tabella seguente è la stessa figura in forma algebrica: le cinque
-ricorrenze, con l'aggiornamento completo di $S_t$ e il fattore di transizione
-che moltiplica, da destra, lo stato precedente.
+La stessa figura, messa in fila: cinque modi di far sopravvivere la memoria di
+ieri, dal più semplice al più raffinato.
 
-| Metodo | Aggiornamento di $S_t$ | Transizione di stato |
+`````{tab} Elementare
+
+| Modello | Che cosa fa della memoria di ieri |
+| :--- | :--- |
+| Attenzione lineare | La tiene tutta, intatta, e ci somma sopra la voce nuova. |
+| Mamba-2 / RetNet | La sbiadisce tutta allo stesso ritmo, poi ci somma sopra la voce nuova. |
+| GLA | La sbiadisce **zona per zona**, ogni zona al suo ritmo, poi ci somma sopra la voce nuova. |
+| DeltaNet | Non la sbiadisce, ma prima di scrivere **cancella la vecchia voce** proprio dell'etichetta che sta per riscrivere, e ne scrive la correzione. |
+| Gated DeltaNet | Le due cose insieme: sbiadisce tutto, e in più cancella e riscrive la voce di turno. |
+
+Cinque righe, una storia sola: **cambia soltanto la prima mossa**, quella che
+decide che cosa resta di ciò che si era scritto prima. Tutto il resto (la
+memoria che non cresce mai, la voce che si somma sotto la sua etichetta, il
+fatto che il modello si alleni tutto in una volta e poi scriva una parola alla
+volta) è identico in tutte e cinque.
+
+`````
+
+`````{tab} Superiore
+
+| Metodo | Aggiornamento di $\mathbf{S}_t$ | Transizione di stato |
 | :--- | :--- | :--- |
-| Attenzione lineare | $S_t = S_{t-1} + v_t\, k_t^\top$ | $I$ (identità) |
-| Mamba-2 / RetNet | $S_t = \alpha_t\, S_{t-1} + v_t\, k_t^\top$ | $\alpha_t I$ (decadimento scalare; commuta con lo stato) |
-| GLA | $S_t = S_{t-1}\operatorname{Diag}(\alpha_t) + v_t\, k_t^\top$ | $\operatorname{Diag}(\alpha_t)$ (decadimento diagonale) |
-| DeltaNet | $S_t = S_{t-1}(I - \beta_t\, k_t k_t^\top) + \beta_t\, v_t\, k_t^\top$ | $I - \beta_t\, k_t k_t^\top$ (Householder) |
-| Gated DeltaNet | $S_t = S_{t-1}\big[\alpha_t(I - \beta_t\, k_t k_t^\top)\big] + \beta_t\, v_t\, k_t^\top$ | $\alpha_t(I - \beta_t\, k_t k_t^\top)$ (gated-delta) |
+| Attenzione lineare | $\mathbf{S}_t = \mathbf{S}_{t-1} + \mathbf{v}_t\, \mathbf{k}_t^\top$ | $\mathbf{I}$ (identità) |
+| Mamba-2 / RetNet | $\mathbf{S}_t = \alpha_t\, \mathbf{S}_{t-1} + \mathbf{v}_t\, \mathbf{k}_t^\top$ | $\alpha_t \mathbf{I}$ (decadimento scalare; commuta con lo stato) |
+| GLA | $\mathbf{S}_t = \mathbf{S}_{t-1}\operatorname{Diag}(\alpha_t) + \mathbf{v}_t\, \mathbf{k}_t^\top$ | $\operatorname{Diag}(\alpha_t)$ (decadimento diagonale) |
+| DeltaNet | $\mathbf{S}_t = \mathbf{S}_{t-1}(\mathbf{I} - \beta_t\, \mathbf{k}_t \mathbf{k}_t^\top) + \beta_t\, \mathbf{v}_t\, \mathbf{k}_t^\top$ | $\mathbf{I} - \beta_t\, \mathbf{k}_t \mathbf{k}_t^\top$ (Householder) |
+| Gated DeltaNet | $\mathbf{S}_t = \mathbf{S}_{t-1}\big[\alpha_t(\mathbf{I} - \beta_t\, \mathbf{k}_t \mathbf{k}_t^\top)\big] + \beta_t\, \mathbf{v}_t\, \mathbf{k}_t^\top$ | $\alpha_t(\mathbf{I} - \beta_t\, \mathbf{k}_t \mathbf{k}_t^\top)$ (gated-delta) |
 
 Letta dall'alto in basso, la tabella racconta una sola storia: **cambia
-soltanto la transizione di stato**, il fattore che decide *come* la memoria di
-ieri sopravvive a oggi. Tutto il resto (lo stato di dimensione fissa, la
-scrittura per prodotto esterno, il fatto che si addestri in parallelo e si
-inferisca in modo ricorrente) resta identico. Questa è la struttura profonda
-che unifica l'intera famiglia, e la stessa che, nel prossimo capitolo,
-ritroveremo arrivando da tutt'altra strada: quella dei sistemi dinamici degli
-State Space Model. Non è un caso che Mamba-2 compaia due volte, qui tra le
-attenzioni lineari e là tra gli SSM: è il ponte, e la sua «dualità» tra stato
-e attenzione è la prova che le due famiglie sono due viste della stessa cosa.
+soltanto la transizione di stato**, il fattore che moltiplica $\mathbf{S}_{t-1}$. Lo
+stato di dimensione fissa, la scrittura per prodotto esterno, l'addestramento
+parallelo e l'inferenza ricorrente restano identici (unica differenza di
+contorno: nelle due righe con la delta rule il termine di scrittura porta anche
+il fattore $\beta_t$).
+
+`````
+
+Questa è la struttura profonda che unifica l'intera famiglia, ed è la stessa
+che, nel prossimo capitolo, ritroveremo arrivando da tutt'altra strada: quella
+dei sistemi dinamici degli **State Space Model**. Non è un caso che Mamba-2 (il
+modello che sbiadisce tutta la lavagna allo stesso ritmo, ma decidendo il ritmo
+parola per parola) compaia due volte, qui tra le attenzioni lineari e là tra
+gli SSM: è il ponte fra le due famiglie, e la sua «dualità» tra stato e
+attenzione è la prova che sono due viste della stessa cosa.
 
 `````{tab} Elementare
 
@@ -366,8 +490,8 @@ e attenzione è la prova che le due famiglie sono due viste della stessa cosa.
   com'era. È una vecchia regola dell'apprendimento adattivo (Widrow e Hoff),
   tornata utile quando ci si è accorti che questa memoria è la stessa idea di
   certe reti degli anni Novanta, che riscrivevano al volo la propria memoria
-  mentre leggevano. Per anni è stata impraticabile sui testi lunghi, perché va
-  fatta in fila; DeltaNet ha trovato il modo di farla a blocchi, e quindi in
+  mentre leggevano. Per anni è rimasta lenta sui testi lunghi, perché va fatta
+  in fila; poi si è trovato il modo di farla a blocchi, e quindi in
   parallelo.
 - **Gated DeltaNet** mette insieme i due gesti, che sono complementari: sbiadire
   alleggerisce tutto in blocco ma non sa che cosa sta buttando via, correggere
@@ -401,11 +525,12 @@ e attenzione è la prova che le due famiglie sono due viste della stessa cosa.
   scalare e fisso in RetNet, scalare e data-dipendente in Mamba-2,
   **diagonale** e data-dipendente in GLA; dal più grossolano al più selettivo,
   canale per canale.
-- La **delta rule** (Widrow–Hoff, dai fast weights di Schlag e colleghi) scrive
-  solo l'**errore** $\mathbf{v}_t - S_{t-1}\mathbf{k}_t$ scalato da
-  $\beta_t$: $\beta_t=1$ sovrascrive la chiave, $\beta_t=0$ la ignora.
-  DeltaNet l'ha resa
-  **parallelizzabile** (algoritmo chunk-parallel, rappresentazione WY).
+- La **delta rule** (Widrow–Hoff, dai fast weights di Schlag e colleghi, che nel
+  2021 la portano in **DeltaNet**) scrive solo l'**errore**
+  $\mathbf{v}_t - \mathbf{S}_{t-1}\mathbf{k}_t$ scalato da $\beta_t$: $\beta_t=1$ sovrascrive la chiave,
+  $\beta_t=0$ la ignora. Yang e colleghi (2024) l'hanno resa
+  **parallelizzabile** (algoritmo chunk-parallel, rappresentazione WY), e quindi
+  scalabile.
 - **Gated DeltaNet** combina i due gesti complementari: $\alpha_t$ decade in
   modo globale, $\beta_t$ corregge in modo mirato (dimentica in fretta *e*
   aggiusta con precisione).
@@ -418,9 +543,9 @@ e attenzione è la prova che le due famiglie sono due viste della stessa cosa.
   finché le chiavi non si assomigliano fra loro; il gate serve a non far
   gonfiare la memoria all'infinito.
 - A cambiare, da un'architettura all'altra, è **solo la transizione di stato**
-  ($I \to \alpha_t I \to \operatorname{Diag}(\alpha_t) \to
-  I-\beta_t \mathbf{k}_t \mathbf{k}_t^\top
-  \to \alpha_t(I-\beta_t \mathbf{k}_t \mathbf{k}_t^\top)$): tutto il
+  ($\mathbf{I} \to \alpha_t \mathbf{I} \to \operatorname{Diag}(\alpha_t) \to
+  \mathbf{I}-\beta_t \mathbf{k}_t \mathbf{k}_t^\top
+  \to \alpha_t(\mathbf{I}-\beta_t \mathbf{k}_t \mathbf{k}_t^\top)$): tutto il
   resto della ricorrenza resta identico.
 ```
 

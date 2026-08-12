@@ -21,9 +21,9 @@
   <circle cx="510" cy="115" r="6" fill="#2D5A5C"/>
   <line x1="120" y1="330" x2="545" y2="95" stroke="#B5532C" stroke-width="2"/>
   <polygon points="545,95 528,98 536,112" fill="#B5532C"/>
-  <text x="470" y="90" font-family="sans-serif" font-size="14" fill="#B5532C">PC1 — massima varianza</text>
+  <text x="470" y="90" font-family="sans-serif" font-size="14" fill="#B5532C">PC1: massima varianza</text>
   <line x1="295" y1="180" x2="365" y2="300" stroke="#C9A961" stroke-width="2"/>
   <polygon points="295,180 296,197 311,190" fill="#C9A961"/>
-  <text x="212" y="168" font-family="sans-serif" font-size="14" fill="#C9A961">PC2 — il residuo</text>
+  <text x="212" y="168" font-family="sans-serif" font-size="14" fill="#C9A961">PC2: il residuo</text>
   <text x="330" y="35" font-family="sans-serif" font-size="14" fill="#1A1A1A" text-anchor="middle">La PCA ruota gli assi lungo la forma della nuvola</text>
 </svg>

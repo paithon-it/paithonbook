@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  paithon book — figura: la gerarchia di memoria di una GPU, come piramide.
+  paithon book, figura: la gerarchia di memoria di una GPU, come piramide.
   Dall'alto (piccola, velocissima, on-chip) verso il basso (capiente, lenta,
   lontana): registri, shared memory, cache L2, memoria globale HBM, memoria
   host oltre il bus PCIe. A sinistra cresce la velocita/banda (verso l'alto),
@@ -40,7 +40,7 @@
 
   <!-- 4. Memoria globale HBM -->
   <polygon class="band" points="177,246 483,246 524,308 136,308" fill="#B5532C" fill-opacity="0.30" stroke="#B5532C"/>
-  <text class="name" x="330" y="274" text-anchor="middle">Memoria globale — HBM</text>
+  <text class="name" x="330" y="274" text-anchor="middle">Memoria globale (HBM)</text>
   <text class="det"  x="330" y="291" text-anchor="middle">decine di GB · qualche TB/s · centinaia di cicli</text>
 
   <!-- 5. Memoria host -->

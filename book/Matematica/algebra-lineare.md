@@ -14,8 +14,9 @@ una **matrice**. L'algebra lineare è la grammatica di queste pile.
 :width: 80%
 
 Il vettore ha due letture, e la figura le tiene insieme: una coppia di numeri
-e una freccia. Sommare due liste di numeri e comporre due spostamenti sono la
-stessa operazione.
+e una freccia. Sommare due liste di numeri voce per voce ($[3,2]$ più $[1,3]$
+fa $[4,5]$) e fare prima uno spostamento e poi l'altro sono la stessa
+operazione: si arriva nello stesso punto.
 ```
 
 La doppia lettura di {numref}`fig-somma-vettori` è il motivo per cui l'algebra
@@ -36,8 +37,32 @@ $$
 L'ordine conta: il primo posto è sempre "metri quadri", il secondo "stanze",
 e così via. Possiamo immaginare un vettore di due o tre numeri come una
 **freccia** che parte dall'origine e punta verso quel punto: ci dice una
-*direzione* e una *lunghezza*. Con più di tre numeri la freccia non la
-disegniamo più, ma l'idea di "direzione nello spazio" resta la stessa.
+*direzione* e una *lunghezza*.
+
+Con i vettori si fanno tre gesti, e sono tutti conti che sapresti fare a
+mente.
+
+*Sommarli*: si sommano i numeri che occupano lo stesso posto. Se $x = (75, 3,
+2)$ e $y = (10, 1, 0)$, allora $x + y = (85, 4, 2)$. Sulla freccia vuol dire
+fare prima uno spostamento e poi l'altro.
+
+*Sottrarli*: si sottraggono voce per voce, $y - x = (-65, -2, -2)$. È
+l'operazione che serve per misurare uno scarto, e quindi un errore: la
+differenza fra quello che il modello ha previsto e quello che è successo
+davvero.
+
+*Moltiplicarli per un numero*: si moltiplica ogni voce per quel numero,
+$2x = (150, 6, 4)$. La freccia resta sulla stessa retta e cambia solo
+lunghezza (e se il numero è negativo, si volta dall'altra parte).
+
+Con più di tre numeri la freccia non la disegniamo più, ma i tre gesti restano
+identici, perché sono conti sulle liste e non sul disegno: si sommano
+ottantaquattro numeri con ottantaquattro numeri esattamente come se ne
+sommavano tre con tre. Quando in questo libro si dirà «direzione» in uno
+spazio a 784 dimensioni, la cosa da tenere in mente non è un'immagine ma
+questa: le operazioni sono le stesse, e le parole «vicino», «lontano»,
+«dalla stessa parte» continuano a voler dire qualcosa perché si calcolano,
+non perché si vedono.
 
 `````
 
@@ -69,8 +94,12 @@ di grigi, "srotolata", è un vettore di $\mathbb{R}^{784}$.
 
 ## Il prodotto scalare: quanto due vettori "vanno d'accordo"
 
-È l'operazione più importante di tutto il libro: un neurone artificiale, in
-fondo, non fa altro che calcolare un prodotto scalare.
+È l'operazione più importante di tutto il libro: un **neurone artificiale**,
+in fondo, non fa altro che calcolare un prodotto scalare. Il nome arriva dal
+capitolo sulle reti neurali e qui basta sapere cosa indica: il mattone
+elementare di cui una rete è fatta, un pezzetto di calcolo che riceve una
+lista di numeri, la confronta con una lista di numeri propri e restituisce un
+numero solo.
 
 Vale la pena rendersi conto della scala. Ogni volta che un modello linguistico
 genera una singola parola, da qualche parte in un datacenter vengono eseguiti
@@ -86,7 +115,12 @@ l'operazione aritmetica più eseguita sul pianeta in questo momento.
 
 La proiezione di $a$ su $b$ è l'"ombra" che $a$ getta sulla direzione di $b$.
 Il prodotto scalare è la lunghezza di quest'ombra moltiplicata per la lunghezza
-di $b$: l'angolo $\theta$ decide se il risultato è grande, nullo o negativo.
+di $b$, e l'angolo fra le due frecce (nel disegno la lettera greca $\theta$,
+si legge «theta») decide se il risultato è grande, nullo o negativo. Nella
+formula scritta accanto, le stanghette $|a|$ vogliono dire «lunghezza di $a$»
+e $\cos\theta$ è un numero fra $-1$ e $1$ che misura l'accordo fra le due
+direzioni: vale $1$ se puntano dalla stessa parte, $0$ se sono
+perpendicolari, $-1$ se sono opposte.
 ```
 
 `````{tab} Elementare
@@ -98,6 +132,11 @@ componenti che occupano lo stesso posto e sommando tutto:
 $$
 a \cdot b = a_1 b_1 + a_2 b_2 + \dots + a_n b_n .
 $$
+
+I numerini in basso sono solo un modo di dire «il posto»: $a_1$ è il primo
+numero della lista $a$, $a_2$ il secondo, e $n$ è quanti sono in tutto. La
+riga, letta a voce, dice: *primo per primo, più secondo per secondo, e così
+via fino alla fine*.
 
 Per esempio, con $a=(4,2)$ e $b=(1,3)$:
 
@@ -124,15 +163,26 @@ strada dritta, e il vettore $a$ come un bastone piantato obliquo all'inizio
 della strada, col sole a picco. Il bastone proietta un'ombra sull'asfalto:
 quell'ombra è la parte di $a$ che va nella stessa direzione della strada. Il
 prodotto scalare è la lunghezza dell'ombra moltiplicata per la lunghezza della
-strada.
+strada. (Se il bastone pende anche di lato, l'ombra esce dall'asfalto: quel che
+conta è solo quanto ne cade *lungo* la strada, e il pezzo di traverso non entra
+nel conto. È la stessa cosa che facciamo quando diciamo che di un viaggio
+sud-est «tanti chilometri sono verso sud».)
 
 Se il bastone è quasi sdraiato lungo la strada, l'ombra è lunga e il risultato
 è **grande e positivo**. Se è perpendicolare, l'ombra si riduce a un punto:
-**zero**. Se punta all'indietro, l'ombra cade dalla parte opposta e il numero
-diventa **negativo**. Tre casi, tre verdetti: concordi, indifferenti, opposti.
+**zero**. Se punta all'indietro, l'ombra cade sull'altro lato del bastone, e
+allora contiamo la sua lunghezza col segno meno, perché quel che ci interessa
+non è quanto è lunga l'ombra ma da che parte cade: il numero diventa
+**negativo**. Tre casi, tre verdetti: concordi, indifferenti, opposti.
 
-Il prodotto scalare non misura quanto due vettori sono grandi: misura quanto
-sono d'accordo.
+Attenzione a non chiedere all'immagine più di quel che dà. Il prodotto scalare
+dipende da due cose insieme: da **quanto** i due vettori sono lunghi e da
+**quanto sono d'accordo**. Allungando la strada il totale cresce, senza che
+nessuno abbia cambiato direzione. Il segno, invece, dipende solo
+dall'accordo, e resta lo stesso comunque si allunghino le due frecce: è quella
+la parte del numero che parla di direzione, ed è la ragione per cui, quando si
+vogliono confrontare *solo* le direzioni, si divide il prodotto scalare per le
+due lunghezze prima di guardarlo.
 
 `````
 
@@ -167,37 +217,71 @@ termine di bias.
 
 Una matrice è una tabella di numeri: righe e colonne. Ci serve per due cose.
 Primo, **impilare tanti esempi**: se ho 100 appartamenti descritti da 3 numeri
-ciascuno, ottengo una tabella $100\times 3$. Secondo, **trasformare** i dati:
-moltiplicare i dati per una matrice significa mescolarli e rimapparli in un
-nuovo spazio; è così che ogni strato di una rete neurale "riscrive" ciò che
-riceve prima di passarlo allo strato dopo.
+ciascuno, ottengo una tabella $100\times 3$. Secondo, **trasformare** i dati,
+ed è qui che vale la pena rallentare, perché «moltiplicare una lista di numeri
+per una tabella di numeri» sembra un'operazione misteriosa e non lo è: è il
+prodotto scalare di poco fa, ripetuto una volta per ogni riga della tabella.
+
+Torniamo all'appartamento, $x = (75,\ 3,\ 2)$: metri quadri, stanze, piano.
+Voglio ricavarne due numeri nuovi, un punteggio di «ampiezza» e uno di
+«comodità». Scrivo due liste di pesi, una per punteggio, e le impilo:
+
+$$
+\begin{array}{lccc}
+ & \text{mq} & \text{stanze} & \text{piano}\\
+\text{ampiezza} & 2 & 10 & 0\\
+\text{comodità} & 0 & 1 & 5
+\end{array}
+$$
+
+Ogni riga si combina con l'appartamento come uno scontrino: quantità per
+prezzi, e si somma.
+
+- ampiezza: $2\cdot 75 + 10\cdot 3 + 0\cdot 2 = 150 + 30 + 0 = 180$;
+- comodità: $0\cdot 75 + 1\cdot 3 + 5\cdot 2 = 0 + 3 + 10 = 13$.
+
+Il risultato è la lista $(180,\ 13)$. Tre numeri sono entrati, due ne sono
+usciti, e non sono gli stessi tre riordinati: sono due misture nuove,
+ciascuna decisa da una riga della tabella. Questo è tutto ciò che significa
+moltiplicare i dati per una matrice, e lo si può ripetere: la lista che esce
+può entrare in un'altra tabella. È così che ogni strato di una rete neurale
+"riscrive" ciò che riceve prima di passarlo allo strato dopo, e i pesi delle
+righe sono esattamente ciò che l'addestramento va a regolare.
 
 `````
 
 `````{tab} Superiore
 
-Una matrice $A\in\mathbb{R}^{m\times n}$ ha $m$ righe e $n$ colonne. Il
-**prodotto matrice-vettore** $A\mathbf{x}$ produce un vettore di
-$\mathbb{R}^m$ le cui componenti sono i prodotti scalari tra le righe di $A$ e
-$\mathbf{x}$:
+Una matrice $\mathbf{A}\in\mathbb{R}^{m\times n}$ ha $m$ righe e $n$ colonne.
+Il **prodotto matrice-vettore** $\mathbf{A}\mathbf{x}$ produce un vettore di
+$\mathbb{R}^m$ le cui componenti sono i prodotti scalari tra le righe di
+$\mathbf{A}$ e $\mathbf{x}$:
 
 $$
-(A\mathbf{x})_i = \sum_{j=1}^{n} A_{ij}\,x_j .
+(\mathbf{A}\mathbf{x})_i = \sum_{j=1}^{n} A_{ij}\,x_j .
 $$
 
-Il **prodotto tra matrici** $C = AB$, con $A\in\mathbb{R}^{m\times k}$ e
-$B\in\mathbb{R}^{k\times n}$, dà $C\in\mathbb{R}^{m\times n}$ con
+(Il grassetto distingue l'oggetto intero dai suoi elementi: $\mathbf{A}$ è la
+matrice, $A_{ij}$ il numero che sta all'incrocio fra riga $i$ e colonna $j$.
+È la convenzione che il libro segue ovunque: maiuscolo grassetto per le
+matrici, minuscolo grassetto per i vettori, tondo per i numeri singoli.)
+
+Il **prodotto tra matrici** $\mathbf{C} = \mathbf{A}\mathbf{B}$, con
+$\mathbf{A}\in\mathbb{R}^{m\times k}$ e $\mathbf{B}\in\mathbb{R}^{k\times n}$,
+dà $\mathbf{C}\in\mathbb{R}^{m\times n}$ con
 
 $$
 C_{ij} = \sum_{r=1}^{k} A_{ir} B_{rj} .
 $$
 
-Non è commutativo ($AB\neq BA$ in generale) e le dimensioni "interne" devono
-combaciare. Uno strato *fully-connected* di una rete non è altro che
-$\mathbf{h} = \sigma(W\mathbf{x}+\mathbf{b})$: una moltiplicazione per la
-matrice dei pesi $W$, seguita da una non linearità $\sigma$. Il fatto che
-tante operazioni si riducano a prodotti tra matrici è ciò che rende le GPU
-(nate per moltiplicare matrici in grafica), così efficaci nel deep learning.
+Non è commutativo ($\mathbf{A}\mathbf{B}\neq\mathbf{B}\mathbf{A}$ in generale)
+e le dimensioni "interne" devono combaciare. Uno strato *fully-connected* di
+una rete non è altro che
+$\mathbf{h} = \sigma(\mathbf{W}\mathbf{x}+\mathbf{b})$: una moltiplicazione
+per la matrice dei pesi $\mathbf{W}$, seguita da una non linearità $\sigma$.
+Il fatto che tante operazioni si riducano a prodotti tra matrici è ciò che
+rende le GPU (nate per moltiplicare matrici in grafica), così efficaci nel
+deep learning.
 
 `````
 
@@ -206,19 +290,24 @@ girate: alcune resistono.
 
 ```{figure} ../figures/autovettori.svg
 :name: fig-autovettori
-:alt: "Animazione: sedici vettori unitari vengono trasformati da una matrice; quasi tutti cambiano direzione, mentre i due sulle diagonali restano sulla propria retta, uno allungandosi di tre volte e l'altro senza muoversi."
+:alt: "Animazione: sedici frecce tutte lunghe uno, che partono dall'origine in sedici direzioni diverse, vengono trasformate da una matrice; quasi tutte cambiano direzione, mentre le due sulle diagonali restano sulla propria retta, una allungandosi di tre volte e l'altra senza muoversi."
 :width: 85%
 
-La matrice $A=\begin{pmatrix}2&1\\1&2\end{pmatrix}$ applicata a sedici
-vettori unitari. Quasi tutti ruotano; i due sulle diagonali (in
-terracotta) restano sulla propria retta: uno si allunga di $3$ volte, l'altro
-non si muove affatto.
+La matrice $\mathbf{A}=\begin{pmatrix}2&1\\1&2\end{pmatrix}$ applicata a
+sedici frecce tutte lunghe uno (si dicono *vettori unitari*: puntano in
+direzioni diverse ma hanno tutte la stessa lunghezza, così l'unica cosa che
+cambia fra loro è la direzione). Quasi tutte ruotano; le due sulle diagonali
+(in terracotta) restano sulla propria retta: una si allunga di $3$ volte,
+l'altra non si muove affatto. La riga scritta nel disegno,
+$\mathbf{A}\mathbf{v} = \lambda\mathbf{v}$, si legge: «applicare la matrice a
+quella freccia dà la stessa freccia moltiplicata per un numero», e quel numero
+è il $3$ o l'$1$.
 ```
 
 ## Autovalori e autovettori: le direzioni che resistono
 
-Quelle due direzioni sono gli **autovettori** di $A$, e i fattori $3$ e $1$ i
-suoi **autovalori**.
+Quelle due direzioni sono gli **autovettori** di $\mathbf{A}$, e i fattori $3$
+e $1$ i suoi **autovalori**.
 
 `````{tab} Elementare
 
@@ -234,7 +323,10 @@ di qua, comprime di là) lungo quella direzione collassa in una
 moltiplicazione. Il vettore può allungarsi, accorciarsi, perfino ribaltarsi,
 ma **non lascia la sua retta** ({numref}`fig-autovettori`).
 
-Il numero $\lambda$ è una specie di oroscopo per quella direzione:
+Quel fattore di allungamento ha un nome e un simbolo: si chiama **autovalore**
+e si scrive con la lettera greca $\lambda$ (si legge «lambda»). Nella figura
+di sopra $\lambda$ vale $3$ per una delle due venature e $1$ per l'altra.
+Sapere quanto vale è una specie di oroscopo per quella direzione:
 
 - $\lambda > 1$: tutto ciò che punta di lì viene **amplificato**;
 - $0 < \lambda < 1$: viene **attenuato**;
@@ -242,27 +334,32 @@ Il numero $\lambda$ è una specie di oroscopo per quella direzione:
 
 Il punto diventa serio quando la matrice si applica non una volta ma cento,
 come a un segnale che attraversa cento strati di una rete. L'effetto si
-accumula: $\lambda$ elevato alla centesima. Un $1{,}1$ diventa $13\,781$, un
-$0{,}9$ diventa $0{,}000027$. È da qui che nascono i gradienti che esplodono o
-svaniscono, e per questo si guardano gli autovalori quando un addestramento
-non converge.
+accumula: $\lambda$ moltiplicato per sé stesso cento volte. Un $1{,}1$ diventa
+$13\,781$, un $0{,}9$ diventa $0{,}000027$. Da un capo si finisce con numeri
+enormi, dall'altro con numeri indistinguibili da zero, e in tutti e due i casi
+la correzione che deve tornare indietro fino ai primi strati (il *gradiente*
+della prossima sezione, il segnale che dice a ogni manopola di quanto girare)
+arriva inservibile. È il motivo per cui si vanno a guardare gli autovalori
+quando un addestramento non migliora più, e in gergo si dice che «i gradienti
+esplodono o svaniscono».
 
 `````
 
 `````{tab} Superiore
 
-Dato $A\in\mathbb{R}^{n\times n}$, un vettore non nullo $\mathbf{v}$ è un
-**autovettore** con **autovalore** $\lambda$ se
+Dato $\mathbf{A}\in\mathbb{R}^{n\times n}$, un vettore non nullo $\mathbf{v}$
+è un **autovettore** con **autovalore** $\lambda$ se
 
 $$
-A\mathbf{v} = \lambda\mathbf{v}.
+\mathbf{A}\mathbf{v} = \lambda\mathbf{v}.
 $$
 
-Riscrivendo come $(A-\lambda I)\mathbf{v}=\mathbf{0}$: la soluzione non banale
-esiste solo se $A-\lambda I$ è singolare, cioè se
+Riscrivendo come $(\mathbf{A}-\lambda \mathbf{I})\mathbf{v}=\mathbf{0}$: la
+soluzione non banale esiste solo se $\mathbf{A}-\lambda \mathbf{I}$ è
+singolare, cioè se
 
 $$
-\det(A - \lambda I) = 0 .
+\det(\mathbf{A} - \lambda \mathbf{I}) = 0 .
 $$
 
 È l'**equazione caratteristica**, un polinomio di grado $n$ in $\lambda$: una
@@ -272,9 +369,10 @@ $\det\!\begin{pmatrix}2-\lambda&1\\1&2-\lambda\end{pmatrix}
 =(2-\lambda)^2-1=0$ dà $\lambda_1=3$ e $\lambda_2=1$.
 
 Il caso che ricorre di più nel machine learning è quello **simmetrico**
-($A=A^\top$): il *teorema spettrale* garantisce che gli autovalori siano reali
-e che esista una base ortonormale di autovettori, cioè $A = Q\Lambda Q^\top$
-con $Q$ ortogonale e $\Lambda$ diagonale. Le matrici di covarianza sono
+($\mathbf{A}=\mathbf{A}^\top$): il *teorema spettrale* garantisce che gli
+autovalori siano reali e che esista una base ortonormale di autovettori, cioè
+$\mathbf{A} = \mathbf{Q}\boldsymbol{\Lambda}\mathbf{Q}^\top$ con $\mathbf{Q}$
+ortogonale e $\boldsymbol{\Lambda}$ diagonale. Le matrici di covarianza sono
 simmetriche, ed è precisamente questa decomposizione che la **PCA** calcola:
 gli autovettori danno le direzioni di massima varianza, gli autovalori quanta
 varianza c'è lungo ciascuna.
@@ -294,18 +392,60 @@ quasi mai coincidono con gli assi in cui i dati sono stati registrati; il
 teorema spettrale garantisce che esistano, siano ortogonali fra loro, e si
 possano ordinare per quanta varianza catturano.
 
-L'iterazione chiarisce il resto: $A^k\mathbf{v} = \lambda^k\mathbf{v}$, quindi
-il comportamento asintotico di un sistema iterato è governato dall'autovalore
-di modulo massimo (il *raggio spettrale*). Se $\rho(A)<1$ ogni vettore
-collassa a zero; se $\rho(A)>1$ diverge ogni vettore generico, cioè con
-componente non nulla lungo l'autodirezione dominante: la lettura in una riga
-dei gradienti che esplodono o svaniscono nelle reti profonde. Lo stesso
-argomento, applicato alla matrice dei link del web (resa stocastica per
+**La decomposizione ai valori singolari.** Il teorema spettrale chiede la
+simmetria, e quindi anche la quadratura. Esiste una decomposizione che non
+chiede niente, e nel resto del libro serve più spesso: ogni matrice
+$\mathbf{A}\in\mathbb{R}^{m\times n}$, rettangolare o quadrata, singolare o
+no, si scrive come
+
+$$
+\mathbf{A} = \mathbf{U}\boldsymbol{\Sigma}\mathbf{V}^\top ,
+$$
+
+con $\mathbf{U}\in\mathbb{R}^{m\times m}$ e $\mathbf{V}\in\mathbb{R}^{n\times
+n}$ ortogonali e $\boldsymbol{\Sigma}$ "diagonale" con elementi
+$\sigma_1\ge\sigma_2\ge\dots\ge 0$, i **valori singolari**. È la
+decomposizione ai valori singolari (*singular value decomposition*, SVD).
+Letta a destra-verso-sinistra dice che ogni trasformazione lineare è una
+rotazione, seguita da una dilatazione lungo assi ortogonali, seguita da
+un'altra rotazione. I due valori estremi hanno un significato immediato:
+$\sigma_1 = \max_{\lVert\mathbf{x}\rVert=1}\lVert\mathbf{A}\mathbf{x}\rVert$ è
+di quanto al massimo la matrice allunga un vettore, $\sigma_{\min}$ di quanto
+al minimo, e il **rango** è il numero dei $\sigma_i$ non nulli. Per una
+matrice simmetrica i valori singolari sono i moduli degli autovalori, ma in
+generale le due famiglie non hanno niente a che vedere. Tornerà nella sezione
+di analisi numerica (dove il numero di condizionamento è il rapporto
+$\sigma_{\max}/\sigma_{\min}$), nel capitolo sulle reti neurali (la
+"grandezza" di una Jacobiana) e in quello sui sistemi di raccomandazione
+(l'approssimazione di rango basso di una matrice di valutazioni).
+
+L'iterazione chiarisce il resto: $\mathbf{A}^k\mathbf{v} =
+\lambda^k\mathbf{v}$, quindi il comportamento asintotico di un sistema che
+applica **sempre la stessa** matrice è governato dall'autovalore di modulo
+massimo (il *raggio spettrale* $\rho(\mathbf{A})$). Se $\rho(\mathbf{A})<1$
+ogni vettore collassa a zero; se $\rho(\mathbf{A})>1$ diverge ogni vettore
+generico, cioè con componente non nulla lungo l'autodirezione dominante. Lo
+stesso argomento, applicato alla matrice dei link del web (resa stocastica per
 colonne e corretta con il *teletrasporto* del fattore di smorzamento), è il
 **PageRank**: sotto quelle ipotesi il teorema di Perron–Frobenius garantisce
 che l'autovalore $1$ sia semplice e dominante, e l'ordinamento delle pagine è
 il suo autovettore, l'unica direzione che la trasformazione lascia esattamente
 com'è.
+
+Vale la pena dire subito dove questo argomento **non** arriva, perché è il
+punto in cui viene applicato più spesso a sproposito. Il gradiente che
+attraversa una rete profonda non è $\mathbf{A}^k$: è un prodotto di matrici
+**diverse** (le Jacobiane dei singoli strati), e gli autovalori di un prodotto
+non hanno alcun rapporto con gli autovalori dei fattori. Di più: anche con una
+sola matrice, $\rho(\mathbf{A})<1$ garantisce soltanto il comportamento
+*asintotico*. Per $\mathbf{A} = \begin{pmatrix}0{,}9 & 100\\ 0 &
+0{,}9\end{pmatrix}$, che ha $\rho = 0{,}9$, un vettore unitario arriva a norma
+$387$ dopo dieci applicazioni prima di cominciare a scendere: le matrici non
+**normali** ($\mathbf{A}\mathbf{A}^\top \neq \mathbf{A}^\top\mathbf{A}$) hanno
+un transitorio che il raggio spettrale non vede, e una rete di qualche decina
+di strati vive tutta lì dentro. La grandezza giusta per i gradienti che
+esplodono o svaniscono è quindi la norma del prodotto, cioè i valori
+singolari, ed è il conto che rifà il capitolo sulle reti neurali.
 
 `````
 
@@ -318,7 +458,13 @@ il buon vecchio teorema di Pitagora: radice quadrata della somma dei quadrati
 delle componenti. La freccia $(3, 4)$, per esempio, è lunga
 $\sqrt{3^2 + 4^2} = \sqrt{25} = 5$. Ci serve soprattutto per misurare
 **quanto un modello sbaglia**: se la risposta giusta è un vettore e la
-previsione è un altro vettore, la lunghezza della loro differenza è l'errore.
+previsione è un altro vettore, si fa la loro differenza (quella voce per
+voce di poco fa) e se ne misura la lunghezza. Quel numero è l'errore.
+
+La stessa mossa dà anche la **distanza** fra due vettori qualsiasi: quanto
+sono lontani due punti è la lunghezza della freccia che va dall'uno all'altro,
+cioè la norma della loro differenza. È il conto che si fa ogni volta che si
+dice che due parole, due canzoni o due clienti "si somigliano".
 
 `````
 
@@ -333,14 +479,35 @@ $$
 
 Accanto a essa usiamo spesso la norma $\ell_1$ (somma dei valori assoluti,
 $\lVert\mathbf{x}\rVert_1=\sum_i |x_i|$), che nella regolarizzazione promuove
-soluzioni *sparse*. La distanza tra previsione $\hat{\mathbf{y}}$ e target
-$\mathbf{y}$ misurata con la norma $\ell_2$ al quadrato è la celebre loss
-dell'**errore quadratico medio**:
+soluzioni *sparse*.
+
+Da una norma si ricava una **distanza**, ed è il ponte che il resto del libro
+dà per costruito:
+
+$$
+d(\mathbf{x},\mathbf{y}) = \lVert \mathbf{x}-\mathbf{y}\rVert_2 .
+$$
+
+È ciò che si misura quando si dice che due *embedding* sono vicini, ed è una
+distanza in senso proprio: non negativa, nulla solo se $\mathbf{x}=\mathbf{y}$,
+simmetrica, e soggetta alla disuguaglianza triangolare. Il **quadrato** della
+norma, comodo perché deriva bene e toglie la radice, distanza non è:
+raddoppiando lo spostamento quadruplica, e la disuguaglianza triangolare
+salta.
+
+Proprio il quadrato è però ciò che compare nella celebre loss dell'**errore
+quadratico medio**:
 
 $$
 \mathcal{L} = \frac{1}{m}\sum_{i=1}^{m}
 \lVert \hat{\mathbf{y}}^{(i)} - \mathbf{y}^{(i)} \rVert_2^2 .
 $$
+
+(Scritta così la media è sui soli $m$ esempi. Con uscite vettoriali le
+librerie mediano anche sulle componenti: `mean_squared_error` di scikit-learn
+e `nn.MSELoss` con `reduction='mean'` dividono per $m\cdot d$, quindi il loro
+numero differisce da questo per un fattore $d$. Il minimo è lo stesso, il
+valore stampato no.)
 
 Norme e prodotti scalari sono legati da $\lVert\mathbf{x}\rVert_2^2 =
 \mathbf{x}^\top\mathbf{x}$: misurare una lunghezza è fare il prodotto scalare
@@ -350,9 +517,9 @@ di un vettore con sé stesso.
 
 ## In pratica, con NumPy
 
-In Python l'algebra lineare vive nella libreria **NumPy**, che vedremo in
-dettaglio nel capitolo su Python. Qui basti l'assaggio: le operazioni di
-sopra sono una riga ciascuna.
+In Python l'algebra lineare vive nella libreria **NumPy**, quella del capitolo
+su Python. Qui basta il richiamo: le operazioni di sopra sono una riga
+ciascuna.
 
 ```python
 import numpy as np
@@ -386,12 +553,14 @@ tutti casi della stessa operazione.
   opposti. È il conto che fa un singolo neurone.
 - Gli **autovettori** sono le venature del legno di una matrice: le direzioni
   che la trasformazione non devia, e lungo cui si limita ad allungare o
-  accorciare di un fattore fisso. Ripetuta cento volte, come in una rete
-  profonda, quella moltiplicazione si accumula: un fattore poco sopra l'uno fa
+  accorciare di un fattore fisso, l'**autovalore** $\lambda$. Ripetuta cento
+  volte quella moltiplicazione si accumula: un fattore poco sopra l'uno fa
   esplodere tutto, uno poco sotto lo fa svanire.
 - La **norma** è la lunghezza di una freccia (il teorema di Pitagora sulle sue
   componenti) e serve soprattutto a misurare l'**errore** di un modello:
-  quanto è lunga la differenza fra la risposta giusta e la previsione.
+  quanto è lunga la differenza fra la risposta giusta e la previsione. La
+  stessa lunghezza, applicata alla differenza di due vettori qualsiasi, è la
+  loro **distanza**: quanto si somigliano.
 ```
 `````
 
@@ -403,10 +572,18 @@ tutti casi della stessa operazione.
 - Il **prodotto scalare** misura l'allineamento tra due vettori ed è il cuore
   del singolo neurone: $\mathbf{w}^\top\mathbf{x}+b$.
 - Gli **autovettori** sono le direzioni che una matrice non devia
-  ($A\mathbf{v}=\lambda\mathbf{v}$), e i loro **autovalori** dicono di
-  quanto le allunga: iterati ($A^k\mathbf{v}=\lambda^k\mathbf{v}$),
-  spiegano perché i gradienti esplodono o svaniscono.
+  ($\mathbf{A}\mathbf{v}=\lambda\mathbf{v}$), e i loro **autovalori** dicono
+  di quanto le allunga. Iterando *la stessa* matrice
+  ($\mathbf{A}^k\mathbf{v}=\lambda^k\mathbf{v}$) comanda il raggio spettrale;
+  per un prodotto di matrici **diverse**, come le Jacobiane di una rete, il
+  raggio spettrale non basta e la grandezza da guardare è la norma.
+- Ogni matrice, anche rettangolare, si decompone come
+  $\mathbf{A}=\mathbf{U}\boldsymbol{\Sigma}\mathbf{V}^\top$ (**SVD**): i
+  **valori singolari** $\sigma_i$ dicono di quanto la matrice allunga al
+  massimo e al minimo, e quanti sono i non nulli è il rango.
 - La **norma** $\lVert\mathbf{x}\rVert_2=\sqrt{\mathbf{x}^\top\mathbf{x}}$
-  misura lunghezze e, soprattutto, l'**errore** di un modello.
+  misura lunghezze e, soprattutto, l'**errore** di un modello; la
+  **distanza** $\lVert\mathbf{x}-\mathbf{y}\rVert_2$ che ne discende è ciò
+  che si intende quando si dice che due embedding sono vicini.
 ```
 `````

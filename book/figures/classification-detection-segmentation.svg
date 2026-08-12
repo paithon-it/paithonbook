@@ -14,7 +14,7 @@
   <line x1="128" y1="183" x2="128" y2="200" stroke="#1A1A1A" stroke-width="2"/>
   <line x1="72" y1="160" x2="56" y2="146" stroke="#1A1A1A" stroke-width="2"/>
   <circle cx="200" cy="172" r="12" fill="none" stroke="#1A1A1A" stroke-width="2"/>
-  <text x="130" y="252" font-family="sans-serif" font-size="15" fill="#B5532C" text-anchor="middle" font-weight="bold">«cane» — 0.92</text>
+  <text x="130" y="252" font-family="sans-serif" font-size="15" fill="#B5532C" text-anchor="middle" font-weight="bold">«cane»: 0.92</text>
   <text x="130" y="274" font-family="sans-serif" font-size="12" fill="#1A1A1A" text-anchor="middle">un'etichetta per tutta l'immagine</text>
 
   <!-- Pannello 2: detection -->

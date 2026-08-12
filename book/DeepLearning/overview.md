@@ -1,4 +1,4 @@
-# Deep Learning: perche la profondita conta
+# Deep Learning: perché la profondità conta
 
 Nel 1959 due neuroscienziati, David Hubel e Torsten Wiesel
 {cite}`hubel1959receptive`, infilarono un sottile elettrodo nella corteccia
@@ -11,11 +11,12 @@ il funzionamento delle reti neurali profonde. Il deep learning, in fondo,
 riscopre la stessa idea: costruire la percezione a strati, dal semplice al
 complesso.
 
-## Feature apprese, non ingegnerizzate a mano
+## Le feature si imparano, non si scrivono a mano
 
 La differenza tra machine learning classico e deep learning non sta in una
 matematica esoterica: sta in *chi* decide quali caratteristiche dei dati
-contano.
+contano. Quelle caratteristiche, in gergo, si chiamano **feature**: sono i
+numeri che descrivono un dato e su cui il modello ragiona.
 
 `````{tab} Elementare
 
@@ -38,7 +39,7 @@ al piatto.
 
 In una pipeline classica di visione artificiale un estrattore fisso e
 progettato a mano (SIFT, HOG, filtri di Gabor) mappa l'immagine in un vettore
-di feature $\phi(X)$, su cui un classificatore $g$ viene addestrato.
+di feature $\phi(\mathbf{X})$, su cui un classificatore $g$ viene addestrato.
 L'estrattore $\phi$ è congelato: non impara nulla dai dati.
 
 Una rete profonda è invece una composizione di trasformazioni parametriche
@@ -47,8 +48,8 @@ $$
 f_\theta = f_L \circ f_{L-1} \circ \dots \circ f_1 ,
 $$
 
-dove tipicamente $f_\ell(Z) = \sigma(W_\ell Z + b_\ell)$ ha i suoi pesi
-$W_\ell$ (ma incontreremo anche strati di altra forma, come il pooling), e
+dove tipicamente $f_\ell(\mathbf{Z}) = \sigma(\mathbf{W}_\ell \mathbf{Z} + \mathbf{b}_\ell)$ ha i suoi pesi
+$\mathbf{W}_\ell$ (ma incontreremo anche strati di altra forma, come il pooling), e
 tutti i parametri $\theta$ vengono ottimizzati insieme minimizzando la loss
 $\mathcal{L}$ per retropropagazione (*end-to-end*). L'estrazione delle feature
 non è più a monte e fissa: è parte del modello e viene appresa. È ciò che si
@@ -58,8 +59,10 @@ chiama *representation learning*.
 
 ## Rappresentazioni gerarchiche: dai bordi agli oggetti
 
-Cosa impara davvero uno strato? Quando nel 2014 Zeiler e Fergus riuscirono a
-"visualizzare" ciò a cui rispondono i neuroni di una rete convoluzionale, il
+Cosa impara davvero uno strato? Quando nel 2014 Zeiler e Fergus
+{cite}`zeiler2014visualizing` riuscirono a "visualizzare" ciò a cui rispondono
+i neuroni di una **rete convoluzionale** (il tipo di rete fatto apposta per le
+immagini, di cui parla la sezione che segue), il
 risultato somigliava in modo sorprendente alla corteccia di Hubel e Wiesel: i
 primi strati reagiscono a bordi e linee orientate; gli strati intermedi a
 texture e a parti (un occhio, una ruota, la trama di un tessuto); gli ultimi
@@ -101,9 +104,9 @@ quanto più $\ell$ è profondo, perché aggrega l'output di neuroni che a loro
 volta aggregano porzioni più piccole.
 
 Formalmente, la rappresentazione allo strato $\ell$ è
-$Z^{(\ell)} = f_\ell(Z^{(\ell-1)})$, con $Z^{(0)} = X$ l'immagine di ingresso.
-Le $Z^{(\ell)}$ superficiali codificano feature locali e generiche (bordi,
-condivisi tra compiti diversi); le $Z^{(\ell)}$ profonde codificano feature
+$\mathbf{Z}^{(\ell)} = f_\ell(\mathbf{Z}^{(\ell-1)})$, con $\mathbf{Z}^{(0)} = \mathbf{X}$ l'immagine di ingresso.
+Le $\mathbf{Z}^{(\ell)}$ superficiali codificano feature locali e generiche (bordi,
+condivisi tra compiti diversi); le $\mathbf{Z}^{(\ell)}$ profonde codificano feature
 astratte e specifiche del compito (categorie di oggetti). È questa gerarchia a
 rendere così efficace il *transfer learning*: i primi strati, appresi su un
 dataset enorme, si riusano quasi invariati su problemi nuovi.
@@ -119,7 +122,12 @@ ancora più vecchia[^backprop-storia].
 Se l'algoritmo esisteva da decenni, perché il deep learning
 è esploso solo dopo il 2012? Perché servivano tre ingredienti tutti insieme:
 **dati**, **potenza di calcolo** e **algoritmi maturi**. Il momento-simbolo è
-l'autunno del 2012, la competizione ImageNet.
+l'autunno del 2012, la competizione **ImageNet**: una gara annuale in cui i
+gruppi di ricerca di mezzo mondo provavano i propri programmi sulle stesse
+fotografie, più di un milione, con lo stesso compito (dire che cosa
+c'è dentro, scegliendo fra mille categorie) e una classifica finale. Quell'anno
+la vince, con un margine mai visto prima, una rete profonda: **AlexNet**, dal
+nome del primo dei suoi autori, Alex Krizhevsky.
 
 `````{tab} Elementare
 
@@ -142,7 +150,10 @@ milioni di immagini etichettate da persone; la sua competizione annuale, la
 **ILSVRC**, ne usa un sottoinsieme di circa 1,2 milioni di immagini di
 addestramento distribuite su 1000 categorie. Nel 2012 **AlexNet** (Krizhevsky,
 Sutskever, Hinton) vince proprio la ILSVRC portando l'errore *top-5* dal 26,2%
-del miglior metodo classico al 15,3%: un salto senza precedenti.
+del miglior metodo classico al 15,3%. Il confronto va letto per quello che è:
+il 15,3% è il punteggio della sottomissione, che media le predizioni di sette
+reti; la singola rete descritta nell'articolo, quella di cui parliamo qui, si
+ferma al 18,2%, e anche così il salto è senza precedenti.
 
 I tre ingredienti, in numeri:
 
@@ -160,14 +171,19 @@ combinazione, alla scala giusta.
 
 ## Profondo, non solo largo
 
-Resta un'obiezione teorica seria. Il **teorema di approssimazione universale**
-({cite}`cybenko1989approximation`; {cite}`hornik1991approximation`) dimostra
-che basta *un solo* strato nascosto, purché abbastanza ampio e purché la
-funzione di attivazione non sia un polinomio (la condizione conta davvero: se
-lo fosse, la rete saprebbe produrre solo polinomi), per approssimare qualunque
-funzione continua, cioè per imitare, con la precisione voluta, qualunque
-regola che leghi ingressi e uscite senza salti bruschi. Se una rete "piatta" e
-larga è già universale, perché impilare tanti strati?
+Resta un'obiezione teorica seria. C'è un risultato matematico, il **teorema di
+approssimazione universale** ({cite}`cybenko1989approximation`;
+{cite}`hornik1991approximation`, che lo dimostrano per attivazioni
+rispettivamente sigmoidali e limitate; nella forma generale che copre anche la
+ReLU, {cite}`leshno1993multilayer`), il quale dice che basta *un solo* strato
+intermedio, purché lo si faccia abbastanza largo, per imitare con la precisione
+che si vuole qualunque regola che leghi ingressi e uscite senza salti bruschi.
+Una condizione c'è, ed è essenziale: la funzione che ogni neurone applica al
+proprio risultato, l'**attivazione** (la ReLU, per esempio, che azzera i numeri
+negativi e lascia passare i positivi), non deve essere un *polinomio*, cioè una
+somma di potenze come $3x^2-x+5$; se lo fosse, la rete saprebbe produrre solo
+polinomi. Se una rete "piatta" e larga è già universale, perché impilare tanti
+strati?
 
 `````{tab} Elementare
 
@@ -201,14 +217,20 @@ dove $\mathbf{x} \in [0,1]^n$ è il singolo esempio in ingresso (un vettore,
 non una matrice di dati), $\mathbf{w}_i \in \mathbb{R}^n$ è il vettore dei
 pesi del neurone $i$-esimo, $b_i$ il suo bias e $v_i$ il peso con cui
 contribuisce all'uscita.
-Il punto è che $N$, il numero di neuroni, può crescere in modo **esponenziale**.
-Esistono famiglie di funzioni rappresentabili da reti profonde con un numero di
+
+Due avvertenze sul quantificatore, che è dove il teorema promette meno di quanto
+sembri. La prima: è un risultato di **esistenza**, cioè di densità. Dice che la
+rete c'è, non che la discesa del gradiente la trovi, né quanti esempi servano
+per impararla. La seconda: il teorema da solo non dà **nessun limite** su $N$,
+il numero di neuroni; sono le stime successive a mostrare che per classi di
+funzioni fissate $N$ cresce esponenzialmente nella **dimensione dell'ingresso**,
+e che la profondità evita quella crescita. Esistono famiglie di funzioni
+rappresentabili da reti profonde con un numero di
 neuroni *polinomiale* nella profondità, ma che richiedono larghezza
 *esponenziale* se ci si limita a un solo strato {cite}`telgarsky2016benefits`.
-Montúfar e
-colleghi (2014) mostrano che il numero di regioni lineari che una rete ReLU può
-generare cresce esponenzialmente con la profondità e solo polinomialmente con
-la larghezza. Tradotto: la profondità compra efficienza espressiva. È più
+Montúfar e colleghi {cite}`montufar2014number` mostrano che il numero di
+regioni lineari che una rete ReLU può generare cresce esponenzialmente con la
+profondità e solo polinomialmente con la larghezza. Tradotto: la profondità compra efficienza espressiva. È più
 economico comporre trasformazioni che allargarne una sola.
 
 `````
@@ -226,17 +248,43 @@ model = nn.Sequential(
     nn.MaxPool2d(2),
     nn.Conv2d(32, 64, 3), nn.ReLU(),   # strati intermedi: texture e parti
     nn.MaxPool2d(2),
-    nn.Conv2d(64, 128, 3), nn.ReLU(),  # parti piu grandi, oggetti
+    nn.Conv2d(64, 128, 3), nn.ReLU(),  # parti più grandi, oggetti
     nn.AdaptiveAvgPool2d(1),           # media globale di ogni feature map
     nn.Flatten(),
     nn.Linear(128, 10),                # la classe finale (un logit per classe)
 )
 ```
 
-Ogni `nn.Conv2d` più in basso nella pila costruisce feature più astratte a
+I tre numeri dentro `nn.Conv2d(3, 32, 3)` si leggono così: quanti "fogli" di
+numeri arrivano (3, cioè rosso, verde e blu), quanti filtri diversi applicare
+(32) e quanto è larga la finestra che ciascun filtro guarda per volta (3 per 3
+pixel). L'ultima riga produce dieci numeri, uno per classe: si chiamano
+**logit**, sono punteggi grezzi, e vince il più alto (per trasformarli in
+probabilità serve un ultimo passaggio, la *softmax*). Ogni `nn.Conv2d` più in
+basso nella pila costruisce feature più astratte a
 partire da quelle dello strato precedente: la stessa scala dai bordi agli
 oggetti della {numref}`fig-gerarchia-feature`, resa in poche righe.
 
+`````{tab} Elementare
+```{admonition} Da ricordare
+:class: important
+- Nel machine learning classico è una persona a decidere quali caratteristiche
+  dei dati contano, e a scriverle nel codice. Una rete profonda se le
+  **inventa da sola**, partendo dai dati grezzi.
+- Le costruisce **a strati**, dal semplice al complesso: prima bordi e linee,
+  poi pezzi riconoscibili (un occhio, una ruota), infine l'oggetto intero.
+- Non è esplosa prima del 2012 perché servivano tre cose insieme, come la
+  legna, l'ossigeno e la scintilla: milioni di **fotografie già etichettate**,
+  **schede grafiche** abbastanza veloci e gli **accorgimenti** giusti per far
+  imparare la rete. Nel 2012 c'erano tutte e tre, e alla gara di ImageNet vinse
+  AlexNet.
+- Uno strato solo, se lo si facesse enorme, in teoria basterebbe. Ma la
+  profondità arriva allo stesso risultato con molti meno neuroni, perché
+  **riusa** il lavoro già fatto invece di rifarlo ogni volta.
+```
+`````
+
+`````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
 - Il deep learning **apprende** le feature dai dati grezzi, invece di
@@ -247,8 +295,10 @@ oggetti della {numref}`fig-gerarchia-feature`, resa in poche righe.
   algoritmi**, non a una singola idea nuova.
 - Una rete larga e piatta è universale in teoria (con un'attivazione non
   polinomiale), ma la **profondità** ottiene la stessa espressività con molti
-  meno neuroni: comporre conviene.
+  meno neuroni: comporre conviene. L'universalità però è un'esistenza, non
+  un'apprendibilità.
 ```
+`````
 
 [^backprop-storia]: Il conto che sta sotto la retropropagazione (partire
     dall'errore in fondo alla rete e risalire all'indietro, strato per strato,

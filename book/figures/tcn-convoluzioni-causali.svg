@@ -77,7 +77,7 @@
 
   <!-- uscita (terracotta) -->
   <circle class="out" cx="685" cy="96" r="16"/>
-  <text class="pred" x="685" y="68">previsione &#375;</text>
+  <text class="pred" x="685" y="68">previsione di x</text>
 
   <!-- etichette dilatazione (a destra di ogni fascio di archi) -->
   <text class="dlbl" x="732" y="146">d = 4</text>

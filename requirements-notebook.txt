@@ -23,6 +23,18 @@
 # --- il framework del libro (ruota CPU: in CI non c'è nessuna GPU) ---
 torch==2.13.0
 torchvision==0.28.0
+# `torchaudio` serve a `SpeechRecognition/sintesi-vocale.md` (Tacotron 2 +
+# WaveRNN) ed era l'unica dipendenza del libro non dichiarata qui. Passava
+# inosservata per una doppia cecità: quel blocco è `pt-lento`, che la verifica
+# salta, e il capitolo sta sotto le tre celle, quindi un notebook compagno non
+# esiste nemmeno.
+#
+# Il `+cpu` è esplicito e NON è ridondante. Con il solo `--extra-index-url` del
+# workflow, `torchaudio==2.11.0` si risolve sulla ruota di PyPI, che è legata a
+# CUDA e all'import muore con `libcudart.so.13: cannot open shared object
+# file`. Provato: senza il suffisso non parte, con il suffisso parte. Per
+# `torch` il problema non si pone perché lì la ruota di PyPI è già senza CUDA.
+torchaudio==2.11.0+cpu
 
 # --- calcolo, dati, grafici ---
 numpy==2.4.6

@@ -1,6 +1,6 @@
 <svg viewBox="0 0 720 340" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Confronto tra attenzione bidirezionale di BERT e attenzione causale di GPT">
   <rect x="0" y="0" width="720" height="340" fill="#F8F5EE"/>
-  <text x="180" y="36" text-anchor="middle" font-family="sans-serif" font-size="18" font-weight="bold" fill="#1A1A1A">BERT — encoder</text>
+  <text x="180" y="36" text-anchor="middle" font-family="sans-serif" font-size="18" font-weight="bold" fill="#1A1A1A">BERT: encoder</text>
   <text x="180" y="56" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">ogni token vede tutti gli altri</text>
   <g stroke="#2D5A5C" stroke-width="1.5" fill="none">
     <path d="M 80 200 C 110 140, 190 140, 220 200"/>
@@ -21,7 +21,7 @@
     <rect x="275" y="200" width="50" height="40" rx="6" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="1.5"/>
     <text x="300" y="225" fill="#F8F5EE">sul</text>
   </g>
-  <text x="540" y="36" text-anchor="middle" font-family="sans-serif" font-size="18" font-weight="bold" fill="#1A1A1A">GPT — decoder</text>
+  <text x="540" y="36" text-anchor="middle" font-family="sans-serif" font-size="18" font-weight="bold" fill="#1A1A1A">GPT: decoder</text>
   <text x="540" y="56" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">ogni token vede solo il passato</text>
   <g stroke="#B5532C" stroke-width="1.5" fill="none">
     <path d="M 440 200 C 470 140, 550 140, 580 200"/>

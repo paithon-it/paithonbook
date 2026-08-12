@@ -13,9 +13,12 @@ parole.
 :alt: "Schema annotato di un blocco Transformer: l'ingresso attraversa la multi-head attention, si somma a sé stesso attraverso una connessione residua e passa per una normalizzazione; il risultato attraversa la rete feed-forward, con una seconda connessione residua e una seconda normalizzazione, prima di uscire verso il blocco successivo."
 :width: 62%
 
-Il blocco che si ripete. Attenzione e rete feed-forward sono i due mestieri;
-le connessioni residue e le normalizzazioni sono l'impalcatura che permette di
-impilarne decine senza che l'addestramento si rompa.
+Il blocco che si ripete, sempre uguale a sé stesso. I due mestieri sono la
+riunione (l'attenzione, dove le parole si scambiano informazioni) e il lavoro
+individuale (la **rete feed-forward**, dove ogni parola rielabora per conto
+suo); attorno a entrambi c'è l'impalcatura della sezione precedente, cioè la
+scorciatoia (**connessione residua**) e la taratura (**normalizzazione**), che
+permette di impilarne decine senza che l'addestramento si rompa.
 ```
 
 Conviene fissare {numref}`fig-blocco-transformer` prima di scendere nei
@@ -48,7 +51,8 @@ $d_{\text{model}} = 512$), ciascuno con due sotto-strati:
 
 Ogni sotto-strato è avvolto da residual connection e layer normalization nella
 forma Post-LN dell'articolo originale,
-$\text{LayerNorm}(x + \text{SubLayer}(x))$, come visto nella sezione
+$\text{LayerNorm}(\mathbf{x} + \text{SubLayer}(\mathbf{x}))$, come visto nella
+sezione
 precedente (dove si è detto anche perché i modelli successivi preferiscono il
 Pre-LN). Si noti la divisione dei ruoli: l'attenzione *mescola*
 informazione tra le posizioni, la FFN la *trasforma* posizione per posizione;
@@ -81,9 +85,15 @@ Anche il decoder ha $N = 6$ strati, ma con tre sotto-strati ciascuno:
    dell'encoder, è qui che la generazione "consulta" la frase di partenza;
 3. **Feed-Forward Network**, identica a quella dell'encoder.
 
-In generazione il decoder produce un token alla volta: a ogni passo
-l'ultimo strato proietta sulla dimensione del vocabolario e una softmax dà la
-distribuzione del token successivo, che rientra come input al passo dopo.
+In generazione il decoder produce un token alla volta: a valle della pila, una
+proiezione lineare sul vocabolario (nel paper con i pesi legati a quelli
+dell'embedding, §3.4) e una softmax danno la distribuzione del token
+successivo. Da quella distribuzione si sceglie **un** token, ed è il suo
+embedding a rientrare come input al passo dopo: non la distribuzione, che è un
+vettore di $|V|$ probabilità e non ha modo di entrare in un ingresso fatto per
+un token. Come si sceglie (il più probabile, uno estratto a sorte, o il token
+vero durante l'addestramento, che è il *teacher forcing*) è una questione a sé,
+e la sezione sui grandi modelli linguistici la affronta per intero.
 `````
 
 ```{figure} ../figures/attenzione-mascherata.gif
@@ -91,23 +101,26 @@ distribuzione del token successivo, che rientra come input al passo dopo.
 :alt: Animazione di una matrice di attenzione 6x6 sulla frase «Il gatto nero salta sul muro». Prima tutte le celle si riempiono di punteggi grigi; poi una scala separa il triangolo superiore, che si spegne perché posto a meno infinito; infine il triangolo inferiore si ricolora con i pesi normalizzati dalla softmax.
 :width: 85%
 
-La maschera causale al lavoro sulla matrice $QK^\top/\sqrt{d_k}$: i punteggi
-verso il futuro vengono posti a $-\infty$, così la softmax li annulla e ogni
-riga ridistribuisce tutto il peso su ciò che precede.
+La maschera causale al lavoro. Ogni riga della griglia è una parola che guarda
+tutte le altre; le caselle verso il futuro si spengono, e ogni riga
+ridistribuisce tutto il colore dell'evidenziatore su ciò che precede.
 ```
 
-Il dettaglio da non perdere nella {numref}`fig-attenzione-mascherata` è che la
-maschera agisce **prima** della softmax, non dopo: azzerare i pesi a valle
-lascerebbe righe che non sommano a uno, mentre un $-\infty$ a monte esce dalla
-softmax come uno zero esatto e la normalizzazione resta corretta.
+Il dettaglio da non perdere nella {numref}`fig-attenzione-mascherata` è che le
+caselle si spengono **prima** che i punteggi diventino intensità, non dopo:
+cancellare le intensità già calcolate lascerebbe righe che non sommano più a
+uno, cioè evidenziature con un pezzo di colore mancante. Spegnere i punteggi a
+monte (tecnicamente: ponendoli a $-\infty$ prima della softmax) li fa uscire
+come zeri esatti, e la ridistribuzione resta corretta.
 
 ## Positional encoding: dare un ordine alle parole
 
-C'è un problema nascosto. L'attenzione tratta la frase come un *insieme* di
+C'è un problema nascosto. L'attenzione tratta la frase come un *sacchetto* di
 parole: se mescolassi "il gatto morde il cane" in "il cane morde il gatto", i
-prodotti scalari tra le parole non cambierebbero, e il significato sì. Le RNN
-l'ordine ce l'avevano gratis (leggevano in fila); il Transformer deve
-aggiungerlo esplicitamente.
+confronti sarebbero gli stessi fra le stesse parole, quindi gli stessi
+punteggi e la stessa evidenziatura. Per l'attenzione le due frasi sono
+identiche; per chi legge sono opposte. Le RNN l'ordine ce l'avevano gratis
+(leggevano in fila); il Transformer deve aggiungerlo esplicitamente.
 
 ```{figure} ../figures/positional-encoding.svg
 :name: fig-positional-encoding
@@ -119,18 +132,23 @@ lette insieme in una colonna danno a ogni posizione una firma diversa da tutte
 le altre.
 ```
 
-Il motivo di usare tante frequenze invece di un semplice contatore si legge in
-{numref}`fig-positional-encoding`: le onde lente distinguono le regioni
-lontane della frase, quelle veloci distinguono i vicini immediati. Una sola
-scala non saprebbe fare entrambe le cose.
+La firma della posizione c'è, ma non è scritta come un semplice contatore (1,
+2, 3, …), ed è quello che mostra {numref}`fig-positional-encoding`: è fatta di
+più orologi che girano a velocità diverse, come le lancette delle ore, dei
+minuti e dei secondi. Le lancette lente dicono in quale parte della frase
+siamo, quelle veloci distinguono i vicini immediati, e lette tutte insieme
+danno a ogni posizione una combinazione che non si ripete. Un contatore solo
+avrebbe una scala sola, e con una scala sola o si distinguono i lontani o si
+distinguono i vicini, non entrambi.
 
 `````{tab} Elementare
 La soluzione è dare a ogni parola un "posto numerato", come a teatro: prima di
 entrare nella rete, alla rappresentazione di ogni parola viene sommata una
-piccola firma numerica che dice "sono la parola in posizione 1", "in posizione
-2", e così via. Così "gatto" in prima posizione e "gatto" in quinta posizione
-non sono più identici: stessa parola, poltrona diversa, e la rete può
-accorgersi che l'ordine conta.
+piccola firma che dice "sono la parola in prima posizione", "in seconda", e
+così via. Il numero del posto non è scritto in cifre, è scritto con le
+lancette di cui parla la figura qui sopra, ma il senso è quello: "gatto" in
+prima posizione e "gatto" in quinta non sono più identici. Stessa parola,
+poltrona diversa, e la rete può accorgersi che l'ordine conta.
 `````
 
 `````{tab} Superiore
@@ -146,8 +164,12 @@ $$
 dove $pos$ è la posizione del token e $i$ indicizza le coordinate del vettore.
 Ogni posizione riceve così una firma unica, sommata all'embedding del token;
 la scelta sinusoidale fa sì che la firma della posizione $pos + k$ sia una
-trasformazione lineare di quella di $pos$, il che permette alla rete di
-rappresentare facilmente le distanze *relative*. Molti modelli successivi
+trasformazione lineare di quella di $pos$ (una rotazione a blocchi di angolo
+$k\omega_i$, e questo è un teorema, non un'opinione). Da lì gli autori
+*ipotizzarono* che la rete potesse rappresentare facilmente le distanze
+*relative*: è una congettura, e va detto che la loro stessa ablazione la
+indebolisce, perché con positional embedding **appresi** i risultati sono
+«quasi identici» (Tabella 3, riga E, dell'articolo). Molti modelli successivi
 usano invece encoding **appresi** (BERT) o codifiche relative più sofisticate
 (RoPE nei modelli recenti): il principio (iniettare l'ordine, perché
 l'attenzione da sola è permutation-invariant) resta lo stesso.
@@ -170,15 +192,20 @@ La FFN applica a ogni posizione, separatamente e con gli stessi pesi, due
 trasformazioni lineari con una ReLU in mezzo:
 
 $$
-\text{FFN}(x) = \max(0,\, xW_1 + b_1)\,W_2 + b_2
+\text{FFN}(\mathbf{x}) = \max(0,\, \mathbf{x}\mathbf{W}_1 + \mathbf{b}_1)\,
+\mathbf{W}_2 + \mathbf{b}_2
 $$
 
 Nel modello base la dimensione interna è $d_{ff} = 2048$, quattro volte
 $d_{\text{model}} = 512$: la FFN espande, applica la non linearità,
 ricomprime. Pur essendo la parte concettualmente più semplice, contiene circa
-due terzi dei parametri di ogni strato (nei grandi modelli linguistici è dove
-risiede gran parte della capacità) e una linea di ricerca la interpreta come
-una memoria associativa di conoscenze apprese durante l'addestramento.
+due terzi dei parametri di uno strato di **encoder** ($2\,d\,d_{ff} = 8d^2$
+contro i $4d^2$ delle quattro proiezioni dell'attenzione); negli strati di
+decoder, che hanno una seconda attenzione, la quota scende a metà. Nei grandi
+modelli linguistici, che sono decoder-only e quindi senza cross-attention, si
+torna ai due terzi, ed è lì che risiede gran parte della capacità. Una linea di
+ricerca interpreta la FFN come una memoria associativa di conoscenze apprese
+durante l'addestramento.
 
 Questa è però la FFN del **paper originale**. I modelli successivi ne hanno
 cambiato la non linearità: prima la **GELU**, una ReLU ammorbidita (BERT,
@@ -186,11 +213,20 @@ GPT-2), poi le varianti *gated* e in particolare **SwiGLU**, oggi lo standard
 di fatto:
 
 $$
-\text{FFN}_{\text{SwiGLU}}(x) = \big(\mathrm{Swish}(xW_1) \odot xV\big)\,W_2 ,
+\text{FFN}_{\text{SwiGLU}}(\mathbf{x}) =
+\big(\mathrm{Swish}(\mathbf{x}\mathbf{W}_1) \odot \mathbf{x}\mathbf{W}_3\big)\,
+\mathbf{W}_2 ,
 \qquad \mathrm{Swish}(z) = z\,\sigma(z).
 $$
 
-Il ramo $xV$ fa da **cancello**: moltiplicando elemento per elemento, decide
+dove $\mathbf{W}_1, \mathbf{W}_3 \in \mathbb{R}^{d \times d_{ff}}$ e
+$\mathbf{W}_2 \in \mathbb{R}^{d_{ff} \times d}$, e $\odot$ è il prodotto
+elemento per elemento. (Shazeer chiama $\mathbf{V}$ la matrice del cancello;
+qui la lettera è già impegnata dai *value* dell'attenzione, e riusarla sarebbe
+una trappola.)
+
+Il ramo $\mathbf{x}\mathbf{W}_3$ fa da **cancello**: moltiplicando elemento per
+elemento, decide
 quanto lasciar passare di ciascuna unità del ramo principale. Le matrici
 diventano tre invece di due, e per non gonfiare il conteggio dei parametri si
 riduce la dimensione interna da $4d$ a circa $\tfrac{8}{3}d$: così
@@ -198,6 +234,16 @@ $3 \cdot d \cdot \tfrac{8}{3}d = 8d^2$, esattamente quanto $2 \cdot d \cdot 4d$
 della versione classica. Stessi parametri, risultati migliori a parità di
 addestramento.
 `````
+
+Con la feed-forward il giro è completo, e vale la pena guardare indietro un
+momento. In questa pagina non è comparso nessun ingrediente che non fosse già
+sul tavolo: c'è l'attenzione della sezione precedente, c'è una piccola rete di
+neuroni come quelle del capitolo sulle reti neurali, ci sono una scorciatoia e
+una taratura attorno a ciascuna delle due. Il Transformer non è un pezzo nuovo,
+è un modo di impilare quei quattro, sempre nello stesso ordine, per sei piani
+e poi per sessanta. È il motivo per cui l'architettura ha retto dieci anni di
+ingrandimenti senza cambiare forma: non c'era una forma da cambiare, c'era una
+sequenza da ripetere.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare

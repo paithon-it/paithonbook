@@ -11,12 +11,27 @@ misurato onde gravitazionali: hanno costruito reti neurali.
 
 La risposta della giuria è seria, ed è la porta d'ingresso di questo capitolo.
 Le reti premiate non *assomigliano* a sistemi fisici: si comportano
-esattamente come tali. Possiedono una grandezza chiamata **energia**, definita
-con la stessa matematica dei materiali magnetici, e la loro dinamica la fa
-scendere, come una pallina che rotola verso il fondo di una valle. In questo
-quadro *ricordare* significa scivolare in un minimo di energia, e *imparare*
-significa scolpire il paesaggio: scavare valli nei punti dove vogliamo che la
-rete vada a finire.
+esattamente come tali. A ogni configurazione dei loro neuroni è associato un
+numero, e quel numero si chiama **energia**.
+
+Conviene fermarsi subito su quella parola, perché è una parola presa in
+prestito. Qui «energia» non è la corrente che accende una lampadina né le
+calorie di un piatto di pasta: non è una sostanza che la rete possiede e
+consuma. È un **voto**, un numero che il modello dà a ogni risposta possibile:
+basso se la risposta è sensata, alto se è assurda. Poteva chiamarsi punteggio,
+o stranezza, o altezza. Si chiama energia per due motivi: la formula che lo
+calcola è, lettera per lettera, quella con cui i fisici descrivono una
+calamita, e quella parola porta con sé un'immagine comoda, le risposte buone
+come il fondo di una valle.
+
+E c'è una ragione precisa per cui il fondo, e non la cima. Una pallina, nel
+mondo, cade: nei punti bassi ci va da sola, mentre in cima a un monte non ci
+sta ferma nessuno. Se mettiamo le risposte buone in basso non dobbiamo
+*cercarle*, basta lasciar rotolare; se le mettessimo in alto qualcuno dovrebbe
+spingere, e quel qualcuno saremmo noi. È qui la furbizia di tutto il capitolo:
+la dinamica di queste reti fa scendere l'energia, quindi *ricordare* significa
+scivolare in un minimo, e *imparare* significa scolpire il paesaggio, scavare
+valli nei punti dove vogliamo che la rete vada a finire.
 
 Quarant'anni dopo quelle reti, il linguaggio dell'energia non è un pezzo da
 museo. È la lingua in cui è scritta la proposta di Yann LeCun per l'AI che
@@ -31,29 +46,38 @@ a una domanda senza essere costretti a rispondere, insieme, a tutte le altre.
 :alt: "Un paesaggio di energia con più valli di profondità diversa. Una pallina che segue soltanto la discesa resta intrappolata nella prima valle che incontra, poco profonda. Una traiettoria tratteggiata mostra invece un percorso che accetta di risalire ogni tanto e riesce così a raggiungere la valle più profonda."
 :width: 92%
 
-Il paesaggio che dà il nome al capitolo. Se la plausibilità è un'altitudine,
-cercare la risposta migliore diventa un problema di esplorazione, e chi scende
-soltanto si ferma presto.
+Il paesaggio che dà il nome al capitolo: in basso le risposte sensate, in alto
+quelle assurde. Chi scende soltanto (nel disegno, *hill climbing*) si ferma
+nella conca più vicina, e quando le conche sono i ricordi è esattamente quello
+che si vuole; chi ogni tanto accetta di risalire (*simulated annealing*, la
+ricottura simulata) può cambiare valle. Sono due mosse per due problemi
+diversi, e il capitolo le incontra in quest'ordine.
 ```
 
-Il percorso tratteggiato di {numref}`fig-paesaggio-energia` anticipa una
-differenza di mentalità che attraversa tutto il capitolo. Dove i modelli visti
-finora *ottimizzano*, questi **campionano**: accettano di peggiorare per un
-tratto, perché è l'unico modo di uscire da una valle e vederne un'altra.
+La seconda mossa di {numref}`fig-paesaggio-energia`, quella che accetta di
+risalire, anticipa una differenza di mentalità che attraversa tutto il
+capitolo. Dove i modelli visti finora *ottimizzano* (cercano la risposta
+migliore e si fermano lì), questi
+**campionano**: ne producono una alla volta, pescandola con la frequenza
+giusta, e per riuscirci accettano di peggiorare per un tratto, perché è
+l'unico modo di uscire da una valle e vederne un'altra.
 
 Un modello probabilistico, per dire quanto è verosimile una risposta, deve
 tenere il conto di tutte le risposte possibili: le probabilità sommano a uno,
 e quell'uno è un vincolo globale. Un modello a energia rinuncia al vincolo.
-Assegna a ogni configurazione un numero (l'energia) e si limita a pretendere
-che le configurazioni *plausibili* stiano in basso e le altre in alto. Nessuna
+Assegna a ogni **configurazione** (cioè a ogni risposta possibile: un'immagine,
+una frase, uno stato della rete) un numero, l'energia, e si limita a pretendere
+che le configurazioni sensate stiano in basso e le altre in alto. Nessuna
 somma da chiudere, nessun totale da rispettare: solo un paesaggio.
 
 `````{tab} Elementare
 
 Immagina una carta geografica in rilievo, con valli e montagne. Ogni punto
 della carta è una risposta possibile alla tua domanda: una faccia, una frase,
-il fotogramma che verrà. L'altezza dice quanto quella risposta è insensata:
-le risposte buone stanno nelle valli, quelle assurde in cima ai monti.
+il fotogramma che verrà. L'altezza di quel punto *è* l'energia di cui sopra, e
+dice quanto la risposta è insensata: le risposte buone stanno nelle valli,
+quelle assurde in cima ai monti. Da qui in avanti, ogni volta che leggi
+«energia», puoi leggere «altezza sulla carta»: sono la stessa cosa.
 Rispondere significa lasciar rotolare una pallina e guardare dove si ferma;
 imparare significa scavare il paesaggio finché le valli non stanno nei punti
 giusti.
@@ -73,33 +97,33 @@ rispondere a una domanda locale.
 `````{tab} Superiore
 
 Un modello a energia (*energy-based model*, EBM) è una funzione scalare
-$E_\theta(x)$ (o $E_\theta(x, y)$ quando le variabili osservate $x$ e quelle
+$E_\theta(\mathbf{x})$ (o $E_\theta(\mathbf{x}, y)$ quando le variabili osservate $\mathbf{x}$ e quelle
 da predire $y$ vanno distinte) con parametri $\theta$: bassa dove i dati sono
 plausibili, alta altrove. L'inferenza è un'ottimizzazione,
 
 $$
-\hat{y} = \arg\min_{y \in \mathcal{Y}} E_\theta(x, y),
+\hat{y} = \arg\min_{y \in \mathcal{Y}} E_\theta(\mathbf{x}, y),
 $$
 
 dove $\hat{y}$ è la risposta predetta e $\mathcal{Y}$ l'insieme delle
 risposte ammissibili: nessuna somma su $\mathcal{Y}$, solo una ricerca del
 minimo.
 
-Il legame con la probabilità esiste, ed è la distribuzione di Gibbs–Boltzmann:
+Il legame con la probabilità esiste, ed è la distribuzione di Boltzmann–Gibbs:
 
 $$
-p_\theta(x) = \frac{e^{-E_\theta(x)}}{Z(\theta)},
+p_\theta(\mathbf{x}) = \frac{e^{-E_\theta(\mathbf{x})}}{Z(\theta)},
 \qquad
-Z(\theta) = \int e^{-E_\theta(x')}\, dx',
+Z(\theta) = \int e^{-E_\theta(\mathbf{x}')}\, d\mathbf{x}',
 $$
 
 dove $Z(\theta)$ è la **funzione di partizione**, l'integrale (o la somma, nel
 caso discreto) su *tutto* lo spazio delle configurazioni. Ogni energia per
 cui quell'integrale è finito definisce una densità, e ogni densità
 strettamente positiva si riscrive come
-energia, $E_\theta(x) = -\log p_\theta(x) + \text{cost.}$: le due descrizioni
+energia, $E_\theta(\mathbf{x}) = -\log p_\theta(\mathbf{x}) + \text{cost.}$: le due descrizioni
 sono equivalenti *sulla carta*. Non lo sono nei conti. $Z(\theta)$ è il
-termine che nessuno sa calcolare quando $x$ è un'immagine, e metà di questo
+termine che nessuno sa calcolare quando $\mathbf{x}$ è un'immagine, e metà di questo
 capitolo è dedicata a ciò che si può fare senza di lui, e all'osservazione,
 tutt'altro che ovvia, che moltissimi compiti non ne hanno mai avuto bisogno.
 
@@ -113,16 +137,16 @@ lo si incontra un pezzo per volta non lo si riconosce.
 Prendiamo i modelli di diffusione del capitolo precedente. Generano partendo
 da un'immagine tutta sporca di rumore e pulendola un poco alla volta, e ogni
 passo di pulitura ha il suo paesaggio: all'inizio liscio, con poche valli
-larghe, poi via via più dettagliato. La grandezza che quei modelli imparano si
-chiama *score* (il gradiente della log-densità al livello di rumore $t$) ed è
-esattamente $-\nabla_x E_t(x)$: la pendenza del paesaggio di energia di quel
-passo. Generare per denoising progressivo *è* scendere lungo quella
-successione di paesaggi.
+larghe, poi via via più dettagliato. Quello che quei modelli imparano, punto
+per punto, è la **pendenza** di quei paesaggi: da che parte si scende e quanto
+ripido. Ha un nome tecnico, *score*, ed è la pendenza del paesaggio di energia
+di quel passo. Ripulire un'immagine un poco alla volta *è* scendere lungo
+quella successione di paesaggi.
 
-Le architetture JEPA del prossimo capitolo sono energie non normalizzate che
-giudicano la compatibilità fra un pezzo di mondo osservato e uno da predire.
-Le reti di Hopfield «moderne» hanno una regola di aggiornamento che coincide,
-formula alla mano, con l'attenzione dei Transformer
+Le architetture JEPA del prossimo capitolo sono energie che nessuno ha mai
+trasformato in percentuali: giudicano quanto un pezzo di mondo osservato e uno
+da predire stiano bene insieme. Le reti di Hopfield «moderne» richiamano un
+ricordo con lo stesso conto con cui i Transformer prestano attenzione
 {cite}`ramsauer2021hopfield`. E il programma che LeCun ripete da anni in fondo
 alle sue conferenze contiene, come seconda delle quattro rinunce, «abbandonare
 il modello probabilistico in favore dei modelli a energia»
@@ -142,19 +166,24 @@ trasforma il paesaggio in una distribuzione di probabilità e incontra per la
 prima volta il muro: la funzione di partizione.
 
 La terza tappa è quel muro. **Oltre la partizione** mette in fila le tre
-strade che l'hanno aggirato (campionare, con MCMC e dinamica di Langevin;
-stimare senza normalizzare, con lo *score matching*
-{cite}`hyvarinen2005estimation`, la sua forma denoising
-{cite}`vincent2011connection`, e la stima contrastiva col rumore
-{cite}`gutmann2010noise`), e mostra come la seconda sia finita, un decennio
-dopo, dentro i modelli di diffusione.
+strade che l'hanno aggirato: mandare esploratori a caso nel paesaggio e
+accontentarsi di quello che riportano (il campionamento, con la dinamica di
+Langevin); rinunciare alle percentuali e imparare soltanto la pendenza (lo
+*score matching* {cite}`hyvarinen2005estimation` e la sua forma denoising
+{cite}`vincent2011connection`); oppure cambiare domanda, e chiedere «questo
+viene dai dati o l'ho fabbricato io?» (la stima contrastiva col rumore
+{cite}`gutmann2010noise`). La seconda strada è quella che, un decennio dopo, è
+finita dentro i modelli di diffusione. I nomi tecnici sono qui perché tu li
+riconosca quando torneranno, non perché tu li sappia già: ciascuno ha la sua
+sezione.
 
 La quarta tappa è il gesto di LeCun: il tutorial del 2006
 {cite}`lecun2006tutorial` che rilegge quasi ogni modello di apprendimento come
-una funzione di **compatibilità** $E(x, y)$, con la sua promessa (niente $Z$)
-e il suo pericolo (il collasso). L'ultima guarda al presente: gli EBM
-addestrati con Langevin sulle immagini {cite}`du2019implicit`, il
-classificatore che era un modello a energia senza saperlo
+un giudizio di **compatibilità** fra una domanda e una risposta, con la sua
+promessa (niente misura del continente) e il suo pericolo (il collasso).
+L'ultima guarda al presente: i modelli a energia addestrati sulle immagini
+vere {cite}`du2019implicit`, il classificatore che era un modello a energia
+senza saperlo
 {cite}`grathwohl2020your`, e le quattro rinunce con cui LeCun chiude le sue
 conferenze, discusse per quello che sono: un programma di ricerca, non un
 verdetto.
@@ -175,8 +204,9 @@ verdetto.
 - Il **premio Nobel per la fisica del 2024** a Hopfield e Hinton ha ricordato
   a tutti che questo modo di ragionare non se n'è mai andato: i generatori di
   immagini del capitolo precedente ripuliscono il rumore seguendo la pendenza
-  di un paesaggio, e le reti di Hopfield di oggi fanno, con altri nomi, quello
-  che fa l'attenzione dei Transformer.
+  di un paesaggio, e le reti di Hopfield di oggi richiamano un ricordo con lo
+  stesso conto con cui i modelli di linguaggio decidono a quali parole
+  guardare.
 - Nelle prossime pagine: la memoria che si ripara da sola, le reti che
   imparano scaldandosi e raffreddandosi, i modi di girare intorno al conto
   impossibile, e i paesaggi che si usano oggi.
@@ -190,15 +220,16 @@ verdetto.
   plausibile, alto se no) e risponde cercando il minimo:
   $\hat{y} = \arg\min_y E_\theta(\mathbf{x}, y)$. Niente probabilità da far
   sommare a uno.
-- Energia e probabilità sono legate dalla distribuzione di Gibbs–Boltzmann,
+- Energia e probabilità sono legate dalla distribuzione di Boltzmann–Gibbs,
   $p_\theta(\mathbf{x}) = e^{-E_\theta(\mathbf{x})}/Z(\theta)$. Il ponte si
   paga con la **funzione di partizione** $Z(\theta)$, intrattabile in alta
   dimensione: è il personaggio contro cui si scontra metà del capitolo.
 - Il premio **Nobel per la fisica 2024** a Hopfield e Hinton ha riportato
   alla luce un filone che non se n'era mai andato: lo *score* della
   diffusione è $-\nabla_{\mathbf{x}} E_t$, una pendenza per ogni livello di
-  rumore; la JEPA è un'energia non normalizzata; le Hopfield moderne sono
-  l'attenzione dei Transformer.
+  rumore; la JEPA è un'energia non normalizzata; l'aggiornamento delle Hopfield
+  moderne è la *scaled dot-product attention*, a meno della proiezione dei
+  value.
 - Nel resto del capitolo: memoria associativa, macchine di Boltzmann e
   contrastive divergence, i modi di aggirare $Z$, la cornice
   dell'*energy-based learning* e i modelli a energia di oggi.

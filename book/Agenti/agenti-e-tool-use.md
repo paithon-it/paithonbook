@@ -17,20 +17,24 @@ chiamiamo **agente**: un modello che non si limita a rispondere, ma *osserva*,
 *decide* e *agisce*, in un ciclo, finché il compito non è chiuso.
 
 Costruiamo su terreno noto. Nel capitolo sui Transformer abbiamo visto un
-modello che, dopo il pre-addestramento, *completa* il testo; che il
-post-training (l'instruction tuning in particolare) lo ha reso capace di
-*eseguire* una consegna invece di limitarsi a proseguirla; e che il prompt è
-diventato un'interfaccia di programmazione in linguaggio naturale, potente e
-fragile insieme. Un agente è il passo successivo: quello stesso modello, messo
-dentro un anello di controllo, con strumenti a portata di mano e il permesso
-di usarli.
+modello che, letta una montagna di testo, impara a *completarlo*; che una
+seconda fase di addestramento su esempi di consegne svolte lo ha reso capace
+di *eseguire* una richiesta invece di limitarsi a proseguirla; e che il
+**prompt** (il foglietto di istruzioni che si scrive al modello prima di
+lasciarlo rispondere) è diventato il modo in cui gli si dice cosa fare:
+potente e fragile insieme, perché una parola diversa cambia il risultato. Un
+agente è il passo successivo: quello stesso modello, messo dentro un anello di
+controllo, con strumenti a portata di mano e il permesso di usarli.
 
 ## Dare le mani al modello: il tool use
 
 L'idea tecnica ha un nome poco poetico (**function calling**, «chiamata di
 funzione») e un funzionamento sorprendentemente semplice. Diamo al modello,
 insieme al prompt, un catalogo di strumenti disponibili: per ognuno un nome,
-una descrizione a parole di cosa fa e la lista degli argomenti che accetta.
+una descrizione a parole di cosa fa e la lista di cosa bisogna infilarci
+dentro perché funzioni, che in gergo si chiamano gli **argomenti** (per una
+calcolatrice, il conto da fare; per una ricerca, le parole da cercare: niente
+a che vedere con gli argomenti di cui si discute).
 Quando il modello ritiene che serva uno strumento, non risponde con del testo
 per l'utente: emette una **richiesta strutturata** («chiama `calcola` con
 argomento `"4831 * 7092"`»). Il sistema che ospita il modello intercetta la
@@ -47,26 +51,38 @@ l'esecuzione resta nel codice di chi lo ospita. I passi 1 e 2 possono
 ripetersi più volte prima che arrivi la risposta finale.
 ```
 
-La divisione dei compiti che si vede in {numref}`fig-function-calling` è la
+Le due etichette al centro di {numref}`fig-function-calling` sono i nomi che
+si usano in gergo per i due messaggi: `tool_use` è «chiedo di usare questo
+attrezzo, con dentro queste cose», `tool_result` è «ecco cosa ha risposto
+l'attrezzo». La divisione dei compiti che si vede nel disegno è la
 ragione per cui il tool use è insieme potente e governabile: il modello
 propone, il codice dispone. Chi ospita il modello decide quali funzioni
 esistono, le valida prima di eseguirle e può rifiutarsi; il modello non ha mai
 in mano l'esecuzione, solo la richiesta.
 
+Scrivere a mano il catalogo, sistema per sistema, funziona finché i sistemi
+sono due o tre. Da qui nasce l'idea di un **protocollo comune**, cioè di una
+lingua unica con cui chiedere a qualunque sistema esterno «che strumenti hai?»
+e «esegui questo». Quello che si è diffuso si chiama **MCP** (*Model Context
+Protocol*, «protocollo per il contesto del modello»), e la sua architettura è
+in {numref}`fig-mcp`.
+
 ```{figure} ../figures/mcp-spiegato.svg
 :name: fig-mcp
-:alt: "Architettura a tre livelli: un host che contiene il modello e due client; ciascun client parla, tramite un protocollo comune, con un server distinto; ogni server espone i propri strumenti e le proprie risorse verso ciò che gestisce, un filesystem in un caso e un database nell'altro."
+:alt: "Architettura a tre livelli: un host, cioè l'applicazione che contiene il modello, tiene al proprio interno due client; ciascun client parla, tramite un protocollo comune, con un server distinto; ogni server espone verso ciò che gestisce le proprie primitive: strumenti e risorse nel primo caso, che governa dei file, strumenti e prompt nel secondo, che governa un archivio di dati."
 :width: 100%
 
-Lo stesso catalogo, ma standardizzato. Il modello non impara un modo diverso
-di parlare con ogni sistema: parla un protocollo solo, e a tradurlo è il
-server dall'altra parte.
+Lo stesso catalogo, ma standardizzato. A parlare il protocollo non è il
+modello: è l'applicazione che lo ospita, la quale apre un canale verso ogni
+sistema esterno e li interroga tutti allo stesso modo. Al modello arrivano poi
+strumenti come gli altri, senza che debba sapere da dove vengono.
 ```
 
 Il salto di {numref}`fig-mcp` rispetto al catalogo scritto a mano è di scala,
-non di meccanismo: sotto resta il giro appena descritto. Cambia chi scrive le
-descrizioni degli strumenti, che diventano responsabilità di chi espone il
-sistema invece che di chi costruisce l'agente.
+non di meccanismo: sotto resta il giro appena descritto, e il modello continua
+a vedere solo un elenco di attrezzi con le loro etichette. Cambia chi scrive
+quelle etichette, cioè le descrizioni degli strumenti, che diventano
+responsabilità di chi espone il sistema invece che di chi costruisce l'agente.
 
 `````{tab} Elementare
 
@@ -99,10 +115,21 @@ Schema. Per una calcolatrice:
   "name": "calcola",
   "description": "Valuta un'espressione aritmetica e ne restituisce il valore.",
   "parameters": {
-    "espressione": {"type": "string", "description": "es. '4831 * 7092'"}
+    "type": "object",
+    "properties": {
+      "espressione": {"type": "string", "description": "es. '4831 * 7092'"}
+    },
+    "required": ["espressione"]
   }
 }
 ```
+
+Le tre righe che avvolgono il parametro non sono cerimoniale: `type`,
+`properties` e `required` sono ciò che rende quel blocco un JSON Schema
+valido, e senza di esse ogni interfaccia reale lo rifiuta. Il nome della
+chiave che lo contiene invece cambia da un fornitore all'altro
+(`parameters`, `input_schema`, `inputSchema`); la forma dello schema no, ed è
+quella che vale la pena ricordare.
 
 La descrizione non è decorazione: è il testo su cui il modello ragiona per
 decidere *se* e *quando* invocare lo strumento, ed è quindi parte del prompt a
@@ -110,7 +137,11 @@ tutti gli effetti. Il modello, invece di campionare token destinati
 all'utente, emette una struttura `{"name": "calcola", "arguments":
 {"espressione": "4831 * 7092"}}`; il runtime la valida contro lo schema, esegue
 la funzione, e re-inietta il risultato nel contesto come messaggio di ruolo
-*tool*. La capacità di scegliere lo strumento e **compilarne gli argomenti**
+*tool*. Anche qui i nomi esatti cambiano da un fornitore all'altro
+(`tool_use`/`tool_result` per gli uni, come nella figura, `function_call` e
+ruolo `tool` per gli altri, che per giunta passano gli `arguments` come
+stringa JSON invece che come oggetto); il giro è lo stesso. La capacità di
+scegliere lo strumento e **compilarne gli argomenti**
 nel formato giusto non è innata: emerge dall'instruction tuning visto nel
 capitolo sui Transformer, cioè dall'addestramento su esempi in cui a una
 consegna corrisponde l'azione corretta invece della sua prosecuzione. Il
@@ -165,23 +196,36 @@ dimostrazioni per ciascuna API (calcolatrice, sistema di domanda-risposta,
 motore di ricerca, traduttore, calendario), il modello campiona in molte
 posizioni di un corpus delle *candidate* chiamate ad API con i relativi
 argomenti. Ogni candidata viene eseguita, e si tiene solo se il suo risultato,
-inserito nel contesto, **riduce la loss** (la cross-entropia sul token
-successivo) sui token che seguono, rispetto al non chiamare o a un risultato
-inutile:
+inserito nel contesto, **riduce la cross-entropia pesata** sui token
+immediatamente successivi, rispetto al non chiamare o a un risultato inutile:
 
 $$
 L_i^{\text{con}} < L_i^{\text{senza}} - \tau,
+\qquad
+L_i = -\sum_{j \ge i} w_{j-i}\, \log p(x_j \mid \dots),
 $$
 
 dove $L_i^{\text{con}}$ e $L_i^{\text{senza}}$ sono la perdita futura con e
-senza la chiamata inserita in posizione $i$, e $\tau$ è una soglia di utilità.
-Le chiamate che superano il filtro diventano un dataset aumentato, e il
-modello ci viene messo a punto sopra con il consueto obiettivo
+senza la chiamata inserita in posizione $i$ ($L_i^{\text{senza}}$ è il
+**minimo** fra il non chiamare affatto e il chiamare senza ottenere nulla di
+utile), $\tau$ è una soglia di utilità, e i pesi $w_t$ calano linearmente
+fino ad **annullarsi dopo cinque token**. Il dettaglio dei pesi non è
+pignoleria: dice che ciò che si misura è se la chiamata aiuta a scrivere la
+frase in corso, non il resto del documento, ed è la ragione per cui il filtro
+non annega nel rumore. Le chiamate che superano il filtro diventano un dataset
+aumentato, e il modello ci viene messo a punto sopra con il consueto obiettivo
 auto-supervisionato. Il risultato è un modello che, a inferenza, decide *da
 sé* quando emettere una chiamata, perché ha imparato che in quei punti la
 chiamata paga in termini di predizione. Il criterio è puramente interno
 («l'attrezzo mi aiuta a continuare il testo?») e non richiede alcuna etichetta
 umana su dove usarlo.
+
+Vale la pena chiudere con il limite che gli autori dichiarano, perché è
+esattamente il confine di questa sezione. Toolformer decide *dove* chiamare,
+non *come* comporre: non sa usare gli strumenti in **catena** (l'uscita di uno
+come ingresso di un altro) né in modo **interattivo** (raffinare la richiesta
+guardando il risultato), ed è ciò che serve a un agente. È il salto che
+affronta il pattern della prossima sezione.
 
 `````
 
@@ -215,13 +259,18 @@ ottenuto il primo. Un sistema che agisse una volta sola non avrebbe modo di
 formulare la seconda ricerca, perché non saprebbe ancora cosa cercare.
 
 Perché conviene far ragionare il modello *ad alta voce* tra un'azione e
-l'altra? Perché è la stessa lezione della chain-of-thought incontrata nel
-capitolo sui Transformer {cite}`wei2022chain`: scrivere i passaggi intermedi
-prima di concludere riduce gli errori, perché ogni passo può appoggiarsi ai
-precedenti invece di indovinare tutto in una volta. ReAct porta l'idea nel
-mondo delle azioni: il pensiero decide *quale* strumento usare e *come*
-interpretare ciò che è tornato, e l'osservazione àncora il pensiero successivo
-a un fatto reale invece che a una fantasia.
+l'altra? La prima risposta è la chain-of-thought incontrata nel capitolo sui
+Transformer {cite}`wei2022chain`, ma va presa per quello che è: i guadagni
+misurati di scrivere i passaggi intermedi si concentrano sui compiti
+matematici e simbolici, e fuori di lì sono piccoli {cite}`sprague2025cot`,
+mentre un loop agentico è fatto in buona parte di altro (scegliere uno
+strumento, leggere un risultato, decidere se ripetere). La ragione per cui il
+pensiero esplicito serve *qui* è un'altra, e più prosaica: dà al modello un
+posto dove scrivere a che punto è del compito prima di scegliere l'azione. È
+la stessa idea che ritroveremo, con altro nome, parlando di context
+engineering. ReAct la porta nel mondo delle azioni: il pensiero decide *quale*
+strumento usare e *come* interpretare ciò che è tornato, e l'osservazione
+àncora il pensiero successivo a un fatto reale invece che a una fantasia.
 
 `````{tab} Elementare
 
@@ -258,17 +307,31 @@ Action: Answer[9 anni, dal 2017]
 
 Ogni *Observation* è testo prodotto dall'esterno (non campionato dal modello)
 e questo è il punto cruciale: àncora il ragionamento a fatti recuperati,
-invece di lasciarlo derivare. Yao e colleghi mostrano che, sui compiti a forte
-intensità di conoscenza come la domanda-risposta multi-hop (HotpotQA) e la
-verifica di fatti (FEVER), affiancare le azioni di recupero al ragionamento
-riduce le allucinazioni rispetto alla sola chain-of-thought, che ragiona bene
-ma inventa i fatti su cui ragiona; e che, sui compiti interattivi come
-ALFWorld (eseguire istruzioni in un ambiente simulato) e WebShop (navigare un
-sito per acquistare), il ragionamento intercalato all'azione batte le
-politiche che agiscono senza pensare. Il costo è in token e latenza (ogni
-pensiero è testo generato in più) ma la traccia ha un effetto collaterale
-prezioso: è **leggibile**, e permette a un umano di capire *perché* l'agente
-ha fatto una certa mossa.
+invece di lasciarlo derivare. Sui compiti interattivi come ALFWorld (eseguire
+istruzioni in un ambiente simulato) e WebShop (navigare un sito per
+acquistare), Yao e colleghi misurano che il ragionamento intercalato all'azione
+batte nettamente le politiche che agiscono senza pensare.
+
+Sui compiti a forte intensità di conoscenza, invece, l'ancoraggio va letto per
+quello che è: uno **scambio**, non un guadagno secco. Sulla verifica di fatti
+(FEVER) ReAct supera la sola chain-of-thought; sulla domanda-risposta
+multi-hop (HotpotQA) le resta appena sotto. Le allucinazioni crollano (nei
+fallimenti passano da oltre metà a zero) ma il ragionamento si irrigidisce
+sulla forma pensiero-azione-osservazione, e gli errori di ragionamento
+**triplicano**; per giunta nasce un modo di fallire che prima non esisteva, la
+ricerca che torna a mani vuote. Il risultato migliore del lavoro non è ReAct da
+solo: è la combinazione dei due, che si alternano quando l'uno si arena.
+
+Il costo è in token e latenza (ogni pensiero è testo generato in più). In
+cambio la traccia è **ispezionabile**, ed è un vantaggio operativo vero. Ma
+qui va evitata una confusione che costa cara: *leggibile* non vuol dire
+*fedele*. La catena di pensieri è testo generato come tutto il resto, e può
+razionalizzare a posteriori una scelta compiuta per motivi che non scrive
+{cite}`turpin2023unfaithful`; peggio, la fedeltà del ragionamento esplicito
+tende a **calare** al crescere della scala del modello {cite}`lanham2023faith`.
+La parte della traccia su cui si può contare sono le azioni e le osservazioni,
+perché quelle le esegue e le registra il runtime; i pensieri sono un indizio,
+non una spiegazione.
 
 `````
 
@@ -310,19 +373,28 @@ superamento o meno di test, il raggiungimento dell'obiettivo); e un *modulo di
 auto-riflessione* che, letta la traccia fallita e il suo esito, produce una
 critica verbale; «l'azione X non ha dato il risultato atteso, conviene provare
 Y». Questa critica finisce in una **memoria episodica** che viene anteposta al
-contesto del tentativo successivo. Sul benchmark di programmazione HumanEval,
-gli autori riportano che Reflexion su GPT-4 raggiunge un $91\%$ di *pass@1*,
-contro l'$80\%$ del modello di base senza riflessione: iterare
-sull'auto-critica, senza toccare i pesi, recupera una fetta consistente dei
-casi inizialmente falliti.
+contesto del tentativo successivo. Sui compiti di programmazione gli autori
+misurano un guadagno netto di *pass@1*: iterare sull'auto-critica, senza
+toccare i pesi, recupera una fetta consistente dei casi inizialmente falliti.
+
+Su quel guadagno conviene però leggere la lettera piccola, perché riguarda il
+distinguo che chiude questa sezione. Il *valutatore* che dice «hai sbagliato»
+non è, in quegli esperimenti di programmazione, un giudice esterno: è una
+batteria di test **generata dal modello stesso**, e gli autori dichiarano che
+può promuovere una soluzione sbagliata (tutti i test passano su un programma
+errato) o bocciarne una giusta. È un segnale d'esito, ma auto-prodotto: sta
+dalla parte scivolosa della riga che stiamo per tracciare, non da quella
+solida.
 
 `````
 
-L'onestà impone però un distinguo netto, che questo libro deve al lettore.
+L'onestà impone appunto un distinguo netto, che questo libro deve al lettore.
 L'auto-critica **non è** auto-correzione garantita. La riflessione funziona
-bene quando esiste un segnale d'esito *affidabile e esterno*, i test unitari
-che passano o falliscono, un risultato numerico verificabile, un obiettivo
-raggiunto o no nell'ambiente: lì la critica ha un appiglio solido su cui
+bene quando esiste un segnale d'esito *affidabile e esterno*: dei **test**
+scritti da qualcun altro che passano o falliscono (i test di progetto di
+SWE-bench sono l'esempio buono, perché nessuno li ha scritti per far contento
+l'agente), un risultato numerico verificabile, un obiettivo raggiunto o no
+nell'ambiente. Lì la critica ha un appiglio solido su cui
 costruire. Quando invece l'unico giudice è il modello stesso, senza alcun
 riscontro dal mondo, la faccenda si fa scivolosa: un modello convinto di una
 risposta sbagliata tende a produrre auto-critiche che *confermano* l'errore, e
@@ -334,12 +406,21 @@ sola introspezione, da sé, non crea competenza che il modello non aveva.
 
 Mettiamo insieme i pezzi nel modo più spoglio possibile: un mini-agente ReAct
 che gira davvero, in puro Python, senza rete né librerie esterne. Il trucco
-per concentrarci sul *ciclo* è sostituire il modello vero con un **LLM finto
-deterministico**: una funzione a regole che, guardando la traccia finora,
-decide il prossimo `Thought` e la prossima `Action`. Gli strumenti, invece,
-sono **veri**: una calcolatrice che valuta un'espressione aritmetica in modo
-sicuro (niente `eval`: un piccolo interprete sugli operatori ammessi) e un
-`cerca` che fa lookup in un archivio.
+per concentrarci sul *ciclo* è sostituire il modello vero con un **LLM finto**
+che, a parità di traccia, risponde sempre la stessa cosa (si dice
+*deterministico*): non un modello, ma poche righe di regole scritte a mano che,
+guardando la traccia finora, decidono il prossimo `Thought` e la prossima
+`Action`. Gli strumenti, invece, sono **veri**: una calcolatrice che valuta
+un'espressione aritmetica in modo sicuro, e un `cerca` che va a prendere una
+voce da un archivio, come si cerca una parola sul vocabolario.
+
+Sulla calcolatrice una parola in più, perché è la parte che vale la pena
+riusare. La via facile in Python sarebbe `eval`, la funzione che esegue una
+stringa come se fosse codice: comodissima e pericolosa, perché eseguirebbe
+*qualunque* cosa il modello scriva, non solo un conto. Al suo posto leggiamo
+l'espressione, la spezziamo nei suoi pezzi e la calcoliamo noi, accettando
+soltanto gli operatori che abbiamo messo in elenco. Tutto il resto viene
+respinto per iscritto, con un messaggio che dice cosa non andava.
 
 ```python
 import ast
@@ -354,13 +435,21 @@ _OP = {
     ast.USub: operator.neg,
 }
 
+def _operatore(op):
+    """Un operatore fuori elenco esce di qui con un errore leggibile."""
+    if type(op) not in _OP:
+        raise ValueError(f"operatore non ammesso: {type(op).__name__}")
+    return _OP[type(op)]
+
 def _valuta(nodo):
-    if isinstance(nodo, ast.Constant):        # un numero
+    if isinstance(nodo, ast.Constant):        # un numero, e solo un numero
+        if not isinstance(nodo.value, (int, float)):
+            raise ValueError("ammessi solo numeri")
         return nodo.value
     if isinstance(nodo, ast.BinOp):           # a operatore b
-        return _OP[type(nodo.op)](_valuta(nodo.left), _valuta(nodo.right))
+        return _operatore(nodo.op)(_valuta(nodo.left), _valuta(nodo.right))
     if isinstance(nodo, ast.UnaryOp):         # -a
-        return _OP[type(nodo.op)](_valuta(nodo.operand))
+        return _operatore(nodo.op)(_valuta(nodo.operand))
     raise ValueError("espressione non ammessa")
 
 def calcola(espressione):
@@ -371,7 +460,7 @@ def calcola(espressione):
 ARCHIVIO = {
     "attention is all you need": "2017",
     "gpt-3": "2020",
-    "react": "2023",
+    "react": "2022",
 }
 
 def cerca(chiave):
@@ -452,29 +541,78 @@ nei sistemi reali, è robustezza: gestire le chiamate malformate, fermarsi
 quando l'agente entra in loop, decidere quali strumenti sono sicuri da
 esporre.
 
+Le sei cose da portarsi via da questa sezione, prima di passare al recupero
+dei documenti.
+
+`````{tab} Elementare
+
+```{admonition} Da ricordare
+:class: important
+- Un modello da solo è murato: non sa l'ora, sbaglia i conti lunghi, ignora
+  quello che è successo dopo il suo addestramento. Il **tool use** gli dà le
+  mani: invece di rispondere di pancia, scrive un **bigliettino d'ordine** per
+  uno strumento; il programma che gli sta attorno lo esegue e gli riporta il
+  risultato, che il modello ritrova davanti al giro dopo.
+- Ogni strumento si presenta con una scheda: come si chiama, a cosa serve, e
+  cosa bisogna infilarci dentro perché funzioni. Il modello impara a scegliere
+  l'attrezzo giusto e a riempirlo bene. **Toolformer**
+  {cite}`schick2023toolformer` lo impara perfino **da solo**, come il bambino
+  che scopre quando gli conviene la calcolatrice: prova a infilare una chiamata
+  qua e là e tiene quelle che lo aiutano a indovinare meglio le parole
+  successive.
+- **ReAct** {cite}`yao2023react` è il metodo del detective che ragiona a voce
+  alta: **penso → controllo → scopro**, e si ricomincia. Le allucinazioni
+  crollano, perché ogni passo si appoggia a un fatto trovato invece che
+  immaginato; in cambio il ragionamento si irrigidisce e nasce un modo nuovo di
+  sbagliare, la ricerca che non trova niente di utile.
+- **Reflexion** {cite}`shinn2023reflexion` è il quaderno di margine: dopo un
+  fallimento l'agente si scrive a parole cosa è andato storto e riprova
+  leggendo quell'appunto. Non cambia niente dentro la rete: cambia solo quello
+  che legge prima di ricominciare.
+- Onestà sui limiti: rileggersi **non è** correggersi. Aiuta quando c'è
+  qualcuno o qualcosa fuori che dice «giusto» o «sbagliato»; se l'unico giudice
+  è il modello stesso, può convincersi di avere ragione avendo torto, e perfino
+  rovinare una risposta che era buona.
+- Il **giro dell'agente** (guarda, pensa, agisci, ripeti fino alla risposta) è
+  lo stesso del mini-agente in venti righe e degli assistenti che navigano il
+  web ed eseguono codice. Quello che cambia, nei sistemi veri, è tutto il
+  lavoro di rendere il giro robusto quando qualcosa va storto.
+```
+
+`````
+
+`````{tab} Superiore
+
 ```{admonition} Da ricordare
 :class: important
 - Un LLM da solo è murato: non sa l'ora, sbaglia i conti lunghi, ignora ciò
   che è successo dopo l'addestramento. Il **tool use** gli dà le mani: invece
   di rispondere, emette una **chiamata strutturata** a uno strumento, che il
   sistema esegue e il cui risultato rientra nel contesto.
-- Ogni strumento è uno **schema** (nome, descrizione, argomenti tipati); la
-  capacità di sceglierlo e compilarne gli argomenti emerge dall'instruction
-  tuning. **Toolformer** {cite}`schick2023toolformer` impara *da solo*, con
-  auto-supervisione, dove conviene chiamare un'API: tiene le chiamate che
-  riducono la loss sui token successivi.
+- Ogni strumento è uno **schema** (nome, descrizione, argomenti tipati, in
+  JSON Schema: `type`, `properties`, `required`); la capacità di sceglierlo e
+  compilarne gli argomenti emerge dall'instruction tuning. **Toolformer**
+  {cite}`schick2023toolformer` impara *da solo*, con auto-supervisione, dove
+  conviene chiamare un'API: tiene le chiamate che riducono la cross-entropia
+  **pesata** sui cinque token successivi. Non sa però comporre gli strumenti in
+  catena: è il salto che ReAct affronta.
 - **ReAct** {cite}`yao2023react` intreccia in un loop **Thought → Action →
-  Observation**: ragionare ad alta voce (sulla scia della chain-of-thought
-  {cite}`wei2022chain`) decide le azioni, e le osservazioni àncorano il
-  ragionamento a fatti reali, riducendo le allucinazioni.
+  Observation**: le osservazioni àncorano il ragionamento a fatti reali e le
+  allucinazioni crollano, ma è uno **scambio**, non un guadagno secco (gli
+  errori di ragionamento triplicano e si aggiunge il fallimento della ricerca a
+  vuoto). La traccia è ispezionabile, **non** fedele
+  {cite}`turpin2023unfaithful, lanham2023faith`: contano le azioni, non i
+  pensieri.
 - **Reflexion** {cite}`shinn2023reflexion` aggiunge una **memoria verbale**
   degli errori: dopo un fallimento l'agente si auto-critica a parole e riprova
   leggendo la critica, senza toccare i pesi.
 - Onestà sui limiti: l'auto-critica **non è** auto-correzione garantita. Aiuta
-  quando c'è un esito esterno affidabile (test, risultato verificabile); con il
-  solo giudizio del modello può confermare l'errore o peggiorare una risposta
-  giusta.
+  quando c'è un esito esterno affidabile (test scritti da altri, risultato
+  verificabile); con un giudice auto-prodotto, o con il solo giudizio del
+  modello, può confermare l'errore o peggiorare una risposta giusta.
 - Il **ciclo dell'agente** (osserva, pensa, agisci, ripeti fino alla risposta)
   è la stessa ossatura del mini-agente in venti righe e degli assistenti che
   navigano il web ed eseguono codice; la differenza è la robustezza attorno.
 ```
+
+`````

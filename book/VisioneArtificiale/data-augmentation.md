@@ -13,7 +13,10 @@ senza raccoglierne di nuovi. Non è un'idea recente: nel capitolo sul deep
 learning abbiamo visto che già AlexNet, nel 2012, la usava in modo aggressivo
 (ritagli casuali, riflessioni, perturbazioni di colore). Bastano i primi due,
 calcolano gli autori, per ricavare da ogni immagine oltre duemila varianti
-possibili {cite}`krizhevsky2012imagenet`.
+possibili {cite}`krizhevsky2012imagenet`, ed è una moltiplicazione, non una
+magia: da un'immagine di 256 pixel di lato se ne ritaglia una di 224, e
+l'angolo del ritaglio può cadere in $32 \times 32 = 1024$ posizioni diverse,
+che lo specchio raddoppia a $2048$.
 
 ## Cambiare i pixel, non l'etichetta
 
@@ -70,8 +73,11 @@ estraggono **a caso, al volo**, ogni volta che un'immagine viene caricata. Il
 dataset su disco non cresce di un byte, ma la rete non rivede mai due volte la
 stessa identica immagine. E c'è una regola d'oro che non ammette eccezioni
 disinvolte: l'augmentation si applica **solo al training set**. Sul validation
-e sul test set si fanno soltanto le operazioni deterministiche:
-ridimensionare, ritagliare al centro, normalizzare.
+e sul test set si fanno soltanto le operazioni deterministiche, cioè quelle che
+danno sempre lo stesso risultato: ridimensionare, ritagliare al centro e
+**normalizzare**, che vuol dire riportare i numeri dei pixel su una scala
+fissa, la stessa per tutte le immagini, così che una foto scattata in
+controluce e una scattata al sole partano dallo stesso metro.
 
 `````{tab} Elementare
 È la differenza tra i compiti a casa e il compito in classe. A casa
@@ -200,8 +206,11 @@ scommessa. **Cutout** è ancora più semplice: si copre un rettangolo a caso
 della foto, come con un post-it. Se la rete riconosceva i gatti solo dalle
 orecchie, con il post-it sulle orecchie dovrà imparare anche zampe e coda.
 Infine, invece di scegliere a mano le trasformazioni, si può lasciare che sia
-un algoritmo a cercare la combinazione migliore per il nostro dataset: è
-l'idea delle *policy apprese*.
+un algoritmo a cercare la combinazione migliore per il nostro archivio di
+foto: ne prova tante per davvero, addestra ogni volta un modello, guarda quale
+combinazione gli fa prendere il voto più alto a un esame di prova, e tiene
+quella. È l'idea delle *policy apprese* (una *policy*, qui, è semplicemente la
+lista delle trasformazioni scelte, con quanto forte applicarle).
 `````
 
 `````{tab} Superiore
@@ -257,6 +266,33 @@ destra, un'anatomia rarissima che il modello imparerebbe a considerare
 normale. Le trasformazioni codificano le nostre ipotesi sul problema, e delle
 ipotesi, come sempre, si risponde.
 
+`````{tab} Elementare
+
+```{admonition} Da ricordare
+:class: important
+- L'augmentation fabbrica varianti di ogni foto (specchiata, ritagliata,
+  ruotata, più chiara) e le conta come esempi nuovi. La regola è una sola:
+  **la risposta giusta non deve cambiare**. Lo specchio va bene per i gatti,
+  rovina i cartelli stradali e trasforma un 6 in un 9.
+- Si applica **solo alle foto su cui la rete si allena**, e cambia a ogni
+  passaggio. Sulle foto d'esame si fanno solo operazioni che danno sempre lo
+  stesso risultato, altrimenti il voto non misura più niente.
+- Serve a impedire di **imparare a memoria**: se il compito non è mai due volte
+  identico, memorizzarlo non conviene più, e l'unica strada che resta è capire.
+- Ci sono modi più spregiudicati: **mescolare due foto** (e mescolare nelle
+  stesse proporzioni la risposta), **coprire un rettangolo a caso** come con un
+  post-it, oppure lasciare che sia un algoritmo a cercare la combinazione
+  migliore.
+- Non è una moltiplicazione miracolosa, e soprattutto **non serve a niente se
+  le foto vere sono di un altro tipo**: se ci si è allenati di giorno e in
+  produzione arrivano riprese notturne, servono foto nuove, non deformazioni
+  di quelle vecchie.
+```
+
+`````
+
+`````{tab} Superiore
+
 ```{admonition} Da ricordare
 :class: important
 - L'augmentation genera varianti di ogni immagine con trasformazioni che
@@ -272,3 +308,5 @@ ipotesi, come sempre, si risponde.
 - Non risolve lo **shift di dominio**: se i dati di produzione sono diversi
   da quelli di training, servono dati nuovi, non trasformazioni.
 ```
+
+`````

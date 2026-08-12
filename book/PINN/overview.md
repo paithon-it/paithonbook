@@ -18,8 +18,10 @@ Il machine learning di questo libro ha fatto finora l'esatto contrario: niente
 leggi, solo dati, e una rete che scova le regolarità da sola. Ottimo quando i
 dati abbondano e le leggi non le conosce nessuno: quale equazione governa lo
 spam? Nelle scienze fisiche però è tutto rovesciato: le leggi le conosciamo
-con precisione ammirevole, i dati sono pochi, costosi e rumorosi. La domanda
-di questo capitolo, allora: e se si potessero usare *entrambi*?
+con precisione ammirevole, i dati sono pochi, costosi e **rumorosi** (sporcati
+dagli errori di misura: mai esattamente il valore vero, sempre un po' sopra o
+un po' sotto). La domanda di questo capitolo, allora: e se si potessero usare
+*entrambi*?
 
 ## Una regola che dice come cambiano le cose
 
@@ -43,6 +45,20 @@ all'inizio, sempre più piatta). Un'equazione differenziale è questo: una
 regola sul cambiamento che, partendo da una condizione iniziale (80 °C al
 minuto zero), inchioda tutto il futuro. Le leggi di Le Verrier erano regole
 dello stesso tipo, con la gravità al posto del caffè.
+
+E vale la pena fermarsi su quel conto minuto per minuto, perché non è un
+esempio qualsiasi: **quello che abbiamo appena fatto a mano è il metodo
+classico**. Da settant'anni i calcolatori risolvono le equazioni differenziali
+così, avanzando un passettino alla volta lungo una fitta rete di puntini (si
+chiama **griglia**) stesa sul tratto di tempo, o di spazio, che ci interessa.
+Più i passettini sono piccoli, più il risultato è preciso e più conti servono;
+noi ne abbiamo fatti tre a mano, un calcolatore ne fa miliardi. Quando in
+questo capitolo si parla di **metodi classici**, o di **solutori** classici,
+si parla di lui: è maturo, accurato, velocissimo, ed è tuttora quello che si
+usa quasi sempre. Due cose però gli costano fatica, e sono esattamente quelle
+su cui giocano le PINN: la rete di puntini va costruita su misura per la forma
+del problema, e quando le grandezze in gioco sono molte il numero di puntini
+esplode.
 
 `````
 
@@ -86,9 +102,11 @@ benissimo, ma la griglia va costruita su misura, ed è un lavoro a sé.
 
 Nel 2019 Maziar Raissi, Paris Perdikaris e George Karniadakis propongono di
 saldare i due mondi {cite}`raissi2019physics`. L'idea delle **Physics-Informed
-Neural Networks** (PINN) sta in una frase: una rete neurale come *candidata
-soluzione* dell'equazione, penalizzata quando **viola la fisica**; i dati
-(pochi, sporchi) e la legge (esatta) collaborano nella stessa loss.
+Neural Networks** (PINN, cioè reti neurali informate dalla fisica) sta in una
+frase: una rete neurale come *candidata soluzione* dell'equazione (una curva
+che si propone come risposta, e che verrà corretta finché non lo è davvero),
+penalizzata quando **viola la fisica**; i dati (pochi, sporchi) e la legge
+(esatta) collaborano nella stessa loss.
 
 `````{tab} Elementare
 
@@ -99,9 +117,12 @@ inventerebbe: tra una misura e l'altra potrebbe fare gobbe assurde, magari un
 caffè che si riscalda da solo. La PINN aggiunge un secondo esaminatore. Il
 primo, classico, controlla col righello che la curva passi vicino alle misure.
 Il secondo apre il grafico in punti scelti *a caso* (anche dove nessuno ha
-misurato niente) e verifica la regola: qui il caffè è a 60 °C, quindi deve
-scendere con la giusta pendenza; se sale, o scende troppo piano, scatta una
-penalità. Le penalità si sommano in un punteggio unico, e la rete aggiusta i
+misurato niente), che si chiamano **punti di collocazione**, e lì verifica la
+regola: qui il caffè è a 60 °C, quindi deve scendere con la giusta pendenza;
+se sale, o scende troppo piano, scatta una penalità. La pendenza, in un punto
+di una curva, è quanto in fretta la curva sta salendo o scendendo proprio lì:
+la ripidità della strada, misurata sotto i piedi invece che su tutta la
+salita. Le penalità si sommano in un punteggio unico, e la rete aggiusta i
 pesi per farlo calare. Dove ci sono dati comanda il righello, dove non ce ne
 sono comanda la fisica, e la curva non può più inventare.
 
@@ -151,14 +172,22 @@ discretizzazione da scegliere.
 ## Perché ci interessa
 
 Tre proprietà rendono la ricetta interessante, tutte figlie della stessa
-radice: la soluzione non vive più su una griglia, ma dentro una funzione
-continua interrogabile ovunque. Primo: **niente griglia da costruire**. I
-punti di collocazione si spargono a pioggia anche in domini dalla forma
-complicata (il condotto di un'aorta, il profilo di un'ala): non che i metodi
-classici non ci arrivino, ci arrivano da decenni, ma prima devono coprire
-quella forma di una griglia fatta su misura, che è un mestiere a sé. E la
-stessa proprietà si estende a un dominio con molte variabili, dove una
-griglia non è costosa: è impossibile. Secondo: **dati scarsi**. Dove il
+radice: la soluzione non è più una tabella di valori calcolati sui puntini di
+una griglia, ma abita dentro la rete, che si può interrogare in qualunque
+punto, anche fra un puntino e l'altro. Primo: **niente griglia da costruire**.
+I punti di collocazione si spargono a pioggia anche in un **dominio** (la
+regione in cui cerchiamo la soluzione) dalla forma complicata, il condotto di
+un'aorta o il profilo di un'ala: non che i metodi classici non ci arrivino, ci
+arrivano da decenni, ma prima devono coprire quella forma di una griglia fatta
+su misura, che è un mestiere a sé. E la stessa proprietà conta ancora di più
+quando le grandezze in gioco sono molte, perché il conto dei puntini è
+spietato e si fa in un rigo: dieci puntini bastano a coprire un segmento, per
+un quadrato ne servono cento, per un cubo mille, e con dieci grandezze in
+gioco diventano un uno seguito da dieci zeri. Lì una griglia non è costosa: è
+impossibile. Che una rete ci arrivi davvero, però, non è automatico: è materia
+di ricerca ancora aperta, e i risultati in dimensione molto alta si ottengono
+con varianti costruite apposta, non con la ricetta base
+{cite}`hu2024tackling`. Secondo: **dati scarsi**. Dove il
 laboratorio arriva con tre sensori, la legge riempie i vuoti con l'unico
 filo coerente con l'equazione. Terzo, il più sorprendente: i **problemi
 inversi**.
@@ -171,10 +200,12 @@ punto) e voglio scoprire un pezzo di regola che mi manca. Di notte la casa si
 raffredda: dalle temperature segnate ora per ora, quanto isolano i muri? È la
 domanda del medico legale (a che ora il decesso, data la temperatura del
 corpo?) ed era la domanda di Le Verrier: dai disturbi nell'orbita di Urano,
-dov'è il pianeta che non vedo? Per i solutori classici gli inversi sono
-notoriamente scomodi: provare un valore, risolvere tutto, confrontare,
-riprovare. Per una PINN il coefficiente ignoto è una manopola in più da
-addestrare: la aggiusti finché fisica e misure vanno d'accordo.
+dov'è il pianeta che non vedo? Anche i metodi classici sanno rispondere, e
+bene: hanno macchinari costruiti apposta, che però vanno progettati su misura
+per ogni singola equazione, ed è un lavoro da specialisti. Per una PINN il
+pezzo di regola che manca è semplicemente una manopola in più da addestrare,
+dello stesso tipo di quelle che la rete gira già da sé: la si aggiusta finché
+fisica e misure non vanno d'accordo.
 
 `````
 
@@ -185,8 +216,20 @@ $\alpha$) è incognito. Basta promuoverlo a variabile addestrabile e
 minimizzare la stessa loss su entrambi,
 $\hat{\theta},\hat{\alpha}=\arg\min_{\theta,\alpha}\mathcal{L}(\theta,\alpha)$:
 il residuo dipende ora anche da $\alpha$, il cui gradiente arriva dalla stessa
-passata di backpropagation. Nessun ciclo di tentativi: soluzione e parametro
-fisico si stimano *insieme*, anche con misure rumorose e incomplete. È
+passata di backpropagation: soluzione e parametro fisico si stimano *insieme*,
+anche con misure rumorose e incomplete.
+
+Attenzione però a non attribuirsi un vantaggio che non c'è: nemmeno i metodi
+classici procedono per tentativi. Da quarant'anni gli inversi vincolati da una
+PDE si affrontano con il **metodo dello stato aggiunto**, che ricava il
+gradiente della funzione di scarto rispetto a *tutti* i parametri incogniti al
+costo di una o due risoluzioni del problema diretto, indipendentemente da
+quanti siano, e poi scende esattamente come fa una rete
+{cite}`plessix2006adjoint`. La differenza è un'altra, ed è di uniformità: lo
+stato aggiunto chiede di scrivere su misura, per quell'equazione, sia il
+solutore diretto sia quello aggiunto; la PINN risolve un unico problema non
+vincolato in $(\theta, \alpha)$, assorbe misure sparse e rumorose senza
+cambiare impianto e non discretizza né la geometria né l'operatore aggiunto. È
 soprattutto questa naturalezza sui problemi inversi ad aver fatto la fortuna
 delle PINN {cite}`raissi2019physics`. Il filone che ne è nato (reti vincolate
 dalla fisica, operatori neurali, scoperta di equazioni dai dati) va oggi sotto
@@ -197,15 +240,36 @@ il nome di **scientific machine learning** {cite}`karniadakis2021physics`.
 ## Un'onestà dovuta
 
 Chiariamolo prima di innamorarcene: le PINN **non mandano in pensione i
-solutori classici**. Su un problema standard (equazione nota, geometria
-regolare, nessun dato da integrare) differenze finite ed elementi finiti
-restano più veloci, più accurati e con garanzie di convergenza che
-un'ottimizzazione non convessa non può offrire; una PINN può richiedere minuti
-di addestramento dove un solutore maturo impiega millisecondi, e a volte
-fallisce senza preavviso {cite}`karniadakis2021physics`. Il loro territorio è
-un altro: dove dati e leggi vanno fusi nella stessa stima, dove le variabili
-sono troppe perché una griglia stia in piedi, dove il problema è inverso. Lì
-i solutori classici arrancano, e la penna di Le Verrier torna a scrivere.
+solutori classici**. Il loro territorio è un altro: dove dati e leggi vanno
+fusi nella stessa stima, dove le grandezze in gioco sono troppe perché una
+griglia stia in piedi, dove il problema è inverso. Lì i solutori classici
+arrancano, e la penna di Le Verrier torna a scrivere. Altrove no.
+
+`````{tab} Elementare
+
+Su un problema ordinario (regola nota, forma regolare, nessuna misura da
+tenere insieme alla legge) il conto a passettini vince, e non di poco: è più
+rapido, è più preciso, e c'è di più, si sa **dimostrare** quanto sbaglia e che
+migliora se si accorciano i passi. Di una rete addestrata, che si ferma dove
+capita che si fermi, questo non si sa dire. Una PINN può metterci minuti dove
+il metodo di sempre impiega millisecondi, e ogni tanto sbaglia senza che nulla
+lo segnali.
+
+`````
+
+`````{tab} Superiore
+
+Su un problema standard (equazione nota, geometria regolare, nessun dato da
+integrare) differenze finite ed elementi finiti restano più veloci, più
+accurati e con garanzie di convergenza che un'ottimizzazione non convessa non
+può offrire: per un metodo classico si dimostra un ordine di convergenza,
+l'errore scende come $O(h^p)$ al raffinarsi del passo $h$, mentre la discesa
+del gradiente su una loss non convessa si ferma in un minimo locale qualsiasi
+e non promette nulla. Una PINN può richiedere minuti di addestramento dove un
+solutore maturo impiega millisecondi, e a volte fallisce senza preavviso
+{cite}`karniadakis2021physics`.
+
+`````
 
 Una forma complicata, da sola, non basta a metterli in crisi: un'aorta o
 un'ala i metodi classici le calcolano tutti i giorni. Quello che costa è
@@ -229,9 +293,10 @@ una mappa onesta dei limiti: quando convengono, quando no.
   cambia** (il caffè si raffredda tanto più in fretta quanto più è caldo).
   Sapendo da dove si parte, e cosa succede ai bordi quando conta anche lo
   spazio, la storia è determinata tutta. Vale per le equazioni ben educate
-  che incontreremo qui, il caffè e la molla; per certe equazioni difficili,
-  come quelle che descrivono un fluido nello spazio, che una risposta unica
-  esista sempre nessuno l'ha ancora dimostrato.
+  che incontreremo qui, il caffè e la molla. Per certe equazioni molto più
+  difficili, come quelle di un fluido che scorre nello spazio, nessuno è
+  ancora riuscito a dimostrare che una risposta unica ci sia sempre: è un
+  problema aperto della matematica, e i nostri due esempi non lo toccano.
 - I metodi classici **spezzettano** il problema: riempiono il dominio di una
   fitta rete di puntini e avanzano da un puntino all'altro. Sono accurati e
   velocissimi, e se la cavano anche con forme complicate; ma quella rete va
@@ -241,8 +306,9 @@ una mappa onesta dei limiti: quando convengono, quando no.
   due esaminatori: il righello, che la tiene vicina alle (poche) misure, e il
   controllo della regola in punti scelti a caso, i **punti di collocazione**,
   dove ogni violazione costa punti {cite}`raissi2019physics`. Le pendenze che
-  servono per verificare la regola gliele dà lo stesso meccanismo con cui la
-  rete si addestra: esatte, e senza nessuna rete di puntini.
+  servono per verificare la regola gliele darà lo stesso meccanismo con cui la
+  rete si addestra, esatte e senza nessuna rete di puntini: è il colpo di
+  scena della prossima sezione.
 - Punti di forza: dati scarsi ma legge nota, molte grandezze in gioco, domini
   dalla forma complicata senza una griglia da costruire, e i **problemi
   inversi** (il pezzo di regola che manca diventa una manopola che

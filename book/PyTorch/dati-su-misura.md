@@ -39,10 +39,12 @@ from torchvision import datasets, transforms
 
 preparazione = transforms.Compose([
     transforms.Resize((224, 224)),   # tutte le immagini della stessa misura
-    transforms.ToTensor(),           # PIL -> tensore (C, H, W) in [0, 1]
+    transforms.ToTensor(),           # da immagine a tensore (canali, altezza,
+                                     # larghezza) con i valori portati fra 0 e 1
 ])
 
 dati_train = datasets.ImageFolder(root="dati/addestramento", transform=preparazione)
+dati_test = datasets.ImageFolder(root="dati/test", transform=preparazione)
 
 print(dati_train.classes)         # ['bistecca', 'pizza', 'sushi']  (ordine alfabetico)
 print(dati_train.class_to_idx)    # {'bistecca': 0, 'pizza': 1, 'sushi': 2}
@@ -70,15 +72,23 @@ meno lavoro di quanto sembri: il contratto è di **tre metodi**.
 :alt: "Gerarchia di classi: in cima una classe base che definisce un metodo di validazione comune; sotto, tre sottoclassi che la ereditano e ridefiniscono ciascuna il proprio metodo di caricamento, uno per le immagini, uno per il CSV, uno per l'audio. Chi le usa chiama sempre gli stessi metodi, senza sapere quale sottoclasse ha davanti."
 :width: 92%
 
-Una base, tre specializzazioni. Chi consuma i dati non sa da dove vengano:
-chiama sempre gli stessi tre metodi, e ogni sottoclasse decide come
-rispondere.
+Uno stampo di partenza, tre versioni specializzate. Chi consuma i dati non sa
+da dove vengano: fa sempre le stesse tre domande, e ognuna delle tre versioni
+risponde a modo suo, leggendo immagini, un foglio di calcolo o dei file audio.
 ```
 
-È esattamente il meccanismo di {numref}`fig-ereditarieta-dataset` che permette
-al `DataLoader` di funzionare con qualunque `Dataset` senza saperne nulla.
-Finché la vostra classe rispetta il contratto dei tre metodi, per il resto di
-PyTorch è indistinguibile da `ImageFolder`.
+La {numref}`fig-ereditarieta-dataset` mostra il meccanismo che permette al
+`DataLoader` di funzionare con qualunque `Dataset` senza saperne nulla, ed è
+l'ereditarietà incontrata nella sezione sui
+[moduli](moduli.md), usata qui per un altro scopo. In cima c'è `Dataset`, lo
+stampo di PyTorch, che non contiene quasi niente: dichiara soltanto quali tre
+domande gli si possono fare. Sotto ci sono le classi che noi scriviamo, una per
+tipo di dato, e ciascuna risponde a quelle tre domande a modo proprio. Il
+guadagno è che il `DataLoader` non deve conoscerle: gli basta sapere che
+qualunque cosa erediti da `Dataset` sa rispondere. Finché la vostra classe
+rispetta il contratto dei tre metodi, per il resto di PyTorch è
+indistinguibile da `ImageFolder`, anche se legge un tipo di dato che chi ha
+scritto la libreria non aveva previsto.
 
 ```python
 import pathlib
@@ -187,8 +197,13 @@ E la `Normalize`? Sposta i numeri in modo che abbiano media attorno a zero:
 alle reti riesce molto più facile imparare quando i numeri in ingresso sono
 piccoli e centrati, per lo stesso motivo per cui è più facile trovare la
 strada in una città con l'origine al centro anziché in un angolo lontano. I sei
-numeri della riga sono le statistiche di ImageNet: si usano quelli quando si
-parte da un modello già addestrato su ImageNet, perché il modello se li aspetta.
+numeri della riga (tre medie e tre deviazioni standard, una per colore) sono le
+statistiche di **ImageNet**, la grande raccolta pubblica di fotografie
+etichettate su cui, dal 2012 in poi, si è misurata la visione artificiale e su
+cui è addestrata la maggior parte dei modelli che si scaricano già pronti. Si
+usano quelli quando si parte da uno di quei modelli, perché il modello se li
+aspetta: sono i numeri con cui gli sono state date le immagini quando ha
+imparato.
 `````
 
 `````{tab} Superiore
@@ -249,6 +264,10 @@ messi in una zona di memoria da cui la GPU può prenderli senza passaggi
 intermedi. `drop_last` butta via l'ultimo vassoio se è mezzo vuoto, con
 duemila esempi e batch da 32, l'ultimo ne ha 16, e nei modelli con la batch
 normalization un batch anomalo può dare statistiche strane.
+`persistent_workers` dice di non licenziare gli aiutanti alla fine di ogni
+giro per riassumerli subito dopo: se prepararsi costa loro qualche secondo,
+quei secondi si pagano una volta invece che a ogni epoca. E `shuffle=True`
+mescola il mazzo prima di ogni giro, così la rete non impara l'ordine.
 
 Un avvertimento: `num_workers` alto **non è sempre meglio**. Ogni aiutante è
 un processo vero, con la sua memoria; oltre il numero di core della macchina
@@ -290,7 +309,22 @@ meccanismo con il proprio.
 
 ```python
 import torch
+from torch.utils.data import Dataset
 from torch.nn.utils.rnn import pad_sequence
+
+class DatasetSequenze(Dataset):
+    """Frasi gia' tradotte in numeri, di lunghezza diversa fra loro."""
+
+    def __init__(self, n=100):
+        lunghezze = torch.randint(5, 40, (n,))
+        self.esempi = [(torch.randint(1, 50, (int(l),)), int(l) % 2)
+                       for l in lunghezze]
+
+    def __len__(self):
+        return len(self.esempi)
+
+    def __getitem__(self, indice):
+        return self.esempi[indice]
 
 def raggruppa(batch):
     """Riceve una lista di (sequenza, etichetta); restituisce un batch imbottito."""
@@ -300,17 +334,26 @@ def raggruppa(batch):
                              padding_value=0)
     return imbottite, lunghezze, torch.tensor(etichette)
 
+dati = DatasetSequenze()
 loader = DataLoader(dati, batch_size=32, shuffle=True, collate_fn=raggruppa)
+
+imbottite, lunghezze, etichette = next(iter(loader))
+print(imbottite.shape, lunghezze.shape, etichette.shape)
+# le lunghezze vere sono tutte diverse, la larghezza del batch e' la massima:
+print(lunghezze[:8].tolist(), "-> larghezza", imbottite.shape[1])
 ```
 
-Le **lunghezze** vanno restituite insieme ai dati e non sono un dettaglio:
-senza di esse il modello non può distinguere una parola vera da
-un'imbottitura, e finirebbe per imparare che lo zero è un token come gli
-altri. Servono a costruire la *maschera* di attenzione dei Transformer, o a
-chiamare `pack_padded_sequence` con le reti ricorrenti: argomenti dei capitoli
-sul [natural language
+Le **lunghezze** vanno restituite insieme ai dati e non sono un dettaglio.
+Dopo l'imbottitura tutte le frasi del vassoio hanno la stessa larghezza, e gli
+zeri aggiunti in coda sono indistinguibili da parole vere: senza sapere dove
+finisce la frase, il modello imparerebbe che lo zero è una parola come le
+altre, e passerebbe metà del suo tempo a studiare l'imbottitura. Le lunghezze
+sono l'informazione che permette di dire «da qui in poi non guardare». Nei
+capitoli sul [natural language
 processing](../NaturalLanguageProcessing/modelli-sequenza.md) e sui
-[Transformer](../Transformers/architettura.md).
+[Transformer](../Transformers/architettura.md) quella riga di "fin qui sì, da
+qui no" prenderà un nome (si chiama *maschera*) e diventerà un ingrediente
+dell'architettura; per ora basta averla in mano.
 
 ## Classi sbilanciate: pescare con criterio
 
@@ -327,6 +370,8 @@ from torch.utils.data import WeightedRandomSampler
 etichette = torch.tensor(dati_train.targets)               # (N,)
 conteggi = torch.bincount(etichette)                       # esempi per classe
 peso_per_classe = 1.0 / conteggi.float()                   # la classe rara pesa di più
+# indicizzare con un elenco: per ogni etichetta va a prendere il peso della sua
+# classe, quindi da 3 pesi (uno per classe) si ottengono N pesi (uno per esempio)
 pesi = peso_per_classe[etichette]                          # un peso per esempio
 
 campionatore = WeightedRandomSampler(weights=pesi,
@@ -392,27 +437,65 @@ gonfia i risultati di poco, ma abbastanza da falsare un confronto.
 
 ## Il collo di bottiglia è quasi sempre il disco
 
-Un'ultima cosa, la meno intuitiva. Quando un addestramento è lento, l'istinto
-dice che la colpa è del modello. Nella maggior parte dei progetti che non
-riguardano i modelli giganti, la colpa è invece del **caricamento dei dati**:
-la GPU finisce il batch e aspetta il successivo. La diagnosi è semplice, si
-guarda l'utilizzo della GPU durante l'addestramento (con `nvidia-smi`, o con
-il profiler `torch.profiler`): se oscilla tra il 100% e lo zero invece di
-restare alto, la cucina sta aspettando i vassoi.
+Un'ultima cosa, la meno intuitiva, ed è forse la più utile della sezione.
+Quando un addestramento è lento, l'istinto dice che la colpa è del modello.
+Nella maggior parte dei progetti che non riguardano i modelli giganti, la colpa
+è invece del **caricamento dei dati**: la cucina finisce il vassoio e resta
+ferma ad aspettare il successivo. Vale la pena tenerlo a mente, perché è la
+diagnosi che quasi nessuno prova per prima e quasi sempre è quella giusta.
+
+Come ci si accorge: si guarda quanto è occupata la scheda grafica mentre
+l'addestramento gira. Se sta al cento per cento in modo stabile, il collo di
+bottiglia è il calcolo; se invece salta dal cento a zero e ritorno, la scheda
+sta aspettando i dati, e ogni ottimizzazione del modello sarà tempo perso.
+
+`````{tab} Elementare
+I rimedi, dal più efficace al meno:
+
+**Più aiutanti.** Alzare `num_workers`: se il problema è che nessuno prepara i
+vassoi mentre la cucina cucina, è la prima cosa da provare.
+
+**Ritagliare le foto una volta sola.** Se ogni epoca ridimensiona quattromila
+fotografie da dodici megapixel a 224 pixel per lato, quel lavoro lo si sta
+rifacendo identico decine di volte. Farlo una volta e salvare le immagini già
+piccole su disco è un pomeriggio che si ripaga in un'ora.
+
+**Meno file, più grandi.** Questo è il rimedio che stupisce, perché la ragione
+non è quella che si immagina: il costo grosso non è *leggere* le foto, è
+**aprirle**. Aprire un file è come chiedere al bibliotecario di andare a
+prendere un volume: il tempo lo fa il tragitto, non la lettura, e per un
+milione di volumi si fa un milione di tragitti. Impacchettare le immagini in
+pochi archivi grandi, letti di seguito, è chiedere al bibliotecario uno
+scaffale intero in una volta. La differenza è enorme, e diventa drammatica
+quando i file non stanno sul computer ma su un disco raggiunto attraverso la
+rete.
+
+**Spostare le trasformazioni pesanti sulla scheda grafica**, che le fa più in
+fretta della CPU.
+`````
+
+`````{tab} Superiore
+La diagnosi si fa con `nvidia-smi` a occhio o, meglio, con il profiler
+`torch.profiler`, che separa il tempo speso in `DataLoader` da quello speso nei
+kernel.
 
 I rimedi, in ordine di efficacia: alzare `num_workers`; ridimensionare le
 immagini **una volta** su disco invece che a ogni epoca; usare formati che si
 leggono in blocco (`.npy`, WebDataset, LMDB) invece di milioni di piccoli file;
-spostare le trasformazioni pesanti sulla GPU. Il capitolo sulle
-[prestazioni](prestazioni.md) riprende il discorso dal lato del calcolo.
+spostare le trasformazioni pesanti sulla GPU (`torchvision.transforms.v2`
+lavora su batch di tensori, quindi anche su device).
 
-Sul terzo rimedio vale la pena essere precisi, perché la ragione non è quella
-che si immagina. Su una collezione grande il costo dominante non è decodificare
-i file, è **aprirli**: ogni `open()` è una chiamata di sistema e un accesso ai
-metadati del filesystem, e un milione di file piccoli produce un milione di
-accessi minuscoli e sparsi, che è lo schema peggiore per qualunque disco e
-disastroso su uno storage di rete. Impacchettarli in pochi archivi letti in
+Sul terzo vale la pena essere precisi. Su una collezione grande il costo
+dominante non è decodificare i file, è **aprirli**: ogni `open()` è una
+chiamata di sistema e un accesso ai metadati del filesystem, e un milione di
+file piccoli produce un milione di accessi minuscoli e sparsi, che è lo schema
+peggiore per qualunque disco e disastroso su uno storage di rete, dove ogni
+accesso paga anche la latenza. Impacchettarli in pochi archivi letti in
 sequenza sposta il lavoro dove l'hardware è veloce.
+`````
+
+Il capitolo sulle [prestazioni](prestazioni.md) riprende il discorso dal lato
+del calcolo.
 
 E c'è un secondo motivo per fare quel passaggio, che si paga una volta e serve
 per sempre: mentre si scorre il dataset per impacchettarlo, si calcolano
@@ -425,6 +508,35 @@ motivo per cui `EfficientNet_B0_Weights.DEFAULT.transforms()` porta con sé i
 numeri di ImageNet: le feature apprese si aspettano ingressi centrati come lo
 erano allora.
 
+Il tubo che porta i file dentro la rete è fatto: da qui in avanti si può
+tornare a occuparsi del modello, sapendo che i dati arrivano.
+
+`````{tab} Elementare
+```{admonition} Da ricordare
+:class: important
+- Un `Dataset` risponde a **tre domande**: come ti prepari (una volta sola, e
+  lì si mette il lavoro lento), quanti esempi hai, dammi il numero 137 (ed è
+  la risposta che verrà chiesta milioni di volte, quindi dev'essere veloce).
+- Se le foto stanno in una cartella per classe, `ImageFolder` fa tutto da sé.
+  I nomi delle classi li assegna in **ordine alfabetico**: vanno riletti da
+  lui, mai riscritti a mano in un altro ordine.
+- Le trasformazioni servono a due cose: **preparare** (stessa misura, stessa
+  scala di numeri) e **moltiplicare** (girare, specchiare, schiarire). Si
+  moltiplica solo in addestramento, mai durante l'esame.
+- Il `DataLoader` ha una manopola che conta più delle altre, il numero di
+  **aiutanti** che preparano i vassoi in parallelo; e una regola: o si mescola
+  a caso, o si passa un modo di pescare proprio, non tutti e due.
+- Se gli esempi hanno lunghezze diverse (frasi, suoni) si allungano tutti alla
+  stessa misura con degli zeri, e si restituiscono anche le **lunghezze vere**,
+  altrimenti il modello studia l'imbottitura.
+- Si divide **per gruppo** (tutte le foto dello stesso paziente di qua o di
+  là), o per data, mai a caso su esempi che si assomigliano: è il modo più
+  comune di darsi un bel voto senza meritarlo.
+- Se l'addestramento è lento, **sospetta i dati prima del modello**.
+```
+`````
+
+`````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
 - Un `Dataset` è un contratto di **tre metodi**: `__init__` (lavoro pesante,
@@ -444,3 +556,4 @@ erano allora.
 - Se l'addestramento è lento, sospetta il **caricamento dei dati** prima del
   modello.
 ```
+`````

@@ -4,18 +4,20 @@ Nell'ottobre del 1971 la rivista *Esquire* pubblica un reportage di Ron
 Rosenbaum su un gruppo di appassionati che telefonava gratis in tutto il mondo.
 Uno dei suoi personaggi, John Draper, doveva il soprannome a un fischietto di
 plastica che si trovava nelle scatole dei cereali Cap'n Crunch: soffiato dentro
-la cornetta emetteva una nota a 2600 hertz, e 2600 hertz era esattamente il
-tono con cui due centrali si dicevano fra loro che una linea interurbana era
-libera. Alla rete quel fischio non arrivava come un suono dentro una
-conversazione: arrivava come un **comando**, perché la conversazione e i
-comandi viaggiavano sullo stesso paio di fili. Non c'era nessun errore di
-programmazione da correggere. C'era un canale solo.
+la cornetta emetteva una nota a 2600 hertz. Quella nota era esattamente il tono
+con cui, all'epoca, le due macchine che smistavano le telefonate si dicevano fra
+loro che un collegamento a lunga distanza era libero. Alla rete il fischio non
+arrivava come un suono dentro una conversazione: arrivava come un **comando**,
+perché le parole delle persone e i comandi delle macchine viaggiavano sullo
+stesso paio di fili. Non c'era nessun errore di programmazione da correggere.
+C'era un canale solo.
 
 Il problema la rete telefonica lo ha risolto nel decennio successivo, nell'unico
-modo davvero strutturale che esista: spostando la segnalazione su un canale
-**separato** dalla voce (il *common channel signalling*, antenato dell'SS7 di
-oggi). Da allora si può fischiare quanto si vuole nella cornetta: il fischio
-resta un suono, perché i comandi passano da un'altra parte.
+modo davvero strutturale che esista: mandando i comandi delle macchine (in gergo
+la **segnalazione**: non «segnalare un problema», ma i messaggi che gli
+apparati si scambiano per far funzionare la telefonata) su un filo **separato**
+da quello della voce. Da allora si può fischiare quanto si vuole nella cornetta:
+il fischio resta un suono, perché i comandi passano da un'altra parte.
 
 La sezione sulla privacy e la robustezza ha mostrato come si inganna la *vista*
 di una rete neurale, con perturbazioni invisibili all'occhio. Questa affronta
@@ -59,10 +61,10 @@ questa non viene dal padrone di casa».
 Formalmente il modello calcola
 
 $$
-\hat{y} = f_{\theta}\big(X^{\text{sys}} \;\Vert\; X^{\text{usr}} \;\Vert\; X^{\text{dati}}\big),
+\hat{y} = f_{\theta}\big(\mathbf{X}^{\text{sys}} \;\oplus\; \mathbf{X}^{\text{usr}} \;\oplus\; \mathbf{X}^{\text{dati}}\big),
 $$
 
-dove $\theta$ sono i pesi, $\Vert$ è la concatenazione e i tre blocchi sono il
+dove $\theta$ sono i pesi, $\oplus$ è la concatenazione e i tre blocchi sono il
 prompt di sistema, il turno dell'utente e il testo recuperato da terzi. Il
 punto è ciò che nella formula **non compare**: un secondo argomento $\tau$ che
 porti, token per token, la provenienza. La gerarchia *system > user* incontrata
@@ -85,11 +87,18 @@ nel fatto che il ricevente ricostruisce la distinzione fra istruzione e dato
 `````
 
 Vale la pena rendere concreta la differenza fra i due modi di trasportare quel
-confine. Nel codice che segue un tokenizzatore giocattolo compone la stessa
-conversazione in due modi: nel primo i marcatori di ruolo sono **scritti nella
-stringa** e poi riletti da lì; nel secondo li emette solo il programma, e il
-testo dei messaggi non può fabbricarli perché gli identificativi riservati sono
-fuori dalla sua portata.
+confine, e l'esperimento si può raccontare prima ancora di guardarlo: facciamo
+scrivere a un estraneo, dentro il suo testo, la stessa formula magica che usa il
+padrone di casa per dare ordini, e guardiamo se il computer produce la stessa
+identica cosa nei due casi. La prima volta sì, ed è il guasto. La seconda no,
+perché quella formula magica il programma se la tiene per sé.
+
+Nel codice che segue un tokenizzatore giocattolo (un programmino che spezza una
+frase in pezzi e dà a ciascuno un numero, come fa un modello vero prima di
+leggere) compone la stessa conversazione in due modi: nel primo i marcatori di
+ruolo sono **scritti nella stringa** e poi riletti da lì; nel secondo li emette
+solo il programma, e il testo dei messaggi non può fabbricarli perché gli
+identificativi riservati sono fuori dalla sua portata.
 
 ```python
 # Un tokenizzatore giocattolo: gli identificativi 1-4 sono riservati ai
@@ -152,10 +161,12 @@ marcatori fuori canale: ostile == autentica -> False
 le parole del comando arrivano comunque al modello -> True
 ```
 
-La prima riga è il guasto in forma pura: con i marcatori in banda, la sequenza
-di token prodotta da un documento ostile è **identica** a quella di una
-conversazione in cui quell'ordine l'aveva impartito davvero il gestore del
-sistema, e nessun modello può distinguere due input uguali. La seconda riga
+La prima riga è il guasto in forma pura: quando i marcatori viaggiano dentro il
+testo (è questo che si intende con «in banda», cioè dentro lo stesso canale
+delle parole), la sequenza di numeri prodotta da un documento ostile è
+**identica** a quella di una conversazione in cui quell'ordine l'aveva impartito
+davvero il gestore del sistema, e nessun modello può distinguere due input
+uguali. La seconda riga
 dice che una parte del problema si risolve, ed è il motivo per cui i formati di
 chat moderni riservano identificativi speciali che il testo dell'utente non
 deve poter produrre (garantirlo spetta a chi tokenizza: il contenuto va
@@ -186,6 +197,11 @@ injection irrigidire il modello serve poco: l'ordine ostile entra insieme ai
 dati che il sistema *deve* leggere, e chi lo ha scritto non è mai in
 conversazione.
 
+Le due parole restano in inglese perché così si chiamano in letteratura, ma
+tradurle aiuta a non confonderle: *jailbreak* vuol dire alla lettera «evasione
+dal carcere» ed è l'utente che scappa dalle regole; *prompt injection* vuol dire
+«iniezione nel prompt» ed è un ordine infilato dentro i dati da qualcun altro.
+
 Nel **jailbreak** è l'utente stesso a spingere: vuole dal modello un
 comportamento che chi lo ha addestrato ha cercato di escludere, e lo cerca
 riformulando la propria richiesta. La vittima, semmai, è chi ha messo il
@@ -202,15 +218,22 @@ a leggere.
 La seconda è più grave per una ragione che conviene mettere in chiaro:
 **l'attaccante non ha bisogno di parlare con il sistema**. Gli basta lasciare
 il proprio testo dove prima o poi qualcuno lo farà leggere a un modello. Non
-sceglie il bersaglio, non conosce l'utente, non paga l'API: pubblica e aspetta.
+sceglie il bersaglio, non conosce l'utente, non paga nulla a nessuno: pubblica
+e aspetta.
 
 ## L'allineamento è una disposizione, non un controllo di accesso
 
-L'obiezione ragionevole è: ma i modelli non sono addestrati apposta a
-rifiutare? Sì, e il capitolo sui Transformer ha raccontato come, nella sezione
-sul post-training: preferenze umane, reward model e ottimizzazione della policy
-{cite}`ouyang2022training`, oppure la stessa sostanza per via diretta con la
-DPO {cite}`rafailov2023direct`. Il risultato di quel lavoro va però guardato
+Il titolo dice «controllo di accesso», che è il termine con cui in informatica
+si chiama un cancello vero: la regola che decide chi può fare cosa, scritta da
+qualche parte e verificabile.
+
+L'obiezione ragionevole è: ma i modelli non sono addestrati apposta a rifiutare?
+Sì. Il modo, che il capitolo sui Transformer racconta per esteso, in sostanza è
+questo: gli si fanno vedere moltissime coppie di risposte con scritto quale
+delle due era migliore, finché non prende l'abitudine di produrre quelle
+{cite}`ouyang2022training`, oppure gli si fa imparare la stessa cosa in un
+passaggio solo invece che in tre {cite}`rafailov2023direct`. Il risultato di
+quel lavoro va però guardato
 per quello che è: una **disposizione appresa**, distribuita in miliardi di
 pesi, non una regola che qualcuno possa esibire e verificare. Una regola vale o
 non vale; una disposizione si può *spostare* cambiando il contesto in cui la
@@ -266,20 +289,42 @@ ma della coppia modello-distribuzione degli input.
 
 ### Il contesto come leva
 
-C'è un altro modo di spostare quella disposizione, e sta dove il libro l'ha già
-incontrato: nell'**apprendimento in contesto**. Il capitolo sui Transformer ha
-mostrato che qualche esempio dentro il prompt basta a orientare il
-comportamento del modello senza toccarne i pesi; è il meccanismo che rende
-utile il *few-shot*, ed è lo stesso che si può girare contro la disposizione
-appresa. Cem Anil e colleghi {cite}`anil2024manyshot` hanno osservato che, con
-le finestre lunghe entrate in uso nel frattempo, condizionare la risposta con
-centinaia di esempi finti sposta progressivamente la distribuzione delle
-risposte verso quella degli esempi, e che l'efficacia cresce con il numero di
-dimostrazioni secondo una legge di potenza: in modo regolare e prevedibile, non
-a soglia. Il punto non è il singolo attacco, è che **la finestra lunga, che è
-una capacità, è anche una superficie**: l'apprendimento in contesto non
-distingue ciò che gli si vuole insegnare da ciò che gli si vuole far
-disimparare.
+C'è un altro modo di spostare quella disposizione, e non richiede di essere
+astuti: richiede solo spazio. Un modello impara anche dagli esempi che trova
+scritti nella conversazione stessa, senza che nessuno lo riaddestri: è la cosa
+che rende utile mostrargli due o tre esempi di come si vuole la risposta. Solo
+che quel meccanismo non sa distinguere ciò che gli si vuole insegnare da ciò che
+gli si vuole far disimparare. Se si riempie la conversazione di finti scambi in
+cui il modello accetta di fare una cosa che non dovrebbe, alla fine la fa. E
+siccome le conversazioni che questi sistemi riescono a tenere a mente si sono
+allungate moltissimo, di finti esempi ce ne stanno centinaia. Il punto non è il
+singolo attacco: è che **la memoria lunga, che è una capacità, è anche una
+superficie**.
+
+`````{tab} Elementare
+
+La parte che colpisce di questo attacco è quanto sia regolare. Non c'è una
+frase magica che a un certo punto sblocca il modello: più esempi finti si
+mettono, più spesso funziona, e cresce in modo liscio e prevedibile. Vuol dire
+che non esiste una soglia sotto la quale si è al sicuro, e che ogni volta che si
+allarga la memoria di un modello per renderlo più utile, gli si allarga anche
+questa porta. Le due cose sono la stessa cosa vista da due lati.
+
+`````
+
+`````{tab} Superiore
+
+È l'**apprendimento in contesto**, il meccanismo che il capitolo sui Transformer
+ha descritto come base del *few-shot*: qualche esempio dentro il prompt orienta
+il comportamento senza toccare i pesi. Cem Anil e colleghi
+{cite}`anil2024manyshot` hanno osservato che, con le finestre di contesto lunghe
+entrate in uso nel frattempo, condizionare la risposta con centinaia di
+dimostrazioni fittizie sposta progressivamente la distribuzione delle risposte
+verso quella degli esempi, e che l'efficacia cresce con il numero di
+dimostrazioni secondo una **legge di potenza**: in modo regolare e prevedibile,
+non a soglia. La conseguenza di progetto è che non esiste un numero di esempi
+sotto il quale dichiararsi al sicuro, e che l'estensione della finestra è a
+tutti gli effetti un ampliamento della superficie d'attacco.
 
 Esiste infine, per chi dispone dei pesi, la versione testuale degli attacchi
 avversari alle immagini: Andy Zou e colleghi {cite}`zou2023universal` hanno
@@ -288,10 +333,12 @@ gradiente sui token (il testo è fatto di simboli discreti, quindi non si somma
 una perturbazione minuscola come si fa con i pixel: si prova a sostituire un
 token con un altro e si tiene la sostituzione migliore), e che le stringhe
 così trovate spesso funzionano anche su modelli diversi da quello su cui sono
-nate. La trasferibilità è la parte che conta: dice che ciò che si sfrutta non è
-l'idiosincrasia di un modello ma qualcosa di condiviso dal modo in cui questi
-modelli vengono costruiti. La stessa proprietà, e la stessa cattiva notizia,
-degli esempi avversari della visione.
+nate. La **trasferibilità** è la parte che conta: dice che ciò che si sfrutta
+non è la particolarità di un modello ma qualcosa di condiviso dal modo in cui
+questi modelli vengono costruiti. La stessa proprietà, e la stessa cattiva
+notizia, degli esempi avversari della visione.
+
+`````
 
 ## Quando l'ordine arriva dai dati
 
@@ -301,14 +348,16 @@ un testo sbagliato. Ma il capitolo sugli agenti ha descritto un modello che
 *agisce*: chiama strumenti, naviga, legge documenti, interroga archivi, e
 reinietta nel proprio contesto ciò che trova. Ogni testo che entra in quel
 contesto è un possibile canale di comando: è la **prompt injection indiretta**
-descritta da Sahar Abdelnabi, Kai Greshake e colleghi {cite}`greshake2023not`,
+descritta da Kai Greshake, Sahar Abdelnabi e colleghi {cite}`greshake2023not`,
 che per primi ne hanno dato una tassonomia sulle applicazioni reali.
 
-Il collegamento con il RAG è diretto. Nel capitolo sugli agenti il recupero
-serviva ad **ancorare** le risposte a fonti esterne, ed era una difesa contro
-le allucinazioni; lo stesso meccanismo, guardato dall'altro lato, è una porta
-d'ingresso: un archivio in cui chiunque può scrivere è un archivio da cui
-chiunque può parlare al modello.
+Il collegamento è diretto con quella tecnica, vista nel capitolo sugli agenti,
+in cui il modello prima cerca dei documenti e poi risponde basandosi su quelli
+invece che sulla propria memoria (si chiama **RAG**, recupero più generazione).
+Lì serviva ad **ancorare** le risposte a fonti vere, ed era una difesa contro la
+tendenza dei modelli a inventare con sicurezza; lo stesso meccanismo, guardato
+dall'altro lato, è una porta d'ingresso: un archivio in cui chiunque può
+scrivere è un archivio da cui chiunque può parlare al modello.
 
 `````{tab} Elementare
 
@@ -342,8 +391,8 @@ dell'utente, non le regole del fornitore).
 
 La conseguenza che allarga il problema è che, con gli strumenti, l'iniezione
 smette di essere parola e diventa **azione**. Le tre condizioni che insieme
-rendono possibile l'esfiltrazione sono ormai elencate come una triade, che
-Simon Willison ha battezzato *lethal trifecta* {cite}`willison2025trifecta`:
+rendono possibile l'esfiltrazione formano una triade, che Simon Willison ha
+battezzato *lethal trifecta* {cite}`willison2025trifecta`:
 
 1. **accesso a dati riservati** (un archivio, la posta, un file system);
 2. **esposizione a contenuti non fidati** (qualunque testo di terzi entri nel
@@ -373,8 +422,49 @@ un riscontro che non passi per la sua parola.
 
 Nessuna delle difese che seguono risolve il problema. Sono in ordine crescente
 di solidità, ed è un ordine che conta più delle singole tecniche: le prime due
-riducono la *probabilità* di un attacco riuscito, le altre cambiano la *classe*
-del danno possibile.
+riducono la *probabilità* di un attacco riuscito, la terza cambia la *classe*
+del danno possibile, e la quarta è il modo di realizzare la terza quando il
+testo non fidato va comunque letto.
+
+`````{tab} Elementare
+
+In quattro frasi, prima dei dettagli, perché l'ordine è la cosa da portarsi via.
+
+1. **Scriverlo nel prompt.** Si dice al modello, a parole, di non dare retta agli
+   ordini che trova nei documenti. Serve a qualcosa, ma non è un confine: quella
+   raccomandazione sta nello stesso posto in cui stanno gli ordini ostili, e non
+   ha nessun titolo per avere ragione su di loro.
+2. **Un secondo controllo.** Un altro programma ispeziona quello che entra e
+   quello che esce e blocca ciò che riconosce. Costa attesa in più a ogni
+   richiesta e blocca ogni tanto del lavoro legittimo per sbaglio; e se il
+   secondo controllore è fatto con la stessa pasta del primo, si fa ingannare
+   dalle stesse cose.
+3. **Ridurre i permessi.** Qui si cambia mestiere: invece di rendere il modello
+   incorruttibile, gli si tolgono le chiavi. Il modello **propone** l'azione, ma
+   a decidere se farla è un pezzo di programma normale, che non legge il testo e
+   quindi non si lascia convincere. È l'unica delle quattro che cambia la
+   *gravità* di quel che può succedere invece della sua probabilità.
+4. **Tenere separate le cose.** Far leggere i testi sospetti a una chiamata a
+   parte, che non ha accesso a niente di prezioso e che restituisce solo una
+   risposta in un formato prestabilito, non un discorso libero. Non è un
+   gradino sopra la terza: è il modo di metterla in pratica quando il testo di
+   estranei bisogna comunque leggerlo.
+
+`````
+
+`````{tab} Superiore
+
+L'ordine merita una precisazione, perché una lettura frettolosa lo rovescia. Le
+quattro difese non stanno su una scala uniforme: le prime due sono mitigazioni
+probabilistiche, la terza è l'unica che introduce un **invariante**, e la quarta
+non ne porta uno proprio. Far elaborare il contenuto non fidato da una chiamata
+separata riduce la banda del canale ostile (un risultato tipizzato invece di
+prosa libera), ma la garanzia continua a venire dai **permessi** di quella
+chiamata: senza di quelli, la chiamata isolata legge testo ostile e restituisce
+campi ostili. È perciò una tecnica di realizzazione del confine di privilegio,
+non un gradino superiore.
+
+`````
 
 **Difese nel prompt.** Delimitare i dati con marcatori, ripetere le istruzioni
 alla fine del contesto, chiedere al modello di ignorare eventuali comandi
@@ -395,9 +485,9 @@ che la giustifica è quello classico della **difesa in profondità**: un secondo
 controllo, indipendente dal primo, fallisce per ragioni diverse. Attenzione
 però a che cosa vuol dire «indipendente»: se il filtro è a sua volta un modello
 di linguaggio addestrato in modo simile, eredita in buona parte le stesse
-debolezze, e il capitolo sui sistemi multi-agente ha già messo in formula il
-fatto che due giudici correlati non valgono due giudici. I costi vanno messi in
-conto: latenza aggiuntiva su ogni richiesta e falsi positivi che bloccano
+debolezze, e due giudici che sbagliano allo stesso modo contano per uno (il
+capitolo sui sistemi multi-agente lo mette anche in formula). I costi vanno
+messi in conto: un'attesa aggiuntiva su ogni richiesta e blocchi ingiusti di
 lavoro legittimo, con la solita soglia da tarare.
 
 **Confini di privilegio.** Qui si cambia mestiere. Invece di provare a rendere
@@ -422,6 +512,7 @@ tracciamento della provenienza di ciò che sta in contesto. Il cancello guarda
 STRUMENTI = {
     "leggi_pagina":    {"marchio": "non_fidato", "esce": False, "irreversibile": False},
     "leggi_contratti": {"marchio": "riservato",  "esce": False, "irreversibile": False},
+    "apri_allegato":   {"marchio": "non_fidato", "esce": False, "irreversibile": True},
     "scrivi_bozza":    {"marchio": None,         "esce": False, "irreversibile": False},
     "invia_email":     {"marchio": None,         "esce": True,  "irreversibile": True},
 }
@@ -441,7 +532,9 @@ def esegui(titolo, proposte):
     for azione in proposte:
         esito = decidi(azione, contesto)
         print(f"  {azione:16s} -> {esito}")
-        if esito == "permessa" and STRUMENTI[azione]["marchio"]:
+        # Il marchio va messo su OGNI azione che non viene bloccata: "conferma
+        # umana" non e' un rifiuto, l'azione viene eseguita e il testo entra.
+        if not esito.startswith("NEGATA") and STRUMENTI[azione]["marchio"]:
             contesto.add(STRUMENTI[azione]["marchio"])   # il contesto si marchia
     print("  contesto finale:", sorted(contesto), "\n")
 
@@ -450,6 +543,9 @@ esegui("A) l'agente legge i contratti e poi una pagina esterna:",
 
 esegui("B) lo stesso compito senza aprire contenuti non fidati:",
        ["leggi_contratti", "scrivi_bozza", "invia_email"])
+
+esegui("C) il contenuto non fidato arriva da uno strumento che chiede conferma:",
+       ["leggi_contratti", "apri_allegato", "scrivi_bozza", "invia_email"])
 ```
 
 ```text
@@ -465,26 +561,52 @@ B) lo stesso compito senza aprire contenuti non fidati:
   scrivi_bozza     -> permessa
   invia_email      -> conferma umana
   contesto finale: ['riservato', 'utente']
+
+C) il contenuto non fidato arriva da uno strumento che chiede conferma:
+  leggi_contratti  -> permessa
+  apri_allegato    -> conferma umana
+  scrivi_bozza     -> permessa
+  invia_email      -> NEGATA (riservato + non fidato + canale in uscita)
+  contesto finale: ['non_fidato', 'riservato', 'utente']
 ```
 
 Una trentina di righe senza una sola chiamata a un modello, ed è già una
 proprietà diversa da tutte quelle discusse finora: nel primo scenario l'invio è
 negato *indipendentemente* da quanto fosse persuasivo il testo della pagina,
 perché la decisione non ha letto quel testo. Nel secondo lo stesso strumento è
-ammesso sotto conferma, perché la triade non è completa. C'è un prezzo, e va
-pagato consapevolmente: l'agente è meno autonomo, il compito A si ferma e chiede
-aiuto, e un sistema tarato male chiede conferma così spesso che l'utente
-comincia ad approvare senza leggere, il che riporta la difesa a zero.
+ammesso sotto conferma, perché la triade non è completa.
 
-**Isolamento del contesto.** L'ultima difesa discende dalle altre: tenere
-separato ciò che è fidato da ciò che non lo è, invece di impastare tutto in
-un'unica finestra. In pratica, far elaborare i contenuti non fidati a una
-chiamata dedicata, con permessi propri e senza accesso ai dati riservati, e
-restituire al ciclo principale non il testo originale ma un risultato
-**tipizzato** (un riassunto in campi previsti, non prosa libera), cioè
-l'**output strutturato** del capitolo sull'ingegneria degli LLM. Non è il canale
-separato della rete telefonica, ma è il suo surrogato più onesto: se il confine
-non può stare *dentro* il modello, lo si mette *fra* le chiamate.
+Il terzo scenario è quello che vale la pena guardare, perché è il punto in cui
+una difesa del genere si rompe più facilmente. Lo strumento che apre un allegato
+di terzi è **insieme** marcante (immette testo non fidato in finestra) e
+irreversibile (il mittente vede che l'allegato è stato aperto), quindi il
+cancello chiede conferma prima di eseguirlo. Ma «conferma umana» non è un
+rifiuto: l'azione poi viene fatta, e il testo entra. Se il marchio si mettesse
+solo sulle azioni che passano senza chiedere niente, quel testo entrerebbe
+**senza lasciare traccia**, e da lì in avanti l'invariante che la sezione
+dichiara sarebbe violato in silenzio: il sistema continuerebbe a funzionare,
+semplicemente non proteggerebbe più. È la ragione della riga di commento nel
+codice, ed è il tipo di difetto che non si vede finché qualcuno non aggiunge uno
+strumento nuovo.
+
+C'è infine un prezzo, e va pagato consapevolmente: l'agente è meno autonomo, il
+compito A si ferma e chiede aiuto, e un sistema tarato male chiede conferma così
+spesso che l'utente comincia ad approvare senza leggere, il che riporta la
+difesa a zero.
+
+**Isolamento del contesto.** L'ultima voce non è un gradino sopra la
+precedente: è il modo di realizzarla quando il testo non fidato va comunque
+letto. Consiste nel tenere separato ciò che è fidato da ciò che non lo è, invece
+di impastare tutto in un'unica finestra. In pratica, far elaborare i contenuti
+non fidati a una chiamata dedicata, con permessi propri e senza accesso ai dati
+riservati, e restituire al ciclo principale non il testo originale ma un
+risultato **tipizzato**, cioè costretto in campi previsti in anticipo invece che
+in prosa libera: è l'**output strutturato** del capitolo sull'ingegneria degli
+LLM. La garanzia però continua a venire dai permessi di quella chiamata, non
+dall'isolamento in sé: una chiamata isolata ma potente legge testo ostile e
+restituisce campi ostili. Non è il canale separato della rete telefonica, ma è
+il suo surrogato più onesto: se il confine non può stare *dentro* il modello, lo
+si mette *fra* le chiamate.
 
 ## Cercare i guasti prima che li trovi qualcun altro
 
@@ -529,11 +651,12 @@ sicurezza del sistema.
 ## Quello che si può promettere
 
 Chiudiamo con l'onestà che il resto del capitolo pretende. Nessuna delle difese
-descritte qui è una dimostrazione, e non lo diventa mettendole insieme: la
-formula da cui siamo partiti non ha un argomento per la provenienza, e finché
-non ce l'ha, qualunque separazione fra istruzioni e dati che avvenga *dentro*
-il modello è una separazione appresa, cioè probabile e non garantita. Una
-difesa strutturale richiederebbe una funzione $f_\theta(X, \tau)$ in cui a ogni
+descritte qui è una dimostrazione, e non lo diventa mettendole insieme, per la
+ragione da cui siamo partiti col fischietto: al modello arriva un canale solo, e
+in quel canale non c'è scritto da dove viene ciascuna parola. Finché è così,
+qualunque separazione fra istruzioni e dati che avvenga *dentro* il modello è
+una separazione appresa, cioè probabile e non garantita. Una
+difesa strutturale richiederebbe una funzione $f_\theta(\mathbf{X}, \tau)$ in cui a ogni
 token sia associata un'etichetta $\tau_i \in \{\text{fidato},
 \text{non fidato}\}$, e richiederebbe soprattutto di **dimostrare**
 l'invarianza del comportamento rispetto alle istruzioni contenute nelle
@@ -578,12 +701,15 @@ può rendere bravo; il confine bisogna costruirlo altrove.
   lettura di roba scritta da estranei e un modo per mandare qualcosa fuori.
   Se ci sono tutti e tre, la fuga di dati non deve rompere niente, deve solo
   farsi eseguire.
+- **Jailbreak** vuol dire «evasione dal carcere», **prompt injection**
+  «iniezione nel prompt»: la prima la fa l'utente, la seconda un estraneo.
 - Le difese, in ordine di quanto reggono: le raccomandazioni scritte nel prompt
   (utili, ma non sono un confine), un secondo controllo che ispeziona quello che
   entra e quello che esce (al prezzo di attese in più e di blocchi ingiusti), i
   **permessi ridotti** con un pezzo di programma che decide al posto del modello
-  (l'unica che cambia la gravità di ciò che può succedere), la lavorazione
-  separata dei testi non fidati.
+  (l'unica che cambia la gravità di ciò che può succedere), e la lavorazione
+  separata dei testi non fidati, che è il modo di mettere in pratica la
+  precedente.
 - Attaccare il proprio sistema apposta va fatto, e va reso ripetibile: a mano
   per scoprire, in automatico per non tornare indietro. Ma si trova quello che
   si cerca, e «nessun tentativo riuscito» non vuol dire sicuro. Quando serve
@@ -597,8 +723,8 @@ può rendere bravo; il confine bisogna costruirlo altrove.
 ```{admonition} Da ricordare
 :class: important
 - Il difetto è **nel canale**: il modello riceve un'unica sequenza,
-  $f_\theta(X^{\text{sys}} \Vert X^{\text{usr}} \Vert
-  X^{\text{dati}})$, senza alcun argomento che porti la
+  $f_\theta(\mathbf{X}^{\text{sys}} \oplus \mathbf{X}^{\text{usr}} \oplus
+  \mathbf{X}^{\text{dati}})$, senza alcun argomento che porti la
   **provenienza**. È la stessa famiglia della SQL injection e della
   segnalazione in banda: dati che diventano comandi perché viaggiano dove
   viaggiano i comandi.
@@ -620,7 +746,8 @@ può rendere bravo; il confine bisogna costruirlo altrove.
   confine), **classificatori** a monte e a valle (difesa in profondità, al
   prezzo di latenza e falsi positivi), **confini di privilegio** (il modello
   propone, un componente deterministico decide: l'unica che cambia la classe
-  del problema), **isolamento del contesto**.
+  del problema), e l'**isolamento del contesto**, che non è un gradino sopra ma
+  il modo di realizzare la precedente quando il testo non fidato va letto.
 - Il **red teaming** va reso ripetibile, manuale per scoprire e automatizzato
   {cite}`perez2022red` per non regredire; ma trova ciò che cerca, e l'assenza
   di risultati non è prova di sicurezza. La garanzia, quando serve, sta fuori

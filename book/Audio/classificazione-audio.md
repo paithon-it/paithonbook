@@ -47,7 +47,7 @@ foto.
 
 `````{tab} Superiore
 
-Lo spettrogramma mel è una matrice $S \in \mathbb{R}^{F \times T}$: $F$ bande
+Lo spettrogramma mel è una matrice $\mathbf{S} \in \mathbb{R}^{F \times T}$: $F$ bande
 di frequenza (tipicamente 64 o 128) per $T$ finestre temporali. La trattiamo
 come un'**immagine a un solo canale** (l'analogo di una foto in scala di
 grigi) e la diamo in pasto a una CNN 2D, con i filtri convoluzionali che
@@ -56,8 +56,19 @@ esattamente la pipeline convoluzione + non linearità + pooling della
 [classificazione di
 immagini](../VisioneArtificiale/classificazione-transfer.md), con un'unica
 differenza concettuale: qui i due assi non sono omogenei (uno è il tempo,
-l'altro la frequenza), ma i filtri locali funzionano comunque, perché una
-firma sonora è un motivo *locale* nel piano tempo–frequenza. Anche il
+l'altro la frequenza). La conseguenza però non riguarda la **località**, che non
+è mai stata in discussione (una firma sonora è un motivo locale nel piano
+tempo–frequenza esattamente come un occhio lo è in una foto): riguarda la
+**condivisione dei pesi**, cioè l'equivarianza per traslazione. Applicare gli
+stessi filtri a ogni banda equivale ad assumere che traslare un motivo non ne
+cambi la classe. Lungo il tempo è una simmetria vera, un latrato è un latrato
+mezzo secondo dopo; lungo la frequenza no, perché su una scala quasi
+logaritmica traslare in su è **trasporre**, e la trasposizione cambia la vocale,
+la nota, lo strumento. Funziona lo stesso perché i motivi utili restano locali,
+ma è un bias solo approssimato: da qui la pratica di non fare pooling globale
+sull'asse delle frequenze, e la scelta dell'AST (poche righe più sotto) di dare
+a ogni patch un embedding della sua posizione *in frequenza*, che sarebbe
+superfluo se quell'asse fosse davvero simmetrico. Anche il
 **transfer learning** si trasporta di peso: si parte spesso da una rete
 pre-addestrata su ImageNet e si rifinisce sugli spettrogrammi, replicando il
 canale grigio sui tre canali RGB attesi in ingresso.
@@ -215,7 +226,8 @@ oscilla lentamente e attraversa lo zero *poche* volte; un sibilo o un rumore,
 fatto di frequenze alte, lo attraversa *tantissime* volte: è la differenza tra
 una «ooo» profonda e una «sss» sibilante. Con queste due sole misure possiamo
 già distinguere tre situazioni: silenzio (poca energia), tono (energia alta,
-pochi attraversamenti), rumore (energia media, tanti attraversamenti).
+pochi attraversamenti), rumore (energia intermedia, molto meno del tono e molto
+più del silenzio, ma tantissimi attraversamenti).
 
 `````
 
@@ -303,7 +315,9 @@ finestra |   energia |    zcr | classe
 
 Il tono ha energia alta ($0{,}5$, la potenza media di una sinusoide di
 ampiezza 1) e ZCR bassissimo (una sinusoide a 200 Hz campionata a 8 kHz
-attraversa lo zero solo ogni 20 campioni). Il silenzio ha energia praticamente
+attraversa lo zero solo ogni 20 campioni: più il suono è acuto, più fitti sono
+quei passaggi, ed è tutto il legame fra questa misura e le frequenze). Il
+silenzio ha energia praticamente
 nulla, e la soglia sull'energia lo cattura *prima* di guardare lo ZCR, che nel
 fondo casuale è persino alto, ma non conta più. Il rumore ha energia
 intermedia e ZCR elevato. Due numeri per finestra e tre soglie: nessuna rete,
@@ -311,11 +325,45 @@ eppure la logica è la stessa dei modelli grandi; *estrarre feature che
 separano le classi, poi decidere*. La differenza è che una CNN o un AST
 imparano le feature migliori da soli, invece di riceverle scritte a mano.
 
+`````{tab} Elementare
+
+```{admonition} Da ricordare
+:class: important
+- Una volta che il suono è diventato una **radiografia** (lo spettrogramma),
+  riconoscerlo è un problema di **immagini**: la stessa rete che distingue un
+  gatto da un cane in una foto distingue un vetro rotto da un clacson in una
+  lastra sonora, e può perfino partire da quello che ha già imparato sulle
+  foto.
+- Ci sono due domande diverse, e non vanno confuse. «Quale di questi suoni è?»
+  è a **crocetta unica**, e le risposte si fanno concorrenza. «Quali suoni ci
+  sono qui dentro?» è una **lista della spesa**, e possono essere veri tutti
+  insieme. Una terza, più difficile, chiede anche *quando* ciascuno comincia e
+  finisce.
+- **AudioSet** {cite}`gemmeke2017audioset` cambia le regole con la scala: due
+  milioni di frammenti da dieci secondi, etichette «alla buona» (dicono che il
+  cane c'è, non in quale secondo abbaia). Tanti esempi imprecisi battono pochi
+  esempi perfetti, quando la rete è grande.
+- Le **tessere** funzionano anche sul suono: si taglia la lastra in quadretti,
+  li si mette in fila e si lascia che ciascuno guardi tutti gli altri, anche
+  quelli lontani. Costa molti più dati che i filtri che scorrono, e per questo
+  di solito si parte da una rete già addestrata sulle immagini.
+- Due misure semplicissime (quanto è **forte** il suono, e quante volte l'onda
+  **attraversa lo zero**) bastano a separare a mano silenzio, tono e rumore. È
+  la stessa idea dei modelli grandi, che però quelle misure se le scelgono da
+  soli.
+```
+
+`````
+
+`````{tab} Superiore
+
 ```{admonition} Da ricordare
 :class: important
 - Trasformato il suono in **spettrogramma mel**, riconoscerlo diventa un
   problema di **visione**: una CNN 2D lo tratta come un'immagine a un canale, e
-  il transfer learning da ImageNet si trasporta di peso.
+  il transfer learning da ImageNet si trasporta di peso. Attenzione però al
+  bias: sull'asse delle frequenze la condivisione dei pesi assume un'invarianza
+  per traslazione che i dati non hanno.
 - **Etichetta singola** (una sola classe, softmax + cross-entropia) e
   **tagging multi-etichetta** (più suoni insieme, sigmoide + BCE) sono problemi
   diversi; il **rilevamento di eventi sonori** aggiunge il *quando*.
@@ -331,3 +379,5 @@ imparano le feature migliori da soli, invece di riceverle scritte a mano.
   per separare a mano silenzio, tono e rumore: la stessa idea dei modelli
   grandi, che però le feature se le imparano da soli.
 ```
+
+`````

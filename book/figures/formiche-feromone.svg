@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  paithon book, figura animata: il feromone che decide la strada
+  Generata da animazioni/svg/formiche-feromone.py: non modificare a mano.
+  Palette-locked, fondo trasparente, animazione in CSS puro (nessuno script).
+  Lo stato di riposo è quello finale: chi non anima (stampa, PDF,
+  prefers-reduced-motion) vede la figura conclusa.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 436"
+     role="img" aria-label="Formicaio a sinistra e cibo a destra, uniti da due strade: una lunga che sale in alto e una corta in basso. Giro dopo giro entrambe si ispessiscono, perché su entrambe passano formiche, ma la corta molto più in fretta, e il divario fra le due cresce. Il contatore in basso dice quante formiche su cento scelgono la corta: si parte da cinquanta e si arriva a ottantadue.">
+  <style>
+    svg  { --d: 9.6s; }
+    .ax  { stroke:#C5BEAA; stroke-width:2; fill:none; }
+    .axc { stroke:#E2DCC9; stroke-width:1.5; }
+    .lbl { font-family:Inter, system-ui, sans-serif; font-size:15px; fill:#1A1A1A; }
+    .lbs { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#5A524A; }
+    .ttl { font-family:Fraunces, Georgia, serif; font-size:16px; font-style:italic; fill:#1A1A1A; }
+    .via  { fill:none; stroke-linecap:round; opacity:0.85; }
+    .nodo { fill:#F8F5EE; stroke:#2D5A5C; stroke-width:2.5; }
+    .cnt  { font-family:Inter, system-ui, sans-serif; font-size:16px; font-weight:700; fill:#B5532C; }
+        @keyframes vial{0.00%{stroke-width:2.5}0.00%{stroke-width:2.5}7.50%{stroke-width:2.5}16.67%{stroke-width:3.6}24.17%{stroke-width:3.6}33.33%{stroke-width:4.3}40.83%{stroke-width:4.3}50.00%{stroke-width:4.8}57.50%{stroke-width:4.8}66.67%{stroke-width:5.3}74.17%{stroke-width:5.3}83.33%{stroke-width:5.7}90.83%{stroke-width:5.7}100.00%{stroke-width:5.7}}
+    @keyframes viac{0.00%{stroke-width:2.5}0.00%{stroke-width:2.5}7.50%{stroke-width:2.5}16.67%{stroke-width:4.6}24.17%{stroke-width:4.6}33.33%{stroke-width:7.4}40.83%{stroke-width:7.4}50.00%{stroke-width:10.4}57.50%{stroke-width:10.4}66.67%{stroke-width:13.7}74.17%{stroke-width:13.7}83.33%{stroke-width:17.0}90.83%{stroke-width:17.0}100.00%{stroke-width:17.0}}
+    @keyframes cnt0{0.00%{opacity:0}0.00%{opacity:1}7.50%{opacity:1}8.70%{opacity:0}100.00%{opacity:0}}
+    @keyframes cnt1{0.00%{opacity:0}15.47%{opacity:0}16.67%{opacity:1}24.17%{opacity:1}25.37%{opacity:0}100.00%{opacity:0}}
+    @keyframes cnt2{0.00%{opacity:0}32.13%{opacity:0}33.33%{opacity:1}40.83%{opacity:1}42.03%{opacity:0}100.00%{opacity:0}}
+    @keyframes cnt3{0.00%{opacity:0}48.80%{opacity:0}50.00%{opacity:1}57.50%{opacity:1}58.70%{opacity:0}100.00%{opacity:0}}
+    @keyframes cnt4{0.00%{opacity:0}65.47%{opacity:0}66.67%{opacity:1}74.17%{opacity:1}75.37%{opacity:0}100.00%{opacity:0}}
+    @keyframes cnt5{0.00%{opacity:0}82.13%{opacity:0}83.33%{opacity:1}90.83%{opacity:1}100.00%{opacity:1}}
+    @media (prefers-reduced-motion:reduce) { .via, .cnt, .lbs { animation:none !important; } }
+  </style>
+  <path class="via" d="M 138 214 Q 340 34 542 214" stroke="#C9A961" stroke-width="5.7" style="animation:vial var(--d) infinite"/><path class="via" d="M 138 214 Q 340 292 542 214" stroke="#B5532C" stroke-width="17.0" style="animation:viac var(--d) infinite"/><circle class="nodo" cx="108" cy="214" r="30"/><text class="lbl" x="108" y="268" text-anchor="middle">formicaio</text><circle class="nodo" cx="572" cy="214" r="30"/><text class="lbl" x="572" y="268" text-anchor="middle">cibo</text><text class="lbs" x="340" y="76" text-anchor="middle" style="fill:#C9A961">strada lunga · venti minuti</text><text class="lbs" x="340" y="300" text-anchor="middle" style="fill:#B5532C">strada corta · dieci minuti</text><text class="cnt" x="340" y="366" text-anchor="middle" opacity="0" style="animation:cnt0 var(--d) infinite">50 formiche su cento prendono la corta</text><text class="lbs" x="340" y="390" text-anchor="middle" opacity="0" style="animation:cnt0 var(--d) infinite">giro 1</text><text class="cnt" x="340" y="366" text-anchor="middle" opacity="0" style="animation:cnt1 var(--d) infinite">66 formiche su cento prendono la corta</text><text class="lbs" x="340" y="390" text-anchor="middle" opacity="0" style="animation:cnt1 var(--d) infinite">giro 2</text><text class="cnt" x="340" y="366" text-anchor="middle" opacity="0" style="animation:cnt2 var(--d) infinite">73 formiche su cento prendono la corta</text><text class="lbs" x="340" y="390" text-anchor="middle" opacity="0" style="animation:cnt2 var(--d) infinite">giro 3</text><text class="cnt" x="340" y="366" text-anchor="middle" opacity="0" style="animation:cnt3 var(--d) infinite">77 formiche su cento prendono la corta</text><text class="lbs" x="340" y="390" text-anchor="middle" opacity="0" style="animation:cnt3 var(--d) infinite">giro 4</text><text class="cnt" x="340" y="366" text-anchor="middle" opacity="0" style="animation:cnt4 var(--d) infinite">80 formiche su cento prendono la corta</text><text class="lbs" x="340" y="390" text-anchor="middle" opacity="0" style="animation:cnt4 var(--d) infinite">giro 5</text><text class="cnt" x="340" y="366" text-anchor="middle" opacity="1" style="animation:cnt5 var(--d) infinite">82 formiche su cento prendono la corta</text><text class="lbs" x="340" y="390" text-anchor="middle" opacity="1" style="animation:cnt5 var(--d) infinite">giro 6</text><text class="lbl" x="340" y="36" text-anchor="middle">lo spessore è il feromone depositato</text><text class="lbs" x="340" y="416" text-anchor="middle">nessuna formica ha misurato le due strade</text>
+</svg>

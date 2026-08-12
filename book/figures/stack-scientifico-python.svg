@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  paithon book — figura: lo stack scientifico di Python come strati
+  paithon book, figura: lo stack scientifico di Python come strati
   sovrapposti. Ogni libreria poggia su quella sotto: Python (base) →
   NumPy → Pandas/Matplotlib/scikit-learn → PyTorch e TensorFlow.
   Palette-locked: box color cream, bordi terracotta/teal/ocra/warm-black,

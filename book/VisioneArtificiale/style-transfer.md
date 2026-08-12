@@ -56,20 +56,21 @@ Formalmente è lo stesso problema di ottimizzazione, con le variabili
 scambiate. L'addestramento classico cerca i parametri migliori a dati fissati,
 
 $$
-\hat{\theta} = \arg\min_{\theta} \; \mathcal{L}(\theta;\, X) ;
+\hat{\theta} = \arg\min_{\theta} \; \mathcal{L}(\theta;\, \mathbf{X}) ;
 $$
 
 qui cerchiamo l'**immagine** migliore a parametri fissati:
 
 $$
-\hat{X} = \arg\min_{X} \; \mathcal{L}(X;\, \theta),
+\hat{\mathbf{X}} = \arg\min_{\mathbf{X}} \; \mathcal{L}(\mathbf{X};\, \theta),
 $$
 
-dove $X$ è il tensore-immagine che stiamo generando e $\theta$ sono i pesi
-(congelati) della VGG. Per autograd non fa differenza: basta dichiarare $X$
+dove $\mathbf{X}$ è il tensore-immagine che stiamo generando e $\theta$ sono i
+pesi (congelati) della VGG. Per autograd non fa differenza: basta dichiarare
+$\mathbf{X}$
 come foglia con `requires_grad_(True)` e la backpropagation restituisce
-$\partial \mathcal{L} / \partial X$, il gradiente della loss **rispetto ai
-pixel**. È lo stesso meccanismo che rende possibili gli *esempi avversari*
+$\partial \mathcal{L} / \partial \mathbf{X}$, il gradiente della loss
+**rispetto ai pixel**. È lo stesso meccanismo che rende possibili gli *esempi avversari*
 (immagini ritoccate in modo impercettibile apposta per ingannare una rete) qui
 usato a fin di bene.
 
@@ -116,10 +117,12 @@ pixel per pixel.
 Lo **stile** è codificato dalle correlazioni tra i canali di uno strato. Allo
 strato $l$ la rete produce $N_l$ mappe di attivazione di
 $M_l = h_l \times w_l$ posizioni ciascuna; srotolando ogni mappa in una riga
-si ottiene la matrice $F^{(l)} \in \mathbb{R}^{N_l \times M_l}$. La **matrice di Gram** è
+si ottiene la matrice $\mathbf{F}^{(l)} \in \mathbb{R}^{N_l \times M_l}$. La
+**matrice di Gram** è
 
 $$
-G^{(l)} = F^{(l)} \left( F^{(l)} \right)^{\top} \in \mathbb{R}^{N_l \times N_l},
+\mathbf{G}^{(l)} = \mathbf{F}^{(l)} \left( \mathbf{F}^{(l)} \right)^{\top}
+\in \mathbb{R}^{N_l \times N_l},
 $$
 
 dove l'elemento $G^{(l)}_{ij}$ è il prodotto scalare tra il canale $i$ e il
@@ -132,17 +135,22 @@ solo le correlazioni.
 
 `````
 
-## La loss composita
+## La loss composita: due giudizi in un voto solo
 
-Per fondere le due cose serve una funzione costo con due termini, uno per
-giudice:
+Per fondere le due cose serve un numero che dica quanto la tela è ancora
+sbagliata, e che sommi i due giudizi del critico. Quel numero, in tutto il
+libro, si chiama **loss** (alla lettera «perdita»): più è alto, più c'è da
+correggere, e il gradiente serve appunto ad abbassarlo. Qui la loss, scritta
+$\mathcal{L}$, è la somma di due voci, una per giudice:
 
 $$
 \mathcal{L} = \alpha \, \mathcal{L}_{\text{contenuto}} + \beta \, \mathcal{L}_{\text{stile}},
 $$
 
-dove $\alpha$ e $\beta$ sono i pesi che bilanciano fedeltà al soggetto e
-fedeltà alla pennellata.
+dove $\mathcal{L}_{\text{contenuto}}$ misura quanto la tela si è allontanata
+dalla foto di partenza, $\mathcal{L}_{\text{stile}}$ quanto la pennellata è
+ancora diversa da quella del quadro, e $\alpha$ e $\beta$ sono i due pesi che
+decidono a quale delle due voci dare più importanza.
 
 `````{tab} Elementare
 
@@ -153,7 +161,11 @@ sopravvento e la scena scivola verso l'astratto. In pratica lo stile parte
 svantaggiato (è più "difficile da accontentare") e gli si dà molto più peso:
 con $\alpha = 1$ e $\beta = 1000$, un errore di stile conta mille volte un
 pari errore di contenuto. Trovare l'equilibrio giusto è questione di gusto,
-letteralmente: si prova e si guarda il risultato.
+letteralmente: si prova e si guarda il risultato. Attenzione a un tranello,
+però: quel mille non è un numero universale. Dipende da come si calcolano le
+due voci, e il codice più avanti le calcola in un altro modo, per cui lì lo
+stesso equilibrio si ottiene con un $\beta$ molto più grande. Il valore va
+riletto ogni volta insieme alla ricetta che lo accompagna.
 
 `````
 
@@ -166,7 +178,8 @@ $$
 \mathcal{L}_{\text{contenuto}} = \frac{1}{2} \sum_{i,j} \left( F^{(l)}_{ij} - P^{(l)}_{ij} \right)^2 ,
 $$
 
-dove $F^{(l)}$ e $P^{(l)}$ sono le mappe di attivazione (canali × posizioni)
+dove $\mathbf{F}^{(l)}$ e $\mathbf{P}^{(l)}$ sono le mappe di attivazione
+(canali × posizioni)
 dell'immagine generata e della foto di contenuto. Il termine di stile
 confronta le matrici di Gram su più strati (nel paper, il primo strato di
 ogni blocco: `conv1_1`, `conv2_1`, `conv3_1`, `conv4_1`, `conv5_1`):
@@ -175,11 +188,15 @@ $$
 \mathcal{L}_{\text{stile}} = \sum_{l} \frac{w_l}{4 N_l^2 M_l^2} \sum_{i,j} \left( G^{(l)}_{ij} - A^{(l)}_{ij} \right)^2 ,
 $$
 
-dove $G^{(l)}$ e $A^{(l)}$ sono le Gram dell'immagine generata e del quadro di
+dove $\mathbf{G}^{(l)}$ e $\mathbf{A}^{(l)}$ sono le Gram dell'immagine
+generata e del quadro di
 stile allo strato $l$, $w_l$ è il peso dello strato e il fattore
 $1/(4 N_l^2 M_l^2)$ normalizza rispetto a numero di canali e posizioni. Usare
 più strati cattura lo stile a più scale: dai granelli di colore alle volute
-larghe. Nel paper il rapporto $\alpha/\beta$ è dell'ordine di $10^{-3}$–$10^{-4}$.
+larghe. Nel paper il rapporto $\alpha/\beta$ è dell'ordine di $10^{-3}$–$10^{-4}$,
+ma quel numero è solidale con **questa** normalizzazione: cambiandola cambia
+il rapporto utile, ed è il motivo per cui il codice della prossima sezione, che
+normalizza in un altro modo, usa un $\beta$ di tutt'altra taglia.
 
 `````
 
@@ -222,7 +239,9 @@ def attivazioni(x):
 def gram(f):
     _, c, h, w = f.shape             # f: (1, c, h, w)
     F = f.view(c, h * w)
-    return F @ F.T / (c * h * w)     # Gram (c, c) normalizzata
+    return F @ F.T / (c * h * w)     # Gram (c, c), normalizzata a modo nostro:
+                                     # non e' la 1/(4 N^2 M^2) del paper, quindi
+                                     # il beta qui sotto non e' quello del paper
 
 # img_contenuto, img_stile: tensori (1, 3, H, W) già ridimensionati
 # e normalizzati con media e deviazione standard di ImageNet
@@ -234,7 +253,9 @@ with torch.no_grad():
 # 2. Si ottimizza l'IMMAGINE: parte dalla foto, il gradiente scende sui pixel
 img = img_contenuto.clone().requires_grad_(True)
 opt = optim.Adam([img], lr=0.02)
-alpha, beta = 1.0, 1e5
+alpha, beta = 1.0, 1e5           # taglia solidale con la gram() qui sopra:
+                                 # il 1000 della sezione precedente vale per
+                                 # la normalizzazione del paper, non per questa
 
 for passo in range(300):
     opt.zero_grad()
@@ -247,12 +268,20 @@ for passo in range(300):
     opt.step()
 ```
 
-Due dettagli pratici. Primo: partire dalla *foto* invece che dal rumore rende
-la convergenza più rapida e il risultato più fedele. Secondo: il paper
+Tre dettagli pratici, e sono anche le tre differenze rispetto al paper. Primo:
+partire dalla *foto* invece che dal rumore fa convergere prima e piega
+leggermente il risultato verso la struttura della foto, ma non lo rende «più
+fedele» in generale (gli autori osservano che l'inizializzazione incide poco
+sull'esito); in cambio si rinuncia alla varietà, perché da
+un'inizializzazione fissa esce sempre la stessa immagine, mentre dal rumore se
+ne possono generare quante se ne vuole. Secondo: il paper
 originale usava **L-BFGS**, che su questo problema converge in meno passi; in
 PyTorch è `optim.LBFGS([img])` con una *closure*, al prezzo di un po' di
 codice in più. Adam funziona bene ed è il gemello del training loop che già
-conosciamo.
+conosciamo. Terzo: gli autori sostituivano i `MaxPool2d` della VGG con
+`nn.AvgPool2d(2, 2)`, che a loro dire dà risultati leggermente più gradevoli
+(le immagini del paper sono fatte così); qui usiamo la `vgg19` di torchvision
+com'è, come fa anche il tutorial ufficiale di PyTorch.
 
 ## L'eredità: da minuti a millisecondi
 
@@ -262,8 +291,9 @@ Alahi e Fei-Fei {cite}`johnson2016perceptual` lo aggirarono con una mossa
 elegante: usare la loss di Gatys non per generare un'immagine, ma per
 **addestrare una rete** feed-forward che trasforma qualunque foto in un dato
 stile. L'ottimizzazione costosa si paga una volta sola, in fase di
-addestramento; dopo, applicare lo stile è una singola passata in avanti: tre
-ordini di grandezza più veloce, abbastanza per un video in tempo reale. È la
+addestramento; dopo, applicare lo stile è una singola passata in avanti: circa
+mille volte più veloce (tre ordini di grandezza), abbastanza per un video in
+tempo reale. È la
 famiglia di tecniche che ha reso possibili app come Prisma, con il compromesso
 di una rete da addestrare *per ciascuno stile*.
 
@@ -308,7 +338,7 @@ nasce qui, da una passeggiata sul Neckar.
   restano congelati e il gradiente scende **sui pixel** dell'immagine.
 - Il **contenuto** vive nelle attivazioni degli strati profondi (*cosa* c'è);
   lo **stile** nelle correlazioni tra canali, riassunte dalla **matrice di
-  Gram** $G = FF^{\top}$ (*come* è dipinto).
+  Gram** $\mathbf{G} = \mathbf{F}\mathbf{F}^{\top}$ (*come* è dipinto).
 - La loss è composita:
   $\mathcal{L} = \alpha\,\mathcal{L}_{\text{contenuto}} + \beta\,\mathcal{L}_{\text{stile}}$,
   con $\alpha$ e $\beta$ a bilanciare fedeltà e pennellata.

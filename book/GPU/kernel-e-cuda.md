@@ -1,8 +1,11 @@
 # Kernel: dare ordini a migliaia di thread
 
-Scrivi `c = a + b` su due tensori PyTorch che vivono sulla GPU, e sembra
+Scrivi `c = a + b` su due **tensori** PyTorch che vivono sulla GPU, e sembra
 l'operazione più banale del mondo: la stessa somma che faresti su due numeri.
-Ma se `a` e `b` hanno un milione di elementi, dietro quella riga innocua è
+(Un tensore è la scatola in cui il deep learning tiene i numeri: una lunga fila
+di valori, o una tabella, o una pila di tabelle, comunque tanti numeri
+raccolti sotto un nome solo. `a + b` somma i due mucchi posizione per
+posizione.) Ma se `a` e `b` hanno un milione di elementi, dietro quella riga innocua è
 appena partito un piccolo programma, lanciato in un colpo solo su un milione
 di minuscoli esecutori che sommano ognuno la propria coppia di numeri, in
 parallelo. Quel programma ha un nome: **kernel**. È il vero protagonista di
@@ -15,7 +18,10 @@ appunto, e come lo si scrive.
 ## Un programma solo, un milione di esecutori
 
 La cosa spiazzante, la prima volta, è che un kernel non descrive cosa fa la
-GPU sull'intero array. Descrive cosa fa **un singolo thread** su *un pezzetto*
+GPU sull'intero **array**, cioè su tutta la fila di numeri messi in ordine, uno
+dopo l'altro, ciascuno con la sua posizione (l'array è la forma più semplice di
+tensore, e nelle prossime pagine le due parole si alterneranno). Descrive cosa
+fa **un singolo thread** su *un pezzetto*
 di dato. Poi lo lanci su una griglia, e l'hardware lo replica identico su
 tutti i thread. Ognuno esegue lo stesso codice, ma su dati diversi, e per
 sapere *su quali* dati, ogni thread comincia col calcolare il proprio indice.
@@ -42,8 +48,11 @@ senza, i soldati si accalcherebbero tutti sulla stessa cassetta.
 Questo stile si chiama **SPMD**, *Single Program, Multiple Data*: un unico
 programma, tante copie in esecuzione su porzioni diverse dei dati.
 Sull'hardware NVIDIA si concretizza nel modello **SIMT** già visto
-nell'architettura (i 32 thread di un warp eseguono la stessa istruzione in
-lockstep). Nel modello CUDA {cite}`nickolls2008scalable` il kernel è una
+nell'architettura: i 32 thread di un warp ricevono la stessa istruzione nello
+stesso momento, ed è l'hardware a raggruppare per l'emissione quelli che si
+trovano allo stesso punto del programma (dal 2017, come si è visto, ciascuno ha
+il proprio program counter, quindi non è più un avanzamento in blocco per
+costruzione). Nel modello CUDA {cite}`nickolls2008scalable` il kernel è una
 funzione (marcata `__global__` nel C per GPU) che riceve implicitamente le
 coordinate del thread che la sta eseguendo, dentro la gerarchia griglia →
 blocco → thread già introdotta. Tre variabili predefinite bastano a
@@ -105,7 +114,9 @@ simboli; il codice si può anche solo guardare da lontano, cogliendone la taglia
 kernel Triton riesca a stare in così poche righe; la lettura riga per riga sta
 nella scheda Superiore.
 
-```python
+```{code-block} python
+:class: pt-non-eseguibile
+
 import torch
 import triton
 import triton.language as tl
@@ -177,10 +188,12 @@ a TorchInductor.
 
 ## Ogni lancio si paga: perché fondere
 
-Perché prendersi la briga di scrivere un kernel fuso come quello, invece di tre
-righe PyTorch pulite `y = torch.relu(a * x + b)`? Perché quelle tre righe, in
-esecuzione *eager*, non sono affatto una cosa sola: sono tre kernel distinti,
-lanciati uno dopo l'altro, e ogni lancio ha un prezzo.
+Perché prendersi la briga di scrivere un kernel fuso come quello, invece della
+riga PyTorch pulita `y = torch.relu(a * x + b)`? Perché quella riga contiene
+**tre** operazioni (moltiplica, somma, azzera i negativi) e nel modo di
+eseguire di partenza, che si chiama *eager*, «impaziente», non sono affatto una
+cosa sola: sono tre kernel distinti, lanciati uno dopo l'altro, e ogni lancio
+ha un prezzo.
 
 `````{tab} Elementare
 
@@ -229,8 +242,8 @@ diverse dal codice ai kernel.
 `````{tab} Elementare
 
 Torniamo alle telefonate per piazzare gli ordini. La prima strada, quella di
-partenza (si chiama *eager*, «impaziente»), esegue il tuo programma una riga
-alla volta: ogni riga è una telefonata, un ordine piazzato e subito eseguito.
+partenza (l'*eager*, «impaziente», di poco fa), esegue il tuo programma
+un'operazione alla volta: ognuna è una telefonata, un ordine piazzato e subito eseguito.
 È comodissima: vedi il risultato di ogni passo appena lo scrivi, e se
 qualcosa va storto capisci subito quale riga è stata. Ma paghi il conto
 appena visto: una telefonata e un viaggio in memoria per ogni riga.
@@ -271,6 +284,37 @@ sforna sono scritti nel linguaggio che abbiamo appena letto.
 
 `````
 
+Con questo il quadro è completo: sappiamo *chi* esegue (le officine e i plotoni
+da 32), *da dove* arrivano i dati (la piramide della memoria) e *che cosa* si
+esegue (il kernel). Resta la domanda che tiene insieme tutte e tre le risposte:
+com'è fatto il kernel su cui una rete neurale spende quasi tutto il suo tempo,
+quello della moltiplicazione fra matrici. È la prossima sezione.
+
+`````{tab} Elementare
+```{admonition} Da ricordare
+:class: important
+- Un **kernel** è il programmino che gira sulla GPU. La cosa spiazzante è che
+  non descrive il lavoro intero: descrive quello di **un solo** esecutore su un
+  pezzetto di dato, e la GPU lo fa eseguire identico a un'intera folla.
+- La riga più importante di un kernel è quella in cui ogni esecutore **legge il
+  proprio numero** e capisce di quale pezzetto occuparsi: è il numero cucito
+  sulla divisa dei soldati che consegnano i volantini. Senza, si
+  accalcherebbero tutti sulla stessa cassetta.
+- **Triton** {cite}`tillet2019triton` è un modo di scrivere questi programmini
+  direttamente in Python, dando l'ordine a una squadra invece che al singolo
+  esecutore. È anche la lingua in cui PyTorch, quando gli si chiede di
+  ottimizzare, si scrive da sé i propri kernel.
+- Ogni volta che si lancia un kernel si paga una **telefonata**: un costo fisso
+  che c'è sia per un ordine grande sia per uno minuscolo. E a ogni telefonata i
+  dati fanno un viaggio di andata e ritorno dalla memoria.
+- **Fondere** più operazioni in un kernel solo vuol dire fare una telefonata al
+  posto di tre e un viaggio al posto di tre: stesso risultato, molto meno
+  tempo. È il grosso di quello che fa quella riga di `torch.compile` vista nel
+  capitolo su PyTorch.
+```
+`````
+
+`````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
 - Un **kernel** è il programma che gira sulla GPU: descrive cosa fa *un* thread
@@ -291,3 +335,4 @@ sforna sono scritti nel linguaggio che abbiamo appena letto.
   kernel elementwise per il resto); con `torch.compile` le catene elementwise
   vengono **fuse** in kernel Triton, riducendo lanci e traffico di memoria.
 ```
+`````

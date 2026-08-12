@@ -96,11 +96,15 @@ sbagliato in senso fisico, e va fatto dopo averli riportati in scala lineare
 
 `````
 
-Stimare $\mathbf{K}$ e i coefficienti di distorsione si chiama
-**calibrazione**, e si fa mostrando alla fotocamera un oggetto di geometria
-nota, tipicamente una scacchiera. Non è un dettaglio da laboratorio: senza
-$\mathbf{K}$ i pixel restano numeri senza scala, e nessuna delle ricostruzioni
-che seguono è possibile in unità metriche.
+Prima di fare qualunque conto, insomma, la fotocamera va **misurata**: bisogna
+sapere quanto ingrandisce e dove cade esattamente il centro dell'immagine, e
+bisogna sapere di quanto il suo obiettivo incurva le linee rette. Quei numeri,
+presi insieme, descrivono com'è fatta la fotocamera e si chiamano i suoi
+**parametri intrinseci**; ricavarli si chiama **calibrazione**, e si fa mostrando alla
+fotocamera un oggetto di cui si conoscono le misure, tipicamente una
+scacchiera stampata, e guardando come viene deformata. Non è un dettaglio da
+laboratorio: senza quelle misure i pixel restano numeri senza scala, e nessuna
+delle ricostruzioni che seguono può dare una risposta in metri.
 
 ## Trovare la stessa cosa in due foto
 
@@ -147,7 +151,13 @@ $$
 
 e cerca i punti dove **entrambi** gli autovalori sono grandi (variazione in
 ogni direzione, cioè un angolo), distinguendoli da quelli dove uno solo lo è
-(un bordo, ambiguo lungo la sua direzione) {cite}`harris1988combined`.
+(un bordo, ambiguo lungo la sua direzione) {cite}`harris1988combined`. Senza
+però calcolarli, ed è il contributo del paper: la risposta
+$R = \det(\mathbf{M}) - k\,\mathrm{tr}(\mathbf{M})^2$ (con $k \approx 0{,}04$)
+dice la stessa cosa a costo di due moltiplicazioni, perché
+$\det(\mathbf{M}) = \lambda_1\lambda_2$ e $\mathrm{tr}(\mathbf{M}) = \lambda_1
++ \lambda_2$. Guardare direttamente $\min(\lambda_1, \lambda_2)$ è invece la
+variante di Shi e Tomasi (1994), che è un rilevatore diverso.
 
 Il **descrittore**: SIFT di David Lowe cerca gli estremi di una differenza di
 gaussiane su più scale, il che dà la posizione **e** la scala, assegna
@@ -158,11 +168,17 @@ rotazione per costruzione, robustezza all'illuminazione per normalizzazione
 
 La **stima robusta**: RANSAC di Fischler e Bolles (1981) campiona il minimo
 numero di corrispondenze necessarie a determinare il modello (quattro per
-un'omografia, otto per la geometria di due viste), conta gli *inlier* entro
+un'omografia; **sette** per la matrice fondamentale, che di gradi di libertà
+ne ha sette, o cinque per l'essenziale se le fotocamere sono calibrate), conta
+gli *inlier* entro
 una soglia, e itera. Con una frazione $w$ di corrispondenze buone e un modello
 che ne richiede $s$, la probabilità di aver estratto almeno un campione
 interamente pulito in $N$ tentativi è $1 - (1 - w^s)^N$: si sceglie $N$ per
-portarla dove serve {cite}`fischler1981random`.
+portarla dove serve {cite}`fischler1981random`. Ed è qui che il minimo conta
+davvero, perché $s$ sta all'esponente: con $w = 0{,}5$ e obiettivo $0{,}99$
+servono circa $1177$ tentativi con $s = 8$, $588$ con $s = 7$ e $146$ con
+$s = 5$. Usare l'algoritmo a otto punti dentro RANSAC, come si legge spesso,
+costa il doppio dei campioni necessari.
 
 `````
 
@@ -173,15 +189,18 @@ raffinatissima, frutto di vent'anni di lavoro, e sono esattamente ciò che la
 rivoluzione delle reti convoluzionali ha reso in gran parte superfluo. Quando
 diciamo che le feature si sono smesse di disegnare e si sono cominciate a
 imparare, **questo** è ciò che si è smesso di disegnare. Il confronto
-funziona anche al contrario: qui la geometria resta, ed è ancora quella di
-Longuet-Higgins. Le reti hanno sostituito la parte fragile, non quella
-dimostrata.
+funziona anche al contrario: la geometria, invece, è rimasta, ed è ancora
+quella dimostrata all'inizio degli anni Ottanta. Le reti hanno sostituito la
+parte fragile, non quella dimostrata.
 
 ## Il vincolo epipolare: da un piano a una retta
 
-Trovare le corrispondenze sarebbe un problema quadratico (ogni pixel della
-prima immagine contro tutti i pixel della seconda) se non fosse per una
-proprietà geometrica che lo riduce di un'intera dimensione.
+Trovare le corrispondenze costerebbe carissimo: ogni pixel della prima immagine
+andrebbe confrontato con **tutti** i pixel della seconda, e siccome i pixel
+sono un milione per parte i confronti sarebbero mille miliardi (per questo si
+dice che il costo è *quadratico*: raddoppiando i pixel, il lavoro quadruplica).
+Non è così, grazie a una proprietà geometrica che riduce la ricerca di
+un'intera dimensione.
 
 ```{figure} ../figures/vincolo-epipolare.svg
 :name: fig-vincolo-epipolare
@@ -218,8 +237,15 @@ Il piano che contiene i due centri ottici e il punto $\mathbf{p}$ si chiama
 **piano epipolare**; la sua intersezione con ciascun piano immagine è la
 **retta epipolare** corrispondente. Tutte le rette epipolari di un'immagine
 passano per uno stesso punto, l'**epipolo**, che è la proiezione dell'altro
-centro ottico (e può cadere fuori dall'immagine, o all'infinito quando gli
-assi ottici sono paralleli).
+centro ottico e può cadere fuori dall'immagine. Va all'infinito quando è la
+**base**, cioè il segmento che unisce i due centri ottici, a essere parallela
+al piano immagine: è il caso della coppia stereo affiancata, ed è il motivo per
+cui la rettificazione del paragrafo seguente consiste proprio nel mandare gli
+epipoli all'infinito. Non c'entrano gli assi ottici: due fotocamere con assi
+perfettamente paralleli che si muovono *in avanti* hanno l'epipolo dentro
+l'immagine, nel punto da cui la scena sembra espandersi (è il caso di ogni
+telecamera montata su un'auto), e due fotocamere con assi divergenti ma base
+laterale ce l'hanno all'infinito.
 
 In coordinate normalizzate, con fotocamere calibrate, il vincolo si scrive con
 la **matrice essenziale** $\mathbf{E} = [\mathbf{t}]_\times \mathbf{R}$,
@@ -316,12 +342,17 @@ da grandi collezioni di scene.
 
 `````
 
-## Quando a muoversi è la scena: il flusso ottico
+## Quando di mezzo c'è il tempo: il flusso ottico
 
 La stereo confronta due immagini prese nello stesso istante da posizioni
-diverse. Il **flusso ottico** confronta due immagini prese dalla stessa
-posizione in istanti diversi, e stima per ogni pixel di quanto si è spostato.
-È lo stesso problema di corrispondenza, senza il regalo della retta epipolare.
+diverse. Il **flusso ottico** confronta due immagini prese in istanti diversi e
+stima per ogni pixel di quanto si è spostato, senza chiedersi se a muoversi sia
+la scena o la fotocamera: le due cose, dall'immagine sola, sono
+indistinguibili. È lo stesso problema di corrispondenza, ma il regalo della
+retta epipolare qui in generale non c'è, perché il movimento proprio della
+fotocamera non è noto e la scena può non essere rigida. (Quando invece lo è, e
+il moto è noto, la retta epipolare torna eccome: è la base dello stereo da
+movimento.)
 
 `````{tab} Elementare
 
@@ -375,12 +406,50 @@ del 1981.
 
 `````
 
+Il tubo di cartone e l'equazione a due incognite sono la stessa cosa, e
+{numref}`fig-apertura-flusso` è il punto del capitolo in cui conviene guardarla
+muoversi invece che leggerla: il palo si sposta, e la finestrella di sinistra
+non riesce a dire di quanto.
+
+```{figure} ../figures/apertura-flusso.svg
+:name: fig-apertura-flusso
+:alt: "Due finestrelle rotonde affiancate, e in ciascuna scorre lo stesso palo inclinato che si muove verso destra. A sinistra si vede solo un tratto di bordo, e la freccia di ciò che si misura punta in diagonale, più corta della freccia del movimento vero, che è orizzontale. A destra si vede la punta del palo, e la freccia del misurato coincide con quella del movimento vero."
+:width: 94%
+
+Lo stesso palo e lo stesso identico movimento, guardati da due finestrelle
+diverse. A sinistra si vede solo un tratto di bordo, e di quel movimento si
+recupera la sola componente perpendicolare al bordo. A destra la finestrella
+contiene la punta, e non manca più niente.
+```
+
+I due numeri sotto le finestrelle sono la formula, non un'illustrazione. Il
+palo è inclinato di 62 gradi e si sposta di 96 pixel in orizzontale; la
+componente lungo la normale al bordo vale $96 \sin 62^\circ = 85$ pixel, ed è
+tutto ciò che quell'equazione può restituire. Quello che si perde non sono
+undici pixel ma quarantacinque, cioè $96 \cos 62^\circ$, e si perdono in
+un'altra direzione: sono scivolati **lungo** il bordo, dove il palo, muovendosi,
+non cambia niente di ciò che si vede. Le due componenti non si sommano come
+numeri, si sommano come frecce ad angolo retto ($\sqrt{85^2 + 45^2} \approx 96$,
+e l'approssimazione è solo negli arrotondamenti), ed è
+anche il motivo per cui a occhio l'errore sembra piccolo mentre non lo è. Ed è
+la ragione per cui la
+finestra di Lucas e Kanade va messa dove c'è uno spigolo: non perché lì
+l'immagine sia più nitida, ma perché lì le due equazioni ci sono davvero
+entrambe.
+
 ## Molte viste: structure from motion e SLAM
 
-Con due immagini si ricava la forma della scena a meno di un fattore di scala
+Con due immagini, **e le fotocamere calibrate**, si ricava la forma della scena
+a meno di un fattore di scala
 globale (le due viste non possono sapere se stanno guardando un palazzo da
 lontano o un plastico da vicino: serve una misura esterna, un oggetto di
-dimensione nota, un'unità inerziale). Con molte immagini si può fare di più, e
+dimensione nota, un'unità inerziale). Senza calibrazione l'ambiguità è molto
+più larga: si ottiene una ricostruzione *proiettiva*, che non conserva né gli
+angoli né i rapporti fra lunghezze, ed è come guardare il palazzo attraverso
+una deformazione prospettica arbitraria. Per riportarla a una forma metrica
+bisogna stimare gli intrinseci a posteriori, ed è quello che si chiama
+auto-calibrazione: un'altra ragione per cui vale la pena calibrare prima. Con
+molte immagini si può fare di più, e
 il problema prende il nome di **structure from motion**: stimare insieme
 *dove erano le fotocamere* e *dov'erano i punti*, avendo solo le foto.
 
@@ -432,11 +501,13 @@ scala), e la scala globale resta **indeterminata** senza informazione esterna.
 `````
 
 Questa sezione, apparentemente la più tecnica, è quella che serve di più
-subito dopo: le pose delle fotocamere che escono da una ricostruzione
-*structure from motion* sono l'ingresso obbligatorio dei metodi di rendering
-neurale della sezione seguente. Chi ha provato a costruire un NeRF da un video
-e ha ottenuto una nuvola confusa, nove volte su dieci non ha sbagliato la
-rete: ha sbagliato le pose.
+subito dopo. Le **pose** delle fotocamere (dove stava e da che parte guardava
+ognuna, che è quello che una ricostruzione *structure from motion* calcola
+insieme ai punti) sono l'ingresso obbligatorio dei metodi di rendering
+neurale della sezione seguente, quelli che ricostruiscono una scena
+addestrando una piccola rete a rispondere «da qui, guardando di là, che colore
+si vede?». Chi ha provato a costruirne uno da un video e ha ottenuto una nuvola
+confusa, nove volte su dieci non ha sbagliato la rete: ha sbagliato le pose.
 
 ## Profondità da una sola immagine
 
@@ -501,9 +572,13 @@ multi-vista per correggerla.
 
 Il bello di questa sezione è che tutto ciò che afferma si può controllare con
 un calcolo, senza addestrare niente. Costruiamo una scena finta di cui
-conosciamo le risposte, proiettiamola in due fotocamere e verifichiamo due
-cose: che la formula della disparità restituisce la profondità vera, e che il
-vincolo epipolare vale davvero.
+conosciamo le risposte, proiettiamola in due fotocamere e verifichiamo le due
+affermazioni centrali. La prima è quella del dito davanti al naso: se misuro di
+quanto un punto **salta** fra la prima e la seconda immagine, posso risalire a
+quanto è lontano. La seconda è quella della retta: il punto che nella prima
+immagine sta in un certo posto, nella seconda deve cadere su una riga precisa,
+calcolabile in anticipo. Se sono vere davvero, il computer deve ridarci i
+numeri esatti da cui siamo partiti.
 
 ```python
 import numpy as np
@@ -542,21 +617,26 @@ print("errore massimo    :", np.abs(Z_stimata - P[:, 2]).max())
 print("righe uguali (rettificato):", np.allclose(u1[:, 1], u2[:, 1]))
 ```
 
-Le due colonne coincidono e l'errore massimo è dell'ordine di $10^{-15}$, cioè
-la precisione della macchina: $Z = fB/d$ non è un'approssimazione, è
-un'identità. E `righe uguali` conferma che nel caso rettificato la
-corrispondenza si cerca sulla **stessa riga**.
+Le due colonne coincidono, e l'errore massimo è dell'ordine di $10^{-15}$: cioè
+zero, a meno degli arrotondamenti che il computer fa quando scrive un numero
+con la virgola. La regola «profondità uguale focale per base diviso il salto»
+($Z = fB/d$) non è un'approssimazione che funziona più o meno bene: è
+un'identità, e o si applica alla lettera o non si applica affatto. E `righe
+uguali` conferma l'altra cosa che il testo aveva promesso: con le due
+fotocamere affiancate e allineate, il gemello di un pixel sta sulla **stessa
+riga** dell'altra immagine, così che a cercarlo basta scorrere quella.
 
-Ora il caso generale, con la seconda fotocamera ruotata di otto gradi. Qui non
+Ora il caso generale, con la seconda fotocamera ruotata di otto gradi attorno
+alla verticale, come due telecamere puntate un po' l'una verso l'altra. Qui non
 c'è più nessuna riga comoda, ma il vincolo epipolare vale lo stesso.
 
 ```python
 ang = np.deg2rad(8.0)
-Rz = np.array([[ np.cos(ang), 0, np.sin(ang)],
-               [ 0,           1, 0          ],
-               [-np.sin(ang), 0, np.cos(ang)]])
+Ry = np.array([[ np.cos(ang), 0, np.sin(ang)],   # rotazione attorno all'asse y
+               [ 0,           1, 0          ],   # (la verticale): la seconda riga
+               [-np.sin(ang), 0, np.cos(ang)]])  # e colonna restano identiche
 t3 = np.array([-B, 0.02, 0.0])
-u3 = proietta(K, Rz, t3, P)
+u3 = proietta(K, Ry, t3, P)
 
 def antisimmetrica(v):
     """La matrice che realizza il prodotto vettoriale: [v]_x @ w == np.cross(v, w)."""
@@ -564,7 +644,7 @@ def antisimmetrica(v):
                      [v[2], 0, -v[0]],
                      [-v[1], v[0], 0]])
 
-F = np.linalg.inv(K).T @ antisimmetrica(t3) @ Rz @ np.linalg.inv(K)
+F = np.linalg.inv(K).T @ antisimmetrica(t3) @ Ry @ np.linalg.inv(K)
 
 def omogenee(u):
     return np.column_stack([u, np.ones(len(u))])
@@ -573,12 +653,53 @@ residuo = np.einsum('ij,jk,ik->i', omogenee(u3), F, omogenee(u1))
 print("residuo epipolare :", np.abs(residuo).max())
 ```
 
-Il residuo massimo è dell'ordine di $10^{-17}$. Per ognuno degli otto punti,
-il pixel nella seconda immagine sta **esattamente** sulla retta
-$\mathbf{F}\tilde{\mathbf{x}}_L$ calcolata dalla prima. Nessuna rete, nessun
+Il residuo massimo è dell'ordine di $10^{-17}$, cioè ancora una volta zero. Il
+«residuo» è quanto la verifica sbaglia: se valesse $0{,}3$ vorrebbe dire che il
+pixel cade a fianco della riga prevista, e qui invece per ognuno degli otto
+punti il pixel nella seconda immagine sta **esattamente** sulla retta calcolata
+dalla prima. Nessuna rete, nessun
 dato: è un'identità algebrica che dipende solo da come è fatta la proiezione,
 ed è la ragione per cui questa parte della visione artificiale non è
 invecchiata.
+
+`````{tab} Elementare
+
+```{admonition} Da ricordare
+:class: important
+- **Scattare una foto butta via la distanza.** Un pixel dice da che parte
+  guardare, non quanto lontano: la mano vicina e la Torre di Pisa lontana, se
+  sono allineate con l'obiettivo, finiscono nello stesso punto della foto. Non
+  è un'informazione nascosta da scovare, è un'informazione cancellata da
+  ricostruire.
+- Prima di qualunque conto la fotocamera va **misurata** (quanto ingrandisce,
+  dove cade il centro dell'immagine, quanto l'obiettivo incurva le rette), e
+  si fa fotografando una scacchiera. Senza quelle misure nessuna risposta può
+  essere in metri.
+- Con due foto la ricerca del punto corrispondente non è una caccia in tutta
+  l'immagine: **è una caccia lungo una riga**, e quale riga si calcola in
+  anticipo dalla posizione reciproca delle due fotocamere. Se le si monta
+  affiancate e allineate, quella riga è la stessa riga di pixel.
+- La distanza si legge nel **salto** di un punto fra le due immagini, ed è una
+  relazione inversa: raddoppiando la distanza il salto si dimezza. Perciò la
+  visione a due occhi è precisa da vicino e vaga da lontano, e allontanare le
+  telecamere aumenta la precisione ma restringe la zona che entrambe vedono.
+- Lo stesso ragionamento vale nel tempo invece che nello spazio (guardare un
+  palo dal finestrino di un treno), con due limiti da tenere a mente: su una
+  superficie senza disegni non c'è niente da riconoscere, e guardando solo un
+  pezzo di bordo non si vede il movimento lungo il bordo stesso.
+- Con molte foto si stima tutto insieme, **dov'erano le fotocamere e dov'erano
+  i punti**, aggiustando finché ogni punto non cade dove il modello dice che
+  dovrebbe cadere. Una cosa resta comunque indeterminata: quanto è grande la
+  scena, cioè se sia un palazzo o un plastico.
+- Da una foto sola la distanza è indeterminata per legge, eppure le reti la
+  stimano bene: non la calcolano, la **riconoscono**, perché hanno visto
+  milioni di scene. Ottimo in pratica, ingannabile per costruzione (una
+  fotografia di una fotografia le inganna), e cieco alla scala.
+```
+
+`````
+
+`````{tab} Superiore
 
 ```{admonition} Da ricordare
 :class: important
@@ -591,17 +712,23 @@ invecchiata.
   i pixel non hanno scala.
 - Il **vincolo epipolare** riduce la ricerca della corrispondenza da un piano
   a una retta: $\tilde{\mathbf{x}}_R^\top \mathbf{F} \tilde{\mathbf{x}}_L = 0$.
-  Rettificando le immagini quelle rette diventano orizzontali.
+  Rettificando le immagini quelle rette diventano orizzontali, il che equivale
+  a mandare gli epipoli all'infinito. Dentro RANSAC, il minimo di
+  corrispondenze è sette per $\mathbf{F}$ e cinque per $\mathbf{E}$, non otto.
 - Nel caso rettificato, $Z = fB/d$: la profondità è **inversamente**
   proporzionale alla disparità, quindi la stereo è precisa da vicino e vaga da
   lontano, e l'errore cresce come $Z^2$.
-- Il **flusso ottico** è lo stesso problema nel tempo; la sua equazione ha due
+- Il **flusso ottico** è lo stesso problema nel tempo, indifferente a chi si
+  muova fra scena e fotocamera; la sua equazione ha due
   incognite per pixel (problema dell'apertura), e si chiude con un'ipotesi
   locale (Lucas-Kanade) o globale (Horn-Schunck).
 - **Structure from motion** stima insieme pose e punti minimizzando l'errore
-  di riproiezione (*bundle adjustment*); la scala globale resta indeterminata.
-  Le sue pose sono l'ingresso obbligatorio del rendering neurale.
+  di riproiezione (*bundle adjustment*); con intrinseci noti la scala globale
+  resta indeterminata, senza calibrazione l'ambiguità è l'intero gruppo
+  proiettivo. Le sue pose sono l'ingresso obbligatorio del rendering neurale.
 - La profondità **da una sola immagine** è matematicamente indeterminata: le
   reti non la calcolano, applicano un prior appreso. Ottimo in pratica,
   ingannabile per costruzione, e cieco alla scala assoluta.
 ```
+
+`````

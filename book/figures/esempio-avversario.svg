@@ -85,7 +85,7 @@
     <rect x="408" y="196" width="28" height="28" fill="#C9A961" fill-opacity="0.20"/>
     <rect x="436" y="196" width="28" height="28" fill="#2D5A5C" fill-opacity="0.26"/>
   </g>
-  <text class="lbl" x="380" y="262">ε · segno(∇ₓ 𝓛)</text>
+  <text class="lbl" x="380" y="262">ρ · segno(∇ₓ 𝓛)</text>
   <text class="cap" x="380" y="282">rumore impercettibile</text>
 
   <!-- = -->

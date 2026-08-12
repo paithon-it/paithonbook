@@ -11,11 +11,19 @@ learning non serve essere matematici, ma per *capirlo* serve riconoscere le
 poche idee matematiche che vi ritornano di continuo. Sono sorprendentemente
 poche. Un modello di deep learning con miliardi di parametri (le "manopole"
 interne che l'addestramento regola da solo), quando lo si smonta, parla tre
-lingue soltanto: **algebra lineare** (per rappresentare i dati e i pesi),
-**analisi** (per capire in che direzione migliorare) e **probabilità** (per
-convivere con l'incertezza). A tenere insieme il tutto quando i conti passano
-dalla carta al calcolatore c'è una quarta voce, discreta ma decisiva:
-l'**analisi numerica**.
+lingue soltanto: **algebra lineare** (per rappresentare i dati e i **pesi**,
+cioè i numeri per cui il modello moltiplica ciò che riceve), **analisi** (il
+ramo della matematica che studia come cambia una quantità quando se ne muove
+un'altra: serve a capire in che direzione migliorare) e **probabilità** (per
+convivere con l'incertezza). A quelle tre se ne aggiungono due, che entrano in
+gioco quando i conti passano dalla carta al calcolatore: la **teoria
+dell'informazione**, che dà il modo di misurare quanto un modello sbaglia, e
+l'**analisi numerica**, che si occupa di ciò che succede ai numeri dentro una
+macchina che ne può scrivere solo un numero finito di cifre.
+
+Il titolo dice «richiami» per tradizione editoriale, non perché tu debba già
+saperle: ogni idea qui dentro è ripresa da capo, e chi non le ha mai viste è
+esattamente il lettore per cui questo capitolo è scritto.
 
 Questo capitolo non è un corso di matematica: è una cassetta degli attrezzi.
 Prendiamo solo gli strumenti che useremo davvero nei capitoli successivi, e li
@@ -37,7 +45,10 @@ esprimere quella sicurezza è la **probabilità**.
 
 Le tre lingue, insieme, coprono l'intero ciclo di vita di un modello:
 *rappresentare* i dati, *ottimizzare* i parametri, *quantificare* la fiducia
-nel risultato.
+nel risultato. Le altre due voci servono al momento in cui quel ciclo si
+mette in moto davvero: la teoria dell'informazione per dire *quanto* il
+modello sbaglia con un numero solo, l'analisi numerica perché quel numero lo
+calcola una macchina con le cifre contate.
 
 ## Come è organizzato il capitolo
 
@@ -47,11 +58,15 @@ nel risultato.
   bussola che indica dove migliorare, e la discesa del gradiente che la segue.
 - **Probabilità e statistica**: variabili aleatorie, valore atteso e varianza,
   le distribuzioni ricorrenti, il teorema di Bayes.
+- **Teoria dell'informazione**: entropia, cross-entropia e divergenza KL,
+  cioè da dove viene la funzione di costo con cui si addestra quasi ogni
+  classificatore.
 - **Analisi numerica**, cosa cambia quando i numeri hanno una precisione
   finita: stabilità, overflow, il trucco del *log-sum-exp*.
-- **La matematica di un modello linguistico**: le quattro voci rimesse
-  insieme. Un LLM smontato con i soli attrezzi di questo capitolo, che sono
-  poi gli unici che servono.
+- **La matematica di un modello linguistico**: le cinque voci rimesse
+  insieme. Un modello linguistico (in inglese *large language model*, da cui
+  la sigla **LLM** che si incontra ovunque) smontato con i soli attrezzi di
+  questo capitolo, che sono poi gli unici che servono.
 
 Ogni sezione segue la regola del libro: una spiegazione **Elementare** con
 un'analogia concreta, e una **Superiore** con la notazione e le formule per

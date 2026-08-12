@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  paithon book — figura: perche' normalizzare aiuta l'ottimizzazione.
+  paithon book, figura: perche' normalizzare aiuta l'ottimizzazione.
   A sinistra dati grezzi (curve di livello allungate, problema mal
   condizionato): la discesa del gradiente rimbalza a zig-zag. A destra dati
   standardizzati (curve quasi tonde, ben condizionato): discesa quasi diretta.

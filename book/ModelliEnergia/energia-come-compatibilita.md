@@ -4,17 +4,29 @@ Nel 2006 Yann LeCun, con Sumit Chopra, Raia Hadsell, Marc'Aurelio Ranzato e Fu
 Jie Huang, pubblica un lungo tutorial {cite}`lecun2006tutorial` che compie il
 gesto inverso rispetto a Hopfield: non costruire una rete a energia, ma
 mostrare che *quasi ogni modello di apprendimento può essere letto come una
-funzione di energia*. La ricetta è di una generalità spiazzante. Si prende una
-funzione $E(x, y)$ che assegna un numero a ogni coppia formata da un input $x$
-e una possibile risposta $y$: energia bassa se la coppia è **compatibile**
-(questa immagine con questa etichetta, questa frase con questa traduzione,
-questo presente con questo futuro), alta se non lo è. Rispondere significa
-cercare la $y$ che rende l'energia minima; imparare significa dare forma alla
-superficie, **abbassare** l'energia delle coppie giuste e **alzarla**, o
-tenerla alta, per quelle sbagliate. La memoria di Hopfield è il caso speciale
-in cui $x$ è il ricordo corrotto e $y$ quello completo; la macchina di
-Boltzmann è il caso in cui sull'energia si costruisce una probabilità. Ma la
-cornice è molto più larga, e contiene una liberazione.
+funzione di energia*. La ricetta è di una generalità spiazzante. Invece di
+dare un'energia a una configurazione sola, la si dà a una **coppia**: da una
+parte quello che si ha davanti (una foto, una frase, il presente), dall'altra
+una risposta possibile (l'etichetta, la traduzione, il futuro). Energia bassa
+se i due sono **compatibili**, cioè se stanno bene insieme; alta se non
+c'entrano niente l'uno con l'altra. In simboli si scrive $E(\mathbf{x}, y)$, dove $\mathbf{x}$ è
+quello che si ha davanti e $y$ la risposta candidata. Rispondere significa
+cercare la risposta che rende l'energia minima; imparare significa dare forma
+alla superficie, **abbassare** l'energia delle coppie giuste e **alzarla**, o
+tenerla alta, su quelle sbagliate.
+
+La macchina di Boltzmann è il caso in cui sull'energia si costruisce una
+probabilità. La memoria di Hopfield è un caso più sottile, e vale la pena non
+liquidarlo: lì l'energia ha una variabile sola, non due. L'indizio corrotto
+non compare nella formula dell'energia e non sposta il paesaggio di un
+millimetro: sceglie soltanto il punto da cui far partire la discesa. E la
+risposta non è il minimo più basso di tutti (se lo fosse, quella rete
+restituirebbe sempre lo stesso ricordo qualunque indizio le si desse, e non
+sarebbe una memoria associativa): è il fondovalle in cui si finisce partendo
+di lì. Il tutorial lo mette in conto, e anzi lo dice: in molte situazioni
+reali la procedura d'inferenza dà un risultato approssimato, che può essere o
+non essere il minimo globale. Ma la cornice è molto più larga, e contiene una
+liberazione.
 
 `````{tab} Elementare
 
@@ -45,13 +57,13 @@ fisicamente impossibile (vincolarlo *per costruzione*).
 `````{tab} Superiore
 
 Un modello a energia (*energy-based model*, EBM) è una funzione
-$E_\theta(x, y)$ a valori reali, con parametri $\theta$, che misura quanto
-$x \in \mathcal{X}$ e $y \in \mathcal{Y}$ siano compatibili: valori bassi per
+$E_\theta(\mathbf{x}, y)$ a valori reali, con parametri $\theta$, che misura quanto
+$\mathbf{x} \in \mathcal{X}$ e $y \in \mathcal{Y}$ siano compatibili: valori bassi per
 le coppie compatibili, alti per le altre. L'inferenza è un problema di
 ottimizzazione:
 
 $$
-\hat{y} = \arg\min_{y \in \mathcal{Y}} E_\theta(x, y),
+\hat{y} = \arg\min_{y \in \mathcal{Y}} E_\theta(\mathbf{x}, y),
 $$
 
 dove $\hat{y}$ è la risposta predetta: nessuna somma su $\mathcal{Y}$, solo
@@ -59,14 +71,14 @@ una ricerca del minimo. Un modello probabilistico si ottiene come caso
 particolare tramite la distribuzione di Gibbs:
 
 $$
-P_\theta(y \mid x) = \frac{e^{-\beta E_\theta(x, y)}}
-{\displaystyle\int_{\mathcal{Y}} e^{-\beta E_\theta(x, y')} \, dy'},
+P_\theta(y \mid \mathbf{x}) = \frac{e^{-\beta E_\theta(\mathbf{x}, y)}}
+{\displaystyle\int_{\mathcal{Y}} e^{-\beta E_\theta(\mathbf{x}, y')} \, dy'},
 $$
 
 dove $\beta > 0$ è una temperatura inversa e il denominatore è la funzione di
-partizione $Z_\theta(x)$, l'integrale (o la somma) su *tutte* le risposte
+partizione $Z_\theta(\mathbf{x})$, l'integrale (o la somma) su *tutte* le risposte
 possibili. Quando $\mathcal{Y}$ è grande o continuo e ad alta dimensione ($y$
-= un'immagine, un video, una frase), $Z_\theta(x)$ è intrattabile: è il muro
+= un'immagine, un video, una frase), $Z_\theta(\mathbf{x})$ è intrattabile: è il muro
 della sezione precedente. La tesi del tutorial è che per decidere, ordinare o
 pianificare serve solo l'$\arg\min$, che di $Z$ non ha alcun bisogno:
 rinunciare alla normalizzazione non è una perdita ma un vantaggio
@@ -76,16 +88,18 @@ computazionale.
 
 ## Il collasso, e le due famiglie di rimedi
 
-Il prezzo della libertà è il **collasso**. Se la loss si limitasse ad
-abbassare l'energia sulle coppie del training set, la soluzione banale sarebbe
-un'energia costante e bassa ovunque: superficie piatta, modello inutile. Il
-tutorial lo dice in modo che vale la pena riportare, perché è una lezione di
-metodo: nella sua tabella comparativa delle funzioni di perdita, ognuna è
-accompagnata dal **margine** che le permette di evitare il collasso, e la
-prima della lista (la *energy loss*, quella che si limita ad abbassare
-l'energia sui dati) ha in quella colonna la parola «none»
-{cite}`lecun2006tutorial`. Non è un difetto sottile da manuale avanzato: è la
-prima riga della tabella.
+Il prezzo della libertà è il **collasso**. Se durante l'addestramento ci si
+limitasse ad abbassare l'energia sulle coppie giuste che si hanno in mano, la
+soluzione più comoda per il modello sarebbe abbassarla dappertutto:
+superficie piatta, energia bassa su tutto, modello inutile. Il tutorial lo
+dice in un modo che vale la pena riportare, perché è una lezione di metodo.
+Nella sua tabella comparativa mette in fila i modi di misurare l'errore
+durante l'addestramento e, accanto a ciascuno, la difesa che quel modo offre
+contro il collasso (in gergo, il **margine** che pretende fra una coppia
+giusta e una sbagliata). Il primo della lista è anche il più ingenuo, quello
+che si limita ad abbassare l'energia sui dati, e nella colonna della difesa ha
+scritto «none», niente {cite}`lecun2006tutorial`. Non è un difetto sottile da
+manuale avanzato: è la prima riga della tabella.
 
 `````{tab} Elementare
 
@@ -102,9 +116,12 @@ volta è come puntellare un tendone con tre paletti.
 Il secondo: cambiare la porta invece di istruire il buttafuori. Se la porta è
 larga un metro, non può passare una folla, qualunque cosa lui dica: si
 costruisce il modello in modo che il numero di risposte a cui *può* dare
-energia bassa sia limitato per costruzione. Nessun controesempio da cercare, e
-il fatto che il primo metodo non regga in alta dimensione è esattamente
-l'argomento su cui poggia la proposta di LeCun per i world model.
+energia bassa sia limitato in partenza. Nessun controesempio da cercare. E il
+fatto che il primo metodo non regga quando le risposte possibili sono
+tantissime (per una foto sono più di quante se ne possano contare) è
+esattamente l'argomento su cui poggia la proposta di LeCun per i *world
+model*, i modelli che si costruiscono un'idea di come va il mondo per poterlo
+prevedere, e a cui è dedicato il capitolo che segue.
 
 `````
 
@@ -120,7 +137,7 @@ answer* $\bar{y}$ (la risposta scorretta con l'energia più bassa, cioè la più
 insidiosa) e su di essa costruisce le loss a margine, per esempio la hinge
 
 $$
-\mathcal{L} = \max\!\big(0,\; m + E_\theta(x, y) - E_\theta(x, \bar{y})\big),
+\mathcal{L} = \max\!\big(0,\; m + E_\theta(\mathbf{x}, y) - E_\theta(\mathbf{x}, \bar{y})\big),
 $$
 
 dove $m > 0$ è il margine preteso fra coppia giusta e coppia sbagliata. La
@@ -146,10 +163,40 @@ difende dal collasso senza mai fabbricare un solo controesempio.
 
 `````
 
+Due strade, dunque, e quale delle due sia la strada giusta non è affatto
+deciso: è la terza delle quattro rinunce con cui LeCun chiude le sue
+conferenze, e la sezione che segue la riprende per l'ultima volta, insieme
+alle altre tre.
+
+`````{tab} Elementare
+```{admonition} Da ricordare
+:class: important
+- Un modello a energia può giudicare **coppie**: questo con questo sta bene
+  insieme, questo con quest'altro no. È il buttafuori davanti alla festa, e
+  gli basta un giudizio alla volta: non deve conoscere tutta la città né
+  compilare la classifica di tutti gli abbinamenti possibili con le
+  percentuali esatte.
+- Rispondere, allora, è cercare la risposta che sta meglio con quello che si
+  ha davanti. Imparare è abbassare il terreno sotto le coppie giuste e
+  alzarlo sotto quelle sbagliate.
+- Il pericolo ha un nome, il **collasso**, ed è il buttafuori pigro che dice
+  sempre sì. Se durante l'addestramento si premia soltanto il sì alle coppie
+  giuste, la scorciatoia perfetta è dire sì a tutti: nessuno si lamenta, e il
+  giudizio non vale più niente.
+- I rimedi sono due, e la scelta fra loro è una discussione ancora aperta:
+  mostrargli anche le coppie sbagliate e pretendere che le respinga, oppure
+  stringere la porta, cioè costruirlo in modo che dire sì a tutti gli sia
+  fisicamente impossibile. Il primo va in crisi quando le coppie sbagliate
+  sono troppe da mostrare, ed è quasi sempre il caso; il secondo è la
+  scommessa di LeCun per i modelli del mondo.
+```
+`````
+
+`````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
 - La cornice dell'**energy-based learning** {cite}`lecun2006tutorial`: ogni
-  modello è una $E(x, y)$ che misura la compatibilità fra input e risposta;
+  modello è una $E(\mathbf{x}, y)$ che misura la compatibilità fra input e risposta;
   inferire è $\arg\min_y E$, imparare è abbassare l'energia delle coppie
   giuste e alzarla sulle sbagliate. I modelli probabilistici sono il caso
   particolare normalizzato, e $Z$ è il costo che conviene evitare.
@@ -165,3 +212,4 @@ difende dal collasso senza mai fabbricare un solo controesempio.
   l'energia di tutte le risposte, pesandole con la loro probabilità. Da cui
   il costo, e da cui l'idea di sostituirla.
 ```
+`````

@@ -95,19 +95,29 @@ correttezza è inutile se il servizio è morto.
 
 Il secondo livello (la sorveglianza delle distribuzioni) è quello dove si
 gioca la partita del *drift*. Nella sezione «Quando i dati cambiano» abbiamo
-classificato i modi in cui il mondo può divergere dall'addestramento,
-*covariate shift* ($P(X)$ che cambia), *label shift* ($P(y)$), *concept shift*
-($P(y\mid X)$) {cite}`quinonero2009dataset`, e non li ripetiamo qui. Ci
-interessa il gesto operativo: come ci si *accorge* che uno di questi shift è
-in corso, in produzione, mentre accade.
+classificato i modi in cui il mondo può divergere dall'addestramento
+{cite}`quinonero2009dataset`, e non li ripetiamo qui; bastano i loro nomi, con
+accanto che cosa vuol dire ciascuno. Il **covariate shift** è quando cambia il
+*tipo di richieste che arrivano*: arriva altra gente, con altre
+caratteristiche. Il **label shift** è quando cambiano le *proporzioni delle
+risposte giuste*: le frodi erano una su cento e adesso sono una su dieci. Il
+**concept shift** è il più insidioso: le richieste sembrano identiche, ma è
+cambiata *la regola* che lega la richiesta alla risposta giusta. Qui ci
+interessa il gesto operativo: come ci si *accorge* che uno di questi è in
+corso, in produzione, mentre accade.
 
-Lo strumento l'abbiamo già incontrato: il **classificatore-detective**.
-Addestrare un modello a distinguere i dati di ieri da quelli di oggi; se ci
-riesce bene lo shift è arrivato, se non ci riesce (AUC vicina a $0{,}5$) le due
-finestre sono indistinguibili *per lui*. È una rassicurazione, non una prova:
-un cambiamento su una *feature* che il detective non guarda gli passa sotto il
-naso. Lì era una diagnosi *una tantum*; per l'impianto in produzione va reso
-una **sorveglianza continua**, e questo richiede tre decisioni operative.
+Lo strumento l'abbiamo già incontrato: il **classificatore-detective**. Si
+addestra un modello a distinguere i dati di ieri da quelli di oggi, e si
+guarda quanto ci riesce. Il numero con cui si misura quanto ci riesce è
+l'**AUC**, incontrata nel capitolo sul machine learning parlando di metriche, e
+qui va letta così: vale $1$ quando il detective indovina sempre da quale delle
+due finestre viene un dato, e vale $0{,}5$ quando sta tirando a indovinare,
+perché fra due possibilità chi tira a caso ne azzecca la metà. Un'AUC vicina a
+$0{,}5$ dice quindi che le due finestre sono indistinguibili *per lui*: è una
+rassicurazione, non una prova, perché un cambiamento su una *feature* che il
+detective non guarda gli passa sotto il naso. Lì era una diagnosi *una tantum*;
+per l'impianto in produzione va reso una **sorveglianza continua**, e questo
+richiede tre decisioni operative.
 
 `````{tab} Elementare
 
@@ -127,7 +137,10 @@ decidere.
 
 `````{tab} Superiore
 
-Le tre decisioni sono:
+In notazione, le tre famiglie richiamate qui sopra sono il *covariate shift*
+($P(X)$ che cambia, con $P(y \mid X)$ invariata), il *label shift* ($P(y)$ che
+cambia, con $P(X \mid y)$ invariata) e il *concept shift* ($P(y \mid X)$ che
+cambia). Le tre decisioni operative sono:
 
 - **Finestre temporali**. Si fissa una **finestra di riferimento** (un periodo
   in cui il modello era sano, spesso i dati di addestramento o un mese
@@ -152,12 +165,54 @@ Le tre decisioni sono:
   $$
 
   dove $F_{\text{rif}}$ e $F_{\text{cur}}$ sono le CDF empiriche della
-  *feature* nella finestra di riferimento e in quella corrente. Con molte
-  *feature* conviene correggere per test multipli (Bonferroni o simili) per non
-  moltiplicare i falsi positivi. Un'alternativa diffusa, basata sugli
-  istogrammi, è il *Population Stability Index*.
+  *feature* nella finestra di riferimento e in quella corrente. Un'alternativa
+  diffusa, basata sugli istogrammi, è il *Population Stability Index*.
+
+  Sul criterio di allarme conviene essere espliciti, perché il riflesso
+  abituale qui è quello sbagliato. Alle taglie di una finestra di produzione
+  (migliaia di record) il KS ha una potenza enorme e rifiuta l'ipotesi nulla su
+  scostamenti che nessun modello sente: uno spostamento di due decimi di
+  deviazione standard, su $n = 2000$ per finestra, dà $p \sim 10^{-7}$ in
+  praticamente ogni finestra. Il problema non è la molteplicità dei test ma la
+  **taglia del campione**, e correggere per Bonferroni non lo tocca, perché i
+  $p$-value non sono al limite, sono a molti ordini di grandezza sotto
+  qualunque soglia. L'allarme va quindi fondato sull'**ampiezza** ($D$, o una
+  distanza normalizzata, o il PSI) con una soglia decisa sul significato
+  pratico, tenendo il $p$-value al più come filtro contro il rumore delle
+  finestre piccole. La correzione per test multipli serve contro la
+  molteplicità, non contro l'eccesso di potenza, che alle taglie di produzione
+  è il problema dominante.
 
 `````
+
+La deriva è una delle poche cose di questo libro che **in un fotogramma non si
+vede**: un istogramma di oggi, da solo, non è né normale né anomalo, e lo
+diventa solo accanto a quello di prima. In {numref}`fig-deriva-ks` ci sono sei
+mesi di una stessa *feature*, con la finestra di riferimento ferma e quella
+corrente che le scivola via.
+
+```{figure} ../figures/deriva-ks.svg
+:name: fig-deriva-ks
+:alt: "Una curva cumulativa color teal sta ferma; una curva terracotta, che all'inizio le sta sopra esattamente, scivola verso destra mese dopo mese. Un segmento verticale ocra unisce le due curve nel punto in cui sono più distanti, e la scritta sotto dice di quanto: si parte da zero e si arriva a 0,40, ben oltre la soglia di 0,10."
+:width: 92%
+
+Le due finestre in cumulata, mese per mese. Il segmento verticale non è un
+ornamento: **è** la statistica $D$, cioè il punto in cui le due curve si
+allontanano di più. Il numero sotto è quello che decide se suonare l'allarme.
+```
+
+Due cose che {numref}`fig-deriva-ks` mostra e una formula non dice. La prima è
+*dove* cade il massimo: non agli estremi, dove le due cumulate tornano
+comunque a coincidere per costruzione, ma nel mezzo, e per due normali sfalsate
+esattamente a metà strada fra le due medie. La seconda è che la soglia
+disegnata è sull'**ampiezza**, non sul $p$-value: qui $0{,}10$, decisa sul
+significato pratico. Con duemila osservazioni per finestra, la taglia presa a
+esempio poche righe più su, il test respingerebbe l'ipotesi nulla già al mese
+1, dove $D$ vale sei centesimi: il valore critico al cinque per cento scende a
+$0{,}043$, e su venti coppie di finestre simulate il rifiuto arriva
+diciannove volte, con $p$ dell'ordine di $10^{-5}$. Alla stessa deriva, con
+cinquecento osservazioni, il rifiuto arriva otto volte su venti. Non è cambiato
+il mondo fra i due casi: è cambiata la taglia del campione.
 
 Mettiamo insieme le tre decisioni in poche righe eseguibili. Il codice confronta
 una finestra di riferimento con una corrente, in cui iniettiamo di proposito uno
@@ -203,19 +258,47 @@ else:
 ```
 
 L'output stampa `AUC detective = 0.775`, ben oltre la soglia di $0{,}65$:
-l'allarme scatta, e il KS punta senza esitazioni la *feature* 1 (statistica
-$0{,}45$, $p$-value minuscolo) lasciando innocenti le altre tre. È lo scheletro di un
-sistema di monitoraggio reale: la stessa funzione, girata a ogni ora sulla
-finestra scorrevole, produce una serie storica dell'indicatore di drift su cui
-si possono appendere gli allarmi.
+l'allarme scatta. Poi il controllo tasca per tasca punta senza esitazioni la
+*feature* 1 e lascia innocenti le altre tre. Il controllo è il test di
+Kolmogorov–Smirnov, `KS` nel codice, che misura di quanto le due distribuzioni
+si scostano (qui $0{,}45$), accompagnato dal $p$-value, che dice quanto sarebbe
+improbabile vedere uno scostamento simile per puro caso (qui: minuscolo).
 
-Una cautela, la stessa della sezione statistica: il detective vede il
-*covariate shift* (cambia la distribuzione degli input) ma da solo non
-distingue un cambiamento innocuo da uno che rovina le predizioni, e
-soprattutto **non vede il concept shift**, in cui gli input sembrano identici
-ma la regola giusta è cambiata sotto. Per quello non c'è scorciatoia: servono
-le etichette vere del terzo livello. Il monitoraggio statistico è un allarme
-precoce, non un verdetto.
+È lo scheletro di un sistema di monitoraggio reale, e la stessa funzione,
+girata a ogni ora sulla finestra scorrevole, produce una serie storica
+dell'indicatore di drift su cui si possono appendere gli allarmi. Ha però due
+semplificazioni didattiche che in un impianto vero si pagano care, e vale la
+pena nominarle proprio perché il codice è breve e viene copiato.
+
+La prima è il cancello: qui i test per singola *feature* girano **solo se**
+l'indicatore globale ha superato la soglia. Comodo da leggere, pericoloso da
+copiare. Un cambiamento concentrato su una colonna sola fra molte può lasciare
+l'indicatore globale appena sotto soglia, e allora il programma non guarda
+nessuna colonna e stampa che va tutto bene: il silenzio più costoso possibile,
+perché è un silenzio *dichiarato*. Un impianto vero calcola sempre i test per
+colonna e tratta l'indicatore globale come uno fra gli indizi, non come
+l'interruttore che decide se guardare.
+
+La seconda è che il controllo colonna per colonna è necessario ma non
+sufficiente. Guarda una colonna alla volta, quindi è cieco ai cambiamenti che
+vivono nel **rapporto** fra le colonne: se altezza e peso continuano ciascuna a
+distribuirsi come prima ma smettono di crescere insieme, ogni singola colonna
+risulta innocente mentre il detective, che le guarda insieme, grida. Quando
+capita questo, la conclusione giusta non è «falso allarme»: è che il
+cambiamento sta nelle dipendenze, e va cercato con strumenti che le guardino
+(le importanze del detective stesso, le correlazioni a coppie).
+
+Una cautela finale, la stessa della sezione statistica ma più severa di come la
+si racconta di solito. Il detective è addestrato **sui soli ingressi**: quello
+che rileva è che è cambiato il tipo di richieste che arrivano, e nient'altro.
+Non distingue un cambiamento innocuo da uno che rovina le predizioni; e non
+distingue nemmeno le tre famiglie fra loro, perché anche un puro cambio di
+proporzioni fra le risposte giuste (il *label shift*) sposta il tipo di
+richieste in arrivo e lo fa suonare. Del **concept shift** puro, poi, non vede
+niente: lì gli ingressi restano identici ed è la regola giusta a essere
+cambiata sotto. Per separare i tre casi non c'è scorciatoia: servono le
+etichette vere del terzo livello, o almeno le predizioni aggregate. Il
+monitoraggio statistico è un allarme precoce, non un verdetto.
 
 ## Rispondere al drift
 
@@ -304,15 +387,17 @@ qualcosa non va. Fai una cosa più furba, in tre possibili modi.
 
 Il primo: lo **cucini in parallelo** senza servirlo (il cuoco prepara il
 piatto nuovo insieme a quello vecchio, tu lo assaggi in cucina e confronti, ma
-al tavolo arriva ancora il vecchio). Nessun cliente corre rischi.
+al tavolo arriva ancora il vecchio). Nessun cliente corre rischi. Si chiama
+*shadow*, cioè «in ombra».
 
 Il secondo: lo **fai assaggiare a pochi tavoli**. Lo metti nel piatto di due
 tavoli su cento, tieni d'occhio le loro facce, e se funziona allarghi a dieci, a
-cinquanta, a tutti; se storcono il naso, lo ritiri e nessun danno è fatto.
+cinquanta, a tutti; se storcono il naso, lo ritiri e nessun danno è fatto. È il
+*canary*, dal canarino dei minatori.
 
 Il terzo: **due metà della sala**, stesso momento, piatto vecchio a una metà e
 nuovo all'altra, e a fine serata conti chi ha lasciato il piatto pulito. Così sai
-davvero se il nuovo è meglio, e non te lo sei immaginato.
+davvero se il nuovo è meglio, e non te lo sei immaginato. È il test *A/B*.
 
 `````
 
@@ -354,6 +439,39 @@ processo da tenere in vita {cite}`shankar2022operationalizing`; questa sezione
 è il turno di guardia che quel processo richiede, ogni giorno, finché il
 modello serve.
 
+`````{tab} Elementare
+```{admonition} Da ricordare
+:class: important
+- Un modello che si guasta **non fa rumore**: continua a rispondere con la
+  stessa prontezza e la stessa aria sicura, solo che le risposte, poco alla
+  volta, diventano sbagliate. Il monitoraggio è l'orecchio che sostituiamo al
+  fischio che manca.
+- Si guarda un cruscotto a **tre quadranti**: il servizio è vivo e risponde in
+  fretta? che tipo di richieste stanno arrivando, e che risposte sta dando? e
+  infine, la più importante e la più lenta, aveva ragione? L'ultima si scopre
+  solo quando arriva la risposta giusta, che spesso arriva con settimane di
+  ritardo e a volte non arriva mai.
+- Per accorgersi che il mondo è cambiato si usa un **metal detector**: un
+  programma che prova a distinguere i dati di ieri da quelli di oggi. Se ci
+  riesce, qualcosa è cambiato; se tira a indovinare, no. Va tarato: troppo
+  sensibile e suona per tutti, e dopo il decimo falso allarme nessuno gli dà
+  più retta.
+- Il metal detector dice *che* qualcosa è cambiato, non *cosa* e nemmeno *se è
+  grave*. Soprattutto, non vede il caso peggiore: quello in cui le richieste
+  sembrano identiche di ieri ma è cambiata la risposta giusta.
+- Quando suona, si risponde **per gradi**, come con la spia dell'olio: prima si
+  guarda, poi si controlla, poi semmai si riaddestra, e solo in emergenza si
+  torna al modello vecchio. Rispondere sempre col gesto più drastico è come
+  cambiare il motore ogni volta che si accende una spia.
+- Riaddestrare da soli su dati che il modello stesso ha contribuito a produrre
+  non lo corregge: **ne amplifica gli errori**, a ogni giro. Serve una persona
+  nell'anello e dati freschi.
+- Un modello nuovo non si accende di colpo per tutti: prima in ombra, poi a
+  pochi tavoli, poi metà sala contro metà sala.
+```
+`````
+
+`````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
 - Si misura su **tre livelli**, dal più rapido al più prezioso: (1) salute del
@@ -366,8 +484,14 @@ modello serve.
 - Il **detective** della sezione «Quando i dati cambiano» diventa sorveglianza
   continua con tre scelte operative: **finestre** (riferimento vs corrente
   scorrevole), **soglia** sull'AUC (tarata sui falsi allarmi) e **test per
-  *feature*** (Kolmogorov–Smirnov) per localizzare il drift. Vede il *covariate
-  shift*, non il *concept shift*.
+  *feature*** (Kolmogorov–Smirnov) per localizzare il drift. Essendo addestrato
+  sui soli ingressi, rileva un cambiamento della **marginale $P(X)$**, che
+  covariate shift e label shift condividono, ed è cieco al *concept shift*
+  puro.
+- L'allarme si fonda sull'**ampiezza** dello scostamento, non sul $p$-value: a
+  taglie di produzione il KS rifiuta su differenze che nessun modello sente. E
+  il test per colonna è necessario ma non sufficiente: uno shift che vive nella
+  struttura congiunta lascia tutte le marginali intatte.
 - La risposta è una **piramide** proporzionata: allarme → indagine → retraining →
   rollback. Retraining **periodico** (a cadenza fissa) o **innescato** (a
   soglia); i sistemi reali fanno entrambi.
@@ -379,3 +503,4 @@ modello serve.
   (confronto statistico), tutti poggiati sul modello **versionato** per un
   rollback immediato.
 ```
+`````

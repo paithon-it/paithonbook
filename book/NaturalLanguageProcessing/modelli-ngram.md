@@ -124,7 +124,14 @@ nostro sarà di tre frasi:
 3. «il cane guarda il gatto nero»
 
 Contiamo le coppie di parole adiacenti (aggiungendo a ogni frase i segnali
-di inizio `<s>` e fine `</s>`):
+di inizio `<s>` e fine `</s>`). I conti che seguono si scrivono in una
+notazione che vale la pena decifrare una volta per tutte, perché ricorre in
+tutto il libro: $P(\text{gatto} \mid \text{il})$ si legge «la probabilità di
+*gatto*, **sapendo che** prima c'era *il*». La barretta verticale vuol dire
+«dato che», e separa la cosa su cui si scommette (a sinistra) da quello che si
+sa già (a destra). Tutto qui: è una frazione con un nome, e la frazione è
+proprio la pagina del quaderno, «quante volte questa parola ha seguito
+quell'altra, diviso quante volte quell'altra è comparsa».
 
 - ogni frase comincia con «il»: $P(\text{il} \mid \langle s \rangle) = 3/3 = 1$;
 - «il» compare 4 volte, seguito 3 volte da «gatto» e 1 da «cane»:
@@ -163,7 +170,8 @@ e uno zero nel prodotto azzera tutto. Il modello confonde «mai visto» con
 «impossibile».
 
 Non è un difetto del nostro corpus giocattolo: è la regola. Jurafsky e Martin
-fanno i conti sull'opera omnia di Shakespeare: circa 884.000 parole con un
+{cite}`jurafsky2026speech` fanno i conti sull'opera omnia di Shakespeare: circa
+884.000 parole con un
 vocabolario di 29.000 tipi; le coppie *possibili* sono più di 800 milioni,
 quelle effettivamente osservate circa 300.000 (il 99,96 per cento dei bigrammi
 possibili non compare mai). E Shakespeare è un corpus generoso. Qualunque
@@ -177,15 +185,20 @@ coppie viste per regalarne un po' a quelle mai viste.
 Il rimedio più semplice l'abbiamo già incontrato nel filtro antispam: la
 «regola del +1» di Laplace (eccolo, il vecchio amico promesso). Si regala un
 conteggio a ogni coppia possibile, così nessuna resta a zero. Nel nostro
-corpus il vocabolario ha 12 simboli (11 parole più il segnale di fine frase);
-«cane nero», mai vista, passa da 0 a una probabilità piccola ma viva: 1 diviso
-13, circa 0,08.
+corpus il vocabolario ha 12 simboli (11 parole più il segnale di fine frase),
+e i due numeri della frazione cambiano tutti e due. Prendiamo «cane nero», mai
+vista. Sopra, al posto dello 0, va l'unico conteggio regalato: 1. Sotto vanno
+le volte in cui «cane» è comparso (una sola) più i 12 regali che abbiamo appena
+distribuito: $1 + 12 = 13$. La probabilità passa quindi da 0 a $1/13$, circa
+0,08: piccola, ma viva.
 
-Il regalo però lo pagano i ricchi, e lo pagano caro: «gatto» dopo «il», che
-valeva 0,75, crolla a 0,25; perché ora il piatto si divide fra tutte le 12
-continuazioni possibili, dieci delle quali sono coppie inventate, mai viste
-davvero. Con un vocabolario vero, di decine di migliaia di parole, il +1
-diventa una patrimoniale che ridistribuisce quasi tutto ai fantasmi.
+Il regalo però lo pagano i ricchi, e lo pagano caro. «Gatto» dopo «il» valeva
+$3/4 = 0{,}75$; adesso sopra c'è $3 + 1$ e sotto ci sono le 4 volte in cui «il»
+è comparso più i 12 regali, cioè $(3+1)/(4+12) = 4/16 = 0{,}25$. Il piatto si
+divide fra tutte le 12 continuazioni possibili, dieci delle quali sono coppie
+inventate, mai viste davvero. Con un vocabolario vero, di decine di migliaia di
+parole, il +1 diventa una patrimoniale che ridistribuisce quasi tutto ai
+fantasmi.
 
 L'idea migliore è un'altra: quando la coppia non s'è mai vista, invece di
 inventare, **ripiega** su un giudice meno esigente. Non sai nulla di «nero
@@ -298,18 +311,61 @@ fino all'era neurale.
 ## La pagella della scommettitrice: la perplessità
 
 Come si misura se un modello di linguaggio scommette bene? Con la
-**perplessità**, che abbiamo già definito nel capitolo sui richiami di
-matematica, nella sezione sulla teoria dell'informazione: è $2^H$, con $H$
-la cross-entropia media per parola, e si legge come il numero di facce del
-dado con cui il modello «esita» a ogni scommessa. Lì avevamo promesso di
-riprenderla numeri alla mano: eccoci. Su una frase di $m$ scommesse è
+**perplessità**, e l'immagine da tenere è quella del dado: la perplessità dice
+con quante facce è il dado su cui il modello sta tirando a ogni scommessa.
+Perplessità 2, e il modello esita fra due parole soltanto; perplessità 100, e
+ne ha davanti cento tutte ugualmente plausibili. Più il numero è basso, meglio
+scommette. Nel capitolo sui richiami di matematica l'avevamo definita nella
+sezione sulla teoria dell'informazione, promettendo di riprenderla numeri alla
+mano: eccoci.
+
+`````{tab} Elementare
+
+Il conto si fa in tre mosse, e sulla nostra frase si può seguire tutto a mano.
+
+**Prima mossa: moltiplicare le scommesse.** Sono quelle appena calcolate,
+$1 \times 0{,}75 \times \frac{2}{3} \times 0{,}5 \times 1 \times 0{,}5 \times
+1 = 0{,}125$, cioè un ottavo. Sono sette fattori, uno per ogni scommessa: le
+sei parole della frase più la chiusura, che è una scommessa anche lei (il
+modello deve decidere che la frase finisce lì). L'apertura invece non si conta,
+perché il segnale di inizio non lo indovina nessuno: c'è e basta.
+
+**Seconda mossa: capovolgere.** Uno diviso un ottavo fa 8. Questo è quanto il
+modello ha «esitato» sull'intera frase, ma dipende da quanto la frase è lunga:
+una frase doppia esita di più anche se il modello è identico, quindi così non
+si possono confrontare due frasi diverse.
+
+**Terza mossa: riportare alla singola scommessa.** Le scommesse erano sette:
+cerchiamo allora il numero che, moltiplicato per sé stesso sette volte, dà 8.
+È la radice settima di 8, parente stretta della radice quadrata che conoscete,
+e vale circa 1,35. Ecco la perplessità: un dado da 1,35 facce, cioè quasi
+nessun dubbio.
+
+`````
+
+`````{tab} Superiore
+
+Su una sequenza di $N$ token la perplessità è
 
 $$
-\mathrm{PP} = P(w_1, \dots, w_m)^{-1/m},
+\mathrm{PP} = P(w_1, \dots, w_N)^{-1/N},
 $$
 
-cioè l'inverso della probabilità della frase, riportato «per scommessa» dalla
-media geometrica: la stessa quantità $2^H$ di allora, solo riscritta.
+cioè l'inverso della probabilità del testo, riportato «per token» dalla media
+geometrica: è la stessa quantità $2^H$ della teoria dell'informazione, con $H$
+la cross-entropia media per token, solo riscritta.
+
+Un avvertimento sul conto di $N$, perché è il punto esatto in cui si sbaglia.
+Se le frasi si incorniciano con `<s>` e `</s>`, come qui, allora anche `</s>` è
+una scommessa e va contato fra gli $N$; `<s>` invece no, perché non lo si
+predice mai. Sulla frase di sei parole qui sotto gli $N$ sono quindi **sette**,
+non sei, ed è la convenzione di Jurafsky e Martin {cite}`jurafsky2026speech`
+oltre che quella del codice a fine sezione. La ragione di escludere `<s>` è che
+al marcatore di fine frase segue il marcatore di inizio con probabilità quasi
+1: contare quella transizione fittizia gonfierebbe artificialmente il
+punteggio.
+
+`````
 
 ```{figure} ../figures/perplexity-sorpresa-modello.svg
 :name: fig-perplessita-frase
@@ -325,7 +381,7 @@ rare, che sono quelle su cui si gioca la qualità di un testo, sono anche le
 più rare: entrano nella media poche volte, e un modello può avere una buona
 perplessità complessiva inciampando proprio lì.
 
-Facciamo i conti sul corpus giocattolo. Il bigramma MLE dava alla frase «il
+Lo stesso conto, scritto in una riga. Il bigramma MLE dava alla frase «il
 gatto nero salta sul muro» probabilità $0{,}125$ in 7 scommesse (sei parole
 più la chiusura di frase):
 
@@ -335,16 +391,27 @@ $$
 
 Un dado da 1,35 facce: quasi nessun dubbio. Troppo bello per essere onesto, e
 infatti stiamo barando: abbiamo valutato il modello *sulla frase con cui
-l'abbiamo addestrato*. La perplessità va sempre misurata su un testo di test,
-mai visto in addestramento; e lì, senza smoothing, basta un bigramma nuovo per
-mandarla a infinito. Con il modello lisciato alla Laplace, il codice a fine
-sezione troverà perplessità intorno a 5,5 sulla frase «in stile», 7 su una
-frase con una coppia mai vista, e oltre 14 sulla stessa frase rimescolata a
-caso: l'ordine delle parole, finalmente, conta. Per le grandezze reali:
-nell'esperimento classico riportato da Jurafsky e Martin su 38 milioni di
-parole del *Wall Street Journal*, la perplessità scende da circa 960 con
-l'unigramma a 170 col bigramma e a circa 110 col trigramma. I modelli neurali
-che incontreremo faranno molto meglio, ma sulla stessa pagella.
+l'abbiamo addestrato*, che è la prima del corpus. La perplessità va sempre
+misurata su un testo di test, mai visto in addestramento; e lì, senza
+smoothing, basta un bigramma nuovo per mandarla a infinito.
+
+Rifacciamo dunque il confronto come si deve, con il modello lisciato alla
+Laplace e su tre frasi che il modello non ha mai letto. Il codice a fine
+sezione troverà perplessità intorno a **5,5** su «il gatto nero salta sul
+divano» (frase nuova, ma tutta fatta di coppie già viste: proprio ciò che si
+intende con «in stile»), **7,0** su «il cane nero salta sul divano», che
+contiene una coppia mai vista, e oltre **14** sulle stesse parole rimescolate a
+caso. L'ordine delle parole, finalmente, conta, ed è il confronto fra la
+seconda e la terza a dirlo con più forza: stesse identiche parole, perplessità
+doppia.
+
+Per le grandezze reali, nell'esperimento classico riportato da Jurafsky e
+Martin {cite}`jurafsky2026speech` su 38 milioni di parole del *Wall Street
+Journal*, la perplessità scende da circa 960 con l'**unigramma** (il modello
+che scommette guardando solo quanto una parola è comune, senza nemmeno
+l'ultima parola letta: è il gradino sotto il bigramma) a 170 col bigramma e a
+circa 110 col trigramma. I modelli neurali che incontreremo faranno molto
+meglio, ma sulla stessa pagella.
 
 ## La passeggiata del bigramma
 
@@ -474,18 +541,19 @@ def perplessita(frase):
                 for w1, w2 in zip(parole, parole[1:]))
     return 2 ** (-log2p / (len(parole) - 1))
 
-print(perplessita("il gatto nero salta sul muro"))   # ~5.5
-print(perplessita("il cane nero salta sul divano"))  # ~7.0
-print(perplessita("muro sul salta nero gatto il"))   # ~14.2
+# nessuna delle tre e' nel corpus di addestramento: si valuta su testo nuovo
+print(perplessita("il gatto nero salta sul divano"))  # ~5.5  tutte coppie viste
+print(perplessita("il cane nero salta sul divano"))   # ~7.0  una coppia mai vista
+print(perplessita("muro sul salta nero gatto il"))    # ~14.2 stesse parole, altro ordine
 ```
 
 Vale la pena soffermarsi sulle uscite. La generazione con il seme 2 inciampa
 nell'anello «il cane guarda il cane guarda…»: a ogni passo il bigramma vede
 solo l'ultima parola, e da «guarda» si torna legittimamente a «il». E le tre
-perplessità raccontano la storia giusta: bassa per la frase «in stile», più
-alta per quella col bigramma mai visto, più che doppia per le stesse parole
-rimescolate. Con la matita al posto di Python, sono i conti che Markov fece
-nel 1913.
+perplessità raccontano la storia giusta, tutte e tre su frasi che il modello
+non ha mai letto: bassa per la frase in stile, più alta per quella con il
+bigramma mai visto, più che doppia per le stesse parole rimescolate. Con la
+matita al posto di Python, sono i conti che Markov fece nel 1913.
 
 ## Gli n-gram non sono morti
 

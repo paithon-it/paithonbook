@@ -31,10 +31,14 @@ nodi, che useremo come filo conduttore per l'intera sezione.
 :alt: Un grafo non diretto di cinque nodi con i suoi archi; accanto a ogni nodo un vettore di tre feature; a destra la matrice di adiacenza A e la matrice delle feature X.
 :width: 100%
 
-Un grafo di 5 nodi. A ogni nodo è associato un piccolo **vettore di feature**
-(le tre caselle). La struttura è riassunta dalla **matrice di adiacenza** $A$
-(chi è collegato a chi) e le feature dalla **matrice** $X$ (una riga per nodo).
-Evidenziato in terracotta il **vicinato** del nodo 3, che ha grado 3.
+Un grafo di 5 nodi. Accanto a ogni nodo, le tre caselle sono le sue
+**caratteristiche**: un numero per casella. A destra le stesse informazioni
+messe in tabella: la tabella $\mathbf{A}$ dice chi è collegato a chi (si chiama
+**matrice di adiacenza**), la tabella $\mathbf{X}$ raccoglie le caselle di
+tutti i nodi, una riga per nodo. In terracotta il **vicinato** del nodo 3, cioè
+l'insieme dei nodi a cui è collegato: sono tre, e per questo si dice che il
+nodo 3 ha **grado** 3 (il grado è quanti vicini ha un nodo; che qui coincida
+col numero che gli fa da nome è un caso).
 ```
 
 Prima di formalizzare, sistemiamo tre distinzioni che tornano di continuo.
@@ -56,8 +60,16 @@ c'è.
 Infine, sia i nodi sia (a volte) gli archi portano con sé delle
 **caratteristiche**, in gergo *feature*: per una persona l'età e gli interessi,
 per un atomo il tipo di elemento. Nella figura sono le tre caselline accanto a
-ogni nodo. Un grafo, insomma, è fatto di due cose insieme: una **struttura**
-(chi è connesso a chi) e dei **contenuti** (cosa sono i nodi).
+ogni nodo: tre caselle in fila, con dentro un numero ciascuna, per esempio
+$14$ (gli anni), $2$ (gli sport che pratica), $300$ (i messaggi che manda in un
+giorno). **Una fila di numeri come questa si chiama vettore**, ed è la parola
+più ricorrente del capitolo: quando più avanti si legge che un nodo «diventa un
+vettore», o che «i messaggi sono vettori», si intendono esattamente queste
+caselline in fila. Quante siano lo si decide una volta per tutte all'inizio, e
+poi è uguale per tutti i nodi.
+
+Un grafo, insomma, è fatto di due cose insieme: una **struttura** (chi è
+connesso a chi) e dei **contenuti** (cosa sono i nodi).
 
 `````
 
@@ -65,7 +77,7 @@ ogni nodo. Un grafo, insomma, è fatto di due cose insieme: una **struttura**
 
 Un grafo è una coppia $G = (V, E)$, dove $V$ è l'insieme dei nodi ($N = |V|$) ed
 $E \subseteq V \times V$ l'insieme degli archi. La struttura si codifica nella
-**matrice di adiacenza** $A \in \{0,1\}^{N \times N}$:
+**matrice di adiacenza** $\mathbf{A} \in \{0,1\}^{N \times N}$:
 
 $$
 A_{ij} =
@@ -75,43 +87,45 @@ A_{ij} =
 \end{cases}
 $$
 
-Se il grafo è **non diretto** allora $A_{ij} = A_{ji}$, cioè $A$ è simmetrica
-($A = A^\top$); se è **diretto** non lo è in generale. In un grafo **pesato** lo
-0/1 è sostituito dal peso $w_{ij} \in \mathbb{R}$ dell'arco, e $A$ diventa una
-matrice reale. Le **feature dei
-nodi** si impilano nella matrice $X \in \mathbb{R}^{N \times F}$, la cui riga
-$i$-esima è il vettore $x_i \in \mathbb{R}^F$ delle $F$ caratteristiche del nodo
-$i$; eventuali feature di arco si raccolgono in un tensore analogo indicizzato
-dalle coppie.
+Se il grafo è **non diretto** allora $A_{ij} = A_{ji}$, cioè $\mathbf{A}$ è
+simmetrica ($\mathbf{A} = \mathbf{A}^\top$); se è **diretto** non lo è in
+generale. In un grafo **pesato** lo 0/1 è sostituito dal peso
+$w_{ij} \in \mathbb{R}$ dell'arco, e $\mathbf{A}$ diventa una matrice reale. Le
+**feature dei nodi** si impilano nella matrice
+$\mathbf{X} \in \mathbb{R}^{N \times F}$, la cui riga $i$-esima è il vettore
+$\mathbf{x}_i \in \mathbb{R}^F$ delle $F$ caratteristiche del nodo $i$;
+eventuali feature di arco si raccolgono in un tensore analogo indicizzato dalle
+coppie.
 
 Il **grado** di un nodo è il numero dei suoi vicini, cioè la somma della sua
 riga: $\deg(i) = \sum_{j} A_{ij}$. I gradi si radunano nella **matrice dei
-gradi** $D \in \mathbb{R}^{N \times N}$, diagonale, con
+gradi** $\mathbf{D} \in \mathbb{R}^{N \times N}$, diagonale, con
 
 $$
 D_{ii} = \deg(i) = \sum_{j} A_{ij}, \qquad D_{ij} = 0 \ \text{ per } i \neq j,
 $$
 
-dove $D_{ii}$ è quante linee escono dal nodo $i$. Le tre matrici $A$, $X$ e $D$
-sono tutto ciò che serve per descrivere un grafo con feature: le ritroveremo in
-ogni formula del capitolo.
+dove $D_{ii}$ è quante linee escono dal nodo $i$. Le tre matrici $\mathbf{A}$,
+$\mathbf{X}$ e $\mathbf{D}$ sono tutto ciò che serve per descrivere un grafo
+con feature: le ritroveremo in ogni formula del capitolo.
 
 `````
 
 ## Perché i grafi mettono in crisi le reti classiche
 
-Verrebbe la tentazione di prendere la matrice di adiacenza $A$, allungarla in un
-vettore e darla in pasto a una rete densa come faremmo con un'immagine
-appiattita. Non funziona, e capire *perché non funziona* è la chiave di tutto il
+Verrebbe la tentazione di prendere la tabella $\mathbf{A}$, srotolarla riga
+dopo riga in un'unica lunga fila di numeri e darla in pasto a una rete neurale
+ordinaria, come si fa con un'immagine, che è anch'essa una griglia di numeri
+srotolata. Non funziona, e capire *perché non funziona* è la chiave di tutto il
 capitolo. Il problema nasce da una libertà che griglie e sequenze non hanno: in
 un grafo **i nodi non hanno un ordine**.
 
 Un'immagine è una griglia: il pixel in alto a sinistra è *sempre* in alto a
 sinistra, e la convoluzione sfrutta proprio questa regolarità. Una frase è una
 sequenza: la prima parola viene sempre prima della seconda, e la ricorrenza (o
-la posizione nei Transformer) conta su quell'ordine. Un grafo no: se rinumero
-i suoi nodi (chiamo «1» quello che prima chiamavo «3» e viceversa) è
-esattamente lo *stesso* grafo, ma la matrice $A$ cambia completamente aspetto.
+la posizione nei Transformer) conta su quell'ordine. Un grafo no: se rinumero i
+suoi nodi (chiamo «1» quello che prima chiamavo «3» e viceversa) è esattamente
+lo *stesso* grafo, ma la matrice $\mathbf{A}$ cambia completamente aspetto.
 
 `````{tab} Elementare
 
@@ -139,14 +153,16 @@ fissa da far scorrere.
 
 `````{tab} Superiore
 
-Chiamiamo $P$ una **matrice di permutazione** $N \times N$ (una sola $1$ per
-riga e colonna). Rinumerare i nodi significa trasformare $A \mapsto P A P^\top$
-e $X \mapsto P X$. Poiché questi descrivono lo stesso grafo, un modello sensato
-deve rispettare una di due proprietà. Per un compito che produce **una risposta
-per l'intero grafo**, serve l'**invarianza a permutazione**:
+Chiamiamo $\mathbf{P}$ una **matrice di permutazione** $N \times N$ (una sola
+$1$ per riga e colonna). Rinumerare i nodi significa trasformare
+$\mathbf{A} \mapsto \mathbf{P} \mathbf{A} \mathbf{P}^\top$ e
+$\mathbf{X} \mapsto \mathbf{P} \mathbf{X}$. Poiché questi descrivono lo stesso
+grafo, un modello sensato deve rispettare una di due proprietà. Per un compito
+che produce **una risposta per l'intero grafo**, serve l'**invarianza a
+permutazione**:
 
 $$
-f(P A P^\top,\, P X) = f(A, X),
+f(\mathbf{P} \mathbf{A} \mathbf{P}^\top,\, \mathbf{P} \mathbf{X}) = f(\mathbf{A}, \mathbf{X}),
 $$
 
 la predizione non cambia comunque si rinumerino i nodi. Per un compito che
@@ -154,7 +170,7 @@ produce **una risposta per nodo** (un vettore per ciascuno), serve invece
 l'**equivarianza a permutazione**:
 
 $$
-f(P A P^\top,\, P X) = P\, f(A, X),
+f(\mathbf{P} \mathbf{A} \mathbf{P}^\top,\, \mathbf{P} \mathbf{X}) = \mathbf{P}\, f(\mathbf{A}, \mathbf{X}),
 $$
 
 le uscite si permutano *insieme* agli ingressi. Progettare architetture che
@@ -198,7 +214,7 @@ esempio se una molecola è tossica.
 - **Livello-arco.** Si prevede se un arco esiste, o esisterà, tra due nodi: la
   **link prediction**. È il motore del «forse conosci…» di un social e del «chi
   ha comprato questo…» di un negozio online. Non a caso il grafo bipartito
-  utente–prodotto e la previsione di collegamento sono esattamente il modo in
+  utente-prodotto e la previsione di collegamento sono esattamente il modo in
   cui abbiamo descritto la raccomandazione nel capitolo sui sistemi di
   raccomandazione: consigliare un film è prevedere un arco mancante.
 - **Livello-grafo.** Si prevede una proprietà dell'*intero* grafo, riassunto in
@@ -206,9 +222,9 @@ esempio se una molecola è tossica.
   atomi e legami, e vogliamo prevedere se è solubile, tossica, o efficace come
   farmaco.
 
-C'è poi una distinzione ortogonale, che riguarda *quali* nodi vediamo in fase di
-addestramento, ed è quella che più di ogni altra separa i metodi antichi da
-quelli moderni.
+C'è poi una distinzione che taglia le tre precedenti per un altro verso, e
+riguarda *quali* nodi vediamo in fase di addestramento: è quella che più di
+ogni altra separa i metodi antichi da quelli moderni.
 
 `````{tab} Elementare
 
@@ -248,10 +264,13 @@ reti neurali su grafo, induttive per costruzione {cite}`hamilton2020graph`.
 Prima di tirare in ballo le reti neurali, vale la pena vedere un'idea più
 semplice che, per qualche anno, è stata lo stato dell'arte per rappresentare i
 nodi. L'obiettivo è familiare: come per le parole nel capitolo di NLP, vogliamo
-dare a ogni nodo un **embedding**, un vettore denso di poche decine di numeri,
-tale che nodi «vicini» nel grafo finiscano vicini anche nello spazio dei
-vettori. E il trucco per ottenerlo è sorprendente: riusare, quasi senza
-modifiche, lo *skip-gram* di word2vec.
+dare a ogni nodo un **embedding**, cioè una fila di poche decine di numeri, in
+modo che due nodi vicini nel grafo ricevano due file di numeri che si
+somigliano casella per casella. («Somigliarsi» fra file di numeri è la stessa
+cosa che essere vicini fra punti su una mappa, solo con più di due coordinate:
+è l'idea che il capitolo di NLP usa per le parole.) E il trucco per ottenerlo è
+sorprendente: riusare, quasi senza modifiche, la stessa ricetta con cui si
+imparano gli embedding delle parole, lo *skip-gram* di word2vec.
 
 `````{tab} Elementare
 
@@ -310,24 +329,26 @@ esattamente i punti che le reti neurali su grafo verranno a risolvere.
 - Sono **transduttivi**: l'embedding è una riga di tabella imparata per *quel*
   nodo. Arriva un nodo nuovo? Non ha nessuna riga, e bisogna riaddestrare. Non
   c'è modo di generalizzare a un grafo mai visto.
-- **Ignorano le feature dei nodi**: guardano solo la struttura (chi è connesso a
-  chi), buttando via la matrice $X$. Due nodi con le stesse connessioni ma
-  contenuti diversissimi ricevono embedding identici.
-- **Non condividono parametri**: ogni nodo ha il suo vettore indipendente, senza
-  una funzione riusabile che, dati struttura e feature, *calcoli* la
-  rappresentazione. È l'opposto della condivisione dei pesi che rende potenti le
-  CNN.
+- **Ignorano le feature dei nodi**: guardano solo la struttura (chi è connesso
+  a chi), buttando via la matrice $\mathbf{X}$. Due nodi con le stesse
+  connessioni ma contenuti diversissimi ricevono embedding identici.
+- **Non condividono niente fra un nodo e l'altro**: ogni nodo ha la sua fila di
+  numeri, imparata per conto suo, e non esiste una *procedura* riusabile che,
+  dati i collegamenti e le caratteristiche, calcoli la rappresentazione di un
+  nodo qualunque. Quel che si impara vale per quel nodo e basta, mentre nelle
+  reti per immagini lo stesso filtro, imparato una volta, si riusa su tutta
+  l'immagine, ed è proprio questa condivisione a renderle potenti.
 
 ## Verso le reti neurali su grafo
 
 Il conto della serva è presto fatto. Da una parte abbiamo la struttura del
-grafo, la matrice $A$; dall'altra le feature dei nodi, la matrice $X$. I cammini
-casuali usano solo la prima. Le reti dense saprebbero usare la seconda, ma non
-sanno gestire l'assenza di ordine e il grado variabile. Ci serve un modello che
-usi **struttura e feature insieme**, che sia **induttivo** (una funzione
-riusabile, non una tabella), che **condivida i parametri** su tutti i nodi come
-la convoluzione li condivide su tutti i pixel, e che rispetti l'invarianza a
-permutazione discussa sopra.
+grafo, la matrice $\mathbf{A}$; dall'altra le feature dei nodi, la matrice
+$\mathbf{X}$. I cammini casuali usano solo la prima. Le reti dense saprebbero
+usare la seconda, ma non sanno gestire l'assenza di ordine e il grado
+variabile. Ci serve un modello che usi **struttura e feature insieme**, che sia
+**induttivo** (una funzione riusabile, non una tabella), che **condivida i
+parametri** su tutti i nodi come la convoluzione li condivide su tutti i pixel,
+e che rispetti l'invarianza a permutazione discussa sopra.
 
 L'idea che concilia tutte queste richieste è tanto semplice quanto feconda: far
 sì che ogni nodo **aggiorni la propria rappresentazione ascoltando i vicini**, e
@@ -339,12 +360,23 @@ Neural Network* e a cui è dedicata la prossima sezione.
 ## Un esempio numerico: dalla figura alla matrice
 
 Chiudiamo mettendo le mani nei numeri, sul grafo di cinque nodi della
-{numref}`fig-grafo-anatomia`. I suoi archi sono: 1–2, 1–3, 2–3, 3–4 e 4–5. È un
-grafo non diretto e non pesato, quindi la matrice di adiacenza $A$ è simmetrica
-e fatta di soli 0 e 1. Riga per riga, mettiamo un 1 dove due nodi sono collegati:
+{numref}`fig-grafo-anatomia`. Prima però conviene dire *perché* si passa dal
+disegno alle tabelle, perché non è un vezzo: un grafo con cinque nodi si guarda,
+un social network con un miliardo di persone no. A un certo punto il disegno
+smette di esistere e resta solo l'elenco, e allora il grafo bisogna
+**scriverlo**. Il modo standard è una griglia quadrata con una riga e una
+colonna per nodo, in cui ogni casella dice se i due nodi corrispondenti sono
+collegati. Quello che segue non è un argomento nuovo: è la figura di prima
+scritta in un altro modo, e costruirla è solo contare vicini e riportare i
+conti. Chi trova le griglie ostiche può guardarle di sfuggita e tirare dritto:
+la sostanza è nelle righe di testo fra l'una e l'altra.
+
+I suoi archi sono: 1–2, 1–3, 2–3, 3–4 e 4–5. È un grafo non diretto e non
+pesato, quindi la matrice di adiacenza $\mathbf{A}$ è simmetrica e fatta di
+soli 0 e 1. Riga per riga, mettiamo un 1 dove due nodi sono collegati:
 
 $$
-A =
+\mathbf{A} =
 \begin{pmatrix}
 0 & 1 & 1 & 0 & 0\\
 1 & 0 & 1 & 0 & 0\\
@@ -358,12 +390,12 @@ Il **grado** di ogni nodo è la somma della sua riga: quante linee ne escono.
 Contando i vicini: il nodo 1 ne ha 2 (il 2 e il 3), il nodo 2 ne ha 2, il nodo
 3 ne ha 3 (l'unico «snodo», evidenziato in figura), il nodo 4 ne ha 2, il nodo
 5 ne ha 1 (solo il 4). Quindi i gradi sono $(2, 2, 3, 2, 1)$, e la loro somma
-vale $2+2+3+2+1 = 10$: esattamente il doppio dei 5 archi, come dev'essere
-(ogni arco conta per i due nodi che collega). La **matrice dei gradi** $D$ è
+vale $2+2+3+2+1 = 10$: esattamente il doppio dei 5 archi, come dev'essere (ogni
+arco conta per i due nodi che collega). La **matrice dei gradi** $\mathbf{D}$ è
 diagonale e porta questi valori:
 
 $$
-D =
+\mathbf{D} =
 \begin{pmatrix}
 2 & 0 & 0 & 0 & 0\\
 0 & 2 & 0 & 0 & 0\\
@@ -377,10 +409,10 @@ C'è un'ultima mossa che ritroveremo di continuo nella prossima sezione:
 aggiungere a ogni nodo un **cappio** (*self-loop*), cioè un arco che lo collega a
 sé stesso. Serve a far sì che, quando un nodo «ascolta» i vicini, non dimentichi
 sé stesso. In matrice significa mettere degli 1 sulla diagonale, cioè sommare la
-matrice identità $I$:
+matrice identità $\mathbf{I}$:
 
 $$
-\tilde{A} = A + I =
+\tilde{\mathbf{A}} = \mathbf{A} + \mathbf{I} =
 \begin{pmatrix}
 1 & 1 & 1 & 0 & 0\\
 1 & 1 & 1 & 0 & 0\\
@@ -390,15 +422,52 @@ $$
 \end{pmatrix},
 $$
 
-dove $I$ è la matrice identità $5 \times 5$ e $\tilde{A}$ è l'adiacenza «con i
-cappi». Ogni nodo guadagna così un vicino in più (sé stesso) e i gradi salgono
-di uno: da $(2,2,3,2,1)$ a $(3,3,4,3,2)$.
+dove $\mathbf{I}$ è la matrice identità $5 \times 5$ e $\tilde{\mathbf{A}}$ è
+l'adiacenza «con i cappi». Ogni nodo guadagna così un vicino in più (sé stesso)
+e i gradi salgono di uno: da $(2,2,3,2,1)$ a $(3,3,4,3,2)$.
 
 `````{tab} Elementare
 
-Tutto qui: costruire $A$, $D$ e $\tilde{A}$ è solo contare vicini e riportare i
-conti in una tabella quadrata. Con `numpy` diventano tre righe, e i numeri sono
-esattamente quelli scritti sopra:
+Ricapitoliamo a parole, che è tutto quello che serve portarsi via. La griglia
+quadrata è il grafo scritto: nella casella dove la riga del nodo 2 incrocia la
+colonna del nodo 3 c'è un $1$ se i due sono collegati e uno $0$ se non lo sono.
+Il **grado** di un nodo, cioè quanti vicini ha, non va calcolato: si legge,
+contando gli $1$ nella sua riga.
+
+E aggiungere «i cappi» vuol dire mettere un $1$ anche là dove una riga incrocia
+la propria colonna, cioè dichiarare ogni nodo vicino di sé stesso. Serve per
+una ragione che si vedrà nella prossima sezione: quando un nodo ascolterà i
+vicini, non vogliamo che si dimentichi di quello che sapeva già di sé. Dopo
+questa aggiunta ogni nodo ha esattamente un vicino in più, ed è per questo che
+i gradi salgono tutti di uno.
+
+`````
+
+`````{tab} Superiore
+
+Queste tre matrici non sono un esercizio di contabilità: sono i mattoni con cui
+si costruisce la convoluzione su grafo. Il *message passing* della prossima
+sezione, nella sua forma più nota, non usa direttamente $\tilde{\mathbf{A}}$ ma
+la sua versione **normalizzata simmetricamente**
+
+$$
+\hat{\mathbf{A}} = \tilde{\mathbf{D}}^{-1/2}\, \tilde{\mathbf{A}}\, \tilde{\mathbf{D}}^{-1/2},
+$$
+
+dove $\tilde{\mathbf{D}}$ è la matrice dei gradi di $\tilde{\mathbf{A}}$
+(quella con i cappi, qui $\mathrm{diag}(3,3,4,3,2)$). La normalizzazione serve
+a evitare che i nodi con tanti vicini dominino la somma dei messaggi,
+riscalando ogni contributo secondo i gradi delle due estremità dell'arco. I
+dettagli (perché proprio $-1/2$ da entrambi i lati, e cosa c'entra il
+Laplaciano del grafo) sono il cuore della prossima sezione; qui basti aver
+visto da dove partono: da $\mathbf{A}$, da $\mathbf{D}$ e dal gesto elementare
+di aggiungere $\mathbf{I}$.
+
+`````
+
+Per chi programma, le tre tabelle sono tre righe di `numpy`, e i numeri che
+stampa sono esattamente quelli scritti sopra. Chi non programma può saltare il
+riquadro: non c'è dentro niente che il testo non abbia già detto.
 
 ```python
 import numpy as np
@@ -419,39 +488,55 @@ print(gradi)                   # [2 2 3 2 1]
 print(A_tilde.sum(axis=1))     # gradi con i cappi: [3 3 4 3 2]
 ```
 
+`````{tab} Elementare
+
+```{admonition} Da ricordare
+:class: important
+- Un **grafo** è fatto di **nodi** (i puntini) e **archi** (le linee), che
+  possono avere un verso e un peso. Ogni nodo porta con sé una fila di numeri,
+  le sue **caratteristiche**, e una fila di numeri si chiama **vettore**.
+- Il **grado** di un nodo è quanti vicini ha. Il grafo si scrive in una griglia
+  quadrata, una riga e una colonna per nodo, con un $1$ dove due nodi sono
+  collegati: serve perché un grafo grande non si può disegnare.
+- I grafi mettono in crisi le reti classiche per tre motivi: **l'ordine in cui
+  si elencano i nodi non conta** (la festa non cambia se riordini l'elenco
+  degli invitati), ogni nodo ha **un numero diverso di vicini**, e ogni grafo ha
+  **un numero diverso di nodi**. Griglie di pixel e frasi non hanno nessuno dei
+  tre problemi.
+- Tre tipi di domanda: su un **nodo** (questo account è un bot?), su un **arco**
+  che ancora non c'è (queste due persone diventeranno amiche?), sull'**intero
+  grafo** (questa molecola è tossica?). E due situazioni: o il grafo è uno solo
+  e fisso, e si tratta di riempire i buchi, oppure si vuole imparare qualcosa
+  che funzioni anche su nodi e grafi mai visti, come imparare a leggere le
+  mappe invece di imparare a memoria una città.
+- I **cammini casuali** (**DeepWalk**, **node2vec**) fabbricano finte frasi
+  passeggiando a caso sul grafo e le danno in pasto all'algoritmo degli
+  embedding di parole. Funzionano, ma imparano un risultato per ogni nodo
+  invece di una procedura: un nodo nuovo li spiazza, e delle caratteristiche
+  dei nodi non sanno che farsene.
+- Le **GNN** nascono per superare questi limiti: usare **collegamenti e
+  caratteristiche insieme**, con una procedura riusabile e la stessa per tutti
+  i nodi, facendo aggiornare ogni nodo tramite i suoi vicini. Il come è il
+  **message passing** della prossima sezione.
+```
+
 `````
 
 `````{tab} Superiore
 
-Queste tre matrici non sono un esercizio di contabilità: sono i mattoni con cui
-si costruisce la convoluzione su grafo. Il *message passing* della prossima
-sezione, nella sua forma più nota, non usa direttamente $\tilde{A}$ ma la sua
-versione **normalizzata simmetricamente**
-
-$$
-\hat{A} = \tilde{D}^{-1/2}\, \tilde{A}\, \tilde{D}^{-1/2},
-$$
-
-dove $\tilde{D}$ è la matrice dei gradi di $\tilde{A}$ (quella con i cappi,
-qui $\mathrm{diag}(3,3,4,3,2)$). La normalizzazione serve a evitare che i nodi
-con tanti vicini dominino la somma dei messaggi, riscalando ogni contributo
-secondo i gradi delle due estremità dell'arco. I dettagli (perché proprio
-$-1/2$ da entrambi i lati, e cosa c'entra il Laplaciano del grafo) sono il
-cuore della prossima sezione; qui basti aver visto da dove partono: da $A$, da
-$D$ e dal gesto elementare di aggiungere $I$.
-
-`````
-
 ```{admonition} Da ricordare
 :class: important
-- Un **grafo** $G=(V,E)$ è fatto di **nodi** e **archi** (diretti o no, pesati o
-  no). La struttura sta nella **matrice di adiacenza** $A$, le caratteristiche
-  dei nodi nella **matrice delle feature** $X$; il **grado** di un nodo è la
-  somma della sua riga, raccolto nella **matrice diagonale dei gradi** $D$.
+- Un **grafo** $G=(V,E)$ è fatto di **nodi** e **archi** (diretti o no, pesati
+  o no). La struttura sta nella **matrice di adiacenza** $\mathbf{A}$, le
+  caratteristiche dei nodi nella **matrice delle feature**
+  $\mathbf{X} \in \mathbb{R}^{N \times F}$; il **grado** di un nodo è la somma
+  della sua riga, raccolto nella **matrice diagonale dei gradi** $\mathbf{D}$.
 - I grafi sfidano le reti classiche perché **i nodi non hanno ordine** (serve
-  **invarianza/equivarianza a permutazione**), hanno **grado variabile** e
-  **taglia variabile**: né la griglia della CNN né la sequenza della RNN vanno
-  bene.
+  **invarianza/equivarianza a permutazione**:
+  $f(\mathbf{P}\mathbf{A}\mathbf{P}^\top, \mathbf{P}\mathbf{X})$ vale
+  $f(\mathbf{A},\mathbf{X})$ oppure $\mathbf{P} f(\mathbf{A},\mathbf{X})$),
+  hanno **grado variabile** e **taglia variabile**: né la griglia della CNN né
+  la sequenza della RNN vanno bene.
 - Tre livelli di compito: **nodo** (classificare gli utenti), **arco** (*link
   prediction*: suggerire un'amicizia o un prodotto), **grafo** (una proprietà
   della molecola). E due regimi: **transduttivo** (grafo fisso) vs
@@ -464,3 +549,5 @@ $D$ e dal gesto elementare di aggiungere $I$.
   ogni nodo tramite i suoi vicini. Il come è il **message passing** della
   prossima sezione.
 ```
+
+`````

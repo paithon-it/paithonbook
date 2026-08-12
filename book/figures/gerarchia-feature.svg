@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  paithon book — figura: la gerarchia di feature in una rete profonda per
+  paithon book, figura: la gerarchia di feature in una rete profonda per
   immagini. Da sinistra a destra: immagine di input (pixel), primi strati
   (bordi e linee), strati intermedi (texture e parti), ultimi strati
   (oggetto intero). Palette-locked: cream/terracotta/teal/ocra su tratto

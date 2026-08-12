@@ -2,8 +2,11 @@
 
 Nell'autunno del 2012 una rete neurale chiamata **AlexNet** vinse la
 competizione ImageNet portando l'errore top-5 dal 26% al 15% circa (un salto
-che nessun metodo precedente aveva nemmeno avvicinato) e la visione
-artificiale non fu più la stessa {cite}`krizhevsky2012imagenet`. Ma dietro
+che nessun metodo precedente aveva nemmeno avvicinato). *Top-5* dice come si
+contano gli errori: il modello dà le cinque etichette che ritiene più
+probabili, e si segna un errore solo se quella giusta non è fra quelle cinque.
+La visione artificiale non fu più la stessa
+{cite}`krizhevsky2012imagenet`. Ma dietro
 quel risultato c'erano 1,2 milioni di immagini etichettate e giorni di
 addestramento su GPU. La buona notizia è che quasi nessuno di noi deve
 ripetere quella fatica: possiamo *prendere in prestito* ciò che quelle reti
@@ -19,7 +22,9 @@ dalla foto all'etichetta.
 `````{tab} Elementare
 
 L'immagine entra come una griglia di pixel. La rete la fa passare attraverso
-una pila di **strati convoluzionali**: i primi riconoscono cose semplici
+una pila di **strati convoluzionali**, quelli del capitolo precedente: ognuno
+passa sull'immagine una lente piccola, sempre la stessa, e segna dove trova il
+motivo che quella lente cerca. I primi riconoscono cose semplici
 (bordi, angoli, macchie di colore) quelli più profondi combinano questi
 pezzetti in forme via via più complesse: una texture, un occhio, un muso. Alla
 fine tutte queste "prove raccolte" vengono riassunte in una lista di numeri
@@ -31,12 +36,16 @@ alto.
 
 `````{tab} Superiore
 
-L'input è un tensore $X \in \mathbb{R}^{C\times H\times W}$ (canali, altezza,
-larghezza: l'ordine *channels-first* di PyTorch, lo stesso dell'inizio del
-capitolo). Una successione di blocchi convoluzione + non linearità + pooling lo
-trasforma in una *feature map* sempre più piccola nello spazio ma più ricca in
-profondità. Un *global average pooling* la riduce a un vettore
-$\mathbf{z}\in\mathbb{R}^d$, che uno strato *fully-connected* con **softmax**
+L'input è un tensore $\mathbf{X} \in \mathbb{R}^{C\times H\times W}$ (canali,
+altezza, larghezza: l'ordine *channels-first* di PyTorch, lo stesso dell'inizio
+del capitolo). Una successione di blocchi convoluzione + non linearità + pooling
+lo trasforma in una *feature map* sempre più piccola nello spazio ma più ricca
+in profondità. Nelle architetture moderne un *global average pooling* la riduce
+a un vettore $\mathbf{z}\in\mathbb{R}^d$ (le reti della prima generazione,
+AlexNet e VGG, appiattivano invece la mappa e la mandavano in tre strati densi
+pesantissimi: in AlexNet sono il 96% dei parametri, ed è il motivo per cui
+«sostituire la testa» vuol dire due cose molto diverse sulle due famiglie), che
+uno strato *fully-connected* con **softmax**
 mappa in una distribuzione sulle $K$ classi:
 
 $$
@@ -53,11 +62,13 @@ $\theta$ della rete.
 ## Perché partire da zero costa caro
 
 Una CNN moderna ha da qualche milione a decine di milioni di parametri. Per
-stimarli senza andare in **overfitting** servono moltissimi esempi etichettati
+stimarli senza andare in **overfitting**, cioè senza che la rete impari a
+memoria gli esempi che le abbiamo mostrato invece della regola che li spiega,
+servono moltissimi esempi etichettati
 e molta potenza di calcolo. Con le poche migliaia di foto di un progetto reale
 (le lastre di un ambulatorio, i difetti su una linea di produzione, le specie
-di una guida botanica), una rete addestrata da zero impara a memoria il
-training set e fallisce sul resto. Il collo di bottiglia, quasi sempre, non è
+di una guida botanica), una rete addestrata da zero fa esattamente così: sulle
+foto di addestramento risponde benissimo, su tutte le altre sbaglia. Il collo di bottiglia, quasi sempre, non è
 l'algoritmo: sono i **dati** e il **tempo**.
 
 ## Prendere in prestito: transfer learning
@@ -118,8 +129,9 @@ sulle nostre classi. Restano due modi di procedere.
 :width: 100%
 
 Le griglie si rimpiccioliscono, il significato cresce. Perdere risoluzione non
-è un effetto collaterale del pooling: è il modo in cui la rete smette di
-guardare i pixel e comincia a guardare le cose.
+è un effetto collaterale del **pooling** (il passaggio che riassume ogni
+quadratino di griglia in un numero solo, e così la rimpicciolisce): è il modo
+in cui la rete smette di guardare i pixel e comincia a guardare le cose.
 ```
 
 Il doppio movimento di {numref}`fig-gerarchia-pooling` spiega perché il
@@ -200,8 +212,8 @@ optimizer = optim.Adam(model.fc.parameters(), lr=1e-3)
 
 L'addestramento è il solito training loop del capitolo su PyTorch, sui batch
 del nostro dataset trasformati da `preprocess`. Quando la testa ha smesso di
-migliorare, passiamo al fine-tuning degli ultimi strati con un learning rate
-ridotto.
+migliorare, passiamo al fine-tuning degli ultimi strati a passi piccolissimi
+(un *learning rate* ridotto).
 
 ```python
 # 3. Si scongela solo l'ultimo blocco della base
@@ -221,6 +233,31 @@ dieci volte i dati. Sostituendo `resnet18` con `resnet50` o con
 cambia: è il
 bello del transfer learning.
 
+`````{tab} Elementare
+
+```{admonition} Da ricordare
+:class: important
+- Una rete che classifica lavora a strati: i primi vedono bordi e macchie di
+  colore, gli ultimi forme e oggetti interi. Alla fine tutto si riduce a una
+  lista di numeri, e l'ultimo passaggio la trasforma in percentuali, una per
+  classe: vince la più alta.
+- Costruire una rete del genere da zero costa **troppe foto e troppo tempo**.
+  Il **transfer learning** è la scorciatoia: si prende una rete che qualcun
+  altro ha già addestrato su milioni di immagini e le si cambia solo la punta.
+- Il cuoco che sa già tagliare e soffriggere deve imparare solo la ricetta
+  nuova: i primi strati (le tecniche di base) valgono per qualunque
+  fotografia, gli ultimi (la ricetta) no, e sono quelli da rifare.
+- Due modi di procedere. **Bloccare** tutta la base e allenare solo la punta:
+  veloce, e basta poco materiale. Oppure **sbloccare anche gli ultimi strati**
+  della base e ritoccarli a passi piccolissimi: rende di più, ma vuole più
+  foto e più cautela, perché a passi grandi la rete dimentica quello che
+  sapeva.
+```
+
+`````
+
+`````{tab} Superiore
+
 ```{admonition} Da ricordare
 :class: important
 - Una CNN classifica estraendo caratteristiche via via più astratte e
@@ -234,3 +271,5 @@ bello del transfer learning.
   **Fine-tuning**: si scongelano gli strati alti con learning rate piccolo
   (più preciso, più dati), BatchNorm sempre in `.eval()`.
 ```
+
+`````

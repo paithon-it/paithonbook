@@ -1,4 +1,4 @@
-# Esplorazione e ricompensa: curiosità, sparsità, reward hacking
+# Esplorazione e ricompensa: curiosità, ricompense rade, reward hacking
 
 Fra i 49 giochi Atari su cui DeepMind mise alla prova il DQN nel 2015, ce n'è
 uno dove l'agente che aveva imparato a giocare a decine di titoli superando i
@@ -52,9 +52,9 @@ Con $\varepsilon$-greedy le azioni esplorative sono scelte in modo *uniforme e
 indipendente* dallo stato: la perturbazione è locale e non correlata nel tempo.
 Per raggiungere uno stato-obiettivo che dista $n$ azioni "insolite" dalla
 regione già visitata, la probabilità di percorrere l'intera sequenza per puro
-caso scala come $(\varepsilon/|A|)^{\,n}$ e decade esponenzialmente in $n$.
-Questo è **dithering**: rumore attorno alla policy corrente, non ricerca
-strutturata.
+caso scala come $(\varepsilon/|\mathcal{A}|)^{\,n}$ e decade esponenzialmente
+in $n$. Questo è **dithering**: rumore attorno alla policy corrente, non
+ricerca strutturata.
 
 L'esplorazione *diretta* (o *deep exploration*) tiene invece conto di ciò che
 l'agente ha già visto e orienta deliberatamente il comportamento verso le
@@ -86,13 +86,16 @@ naturalmente spinto verso l'ignoto, senza bisogno di lanciare monetine.
 Si sostituisce alla ricompensa dell'ambiente $r_t$ una ricompensa aumentata
 
 $$
-r_t^{+} = r_t + \beta\, \frac{1}{\sqrt{N(s_t)}} ,
+r_t^{+} = r_t + \frac{\beta}{\sqrt{N(s_t)}} ,
 $$
 
 dove $N(s_t)$ è il numero di volte in cui lo stato $s_t$ è stato visitato e
 $\beta>0$ dosa il peso della curiosità. Il bonus è alto sugli stati rari,
 tende a zero su quelli battuti: l'agente è incentivato a raggiungere le zone
-poco esplorate.
+poco esplorate. Sullo stato mai visitato, $N=0$, la formula scritta così
+diverge, e nella teoria è voluto: uno stato mai visto va visitato, e basta. In
+un programma quell'infinito va smorzato, e si scrive
+$\beta/\sqrt{N(s_t)+1}$, che è la forma implementata nel codice qui sotto.
 
 Il limite è evidente in spazi grandi o continui: con osservazioni ad alta
 dimensione (i pixel di uno schermo) ogni stato è, letteralmente, unico, e
@@ -100,7 +103,7 @@ $N(s_t)$ vale sempre $1$. Il conteggio esatto non ha senso. La soluzione sono
 gli **pseudo-conteggi**: si stima una densità $\rho(s)$ sugli stati visitati e
 se ne ricava un conteggio *effettivo* $\hat N(s)$ coerente con quanto la
 densità è "sorpresa" di rivedere $s$. È l'approccio *count-based* esteso agli
-spazi grandi (Bellemare e colleghi, 2016), che diede i primi progressi
+spazi grandi {cite}`bellemare2016unifying`, che diede i primi progressi
 sostanziali proprio su Montezuma's Revenge.
 
 `````
@@ -123,9 +126,13 @@ for s, (n, b) in enumerate(zip(visite, bonus)):
     print(f"stato {s}: visite={n:3d}  bonus={b:.3f}")
 ```
 
-Lo stato mai visitato riceve il bonus massimo ($0{,}500$), quello battuto
-duecento volte quasi nulla ($0{,}035$): la ricompensa aumentata inclina
-l'agente verso l'ignoto senza toccare la regola di scelta.
+I due numeri si controllano a mano, ed è un conto da fare. Il premio pieno vale
+$0{,}5$ (è il `beta` scelto nel codice) e si divide per la radice quadrata di
+quante volte quello stato è stato visto, più uno. Lo stato mai visitato prende
+quindi $0{,}5$ diviso $1$, cioè il bonus massimo, $0{,}500$; quello battuto
+duecento volte prende $0{,}5$ diviso la radice di $201$, che vale poco più di
+quattordici, cioè $0{,}035$: quattordici volte meno. La ricompensa aumentata
+inclina l'agente verso l'ignoto senza toccare la regola con cui sceglie.
 
 ## Curiosità intrinseca: la sorpresa come ricompensa
 
@@ -187,13 +194,25 @@ produrrà la rete casuale, e l'errore (cioè la novità) è alto. RND fu il prim
 metodo a superare la prestazione media umana su Montezuma's Revenge senza
 ricorrere a dimostrazioni umane né allo stato interno dell'emulatore: il
 punteggio zero del DQN era già stato scalfito dagli pseudo-conteggi, ma ora,
-tre anni dopo, anche la media umana era superata.
+tre anni dopo, anche la media umana era superata. Non di più, ed è bene dirlo
+con le parole del lavoro stesso, che sull'esito è prudente: l'agente
+«occasionalmente completa il primo livello». Di livelli, Montezuma's Revenge ne
+ha tre. Superare il punteggio umano medio e risolvere un gioco sono due
+affermazioni diverse, e vale la pena tenerle separate.
 
 `````
 
-Il cuore di RND si scrive in poche righe di PyTorch. Due reti identiche
-d'architettura; una è congelata, l'altra impara a imitarla, e lo scarto è la
-misura di novità:
+Di questa idea esistono due realizzazioni classiche, e conviene tenerne a mente
+i nomi perché torneranno. La prima si chiama **ICM** (*Intrinsic Curiosity
+Module*, modulo di curiosità intrinseca): l'agente si costruisce un modello di
+«che cosa succederà se faccio questo», e ogni volta che sbaglia la previsione
+incassa un premietto. La seconda si chiama **RND** (*Random Network
+Distillation*): due reti con la stessa architettura, una congelata con pesi
+tirati a caso e mai toccati, l'altra che si allena a imitarla; dove l'imitazione
+riesce male, l'agente non è ancora passato abbastanza, e proprio quello scarto è
+la misura di novità.
+
+Il cuore di RND si scrive in poche righe di PyTorch:
 
 ```python
 import torch
@@ -262,8 +281,9 @@ trovare.
 
 Il rischio del reward shaping ingenuo è cambiare la policy ottima: un termine
 aggiuntivo mal scelto può rendere conveniente un comportamento che l'obiettivo
-originale non premia. Ng, Harada e Russell (1999) hanno dimostrato che esiste
-una forma di shaping **garantita** a preservare l'ordine delle policy: il
+originale non premia. Ng, Harada e Russell {cite}`ng1999policy` hanno
+dimostrato che esiste una forma di shaping **garantita** a preservare l'ordine
+delle policy: il
 **potential-based reward shaping**. Si sceglie una funzione potenziale
 $\Phi(s)$ sugli stati e si aggiunge alla ricompensa il termine
 
@@ -310,12 +330,19 @@ punto in cui le cose hanno cominciato a peggiorare.
 ```
 
 Il punto di divergenza in {numref}`fig-reward-hacking` porta il nome di
-Charles Goodhart, l'economista a cui si attribuisce la formulazione «quando
-una misura diventa un obiettivo, cessa di essere una buona misura». Vale per
-gli agenti come per le organizzazioni, e per la stessa ragione: la misura era
-un buon indicatore *finché nessuno ci puntava contro tutto lo sforzo*.
+Charles Goodhart, l'economista che nel 1975, parlando di politica monetaria,
+osservò come una regolarità statistica tenda a rompersi non appena la si usa
+per governare qualcosa. La formulazione che tutti citano («quando una misura
+diventa un obiettivo, cessa di essere una buona misura») non è però sua: è
+dell'antropologa **Marilyn Strathern**, che la scrisse nel 1997 a proposito
+della valutazione delle università britanniche
+{cite}`strathern1997improving`, ed è quella che ha portato la legge fuori
+dall'economia. Vale per gli agenti come per le organizzazioni, e per la stessa
+ragione: la misura era un buon indicatore *finché nessuno ci puntava contro
+tutto lo sforzo*.
 
-L'esempio diventato manifesto è di OpenAI (2016): in *CoastRunners*, un gioco di
+L'esempio diventato manifesto è di OpenAI {cite}`clark2016faulty`: in
+*CoastRunners*, un gioco di
 gare di barche, l'agente doveva completare un percorso il più in fretta
 possibile. La ricompensa, però, era stata legata ai punti raccolti lungo il
 tragitto, non all'arrivo. L'agente scoprì che in una laguna un gruppo di bonus
@@ -329,9 +356,10 @@ della ricompensa, perdendo secondo ogni ragionevole intento.
 È la stessa cosa che succede quando si paga un idraulico a numero di tubi
 sostituiti: qualcuno inizierà a sostituire tubi che andavano benissimo. Il
 metro con cui misuri diventa l'obiettivo, e l'obiettivo vero (l'impianto che
-funziona) passa in secondo piano. Gli economisti la chiamano **legge di
-Goodhart**: *quando una misura diventa un bersaglio, smette di essere una
-buona misura*.
+funziona) passa in secondo piano. La chiamano **legge di Goodhart**, anche se
+la frase che si cita sempre (*quando una misura diventa un bersaglio, smette di
+essere una buona misura*) non l'ha scritta l'economista che le dà il nome: l'ha
+scritta un'antropologa, Marilyn Strathern, più di vent'anni dopo.
 
 Con gli agenti è identico, e più insidioso, perché un ottimizzatore
 instancabile cercherà *ogni* scorciatoia possibile. Il problema non è che
@@ -368,20 +396,72 @@ scorciatoia sleale. Progettare l'esplorazione e progettare la ricompensa è,
 alla fine, lo stesso mestiere: decidere con cura cosa spingiamo davvero
 l'agente a cercare.
 
+Con questo il capitolo si chiude, e quella frase vale anche per tutto ciò che lo
+precede. Dal DQN in avanti ogni sezione ha dato all'agente un pezzo di libertà
+in più, e subito dopo ha dovuto inventarsi come contenerla: la memoria delle
+esperienze e la copia congelata perché i valori non esplodessero, il guinzaglio
+di PPO perché non esplodesse la strategia, i sogni corti perché non esplodesse
+l'immaginazione, il recinto attorno all'archivio perché non esplodessero le
+stime su ciò che nessuno ha mai provato, l'esperto richiamato a etichettare
+perché l'allievo non finisse nel fosso. Il reward hacking è la stessa storia
+raccontata all'ultimo livello, quello dell'obiettivo. Con una differenza: lì il
+contenimento non è più un accorgimento tecnico, è una domanda su che cosa
+vogliamo davvero. Il capitolo sull'AI responsabile comincia da qui.
+
+`````{tab} Elementare
+```{admonition} Da ricordare
+:class: important
+- Quando la ricompensa arriva **di rado** (l'emblema è *Montezuma's Revenge*,
+  dove il DQN segnava zero), tirare a caso ogni tanto non basta: è come
+  esplorare una città lanciando una monetina a ogni incrocio, si gira per ore
+  nello stesso quartiere. Serve una spinta che punti **deliberatamente** verso
+  quello che non si è ancora visto.
+- Il modo più semplice è il **premio alla novità**, il principio del turista
+  curioso: un piccolo premio ogni volta che metti piede in un posto nuovo, che
+  si spegne man mano che quel posto diventa familiare. Negli spazi enormi, dove
+  ogni schermata è unica e nessun posto si ripete mai, il conteggio non si può
+  fare e lo si stima.
+- L'idea più elegante è la **curiosità**: il premio non va a ciò che è raro, va
+  a ciò che **sorprende**, come il bambino che spinge il bicchiere oltre il
+  bordo del tavolo finché non ha imparato cosa succede. L'agente si costruisce
+  una previsione di come andrà a finire, e ogni volta che sbaglia la previsione
+  incassa. Si spegne da sé: quando ha imparato, non c'è più sorpresa.
+- Aggiungere premietti intermedi per guidare l'agente (**reward shaping**)
+  funziona, ma solo se sono dati come *differenza di quota*: altrimenti il robot
+  scopre che gli conviene oscillare davanti alla porta incassando premietti,
+  senza mai uscire.
+- Il pericolo grosso ha un nome, **reward hacking**: l'idraulico pagato a tubi
+  sostituiti che comincia a sostituire tubi sani, la barca di *CoastRunners* che
+  gira in tondo prendendo fuoco. Il problema non è che l'agente disobbedisce, è
+  che obbedisce troppo bene, alla lettera sbagliata. Ed è il ponte verso il
+  capitolo sull'AI responsabile.
+```
+`````
+
+`````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
 - Con **ricompense sparse** (l'emblema è *Montezuma's Revenge*, dove il DQN
-  segnava zero) l'esplorazione casuale di $\varepsilon$-greedy fallisce: serve
-  esplorazione **diretta**, non rumore locale.
+  segnava zero) l'esplorazione casuale di $\varepsilon$-greedy fallisce: la
+  probabilità di azzeccare $n$ azioni insolite di fila scala come
+  $(\varepsilon/|\mathcal{A}|)^n$. Serve esplorazione **diretta**, non rumore
+  locale.
 - I **bonus di novità** *count-based* premiano gli stati poco visitati
-  ($\propto 1/\sqrt{N(s)}$); negli spazi grandi si usano **pseudo-conteggi**.
+  ($\propto 1/\sqrt{N(s)}$, con un $+1$ a smorzare l'infinito); negli spazi
+  grandi il conteggio esatto non ha senso e si usano **pseudo-conteggi**
+  derivati da una densità.
 - La **curiosità intrinseca** trasforma la *sorpresa* in ricompensa: **ICM**
-  usa l'errore di predizione della dinamica in uno spazio di feature, **RND**
-  l'errore nel predire una rete casuale fissa, e risolse Montezuma.
+  usa l'errore di predizione della dinamica in uno spazio di feature appreso,
+  **RND** l'errore nel predire una rete casuale fissa. RND fu il primo a
+  superare il punteggio umano medio su Montezuma senza dimostrazioni né accesso
+  allo stato dell'emulatore; il gioco non lo «risolse», e il paper stesso dice
+  che il primo livello lo completa solo occasionalmente.
 - Il **reward shaping** densifica il segnale; solo la forma *potential-based*
   $F=\gamma\Phi(s')-\Phi(s)$ (Ng, Harada, Russell, 1999) preserva la policy
-  ottima.
-- Il **reward hacking** (legge di Goodhart) è l'agente che ottimizza la
-  *lettera* della ricompensa, non l'intento, come la barca di *CoastRunners*.
-  È il ponte verso il problema dell'**allineamento**.
+  ottima, per un argomento telescopico valido *per qualunque* $\Phi$.
+- Il **reward hacking** è l'agente che ottimizza la *lettera* della ricompensa,
+  non l'intento, come la barca di *CoastRunners*. La legge che porta il nome di
+  Goodhart, nella formulazione che tutti citano, è in realtà di Marilyn
+  Strathern (1997). È il ponte verso il problema dell'**allineamento**.
 ```
+`````

@@ -267,19 +267,23 @@
   year={2016}
 }
 
-@book{geron2019hands,
-  title={Hands-On Machine Learning with Scikit-Learn, Keras, and TensorFlow},
+@book{geron2022hands,
+  title={Hands-On Machine Learning with Scikit-Learn, Keras, and TensorFlow:
+         Concepts, Tools, and Techniques to Build Intelligent Systems},
   author={G{\'e}ron, Aur{\'e}lien},
-  edition={2},
-  year={2019},
-  publisher={O'Reilly Media}
+  edition={3},
+  year={2022},
+  publisher={O'Reilly Media},
+  isbn={978-1-098-12597-4}
 }
 
-@book{chollet2017deep,
+@book{chollet2021deep,
   title={Deep Learning with Python},
   author={Chollet, Fran{\c{c}}ois},
-  year={2017},
-  publisher={Manning Publications}
+  edition={2},
+  year={2021},
+  publisher={Manning Publications},
+  isbn={978-1-61729-686-4}
 }
 
 @article{samuel1959some,
@@ -685,11 +689,15 @@
   year={2022}
 }
 
-@article{radford2022robust,
+@inproceedings{radford2022robust,
   title={Robust Speech Recognition via Large-Scale Weak Supervision},
   author={Radford, Alec and Kim, Jong Wook and Xu, Tao and Brockman, Greg and McLeavey, Christine and Sutskever, Ilya},
-  journal={arXiv preprint arXiv:2212.04356},
-  year={2022}
+  booktitle={Proceedings of the 40th International Conference on Machine Learning (ICML)},
+  series={Proceedings of Machine Learning Research},
+  volume={202},
+  pages={28492--28518},
+  year={2023},
+  note={arXiv:2212.04356}
 }
 
 @inproceedings{ouyang2022training,
@@ -1117,7 +1125,8 @@
   title   = {Speech and Language Processing: An Introduction to Natural Language Processing, Computational Linguistics, and Speech Recognition with Language Models},
   edition = {3},
   year    = {2026},
-  note    = {Bozza online della terza edizione, rilasciata il 6 gennaio 2026},
+  publisher = {Edizione online degli autori},
+  note    = {Bozza della terza edizione, rilasciata il 6 gennaio 2026},
   url     = {https://web.stanford.edu/~jurafsky/slp3/}
 }
 
@@ -2065,7 +2074,7 @@
   year={2026}
 }
 
-% --- ibridi (solo se citati in panorama-e-limiti); ID arXiv DA VERIFICARE ---
+% --- architetture ibride (arXiv verificati sull'API il 12 agosto 2026) ---
 @article{lieber2024jamba,
   title={{Jamba}: A Hybrid Transformer-Mamba Language Model},
   author={Lieber, Opher and Lenz, Barak and Bata, Hofit and others},
@@ -2192,7 +2201,7 @@
   year={2025}
 }
 
-% ===== Alberi & ensemble (alberi-ensemble.md) — geron2019hands già presente =====
+% ===== Alberi & ensemble (alberi-ensemble.md) — geron2022hands già presente =====
 @book{breiman1984classification,
   title={Classification and Regression Trees},
   author={Breiman, Leo and Friedman, Jerome H. and Olshen, Richard A. and Stone, Charles J.},
@@ -2257,7 +2266,7 @@
   year={2017}
 }
 
-% ===== Support Vector Machine (svm.md) — geron2019hands già presente =====
+% ===== Support Vector Machine (svm.md) — geron2022hands già presente =====
 @inproceedings{boser1992training,
   title={A Training Algorithm for Optimal Margin Classifiers},
   author={Boser, Bernhard E. and Guyon, Isabelle M. and Vapnik, Vladimir N.},
@@ -2851,6 +2860,7 @@
   title={Interpretable Machine Learning: A Guide for Making Black Box Models Explainable},
   author={Molnar, Christoph},
   edition={2},
+  publisher={Edizione dell'autore},
   year={2022},
   url={https://christophm.github.io/interpretable-ml-book/}
 }
@@ -3450,7 +3460,7 @@
 
 @inproceedings{greshake2023not,
   title={Not What You've Signed Up For: Compromising Real-World {LLM}-Integrated Applications with Indirect Prompt Injection},
-  author={Abdelnabi, Sahar and Greshake, Kai and Mishra, Shailesh and Endres, Christoph and Holz, Thorsten and Fritz, Mario},
+  author={Greshake, Kai and Abdelnabi, Sahar and Mishra, Shailesh and Endres, Christoph and Holz, Thorsten and Fritz, Mario},
   booktitle={Proceedings of the 16th ACM Workshop on Artificial Intelligence and Security (AISec '23)},
   pages={79--90},
   publisher={Association for Computing Machinery},
@@ -4338,4 +4348,1570 @@
   booktitle={International Conference on Learning Representations (ICLR)},
   year={2019},
   url={https://arxiv.org/abs/1807.03819}
+}
+
+% ---------------------------------------------------------------
+% Fuse dalla revisione a tre lenti dell'11 agosto 2026: ogni voce
+% verificata su fonte primaria dal redattore che l'ha richiesta.
+% ---------------------------------------------------------------
+
+@inproceedings{artetxe2020cross,
+  title={On the Cross-lingual Transferability of Monolingual Representations},
+  author={Artetxe, Mikel and Ruder, Sebastian and Yogatama, Dani},
+  booktitle={Proceedings of the 58th Annual Meeting of the Association for Computational Linguistics},
+  pages={4623--4637},
+  year={2020}
+}
+
+@article{belkin2019reconciling,
+  title={Reconciling modern machine-learning practice and the classical bias--variance trade-off},
+  author={Belkin, Mikhail and Hsu, Daniel and Ma, Siyuan and Mandal, Soumik},
+  journal={Proceedings of the National Academy of Sciences},
+  volume={116},
+  number={32},
+  pages={15849--15854},
+  year={2019},
+  doi={10.1073/pnas.1903070116}
+}
+
+@inproceedings{carion2020end,
+  title={End-to-End Object Detection with Transformers},
+  author={Carion, Nicolas and Massa, Francisco and Synnaeve, Gabriel and
+          Usunier, Nicolas and Kirillov, Alexander and Zagoruyko, Sergey},
+  booktitle={European Conference on Computer Vision (ECCV)},
+  pages={213--229},
+  year={2020}
+}
+
+@inproceedings{elkan2001foundations,
+  title={The Foundations of Cost-Sensitive Learning},
+  author={Elkan, Charles},
+  booktitle={Proceedings of the 17th International Joint Conference on Artificial Intelligence (IJCAI)},
+  pages={973--978},
+  year={2001}
+}
+
+@article{feinstein1990high,
+  title={High agreement but low kappa: I. The problems of two paradoxes},
+  author={Feinstein, Alvan R. and Cicchetti, Domenic V.},
+  journal={Journal of Clinical Epidemiology},
+  volume={43},
+  number={6},
+  pages={543--549},
+  year={1990},
+  doi={10.1016/0895-4356(90)90158-L}
+}
+
+@inproceedings{frankle2019lottery,
+  title={The Lottery Ticket Hypothesis: Finding Sparse, Trainable Neural Networks},
+  author={Frankle, Jonathan and Carbin, Michael},
+  booktitle={International Conference on Learning Representations (ICLR)},
+  year={2019},
+  note={arXiv:1803.03635}
+}
+
+@inproceedings{grinsztajn2022why,
+  title={Why do tree-based models still outperform deep learning on typical tabular data?},
+  author={Grinsztajn, L{\'e}o and Oyallon, Edouard and Varoquaux, Ga{\"e}l},
+  booktitle={Advances in Neural Information Processing Systems 35 (NeurIPS 2022), Datasets and Benchmarks Track},
+  year={2022},
+  note={arXiv:2207.08815}
+}
+
+@inproceedings{hongkung1981io,
+  title={I/O Complexity: The Red-Blue Pebble Game},
+  author={Hong, Jia-Wei and Kung, H. T.},
+  booktitle={Proceedings of the Thirteenth Annual ACM Symposium on Theory of Computing (STOC)},
+  pages={326--333},
+  year={1981},
+  publisher={ACM},
+  doi={10.1145/800076.802486}
+}
+
+@inproceedings{karnin2013almost,
+  title={Almost Optimal Exploration in Multi-Armed Bandits},
+  author={Karnin, Zohar and Koren, Tomer and Somekh, Oren},
+  booktitle={Proceedings of the 30th International Conference on Machine Learning (ICML)},
+  series={PMLR},
+  volume={28},
+  number={3},
+  pages={1238--1246},
+  year={2013}
+}
+
+@article{kobak2021initialization,
+  title={Initialization is critical for preserving global data structure in both t-SNE and UMAP},
+  author={Kobak, Dmitry and Linderman, George C.},
+  journal={Nature Biotechnology},
+  volume={39},
+  number={2},
+  pages={156--157},
+  year={2021},
+  doi={10.1038/s41587-020-00809-z}
+}
+
+@inproceedings{krogh1995neural,
+  title={Neural Network Ensembles, Cross Validation, and Active Learning},
+  author={Krogh, Anders and Vedelsby, Jesper},
+  booktitle={Advances in Neural Information Processing Systems 7 (NIPS 1994)},
+  publisher={MIT Press},
+  pages={231--238},
+  year={1995}
+}
+
+@techreport{lions1996ariane,
+  title={ARIANE 5: Flight 501 Failure. Report by the Inquiry Board},
+  author={Lions, Jacques-Louis},
+  institution={European Space Agency and Centre National d'\'Etudes Spatiales},
+  address={Paris},
+  year={1996},
+  month={7},
+  note={19 luglio 1996}
+}
+
+@book{mitchell1997machine,
+  title={Machine Learning},
+  author={Mitchell, Tom M.},
+  publisher={McGraw-Hill},
+  series={McGraw-Hill Series in Computer Science},
+  year={1997},
+  isbn={978-0-07-042807-2}
+}
+
+@inproceedings{nakkiran2020deep,
+  title={Deep Double Descent: Where Bigger Models and More Data Hurt},
+  author={Nakkiran, Preetum and Kaplun, Gal and Bansal, Yamini and Yang, Tristan and Barak, Boaz and Sutskever, Ilya},
+  booktitle={International Conference on Learning Representations (ICLR)},
+  year={2020},
+  note={arXiv:1912.02292}
+}
+
+@article{nissim2020fair,
+  title   = {Fair Is Better than Sensational: Man Is to Doctor as Woman Is to Doctor},
+  author  = {Nissim, Malvina and van Noord, Rik and van der Goot, Rob},
+  journal = {Computational Linguistics},
+  volume  = {46},
+  number  = {2},
+  pages   = {487--497},
+  year    = {2020},
+  doi     = {10.1162/coli_a_00379},
+  url     = {https://aclanthology.org/2020.cl-2.7/}
+}
+
+@inproceedings{papineni2002bleu,
+  title     = {{BLEU}: a Method for Automatic Evaluation of Machine Translation},
+  author    = {Papineni, Kishore and Roukos, Salim and Ward, Todd and Zhu, Wei-Jing},
+  booktitle = {Proceedings of the 40th Annual Meeting of the Association for
+               Computational Linguistics (ACL)},
+  pages     = {311--318},
+  year      = {2002},
+  address   = {Philadelphia, Pennsylvania, USA},
+  publisher = {Association for Computational Linguistics},
+  doi       = {10.3115/1073083.1073135},
+  url       = {https://aclanthology.org/P02-1040/}
+}
+
+@inproceedings{sukhbaatar2015end,
+  title={End-To-End Memory Networks},
+  author={Sukhbaatar, Sainbayar and Szlam, Arthur and Weston, Jason and Fergus, Rob},
+  booktitle={Advances in Neural Information Processing Systems},
+  volume={28},
+  pages={2440--2448},
+  year={2015}
+}
+
+@article{vapnik1963pattern,
+  title={Pattern recognition using generalized portrait method},
+  author={Vapnik, Vladimir N. and Lerner, Alexander Ya.},
+  journal={Automation and Remote Control},
+  volume={24},
+  number={6},
+  pages={774--780},
+  year={1963}
+}
+
+@article{weston2015memory,
+  title={Memory Networks},
+  author={Weston, Jason and Chopra, Sumit and Bordes, Antoine},
+  journal={arXiv preprint arXiv:1410.3916},
+  note={International Conference on Learning Representations, 2015},
+  year={2014}
+}
+
+@article{wood2023unified,
+  title={A Unified Theory of Diversity in Ensemble Learning},
+  author={Wood, Danny and Mu, Tingting and Webb, Andrew M. and Reeve, Henry W. J. and Luj{\'a}n, Mikel and Brown, Gavin},
+  journal={Journal of Machine Learning Research},
+  volume={24},
+  number={359},
+  pages={1--49},
+  year={2023}
+}
+
+@inproceedings{wu2019beto,
+  title={Beto, Bentz, Becas: The Surprising Cross-Lingual Effectiveness of BERT},
+  author={Wu, Shijie and Dredze, Mark},
+  booktitle={Proceedings of the 2019 Conference on Empirical Methods in Natural Language Processing and the 9th International Joint Conference on Natural Language Processing (EMNLP-IJCNLP)},
+  pages={833--844},
+  year={2019}
+}
+
+@inproceedings{zhang2019making,
+  title={Making Convolutional Networks Shift-Invariant Again},
+  author={Zhang, Richard},
+  booktitle={International Conference on Machine Learning (ICML)},
+  series={PMLR},
+  volume={97},
+  pages={7324--7334},
+  year={2019}
+}
+
+@inproceedings{li2014parameterserver,
+  title     = {Scaling Distributed Machine Learning with the Parameter Server},
+  author    = {Mu Li and David G. Andersen and Jun Woo Park and Alexander J. Smola
+               and Amr Ahmed and Vanja Josifovski and James Long and
+               Eugene J. Shekita and Bor-Yiing Su},
+  booktitle = {11th {USENIX} Symposium on Operating Systems Design and Implementation
+               ({OSDI} 14)},
+  pages     = {583--598},
+  year      = {2014},
+  publisher = {{USENIX} Association},
+  url       = {https://www.usenix.org/conference/osdi14/technical-sessions/presentation/li_mu}
+}
+
+@inproceedings{korthikanti2023activation,
+  title     = {Reducing Activation Recomputation in Large Transformer Models},
+  author    = {Vijay Anand Korthikanti and Jared Casper and Sangkug Lym and
+               Lawrence McAfee and Michael Andersch and Mohammad Shoeybi and
+               Bryan Catanzaro},
+  booktitle = {Proceedings of Machine Learning and Systems 5 ({MLSys} 2023)},
+  pages     = {341--353},
+  year      = {2023},
+  publisher = {Curran Associates},
+  url       = {https://proceedings.mlsys.org/paper_files/paper/2023/file/80083951326cf5b35e5100260d64ed81-Paper-mlsys2023.pdf}
+}
+
+@article{sutton1988learning,
+  title={Learning to predict by the methods of temporal differences},
+  author={Sutton, Richard S.},
+  journal={Machine Learning},
+  volume={3},
+  number={1},
+  pages={9--44},
+  year={1988},
+  publisher={Springer}
+}
+
+@article{singh2000convergence,
+  title={Convergence results for single-step on-policy
+         reinforcement-learning algorithms},
+  author={Singh, Satinder and Jaakkola, Tommi and Littman, Michael L. and
+          Szepesv{\'a}ri, Csaba},
+  journal={Machine Learning},
+  volume={38},
+  number={3},
+  pages={287--308},
+  year={2000},
+  publisher={Springer}
+}
+
+@inproceedings{turpin2023unfaithful,
+  title={Language Models Don't Always Say What They Think: Unfaithful Explanations in Chain-of-Thought Prompting},
+  author={Turpin, Miles and Michael, Julian and Perez, Ethan and Bowman, Samuel R.},
+  booktitle={Advances in Neural Information Processing Systems (NeurIPS)},
+  volume={36},
+  year={2023},
+  url={https://arxiv.org/abs/2305.04388}
+}
+
+@article{lanham2023faith,
+  title={Measuring Faithfulness in Chain-of-Thought Reasoning},
+  author={Lanham, Tamera and Chen, Anna and Radhakrishnan, Ansh and Steiner, Benoit and Denison, Carson and Hernandez, Danny and Li, Dustin and Durmus, Esin and Hubinger, Evan and Kernion, Jackson and others},
+  journal={arXiv preprint arXiv:2307.13702},
+  year={2023},
+  url={https://arxiv.org/abs/2307.13702}
+}
+
+@inproceedings{sprague2025cot,
+  title={To {CoT} or not to {CoT}? Chain-of-thought helps mainly on math and symbolic reasoning},
+  author={Sprague, Zayne and Yin, Fangcong and Rodriguez, Juan Diego and Jiang, Dongwei and Wadhwa, Manya and Singhal, Prasann and Zhao, Xinyu and Ye, Xi and Mahowald, Kyle and Durrett, Greg},
+  booktitle={International Conference on Learning Representations (ICLR)},
+  year={2025},
+  url={https://arxiv.org/abs/2409.12183}
+}
+
+@article{aleithan2024swebenchplus,
+  title={{SWE-Bench+}: Enhanced Coding Benchmark for {LLMs}},
+  author={Aleithan, Reem and Xue, Haoran and Mohajer, Mohammad Mahdi and Nnorom, Elijah and Uddin, Gias and Wang, Song},
+  journal={arXiv preprint arXiv:2410.06992},
+  year={2024},
+  url={https://arxiv.org/abs/2410.06992}
+}
+
+@inproceedings{novikoff1962convergence,
+  title={On convergence proofs on perceptrons},
+  author={Novikoff, Albert B. J.},
+  booktitle={Proceedings of the Symposium on the Mathematical Theory of Automata},
+  volume={12},
+  pages={615--622},
+  publisher={Polytechnic Institute of Brooklyn},
+  address={New York},
+  year={1962},
+  note={Volume XII della Microwave Research Institute Symposia Series; atti stampati nel 1963 da Polytechnic Press}
+}
+
+@article{block1970boundedness,
+  title={On the boundedness of an iterative procedure for solving a system of linear inequalities},
+  author={Block, H. D. and Levin, S. A.},
+  journal={Proceedings of the American Mathematical Society},
+  volume={26},
+  number={2},
+  pages={229--235},
+  year={1970},
+  doi={10.1090/S0002-9939-1970-0265383-5}
+}
+
+@mastersthesis{hochreiter1991untersuchungen,
+  title={Untersuchungen zu dynamischen neuronalen Netzen},
+  author={Hochreiter, Sepp},
+  school={Institut f{\"u}r Informatik, Technische Universit{\"a}t M{\"u}nchen},
+  type={Diplomarbeit},
+  year={1991},
+  note={Relatore: J{\"u}rgen Schmidhuber, Lehrstuhl Prof. Brauer}
+}
+
+@incollection{lecun1998efficient,
+  title={Efficient BackProp},
+  author={LeCun, Yann and Bottou, L{\'e}on and Orr, Genevieve B. and M{\"u}ller, Klaus-Robert},
+  booktitle={Neural Networks: Tricks of the Trade},
+  editor={Orr, Genevieve B. and M{\"u}ller, Klaus-Robert},
+  series={Lecture Notes in Computer Science},
+  volume={1524},
+  publisher={Springer},
+  address={Berlin, Heidelberg},
+  pages={9--50},
+  year={1998},
+  doi={10.1007/3-540-49430-8_2}
+}
+
+@inproceedings{glorot2010understanding,
+  title={Understanding the difficulty of training deep feedforward neural networks},
+  author={Glorot, Xavier and Bengio, Yoshua},
+  booktitle={Proceedings of the 13th International Conference on Artificial Intelligence and Statistics (AISTATS)},
+  series={Proceedings of Machine Learning Research},
+  volume={9},
+  pages={249--256},
+  year={2010}
+}
+
+@inproceedings{he2015delving,
+  title={Delving Deep into Rectifiers: Surpassing Human-Level Performance on ImageNet Classification},
+  author={He, Kaiming and Zhang, Xiangyu and Ren, Shaoqing and Sun, Jian},
+  booktitle={Proceedings of the IEEE International Conference on Computer Vision (ICCV)},
+  pages={1026--1034},
+  year={2015},
+  doi={10.1109/ICCV.2015.123}
+}
+
+@article{hendrycks2016gaussian,
+  title={Gaussian Error Linear Units ({GELUs})},
+  author={Hendrycks, Dan and Gimpel, Kevin},
+  journal={arXiv preprint arXiv:1606.08415},
+  year={2016}
+}
+
+@article{olazaran1996sociological,
+  title={A Sociological Study of the Official History of the Perceptrons Controversy},
+  author={Olazaran, Mikel},
+  journal={Social Studies of Science},
+  volume={26},
+  number={3},
+  pages={611--659},
+  year={1996},
+  doi={10.1177/030631296026003005}
+}
+
+@misc{tieleman2012rmsprop,
+  title        = {Lecture 6.5---RMSProp: Divide the gradient by a running average of its recent magnitude},
+  author       = {Tieleman, Tijmen and Hinton, Geoffrey},
+  howpublished = {COURSERA: Neural Networks for Machine Learning},
+  year         = {2012}
+}
+
+@inproceedings{liu2020radam,
+  title     = {On the Variance of the Adaptive Learning Rate and Beyond},
+  author    = {Liu, Liyuan and Jiang, Haoming and He, Pengcheng and Chen, Weizhu and Liu, Xiaodong and Gao, Jianfeng and Han, Jiawei},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2020}
+}
+
+@inproceedings{ma2021adequacy,
+  title     = {On the Adequacy of Untuned Warmup for Adaptive Optimization},
+  author    = {Ma, Jerry and Yarats, Denis},
+  booktitle = {Proceedings of the AAAI Conference on Artificial Intelligence},
+  volume    = {35},
+  pages     = {8828--8836},
+  year      = {2021}
+}
+
+@article{goyal2017accurate,
+  title   = {Accurate, Large Minibatch SGD: Training ImageNet in 1 Hour},
+  author  = {Goyal, Priya and Doll{\'a}r, Piotr and Girshick, Ross and Noordhuis, Pieter and Wesolowski, Lukasz and Kyrola, Aapo and Tulloch, Andrew and Jia, Yangqing and He, Kaiming},
+  journal = {arXiv preprint arXiv:1706.02677},
+  year    = {2017}
+}
+
+@inproceedings{xiong2020layer,
+  title     = {On Layer Normalization in the Transformer Architecture},
+  author    = {Xiong, Ruibin and Yang, Yunchang and He, Di and Zheng, Kai and Zheng, Shuxin and Xing, Chen and Zhang, Huishuai and Lan, Yanyan and Wang, Liwei and Liu, Tie-Yan},
+  booktitle = {Proceedings of the 37th International Conference on Machine Learning (ICML)},
+  series    = {Proceedings of Machine Learning Research},
+  volume    = {119},
+  pages     = {10524--10533},
+  year      = {2020}
+}
+
+@inproceedings{reddi2018convergence,
+  title     = {On the Convergence of Adam and Beyond},
+  author    = {Reddi, Sashank J. and Kale, Satyen and Kumar, Sanjiv},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2018}
+}
+
+@inproceedings{montufar2014number,
+  title     = {On the Number of Linear Regions of Deep Neural Networks},
+  author    = {Mont{\'u}far, Guido and Pascanu, Razvan and Cho, Kyunghyun and Bengio, Yoshua},
+  booktitle = {Advances in Neural Information Processing Systems (NIPS)},
+  volume    = {27},
+  pages     = {2924--2932},
+  year      = {2014}
+}
+
+@inproceedings{kurin2022defense,
+  title     = {In Defense of the Unitary Scalarization for Deep Multi-Task Learning},
+  author    = {Kurin, Vitaly and De Palma, Alessandro and Kostrikov, Ilya and Whiteson, Shimon and Kumar, M. Pawan},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
+  volume    = {35},
+  year      = {2022}
+}
+
+@inproceedings{xin2022current,
+  title     = {Do Current Multi-Task Optimization Methods in Deep Learning Even Help?},
+  author    = {Xin, Derrick and Ghorbani, Behrooz and Garg, Ankush and Firat, Orhan and Gilmer, Justin},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
+  volume    = {35},
+  year      = {2022}
+}
+
+@inproceedings{standley2020tasks,
+  title     = {Which Tasks Should Be Learned Together in Multi-task Learning?},
+  author    = {Standley, Trevor and Zamir, Amir R. and Chen, Dawn and Guibas, Leonidas and Malik, Jitendra and Savarese, Silvio},
+  booktitle = {Proceedings of the 37th International Conference on Machine Learning (ICML)},
+  series    = {Proceedings of Machine Learning Research},
+  volume    = {119},
+  pages     = {9120--9132},
+  year      = {2020}
+}
+
+@article{dean2013tail,
+  author  = {Dean, Jeffrey and Barroso, Luiz Andr{\'e}},
+  title   = {The Tail at Scale},
+  journal = {Communications of the ACM},
+  volume  = {56},
+  number  = {2},
+  pages   = {74--80},
+  year    = {2013},
+  month   = feb,
+  doi     = {10.1145/2408776.2408794}
+}
+
+@article{goldberg1992using,
+  author  = {Goldberg, David and Nichols, David and Oki, Brian M. and Terry, Douglas},
+  title   = {Using Collaborative Filtering to Weave an Information Tapestry},
+  journal = {Communications of the ACM},
+  volume  = {35},
+  number  = {12},
+  pages   = {61--70},
+  year    = {1992},
+  doi     = {10.1145/138859.138867}
+}
+
+@inproceedings{resnick1994grouplens,
+  author    = {Resnick, Paul and Iacovou, Neophytos and Suchak, Mitesh and Bergstrom, Peter and Riedl, John},
+  title     = {{GroupLens}: An Open Architecture for Collaborative Filtering of Netnews},
+  booktitle = {Proceedings of the 1994 ACM Conference on Computer Supported Cooperative Work (CSCW '94)},
+  pages     = {175--186},
+  year      = {1994},
+  doi       = {10.1145/192844.192905}
+}
+
+@inproceedings{sarwar2001item,
+  author    = {Sarwar, Badrul and Karypis, George and Konstan, Joseph and Riedl, John},
+  title     = {Item-Based Collaborative Filtering Recommendation Algorithms},
+  booktitle = {Proceedings of the 10th International Conference on World Wide Web (WWW '01)},
+  pages     = {285--295},
+  year      = {2001},
+  doi       = {10.1145/371920.372071}
+}
+
+@article{linden2003amazon,
+  author  = {Linden, Greg and Smith, Brent and York, Jeremy},
+  title   = {{Amazon.com} Recommendations: Item-to-Item Collaborative Filtering},
+  journal = {IEEE Internet Computing},
+  volume  = {7},
+  number  = {1},
+  pages   = {76--80},
+  year    = {2003},
+  doi     = {10.1109/MIC.2003.1167344}
+}
+
+@inproceedings{hu2008collaborative,
+  author    = {Hu, Yifan and Koren, Yehuda and Volinsky, Chris},
+  title     = {Collaborative Filtering for Implicit Feedback Datasets},
+  booktitle = {Proceedings of the 2008 Eighth IEEE International Conference on Data Mining (ICDM '08)},
+  pages     = {263--272},
+  year      = {2008},
+  doi       = {10.1109/ICDM.2008.22}
+}
+
+@inproceedings{rendle2022revisiting,
+  author    = {Rendle, Steffen and Krichene, Walid and Zhang, Li and Koren, Yehuda},
+  title     = {Revisiting the Performance of {iALS} on Item Recommendation Benchmarks},
+  booktitle = {Proceedings of the 16th ACM Conference on Recommender Systems (RecSys '22)},
+  pages     = {427--435},
+  year      = {2022},
+  doi       = {10.1145/3523227.3548486},
+  note      = {arXiv:2110.14037}
+}
+
+@inproceedings{marlin2009collaborative,
+  author    = {Marlin, Benjamin M. and Zemel, Richard S.},
+  title     = {Collaborative Prediction and Ranking with Non-Random Missing Data},
+  booktitle = {Proceedings of the Third ACM Conference on Recommender Systems (RecSys '09)},
+  pages     = {5--12},
+  year      = {2009},
+  doi       = {10.1145/1639714.1639717}
+}
+
+@inproceedings{dacrema2019are,
+  author    = {Ferrari Dacrema, Maurizio and Cremonesi, Paolo and Jannach, Dietmar},
+  title     = {Are We Really Making Much Progress? A Worrying Analysis of Recent Neural Recommendation Approaches},
+  booktitle = {Proceedings of the 13th ACM Conference on Recommender Systems (RecSys '19)},
+  pages     = {101--109},
+  year      = {2019},
+  doi       = {10.1145/3298689.3347058},
+  note      = {Best Long Paper; arXiv:1907.06902}
+}
+
+@article{ji2023critical,
+  author  = {Ji, Yitong and Sun, Aixin and Zhang, Jie and Li, Chenliang},
+  title   = {A Critical Study on Data Leakage in Recommender System Offline Evaluation},
+  journal = {ACM Transactions on Information Systems},
+  volume  = {41},
+  number  = {3},
+  pages   = {75:1--75:27},
+  year    = {2023},
+  doi     = {10.1145/3569930},
+  note    = {arXiv:2010.11060}
+}
+
+@inproceedings{krichene2020sampled,
+  author    = {Krichene, Walid and Rendle, Steffen},
+  title     = {On Sampled Metrics for Item Recommendation},
+  booktitle = {Proceedings of the 26th ACM SIGKDD International Conference on Knowledge Discovery and Data Mining (KDD '20)},
+  pages     = {1748--1757},
+  year      = {2020},
+  doi       = {10.1145/3394486.3403226}
+}
+
+@inproceedings{yi2019sampling,
+  author    = {Yi, Xinyang and Yang, Ji and Hong, Lichan and Cheng, Derek Zhiyuan and Heldt, Lukasz and Kumthekar, Aditee and Zhao, Zhe and Wei, Li and Chi, Ed},
+  title     = {Sampling-Bias-Corrected Neural Modeling for Large Corpus Item Recommendations},
+  booktitle = {Proceedings of the 13th ACM Conference on Recommender Systems (RecSys '19)},
+  pages     = {269--277},
+  year      = {2019},
+  doi       = {10.1145/3298689.3346996}
+}
+
+@inproceedings{hidasi2016session,
+  author    = {Hidasi, Bal{\'a}zs and Karatzoglou, Alexandros and Baltrunas, Linas and Tikk, Domonkos},
+  title     = {Session-Based Recommendations with Recurrent Neural Networks},
+  booktitle = {4th International Conference on Learning Representations (ICLR 2016)},
+  year      = {2016},
+  note      = {arXiv:1511.06939}
+}
+
+@book{pariser2011filter,
+  author    = {Pariser, Eli},
+  title     = {The Filter Bubble: What the Internet Is Hiding from You},
+  publisher = {Penguin Press},
+  address   = {New York},
+  year      = {2011}
+}
+
+@article{flaxman2016filter,
+  author  = {Flaxman, Seth and Goel, Sharad and Rao, Justin M.},
+  title   = {Filter Bubbles, Echo Chambers, and Online News Consumption},
+  journal = {Public Opinion Quarterly},
+  volume  = {80},
+  number  = {S1},
+  pages   = {298--320},
+  year    = {2016},
+  doi     = {10.1093/poq/nfw006}
+}
+
+@inproceedings{karras2018progressive,
+  title={Progressive Growing of {GANs} for Improved Quality, Stability, and Variation},
+  author={Karras, Tero and Aila, Timo and Laine, Samuli and Lehtinen, Jaakko},
+  booktitle={International Conference on Learning Representations (ICLR)},
+  year={2018}
+}
+
+@inproceedings{gulrajani2017improved,
+  title={Improved Training of Wasserstein {GANs}},
+  author={Gulrajani, Ishaan and Ahmed, Faruk and Arjovsky, Martin and Dumoulin, Vincent and Courville, Aaron},
+  booktitle={Advances in Neural Information Processing Systems},
+  volume={30},
+  year={2017}
+}
+
+@inproceedings{chu2017cyclegan,
+  title={{CycleGAN}, a Master of Steganography},
+  author={Chu, Casey and Zhmoginov, Andrey and Sandler, Mark},
+  booktitle={NIPS 2017 Workshop on Machine Deception},
+  year={2017},
+  note={arXiv:1712.02950}
+}
+
+@misc{goodfellow2016nips,
+  title={{NIPS} 2016 Tutorial: Generative Adversarial Networks},
+  author={Goodfellow, Ian},
+  year={2017},
+  howpublished={arXiv:1701.00160},
+  note={tutorial NIPS 2016}
+}
+
+@article{strobl2007bias,
+  title={Bias in Random Forest Variable Importance Measures: Illustrations, Sources and a Solution},
+  author={Strobl, Carolin and Boulesteix, Anne-Laure and Zeileis, Achim and Hothorn, Torsten},
+  journal={BMC Bioinformatics},
+  volume={8},
+  number={25},
+  year={2007},
+  url={https://doi.org/10.1186/1471-2105-8-25}
+}
+
+@article{fisher2019models,
+  title={All Models are Wrong, but Many are Useful: Learning a Variable's Importance by Studying an Entire Class of Prediction Models Simultaneously},
+  author={Fisher, Aaron and Rudin, Cynthia and Dominici, Francesca},
+  journal={Journal of Machine Learning Research},
+  volume={20},
+  number={177},
+  pages={1--81},
+  year={2019},
+  url={https://arxiv.org/abs/1801.01489}
+}
+
+@article{hooker2021unrestricted,
+  title={Unrestricted Permutation Forces Extrapolation: Variable Importance Requires at Least One More Model, or There Is No Free Variable Importance},
+  author={Hooker, Giles and Mentch, Lucas and Zhou, Siyu},
+  journal={Statistics and Computing},
+  volume={31},
+  number={82},
+  year={2021},
+  url={https://arxiv.org/abs/1905.03151}
+}
+
+@article{goldstein2015peeking,
+  title={Peeking Inside the Black Box: Visualizing Statistical Learning With Plots of Individual Conditional Expectation},
+  author={Goldstein, Alex and Kapelner, Adam and Bleich, Justin and Pitkin, Emil},
+  journal={Journal of Computational and Graphical Statistics},
+  volume={24},
+  number={1},
+  pages={44--65},
+  year={2015},
+  url={https://doi.org/10.1080/10618600.2014.907095}
+}
+
+@article{apley2020visualizing,
+  title={Visualizing the Effects of Predictor Variables in Black Box Supervised Learning Models},
+  author={Apley, Daniel W. and Zhu, Jingyu},
+  journal={Journal of the Royal Statistical Society: Series B (Statistical Methodology)},
+  volume={82},
+  number={4},
+  pages={1059--1086},
+  year={2020},
+  url={https://arxiv.org/abs/1612.08468}
+}
+
+@inproceedings{sundararajan2020many,
+  title={The Many Shapley Values for Model Explanation},
+  author={Sundararajan, Mukund and Najmi, Amir},
+  booktitle={Proceedings of the 37th International Conference on Machine Learning (ICML)},
+  series={Proceedings of Machine Learning Research},
+  volume={119},
+  pages={9269--9278},
+  year={2020},
+  url={https://proceedings.mlr.press/v119/sundararajan20b.html}
+}
+
+@article{aas2021explaining,
+  title={Explaining Individual Predictions When Features Are Dependent: More Accurate Approximations to Shapley Values},
+  author={Aas, Kjersti and Jullum, Martin and L{\o}land, Anders},
+  journal={Artificial Intelligence},
+  volume={298},
+  pages={103502},
+  year={2021},
+  url={https://doi.org/10.1016/j.artint.2021.103502}
+}
+
+@article{sturmfels2020baselines,
+  title={Visualizing the Impact of Feature Attribution Baselines},
+  author={Sturmfels, Pascal and Lundberg, Scott and Lee, Su-In},
+  journal={Distill},
+  volume={5},
+  number={1},
+  year={2020},
+  url={https://distill.pub/2020/attribution-baselines/}
+}
+
+@inproceedings{jain2019attention,
+  title={Attention is not Explanation},
+  author={Jain, Sarthak and Wallace, Byron C.},
+  booktitle={Proceedings of the 2019 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies (NAACL-HLT)},
+  pages={3543--3556},
+  year={2019},
+  url={https://arxiv.org/abs/1902.10186}
+}
+
+@inproceedings{wiegreffe2019attention,
+  title={Attention is not not Explanation},
+  author={Wiegreffe, Sarah and Pinter, Yuval},
+  booktitle={Proceedings of the 2019 Conference on Empirical Methods in Natural Language Processing and the 9th International Joint Conference on Natural Language Processing (EMNLP-IJCNLP)},
+  pages={11--20},
+  year={2019},
+  url={https://arxiv.org/abs/1908.04626}
+}
+
+@article{alain2017understanding,
+  title={Understanding Intermediate Layers Using Linear Classifier Probes},
+  author={Alain, Guillaume and Bengio, Yoshua},
+  journal={arXiv preprint arXiv:1610.01644},
+  year={2016},
+  note={ICLR 2017, workshop track},
+  url={https://arxiv.org/abs/1610.01644}
+}
+
+@inproceedings{hewitt2019control,
+  title={Designing and Interpreting Probes with Control Tasks},
+  author={Hewitt, John and Liang, Percy},
+  booktitle={Proceedings of the 2019 Conference on Empirical Methods in Natural Language Processing and the 9th International Joint Conference on Natural Language Processing (EMNLP-IJCNLP)},
+  pages={2733--2743},
+  year={2019},
+  url={https://arxiv.org/abs/1909.03368}
+}
+
+@article{templeton2024scaling,
+  title={Scaling Monosemanticity: Extracting Interpretable Features from Claude 3 Sonnet},
+  author={Templeton, Adly and Conerly, Tom and Marcus, Jonathan and Lindsey, Jack and Bricken, Trenton and Chen, Brian and Pearce, Adam and Citro, Craig and Ameisen, Emmanuel and Jones, Andy and Cunningham, Hoagy and Turner, Nicholas L. and McDougall, Callum and MacDiarmid, Monte and Freeman, C. Daniel and Sumers, Theodore R. and Rees, Edward and Batson, Joshua and Jermyn, Adam and Carter, Shan and Olah, Chris and Henighan, Tom},
+  journal={Transformer Circuits Thread, Anthropic},
+  year={2024},
+  url={https://transformer-circuits.pub/2024/scaling-monosemanticity/}
+}
+
+@inproceedings{wu2019simplifying,
+  title     = {Simplifying Graph Convolutional Networks},
+  author    = {Wu, Felix and Souza, Amauri H. and Zhang, Tianyi and
+               Fifty, Christopher and Yu, Tao and Weinberger, Kilian Q.},
+  booktitle = {Proceedings of the 36th International Conference on Machine Learning},
+  series    = {Proceedings of Machine Learning Research},
+  volume    = {97},
+  pages     = {6861--6871},
+  year      = {2019},
+  publisher = {PMLR},
+  eprint    = {1902.07153},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.LG}
+}
+@inproceedings{sutskever2010convergence,
+  author    = {Sutskever, Ilya and Tieleman, Tijmen},
+  title     = {On the Convergence Properties of Contrastive Divergence},
+  booktitle = {Proceedings of the Thirteenth International Conference on Artificial Intelligence and Statistics (AISTATS)},
+  series    = {Proceedings of Machine Learning Research},
+  volume    = {9},
+  pages     = {789--795},
+  year      = {2010},
+  url       = {https://proceedings.mlr.press/v9/sutskever10a.html}
+}
+
+@article{hinton2006fast,
+  author  = {Hinton, Geoffrey E. and Osindero, Simon and Teh, Yee-Whye},
+  title   = {A Fast Learning Algorithm for Deep Belief Nets},
+  journal = {Neural Computation},
+  volume  = {18},
+  number  = {7},
+  pages   = {1527--1554},
+  year    = {2006},
+  doi     = {10.1162/neco.2006.18.7.1527}
+}
+
+@article{amari1972learning,
+  author  = {Amari, Shun-Ichi},
+  title   = {Learning Patterns and Pattern Sequences by Self-Organizing Nets of Threshold Elements},
+  journal = {IEEE Transactions on Computers},
+  volume  = {C-21},
+  number  = {11},
+  pages   = {1197--1206},
+  year    = {1972},
+  doi     = {10.1109/T-C.1972.223477}
+}
+
+@article{little1974existence,
+  author  = {Little, W. A.},
+  title   = {The Existence of Persistent States in the Brain},
+  journal = {Mathematical Biosciences},
+  volume  = {19},
+  number  = {1--2},
+  pages   = {101--120},
+  year    = {1974},
+  doi     = {10.1016/0025-5564(74)90031-5}
+}
+
+@article{gutmann2012noise,
+  author  = {Gutmann, Michael U. and Hyv{\"a}rinen, Aapo},
+  title   = {Noise-Contrastive Estimation of Unnormalized Statistical Models, with Applications to Natural Image Statistics},
+  journal = {Journal of Machine Learning Research},
+  volume  = {13},
+  pages   = {307--361},
+  year    = {2012},
+  url     = {https://jmlr.org/papers/v13/gutmann12a.html}
+}
+
+@inproceedings{krotov2016dense,
+  author    = {Krotov, Dmitry and Hopfield, John J.},
+  title     = {Dense Associative Memory for Pattern Recognition},
+  booktitle = {Advances in Neural Information Processing Systems 29 (NIPS)},
+  year      = {2016},
+  url       = {https://arxiv.org/abs/1606.01164}
+}
+
+@article{demircigil2017model,
+  author  = {Demircigil, Mete and Heusel, Judith and L{\"o}we, Matthias and Upgang, Sven and Vermet, Franck},
+  title   = {On a Model of Associative Memory with Huge Storage Capacity},
+  journal = {Journal of Statistical Physics},
+  volume  = {168},
+  number  = {2},
+  pages   = {288--299},
+  year    = {2017},
+  url     = {https://arxiv.org/abs/1702.01929}
+}
+
+@article{plessix2006adjoint,
+  title={A Review of the Adjoint-State Method for Computing the Gradient of a
+         Functional with Geophysical Applications},
+  author={Plessix, R.-E.},
+  journal={Geophysical Journal International},
+  volume={167},
+  number={2},
+  pages={495--503},
+  year={2006},
+  doi={10.1111/j.1365-246X.2006.02978.x}
+}
+
+@article{karnakov2024discrete,
+  title={Solving Inverse Problems in Physics by Optimizing a Discrete Loss:
+         Fast and Accurate Learning without Neural Networks},
+  author={Karnakov, Petr and Litvinov, Sergey and Koumoutsakos, Petros},
+  journal={PNAS Nexus},
+  volume={3},
+  number={1},
+  pages={pgae005},
+  year={2024},
+  doi={10.1093/pnasnexus/pgae005}
+}
+
+@article{mcgreivy2024weak,
+  title={Weak Baselines and Reporting Biases Lead to Overoptimism in Machine
+         Learning for Fluid-Related Partial Differential Equations},
+  author={McGreivy, Nick and Hakim, Ammar},
+  journal={Nature Machine Intelligence},
+  volume={6},
+  number={10},
+  pages={1256--1269},
+  year={2024},
+  doi={10.1038/s42256-024-00897-5}
+}
+
+@article{dissanayake1994neural,
+  title={Neural-Network-Based Approximations for Solving Partial Differential
+         Equations},
+  author={Dissanayake, M. W. M. G. and Phan-Thien, N.},
+  journal={Communications in Numerical Methods in Engineering},
+  volume={10},
+  number={3},
+  pages={195--201},
+  year={1994},
+  doi={10.1002/cnm.1640100303}
+}
+
+@article{lee1990neural,
+  title={Neural Algorithm for Solving Differential Equations},
+  author={Lee, Hyuk and Kang, In Seok},
+  journal={Journal of Computational Physics},
+  volume={91},
+  number={1},
+  pages={110--131},
+  year={1990},
+  doi={10.1016/0021-9991(90)90007-N}
+}
+
+@article{hu2024tackling,
+  title={Tackling the Curse of Dimensionality with Physics-Informed Neural Networks},
+  author={Hu, Zheyuan and Shukla, Khemraj and Karniadakis, George Em and
+          Kawaguchi, Kenji},
+  journal={Neural Networks},
+  volume={176},
+  pages={106369},
+  year={2024},
+  doi={10.1016/j.neunet.2024.106369}
+}
+@inproceedings{tam2024format,
+  title={Let Me Speak Freely? {A} Study on the Impact of Format Restrictions on Performance of Large Language Models},
+  author={Tam, Zhi Rui and Wu, Cheng-Kuang and Tsai, Yi-Lin and Lin, Chieh-Yen and Lee, Hung-yi and Chen, Yun-Nung},
+  booktitle={Proceedings of the 2024 Conference on Empirical Methods in Natural Language Processing: Industry Track (EMNLP)},
+  pages={1218--1236},
+  publisher={Association for Computational Linguistics},
+  year={2024},
+  url={https://aclanthology.org/2024.emnlp-industry.91/}
+}
+
+@inproceedings{agarwal2024manyshot,
+  title={Many-Shot In-Context Learning},
+  author={Agarwal, Rishabh and Singh, Avi and Zhang, Lei M. and Bohnet, Bernd and Rosias, Luis and Chan, Stephanie and Zhang, Biao and Anand, Ankesh and Abbas, Zaheer and Nova, Azade and Co-Reyes, John D. and Chu, Eric and Behbahani, Feryal and Faust, Aleksandra and Larochelle, Hugo},
+  booktitle={Advances in Neural Information Processing Systems (NeurIPS)},
+  volume={37},
+  year={2024},
+  note={Spotlight},
+  url={https://arxiv.org/abs/2404.11018}
+}
+
+@inproceedings{panickssery2024selfpreference,
+  title={{LLM} Evaluators Recognize and Favor Their Own Generations},
+  author={Panickssery, Arjun and Bowman, Samuel R. and Feng, Shi},
+  booktitle={Advances in Neural Information Processing Systems (NeurIPS)},
+  volume={37},
+  year={2024},
+  url={https://proceedings.neurips.cc/paper_files/paper/2024/hash/7f1f0218e45f5414c79c0679633e47bc-Abstract-Conference.html}
+}
+
+@misc{chen2021evaluating,
+  title={Evaluating Large Language Models Trained on Code},
+  author={Chen, Mark and Tworek, Jerry and Jun, Heewoo and Yuan, Qiming and Ponde de Oliveira Pinto, Henrique and Kaplan, Jared and Edwards, Harri and Burda, Yuri and Joseph, Nicholas and Brockman, Greg and Ray, Alex and Puri, Raul and Krueger, Gretchen and Petrov, Michael and Khlaaf, Heidy and Sastry, Girish and Mishkin, Pamela and Chan, Brooke and Gray, Scott and Ryder, Nick and Pavlov, Mikhail and Power, Alethea and Kaiser, Lukasz and Bavarian, Mohammad and Winter, Clemens and Tillet, Philippe and Petroski Such, Felipe and Cummings, Dave and Plappert, Matthias and Chantzis, Fotios and Barnes, Elizabeth and Herbert-Voss, Ariel and Hebgen Guss, William and Nichol, Alex and Paino, Alex and Tezak, Nikolas and Tang, Jie and Babuschkin, Igor and Balaji, Suchir and Jain, Shantanu and Saunders, William and Hesse, Christopher and Carr, Andrew N. and Leike, Jan and Achiam, Josh and Misra, Vedant and Morikawa, Evan and Radford, Alec and Knight, Matthew and Brundage, Miles and Murati, Mira and Mayer, Katie and Welinder, Peter and McGrew, Bob and Amodei, Dario and McCandlish, Sam and Sutskever, Ilya and Zaremba, Wojciech},
+  year={2021},
+  howpublished={OpenAI, arXiv:2107.03374},
+  url={https://arxiv.org/abs/2107.03374}
+}
+
+@misc{meincke2025threats,
+  title={{Prompting Science Report 3}: I'll Pay You or I'll Kill You, but Will You Care?},
+  author={Meincke, Lennart and Mollick, Ethan and Mollick, Lilach and Shapiro, Dan},
+  year={2025},
+  howpublished={The Wharton School, Generative AI Labs, arXiv:2508.00614, 1 agosto 2025},
+  url={https://arxiv.org/abs/2508.00614}
+}
+
+@misc{meincke2025contingent,
+  title={{Prompting Science Report 1}: Prompt Engineering is Complicated and Contingent},
+  author={Meincke, Lennart and Mollick, Ethan and Mollick, Lilach and Shapiro, Dan},
+  year={2025},
+  howpublished={The Wharton School, Generative AI Labs, arXiv:2503.04818, 4 marzo 2025},
+  url={https://arxiv.org/abs/2503.04818}
+}
+
+@misc{he2025nondeterminism,
+  title={Defeating Nondeterminism in {LLM} Inference},
+  author={He, Horace},
+  year={2025},
+  howpublished={Thinking Machines Lab, 10 settembre 2025},
+  url={https://thinkingmachines.ai/blog/defeating-nondeterminism-in-llm-inference/}
+}
+
+@misc{dair2024promptguide,
+  title={Prompt Engineering Guide},
+  author={{DAIR.AI}},
+  year={2024},
+  howpublished={Guida online, \url{https://www.promptingguide.ai}},
+  note={consultata nell'agosto 2026}
+}
+
+@misc{breunig2025contexts,
+  title={How Long Contexts Fail},
+  author={Breunig, Drew},
+  year={2025},
+  howpublished={dbreunig.com, 22 giugno 2025},
+  url={https://www.dbreunig.com/2025/06/22/how-contexts-fail-and-how-to-fix-them.html}
+}
+
+@misc{langchain2025context,
+  title={Context Engineering for Agents},
+  author={{LangChain}},
+  year={2025},
+  howpublished={Blog di LangChain, 2 luglio 2025},
+  url={https://www.langchain.com/blog/context-engineering-for-agents}
+}
+
+@misc{medin2025contextintro,
+  title={context-engineering-intro},
+  author={Medin, Cole},
+  year={2025},
+  howpublished={Repository GitHub},
+  url={https://github.com/coleam00/context-engineering-intro}
+}
+
+@misc{kim2025contextengineering,
+  title={Context-Engineering},
+  author={Kim, David},
+  year={2025},
+  howpublished={Repository GitHub},
+  url={https://github.com/davidkimai/Context-Engineering}
+}
+
+@misc{greyling2026loop,
+  title={loop-engineering},
+  author={Greyling, Cobus},
+  year={2026},
+  howpublished={Repository GitHub},
+  url={https://github.com/cobusgreyling/loop-engineering}
+}
+
+@misc{cherny2026loops,
+  title={{I don't prompt Claude anymore. I have loops running that prompt Claude and figuring out what to do. My job is to write loops}},
+  author={Cherny, Boris},
+  year={2026},
+  howpublished={Dichiarazione pubblica, giugno 2026; formulazione raccolta in \texttt{resources/sources.md} del repository \emph{loop-engineering} di Cobus Greyling},
+  url={https://github.com/cobusgreyling/loop-engineering}
+}
+
+@misc{steinberger2026loops,
+  title={{You shouldn't be prompting coding agents anymore. You should be designing loops that prompt your agents}},
+  author={Steinberger, Peter},
+  year={2026},
+  howpublished={Post su X, 8 giugno 2026},
+  url={https://x.com/steipete/status/2063697162748260627}
+}
+
+@misc{osmani2026loop,
+  title={Loop Engineering},
+  author={Osmani, Addy},
+  year={2026},
+  howpublished={addyosmani.com, 7 giugno 2026},
+  url={https://addyosmani.com/blog/loop-engineering/}
+}
+
+@misc{osmani2026comprehension,
+  title={Comprehension Debt: The Hidden Cost of {AI} Generated Code},
+  author={Osmani, Addy},
+  year={2026},
+  howpublished={addyosmani.com, 14 marzo 2026},
+  url={https://addyosmani.com/blog/comprehension-debt/}
+}
+
+@inproceedings{pleiss2017fairness,
+  author    = {Pleiss, Geoff and Raghavan, Manish and Wu, Felix and
+               Kleinberg, Jon and Weinberger, Kilian Q.},
+  title     = {On Fairness and Calibration},
+  booktitle = {Advances in Neural Information Processing Systems 30 (NIPS)},
+  year      = {2017},
+  url       = {https://arxiv.org/abs/1709.02012}
+}
+
+@article{tesauro1995temporal,
+  author  = {Tesauro, Gerald},
+  title   = {Temporal Difference Learning and {TD-Gammon}},
+  journal = {Communications of the ACM},
+  volume  = {38},
+  number  = {3},
+  pages   = {58--68},
+  year    = {1995},
+  doi     = {10.1145/203330.203343}
+}
+
+@article{tsitsiklis1997analysis,
+  author  = {Tsitsiklis, John N. and Van Roy, Benjamin},
+  title   = {An Analysis of Temporal-Difference Learning with Function Approximation},
+  journal = {IEEE Transactions on Automatic Control},
+  volume  = {42},
+  number  = {5},
+  pages   = {674--690},
+  year    = {1997},
+  doi     = {10.1109/9.580874}
+}
+
+@inproceedings{silver2014deterministic,
+  author    = {Silver, David and Lever, Guy and Heess, Nicolas and Degris, Thomas
+               and Wierstra, Daan and Riedmiller, Martin},
+  title     = {Deterministic Policy Gradient Algorithms},
+  booktitle = {Proceedings of the 31st International Conference on Machine Learning},
+  series    = {Proceedings of Machine Learning Research},
+  volume    = {32},
+  number    = {1},
+  pages     = {387--395},
+  year      = {2014},
+  url       = {https://proceedings.mlr.press/v32/silver14.html}
+}
+
+@inproceedings{sutton1990integrated,
+  author    = {Sutton, Richard S.},
+  title     = {Integrated Architectures for Learning, Planning, and Reacting Based
+               on Approximating Dynamic Programming},
+  booktitle = {Proceedings of the Seventh International Conference on Machine Learning},
+  pages     = {216--224},
+  publisher = {Morgan Kaufmann},
+  year      = {1990}
+}
+
+@inproceedings{schulman2016high,
+  author    = {Schulman, John and Moritz, Philipp and Levine, Sergey and
+               Jordan, Michael I. and Abbeel, Pieter},
+  title     = {High-Dimensional Continuous Control Using Generalized Advantage Estimation},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2016},
+  eprint    = {1506.02438},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.LG},
+  url       = {https://arxiv.org/abs/1506.02438}
+}
+
+@inproceedings{engstrom2020implementation,
+  author    = {Engstrom, Logan and Ilyas, Andrew and Santurkar, Shibani and
+               Tsipras, Dimitris and Janoos, Firdaus and Rudolph, Larry and
+               Madry, Aleksander},
+  title     = {Implementation Matters in Deep Policy Gradients:
+               A Case Study on {PPO} and {TRPO}},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2020},
+  eprint    = {2005.12729},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.LG},
+  url       = {https://arxiv.org/abs/2005.12729}
+}
+
+@inproceedings{andrychowicz2021what,
+  author    = {Andrychowicz, Marcin and Raichuk, Anton and Sta{\'n}czyk, Piotr and
+               Orsini, Manu and Girgin, Sertan and Marinier, Raphael and
+               Hussenot, L{\'e}onard and Geist, Matthieu and Pietquin, Olivier and
+               Michalski, Marcin and Gelly, Sylvain and Bachem, Olivier},
+  title     = {What Matters In On-Policy Reinforcement Learning?
+               A Large-Scale Empirical Study},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2021},
+  eprint    = {2006.05990},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.LG},
+  url       = {https://arxiv.org/abs/2006.05990}
+}
+
+@inproceedings{coquelin2007bandit,
+  author    = {Coquelin, Pierre-Arnaud and Munos, R{\'e}mi},
+  title     = {Bandit Algorithms for Tree Search},
+  booktitle = {Proceedings of the Twenty-Third Conference on Uncertainty in
+               Artificial Intelligence (UAI)},
+  pages     = {67--74},
+  year      = {2007},
+  eprint    = {1408.2028},
+  archivePrefix = {arXiv},
+  url       = {https://arxiv.org/abs/1408.2028}
+}
+
+@inproceedings{bellemare2016unifying,
+  author    = {Bellemare, Marc G. and Srinivasan, Sriram and Ostrovski, Georg and
+               Schaul, Tom and Saxton, David and Munos, R{\'e}mi},
+  title     = {Unifying Count-Based Exploration and Intrinsic Motivation},
+  booktitle = {Advances in Neural Information Processing Systems 29 (NeurIPS)},
+  pages     = {1471--1479},
+  year      = {2016},
+  eprint    = {1606.01868},
+  archivePrefix = {arXiv},
+  url       = {https://arxiv.org/abs/1606.01868}
+}
+
+@inproceedings{ng1999policy,
+  author    = {Ng, Andrew Y. and Harada, Daishi and Russell, Stuart},
+  title     = {Policy Invariance Under Reward Transformations:
+               Theory and Application to Reward Shaping},
+  booktitle = {Proceedings of the Sixteenth International Conference on Machine Learning},
+  pages     = {278--287},
+  publisher = {Morgan Kaufmann},
+  year      = {1999}
+}
+
+@inproceedings{ng2000algorithms,
+  author    = {Ng, Andrew Y. and Russell, Stuart},
+  title     = {Algorithms for Inverse Reinforcement Learning},
+  booktitle = {Proceedings of the Seventeenth International Conference on Machine Learning},
+  pages     = {663--670},
+  publisher = {Morgan Kaufmann},
+  year      = {2000}
+}
+
+@article{strathern1997improving,
+  author  = {Strathern, Marilyn},
+  title   = {`Improving ratings': audit in the {British} {University} system},
+  journal = {European Review},
+  volume  = {5},
+  number  = {3},
+  pages   = {305--321},
+  year    = {1997},
+  doi     = {10.1002/(SICI)1234-981X(199707)5:3<305::AID-EURO184>3.0.CO;2-4}
+}
+
+@article{pomerleau1991efficient,
+  author  = {Pomerleau, Dean A.},
+  title   = {Efficient Training of Artificial Neural Networks for Autonomous Navigation},
+  journal = {Neural Computation},
+  volume  = {3},
+  number  = {1},
+  pages   = {88--97},
+  year    = {1991},
+  doi     = {10.1162/neco.1991.3.1.88}
+}
+
+@misc{clark2016faulty,
+  author       = {Clark, Jack and Amodei, Dario},
+  title        = {Faulty Reward Functions in the Wild},
+  howpublished = {OpenAI Blog},
+  year         = {2016},
+  month        = dec,
+  url          = {https://openai.com/index/faulty-reward-functions/}
+}
+
+@inproceedings{rohrbach2018object,
+  title={Object Hallucination in Image Captioning},
+  author={Rohrbach, Anna and Hendricks, Lisa Anne and Burns, Kaylee and Darrell, Trevor and Saenko, Kate},
+  booktitle={Proceedings of the 2018 Conference on Empirical Methods in Natural Language Processing (EMNLP)},
+  pages={4035--4045},
+  year={2018}
+}
+
+@inproceedings{liang2022mind,
+  title={Mind the Gap: Understanding the Modality Gap in Multi-modal Contrastive Representation Learning},
+  author={Liang, Weixin and Zhang, Yuhui and Kwon, Yongchan and Yeung, Serena and Zou, James},
+  booktitle={Advances in Neural Information Processing Systems},
+  volume={35},
+  year={2022}
+}
+
+@inproceedings{yuksekgonul2023when,
+  title={When and Why Vision-Language Models Behave like Bags-of-Words, and What to Do About It?},
+  author={Yuksekgonul, Mert and Bianchi, Federico and Kalluri, Pratyusha and Jurafsky, Dan and Zou, James},
+  booktitle={International Conference on Learning Representations (ICLR)},
+  year={2023}
+}
+
+@article{chen2024mmstar,
+  title={Are We on the Right Way for Evaluating Large Vision-Language Models?},
+  author={Chen, Lin and Li, Jinsong and Dong, Xiaoyi and Zhang, Pan and Zang, Yuhang and Chen, Zehui and Duan, Haodong and Wang, Jiaqi and Qiao, Yu and Lin, Dahua and Zhao, Feng},
+  journal={arXiv preprint arXiv:2403.20330},
+  year={2024}
+}
+
+@inproceedings{feller1949theory,
+  title     = {On the Theory of Stochastic Processes, with Particular Reference
+               to Applications},
+  author    = {Feller, William},
+  booktitle = {Proceedings of the First Berkeley Symposium on Mathematical
+               Statistics and Probability},
+  pages     = {403--432},
+  year      = {1949},
+  publisher = {University of California Press}
+}
+
+@inproceedings{liu2023rectified,
+  title     = {Flow Straight and Fast: Learning to Generate and Transfer Data
+               with Rectified Flow},
+  author    = {Liu, Xingchao and Gong, Chengyue and Liu, Qiang},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2023},
+  note      = {arXiv:2209.03003}
+}
+
+@article{bradley2024classifier,
+  title   = {Classifier-Free Guidance is a Predictor-Corrector},
+  author  = {Bradley, Arwen and Nakkiran, Preetum},
+  journal = {arXiv preprint arXiv:2408.09000},
+  year    = {2024}
+}
+
+@inproceedings{hu2022lora,
+  title     = {LoRA: Low-Rank Adaptation of Large Language Models},
+  author    = {Hu, Edward J. and Shen, Yelong and Wallis, Phillip and
+               Allen-Zhu, Zeyuan and Li, Yuanzhi and Wang, Shean and
+               Wang, Lu and Chen, Weizhu},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2022},
+  note      = {arXiv:2106.09685}
+}
+
+@inproceedings{zhang2023adding,
+  title     = {Adding Conditional Control to Text-to-Image Diffusion Models},
+  author    = {Zhang, Lvmin and Rao, Anyi and Agrawala, Maneesh},
+  booktitle = {IEEE/CVF International Conference on Computer Vision (ICCV)},
+  year      = {2023},
+  note      = {arXiv:2302.05543}
+}
+
+@techreport{dieterich2016compas,
+  author      = {Dieterich, William and Mendoza, Christina and Brennan, Tim},
+  title       = {{COMPAS} Risk Scales: Demonstrating Accuracy Equity and Predictive Parity},
+  institution = {Northpointe Inc. Research Department},
+  year        = {2016},
+  month       = jul,
+  note        = {Rapporto tecnico dell'8 luglio 2016, risposta all'inchiesta di ProPublica},
+  url         = {https://www.documentcloud.org/documents/2998391-ProPublica-Commentary-Final-070616/}
+}
+
+@inproceedings{fogliato2020fairness,
+  author    = {Fogliato, Riccardo and G'Sell, Max and Chouldechova, Alexandra},
+  title     = {Fairness Evaluation in Presence of Biased Noisy Labels},
+  booktitle = {Proceedings of the Twenty Third International Conference on
+               Artificial Intelligence and Statistics (AISTATS)},
+  series    = {Proceedings of Machine Learning Research},
+  volume    = {108},
+  pages     = {2325--2336},
+  year      = {2020},
+  publisher = {PMLR},
+  eprint    = {2003.13808},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.LG},
+  url       = {https://proceedings.mlr.press/v108/fogliato20a.html}
+}
+
+@book{barocas2023fairness,
+  author    = {Barocas, Solon and Hardt, Moritz and Narayanan, Arvind},
+  title     = {Fairness and Machine Learning: Limitations and Opportunities},
+  publisher = {MIT Press},
+  year      = {2023},
+  url       = {https://fairmlbook.org/},
+  note      = {Versione online gratuita su fairmlbook.org}
+}
+
+@inproceedings{gao2023scaling,
+  author    = {Gao, Leo and Schulman, John and Hilton, Jacob},
+  title     = {Scaling Laws for Reward Model Overoptimization},
+  booktitle = {Proceedings of the 40th International Conference on Machine Learning (ICML)},
+  series    = {Proceedings of Machine Learning Research},
+  volume    = {202},
+  pages     = {10835--10866},
+  year      = {2023},
+  publisher = {PMLR},
+  eprint    = {2210.10760},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.LG},
+  url       = {https://proceedings.mlr.press/v202/gao23h.html}
+}
+
+@misc{dastin2018amazon,
+  author       = {Dastin, Jeffrey},
+  title        = {Amazon scraps secret {AI} recruiting tool that showed bias against women},
+  howpublished = {Reuters},
+  year         = {2018},
+  month        = oct,
+  url          = {https://www.reuters.com/article/us-amazon-com-jobs-automation-insight-idUSKCN1MK08G/}
+}
+
+@misc{openai2016faulty,
+  author       = {{OpenAI}},
+  title        = {Faulty reward functions in the wild},
+  howpublished = {OpenAI Blog},
+  year         = {2016},
+  month        = dec,
+  url          = {https://openai.com/index/faulty-reward-functions/}
+}
+
+@misc{eugdpr2016,
+  author       = {{Parlamento europeo e Consiglio dell'Unione europea}},
+  title        = {Regolamento (UE) 2016/679 del Parlamento europeo e del Consiglio
+                  del 27 aprile 2016 relativo alla protezione delle persone fisiche
+                  con riguardo al trattamento dei dati personali, nonch\'e alla libera
+                  circolazione di tali dati e che abroga la direttiva 95/46/CE
+                  (regolamento generale sulla protezione dei dati)},
+  howpublished = {Gazzetta ufficiale dell'Unione europea, L 119, 4.5.2016, pp. 1--88},
+  year         = {2016},
+  note         = {Applicabile dal 25 maggio 2018 (art. 99)},
+  url          = {https://eur-lex.europa.eu/eli/reg/2016/679/oj/ita}
+}
+
+@article{dwork2014algorithmic,
+  author  = {Dwork, Cynthia and Roth, Aaron},
+  title   = {The Algorithmic Foundations of Differential Privacy},
+  journal = {Foundations and Trends in Theoretical Computer Science},
+  volume  = {9},
+  number  = {3--4},
+  pages   = {211--407},
+  year    = {2014},
+  doi     = {10.1561/0400000042},
+  url     = {https://doi.org/10.1561/0400000042}
+}
+
+@article{fischer1985impossibility,
+  author  = {Fischer, Michael J. and Lynch, Nancy A. and Paterson, Michael S.},
+  title   = {Impossibility of Distributed Consensus with One Faulty Process},
+  journal = {Journal of the ACM},
+  volume  = {32},
+  number  = {2},
+  pages   = {374--382},
+  year    = {1985},
+  month   = apr,
+  doi     = {10.1145/3149.214121}
+}
+
+@article{lamport1998part,
+  author  = {Lamport, Leslie},
+  title   = {The Part-Time Parliament},
+  journal = {ACM Transactions on Computer Systems},
+  volume  = {16},
+  number  = {2},
+  pages   = {133--169},
+  year    = {1998},
+  month   = may,
+  doi     = {10.1145/279227.279229}
+}
+
+@inproceedings{ongaro2014raft,
+  author    = {Ongaro, Diego and Ousterhout, John},
+  title     = {In Search of an Understandable Consensus Algorithm},
+  booktitle = {Proceedings of the 2014 USENIX Annual Technical Conference
+               (USENIX ATC 14)},
+  pages     = {305--319},
+  year      = {2014},
+  address   = {Philadelphia, PA},
+  publisher = {USENIX Association}
+}
+
+@inproceedings{graves2012sequence,
+  title={Sequence Transduction with Recurrent Neural Networks},
+  author={Graves, Alex},
+  booktitle={ICML 2012 Workshop on Representation Learning},
+  year={2012},
+  note={arXiv:1211.3711}
+}
+
+@inproceedings{he2019streaming,
+  title={Streaming End-to-end Speech Recognition for Mobile Devices},
+  author={He, Yanzhang and Sainath, Tara N. and Prabhavalkar, Rohit and McGraw, Ian and Alvarez, Raziel and Zhao, Ding and Rybach, David and Kannan, Anjuli and Wu, Yonghui and Pang, Ruoming and Liang, Qiao and Bhatia, Deepti and Shangguan, Yuan and Li, Bo and Pundak, Golan and Sim, Khe Chai and Bagby, Tom and Chang, Shuo-yiin and Rao, Kanishka and Gruenstein, Alexander},
+  booktitle={IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP)},
+  year={2019},
+  note={arXiv:1811.06621}
+}
+
+@inproceedings{kannan2018analysis,
+  title={An Analysis of Incorporating an External Language Model into a Sequence-to-Sequence Model},
+  author={Kannan, Anjuli and Wu, Yonghui and Nguyen, Patrick and Sainath, Tara N. and Chen, Zhifeng and Prabhavalkar, Rohit},
+  booktitle={IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP)},
+  year={2018},
+  note={arXiv:1712.01996}
+}
+
+@inproceedings{kim2021vits,
+  title={Conditional Variational Autoencoder with Adversarial Learning for End-to-End Text-to-Speech},
+  author={Kim, Jaehyeon and Kong, Jungil and Son, Juhee},
+  booktitle={Proceedings of the 38th International Conference on Machine Learning (ICML)},
+  volume={139},
+  pages={5530--5540},
+  year={2021}
+}
+
+@book{russell2020artificial,
+  author    = {Russell, Stuart and Norvig, Peter},
+  title     = {Artificial Intelligence: A Modern Approach},
+  edition   = {4},
+  publisher = {Pearson},
+  year      = {2020},
+  isbn      = {978-0134610993}
+}
+
+@article{hyndman2006another,
+  author  = {Hyndman, Rob J. and Koehler, Anne B.},
+  title   = {Another look at measures of forecast accuracy},
+  journal = {International Journal of Forecasting},
+  volume  = {22},
+  number  = {4},
+  pages   = {679--688},
+  year    = {2006},
+  doi     = {10.1016/j.ijforecast.2006.03.001}
+}
+
+@article{taylor2018forecasting,
+  author  = {Taylor, Sean J. and Letham, Benjamin},
+  title   = {Forecasting at Scale},
+  journal = {The American Statistician},
+  volume  = {72},
+  number  = {1},
+  pages   = {37--45},
+  year    = {2018},
+  doi     = {10.1080/00031305.2017.1380080}
+}
+
+@misc{ng2017electricity,
+  author       = {Ng, Andrew},
+  title        = {Artificial Intelligence Is the New Electricity},
+  howpublished = {Intervento al programma MSx, Stanford Graduate School of Business; resoconto di Shana Lynch, Stanford GSB Insights},
+  year         = {2017},
+  month        = {3},
+  url          = {https://www.gsb.stanford.edu/insights/andrew-ng-why-ai-new-electricity}
+}
+
+@misc{evans2016deepmind,
+  author       = {Evans, Richard and Gao, Jim},
+  title        = {DeepMind AI Reduces Google Data Centre Cooling Bill by 40\%},
+  howpublished = {DeepMind blog},
+  year         = {2016},
+  month        = {7},
+  url          = {https://deepmind.google/discover/blog/deepmind-ai-reduces-google-data-centre-cooling-bill-by-40/}
+}
+
+@article{hannun2019cardiologist,
+  author  = {Hannun, Awni Y. and Rajpurkar, Pranav and Haghpanahi, Masoumeh and Tison, Geoffrey H. and Bourn, Codie and Turakhia, Mintu P. and Ng, Andrew Y.},
+  title   = {Cardiologist-level arrhythmia detection and classification in ambulatory electrocardiograms using a deep neural network},
+  journal = {Nature Medicine},
+  volume  = {25},
+  number  = {1},
+  pages   = {65--69},
+  year    = {2019},
+  doi     = {10.1038/s41591-018-0268-3}
+}
+
+@article{jumper2021highly,
+  author  = {Jumper, John and Evans, Richard and Pritzel, Alexander and Green, Tim and Figurnov, Michael and Ronneberger, Olaf and others},
+  title   = {Highly accurate protein structure prediction with AlphaFold},
+  journal = {Nature},
+  volume  = {596},
+  number  = {7873},
+  pages   = {583--589},
+  year    = {2021},
+  doi     = {10.1038/s41586-021-03819-2}
+}
+
+@article{nanda2023emergent,
+  title={Emergent Linear Representations in World Models of Self-Supervised
+         Sequence Models},
+  author={Nanda, Neel and Lee, Andrew and Wattenberg, Martin},
+  journal={arXiv preprint arXiv:2309.00941},
+  year={2023},
+  eprint={2309.00941},
+  archivePrefix={arXiv},
+  primaryClass={cs.LG},
+  url={https://arxiv.org/abs/2309.00941}
+}
+
+@article{vafa2024evaluating,
+  title={Evaluating the World Model Implicit in a Generative Model},
+  author={Vafa, Keyon and Chen, Justin Y. and Rambachan, Ashesh and
+          Kleinberg, Jon and Mullainathan, Sendhil},
+  journal={arXiv preprint arXiv:2406.03689},
+  year={2024},
+  eprint={2406.03689},
+  archivePrefix={arXiv},
+  primaryClass={cs.CL},
+  url={https://arxiv.org/abs/2406.03689}
 }

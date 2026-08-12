@@ -1,4 +1,4 @@
-<svg viewBox="0 0 700 400" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Il self-play allena due reti neurali, policy e value, che a loro volta guidano una ricerca ad albero">
+<svg viewBox="0 0 700 400" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Le reti di AlphaGo partono dalle partite umane, poi il self-play le affina; le due reti guidano una ricerca ad albero che gioca meglio di entrambe">
   <defs>
     <marker id="ago-arrow" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
       <path d="M0,0 L8,4 L0,8 Z" fill="#1A1A1A"/>
@@ -6,13 +6,20 @@
   </defs>
   <rect x="0" y="0" width="700" height="400" fill="#F8F5EE"/>
   <text x="350" y="30" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#1A1A1A" font-weight="bold">Self-play, reti neurali e ricerca ad albero</text>
+  <!-- il punto di partenza del 2016, che AlphaGo Zero toglie -->
+  <rect x="248" y="58" width="170" height="46" rx="8" fill="#F8F5EE" stroke="#B5532C" stroke-width="2" stroke-dasharray="6 4"/>
+  <text x="333" y="78" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#B5532C" font-weight="bold">partite umane</text>
+  <text x="333" y="95" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#1A1A1A">il punto di partenza, nel 2016</text>
+  <line x1="333" y1="104" x2="333" y2="114" stroke="#B5532C" stroke-width="2" marker-end="url(#ago-arrow)"/>
+  <text x="428" y="86" font-family="sans-serif" font-size="11" fill="#5A524A">è il passo che</text>
+  <text x="428" y="101" font-family="sans-serif" font-size="11" fill="#5A524A">AlphaGo Zero toglie</text>
   <!-- stage 1: self play -->
   <rect x="45" y="150" width="120" height="64" rx="10" fill="#B5532C"/>
   <text x="105" y="178" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#F8F5EE">AlphaGo</text>
   <text x="105" y="196" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#F8F5EE">vs se stesso</text>
   <path d="M60 148 A 40 26 0 1 1 150 148" fill="none" stroke="#1A1A1A" stroke-width="1.5" marker-end="url(#ago-arrow)"/>
-  <text x="105" y="248" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#5E5852">self-play:</text>
-  <text x="105" y="264" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#5E5852">milioni di partite</text>
+  <text x="105" y="248" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#5A524A">self-play:</text>
+  <text x="105" y="264" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#5A524A">milioni di partite</text>
   <!-- arrow to stage 2 -->
   <line x1="167" y1="182" x2="243" y2="182" stroke="#1A1A1A" stroke-width="2" marker-end="url(#ago-arrow)"/>
   <text x="205" y="172" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#1A1A1A">allena</text>
@@ -23,25 +30,25 @@
   <rect x="248" y="190" width="170" height="48" rx="8" fill="#C9A961"/>
   <text x="333" y="211" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">rete value</text>
   <text x="333" y="228" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#1A1A1A">chi vince (profondità)</text>
-  <text x="333" y="262" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#5E5852">reti neurali</text>
+  <text x="333" y="262" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#5A524A">reti neurali</text>
   <!-- arrows to tree -->
   <line x1="420" y1="152" x2="486" y2="150" stroke="#1A1A1A" stroke-width="2" marker-end="url(#ago-arrow)"/>
   <line x1="420" y1="214" x2="486" y2="182" stroke="#1A1A1A" stroke-width="2" marker-end="url(#ago-arrow)"/>
-  <text x="452" y="205" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#1A1A1A">guidano</text>
+  <text x="452" y="238" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#1A1A1A">guidano</text>
   <!-- stage 3: tree -->
   <circle cx="580" cy="95" r="12" fill="none" stroke="#1A1A1A" stroke-width="2"/>
-  <line x1="571" y1="103" x2="530" y2="142" stroke="#C9C2B4" stroke-width="1.5"/>
+  <line x1="571" y1="103" x2="530" y2="142" stroke="#C5BEAA" stroke-width="1.5"/>
   <line x1="580" y1="107" x2="580" y2="142" stroke="#2D5A5C" stroke-width="2.5"/>
   <line x1="589" y1="103" x2="630" y2="142" stroke="#2D5A5C" stroke-width="2.5"/>
-  <circle cx="530" cy="152" r="10" fill="none" stroke="#C9C2B4" stroke-width="1.5"/>
+  <circle cx="530" cy="152" r="10" fill="none" stroke="#C5BEAA" stroke-width="1.5"/>
   <circle cx="580" cy="152" r="10" fill="#2D5A5C"/>
   <circle cx="630" cy="152" r="10" fill="#2D5A5C"/>
   <line x1="580" y1="162" x2="560" y2="196" stroke="#2D5A5C" stroke-width="2.5"/>
-  <line x1="630" y1="162" x2="650" y2="196" stroke="#C9C2B4" stroke-width="1.5"/>
+  <line x1="630" y1="162" x2="650" y2="196" stroke="#C5BEAA" stroke-width="1.5"/>
   <rect x="532" y="200" width="56" height="26" rx="4" fill="none" stroke="#C9A961" stroke-width="2" stroke-dasharray="4 3"/>
   <text x="560" y="217" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#1A1A1A">v ≈ 0,7</text>
-  <circle cx="650" cy="206" r="10" fill="none" stroke="#C9C2B4" stroke-width="1.5"/>
-  <text x="580" y="262" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#5E5852">ricerca ad albero (MCTS)</text>
+  <circle cx="650" cy="206" r="10" fill="none" stroke="#C5BEAA" stroke-width="1.5"/>
+  <text x="580" y="262" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#5A524A">ricerca ad albero (MCTS)</text>
   <text x="350" y="320" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">la policy taglia i rami inutili, la value valuta senza arrivare alla fine della partita</text>
   <text x="350" y="342" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">e le partite contro se stesso migliorano entrambe le reti</text>
 </svg>

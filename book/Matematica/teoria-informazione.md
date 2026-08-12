@@ -34,10 +34,7 @@ evento raro ne porta molta.
 
 Shannon trasformò l'intuizione in un numero. L'esito di una moneta equa (testa
 o croce, 50 e 50) vale esattamente **1 bit**: è la sorpresa di una domanda
-secca con due risposte ugualmente possibili. L'esito di un dado a sei facce
-sorprende di più (le alternative erano sei, non due): circa 2,6 bit. E sapere
-che una moneta truccata, che dà testa 9 volte su 10, ha dato testa? Quasi
-niente: 0,15 bit. Ce lo aspettavamo già.
+secca con due risposte ugualmente possibili.
 
 Se l'idea di "misurare in domande" sembra astratta, pensa al gioco delle
 **venti domande**: uno pensa a un oggetto, l'altro può chiedere solo cose con
@@ -47,6 +44,23 @@ $2^{20} \approx 1{,}05$ milioni. Giocando male ("è un carciofo?", "è un
 trapano?") non bastano nemmeno per il contenuto di un cassetto. Un bit è
 esattamente una domanda ben posta, e l'entropia conterà quante ne servono in
 media.
+
+Da qui esce il conto per tutti gli altri casi, e vale la pena farlo una volta
+perché altrimenti i numeri di questa sezione sembrano piovere dal cielo. **Il
+bit è l'esponente del due.** Due alternative fanno $1$ bit perché $2^1 = 2$;
+quattro ne fanno $2$ perché $2^2 = 4$; otto ne fanno $3$. Con sei facce di un
+dado siamo in mezzo fra quattro e otto, quindi fra $2$ e $3$ bit: il numero
+esatto è quello che elevando $2$ dà $6$, cioè circa $2{,}585$. Ecco i «2,6 bit»
+del dado: non è che servano due domande e mezzo, è che *in media*, su tante
+partite, una strategia ottima ne consuma poco più di due e mezzo.
+
+Lo stesso conto vale per gli esiti singoli di una moneta sbilanciata, con una
+sola avvertenza: al posto del numero di alternative si mette **uno diviso la
+probabilità**. Una moneta truccata dà testa $9$ volte su $10$: la testa è
+"un'alternativa su $1/0{,}9 = 1{,}11$", quindi vale pochissimo, $0{,}15$ bit.
+Ce lo aspettavamo già. La croce invece è "una su $1/0{,}1 = 10$", cioè quanto
+un dado a dieci facce, e vale $3{,}32$ bit: rara, e perciò molto informativa.
+Sono i due numeri che torneranno fra poco.
 
 `````
 
@@ -60,9 +74,12 @@ $$
 
 dove il segno meno rende la quantità positiva (i logaritmi di numeri fra $0$ e
 $1$ sono negativi) e la base $2$ fissa l'unità di misura in bit. La forma
-logaritmica non è un vezzo: è l'unica (a meno della base) che rende la
-sorpresa **additiva** per eventi indipendenti; se $p(x,y)=p(x)\,p(y)$, allora
-$I(x,y)=I(x)+I(y)$, perché il logaritmo trasforma i prodotti in somme.
+logaritmica non è un vezzo: è l'unica forma **continua** (a meno della base)
+che rende la sorpresa **additiva** per eventi indipendenti; se
+$p(x,y)=p(x)\,p(y)$, allora $I(x,y)=I(x)+I(y)$, perché il logaritmo trasforma i
+prodotti in somme. L'aggettivo serve: l'equazione funzionale $f(pq)=f(p)+f(q)$
+ha anche soluzioni patologiche, che però si costruiscono solo rinunciando a
+ogni regolarità (continuità, monotonia o misurabilità).
 
 Esempi: moneta equa, $I=-\log_2 0{,}5 = 1$ bit; una faccia del dado,
 $I=-\log_2 \tfrac{1}{6} \approx 2{,}585$ bit; testa con la moneta truccata,
@@ -85,7 +102,10 @@ aspettiamo di essere sorpresi, in media, a ogni estrazione
 :width: 85%
 
 Due monete identiche all'aspetto, entropie diverse: l'equa produce in media 1
-bit di sorpresa per lancio, la truccata meno della metà.
+bit di sorpresa per lancio, la truccata meno della metà. (La lettera $H$ che
+compare nel disegno è il simbolo con cui si indica l'entropia, così come
+$\pi$ indica il pi greco: «$H = 1$ bit» si legge «l'entropia di questa moneta
+è di un bit».)
 ```
 
 `````{tab} Elementare
@@ -123,6 +143,13 @@ degeneri (un esito certo); e $H(p)\le \log_2 n$, con uguaglianza solo per la
 distribuzione uniforme. L'entropia è quindi una misura di *incertezza*: nulla
 quando l'esito è scritto, massima quando le $n$ alternative sono equiprobabili.
 
+Entrambe valgono nel **discreto**, ed è bene dirlo perché nel continuo la
+prima cade. L'analogo per una densità, l'*entropia differenziale*
+$h(f) = -\int f\log_2 f$, può essere negativo appena la densità si concentra:
+$h(\mathcal{N}(0,1)) = +2{,}05$ bit, ma $h(\mathcal{N}(0,\,0{,}1^2)) =
+-1{,}27$. La divergenza KL, invece, resta $\ge 0$ in entrambi i casi, ed è una
+delle ragioni per cui è lei l'oggetto su cui si costruisce.
+
 `````
 
 ## Confrontare distribuzioni: cross-entropia e divergenza KL
@@ -134,12 +161,16 @@ seconda sbaglia rispetto alla prima.
 
 ```{figure} ../figures/cross-entropy-kl-divergence.svg
 :name: fig-cross-entropia-kl
-:alt: "Due distribuzioni disegnate sugli stessi assi: p, la realtà, e q, il modello, che le somiglia ma è spostata e di forma diversa. L'area fra le due curve rappresenta lo scarto, cioè quanto costa in più descrivere i dati usando le credenze del modello invece della distribuzione vera."
+:alt: "Due distribuzioni disegnate sugli stessi assi: p, la realtà, e q, il modello, che le somiglia ma è spostata e di forma diversa. Lo spazio fra le due curve segnala visivamente che il modello non coincide con la realtà, e quindi che descrivere i dati con le sue credenze costa qualcosa in più."
 :width: 88%
 
-Le due curve e ciò che le separa. La cross-entropia misura il costo totale di
-descrivere $p$ usando $q$; la divergenza KL misura solo il sovrapprezzo, cioè
-quanto si paga in più rispetto a conoscere $p$.
+Le due curve e il fatto che non combaciano. La cross-entropia misura il costo
+totale di descrivere $p$ usando $q$; la divergenza KL misura solo il
+sovrapprezzo, cioè quanto si paga in più rispetto a conoscere $p$. Lo scarto
+fra le curve è un promemoria visivo, non la misura: la KL non è l'area fra le
+due (quella sarebbe simmetrica, e la KL non lo è) ma una media, pesata da $p$,
+di quanto $q$ sbaglia in ciascun punto. La formula qui sotto lo dice
+esattamente.
 ```
 
 La distinzione che {numref}`fig-cross-entropia-kl` rende visiva spiega perché
@@ -222,7 +253,19 @@ H(p, q_\theta) = H(p) + D_{KL}(p\,\|\,q_\theta)
 $$
 
 e $H(p)$ non dipende da $\theta$: il minimo teorico della loss non è zero ma
-l'entropia dei dati, la loro incertezza irriducibile. Inoltre, sulla
+l'entropia dei dati, la loro incertezza irriducibile.
+
+Attenzione però a **quale** $p$, perché il libro (come tutti) usa lo stesso
+simbolo per due cose. Se $p$ è la distribuzione condizionata vera del
+processo che genera i dati, il pavimento è $H(p) > 0$ e nessun modello scende
+sotto. Se invece $p$ è il bersaglio empirico di un singolo esempio, cioè
+«questa immagine è un gatto» con probabilità $1$ e tutto il resto a zero,
+allora $H(p) = 0$ e il pavimento è zero. Le due affermazioni convivono e
+spiegano una cosa che si osserva addestrando: la loss di *training* può
+scendere quasi a zero, quella di *validazione* no, perché la prima misura la
+distanza da bersagli certi e la seconda da una distribuzione che certa non è.
+
+Inoltre, sulla
 distribuzione empirica del training set la cross-entropia coincide con la
 log-verosimiglianza negativa media: minimizzarla *è* la stima di massima
 verosimiglianza vista nella sezione su probabilità e statistica. Le tre
@@ -250,9 +293,19 @@ facce ha il dado equivalente».
 ```
 
 Il salto da {numref}`fig-entropia-due-monete` alla perplessità è una
-riscrittura, non un concetto nuovo: $2^1 = 2$ facce per la moneta equa, $2^{0,47}
-\approx 1{,}4$ per quella truccata. Il secondo numero dice, in modo più
-intuitivo del primo, che quella moneta è poco più che decisa.
+riscrittura, non un concetto nuovo: si torna indietro dall'esponente al numero
+di alternative. Per la moneta equa $2^1 = 2$ facce, per quella truccata
+$2^{0{,}47} \approx 1{,}4$.
+
+Quel secondo conto merita una riga, perché «due elevato a zero virgola
+quarantasette» non è più «due moltiplicato per sé stesso un certo numero di
+volte»: l'elevamento a potenza si estende agli esponenti con la virgola in
+modo che continui a valere la regola di sempre, cioè che sommando gli
+esponenti si moltiplichino i risultati. Con quella regola $2^{0{,}5}$ deve
+essere il numero che moltiplicato per sé stesso dà $2$, cioè $\sqrt 2 \approx
+1{,}41$; e $2^{0{,}47}$, di pochissimo più piccolo, vale circa $1{,}4$. Non
+esiste un dado con $1{,}4$ facce, e non serve: il numero dice «meno di due
+alternative vere», cioè che quella moneta è poco più che decisa.
 
 `````{tab} Elementare
 
@@ -289,16 +342,33 @@ Natural Language Processing.
 
 Chiudiamo con la conseguenza più concreta del lavoro di Shannon: l'entropia è
 un **limite alla compressione**. Nessun programma, per quanto ingegnoso, può
-comprimere senza perdite una sorgente sotto la sua entropia: in media, sotto
-$H$ bit per simbolo non si scende. È il motivo per cui uno zip morde bene un
-file di testo, le lingue sono ridondanti: nel 1951 lo stesso Shannon stimò per
-l'inglese scritto circa un bit per lettera, contro i quasi $5$ di lettere
-equiprobabili {cite}`shannon1951prediction`, e non riesce a comprimere un file
-già compresso, dove la ridondanza è già stata spremuta. Comprimere è l'arte
-del Morse portata al suo limite matematico: scorciatoie a ciò che è frequente.
-E un modello che predice bene, assegnando poca sorpresa alla realtà, è per ciò
-stesso un buon compressore: predire e comprimere, ci dice Shannon, sono in
-fondo la stessa cosa.
+comprimere senza perdite una sorgente sotto la sua **entropia per simbolo**:
+in media, sotto quella soglia non si scende.
+
+L'aggettivo «per simbolo» non è un dettaglio, ed è il punto in cui la frase
+detta male diventa falsa. La sorpresa media $H$ calcolata sulle sole frequenze
+delle lettere descrive una sorgente **senza memoria**, una che estrae ogni
+lettera indipendentemente dalle precedenti. Una lingua non è così: dopo una
+«q» arriva quasi sempre una «u», dopo «il gatto ne» le continuazioni plausibili
+sono poche. Per una sorgente con memoria il limite vero è più basso, ed è la
+sorpresa media di ogni lettera **dato tutto ciò che la precede**. La differenza
+si tocca con mano: le sole frequenze dei caratteri dei sorgenti di questo libro
+danno circa $4{,}75$ bit per simbolo, e un banale `gzip` scende a $2{,}90$,
+cioè al $61\%$ di quel presunto limite invalicabile. Non ha violato nessun
+teorema: sta
+sfruttando proprio la ridondanza fra un simbolo e il successivo, che quel conto
+ignorava.
+
+È la stessa quantità che Shannon stimò nel 1951 per l'inglese scritto in circa
+**un bit per lettera** {cite}`shannon1951prediction`, e va confrontata con i
+quasi $5$ bit che darebbero ventisei lettere equiprobabili tenendo conto solo
+di quante sono. Uno zip morde bene un testo perché quella ridondanza c'è tutta;
+non morde più niente su un file già compresso, dove è già stata spremuta via.
+
+Comprimere è l'arte del Morse portata al suo limite matematico: scorciatoie a
+ciò che è frequente. E un modello che predice bene, assegnando poca sorpresa
+alla realtà, è per ciò stesso un buon compressore: predire e comprimere, ci
+dice Shannon, sono in fondo la stessa cosa.
 
 ## In pratica, con NumPy
 
@@ -354,9 +424,13 @@ print(2**entropia(equa), 2**entropia(dado))   # 2.0  6.0
   operazione.
 - La **perplessità** traduce l'entropia in facce del dado: quante alternative
   ugualmente probabili darebbero la stessa incertezza (2 per la moneta equa, 6
-  per il dado). La ritroveremo nei modelli di linguaggio. E l'entropia è il
-  limite invalicabile della compressione: sotto quella soglia nessun programma
-  comprime senza perdere qualcosa.
+  per il dado). La ritroveremo nei modelli di linguaggio.
+- Comprimere senza perdere niente ha un limite, ed è l'entropia **per
+  simbolo** della sorgente: quanta sorpresa porta in media ogni pezzo di
+  messaggio, tenuto conto di tutto quello che lo precede. È molto meno di
+  quanto direbbero le sole frequenze delle lettere, ed è la ragione per cui
+  uno zip su un testo fa meglio di quel conto ingenuo, e non fa niente su un
+  file già compresso.
 ```
 `````
 
@@ -374,7 +448,11 @@ print(2**entropia(equa), 2**entropia(dado))   # 2.0  6.0
 - Minimizzare la cross-entropy come loss = minimizzare la KL fra dati e
   modello = massima verosimiglianza: tre nomi per la stessa operazione.
 - La **perplessità** $2^{H}$ traduce l'entropia in "facce del dado": la
-  ritroveremo nei modelli di linguaggio. E l'entropia è il limite invalicabile
-  della compressione senza perdite.
+  ritroveremo nei modelli di linguaggio.
+- Il limite della compressione senza perdite è l'**entropia per simbolo**
+  (*entropy rate*) $\lim_n H(X_1,\dots,X_n)/n$, non la $H$ di ordine zero
+  calcolata sulle frequenze marginali: per una sorgente con memoria la seconda
+  sovrastima largamente, e un compressore generico la scavalca senza
+  contraddire Shannon.
 ```
 `````

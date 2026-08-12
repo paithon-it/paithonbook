@@ -1,12 +1,17 @@
 # Transformer: quando l'attenzione basta
 
-Nell'estate del 2017 otto ricercatori di Google pubblicano un paper dal titolo
-che suona come una battuta: *Attention Is All You Need*
-{cite}`vaswani2017attention`; "l'attenzione è tutto ciò che serve", eco del
-ritornello dei Beatles. Dentro c'è un'architettura di rete neurale nuova, il
-**Transformer**, che fa una scommessa radicale: per capire il linguaggio non
-servono né la ricorrenza delle RNN né le convoluzioni; basta il meccanismo di
-**attenzione**, usato fino ad allora come accessorio. La scommessa è vinta
+Nell'estate del 2017 otto ricercatori, tutti passati per Google Brain e Google
+Research, pubblicano un *paper* (un articolo scientifico: il modo in cui chi fa
+ricerca racconta agli altri quello che ha trovato) dal titolo che suona come
+una battuta: *Attention Is All You Need* {cite}`vaswani2017attention`;
+"l'attenzione è tutto ciò che serve", eco del ritornello dei Beatles. Dentro
+c'è un'architettura di rete neurale nuova, il **Transformer**, che fa una
+scommessa radicale: per capire il linguaggio non servono né la ricorrenza delle
+RNN (leggere una parola alla volta, portandosi dietro un riassunto di quel che
+è venuto prima) né le convoluzioni (i filtri che scorrono su un testo o su
+un'immagine guardando solo i vicini, del capitolo sul deep learning); basta il
+meccanismo di **attenzione**, usato fino ad allora come accessorio. La
+scommessa è vinta
 oltre ogni previsione: oggi il Transformer è la base di quasi tutti i grandi
 modelli linguistici, e quella "T" è la stessa che trovi nel nome di GPT e di
 ChatGPT.
@@ -70,9 +75,12 @@ allineamento: come un modello di linguaggio diventa un assistente) e il
 **tendenze**, con i limiti, che non mancano.
 
 Una nota di metodo, coerente col resto del libro: i Transformer sono
-importanti, ma non sono magia. Sono algebra lineare (matrici, prodotti
-scalari, softmax) organizzata in un modo particolarmente felice. Tutto ciò che
-serve per capirli lo abbiamo già costruito nei capitoli precedenti.
+importanti, ma non sono magia. Sotto il cofano ci sono tabelle di numeri e
+operazioni che si fanno con carta e penna, montate in un ordine
+particolarmente felice; chi ha letto i capitoli sulla matematica e sulle reti
+neurali ritroverà i pezzi con i loro nomi (matrici, prodotti scalari,
+softmax), e chi non li ha letti può seguire lo stesso il filo del livello
+Elementare, dove ogni pezzo ha un'immagine al posto della formula.
 
 ```{admonition} Da ricordare
 :class: important
@@ -80,8 +88,10 @@ serve per capirli lo abbiamo già costruito nei capitoli precedenti.
   elimina ricorrenza e convoluzioni: l'intera architettura si regge sul
   meccanismo di **attenzione**.
 - Rispetto alle RNN risolve due problemi: le **dipendenze lunghe** (ogni
-  parola vede direttamente ogni altra) e la **parallelizzazione**
-  (l'addestramento sfrutta appieno le GPU).
+  parola vede direttamente ogni altra) e la **parallelizzazione** (le parole si
+  possono elaborare tutte insieme invece che in fila, e i cento amici della
+  scheda Elementare servono davvero: è quello che permette di addestrare i
+  modelli su macchine con migliaia di processori).
 - La capacità di scalare con dati e parametri ne ha fatto la base dei grandi
   modelli linguistici: la "T" di GPT, BERT e ChatGPT.
 ```

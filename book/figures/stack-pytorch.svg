@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  paithon book — figura: lo stack di PyTorch come strati sovrapposti.
+  paithon book, figura: lo stack di PyTorch come strati sovrapposti.
   Dal basso: l'hardware (CPU/GPU/acceleratori) -> il motore C++ (ATen e
   autograd) -> l'API Python (torch, torch.nn, torch.optim) -> il tuo modello.
   Palette-locked: box color cream, bordi terracotta/ocra/teal/warm-black,

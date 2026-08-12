@@ -91,6 +91,28 @@ letto il capitolo sulle GAN riconoscerà quanto di quella instabilità venga
 proprio dal pezzo che qui è stato tolto.
 `````
 
+Fra i tre, il terzo merita un disegno, perché la sua idea è quella che si è
+presa il futuro.
+
+```{figure} ../figures/t5-2019.svg
+:name: fig-t5-text-to-text
+:alt: "Quattro compiti diversi (traduzione, giudizio di accettabilità grammaticale, somiglianza fra due frasi e riassunto) entrano nello stesso modello scritti come testo, ciascuno preceduto da un prefisso che dice di quale compito si tratta; da tutti e quattro esce testo. Nessuna testa specializzata per compito compare nello schema."
+:width: 100%
+
+Un solo formato per tutto. T5 non aggiunge un giudice diverso per ogni compito:
+mette il nome del compito davanti alla frase, e la risposta esce come testo
+anche quando è un voto o un'etichetta.
+```
+
+L'idea di {numref}`fig-t5-text-to-text` sembra un dettaglio ingegneristico e
+invece anticipa il modo in cui oggi si usano i modelli di linguaggio. Se ogni
+compito si può scrivere come testo in ingresso e testo in uscita, allora
+cambiare compito non richiede di cambiare il modello: basta cambiare quello che
+gli si scrive davanti. Quel «quello che gli si scrive davanti» è il **prompt**,
+la parola che da qui in avanti tornerà in tutto il capitolo, e che vuol dire
+esattamente questo: le istruzioni e il testo che si consegnano al modello prima
+che risponda.
+
 ## Oltre il testo: Vision Transformer e modelli multimodali
 
 ```{figure} ../figures/vit-transformer-immagini.svg
@@ -103,9 +125,11 @@ tessere e le tratta come parole. Da lì in poi è lo stesso encoder del testo.
 ```
 
 Il passaggio mostrato in {numref}`fig-vit` è meno innocente di quanto sembri.
-Tagliare e mettere in fila butta via ciò che una convoluzione dava per
-scontato, cioè che i pixel vicini siano imparentati: il ViT quella parentela
-deve impararla dai dati, e infatti ha bisogno di molti più esempi per farlo.
+Tagliare e mettere in fila butta via quello che le reti per le immagini del
+capitolo sul deep learning (le *convoluzioni*, i filtri che guardano un pezzetto
+di foto alla volta) davano per scontato, cioè che i pixel vicini siano
+imparentati: il ViT quella parentela deve impararla dai dati, e infatti ha
+bisogno di molti più esempi per farlo.
 
 `````{tab} Elementare
 E le immagini? Il trucco è di una semplicità disarmante: si taglia la foto in
@@ -138,17 +162,23 @@ frammenti audio) è terreno di gioco per l'attenzione.
 Qui ci fermiamo al principio, che è il filo di questo capitolo: tutto ciò che
 si riduce a una sequenza di token è terreno dell'attenzione. Come si costruisca
 davvero un modello che vede e parla è un'altra storia, e ha un capitolo suo più
-avanti: allineare due spazi separati senza fonderli, innestare un occhio su un
-modello di linguaggio già addestrato, oppure dare a pixel e parole un unico
-vocabolario sono tre risposte diverse alla stessa domanda, e ciascuna si paga
-in modo diverso.
+avanti. Le strade sono tre, e conviene averle in mente. Si può tenere il
+linguaggio e le immagini in due mappe separate e addestrarle a mettere le cose
+corrispondenti nello stesso punto (una foto di gatto e la parola «gatto» finiscono
+vicine, pur restando in mappe diverse). Si può innestare un occhio su un modello
+di linguaggio già addestrato, lasciando che sia il linguaggio a comandare. Oppure
+si può dare a pixel e parole un unico vocabolario, come se le tessere di
+un'immagine fossero parole di una lingua in più. Sono tre risposte diverse alla
+stessa domanda, e ciascuna si paga in modo diverso.
 
 ## Fuori dal linguaggio: AlphaFold 2 e la forma delle proteine
 
 Il caso più clamoroso di attenzione applicata a un dominio che con il testo non
-c'entra nulla è arrivato nel novembre 2020, a CASP14: **AlphaFold 2** predice la
-struttura tridimensionale delle proteine con un'accuratezza vicina a quella dei
-metodi sperimentali, chiudendo di fatto un problema aperto da mezzo secolo.
+c'entra nulla è arrivato nel novembre 2020, alla CASP14, la gara biennale in cui
+si sfidano i programmi che prevedono la forma delle proteine: **AlphaFold 2**
+predice la struttura tridimensionale delle proteine con un'accuratezza vicina a
+quella dei metodi sperimentali, chiudendo di fatto un problema aperto da mezzo
+secolo.
 
 ```{figure} ../figures/alphafold-2.svg
 :name: fig-alphafold
@@ -161,9 +191,13 @@ fatto milioni di esperimenti, e quelli sono i dati.
 ```
 
 Il blocco centrale di {numref}`fig-alphafold` è dove l'attenzione fa il suo
-mestiere. Due residui lontani nella sequenza possono trovarsi vicini nello
-spazio, ed è esattamente il tipo di relazione a lungo raggio che le
-convoluzioni faticano a vedere e che l'attenzione tratta come un caso normale.
+mestiere. Una proteina è una catena di anelli, e gli anelli si chiamano
+**residui** (sono i venti amminoacidi della scheda qui sotto; niente a che
+vedere con le «connessioni residue» del corrimano, che è solo la stessa parola
+usata per un'altra cosa). Due residui lontanissimi lungo la catena possono
+ritrovarsi appiccicati una volta che la catena si è ripiegata, ed è esattamente
+il tipo di relazione a lungo raggio che i filtri delle reti per immagini
+faticano a vedere e che l'attenzione tratta come un caso normale.
 
 `````{tab} Elementare
 
@@ -236,13 +270,40 @@ dettagli:
 - **Risorse**: addestrare un grande modello richiede cluster di GPU, mesi di
   calcolo e consumi energetici ingenti; anche solo *eseguirlo* può richiedere
   hardware fuori dalla portata di un laboratorio piccolo.
-- **Dati**: i corpora da miliardi di parole contengono errori, stereotipi e
-  contenuti tossici, e i modelli li assorbono; i **bias** dei dati diventano
-  bias del modello.
-- **Affidabilità**: un modello autoregressivo produce la continuazione più
-  plausibile, non necessariamente quella *vera*: le "allucinazioni" (risposte
-  fluenti e sbagliate) sono un limite strutturale, non un incidente.
+- **Dati**: i *corpora* (cioè le grandi raccolte di testi su cui i modelli
+  studiano) da miliardi di parole contengono errori, stereotipi e contenuti
+  tossici, e i modelli li assorbono; i **bias** dei dati diventano bias del
+  modello.
+- **Affidabilità**: un modello **autoregressivo** (che scrive una parola alla
+  volta, ogni volta scegliendo la continuazione più probabile di quello che ha
+  già scritto) produce la continuazione più plausibile, non necessariamente
+  quella *vera*: le "allucinazioni" (risposte fluenti e sbagliate) sono un
+  limite strutturale, non un incidente.
 
+`````{tab} Elementare
+```{admonition} Da ricordare
+:class: important
+- Tre modi di studiare, tre mestieri. **GPT** copre la pagina con la mano e
+  indovina la parola dopo: diventa bravo a scrivere. **BERT** fa gli esercizi a
+  buchi guardando prima e dopo: diventa bravo a capire. **T5** riscrive ogni
+  compito come un tema, con il nome del compito davanti.
+- La ricetta è sempre la stessa: prima si studia tantissimo per conto proprio,
+  su montagne di testo e senza nessuno che corregga; poi si aggiusta il tiro sul
+  compito che serve, con pochi esempi o solo con le istruzioni scritte davanti
+  (il *prompt*).
+- **ELECTRA** cambia l'esercizio invece dell'architettura: fa il correttore di
+  bozze su **ogni** parola invece di indovinarne una su sette, e a parità di
+  fatica impara molto di più.
+- Le immagini entrano nello stesso meccanismo tagliandole in tessere e
+  mettendole in fila come parole; da lì un modello può guardare una foto e
+  rispondere a parole.
+- I limiti vanno messi in conto quanto i pregi: costano moltissimo da
+  addestrare, si portano dentro i pregiudizi dei testi su cui hanno studiato, e
+  scrivono con la stessa sicurezza cose vere e cose inventate.
+```
+`````
+
+`````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
 - **GPT** = decoder-only, indovina la parola successiva, forte nel generare;
@@ -259,3 +320,4 @@ dettagli:
 - Costi computazionali, bias nei dati e allucinazioni sono limiti
   strutturali, da mettere in conto quanto i vantaggi.
 ```
+`````

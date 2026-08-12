@@ -2,7 +2,8 @@
 
 Per molto tempo una rete con tanti strati è stata più un'idea che una pratica.
 Negli anni '90 e nei primi 2000 impilare più livelli spesso *peggiorava* le
-cose: la loss non scendeva, l'addestramento si arenava dopo poche epoche. Non
+cose: la loss (il numero che misura quanto la rete sbaglia) non scendeva,
+l'addestramento si arenava dopo poche passate sui dati. Non
 era solo questione di potenza di calcolo. Mancavano gli accorgimenti che
 rendono stabile l'apprendimento quando la rete è profonda. Tra il 2010 e il
 2015 una manciata di idee, inizializzazioni pensate meglio, la *batch
@@ -16,19 +17,25 @@ poi i rimedi.
 
 La *backpropagation* calcola il gradiente della loss strato per strato,
 partendo dall'uscita e risalendo verso l'ingresso. A ogni passo indietro il
-gradiente viene moltiplicato per i pesi e per le derivate delle attivazioni.
-Ed è qui che nasce il guaio.
+segnale viene moltiplicato per i pesi di quello strato e per le **derivate**
+delle attivazioni: la derivata è il numero che dice quanto l'uscita di un
+neurone reagisce a una piccola variazione del suo ingresso, ed è piccola dove
+il neurone è pigro, cioè dove muovere l'ingresso non cambia quasi niente. Ed è
+qui che nasce il guaio.
 
 ```{figure} ../figures/gradiente-svanisce.svg
 :name: fig-gradiente-svanisce
 :alt: "Animazione: due file di barre, sigmoide e ReLU. Risalendo dall'uscita verso l'ingresso le barre della sigmoide si accorciano di un fattore quattro per strato, quelle della ReLU restano intere."
 :width: 90%
 
-Il fattore che sopravvive al passaggio di ogni strato. Con la sigmoide, la cui
-derivata non supera mai $0{,}25$, dopo sei strati resta meno di un millesimo
-del gradiente di partenza; con la ReLU, che sulla parte attiva ha derivata
-$1$, il prodotto non si consuma. *(Le altezze sono in scala logaritmica: in
-scala lineare le ultime barre non si vedrebbero, che poi è il punto.)*
+Quanta parte del segnale di correzione sopravvive al passaggio di ogni strato,
+con due attivazioni diverse. Con la sigmoide ogni strato lo moltiplica per un
+numero che non supera mai $0{,}25$, cioè lo divide almeno per quattro: dal
+sesto strato al primo, che sono cinque passaggi, resta un millesimo scarso di
+quello di partenza ($0{,}25^5 = 0{,}00098$, l'ultima barra). Con la ReLU quel
+numero vale $1$ sulla parte attiva, e il prodotto non si consuma. *(Le barre
+sono disegnate in scala logaritmica, cioè ogni tacca vale dieci volte la
+precedente: in scala normale le ultime non si vedrebbero, che poi è il punto.)*
 ```
 
 I numeri della {numref}`fig-gradiente-svanisce` sono il caso **migliore** per
@@ -56,10 +63,11 @@ fattori. Schematicamente, per una rete di $L$ strati, il gradiente che
 raggiunge lo strato $\ell$ contiene un termine
 
 $$
-\prod_{k=\ell}^{L-1} W_k^\top \, \operatorname{diag}\!\big(\sigma'(z_k)\big),
+\prod_{k=\ell}^{L-1} \mathbf{W}_k^\top \,
+\operatorname{diag}\!\big(\sigma'(\mathbf{z}_k)\big),
 $$
 
-dove $W_k$ è la matrice dei pesi e $\sigma'(z_k)$ la derivata
+dove $\mathbf{W}_k$ è la matrice dei pesi e $\sigma'(\mathbf{z}_k)$ la derivata
 dell'attivazione. Se i fattori hanno modulo tipico minore di $1$, il prodotto
 tende a $0$ esponenzialmente in $L$ (**vanishing gradient**); se maggiore di
 $1$, diverge (**exploding gradient**). La sigmoide aggrava il primo caso:
@@ -82,8 +90,11 @@ sbagliata condanna la rete prima ancora del primo aggiornamento.
 :alt: "Grafico della varianza del segnale strato dopo strato, con tre curve. Con pesi iniziali troppo grandi la varianza cresce di strato in strato ed esplode; con pesi troppo piccoli collassa verso lo zero; con la scala calibrata resta costante lungo tutta la profondità della rete."
 :width: 92%
 
-Tre inizializzazioni, tre destini, e nessun addestramento ancora avvenuto. La
-curva piatta è l'obiettivo: la varianza del segnale deve attraversare la rete
+Tre inizializzazioni, tre destini, e nessun addestramento ancora avvenuto. In
+verticale c'è la **varianza** del segnale, cioè quanto sono sparpagliati i
+numeri che escono da uno strato: grande vuol dire valori forti e distanti fra
+loro, vicina a zero vuol dire valori tutti appiccicati, cioè un segnale ormai
+spento. La curva piatta è l'obiettivo: quell'ampiezza deve attraversare la rete
 senza gonfiarsi né spegnersi.
 ```
 
@@ -95,7 +106,8 @@ degenerato al primo passaggio.
 
 `````{tab} Elementare
 
-L'idea è tenere costante il "volume" del segnale mentre attraversa gli strati:
+L'idea è tenere costante il "volume" del segnale (l'ampiezza che la curva del
+disegno qui sopra chiama varianza) mentre attraversa gli strati:
 né più forte né più debole. Se un neurone somma tanti ingressi, i suoi pesi
 iniziali devono essere piccoli in proporzione, così che la somma non diventi
 troppo grande o troppo piccola. Due ricette calibrano questa scala in base a
@@ -109,21 +121,22 @@ predefinita nei framework moderni: raramente serve toccarle a mano.
 
 L'obiettivo è preservare la varianza delle attivazioni (e dei gradienti) da
 uno strato all'altro. Con $n_{\text{in}}$ ingressi e $n_{\text{out}}$ uscite,
-l'inizializzazione di **Glorot** (2010) campiona i pesi con varianza
+l'inizializzazione di **Glorot** {cite}`glorot2010understanding` campiona i
+pesi con varianza
 
 $$
-\operatorname{Var}(W) = \frac{2}{n_{\text{in}} + n_{\text{out}}},
+\operatorname{Var}(w) = \frac{2}{n_{\text{in}} + n_{\text{out}}},
 $$
 
 adatta ad attivazioni simmetriche attorno a zero (tanh). Per la ReLU, che
-azzera metà degli ingressi, **He** (2015) raddoppia la scala usando solo il
-fan-in:
+azzera metà degli ingressi, **He** {cite}`he2015delving` raddoppia la scala
+usando solo il fan-in:
 
 $$
-\operatorname{Var}(W) = \frac{2}{n_{\text{in}}}.
+\operatorname{Var}(w) = \frac{2}{n_{\text{in}}}.
 $$
 
-In entrambi i casi $W$ si estrae da una normale (o da una uniforme con
+In entrambi i casi $w$ si estrae da una normale (o da una uniforme con
 supporto equivalente) e i bias si pongono a $0$. La regola pratica: **He** con
 ReLU e varianti, **Glorot** con tanh e sigmoide.
 
@@ -131,26 +144,30 @@ ReLU e varianti, **Glorot** con tanh e sigmoide.
 
 ## Normalizzare mentre si impara: la batch normalization
 
-Anche partendo bene, durante l'addestramento la distribuzione delle
-attivazioni si sposta di continuo: ogni aggiornamento cambia gli input dello
-strato successivo, che deve inseguire un bersaglio mobile. La *batch
-normalization* stabilizza questo bersaglio.
+Anche partendo bene, i numeri che circolano dentro la rete cambiano scala di
+continuo mentre si impara: ogni aggiornamento modifica ciò che arriva allo
+strato successivo. La *batch normalization* interviene qui, rimettendo in riga
+le attivazioni di ogni strato, e in pratica rende l'addestramento molto più
+rapido e stabile. Conviene dirlo subito: **perché funzioni così bene è ancora
+materia di discussione**, e la spiegazione data dai suoi autori non ha retto
+alla prova dei fatti.
 
 ```{figure} ../figures/batch-normalization-2015.svg
 :name: fig-batch-norm
 :alt: "A sinistra tre distribuzioni delle attivazioni provenienti da batch diversi, spostate l'una rispetto all'altra e di larghezza diversa. Al centro una stazione di batch normalization sottrae la media e divide per la deviazione standard, poi riapplica i parametri appresi gamma e beta. A destra le tre distribuzioni escono centrate in zero e con la stessa dispersione."
 :width: 96%
 
-Da tre distribuzioni che vagano a tre distribuzioni sovrapposte. I parametri
-$\gamma$ e $\beta$ in coda servono a restituire alla rete la libertà che la
-normalizzazione le ha appena tolto.
+Da tre distribuzioni che vagano a tre distribuzioni sovrapposte. Le due
+manopole in coda, chiamate $\gamma$ (gamma) e $\beta$ (beta), servono a
+restituire alla rete la libertà che la normalizzazione le ha appena tolto: la
+prima riallarga o restringe i numeri, la seconda li sposta in su o in giù.
 ```
 
 La coda di {numref}`fig-batch-norm` è la parte che spesso si salta e che
-invece conta. Normalizzare e basta imporrebbe a ogni strato una distribuzione
-decisa da noi; $\gamma$ e $\beta$ sono addestrabili, e permettono alla rete di
-spostare e riscalare il risultato se le conviene, anche fino ad annullare la
-normalizzazione.
+invece conta. Normalizzare e basta imporrebbe a ogni strato un'ampiezza decisa
+da noi; $\gamma$ e $\beta$ sono due numeri che la rete impara come tutti gli
+altri, e le permettono di riallargare e spostare il risultato se le conviene,
+anche fino ad annullare del tutto la normalizzazione.
 
 `````{tab} Elementare
 
@@ -180,9 +197,15 @@ Il termine $\epsilon$ evita la divisione per zero; $\gamma$ e $\beta$
 restituiscono alla rete la libertà di rappresentare qualsiasi scala, inclusa
 l'identità. In inferenza si usano media e varianza mobili accumulate durante
 il training, non le statistiche del singolo batch. Ioffe e Szegedy la
-introdussero per contrastare l'*internal covariate shift*; l'effetto pratico è
-un panorama della loss più liscio e percorribile
-{cite}`santurkar2018batchnorm`.
+introdussero per contrastare l'*internal covariate shift*, cioè lo spostarsi
+della distribuzione degli input di ogni strato durante l'addestramento, ma
+quella spiegazione è stata contestata: Santurkar e colleghi
+{cite}`santurkar2018batchnorm` mostrano che la stabilità distribuzionale
+c'entra poco con il successo della batch normalization (si può iniettare
+rumore *dopo* la normalizzazione, aumentando lo shift, senza perderne i
+benefici) e propongono che l'effetto vero sia un panorama della loss più
+liscio e percorribile. Anche questa resta un'ipotesi: il meccanismo per cui la
+BN funziona è tuttora aperto.
 
 `````
 
@@ -194,17 +217,14 @@ combattere l'*overfitting*.
 
 ```{figure} ../figures/dropout.svg
 :name: fig-dropout
-:alt: "Animazione: una rete con due strati nascosti; a ogni mini-batch una metà diversa dei neuroni nascosti si spegne insieme alle sue connessioni, mentre input e output restano sempre attivi."
+:alt: "Animazione: una rete con due strati nascosti; a ogni mini-batch si spegne un sottoinsieme diverso dei neuroni nascosti, estratto a caso e in media grande la metà, insieme alle sue connessioni, mentre input e output restano sempre attivi."
 :width: 90%
 
 Quattro mini-batch consecutivi con $p = 0{,}5$: ogni volta la rete che viene
-davvero addestrata è **un'altra**. Input e output non si spengono mai.
+davvero addestrata è **un'altra**. Ogni neurone nascosto se la gioca a testa o
+croce per conto proprio, quindi il numero di quelli spenti cambia da un passo
+all'altro. Input e output non si spengono mai.
 ```
-
-Guardando la {numref}`fig-dropout` si capisce anche perché il dropout venga
-descritto come un *ensemble implicito*: una rete con $n$ neuroni nascosti
-nasconde $2^n$ sottoreti, e l'addestramento ne campiona una a ogni passo,
-condividendo i pesi fra tutte.
 
 `````{tab} Elementare
 
@@ -212,8 +232,9 @@ Durante l'addestramento, a ogni passo, spegniamo a caso una frazione dei
 neuroni. La rete non può più affidarsi a un singolo neurone "specialista":
 deve distribuire la conoscenza, perché quel neurone potrebbe non esserci al
 prossimo giro. È come allenare ogni volta una squadra leggermente diversa: il
-risultato è un modello più robusto, che generalizza meglio su dati nuovi. A
-inferenza tutti i neuroni tornano attivi.
+risultato è un modello più robusto, che generalizza meglio su dati nuovi.
+Quando poi la rete lavora sul serio, cioè quando risponde invece di allenarsi
+(si dice *a inferenza*), tutti i neuroni tornano attivi.
 
 `````
 
@@ -221,25 +242,38 @@ inferenza tutti i neuroni tornano attivi.
 
 Con probabilità di spegnimento $p$, la convenzione di `nn.Dropout(p)` in
 PyTorch, si applica alle attivazioni una maschera binaria
-$m \sim \text{Bernoulli}(1-p)$:
+$\mathbf{m} \sim \text{Bernoulli}(1-p)$:
 
 $$
-\tilde{h} = \frac{1}{1-p}\,(m \odot h),
+\tilde{\mathbf{h}} = \frac{1}{1-p}\,(\mathbf{m} \odot \mathbf{h}),
 $$
 
 dove $\odot$ è il prodotto elemento per elemento. Il fattore $1/(1-p)$
-(*inverted dropout*) mantiene invariato il valore atteso, così a inferenza si
-usa la rete piena senza riscalature. Interpretazione: il dropout addestra
-implicitamente un *ensemble* esponenziale di sotto-reti che condividono i
-pesi. Valori tipici: $p \in [0{,}2,\ 0{,}5]$. Non si combina bene con la
-batch normalization sullo stesso strato: spesso si sceglie l'una o l'altro.
+(*inverted dropout*) mantiene invariato il valore atteso di ciascuna
+attivazione, e a inferenza si usa direttamente la rete piena senza
+riscalature. Attenzione a cosa questo garantisce: l'uscita della rete piena
+**non** è la media dell'ensemble di sotto-reti, perché attraversare una
+non-linearità non conserva il valore atteso. Ne è un'approssimazione (della
+media geometrica delle distribuzioni predette), esatta solo per modelli senza
+unità nascoste non lineari e per il resto giustificata dalla sola evidenza
+empirica, che però è schiacciante. Valori tipici: $p \in [0{,}2,\ 0{,}5]$. Non
+si combina bene con la batch normalization sullo stesso strato: spesso si
+sceglie l'una o l'altro.
 
 `````
+
+Adesso si capisce anche perché il dropout venga descritto come un *ensemble*
+implicito, cioè come una squadra di reti al posto di una sola: con $n$ neuroni
+nascosti le combinazioni possibili di acceso e spento sono $2^n$, ogni passo di
+addestramento ne allena una presa a caso, e tutte quelle reti condividono gli
+stessi pesi, quindi allenarne una fa progredire anche le altre.
 
 ## Scendere bene: gli optimizer moderni
 
 Tutti questi accorgimenti stabilizzano il *segnale*; resta da decidere *come*
-muoversi nel panorama della loss. La discesa del gradiente pura fa un passo
+muoversi nel panorama della loss. Gli algoritmi che lo decidono si chiamano
+**optimizer**, e in italiano *ottimizzatori*: le due parole vogliono dire la
+stessa cosa e nel libro si alternano. La discesa del gradiente pura fa un passo
 proporzionale al gradiente e basta. In una valle stretta e allungata questo
 significa rimbalzare da parete a parete invece di scivolare verso il fondo
 ({numref}`fig-momentum`).
@@ -297,8 +331,8 @@ learning rate effettivo $\eta/(\sqrt{G_t}+\epsilon)$ tutto suo. La
 normalizzazione premia le feature sparse (i parametri aggiornati di rado
 conservano passi ampi) ma $G_t$ cresce monotonicamente, quindi il passo
 effettivo tende a zero e prima o poi l'addestramento si arena. **RMSProp**
-rimedia sostituendo la somma con una media mobile esponenziale, che dimentica
-il passato remoto:
+{cite}`tieleman2012rmsprop` rimedia sostituendo la somma con una media mobile
+esponenziale, che dimentica il passato remoto:
 
 $$
 s_t = \rho\,s_{t-1} + (1-\rho)\,g_t^2,
@@ -318,49 +352,117 @@ $$
 $$
 
 I default $\beta_1=0{,}9$, $\beta_2=0{,}999$, $\epsilon=10^{-8}$ funzionano in
-un'enorme varietà di casi.
+un'enorme varietà di casi.[^adam-convergenza]
 
 `````
 
 C'è un punto in cui gli ottimizzatori incontrano la lotta contro
-l'overfitting. Il parametro `weight_decay` di `torch.optim` applica il
-**decadimento dei pesi**: a ogni aggiornamento i pesi vengono leggermente
-riportati verso lo zero, così la rete non può affidarsi a valori enormi per
-imparare a memoria. È la stessa cosa della **regolarizzazione L2** (aggiungere
-alla loss una penalità proporzionale al quadrato dei pesi) almeno finché la
-discesa è quella semplice. Con i passi adattivi di Adam, però, l'equivalenza
-si rompe: il decadimento viene riscalato insieme al gradiente e perde parte
-dell'effetto. **AdamW** {cite}`loshchilov2019decoupled` lo *disaccoppia*
-dall'aggiornamento adattivo, applicandolo direttamente ai pesi, ed è oggi il
-default de facto per addestrare i Transformer:
+l'overfitting: il parametro `weight_decay` di `torch.optim`, che serve a
+tenere i pesi piccoli. L'idea è che una rete costretta a lavorare con numeri
+modesti non può affidarsi a pochi valori enormi per imparare a memoria. Il
+nome però promette una cosa e il codice ne fa un'altra, e vale la pena
+disfare l'equivoco subito, perché è quello da cui nasce AdamW.
+
+`````{tab} Elementare
+
+Tenere piccoli i pesi si può fare in due modi, che sembrano lo stesso e non lo
+sono. Il primo è aggiungere al conto dell'errore una **multa** proporzionale a
+quanto i pesi sono grandi: la rete, cercando di pagare meno multa, li tiene
+bassi da sé. Il secondo è più diretto: a ogni passo si accorciano un pochino
+tutti i pesi, e basta.
+
+Con la discesa semplice i due modi finiscono per fare la stessa cosa. Con Adam
+no, perché Adam ridimensiona ogni correzione in base a quanto quel peso è
+stato corretto di recente, e insieme alla correzione ridimensiona anche la
+multa. Risultato: la multa arriva forte su certi pesi e debole su altri, e non
+perché qualcuno l'abbia deciso. **AdamW** tiene le due cose separate, accorcia
+i pesi per conto suo senza passare dalla bilancia di Adam, ed è per questo che
+è diventato la scelta abituale.
+
+`````
+
+`````{tab} Superiore
+
+Il parametro `weight_decay` di `torch.optim` (in `SGD` come in `Adam`) non
+implementa il decadimento dei pesi: somma al gradiente il termine
+$\lambda\theta$, cioè la **regolarizzazione L2** (una penalità nella loss
+proporzionale al quadrato dei pesi). Per la discesa semplice le due forme
+coincidono a meno del learning rate: L2 dà
+$\theta \leftarrow \theta(1-\eta\lambda)$, il decadimento disaccoppiato
+$\theta \leftarrow \theta(1-\lambda)$, e con $\eta = 0{,}1$ è un fattore dieci
+a parità di `weight_decay`.
+
+Con i passi adattivi di Adam l'equivalenza si rompe, e non nel senso che il
+decadimento si indebolisce: il termine $\lambda\theta$ finisce **dentro** la
+normalizzazione, quindi i parametri con gradienti tipicamente grandi vengono
+regolarizzati **meno** e quelli con gradienti piccoli **di più**. Il difetto è
+la disomogeneità, non la debolezza. **AdamW** {cite}`loshchilov2019decoupled`
+lo *disaccoppia* dall'aggiornamento adattivo, applicandolo direttamente ai
+pesi.
+
+`````
+
+AdamW è oggi il default de facto per addestrare i Transformer, e in PyTorch si
+usa esattamente come Adam:
 `optim.AdamW(model.parameters(), lr=1e-3, weight_decay=0.01)`.
 
 ## Regolare il passo nel tempo
 
-Un ultimo dettaglio spesso decisivo: il learning rate $\eta$ non deve restare
-costante.
+Un ultimo dettaglio spesso decisivo: il **learning rate** $\eta$, cioè la
+lunghezza del passo con cui si correggono i pesi, non deve restare costante.
 
 ```{figure} ../figures/learning-rate.svg
 :name: fig-learning-rate
 :alt: "Animazione: tre parabole affiancate con lo stesso punto di partenza. Con un passo piccolo il punto striscia lungo il fianco senza arrivare al minimo; con quello giusto ci arriva in pochi passi; con quello troppo grande rimbalza da una parete all'altra allontanandosi."
 :width: 90%
 
-Sei passi di discesa su $f(x)=x^2$ a partire dallo stesso punto. Il passo
-governa tutto: troppo corto e non si arriva, troppo lungo e si scappa.
+Sei passi di discesa lungo la parabola $f(x)=x^2$, sempre a partire dallo
+stesso punto, con tre lunghezze di passo diverse. Nelle scritte, la lettera
+greca $\eta$ («eta») è la lunghezza del passo e $f'(x)$ è la pendenza del
+terreno nel punto in cui ci si trova. Il passo governa tutto: troppo corto e
+non si arriva, troppo lungo e si scappa.
 ```
 
-La {numref}`fig-learning-rate` ha anche un conto esatto dietro. Su $f(x)=x^2$
+Il terzo pannello non è una licenza grafica: dietro c'è un conto esatto, e dice
+che oltre una certa lunghezza il passo non rallenta la discesa, la fa scappare.
+Quella lunghezza dipende da quanto è ripida e stretta la valle, e siccome la
+valle cambia forma man mano che si scende, il passo giusto oggi è quello
+sbagliato domani.
+
+`````{tab} Elementare
+
+Il passo giusto non è lo stesso all'inizio e alla fine. All'inizio conviene
+grande: la rete è lontana da qualunque soluzione decente e serve coprire
+strada. Alla fine conviene piccolo, altrimenti si continua a scavalcare il
+punto in cui ci si voleva fermare, come chi cerca di infilare la chiave nella
+toppa muovendo la mano dieci centimetri per volta.
+
+La ricetta che regola il passo mentre l'addestramento procede si chiama
+**schedule** (è l'inglese per "programma"). Ce ne sono diverse e si assomigliano
+tutte: ridurre il passo un po' a ogni passata sui dati, dimezzarlo a scalini
+ogni tot, oppure farlo scendere lungo una curva morbida che parte quasi piatta,
+cala in fretta a metà strada e si riappiattisce alla fine (quella curva è il
+coseno, ed è la scelta più comune oggi).
+
+`````
+
+`````{tab} Superiore
+
+Su $f(x)=x^2$
 l'aggiornamento è $x \leftarrow x(1-2\eta)$, quindi $x_k = x_0\,(1-2\eta)^k$:
 si converge se e solo se $|1-2\eta| < 1$, cioè $0 < \eta < 1$. Il terzo
 pannello usa $\eta = 1{,}05$: fattore $-1{,}1$, e ogni passo scavalca il
-minimo più lontano del precedente. Non è una licenza grafica: è la
-disuguaglianza che si rompe. Su una funzione qualunque la soglia dipende dalla
-curvatura, ed è proprio questo che uno schedule insegue mentre la curvatura
-cambia. Un passo grande all'inizio esplora in fretta; lo stesso passo verso la
-fine fa oscillare attorno al minimo senza mai stabilizzarsi. Il **learning
-rate schedule** riduce progressivamente $\eta$: per esempio con decadimento
-inverso $\eta_t = \eta_0/(1+kt)$, a gradini, o con andamento a coseno. In
-PyTorch gli *scheduler* vivono accanto all'ottimizzatore e si aggiornano nel
+minimo più lontano del precedente. Su una funzione qualunque la soglia dipende
+dalla curvatura, ed è proprio questo che uno schedule insegue mentre la
+curvatura cambia. Un passo grande all'inizio esplora in fretta; lo stesso passo
+verso la fine fa oscillare attorno al minimo senza mai stabilizzarsi. Il
+**learning rate schedule** riduce progressivamente $\eta$: per esempio con
+decadimento inverso $\eta_t = \eta_0/(1+kt)$, a gradini, o con andamento a
+coseno.
+
+`````
+
+In PyTorch gli *scheduler* vivono accanto all'ottimizzatore e si aggiornano nel
 training loop:
 
 ```{code-block} python
@@ -407,20 +509,27 @@ poi si va.
 `````{tab} Superiore
 
 Adam normalizza il gradiente per la radice della stima del secondo momento,
-$\hat{v}_t$. Nei primi passi quella stima è calcolata su pochissimi campioni ed
-è ad alta varianza, quindi il rapporto $\hat{m}_t/\sqrt{\hat{v}_t}$ può
+$\hat{s}_t$ nella notazione fissata qui sopra (Kingma e Ba, e con loro buona
+parte della letteratura, chiamano $m_t$ il primo momento e $v_t$ il secondo).
+Nei primi passi quella stima è calcolata su pochissimi campioni ed
+è ad alta varianza, quindi il rapporto $\hat{v}_t/\sqrt{\hat{s}_t}$ può
 assumere valori molto più grandi del previsto: il passo effettivo è
 enormemente più variabile di $\eta$. La correzione del bias di Adam sistema la
-media ma non la **varianza** della stima, ed è questa la diagnosi che motiva il
-warmup come riduttore di varianza nella fase iniziale.
+media ma non la **varianza** della stima: è la diagnosi proposta da Liu e
+colleghi {cite}`liu2020radam`, che leggono il warmup come un riduttore di
+varianza nella fase iniziale. Non è l'ultima parola. Ma e Yarats
+{cite}`ma2021adequacy` la contestano e riconducono il fenomeno alla dimensione
+del passo, e il fatto che il warmup serva anche a SGD con momentum, che di
+stime adattive non ne ha, dice che di una spiegazione sola non si tratta.
 
 Si somma a due fattori che agiscono nella stessa direzione. Con batch grandi il
-learning rate viene scalato verso l'alto (regola lineare), e quel valore alto è
+learning rate viene scalato verso l'alto (la regola lineare di
+{cite}`goyal2017accurate`), e quel valore alto è
 proprio ciò che all'inizio si vuole evitare. E nei Transformer *post-LN* la
 norma è dopo il blocco residuo, il che produce gradienti molto grandi negli
-strati alti a inizio addestramento; è il motivo per cui la ricetta originale
-prevedeva warmup obbligatorio, e per cui l'adozione del *pre-LN* lo ha reso
-meno critico ma non inutile.
+strati alti a inizio addestramento {cite}`xiong2020layer`; è il motivo per cui
+la ricetta originale prevedeva warmup obbligatorio, e per cui l'adozione del
+*pre-LN* lo ha reso meno critico ma non inutile.
 
 La forma standard è lineare crescente per $T_w$ passi e poi coseno decrescente:
 
@@ -437,22 +546,51 @@ addestramento su larga scala.
 
 `````
 
+Messe in fila, queste tecniche non sono un elenco di trucchi indipendenti:
+rispondono tutte alla stessa domanda, cioè come far arrivare un segnale sensato
+dall'uscita fino ai primi strati, e come muoversi una volta arrivati senza
+rovinare quello che si è capito.
+
+`````{tab} Elementare
+```{admonition} Da ricordare
+:class: important
+- Il segnale di correzione che torna indietro **si assottiglia o esplode**,
+  perché attraversando gli strati viene moltiplicato tante volte: se ogni
+  strato lo riduce di quattro volte, dopo cinque strati ne resta un millesimo.
+- Partire con i pesi della **scala giusta**, rimettere in riga i numeri a ogni
+  strato (**batch normalization**) e spegnere neuroni a caso (**dropout**)
+  sono i tre accorgimenti che rendono l'addestramento stabile e la rete meno
+  incline a imparare a memoria.
+- **Adam** è il punto di partenza sensato: mette insieme l'inerzia della
+  pallina che rotola e un passo su misura per ogni peso. **AdamW** se si
+  vogliono anche tenere piccoli i pesi.
+- La lunghezza del passo non resta la stessa per tutto l'addestramento: prima
+  **sale** da quasi zero (è il *warmup*: non si prendono decisioni importanti
+  mentre si è ignoranti), poi **cala** man mano che ci si avvicina, di solito
+  lungo la curva del coseno.
+```
+`````
+
+`````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
 - I gradienti **svaniscono o esplodono** perché la backpropagation moltiplica
   tanti fattori: profondità e attivazioni saturanti sono i colpevoli.
 - **Inizializzazione** giusta (He per ReLU, Glorot per tanh), **batch
   normalization** e **dropout** rendono l'addestramento stabile e
-  generalizzabile.
+  generalizzabile; perché la batch normalization funzioni è però ancora una
+  questione aperta.
 - **Adam** (momentum + passo adattivo) è il punto di partenza sensato,
-  **AdamW** se si usa il weight decay; un **learning rate schedule** che
+  **AdamW** se si usa il weight decay (che in `torch.optim` è una penalità L2,
+  non un decadimento disaccoppiato); un **learning rate schedule** che
   decade nel tempo rifinisce la convergenza.
 - Lo schedule comincia però **salendo**: il **warmup** porta il learning rate
-  da quasi zero a $\eta_0$ nei primi passi, perché lì le statistiche dei
+  da quasi zero a $\eta_0$ nei primi passi, quando le statistiche dei
   momenti di Adam sono stimate su pochissimi campioni e il passo effettivo ha
-  varianza altissima, proprio quando la rete è più fragile. Poi si decade, di
+  varianza altissima, proprio mentre la rete è più fragile. Poi si decade, di
   norma a coseno.
 ```
+`````
 
 [^momentum-pytorch]: Attenzione a trasferire la formula nel codice:
     `torch.optim.SGD` usa la convenzione classica $v_t = \beta\,v_{t-1} + g_t$,
@@ -462,3 +600,13 @@ addestramento su larga scala.
     $10$ quando $\beta=0{,}9$: a parità di learning rate, il passo di PyTorch
     è dieci volte più lungo. Qui adottiamo la media mobile esponenziale perché è la
     stessa che ritroveremo tra poco in Adam.
+
+[^adam-convergenza]: Sulle garanzie teoriche conviene essere espliciti, perché
+    i default che funzionano non sono un teorema. La dimostrazione di
+    convergenza dell'articolo originale di Adam è **errata**: Reddi, Kale e
+    Kumar {cite}`reddi2018convergence` esibiscono un problema convesso in una
+    sola variabile su cui Adam converge al punto peggiore del dominio invece
+    che all'ottimo. Il rimedio che propongono, AMSGrad, tiene il massimo
+    storico del secondo momento ed è disponibile come
+    `torch.optim.Adam(amsgrad=True)`; in pratica però Adam resta il default,
+    cioè funziona senza che si sappia dimostrare che debba.

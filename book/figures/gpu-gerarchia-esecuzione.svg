@@ -9,7 +9,7 @@
   </defs>
 
   <!-- ============ FASCIA LOGICA (in alto) ============ -->
-  <text x="20" y="34" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#1A1A1A" fill-opacity="0.55" letter-spacing="1">LOGICO — cosa lancia il programmatore</text>
+  <text x="20" y="34" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#1A1A1A" fill-opacity="0.55" letter-spacing="1">LOGICO: cosa lancia il programmatore</text>
 
   <!-- Grid -->
   <rect x="20" y="48" width="150" height="118" rx="8" fill="#F8F5EE" stroke="#C9A961" stroke-width="2"/>
@@ -90,7 +90,7 @@
   <text x="710" y="186" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#1A1A1A" fill-opacity="0.7">il singolo lavoratore</text>
 
   <!-- ============ FASCIA FISICA (in basso) ============ -->
-  <text x="20" y="238" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#1A1A1A" fill-opacity="0.55" letter-spacing="1">FISICO — come esegue l'hardware</text>
+  <text x="20" y="238" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#1A1A1A" fill-opacity="0.55" letter-spacing="1">FISICO: come esegue l'hardware</text>
 
   <!-- GPU con griglia di SM -->
   <rect x="20" y="252" width="430" height="196" rx="10" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2.2"/>

@@ -11,8 +11,9 @@ Gli obiettivi conviene leggerli nell'ordine in cui sono scritti. Primo:
 dividere l'immagine ripresa dalla telecamera in regioni che sono «oggetti
 probabili», regioni che sono «sfondo probabile» e regioni che sono «caos»
 (l'analisi figura-sfondo). Secondo: descrivere quelle regioni. Terzo e ultimo,
-la *object identification*, che deve «dare un nome agli oggetti confrontandoli
-con un vocabolario di oggetti noti». Per luglio erano previste scene di oggetti
+il riconoscimento degli oggetti (nel promemoria, *object identification*), che
+deve «dare un nome agli oggetti confrontandoli con un vocabolario di oggetti
+noti». Per luglio erano previste scene di oggetti
 non sovrapposti (palle, mattoncini, cilindri) con facce di colore uniforme e
 sfondo omogeneo; ad agosto si sarebbe passati a superfici e sfondi complicati,
 e poi a «oggetti come utensili, tazze e simili».
@@ -54,10 +55,10 @@ Farli lavorare insieme vuol dire allora due cose: prima dare all'immagine dei
 
 `````{tab} Superiore
 
-Un testo è una sequenza $x = (x_1, \dots, x_T)$ con $x_t \in V$, dove $V$ è un
+Un testo è una sequenza $\mathbf{x} = (x_1, \dots, x_T)$ con $x_t \in V$, dove $V$ è un
 vocabolario finito: discreto, ordinato in una dimensione, già simbolico, perché
 l'unità minima porta significato di per sé. Un'immagine è un tensore
-$I \in \mathbb{R}^{H \times W \times 3}$: continuo, ordinato in due dimensioni
+$\mathbf{I} \in \mathbb{R}^{H \times W \times 3}$: continuo, ordinato in due dimensioni
 e privo di unità naturali. Il pixel non è un simbolo, e non esiste una
 segmentazione canonica del reticolo in parti dotate di senso; la segmentazione
 è semmai *l'esito* di un modello, non il suo input.
@@ -81,7 +82,14 @@ informazione linguistica smettono di essere separate.
 La prima domanda ha una risposta condivisa da quasi tutti i sistemi di oggi, e
 il lettore la conosce già: il **Vision Transformer**
 {cite}`dosovitskiy2021image` del capitolo sui Transformer. Vale la pena
-richiamarne il gesto, perché tutto il resto ci poggia sopra.
+richiamarne il gesto, perché tutto il resto ci poggia sopra, e sta in due mosse.
+
+La prima: si taglia la fotografia in quadratini tutti uguali, che qui chiameremo
+**tessere** (in inglese *patch*, ed è la parola che si incontra ovunque, questo
+capitolo compreso). La seconda: siccome le tessere, una volta messe in fila, non
+ricordano più da quale punto della foto venissero, a ciascuna si attacca
+un'etichetta che dice dove stava nella griglia, e quell'etichetta si chiama
+**codifica di posizione**.
 
 ```{figure} ../figures/vit-2020.svg
 :name: fig-vit-patch-token
@@ -117,11 +125,12 @@ sul numero di tessere.
 
 `````{tab} Superiore
 
-Il ViT divide l'immagine in patch quadrate di lato $P$, ne ottiene
-$N = HW/P^2$ (con $H = W = 224$ e $P = 16$, esattamente $N = 196$), appiattisce
-ciascuna patch in $\mathbb{R}^{3P^2}$ e la proietta linearmente in
+Il ViT divide l'immagine in patch quadrate di lato $p$, ne ottiene
+$N = \lfloor H/p \rfloor \cdot \lfloor W/p \rfloor$ (con $H = W = 224$ e
+$p = 16$, esattamente $N = 196$), appiattisce
+ciascuna patch in $\mathbb{R}^{3p^2}$ e la proietta linearmente in
 $\mathbb{R}^{d}$, sommando un embedding di posizione. Ne esce una matrice
-$X \in \mathbb{R}^{N \times d}$ indistinguibile da una sequenza di token
+$\mathbf{X} \in \mathbb{R}^{N \times d}$ indistinguibile da una sequenza di token
 testuali: da lì in poi l'architettura non sa più, e non ha bisogno di sapere,
 da quale modalità arrivino le righe.
 
@@ -145,11 +154,13 @@ Le risposte che hanno resistito sono tre, e non sono tre epoche destinate a
 superarsi a vicenda: convivono, e servono a cose diverse.
 
 La prima **allinea due spazi senza fonderli**: due reti separate, una per le
-immagini e una per i testi, imparano a mandare una foto e la sua didascalia
-nello stesso punto di uno spazio comune, e lontano le coppie che non si
-corrispondono. È l'idea di CLIP {cite}`radford2021learning`, addestrato su 400
-milioni di coppie di immagine e testo raccolte dal web: il modello che ne esce
-non scrive una riga, ma sa dire quanto un'immagine e un testo si somigliano.
+immagini e una per i testi, imparano a mandare una foto e la sua didascalia in
+due punti vicini di una stessa mappa, e a tenere lontane le coppie che non si
+corrispondono. Vicini rispetto a che cosa, sarà la prima domanda della sezione
+apposita, perché la risposta è meno ovvia di così. È l'idea di CLIP
+{cite}`radford2021learning`, addestrato su 400 milioni di coppie di immagine e
+testo raccolte dal web: il modello che ne esce non scrive una riga, ma sa dire
+quanto un'immagine e un testo si somigliano.
 
 La seconda **innesta un occhio su un modello di linguaggio già addestrato**:
 fra un encoder visivo e un modello che parla bene si costruisce un raccordo (un
@@ -169,9 +180,11 @@ Per tenerle a mente, pensa a due persone che devono lavorare insieme e non
 parlano la stessa lingua.
 
 Nel primo caso non si parlano affatto: hanno però imparato, ciascuno per conto
-suo, a riporre le cose che si somigliano nello stesso cassetto di uno schedario
-comune. Serve per ritrovare le cose («quale di queste diecimila foto è il gatto
-nero sul muro?»), non per fare conversazione.
+suo, a segnare quel che hanno in mano su una stessa **mappa**, vicino se le due
+cose si somigliano e lontano se non c'entrano niente. Nessuno dei due sa che cosa
+abbia scritto l'altro, ma i segni si possono confrontare con un righello, e tanto
+basta per ritrovare le cose («quale di queste diecimila foto è il gatto nero sul
+muro?»). Per fare conversazione, no.
 
 Nel secondo c'è un interprete che sussurra: la prima persona guarda, e passa
 alla seconda, in forma comprensibile, quello che ha visto. Chi parla resta uno
@@ -197,7 +210,7 @@ interazione fine fra parti dell'immagine e parole, e quindi nessuna capacità
 generativa.
 
 *Intermedia, tramite connettore.* Un encoder visivo produce
-$Z \in \mathbb{R}^{N \times d}$, e queste righe entrano in un modello di
+$\mathbf{Z} \in \mathbb{R}^{N \times d}$, e queste righe entrano in un modello di
 linguaggio pre-addestrato o come token in testa alla sequenza (un *prefisso*
 visivo) o attraverso strati di cross-attention inseriti fra i blocchi, con le
 query dal testo e chiavi e valori dall'immagine. Si addestra il connettore
@@ -217,14 +230,26 @@ suggerisca, e i sistemi reali sono spesso ibridi.
 
 ## Quello che serve avere già in mano
 
-Il capitolo poggia su cose viste altrove e non le rispiega. Dal capitolo sui
-**Transformer** servono la **cross-attention**, dove le query vengono da una
-sequenza e chiavi e valori da un'altra (è il meccanismo con cui il testo
-interroga l'immagine), e
-l'**instruction tuning**, che trasforma un modello che descrive immagini in un
-modello a cui si fanno domande. Dal capitolo sulla **visione artificiale**
-serve il **transfer learning**, riusare una rete pre-addestrata congelandone i
-pesi: qui è la strategia dominante.
+Il capitolo poggia su cose viste altrove e non le rispiega. Vale però la pena
+dire quali sono, una riga ciascuna.
+
+Dal capitolo sul **linguaggio** serve la **mappa del significato**: l'idea che
+una parola si possa scrivere come una fila di numeri, e che su quella mappa
+*gatto* e *felino* finiscano vicini mentre *gatto* e *mercoledì* finiscono agli
+antipodi, con un numero fra $-1$ e $+1$ a dire quanto. Tutto questo capitolo
+consiste nel far entrare le fotografie in quella stessa mappa.
+
+Dal capitolo sui **Transformer** serve la **cross-attention**. È l'attenzione di
+sempre, con una differenza: chi fa le domande e chi le riceve sono due sequenze
+diverse. Le domande (in gergo, le *query*) vengono dal testo; quel che si va a
+consultare (le *chiavi*, per trovare il punto giusto, e i *valori*, cioè quel che
+si porta via) viene dall'immagine. È il meccanismo con cui il testo interroga
+l'immagine. Dallo stesso capitolo serve l'**instruction tuning**, che trasforma
+un modello che descrive immagini in un modello a cui si fanno domande.
+
+Dal capitolo sulla **visione artificiale** serve il **transfer learning**,
+riusare una rete pre-addestrata congelandone i pesi: qui è la strategia
+dominante.
 
 ## Un avvertimento, prima di cominciare
 
@@ -249,9 +274,9 @@ bene impara a farne a meno.
 `````{tab} Superiore
 
 Un modello che genera testo condizionato a un'immagine minimizza
-$\mathcal{L}(\theta) = -\sum_t \log p_\theta(y_t \mid y_{<t}, I)$, dove $y_t$ è
-il token al passo $t$ e $I$ l'immagine. Nulla in questa funzione di costo
-obbliga il modello a *usare* $I$: se il prior linguistico concentra già la
+$\mathcal{L}(\theta) = -\sum_t \log p_\theta(y_t \mid y_{<t}, \mathbf{I})$, dove $y_t$ è
+il token al passo $t$ e $\mathbf{I}$ l'immagine. Nulla in questa funzione di costo
+obbliga il modello a *usare* $\mathbf{I}$: se il **priore linguistico** concentra già la
 massa di probabilità sulla parola corretta, il gradiente che spinge a sfruttare
 l'informazione visiva è debole, e il modello impara la statistica delle
 didascalie invece della scena. È il meccanismo dell'**allucinazione visiva**:
@@ -278,6 +303,39 @@ che il sistema abbia davvero guardato.
 - **Vedere quel che non c'è**, l'allucinazione visiva e la valutazione di
   questi sistemi, fino ai modelli che dalla percezione passano all'azione.
 
+`````{tab} Elementare
+
+```{admonition} Da ricordare
+:class: important
+- Nel 1966, al MIT, si pensava di far vedere una macchina in un'estate: separare
+  gli oggetti dallo sfondo, descriverli e dar loro un nome «confrontandoli con un
+  vocabolario di oggetti noti». La scaletta era giusta; mancava il modo di legare
+  i puntini di una fotografia alle parole di una lingua, e ci sono voluti
+  sessant'anni.
+- Le due materie prime hanno nature opposte: una pagina scritta arriva **già
+  tagliata a pezzi**, le parole, sempre le stesse per tutti; una fotografia è un
+  **tappeto di puntini colorati** senza cuciture, e il confine fra il gatto e il
+  muro lo vediamo noi, nei numeri non c'è.
+- Il primo passo è sempre lo stesso: tagliare la foto in **tessere** e metterle
+  in fila come le parole di una frase, attaccando a ciascuna un'etichetta che
+  dice dove stava. Da lì in poi immagine e testo sono due file di pezzi, e le
+  file sappiamo già come si mettono insieme. Il prezzo si paga sul numero di
+  tessere: se raddoppiano, il lavoro quadruplica.
+- La domanda che genera tutto il capitolo è **dove i due flussi si incontrano**,
+  e le risposte che hanno retto sono tre: due che non si parlano ma segnano le
+  cose sulla stessa mappa (**cerca**), un interprete che sussurra a chi sa già
+  parlare (**conversa**), una lingua sola insegnata a tutti e due dall'inizio
+  (**produce**). Non si superano a vicenda.
+- Il rischio da tenere presente fin da subito: un modello che vede e parla può
+  parlare benissimo **senza aver guardato**, come lo studente che ha letto
+  migliaia di didascalie di spiaggia e ti nomina gli ombrelloni anche quando non
+  ci sono. Non è sfortuna, è quello che l'addestramento premia.
+```
+
+`````
+
+`````{tab} Superiore
+
 ```{admonition} Da ricordare
 :class: important
 - Nel 1966 il *Summer Vision Project* di Papert voleva separare gli oggetti
@@ -296,6 +354,9 @@ che il sistema abbia davvero guardato.
   di un unico vocabolario. Non si superano a vicenda: la prima cerca, la
   seconda conversa, la terza produce.
 - L'obiettivo di addestramento non obbliga il modello a **guardare**: quando il
-  prior linguistico basta a indovinare la didascalia nasce l'allucinazione
-  visiva, un limite strutturale e non un caso sfortunato.
+  priore linguistico (la statistica delle didascalie, appresa prima e
+  indipendentemente dall'immagine) basta a indovinare la didascalia nasce
+  l'allucinazione visiva, un limite strutturale e non un caso sfortunato.
 ```
+
+`````

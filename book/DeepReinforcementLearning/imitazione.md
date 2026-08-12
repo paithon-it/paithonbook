@@ -2,12 +2,23 @@
 
 Nel 1989, alla Carnegie Mellon, un furgone attrezzato percorreva le strade
 attorno al campus guidato da una rete neurale con un solo strato nascosto. Si
-chiamava **ALVINN**, prendeva in ingresso l'immagine di una telecamera e
-restituiva l'angolo di sterzata {cite}`pomerleau1989alvinn`. Non aveva imparato
-per tentativi ed errori, il che sarebbe stato imprudente su una strada vera:
-aveva guardato un guidatore umano e aveva imparato a **fare la stessa cosa
-nelle stesse situazioni**. Trent'anni prima che l'espressione diventasse di
-moda, era già un modello di guida addestrato per imitazione.
+chiamava **ALVINN**, riceveva in ingresso l'immagine di una telecamera e la
+lettura di un telemetro laser, e restituiva l'angolo di sterzata
+{cite}`pomerleau1989alvinn`. Non aveva imparato per tentativi ed errori, il che
+sarebbe stato imprudente su una strada vera: era stato addestrato a
+**riprodurre, per ogni immagine di strada, l'angolo di sterzata corretto**.
+Apprendimento supervisionato, non prove ed errori.
+
+C'è un dettaglio di quella storia che sembra un'inezia ed è invece la tesi di
+questa sezione, arrivata con trent'anni di anticipo. Le immagini su cui ALVINN
+imparò, nel lavoro del 1989, erano **simulate**. Quando Pomerleau passò alle
+registrazioni di un guidatore vero, due anni dopo, si trovò davanti a un
+ostacolo che dovette aggirare a mano: un guidatore bravo non esce mai dalla
+corsia, quindi nelle sue registrazioni non c'è un solo fotogramma che mostri
+come si rimedia a un'auto storta. Dovette fabbricarseli, deformando le immagini
+per ricavarne viste spostate rispetto al centro della corsia
+{cite}`pomerleau1991efficient`. Perché fosse necessario è esattamente ciò che
+segue.
 
 L'imitazione è, in un certo senso, l'idea più ovvia di tutte, e per questo vale
 la pena capire bene perché non basta. Nei capitoli precedenti l'agente impara
@@ -28,8 +39,8 @@ l'ingresso è la situazione, l'uscita da indovinare è la mossa dell'esperto.
 
 Si chiama **clonazione comportamentale**, ed è tanto semplice che il libro l'ha
 già usata due volte senza chiamarla così. Il primo AlphaGo, prima di giocare
-contro sé stesso, aveva imparato a proporre mosse guardando centomila partite
-di giocatori forti. E la prima fase dell'addestramento di un assistente
+contro sé stesso, aveva imparato a proporre mosse guardando
+centosessantamila partite di giocatori forti. E la prima fase dell'addestramento di un assistente
 conversazionale è esattamente questa: si raccolgono risposte scritte da persone
 e si insegna al modello a scriverne di simili.
 
@@ -61,7 +72,7 @@ capitolo sui metodi a gradiente di policy, la rete di policy di AlphaGo è
 pre-addestrata in modo supervisionato su partite umane prima del *self-play*.
 Nel post-addestramento dei modelli linguistici, la fase di *supervised
 fine-tuning* che precede l'RLHF è clonazione comportamentale su dimostrazioni
-scritte da persone. E nel prossimo capitolo, la componente supervisionata del
+scritte da persone. E nella prossima sezione, la componente supervisionata del
 Decision Transformer è la stessa cosa, condizionata sul ritorno desiderato.
 
 L'assunzione nascosta, che è tutto il problema, è quella di ogni apprendimento
@@ -105,6 +116,13 @@ vedere. Bisogna **lasciar provare l'allievo, guardare dove finisce, e chiedere
 al maestro cosa avrebbe fatto lì**. Le situazioni che contano sono quelle in
 cui va a cacciarsi l'allievo, non quelle in cui passava il maestro.
 
+Quel rimedio ha un nome, **DAgger**, e lo si incontrerà da qui in poi con quello.
+Viene da *Dataset Aggregation*, cioè «accumulare dati», perché a ogni giro
+l'archivio si allarga con le situazioni nuove in cui l'allievo è andato a
+finire, etichettate dal maestro. Ha un costo, ed è chiaro anche detto così: il
+maestro deve essere lì, disponibile a rispondere, e non basta più una scatola di
+vecchie registrazioni.
+
 `````
 
 `````{tab} Superiore
@@ -129,10 +147,26 @@ semplice: iterare. Si addestra una politica sulle dimostrazioni, la si
 **esegue** per raccogliere gli stati che *lei* visita, si chiede all'esperto
 l'azione corretta **su quegli stati**, si aggiunge tutto al dataset e si
 riaddestra. Ripetendo, la distribuzione di addestramento converge a quella
-d'uso, e la garanzia torna lineare in $T$. Il prezzo è che serve un esperto
-**interrogabile durante l'addestramento**, non solo un archivio di
-registrazioni: e nella maggior parte dei casi pratici quell'esperto è una
-persona, il che sposta il costo dai dati al tempo umano.
+d'uso, e la garanzia torna lineare in $T$ **a una condizione**, che è nascosta
+in una costante e va tirata fuori. Il bound è
+
+$$
+J(\hat\pi) \;\le\; J(\pi^\star) + u\,T\,\epsilon_N + O(1),
+$$
+
+dove $u$ misura di quanto un singolo errore può peggiorare il costo-per-andare
+dell'esperto. Nei compiti **recuperabili** $u$ è $O(1)$ e la garanzia è
+effettivamente lineare; ma se un errore porta in uno stato da cui non si torna
+(il fosso della metafora di due paragrafi fa) $u$ può crescere come $T$, e si
+torna al quadrato. È un'ipotesi che vale la pena tenere presente perché
+l'esperimento di questa sezione la **viola**: il sistema del codice è instabile,
+cioè per costruzione non recuperabile senza correzione. DAgger raccoglie gli
+stati giusti; non promette che da quegli stati si possa tornare.
+
+Il prezzo, poi, è che serve un esperto **interrogabile durante
+l'addestramento**, non solo un archivio di registrazioni: e nella maggior parte
+dei casi pratici quell'esperto è una persona, il che sposta il costo dai dati al
+tempo umano.
 
 Vale la pena distinguere la clonazione da un parente che risolve lo stesso
 problema in un altro modo. Nell'**apprendimento per rinforzo inverso** non si
@@ -146,21 +180,42 @@ motivo per cui l'RLHF non si ferma alla fase supervisionata: il modello di
 ricompensa addestrato sulle preferenze è, di fatto, una ricompensa inferita da
 comportamento umano.
 
+Il difetto strutturale, però, gli sta accanto fin dal primo lavoro che definisce
+il problema {cite}`ng2000algorithms`, e va detto: l'RL inverso, nella sua forma
+nuda, è **mal posto**. Infinite funzioni di ricompensa rendono ottimo lo stesso
+comportamento osservato, a cominciare da quella identicamente nulla, sotto la
+quale ogni politica è ottima. In generale la ricompensa si recupera solo a meno
+di una scala e di un termine di *shaping potential-based*. È un oggetto che il
+capitolo rincontrerà: nella sezione sull'esplorazione si dimostra che aggiungere
+alla ricompensa un termine della forma $\gamma\Phi(s')-\Phi(s)$ lascia
+invariata la policy ottima, *per qualunque* $\Phi$. Là quella proprietà è una
+garanzia (si possono dare aiuti senza spostare l'obiettivo); qui, letta al
+rovescio, è esattamente l'ambiguità che l'RL inverso non può sciogliere. Stessa
+proprietà, due lati.
+
 `````
 
-## In pratica: l'errore per passo è zero, e il sistema finisce nel fosso
+## In pratica: basta uscire dalla fascia dimostrata
 
-L'affermazione centrale di questa sezione è quantitativa, e si può verificare
-in mezza pagina. Prendiamo un sistema **instabile** (senza controllo lo stato
-esplode), un esperto che lo governa perfettamente e quindi non si allontana
-mai da zero, e poi diamo una folata di vento che l'esperto non ha mai preso.
+L'affermazione centrale di questa sezione si può toccare con mano in mezza
+pagina. Prendiamo un **sistema instabile**, cioè uno che lasciato a sé peggiora
+da solo invece di rimettersi a posto: è l'auto storta del racconto qui sopra,
+scritta in numeri. Lo «stato» è un numero solo, e dice di quanto siamo fuori
+posto: zero vuol dire dritti in mezzo alla corsia, e più il numero cresce (in
+positivo o in negativo) più siamo storti. Instabile significa che senza
+correzione quel numero, a ogni passo, si moltiplica per $1{,}25$: da solo non
+torna a zero, esplode.
+
+L'esperto è un controllore che sa cosa fare ovunque, anche lontanissimo da
+zero, e siccome è bravo dallo zero non si allontana mai. Poi, a metà episodio,
+diamo una folata di vento che l'esperto nelle sue registrazioni non ha mai
+preso.
 
 ```python
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-torch.manual_seed(0)
 INSTABILE, RUMORE, ORIZZONTE, RAFFICA = 1.25, 0.02, 40, 4.0
 
 def esperto(s):
@@ -178,6 +233,16 @@ def episodio(politica, s0, g, raffica=False):
         s = INSTABILE * s + a + RUMORE * torch.randn(s.shape, generator=g)
     return torch.cat(stati), torch.cat(azioni), s
 
+def rete():
+    return nn.Sequential(nn.Linear(1, 64), nn.Tanh(), nn.Linear(64, 64),
+                         nn.Tanh(), nn.Linear(64, 1))
+
+def allena(politica, S, A, passi=2000):
+    ott = torch.optim.Adam(politica.parameters(), lr=3e-3)
+    for _ in range(passi):
+        ott.zero_grad(); F.mse_loss(politica(S), A).backward(); ott.step()
+
+torch.manual_seed(0)
 g = torch.Generator().manual_seed(1)
 avvio = lambda n: torch.randn(n, 1, generator=g) * 0.3
 
@@ -185,15 +250,8 @@ avvio = lambda n: torch.randn(n, 1, generator=g) * 0.3
 S_dim, A_dim, _ = episodio(esperto, avvio(64), g)
 print(f"stati dimostrati: fra {S_dim.min():+.2f} e {S_dim.max():+.2f}")
 
-politica = nn.Sequential(nn.Linear(1, 64), nn.Tanh(), nn.Linear(64, 64),
-                         nn.Tanh(), nn.Linear(64, 1))
-
-def allena(S, A, passi=2000):
-    ott = torch.optim.Adam(politica.parameters(), lr=3e-3)
-    for _ in range(passi):
-        ott.zero_grad(); F.mse_loss(politica(S), A).backward(); ott.step()
-
-allena(S_dim, A_dim)
+politica = rete()
+allena(politica, S_dim, A_dim)
 with torch.no_grad():
     print(f"errore per singolo passo sugli stati dimostrati: "
           f"{F.mse_loss(politica(S_dim), A_dim).item():.6f}  (praticamente perfetto)")
@@ -212,9 +270,30 @@ S_tot, A_tot = S_dim, A_dim
 for giro in (1, 2, 3):
     S_v, A_v, _ = episodio(politica, avvio(64), g, raffica=True)
     S_tot, A_tot = torch.cat([S_tot, S_v]), torch.cat([A_tot, A_v])
-    allena(S_tot, A_tot, passi=1500)
+    allena(politica, S_tot, A_tot, passi=1500)
     _, _, f = episodio(politica, avvio(64), g, raffica=True)
     print(f"dopo il giro {giro} di DAgger: |stato| finale {f.abs().mean():.3f}")
+
+# Controllo, e vale quanto l'esperimento: quel 74,6 è UN seme, e la folata
+# gliela diamo noi. Che cosa succede su otto semi, e senza la folata?
+def prova(seme):
+    torch.manual_seed(seme)
+    g = torch.Generator().manual_seed(seme + 1)
+    avvio = lambda n: torch.randn(n, 1, generator=g) * 0.3
+    S, A, _ = episodio(esperto, avvio(64), g)
+    pol = rete(); allena(pol, S, A)
+    _, _, e_senza = episodio(esperto, avvio(64), g)          # esperto, nessuna folata
+    _, _, c_senza = episodio(pol, avvio(64), g)              # clonazione, nessuna folata
+    _, _, c_con = episodio(pol, avvio(64), g, raffica=True)  # clonazione, con folata
+    return (e_senza.abs().mean().item(), c_senza.abs().mean().item(),
+            c_con.abs().mean().item())
+
+esiti = [prova(s) for s in range(8)]
+for nome, colonna in (("esperto, senza folata   ", 0),
+                      ("clonazione, senza folata", 1),
+                      ("clonazione, con folata  ", 2)):
+    v = sorted(e[colonna] for e in esiti)
+    print(f"{nome}: mediana {(v[3] + v[4]) / 2:.4g}, da {v[0]:.4g} a {v[-1]:.4g}")
 ```
 
 I numeri raccontano la storia meglio di qualunque spiegazione.
@@ -238,8 +317,75 @@ pari a zero.
 Poi i tre giri di DAgger: $0{,}102$, $0{,}077$, $0{,}082$. Riportare
 l'esperto a etichettare gli stati in cui era finito **l'allievo** basta a
 tornare al livello del maestro. E si noti cosa è cambiato: non il modello, non
-la loss, non l'ottimizzatore. Sono cambiati **quali stati stanno nel dataset**.
+il modo di misurare l'errore, non il procedimento con cui lo si riduce. Sono
+cambiati **quali situazioni stanno nel mucchio degli esempi**.
 
+### Che cosa questo esperimento dimostra, e che cosa no
+
+Le ultime righe del codice servono a non prendere lucciole per lanterne, e sono
+la parte più importante da leggere.
+
+Primo, quel $74{,}6$ è **un seme**. Ripetendo l'esperimento su otto semi
+indipendenti, lo stato finale della clonazione dopo la folata ha mediana
+$322$ e va da $77$ a $472$: il numero del racconto è l'estremo basso di una
+distribuzione la cui mediana è più di quattro volte più grande. La conclusione
+qualitativa non cambia di una virgola (la clonazione finisce fuori strada in
+tutti e otto i casi, di due o tre ordini di grandezza), ma la cifra precisa non
+è una proprietà dell'algoritmo: è una proprietà di quella ripetizione.
+
+Secondo, e conta di più: **senza la folata non succede niente**. Sugli stessi
+otto semi, lasciata a sé, la clonazione chiude con mediana $0{,}0285$ (fra
+$0{,}025$ e $0{,}031$) e l'esperto con mediana $0{,}0318$: non solo sono dello
+stesso ordine, ma su questi otto semi l'allievo sta perfino un filo meglio del
+maestro, che è quanto dire che la differenza è rumore. Il fosso arriva solo
+quando qualcosa porta l'allievo fuori dalla fascia dimostrata, e in questo
+esperimento a portarcelo è una perturbazione **esterna**, che gli diamo noi, e
+che in un colpo solo lo scaraventa a quattro volte il bordo della fascia.
+
+Nel racconto della guida, invece, fuori dalla fascia l'allievo ci arriva **da
+solo**, un errore alla volta, ed è proprio quell'accumulo il $T^2$ di Ross,
+Gordon e Bagnell. Qui la spinta iniziale è un espediente: il modo più rapido di
+mettere l'allievo dove non è mai stato, per mostrare cosa succede una volta che
+ci si trova. Quello che l'esperimento dimostra, e lo dimostra bene, è la seconda
+metà del ragionamento: **fuori dalla fascia dimostrata una politica clonata
+sbaglia in modo sistematico, e su un sistema instabile sbagliare in modo
+sistematico è irrecuperabile.** La prima metà, cioè che a portarla fuori bastino
+i suoi stessi errori, resta un risultato teorico, e questo codice non la prova.
+
+`````{tab} Elementare
+```{admonition} Da ricordare
+:class: important
+- La **clonazione comportamentale** è la scorciatoia più ovvia: si registra
+  qualcuno che il lavoro lo sa fare, si annota «in questa situazione, questa
+  mossa», e da lì in poi il problema non è più imparare per tentativi, è
+  indovinare la risposta giusta. Stabile, sicura, parca di dati, e già usata due
+  volte nel libro senza chiamarla per nome.
+- La crepa sta in un'assunzione che nessuno dichiara: che le situazioni siano
+  sempre le stesse, decise dal mondo. Non è così, perché **le situazioni che
+  incontri dipendono dalle mosse che hai fatto**, e le mosse dell'allievo non
+  sono quelle del maestro.
+- Da qui la **composizione degli errori**: un errore piccolo ti porta in un
+  posto che conosci meno, dove sbagli di più, che ti porta ancora più lontano.
+  L'errore non si somma, si compone, e su un percorso lungo è la differenza fra
+  un sistema che funziona e uno che no.
+- Il paradosso da ricordare: **più l'esperto è bravo, meno insegna a
+  rimediare**, perché non si trova mai nella condizione di doverlo fare. Il
+  pilota che non esce mai di corsia non ti fa mai vedere come si raddrizza
+  l'auto.
+- Il rimedio si chiama **DAgger**: far provare l'allievo, guardare dove va a
+  finire, e chiedere al maestro cosa avrebbe fatto *lì*. Non cambia il modello e
+  non cambia il modo di allenarlo: cambia quali situazioni finiscono nel mucchio
+  degli esempi. Il prezzo è che serve un maestro disponibile a rispondere, non
+  soltanto un archivio di registrazioni.
+- C'è un'altra strada: invece della strategia, imparare la **ricompensa**, cioè
+  che cosa l'esperto stesse cercando di ottenere. Costa di più e regge meglio se
+  il mondo cambia un po', perché descrive l'obiettivo e non solo le reazioni. Ha
+  un difetto suo, però: di obiettivi che spiegano lo stesso comportamento ce n'è
+  un'infinità, e distinguerli guardando solo il comportamento non si può.
+```
+`````
+
+`````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
 - La **clonazione comportamentale** trasforma il controllo in apprendimento
@@ -257,10 +403,14 @@ la loss, non l'ottimizzatore. Sono cambiati **quali stati stanno nel dataset**.
   rimediare**, perché non si trova mai nella condizione di doverlo fare.
 - **DAgger** rimuove il termine in più iterando: esegui la politica, chiedi
   all'esperto cosa fare **negli stati che lei visita**, aggiungi, riaddestra.
-  Serve un esperto interrogabile, non solo un archivio.
+  Serve un esperto interrogabile, non solo un archivio; e la garanzia lineare
+  vale a patto che il compito sia **recuperabile**, altrimenti la costante $u$
+  del bound cresce con $T$ e si torna al quadrato.
 - L'**RL inverso** risolve lo stesso problema per un'altra strada: impara la
   **ricompensa** invece della politica. Costa di più ed è più trasferibile,
   perché una ricompensa descrive l'obiettivo mentre una politica descrive solo
   delle reazioni. È la ragione per cui l'RLHF non si ferma alla fase
-  supervisionata.
+  supervisionata. È però **mal posto**: la ricompensa si recupera a meno di una
+  scala e di un termine di shaping potential-based.
 ```
+`````

@@ -6,7 +6,11 @@ titolo modesto (*Some Studies in Machine Learning Using the Game of Checkers*
 programma che giocava a dama, e la parte sorprendente è questa: dopo migliaia
 di partite contro sé stesso, il programma giocava **meglio del suo autore**.
 Non perché Samuel gli avesse insegnato le mosse giuste una per una, ma perché
-il programma le aveva ricavate dall'esperienza. In quelle pagine compare, tra
+il programma le aveva ricavate dall'esperienza. (Se giocava contro sé stesso,
+chi gli diceva quale mossa fosse quella buona? L'esito della partita: vinta,
+promuove tutte le posizioni attraversate per arrivarci; persa, le declassa un
+po'. Il credito si distribuisce all'indietro, dalla fine all'inizio, ed è il
+terzo dei tre modi di imparare che vedremo fra poche pagine.) In quelle pagine compare, tra
 le prime volte nella storia, l'espressione *machine learning*: la capacità di
 un calcolatore di migliorare a un compito senza essere riprogrammato a mano.
 
@@ -49,11 +53,22 @@ $\theta$.
 
 `````
 
+Vale la pena fermarsi su come si chiama il risultato di tutto questo, perché è
+la parola che tornerà in ogni pagina del libro: il **modello**. Non è il
+modellino di un aeroplano né chi sfila in passerella. È il programma *dopo* che
+ha visto i dati: la regola che quei dati hanno prodotto, con dentro tutti i
+numeri che l'hanno resa proprio quella e non un'altra. Il codice che scriviamo
+resta sempre lo stesso; il modello è ciò che ne esce quando lo si è fatto
+passare su un mucchio di esempi. E *come* faccia a trovare quelle regolarità,
+chi gli dica di guardare le parole di un'email e non il colore dello schermo, è
+esattamente la domanda giusta: la risposta arriva un pezzo per volta nelle
+prossime sezioni, e per ora basta sapere che quelle regole non le scriviamo noi.
+
 ## Che cosa vuol dire "imparare": la definizione di Mitchell
 
 La definizione operativa più citata è quella di Tom Mitchell, nel manuale
-*Machine Learning* del 1997. Ha il pregio di essere verificabile: dice quando
-un programma sta davvero imparando e quando no.
+*Machine Learning* del 1997 {cite}`mitchell1997machine`. Ha il pregio di essere
+verificabile: dice quando un programma sta davvero imparando e quando no.
 
 `````{tab} Elementare
 
@@ -89,14 +104,16 @@ rispettare: se all'aumentare di $E$ la $P$ non cresce, non c'è apprendimento.
 ## Tre modi di imparare
 
 A seconda del tipo di esperienza a disposizione, il machine learning si
-divide in tre grandi paradigmi.
+divide in tre grandi famiglie (chi scrive di ricerca le chiama *paradigmi*).
 
 **Apprendimento supervisionato.** È il caso del filtro antispam: ogni esempio
 arriva con la sua **risposta giusta** (l'etichetta). Il modello impara la
-corrispondenza tra domanda e risposta (input → output). Se l'output è una categoria si parla di
-*classificazione* (spam / non spam, gatto / cane); se è un numero continuo di
+corrispondenza tra domanda e risposta (input → output). Se l'output è una
+categoria si parla di *classificazione* (spam / non spam, gatto / cane); se è
+un numero su una scala **continua**, cioè una scala in cui fra due valori ce
+n'è sempre un altro (2,5 metri quadri esistono, 2,5 stanze no), si parla di
 *regressione* (prevedere il prezzo di una casa dai suoi metri quadri). È di gran
-lunga il paradigma più usato in pratica.
+lunga il modo più usato in pratica.
 
 `````{tab} Elementare
 
@@ -109,17 +126,18 @@ etichette: senza di esse, questo tipo di apprendimento non funziona.
 
 `````{tab} Superiore
 
-Dato un insieme di addestramento $\{(X^{(i)}, y^{(i)})\}_{i=1}^{m}$, dove
-$X^{(i)}$ è il vettore delle feature dell'esempio $i$-esimo e $y^{(i)}$ la sua
+Dato un insieme di addestramento
+$\{(\mathbf{x}^{(i)}, y^{(i)})\}_{i=1}^{m}$, dove $\mathbf{x}^{(i)}$ è il
+vettore delle feature dell'esempio $i$-esimo e $y^{(i)}$ la sua
 etichetta, si cerca $f_\theta$ che minimizzi una funzione di costo (o *loss*)
 $\mathcal{L}$ che penalizza le previsioni sbagliate:
 
 $$
 \theta^\star = \arg\min_{\theta}\ \frac{1}{m}\sum_{i=1}^{m}
-\mathcal{L}\!\left(f_\theta(X^{(i)}),\, y^{(i)}\right).
+\mathcal{L}\!\left(f_\theta(\mathbf{x}^{(i)}),\, y^{(i)}\right).
 $$
 
-Qui $f_\theta(X^{(i)}) = \hat{y}^{(i)}$ è la predizione del modello e
+Qui $f_\theta(\mathbf{x}^{(i)}) = \hat{y}^{(i)}$ è la predizione del modello e
 $\mathcal{L}$ misura la sua distanza dal valore vero $y^{(i)}$. L'intero
 addestramento supervisionato è, in fondo, questo problema di minimizzazione.
 
@@ -129,8 +147,10 @@ addestramento supervisionato è, in fondo, questo problema di minimizzazione.
 modello riceve solo gli input e deve scoprire da sé una struttura nascosta.
 L'esempio classico è il *clustering*: raggruppare i clienti di un negozio in
 segmenti simili senza sapere in anticipo quali segmenti esistano. Rientrano qui
-anche la riduzione della dimensionalità (comprimere i dati mantenendone
-l'essenza) e i sistemi che rilevano anomalie in una transazione.
+anche la **riduzione della dimensionalità**, cioè togliere colonne a una
+tabella senza perderne l'essenza (le «dimensioni» sono proprio le colonne, e
+alla sezione dedicata si vedrà perché il nome sia quello), e i sistemi che
+rilevano anomalie in una transazione.
 
 **Apprendimento per rinforzo.** Non ci sono né etichette né dataset fisso: c'è
 un **agente** che compie azioni in un ambiente e riceve, di tanto in tanto, una
@@ -161,16 +181,26 @@ I passaggi, in ordine:
 
 1. **Dati**: raccogliere esempi e ripulirli (valori mancanti, duplicati,
    errori). Spesso è la fase più lunga e ingrata dell'intero progetto.
-2. **Feature**, trasformare i dati grezzi nella rappresentazione numerica che
-   il modello riceverà: le *feature*. Rappresentare bene un problema è metà
-   della soluzione.
-3. **Modello**, scegliere una famiglia di modelli e **addestrarla** sui dati:
-   l'addestramento cerca i numeri interni del modello (i *parametri* $\theta$)
-   che riducono al minimo l'errore (la *loss*).
+2. **Feature**: un modello non sa leggere un'email, sa fare conti su dei
+   numeri. Le **feature** (in italiano: le *caratteristiche*) sono i numeri con
+   cui descriviamo ogni esempio, e sceglierli è un lavoro nostro. Di un'email
+   possiamo prendere quante parole ha, quanti punti esclamativi, quante volte
+   compare la parola «vincita», se il mittente è in rubrica: cinque numeri, e
+   quell'email per il modello è diventata quei cinque numeri. Cambiando i numeri
+   che si prendono cambia la risposta, ed è per questo che si dice che
+   rappresentare bene un problema è metà della soluzione.
+3. **Modello**: scegliere una famiglia di modelli e **addestrarla** sui dati.
+   Dentro un modello ci sono dei numeri regolabili, come le manopole di un
+   vecchio amplificatore: si chiamano **parametri** (nelle formule del libro:
+   $\theta$, la lettera greca *theta*). Addestrare vuol dire girare quelle
+   manopole finché il modello sbaglia il meno possibile, e «quanto sbaglia» è a
+   sua volta un numero, che si chiama **loss** (la *perdita*: quanto ci costa
+   ogni risposta sbagliata).
 4. **Valutazione**: misurare le prestazioni su dati **mai visti** in
    addestramento, per stimare come il modello si comporterà nel mondo reale.
-5. **Deploy**: se i numeri convincono, mettere il modello in produzione e
-   monitorarlo, perché i dati del mondo cambiano nel tempo.
+5. **Deploy**: se i numeri convincono, mettere il modello **in produzione**,
+   cioè lasciarlo lavorare sul serio, con utenti veri e dati che arrivano ogni
+   giorno, e sorvegliarlo, perché i dati del mondo cambiano nel tempo.
 
 La freccia di ritorno è la parte più importante: quasi mai il primo tentativo
 è quello buono. Si osserva dove il modello sbaglia, si tornano a ritoccare le
@@ -204,25 +234,29 @@ y_pred = modello.predict(X_test)    # previsione su dati mai visti in training
 
 ## Perché questo capitolo non è archeologia
 
+C'è una scena che si ripete in ogni team alle prime armi. Arriva un problema
+(prevedere quali clienti abbandoneranno il servizio, a partire da una tabella
+di età, contratti, consumi, reclami) e qualcuno propone subito una rete
+neurale profonda, perché è quella di cui parlano tutti. Dopo due settimane di
+messa a punto la rete arriva faticosamente a pareggiare un *gradient boosting*
+(uno dei metodi di questo capitolo, che incontreremo fra qualche sezione: tanti
+piccoli modelli semplici messi in fila, ognuno a correggere gli errori del
+precedente) che un collega scettico aveva addestrato in dieci minuti lasciando
+tutte le manopole come le trovava.
+
 ```{figure} ../figures/ml-classico-batte-deep-learning.svg
 :name: fig-tabellari-vs-non-strutturati
 :alt: "Due domini affiancati. A sinistra i dati tabellari, righe e colonne con significati eterogenei, dove i metodi classici basati su alberi restano competitivi. A destra i dati non strutturati, immagini, audio e testo, dove il deep learning domina perché le caratteristiche utili vanno costruite e non sono già nelle colonne."
 :width: 100%
 
-Non c'è un vincitore assoluto, c'è un confine. A sinistra le colonne
-*sono già* le caratteristiche buone; a destra vanno estratte dai pixel o dai
-campioni, ed è lì che le reti profonde non hanno rivali.
+Non c'è un vincitore assoluto, c'è un confine. A sinistra i dati già in
+tabella, dove le colonne *sono già* le caratteristiche buone; a destra le
+foto, il suono e il testo, dove le caratteristiche vanno estratte dai pixel o
+dai campioni, ed è lì che le reti profonde non hanno rivali.
 ```
 
-Il confine tracciato in {numref}`fig-tabellari-vs-non-strutturati` è quello
-che la scena qui sotto ignora ogni volta.
-
-C'è una scena che si ripete in ogni team alle prime armi. Arriva un problema
-(prevedere quali clienti abbandoneranno il servizio, a partire da una tabella
-di età, contratti, consumi, reclami) e qualcuno propone subito una rete
-neurale profonda, perché è quella di cui parlano tutti. Dopo due settimane di
-tuning la rete arriva faticosamente a pareggiare un gradient boosting che un
-collega scettico aveva addestrato in dieci minuti con i parametri di default.
+Il confine tracciato in {numref}`fig-tabellari-vs-non-strutturati` è quello che
+quella scena ignora ogni volta.
 
 `````{tab} Elementare
 
@@ -238,8 +272,10 @@ In una tabella, la colonna "codice postale", quella "reddito annuo" e quella
 diverse, significati diversi. Non c'è vicinanza spaziale come fra due pixel
 adiacenti, né ordine come fra due parole in una frase. Sono **variabili senza
 geografia**, e le reti neurali sono costruite proprio per sfruttare una
-geografia: convoluzioni per i pixel vicini, attenzione per le parole in
-sequenza. Su una tabella quella struttura non c'è, e il vantaggio evapora.
+geografia: hanno pezzi fatti apposta per guardare i pixel vicini fra loro, e
+altri fatti apposta per guardare quali parole di una frase si riferiscono a
+quali (li vedremo, si chiamano convoluzioni e attenzione). Su una tabella
+quella struttura non c'è, e il vantaggio evapora.
 
 Gli alberi, al contrario, si trovano a casa: dividono una colonna alla volta con
 una soglia, non chiedono che le scale siano confrontabili, e gestiscono
@@ -259,9 +295,10 @@ Tre casi in cui il classico resta la scelta giusta:
 `````{tab} Superiore
 
 L'osservazione è stata messa alla prova sistematicamente: Grinsztajn, Oyallon e
-Varoquaux (NeurIPS 2022) hanno confrontato modelli ad albero e reti neurali su
-decine di dataset tabulari, trovando che i primi restano superiori anche a
-parità di tuning, e con un budget di ricerca degli iperparametri molto minore.
+Varoquaux (NeurIPS 2022) {cite}`grinsztajn2022why` hanno confrontato modelli ad
+albero e reti neurali su decine di dataset tabulari, trovando che i primi
+restano superiori anche a parità di tuning, e con un budget di ricerca degli
+iperparametri molto minore.
 
 Le ragioni identificate sono strutturali, non contingenti:
 
@@ -279,6 +316,11 @@ del deep learning conviene avere una baseline classica ben tarata, e succede
 spesso che quella baseline sia già la risposta.
 
 `````
+
+Ed è il motivo per cui questo capitolo viene prima degli altri, e non per
+ragioni cronologiche. Da qui in avanti tutto il libro userà le stesse quattro
+parole (modello, feature, parametri, loss) e gli stessi due gesti (addestrare,
+valutare su dati mai visti): cambieranno i modelli, non la grammatica.
 
 `````{tab} Elementare
 

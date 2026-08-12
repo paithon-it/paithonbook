@@ -8,8 +8,8 @@
   Palette-locked, assi neutri warm, linee di riferimento tratteggiate.
   Fondo trasparente (leggibile in light e dark).
 -->
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 232" role="img"
-     aria-label="Tre grafici affiancati di funzioni di attivazione. A sinistra la sigmoide: una curva a S in terracotta che parte quasi appiattita sullo zero, sale ripida attorno all'origine e si appiattisce verso il valore uno. Al centro la tangente iperbolica: la stessa curva a S in teal, ma centrata nell'origine, che va da meno uno a piu uno. A destra la ReLU: una linea in ocra piatta sullo zero per le x negative, che poi risale come una retta inclinata per le x positive.">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 248" role="img"
+     aria-label="Tre grafici affiancati di funzioni di attivazione. A sinistra la sigmoide: una curva a S in terracotta che parte quasi appiattita sullo zero, sale ripida attorno all'origine e si appiattisce verso il valore uno. Al centro la tangente iperbolica: la stessa curva a S in teal, ma centrata nell'origine, che va da meno uno a più uno. A destra la ReLU: una linea in ocra piatta sullo zero per le x negative, che poi risale come una retta inclinata per le x positive.">
   <style>
     .axis  { stroke:#8B847C; stroke-width:1.4; }
     .ref   { stroke:#C9C2B4; stroke-width:1; stroke-dasharray:3 4; opacity:.85; }
@@ -69,5 +69,8 @@
     <polyline class="rel" points="40,150 115,150 190,51"/>
   </g>
 
-  <text class="cap" x="330" y="222">Tre non linearita a confronto: la sigmoide <tspan font-weight="700" fill="#1A1A1A">satura</tspan> tra 0 e 1, la tanh e <tspan font-weight="700" fill="#1A1A1A">centrata nello zero</tspan>, la ReLU lascia passare solo la <tspan font-weight="700" fill="#1A1A1A">parte positiva</tspan>.</text>
+  <!-- su due righe: in una sola la frase misura 760-860 px (a seconda del
+       font) e il viewBox, largo 660, la tagliava da tutte e due le parti -->
+  <text class="cap" x="330" y="206">Tre non linearità a confronto: la sigmoide <tspan font-weight="700" fill="#1A1A1A">satura</tspan> tra 0 e 1,</text>
+  <text class="cap" x="330" y="224">la tanh è <tspan font-weight="700" fill="#1A1A1A">centrata nello zero</tspan>, la ReLU lascia passare solo la <tspan font-weight="700" fill="#1A1A1A">parte positiva</tspan>.</text>
 </svg>

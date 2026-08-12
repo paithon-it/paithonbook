@@ -10,15 +10,21 @@ volte costa meno che impararne una sola.
 L'idea che questo valga anche per una rete neurale ha un articolo di
 riferimento e una data: Rich Caruana, 1997, in un lavoro il cui titolo è
 semplicemente *Multitask Learning* {cite}`caruana1997multitask`. La tesi è
-netta: addestrare una rete su più compiti collegati, in parallelo e con una
-rappresentazione condivisa, **migliora la generalizzazione su ciascuno di
-essi**. Non è un trucco per risparmiare memoria: è il compito in più che
+netta: addestrare una rete su più compiti collegati insieme, facendo sì che
+partano tutti dallo stesso lavoro preliminare (una **rappresentazione
+condivisa**: gli stessi numeri intermedi, calcolati una volta sola, da cui poi
+ciascun compito ricava la sua risposta), fa funzionare meglio **ciascuno** di
+quei compiti su esempi mai visti, che è quello che chiamiamo *generalizzazione*.
+Non è un trucco per risparmiare memoria: è il compito in più che
 insegna qualcosa al compito principale.
 
 Vale la pena affrontarla qui perché è una tecnica che il libro incontra
 dappertutto senza mai chiamarla per nome. Il rilevatore di oggetti che predice
-insieme la classe e le coordinate del riquadro fa multi-compito. Il modello
-linguistico pre-addestrato su decine di obiettivi diversi fa multi-compito. Il
+insieme che cosa c'è nella foto e in che punto si trova (la classe e le
+coordinate del riquadro) fa multi-compito. Il **modello linguistico**, quello
+che completa e genera testo, viene preparato indovinando pezzi mancanti in
+decine di modi diversi, e ognuno di quei modi è un compito a sé: multi-compito
+anche lui. Il
 sistema di raccomandazione che stima insieme la probabilità di un clic e quella
 di un acquisto fa multi-compito, e la seconda è rara quanto preziosa.
 
@@ -30,8 +36,9 @@ Prima del perché, la forma: come è fatta materialmente una rete che fa più co
 
 La struttura si disegna in un attimo: un **tronco** condiviso, che elabora
 l'ingresso, e in cima tante **teste** quante sono le cose da predire, una per
-compito. Il tronco impara una rappresentazione buona per tutti; ogni testa la
-traduce nella risposta che le serve.
+compito. Il tronco è la rappresentazione condivisa di cui parlavamo: il lavoro
+fatto una volta sola e buono per tutti. Ogni testa lo traduce nella risposta
+che le serve.
 
 L'immagine giusta è quella di un ufficio: c'è un archivio comune, dove il
 materiale viene letto e ordinato una volta sola, e poi ci sono gli uffici
@@ -177,6 +184,14 @@ $\nabla\mathcal{L}_i \cdot \nabla\mathcal{L}_j < 0$, proietta ciascun gradiente
 sul piano ortogonale all'altro prima di sommarli, rimuovendo la sola componente
 distruttiva e lasciando intatto il resto.
 
+Va detto che il beneficio pratico di questa famiglia di metodi è **contestato**:
+confronti su larga scala trovano che la somma pesata semplice, purché
+regolarizzata e stabilizzata come si farebbe per un compito solo, li eguaglia o
+li batte {cite}`kurin2022defense`, e che su compiti di visione e di linguaggio
+non producono guadagni oltre l'ottimizzazione ordinaria {cite}`xin2022current`.
+Il conflitto fra gradienti resta una buona **diagnosi**; che proiettarli sia la
+**cura** è meno stabilito di quanto la letteratura sui metodi lasci pensare.
+
 Una cautela metodologica su questa diagnosi, perché è facile misurarla male: il
 prodotto scalare fra gradienti va guardato **durante** l'addestramento e sui
 parametri condivisi, non all'inizializzazione. All'inizio le teste sono
@@ -209,11 +224,13 @@ tenendo quelli che aiutano.
 
 ## In pratica: il guadagno si misura, e può essere negativo
 
-L'affermazione «un compito imparentato aiuta, uno estraneo danneggia» si può
-verificare, e l'esperimento sta in una pagina. Costruiamo una situazione
-realistica: il compito che ci interessa ha **poche etichette** (quaranta), il
-compito ausiliario ne ha molte (ottocento). Poi confrontiamo tre addestramenti
-sullo stesso identico tronco.
+L'affermazione «un compito imparentato aiuta, uno che non c'entra niente
+danneggia» si può verificare, e l'esperimento sta in una pagina. Costruiamo una
+situazione realistica: il compito che ci interessa ha **poche etichette**
+(quaranta), il compito ausiliario ne ha molte (ottocento). Poi confrontiamo tre
+addestramenti sullo stesso identico tronco. Il codice qui sotto è lungo, ma si
+può saltare senza perdere il filo: quello che conta sono i tre numeri che
+stampa, commentati subito dopo.
 
 ```python
 import torch
@@ -232,7 +249,8 @@ def dati(seme):
     return X, {
         "principale": nascosto,                  # etichettata solo su 40 esempi
         "parente":    nascosto ** 2,             # dipende dalla STESSA quantità
-        "estraneo":   torch.randn(n, generator=g),
+        # bersaglio che non dipende da X: nessuna rete può impararlo
+        "rumore":     torch.randn(n, generator=g),
     }
 
 def addestra(X, y, ausiliario, seme, passi=800):
@@ -255,7 +273,8 @@ def addestra(X, y, ausiliario, seme, passi=800):
         return F.mse_loss(pred, y["principale"][N_AUSILIARI:]).item()
 
 base = None
-for ausiliario in (None, "parente", "estraneo"):
+# cinque semi per tre configurazioni: qualche minuto di attesa
+for ausiliario in (None, "parente", "rumore"):
     errori = [addestra(*dati(s)[:2], ausiliario, s) for s in range(5)]
     media = sum(errori) / len(errori)
     if base is None:
@@ -265,7 +284,9 @@ for ausiliario in (None, "parente", "estraneo"):
           f"   ({100 * (media - base) / base:+.0f}%)")
 ```
 
-Media su cinque semi, per non leggere il rumore:
+Media su cinque semi, per non leggere il rumore. I numeri da soli non dicono
+niente (sono la scala della quantità che stiamo predicendo): conta il confronto
+fra i tre.
 
 - **nessun ausiliario**: errore $0{,}2829$. Quaranta esempi sono pochi, e si
   vede;
@@ -273,19 +294,52 @@ Media su cinque semi, per non leggere il rumore:
   secondo compito non condivide le etichette del primo, condivide la *quantità
   nascosta* da cui entrambi dipendono, e ottocento esempi su quella quantità
   hanno insegnato al tronco quello che quaranta non bastavano a insegnare;
-- **ausiliario estraneo**: $0{,}3523$, cioè **il 25% di errore in più**. Non è
-  neutro: è peggio che non averlo. Le stesse capacità del tronco sono state
-  spese per inseguire del rumore, e quelle capacità le ha sottratte al compito
-  che contava.
+- **ausiliario che non ha niente da insegnare**: $0{,}3523$, cioè **il 25% di
+  errore in più**. Non è neutro: è peggio che non averlo. La capacità del tronco
+  spesa a inseguire quel bersaglio è capacità sottratta al compito che contava.
 
 Il terzo numero è il più importante dei tre, perché è quello che di solito non
-si racconta. Il multi-compito non è una tecnica che si aggiunge e male che
-vada non fa niente: **male che vada fa danno**, e quanto danno dipende da una
-domanda che nessuna formula risolve, cioè se i compiti siano davvero
-imparentati. Stabilire quali compiti stiano bene insieme è ancora, in larga
+si racconta: il multi-compito non è una tecnica che si aggiunge e male che
+vada non fa niente. **Male che vada fa danno.** Va però letto per quello che è:
+il bersaglio del terzo braccio è rumore puro, un caso estremo che nessuna rete
+può imparare, quindi quello che l'esperimento misura con precisione è la prima
+delle due cause di danno, la capacità del tronco sprecata. Un compito diverso
+ma *imparabile* fa in genere molto meno danno di così. Che compiti in
+competizione peggiorino il risultato è comunque un fatto documentato su scala
+ben più grande di questa {cite}`standley2020tasks`, e quanto danno facciano
+dipende da una domanda che nessuna formula risolve, cioè se i compiti siano
+davvero imparentati. Stabilire quali stiano bene insieme è ancora, in larga
 parte, un problema aperto: si misura empiricamente, provandoli a coppie, più
 che deducendolo.
 
+`````{tab} Elementare
+```{admonition} Da ricordare
+:class: important
+- Una rete può imparare **più cose insieme**: un **tronco** comune, che legge
+  l'ingresso una volta sola per tutti, e in cima una **testa** per ogni
+  risposta da dare. È l'ufficio con l'archivio comune e gli sportelli
+  specializzati.
+- Il compito in più aiuta per tre motivi diversi: porta **altri esempi**;
+  fa da **freno**, perché le scorciatoie comode per un compito solo smettono di
+  convenire quando la stessa preparazione deve servire anche a un altro; e
+  **indica dove guardare**, cioè quali dettagli valeva la pena notare.
+- Aiuta soprattutto quando del compito che ci sta a cuore abbiamo **pochi
+  esempi**. Se ne abbiamo tanti, il vantaggio si assottiglia fino a sparire.
+- Ma solo **se i compiti sono imparentati**. Se non lo sono si contendono lo
+  stesso tronco e finiscono peggio di quando erano separati: il latino aiuta
+  l'italiano, non il nuoto. E non c'è una formula per saperlo prima: si prova.
+- Un altro problema pratico è **quanto pesa ciascun compito** nel conto
+  dell'errore: se uno misura metri e l'altro una probabilità, quello con i
+  numeri più grossi comanda l'addestramento senza che nessuno l'abbia deciso.
+  Si può regolare a mano, oppure lasciare che sia la rete a fidarsi di meno dei
+  compiti su cui è più incerta.
+- Misurato su un caso costruito apposta: un compito ausiliario imparentato ha
+  tolto il **65%** dell'errore, uno fatto di numeri casuali ne ha **aggiunto il
+  25%**. Non è una tecnica neutra.
+```
+`````
+
+`````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
 - L'**apprendimento multi-compito** addestra una rete su più compiti insieme
@@ -303,12 +357,15 @@ che deducendolo.
   alta, cioè con pochi dati.
 - Il rovescio è il **trasferimento negativo**: compiti non imparentati si
   contendono la rappresentazione e peggiorano il risultato. La diagnosi
-  meccanica sono i **gradienti in conflitto**, e un rimedio è proiettarli
-  (**PCGrad**).
+  meccanica sono i **gradienti in conflitto**; proiettarli (**PCGrad**) è il
+  rimedio più noto, ma che serva davvero è contestato dai confronti su larga
+  scala.
 - I pesi $\lambda_t$ delle loss non sono commensurabili fra compiti; si
   possono **apprendere** trattandoli come incertezza di ciascun compito
   ($\mathcal{L} = \sum_t \frac{1}{2\sigma_t^2}\mathcal{L}_t + \log\sigma_t$),
   invece di cercarli a mano.
 - Misurato su un caso costruito: un ausiliario imparentato toglie il **65%**
-  dell'errore, uno estraneo ne **aggiunge il 25%**. Non è una tecnica neutra.
+  dell'errore, un ausiliario fatto di puro rumore ne **aggiunge il 25%**. Non è
+  una tecnica neutra.
 ```
+`````

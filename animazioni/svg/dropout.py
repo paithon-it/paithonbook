@@ -4,7 +4,10 @@ Le maschere non sono disegnate a mano: si estraggono con un seme fisso, così la
 figura è riproducibile e i conti tornano con quello che dice il testo.
 
 Come le altre figure animate, il disegno fermo è l'**ultimo** passo: chi non
-anima vede una rete con metà neuroni spenti, che è esattamente il concetto.
+anima vede una rete con alcuni neuroni spenti, che è esattamente il concetto.
+L'etichetta dice «probabilità su due» e non «metà» perché con p = 0,5 il numero
+di neuroni spenti è una variabile aleatoria, non una costante: dirlo storto qui
+vorrebbe dire insegnare storto il meccanismo.
 """
 
 import random
@@ -114,13 +117,14 @@ def costruisci() -> Figura:
                      f'style="animation:pk{k} var(--d) infinite{fermo}">'
                      f'mini-batch {k + 1}</text>')
 
-    corpo.append(f'<text class="lbl" x="90" y="440">p = {str(P).replace(chr(46), chr(44))}: a ogni passo metà '
-                 f'dei neuroni nascosti sparisce</text>')
+    corpo.append(f'<text class="lbl" x="90" y="440">p = {str(P).replace(chr(46), chr(44))}: a ogni passo '
+                 f'ogni neurone nascosto ha una probabilità su due di sparire</text>')
 
     return Figura(
         larghezza=680, altezza=470,
-        alt="Una rete con due strati nascosti: a ogni mini-batch una metà "
-            "diversa dei neuroni nascosti si spegne, insieme alle sue connessioni.",
+        alt="Una rete con due strati nascosti: a ogni mini-batch ogni neurone "
+            "nascosto ha una probabilità su due di spegnersi, insieme alle sue "
+            "connessioni, e il gruppo che si spegne cambia ogni volta.",
         corpo="".join(corpo),
         stile=f"""    .arc  {{ stroke:{BORDER_STRONG}; stroke-width:1.6; }}
     .nodo {{ fill:{CREAM}; stroke:{TEAL}; stroke-width:3; }}

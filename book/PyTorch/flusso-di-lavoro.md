@@ -66,6 +66,15 @@ verificare a colpo d'occhio se il modello l'ha trovata. Costruiamo dei dati
 con una formula nota (una retta di pendenza $0{,}7$ e intercetta $0{,}3$) e
 poi buttiamo via la formula, lasciando al modello solo i punti.
 
+Vale la pena fermarsi un attimo su quei due nomi, perché è il punto migliore
+di tutto il capitolo per capire che cosa sia davvero un peso. La **pendenza**
+di una retta è quanto la retta sale ogni volta che ci si sposta di uno verso
+destra; l'**intercetta** è l'altezza a cui la retta taglia l'asse verticale, il
+punto da cui parte. Nel vocabolario delle reti neurali quei due numeri si
+chiamano **peso** e **bias**, ed è la stessa cosa: il peso dice quanto
+l'ingresso conta, il bias dove si parte. Una rete vera ne ha milioni invece di
+due, ma il mestiere di ciascuno è questo.
+
 ```python
 import torch
 from torch import nn
@@ -84,8 +93,12 @@ X_test,  y_test  = X[taglio:], y[taglio:]       # (10, 1)
 ```
 
 Due dettagli meritano attenzione, perché tornano in ogni progetto.
-`unsqueeze(dim=1)` aggiunge l'asse delle *feature*: `nn.Linear` vuole una
-matrice $(N, d)$, non un vettore di $N$ numeri, e dimenticarlo è il primo dei
+`unsqueeze(dim=1)` trasforma la fila di cinquanta numeri in una **tabella** di
+cinquanta righe e una colonna: gli strati di PyTorch vogliono una riga per
+esempio, e su ogni riga le **caratteristiche** di quell'esempio (in inglese
+*feature*, ed è la parola che si troverà nel codice: `in_features`,
+`out_features`). Qui la caratteristica è una sola, ma la colonna ci vuole lo
+stesso, ed è per questo che il conto delle dimensioni è il primo dei
 [tre errori più comuni](errori-comuni.md). E `manual_seed` fissa il
 generatore di numeri casuali: senza, due esecuzioni dello stesso codice danno
 risultati diversi e non si capisce più se un miglioramento viene dalla
@@ -122,7 +135,7 @@ for epoca in range(1000):
     perdita.backward()
     ottimizzatore.step()
 
-    if epoca % 200 == 0:                                   # il "termometro"
+    if epoca % 199 == 0:                                   # il "termometro"
         modello.eval()
         with torch.no_grad():
             perdita_test = criterio(modello(X_test), y_test)
@@ -133,10 +146,20 @@ print(modello.state_dict())
 ```
 
 Alla fine `state_dict()` stampa due numeri molto vicini a $0{,}7$ e $0{,}3$:
-non identici, perché la discesa del gradiente si ferma quando è *abbastanza*
-vicina, ma le prime due cifre tornano. È una verifica che nella maggior parte
-dei problemi veri non potremo mai fare, e proprio per questo vale la pena
-farla almeno una volta: qui sappiamo con certezza che la macchina funziona.
+$0{,}6968$ e $0{,}3025$, cioè $0{,}70$ e $0{,}30$ arrotondati al centesimo. Non
+identici, perché la discesa del gradiente si ferma quando è *abbastanza*
+vicina. È una verifica che nella maggior parte dei problemi veri non potremo
+mai fare, e proprio per questo vale la pena farla almeno una volta: qui
+sappiamo con certezza che la macchina funziona.
+
+Un dettaglio sul `199` del "termometro", che sembra un capriccio e non lo è:
+verso la fine la perdita non si ferma su un valore, **alterna** fra due
+($0{,}0013$ e $0{,}0103$), un giro sì e un giro no. Stampandola ogni $200$
+epoche la si campionerebbe sempre nello stesso punto del ciclo, e si vedrebbero
+quattro numeri identici di fila: il modello sembrerebbe fermo sull'ottimo,
+mentre in realtà gli sta girando attorno. La scheda Superiore qui sotto spiega
+perché succede, e non è un difetto: è come si comporta questa funzione di
+perdita quando il passo è fisso.
 
 `````{tab} Elementare
 La `L1Loss` è la scelta più leggibile che ci sia: è la **distanza media** tra
@@ -154,8 +177,13 @@ i quadrati. La differenza pratica sta nei gradienti e negli *outlier*: il
 gradiente della L1 rispetto al residuo è $\pm 1$, costante, quindi un punto
 molto lontano non domina l'aggiornamento, la L1 è robusta; con il lr fissato,
 però, il modello non converge esattamente ma oscilla in un intorno di ampiezza
-$\sim \eta$ attorno all'ottimo. La MSE, il cui gradiente è proporzionale al
-residuo, converge in modo più pulito ma insegue gli outlier. La
+$\sim \eta$ attorno all'ottimo. Qui l'oscillazione è un ciclo limite di
+periodo 2, e si misura: il residuo cambia segno tutto insieme, quindi il
+gradiente sul bias vale $\pm 1$ e il passo è esattamente $\pm \eta$; sul peso
+il gradiente è $\pm \overline{|x_i|} = \pm 0{,}39$, e l'ampiezza scala di
+conseguenza. È la ragione per cui il "termometro" stampa a passo dispari: a
+passo pari si campionerebbe sempre la stessa fase. La MSE, il cui gradiente è
+proporzionale al residuo, converge in modo più pulito ma insegue gli outlier. La
 `nn.SmoothL1Loss` (o *Huber*) è il compromesso: quadratica vicino allo zero,
 lineare lontano. Qui la scelta è quasi indifferente perché i dati sono
 esattamente su una retta: la loss finale è limitata solo dalla granularità dei
@@ -177,6 +205,19 @@ da una riga sbagliata qui.
 | Multi-etichetta ($K$ sì/no) | `nn.Linear(d, K)` | `nn.BCEWithLogitsLoss` | `torch.sigmoid` |
 
 `````{tab} Elementare
+Le quattro righe sono i quattro tipi di domanda che si possono fare a un
+modello. **Quanto?** (un prezzo, una temperatura): l'ultimo strato dà un numero
+solo e lo si legge com'è. **Sì o no?** (è spam, non è spam): un numero solo,
+che poi va schiacciato fra zero e uno per leggerlo come probabilità, ed è ciò
+che fa la `sigmoid`. **Quale, fra tanti?** (quale cifra, quale animale): tanti
+numeri quante sono le categorie, e vince il più alto. **Quali, fra tanti?** (la
+foto contiene un cane *e* un prato *e* una palla): di nuovo tanti numeri, ma
+ognuno è un sì/no per conto suo, e più di uno può essere sì. È quello che si
+chiama *multi-etichetta*, e la differenza con la riga di sopra è tutta lì: là
+si sceglie una risposta, qui se ne accendono quante se ne vuole. Le due lettere
+delle formule stanno per «quanti numeri entrano» ($d$) e «quante categorie ci
+sono» ($K$).
+
 La riga da leggere con più attenzione è la terza. Quando le classi sono più di
 due, il modello non dà probabilità: dà dei **punteggi grezzi**, uno per
 classe, che possono essere negativi o enormi. La funzione di perdita se li
@@ -233,6 +274,13 @@ sensato in cui provare, dal più efficace al più illusorio.
 
 E prima di ogni prova: fissa il seme casuale, annota che cosa hai cambiato,
 tieni il risultato. Un quaderno di laboratorio, letteralmente.
+
+C'è però un controllo che viene **prima** di tutti e sei, e che costa cinque
+minuti: prendi due mucchietti di esempi, una ventina in tutto, e addestra su
+quelli finché l'errore non è quasi zero. Mandare a memoria venti esempi è alla
+portata di qualunque rete, e se la tua non ci riesce non c'è manopola che la
+salvi su cinquantamila: c'è un errore da qualche parte nel codice, e stai
+girando le manopole sbagliate.
 `````
 
 `````{tab} Superiore
@@ -282,6 +330,35 @@ quando una delle tre condizioni salta (e come si legge il messaggio d'errore
 che ne esce) è l'argomento della sezione [sui tre errori più
 comuni](errori-comuni.md).
 
+Il mestiere sta in queste sei stazioni e nel ciclo che le lega. Il resto del
+capitolo torna a occuparsi dei pezzi, cominciando da quello che nella pratica
+dà più lavoro di tutti: i dati.
+
+`````{tab} Elementare
+```{admonition} Da ricordare
+:class: important
+- Il flusso di lavoro ha **sei stazioni**: che cosa voglio predire, con quali
+  dati, quale modello, addestrarlo, assaggiarlo, usarlo. Le tre centrali si
+  ripetono in circolo, ed è lì che va tutto il tempo.
+- Costruirsi un **problema con la risposta nota** (punti generati da una retta
+  che si conosce) è il modo più rapido per verificare che la propria macchina
+  funzioni davvero: alla fine i due numeri devono tornare.
+- La domanda che si fa al modello decide l'ultimo strato e la misura
+  dell'errore: quanto? sì o no? quale fra tanti? quali fra tanti? Sbagliare
+  questa riga è metà degli errori di chi comincia.
+- Nel migliorare un modello si cambia **una cosa alla volta**, e in ordine:
+  prima più dati, poi più tempo, poi un modello più grande, poi la manopola
+  del passo, poi i freni, e solo alla fine si cambia strada.
+- Prima di girare qualunque manopola, il collaudo che costa cinque minuti: il
+  modello deve riuscire a **mandare a memoria venti esempi**. Se non ci
+  riesce, non è una manopola sbagliata, è un errore nel codice.
+- Per dare al modello un dato nuovo servono **tre condizioni** (stesso posto,
+  stesso tipo di numeri, stessa forma) e **due interruttori** (modalità esame,
+  niente appunti).
+```
+`````
+
+`````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
 - Il flusso di lavoro ha **sei stazioni**: problema, dati, modello,
@@ -301,3 +378,4 @@ comuni](errori-comuni.md).
 - Per predire su dati nuovi servono **tre condizioni** (device, dtype, shape)
   e **due interruttori** (`eval()`, `no_grad()`).
 ```
+`````

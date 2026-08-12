@@ -102,7 +102,7 @@
 
   <!-- codebook -->
   <rect x="250" y="250" width="256" height="82" rx="8" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="2"/>
-  <text x="378" y="270" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="bold" fill="#1A1A1A">codebook — le K tessere apprese</text>
+  <text x="378" y="270" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="bold" fill="#1A1A1A">codebook: le K tessere apprese</text>
   <g stroke="#1A1A1A" stroke-width="0.8">
     <rect x="268" y="284" width="28" height="26" fill="#B5532C"/>
     <rect x="302" y="284" width="28" height="26" fill="#2D5A5C"/>

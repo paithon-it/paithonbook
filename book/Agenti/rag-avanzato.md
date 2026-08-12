@@ -6,11 +6,19 @@ passaggio giusto («Il gatto nero salta sul muro del giardino») con similarità
 quasi perfetta. Ma al secondo posto si era intrufolato un impostore, «Il gatto
 dorme accanto ai fornelli»: vicino per tema, muto sulla domanda. Era il
 **quasi-pertinente**, e non era un incidente di percorso. Era il sintomo di un
-limite di fondo che avevamo enunciato senza troppi giri di parole: ciò che la
-ricerca non porta a galla, la risposta non potrà mai contenerlo, per quanto
-bravo sia il modello che poi la scrive. In una parola, il *recall* (la quota
-dei passaggi giusti che la ricerca riesce a ripescare) è il **tetto**
-dell'intero sistema {cite}`lewis2020retrieval`.
+limite di fondo: ciò che la ricerca non porta a galla, il modello che poi
+scrive la risposta può ricostruirlo solo dalla propria memoria, cioè proprio
+dalla parte che il recupero serviva a non dover usare. In una parola, il
+*recall* (la quota dei passaggi giusti che la ricerca riesce a ripescare) è il
+**vincolo dominante** dell'intero sistema, il suo tetto.
+
+Vale la pena dire quanto è duro quel tetto, perché il paper che ha inaugurato
+la RAG lo ha misurato: nei casi in cui la risposta non compare in **nessun**
+documento recuperato, il sistema di Lewis e colleghi ne indovina comunque una
+su otto ($11{,}8\%$ su Natural Questions), là dove un modello puramente
+estrattivo, che può solo ritagliare la risposta da ciò che ha in mano, farebbe
+zero {cite}`lewis2020retrieval`. Non è zero, dunque, ma è abbastanza poco da
+fare del recupero il posto giusto dove intervenire.
 
 La RAG di base, così come l'abbiamo costruita, faceva tre gesti: trasformava
 domanda e passaggi in punti su una mappa del significato, prendeva i pochi
@@ -18,8 +26,9 @@ passaggi più vicini alla domanda (quanti, lo decidiamo noi: diciamo i primi
 cinque) e li incollava nel foglietto di istruzioni che si dà al modello, il
 *prompt*, prima di fargli scrivere la risposta {cite}`karpukhin2020dense`. È
 un ottimo punto di partenza e un pessimo punto di arrivo. Questa sezione
-raccoglie le tecniche che spingono quel tetto più in alto: intervengono sulle
-tre giunture della pipeline; **prima** di cercare (migliorando la domanda),
+raccoglie le tecniche che spingono quel tetto più in alto, e intervengono
+sulle giunture della **pipeline**, cioè della catena di passaggi che porta
+dalla domanda alla risposta: **prima** di cercare (migliorando la domanda),
 **dopo** aver cercato (riordinando i candidati), e **attorno** all'intero
 ciclo (facendo decidere al modello se e quando cercare). Chiudiamo con la
 domanda che tiene onesto tutto il resto: come si misura se un sistema RAG
@@ -30,27 +39,45 @@ funziona davvero.
 :alt: "Pipeline di RAG avanzato da sinistra a destra: la domanda dell'utente viene prima riscritta, poi cercata in parallelo con una ricerca densa (vettoriale) e una sparsa (per parole chiave); i due elenchi di risultati confluiscono in una fusione che produce una lista unica di candidati; un reranker li riordina per precisione e solo i primi passano al modello linguistico, che genera la risposta."
 :width: 100%
 
-La pipeline per intero. Rispetto alla RAG di base cambiano tre cose: la
-domanda non va a cercare com'è arrivata, la ricerca è doppia (densa e per
+La catena per intero. Rispetto alla RAG di base cambiano tre cose: la domanda
+non va a cercare com'è arrivata, la ricerca è doppia (per significato e per
 parole chiave) e fra il recupero e il modello si interpone un riordino.
 ```
 
 Conviene tenere {numref}`fig-rag-avanzato` sott'occhio mentre si legge il
-resto: ogni sezione che segue è uno di questi blocchi, e il punto è sempre lo
-stesso. Il recupero grezzo deve essere **generoso** (meglio cento candidati
-mediocri che dieci scelti male, perché ciò che non entra qui è perduto per
-sempre) e ciò che viene dopo deve essere **severo**, perché al modello arrivi
-poco e buono.
+resto: le sezioni che seguono sviluppano i blocchi di questa catena, tranne la
+ricerca per parole chiave e la fusione dei due elenchi, che abbiamo già visto
+nel capitolo sui Transformer. Il punto è sempre lo stesso. Il recupero grezzo
+deve essere **generoso** (meglio cento candidati mediocri che dieci scelti
+male, perché ciò che non entra qui è perduto per sempre) e ciò che viene dopo
+deve essere **severo**, perché al modello arrivi poco e buono.
 
-## Migliorare la domanda: query rewriting ed espansione
+Una parola sul primo dei due modi di cercare, perché il disegno lo chiama
+«densa» e la parola da sola non dice niente. Una ricerca **densa** confronta
+*significati*: domanda e passaggi diventano punti su una mappa, e si prendono
+i più vicini, anche quando non condividono una sola parola. Una ricerca
+sparsa, o per parole chiave, confronta invece le parole così come sono
+scritte. Le due sbagliano in modi diversi, e per questo conviene farle
+entrambe.
+
+## Migliorare la domanda: riscrittura ed espansione
+
+Prima di entrare nel merito, una parola sul termine che tornerà in ogni riga
+di questa sezione. Nel gergo del recupero si chiama **query** il testo con cui
+si interroga l'archivio. Non è sempre la domanda dell'utente, ed è proprio
+questo il punto: la domanda è quello che una persona ha scritto, la query è
+quello che mandiamo davvero a cercare. Tutta la prima leva consiste nel non
+farle coincidere.
 
 ```{figure} ../figures/extra-rag-spiegato.svg
 :name: fig-rag-due-fasi
 :alt: "Pipeline RAG divisa in due fasi. La prima, di indicizzazione, si esegue una volta sola: i documenti vengono spezzati in blocchi, ogni blocco convertito in un vettore e depositato in un archivio di vettori. La seconda, a ogni domanda: la domanda diventa un vettore, si recuperano i blocchi più vicini, e questi entrano nel prompt del modello, che risponde citando le fonti."
 :width: 100%
 
-Due fasi con tempi diversi. L'indicizzazione si paga una volta e si riusa
-sempre; il recupero si paga a ogni domanda, ed è lì che si gioca la latenza.
+Due fasi con tempi diversi. Preparare l'archivio (spezzare i documenti e
+metterli sulla mappa: l'**indicizzazione**) si paga una volta sola e si riusa
+sempre; il recupero si paga a ogni domanda, ed è lì che si giocano i secondi
+che l'utente aspetta prima di vedere una risposta (la **latenza**).
 ```
 
 La separazione di {numref}`fig-rag-due-fasi` è quella che conviene tenere in
@@ -59,14 +86,14 @@ quasi tutte nella seconda fase, dove il costo è ricorrente e i margini di
 miglioramento si moltiplicano per ogni domanda ricevuta.
 
 La prima leva è quella a cui si pensa per ultimi, perché sembra fuori dal
-nostro controllo: la domanda. Il retrieval denso presume che la query
-dell'utente e il passaggio giusto finiscano vicini sulla mappa del
-significato. Ma la domanda che scrive una persona è quasi sempre la query
-*peggiore* per cercare: breve, sbrigativa, piena di sottintesi, a volte una
-sola parola. «E il tagliando?» non ha alcuna speranza di avvicinarsi al
-manuale d'officina, semplicemente perché non dice abbastanza.
+nostro controllo: la domanda. La ricerca per significato presume che la query
+e il passaggio giusto finiscano vicini sulla mappa. Ma la domanda che scrive
+una persona è quasi sempre la query *peggiore* per cercare: breve,
+sbrigativa, piena di sottintesi, a volte una sola parola. «E il tagliando?»
+non ha alcuna speranza di avvicinarsi al manuale d'officina, semplicemente
+perché non dice abbastanza.
 
-L'idea è interporre, tra l'utente e il retriever, un passaggio di
+L'idea è interporre, tra l'utente e la ricerca, un passaggio di
 **riscrittura**: un modello di linguaggio riformula la domanda in una o più
 query pensate *per la ricerca*. Le varianti sono tre, di ambizione crescente.
 La **riscrittura** rende esplicito il sottinteso («il tagliando» →
@@ -105,30 +132,47 @@ Il trucco dell'ultimo paragrafo ha un nome (**HyDE**, *Hypothetical Document
 Embeddings* {cite}`gao2023hyde`) e risolve un problema geometrico preciso: la
 **asimmetria** tra query e documenti. Una domanda («su cosa salta il gatto?»)
 e il passaggio che la soddisfa («il gatto salta sul muro») sono testi di forma
-diversa, e un bi-encoder addestrato genericamente può collocarli non così
+diversa, e un encoder addestrato genericamente può collocarli non così
 vicini quanto vorremmo. HyDE aggira l'ostacolo: chiede a un LLM di generare
-$N$ documenti *ipotetici* di risposta e interroga l'indice con la media dei
+$M$ documenti *ipotetici* di risposta e interroga l'indice con la media dei
 loro embedding e di quello della query,
 
 $$
-v_{\text{ricerca}} = \frac{1}{N+1} \Big( \sum_{i=1}^{N} E_p(\tilde{d}_i) + E_p(q) \Big),
+\mathbf{v}_{\text{ricerca}} = \frac{1}{M+1} \Big( \sum_{i=1}^{M} E_p(\tilde{d}_i) + E_p(q) \Big),
 \qquad \tilde{d}_i \sim \mathrm{LLM}(\,\cdot \mid q\,),
 $$
 
-dove $q$ è la domanda, le $\tilde{d}_i$ sono $N$ risposte ipotetiche
+dove $q$ è la domanda, le $\tilde{d}_i$ sono $M$ risposte ipotetiche
 **campionate indipendentemente** dal modello condizionato sulla domanda (il
-campionamento è essenziale: con una decodifica deterministica le $N$
+campionamento è essenziale: con una decodifica deterministica le $M$
 generazioni coinciderebbero e la media collasserebbe su un solo embedding),
 $E_p$ l'encoder dei passaggi (lo stesso che ha indicizzato l'archivio, e che
 qui codifica anche la query, trattata come un documento in più) e
-$v_{\text{ricerca}}$ il vettore con cui si interroga l'indice. L'intuizione è
-che le $\tilde{d}_i$, pur potendo contenere errori fattuali, vivono nello
-**spazio delle risposte** (la stessa regione dove abitano i passaggi veri) e
-ci somigliano più di quanto ci somigli la domanda; tenere anche la query nella
-media àncora comunque la ricerca a ciò che l'utente ha chiesto davvero. In
+$\mathbf{v}_{\text{ricerca}}$ il vettore con cui si interroga l'indice.
+L'intuizione è che le $\tilde{d}_i$, pur potendo contenere errori fattuali,
+vivono nello **spazio delle risposte** (la stessa regione dove abitano i
+passaggi veri) e ci somigliano più di quanto ci somigli la domanda. Attenzione
+però a non leggere il termine $E_p(q)$ come un'àncora: la query entra nella
+media con peso $1/(M+1)$, cioè conta esattamente quanto una delle ipotesi, e
+già con una manciata di documenti generati il suo contributo è minoritario. In
 pratica i documenti ipotetici sono generati dall'LLM e poi **codificati** con
 l'encoder dei documenti: le allucinazioni del modello non finiscono nella
-risposta finale, servono solo da esca per il recupero. Le riscritture
+risposta finale, servono solo da esca per il recupero.
+
+Il perimetro va dichiarato, perché è la cosa più utile a chi deve decidere se
+adottare il metodo, ed è scritta nel lavoro originale: HyDE nasce per il caso
+in cui **non si hanno etichette di rilevanza**, con un unico encoder
+contrastivo non supervisionato usato indifferentemente per query e documenti.
+Gli autori sono espliciti nel dire che l'uso con un retriever messo a punto sul
+proprio dominio *non è quello previsto*, e che avere di che addestrarlo
+riduce naturalmente il guadagno di HyDE, fino a farlo restare sotto quel
+retriever nei confronti in dominio. È la leva giusta quando non si ha un
+dataset annotato su cui addestrare la ricerca, non un miglioramento che si
+somma a chi ce l'ha. Attenzione anche alla lettera della formula: qui c'è un
+encoder solo, mentre poche pagine più avanti scriveremo la similarità come
+$E_q(q)^\top E_p(d)$, con due reti distinte. Applicare la ricetta di HyDE su un
+indice a due encoder significherebbe codificare la query con la rete
+sbagliata. Le riscritture
 multi-query si formalizzano invece come unione dei risultati, spesso fusi con
 la **reciprocal rank fusion** {cite}`cormack2009reciprocal`: a ogni documento
 si assegna il punteggio $\sum 1/(c + r)$, sommando sui ranghi $r$ che occupa
@@ -150,22 +194,39 @@ il vicino esatto.
 ```
 
 Prima di riordinare bisogna aver recuperato, e {numref}`fig-hnsw` mostra come
-lo fa un archivio vettoriale vero: non confrontando la domanda con tutti i
-passaggi a uno a uno, che sarebbe esatto e impraticabile, ma per scale
+lo fa un archivio vero. Il disegno parla di **vettori**: è il nome tecnico dei
+punti sulla mappa di cui parliamo da due sezioni, cioè della lista di numeri
+con cui si riassume una frase (le nostre erano lunghe quattro numeri; quelle
+di un sistema vero, qualche centinaio). Cercare vuol dire trovare i punti più
+vicini a quello della domanda, e il modo per farlo non è confrontare la
+domanda con tutti i passaggi a uno a uno, che sarebbe esatto e
+impraticabile, ma procedere per scale
 successive, come si cerca un indirizzo in una città (prima il quartiere, poi
 l'isolato, poi il numero civico). Si rinuncia così alla garanzia di trovare
 *sempre* il vicino migliore, in cambio di una ricerca incomparabilmente più
 rapida; ed è un altro motivo per cui il recupero grezzo va tenuto generoso,
 perché per strada qualche buon candidato si perde.
 
-La seconda leva agisce a valle del recupero. Nella sezione «Cercare per
-rispondere» avevamo già distinto due architetture: il **bi-encoder**, che
-codifica domanda e passaggio *separatamente* e li confronta con un prodotto
-scalare (velocissimo, perché gli embedding dei passaggi si calcolano una volta
-sola) e il **cross-encoder**, che li dà in pasto *insieme* a un unico
-Transformer, così che l'attenzione confronti i loro token uno a uno: molto più
-accurato, ma troppo costoso per scandagliare milioni di documenti. La
-soluzione, l'avevamo anticipata, è usarli **in due stadi**.
+La seconda leva agisce a valle del recupero, e poggia su una distinzione che
+vale la pena rifare per intero, perché è il cuore di tutta la sezione. Ci sono
+due modi di far confrontare una domanda con un passaggio.
+
+Il primo è quello che abbiamo usato finora: si riassume il passaggio in un
+punto sulla mappa, si riassume la domanda in un altro punto, e si guarda
+quanto sono vicini. Ha un nome, **bi-encoder** («due codificatori», perché i
+due testi vengono letti separatamente, ciascuno per conto proprio), ed è
+velocissimo per una ragione sola: i punti dei passaggi si calcolano una volta
+per tutte, quando si prepara l'archivio, e poi si riusano a ogni domanda.
+
+Il secondo modo è dare i due testi **insieme** a un unico modello, che li legge
+uno accanto all'altro e dice, guardandoli entrambi, quanto il secondo risponde
+al primo. Si chiama **cross-encoder** («codificatore incrociato», perché
+incrocia i due testi invece di tenerli separati), ed è molto più accurato,
+perché può accorgersi che una frase parla dello stesso argomento senza
+rispondere alla domanda. Il prezzo è che non si può precalcolare niente: il
+confronto va rifatto da capo per ogni coppia, e passare in rassegna così
+milioni di documenti è fuori discussione. La soluzione è usarli **in due
+stadi**.
 
 Il primo stadio, il bi-encoder, fa il grosso: spazza l'intero archivio e
 restituisce non i pochi passaggi che finiranno sotto gli occhi del modello, ma
@@ -197,9 +258,12 @@ La struttura che rende possibile la ricerca «per scale» della figura è
 grafo a strati in cui quelli alti tengono pochi nodi con archi lunghi, buoni
 per attraversare in fretta lo spazio, e quelli bassi tutti i punti con archi
 solo fra vicini. La discesa strato per strato è una ricerca *approssimata*: in
-cambio della garanzia di esattezza, gli autori misurano empiricamente un tempo
-di ricerca che cresce come il **logaritmo** del numero di vettori, cioè
-raddoppiare l'archivio costa un pugno di confronti in più, non il doppio.
+cambio della garanzia di esattezza, gli autori mostrano che il numero di
+confronti cresce come il **logaritmo** del numero di vettori, a recall
+fissato, cioè raddoppiare l'archivio costa un pugno di confronti in più, non
+il doppio. Il logaritmo però è in $N$, non nella dimensione degli embedding:
+il prezzo di vettori più lunghi non sparisce, si sposta nel costo del singolo
+confronto.
 
 Formalmente il primo stadio ordina l'archivio con la similarità del bi-encoder
 $E_q(q)^\top E_p(d)$ e ne trattiene i primi $N$; il secondo riordina
@@ -232,15 +296,25 @@ un indice molto più grande (un vettore per token, non per passaggio).
 `````
 
 Vediamo il reranking in azione, estendendo il retriever in miniatura della
-sezione precedente. Teniamo lo stesso mini-archivio a quattro dimensioni e la
-stessa domanda; aggiungiamo lo **stadio di reranking**. Il cross-encoder è
-finto (non un vero Transformer) ma sensato: dove il bi-encoder vede solo il
-*tema* di una frase, il nostro reranker pesa i **concetti portanti** della
-domanda, distinguendo l'azione («saltare») e il bersaglio («muro») dal tema
-generico («gatto»).
+sezione precedente. Teniamo lo stesso mini-archivio (ogni frase è riassunta da
+quattro numeri, uno per ciascuno dei quattro temi presenti: gatti, muri,
+automobili, cucina) e la stessa domanda; aggiungiamo lo **stadio di
+reranking**. La vicinanza fra due frasi la misura il **coseno**, un numero che
+qui va da $0$ (niente in comune) a $1$ (stessa direzione esatta): è la misura
+di somiglianza che avevamo usato costruendo il retriever.
+
+Il cross-encoder è finto, non un vero Transformer, ma imita la cosa che
+conta: legge la coppia. Il bi-encoder ha schiacciato ogni frase in un punto
+solo, e da lì «gatto» e «salta» sono ormai mescolati; il nostro reranker
+riceve invece *domanda e passaggio* e conta quanti concetti della domanda il
+passaggio copre, dando un premio a ogni **coppia** di concetti che compaiono
+**insieme**. È il punto: a rispondere non è il gatto, e nemmeno il saltare,
+ma un gatto *che salta*. Nessun peso scritto a mano, e in un cross-encoder
+vero questa preferenza per le combinazioni non si programma, si impara.
 
 ```python
 import torch
+from itertools import combinations
 
 # --- Stadio 1: recupero grezzo con il bi-encoder ---
 # stesso mini-archivio della sezione «Cercare per rispondere»:
@@ -280,33 +354,41 @@ for v, i in zip(val, cand):
 # --- Stadio 2: reranking con un "cross-encoder" didattico ---
 # Il bi-encoder ha collassato ogni frase in un unico vettore: cosi' un
 # passaggio che condivide solo il tema "gatto" gli sembra vicino. Un
-# cross-encoder legge domanda e passaggio INSIEME e distingue il tema
-# dall'azione. Qui lo simuliamo con dei concetti pesati: il tema (gatto)
-# conta poco, l'azione (saltare) e il bersaglio (muro) molto.
-concetti_domanda = {"gatto": 1.0, "saltare": 3.0, "muro": 3.0}
-concetti_passaggio = {
-    0: {"gatto", "saltare", "muro"},      # gatto che SALTA sul MURO: risponde
-    1: {"muro", "solaio"},
+# cross-encoder legge domanda e passaggio INSIEME. Qui lo simuliamo con i
+# concetti dei due testi, premiando le CO-OCCORRENZE: a rispondere non e' il
+# gatto, ne' il saltare, ma un gatto CHE SALTA.
+concetti = {
+    domanda: {"gatto", "nero", "saltare"},
+    0: {"gatto", "nero", "saltare", "muro", "giardino"},  # copre tutto: risponde
+    1: {"muro", "portante", "solaio"},
     2: {"vettura", "garage"},
     3: {"auto", "centro"},
-    4: {"gatto", "dormire", "fornelli"},  # solo il tema "gatto": quasi-pertinente
+    4: {"gatto", "dormire", "fornelli"},   # solo il tema "gatto": quasi-pertinente
     5: {"ricetta", "burro"},
 }
 
-def cross_encoder(i):
-    # pertinenza = peso dei concetti della domanda davvero coperti dal passaggio
-    coperti = concetti_passaggio[i]
-    return sum(peso for c, peso in concetti_domanda.items() if c in coperti)
+def cross_encoder(domanda, i):
+    """Punteggio della COPPIA (domanda, passaggio), non del solo passaggio.
+    Ogni concetto della domanda coperto vale 1; ogni coppia di concetti
+    coperti INSIEME vale 2, perche' e' la combinazione a rispondere."""
+    coperti = concetti[domanda] & concetti[i]
+    return len(coperti) + 2 * len(list(combinations(coperti, 2)))
 
 # il cross-encoder e' costoso: lo applichiamo SOLO ai candidati dello stadio 1
-riordino = sorted(cand.tolist(), key=cross_encoder, reverse=True)
+riordino = sorted(cand.tolist(), key=lambda i: cross_encoder(domanda, i),
+                  reverse=True)
 
 print("\nStadio 2 - cross-encoder (preciso, solo sui 4 candidati):")
 for i in riordino:
-    print(f"  pertinenza {cross_encoder(i):.1f}  {passaggi[i]}")
+    print(f"  pertinenza {cross_encoder(domanda, i):.1f}  {passaggi[i]}")
 
-print("\nAl generatore vanno i primi due dopo il reranking:")
-for n, i in enumerate(riordino[:2], 1):
+# ora che i punteggi sono separati, una soglia ha senso: passa solo chi si
+# avvicina al migliore, invece di riempire a forza un numero fisso di posti.
+migliore = cross_encoder(domanda, riordino[0])
+rosa = [i for i in riordino if cross_encoder(domanda, i) >= migliore / 2]
+
+print("\nAl generatore va solo chi supera meta' del punteggio migliore:")
+for n, i in enumerate(rosa, 1):
     print(f"  [{n}] {passaggi[i]}")
 ```
 
@@ -320,28 +402,35 @@ Stadio 1 - bi-encoder (veloce, tutto l'archivio):
   coseno 0.10  L'auto storica sfila per il centro.
 
 Stadio 2 - cross-encoder (preciso, solo sui 4 candidati):
-  pertinenza 7.0  Il gatto nero salta sul muro del giardino.
-  pertinenza 3.0  Il muro portante sostiene il solaio.
+  pertinenza 9.0  Il gatto nero salta sul muro del giardino.
   pertinenza 1.0  Il gatto dorme accanto ai fornelli.
+  pertinenza 0.0  Il muro portante sostiene il solaio.
   pertinenza 0.0  L'auto storica sfila per il centro.
 
-Al generatore vanno i primi due dopo il reranking:
+Al generatore va solo chi supera meta' del punteggio migliore:
   [1] Il gatto nero salta sul muro del giardino.
-  [2] Il muro portante sostiene il solaio.
 ```
 
-Ecco il punto. Al primo stadio il bi-encoder aveva messo il quasi-pertinente
-«Il gatto dorme accanto ai fornelli» al **secondo posto** (coseno $0{,}78$),
-appena sotto il passaggio giusto: quella vicinanza di tema che avevamo
-diagnosticato come l'insidia tipica del retrieval denso. Il reranker, che
-guarda l'azione e non solo il soggetto, lo declassa al terzo posto e lo
-**scaccia dalla rosa** che arriva al generatore. Al suo posto sale «Il muro
-portante…»: non risponde nemmeno lui, ma almeno condivide il concetto portante
-«muro», e soprattutto il margine è ora netto ($7{,}0$ contro $3{,}0$ e
-$1{,}0$) invece dello sfumato $0{,}99$ contro $0{,}78$. Il generatore riceve
-un segnale più pulito su dove appoggiarsi. Non abbiamo alzato il recall (il
-passaggio giusto era già stato recuperato) ma abbiamo alzato la **precisione
-ai primi posti**, che è il secondo tetto del sistema.
+Ecco il punto, e non è quello che ci si aspetterebbe. L'ordine dei primi due
+non cambia: il quasi-pertinente «Il gatto dorme accanto ai fornelli» era
+secondo e resta secondo. Quello che cambia è la **distanza** fra il primo e il
+secondo. Il bi-encoder li dava a $0{,}99$ contro $0{,}78$: una differenza che
+non permette di decidere niente, perché il quasi-pertinente è quasi buono
+quanto la risposta. Il cross-encoder li dà a $9{,}0$ contro $1{,}0$, e nove
+volte non è un margine sfumato: è un verdetto.
+
+Da lì viene il guadagno vero, che è una decisione diventata possibile. Con
+punteggi indistinguibili l'unica regola disponibile è «prendine i primi
+$k$», e riempiendo i posti si finisce per infilare nel prompt un passaggio
+che non risponde. Con punteggi separati si può mettere una **soglia**, e al
+generatore arriva un passaggio solo: quello giusto, senza compagnia
+fuorviante. Notiamo anche che «Il muro portante sostiene il solaio», che pure
+condivide una parola con la risposta, finisce a zero, ed è corretto: la
+domanda parlava di un gatto che salta, non di solai.
+
+Non abbiamo alzato il recall (il passaggio giusto era già stato recuperato) ma
+abbiamo alzato la **precisione ai primi posti**, che è il secondo tetto del
+sistema, e lo abbiamo fatto guadagnando la capacità di dire di no.
 
 ## Il RAG che si corregge: Self-RAG e RAG agentico
 
@@ -355,9 +444,10 @@ fatti che stanno in documenti diversi e che nessuna singola query trova
 insieme. La terza leva rompe la rigidità: lascia che sia il **modello** a
 decidere se, quando e quante volte cercare. (Esiste anche una quarta via a
 quel problema di composizione, che non passa da più tornate di ricerca ma dal
-cambiare la forma dell'archivio: se i fatti stanno su un grafo invece che in
-paragrafi, incrociarne due è percorrere due archi. Il capitolo sulle reti
-neurali su grafo la riprende parlando di knowledge graph.)
+cambiare la forma dell'archivio: invece di paragrafi si tengono i fatti in una
+rete di collegamenti, come una mappa di città unite da strade, e allora
+incrociare due fatti vuol dire percorrere due strade. Il capitolo sulle reti
+neurali su grafo la riprende per esteso.)
 
 `````{tab} Elementare
 
@@ -403,8 +493,9 @@ insieme.
 `````
 
 L'onestà, qui, è d'obbligo, ed è la stessa che abbiamo tenuto per tutto il
-libro. Ogni giro in più (una riscrittura, un reranking, una seconda tornata di
-ricerca, un token di riflessione) è una chiamata in più al modello: costa
+libro. Ogni giro in più (una riscrittura, un riordino, una seconda tornata di
+ricerca, una pausa in cui il modello si chiede se quello che ha trovato serve
+davvero) è una chiamata in più al modello: costa
 **latenza** e **denaro**. Un RAG agentico che itera cinque volte è cinque
 volte più lento e più caro di un recupero secco, e non sempre di qualità
 cinque volte migliore. La domanda ingegneristica non è «quanti giri posso
@@ -465,7 +556,7 @@ contesto fa eccezione: per contare i rilevanti *mancati* serve una risposta di
 riferimento annotata, e infatti la libreria la calcola solo se gliene si dà
 una. Il reference-free è comodo perché non richiede un dataset etichettato a
 mano, ma eredita in blocco i limiti
-dell'**LLM-as-a-judge** che vedremo nel capitolo conclusivo sull'MLOps (il
+dell'**LLM-as-a-judge** che vedremo più avanti, nel capitolo su MLOps (il
 *position bias*, il *verbosity bias*, l'auto-preferenza) e va perciò calibrato
 contro un campione di giudizi umani, mai preso per oracolo.
 
@@ -483,21 +574,70 @@ delle fonti, né sull'onestà con cui sono state riassunte. La RAG avanzata alza
 il tetto del recupero e ripulisce la rosa dei candidati, ma non solleva mai
 chi la usa dal dovere di scegliere bene cosa mettere nell'archivio.
 
+Sei righe per ripercorrere la sezione più lunga del capitolo.
+
+`````{tab} Elementare
+
 ```{admonition} Da ricordare
 :class: important
-- Il **recall del retriever è il tetto** del sistema RAG: la RAG avanzata
-  interviene *prima* di cercare (migliorare la domanda), *dopo* (riordinare i
-  candidati) e *attorno* (decidere se e quando cercare).
+- Quello che la ricerca non ripesca, la risposta quasi certamente non lo
+  conterrà: la qualità del **recupero** è il tetto di tutto il sistema. Le
+  tecniche di questa sezione lo alzano intervenendo *prima* di cercare
+  (migliorare la domanda), *dopo* (riordinare i risultati) e *attorno*
+  (decidere se e quando cercare).
+- La domanda che scrive una persona è quasi sempre il testo peggiore da mandare
+  a cercare: troppo corta, piena di sottintesi. Conviene riscriverla, oppure
+  farne tre versioni diverse e unire i risultati. C'è perfino il trucco di
+  cercare con una **risposta inventata** (si chiama **HyDE**
+  {cite}`gao2023hyde`), che fa da esca perché somiglia ai documenti veri più di
+  quanto ci somigli la domanda. Nasce per il caso in cui non si ha modo di
+  addestrare la ricerca sul proprio archivio: se quel modo c'è, conviene
+  quello.
+- **Due stadi**: prima una scrematura rapida che tiene molti candidati, poi un
+  esame lento e attento solo su quei pochi (la selezione dei curriculum e poi
+  il colloquio). Il secondo stadio non serve tanto a cambiare l'ordine, quanto
+  a **separare** i punteggi: quando il primo stacca nettamente gli altri, si
+  può scartare il resto invece di riempire a forza i posti liberi.
+- Un recupero che si **corregge**: il modello può decidere da sé se gli serve
+  cercare, rileggere criticamente quello che ha trovato, e tornare a cercare
+  finché non gli basta. È lo studente maturo all'esame a libro aperto. Ma ogni
+  giro in più è tempo di attesa e denaro: la domanda giusta non è «quanti giri
+  posso fare» ma «qual è il minimo che risolve questa domanda».
+- **Dare un voto** vuol dire guardare tre cose separate: la risposta è davvero
+  sostenuta dalle pagine citate? parla della domanda che era stata posta? le
+  pagine trovate erano quelle giuste? Correggere a mano costa, e allora si
+  promuove un altro modello a esaminatore: comodo, purché si ricordi che anche
+  l'esaminatore ha i suoi pregiudizi e va tenuto d'occhio.
+- **Fedele non vuol dire vero**: se l'archivio contiene un documento sbagliato,
+  la risposta più fedele possibile a quel documento sarà sbagliata, con tanto
+  di citazione impeccabile. Nessuna tecnica di questa sezione solleva chi la usa
+  dal dovere di scegliere bene cosa mettere nell'archivio.
+```
+
+`````
+
+`````{tab} Superiore
+
+```{admonition} Da ricordare
+:class: important
+- Il **recall del retriever è il vincolo dominante** del sistema RAG: il
+  generatore recupera dalla memoria parametrica solo una frazione di ciò che il
+  recupero ha mancato ($11{,}8\%$ su NQ nel lavoro originale
+  {cite}`lewis2020retrieval`). La RAG avanzata interviene *prima* di cercare
+  (migliorare la query), *dopo* (riordinare i candidati) e *attorno* (decidere
+  se e quando cercare).
 - **Query rewriting, espansione, multi-query**: la domanda dell'utente è la
-  query peggiore per cercare. **HyDE** {cite}`gao2023hyde` genera una risposta
-  *ipotetica* e cerca con quella, perché vive nello spazio dei documenti veri
-  più vicino della domanda.
+  query peggiore per cercare. **HyDE** {cite}`gao2023hyde` genera $M$ risposte
+  *ipotetiche* e cerca con la media dei loro embedding, perché vivono nello
+  spazio dei documenti; la query pesa $1/(M+1)$, quindi non è un'àncora. È
+  pensato per il regime **senza etichette di rilevanza**: con un retriever
+  messo a punto sul dominio, gli autori dichiarano che non è l'uso previsto.
 - **Reranking in due stadi**: il **bi-encoder** recupera tanti candidati grezzi
-  (veloce), un **cross-encoder** riordina solo quella rosa ristretta (preciso
-  ma costoso).
+  (veloce, embedding precalcolati), un **cross-encoder** riordina solo quella
+  rosa ristretta (preciso ma costoso, $N$ inferenze per query).
   **ColBERT** {cite}`khattab2020colbert` è la via di mezzo, con MaxSim
-  token-a-token ed embedding precalcolabili. Nel codice il reranking scaccia il
-  quasi-pertinente dai primi posti.
+  token-a-token ed embedding precalcolabili. Il guadagno vero del secondo stadio
+  è la **separazione** dei punteggi, che rende possibile una soglia.
 - **RAG che si corregge**: **Self-RAG** {cite}`asai2024selfrag` addestra il
   modello a decidere *se* recuperare e a **criticare** i passaggi con token di
   riflessione; il **RAG agentico** usa il recupero come strumento invocabile più
@@ -506,8 +646,10 @@ chi la usa dal dovere di scegliere bene cosa mettere nell'archivio.
   passaggi?), pertinenza della risposta, precision/recall del contesto.
   **RAGAS** {cite}`es2024ragas` stima le prime tre senza risposte di
   riferimento, con un LLM-giudice (la recall del contesto vuole una risposta
-  annotata) e con i bias dell'**LLM-as-a-judge** del capitolo sull'MLOps.
+  annotata) e con i bias dell'**LLM-as-a-judge** del capitolo su MLOps.
 - Fedeltà **non è** verità: una risposta fedele a un documento sbagliato è
   sbagliata, e una citazione corretta non salva una risposta che travisa la
   fonte.
 ```
+
+`````

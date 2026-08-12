@@ -97,6 +97,8 @@ sphinx:
       - SerieTemporali
       - SistemiMultiAgente
       - SistemiRaccomandazione
+      - SpeechRecognition
+      - StateSpaceModel
       - Transformers
       - VisioneArtificiale
       - VisioneLinguaggio

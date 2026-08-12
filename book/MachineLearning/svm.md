@@ -5,15 +5,22 @@ rossi a destra) e traccia una retta che li separi. Facile. Ora traccia
 *un'altra* retta che li separi lo stesso, e poi un'altra ancora: se le due
 nuvole sono ben distinte, di rette buone ce ne sono infinite. Quale scegliere?
 La regressione logistica del capitolo sull'apprendimento supervisionato ne
-sceglie una, il *perceptron* un'altra, e nessuno dei due si pone davvero la
-domanda. La **Support Vector Machine** (SVM) sì, e con una risposta di netta
+sceglie una, e nemmeno si pone la domanda. La **Support Vector Machine** (SVM)
+invece sì, e con una risposta di netta
 eleganza geometrica: tra tutte le rette che separano, scegli la più *prudente*
 (quella che lascia il corridoio più largo possibile tra le due classi).
 
-È un'idea nata nei primi anni Novanta nei laboratori Bell da Vladimir Vapnik e
-colleghi, formalizzata da Boser, Guyon e Vapnik nel 1992
-{cite}`boser1992training` e completata da Cortes e Vapnik nel 1995
-{cite}`cortes1995support`. Per un decennio, prima dell'ondata del deep
+L'idea del margine massimo è vecchia, e non nasce dove si crede: la formularono
+in Unione Sovietica **Vladimir Vapnik e Alexey Chervonenkis**, che dal 1962
+lavoravano all'Istituto di Problemi di Controllo di Mosca e la pubblicarono nel
+1963-64 col nome di *metodo del ritratto generalizzato*
+{cite}`vapnik1963pattern`. Quello che nasce trent'anni dopo nei laboratori Bell
+sono i due innesti che la rendono praticabile, e sono anche le due sezioni che
+seguono: il **kernel trick** (Boser, Guyon e Vapnik, 1992
+{cite}`boser1992training`) e il **margine morbido** (Cortes e Vapnik, 1995
+{cite}`cortes1995support`). Un algoritmo che ha aspettato trent'anni due idee.
+
+Per un decennio, prima dell'ondata del deep
 learning, le SVM sono state il classificatore di riferimento: matematicamente
 solide, sorprendentemente efficaci su dataset di dimensioni medie, e ancora
 oggi una scelta sensata quando gli esempi sono poche migliaia.
@@ -55,54 +62,60 @@ $n-1$ in uno spazio a $n$ dimensioni.
 
 `````{tab} Elementare
 
-L'iperpiano è l'insieme dei punti $X$ che soddisfano l'equazione
+L'iperpiano è l'insieme dei punti $\mathbf{x}$ che soddisfano l'equazione
 
 $$
-W^\top X + b = 0,
+\mathbf{w}^\top \mathbf{x} + b = 0,
 $$
 
-la stessa che descriveva il confine di decisione della regressione logistica:
-$W$ è il vettore che dà l'orientamento della frontiera e $b$ la sposta avanti
-o indietro. La scrittura $W^\top X$ si legge in parole semplici: moltiplica
-ogni caratteristica di $X$ per il suo peso in $W$ e somma tutto; ne esce un
-punteggio, come nella regressione. Un punto nuovo si classifica guardando il
-*segno* di quel punteggio più $b$: positivo di qua, negativo di là. La novità della SVM non è
-questa formula, è il criterio con cui sceglie $W$ e $b$: non una frontiera
-qualsiasi, ma quella che lascia il vuoto più ampio attorno a sé. Più il
-corridoio è largo, più il classificatore è robusto.
+ed è lo stesso conto che faceva la regressione logistica prima di schiacciare
+il risultato nella curva a S: moltiplica ogni caratteristica del punto per il
+suo peso, somma tutto, aggiungi il numero di partenza $b$, e guarda che segno
+ha il risultato. Positivo di qua, negativo di là, e zero esattamente sul
+confine. Nella scrittura, $\mathbf{w}$ è l'elenco dei pesi (che dà
+l'orientamento della frontiera), $\mathbf{x}$ l'elenco delle caratteristiche
+del punto, e la scrittura $\mathbf{w}^\top \mathbf{x}$ è solo un modo compatto
+di dire «moltiplica a coppie e somma»; $b$ sposta la frontiera avanti o
+indietro. La novità della SVM non è
+questa formula, è il criterio con cui sceglie $\mathbf{w}$ e $b$: non una
+frontiera qualsiasi, ma quella che lascia il vuoto più ampio attorno a sé. Più
+il corridoio è largo, più il classificatore è robusto.
 
 `````
 
 `````{tab} Superiore
 
 Fissiamo la scala imponendo che gli esempi più vicini alla frontiera
-soddisfino $W^\top X + b = \pm 1$: sono le due rette di margine. Con la
-convenzione $y_i \in \{-1, +1\}$ per le due classi, chiedere che ogni punto
-stia dalla parte giusta *e fuori dal corridoio* si scrive in un colpo solo:
+soddisfino $\mathbf{w}^\top \mathbf{x} + b = \pm 1$: sono le due rette di
+margine. Con la convenzione $y_i \in \{-1, +1\}$ per le due classi, chiedere
+che ogni punto stia dalla parte giusta *e fuori dal corridoio* si scrive in un
+colpo solo:
 
 $$
-y_i\,(W^\top X_i + b) \ge 1, \qquad i = 1, \dots, m.
+y_i\,(\mathbf{w}^\top \mathbf{x}_i + b) \ge 1, \qquad i = 1, \dots, m.
 $$
 
-La distanza di un punto sul margine dall'iperpiano è $1/\lVert W\rVert$,
+La distanza di un punto sul margine dall'iperpiano è $1/\lVert \mathbf{w}\rVert$,
 quindi la larghezza totale del corridoio (da un bordo all'altro) è
 
 $$
-\text{margine} = \frac{2}{\lVert W\rVert}.
+\text{margine} = \frac{2}{\lVert \mathbf{w}\rVert}.
 $$
 
-Massimizzare il margine equivale allora a *minimizzare* $\lVert W\rVert$, o più
-comodamente il suo quadrato (differenziabile ovunque). Il problema del
+Massimizzare il margine equivale allora a *minimizzare*
+$\lVert \mathbf{w}\rVert$, o più comodamente il suo quadrato (differenziabile
+ovunque). Il problema del
 **margine rigido** (*hard margin*) è
 
 $$
-\min_{W,\,b}\ \tfrac{1}{2}\lVert W\rVert^2
-\quad\text{soggetto a}\quad y_i\,(W^\top X_i + b) \ge 1 \ \ \forall i,
+\min_{\mathbf{w},\,b}\ \tfrac{1}{2}\lVert \mathbf{w}\rVert^2
+\quad\text{soggetto a}\quad
+y_i\,(\mathbf{w}^\top \mathbf{x}_i + b) \ge 1 \ \ \forall i,
 $$
 
-dove $W$ è il vettore dei pesi, $b$ il termine di bias, $X_i$ l'$i$-esimo
-esempio e $y_i \in \{-1,+1\}$ la sua etichetta. È un problema di
-programmazione quadratica *convesso*: ha un'unica soluzione, senza minimi
+dove $\mathbf{w}$ è il vettore dei pesi, $b$ il termine di bias,
+$\mathbf{x}_i$ l'$i$-esimo esempio e $y_i \in \{-1,+1\}$ la sua etichetta. È
+un problema di programmazione quadratica *convesso*: ha un'unica soluzione, senza minimi
 locali in cui restare intrappolati.
 
 `````
@@ -135,46 +148,56 @@ Prendiamo quattro punti:
 
 | punto | coordinate | classe $y_i$ |
 |-------|------------|--------------|
-| $X_1$ | $(0,\,0)$  | $-1$ |
-| $X_2$ | $(2,\,2)$  | $+1$ |
-| $X_3$ | $(-1,-1)$  | $-1$ |
-| $X_4$ | $(3,\,3)$  | $+1$ |
+| $\mathbf{x}_1$ | $(0,\,0)$  | $-1$ |
+| $\mathbf{x}_2$ | $(2,\,2)$  | $+1$ |
+| $\mathbf{x}_3$ | $(-1,-1)$  | $-1$ |
+| $\mathbf{x}_4$ | $(3,\,3)$  | $+1$ |
 
 I punti stanno tutti sulla diagonale. Per simmetria l'iperpiano di massimo
-margine è perpendicolare alla diagonale e passa a metà strada tra $X_1$ e
-$X_2$, cioè per il punto $(1,1)$: questo fissa la *direzione* di $W$, che è
-quella della diagonale $(1,1)$. La *scala* la fissa la convenzione
-$W^\top X + b = \pm 1$ sui punti di margine, e i due vincoli (in $X_1$ e in
-$X_2$) danno
+margine è perpendicolare alla diagonale e passa a metà strada tra $\mathbf{x}_1$ e
+$\mathbf{x}_2$, cioè per il punto $(1,1)$: questo fissa la *direzione* di
+$\mathbf{w}$, che è quella della diagonale $(1,1)$. La *scala* la fissa la
+convenzione $\mathbf{w}^\top \mathbf{x} + b = \pm 1$ sui punti di margine, e i
+due vincoli (in $\mathbf{x}_1$ e in $\mathbf{x}_2$) danno
 
 $$
-W = (0{,}5,\ 0{,}5), \qquad b = -1.
+\mathbf{w} = (0{,}5,\ 0{,}5), \qquad b = -1.
 $$
 
-Verifichiamo che i due punti più interni, $X_1$ e $X_2$, cadano esattamente
-sulle rette di margine, cioè soddisfino $y_i(W^\top X_i + b) = 1$:
+Verifichiamo che i due punti più interni, $\mathbf{x}_1$ e $\mathbf{x}_2$,
+cadano esattamente sulle rette di margine, cioè soddisfino
+$y_i(\mathbf{w}^\top \mathbf{x}_i + b) = 1$:
 
-- $X_1=(0,0)$, classe $-1$: $\;W^\top X_1 + b = 0{,}5\cdot 0 + 0{,}5\cdot 0 - 1 = -1$, e $\;y_1(-1) = (-1)(-1) = 1$. ✓
-- $X_2=(2,2)$, classe $+1$: $\;W^\top X_2 + b = 0{,}5\cdot 2 + 0{,}5\cdot 2 - 1 = 1$, e $\;y_2(1) = (+1)(1) = 1$. ✓
+- $\mathbf{x}_1=(0,0)$, classe $-1$:
+  $\;\mathbf{w}^\top \mathbf{x}_1 + b = 0{,}5\cdot 0 + 0{,}5\cdot 0 - 1 = -1$,
+  e $\;y_1(-1) = (-1)(-1) = 1$. ✓
+- $\mathbf{x}_2=(2,2)$, classe $+1$:
+  $\;\mathbf{w}^\top \mathbf{x}_2 + b = 0{,}5\cdot 2 + 0{,}5\cdot 2 - 1 = 1$,
+  e $\;y_2(1) = (+1)(1) = 1$. ✓
 
 Sono loro i **vettori di supporto**. Gli altri due stanno più lontani, oltre il
 margine (il vincolo vale con la disuguaglianza *stretta*):
 
-- $X_3=(-1,-1)$: $\;W^\top X_3 + b = -0{,}5 - 0{,}5 - 1 = -2$, e $\;y_3(-2) = (-1)(-2) = 2 \ge 1$. ✓
-- $X_4=(3,3)$: $\;W^\top X_4 + b = 1{,}5 + 1{,}5 - 1 = 2$, e $\;y_4(2) = (+1)(2) = 2 \ge 1$. ✓
+- $\mathbf{x}_3=(-1,-1)$:
+  $\;\mathbf{w}^\top \mathbf{x}_3 + b = -0{,}5 - 0{,}5 - 1 = -2$,
+  e $\;y_3(-2) = (-1)(-2) = 2 \ge 1$. ✓
+- $\mathbf{x}_4=(3,3)$:
+  $\;\mathbf{w}^\top \mathbf{x}_4 + b = 1{,}5 + 1{,}5 - 1 = 2$,
+  e $\;y_4(2) = (+1)(2) = 2 \ge 1$. ✓
 
 La larghezza del corridoio è
 
 $$
-\frac{2}{\lVert W\rVert} = \frac{2}{\sqrt{0{,}5^2 + 0{,}5^2}}
+\frac{2}{\lVert \mathbf{w}\rVert} = \frac{2}{\sqrt{0{,}5^2 + 0{,}5^2}}
 = \frac{2}{\sqrt{0{,}5}} = \frac{2}{0{,}707} \approx 2{,}83 = 2\sqrt{2}.
 $$
 
-Ed è esattamente la distanza euclidea tra $X_1=(0,0)$ e $X_2=(2,2)$, che vale
+Ed è esattamente la distanza euclidea tra $\mathbf{x}_1=(0,0)$ e
+$\mathbf{x}_2=(2,2)$, che vale
 $\sqrt{2^2+2^2}=\sqrt{8}=2\sqrt{2}$: i due vettori di supporto, uno per
 classe, si affacciano sui bordi opposti dello stesso corridoio. Nota il punto
-cruciale: cancellare $X_3$ e $X_4$ non cambia nulla; la soluzione dipende solo
-dai due punti sul bordo.
+cruciale: cancellare $\mathbf{x}_3$ e $\mathbf{x}_4$ non cambia nulla; la
+soluzione dipende solo dai due punti sul bordo.
 
 `````
 
@@ -214,29 +237,32 @@ misura di quanto quel punto viola il proprio margine, e la si somma nella
 funzione obiettivo:
 
 $$
-\min_{W,\,b,\,\xi}\ \tfrac{1}{2}\lVert W\rVert^2 + C\sum_{i=1}^{m}\xi_i
+\min_{\mathbf{w},\,b,\,\xi}\ \tfrac{1}{2}\lVert \mathbf{w}\rVert^2
++ C\sum_{i=1}^{m}\xi_i
 \quad\text{soggetto a}\quad
-y_i\,(W^\top X_i + b) \ge 1 - \xi_i,\ \ \xi_i \ge 0,
+y_i\,(\mathbf{w}^\top \mathbf{x}_i + b) \ge 1 - \xi_i,\ \ \xi_i \ge 0,
 $$
 
 dove $\xi_i$ è la violazione dell'$i$-esimo punto e $C > 0$ regola il
-compromesso tra «corridoio largo» ($\lVert W\rVert$ piccolo) e «poche
+compromesso tra «corridoio largo» ($\lVert \mathbf{w}\rVert$ piccolo) e «poche
 violazioni» ($\sum\xi_i$ piccolo). Eliminando i vincoli, il problema si
 riscrive come minimizzazione della **hinge loss** più un termine di
 regolarizzazione:
 
 $$
-\min_{W,\,b}\ \sum_{i=1}^{m}\max\!\big(0,\ 1 - y_i\,(W^\top X_i + b)\big)
-+ \frac{1}{2C}\lVert W\rVert^2 .
+\min_{\mathbf{w},\,b}\ \sum_{i=1}^{m}
+\max\!\big(0,\ 1 - y_i\,(\mathbf{w}^\top \mathbf{x}_i + b)\big)
++ \frac{1}{2C}\lVert \mathbf{w}\rVert^2 .
 $$
 
-La hinge loss $\max(0,\,1 - y_i f(X_i))$ è nulla per i punti ben classificati
+La hinge loss $\max(0,\,1 - y_i f(\mathbf{x}_i))$ è nulla per i punti ben
+classificati
 e fuori dal margine, e cresce *linearmente* per quelli dentro la fascia o
 dalla parte sbagliata: è l'analogo, per la SVM, di ciò che la log-loss è per
 la regressione logistica, con la differenza che, essendo piatta oltre il
 margine, ignora del tutto i punti «facili» e dà alla SVM la sua sparsità in
 vettori di supporto. In questa forma si legge chiaramente il ruolo di $C$: il
-coefficiente della penalità $\lVert W\rVert^2$ è $1/(2C)$, quindi **$C$ è
+coefficiente della penalità $\lVert \mathbf{w}\rVert^2$ è $1/(2C)$, quindi **$C$ è
 l'inverso della forza di regolarizzazione**. $C$ grande → penalità debole →
 margine stretto, varianza alta; $C$ piccolo → penalità forte → margine largo,
 bias più alto. È la stessa manopola $\lambda$ della sezione sull'overfitting,
@@ -244,6 +270,69 @@ letta al contrario; con un'avvertenza di normalizzazione: la loss Ridge era
 *mediata* sugli $m$ esempi, la hinge qui è *sommata*, e a parità di
 convenzione l'identificazione esatta è $\lambda = 1/(2Cm)$, cioè a meno di un
 fattore pari alla taglia del dataset.
+
+`````
+
+### Il problema duale, e perché i vettori di supporto sono pochi
+
+Fin qui abbiamo scritto il problema nella forma **primale**, cioè cercando
+direttamente $\mathbf{w}$ e $b$. C'è una seconda scrittura equivalente, il
+problema **duale**, che serve a due cose: spiega perché la soluzione dipenda
+solo da una manciata di punti (un fatto finora asserito e mai dimostrato) e
+apre la porta al kernel trick della prossima sezione.
+
+`````{tab} Elementare
+
+Torna al confine fra i due quartieri e alla frase più sorprendente di tutta la
+sezione: le case lontane dal confine non contano nulla, e potresti cancellarle
+senza spostarlo di un millimetro. Perché?
+
+Immagina il confine come un muro elastico teso fra le due parti, e ogni casa
+come una mano che spinge il muro per allontanarlo da sé. Le case addossate al
+corridoio spingono davvero: se togli una di loro, il muro scivola. Le case
+arretrate non toccano il muro, quindi la loro spinta è **esattamente zero**, e
+zero moltiplicato per qualunque cosa resta zero: nella soluzione, il loro
+contributo non c'è proprio. È il motivo per cui la SVM, alla fine, si porta
+appresso solo pochi punti (quelli che spingono) e può dimenticare tutti gli
+altri, anche se erano un milione.
+
+`````
+
+`````{tab} Superiore
+
+Introducendo i moltiplicatori di Lagrange $\alpha_i \ge 0$ per i vincoli di
+margine e eliminando $\mathbf{w}$ e $b$, il problema a margine morbido diventa
+
+$$
+\max_{\alpha}\ \sum_{i=1}^{m}\alpha_i
+- \tfrac{1}{2}\sum_{i,j}\alpha_i\alpha_j\, y_i y_j\,
+k(\mathbf{x}_i, \mathbf{x}_j)
+\quad\text{con}\quad
+0 \le \alpha_i \le C,\ \ \sum_{i=1}^{m}\alpha_i y_i = 0,
+$$
+
+e la soluzione primale si ricostruisce come
+$\mathbf{w} = \sum_i \alpha_i y_i \mathbf{x}_i$ (qui $k$ è il prodotto scalare;
+la prossima sezione lo sostituirà con un kernel, ed è tutta lì la comodità di
+questa forma: **gli esempi compaiono solo dentro prodotti scalari**).
+
+La sparsità in vettori di supporto è una conseguenza, non un'osservazione
+empirica. Le condizioni di Karush–Kuhn–Tucker impongono la
+**complementarità**
+
+$$
+\alpha_i\big[\,y_i(\mathbf{w}^\top\mathbf{x}_i + b) - 1 + \xi_i\,\big] = 0 ,
+$$
+
+quindi per ogni punto strettamente fuori dal margine (dove la parentesi quadra
+è diversa da zero) deve essere $\alpha_i = 0$, e quel punto sparisce dalla
+somma che ricostruisce $\mathbf{w}$. Restano solo i punti *sul* margine o
+dentro la fascia: i **vettori di supporto**.
+
+Sui quattro punti dell'esempio numerico i conti si chiudono in una riga:
+$\alpha_1 = \alpha_2 = 0{,}25$ e $\alpha_3 = \alpha_4 = 0$, da cui
+$\mathbf{w} = 0{,}25\,(2,2) = (0{,}5;\,0{,}5)$, esattamente la soluzione
+trovata per via geometrica, con $\sum_i \alpha_i y_i = 0$ rispettato.
 
 `````
 
@@ -281,16 +370,16 @@ $$
 Nello spazio a tre dimensioni la classe interna (piccolo $r^2$) e quella esterna
 (grande $r^2$) sono separate da un piano orizzontale a un'altezza-soglia. Il
 problema, così com'è, sembra però costoso: se $\phi$ manda in uno spazio a
-migliaia di dimensioni, calcolare e conservare tutti quei $\phi(X_i)$ diventa
-proibitivo.
+migliaia di dimensioni, calcolare e conservare tutti quei
+$\phi(\mathbf{x}_i)$ diventa proibitivo.
 
-Il **kernel trick** è l'osservazione che salva tutto: nella formulazione duale
-della SVM, gli esempi compaiono *solo* attraverso prodotti scalari
-$\phi(X)^\top\phi(Z)$. Se esiste una funzione $k$ che calcola quel prodotto
-scalare direttamente dalle coordinate originali,
+Il **kernel trick** è l'osservazione che salva tutto: nel problema duale
+appena scritto, gli esempi compaiono *solo* attraverso prodotti scalari
+$\phi(\mathbf{x})^\top\phi(\mathbf{z})$. Se esiste una funzione $k$ che
+calcola quel prodotto scalare direttamente dalle coordinate originali,
 
 $$
-k(X, Z) = \phi(X)^\top \phi(Z),
+k(\mathbf{x}, \mathbf{z}) = \phi(\mathbf{x})^\top\phi(\mathbf{z}),
 $$
 
 allora non serve mai costruire $\phi$: si lavora nello spazio ad alta dimensione
@@ -299,16 +388,32 @@ allora non serve mai costruire $\phi$: si lavora nello spazio ad alta dimensione
 
 $$
 \begin{aligned}
-&\text{lineare:} && k(X,Z) = X^\top Z, \\
-&\text{polinomiale:} && k(X,Z) = (X^\top Z + c)^{d}, \\
-&\text{RBF / gaussiano:} && k(X,Z) = \exp\!\big(-\gamma\,\lVert X - Z\rVert^2\big),
+&\text{lineare:} && k(\mathbf{x},\mathbf{z}) = \mathbf{x}^\top \mathbf{z}, \\
+&\text{polinomiale:} && k(\mathbf{x},\mathbf{z})
+   = (\mathbf{x}^\top \mathbf{z} + c)^{d}, \\
+&\text{RBF / gaussiano:} && k(\mathbf{x},\mathbf{z})
+   = \exp\!\big(-\gamma\,\lVert \mathbf{x} - \mathbf{z}\rVert^2\big),
 \end{aligned}
 $$
 
 dove $d$ è il grado del polinomio, $c \ge 0$ un termine costante e $\gamma > 0$
-l'ampiezza del kernel gaussiano. Il kernel RBF corrisponde a uno spazio $\phi$
-di dimensione *infinita*: sarebbe impossibile da costruire, eppure $k$ si
-calcola in una riga.
+il parametro di ampiezza del kernel gaussiano, che è l'**inverso** della
+larghezza della campana (la deviazione standard equivalente vale
+$1/\sqrt{2\gamma}$): $\gamma$ grande, campana stretta. Il kernel RBF
+corrisponde a uno spazio $\phi$ di dimensione *infinita*: sarebbe impossibile
+da costruire, eppure $k$ si calcola in una riga.
+
+Un'ultima clausola, quella che fa del trucco un teorema invece che una
+speranza. La frase «se esiste una funzione $k$ che calcola quel prodotto
+scalare» rovescia l'ordine dei fatti: in pratica non si parte da $\phi$ per
+cercare $k$, si **sceglie** $k$ e si spera che un $\phi$ esista. Esiste se e
+solo se $k$ è simmetrica e **semidefinita positiva**, cioè se ogni matrice di
+Gram $K_{ij} = k(\mathbf{x}_i, \mathbf{x}_j)$ ha autovalori non negativi: è il
+teorema di Mercer {cite}`scholkopf2002learning`, ed è la ragione per cui i
+kernel non si inventano a piacere. Se $k$ non lo è, il duale smette di essere
+concavo e il solutore sta risolvendo un problema diverso da quello che si
+crede. Non ogni «misura di somiglianza» è un kernel, ed è l'errore più comune
+di chi prova a scriversene uno.
 
 `````
 
@@ -329,17 +434,31 @@ kernel RBF merita un commento: è il **raggio d'influenza** di ogni punto.
 
 `````{tab} Elementare
 
-Pensa a ogni punto come a un lampione acceso di notte: illumina bene chi gli
-sta accanto, sempre meno chi si allontana, per niente chi è lontano. Il kernel
-misura proprio questa «luce» su una scala da $0$ a $1$, dove $1$ vuol dire
-«stesso punto». Chiamiamo *portata* del lampione la distanza alla quale la luce
-è scesa a poco più di un terzo, cioè $0{,}37$: diciamo un metro e mezzo. Chi
-sta a un metro e mezzo si vede ancora; chi sta al doppio, a tre metri, riceve
-appena due centesimi di luce ($0{,}02$), e per lui è già buio. La manopola
-$\gamma$ decide quanto è stretto il cono di luce: $\gamma$ grande, luce corta,
-e la frontiera viene frastagliata perché ogni punto comanda solo nel suo
-cortile (rischio di imparare il rumore); $\gamma$ piccolo, luce lunga, e la
-frontiera esce morbida.
+Prima di tutto, il collegamento con la pagina precedente, perché sembrano due
+storie diverse e sono la stessa. Là abbiamo sollevato i punti in aria per
+separarli con una lastra di vetro; qui diciamo che il kernel misura quanto due
+punti si somigliano. Il ponte è questo: **il kernel è il prodotto scalare dei
+punti già sollevati**, cioè misura quanto due punti si somigliano *nel nuovo
+spazio*, senza che nessuno debba costruirlo. Sollevamento e somiglianza sono la
+stessa cosa vista da due lati: si sceglie la somiglianza, e il sollevamento
+viene dietro gratis.
+
+Pensa allora a ogni punto come a un lampione acceso di notte: illumina bene chi
+gli sta accanto, sempre meno chi si allontana, per niente chi è lontano. Il
+kernel misura proprio questa «luce» su una scala da $0$ a $1$, dove $1$ vuol
+dire «stesso punto». Chiamiamo *portata* del lampione la distanza alla quale la
+luce è scesa a poco più di un terzo, cioè $0{,}37$: mettiamo un metro e mezzo.
+Chi sta a un metro e mezzo si vede ancora. E chi sta al doppio, a tre metri?
+Non riceve la metà della luce, e nemmeno un terzo: la formula fa scendere la
+luce con il **quadrato** della distanza, e a distanza doppia il conto è
+$0{,}37$ elevato alla quarta, cioè appena $0{,}018$, meno di due centesimi. Per
+lui è già buio. Ecco perché il raggio d'influenza di un punto finisce così
+bruscamente.
+
+La manopola $\gamma$ decide quanto è stretto il cono di luce, ed è la portata
+**al contrario**: $\gamma$ grande, luce corta, e la frontiera viene frastagliata
+perché ogni punto comanda solo nel suo cortile (rischio di imparare il rumore);
+$\gamma$ piccolo, luce lunga, e la frontiera esce morbida.
 
 `````
 
@@ -347,12 +466,14 @@ frontiera esce morbida.
 
 Vediamolo con i numeri, scegliendo $\gamma = 0{,}5$:
 
-- due punti *vicini*, $X=(2,2)$ e $Z=(3,3)$, distano
-  $\lVert X-Z\rVert^2 = 1^2 + 1^2 = 2$, quindi
-  $k(X,Z) = e^{-0{,}5\cdot 2} = e^{-1} \approx 0{,}37$: si «vedono» bene;
-- due punti *lontani*, $X=(2,2)$ e $Z=(0,0)$, distano
-  $\lVert X-Z\rVert^2 = 2^2 + 2^2 = 8$, quindi
-  $k(X,Z) = e^{-0{,}5\cdot 8} = e^{-4} \approx 0{,}018$: quasi si ignorano.
+- due punti *vicini*, $\mathbf{x}=(2,2)$ e $\mathbf{z}=(3,3)$, distano
+  $\lVert \mathbf{x}-\mathbf{z}\rVert^2 = 1^2 + 1^2 = 2$, quindi
+  $k(\mathbf{x},\mathbf{z}) = e^{-0{,}5\cdot 2} = e^{-1} \approx 0{,}37$:
+  si «vedono» bene;
+- due punti *lontani*, $\mathbf{x}=(2,2)$ e $\mathbf{z}=(0,0)$, distano
+  $\lVert \mathbf{x}-\mathbf{z}\rVert^2 = 2^2 + 2^2 = 8$, quindi
+  $k(\mathbf{x},\mathbf{z}) = e^{-0{,}5\cdot 8} = e^{-4} \approx 0{,}018$:
+  quasi si ignorano.
 
 Con $\gamma$ grande la campana si stringe, ogni punto influenza solo i vicinissimi
 e la frontiera si fa frastagliata (varianza alta, rischio overfitting); con
@@ -384,11 +505,12 @@ oscillazioni, si preoccupa solo degli scostamenti seri.
 
 `````{tab} Superiore
 
-Si fissa una tolleranza $\epsilon > 0$ e si usa la **loss $\epsilon$-insensitive**,
-nulla dentro il tubo e lineare fuori:
+Si fissa una tolleranza $\epsilon > 0$ e si usa la **loss
+$\epsilon$-insensitive**, nulla dentro il tubo e lineare fuori:
 
 $$
-L_\epsilon\big(y,\, f(X)\big) = \max\!\big(0,\ |y - f(X)| - \epsilon\big).
+L_\epsilon\big(y,\, f(\mathbf{x})\big)
+= \max\!\big(0,\ |y - f(\mathbf{x})| - \epsilon\big).
 $$
 
 Gli errori entro $\pm\epsilon$ non vengono penalizzati; oltre, la penalità
@@ -455,18 +577,25 @@ classificazione con kernel, `LinearSVC` per la versione lineare veloce, `SVR`
 per la regressione, `OneClassSVM` per la novelty detection. Due avvertenze
 valgono per tutte, e non sono opzionali.
 
-**Standardizzare sempre le feature.** La SVM misura distanze: una feature con
-scala molto più ampia domina il conto e schiaccia le altre, esattamente come
+**Standardizzare sempre le feature**, cioè riportare tutte le colonne alla
+stessa scala prima di dare i dati al modello: si sottrae a ogni colonna la sua
+media e la si divide per la sua ampiezza tipica, così che i metri quadri (che
+valgono decine) e il numero di stanze (che vale unità) contino allo stesso
+modo. La SVM misura distanze, e senza questa operazione una colonna con numeri
+grandi domina il conto e schiaccia le altre, esattamente come
 succede al k-NN. Si antepone quindi sempre uno `StandardScaler` in una
 `Pipeline`, come nel pattern «In pratica, con scikit-learn» delle sezioni
 precedenti.
 
-**Attenzione ai numeri grandi.** L'addestramento di una SVM con kernel costa
-circa tra $O(m^2)$ e $O(m^3)$ nel numero di esempi $m$: ottima da poche
+**Attenzione ai numeri grandi.** Il costo di addestramento cresce assai più in
+fretta del numero di esempi: raddoppiando gli esempi il lavoro non raddoppia,
+si moltiplica per quattro o per otto. Nella notazione con cui si scrivono
+queste crescite (si legge «ordine di») è circa fra $O(m^2)$ e $O(m^3)$ nel
+numero di esempi $m$: ottima da poche
 centinaia a qualche decina di migliaia di punti, diventa proibitiva su milioni.
 Per i dataset molto grandi si ripiega su modelli lineari (`LinearSVC`,
 `SGDClassifier`, che scalano circa come $O(m)$) o sugli alberi in boosting della
-sezione precedente {cite}`geron2019hands`.
+sezione precedente {cite}`geron2022hands`.
 
 ```python
 import numpy as np
@@ -486,10 +615,15 @@ clf.fit(X, y)
 lin = make_pipeline(StandardScaler(), LinearSVC(C=1.0))
 lin.fit(X, y)
 
-# Regressione: il tubo epsilon-insensitive ignora gli scarti piccoli
+# Regressione: qui serve un target CONTINUO, non le classi 0/1 di sopra.
+# Fabbrichiamone uno: una sinusoide della prima coordinata, con un po' di rumore.
+rng = np.random.default_rng(0)
+y_reg = np.sin(3 * X[:, 0]) + rng.normal(0, 0.1, size=len(X))
+
+# il tubo epsilon-insensitive ignora gli scarti piccoli
 reg = make_pipeline(StandardScaler(),
                     SVR(kernel="rbf", C=10.0, epsilon=0.1))
-reg.fit(X, y.astype(float))
+reg.fit(X, y_reg)
 
 # One-class SVM: impara la regione dei dati "normali";
 # nu ~ frazione di anomalie attese
@@ -545,17 +679,25 @@ su griglia con la cross-validation della sezione sull'overfitting è la prassi.
 ```{admonition} Da ricordare
 :class: important
 - La **SVM** sceglie, tra le infinite frontiere che separano due classi, quella
-  a **margine massimo**: il corridoio $2/\lVert W\rVert$ più largo. La
-  soluzione dipende solo dai **vettori di supporto**, i pochi punti sul bordo.
+  a **margine massimo**: il corridoio $2/\lVert \mathbf{w}\rVert$ più largo.
+  L'idea è di Vapnik e Chervonenkis (1963-64); dai laboratori Bell arrivano
+  trent'anni dopo il kernel trick e il margine morbido.
+- La soluzione dipende solo dai **vettori di supporto**, e non è
+  un'osservazione ma un corollario: la complementarità KKT
+  $\alpha_i[y_i(\mathbf{w}^\top\mathbf{x}_i+b)-1+\xi_i]=0$ annulla $\alpha_i$
+  per ogni punto fuori dal margine, e $\mathbf{w}=\sum_i\alpha_iy_i\mathbf{x}_i$
+  non lo contiene.
 - Il **margine morbido** ammette violazioni $\xi_i$ pagate dal parametro $C$,
   l'**inverso** della forza di regolarizzazione: $C$ grande → margine stretto
   (overfitting), $C$ piccolo → margine largo. La perdita è la **hinge loss**,
   parente della log-loss ma piatta oltre il margine.
 - Il **kernel trick** rende non lineare la SVM: mappa i dati in uno spazio più
   ampio dove diventano separabili, calcolando i prodotti scalari con un
-  **kernel** $k(X,Z)=\phi(X)^\top\phi(Z)$
-  senza costruirlo. Kernel principali: lineare, polinomiale, RBF (parametro
-  $\gamma$ = raggio d'influenza).
+  **kernel** $k(\mathbf{x},\mathbf{z})=\phi(\mathbf{x})^\top\phi(\mathbf{z})$
+  senza costruirlo: funziona perché nel **duale** gli esempi compaiono solo
+  dentro prodotti scalari, e vale se e solo se $k$ è simmetrica e semidefinita
+  positiva (Mercer). Kernel principali: lineare, polinomiale, RBF, dove
+  $\gamma$ è l'**inverso** della larghezza della campana.
 - La **SVR** regredisce con un tubo $\epsilon$-insensitive; la **one-class SVM**
   ($\nu$ = frazione di anomalie attese) impara la regione dei dati normali per
   la **novelty/anomaly detection**, senza vedere esempi anomali.

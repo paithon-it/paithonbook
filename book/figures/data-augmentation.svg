@@ -1,6 +1,6 @@
 <svg viewBox="0 0 760 320" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Una stessa immagine di foglia genera cinque varianti: specchiata, ruotata, ritagliata, piu' scura, con rumore">
   <rect x="0" y="0" width="760" height="320" fill="#F8F5EE"/>
-  <text x="380" y="32" text-anchor="middle" font-family="sans-serif" font-size="17" font-weight="bold" fill="#1A1A1A">Una immagine, molte varianti — stessa etichetta</text>
+  <text x="380" y="32" text-anchor="middle" font-family="sans-serif" font-size="17" font-weight="bold" fill="#1A1A1A">Una immagine, molte varianti: stessa etichetta</text>
   <!-- original -->
   <rect x="55" y="110" width="110" height="110" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="2"/>
   <path d="M110 135 C85 155 85 190 110 200 C135 190 135 155 110 135 Z" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="1.5"/>

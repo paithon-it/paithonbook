@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  paithon book — figura: un percettrone multistrato (MLP). Tre strati di
+  paithon book, figura: un percettrone multistrato (MLP). Tre strati di
   nodi da sinistra a destra: input (3 nodi, bordo teal), strato nascosto
   (4 nodi, bordo ocra), output (2 nodi, bordo terracotta). Ogni nodo di uno
   strato e' collegato a tutti i nodi dello strato successivo (fully-connected).

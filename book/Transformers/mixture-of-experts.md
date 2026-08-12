@@ -89,7 +89,8 @@ $d_{ff} = 4\,d_{\text{model}} = 16384$ e $L = 32$ strati. Per ogni strato:
 $$
 \underbrace{2\,d_{\text{model}}\,d_{ff}}_{\text{FFN}} = 134{,}2 \text{ M},
 \qquad
-\underbrace{4\,d_{\text{model}}^2}_{W_Q, W_K, W_V, W_O} = 67{,}1 \text{ M},
+\underbrace{4\,d_{\text{model}}^2}_{\mathbf{W}_Q, \mathbf{W}_K, \mathbf{W}_V,
+\mathbf{W}_O} = 67{,}1 \text{ M},
 $$
 
 dove il primo termine sono le due matrici della rete feed-forward e il secondo
@@ -97,8 +98,11 @@ le quattro proiezioni dell'attenzione. In tutto $201{,}3$ M per strato, cioè
 $6{,}44$ miliardi di parametri sui 32 strati (embedding esclusi): un modello
 «da 7 miliardi», nel gergo corrente. La FFN è quella classica a due matrici
 della sezione sull'architettura; con una variante *gated* come SwiGLU le
-matrici diventano tre e il primo termine cresce di metà, ma i rapporti che
-seguono non cambiano.
+matrici diventano tre, e allora dipende da cosa si tiene fisso: a $d_{ff}$
+invariato il primo termine cresce di metà, mentre riducendo $d_{ff}$ a
+$\tfrac{8}{3}d_{\text{model}}$, che è la pratica corrente vista nella sezione
+sull'architettura, resta identico. In nessuno dei due casi cambiano i rapporti
+che seguono.
 
 Ora sostituiamo ogni FFN con $N = 8$ esperti della stessa taglia. I parametri
 **totali** diventano
@@ -124,7 +128,7 @@ la $d_{ff}$ di ciascun esperto, così che due esperti dimezzati costino quanto
 una FFN intera.
 
 Il router, in tutto questo, è rumore di fondo: una matrice
-$W_g \in \mathbb{R}^{N \times d_{\text{model}}}$ per strato, cioè
+$\mathbf{W}_g \in \mathbb{R}^{N \times d_{\text{model}}}$ per strato, cioè
 $8 \times 4096 = 32\,768$ parametri, poco più di un milione sull'intero
 modello, lo $0{,}003\%$ del totale.
 
@@ -139,11 +143,13 @@ sempre in coppia.
 
 ## Il router, in formule
 
-Il router è la cosa più semplice del capitolo: un singolo strato lineare senza
-bias che, dato il vettore di un token, produce un punteggio per ciascuno degli
-$N$ esperti. Poi si tengono i $k$ punteggi più alti, si trasformano in pesi
-con una softmax, e l'uscita dello strato è la combinazione pesata degli
-esperti scelti.
+Il router è il pezzo più semplice di tutta l'architettura. Prende la lista di
+numeri che rappresenta il token e ne ricava $N$ punteggi, uno per esperto, con
+la moltiplicazione più elementare che ci sia fra una tabella di numeri e una
+lista (in gergo: un singolo strato lineare, senza nemmeno il termine costante
+che di solito si aggiunge). Poi si tengono i $k$ punteggi più alti, si
+trasformano in proporzioni che sommano a uno, e l'uscita dello strato è la
+miscela degli esperti scelti in quelle proporzioni.
 
 `````{tab} Elementare
 
@@ -156,18 +162,24 @@ guarda ed emette quattro punteggi:
 
 Con $k = 2$ si tengono i due migliori, l'esperto 1 e l'esperto 3, e gli altri
 due si buttano via: per questo token semplicemente non esistono. Restano da
-decidere le proporzioni della miscela, ed è qui che entra la softmax, la
-stessa funzione che abbiamo usato per trasformare punteggi in probabilità in
-tutto il libro. Applicata **solo ai due sopravvissuti** dà $0{,}62$ e $0{,}38$:
-due pesi che sommano a uno, con il primo un po' più pesante perché il suo
-punteggio era più alto.
+decidere le proporzioni della miscela, cioè da trasformare due punteggi
+($2{,}0$ e $1{,}5$) in due percentuali che sommino a cento. La ricetta standard
+si chiama **softmax**, ed è una divisione con un passaggio in più: si prende il
+numero $e = 2{,}718\ldots$, lo si eleva a ciascun punteggio, e si divide
+ciascun risultato per la somma di tutti. Sui nostri due, $e^{2{,}0} = 7{,}39$ e
+$e^{1{,}5} = 4{,}48$, che sommati fanno $11{,}87$; quindi
+$7{,}39 / 11{,}87 = 0{,}62$ e $4{,}48 / 11{,}87 = 0{,}38$. Due pesi che sommano
+a uno, con il primo un po' più pesante perché il suo punteggio era più alto.
+(L'elevamento a potenza serve a due cose: non far uscire mai numeri negativi,
+e allargare le differenze, così che mezzo punto di vantaggio conti davvero.)
 
 L'uscita è la media pesata delle due risposte: il 62% di quella dell'esperto 1
 più il 38% di quella dell'esperto 3. Il token ha attraversato due reti su
 quattro, e le altre due sono rimaste ferme: nessun calcolo, nessun costo.
 
 Un dettaglio che sembra un cavillo e invece conta: la softmax si applica
-**dopo** il taglio, non prima. Applicata a tutti e quattro darebbe $0{,}53$,
+**dopo** il taglio, non prima. Applicata a tutti e quattro (stessa ricetta, ma
+dividendo per la somma di quattro numeri invece che di due) darebbe $0{,}53$,
 $0{,}12$, $0{,}32$ e $0{,}03$, e i due scelti insieme farebbero solo $0{,}85$:
 buttare via il resto lascerebbe l'uscita sistematicamente più piccola del
 dovuto. Rinormalizzando sui soli scelti, il cento per cento viene sempre
@@ -177,13 +189,15 @@ distribuito.
 
 `````{tab} Superiore
 
-Sia $x \in \mathbb{R}^{d_{\text{model}}}$ la rappresentazione di un token in
-ingresso allo strato, $W_g \in \mathbb{R}^{N \times d_{\text{model}}}$ la
-matrice del router e $E_1, \dots, E_N$ gli esperti (ciascuno una FFN
+Sia $\mathbf{x} \in \mathbb{R}^{d_{\text{model}}}$ la rappresentazione di un
+token in ingresso allo strato,
+$\mathbf{W}_g \in \mathbb{R}^{N \times d_{\text{model}}}$
+la matrice del router e $E_1, \dots, E_N$ gli esperti (ciascuno una FFN
 indipendente). I pesi di miscelazione sono
 
 $$
-G(x) = \operatorname{softmax}\bigl(\text{top-}k(W_g\,x)\bigr),
+G(\mathbf{x}) =
+\operatorname{softmax}\bigl(\text{top-}k(\mathbf{W}_g\,\mathbf{x})\bigr),
 $$
 
 dove $\text{top-}k(\cdot)$ conserva le $k$ componenti maggiori e pone le altre
@@ -192,18 +206,19 @@ sopravvissuti: è la formulazione di Shazeer e colleghi
 {cite}`shazeer2017outrageously`). L'uscita dello strato è
 
 $$
-y = \sum_{i \,\in\, \text{top-}k} G(x)_i \, E_i(x),
+\mathbf{y} = \sum_{i \,\in\, \text{top-}k} G(\mathbf{x})_i \, E_i(\mathbf{x}),
 $$
 
-dove $G(x)_i$ è il peso assegnato all'esperto $i$ (i pesi dei selezionati
-sommano a 1) ed $E_i(x)$ la sua risposta. Con i punteggi
-$W_g x = (2{,}0;\ 0{,}5;\ 1{,}5;\ -1{,}0)$ e $k = 2$ sopravvivono gli indici 1
-e 3, con
+dove $G(\mathbf{x})_i$ è il peso assegnato all'esperto $i$ (i pesi dei
+selezionati sommano a 1) ed $E_i(\mathbf{x})$ la sua risposta. Con i punteggi
+$\mathbf{W}_g \mathbf{x} = (2{,}0;\ 0{,}5;\ 1{,}5;\ -1{,}0)$ e $k = 2$
+sopravvivono gli
+indici 1 e 3, con
 
 $$
-G(x)_1 = \frac{e^{2{,}0}}{e^{2{,}0} + e^{1{,}5}} = 0{,}622,
+G(\mathbf{x})_1 = \frac{e^{2{,}0}}{e^{2{,}0} + e^{1{,}5}} = 0{,}622,
 \qquad
-G(x)_3 = \frac{e^{1{,}5}}{e^{2{,}0} + e^{1{,}5}} = 0{,}378 .
+G(\mathbf{x})_3 = \frac{e^{1{,}5}}{e^{2{,}0} + e^{1{,}5}} = 0{,}378 .
 $$
 
 Il costo del router è $O(N\,d_{\text{model}})$ per token, contro
@@ -220,21 +235,30 @@ sezione sul collasso, qui sotto, spiega perché sia una precauzione necessaria.
 `````
 
 C'è un punto sottile e importante, e vale per entrambi i livelli di lettura.
-La scelta dei $k$ esperti è **discreta**: un ordinamento, un taglio, niente su
-cui si possa calcolare una derivata. Come fa allora il router a imparare a
-smistare? Il gradiente non passa dalla selezione, passa dai **pesi della
-miscela**, i due numeri calcolati poco fa, con cui gli esperti scelti
-contribuiscono all'uscita. Se l'esperto 1 ha dato una
-risposta utile, la discesa del gradiente alza il suo peso, e per alzarlo deve
-alzare il punteggio che il router gli aveva assegnato: la prossima volta che
-arriverà un token simile, l'esperto 1 sarà scelto un po' più volentieri. Il
-router impara per rinforzo indiretto, guardando com'è andata a chi ha
-mandato.
+La scelta dei $k$ esperti è **discreta**: si ordina, si taglia, e un taglio non
+ha vie di mezzo, perché un esperto è dentro o è fuori, mai «dentro per il tre
+per cento in più». Il modo in cui una rete impara, invece, è tutto fatto di vie
+di mezzo: si guarda com'è andata e ci si chiede, per ogni numero interno, «se
+lo avessi alzato di pochissimo, sarebbe andata meglio o peggio?», poi lo si
+sposta di un'inezia nella direzione buona. Su un taglio quella domanda non ha
+risposta: alzare di pochissimo un punteggio, quasi sempre, non cambia chi entra
+e chi resta fuori. Come fa allora il router a imparare a smistare?
 
-E gli esperti *non* scelti? Non ricevono nulla. Nessun gradiente, nessuna
-correzione, nessun modo di dimostrare che avrebbero fatto meglio. Questa
-asimmetria è comodissima (è il motivo per cui il calcolo si risparmia davvero)
-ed è anche la radice del guasto caratteristico di tutta la famiglia.
+La risposta è che impara dall'altro pezzo, i **pesi della miscela**, i due
+numeri calcolati poco fa. Quelli sì che rispondono a variazioni piccole, e
+dipendono direttamente dai punteggi del router. Se l'esperto 1 ha dato una
+risposta utile, conviene alzare il suo peso; per alzare il suo peso bisogna
+alzare il punteggio che il router gli aveva assegnato; e allora la prossima
+volta che arriverà un token simile, l'esperto 1 sarà scelto un po' più
+volentieri. Il router impara di riflesso, guardando com'è andata a chi ha
+mandato, senza mai essere corretto direttamente su chi avrebbe dovuto
+scegliere.
+
+E gli esperti *non* scelti? Non ricevono nulla. Nessuna correzione, nessun
+modo di dimostrare che avrebbero fatto meglio: chi non lavora non sbaglia, e
+chi non sbaglia non impara. Questa asimmetria è comodissima (è il motivo per
+cui il calcolo si risparmia davvero) ed è anche la radice del guasto
+caratteristico di tutta la famiglia.
 
 ## Il collasso del router
 
@@ -277,12 +301,14 @@ $N$ esperti:
 $$
 \mathcal{L}_{\text{aux}} = \alpha\,N \sum_{i=1}^{N} f_i \, P_i,
 \qquad
-f_i = \frac{1}{T}\sum_{x \in \mathcal{B}} \mathbb{1}\{\arg\max_j p_j(x) = i\},
+f_i = \frac{1}{T}\sum_{\mathbf{x} \in \mathcal{B}}
+\mathbb{1}\{\arg\max_j p_j(\mathbf{x}) = i\},
 \qquad
-P_i = \frac{1}{T}\sum_{x \in \mathcal{B}} p_i(x),
+P_i = \frac{1}{T}\sum_{\mathbf{x} \in \mathcal{B}} p_i(\mathbf{x}),
 $$
 
-dove $p(x)$ è la distribuzione softmax del router sul token $x$, $f_i$ è la
+dove $p(\mathbf{x})$ è la distribuzione softmax del router sul token
+$\mathbf{x}$, $f_i$ è la
 **frazione di token effettivamente instradati** all'esperto $i$ (un
 conteggio), $P_i$ la **probabilità media** che il router gli ha assegnato (una
 quantità continua) e $\alpha$ il peso della penalità, $10^{-2}$ nel paper.
@@ -333,25 +359,31 @@ fra le cose che si osservano, non fra quelle che si dimostrano.
 
 ### La capacità, e i token che cadono
 
-Il bilanciamento è una spinta statistica, non una garanzia: in un batch
-qualunque un esperto può comunque ricevere più token di quanti ne possa
-elaborare. Per questo l'implementazione fissa in anticipo una **capacità**,
-cioè il numero massimo di token che ciascun esperto accetta per batch:
+Il bilanciamento è una spinta statistica, non una garanzia: in un mucchietto di
+token qualunque (nel gergo un **batch**, cioè il gruppo di esempi che il
+modello elabora in una volta sola) un esperto può comunque ricevere più token
+di quanti ne possa elaborare. Per questo l'implementazione fissa in anticipo
+una **capacità**, cioè il numero massimo di token che ciascun esperto accetta
+per batch. La ricetta è semplice: si conta quanti token toccherebbero a testa
+in un mondo perfettamente equo, si aggiunge un margine di sicurezza, e si
+arrotonda per eccesso.
 
 $$
 \text{capacità} = \left\lceil \frac{T}{N} \cdot c \right\rceil,
 $$
 
-dove $T$ è il numero di token del batch, $N$ il numero di esperti e $c$ il
-*capacity factor*, un margine di sicurezza appena sopra 1 (valori tipici tra
-$1{,}0$ e $1{,}25$). Con $T = 8$ token, $N = 4$ esperti e $c = 1{,}25$ la
-capacità è $3$: un esperto che si vedesse assegnare cinque token ne elabora
-tre e ne lascia cadere due.
+dove $T$ è il numero di token del batch, $N$ il numero di esperti, $c$ il
+*capacity factor*, cioè il margine, appena sopra 1 (valori tipici tra $1{,}0$ e
+$1{,}25$), e le parentesi con gli angoli sono l'arrotondamento all'intero
+superiore. Con $T = 8$ token, $N = 4$ esperti e $c = 1{,}25$ la capacità è $3$
+(due token a testa più un quarto, cioè $2{,}5$, arrotondato a $3$): un esperto
+che si vedesse assegnare cinque token ne elabora tre e ne lascia cadere due.
 
 Cosa succede ai token caduti? Nulla di drammatico e nulla di visibile: l'uscita
 dello strato MoE per quel token è zero, e siccome il blocco è avvolto dalla
 connessione residua incontrata con le ResNet nel capitolo sul deep learning
-($x + \text{MoE}(x)$), il token attraversa lo strato **immutato**, come se lì
+($\mathbf{x} + \text{MoE}(\mathbf{x})$), il token attraversa lo strato
+**immutato**, come se lì
 non ci fosse. Nessun errore, nessun messaggio: solo un po' di qualità in meno,
 distribuita in modo silenzioso. Alzare $c$ riduce i token caduti ma alloca
 buffer più grandi, cioè spreca memoria per posti mai occupati. E c'è una
@@ -444,12 +476,13 @@ L'idea era pronta trent'anni prima dell'hardware che l'ha resa utile.
 Nel 1991 Robert Jacobs, Michael Jordan, Steven Nowlan e Geoffrey Hinton
 pubblicano su *Neural Computation* un articolo intitolato *Adaptive Mixtures
 of Local Experts* {cite}`jacobs1991adaptive`. La proposta è già tutta lì: più
-reti separate, e una **gating network** che impara a pesarle in funzione
-dell'input, così che ciascuna si specializzi su una regione dello spazio dei
-dati invece di fare un compromesso mediocre su tutto. Manca però il pezzo che
-ci interessa qui: la miscela era **densa**, cioè tutti gli esperti venivano
-calcolati e poi mediati. Un buon modo di organizzare l'apprendimento, non un
-modo di risparmiare conto.
+reti separate, e una **gating network** (letteralmente «rete cancello»: è il
+nonno del router) che impara a pesarle a seconda di quello che le arriva
+davanti, così che ciascuna si specializzi su un tipo di dati invece di fare un
+compromesso mediocre su tutto. Manca però il pezzo che ci interessa qui: la
+miscela era **densa**, cioè si facevano lavorare tutti gli esperti e poi si
+faceva la media delle loro risposte. Un buon modo di organizzare
+l'apprendimento, non un modo di risparmiare conto.
 
 Il salto è del 2017, con *Outrageously Large Neural Networks: The
 Sparsely-Gated Mixture-of-Experts Layer* di Noam Shazeer e colleghi
@@ -466,12 +499,14 @@ Eigen, Ranzato e Sutskever {cite}`eigen2013learning`, che lo curavano con un
 tetto imposto a mano sulle assegnazioni) e che introduce le loss ausiliarie
 per correggerlo durante l'addestramento.
 
-Nel 2021 GShard {cite}`lepikhin2021gshard` porta il meccanismo dentro il
-Transformer nella forma che ancora usiamo: la FFN di uno strato ogni due
-sostituita da un banco di esperti, routing **top-2**, capacità con token
-lasciati cadere, esperti distribuiti su centinaia di acceleratori con
-all-to-all. L'anno dopo Switch Transformer {cite}`fedus2022switch` fa la mossa
-controintuitiva: **un solo esperto per token**. Il ragionamento del 2017
+Nel 2020 GShard {cite}`lepikhin2021gshard` (presentato a ICLR l'anno
+successivo, che è la data della voce in bibliografia) porta il meccanismo dentro
+il Transformer nella forma che ancora usiamo: la rete feed-forward di uno strato
+ogni due sostituita da un banco di esperti, due esperti per token, il tetto alla
+capacità con i token che cadono, e gli esperti sparsi su centinaia di schede che
+si scambiano token in continuazione. Pochi mesi dopo Switch Transformer
+{cite}`fedus2022switch` fa la mossa controintuitiva: **un solo esperto per
+token**. Il ragionamento del 2017
 diceva che ne servivano almeno due per avere un gradiente sensato sul router;
 Fedus, Zoph e Shazeer mostrano che il gradiente arriva comunque, e che il
 top-1 dimezza il traffico dell'all-to-all, semplifica il codice e permette
@@ -497,7 +532,9 @@ Il codice qui sotto implementa lo strato per intero: esperti, router, top-$k$,
 softmax sui soli scelti, combinazione pesata. Non c'è nessuna delle
 ottimizzazioni vere (il *dispatch* efficiente dei token, l'all-to-all, la
 capacità con i buffer preallocati), e il ciclo `for` sugli esperti sarebbe
-inaccettabile su scala; ma la struttura è quella, e si legge.
+inaccettabile su scala; ma la struttura è quella, e si legge. Chi legge al
+livello Elementare può saltare da qui alla fine della sezione: il conto che
+chiude la pagina è raccontato senza formule nel riquadro finale.
 
 ```python
 import torch
@@ -559,7 +596,9 @@ print(totali, per_esperto * strato.k)
 ```
 
 Un esperto pesa $64 \times 256 + 256 + 256 \times 64 + 64 = 33\,088$
-parametri; otto ne fanno $264\,704$, più i $512$ del router: $265\,216$ in
+parametri (un *parametro* è uno dei numeri che la rete regola durante
+l'addestramento: sono quelli che si contano quando si dice «un modello da sette
+miliardi»); otto ne fanno $264\,704$, più i $512$ del router: $265\,216$ in
 tutto. Ogni token ne attraversa due, cioè $66\,176$: esattamente un quarto dei
 parametri degli esperti, il rapporto $N/k = 8/2$ (sul totale il rapporto è
 $4{,}008$, perché il router lo pagano tutti i token). Quattro volte i
@@ -624,7 +663,7 @@ testo, e per trasformarlo in un interlocutore serve la fase successiva, il
   **parametri totali** (la memoria) e **parametri attivi** (il calcolo per
   token).
 - Il router è uno strato lineare:
-  $G(\mathbf{x}) = \operatorname{softmax}(\text{top-}k(W_g \mathbf{x}))$
+  $G(\mathbf{x}) = \operatorname{softmax}(\text{top-}k(\mathbf{W}_g \mathbf{x}))$
   e $\mathbf{y} = \sum_{i \in \text{top-}k} G(\mathbf{x})_i E_i(\mathbf{x})$.
   La selezione è discreta e non differenziabile: il gradiente arriva al router
   **attraverso i pesi** $G(\mathbf{x})_i$ degli esperti scelti.

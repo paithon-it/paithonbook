@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  paithon book — figura: il flusso di un progetto di machine learning.
+  paithon book, figura: il flusso di un progetto di machine learning.
   Cinque blocchi in sequenza: Dati -> Feature -> Modello -> Valutazione
   -> Deploy, con una freccia di feedback che dalla Valutazione torna alle
   Feature (si itera). Palette-locked: box cream, bordi teal/ocra/terracotta/

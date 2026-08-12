@@ -59,6 +59,7 @@ Il notebook è JSON scritto a mano: nessuna dipendenza da nbformat, così lo
 script gira anche in un ambiente spoglio.
 """
 
+import functools
 import json
 import pathlib
 import re
@@ -187,14 +188,59 @@ def blocchi(testo: str):
     return sorted(trovati)
 
 
+def _e_codice(info: str) -> bool:
+    """L'info string di un recinto dice che dentro c'e' codice?"""
+    return (not info.startswith("{")
+            or info.startswith(("{code-block}", "{code}", "{literalinclude}")))
+
+
+@functools.lru_cache(maxsize=None)
+def senza_codice(testo: str) -> str:
+    """Il testo con i recinti di CODICE anneriti, lunghezza conservata.
+
+    Serve perche' `RE_TITOLO` cerca `^#{1,4} ` su tutto il file, e dentro un
+    blocco Python quel cancelletto non apre un titolo, apre un commento. Senza
+    questa maschera «# --- Clustering ---» diventava l'intestazione della cella
+    successiva nel notebook compagno, e i notebook sono la cosa che il lettore
+    scarica dal pulsante «Esegui il codice»: erano undici celle in otto
+    capitoli, fra cui «train.py», «UCB c=2  85.9%» e «--- Schedule del rumore».
+
+    Le regole dei recinti sono quelle di CommonMark e vanno seguite tutte e
+    tre, perche' sbagliarne una sola rimaschera mezzo file: si apre con N>=3
+    backtick piu' un'info string, si chiude con >=N backtick e **niente** info
+    string, e i recinti si annidano (le tab del libro ne usano 5, e dentro ci
+    stanno blocchi da 3). Il caso che tradisce e' proprio la riga che CHIUDE
+    una tab: ha l'info string vuota, e presa per un'apertura anneriva tutto il
+    resto della pagina, titoli veri compresi.
+
+    La lunghezza si conserva riga per riga perche' chi chiama passa una
+    posizione calcolata sul testo originale.
+    """
+    pila: list[tuple[int, bool]] = []      # (quanti backtick, e' codice)
+    fuori = []
+    for riga in testo.split("\n"):
+        m = re.match(r"^[^\S\n]*(`{3,})(.*)$", riga)
+        chiude = False
+        if m:
+            n, info = len(m.group(1)), m.group(2).strip()
+            if pila and not info and n >= pila[-1][0]:
+                chiude = True
+            else:
+                pila.append((n, _e_codice(info)))
+        fuori.append(" " * len(riga) if any(c for _, c in pila) else riga)
+        if chiude:
+            pila.pop()
+    return "\n".join(fuori)
+
+
 def titolo_di(testo: str) -> str | None:
-    m = RE_TITOLO.search(testo)
+    m = RE_TITOLO.search(senza_codice(testo))
     return m.group(2) if m else None
 
 
 def titolo_prima_di(testo: str, posizione: int) -> str | None:
     ultimo = None
-    for m in RE_TITOLO.finditer(testo, 0, posizione):
+    for m in RE_TITOLO.finditer(senza_codice(testo), 0, posizione):
         ultimo = m
     return ultimo.group(2) if ultimo else None
 
@@ -227,7 +273,16 @@ def cella_codice(codice: str, tag: str | None = None,
         "execution_count": None,
         "metadata": meta,
         "outputs": [],
-        "source": codice.rstrip("\n").split("\n"),
+        # `keepends=True` NON e' un dettaglio: nel formato ipynb `source` e' una
+        # lista di righe che **conservano il proprio `\n`**, perche' chi legge il
+        # file (nbformat, Jupyter, Colab) le ricongiunge con `''.join()`. Con uno
+        # `split("\n")` nudo le righe arrivano senza terminatore e ogni cella
+        # collassa su una riga sola: 151 celle su 264, in tutti e 23 i notebook,
+        # davano `SyntaxError` a chi le apriva. Sono i file che il lettore scarica
+        # dal pulsante «Esegui il codice», e nessuno se n'era accorto perche' la
+        # verifica qui sotto ricongiungeva con `"\n".join()`, cioe' rimetteva a
+        # posto in memoria proprio la cosa che sul disco era rotta.
+        "source": codice.rstrip("\n").splitlines(keepends=True),
     }
 
 
@@ -359,7 +414,13 @@ def verifica(nb: dict) -> str:
                 righe.append("# " + r)
             else:
                 righe.append(r)
-        celle.append(("\n".join(righe), c["metadata"].get("pt-pagina", "?")))
+        # Si ricongiunge con `''.join()`, cioe' **come fa nbformat**, non con
+        # `"\n".join()`. La differenza sembra nulla e non lo e': unendo con `\n`
+        # questa verifica rimetteva i terminatori che il file non aveva, provava
+        # un testo che nel notebook non esisteva, e restava verde mentre tutti e
+        # 23 i notebook pubblicati non si aprivano. Un verificatore che ripara
+        # l'oggetto prima di guardarlo non sta verificando niente.
+        celle.append(("".join(righe), c["metadata"].get("pt-pagina", "?")))
 
     coda = ""
     if magie:

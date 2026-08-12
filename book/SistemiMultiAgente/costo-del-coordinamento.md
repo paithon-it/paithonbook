@@ -13,16 +13,21 @@ secondo termine si mangia il primo.
 Chi mette al lavoro più agenti si trova davanti un conto della stessa forma,
 il quadrato, ma di origine diversa. Qui a moltiplicarsi non sono i canali fra
 le persone: è la conversazione che si allunga a ogni intervento, e che ogni
-agente rilegge da capo prima di parlare. Quello che si rilegge sono token, e i
-token hanno un prezzo di listino. Il capitolo sugli Agenti ha già detto, a
+agente rilegge da capo prima di parlare. Quello che si rilegge sono **token**,
+cioè i pezzetti in cui un modello di linguaggio spezza il testo per digerirlo:
+in italiano un token vale grosso modo mezza parola, e una pagina come questa ne
+contiene sette o ottocento. I token hanno un prezzo di listino, e si pagano sia
+quelli scritti sia quelli letti. Il capitolo sugli Agenti ha già detto, a
 parole, che una squadra costa più di un solista e moltiplica i modi di
 sbagliare. Questa
 sezione trasforma quell'avvertimento in un conto: tre formule che si fanno su
 un tovagliolo prima di scrivere una riga di codice. È il metodo di Enrico
 Fermi, che al test Trinity, il 16 luglio 1945, lasciò cadere dei pezzetti di
 carta al passaggio dell'onda d'urto e dal loro spostamento stimò a mente una
-decina di chilotoni: contro i venticinque circa che le analisi radiochimiche
-avrebbero stabilito poi, l'ordine di grandezza giusto, e subito. Prima di
+decina di chilotoni: contro i ventuno che le analisi radiochimiche avrebbero
+stabilito poi (e i quasi venticinque a cui li ha portati una rideterminazione
+del 2021 sui campioni di trinitite), l'ordine di grandezza giusto, e subito.
+Prima di
 assemblare una squadra conviene fare lo stesso: quanto costerà, quanto potrà
 accelerare, quanto spesso sbaglierà.
 
@@ -51,6 +56,14 @@ Quattro volte i turni, quasi **quindici** volte le righe lette. Questo è tutto
 il problema: quando raddoppi le persone attorno al tavolo non raddoppi il
 costo della riunione, quasi lo quadruplichi, perché ogni nuovo partecipante
 non solo parla, ma va anche ascoltato da tutti gli altri.
+
+Fra poco, in tabella, lo stesso passaggio comparirà con un numero più mite,
+quasi dieci invece di quasi quindici, e non è una svista. Quel quindici conta
+solo le righe di conversazione; la bolletta vera comprende anche il pezzo fisso
+che ciascuno si rilegge a ogni turno, cioè le istruzioni di partenza, che sono
+sempre lunghe uguali e non si allungano mai. Una parte che non cresce, sommata a
+una che cresce in fretta, smorza il rapporto fra i due totali. Quindici è la
+crescita del pezzo che si gonfia, dieci è quella del conto intero.
 
 `````
 
@@ -85,12 +98,29 @@ di agenti. Cresce come i canali $n(n-1)/2$ di Brooks, ma per un'altra ragione:
 qui il quadrato non viene dalle coppie che si parlano, viene dalla **rilettura
 cumulativa** di una trascrizione che si allunga, ed è quadratico nei turni
 anche per un solista che lavori da solo abbastanza a lungo. Stessa forma,
-meccanismo diverso. In
-un regime a *broadcast*, dove a ogni giro tutti leggono e tutti scrivono, il
-conto peggiora ancora: la trascrizione cresce di $N\bar{m}$ a ogni giro e la
-leggono in $N$, per un totale di circa $N R\,c_0 + N^{2}\bar{m}\,R(R-1)/2$,
-cioè lo stesso ordine $O(\bar{m}N^2R^2)$ raggiunto però in $R$ giri invece che
-in $NR$ turni.
+meccanismo diverso.
+
+Vale la pena guardare l'altro regime possibile, il *broadcast*, dove a ogni giro
+tutti leggono e tutti scrivono insieme invece che a turno. La trascrizione
+cresce di $N\bar{m}$ a giro e la leggono in $N$, per un totale di circa
+
+$$
+\text{token}_{\text{broadcast}}(N, R) \;=\; N R\,c_0 \;+\;
+N^{2}\,\bar{m}\,\frac{R(R-1)}{2},
+$$
+
+cioè lo **stesso ordine** $O(\bar{m}N^2R^2)$, con una costante appena più bassa.
+Con i numeri di questa sezione ($N = 4$, $R = 8$) fa $288.000$ token contro i
+$328.000$ del turno a turno, il 12% in meno, e il rapporto resta sotto uno per
+ogni $N$ e $R$. Attenzione a non leggerlo come un risparmio: la ragione dello
+sconto è che dentro un giro **nessuno legge gli altri**. Chi parla per $t$-esimo
+nel regime a turni ha già davanti i $t-1$ interventi del giro in corso; in
+*broadcast* tutti leggono la stessa trascrizione, ferma al giro precedente, e
+quello che manca dal conto è esattamente l'informazione che manca a chi lavora.
+Ciò che il *broadcast* compra davvero è la **latenza**, $R$ giri invece di $NR$
+turni, perché gli interventi di un giro si producono in parallelo; e la compra
+al prezzo di un giro di ritardo nel reagire a quello che ha appena detto un
+altro.
 
 `````
 
@@ -142,9 +172,11 @@ perché non produce niente di visibile.
 C'è un secondo effetto, meno contabile e più insidioso. All'ultimo turno la
 finestra contiene 18.000 token di verbale, e l'informazione decisiva (una
 decisione presa al decimo turno, un vincolo enunciato al terzo) sta sepolta in
-mezzo: è la zona cieca del *lost in the middle* descritta nella sezione sul
-context engineering. La trascrizione condivisa non è solo cara, è anche il
-posto peggiore dove mettere qualcosa che deve essere ricordato.
+mezzo, ed è la posizione da cui un modello recupera peggio: quello che sta
+all'inizio e alla fine di una finestra lunga pesa molto più di quello che sta in
+mezzo. È il difetto che il capitolo sugli **Agenti**, nella sezione sul context
+engineering, chiama *lost in the middle*. La trascrizione condivisa non è solo
+cara, è anche il posto peggiore dove mettere qualcosa che deve essere ricordato.
 
 ## Il tetto di Amdahl
 
@@ -230,14 +262,22 @@ ginocchio si sposta ancora più a sinistra.
 `````
 
 La conseguenza pratica è una sola: si aggiungono agenti finché il pezzo
-parallelizzabile lo giustifica, e poi si smette. La domanda da farsi non è «un
-altro agente aiuterebbe?» (la risposta è quasi sempre sì, di pochissimo) ma
-«quanto vale l'*ultimo* agente aggiunto, rispetto a quello che costa?». Con
-$s = 0{,}3$, passare da quattro a otto agenti compra $0{,}48$ di accelerazione
-e paga, stando alla tabella dei token, un conto che sale da $9{,}6\times$ a
-$34{,}4\times$: nessuna aritmetica sensata approva quella spesa. Il regime
-opposto (centinaia di agenti elementari con coordinamento quasi gratuito) è
-quello degli sciami, e ha una sezione sua.
+divisibile lo giustifica, e poi si smette. La domanda da farsi non è «un altro
+agente aiuterebbe?» (la risposta è quasi sempre sì, di pochissimo) ma «quanto
+vale l'*ultimo* agente aggiunto, rispetto a quello che costa?».
+
+Sul rapporto in dieci ore la risposta si legge senza formule. Passare da quattro
+persone a otto accorcia il lavoro da $4{,}75$ ore a $3{,}875$: si guadagna meno
+di un'ora, cioè mezza volta scarsa di accelerazione in più, e la si paga, stando
+alla tabella dei token di poco fa, con un conto che sale da dieci a
+trentaquattro volte quello di un solista. Nessuna aritmetica sensata approva
+quella spesa. E quella mezza volta è ancora la stima **generosa**, perché viene
+dalla curva che finge che coordinarsi non costi niente: tenendo conto anche del
+tempo che ogni nuovo arrivato fa perdere agli altri, gli otto non guadagnano
+quasi più nulla rispetto ai quattro.
+
+Il regime opposto (centinaia di agenti elementari con coordinamento quasi
+gratuito) è quello degli sciami, e ha una sezione sua.
 
 ## Gli errori si compongono
 
@@ -316,19 +356,32 @@ propaga travestito da dato di partenza, e quello **segnalato**, che è
 recuperabile. Con $p = 0{,}95$ e un verificatore che ne pesca
 l'$80\%$ si ottiene $p' = 0{,}99$, e su venti passi
 $0{,}99^{20} = 0{,}818$ invece di $0{,}358$: da due catene su tre che
-falliscono a una su cinque, cambiando **non il modello ma il ponteggio**. Due
-avvertenze per onestà: il calcolo presuppone che il controllo sia indipendente
-da chi produce (è il punto in cui un autocontrollo non vale
-nulla, ci torniamo fra poco), e i
-ritentativi dopo un rifiuto non sono indipendenti fra loro, perché un modello
-che sbaglia tende a rifare lo stesso ragionamento; contarli come prove
-indipendenti sovrastima il guadagno.
+falliscono a una su cinque, cambiando **non il modello ma il ponteggio**.
+
+Tre avvertenze per onestà. La prima è che $r$ **da solo non caratterizza un
+verificatore**, e il modo più rapido di vederlo è portarlo all'estremo: con
+$r = 1$ la formula dà $p' = 1$, cioè una catena lunga a piacere che non fallisce
+mai qualunque sia la qualità dei passi. Ma $r = 1$ lo realizza anche il cancello
+degenere che **rifiuta tutto**, il quale non verifica niente. Alla formula manca
+il tasso di falso allarme, $P(\text{rifiuto} \mid \text{passo corretto})$: sotto
+l'ipotesi appena dichiarata, che il passo intercettato venga rifatto, ogni falso
+allarme è un passo rifatto per niente, ed è quel numero, non $r$, a dire quanto
+costa il ponteggio. Un verificatore si prezza con due cifre, e la sezione «Come
+falliscono» qui sotto guarda per lo più quella sbagliata, cioè il critico che
+approva troppo, mentre il critico che boccia troppo è altrettanto reale e non
+compare mai nel conto. La seconda avvertenza: il calcolo presuppone che il
+controllo sia indipendente da chi produce (è il punto in cui un autocontrollo
+non vale nulla, ci torniamo fra poco). La terza: i ritentativi dopo un rifiuto
+non sono indipendenti fra loro, perché un modello che sbaglia tende a rifare lo
+stesso ragionamento; contarli come prove indipendenti sovrastima il guadagno.
 
 `````
 
-Il meccanismo di controllo non va reinventato: è il **validation gate** già
-descritto nella sezione sul loop engineering, il predicato deterministico ed
-esterno che il modello non può compiacere. Quello che i numeri qui sopra
+Il meccanismo di controllo non va reinventato: è l'adulto col foglio in tasca del
+gioco di poco fa, cioè un controllo **esterno** che dà sempre la stessa risposta
+sullo stesso caso e non si lascia convincere da come gliela si racconta: un test
+che gira, un conto che deve tornare, un formato che si valida. Nella sezione sul
+loop engineering si chiama **validation gate**. Quello che i numeri qui sopra
 aggiungono è la ragione per cui non è un lusso ma il pezzo portante: senza
 cancello, ogni passo aggiunto alla catena è un fattore moltiplicativo minore
 di uno; con il cancello, il fattore si avvicina a uno e la catena smette di
@@ -352,18 +405,46 @@ primo conto con un altro nome, e la bolletta è quella.
 aggiunto non è potenza di calcolo, è l'indipendenza: chi ha scritto il codice
 ha già deciso, mentre lo scriveva, che è giusto. La separazione fra *maker* e
 *checker* descritta nel loop engineering esiste per rompere questa
-correlazione, e il guadagno si quantifica. Detta $P(E)$ la probabilità che il
-produttore sbagli e $P(M \mid E)$ quella che il controllo non se ne accorga
-*dato che* l'errore c'è, un errore arriva in fondo con probabilità
-$P(E)\,P(M \mid E)$. Poniamo $P(E) = 0{,}05$ e, per fissare le idee, un
-autocontrollo che si accorge del proprio errore una volta su dieci
-($P(M \mid E) \approx 0{,}9$): lascia passare il $4{,}5\%$. Un critico con
+correlazione, e il guadagno si quantifica.
+
+`````{tab} Elementare
+
+È la differenza fra rileggersi il proprio tema e farlo rileggere a un compagno.
+Rileggendoti, gli errori che non hai visto mentre scrivevi continui a non
+vederli: sono proprio quelli su cui, scrivendo, avevi già deciso che andavano
+bene. Un compagno che non sa che cosa avevi in testa li vede.
+
+Mettiamoci dei numeri, scelti per fissare le idee e non misurati sul campo.
+Diciamo che chi lavora sbaglia cinque volte su cento. Se poi si rilegge da solo,
+di quei cinque errori se ne accorge grosso modo uno su dieci, e gli altri nove
+arrivano in fondo: quattro volte e mezzo su cento. Se invece a rileggere è un
+altro, che parte dal risultato e non conosce il ragionamento che c'è dietro, gli
+sfugge un errore su tre invece di nove su dieci: in fondo ne arriva uno e mezzo
+su cento, **tre volte meno**. Stesso modello, stessa bravura, stesso numero di
+controlli: cambia solo chi controlla.
+
+Qui sta la cosa da non sbagliare mai. Quel vantaggio non viene dall'avere due
+teste, viene dal fatto che la seconda **non sa** come è stato fatto il lavoro. Se
+al controllore si passa tutto il ragionamento del primo, la sua scrivania torna a
+essere quella del primo, e il vantaggio sparisce insieme all'ignoranza.
+
+`````
+
+`````{tab} Superiore
+
+Detta $P(E)$ la probabilità che il produttore sbagli e $P(M \mid E)$ quella che
+il controllo non se ne accorga *dato che* l'errore c'è, un errore arriva in
+fondo con probabilità $P(E)\,P(M \mid E)$. Poniamo $P(E) = 0{,}05$ e, per
+fissare le idee, un autocontrollo che si accorge del proprio errore una volta su
+dieci ($P(M \mid E) \approx 0{,}9$): lascia passare il $4{,}5\%$. Un critico con
 contesto pulito e criteri propri scende a $P(M \mid E) \approx 0{,}3$ e lascia
 passare l'$1{,}5\%$, tre volte meglio a parità di modello. Le due cifre sono
-plausibili, non misurate; quello che conta è il verso della disuguaglianza,
-che non dipende da quanto valgono esattamente. Tutto il valore del
-secondo agente sta in quel condizionamento, e sparisce se gli si passa la
-trascrizione del primo: a quel punto i due contesti tornano a coincidere.
+plausibili, non misurate; quello che conta è il verso della disuguaglianza, che
+non dipende da quanto valgono esattamente. Tutto il valore del secondo agente
+sta in quel condizionamento, e sparisce se gli si passa la trascrizione del
+primo: a quel punto i due contesti tornano a coincidere.
+
+`````
 
 **Terzo: i contesti sono in conflitto.** È il caso più sottovalutato, e merita
 di essere detto senza mezzi termini: qui il multi-agente non è un argomento di
@@ -458,10 +539,11 @@ La terza è la **verifica e la terminazione**. Il sistema si ferma prima di
 aver finito, oppure la verifica manca del tutto, oppure c'è ma è inadeguata:
 il critico approva perché non ha modo di provare davvero, e il suo verdetto non
 aggiunge informazione, aggiunge una firma. Torna qui, in forma empirica, la
-matematica di poche righe fa: un controllo con $r$ vicino a zero lascia $p'$
-uguale a $p$, e il ponteggio è teatro.
+matematica di poche righe fa: un controllo che intercetta quasi nessuno degli
+errori lascia la catena esattamente dov'era, e il ponteggio è teatro.
 
-Tre famiglie, tre contromisure, e nessuna è «usare un modello più bravo»: si
+Le tre famiglie di MAST hanno tre contromisure diverse, e nessuna delle tre è
+«usare un modello più bravo»: si
 scrivono specifiche più strette, si rende esplicito lo stato condiviso invece
 di lasciarlo implicito nella conversazione (è il mestiere dei protocolli e dei
 meccanismi di consenso, più avanti in questo capitolo), si dà al verificatore

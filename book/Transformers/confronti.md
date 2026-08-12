@@ -19,9 +19,13 @@ sequenze di lunghezza qualsiasi.
 ```
 
 L'equivalenza di {numref}`fig-rnn-srotolamento` è anche la radice del problema
-che questa sezione racconta. Se lo stato attraversa la stessa moltiplicazione
-a ogni passo, dopo cento passi quel fattore è stato applicato cento volte, e
-un numero poco più piccolo di uno diventa quasi zero.
+che questa sezione racconta. Se il riassunto che la rete si porta dietro
+attraversa la stessa moltiplicazione a ogni passo, dopo cento passi quel
+fattore è stato applicato cento volte, e un numero poco più piccolo di uno
+diventa quasi zero: $0{,}9$ moltiplicato per sé stesso cento volte fa
+$0{,}000027$, e perfino $0{,}99$ scende a $0{,}37$. È un conto da calcolatrice,
+e vale la pena farlo, perché è tutta lì la ragione per cui l'inizio di un testo
+lungo sbiadisce.
 
 `````{tab} Elementare
 Le **RNN** leggono una parola alla volta portandosi dietro un riassunto
@@ -37,7 +41,8 @@ basta guardare.
 `````
 
 `````{tab} Superiore
-Le **RNN** mantengono uno stato $h_t = f(h_{t-1}, x_t)$: la dipendenza tra
+Le **RNN** mantengono uno stato
+$\mathbf{h}_t = f(\mathbf{h}_{t-1}, \mathbf{x}_t)$: la dipendenza tra
 posizioni distanti $n$ passi attraversa $n$ applicazioni di $f$, e il
 gradiente retropropagato si attenua o esplode esponenzialmente (il *vanishing
 / exploding gradient* del capitolo sulle reti neurali). Le **LSTM**
@@ -52,7 +57,9 @@ Il Transformer porta la lunghezza del cammino tra due posizioni qualsiasi a
 $O(1)$ (ogni coppia è collegata direttamente dalla self-attention) e rende
 l'addestramento parallelo sull'intera sequenza. È questa combinazione
 (dipendenze lunghe *e* parallelismo) che le architetture ricorrenti non
-potevano offrire insieme.
+potevano offrire insieme. Con un'avvertenza che vale la pena mettere subito: il
+parallelismo è un vantaggio soprattutto **in addestramento**, perché in
+inferenza la generazione autoregressiva resta sequenziale, un token alla volta.
 `````
 
 ## Il conto da pagare: l'attenzione costa quadratica
@@ -112,12 +119,19 @@ massa di attenzione va su pochissime chiavi, quindi calcolare l'intera matrice
 contano sono quelle con prodotto scalare grande, cioè quelle *vicine* alla
 query. Trovare i vicini senza confrontarli tutti è un problema classico, e la
 risposta classica è l'**hashing sensibile alla località** (LSH): una funzione
-che manda vettori simili nello stesso secchiello con alta probabilità. Si
-raggruppano query e chiavi per secchiello, si calcola l'attenzione piena solo
-dentro ciascun secchiello, e il costo scende da $O(L^2)$ a $O(L \log L)$. Il
-prezzo è che l'hashing sbaglia: si ripete con più funzioni indipendenti per
-ridurre la probabilità di perdere una coppia importante, e la sparsità non è
-più garantita ma probabilistica.
+che manda vettori simili nello stesso secchiello con alta probabilità. Perché
+l'hashing funzioni, però, query e chiavi devono **coincidere**: se
+$h(\mathbf{q}_j) \neq h(\mathbf{k}_j)$ una query può finire in un secchiello
+dove la sua stessa
+chiave non c'è. Il Reformer usa quindi la stessa proiezione per entrambe
+(*shared-QK*), rinunciando alla distinzione fra il cercare e l'essere trovati
+su cui si regge la {numref}`fig-qkv`; gli autori misurano che questa rinuncia
+non costa prestazioni, il che è di per sé un'informazione interessante. Fatto
+questo, si raggruppano query e chiavi per secchiello, si calcola l'attenzione
+piena solo dentro ciascun secchiello, e il costo scende da $O(n^2)$ a
+$O(n \log n)$. Il prezzo ulteriore è che l'hashing sbaglia: si ripete con più
+funzioni indipendenti per ridurre la probabilità di perdere una coppia
+importante, e la sparsità non è più garantita ma probabilistica.
 
 Il secondo ingrediente del Reformer non riguarda l'attenzione ma la memoria, e
 merita di essere ricordato perché è trasversale: gli **strati reversibili**.
@@ -128,10 +142,7 @@ gli ingressi), quelle attivazioni non serve tenerle: si buttano e si
 ricostruiscono all'indietro quando servono. È il baratto **memoria contro
 calcolo** che l'ingegneria del deep learning ripropone a ogni scala, dalla
 ricomputazione delle attivazioni al modo in cui FlashAttention evita di
-materializzare la matrice di attenzione. In
-inferenza, inoltre, la generazione autoregressiva resta sequenziale token
-per token: il parallelismo del Transformer è un vantaggio soprattutto in
-addestramento.
+materializzare la matrice di attenzione.
 `````
 
 ## Un bilancio onesto
@@ -139,30 +150,58 @@ addestramento.
 Messi su una bilancia: il Transformer domina quando i dati sono tanti,
 l'hardware è parallelo e le dipendenze sono lunghe (esattamente il regime dei
 grandi modelli linguistici). Le architetture ricorrenti restano sensate su
-sequenze molto lunghe a risorse limitate, nei sistemi in tempo reale dove i
-dati arrivano in flusso, e come idea non è affatto morta: linee di ricerca
-recenti (le *attenzioni lineari* e i cosiddetti *state space model* come
-Mamba) riportano meccanismi di tipo ricorrente proprio per aggirare il costo
-quadratico dell'attenzione, e sono il tema dei due capitoli che seguono. In
-altre parole: il Transformer ha vinto la partita del decennio, non
-necessariamente il campionato eterno.
+sequenze molto lunghe a risorse limitate e nei sistemi che devono rispondere
+mentre i dati arrivano, uno alla volta, senza poter aspettare la fine del
+testo. E come idea non sono affatto morte: due linee di ricerca recenti
+rimettono in mezzo un riassunto che si aggiorna passo per passo, proprio come
+facevano le RNN, ma costruito in modo da non pagare il costo della riunione
+plenaria. Si chiamano *attenzioni lineari* e *state space model* (il più noto
+si chiama Mamba), e hanno un capitolo ciascuna subito dopo questo. In altre
+parole: il Transformer ha vinto la partita del decennio, non necessariamente il
+campionato eterno.
 
+`````{tab} Elementare
+```{admonition} Da ricordare
+:class: important
+- Le **RNN** leggono in fila con un riassunto mentale che sbiadisce;
+  **LSTM** e **GRU** aggiungono un taccuino con delle regole e la memoria dura
+  di più, ma si legge sempre una parola alla volta.
+- Il **Transformer** tiene tutto il testo sott'occhio: ogni parola può andare a
+  rileggersi qualunque altra, e il lavoro si divide fra tanti processori.
+- Il prezzo è la riunione dove ognuno parla con ognuno: raddoppiando i
+  partecipanti le chiacchiere quadruplicano. Da qui il limite alla lunghezza
+  del testo che un modello riesce a tenere davanti.
+- Per spendere meno si tolgono conversazioni, e i modi sono tre: decidere
+  **in anticipo** chi parla con chi (ognuno con i vicini, più qualche
+  partecipante che parla con tutti), lasciare che siano **i dati** a dire quali
+  coppie contano, oppure cambiare del tutto il modo di fare i conti (il
+  capitolo sull'attenzione lineare).
+- Nessuna architettura vince per sempre: i due capitoli che seguono riportano
+  in gioco l'idea del riassunto che si aggiorna, proprio dove la riunione
+  plenaria costa troppo.
+```
+`````
+
+`````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
 - **RNN**: memoria che sbiadisce e calcolo sequenziale. **LSTM/GRU**: gate
   che allungano la memoria (3 gate le prime, 2 le seconde), ma sempre in
   fila.
 - Il **Transformer** collega ogni coppia di posizioni in un passo e si
-  addestra in parallelo: dipendenze lunghe *e* velocità.
+  addestra in parallelo: dipendenze lunghe *e* velocità. In inferenza, però, la
+  generazione resta sequenziale.
 - Il prezzo è il costo **quadratico** $O(n^2)$ nella lunghezza della
   sequenza: da qui finestre di contesto limitate e la ricerca su attenzioni
   efficienti.
 - Ridurre quel costo vuol dire **togliere archi** da un grafo completo, e le
   strade sono tre: uno schema **fisso** deciso in anticipo (Longformer,
   BigBird), una scelta **guidata dai dati** con l'hashing sensibile alla
-  località (**Reformer**, da $O(L^2)$ a $O(L\log L)$), oppure rinunciare del
-  tutto alla softmax e **fattorizzarla** (il capitolo sull'attenzione lineare).
+  località (**Reformer**, da $O(n^2)$ a $O(n\log n)$, al prezzo di query e
+  chiavi condivise), oppure rinunciare del tutto alla softmax e
+  **fattorizzarla** (il capitolo sull'attenzione lineare).
 - Nessuna architettura vince per sempre: attenzione lineare e *state space
   model* (i due capitoli che seguono) rimettono in gioco idee ricorrenti
   proprio dove l'attenzione costa troppo.
 ```
+`````

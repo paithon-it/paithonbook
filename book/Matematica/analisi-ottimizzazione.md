@@ -11,17 +11,29 @@ sezione è la bussola promessa all'inizio del capitolo.
 
 ## La derivata: la pendenza istante per istante
 
-Una funzione lega un ingresso a un'uscita. La derivata risponde a una domanda
-sola: *se muovo l'ingresso di un pelo, di quanto cambia l'uscita?*
+Una **funzione** è una regola che, dato un numero in ingresso, ne restituisce
+uno in uscita, sempre lo stesso a parità di ingresso: «raddoppia» è una
+funzione, «il prezzo del biglietto per un viaggio di tanti chilometri» è una
+funzione, e anche «di quanto sbaglia questo modello, se le sue manopole sono
+regolate così» è una funzione. Disegnarla si può: si mette l'ingresso
+sull'asse orizzontale e l'uscita su quello verticale, e l'insieme dei punti
+che ne viene fuori è il **grafico**, di solito una curva che sale e scende. La
+derivata risponde a una domanda sola: *se muovo l'ingresso di un pelo, di
+quanto cambia l'uscita?*
 
 `````{tab} Elementare
 
 Pensa al tachimetro di un'auto. La posizione cambia nel tempo, e la velocità
-è "quanto in fretta" cambia: è la derivata della posizione. Su un grafico,
-la derivata in un punto è la **pendenza della tangente** lì. Dove la curva
-sale ripida la derivata è grande e positiva; dove scende è negativa; in cima
-a una gobba o in fondo a una conca, dove per un istante il terreno è piatto,
-la derivata vale **zero**.
+è "quanto in fretta" cambia: è la derivata della posizione.
+
+Sul grafico si vede ancora meglio. Appoggia un righello alla curva in un
+punto, inclinandolo finché la tocca senza attraversarla: quella è la retta
+**tangente**, e la sua inclinazione (di quanto sale ogni volta che si avanza
+di un passo verso destra) è la derivata lì. Dove la curva sale ripida il
+righello è ripido e la derivata è grande e positiva; dove scende, il righello
+punta in giù e la derivata è negativa; in cima a una gobba o in fondo a una
+conca, dove per un istante il terreno è piatto, il righello è orizzontale e la
+derivata vale **zero**.
 
 `````
 
@@ -47,14 +59,52 @@ famiglie di funzioni compaiono ovunque nel machine learning.
 
 `````{tab} Elementare
 
-Le tre "solite sospette" sono: le **potenze** (la parabola $x^2$ è la forma
-dell'errore quadratico, quello che si minimizza quando il modello deve
-prevedere un numero), l'**esponenziale** $e^x$ (dentro la sigmoide e la
-softmax, che trasformano punteggi in probabilità) e il **logaritmo** (nella
-cross-entropy, la loss della classificazione). Per derivarle si va a memoria:
-la pendenza di $x^2$ è $2x$ (nel punto $x=3$ la parabola sale con pendenza
-$6$), quella di $e^x$ è di nuovo $e^x$: derivandola, resta identica a sé
-stessa.
+Le tre "solite sospette" sono le **potenze**, l'**esponenziale** e il
+**logaritmo**. Le prime le conosci già: la parabola $x^2$, cioè «il numero
+moltiplicato per sé stesso», è la forma dell'errore quadratico, quello che si
+minimizza quando il modello deve prevedere un numero. Le altre due meritano
+una presentazione, perché ritornano in tre sezioni di questo capitolo e poi in
+mezzo libro.
+
+**Il logaritmo è la domanda inversa dell'elevamento a potenza.** Se
+l'elevamento chiede «quanto fa $2$ moltiplicato per sé stesso $3$ volte?»
+(risposta: $8$), il logaritmo chiede «quante volte devo moltiplicare $2$ per
+sé stesso per arrivare a $8$?», e la risposta è $3$. Si scrive $\log_2 8 = 3$,
+e quel $2$ in basso si chiama *base*. Con la base $10$ è ancora più
+immediato: $\log_{10} 1000 = 3$, perché $1000$ è $10\times10\times10$. Due
+cose lo rendono prezioso, e sono le sole che servono qui. La prima: **schiaccia
+i numeri enormi**. Fra $1000$ e $1\,000\,000$ ci sono novecentonovantanovemila
+unità di differenza, ma fra i loro logaritmi ce ne sono tre: è il motivo per
+cui le scale dei terremoti e del volume sonoro sono logaritmiche, e per cui
+sono comode quando i numeri in gioco vanno da un milionesimo a un miliardo. La
+seconda: **trasforma le moltiplicazioni in somme**, perché moltiplicare due
+potenze vuol dire sommarne gli esponenti. Moltiplicare fra loro mille
+probabilità piccolissime dà un numero che nessun calcolatore riesce a
+scrivere; sommare i loro logaritmi no, e il risultato è lo stesso a meno di
+tradurlo indietro.
+
+**L'esponenziale è il logaritmo letto al contrario**, e $e^x$ è il caso
+particolare che si usa quasi sempre. Quel simbolo $e$ non è una variabile: è
+un numero fisso, $e \approx 2{,}718$, come $\pi$ vale $3{,}14$. Vale la pena
+sapere da dove salta fuori, perché non è arbitrario: fra tutte le curve di
+crescita, $e^x$ è quella che in ogni punto **cresce esattamente quanto vale**.
+Se in un certo istante vale $5$, sta salendo con pendenza $5$. È il modo
+matematico di dire «raddoppia sempre allo stesso ritmo», e descrive gli
+interessi composti, la crescita di una popolazione e il decadimento di una
+sostanza. Nel libro compare dentro due funzioni che incontrerai presto, la
+**sigmoide** e la **softmax**: due ricette che prendono i punteggi grezzi
+sputati da un modello (numeri qualsiasi, anche negativi) e li rimettono in
+riga come probabilità, cioè numeri fra zero e uno che sommati fanno uno. Il
+logaritmo, dal canto suo, compare nella **cross-entropy**, la funzione di
+costo con cui si addestrano i classificatori, di cui parla per esteso la
+sezione sulla teoria dell'informazione.
+
+Restano le derivate. Non si dimostrano qui, si prendono da una tabella, come
+si prende la formula dell'area del cerchio: la pendenza di $x^2$ è $2x$ (nel
+punto $x=3$ la parabola sale con pendenza $6$), e quella di $e^x$ è di nuovo
+$e^x$, che è poi la proprietà appena raccontata detta in simboli. È anche il
+motivo per cui l'esponenziale rende i conti sopportabili: derivandola, resta
+identica a sé stessa.
 
 `````
 
@@ -78,22 +128,37 @@ La stabilità di $e^x$ sotto derivazione è ciò che rende quei conti trattabili
 ## Dal singolo numero al gradiente
 
 Un modello reale non ha un parametro solo, ne ha milioni, e la loss dipende da
-tutti insieme. Ci serve la derivata "una direzione alla volta".
+tutti insieme. Con due parametri il costo non è più una curva ma una
+superficie, un paesaggio di colline e conche in cui ogni punto del terreno è
+una coppia di regolazioni e la quota è l'errore che ne viene fuori. Un modo
+comodo di disegnare un paesaggio su un foglio è quello delle carte
+escursionistiche: guardarlo dall'alto e tracciare le **curve di livello**,
+cioè le linee che uniscono i punti alla stessa quota. Dove le linee sono
+fitte, il terreno è ripido; dove sono larghe, è pianeggiante.
 
 ```{figure} ../figures/derivate-gradiente.svg
 :name: fig-curve-di-livello
 :alt: "Una superficie di loss vista dall'alto, disegnata come curve di livello concentriche attorno a un minimo. Sopra di essa il percorso della discesa del gradiente: una successione di passi che in ogni punto imbocca la direzione perpendicolare alla curva di livello, cioè quella di massima pendenza, avvicinandosi progressivamente al centro."
 :width: 88%
 
-La stessa superficie vista dall'alto. Il gradiente in ogni punto è
-perpendicolare alla curva di livello che ci passa: è la direzione in cui la
-loss cambia più in fretta.
+Il paesaggio del costo visto dall'alto, come in una carta escursionistica:
+ogni anello unisce i punti in cui il modello sbaglia allo stesso modo, e il
+centro è il fondo della conca. Il **gradiente** disegnato sopra è la freccia
+che in ogni punto indica dove il terreno sale più ripido (nel disegno compare
+col segno meno, $-\nabla\mathcal{L}$, perché per scendere si va nel verso
+opposto: il tridente rovesciato $\nabla$ è il simbolo che lo indica, si legge
+«nabla»). Quella freccia taglia sempre ad angolo retto l'anello su cui si
+trova.
 ```
 
 La perpendicolarità visibile in {numref}`fig-curve-di-livello` non è un
-dettaglio grafico ma la definizione stessa del gradiente, e spiega perché il
-percorso zigzaghi in una valle allungata: la direzione più ripida punta verso
-il fianco più vicino, non verso il fondo.
+dettaglio grafico ma una **conseguenza** della definizione che daremo fra
+poco: lungo una curva di livello il costo, per costruzione, non cambia, quindi
+in quella direzione la sua variazione è nulla, e la direzione di massima
+variazione non può che esserle ortogonale. Ed è la stessa perpendicolarità a
+spiegare perché il percorso zigzaghi quando la conca, invece di essere tonda,
+si allunga in una valle stretta: la direzione più ripida punta verso il fianco
+più vicino, non verso il fondo.
 
 `````{tab} Elementare
 
@@ -114,13 +179,46 @@ derivate parziali:
 
 $$
 \nabla \mathcal{L}(\theta) =
-\left( \frac{\partial \mathcal{L}}{\partial \theta_1}, \;
-\dots, \; \frac{\partial \mathcal{L}}{\partial \theta_n} \right).
+\begin{bmatrix} \dfrac{\partial \mathcal{L}}{\partial \theta_1} \\[4pt]
+\vdots \\[2pt]
+\dfrac{\partial \mathcal{L}}{\partial \theta_n} \end{bmatrix}
+\in \mathbb{R}^n .
 $$
+
+```{admonition} Una convenzione, dichiarata una volta per tutte
+:class: note
+Il libro adotta il **layout al denominatore**: la derivata di uno scalare
+rispetto a un oggetto ha **sempre la stessa forma di quell'oggetto**. Il
+gradiente rispetto a un vettore è quindi un vettore colonna, e
+$\partial\mathcal{L}/\partial\mathbf{W}$ è una matrice $m\times n$ come
+$\mathbf{W}$. Non è pedanteria: è la differenza fra
+$\boldsymbol{\delta}\mathbf{a}^\top$ e $\mathbf{a}\boldsymbol{\delta}^\top$,
+cioè fra un aggiornamento dei pesi che ha le dimensioni giuste e uno che non
+si può nemmeno scrivere. Il capitolo sulle reti neurali e quello su PyTorch
+compongono catene di derivate: è la stessa convenzione, e il lettore che le
+rifà a mano deve poterle attaccare senza trasposte a sorpresa.
+```
 
 Vale un fatto centrale: $\nabla\mathcal{L}$ indica la direzione di **massima
 crescita** di $\mathcal{L}$, quindi $-\nabla\mathcal{L}$ è la direzione di
-massima discesa. È il verso in cui muoveremo i parametri.
+massima discesa. È il verso in cui muoveremo i parametri, e si dimostra in due
+righe. La variazione di $\mathcal{L}$ nella direzione di un versore
+$\mathbf{u}$ (la **derivata direzionale**) è
+$D_\mathbf{u}\mathcal{L} = \nabla\mathcal{L}^\top\mathbf{u}$; per la
+disuguaglianza di Cauchy–Schwarz vale
+$|\nabla\mathcal{L}^\top\mathbf{u}| \le \lVert\nabla\mathcal{L}\rVert$, con
+uguaglianza se e solo se $\mathbf{u}$ è parallelo a $\nabla\mathcal{L}$. Da
+qui segue anche la perpendicolarità alle curve di livello: lungo una curva di
+livello $D_\mathbf{u}\mathcal{L}=0$, cioè
+$\nabla\mathcal{L}^\top\mathbf{u}=0$.
+
+Un'avvertenza che tornerà utile fra poche righe: quel primato è relativo alla
+**norma euclidea**. «Il passo di lunghezza fissata che fa scendere di più»
+dipende da come si misura la lunghezza di un passo, e cambiando metrica cambia
+la direzione più ripida. Non è un cavillo: è precisamente ciò che fanno Adam,
+riscalando ogni coordinata, e i metodi del secondo ordine, misurando i passi
+con la curvatura. Il gradiente non è *la* direzione migliore in assoluto, è la
+migliore secondo un metro particolare.
 
 `````
 
@@ -188,10 +286,13 @@ nebbia: un passo in discesa, ricalcola, ripeti ({numref}`fig-discesa-gradiente`)
 :alt: Curva di costo a forma di scodella con quattro punti che scendono lungo il fianco verso il minimo, collegati da frecce; i passi si accorciano avvicinandosi al fondo.
 :width: 85%
 
-La funzione di costo $\mathcal{L}(\theta)$ come una scodella. Partendo da
-$\theta_0$ sul fianco, ogni passo va nel verso opposto al gradiente. I passi
-si accorciano avvicinandosi al minimo, dove la pendenza (e quindi il passo)
-tende a zero.
+La funzione di costo $\mathcal{L}(\theta)$ come una scodella. Sull'asse
+orizzontale c'è il parametro da regolare, che si scrive con la lettera greca
+$\theta$ (si legge «theta»); il numerino in basso conta i passi, quindi
+$\theta_0$ è la regolazione di partenza, quella scelta a caso prima che
+l'addestramento cominci. Da lì ogni passo va nel verso opposto al gradiente, e
+i passi si accorciano avvicinandosi al minimo, dove la pendenza (e quindi il
+passo) tende a zero.
 ```
 
 La scodella è il caso gentile. Appena la valle si allunga in una direzione, la
@@ -202,19 +303,39 @@ ricetta «vai dove è più ripido» smette di puntare verso il fondo.
 :alt: "Curve di livello di una valle stretta e allungata, percorsa da due traiettorie. Senza momentum il percorso zigzaga da una parete all'altra e avanza poco lungo l'asse della valle. Con il momentum le oscillazioni laterali si cancellano fra loro e la traiettoria scorre diritta verso il minimo."
 :width: 96%
 
-Perché il momento aiuta. Le componenti che cambiano segno a ogni passo si
-elidono sommandosi; quella che punta sempre nella stessa direzione si accumula.
+Due modi di scendere nella stessa valle stretta. Il percorso etichettato «SGD
+puro» è la ricetta di base, un passo alla volta nella direzione più ripida del
+momento, e rimbalza da una parete all'altra. Quello etichettato «SGD +
+momentum» tiene conto anche dei passi precedenti e scorre diritto verso il
+fondo.
 ```
 
-Il meccanismo di {numref}`fig-valle-allungata` è più semplice dell'analogia fisica
-con cui si racconta di solito. Non serve immaginare una pallina con
-un'inerzia: basta osservare che mediare gli ultimi gradienti cancella ciò che
-oscilla e conserva ciò che è costante.
+Il meccanismo di {numref}`fig-valle-allungata` si chiama **momento**
+(*momentum*), e sotto il nome fisico c'è una ricetta più semplice
+dell'immagine della pallina che rotola: invece di muoversi lungo la pendenza
+sentita adesso, ci si muove lungo una **media delle ultime pendenze sentite**.
+Il perché funzioni si vede senza formule. In una valle stretta la pendenza ha
+due parti: quella che attraversa la valle, che a ogni passo cambia verso
+perché si sbatte prima contro una parete e poi contro l'altra, e quella che
+scende lungo la valle, che punta sempre dalla stessa parte. Facendo la media,
+la prima si cancella da sé (una volta è più uno, la volta dopo è meno uno) e
+la seconda si somma. Restano meno rimbalzi e più avanzamento, che è appunto
+quel che mostra il disegno.
+
+La sigla del disegno, **SGD**, sta per *stochastic gradient descent*, discesa
+stocastica del gradiente: è la discesa raccontata qui, con l'accorgimento che
+a ogni passo la pendenza non si misura su tutti i dati ma su un pugno di
+esempi presi a caso, il che la rende più sbrigativa e un po' traballante. È la
+variante che si usa in pratica, e su di essa il momento è quasi sempre
+attivo.
 
 `````{tab} Elementare
 
-Cammini verso il basso e a ogni passo scegli la direzione di discesa. La
-lunghezza del passo si chiama **learning rate** (tasso di apprendimento). È
+Cammini verso il basso e a ogni passo scegli la direzione di discesa. Quanto
+lungo sia il passo lo decidono due cose insieme: quanto è ripido lì dove sei
+(più ripido, passo più lungo) e una manopola che moltiplica tutto, il
+**learning rate** (tasso di apprendimento). La manopola è la sola che scegli
+tu, ed è
 un compromesso delicato: un passo troppo lungo scavalca il fondo e ti fa
 rimbalzare da una parete all'altra senza mai fermarti; un passo troppo corto
 arriva, ma dopo un'eternità. Trovare la lunghezza giusta è metà del mestiere
@@ -245,12 +366,19 @@ La discesa del gradiente scende sempre. Ma "in fondo a cosa", esattamente?
 
 ```{figure} ../figures/minimi-locali-plateau-sella.svg
 :name: fig-paesaggio-loss
-:alt: "Profilo stilizzato di una superficie di loss percorsa da sinistra a destra: un tratto quasi orizzontale segnato come plateau, una conca poco profonda segnata come minimo locale, un punto di flesso segnato come punto di sella e infine la conca più profonda, il minimo globale. Una nota avverte che nei punti piatti, plateau e sella, il segnale di discesa quasi scompare."
+:alt: "Profilo stilizzato di una superficie di loss percorsa da sinistra a destra: un tratto quasi orizzontale segnato come plateau, una conca poco profonda segnata come minimo locale, un tratto in cui la discesa si appiattisce per poi riprendere (in una dimensione l'analogo del punto di sella) e infine la conca più profonda, il minimo globale. Una nota avverte che nei punti piatti, plateau e sella, il segnale di discesa quasi scompare."
 :width: 92%
 
 I quattro luoghi dove una pallina che segue il gradiente può fermarsi o
-rallentare. Solo l'ultimo è quello che vorremmo, e nulla nel gradiente dice
-alla pallina in quale dei quattro si trova.
+rallentare, con i nomi che si trovano nel disegno. Un **plateau** è un
+altopiano, un tratto in cui il terreno è quasi orizzontale su una distanza
+lunga. Un **minimo locale** è una conca vera, ma non la più profonda del
+paesaggio. Un **punto di sella** è un passo di montagna: sceso da una parte, si
+sale dall'altra, quindi non è né una cima né un fondo (visto su un profilo a
+una dimensione sola, com'è qui, si presenta come un tratto che si appiattisce e
+poi riprende a scendere). L'ultimo è il **minimo globale**, il fondo più basso
+di tutti, ed è l'unico che vorremmo: nulla, nel gradiente, dice alla pallina in
+quale dei quattro si trova.
 ```
 
 Il guaio, guardando {numref}`fig-paesaggio-loss`, non sono tanto i minimi
@@ -272,12 +400,26 @@ buon posto ma non il migliore.
 `````{tab} Superiore
 
 Una funzione è **convessa** se il segmento che unisce due punti qualsiasi del
-suo grafico sta sopra la curva; per una funzione convessa ogni minimo locale è
-anche globale, e la discesa del gradiente converge all'ottimo, purché il
-learning rate sia abbastanza piccolo rispetto alla curvatura: con un passo
-troppo lungo si diverge anche in una scodella perfetta, come mostrerà tra poco
-l'esperimento con `eta = 1.1`. Le loss del deep
-learning, però, sono quasi sempre **non convesse**: nessuna garanzia. La buona
+suo grafico non sta mai sotto la curva (la formulazione con il «non sotto»
+invece che con il «sopra» serve a non escludere le rette, che sono convesse e
+per cui il segmento sta *sulla* curva). Per una funzione convessa ogni minimo
+locale è anche globale: nessuna conca secondaria in cui restare intrappolati.
+
+La convergenza della discesa del gradiente, però, richiede due ipotesi in più,
+e vale la pena enunciarle perché senza di esse l'affermazione è falsa. La
+prima è che il gradiente sia **lipschitziano** di costante $L$ (cioè che la
+curvatura sia limitata da $L$), e allora ogni passo fisso $\eta < 2/L$ va
+bene. La seconda è che **il minimo esista**. Nessuna delle due è gratis:
+$f(x)=x^4$ è convessa e liscia, ma $f''(x)=12x^2$ è illimitata, e per *ogni*
+$\eta$ fissato la discesa diverge se si parte abbastanza lontano (la soglia è
+$|x_0| > 1/\sqrt{2\eta}$: con $\eta=10^{-9}$ basta partire da $x_0 = 23\,000$);
+e $f(x)=e^x$ è convessa con gradiente sempre positivo e nessun minimo, quindi
+la discesa scende per sempre senza convergere a niente. Anche restando dentro
+le ipotesi, un passo troppo lungo diverge in una scodella perfetta, come
+mostrerà tra poco l'esperimento con `eta = 1.1`.
+
+Le loss del deep learning, poi, sono quasi sempre **non convesse**: nessuna
+garanzia. La buona
 notizia empirica è che per reti molto grandi i minimi locali "buoni" sono
 tantissimi e quasi equivalenti al globale; gli ostacoli veri sono più i punti
 di sella che le conche profonde {cite}`dauphin2014identifying`. Ci si
@@ -307,9 +449,12 @@ for _ in range(20):
 print(round(theta, 3))              # -> 2.919, ormai vicino al minimo 3
 ```
 
-Cambia `eta` e osserva: con un valore piccolo (`0.01`) la convergenza rallenta,
-con uno troppo grande (`1.1`) $\theta$ diverge oscillando. È la stessa dinamica,
-in scala minima, che governa l'addestramento di una rete con miliardi di pesi.
+Cambia `eta` e osserva: con un valore piccolo (`0.01`) la convergenza rallenta
+(dopo venti passi $\theta$ è a $-1{,}67$, ancora lontano); con uno troppo
+grande (`1.1`) $\theta$ **diverge** oscillando, cioè scappa via invece di
+avvicinarsi, saltando a ogni passo da una parte all'altra del minimo e sempre
+più lontano (dopo venti passi vale $-265$). È la stessa dinamica, in scala
+minima, che governa l'addestramento di una rete con miliardi di pesi.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
@@ -322,9 +467,10 @@ in scala minima, che governa l'addestramento di una rete con miliardi di pesi.
   solo, una manopola alla volta: indica la direzione in cui il costo cresce più
   in fretta, e per scendere si va nel verso opposto.
 - La **discesa del gradiente** è l'escursionista nella nebbia: un passo verso il
-  basso, si risente la pendenza, si ripete. La lunghezza del passo si chiama
-  **learning rate** ed è la scelta delicata: troppo lungo e si rimbalza da una
-  parete all'altra, troppo corto e si arriva dopo un'eternità.
+  basso, si risente la pendenza, si ripete. Il passo è tanto più lungo quanto
+  più è ripido, moltiplicato per una manopola che si chiama **learning rate**:
+  quella è la scelta delicata, perché con la manopola troppo alta si rimbalza da
+  una parete all'altra e con quella troppo bassa si arriva dopo un'eternità.
 - La **regola della catena** moltiplica fra loro le pendenze anello per anello,
   come ingranaggi che si trascinano: è così che la correzione risale
   dall'uscita fino ai primi strati (il *backpropagation*).

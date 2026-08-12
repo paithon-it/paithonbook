@@ -12,23 +12,25 @@ andava a perdere i soldi presi in prestito dai parenti
 
 L'idea è tutta lì, e serve esattamente al punto in cui la sezione precedente
 si è fermata. La *value iteration* sa calcolare i valori, ma pretende la mappa
-dell'ambiente: le probabilità di transizione $P$ e le ricompense attese $r$.
-Se la mappa non c'è, resta una via che non chiede nulla a nessuno: far vivere
-all'agente molte partite intere, guardare come sono andate, e fare la media.
+dell'ambiente: dove porta ogni mossa e quanto paga. Se la mappa non c'è, resta
+una via che non chiede nulla a nessuno: far vivere all'agente molte partite
+intere, guardare come sono andate, e fare la media.
 
 ## Giocare, e poi fare la media
 
-Il ritorno $G_t$ è già definito: la somma scontata delle ricompense da un certo
-istante fino alla fine dell'episodio. Il valore $V^\pi(s)$ è il ritorno
-*atteso* partendo da $s$. Un valore atteso si stima con una media campionaria,
-e i campioni sono le partite.
+Il **ritorno** è quello definito nella sezione precedente: quanto si raccoglie
+in tutto da un certo istante fino alla fine della partita, contando meno ciò
+che arriva tardi. Il **valore** di una situazione è il ritorno *medio* partendo
+da lì, e una media si stima nel modo più ovvio che ci sia: si prendono tanti
+casi e si fa la loro media. Qui i casi sono le partite giocate.
 
 `````{tab} Elementare
 
 Vuoi sapere quanto vale, negli scacchi, una certa posizione. Un modo c'è, e
 non richiede di capire niente di scacchi: da quella posizione gioca mille
-partite fino allo scacco matto, segnati com'è finita ogni volta, e fai la
-media. Se in media si vince, la posizione è buona.
+partite fino allo scacco matto, e segnati com'è finita ogni volta, un punto se
+hai vinto e zero se hai perso. La media di quei mille numeri è la percentuale
+di vittorie, e se è alta la posizione è buona.
 
 I metodi **Monte Carlo** fanno questo, e la parola difficile non nasconde
 niente di più. L'agente gioca un episodio dall'inizio alla fine, poi torna
@@ -61,10 +63,20 @@ La versione a prima visita ha una giustificazione immediata: i ritorni raccolti
 sono variabili aleatorie **indipendenti e identicamente distribuite** con media
 $V^\pi(s)$ e varianza finita, quindi per la legge dei grandi numeri la media
 converge al valore vero, e l'errore standard cala come $1/\sqrt{n}$ con $n$
-ritorni mediati. Ogni stima è **non distorta**. La variante a ogni visita non è
-i.i.d. (i ritorni di uno stesso episodio sono correlati) e la sua stima è
-distorta per $n$ finito, ma converge anch'essa e si estende meglio
-all'approssimazione di funzione {cite}`sutton2018reinforcement`.
+ritorni mediati. Ogni stima è **non distorta**.
+
+La variante a ogni visita è invece distorta per $n$ finito, e conviene dire da
+dove viene la distorsione, perché la spiegazione naturale è sbagliata: **non**
+dal fatto che i ritorni di uno stesso episodio siano correlati (una media di
+variabili correlate, in numero fissato e con la stessa media marginale, resta
+non distorta: la correlazione muove la varianza, non il valore atteso). Viene
+dal fatto che il **denominatore è aleatorio**: il numero di visite non è
+deciso in anticipo, ed è correlato con il numeratore, perché gli episodi lunghi
+contribuiscono più righe *e* ritorni sistematicamente più bassi (una visita
+tardiva ha meno futuro davanti). È il classico stimatore-rapporto, dove
+l'attesa del rapporto non è il rapporto delle attese. La distorsione svanisce al
+crescere degli episodi, e la variante si estende meglio all'approssimazione di
+funzione {cite}`sutton2018reinforcement`.
 
 Il punto strutturale: qui **non c'è bootstrapping**. Il bersaglio è il ritorno
 osservato, non una stima costruita a partire da altre stime. Ogni stato si
@@ -75,13 +87,19 @@ altri.
 
 ## Che cosa cambia rispetto alla programmazione dinamica
 
-Vale la pena mettere i due metodi uno accanto all'altro, perché la differenza
-non è di efficienza ma di **che cosa serve sapere**.
+**Programmazione dinamica** è il nome che Bellman diede al modo di procedere
+della sezione precedente, quello che trova i valori girando e rigirando su tutte
+le caselle con la mappa in mano: da qui in avanti lo useremo come nome
+collettivo di value iteration e policy iteration. Vale la pena metterlo accanto
+a Monte Carlo, perché la differenza fra i due non è di efficienza ma di **che
+cosa serve sapere**.
 
 La programmazione dinamica guarda **un passo in avanti ma in tutte le
-direzioni**: per aggiornare $V(s)$ somma su tutti gli stati d'arrivo possibili,
-pesandoli con le probabilità di transizione. Ha bisogno di quelle probabilità,
-e in cambio non le deve stimare.
+direzioni**: per calcolare il valore di una casella tiene conto di tutte le
+caselle in cui quella mossa potrebbe far finire, dando a ciascuna l'importanza
+della sua probabilità (in simboli: per aggiornare $V(s)$ somma su tutti gli
+stati d'arrivo, pesandoli con le probabilità di transizione). Ha bisogno di
+quelle probabilità, e in cambio non le deve stimare.
 
 Monte Carlo guarda **in una direzione sola ma fino in fondo**: segue la
 traiettoria realmente accaduta, dall'inizio alla fine dell'episodio, e ignora
@@ -102,14 +120,49 @@ Da questa differenza discendono tre conseguenze pratiche.
 
 ## Tre partite, coi numeri
 
-Riprendiamo l'MDP in miniatura della {numref}`fig-mdp`, con $\gamma = 0{,}9$.
-Stavolta fingiamo di **non** conoscere le transizioni: l'agente si limita a
-giocare seguendo una policy che di norma sale verso l'obiettivo ma ogni tanto
-tentenna. Ecco tre episodi, con le ricompense incassate lungo la strada.
+Riprendiamo l'MDP in miniatura della {numref}`fig-mdp`, con lo stesso sconto di
+prima, $0{,}9$. Stavolta fingiamo di **non** conoscere dove porta ogni mossa:
+l'agente si limita a giocare seguendo una policy che di norma sale verso
+l'obiettivo ma ogni tanto tentenna. Ecco tre episodi, con le ricompense
+incassate lungo la strada.
 
 1. $s_0 \xrightarrow{\,0\,} s_1 \xrightarrow{\,+10\,} s_2$
 2. $s_0 \xrightarrow{\,-1\,} s_0 \xrightarrow{\,0\,} s_1 \xrightarrow{\,+10\,} s_2$
 3. $s_0 \xrightarrow{\,0\,} s_1 \xrightarrow{\,-1\,} s_0 \xrightarrow{\,0\,} s_1 \xrightarrow{\,+10\,} s_2$
+
+Ogni riga si legge da sinistra a destra, e il numero sopra la freccia è quello
+che si incassa facendo quel passo: nel primo episodio, da $s_0$ si sale a $s_1$
+senza incassare nulla, e da $s_1$ si arriva all'obiettivo incassando $+10$.
+
+`````{tab} Elementare
+
+I punti raccolti si contano **all'indietro**, ed è il modo comodo di farlo: si
+parte dalla fine e, a ogni passo indietro, si moltiplica per $0{,}9$ il totale
+che si aveva e ci si aggiunge la ricompensa di quel passo.
+
+Prendiamo il secondo episodio. Dall'ultimo $s_1$ mancava solo il premio, quindi
+$10$. Dal $s_0$ che veniva subito prima: quel passo non paga nulla e porta in un
+posto che vale $10$, quindi $0 + 0{,}9 \times 10 = 9$. Dal primo $s_0$: quel
+passo costa $1$ e porta in un posto che vale $9$, quindi
+$-1 + 0{,}9 \times 9 = 7{,}1$.
+
+| episodio | raccolto da $s_0$ in avanti | raccolto da $s_1$ in avanti |
+|:--|:--|:--|
+| 1 | $9$ | $10$ |
+| 2 | $7{,}1$ la prima volta, $9$ la seconda | $10$ |
+| 3 | $6{,}39$ la prima volta, $9$ la seconda | $7{,}1$ la prima volta, $10$ la seconda |
+
+Adesso la media, e ci sono due modi di farla. Il primo conta **una riga per
+partita**, quella della prima volta che si è passati di lì, e si chiama *a prima
+visita*: per $s_0$ si mediano $9$, $7{,}1$ e $6{,}39$, cioè
+$22{,}49 : 3 = 7{,}50$; per $s_1$ si mediano $10$, $10$ e $7{,}1$, cioè
+$27{,}1 : 3 = 9{,}03$. Il secondo conta **tutte le righe**, ripassaggi compresi,
+e si chiama *a ogni visita*: per $s_0$ i numeri diventano cinque e la media
+$8{,}10$, per $s_1$ diventano quattro e la media $9{,}28$.
+
+`````
+
+`````{tab} Superiore
 
 I ritorni si calcolano **all'indietro**, che è il modo economico di farlo:
 partendo dalla fine, $G \leftarrow r + \gamma\,G$ a ogni passo indietro.
@@ -139,13 +192,16 @@ V(s_0) = \frac{9 + 7{,}1 + 9 + 6{,}39 + 9}{5} = 8{,}10,
 V(s_1) = \frac{10 + 10 + 7{,}1 + 10}{4} = 9{,}28 .
 $$
 
-Due numeri diversi dagli stessi dati, ed entrambi legittimi: sono due
-stimatori diversi della stessa quantità. E nessuno dei due tende ai $9$ e $10$
-che la value iteration aveva calcolato nella sezione precedente, per una
-ragione che conviene fissare: là si calcolava $V^*$, il valore della policy
-**ottima**; qui si stima $V^\pi$, il valore della policy **che ha giocato
-davvero**, tentennamenti compresi. Con tre episodi, per di più: la legge dei
-grandi numeri ha bisogno di ben altro.
+`````
+
+Due numeri diversi dagli stessi dati, ed entrambi legittimi: sono due modi
+diversi di stimare la stessa cosa. E nessuno dei due si avvicina al $9$ e al
+$10$ che la sezione precedente aveva calcolato sullo stesso mondo, per una
+ragione che conviene fissare: là si calcolava il valore della strategia
+**migliore possibile**, qui si misura quello della strategia **che ha giocato
+davvero**, tentennamenti compresi. Sono due domande diverse, e la seconda ha
+per forza una risposta più bassa (in simboli, là $V^*$, qui $V^\pi$). Con tre
+episodi, per di più: la legge dei grandi numeri ha bisogno di ben altro.
 
 ```python
 gamma = 0.9
@@ -188,10 +244,13 @@ Nulla nel codice conosce l'ambiente: legge una lista di partite già giocate.
 
 ## Dalla valutazione al controllo
 
-Stimare il valore di una policy è metà del lavoro. Per **migliorarla** si
-riusa lo schema della policy iteration: si valuta, si rende la policy greedy
-rispetto ai valori stimati, si rivaluta. Con una differenza che sembra un
-dettaglio tecnico e invece è il tema di tutto il capitolo.
+Misurare quanto vale una strategia è metà del lavoro; l'altra metà si chiama
+**controllo**, ed è trovarne una migliore. Si riusa lo schema dell'allenatore
+della sezione precedente: si misura, poi in ogni situazione si tiene la mossa
+che secondo le misure rende di più (si dice che la strategia si rende *greedy*,
+avida, rispetto ai valori stimati), e si ricomincia da capo con la strategia
+nuova. Con una differenza che sembra un dettaglio tecnico e invece è il tema di
+tutto il capitolo.
 
 `````{tab} Elementare
 
@@ -237,12 +296,15 @@ policy che **genera** i dati da quella che si sta **valutando**.
 Qui sta il concetto che questa sezione deve al resto del libro, perché più
 avanti verrà usato tre volte senza essere più spiegato.
 
-Chiamiamo $\pi$ la policy che vogliamo valutare (*target*) e $b$ quella che ha
-effettivamente generato le partite (*comportamento*). Se $\pi = b$ siamo nel
-caso **on-policy** visto finora. Se differiscono, siamo **off-policy**, ed è la
-situazione interessante: imparare da un archivio di partite giocate da altri,
-da un controllore preesistente, da un esperto umano, oppure da una versione
-precedente di sé stessi.
+Ci sono due strategie in gioco: quella che vogliamo giudicare e quella che ha
+davvero giocato le partite che abbiamo in mano. Se sono la stessa, cioè se si
+impara giocando in proprio, si dice che si sta lavorando **on-policy**, ed è il
+caso di tutto quello che abbiamo visto finora. Se sono diverse si è
+**off-policy**, "fuori dalla propria strategia", ed è la situazione
+interessante: imparare da un archivio di partite giocate da altri, da un
+programma di controllo che c'era già, da un esperto umano, oppure da una
+versione precedente di sé stessi. Nelle formule la strategia da giudicare si
+chiama $\pi$ (*target*) e quella che ha giocato $b$ (*comportamento*).
 
 `````{tab} Elementare
 
@@ -262,6 +324,18 @@ Una condizione però serve, ed è di buon senso: l'archivio deve **contenere**
 tutto ciò che la strategia da giudicare potrebbe fare. Se l'audace giocherebbe
 una mossa che il prudente non ha mai provato nemmeno una volta, di quella mossa
 non si può dire nulla, e nessun peso può inventare i dati mancanti.
+
+Quanto pesano davvero quei pesi si vede con un conto piccolo. Poniamo che il
+prudente scelga fra due mosse tirando una monetina, e che l'audace sappia
+sempre quale vuole. Una partita di tre mosse in cui la monetina ha indovinato
+per caso tutte e tre le volte la mossa dell'audace è una partita che l'audace
+avrebbe giocato sempre e il prudente una volta su otto: quindi conta **otto
+volte tanto**. Se invece a un certo punto la monetina ha scelto una mossa che
+l'audace non farebbe mai, da lì in avanti quella partita non dice più niente
+sull'audace, e il suo peso va a zero. Ecco il difetto, in due righe: bastano
+poche mosse perché i pesi diventino minuscoli o enormi, ed è il motivo per cui
+giudicare le partite di un altro funziona bene su partite corte e traballa su
+quelle lunghe.
 
 `````
 
@@ -289,9 +363,11 @@ denominatore. Il correttore non dipende dall'MDP, che infatti non conosciamo:
 dipende solo dalle due policy e dalle azioni osservate. È il motivo per cui
 l'off-policy è possibile senza modello.
 
-Poiché $\mathbb{E}\big[\rho_{t:T-1}\,G_t \mid S_t = s\big] = V^\pi(s)$, si può
-stimare in due modi. L'**importance sampling ordinario** fa la media semplice
-dei ritorni pesati; quello **pesato** normalizza per la somma dei pesi:
+Poiché $\mathbb{E}_b\big[\rho_{t:T-1}\,G_t \mid S_t = s\big] = V^\pi(s)$ (il
+pedice non è pignoleria: l'attesa è sulle traiettorie generate da $b$, ed è
+tutto il punto), si può stimare in due modi. L'**importance sampling
+ordinario** fa la media semplice dei ritorni pesati; quello **pesato**
+normalizza per la somma dei pesi:
 
 $$
 V_{\text{ord}}(s) = \frac{\sum_{t\in\mathcal{T}(s)} \rho_{t:T-1}\,G_t}{|\mathcal{T}(s)|},
@@ -310,8 +386,6 @@ dei rapporti è infinita: un risultato del 2001 di Precup, Sutton e Dasgupta.
 In pratica si preferisce quasi sempre il pesato
 {cite}`sutton2018reinforcement`.
 
-`````
-
 Un esempio piccolo rende concreto il numero. Supponiamo che $b$ scelga fra due
 azioni tirando una moneta ($b = 0{,}5$ per entrambe) e che $\pi$ sia
 deterministica. Una partita di tre mosse in cui $b$ ha per caso scelto ogni
@@ -328,21 +402,28 @@ quell'istante in poi, esce dal conto. Si vede subito anche il difetto: bastano
 poche mosse perché i pesi diventino minuscoli o enormi, ed è il motivo per cui
 l'off-policy su traiettorie lunghe è fragile.
 
+`````
+
+Questo modo di pesare le partite di un altro non resta in questa sezione: è uno
+degli attrezzi che il libro riusa di più, e conviene sapere dove ricomparirà.
+
 ```{admonition} Dove ritorna
 :class: seealso
-Il rapporto $\rho$ non resta in questa sezione.
-
-- Nel **PPO** è il rapporto $\rho_t = \pi_\theta(A_t\mid S_t) /
-  \pi_{\theta_\text{old}}(A_t\mid S_t)$ fra la policy nuova e quella che ha
-  raccolto i dati: lo stesso oggetto, troncato a un passo. Il *clipping* di PPO
-  è, letteralmente, un tetto messo a quel peso perché non esploda.
-- Nell'**offline RL** l'archivio è tutto ciò che c'è, la policy di
-  comportamento non si può interrogare oltre, e il problema della copertura
+- Nel **PPO**, un algoritmo di deep reinforcement learning del capitolo
+  successivo, il peso è il rapporto fra quanto la strategia nuova e quella che
+  ha raccolto i dati avrebbero giocato la stessa mossa: lo stesso oggetto,
+  calcolato su una mossa sola invece che su tutta la partita. Il *clipping* di
+  PPO è una fascia stretta attorno a quel peso, sopra e sotto, perché non
+  esploda.
+- Nell'**offline RL**, cioè imparare da un archivio di partite senza poterne
+  giocare altre, quell'archivio è tutto ciò che c'è: la condizione appena vista
+  (deve contenere tutto quello che la strategia da giudicare potrebbe fare)
   diventa il problema centrale del capitolo.
-- Nell'**RLHF** il modello che si sta ottimizzando si allontana passo dopo
-  passo da quello che ha prodotto le risposte giudicate dagli umani: è la
-  stessa deriva, tenuta a bada dallo stesso rapporto (più una penalità che
-  misura quanto ci si è allontanati dal modello di partenza).
+- Nell'**RLHF**, il modo in cui si addestrano gli assistenti conversazionali sui
+  giudizi delle persone, il modello che si sta ottimizzando si allontana passo
+  dopo passo da quello che ha prodotto le risposte giudicate: è la stessa
+  deriva, tenuta a bada dallo stesso rapporto (più una penalità che misura
+  quanto ci si è allontanati dal modello di partenza).
 ```
 
 ## Il ponte verso le differenze temporali
@@ -354,29 +435,37 @@ aggiorna niente finché l'episodio non termina, il che lo esclude dai compiti
 continui (un impianto che non si spegne mai, un agente che non muore) e lo
 rende lento quando gli episodi sono lunghi.
 
-Il secondo è la **varianza**. Il ritorno di una singola partita è la somma di
-molte ricompense, ognuna con la sua dose di caso: come stima è corretta in
-media ma ballerina, e servono molti episodi per stabilizzarla.
+Il secondo è che i numeri **ballano**. Il ritorno di una singola partita è la
+somma di molte ricompense, ognuna con la sua dose di caso: in media è giusto, ma
+preso una volta sola può capitare lontanissimo dal vero, e servono molti episodi
+perché la media si assesti. Quanto ballano lo misura la **varianza**, cioè
+quanto i valori si sparpagliano attorno alla loro media.
 
 L'idea che li risolve entrambi è di una semplicità irritante: invece di
 aspettare il ritorno vero, usare la ricompensa del prossimo passo più la
-**stima già disponibile** dello stato in cui si finisce. Si aggiorna subito, e
-si sostituisce una somma rumorosa di molti termini con un termine osservato e
-una stima. Si guadagna in varianza, si perde in correttezza (la stima usata
-come bersaglio può essere sbagliata: è la distorsione del *bootstrapping*), e
-nasce il temporal-difference learning.
+**stima già disponibile** della situazione in cui si finisce. Si aggiorna
+subito, e si sostituisce una somma rumorosa di molti termini con un termine
+osservato e una stima sola. Usare una propria stima per aggiornarne un'altra ha
+un nome, **bootstrapping** (alla lettera "tirarsi su per i lacci delle
+scarpe"), e ha un costo: la stima presa come bersaglio può essere sbagliata, e
+allora la correzione tira nella direzione sbagliata, non a caso ma sempre nello
+stesso senso. Questo tipo di errore si chiama **distorsione**, ed è il prezzo di
+non aspettare la fine: numeri molto più stabili, appoggiati però a un bersaglio
+che potrebbe non essere quello giusto. Nasce così l'apprendimento per
+**differenze temporali**, in inglese *temporal-difference*, che tutti abbreviano
+in **TD**.
 
 Le tre famiglie si dispongono allora su due assi, ed è la mappa da tenere a
 mente per tutto il resto del capitolo:
 
-| | quanto guarda avanti | serve il modello? | bootstrapping |
+| | quanto guarda avanti | serve la mappa dell'ambiente? | usa le proprie stime come bersaglio (*bootstrapping*) |
 |:--|:--|:--|:--|
 | Programmazione dinamica | un passo, su **tutti** gli stati d'arrivo | sì | sì |
 | Monte Carlo | **fino alla fine**, su una traiettoria sola | no | no |
 | Differenze temporali | un passo, su una traiettoria sola | no | sì |
 
 Manca una casella, quella in mezzo fra un passo e tutta la partita, e non è
-vuota: i metodi a $n$ passi e le tracce di eleggibilità la riempiono con
+vuota: guardare avanti due, tre o dieci passi invece di uno solo la riempie con
 continuità, dal TD puro al Monte Carlo puro, regolando una sola manopola. Ne
 diremo alla fine della prossima sezione.
 

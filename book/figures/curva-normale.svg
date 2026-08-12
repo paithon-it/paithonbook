@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  paithon book — figura: curva a campana della distribuzione normale.
+  paithon book, figura: curva a campana della distribuzione normale.
   Media mu al centro, bande evidenziate a mu +/- sigma (circa 68%) e
   mu +/- 2 sigma (circa 95%). Palette-locked: terracotta/ocra/teal su
   tratto warm-black, fondo trasparente (leggibile in light e dark).

@@ -145,11 +145,17 @@ in inglese, assai più comune nelle lingue a ordine libero.
 `````
 
 {numref}`fig-alberi-sintassi` mette i due formalismi fianco a fianco sulla
-frase del binocolo, con una malizia: i costituenti mostrano la lettura in cui
-il binocolo è dell'uomo (il SP è *dentro* il SN), le dipendenze quella opposta
-(l'arco `obl` parte dal verbo). Per scambiare le letture basterebbe, a
-sinistra, agganciare il SP al SV invece che al SN; a destra, spostare la coda
-dell'arco da «visto» a «uomo» (e l'etichetta diventerebbe `nmod`).
+frase del binocolo, con una malizia: ciascuno mostra una lettura diversa. A
+sinistra, nelle scatole, «con il binocolo» sta **dentro** la scatola di «un
+uomo», ed è la lettura in cui il binocolo è dell'uomo. A destra, nelle frecce,
+«binocolo» lavora per «visto» e non per «uomo», ed è la lettura opposta, quella
+in cui il binocolo è di chi guarda. Per scambiarle basta uno spostamento per
+parte: a sinistra tirare fuori la scatola del binocolo da quella dell'uomo e
+agganciarla a quella del verbo, a destra spostare la coda della freccia da
+«visto» a «uomo». Nel gergo dei due formalismi lo stesso spostamento si dice
+così: il sintagma preposizionale passa dal sintagma nominale a quello verbale,
+e la relazione `obl` (complemento del verbo) diventa `nmod` (modificatore del
+nome).
 
 ```{figure} ../figures/alberi-sintassi.svg
 :name: fig-alberi-sintassi
@@ -164,9 +170,13 @@ lettura, a destra le dipendenze dell'altra. La differenza tra le due letture
 ## L'esplosione degli alberi
 
 Con un solo complemento le letture sono due: pazienza. Ma allunghiamo la
-frase. In «Ho visto un uomo con il binocolo **nel parco**» il parco può
-ospitare la scena, l'uomo o il binocolo e, contando gli incastri, le analisi
-diventano 5; con «**dalla finestra**» salgono a 14, poi 42, 132, 429… Sono i
+frase. In «Ho visto un uomo con il binocolo **nel parco**» il conto si fa così.
+Se il binocolo è dell'uomo, il parco può ospitare la scena, l'uomo o il
+binocolo: tre letture. Se invece il binocolo è mio, il parco può ospitare solo
+la scena o il binocolo, e non l'uomo, perché le scatole si annidano e non si
+possono incrociare: altre due. Tre più due fa **cinque**, tutte
+grammaticalmente ineccepibili. Aggiungete «**dalla finestra**» e salgono a 14,
+poi 42, 132, 429… Sono i
 **numeri di Catalan**, e crescono in modo esponenziale: ogni complemento in
 coda moltiplica gli alberi per un fattore che si avvicina a quattro. Il
 fenomeno ha un articolo di riferimento dal titolo tutto un programma: *Coping
@@ -177,9 +187,12 @@ La morale è doppia. Una frase di giornale può avere *migliaia* di alberi
 grammaticalmente leciti, quasi tutti assurdi per un lettore umano ma
 impeccabili per la grammatica, che non giudica la plausibilità. E nessun
 parser può permettersi di elencarli uno per uno: serve un modo di
-**condividere i pezzi** comuni a molte analisi (la programmazione dinamica) e
-un modo di **scegliere** l'analisi giusta (le probabilità, o una rete
-neurale).
+**condividere i pezzi** comuni a molte analisi e un modo di **scegliere**
+l'analisi giusta (le probabilità, o una rete neurale). Il primo dei due ha un
+nome che in questo capitolo è già passato due volte, con la griglia della
+distanza di edit e con il navigatore di Viterbi: si chiama **programmazione
+dinamica**, e vuol dire calcolare una volta sola ogni pezzo che servirà più
+volte, tenendoselo da parte.
 
 ## Costruire l'albero senza provarle tutte
 
@@ -327,9 +340,12 @@ Domanda inevitabile: i grandi modelli linguistici fanno parsing? No, non nel
 senso di questa sezione. Un LLM addestrato a predire la parola successiva non
 produce alberi, e nessuno glieli ha mostrati. Eppure gli studi di *probing*
 (piccole sonde addestrate a leggere le rappresentazioni interne di un modello)
-raccontano una storia interessante: dalle attivazioni di BERT
-{cite}`devlin2019bert` si possono ricostruire con buona approssimazione le
-distanze tra le parole nell'albero a dipendenze (Hewitt e Manning, 2019). È un
+raccontano una storia interessante. Mentre un modello come BERT
+{cite}`devlin2019bert` legge una frase, dentro di lui si accendono migliaia di
+numeri, uno strato dopo l'altro: sono le sue **attivazioni**, cioè lo stato in
+cui la frase lo mette. Ebbene, da quei numeri si possono ricostruire con buona
+approssimazione le distanze fra le parole nell'albero a dipendenze, quello che
+al modello nessuno ha mai mostrato (Hewitt e Manning, 2019). È un
 indizio che qualcosa di simile alla struttura sintattica emerga implicitamente
 durante l'addestramento: un indizio, non la prova che il modello la usi come
 farebbe un linguista.
@@ -350,6 +366,41 @@ frasi, nella vita, arrivano in botta e risposta: domande, risposte,
 malintesi, sottintesi. La prossima sezione porta tutto questo in scena: il
 dialogo tra persone e macchine.
 
+`````{tab} Elementare
+```{admonition} Da ricordare
+:class: important
+- L'ambiguità di «Ho visto un uomo con il binocolo» non sta nelle parole né nel
+  mestiere che ciascuna fa: le etichette della sezione precedente sono identiche
+  nelle due letture. Sta in **come le parole si raggruppano**, e cioè se «con il
+  binocolo» si attacca all'uomo o al vedere.
+- Le **scatole del trasloco**: certi gruppi di parole viaggiano insieme, e lo si
+  scopre con due prove da fare a orecchio, sostituire il gruppo con una parola
+  sola e spostarlo tutto intero. Le scatole stanno dentro altre scatole, fino
+  alle singole parole.
+- L'**organigramma**: la stessa struttura si può disegnare con delle frecce,
+  ogni parola con un capo solo e il verbo principale in cima. L'ambiguità del
+  binocolo diventa una domanda sola: per chi lavora «binocolo»? Le frecce
+  reggono meglio le lingue che spostano le parole con libertà, come l'italiano,
+  ed è il formalismo con cui sono annotate più di cento lingue.
+- Le letture possibili **esplodono**: due con un complemento, cinque con due,
+  poi 14, 42, 132. Nessun programma può elencarle tutte, quindi ne condivide i
+  pezzi (la stessa astuzia della griglia e del navigatore delle sezioni
+  precedenti) e poi ne sceglie una, con delle probabilità o con una rete.
+- Due modi di costruire l'analisi: **il mosaico**, che capisce prima i pezzi
+  corti e poi incolla, sicuro ma costoso; e **il vassoio**, che legge da
+  sinistra a destra decidendo mossa per mossa, velocissimo ma senza ripensamenti
+  (e il rimedio è quello già visto per la traduzione, tenere aperte alcune
+  alternative).
+- Gli alberi giusti li insegnano delle **persone**: i *treebank* sono corpora in
+  cui ogni frase è stata analizzata a mano, e da lì i programmi imparano. Per
+  l'italiano ce n'è uno, ISDT, di circa quattordicimila frasi.
+- I modelli giganti l'analisi logica **non la fanno**, e nessuno gliel'ha
+  insegnata; ma andando a guardare dentro di loro si ritrova qualcosa che le
+  somiglia. È un indizio, non una prova.
+```
+`````
+
+`````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
 - L'ambiguità di «Ho visto un uomo con il binocolo» è **strutturale**: le
@@ -375,3 +426,4 @@ dialogo tra persone e macchine.
   esplicito resta utile a linguistica, correzione grammaticale e lingue a
   poche risorse.
 ```
+`````

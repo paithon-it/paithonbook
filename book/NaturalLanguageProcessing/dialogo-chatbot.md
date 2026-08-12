@@ -61,8 +61,10 @@ Senza questi segnali la conversazione si sfalda.
 
 Quarto: i **sottintesi**. «All'aperto *ne* è rimasto uno»: ne... di che? Di
 tavoli all'aperto, ma nessuno lo ripete, il filo del discorso lo regge. «*Lo*
-prendiamo»: lo, quel tavolo lì. È l'anafora incontrata all'inizio del
-capitolo: le parole piccole pescano il significato nelle battute precedenti.
+prendiamo»: lo, quel tavolo lì. È l'**anafora** di cui si diceva all'inizio del
+capitolo: le parole piccole pescano il significato in quello che è già stato
+detto. Qui però c'è un salto in più: là il significato stava nella stessa
+frase, qui sta in una **battuta precedente**, pronunciata da un'altra persona.
 Morale: per dialogare non basta capire l'ultima frase, bisogna ricordare la
 partita.
 
@@ -313,8 +315,8 @@ giudice che li legga.
 Con i sistemi a modulo si può ancora correggere come un dettato: la
 prenotazione è andata a buon fine, sì o no? Quante battute ci sono volute?
 Sono numeri, e si contano. Con i chatbot aperti resta il tema: si fanno
-conversare con persone in carne e ossa, e si chiede ai giudici di votare (le
-risposte filavano)? stavano in piedi da un capo all'altro? veniva voglia di
+conversare con persone in carne e ossa, e si chiede ai giudici di votare: le
+risposte filavano? stavano in piedi da un capo all'altro? veniva voglia di
 continuare? Costoso, lento, un po' soggettivo: ma a oggi non c'è metro
 migliore del giudizio umano su una cosa fatta per gli umani.
 
@@ -329,10 +331,13 @@ costi del dialogo in un'unica funzione di qualità, stimata sui giudizi di
 soddisfazione degli utenti.
 
 Per i chatbot aperti le metriche ereditate dalla traduzione falliscono: la
-sovrapposizione con una risposta di riferimento (BLEU e simili), correla
-pochissimo con i giudizi umani, proprio per la molteplicità delle risposte
-valide (Liu et al., 2016, dal titolo eloquente: *How NOT to evaluate your
-dialogue system*). La perplessità misura la fluidità, non la qualità del
+sovrapposizione con una risposta di riferimento (BLEU {cite}`papineni2002bleu`
+e simili, definito nella sezione sulla traduzione) correla pochissimo con i
+giudizi umani, proprio per la molteplicità delle risposte valide (Liu et al.,
+2016, dal titolo eloquente: *How NOT to evaluate your dialogue system*). Il
+motivo si legge nella definizione stessa: BLEU conta $n$-grammi condivisi con
+il riferimento, e due risposte ottime alla stessa domanda possono non
+condividerne nemmeno uno. La perplessità misura la fluidità, non la qualità del
 dialogo. Restano i **giudizi umani**, per dimensioni separate (coerenza,
 specificità, correttezza fattuale, interesse) o per confronto a coppie; di
 recente si usano anche LLM come giudici, pratica economica ma con bias
@@ -376,7 +381,10 @@ un tono sobrio: né allarme, né alzata di spalle.
 - **Antropomorfizzazione.** I sistemi attuali sono incomparabilmente più
   fluenti di ELIZA, e la fluidità amplifica l'effetto: scambiare la forma del
   linguaggio per comprensione è l'errore contro cui mette in guardia la
-  critica dei «pappagalli stocastici» {cite}`bender2021dangers`. Non è solo
+  critica dei «pappagalli stocastici» {cite}`bender2021dangers`, dove
+  *stocastico* vuol dire «governato dal caso»: un pappagallo che ripete quello
+  che ha sentito, scegliendo di volta in volta secondo le probabilità che ha
+  imparato, senza sapere che cosa sta dicendo. Non è solo
   un equivoco filosofico: un chatbot che dice «io», ha un nome proprio e
   simula esitazioni umane *sceglie* di spingere quel riflesso.
 - **Privacy.** Chi protestò per i registri di ELIZA era in anticipo di
@@ -406,6 +414,37 @@ mandato in pensione la ricorrenza e reso possibili gli interlocutori
 artificiali di oggi) merita un capitolo intero: i **Transformer** ci aspettano
 alla prossima pagina.
 
+`````{tab} Elementare
+```{admonition} Da ricordare
+:class: important
+- Una conversazione non è una fila di frasi. Ci si dà il turno senza
+  accavallarsi; si **fanno cose** con le parole («sai l'ora?» non è una domanda
+  a cui rispondere sì); ci si conferma di continuo che si sta seguendo (il
+  «mh-mh» del ristoratore, e la ricevuta riletta ad alta voce); e le parole
+  piccole («ne», «lo») pescano il senso nelle battute già dette. Per dialogare
+  non basta capire l'ultima frase: bisogna ricordare la partita.
+- Tre famiglie di interlocutori artificiali, tutte e tre ancora vive. **A
+  regole**, come ELIZA: aggancia uno schema nelle tue parole e te le rigira,
+  nessuna memoria, nessun mondo. **A moduli**, come lo sportello che riempie le
+  caselle di un formulario facendo domande solo per quelle vuote: è ancora
+  l'ossatura degli assistenti vocali, bravissimi dentro il modulo e nel vuoto
+  un millimetro fuori. **Generativi**, che scrivono la risposta parola per
+  parola dopo aver letto milioni di dialoghi.
+- Chi impara a *continuare* i testi non sa ancora *rispondere*: serve una
+  seconda scuola, fatta di esempi di buone risposte e di giudizi umani, ed è la
+  storia del capitolo sui Transformer.
+- **Il dettato e il tema**: un sistema a moduli si corregge come un dettato (la
+  prenotazione è andata a buon fine, sì o no?), un chatbot aperto come un tema,
+  e per il tema serve un giudice che legga. Costoso e un po' soggettivo, ma non
+  c'è di meglio per una cosa fatta per gli umani.
+- L'**effetto ELIZA**: attribuiamo comprensione a qualunque cosa parli la
+  nostra lingua, ed è un riflesso, non ingenuità. È il monito di Weizenbaum, ed
+  è più attuale del suo programma: sapere che dall'altra parte non c'è nessuno,
+  per quanto forte sia l'impressione contraria.
+```
+`````
+
+`````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
 - Una conversazione non è una fila di frasi: **turni**, **atti linguistici**
@@ -421,10 +460,13 @@ alla prossima pagina.
   {cite}`ouyang2022training`), sviluppato nel capitolo sui Transformer.
 - Valutare il dialogo è difficile perché non esiste *la* risposta giusta:
   successo del compito per i sistemi a frame, **giudizi umani** per i chatbot
-  aperti; il test di Turing {cite}`turing1950computing` è una cornice
+  aperti. Le metriche di sovrapposizione (BLEU {cite}`papineni2002bleu`) non
+  reggono, perché due risposte ottime possono non condividere un $n$-gramma;
+  il test di Turing {cite}`turing1950computing` è una cornice
   storica, non una metrica.
 - L'**effetto ELIZA** (attribuire comprensione a ciò che parla) è il riflesso
   su cui i chatbot fanno leva, volenti o nolenti: il monito di Weizenbaum
   {cite}`weizenbaum1976computer` su antropomorfizzazione, privacy e deleghe da
   non dare è più attuale del suo programma.
 ```
+`````

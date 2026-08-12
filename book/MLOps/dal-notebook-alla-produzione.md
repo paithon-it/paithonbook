@@ -1,15 +1,20 @@
 # Dal notebook alla produzione
 
-Il notebook ha quarantasette celle, e i contatori a lato raccontano una storia
-sconfortante: `[12]`, poi `[8]`, poi `[31]`, poi di nuovo `[9]`. Le celle sono
-state eseguite in ordine sparso, avanti e indietro, per giorni. Ieri sera il
-modello dava un'accuratezza del 94% e l'autrice è andata a dormire
-soddisfatta. Stamattina una collega apre lo stesso file, preme *Restart & Run
-All* (riavvia il kernel e riesegue tutto dall'alto, come farebbe una macchina
-che non sa nulla della cronologia) e metà delle celle esplode: una variabile
-definita in un blocco poi cancellato, un file letto da un percorso che esiste
-solo su quel portatile, uno `train_test_split` senza seme che ogni volta
-divide i dati in modo diverso. La frase che chiude la giornata è la più
+Il notebook ha quarantasette **celle**, i pezzetti in cui il programma è
+spezzato e che si possono eseguire uno alla volta, in qualunque ordine. A lato
+di ciascuna un numero fra parentesi quadre dice quando è stata eseguita
+l'ultima volta, e quei numeri raccontano una storia sconfortante: `[12]`, poi
+`[8]`, poi `[31]`, poi di nuovo `[9]`. Le celle sono state eseguite in ordine
+sparso, avanti e indietro, per giorni, e il risultato di ieri sera esiste
+soltanto nella memoria di quella sessione, non nel file. Ieri sera il modello
+dava un'accuratezza del 94% e l'autrice è andata a dormire soddisfatta.
+Stamattina una collega apre lo stesso file e preme *Restart & Run All*, che
+butta via quella memoria e riesegue tutto dall'alto, come farebbe una macchina
+che non sa nulla della cronologia. Metà delle celle esplode: un dato calcolato
+in un blocco poi cancellato, un file cercato in una cartella che esiste solo su
+quel portatile, una divisione fra dati di addestramento e dati di prova
+(`train_test_split`) che ogni volta capita diversa, perché nessuno ha fissato
+il punto da cui parte il sorteggio. La frase che chiude la giornata è la più
 celebre della disciplina: «Ma sul mio computer funzionava».
 
 Tra quel notebook e un sistema che serve previsioni agli utenti, ogni giorno,
@@ -76,21 +81,26 @@ linea retta con un traguardo, ma un **ciclo** che si percorre molte volte.
 
 ```{figure} ../figures/cicd-machine-learning.svg
 :name: fig-cicd-ml
-:alt: "Pipeline di integrazione continua per il machine learning: da una pull request si passa a build e test del codice, poi all'addestramento del modello, alla valutazione contro una soglia e infine al rilascio. Se la valutazione non supera la soglia la pipeline si ferma e il modello non viene rilasciato."
+:alt: "Catena automatica per il machine learning: da una proposta di modifica (una pull request) si passa alla prova automatica del codice, poi all'addestramento del modello, alla valutazione contro una soglia e infine al rilascio. Se la valutazione non supera la soglia la catena si ferma e il modello non viene rilasciato."
 :width: 100%
 
-La stessa automazione del software, con uno stadio in più. Fra i test e il
-rilascio si interpone una valutazione del modello, e anche quella è un
-cancello che può dire di no.
+Il percorso che una modifica compie prima di andare in pubblico. Qualcuno
+propone un cambiamento, una macchina prova il codice, poi riaddestra il
+modello e lo valuta; solo se il punteggio supera la soglia scritta prima il
+cambiamento viene accettato e pubblicato. Rispetto al software normale lo
+stadio in più è quello della valutazione, ed è un cancello che può dire di no.
 ```
 
 Lo stadio aggiunto in {numref}`fig-cicd-ml` è la differenza fra il rilascio di
-un programma e quello di un modello. Il codice o compila o no; un modello
-compila sempre, e può essere semplicemente peggiore del precedente. Senza una
-soglia scritta prima, non c'è modo automatico di accorgersene.
+un programma e quello di un modello. Di un programma rotto il computer si
+accorge da solo e si rifiuta di partire; un modello no: un modello risponde
+comunque, con la stessa aria sicura, anche quando risponde peggio di quello di
+prima. Senza una soglia scritta prima, non c'è modo automatico di
+accorgersene.
 
 Uno studio di ingegneria del software condotto in Microsoft {cite}`amershi2019software`
-mette in fila le fasi ricorrenti di un progetto di machine learning:
+mette in fila nove fasi ricorrenti di un progetto di machine learning, che qui
+raggruppiamo in sei momenti:
 
 1. **Dati**: raccolta, pulizia, etichettatura. È dove si consuma la maggior
    parte del tempo, e dove nasce la maggior parte degli errori.
@@ -104,7 +114,10 @@ mette in fila le fasi ricorrenti di un progetto di machine learning:
    machine learning (si veda [Overfitting e
    validazione](../MachineLearning/overfitting-validazione.md)).
 5. **Deploy**: mettere il modello in un servizio che risponde a richieste
-   reali, dietro un'API o dentro un'applicazione.
+   reali, dietro un'**API** o dentro un'applicazione. Un'API è una specie di
+   sportello elettronico: un indirizzo a cui un altro programma manda una
+   domanda e da cui riceve la risposta, senza sapere né dover sapere che cosa
+   c'è dietro.
 6. **Monitoraggio**, sorvegliare il modello in esercizio: le prestazioni
    reggono? I dati in ingresso somigliano ancora a quelli di addestramento?
 
@@ -133,6 +146,14 @@ ricetta: stesso codice, stesso risultato. Nel machine learning no: lo stesso
 codice, addestrato su dati anche solo un po' diversi, produce un modello
 diverso. Per rifare la torta servono tutti e tre gli elementi congelati, e, in
 più, va segnato pure il lancio dei dadi, perché qui dentro c'è del caso.
+
+Tradotta dalla cucina al mestiere, l'analogia dice così: la ricetta è il
+programma, gli ingredienti sono i dati, il forno è il computer con le sue
+librerie, e la torta è il modello addestrato. Congelare i primi non basta se
+la torta la si butta via: rifarla identica costa ore, e chi la mangia non può
+aspettarle. Le tre cose da tenere sotto chiave, allora, si chiamano **codice,
+dati e modello**, con il forno (l'ambiente) come quarta condizione da non
+dimenticare.
 
 `````
 
@@ -163,44 +184,110 @@ all'archivio) e si tiene l'artefatto vero altrove.
 `````
 
 Il seme casuale merita una riga a parte, perché è la fonte di riproducibilità
-più facile da dimenticare e più economica da fissare. Divisione dei dati,
-inizializzazione dei pesi, ordine dei mini-batch: tutto attinge a un generatore
-di numeri pseudo-casuali, e fissarne il seme rende la sequenza ripetibile.
+più facile da dimenticare e più economica da fissare. Il computer i dadi li
+tira per finta: segue una lista di numeri preparata in anticipo, e il **seme**
+è il punto della lista da cui parte. Fissarlo vuol dire far uscire sempre gli
+stessi dadi. E i dadi qui si tirano almeno in tre punti: quando i dati si
+dividono fra addestramento e prova, quando i pesi della rete ricevono i loro
+valori iniziali, e quando gli esempi vengono mescolati prima di essere dati in
+pasto al modello un gruppetto alla volta (i *mini-batch*).
 
 ```python
 import random
+
 import numpy as np
+import torch
 
 
 def fissa_seed(seed: int = 42) -> None:
-    """Fissa le sorgenti legacy di casualita': il modulo random e NumPy globale."""
+    """Fissa le sorgenti di casualita' che il libro usa davvero."""
     random.seed(seed)
-    np.random.seed(seed)
+    np.random.seed(seed)      # sorgente "legacy" di NumPy
+    torch.manual_seed(seed)   # pesi iniziali, dropout, DataLoader che mescola
     # i Generator moderni di NumPy ricevono il seme alla creazione:
     #   rng = np.random.default_rng(seed)
-    # in PyTorch si aggiungerebbe: torch.manual_seed(seed)
+    # e un DataLoader che mescola vuole il proprio generatore, piu' un
+    # worker_init_fn se num_workers > 0:
+    #   DataLoader(dati, shuffle=True,
+    #              generator=torch.Generator().manual_seed(seed))
 ```
 
-Fissare il seme non garantisce da solo la riproducibilità (restano di mezzo
-versioni delle librerie e non-determinismi dell'hardware), ma è il primo,
-irrinunciabile passo: senza, due esecuzioni dello stesso codice danno modelli
+Fissare il seme è il primo passo e non è l'ultimo: da solo non basta. Restano
+di mezzo le versioni delle librerie, che cambiando cambiano i risultati, e un
+fatto sorprendente dell'aritmetica dei calcolatori: **sommare gli stessi
+numeri in ordine diverso non dà esattamente lo stesso totale**. I numeri con la
+virgola vengono arrotondati a ogni passaggio, e l'ordine in cui il calcolo li
+combina dipende da quanti esempi viaggiano insieme, da quale variante
+dell'algoritmo la libreria sceglie per quella forma di dati, da quanti
+processori se lo dividono. Le ultime cifre ballano; e in produzione ballano di
+più, perché lì quanti esempi viaggiano insieme lo decide il servizio momento
+per momento (è il *batching dinamico* della sezione sul deployment, che a
+quella ripetibilità rinuncia per scelta).
+
+Conviene allora distinguere due promesse diverse, perché costano diversamente.
+La **riproducibilità bit a bit**, due esecuzioni che danno numeri identici fino
+all'ultima cifra, si ottiene solo pagandola: semi su ogni generatore,
+algoritmi deterministici richiesti esplicitamente
+(`torch.use_deterministic_algorithms(True)`), nessun processo parallelo sul
+caricamento dei dati, e prestazioni più basse. La **riproducibilità
+statistica**, le metriche che coincidono entro il rumore e le conclusioni che
+reggono, è quella che serve quasi sempre, ed è quella che seme, ambiente
+congelato e dati versionati consegnano davvero. Senza nemmeno il seme, però,
+non si ha né l'una né l'altra: due esecuzioni dello stesso codice danno modelli
 diversi, e ogni confronto perde di significato.
 
 ## Tracciare gli esperimenti
 
 Durante l'esplorazione si provano decine, poi centinaia di configurazioni:
-learning rate diversi, architetture diverse, feature diverse. Senza un registro,
-dopo una settimana nessuno ricorda *quale* combinazione aveva dato quel 94%. L'
-**experiment tracking** è la pratica di registrare, per ogni esecuzione (*run*),
-gli iperparametri, le metriche ottenute e gli artefatti prodotti. Strumenti
-come MLflow o Weights & Biases lo industrializzano, ma l'idea è indipendente dal
-tool e sta in poche righe: associare a ogni configurazione un'identità stabile e
-tenerne un registro.
+ritmi di apprendimento diversi, architetture diverse, feature diverse. Senza un
+registro, dopo una settimana nessuno ricorda *quale* combinazione aveva dato
+quel 94%. Registrare, per ogni singola esecuzione (una *run*), che cosa si era
+impostato e com'è andata è la pratica che in gergo si chiama **experiment
+tracking**; strumenti come MLflow o Weights & Biases la industrializzano, ma
+l'idea non dipende dallo strumento e sta in poche righe.
 
-Il cuore è un'**impronta riproducibile** della configurazione: uno stesso
-insieme di iperparametri deve produrre sempre lo stesso identificativo, così da
-riconoscere quando stiamo ripetendo un esperimento già fatto. Si ottiene con una
-funzione di hash sul dizionario ordinato degli iperparametri.
+`````{tab} Elementare
+
+Il problema è banale, e chiunque abbia provato e riprovato qualcosa lo
+riconosce. Cambi un'impostazione, riprovi, va meglio. Ne cambi un'altra,
+riprovi, va peggio. Dopo cento giri hai un numero buono in mano e non sai più a
+quale combinazione appartenga: rifarlo a memoria non funziona, perché le prove
+si somigliano tutte.
+
+La cura non è un attrezzo, è un'abitudine. Prima di lanciare una prova, scrivere
+da qualche parte che cosa si è impostato; a prova finita, scrivere com'è andata.
+«Da qualche parte» vuol dire in un posto che sopravviva alla chiusura del
+programma, non in una cella del notebook.
+
+Serve poi un modo per dare a ogni combinazione un **nome corto e sempre
+uguale**, così che riprovando la stessa identica combinazione si ritrovi lo
+stesso nome e ci si accorga di stare rifacendo una prova già fatta. Il modo è
+quello che la sezione seguente racconta per i dati: si passa l'elenco delle
+impostazioni in un tritatutto che ne ricava un codice corto, identico se
+l'elenco è identico e completamente diverso appena una cifra cambia.
+
+`````
+
+`````{tab} Superiore
+
+Il cuore è un'**impronta** della configurazione: si serializza il dizionario
+degli iperparametri in una forma canonica e se ne prende un hash, così da
+riconoscere quando stiamo ripetendo un esperimento già fatto. `sort_keys=True`
+è ciò che rende irrilevante l'ordine in cui le chiavi sono state scritte, ed è
+la proprietà che l'esempio qui sotto dimostra.
+
+Vale la pena essere precisi su *quanto* quell'impronta è stabile, perché la
+promessa larga («stessa configurazione, stesso identificativo») non è quella
+che il codice consegna. `json.dumps` conserva la **rappresentazione** dei
+valori, non il loro valore numerico: `epoche=5` ed `epoche=5.0` danno due
+impronte diverse pur essendo lo stesso esperimento, una tupla e una lista si
+serializzano uguali e quindi collidono, e un valore non serializzabile (un
+`torch.dtype`, una classe) solleva un'eccezione. In un impianto vero i valori
+si normalizzano prima di serializzarli; qui l'impronta è stabile **rispetto
+all'ordine delle chiavi**, che è già sufficiente a riconoscere il duplicato più
+frequente, cioè la stessa configurazione riscritta in un altro ordine.
+
+`````
 
 ```python
 import hashlib
@@ -308,6 +395,32 @@ passaggio dalla dimostrazione al prodotto: meno spettacolare della prima
 intuizione, ma è qui che la ricerca diventa qualcosa su cui le persone possono
 contare.
 
+`````{tab} Elementare
+```{admonition} Da ricordare
+:class: important
+- Fra il **notebook** e la **produzione** c'è un abisso, ed è quello fra
+  cucinare un piatto una sera per gli amici e metterlo nel menù: in
+  esplorazione conta solo che venga buono, in servizio deve venire identico la
+  centesima volta, uscire in fretta e reggere il sabato sera.
+- Rifare esattamente un risultato è la competenza su cui poggia tutto il resto:
+  se non sai rifare un modello non puoi confrontarlo, correggerlo, né tornare
+  a quello buono quando il nuovo peggiora.
+- Le cose da conservare sono **tre** (il programma, i dati, il modello) più il
+  computer con le sue librerie e il **seme**, cioè il punto da cui parte il
+  sorteggio. Fissare il seme è il primo passo e non basta da solo: due
+  esecuzioni possono ancora differire nelle ultime cifre, e va bene così,
+  purché le conclusioni non cambino.
+- **Segnare ogni prova** appena la si lancia: che cosa si era impostato e com'è
+  andata, in un posto che sopravviva alla chiusura del programma. È la
+  differenza fra un laboratorio con i quaderni e uno dove si va a memoria.
+- Le scorciatoie prese oggi si pagano con gli interessi domani (il **debito
+  tecnico**), e in questo mestiere si pagano più care, perché un modello
+  dipende dai dati e i dati cambiano da soli, senza che nessuno tocchi una
+  riga.
+```
+`````
+
+`````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
 - Tra un **notebook** e la **produzione** c'è un abisso: cambiano i requisiti
@@ -321,12 +434,15 @@ contare.
   monitoraggio rimanda ai dati, un sistema di ML si coltiva.
 - La **riproducibilità** richiede tre artefatti versionati (**codice, dati,
   modello**) più ambiente e semi casuali. `git` da solo non basta: dati e
-  modelli sono grandi e binari, se ne versiona un'impronta.
+  modelli sono grandi e binari, se ne versiona un'impronta. Distinguere la
+  riproducibilità **bit a bit** (che si paga in prestazioni e che il batching
+  dinamico rinuncia a dare) da quella **statistica**, che è quella che serve.
 - L'**experiment tracking** registra iperparametri, metriche e artefatti di ogni
-  run: un'impronta riproducibile della configurazione basta a riconoscere gli
-  esperimenti già fatti.
+  run: un'impronta della configurazione, stabile rispetto all'ordine delle
+  chiavi, basta a riconoscere gli esperimenti già fatti.
 - Il ML accumula **debito tecnico** in fretta {cite}`sculley2015hidden` (glue
   code, pipeline jungle, dipendenze dai dati); la maturità si misura con rubriche
   come la **ML Test Score** {cite}`breck2017ml` e si automatizza con la CD4ML
   {cite}`sato2019continuous`.
 ```
+`````

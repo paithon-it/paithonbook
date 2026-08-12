@@ -1,7 +1,17 @@
 # Dal notebook agli script
 
+Un **notebook** è il quaderno interattivo con cui si lavora quasi sempre
+quando si sperimenta: una pagina divisa in **celle**, ciascuna con dentro un
+pezzo di codice, che si eseguono una alla volta premendo un tasto e che
+lasciano il risultato stampato lì sotto. È lo stesso oggetto che si apre
+premendo «Esegui il codice» in cima a queste pagine. La comodità è enorme: si
+prova una riga, si guarda il numero, si cambia. E il difetto nasce esattamente
+da lì, perché le celle si possono eseguire in qualunque ordine, anche in uno
+diverso da quello in cui sono scritte.
+
 C'è un esperimento che ogni tanto conviene fare sul proprio notebook preferito:
-premere *Restart & Run All* e guardare che cosa succede. Molto spesso non
+premere *Restart & Run All*, cioè «ricomincia da zero ed esegui tutto in
+ordine», e guardare che cosa succede. Molto spesso non
 succede niente di buono. La cella 43 usa una variabile definita nella cella 12,
 che nel frattempo è stata cancellata; la funzione buona è la terza versione,
 ma le prime due sono ancora lì sotto; il modello che ha dato il risultato
@@ -111,10 +121,18 @@ def passo_valutazione(modello, loader, criterio, device):
 ```
 
 Due dettagli che pagano subito. La moltiplicazione `* X.size(0)` serve perché
-la loss restituita da PyTorch è già una **media sul batch**: sommare le medie
-di batch di dimensione diversa darebbe un risultato leggermente sbagliato, e
-`drop_last=False` fa sì che l'ultimo batch sia quasi sempre più piccolo. E
-`@torch.no_grad()` usato come decoratore evita di dover ricordare il blocco
+la loss restituita da PyTorch è già una **media sul batch**, e la media delle
+medie non è la media. Con i numeri: due vassoi, il primo con dieci esempi che
+sbagliano in media di $1$, il secondo con due esempi che sbagliano in media di
+$4$. La media vera sui dodici esempi è $(10 \cdot 1 + 2 \cdot 4)/12 = 1{,}5$;
+la media delle due medie è $(1 + 4)/2 = 2{,}5$, cioè quasi il doppio, perché
+conta i due esempi del secondo vassoio come se fossero dieci. Moltiplicare
+ciascuna media per il numero di esempi del suo vassoio, sommare, e dividere
+alla fine per il totale rimette le cose a posto. Non è un caso di scuola:
+`drop_last=False` fa sì che l'ultimo batch sia quasi sempre più piccolo degli
+altri. E `@torch.no_grad()` scritto sopra la funzione con la chiocciola (in
+Python si chiama **decoratore**: una riga che avvolge la funzione e ne cambia
+il comportamento senza toccarne il corpo) evita di dover ricordare il blocco
 `with` a ogni chiamata: la funzione *è* una valutazione, non può essere altro.
 
 ## Il punto d'ingresso
@@ -164,7 +182,8 @@ def main() -> None:
               f"train perdita {pt:.4f} acc {at:.3f} | "
               f"test perdita {pv:.4f} acc {av:.3f}")
 
-    utils.salva_modello(modello, args.uscita, classi=classi, argomenti=vars(args))
+    utils.salva_modello(modello, ottimizzatore, args.epoche, args.uscita,
+                        classi=classi, argomenti=vars(args))
 
 if __name__ == "__main__":      # eseguito solo se si lancia questo file
     main()
@@ -187,10 +206,10 @@ Windows e su macOS il `DataLoader` con più *worker* riesegue il modulo in ogni
 processo figlio, e senza quella riga ogni figlio farebbe ripartire
 l'addestramento da capo; Python se ne accorge e blocca tutto con un errore.
 
-L'ultima riga di `main()` salva, insieme ai pesi, anche i nomi delle classi e
-gli argomenti usati. È il gesto che distingue un modello utile da un file
-misterioso: fra sei mesi quel `.pt` da solo non dirà né che cosa predice né
-come è stato ottenuto.
+L'ultima riga di `main()` salva, insieme ai pesi, anche i nomi delle classi,
+gli argomenti usati e la memoria dell'ottimizzatore. È il gesto che distingue
+un modello utile da un file misterioso: fra sei mesi quel `.pt` da solo non
+dirà né che cosa predice, né come è stato ottenuto, né da dove ripartire.
 `````
 
 `````{tab} Superiore
@@ -204,25 +223,38 @@ discussa in [dal notebook alla
 produzione](../MLOps/dal-notebook-alla-produzione.md).
 
 Sul salvataggio conviene essere espliciti: un `state_dict` nudo non è
-autosufficiente. Il minimo utile è un dizionario che contenga i pesi, la
-mappatura classe → indice, la configurazione e la versione del codice:
+autosufficiente. Il minimo utile è un dizionario che contenga i pesi, lo stato
+dell'ottimizzatore, l'epoca raggiunta, la mappatura classe → indice e la
+configurazione:
 
 ```python
 # utils.py
 import pathlib, torch
 
-def salva_modello(modello, percorso, classi, argomenti):
+def salva_modello(modello, ottimizzatore, epoca, percorso, classi, argomenti):
+    """Un checkpoint completo: per *usare* il modello e per *riprendere* il lavoro."""
     percorso = pathlib.Path(percorso)
     percorso.parent.mkdir(parents=True, exist_ok=True)
     torch.save({"pesi": modello.state_dict(),
+                "ottimizzatore": ottimizzatore.state_dict(),
+                "epoca": epoca,
                 "classi": classi,
                 "config": argomenti}, percorso)
 ```
 
+Le due righe centrali sono quelle che di solito mancano, ed è la distinzione
+già vista nella sezione [sul training loop](addestramento.md): senza lo stato
+dell'ottimizzatore il file serve a **ripartire da capo**, non a **riprendere**.
+Con Adam la differenza si misura: il primo passo dopo la ripresa vale
+$\approx \eta$ pieno, contro i pochi centesimi di $\eta$ della traiettoria non
+interrotta. Vale per tutto ciò che ha uno `state_dict` e che il ciclo tocca,
+scheduler e `GradScaler` compresi.
+
 Da PyTorch 2.6 `torch.load` usa `weights_only=True` come default, quindi un
 file che contiene oggetti Python arbitrari va ricaricato con
 `weights_only=False`, o, meglio, salvato con dentro solo tipi elementari, come
-qui.
+qui: `vars(args)` è un dizionario di stringhe e numeri, non un `Namespace`,
+proprio per questo.
 `````
 
 ## Riproducibilità: fissare il caso
@@ -313,6 +345,33 @@ come interfaccia di esplorazione e importarvi `engine.py`, ottenendo il meglio
 delle due cose (grafici e assaggi nel notebook, logica stabile e testabile nei
 file).
 
+Cinque file, un comando, un seme fissato: è tutto quello che serve perché un
+esperimento smetta di essere un ricordo.
+
+`````{tab} Elementare
+```{admonition} Da ricordare
+:class: important
+- Il notebook è una **cucina di prova**, lo script è la **ricetta scritta**. Il
+  segnale che è ora di passare dall'uno all'altro è sempre lo stesso: "sto
+  rilanciando la stessa cosa cambiando un numero".
+- La divisione standard è in cinque file, uno per mestiere: i dati, il
+  modello, il giro di addestramento, le funzioni di servizio, e il file che si
+  lancia. Il terzo non sa nulla del problema, e per questo si riusa ovunque.
+- Quando si sommano gli errori di più vassoi bisogna pesarli per quanti esempi
+  contengono: la media delle medie non è la media.
+- Tutto ciò che cambia da un esperimento all'altro si passa **da terminale**,
+  non modificando il codice: così resta scritto nella cronologia.
+- Nel file salvato vanno **i pesi, i nomi delle classi, la configurazione** e
+  la memoria dell'ottimizzatore: senza, fra sei mesi quel file non dice né che
+  cosa predice, né come è stato ottenuto, né da dove ripartire.
+- Fissare il **seme** del caso serve a confrontare due esperimenti fra loro.
+  Non serve a dire che il modello è buono: per quello si ripete con tre o
+  cinque semi diversi.
+- Non dividere in file troppo presto: la regola delle **tre volte**.
+```
+`````
+
+`````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
 - Il notebook è un **laboratorio** (stato implicito, ordine invisibile), lo
@@ -325,9 +384,11 @@ file).
   PyTorch è già una media sul batch.
 - `argparse` più `if __name__ == "__main__":` (quest'ultimo indispensabile
   anche per i worker del `DataLoader` su Windows e macOS).
-- Si salvano **pesi, classi e configurazione** insieme: uno `state_dict` nudo
-  fra sei mesi non dice che cosa predice.
+- Si salvano **pesi, classi, configurazione e stato dell'ottimizzatore**
+  insieme: uno `state_dict` nudo fra sei mesi non dice che cosa predice, e da
+  solo non permette di riprendere.
 - Fissare i semi serve a **confrontare** gli esperimenti; il determinismo
   bit-a-bit su GPU si chiede a parte e si paga in prestazioni.
 - Non modularizzare troppo presto: la regola delle **tre volte**.
 ```
+`````

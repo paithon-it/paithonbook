@@ -57,23 +57,33 @@ Abbiamo i token. Il modo più ingenuo di dar loro un numero è la codifica
 :alt: "La stessa colonna di categorie codificata in due modi. Con l'ordinal encoding diventa una sola colonna di interi, che però introduce un ordine e delle distanze fra categorie che non ne hanno. Con il one-hot diventa una colonna per categoria, riempita di zeri e con un solo uno: tutte le categorie restano equidistanti."
 :width: 96%
 
-Due codifiche, due significati impliciti. Gli interi dicono che una categoria
-viene prima di un'altra e dista il doppio da una terza; il one-hot non dice
-niente di tutto questo, ed è il suo pregio.
+Due codifiche, due significati impliciti. Numerare le categorie una dopo
+l'altra, 1, 2, 3 (è la codifica che si chiama *ordinal*), dice che una viene
+prima di un'altra e dista il doppio da una terza; una casella per categoria,
+tutte a zero tranne una, non dice niente di tutto questo, ed è il suo pregio.
 ```
 
-Il confronto di {numref}`fig-one-hot` spiega perché si accetti lo spreco. Una
-colonna per parola è un'enormità con un vocabolario da decine di migliaia di
-voci; ma la codifica compatta introdurrebbe un ordine inventato, e un modello
-che vede numeri cerca sempre relazioni fra numeri, comprese quelle che nessuno
-intendeva metterci.
+Lo spreco si vede a occhio: una casella per ogni parola vuol dire, con un
+vocabolario da decine di migliaia di voci, decine di migliaia di caselle per
+scrivere una parola sola. Il confronto di {numref}`fig-one-hot` spiega perché
+lo si accetti lo stesso. La codifica compatta, quella che numera le parole
+1, 2, 3, occuperebbe una casella e basta, ma introdurrebbe un ordine inventato,
+e un modello che vede numeri cerca sempre relazioni fra numeri, comprese quelle
+che nessuno intendeva metterci.
 
 `````{tab} Elementare
 
 Immagina una lunghissima pulsantiera con un interruttore per ogni parola del
 vocabolario. Per rappresentare *gatto* accendi solo il suo interruttore e
-lasci spenti tutti gli altri: un vettore lunghissimo, tutto zeri tranne un
-singolo $1$.
+lasci spenti tutti gli altri.
+
+Scrivi ora $1$ per «acceso» e $0$ per «spento», e leggi la pulsantiera da
+sinistra a destra: quello che ottieni è una lunga fila di numeri,
+`0 0 1 0 0 ... 0`. Una fila di numeri presa nel suo ordine si chiama
+**vettore**, e conviene fissarlo adesso perché la parola tornerà in ogni pagina
+di questo capitolo: un vettore è questo, una fila di numeri, niente di più
+misterioso. Quello di *gatto* è lungo quanto il vocabolario ed è tutto zeri
+tranne un singolo $1$.
 
 Funziona, ma è uno spreco e, soprattutto, è cieco al significato. Per questa
 codifica *gatto* e *felino* sono lontani esattamente quanto *gatto* e
@@ -122,14 +132,26 @@ perdita c'è, ed è totale: nessun modello a valle potrà recuperarla.
 
 `````{tab} Elementare
 
-Il documento diventa un conteggio: quante volte compare ciascuna parola. Ma
-c'è un problema: articoli e preposizioni come *il* o *di* compaiono ovunque,
-e proprio per questo dicono poco su *cosa* parla il testo. Parole rare come
-*retina* o *sinapsi* sono molto più rivelatrici.
+Il documento diventa un conteggio: quante volte compare ciascuna parola. È la
+pulsantiera di prima, con gli interruttori sostituiti da manopole: non più
+«c'è / non c'è», ma «c'è, e tante volte». Resta **sparsa**, che è il modo
+tecnico di dire che quasi tutte le caselle stanno a zero: un documento usa
+qualche centinaio di parole diverse, e le caselle disponibili sono decine di
+migliaia.
 
-Il peso **TF-IDF** corregge lo squilibrio: gonfia le parole rare e
-informative, sgonfia quelle comuni a tutti i documenti. È ancora una
-pulsantiera sparsa, ma con volumi tarati meglio.
+C'è però un problema: articoli e preposizioni come *il* o *di* compaiono
+ovunque, e proprio per questo dicono poco su *cosa* parla il testo. Parole rare
+come *retina* o *sinapsi* sono molto più rivelatrici.
+
+Il peso **TF-IDF** corregge lo squilibrio moltiplicando fra loro due numeri,
+che sono poi le due metà della sigla. Il primo (*term frequency*, la frequenza
+del termine) è quante volte la parola compare **in questo documento**: più ci
+compare, più conta. Il secondo (*inverse document frequency*, la frequenza
+documentale rovesciata) guarda **in quanti documenti** della collezione la
+parola compare, e premia quelle che ne occupano pochi: una parola presente
+dappertutto prende un fattore piccolo, una presente in due documenti su mille
+un fattore grande. Il prodotto dei due gonfia le parole rare e informative e
+sgonfia quelle comuni a tutti: stessa pulsantiera, manopole tarate meglio.
 
 `````
 
@@ -171,10 +193,14 @@ non cambia (le parole rare pesano più di quelle comuni), i decimali sì.
 
 `````{tab} Elementare
 
-La variante serve a due cose. La prima è non trovarsi mai a dividere per zero
-quando una parola compare in pochissimi documenti. La seconda è mettere sulla
-stessa scala documenti di lunghezza diversa, così che un testo lungo non
-risulti più «pesante» solo perché contiene più parole. Il risultato è che
+La variante serve a due cose. La prima è non trovarsi mai a dividere per zero:
+la seconda metà della ricetta è una divisione (quanti sono i documenti, diviso
+in quanti compare la parola), e se quel secondo numero fosse zero la divisione
+non si potrebbe fare, quindi la libreria aggiunge $1$ sopra e sotto. La seconda
+è mettere sulla stessa scala documenti di lunghezza diversa, così che un testo
+lungo non risulti più «pesante» solo perché contiene più parole: a conti fatti
+ogni documento viene riportato a una misura comune, come si fa con le
+percentuali. Il risultato è che
 anche le parole presenti in tutti i documenti si portano dietro un po' di
 peso, invece di sparire del tutto: poco male, perché quello che conta è che le
 parole rare ne abbiano di più.
@@ -231,6 +257,15 @@ Il risultato è una **mappa del significato**. Su questa mappa *gatto* e
 *felino* finiscono vicini, *gatto* e *cane* poco più lontani, *gatto* e
 *mercoledì* agli antipodi. La vicinanza geometrica diventa vicinanza di
 senso.
+
+Quella vicinanza ha un modo standard di misurarsi, e conviene impararne il
+nome adesso perché lo si incontra ovunque: la **similarità del coseno**. Non è
+una distanza in metri, è un numero fra $-1$ e $+1$ che dice quanto due file di
+numeri «puntano dalla stessa parte»: vale $+1$ quando puntano esattamente nella
+stessa direzione, $0$ quando non hanno niente a che spartire, $-1$ quando
+puntano in direzioni opposte. Ogni volta che più avanti leggerete «coseno
+$0{,}88$», leggete «si somigliano molto»; dove leggerete «coseno $-0{,}26$»,
+leggete «non c'entrano niente l'uno con l'altra».
 
 `````
 
@@ -305,17 +340,36 @@ si possono sommare e sottrarre come frecce.
 
 I quattro embedding formano un parallelogramma: la stessa freccia
 "regalità" separa *uomo* da *re* e *donna* da *regina*; la stessa freccia
-"femminile" separa *uomo* da *donna* e *re* da *regina*.
+"femminile" separa *uomo* da *donna* e *re* da *regina*. Il disegno è
+idealizzato: nello spazio vero le due frecce non sono identiche e il
+parallelogramma si chiude solo per approssimazione, come si legge qui sotto.
 ```
 
 `````{tab} Elementare
 
 Guarda la {numref}`fig-embedding-analogia`. La freccia che va da *uomo* a *re*
 significa più o meno "diventare regale". Se prendi quella stessa freccia e la
-applichi a *donna*, dove atterri? Molto vicino a *regina*. In formula:
+applichi a *donna*, dove atterri? Molto vicino a *regina*.
+
+Quella freccia si scrive con una sottrazione, ed è l'unico passaggio da
+digerire. Sottrarre due vettori vuol dire fare la sottrazione numero per
+numero, e il risultato è esattamente la freccia che porta dal secondo al primo:
+«*re* meno *uomo*» è un altro modo di dire «la freccia che va da *uomo* a
+*re*». Applicarla a *donna* vuol dire sommargliela. In formula:
 *re − uomo + donna ≈ regina*. I quattro punti disegnano un parallelogramma, e
 questo è il segno che il modello ha catturato da solo il concetto di "regalità"
 e quello di "genere", senza che nessuno glieli abbia mai spiegati.
+
+C'è un'avvertenza che quasi nessuno racconta, e che invece è la parte più
+istruttiva. Se il conto lo si fa davvero, e poi si cerca la parola più vicina
+al punto di arrivo, la vincitrice non è *regina*: è *re*. La freccia del genere
+è una spintarella, debole rispetto alla distanza che separa una parola
+dall'altra: sposta il punto quel tanto che basta a portare *regina* al secondo
+posto, non abbastanza da farle superare *re*. Tutti i programmi che fanno
+queste analogie **tolgono dalla gara le tre parole della domanda**, e solo così
+la risposta che esce è quella famosa. L'analogia geometrica esiste davvero,
+insomma, ma è più tenue di come la si disegna, e il parallelogramma della
+figura è un'idealizzazione.
 
 `````
 
@@ -338,11 +392,34 @@ $$
 {\lVert\mathbf{a}\rVert\,\lVert\mathbf{b}\rVert} \in [-1, 1] .
 $$
 
-Non è magia e non è perfetta: molte analogie falliscono, e questi vettori
-ereditano i **pregiudizi** dei testi su cui sono addestrati (per esempio
-associazioni di genere a certi mestieri). Ne parleremo, ma il messaggio resta:
-il significato, ridotto a geometria, si lascia misurare con un prodotto
-scalare.
+La ricerca però si fa **escludendo dai candidati le tre parole della domanda**,
+e quel vincolo non è un dettaglio di implementazione: senza di esso il primo
+vicino è quasi sempre *re* stesso. Su GloVe da $100$ dimensioni addestrato su
+6 miliardi di token, il coseno con *king* vale $0{,}855$ contro lo $0{,}783$ di
+*queen*, e la stessa cosa succede a `man : doctor :: woman : ?` ($0{,}866$ per
+*doctor*, $0{,}776$ per *nurse*) e a `good : better :: bad : ?` ($0{,}886$ per
+*bad*, $0{,}839$ per *worse*). L'enunciato onesto non è dunque l'$\approx$
+della formula, ma
+
+$$
+\arg\max_{w \,\notin\, \{\text{re},\,\text{uomo},\,\text{donna}\}}
+\cos\bigl(\mathbf{v}_w,\ \mathbf{v}_{\text{re}} - \mathbf{v}_{\text{uomo}}
++ \mathbf{v}_{\text{donna}}\bigr) = \text{regina} .
+$$
+
+La lettura corretta è che l'analogia lineare è una **direzione debole
+sovrapposta a una posizione forte**: la geometria sposta il punto abbastanza da
+mettere *regina* al secondo posto, non abbastanza da farle superare *re*. Chi
+ha discusso a fondo la questione è Nissim, van Noord e van der Goot
+{cite}`nissim2020fair`, che mostrano quanto di ciò che si legge sulle analogie,
+comprese quelle usate come prova di *bias*, dipenda da quella scelta di
+implementazione, mai scritta nelle equazioni.
+
+Non è magia e non è perfetta, quindi, anche al netto dell'esclusione: molte
+analogie falliscono, e questi vettori ereditano i **pregiudizi** dei testi su
+cui sono addestrati (per esempio associazioni di genere a certi mestieri). Ne
+parleremo, ma il messaggio resta: il significato, ridotto a geometria, si
+lascia misurare con un prodotto scalare.
 
 `````
 
@@ -368,7 +445,14 @@ le altre, e certe parole piccole ribaltano tutto: «il film mi è piaciuto» e �
 film non mi è piaciuto» differiscono per un «non» che nella media si perde.
 
 Con i Transformer il problema sembra risolto, perché quei modelli l'ordine lo
-tengono. Ma c'è una sorpresa: **un BERT preso così com'è dà vettori di frase
+tengono. **BERT** è uno di quei modelli, uscito nel 2018, ed è il primo nome
+proprio che incontriamo: un programma addestrato a leggere frasi a cui è stata
+cancellata qualche parola e a indovinare quali fossero. Da quell'esercizio,
+ripetuto su miliardi di frasi, esce qualcosa che si può riutilizzare per compiti
+diversissimi senza rifare tutto da capo, ed è il motivo per cui BERT tornerà
+altre volte in questo capitolo.
+
+Ma c'è una sorpresa: **un BERT preso così com'è dà vettori di frase
 mediocri**. Il motivo è semplice e vale la pena farci caso, perché è una
 lezione generale: BERT è stato addestrato a indovinare parole mancanti, non a
 mettere vicine due frasi che vogliono dire la stessa cosa. Nessuno gli ha mai
@@ -387,11 +471,13 @@ più volte: la stessa identica, con gli stessi pesi, applicata all'ancora, alla
 frase simile e a quella diversa. È essenziale che sia la stessa, altrimenti i
 vettori finirebbero in spazi diversi e confrontarli non vorrebbe dire niente.
 
-Il guadagno pratico è enorme, e gli autori di Sentence-BERT lo misurano:
-trovare la coppia più simile fra diecimila frasi richiede circa **65 ore** se
-per ogni coppia si deve far girare un BERT sulle due frasi insieme, e circa
-**cinque secondi** se ogni frase ha già il suo vettore e basta confrontare
-numeri. È la differenza fra un'idea e un prodotto.
+Il guadagno pratico è enorme, e gli autori di Sentence-BERT lo misurano.
+Diecimila frasi fanno quasi **cinquanta milioni di coppie** (ognuna con ognuna:
+$10\,000 \times 9\,999$ diviso $2$). Trovare la più simile richiede circa **65
+ore** se per ogni coppia bisogna far girare un BERT sulle due frasi messe
+insieme, e circa **cinque secondi** se ogni frase ha già il suo vettore, perché
+allora restano solo cinquanta milioni di confronti fra file di numeri, che è
+lavoro da niente. È la differenza fra un'idea e un prodotto.
 
 `````
 
@@ -539,6 +625,39 @@ che in un modello vero si governa con negativi difficili e temperatura, e la
 ragione per cui un modello di embedding va scelto guardando il compito, non la
 classifica.
 
+`````{tab} Elementare
+```{admonition} Da ricordare
+:class: important
+- **Tokenizzare** vuol dire affettare il testo in pezzi. I sistemi moderni
+  usano pezzi più piccoli della parola, così anche una parola mai vista si
+  ricostruisce dai suoi mattoncini.
+- Un **vettore** è una fila di numeri, e niente di più. Il modo più ingenuo di
+  darne uno a una parola è la pulsantiera con un interruttore acceso e tutti
+  gli altri spenti: funziona, ma per lei *gatto* e *felino* sono lontani
+  esattamente quanto *gatto* e *mercoledì*.
+- Contare quante volte compare ogni parola di un documento (il **sacchetto di
+  parole**) butta via l'ordine per sempre; il peso **TF-IDF** aggiusta i conti
+  gonfiando le parole rare e sgonfiando quelle che stanno dappertutto.
+- Gli **embedding** danno a ogni parola poche centinaia di numeri, imparati
+  leggendo montagne di testo: una mappa del significato, in cui la vicinanza si
+  misura con la **similarità del coseno**, un numero fra $-1$ e $+1$.
+- *Re meno uomo più donna* atterra vicino a *regina*, ma la risposta esce solo
+  se dalla ricerca si tolgono le tre parole della domanda: la freccia del
+  significato esiste, ed è più debole di come la si disegna.
+- **fastText** spezza le parole in mattoncini di poche lettere e ne somma i
+  vettori: un vettore ce l'ha anche una parola mai vista, e *gatto*, *gatta* e
+  *gattino* nascono già simili fra loro.
+- Per una **frase** intera, la media dei vettori delle sue parole è un punto di
+  partenza onesto ma cieco all'ordine; e un BERT preso così com'è non fa
+  meglio, perché nessuno gliel'aveva chiesto. Se vuoi che uno spazio abbia una
+  certa proprietà, quella proprietà devi addestrarla: una sola rete usata tre
+  volte, e triplette di frasi da avvicinare e da allontanare.
+- Il coseno dice «si somigliano», non «questo risponde a quella»: chi cerca
+  risposte addestra due reti separate, una per le domande e una per i testi.
+```
+`````
+
+`````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
 - **Tokenizzare** spezza il testo in unità; i sistemi moderni usano token
@@ -548,6 +667,10 @@ classifica.
 - Gli **word embedding** (word2vec, GloVe) sono densi e a bassa dimensione: la
   **vicinanza geometrica riflette la vicinanza di significato**, misurata con
   la **similarità del coseno**.
+- L'**analogia lineare** ($\mathbf{v}_{re} - \mathbf{v}_{uomo} +
+  \mathbf{v}_{donna}$) restituisce *regina* solo perché i tre termini di
+  ingresso sono esclusi dai candidati: senza quel vincolo, mai scritto nelle
+  equazioni, vince *re* {cite}`nissim2020fair`.
 - **fastText** somma i vettori degli *n-grammi di caratteri*: dà un vettore
   anche alle parole mai viste e sfrutta la morfologia; un aiuto concreto per
   lingue flessive come l'italiano.
@@ -563,3 +686,4 @@ classifica.
   risponde a quella». È il motivo per cui il retrieval usa **due torri**,
   domande da una parte e passaggi dall'altra.
 ```
+`````

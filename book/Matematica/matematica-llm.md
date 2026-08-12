@@ -12,17 +12,26 @@ il contenuto: era il vocabolario preso in prestito da mestieri diversi (le
 basi di dati, le scienze cognitive, l'elettrotecnica) e appiccicato sopra a
 operazioni che avevano già un nome.
 
+Dei quattro nomi di cui si lamenta, uno serve subito e va tolto di mezzo: un
+**token** è il pezzetto di testo su cui il modello lavora, non proprio una
+parola ma un frammento (una parola corta per intero, la radice di una lunga, un
+segno di punteggiatura), e una frase, per il modello, è la fila dei suoi token.
+Gli altri tre (*query*, *chiave*, *testa*) sono etichette appiccicate a tre
+oggetti che qui nasceranno con un nome italiano; il nome inglese arriverà dopo,
+in una tabella, quando ci sarà qualcosa da tradurre.
+
 Questa sezione fa lo stesso percorso, ed è il punto in cui la cassetta degli
 attrezzi si richiude. Non spiega l'architettura Transformer, che il capitolo
 dedicato smonterà pezzo per pezzo con i suoi nomi standard; risponde a una
-domanda più stretta e, per chi ha appena finito quattro sezioni di
+domanda più stretta e, per chi ha appena finito cinque sezioni di
 matematica, più urgente: *di che cosa è fatto un modello linguistico, se lo si
 guarda con gli strumenti visti fin qui?*
 
 La risposta breve è che non serve nient'altro. Prodotti scalari e prodotti fra
 matrici dall'algebra lineare, la regola della catena e il valore atteso dalla
-probabilità, la cross-entropia dalla teoria dell'informazione, la discesa del
-gradiente e il *log-sum-exp* dall'analisi. Sono tutti qui dentro. La
+probabilità, la cross-entropia dalla teoria dell'informazione, la derivata
+delle funzioni composte e la discesa del gradiente dall'analisi, il
+*log-sum-exp* dall'analisi numerica. Sono tutti qui dentro. La
 sofisticazione non sta nei pezzi, sta in come vengono composti e in quante
 volte vengono ripetuti.
 
@@ -132,26 +141,65 @@ transizione, non la classe del modello.
 ## Da simboli a punti in uno spazio
 
 Una funzione ha bisogno di numeri in ingresso, e i token sono simboli. La
-mossa standard è già stata vista nel capitolo di algebra lineare, in
-un'altra veste: rappresentare ogni token con un vettore.
+mossa standard è già stata vista nella sezione di algebra lineare, in
+un'altra veste: rappresentare ogni token con un vettore, cioè con una lista di
+numeri.
+
+`````{tab} Elementare
+
+Il modo più ovvio è anche il peggiore: si numerano le voci del vocabolario da
+$1$ a cinquantamila e si dà a ciascuna una lista lunga cinquantamila, tutta di
+zeri tranne un $1$ nella sua casella. È la codifica che si chiama *one-hot*,
+«uno acceso». Funziona, nel senso che ogni parola ha la sua lista e nessuna si
+confonde con un'altra, ma butta via l'unica cosa che ci interessava. Prese due
+liste qualsiasi, la loro differenza è sempre la stessa: due caselle diverse, e
+basta. Il libro dichiara così che «gatto» e «cane» sono lontani fra loro
+esattamente quanto «gatto» e «sebbene». Tutto quello che il modello impara sul
+primo va reimparato da capo sul secondo.
+
+L'alternativa è dare a ogni token una lista molto più corta (da qualche
+centinaio a qualche migliaio di numeri) e, soprattutto, **non deciderla noi**:
+quei numeri sono manopole come tutte le altre, e l'addestramento li regola
+insieme al resto. È l'**embedding**, e il capitolo sul Natural Language
+Processing lo tratta per esteso, insieme alla ragione per cui funziona: una
+parola si conosce dalla compagnia che frequenta, quindi parole che compaiono
+negli stessi contesti finiscono per prendere liste simili.
+
+Il guadagno è tutto qui: adesso le parole sono punti, e sui punti si possono
+fare le domande di poco fa, quelle dell'algebra lineare. Quanto sono lontani?
+Puntano dalla stessa parte? Qual è il punto che sta in mezzo? Su una fila di
+caselle spente e una accesa nessuna di queste domande aveva una risposta
+interessante.
+
+`````
+
+`````{tab} Superiore
 
 Il modo ingenuo è dare a ogni voce del vocabolario un indice e trasformarlo
 in un vettore lungo $|\mathcal{V}|$ con un solo 1 (la codifica *one-hot*). Ha
-un difetto fatale: rende ogni coppia di token equidistante, cioè dichiara che
-«gatto» e «cane» sono diversi fra loro esattamente quanto «gatto» e
-«sebbene». Ogni cosa imparata sul primo va reimparata da capo sul secondo.
+un difetto fatale: rende ogni coppia di token equidistante ($\lVert
+\mathbf{x}-\mathbf{y}\rVert_2 = \sqrt{2}$ per ogni coppia distinta), cioè
+dichiara che «gatto» e «cane» sono diversi fra loro esattamente quanto
+«gatto» e «sebbene». Ogni cosa imparata sul primo va reimparata da capo sul
+secondo.
 
-L'alternativa è una funzione $\mathbf{E}: \mathcal{V} \to \mathbb{R}^d$ che
-manda ogni token in un vettore $\mathbf{e}_w$ di dimensione moderata (nei
-modelli attuali da qualche centinaio a qualche migliaio), le cui coordinate
-sono parametri appresi. È l'**embedding**, e il capitolo sul Natural
-Language Processing lo tratta per esteso, compresa la ragione linguistica che
-lo giustifica: il principio di Firth, «una parola la conosci dalla compagnia
-che frequenta» {cite}`firth1957synopsis`, e le regolarità aritmetiche che ne
-emergono {cite}`mikolov2013distributed`. Qui basta la conseguenza
-matematica, che è tutta nel prodotto scalare: una volta che i token sono
-punti, si possono sommare, mediare, confrontare per angolo e per distanza.
-Diventano oggetti su cui l'algebra lineare ha qualcosa da dire.
+L'alternativa è una **matrice di embedding** $\mathbf{E} \in
+\mathbb{R}^{|\mathcal{V}| \times d}$, di cui la riga $\mathbf{e}_w \in
+\mathbb{R}^d$ è la rappresentazione del token $w$; la dimensione $d$ è moderata
+(nei modelli attuali da qualche centinaio a qualche migliaio) e tutte le
+coordinate sono parametri appresi. Formalmente è il prodotto
+$\mathbf{E}^\top \mathbf{x}_w$ con $\mathbf{x}_w$ il vettore one-hot, cioè una
+selezione di riga: la codifica ingenua non viene sostituita, viene composta con
+una mappa lineare appresa. Il capitolo sul Natural Language Processing tratta
+l'embedding per esteso, compresa la ragione linguistica che lo giustifica: il
+principio di Firth, «una parola la conosci dalla compagnia che frequenta»
+{cite}`firth1957synopsis`, e le regolarità aritmetiche che ne emergono
+{cite}`mikolov2013distributed`. Qui basta la conseguenza matematica, che è
+tutta nel prodotto scalare: una volta che i token sono punti, si possono
+sommare, mediare, confrontare per angolo e per distanza. Diventano oggetti su
+cui l'algebra lineare ha qualcosa da dire.
+
+`````
 
 ## Il significato dipende dal contesto
 
@@ -169,12 +217,14 @@ un'eccezione da manuale, è la norma: pochi vocaboli frequenti hanno un solo
 significato.
 
 Da qui l'obiettivo di calcolo, che è la richiesta precisa da cui nasce tutto
-il resto. Data la sequenza di vettori $(\mathbf{e}_1, \dots, \mathbf{e}_n)$,
-vogliamo produrre una nuova sequenza
-$(\mathbf{h}_1, \dots, \mathbf{h}_n)$ in cui ogni $\mathbf{h}_i$ non dipenda
-solo dal token in posizione $i$, ma da tutto il contesto in cui quel token si
-trova. La stessa parola, in due frasi diverse, deve uscire con due vettori
-diversi.
+il resto: entrano tanti vettori quante sono le parole, uno per parola presa da
+sola, e ne devono uscire altrettanti, uno per posizione, ciascuno dei quali
+tenga conto di tutta la frase in cui quella parola si trova. La stessa parola,
+in due frasi diverse, deve uscire con due vettori diversi. In simboli: data la
+sequenza $(\mathbf{e}_1, \dots, \mathbf{e}_n)$, vogliamo produrre una nuova
+sequenza $(\mathbf{h}_1, \dots, \mathbf{h}_n)$, della stessa lunghezza e della
+stessa dimensione $d$, in cui ogni $\mathbf{h}_i$ non dipenda solo dal token in
+posizione $i$.
 
 ## Il motore: una media pesata con pesi appresi
 
@@ -188,12 +238,16 @@ Per capire «salta» in «Il gatto nero salta sul muro» conviene mescolare al
 suo vettore un po' di ciò che sanno le altre parole: parecchio di «gatto»
 (è chi salta), un po' di «muro» (è dove), quasi niente di «il» e di «sul».
 Mescolare in proporzioni diverse è fare una **media pesata**: si moltiplica
-ogni vettore per un numero, si somma tutto, e si pretende che i numeri siano
-non negativi e sommino a uno, altrimenti non è una media.
+ogni vettore per un numero e si somma tutto (sono i due gesti della sezione di
+algebra lineare, moltiplicare una lista per un numero e sommarne due voce per
+voce), e si pretende che i numeri siano non negativi e sommino a uno,
+altrimenti non è una media ma una combinazione qualsiasi.
 
-Il numero $\alpha_{ij}$, il peso che la posizione $i$ mette sulla posizione
-$j$, lo chiamiamo **peso di influenza**. Due osservazioni lo rendono meno
-banale di quanto sembri.
+Quel numero, il peso che la posizione $i$ mette sulla posizione $j$, lo
+chiamiamo **peso di influenza** e lo scriviamo $\alpha_{ij}$: la lettera greca
+$\alpha$ si legge «alfa», e i due numerini servono perché il peso dipende da
+due posizioni, non da una (quanto la parola numero $i$ si appoggia alla parola
+numero $j$). Due osservazioni lo rendono meno banale di quanto sembri.
 
 La prima: l'influenza è a senso unico. Quanto «gatto» conta per capire
 «salta» non è quanto «salta» conta per capire «gatto». Sono due domande
@@ -222,16 +276,21 @@ diversi dello stesso vettore, non uno.
 `````{tab} Superiore
 
 Siano $\mathbf{e}_1,\dots,\mathbf{e}_n \in \mathbb{R}^d$ i vettori in
-ingresso. La rappresentazione contestuale della posizione $i$ è
+ingresso. L'uscita dell'aggregazione, per la posizione $i$, è
 
 $$
-\mathbf{h}_i = \sum_{j=1}^{n} \alpha_{ij}\,\mathbf{c}_j ,
+\mathbf{o}_i = \sum_{j=1}^{n} \alpha_{ij}\,\mathbf{c}_j ,
 \qquad \alpha_{ij} \ge 0, \qquad \sum_j \alpha_{ij} = 1,
 $$
 
 dove $\alpha_{ij}$ è il **peso di influenza** della posizione $j$ su $i$ e
 $\mathbf{c}_j$ è il contenuto che $j$ mette a disposizione. Restano da
 definire due cose: da dove vengono i pesi e da dove viene il contenuto.
+
+(Il simbolo è $\mathbf{o}_i$ e non $\mathbf{h}_i$ perché questa è l'uscita di
+**una** aggregazione, e vive in $\mathbb{R}^k$ con $k < d$. La
+rappresentazione contestuale $\mathbf{h}_i \in \mathbb{R}^d$ promessa poco fa
+si ottiene solo più avanti, ricomponendo le $H$ aggregazioni parallele.)
 
 Entrambi da **tre trasformazioni lineari apprese** applicate ai vettori
 stessi. Con $\mathbf{W}^A, \mathbf{W}^B, \mathbf{W}^C \in \mathbb{R}^{k
@@ -277,8 +336,12 @@ $$
 È l'inversa della trasformazione log-odds generalizzata a più di due
 categorie: nella regressione logistica multinomiale, se il log-odds della
 categoria $m$ rispetto a una di riferimento è $z_m$, la probabilità di quella
-categoria è $e^{z_m}/\sum_{m'} e^{z_{m'}}$. Qui il punteggio $r_{ij}$ gioca
-il ruolo del log-odds «di essere influenzati dalla posizione $j$». È
+categoria è $e^{z_m}/\sum_{m'} e^{z_{m'}}$, dove la somma comprende anche la
+categoria di riferimento, che entra con $z = 0$. Qui il punteggio $r_{ij}$
+gioca il ruolo del log-odds «di essere influenzati dalla posizione $j$», ma di
+categoria di riferimento non ce n'è nessuna: i punteggi sono definiti solo a
+meno di una costante additiva comune, ed è precisamente l'invarianza che il
+*log-sum-exp* sfrutta quando sottrae il massimo. È
 differenziabile ovunque, monotona nei punteggi e assegna peso positivo a
 tutte le posizioni, per quanto trascurabile. In pratica si calcola sempre
 sottraendo prima il massimo, con il *log-sum-exp* della sezione di analisi
@@ -296,7 +359,9 @@ dati: si interroga una base con una chiave per ottenere un valore. La
 metafora è imperfetta, perché non c'è nessuna base di dati e nessuna
 interrogazione: c'è un vettore confrontato con altri vettori. Il libro
 continua a usare i nomi standard, perché sono quelli dei paper e del codice,
-ma vale la pena tenere accanto la traduzione.
+ma vale la pena tenere accanto la traduzione. La tabella che segue serve da
+dizionario per quando quei nomi si incontreranno altrove: per seguire questa
+sezione non serve, ed è la ragione per cui arriva adesso e non all'inizio.
 
 | il nome che si incontra | qui | che cosa fa davvero |
 |---|---|---|
@@ -311,17 +376,25 @@ ma vale la pena tenere accanto la traduzione.
 ## Una forma bilineare di rango basso
 
 C'è un modo più compatto di guardare il punteggio di influenza, e riconoscerlo
-chiarisce in un colpo solo quanti parametri servono e perché.
+chiarisce in un colpo solo quanti parametri servono e perché. Il titolo di
+questa sezione anticipa due parole tecniche, e conviene scioglierle subito.
+Una **forma bilineare** è un modo di misurare l'accordo fra due liste di
+numeri passando per una tabella: si prende la prima lista, la si fa attraversare
+dalla tabella e si fa il prodotto scalare con la seconda. Il **rango** di una
+tabella è quante righe davvero indipendenti contiene, cioè quante ne servono
+per ricostruire tutte le altre combinandole: una tabella grande di rango basso
+è grande solo all'apparenza.
 
 ```{figure} ../figures/forma-bilineare-rango-basso.svg
 :name: fig-forma-bilineare
 :alt: "A sinistra un quadrato grande etichettato M, di lato d, che rappresenta la matrice di tutte le affinità possibili fra caratteristiche; a destra lo stesso quadrato è mostrato come prodotto di due rettangoli sottili, alti k e larghi d, le trasposte delle due matrici di proiezione. Sotto, il conteggio dei numeri da imparare: circa 151 milioni per il quadrato pieno, circa 3,1 milioni per i due rettangoli."
 :width: 88%
 
-Il quadrato pieno e la sua versione fattorizzata. Imparare $\mathbf{M}$ per
-intero significherebbe un parametro per ogni coppia di coordinate; passando
-per due matrici sottili se ne imparano quarantotto volte meno, al prezzo di
-poter rappresentare solo affinità di rango al più $k$.
+Il quadrato pieno e la sua versione fattorizzata. Imparare il quadrato per
+intero significherebbe un numero da regolare per ogni coppia di coordinate;
+ricavandolo dal prodotto di due tabelle sottili se ne regolano quarantotto
+volte meno, e in cambio si rinuncia a tutti i quadrati che quel prodotto non
+sa produrre.
 ```
 
 `````{tab} Elementare
@@ -330,14 +403,16 @@ Immagina una tabella gigantesca che, per ogni coppia di caratteristiche
 possibili, dica quanto quella dell'una si accorda con quella dell'altra: la
 riga «è un verbo di movimento» incrocia la colonna «è un nome animato» con un
 numero alto, e così via per ogni coppia. Sarebbe il modo più generale di
-misurare l'affinità fra due parole, e sarebbe anche insostenibile: con
-$12\,288$
-coordinate per vettore, quella tabella ha 151 milioni di caselle, e ce ne
-vorrebbe una per ogni relazione e per ogni strato.
+misurare l'affinità fra due parole, e sarebbe anche insostenibile. Prendiamo i
+numeri veri di GPT-3, il modello di cui torneremo a fare i conti più avanti:
+$12\,288$ coordinate per vettore. Quella tabella avrebbe $12\,288$ righe e
+$12\,288$ colonne, cioè 151 milioni di caselle, e ce ne vorrebbe una per ogni
+relazione e per ogni strato.
 
 La scorciatoia è non imparare mai la tabella intera, ma due tabelle sottili
 il cui prodotto la ricostruisce approssimativamente. Con $128$ righe ciascuna
-sono 3,1 milioni di numeri invece di 151 milioni: quarantotto volte meno
+(sempre GPT-3: è la stessa scelta di progetto) sono 3,1 milioni di numeri
+invece di 151 milioni, quarantotto volte meno
 ({numref}`fig-forma-bilineare`).
 
 Si perde qualcosa, ovviamente. Le tabelle ottenute in questo modo non sono
@@ -398,11 +473,15 @@ prima si ritrova uguale sulla seconda: nessuna misura fatta sulle mappe può
 dire quale delle due sia «quella giusta», perché le due mappe descrivono
 esattamente la stessa città.
 
-Alle due matrici che calcolano l'influenza succede lo stesso. Si possono
-ruotare insieme, in infiniti modi, senza che nemmeno un numero cambi
-nell'uscita del modello. Ne segue che chiedersi «che cosa significa la riga 7
-di quella matrice?» è una domanda mal posta: la riga 7 non è determinata dai
-dati, lo è solo il modo in cui le righe lavorano insieme.
+Alle due tabelle che calcolano l'influenza succede lo stesso, e per la stessa
+ragione. Ruotare una mappa vuol dire cambiare la coppia di numeri con cui si
+indica ogni luogo, lasciando i luoghi dove sono: ruotare una tabella di numeri
+è esattamente questo, riscrivere le stesse quantità rispetto a un'altra scelta
+di assi. Le due tabelle si possono ruotare insieme, in infiniti modi, senza
+che nemmeno un numero cambi nell'uscita del modello: quello che una gira, per
+così dire, l'altra lo gira indietro. Ne segue che chiedersi «che cosa
+significa la riga 7 di quella tabella?» è una domanda mal posta: la riga 7 non
+è determinata dai dati, lo è solo il modo in cui le righe lavorano insieme.
 
 Questo è un guaio per chi vuole capire cosa un modello ha imparato, ed è
 invece una fortuna per chi lo addestra: quando tantissime configurazioni di
@@ -426,11 +505,25 @@ $$
 
 cioè i punteggi non cambiano. Le due matrici non sono **identificabili**
 separatamente: lo è solo il loro prodotto $\mathbf{M}$
-{cite}`shalizi2023attention`. E poiché anche gli embedding sono appresi,
-l'indeterminazione è più ampia: per ogni $\mathbf{R} \in \mathbb{R}^{d \times
-d}$ invertibile, sostituire $\mathbf{e} \to \mathbf{R}\mathbf{e}$ insieme a
-$\mathbf{W}^A \to \mathbf{W}^A \mathbf{R}^{-1}$ e $\mathbf{W}^B \to
-\mathbf{W}^B \mathbf{R}^{-1}$ lascia il modello identico.
+{cite}`shalizi2023attention`. L'ortogonalità, per giunta, è più di quanto
+serva: per ogni $\mathbf{S} \in \mathbb{R}^{k\times k}$ invertibile,
+$\mathbf{W}^A \to \mathbf{S}^{-\top}\mathbf{W}^A$ e $\mathbf{W}^B \to
+\mathbf{S}\mathbf{W}^B$ lasciano $\mathbf{M}$ invariata, e la varietà delle
+soluzioni equivalenti è quindi ancora più grande.
+
+E poiché anche gli embedding sono appresi, l'indeterminazione si estende a
+loro: per ogni $\mathbf{R} \in \mathbb{R}^{d \times d}$ invertibile,
+sostituire $\mathbf{e} \to \mathbf{R}\mathbf{e}$ insieme a
+$\mathbf{W}^A \to \mathbf{W}^A \mathbf{R}^{-1}$, $\mathbf{W}^B \to
+\mathbf{W}^B \mathbf{R}^{-1}$ **e** $\mathbf{W}^C \to \mathbf{W}^C
+\mathbf{R}^{-1}$ lascia il modello identico. La terza sostituzione non è
+facoltativa: senza di essa restano invariati i punteggi $r_{ij}$, ma i
+contenuti $\mathbf{c}_j = \mathbf{W}^C\mathbf{e}_j$ diventano
+$\mathbf{W}^C\mathbf{R}\mathbf{e}_j$ e l'uscita cambia. (Sul modello intero
+l'invarianza si estende a tutto ciò che legge o scrive quel flusso: anche
+$\mathbf{W}^O$ e le matrici della parte non lineare vanno composte con
+$\mathbf{R}$ dal lato giusto, e i vettori d'uscita $\mathbf{u}_v$ con
+$\mathbf{R}^{-\top}$.)
 
 La situazione è la stessa della **rotazione dei fattori** nell'analisi
 fattoriale, dove i fattori estratti sono determinati solo a meno di una
@@ -453,8 +546,11 @@ Un solo terzetto di matrici impara un solo schema di influenza. Ma le parole
 si legano fra loro in modi diversi: il soggetto al verbo, l'aggettivo al
 nome, il pronome al suo antecedente («Marta disse che era stanca»: chi era
 stanca?), e poi la semplice vicinanza. La scelta architetturale è replicare
-il meccanismo $H$ volte in parallelo, con $H$ terzetti di matrici
-indipendenti, e ricomporne le uscite.
+il meccanismo un certo numero di volte in parallelo, con altrettanti terzetti
+di matrici indipendenti, e ricomporne le uscite. Quel numero si scrive $H$,
+dall'inglese *head*: è la stessa lettera che nella sezione sulla teoria
+dell'informazione indicava l'entropia, e qui non ha niente a che vedere con
+quella, è solo un conteggio.
 
 `````{tab} Elementare
 
@@ -532,10 +628,14 @@ di uno strato diventa l'ingresso del successivo, $L$ volte.
 
 `````{tab} Elementare
 
-Impilare da solo non basterebbe. Se ogni strato si limitasse a mescolare e
-riproiettare, cioè a fare solo operazioni lineari, cento strati
-equivarrebbero a uno solo: una combinazione di combinazioni resta una
-combinazione, e tutta la pila collasserebbe in un'unica matrice. Serve, fra
+Impilare da solo non basterebbe. Tutto quello che uno strato fa finora è
+moltiplicare per dei numeri e sommare: in gergo si dice che l'operazione è
+**lineare**. E fare due volte di fila un'operazione del genere non porta più
+lontano che farne una sola, perché il risultato resta pur sempre una somma di
+multipli dei numeri di partenza, con altri coefficienti. È lo stesso motivo
+per cui raddoppiare e poi triplicare equivale a sestuplicare: due passaggi, un
+solo passaggio possibile. Cento strati tutti lineari equivarrebbero quindi a
+uno, e tutta la pila collasserebbe in un'unica tabella. Serve, fra
 uno strato e l'altro, una funzione che *pieghi* i numeri, e la più usata è la
 più semplice che si possa immaginare: azzerare i valori negativi e lasciar
 passare i positivi. È la non linearità del capitolo sulle reti neurali, ed è
@@ -573,10 +673,21 @@ $\mathbf{h}_i \leftarrow \mathbf{h}_i + f(\mathbf{h}_i)$
 {cite}`he2016deep`. La ragione è nel gradiente: la regola della catena
 moltiplica le derivate strato per strato, e prodotti di molti fattori minori
 di uno svaniscono esponenzialmente con la profondità. La struttura additiva
-garantisce che la derivata contenga sempre un termine $1$ dal cammino
-identità, cioè una via diretta per il gradiente che non si attenua.
+mette in ogni derivata un termine dell'identità, cioè una via diretta per il
+gradiente accanto a quella che passa per $f$.
 
-**Normalizzazione.** Dopo ogni sotto-operazione i vettori vengono
+Quanto quella via resti davvero libera dipende però da dove si mette la
+normalizzazione, e qui il testo non può promettere più di quanto la formula
+mantenga. Nella forma del 2017 (*post-LN*, quella scritta qui sotto) la
+normalizzazione sta **sopra** la somma, quindi il gradiente la attraversa a
+ogni strato e viene moltiplicato per la sua Jacobiana, che identità non è: il
+termine si attenua, tanto più quanto più il residuo cresce in norma, ed è il
+motivo per cui il post-LN richiede un riscaldamento del tasso di
+apprendimento. I modelli recenti spostano la normalizzazione a monte del
+sotto-strato (*pre-LN*) e solo lì la scorciatoia resta pulita. Il capitolo sui
+Transformer entra nel merito con i numeri.
+
+**Normalizzazione.** Dopo ciascuno dei due sotto-strati i vettori vengono
 standardizzati (media nulla e varianza unitaria sulle coordinate): un
 accorgimento che tiene le grandezze in un intervallo trattabile lungo tutta
 la pila.
@@ -599,9 +710,13 @@ di GPT-3.
 C'è una cosa che la media pesata, così com'è scritta, non sa fare, ed è
 istruttivo che il difetto si veda direttamente dalla formula.
 
-I punteggi $r_{ij}$ dipendono dai vettori che occupano le posizioni $i$ e
-$j$, non dagli indici $i$ e $j$. Se si permutano le parole della frase, i punteggi sono gli stessi,
-solo riordinati: l'operazione tratta la sequenza come un **insieme**. Ma
+Nel conto del punteggio fra due parole entrano i loro vettori e nient'altro:
+non entra mai il **posto** che occupano nella frase, cioè se una è la seconda
+parola e l'altra la quinta. Detto in simboli: i punteggi $r_{ij}$ dipendono dai
+vettori che stanno nelle posizioni $i$ e $j$, non dai numeri $i$ e $j$. Se si
+mescolano le parole della frase, i punteggi sono gli stessi, solo riordinati:
+l'operazione tratta la sequenza come un **insieme**, un sacchetto di parole
+senza un ordine. Ma
 «il cane morde l'uomo» e «l'uomo morde il cane» non sono la stessa frase, e
 un modello che le confonde non è un modello del linguaggio.
 
@@ -624,10 +739,36 @@ altrimenti il modello, per indovinare la parola dopo, potrebbe leggersela.
 
 ## Dall'ultimo vettore alla parola dopo
 
-Dopo $L$ strati resta un vettore, $\mathbf{h}^{(L)}_n$, che riassume tutto
-ciò che il modello ha estratto dal contesto. Convertirlo in una distribuzione
-di probabilità sulle parole possibili richiede un ultimo passo, e non è un
-passo nuovo: è lo stesso di prima.
+Dopo tutti gli strati resta un vettore, quello dell'ultima posizione, che
+riassume tutto ciò che il modello ha estratto dal contesto. Convertirlo in una
+distribuzione di probabilità sulle parole possibili richiede un ultimo passo,
+e non è un passo nuovo: è lo stesso di prima.
+
+`````{tab} Elementare
+
+A ogni parola del vocabolario è associata una lista di numeri, sua e appresa
+come tutte le altre. Per sapere quanto quella parola è plausibile qui, si
+confronta la sua lista con il vettore finale: è di nuovo il prodotto scalare,
+il conto dello scontrino, alto quando le due liste puntano dalla stessa parte.
+Vengono fuori cinquantamila punteggi, uno per parola, e si trasformano in
+probabilità con la stessa ricetta usata per i pesi di influenza: si elevano a
+potenza e si dividono per il totale, così sommano a uno.
+
+Vale la pena fermarsi su che cosa è appena successo, perché è la conclusione
+di tutta la sezione. Prese le ultime due righe da sole, quello che il modello
+fa alla fine è la cosa più ordinaria della statistica: ha una lista di numeri
+che descrivono la situazione, la confronta con una lista per ogni risposta
+possibile e ne ricava delle probabilità. È lo stesso schema con cui si stima
+se un cliente restituirà un prestito, dati il suo reddito e la sua età. La
+differenza, e non è piccola, è che lì i numeri che descrivono la situazione li
+sceglie una persona (reddito, età, anzianità di lavoro), mentre qui sono
+calcolati dalle decine di strati che li precedono. Tutta la sofisticazione
+dell'architettura serve a **costruire i numeri giusti da dare in pasto a un
+metodo vecchio**.
+
+`````
+
+`````{tab} Superiore
 
 A ogni token $v$ del vocabolario è associato un vettore appreso
 $\mathbf{u}_v \in \mathbb{R}^d$, e il punteggio del token è il prodotto
@@ -645,17 +786,55 @@ Detto in una riga: **l'ultimo strato di un modello linguistico è una
 regressione logistica multinomiale** con $|\mathcal{V}|$ categorie, in cui il
 vettore dei regressori non è stato scelto da un analista ma calcolato dagli
 $L$ strati precedenti. Tutta la sofisticazione dell'architettura serve a
-costruire delle buone covariate per un modello statistico che si insegna al
-primo corso.
+costruire delle buone covariate (cioè le variabili esplicative, i «numeri che
+descrivono il caso») per un modello statistico fra i più antichi e più
+studiati che ci siano.
+
+I vettori $\mathbf{u}_v$, per inciso, in molti modelli non sono parametri
+nuovi: sono le righe della matrice di embedding $\mathbf{E}$, riusate al
+contrario (*weight tying*). È il motivo per cui, nel conteggio dei parametri di
+poco fa, gli embedding sono stati contati una volta sola.
+
+`````
 
 ## Addestrare: massima verosimiglianza, ancora
 
-Restano i parametri: gli embedding $\mathbf{e}_w$, le matrici di proiezione
-di ogni relazione di ogni strato, le riproiezioni $\mathbf{W}^O$, le matrici
-della parte non lineare, i vettori d'uscita $\mathbf{u}_v$. Miliardi di
-numeri, e un solo principio per fissarli, quello della sezione su probabilità
-e statistica: scegliere i valori che rendono i dati osservati i più
-plausibili.
+Restano le manopole: le liste di numeri di ogni token, le tabelle di
+proiezione di ogni relazione di ogni strato, le riproiezioni, le tabelle della
+parte non lineare. Miliardi di numeri, e un solo principio per fissarli, quello
+della sezione su probabilità e statistica: scegliere i valori che rendono i
+dati osservati i più plausibili.
+
+`````{tab} Elementare
+
+Il principio è quello della moneta lanciata dieci volte. Lì c'era una manopola
+sola, la probabilità di far testa, e si cercava il valore che rendeva più
+probabile ciò che si era visto: sette teste su dieci portavano a $0{,}7$. Qui
+le manopole sono miliardi e ciò che si è visto è un pezzo di internet, ma la
+domanda è identica: quali regolazioni rendono meno sorprendente il testo che è
+stato scritto davvero?
+
+C'è una semplificazione che rende il conto praticabile, e vale la pena
+notarla. Per ogni posizione del testo il modello produce una distribuzione su
+tutto il vocabolario, ma la realtà, lì, non è una distribuzione: è una parola
+sola, quella che è effettivamente occorsa. Del sacco di probabilità che il
+modello ha prodotto interessa quindi un numero solo, quello assegnato alla
+parola giusta, e l'obiettivo si riduce a: fai in modo che quel numero sia il
+più alto possibile, in ogni punto del testo. È esattamente la sorpresa media
+della sezione sulla teoria dell'informazione, misurata sulla realtà: minimizzare
+quella e massimizzare la plausibilità dei dati sono la stessa operazione,
+scritta due volte.
+
+Le manopole si girano come nell'escursionista nella nebbia: si guarda in che
+direzione l'errore cala più in fretta e si fa un passo di lì. Con una
+scorciatoia obbligata, però: calcolare la pendenza su tutto il testo del mondo
+a ogni passo è impensabile, quindi la si calcola ogni volta su un pugno di
+brani presi a caso. Il risultato è una direzione un po' storta, ma storta per
+caso, e su tanti passi gli errori si compensano invece di accumularsi.
+
+`````
+
+`````{tab} Superiore
 
 $$
 \max_{\theta} \ \sum_{\text{sequenze}} \sum_{i=1}^{n}
@@ -668,20 +847,27 @@ ottiene la log-verosimiglianza negativa, che è poi la **cross-entropia** fra
 la distribuzione vera e quella del modello: la sezione sulla teoria
 dell'informazione ha già mostrato che sono la stessa cosa, e vale la pena
 vedere perché in questo caso specifico. La distribuzione «vera» su ogni
-posizione è degenere, tutta concentrata sulla parola che è effettivamente
-occorsa; la sua entropia è nulla, e la cross-entropia si riduce a
-$-\log q(\text{parola occorsa})$. Minimizzare la sorpresa media del modello
-davanti alla realtà e massimizzare la verosimiglianza sono, letteralmente,
-la stessa formula.
+posizione è *degenere*, cioè mette tutta la probabilità su un solo esito, la
+parola che è effettivamente occorsa; la sua entropia è nulla, e la
+cross-entropia si riduce a $-\log q(\text{parola occorsa})$. Minimizzare la
+sorpresa media del modello davanti alla realtà e massimizzare la
+verosimiglianza sono, letteralmente, la stessa formula. (È anche il caso in cui
+il «pavimento» della loss è zero: la sezione sulla teoria dell'informazione
+osservava che il minimo teorico è $H(p)$, ed è vero della distribuzione
+condizionata vera del processo, non di questo bersaglio empirico.)
 
 La massimizzazione avviene per **discesa del gradiente stocastica**: si
 calcola il gradiente su un sottoinsieme casuale di sequenze invece che
-sull'intero corpus (stima rumorosa ma non distorta) e si aggiornano i
-parametri nella direzione che migliora l'obiettivo. Che il gradiente sia
+sull'intero corpus, il che dà una stima rumorosa ma **non distorta**, cioè
+sbagliata in media di zero: gli errori dei singoli passi si compensano invece
+di sommarsi in una direzione. I parametri si aggiornano nella direzione che
+migliora l'obiettivo. Che il gradiente sia
 calcolabile attraverso decine di strati non è un miracolo, è la regola della
 catena: il modello, dagli embedding fino alle probabilità, è una composizione
 di funzioni differenziabili, e il capitolo su PyTorch mostra la macchina che
 lo fa in automatico.
+
+`````
 
 Se qualcosa in tutto questo somiglia alla magia, non è la stima simultanea di
 miliardi di parametri: è che funzioni. L'apparenza di un'unica gigantesca
@@ -724,11 +910,12 @@ sorprendenti possibile.
 
 Ingresso: una sequenza $(w_1, \dots, w_n)$ con $w_i \in \mathcal{V}$.
 
-Rappresentazione iniziale, con $\mathbf{E}: \mathcal{V} \to \mathbb{R}^d$ e
-$\mathbf{p}_i \in \mathbb{R}^d$ l'informazione di posizione:
+Rappresentazione iniziale, con $\mathbf{e}_{w} \in \mathbb{R}^d$ la riga della
+matrice di embedding relativa al token $w$ e $\mathbf{p}_i \in \mathbb{R}^d$
+l'informazione di posizione:
 
 $$
-\mathbf{h}^{(0)}_i = \mathbf{E}(w_i) + \mathbf{p}_i .
+\mathbf{h}^{(0)}_i = \mathbf{e}_{w_i} + \mathbf{p}_i .
 $$
 
 Aggregazione contestuale, allo strato $\ell$ e nella relazione $h$:
@@ -747,15 +934,16 @@ $$
 $$
 
 Ricomposizione delle $H$ relazioni, aggiornamento additivo e non linearità
-(con $\mathbf{z}_i$ il vettore intermedio dopo l'aggiornamento; la
-normalizzazione è scritta qui in coda, come nell'articolo del 2017, mentre i
-modelli recenti la spostano a monte del sotto-strato):
+(con $\mathbf{z}_i$ il vettore intermedio fra i due sotto-strati; la
+normalizzazione è scritta in coda a ciascuno dei due, come nell'articolo del
+2017, mentre i modelli recenti la spostano a monte):
 
 $$
 \tilde{\mathbf{h}}_i = \mathbf{W}^O_\ell
 \big[\mathbf{o}^{(1)}_i; \dots; \mathbf{o}^{(H)}_i\big],
 \qquad
-\mathbf{z}_i = \mathbf{h}^{(\ell-1)}_i + \tilde{\mathbf{h}}_i ,
+\mathbf{z}_i = \operatorname{Norm}\!\big(
+\mathbf{h}^{(\ell-1)}_i + \tilde{\mathbf{h}}_i\big) ,
 $$
 
 $$
@@ -806,9 +994,9 @@ meccanica statistica, la fluidodinamica dalle interazioni fra molecole, lo
 stormo dal comportamento del singolo storno. In ogni caso il fenomeno
 macroscopico non si legge nelle regole microscopiche, ma non per questo è
 meno reale. Perché la sola previsione della parola successiva porti così
-lontano è, onestamente, ancora una questione aperta, e il capitolo sui grandi
-modelli linguistici discute anche i motivi per dubitare che quelle
-«abilità emergenti» siano tutte quel che sembrano.
+lontano è, onestamente, ancora una questione aperta, e la sezione sui grandi
+modelli linguistici, nel capitolo sui Transformer, discute anche i motivi per
+dubitare che quelle «abilità emergenti» siano tutte quel che sembrano.
 
 ## In pratica, con NumPy
 
@@ -906,12 +1094,15 @@ punteggi identici alle originali fino all'ultima cifra.
   prima di $m = 10$). Resta una catena di Markov di ordine finito, pari alla
   finestra di contesto.
 - L'aggregazione contestuale è
-  $\mathbf{h}_i = \sum_j \alpha_{ij}\mathbf{c}_j$ con
+  $\mathbf{o}_i = \sum_j \alpha_{ij}\mathbf{c}_j \in \mathbb{R}^k$ con
   $\alpha_{ij} = \operatorname{softmax}_j(\mathbf{a}_i^\top\mathbf{b}_j/\sqrt{k})$
   e $\mathbf{a}_i = \mathbf{W}^A\mathbf{e}_i$,
   $\mathbf{b}_j = \mathbf{W}^B\mathbf{e}_j$,
   $\mathbf{c}_j = \mathbf{W}^C\mathbf{e}_j$: le tre proiezioni sono *query*,
-  *key* e *value*, la softmax è il logit multinomiale inverso.
+  *key* e *value*, la softmax è il logit multinomiale inverso. La
+  rappresentazione $\mathbf{h}_i \in \mathbb{R}^d$ è la ricomposizione delle
+  $H$ uscite, $\mathbf{h}_i = \mathbf{W}^O[\mathbf{o}^{(1)}_i;\dots;
+  \mathbf{o}^{(H)}_i]$.
 - Il punteggio è una **forma bilineare**
   $\mathbf{e}_i^\top \mathbf{M} \mathbf{e}_j$ con
   $\mathbf{M} = (\mathbf{W}^A)^\top\mathbf{W}^B$ di rango $\le k$: una
@@ -919,20 +1110,27 @@ punteggi identici alle originali fino all'ultima cifra.
   contro $d^2$: quarantotto volte meno) e regolarizza.
 - $\mathbf{W}^A$ e $\mathbf{W}^B$ **non sono identificabili** separatamente:
   per ogni $\mathbf{O}$ ortogonale la coppia
-  $(\mathbf{O}\mathbf{W}^A, \mathbf{O}\mathbf{W}^B)$ dà gli stessi punteggi.
+  $(\mathbf{O}\mathbf{W}^A, \mathbf{O}\mathbf{W}^B)$ dà gli stessi punteggi, e
+  con una $\mathbf{S}$ invertibile qualsiasi resta invariata $\mathbf{M}$.
   È il problema della rotazione dei fattori: male per l'interpretazione,
-  bene per l'ottimizzazione.
+  bene per l'ottimizzazione. Riparametrizzare gli embedding richiede di
+  trasformare **anche** $\mathbf{W}^C$: senza, i punteggi restano ma l'uscita
+  cambia.
 - Le $H$ copie parallele (*head*) sono capacità progettata, non ruoli
   assegnati: si differenziano perché la ridondanza costa accuratezza, e
   l'allineamento con le categorie linguistiche è parziale.
 - La profondità richiede una non linearità (altrimenti $L$ mappe lineari
-  collassano in una) e un aggiornamento additivo (che garantisce al gradiente
-  un cammino identità). Nulla è condiviso fra strati: $12d^2$ parametri per
+  collassano in una) e un aggiornamento additivo, che mette in ogni derivata un
+  termine dell'identità; quanto quel cammino resti libero dipende però da dove
+  sta la normalizzazione (in post-LN il gradiente la attraversa e il termine si
+  attenua). Nulla è condiviso fra strati: $12d^2$ parametri per
   strato, che per GPT-3 ($d=12\,288$, $L=96$) fanno i 175 miliardi
   complessivi.
 - L'ultimo strato è una **regressione logistica multinomiale** su
   $|\mathcal{V}|$ categorie, $P(v) \propto \exp(\mathbf{u}_v^\top
-  \mathbf{h}^{(L)}_n)$, con covariate calcolate dai $L$ strati precedenti.
+  \mathbf{h}^{(L)}_n)$, con covariate calcolate dai $L$ strati precedenti; i
+  $\mathbf{u}_v$ di solito non sono parametri nuovi, ma le righe di
+  $\mathbf{E}$ riusate al contrario (*weight tying*).
 - L'obiettivo è la massima verosimiglianza
   $\max_\theta \sum \log P_\theta(w_i \mid w_{<i})$, che con target degenere
   coincide con la cross-entropia, ottimizzata per discesa del gradiente

@@ -18,6 +18,13 @@ toglierli di mezzo prima di rileggere:
   toc        file sotto book/ non elencati in _toc.yml
   landing    schede di intro.md che non corrispondono ai capitoli del _toc.yml
              (mancanti, di troppo, fuori ordine, o col numero scritto a mano)
+  animazioni capitoli senza nemmeno una figura animata (solo elenco: zero clip
+             puo' essere una scelta), e capitoli oltre il tetto di 10
+  schede     gruppi di tab contigui, che `sphinx-inline-tabs` FONDE in un
+             gruppo solo con quattro linguette (si vede solo in build)
+  ricordare  riquadri «Da ricordare» FUORI dalle schede, mentre
+             `aggiornamenti.md` promette al lettore che sono sui due livelli
+             (solo elenco: fuori dalle schede non e' di per se' un difetto)
   avanti     rimandi in avanti ("vedremo", "prossima sezione"), solo elenco,
              la verifica resta umana
 
@@ -38,12 +45,36 @@ DeepLearning/overview.
 La differenza col controllo sul codice e' il vocabolario: i costrutti Python
 sono un insieme chiuso e riconoscibile, i termini tecnici no. Su questo libro
 l'asse dell'ordine di introduzione e' esaurito.
+
+Un SECONDO asse provato e scartato (agosto 2026), che sembrava aggirare il
+problema di sopra e non lo aggira. La revisione a tre lenti ha trovato che il
+difetto piu' diffuso del libro e' un termine introdotto **solo dentro una scheda
+Superiore** e poi usato nel testo comune, dove il lettore Elementare lo incontra
+senza averlo mai visto: succede con GLA, Mamba-2, NT-Xent, «bias induttivo».
+Sembra contabile: si guarda in quale zona (fuori dalle schede / Elementare /
+Superiore) cade ogni occorrenza in grassetto, e si segnala chi e' in grassetto
+solo in Superiore ma compare anche altrove.
+
+Ha dato **625 risultati, quasi tutti rumore**, e per la stessa ragione di
+prima: nel libro il grassetto non marca solo l'introduzione di un termine, marca
+anche l'enfasi. Fra i primi risultati ci sono «a sinistra», «accanto»,
+«aggiorna», «10 minuti». Il segnale c'e' ma sta sotto il rumore, e un elenco di
+625 righe di cui novanta per cento false non lo legge nessuno.
+
+Quel difetto lo trovano bene i lettori (un agente che legge il capitolo come
+farebbe un tredicenne ne ha trovati 118 bloccanti in undici capitoli, con la
+causa giusta): e' una cosa che si vede leggendo, non contando. Il conteggio che
+invece funziona, e che sta qui sotto, e' quello dei riquadri «Da ricordare»
+fuori dalle schede, perche' li' la marca e' una direttiva MyST e non una
+convenzione tipografica.
 """
 
 from __future__ import annotations
 
 import argparse
 import re
+import shutil
+import subprocess
 import sys
 from collections import defaultdict
 from pathlib import Path
@@ -71,9 +102,15 @@ RX = {
 def sorgenti() -> dict[str, str]:
     # _static/ contiene il submodule `brand` con i suoi README: non e' testo del
     # libro e non va nel _toc.yml.
+    #
+    # _build/ e' l'uscita di Sphinx, e va esclusa perche' contiene una COPIA di
+    # ogni sorgente sotto `_sources/`: una cartella di build dimenticata in giro
+    # fa contare ogni file due volte e il totale passa da 6 problemi a 258, tutti
+    # fantasmi. Chi ci casca smette di fidarsi del controllo, che e' il danno
+    # peggiore che un controllo possa fare.
     return {str(p.relative_to(LIBRO)): p.read_text(encoding="utf-8", errors="ignore")
             for p in sorted(list(LIBRO.rglob("*.md")) + list(LIBRO.rglob("*.ipynb")))
-            if "_static" not in p.parts}
+            if "_static" not in p.parts and "_build" not in p.parts}
 
 
 def chiavi_bib() -> set[str]:
@@ -89,7 +126,8 @@ def main():
     ap.add_argument("--solo", help="controlli da eseguire, separati da virgola")
     args = ap.parse_args()
     attivi = set(args.solo.split(",")) if args.solo else {
-        "numref", "cite", "ref", "figure", "toc", "landing", "avanti"}
+        "numref", "cite", "ref", "figure", "toc", "landing", "animazioni",
+        "schede", "ricordare", "avanti", "palette", "clip", "ambiente", "lineette"}
 
     testi = sorgenti()
     problemi = defaultdict(list)
@@ -211,6 +249,310 @@ def main():
                 problemi["numero scritto a mano nella scheda"].append(
                     f"«{numero}», lo conta il CSS, lo <span> va lasciato vuoto")
 
+    if "schede" in attivi:
+        # `sphinx-inline-tabs` unisce in UN SOLO gruppo le schede che si
+        # toccano: due coppie Elementare/Superiore separate solo da righe
+        # vuote diventano una barra da quattro linguette, con «Elementare»
+        # scritto due volte. Il sorgente e' corretto, la build non protesta, e
+        # il difetto si vede solo aprendo la pagina: infatti quattro casi erano
+        # online da mesi. Il rimedio e' una riga di testo comune in mezzo, che
+        # e' anche la regola editoriale («le tab avvolgono i passaggi dove la
+        # profondita' fa la differenza, intervallati da testo universale»).
+        #
+        # Il rischio non e' accidentale ma sistematico: sdoppiare un riquadro
+        # «Da ricordare» significa aggiungere una coppia di schede in fondo a
+        # una pagina, cioe' esattamente dove ce n'e' gia' un'altra.
+        apre = re.compile(r"^(`{4,})\{tab\}\s*(\S+)")
+        for f, t in testi.items():
+            if not f.endswith(".md"):
+                continue
+            righe = t.split("\n")
+            i, gruppo, riga_inizio = 0, [], None
+            def resoconto():
+                if len(gruppo) > 2:
+                    problemi["schede contigue, che la build fonde"].append(
+                        f"{f}:{riga_inizio}  ->  {len(gruppo)} linguette: "
+                        f"{' | '.join(gruppo)}")
+            while i < len(righe):
+                m = apre.match(righe[i])
+                if not m:
+                    if righe[i].strip() and gruppo:
+                        resoconto()
+                        gruppo, riga_inizio = [], None
+                    i += 1
+                    continue
+                if riga_inizio is None:
+                    riga_inizio = i + 1
+                gruppo.append(m.group(2))
+                tick = m.group(1)
+                j = i + 1
+                while j < len(righe) and righe[j].rstrip() != tick:
+                    j += 1
+                i = j + 1
+            resoconto()
+
+    if "ricordare" in attivi:
+        # `book/aggiornamenti.md` promette al lettore, nero su bianco: «Ogni
+        # capitolo si chiude con un riquadro "Da ricordare", scritto sui due
+        # livelli come il resto del libro». Una promessa pubblica che nessuno
+        # verificava: alla revisione dell'11 agosto 2026 erano 111 riquadri su
+        # 237 fuori dalle schede, e cinque capitoli non ne avevano NEMMENO UNO
+        # sdoppiato.
+        #
+        # Fuori dalle schede non e' di per se' un difetto: un riquadro scritto
+        # in lingua comune va benissimo. Lo diventa quando e' scritto in lingua
+        # Superiore, e quello un programma non lo sa giudicare. Quindi qui si
+        # elenca e basta, e la lettura resta umana; ma l'elenco c'e', e questo
+        # basta a non dimenticarsene per centoundici volte.
+        apre = re.compile(r"^\s*(`{3,})(.*)$")
+        for f, t in sorted(testi.items()):
+            if not f.endswith(".md"):
+                continue
+            pila, fuori = [], 0
+            for riga in t.split("\n"):
+                m = apre.match(riga)
+                if not m:
+                    continue
+                n, info = len(m.group(1)), m.group(2).strip()
+                if "{admonition} Da ricordare" in info:
+                    fuori += not any(pila)
+                    pila.append((n, False))
+                elif pila and not info and n >= pila[-1][0]:
+                    pila.pop()
+                else:
+                    pila.append((n, info.startswith("{tab}")))
+            if fuori:
+                problemi["«Da ricordare» fuori dalle schede"].append(
+                    f"{f}  ->  {fuori}")
+
+    if "animazioni" in attivi:
+        # Le clip non le contava nessuno, ed e' cosi' che venti capitoli sono
+        # nati senza. `animazioni/README.md` scriveva gia' «i capitoli non
+        # ancora coperti sono la lista dei prossimi»: una lista scritta a mano,
+        # che infatti e' rimasta ferma mentre il libro raddoppiava. Contarla
+        # non invecchia.
+        #
+        # Zero clip NON e' un errore e non entra nel totale: il tetto di 5-10
+        # per capitolo e' un tetto, non una quota, e un capitolo dove il tempo
+        # non e' mai il contenuto sta bene fermo. E' un elenco da guardare, per
+        # decidere una volta e non dimenticarsene per venti capitoli.
+        toc = LIBRO / "_toc.yml"
+        if toc.is_file():
+            animate = set()
+            for p in sorted((LIBRO / "figures").glob("*")):
+                if not p.is_file():
+                    continue
+                if p.suffix == ".gif":
+                    animate.add(p.name)
+                elif p.suffix == ".svg" and "@keyframes" in p.read_text(
+                        encoding="utf-8", errors="ignore"):
+                    animate.add(p.name)
+            capitoli = [f for f in re.findall(
+                r"^  - file:\s*(\S+)", toc.read_text(encoding="utf-8"), re.M)
+                if "/" in f]
+            for cap in capitoli:
+                cartella = cap.split("/")[0]
+                usate = set()
+                for f, t in testi.items():
+                    if f.startswith(cartella + "/"):
+                        usate |= set(RX["fig_uso"].findall(t))
+                        usate |= set(RX["img_uso"].findall(t))
+                clip = sorted(usate & animate)
+                if not clip:
+                    problemi["capitoli senza figure animate"].append(cartella)
+                elif len(clip) > 10:
+                    problemi["capitoli oltre il tetto di 10 clip"].append(
+                        f"{cartella}  ->  {len(clip)}: {', '.join(clip)}")
+
+
+    if "palette" in attivi:
+        # Il motore delle figure generate verifica la palette e rifiuta il file
+        # (`scrivi()` in paithon_svg.py). Le figure scritte a mano non passavano
+        # da nessun controllo, ed e' cosi' che 172 file su 306 hanno finito per
+        # usare tre grigi che nessun documento autorizza, e cinque hanno
+        # attraversato due campagne di ripulitura con le lineette ancora dentro.
+        #
+        # Le due cose non pesano uguale, e infatti qui non pesano uguale.
+        #
+        # La LINEETTA e' un difetto e basta: `CLAUDE.md` la vieta, non c'e'
+        # nessuna decisione in sospeso, e chi corregge il testo non ha modo di
+        # sapere che quella lineetta e' disegnata anche altrove. Conta.
+        #
+        # Il COLORE fuori palette e' un elenco da guardare: `#5E5852` con 927
+        # usi e' una convenzione stabilita che pero' esiste solo nei file, e
+        # decidere se diventa un token o si accorpa a `--pt-fg-muted` e' una
+        # decisione del repository `brand`, non di questo. Finche' non e'
+        # presa, farla fallire qui vorrebbe dire tenere il controllo rosso per
+        # una cosa che da qui non si puo' chiudere.
+        AMMESSI = {"#B5532C", "#2D5A5C", "#C9A961", "#1A1A1A", "#F8F5EE",
+                   "#5A524A", "#E2DCC9", "#C5BEAA", "#FFFFFF"}
+        rx_col = re.compile(r"#[0-9A-Fa-f]{6}")
+        fuori = defaultdict(int)
+        for p in sorted((LIBRO / "figures").glob("*.svg")):
+            t = p.read_text(encoding="utf-8", errors="ignore")
+            if "\u2014" in t or "&#8212;" in t:
+                problemi["lineette dentro le figure"].append(p.name)
+            if "<script" in t:
+                problemi["script dentro le figure"].append(p.name)
+            for c in {x.upper() for x in rx_col.findall(t)} - AMMESSI:
+                fuori[c] += 1
+        for c, n in sorted(fuori.items(), key=lambda kv: -kv[1]):
+            problemi["colori fuori palette (decisione del repo brand)"].append(
+                f"{c}  ->  in {n} figure")
+
+
+    if "clip" in attivi:
+        # Le SVG generate hanno `animazioni/svg/genera.py --verifica`, che le
+        # rigenera in un temporaneo e le confronta. Le clip Manim no: sono
+        # video, rigenerarle costa, e due render della stessa scena non danno
+        # comunque file identici. Risultato: fra `animazioni/*.py` e
+        # `book/figures/*.gif` non c'era **nessun** legame verificabile, e si
+        # poteva correggere il sorgente, committare, e lasciare online la clip
+        # vecchia senza che niente protestasse. E' successo con
+        # `diffusione-denoising`, che mostrava il passo deterministico di DDIM
+        # sotto un testo che spiega perche' quello di DDPM e' un altro: una
+        # formula dentro un'immagine, che nessuna grep puo' trovare.
+        #
+        # Qui non si confrontano i video, si confrontano le date dei commit. Ma
+        # la sola data grida al lupo, e un controllo che segnala cose che non
+        # sono difetti viene disattivato, il che e' peggio di non averlo: la
+        # campagna di luglio contro le lineette ha toccato la **docstring** di
+        # una scena e un **commento** di un'altra, e ne' l'una ne' l'altro
+        # finiscono nel video. Quindi si guarda anche il diff, e si segnala solo
+        # quando cambia una riga che il render puo' vedere.
+        import ast
+
+        def _ct(rel):
+            r = subprocess.run(["git", "log", "-1", "--format=%ct", "--", rel],
+                               cwd=QUI, capture_output=True, text=True)
+            try:
+                return int(r.stdout.strip())
+            except ValueError:
+                return 0
+
+        for sorg in sorted((QUI / "animazioni").glob("*.py")):
+            gif = LIBRO / "figures" / (sorg.stem + ".gif")
+            if not gif.is_file():
+                continue
+            if not (_ct("animazioni/" + sorg.name) > _ct("book/figures/" + gif.name)):
+                continue
+            sha = subprocess.run(
+                ["git", "log", "-1", "--format=%H", "--", "book/figures/" + gif.name],
+                cwd=QUI, capture_output=True, text=True).stdout.strip()
+            diff = subprocess.run(
+                ["git", "log", sha + "..HEAD", "-U0", "--format=", "--",
+                 "animazioni/" + sorg.name],
+                cwd=QUI, capture_output=True, text=True).stdout
+            try:
+                testa = ast.parse(sorg.read_text(encoding="utf-8")).body[0]
+                fine_doc = (testa.end_lineno or 0) if (
+                    isinstance(testa, ast.Expr)
+                    and isinstance(getattr(testa, "value", None), ast.Constant)
+                    and isinstance(testa.value.value, str)) else 0
+            except (SyntaxError, IndexError):
+                fine_doc = 0
+            vive, n = [], 0
+            for r in diff.split("\n"):
+                if r.startswith("@@"):
+                    try:
+                        n = int(r.split("+")[1].split(",")[0].split(" ")[0])
+                    except (IndexError, ValueError):
+                        n = fine_doc + 1
+                    continue
+                if r[:3] in ("+++", "---") or r[:1] not in "+-":
+                    continue
+                if n > fine_doc:
+                    vive.append(r[1:].strip())
+                if r[:1] == "+":
+                    n += 1
+            if any(x and not x.startswith("#") for x in vive):
+                problemi["clip piu' vecchie del loro sorgente"].append(
+                    sorg.name + "  ->  il sorgente e' cambiato dopo il .gif, e "
+                    "non solo nei commenti: va rigenerato")
+
+
+    if "ambiente" in attivi:
+        # L'altra meta' del problema delle clip, e la peggiore, perche' non
+        # lascia tracce in git: l'**ambiente** cambia sotto le scene. Una
+        # versione nuova di Manim rinomina una classe, un LaTeX nuovo compone
+        # una formula in un altro modo, e le scene smettono di partire senza
+        # che nessun file del repository sia stato toccato. L'asse `clip` qui
+        # sopra non puo' vederlo: guarda le date dei commit, e di commit non ce
+        # ne sono.
+        #
+        # `animazioni/ambiente.json` e' il manifesto delle versioni con cui le
+        # scene sono state viste girare; `collaudo.py --verifica` lo confronta
+        # con l'immagine di oggi. Se Docker non c'e' non e' un difetto del
+        # libro, e' una mancanza della macchina: si tace.
+        collaudo = QUI / "animazioni" / "collaudo.py"
+        if collaudo.is_file() and shutil.which("docker"):
+            r = subprocess.run([sys.executable, str(collaudo), "--verifica"],
+                               cwd=QUI, capture_output=True, text=True)
+            if r.returncode != 0:
+                for riga in r.stdout.splitlines():
+                    if riga.strip() and not riga.startswith("   python3"):
+                        problemi["ambiente delle clip cambiato"].append(riga.strip())
+
+
+    if "lineette" in attivi:
+        # `CLAUDE.md` vieta la lineetta lunga (—) perche' non e' nello stile
+        # dell'autore. Ma la stessa cosa si scrive in altri due modi, e sono i
+        # due che una macchina produce piu' volentieri: la **doppia lineetta**
+        # `--` e il **trattino singolo spaziato** ` - `. Vanno tenuti fuori con
+        # lo stesso rigore: sono la firma piu' riconoscibile di un testo
+        # generato, e a differenza della lineetta lunga non si vedono a colpo
+        # d'occhio scorrendo una pagina.
+        #
+        # Il libro oggi e' pulito su tutte e tre le forme (misurato: zero
+        # occorrenze in prosa), quindi questo controllo non ripara, impedisce di
+        # cominciare.
+        #
+        # La parte delicata e' non gridare al lupo, perche' in un libro tecnico
+        # quei segni compaiono legittimamente dappertutto: segni meno nelle
+        # formule, opzioni da riga di comando, indici, commenti HTML, classi
+        # CSS, separatori di tabella, elenchi. Al primo giro un interruttore
+        # acceso/spento sui recinti ne ha lasciati passare cinque, perche' le
+        # schede a cinque backtick lo desincronizzavano; e la matematica in
+        # linea che va a capo non si vede guardando una riga per volta. Quindi
+        # qui si maschera il testo **una volta sola**, con una pila per i
+        # recinti e sostituendo con spazi per non spostare i numeri di riga.
+        def maschera(testo: str) -> str:
+            fuori, pila = [], []
+            for riga in testo.split("\n"):
+                m = re.match(r"^(\s*)(`{3,}|~{3,})(.*)$", riga)
+                if m:
+                    tick, info = m.group(2), m.group(3).strip()
+                    if pila and len(tick) >= len(pila[-1]) and not info:
+                        pila.pop()
+                    elif info or not pila:
+                        pila.append(tick)
+                    else:
+                        pila.pop()
+                    fuori.append(" " * len(riga))
+                    continue
+                fuori.append(" " * len(riga) if pila else riga)
+            t = "\n".join(fuori)
+            # matematica: $$...$$ prima di $...$, e su tutto il testo perche'
+            # una formula in linea puo' andare a capo
+            for rx in (r"\$\$.*?\$\$", r"\$[^$]*?\$", r"`[^`]*`", r"https?://\S+"):
+                t = re.sub(rx, lambda m: re.sub(r"[^\n]", " ", m.group(0)), t, flags=re.S)
+            return t
+
+        doppia = re.compile(r"(?<![-\w])--(?![-\w])|(?<=\w)--(?=\w)")
+        singola = re.compile(r"(?<=\w) - (?=\w)")
+        for f, t in sorted(testi.items()):
+            if not f.endswith(".md"):
+                continue
+            for n, riga in enumerate(maschera(t).split("\n"), 1):
+                if "<!--" in riga or "-->" in riga or '="' in riga:
+                    continue
+                if re.match(r"^\s*\|[\s|:-]+\|\s*$", riga) or re.match(r"^\s*-{3,}\s*$", riga):
+                    continue
+                pulita = re.sub(r"^\s*[-*+]\s", "", riga)
+                if doppia.search(pulita) or singola.search(pulita):
+                    problemi["lineette scritte in ASCII (-- oppure - )"].append(
+                        f"{f}:{n}  {pulita.strip()[:88]}")
+
     if "avanti" in attivi:
         for f, t in testi.items():
             for frase in RX["avanti"].findall(t):
@@ -231,7 +573,23 @@ def main():
               "schede della landing senza capitolo",
               "schede della landing fuori ordine",
               "numero scritto a mano nella scheda",
+              "schede contigue, che la build fonde",
+              "capitoli oltre il tetto di 10 clip",
+              "capitoli senza figure animate",
+              "lineette scritte in ASCII (-- oppure - )",
+              "«Da ricordare» fuori dalle schede",
+              "clip piu' vecchie del loro sorgente",
+              "ambiente delle clip cambiato",
+              "lineette dentro le figure",
+              "script dentro le figure",
+              "colori fuori palette (decisione del repo brand)",
               "rimandi in avanti (da leggere)"]
+    # Assi che elencano e basta: dicono cosa guardare, non cosa e' rotto, e
+    # quindi non fanno fallire niente.
+    solo_elenco = {"rimandi in avanti (da leggere)",
+                   "capitoli senza figure animate",
+                   "colori fuori palette (decisione del repo brand)",
+                   "«Da ricordare» fuori dalle schede"}
     totale = 0
     for k in ordine:
         v = problemi.get(k)
@@ -243,11 +601,12 @@ def main():
             print(f"   {riga}")
         if len(v) > len(mostra):
             print(f"   … e altri {len(v) - len(mostra)}")
-        if k != "rimandi in avanti (da leggere)":
+        if k not in solo_elenco:
             totale += len(v)
 
     print(f"\n{totale} problemi da correggere"
-          f" ({len(problemi.get('rimandi in avanti (da leggere)', []))} rimandi da leggere a mano)")
+          f" ({len(problemi.get('rimandi in avanti (da leggere)', []))} rimandi da leggere a mano,"
+          f" {len(problemi.get('capitoli senza figure animate', []))} capitoli senza clip)")
     return 1 if totale else 0
 
 

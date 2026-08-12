@@ -18,15 +18,21 @@ modelli) e gran parte degli articoli scientifici recenti sono scritti così.
 ## La filosofia: il grafo si costruisce mentre giri
 
 La scelta di fondo di PyTorch (quella che l'ha fatto vincere) riguarda
-*quando* i conti vengono eseguiti.
+*quando* i conti vengono eseguiti. Il **grafo** del titolo è la parola tecnica
+per una cosa semplice: l'elenco delle operazioni da fare e delle frecce che le
+collegano, cioè quale risultato serve a quale conto successivo. È la ricetta,
+prima che qualcuno la esegua; e la domanda è se vada scritta tutta in anticipo
+o se possa nascere mentre si cucina.
 
 `````{tab} Elementare
 Due modi di seguire un percorso in auto. Il primo: stampi l'itinerario completo
 prima di partire e lo esegui alla lettera; se una strada è chiusa, devi tornare
 a casa e ristampare tutto. Il secondo: usi il navigatore, che ricalcola strada
-facendo e a ogni incrocio sa dove sei. I primi framework di deep learning
-funzionavano nel primo modo: prima descrivevi *tutta* la rete, poi la
-consegnavi al motore ed eseguivi, e se qualcosa andava storto capirlo era
+facendo e a ogni incrocio sa dove sei. I primi **framework** di deep learning
+(un framework è una libreria abbastanza grande da dettare anche il modo in cui
+si scrive il programma, non solo da offrire funzioni pronte) funzionavano nel
+primo modo: prima descrivevi *tutta* la rete, cioè scrivevi tutto il grafo, poi
+la consegnavi al motore ed eseguivi, e se qualcosa andava storto capirlo era
 un'impresa. PyTorch funziona come il navigatore: ogni riga di codice viene
 eseguita **subito**, puoi fermarti a guardare i numeri in qualunque punto, e
 correggere è facile come in qualsiasi programma Python.
@@ -52,10 +58,10 @@ punto la storia ha dato ragione a PyTorch.
 ## Perché ha vinto nella ricerca
 
 Nel 2017 TensorFlow dominava e PyTorch era l'ultimo arrivato; cinque anni dopo
-i rapporti si erano invertiti, almeno nei laboratori. Secondo i dati di Papers
-with Code, già nel 2022 circa tre articoli su quattro tra quelli che
-dichiarano il framework usavano PyTorch. Le ragioni sono meno misteriose di
-quanto sembri: un ricercatore passa le giornate a *provare idee strane*, e uno
+i rapporti si erano invertiti, almeno nei laboratori, dove ormai la grande
+maggioranza degli articoli che dichiarano quale libreria hanno usato dichiara
+questa. Le ragioni sono meno misteriose di quanto sembri: un ricercatore passa
+le giornate a *provare idee strane*, e uno
 strumento che si lascia ispezionare riga per riga, che non chiede di imparare
 un secondo linguaggio mentale oltre a Python, fa risparmiare esattamente il
 tempo che conta. Attorno a questa comodità è cresciuto un circolo virtuoso: i
@@ -117,7 +123,13 @@ pip install torch torchvision
 ```
 
 E questo è il primo contatto, un assaggio delle due cose che vedremo nelle
-prossime sezioni, i tensori e i gradienti automatici:
+prossime sezioni: i **tensori** (le scatole in cui PyTorch tiene i numeri) e i
+gradienti automatici. Nel codice compaiono anche due parole che qui basta
+prendere così come sono: la **GPU** è la scheda grafica, il chip nato per i
+videogiochi che si è rivelato bravissimo a fare tanti conti identici insieme, e
+**CUDA** è il nome che NVIDIA dà al modo in cui i programmi le parlano (per
+questo nel codice il dispositivo si chiama `"cuda"` e non `"gpu"`). La prossima
+sezione riprende entrambe con calma.
 
 ```python
 import torch
@@ -131,8 +143,9 @@ y.backward()                               # gradiente automatico
 print(x.grad)                              # dy/dx = 2x + 2 -> tensor(8.)
 ```
 
-Nessuna sessione da aprire, nessun grafo da compilare: tre righe di algebra e
-una **derivata** calcolata da sola. Se il termine non ti dice niente, basta
+Niente da dichiarare in anticipo e niente da compilare prima di partire: si
+scrivono i conti come si scriverebbero su un foglio, e la **derivata** esce da
+sola. Se il termine non ti dice niente, basta
 questo: la derivata misura quanto cambia il risultato quando l'ingresso si
 sposta di un soffio, e qui dice che attorno a $x = 3$ il valore di $y$ cresce
 $8$ volte più in fretta di $x$. È il numero che il commento nel codice chiama
@@ -176,6 +189,28 @@ terreno in inglese, con codice eseguibile e video. È una buona palestra
 parallela alla lettura di questo capitolo.
 ```
 
+Un ripasso della pagina, per chi legge di seguito e per chi torna a
+consultarla.
+
+`````{tab} Elementare
+```{admonition} Da ricordare
+:class: important
+- **PyTorch** nasce nel 2016 nei laboratori di Facebook (oggi Meta) come
+  versione in Python di un vecchio strumento chiamato **Torch**, che si usava
+  con un altro linguaggio; oggi non appartiene più a un'azienda sola.
+- Ogni riga viene **eseguita subito**, come su una calcolatrice: puoi fermarti
+  a guardare i numeri in qualunque punto, e correggere un errore è come
+  correggerlo in un normale programma Python.
+- Python è la sala del ristorante; la cucina è scritta in un linguaggio più
+  veloce e sta sotto, invisibile. Tu ordini in Python, la velocità è quella
+  della cucina.
+- È lo strumento con cui oggi si fa quasi tutta la ricerca. Non è l'unico:
+  imparato questo, gli altri si leggono senza fatica, perché le idee (numeri
+  in scatole, strati, gradienti) sono le stesse.
+```
+`````
+
+`````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
 - **PyTorch** nasce nel 2016 a Facebook AI Research (oggi Meta AI) come
@@ -190,3 +225,4 @@ parallela alla lettura di questo capitolo.
 - È lo standard *de facto* della ricerca; TensorFlow resta un onesto
   vicino di casa, e i concetti si trasferiscono senza attrito.
 ```
+`````

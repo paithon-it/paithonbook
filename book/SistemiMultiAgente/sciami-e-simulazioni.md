@@ -31,8 +31,12 @@ Natural Algorithms*; e nel 1996 l'articolo di rivista che tutti citano, *Ant
 system: optimization by a colony of cooperating agents*, sulle *IEEE
 Transactions on Systems, Man, and Cybernetics, Part B* {cite}`dorigo1996ant`. È
 il capostipite di una famiglia di algoritmi (la **ant colony optimization**)
-nata in un'università italiana, e il problema su cui viene provato è il commesso
-viaggiatore, cioè uno dei problemi combinatori più studiati che esistano.
+nata in un'università italiana, e il problema su cui viene provato è il
+**commesso viaggiatore**: date certe città e le distanze fra loro, trovare il
+giro più corto che le tocchi tutte una volta sola e torni al punto di partenza.
+È facile da enunciare e feroce da risolvere, perché i giri possibili crescono in
+modo mostruoso col numero di città, ed è per questo uno dei problemi più
+studiati che esistano.
 
 Il meccanismo biologico è a una riga. Una formica che cammina deposita per
 terra una sostanza, il **feromone**; una formica che incontra una traccia già
@@ -109,6 +113,39 @@ uno lungo, e per saperlo bisogna che il giro sia finito. Così la traccia non
 registra il traffico, registra il **merito**.
 
 `````
+
+Questo è uno dei pochi meccanismi del libro in cui **il tempo è il contenuto**:
+non c'è niente da vedere in un fotogramma solo, perché quello che decide è
+l'accumulo. In {numref}`fig-formiche-feromone` ci sono sei giri della colonia
+sul ponte doppio, con le due strade che cambiano spessore man mano che il
+feromone si deposita.
+
+```{figure} ../figures/formiche-feromone.svg
+:name: fig-formiche-feromone
+:alt: "Il formicaio a sinistra e il cibo a destra, uniti da due strade: una lunga che sale in alto e una corta che passa in basso. Giro dopo giro entrambe si ispessiscono, perché su entrambe passano formiche, ma la corta molto più in fretta, e il divario fra le due cresce. Il contatore sotto dice quante formiche su cento scelgono la corta: si parte da cinquanta e si arriva a ottantadue."
+:width: 88%
+
+Sei giri della colonia sul ponte doppio: lo spessore di ciascuna strada è il
+feromone che ci si è accumulato sopra. Si parte in parità, cinquanta e
+cinquanta, e si finisce con l'ottantadue per cento delle formiche sulla strada
+corta. I numeri li calcola la figura, con le due formule qui sopra e niente
+altro.
+```
+
+Due cose vale la pena guardare, e la seconda è quella che conta.
+
+La prima è *dove* cambia la pendenza: il salto grosso è fra il primo e il
+secondo giro (sedici punti, contro i sette del secondo e i quattro del terzo),
+cioè quando le due strade sono ancora percorse dallo stesso numero di
+formiche e a fare la differenza è **solo** il $Q/L$. Da lì in poi il vantaggio
+si rinforza da sé.
+
+La seconda è che **anche la strada lunga si ispessisce**. Non è un dettaglio del
+disegno: è il difetto del meccanismo. Finché le formiche passano, il feromone si
+accumula dappertutto e non se ne va più; quello che cresce è il *divario*, non
+la differenza fra una traccia e nessuna traccia. Un sistema fatto così sa
+premiare, ma non sa dimenticare, ed è esattamente il buco che la sezione
+seguente va a tappare.
 
 ## L'evaporazione è l'esplorazione
 
@@ -262,24 +299,26 @@ gruppo sta già puntando, stanno appena oltre.
 
 `````{tab} Superiore
 
-Ogni particella $i$ è una coppia posizione-velocità $(x_i, v_i)$ nello spazio
-delle soluzioni. L'aggiornamento è di due righe, ripetute:
+Ogni particella $i$ è una coppia posizione-velocità
+$(\mathbf{x}_i, \mathbf{v}_i)$ nello spazio delle soluzioni, e sono vettori: il
+grassetto qui non è decorazione, perché tutto ciò che segue si applica
+componente per componente. L'aggiornamento è di due righe, ripetute:
 
 $$
-v_i \;\leftarrow\; w\,v_i
-\;+\; c_1\, r_1 \odot (p_i - x_i)
-\;+\; c_2\, r_2 \odot (g - x_i),
+\mathbf{v}_i \;\leftarrow\; w\,\mathbf{v}_i
+\;+\; c_1\, \mathbf{r}_1 \odot (\mathbf{p}_i - \mathbf{x}_i)
+\;+\; c_2\, \mathbf{r}_2 \odot (\mathbf{g} - \mathbf{x}_i),
 \qquad
-x_i \;\leftarrow\; x_i + v_i,
+\mathbf{x}_i \;\leftarrow\; \mathbf{x}_i + \mathbf{v}_i,
 $$
 
-dove $p_i$ è la posizione migliore visitata dalla particella $i$ (il termine
-*cognitivo*), $g$ la migliore visitata dall'intero sciame (il termine
-*sociale*), $r_1$ e $r_2$ sono vettori di numeri casuali uniformi in $[0,1]$
-estratti daccapo a ogni passo, $\odot$ è il prodotto componente per componente,
-$c_1$ e $c_2$ dosano le due attrazioni e $w$ è l'**inerzia**. I tre addendi
-sono, nell'ordine, dove stavo andando, dove sono stato meglio io, dove è stato
-meglio il gruppo.
+dove $\mathbf{p}_i$ è la posizione migliore visitata dalla particella $i$ (il
+termine *cognitivo*), $\mathbf{g}$ la migliore visitata dall'intero sciame (il
+termine *sociale*), $\mathbf{r}_1$ e $\mathbf{r}_2$ sono vettori di numeri
+casuali uniformi in $[0,1]$ estratti daccapo a ogni passo, $\odot$ è il prodotto
+componente per componente, mentre $c_1$, $c_2$ e l'**inerzia** $w$ sono scalari
+che dosano le tre spinte. I tre addendi sono, nell'ordine, dove stavo andando,
+dove sono stato meglio io, dove è stato meglio il gruppo.
 
 Due precisazioni storiche. Nella formulazione del 1995 il peso $w$ non c'è: la
 velocità precedente entra con coefficiente unitario, e l'inerzia come parametro
@@ -424,10 +463,12 @@ ottimo = max(sum(v for v, b in zip(valore, c) if b)
 print("dieci esecuzioni:", esiti)
 print("ottimo vero (forza bruta su 2^20 = 1 048 576 combinazioni):", ottimo)
 print(f"quante volte lo trova: {esiti.count(ottimo)}/10, con 4800 zaini provati su un milione")
+```
 
-# dieci esecuzioni: [228, 228, 228, 228, 224, 228, 228, 228, 228, 224]
-# ottimo vero (forza bruta su 2^20 = 1 048 576 combinazioni): 228
-# quante volte lo trova: 8/10, con 4800 zaini provati su un milione
+```text
+dieci esecuzioni: [228, 228, 228, 228, 224, 228, 228, 228, 228, 224]
+ottimo vero (forza bruta su 2^20 = 1 048 576 combinazioni): 228
+quante volte lo trova: 8/10, con 4800 zaini provati su un milione
 ```
 
 Il risultato dice due cose insieme, e vanno tenute insieme. La prima è che
@@ -441,13 +482,20 @@ confronto non esisterebbe, e la risposta trovata avrebbe esattamente lo stesso
 aspetto.
 
 Nel machine learning questa famiglia compare in due punti. Il primo è la
-**ricerca di architetture**: la rete base di EfficientNet, ricordata nel
-capitolo sul deep learning, viene da una ricerca automatica, e una delle due
-strade principali per farla è evolutiva {cite}`real2019regularized`, con
-architetture che mutano e si ricombinano invece di essere disegnate. Il
-secondo è ovunque l'obiettivo non sia derivabile: scegliere iperparametri
-discreti, potare una rete decidendo *quali* pezzi togliere, ottimizzare una
-pipeline di preelaborazione.
+**ricerca di architetture**, e conviene distinguere subito le due strade perché
+si confondono spesso. La rete base di EfficientNet, ricordata nel capitolo sul
+deep learning, viene da una ricerca automatica multi-obiettivo guidata dal
+**reinforcement learning**, non dall'evoluzione. L'evoluzione è l'altra strada
+principale, e il suo esemplare è AmoebaNet {cite}`real2019regularized`, dove le
+architetture **mutano** e le migliori sopravvivono, con una selezione a torneo
+che scarta anche le più vecchie. Vale la pena notare che quell'algoritmo il
+crossover non ce l'ha, ed è coerente con la scommessa dichiarata poche righe fa:
+in un'architettura i pezzi non sono separabili, perché un blocco che funziona
+bene in una rete può essere pessimo in un'altra, quindi la scommessa non
+reggerebbe e l'algoritmo si limita a non farla. Il secondo punto è ovunque
+l'obiettivo non sia derivabile: scegliere iperparametri discreti, potare una
+rete decidendo *quali* pezzi togliere, ottimizzare una pipeline di
+preelaborazione.
 
 ## Perché non usare il gradiente
 
@@ -510,11 +558,13 @@ sta vendendo qualcosa.
 ## Uno sciame in venti righe
 
 Il modo più rapido di crederci è farlo girare. La funzione di prova è la
-**Rastrigin** in due dimensioni, cioè una parabola su cui è stata sovrapposta
-un'ondulazione periodica: il minimo globale è nell'origine e vale zero, ma
-tutt'attorno c'è un reticolo di conche locali, una attorno a ogni coppia di
-numeri interi. È il paesaggio fatto apposta per mettere in crisi chi segue la
-pendenza.
+**Rastrigin** in due dimensioni, e conviene immaginarsela così: una conca
+larghissima e regolare, che scende dolcemente verso il centro, sulla quale
+qualcuno ha passato una grattugia, cioè un'ondulazione fitta e ordinata che
+scava una fossetta attorno a ogni coppia di numeri interi. Il fondo vero è al
+centro e vale zero; le fossette sono centinaia, e dal fondo di ognuna tutte le
+direzioni salgono. È il paesaggio fatto apposta per mettere in crisi chi segue
+la pendenza.
 
 ```python
 import numpy as np
@@ -572,16 +622,46 @@ sono $30 \times 61 = 1830$: in due dimensioni sono niente, in mille sarebbero
 ancora $1830$ e non basterebbero. E il risultato è **probabilistico**: ripetendo
 lo stesso esperimento con trecento semi diversi, e contando come riuscite le
 prove che chiudono sotto $10^{-2}$, lo sciame arriva al minimo globale in $277$
-casi su $300$, cioè poco più di nove volte su dieci, non sempre. Il termine di
-paragone onesto è però l'altro: una discesa del gradiente ordinaria fatta
-partire da trecento punti a caso nello stesso dominio arriva al minimo globale
-**una volta su trecento**, e nelle altre duecentonovantanove si ferma
-ordinatamente nella conca in cui è nata.
+casi su $300$, cioè poco più di nove volte su dieci, non sempre.
 
-Un'ultima nota sui tre numeri in cima al programma. $w = 0{,}73$ e
-$c_1 = c_2 = 1{,}5$ non sono i valori del 1995 ma quelli oggi standard, che
-vengono dall'analisi di stabilità dell'aggiornamento: sono scelti perché la
-velocità non diverga, e sostituiscono il tarare a mano l'ampiezza dei passi.
+Resta il confronto con il gradiente, ed è il punto in cui la divulgazione su
+questi metodi imbroglia quasi sempre. Fatta partire da **un solo** punto preso a
+caso, una discesa del gradiente ordinaria (passo $0{,}005$, duemila iterazioni)
+chiude sotto $10^{-2}$ una volta su trecento, e nelle altre duecentonovantanove
+si ferma ordinatamente nella fossetta in cui è nata. Duecentosettantasette contro
+uno: un confronto splendido e scorretto, perché schiera trenta esploratori
+contro uno solo, e viola la clausola che questo stesso capitolo ha enunciato
+come regola vincolante due sezioni fa, **a parità di budget**.
+
+Rifacciamolo per bene. Al gradiente si danno **trenta ripartenze** per prova,
+cioè gli stessi trenta punti iniziali che ha lo sciame, e si tiene il migliore
+dei trenta. Allora chiude $62$ prove su $300$, cioè una su cinque, contro le
+nove su dieci dello sciame. Lo sciame vince ancora, e vince nettamente, ma vince
+tre volte tanto e non trecento. Se poi si guarda la spesa, il confronto è
+perfino generoso verso il gradiente: le trenta discese sono sessantamila passi,
+contro le $1830$ valutazioni dello sciame.
+
+Due avvertenze sui numeri, perché il primo è più fragile di quanto sembri. La
+partenza singola non è riproducibile come il resto del capitolo: cambiando seme
+si ottiene qualunque cosa fra $0$ e $4$ su $300$, e il risultato dipende dai due
+iperparametri al punto che con un passo di $0{,}01$ scende a zero. Quell'«una
+volta su trecento» è l'esito di un'esecuzione, non una costante, e conviene
+affiancargli la ragione geometrica, che invece è solida: la fossetta centrale è
+larga circa $1 \times 1$ su un dominio di lato $10{,}24$, cioè occupa poco meno
+dell'$1\%$ dell'area, e un punto preso a caso ci cade circa una volta su cento.
+La seconda avvertenza è che a trenta ripartenze il conto elementare
+$1 - (1 - 0{,}0095)^{30} \approx 0{,}25$ prevederebbe $75$ prove su $300$ invece
+di $62$: la differenza sono le partenze nate nella fossetta giusta che non
+arrivano abbastanza in fondo entro duemila passi. Nascere nel bacino buono è
+necessario, non sufficiente.
+
+Un'ultima nota sui tre numeri in cima al programma, quelli che pesano le tre
+spinte (tirare dritto per dove stavo andando, tornare dove sono stato meglio io,
+andare dove è stato meglio il gruppo). Non sono i valori del 1995 ma quelli oggi
+standard, e non sono stati trovati provando: vengono da un conto che dice per
+quali valori la velocità delle particelle **non esplode**. Con spinte troppo
+forti lo sciame si sparpaglia e non torna più; con questi tre numeri sta insieme
+da sé, e nessuno deve tarare a mano l'ampiezza dei passi.
 
 ## Venticinque agenti in un paese
 
@@ -610,6 +690,12 @@ quanto è **importante**, e quanto **c'entra** con quello che sto facendo. Chi
 usa solo il primo si ricorda l'ultima cosa successa; chi usa solo il secondo si
 ripete addosso sempre lo stesso trauma; chi usa solo il terzo pesca frasi che
 somigliano alla domanda ma sono di sei mesi fa.
+
+Prima di sommarli bisogna però saperli misurare, e la **recenza** si misura
+così: ogni ora che passa il ricordo perde mezzo punto percentuale di freschezza,
+sempre lo stesso mezzo punto sul valore che gli era rimasto. Da lì escono i tre
+numeri della prima colonna qui sotto: dopo un'ora resta $0{,}995$, dopo
+cinquanta ore $0{,}778$, dopo duecento ore $0{,}367$, cioè poco più di un terzo.
 
 Il guaio è sommarli, perché sono misurati in unità diverse. L'importanza è un
 voto da 1 a 10 che l'agente si dà da sé, gli altri due sono numeri fra zero e
@@ -803,10 +889,13 @@ ciascuno, ma che cosa può scrivere ciascuno, a chi, quando, e chi decide dopo.
   quota. Servono dove la pendenza non c'è, non si calcola o non informa
   (terreni pieni di buche, misure rumorose, scelte in cui non ci si può
   spostare di un millimetro, come l'ordine in cui visitare venti città), e si
-  pagano in tentativi: sulla valle piena di conche dell'esempio lo sciame trova
-  il fondo vero in $277$ prove su $300$ con $1830$ tentativi, la discesa del
-  gradiente una volta su trecento. Quando le variabili sono tantissime il
-  rapporto si rovescia, e non sono un'alternativa generale.
+  pagano in tentativi: sulla valle piena di fossette dell'esempio lo sciame
+  trova il fondo vero in $277$ prove su $300$. Il confronto va però fatto
+  **a parità di esploratori**, altrimenti si bara: una discesa del gradiente
+  lanciata da un punto solo ci arriva una volta su trecento, ma lanciata dagli
+  stessi trenta punti dello sciame ci arriva una volta su cinque. Lo sciame
+  vince tre volte, non trecento. E quando le variabili sono tantissime il
+  rapporto si rovescia: non sono un'alternativa generale.
 - Nelle **società simulate** {cite}`park2023generative` il pezzo da capire è
   come si scelgono i ricordi da rimettere davanti all'agente: quanto è recente,
   quanto è importante, quanto c'entra con quello che sta facendo, e i tre
@@ -864,9 +953,12 @@ ciascuno, ma che cosa può scrivere ciascuno, a chi, quando, e chi decide dopo.
   esiste, non si calcola o non informa (funzioni non differenziabili,
   valutazioni rumorose, spazi combinatori), e pagano in valutazioni della
   funzione obiettivo: sulla Rastrigin in due dimensioni lo sciame trova il
-  minimo globale in 277 prove su 300 con 1830 valutazioni, la discesa del
-  gradiente una volta su trecento. In alta dimensione il rapporto si rovescia,
-  e non sono un'alternativa generale.
+  minimo globale in 277 prove su 300 con 1830 valutazioni. Il termine di
+  paragone va preso **a parità di budget**, come impone la regola prudente del
+  «Costo del coordinamento»: la discesa del gradiente a partenza singola chiude
+  1 prova su 300, ma con trenta ripartenze, cioè con gli stessi trenta punti
+  iniziali dello sciame, ne chiude 62. In alta dimensione il rapporto si
+  rovescia, e non sono un'alternativa generale.
 - Nelle **società simulate** {cite}`park2023generative` il pezzo da capire è il
   recupero a tre termini (recenza, importanza, pertinenza) **normalizzati** e
   sommati con pesi uguali: senza normalizzazione vince sempre il termine con

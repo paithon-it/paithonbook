@@ -1,29 +1,43 @@
-<svg viewBox="0 0 640 360" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Curva di loss a forma di valle con la traiettoria della discesa del gradiente: punti che partono in alto a sinistra e scendono a passi sempre piu' corti verso il minimo">
+<svg viewBox="0 0 640 360" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Curva di loss a forma di valle con la traiettoria della discesa del gradiente: punti che partono in alto a sinistra e scendono a passi sempre più corti verso il minimo">
+  <!--
+    I passi non sono disegnati a occhio: sono quelli dell'algoritmo.
+    Loss L(w) = (w - 3)^2, gradiente 2(w - 3), passo w <- w - eta * grad(w),
+    con eta = 0,15 fisso e partenza w = 0. Sette posizioni, cioè sei passi.
+    Sull'asse dei parametri il passo vale eta * |grad|, quindi il rapporto
+    passo/pendenza è 0,15 per tutti e sei: è esattamente ciò che la didascalia
+    della pagina afferma («la lunghezza è proporzionale alla pendenza»).
+    Delta w: 0,900  0,630  0,441  0,309  0,216  0,151 (rapporto 0,7 costante).
+    Mappa: w in [-0,5; 6,5] -> x in [70; 600]; L in [0; 12,25] -> y in [270; 46].
+    La parabola è resa esattamente da una sola Bézier quadratica (il punto di
+    controllo sta all'incrocio delle tangenti agli estremi), quindi i marcatori
+    cadono sulla curva al pixel, non accanto.
+  -->
   <rect x="0" y="0" width="640" height="360" fill="#F8F5EE"/>
   <line x1="60" y1="310" x2="600" y2="310" stroke="#1A1A1A" stroke-width="1.5"/>
   <line x1="60" y1="310" x2="60" y2="40" stroke="#1A1A1A" stroke-width="1.5"/>
   <text x="330" y="345" text-anchor="middle" font-family="sans-serif" font-size="14" fill="#1A1A1A">parametro w</text>
   <text x="30" y="175" text-anchor="middle" font-family="sans-serif" font-size="14" fill="#1A1A1A" transform="rotate(-90 30 175)">loss L(w)</text>
-  <path d="M 80 60 Q 200 70 280 180 Q 350 275 400 278 Q 450 280 530 120" fill="none" stroke="#2D5A5C" stroke-width="2"/>
-  <circle cx="110" cy="66" r="7" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5"/>
-  <circle cx="190" cy="85" r="7" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5"/>
-  <circle cx="262" cy="152" r="7" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5"/>
-  <circle cx="318" cy="232" r="7" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5"/>
-  <circle cx="360" cy="268" r="7" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5"/>
-  <circle cx="388" cy="277" r="7" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5"/>
-  <circle cx="402" cy="278" r="8" fill="#C9A961" stroke="#1A1A1A" stroke-width="2"/>
+  <path d="M 70 46 Q 335 494 600 46" fill="none" stroke="#2D5A5C" stroke-width="2"/>
   <defs>
     <marker id="punta" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
       <path d="M0,0 L9,3.5 L0,7 Z" fill="#B5532C"/>
     </marker>
   </defs>
-  <line x1="118" y1="68" x2="180" y2="82" stroke="#B5532C" stroke-width="1.5" marker-end="url(#punta)"/>
-  <line x1="197" y1="91" x2="254" y2="144" stroke="#B5532C" stroke-width="1.5" marker-end="url(#punta)"/>
-  <line x1="268" y1="159" x2="311" y2="223" stroke="#B5532C" stroke-width="1.5" marker-end="url(#punta)"/>
-  <line x1="325" y1="238" x2="352" y2="262" stroke="#B5532C" stroke-width="1.5" marker-end="url(#punta)"/>
-  <line x1="367" y1="271" x2="380" y2="275" stroke="#B5532C" stroke-width="1.5" marker-end="url(#punta)"/>
-  <text x="110" y="45" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#B5532C">partenza</text>
-  <text x="402" y="305" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#1A1A1A">minimo</text>
-  <text x="490" y="70" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#2D5A5C">passi lunghi dove la pendenza è forte,</text>
-  <text x="490" y="88" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#2D5A5C">corti vicino al fondo</text>
+  <!-- le frecce solo dove ci stanno: dal quarto passo in poi i marcatori si
+       toccano già, ed è proprio quello che la figura deve far vedere -->
+  <line x1="113.5" y1="112.3" x2="169.1" y2="180.9" stroke="#B5532C" stroke-width="1.5" marker-end="url(#punta)"/>
+  <line x1="182.8" y1="195.3" x2="215.4" y2="223.4" stroke="#B5532C" stroke-width="1.5" marker-end="url(#punta)"/>
+  <line x1="231.4" y1="235.1" x2="247.7" y2="244.9" stroke="#B5532C" stroke-width="1.5" marker-end="url(#punta)"/>
+  <circle cx="107.9" cy="105.4" r="6" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5"/>
+  <circle cx="176.0" cy="189.4" r="6" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5"/>
+  <circle cx="223.7" cy="230.5" r="6" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5"/>
+  <circle cx="257.1" cy="250.6" r="6" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5"/>
+  <circle cx="280.5" cy="260.5" r="6" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5"/>
+  <circle cx="296.8" cy="265.4" r="6" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5"/>
+  <circle cx="308.3" cy="267.7" r="6" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5"/>
+  <circle cx="335" cy="270" r="8" fill="#C9A961" stroke="#1A1A1A" stroke-width="2"/>
+  <text x="107.9" y="86" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#B5532C">partenza</text>
+  <text x="335" y="296" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#1A1A1A">minimo</text>
+  <text x="430" y="62" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#2D5A5C">passi lunghi dove la pendenza è forte,</text>
+  <text x="430" y="80" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#2D5A5C">corti vicino al fondo</text>
 </svg>

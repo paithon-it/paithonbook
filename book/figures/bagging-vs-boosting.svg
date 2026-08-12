@@ -33,8 +33,8 @@
   <line class="div" x1="410" y1="40" x2="410" y2="352"/>
 
   <!-- titoli -->
-  <text class="ttl" x="205" y="28">Bagging — in parallelo</text>
-  <text class="ttl" x="615" y="28">Boosting — in sequenza</text>
+  <text class="ttl" x="205" y="28">Bagging: in parallelo</text>
+  <text class="ttl" x="615" y="28">Boosting: in sequenza</text>
 
   <!-- ============================ BAGGING ============================ -->
   <!-- dataset -->

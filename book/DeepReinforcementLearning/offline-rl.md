@@ -150,8 +150,10 @@ print(f"vincolato : a*={a_vinc:+.2f}  Q_stimato={Q_stima(a_vinc):+.2f}  "
 
 Il massimo naive sceglie un'azione al bordo dello spazio, mai osservata, a cui
 il polinomio assegna un valore assurdamente alto rispetto al suo valore reale.
-Vincolando la ricerca al supporto dei dati, stima e realtà tornano a coincidere:
-è, in miniatura, la prima famiglia di soluzioni.
+Vincolando la ricerca alla zona che i dati coprono davvero (il loro
+**supporto**, che in statistica è appunto l'insieme dei valori effettivamente
+presenti), stima e realtà tornano a coincidere: è, in miniatura, la prima
+famiglia di soluzioni.
 
 ## BCQ: restare vicini a ciò che è stato visto
 
@@ -162,6 +164,24 @@ dall'esempio: se il guaio nasce dal valutare azioni fuori distribuzione, allora
 non valutiamole affatto. BCQ limita il $\max$ alle sole azioni *plausibili*
 secondo il dataset.
 
+`````{tab} Elementare
+
+Come fa BCQ a sapere quali mosse siano plausibili? Impara a **imitare chi ha
+raccolto i dati**. Da una parte addestra una rete a rispondere alla domanda «in
+una serata come questa, che cosa avrebbe cucinato la nonna?», e quella rete
+propone una manciata di ricette possibili, tutte del genere che nei quaderni
+compare davvero. Dall'altra parte la rete dei voti giudica **soltanto quelle**,
+e si tiene la migliore.
+
+La differenza è tutta qui: alle ricette che nessuno ha mai scritto non viene mai
+chiesto un voto, quindi nessun voto di fantasia può vincere, perché non è mai
+stato dato. Un margine per migliorare resta, perché alle ricette proposte è
+concesso un piccolo ritocco imparato; ma è un ritocco, non un'invenzione.
+
+`````
+
+`````{tab} Superiore
+
 Per sapere quali azioni siano plausibili, BCQ addestra un **modello
 generativo** (un *variational autoencoder*), sulle coppie $(s, a)$ del
 dataset: dato uno stato, genera azioni simili a quelle che $\pi_\beta$ avrebbe
@@ -169,9 +189,12 @@ scelto in situazioni analoghe. La rete $Q$ viene poi massimizzata solo su un
 pugno di azioni campionate da questo generatore (con una piccola perturbazione
 appresa che concede un margine di miglioramento). L'operatore di
 massimizzazione non può più cadere nelle regioni fantasma: sceglie il meglio
-*tra ciò che si sarebbe davvero potuto fare*. È il modo più letterale di
-rispondere al distributional shift: costruire un recinto attorno ai dati e non
-uscirne.
+*tra ciò che si sarebbe davvero potuto fare*.
+
+`````
+
+È il modo più letterale di rispondere al distributional shift: costruire un
+recinto attorno ai dati e non uscirne.
 
 ## CQL: essere pessimisti sull'ignoto
 
@@ -179,7 +202,9 @@ BCQ mette un recinto *esplicito* attorno alle azioni. Un anno dopo, nel 2020,
 Aviral Kumar, Aurick Zhou, George Tucker e Sergey Levine propongono un approccio
 più elegante che non ha bisogno di un modello generativo separato: **CQL**
 (*Conservative Q-Learning*) {cite}`kumar2020conservative`. Invece di vietare le
-azioni OOD, le rende *poco appetibili* agendo direttamente sulla loss.
+azioni mai viste (in gergo *out-of-distribution*, «fuori distribuzione»,
+abbreviato **OOD**), le rende *poco appetibili*, intervenendo direttamente sulla
+quantità che l'addestramento cerca di minimizzare, la *loss*.
 
 `````{tab} Elementare
 
@@ -222,8 +247,16 @@ colleghi dimostrano che, per $\alpha$ abbastanza grande e con $\mu$ agganciata
 alla policy che si sta valutando, il **valore atteso** delle azioni sotto la
 $Q$ così ottenuta minora in ogni stato il vero valore della policy: un limite
 inferiore *in valore*, non punto per punto (la singola stima $Q(s,a)$ può
-ancora eccedere quella vera). La prudenza sull'ignoto resta comunque una
-garanzia formale, non un'euristica.
+ancora eccedere quella vera).
+
+La prudenza sull'ignoto resta quindi una garanzia formale e non un'euristica,
+ma conviene dire dove la garanzia vive: nel caso **tabellare**, e per un
+$\alpha$ abbastanza grande rispetto all'errore di campionamento, che dipende da
+quante volte la coppia $(s,a)$ compare nel dataset. Con una rete al posto della
+tabella la dimostrazione non si trasferisce, perché l'errore di approssimazione
+non è controllato da nessuna delle ipotesi. Quello che resta è una buona
+euristica con un teorema alle spalle, il che nel RL offline è comunque parecchio
+più di quanto offra la concorrenza.
 
 `````
 
@@ -234,7 +267,9 @@ Kostrikov, Ashvin Nair e Sergey Levine portano l'idea alle estreme conseguenze
 con **IQL** (*Implicit Q-Learning*) {cite}`kostrikov2022offline`: costruire
 una policy migliore di quella che ha raccolto i dati *senza mai interrogare la
 rete dei voti su un'azione che non sia nel dataset*. Se non guardi mai fuori,
-non puoi essere ingannato da ciò che c'è fuori.
+non puoi essere ingannato da ciò che c'è fuori. «Implicito» è il nome di quel
+che non si fa: il massimo sulle azioni non viene mai calcolato, lo si ottiene di
+sbieco come sottoprodotto di una regressione, senza doverlo mai nominare.
 
 `````{tab} Elementare
 
@@ -371,14 +406,23 @@ sui metodi a gradiente di policy abbiamo visto l'RLHF, con cui si allineano i
 modelli linguistici {cite}`ouyang2022training`: valutatori umani confrontano le
 risposte del modello, e le loro preferenze addestrano un modello di ricompensa.
 
-Ma quelle preferenze sono, a tutti gli effetti, un **dataset fisso**: nessuno
-torna dagli annotatori a chiedere un giudizio su ogni nuova risposta generata
-durante l'ottimizzazione. Non stupisce allora che l'RLHF erediti le stesse
-tensioni (la policy tende ad allontanarsi dalla distribuzione dei dati e a
-«sfruttare» il modello di ricompensa dove questo è poco vincolato) e le
-contenga con gli stessi strumenti: un termine di penalità che tiene la nuova
-policy *vicina* a quella di partenza, cugino diretto della prudenza di BCQ e
-CQL. Imparare da dati fissi, dalla terapia intensiva agli assistenti
+Quelle preferenze sono un dataset raccolto **a tornate**, e la distinzione conta.
+Non è vero che nessuno torni mai dagli annotatori: il lavoro stesso che ha
+introdotto la ricetta dice che i due passi (raccolta dei confronti e
+ottimizzazione) «possono essere iterati di continuo», raccogliendo nuovi
+confronti sulla policy migliore del momento per addestrare un nuovo modello di
+ricompensa. Ma fra una tornata e l'altra l'ottimizzazione va avanti contro un
+modello di ricompensa **fermo**, e il grosso dei confronti viene da risposte di
+policy precedenti, non da quella che si sta addestrando in quel momento.
+
+È abbastanza perché l'RLHF erediti le stesse tensioni: la policy tende ad
+allontanarsi dalla distribuzione dei dati e a «sfruttare» il modello di
+ricompensa dove questo è poco vincolato. E le contiene con gli stessi strumenti,
+un termine di penalità che tiene la nuova policy *vicina* a quella di partenza,
+cugino diretto della prudenza di BCQ e CQL. Anzi, il distinguo rende il punto
+più interessante, perché spiega *perché* si itera: iterare è il modo di
+ricomprare, ogni tanto, i dati che l'ottimizzazione ha consumato allontanandosi.
+Imparare da dati fissi, dalla terapia intensiva agli assistenti
 conversazionali, pone sempre la stessa domanda: quanto possiamo fidarci di ciò
 che non abbiamo mai visto?
 
@@ -406,8 +450,9 @@ che non abbiamo mai visto?
   mosse che di solito portano lì. Nessun voto da stimare, quindi nessun voto
   gonfiato.
 - Anche le preferenze umane con cui si allineano i modelli linguistici sono un
-  archivio chiuso: stesso problema, e stesso rimedio, cioè restare vicini a
-  ciò che l'archivio contiene davvero.
+  archivio, che si riapre a tornate ma resta fermo mentre l'addestramento va
+  avanti: stesso problema, e stesso rimedio, cioè restare vicini a ciò che
+  l'archivio contiene davvero.
 ```
 `````
 
@@ -430,8 +475,8 @@ che non abbiamo mai visto?
 - Il **Decision Transformer** riformula l'RL come modellazione di sequenze:
   condiziona sul *return-to-go* desiderato e predice l'azione con un Transformer,
   in modo puramente supervisionato {cite}`chen2021decision`.
-- I dati di preferenza dell'**RLHF** sono anch'essi un dataset fisso: stesso
-  problema, stessi rimedi (restare vicini alla distribuzione dei dati
-  {cite}`ouyang2022training`).
+- I dati di preferenza dell'**RLHF** sono anch'essi un dataset raccolto a
+  tornate e fermo fra una tornata e l'altra: stesso problema, stessi rimedi
+  (restare vicini alla distribuzione dei dati {cite}`ouyang2022training`).
 ```
 `````

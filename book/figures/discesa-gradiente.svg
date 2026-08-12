@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  paithon book — figura: discesa del gradiente su una funzione di costo
+  paithon book, figura: discesa del gradiente su una funzione di costo
   a scodella (convessa). Quattro passi che scendono verso il minimo, con
   passi via via più corti. Palette-locked: teal per la curva, terracotta
   per i passi, ocra per il minimo, tratto/label warm-black su neutri warm.

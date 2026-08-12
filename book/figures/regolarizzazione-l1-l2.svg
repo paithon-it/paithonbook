@@ -15,7 +15,7 @@
     <!-- punto di contatto sul vertice -->
     <circle cx="0" cy="-70" r="6" fill="#C9A961" stroke="#1A1A1A" stroke-width="1.5"/>
     <text x="-116" y="-88" font-family="sans-serif" font-size="12" fill="#1A1A1A">w₁ = 0 esatto</text>
-    <text x="0" y="108" font-family="sans-serif" font-size="15" font-weight="bold" fill="#B5532C" text-anchor="middle">L1 — rombo</text>
+    <text x="0" y="108" font-family="sans-serif" font-size="15" font-weight="bold" fill="#B5532C" text-anchor="middle">L1: rombo</text>
   </g>
   <!-- Pannello L2 -->
   <g transform="translate(540,180)">
@@ -32,7 +32,7 @@
     <!-- punto di contatto fuori dagli assi -->
     <circle cx="46" cy="-53" r="6" fill="#C9A961" stroke="#1A1A1A" stroke-width="1.5"/>
     <text x="-134" y="-88" font-family="sans-serif" font-size="12" fill="#1A1A1A">entrambi piccoli, non zero</text>
-    <text x="0" y="108" font-family="sans-serif" font-size="15" font-weight="bold" fill="#B5532C" text-anchor="middle">L2 — cerchio</text>
+    <text x="0" y="108" font-family="sans-serif" font-size="15" font-weight="bold" fill="#B5532C" text-anchor="middle">L2: cerchio</text>
   </g>
   <text x="360" y="28" font-family="sans-serif" font-size="14" fill="#1A1A1A" text-anchor="middle">Le curve di livello dell'errore (teal) toccano il vincolo (terracotta) nel punto ottimo (ocra)</text>
 </svg>

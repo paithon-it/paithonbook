@@ -1,12 +1,11 @@
 # World Model
 
-«Un gatto di casa ha molto più senso comune e comprensione del mondo di
-qualunque LLM.» A scriverlo, all'inizio del 2023, non è uno scettico qualsiasi
-ma Yann LeCun (premio Turing 2018, uno dei padri del deep learning) che da
-allora lo ha ripetuto, con poche variazioni, in conferenze e interviste.
-Mentre mezzo mondo si stupiva di ciò che i grandi modelli di linguaggio (gli
-LLM della citazione, *Large Language Model*), sanno scrivere, uno dei loro
-nonni intellettuali indicava un gatto. Provocazione calcolata, certo. Ma
+Un gatto di casa ha molto più senso comune e comprensione del mondo di
+qualunque modello di linguaggio. A ripeterlo da anni, con poche variazioni, in
+conferenze e interviste, non è uno scettico qualsiasi ma Yann LeCun (premio
+Turing 2018, uno dei padri del deep learning). Mentre mezzo mondo si stupiva di
+ciò che i grandi modelli di linguaggio (gli **LLM**, *Large Language Model*)
+sanno scrivere, uno dei loro nonni intellettuali indicava un gatto. Provocazione calcolata, certo. Ma
 proviamo a prenderla sul serio: che cosa sa fare, un gatto? Non risolve
 integrali e non scrive sonetti; però salta sul mobile calibrando la
 traiettoria al primo colpo, prevede da che parte sbucherà il gomitolo rotolato
@@ -83,22 +82,25 @@ quella traiettoria, non di ri-estrarlo) e di ri-simulare cambiando la sola
 azione; le due cose coincidono solo se la dinamica è deterministica. C'è però
 un dettaglio che occuperà mezzo capitolo: nel mondo reale lo stato non si
 osserva. Si osservano pixel, suoni, letture di
-sensori: un'osservazione $x_t$ ad alta dimensione e piena di dettagli
-irrilevanti. I world model moderni imparano perciò uno **stato latente**
-compatto $z_t = f_\phi(x_{1:t})$, con $f_\phi$ un encoder appreso, e simulano
-lì: $p_\theta(z_{t+1} \mid z_t, a_t)$. Il pedice $1{:}t$ non è un dettaglio:
-da un solo fotogramma mancherebbero, per dire, le velocità, e nessuna
-transizione su $z_t$ sarebbe ben definita; per questo i sistemi che
-incontreremo aggregano la storia con uno stato ricorrente (la memoria $h_t$
-della prossima sezione). Che cosa debba finire in $z_t$ (e che cosa sia
-giusto lasciar fuori) è una delle domande centrali del capitolo.
+sensori: un'osservazione $\mathbf{x}_t$ ad alta dimensione e piena di dettagli
+irrilevanti. I world model moderni imparano perciò **due** oggetti distinti: un
+**codice** compatto della singola osservazione, $\mathbf{z}_t = f_\phi(\mathbf{x}_t)$ con
+$f_\phi$ un encoder appreso, e una **memoria** $\mathbf{h}_t$ che riassume la storia
+precedente. Da un solo fotogramma mancherebbero, per dire, le velocità: è $\mathbf{h}_t$
+a portarle, ed è la memoria della prossima sezione. Lo stato del modello è
+quindi la coppia $(\mathbf{z}_t, \mathbf{h}_t)$ e la dinamica si scrive
+$p_\theta(\mathbf{z}_{t+1} \mid \mathbf{z}_t, a_t, \mathbf{h}_t)$; nell'RSSM dei Dreamer i due oggetti
+sopravvivono con gli stessi nomi, $\mathbf{h}_t$ deterministico e $\mathbf{z}_t$ stocastico
+condizionato su di esso. Che cosa debba finire in $\mathbf{z}_t$ (e che cosa sia giusto
+lasciar fuori) è una delle domande centrali del capitolo.
 
 `````
 
 ## Immaginare costa meno che provare
 
 La prima ragione per volere un world model è un conto della spesa, e lo
-abbiamo già pagato nel capitolo sul Deep Reinforcement Learning: DQN ha
+abbiamo già pagato nel capitolo sul Deep Reinforcement Learning: il DQN
+(*Deep Q-Network*, la rete che impara direttamente quanto vale ogni mossa) ha
 raggiunto il livello umano sui giochi Atari consumando decine di milioni di
 fotogrammi per titolo (settimane di gioco ininterrotto {cite}`mnih2015human`),
 dove a una persona bastano pochi minuti per capire *Breakout*. Il vocabolario
@@ -140,7 +142,11 @@ imprecisa a un passo può essere pessima a $k$ passi; peggio, una policy
 ottimizzata dentro il modello impara a sfruttarne i difetti (*model
 exploitation*), ottenendo ritorni immaginari che l'ambiente vero non paga.
 Gran parte del capitolo è il racconto di come la ricerca ha negoziato questo
-compromesso: quanta fiducia concedere al sogno.
+compromesso: quanta fiducia concedere al sogno. Con una precisazione che il
+capitolo sul Deep Reinforcement Learning quantifica e che qui conviene non
+promettere di più: *quanto in fretta* l'errore si componga dipende da quanto la
+dinamica amplifica le perturbazioni, e su sistemi contrattivi lo scarto, invece
+di esplodere, si assesta.
 
 `````
 
@@ -151,8 +157,10 @@ continua a esistere, i liquidi si versano, gli oggetti spinti si muovono. È la
 *fisica intuitiva* che il neonato dell'incipit costruisce guardando, senza
 etichette: il segnale di apprendimento è la sorpresa, lo scarto tra ciò che il
 suo modello prevedeva e ciò che accade. Tradotto nel lessico di questo libro:
-è apprendimento **auto-supervisionato**, dove il bersaglio non lo fornisce un
-annotatore umano ma il futuro stesso. Se il senso comune è fatto così,
+è apprendimento **auto-supervisionato**, dove la risposta giusta su cui
+correggersi (il **bersaglio**, in gergo: quel che il modello avrebbe dovuto
+prevedere) non la fornisce un annotatore umano ma il futuro stesso. Se il senso
+comune è fatto così,
 inseguirlo significa costruire macchine che imparano a prevedere il mondo: non
 a memorizzarlo.
 
@@ -186,8 +194,11 @@ sceglie la parola più plausibile dopo le altre. Attenzione, però: questa è un
 ricercatori rispondono che per indovinare bene la parola successiva in tutti i
 testi del mondo bisogna, in qualche misura, aver imparato molto del mondo che
 quei testi descrivono, e fanno notare che intanto i modelli continuano a
-migliorare. Chi ha ragione si vedrà; questo capitolo serve ad avere gli
-strumenti per seguire la partita.
+migliorare. Su questo c'è perfino un esperimento pensato per decidere la
+questione con i dati invece che con gli slogan, condotto su un gioco da tavolo:
+lo raccontiamo per intero nell'ultima sezione del capitolo, perché è la prova
+più pulita che il dibattito abbia prodotto. Chi ha ragione si vedrà; questo
+capitolo serve ad avere gli strumenti per seguire la partita.
 
 `````
 
@@ -219,17 +230,25 @@ JEPA, nel linguaggio del capitolo precedente.
 
 Tre tappe. Si parte dai **mondi in miniatura**: nel 2018 David Ha e Jürgen
 Schmidhuber addestrano un agente che impara a giocare a un vecchio sparatutto
-(schivare palle di fuoco in *Doom*) esercitandosi *dentro il proprio sogno*:
-un world model ricorrente in cui la policy si allena senza toccare il gioco
-vero. Quella linea di ricerca arriva ai **Dreamer** di Danijar Hafner e
-colleghi (2020–2023), che imparano interamente nell'immaginazione latente,
-fino a ottenere (primo algoritmo al mondo) un diamante in *Minecraft* senza
+(schivare palle di fuoco in *Doom*) esercitandosi *dentro il proprio sogno*. Il
+sogno è fatto da una rete **ricorrente**, cioè una rete che legge una cosa alla
+volta portandosi dietro un riassunto di quel che ha già visto: le basta quel
+riassunto per raccontarsi come prosegue il gioco, e la strategia dell'agente
+(la sua *policy*, il modo in cui sceglie la mossa) si allena lì dentro senza
+toccare il gioco vero. Quella linea di ricerca arriva ai **Dreamer** di Danijar
+Hafner e colleghi (2020–2023), che imparano quasi soltanto immaginando, fino a
+ottenere (primo algoritmo al mondo) un diamante in *Minecraft* senza
 dimostrazioni umane. Seconda tappa, la **via di LeCun**: le architetture
-**JEPA** (I-JEPA per le immagini, V-JEPA per i video), che predicono nello
-spazio delle rappresentazioni e non dei pixel. Qui il capitolo precedente
-torna utile per intero: una JEPA è un modello a energia non normalizzato, e
-senza quel linguaggio (energia come compatibilità, collasso, metodi
-regolarizzati) la proposta di LeCun resta illeggibile. Ultima tappa, i
+**JEPA** (*Joint-Embedding Predictive Architecture*, cioè architettura che
+predice fra due riassunti: una rete riassume il presente, un'altra riassume il
+futuro, e la previsione avviene fra i due riassunti). Ce ne sono due versioni,
+I-JEPA per le immagini e V-JEPA per i video, e tutte e due prevedono nello
+**spazio delle rappresentazioni**, che è poi lo «spazio delle idee» del titolo
+della prossima sezione: il posto in cui una scena è già diventata un riassunto
+e non è più un mosaico di puntini colorati. Qui il capitolo precedente torna
+utile per intero, perché una JEPA è un modello a energia: la stessa idea del
+buttafuori che assegna un voto di compatibilità, e gli stessi due problemi, il
+collasso e i modi di evitarlo. Ultima tappa, i
 **simulatori generativi di video** (Sora di OpenAI, presentato nel 2024 come
 passo verso «simulatori di mondo», e Genie di Google DeepMind, che genera
 ambienti interattivi giocabili) e la domanda con cui il capitolo chiude,
@@ -266,7 +285,9 @@ o soltanto saperla imitare?
   eredi (i *Dreamer*, che di sogno vivono quasi soltanto). Poi la strada di
   LeCun, che invece di immaginare il mondo immagine per immagine lo immagina
   **per idee**, cioè prevede a grandi linee cosa ci sarà, non ogni singolo
-  puntino dello schermo (la sigla è **JEPA**). Infine i programmi che sanno
+  puntino dello schermo (la sigla è **JEPA**, *Joint-Embedding Predictive
+  Architecture*: «architettura che predice fra due riassunti»). Infine i
+  programmi che sanno
   generare video, e la domanda con cui il capitolo si chiude: chi sa girare il
   filmato giusto ha capito come funziona il mondo, o è solo bravissimo a
   imitarlo?

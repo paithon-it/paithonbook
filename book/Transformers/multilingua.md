@@ -1,11 +1,15 @@
 # Una rete, cento lingue
 
-La sezione sulla traduzione neurale si era fermata al 2016, con GNMT che
-entrava in produzione: un modello per ogni coppia di lingue, addestrato sui
-suoi corpora paralleli. Pochi mesi dopo lo stesso gruppo prova una cosa che
-sembra solo un risparmio di ingegneria: invece di decine di modelli, uno solo,
-addestrato su tutte le coppie insieme, con un gettone in testa alla frase a
-dire in che lingua si vuole l'uscita.
+La sezione sulla traduzione neurale si era fermata al 2016, con GNMT (il
+traduttore neurale di Google) che entrava in produzione: un modello per ogni
+coppia di lingue, addestrato sui *corpora paralleli* di quella coppia, cioè
+grandi raccolte di testi già tradotti, frase per frase, da un umano. Pochi mesi
+dopo lo stesso gruppo prova una cosa che sembra solo un risparmio di
+ingegneria: invece di decine di modelli, uno solo, addestrato su tutte le coppie
+insieme, con un gettone in testa alla frase a dire in che lingua si vuole
+l'uscita. Il gettone è un *token* come tutti gli altri, uno di quei mattoncini
+in cui il testo viene spezzato, e sta lì a fare da etichetta: `<2ko>` davanti a
+una frase vuol dire «questa me la vuoi in coreano».
 
 Il risparmio arriva, ma con un effetto collaterale che nessuno aveva ordinato.
 Il modello aveva visto giapponese verso inglese e coreano verso inglese, mai
@@ -42,8 +46,14 @@ latine e greche, i prefissi che l'italiano e lo spagnolo hanno in comune).
 
 Resta un problema di dosi. Se dai al modello i testi in proporzione a quanti
 ce ne sono, l'inglese sommerge tutto e le lingue piccole spariscono: la
-Wikipedia inglese ha ordini di grandezza più voci di quella in curdo. Allora
-si bara sulle proporzioni, e si bara in modo controllato.
+Wikipedia inglese ha ordini di grandezza più voci di quella in curdo. Allora si
+bara sulle proporzioni, e si bara in modo controllato: alle lingue piccole si
+danno più turni di quanti gliene spetterebbero, e a quelle grandi meno, con una
+manopola che dice quanto appiattire. Girata a fondo, tutte le lingue avrebbero
+lo stesso numero di turni; lasciata ferma, ognuna avrebbe i turni che le
+toccano. La si mette in mezzo. Nei fatti mBERT la gira poco (una lingua che vale
+l'uno per cento dei testi arriva al quattro), e i modelli venuti dopo, che
+puntavano di più sulle lingue rare, la girano molto di più.
 
 `````
 
@@ -74,12 +84,18 @@ q_i = \frac{p_i^{\,\alpha}}{\sum_j p_j^{\,\alpha}}, \qquad 0 < \alpha \le 1 .
 $$
 
 Con $\alpha = 1$ nulla cambia; più $\alpha$ scende, più la distribuzione si
-appiattisce verso l'uniforme. Due lingue che stanno nei dati al $99\%$ e
-all'$1\%$, con $\alpha = 0{,}3$, vengono campionate all'incirca all'$80\%$ e al
-$20\%$: la lingua piccola è sovracampionata di venti volte. È l'unico modo per
-cui, quando si costruisce il vocabolario condiviso, alle lingue a bassa
-disponibilità tocchino pezzi sensati invece di sole lettere sciolte, che è
-esattamente il baratto discusso nella sezione sui tokenizzatori.
+appiattisce verso l'uniforme. Il valore non è universale, ed è bene sapere di
+chi è: **mBERT usa $\alpha = 0{,}7$** (il README multilingue ufficiale lo chiama
+$S$), XLM {cite}`lample2019cross` $\alpha = 0{,}5$, XLM-R
+{cite}`conneau2020unsupervised` $\alpha = 0{,}3$. La differenza non è di
+dettaglio. Prendendo due lingue che stanno nei dati al $99\%$ e all'$1\%$: con
+l'$\alpha$ di mBERT si campiona al $96\%$ e al $4\%$, cioè la lingua piccola è
+sovracampionata di quasi quattro volte; con quello di XLM-R si arriva a $80\%$ e
+$20\%$, venti volte. È così che, quando si costruisce il vocabolario condiviso,
+alle lingue a bassa disponibilità toccano pezzi sensati invece di sole lettere
+sciolte, che è esattamente il baratto discusso nella sezione sui tokenizzatori;
+ed è anche la manopola su cui si litiga, perché ogni turno dato a una lingua
+rara è un turno tolto a una comune.
 
 `````
 
@@ -91,9 +107,20 @@ scontata dopo averla sentita raccontare.
 Nel procedimento appena descritto **non c'è nulla che chieda al modello di
 mettere vicine le traduzioni**. Nessuno gli mostra mai «il gatto nero salta sul
 muro» accanto a «the black cat jumps on the wall». Eppure, a fine
-addestramento, le due frasi finiscono in punti vicini dello spazio interno, e
-un classificatore addestrato sulle rappresentazioni inglesi funziona su quelle
-italiane.
+addestramento, succede questo.
+
+Dentro il modello ogni frase diventa una lista di numeri, e una lista di numeri
+si può leggere come un indirizzo: due numeri sono un punto su un foglio, tre un
+punto nello spazio, settecentosessantotto un punto in un luogo che non si
+disegna ma si ragiona allo stesso modo. Chiamiamola **mappa del significato**,
+perché la proprietà che conta è quella di una mappa: frasi che vogliono dire
+cose simili finiscono in indirizzi vicini. Ebbene, «il gatto nero salta sul
+muro» e «the black cat jumps on the wall» finiscono a due passi l'una
+dall'altra, pur essendo in due lingue di cui al modello nessuno ha mai
+raccontato l'esistenza. E la conseguenza pratica arriva subito: un programma
+addestrato a riconoscere qualcosa guardando gli indirizzi delle frasi inglesi
+funziona anche sugli indirizzi delle frasi italiane, perché stanno nello stesso
+quartiere.
 
 `````{tab} Elementare
 
@@ -123,22 +150,35 @@ esattamente perché mBERT funzioni sta semplificando.
 `````{tab} Superiore
 
 Le prove sono di tre tipi, e vale la pena distinguerle perché portano in
-direzioni diverse {cite}`pires2019multilingual`.
+direzioni diverse.
 
-**Sovrapposizione di vocabolario.** La correlazione fra sovrapposizione dei
-sottotoken e trasferimento zero-shot è positiva e robusta su molti compiti
-(NER, POS tagging, inferenza, parsing). Ma è correlazione: Karthikeyan e
+**Sovrapposizione di vocabolario.** Che la sovrapposizione dei sottotoken
+correli positivamente con il trasferimento zero-shot, e su molti compiti (NER,
+POS tagging, inferenza, parsing di dipendenze, question answering), è il
+risultato di Wu e Dredze {cite}`wu2019beto`, che misura mBERT su cinque compiti
+e trentanove lingue. Ma è correlazione, e due lavori la ridimensionano da
+direzioni diverse. Pires e colleghi {cite}`pires2019multilingual` misurano la
+stessa quantità su NER e POS e trovano la resa di mBERT **piatta** al variare
+della sovrapposizione: resta fra il 40% e il 70% perfino per coppie di lingue
+quasi prive di parole in comune, mentre un BERT solo inglese, tenuto come
+termine di paragone, dipende direttamente dalla sovrapposizione. Karthikeyan e
 colleghi {cite}`karthikeyan2020cross` costruiscono lingue sintetiche con
-sovrapposizione **nulla** e osservano un calo minimo, e altri mostrano che il
-trasferimento avviene comunque purché si rifiniscano tutti gli strati tranne
-quello di embedding in ingresso. Il trasferimento sopravvive senza pezzi
-condivisi, e nemmeno senza alfabeto condiviso: urdu (in grafia araba) e hindi
-(in devanagari) si trasferiscono bene pur non avendo un carattere in comune.
+sovrapposizione **nulla** e osservano un calo minimo. Il trasferimento
+sopravvive dunque senza pezzi condivisi, e nemmeno serve l'alfabeto condiviso:
+urdu (in grafia araba) e hindi (in devanagari) si trasferiscono al 91% pur non
+avendo un carattere in comune.
 
-**Architettura.** Ciò che conta è la **profondità**, non il numero di teste: il
-trasferimento resta accettabile perfino con una testa sola, mentre crolla con
-poche layer. Anche il numero totale di parametri conta meno del numero di
-strati.
+C'è anche la prova per la strada opposta. Artetxe, Ruder e Yogatama
+{cite}`artetxe2020cross` prendono un modello **monolingue**, ne congelano tutto
+il corpo e riapprendono **soltanto** la tabella di embedding nella lingua nuova,
+con lo stesso esercizio a buchi: il trasferimento avviene lo stesso. Il pezzo
+che dipende dalla lingua è quindi l'embedding in ingresso; quel che si
+trasferisce è tutto il resto, cioè proprio la parte che nessuno ha toccato.
+
+**Architettura.** Ciò che conta è la **profondità**, non il numero di teste
+{cite}`karthikeyan2020cross`: il trasferimento resta accettabile perfino con una
+testa sola, mentre crolla con poche layer. Anche il numero totale di parametri
+conta meno del numero di strati.
 
 **Capacità.** L'argomento più curioso è che mBERT trasferirebbe **perché** è
 piccolo: la capacità limitata, spartita fra cento lingue, lo costringe a
@@ -170,14 +210,17 @@ parole in tutte e due. A quel punto, per indovinare la parola coperta in
 italiano, al modello conviene sbirciare nell'inglese, e viceversa. Non gli si
 dice «queste due sono la stessa cosa»: gli si rende conveniente scoprirlo.
 
-La seconda strada lavora su frasi intere e ha una forma che il libro ha già
-incontrato, in un capitolo che parlava di tutt'altro. Si prendono due encoder,
-si dà a uno la frase italiana e all'altro l'inglese, e si chiede: dato un
-mucchietto di frasi da una parte e il mucchietto mescolato delle loro
-traduzioni dall'altra, **appaiale**. È la stessa identica figura del capitolo
-su visione e linguaggio, quella con la matrice di somiglianza e la diagonale
-da massimizzare. Lì i due mucchietti erano immagini e didascalie; qui sono
-italiano e inglese. Il meccanismo non cambia di una virgola.
+La seconda strada lavora su frasi intere e ha una forma che ritroverai più
+avanti, in un capitolo che parla di tutt'altro. Si prendono due lettori, si dà a
+uno la frase italiana e all'altro l'inglese, e si chiede: dato un mucchietto di
+frasi da una parte e il mucchietto mescolato delle loro traduzioni dall'altra,
+**appaiale**. Immaginalo come una griglia, le frasi italiane sulle righe e
+quelle inglesi sulle colonne: in ogni casella si scrive quanto quelle due si
+somigliano, e si allena il modello a far venire i numeri grossi sulla diagonale
+(dove ogni frase incontra la sua traduzione) e piccoli dappertutto altrove. È la
+stessa identica griglia che disegnerà il capitolo su visione e linguaggio, dove
+al posto di italiano e inglese ci sono immagini e didascalie. Il meccanismo non
+cambia di una virgola.
 
 `````
 
@@ -232,20 +275,29 @@ l'inglese, è spesso la differenza fra avere un classificatore e non averlo.
 
 Due avvertenze, che non si trovano nei tutorial.
 
-La prima: **il fine-tuning consuma l'allineamento**. I pesi che si spostano per
-imparare il compito sono gli stessi che tenevano vicine le lingue, e adattare
-un modello al POS tagging inglese ne peggiora sensibilmente la capacità di
-recuperare frasi parallele. È una forma di dimenticanza catastrofica che
-colpisce non il compito precedente ma una proprietà emersa lungo la strada, e
-si attenua tenendo in vita l'obiettivo di pre-addestramento durante
-l'adattamento.
+La prima: **la rifinitura consuma l'allineamento**. I numeri che si spostano
+per imparare il compito sono gli stessi che tenevano vicine le lingue. Se
+adatti il modello a etichettare le parti del discorso di una frase inglese
+(dire per ogni parola se è nome, verbo, aggettivo: si chiama *POS tagging*), poi
+quello stesso modello ritrova molto peggio le traduzioni di una frase. È una
+forma di quella che il libro ha chiamato **dimenticanza catastrofica**,
+imparare una cosa nuova cancellandone una vecchia, con la particolarità che
+qui non viene cancellato un compito precedente ma una proprietà emersa per
+conto suo lungo la strada; e si attenua continuando a far fare al modello, in
+sottofondo, anche il vecchio esercizio a buchi mentre impara il compito nuovo.
 
 La seconda: il trasferimento non è uniforme, ed è più facile fra lingue con la
 stessa struttura sintattica. Il salto fra lingue soggetto-verbo-oggetto
 (italiano, inglese, francese) è molto più agevole di quello verso lingue
-soggetto-oggetto-verbo (turco, coreano, giapponese), sia per il parsing sia per
-l'etichettatura morfosintattica. Chi misura la resa sull'italiano e ne deduce
-la resa «sulle altre lingue» sta misurando la cosa più facile.
+soggetto-oggetto-verbo (turco, coreano, giapponese): sull'etichettatura delle
+parti del discorso, l'unica misurata su questa griglia da Pires e colleghi, si
+passa da 81,6 punti restando dentro il gruppo SVO a 66,5 uscendone. La tabella
+per intero dice però una cosa più precisa di «stessa struttura, salto facile»:
+da SOV a SOV si ottiene 64,2, da SOV a SVO 64,0, cioè lo stesso. Non c'è
+simmetria, e il caso facile non è «le lingue che si somigliano»: è **SVO verso
+SVO**, che è anche il caso in cui casca l'italiano. Chi misura la resa
+sull'italiano e ne deduce la resa «sulle altre lingue» sta misurando la cosa
+più facile che c'era da misurare.
 
 ## La maledizione della multilingualità
 
@@ -334,7 +386,7 @@ mappa di quali lingue si parlano.
   frase **e** nella sua traduzione messe una dopo l'altra, così che per
   indovinarle convenga sbirciare nell'altra lingua; oppure dare a due lettori
   un mucchietto di frasi e il mucchietto mescolato delle loro traduzioni e
-  chiedere di appaiarle, esattamente come si fa con immagini e didascalie nel
+  chiedere di appaiarle, esattamente come si farà con immagini e didascalie nel
   capitolo su visione e linguaggio.
 - Il motivo pratico di tutto questo è **rifinire in inglese e usare in
   italiano**, senza un solo esempio etichettato in italiano. Due avvertenze:

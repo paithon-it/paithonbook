@@ -169,7 +169,7 @@
   <circle cx="781" cy="486" r="5" fill="#C9A961"/>
   <polyline points="741,512 755,492 764,503 773,489 789,512" fill="none" stroke="#B5532C" stroke-width="2" stroke-linejoin="round"/>
 
-  <text x="765" y="540" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" fill="#1A1A1A">connettore: 4 milioni di parametri</text>
+  <text x="765" y="540" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" fill="#1A1A1A">connettore: 21 milioni di parametri</text>
 
   <!-- =================== LEGENDA =================== -->
   <rect x="228" y="564" width="16" height="14" rx="2" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.2"/>

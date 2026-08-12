@@ -1,8 +1,10 @@
 # Il conto in energia
 
-Di un modello si dichiara quasi tutto: quanti parametri ha, quanti FLOP costa
-una passata, quanto è accurato, quanti millisecondi impiega a rispondere. Una
-cosa non si dichiara quasi mai, ed è quanta elettricità consuma.
+Di un modello si dichiara quasi tutto: quanti parametri ha, quanti conti costa
+una passata (in gergo quanti **FLOP**, cioè quante singole operazioni
+aritmetiche, una moltiplicazione o una somma), quanto è accurato, quanti
+millisecondi impiega a rispondere. Una cosa non si dichiara quasi mai, ed è
+quanta elettricità consuma.
 
 La domanda è entrata nel dibattito tecnico nel 2019, quando Strubell, Ganesh e
 McCallum hanno provato a mettere un numero sull'addestramento di un modello di
@@ -32,10 +34,12 @@ programmazione.
 Il capitolo sulle GPU aveva già detto questa cosa con il cronometro in mano:
 il collo di bottiglia non sono i conti, sono i byte. Adesso la stessa frase si
 rilegge con la bolletta in mano, e dice la stessa cosa. Le due ottimizzazioni
-coincidono: il tiling, la fusione dei kernel, FlashAttention e gli
-acceleratori che fanno scorrere i dati fra unità vicine sono tutte tecniche per
-ridurre i viaggi, e ridurre i viaggi vuol dire insieme andare più veloci e
-consumare meno.
+coincidono, ed è per questo che tutte le tecniche di quel capitolo (lavorare a
+piccoli blocchi tenuti vicino al processore, fare più operazioni in un
+passaggio solo invece di andare e tornare dalla memoria a ogni passo, far
+scorrere il dato fra unità vicine invece che dentro e fuori) sono in fondo la
+stessa tecnica: **ridurre i viaggi**. E ridurre i viaggi vuol dire insieme
+andare più veloci e consumare meno.
 
 `````
 
@@ -43,15 +47,28 @@ consumare meno.
 
 Le misure di riferimento sono quelle di Horowitz {cite}`horowitz2014computing`:
 in un nodo tecnologico a 45 nm, una moltiplicazione-accumulo in virgola mobile
-costa qualche picojoule, mentre **leggere un dato a 32 bit dalla DRAM ne costa
-circa 640**, cioè più di due ordini di grandezza. Un accesso a memoria
-*on-chip* sta nel mezzo, dell'ordine dei $5$–$10$ pJ. I valori assoluti
-dipendono dal nodo e dal progetto, ma il **rapporto** è la cosa robusta, e nel
-tempo è peggiorato: la densità dei transistor è migliorata più in fretta
-dell'energia per bit trasportato.
+costa qualche picojoule (una moltiplicazione-accumulo in `float32` sta attorno
+a $4{,}6$), mentre **leggere un dato a 32 bit dalla DRAM ne costa circa 640**,
+cioè più di due ordini di grandezza. Un accesso a memoria *on-chip* costa
+invece quanto l'aritmetica stessa, dell'ordine dei $5$ pJ: il salto dei due
+ordini di grandezza è tutto nell'**uscita dal chip**. Finché il dato resta
+dentro il silicio, toccarlo costa quanto calcolarci sopra; appena esce, costa
+cento volte tanto. I valori assoluti dipendono dal nodo e dal progetto, ma il
+**rapporto** è la cosa robusta, e nel tempo è peggiorato: la densità dei
+transistor è migliorata più in fretta dell'energia per bit trasportato.
 
-Ne segue che, per una tipica inferenza densa, la maggior parte del budget
-energetico se ne va in movimento di dati e non in aritmetica. Ed è la
+Da un rapporto fra costi unitari, però, non segue ancora niente sul budget
+totale: per sapere dove finisce l'energia serve sapere **quante operazioni si
+fanno per ogni byte letto**, cioè l'intensità aritmetica del modello roofline,
+la stessa grandezza con cui la sezione sulle metriche di servizio ha distinto
+prefill e decode. Con i numeri qui sopra il pareggio cade attorno a $70$
+FLOP/byte. Al di sotto l'energia se ne va quasi tutta in movimento di dati, ed
+è il caso della generazione token per token, dove l'intensità è dell'ordine
+dell'unità e la quota spesa in aritmetica è di qualche punto percentuale. Al di
+sopra domina invece l'aritmetica: la lettura di un prompt lungo, o una passata
+di addestramento, stanno dall'altra parte del ginocchio. La leva del movimento
+dei dati è dunque enorme dove il carico è memory-bound, che è quasi tutta
+l'inferenza interattiva, e modesta dove non lo è. È la
 giustificazione economica di tutta l'ingegneria del capitolo sulle GPU: il
 riuso in shared memory, la fusione dei kernel, la precisione ridotta (che
 dimezza i byte da muovere prima ancora di dimezzare i conti) e l'array
@@ -74,8 +91,10 @@ Il secondo anello esce dal silicio ed entra nell'edificio.
 `````{tab} Elementare
 
 Un centro dati non consuma solo quello che consumano i calcolatori. Consuma
-anche il condizionamento che porta via il calore, i gruppi di continuità, le
-perdite negli alimentatori. La misura di quanto pesa questo contorno si chiama
+anche il condizionamento che porta via il calore, i gruppi di continuità (le
+batterie che tengono tutto acceso quando manca la corrente, e che per restare
+cariche consumano di continuo), le perdite negli alimentatori. La misura di
+quanto pesa questo contorno si chiama
 **PUE**: è il rapporto fra l'energia che entra nell'edificio e quella che
 arriva davvero ai calcolatori. Un PUE di $1$ sarebbe la perfezione (impossibile);
 una struttura moderna sta attorno a $1{,}1$–$1{,}3$, cioè spende il dieci o il
@@ -118,20 +137,38 @@ raffreddamento); $I_{\text{rete}}$ è la leva di chi sceglie **dove** e
 **quando** eseguire, e varia di oltre un ordine di grandezza fra reti diverse,
 e di alcune volte fra ore diverse della stessa rete.
 
+Una precisazione sul PUE, perché la formula insegna a fare un conto ed è così
+che il conto sbaglia. Il PUE è un rapporto **di struttura, annualizzato**:
+riguarda tutto l'edificio su tutto l'anno. Moltiplicarlo per l'$E_{\text{IT}}$
+di *un* singolo carico di lavoro assume che il contorno cresca in proporzione
+al carico, mentre una quota rilevante (illuminazione, gruppi di continuità a
+vuoto, ventilazione di base) è fissa: il PUE **marginale** di un lavoro
+aggiuntivo è di norma più basso di quello medio, e la formula sovrastima. Nella
+direzione opposta, il PUE non copre né le perdite di trasmissione della rete
+elettrica né il consumo d'acqua. Va bene per l'ordine di grandezza, non per
+confrontare due lavori sulla stessa macchina.
+
 L'analisi di Patterson e colleghi {cite}`patterson2021carbon` mette in fila le
-ampiezze, e non sono affatto uguali fra loro. Pesa di più la scelta del
-**modello**: una rete grande ma ad attivazione **sparsa** può consumare meno di
-un decimo di una densa a parità di qualità, cioè circa dieci volte meno. Le sta
-vicina la **collocazione geografica**, cioè in quale rete elettrica si esegue
-il lavoro, che sposta le emissioni di un fattore fra cinque e dieci, anche
-restando dentro lo stesso paese e la stessa organizzazione. Più sotto vengono
-le altre due leve, che il paper tiene distinte: l'**hardware** specializzato
+ampiezze delle quattro leve, e non sono affatto uguali fra loro. Sui modelli
+che avevano sottomano, nel 2021, pesava di più la scelta del **modello**: una
+rete grande ma ad attivazione **sparsa** (una in cui, per rispondere, si accende
+ogni volta solo una piccola parte della rete, invece che tutta come in una
+rete *densa*) poteva consumare meno di un decimo di una densa a parità di
+qualità. Le stava vicina la **collocazione geografica**, cioè in quale rete
+elettrica si esegue il lavoro, che sposta le emissioni di un fattore fra cinque
+e dieci, anche restando dentro lo stesso paese e la stessa organizzazione. Più
+sotto le altre due, che il paper tiene distinte: l'**hardware** specializzato
 per il machine learning rende da due a cinque volte più di un sistema generico,
 e un centro dati progettato bene è da 1,4 a 2 volte più efficiente di uno
-tipico (è il PUE di poco fa). La lezione va detta con onestà: la leva di chi
-modella esiste ed è la più grande, ma sta nella **scelta del modello**, non
-nella micro-ottimizzazione del codice, che sposta molto meno; e la scelta del
-luogo, che non è del team di modellazione, le sta quasi alla pari.
+tipico (è il PUE di poco fa).
+
+Quei quattro numeri sono misure su architetture di quell'anno, e come tutte le
+misure hanno una scadenza; quello che regge è la loro **morale**, ed è già
+abbastanza forte. Le leve di progetto (quanto modello serve, e dove lo si
+esegue) contano più di quelle di implementazione, e nessuna delle due sta dove
+di solito si cerca: non nella micro-ottimizzazione del codice, che sposta molto
+meno, e non tutte nelle mani del team che costruisce il modello, visto che la
+scelta del luogo è di qualcun altro.
 
 `````
 
@@ -144,15 +181,20 @@ L'addestramento è un costo **una tantum**, grande e ben visibile: si può
 misurare, si può datare, si può scrivere in un paper. L'inferenza è un costo
 **minuscolo moltiplicato per un numero enorme**: una singola risposta consuma
 pochissimo, ma se il modello risponde a milioni di richieste al giorno per due
-anni, l'integrale supera facilmente l'addestramento che l'ha prodotto.
+anni, il totale supera facilmente l'addestramento che l'ha prodotto.
 
 La conseguenza operativa è che **le leve dell'inferenza contano più di quelle
 dell'addestramento**, e sono esattamente quelle già viste per motivi di costo e
-di latenza: la quantizzazione, la distillazione e la potatura della sezione su
-LLMOps, il *batching* che ammortizza la lettura dei pesi su molte richieste, la
-cache del prefisso che evita di ricalcolare ciò che è già stato calcolato. Nel
-capitolo su LLMOps quelle tecniche erano presentate come modi di spendere meno
-e rispondere prima; sono la stessa cosa vista da un'altra finestra.
+di latenza: la quantizzazione e la potatura della sezione su LLMOps, il
+*batching* che ammortizza la lettura dei pesi su molte richieste, la cache del
+prefisso della sezione sulle metriche di servizio, che evita di ricalcolare ciò
+che è già stato calcolato. Ci si aggiunge la **distillazione**, cioè
+addestrare un modello piccolo a imitare le risposte di uno grande e poi servire
+il piccolo: la incontra il capitolo sui Transformer, nella sezione *Tendenze e
+limiti*, e sul conto dell'energia è la leva più radicale di tutte, perché non
+alleggerisce il modello, lo sostituisce. Nella sezione su LLMOps quelle
+tecniche erano presentate come modi di spendere meno e rispondere prima; sono
+la stessa cosa vista da un'altra finestra.
 
 Il punto di pareggio non è un numero universale: dipende da quanto è grande il
 modello, da quante richieste riceve e da quanto a lungo resta in servizio. Ma
@@ -187,8 +229,9 @@ servizio più a lungo**.
 
 `````{tab} Superiore
 
-Si distingue fra carbonio **operativo** (quello della sezione precedente,
-$E \times \text{PUE} \times I$) e carbonio **incorporato**, cioè le emissioni
+Si distingue fra carbonio **operativo** (quello della sezione *Dal joule al
+grammo*, $E \times \text{PUE} \times I$) e carbonio **incorporato**, cioè le
+emissioni
 di fabbricazione, trasporto e smaltimento, che si ammortizzano sulla vita utile
 del dispositivo. Il conto complessivo è
 
@@ -214,8 +257,8 @@ pesa più di anni di funzionamento.
 ## Che cosa si può fare, e che cosa non funziona
 
 Tirando le somme, le leve sono cinque, e le prime due contano più delle altre:
-**quanto** modello serve davvero (un modello sparso invece che denso, o dieci
-volte più piccolo, che basti comunque allo scopo, batte qualunque
+**quanto** modello serve davvero (un modello che si accende solo in parte, o
+dieci volte più piccolo, purché basti allo scopo, batte qualunque
 micro-ottimizzazione) e **dove** si esegue, cioè l'intensità di carbonio della
 rete elettrica. Vengono poi, nell'ordine, **su cosa** si esegue (un
 acceleratore adatto contro uno generico), **quando** si esegue per i lavori
@@ -223,10 +266,17 @@ differibili, e infine **come** è scritto il codice.
 
 Due avvertenze finali, che valgono più di molte buone intenzioni.
 
-La prima è che l'efficienza, da sola, non riduce i consumi totali. Ogni volta
-che addestrare è diventato più economico, il risparmio è stato reinvestito in
-modelli più grandi anziché incassato: è il paradosso di Jevons, e non è un
-argomento contro l'efficienza, è un argomento contro il crederla sufficiente.
+La prima è che l'efficienza, da sola, non basta a ridurre i consumi totali.
+Nella corsa alla scala degli ultimi anni, ogni volta che addestrare è diventato
+più economico il risparmio è stato in buona parte reinvestito in modelli più
+grandi anziché incassato: è l'effetto di rimbalzo che va sotto il nome di
+paradosso di Jevons. Non è però una legge, ed è onesto dire che la questione è
+aperta: il consumo elettrico complessivo dei centri dati, per esempio, è
+rimasto sostanzialmente piatto per quasi un decennio a fronte di una crescita
+enorme del carico di lavoro, cioè in un caso in cui l'efficienza la crescita
+l'ha assorbita davvero. Il rimbalzo è un effetto documentato e frequente, non
+un destino: l'argomento non è contro l'efficienza, è contro il crederla
+sufficiente da sola.
 
 La seconda riguarda i numeri. Quasi tutte le cifre pubblicate su questo tema
 sono **stime**, ottenute da ipotesi su hardware, utilizzo e mix energetico che
@@ -266,19 +316,25 @@ molto.
 `````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
-- L'energia non se ne va nei conti ma nel **movimento dei dati**: leggere un
-  valore dalla DRAM costa più di due ordini di grandezza rispetto a una
-  moltiplicazione-accumulo {cite}`horowitz2014computing`. È la stessa
-  affermazione del capitolo sulle GPU, letta con il contatore invece che col
-  cronometro, e rende ottimizzazione e sobrietà la stessa cosa.
+- L'energia non se ne va nei conti ma nel **movimento dei dati**, a una
+  condizione: che l'**intensità aritmetica** sia bassa. Leggere dalla DRAM costa
+  più di due ordini di grandezza rispetto a una moltiplicazione-accumulo
+  {cite}`horowitz2014computing` (mentre un accesso *on-chip* costa quanto
+  l'aritmetica: il salto è nell'uscita dal chip), e il pareggio cade attorno a
+  $70$ FLOP/byte: il decode sta molto sotto, il prefill e l'addestramento
+  stanno sopra. È la stessa affermazione del capitolo sulle GPU, letta con il
+  contatore invece che col cronometro.
 - La catena completa è
   $\text{gCO}_2\text{e} = E_{\text{IT}} \times \text{PUE} \times I_{\text{rete}}$:
   il **PUE** misura il costo dell'edificio (da $1{,}1$ a oltre $2$, quasi tutto
   raffreddamento), l'**intensità di rete** varia di oltre un ordine di
-  grandezza fra luoghi, e di alcune volte fra le ore della stessa rete.
+  grandezza fra luoghi, e di alcune volte fra le ore della stessa rete. Il PUE
+  però è una media annuale di struttura: applicato a un singolo carico
+  sovrastima, perché una parte del contorno è fissa.
 - **L'inferenza supera l'addestramento** quando il modello è servito a lungo:
-  quantizzazione, distillazione, *batching* e cache del prefisso sono leve
-  ambientali oltre che economiche.
+  quantizzazione e potatura (sezione su LLMOps), *batching*, cache del prefisso
+  (sezione sulle metriche di servizio) e distillazione sono leve ambientali
+  oltre che economiche.
 - Il **carbonio incorporato** (fabbricazione) è trascurabile per un
   acceleratore molto usato e **dominante** per un dispositivo poco usato: là si
   ottimizza il joule, qui la durata.

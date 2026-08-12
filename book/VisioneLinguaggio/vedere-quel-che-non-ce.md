@@ -11,11 +11,15 @@ sensore o un riflesso scambiato per un oggetto. È la lettura sbagliata, e
 sbagliarla porta a cercare la soluzione nel posto sbagliato. Il modello non ha
 visto male: ha *scritto bene*. Nelle didascalie del mondo, accanto a un piatto e
 a un coltello, una forchetta c'è quasi sempre, e chi è addestrato a continuare
-frasi plausibili la scrive perché la frase, senza, sarebbe meno plausibile. È il
-**priore linguistico** (il *prior* del modello di linguaggio, quello che
-l'overview ha già nominato) che vince sull'evidenza visiva, e questa sezione mostra
-perché il meccanismo lo renda inevitabile, come si fa a misurarlo, e che cosa si
-può fare per contenerlo.
+frasi plausibili la scrive perché la frase, senza, sarebbe meno plausibile.
+
+A quello che il modello si aspetta di leggere *prima* di guardare la fotografia
+daremo un nome, e lo useremo per tutta la sezione: **priore linguistico**. In
+parole povere è l'abitudine della lingua, quello che di solito viene scritto in
+frasi come questa; «priore» perché viene prima, prima dell'immagine e
+indipendentemente da essa. La sezione mostra perché quell'abitudine vinca così
+spesso sull'evidenza visiva, come si fa a misurarlo, e che cosa si può fare per
+contenerlo.
 
 ## Un errore che non riguarda gli occhi
 
@@ -48,26 +52,26 @@ ottiene anche a occhi chiusi. Guardare non è vietato, è semplicemente facoltat
 
 Un modello con connettore {cite}`liu2023visual` ottimizza la cross-entropia
 autoregressiva
-$\mathcal{L}(\theta) = -\sum_t \log p_\theta\big(y_t \mid y_{<t}, E(I)\big)$,
-dove $y_t$ è il token al passo $t$, $I$ l'immagine ed $E$ l'encoder visivo con
+$\mathcal{L}(\theta) = -\sum_t \log p_\theta\big(y_t \mid y_{<t}, E(\mathbf{I})\big)$,
+dove $y_t$ è il token al passo $t$, $\mathbf{I}$ l'immagine ed $E$ l'encoder visivo con
 il suo connettore. Il termine dentro il logaritmo si scompone in modo
 istruttivo:
 
 $$
-\log p_\theta\big(y_t \mid y_{<t}, E(I)\big) =
+\log p_\theta\big(y_t \mid y_{<t}, E(\mathbf{I})\big) =
 \underbrace{\log p_\theta\big(y_t \mid y_{<t}\big)}_{\text{priore linguistico}} +
-\underbrace{\log \frac{p_\theta\big(y_t \mid y_{<t}, E(I)\big)}{p_\theta\big(y_t \mid y_{<t}\big)}}_{\text{contributo visivo}},
+\underbrace{\log \frac{p_\theta\big(y_t \mid y_{<t}, E(\mathbf{I})\big)}{p_\theta\big(y_t \mid y_{<t}\big)}}_{\text{contributo visivo}},
 $$
 
 dove il primo addendo è ciò che il modello direbbe a occhi chiusi. L'identità
 è algebrica e vale sempre; le etichette dei due addendi chiedono un'ipotesi in
 più. La rete interrogata senza immagine non calcola il marginale vero
-$\mathbb{E}_I\big[p_\theta(y_t \mid y_{<t}, E(I))\big]$: è un altro percorso
+$\mathbb{E}_{\mathbf{I}}\big[p_\theta(y_t \mid y_{<t}, E(\mathbf{I}))\big]$: è un altro percorso
 di calcolo, mai addestrato a marginalizzare. Nella misura in cui lo
 approssima, il primo addendo stima il priore linguistico e il secondo la
 **mutua informazione puntuale** fra il token e l'immagine, dato il prefisso.
 La riduzione della perdita che il condizionamento sull'immagine può al più
-produrre è la mutua informazione condizionata $\mathcal{I}(Y_t; I \mid Y_{<t})$:
+produrre è la mutua informazione condizionata $\mathcal{I}(Y_t; \mathbf{I} \mid Y_{<t})$:
 dove la didascalia è già prevedibile dal solo testo, quella quantità è piccola,
 e con essa il gradiente che spinge il percorso visivo a servire a qualcosa.
 
@@ -104,16 +108,26 @@ coltello e forchetta, pronto per il pranzo», l'errore è una parola su dodici, 
 per accorgersene bisogna prima decidere quali parole sono affermazioni sul mondo
 e poi verificarle una a una.
 
-La via classica esiste: si fissa un elenco chiuso di categorie di oggetti, si
-cercano nel testo generato quelle parole (con una tabella di sinonimi e di
-plurali), e si conta la frazione di oggetti nominati che nell'immagine non sono
-annotati. Funziona, è stata la prima misura del campo, e porta con sé tre
-fragilità che non si possono togliere. Vede solo gli oggetti dell'elenco: un
-colore sbagliato, un conteggio sbagliato, una relazione spaziale rovesciata sono
-invisibili. Dipende dalla completezza delle annotazioni: un oggetto che c'è
-davvero ma che nessuno ha annotato viene contato come allucinazione. E l'analisi
-del testo libero resta un'euristica, che inciampa sulle negazioni («non c'è
-nessuna forchetta» contiene la parola «forchetta») e sui riferimenti generici.
+La via classica ha un nome, **CHAIR** {cite}`rohrbach2018object`, ed è del 2018:
+si fissa un elenco chiuso di categorie di oggetti, si cercano nel testo generato
+quelle parole (con una tabella di sinonimi e di plurali), e si conta la frazione
+di oggetti nominati che nell'immagine non risultano **annotati**, cioè che
+nell'elenco scritto a mano da chi ha preparato le fotografie non compaiono.
+Funziona, è stata la prima misura del campo, ed è ancora l'unica che guarda quel
+che il modello scrive di sua iniziativa. Porta però con sé quattro fragilità che
+non si possono togliere.
+
+Vede solo gli oggetti dell'elenco: un colore sbagliato, un conteggio sbagliato,
+una relazione spaziale rovesciata sono invisibili. Dipende dalla completezza
+delle annotazioni: un oggetto che c'è davvero ma che nessuno ha annotato viene
+contato come allucinazione. La ricerca delle parole nel testo libero resta un
+metodo approssimativo, che va bene in media e sbaglia sui casi storti: inciampa
+sulle negazioni («non c'è nessuna forchetta» contiene la parola «forchetta») e
+sui riferimenti generici. E infine il punteggio dipende da cose che con
+l'immagine non c'entrano: come è formulata la richiesta e quanto è lunga la
+descrizione che ne esce, perché più parole si scrivono più occasioni di sbagliare
+si offrono. È l'obiezione che muovono gli autori del protocollo di cui parliamo
+fra poco {cite}`li2023evaluating`, e che li ha portati a cambiare strada.
 
 Il risultato non è una misura sbagliata: è una misura **rumorosa in una
 direzione che non si controlla**, e cioè la cosa peggiore che si possa avere in
@@ -123,12 +137,13 @@ analizzatore migliore. È cambiare la domanda.
 ## Una domanda con due sole risposte
 
 L'impostazione che ha reso il problema trattabile è quella di POPE
-{cite}`li2023evaluating`, *Polling-based Object Probing Evaluation*: non si
-chiede più al modello di descrivere, gli si chiede «c'è una forchetta in questa
-immagine?» e si accetta solo sì o no. La risposta è un token, la verità sta
-nelle annotazioni, e nessun giudice deve interpretare niente; è la ragione per
-cui il protocollo esiste, perché
-l'alternativa (un modello che fa da correttore, l'*LLM-as-a-judge* del capitolo
+{cite}`li2023evaluating` (le iniziali di *Polling-based Object Probing
+Evaluation*, cioè una valutazione che tasta gli oggetti a forza di domande): non
+si chiede più al modello di descrivere, gli si chiede «c'è una forchetta in
+questa immagine?» e si accetta solo sì o no. La risposta è una parola sola, la
+verità sta nell'elenco di quel che c'è, e nessun giudice deve interpretare
+niente; è la ragione per cui il protocollo esiste, perché l'alternativa (mettere
+a correggere un secondo modello di linguaggio, il *modello giudice* del capitolo
 sull'MLOps) porta in dote i propri difetti proprio là dove si vuole misurare un
 difetto.
 
@@ -164,16 +179,16 @@ sta appoggiando.
 `````{tab} Superiore
 
 Sia $\mathcal{O}$ l'insieme delle categorie annotate nel corpus e
-$\mathcal{O}(I) \subseteq \mathcal{O}$ quelle presenti nell'immagine $I$. Le
-domande positive si estraggono da $\mathcal{O}(I)$, quelle negative da
-$\mathcal{O} \setminus \mathcal{O}(I)$ secondo tre distribuzioni:
+$\mathcal{O}(\mathbf{I}) \subseteq \mathcal{O}$ quelle presenti nell'immagine $\mathbf{I}$. Le
+domande positive si estraggono da $\mathcal{O}(\mathbf{I})$, quelle negative da
+$\mathcal{O} \setminus \mathcal{O}(\mathbf{I})$ secondo tre distribuzioni:
 
 $$
 q_{\text{unif}}(o) \propto 1,
 \qquad
 q_{\text{freq}}(o) \propto \hat{p}(o),
 \qquad
-q_{\text{cooc}}(o) \propto \sum_{o' \in \mathcal{O}(I)} \hat{p}(o \mid o'),
+q_{\text{cooc}}(o) \propto \sum_{o' \in \mathcal{O}(\mathbf{I})} \hat{p}(o \mid o'),
 $$
 
 dove $\hat{p}(o)$ è la frequenza marginale della categoria $o$ nel corpus e
@@ -233,16 +248,24 @@ print(pagella(guarda_davvero(0.60)))       # (0.6, 0.5)    guarda, e sbaglia mol
 print(pagella(guarda_davvero(0.90)))       # (0.9, 0.5)    guarda bene
 ```
 
-Il modello che risponde sempre «sì» non guarda mai, sbaglia una domanda su due,
-e porta a casa un F1 di $0{,}667$: perché non manca un solo oggetto presente
-(richiamo $1$) e paga solo in precisione ($0{,}5$). Un modello che guarda
-davvero ma sbaglia due volte su cinque prende $0{,}60$, cioè **meno**. A leggere
-il solo F1 si metterebbe in classifica sopra a tutti un modello che
+Il primo modello risponde sempre «sì»: non guarda mai, e sbaglia una domanda su
+due, perché azzecca tutte le millecinquecento domande sugli oggetti che ci sono e
+sbaglia tutte le millecinquecento su quelli che non ci sono. Eppure il punteggio
+con cui di solito si riassumono queste prove, l'**F1**, lo premia. Conviene
+smontarlo, perché è fatto di due numeri che qui tirano in direzioni opposte. Il
+**richiamo** è la quota di oggetti presenti che il modello ha riconosciuto: chi
+dice sempre «sì» non se ne lascia sfuggire nemmeno uno, quindi prende il massimo,
+$1$. La **precisione** è la quota di volte in cui, avendo detto «sì», aveva
+ragione: qui una su due, cioè $0{,}5$. L'F1 è una media dei due che tira verso il
+più piccolo, e vale $0{,}667$. Un modello che guarda davvero ma sbaglia due volte
+su cinque, in tutte e due le colonne, si ferma a $0{,}60$: **meno**.
+
+A leggere il solo F1 si metterebbe in classifica sopra a tutti un modello che
 dell'immagine non ha usato un pixel. La quota di sì scioglie l'equivoco in un
 colpo: $1{,}0$ contro $0{,}5$, e il primo dei due non sta rispondendo, sta
 ripetendo sempre la stessa cosa.
 
-Due onestà, per non trasformare un protocollo in un oracolo. La prima: si misura
+Tre onestà, per non trasformare un protocollo in un oracolo. La prima: si misura
 l'**esistenza degli oggetti**, e nient'altro; un colore sbagliato, un conteggio
 sbagliato, una relazione rovesciata restano invisibili. La seconda: poiché la
 misura è pubblica e la strategia per migliorarla è nota, un modello istruito a
@@ -250,6 +273,74 @@ dire «no» più spesso guadagna punti senza aver guadagnato un grammo di vista,
 è la solita legge di Goodhart e vale qui come altrove. Del resto la ragione per
 descrivere il metodo e non i punteggi è proprio questa: i punteggi sono cronaca,
 il disegno dell'esperimento no.
+
+La terza è la più facile da dimenticare, perché riguarda il confine fra le due
+misure e non i loro difetti. Domandare non è far descrivere: qui si misura se il
+modello **acconsente** a un oggetto che non c'è, non se lo **nomina** scrivendo
+di sua iniziativa. Sono due grandezze diverse, non due letture della stessa, e la
+seconda è precisamente quella con cui la sezione si è aperta, il tavolo con la
+forchetta. Un modello può rispondere «no, non c'è nessuna forchetta» a chi glielo
+chiede e continuare a metterla in tutte le sue descrizioni: per accorgersene
+serve ancora una misura sul testo generato, con tutta la sua rumorosità. Le due
+si leggono insieme, e nessuna delle due sostituisce l'altra.
+
+## Chi controlla il controllore
+
+C'è un piano superiore della stessa domanda, e questa sezione non sarebbe
+onesta a non porlo. Abbiamo chiesto: il modello ha davvero guardato? E abbiamo
+risposto con un protocollo di misura. Ma anche il protocollo può rispondere
+senza aver guardato.
+
+`````{tab} Elementare
+
+Immagina un compito in classe di cui gira da mesi la fotocopia con le soluzioni.
+I voti alti non dicono più chi ha studiato: dicono chi ha visto la fotocopia. In
+questo campo è successo, ed è documentato. Le prove con cui si misurano questi
+sistemi sono pubbliche, stanno sul web, e sul web questi sistemi si addestrano:
+domande e risposte finiscono nel materiale di studio insieme a tutto il resto.
+
+C'è anche un secondo difetto, più banale e forse peggiore: molte domande si
+possono indovinare senza guardare la fotografia, perché la risposta sta nella
+domanda stessa, nelle risposte proposte accanto («che animale c'è nella foto?
+a) un cane b) una sedia c) un tavolo d) una nuvola») o in cose che chiunque sa
+del mondo.
+
+Per fortuna il controllo che li scopre tutti e due è il più semplice che si possa
+immaginare: rifare l'esame **togliendo l'immagine**. Quello che il modello porta
+a casa a occhi chiusi è quello che non ha imparato guardando. Chi pubblica un
+punteggio senza aver riportato anche quello sta chiedendo di essere creduto sulla
+parola.
+
+`````
+
+`````{tab} Superiore
+
+Il fenomeno è stato quantificato da chi ha costruito MMStar
+{cite}`chen2024mmstar`, ed è di ampiezza tale da rendere non interpretabili
+molti punteggi pubblicati. I due meccanismi sono distinti. Il primo è la
+**risolvibilità dal solo testo**: su sei benchmark generalisti i modelli battono
+la scelta casuale di oltre $24$ punti in media senza ricevere alcuna immagine,
+perché la risposta si ricava dalla domanda, dalle opzioni o dalla conoscenza del
+mondo già nel modello di linguaggio. Il secondo è la **fuga di dati**: un modello
+ottiene $43{,}6\%$ su un benchmark multimodale senza immagini, cioè $17{,}9$
+punti **sopra** il proprio modello di linguaggio di base, che è la firma della
+memorizzazione, non della deduzione. Da qui le due misure che gli autori
+propongono, il guadagno multimodale (quanto si perde togliendo l'immagine) e la
+fuga multimodale (quanto il sistema completo supera il proprio modello di
+linguaggio cieco).
+
+Il caso è aggravante proprio per un protocollo come quello appena descritto,
+che poggia sulle annotazioni di un corpus fotografico pubblico, cioè su un
+corpus che sta nella miscela di addestramento di quasi ogni sistema di cui si
+vuole misurare l'allucinazione. Va detto con la cautela che merita: che quel
+corpus sia nella miscela è noto, che questo gonfi i punteggi è un rischio
+documentato altrove e non una misura pubblicata su questo protocollo. Il rimedio
+resta comunque quello, e costa una riesecuzione: riportare il punteggio **a
+immagine tolta** accanto a quello ordinario. È la stessa mossa che fra poco
+troveremo fra i rimedi in decodifica (confrontare la risposta a occhi aperti con
+quella a occhi chiusi), portata dalla generazione alla valutazione.
+
+`````
 
 ## Il difetto viene da più a monte
 
@@ -260,24 +351,25 @@ avrebbe permesso di rispondere non è arrivata affatto.
 `````{tab} Elementare
 
 Immagina di dover distinguere due pacchi usando soltanto una bilancia. Uno è
-pieno di libri, l'altro di piume, e per un caso sfortunato pesano uguale. La
-bilancia dice «due chili» a tutti e due, e chiunque legga solo il numero non
-potrà mai distinguerli: non perché sia distratto, ma perché nel numero la
-differenza non c'è più. Se poi gli chiedi «in quale pacco ci sono i libri?»,
-dovrà tirare a indovinare, e tirerà a indovinare secondo l'abitudine, perché non
-ha altro.
+pieno di libri, l'altro di piume, e per un caso sfortunato pesano quasi uguale:
+due chili tondi il primo, due chili e un grammo il secondo. Quel grammo la
+bilancia lo scrive, ma è così poco che chi legge il numero lo arrotonda via senza
+pensarci, e nessuno gli ha mai insegnato che proprio lì stava la risposta. Se poi
+gli chiedi «in quale pacco ci sono i libri?», dovrà tirare a indovinare, e tirerà
+a indovinare secondo l'abitudine, perché non ha altro.
 
 L'encoder della prima sezione è quella bilancia. Si possono trovare, e si sono
 trovate, coppie di fotografie che una persona distingue in mezzo secondo (un
 animale girato a destra e lo stesso girato a sinistra, una scarpa allacciata e
-la stessa slacciata) e che l'encoder misura quasi identiche: somiglianza
-$0{,}96$ su una scala che arriva a $1$. Un secondo strumento, addestrato solo
-sulle immagini e senza mai vedere una didascalia, mette le stesse due foto a
-$0{,}5$: per lui sono due cose diverse. La differenza non sta nella fotografia,
-sta nel righello.
+la stessa slacciata) e che l'encoder misura quasi identiche: somiglianza sopra
+$0{,}95$, su una scala che arriva a $1$. Un secondo strumento, addestrato solo
+sulle immagini e senza mai vedere una didascalia, mette le stesse due foto sotto
+$0{,}6$: per lui sono due cose diverse. La differenza non sta nella fotografia,
+sta nel righello. (Le due coppie di fotografie, del resto, si sono cercate
+apposta con quei due numeri in mano: è così che sono state trovate.)
 
-Ed ecco il punto che chiude il cerchio: quando il righello non distingue, il
-modello di linguaggio non risponde «non lo so». Riempie il buco con quello che
+Ed ecco il punto che chiude il cerchio: quando il righello distingue troppo poco,
+il modello di linguaggio non risponde «non lo so». Riempie il buco con quello che
 di solito è vero. Il punto cieco non produce silenzio, produce allucinazione.
 
 `````
@@ -285,12 +377,12 @@ di solito è vero. Il punto cieco non produce silenzio, produce allucinazione.
 `````{tab} Superiore
 
 Il lavoro di Tong e colleghi {cite}`tong2024eyes` costruisce **coppie cieche**
-in modo operativo: due immagini $I_1, I_2$ tali che
+in modo operativo: due immagini $\mathbf{I}_1, \mathbf{I}_2$ tali che
 
 $$
-\big\langle E_{\text{CLIP}}(I_1), E_{\text{CLIP}}(I_2) \big\rangle > 0{,}95
+\big\langle E_{\text{CLIP}}(\mathbf{I}_1), E_{\text{CLIP}}(\mathbf{I}_2) \big\rangle > 0{,}95
 \qquad\text{e}\qquad
-\big\langle E_{\text{SSL}}(I_1), E_{\text{SSL}}(I_2) \big\rangle < 0{,}6,
+\big\langle E_{\text{SSL}}(\mathbf{I}_1), E_{\text{SSL}}(\mathbf{I}_2) \big\rangle < 0{,}6,
 $$
 
 dove $E_{\text{CLIP}}$ è la torre visiva di un modello contrastivo
@@ -304,42 +396,63 @@ stato e condizione di un oggetto, quantità e conteggio, posizione e relazione
 spaziale, colore e aspetto, caratteristiche fisiche e strutturali, testo
 scritto, punto di vista e prospettiva.
 
-L'argomento per cui a valle non si recupera è breve. Il decoder vede soltanto
-$Z = E(I)$, quindi la catena $I \to Z \to Y$ è markoviana e per qualunque
-risposta $Y$ vale la disuguaglianza dell'elaborazione dei dati,
-$\mathcal{I}(Y; I) \le \mathcal{I}(Z; I)$, dove $\mathcal{I}$ è la mutua
-informazione: la risposta non può portare sull'immagine più informazione di
-quanta l'encoder ne abbia fatta passare, per quanto si addestri ciò che viene
-dopo. E in forma quantitativa, se il decoder $g$ è lipschitziano di costante
-$L$, allora
-$\lVert g(z_1) - g(z_2) \rVert \le L \lVert z_1 - z_2 \rVert$: con $z_1 \approx
-z_2$ le due risposte sono costrette a somigliarsi, mentre le risposte corrette
-sono opposte. Il modello deve rompere il pareggio, e l'unico strumento che gli
-resta per farlo è il priore del blocco precedente. Punto cieco a monte e
-allucinazione a valle non sono due difetti: sono un difetto e la sua
-manifestazione.
+Perché a valle non si recuperi si adduce di solito un argomento informazionale,
+e conviene essere precisi sul fatto che da solo non basta. Il decoder vede
+soltanto $\mathbf{Z} = E(\mathbf{I})$, quindi la catena
+$\mathbf{I} \to \mathbf{Z} \to Y$ è markoviana e per qualunque risposta $Y$ vale
+la disuguaglianza dell'elaborazione dei dati,
+$\mathcal{I}(Y; \mathbf{I}) \le \mathcal{I}(\mathbf{Z}; \mathbf{I})$, dove
+$\mathcal{I}$ è la mutua informazione: addestrando ciò che viene dopo non si
+aggiunge informazione sull'immagine. Vero, e qui **inoffensivo**. L'encoder è una
+funzione deterministica e le due immagini della coppia hanno coseno $0{,}95$,
+cioè embedding *distinti*: finché $E$ è iniettivo,
+$\mathcal{I}(\mathbf{Z}; \mathbf{I}) = H(\mathbf{I})$, con $H$ l'entropia
+dell'immagine (finita, perché i pixel sono già quantizzati), e un limite pari a
+tutta l'informazione disponibile non vieta niente a nessuno. La disuguaglianza
+morderebbe se l'encoder mandasse le due immagini **nello stesso** punto, che non
+è ciò che il lavoro citato osserva.
+
+Il limite vero è di **margine**, non di informazione, ed è più istruttivo. La
+differenza fra le due immagini sopravvive nell'embedding, ma lungo una direzione
+di norma piccolissima, che il coseno pesa poco e che nulla, in addestramento, ha
+mai chiesto al decoder di leggere. Se $g$ è il decoder ed è lipschitziano di
+costante $L$, allora
+$\lVert g(\mathbf{z}_1) - g(\mathbf{z}_2) \rVert \le L \lVert \mathbf{z}_1 - \mathbf{z}_2 \rVert$:
+con $\mathbf{z}_1 \approx \mathbf{z}_2$ le due risposte partono costrette a
+somigliarsi, mentre le risposte corrette sono opposte. Non è una dimostrazione di
+impossibilità, perché $L$ non viene maggiorato e per una rete profonda è enorme;
+è la constatazione che quella distinzione la troverebbe solo chi la cercasse, e
+che il modello non la cerca, mentre tutto (il priore del blocco precedente) lo
+spinge a rompere il pareggio in un altro modo. Chi volesse l'affermazione
+informazionale in senso forte deve introdurre del rumore, che nei sistemi veri
+c'è (quantizzazione, precisione ridotta, augmentation in addestramento): allora
+$\mathcal{I}(\mathbf{Z}; \mathbf{I})$ cala davvero e la disuguaglianza torna a
+mordere. In tutti i casi, punto cieco a monte e allucinazione a valle non sono
+due difetti: sono un difetto e la sua manifestazione.
 
 `````
 
 Conviene dire in modo esplicito che questo è **lo stesso limite della prima
-sezione, visto dall'altro lato**. Là, dal lato del testo, la loss contrastiva
-chiedeva solo di distinguere la didascalia vera da $N-1$ didascalie di immagini
-prese a caso, e per vincere quel gioco bastava riconoscere gli oggetti: da qui
-il comportamento a «sacco di concetti» misurato da Winoground. Qui, dal lato
-dell'immagine, vale la conseguenza speculare: qualunque dimensione visiva che
-non serva mai a quella discriminazione può essere collassata senza costo, e
-l'ottimizzazione la collassa. L'orientamento, il conteggio, la presenza di un
-particolare minuto sono precisamente le dimensioni da cui la didascalia di
+sezione, visto dall'altro lato**. Là, dal lato del testo, il gioco
+dell'abbinamento chiedeva solo di distinguere la didascalia vera da quelle di
+altre fotografie prese a caso, e per vincerlo bastava riconoscere gli oggetti: da
+qui il comportamento a «sacco di concetti». Qui, dal lato dell'immagine, vale la
+conseguenza speculare: se un tratto della fotografia non serve mai a fare quella
+scelta, buttarlo via non costa niente, e l'addestramento, che è pigro per
+mestiere, lo butta. Il verso in cui è girato un animale, quanti oggetti ci sono,
+un particolare minuto sono precisamente i tratti da cui la didascalia di
 un'altra fotografia non dipende mai. Un solo buco, due modi di infilarci il
 dito.
 
-Il rimedio a monte è coerente con la diagnosi: se un encoder contrastivo perde
-ciò che le didascalie non nominano, gli si affianca un encoder auto-supervisionato
-di sola visione e si uniscono le due rappresentazioni. Il come cambia il conto:
-affiancare i canali di ogni token lascia la sequenza lunga uguale e allarga i
-vettori, alternare nella sequenza i token delle due torri raddoppia il contesto
-occupato (il conto della sezione sulla risoluzione). In tutti i casi restano due
-encoder da far girare invece di uno, e il problema non è cancellato; è spostato.
+Il rimedio a monte è coerente con la diagnosi: se un encoder addestrato sulle
+didascalie perde ciò che le didascalie non nominano, gli si affianca un secondo
+encoder addestrato sulle sole immagini e si uniscono le due descrizioni. Il come
+cambia il conto: si può allungare la fila di numeri di ogni tessera attaccandoci
+in coda quella dell'altro encoder, e allora la sequenza resta lunga uguale;
+oppure mettere in fila i token delle due torri uno dopo l'altro, e allora il
+posto occupato raddoppia (è il conto della sezione sulla risoluzione). In tutti i
+casi restano due encoder da far girare invece di uno, e il problema non è
+cancellato; è spostato.
 
 ## Tre rimedi, nessuna cura
 
@@ -348,27 +461,38 @@ in tre punti diversi della catena: i dati, la decodifica, l'uscita.
 
 **Ancorare la risposta a ciò che si vede.** Invece di chiedere al modello *che
 cosa* c'è, gli si chiede anche *dove*: il nome dell'oggetto accompagnato dalle
-coordinate del riquadro che lo contiene, emesse come token
-{cite}`chen2023shikra, peng2023kosmos`. Il come è noto: si
-normalizzano le coordinate in $[0,1]$, si taglia l'intervallo in un numero fisso
-di gradini e si dà a ogni gradino un simbolo del vocabolario. È lo stesso gesto
-già visto per i token d'immagine (un continuo tagliato in un numero finito di
-simboli), applicato qui a una grandezza continua che non è l'immagine.
-L'effetto interessante non è in uscita ma nel gradiente: «una
-forchetta» il priore linguistico te lo regala, «una forchetta in $0{,}42$,
-$0{,}31$, $0{,}55$, $0{,}60$» no, perché quei quattro numeri dall'abitudine non
-si ricavano. Chiedere le coordinate rende l'affermazione verificabile a
-posteriori e, in addestramento, rende il percorso visivo l'unica strada per
-abbassare la perdita.
+quattro coordinate del riquadro che lo contiene, scritte nella stessa risposta.
+Su come si scrivano quei numeri i due lavori di riferimento prendono strade
+opposte, e vale la pena vederle affiancate. Kosmos-2 {cite}`peng2023kosmos`
+normalizza le coordinate in $[0,1]$, taglia l'intervallo in un numero fisso di
+gradini e dà a ogni gradino un simbolo **nuovo** del vocabolario: è lo stesso
+gesto già visto per i token d'immagine (un continuo tagliato in un numero finito
+di simboli), applicato qui a una grandezza continua che non è l'immagine.
+Shikra {cite}`chen2023shikra` fa il contrario, e lo rivendica: nessun simbolo
+nuovo, nessun gradino, le coordinate sono numeri decimali scritti in lingua
+naturale dentro la frase, come li scriverebbe una persona.
+
+Quale delle due si scelga, per il nostro problema cambia poco, ed è questo il
+punto: «una forchetta» l'abitudine della lingua te la regala, «una forchetta in
+$0{,}42$, $0{,}31$, $0{,}55$, $0{,}60$» no, perché quei quattro numeri
+dall'abitudine non si ricavano. In uscita, l'effetto è che l'affermazione
+diventa verificabile: chi legge può andare a guardare quel rettangolo. In
+addestramento l'effetto è più profondo, e riguarda il gradiente, cioè il
+segnale che corregge i pesi: siccome sbagliare le coordinate costa e indovinarle
+per abitudine non si può, l'unico modo di abbassare la perdita è passare
+davvero per l'immagine.
 
 **Decodificare per differenza.** Il secondo rimedio non tocca i pesi: cambia
 come si sceglie il token.
 
 `````{tab} Elementare
 
-Il trucco è fare la stessa domanda due volte, una a occhi aperti e una a occhi
-chiusi (o guardando una versione dell'immagine rovinata di proposito), e tenere
-solo la differenza.
+Il trucco è fare la stessa domanda due volte: la prima guardando la fotografia,
+la seconda guardando la stessa fotografia rovinata di proposito, coperta di
+disturbo finché non ci si distingue quasi più niente. Poi si tiene solo la
+differenza. Per brevità diremo «a occhi aperti» e «a occhi chiusi», ma gli occhi
+nel secondo caso restano socchiusi: l'immagine c'è ancora, è illeggibile.
+(Qualcuno la toglie del tutto, ed è la variante più radicale dello stesso gesto.)
 
 Se «forchetta» risulta probabile in entrambi i casi, quella parola non viene
 dalla foto: viene dall'abitudine, e allora la si penalizza. Se «coltello» è
@@ -387,22 +511,24 @@ tempo per ogni parola scritta.
 
 `````{tab} Superiore
 
-Detti $\ell_\theta$ i logit del modello, $x$ il prompt testuale, $I$ l'immagine
-e $I'$ una sua versione priva di informazione (nessuna immagine, oppure
-un'immagine degradata con rumore), la decodifica contrastiva visiva
+Detti $\ell_\theta$ i logit del modello, $\mathbf{x}$ il prompt testuale, $\mathbf{I}$ l'immagine
+e $\mathbf{I}'$ la stessa immagine degradata (nel lavoro citato con il rumore gaussiano
+del processo diretto di diffusione, aggiunto finché la scena non è più
+riconoscibile; varianti successive contrastano invece con l'assenza
+dell'immagine), la decodifica contrastiva visiva
 {cite}`leng2024mitigating` sceglie il token successivo secondo
 
 $$
-\ell_{\text{cd}}(y_t) = (1 + \alpha)\,\ell_\theta\big(y_t \mid y_{<t}, x, I\big)
-- \alpha\,\ell_\theta\big(y_t \mid y_{<t}, x, I'\big),
+\ell_{\text{cd}}(y_t) = (1 + \alpha)\,\ell_\theta\big(y_t \mid y_{<t}, \mathbf{x}, \mathbf{I}\big)
+- \alpha\,\ell_\theta\big(y_t \mid y_{<t}, \mathbf{x}, \mathbf{I}'\big),
 $$
 
 ristretto all'insieme dei candidati plausibili
 
 $$
 \mathcal{V}_t = \Big\{ w \in V \;:\;
-p_\theta\big(w \mid y_{<t}, x, I\big) \ge
-\beta \max_{w' \in V} p_\theta\big(w' \mid y_{<t}, x, I\big) \Big\},
+p_\theta\big(w \mid y_{<t}, \mathbf{x}, \mathbf{I}\big) \ge
+\beta \max_{w' \in V} p_\theta\big(w' \mid y_{<t}, \mathbf{x}, \mathbf{I}\big) \Big\},
 $$
 
 dove $\alpha \ge 0$ regola la forza della correzione e $\beta \in (0,1)$ (in
@@ -412,12 +538,12 @@ la differenza dei due logit è, a meno delle costanti di normalizzazione, propri
 il **contributo visivo** isolato nella scomposizione all'inizio della sezione:
 si sta decodificando su una **stima** della mutua informazione puntuale invece
 che sulla probabilità totale, con la stessa approssimazione di allora, resa
-qui ancora più larga quando $I'$ è un'immagine degradata e non l'assenza
+qui ancora più larga quando $\mathbf{I}'$ è un'immagine degradata e non l'assenza
 dell'immagine.
 
 I limiti seguono dalla stessa lettura. È una toppa in decodifica: non aggiunge
 informazione, ridistribuisce quella che c'è. Se la distinzione che serve è già
-scomparsa in $E(I)$, contrastare con $E(I')$ non la fa ricomparire: la
+scomparsa in $E(\mathbf{I})$, contrastare con $E(\mathbf{I}')$ non la fa ricomparire: la
 correzione sposta massa di probabilità fra token, non restituisce una dimensione
 che l'encoder ha collassato. E con $\alpha$ grande si penalizza tutto ciò
 che è insieme vero e atteso, cioè anche la forchetta nelle foto in cui la
@@ -482,7 +608,7 @@ tazza e molto meno per infilare un ago.
 
 `````{tab} Superiore
 
-Sia $a \in \mathbb{R}^{7}$ l'azione (tre componenti di traslazione, tre di
+Sia $\mathbf{a} \in \mathbb{R}^{7}$ l'azione (tre componenti di traslazione, tre di
 rotazione, una per l'apertura della pinza), a cui si aggiunge un indicatore
 binario di fine episodio. Ogni componente $j$ viene discretizzata in $B = 256$
 gradini uniformi fra $a_j^{\min}$ e $a_j^{\max}$, e l'indice del gradino diventa
@@ -491,12 +617,12 @@ riusa così com'è, altrimenti si sovrascrivono le 256 voci meno frequenti. La
 politica è allora
 
 $$
-\pi_\theta\big(a \mid I, x\big) = \prod_{j=1}^{7}
-p_\theta\big(k_j \mid k_{<j},\, E(I),\, x\big),
+\pi_\theta\big(\mathbf{a} \mid \mathbf{I}, \mathbf{x}\big) = \prod_{j=1}^{7}
+p_\theta\big(k_j \mid k_{<j},\, E(\mathbf{I}),\, \mathbf{x}\big),
 $$
 
-dove $k_j$ è il token del gradino della componente $j$, $I$ l'osservazione ed
-$x$ l'istruzione in lingua naturale. È la fattorizzazione autoregressiva del
+dove $k_j$ è il token del gradino della componente $j$, $\mathbf{I}$ l'osservazione ed
+$\mathbf{x}$ l'istruzione in lingua naturale. È la fattorizzazione autoregressiva del
 capitolo sui modelli di linguaggio, applicata a una sequenza lunga sette, con la
 stessa cross-entropia come perdita. È l'impostazione di RT-2
 {cite}`brohan2023rt2`, che addestra il modello in **co-fine-tuning** su una
@@ -560,7 +686,8 @@ altri tre, e vale la pena elencarli, perché fra il video di una dimostrazione e
 un impianto che lavora ci sono tutti e tre.
 
 Il primo è la **frequenza**. Un modello da decine di miliardi di parametri emette
-uno o due comandi al secondo, e sceso a qualche miliardo arriva a cinque o sei;
+fra uno e tre comandi al secondo, e sceso a qualche miliardo arriva a cinque o
+sei;
 un controllore classico ne emette decine o centinaia. Finché il compito è
 afferrare e spostare va bene, per un movimento che deve
 reagire in fretta no, e non è un problema di ingegneria del software: è la
@@ -608,31 +735,75 @@ tenere davanti alle altre quattro: chiedersi non soltanto dove i due flussi si
 sono incontrati, ma se si sono incontrati davvero, o se il modello sta parlando
 di una fotografia che non ha guardato.
 
+`````{tab} Elementare
+
+```{admonition} Da ricordare
+:class: important
+- La forchetta che non c'era **non è un errore di vista**: è l'abitudine della
+  lingua che vince sulla fotografia. Nelle didascalie del mondo, accanto a un
+  piatto e a un coltello, una forchetta c'è quasi sempre, e chi è addestrato a
+  scrivere frasi plausibili la scrive. Guardare non è vietato, è facoltativo.
+- Dare un voto a sei righe di descrizione è rumoroso: bisogna decidere quali
+  parole sono affermazioni sul mondo e poi controllarle una a una. La via che
+  funziona è **cambiare la domanda**: si chiede «c'è una forchetta?» e si accetta
+  solo sì o no.
+- Le domande difficili non sono quelle a caso («c'è una zebra?»), sono quelle
+  sull'oggetto che di solito accompagna quelli presenti. Non si guarda **un**
+  punteggio: se ne guardano tre e si guarda **quanto scendono**, perché quella
+  discesa misura l'abitudine e non la bravura.
+- Il voto va letto insieme a **quante volte il modello ha detto sì**: chi dice
+  sempre sì sbaglia una domanda su due e ottiene comunque un punteggio migliore
+  di chi guarda davvero e sbaglia due volte su cinque.
+- Una parte del guaio viene da prima, dalla bilancia: esistono coppie di
+  fotografie che una persona distingue in un istante e che l'encoder misura quasi
+  uguali. Quel che il righello non separa non si recupera più a valle, e il
+  modello, invece di dire «non lo so», riempie il buco con l'abitudine.
+- Tre rimedi, nessuna cura: farsi dire **anche dove** (le coordinate l'abitudine
+  non le regala), **chiedere due volte** e tenere la differenza fra occhi aperti e
+  occhi chiusi, far **ricontrollare** la risposta da qualcuno di indipendente.
+  Riducono, non eliminano.
+- Gli stessi pezzi comandano un braccio: si taglia ogni comando in 256 gradini
+  come le tacche di un righello e ogni gradino diventa una parola, così muoversi
+  è scrivere. Restano il passo del righello, i pochi comandi al secondo, i dati
+  che nessuno regala sul web, e il fatto che una mossa sbagliata è già avvenuta.
+```
+
+`````
+
+`````{tab} Superiore
+
 ```{admonition} Da ricordare
 :class: important
 - L'**allucinazione visiva** non è un errore di percezione: la perdita si
   scompone in un **priore linguistico** più un **contributo visivo**, e dove la
   didascalia è già prevedibile dal testo il gradiente che spinge a guardare è
   debole. Guardare non è vietato, è facoltativo.
-- Valutare su descrizioni libere è rumoroso in modo incontrollabile. **POPE**
-  {cite}`li2023evaluating` trasforma la valutazione in domande **binarie** su
-  oggetti presenti e assenti, con gli assenti scelti a caso, per frequenza o per
-  **co-occorrenza**: il divario fra le tre condizioni misura il priore, non la
-  bravura.
+- Le due misure sono **costrutti diversi**, non due letture della stessa
+  grandezza. **CHAIR** {cite}`rohrbach2018object` conta gli oggetti allucinati in
+  una descrizione libera (generativo, rumoroso, sensibile all'istruzione e alla
+  lunghezza); **POPE** {cite}`li2023evaluating` misura a che cosa il modello
+  acconsente su domande **binarie**, con gli assenti scelti a caso, per frequenza
+  o per **co-occorrenza**: il divario fra le tre condizioni misura il priore, non
+  la bravura. Si leggono insieme.
 - Il test va **bilanciato** e letto con la **quota di sì**: un modello che
   risponde sempre «sì» non guarda mai e ottiene comunque un F1 di $0{,}667$, più
   di un modello che guarda davvero e sbaglia due volte su cinque ($0{,}60$).
+- Anche il **benchmark** può rispondere senza aver guardato: molte domande sono
+  risolvibili dal solo testo e i test pubblici finiscono nei corpora di
+  addestramento {cite}`chen2024mmstar`. Il controllo che costa meno di tutti è
+  rieseguire la prova **a immagine tolta** e riportare il divario.
 - Una parte del difetto è **a monte**: esistono coppie di immagini con embedding
   contrastivi quasi identici (coseno oltre $0{,}95$) che un encoder di sola
-  visione separa nettamente {cite}`tong2024eyes`. Quel che l'encoder non
-  conserva non è recuperabile a valle, e il modello di linguaggio riempie il
-  buco con il priore. È il limite composizionale della prima sezione
-  {cite}`radford2021learning` visto dal lato dell'immagine.
+  visione separa nettamente {cite}`tong2024eyes`. La differenza sopravvive, ma
+  con un margine così sottile che nulla, in addestramento, ha insegnato al
+  decoder a leggerlo: il modello rompe il pareggio con il priore. È il limite
+  composizionale della prima sezione {cite}`radford2021learning` visto dal lato
+  dell'immagine.
 - Tre rimedi, nessuna cura: **ancorare** la risposta alle coordinate (che il
   priore non sa indovinare), **decodificare per differenza** fra la
-  distribuzione con e senza immagine (trattenuta da una soglia di plausibilità),
-  una **seconda passata** di verifica (utile solo se indipendente). Riducono,
-  non eliminano.
+  distribuzione con l'immagine e quella con l'immagine degradata (trattenuta da
+  una soglia di plausibilità), una **seconda passata** di verifica (utile solo se
+  indipendente). Riducono, non eliminano.
 - Discretizzando i comandi di un robot in 256 gradini per grado di libertà,
   l'**azione diventa una sequenza di token** e tutta la macchina del capitolo si
   riusa {cite}`brohan2023rt2`, {cite}`kim2024openvla`. Restano il passo di
@@ -640,3 +811,5 @@ di una fotografia che non ha guardato.
   raccolgono dal web, e un modello di errore in cui la mossa sbagliata è già
   avvenuta.
 ```
+
+`````

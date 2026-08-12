@@ -1,0 +1,58 @@
+{
+  "_": "Manifesto dell'ambiente di render. Lo scrive animazioni/collaudo.py.",
+  "data": "2026-08-12",
+  "versioni": {
+    "manim": "0.21.0",
+    "python": "3.12.13",
+    "latex": "TeX Live 2022",
+    "ffmpeg": "5.1.9-0+deb12u1",
+    "immagine": "paithon-manim"
+  },
+  "scene": {
+    "attenzione-mascherata.py": {
+      "classe": "AttenzioneMascherata",
+      "ok": true,
+      "secondi": 5.9
+    },
+    "backpropagation.py": {
+      "classe": "Backpropagation",
+      "ok": true,
+      "secondi": 5.2
+    },
+    "convoluzione.py": {
+      "classe": "Convoluzione",
+      "ok": true,
+      "secondi": 7.7
+    },
+    "diffusione-denoising.py": {
+      "classe": "DiffusioneDenoising",
+      "ok": true,
+      "secondi": 6.9
+    },
+    "generazione-autoregressiva.py": {
+      "classe": "GenerazioneAutoregressiva",
+      "ok": true,
+      "secondi": 7.9
+    },
+    "iterazione-valore.py": {
+      "classe": "IterazioneValore",
+      "ok": true,
+      "secondi": 7.8
+    },
+    "limite-centrale.py": {
+      "classe": "LimiteCentrale",
+      "ok": true,
+      "secondi": 5.4
+    },
+    "message-passing.py": {
+      "classe": "MessagePassing",
+      "ok": true,
+      "secondi": 5.4
+    },
+    "stato-ricorrente.py": {
+      "classe": "StatoRicorrente",
+      "ok": true,
+      "secondi": 9.0
+    }
+  }
+}

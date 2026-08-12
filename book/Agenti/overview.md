@@ -12,19 +12,23 @@ non si limitano a rispondere: cercano sul web una notizia di ieri, eseguono un
 pezzo di codice per controllare se gira, compilano un modulo, prenotano,
 aprono una richiesta di modifica (una *pull request*) su un progetto software
 vero. L'esempio più spietato di questo salto è **SWE-bench**
-{cite}`jimenez2024swebench`: 2.294 segnalazioni di errore (*issue*) prese da
-progetti reali su GitHub. Al sistema si dà la segnalazione del bug e il codice
-del progetto; deve produrre una modifica che lo risolva davvero. A giudicarlo
-non c'è una persona, ma i **test** del progetto: dei controlli automatici che
-il computer fa girare per vedere se il programma funziona ancora. Sono gli
-stessi test che, quando il bug fu risolto per davvero, dissero «a posto» alla
-correzione scritta da uno sviluppatore in carne e ossa. È un
-compito che
+{cite}`jimenez2024swebench` (dall'inglese *software engineering*, ingegneria
+del software, più *bench*, banco di prova): 2.294 segnalazioni di errore
+(*issue*) prese da progetti reali su GitHub, il sito dove i programmatori
+tengono il codice dei loro progetti e si scambiano correzioni. Al sistema si
+dà la segnalazione del bug e il codice del progetto; deve produrre una
+modifica che lo risolva davvero. A giudicarlo non c'è una persona, ma i
+**test** del progetto: dei controlli automatici che il computer fa girare per
+vedere se il programma funziona ancora. Sono gli stessi test che, quando il
+bug fu risolto per davvero, dissero «a posto» alla correzione scritta da uno
+sviluppatore in carne e ossa. È un compito che
 nessun completamento di testo, per quanto fluente, chiude in un colpo solo:
 bisogna trovare i file giusti, provare, sbagliare, rileggere il messaggio
 d'errore, correggere. I primi sistemi ci riuscivano in una **piccola
 frazione** dei casi (pochi punti percentuali) e proprio quel numero basso è la
-notizia: misura, in cifre, la distanza tra dire e fare.
+notizia: dà la prima cifra pubblica della distanza fra dire e fare. Che poi
+sia una misura *pulita* di quella distanza è un'altra questione, e ci
+torneremo nell'ultima sezione: un benchmark misura anche se stesso.
 
 Prima di andare avanti, mettiamo un paletto che vale per tutto il capitolo. Un
 **modello** è la rete che, dato un testo, ne predice la continuazione: quello
@@ -39,17 +43,22 @@ all'automobile.
 
 ```{figure} ../figures/rag-lewis-2020.svg
 :name: fig-rag-lewis
-:alt: "Schema del RAG originale: la domanda entra in un retriever che consulta un indice costruito su Wikipedia e ne estrae i passaggi più rilevanti; domanda e passaggi entrano insieme nel generatore, che produce la risposta. Retriever e generatore sono addestrati insieme, come un unico modello."
+:alt: "Schema del RAG originale: la domanda entra in un cercatore (retriever) che consulta un indice costruito su Wikipedia e ne estrae i passaggi più rilevanti; domanda e passaggi entrano insieme nel generatore, che scrive la risposta. Cercatore e generatore sono addestrati insieme, tenendo però fisso l'indice dei documenti: per questo l'archivio si può sostituire senza riaddestrare."
 :width: 96%
 
-Il primo passo fuori dai pesi. La conoscenza non sta più solo nel modello:
-una parte vive in un archivio che si può aggiornare senza riaddestrare niente.
+Il primo passo fuori dai pesi. Il disegno ha tre pezzi: chi cerca nell'archivio
+(il *retriever*, il cercatore), l'archivio stesso e chi scrive la risposta (il
+generatore). La conoscenza non sta più solo nel modello: una parte vive in un
+archivio che si può aggiornare senza riaddestrare niente.
 ```
 
 {numref}`fig-rag-lewis` è il precedente diretto di tutto questo capitolo, ed è
-utile vederlo prima di parlare di agenti. Un modello che consulta un archivio
-fa già una cosa che il completamento puro non fa: sospende la risposta, va a
-prendere qualcosa fuori di sé, e solo dopo conclude.
+utile vederlo prima di parlare di agenti: è la **RAG** di Lewis e colleghi
+{cite}`lewis2020retrieval`, sigla che sta per *Retrieval-Augmented Generation*,
+«generazione aumentata dal recupero», e che nel capitolo sui Transformer
+abbiamo già costruito in miniatura. Un modello che consulta un archivio fa già
+una cosa che il completamento puro non fa: sospende la risposta, va a prendere
+qualcosa fuori di sé, e solo dopo conclude.
 
 Perché il completamento di testo, da solo, non basta? Perché rispondere è un
 atto unico e chiuso, mentre agire nel mondo è un processo: richiede più mosse
@@ -103,13 +112,19 @@ istruzioni in linguaggio naturale: non si aggiornano i pesi, si scrive il
 
 `````
 
-Un ingrediente rende il ciclo molto più affidabile: far «ragionare ad alta
-voce» il modello prima di agire. Invece di saltare all'azione, il modello
-scrive il proprio ragionamento (*«per risolvere il bug devo prima leggere il
-file dove viene sollevata l'eccezione»*) e solo dopo sceglie la mossa. È
-l'idea del **chain-of-thought** {cite}`wei2022chain`, la catena di
-ragionamento che nel capitolo sui Transformer abbiamo visto migliorare i
-compiti di ragionamento: qui diventa il collante tra il pensare e il fare.
+Un ingrediente aiuta il ciclo: far «ragionare ad alta voce» il modello prima
+di agire. Invece di saltare all'azione, il modello scrive il proprio
+ragionamento (*«per risolvere il bug devo prima leggere il file dove viene
+sollevata l'eccezione»*) e solo dopo sceglie la mossa. È l'idea del
+**chain-of-thought** {cite}`wei2022chain`, la catena di ragionamento che nel
+capitolo sui Transformer abbiamo visto migliorare i compiti di ragionamento.
+Conviene però dire subito dove il guadagno è stato misurato davvero, perché è
+più stretto di come lo si racconta di solito: una meta-analisi su oltre cento
+lavori lo trova concentrato sui compiti **matematici e simbolici**, e piccolo
+altrove {cite}`sprague2025cot`. In un agente il pensiero scritto serve
+soprattutto a un'altra cosa, dare al modello un posto dove annotare a che
+punto è del compito prima di scegliere la mossa: è il collante fra il pensare
+e il fare, non una cura generale.
 
 ## L'anatomia di un agente
 
@@ -118,16 +133,21 @@ ingredienti, e conviene tenerli distinti perché ognuno ha problemi suoi.
 
 - Il **modello** è il cervello: legge il contesto, ragiona, decide la prossima
   azione. È l'unico pezzo che «pensa»; tutto il resto è impalcatura attorno.
-- Gli **strumenti** (*tool*) sono le mani: una ricerca sul web, un interprete
-  che esegue codice, una chiamata a un servizio esterno (un'API), una query a
-  un database. Sono ciò che permette all'agente di *toccare* il mondo: di
-  leggere dati freschi e di produrre effetti.
+- Gli **strumenti** (*tool*) sono le mani: una ricerca sul web, un programma
+  che esegue del codice al posto suo, la chiamata a un servizio esterno
+  (un'**API**, dall'inglese *application programming interface*: la presa
+  elettrica con cui un programma ne interroga un altro), un'interrogazione a
+  un archivio di dati. Sono ciò che permette all'agente di *toccare* il mondo:
+  di leggere dati freschi e di produrre effetti.
 - Il **loop di controllo** è il metodo di lavoro: il programma che alterna
   percezione e azione, passa il contesto al modello, esegue l'azione scelta,
   raccoglie il risultato e decide se continuare o fermarsi.
 - La **memoria** è ciò che l'agente si porta dietro. Nel breve termine è la
   finestra di contesto: la memoria di lavoro, limitata, che abbiamo studiato
-  parlando di KV cache e contesti lunghi. Nel lungo termine è una memoria
+  parlando di contesti lunghi e di quel segnalibro con cui il modello evita di
+  rileggere da capo ciò che ha già letto (la **KV cache**, dalle iniziali di
+  *key* e *value*, i due ingredienti dell'attenzione che vengono messi da
+  parte). Nel lungo termine è una memoria
   *esterna*: un archivio di documenti o di ricordi passati da cui pescare
   quando serve, senza tenere tutto in testa.
 
@@ -145,8 +165,8 @@ risposta.
 Come mostra {numref}`fig-agente-anatomia`, il modello non tocca mai il mondo
 direttamente: lo fa attraverso gli strumenti, e ogni azione torna indietro
 come un'osservazione che rientra nel contesto. Il pezzo più sottile è proprio
-il tool use, come fa un modello che sa solo *scrivere testo* a *chiamare* una
-funzione?
+il tool use. Come fa un modello che sa solo *scrivere testo* a mettere in moto
+un pezzo di programma (in gergo, a *chiamare una funzione*)?
 
 `````{tab} Elementare
 
@@ -196,7 +216,9 @@ riempie in fretta, come vedremo parlando di context engineering.
 
 Le tre idee (un motore linguistico, degli strumenti, un ciclo) non sono nuove.
 L'AI classica costruiva agenti già negli anni Settanta. Perché allora gli
-agenti *basati su LLM* nascono solo ora? La risposta sta in una capacità che i
+agenti *basati su LLM* (dall'inglese *large language model*, «grande modello
+di linguaggio»: è la sigla con cui d'ora in poi chiameremo il modello che
+completa il testo) nascono solo ora? La risposta sta in una capacità che i
 modelli hanno acquisito da poco: capire ed eseguire una consegna scritta in
 linguaggio naturale.
 
@@ -247,12 +269,15 @@ di fila.
 Vale la pena guardarsi indietro, perché l'idea di un sistema che percepisce,
 decide e agisce non nasce con gli LLM. Nel capitolo sul Natural Language
 Processing abbiamo incontrato i primi sistemi di dialogo: **ELIZA**, che negli
-anni Sessanta rispondeva rigirando le parole dell'interlocutore con
-espressioni regolari, e i **sistemi a frame** come GUS, che conducevano una
-conversazione riempiendo le caselle di un modulo (*dove*, *quando*, *quanti*)
-con domande mirate. Erano già, a modo loro, agenti: avevano una percezione
-(l'input), una policy (le regole) e delle azioni (le risposte, o la
-prenotazione a modulo completo).
+anni Sessanta rispondeva rigirando le parole dell'interlocutore con delle
+**espressioni regolari** (schemi scritti a mano del tipo «se la frase contiene
+*mia madre*, rispondi *mi parli della sua famiglia*»), e i **sistemi a frame**
+come GUS, che conducevano una conversazione riempiendo le caselle di un modulo
+(*dove*, *quando*, *quanti*) con domande mirate. Erano già, a modo loro,
+agenti: avevano una percezione (quello che arriva dall'esterno), una
+**politica** (in inglese *policy*: la regola che, vista la situazione, sceglie
+la mossa successiva, ed è la stessa parola del capitolo sul reinforcement
+learning) e delle azioni (le risposte, o la prenotazione a modulo completo).
 
 `````{tab} Elementare
 
@@ -298,18 +323,59 @@ abbiamo solo montato insieme.
 - **Agenti e tool use**, come un modello chiama davvero gli strumenti e
   compone le azioni in sequenza: il pattern ragiona-agisci-osserva in pratica,
   con il codice del loop.
-- **RAG avanzato**, recuperare i documenti giusti *prima* di rispondere, oltre
-  la forma base già vista nel capitolo sui Transformer: interrogazioni
-  multiple, ri-ordinamento dei risultati, recupero guidato dall'agente stesso.
+- **RAG avanzato**, cioè il recupero dei documenti giusti *prima* di
+  rispondere, oltre la forma base già vista nel capitolo sui Transformer:
+  interrogazioni multiple, ri-ordinamento dei risultati, recupero guidato
+  dall'agente stesso.
 - **Context engineering**, l'arte di riempire la finestra di contesto: cosa
   mettere e cosa lasciare fuori, cosa comprimere, cosa far sopravvivere da un
   passo all'altro quando la memoria di lavoro è stretta.
 - **Architetture e valutazione**, come si compongono più agenti in un sistema,
   e il problema aperto di dare loro un voto: valutare un agente che agisce,
-  non solo un testo che risponde, è difficile quanto (e più di) valutare
-  l'output aperto di cui parleremo nel capitolo conclusivo su LLMOps.
-  SWE-bench {cite}`jimenez2024swebench` è un esempio di come si prova a farlo
-  su compiti reali.
+  non solo un testo che risponde, è difficile quanto (e più di) dare un voto a
+  una risposta libera, quella per cui non esiste una soluzione unica, di cui
+  parleremo più avanti nel capitolo su MLOps, alla sezione LLMOps. SWE-bench
+  {cite}`jimenez2024swebench` è un esempio di come si prova a farlo su compiti
+  reali.
+
+Ecco, in sei righe, quello che vale la pena portarsi via da questa prima
+sezione.
+
+`````{tab} Elementare
+
+```{admonition} Da ricordare
+:class: important
+- Un **modello** indovina come continua un testo; un **agente** è il *sistema*
+  che gli mette attorno delle mani e un metodo di lavoro, così che non risponda
+  soltanto ma **agisca**: cerchi, esegua, prenoti, corregga il codice. Il
+  modello è il motore, l'agente è l'automobile.
+- Il cuore è un giro che si ripete, **osserva → ragiona → agisci → osserva**,
+  con il modello nel ruolo di chi sceglie la mossa. Farlo «ragionare ad alta
+  voce» prima di agire (la **catena di ragionamento**, in inglese
+  *chain-of-thought* {cite}`wei2022chain`) aiuta, ma soprattutto sui conti e
+  sui problemi di logica {cite}`sprague2025cot`.
+- I quattro ingredienti: il **modello** (il cervello), gli **strumenti** (le
+  mani: cercare sul web, far girare del codice, interrogare un servizio
+  esterno), il **giro di controllo** (guarda, agisci, riguarda) e la **memoria**
+  (quello che tiene sott'occhio adesso, più un archivio esterno). Il modello
+  scrive il bigliettino d'ordine; il programma che gli sta attorno lo esegue.
+- Gli agenti nascono **adesso** perché i modelli hanno imparato a capire una
+  consegna scritta a parole: basta descrivere lo strumento e l'obiettivo,
+  invece di programmare ogni caso. È però un campo giovane {cite}`xi2023rise`,
+  e i piccoli errori si sommano lungo il giro.
+- I **chatbot a regole** del capitolo sul linguaggio (ELIZA, i sistemi a
+  moduli) sono gli antenati rigidi: bravissimi dentro il previsto, muti fuori.
+  L'agente guadagna versatilità e perde prevedibilità: è uno scambio, non un
+  regalo.
+- Nel resto del capitolo: come il modello chiama davvero gli strumenti, come si
+  recuperano i documenti giusti prima di rispondere, come si riempie bene la
+  finestra di contesto, e come si dà un voto a un agente. Su quest'ultimo punto
+  SWE-bench {cite}`jimenez2024swebench` è il banco di prova su compiti veri.
+```
+
+`````
+
+`````{tab} Superiore
 
 ```{admonition} Da ricordare
 :class: important
@@ -319,8 +385,9 @@ abbiamo solo montato insieme.
   codice.
 - Il cuore è un ciclo **osserva → ragiona → agisci → osserva**, con l'LLM nel
   ruolo di *policy*: sceglie l'azione dato il contesto. Farlo «ragionare ad alta
-  voce» (**chain-of-thought** {cite}`wei2022chain`) rende il ciclo più
-  affidabile.
+  voce» (**chain-of-thought** {cite}`wei2022chain`) aiuta, ma i guadagni
+  misurati si concentrano su matematica e ragionamento simbolico
+  {cite}`sprague2025cot`.
 - I quattro ingredienti: il **modello** (il cervello), gli **strumenti** (le
   mani: web, codice, API), il **loop di controllo** (percezione-azione) e la
   **memoria** (contesto + memoria esterna). Il modello *propone* le azioni; il
@@ -337,3 +404,5 @@ abbiamo solo montato insieme.
   engineering**, **architetture e valutazione**; di quest'ultima, SWE-bench
   {cite}`jimenez2024swebench` è un banco di prova su compiti reali.
 ```
+
+`````

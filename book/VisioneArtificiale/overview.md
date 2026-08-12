@@ -26,8 +26,10 @@ macchina possa manipolare, e quel qualcosa è una griglia.
 Immagina una foto come un enorme foglio a quadretti. Ogni quadretto è un
 **pixel**, e dentro ci sta un numero che dice quanto quel puntino è chiaro o
 scuro: $0$ è nero pieno, $255$ è bianco pieno, e i valori in mezzo sono le
-sfumature di grigio. Una foto in bianco e nero, per il computer, è tutta qui:
-una tabella di numeri fra $0$ e $255$.
+sfumature di grigio. Il $255$ non è un capriccio: il computer conta a gruppi di
+otto interruttori acceso-spento, e con otto interruttori i valori diversi sono
+$256$, cioè da $0$ a $255$. Una foto in bianco e nero, per il computer, è tutta
+qui: una tabella di numeri fra $0$ e $255$.
 
 Se la foto è a colori, ogni quadretto non ha più un numero solo ma tre, quanto
 rosso, quanto verde, quanto blu (il famoso **RGB**), che mescolati ricreano
@@ -39,7 +41,7 @@ regolarità che corrispondano a ciò che noi chiamiamo "un gatto".
 
 `````{tab} Superiore
 
-Un'immagine è un **tensore** $X \in \mathbb{R}^{C \times H \times W}$,
+Un'immagine è un **tensore** $\mathbf{X} \in \mathbb{R}^{C \times H \times W}$,
 nell'ordine *channels-first* di PyTorch: canali, altezza, larghezza (dove
 $C=1$ in scala di grigi, $C=3$ per RGB). L'elemento $X_{c,i,j}$ è l'intensità
 del canale $c$ nel pixel di riga $i$ e colonna $j$, tipicamente un intero in
@@ -50,16 +52,16 @@ Le dimensioni crescono in fretta: una modesta immagine
 $3 \times 224 \times 224$ (la taglia d'ingresso classica delle reti addestrate
 su ImageNet) è un vettore di $150\,528$ numeri. Trattarla come un vettore
 piatto, ignorando che i pixel vicini sono correlati, è proprio l'errore che le
-reti convoluzionali (protagoniste dei prossimi paragrafi) evitano per
-costruzione.
+reti convoluzionali (costruite nel capitolo precedente, e qui date per
+acquisite) evitano per costruzione.
 
 `````
 
 ## Perché è difficile: la distanza fra pixel e significato
 
 Fra la griglia di numeri e la parola «gatto» c'è un salto che vale la pena
-misurare prima di provare a colmarlo, perché ogni tecnica dei prossimi
-capitoli è la risposta a una voce precisa di questo elenco.
+misurare prima di provare a colmarlo, perché ogni tecnica delle prossime
+sezioni è la risposta a una voce precisa di questo elenco.
 
 `````{tab} Elementare
 
@@ -87,10 +89,14 @@ vediamo senza pensarci il computer li deve inferire.
 **Variazione dentro la classe.** Un siamese e un persiano condividono
 l'etichetta e quasi nient'altro.
 
-Tenete a mente l'elenco, perché tornerà voce per voce. La convoluzione, che
-scorre lo stesso filtro dappertutto, è la risposta strutturale a una di queste
-(un gatto è un gatto ovunque stia nell'immagine). La *data augmentation* del
-capitolo seguente è, letteralmente, l'elenco riletto come ricettario: ruotare
+Tenete a mente l'elenco, perché tornerà voce per voce. La convoluzione, quella
+del capitolo precedente, è la risposta strutturale a una di queste: fa passare
+sull'immagine una lente piccola (il **filtro**), sempre la stessa, un
+quadretto alla volta, dall'angolo in alto a sinistra fino in fondo. Siccome la
+lente è la stessa dappertutto, quello che la rete impara a riconoscere in un
+angolo lo riconosce anche nell'altro, e un gatto resta un gatto ovunque stia
+nell'immagine. La *data augmentation*, più avanti in questo stesso capitolo,
+è, letteralmente, l'elenco riletto come ricettario: ruotare
 contro il punto di vista, ritagliare contro la scala, cancellare rettangoli
 contro l'occlusione, alterare la luminosità contro l'illuminazione. Non è un
 insieme di trucchi: è un modo di dire alla rete quali cambiamenti **non**
@@ -101,7 +107,7 @@ devono cambiare la risposta.
 `````{tab} Superiore
 
 Il salto si chiama **divario semantico**: fra la rappresentazione numerica
-$X \in \mathbb{R}^{C\times H\times W}$ e la categoria semantica non c'è nessuna
+$\mathbf{X} \in \mathbb{R}^{C\times H\times W}$ e la categoria semantica non c'è nessuna
 relazione semplice, e in particolare nessuna relazione che si possa scrivere
 guardando i valori dei pixel uno per uno.
 
@@ -119,7 +125,11 @@ mano racconta il primo tentativo di rimediare.
 Le invarianze si ottengono in tre modi, che il resto del capitolo percorre
 tutti. **Per architettura**: la condivisione dei pesi della convoluzione dà
 l'equivarianza alla traslazione, e il pooling una tolleranza locale alle
-piccole traslazioni. **Per dati**: la *data augmentation* espone il modello
+piccole traslazioni, che però è un'intenzione di progetto più che una proprietà
+ottenuta: il sottocampionamento (max-pool, average-pool, convoluzione con
+stride) ignora il teorema del campionamento, e per aliasing una CNN moderna
+resta sorprendentemente sensibile a uno spostamento di pochi pixel
+{cite}`zhang2019making`. **Per dati**: la *data augmentation* espone il modello
 alle trasformazioni che deve ignorare, ed è un modo di iniettare
 un'invarianza senza cablarla nell'architettura. **Per addestramento**:
 l'apprendimento auto-supervisionato costruisce il compito proprio a partire
@@ -166,7 +176,7 @@ singolo oggetto pixel per pixel (segmentazione di istanza).
 
 Formalmente, i quattro compiti differiscono per la forma dell'output.
 
-- **Classificazione**: $\hat{y} = \arg\max_{k \in \{1,\dots,K\}} f_k(X)$, una
+- **Classificazione**: $\hat{y} = \arg\max_{k \in \{1,\dots,K\}} f_k(\mathbf{X})$, una
   sola etichetta su $K$ classi per l'intera immagine.
 - **Rilevamento**: l'output è un insieme di coppie
   $\{(\hat{c}_i,\ \mathbf{b}_i)\}_{i=1}^{N}$, dove $\hat{c}_i$ è la classe e
@@ -219,7 +229,8 @@ emergono dai dati.
 
 L'era delle *feature* ingegnerizzate ci ha lasciato strumenti tuttora eleganti:
 il rilevatore di bordi di **Canny** (1986), i descrittori **SIFT** di Lowe
-(2004), invarianti a scala e rotazione, e l'istogramma dei gradienti orientati
+(1999, nella forma canonica del 2004), invarianti a scala e rotazione, e
+l'istogramma dei gradienti orientati
 **HOG** di Dalal e Triggs {cite}`dalal2005histograms`, a lungo lo standard
 per il rilevamento di
 pedoni. Erano feature *fisse*, seguite da un classificatore addestrabile (spesso
@@ -237,10 +248,11 @@ disegnano più: si *imparano*, strato dopo strato, direttamente dai pixel.
 ## Il carburante: i grandi dataset
 
 Le CNN non avrebbero spiccato il volo senza qualcosa su cui volare. Il progetto
-**ImageNet**, guidato da Fei-Fei Li e presentato nel 2009, mette insieme oltre
-quattordici milioni di immagini etichettate; la sua sfida annuale (ILSVRC) usa un
-sottoinsieme di mille categorie ed è la palestra su cui, nel 2012, AlexNet cambia
-la storia. Poco dopo arriva **COCO** (*Common Objects in Context*, 2014), con
+**ImageNet**, guidato da Fei-Fei Li, viene presentato nel 2009 con 3,2 milioni
+di immagini etichettate ed è poi cresciuto fino a oltre quattordici milioni; la
+sua sfida annuale (ILSVRC, *ImageNet Large Scale Visual Recognition Challenge*)
+usa un sottoinsieme di mille categorie ed è la palestra su cui, nel 2012,
+AlexNet cambia la storia. Poco dopo arriva **COCO** (*Common Objects in Context*, 2014), con
 centinaia di migliaia di immagini annotate non solo con etichette, ma con box e
 maschere per circa ottanta categorie di oggetti comuni: il banco di prova
 naturale per rilevamento e segmentazione. La lezione è netta e vale per tutto il
@@ -249,23 +261,29 @@ architettura.
 
 ## Come è organizzato il capitolo
 
-Nei prossimi paragrafi partiamo dal mattone fondamentale: la **convoluzione**,
-l'operazione che permette a una rete di "guardare" un'immagine rispettandone
-la struttura spaziale. Da lì costruiamo le **reti convoluzionali** e ne
-ripercorriamo le architetture che hanno fatto scuola. Passeremo poi ai compiti
-più ambiziosi, il rilevamento e la segmentazione, e a tecniche pratiche come
-il *transfer learning*, che consente di riusare reti già addestrate su
-ImageNet per i nostri problemi con pochi dati. L'obiettivo non è solo capire
-come funzionano: è metterle al lavoro, con PyTorch, sulle nostre immagini.
+Il mattone fondamentale, la **convoluzione**, e le **reti convoluzionali** che
+ne sono fatte le abbiamo costruite nel capitolo precedente, insieme alle
+architetture che hanno fatto scuola: qui le diamo per acquisite e le mettiamo
+al lavoro. Si parte da dove serve davvero, cioè dai dati. Prima **riusare** una
+rete che qualcun altro ha già addestrato su milioni di immagini (il *transfer
+learning*), poi **moltiplicare** le foto che non abbiamo deformando quelle che
+abbiamo (la *data augmentation*), poi **farne a meno del tutto**, imparando da
+immagini che nessuno ha mai etichettato. Poi salgono le pretese sulla risposta,
+dal riquadro attorno all'oggetto alla sua sagoma esatta: **rilevamento e
+segmentazione**. L'obiettivo non è solo capire come funzionano queste tecniche:
+è metterle al lavoro, con PyTorch, sulle nostre immagini.
 
-Le ultime sezioni cambiano domanda e passano dal «che cosa» al «dove»: la
+Le sezioni successive cambiano domanda e passano dal «che cosa» al «dove»: la
 **geometria** che lega una fotografia alla scena da cui viene, e che permette
 di ricavare la profondità da due viste o dal movimento, e i **campi di
-radianza**, con cui una scena si rappresenta addestrando una funzione invece
-di ricostruire una superficie. Sono la parte della visione artificiale che le
-reti non hanno sostituito ma su cui hanno costruito, ed è anche la più antica:
-il modello di fotocamera che useremo lo dimostrò Brunelleschi nel Quattrocento
-con una tavoletta forata.
+radianza**, con cui una scena non si ricostruisce come un oggetto solido ma si
+riassume dentro una piccola rete, addestrata a rispondere a domande del tipo
+«guardando da qui, che colore vedo?». Sono la parte della visione artificiale
+che le reti non hanno sostituito ma su cui hanno costruito, ed è anche la più
+antica: lo schema di come una fotocamera schiaccia il mondo su una foto, che è
+quello che useremo, lo dimostrò Brunelleschi nel Quattrocento con una tavoletta
+forata. Chiude il capitolo il **trasferimento di stile**, che di una fotografia
+tiene il soggetto e ne cambia la pennellata.
 
 `````{tab} Elementare
 
@@ -300,7 +318,7 @@ con una tavoletta forata.
 ```{admonition} Da ricordare
 :class: important
 - Per un computer un'immagine è un **tensore**
-  $X \in \mathbb{R}^{C \times H \times W}$: una griglia di numeri, non
+  $\mathbf{X} \in \mathbb{R}^{C \times H \times W}$: una griglia di numeri, non
   di oggetti.
 - I quattro compiti classici (**classificazione, rilevamento, segmentazione
   semantica e di istanza**) differiscono per la forma dell'output,

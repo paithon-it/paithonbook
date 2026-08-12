@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  paithon book, figura animata: la regola di collasso della CTC
+  Generata da animazioni/svg/ctc-collassa.py: non modificare a mano.
+  Palette-locked, fondo trasparente, animazione in CSS puro (nessuno script).
+  Lo stato di riposo è quello finale: chi non anima (stampa, PDF,
+  prefers-reduced-motion) vede la figura conclusa.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 668 470"
+     role="img" aria-label="Sette frame acustici con il simbolo che la rete emette per ciascuno, P A A L vuoto L A. Nel primo passo le due A consecutive si fondono in una sola, mentre le due L restano separate dal simbolo vuoto; nel secondo passo il vuoto viene cancellato e resta la parola PALLA. In basso, invertendo i due passi, esce invece PALA.">
+  <style>
+    svg  { --d: 13.0s; }
+    .ax  { stroke:#C5BEAA; stroke-width:2; fill:none; }
+    .axc { stroke:#E2DCC9; stroke-width:1.5; }
+    .lbl { font-family:Inter, system-ui, sans-serif; font-size:15px; fill:#1A1A1A; }
+    .lbs { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#5A524A; }
+    .ttl { font-family:Fraunces, Georgia, serif; font-size:16px; font-style:italic; fill:#1A1A1A; }
+    .onda  { fill:none; stroke:#2D5A5C; stroke-width:1.6;
+             stroke-linejoin:round; }
+    .cella { fill:none; stroke:#C9A961; stroke-width:1.6; }
+    .giu   { stroke:#C5BEAA; stroke-width:1.4; }
+    .punta { fill:#C5BEAA; }
+    rect.box { fill:none; stroke:#C5BEAA; stroke-width:1.8; }
+    rect.vuoto { stroke:#C9A961; }
+    rect.fusa, rect.tenuta { stroke:#2D5A5C; stroke-width:2.4; }
+    rect.errata { stroke:#B5532C; stroke-width:2.2; }
+    text.sim { font-family:Inter, system-ui, sans-serif; font-size:19px; font-weight:600;
+             fill:#1A1A1A; }
+    text.mini { font-size:14px; font-weight:500; }
+    text.vuoto { fill:#5A524A; }
+    text.fusa, text.tenuta { fill:#2D5A5C; }
+    text.errata { fill:#B5532C; }
+    .conn  { stroke:#C5BEAA; stroke-width:1.6; }
+    .fonde { stroke:#B5532C; stroke-width:2.4; }
+    .croce { stroke:#B5532C; stroke-width:2.6; stroke-linecap:round; }
+    .verso { stroke:#B5532C; stroke-width:2; }
+    .pverso { fill:#B5532C; }
+    .esito { fill:none; stroke:#2D5A5C; stroke-width:2.6; }
+    .parola { font-family:Inter, system-ui, sans-serif; font-size:22px; font-weight:700;
+             fill:#2D5A5C; letter-spacing:3px; }
+    .passo { font-family:Inter, system-ui, sans-serif; font-size:13.5px; font-weight:700;
+             fill:#B5532C; }
+    .nota  { font-family:Inter, system-ui, sans-serif; font-size:12.5px; fill:#5A524A; }
+    .errata { font-family:Inter, system-ui, sans-serif; font-size:14px; font-weight:600;
+             fill:#B5532C; }
+    .pan   { fill:none; stroke:#C5BEAA; stroke-width:1.4;
+             stroke-dasharray:5 4; }
+        @keyframes a20{0.00%{opacity:0}2.00%{opacity:0}4.20%{opacity:1}100.00%{opacity:1}}
+    @keyframes a45{0.00%{opacity:0}4.50%{opacity:0}6.70%{opacity:1}100.00%{opacity:1}}
+    @keyframes a70{0.00%{opacity:0}7.00%{opacity:0}9.20%{opacity:1}100.00%{opacity:1}}
+    @keyframes a95{0.00%{opacity:0}9.50%{opacity:0}11.70%{opacity:1}100.00%{opacity:1}}
+    @keyframes a120{0.00%{opacity:0}12.00%{opacity:0}14.20%{opacity:1}100.00%{opacity:1}}
+    @keyframes a145{0.00%{opacity:0}14.50%{opacity:0}16.70%{opacity:1}100.00%{opacity:1}}
+    @keyframes a170{0.00%{opacity:0}17.00%{opacity:0}19.20%{opacity:1}100.00%{opacity:1}}
+    @keyframes a250{0.00%{opacity:0}25.00%{opacity:0}27.20%{opacity:1}100.00%{opacity:1}}
+    @keyframes a272{0.00%{opacity:0}27.20%{opacity:0}29.40%{opacity:1}100.00%{opacity:1}}
+    @keyframes a294{0.00%{opacity:0}29.40%{opacity:0}31.60%{opacity:1}100.00%{opacity:1}}
+    @keyframes a316{0.00%{opacity:0}31.60%{opacity:0}33.80%{opacity:1}100.00%{opacity:1}}
+    @keyframes a338{0.00%{opacity:0}33.80%{opacity:0}36.00%{opacity:1}100.00%{opacity:1}}
+    @keyframes a360{0.00%{opacity:0}36.00%{opacity:0}38.20%{opacity:1}100.00%{opacity:1}}
+    @keyframes a220{0.00%{opacity:0}22.00%{opacity:0}24.20%{opacity:1}100.00%{opacity:1}}
+    @keyframes a420{0.00%{opacity:0}42.00%{opacity:0}44.20%{opacity:1}100.00%{opacity:1}}
+    @keyframes a450{0.00%{opacity:0}45.00%{opacity:0}47.20%{opacity:1}100.00%{opacity:1}}
+    @keyframes a480{0.00%{opacity:0}48.00%{opacity:0}50.20%{opacity:1}100.00%{opacity:1}}
+    @keyframes a502{0.00%{opacity:0}50.20%{opacity:0}52.40%{opacity:1}100.00%{opacity:1}}
+    @keyframes a524{0.00%{opacity:0}52.40%{opacity:0}54.60%{opacity:1}100.00%{opacity:1}}
+    @keyframes a546{0.00%{opacity:0}54.60%{opacity:0}56.80%{opacity:1}100.00%{opacity:1}}
+    @keyframes a568{0.00%{opacity:0}56.80%{opacity:0}59.00%{opacity:1}100.00%{opacity:1}}
+    @keyframes a620{0.00%{opacity:0}62.00%{opacity:0}64.20%{opacity:1}100.00%{opacity:1}}
+    @keyframes a700{0.00%{opacity:0}70.00%{opacity:0}72.20%{opacity:1}100.00%{opacity:1}}
+    @keyframes a730{0.00%{opacity:0}73.00%{opacity:0}75.20%{opacity:1}100.00%{opacity:1}}
+    @keyframes a760{0.00%{opacity:0}76.00%{opacity:0}78.20%{opacity:1}100.00%{opacity:1}}
+    @keyframes a790{0.00%{opacity:0}79.00%{opacity:0}81.20%{opacity:1}100.00%{opacity:1}}
+    @keyframes a820{0.00%{opacity:0}82.00%{opacity:0}84.20%{opacity:1}100.00%{opacity:1}}
+    @media (prefers-reduced-motion:reduce) { .ap { animation:none !important; } }
+  </style>
+  <polyline class="onda" points="66,56.4 69,55.8 72,55.0 75,54.2 78,55.6 82,54.7 85,51.8 88,54.5 91,61.1 94,63.9 97,64.5 100,65.4 103,62.0 107,57.8 110,59.7 113,61.2 116,56.0 119,51.3 122,50.2 125,48.5 128,50.5 132,58.8 135,62.7 138,59.9 141,60.5 144,64.1 147,64.4 150,65.5 153,67.0 157,60.3 160,50.6 163,49.4 166,51.8 169,51.3 172,53.2 175,55.8 178,53.1 182,53.7 185,63.1 188,69.6 191,68.2 194,66.7 197,63.7 200,56.4 203,54.7 207,58.7 210,55.8 213,48.4 216,47.2 219,48.8 222,50.6 225,58.8 228,67.4 231,65.4 235,61.4 238,64.3 241,65.8 244,63.8 247,64.0 250,60.1 253,48.9 256,44.2 260,49.4 263,52.5 266,53.3 269,57.4 272,58.2 275,56.2 278,62.5 281,71.7 285,70.7 288,65.1 291,61.8 294,55.6 297,50.4 300,53.8 303,56.0 306,49.7 310,46.5 313,50.6 316,54.3 319,59.6 322,68.7 325,70.0 328,63.1 331,61.5 335,64.2 338,62.1 341,59.3 344,57.8 347,50.2 350,43.0 353,47.3 356,54.9 359,56.6 363,58.8 366,61.9 369,60.4 372,61.3 375,68.9 378,70.7 381,63.4 384,57.8 388,54.4 391,49.5 394,50.1 397,55.3 400,53.9 403,49.4 406,52.4 409,58.2 413,61.5 416,66.8 419,70.1 422,64.4 425,58.5 428,59.8 431,60.1 434,56.6 438,55.0 441,52.5 444,47.2 447,48.4 450,56.3 453,60.3 456,60.4 459,62.2 463,62.4 466,60.6 469,63.2 472,65.9 475,61.6 478,55.6 481,53.8 484,52.5 488,52.1 491,55.5 494,57.5 497,55.7 500,56.4"/><rect class="cella" x="66" y="36" width="62" height="44"/><rect class="cella" x="128" y="36" width="62" height="44"/><rect class="cella" x="190" y="36" width="62" height="44"/><rect class="cella" x="252" y="36" width="62" height="44"/><rect class="cella" x="314" y="36" width="62" height="44"/><rect class="cella" x="376" y="36" width="62" height="44"/><rect class="cella" x="438" y="36" width="62" height="44"/><text class="lbs" x="66" y="24">sette frame acustici (pochi, per stare in figura)</text><g class="ap" style="animation:a20 var(--d) infinite"><line class="giu" x1="97" y1="83" x2="97" y2="92"/><polygon class="punta" points="93,91 101,91 97,99"/><rect class="box" x="75" y="100" width="44" height="34" rx="5"/><text class="sim" x="97" y="124" text-anchor="middle">P</text></g><g class="ap" style="animation:a45 var(--d) infinite"><line class="giu" x1="159" y1="83" x2="159" y2="92"/><polygon class="punta" points="155,91 163,91 159,99"/><rect class="box" x="137" y="100" width="44" height="34" rx="5"/><text class="sim" x="159" y="124" text-anchor="middle">A</text></g><g class="ap" style="animation:a70 var(--d) infinite"><line class="giu" x1="221" y1="83" x2="221" y2="92"/><polygon class="punta" points="217,91 225,91 221,99"/><rect class="box" x="199" y="100" width="44" height="34" rx="5"/><text class="sim" x="221" y="124" text-anchor="middle">A</text></g><g class="ap" style="animation:a95 var(--d) infinite"><line class="giu" x1="283" y1="83" x2="283" y2="92"/><polygon class="punta" points="279,91 287,91 283,99"/><rect class="box" x="261" y="100" width="44" height="34" rx="5"/><text class="sim" x="283" y="124" text-anchor="middle">L</text></g><g class="ap" style="animation:a120 var(--d) infinite"><line class="giu" x1="345" y1="83" x2="345" y2="92"/><polygon class="punta" points="341,91 349,91 345,99"/><rect class="box vuoto" x="323" y="100" width="44" height="34" rx="5"/><text class="sim vuoto" x="345" y="124" text-anchor="middle">∅</text></g><g class="ap" style="animation:a145 var(--d) infinite"><line class="giu" x1="407" y1="83" x2="407" y2="92"/><polygon class="punta" points="403,91 411,91 407,99"/><rect class="box" x="385" y="100" width="44" height="34" rx="5"/><text class="sim" x="407" y="124" text-anchor="middle">L</text></g><g class="ap" style="animation:a170 var(--d) infinite"><line class="giu" x1="469" y1="83" x2="469" y2="92"/><polygon class="punta" points="465,91 473,91 469,99"/><rect class="box" x="447" y="100" width="44" height="34" rx="5"/><text class="sim" x="469" y="124" text-anchor="middle">A</text></g><g class="ap" style="animation:a20 var(--d) infinite"><text class="nota" x="512" y="114">la sequenza emessa,</text><text class="nota" x="512" y="130">un simbolo per frame</text></g><g class="ap" style="animation:a250 var(--d) infinite"><line class="conn " x1="97" y1="134" x2="97" y2="186"/><rect class="box" x="75" y="186" width="44" height="34" rx="5"/><text class="sim" x="97" y="210" text-anchor="middle">P</text></g><g class="ap" style="animation:a272 var(--d) infinite"><line class="conn fonde" x1="159" y1="134" x2="190" y2="186"/><line class="conn fonde" x1="221" y1="134" x2="190" y2="186"/><rect class="box fusa" x="168" y="186" width="44" height="34" rx="5"/><text class="sim fusa" x="190" y="210" text-anchor="middle">A</text></g><g class="ap" style="animation:a294 var(--d) infinite"><line class="conn " x1="283" y1="134" x2="283" y2="186"/><rect class="box" x="261" y="186" width="44" height="34" rx="5"/><text class="sim" x="283" y="210" text-anchor="middle">L</text></g><g class="ap" style="animation:a316 var(--d) infinite"><line class="conn " x1="345" y1="134" x2="345" y2="186"/><rect class="box vuoto" x="323" y="186" width="44" height="34" rx="5"/><text class="sim vuoto" x="345" y="210" text-anchor="middle">∅</text></g><g class="ap" style="animation:a338 var(--d) infinite"><line class="conn " x1="407" y1="134" x2="407" y2="186"/><rect class="box" x="385" y="186" width="44" height="34" rx="5"/><text class="sim" x="407" y="210" text-anchor="middle">L</text></g><g class="ap" style="animation:a360 var(--d) infinite"><line class="conn " x1="469" y1="134" x2="469" y2="186"/><rect class="box" x="447" y="186" width="44" height="34" rx="5"/><text class="sim" x="469" y="210" text-anchor="middle">A</text></g><g class="ap" style="animation:a220 var(--d) infinite"><text class="passo" x="512" y="150">passo 1</text><text class="nota" x="512" y="167">unisci i simboli</text><text class="nota" x="512" y="183">uguali consecutivi</text></g><g class="ap" style="animation:a420 var(--d) infinite"><text class="passo" x="512" y="236">passo 2</text><text class="nota" x="512" y="253">togli i vuoti ∅</text></g><g class="ap" style="animation:a450 var(--d) infinite"><line class="croce" x1="330" y1="191" x2="360" y2="215"/><line class="croce" x1="360" y1="191" x2="330" y2="215"/></g><g class="ap" style="animation:a480 var(--d) infinite"><line class="conn" x1="97" y1="220" x2="97" y2="272"/><rect class="box tenuta" x="75" y="272" width="44" height="34" rx="5"/><text class="sim tenuta" x="97" y="296" text-anchor="middle">P</text></g><g class="ap" style="animation:a502 var(--d) infinite"><line class="conn" x1="190" y1="220" x2="190" y2="272"/><rect class="box tenuta" x="168" y="272" width="44" height="34" rx="5"/><text class="sim tenuta" x="190" y="296" text-anchor="middle">A</text></g><g class="ap" style="animation:a524 var(--d) infinite"><line class="conn" x1="283" y1="220" x2="283" y2="272"/><rect class="box tenuta" x="261" y="272" width="44" height="34" rx="5"/><text class="sim tenuta" x="283" y="296" text-anchor="middle">L</text></g><g class="ap" style="animation:a546 var(--d) infinite"><line class="conn" x1="407" y1="220" x2="407" y2="272"/><rect class="box tenuta" x="385" y="272" width="44" height="34" rx="5"/><text class="sim tenuta" x="407" y="296" text-anchor="middle">L</text></g><g class="ap" style="animation:a568 var(--d) infinite"><line class="conn" x1="469" y1="220" x2="469" y2="272"/><rect class="box tenuta" x="447" y="272" width="44" height="34" rx="5"/><text class="sim tenuta" x="469" y="296" text-anchor="middle">A</text></g><g class="ap" style="animation:a620 var(--d) infinite"><line class="verso" x1="497" y1="289" x2="498" y2="289"/><polygon class="pverso" points="499,285 499,293 509,289"/><rect class="esito" x="512" y="272" width="128" height="34" rx="7"/><text class="parola" x="576" y="297" text-anchor="middle">PALLA</text></g><g class="ap" style="animation:a700 var(--d) infinite"><rect class="pan" x="66" y="342" width="574" height="104" rx="8"/><text class="passo" x="86" y="368">e se si invertisse l'ordine? prima togliere i vuoti, poi unire i ripetuti</text></g><g class="ap" style="animation:a730 var(--d) infinite"><rect class="box mini" x="87" y="386" width="26" height="26" rx="5"/><text class="sim mini" x="100" y="405" text-anchor="middle">P</text><rect class="box mini" x="117" y="386" width="26" height="26" rx="5"/><text class="sim mini" x="130" y="405" text-anchor="middle">A</text><rect class="box mini" x="147" y="386" width="26" height="26" rx="5"/><text class="sim mini" x="160" y="405" text-anchor="middle">A</text><rect class="box mini" x="177" y="386" width="26" height="26" rx="5"/><text class="sim mini" x="190" y="405" text-anchor="middle">L</text><rect class="box mini" x="207" y="386" width="26" height="26" rx="5"/><text class="sim mini" x="220" y="405" text-anchor="middle">L</text><rect class="box mini" x="237" y="386" width="26" height="26" rx="5"/><text class="sim mini" x="250" y="405" text-anchor="middle">A</text></g><g class="ap" style="animation:a760 var(--d) infinite"><line class="verso" x1="282" y1="399" x2="304" y2="399"/><polygon class="pverso" points="305,395 305,403 315,399"/></g><g class="ap" style="animation:a790 var(--d) infinite"><rect class="box mini errata" x="317" y="386" width="26" height="26" rx="5"/><text class="sim mini errata" x="330" y="405" text-anchor="middle">P</text><rect class="box mini errata" x="347" y="386" width="26" height="26" rx="5"/><text class="sim mini errata" x="360" y="405" text-anchor="middle">A</text><rect class="box mini errata" x="377" y="386" width="26" height="26" rx="5"/><text class="sim mini errata" x="390" y="405" text-anchor="middle">L</text><rect class="box mini errata" x="407" y="386" width="26" height="26" rx="5"/><text class="sim mini errata" x="420" y="405" text-anchor="middle">A</text><text class="errata" x="456" y="404">PALA, non PALLA</text></g><g class="ap" style="animation:a820 var(--d) infinite"><text class="nota" x="86" y="432">senza il vuoto in mezzo, il passo 1 fonde le due L: il ∅ esiste per impedirlo</text></g>
+</svg>

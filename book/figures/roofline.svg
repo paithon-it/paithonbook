@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  paithon book — figura: il modello roofline (scala log-log). Asse x =
+  paithon book, figura: il modello roofline (scala log-log). Asse x =
   intensita aritmetica (FLOP per byte); asse y = prestazione raggiungibile
   (FLOP/s). Il "tetto" ha due tratti: il tratto inclinato (pendenza = banda
   di memoria) a sinistra del ginocchio, il tratto piatto (picco di calcolo)

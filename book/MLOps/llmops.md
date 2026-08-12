@@ -35,11 +35,15 @@ tutto così, i tempi come i costi.
 
 ```{figure} ../figures/modelli-locali-ollama.svg
 :name: fig-cosa-entra-in-memoria
-:alt: "Barre orizzontali che indicano, per diverse quantità di memoria disponibile, quali taglie di modello riescono a girarci con una quantizzazione a 4 bit: dalle poche unità di miliardi di parametri su una scheda modesta fino alle decine su hardware da datacentre."
+:alt: "Barre orizzontali che indicano, per diverse quantità di memoria disponibile, quali taglie di modello riescono a girarci con i pesi scritti a 4 bit: dalle poche unità di miliardi di parametri su una scheda modesta fino alle decine su hardware da datacentre."
 :width: 96%
 
 La domanda pratica che precede ogni altra. Non «quale modello è migliore», ma
-«quale entra», perché sotto quella soglia nessuna ottimizzazione serve.
+«quale entra», perché sotto quella soglia nessuna ottimizzazione serve. Le
+taglie sono scritte come si usa nel settore, con la B dei miliardi (`8B` sono
+otto miliardi di parametri), e la regola pratica per stimare l'ingombro è
+quella riportata in fondo: circa mezzo gigabyte per ogni miliardo di
+parametri, quando ciascuno è scritto a quattro bit.
 ```
 
 Il vincolo di {numref}`fig-cosa-entra-in-memoria` viene prima di tutte le
@@ -106,9 +110,12 @@ Il difetto che {numref}`fig-continuous-batching` mette in evidenza nasce da
 una particolarità della generazione: le risposte non durano tutte uguale, e
 non si sa in anticipo quanto dureranno. Un gruppo che deve aspettare il più
 lento è quindi la regola, non l'eccezione, e in un batch grande basta una
-risposta lunga per tenere fermi tutti gli altri. Ma qui si scontra con la KV cache: ogni
-sequenza nel batch porta con sé la propria cache, che cresce di token in token
-in modo imprevedibile, e la memoria della GPU finisce in fretta.
+risposta lunga per tenere fermi tutti gli altri. Ma qui si scontra con la **KV
+cache**, cioè gli appunti che il modello prende su ciò che ha già letto per non
+doverlo rileggere da capo a ogni parola nuova (li abbiamo incontrati nel
+capitolo sui Transformer). Ogni sequenza nel batch porta con sé i propri
+appunti, che crescono di token in token in modo imprevedibile, e la memoria
+della GPU finisce in fretta.
 
 `````{tab} Elementare
 
@@ -166,12 +173,14 @@ ha una proprietà rara: **non cambia di una virgola l'output**.
 
 ```{figure} ../figures/speculative-decoding-2024.svg
 :name: fig-speculative-decoding
-:alt: "In alto un modello bozza, piccolo e veloce, genera in sequenza quattro token candidati. In basso il modello grande li verifica tutti insieme in un'unica passata parallela: accetta i primi tre, che coincidono con quello che avrebbe prodotto lui, e corregge il quarto, scartando i candidati successivi."
+:alt: "In alto un modello bozza, piccolo e veloce, genera in sequenza quattro token candidati. In basso il modello grande li verifica tutti insieme in un'unica passata parallela: accetta i primi tre, che coincidono con quello che avrebbe prodotto lui, e al quarto lo corregge scrivendo di suo il token giusto."
 :width: 100%
 
 Indovinare è più veloce che verificare, e verificare in blocco è più veloce
-che generare uno per uno. Se il piccolo azzecca, il grande incassa tre token
-al prezzo di uno; se sbaglia, la sua correzione è quella giusta comunque.
+che generare uno per uno. Se il piccolo azzecca quasi tutto, la passata di
+verifica consegna quattro token (i tre accettati più quello che il grande
+scrive di suo) al prezzo di uno: sono tre passate risparmiate. E se il piccolo
+sbaglia, la correzione del grande è comunque quella giusta.
 ```
 
 La proprietà rara annunciata sopra si legge nella metà inferiore di
@@ -241,14 +250,22 @@ $$
 che per $\alpha=0{,}8$ e $\gamma=4$ dà circa $3{,}4$ token contro $1$. In
 pratica si osservano accelerazioni di 2–3 volte. Il modello bozza dev'essere
 molto più economico del target e allineato nella distribuzione, altrimenti
-$\alpha$ crolla e il costo delle bozze rifiutate mangia il guadagno. Le
-varianti *self-speculative* (Medusa, EAGLE, o il *prompt lookup* che pesca le
-proposte dal contesto già presente) evitano di mantenere un secondo modello.
+$\alpha$ crolla e il costo delle bozze rifiutate mangia il guadagno.
+
+Le varianti *self-speculative* evitano di mantenere un secondo modello, e vanno
+distinte proprio sulla proprietà appena rivendicata. EAGLE e il *prompt lookup*
+(che pesca le proposte dal contesto già presente) cambiano solo **chi propone**
+e tengono la verifica standard, quindi restano esatte. **Medusa**, nella sua
+configurazione di riferimento, no: sostituisce il campionamento per rifiuto con
+la *typical acceptance*, un criterio a soglia scelto apposta per accettare più
+token al prezzo di allontanarsi dalla distribuzione del modello target. È un
+compromesso legittimo, e va saputo: chi lo adotta credendo di stare ancora nel
+metodo esatto sta scambiando qualità per velocità senza essersene accorto.
 
 Un avvertimento pratico: il metodo aiuta nel regime **memory-bound**, cioè
 batch piccoli e bassa latenza. A batch molto grandi la GPU è già satura di
 lavoro utile e il vantaggio si assottiglia: si combina male, non bene, con la
-spinta al throughput della sezione precedente.
+spinta al throughput del batching visto poco sopra.
 
 `````
 
@@ -257,8 +274,9 @@ spinta al throughput della sezione precedente.
 Se il vincolo è la memoria (capienza e banda), la leva più diretta è far
 **pesare meno i pesi**. L'idea l'abbiamo già vista nella sezione sul
 deployment: la **quantizzazione**, cioè riscrivere i decimali finissimi dei
-pesi come interi grossolani secondo la mappa affine $r = S\,(q - Z)$, con un
-risparmio di circa 4× passando da 16 a 4 bit. Sugli LLM questa leva conta
+pesi come interi grossolani, arrotondati ai gradini di una scala; passando da
+sedici a quattro bit ogni peso occupa circa quattro volte meno. Sugli LLM
+questa leva conta
 doppio, per due ragioni: primo, siccome l'inferenza è memory-bound,
 alleggerire i pesi accelera *direttamente* la generazione (meno byte da far
 scorrere a ogni token); secondo, riaddestrare un modello da centinaia di
@@ -268,12 +286,14 @@ ricetta originale.
 
 ```{figure} ../figures/quantizzazione-modelli.svg
 :name: fig-quantizzazione-memoria
-:alt: "Barre che confrontano la memoria occupata dallo stesso modello da 7 miliardi di parametri a precisioni diverse: circa 28 gigabyte a 32 bit, 14 a 16 bit, 7 a 8 bit e 3,5 a 4 bit. Accanto a ciascuna, il tipo di scheda su cui quel modello entra."
+:alt: "Barre che confrontano la memoria occupata dallo stesso modello da 7 miliardi di parametri a precisioni diverse: circa 28 gigabyte con numeri a 32 bit, 14 a 16 bit, 7 a 8 bit e 3,5 a 4 bit. Accanto alla barra più corta, l'annotazione che a 4 bit quel modello entra in un portatile."
 :width: 92%
 
-Lo stesso modello, quattro ingombri. La colonna a destra è quella che decide
-davvero: sotto una certa soglia il modello smette di stare su una scheda da
-gioco e comincia a richiederne una da datacentre.
+Lo stesso modello, quattro ingombri. Le sigle sono i nomi tecnici delle quattro
+scritture (quanti bit occupa ciascun numero, e se ha o no la virgola: `FP32`
+sono trentadue bit con la virgola, `INT4` quattro bit senza), ma a decidere
+sono i gigabyte: ventotto vogliono una macchina da datacentre, tre e mezzo
+entrano in un portatile. E fra i due casi non c'è una via di mezzo.
 ```
 
 Il salto raccontato in {numref}`fig-quantizzazione-memoria` è discreto, non
@@ -302,26 +322,45 @@ prima.
 
 `````{tab} Superiore
 
-Tre metodi post-training sono ormai lo standard, e condividono l'intuizione
-che i pesi *non sono tutti uguali*. **LLM.int8()** {cite}`dettmers2022llmint8`
-scopre che oltre una certa scala emergono **feature anomale** (*outlier*)
-concentrate in poche dimensioni: quantizzarle a 8 bit come le altre distrugge
-la qualità. La soluzione è una moltiplicazione di matrici a **precisione
-mista** (la stragrande maggioranza dei valori in `int8`, le poche dimensioni
-anomale tenute in 16 bit) che preserva la qualità fino a 175 miliardi di
-parametri. **GPTQ** {cite}`frantar2023gptq` spinge oltre, fino a **3–4 bit per
-peso**: quantizza uno strato alla volta usando informazione del second'ordine
-(la matrice hessiana) per correggere l'errore introdotto, e arriva a
-quantizzare un modello da 175 miliardi di parametri in circa quattro ore di
-GPU con degrado trascurabile. **AWQ** {cite}`lin2024awq` (*Activation-aware
-Weight Quantization*) osserva che i pesi importanti si individuano guardando
-le **attivazioni**, non i pesi stessi: protegge con un riscalamento circa l'1%
-dei canali salienti, senza retropropagazione né dati di ricostruzione, con un
-metodo più veloce e adatto all'hardware. Il compromesso è sempre lo stesso
-(meno bit significano meno memoria e più velocità, ma più rischio per la
-qualità) e vale la regola d'oro della sezione sul deployment: la
-quantizzazione va **misurata** su dati di validazione, mai data per gratuita.
-Oggi i 4 bit sono il punto d'equilibrio più comune per servire pesi aperti.
+La mappa affine $r = S\,(q - Z)$ della sezione sul deployment vale qui
+identica. Tre metodi post-training si sono affermati, e condividono
+l'intuizione che *non tutti i numeri contano uguale*; si distinguono per
+**quali** numeri guardano, ed è la distinzione che di solito si perde.
+
+**LLM.int8()** {cite}`dettmers2022llmint8` scopre che oltre una certa scala
+emergono valori anomali (*outlier*) nelle **attivazioni**, cioè nei numeri che
+attraversano il modello, concentrati in poche dimensioni: quantizzare quelle
+dimensioni a 8 bit come le altre distrugge la qualità. La soluzione è una
+moltiplicazione di matrici a **precisione mista** (la stragrande maggioranza
+dei valori in `int8`, le poche dimensioni anomale tenute in 16 bit) che
+preserva la qualità fino a 175 miliardi di parametri. **GPTQ**
+{cite}`frantar2023gptq` guarda invece la **curvatura della loss** e spinge fino
+a **3–4 bit per peso**: quantizza uno strato alla volta usando informazione del
+second'ordine (la matrice hessiana) per correggere l'errore introdotto, e
+arriva a quantizzare un modello da 175 miliardi di parametri in circa quattro
+ore di GPU con degrado trascurabile. **AWQ** {cite}`lin2024awq`
+(*Activation-aware Weight Quantization*) usa le attivazioni per decidere quali
+**pesi** proteggere: ne riscala circa l'1%, i canali salienti, senza
+retropropagazione né dati di ricostruzione, con un metodo più veloce e adatto
+all'hardware. In fila: il primo isola le dimensioni di attivazione anomale, il
+terzo usa le attivazioni per scegliere i pesi da salvare, il secondo non
+guarda le attivazioni affatto.
+
+Un'avvertenza sul «circa quattro volte». A 8 bit per tensore i due scalari di
+calibrazione sono trascurabili e il conto torna esatto; a 4 bit non più, perché
+né GPTQ né AWQ usano una scala per tensore, ma **gruppi** di pesi (tipicamente
+128), ed è proprio quella granularità a rendere i 4 bit praticabili.
+Memorizzando scala e zero per gruppo, i bit effettivi per peso sono circa
+$4{,}16$ a gruppo 128 e $4{,}62$ a gruppo 32: il rapporto reale rispetto ai 16
+bit è $3{,}8\times$, non $4\times$. Qualche punto percentuale di bit, comprato
+in cambio della qualità.
+
+Il compromesso è sempre lo stesso (meno bit significano meno memoria e più
+velocità, ma più rischio per la qualità) e vale la regola d'oro della sezione
+sul deployment: la quantizzazione va **misurata** su dati di validazione, mai
+data per gratuita. I 4 bit sono il punto in cui, per la maggior parte dei
+modelli densi, il rapporto fra risparmio e degrado cambia segno: scendendo
+sotto, il degrado cresce più in fretta di quanto si risparmi.
 
 `````
 
@@ -334,7 +373,9 @@ La quantizzazione scrive gli stessi pesi con meno cifre. La **potatura**
 
 Il fatto sorprendente è quanto se ne può buttare. Prendi un modello
 addestrato, elimina i pesi più vicini a zero (quelli che contribuiscono poco)
-e scopri che si può arrivare a rimuovere il **90%** delle connessioni perdendo
+e scopri che, sulle reti di visione su cui la cosa è stata misurata più a
+lungo, si può arrivare a rimuovere il **90%** dei pesi (le «connessioni» fra i
+neuroni sono la stessa cosa: ogni connessione porta un peso) perdendo
 pochissimo in accuratezza. Le reti addestrate, insomma, sono largamente
 sovradimensionate rispetto a ciò che serve per fare il lavoro.
 
@@ -368,11 +409,13 @@ i pesi importanti si riconoscono guardando cosa ci passa attraverso, non
 quanto sono grandi. Con questi metodi il $50\%$ di sparsità è raggiungibile
 senza riaddestramento e con degrado contenuto; oltre, il conto si fa salato.
 
-In pratica, oggi, la quantizzazione a 4 bit resta la leva con il miglior
-rapporto fra risparmio e rischio, e la potatura strutturata è complementare più
-che alternativa. Vale però la regola di sempre: **misurare**, perché il degrado
-si distribuisce in modo diseguale fra i compiti e una media aggregata lo
-nasconde.
+Quantizzazione e potatura non sono alternative ma complementari, e agiscono su
+cose diverse: la prima riscrive gli stessi pesi con meno cifre e il guadagno in
+memoria è garantito; la seconda ne toglie, e il guadagno in tempo arriva solo
+se si toglie in modo ordinato. È la ragione per cui, a parità di rischio, si
+comincia dalla prima. Vale poi la regola di sempre: **misurare**, perché il
+degrado si distribuisce in modo diseguale fra i compiti e una media aggregata
+lo nasconde.
 
 `````
 
@@ -385,7 +428,10 @@ modello esita a ogni token) ed è ottima per il pretraining, ma non dice quasi
 nulla di ciò che interessa in produzione: la risposta è *utile*, *corretta*,
 *ben scritta*? Ci sono i **benchmark** standardizzati come MMLU, anch'essi
 visti nel capitolo sui Transformer, ma vanno letti col sospetto della
-**contaminazione** dei dati di test. E soprattutto: per una richiesta aperta
+**contaminazione** dei dati di test: se le domande dell'esame erano già finite
+dentro i testi su cui il modello si è allenato, il suo bel voto non dice
+niente, perché quelle domande le aveva già viste. E soprattutto: per una
+richiesta aperta
 («scrivi una mail di scuse al cliente») non esiste *la* risposta giusta con
 cui confrontarsi.
 
@@ -443,15 +489,20 @@ umano, e ottimizzare troppo contro un surrogato porta al *reward hacking*.
 
 `````
 
-Alla valutazione si affianca, in produzione, la **sicurezza dell'output**.
-L'allineamento visto nel capitolo sui Transformer (l'RLHF, la DPO) rende il
-modello meno incline a rispondere in modo dannoso, ma non offre garanzie:
-resta una disposizione appresa, aggirabile. Per questo i sistemi reali
-aggiungono dei **guardrail**: filtri e classificatori che ispezionano
-*ingresso* e *uscita* (per bloccare contenuti tossici, dati personali,
-tentativi di *prompt injection* o di *jailbreak*), come una seconda linea
-indipendente dal modello. Nessuno di questi strumenti è perfetto; messi
-insieme, riducono il rischio senza azzerarlo.
+Alla valutazione si affianca, in produzione, la **sicurezza dell'output**. Le
+tecniche di allineamento viste nel capitolo sui Transformer (l'RLHF e la DPO,
+i due modi di insegnare al modello quali risposte sono preferibili) lo rendono
+meno incline a rispondere in modo dannoso, ma non offrono garanzie: restano
+una disposizione appresa, e una disposizione si aggira. Per questo i sistemi
+reali aggiungono dei **guardrail**, che in italiano sono proprio i guard rail
+dell'autostrada: filtri e classificatori indipendenti dal modello, che
+ispezionano quello che entra e quello che esce. Servono a bloccare contenuti
+dannosi e dati personali, ma anche due mosse che hanno un nome preciso: le
+istruzioni nascoste dentro un testo che il modello deve leggere, scritte
+apposta perché le prenda per ordini (la *prompt injection*), e i tentativi di
+farsi dire ciò che il modello non dovrebbe dire, aggirandone le regole (il
+*jailbreak*). Nessuno di questi strumenti è perfetto; messi insieme, riducono
+il rischio senza azzerarlo.
 
 ## Il ciclo LLMOps
 
@@ -477,6 +528,35 @@ comporre più passi in un **agente**. Non è un dettaglio di serving: è un
 capitolo a sé, che abbiamo già affrontato (quello sugli **Agenti e
 applicazioni LLM**).
 
+`````{tab} Elementare
+```{admonition} Da ricordare
+:class: important
+- Con un grande modello linguistico **la parte lenta non è pensare, è
+  ricordare**: per scrivere una sola parola il modello deve rileggersi tutti i
+  suoi numeri, e sono miliardi. Il calcolo, in confronto, è quasi fermo.
+- La prima domanda non è quale modello sia migliore, è **quale ci sta** nella
+  memoria che si ha: sotto quella soglia il modello non è lento, non parte.
+- Servendo tante richieste **insieme** quella rilettura si paga una volta per
+  tutte: è il motivo per cui un buon maître non riserva tavoloni e riempie ogni
+  sedia appena si libera.
+- Si può far **indovinare in anticipo** un modello piccolo e far verificare al
+  grande in blocco quello che ha indovinato: se il piccolo azzecca si va molto
+  più veloci, e quello che esce è comunque parola per parola ciò che avrebbe
+  scritto il grande.
+- Per farlo entrare si **comprime**: si arrotondano i numeri (come l'app che
+  rimpicciolisce la foto) o se ne buttano via una parte. Ma alcuni numeri sono
+  fragili e portanti, come i bicchieri buoni in un trasloco, e vanno trattati a
+  parte.
+- **Giudicare un testo aperto** non ha una risposta esatta: si usa un altro
+  modello come esaminatore, comodo ed economico, sapendo che ha dei
+  pregiudizi (premia chi risponde per primo e chi scrive di più).
+- Quello che qui si conserva versione per versione non sono i pesi, che spesso
+  arrivano già fatti: è **l'istruzione con cui si parla al modello**, che è
+  fragile come il codice e come il codice va provata prima di sostituirla.
+```
+`````
+
+`````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
 - Con gli LLM il collo di bottiglia si sposta sulla **generazione
@@ -485,15 +565,21 @@ applicazioni LLM**).
   che cresce col contesto.
 - **Servire** un LLM significa **batchare** tante richieste per ammortizzare
   la lettura dei pesi: **PagedAttention** di vLLM {cite}`kwon2023efficient`
-  pagina la KV cache come un sistema operativo (spreco dal 60–80% a &lt;4%) e
-  il **continuous batching** tiene il batch sempre pieno (fino a 2–4× di
+  pagina la KV cache come un sistema operativo (spreco dal 60–80% a meno del
+  4%) e il **continuous batching** tiene il batch sempre pieno (fino a 2–4× di
   throughput a parità di latenza).
+- Lo **speculative decoding** è **esatto** grazie alla regola di
+  accettazione-rifiuto {cite}`leviathan2023fast`, e non tutte le sue varianti
+  lo restano: EAGLE e il *prompt lookup* sì, Medusa no, perché la *typical
+  acceptance* scambia la distribuzione del target per un tasso di accettazione
+  più alto.
 - **Comprimere per servire**: quantizzazione *post-training* (riaddestrare è
   fuori portata) con la mappa affine $r = S(q - Z)$ della sezione sul
-  deployment. **LLM.int8()** {cite}`dettmers2022llmint8` isola le feature
-  anomale, **GPTQ** {cite}`frantar2023gptq` scende a 3–4 bit con l'hessiana,
-  **AWQ** {cite}`lin2024awq` protegge l'1% dei pesi salienti dalle attivazioni.
-  Sempre **da misurare**.
+  deployment, ma **per gruppi** di pesi, non per tensore: a 4 bit i bit
+  effettivi sono circa 4,2. **LLM.int8()** {cite}`dettmers2022llmint8` isola le
+  dimensioni di attivazione anomale, **GPTQ** {cite}`frantar2023gptq` scende a
+  3–4 bit con l'hessiana, **AWQ** {cite}`lin2024awq` usa le attivazioni per
+  scegliere l'1% di pesi da proteggere. Sempre **da misurare**.
 - **Valutare l'invalutabile**: la perplessità non basta e i benchmark si
   contaminano; per l'output aperto si usa **LLM-as-a-judge**
   {cite}`zheng2023judging` (accordo ~80% con l'uomo), coi suoi bias (di
@@ -504,3 +590,4 @@ applicazioni LLM**).
   continua**. RAG avanzato, *tool use* e **agenti** hanno un capitolo dedicato,
   che abbiamo già percorso.
 ```
+`````

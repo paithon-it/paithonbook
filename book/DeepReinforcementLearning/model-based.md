@@ -6,8 +6,8 @@ giocato migliaia di partite: ne bastano due o tre perché la testa cominci a
 fare da sola una cosa preziosa (*provare le mosse prima di farle*). «Se scarto
 questa carta lui pesca e chiude… allora no.» La mossa cattiva muore
 nell'immaginazione, senza costarti la partita. È questa la differenza, ancora
-oggi imbarazzante, fra un essere umano e un agente come il DQN incontrato nel
-capitolo sul Deep Reinforcement Learning: a noi bastano pochi minuti per
+oggi imbarazzante, fra un essere umano e un agente come il DQN incontrato nella
+sezione su DQN: a noi bastano pochi minuti per
 capire *Breakout*, all'agente servono decine di milioni di fotogrammi. La
 parola tecnica per questa distanza è **sample efficiency**, l'efficienza nei
 campioni (quanta esperienza serve per imparare) ed è il problema che questa
@@ -85,7 +85,8 @@ concedere al modello.
 
 L'idea non è nuova. Nel 1990 Richard Sutton (lo stesso del libro di
 riferimento su cui poggia mezzo capitolo {cite}`sutton2018reinforcement`)
-propone **Dyna** {cite}`sutton1991dyna`, un'architettura tanto semplice quanto
+presenta **Dyna** {cite}`sutton1990integrated`, ripresa l'anno dopo in una
+versione più diffusa {cite}`sutton1991dyna`: un'architettura tanto semplice quanto
 lungimirante: mentre l'agente gioca, impara *contemporaneamente* due cose (una
 policy, come sempre, e un modellino del mondo) e usa il modellino per
 «ripassare» esperienze mai vissute davvero.
@@ -131,14 +132,20 @@ modello).
 
 Vale la pena vedere Dyna-Q al lavoro su un ambiente minuscolo. Un corridoio di
 sei caselle: si parte a sinistra, l'obiettivo è la casella più a destra, e la
-ricompensa arriva solo entrando nell'obiettivo. Con abbastanza passi di
-planning, la policy corretta («vai sempre a destra»), emerge in pochissime
-partite reali.
+ricompensa arriva solo entrando nell'obiettivo.
+
+Prima però va scelto **che cosa guardare**, ed è la parte istruttiva. La
+tentazione è guardare la policy appresa e verificare che dica «vai sempre a
+destra»: solo che il corridoio è così facile che il Q-learning tabellare puro,
+senza un solo ripasso, impara la stessa identica policy. Sarebbe una misura che
+non misura. Ciò che il planning cambia davvero è la quantità che il testo ha
+appena promesso, cioè **quanto in fretta la ricompensa si propaga all'indietro**
+fino allo stato di partenza. Perciò il codice qui sotto esegue lo stesso ciclo
+due volte, con e senza ripassi, e stampa il valore dello stato iniziale su dieci
+semi.
 
 ```python
 import numpy as np
-
-rng = np.random.default_rng(0)
 
 # Ambiente: corridoio di 6 stati; l'obiettivo e' lo stato 5 (assorbente).
 # Azioni: 0 = sinistra, 1 = destra. Ricompensa +1 solo entrando nell'obiettivo.
@@ -146,44 +153,69 @@ n_stati, n_azioni, goal = 6, 2, 5
 
 def passo(s, a):
     s2 = min(s + 1, goal) if a == 1 else max(s - 1, 0)
-    r = 1.0 if s2 == goal else 0.0
-    return s2, r, (s2 == goal)
+    return s2, (1.0 if s2 == goal else 0.0), (s2 == goal)
 
-def scelta_greedy(q):              # argmax con i pareggi rotti a caso
-    return int(rng.choice(np.flatnonzero(q == q.max())))
+def dyna(n_plan, seme, episodi=30):
+    """Dyna-Q. Con n_plan=0 e' Q-learning tabellare puro: nessun ripasso."""
+    rng = np.random.default_rng(seme)
+    Q = np.zeros((n_stati, n_azioni))
+    modello = {}                       # (s, a) -> (r, s2): la dinamica APPRESA
+    alpha, gamma, eps = 0.1, 0.95, 0.1
+    valore_partenza = []               # quanto vale lo stato 0, episodio per episodio
+    for _ in range(episodi):
+        s = 0
+        for _ in range(100):
+            if rng.random() < eps:
+                a = int(rng.integers(n_azioni))
+            else:                      # argmax con i pareggi rotti a caso
+                a = int(rng.choice(np.flatnonzero(Q[s] == Q[s].max())))
+            s2, r, fine = passo(s, a)
+            # 1) aggiornamento dall'esperienza REALE
+            Q[s, a] += alpha * (r + gamma * Q[s2].max() - Q[s, a])
+            modello[(s, a)] = (r, s2)  # memorizza la transizione osservata
+            # 2) n passi di PLANNING su transizioni gia' viste (esperienza immaginata)
+            viste = list(modello.keys())
+            for _ in range(n_plan):
+                sp, ap = viste[rng.integers(len(viste))]
+                rp, s2p = modello[(sp, ap)]
+                Q[sp, ap] += alpha * (rp + gamma * Q[s2p].max() - Q[sp, ap])
+            s = s2
+            if fine:
+                break
+        valore_partenza.append(Q[0].max())
+    return np.argmax(Q, axis=1), np.array(valore_partenza)
 
-Q = np.zeros((n_stati, n_azioni))
-modello = {}                       # (s, a) -> (r, s2): la dinamica APPRESA
-alpha, gamma, eps, n_plan = 0.1, 0.95, 0.1, 20
-
-for _ in range(30):                # appena 30 episodi reali
-    s = 0
-    for _ in range(100):
-        a = int(rng.integers(n_azioni)) if rng.random() < eps else scelta_greedy(Q[s])
-        s2, r, fine = passo(s, a)
-        # 1) aggiornamento dall'esperienza REALE
-        Q[s, a] += alpha * (r + gamma * Q[s2].max() - Q[s, a])
-        modello[(s, a)] = (r, s2)  # memorizza la transizione osservata
-        # 2) n passi di PLANNING su transizioni gia' viste (esperienza immaginata)
-        viste = list(modello.keys())
-        for _ in range(n_plan):
-            sp, ap = viste[rng.integers(len(viste))]
-            rp, s2p = modello[(sp, ap)]
-            Q[sp, ap] += alpha * (rp + gamma * Q[s2p].max() - Q[sp, ap])
-        s = s2
-        if fine:
-            break
-
-policy = np.argmax(Q, axis=1)      # ci aspettiamo 1 (destra) ovunque
-print("Policy appresa (0=sx, 1=dx):", policy[:goal].tolist())
+SEMI = range(10)
+for n_plan in (0, 20):
+    esiti = [dyna(n_plan, s) for s in SEMI]
+    v = np.array([e[1] for e in esiti])          # (semi, episodi)
+    print(f"n_plan={n_plan:2d} | policy appresa (0=sx, 1=dx): "
+          f"{esiti[0][0][:goal].tolist()}")
+    print(f"           valore dello stato di partenza, mediana su {len(SEMI)} semi: "
+          f"dopo 3 episodi {np.median(v[:, 2]):.3f}, "
+          f"dopo 10 {np.median(v[:, 9]):.3f}, alla fine {np.median(v[:, -1]):.3f}")
 ```
+
+La policy, come previsto, è la stessa nei due casi: `[1, 1, 1, 1, 1]`, vai
+sempre a destra. Il valore dello stato di partenza no. Senza ripassi, dopo tre
+episodi vale ancora $0{,}000$ (la notizia della ricompensa non è arrivata fin
+laggiù) e dopo trenta si ferma a $0{,}156$. Con venti ripassi per ogni mossa
+vera, dopo tre episodi vale già $0{,}200$ e dopo dieci $0{,}808$, cioè
+praticamente il valore esatto, che in questo corridoio è
+$\gamma^{4} = 0{,}95^{4} \approx 0{,}815$.
+
+È tutto il guadagno del model-based in un numero: la stessa esperienza reale,
+digerita nel modello, arriva **cinque volte più in là** nello stesso tempo. Se
+avessimo guardato solo la policy non avremmo visto niente, e avremmo attribuito
+al planning un merito che in questo ambiente non ha.
 
 ## Il tallone d'Achille: l'errore che si accumula
 
 C'è un motivo se Dyna, nell'esempio, «immagina» transizioni di *un solo passo*
 già osservate, e non intere partite inventate di sana pianta. È il problema
 strutturale di ogni approccio model-based: l'errore del modello **si compone**
-lungo il rollout. Una predizione appena imprecisa a un passo diventa una
+man mano che il sogno si allunga (una di quelle traiettorie immaginate, in
+gergo, è un *rollout*). Una predizione appena imprecisa a un passo diventa una
 predizione mediocre a cinque passi e un'assurdità a venti.
 
 `````{tab} Elementare
@@ -194,24 +226,37 @@ irriconoscibile. Un modello del mondo fa lo stesso quando gli chiedi di
 immaginare lontano: la prima previsione è quasi giusta, ma la seconda parte da
 quella «quasi», la terza dal «quasi del quasi», e l'errore si gonfia a ogni
 passo. Morale: le previsioni utili sono quelle a breve. La cura, trovata dai
-ricercatori nel 2019, è disarmante nella sua semplicità, invece di far partire
+ricercatori nel 2019, è disarmante nella sua semplicità: invece di far partire
 i sogni dall'inizio della partita e tirarli avanti a lungo, si parte da uno
 stato *vero*, appena visitato, e si immagina solo pochi passi. Sogni corti,
-ancorati alla realtà: l'errore non fa in tempo ad accumularsi.
+ancorati alla realtà, e l'errore non fa in tempo ad accumularsi.
 
 `````
 
 `````{tab} Superiore
 
-Se il modello sbaglia in media di una quantità $\epsilon$ a ogni passo e gli
-errori non si cancellano, lo scarto fra la traiettoria immaginata e quella
-reale cresce *almeno* in proporzione all'orizzonte $k$ del rollout; e la
-proporzionalità è il caso benevolo, valido quando la dinamica non amplifica le
-perturbazioni. Ogni passo, infatti, parte da uno stato già sbagliato: se la
-dinamica ingigantisce gli scostamenti, l'errore si moltiplica di passo in
-passo e la crescita in $k$ diventa esponenziale. È il **compounding error**, e
-impone un compromesso: rollout lunghi danno più segnale di allenamento ma
-sempre meno affidabile.
+Se il modello sbaglia di una quantità $\epsilon$ a ogni passo, ogni passo
+successivo parte da uno stato già sbagliato, e quanto quell'errore si gonfi
+dipende da quanto la dinamica **amplifica le perturbazioni**. Con una dinamica
+$L$-Lipschitz, cioè che moltiplica al più per $L$ la distanza fra due stati
+vicini, lo scarto dopo $k$ passi è maggiorato da
+
+$$
+\epsilon \sum_{i=0}^{k-1} L^{\,i} ,
+$$
+
+e i tre regimi sono diversissimi fra loro. Per $L>1$ la somma esplode
+**esponenzialmente** in $k$, ed è questo il caso che rende il compounding error
+un problema: un sistema instabile, o caotico, è per definizione uno dove $L>1$.
+Per $L=1$ esattamente si ha la crescita **lineare**, $k\epsilon$, che è il caso
+limite e non il caso tipico. E per $L<1$, cioè quando la dinamica è
+contrattiva e gli scostamenti si riassorbono da sé, lo scarto è **limitato** da
+$\epsilon/(1-L)$ e smette proprio di crescere: con $\epsilon = 0{,}01$, a
+cinquanta passi e $L=0{,}5$ lo scarto resta $0{,}020$, contro i $0{,}500$ che
+darebbe la lettura lineare, ed è già fermo lì dal ventesimo passo. È il
+**compounding error**, e impone un compromesso: rollout lunghi danno più segnale
+di allenamento ma sempre meno affidabile, e quanto meno affidabile non lo decide
+l'orizzonte da solo, lo decide il sistema.
 
 **MBPO** (*Model-Based Policy Optimization*, Janner et al., 2019
 {cite}`janner2019trust`) risolve il compromesso con un'idea nel titolo del
@@ -280,9 +325,10 @@ questo modello latente MuZero esegue una **ricerca ad albero Monte Carlo**
 successore AlphaZero {cite}`silver2018general`, ma
 srotolata dentro il modello appreso anziché su un simulatore dato. Il
 risultato: prestazioni pari ad AlphaZero su Go, scacchi e shogi *senza*
-riceverne le regole, e stato dell'arte sul benchmark Atari; dove un modello
-scritto a mano non esiste. La differenza con AlphaZero è tutta qui: AlphaZero
-pianifica su un modello *fornito*, MuZero su un modello *appreso*.
+riceverne le regole, e la stessa ricetta che regge sui giochi Atari, dove un
+modello scritto a mano non esiste affatto. La differenza con AlphaZero è tutta
+qui: AlphaZero pianifica su un modello *fornito*, MuZero su un modello
+*appreso*.
 
 `````
 
@@ -292,8 +338,12 @@ C'è una terza via, che il capitolo sui World Model racconta per esteso e che
 qui richiamiamo solo come tassello del quadro model-based. Invece di
 pianificare al momento della decisione, come fa MCTS in MuZero, si può
 apprendere un **world model** (un simulatore interno dell'ambiente) e poi
-allenare *interamente dentro di esso* una policy, per retropropagazione
-attraverso traiettorie immaginate. È l'*immaginazione latente*.
+allenare *interamente dentro di esso* una policy. Il simulatore è a sua volta
+una rete, quindi derivabile: la correzione può scorrere all'indietro lungo le
+traiettorie immaginate, esattamente come scorre dentro una rete qualunque. È
+l'*immaginazione latente*, dove «latente» significa che il simulatore non
+ridisegna il mondo pixel per pixel, ma ne tiene solo il riassunto che serve a
+decidere.
 
 `````{tab} Elementare
 
@@ -303,8 +353,9 @@ in testa, e lì dentro può girare quante volte vuole. Gli algoritmi della
 famiglia **Dreamer** fanno questo: si costruiscono un modello del gioco e poi
 addestrano il pilota *solo dentro il sogno*, riportandolo nel mondo vero già
 allenato. La linea di ricerca nasce dai «mondi in miniatura» di Ha e
-Schmidhuber (l'agente che imparava a schivare palle di fuoco esercitandosi nel
-proprio sogno) e arriva a **DreamerV3** di Danijar Hafner e colleghi
+Schmidhuber {cite}`ha2018world` (l'agente che imparava a schivare palle di
+fuoco esercitandosi nel proprio sogno) e arriva a **DreamerV3** di Danijar
+Hafner e colleghi
 {cite}`hafner2023mastering`, che con la *stessa* configurazione, senza
 ritocchi, padroneggia oltre 150 compiti diversi (robot simulati, giochi Atari,
 navigazione 3D) e riesce persino a raccogliere i diamanti in *Minecraft*
@@ -331,10 +382,10 @@ questa linea di ricerca.
 
 `````
 
-Un modello dinamico appreso, del tipo che alimenta MBPO o Dreamer, in PyTorch
-ha una forma semplice: da stato e azione predice lo stato successivo e la
-ricompensa. Il rollout «immaginato» è poi la sua applicazione ripetuta, tenuta
-volutamente corta.
+Un modello della dinamica appreso, come quelli che alimentano i metodi appena
+visti, in PyTorch ha una forma semplice: da stato e azione predice lo stato
+successivo e la ricompensa. La traiettoria «immaginata» è poi la sua
+applicazione ripetuta, tenuta volutamente corta.
 
 ```python
 import torch
@@ -397,12 +448,15 @@ ricerca aperta.
   aggiusta le sue valutazioni e si annota che cosa è successo, poi si concede
   qualche "ripasso" pescando a caso fra le transizioni annotate. Una mossa
   vera, tanti ripassi immaginati, e la ricompensa si propaga all'indietro
-  molto più in fretta.
+  molto più in fretta: nel corridoio dell'esempio, a parità di partite
+  giocate, arriva cinque volte più lontano.
 - Immaginare lontano è il gioco del telefono senza fili: ogni previsione parte
   da una precedente già un po' sbagliata e l'errore si gonfia a ogni passaggio.
-  La cura trovata dai ricercatori nel 2019 è tenere i sogni **corti** e farli
-  partire da situazioni davvero visitate, così l'errore non fa in tempo ad
-  accumularsi.
+  *Quanto* si gonfi dipende dal sistema: dove gli scarti si riassorbono da sé
+  l'errore resta piccolo per sempre, dove il sistema li ingigantisce esplode in
+  pochi passi. La cura trovata dai ricercatori nel 2019 è tenere i sogni
+  **corti** e farli partire da situazioni davvero visitate, così l'errore non fa
+  in tempo ad accumularsi.
 - **MuZero** (2020) le regole del gioco se le costruisce da solo guardando le
   partite, e non si fa un modello che ridisegna la scacchiera pezzo per pezzo:
   tiene solo il riassunto che serve a rispondere a "chi è in vantaggio, che
@@ -425,9 +479,11 @@ ricerca aperta.
   bias**.
 - **Dyna** (Sutton, 1990) è il capostipite: intreccia aggiornamenti da
   esperienza reale e da esperienza «immaginata» campionata dal modello appreso.
-- L'**errore si accumula** lungo il rollout (compounding error): **MBPO**
-  (Janner et al., 2019) lo aggira con rollout *brevi* diramati da stati reali,
-  usando il modello solo dove è affidabile.
+- L'**errore si accumula** lungo il rollout (compounding error), maggiorato da
+  $\epsilon\sum_{i<k}L^{\,i}$: esponenziale in $k$ appena la dinamica amplifica
+  le perturbazioni ($L>1$), lineare solo nel caso limite $L=1$, limitato se è
+  contrattiva. **MBPO** (Janner et al., 2019) lo aggira con rollout *brevi*
+  diramati da stati reali, usando il modello solo dove è affidabile.
 - **MuZero** (Schrittwieser et al., 2020) apprende un modello *latente*
   (dinamica, ricompensa, valore) e pianifica con MCTS *senza conoscere le
   regole* del gioco: è l'erede di AlphaZero, che il modello lo riceveva già

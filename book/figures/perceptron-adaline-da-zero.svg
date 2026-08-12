@@ -28,11 +28,14 @@
   <polyline points="420,220 453,220 453,172 486,172" fill="none" stroke="#2D5A5C" stroke-width="2"/>
   <text x="453" y="150" font-family="sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">gradino</text>
   <!-- uscita -->
-  <line x1="498" y1="195" x2="570" y2="195" stroke="#1A1A1A" stroke-width="1.5"/>
-  <circle cx="600" cy="195" r="28" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="2"/>
-  <text x="600" y="201" font-family="sans-serif" font-size="15" fill="#1A1A1A" text-anchor="middle">ŷ = ±1</text>
+  <line x1="498" y1="195" x2="560" y2="195" stroke="#1A1A1A" stroke-width="1.5"/>
+  <!-- il capitolo fissa la decisione binaria a due valori: percettrone.md,
+       «La decisione è dunque binaria: y-cappuccio in {0,1}». Il nodo è
+       cresciuto a r=38 (come il nodo somma) perché l'etichetta ci stia. -->
+  <circle cx="600" cy="195" r="38" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="2"/>
+  <text x="600" y="201" font-family="sans-serif" font-size="14" fill="#1A1A1A" text-anchor="middle">ŷ ∈ {0,1}</text>
   <!-- retroazione aggiornamento pesi -->
-  <path d="M 600 223 L 600 300 L 185 300 L 185 210" fill="none" stroke="#C9A961" stroke-width="2" stroke-dasharray="6 5"/>
+  <path d="M 600 233 L 600 300 L 185 300 L 185 210" fill="none" stroke="#C9A961" stroke-width="2" stroke-dasharray="6 5"/>
   <polygon points="185,204 179,216 191,216" fill="#C9A961"/>
   <text x="392" y="322" font-family="sans-serif" font-size="14" fill="#1A1A1A" text-anchor="middle">se ŷ ≠ y: w ← w + η · (y − ŷ) · x</text>
   <text x="340" y="40" font-family="sans-serif" font-size="16" fill="#1A1A1A" text-anchor="middle" font-weight="bold">Il perceptron: un neurone implementabile in 30 righe</text>

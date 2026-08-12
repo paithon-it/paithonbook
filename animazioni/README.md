@@ -94,10 +94,23 @@ che **l'ultimo fotogramma regga da solo**: è quello che finisce sulla carta.
 
 Si anima solo dove **il tempo è il contenuto**, cioè dove una figura ferma perde
 davvero informazione. Architetture, tassonomie e confronti restano SVG. Il tetto
-è **5–10 clip per capitolo** — un tetto, non una quota da riempire.
+è **5–10 clip per capitolo**, un tetto, non una quota da riempire.
 
-Questa è la **prima ondata**: un capitolo per clip, i concetti più ostici del
-libro. I capitoli non ancora coperti sono la lista dei prossimi.
+**Chi manca non si scrive qui, si conta.** Fino ad agosto 2026 questa riga
+diceva «i capitoli non ancora coperti sono la lista dei prossimi», e la lista
+era in testa a chi l'aveva scritta: nel frattempo il libro è passato da quindici
+capitoli a trentacinque e le clip sono rimaste quindici, tutte nella metà
+vecchia. Chi leggeva la parte nuova non ne vedeva nessuna. Adesso lo dice il
+controllo, che non può dimenticarsene:
+
+```bash
+python3 scripts/coerenza.py --solo animazioni
+```
+
+Elenca i capitoli a zero clip e quelli che sforano il tetto. Zero **non** è un
+errore e non fa fallire niente: un capitolo dove il tempo non è mai il contenuto
+sta bene fermo. È un elenco da guardare quando nasce un capitolo, per decidere
+una volta invece di non deciderlo mai.
 
 | Sorgente | Figura nel libro | Sezione |
 |---|---|---|

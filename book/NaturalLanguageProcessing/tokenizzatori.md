@@ -22,9 +22,13 @@ All'estremo opposto c'è la soluzione radicale: un vocabolario di singoli
 caratteri. Le parole sconosciute spariscono per costruzione, perché ogni testo
 è fatto di lettere che il vocabolario contiene tutte. Ma si paga due volte. La
 prima: le sequenze si allungano di brutto, perché una parola italiana media
-sta attorno ai cinque o sei caratteri, e siccome il costo dell'attenzione (lo
-vedremo nel capitolo sui Transformer) cresce con il **quadrato** della
-lunghezza, una sequenza cinque volte più lunga costa venticinque volte il
+sta attorno ai cinque o sei caratteri, e la lunghezza si paga cara.
+L'**attenzione**, il meccanismo con cui un modello moderno guarda tutte le
+parole della frase insieme e decide quali contano (la incontreremo fra qualche
+sezione, con la traduzione automatica, e per esteso nel capitolo sui
+Transformer), confronta ogni posizione con ogni altra: raddoppiare le posizioni
+quadruplica i confronti. Il costo cresce cioè con il **quadrato** della
+lunghezza, e una sequenza cinque volte più lunga costa venticinque volte il
 lavoro. La seconda: il modello deve reimparare da zero che le lettere si
 raggruppano in parole, spendendo capacità per riscoprire una struttura che gli
 si poteva regalare.
@@ -143,7 +147,10 @@ perché è la ricetta. Per tokenizzare una parola nuova non serve cercarla da
 nessuna parte: la si spezza in lettere e le si riapplicano le stesse fusioni,
 nello stesso ordine in cui erano state imparate. Se la parola contiene pezzi
 familiari, si ricompongono da soli; se non ne contiene nessuno, resta una fila
-di lettere. In nessun caso resta fuori.
+di lettere. In nessun caso resta fuori, **purché la scatola contenga davvero
+tutte le lettere che potranno arrivare**: è un «purché» che pesa più di quanto
+sembri, e alla fine della sezione vedremo come lo si toglie di mezzo per
+sempre.
 
 `````
 
@@ -212,7 +219,9 @@ somigliano abbastanza da condividere pezzi:
 | `rossetto` | 5 |
 
 In tutto sono $6 \cdot 5 + 2 \cdot 8 + 3 \cdot 5 + 9 \cdot 5 + 5 \cdot 8 = 146$
-caratteri. Ogni parola parte spezzata nelle sue lettere: `b a s s o`,
+caratteri (il totale tornerà utile fra qualche pagina, quando confronteremo
+questo criterio con quello di WordPiece, che divide proprio per delle
+frequenze). Ogni parola parte spezzata nelle sue lettere: `b a s s o`,
 `b a s s o t t o`, e così via.
 
 **Passo 1.** Contiamo ogni coppia adiacente, pesandola con la frequenza della
@@ -261,6 +270,20 @@ corpus, quindi i suoi pezzi si trovano insieme più spesso di chiunque altro e
 si saldano per primi. È il motivo per cui, nei tokenizzatori veri, *casa* o
 *the* sono un token solo mentre *ortogonalizzazione* ne prende cinque.
 
+I quattro passi si vedono meglio tutti insieme che descritti a parole
+({numref}`fig-bpe-fusioni`): a ogni giro una coppia si salda, l'elenco delle
+fusioni si allunga di una riga, e le parole si accorciano.
+
+```{figure} ../figures/bpe-fusioni.svg
+:name: fig-bpe-fusioni
+:alt: Le cinque parole del corpus giocattolo, ciascuna spezzata in scatole, una per token, con accanto la propria frequenza. A ogni passo la coppia adiacente più frequente si salda in una scatola sola e la fusione entra nell'elenco a destra con il suo conteggio: ss 25, sso 20, ro 14, rosso 9. Dopo quattro fusioni la parola rosso è un token unico e il corpus è passato da 146 a 78 token.
+:width: 96%
+
+A ogni passo la coppia adiacente più frequente diventa un simbolo solo: le
+fusioni si accumulano in un elenco ordinato e il corpus si accorcia, finché
+`rosso` sta in un token solo.
+```
+
 Dopo quattro fusioni il vocabolario contiene le sette lettere del corpus
 (`a b e o r s t`) più `ss`, `sso`, `ro`, `rosso`. Al passo successivo si
 presenterebbe un pareggio, `b`+`a` e `a`+`sso` a quota 8, e serve una regola
@@ -275,7 +298,9 @@ Il collaudo è tokenizzare qualcosa che nel corpus non c'era. Prendiamo
 fusioni imparate **nell'ordine in cui sono state imparate**. Con le prime
 quattro: `ss` si applica (`b a ss e t t o`), `sso` no (dopo la doppia s c'è
 una e), `ro` no, `rosso` no. Con dieci fusioni, come nel codice della prossima
-sezione, entrano in gioco anche `to`, `tto` e `etto`, e il risultato è
+sezione, il corpus fa in tempo a imparare anche `to`, `tto` ed `etto` (nascono
+tutte e tre dalle uniche due parole che finiscono così, `bassotto` e
+`rossetto`), e il risultato è
 
 ```
 b | a | ss | etto
@@ -298,9 +323,27 @@ Un caso più estremo: un cognome come `rossellini`, mai visto, diventa
 ross | e | l | l | i | n | i
 ```
 
-sette token per una parola sola. Nessuna informazione persa, ma un costo alto:
-è il prezzo che le sotto-parole fanno pagare a ciò che è raro, ed è la radice
-di due delle conseguenze pratiche di cui parleremo alla fine.
+sette token per una parola sola. È il prezzo che le sotto-parole fanno pagare a
+ciò che è raro, ed è la radice di due delle conseguenze pratiche di cui
+parleremo alla fine.
+
+E c'è dell'altro, che conviene guardare in faccia invece di girarci intorno,
+perché è il punto in cui la promessa «niente resta fuori» mostra la sua
+condizione. Le lettere `l`, `i` e `n` nel nostro corpus giocattolo non
+compaiono mai: il vocabolario di partenza sono le sette lettere di `basso`,
+`bassotto`, `bosso`, `rosso` e `rossetto`, cioè `a b e o r s t`. Un
+tokenizzatore vero, che prima di emettere un pezzo controlla di averlo nel
+vocabolario, per `rossellini` restituirebbe quattro `<UNK>` su sette token. Il
+codice della prossima sezione non lo fa soltanto perché riapplica le fusioni
+alla cieca, senza chiedersi se i simboli rimasti siano simboli noti: è un
+programma didattico, non un tokenizzatore di produzione. Il punto vero è che a
+livello di **carattere** l'assenza di `<UNK>` non è una proprietà
+dell'algoritmo, è una scommessa sull'alfabeto di partenza: si vince finché il
+corpus di addestramento conteneva ogni carattere che potrà mai arrivare. Con
+cinque parole la scommessa è persa in partenza; con un corpus vero è quasi
+sempre vinta, e a tradirla bastano un ideogramma raro o un'emoji uscita l'anno
+scorso. È il buco che il livello dei **byte**, fra qualche pagina, chiuderà per
+costruzione e per sempre.
 
 ## Trenta righe di Python
 
@@ -427,10 +470,14 @@ sono comuni i due pezzi presi singolarmente. Un pezzo che è dappertutto viene
 penalizzato, e le sue coppie devono essere davvero frequenti per vincere.
 
 Nel nostro corpus di cinque parole, con questo criterio, la prima fusione non è
-più `ss` ma `ba`: la `s` è talmente diffusa che le sue coppie non stupiscono
-nessuno, mentre la `a`, che si presenta sempre e solo dopo la `b`, è una
-compagnia troppo fedele per essere una coincidenza. In una frase: BPE premia
-ciò che **ricorre**, WordPiece premia ciò che **sta insieme per una ragione**.
+più `ss` ma `ba`, e il conto si può rifare a mano con due divisioni. Nei 146
+caratteri del corpus la `s` compare 50 volte e la coppia `ss` 25: il punteggio è
+25 diviso (50 per 50), cioè 0,01. La `b` compare 11 volte, la `a` 8 e la coppia
+`ba` 8: il punteggio è 8 diviso (11 per 8), cioè circa 0,09, nove volte tanto.
+La `s` è talmente diffusa che le sue coppie non stupiscono nessuno, mentre la
+`a`, che si presenta sempre e solo dopo la `b`, è una compagnia troppo fedele
+per essere una coincidenza. In una frase: BPE premia ciò che **ricorre**,
+WordPiece premia ciò che **sta insieme per una ragione**.
 
 `````
 
@@ -533,11 +580,19 @@ com'era.
 Resta un ultimo buco. Anche lavorando sui caratteri, i caratteri sono tanti:
 Unicode ne definisce oltre centomila, e nessun corpus li contiene tutti. Un
 ideogramma raro, un simbolo matematico, un'emoji nuova, e siamo di nuovo al
-punto di partenza con un `<UNK>` in mano. La soluzione è scendere ancora di un
-piano: sotto i caratteri ci sono i **byte**, e i byte sono 256. Non 256 nel
-corpus, 256 *e basta*: qualunque cosa esista o esisterà, sul computer è una
-sequenza di byte. Partendo da lì, il vocabolario di base copre tutto per
-costruzione, e la parola «sconosciuto» esce definitivamente dal dizionario.
+punto di partenza con un `<UNK>` in mano. È lo stesso buco che avevamo
+intravisto con `rossellini`: se una lettera non era nel corpus di partenza,
+niente la rappresenta.
+
+La soluzione è scendere ancora di un piano: sotto i caratteri ci sono i
+**byte**, e i byte sono 256. Un byte è il mattoncino minimo con cui un computer
+scrive qualunque cosa, otto caselle che valgono 0 o 1: le combinazioni sono
+$2^8 = 256$, né una di più né una di meno. Non sono 256 *nel corpus*, sono 256
+*e basta*, e non li ha scelti nessuno guardando dei testi: qualunque cosa
+esista o esisterà, sul computer è una sequenza di quei 256 mattoncini. Partendo
+da lì, il vocabolario di base copre tutto per costruzione, la scommessa
+sull'alfabeto non c'è più, e la parola «sconosciuto» esce definitivamente dal
+dizionario.
 
 `````
 
@@ -637,8 +692,14 @@ vocabolario è stato costruito su un corpus in prevalenza inglese, e i posti se
 li sono presi le sottostringhe inglesi.
 ```
 
-Come mostra {numref}`fig-italiano-token`, il costo non è metaforico: si paga
-a token, in denaro e in finestra di contesto. Anche questa è aritmetica di
+Come mostra {numref}`fig-italiano-token`, il costo non è metaforico, e conviene
+dire in che valuta si paga. In denaro, prima di tutto: i servizi che danno
+accesso a un modello di linguaggio fanno pagare a token, quindi la stessa
+richiesta scritta in italiano costa qualche decina di percento più della stessa
+richiesta in inglese. E poi in **finestra di contesto**, che è la quantità di
+testo che un modello riesce a tenere davanti agli occhi in una volta sola,
+misurata anch'essa in token: un documento che in inglese ci sta, in italiano
+può non starci. Anche questo è aritmetica di
 fusioni. Se il corpus su cui il tokenizzatore è
 stato addestrato è in prevalenza inglese, le fusioni che "pagano" sono le
 sottostringhe inglesi, e i posti nel vocabolario finiscono lì. Le parole
@@ -659,22 +720,30 @@ che si corregge solo addestrando il tokenizzatore su dati più bilanciati.
 **Terzo: uno spazio in più o in meno cambia i token.** Nei tokenizzatori
 moderni lo spazio non è un separatore invisibile, è parte del token: `▁gatto`
 e `gatto` sono due voci diverse del vocabolario, con due embedding diversi e
-due statistiche diverse. Ne segue che un prompt che finisce con uno spazio
-mette il modello in una condizione differente da uno che finisce senza, perché
+due statistiche diverse. Ne segue che un **prompt** (il testo che si scrive al
+modello per farlo lavorare: una domanda, un'istruzione, l'inizio di un
+documento da completare) che finisce con uno spazio mette il modello in una
+condizione differente da uno che finisce senza, perché
 la continuazione naturale del primo è un token *senza* la barretta iniziale,
 che è la variante rara. È il motivo per cui uno spazio di troppo in coda a una
 richiesta può degradare la risposta in modo apparentemente inspiegabile, e
-perché nelle interfacce di completamento conviene non lasciarne. Non è
+perché nei programmi che completano un testo già iniziato conviene non
+lasciarne. Non è
 fragilità del modello: è che gli avete dato in ingresso una sequenza diversa
 da quella che credevate.
 
 **Quarto: il vocabolario si fissa prima dell'addestramento e non si cambia
-dopo.** Questa è la conseguenza più vincolante, ed è architetturale. La
-matrice di embedding ha una riga per token e la proiezione finale una colonna
-per token: aggiungerne uno significa aggiungere parametri privi di
-addestramento, e cambiare la segmentazione di un token esistente significa che
-tutto ciò che il modello ha imparato su quella riga si riferisce a un'altra
-cosa. Il tokenizzatore è quindi parte del modello quanto i suoi pesi, si
+dopo.** Questa è la conseguenza più vincolante, ed è architetturale. Dentro il
+modello c'è una tabella con **una riga per ogni token del vocabolario**: la
+riga contiene i numeri con cui quel pezzo di parola viene rappresentato, ed è
+quello che negli altri capitoli si chiama matrice di embedding. In uscita ce
+n'è una seconda, con **una colonna per ogni token**, che serve a decidere quale
+pezzo scrivere. Aggiungere un token al vocabolario vuol dire allora aggiungere
+una riga e una colonna vuote a due tabelle che l'addestramento ha già
+riempito: numeri che nessuno ha mai regolato, in mezzo a numeri regolati per
+mesi. E cambiare la segmentazione di un token esistente è peggio, perché
+tutto ciò che il modello ha imparato su quella riga si riferisce ormai a
+un'altra cosa. Il tokenizzatore è quindi parte del modello quanto i suoi pesi, si
 distribuisce insieme a essi, e se il dominio d'uso non era rappresentato nel
 corpus su cui è stato costruito (una lingua minore, la notazione chimica, un
 linguaggio di programmazione poco diffuso) quel testo resterà frammentato per
@@ -686,23 +755,58 @@ fatta all'inizio e con calma.
 ## Un'idea che vale oltre il testo
 
 Vale la pena chiudere allargando lo sguardo. Tutto quello che avete letto
-serve a una cosa sola: costruire un **alfabeto discreto** su cui un modello
-autoregressivo possa lavorare, cioè un insieme finito di simboli in cui
-qualunque input si possa scrivere e da cui qualunque output si possa
-ricomporre. Il testo ce l'aveva già mezzo pronto (i caratteri) e il lavoro è
-stato scegliere i raggruppamenti giusti.
+serve a una cosa sola: costruire un **alfabeto discreto** su cui possa lavorare
+un modello che scrive un pezzo per volta, guardando quelli che ha già scritto
+(è ciò che si intende con *autoregressivo*). Discreto vuol dire fatto di pezzi
+separati e contabili, come le lettere di un alfabeto e non come le sfumature di
+un colore: un insieme finito di simboli in cui qualunque testo in ingresso si
+possa scrivere e da cui qualunque testo in uscita si possa ricomporre. Il testo
+quell'alfabeto ce l'aveva già mezzo pronto (i caratteri) e il lavoro è stato
+scegliere i raggruppamenti giusti.
 
 Altri segnali quell'alfabeto non ce l'hanno affatto. L'audio è un'onda
 continua, e per darla in pasto a un Transformer bisogna prima inventarsi dei
 simboli: è esattamente quello che fanno i codec neurali del capitolo
-sull'audio, dove un quantizzatore vettoriale trasforma ogni frammento di suono
-in un indice intero. Il problema è lo stesso di questa sezione, la soluzione è
+sull'audio, dove un quantizzatore vettoriale sceglie, da un catalogo fisso di
+suoni campione, quello che somiglia di più al frammento che ha davanti, e ne
+scrive il numero di catalogo. Il problema è lo stesso di questa sezione, la
+soluzione è
 diversa perché diversa è la materia prima. E la domanda che resta aperta, in
 entrambi i casi, è se il testo e il suono debbano davvero passare per dei
 simboli, o se un giorno i modelli lavoreranno direttamente sui byte grezzi.
 Per ora la risposta è economica più che teorica: i simboli accorciano le
 sequenze, e la lunghezza delle sequenze è ciò che si paga.
 
+`````{tab} Elementare
+```{admonition} Da ricordare
+:class: important
+- La **scatola dei mattoncini**: con le sole lettere si costruisce qualunque
+  parola, ma ci vuole un'eternità; con un pezzo già fatto per ogni parola del
+  dizionario si va veloci, ma la scatola non basta mai. I pezzi
+  **sotto-parola** sono il compromesso che ha vinto: pezzi grandi per ciò che
+  ricorre, lettere singole di riserva per tutto il resto.
+- **BPE** parte dalle lettere e incolla ogni volta la coppia di pezzi vicini
+  che compare più spesso, segnandosi la fusione su un elenco. Per spezzare una
+  parola mai vista non la cerca da nessuna parte: riapplica l'elenco nello
+  stesso ordine. Non cerca la scomposizione migliore, ripete una ricetta.
+- **WordPiece** cambia una cosa sola: non incolla la coppia più frequente, ma
+  quella che sta insieme più di quanto ci si aspetterebbe per caso («acqua
+  minerale» contro «di un»).
+- **SentencePiece** tratta il testo come una collana ininterrotta di simboli,
+  con lo spazio scritto come `▁`: non c'è bisogno di tagliarlo prima in parole
+  (indispensabile per cinese e giapponese, che gli spazi non li usano) e il
+  testo si ricompone identico. Sotto i caratteri ci sono i **byte**, che sono
+  256 comunque vada: partendo da lì non resta fuori più niente, mai.
+- Le conseguenze si toccano con mano: **i numeri** vengono spezzati a casaccio
+  e i conti ne soffrono; **l'italiano costa più token dell'inglese**, cioè più
+  soldi e più posto occupato nella memoria di lavoro del modello; **uno spazio
+  di troppo** in fondo a una richiesta cambia davvero la domanda; e il
+  vocabolario, una volta scelto, **non si cambia più**, perché fa parte del
+  modello quanto i numeri che ha imparato.
+```
+`````
+
+`````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
 - Un vocabolario di parole intere produce `<UNK>` (informazione persa e non
@@ -719,12 +823,14 @@ sequenze, e la lunghezza delle sequenze è ciò che si paga.
 - **SentencePiece** {cite}`kudo2018sentencepiece` tratta il testo come flusso
   grezzo con lo spazio marcato da `▁`: nessun bisogno di pre-segmentare in
   parole (il che lo rende usabile per cinese e giapponese, dove gli spazi fra
-  le parole non esistono) e detokenizzazione esatta. Il
-  **livello dei byte** elimina gli `<UNK>` per costruzione, perché i byte sono
-  256.
+  le parole non esistono) e detokenizzazione esatta. A livello di **carattere**
+  l'assenza di `<UNK>` dipende da quali caratteri stavano nel corpus; il
+  **livello dei byte** la rende una proprietà per costruzione, perché i byte
+  sono 256 e basta.
 - Le conseguenze si vedono a valle: **numeri** segmentati in modo irregolare
   (e aritmetica fragile), **lingue non inglesi** che consumano più token e più
   contesto, **spazi** che cambiano la sequenza in ingresso, e un vocabolario
   **congelato** prima dell'addestramento, perché è parte del modello quanto i
   suoi pesi.
 ```
+`````

@@ -19,9 +19,12 @@ deep learning.
 
 Uno strato **denso** (il "completamente connesso" che conosciamo dal capitolo
 sulle reti neurali) collega *ogni* pixel a *ogni* neurone. Sembra generoso, ma
-è uno spreco. Una foto a colori di 256×256 pixel sono quasi 200.000 numeri: un
-solo strato denso con 1000 neuroni avrebbe quasi 200 milioni di pesi da
-imparare (solo per il primo strato). Troppi.
+è uno spreco. Una foto a colori di 256×256 pixel non sono 65.536 numeri ma il
+triplo: ogni pixel ne porta **tre**, uno per il rosso, uno per il verde e uno
+per il blu, e $256 \times 256 \times 3$ fa 196.608, quasi 200.000. Uno strato
+denso con 1000 neuroni ha un peso per ogni coppia (numero in ingresso,
+neurone): $196.608 \times 1000$, cioè quasi **200 milioni** di pesi da
+imparare, solo per il primo strato. Troppi.
 
 E c'è un problema più profondo. Se la rete impara a riconoscere un occhio
 quando compare in alto a sinistra, non sa nulla dello stesso occhio in basso
@@ -37,12 +40,15 @@ $h$ unità richiede $h\cdot d$ pesi. Per un'immagine RGB $256\times256$ si ha
 $d = 256\cdot256\cdot3 \approx 1{,}97\times10^{5}$: con $h=1000$ servono circa
 $2\times10^{8}$ parametri, un invito all'*overfitting*.
 
-Soprattutto, lo strato denso non possiede **invarianza alla traslazione**: un
-pattern spostato di un vettore $\Delta$ attiva pesi diversi, perché l'indice
-della componente cambia. Le CNN reintroducono questa struttura via due vincoli
-architetturali (connettività locale e condivisione dei pesi) che riducono i
-parametri e rendono la risposta *equivariante* alla traslazione (sposti
-l'input, si sposta l'attivazione).
+Soprattutto, lo strato denso non è **equivariante alla traslazione**: un
+pattern spostato di un vettore $\boldsymbol{\Delta}$ attiva pesi diversi,
+perché l'indice
+della componente cambia. Le CNN recuperano l'equivarianza via due vincoli
+architetturali (connettività locale e condivisione dei pesi) che riducono
+anche i parametri: sposti l'input, e l'attivazione si sposta con lui.
+Attenzione a non chiamarla invarianza, che è un'altra proprietà (la risposta
+non cambia affatto) e la convoluzione non la dà: semmai la porta la testa
+della rete, con il *global average pooling* che incontreremo parlando di NiN.
 
 `````
 
@@ -57,12 +63,13 @@ una macchia di colore, una texture.
 
 ```{figure} ../figures/convoluzione.svg
 :name: fig-convoluzione
-:alt: Un kernel 3x3 evidenziato su una porzione di una griglia di input 5x5; una freccia collega la regione alla singola cella corrispondente nella feature map di output.
+:alt: Un filtro 3x3 evidenziato su una porzione di una griglia di ingresso 5x5; una freccia collega la regione alla singola casella corrispondente della mappa dei risultati.
 :width: 85%
 
-Il kernel $3\times3$ copre una finestra dell'input; la somma pesata dei nove
-valori produce **una** cella della feature map. Facendo scorrere la finestra
-si riempie l'intera mappa.
+Il filtro (o *kernel*) di $3\times3$ copre nove caselle dell'immagine per
+volta: i nove valori vengono moltiplicati ciascuno per il proprio peso e poi
+sommati, e il totale diventa **una** casella del foglio dei risultati, che si
+chiama *feature map*. Facendo scorrere la finestra si riempie l'intera mappa.
 ```
 
 Come mostra {numref}`fig-convoluzione`, il filtro guarda solo una finestra per
@@ -107,12 +114,20 @@ per canale $c$ e posizione $(m,n)$, $a_{i,j}$ l'attivazione risultante.
 :alt: "Animazione: una finestra 3x3 scorre sulle nove posizioni di un'immagine 5x5 che contiene una barra verticale; a ogni posizione si riempie la cella corrispondente della mappa 3x3, con valori -3 sulla colonna di sinistra, 0 al centro e +3 a destra."
 :width: 90%
 
-La stessa operazione in movimento, con un kernel che cerca **bordi verticali**:
-la mappa risponde $-3$ dove la barra comincia, $+3$ dove finisce e $0$ nel
-mezzo, dove non c'è nessun bordo da trovare.
+La stessa operazione in movimento, con un filtro che cerca **bordi verticali**.
+In alto la regola scritta in simboli, che dice questo: moltiplica i nove valori
+sotto la finestra per i nove pesi del filtro, e somma tutto. La mappa risponde
+$-3$ dove la barra comincia, $+3$ dove finisce e $0$ nel mezzo, dove la
+finestra è centrata sulla barra e i due bordi, che hanno segno opposto, si
+annullano.
 ```
 
-Vale la pena leggere i numeri della {numref}`fig-convoluzione-animata`: il
+Vale la pena rifare i conti della {numref}`fig-convoluzione-animata`. Il filtro
+è fatto di tre righe uguali, ciascuna con i pesi $1$, $0$, $-1$; la barra vale
+$1$ e lo sfondo $0$. Quando la barra finisce sotto la colonna destra del
+filtro, ogni riga contribuisce $-1$ e le tre righe insieme danno $-3$; quando
+finisce sotto la colonna sinistra, $+3$; quando è al centro, il peso che la
+moltiplica è $0$ e le altre due colonne vedono solo sfondo. Il
 filtro non "vede" la barra: vede i suoi **bordi**, e li segna con segno opposto
 a seconda del verso. È già un abbozzo di ciò che i primi strati di una CNN
 imparano da soli.
@@ -127,8 +142,11 @@ migliaia di volte.
 
 `````{tab} Elementare
 
-Un filtro $3\times3$ su un'immagine a colori ha solo $3\times3\times3+1 = 28$
-numeri da imparare. Con 32 filtri diversi arrivi a meno di mille parametri,
+Un filtro $3\times3$ su un'immagine a colori guarda nove caselle, e di ogni
+casella i tre numeri del colore: $3\times3\times3 = 27$ pesi. Più un ultimo
+numero, che la rete somma sempre al risultato per regolare la propria soglia di
+attenzione (si chiama *bias*): $27+1 = 28$
+numeri da imparare, in tutto. Con 32 filtri diversi arrivi a meno di mille parametri,
 contro i milioni dello strato denso. Pochi pesi, riusati ovunque: la rete
 impara *cosa* cercare, non *dove*.
 
@@ -176,8 +194,10 @@ y_{i,j} = \max_{(m,n)\,\in\,\mathcal{R}_{i,j}} x_{m,n}.
 $$
 
 Non ha parametri da apprendere. Sottocampionando, aumenta il campo recettivo
-effettivo dei layer successivi e introduce una modesta **invarianza a piccole
-traslazioni** locali, complementare all'equivarianza della convoluzione.
+effettivo dei layer successivi; e in cambio dell'equivarianza esatta, che a
+stride 2 sopravvive solo per gli spostamenti pari, offre una modesta
+tolleranza alle traslazioni di un pixel. Non è un'aggiunta gratuita, è un
+baratto.
 
 `````
 
@@ -186,20 +206,45 @@ traslazioni** locali, complementare all'equivarianza della convoluzione.
 Lo schema classico alterna blocchi **conv → ReLU → pool**, ripetuti alcune
 volte, e chiude con uno o più strati densi che trasformano le feature astratte
 in una decisione (la classe dell'immagine). Due manopole governano lo
-scorrimento del filtro: lo **stride** $s$, di quanti pixel salta la finestra a
-ogni passo (stride 2 dimezza la risoluzione), e il **padding** $p$, la cornice
-di zeri aggiunta ai bordi per non perdere i pixel di frontiera. La dimensione
-di uscita lungo un asse è
+scorrimento del filtro: lo **stride**, di quanti pixel salta la finestra a
+ogni passo, e il **padding**, la cornice di zeri aggiunta ai bordi per non
+perdere i pixel di frontiera.
+
+`````{tab} Elementare
+
+Le due manopole si capiscono meglio con un esempio. Se la finestra avanza di un
+pixel per volta (**stride** 1) e all'immagine si aggiunge attorno una cornice
+spessa uno (**padding** 1), un filtro $3\times3$ restituisce una mappa grande
+esattamente quanto l'immagine di partenza: da $28\times28$ pixel escono
+$28\times28$ risultati. Senza quella cornice ne uscirebbero $26\times26$,
+perché vicino al bordo la finestra sporgerebbe fuori e quelle posizioni non si
+possono usare. Se invece il passo diventa 2, la finestra ne salta uno ogni
+volta e la mappa esce **dimezzata**, $14\times14$.
+
+È il ritmo con cui le mappe si rimpiccioliscono man mano che si sale nella
+rete, ed è una scelta di chi la progetta: più le mappe si stringono, meno conti
+ci sono da fare, ma meno dettaglio resta.
+
+`````
+
+`````{tab} Superiore
+
+La dimensione di uscita lungo un asse è
 
 $$
 o = \left\lfloor \frac{n + 2p - k}{s} \right\rfloor + 1,
 $$
 
-dove $n$ è la dimensione d'ingresso e $k$ quella del kernel. Un esempio con i
+dove $n$ è la dimensione d'ingresso, $k$ quella del kernel, $p$ il padding, $s$
+lo stride e $\lfloor \cdot \rfloor$ la parte intera inferiore, che serve perché
+la divisione non cade quasi mai su un numero intero: le posizioni in cui la
+finestra sporgerebbe dal bordo non si contano. Un esempio con i
 numeri del codice qui sotto, ingresso $n=28$, kernel $k=3$, padding $p=1$,
 stride $s=1$: $o = \lfloor(28 + 2 - 3)/1\rfloor + 1 = 28$, la risoluzione non
 cambia. Con `padding="same"` si sceglie appunto $p$ affinché $o=n$ (a stride
 1): l'uscita conserva la risoluzione dell'ingresso.
+
+`````
 
 In PyTorch l'intera architettura sta in poche righe:
 
@@ -211,7 +256,7 @@ model = nn.Sequential(
     # blocco 1: 32 filtri 3x3, mappe grandi come l'input
     nn.Conv2d(1, 32, 3, padding="same"), nn.ReLU(),
     nn.MaxPool2d(2),               # 28x28 -> 14x14
-    # blocco 2: piu' filtri man mano che le mappe rimpiccioliscono
+    # blocco 2: più filtri man mano che le mappe rimpiccioliscono
     nn.Conv2d(32, 64, 3, padding="same"), nn.ReLU(),
     nn.MaxPool2d(2),               # 14x14 -> 7x7
     nn.Flatten(),                  # srotola in un vettore di 64*7*7 = 3136
@@ -227,15 +272,38 @@ vuole sapere esattamente quanti numeri riceve (qui
 $64 \cdot 7 \cdot 7 = 3136$) e il conto delle dimensioni resta a chi progetta
 la rete, non alla libreria.
 
+`````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
-- Gli strati densi falliscono sulle immagini per **troppi parametri** e
-  **nessuna invarianza alla traslazione**.
+- Uno strato denso sull'immagine intera ha **troppi pesi** da imparare (quasi
+  200 milioni per una sola foto a colori e mille neuroni), e per di più non ha
+  nessuna idea che *un motivo sia lo stesso ovunque appaia*.
+- La **convoluzione** fa scorrere sull'immagine un filtro piccolo e scrive su
+  un foglio nuovo, punto per punto, quanto quel motivo c'è: quel foglio si
+  chiama *feature map*.
+- Pochi pesi, riusati in ogni punto: la rete impara **cosa** cercare, non
+  **dove**. Se il motivo si sposta, si sposta con lui anche il segnale che lo
+  indica.
+- Il **max pooling** tiene, di ogni quadratino, solo il valore più forte:
+  rimpicciolisce le mappe e regala un po' di tolleranza agli spostamenti
+  minimi. L'architettura tipica alterna convoluzione e pooling, e chiude con
+  gli strati densi che decidono la classe.
+```
+`````
+
+`````{tab} Superiore
+```{admonition} Da ricordare
+:class: important
+- Gli strati densi falliscono sulle immagini per **troppi parametri** e perché
+  non sono **equivarianti alla traslazione**.
 - La **convoluzione** fa scorrere un piccolo kernel che evidenzia un motivo
   ovunque compaia; l'uscita è una **feature map**.
-- **Campo recettivo locale** + **pesi condivisi** = pochi parametri, motivi
-  riconosciuti indipendentemente dalla posizione.
-- Il **max pooling** riduce la risoluzione e aggiunge tolleranza a piccoli
-  spostamenti; l'architettura tipica alterna **conv–pool** e chiude con strati
-  densi.
+- **Campo recettivo locale** + **pesi condivisi** = pochi parametri e risposta
+  **equivariante**: il motivo è riconosciuto ovunque compaia, e l'attivazione
+  si sposta insieme a lui. L'invarianza è un'altra proprietà, e arriva semmai
+  dalla testa della rete (pooling globale), non dalla convoluzione.
+- Il **max pooling** riduce la risoluzione e baratta l'equivarianza esatta con
+  una tolleranza ai piccoli spostamenti; l'architettura tipica alterna conv e
+  pool e chiude con strati densi.
 ```
+`````

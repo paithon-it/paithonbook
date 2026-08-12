@@ -26,8 +26,10 @@ pt-livello__icona--superiore" viewBox="0 0 16 16" width="15" height="15"><rect
 x="1.6" y="7" width="5.2" height="6.4" rx="1.3" fill="currentColor"/><rect
 x="9.2" y="2.6" width="5.2" height="10.8" rx="1.3"
 fill="currentColor"/></svg></span>, per scegliere **come** leggere: l'analogia
-quotidiana o la trattazione formale con le formule. La scelta vale per tutto
-il libro e si cambia quando vuoi.
+quotidiana o la trattazione formale con le formule. Ogni concetto che conta è
+spiegato in tutti e due i modi, e nessuno dei due è una versione ridotta
+dell'altro: raccontano la stessa cosa a profondità diverse, quindi scegliendo
+non perdi niente. La scelta vale per tutto il libro e si cambia quando vuoi.
 
 ```{epigraph}
 Invece di cercare di produrre un programma che simuli la mente adulta, perché non provare piuttosto a produrne uno che simuli quella di un bambino?
@@ -37,7 +39,7 @@ Invece di cercare di produrre un programma che simuli la mente adulta, perché n
 
 Addentrarsi le prime volte nel mondo del Machine Learning e dell'Intelligenza Artificiale con Python può sembrare una sfida complessa, ma con la giusta guida può diventare un viaggio affascinante e gratificante. Paithon Book è qui per rendere questo percorso più semplice e accessibile, offrendo risorse chiare e pratiche, tutte in italiano, per chiunque voglia imparare, indipendentemente dal proprio livello di partenza.
 
-Questa versione online del libro **è gratuita** ed **in continuo aggiornamento** per stare al passo con le innovazioni del campo: aggiungiamo regolarmente sezioni, argomenti ed esempi in Python. Il codice del libro usa **PyTorch**, NumPy e scikit-learn. Dove in alto compare **Esegui il codice**, la pagina ha un notebook compagno che si apre su Colab con le sue celle in ordine; due capitoli hanno anche un notebook proprio, con l'icona 🚀. Altrove il codice si legge qui e si copia nel proprio editor.
+Questa versione online del libro **è gratuita** ed **in continuo aggiornamento** per stare al passo con le innovazioni di questa materia: aggiungiamo regolarmente sezioni, argomenti ed esempi in Python. Il codice usa **PyTorch**, NumPy e scikit-learn, e per provarlo non devi installare niente. Dove in alto compare **Esegui il codice**, quel capitolo ha un *notebook*: una copia della pagina in cui i blocchi di codice, invece di stare lì solo da leggere, si eseguono uno dopo l'altro. Il collegamento lo apre su Google Colab, un servizio gratuito che fa girare il codice su una macchina di Google (serve un account Google). Qualche pagina è essa stessa un notebook, e si riconosce dall'icona a razzo 🚀 in alto a destra: lì il codice si esegue restando nel libro. Altrove si legge qui e si copia dove preferisci.
 
 Che cosa è cambiato, e quando, sta scritto: {doc}`Aggiornamenti </aggiornamenti>` è il registro delle sezioni nuove e delle correzioni, una voce per pubblicazione, con il link alla pagina toccata. Questa è la versione **{{ versione }}** ({{ data_versione }}).
 
@@ -45,7 +47,7 @@ Che cosa è cambiato, e quando, sta scritto: {doc}`Aggiornamenti </aggiornamenti
 
 ## Il percorso
 
-{{ n_capitoli_lettere|capitalize }} capitoli, dall'alfabeto (Python e matematica) alle frontiere (Transformer, modelli di diffusione, agenti LLM, generazione audio, produzione con l'MLOps). Ogni capitolo si legge da solo, ma l'ordine è pensato per costruire un mattone alla volta.
+{{ n_capitoli_lettere|capitalize }} capitoli, dall'alfabeto (Python e matematica) alle frontiere (Transformer, modelli di diffusione, agenti LLM, generazione audio, produzione con l'MLOps). Se qui sotto trovi molti nomi che non ti dicono niente, è normale, ed è il punto: sono le cose che imparerai. I capitoli si leggono nell'ordine, e l'ordine è pensato per costruire un mattone alla volta, ognuno dando per acquisito quello prima; chi le basi già le ha salta dove gli pare.
 
 <div class="pt-chapters"> <a class="pt-card"
 href="Introduzione/overview.html"> <span class="pt-card-num"></span> <span
@@ -57,11 +59,13 @@ class="pt-card-desc">Il linguaggio dell'AI: basi, NumPy, pandas e
 matplotlib.</span> </a> <a class="pt-card" href="Matematica/overview.html">
 <span class="pt-card-num"></span> <span class="pt-card-title">Richiami di
 matematica</span> <span class="pt-card-desc">Algebra lineare, ottimizzazione,
-probabilità, teoria dell'informazione, analisi numerica.</span> </a> <a
+probabilità, teoria dell'informazione, analisi numerica e la matematica di un
+LLM.</span> </a> <a
 class="pt-card" href="MachineLearning/overview.html"> <span
 class="pt-card-num"></span> <span class="pt-card-title">Machine
-Learning</span> <span class="pt-card-desc">Imparare dai dati: modelli
-supervisionati, overfitting, metriche, iperparametri.</span> </a> <a
+Learning</span> <span class="pt-card-desc">Imparare dai dati: apprendimento
+supervisionato, overfitting e metriche, alberi ed ensemble, SVM, clustering e
+riduzione della dimensionalità, dati che cambiano.</span> </a> <a
 class="pt-card" href="RetiNeurali/overview.html"> <span
 class="pt-card-num"></span> <span class="pt-card-title">Reti Neurali</span>
 <span class="pt-card-desc">Dal percettrone alla backpropagation: come una rete
@@ -75,28 +79,32 @@ architettura, memoria, kernel, GEMM e tensor core, Flash Attention e
 parallelismo su più GPU.</span> </a> <a class="pt-card"
 href="DeepLearning/overview.html"> <span class="pt-card-num"></span> <span
 class="pt-card-title">Deep Learning</span> <span class="pt-card-desc">Reti
-convoluzionali, ottimizzazione, regolarizzazione e architetture
-storiche.</span> </a> <a class="pt-card"
+convoluzionali, ottimizzazione, regolarizzazione, architetture storiche e una
+rete sola per molti compiti.</span> </a> <a class="pt-card"
 href="VisioneArtificiale/overview.html"> <span class="pt-card-num"></span>
 <span class="pt-card-title">Visione Artificiale</span> <span
 class="pt-card-desc">Classificare, riconoscere, segmentare: le macchine che
 vedono.</span> </a> <a class="pt-card"
 href="ReinforcementLearning/overview.html"> <span class="pt-card-num"></span>
 <span class="pt-card-title">Reinforcement Learning</span> <span
-class="pt-card-desc">Imparare per tentativi: MDP, funzioni di valore e
-Q-learning.</span> </a> <a class="pt-card"
+class="pt-card-desc">Imparare per tentativi: i bandit, gli MDP e le funzioni
+di valore, i metodi Monte Carlo, il Q-learning.</span> </a> <a class="pt-card"
 href="DeepReinforcementLearning/overview.html"> <span
 class="pt-card-num"></span> <span class="pt-card-title">Deep Reinforcement
 Learning</span> <span class="pt-card-desc">Quando il RL incontra le reti
-profonde: DQN e policy gradient.</span> </a> <a class="pt-card"
+profonde: DQN e policy gradient, controllo continuo, RL basato su modello,
+imitazione, offline RL, esplorazione e reward hacking.</span> </a> <a class="pt-card"
 href="NaturalLanguageProcessing/overview.html"> <span
 class="pt-card-num"></span> <span class="pt-card-title">Natural Language
 Processing</span> <span class="pt-card-desc">Dal testo ai numeri: token,
-embedding, reti ricorrenti, traduzione e attenzione.</span> </a> <a
+embedding, modelli n-gram, reti ricorrenti, traduzione e attenzione, entità,
+parsing, dialogo e chatbot.</span> </a> <a
 class="pt-card" href="Transformers/overview.html"> <span
 class="pt-card-num"></span> <span class="pt-card-title">Transformers</span>
 <span class="pt-card-desc">L'architettura che ha cambiato tutto:
-self-attention, GPT, BERT e multimodalità.</span> </a> <a class="pt-card"
+self-attention, GPT e BERT, i grandi modelli linguistici, Mixture of Experts,
+il post-addestramento (RLHF, DPO), retrieval e RAG, multimodalità e
+multilingua.</span> </a> <a class="pt-card"
 href="AttenzioneLineare/overview.html"> <span class="pt-card-num"></span>
 <span class="pt-card-title">Attenzione lineare</span> <span
 class="pt-card-desc">Oltre il costo quadratico: dal trucco del kernel alla
@@ -174,8 +182,9 @@ delle feature, spiegazioni locali (LIME, SHAP, controfattuali), attribuzione
 </a> <a class="pt-card" href="AIResponsabile/overview.html"> <span
 class="pt-card-num"></span> <span class="pt-card-title">AI responsabile</span>
 <span class="pt-card-desc">Equità e bias algoritmico, privacy (differential
-privacy, federated learning) e robustezza agli attacchi avversari,
-allineamento (RLHF, DPO) e governance (l'AI Act europeo).</span> </a> <a
+privacy, federated learning) e robustezza agli attacchi avversari, attaccare e
+difendere un LLM (prompt injection, jailbreak), allineamento (RLHF, DPO) e
+governance (l'AI Act europeo).</span> </a> <a
 class="pt-card" href="Conclusioni/overview.html"> <span
 class="pt-card-num"></span> <span class="pt-card-title">Conclusioni</span>
 <span class="pt-card-desc">Bilancio del viaggio e letture per
@@ -205,9 +214,18 @@ Le due cose convivono. L'interruttore decide da dove *parte* ogni pagina; aprire
 
 Ad esempio, ecco la funzione ReLU nelle due modalità:
 
-````{tab} Elementare
+`````{tab} Elementare
 
-Immagina di avere un controllo, denominato $f(x)$, per il trasferimento di una somma di denaro $x$ in Euro (€). Se il valore della transazione è positivo, $x > 0$, il filtro $f(x)$ permette il passaggio esattamente di $x$ €. Se la transazione ha un valore negativo o zero, il controllo blocca la transazione e restituisce $0$, evitando così prelievi non autorizzati dal conto del destinatario. In altre parole, la funzione ReLU permette il passaggio di una quantità uguale a quella in ingresso solo se quest'ultima è positiva, altrimenti blocca completamente il passaggio (restituendo zero).
+La ReLU è un filtro, e per parlare di filtri serve una scrittura che conviene
+fissare subito: $f(x)$ si legge «quello che il filtro restituisce quando gli si
+dà $x$». La $x$ è il numero che entra, $f(x)$ quello che esce.
+
+Immagina allora uno sportello che smista movimenti di denaro: entra una somma
+$x$ in Euro (€) e lo sportello lascia passare soltanto gli importi positivi. Se
+$x$ è positivo, esce $x$ tale e quale; se $x$ è negativo o zero, cioè un
+movimento che toglierebbe denaro invece di aggiungerne, non passa niente ed
+esce $0$. Tutto qui: la ReLU lascia passare quello che entra quando è positivo,
+e blocca completamente il resto.
 
 Esempi:
 
@@ -218,9 +236,15 @@ x &= -3, & f(x) &= 0 \\
 \end{align*}
 $
 
-````
+E perché occuparsene? Perché un filtro così banale, ripetuto milioni di volte,
+è uno dei mattoni delle reti neurali: è la regola che decide quali segnali
+proseguono dentro la rete e quali si fermano lì. Il capitolo sulle reti neurali
+racconta perché proprio questa funzioni meglio di alternative in apparenza più
+raffinate.
 
-````{tab} Superiore
+`````
+
+`````{tab} Superiore
 
 La funzione di attivazione ReLU (Rectified Linear Unit) è definita come:
 
@@ -239,9 +263,13 @@ f(x) = \begin{cases}
 $$
 
 Questa funzione prende un input $x$ e restituisce $x$ se $x$ è positivo; altrimenti, restituisce zero. \
-La ReLU è ampiamente utilizzata nelle reti neurali perché introduce una non linearità essenziale e la sua derivata vale esattamente $1$ per $x > 0$: durante la *backpropagation* il gradiente attraversa gli strati senza attenuarsi, evitando la saturazione che affligge sigmoide e tangente iperbolica. In $x = 0$ la funzione non è derivabile (il grafico ha un punto angoloso); il sottodifferenziale è l'intervallo $[0, 1]$ e nella pratica, PyTorch compreso, si adotta la convenzione $f'(0) = 0$.
+La ReLU è ampiamente utilizzata nelle reti neurali perché introduce una non linearità essenziale e la sua derivata vale esattamente $1$ per $x > 0$: durante la *backpropagation*, **lungo i cammini attivi**, il gradiente non si attenua per colpa dell'attivazione, e sparisce la saturazione che affligge sigmoide e tangente iperbolica.
 
-````
+Attenzione però a non chiedere alla ReLU più di quanto dia. Il gradiente che attraversa uno strato è $\mathbf{W}^\top \mathrm{diag}(\mathbb{1}[z>0])$: l'attenuazione la producono i pesi e le unità spente, non l'attivazione. Che il segnale sopravviva a molti strati dipende quindi dalla **scala dell'inizializzazione**, e con quella sbagliata si vede subito: attraversando cinquanta strati di sole ReLU, con la scala di Xavier (giusta per la tangente iperbolica) il gradiente si attenua di sette ordini di grandezza, e con una scala un po' troppo grande esplode di otto. È proprio la ReLU a richiedere una scala sua, il fattore $2$ di He, perché azzera metà delle unità: la frazione di derivate nulle, misurata, è $0{,}50$.
+
+In $x = 0$ la funzione non è derivabile (il grafico ha un punto angoloso); il sottodifferenziale è l'intervallo $[0, 1]$ e nella pratica, PyTorch compreso, si adotta la convenzione $f'(0) = 0$.
+
+`````
 
 ---
 
@@ -254,7 +282,7 @@ Ogni progetto ha bisogno di supporto per crescere e migliorare. I progetti open 
     <script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="paithon.it" data-color="#B5532C" data-emoji="🔋"  data-font="Cookie" data-text="Ricarica la mia energia" data-outline-color="#1A1A1A" data-font-color="#ffffff" data-coffee-color="#C9A961" ></script>
 </span>
 
-- Aiutaci a scoprire errori e migliorare il progetto aprendo un Issue tramite le pagine del sito.
+- Aiutaci a scoprire errori e migliorare il progetto: selezionando un pezzo di testo in qualunque pagina compare un pulsante che apre una segnalazione (un *issue*) già compilata su GitHub, dove la correzione viene discussa e poi accolta.
 - Invia i tuoi feedback ✉ a *info@paithon.it*. Saranno utilizzati esclusivamente per migliorare e arricchire il libro.
 
 ---

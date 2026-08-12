@@ -45,23 +45,35 @@ a sparire nel rumore.
 
 `````{tab} Elementare
 
-Immagina di cercare un amico. In una **strada** (una dimensione) è facile:
-sarà a pochi metri da te. In una **piazza** (due dimensioni) devi guardarti
-attorno un po' di più. In un **grattacielo** (tre dimensioni) devi anche
-scegliere il piano. Aggiungi una dimensione e lo spazio da esplorare si gonfia
-ogni volta: in dieci, cento, mille dimensioni, tutto finisce per essere
-lontanissimo da tutto il resto; non ci sono più «vicini», perché lo spazio è
-troppo vuoto.
+Prima di tutto, di quali dimensioni stiamo parlando? Delle **colonne della
+tabella**: nella sezione sull'apprendimento supervisionato abbiamo visto che
+ogni colonna è una direzione dello spazio e ogni riga un punto. Se di ogni
+cliente registriamo età, reddito, spese mensili e altre novantasette misure,
+quel cliente è un punto in uno spazio a cento dimensioni. Non lo possiamo
+disegnare, ma i conti (distanze comprese) si fanno identici a quelli su un
+foglio.
+
+Immagina allora di cercare un amico. In una **strada** (una dimensione) è
+facile: sarà a pochi metri da te. In una **piazza** (due dimensioni) devi
+guardarti attorno un po' di più. In un **grattacielo** (tre dimensioni) devi
+anche scegliere il piano. Aggiungi una dimensione, cioè una colonna, e lo
+spazio da esplorare si gonfia ogni volta: in dieci, cento, mille dimensioni,
+tutto finisce per essere lontanissimo da tutto il resto; non ci sono più
+«vicini», perché lo spazio è troppo vuoto.
 
 C'è un secondo effetto, ancora più controintuitivo: in tante dimensioni, quasi
 tutto lo spazio si accalca **sui bordi**. Prendi una scatola e considera il
-guscio sottile vicino alla superficie, spesso un decimo del lato. In una
-dimensione (un segmento) quel guscio è il 20% del totale. In dieci dimensioni
-è già l'89%. In cento, praticamente il 100%: quasi nessun punto sta «nel
-mezzo», stanno tutti appiccicati alle pareti. In un mondo così svuotato e
-spinto ai margini, gli algoritmi che si fidano delle distanze («chi è vicino a
-chi») vanno in crisi. Da qui l'idea di **ridurre le dimensioni**: buttare via
-quelle che non servono e tenere solo ciò che conta davvero.
+guscio sottile vicino alla superficie, spesso un decimo del lato. Il conto lo
+puoi fare da solo, perché è una potenza. Il «cuore» interno, quello che resta
+tolto il guscio, è una scatola di lato $0{,}8$ (un decimo tolto di qua e uno di
+là): in una dimensione occupa $0{,}8$ del totale, in due $0{,}8 \times 0{,}8 =
+0{,}64$, in dieci $0{,}8$ moltiplicato per sé stesso dieci volte, cioè $0{,}11$.
+Quindi il guscio è il 20% in una dimensione, il 36% in due, e già l'**89%** in
+dieci. In cento dimensioni il cuore è praticamente zero e il guscio è quasi il
+100%: nessun punto sta «nel mezzo», stanno tutti appiccicati alle pareti. In un
+mondo così svuotato e spinto ai margini, gli algoritmi che si fidano delle
+distanze («chi è vicino a chi») vanno in crisi. Da qui l'idea di **ridurre le
+dimensioni**: togliere direzioni tenendo solo ciò che conta davvero.
 
 `````
 
@@ -90,7 +102,7 @@ $$
 
 Il punto più vicino e il più lontano finiscono per essere quasi equidistanti:
 la nozione stessa di «vicinanza» perde di significato, e con essa vacillano
-$k$-NN, il clustering per distanza e la stima di densità {cite}`geron2019hands`.
+$k$-NN, il clustering per distanza e la stima di densità {cite}`geron2022hands`.
 La risposta è cercare un sottospazio di dimensione $k \ll d$ che conservi
 l'informazione utile: è la **riduzione della dimensionalità**.
 
@@ -121,39 +133,55 @@ che si nasconde la maggior parte delle differenze tra un esempio e l'altro.
 Poi cerca la direzione più dispersa tra quelle rimaste (perpendicolare alla
 prima), e così via. Se le prime due o tre direzioni catturano quasi tutta la
 dispersione, possiamo buttare le altre e rappresentare ogni dato con due o tre
-numeri soltanto, quasi senza perdite. La «dispersione» ha un nome tecnico che
-già conosciamo: **varianza**.
+numeri soltanto, quasi senza perdite.
+
+La «dispersione» ha un nome tecnico, **varianza**, ed è la stessa parola che
+abbiamo già usato parlando del compromesso bias-varianza. **Ma non è la stessa
+cosa, e conviene tenerle separate.** Là la varianza era l'irrequietezza di un
+*modello*: quanto cambiano le sue risposte se lo riaddestriamo su un campione
+diverso. Qui è una proprietà dei *dati*, e non c'è nessun modello in giro:
+quanto sono sparpagliati i punti lungo una direzione. Stessa parola perché il
+conto che si fa è lo stesso (quanto le cose si scostano dalla loro media), ma
+la cosa misurata è diversa: là un modello, qui un mucchio di numeri.
 
 `````
 
 `````{tab} Superiore
 
-Sia $X \in \mathbb{R}^{m \times d}$ la matrice dei dati, con le feature già
+Sia $\mathbf{X} \in \mathbb{R}^{m \times d}$ la matrice dei dati, con le feature già
 **centrate** (media di colonna nulla) e, di norma, **standardizzate** (varianza
 unitaria, così che una feature misurata in metri non domini una misurata in
 chilometri). La dispersione dei dati è riassunta dalla **matrice di
 covarianza**
 
 $$
-C = \frac{1}{m}\, X^{\top} X \in \mathbb{R}^{d \times d},
+\mathbf{C} = \frac{1}{m}\, \mathbf{X}^{\top} \mathbf{X} \in \mathbb{R}^{d \times d},
 $$
 
 dove $C_{jk}$ è la covarianza tra la feature $j$ e la feature $k$. La PCA
-cerca il versore $u$ che massimizza la varianza dei dati proiettati,
-$\operatorname{Var}(Xu) = u^{\top} C\, u$, con il vincolo $\lVert u \rVert = 1$.
+cerca il versore $\mathbf{u}$ che massimizza la varianza dei dati proiettati,
+$\operatorname{Var}(\mathbf{X}\mathbf{u}) =
+\mathbf{u}^{\top}\mathbf{C}\,\mathbf{u}$, con il vincolo
+$\lVert \mathbf{u} \rVert = 1$.
 Con i moltiplicatori di Lagrange il problema diventa
 
 $$
-C\, u = \lambda\, u ,
+\mathbf{C}\, \mathbf{u} = \lambda\, \mathbf{u} ,
 $$
 
-cioè le direzioni cercate sono gli **autovettori** di $C$, e la varianza
+cioè le direzioni cercate sono gli **autovettori** di $\mathbf{C}$, e la varianza
 catturata da ciascuna è il corrispondente **autovalore** $\lambda$. Ordinando
 gli autovalori $\lambda_1 \ge \lambda_2 \ge \dots \ge \lambda_d \ge 0$, la
 prima componente principale è l'autovettore di $\lambda_1$, la seconda quello
-di $\lambda_2$, e così via: sono ortogonali tra loro perché $C$ è simmetrica.
-Proiettare su $u_1, \dots, u_k$ (con $k \ll d$) dà la rappresentazione ridotta
-$Z = X\,U_k$, dove $U_k$ raccoglie i primi $k$ autovettori in colonna.
+di $\lambda_2$, e così via; e si possono sempre **scegliere ortogonali** fra
+loro, perché $\mathbf{C}$ è simmetrica (con autovalori distinti lo sono per
+forza; se un autovalore è ripetuto, il teorema spettrale garantisce che una
+base ortonormale del suo autospazio esiste, ed è quella che ogni
+implementazione restituisce).
+Proiettare su $\mathbf{u}_1, \dots, \mathbf{u}_k$ (con $k \ll d$) dà la
+rappresentazione ridotta
+$\mathbf{Z} = \mathbf{X}\,\mathbf{U}_k$, dove $\mathbf{U}_k$ raccoglie i
+primi $k$ autovettori in colonna.
 
 `````
 
@@ -165,10 +193,16 @@ punti in due dimensioni, da proiettare su una sola.
 Disegna quattro punti su un foglio a quadretti: $(2,2)$ e $(-2,-2)$ sulla
 diagonale che sale, $(1,-1)$ e $(-1,1)$ su quella che scende. Lo «stormo» è
 chiaramente più allungato lungo la diagonale che sale: i due punti che ci
-stanno sopra sono i più lontani dal centro. Se misuriamo la dispersione (la
-varianza di prima) nelle due direzioni, lungo la diagonale che sale vale $4$
-e lungo l'altra vale $1$: la prima direzione, da sola, cattura $4$ su $5$,
-cioè l'$80\%$ del totale.
+stanno sopra sono i più lontani dal centro.
+
+Misuriamo la dispersione nelle due direzioni, e i conti li puoi rifare con
+Pitagora. Lungo la diagonale che sale, i due punti che ci stanno sopra distano
+dal centro $\sqrt{2^2+2^2} = \sqrt{8}$, mentre gli altri due la attraversano
+esattamente al centro e distano $0$: la dispersione, cioè la media dei quadrati
+di quelle quattro distanze, vale $(8 + 0 + 8 + 0)/4 = 4$. Lungo la diagonale
+che scende succede il contrario, con distanze $\sqrt{1^2+1^2} = \sqrt2$ per due
+punti e $0$ per gli altri due: $(0+2+0+2)/4 = 1$. Quindi la prima direzione, da
+sola, cattura $4$ su $5$, cioè l'$80\%$ del totale.
 
 Proiettare significa far cadere ogni punto, come un'ombra, sulla diagonale
 che sale. I due punti che già ci stavano sopra conservano tutta la loro
@@ -184,7 +218,7 @@ Prendiamo quattro punti già centrati (media nulla), così da saltare la
 sottrazione della media:
 
 $$
-X = \{(2,2),\ (1,-1),\ (-2,-2),\ (-1,1)\}.
+\mathbf{X} = \{(2,2),\ (1,-1),\ (-2,-2),\ (-1,1)\}.
 $$
 
 La matrice di covarianza, dividendo per $m = 4$, ha elementi
@@ -202,37 +236,38 @@ $$
 quindi
 
 $$
-C = \begin{pmatrix} 2{,}5 & 1{,}5 \\ 1{,}5 & 2{,}5 \end{pmatrix}.
+\mathbf{C} = \begin{pmatrix} 2{,}5 & 1{,}5 \\ 1{,}5 & 2{,}5 \end{pmatrix}.
 $$
 
-Gli autovalori risolvono $\det(C - \lambda I) = 0$, cioè
+Gli autovalori risolvono $\det(\mathbf{C} - \lambda \mathbf{I}) = 0$, cioè
 $(2{,}5-\lambda)^2 - 1{,}5^2 = 0$, da cui $2{,}5 - \lambda = \pm 1{,}5$ e
 
 $$
 \lambda_1 = 4, \qquad \lambda_2 = 1 .
 $$
 
-Gli autovettori corrispondenti sono $u_1 = \tfrac{1}{\sqrt2}(1, 1)$ (la
-diagonale che sale) e $u_2 = \tfrac{1}{\sqrt2}(1, -1)$. La **varianza
+Gli autovettori corrispondenti sono $\mathbf{u}_1 = \tfrac{1}{\sqrt2}(1, 1)$
+(la
+diagonale che sale) e $\mathbf{u}_2 = \tfrac{1}{\sqrt2}(1, -1)$. La **varianza
 spiegata** dalla prima componente è
 
 $$
 \frac{\lambda_1}{\lambda_1 + \lambda_2} = \frac{4}{4 + 1} = 0{,}8,
 $$
 
-l'80%: proiettando su $u_1$ soltanto, buttiamo via una dimensione ma
+l'80%: proiettando su $\mathbf{u}_1$ soltanto, buttiamo via una dimensione ma
 conserviamo i quattro quinti della dispersione. La proiezione di ogni punto è
-il prodotto scalare con $u_1$:
+il prodotto scalare con $\mathbf{u}_1$:
 
 $$
-(2,2)\!\cdot\! u_1 = \tfrac{4}{\sqrt2} = 2\sqrt2,\quad
-(1,-1)\!\cdot\! u_1 = 0,\quad
-(-2,-2)\!\cdot\! u_1 = -2\sqrt2,\quad
-(-1,1)\!\cdot\! u_1 = 0.
+(2,2)\!\cdot\! \mathbf{u}_1 = \tfrac{4}{\sqrt2} = 2\sqrt2,\quad
+(1,-1)\!\cdot\! \mathbf{u}_1 = 0,\quad
+(-2,-2)\!\cdot\! \mathbf{u}_1 = -2\sqrt2,\quad
+(-1,1)\!\cdot\! \mathbf{u}_1 = 0.
 $$
 
 I due punti «fuori diagonale» collassano a $0$ (stavano interamente lungo la
-direzione scartata $u_2$), mentre i due «in diagonale» conservano tutta la
+direzione scartata $\mathbf{u}_2$), mentre i due «in diagonale» conservano tutta la
 loro distanza.
 
 `````
@@ -315,21 +350,32 @@ Ottimi per l'occhio, pessimi per il righello.
 
 t-SNE modella le vicinanze come probabilità. Nello spazio originale la
 somiglianza tra i punti $i$ e $j$ è una gaussiana sulla loro distanza,
-$p_{j\mid i} \propto \exp(-\lVert X_i - X_j\rVert^2 / 2\sigma_i^2)$, con
-$\sigma_i$ tarato localmente da un iperparametro, la *perplexity*. Nello
+$p_{j\mid i} \propto \exp(-\lVert \mathbf{x}_i - \mathbf{x}_j\rVert^2 / 2\sigma_i^2)$, con
+$\sigma_i$ tarato localmente da un iperparametro, la *perplexity*. Queste
+condizionate non sono simmetriche ($p_{j\mid i} \neq p_{i\mid j}$, perché
+$\sigma_i$ e $\sigma_j$ differiscono) e vengono simmetrizzate in una congiunta,
+$p_{ij} = (p_{j\mid i} + p_{i\mid j})/2n$: è il passaggio che distingue t-SNE
+dal SNE originale di Hinton e Roweis. Nello
 spazio ridotto usa invece una $t$ di Student a un grado di libertà (con code
 pesanti, che evitano l'affollamento al centro),
-$q_{ij} \propto (1 + \lVert Z_i - Z_j\rVert^2)^{-1}$, e dispone i punti $Z_i$
+$q_{ij} \propto (1 + \lVert \mathbf{z}_i - \mathbf{z}_j\rVert^2)^{-1}$, e
+dispone i punti $\mathbf{z}_i$
 minimizzando la divergenza di Kullback–Leibler $\mathrm{KL}(P \Vert Q)$ tra le
-due distribuzioni. Poiché la KL pesa molto le vicinanze e poco le lontananze,
+due distribuzioni **congiunte**. Poiché la KL pesa molto le vicinanze e poco le
+lontananze,
 t-SNE **preserva la struttura locale** ma distorce quella globale: distanze
 tra cluster, densità e dimensioni apparenti sui grafici **non sono
 quantitativamente affidabili**.
 
 UMAP parte da fondamenta diverse (una costruzione su grafi e topologia) ma
 persegue un obiettivo simile; in pratica è **più veloce**, scala meglio a
-milioni di punti e tende a **preservare meglio la struttura globale**, pur
-condividendo lo stesso monito: sono strumenti di visualizzazione, non di
+milioni di punti e tende a **preservare meglio la struttura globale**. Su
+quest'ultimo punto vale però una precisazione che ridimensiona il confronto:
+Kobak e Linderman {cite}`kobak2021initialization` hanno mostrato che il divario
+si annulla inizializzando t-SNE con la PCA invece che a caso, ed è quindi
+l'**inizializzazione**, più dell'algoritmo, a decidere quanto sopravvive della
+struttura globale (in scikit-learn, `init="pca"`). Resta comunque lo stesso
+monito per entrambi: sono strumenti di visualizzazione, non di
 analisi metrica. Entrambi vanno usati per *esplorare*, mai per concludere che
 «questo gruppo è il doppio più lontano di quell'altro».
 
@@ -342,7 +388,11 @@ ispezionare gli *embedding* di una rete per capire cosa ha imparato; presentare
 a un pubblico la forma di dati che nessuno può visualizzare in $784$ dimensioni.
 
 **No**: come passo di preprocessing prima di un classificatore, per quello
-serve la PCA, che è lineare, invertibile e si applica a dati nuovi. Né t-SNE
+serve la PCA, che è lineare, si applica a **dati nuovi** con la stessa matrice
+e permette di tornare nello spazio di partenza con una ricostruzione
+approssimata (approssimata e non esatta: proiettare su meno direzioni butta via
+informazione per sempre, ed è lo stesso $20\%$ dell'esempio di poco fa; solo
+tenendo tutte le componenti la ricostruzione è esatta). Né t-SNE
 né UMAP producono una trasformazione riusabile in modo affidabile su punti mai
 visti, e la mappa cambia a ogni esecuzione con seed diversi.
 
@@ -407,18 +457,18 @@ $\mu_1, \dots, \mu_k$ e l'assegnazione dei punti che minimizzano l'**inerzia**
 (somma delle distanze quadrate dai rispettivi centroidi):
 
 $$
-\mathcal{L}(\mu, c) = \sum_{i=1}^{m} \bigl\lVert X_i - \mu_{c_i} \bigr\rVert^2,
+\mathcal{L}(\mu, c) = \sum_{i=1}^{m} \bigl\lVert \mathbf{x}_i - \mu_{c_i} \bigr\rVert^2,
 $$
 
-dove $c_i \in \{1, \dots, k\}$ è il cluster assegnato al punto $X_i$. L'algoritmo
+dove $c_i \in \{1, \dots, k\}$ è il cluster assegnato al punto $\mathbf{x}_i$. L'algoritmo
 di Lloyd minimizza $\mathcal{L}$ alternando due passi di coordinate:
 
 $$
 \textbf{assegnazione:}\quad
-c_i = \arg\min_{j} \lVert X_i - \mu_j \rVert^2,
+c_i = \arg\min_{j} \lVert \mathbf{x}_i - \mu_j \rVert^2,
 \qquad
 \textbf{aggiornamento:}\quad
-\mu_j = \frac{1}{|C_j|} \sum_{i \in C_j} X_i .
+\mu_j = \frac{1}{|C_j|} \sum_{i \in C_j} \mathbf{x}_i .
 $$
 
 Ciascun passo non aumenta mai $\mathcal{L}$, quindi la procedura converge, ma
@@ -433,6 +483,12 @@ $k = 2$:
 $$
 A(1,1),\ B(1,2),\ C(2,1),\ D(8,8),\ E(9,8),\ F(8,9).
 $$
+
+Il centro di un gruppo si chiama **centroide** e nelle formule si scrive con la
+lettera greca $\mu$ (*mi*), che in statistica indica da sempre una media: un
+centroide, in fondo, è la media delle posizioni dei suoi punti. Le distanze fra
+due punti le calcoliamo con Pitagora, come sul foglio a quadretti: differenza
+delle ascisse e delle ordinate, ciascuna al quadrato, sommate, e radice.
 
 Partiamo (di proposito male) con i centroidi $\mu_1 = (1,1)$ e
 $\mu_2 = (2,1)$, entrambi in mezzo al gruppo di sinistra.
@@ -462,7 +518,19 @@ due gruppi «veri».
 $\mu_1 = (\tfrac{4}{3}; \tfrac{4}{3}) \approx (1{,}33; 1{,}33)$ e
 $\mu_2 = (\tfrac{25}{3}; \tfrac{25}{3}) \approx (8{,}33; 8{,}33)$. Alla terza
 iterazione nessun punto cambia più gruppo: l'algoritmo è **a convergenza**.
-Nota come una partenza sbagliata si sia corretta da sola in due passi.
+Nota come una partenza sbagliata si sia corretta da sola in due passi
+({numref}`fig-kmeans-converge`): l'unico momento in cui succede qualcosa di non
+ovvio è quando $C$ cambia gruppo, e da lì in poi non si muove più niente.
+
+```{figure} ../figures/kmeans-converge.svg
+:name: fig-kmeans-converge
+:alt: I sei punti A, B, C, D, E, F dell'esempio su un piano, e due centroidi segnati con una x che partono tutti e due nel gruppo di sinistra. Poi si alternano due mosse: nell'assegnazione ogni punto prende il colore del centroide più vicino, nell'aggiornamento ogni centroide si sposta nella media dei suoi punti lasciando una scia tratteggiata. Alla seconda assegnazione il punto C passa al gruppo di sinistra; dopo il secondo aggiornamento nessun punto cambia più colore e l'algoritmo si ferma.
+:width: 90%
+
+Le due mosse sui sei punti dell'esempio: ogni punto prende il colore del
+centroide più vicino, poi ogni centroide si sposta nella media dei suoi punti.
+Al secondo giro $C$ cambia gruppo, e da lì non si muove più niente.
+```
 
 ### Quante famiglie? Scegliere k
 
@@ -508,9 +576,14 @@ I limiti di k-means, però, non si esauriscono nella scelta di $k$. L'algoritmo
 assume che i cluster siano **sferici** e di dimensione simile (minimizza
 distanze quadrate attorno a un centro), quindi inciampa su forme allungate o
 concentriche. Ed è **sensibile all'inizializzazione**: partenze diverse
-possono portare a minimi locali diversi. Il rimedio standard a quest'ultimo
-punto è **k-means++**, che sceglie i centroidi iniziali lontani tra loro
-invece che a caso: è oggi l'inizializzazione predefinita in scikit-learn.
+possono portare a soluzioni diverse, ciascuna delle quali è un **minimo
+locale**, cioè un assetto che non si può migliorare con una mossa piccola pur
+non essendo il migliore possibile (come una pallina che si ferma in una
+conchetta a mezza costa invece di arrivare a valle: da lì, in qualunque
+direzione si guardi, si sale). Il rimedio standard è
+**k-means++**, che sceglie i centroidi iniziali lontani tra loro
+invece che a caso: è oggi l'inizializzazione predefinita in scikit-learn. Il
+secondo rimedio è farlo ripartire più volte e tenere la soluzione migliore.
 
 ## DBSCAN: seguire la densità, non i centri
 
@@ -606,13 +679,21 @@ Resta un dettaglio che cambia tutto: quando due cluster contengono molti punti,
 cosa vuol dire che sono "vicini"? La risposta si chiama **linkage**, e la
 scelta produce alberi molto diversi:
 
-- **single**: distanza fra i due punti più vicini dei due gruppi. Segue bene
-  le forme allungate, ma soffre di *concatenamento*, basta un ponte di punti
-  sparsi per fondere due gruppi che a occhio sono separati;
-- **complete**: distanza fra i due punti più lontani. Dà cluster compatti e di
-  dimensioni simili, e spezza le forme allungate;
-- **average**: la media delle distanze fra tutte le coppie, un compromesso;
-- **Ward**: fonde la coppia che aumenta meno la varianza interna. È il default
+Immagina due comitive in gita e chiediti quanto distano fra loro: la risposta
+cambia secondo chi guardi.
+
+- **single** («legame singolo»): distanza fra i due membri più vicini, uno per
+  comitiva. Due gruppi sono vicini se anche solo due persone si sfiorano.
+  Segue bene le forme allungate (un serpente di punti resta un serpente), ma
+  soffre di *concatenamento*: basta una fila di passanti sparsi a fare da ponte
+  perché due comitive lontanissime vengano dichiarate una sola;
+- **complete** («legame completo»): distanza fra i due membri più lontani. Due
+  gruppi si fondono solo se stanno stretti *tutti quanti*: ne escono cluster
+  compatti e di dimensioni simili, al prezzo di spezzare le forme allungate;
+- **average**: la media delle distanze fra tutte le coppie, un compromesso fra
+  i due;
+- **Ward**: fonde la coppia che, una volta unita, resta la più raccolta (in
+  termini tecnici, quella che aumenta meno la varianza interna). È il default
   di scikit-learn e tende a produrre gruppi bilanciati: vicino nello spirito a
   k-means, con cui condivide il pregio e il difetto di preferire forme
   sferiche.
@@ -635,7 +716,12 @@ il suo centro**. Se un gruppo è una nuvola allungata e uno è una pallina
 stretta, il centro da solo non basta a distinguerli, e i punti sul confine
 finiscono dalla parte sbagliata.
 
-Le **misture gaussiane** cambiano due cose insieme.
+Le **misture gaussiane** cambiano due cose insieme. (Il nome viene da Carl
+Friedrich Gauss: una *gaussiana* è la curva a campana, quella che descrive
+l'altezza delle persone o gli errori di una misura, con tanti valori
+addensati attorno a una media e sempre meno man mano che ci si allontana. Una
+«mistura» di gaussiane è semplicemente più campane sovrapposte, una per
+gruppo.)
 
 La prima: di ogni gruppo non imparano solo il centro, ma anche la **forma**.
 Quanto è largo, quanto è allungato, in che direzione è orientato. Un gruppo
@@ -657,10 +743,13 @@ appartenenze usando le forme attuali, aggiorni le forme usando le appartenenze
 attuali, e ripeti. Ogni giro la spiegazione dei dati migliora un pochino,
 finché smette di migliorare.
 
-Quel ciclo si chiama **algoritmo EM** ed è una delle idee più riusate di tutta
-la statistica: lo stesso schema, sotto altri nomi, fa funzionare i vecchi
-sistemi di riconoscimento vocale e uno dei tokenizzatori che il libro
-incontrerà più avanti.
+Quel ciclo si chiama **algoritmo EM**, dalle due mosse che alterna:
+*expectation* (l'attesa, cioè indovinare a quale gruppo appartiene ogni punto,
+date le forme attuali) e *maximization* (la massimizzazione, cioè ricalcolare
+centri e forme al meglio, date quelle appartenenze). È una delle idee più
+riusate di tutta la statistica: lo stesso schema, sotto altri nomi, fa
+funzionare i vecchi sistemi di riconoscimento vocale e uno dei tokenizzatori
+che il libro incontrerà più avanti.
 
 `````
 
@@ -672,18 +761,18 @@ prima una componente e poi campionando dalla sua gaussiana. La densità è
 
 $$
 p(\mathbf{x}) = \sum_{k=1}^{K} \pi_k \,
-\mathcal{N}(\mathbf{x} \mid \boldsymbol{\mu}_k, \boldsymbol{\Sigma}_k),
+\mathcal{N}(\mathbf{x} \mid \mu_k, \Sigma_k),
 \qquad \pi_k \geq 0, \;\; \sum_k \pi_k = 1,
 $$
 
-con $\pi_k$ i pesi di mistura, $\boldsymbol{\mu}_k$ le medie e
-$\boldsymbol{\Sigma}_k$ le covarianze, che sono ciò che k-means non ha. Il
-parametro da stimare è $\theta = \{\pi_k, \boldsymbol{\mu}_k,
-\boldsymbol{\Sigma}_k\}$, per massima verosimiglianza:
+con $\pi_k$ i pesi di mistura, $\mu_k$ le medie e
+$\Sigma_k$ le covarianze, che sono ciò che k-means non ha. Il
+parametro da stimare è $\theta = \{\pi_k, \mu_k,
+\Sigma_k\}$, per massima verosimiglianza:
 
 $$
 \log p(\mathbf{X} \mid \theta) = \sum_{i=1}^{m} \log \sum_{k=1}^{K} \pi_k\,
-\mathcal{N}(\mathbf{x}^{(i)} \mid \boldsymbol{\mu}_k, \boldsymbol{\Sigma}_k).
+\mathcal{N}(\mathbf{x}^{(i)} \mid \mu_k, \Sigma_k).
 $$
 
 Il logaritmo di una somma non si separa, e annullando il gradiente non si
@@ -699,10 +788,10 @@ L'algoritmo **EM**, formalizzato da Dempster, Laird e Rubin nel 1977
 
 $$
 \gamma_{ik} = p(z^{(i)} = k \mid \mathbf{x}^{(i)}) =
-\frac{\pi_k \, \mathcal{N}(\mathbf{x}^{(i)} \mid \boldsymbol{\mu}_k,
-\boldsymbol{\Sigma}_k)}
-{\sum_{j} \pi_j \, \mathcal{N}(\mathbf{x}^{(i)} \mid \boldsymbol{\mu}_j,
-\boldsymbol{\Sigma}_j)} .
+\frac{\pi_k \, \mathcal{N}(\mathbf{x}^{(i)} \mid \mu_k,
+\Sigma_k)}
+{\sum_{j} \pi_j \, \mathcal{N}(\mathbf{x}^{(i)} \mid \mu_j,
+\Sigma_j)} .
 $$
 
 **Passo M** (*maximization*): a responsabilità fisse, ristima i parametri con
@@ -710,11 +799,11 @@ medie pesate, dove il peso è la responsabilità e $m_k = \sum_i \gamma_{ik}$ è
 la massa della componente:
 
 $$
-\boldsymbol{\mu}_k = \frac{1}{m_k}\sum_i \gamma_{ik}\,\mathbf{x}^{(i)},
+\mu_k = \frac{1}{m_k}\sum_i \gamma_{ik}\,\mathbf{x}^{(i)},
 \qquad
-\boldsymbol{\Sigma}_k = \frac{1}{m_k}\sum_i \gamma_{ik}
-(\mathbf{x}^{(i)} - \boldsymbol{\mu}_k)(\mathbf{x}^{(i)} -
-\boldsymbol{\mu}_k)^\top,
+\Sigma_k = \frac{1}{m_k}\sum_i \gamma_{ik}
+(\mathbf{x}^{(i)} - \mu_k)(\mathbf{x}^{(i)} -
+\mu_k)^\top,
 \qquad
 \pi_k = \frac{m_k}{m}.
 $$
@@ -737,16 +826,22 @@ anche a quello che il clustering non fa, cioè segnalare i punti improbabili.
 dati che cambiano.
 
 Poiché il modello ha una verosimiglianza, il numero di componenti si sceglie
-con un criterio di informazione invece che a occhio. **BIC** e **AIC**
-sommano alla log-verosimiglianza una penalità sul numero di parametri, e si
-prende il $K$ che li minimizza: una risposta più difendibile del gomito o
+con un criterio di informazione invece che a occhio. **BIC** e **AIC** sommano
+a $-2$ volte la log-verosimiglianza una penalità sul numero di parametri
+($p\log m$ per il BIC, $2p$ per l'AIC), e si prende il $K$ che li **minimizza**:
+il primo termine premia chi spiega bene i dati (cambiato di segno, quindi
+minimizzarlo vuol dire massimizzare la verosimiglianza), il secondo fa pagare i
+parametri usati per farlo. È la convenzione di `GaussianMixture.bic`, quella
+usata dal codice più sotto, e una risposta più difendibile del gomito o
 della silhouette, che sono diagnostiche geometriche senza un modello sotto.
 
 `````
 
 L'algoritmo EM merita di essere riconosciuto quando ricompare, perché ricompare
-spesso e sotto altri nomi. Il capitolo sul riconoscimento vocale racconta i
-sistemi **HMM-GMM** che hanno dominato l'ASR per trent'anni: le GMM sono
+spesso e sotto altri nomi. Il capitolo sul riconoscimento vocale (in inglese
+*Automatic Speech Recognition*, da cui la sigla **ASR**) racconta i sistemi che
+per trent'anni hanno trascritto il parlato accoppiando una catena di stati
+nascosti alle misture gaussiane di questa sezione: le seconde sono proprio
 queste, e il loro addestramento è EM. Il capitolo sui tokenizzatori descrive
 il modello **Unigram** di SentencePiece, che pota il vocabolario stimando le
 probabilità dei pezzi: anche lì il motore è EM, con la segmentazione al posto
@@ -835,10 +930,48 @@ allungate, e la frontiera a metà strada fra i due centri le taglia di
 traverso. La mistura arriva a $0{,}997$, perché ha imparato che i gruppi sono
 larghi in una direzione e stretti nell'altra. Restano **cinque punti** su
 seicento su cui il modello non si sbilancia oltre il 90%, e sono quelli in
-mezzo: non è un difetto, è l'unica risposta onesta lì. Il BIC, infine, tocca
-il minimo esattamente a $k=2$: avendo un modello probabilistico sotto, il
-numero dei gruppi si sceglie con un criterio invece che con un giudizio a
-occhio sul grafico.
+mezzo: non è un difetto, è l'unica risposta onesta lì.
+
+Resta l'ultima stampa, quella del **BIC**: un punteggio che mette insieme due
+cose opposte, quanto bene il modello spiega i dati e quanti parametri ha
+speso per farlo, e che quindi si può confrontare fra modelli di taglia diversa.
+Più basso è, meglio è. Qui tocca il minimo esattamente a $k=2$: avendo un
+modello probabilistico sotto, il numero dei gruppi si sceglie con un criterio
+invece che con un giudizio a occhio sul grafico.
+
+`````{tab} Elementare
+
+```{admonition} Da ricordare
+:class: important
+- Qui i dati arrivano **muti**, senza risposta giusta accanto, ed è il caso
+  della stragrande maggioranza dei dati del mondo. Si può chiedere loro due
+  cose: se si possono descrivere con meno colonne, e se contengono gruppi
+  naturali.
+- Troppe colonne sono un problema, non una ricchezza: in uno spazio con tante
+  direzioni i punti finiscono tutti lontani e tutti alla stessa distanza, e
+  «chi somiglia a chi» perde senso. È la **maledizione della dimensionalità**.
+- La **PCA** cerca le direzioni lungo cui i punti sono più sparpagliati e butta
+  le altre: è la fotografia dello stormo scattata dal lato giusto. Serve a
+  comprimere, a disegnare in due dimensioni ciò che ne ha cento, e a ripulire
+  dal rumore.
+- **t-SNE** e **UMAP** disegnano mappe bellissime, dove chi si somigliava
+  finisce vicino. Ma sono ottime per l'occhio e pessime per il righello: la
+  distanza fra due isole, la loro grandezza e quanto sono fitte non vogliono
+  dire quasi niente.
+- **k-means** raggruppa alternando due mosse: ognuno va al punto di ritrovo più
+  vicino, poi ogni ritrovo si sposta in mezzo ai suoi. Bisogna dirgli quanti
+  gruppi cercare, e preferisce i gruppi tondi e della stessa taglia.
+- **DBSCAN** guarda invece le zone fitte, come le luci di una città viste
+  dall'aereo: scopre da solo quanti gruppi ci sono, riconosce forme di qualunque
+  sagoma, e ha il buon senso di lasciare fuori i puntini isolati.
+- Le **misture gaussiane** imparano di ogni gruppo anche la forma, non solo il
+  centro, e invece di un'etichetta secca rispondono «al 90% di qua e al 10% di
+  là»: sul confine l'incertezza c'è davvero, ed è onesto dirlo.
+```
+
+`````
+
+`````{tab} Superiore
 
 ```{admonition} Da ricordare
 :class: important
@@ -867,5 +1000,8 @@ occhio sul grafico.
   di questo schema con covarianze sferiche che tendono a zero.
 - Avendo un modello probabilistico sotto, una mistura dà una **densità**
   (quindi serve anche per le anomalie) e permette di scegliere il numero di
-  componenti con **BIC** o **AIC** invece che a occhio.
+  componenti con **BIC** o **AIC** invece che a occhio: penalità sommata a
+  $-2\log L$, e si minimizza.
 ```
+
+`````

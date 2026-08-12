@@ -9,7 +9,7 @@
   </defs>
 
   <!-- titolo -->
-  <text x="320" y="26" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#1A1A1A">un array in memoria — un elemento per thread</text>
+  <text x="320" y="26" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#1A1A1A">un array in memoria: un elemento per thread</text>
 
   <!-- array di 8 celle -->
   <rect x="104" y="44" width="54" height="42" rx="4" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.6"/>

@@ -14,5 +14,5 @@
   <rect x="215" y="292" width="480" height="24" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5"/>
   <text x="705" y="309" font-family="sans-serif" font-size="14" fill="#1A1A1A">225 $</text>
   <line x1="215" y1="340" x2="215" y2="70" stroke="#1A1A1A" stroke-width="2"/>
-  <text x="400" y="372" font-family="sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">larghezza barre in scala logaritmica — tra il primo e l'ultimo caso c'è un fattore ~400</text>
+  <text x="400" y="372" font-family="sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">larghezza barre in scala logaritmica: tra il primo e l'ultimo caso c'è un fattore ~400</text>
 </svg>

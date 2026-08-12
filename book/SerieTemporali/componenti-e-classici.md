@@ -65,9 +65,22 @@ l'estate aggiunge sempre lo stesso numero di unità, qualunque sia il livello.
 Nel moltiplicativo l'ampiezza è *proporzionale* al livello: l'estate aggiunge
 una percentuale, quindi cresce con la serie (proprio come i passeggeri delle
 linee aeree). Un modello moltiplicativo si linearizza prendendo il logaritmo,
-$\log x_t = \log T_t + \log S_t + \log R_t$, che riporta al caso additivo. Le
-stime pratiche di $T_t$, $S_t$, $R_t$ si ottengono con medie mobili centrate
-(classical decomposition) o con metodi più robusti come STL
+$\log x_t = \log T_t + \log S_t + \log R_t$, che riporta al caso additivo.
+
+Attenzione al ritorno, perché è il passo che si dimentica: se si modella
+$\log x_t$ e poi si esponenzia la previsione, quello che si ottiene è la
+**mediana** di $x_{T+h}$, non la media, perché l'esponenziale non commuta col
+valore atteso ($\mathbb{E}[e^X] = e^{\mu+\sigma^2/2}$ per una gaussiana). Con
+$\sigma = 0{,}3$ la differenza è del $4{,}4\%$ verso il basso, e cresce come
+$e^{\sigma^2/2}$. Non è sempre un errore: se si punta alla mediana (ed è il caso
+se si giudica col MAE, o con la *pinball loss* al quantile $0{,}5$ della sezione
+seguente) esponenziare e basta è esattamente giusto; se serve la media, perché
+si sommano le previsioni di più prodotti o perché si giudica con l'RMSE, la
+correzione va applicata {cite}`hyndman2021forecasting`.
+
+Le stime pratiche di $T_t$, $S_t$, $R_t$ si ottengono con **medie mobili
+centrate** (ogni istante sostituito dalla media dei suoi vicini: la
+*classical decomposition*) o con metodi più robusti come STL
 {cite}`hyndman2021forecasting`.
 
 `````
@@ -79,23 +92,37 @@ $$
 x = (\underbrace{20}_{\text{inverno}},\ \underbrace{45}_{\text{primav.}},\ \underbrace{80}_{\text{estate}},\ \underbrace{35}_{\text{autunno}}).
 $$
 
-Il **trend** di quest'anno, in prima approssimazione, è la media annuale,
-$\bar{x} = (20+45+80+35)/4 = 45$. La **stagionalità additiva** è ciò che ogni
-trimestre aggiunge o toglie rispetto alla media:
+Con un anno solo di dati la direzione di fondo non si vede ancora (servirebbero
+più anni per dire se sale o scende): quello che si può stimare è il **livello**
+attorno a cui l'anno ruota, cioè la media dei quattro trimestri, che scriviamo
+$\bar{x}$ (la barra sopra una lettera vuol dire «media di»):
 
 $$
-S^{\text{add}} = (20-45,\ 45-45,\ 80-45,\ 35-45) = (-25,\ 0,\ +35,\ -10),
+\bar{x} = (20+45+80+35)/4 = 45.
 $$
 
-e questi scarti sommano a zero, com'è giusto per una stagionalità additiva. La
-**stagionalità moltiplicativa** è invece il rapporto rispetto al livello:
+La **stagionalità additiva**, che qui chiamiamo $S^{\text{add}}$ (le tre
+letterine in alto sono solo un'etichetta per distinguerla dalla prossima, non un
+esponente), è ciò che ogni trimestre aggiunge o toglie rispetto a quel livello.
+I quattro numeri stanno fra parentesi tutti insieme perché sono una lista
+ordinata, un valore per trimestre:
+
+$$
+S^{\text{add}} = (20-45,\ 45-45,\ 80-45,\ 35-45) = (-25,\ 0,\ +35,\ -10).
+$$
+
+Questi scarti sommano a zero, e non è un caso: sono scarti *dalla media*, e per
+definizione di media quello che sta sopra pareggia esattamente quello che sta
+sotto. La **stagionalità moltiplicativa** è invece il rapporto rispetto al
+livello:
 
 $$
 S^{\text{mol}} = \left(\tfrac{20}{45},\ \tfrac{45}{45},\ \tfrac{80}{45},\ \tfrac{35}{45}\right)
 \approx (0{,}44,\ 1{,}00,\ 1{,}78,\ 0{,}78),
 $$
 
-fattori che stavolta hanno **media** $1$. La lettura è diversa: l'additivo dice
+fattori che, per la stessa ragione di prima, hanno **media** $1$ invece di
+sommare a zero. La lettura è diversa: l'additivo dice
 «d'estate si vendono 35 mila euro *in più* del solito»; il moltiplicativo dice
 «d'estate si vende il 78% *in più*». Se l'anno prossimo la gelateria raddoppia
 il giro d'affari, il modello additivo continuerebbe a prevedere +35 mila,
@@ -106,9 +133,16 @@ sarebbe $82 - (45 + 35) = 2$.
 
 ## Stazionarietà e differenziazione
 
-L'introduzione al capitolo ha già dato la definizione: una serie è
-**stazionaria** (in senso debole) quando media, varianza e autocovarianza non
-dipendono dal tempo. Qui interessa il *perché* quasi tutti i modelli classici la
+L'introduzione al capitolo ha presentato la **stazionarietà** con l'immagine del
+fiume stabile; detta per esteso, una serie è stazionaria quando il valore attorno
+a cui balla, l'ampiezza con cui balla e il modo in cui due giorni si somigliano
+restano gli stessi lungo tutta la serie. L'ultimo punto è quello che
+conta e va detto con precisione: due istanti si somigliano in base a **quanto**
+distano fra loro, non a **quando** cadono nel calendario. (Questa è la
+stazionarietà detta *in senso debole*, perché riguarda solo la media e le
+somiglianze a due a due; la versione forte chiede che sia l'intera distribuzione
+a non spostarsi nel tempo, ed è una richiesta che nella pratica non si usa
+quasi mai.) Qui interessa il *perché* quasi tutti i modelli classici la
 pretendono. La ragione è semplice: un modello stima pochi parametri e li assume
 validi per tutta la serie, passato e futuro. Se la media scivola verso l'alto o
 l'ampiezza delle oscillazioni cambia, quei parametri descrivono un pezzo di
@@ -116,20 +150,49 @@ serie e ne sbagliano un altro. Rendere la serie stazionaria significa toglierle
 di dosso trend e stagionalità, così che ciò che resta *balli sempre allo stesso
 modo*.
 
-Lo strumento principe è la **differenziazione**: sostituire ogni valore con la
+Lo strumento più famoso è la **differenziazione**: sostituire ogni valore con la
 sua variazione rispetto al precedente,
 
 $$
 \nabla x_t = x_t - x_{t-1}.
 $$
 
-Toglie una tendenza lineare in un colpo solo. Sulla serie
-$100, 110, 120, 130$, che cresce di $10$ a ogni passo, la differenziata è
-$10, 10, 10$: il trend è sparito, resta una costante. Per la stagionalità si
-usa la **differenziazione stagionale** $\nabla_m x_t = x_t - x_{t-m}$, che
-sottrae il valore dello stesso periodo del ciclo precedente (mese contro
-stesso mese dell'anno prima). Prima di modellare, si differenzia quanto basta
-a stabilizzare la serie, e non di più, per non introdurre rumore inutile.
+Sulla serie $100, 110, 120, 130$, che cresce di $10$ a ogni passo, la
+differenziata è $10, 10, 10$: la salita è sparita, resta una costante. Il
+meccanismo si vede benissimo, ed è per questo che l'esempio è utile. Ma è anche,
+esattamente, il caso in cui differenziare **non** è la mossa giusta, e conviene
+capire subito perché.
+
+Le tendenze sono di due tipi, e chiedono due cure diverse. Una tendenza è
+**deterministica** quando la serie oscilla attorno a una retta: la retta c'è
+davvero, le scosse la fanno sbandare ma non la spostano, e domani si torna sulla
+riga di prima. È il caso della gelateria che cresce del tanto per cento all'anno
+e dell'esempio qui sopra. Una tendenza è invece **stocastica** quando la retta
+non c'è: la serie cammina alla cieca, e ogni scossa le sposta il livello **per
+sempre**, come il prezzo di un titolo che dopo un crollo riparte da dove è
+arrivato e non da dove sarebbe dovuto essere.
+
+La differenziazione è la cura del secondo caso, e lì è insostituibile. Sul
+primo fa un danno che ha un nome: dopo aver tolto la retta lascia nella serie una
+struttura che nella serie non c'era. Su una serie fatta di una retta più un po'
+di rumore, misurata su venti repliche, la differenziata esce con
+un'autocorrelazione di $-0{,}50$ al primo ritardo e con il **doppio** della
+varianza originale. La cura
+del primo caso si chiama **detrendizzazione**: si stima la retta e si tengono gli
+scarti da quella retta, ed è precisamente ciò che faceva il codice
+dell'introduzione al capitolo con `polyfit` e `polyval` (sulla stessa serie, la
+detrendizzata esce con autocorrelazione praticamente nulla e varianza giusta).
+Le due operazioni non sono intercambiabili: ciascuna guasta il caso che l'altra
+risolve.
+
+Per la stagionalità si usa la **differenziazione stagionale**
+$\nabla_m x_t = x_t - x_{t-m}$, dove $m$ è la lunghezza del ciclo (12 per dati
+mensili, 7 per dati giornalieri con un ritmo settimanale): sottrae il valore
+dello stesso periodo del ciclo precedente, mese contro stesso mese dell'anno
+prima. Prima di modellare si differenzia quanto basta a stabilizzare la serie, e
+non di più: differenziare una volta di troppo è un errore vero e ha un nome,
+**sovradifferenziazione**, ed è lo stesso guasto descritto qui sopra visto da un
+altro lato.
 
 Come si *diagnostica* la struttura che resta? Con due grafici che sono il pane
 quotidiano dell'analista di serie temporali: l'**ACF** e la **PACF**.
@@ -171,6 +234,16 @@ perché hanno firme complementari: un processo **AR($p$)** ha PACF che si
 Leggere dove le barre «cadono nel rumore» suggerisce gli ordini $p$ e $q$ da
 provare {cite}`box2015time`.
 
+«Nel rumore» ha una definizione precisa: dentro la banda
+$\pm z_{1-\alpha/2}/\sqrt{n}$, cioè $\pm 1{,}96/\sqrt{n}$ al 95%, che è
+l'intervallo in cui cadrebbe un'autocorrelazione campionaria se quella vera
+fosse zero ($n$ è il numero di osservazioni). Va letta sapendo che è una banda
+**puntuale**, valida un ritardo per volta: su venti ritardi di rumore bianco
+puro, la probabilità che almeno una barra esca dalla banda per puro caso supera
+il 50%. Una barra fuori non è la firma di niente, ed è esattamente la ragione
+per cui il test di Ljung-Box, più avanti, giudica tutte le autocorrelazioni
+**insieme** invece che una per una.
+
 `````
 
 ## Autoregressione: AR($p$)
@@ -188,10 +261,12 @@ somma, e aggiunge un pizzico di imprevedibile per il resto. «Auto-regressivo»
 vuol dire che la serie fa da predittore *a sé stessa*: guarda il proprio
 passato, non variabili esterne.
 
-Il numero di passati che guarda è l'ordine. Un AR(1) guarda solo ieri; un
-AR(2) guarda ieri e l'altro ieri. Più passati includi, più la memoria del
-modello si allunga, ma anche più parametri devi stimare da una serie che è pur
-sempre lunga un tanto.
+Il numero di passati che guarda è l'**ordine**, ed è la lettera $p$ che compare
+fra parentesi nel nome del modello: AR($p$) vuol dire soltanto «autoregressivo
+che guarda indietro di $p$ giorni». Un AR(1) guarda solo ieri; un AR(2) guarda
+ieri e l'altro ieri. Più passati includi, più la memoria del modello si
+allunga, ma anche più parametri devi stimare da una serie che è pur sempre
+lunga un tanto.
 
 `````
 
@@ -216,10 +291,18 @@ dopo ogni scossa.
 
 `````
 
-Vediamolo con i numeri su un AR(1), $x_t = c + \phi\,x_{t-1} + \varepsilon_t$, con
-$c = 4$ e $\phi = 0{,}6$. La media di lungo periodo è $\mu = 4/(1-0{,}6) = 10$.
-Partiamo da un valore alto, $x_0 = 20$, e seguiamo la parte prevedibile
-(trascurando il rumore, $\varepsilon_t = 0$):
+Vediamolo con i numeri su un AR(1). La regola dice: il valore di domani è una
+quota fissa più una frazione del valore di oggi, più una scossa casuale. In
+simboli, $x_t = c + \phi\,x_{t-1} + \varepsilon_t$, dove $c$ è la quota fissa,
+$\phi$ (la lettera greca *fi*) la frazione, e $\varepsilon_t$ la scossa.
+Prendiamo $c = 4$ e $\phi = 0{,}6$, cioè: di quello che c'era ieri ne resta il
+60%, e ogni giorno se ne aggiungono 4.
+
+Dove finisce una serie fatta così, se la si lascia andare? In un valore che non
+si muove più, quello per cui «il 60% di sé stesso più 4» ridà sé stesso:
+$\mu = 0{,}6\,\mu + 4$, cioè $\mu = 4/(1-0{,}6) = 10$. È la **media di lungo
+periodo**. Partiamo da un valore alto, $x_0 = 20$, e seguiamo la parte
+prevedibile (mettendo a zero il rumore, $\varepsilon_t = 0$):
 
 $$
 \begin{aligned}
@@ -230,16 +313,26 @@ x_3 &= 4 + 0{,}6 \cdot 13{,}6 = 12{,}16.
 $$
 
 La serie scivola $20 \to 16 \to 13{,}6 \to 12{,}16$, avvicinandosi a $10$ a ogni
-passo: è la **mean reversion**, il rientro verso la media che $|\phi| < 1$
-garantisce. Il rumore, nella realtà, la scompiglia continuamente, ma la spinta
-di fondo resta sempre quella verso $\mu$.
+passo: è il **rientro verso la media** (in inglese *mean reversion*), e succede
+finché la frazione $\phi$ vale meno di $1$ in valore assoluto, cioè finché sta
+fra $-1$ e $+1$ (le due sbarrette in $|\phi| < 1$ vogliono dire proprio
+«guardando il numero senza il segno»). Se valesse $1$ o più, ogni giorno
+ricomincerebbe da dove era arrivato o più in là, e la serie non tornerebbe mai
+indietro: è la tendenza stocastica di poco fa. Il rumore, nella realtà,
+scompiglia continuamente la discesa, ma la spinta di fondo resta sempre quella
+verso $\mu$.
 
 ## Da AR ad ARIMA: media mobile, integrazione, stagionalità
 
 L'AR è metà della storia. L'altra metà guarda non ai valori passati, ma agli
-**urti** passati: è il modello a **media mobile**, sigla MA. Da non confondere
-con la «media mobile» usata per lisciare un grafico: qui è una media *degli
-imprevisti*, non dei valori.
+**urti** passati: è il modello a **media mobile**, sigla MA. Attenzione, perché
+«media mobile» in questo campo indica due cose diverse. La prima, la più comune,
+è il modo più semplice di lisciare un grafico: si sostituisce ogni valore con la
+media dei suoi vicini, e così il tremolio si attenua e si vede il fondo (è anche
+il modo in cui si stimano trend e stagionalità nella decomposizione della prima
+sezione). La seconda è questa, il modello MA, e non è una media dei valori: è
+una media **degli imprevisti**. Sono due mestieri diversi con lo stesso nome, e
+d'ora in avanti «media mobile», da sola, indica il modello.
 
 `````{tab} Elementare
 
@@ -255,12 +348,15 @@ e quella degli urti (il MA). E siccome le serie vere hanno quasi sempre una
 tendenza, prima la si raddrizza col trucco già incontrato, sostituire ogni
 valore con la variazione rispetto al giorno prima, e poi si modella ciò che
 resta. Il tutto insieme si chiama **ARIMA**, il modello di punta di Box e
-Jenkins: dietro la sigla ci sono solo tre conteggi, quanti valori passati
-guardare, quante volte raddrizzare la serie, per quanti giorni far durare
-l'eco degli urti. Se c'è anche una stagionalità, si rifà lo stesso gioco sul
-calendario (dicembre si confronta con lo scorso dicembre): è la variante
-**SARIMA**. Le sigle piene di lettere e numeri che si incontrano nei manuali
-non sono che questi conteggi messi in fila.
+Jenkins, e la sigla è la somma dei tre pezzi: **AR** la memoria dei valori,
+**I** (*integrated*) il raddrizzamento, **MA** la memoria degli urti. Dietro
+non ci sono che tre conteggi, quanti valori passati guardare, quante volte
+raddrizzare la serie, per quanti giorni far durare l'eco degli urti, e i
+manuali li scrivono in quest'ordine fra parentesi, ARIMA($p,d,q$). Se c'è anche
+una stagionalità, si rifà lo stesso gioco sul calendario (dicembre si confronta
+con lo scorso dicembre): è la variante **SARIMA**, dove la S sta per
+*seasonal*, stagionale. Le sigle piene di lettere e numeri che si incontrano
+nei manuali non sono che questi conteggi messi in fila.
 
 `````
 
@@ -275,6 +371,21 @@ $$
 dove $\varepsilon_{t-i}$ sono le scosse casuali dei passi precedenti e
 $\theta_1,\dots,\theta_q$ i loro pesi: un urto di oggi non si esaurisce
 subito, ma continua a farsi sentire per $q$ passi prima di svanire.
+
+Come per l'AR c'è una condizione sui coefficienti, ma serve a un'altra cosa. Si
+chiama **invertibilità** e chiede che le radici di
+$1 + \theta_1 z + \dots + \theta_q z^q$ stiano fuori dal cerchio unitario
+($|\theta_1| < 1$ per l'MA(1)). Non serve per la stazionarietà, che un MA ha
+comunque, essendo una somma finita di scosse a varianza costante. Serve per due
+ragioni concrete. La prima: senza di essa il modello **non è identificato**,
+perché $\theta$ e $1/\theta$ danno la stessa autocorrelazione
+($\rho_1 = \theta/(1+\theta^2)$ vale $0{,}40$ tanto per $\theta = 0{,}5$ quanto
+per $\theta = 2$), quindi la stessa ACF, quindi due processi che i grafici della
+sezione precedente non sanno distinguere. La seconda: solo con essa le scosse
+passate $\varepsilon_{t-i}$, che nessuno osserva, si possono ricostruire dai
+dati, cioè solo con essa il modello si può usare per prevedere. Una spia utile:
+quando una serie è stata **sovradifferenziata**, il $\theta$ stimato finisce
+inchiodato a $-1$ o quasi, cioè proprio sul bordo di questa regione.
 
 Mettendo insieme le due idee si ottiene l'**ARMA($p,q$)**, che spiega il valore
 odierno con $p$ valori passati e $q$ errori passati. Ma l'ARMA vive solo su
@@ -300,10 +411,12 @@ una serie mensile con trend e stagionalità annuale.
 
 ## Scegliere l'ordine, e poi verificare i residui
 
-Sappiamo che cos'è un ARIMA($p,d,q$). Resta la domanda pratica, che è quella
-che si pone chiunque abbia una serie davanti: **quali numeri ci metto dentro, e
-come faccio a sapere se il modello che ne esce va bene?** La risposta è una
-procedura, ed è la spina dorsale metodologica di tutta la famiglia.
+Sappiamo che cos'è un ARIMA, e sappiamo che i tre conteggi fra parentesi si
+scrivono $p$ (quanti valori passati), $d$ (quante volte si raddrizza la serie) e
+$q$ (per quanti giorni dura l'eco degli urti). Resta la domanda pratica, che è
+quella che si pone chiunque abbia una serie davanti: **quali numeri ci metto
+dentro, e come faccio a sapere se il modello che ne esce va bene?** La risposta
+è una procedura, ed è la spina dorsale metodologica di tutta la famiglia.
 
 `````{tab} Elementare
 
@@ -339,10 +452,33 @@ gli errori, se guardati, confessano.
 La procedura è quella di Box e Jenkins nella forma che si usa oggi, in tre
 tempi.
 
-**1. Rendere stazionaria la serie.** Si testa (ADF, KPSS), si differenzia il
-necessario, si fissa $d$ (e $D$ per la parte stagionale). Sovradifferenziare è
-un errore reale e riconoscibile: introduce autocorrelazione negativa artificiale
-al ritardo 1 e gonfia la varianza.
+**1. Rendere stazionaria la serie.** Si testa, si toglie il necessario, si fissa
+$d$ (e $D$ per la parte stagionale). Sovradifferenziare è un errore reale e
+riconoscibile: introduce autocorrelazione negativa artificiale al ritardo 1
+(esattamente $-0{,}5$ nel caso limite) e gonfia la varianza, e si vede anche dal
+$\theta$ stimato, che finisce sul bordo della regione di invertibilità.
+
+Sui test conviene spendere quattro righe, perché sono due e vanno usati
+**insieme**. L'**ADF** (Dickey-Fuller aumentato) ha per ipotesi nulla «c'è una
+radice unitaria», quindi un $p$-value **basso** dice *stazionaria*; il **KPSS**
+ha per ipotesi nulla «la serie è stazionaria», quindi un $p$-value **basso**
+dice *non stazionaria*. Il KPSS ha dunque lo stesso verso del Ljung-Box del
+passo 3 (si spera di non rifiutare), l'ADF ha il verso contrario, e portare la
+regola dell'uno sull'altro è l'errore più facile del capitolo. Usarli in coppia
+dà quattro esiti
+e non due: concordi in un senso, concordi nell'altro, e i due casi in cui non
+concordano, che sono i più informativi, perché dicono che con questi dati la
+domanda non si decide e conviene guardare il grafico.
+
+Va aggiunto che il verdetto dipende dai **termini deterministici** che si
+mettono nella regressione ausiliaria del test. Una serie che oscilla attorno a
+una retta, cioè senza nessuna radice unitaria, con la sola costante risulta
+«con radice unitaria» ($p$ dell'ADF misurato attorno a $0{,}94$: non rifiuta) e
+chi segue la ricetta alla lettera differenzia, cioè sovradifferenzia; includendo
+il trend nella specificazione, la stessa serie sugli stessi dati dà il verdetto
+opposto ($p$ praticamente nullo, rifiuta). Non è un difetto dei test: è che
+stanno rispondendo a due domande diverse, e bisogna sapere quale si sta
+ponendo.
 
 **2. Scegliere gli ordini con un criterio di informazione.** Si stimano tutte
 le combinazioni di $(p,q)$ entro una griglia e si prende quella che minimizza
@@ -356,12 +492,25 @@ dove $\hat{L}$ è la massima verosimiglianza raggiunta e $k$ il numero di
 parametri. Il primo termine penalizza la complessità, il secondo premia
 l'aderenza: è lo stesso compromesso bias-varianza del capitolo sul Machine
 Learning, espresso in valuta di verosimiglianza invece che di errore su un set
-di validazione. Il **BIC** ($k\ln m - 2\ln\hat L$) penalizza di più al crescere
-delle osservazioni e tende a scegliere modelli più piccoli.
+di validazione. Il **BIC** ($k\ln n - 2\ln\hat L$, con $n$ il numero di
+osservazioni) penalizza di più al crescere delle osservazioni e tende a
+scegliere modelli più piccoli.
 
 Una nota che vale più della formula: **l'AIC è una quantità relativa**. Il suo
 valore assoluto non significa nulla, contano solo le differenze, e differenze
 sotto le due unità non sono evidenza di niente.
+
+E contano solo fra modelli stimati **sugli stessi dati**. È la clausola che
+rende l'AIC un criterio invece che un numero, ed è la ragione per cui $d$ si
+fissa al passo 1 e non si mette nella griglia: differenziare cambia i dati su
+cui la verosimiglianza è calcolata (una serie differenziata una volta ha
+un'osservazione in meno), e due AIC così non si possono sottrarre. Vale identico
+per le trasformazioni: l'AIC di un modello su $\log x_t$ e quello di un modello
+su $x_t$ non vivono nella stessa scala, e la differenza fra i due è dominata dal
+cambio di variabile, non dal modello. Su una serie di prova il logaritmo «vince»
+di quasi cinquemila unità, cioè di duemilaquattrocento volte la soglia delle
+due; rimettendo il termine jacobiano, cioè riportando le due verosimiglianze
+alla stessa scala, di quelle cinquemila unità ne restano un centinaio.
 
 **3. Verificare i residui.** Se il modello ha catturato la struttura, i residui
 $\hat\varepsilon_t = x_t - \hat x_t$ devono essere **rumore bianco**: media
@@ -372,19 +521,30 @@ Il **Q-Q plot** confronta i quantili empirici dei residui con quelli di una
 normale: se stanno su una retta, la distribuzione è normale come si assume. È
 veloce e resta un giudizio a occhio.
 
-Il **test di Ljung-Box** è quantitativo e testa congiuntamente le prime $h$
+Il **test di Ljung-Box** è quantitativo e testa congiuntamente le prime $\ell$
 autocorrelazioni dei residui:
 
 $$
-Q = m(m+2) \sum_{k=1}^{h} \frac{\hat\rho_k^2}{m-k},
+Q = n(n+2) \sum_{k=1}^{\ell} \frac{\hat\rho_k^2}{n-k},
 $$
 
-con $m$ il numero di osservazioni e $\hat\rho_k$ l'autocorrelazione campionaria
-al ritardo $k$. Sotto l'ipotesi nulla di **assenza** di autocorrelazione, $Q$
-si distribuisce come una $\chi^2$. Attenzione al verso, perché è
-controintuitivo: qui **si spera di non rifiutare**. Un $p$-value alto significa
-«non c'è evidenza di struttura residua», cioè il modello va bene; un $p$-value
-basso significa che qualcosa è rimasto fuori.
+con $n$ il numero di osservazioni, $\ell$ il numero di ritardi esaminati e
+$\hat\rho_k$ l'autocorrelazione campionaria al ritardo $k$. Sotto l'ipotesi
+nulla di **assenza** di autocorrelazione, $Q$ si distribuisce come una $\chi^2$.
+
+Con quanti gradi di libertà, però, non è un dettaglio. Applicato ai residui di
+un ARMA **stimato**, il test va calcolato con $\ell - (p+q)$ gradi di libertà e
+non con $\ell$ {cite}`hyndman2021forecasting`: i parametri già spesi per far
+aderire il modello ai dati non contano come prove d'innocenza. Ometterlo è la
+scorciatoia più diffusa della materia (le librerie lasciano fare, perché il
+parametro va passato a mano) ed è **sempre ottimista**: gonfia il $p$-value, e
+cioè fa sembrare adeguati modelli che lo sono meno. Sull'esempio della prossima
+sottosezione la differenza fra le due letture è fra $0{,}71$ e $0{,}51$.
+
+Attenzione anche al verso, perché è controintuitivo: qui **si spera di non
+rifiutare**. Un $p$-value alto significa «non c'è evidenza di struttura
+residua», cioè il modello va bene; un $p$-value basso significa che qualcosa è
+rimasto fuori. È il verso opposto a quello dell'ADF del passo 1.
 
 Vale la pena essere precisi su cosa questo dimostra e cosa no. Non rifiutare
 l'ipotesi nulla **non prova** che i residui siano rumore bianco: prova solo che
@@ -395,9 +555,26 @@ sezione seguente.
 
 `````
 
-Il ciclo, in una riga: **stima, seleziona, verifica, e se i residui non sono
-bianchi torna indietro**. È la stessa disciplina che nel Machine Learning
-separa il training dalla validazione, applicata a un oggetto diverso.
+Il ciclo, in una riga: **stima, seleziona, verifica, e se in quello che resta si
+vede ancora una regolarità torna indietro**. È la stessa disciplina che nel
+Machine Learning separa il training dalla validazione, applicata a un oggetto
+diverso.
+
+Le due cose hanno un nome, e conviene averlo prima di vederle all'opera. Il
+criterio che sceglie fra i modelli, quello che mette insieme «quanto spiega» e
+«quanti parametri ha speso», si chiama **AIC**: più è basso, meglio è, e le
+differenze piccole non vogliono dire niente. Il test che guarda quello che resta
+si chiama **Ljung-Box**, dai due statistici che lo misero a punto, e risponde a
+una domanda sola: negli errori del modello si vede ancora una regolarità, o
+sembrano capitati a caso? Un mucchio di numeri senza nessuna regolarità dentro
+si chiama **rumore bianco**, ed è il complimento più alto che si possa fare agli
+errori di un modello: vuol dire che tutto ciò che si poteva spremere è stato
+spremuto.
+
+La risposta del test è un numero fra $0$ e $1$ chiamato **$p$-value**, e va
+letta al contrario di quanto verrebbe naturale: alto vuol dire «nessuna traccia
+di regolarità», cioè il modello va bene; vicino a zero vuol dire «una regolarità
+c'è, e l'hai lasciata fuori». La soglia d'uso è $0{,}05$, per convenzione.
 
 ### In pratica: l'AIC sceglie, Ljung-Box giudica
 
@@ -422,28 +599,39 @@ def scegli(serie):
     for p in range(4):
         for q in range(4):
             try:
+                # d è fissato al passo 1 e NON entra nella griglia: differenziare
+                # cambia i dati, e due AIC su dati diversi non si sottraggono
                 esiti.append((ARIMA(serie, order=(p, 0, q)).fit().aic, p, q))
             except Exception:
                 continue
     return sorted(esiti)
 
+def ljung_box(residui, p, q, lags=10):
+    """p-value di Ljung-Box sui residui di un ARMA(p,q) stimato.
+    I gradi di libertà sono lags - (p+q): i parametri già spesi per
+    adattare il modello non contano come prove d'innocenza."""
+    esito = acorr_ljungbox(residui, lags=[lags], model_df=p + q, return_df=True)
+    return esito["lb_pvalue"].iloc[0]
+
 for n in (600, 2000):
     rng = np.random.default_rng(0)
     serie = processo.generate_sample(nsample=n, distrvs=rng.standard_normal)
     classifica = scegli(serie)
+    posto = [i for i, (_, p, q) in enumerate(classifica) if (p, q) == (2, 1)][0]
     print(f"\ncon {n} osservazioni (il vero modello è ARMA(2,1)):")
-    for aic, p, q in classifica[:3]:
+    for i, (aic, p, q) in enumerate(classifica[:3]):
         print(f"   ARMA({p},{q})   AIC = {aic:8.1f}   (+{aic - classifica[0][0]:.1f})")
+    aic, p, q = classifica[posto]
+    print(f"   il VERO ARMA(2,1) è {posto + 1}° a +{aic - classifica[0][0]:.1f}")
 
     p, q = classifica[0][1], classifica[0][2]
     residui = ARIMA(serie, order=(p, 0, q)).fit().resid
-    pv = acorr_ljungbox(residui, lags=[10], return_df=True)["lb_pvalue"].iloc[0]
+    pv = ljung_box(residui, p, q)
     print(f"   Ljung-Box sul modello scelto: p = {pv:.3f}  ->  "
-          f"{'residui indistinguibili dal rumore' if pv > 0.05 else 'resta struttura'}")
+          f"{'nessuna traccia di struttura residua' if pv > 0.05 else 'resta struttura'}")
 
-# e su un modello deliberatamente troppo povero?
-pv = acorr_ljungbox(ARIMA(serie, order=(0, 0, 0)).fit().resid,
-                    lags=[10], return_df=True)["lb_pvalue"].iloc[0]
+# e su un modello deliberatamente troppo povero? (nessun parametro: model_df=0)
+pv = ljung_box(ARIMA(serie, order=(0, 0, 0)).fit().resid, 0, 0)
 print(f"\nLjung-Box su un modello vuoto (0,0,0): p = {pv:.1e}  ->  resta struttura")
 ```
 
@@ -451,18 +639,43 @@ Il risultato è più istruttivo di quello che ci si aspetterebbe, ed è il motiv
 per cui vale la pena eseguirlo invece di raccontarlo.
 
 Con **600 osservazioni l'AIC sbaglia**: sceglie un ARMA(1,1) invece del vero
-ARMA(2,1). Ma guardate i margini, $+0{,}4$ e $+1{,}5$ per il secondo e il
-terzo: sono differenze che non significano niente, e i tre modelli sono
-statisticamente indistinguibili. Il Ljung-Box sul modello scelto dà
-$p = 0{,}706$, cioè i residui **sono** rumore bianco. Il modello «sbagliato»
-va benissimo, ed è la lezione centrale: l'obiettivo non è indovinare il modello
-vero (che sulle serie reali non esiste), è trovarne uno che non lasci
-struttura fuori.
+ARMA(2,1). Ma guardate i margini. Il secondo è a $+0{,}4$, il terzo a $+1{,}5$,
+e il vero ARMA(2,1) è quinto a $+1{,}8$: tutti dentro le due unità sotto le
+quali, come si è appena detto, l'AIC non distingue niente. L'AIC non ha
+**scartato** il modello vero, l'ha messo nella stessa nuvola d'indifferenza
+degli altri, il che con seicento osservazioni è la verità.
+
+Il Ljung-Box sul modello scelto dà $p = 0{,}514$: il test, su questi dati, non
+trova traccia di struttura residua. Che non è la stessa cosa che dimostrare
+l'assenza, come si è avvertito poco fa, ma è tutto quello che una diagnostica
+può dare. Il modello «sbagliato» va benissimo, ed è la lezione centrale:
+l'obiettivo non è indovinare il modello vero (che sulle serie reali non
+esiste), è trovarne uno che non lasci struttura fuori.
 
 Con 2000 osservazioni l'AIC trova l'ordine giusto, e il secondo classificato è
-ancora lì a $+0{,}6$. Sul modello vuoto, infine, il $p$-value crolla a zero:
-il test vede benissimo la struttura rimasta fuori, ed è esattamente il suo
-mestiere.
+ancora lì a $+0{,}6$. Ma non è una questione di numerosità, e vale la pena
+dirlo perché è la lettura che verrebbe naturale: rilanciando lo stesso
+esperimento cambiando soltanto il seme del generatore, l'ordine esatto salta
+fuori una volta su venti con seicento osservazioni e cinque volte su venti con
+duemila. Non è un difetto dell'AIC: è che l'AIC è costruito per scegliere il
+modello che prevede meglio, non per indovinare quello che ha generato i dati, e
+con verosimiglianze così vicine i due obiettivi non coincidono (il criterio che
+punta all'identificazione è semmai il BIC). La lezione, invece, tiene su tutti
+i semi e a tutte e due le numerosità: il Ljung-Box non rifiuta mai, e il
+$p$-value più basso osservato in quaranta esperimenti è $0{,}13$.
+
+Sul modello vuoto, infine, il $p$-value crolla a zero: il test vede benissimo
+la struttura rimasta fuori, ed è esattamente il suo mestiere.
+
+Un'ultima avvertenza sulla procedura, che la sezione seguente riprenderà da
+capo: anche **scegliere** $p$ e $q$ è un uso dei dati. Qui la griglia gira su
+tutta la serie, e se poi si misurasse l'errore del modello scelto sugli stessi
+dati quel numero sarebbe ottimista, perché l'ordine è stato scelto avendo visto
+anche i pezzi che dovrebbero fare da prova. Con l'AIC il difetto è lieve,
+perché è una penalizzazione sulla verosimiglianza in campione e non una stima
+fuori campione; con qualunque selezione fatta a colpi di errore di validazione
+è grave. La versione pulita mette la selezione **dentro** il ciclo di
+validazione, e la sezione seguente costruisce quel ciclo.
 
 ## Il mondo entra nella serie: SARIMAX e VAR
 
@@ -492,12 +705,23 @@ sempre quelle del primo tipo.
 La seconda strada: hai **più serie che si influenzano a vicenda** e vuoi
 prevederle tutte insieme (il reddito e i consumi, la domanda e il prezzo). Qui
 non c'è una principale e delle comparse: ognuna dipende dal proprio passato e
-da quello delle altre. È il modello vettoriale, VAR.
+da quello delle altre. È il modello VAR, e la V sta per «vettoriale», che qui
+vuol dire solo che al posto di un numero per volta il modello tratta una fila
+di numeri per volta, una casella per ciascuna serie.
 
-Il VAR però ha una condizione di validità che non va data per scontata: che
-quelle serie **si aiutino davvero** a prevedersi. Esiste un test per
-verificarlo, e prende il nome dall'economista Clive Granger. Con un avvertimento
-grosso quanto il test, di cui parliamo subito.
+Il VAR però conviene a una condizione che non va data per scontata: che quelle
+serie **si aiutino davvero** a prevedersi. Se non lo fanno, il modello resta
+lecito, ma non sta comprando niente con tutti i parametri che costa, e tanto
+vale prevedere le serie una per una.
+
+Esiste un test per verificarlo, e prende il nome dall'economista Clive Granger.
+Il nome, però, è la cosa più sbagliata che ha: si dice «causalità di Granger»,
+e non dice affatto che una serie **fa succedere** l'altra. Dice solo che il suo
+passato **aiuta a indovinarla**. Se il gelato e i condizionatori salgono
+insieme d'estate, ciascuno dei due «prevede» l'altro benissimo, ma a farli
+salire è il caldo, che non è né l'uno né l'altro. È un'affermazione sui dati,
+non sul mondo, e chi la porta fuori da qui come se fosse una prova di causa fa
+un errore che è costato mezzo secolo di equivoci.
 
 `````
 
@@ -540,6 +764,16 @@ ritardi di quest'ultima: è un test $F$ fra due regressioni annidate, l'ipotesi
 nulla è che i coefficienti aggiuntivi siano tutti nulli, e richiede serie
 stazionarie. Va fatto in entrambe le direzioni, perché è asimmetrico.
 
+Un chiarimento su cosa il test *non* è: non è un test di **validità** del VAR.
+Un VAR le cui matrici $\mathbf{A}_i$ risultano (blocco-)diagonali è un modello
+perfettamente ben specificato, che si riduce a tanti AR univariati e che
+continua ad aggiungere qualcosa rispetto a stimarli separatamente ogni volta
+che le innovazioni $\boldsymbol{\varepsilon}_t$ sono correlate
+contemporaneamente (per gli intervalli congiunti, e per le funzioni di risposta
+d'impulso). Il test di Granger è un test di **esclusione** su un blocco di
+coefficienti: risponde a «i ritardi incrociati servono?», non a «il VAR è
+lecito?».
+
 E qui va detto forte, perché il nome ha prodotto mezzo secolo di equivoci: la
 **causalità di Granger non è causalità**. È **precedenza predittiva**, e
 soltanto quella. Due serie guidate da una terza causa comune non osservata si
@@ -572,8 +806,9 @@ La versione base tiene conto solo del **livello** (dove sta la serie ora). Ma se
 la serie sale con costanza, ti serve anche una stima di *quanto* sale: aggiungi
 il **trend**. E se ha un respiro stagionale, aggiungi anche quello. Sono i tre
 gradini: livello, poi livello + trend, poi livello + trend + stagionalità. Con
-tutti e tre, il metodo si chiama Holt-Winters, dai nomi di chi lo mise a punto
-alla fine degli anni Cinquanta.
+tutti e tre, il metodo si chiama Holt-Winters, dai nomi dei due che lo misero a
+punto fra il 1957 e il 1960: Charles Holt per il livello e la tendenza, Peter
+Winters per la stagione.
 
 `````
 
@@ -646,9 +881,10 @@ serie è corta o disturbata. La **frugalità di dati**: gran parte delle serie
 reali (le vendite mensili di un prodotto, i pazienti di un reparto) hanno
 poche decine o centinaia di osservazioni, troppo poche per addestrare una rete
 affamata di dati, più che sufficienti per un ARIMA. E l'**interpretabilità**:
-un coefficiente $\phi$, una componente stagionale, un intervallo di confidenza
-sono oggetti che un analista legge, discute e difende davanti a chi deve
-decidere, mentre i pesi di una rete no {cite}`hyndman2021forecasting`. La
+la frazione con cui il passato pesa sul futuro, la componente stagionale, la
+forbice fra cui il modello dice che cadrà il valore vero sono oggetti che un
+analista legge, discute e difende davanti a chi deve decidere, mentre i pesi di
+una rete no {cite}`hyndman2021forecasting`. La
 regola pratica che ne discende attraversa tutto il forecasting serio: un
 modello classico è la **linea di base onesta**. Prima si batte quella, poi si
 tira in ballo il deep learning.
@@ -656,9 +892,13 @@ tira in ballo il deep learning.
 ## In pratica: stimare un AR(1) ai minimi quadrati
 
 Stimare un AR(1) non richiede librerie sofisticate: è una regressione lineare di
-$x_t$ sul suo ritardo $x_{t-1}$. Generiamo una serie dal modello con un $\phi$
-noto e verifichiamo di saperlo recuperare, poi facciamo una previsione a un
-passo. Tutto in puro NumPy.
+$x_t$ sul suo ritardo $x_{t-1}$, cioè si cerca la retta che passa il più vicino
+possibile a tutte le coppie (valore di ieri, valore di oggi). «Il più vicino
+possibile» in che senso: nel senso che rende minima la somma dei quadrati degli
+scarti, ed è il metodo dei **minimi quadrati** già incontrato nel capitolo sul
+Machine Learning. Generiamo una serie dal modello con una frazione $\phi$ nota e
+verifichiamo di saperla recuperare, poi facciamo una previsione a un passo.
+Tutto in puro NumPy.
 
 ```python
 import numpy as np
@@ -695,12 +935,50 @@ formula del modello applicata all'ultimo valore osservato. Da qui in avanti si
 può iterare in avanti per orizzonti più lunghi: ricadendo, però, nel problema
 dell'accumulo dell'errore visto nell'introduzione al capitolo.
 
+`````{tab} Elementare
+
+Due cose, per non prendere il risultato per più di quel che è.
+
+La prima: la scheda su SARIMAX ha appena avvertito che fare una regressione
+ordinaria su dei dati temporali è insidioso. Qui l'avvertimento non morde,
+perché in un AR(1) ben specificato quello che avanza è imprevedibile per
+costruzione, e l'avvertimento riguardava il caso in cui quello che avanza ha
+ancora una regolarità dentro.
+
+La seconda: con cinquecento osservazioni la stima è buona, con cinquanta lo è
+molto meno, e sbaglia sempre nella stessa direzione, cioè per difetto. Molte
+serie reali stanno nel secondo caso, e vale la pena saperlo prima di fidarsi
+del numero.
+
+`````
+
+`````{tab} Superiore
+
+Due precisazioni, perché il numero è giusto ma il metodo ha un limite che va
+detto proprio nel regime in cui vive gran parte delle serie reali.
+
+La prima: l'avvertimento della scheda su SARIMAX («una regressione lineare
+ordinaria su dati temporali dà coefficienti con errori standard sbagliati») qui
+non morde, perché in un AR(1) ben specificato l'errore è rumore bianco per
+costruzione, ed è quando l'errore ha struttura che gli errori standard ordinari
+diventano inaffidabili.
+
+La seconda: regredire su un valore **ritardato della stessa serie** non è una
+regressione ordinaria fino in fondo, perché il regressore non è indipendente
+dall'errore passato, cioè viene meno l'esogeneità stretta. La stima resta
+consistente, ma in campione finito è **distorta verso lo zero**, di circa
+$(1+3\phi)/n$: con cinquecento osservazioni sono sei millesimi e non si vedono,
+con cinquanta sono sei centesimi, cioè il 10% del valore vero, e a
+quel punto la distorsione è più grande dell'errore standard.
+
+`````
+
 Con questo abbiamo la cassetta degli attrezzi classica: decomposizione per
 capire, ARIMA e Holt-Winters per prevedere, ACF e PACF per diagnosticare. La
 sezione successiva affronta una domanda che finora abbiamo aggirato (come si
 **valida** un modello di serie temporale senza barare col futuro) e come si
-trasformano le serie in feature per i modelli tabulari già incontrati nel
-capitolo sul Machine Learning.
+trasformano le serie in colonne di una tabella, per darle in pasto ai modelli
+tabellari già incontrati nel capitolo sul Machine Learning.
 
 `````{tab} Elementare
 
@@ -714,9 +992,15 @@ capitolo sul Machine Learning.
   **moltiplicativo**): in gelateria, «d'estate 35 mila euro in più» contro
   «d'estate il $78\%$ in più».
 - Quasi tutti i modelli classici pretendono una serie **stazionaria**, che balli
-  sempre allo stesso modo: la si ottiene sostituendo ogni valore con la
-  **variazione** rispetto al precedente, che toglie la tendenza in un colpo
-  solo. Per capire che memoria resta si guardano due grafici a barre: l'**ACF**
+  sempre allo stesso modo, cioè attorno alla stessa media, con la stessa
+  ampiezza, e in cui due giorni si somiglino in base a **quanto** distano e non
+  a **quando** cadono. Per arrivarci ci sono due strade diverse, e vanno tenute
+  distinte: se la serie oscilla attorno a una **retta** si stima la retta e si
+  tengono gli scarti; se invece cammina alla cieca, e ogni scossa le sposta il
+  livello per sempre, si sostituisce ogni valore con la **variazione** rispetto
+  al precedente. Usare la seconda al posto della prima non è gratis: lascia
+  dentro la serie una regolarità che non c'era. Per capire che memoria resta si
+  guardano due grafici a barre: l'**ACF**
   (la funzione di autocorrelazione), quanto oggi assomiglia ai giorni passati, e
   la **PACF** (l'autocorrelazione parziale), quanto ci assomiglia al netto degli
   effetti a catena (il nonno e il nipote, scontato il padre). Finché le barre
@@ -738,7 +1022,12 @@ capitolo sul Machine Learning.
 - Le informazioni esterne entrano in due modi. Come variabili **esogene** in un
   SARIMAX (il meteo, le promozioni), con la trappola che per prevedere domani
   serve il loro valore di domani; oppure, se più serie si influenzano a
-  vicenda, prevedendole tutte insieme con un **VAR**.
+  vicenda, prevedendole tutte insieme con un **VAR**, che però conviene solo se
+  quelle serie si aiutano davvero a prevedersi. Lo verifica il test di
+  **Granger**, e il suo nome contiene la trappola più famosa del capitolo: la
+  «causalità di Granger» non è causalità. Dice che il passato di una serie aiuta
+  a indovinarne un'altra, non che la faccia succedere. Gelato e condizionatori
+  si prevedono a vicenda benissimo, ma a farli salire è il caldo.
 - Il **lisciamento esponenziale** è una media del passato in cui ieri pesa
   molto e ogni passo indietro pesa una frazione in meno, come l'eco di un suono
   che si spegne. Tre gradini: solo il livello, poi livello più tendenza, poi
@@ -759,24 +1048,33 @@ capitolo sul Machine Learning.
   **residuo**, in forma **additiva** ($x_t = T_t + S_t + R_t$, oscillazioni di
   ampiezza costante) o **moltiplicativa** ($x_t = T_t \times S_t \times R_t$,
   ampiezza proporzionale al livello, linearizzabile col logaritmo).
-- Quasi tutti i modelli classici richiedono la **stazionarietà**; la si ottiene
-  **differenziando** ($\nabla x_t = x_t - x_{t-1}$ toglie un trend). **ACF** e
-  **PACF** diagnosticano gli ordini: la PACF si annulla dopo il ritardo $p$ di un
-  AR, l'ACF dopo il ritardo $q$ di un MA.
+- Quasi tutti i modelli classici richiedono la **stazionarietà**, e lo strumento
+  dipende dal tipo di non stazionarietà: **differenziare**
+  ($\nabla x_t = x_t - x_{t-1}$) contro un trend **stocastico**,
+  **detrendizzare** contro un trend **deterministico**. Scambiarle
+  sovradifferenzia, cioè lascia $\rho_1 = -0{,}5$ e varianza doppia, con
+  $\theta$ inchiodato sul bordo dell'invertibilità. Si testa con ADF e KPSS, che
+  hanno ipotesi nulle **opposte**. **ACF** e **PACF** diagnosticano gli ordini:
+  la PACF si annulla dopo il ritardo $p$ di un AR, l'ACF dopo il ritardo $q$ di
+  un MA, e «annullarsi» vuol dire cadere dentro $\pm 1{,}96/\sqrt{n}$, che è una
+  banda **puntuale**.
 - **AR($p$)** spiega il valore con i $p$ passati; **MA($q$)** con i $q$ errori
   passati; **ARIMA($p,d,q$)** unisce i due sulla serie differenziata $d$ volte,
   e **SARIMA** aggiunge i termini stagionali al ritardo $m$ {cite}`box2015time`.
 - La **procedura** è in tre tempi: stazionarizzare (fissando $d$), scegliere
   $(p,q)$ minimizzando l'**AIC** $= 2k - 2\ln\hat L$ su una griglia, verificare
   che i residui siano **rumore bianco** con il Q-Q plot e il test di
-  **Ljung-Box**. Attenzione al verso del test: qui si spera di **non**
-  rifiutare, e l'AIC è una quantità **relativa**, differenze sotto le due unità
-  non dicono niente.
+  **Ljung-Box**, calcolato con $\ell - (p+q)$ gradi di libertà: ometterlo gonfia
+  sempre il $p$-value. Attenzione al verso del test: qui si spera di **non**
+  rifiutare (il contrario dell'ADF), e l'AIC è una quantità **relativa** e
+  confrontabile solo **a parità di dati**, il che è la ragione per cui $d$ e le
+  trasformazioni non entrano nella griglia.
 - **SARIMAX** aggiunge variabili **esogene** (una regressione il cui errore ha
   a sua volta struttura temporale), al prezzo di doverne conoscere i valori
   futuri. **VAR($p$)** modella $d$ serie insieme, con $pd^2$ parametri, ed è
-  valido solo se le serie si aiutano a vicenda: lo verifica il test di
-  **Granger**, che però misura **precedenza predittiva**, non causalità.
+  utile solo se le serie si aiutano a vicenda: lo verifica il test di
+  **Granger**, che è un test di **esclusione** sui ritardi incrociati, non di
+  validità del modello, e che misura **precedenza predittiva**, non causalità.
 - Il **lisciamento esponenziale** pesa il passato con pesi che **decadono
   esponenzialmente**: SES (solo livello), Holt (livello + trend), Holt-Winters
   (livello + trend + stagionalità).

@@ -1,13 +1,17 @@
 # Simulare il mondo: video generativi e un dibattito aperto
 
 Il 15 febbraio 2024 OpenAI presenta Sora, un modello che da una descrizione
-testuale genera video fotorealistici fino a un minuto. Il rapporto tecnico che
-lo accompagna {cite}`brooks2024video` ha un titolo che è una tesi: *Video
-generation models as world simulators*, i modelli di generazione video come
-simulatori di mondo. La scommessa è dichiarata nell'ultima riga: continuare a
-scalare i modelli video è «una strada promettente verso lo sviluppo di
-simulatori capaci del mondo fisico e digitale». A sostegno, il rapporto elenca
-capacità *emerse* senza essere state programmate: coerenza tridimensionale
+testuale genera video fotorealistici fino a un minuto. Come sia fatto dentro
+l'ha già raccontato il capitolo sui Modelli di Diffusione; qui interessa che
+cosa dimostra. Il rapporto che lo accompagna {cite}`brooks2024video` ha un
+titolo che è una tesi: *Video generation models as world simulators*, i modelli
+di generazione video come simulatori di mondo. È un documento aziendale con
+dimostrazioni scelte da chi le pubblica, non un articolo passato da revisione,
+e conviene dirlo qui perché è lo stesso cartello che fra poco appenderemo a
+Genie. La scommessa è dichiarata nell'ultima riga: continuare a scalare i
+modelli video è «una strada promettente verso lo sviluppo di simulatori capaci
+del mondo fisico e digitale». A sostegno, il rapporto elenca capacità che
+dichiara *emerse* senza essere state programmate: coerenza tridimensionale
 delle scene, oggetti che continuano a esistere quando escono dall'inquadratura,
 un pittore che lascia sulla tela pennellate che restano.
 
@@ -72,17 +76,25 @@ etichette: i video di internet non dicono quale azione è stata premuta. La
 soluzione è inferirla come variabile latente *discreta*:
 
 $$
-\tilde{a}_t = q\big(f_\phi(x_{1:t+1})\big) \in \{1, \dots, 8\},
+\mathbf{z}_t = \mathrm{tok}(\mathbf{x}_t),
 \qquad
-\hat{x}_{t+1} = g_\theta\big(x_{1:t},\, \tilde{a}_{1:t}\big),
+\tilde{a}_t = q\big(f_\phi(\mathbf{x}_{1:t+1})\big) \in \{1, \dots, 8\},
+\qquad
+\hat{\mathbf{z}}_{t+1} = g_\theta\big(\mathbf{z}_{1:t},\, \tilde{a}_{1:t}\big),
 $$
 
-dove $x_{1:t+1}$ sono i fotogrammi osservati fino al tempo $t+1$, $f_\phi$ è
-un encoder che riassume la transizione dal fotogramma $t$ al $t+1$, $q$ è una
-quantizzazione vettoriale su un codebook di appena $|A| = 8$ codici (un tetto
-fissato dagli autori perché il joystick resti maneggiabile per un giocatore
-umano) e $g_\theta$ è il modello che deve ricostruire il fotogramma successivo
-a partire dal passato *e* dall'azione latente $\tilde{a}_t$. Il collo di
+dove $\mathbf{x}_{1:t+1}$ sono i fotogrammi osservati fino al tempo $t+1$;
+$\mathrm{tok}$ è il tokenizer, il primo dei tre moduli, che di ogni fotogramma
+fa una manciata di token discreti $\mathbf{z}_t$ (lo stesso mestiere del $\mathbf{z}$ del VAE
+nella prima sezione, ma con un vocabolario finito invece di 32 numeri
+continui); $f_\phi$ è un encoder che riassume la transizione dal fotogramma $t$
+al $t+1$; $q$ è una quantizzazione vettoriale su un codebook di appena
+$|\mathcal{A}| = 8$ codici (un tetto fissato dagli autori perché il joystick resti
+maneggiabile per un giocatore umano); e $g_\theta$ è il modello di dinamica,
+che predice i **token** del fotogramma successivo a partire dai token del
+passato *e* dall'azione latente $\tilde{a}_t$. A riportare i token in pixel è
+il decoder del tokenizer: il modello di dinamica non vede mai un pixel e non ne
+produce mai uno. Il collo di
 bottiglia è la chiave: potendo trasmettere a $g_\theta$ solo tre bit per
 passo, $\tilde{a}_t$ è costretta a codificare il *cambiamento controllabile*
 (la mossa) e a lasciare tutto il resto (sfondo, fisica, inerzia) al modello di
@@ -96,20 +108,20 @@ legata ai platform.
 `````
 
 La discendenza di Genie è andata avanti a passo rapido, e conviene raccontarla
-con le cautele del caso, perché la fonte sono gli annunci sul blog di
-DeepMind, con demo selezionate, non articoli passati da revisione. **Genie 2**
-(dicembre 2024) passa al 3D: da una singola immagine genera mondi esplorabili
-con tastiera e mouse, con effetti di acqua, fumo e gravità, coerenti fino a un
-minuto (la maggior parte degli esempi mostrati dura 10–20 secondi). **Genie
-3** (agosto 2025) aggiunge il tempo reale: 24 fotogrammi al secondo a
-risoluzione 720p, mondi che restano coerenti per alcuni minuti con una
-«memoria visiva» di circa un minuto, ed eventi richiamabili con una frase
-(«fa' piovere», «aggiungi un cane»). Gli stessi autori elencano i limiti:
-interazioni di pochi minuti, spazio di azioni ristretto, testo in scena spesso
-illeggibile, più agenti nello stesso mondo ancora problematici. Al lancio
-Genie 3 era un'anteprima di ricerca per una piccola cerchia di collaudatori:
-una demo notevole, non un prodotto, e la distanza tra le due cose, in questo
-campo, va sempre tenuta a mente.
+per quel che ha di strutturale, perché il resto invecchia in fretta e la fonte
+sono gli annunci sul blog di DeepMind, con dimostrazioni scelte, non articoli
+passati da revisione. Due passi contano. Il primo, **Genie 2** (dicembre 2024),
+esce dal piano: da una singola immagine genera mondi tridimensionali
+esplorabili con tastiera e mouse, con acqua, fumo e gravità. Il secondo,
+**Genie 3** (agosto 2025), passa dal differito al **tempo reale**: il mondo si
+genera mentre lo si attraversa, non dopo, e si possono richiamare eventi con una
+frase («fa' piovere», «aggiungi un cane»). Gli stessi autori elencano i limiti,
+e sono i limiti a contare più delle risoluzioni: le sessioni si misurano in
+minuti; il repertorio di comandi è ristretto, cioè si possono fare poche cose,
+non andare in pochi posti; il testo che compare in scena è spesso illeggibile;
+e mettere più agenti nello stesso mondo resta problematico. Anteprime di
+ricerca, insomma: dimostrazioni notevoli, non prodotti, e la distanza tra le
+due cose, in questo campo, va sempre tenuta a mente.
 
 ## La scacchiera nella macchina: gli LLM hanno un world model?
 
@@ -160,7 +172,7 @@ Non è un pappagallo di sequenze: dentro c'è un piccolo mondo, e lo usa.
 `````{tab} Superiore
 
 Lo strumento è il **probing**: una sonda $p_\psi$ (un classificatore
-addestrato a parte) riceve le attivazioni $h_t^{(\ell)}$ dello strato $\ell$
+addestrato a parte) riceve le attivazioni $\mathbf{h}_t^{(\ell)}$ dello strato $\ell$
 al passo $t$ e deve predire lo stato di ciascuna delle 64 caselle (vuota,
 nera, bianca). Le sonde *lineari* falliscono (errore del 20–23%, appena meglio
 del 27–29% che si ottiene sondando una rete con pesi casuali), quelle *non
@@ -173,11 +185,12 @@ scacchiera contraffatta, si lascia proseguire il calcolo e si osserva che la
 distribuzione sulle mosse legali si adegua alla scacchiera modificata, non
 alla sequenza di input. La rappresentazione, dunque, *guida* la predizione.
 
-Due poscritti metodologici. Neel Nanda e collaboratori (2023) hanno mostrato
-che la rappresentazione è in realtà *lineare*, purché la si cerchi nel sistema
-di riferimento giusto: non «nero/bianco» ma «mia/dell'avversario», relativo a
-chi muove; un monito su quanto le conclusioni del probing dipendano dalle
-coordinate scelte. E Keyon Vafa e colleghi (NeurIPS 2024) hanno raffreddato
+Due poscritti metodologici. Neel Nanda e collaboratori (2023)
+{cite}`nanda2023emergent` hanno mostrato che la rappresentazione è in realtà
+*lineare*, purché la si cerchi nel sistema di riferimento giusto: non
+«nero/bianco» ma «mia/dell'avversario», relativo a chi muove; un monito su
+quanto le conclusioni del probing dipendano dalle coordinate scelte. E Keyon
+Vafa e colleghi (2024) {cite}`vafa2024evaluating` hanno raffreddato
 gli entusiasmi sul fronte opposto: un transformer addestrato sui percorsi dei
 taxi di Manhattan dà indicazioni svolta-per-svolta valide nel 99% dei casi, ma
 la mappa implicita che si può ricostruire dai suoi output contiene strade
@@ -193,10 +206,17 @@ onesto dire che nessuna delle due ha vinto. La prima: Othello-GPT dimostra che
 la pura predizione del token successivo *può* far emergere una
 rappresentazione interna dello stato del mondo; la caricatura del modello che
 «rimescola frasi senza rappresentarsi nulla» è, almeno in questo caso
-controllato, falsificata. La seconda: un mondo di 64 caselle con regole fisse
-è lontanissimo dal mondo fisico, e i risultati alla Vafa suggeriscono che le
-rappresentazioni emerse per questa via possono essere frammentarie, fragili
-fuori distribuzione, buone per il compito d'addestramento e poco altro. È
+controllato, falsificata. La seconda: un mondo di 64 caselle con regole fisse è
+lontanissimo dal mondo fisico, e c'è un secondo esperimento che raffredda gli
+entusiasmi. Un gruppo guidato da Keyon Vafa {cite}`vafa2024evaluating` ha
+addestrato una rete sui percorsi dei taxi di New York: le indicazioni che dà,
+svolta per svolta, sono valide quasi sempre, ma se dalla rete si prova a
+ricavare la mappa che ha in testa vengono fuori strade che non esistono e
+cavalcavia impossibili, e basta imporre qualche deviazione perché smetta di
+funzionare. Le rappresentazioni emerse per questa via, insomma, possono essere
+frammentarie: buone finché si resta nelle situazioni su cui la rete si è
+addestrata, fragili appena se ne esce (**fuori distribuzione** si dice appunto
+di tutto ciò che al momento dell'addestramento non c'era). È
 l'eco di una prudenza già incontrata nel capitolo sui Transformer, a proposito
 di allucinazioni e comprensione: su che cosa i modelli capiscano davvero, il
 dibattito scientifico è tutt'altro che chiuso. Chi, come LeCun, ritiene che
@@ -216,8 +236,9 @@ e scegliere quella che avvicina il braccio all'obiettivo) su robot mai visti
 in addestramento. Nella **guida autonoma** il problema sono gli scenari rari:
 il bambino che sbuca tra due auto, il carico che cade dal camion. Raccoglierli
 su strada è impraticabile, oltre che inaccettabile; un world model generativo
-li produce in quantità e in sicurezza: la scommessa di sistemi come GAIA-1 di
-Wayve (2023). Nei **videogiochi e negli ambienti di addestramento**, infine,
+li produce in quantità e in sicurezza, ed è dal 2023 la scommessa di più di un
+laboratorio del settore (GAIA-1 di Wayve fu il primo a mostrarla in pubblico).
+Nei **videogiochi e negli ambienti di addestramento**, infine,
 il cerchio si chiude: DeepMind presenta Genie 2 esplicitamente come generatore
 di ambienti illimitati in cui addestrare e valutare agenti; il rimedio a un
 vizio storico del reinforcement learning, dove gli agenti imparano a memoria i
@@ -246,8 +267,8 @@ ancora spremuta: ecco perché tutti scavano qui.
 
 È la stessa logica auto-supervisionata che ha alimentato gli LLM (il bersaglio
 dell'addestramento è il dato stesso, spostato nel tempo) applicata a un
-serbatoio più grande di ordini di grandezza: il target è $x_{t+1}$ (o una sua
-rappresentazione $z_{t+1}$, nella scelta JEPA), la loss una verosimiglianza o
+serbatoio più grande di ordini di grandezza: il target è $\mathbf{x}_{t+1}$ (o una sua
+rappresentazione $\mathbf{z}_{t+1}$, nella scelta JEPA), la loss una verosimiglianza o
 una distanza predittiva, l'annotatore nessuno. Se la lezione delle leggi di
 scala {cite}`kaplan2020scaling` è che le prestazioni crescono con dati e
 calcolo secondo regolarità prevedibili, i video sono il posto naturale dove
@@ -266,8 +287,10 @@ Riavvolgiamo. Kenneth Craik, 1943: un organismo con un «modello in scala
 ridotta» della realtà può provare le alternative nella testa e reagire al
 futuro prima che arrivi. Ha e Schmidhuber, 2018: un agente si allena dentro il
 proprio sogno e torna nel gioco vero più bravo di prima. Hopfield, 1982, e la
-tradizione delle energie: ricordare e giudicare come discesa verso le
-configurazioni compatibili; la lingua in cui LeCun ha scritto la sua proposta.
+tradizione delle energie: dare a ogni combinazione possibile un voto, e poi
+lasciare che il sistema scivoli verso quelle che il voto dice compatibili, che
+è insieme il modo di ricordare e quello di giudicare; è la lingua in cui LeCun
+ha scritto la sua proposta.
 Le JEPA: prevedere sì, ma nello spazio delle rappresentazioni, lasciando
 cadere i dettagli che non contano. E infine Sora e Genie: la previsione fatta
 spettacolo, fotogrammi interi di futuro. Il filo che attraversa ottant'anni è
@@ -276,15 +299,22 @@ uno solo, e conviene dirlo in chiaro: in questa tradizione di ricerca
 agire.
 
 Che cosa manca, lo si può dire con la stessa calma. Manca la
-**composizionalità**: i simulatori attuali interpolano le scene viste, ma
-ricombinare pezzi noti in situazioni radicalmente nuove (il forte delle menti
-biologiche) resta fragile. Manca la **causalità**: prevedere ciò che *segue*
+**composizionalità**: i simulatori attuali sanno muoversi *fra* le scene che
+hanno visto, mescolandole e sfumando dall'una all'altra (in gergo si dice che
+le **interpolano**), ma ricombinare pezzi noti in situazioni radicalmente
+nuove, che è il forte delle menti biologiche, resta fragile. Manca la
+**causalità**: prevedere ciò che *segue*
 non è capire ciò che *provoca*, e la differenza tra osservare una correlazione
 e intervenire su un meccanismo, che un bambino esplora rovesciando bicchieri
 apposta, nei modelli è ancora sottile. E manca la **pianificazione a lungo
-orizzonte**: l'errore dei modelli si accumula passo dopo passo (lo abbiamo
-chiamato *model bias* all'inizio del capitolo) e i sogni utili, per ora,
-durano minuti, non giornate. Nessuna di queste lacune autorizza il
+orizzonte**: l'errore dei modelli si accumula passo dopo passo, ed è il difetto
+che il capitolo ha incontrato per primo, quando l'agente si allenava dentro una
+copia imprecisa del gioco (in gergo tecnico si chiama *model bias*). I sogni
+dentro cui si può ancora pianificare durano **secondi, non minuti**: una
+quindicina di passi immaginati per i Dreamer, un solo passo per il world model
+che guida il braccio robotico. I minuti sono la lunghezza dei video che un
+simulatore generativo sa tenere in piedi da *guardare*, che è un'altra cosa.
+Nessuna di queste lacune autorizza il
 catastrofismo («è tutto un trucco») né il trionfalismo («è fatta, questione di
 mesi»): autorizzano un cantiere. Se c'è una lezione nelle date di questo
 capitolo (un'idea del 1943 diventata un agente funzionante nel 2018, una rete
@@ -292,28 +322,83 @@ del 1982 premiata con il Nobel nel 2024) è che le idee giuste maturano su
 tempi lunghi, e che saperle riconoscere prima degli altri è esattamente ciò
 per cui vale la pena studiarle.
 
+`````{tab} Elementare
+
+```{admonition} Da ricordare
+:class: important
+- Nel 2024 OpenAI presenta i propri generatori di video come «simulatori di
+  mondo» {cite}`brooks2024video`, ma è il documento stesso a mostrare dove il
+  trucco si vede: il bicchiere che si rovescia e non versa. Copiare bene un
+  fenomeno e possederne il meccanismo restano due cose diverse, come per i
+  pittori fiamminghi che rendevano la luce nei calici senza sapere niente di
+  ottica.
+- **Genie** {cite}`bruce2024genie` è un videogioco senza motore di gioco:
+  guardando trentamila ore di partite altrui, e senza che nessuno gli abbia
+  mai detto quali tasti si premessero, si è inventato da solo un joystick a
+  otto pulsanti. Le versioni successive fanno lo stesso in tre dimensioni e in
+  tempo reale, ma sono dimostrazioni scelte da chi le pubblica, non prodotti.
+- **Othello-GPT** è la pagina da ricordare: una rete che ha solo «ascoltato»
+  radiocronache di partite si è costruita in testa una scacchiera. Lo si
+  dimostra in due mosse, e la seconda è quella che conta: prima un lettore del
+  pensiero indovina dove sono le pedine guardando l'attività interna della
+  rete (sbaglia meno di 2 caselle su 100), poi il test del **falso ricordo**,
+  in cui gli sperimentatori spostano una pedina *nella mente* della rete e le
+  mosse cambiano di conseguenza. Non è un pappagallo: dentro c'è un piccolo
+  mondo, e lo usa.
+- Ma un'altra rete, allenata sui percorsi dei taxi di New York, dà indicazioni
+  quasi sempre giuste e ha in testa una mappa piena di strade che non esistono.
+  Un modello del mondo, dunque, può nascere da solo; quanto sia coerente e
+  quanto regga fuori dai casi su cui si è allenato è la vera posta del
+  dibattito, che resta aperto.
+- Intanto queste cose lavorano: robot che pianificano immaginando, scenari
+  rari generati per addestrare le auto a guida autonoma, ambienti illimitati
+  in cui allenare programmi che imparano.
+- Perché il fronte è così caldo: il video è l'unico grande giacimento di dati
+  in cui la correzione è gratis. Vuoi sapere se il modello ha previsto bene?
+  Aspetta il fotogramma successivo.
+- Il filo del capitolo, da Craik (1943) ai simulatori video: l'intelligenza
+  come capacità di prevedere. Mancano ancora la capacità di ricombinare i
+  pezzi in situazioni davvero nuove, quella di distinguere che cosa *provoca*
+  che cosa, e quella di immaginare lontano. Un cantiere, non un verdetto.
+```
+
+`````
+
+`````{tab} Superiore
+
 ```{admonition} Da ricordare
 :class: important
 - Nel 2024 OpenAI presenta i modelli di generazione video come «simulatori di
   mondo» {cite}`brooks2024video`, documentando però essa stessa i limiti:
   fisica delle interazioni di base sbagliata (il bicchiere che si rovescia
-  senza versare). Imitare le apparenze non equivale a possedere il meccanismo.
+  senza versare). È un documento aziendale con dimostrazioni scelte, non un
+  articolo passato da revisione. Imitare le apparenze non equivale a
+  possedere il meccanismo.
 - **Genie** {cite}`bruce2024genie` genera *ambienti interattivi* da 30.000 ore
   di video di platform senza etichette: 8 azioni latenti apprese da sole
   (quantizzazione con collo di bottiglia) più un modello di dinamica
-  condizionato sulle azioni. Genie 2 e Genie 3 estendono a mondi 3D in tempo
-  reale: annunci via blog con demo selezionate, non ancora prodotti.
+  autoregressivo che vive sui **token** del tokenizer video, non sui pixel.
+  Genie 2 e Genie 3 estendono a mondi 3D in tempo reale: annunci via blog con
+  demo selezionate, non ancora prodotti.
 - **Othello-GPT** {cite}`li2023emergent`: un GPT addestrato solo su sequenze
   di mosse sviluppa una rappresentazione interna della scacchiera, leggibile
-  con sonde (1,7% di errore) e *causalmente* efficace (interventi sulle
-  attivazioni cambiano le mosse). Qualche world model emerge dalla sola
-  predizione; quanto sia coerente e generale (i taxi di Manhattan di Vafa) è
-  la vera posta del dibattito, che resta aperto.
+  con sonde (1,7% di errore con sonde non lineari) e *causalmente* efficace
+  (interventi sulle attivazioni cambiano le mosse). La rappresentazione è poi
+  risultata lineare nel sistema di riferimento «mia/dell'avversario»
+  {cite}`nanda2023emergent`, il che ricorda quanto il probing dipenda dalle
+  coordinate scelte.
+- Qualche world model emerge dunque dalla sola predizione; quanto sia coerente
+  e generale è la vera posta, e i taxi di Manhattan {cite}`vafa2024evaluating`
+  mostrano il caso opposto: accuratezza locale altissima, mappa implicita
+  incoerente, crollo appena si esce dalla distribuzione d'addestramento.
 - Applicazioni già al lavoro: pianificazione robotica (V-JEPA 2), scenari
   rari per la guida autonoma, ambienti illimitati per addestrare agenti.
 - Il fronte è caldo perché i video sono dati sterminati con supervisione
-  gratuita: il bersaglio è il fotogramma successivo.
+  gratuita: il bersaglio è il fotogramma successivo (o una sua
+  rappresentazione, nella scelta JEPA).
 - Il filo del capitolo, da Craik (1943) ai simulatori video: l'intelligenza
   come capacità di prevedere. Mancano ancora composizionalità, causalità e
   pianificazione lunga: un cantiere, non un verdetto.
 ```
+
+`````

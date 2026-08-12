@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  paithon book, figura animata: il problema dell'apertura
+  Generata da animazioni/svg/apertura-flusso.py: non modificare a mano.
+  Palette-locked, fondo trasparente, animazione in CSS puro (nessuno script).
+  Lo stato di riposo è quello finale: chi non anima (stampa, PDF,
+  prefers-reduced-motion) vede la figura conclusa.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 452"
+     role="img" aria-label="Due finestrelle rotonde affiancate, e in ciascuna scorre lo stesso palo inclinato che si muove verso destra. A sinistra si vede solo un tratto di bordo, e la freccia di ciò che si misura punta in diagonale, più corta della freccia del movimento vero, che è orizzontale. A destra si vede la punta del palo, e la freccia del misurato coincide con quella del movimento vero.">
+  <style>
+    svg  { --d: 5.0s; }
+    .ax  { stroke:#C5BEAA; stroke-width:2; fill:none; }
+    .axc { stroke:#E2DCC9; stroke-width:1.5; }
+    .lbl { font-family:Inter, system-ui, sans-serif; font-size:15px; fill:#1A1A1A; }
+    .lbs { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#5A524A; }
+    .ttl { font-family:Fraunces, Georgia, serif; font-size:16px; font-style:italic; fill:#1A1A1A; }
+    .palo     { fill:none; stroke:#2D5A5C; stroke-width:34.0;
+                 opacity:0.9; }
+    .apertura { fill:none; stroke:#C5BEAA; stroke-width:2.5; }
+    .vero     { stroke:#B5532C; stroke-width:3.5; }
+    .mis      { stroke:#C9A961; stroke-width:3.5; }
+        @keyframes scorri{0.00%{transform:translateX(-96px)}6.00%{transform:translateX(-96px)}86.00%{transform:translateX(0)}100.00%{transform:translateX(0)}}
+    @media (prefers-reduced-motion:reduce) { .palo { animation:none !important; } }
+  </style>
+  <defs><marker id="pf" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#B5532C"/></marker><marker id="po" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#C9A961"/></marker><clipPath id="apA"><circle cx="188.0" cy="190.0" r="76.0"/></clipPath><clipPath id="apB"><circle cx="486.0" cy="190.0" r="76.0"/></clipPath></defs><g clip-path="url(#apA)"><path class="palo" d="M 75.3 401.9 L 300.7 -21.9" style="animation:scorri var(--d) infinite"/></g><circle class="apertura" cx="188.0" cy="190.0" r="76.0"/><g clip-path="url(#apB)"><path class="palo" d="M 373.3 401.9 L 498.2 167.0" style="animation:scorri var(--d) infinite"/></g><circle class="apertura" cx="486.0" cy="190.0" r="76.0"/><line class="vero" x1="140.0" y1="320.0" x2="236.0" y2="320.0" marker-end="url(#pf)"/><line class="mis" x1="140.0" y1="320.0" x2="214.8" y2="359.8" marker-end="url(#po)"/><line class="vero" x1="438.0" y1="320.0" x2="534.0" y2="320.0" marker-end="url(#pf)"/><text class="lbl" x="188" y="52" text-anchor="middle">la finestrella vede un bordo</text><text class="lbl" x="486" y="52" text-anchor="middle">la finestrella vede una punta</text><text class="lbs" x="188" y="380" text-anchor="middle" style="fill:#C9A961">si misura 85 px, in diagonale</text><text class="lbs" x="188" y="400" text-anchor="middle" style="fill:#B5532C">ne sono successi 96, in orizzontale</text><text class="lbs" x="486" y="380" text-anchor="middle" style="fill:#B5532C">si misurano tutti e 96</text><text class="lbs" x="486" y="400" text-anchor="middle">lo spigolo chiude le due incognite</text><text class="lbs" x="340" y="434" text-anchor="middle">stesso palo, stesso movimento: cambia solo da dove lo si guarda</text>
+</svg>

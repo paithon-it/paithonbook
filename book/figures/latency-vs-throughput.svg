@@ -16,10 +16,10 @@
   <circle cx="680" cy="80" r="7" fill="#C9A961" stroke="#1A1A1A" stroke-width="1.5"/>
   <text x="668" y="70" text-anchor="end" font-family="sans-serif" font-size="12" font-weight="bold" fill="#1A1A1A">batch grande</text>
   <text x="668" y="86" text-anchor="end" font-family="sans-serif" font-size="11" fill="#5E5852">throughput massimo, GPU satura</text>
-  <!-- linea budget latenza (SLA) -->
+  <!-- linea budget latenza (SLO) -->
   <line x1="430" y1="60" x2="430" y2="320" stroke="#B5532C" stroke-width="2" stroke-dasharray="6 5"/>
   <text x="438" y="150" font-family="sans-serif" font-size="12" font-weight="bold" fill="#B5532C">budget di latenza</text>
-  <text x="438" y="166" font-family="sans-serif" font-size="11" fill="#B5532C">(SLA: non si va oltre)</text>
+  <text x="438" y="166" font-family="sans-serif" font-size="11" fill="#B5532C">(SLO: non si va oltre)</text>
   <!-- punto operativo ottimale sull'intersezione -->
   <circle cx="430" cy="100" r="8" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5"/>
   <text x="418" y="105" text-anchor="end" font-family="sans-serif" font-size="12" font-weight="bold" fill="#1A1A1A">punto operativo</text>

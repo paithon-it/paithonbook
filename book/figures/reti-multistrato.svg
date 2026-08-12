@@ -1,26 +1,35 @@
-<svg viewBox="0 0 720 300" width="100%" role="img" aria-label="Tre pannelli: confine lineare di un neurone, regione poligonale di uno strato nascosto, confine curvo di una rete profonda" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="0 0 720 300" width="100%" role="img" aria-label="Tre pannelli: confine lineare di un neurone, regione poligonale di uno strato nascosto, confine poligonale a molti lati di una rete profonda" xmlns="http://www.w3.org/2000/svg">
   <rect x="0" y="0" width="720" height="300" fill="#F8F5EE"/>
+  <!-- Una sola nuvola di quattro punti, la stessa nei tre pannelli:
+       coordinate locali teal (38,40) (160,32), terracotta (108,148)
+       (138,138), traslate di +240 e +480 sull'asse x. Verificate con un
+       test punto-in-poligono contro tutti e tre i confini: i due
+       terracotta cadono dentro la retta, dentro il triangolo e dentro il
+       poligono; i due teal restano fuori da tutti e tre. Prima erano tre
+       nuvole diverse (e il pannello 2 ne aveva solo tre) mentre la
+       didascalia diceva "la stessa nube di punti". -->
   <text x="120" y="38" font-family="sans-serif" font-size="14" fill="#1A1A1A" text-anchor="middle">1 neurone</text>
   <rect x="20" y="52" width="200" height="200" fill="none" stroke="#1A1A1A" stroke-width="1.5"/>
   <polygon points="20,252 220,132 220,252" fill="#B5532C" fill-opacity="0.15"/>
   <line x1="20" y1="252" x2="220" y2="132" stroke="#B5532C" stroke-width="2"/>
-  <circle cx="70" cy="110" r="5" fill="none" stroke="#2D5A5C" stroke-width="1.5"/>
-  <circle cx="130" cy="90" r="5" fill="none" stroke="#2D5A5C" stroke-width="1.5"/>
-  <circle cx="150" cy="220" r="5" fill="#B5532C"/>
-  <circle cx="190" cy="200" r="5" fill="#B5532C"/>
+  <circle cx="58" cy="92" r="5" fill="none" stroke="#2D5A5C" stroke-width="1.5"/>
+  <circle cx="180" cy="84" r="5" fill="none" stroke="#2D5A5C" stroke-width="1.5"/>
+  <circle cx="128" cy="200" r="5" fill="#B5532C"/>
+  <circle cx="158" cy="190" r="5" fill="#B5532C"/>
   <text x="120" y="278" font-family="sans-serif" font-size="12" fill="#1A1A1A" text-anchor="middle">una retta</text>
 
   <text x="245" y="160" font-family="sans-serif" font-size="18" fill="#1A1A1A" text-anchor="middle">&#8594;</text>
 
   <text x="360" y="38" font-family="sans-serif" font-size="14" fill="#1A1A1A" text-anchor="middle">1 strato nascosto</text>
   <rect x="260" y="52" width="200" height="200" fill="none" stroke="#1A1A1A" stroke-width="1.5"/>
-  <polygon points="360,90 300,210 420,210" fill="#2D5A5C" fill-opacity="0.18"/>
+  <polygon points="360,90 300,210 420,210" fill="#B5532C" fill-opacity="0.15"/>
   <line x1="280" y1="250" x2="400" y2="70" stroke="#2D5A5C" stroke-width="1.5"/>
   <line x1="320" y1="70" x2="440" y2="250" stroke="#2D5A5C" stroke-width="1.5"/>
   <line x1="270" y1="210" x2="450" y2="210" stroke="#2D5A5C" stroke-width="1.5"/>
-  <circle cx="360" cy="170" r="5" fill="#B5532C"/>
-  <circle cx="290" cy="100" r="5" fill="none" stroke="#2D5A5C" stroke-width="1.5"/>
-  <circle cx="430" cy="120" r="5" fill="none" stroke="#2D5A5C" stroke-width="1.5"/>
+  <circle cx="298" cy="92" r="5" fill="none" stroke="#2D5A5C" stroke-width="1.5"/>
+  <circle cx="420" cy="84" r="5" fill="none" stroke="#2D5A5C" stroke-width="1.5"/>
+  <circle cx="368" cy="200" r="5" fill="#B5532C"/>
+  <circle cx="398" cy="190" r="5" fill="#B5532C"/>
   <text x="360" y="278" font-family="sans-serif" font-size="12" fill="#1A1A1A" text-anchor="middle">rette combinate in una regione</text>
 
   <text x="485" y="160" font-family="sans-serif" font-size="18" fill="#1A1A1A" text-anchor="middle">&#8594;</text>
@@ -31,9 +40,9 @@
        lati che da lontano sembrano una curva, ma spigoli sono e spigoli
        restano. Disegnarlo curvo direbbe una cosa falsa. -->
   <polygon points="545,200 537,169 543,139 558,113 582,97 610,95 639,105 658,121 668,141 667,163 655,185 649,197 648,208 645,218 638,226 620,232 599,235 582,234 569,228 557,217" fill="#C9A961" fill-opacity="0.25" stroke="#B5532C" stroke-width="2" stroke-linejoin="round"/>
-  <circle cx="600" cy="150" r="5" fill="#B5532C"/>
-  <circle cx="630" cy="200" r="5" fill="#B5532C"/>
-  <circle cx="530" cy="90" r="5" fill="none" stroke="#2D5A5C" stroke-width="1.5"/>
-  <circle cx="670" cy="80" r="5" fill="none" stroke="#2D5A5C" stroke-width="1.5"/>
+  <circle cx="538" cy="92" r="5" fill="none" stroke="#2D5A5C" stroke-width="1.5"/>
+  <circle cx="660" cy="84" r="5" fill="none" stroke="#2D5A5C" stroke-width="1.5"/>
+  <circle cx="608" cy="200" r="5" fill="#B5532C"/>
+  <circle cx="638" cy="190" r="5" fill="#B5532C"/>
   <text x="600" y="278" font-family="sans-serif" font-size="12" fill="#1A1A1A" text-anchor="middle">regioni composte in confini arbitrari</text>
 </svg>

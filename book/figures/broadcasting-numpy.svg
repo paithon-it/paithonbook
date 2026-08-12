@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  paithon book — figura: broadcasting in NumPy. Una riga (1x4, teal) e una
+  paithon book, figura: broadcasting in NumPy. Una riga (1x4, teal) e una
   colonna (3x1, terracotta) si "espandono" virtualmente, ripetendosi lungo
   la dimensione mancante, per formare una matrice 3x4 (risultato, warm-black).
   Le celle piene sono i dati reali; le celle tratteggiate sono le copie

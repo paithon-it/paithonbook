@@ -5,7 +5,7 @@
   <!-- forward arrow -->
   <line x1="60" y1="70" x2="620" y2="70" stroke="#B5532C" stroke-width="2"/>
   <polygon points="620,70 610,65 610,75" fill="#B5532C"/>
-  <text x="340" y="60" font-size="13" fill="#B5532C" text-anchor="middle">processo diretto q — aggiungi rumore (nessun apprendimento)</text>
+  <text x="340" y="60" font-size="13" fill="#B5532C" text-anchor="middle">processo diretto q: aggiungi rumore (nessun apprendimento)</text>
 
   <!-- five frames -->
   <g stroke="#1A1A1A" stroke-width="1.5" fill="#F8F5EE">
@@ -56,5 +56,5 @@
   <!-- reverse arrow -->
   <line x1="620" y1="256" x2="60" y2="256" stroke="#2D5A5C" stroke-width="2"/>
   <polygon points="60,256 70,251 70,261" fill="#2D5A5C"/>
-  <text x="340" y="278" font-size="13" fill="#2D5A5C" text-anchor="middle">processo inverso p_θ — la rete impara a togliere il rumore, un passo alla volta</text>
+  <text x="340" y="278" font-size="13" fill="#2D5A5C" text-anchor="middle">processo inverso p_θ: la rete impara a togliere il rumore, un passo alla volta</text>
 </svg>

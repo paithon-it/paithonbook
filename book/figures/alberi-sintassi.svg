@@ -108,5 +108,5 @@
   <text x="852" y="430" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" font-weight="700" fill="#1A1A1A">binocolo</text>
 
   <!-- didascalia interna -->
-  <text x="450" y="466" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#5E5852">la stessa frase, due formalismi — e ogni formalismo mostra qui una delle due letture</text>
+  <text x="450" y="466" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#5E5852">la stessa frase, due formalismi: ogni formalismo mostra qui una delle due letture</text>
 </svg>

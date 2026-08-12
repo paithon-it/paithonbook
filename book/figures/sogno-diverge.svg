@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  paithon book, figura animata: il sogno che si stacca dalla realtà
+  Generata da animazioni/svg/sogno-diverge.py: non modificare a mano.
+  Palette-locked, fondo trasparente, animazione in CSS puro (nessuno script).
+  Lo stato di riposo è quello finale: chi non anima (stampa, PDF,
+  prefers-reduced-motion) vede la figura conclusa.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 452"
+     role="img" aria-label="Due curve oscillanti partono sovrapposte e restano indistinguibili per una quindicina di passi, poi si separano sempre di più. Una banda chiara copre la parte finale del grafico, da dove lo scarto ha superato la tolleranza in poi.">
+  <style>
+    svg  { --d: 7.0s; }
+    .ax  { stroke:#C5BEAA; stroke-width:2; fill:none; }
+    .axc { stroke:#E2DCC9; stroke-width:1.5; }
+    .lbl { font-family:Inter, system-ui, sans-serif; font-size:15px; fill:#1A1A1A; }
+    .lbs { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#5A524A; }
+    .ttl { font-family:Fraunces, Georgia, serif; font-size:16px; font-style:italic; fill:#1A1A1A; }
+    .vero   { fill:none; stroke:#2D5A5C; stroke-width:3.5; }
+    .sogno  { fill:none; stroke:#B5532C; stroke-width:2.6; }
+    .ombra  { fill:#E2DCC9; opacity:0.45; }
+    .taglio { stroke:#C9A961; stroke-width:2.5; stroke-dasharray:6 5; }
+    .cap    { font-family:Inter, system-ui, sans-serif; font-size:17px; font-weight:700;
+              fill:#B5532C; }
+        @keyframes scopri{0.00%{transform:translateX(-512px)}4.00%{transform:translateX(-512px)}88.00%{transform:translateX(0)}100.00%{transform:translateX(0)}}
+    @media (prefers-reduced-motion:reduce) { #scopri rect { animation:none !important; } }
+  </style>
+  <defs><clipPath id="scopri"><rect x="84" y="92" width="512" height="256" style="animation:scopri var(--d) infinite"/></clipPath></defs><rect class="ax" x="88" y="96" width="504" height="248" rx="4"/><line class="axc" x1="88" y1="220.0" x2="592" y2="220.0"/><line class="axc" x1="88.0" y1="96" x2="88.0" y2="344"/><rect class="ombra" x="386.7" y="96" width="205.3" height="248"/><line class="taglio" x1="386.7" y1="96" x2="386.7" y2="344"/><text class="lbs" x="566" y="118" text-anchor="end">da qui il sogno non serve più</text><g clip-path="url(#scopri)"><polyline class="vero" points="88.0,220.0 106.7,220.0 125.3,217.3 144.0,211.0 162.7,202.9 181.3,196.9 200.0,197.1 218.7,206.2 237.3,223.2 256.0,243.5 274.7,260.0 293.3,265.6 312.0,256.3 330.7,233.0 349.3,201.9 368.0,172.9 386.7,156.6 405.3,159.9 424.0,183.7 442.7,221.9 461.3,262.7 480.0,292.5 498.7,300.4 517.3,282.3 536.0,242.4 554.7,192.9 573.3,149.5 592.0,127.0"/><polyline class="sogno" points="88.0,220.0 106.7,220.0 125.3,217.3 144.0,210.9 162.7,202.6 181.3,196.2 200.0,196.2 218.7,205.3 237.3,222.9 256.0,244.3 274.7,262.2 293.3,268.9 312.0,259.7 330.7,235.0 349.3,201.1 368.0,168.9 386.7,149.9 405.3,152.4 424.0,178.2 442.7,221.0 461.3,267.6 480.0,302.7 498.7,313.1 517.3,293.2 536.0,247.3 554.7,188.9 573.3,136.8 592.0,108.8"/></g><text class="lbl" x="88" y="44">lo stesso mondo, dalla stessa partenza</text><text class="lbs" x="592" y="72" text-anchor="end" style="fill:#B5532C">come il modello se lo immagina</text><text class="lbs" x="360" y="72" text-anchor="end" style="fill:#2D5A5C">com'è davvero</text><text class="cap" x="340" y="390" text-anchor="middle">16 passi di sogno affidabile</text><text class="lbs" x="340" y="416" text-anchor="middle">al modello basta sbagliare del 2,8 per cento un solo numero: quanta spinta resta a ogni passo</text><text class="lbs" x="98" y="116">dove si trova</text><text class="lbs" x="592" y="366" text-anchor="end">passi</text>
+</svg>

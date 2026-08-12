@@ -11,11 +11,12 @@ subito il campo da un equivoco.
 
 ## Un'ispirazione, non una copia
 
-Il neurone biologico riceve segnali dai **dendriti**, li integra nel corpo
-cellulare e, se lo stimolo complessivo supera una soglia, "spara" un impulso
-lungo l'assone verso le **sinapsi**, i punti di contatto con gli altri
-neuroni. È da questa immagine che nasce il neurone artificiale. Attenzione,
-però: è una metafora, non una fotografia. Un neurone reale è una cellula viva,
+Il neurone biologico riceve segnali dalle sue diramazioni d'ingresso, i
+**dendriti**, li somma nel corpo cellulare e, se il totale supera una soglia,
+"spara" un impulso lungo il proprio cavo d'uscita, l'assone, fino ai punti di
+contatto con gli altri neuroni. È da questa immagine che nasce il neurone
+artificiale. Attenzione, però: è una metafora, non una fotografia. Un neurone
+reale è una cellula viva,
 governata da una chimica di una complessità che non riproduciamo. Il neurone
 artificiale ne prende in prestito una sola idea (*sommare tanti segnali e
 decidere*) e la trasforma in aritmetica.
@@ -55,7 +56,9 @@ capitolo di algebra lineare.
 La storia comincia in piena Seconda guerra mondiale. Nel 1943 il neurofisiologo
 Warren McCulloch e il logico Walter Pitts pubblicano *A Logical Calculus of the
 Ideas Immanent in Nervous Activity*: dimostrano che una rete di neuroni
-"tutto-o-niente" può calcolare qualunque funzione logica. Era una macchina di
+"tutto-o-niente" può calcolare qualunque **funzione logica**, cioè qualunque
+regola che, ricevuti in ingresso dei sì e dei no, risponda sì o no (l'*e*,
+l'*o*, il *non*, e tutto ciò che si ottiene combinandoli). Era una macchina di
 carta, senza apprendimento: i pesi li fissava a mano il progettista.
 
 Il salto arriva nel 1958 con Frank Rosenblatt e il suo **percettrone**. Non
@@ -103,20 +106,32 @@ numero finito di passi un iperpiano che li separa. Il guaio è tutto in quel
 
 ## L'inverno: lo scandalo dello XOR (1969)
 
-Nel 1969 Marvin Minsky e Seymour Papert pubblicano *Perceptrons*, un'analisi
-matematica impeccabile e devastante. Il percettrone, dimostrano, sa tracciare
-una sola linea di separazione, e alcune funzioni banali quella linea non la
-concedono. Il controesempio simbolo è lo **XOR**, l'"o esclusivo".
+Nel 1969 Marvin Minsky e Seymour Papert pubblicano *Perceptrons*
+{cite}`minsky1969perceptrons`, un libro di matematica rigorosa che è passato
+alla storia per una cosa che non contiene. Che un neurone solo sappia tracciare
+una sola linea di separazione, e che quindi certe funzioni elementari gli
+sfuggano, si sapeva già: è un'osservazione di poche righe, e i due autori la
+danno per nota. Il controesempio simbolo, quello che tutti ricordano, è lo
+**XOR**, l'"o esclusivo". I loro teoremi veri sono un'altra cosa, più forte, e
+li vediamo nella sezione dedicata al percettrone.
 
 `````{tab} Elementare
 
 Lo XOR risponde "vero" quando i due ingressi sono diversi (uno acceso e uno
-spento) e "falso" quando sono uguali. Disegna i quattro casi su un foglio:
-i due "veri" finiscono su angoli opposti del quadrato, i due "falsi" sugli
-altri due. Ora prova a separare i veri dai falsi con **una sola retta**: è
-impossibile, qualunque riga tu tracci ne lascia sempre uno dalla parte
-sbagliata. Un percettrone singolo sa disegnare solo quella retta, e quindi lo
-XOR non lo imparerà mai.
+spento) e "falso" quando sono uguali. Disegna i quattro casi su un foglio a
+quadretti: il primo ingresso in orizzontale, il secondo in verticale, e i
+quattro casi diventano i quattro angoli di un quadrato. I due "veri" finiscono
+su angoli opposti, i due "falsi" sugli altri due. Ora prova a separare i veri
+dai falsi con **una sola retta**: è impossibile, qualunque riga tu tracci ne
+lascia sempre uno dalla parte sbagliata.
+
+E perché mai un neurone dovrebbe essere legato a una retta? Perché fa una cosa
+sola: moltiplica ogni ingresso per il suo peso, somma e confronta il totale con
+una soglia. Su quel foglio a quadretti i punti in cui il totale raggiunge la
+soglia stanno tutti allineati, e sono proprio una riga dritta: da una parte il
+neurone dice sì, dall'altra no. Cambiare i pesi inclina quella riga, cambiare
+il bias la sposta, ma una riga resta. Un percettrone singolo sa disegnare solo
+quello, e quindi lo XOR non lo imparerà mai.
 
 `````
 
@@ -127,10 +142,14 @@ Un percettrone realizza un separatore lineare $\mathbf{w}^\top\mathbf{x}+b=0$,
 cioè un iperpiano; può risolvere solo problemi **linearmente separabili**. Lo
 XOR non lo è: non esistono $\mathbf{w}$ e $b$ tali che $w_1 x_1 + w_2 x_2 + b$
 risulti positivo esattamente sui due punti con etichetta $1$ e non positivo
-sugli altri due. La soluzione (impilare più neuroni in **strati**) era nota
-già allora, ma mancava un modo efficiente per addestrarla. I finanziamenti si
-prosciugarono e la ricerca sulle reti neurali entrò in una lunga pausa: il
-loro primo "inverno".
+sugli altri due. La soluzione (impilare più neuroni in **strati**) era nota già
+allora, ma mancava un modo efficiente per addestrarla, ed è questa la ragione
+che gli stessi Minsky e Papert indicheranno per la lunga pausa che seguì. Il
+libro contribuì a raffreddare gli entusiasmi e a spostare risorse verso l'AI
+simbolica; nel decennio successivo, con il rapporto Lighthill del 1973, i
+tagli colpirono l'intero campo. È il primo "inverno" delle reti neurali, e la
+storiografia recente invita a non attribuirlo a un libro solo
+{cite}`olazaran1996sociological`.
 
 `````
 
@@ -180,24 +199,6 @@ Il modello che nasce da questa storia è il **percettrone multistrato** (MLP,
 l'uscita di uno strato è l'ingresso del prossimo
 ({numref}`fig-percettrone-multistrato`).
 
-```{figure} ../figures/reti-multistrato.svg
-:name: fig-confini-multistrato
-:alt: "Tre pannelli sulla stessa nube di punti. Con un solo neurone il confine di decisione è una retta. Con uno strato nascosto diventa una regione poligonale, ottenuta combinando più rette. Con più strati le regioni si compongono in una figura chiusa a molti lati, che da lontano sembra una curva ma conserva gli spigoli."
-:width: 100%
-
-Tre pannelli sulla stessa nube di punti. Un neurone solo può separarla con una
-retta; uno strato nascosto mette insieme più rette e ritaglia una regione;
-aggiungendo strati le regioni si combinano fra loro e il confine segue la
-forma dei dati sempre più da vicino. Quello che si guadagna è soprattutto
-risparmio: gli stessi confini si ottengono con molti meno neuroni.
-```
-
-La progressione di {numref}`fig-confini-multistrato` è la risposta visiva allo
-scandalo dello XOR raccontato poco sopra. Il problema del percettrone non era
-che imparasse male: era che una retta sola non può separare quei quattro
-punti, per quanto bene la si posizioni. Serviva un secondo strato, non un
-addestramento migliore.
-
 ```{figure} ../figures/percettrone-multistrato.svg
 :name: fig-percettrone-multistrato
 :alt: Diagramma di un percettrone multistrato con tre nodi di input, quattro nodi nello strato nascosto e due nodi di output, tutti collegati tra strati adiacenti.
@@ -209,12 +210,43 @@ strato nascosto (4 nodi), che a sua volta alimenta lo strato di output
 a destra.
 ```
 
+Quanti neuroni mettere in mezzo, e quanti strati, non lo dice nessuna formula:
+il 3-4-2 della figura è un esempio, e nella pratica quelle misure si scelgono
+provando. Ciò che cambia davvero, aggiungendo strati, è la **forma** delle
+frontiere che la rete sa tracciare ({numref}`fig-confini-multistrato`).
+
+```{figure} ../figures/reti-multistrato.svg
+:name: fig-confini-multistrato
+:alt: "Tre pannelli sulla stessa nube di quattro punti, due pieni e due vuoti. Con un solo neurone il confine di decisione è una retta. Con uno strato nascosto diventa una regione triangolare, ottenuta combinando tre rette. Con più strati le regioni si compongono in una figura chiusa a venti lati, che da lontano sembra una curva ma conserva gli spigoli."
+:width: 100%
+
+Gli stessi quattro punti, tre confini. Un neurone solo li separa con una retta;
+uno strato nascosto mette insieme più rette e ritaglia una regione chiusa;
+aggiungendo strati le regioni si combinano fra loro e il contorno segue la
+forma dei dati sempre più da vicino. Attenzione a cosa cambia davvero: non è
+che il terzo confine sia irraggiungibile per gli altri due (con abbastanza
+neuroni in un solo strato ci si arriva lo stesso), è che con più strati lo si
+ottiene con molti meno neuroni.
+```
+
+La progressione di {numref}`fig-confini-multistrato` è la risposta visiva allo
+scandalo dello XOR raccontato poco sopra. I quattro punti disegnati qui non
+sono lo XOR, anzi: sono un problema che una retta risolve, mostrato per
+confronto. Il problema del percettrone non era che imparasse male, era che una
+retta sola non può separare **i quattro casi dello XOR**, per quanto bene la si
+posizioni. Serviva un secondo strato, non un addestramento migliore.
+
 `````{tab} Elementare
 
 Tre strati, tre ruoli. Lo **strato di input** non calcola nulla: è la porta da
 cui entrano i dati (i tre numeri che descrivono l'esempio). Gli **strati
-nascosti** sono la fabbrica: ogni neurone combina ciò che riceve e costruisce
-via via caratteristiche più astratte. Lo **strato di output** tira le somme e
+nascosti** sono la fabbrica: ogni neurone combina ciò che riceve e passa avanti
+qualcosa di un po' più grosso di quello che ha ricevuto. In una rete che guarda
+fotografie, per dire, i neuroni del primo strato reagiscono a cose minime, un
+bordo chiaro-scuro, una macchia di colore; quelli del secondo mettono insieme
+quei bordi e reagiscono a un angolo, a un cerchietto; più avanti si arriva a un
+occhio, a un muso, a una faccia intera. Nessuno glielo ha insegnato: viene
+fuori così dall'addestramento. Lo **strato di output** tira le somme e
 produce la risposta: qui due numeri, per esempio quanto la rete è convinta di
 ciascuna delle due risposte possibili ("gatto" o "cane"). "Nascosto" vuol dire
 solo che non lo vediamo né in ingresso né in uscita: lavora in mezzo.
@@ -257,16 +289,46 @@ attivazioni derivabili come la sigmoide o la tangente iperbolica.
 
 ## Come è organizzato questo capitolo
 
-Da qui in avanti smontiamo l'MLP pezzo per pezzo. Vedremo le **funzioni di
-attivazione** e perché la non linearità è ciò che tiene in piedi tutto; la
-**backpropagation** nel dettaglio, cioè il meccanismo con cui l'errore risale
-la rete e corregge ogni peso (per chi ha le derivate nello zaino: la regola
-della catena applicata con ordine); la **discesa del gradiente** e le sue
-varianti per addestrare in pratica; le scelte pratiche (come misurare
-l'errore, da dove far partire i pesi) che separano una rete che impara da una
-che diverge. È la cerniera del libro: tutto ciò che segue (visione
-artificiale, NLP, modelli generativi) sono percettroni multistrato cresciuti,
-specializzati e resi profondi.
+Da qui in avanti smontiamo l'MLP pezzo per pezzo, in tre sezioni. La prima
+torna sul **percettrone**, il neurone singolo, e sulla regola con cui impara: è
+il mattone, e il suo limite è la ragione di tutto il resto. La seconda sono le
+**funzioni di attivazione**, il piccolo gesto non lineare senza cui la
+profondità non servirebbe a niente. La terza è la **backpropagation**, cioè il
+meccanismo con cui l'errore risale la rete e corregge ogni peso, e con essa la
+**discesa del gradiente**, il modo in cui quelle correzioni si fanno in
+pratica. Chi ha le derivate nello zaino ci riconoscerà la regola della catena
+applicata con ordine, ma la parte principale è raccontata anche senza. Restano
+fuori due scelte pratiche che meritano una sezione a sé, e l'avranno nel
+capitolo sul deep learning: da dove far partire i pesi, e come tenere a bada una
+rete che impara troppo bene i dati che ha visto. È la cerniera del libro: tutto
+ciò che segue (visione artificiale, NLP, modelli generativi) sono percettroni
+multistrato cresciuti, specializzati e resi profondi.
+
+`````{tab} Elementare
+
+```{admonition} Da ricordare
+:class: important
+- Il neurone artificiale prende dal neurone vero *una sola idea*: sommare
+  segnali con un'importanza diversa ciascuno, e decidere. Il resto è metafora,
+  non copia.
+- McCulloch e Pitts, nel 1943, scrivono il neurone come una regoletta di
+  calcolo; Rosenblatt, nel 1958, lo fa *imparare*: gli mostri esempi e lui
+  aggiusta da solo le importanze.
+- Un neurone da solo sa dividere i casi con **una riga dritta**. Sullo
+  **XOR** quella riga non esiste, e nel 1969 il libro di Minsky e Papert lo
+  ricorda a tutti nel momento peggiore: seguono anni di disinteresse e di
+  fondi tagliati.
+- La **backpropagation** (1986) risolve la domanda che teneva ferma la
+  faccenda: come si correggono i neuroni in mezzo, quelli a cui nessuno dice
+  quale fosse la risposta giusta.
+- Una rete è una pila: i dati entrano, attraversano uno o più strati che li
+  rimescolano, e dall'ultimo esce la risposta. Fra uno strato e l'altro ci
+  vuole sempre un passaggio che non sia una semplice proporzione.
+```
+
+`````
+
+`````{tab} Superiore
 
 ```{admonition} Da ricordare
 :class: important
@@ -275,11 +337,17 @@ specializzati e resi profondi.
 - McCulloch e Pitts {cite}`mcculloch1943logical` formalizzano il neurone;
   Rosenblatt {cite}`rosenblatt1958perceptron` lo fa *imparare* con il
   percettrone.
-- Minsky e Papert {cite}`minsky1969perceptrons` mostrano che un percettrone
-  singolo non risolve lo **XOR**: separa i dati con una sola retta. Servono
-  più strati.
+- Un percettrone singolo è un **classificatore lineare** e non risolve lo
+  **XOR**. *Perceptrons* {cite}`minsky1969perceptrons` non dimostra questo (era
+  noto): dimostra che nel suo modello il costo di certi predicati cresce con la
+  taglia dell'ingresso, e sul multistrato avanza una congettura, non un
+  teorema.
 - La **backpropagation** (Rumelhart, Hinton, Williams, 1986) rende
   addestrabili gli strati nascosti: è la rinascita del campo.
 - Un **MLP** impila input → strati nascosti → output, alternando
-  trasformazioni lineari e non linearità.
+  trasformazioni lineari e non linearità. Il teorema di approssimazione
+  universale garantisce l'esistenza dei pesi giusti per ogni attivazione **non
+  polinomiale**, non che la discesa del gradiente li trovi.
 ```
+
+`````

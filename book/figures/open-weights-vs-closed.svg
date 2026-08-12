@@ -1,40 +1,41 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 520" width="100%" role="img" aria-label="Mappa a quadranti: apertura dei modelli sull'asse orizzontale, capacità sull'asse verticale">
-  <rect x="0" y="0" width="700" height="520" fill="#F8F5EE"/>
-  <!-- axes -->
-  <line x1="350" y1="40" x2="350" y2="460" stroke="#1A1A1A" stroke-width="2"/>
-  <line x1="60" y1="250" x2="640" y2="250" stroke="#1A1A1A" stroke-width="2"/>
-  <!-- axis labels -->
-  <text x="350" y="26" font-family="sans-serif" font-size="14" fill="#1A1A1A" text-anchor="middle" font-weight="bold">capacità alta</text>
-  <text x="350" y="486" font-family="sans-serif" font-size="14" fill="#1A1A1A" text-anchor="middle" font-weight="bold">capacità contenuta</text>
-  <text x="70" y="242" font-family="sans-serif" font-size="14" fill="#1A1A1A" text-anchor="start" font-weight="bold">chiuso (API)</text>
-  <text x="630" y="242" font-family="sans-serif" font-size="14" fill="#1A1A1A" text-anchor="end" font-weight="bold">open weights</text>
-  <!-- quadrant tints -->
-  <rect x="72" y="52" width="266" height="186" fill="#2D5A5C" opacity="0.08"/>
-  <rect x="362" y="52" width="266" height="186" fill="#B5532C" opacity="0.08"/>
-  <rect x="72" y="262" width="266" height="186" fill="#C9A961" opacity="0.10"/>
-  <rect x="362" y="262" width="266" height="186" fill="#C9A961" opacity="0.10"/>
-  <!-- top-left: closed frontier -->
-  <circle cx="150" cy="110" r="9" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="1.5"/>
-  <text x="168" y="115" font-family="sans-serif" font-size="13" fill="#1A1A1A">GPT (OpenAI)</text>
-  <circle cx="140" cy="150" r="9" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="1.5"/>
-  <text x="158" y="155" font-family="sans-serif" font-size="13" fill="#1A1A1A">Claude (Anthropic)</text>
-  <circle cx="165" cy="190" r="9" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="1.5"/>
-  <text x="183" y="195" font-family="sans-serif" font-size="13" fill="#1A1A1A">Gemini (Google)</text>
-  <!-- top-right: open frontier -->
-  <circle cx="560" cy="105" r="9" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5"/>
-  <text x="545" y="110" font-family="sans-serif" font-size="13" fill="#1A1A1A" text-anchor="end">DeepSeek (MIT)</text>
-  <circle cx="510" cy="150" r="9" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5"/>
-  <text x="495" y="155" font-family="sans-serif" font-size="13" fill="#1A1A1A" text-anchor="end">Qwen (Alibaba)</text>
-  <circle cx="470" cy="195" r="9" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5"/>
-  <text x="455" y="200" font-family="sans-serif" font-size="13" fill="#1A1A1A" text-anchor="end">Llama (licenza propria)</text>
-  <!-- bottom-right: open small -->
-  <circle cx="450" cy="310" r="7" fill="#C9A961" stroke="#1A1A1A" stroke-width="1.5"/>
-  <text x="465" y="315" font-family="sans-serif" font-size="13" fill="#1A1A1A">Gemma (Google)</text>
-  <circle cx="480" cy="355" r="7" fill="#C9A961" stroke="#1A1A1A" stroke-width="1.5"/>
-  <text x="495" y="360" font-family="sans-serif" font-size="13" fill="#1A1A1A">Mistral (Apache 2.0)</text>
-  <circle cx="430" cy="400" r="7" fill="#C9A961" stroke="#1A1A1A" stroke-width="1.5"/>
-  <text x="445" y="405" font-family="sans-serif" font-size="13" fill="#1A1A1A">Phi (Microsoft)</text>
-  <!-- bottom-left: closed small -->
-  <text x="205" y="355" font-family="sans-serif" font-size="13" fill="#5E5852" text-anchor="middle" font-style="italic">modelli "mini" via API</text>
-  <text x="205" y="375" font-family="sans-serif" font-size="13" fill="#5E5852" text-anchor="middle" font-style="italic">(veloci, economici, chiusi)</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 500" width="100%" role="img" aria-label="Mappa a quadranti. Sull'asse orizzontale il grado di apertura di un modello, da chiuso e raggiungibile solo via interfaccia, a sinistra, a pesi scaricabili da chiunque, a destra. Sull'asse verticale la capacita', dal basso verso l'alto. I punti sono distribuiti in tutti e quattro i quadranti e nessuno dei due lati domina l'altro: ce ne sono di capaci fra i chiusi e fra gli aperti, e di contenuti in entrambi. I punti non portano nomi.">
+  <rect x="0" y="0" width="700" height="500" fill="#F8F5EE"/>
+  <text x="350" y="38" text-anchor="middle" font-family="Inter, sans-serif" font-size="16" font-weight="700" fill="#1A1A1A">Due assi indipendenti</text>
+
+  <line x1="120" y1="430" x2="620" y2="430" stroke="#1A1A1A" stroke-width="2"/>
+  <line x1="120" y1="430" x2="120" y2="90" stroke="#1A1A1A" stroke-width="2"/>
+  <line x1="370" y1="90" x2="370" y2="430" stroke="#C5BEAA" stroke-width="1.5" stroke-dasharray="6 5"/>
+  <line x1="120" y1="270" x2="620" y2="270" stroke="#C5BEAA" stroke-width="1.5" stroke-dasharray="6 5"/>
+
+  <circle cx="236" cy="193" r="7" fill="#2D5A5C" fill-opacity="0.72"/>
+  <circle cx="326" cy="181" r="7" fill="#2D5A5C" fill-opacity="0.72"/>
+  <circle cx="246" cy="196" r="7" fill="#2D5A5C" fill-opacity="0.72"/>
+  <circle cx="185" cy="187" r="7" fill="#2D5A5C" fill-opacity="0.72"/>
+  <circle cx="270" cy="223" r="7" fill="#2D5A5C" fill-opacity="0.72"/>
+  <circle cx="168" cy="159" r="7" fill="#2D5A5C" fill-opacity="0.72"/>
+  <circle cx="167" cy="225" r="7" fill="#2D5A5C" fill-opacity="0.72"/>
+  <circle cx="532" cy="125" r="7" fill="#B5532C" fill-opacity="0.72"/>
+  <circle cx="587" cy="245" r="7" fill="#B5532C" fill-opacity="0.72"/>
+  <circle cx="524" cy="200" r="7" fill="#B5532C" fill-opacity="0.72"/>
+  <circle cx="430" cy="122" r="7" fill="#B5532C" fill-opacity="0.72"/>
+  <circle cx="500" cy="128" r="7" fill="#B5532C" fill-opacity="0.72"/>
+  <circle cx="436" cy="151" r="7" fill="#B5532C" fill-opacity="0.72"/>
+  <circle cx="156" cy="341" r="7" fill="#2D5A5C" fill-opacity="0.72"/>
+  <circle cx="234" cy="383" r="7" fill="#2D5A5C" fill-opacity="0.72"/>
+  <circle cx="249" cy="360" r="7" fill="#2D5A5C" fill-opacity="0.72"/>
+  <circle cx="245" cy="363" r="7" fill="#2D5A5C" fill-opacity="0.72"/>
+  <circle cx="237" cy="321" r="7" fill="#2D5A5C" fill-opacity="0.72"/>
+  <circle cx="590" cy="400" r="7" fill="#B5532C" fill-opacity="0.72"/>
+  <circle cx="560" cy="368" r="7" fill="#B5532C" fill-opacity="0.72"/>
+  <circle cx="460" cy="315" r="7" fill="#B5532C" fill-opacity="0.72"/>
+  <circle cx="455" cy="298" r="7" fill="#B5532C" fill-opacity="0.72"/>
+  <circle cx="546" cy="334" r="7" fill="#B5532C" fill-opacity="0.72"/>
+  <circle cx="561" cy="333" r="7" fill="#B5532C" fill-opacity="0.72"/>
+
+  <text x="108" y="104" text-anchor="end" font-family="Inter, sans-serif" font-size="12.5" fill="#5A524A">capacità</text>
+  <text x="108" y="122" text-anchor="end" font-family="Inter, sans-serif" font-size="12.5" fill="#5A524A">alta</text>
+  <text x="108" y="426" text-anchor="end" font-family="Inter, sans-serif" font-size="12.5" fill="#5A524A">contenuta</text>
+  <text x="120" y="456" font-family="Inter, sans-serif" font-size="13" fill="#2D5A5C" font-weight="600">chiuso (solo via interfaccia)</text>
+  <text x="620" y="456" text-anchor="end" font-family="Inter, sans-serif" font-size="13" fill="#B5532C" font-weight="600">aperto (pesi scaricabili)</text>
+  <text x="350" y="474" text-anchor="middle" font-family="Inter, sans-serif" font-size="12.5" fill="#5A524A">ogni punto è un modello; i nomi cambiano ogni pochi mesi, la forma della nuvola no</text>
 </svg>

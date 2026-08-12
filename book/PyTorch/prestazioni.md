@@ -67,9 +67,13 @@ batch, non tensore per tensore, e per cui vedremo che tenere la GPU
 
 Ogni numero di un tensore `float32` occupa 4 byte. Ma servono davvero tutti?
 L'idea della **precisione mista** {cite}`micikevicius2018mixed` è usare numeri
-a 16 bit (metà spazio, metà traffico in memoria, e sui tensor core un multiplo
-di velocità) nei punti dove la precisione piena non serve, conservando il
-`float32` dove invece è indispensabile.
+a 16 bit (metà spazio, metà traffico in memoria) nei punti dove la precisione
+piena non serve, conservando il `float32` dove invece è indispensabile. C'è
+anche un secondo guadagno, e riguarda i **tensor core**: dal 2017 le schede
+NVIDIA hanno, accanto alle unità di calcolo normali, dei circuiti costruiti
+apposta per moltiplicare piccole matrici di numeri corti, e quelli entrano in
+funzione solo se i numeri sono corti davvero. Non sono un lusso da datacenter:
+li hanno anche le schede da videogiocatori.
 
 `````{tab} Elementare
 Per pesare le patate non serve il bilancino del farmacista: la bilancia da
@@ -105,27 +109,58 @@ prezzo di una mantissa più corta; è il formato preferito sulle GPU NVIDIA da
 Ampere in poi e sulle TPU, dov'è nato.
 `````
 
-Nel training loop della sezione precedente, la precisione mista sono quattro
-righe in più:
+Nel training loop della sezione precedente, la precisione mista sono cinque
+righe in più: il `GradScaler` all'inizio, il blocco `autocast` attorno alle due
+righe del forward, e tre righe al posto delle solite `backward()` e `step()`.
+Il blocco qui sotto è scritto per girare **davvero**, anche senza GPU, quindi
+si costruisce i suoi pezzi e stampa qualcosa a ogni giro: il ciclo che non
+stampa niente è un ciclo che non è mai entrato, ed è un guasto che altrimenti
+non si vede.
 
 ```python
-scaler = torch.amp.GradScaler("cuda")            # la "lente" per i gradienti
+import torch
+from torch import nn
 
-for X, y in train_loader:
-    X, y = X.to(device), y.to(device)
+dispositivo = "cuda" if torch.cuda.is_available() else "cpu"
+# su GPU si usa float16 con la "lente"; su CPU l'autocast lavora in bfloat16,
+# che non ne ha bisogno, e lo scaler si disattiva da sé
+mezza = torch.float16 if dispositivo == "cuda" else torch.bfloat16
+
+model = nn.Sequential(nn.Flatten(), nn.Linear(28 * 28, 128), nn.ReLU(),
+                      nn.Linear(128, 10)).to(dispositivo)
+criterion = nn.CrossEntropyLoss()
+optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
+train_loader = [(torch.randn(16, 1, 28, 28), torch.randint(0, 10, (16,)))
+                for _ in range(3)]               # tre batch finti, per far girare il ciclo
+
+scaler = torch.amp.GradScaler(dispositivo)       # la "lente" per i gradienti
+
+for i, (X, y) in enumerate(train_loader):
+    X, y = X.to(dispositivo), y.to(dispositivo)
     optimizer.zero_grad()
-    with torch.autocast("cuda", dtype=torch.float16):
+    with torch.autocast(dispositivo, dtype=mezza):
         y_pred = model(X)                        # forward in mezza precisione
         loss = criterion(y_pred, y)
     scaler.scale(loss).backward()                # loss amplificata, poi backward
     scaler.step(optimizer)                       # gradienti riportati in scala
     scaler.update()                              # ricalibra il fattore di scala
+    print(f"batch {i}: loss {loss.item():.4f} | tipo interno {y_pred.dtype}")
 ```
 
 `autocast` sceglie da solo, operazione per operazione, dove i 16 bit sono
-sicuri (le moltiplicazioni tra matrici) e dove no (somme lunghe, softmax).
-Su una GPU recente si può usare `dtype=torch.bfloat16` e togliere del tutto
-il `GradScaler`: due righe in meno e stessa sostanza.
+sicuri (le moltiplicazioni tra matrici) e dove no (somme lunghe, softmax): la
+riga stampata mostra che l'uscita del modello è davvero in mezza precisione
+anche se i pesi restano interi a 32 bit.
+
+C'è poi un formato alternativo, il **bfloat16**, che sulle GPU recenti si usa
+al posto del `float16` scrivendo `dtype=torch.bfloat16`, e che permette di
+togliere del tutto il `GradScaler`. La ragione è che il problema dei gradienti
+minuscoli, quello per cui serviva la lente d'ingrandimento, con il bfloat16 non
+si pone: dei sedici bit ne spende di più per dire *quanto è grande* il numero e
+meno per dire *con quante cifre*, quindi arriva agli stessi estremi del
+`float32` (dal miliardesimo di miliardesimo in su) e i gradienti piccoli non
+diventano zero. Si perdono cifre decimali, che qui non servono, e si guadagna
+la semplicità di due righe in meno.
 
 ## Misurare davvero: la coda asincrona
 
@@ -185,6 +220,7 @@ dispositivo = "cuda" if torch.cuda.is_available() else "cpu"
 A = torch.randn(1024, 1024, device=dispositivo)
 
 def cronometra(sincronizza):
+    """Il parametro decide se aspettare la GPU alla fine: True sì, False no."""
     if dispositivo == "cuda":
         torch.cuda.synchronize()          # parti da una coda vuota
     t0 = time.perf_counter()
@@ -194,18 +230,35 @@ def cronometra(sincronizza):
         torch.cuda.synchronize()          # aspetta che la GPU abbia finito DAVVERO
     return time.perf_counter() - t0
 
+for _ in range(3):                        # riscaldamento, fuori dal cronometro
+    A @ A
+
 print(f"dispositivo: {dispositivo}")
-print(f"senza synchronize: {cronometra(False) * 1000:8.2f} ms")
-print(f"con synchronize  : {cronometra(True) * 1000:8.2f} ms")
+senza = min(cronometra(False) for _ in range(3))   # il minimo, non la prima misura
+con   = min(cronometra(True)  for _ in range(3))
+print(f"senza synchronize: {senza * 1000:8.2f} ms")
+print(f"con synchronize  : {con   * 1000:8.2f} ms")
 if dispositivo == "cpu":
-    print("(su CPU non c'è coda asincrona: i due numeri coincidono, ed è giusto così)")
+    print(f"(su CPU non c'è coda asincrona: i due numeri sono dello stesso "
+          f"ordine, qui a {abs(con - senza) / senza:.0%} di distanza)")
 ```
 
-Su CPU i due numeri si equivalgono, perché non c'è nessuna coda: è il controllo
-negativo, e serve a mostrare che la differenza non è un artefatto del modo di
-misurare. Su una GPU, invece, la prima riga stampa un tempo assurdamente
-piccolo e la seconda quello vero. Se si esegue questo capitolo su Colab con
-l'acceleratore attivo, è il primo esperimento da rifare.
+Due precauzioni nel codice meritano una riga, perché sono il modo giusto di
+cronometrare qualunque cosa e non solo questo. La prima è il **riscaldamento**:
+le prime chiamate pagano costi che le successive non pagano (l'avvio dei thread
+di calcolo, la memoria che si scalda), quindi si fanno girare a vuoto e non si
+misurano. La seconda è prendere il **minimo** di più ripetizioni invece della
+prima misura: il minimo è il giro in cui il computer è stato meno disturbato da
+altro, ed è la statistica meno rumorosa che si possa usare su una macchina
+condivisa.
+
+Su CPU, con queste due precauzioni, i due numeri si equivalgono a meno del
+rumore di misura (qualche punto percentuale, in un senso o nell'altro), perché
+non c'è nessuna coda: è il controllo negativo, e serve a mostrare che la
+differenza non è un artefatto del modo di misurare. Su una GPU, invece, la
+prima riga stampa un tempo assurdamente piccolo e la seconda quello vero. Se si
+esegue questo capitolo su Colab con l'acceleratore attivo, è il primo
+esperimento da rifare.
 
 ## Una riga per compilare: `torch.compile`
 
@@ -242,9 +295,15 @@ sono *memory bound*, limitate dalla banda più che dal calcolo. Il grafo è
 protetto da *guard*: se cambiano forme dei tensori o rami del control flow, si
 ricompila (altro overhead). Nei benchmark ufficiali su GPU A100 il guadagno
 medio in addestramento è attorno al 40%, ma la varianza è alta: modelli grandi
-e statici guadagnano di più, modelli piccoli o dalle forme variabili poco o
-nulla. La regola pratica: attivalo quando l'addestramento dura ore, misura, e
-tienilo solo se il cronometro dà ragione.
+e statici guadagnano di più, modelli piccoli o dalle forme variabili poco,
+nulla, o **meno di zero**: il pavimento non è la parità. Misurato sulla MLP di
+MNIST su CPU: decine di secondi solo per compilare (da 23 a 75 in due prove con
+carichi diversi, contro un addestramento che dura minuti) e, a regime, un
+compilato più lento dell'eager, di una frazione o di parecchie volte a seconda
+di quanto la macchina è carica. Su CPU l'inductor gioca in trasferta e il
+fattore non è trasferibile a una GPU, ma il segno sì. La regola pratica:
+attivalo quando l'addestramento dura ore, misura, e tienilo solo se il
+cronometro dà ragione.
 `````
 
 ## Più GPU, un solo modello: il parallelismo dati
@@ -301,7 +360,9 @@ su Python) e lo sbilanciamento sulla GPU 0 ne fanno un reperto storico. DDP
 gira un processo per GPU proprio per questo: un GIL a testa.
 `````
 
-In codice, DDP è uno schema più che una libreria da imparare. Lo snippet che
+In codice, DDP è uno schema più che una libreria da imparare, e chi ha una
+scheda sola (cioè quasi tutti) può guardarlo di sfuggita: quello che c'era da
+capire l'hanno detto la figura e le due schede qui sopra. Lo snippet che
 segue non si lancia con `python`: serve un *launcher*, `torchrun`, che avvia
 un processo per GPU e assegna a ciascuno la propria identità.
 
@@ -342,11 +403,19 @@ conosci.
 ## Partire col piede giusto: `nn.init`
 
 C'è un'ottimizzazione che non riguarda la velocità dell'hardware ma quella
-dell'*apprendimento*: da quali valori partono i pesi. Nel capitolo sul deep
-learning vedremo perché la scala iniziale dei pesi decide se il segnale
-attraversa una rete profonda o svanisce strada facendo, e da dove vengono le
-due ricette classiche: **Xavier/Glorot** per attivazioni simmetriche come la
-tanh, **He** per la ReLU. Qui vediamo il gesto con cui si applicano. I default
+dell'*apprendimento*: da quali valori partono i pesi.
+
+Che la cosa conti non è ovvio, e mezza riga di spiegazione la merita. Prima di
+imparare qualunque cosa, i pesi di una rete sono numeri a caso, e la domanda è
+*quanto* grandi. Se sono troppo piccoli, il segnale che entra da una parte si
+smorza attraversando gli strati e dall'ultimo esce quasi zero: non c'è niente
+da correggere, e la rete non parte. Se sono troppo grandi succede il contrario,
+il segnale si gonfia strato dopo strato e i numeri esplodono. Le due ricette
+classiche, **Xavier/Glorot** e **He**, sono due modi di scegliere quella scala
+in funzione di quanti ingressi ha ciascun neurone, la prima pensata per
+attivazioni simmetriche come la tanh, la seconda per la ReLU. Il capitolo sul
+deep learning ne darà la ragione per esteso; qui vediamo il gesto con cui si
+applicano. I default
 di PyTorch sono ragionevoli (per `nn.Linear`, una variante uniforme mantenuta
 per compatibilità storica col vecchio Torch), ma quando si vuole il controllo
 esplicito il modulo `torch.nn.init` offre le ricette pronte, con la solita
@@ -385,7 +454,7 @@ leve che spostano davvero il cronometro sono più modeste e più vicine:
   parallelo mentre la GPU lavora, e `pin_memory=True` accelera il
   trasferimento.
 - **Precisione mista anche in piccolo**: i tensor core non sono un lusso da
-  datacenter; li hanno tutte le GeForce RTX. Le quattro righe di `autocast`
+  datacenter; li hanno tutte le GeForce RTX. Le cinque righe di `autocast`
   viste sopra sono spesso il singolo guadagno più grande disponibile su una
   GPU consumer.
 - **Nessuna GPU?** Google Colab ne offre una gratis (con limiti di tempo), e
@@ -396,6 +465,35 @@ Un cronometro attorno a un'epoca (`time.time()` basta) e un'occhiata
 all'utilizzo della scheda (`nvidia-smi`) dicono in trenta secondi dove va il
 tempo; ottimizzare senza misurare è potare un albero al buio.
 
+Con questa sezione il capitolo si chiude: dal primo tensore alla macchina
+tenuta a regime. Il capitolo successivo apre il cofano dell'hardware.
+
+`````{tab} Elementare
+```{admonition} Da ricordare
+:class: important
+- Una rete neurale, vista dall'hardware, è quasi soltanto
+  **moltiplicazioni di tabelle di numeri**: milioni di conti identici e
+  indipendenti. È il lavoro perfetto per una scheda grafica, che è fatta di
+  migliaia di operai semplici invece che di pochi bravissimi.
+- La **precisione mista** usa numeri corti dove bastano e lunghi dove
+  servono: quasi il doppio della velocità, quasi gratis, su qualunque scheda
+  moderna. L'unica insidia sono i numeri piccolissimi, e c'è una lente
+  d'ingrandimento apposta.
+- `torch.compile` legge il modello tutto insieme e riorganizza i passaggi:
+  conviene sugli addestramenti lunghi, non sugli assaggi, perché studiare la
+  ricetta costa e su un modello minuscolo può costare più di quanto rende.
+- Se le schede sono più d'una, ognuna prende **una fetta del vassoio**, e alla
+  fine tutte mettono in comune le correzioni e ne fanno la media. Il giro di
+  addestramento non cambia di una riga.
+- Anche da quali numeri si parte conta: troppo piccoli e il segnale si spegne
+  attraversando la rete, troppo grandi e esplode. Ci sono ricette pronte.
+- Su una macchina sola le leve che spostano il cronometro sono tre: riempire
+  la scheda, rifornirla di dati, usare i numeri corti. E prima di tutto,
+  **misurare**: ottimizzare senza misurare è potare un albero al buio.
+```
+`````
+
+`````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
 - Le reti neurali sono soprattutto **moltiplicazioni di matrici**: milioni di
@@ -406,7 +504,8 @@ tempo; ottimizzare senza misurare è potare un albero al buio.
   basta e 32 dove serve: `autocast` + `GradScaler` (o `bfloat16` senza
   scaler) per un guadagno quasi gratuito su qualunque GPU con tensor core.
 - `torch.compile` (PyTorch 2.0) fonde i kernel in una riga: paga su modelli
-  grandi e addestramenti lunghi, non sugli esperimenti brevi.
+  grandi e addestramenti lunghi, non sugli esperimenti brevi, dove il
+  compilato può risultare **più lento** dell'eager.
 - Il **parallelismo dati** replica il modello su ogni GPU, spartisce il
   batch e media i gradienti con l'**all-reduce**: lo standard è
   `DistributedDataParallel`, lanciato con `torchrun`; il training loop resta
@@ -414,5 +513,7 @@ tempo; ottimizzare senza misurare è potare un albero al buio.
 - `nn.init` con `apply()` applica le inizializzazioni Xavier/He
   (`kaiming_normal_`) che il capitolo sul deep learning motiverà.
 - Su una macchina sola contano `batch_size`, `num_workers`, la precisione
-  mista, e il cronometro prima di tutto.
+  mista, e il cronometro prima di tutto: riscaldamento fuori dalla misura e
+  minimo di più ripetizioni, non la prima.
 ```
+`````

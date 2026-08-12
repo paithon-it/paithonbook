@@ -32,7 +32,11 @@ RuntimeError: mat1 and mat2 shapes cannot be multiplied (32x784 and 128x10)
 È il più frequente in assoluto, e il messaggio (una volta imparato a leggerlo)
 dice già tutto: PyTorch ha provato a moltiplicare una matrice $32 \times 784$
 per una $128 \times 10$, e non si può, perché il numero di colonne della prima
-($784$) non coincide con il numero di righe della seconda ($128$).
+($784$) non coincide con il numero di righe della seconda ($128$). È la regola
+del prodotto fra matrici vista nel capitolo di algebra lineare, e il motivo per
+cui esiste è che ogni riga della prima matrice viene accoppiata a una colonna
+della seconda, numero per numero: se le due file non hanno la stessa lunghezza,
+gli accoppiamenti non si chiudono.
 
 `````{tab} Elementare
 Pensa ai tensori come a scatole con un'etichetta che dice quante cose
@@ -63,9 +67,9 @@ formalizzano così.
 
 **Appiattimento.** `nn.Linear(d_in, d_out)` opera sull'**ultima** dimensione e
 lascia intatte le precedenti: applicato a $(B, C, H, W)$ fallisce a meno che
-$W = d_{in}$. Per un MLP su immagini serve `nn.Flatten()` (che per default
-appiattisce da `start_dim=1`, preservando il batch) e
-$d_{in} = C \cdot H \cdot W$.
+$W = d_{\text{in}}$. Per un MLP su immagini serve `nn.Flatten()` (che per
+default appiattisce da `start_dim=1`, preservando il batch) e
+$d_{\text{in}} = C \cdot H \cdot W$.
 
 **Composizione.** In una `nn.Sequential`, `out_features` di uno strato deve
 uguagliare `in_features` del successivo. Quando la dimensione dipende da
@@ -91,26 +95,43 @@ elegante, sempre efficace.
 ## 2. Il tipo non torna
 
 ```text
-RuntimeError: expected scalar type Float but found Byte
-RuntimeError: expected scalar type Long but found Float
+RuntimeError: mat1 and mat2 must have the same dtype, but got Byte and Float
+RuntimeError: expected target dtype to be Long or Byte, but got Float
 ```
 
 Il secondo errore riguarda il `dtype`, cioè il tipo di numero con cui il
 tensore è scritto: interi (il $3$) oppure decimali (il $3{,}0$). Quando somma
 o moltiplica due tensori numero per numero, PyTorch converte da sé quello
-"più stretto" nel tipo dell'altro, con le stesse regole di NumPy; ma nel
-prodotto fra matrici e dentro gli strati `nn` (i casi dei due messaggi qui
-sopra) il tipo se lo aspetta preciso, e preferisce fermarsi piuttosto che
-indovinare quale volevamo. Preciso non vuol dire uguale per tutti: il primo
-messaggio nasce da un tensore che deve essere decimale e non lo è, il secondo
-dal caso opposto, un'etichetta scritta come decimale dove ci vuole un intero.
+"più stretto" nel tipo dell'altro; ma nel prodotto fra matrici e dentro gli
+strati `nn` (i casi dei due messaggi qui sopra) il tipo se lo aspetta preciso,
+e preferisce fermarsi piuttosto che indovinare quale volevamo.
+
+I due messaggi vanno letti in modi diversi, e conviene saperlo perché è proprio
+la varietà delle formulazioni a disorientare. Nel **primo** i due tipi non sono
+"atteso" e "trovato": sono i **due operandi**, il tensore che abbiamo passato e
+i pesi del modello, nell'ordine. `Byte` è il nome interno di `uint8`, il tipo
+di un'immagine appena letta da un file, e `Float` è il tipo dei pesi: la frase
+dice che una cosa a interi e una a decimali si sono incontrate in una
+moltiplicazione fra matrici. Il **secondo** riguarda le etichette, e lì i nomi
+sono quelli dei tipi ammessi (`Long`, cioè `int64`) contro quello ricevuto.
+
+Una nota sulla varietà: la stessa situazione produce frasi diverse a seconda
+dell'operazione. Uno strato lineare dice `mat1 and mat2 must have the same
+dtype`; una convoluzione con bias dice `Input type (unsigned char) and bias
+type (float) should be the same`; una convoluzione senza bias dice
+`expected scalar type Byte but found Float`. Sono tre modi di dire la stessa
+cosa, e riconoscerne il tema è più utile che impararli a memoria.
 
 `````{tab} Elementare
 Un'immagine appena letta da un file è fatta di numeri interi da $0$ a $255$: è
 il tipo `uint8`, il "Byte" del messaggio. Una rete neurale lavora invece con
-numeri decimali. Sono due modi diversi di scrivere la stessa cosa, ma il
-computer non li scambia da solo, e la conversione è a carico nostro: la fa la
-trasformazione `ToTensor()`, oppure `.float()` a mano.
+numeri decimali fra $0$ e $1$. In una somma PyTorch la conversione la fa da
+sé, ma **la rete no**: dentro uno strato il tipo se lo aspetta preciso, e la
+conversione è a carico nostro. La fa la trasformazione `ToTensor()`, che
+converte *e* divide per $255$ portando i valori nell'intervallo giusto; a mano
+servono tutti e due i gesti, `.float() / 255`, e il secondo si dimentica
+spesso, con l'effetto di dare alla rete numeri fino a $255$ volte più grandi di
+quelli che si aspetta.
 
 Il secondo messaggio è il caso opposto e riguarda le **etichette**. Alla
 `CrossEntropyLoss` le classi vere si danno come numeri interi (la classe $3$,
@@ -125,20 +146,39 @@ converte quando i dati entrano, non a metà del training loop.
 `````{tab} Superiore
 Il default di PyTorch è `float32`; il default di NumPy è `float64`. Un
 `torch.from_numpy(array)` conserva il `float64` e produce un tensore che non
-può essere moltiplicato per i pesi `float32` del modello: è la sorgente più
-insidiosa di errori di tipo, perché nasce fuori da PyTorch. La conversione
-esplicita `torch.from_numpy(a).float()` (o `.to(torch.float32)`) va fatta al
-confine.
+può essere moltiplicato per i pesi `float32` del modello (`mat1 and mat2 must
+have the same dtype, but got Double and Float`, dove `Double` è `float64`): è
+la sorgente più insidiosa di errori di tipo, perché nasce fuori da PyTorch. La
+conversione esplicita `torch.from_numpy(a).float()` (o `.to(torch.float32)`) va
+fatta al confine.
+
+Sul *type promotion* elemento per elemento vale la pena essere precisi, perché
+la formula che si legge di solito («le stesse regole di NumPy») è vera solo in
+parte. Confrontando `torch.result_type` con `np.result_type` su tutte le 81
+coppie dei tipi qui elencati, **dieci divergono**, e sono tutte del tipo intero
+per decimale: a differenza di NumPy, in PyTorch un intero non spinge mai un
+decimale a una precisione più alta. `int64 + float32` dà `float32` in torch e
+`float64` in NumPy; `torch.tensor([1,2,3]) * 2.5` dà `float32`, mentre
+`np.array([1,2,3]) * 2.5` dà `float64`. Il che rafforza il paragrafo qui sopra
+invece di indebolirlo: il `float64` che arriva da NumPy è insidioso proprio
+perché le due librerie non la pensano allo stesso modo.
 
 Il quadro completo dei tipi che si incontrano:
 
 | Contenuto | dtype atteso | Note |
 |---|---|---|
 | Immagini, feature, attivazioni | `torch.float32` | il default dei pesi |
-| Etichette per `CrossEntropyLoss` | `torch.int64` (`long`) | indici di classe, shape $(N,)$ |
+| Etichette per `CrossEntropyLoss` | `torch.int64` (`long`) | indici di classe, shape $(N,)$; oppure `float32` di shape $(N,K)$, cioè probabilità |
 | Etichette per `BCEWithLogitsLoss` | `torch.float32` | shape uguale ai logit |
 | Maschere booleane | `torch.bool` | per `masked_fill` e le maschere di attenzione |
 | Immagini appena lette | `torch.uint8` | da convertire, e da scalare in $[0,1]$ |
+
+La riga della `CrossEntropyLoss` spiega anche perché il suo messaggio parla di
+«target dtype» e non di «scalar type»: da PyTorch 1.10 quella loss accetta
+*anche* target `float`, ma solo con la stessa shape dei logit, interpretandoli
+come probabilità di classe (è la forma che serve per il *label smoothing* e per
+la distillazione). Un target `float` di shape $(N,)$ non è quindi una forma
+sbagliata, è un **tipo** sbagliato, ed è per questo che l'errore parla di tipi.
 
 Nota che `float16` e `bfloat16` non fanno eccezione a queste regole: la
 precisione mista, trattata in [prestazioni](prestazioni.md), non si ottiene
@@ -212,10 +252,12 @@ I tre errori sopra si risolvono in trenta secondi *se* si legge il messaggio.
 Vale la pena rendere esplicito il metodo, perché funziona anche per il
 quarto errore, quello che non è in nessun elenco.
 
-1. **Leggi il traceback dal basso verso l'alto.** L'ultima riga dice *che
-   cosa* è successo; risalendo si trova la prima riga di codice *tuo*: quella
-   è il punto da guardare, non le venti righe interne di PyTorch che stanno
-   sotto.
+1. **Leggi il traceback dal basso verso l'alto.** Quando un programma Python si
+   ferma non stampa una frase, stampa un elenco: è il *traceback*, la catena di
+   chiamate che ha portato all'errore, dalla prima riga lanciata (in cima) fino
+   al punto esatto in cui è esploso (in fondo). L'ultima riga dice *che cosa* è
+   successo; risalendo si trova la prima riga di codice *tuo*: quella è il
+   punto da guardare, non le venti righe interne di PyTorch che stanno sotto.
 2. **Stampa la terna.** `print(x.shape, x.dtype, x.device)` prima della riga
    che esplode, e la stessa cosa per l'altro operando. Nove volte su dieci
    l'errore diventa evidente.
@@ -246,9 +288,13 @@ comune di tutti, quello che chiude questa lista: una loss di addestramento che
 scende benissimo mentre quella di validazione risale. Il codice funziona, non
 c'è niente da correggere in PyTorch, e proprio per questo lo si scopre tardi.
 
-- **`optimizer.zero_grad()` dimenticato.** I gradienti si accumulano: ogni
-  passo userebbe la somma di tutti i precedenti. L'addestramento sembra
-  partire, poi diverge.
+- **`optimizer.zero_grad()` dimenticato.** I gradienti si accumulano, quindi il
+  passo effettivo cresce a ogni iterazione. Che cosa si vede dipende
+  dall'ottimizzatore, e vale la pena saperlo perché il sintomo ovvio è quello
+  sbagliato: con `Adam` la loss di solito esplode, ma con `SGD`, misurando, la
+  loss all'inizio scende *più in fretta* del normale. È il caso peggiore, non
+  il più innocuo, proprio perché il bug si traveste da successo, e chi cerca la
+  divergenza conclude che lo `zero_grad()` c'è.
 - **`optimizer.step()` dimenticato.** I gradienti si calcolano ma nessuno
   aggiorna i pesi: la loss resta piatta, identica, epoca dopo epoca.
 - **Softmax applicata due volte.** Se l'ultimo strato del modello ha già una
@@ -258,13 +304,25 @@ c'è niente da correggere in PyTorch, e proprio per questo lo si scopre tardi.
 - **`model.eval()` dimenticato in valutazione.** Con dropout e batch norm
   attivi, le metriche di test risultano peggiori e (cosa più insidiosa)
   diverse a ogni esecuzione.
-- **Memoria che cresce a ogni epoca.** Accumulare `totale += perdita` invece
-  di `totale += perdita.item()` tiene in vita l'intero grafo dei calcoli di
-  ogni batch. Dopo qualche centinaio di iterazioni, *out of memory*.
-- **La loss diventa `nan`.** Quasi sempre il learning rate è troppo alto;
-  altrimenti è un logaritmo di zero (una probabilità esatta $0$) o una
-  divisione per una deviazione standard nulla. Si dimezza il learning rate e
-  si aggiunge un $\varepsilon$ al denominatore.
+- **Memoria che cresce a ogni epoca.** `perdita` non è un numero: è un numero
+  *più* tutta la catena di operazioni che l'ha prodotto, che PyTorch conserva
+  perché servirà al calcolo della derivata. Accumulare `totale += perdita`
+  tiene quindi in vita l'intera catena di ogni batch, una sopra l'altra;
+  `perdita.item()` estrae il numero e basta, e la catena può essere buttata.
+  Senza quel `.item()`, dopo qualche centinaio di iterazioni la memoria finisce
+  (*out of memory*).
+- **La loss diventa `nan`.** `nan` sta per *not a number* ed è il valore che i
+  computer usano per dire "questo conto non ha un risultato": lo si ottiene
+  dividendo zero per zero, o da un numero cresciuto oltre il rappresentabile.
+  Quando compare al posto della loss, quasi sempre il learning rate è troppo
+  alto e i pesi sono schizzati via; altrimenti c'è una divisione per zero
+  nascosta da qualche parte, e i due posti dove si nasconde più spesso sono il
+  logaritmo di una probabilità esatta $0$ (che vale meno infinito) e la
+  divisione per una deviazione standard nulla, cioè per un gruppo di numeri
+  tutti uguali. I rimedi sono altrettanto meccanici: dimezzare il learning
+  rate, e sommare al denominatore un numero minuscolo (si scrive
+  $\varepsilon$, epsilon, e vale tipicamente $10^{-8}$) perché non possa mai
+  essere zero esatto.
 - **`shuffle=True` sul `DataLoader` di test.** Non è un errore di per sé, ma
   rende impossibile confrontare le predizioni con le etichette in un ordine
   stabile, e ogni valutazione racconta una storia leggermente diversa.
@@ -312,9 +370,11 @@ malattia: quello che si sorveglia è se **si allarga**.
 **Sovradattamento.** L'addestramento continua a scendere, la validazione tocca
 un minimo e risale. È la forma già incontrata parlando di
 [quando fermarsi](addestramento.md), con l'arresto anticipato come rimedio, e
-non la ripetiamo qui. Vale però un'avvertenza: nel regime dei modelli molto
-sovraparametrizzati quella risalita può non essere la fine della storia, come
-racconta la sezione sulla doppia discesa nel capitolo di machine learning.
+non la ripetiamo qui. Vale però un'avvertenza: quando il modello ha molti più
+parametri che esempi da imparare, quella risalita può non essere la fine della
+storia, e continuando ad addestrare la validazione può tornare a scendere una
+seconda volta. È il fenomeno della *doppia discesa*, raccontato nel capitolo di
+machine learning.
 
 **Passo troppo lungo.** Le curve oscillano vistosamente, magari con una
 tendenza generale al ribasso ma con salti che la coprono. L'ottimizzatore sta
@@ -433,6 +493,46 @@ plt.plot(storia["val"], label="validazione", linestyle="--")
 plt.xlabel("epoche"); plt.ylabel("loss"); plt.legend()
 ```
 
+Tre errori con un messaggio, sette senza, e un metodo che vale per tutti e
+dieci. È la sezione a cui si torna, e vale la pena rileggerne il riassunto la
+prima volta che qualcosa si rompe.
+
+`````{tab} Elementare
+```{admonition} Da ricordare
+:class: important
+- Un tensore ha **forma, tipo e dispositivo**: quasi ogni errore rosso di
+  PyTorch riguarda uno di questi tre, e la prima cosa da fare è stamparli tutti
+  e tre, per il tuo dato e per quello che gli sta di fronte.
+- **Forma**: manca lo strato che srotola l'immagine, due strati non combaciano,
+  oppure manca il "mucchietto" attorno all'esempio singolo.
+- **Tipo**: numeri decimali per i dati, numeri interi per le etichette quando
+  la risposta è una categoria fra tante. Le immagini appena lette sono fatte di
+  interi da 0 a 255 e vanno convertite una volta sola, appena entrano.
+- **Dispositivo**: spostare il modello lo sposta davvero; spostare un dato
+  restituisce una *copia*, e se non la riassegni non hai fatto niente.
+- Il metodo vale più dei rimedi: **leggi l'errore dall'ultima riga in su**,
+  stampa forma-tipo-dispositivo, riduci il problema a un esempio solo, e prova
+  la catena con un dato finto prima di lanciare l'addestramento vero.
+- Gli errori peggiori sono quelli **silenziosi**, quelli senza niente di rosso:
+  gli appunti del giro prima non buttati, la trasformazione in probabilità
+  fatta due volte, la modalità esame dimenticata, il numero estratto dalla
+  perdita dimenticato nell'accumulo.
+- Per gli errori silenziosi il messaggio d'errore è **la coppia di curve**, e
+  va disegnata dalla prima epoca. Piatta come un tavolo: è un errore nel
+  codice. Scende appena: passo corto o modello piccolo. Salta: passo lungo o
+  mucchietti troppo piccoli. Distanza fra le due che si allarga: servono i
+  freni.
+- **Far imparare a memoria dieci esempi** è il collaudo più economico che
+  esista: se il modello non ci riesce, il difetto è nel codice, non nelle
+  manopole.
+- La validazione **sotto** l'addestramento di solito non è un guasto: il numero
+  dell'addestramento è una media presa mentre il modello stava ancora
+  cambiando, e i trucchi che si usano solo mentre si studia penalizzano
+  soltanto lui.
+```
+`````
+
+`````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
 - Un tensore ha **forma, tipo e dispositivo**: quasi ogni `RuntimeError` di
@@ -449,9 +549,9 @@ plt.xlabel("epoche"); plt.ylabel("loss"); plt.legend()
   `register_buffer`.
 - Il metodo vale più dei rimedi: **traceback dal basso**, stampa della terna,
   problema ridotto, giro a vuoto con un tensore finto.
-- Gli errori peggiori sono quelli **silenziosi**: `zero_grad` mancante,
-  softmax doppia, `eval()` dimenticato, `.item()` dimenticato
-  nell'accumulo.
+- Gli errori peggiori sono quelli **silenziosi**: `zero_grad` mancante (che con
+  SGD può far *scendere* la loss più in fretta, non divergere), softmax
+  doppia, `eval()` dimenticato, `.item()` dimenticato nell'accumulo.
 - Per gli errori silenziosi il messaggio d'errore è **la coppia di curve**, e
   va disegnata dall'epoca uno. Piatta come un tavolo: è un bug. Scende appena:
   passo corto o modello piccolo. Salta: passo lungo o batch piccolo. Divario
@@ -463,3 +563,4 @@ plt.xlabel("epoche"); plt.ylabel("loss"); plt.legend()
   di training è una media presa mentre i pesi cambiavano, e dropout e
   augmentation penalizzano solo il training.
 ```
+`````

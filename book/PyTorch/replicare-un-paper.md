@@ -9,9 +9,15 @@ che non consente di autoingannarsi, perché il codice non accetta i passaggi
 vaghi: dove il testo dice "si proietta linearmente" bisogna decidere una
 matrice, e la matrice ha una forma precisa.
 
-Questa sezione non introduce nulla di nuovo di PyTorch: usa quello che il
-capitolo ha già costruito. Introduce un **metodo**, che è la cosa più
-trasferibile che si possa imparare qui dentro.
+Quello che questa sezione insegna è un **metodo**, ed è la cosa più
+trasferibile che si possa imparare qui dentro. Il modello su cui lo mettiamo
+alla prova usa due strati che il libro spiegherà più avanti, la **convoluzione**
+(capitolo sul deep learning) e l'**attenzione multi-testa** (capitolo sui
+Transformer): qui contano solo come scatole con una forma in ingresso e una in
+uscita, e non serve sapere che cosa facciano dentro per verificare che il
+montaggio sia giusto. Anzi, è precisamente il punto: gli invarianti si
+controllano senza aprire le scatole, ed è per questo che il metodo funziona
+anche su un articolo di cui non si è capito tutto.
 
 ## Il metodo, in quattro mosse
 
@@ -41,7 +47,8 @@ Formalizzato, il procedimento è una verifica incrementale su tre invarianti,
 tutti controllabili **senza addestrare**:
 
 1. **Invariante di forma.** Ogni modulo definisce una mappa
-   $f: \mathbb{R}^{d_{in}} \to \mathbb{R}^{d_{out}}$; se ne verifica il tipo
+   $f: \mathbb{R}^{d_{\text{in}}} \to \mathbb{R}^{d_{\text{out}}}$; se ne
+   verifica il tipo
    con un tensore casuale della forma dichiarata nel paper. Un `assert` sulla
    shape in uscita è un test unitario a costo zero.
 2. **Invariante di conteggio.** Il numero di parametri è una funzione chiusa
@@ -60,11 +67,14 @@ numerici, ed è a quel punto che comincia la parte difficile.
 
 ## Il caso: il Vision Transformer
 
-Prendiamo un articolo che il libro ha già incontrato più volte: *An Image is
-Worth 16x16 Words* {cite}`dosovitskiy2021image`, che nel 2021 ha portato
+Prendiamo un articolo che il libro incontrerà più volte più avanti: *An Image
+is Worth 16x16 Words* {cite}`dosovitskiy2021image`, che nel 2021 ha portato
 l'architettura Transformer dentro la visione artificiale. È un ottimo caso di
 studio perché l'architettura è breve (quattro equazioni) e perché i numeri da
-verificare sono pubblicati.
+verificare sono pubblicati. Che sia un articolo di cui non abbiamo ancora
+letto la teoria è, per una volta, un vantaggio: mostra che il metodo non
+richiede di aver capito prima il modello, e che si può montare qualcosa
+correttamente pur non sapendo ancora perché funzioni.
 
 La prima equazione del paper costruisce la sequenza di ingresso: l'immagine
 viene tagliata in quadratini, ognuno viene proiettato in un vettore, si
@@ -86,7 +96,17 @@ $\mathbf{x}_{\text{class}}$ è un vettore imparabile premesso alla sequenza e
 $\mathbf{E}_{\text{pos}} \in \mathbb{R}^{(N+1) \times D}$ sono le codifiche di
 posizione. Con immagini $224 \times 224$, patch $P = 16$ e $C = 3$ canali si
 ottengono $N = (224/16)^2 = 196$ patch, ciascuna di $16 \cdot 16 \cdot 3 = 768$
-numeri.
+numeri. Il quadrato viene da lì: $224/16 = 14$ è il numero di quadratini che
+stanno su **una** riga, e l'immagine è una griglia, quindi le righe sono
+altrettante e i quadratini in tutto sono $14 \times 14$.
+
+Una coincidenza da segnalare, perché altrimenti confonde: il $768$ appena
+calcolato ($16 \cdot 16 \cdot 3$, quanti numeri contiene una patch) e il $768$
+che comparirà fra poco nel codice come `d_modello` **sono due cose diverse**.
+Il primo è quanto entra nella proiezione, il secondo quanto ne esce, ed è una
+scelta degli autori del paper. Che coincidano vuol dire soltanto che la
+proiezione, in questo caso, non cambia il numero di numeri; con patch da $32$
+pixel il primo diventerebbe $3072$ e il secondo resterebbe $768$.
 
 Ecco la stessa equazione, in PyTorch:
 
@@ -121,12 +141,20 @@ class IncorporazionePatch(nn.Module):
 Le righe da guardare sono due: la convoluzione e il token di classe.
 
 `````{tab} Elementare
-**La convoluzione.** Il paper dice "si taglia l'immagine in quadratini e si
-proietta ciascuno". La traduzione letterale sarebbe: taglia, impila, applica
-uno strato lineare (tre operazioni). Ma una convoluzione con la finestra
-grande esattamente quanto il passo fa già questo: scorre di sedici pixel alla
-volta con una finestra di sedici, quindi guarda ogni quadratino una volta e
-nessun pixel due volte. Una riga invece di tre, e più veloce. Accorgersi che
+**La convoluzione.** Del pezzo di codice `nn.Conv2d` basta sapere, per ora,
+questo: fa scorrere una finestrella sull'immagine e a ogni posizione produce un
+pugno di numeri a partire dai pixel che ci stanno dentro. Due manopole ne
+governano il movimento: quanto è grande la finestra (`kernel_size`) e di quanto
+si sposta a ogni scatto (`stride`). Il capitolo sul deep learning spiegherà
+perché questa operazione sia il modo giusto di guardare un'immagine; qui serve
+solo il movimento.
+
+Il paper dice "si taglia l'immagine in quadratini e si proietta ciascuno". La
+traduzione letterale sarebbe: taglia, impila, applica uno strato lineare (tre
+operazioni). Ma una convoluzione con la finestra grande esattamente quanto il
+passo fa già questo: scorre di sedici pixel alla volta con una finestra di
+sedici, quindi guarda ogni quadratino una volta e nessun pixel due volte. Una
+riga invece di tre, e più veloce. Accorgersi che
 due descrizioni diverse sono la stessa operazione è metà del mestiere di chi
 replica un paper.
 
@@ -245,12 +273,27 @@ verifica che smaschera qualunque svista:
 | **12 blocchi** | $12 \cdot 7\,087\,872$ | $85\,054\,464$ |
 | **Totale** | | $\mathbf{85\,797\,120}$ |
 
+Due righe hanno un fattore che sembra piovere dall'alto, e vale la pena
+scioglierlo perché il testo invita a rifare il conto a mano. Il **4**
+dell'attenzione conta quattro proiezioni della stessa forma
+$768 \times 768$ più bias: tre servono a produrre le tre versioni di ogni
+elemento della sequenza che l'attenzione mette in gioco, la quarta a
+ricomporre il risultato. Il **2** della LayerNorm è perché una
+normalizzazione, dopo aver riportato i numeri su una scala standard, li
+riscala di nuovo con due parametri imparati per canale, un moltiplicatore e
+uno spostamento: due numeri per ciascuno dei $768$ canali, e i normalizzatori
+per blocco sono due, da cui $2 \cdot 2 \cdot 768$.
+
 Poco meno di $86$ milioni: il numero dichiarato dal paper, che qui non
 comprende né la LayerNorm finale dell'equazione 4 né la testa di
-classificazione (altri $768 \cdot K$ parametri, con $K$ le classi). Se il
-nostro conteggio fosse uscito attorno ai $43$ milioni sapremmo, senza ipotesi,
-di aver usato sei blocchi invece di dodici; se fosse uscito $170$ milioni, di
-aver raddoppiato qualcosa. È una verifica che costa niente e che
+classificazione (altri $768K + K$ parametri, con $K$ le classi: un peso per
+ogni coppia canale-classe, più un bias per classe). La verifica si può portare
+fino in fondo su `torchvision.models.vit_b_16`, che con $K = 1000$ ha
+$85\,797\,120 + 1\,536 + (768 \cdot 1000 + 1000) = 86\,567\,656$ parametri,
+esatto fino all'ultima cifra: con $768 \cdot K$ mancherebbero mille parametri.
+Se il nostro conteggio fosse uscito attorno ai $43$ milioni sapremmo, senza
+ipotesi, di aver usato sei blocchi invece di dodici; se fosse uscito $170$
+milioni, di aver raddoppiato qualcosa. È una verifica che costa niente e che
 quasi nessuno fa.
 
 Lo stesso controllo, strato per strato, lo dà `torchinfo`:
@@ -382,6 +425,30 @@ replica dichiarata riuscita senza esserlo, no. Vale anche per il proprio
 lavoro: se un risultato dipende da un seme fortunato, non è un risultato.
 ```
 
+Il metodo vale più del caso su cui l'abbiamo provato: si applica identico a
+qualunque articolo che dichiari un'architettura e dei numeri.
+
+`````{tab} Elementare
+```{admonition} Da ricordare
+:class: important
+- Replicare un articolo è il modo più affidabile di capirlo: il codice non
+  accetta i passaggi vaghi. Dove il testo dice «si proietta», il codice deve
+  dire con che cosa e di che misura.
+- Le mosse sono quattro: **inventario** dei pezzi, **una formula alla volta**,
+  **metro da falegname** a ogni passo (mandi dentro un dato finto e guardi che
+  forma esce), **conteggio dei pezzi** alla fine.
+- Nessuna delle quattro richiede di addestrare niente, e nessuna richiede di
+  aver capito che cosa fanno i pezzi dentro: bastano le misure in entrata e in
+  uscita.
+- Il conteggio dei pezzi è la verifica più potente e costa trenta secondi: se
+  l'articolo dice 86 milioni e a te ne escono 43, ne hai montata metà.
+- Riprodurre **il montaggio** è quasi sempre possibile; riprodurre **i
+  risultati** spesso no, perché mancano i dati o metà delle istruzioni. Dirlo
+  è parte del lavoro, non un'ammissione di sconfitta.
+```
+`````
+
+`````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
 - Replicare un paper è il modo più affidabile di capirlo: il codice non tollera
@@ -389,13 +456,16 @@ lavoro: se un risultato dipende da un seme fortunato, non è un risultato.
 - Il metodo ha quattro mosse: **inventario** dei pezzi, **un'equazione alla
   volta**, **controllo delle forme** a ogni passo, **conteggio dei parametri**
   alla fine.
-- I tre invarianti si verificano **senza addestrare**: forma in uscita, numero
-  di parametri, presenza di gradiente su ogni parametro.
+- I tre **invarianti** (cioè le proprietà che devono valere comunque, prima di
+  qualunque addestramento) si verificano a costo zero: forma in uscita, numero
+  di parametri, presenza di gradiente su ogni parametro dopo un `backward()`.
 - Nel ViT, una `Conv2d` con `kernel_size = stride = patch` *è* la proiezione
   lineare delle patch: riconoscere queste equivalenze fa parte del mestiere.
-- ViT-Base ha $85\,797\,120$ parametri senza LayerNorm finale né testa: il
-  conto si rifà a mano e smaschera qualunque svista strutturale.
+- ViT-Base ha $85\,797\,120$ parametri senza LayerNorm finale né testa (la
+  testa ne aggiunge $768K + K$): il conto si rifà a mano e smaschera qualunque
+  svista strutturale.
 - Riprodurre l'**architettura** è quasi sempre possibile; riprodurre i
   **risultati** spesso no: dati non pubblici, iperparametri omessi, hardware
   diverso. Dirlo è parte del lavoro.
 ```
+`````

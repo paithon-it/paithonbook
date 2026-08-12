@@ -12,13 +12,17 @@ azioni.
 
 ## Agente, ambiente, ricompensa
 
-Tre ingredienti bastano a definire l'intero paradigma. C'è un **agente**, cioè
-chi decide (il bambino, un robot, un programma che gioca a scacchi). C'è un
+Tre ingredienti bastano, e non ne servono altri. C'è un **agente**, cioè chi
+decide (il bambino, un robot, un programma che gioca a scacchi). C'è un
 **ambiente**, cioè tutto il resto: il mondo che l'agente non controlla ma con
 cui interagisce. E c'è una **ricompensa**, un numero che l'ambiente restituisce
-per dire "bene" o "male". L'agente osserva lo stato del mondo, sceglie
-un'azione, l'ambiente cambia stato e gli passa una ricompensa; poi il ciclo
-ricomincia ({numref}`fig-rl-ciclo`).
+per dire "bene" o "male". L'agente guarda la situazione in cui si trova (lo
+**stato**: tutto ciò che in questo istante vede del mondo), sceglie
+un'**azione**, l'ambiente passa a un nuovo stato e gli consegna una ricompensa;
+poi il ciclo ricomincia ({numref}`fig-rl-ciclo`). Quello che l'agente cerca di
+rendere più grande possibile non è la ricompensa di adesso, ma la somma di
+tutte quelle che verranno da qui alla fine: quella somma ha un nome, **ritorno**
+(in inglese *return*), e da qui in avanti la useremo continuamente.
 
 ```{figure} ../figures/rl-ciclo-interazione.svg
 :name: fig-rl-ciclo
@@ -27,7 +31,25 @@ ricomincia ({numref}`fig-rl-ciclo`).
 
 Il ciclo di interazione del reinforcement learning: l'agente compie un'azione,
 l'ambiente risponde con un nuovo stato e una ricompensa, e l'anello si richiude.
+Nel disegno le etichette portano un pedice, che è soltanto il numero del passo:
+l'azione la si compie all'istante $t$, lo stato nuovo e la ricompensa arrivano
+subito dopo, all'istante $t+1$.
 ```
+
+Una domanda viene prima di ogni algoritmo, e conviene togliersela subito: **chi
+decide la ricompensa?** Non l'agente, e nemmeno il mondo: la scrive chi imposta
+il problema. In un videogioco il punteggio esiste già e si prende quello; per un
+robot che deve imparare a camminare qualcuno deve stabilire che cadere vale
+$-5$ e che un metro guadagnato vale $+1$. È una scelta di progetto, ed è una
+scelta seria, perché un agente ottimizza esattamente i numeri che gli sono
+stati dati e non le intenzioni di chi glieli ha dati: premiato per la velocità,
+può imparare a buttarsi in avanti e cadere in fretta. Nel capitolo di deep
+reinforcement learning una sezione intera è dedicata a questo mestiere, che si
+chiama *reward shaping*.
+
+La regola con cui l'agente sceglie, situazione per situazione, si chiama
+**politica**, all'inglese **policy**. Le due parole indicano la stessa cosa e in
+questo capitolo si alternano: è la sola cosa che l'agente cerca di migliorare.
 
 `````{tab} Elementare
 
@@ -35,8 +57,9 @@ Immagina un videogioco. A ogni istante vedi lo schermo (lo **stato**),
 premi un tasto (l'**azione**) e il gioco reagisce: nuova schermata e magari
 qualche punto in più o in meno (la **ricompensa**). L'obiettivo non è indovinare
 il tasto "giusto" in questo istante, ma accumulare più punti possibile fino alla
-fine della partita. La strategia con cui scegli i tasti, momento per momento, si
-chiama **politica** (*policy*): è tutto ciò che l'agente cerca di migliorare.
+fine della partita: quel totale è il **ritorno**, ed è il numero da cui si
+giudica tutto. La politica, cioè la tua abitudine di gioco ("in questa schermata
+salto sempre"), è quello che con l'esperienza migliora.
 
 `````
 
@@ -46,18 +69,22 @@ Formalmente l'interazione è un **processo decisionale di Markov** (*Markov
 Decision Process*, MDP). A ogni passo $t$ l'agente osserva lo stato $S_t$,
 sceglie un'azione $A_t$ secondo la sua politica $\pi(a \mid s)$, e l'ambiente
 transita in $S_{t+1}$ restituendo una ricompensa scalare $R_{t+1}$ (maiuscole
-per le variabili aleatorie, minuscole $s$, $a$, $r$ per i loro valori: è la
-convenzione che terremo in tutto il capitolo). L'obiettivo è massimizzare non
-la ricompensa immediata ma il **ritorno** (*return*) scontato:
+per le variabili aleatorie, minuscole $s$, $a$, $r$ per i valori che assumono).
+L'obiettivo è massimizzare non la ricompensa immediata ma il **ritorno**
+(*return*) scontato:
 
 $$
 G_t = \sum_{k=0}^{\infty} \gamma^{k}\, R_{t+1+k},
-\qquad \gamma \in [0,1) .
+\qquad \gamma \in [0,1] .
 $$
 
 Qui $\gamma$ è il **fattore di sconto**: vicino a $1$ l'agente è lungimirante e
 dà peso al futuro lontano; vicino a $0$ è miope e insegue solo il premio
-immediato. Cercare la politica ottima $\pi^{*}$ significa massimizzare
+immediato. $\gamma < 1$ è obbligatorio nei compiti **continui**, che non
+terminano mai, perché senza sconto quella somma infinita non converge; nei
+compiti **episodici**, che finiscono da soli, la somma ha un numero finito di
+termini e $\gamma = 1$ è ammesso e usatissimo. Cercare la politica ottima
+$\pi^{*}$ significa massimizzare
 $\mathbb{E}_\pi[G_t]$, e quasi tutti gli algoritmi lo fanno stimando funzioni di
 valore come $Q^\pi(s,a) = \mathbb{E}_\pi[G_t \mid S_t=s,\, A_t=a]$, il ritorno
 atteso partendo da $s$, giocando $a$ e poi seguendo $\pi$.
@@ -67,9 +94,9 @@ atteso partendo da $s$, giocando $a$ e poi seguendo $\pi$.
 ## Cosa lo distingue dall'apprendimento supervisionato
 
 Nell'apprendimento supervisionato ogni esempio arriva con la sua risposta
-corretta: questa foto è un gatto, quella casa vale 300 000 euro. Il modello deve
-solo imitare le etichette. Nel reinforcement learning quelle etichette non
-esistono.
+corretta, la sua **etichetta**: questa foto è un gatto, quella casa vale
+300 000 euro. Il programma deve solo imparare a imitare quelle risposte. Nel
+reinforcement learning le risposte corrette non esistono: nessuno le conosce.
 
 `````{tab} Elementare
 
@@ -117,6 +144,12 @@ serate in locali mediocri. Un buon agente fa entrambe le cose: sfrutta ciò che
 sa quasi sempre, ma ogni tanto azzarda, perché solo azzardando può scoprire
 ricompense che non sospettava.
 
+Questa ricetta ha un nome che ritornerà in ogni sezione del capitolo:
+**$\varepsilon$-greedy**, che si legge "epsilon-greedy". *Greedy* è l'inglese
+per "avido", cioè chi prende sempre quello che al momento sembra il meglio; ed
+$\varepsilon$ (epsilon) è la piccola probabilità con cui invece si azzarda, per
+esempio una volta su dieci.
+
 `````
 
 `````{tab} Superiore
@@ -159,17 +192,47 @@ immenso: un risultato che molti si aspettavano lontano un decennio.
 ## Come è organizzato questo capitolo
 
 Cominciamo da una versione del problema spogliata di tutto tranne il dilemma
-appena descritto: i **bandit a più braccia**, dove non c'è nessuno stato e
-l'unica domanda è quale leva tirare. Poi rimettiamo lo stato al suo posto con
-le fondamenta appena introdotte (MDP, ritorno, funzioni di valore) e le
-rendiamo algoritmo con i metodi classici (programmazione dinamica, Monte
-Carlo, differenza temporale, Q-learning). Da lì il passo verso il **deep
-reinforcement learning**, dove reti neurali stimano le funzioni di valore o
-direttamente la politica, è naturale: lo affrontiamo nel capitolo successivo,
-ricostruendo proprio il tipo di agente che ha imparato a giocare a partire dai
-pixel. L'obiettivo non è collezionare sigle, ma capire un'unica idea da tutte
-le angolazioni: come si impara a decidere quando l'unico maestro è
-l'esperienza.
+appena descritto: i **bandit a più braccia**, dove la situazione non cambia mai
+e l'unica domanda è quale leva tirare. Poi rimettiamo al suo posto la situazione
+che cambia, e con essa il modo di dire quanto vale trovarsi in un certo punto;
+da lì i metodi classici per calcolare quel valore (programmazione dinamica,
+Monte Carlo, differenze temporali, Q-learning), che sono tutti modi di riempire
+una grande tabella, una casella per ogni situazione. Il passo verso il **deep
+reinforcement learning**, dove reti neurali stimano quei numeri o direttamente
+la politica, non è un ampliamento facoltativo: è una necessità, perché la
+tabella smette di stare in piedi appena le situazioni possibili sono tante, e va
+sostituita da qualcosa che sappia indovinare il valore di situazioni mai viste
+prima. Lo affrontiamo nel capitolo successivo, ricostruendo proprio il tipo di
+agente che ha imparato a giocare a partire dai pixel. L'obiettivo non è
+collezionare sigle, ma capire un'unica idea da tutte le angolazioni: come si
+impara a decidere quando l'unico maestro è l'esperienza.
+
+`````{tab} Elementare
+
+```{admonition} Da ricordare
+:class: important
+- Servono tre cose e basta: qualcuno che **decide** (l'agente), un mondo che
+  **risponde** (l'ambiente) e un punteggio che dice se è andata bene o male (la
+  **ricompensa**). Si agisce, il mondo cambia e paga, si ricomincia.
+- Nessuno dice mai qual era la mossa giusta: il punteggio dice *quanto* è
+  andata bene, non *cosa* si doveva fare. E spesso arriva tardi, molte mosse
+  dopo quella che lo ha meritato: capire chi ringraziare è la difficoltà
+  centrale.
+- Quel che si vuole rendere grande non è il punteggio del momento ma il totale
+  da qui alla fine (il **ritorno**), con una regola di impazienza: un premio
+  lontano conta meno di uno vicino.
+- Chi decide i punti è chi imposta il problema, non il mondo: numeri scelti
+  male insegnano il comportamento sbagliato.
+- Bisogna sempre scegliere fra tornare dove si sa che si sta bene e provare
+  qualcosa di nuovo (il dilemma del ristorante): quasi sempre il noto, ogni
+  tanto una prova a caso.
+- Tre risultati che hanno fatto la storia: **TD-Gammon** a backgammon, **DQN**
+  sui vecchi videogiochi **Atari**, **AlphaGo** al Go nel 2016.
+```
+
+`````
+
+`````{tab} Superiore
 
 ```{admonition} Da ricordare
 :class: important
@@ -179,9 +242,14 @@ l'esperienza.
 - A differenza del supervisionato non ci sono etichette, ma un segnale scalare
   spesso **ritardato**: da qui il problema dell'assegnazione del merito.
 - L'obiettivo è massimizzare il **ritorno** scontato $G_t$, non la ricompensa
-  immediata; il fattore $\gamma$ regola quanto conta il futuro.
+  immediata; il fattore $\gamma$ regola quanto conta il futuro ed è
+  obbligatoriamente $<1$ solo nei compiti continui.
 - Ogni agente deve bilanciare **esplorazione** e **sfruttamento** (per esempio
   con $\varepsilon$-greedy).
+- La funzione di ricompensa è una scelta di progetto, non un dato
+  dell'ambiente: l'agente ottimizza ciò che è scritto, non ciò che si intendeva.
 - Tappe simbolo: **TD-Gammon** (backgammon), **DQN** sui giochi **Atari**,
   **AlphaGo** (Go, 2016).
 ```
+
+`````

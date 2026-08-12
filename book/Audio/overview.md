@@ -38,9 +38,10 @@ ricavare le parole giuste. Qui il traguardo cambia forma. Non c'è più
 necessariamente un testo in fondo: a volte vogliamo un'**etichetta** («questo
 è un violino»), a volte una **lista di tag** («pioggia, tuono, traffico»), a
 volte un suono **nuovo** che prima non esisteva. E il segnale stesso è
-diverso: la voce ha una struttura sua (le formanti, i fonemi, il ritmo del
-parlato), mentre un accordo, un temporale o il rombo di un motore obbediscono
-ad altre regole.
+diverso: la voce è fatta in un modo suo (i suoni elementari di una lingua, le
+risonanze della gola e della bocca che le danno il colore, il ritmo di chi
+parla), mentre un accordo, un temporale o il rombo di un motore obbediscono ad
+altre regole.
 
 `````{tab} Elementare
 
@@ -61,15 +62,15 @@ diversi, e per la maggior parte non c'entrano niente con la voce.
 `````{tab} Superiore
 
 Lo Speech Recognition è, formalmente, un problema di **trascrizione di
-sequenze**: da $X = (x_1, \dots, x_T)$ acustica a una sequenza di parole
+sequenze**: da $\mathbf{X} = (\mathbf{x}_1, \dots, \mathbf{x}_T)$ acustica a una sequenza di parole
 $\hat{W}$. I compiti dell'audio generale hanno firme diverse:
 
 - **classificazione**, dato un segmento, un'unica etichetta su $C$ classi
-  ($\hat{y} = \arg\max_c P(c \mid X)$: «violino» vs «pianoforte»);
+  ($\hat{y} = \arg\max_c P(c \mid \mathbf{X})$: «violino» vs «pianoforte»);
 - **tagging multi-etichetta**, più eventi compresenti, ognuno presente o
-  assente ($\hat{y} \in \{0,1\}^C$: pioggia *e* tuono *e* traffico insieme);
+  assente ($\hat{\mathbf{y}} \in \{0,1\}^C$: pioggia *e* tuono *e* traffico insieme);
 - **rilevazione temporale**, *quando* comincia e finisce ogni evento;
-- **generazione**: campionare un $X$ nuovo da una distribuzione appresa,
+- **generazione**: campionare un $\mathbf{X}$ nuovo da una distribuzione appresa,
   eventualmente condizionata da testo.
 
 La radice comune è che le rappresentazioni tempo–frequenza restano quelle: lo
@@ -111,8 +112,10 @@ I nomi delle campate, che la prossima sezione monta pezzo per pezzo:
 Tutto questo vale identico per il canto di un merlo, per un accordo di chitarra,
 per il fragore di un temporale: è il **punto di partenza comune** di ogni
 sezione che segue. Da lì in poi diamo per acquisito che un pezzo di audio arrivi
-al modello come uno spettrogramma log-mel: una matrice tempo × frequenza, un
-oggetto che sappiamo trattare come un'immagine.
+al modello come uno **spettrogramma log-mel**: una tabella con il tempo su un
+asse e le frequenze sull'altro, riscritte come le sente un orecchio (è la parte
+«mel») e con le intensità schiacciate come fanno i decibel (è la parte «log»).
+Un oggetto, cioè, che sappiamo trattare come un'immagine.
 
 ## L'idea nuova: l'audio come sequenza di token
 
@@ -121,13 +124,22 @@ oggetto che sappiamo trattare come un'immagine.
 :alt: "Catena in quattro stadi: la forma d'onda dell'audio viene convertita in uno spettrogramma log-mel, che entra in un encoder Transformer; il decoder legge l'uscita dell'encoder e produce i token di testo uno dopo l'altro, fino alla trascrizione completa."
 :width: 100%
 
-Il percorso più battuto: l'onda diventa immagine, l'immagine diventa testo.
-Lo spettrogramma resta una tabella di numeri continui, ed è il punto che la
+La via di prima, quella del riconoscimento vocale: l'onda diventa immagine,
+l'immagine diventa testo. Nel disegno, la parte che legge (l'*encoder*) riassume
+lo spettrogramma e la parte che scrive (il *decoder*) ne ricava le parole, una
+alla volta. Lo spettrogramma resta una tabella di numeri, ed è il punto che la
 prossima sezione mette in discussione.
 ```
 
 C'è però un secondo modo di guardare l'audio, ed è il vero filo conduttore di
-questo capitolo. Lo spettrogramma di {numref}`fig-whisper-pipeline` è
+questo capitolo. Poggia su due parole che conviene fissare subito, perché
+torneranno in ogni sezione. Una cosa è **discreta** quando si può contare: le
+lettere dell'alfabeto sono ventuno, e fra la A e la B non c'è niente in mezzo. È
+**continua** quando non si può: fra $0{,}3$ e $0{,}4$ ci sono infiniti numeri, e
+fra due sfumature di grigio ce n'è sempre una terza. Un testo nasce discreto; un
+suono, che è un'onda, e la tabella di numeri con cui lo misuriamo sono continui.
+
+Lo spettrogramma di {numref}`fig-whisper-pipeline` è dunque
 un'immagine di numeri *continui*. Ma se
 riuscissimo a trasformare un suono in una sequenza di **simboli discreti**
 (come le lettere di un testo, o le parole di una frase), allora tutto
@@ -145,7 +157,9 @@ simbolo successivo, lettera dopo lettera, parola dopo parola.
 
 L'idea è di dare al suono lo stesso trattamento: ritagliarlo in tanti
 **pezzetti** e assegnare a ciascuno un simbolo da un «alfabeto sonoro» finito,
-costruito apposta. Una volta fatto questo, un brano musicale diventa una
+costruito apposta. Un simbolo del genere ha un nome che ricorrerà in tutto il
+capitolo: si chiama **token**, ed è esattamente ciò che è una lettera per una
+parola scritta. Una volta fatto questo, un brano musicale diventa una
 *frase* scritta in quell'alfabeto, e generare musica nuova diventa la stessa
 cosa che generare testo nuovo: indovina il pezzetto successivo, poi il
 prossimo, poi il prossimo. La macchina che scrive romanzi impara a comporre
@@ -215,6 +229,32 @@ Un filo, quattro nodi: si parte dall'ascoltare per arrivare a comporre, e in
 mezzo c'è sempre la stessa idea (trasformare il suono in qualcosa che una rete
 sa maneggiare, che sia un'immagine tempo–frequenza o un alfabeto di token).
 
+`````{tab} Elementare
+
+```{admonition} Da ricordare
+:class: important
+- L'audio è molto più della voce: **musica**, **suoni dell'ambiente**, versi di
+  animali. AudioSet {cite}`gemmeke2017audioset` (oltre due milioni di frammenti
+  da dieci secondi presi da YouTube, 527 categorie di suoni) dà l'idea di quanto
+  sia grande il mondo che c'è là fuori.
+- Cambiano le **domande**: non più (solo) «che cosa ha detto», ma «che suono è
+  questo», «quali suoni ci sono in questa registrazione», «quando comincia
+  ciascuno», e perfino «fammene sentire uno nuovo».
+- Il **punto di partenza** (come un suono diventa numeri, e i numeri
+  un'immagine) è già costruito nella sezione *Dal suono alle feature* e vale per
+  qualsiasi suono: non lo rifacciamo.
+- Il **filo conduttore**: se il suono si può scrivere con un alfabeto finito di
+  simboli (i **token**), allora la stessa macchina che indovina la parola
+  successiva di una frase può indovinare il pezzetto di suono successivo di un
+  brano.
+- Le quattro tappe: **riconoscere** i suoni, **imparare** dal suono senza
+  etichette, costruire l'**alfabeto**, **generare** suono nuovo.
+```
+
+`````
+
+`````{tab} Superiore
+
 ```{admonition} Da ricordare
 :class: important
 - L'audio è molto più della voce: **musica**, **suoni ambientali**,
@@ -233,3 +273,5 @@ sa maneggiare, che sia un'immagine tempo–frequenza o un alfabeto di token).
 - Le quattro sezioni: **classificazione**, **rappresentazioni
   auto-supervisionate**, **codec neurali**, **generazione audio e musica**.
 ```
+
+`````

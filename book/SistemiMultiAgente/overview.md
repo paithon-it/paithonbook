@@ -10,19 +10,26 @@ di migliaia.
 
 A provarci, fra il dicembre 2005 e il febbraio 2006, è stato un gruppo di
 fisici dei sistemi complessi (CNR-INFM, Sapienza, Istituto Superiore di Sanità)
-dentro il progetto europeo **StarFlag**, coordinato da Giorgio Parisi, che nel
-2021 avrebbe ricevuto il Nobel per la fisica per i suoi contributi alla
-comprensione dei sistemi fisici complessi; il lavoro sul campo lo guidavano
-Andrea Cavagna e Irene Giardina, e fra i dodici autori dell'articolo compare
-anche Nicola Cabibbo. Il laboratorio era la terrazza di Palazzo Massimo, al
-Museo Nazionale Romano, che guarda gli alberi del posatoio nella piazza davanti
-alla stazione Termini: due postazioni fotografiche sincronizzate, a venticinque
-metri l'una dall'altra e trenta sopra la strada, per dieci fotogrammi al secondo
-(che nessuna macchina reggeva da sola: su ogni postazione ne stavano due, che
-scattavano a turno cinque volte al secondo). Da ogni coppia di immagini, con la
-stessa geometria con cui due occhi ricavano la profondità, si risale alla
-posizione di ciascun uccello nello spazio: dieci eventi di volo ricostruiti in
-tre dimensioni, in stormi che arrivavano a 2600 individui.
+dentro il progetto europeo **StarFlag**. Il lavoro sul campo lo guidava Andrea
+Cavagna; Irene Giardina firmò l'algoritmo con cui gli uccelli vennero
+riconosciuti da un'immagine all'altra, e fra i dodici autori dell'articolo
+compaiono anche Nicola Cabibbo e Giorgio Parisi, che nel 2021 avrebbe ricevuto
+il Nobel per la fisica per i suoi contributi alla comprensione dei sistemi
+fisici complessi. Il laboratorio era la terrazza di Palazzo Massimo, al Museo
+Nazionale Romano, che guarda gli alberi del posatoio nella piazza davanti alla
+stazione Termini: tre postazioni fotografiche sincronizzate, due a venticinque
+metri l'una dall'altra e la terza poco più in là, tutte a trenta metri sopra la
+strada, per dieci fotogrammi al secondo (che nessuna macchina reggeva da sola:
+su ogni postazione ne stavano due, che scattavano a turno cinque volte al
+secondo). Da due immagini, con la stessa geometria con cui due occhi ricavano
+la profondità, si risale alla posizione di un uccello nello spazio; ma è la
+**terza** postazione a risolvere il problema che rendeva quello spettacolo
+impossibile da misurare, cioè capire quale puntino di una foto sia lo stesso
+uccello di quale puntino dell'altra, quando i puntini sono migliaia e si
+somigliano tutti. Con due punti di vista le corrispondenze plausibili sono
+troppe; il terzo le taglia, perché una coppia sbagliata cade nel posto sbagliato
+sulla terza immagine. Così vengono fuori dieci eventi di volo ricostruiti in tre
+dimensioni, in stormi che arrivavano a 2600 individui.
 
 Il risultato, pubblicato su *PNAS* nel 2008 {cite}`ballerini2008interaction`, è
 di quelli che cambiano la domanda. Fino ad allora si dava per scontato che ogni
@@ -57,11 +64,21 @@ raddoppiato ne restano la metà, e a ogni ulteriore diradamento se ne perdono
 altri, finché ciascuno resta solo e lo stormo si sfalda nell'istante peggiore.
 
 Con la regola **topologica** ogni storno guarda i suoi sette vicini più
-prossimi, dovunque siano, e sette restano: stanno solo un po' più lontano, e
-per ritrovarli in uno spazio doppio basta allargare lo sguardo di un quarto, da
-due metri a due metri e mezzo. Il legame regge perché la regola non parla di
-metri: parla di *quanti*, e quanti restano quanti anche quando il gruppo si
-allarga.
+prossimi, dovunque siano, e sette restano: stanno solo un po' più lontano.
+
+Quanto più lontano? Meno di quanto verrebbe da dire, e vale la pena farlo
+vedere con dei cubetti, perché è il punto su cui poggia tutto il resto. Una
+scatola larga due metri, per due, per due contiene otto metri cubi. Per
+contenerne il doppio, sedici, **non** serve una scatola larga il doppio: quella
+ne conterrebbe sessantaquattro, cioè otto volte tanto, perché allargando il lato
+si allargano insieme le tre direzioni. Basta portare il lato a due metri e
+mezzo, e siamo già a quindici metri cubi e mezzo. Ecco perché per ritrovare i
+suoi sette compagni in uno spazio doppio a uno storno basta allargare lo
+sguardo di un quarto, da due metri a due e mezzo: lo spazio cresce molto più in
+fretta della distanza.
+
+Il legame regge perché la regola non parla di metri: parla di *quanti*, e
+quanti restano quanti anche quando il gruppo si allarga.
 
 `````
 
@@ -116,11 +133,25 @@ comunicazione, protocolli di negoziazione, meccanismi di consenso. Quel lavoro
 esiste, e conviene non riscoprirlo male.
 
 Quello che è cambiato è il costo di partenza. Con un modello di linguaggio,
-istanziare dieci agenti costa una riga di codice: lo stesso motore, dieci
-prompt di sistema diversi, e la squadra è in piedi. Il capitolo sugli
-**Agenti** lo ha già mostrato con i ruoli specializzati (un pianificatore, un
-esecutore, un critico) e con l'idea di modellare il sistema come una
-conversazione fra agenti, come fa il framework AutoGen {cite}`wu2024autogen`.
+far nascere dieci agenti costa una riga di codice: è sempre lo stesso modello,
+e a distinguerli è soltanto il foglio di istruzioni che ciascuno si trova
+davanti prima di cominciare («tu scrivi codice e non discuti le scelte altrui»,
+«tu cerchi errori e non ne proponi la correzione»). Dieci fogli diversi, e la
+squadra è in piedi.
+
+Conviene fissare subito un esempio, perché nelle prossime pagine si parlerà a
+lungo di quanto costa una squadra e di che forma darle, e il prezzo di una cosa
+non dice niente finché non si sa che cosa sia. Prendiamo la richiesta: «apri
+questo file di vendite e dimmi quali negozi stanno peggiorando». Un agente la
+legge e decide i passi da fare. Un secondo scrive il programma che apre il file
+e fa i conti. Un terzo lo esegue in un ambiente separato e controlla che non
+cancelli niente e che i numeri tornino. Il primo, letto il risultato, scrive la
+risposta. È il sistema di programmazione presentato insieme al framework AutoGen
+{cite}`wu2024autogen`, ed è la squadra a cui pensare ogni volta che in questo
+capitolo si parla di agenti che si passano messaggi. Il capitolo sugli **Agenti**
+ha già descritto quei ruoli uno per uno (un pianificatore, un esecutore, un
+critico); qui si studia che cosa succede quando sono insieme.
+
 Ma se creare i partecipanti è gratis, tutta la difficoltà si sposta altrove: su
 **chi parla con chi**, su **chi decide** quando le proposte sono in
 disaccordo, e su una domanda che con un agente solo non si pone, **come ci si
@@ -145,7 +176,10 @@ sono costruiti tutti allo stesso modo.
 Tre colleghi rispondono a una domanda difficile e ognuno, da solo, ci prende
 sette volte su dieci. Decidendo a maggioranza il gruppo ci prende quasi otto
 volte su dieci (78%), e con nove colleghi il 90%: perché il gruppo sbagli
-servono almeno due errori insieme, che sono più rari di uno.
+servono almeno due errori insieme, che sono più rari di uno. Da dove escano
+esattamente quel 78 e quel 90 lo vedremo elencando i casi uno per uno nella
+sezione «Mettersi d'accordo»: è un conto che si fa a mano e vale la pena
+rifarlo, ma per adesso basta il senso.
 
 Il conto però vale solo se i tre sbagliano in modo *diverso*. Se hanno studiato
 sugli stessi appunti sbagliati sbagliano insieme, la maggioranza conferma
@@ -183,38 +217,53 @@ tema della prossima sezione.
 
 `````
 
-## Quello che sappiamo già
+## Quello che sappiamo già, e una cosa che sapremo dopo
 
-Questo capitolo poggia su tre capitoli precedenti. Dagli **Agenti** vengono il
-ciclo osserva-ragiona-agisci e i ruoli specializzati: qui diamo per acquisito
-il singolo agente e studiamo ciò che nasce quando sono molti. Dal
-**Reinforcement Learning** vengono l'MDP, la policy $\pi$ e l'assegnazione del
-merito, che con più agenti si sdoppia: non solo *quale mossa* ha prodotto il
-risultato, ma *quale agente*. Dalle **GAN**, infine, viene qualcosa che si fa
-fatica a riconoscere come multi-agente e invece lo è in pieno: due giocatori
-con obiettivi opposti, che non convergono a un minimo ma a un equilibrio.
+Questo capitolo poggia su due capitoli precedenti, e ne anticipa uno. Dagli
+**Agenti** vengono il ciclo osserva-ragiona-agisci e i ruoli specializzati: qui
+diamo per acquisito il singolo agente e studiamo ciò che nasce quando sono
+molti. Dal **Reinforcement Learning** viene il processo decisionale di Markov,
+insieme alla *policy* (la regola con cui un agente sceglie che mossa fare in una
+data situazione, indicata di solito con la lettera greca $\pi$) e
+all'**assegnazione del merito**: la ricompensa arriva alla fine di una partita e
+bisogna capire quale delle mosse se la sia guadagnata. Con più agenti quella
+domanda si sdoppia, e non chiede più soltanto *quale mossa* ha prodotto il
+risultato, ma anche *quale agente*.
+
+Il terzo appoggio invece il libro non l'ha ancora posato: le **GAN** arrivano
+più avanti, e chi legge in ordine non le ha ancora incontrate. Le nominiamo lo
+stesso, perché sono l'esempio più puro della cosa che questo capitolo studia, e
+ogni volta che serviranno diremo per esteso quel che c'è da saperne.
 
 `````{tab} Elementare
 
-Nella GAN c'erano due reti in gara, un falsario e un detective, e la fine della
-partita non era un traguardo ma un pareggio: il punto in cui a nessuno dei due
-conviene più cambiare mossa. Un sistema multi-agente allarga quella struttura:
-i giocatori possono essere dieci, e non sono per forza nemici. E imparare
-diventa più difficile, perché un agente solo studia in un mondo fermo mentre
-dieci agenti studiano in un mondo che si muove: il «mondo» di ciascuno contiene
-gli altri nove, che stanno imparando anche loro. È come preparare un esame in
-cui il programma cambia perché i tuoi compagni studiano.
+Più avanti nel libro incontrerai due reti che si allenano l'una contro l'altra:
+una fabbrica immagini false, l'altra cerca di smascherarle. Si chiamano GAN, e
+di loro qui basta sapere come finisce la partita. Non finisce con un traguardo,
+come quando si cerca il punto più basso di una valle: finisce con un
+**pareggio**, cioè con il momento in cui a nessuno dei due conviene più cambiare
+mossa, perché a qualunque mossa l'altro saprebbe rispondere.
+
+Un sistema multi-agente allarga quella struttura: i giocatori possono essere
+dieci, e non sono per forza nemici. E imparare diventa più difficile, perché un
+agente solo studia in un mondo fermo mentre dieci agenti studiano in un mondo
+che si muove: il «mondo» di ciascuno contiene gli altri nove, che stanno
+imparando anche loro. È come preparare un esame in cui il programma cambia
+perché i tuoi compagni studiano.
 
 `````
 
 `````{tab} Superiore
 
 Il quadro formale generalizza l'MDP a un **gioco stocastico**: $N$ agenti, uno
-spazio di stati $S$, spazi di azione $A^1, \dots, A^N$, una transizione
+spazio di stati $\mathcal{S}$, spazi di azione
+$\mathcal{A}^1, \dots, \mathcal{A}^N$, una transizione
 $P(s' \mid s, a)$ che dipende dall'azione **congiunta**
 $a = (a^1, \dots, a^N)$ e una ricompensa $r^i$ per ciascun agente. Se
 $r^i = r$ per ogni $i$ il gioco è cooperativo; se $N = 2$ e $r^1 + r^2 = 0$ si
-ricade nel caso a somma zero della GAN, dove l'obiettivo non è un minimo di
+ricade nel caso a somma zero, che è la forma **minimax** della GAN (con la
+*loss* non-saturante che si usa in pratica la somma non è più zero, e il
+capitolo sulle GAN spiega perché), dove l'obiettivo non è un minimo di
 $\mathcal{L}$ ma un **equilibrio di Nash**: un profilo $(\pi^1, \dots, \pi^N)$
 in cui nessun agente migliora il proprio ritorno atteso cambiando policy da
 solo. Ne segue che il caso multi-agente non è quello singolo ripetuto $N$
@@ -248,16 +297,50 @@ storni, a cui la regola dei sei o sette vicini non l'ha insegnata nessuno?
   problemi globali (colonie di formiche, sciami di particelle) e le società
   simulate, dove l'oggetto di studio è il collettivo stesso.
 
+`````{tab} Elementare
+
+```{admonition} Da ricordare
+:class: important
+- Gli stormi di storni sopra Termini, ricostruiti in tre dimensioni dal progetto
+  **StarFlag** {cite}`ballerini2008interaction`, seguono una regola
+  **topologica**: ogni uccello tiene d'occhio un numero fisso di vicini, i sei o
+  sette più prossimi, e non tutti quelli che gli stanno entro due metri.
+- È questo che tiene insieme lo stormo quando si dirada. Con una regola a metri
+  i compagni dentro il raggio si dimezzano appena lo spazio raddoppia; contando
+  i vicini invece che misurandoli, sette restano sette, e per ritrovarli basta
+  allargare lo sguardo di un quarto. Le regole a metri, come quella dei **boids**
+  {cite}`reynolds1987flocks`, tengono molto meno, e lo si vede simulandole.
+- La tesi del capitolo: **il comportamento del gruppo è una proprietà della
+  regola di interazione, non della bravura dei singoli**. Stessi individui,
+  regola diversa, collettivo diverso.
+- Far nascere dieci agenti costa una riga di codice: stesso modello, dieci fogli
+  di istruzioni diversi {cite}`wu2024autogen`. Il difficile viene dopo: chi parla
+  con chi, chi decide quando le risposte non coincidono, e come ci si accorge che
+  a sbagliare è stato il *gruppo* e non un singolo turno {cite}`xi2023rise`.
+- «Più teste» aiuta solo se sbagliano in modo **diverso**. Tre persone che ci
+  prendono sette volte su dieci, votando, ci prendono quasi otto volte su dieci;
+  ma se hanno studiato sugli stessi appunti sbagliati sbagliano insieme, e dieci
+  agenti valgono quanto uno, al costo di dieci.
+- Il caso con molti agenti non è quello singolo ripetuto tante volte: per
+  ciascuno il mondo contiene gli altri, che nel frattempo cambiano. Il traguardo
+  non è più il fondo di una valle, è un **pareggio**: la situazione in cui a
+  nessuno conviene più muoversi da solo.
+```
+
+`````
+
+`````{tab} Superiore
+
 ```{admonition} Da ricordare
 :class: important
 - Gli stormi di storni sopra Termini, ricostruiti in 3D dal progetto
   **StarFlag** {cite}`ballerini2008interaction`, seguono una regola
   **topologica**: ogni uccello guarda un numero fisso di vicini più prossimi
-  (sei o sette), non tutti quelli entro un raggio in metri.
+  ($n_c = 6{,}5 \pm 0{,}9$), non tutti quelli entro un raggio in metri.
 - Così lo stormo resta unito anche quando si dirada, perché il grado di
   interazione non dipende dalla densità ($r_c \propto \rho^{-1/3}$); una regola
   metrica, come quella dei **boids** {cite}`reynolds1987flocks`, tiene molto
-  meno, come mostrano le simulazioni dello stesso lavoro.
+  meno, come mostrano le simulazioni a regola metrica dello stesso lavoro.
 - La tesi del capitolo: **il comportamento del gruppo è una proprietà della
   regola di interazione, non della bravura dei singoli**. Stessi individui,
   regola diversa, collettivo diverso.
@@ -269,5 +352,7 @@ storni, a cui la regola dei sei o sette vicini non l'ha insegnata nessuno?
   $n$ agenti valgono quanto uno, al costo di $n$.
 - Il caso multi-agente non è quello singolo ripetuto: per ciascun agente
   l'ambiente contiene gli altri, che cambiano, e quindi **non è stazionario**;
-  l'obiettivo diventa un **equilibrio**, non un minimo.
+  l'obiettivo diventa un **equilibrio di Nash**, non un minimo di $\mathcal{L}$.
 ```
+
+`````

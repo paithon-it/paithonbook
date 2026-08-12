@@ -27,8 +27,14 @@ Per l'esempio ricorrente del libro il risultato è:
 
 > Il/`DET` gatto/`NOUN` nero/`ADJ` salta/`VERB` su/`ADP` il/`DET` muro/`NOUN`
 
-(nota «sul», che l'italiano fonde e che l'annotazione scompone in preposizione
-più articolo). Perché il gioco funzioni tra lingue diverse serve però un
+Le sigle sono abbreviazioni inglesi, e conviene scioglierle subito: `DET` è il
+*determiner*, cioè l'articolo; `NOUN` il nome; `ADJ` l'aggettivo; `VERB` il
+verbo; `ADP` l'*adposition*, che raccoglie le nostre preposizioni e le
+posposizioni di quelle lingue che le mettono dopo il nome invece che prima
+(una categoria sola per tutte e due, così l'etichetta vale in ogni lingua).
+Nota poi «sul», che l'italiano fonde e che l'annotazione scompone in
+preposizione più articolo. Perché il gioco funzioni tra lingue diverse serve
+però un
 inventario di categorie condiviso: è il contributo del progetto **Universal
 Dependencies** {cite}`nivre2016universal`, nato per annotare molte lingue (33
 alla presentazione del 2016, oggi quasi duecento), con gli stessi criteri.
@@ -107,7 +113,11 @@ ai personaggi che cita.
 A prima vista sembra un problema diverso dal POS tagging: lì un'etichetta per
 parola, qui *segmenti* da ritagliare; «Enrico Fermi» è un'entità sola, lunga
 due parole. Il trucco che riporta tutto alla forma già nota è lo **schema
-BIO**, proposto negli anni Novanta (Ramshaw e Marshall, 1995).
+BIO**, nato con l'etichettatura a *chunk* di Lance Ramshaw e Mitchell Marcus
+(1995) e diffusosi poi nella variante che useremo qui, quella in cui *ogni*
+segmento comincia con una `B` (è nota come IOB2, la introduce Adwait
+Ratnaparkhi nel 1998, e le varianti in circolazione le mettono a confronto
+Tjong Kim Sang e Veenstra nel 1999).
 
 `````{tab} Elementare
 
@@ -139,7 +149,19 @@ tagset conta $2K + 1$ etichette. La frase di Fermi diventa:
 La marca `B` è ciò che rende lo schema invertibile: senza di essa due entità
 adiacenti dello stesso tipo si fonderebbero in una. La sequenza `B-PER B-PER`
 codifica due persone consecutive; `B-PER I-PER` una sola entità di due token.
-Esistono varianti più ricche (BIOES aggiunge etichette esplicite di fine
+
+Vale la pena distinguere due varianti che vengono spesso confuse, perché la
+differenza è proprio su quel punto. Nello schema originale del 1995 (oggi
+chiamato **IOB1**) la `B` era parsimoniosa: compariva **solo** quando un
+segmento ne seguiva immediatamente un altro dello stesso tipo, cioè solo dove
+serviva davvero a separarli. Sotto IOB1 la frase di Fermi si etichetta
+`I-PER I-PER`, non `B-PER I-PER`, e la `B` fa esattamente e soltanto il lavoro
+di garantire l'invertibilità. La variante che ha vinto, **IOB2**, mette la `B`
+in testa a ogni segmento senza eccezioni: costa un'etichetta in più dove non
+servirebbe, e in cambio rende l'etichetta di un token indipendente da ciò che
+lo precede, il che semplifica sia l'annotazione sia l'apprendimento. È quella
+usata nello schema qui sopra e in tutti i corpora moderni. Esistono varianti
+più ricche (BIOES aggiunge etichette esplicite di fine
 segmento e di entità a token singolo), ma l'idea non cambia: una volta ridotto
 il NER a un'etichetta per token, *qualunque* modello di etichettatura di
 sequenze (HMM, CRF, BiLSTM, Transformer) lo può affrontare.
@@ -227,7 +249,10 @@ cellulari.
 
 Facciamo i conti fino in fondo su un modello giocattolo: tre categorie
 (`DET`, `NOME`, `VERBO`) e la frase «la porta cigola», dove «porta» ha la
-stessa doppiezza dell'aggancio di questa sezione. Le probabilità di
+stessa doppiezza dell'aggancio di questa sezione. I numeri delle due tabelle
+qui sotto sono **inventati per l'esempio**, scelti tondi perché i conti si
+possano rifare a mente: in un sistema vero verrebbero dai conteggi su un
+corpus già etichettato, come si è detto poco fa. Le probabilità di
 partenza e di transizione:
 
 | da ↓ verso → | `DET` | `NOME` | `VERBO` |
@@ -336,8 +361,11 @@ regola: la lettura **bidirezionale** vale solo per *capire* un testo che
 esiste già tutto intero, non per generarlo. L'etichettatura è il caso ideale:
 la frase è lì, completa, e per decidere l'etichetta di «porta» servono tanto
 le parole prima quanto quelle dopo («la porta **cigola**» contro «la porta **a
-scuola**»). Un tagger neurale minimo è quindi: embedding, LSTM bidirezionale,
-e uno strato lineare che produce un punteggio per etichetta *per ogni token*.
+scuola**»). Un tagger neurale minimo è quindi fatto di tre pezzi, tutti già
+incontrati: si trasforma ogni parola nella sua fila di numeri (l'embedding),
+la si dà in pasto a una LSTM che legge nei due sensi, e in cima si mette uno
+strato che per **ogni** parola assegna un punteggio a ciascuna delle 17
+etichette possibili. Vince l'etichetta col punteggio più alto.
 
 ```python
 import torch
@@ -359,8 +387,13 @@ class TaggerBiLSTM(nn.Module):
 
 Confrontalo con il classificatore di sentiment della sezione sui modelli di
 sequenza: là si teneva solo l'ultimo stato (`h[:, -1]`), un'etichetta per
-frase; qui si tengono tutti, un'etichetta per parola. La loss è la solita
-cross-entropia, applicata token per token:
+frase; qui si tengono tutti, un'etichetta per parola. La misura dell'errore è
+la solita, la cross-entropia, applicata però token per token, e con un
+accorgimento: le frasi di un gruppo hanno lunghezze diverse e si pareggiano
+riempiendo le più corte con caselle vuote (il *padding*), che vanno escluse dal
+conto, altrimenti la rete si metterebbe a imparare il vuoto. È a questo che
+serve il `-100` nel codice qui sotto: è la marca convenzionale che dice
+«questa casella non conta».
 
 ```{code-block} python
 :class: pt-non-eseguibile
@@ -378,11 +411,14 @@ loss.backward()                            # poi optimizer.step(), come sempre
 Nei sistemi di punta questa ricetta si arricchisce spesso di uno strato CRF
 finale, che rimette in gioco le transizioni tra etichette (una `I-PER` subito
 dopo una `O` non ha senso, e il CRF lo sa). Oggi però lo standard del NER è
-un'altra strada: prendere un modello pre-addestrato come BERT
-{cite}`devlin2019bert`, aggiungergli la stessa testa lineare per token e fare
-*fine-tuning*, ne parleremo nel capitolo sui Transformer, dove la
-bidirezionalità qui costruita con due LSTM diventerà una proprietà nativa
-dell'attenzione.
+un'altra strada: prendere un modello già addestrato su montagne di testo, come
+BERT {cite}`devlin2019bert`, aggiungergli la stessa testa lineare per token e
+proseguirne l'addestramento per poche epoche sul compito specifico. Questa
+seconda fase corta si chiama **fine-tuning**, «rifinitura»: non si riparte da
+zero, si parte da un modello che la lingua la sa già e gli si insegna soltanto
+il mestiere nuovo, con una frazione dei dati e del tempo. Ne parleremo nel
+capitolo sui Transformer, dove la bidirezionalità qui costruita con due LSTM
+diventerà una proprietà nativa dell'attenzione.
 
 ## Misurare bene: token o entità?
 
@@ -406,8 +442,10 @@ un'entità sbagliata: mezza persona non serve a nessuno. Per questo il NER si
 giudica a evidenziature intere (vale solo il segmento completo, del colore
 giusto) e con due domande: di quello che hai evidenziato, quanto era giusto? E
 di quello che andava evidenziato, quanto ne hai trovato? Sono la precisione e
-il richiamo che abbiamo incontrato nel capitolo sul machine learning, riuniti
-nel loro voto unico, l'F1.
+il richiamo che abbiamo incontrato nel capitolo sul machine learning e usato
+nella sezione sulla classificazione, dove si chiamavano con i loro nomi
+inglesi, *precision* e *recall*: sono la stessa identica coppia di domande,
+riunita nel voto unico $F_1$.
 
 `````
 

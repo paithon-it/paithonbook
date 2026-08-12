@@ -12,9 +12,15 @@ TITOLO = "la regola del percettrone"
 # la rotazione la cosa da guardare
 POS = [(1.1, 0.8), (1.7, 0.1), (0.6, 1.7), (1.4, 1.4)]
 NEG = [(-1.1, -0.8), (-1.7, 0.0), (-0.6, -1.7), (-1.4, -1.4)]
-DATI = [(p, 1) for p in POS] + [(p, -1) for p in NEG]
+# etichette 0/1, la convenzione del capitolo: il gradino vale 1 se z >= 0 e 0
+# altrimenti, e la regola aggiorna di eta*(y - yhat)*x. Con le etichette +-1 e
+# w += eta*t*x (come era qui) i passi sono metà di quelli che la formula
+# stampata sotto la figura prescrive: la figura smentiva sé stessa.
+DATI = [(p, 1) for p in POS] + [(p, 0) for p in NEG]
 
 W0, B0, ETA = (-0.9, 0.5), 0.0, 0.25   # partenza deliberatamente sbagliata
+
+CORREZIONI_ATTESE = 4      # quante ne annuncia percettrone.md
 
 
 def addestra():
@@ -23,11 +29,13 @@ def addestra():
     stati = [(tuple(w), b, None)]
     for _ in range(20):
         errori = 0
-        for i, ((x, y), t) in enumerate(DATI):
-            if t * (w[0] * x + w[1] * y + b) <= 0:
-                w[0] += ETA * t * x
-                w[1] += ETA * t * y
-                b += ETA * t
+        for i, ((x, y), y_vero) in enumerate(DATI):
+            y_hat = 1 if w[0] * x + w[1] * y + b >= 0 else 0
+            if y_hat != y_vero:
+                d = y_vero - y_hat
+                w[0] += ETA * d * x
+                w[1] += ETA * d * y
+                b += ETA * d
                 stati.append((tuple(w), b, i))
                 errori += 1
         if not errori:
@@ -43,6 +51,9 @@ def costruisci() -> Figura:
 
     if not r.separa(pose[-1], DATI):
         raise AssertionError("la retta disegnata non separa le classi")
+    if n - 1 != CORREZIONI_ATTESE:
+        raise AssertionError(f"la figura disegna {n - 1} correzioni, il capitolo "
+                             f"ne annuncia {CORREZIONI_ATTESE}")
 
     tappe = []
     for i, (px, py, a) in enumerate(pose):
@@ -63,8 +74,8 @@ def costruisci() -> Figura:
     for i, (_, _, idx) in enumerate(stati):
         if idx is not None:
             primo_uso.setdefault(idx, i)
-    for i, ((x, y), t) in enumerate(DATI):
-        cls = "pos" if t > 0 else "neg"
+    for i, ((x, y), y_vero) in enumerate(DATI):
+        cls = "pos" if y_vero else "neg"
         extra = ""
         if i in primo_uso:
             k = primo_uso[i]
@@ -95,10 +106,10 @@ def costruisci() -> Figura:
     lx = r.x + r.larg + 26
     corpo += [
         f'<circle class="pt pos" cx="{lx}" cy="{r.y + 20}" r="8"/>',
-        f'<text class="lbs" x="{lx + 16}" y="{r.y + 25}">classe +1</text>',
+        f'<text class="lbs" x="{lx + 16}" y="{r.y + 25}">classe 1</text>',
         f'<circle class="pt neg" cx="{lx}" cy="{r.y + 48}" r="8"/>',
-        f'<text class="lbs" x="{lx + 16}" y="{r.y + 53}">classe −1</text>',
-        f'<text class="lbl" x="{r.x}" y="{r.y + r.alt + 62}">w ← w + η (t − ŷ) x</text>',
+        f'<text class="lbs" x="{lx + 16}" y="{r.y + 53}">classe 0</text>',
+        f'<text class="lbl" x="{r.x}" y="{r.y + r.alt + 62}">w ← w + η (y − ŷ) x</text>',
     ]
 
     return Figura(

@@ -12,8 +12,10 @@ protagonista assoluto.
 ## L'idea: pesare le parole
 
 Per ogni parola da elaborare, l'attenzione produce una versione "arricchita
-dal contesto": una media pesata delle informazioni di tutte le parole della
-frase, dove i pesi dicono quanto ognuna è rilevante.
+dal contesto": guarda tutte le altre parole della frase, decide quanto ciascuna
+conta per capire quella, e mescola le informazioni in quella proporzione. È una
+media, come la media dei voti, con una differenza: i voti non pesano tutti
+uguale, e a decidere quanto pesano è la frase stessa.
 
 ```{figure} ../figures/seq2seq-collo-di-bottiglia.svg
 :name: fig-collo-di-bottiglia
@@ -21,12 +23,16 @@ frase, dove i pesi dicono quanto ognuna è rilevante.
 :width: 92%
 
 Il collo di bottiglia che l'attenzione viene a sciogliere. Tutta la frase
-d'origine deve passare per un vettore solo, e più la frase è lunga più quel
-vettore deve dimenticare.
+d'origine deve passare per un'unica lista di numeri, sempre lunga uguale: più
+la frase è lunga, più quella lista è costretta a dimenticare.
 ```
 
-{numref}`fig-collo-di-bottiglia` è il problema da cui nasce tutto. Se il
-decoder può guardare solo un riassunto, la prima parola della frase e
+{numref}`fig-collo-di-bottiglia` è il problema da cui nasce tutto. Nel gergo
+del libro quella lista di numeri si chiama **vettore**, e le due metà del
+sistema hanno un nome anche loro: l'**encoder** è la parte che legge la frase
+di partenza, il **decoder** quella che scrive la frase d'arrivo (li rivediamo
+per bene in fondo a questa pagina). Se il decoder può guardare solo un
+riassunto, la prima parola della frase e
 l'ultima competono per lo stesso spazio; l'attenzione toglie la strozzatura
 lasciando che ogni passo della generazione vada a rileggersi *tutte* le
 parole d'origine, pesandole di volta in volta.
@@ -42,7 +48,10 @@ ma in proporzione all'evidenziatura: tanta parte di "gatto", un po' di
 "muro", pochissimo del resto.
 
 I numeri dell'evidenziatore non li decide un programmatore: li impara la rete
-durante l'addestramento, esattamente come impara ogni altro peso. E quando
+durante l'addestramento, cioè provando e correggendosi su miliardi di frasi.
+Ogni volta che sbaglia a indovinare la parola che viene dopo, i numeri vengono
+ritoccati un pochino nella direzione che avrebbe fatto sbagliare di meno: è lo
+stesso meccanismo del capitolo sulle reti neurali. E quando
 questo gioco lo fa ogni parola verso tutte le altre (non solo "salta"), si
 parla di **self-attention**, attenzione della frase su sé stessa.
 `````
@@ -50,25 +59,47 @@ parla di **self-attention**, attenzione della frase su sé stessa.
 `````{tab} Superiore
 Ogni parola (più precisamente ogni *token*, come vedremo) è rappresentata da
 un vettore. Da ciascun vettore la rete ricava tre proiezioni con matrici
-apprese: una **query** $Q$ ("che cosa sto cercando?"), una **key** $K$ ("che
-cosa offro come etichetta?") e un **value** $V$ ("che informazione porto?").
+apprese: una **query** $\mathbf{Q}$ ("che cosa sto cercando?"), una **key**
+$\mathbf{K}$ ("che cosa offro come etichetta?") e un **value** $\mathbf{V}$
+("che informazione porto?").
 L'affinità tra la parola che elabora e ogni altra è il prodotto scalare
 query·key (la stessa misura di somiglianza tra vettori del capitolo di algebra
 lineare) e la **Scaled Dot-Product Attention** la trasforma in pesi:
 
 $$
-\text{Attention}(Q, K, V) = \text{softmax}\!\left(\frac{QK^T}{\sqrt{d_k}}\right)V
+\text{Attention}(\mathbf{Q}, \mathbf{K}, \mathbf{V}) =
+\text{softmax}\!\left(\frac{\mathbf{Q}\mathbf{K}^\top}{\sqrt{d_k}}\right)\mathbf{V}
 $$
 
-dove $Q, K, V$ raccolgono per righe le proiezioni di tutti i token e $d_k$ è
+dove $\mathbf{Q}, \mathbf{K}, \mathbf{V}$ raccolgono per righe le proiezioni
+di tutti i token e $d_k$ è
 la dimensione delle key. La softmax (già incontrata nel capitolo sulle reti
 neurali) normalizza le affinità in pesi che sommano a 1; la divisione per
 $\sqrt{d_k}$ evita che, al crescere della dimensione, i prodotti scalari
-diventino così grandi da saturare la softmax e azzerarne i gradienti. L'output
+diventino così grandi da saturare la softmax e azzerarne i gradienti. Il conto
+sta in una riga, e vale la pena scriverla perché è l'unica ipotesi in tutto il
+paragrafo: se le componenti di query e key sono indipendenti, a media nulla e
+varianza unitaria, il loro prodotto scalare ha varianza $d_k$, e dividere per
+$\sqrt{d_k}$ la riporta a 1. Il fattore non *impedisce* la saturazione, ne
+toglie la dipendenza da $d_k$: con componenti di varianza diversa da 1 la
+softmax satura lo stesso, a qualunque dimensione. L'output
 è, per ogni token, la combinazione dei value pesata dall'attenzione: una
 rappresentazione contestuale calcolata in un unico prodotto tra matrici, per
 tutte le posizioni insieme.
 `````
+
+Resta da dire *come* si decide l'intensità dell'evidenziatore, ed è qui che
+compaiono tre parole che poi tornano in tutto il capitolo. Ogni parola, per
+partecipare al gioco, si presenta in tre versioni diverse di sé stessa, che la
+rete si costruisce da sola: una **query**, cioè la domanda che quella parola
+sta facendo alle altre («chi è che salta?»); una **key**, cioè l'etichetta con
+cui quella stessa parola si fa trovare da chi la cerca («io sono un soggetto,
+sono un animale»); e un **value**, cioè l'informazione che consegna a chi la
+seleziona. Il confronto fra la query di una parola e la key di un'altra dà il
+punteggio, i punteggi diventano le intensità dell'evidenziatore, e le
+informazioni (i value) si mescolano in quelle proporzioni. In italiano
+sarebbero *domanda*, *etichetta* e *contenuto*, ma i nomi inglesi sono ormai
+quelli che si trovano scritti ovunque, e li useremo anche noi.
 
 ```{figure} ../figures/attention-is-all-you-need.svg
 :name: fig-qkv
@@ -81,10 +112,10 @@ parola li ricopre tutti e tre insieme.
 ```
 
 La separazione dei tre ruoli in {numref}`fig-qkv` è ciò che rende
-l'attenzione più di una semplice somiglianza. Se ci fosse un solo vettore per
-parola, «cercare» ed «essere trovati» sarebbero la stessa operazione; con
-Query e Key distinte, una parola può cercare qualcosa di molto diverso da ciò
-che offre.
+l'attenzione più di una semplice somiglianza. Se ogni parola avesse una sola
+versione di sé, «cercare» ed «essere trovati» sarebbero la stessa operazione;
+con query e key distinte, una parola può cercare qualcosa di molto diverso da
+ciò che offre.
 
 ```{admonition} Un antenato: le reti a memoria
 :class: note
@@ -92,20 +123,29 @@ Interrogare un archivio con una domanda, pesare quanto ciascun elemento le
 risponde, e restituire la miscela pesata di ciò che quegli elementi contengono:
 questa struttura è stata inventata prima dei Transformer, e per un altro scopo.
 
-A metà degli anni Dieci le **memory network** affrontavano il problema di far
-ragionare una rete su un elenco di fatti («Maria è andata in cucina. Giovanni
-ha preso il latte. Dov'è il latte?»). La rete teneva i fatti in una **memoria
-esplicita**, confrontava la domanda con ciascuno di essi, ne ricavava una
-distribuzione di attenzione, e leggeva la memoria pesando con quella. Poi
-ripeteva, usando il risultato come nuova domanda: erano i *hop*, cioè i salti
-di ragionamento, che permettevano di concatenare due fatti per rispondere a una
-domanda che nessuno dei due risolveva da solo.
+Nel 2014 le **memory network** {cite}`weston2015memory` affrontavano il
+problema di far ragionare una rete su un elenco di fatti («Maria è andata in
+cucina. Giovanni ha preso il latte. Dov'è il latte?»). La rete teneva i fatti
+in un archivio a parte, separato dai numeri che aveva imparato, e per
+rispondere andava a pescarci dentro. In quella prima versione però la pesca era
+secca (si sceglieva *un* fatto, il più somigliante) e per addestrarla bisognava
+dire alla rete, esempio per esempio, quali fossero i fatti giusti da usare.
 
-Due cose da portarsi via. La prima è che quel softmax sui fatti **è**
-l'attenzione, con la sola differenza che qui l'archivio è la sequenza stessa
-invece di un magazzino a parte. La seconda è che la struttura
-interrogazione-contro-archivio, con la memoria tenuta fuori dai pesi della
-rete, è esattamente la forma dei sistemi che nel capitolo su RAG recuperano
+Il passo che ci interessa arriva l'anno dopo, con le *end-to-end memory
+network* {cite}`sukhbaatar2015end`: al posto della scelta secca si mette una
+graduatoria: la domanda viene confrontata con **tutti** i fatti, il confronto
+produce un'intensità di evidenziatore per ciascuno, e l'archivio viene letto
+mescolando i fatti in quelle proporzioni. Poi si ripete, usando il risultato
+come nuova domanda: erano i *hop*, cioè i salti di ragionamento, che
+permettevano di concatenare due fatti per rispondere a una domanda che nessuno
+dei due risolveva da solo. E siccome adesso ogni fatto contribuisce un po', la
+rete può imparare da sola quali contano, senza che glielo si dica.
+
+Due cose da portarsi via. La prima è che quella graduatoria sui fatti **è**
+l'attenzione, con la sola differenza che qui l'archivio è un magazzino a parte
+invece della frase stessa. La seconda è che la struttura
+domanda-contro-archivio, con i fatti tenuti fuori dalla rete e consultati al
+momento, è esattamente la forma dei sistemi che nel capitolo su RAG recuperano
 documenti prima di rispondere. Un'idea messa da parte perché la sua epoca non
 aveva né i dati né l'hardware, e tornata due volte sotto altri nomi.
 ```
@@ -123,7 +163,9 @@ colore diverso e una fissazione diversa: uno segna i rapporti grammaticali
 gatto), un altro ancora i legami di posizione. Alla fine i fogli evidenziati
 si sovrappongono, e la frase risulta letta da più punti di vista
 contemporaneamente. Ogni lettore è una "testa" di attenzione; il Transformer
-originale ne usa otto.
+originale ne usa otto. Perché otto e non nove? Perché funzionava: è una scelta
+provata sul campo, non una legge di natura, e i modelli che sono venuti dopo
+usano numeri diversi.
 `````
 
 `````{tab} Superiore
@@ -131,11 +173,14 @@ La **Multi-Head Attention** esegue $h$ attenzioni indipendenti in sottospazi
 distinti e ne ricompone gli esiti:
 
 $$
-\text{MultiHead}(Q, K, V) = \text{Concat}(\text{head}_1, \ldots, \text{head}_h)\,W^O
+\text{MultiHead}(\mathbf{Q}, \mathbf{K}, \mathbf{V}) =
+\text{Concat}(\text{head}_1, \ldots, \text{head}_h)\,\mathbf{W}^O
 $$
 
-dove $\text{head}_i = \text{Attention}(QW_i^Q, KW_i^K, VW_i^V)$ e
-$W_i^Q, W_i^K, W_i^V, W^O$ sono matrici apprese. Nel Transformer originale
+dove $\text{head}_i = \text{Attention}(\mathbf{Q}\mathbf{W}_i^Q,
+\mathbf{K}\mathbf{W}_i^K, \mathbf{V}\mathbf{W}_i^V)$ e
+$\mathbf{W}_i^Q, \mathbf{W}_i^K, \mathbf{W}_i^V, \mathbf{W}^O$ sono matrici
+apprese. Nel Transformer originale
 $h = 8$ e ogni testa lavora in dimensione $d_k = d_{\text{model}}/h = 64$: il
 costo complessivo resta paragonabile a una singola attenzione a dimensione
 piena, ma il modello può dedicare teste diverse a relazioni diverse
@@ -145,8 +190,8 @@ teste addestrate conferma almeno in parte).
 
 ## Dove va a finire l'attenzione: encoder e decoder
 
-Il blocco di attenzione non vive da solo: è il cuore di due componenti che il
-prossimo capitolo smonta pezzo per pezzo. L'**encoder** legge la frase di
+Il blocco di attenzione non vive da solo: è il cuore di due componenti che la
+prossima sezione smonta pezzo per pezzo. L'**encoder** legge la frase di
 partenza e ne costruisce una rappresentazione ricca; il **decoder** la usa per
 generare l'uscita (una traduzione, una risposta) un pezzo alla volta. In
 mezzo, ancora attenzione: mentre genera, il decoder "evidenzia" le parti
@@ -157,20 +202,25 @@ reti molto profonde.
 
 `````{tab} Elementare
 Il primo è una **scorciatoia**: l'informazione che entra in un blocco viene
-anche fatta passare *intatta* accanto al blocco, e sommata all'uscita. Come un
-corrimano lungo una scala ripida: anche se un gradino è scivoloso,
-l'informazione (e la correzione degli errori durante l'apprendimento) ha
-sempre una presa solida per risalire. Il secondo è una **taratura**: dopo ogni
-blocco, i numeri vengono riportati su una scala standard, come rimettere a
-zero la bilancia tra una pesata e l'altra, così nessuno strato lavora con
-valori fuori misura.
+anche fatta passare *intatta* accanto al blocco, e sommata all'uscita. Serve a
+due cose, e la seconda è meno ovvia. All'andata, tiene aperta una strada
+diretta perché l'informazione arrivi in cima senza sfilacciarsi in mezzo a
+decine di blocchi. Al ritorno, serve alla correzione: quando la rete scopre di
+aver sbagliato, il segnale che dice «di quanto e in che direzione ritoccare»
+deve tornare indietro fino ai primi blocchi, e senza scorciatoia si spegne per
+strada. Come un corrimano lungo una scala ripida: anche se un gradino è
+scivoloso, chi sale e chi scende hanno sempre una presa solida. Il secondo
+accorgimento è una **taratura**: le parole, dentro la rete, sono liste di
+numeri, e quei numeri dopo ogni blocco vengono riportati su una scala standard,
+come rimettere a zero la bilancia tra una pesata e l'altra, così nessuno strato
+lavora con valori fuori misura.
 `````
 
 `````{tab} Superiore
 Sono le **residual connection** e la **layer normalization**, combinate in
 
 $$
-\text{LayerNorm}\big(x + \text{SubLayer}(x)\big)
+\text{LayerNorm}\big(\mathbf{x} + \text{SubLayer}(\mathbf{x})\big)
 $$
 
 attorno a ogni sotto-strato (attenzione o feed-forward). La connessione
@@ -182,25 +232,58 @@ l'addestramento meno sensibile a learning rate e inizializzazione. «Quasi»,
 perché in questa formulazione (detta *Post-LN*, quella del 2017) la
 normalizzazione sta proprio sul ramo della scorciatoia, e il gradiente la
 attraversa a ogni strato: i modelli successivi la spostano prima del
-sotto-strato, $x + \text{SubLayer}(\text{LayerNorm}(x))$, il cosiddetto
+sotto-strato, $\mathbf{x} + \text{SubLayer}(\text{LayerNorm}(\mathbf{x}))$, il
+cosiddetto
 *Pre-LN*, ed è lì che il cammino identità diventa davvero pulito (Xiong e
 colleghi, 2020, mostrano che senza questo spostamento serve un riscaldamento
 graduale del learning rate per addestrare stabilmente).
 `````
 
+Scorciatoia e taratura sono la parte che nessuno racconta mai, e senza la quale
+niente di tutto il resto starebbe in piedi: l'attenzione è l'idea, ma un'idea
+impilata sessanta volte si sfalda, e questi due accorgimenti sono ciò che la
+tiene insieme. Ci si può fermare qui con il meccanismo in mano; la sezione
+successiva prende questi pezzi e li monta nelle due torri di una macchina vera.
+
+`````{tab} Elementare
+```{admonition} Da ricordare
+:class: important
+- L'**attenzione** rilegge la frase con un evidenziatore: per capire una
+  parola, guarda tutte le altre, dà a ciascuna un'intensità di colore e ne
+  mescola le informazioni in quella proporzione.
+- Le intensità le decide la frase, non un programmatore: la rete le impara
+  provando e correggendosi su miliardi di esempi. Quando è ogni parola a
+  guardare tutte le altre, si chiama **self-attention**.
+- Per giocare, ogni parola si presenta in tre versioni: la **query** (la
+  domanda che fa), la **key** (l'etichetta con cui si fa trovare) e il
+  **value** (l'informazione che consegna).
+- Di evidenziatori se ne passano otto in parallelo, ognuno attento a un tipo di
+  legame diverso: sono le **teste** di attenzione.
+- Attorno a ogni blocco ci sono una **scorciatoia** (l'informazione passa anche
+  di lato, intatta, e la correzione degli errori trova sempre una presa per
+  tornare indietro) e una **taratura** (i numeri riportati su una scala
+  standard). Senza di loro le torri alte non si addestrano.
+```
+`````
+
+`````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
 - L'**attenzione** costruisce, per ogni parola, una rappresentazione
   contestuale: media dei *value* pesata dalle affinità *query*·*key*,
-  normalizzate con softmax e scalate di $\sqrt{d_k}$.
+  normalizzate con softmax e scalate di $\sqrt{d_k}$ (il fattore neutralizza la
+  dipendenza della varianza da $d_k$, sotto l'ipotesi di componenti
+  indipendenti a media nulla e varianza unitaria).
 - Nella **self-attention** ogni parola guarda tutte le altre; i pesi non sono
   fissati a mano ma appresi.
 - La **Multi-Head Attention** esegue più attenzioni in parallelo ($h = 8$ nel
   modello originale), ciascuna libera di specializzarsi su relazioni diverse.
 - **Residual connection** e **layer normalization** tengono addestrabili le
   pile profonde di blocchi. L'articolo del 2017 le combina come
-  $\text{LayerNorm}(x + \text{SubLayer}(x))$ (*Post-LN*); i modelli successivi
-  normalizzano prima del sotto-strato,
-  $x + \text{SubLayer}(\text{LayerNorm}(x))$ (*Pre-LN*), ed è così che la
+  $\text{LayerNorm}(\mathbf{x} + \text{SubLayer}(\mathbf{x}))$ (*Post-LN*); i
+  modelli successivi normalizzano prima del sotto-strato,
+  $\mathbf{x} + \text{SubLayer}(\text{LayerNorm}(\mathbf{x}))$ (*Pre-LN*), ed
+  è così che la
   scorciatoia resta davvero libera.
 ```
+`````

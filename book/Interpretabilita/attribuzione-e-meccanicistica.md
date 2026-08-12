@@ -1,15 +1,18 @@
 # Dentro le reti profonde: attribuzione e interpretabilità meccanicistica
 
-C'è un esperimento diventato un piccolo classico della cattiva coscienza del
-machine learning: il rilevatore di neve dell'apertura di capitolo. Un
-classificatore di lupi e husky truccato a tavolino (tutti i lupi
-dell'addestramento sulla neve, nessun husky) per misurare se qualcuno se ne
-accorgeva; e senza spiegazioni la maggioranza degli studenti non ci arrivò.
-Poi le spiegazioni mostrarono *dove* il modello posava lo sguardo: non sul
-muso, non sulle orecchie, ma sullo **sfondo**. La rete non aveva imparato a
-riconoscere un lupo: aveva imparato a riconoscere la neve. Funzionava per la
-ragione sbagliata, e a guardare solo le sue risposte quasi nessuno lo avrebbe
-detto.
+Torniamo un'ultima volta al rilevatore di neve dell'apertura di capitolo, per
+una ragione precisa. Le spiegazioni che smascherarono quel classificatore erano
+LIME, cioè il metodo agnostico della sezione precedente: trattavano il modello
+come una scatola chiusa, gli davano l'immagine con alcune porzioni spente e
+guardavano come cambiava la risposta. Doveva andare così, del resto, perché il
+modello truccato non era una rete: era una semplice regressione logistica
+appoggiata sopra le rappresentazioni di una rete già addestrata, che nessuno
+aveva toccato. La scorciatoia («c'è neve → lupo») l'aveva imparata il pezzo
+lineare a valle.
+
+Ma quando il modello **è** la rete, e la rete ce l'abbiamo in mano con tutti i
+suoi pesi, c'è una strada che la scatola chiusa non permette: guardarci dentro
+invece di bussare da fuori.
 
 Nella prima sezione del capitolo abbiamo visto modelli **interpretabili per
 costruzione**: una regressione lineare ci consegna un coefficiente per ogni
@@ -18,15 +21,24 @@ capitolo sul Machine Learning classico). Una rete profonda no. Ha milioni di
 parametri intrecciati, e nessuno di essi, preso da solo, dice qualcosa di
 sensato. Dobbiamo cambiare domanda. Non «quanto pesa questa variabile in
 generale?», ma «quanto ha contribuito *questo* ingresso a *questa*
-decisione?». La risposta, sorprendentemente, è uno strumento che già
-conosciamo bene: il **gradiente**.
+decisione?». La quota di merito che si assegna a ciascun pezzo dell'ingresso si
+chiama **attribuzione**, ed è la parola che intitola questa sezione. La
+risposta, sorprendentemente, viene da uno strumento che il libro ha già usato
+per tutt'altro mestiere: il **gradiente**.
 
 ## Saliency maps: il gradiente come mappa di importanza
 
-Il gradiente lo abbiamo usato per *addestrare*: la derivata della loss rispetto
-ai pesi ci dice come correggere il modello. Ma possiamo puntarlo altrove.
-Invece di derivare rispetto ai pesi, deriviamo il punteggio della classe
-predetta rispetto ai **pixel di ingresso**. Il risultato è una *saliency map*,
+Conviene ricordare in due righe che cos'è, perché tutto quel che segue ci si
+appoggia. Il gradiente di una quantità rispetto a una manopola risponde alla
+domanda: «di quanto cambia la quantità, se giro la manopola di un nulla?» (la
+parola tecnica per quel «di quanto cambia se la giro appena» è **derivata**).
+Nell'addestramento le manopole erano i pesi della rete e la quantità era
+l'errore, e girare le manopole nel verso che abbassa l'errore *è*
+l'addestramento, come si è visto nel capitolo sulle reti neurali. Adesso
+puntiamo lo stesso strumento altrove: teniamo ferme le manopole dei pesi e
+chiamiamo manopola ogni **pixel di ingresso**, mentre la quantità da guardare
+non è più l'errore, ma il punteggio che la rete assegna alla classe che ha
+predetto. Il risultato è una *saliency map*,
 proposta da Simonyan, Vedaldi e Zisserman nel 2014 {cite}`simonyan2014deep`.
 
 `````{tab} Elementare
@@ -49,23 +61,25 @@ appena.
 
 `````{tab} Superiore
 
-Sia $S_c(X)$ il punteggio (il logit, prima della softmax) che la rete assegna
-alla classe $c$ per l'immagine $X$. La saliency map è il modulo del gradiente
-del punteggio rispetto all'ingresso:
+Sia $S_c(\mathbf{X})$ il punteggio (il logit, prima della softmax) che la rete
+assegna alla classe $c$ per l'immagine $\mathbf{X}$. La saliency map è il modulo
+del gradiente del punteggio rispetto all'ingresso:
 
 $$
-M = \left| \frac{\partial S_c}{\partial X} \right|,
+\mathbf{M} = \left| \frac{\partial S_c}{\partial \mathbf{X}} \right|,
 $$
 
 calcolato con una singola *backpropagation* fino allo strato di input anziché
-fermarsi ai pesi. L'idea è una **linearizzazione locale**: nell'intorno di $X$,
-$S_c(X + \delta) \approx S_c(X) + \big(\partial S_c/\partial X\big)^\top \delta$,
+fermarsi ai pesi. L'idea è una **linearizzazione locale**: nell'intorno di
+$\mathbf{X}$,
+$S_c(\mathbf{X} + \delta) \approx S_c(\mathbf{X}) +
+\big(\partial S_c/\partial \mathbf{X}\big)^\top \delta$,
 quindi le componenti del gradiente di modulo maggiore individuano i pixel la cui
 piccola variazione altera di più il punteggio. Per un'immagine a colori si
 prende in genere il massimo del modulo sui tre canali RGB.
 
 Il limite è duplice. Primo, il gradiente è **locale**: coglie la pendenza solo
-nel punto $X$, e le reti profonde sono tutt'altro che lineari. Secondo, è
+nel punto $\mathbf{X}$, e le reti profonde sono tutt'altro che lineari. Secondo, è
 **rumoroso**, perché la superficie $S_c$ ha derivate che oscillano rapidamente.
 Le mappe risultano granulose, e le tecniche successive nascono quasi tutte per
 domare questo rumore.
@@ -133,16 +147,28 @@ che ha guidato la decisione.
 ## Integrated Gradients: gli assiomi e il cammino dalla baseline
 
 Sia la saliency sia Grad-CAM misurano il gradiente in **un solo punto**, e qui
-si nasconde un problema. Se la rete è già «sicura» (il neurone è saturo, come
-la parte piatta di una sigmoide), il gradiente locale è quasi zero, anche se
-quell'ingresso è la ragione stessa della decisione. Sundararajan, Taly e Yan,
+si nasconde un problema.
+
+Le funzioni che una rete usa per decidere non salgono all'infinito: crescono
+ripide finché la rete è incerta, e poi si appiattiscono, perché una fiducia non
+può superare il suo massimo. La curva a esse che si comporta così, ripida in
+mezzo e piatta alle due estremità, è la **sigmoide** vista nel capitolo sulle
+reti neurali; e di un neurone arrivato sul tratto piatto si dice che è
+**saturo**. Su un tratto piatto, però, il gradiente è quasi zero: toccare
+l'ingresso non cambia più niente, perché la rete è già convinta. Il paradosso è
+che il gradiente dichiara «questo pixel non conta» proprio quando quel pixel è
+la ragione per cui la rete è così sicura.
+
+Sundararajan, Taly e Yan,
 nel 2017, hanno affrontato la questione partendo non da un'euristica ma da due
 **assiomi**: proprietà che una buona spiegazione *deve* soddisfare
 {cite}`sundararajan2017axiomatic`.
 
-Il primo è la **sensibilità**: se basta cambiare una variabile perché la
-risposta del modello cambi, quella variabile deve ricevere una quota di merito
-diversa da zero. Il secondo è
+Il primo è la **sensibilità**, e va enunciato con la sua condizione, altrimenti
+dice il falso: se un ingresso e il riferimento neutro da cui si parte
+differiscono per **una sola** variabile, e su quei due il modello risponde in
+modo diverso, allora quella variabile deve ricevere una quota di merito diversa
+da zero. Il secondo è
 l'**invarianza all'implementazione**: due reti che calcolano la stessa
 funzione matematica, con architetture diverse, devono ricevere le stesse
 attribuzioni (la spiegazione riguarda *cosa* la rete calcola, non *come* lo
@@ -154,10 +180,11 @@ nei casi di saturazione.
 Invece di misurare la pendenza solo nel punto di arrivo, immagina di partire
 da un'immagine «neutra» (di solito tutta nera, la *baseline*) e di arrivare
 piano piano all'immagine vera, mescolandole in tante tappe: 10% vera e 90%
-nera, poi 20 e 80, e così via fino al 100%. A ogni tappa misuri la pendenza, e
-alla fine fai la media. Così, anche se all'arrivo la rete è satura e non
-reagisce più, hai comunque registrato la sua reazione lungo tutta la salita,
-quando reagiva eccome.
+nera, poi 20 e 80, e così via fino al 100%. A ogni tappa ti chiedi di quanto
+cambierebbe la fiducia della rete se toccassi appena quel pixel, e alla fine
+fai la media di tutte le risposte. Così, anche se all'arrivo la rete è satura e
+non reagisce più, hai comunque registrato la sua reazione lungo tutta la
+salita, quando reagiva eccome.
 
 Questo metodo ha una proprietà bellissima da controllare: se sommi le
 attribuzioni di tutti i pixel, ottieni esattamente *quanto* la rete è passata
@@ -166,24 +193,37 @@ niente si inventa: il conto torna sempre. È come dividere il conto di una cena
 tra i commensali in modo che la somma delle quote faccia, al centesimo, il
 totale sullo scontrino.
 
+Sull'analogia della cena, però, c'è una domanda scomoda da fare subito: il
+conto torna, ma torna **a partire da dove?** Il punto di partenza, quell'immagine
+nera, non è un fatto di natura: è una scelta, e la scelta cambia le risposte. La
+più chiara delle conseguenze è questa: di ciò che era **già nero** in partenza
+non si può misurare nessun contributo, perché fra partenza e arrivo non è
+cambiato. Se la ragione della decisione fosse proprio una zona buia della foto
+(un'ombra, il cielo notturno, il nero di una radiografia), quel metodo le
+darebbe zero, e la somma tornerebbe lo stesso. Che il conto torni non dice che
+si è partiti dal punto giusto.
+
 `````
 
 `````{tab} Superiore
 
-Sia $x'$ la **baseline**, il punto di riferimento «neutro» rispetto a cui si
-misura il contributo (per un'immagine, tipicamente il nero, $x' = 0$), e $x$
-l'ingresso da spiegare. In forma precisa, l'assioma di **sensibilità** chiede
-che se $x$ e $x'$ differiscono in una sola componente e $f(x) \neq f(x')$,
+Sia $\mathbf{x}'$ la **baseline**, il punto di riferimento «neutro» rispetto a cui si
+misura il contributo (per un'immagine, tipicamente il nero,
+$\mathbf{x}' = 0$), e $\mathbf{x}$ l'ingresso da spiegare. In forma precisa,
+l'assioma di **sensibilità** chiede che se $\mathbf{x}$ e $\mathbf{x}'$
+differiscono in una sola componente e
+$f(\mathbf{x}) \neq f(\mathbf{x}')$,
 quella componente riceva attribuzione non nulla: è proprio ciò che il gradiente
-valutato nel solo punto $x$ non garantisce, perché in regime di saturazione è
+valutato nel solo punto $\mathbf{x}$ non garantisce, perché in regime di saturazione è
 quasi zero anche quando quella componente è la ragione dell'uscita.
 
 Gli *Integrated Gradients* integrano il gradiente lungo
-il segmento rettilineo da $x'$ a $x$:
+il segmento rettilineo da $\mathbf{x}'$ a $\mathbf{x}$:
 
 $$
-\mathrm{IG}_i(x) = (x_i - x'_i)\,
-   \int_0^1 \frac{\partial f\big(x' + \alpha\,(x - x')\big)}{\partial x_i}\,
+\mathrm{IG}_i(\mathbf{x}) = (x_i - x'_i)\,
+   \int_0^1 \frac{\partial
+     f\big(\mathbf{x}' + \alpha\,(\mathbf{x} - \mathbf{x}')\big)}{\partial x_i}\,
    \mathrm{d}\alpha,
 $$
 
@@ -199,14 +239,63 @@ attribuzioni si sommano esattamente alla differenza di uscita tra input e
 baseline,
 
 $$
-\sum_i \mathrm{IG}_i(x) = f(x) - f(x').
+\sum_i \mathrm{IG}_i(\mathbf{x}) = f(\mathbf{x}) - f(\mathbf{x}').
 $$
 
 La completezza implica la sensibilità e conferisce alle attribuzioni un
 significato preciso: ciascuna è la *quota* di quel salto di punteggio imputabile
 a quella componente. È l'assioma che verificheremo numericamente più avanti.
 
+Va detto però che cosa la completezza **non** garantisce, perché è il punto in
+cui il metodo si presta a essere letto per più di quel che promette: essa vale
+per **qualunque** baseline. Gli assiomi vincolano come si ripartisce il salto
+$f(\mathbf{x}) - f(\mathbf{x}')$, non da dove il salto parte, e la scelta di
+$\mathbf{x}'$ resta il grado di libertà principale del metodo. Due conseguenze
+concrete. La prima è che il
+fattore $(x_i - x'_i)$ davanti all'integrale **azzera per costruzione**
+l'attribuzione di ogni componente che coincide con la baseline: con la baseline
+nera ogni pixel nero riceve esattamente zero, per definizione e non per misura,
+mentre in una radiografia o in una foto notturna il nero non è affatto assenza
+di informazione. La seconda è che cambiando baseline le attribuzioni cambiano di
+grandezza e perfino di **segno**, mentre la somma continua a tornare: sulla
+funzione giocattolo dell'esempio in fondo alla sezione, spostando la baseline da
+$(0,0)$ a $(2,0)$ l'attribuzione della componente con il peso maggiore passa da
+$1{,}327$ a esattamente $0$, e con la baseline $(-1,2)$ la seconda componente
+prende segno positivo invece che negativo; in tutti e tre i casi la completezza
+è verificata al quarto decimale. Gli autori chiedono infatti che la baseline sia
+scelta e **verificata**: deve rappresentare un'assenza di segnale, e su di essa
+il punteggio della classe dev'essere quasi nullo. Le alternative d'uso comune
+(rumore gaussiano, immagine sfocata, media del dataset, media su più baseline)
+danno attribuzioni diverse, e nessun assioma le ordina
+{cite}`sturmfels2020baselines`.
+
 `````
+
+Questo metodo ha una particolarità che vale la pena rendere esplicita: **non
+si vede in un fotogramma**, perché il fotogramma è proprio il punto in cui il
+gradiente non dice niente. In {numref}`fig-gradienti-integrati` c'è il cammino,
+percorso a passi.
+
+```{figure} ../figures/gradienti-integrati.svg
+:name: fig-gradienti-integrati
+:alt: "A sinistra la curva dell'uscita della rete lungo il segmento che va dalla baseline all'ingresso: parte ripida e si appiattisce. Un pallino la percorre a passi, e a ogni passo un segmento mostra la pendenza in quel punto, che all'inizio è grande e alla fine quasi nulla. A destra una barra accumula la somma delle pendenze e si ferma esattamente sulla riga che segna la differenza fra l'uscita sull'ingresso e quella sulla baseline."
+:width: 92%
+
+Il cammino da $\mathbf{x}'$ a $\mathbf{x}$, percorso a otto passi. A sinistra
+la pendenza in ciascun punto: viva all'inizio, quasi nulla alla fine. A destra
+la somma che si accumula, e la riga che segna dove deve arrivare.
+```
+
+Due cose si leggono in {numref}`fig-gradienti-integrati` e non nella formula.
+La prima è **quanto** la saturazione morda: sull'esempio della figura la
+pendenza vale $3{,}76$ a un ottavo del cammino e $0{,}009$ all'ultimo ottavo,
+quattrocento volte meno. Un metodo che guardi solo il punto d'arrivo lavora su
+quel $0{,}009$, ed è la ragione per cui restituisce quasi zero anche per una
+componente che è tutta la spiegazione. La seconda è che la barra di destra si
+ferma **esattamente** sulla riga, e quella non è una coincidenza né un
+aggiustamento: è la completezza, e il fatto che valga anche con soli otto passi
+è ciò che rende la somma di Riemann un'approssimazione onesta e non una
+speranza.
 
 ## Le mappe dicono dove, non che cosa
 
@@ -233,7 +322,10 @@ semplice quanto crudele. Prendi una rete addestrata, produci la sua mappa, poi
 **cancella quello che ha imparato**: randomizza i pesi, strato per strato, e
 rifai la mappa. Se la mappa fosse una spiegazione del modello, dovrebbe
 disintegrarsi, perché il modello non c'è più. Per diversi metodi popolari, la
-mappa cambia pochissimo, e resta riconoscibile come una sagoma dell'oggetto.
+mappa cambia pochissimo, e resta riconoscibile come una sagoma dell'oggetto. I
+due che abbiamo visto qui (i colpetti pixel per pixel e i faretti di Grad-CAM)
+non sono fra i bocciati; a fallire il test sono due varianti più elaborate che
+non abbiamo incontrato.
 
 La conclusione è spiacevole e va detta: quelle mappe stavano in buona parte
 descrivendo l'**immagine**, non la rete. Somigliavano a un rilevatore di
@@ -265,7 +357,9 @@ sulle etichette vere.
 Un metodo che superi i test deve cambiare drasticamente in entrambi i casi.
 Diversi metodi molto usati non lo fanno, e le loro mappe restano visivamente
 simili all'originale: si comportano, per usare l'espressione degli autori, come
-un rilevatore di bordi indipendente dal modello. Metodi come le saliency
+un rilevatore di bordi indipendente dal modello. Vale la pena nominarli, perché
+è l'informazione operativa: sono **Guided BackProp** e **Guided Grad-CAM**, che
+restano riconoscibili anche a pesi randomizzati. Metodi come le saliency
 semplici e Grad-CAM se la cavano meglio di altri, ma il punto metodologico
 resta, ed è quello che vale la pena portarsi via: **la plausibilità visiva di
 una spiegazione non è una prova della sua fedeltà**, e un occhio umano non
@@ -284,23 +378,36 @@ posto per l'oggetto che sembrava metterne al riparo: i pesi di attenzione.
 
 C'è una tentazione naturale, per chi lavora con i Transformer del capitolo
 dedicato: i pesi di **attenzione** {cite}`vaswani2017attention` sono già lì,
-belli normalizzati, e sembrano dire su quali parole il modello si è
+e sembrano dire su quali parole il modello si è
 concentrato. Vale la pena richiamare in una riga di che si tratta: per
 decidere che cosa fare di una parola, il modello distribuisce una specie di
 sguardo sulle altre parole della frase, dando a ciascuna un peso; quei pesi
-sono l'attenzione. Perché non usarli come spiegazione, gratis?
+sono l'attenzione, e sommano sempre a uno, come le fette di una torta divisa
+fra tutte le parole. Perché non usarli come spiegazione, gratis?
 
-La comunità ci ha discusso a lungo. Nel 2019 Jain e Wallace, con un articolo
+La comunità ci ha discusso a lungo. Nel 2019 Jain e Wallace
+{cite}`jain2019attention`, con un articolo
 dal titolo programmatico *«Attention is not Explanation»*, hanno mostrato che
 spesso si possono costruire pesi di attenzione **molto diversi** che
 portano alla **stessa** predizione: se più configurazioni dei pesi danno lo
 stesso verdetto, nessuna di esse può essere *la* spiegazione. Altri (Wiegreffe
 e Pinter, sempre nel 2019, con la replica *«Attention is not not
-Explanation»*) hanno ribattuto che dipende da cosa si pretende: sotto vincoli
+Explanation»* {cite}`wiegreffe2019attention`) hanno ribattuto che dipende da
+cosa si pretende: sotto vincoli
 più stretti l'attenzione conserva un valore esplicativo. La morale operativa è
 di **cautela**: i pesi di attenzione sono un indizio suggestivo, non una
 prova; una heatmap di attenzione va letta come una traccia, non come una
 confessione.
+
+Un'avvertenza sulla portata, però, va messa accanto al risultato, perché il
+titolo è più largo dell'esperimento: Jain e Wallace studiano **un solo strato**
+di attenzione sopra un encoder ricorrente (una BiLSTM), su compiti di
+classificazione, domanda-risposta e inferenza testuale, non l'auto-attenzione a
+più teste e più strati di un Transformer, che nel loro articolo non compare mai.
+Nel lavoro stesso, anzi, il comportamento **cambia con l'architettura**: gli
+encoder più semplici, a media pesata, si comportano meglio secondo gli stessi
+criteri. Il risultato è quindi un monito metodologico solido, non un teorema sui
+Transformer.
 
 C'è però una domanda tecnica che precede quella filosofica, e che di solito
 viene saltata: **l'attenzione di quale strato?** Un Transformer ne ha decine,
@@ -365,9 +472,16 @@ le attivazioni di uno strato e ci si allena sopra una semplice regressione
 logistica per una proprietà a scelta. Se il probe riesce, l'informazione è
 presente e linearmente accessibile in quello strato; se fallisce, non lo è. È
 un modo economico per mappare *dove*, nella pila di strati, emergono le varie
-proprietà, con l'avvertenza, discussa da Alain e Bengio e da altri, che un
-probe troppo potente rischia di *imparare* lui la proprietà invece di
-limitarsi a leggerla.
+proprietà. Il probe lineare è la proposta di Alain e Bengio
+{cite}`alain2017understanding`, che lo motivano proprio con la separabilità
+lineare e con la convessità del problema di addestramento; l'avvertenza che ne
+delimita l'uso è invece di Hewitt e Liang {cite}`hewitt2019control`, e va
+attribuita a loro: un probe troppo potente rischia di *imparare* lui la
+proprietà invece di limitarsi a leggerla. La loro proposta per accorgersene
+sono i *control task*, cioè rifare lo stesso addestramento su un'etichettatura
+casuale, e misurare la **selectivity**, lo scarto fra quanto il probe riesce
+sulla proprietà vera e quanto riesce sul casuale. Un probe che va bene su
+entrambe non stava leggendo: stava risolvendo.
 
 `````
 
@@ -378,37 +492,6 @@ Attribuzione e probing dicono *cosa* pesa e *dove* sta l'informazione, ma non
 aperta) punta più in alto: **fare reverse-engineering** dei calcoli interni,
 come si smonta un circuito elettronico per capire cosa fa ciascun componente.
 È l'**interpretabilità meccanicistica**.
-
-```{figure} ../figures/toy-models-superposition.svg
-:name: fig-superposizione
-:alt: "Due piani a due dimensioni. Nel primo, con feature dense, i due assi interni ospitano due sole feature, ortogonali fra loro, una per direzione. Nel secondo, con feature sparse, gli stessi due assi ospitano cinque feature disposte a raggiera: non sono ortogonali, si sovrappongono, ma poiché raramente sono attive insieme il modello riesce comunque a distinguerle."
-:width: 92%
-
-La sovrapposizione. Due dimensioni possono rappresentare più di due cose, a
-patto che quelle cose si accendano di rado e quasi mai insieme.
-```
-
-{numref}`fig-superposizione` spiega perché smontare una rete sia difficile
-oltre il previsto. La speranza naturale è che ogni neurone corrisponda a un
-concetto; se invece i concetti sono più delle dimensioni e ci convivono a
-raggiera, il singolo neurone risponde a un miscuglio di cose senza rapporto
-fra loro, ed è esattamente ciò che si osserva guardando dentro i modelli.
-
-```{figure} ../figures/interpretabilita-scatola-nera.svg
-:name: fig-sparse-autoencoder
-:alt: "A sinistra uno strato di attivazioni rappresentato come un fascio di direzioni aggrovigliate, in cui ogni neurone mescola più concetti. Una freccia attraversa uno sparse autoencoder, che proietta le stesse attivazioni in uno spazio molto più ampio ma con pochissime unità attive per volta. A destra le feature risultanti, ciascuna corrispondente a un concetto leggibile."
-:width: 96%
-
-La mossa che scioglie il groviglio. Si passa a uno spazio più largo di quello
-di partenza, imponendo che pochissime unità siano accese insieme: la
-sovrapposizione si srotola in feature che si possono leggere una per una.
-```
-
-La direzione di {numref}`fig-sparse-autoencoder` sembra paradossale (per
-capire meglio si aumentano le dimensioni) e invece è la conseguenza diretta
-della figura precedente. Se il problema è che troppe cose stanno in troppo
-poco spazio, la cura è dare più spazio, e imporre con la sparsità che ciascuna
-si prenda la propria direzione invece di dividerla con altre.
 
 `````{tab} Elementare
 
@@ -423,11 +506,26 @@ C'è però un ostacolo curioso, chiamato **sovrapposizione**: la rete ha meno
 neuroni dei concetti che deve rappresentare, e allora fa come chi ha poche
 scatole e troppa roba; mette più concetti nella stessa scatola, e un singolo
 neurone finisce per accendersi per cose scollegate (un po' per i gatti, un po'
-per le automobili, un po' per il colore verde). Una tecnica recente, gli
-*sparse autoencoder*, prova a «ri-sistemare gli scatoloni»: espande le
-attivazioni in uno spazio molto più grande in cui, si spera, ogni casella
-torni a rappresentare **una cosa sola** e leggibile. È un campo giovane:
-promettente, ma ancora lontano dal capire una rete grande per intero.
+per le automobili, un po' per il colore verde).
+
+Una tecnica recente, gli *sparse autoencoder*, prova a «ri-sistemare gli
+scatoloni». Serve prima una parola: quando un'immagine o una frase attraversa
+la rete, ogni neurone di uno strato produce un numero, e quei numeri tutti
+insieme sono le **attivazioni** di quello strato, cioè la fotografia di ciò che
+la rete ha in mente lì dentro in quel momento. Lo sparse autoencoder prende
+quella fotografia e la riscrive usando **molte più caselle** di quanti erano i
+neuroni, chiedendo però che a ogni esempio se ne accendano pochissime. Con
+tanto posto a disposizione e l'obbligo di usarne poco, ogni casella ha
+convenienza a specializzarsi su **una cosa sola**, che è esattamente quello che
+vorremmo poter leggere.
+
+Il campo è giovane e va raccontato per quello che è. La tecnica ha retto la
+prova della scala, e si applica ormai a modelli linguistici veri, non a
+giocattoli. Quello che non è dimostrato è il punto d'arrivo: che ogni casella
+contenga davvero una cosa sola resta un giudizio dato guardandole a campione, e
+si sono trovati casi in cui una casella che sembrava pulita non si accende
+proprio dove dovrebbe. Nessuno, comunque, ha ancora letto una rete grande per
+intero.
 
 `````
 
@@ -451,16 +549,65 @@ Monosemanticity* (Anthropic, 2023), affrontano il problema con uno **sparse
 autoencoder** {cite}`bricken2023monosemanticity`: le attivazioni di uno strato
 vengono ricodificate in un dizionario **sovracompleto** (molte più unità dei
 neuroni originali) sotto un vincolo di **sparsità**, che spinge poche unità
-attive per esempio. Le feature così estratte risultano in larga parte
-**monosemantiche** (ciascuna corrisponde a un concetto singolo e nominabile) e
-molto più interpretabili dei neuroni grezzi.
+attive per esempio. Le feature così estratte risultano in buona parte
+**leggibili**, e conviene prendere «in buona parte» e «leggibili» per quel che
+sono: il giudizio di valutatori umani (o di un modello usato come valutatore)
+su un campione di feature, non una proprietà dimostrata.
 
-Il campo è nascente e va preso con l'onestà che si deve alle frontiere: i
-risultati sono su modelli piccoli o su strati singoli, e nessuno ha ancora
-«letto» un modello di grande scala per intero. La posta in gioco, però, è
-alta, ne parliamo qui sotto.
+Il campo è nascente e va preso con l'onestà che si deve alle frontiere, ma vale
+la pena dire **dove** stia oggi la frontiera, perché non è dove si tende a
+metterla. La prova della **scala** la tecnica l'ha superata: Templeton e
+colleghi {cite}`templeton2024scaling` hanno addestrato autoencoder sparsi fino
+a decine di milioni di feature sulle attivazioni interne di un modello
+linguistico di produzione, non di un giocattolo di laboratorio. Quella che non
+ha superato è la prova dell'**affidabilità**: si sono documentati modi
+sistematici in cui un latente apparentemente monosemantico non si accende
+proprio dove dovrebbe, perché un latente più specifico ne ha assorbito i casi,
+e il fenomeno non si risolve cambiando la dimensione del dizionario o il grado
+di sparsità. La sovrapposizione resta una spiegazione teorica solida del
+*perché* i neuroni siano illeggibili; che gli sparse autoencoder siano *la*
+cura è ancora un programma di ricerca, non un risultato acquisito. E nessuno,
+in ogni caso, ha ancora «letto» un modello di grande scala per intero. La posta
+in gioco, però, è alta, ne parliamo qui sotto.
 
 `````
+
+```{figure} ../figures/toy-models-superposition.svg
+:name: fig-superposizione
+:alt: "Due piani a due dimensioni. Nel primo, con feature dense, i due assi interni ospitano due sole feature, ad angolo retto fra loro, una per direzione. Nel secondo, con feature sparse, gli stessi due assi ospitano cinque feature disposte a raggiera: non sono ad angolo retto, si sovrappongono, ma poiché raramente sono attive insieme il modello riesce comunque a distinguerle."
+:width: 92%
+
+La sovrapposizione. Con due sole direzioni a disposizione si possono tenere più
+di due concetti, purché ciascuno si accenda di rado e quasi mai insieme agli
+altri: a destra ce ne stanno cinque, sistemati a raggiera invece che ad angolo
+retto. Il prezzo è che nessuno di essi ha più una direzione tutta sua.
+```
+
+{numref}`fig-superposizione` mostra perché smontare una rete sia difficile
+oltre il previsto. La speranza naturale è che ogni neurone corrisponda a un
+concetto; se invece i concetti sono più delle direzioni disponibili e ci
+convivono a raggiera, il singolo neurone risponde a un miscuglio di cose senza
+rapporto fra loro, ed è esattamente ciò che si osserva guardando dentro i
+modelli.
+
+```{figure} ../figures/interpretabilita-scatola-nera.svg
+:name: fig-sparse-autoencoder
+:alt: "A sinistra uno strato di attivazioni disegnato come un fascio di direzioni aggrovigliate, in cui ogni neurone mescola più concetti. Una freccia le fa attraversare uno sparse autoencoder. A destra le feature che ne escono, disegnate come caselle separate, ciascuna con il nome di un concetto leggibile."
+:width: 96%
+
+La mossa che scioglie il groviglio. Le attivazioni aggrovigliate entrano da
+sinistra e ne escono riscritte: al posto di neuroni che mescolano più cose,
+caselle che ne tengono una sola. Dentro la freccia ci sono due mosse insieme, e
+servono tutte e due: le caselle in uscita sono **molte di più** dei neuroni in
+entrata, e a ogni esempio se ne accendono **pochissime**.
+```
+
+La direzione di {numref}`fig-sparse-autoencoder` sembra paradossale (per capire
+meglio si fa più largo il posto in cui la rete tiene le sue rappresentazioni,
+invece di stringerlo) e invece è la conseguenza diretta della figura
+precedente. Se il problema è che troppe cose stanno in troppo poco spazio, la
+cura è dare più spazio, e imporre con la sparsità che ciascuna si prenda la
+propria direzione invece di dividerla con altre.
 
 Perché tutto questo conta, e non è solo un esercizio di curiosità? Per la
 **sicurezza**. Un modello linguistico di grandi dimensioni può apprendere
@@ -470,6 +617,11 @@ accorgersene *prima* che si manifestino: è il ponte, che riprenderemo nel
 capitolo sull'AI responsabile, tra l'interpretabilità come curiosità
 scientifica e l'interpretabilità come strumento di controllo.
 
+Il quadro concettuale finisce qui. Le due sezioni che seguono sono di bottega:
+rifanno coi numeri, e con poche righe di codice, i due metodi centrali del
+capitolo, gli Integrated Gradients e Grad-CAM. Chi non programma può saltarle e
+andare al riquadro finale.
+
 ## Integrated Gradients coi numeri: un esempio eseguibile
 
 Vale più di mille formule vedere la completezza tornare al centesimo. Prendiamo
@@ -478,13 +630,19 @@ cioè per riprodurre il caso in cui il gradiente locale mente. È la solita somm
 pesata di un neurone (due volte la prima variabile, meno una volta la seconda)
 passata dentro la **tangente iperbolica** $\tanh$, una funzione che schiaccia:
 sale ripida vicino allo zero e si appiattisce man mano che l'uscita si avvicina
-a 1, come la sigmoide del capitolo sulle reti neurali. In formule,
-$f(x) = \tanh(w^\top x)$ con $w = (2, -1)$, dove $w^\top x$ è appunto la somma
-pesata. Nel punto $x = (2, 1)$ essa vale $2 \cdot 2 - 1 \cdot 1 = 3$, e
+a 1, come la sigmoide di poco fa. In formule,
+$f(\mathbf{x}) = \tanh(\mathbf{w}^\top \mathbf{x})$ con
+$\mathbf{w} = (2, -1)$: la scrittura $\mathbf{w}^\top \mathbf{x}$ è il modo
+compatto di dire «moltiplica ogni peso per la variabile che gli corrisponde e
+somma tutto», cioè appunto la somma
+pesata. Nel punto $\mathbf{x} = (2, 1)$ essa vale $2 \cdot 2 - 1 \cdot 1 = 3$, e
 $\tanh(3) \approx 0{,}995$: siamo sulla parte piatta della curva, dove la
 pendenza è quasi nulla. Un solo gradiente direbbe «qui non conta niente»; gli
 Integrated Gradients, integrando dalla baseline tutta a zero, recuperano
-l'intero contributo.
+l'intero contributo. Nel codice, il commento «regola della catena» segnala il
+modo standard di derivare una funzione dentro un'altra: si deriva prima quella
+esterna, la $\tanh$, poi quella interna, la somma pesata, e si moltiplicano i
+due risultati.
 
 ```python
 import numpy as np
@@ -561,14 +719,31 @@ A = att["v"]                              # attivazioni  (1, C, h, w)
 dY = grad["v"]                            # gradienti    (1, C, h, w)
 alpha = dY.mean(dim=(2, 3), keepdim=True)  # peso per canale (global avg pool)
 heatmap = F.relu((alpha * A).sum(dim=1))   # (1, h, w), solo contributi positivi
-heatmap = heatmap / heatmap.max()          # normalizzata in [0, 1]
+heatmap = heatmap / (heatmap.max() + 1e-8) # normalizzata in [0, 1]
 # heatmap va poi sovracampionata a 224x224 e sovrapposta all'immagine
+
+print("attivazioni:", tuple(A.shape))
+print("gradienti  :", tuple(dY.shape))
+print("heatmap    :", tuple(heatmap.shape))
 ```
 
-Il cuore è tutto nelle ultime tre righe: `alpha` è il peso $\alpha_k^c$ (la
+Le tre righe stampate dicono che cosa è uscito:
+
+```text
+attivazioni: (1, 512, 7, 7)
+gradienti  : (1, 512, 7, 7)
+heatmap    : (1, 7, 7)
+```
+
+cioè 512 mappe di attivazione da $7 \times 7$ ciascuna (il $7\times 7$
+annunciato più sopra per una ResNet su ingresso $224 \times 224$), altrettanti
+gradienti, e una sola heatmap $7 \times 7$ che le riassume. Il cuore è tutto
+nelle ultime tre righe di calcolo: `alpha` è il peso $\alpha_k^c$ (la
 media spaziale del gradiente), la somma pesata delle mappe seguita dalla
-`relu` è $L^c_{\text{Grad-CAM}}$, e l'ultima riga la porta in $[0,1]$ per
-visualizzarla. Su un'immagine di cane la macchia calda cadrebbe sul muso; su
+`relu` è $L^c_{\text{Grad-CAM}}$, e la divisione la porta in $[0,1]$ per
+visualizzarla (il $10^{-8}$ evita una divisione per zero nel caso, raro ma
+possibile su una classe non predetta, in cui la `relu` azzeri tutta la mappa).
+Su un'immagine di cane la macchia calda cadrebbe sul muso; su
 un husky del dataset ingannevole, sulla neve, ed è precisamente questo che
 volevamo poter vedere.
 
@@ -591,13 +766,17 @@ volevamo poter vedere.
   reazione lungo tutta la salita: così vedono anche i contributi che
   all'arrivo, ormai satura, la rete non segnala più. La somma delle quote fa
   esattamente il salto di fiducia fra le due immagini, come un conto di cena
-  che torna al centesimo.
+  che torna al centesimo. Con un'avvertenza: il conto torna **da qualunque
+  punto si parta**, quindi che torni non dimostra che il punto di partenza sia
+  quello giusto; e di ciò che era già nero in partenza non si misura nessun
+  contributo, nemmeno se era la ragione della decisione.
 - Una mappa dice **dove**, non **che cosa** (Cynthia Rudin): sapere quale zona
   la rete guarda non dice che cosa ci trovi. E i **controlli di sanità**
   (Adebayo e colleghi, 2018) mostrano che, cancellando ciò che il modello ha
   imparato, per parecchi metodi la mappa resta quasi identica: descriveva
-  l'immagine, non la rete. Una spiegazione che sembra sensata non è per questo
-  fedele.
+  l'immagine, non la rete. I due metodi di questa sezione il test lo superano;
+  a fallirlo sono due varianti più elaborate che qui non abbiamo incontrato.
+  Una spiegazione che sembra sensata non è per questo fedele.
 - I **pesi di attenzione** sono un indizio, non una prova: pesi molto diversi
   possono portare alla stessa risposta. E guardare un solo strato non basta,
   perché una parte dell'informazione salta l'attenzione e prende la scorciatoia
@@ -607,8 +786,10 @@ volevamo poter vedere.
 - L'**interpretabilità meccanicistica** apre la scatola e prova a ricostruire i
   circuiti con cui la rete calcola, sciogliendo la **sovrapposizione** (troppi
   concetti nella stessa scatola, un neurone che si accende per cose scollegate)
-  con gli *sparse autoencoder*. Campo giovane, ma centrale per la sicurezza dei
-  modelli grandi.
+  con gli *sparse autoencoder*. La tecnica si applica ormai a modelli veri e
+  grandi; che le caselle che ne escono contengano davvero **una cosa sola**
+  resta però un giudizio dato guardandole, non una cosa dimostrata. Campo
+  giovane, ma centrale per la sicurezza dei modelli grandi.
 ```
 
 `````
@@ -626,25 +807,37 @@ volevamo poter vedere.
   localizza in modo robusto *dove* guarda la CNN.
 - Gli **Integrated Gradients** {cite}`sundararajan2017axiomatic` integrano il
   gradiente lungo il cammino dalla baseline all'input: fondati su assiomi
-  (sensibilità, invarianza all'implementazione), risolvono la saturazione e
+  (sensibilità **a input e baseline che differiscono in una sola componente**,
+  invarianza all'implementazione), risolvono la saturazione e
   soddisfano la **completezza**,
-  $\sum_i \mathrm{IG}_i = f(\mathbf{x}) - f(\mathbf{x}')$.
+  $\sum_i \mathrm{IG}_i = f(\mathbf{x}) - f(\mathbf{x}')$. La completezza vale
+  però per **qualunque** baseline: $\mathbf{x}'$ è il grado di libertà che gli
+  assiomi non vincolano, e ogni componente uguale alla baseline riceve
+  attribuzione nulla per costruzione {cite}`sturmfels2020baselines`.
 - Una mappa dice **dove**, non **che cosa** {cite}`rudin2019stop`, e i
   **controlli di sanità** {cite}`adebayo2018sanity` mostrano che per diversi
   metodi popolari la mappa cambia pochissimo randomizzando i pesi del modello:
-  descriveva l'immagine, non la rete. La plausibilità visiva di una spiegazione
+  descriveva l'immagine, non la rete. Nel paper i bocciati sono **Guided
+  BackProp** e **Guided Grad-CAM**, mentre gradiente semplice e Grad-CAM
+  passano. La plausibilità visiva di una spiegazione
   non è una prova della sua fedeltà.
 - I **pesi di attenzione** non sono di per sé una spiegazione affidabile
-  (dibattito *«Attention is not Explanation»*, 2019). E prima ancora c'è un
+  (dibattito *«Attention is not Explanation»*, {cite}`jain2019attention` e
+  {cite}`wiegreffe2019attention`, con l'avvertenza che quegli esperimenti sono
+  su un singolo strato di attenzione sopra una BiLSTM, non su un Transformer).
+  E prima ancora c'è un
   problema tecnico: comporre gli strati richiede di tener conto delle
   connessioni residuali, che è ciò che fanno **attention rollout** e
   *attention flow* {cite}`abnar2020quantifying`. Il **probing** con
-  classificatori lineari mappa invece dove sta l'informazione negli strati
-  interni.
+  classificatori lineari {cite}`alain2017understanding` mappa invece dove sta
+  l'informazione negli strati interni, con i *control task* di Hewitt e Liang
+  {cite}`hewitt2019control` a misurare che stia leggendo e non risolvendo.
 - L'**interpretabilità meccanicistica** (circuiti {cite}`olah2020zoom` e
-  feature monosemantiche via sparse autoencoder
-  {cite}`bricken2023monosemanticity`) punta a fare reverse-engineering dei
-  calcoli interni. Campo giovane, ma centrale per la sicurezza degli LLM.
+  sparse autoencoder {cite}`bricken2023monosemanticity`) punta a fare
+  reverse-engineering dei calcoli interni. La scala non è più il limite
+  {cite}`templeton2024scaling`; la **monosemanticità** delle feature estratte
+  sì, ed è tuttora contesa. Campo giovane, ma centrale per la sicurezza degli
+  LLM.
 ```
 
 `````

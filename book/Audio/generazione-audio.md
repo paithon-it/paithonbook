@@ -32,8 +32,9 @@ Immagina di disegnare un'onda sonora su carta millimetrata, puntino per
 puntino, da sinistra a destra. Ogni puntino è l'altezza dell'onda in
 quell'istante; per decidere dove metterlo guardi tutti quelli che hai già
 segnato, così la curva resta coerente. WaveNet fa esattamente questo, ma i
-puntini da mettere sono **più di sedicimila al secondo**: tanti quante volte
-al secondo si misura il suono. Disegnare un minuto di musica vuol dire
+puntini da mettere sono **sedicimila al secondo**: tanti quante sono le
+misure al secondo con cui si tratta di solito la voce (i $16\,000$ della prima
+sezione). Disegnare un minuto di musica vuol dire
 piazzarne quasi un milione, uno dopo l'altro, in fila: e siccome ognuno
 dipende dai precedenti, non si può correre avanti, bisogna aspettare che il
 puntino di prima sia pronto. Ecco perché WaveNet, pur suonando benissimo, era
@@ -45,14 +46,16 @@ pennino.
 
 `````{tab} Superiore
 
-WaveNet fattorizza la probabilità dell'onda $a = (a_1, \dots, a_T)$ in modo
+WaveNet fattorizza la probabilità dell'onda $\mathbf{x} = (x_1, \dots, x_T)$ in modo
 autoregressivo, come un modello di linguaggio sui campioni:
 
 $$
-p(a) = \prod_{t=1}^{T} p(a_t \mid a_1, \dots, a_{t-1}),
+p(\mathbf{x}) = \prod_{t=1}^{T} p(x_t \mid x_1, \dots, x_{t-1}),
 $$
 
-dove $a_t$ è il campione audio al passo $t$. Due scelte architetturali rendono
+dove $x_t$ è il campione audio al passo $t$ (è la forma d'onda campionata della
+prima sezione, dove i singoli campioni si scrivevano $x[n]$). Due scelte
+architetturali rendono
 il tutto praticabile. La prima è la **quantizzazione**: predire un valore
 reale continuo sarebbe scomodo, così l'ampiezza viene ridotta a $256$ livelli
 (un byte per campione) con la compansione **$\mu$-law** (di cui diciamo tra
@@ -65,7 +68,7 @@ profondità: pochi strati bastano a coprire migliaia di campioni, cioè
 centinaia di millisecondi di contesto, senza il costo di una convoluzione
 fitta su tutta la finestra. Resta però il limite strutturale
 dell'autoregressione *sui campioni grezzi*: la generazione richiede $T$ passi
-sequenziali, oltre sedicimila per ogni secondo a $16$ kHz. Nulla di
+sequenziali, sedicimila per ogni secondo a $16$ kHz. Nulla di
 parallelizzabile in inferenza, ed è precisamente il collo di bottiglia che la
 via dei token, qui sotto, aggira.
 
@@ -73,7 +76,12 @@ via dei token, qui sotto, aggira.
 
 La compansione $\mu$-law merita una sosta, perché è il trucco che permette a
 WaveNet di descrivere ogni puntino dell'onda scegliendolo fra appena $256$
-valori possibili. Il punto di partenza è una proprietà dell'orecchio: siamo
+valori possibili. Il nome è ostico due volte, e conviene scioglierlo subito.
+«Compansione» non è un refuso per «compressione»: è una parola composta
+(*com*primere ed es*pandere*) e dice che il segnale si comprime prima di
+misurarlo e si riespande dopo. E $\mu$ è la lettera greca «mi», che qui fa solo
+da nome a una manopola: quanto forte si comprime. Il punto di partenza è una
+proprietà dell'orecchio: siamo
 sensibili alle variazioni *relative* del suono, e un fruscio debole va
 conservato con la stessa cura di un colpo forte.
 
@@ -102,12 +110,12 @@ ampiezze piccole; in decodifica si applica la trasformazione inversa. La
 formula è
 
 $$
-F(a) = \operatorname{sign}(a)\,
-\frac{\ln\!\left(1 + \mu\,|a|\right)}{\ln\!\left(1 + \mu\right)},
+F(x) = \operatorname{sign}(x)\,
+\frac{\ln\!\left(1 + \mu\,|x|\right)}{\ln\!\left(1 + \mu\right)},
 \qquad \mu = 255,
 $$
 
-dove $a \in [-1, 1]$ è il campione normalizzato, $\operatorname{sign}$ ne
+dove $x \in [-1, 1]$ è il campione normalizzato, $\operatorname{sign}$ ne
 conserva il segno e $\mu = 255$ è il parametro di compressione (con $256$
 livelli, cioè $8$ bit). Verifichiamolo su una nota che sfuma quasi al
 silenzio, un caso con ampia gamma dinamica, dove la differenza si vede:
@@ -143,18 +151,27 @@ def snr_segmentale(x, xh, win=320):                # SNR medio su finestre di 20
     return np.mean(10*np.log10(ps[m]/pe[m]))
 
 print(f"errore massimo (mu-law):    {np.max(np.abs(x - x_mulaw)):.4f}")
+print(f"errore massimo (lineare):   {np.max(np.abs(x - x_lineare)):.4f}")
 print(f"SNR segmentale mu-law:      {snr_segmentale(x, x_mulaw):.1f} dB")
 print(f"SNR segmentale lineare:     {snr_segmentale(x, x_lineare):.1f} dB")
 ```
 
 ```text
 errore massimo (mu-law):    0.0201
+errore massimo (lineare):   0.0039
 SNR segmentale mu-law:      36.8 dB
 SNR segmentale lineare:     26.3 dB
 ```
 
-L'errore massimo di ricostruzione resta sotto il $2\%$ dell'escursione totale:
-con un solo byte per campione l'onda torna indietro quasi intatta. E il
+L'errore massimo di ricostruzione resta attorno all'$1\%$ dell'escursione
+picco-picco (il segnale vive in $[-1, 1]$, quindi l'escursione è 2 e l'errore
+$0{,}0201$): con un solo byte per campione l'onda torna indietro quasi intatta.
+Si noti però
+il rovescio, che è la parte istruttiva: sull'errore *massimo* la quantizzazione
+lineare è **cinque volte migliore** ($0{,}0039$ contro $0{,}0201$), perché la
+$\mu$-law spende i suoi gradini sulle ampiezze piccole e ne lascia di più larghi
+sui picchi. È il baratto voluto, ed è anche una lezione sulle metriche: qui una
+misura peggiora di cinque volte e il suono migliora. Il
 confronto per finestre (l'**SNR segmentale**, che misura il rapporto
 segnale/rumore mediando su spezzoni di $20$ ms e quindi pesa allo stesso modo
 i tratti forti e quelli deboli) premia nettamente la $\mu$-law: dieci decibel
@@ -183,8 +200,13 @@ millisecondi di suono? È esattamente ciò che offre un **codec neurale**: un
 autoencoder addestrato a comprimere la forma d'onda in una sequenza *corta* di
 token discreti e a ricostruirla da quelli. I token nascono dallo stesso
 principio di quantizzazione visto nella sezione precedente, portato alle sue
-conseguenze: l'audio diventa una manciata di simboli al secondo invece di
-decine di migliaia di campioni.
+conseguenze: l'audio diventa qualche centinaio di simboli al secondo invece di
+decine di migliaia di campioni. Ma il numero che conta davvero non è quello: è
+quanti **passi in fila** servono. Con il codec di MusicGen (50 frame al secondo,
+quattro token per frame, prodotti in un colpo solo) si generano 50 passi
+sequenziali per ogni secondo di musica, contro i 16.000 di WaveNet. È un fattore
+trecento sul costo della generazione, ed è tutta la ragione per cui questa via
+ha vinto.
 
 Con l'audio ridotto a token, la generazione cambia natura. Non serve più una
 rete su misura per le onde: basta un **Transformer** che li produca in
@@ -195,7 +217,7 @@ precursore: già nel 2020 **Jukebox** {cite}`dhariwal2020jukebox`, di OpenAI,
 riduceva la musica a token e li faceva scrivere in sequenza a un Transformer,
 arrivando a minuti di canzone con tanto di voce, anche se su quella durata la
 struttura del brano si sfilacciava. Ma il sistema che porta la ricetta a
-maturazione è **AudioLM** {cite}`borsos2023audiolm`, di Google, nel 2022: il
+maturazione è **AudioLM** {cite}`borsos2023audiolm`, di Google: il
 titolo stesso, *a Language Modeling Approach to Audio Generation*, dichiara il
 programma. Il suo contributo chiave non è l'idea in sé, ma capire che *un
 solo* tipo di token non basta: ne servono due, uno che tenga la struttura del
@@ -286,7 +308,9 @@ l'abbozzo grezzo del suono, il secondo corregge ciò che il primo ha sbagliato,
 il terzo affina ancora, e così via, come un pittore che parte da una macchia
 di colore e la ripassa più volte per avvicinarsi alla tinta giusta. Ottima
 idea per la qualità, ma un guaio per chi genera: a ogni istante non c'è *un*
-token da indovinare, ce ne sono quattro sovrapposti. Metterli tutti in fila,
+token da indovinare, ce ne sono quattro sovrapposti. (Quattro non è un numero
+magico: è quello scelto da MusicGen. Di più darebbe un suono più fedele e più
+roba da generare, di meno il contrario.) Metterli tutti in fila,
 uno dopo l'altro, allungherebbe la sequenza di quattro volte e renderebbe
 tutto lentissimo; produrli tutti insieme in un colpo solo, invece, ignorerebbe
 il fatto che il secondo dipende dal primo. MusicGen trova la via di mezzo:
@@ -325,16 +349,22 @@ addestramento, controllabile a parole.
 
 ## Diffusione, e uno sguardo onesto ai limiti
 
-La via dei token non è l'unica. Anche i **modelli di diffusione** (che il
-capitolo dedicato mostrerà nascere per le immagini) si applicano all'audio,
-con lo stesso schema: si corrompe il dato con rumore e si addestra una rete a
-invertire il processo. Il dato, però, raramente è l'onda grezza: di solito è
-il suo **spettrogramma** (l'immagine tempo-frequenza costruita nella sezione
-sull'elaborazione audio), che si può trattare quasi come una figura, oppure
-una rappresentazione **latente** compressa (la stessa strategia della
-diffusione latente di Stable Diffusion, trasferita al suono). È un secondo
-grande filone, parallelo a quello autoregressivo, e i due si contendono lo
-stato dell'arte a seconda del compito.
+La via dei token non è l'unica. C'è un secondo grande filone, quello dei
+**modelli di diffusione**, a cui il libro dedica un capitolo intero più avanti
+(dove il metodo nasce, per le immagini) e che qui vale la pena almeno nominare,
+perché nell'audio pesa quanto l'altro. L'idea in due righe: si prende un dato
+vero e lo si sporca di rumore un po' alla volta, finché non resta che rumore;
+poi si addestra una rete a fare il percorso inverso, a togliere rumore un passo
+per volta. Fatto questo, si può partire da rumore puro e arrivare a un dato
+nuovo, che nessuno ha mai visto. Il dato, nell'audio, raramente è l'onda grezza:
+di solito è
+il suo **spettrogramma** (l'immagine tempo-frequenza costruita nella prima
+sezione del capitolo), che si può trattare quasi come una figura, oppure il
+riassunto compatto che l'encoder di un codec produce prima di arrotondarlo in
+token, quello che nella sezione precedente abbiamo chiamato **latente** (è la
+stessa strategia della diffusione latente di Stable Diffusion, trasferita al
+suono). I due filoni corrono paralleli e si contendono lo stato dell'arte a
+seconda del compito.
 
 Detto ciò che funziona, l'onestà impone di dire ciò che ancora non funziona.
 La **coerenza a lungo termine** resta fragile: un modello sa produrre trenta
@@ -356,6 +386,39 @@ generarne un surrogato a comando tocca il sostentamento di chi quella musica
 la fa. Come sempre in questo libro, lo strumento non sceglie l'uso, ma qui,
 più che altrove, le regole del gioco sono ancora tutte da scrivere.
 
+`````{tab} Elementare
+
+```{admonition} Da ricordare
+:class: important
+- **WaveNet** {cite}`oord2016wavenet` (2016) disegna l'onda puntino per
+  puntino, come su carta millimetrata, guardando ogni volta tutti i puntini già
+  messi. Suona benissimo, ma i puntini sono più di sedicimila al secondo e vanno
+  in fila uno dopo l'altro: il difetto non è la qualità, è il ritmo del pennino.
+- Per farceli stare in un solo byte ciascuno si sposta il **righello**: tacche
+  fitte dove il suono è debole, più rade dove è forte, così anche i sussurri
+  vengono arrotondati con cura. Curiosamente il singolo errore più grosso
+  peggiora, e il suono migliora lo stesso.
+- La svolta è smettere di disegnare puntini e scrivere **token**: un codec
+  riassume il suono in poche centinaia di simboli al secondo, e una macchina che
+  indovina il simbolo successivo (la stessa che scrive testo) li produce in
+  sequenza. Poi il codec li ritrasforma in suono.
+- **AudioLM** {cite}`borsos2023audiolm` scopre che di token ne servono due tipi,
+  e in quest'ordine: prima quelli della **struttura** (dove va il pezzo), poi
+  quelli del **suono** (che timbro ha). Come un musicista che abbozza prima e
+  riempie dopo.
+- **MusicGen** {cite}`copet2023simple` compone a partire da una **descrizione a
+  parole**. A ogni istante il codec produce quattro token sovrapposti, e
+  MusicGen li sfalsa di un passo l'uno dall'altro, come le voci di un canone.
+- Ciò che ancora non funziona: i brani **lunghi** perdono il filo, restano
+  **difetti** che un orecchio allenato sente, e soprattutto c'è la questione di
+  **chi possiede** la musica su cui questi modelli hanno imparato, e lo stile
+  degli artisti che imitano.
+```
+
+`````
+
+`````{tab} Superiore
+
 ```{admonition} Da ricordare
 :class: important
 - **WaveNet** {cite}`oord2016wavenet` (2016) genera l'onda **campione per
@@ -366,7 +429,8 @@ più che altrove, le regole del gioco sono ancora tutte da scrivere.
 - La svolta è generare **token** invece di campioni: un **codec neurale**
   comprime l'audio in una sequenza corta di simboli, e un **Transformer** li
   produce come un LLM produce parole (poi il decoder del codec li ritrasforma
-  in suono).
+  in suono). Il guadagno vero è nei **passi sequenziali**: 50 al secondo con il
+  codec di MusicGen contro i 16.000 di WaveNet, un fattore ~300.
 - **AudioLM** {cite}`borsos2023audiolm` usa due livelli di token in cascata:
   **semantici** (struttura a lungo termine, da modelli auto-supervisionati) e
   **acustici** (dettaglio del suono, dal codec), per avere insieme **coerenza** e
@@ -381,3 +445,5 @@ più che altrove, le regole del gioco sono ancora tutte da scrivere.
   questioni di **copyright e consenso** sulla musica di addestramento e sullo
   stile degli artisti.
 ```
+
+`````

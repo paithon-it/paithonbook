@@ -25,9 +25,14 @@ la frase è **ambigua**, e solo il contesto scioglie il dubbio.
 E il contesto cambia tutto. La parola "campo" vuol dire una cosa in "campo di
 grano", un'altra in "campo magnetico", un'altra ancora in "campo da calcio".
 Poi ci sono i **sinonimi**: "auto", "macchina" e "vettura" indicano lo stesso
-oggetto, e una macchina deve capirlo. E c'è l'**ironia**: se dico "che bella
-giornata" mentre diluvia, intendo l'esatto contrario. Nessuna di queste cose è
-scritta nelle parole: sta tra le righe, ed è lì che le macchine si perdono.
+oggetto, e una macchina deve capirlo. Ci sono le parole piccole che da sole non
+vogliono dire niente e vanno a pescare il significato in quello che è già
+stato detto: in "Marco ha preso il libro e l'ha letto", quel "l" è il libro, ma
+per saperlo bisogna ricordarsi la prima metà della frase. Questo rimando
+all'indietro ha un nome, l'**anafora**, e tornerà spesso nel capitolo. E c'è
+l'**ironia**: se dico "che bella giornata" mentre diluvia, intendo l'esatto
+contrario. Nessuna di queste cose è scritta nelle parole: sta tra le righe, ed
+è lì che le macchine si perdono.
 
 `````
 
@@ -59,7 +64,8 @@ $P(\text{significato} \mid \text{testo}, \text{contesto})$.
 Il NLP non è un problema unico ma una famiglia di compiti. Quattro tornano di
 continuo, e attraversano tutto il resto del capitolo.
 
-- **Classificazione e sentiment analysis**: assegnare un'etichetta a un testo.
+- **Classificazione** e analisi del sentimento (*sentiment analysis*, che è il
+  nome inglese con cui la si trova ovunque): assegnare un'etichetta a un testo.
   È spam o no? Questa recensione è positiva o negativa? Questa email va allo
   sportello "reclami" o "fatturazione"?
 - **Traduzione automatica** (*machine translation*): trasformare una frase da
@@ -72,8 +78,12 @@ continuo, e attraversano tutto il resto del capitolo.
 - **Question answering**: rispondere a una domanda posta in linguaggio
   naturale, estraendo la risposta da un testo o generandola.
 
-Sono compiti diversi, ma la storia recente li ha avvicinati fino quasi a
-unificarli.
+Sono compiti diversi, e per decenni si sono risolti con programmi diversi: uno
+per lo spam, uno per la traduzione, uno per le entità. La storia recente li ha
+avvicinati fino quasi a unificarli, e in un senso molto preciso: oggi si
+scrivono tutti e quattro come «continua questo testo», si danno in pasto a un
+unico modello e si cambia soltanto la richiesta che gli si fa. Il come, e a
+quale prezzo, è il filo che percorre il capitolo fino all'ultima sezione.
 
 ## Una parabola storica: dalle regole ai Transformer
 
@@ -97,10 +107,15 @@ Poi arrivò l'idea di **contare**. Invece di dire alla macchina *come* funziona
 la lingua, le si dà da leggere montagne di testo e la si lascia notare le
 regolarità: dopo "buon" viene spesso "giorno", raramente "sasso". Con la
 diffusione di internet il testo da leggere è diventato praticamente infinito,
-e i modelli hanno imparato a **rappresentare le parole come punti in uno
-spazio**, mettendo vicine quelle che compaiono in contesti simili: così "re" e
-"regina" finiscono vicini. L'ultimo salto, nel 2017, è stato un modello capace
-di guardare l'intera frase in una volta e pesare quali parole contano davvero.
+e i modelli hanno imparato a **rappresentare ogni parola con una manciata di
+numeri**. Sono coordinate, come la latitudine e la longitudine di un posto
+sulla carta: ogni parola diventa un punto su una mappa, e la mappa la disegna
+il programma da solo, leggendo, mettendo vicine le parole che compaiono negli
+stessi contesti. Così "re" e "regina" finiscono uno accanto all'altra. L'ultimo
+salto, nel 2017, è stato un modello capace di guardare l'intera frase in una
+volta e di decidere, parola per parola, quali delle altre contano davvero per
+capirla: si chiama **Transformer**, e a quel nome è dedicato un capitolo
+apposta.
 
 `````
 
@@ -131,19 +146,29 @@ inserita a mano** in favore di rappresentazioni apprese direttamente dal testo.
 
 ## Come è organizzato il capitolo
 
-Nelle sezioni seguenti seguiremo questa stessa parabola, ma da vicino. Si
-parte dalla **cassetta degli attrezzi classica** (espressioni regolari,
-normalizzazione, distanza di edit) poi il testo diventa numeri: dalla
-*tokenizzazione* al conteggio *bag-of-words*, fino agli *embedding* densi. Con
-i numeri in mano affronteremo i compiti, uno alla volta: **classificare** un
-testo (da Naive Bayes alla regressione logistica), **scommettere sulla parola
-successiva** con i modelli *n-gram*, **ricordare** con le reti ricorrenti,
-**tradurre** con encoder–decoder e attenzione, **etichettare** parole ed
-entità (POS tagging e NER, con il classico algoritmo di Viterbi), scoprire la
-**struttura della frase** con il parsing e, per chiudere il cerchio aperto da
-ELIZA nell'Introduzione, **parlare con le macchine**: dialogo e chatbot.
-Ovunque, esempi in Python su `scikit-learn` e PyTorch, tenendo l'italiano come
-lingua di lavoro.
+Nelle sezioni seguenti seguiremo questa stessa parabola, ma da vicino. Ogni
+tappa ha un nome tecnico, e qui lo mettiamo fra parentesi solo perché lo si
+riconosca quando arriverà: quello che conta è il lavoro, scritto in italiano.
+
+Si parte dalla **cassetta degli attrezzi classica**: cercare in un testo tutti i
+pezzi che hanno una certa forma (le *espressioni regolari*), ripulirlo perché
+due scritture della stessa parola non contino come due parole diverse (la
+*normalizzazione*), misurare quanto due parole si somigliano (la *distanza di
+edit*, quella che sta dietro al correttore del telefono). Poi il testo diventa
+numeri: prima lo si taglia in pezzi (la *tokenizzazione*), poi si contano i
+pezzi (il *bag-of-words*, il "sacchetto di parole"), infine ogni parola riceve
+le sue coordinate sulla mappa di cui si diceva sopra (gli *embedding*).
+
+Con i numeri in mano affrontiamo i compiti, uno alla volta: **dare
+un'etichetta a un testo intero** (da Naive Bayes alla regressione logistica),
+**scommettere su quale parola verrà** (i modelli *n-gram*), **ricordare** ciò
+che si è letto prima (le reti ricorrenti), **tradurre** (l'architettura
+encoder–decoder e l'attenzione), **dire il mestiere di ogni singola parola** e
+riconoscere nomi di persona, di luogo e date (POS tagging e NER, con il
+classico algoritmo di Viterbi), **scoprire com'è costruita una frase** (il
+parsing) e, per chiudere il cerchio aperto da ELIZA nell'Introduzione,
+**parlare con le macchine**: dialogo e chatbot. Ovunque, esempi in Python su
+`scikit-learn` e PyTorch, tenendo l'italiano come lingua di lavoro.
 
 L'ultima tappa, i **Transformer**, merita un capitolo tutto suo: è
 l'architettura che ha ridefinito non solo il NLP ma buona parte dell'AI

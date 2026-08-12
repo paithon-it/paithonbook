@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  paithon book — figura: matrice di confusione 2x2.
+  paithon book, figura: matrice di confusione 2x2.
   Colonne = valore reale (Positivo/Negativo), righe = predizione del
   modello (Positivo/Negativo). Diagonale corretta (VP, VN) con bordo teal;
   errori (FP, FN) con bordo terracotta. Celle cream, testo warm-black e

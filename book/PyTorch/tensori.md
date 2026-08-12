@@ -81,7 +81,7 @@ M.dtype        # torch.float32
 
 torch.zeros(2, 3)        # matrice 2x3 di zeri
 torch.ones(5)            # vettore di uno
-torch.randn(3, 3)        # numeri casuali dalla normale standard
+torch.randn(3, 3)        # numeri a caso, quasi tutti fra -2 e 2, centrati sullo zero
 torch.arange(0, 10, 2)   # tensor([0, 2, 4, 6, 8])
 ```
 
@@ -124,8 +124,17 @@ vettore $(4,)$ produce una $(3, 4)$. Il prodotto matriciale è `@` (ovvero
 `a @ b` tra due vettori è direttamente il prodotto scalare, senza bisogno di
 reshape. A proposito di `reshape`: restituisce una **vista** (stessa memoria,
 solo un modo diverso di leggerla) quando la disposizione dei dati lo permette,
-e altrimenti copia in silenzio; `t.view(...)` la vista la pretende, e su un
-tensore non contiguo solleva un errore invece di copiare. Molte operazioni
+e altrimenti copia in silenzio; `t.view(...)` la vista la pretende, e solleva
+un errore invece di copiare quando non può darla. La condizione non è la
+contiguità, come si legge spesso: è che la nuova forma sia compatibile con gli
+**stride** esistenti, cioè con i passi con cui si cammina lungo ciascun asse.
+Spezzare o fondere assi già contigui fra loro riesce anche su un tensore non
+contiguo: se `x` è $(8,4)$ e `y = x[::2]` (quindi $(4,4)$ con stride $(8,1)$,
+non contigua), `y.view(4, 2, 2)` passa e condivide la memoria, mentre
+`y.view(16)` solleva. Il messaggio d'errore lo dice esattamente, e vale la
+pena leggerlo alla lettera: *view size is not compatible with input tensor's
+size and stride (at least one dimension spans across two contiguous
+subspaces). Use `.reshape(...)` instead.* Molte operazioni
 esistono in variante *in-place* col suffisso underscore (`t.add_(1)`,
 `t.zero_()`): risparmiano memoria ma, come vedremo, vanno evitate sui tensori
 tracciati da autograd.
@@ -193,11 +202,17 @@ valori memorizzati, ed è per questo che il gradiente costa all'incirca quanto
 una seconda passata e non quanto milioni di derivate separate.
 ```
 
-La memoria implicita in {numref}`fig-autograd-due-passate` spiega un
-comportamento di PyTorch che altrimenti sorprende: perché un forward pass
-consumi RAM crescente con la profondità, e perché `torch.no_grad()` la
-liberi. Se non chiederete mai il gradiente, quei valori intermedi non serve
-tenerli.
+Vale la pena fermarsi sul «ricorda» della {numref}`fig-autograd-due-passate`,
+perché spiega un comportamento di PyTorch che altrimenti sorprende. L'andata
+(la **passata in avanti**, che in inglese si chiama *forward pass*: i dati
+entrano da una parte, attraversano gli strati e escono dall'altra) non si
+limita a calcolare il risultato: appunta anche tutti i valori intermedi, perché
+al ritorno serviranno. Quindi più strati ha la rete, cioè più è **profonda**,
+più appunti restano in memoria durante l'andata. E se il gradiente non lo
+chiederemo mai, quegli appunti sono peso morto: dirlo in anticipo si può, ed è
+ciò che fa il comando `torch.no_grad()`, che li fa **non prendere affatto**.
+Attenzione alla sfumatura, perché è il punto in cui si sbaglia: `no_grad()` non
+libera memoria già occupata, impedisce che venga occupata.
 
 ```python
 x = torch.tensor(3.0, requires_grad=True)   # "osserva questo tensore"
@@ -256,6 +271,29 @@ possono invalidare i valori salvati per la passata a ritroso.
 
 `````
 
+Tensori e autograd sono i due oggetti su cui poggia tutto il resto del
+capitolo: dalla prossima sezione non si farà che comporli.
+
+`````{tab} Elementare
+```{admonition} Da ricordare
+:class: important
+- Un **tensore** è una scatola di numeri con un certo numero di assi: un
+  numero solo, una fila, una tabella, una pila di tabelle. Il numero di assi si
+  chiama **rank**, le lunghezze lungo gli assi sono la **shape**. Una foto a
+  colori è una pila di tre tabelle, una per colore.
+- Ogni riga di conti viene eseguita **subito**, con i numeri già dentro, e le
+  regole sono quelle di NumPy, la libreria già vista nel capitolo su Python:
+  sommare un numero a tutta una fila si scrive una volta sola.
+- Ogni tensore vive su un **dispositivo**, la CPU o la scheda grafica: i conti
+  avvengono dove stanno i numeri, e il codice non cambia, cambia solo la
+  velocità.
+- **Autograd** è il registratore: `requires_grad=True` lo accende su un
+  tensore, `.backward()` riavvolge il nastro e deposita la derivata. Nessuna
+  formula scritta a mano.
+```
+`````
+
+`````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
 - Un **tensore** generalizza scalari, vettori e matrici a un numero qualunque
@@ -268,4 +306,8 @@ possono invalidare i valori salvati per la passata a ritroso.
 - **Autograd** calcola i gradienti da solo: `requires_grad=True` accende il
   registratore, `.backward()` riavvolge il nastro; è la backpropagation, cioè
   la regola della catena applicata a ritroso sul grafo dei calcoli.
+- `t.view(...)` pretende una vista e passa solo se la nuova forma è compatibile
+  con gli **stride**, non solo sui tensori contigui; `reshape` copia quando non
+  può fare altrimenti.
 ```
+`````

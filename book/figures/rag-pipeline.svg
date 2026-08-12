@@ -38,9 +38,9 @@
   <!-- passaggi recuperati -->
   <text x="550" y="40" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#1A1A1A">passaggi recuperati (top-k)</text>
   <rect x="452" y="50" width="196" height="32" rx="8" fill="#C9A961" fill-opacity="0.15" stroke="#C9A961" stroke-width="2"/>
-  <text x="462" y="70" font-family="Inter, sans-serif" font-size="10.5" fill="#1A1A1A">[1] &#171;&#8230;salta sul muro&#8230;&#187; &#8212; 0,99</text>
+  <text x="462" y="70" font-family="Inter, sans-serif" font-size="10.5" fill="#1A1A1A">[1] &#171;&#8230;salta sul muro&#8230;&#187; &#183; 0,99</text>
   <rect x="452" y="90" width="196" height="32" rx="8" fill="#C9A961" fill-opacity="0.15" stroke="#C9A961" stroke-width="2"/>
-  <text x="462" y="110" font-family="Inter, sans-serif" font-size="10.5" fill="#1A1A1A">[2] &#171;Il gatto dorme&#8230;&#187; &#8212; 0,78</text>
+  <text x="462" y="110" font-family="Inter, sans-serif" font-size="10.5" fill="#1A1A1A">[2] &#171;Il gatto dorme&#8230;&#187; &#183; 0,78</text>
 
   <!-- passaggi -> prompt (gomito) -->
   <path d="M 550 126 V 300 H 232 V 314" fill="none" stroke="#1A1A1A" stroke-width="2" marker-end="url(#freccia-rag)"/>
