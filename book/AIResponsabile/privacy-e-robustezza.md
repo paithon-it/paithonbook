@@ -753,6 +753,23 @@ questa taglia basti a scavallare il confine. Il fenomeno è reale e non ha
 bisogno di essere gonfiato: che quattro casi su dieci si ribaltino con una
 spinta invisibile è già una notizia.
 
+Il codice prova un valore solo di $\rho$, quello scelto in partenza. La
+{numref}`fig-attacco-epsilon` rifà lo stesso esperimento su tutta la scala, e
+mostra la cosa che il prima e il dopo non possono mostrare: il punto preciso in
+cui la risposta si ribalta.
+
+```{figure} ../figures/attacco-epsilon.svg
+:name: fig-attacco-epsilon
+:alt: "Tre pannelli sovrapposti. In alto trenta barre verde-azzurre, i valori delle trenta caratteristiche dell'esempio scelto. In mezzo trenta trattini terracotta, tutti della stessa ampiezza e disegnati alla stessa scala del pannello sopra, dove si vedono minuscoli: sono le spinte che l'attacco somma a ciascuna caratteristica. In basso un grafico della probabilità della classe giusta al crescere di rho: parte da 0,890, scende e attraversa la soglia di 0,5 a rho uguale a 0,089, segnata da una linea tratteggiata terracotta; a rho uguale a 0,15 vale 0,190 e la classificazione è ribaltata."
+:width: 100%
+
+Quanto poco basta. Ognuna delle trenta caratteristiche dell'esempio (in alto)
+riceve una spinta della stessa ampiezza $\rho$ (in mezzo, disegnata alla stessa
+scala: è minuscola), e la probabilità della risposta giusta scende finché passa
+sotto la metà. Succede a $\rho = 0{,}089$: da lì in poi il modello dà la
+risposta sbagliata.
+```
+
 `````{tab} Elementare
 
 Perché spostamenti così piccoli bastano? Perché sono tanti e tutti d'accordo.

@@ -25,6 +25,14 @@ toglierli di mezzo prima di rileggere:
   ricordare  riquadri «Da ricordare» FUORI dalle schede, mentre
              `aggiornamenti.md` promette al lettore che sono sui due livelli
              (solo elenco: fuori dalle schede non e' di per se' un difetto)
+  clip       scene Manim il cui sorgente e' piu' recente della GIF pubblicata,
+             e con un diff che il render puo' vedere: la clip online non e'
+             quella che il sorgente descrive
+  palette    colori fuori palette nelle figure scritte a mano (quelle generate
+             le rifiuta gia' `scrivi()` in paithon_svg.py)
+  ambiente   scene Manim che l'ambiente di oggi non saprebbe piu' rendere
+  lineette   i due travestimenti della lineetta che `CLAUDE.md` vieta: la
+             doppia `--` e il trattino singolo spaziato
   avanti     rimandi in avanti ("vedremo", "prossima sezione"), solo elenco,
              la verifica resta umana
 
@@ -364,6 +372,29 @@ def main():
                     problemi["capitoli oltre il tetto di 10 clip"].append(
                         f"{cartella}  ->  {len(clip)}: {', '.join(clip)}")
 
+        # La tabella in fondo ad `animazioni/README.md` elenca le clip che
+        # esistono, ed e' scritta a mano tre paragrafi sotto la riga che spiega
+        # perche' gli elenchi scritti a mano invecchiano. Infatti e' invecchiata
+        # anche lei: a fine campagna dichiarava diciassette clip su
+        # trentaquattro generatori. Non la si genera (a un umano che apre il
+        # README serve leggerla li'), la si verifica.
+        readme = QUI / "animazioni" / "README.md"
+        if readme.is_file():
+            elencati = set(re.findall(r"^\|\s*`([\w./-]+\.py)`",
+                                      readme.read_text(encoding="utf-8"), re.M))
+            for gen in sorted(list((QUI / "animazioni").glob("*.py"))
+                              + list((QUI / "animazioni/svg").glob("*.py"))):
+                nome = gen.name if gen.parent.name == "animazioni" \
+                    else f"svg/{gen.name}"
+                if gen.stem == "genera":
+                    continue
+                # Un generatore la cui figura non e' richiamata da nessuna
+                # pagina non e' una clip del libro: lo dice gia' l'asse
+                # `figure`, e ripeterlo qui direbbe due volte la stessa cosa.
+                prodotta = (LIBRO / "figures" / f"{gen.stem}.svg").is_file() or \
+                           (LIBRO / "figures" / f"{gen.stem}.gif").is_file()
+                if prodotta and nome not in elencati:
+                    problemi["clip fuori dalla tabella del README"].append(nome)
 
     if "palette" in attivi:
         # Il motore delle figure generate verifica la palette e rifiuta il file
@@ -575,6 +606,7 @@ def main():
               "numero scritto a mano nella scheda",
               "schede contigue, che la build fonde",
               "capitoli oltre il tetto di 10 clip",
+              "clip fuori dalla tabella del README",
               "capitoli senza figure animate",
               "lineette scritte in ASCII (-- oppure - )",
               "«Da ricordare» fuori dalle schede",

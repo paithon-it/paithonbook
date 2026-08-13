@@ -531,6 +531,24 @@ Thought: Il calcolo dice 9: ho tutto per rispondere.
 Answer: 'Attention Is All You Need' è del 2017: 9 anni fa nel 2026.
 ```
 
+Quella traccia, guardata dall'alto, è un cerchio che gira tre volte
+({numref}`fig-ciclo-agente`). I tre passi sono sempre gli stessi; quello che
+cambia a ogni giro è il contesto, cioè ciò che il modello si ritrova davanti
+prima di scegliere la mossa successiva, e che si allunga di un blocco ogni
+volta: la chiamata fatta e quello che ha risposto.
+
+```{figure} ../figures/ciclo-agente.svg
+:name: fig-ciclo-agente
+:alt: "A sinistra il ciclo di un agente: tre caselle collegate in cerchio, pensa (Thought), agisce (Action) e osserva (Observation). L'evidenziazione gira di casella in casella: il modello pensa, chiama uno strumento, il sistema lo esegue e il risultato torna indietro. Al centro un contagiri arriva a giro 3 di 5. Al terzo giro il modello non chiama nessuno strumento: un ramo scende fuori dal cerchio verso la risposta finale, cioè che il paper è del 2017 e sono 9 anni fa nel 2026. A destra la colonna del contesto si allunga di un blocco a ogni giro: prima la sola domanda, poi la ricerca con la sua osservazione 2017, poi il calcolo con la sua osservazione 9, e una barra verticale accanto cresce insieme a loro fino a tre blocchi."
+:width: 100%
+
+Lo stesso giro, tre volte. A sinistra i passi che si ripetono; a destra quello
+che il modello si rilegge prima di decidere, più lungo di un blocco a ogni
+giro. Al terzo giro non serve nessuno strumento e l'agente esce dal ciclo con
+la risposta: è uno dei due modi in cui un ciclo finisce, l'altro è il limite di
+passi.
+```
+
 Il modello finto non sapeva l'anno (l'ha cercato) e non ha fatto la
 sottrazione a mente (l'ha delegata): esattamente il comportamento che vogliamo
 da un agente. Sostituite `llm_finto` con un vero LLM a cui passate, a ogni

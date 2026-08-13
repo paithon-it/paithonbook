@@ -225,6 +225,25 @@ instabile in cui il bersaglio si muove insieme alla stima.
 
 `````
 
+Sono due modi di rompere la stessa cosa, una correlazione nel tempo: la memoria
+di replay la spezza fra un'esperienza e la successiva, pescando a caso invece
+che nell'ordine in cui le cose sono state vissute; la rete-target la spezza fra
+la stima e il bersaglio che la guida, tenendo fermo il secondo mentre la prima
+si muove ({numref}`fig-dqn-stabilita`).
+
+```{figure} ../figures/dqn-stabilita.svg
+:name: fig-dqn-stabilita
+:alt: "Animazione: a sinistra un buffer di ventiquattro celle disposte in ordine di arrivo, di cui a ogni passo se ne accendono quattro sparse, mai consecutive, che sono il minibatch pescato a caso. A destra il valore Q di una stessa coppia stato-azione: la curva della rete che impara sale a ogni passo, mentre la scaletta della copia congelata resta ferma per tre passi e poi scatta a raggiungerla."
+:width: 95%
+
+I due accorgimenti al lavoro sullo stesso addestramento. A sinistra la memoria
+di replay: le esperienze entrano in ordine, il minibatch le pesca a caso. A
+destra lo stesso valore $Q$ calcolato dalla rete che impara, che si muove a
+ogni passo, e dalla copia congelata, che resta ferma per $C$ passi (qui tre) e
+poi scatta a raggiungerla. La figura è in scala ridotta: nel testo le celle
+sono un milione e il minibatch ne prende 32.
+```
+
 La rete è una CNN classica; in PyTorch la si costruisce in poche righe. Un paio
 di numeri, prima di leggerla: i fotogrammi arrivano ridotti a $84\times84$
 punti in scala di grigi e impilati a quattro a quattro, perché da una sola

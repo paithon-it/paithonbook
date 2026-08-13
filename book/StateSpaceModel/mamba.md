@@ -131,14 +131,37 @@ o nell'altro dà lo stesso risultato. È la seconda a essere decisiva, perché
 autorizza a fondere i passi a coppie, poi a gruppi di quattro, di otto, invece
 di percorrerli in fila da sinistra a destra. Questo è il *parallel scan* (o
 *associative scan*: «scan» è la passata che percorre la sequenza accumulando i
-risultati parziali), un algoritmo classico che risale a Blelloch: svolge
-l'intera ricorrenza facendo lo stesso numero di operazioni, dell'ordine di $L$,
-ma in un numero di **turni** molto minore, che cresce come il logaritmo di $L$
-(raddoppiando la lunghezza si aggiunge un turno soltanto: da un migliaio di
-passi in fila si scende a una decina di turni). Ogni turno tiene occupati
+risultati parziali), e ne esistono due versioni che vale la pena distinguere,
+perché più avanti ne scriveremo una sola. Quella **a raddoppio** compone a ogni
+turno le posizioni distanti prima 1, poi 2, poi 4: arriva in un numero di turni
+pari al logaritmo di $L$, facendo però qualche operazione in più di quante ne
+servirebbero (dell'ordine di $L\log L$ invece di $L$). Quella di **Blelloch**,
+con una passata che sale e una che scende, di operazioni ne fa dell'ordine di
+$L$, come la versione in fila. Quel che conta qui vale per tutte e due: il
+numero di **turni** crolla da $L$ al suo logaritmo (raddoppiando la lunghezza
+se ne aggiunge uno soltanto, e da un migliaio di passi in fila si scende a una
+decina di turni). È il compromesso tipico del calcolo parallelo, dove si
+accettano più conti in cambio di meno attesa. Ogni turno tiene occupati
 migliaia di core della GPU: quelli generici, però, non le sue unità dedicate a
 moltiplicare matrici, e in fondo alla pagina vedremo che è un problema. La
 convoluzione se n'è andata, ma il parallelismo resta.
+
+La {numref}`fig-scan-parallelo` mette le due strade sullo stesso orologio.
+
+```{figure} ../figures/scan-parallelo.svg
+:name: fig-scan-parallelo
+:alt: Due schemi affiancati della stessa ricorrenza su dodici passi, con lo stesso asse verticale dei turni, numerati da 0 a 11. A sinistra, in fila: una scala di pallini pieni scende in diagonale, una posizione per turno, e per arrivare in fondo ne servono undici. A destra, a raddoppio: quattro righe di frecce in cui la distanza fra le posizioni composte raddoppia (1, 2, 4, 8), i pallini pieni passano da 2 a 4 a 8 a 12, e dopo il quarto turno tutte le righe sotto restano vuote perché non c'è più niente da fare.
+:width: 90%
+
+Le due strade per svolgere la stessa ricorrenza su dodici passi, messe sullo
+stesso orologio: in verticale i turni, in orizzontale le posizioni della
+sequenza. A sinistra si va in fila, una composizione per turno, e il risultato
+definitivo (il pallino pieno) avanza di una posizione alla volta: servono
+undici turni. A destra si compongono le posizioni distanti prima 1, poi 2, poi
+4, poi 8, e siccome a ogni turno raddoppia il tratto di sequenza già riassunto
+dopo quattro turni ogni posizione ha il suo risultato. Le due strade danno gli
+stessi numeri; cambia solo quanto c'è da aspettare.
+```
 
 Non basta però la matematica: Mamba deve fare i conti con la **gerarchia di
 memoria** della scheda grafica, ed è qui che sta la parte «hardware-aware».

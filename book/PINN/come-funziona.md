@@ -516,6 +516,26 @@ termine sulle condizioni iniziali, che si esaurisce entro le prime mille
 epoche; il termine di fisica, quello che dovrebbe fare il lavoro, scende in
 tutto di un ordine e mezzo.
 
+```{figure} ../figures/pinn-residuo.svg
+:name: fig-pinn-residuo
+:alt: "Due pannelli sovrapposti, con il tempo in ascissa. In alto la curva della rete, che nel corso dell'addestramento passa da quasi piatta a sovrapposta all'oscillazione smorzata della soluzione esatta, con lo scarto massimo che cala da 1,009 a 0,154. In basso le barre del residuo nei punti di collocazione: all'inizio salgono tutte fino a un tratteggio orizzontale, alla fine sono briciole, e la media dei quadrati passa da 2,6 per dieci alla meno uno a 7,8 per dieci alla meno tre."
+:width: 100%
+
+Lo stesso addestramento guardato dai due lati che contano: mentre la curva
+della rete si accosta alla soluzione esatta (in alto), il residuo nei punti di
+collocazione si abbassa fino a diventare una briciola (in basso). Le
+istantanee sono epoche vere dell'addestramento di questa pagina, con il
+seme 42.
+```
+
+In {numref}`fig-pinn-residuo` le due misure si guardano insieme,
+dall'inizializzazione alla trentamillesima epoca: in alto la curva della rete
+che si accosta alla soluzione esatta, in basso il residuo nei punti di
+collocazione che si abbassa. L'ordine e mezzo di cui sopra si legge lì, nel
+numero in basso a destra, che passa da $2{,}6 \cdot 10^{-1}$ a
+$7{,}8 \cdot 10^{-3}$; e si vede anche dove resta lo scarto, cioè nella coda,
+dove la curva della rete si appiattisce mentre quella vera oscilla ancora.
+
 Quello scarto fra i due numeri, il residuo piccolo e l'errore grande, non è un
 dettaglio di rifinitura. Vale la pena vedere fin dove arriva.
 

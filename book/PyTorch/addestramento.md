@@ -55,6 +55,20 @@ for X_batch, y_batch in dataloader:
     optimizer.step()                    # 5. aggiorna i pesi
 ```
 
+Quelle cinque righe dicono l'ordine, non il movimento:
+{numref}`fig-ciclo-addestramento` le fa girare per tre mini-batch e mostra, a
+ogni passo, che cosa cambia dentro il modello.
+
+```{figure} ../figures/ciclo-addestramento.svg
+:name: fig-ciclo-addestramento
+:alt: "I cinque passi del ciclo di addestramento in fila, con una freccia che dal quinto torna al primo. Sotto, lo stato del modello: le barre dei gradienti di sei pesi e la posizione di quei sei pesi rispetto al valore di partenza. Il quarto passo, backward, riempie le barre dei gradienti; il quinto, step, sposta i pesi; le barre restano piene fino allo zero_grad del giro successivo, che le riporta a zero. A destra la loss dei tre giri, che scende: 2,35 poi 2,29 poi 2,25."
+:width: 96%
+
+Tre giri dello stesso ciclo: i gradienti compaiono quando `backward()` li
+calcola, restano finché lo `zero_grad()` del giro dopo non li cancella, e nel
+mezzo `step()` sposta i pesi. La loss, intanto, scende a ogni giro.
+```
+
 `````{tab} Elementare
 È il metodo con cui si impara con le flashcard, le carte per memorizzare.
 Guardi la domanda e provi a rispondere (passo 1, la previsione). Giri la carta

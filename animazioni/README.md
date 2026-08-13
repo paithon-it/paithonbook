@@ -114,21 +114,41 @@ una volta invece di non deciderlo mai.
 
 | Sorgente | Figura nel libro | Sezione |
 |---|---|---|
-| `svg/percettrone-impara.py` | `fig-percettrone-impara` | `RetiNeurali/percettrone.md` |
-| `svg/xor-non-separabile.py` | `fig-xor-non-separabile` | `RetiNeurali/percettrone.md` |
+| `svg/apertura-flusso.py` | `fig-apertura-flusso` | `VisioneArtificiale/geometria-e-profondita.md` |
+| `svg/attacco-epsilon.py` | `fig-attacco-epsilon` | `AIResponsabile/privacy-e-robustezza.md` |
 | `svg/autovettori.py` | `fig-autovettori` | `Matematica/algebra-lineare.md` |
-| `svg/gradiente-svanisce.py` | `fig-gradiente-svanisce` | `DeepLearning/ottimizzazione-regolarizzazione.md` |
+| `svg/bpe-fusioni.py` | `fig-bpe-fusioni` | `NaturalLanguageProcessing/tokenizzatori.md` |
+| `svg/ciclo-addestramento.py` | `fig-ciclo-addestramento` | `PyTorch/addestramento.md` |
+| `svg/ciclo-agente.py` | `fig-ciclo-agente` | `Agenti/agenti-e-tool-use.md` |
+| `svg/ctc-collassa.py` | `fig-ctc-allineamento` | `SpeechRecognition/modelli-asr.md` |
+| `svg/deriva-ks.py` | `fig-deriva-ks` | `MLOps/monitoring-e-drift.md` |
+| `svg/diffusione-avanti.py` | `fig-diffusione-avanti` | `ModelliDiffusione/come-funziona.md` |
+| `svg/dqn-stabilita.py` | `fig-dqn-stabilita` | `DeepReinforcementLearning/dqn.md` |
 | `svg/dropout.py` | `fig-dropout` | `DeepLearning/ottimizzazione-regolarizzazione.md` |
+| `svg/finestra-spettrogramma.py` | `fig-finestra-spettrogramma` | `Audio/dal-suono-alle-feature.md` |
+| `svg/flash-attention-blocchi.py` | `fig-flash-attention-blocchi` | `GPU/flash-attention.md` |
+| `svg/formiche-feromone.py` | `fig-formiche-feromone` | `SistemiMultiAgente/sciami-e-simulazioni.md` |
+| `svg/gan-inseguimento.py` | `fig-gan-inseguimento` | `GAN/come-funziona.md` |
+| `svg/gradiente-svanisce.py` | `fig-gradiente-svanisce` | `DeepLearning/ottimizzazione-regolarizzazione.md` |
+| `svg/gradienti-integrati.py` | `fig-gradienti-integrati` | `Interpretabilita/attribuzione-e-meccanicistica.md` |
+| `svg/hopfield-ricorda.py` | `fig-hopfield-ricorda` | `ModelliEnergia/memoria-associativa.md` |
+| `svg/kmeans-converge.py` | `fig-kmeans-converge` | `MachineLearning/riduzione-clustering.md` |
 | `svg/learning-rate.py` | `fig-learning-rate` | `DeepLearning/ottimizzazione-regolarizzazione.md` |
-| `limite-centrale.py` | `fig-limite-centrale` | `Matematica/probabilita-statistica.md` |
+| `svg/origine-mobile.py` | `fig-walk-forward-validazione` | `SerieTemporali/validazione-e-feature.md` |
+| `svg/percettrone-impara.py` | `fig-percettrone-impara` | `RetiNeurali/percettrone.md` |
+| `svg/pinn-residuo.py` | `fig-pinn-residuo` | `PINN/come-funziona.md` |
+| `svg/scan-parallelo.py` | `fig-scan-parallelo` | `StateSpaceModel/mamba.md` |
+| `svg/sogno-diverge.py` | `fig-sogno-diverge` | `WorldModels/mondi-in-miniatura.md` |
+| `svg/xor-non-separabile.py` | `fig-xor-non-separabile` | `RetiNeurali/percettrone.md` |
+| `attenzione-mascherata.py` | `fig-attenzione-mascherata` | `Transformers/architettura.md` |
 | `backpropagation.py` | `fig-backpropagation-animata` | `RetiNeurali/backpropagation.md` |
 | `convoluzione.py` | `fig-convoluzione-animata` | `DeepLearning/reti-convoluzionali.md` |
-| `attenzione-mascherata.py` | `fig-attenzione-mascherata` | `Transformers/architettura.md` |
-| `generazione-autoregressiva.py` | `fig-generazione-autoregressiva` | `Transformers/llm.md` |
-| `stato-ricorrente.py` | `fig-stato-ricorrente` | `AttenzioneLineare/dalla-softmax-alla-ricorrenza.md` |
 | `diffusione-denoising.py` | `fig-diffusione-denoising` | `ModelliDiffusione/come-funziona.md` |
+| `generazione-autoregressiva.py` | `fig-generazione-autoregressiva` | `Transformers/llm.md` |
 | `iterazione-valore.py` | `fig-iterazione-valore` | `ReinforcementLearning/mdp-valore.md` |
+| `limite-centrale.py` | `fig-limite-centrale` | `Matematica/probabilita-statistica.md` |
 | `message-passing.py` | `fig-message-passing-animato` | `GraphNeuralNetwork/message-passing.md` |
+| `stato-ricorrente.py` | `fig-stato-ricorrente` | `AttenzioneLineare/dalla-softmax-alla-ricorrenza.md` |
 
 Dove la scena mostra dei numeri, li **calcola**: l'iterazione di valore esegue
 davvero Bellman sulla griglia, la ricorrenza dell'attenzione lineare somma

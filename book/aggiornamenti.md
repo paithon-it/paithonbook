@@ -38,6 +38,19 @@ Una versione corrisponde a una **pubblicazione**, non a una giornata di
 lavoro: il libro si scrive tutti i giorni e si pubblica quando un pezzo sta in
 piedi.
 
+(v1-4-1)=
+
+## 1.4.1 · 13 agosto 2026
+
+### Pagine ampliate
+
+- Sei figure animate nuove, nei capitoli che non ne avevano nessuna. Si anima solo dove il tempo è il contenuto, cioè dove una figura ferma perde davvero qualcosa: il ciclo di addestramento che si ripete mentre la loss scende, i due modi in cui il DQN rompe una correlazione (la memoria che pesca a caso, la copia congelata che resta indietro e poi scatta), la ricorrenza che si svolge a raddoppio in quattro turni invece che in undici, il ciclo di un agente col contesto che si allunga a ogni giro, la spinta avversaria che cresce finché la risposta si ribalta, e il residuo di una rete guidata dalla fisica che si spegne mentre la curva si accosta alla soluzione esatta.
+
+### Correzioni
+
+- Le figure animate calcolano i numeri che mostrano, e adesso lo verificano: ognuna delle sei porta un controllo che ne impedisce la nascita se il risultato non coincide con quello che il capitolo dichiara. Lo scan a raddoppio si genera solo se dà lo stesso risultato di quello in fila, posizione per posizione; la figura dell'attacco solo se a spinta zero la risposta è giusta e oltre la soglia è ribaltata; quella della rete guidata dalla fisica addestra davvero, per trentamila epoche, e ritrova i due numeri stampati nella pagina. Una figura che smentisce il testo non è un difetto grafico: è il libro che dice due cose diverse nella stessa pagina.
+- {doc}`Mamba </StateSpaceModel/mamba>` (State Space Model). Il testo attribuiva a Blelloch lo scan parallelo e gli accreditava lo stesso numero di operazioni della versione in fila, ma il codice stampato poche righe dopo è quello a raddoppio, che di operazioni ne fa di più. Adesso il libro distingue le due versioni e dice quale sta scrivendo: il guadagno è sui turni, e si paga in conti.
+
 (v1-4-0)=
 
 ## 1.4.0 · 12 agosto 2026
