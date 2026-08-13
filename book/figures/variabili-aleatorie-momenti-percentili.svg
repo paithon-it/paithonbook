@@ -1,7 +1,7 @@
 <svg viewBox="0 0 680 360" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Due grafici affiancati: a sinistra una PDF asimmetrica con media, mediana e area del 95esimo percentile evidenziata; a destra la CDF corrispondente con la lettura del percentile 0,95">
   <rect x="0" y="0" width="680" height="360" fill="#F8F5EE"/>
   <!-- pannello PDF -->
-  <text x="170" y="34" font-family="sans-serif" font-size="16" fill="#1A1A1A" text-anchor="middle" font-weight="bold">PDF: dove si addensano i valori</text>
+  <text x="170" y="34" font-family="Inter, system-ui, sans-serif" font-size="16" fill="#1A1A1A" text-anchor="middle" font-weight="bold">PDF: dove si addensano i valori</text>
   <line x1="40" y1="280" x2="310" y2="280" stroke="#1A1A1A" stroke-width="1.5"/>
   <line x1="40" y1="280" x2="40" y2="60" stroke="#1A1A1A" stroke-width="1.5"/>
   <!-- area coda oltre p95 -->
@@ -10,26 +10,26 @@
   <path d="M 45 279 C 70 270 80 120 110 95 C 130 80 150 95 175 150 C 200 205 230 255 300 279" fill="none" stroke="#B5532C" stroke-width="2"/>
   <!-- mediana -->
   <line x1="122" y1="280" x2="122" y2="92" stroke="#2D5A5C" stroke-width="1.5" stroke-dasharray="5 4"/>
-  <text x="122" y="308" font-family="sans-serif" font-size="13" fill="#2D5A5C" text-anchor="middle">mediana</text>
+  <text x="122" y="308" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#2D5A5C" text-anchor="middle">mediana</text>
   <!-- media trascinata a destra -->
   <line x1="160" y1="280" x2="160" y2="120" stroke="#1A1A1A" stroke-width="1.5" stroke-dasharray="5 4"/>
-  <text x="168" y="328" font-family="sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">media</text>
+  <text x="168" y="328" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">media</text>
   <!-- etichetta coda -->
-  <text x="262" y="240" font-family="sans-serif" font-size="12" fill="#1A1A1A" text-anchor="middle">coda oltre p95</text>
+  <text x="262" y="240" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A" text-anchor="middle">coda oltre p95</text>
   <line x1="262" y1="248" x2="262" y2="270" stroke="#C9A961" stroke-width="1.5"/>
   <!-- pannello CDF -->
-  <text x="510" y="34" font-family="sans-serif" font-size="16" fill="#1A1A1A" text-anchor="middle" font-weight="bold">CDF: quanti valori stanno sotto x</text>
+  <text x="510" y="34" font-family="Inter, system-ui, sans-serif" font-size="16" fill="#1A1A1A" text-anchor="middle" font-weight="bold">CDF: quanti valori stanno sotto x</text>
   <line x1="380" y1="280" x2="650" y2="280" stroke="#1A1A1A" stroke-width="1.5"/>
   <line x1="380" y1="280" x2="380" y2="60" stroke="#1A1A1A" stroke-width="1.5"/>
-  <text x="372" y="70" font-family="sans-serif" font-size="12" fill="#1A1A1A" text-anchor="end">1</text>
-  <text x="372" y="284" font-family="sans-serif" font-size="12" fill="#1A1A1A" text-anchor="end">0</text>
+  <text x="372" y="70" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A" text-anchor="end">1</text>
+  <text x="372" y="284" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A" text-anchor="end">0</text>
   <!-- curva CDF -->
   <path d="M 385 279 C 420 275 430 200 455 150 C 475 110 520 85 570 72 C 605 64 630 63 645 62" fill="none" stroke="#2D5A5C" stroke-width="2"/>
   <!-- lettura p95 -->
   <line x1="380" y1="75" x2="585" y2="75" stroke="#B5532C" stroke-width="1.5" stroke-dasharray="5 4"/>
   <line x1="585" y1="75" x2="585" y2="280" stroke="#B5532C" stroke-width="1.5" stroke-dasharray="5 4"/>
   <circle cx="585" cy="75" r="5" fill="#B5532C"/>
-  <text x="400" y="66" font-family="sans-serif" font-size="13" fill="#B5532C">0,95</text>
-  <text x="585" y="308" font-family="sans-serif" font-size="13" fill="#B5532C" text-anchor="middle">p95</text>
-  <text x="500" y="335" font-family="sans-serif" font-size="12" fill="#1A1A1A" text-anchor="middle">entri dall'asse y a 0,95 → esci sul percentile</text>
+  <text x="400" y="66" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#B5532C">0,95</text>
+  <text x="585" y="308" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#B5532C" text-anchor="middle">p95</text>
+  <text x="500" y="335" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A" text-anchor="middle">entri dall'asse y a 0,95 → esci sul percentile</text>
 </svg>

@@ -417,8 +417,9 @@ G_{t:t+n} = R_{t+1} + \gamma\, R_{t+2} + \cdots + \gamma^{n-1} R_{t+n}
 + \gamma^{n} V(S_{t+n}),
 $$
 
-e l'aggiornamento è il solito $V(S_t) \leftarrow V(S_t) + \alpha\,[\,G_{t:t+n}
-- V(S_t)\,]$. Per $n=1$ si ritrova TD(0); per $n$ pari o superiore alla durata
+e l'aggiornamento è il solito
+$V(S_t) \leftarrow V(S_t) + \alpha\,[\,G_{t:t+n} - V(S_t)\,]$.
+Per $n=1$ si ritrova TD(0); per $n$ pari o superiore alla durata
 dell'episodio il termine con $V$ sparisce e resta il ritorno Monte Carlo.
 Il compromesso è quello classico fra distorsione e varianza: $n$ piccolo poca
 varianza e molta distorsione, $n$ grande il contrario. Nei banchi di prova di

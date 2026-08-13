@@ -10,7 +10,7 @@
 
   <!-- ===================== PANNELLO BATCH (sinistra) ===================== -->
   <rect x="55" y="26" width="270" height="48" rx="9" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2.5"/>
-  <text x="190" y="50" text-anchor="middle" font-family="Georgia, serif" font-size="20" font-weight="700" fill="#2D5A5C">Batch</text>
+  <text x="190" y="50" text-anchor="middle" font-family="Fraunces, Georgia, serif" font-size="20" font-weight="700" fill="#2D5A5C">Batch</text>
   <text x="190" y="67" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#1A1A1A">in blocco &#183; offline</text>
 
   <!-- input: pila di molte richieste -->
@@ -41,7 +41,7 @@
 
   <!-- ===================== PANNELLO ONLINE (destra) ===================== -->
   <rect x="395" y="26" width="270" height="48" rx="9" fill="#F8F5EE" stroke="#B5532C" stroke-width="2.5"/>
-  <text x="530" y="50" text-anchor="middle" font-family="Georgia, serif" font-size="20" font-weight="700" fill="#B5532C">Online</text>
+  <text x="530" y="50" text-anchor="middle" font-family="Fraunces, Georgia, serif" font-size="20" font-weight="700" fill="#B5532C">Online</text>
   <text x="530" y="67" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#1A1A1A">sincrono &#183; in tempo reale</text>
 
   <!-- input: una richiesta -->

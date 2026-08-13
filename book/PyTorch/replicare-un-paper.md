@@ -195,10 +195,10 @@ Le equazioni 2 e 3 sono il blocco Transformer, con la normalizzazione **prima**
 dei sottoblocchi (*pre-norm*) e due connessioni residue:
 
 $$
-\begin{align*}
+\begin{aligned}
 \mathbf{z}'_{\ell} &= \text{MSA}\big(\text{LN}(\mathbf{z}_{\ell-1})\big) + \mathbf{z}_{\ell-1}, \\
 \mathbf{z}_{\ell}  &= \text{MLP}\big(\text{LN}(\mathbf{z}'_{\ell})\big) + \mathbf{z}'_{\ell},
-\end{align*}
+\end{aligned}
 \qquad \ell = 1 \dots L
 $$
 

@@ -114,6 +114,26 @@ In pratica, scrivendo una pagina:
   `python3 scripts/coerenza.py --solo landing` dice se una scheda manca o è
   fuori ordine.
 
+- **Quello che vale solo online va dichiarato.** Il libro esiste in due
+  formati: il sito e un PDF unico, che si scarica dalla home. Una frase come
+  «in alto trovi il pulsante *Esegui il codice*» è vera sul sito e falsa su
+  carta, quindi si avvolge:
+
+  ````md
+  :::{only} html
+  In alto trovi il pulsante «Esegui il codice».
+  :::
+
+  :::{only} latex
+  Il codice di questo capitolo si esegue online, su book.paithon.it.
+  :::
+  ````
+
+  Attenzione a come si annidano le recinzioni MyST: **l'esterna deve essere
+  più lunga dell'interna** (`::::{only}` che contiene `:::{container}`). Al
+  contrario il blocco non si chiude dove sembra, e l'errore che ne esce parla
+  d'altro.
+
 Una cosa che il libro **non** ospita: la cronaca. Classifiche, benchmark,
 prezzi, "questo modello supera quell'altro" invecchiano dentro un testo che si
 legge per anni. Qui si spiega come funziona un meccanismo; le notizie stanno su

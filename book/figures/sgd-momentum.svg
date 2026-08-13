@@ -4,7 +4,7 @@
     <marker id="sgd45-b" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#2D5A5C"/></marker>
   </defs>
   <rect x="0" y="0" width="720" height="400" fill="#F8F5EE"/>
-  <text x="360" y="30" text-anchor="middle" font-family="sans-serif" font-size="15" fill="#1A1A1A">stesso canyon, stesso punto di partenza, due traiettorie</text>
+  <text x="360" y="30" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="15" fill="#1A1A1A">stesso canyon, stesso punto di partenza, due traiettorie</text>
   <g fill="none" stroke="#C9A961" stroke-width="1.5">
     <ellipse cx="520" cy="215" rx="180" ry="120" opacity="0.5"/>
     <ellipse cx="520" cy="215" rx="135" ry="85" opacity="0.65"/>
@@ -12,12 +12,12 @@
     <ellipse cx="520" cy="215" rx="45" ry="24"/>
   </g>
   <circle cx="520" cy="215" r="5" fill="#1A1A1A"/>
-  <text x="520" y="252" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">minimo</text>
+  <text x="520" y="252" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A">minimo</text>
   <path d="M 120 110 L 175 300 L 225 130 L 270 288 L 310 148 L 348 272 L 382 162 L 414 258 L 442 176" fill="none" stroke="#B5532C" stroke-width="2" marker-end="url(#sgd45-a)"/>
   <path d="M 120 110 Q 200 190 300 215 Q 400 236 505 218" fill="none" stroke="#2D5A5C" stroke-width="2" marker-end="url(#sgd45-b)"/>
   <circle cx="120" cy="110" r="6" fill="#1A1A1A"/>
-  <text x="112" y="92" text-anchor="end" font-family="sans-serif" font-size="12" fill="#1A1A1A">partenza</text>
-  <g font-family="sans-serif" font-size="13">
+  <text x="112" y="92" text-anchor="end" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A">partenza</text>
+  <g font-family="Inter, system-ui, sans-serif" font-size="13">
     <line x1="90" y1="352" x2="130" y2="352" stroke="#B5532C" stroke-width="2"/>
     <text x="140" y="357" fill="#B5532C">SGD puro: zigzag tra le pareti, avanza poco</text>
     <line x1="90" y1="378" x2="130" y2="378" stroke="#2D5A5C" stroke-width="2"/>

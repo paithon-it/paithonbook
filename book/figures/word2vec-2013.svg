@@ -1,6 +1,6 @@
 <svg viewBox="0 0 680 400" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Diagramma di aritmetica vettoriale: i vettori di uomo, re, donna, regina formano un parallelogramma, e re meno uomo più donna cade su regina">
   <rect x="0" y="0" width="680" height="400" fill="#F8F5EE"/>
-  <text x="340" y="32" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#1A1A1A" font-weight="bold">re − uomo + donna ≈ regina</text>
+  <text x="340" y="32" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" fill="#1A1A1A" font-weight="bold">re − uomo + donna ≈ regina</text>
 
   <!-- assi leggeri -->
   <line x1="80" y1="340" x2="620" y2="340" stroke="#C9C2B4" stroke-width="1"/>
@@ -20,17 +20,17 @@
 
   <!-- punti -->
   <circle cx="180" cy="300" r="6" fill="#1A1A1A"/>
-  <text x="180" y="324" text-anchor="middle" font-family="sans-serif" font-size="14" fill="#1A1A1A">uomo</text>
+  <text x="180" y="324" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#1A1A1A">uomo</text>
   <circle cx="260" cy="150" r="6" fill="#1A1A1A"/>
-  <text x="248" y="140" text-anchor="middle" font-family="sans-serif" font-size="14" fill="#1A1A1A">re</text>
+  <text x="248" y="140" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#1A1A1A">re</text>
   <circle cx="440" cy="300" r="6" fill="#1A1A1A"/>
-  <text x="440" y="324" text-anchor="middle" font-family="sans-serif" font-size="14" fill="#1A1A1A">donna</text>
+  <text x="440" y="324" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#1A1A1A">donna</text>
   <circle cx="520" cy="150" r="7" fill="#C9A961" stroke="#1A1A1A" stroke-width="1.5"/>
-  <text x="540" y="146" text-anchor="middle" font-family="sans-serif" font-size="14" fill="#1A1A1A" font-weight="bold">regina</text>
+  <text x="540" y="146" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#1A1A1A" font-weight="bold">regina</text>
 
   <!-- legenda -->
   <line x1="150" y1="372" x2="185" y2="372" stroke="#B5532C" stroke-width="2"/>
-  <text x="193" y="376" font-family="sans-serif" font-size="12" fill="#1A1A1A">direzione "regalità" (re − uomo)</text>
+  <text x="193" y="376" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A">direzione "regalità" (re − uomo)</text>
   <line x1="420" y1="372" x2="455" y2="372" stroke="#2D5A5C" stroke-width="2"/>
-  <text x="463" y="376" font-family="sans-serif" font-size="12" fill="#1A1A1A">direzione "genere"</text>
+  <text x="463" y="376" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A">direzione "genere"</text>
 </svg>

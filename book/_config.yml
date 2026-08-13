@@ -169,8 +169,61 @@ sphinx:
         thebe: true
         colab_url: "https://colab.research.google.com"
     html_show_copyright: false
+    # LA STAMPA. Il libro esiste anche come PDF unico, che si costruisce con
+    # `python3 scripts/genera-pdf.py`. Queste righe non toccano l'HTML.
+    #
+    # Il motore e' LuaLaTeX perche' e' l'unico installato che legge i font di
+    # sistema (`fontspec`), e i font sono quelli del brand.
+    #
+    # Perche' `latex_engine` sta QUI e non sotto `latex:` come vorrebbe
+    # jupyter-book: perche' `sphinx-jupyterbook-latex`, se acceso, lo
+    # sovrascrive comunque con `xelatex`. Vedi `use_jupyterbook_latex` in
+    # fondo a questo file, che infatti e' spento.
+    latex_engine: lualatex
+    # `author`, in cima a questo file, e' il blocco HTML del copyright che va
+    # in fondo alle pagine del sito: in copertina ci vuole il nome dell'autore,
+    # quindi il documento si dichiara per esteso invece di ereditarlo.
+    latex_documents:
+    - - intro
+      - paithon-book.tex
+      - Paithon Book
+      - Francesco Messina
+      - manual
+    latex_elements:
+      papersize: a4paper
+      pointsize: 10pt
+      # Le figure NON flottano. Due ragioni, e la seconda e' tecnica.
+      #
+      # La prima e' editoriale, ed e' una regola del libro: «una figura si
+      # mette dove il testo gia' parla di quella cosa». Una figura che
+      # galleggia due pagine piu' in la' contraddice il testo che la
+      # richiama.
+      #
+      # La seconda: nel libro ci sono figure DENTRO le tab dei due livelli, e
+      # un oggetto flottante di LaTeX non puo' stare dentro una scatola. Con
+      # `htbp` la compilazione si ferma con «Not in outer par mode» e la
+      # pagina perde pezzi.
+      figure_align: H
+      # Tutto lo stile sta in `_stampa/paithon.sty`. I font invece li
+      # imposta `_ext/pt_stampa.py`, che e' l'unico a sapere il percorso
+      # assoluto del submodule del brand.
+      preamble: \usepackage{paithon}
+    latex_additional_files:
+    - _stampa/paithon.sty
+    # Il marchio in copertina, gia' convertito in PDF: non passa dal
+    # convertitore delle figure, perche' non sta nell'albero del documento
+    # ma lo chiama una macro. Si rifa' con lo stesso Chromium quando cambia
+    # nel brand.
+    - _stampa/marchio.pdf
+    # Le bande di apertura dei capitoli NON si elencano qui: sono una per
+    # capitolo e cambierebbero a ogni capitolo nuovo. Le aggiunge
+    # `_ext/pt_stampa.py`, che le trova da se'. (E comunque `latex_additional_files`
+    # non prende cartelle: vuole un file per riga.)
+
   extra_extensions:
-    - sphinx.ext.imgconverter
+    # `sphinx.ext.imgconverter` stava qui e non convertiva niente: vuole
+    # ImageMagick, che non c'e', e infatti si limitava a stampare un warning a
+    # ogni build. Il suo mestiere lo fa `pt_stampa`, con Chromium.
     - jupyterbook_patches
     - sphinx_inline_tabs
 
@@ -188,10 +241,35 @@ sphinx:
   # numero di capitolo lo prende dal `_toc.yml`, la stessa fonte della landing
   # e del contatore dell'indice, cosi' le due numerazioni non possono
   # divergere.
+  # `pt_stampa` e' l'estensione della stampa: converte le figure con Chromium,
+  # da' un nome alle tab dei due livelli, sostituisce le animazioni con i fermi
+  # immagine. Si accende solo per il builder LaTeX.
   local_extensions:
     pt_conteggi: _ext
     pt_meta: _ext
     pt_figure: _ext
+    pt_stampa: _ext
 
-bibtex_bibfiles: 
+# `sphinx-jupyterbook-latex` resta ACCESA, ma le si disfano tre cose.
+#
+# Serve perche' fa un lavoro che nessun altro fa: nel `_toc.yml` la radice e'
+# `intro.md`, e senza di lei le sezioni della landing («Il percorso»,
+# «Livelli di Complessità») diventano i capitoli 1, 2 e 3 del libro, con i
+# capitoli veri che slittano dietro. Si vede solo guardando il PDF: nessuna
+# build si lamenta.
+#
+# Quello che invece riscrive senza chiedere, a `config-inited`, e' questo:
+#
+#   latex_engine  ->  xelatex     che qui non e' installato, e comunque il
+#                                 motore lo scegliamo noi (LuaLaTeX);
+#   latex_theme   ->  jupyterBook che porta la sua impaginazione, mentre la
+#                                 nostra sta in `_stampa/paithon.sty`;
+#   preambolo     ->  ucharclasses, che funziona **solo con XeTeX**, e
+#                     `\contentsname` = "Contents" in un libro italiano.
+#
+# Glieli disfa `_ext/pt_stampa.py` con un gancio che gira dopo il suo. Il
+# rimedio e' brutto ed e' scritto apposta dove si vede: e' l'unico modo di
+# tenere il pezzo che serve senza portarsi dietro il resto.
+
+bibtex_bibfiles:
   - references.bib

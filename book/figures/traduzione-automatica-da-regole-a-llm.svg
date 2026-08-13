@@ -1,11 +1,11 @@
 <svg viewBox="0 0 760 340" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Timeline dei quattro paradigmi della traduzione automatica: regole, statistica, neurale, LLM">
   <rect x="0" y="0" width="760" height="340" fill="#F8F5EE"/>
-  <text x="380" y="34" font-family="sans-serif" font-size="16" fill="#1A1A1A" text-anchor="middle" font-weight="bold">Quattro paradigmi in settant'anni</text>
+  <text x="380" y="34" font-family="Inter, system-ui, sans-serif" font-size="16" fill="#1A1A1A" text-anchor="middle" font-weight="bold">Quattro paradigmi in settant'anni</text>
   <!-- asse timeline -->
   <line x1="40" y1="250" x2="720" y2="250" stroke="#1A1A1A" stroke-width="2"/>
   <polygon points="720,250 710,245 710,255" fill="#1A1A1A"/>
   <!-- tacche e anni -->
-  <g font-family="sans-serif" font-size="12" fill="#5E5852">
+  <g font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5E5852">
     <line x1="80" y1="245" x2="80" y2="255" stroke="#1A1A1A" stroke-width="1.5"/>
     <text x="80" y="275" text-anchor="middle">1954</text>
     <line x1="250" y1="245" x2="250" y2="255" stroke="#1A1A1A" stroke-width="1.5"/>
@@ -18,39 +18,39 @@
   <!-- blocco 1: regole -->
   <rect x="55" y="70" width="160" height="130" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="2" rx="8"/>
   <rect x="55" y="70" width="160" height="34" fill="#1A1A1A" rx="8"/>
-  <text x="135" y="92" font-family="sans-serif" font-size="14" fill="#F8F5EE" text-anchor="middle">Regole</text>
-  <text x="135" y="128" font-family="sans-serif" font-size="11.5" fill="#1A1A1A" text-anchor="middle">dizionari + grammatiche</text>
-  <text x="135" y="146" font-family="sans-serif" font-size="11.5" fill="#1A1A1A" text-anchor="middle">scritte a mano</text>
-  <text x="135" y="172" font-family="sans-serif" font-size="11" fill="#5E5852" text-anchor="middle">sa la grammatica,</text>
-  <text x="135" y="188" font-family="sans-serif" font-size="11" fill="#5E5852" text-anchor="middle">non il contesto</text>
+  <text x="135" y="92" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#F8F5EE" text-anchor="middle">Regole</text>
+  <text x="135" y="128" font-family="Inter, system-ui, sans-serif" font-size="11.5" fill="#1A1A1A" text-anchor="middle">dizionari + grammatiche</text>
+  <text x="135" y="146" font-family="Inter, system-ui, sans-serif" font-size="11.5" fill="#1A1A1A" text-anchor="middle">scritte a mano</text>
+  <text x="135" y="172" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#5E5852" text-anchor="middle">sa la grammatica,</text>
+  <text x="135" y="188" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#5E5852" text-anchor="middle">non il contesto</text>
   <line x1="135" y1="200" x2="135" y2="244" stroke="#1A1A1A" stroke-width="1.5" stroke-dasharray="4 4"/>
   <!-- blocco 2: statistica -->
   <rect x="228" y="70" width="160" height="130" fill="#F8F5EE" stroke="#C9A961" stroke-width="2" rx="8"/>
   <rect x="228" y="70" width="160" height="34" fill="#C9A961" rx="8"/>
-  <text x="308" y="92" font-family="sans-serif" font-size="14" fill="#1A1A1A" text-anchor="middle">Statistica</text>
-  <text x="308" y="128" font-family="sans-serif" font-size="11.5" fill="#1A1A1A" text-anchor="middle">probabilità contate</text>
-  <text x="308" y="146" font-family="sans-serif" font-size="11.5" fill="#1A1A1A" text-anchor="middle">sui corpora paralleli</text>
-  <text x="308" y="172" font-family="sans-serif" font-size="11" fill="#5E5852" text-anchor="middle">frasi a pezzetti,</text>
-  <text x="308" y="188" font-family="sans-serif" font-size="11" fill="#5E5852" text-anchor="middle">mai la frase intera</text>
+  <text x="308" y="92" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#1A1A1A" text-anchor="middle">Statistica</text>
+  <text x="308" y="128" font-family="Inter, system-ui, sans-serif" font-size="11.5" fill="#1A1A1A" text-anchor="middle">probabilità contate</text>
+  <text x="308" y="146" font-family="Inter, system-ui, sans-serif" font-size="11.5" fill="#1A1A1A" text-anchor="middle">sui corpora paralleli</text>
+  <text x="308" y="172" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#5E5852" text-anchor="middle">frasi a pezzetti,</text>
+  <text x="308" y="188" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#5E5852" text-anchor="middle">mai la frase intera</text>
   <line x1="308" y1="200" x2="308" y2="244" stroke="#C9A961" stroke-width="1.5" stroke-dasharray="4 4"/>
   <!-- blocco 3: neurale -->
   <rect x="401" y="70" width="160" height="130" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2" rx="8"/>
   <rect x="401" y="70" width="160" height="34" fill="#2D5A5C" rx="8"/>
-  <text x="481" y="92" font-family="sans-serif" font-size="14" fill="#F8F5EE" text-anchor="middle">Neurale</text>
-  <text x="481" y="128" font-family="sans-serif" font-size="11.5" fill="#1A1A1A" text-anchor="middle">seq2seq + attention,</text>
-  <text x="481" y="146" font-family="sans-serif" font-size="11.5" fill="#1A1A1A" text-anchor="middle">poi transformer</text>
-  <text x="481" y="172" font-family="sans-serif" font-size="11" fill="#5E5852" text-anchor="middle">legge tutta la frase,</text>
-  <text x="481" y="188" font-family="sans-serif" font-size="11" fill="#5E5852" text-anchor="middle">impara end-to-end</text>
+  <text x="481" y="92" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#F8F5EE" text-anchor="middle">Neurale</text>
+  <text x="481" y="128" font-family="Inter, system-ui, sans-serif" font-size="11.5" fill="#1A1A1A" text-anchor="middle">seq2seq + attention,</text>
+  <text x="481" y="146" font-family="Inter, system-ui, sans-serif" font-size="11.5" fill="#1A1A1A" text-anchor="middle">poi transformer</text>
+  <text x="481" y="172" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#5E5852" text-anchor="middle">legge tutta la frase,</text>
+  <text x="481" y="188" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#5E5852" text-anchor="middle">impara end-to-end</text>
   <line x1="481" y1="200" x2="481" y2="244" stroke="#2D5A5C" stroke-width="1.5" stroke-dasharray="4 4"/>
   <!-- blocco 4: LLM -->
   <rect x="574" y="70" width="160" height="130" fill="#F8F5EE" stroke="#B5532C" stroke-width="2" rx="8"/>
   <rect x="574" y="70" width="160" height="34" fill="#B5532C" rx="8"/>
-  <text x="654" y="92" font-family="sans-serif" font-size="14" fill="#F8F5EE" text-anchor="middle">LLM</text>
-  <text x="654" y="128" font-family="sans-serif" font-size="11.5" fill="#1A1A1A" text-anchor="middle">tradurre è un caso</text>
-  <text x="654" y="146" font-family="sans-serif" font-size="11.5" fill="#1A1A1A" text-anchor="middle">particolare di generare</text>
-  <text x="654" y="172" font-family="sans-serif" font-size="11" fill="#5E5852" text-anchor="middle">contesto, tono,</text>
-  <text x="654" y="188" font-family="sans-serif" font-size="11" fill="#5E5852" text-anchor="middle">istruzioni in prompt</text>
+  <text x="654" y="92" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#F8F5EE" text-anchor="middle">LLM</text>
+  <text x="654" y="128" font-family="Inter, system-ui, sans-serif" font-size="11.5" fill="#1A1A1A" text-anchor="middle">tradurre è un caso</text>
+  <text x="654" y="146" font-family="Inter, system-ui, sans-serif" font-size="11.5" fill="#1A1A1A" text-anchor="middle">particolare di generare</text>
+  <text x="654" y="172" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#5E5852" text-anchor="middle">contesto, tono,</text>
+  <text x="654" y="188" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#5E5852" text-anchor="middle">istruzioni in prompt</text>
   <line x1="654" y1="200" x2="654" y2="244" stroke="#B5532C" stroke-width="1.5" stroke-dasharray="4 4"/>
   <!-- domanda di fondo -->
-  <text x="380" y="315" font-family="sans-serif" font-size="12.5" fill="#5E5852" text-anchor="middle" font-style="italic">La stessa domanda, quattro risposte: che cosa deve sapere una macchina per tradurre?</text>
+  <text x="380" y="315" font-family="Inter, system-ui, sans-serif" font-size="12.5" fill="#5E5852" text-anchor="middle" font-style="italic">La stessa domanda, quattro risposte: che cosa deve sapere una macchina per tradurre?</text>
 </svg>

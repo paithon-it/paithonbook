@@ -16,7 +16,7 @@
     .xlbl  { font-family:Fraunces, Georgia, serif; font-size:18px; font-weight:600; fill:#1A1A1A; }
     .wlbl  { font-family:Inter, system-ui, sans-serif; font-size:13px; font-style:italic; fill:#B5532C; }
     .cap   { font-family:Inter, system-ui, sans-serif; font-size:12px; fill:#5E5852; }
-    .sig   { font-family:Georgia, serif; font-size:34px; fill:#B5532C; }
+    .sig   { font-family:Fraunces, Georgia, serif; font-size:34px; fill:#B5532C; }
     .step  { stroke:#1A1A1A; stroke-width:2.5; fill:none; }
   </style>
 
@@ -35,7 +35,7 @@
   <text class="xlbl" x="72" y="72"  text-anchor="middle">x&#8321;</text>
   <text class="xlbl" x="72" y="132" text-anchor="middle">x&#8322;</text>
   <text class="xlbl" x="72" y="240" text-anchor="middle">x&#8345;</text>
-  <text x="72" y="188" text-anchor="middle" font-family="Georgia, serif" font-size="22px" fill="#8B847C">&#8942;</text>
+  <text x="72" y="188" text-anchor="middle" font-family="Fraunces, Georgia, serif" font-size="22px" fill="#8B847C">&#8942;</text>
   <text class="cap" x="72" y="284" text-anchor="middle">ingressi</text>
 
   <!-- bias in ingresso dall'alto -->

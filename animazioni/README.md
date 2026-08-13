@@ -7,7 +7,7 @@ Sorgenti delle figure animate del libro. Due strade, che non competono:
 | uscita | `book/figures/*.gif` raster | `book/figures/*.svg`, testo |
 | peso | ~570 KB a clip | **~6 KB** a figura |
 | in git | blob binario nuovo a ogni render | diffabile |
-| stampa | serve la `-striscia.png` | si congela da sé |
+| stampa | tre fermi immagine (`fermi.py`) | idem, e da fermo è già lo stato finale |
 | serve per | LaTeX denso, curve, coreografie | geometria, barre, reti, griglie |
 | dipendenze | Docker + Manim + LaTeX | nessuna (`cairosvg` solo per il provino) |
 
@@ -76,19 +76,27 @@ segno che avrebbe mandato in stampa una retta con la pendenza sbagliata.
 `scrivi()` rifiuta il file se contiene colori fuori palette, uno `<script>` o
 XML malformato.
 
-## Online la clip, a stampa la striscia
+## Online la clip, a stampa tre fermi immagine
 
-Ogni animazione produce **due** artefatti in `book/figures/`, e sono la stessa
-figura su due supporti:
+Nel PDF il movimento non c'è, e una figura ferma sola perde proprio la cosa
+per cui l'animazione era stata fatta. Al suo posto vanno **tre fotogrammi
+affiancati** più l'indirizzo della pagina che la muove: non sono l'animazione,
+ma dicono che c'era un prima e un dopo.
 
-- `<nome>.gif` — è quella richiamata dal `{figure}` nei file MyST: vive nel
-  libro online, dove il movimento si può guardare;
-- `<nome>-striscia.png` — 2–3 fotogrammi affiancati, la versione ferma per la
-  **stampa** e il PDF. Non è referenziata da nessun `.md`: si sostituisce alla
-  GIF quando si impagina l'edizione cartacea.
+```bash
+python3 animazioni/fermi.py             # i tre PNG per tutte e 35
+python3 animazioni/fermi.py --provino   # i fogli a contatto, DA GUARDARE
+python3 animazioni/fermi.py --verifica  # sono allineati alle animazioni?
+```
 
-Si generano insieme con `--striscia`. Per questo ogni scena è scritta in modo
-che **l'ultimo fotogramma regga da solo**: è quello che finisce sulla carta.
+Escono in `book/figures/fermi/`, sono **tracciati**, e valgono per tutte e due
+le strade: le GIF di Manim (fotogrammi con PIL) e gli SVG animati (Chromium,
+che ferma l'animazione CSS su un istante preciso). Gli istanti di default sono
+10%, 50% e 90% del ciclo; dove non rendono giustizia si scrive in
+`fermi.toml`, dopo aver guardato il provino.
+
+Il vecchio `--striscia` non c'è più: faceva metà di questo lavoro, per le sole
+GIF, con un meccanismo suo.
 
 ## Le animazioni del libro
 

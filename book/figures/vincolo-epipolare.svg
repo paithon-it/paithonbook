@@ -16,7 +16,7 @@
     .lblB { font-family:Inter, system-ui, sans-serif; font-size:13px; font-weight:700; fill:#1A1A1A; }
     .leg  { font-family:Inter, system-ui, sans-serif; font-size:12px; fill:#5E5852; }
     .ttl  { font-family:Fraunces, Georgia, serif; font-size:14px; font-weight:600; fill:#1A1A1A; }
-    .mth  { font-family:Georgia, serif; font-size:13px; font-style:italic; fill:#1A1A1A; }
+    .mth  { font-family:Fraunces, Georgia, serif; font-size:13px; font-style:italic; fill:#1A1A1A; }
   </style>
 
   <!-- ============ fascia alta: le due immagini ============ -->

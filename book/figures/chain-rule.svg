@@ -4,29 +4,29 @@
     <marker id="cr-terra" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#B5532C"/></marker>
   </defs>
   <rect x="0" y="0" width="720" height="340" fill="#F8F5EE"/>
-  <text x="360" y="34" text-anchor="middle" font-family="sans-serif" font-size="15" fill="#1A1A1A">funzioni annidate: l'uscita di una è l'ingresso della successiva</text>
-  <text x="60" y="112" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#1A1A1A">x</text>
+  <text x="360" y="34" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="15" fill="#1A1A1A">funzioni annidate: l'uscita di una è l'ingresso della successiva</text>
+  <text x="60" y="112" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" fill="#1A1A1A">x</text>
   <line x1="80" y1="107" x2="128" y2="107" stroke="#1A1A1A" stroke-width="1.5" marker-end="url(#cr-nero)"/>
   <rect x="136" y="77" width="110" height="60" rx="10" fill="none" stroke="#2D5A5C" stroke-width="2"/>
-  <text x="191" y="113" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#2D5A5C">f</text>
+  <text x="191" y="113" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" fill="#2D5A5C">f</text>
   <line x1="246" y1="107" x2="294" y2="107" stroke="#1A1A1A" stroke-width="1.5" marker-end="url(#cr-nero)"/>
   <rect x="302" y="77" width="110" height="60" rx="10" fill="none" stroke="#C9A961" stroke-width="2"/>
-  <text x="357" y="113" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#1A1A1A">g</text>
+  <text x="357" y="113" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" fill="#1A1A1A">g</text>
   <line x1="412" y1="107" x2="460" y2="107" stroke="#1A1A1A" stroke-width="1.5" marker-end="url(#cr-nero)"/>
   <rect x="468" y="77" width="110" height="60" rx="10" fill="none" stroke="#B5532C" stroke-width="2"/>
-  <text x="523" y="113" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#B5532C">h</text>
+  <text x="523" y="113" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" fill="#B5532C">h</text>
   <line x1="578" y1="107" x2="626" y2="107" stroke="#1A1A1A" stroke-width="1.5" marker-end="url(#cr-nero)"/>
-  <text x="662" y="112" text-anchor="middle" font-family="sans-serif" font-size="15" fill="#1A1A1A">loss</text>
-  <text x="270" y="70" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#5E5852">f(x)</text>
-  <text x="436" y="70" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#5E5852">g(f(x))</text>
+  <text x="662" y="112" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="15" fill="#1A1A1A">loss</text>
+  <text x="270" y="70" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5E5852">f(x)</text>
+  <text x="436" y="70" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5E5852">g(f(x))</text>
   <line x1="626" y1="180" x2="120" y2="180" stroke="#B5532C" stroke-width="2" marker-end="url(#cr-terra)"/>
-  <text x="360" y="172" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#B5532C">l'errore torna indietro moltiplicando le derivate locali</text>
-  <text x="191" y="222" text-anchor="middle" font-family="sans-serif" font-size="14" fill="#2D5A5C">f′ = 2</text>
-  <text x="357" y="222" text-anchor="middle" font-family="sans-serif" font-size="14" fill="#1A1A1A">g′ = 3</text>
-  <text x="523" y="222" text-anchor="middle" font-family="sans-serif" font-size="14" fill="#B5532C">h′ = 0,5</text>
-  <text x="274" y="222" text-anchor="middle" font-family="sans-serif" font-size="14" fill="#1A1A1A">×</text>
-  <text x="440" y="222" text-anchor="middle" font-family="sans-serif" font-size="14" fill="#1A1A1A">×</text>
+  <text x="360" y="172" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#B5532C">l'errore torna indietro moltiplicando le derivate locali</text>
+  <text x="191" y="222" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#2D5A5C">f′ = 2</text>
+  <text x="357" y="222" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#1A1A1A">g′ = 3</text>
+  <text x="523" y="222" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#B5532C">h′ = 0,5</text>
+  <text x="274" y="222" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#1A1A1A">×</text>
+  <text x="440" y="222" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#1A1A1A">×</text>
   <line x1="120" y1="252" x2="600" y2="252" stroke="#8B847C" stroke-width="1.5"/>
-  <text x="360" y="290" text-anchor="middle" font-family="sans-serif" font-size="15" fill="#1A1A1A">derivata totale = 2 × 3 × 0,5 = 3</text>
-  <text x="360" y="316" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#5E5852">ogni anello conosce solo il proprio tratto: il prodotto conosce la catena intera</text>
+  <text x="360" y="290" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="15" fill="#1A1A1A">derivata totale = 2 × 3 × 0,5 = 3</text>
+  <text x="360" y="316" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5E5852">ogni anello conosce solo il proprio tratto: il prodotto conosce la catena intera</text>
 </svg>

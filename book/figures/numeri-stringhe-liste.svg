@@ -1,14 +1,14 @@
 <svg viewBox="0 0 720 300" width="100%" role="img" aria-label="Tre contenitori: il numero come scatolina sigillata con un solo valore, la stringa come catena di caselle saldate con lucchetto, la lista come cassetta aperta con scomparti e frecce di ingresso e uscita" xmlns="http://www.w3.org/2000/svg">
   <rect x="0" y="0" width="720" height="300" fill="#F8F5EE"/>
-  <text x="360" y="34" text-anchor="middle" font-family="sans-serif" font-size="17" font-weight="bold" fill="#1A1A1A">Tre tipi, tre contenitori</text>
+  <text x="360" y="34" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="17" font-weight="bold" fill="#1A1A1A">Tre tipi, tre contenitori</text>
 
   <!-- NUMERO: scatolina sigillata -->
   <rect x="45" y="110" width="120" height="80" fill="#F8F5EE" stroke="#B5532C" stroke-width="2"/>
   <line x1="45" y1="130" x2="165" y2="130" stroke="#B5532C" stroke-width="2"/>
-  <text x="105" y="168" text-anchor="middle" font-family="sans-serif" font-size="22" fill="#B5532C" font-weight="bold">42</text>
-  <text x="105" y="82" text-anchor="middle" font-family="sans-serif" font-size="15" font-weight="bold" fill="#1A1A1A">int / float</text>
-  <text x="105" y="220" text-anchor="middle" font-family="sans-serif" font-size="12.5" fill="#1A1A1A">un solo valore,</text>
-  <text x="105" y="237" text-anchor="middle" font-family="sans-serif" font-size="12.5" fill="#1A1A1A">scatola sigillata</text>
+  <text x="105" y="168" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="22" fill="#B5532C" font-weight="bold">42</text>
+  <text x="105" y="82" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="bold" fill="#1A1A1A">int / float</text>
+  <text x="105" y="220" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12.5" fill="#1A1A1A">un solo valore,</text>
+  <text x="105" y="237" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12.5" fill="#1A1A1A">scatola sigillata</text>
 
   <!-- STRINGA: catena di caselle saldate + lucchetto -->
   <g stroke="#2D5A5C" stroke-width="2" fill="#F8F5EE">
@@ -18,15 +18,15 @@
     <rect x="338" y="120" width="36" height="46"/>
     <rect x="374" y="120" width="36" height="46"/>
   </g>
-  <g font-family="sans-serif" font-size="19" fill="#2D5A5C" font-weight="bold" text-anchor="middle">
+  <g font-family="Inter, system-ui, sans-serif" font-size="19" fill="#2D5A5C" font-weight="bold" text-anchor="middle">
     <text x="248" y="151">c</text><text x="284" y="151">i</text><text x="320" y="151">a</text><text x="356" y="151">o</text><text x="392" y="151">!</text>
   </g>
   <!-- lucchetto -->
   <rect x="296" y="185" width="26" height="20" fill="#2D5A5C"/>
   <path d="M301 185 v-7 a8 8 0 0 1 16 0 v7" fill="none" stroke="#2D5A5C" stroke-width="2"/>
-  <text x="309" y="82" text-anchor="middle" font-family="sans-serif" font-size="15" font-weight="bold" fill="#1A1A1A">str</text>
-  <text x="309" y="228" text-anchor="middle" font-family="sans-serif" font-size="12.5" fill="#1A1A1A">caselle in ordine,</text>
-  <text x="309" y="245" text-anchor="middle" font-family="sans-serif" font-size="12.5" fill="#1A1A1A">catena saldata (immutabile)</text>
+  <text x="309" y="82" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="bold" fill="#1A1A1A">str</text>
+  <text x="309" y="228" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12.5" fill="#1A1A1A">caselle in ordine,</text>
+  <text x="309" y="245" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12.5" fill="#1A1A1A">catena saldata (immutabile)</text>
 
   <!-- LISTA: cassetta aperta con scomparti -->
   <path d="M470 108 h190 v76 h-190 z" fill="#F8F5EE" stroke="#C9A961" stroke-width="2"/>
@@ -38,14 +38,14 @@
     <line x1="566" y1="108" x2="566" y2="184"/>
     <line x1="614" y1="108" x2="614" y2="184"/>
   </g>
-  <g font-family="sans-serif" font-size="18" fill="#1A1A1A" font-weight="bold" text-anchor="middle">
+  <g font-family="Inter, system-ui, sans-serif" font-size="18" fill="#1A1A1A" font-weight="bold" text-anchor="middle">
     <text x="494" y="152">7</text><text x="542" y="152">9</text><text x="590" y="152">6</text><text x="637" y="152">8</text>
   </g>
   <!-- frecce ingresso/uscita -->
   <line x1="565" y1="46" x2="565" y2="82" stroke="#B5532C" stroke-width="2"/>
   <path d="M559 74 L565 86 L571 74 z" fill="#B5532C"/>
-  <text x="583" y="60" font-family="sans-serif" font-size="12" fill="#B5532C">append</text>
-  <text x="565" y="82" text-anchor="end" font-family="sans-serif" font-size="15" font-weight="bold" fill="#1A1A1A" dx="-90" dy="0">list</text>
-  <text x="565" y="220" text-anchor="middle" font-family="sans-serif" font-size="12.5" fill="#1A1A1A">scomparti aperti:</text>
-  <text x="565" y="237" text-anchor="middle" font-family="sans-serif" font-size="12.5" fill="#1A1A1A">aggiungi, togli, riordina (mutabile)</text>
+  <text x="583" y="60" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#B5532C">append</text>
+  <text x="565" y="82" text-anchor="end" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="bold" fill="#1A1A1A" dx="-90" dy="0">list</text>
+  <text x="565" y="220" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12.5" fill="#1A1A1A">scomparti aperti:</text>
+  <text x="565" y="237" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12.5" fill="#1A1A1A">aggiungi, togli, riordina (mutabile)</text>
 </svg>

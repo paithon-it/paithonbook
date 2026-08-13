@@ -1,33 +1,33 @@
 <svg viewBox="0 0 720 420" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Due allocazioni dello stesso budget di calcolo: Gopher con molti parametri e pochi token, Chinchilla con pochi parametri e molti token">
   <rect x="0" y="0" width="720" height="420" fill="#F8F5EE"/>
-  <text x="360" y="34" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="bold" fill="#1A1A1A">Stesso budget di calcolo, due modi di spenderlo</text>
+  <text x="360" y="34" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="bold" fill="#1A1A1A">Stesso budget di calcolo, due modi di spenderlo</text>
   <!-- baseline -->
   <line x1="50" y1="330" x2="670" y2="330" stroke="#1A1A1A" stroke-width="2"/>
   <!-- divider -->
   <line x1="360" y1="70" x2="360" y2="360" stroke="#C9C2B4" stroke-width="1.5" stroke-dasharray="4 5"/>
   <!-- GOPHER panel -->
-  <text x="205" y="66" text-anchor="middle" font-family="sans-serif" font-size="15" font-weight="bold" fill="#1A1A1A">Gopher</text>
+  <text x="205" y="66" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="bold" fill="#1A1A1A">Gopher</text>
   <!-- params bar (tall) -->
   <rect x="120" y="120" width="64" height="210" fill="#B5532C"/>
-  <text x="152" y="112" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#1A1A1A">280 mld</text>
-  <text x="152" y="352" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#5E5852">parametri</text>
+  <text x="152" y="112" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A">280 mld</text>
+  <text x="152" y="352" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5E5852">parametri</text>
   <!-- tokens bar (short) -->
   <rect x="228" y="285" width="64" height="45" fill="#2D5A5C"/>
-  <text x="260" y="277" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#1A1A1A">300 mld</text>
-  <text x="260" y="352" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#5E5852">token</text>
+  <text x="260" y="277" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A">300 mld</text>
+  <text x="260" y="352" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5E5852">token</text>
   <!-- CHINCHILLA panel -->
-  <text x="515" y="66" text-anchor="middle" font-family="sans-serif" font-size="15" font-weight="bold" fill="#1A1A1A">Chinchilla</text>
+  <text x="515" y="66" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="bold" fill="#1A1A1A">Chinchilla</text>
   <!-- params bar (short) -->
   <rect x="430" y="278" width="64" height="52" fill="#B5532C"/>
-  <text x="462" y="270" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#1A1A1A">70 mld</text>
-  <text x="462" y="352" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#5E5852">parametri</text>
+  <text x="462" y="270" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A">70 mld</text>
+  <text x="462" y="352" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5E5852">parametri</text>
   <!-- tokens bar (tall) -->
   <rect x="538" y="112" width="64" height="218" fill="#2D5A5C"/>
-  <text x="570" y="104" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#1A1A1A">1400 mld</text>
-  <text x="570" y="352" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#5E5852">token</text>
+  <text x="570" y="104" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A">1400 mld</text>
+  <text x="570" y="352" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5E5852">token</text>
   <!-- legend -->
   <rect x="205" y="384" width="16" height="16" fill="#B5532C"/>
-  <text x="228" y="397" font-family="sans-serif" font-size="12" fill="#1A1A1A">parametri (capacità)</text>
+  <text x="228" y="397" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A">parametri (capacità)</text>
   <rect x="390" y="384" width="16" height="16" fill="#2D5A5C"/>
-  <text x="413" y="397" font-family="sans-serif" font-size="12" fill="#1A1A1A">token (esperienza)</text>
+  <text x="413" y="397" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A">token (esperienza)</text>
 </svg>

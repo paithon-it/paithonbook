@@ -1,9 +1,9 @@
 <svg viewBox="0 0 720 400" width="100%" role="img" aria-label="Schema: due dimensioni interne contengono due feature ortogonali se dense, cinque feature sovrapposte se sparse" xmlns="http://www.w3.org/2000/svg">
   <rect x="0" y="0" width="720" height="400" fill="#F8F5EE"/>
-  <text x="360" y="34" text-anchor="middle" font-family="sans-serif" font-size="17" font-weight="bold" fill="#1A1A1A">Lo stesso spazio, due regimi</text>
+  <text x="360" y="34" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="17" font-weight="bold" fill="#1A1A1A">Lo stesso spazio, due regimi</text>
   <!-- left panel: dense -->
   <rect x="40" y="70" width="280" height="280" fill="#F8F5EE" stroke="#C9C2B4" stroke-width="1.5" rx="6"/>
-  <text x="180" y="96" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#1A1A1A">Feature dense</text>
+  <text x="180" y="96" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="bold" fill="#1A1A1A">Feature dense</text>
   <!-- axes -->
   <line x1="180" y1="320" x2="180" y2="130" stroke="#1A1A1A" stroke-width="1.5"/>
   <line x1="90" y1="230" x2="290" y2="230" stroke="#1A1A1A" stroke-width="1.5"/>
@@ -12,14 +12,14 @@
   <polygon points="180,140 174,152 186,152" fill="#B5532C"/>
   <line x1="180" y1="230" x2="278" y2="230" stroke="#2D5A5C" stroke-width="3"/>
   <polygon points="283,230 271,224 271,236" fill="#2D5A5C"/>
-  <text x="180" y="342" text-anchor="middle" font-family="sans-serif" font-size="11" font-style="italic" fill="#1A1A1A">2 dimensioni, 2 concetti: assi separati</text>
+  <text x="180" y="342" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" font-style="italic" fill="#1A1A1A">2 dimensioni, 2 concetti: assi separati</text>
   <!-- middle arrow -->
   <line x1="325" y1="210" x2="395" y2="210" stroke="#1A1A1A" stroke-width="2"/>
   <polygon points="395,210 385,204 385,216" fill="#1A1A1A"/>
-  <text x="360" y="200" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#1A1A1A">più sparse</text>
+  <text x="360" y="200" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#1A1A1A">più sparse</text>
   <!-- right panel: sparse -->
   <rect x="400" y="70" width="280" height="280" fill="#F8F5EE" stroke="#C9C2B4" stroke-width="1.5" rx="6"/>
-  <text x="540" y="96" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#1A1A1A">Feature sparse</text>
+  <text x="540" y="96" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="bold" fill="#1A1A1A">Feature sparse</text>
   <!-- axes -->
   <line x1="540" y1="320" x2="540" y2="130" stroke="#1A1A1A" stroke-width="1.5"/>
   <line x1="450" y1="230" x2="630" y2="230" stroke="#1A1A1A" stroke-width="1.5"/>
@@ -30,5 +30,5 @@
   <line x1="540" y1="225" x2="493" y2="290" stroke="#1A1A1A" stroke-width="2.5"/>
   <line x1="540" y1="225" x2="464" y2="200" stroke="#B5532C" stroke-width="2.5"/>
   <circle cx="540" cy="225" r="4" fill="#1A1A1A"/>
-  <text x="540" y="342" text-anchor="middle" font-family="sans-serif" font-size="11" font-style="italic" fill="#1A1A1A">2 dimensioni, 5 concetti: direzioni sovrapposte</text>
+  <text x="540" y="342" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" font-style="italic" fill="#1A1A1A">2 dimensioni, 5 concetti: direzioni sovrapposte</text>
 </svg>

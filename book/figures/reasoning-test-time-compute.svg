@@ -1,13 +1,13 @@
 <svg viewBox="0 0 720 420" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Grafico stilizzato: accuratezza in funzione del tempo di riflessione. La curva del reasoning model sale con rendimenti decrescenti; il modello standard resta piatto.">
   <rect x="0" y="0" width="720" height="420" fill="#F8F5EE"/>
-  <text x="360" y="32" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="bold" fill="#1A1A1A">Più riflessione, più accuratezza (fino a un certo punto)</text>
+  <text x="360" y="32" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="bold" fill="#1A1A1A">Più riflessione, più accuratezza (fino a un certo punto)</text>
   <!-- assi -->
   <line x1="80" y1="340" x2="660" y2="340" stroke="#1A1A1A" stroke-width="2"/>
   <line x1="80" y1="340" x2="80" y2="70" stroke="#1A1A1A" stroke-width="2"/>
   <polygon points="660,335 672,340 660,345" fill="#1A1A1A"/>
   <polygon points="75,70 80,58 85,70" fill="#1A1A1A"/>
-  <text x="370" y="380" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#1A1A1A">tempo di riflessione (token di ragionamento, scala log)</text>
-  <text x="38" y="205" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#1A1A1A" transform="rotate(-90 38 205)">accuratezza</text>
+  <text x="370" y="380" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A">tempo di riflessione (token di ragionamento, scala log)</text>
+  <text x="38" y="205" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A" transform="rotate(-90 38 205)">accuratezza</text>
   <!-- griglia leggera -->
   <line x1="80" y1="250" x2="660" y2="250" stroke="#C9C2B4" stroke-width="1" stroke-dasharray="4 5"/>
   <line x1="80" y1="160" x2="660" y2="160" stroke="#C9C2B4" stroke-width="1" stroke-dasharray="4 5"/>
@@ -16,19 +16,19 @@
   <circle cx="100" cy="305" r="5" fill="#B5532C"/>
   <circle cx="340" cy="155" r="5" fill="#B5532C"/>
   <circle cx="640" cy="95" r="5" fill="#B5532C"/>
-  <text x="475" y="82" font-family="sans-serif" font-size="13" font-weight="bold" fill="#B5532C">reasoning model</text>
+  <text x="475" y="82" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="bold" fill="#B5532C">reasoning model</text>
   <!-- curva modello standard: piatta -->
   <path d="M 100 308 C 250 305, 450 302, 640 300" fill="none" stroke="#2D5A5C" stroke-width="2"/>
   <circle cx="100" cy="308" r="5" fill="#2D5A5C"/>
   <circle cx="640" cy="300" r="5" fill="#2D5A5C"/>
-  <text x="470" y="325" font-family="sans-serif" font-size="13" font-weight="bold" fill="#2D5A5C">modello standard (risposta diretta)</text>
+  <text x="470" y="325" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="bold" fill="#2D5A5C">modello standard (risposta diretta)</text>
   <!-- zona rendimenti decrescenti -->
   <rect x="480" y="70" width="180" height="270" fill="#C9A961" opacity="0.18"/>
   <line x1="480" y1="70" x2="480" y2="340" stroke="#C9A961" stroke-width="2" stroke-dasharray="6 5"/>
-  <text x="570" y="215" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">rendimenti</text>
-  <text x="570" y="232" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">decrescenti</text>
+  <text x="570" y="215" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A">rendimenti</text>
+  <text x="570" y="232" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A">decrescenti</text>
   <!-- annotazione divario -->
   <line x1="340" y1="155" x2="340" y2="304" stroke="#1A1A1A" stroke-width="1.5" stroke-dasharray="3 4"/>
-  <text x="352" y="235" font-family="sans-serif" font-size="12" fill="#5E5852">il divario si apre</text>
-  <text x="352" y="252" font-family="sans-serif" font-size="12" fill="#5E5852">sui problemi difficili</text>
+  <text x="352" y="235" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5E5852">il divario si apre</text>
+  <text x="352" y="252" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5E5852">sui problemi difficili</text>
 </svg>

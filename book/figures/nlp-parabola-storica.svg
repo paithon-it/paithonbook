@@ -10,32 +10,32 @@
 
   <!-- Tappa 1: Regole -->
   <circle cx="120" cy="150" r="15" fill="#2D5A5C"/>
-  <text x="120" y="96" text-anchor="middle" font-family="Georgia, serif" font-size="18" font-weight="700" fill="#1A1A1A">Regole</text>
-  <text x="120" y="116" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#5E5852">anni '50–'80</text>
-  <text x="120" y="205" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13.5" fill="#1A1A1A">grammatiche</text>
-  <text x="120" y="223" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13.5" fill="#1A1A1A">scritte a mano</text>
+  <text x="120" y="96" text-anchor="middle" font-family="Fraunces, Georgia, serif" font-size="18" font-weight="700" fill="#1A1A1A">Regole</text>
+  <text x="120" y="116" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#5E5852">anni '50–'80</text>
+  <text x="120" y="205" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13.5" fill="#1A1A1A">grammatiche</text>
+  <text x="120" y="223" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13.5" fill="#1A1A1A">scritte a mano</text>
 
   <!-- Tappa 2: Statistica -->
   <circle cx="330" cy="150" r="15" fill="#C9A961"/>
-  <text x="330" y="96" text-anchor="middle" font-family="Georgia, serif" font-size="18" font-weight="700" fill="#1A1A1A">Statistica</text>
-  <text x="330" y="116" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#5E5852">anni '90–2000</text>
-  <text x="330" y="205" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13.5" fill="#1A1A1A">conteggi su</text>
-  <text x="330" y="223" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13.5" fill="#1A1A1A">grandi corpora</text>
+  <text x="330" y="96" text-anchor="middle" font-family="Fraunces, Georgia, serif" font-size="18" font-weight="700" fill="#1A1A1A">Statistica</text>
+  <text x="330" y="116" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#5E5852">anni '90–2000</text>
+  <text x="330" y="205" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13.5" fill="#1A1A1A">conteggi su</text>
+  <text x="330" y="223" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13.5" fill="#1A1A1A">grandi corpora</text>
 
   <!-- Tappa 3: Reti neurali -->
   <circle cx="540" cy="150" r="15" fill="#B5532C"/>
-  <text x="540" y="96" text-anchor="middle" font-family="Georgia, serif" font-size="18" font-weight="700" fill="#1A1A1A">Reti neurali</text>
-  <text x="540" y="116" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#5E5852">dal 2013</text>
-  <text x="540" y="205" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13.5" fill="#1A1A1A">word2vec,</text>
-  <text x="540" y="223" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13.5" fill="#1A1A1A">embedding densi</text>
+  <text x="540" y="96" text-anchor="middle" font-family="Fraunces, Georgia, serif" font-size="18" font-weight="700" fill="#1A1A1A">Reti neurali</text>
+  <text x="540" y="116" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#5E5852">dal 2013</text>
+  <text x="540" y="205" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13.5" fill="#1A1A1A">word2vec,</text>
+  <text x="540" y="223" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13.5" fill="#1A1A1A">embedding densi</text>
 
   <!-- Tappa 4: Transformer -->
   <circle cx="720" cy="150" r="17" fill="#B5532C" stroke="#1A1A1A" stroke-width="2.5"/>
-  <text x="720" y="96" text-anchor="middle" font-family="Georgia, serif" font-size="18" font-weight="700" fill="#1A1A1A">Transformer</text>
-  <text x="720" y="116" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#5E5852">dal 2017</text>
-  <text x="720" y="205" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13.5" fill="#1A1A1A">attention,</text>
-  <text x="720" y="223" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13.5" fill="#1A1A1A">BERT, GPT</text>
+  <text x="720" y="96" text-anchor="middle" font-family="Fraunces, Georgia, serif" font-size="18" font-weight="700" fill="#1A1A1A">Transformer</text>
+  <text x="720" y="116" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#5E5852">dal 2017</text>
+  <text x="720" y="205" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13.5" fill="#1A1A1A">attention,</text>
+  <text x="720" y="223" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13.5" fill="#1A1A1A">BERT, GPT</text>
 
   <!-- nota trasversale -->
-  <text x="415" y="270" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13" font-style="italic" fill="#8B847C">meno regole scritte a mano, più conoscenza appresa dai dati</text>
+  <text x="415" y="270" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" font-style="italic" fill="#8B847C">meno regole scritte a mano, più conoscenza appresa dai dati</text>
 </svg>

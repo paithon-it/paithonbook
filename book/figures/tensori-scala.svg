@@ -4,11 +4,11 @@
   <!-- Scalare: rank 0 -->
   <rect x="70" y="100" width="30" height="30" fill="#B5532C" stroke="#1A1A1A" stroke-width="2"/>
   <circle cx="85" cy="115" r="4" fill="#F8F5EE"/>
-  <text x="85" y="200" text-anchor="middle" font-family="Georgia, serif" font-size="18" font-weight="700" fill="#1A1A1A">Scalare</text>
-  <text x="85" y="222" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#5E5852">rank 0 &#183; ()</text>
+  <text x="85" y="200" text-anchor="middle" font-family="Fraunces, Georgia, serif" font-size="18" font-weight="700" fill="#1A1A1A">Scalare</text>
+  <text x="85" y="222" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#5E5852">rank 0 &#183; ()</text>
 
   <!-- freccia -->
-  <text x="150" y="122" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="22" fill="#8B847C">&#8594;</text>
+  <text x="150" y="122" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="22" fill="#8B847C">&#8594;</text>
 
   <!-- Vettore: rank 1 -->
   <g stroke="#1A1A1A" stroke-width="2" fill="#2D5A5C">
@@ -17,11 +17,11 @@
     <rect x="250" y="100" width="30" height="30"/>
     <rect x="280" y="100" width="30" height="30"/>
   </g>
-  <text x="250" y="200" text-anchor="middle" font-family="Georgia, serif" font-size="18" font-weight="700" fill="#1A1A1A">Vettore</text>
-  <text x="250" y="222" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#5E5852">rank 1 &#183; (4,)</text>
+  <text x="250" y="200" text-anchor="middle" font-family="Fraunces, Georgia, serif" font-size="18" font-weight="700" fill="#1A1A1A">Vettore</text>
+  <text x="250" y="222" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#5E5852">rank 1 &#183; (4,)</text>
 
   <!-- freccia -->
-  <text x="345" y="122" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="22" fill="#8B847C">&#8594;</text>
+  <text x="345" y="122" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="22" fill="#8B847C">&#8594;</text>
 
   <!-- Matrice: rank 2 -->
   <g stroke="#1A1A1A" stroke-width="2" fill="#C9A961">
@@ -35,11 +35,11 @@
     <rect x="415" y="130" width="30" height="30"/>
     <rect x="445" y="130" width="30" height="30"/>
   </g>
-  <text x="430" y="200" text-anchor="middle" font-family="Georgia, serif" font-size="18" font-weight="700" fill="#1A1A1A">Matrice</text>
-  <text x="430" y="222" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#5E5852">rank 2 &#183; (3, 3)</text>
+  <text x="430" y="200" text-anchor="middle" font-family="Fraunces, Georgia, serif" font-size="18" font-weight="700" fill="#1A1A1A">Matrice</text>
+  <text x="430" y="222" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#5E5852">rank 2 &#183; (3, 3)</text>
 
   <!-- freccia -->
-  <text x="525" y="122" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="22" fill="#8B847C">&#8594;</text>
+  <text x="525" y="122" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="22" fill="#8B847C">&#8594;</text>
 
   <!-- Tensore 3D: rank 3 (pila di griglie) -->
   <!-- layer posteriore -->
@@ -70,6 +70,6 @@
     <rect x="613" y="136" width="30" height="30"/>
     <rect x="643" y="136" width="30" height="30"/>
   </g>
-  <text x="648" y="200" text-anchor="middle" font-family="Georgia, serif" font-size="18" font-weight="700" fill="#1A1A1A">Tensore 3D</text>
-  <text x="648" y="222" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#5E5852">rank 3 &#183; (3, 3, 3)</text>
+  <text x="648" y="200" text-anchor="middle" font-family="Fraunces, Georgia, serif" font-size="18" font-weight="700" fill="#1A1A1A">Tensore 3D</text>
+  <text x="648" y="222" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#5E5852">rank 3 &#183; (3, 3, 3)</text>
 </svg>

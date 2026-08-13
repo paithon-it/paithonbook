@@ -1,9 +1,9 @@
 <svg viewBox="0 0 660 560" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Quattro bersagli che illustrano le combinazioni di bias e varianza">
   <rect width="660" height="560" fill="#F8F5EE"/>
-  <text x="205" y="34" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#1A1A1A" font-weight="bold">varianza bassa</text>
-  <text x="490" y="34" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#1A1A1A" font-weight="bold">varianza alta</text>
-  <text x="28" y="170" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#1A1A1A" font-weight="bold" transform="rotate(-90 28 170)">bias basso</text>
-  <text x="28" y="420" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#1A1A1A" font-weight="bold" transform="rotate(-90 28 420)">bias alto</text>
+  <text x="205" y="34" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" fill="#1A1A1A" font-weight="bold">varianza bassa</text>
+  <text x="490" y="34" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" fill="#1A1A1A" font-weight="bold">varianza alta</text>
+  <text x="28" y="170" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" fill="#1A1A1A" font-weight="bold" transform="rotate(-90 28 170)">bias basso</text>
+  <text x="28" y="420" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" fill="#1A1A1A" font-weight="bold" transform="rotate(-90 28 420)">bias alto</text>
 
   <!-- bias basso, varianza bassa -->
   <g>

@@ -1,6 +1,6 @@
 <svg viewBox="0 0 720 380" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Una rete neurale densa con tutte le connessioni in grigio; un sottoinsieme di connessioni e nodi, il biglietto vincente, è evidenziato in terracotta">
   <rect x="0" y="0" width="720" height="380" fill="#F8F5EE"/>
-  <text x="360" y="34" text-anchor="middle" font-family="sans-serif" font-size="15" fill="#1A1A1A">la rete densa (grigio) e il biglietto vincente al suo interno (terracotta)</text>
+  <text x="360" y="34" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="15" fill="#1A1A1A">la rete densa (grigio) e il biglietto vincente al suo interno (terracotta)</text>
   <!-- connessioni dense in grigio -->
   <g stroke="#C9C2B4" stroke-width="1.2">
     <line x1="140" y1="110" x2="380" y2="70"/><line x1="140" y1="110" x2="380" y2="150"/><line x1="140" y1="110" x2="380" y2="230"/><line x1="140" y1="110" x2="380" y2="310"/>
@@ -31,7 +31,7 @@
     <circle cx="380" cy="70" r="16"/><circle cx="380" cy="230" r="16"/>
     <circle cx="620" cy="190" r="16"/>
   </g>
-  <text x="140" y="352" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#5E5852">ingresso</text>
-  <text x="380" y="352" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#5E5852">strato nascosto</text>
-  <text x="620" y="352" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#5E5852">uscita</text>
+  <text x="140" y="352" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#5E5852">ingresso</text>
+  <text x="380" y="352" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#5E5852">strato nascosto</text>
+  <text x="620" y="352" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#5E5852">uscita</text>
 </svg>

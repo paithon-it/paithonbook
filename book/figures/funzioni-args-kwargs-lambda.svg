@@ -2,11 +2,11 @@
   <rect x="0" y="0" width="720" height="340" fill="#F8F5EE"/>
   <!-- input -->
   <rect x="30" y="60" width="150" height="42" rx="6" fill="#C9A961" stroke="#1A1A1A" stroke-width="1.5"/>
-  <text x="105" y="86" text-anchor="middle" font-family="sans-serif" font-size="14" fill="#1A1A1A">prezzo = 100</text>
+  <text x="105" y="86" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#1A1A1A">prezzo = 100</text>
   <rect x="30" y="120" width="150" height="42" rx="6" fill="#C9A961" stroke="#1A1A1A" stroke-width="1.5"/>
-  <text x="105" y="146" text-anchor="middle" font-family="sans-serif" font-size="14" fill="#1A1A1A">sconto = 0.25</text>
+  <text x="105" y="146" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#1A1A1A">sconto = 0.25</text>
   <rect x="30" y="180" width="150" height="42" rx="6" fill="#F8F5EE" stroke="#C9A961" stroke-width="2" stroke-dasharray="6 4"/>
-  <text x="105" y="206" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#1A1A1A">default se assente</text>
+  <text x="105" y="206" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A">default se assente</text>
   <!-- frecce in ingresso -->
   <line x1="180" y1="81" x2="250" y2="130" stroke="#1A1A1A" stroke-width="1.5"/>
   <line x1="180" y1="141" x2="250" y2="150" stroke="#1A1A1A" stroke-width="1.5"/>
@@ -14,21 +14,21 @@
   <polygon points="258,150 246,144 246,156" fill="#1A1A1A"/>
   <!-- scatola -->
   <rect x="262" y="70" width="220" height="170" rx="10" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="2"/>
-  <text x="372" y="110" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#F8F5EE">prezzo_scontato()</text>
+  <text x="372" y="110" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" fill="#F8F5EE">prezzo_scontato()</text>
   <line x1="290" y1="128" x2="454" y2="128" stroke="#F8F5EE" stroke-width="1.5"/>
-  <text x="372" y="158" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#F8F5EE">finale = prezzo · (1 − sconto)</text>
-  <text x="372" y="184" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#F8F5EE">variabili locali: invisibili</text>
-  <text x="372" y="204" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#F8F5EE">fuori dalla scatola</text>
+  <text x="372" y="158" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F8F5EE">finale = prezzo · (1 − sconto)</text>
+  <text x="372" y="184" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F8F5EE">variabili locali: invisibili</text>
+  <text x="372" y="204" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F8F5EE">fuori dalla scatola</text>
   <!-- freccia in uscita -->
   <line x1="482" y1="155" x2="552" y2="155" stroke="#1A1A1A" stroke-width="1.5"/>
   <polygon points="560,155 548,149 548,161" fill="#1A1A1A"/>
   <!-- output -->
   <rect x="564" y="132" width="130" height="46" rx="6" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5"/>
-  <text x="629" y="153" text-anchor="middle" font-family="sans-serif" font-size="14" fill="#F8F5EE">return 75.0</text>
-  <text x="629" y="170" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#F8F5EE">(l'unico canale)</text>
+  <text x="629" y="153" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#F8F5EE">return 75.0</text>
+  <text x="629" y="170" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F8F5EE">(l'unico canale)</text>
   <!-- etichette -->
-  <text x="105" y="46" text-anchor="middle" font-family="sans-serif" font-size="14" fill="#1A1A1A" font-weight="bold">argomenti</text>
-  <text x="372" y="56" text-anchor="middle" font-family="sans-serif" font-size="14" fill="#1A1A1A" font-weight="bold">corpo (privato)</text>
-  <text x="629" y="118" text-anchor="middle" font-family="sans-serif" font-size="14" fill="#1A1A1A" font-weight="bold">output</text>
-  <text x="360" y="300" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#1A1A1A">stessi input → stesso output: questo è il contratto</text>
+  <text x="105" y="46" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#1A1A1A" font-weight="bold">argomenti</text>
+  <text x="372" y="56" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#1A1A1A" font-weight="bold">corpo (privato)</text>
+  <text x="629" y="118" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#1A1A1A" font-weight="bold">output</text>
+  <text x="360" y="300" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A">stessi input → stesso output: questo è il contratto</text>
 </svg>

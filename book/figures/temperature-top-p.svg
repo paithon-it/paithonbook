@@ -1,7 +1,7 @@
 <svg viewBox="0 0 720 316" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Schema: la stessa distribuzione sui token, riscalata dalla temperatura e troncata dal top_p, e il taglio del top_p che si sposta quando cambia la temperatura">
   <rect x="0" y="0" width="720" height="316" fill="#F8F5EE"/>
-  <text x="360" y="30" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="bold" fill="#1A1A1A">Una distribuzione, due manopole</text>
-  <g font-family="sans-serif" font-size="12">
+  <text x="360" y="30" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="bold" fill="#1A1A1A">Una distribuzione, due manopole</text>
+  <g font-family="Inter, system-ui, sans-serif" font-size="12">
     <text x="130" y="60" text-anchor="middle" font-size="13" font-weight="bold" fill="#1A1A1A">originale (T = 1)</text>
     <line x1="40" y1="200" x2="220" y2="200" stroke="#1A1A1A" stroke-width="1.5"/>
     <rect x="50" y="110" width="24" height="90" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="1.5"/>
@@ -12,7 +12,7 @@
     <text x="130" y="222" text-anchor="middle" fill="#1A1A1A">token ordinati per probabilità</text>
     <text x="130" y="240" text-anchor="middle" fill="#5A524A">45 · 30 · 16 · 6 · 3 per cento</text>
   </g>
-  <g font-family="sans-serif" font-size="12">
+  <g font-family="Inter, system-ui, sans-serif" font-size="12">
     <text x="360" y="60" text-anchor="middle" font-size="13" font-weight="bold" fill="#B5532C">temperatura alta (T = 2)</text>
     <line x1="270" y1="200" x2="450" y2="200" stroke="#1A1A1A" stroke-width="1.5"/>
     <rect x="280" y="134" width="24" height="66" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5"/>
@@ -23,7 +23,7 @@
     <text x="360" y="222" text-anchor="middle" fill="#1A1A1A">riscala tutti, non esclude nessuno</text>
     <text x="360" y="240" text-anchor="middle" fill="#5A524A">33 · 27 · 20 · 12 · 9 per cento</text>
   </g>
-  <g font-family="sans-serif" font-size="12">
+  <g font-family="Inter, system-ui, sans-serif" font-size="12">
     <text x="590" y="60" text-anchor="middle" font-size="13" font-weight="bold" fill="#2D5A5C">top_p = 0,9 (a T = 1)</text>
     <line x1="500" y1="200" x2="680" y2="200" stroke="#1A1A1A" stroke-width="1.5"/>
     <rect x="510" y="110" width="24" height="90" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="1.5"/>
@@ -37,6 +37,6 @@
     <text x="590" y="240" text-anchor="middle" fill="#5A524A">3 token bastano a superare 0,9</text>
   </g>
   <line x1="40" y1="258" x2="680" y2="258" stroke="#C5BEAA" stroke-width="1.5"/>
-  <text x="360" y="280" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#1A1A1A">Ma non sono indipendenti: con lo stesso p = 0,9, a T = 1 il nucleo è di 3 token, a T = 2 di 4.</text>
-  <text x="360" y="298" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#B5532C">la temperatura sposta il taglio</text>
+  <text x="360" y="280" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A">Ma non sono indipendenti: con lo stesso p = 0,9, a T = 1 il nucleo è di 3 token, a T = 2 di 4.</text>
+  <text x="360" y="298" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="bold" fill="#B5532C">la temperatura sposta il taglio</text>
 </svg>

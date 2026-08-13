@@ -1,22 +1,22 @@
 <svg viewBox="0 0 720 360" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Flusso della self-attention: un token in ingresso genera tre vettori Query, Key e Value; Query e Key producono i punteggi, la softmax li trasforma in pesi che ricombinano i Value nell'output">
   <rect x="0" y="0" width="720" height="360" fill="#F8F5EE"/>
-  <text x="360" y="34" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="bold" fill="#1A1A1A">Il flusso Q · K · V dentro un livello di attention</text>
+  <text x="360" y="34" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="bold" fill="#1A1A1A">Il flusso Q · K · V dentro un livello di attention</text>
 
   <!-- token in ingresso -->
   <rect x="30" y="150" width="120" height="56" rx="6" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="2"/>
-  <text x="90" y="176" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#1A1A1A">vettore del</text>
-  <text x="90" y="194" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#1A1A1A">token «cane»</text>
+  <text x="90" y="176" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A">vettore del</text>
+  <text x="90" y="194" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A">token «cane»</text>
 
   <!-- tre proiezioni Q K V -->
   <rect x="210" y="70" width="96" height="44" rx="6" fill="#B5532C"/>
-  <text x="258" y="90" text-anchor="middle" font-family="sans-serif" font-size="15" font-weight="bold" fill="#F8F5EE">Q</text>
-  <text x="258" y="106" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#F8F5EE">query</text>
+  <text x="258" y="90" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="bold" fill="#F8F5EE">Q</text>
+  <text x="258" y="106" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#F8F5EE">query</text>
   <rect x="210" y="156" width="96" height="44" rx="6" fill="#2D5A5C"/>
-  <text x="258" y="176" text-anchor="middle" font-family="sans-serif" font-size="15" font-weight="bold" fill="#F8F5EE">K</text>
-  <text x="258" y="192" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#F8F5EE">key</text>
+  <text x="258" y="176" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="bold" fill="#F8F5EE">K</text>
+  <text x="258" y="192" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#F8F5EE">key</text>
   <rect x="210" y="242" width="96" height="44" rx="6" fill="#C9A961"/>
-  <text x="258" y="262" text-anchor="middle" font-family="sans-serif" font-size="15" font-weight="bold" fill="#1A1A1A">V</text>
-  <text x="258" y="278" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#1A1A1A">value</text>
+  <text x="258" y="262" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="bold" fill="#1A1A1A">V</text>
+  <text x="258" y="278" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#1A1A1A">value</text>
 
   <!-- frecce token -> QKV -->
   <g stroke="#1A1A1A" stroke-width="1.5" fill="none">
@@ -27,8 +27,8 @@
 
   <!-- nodo punteggi (Q e K) -->
   <rect x="370" y="102" width="150" height="52" rx="6" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="2"/>
-  <text x="445" y="126" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#1A1A1A">punteggi</text>
-  <text x="445" y="144" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">Q · K&#8348; / &#8730;d&#8342;</text>
+  <text x="445" y="126" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A">punteggi</text>
+  <text x="445" y="144" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A">Q · K&#8348; / &#8730;d&#8342;</text>
   <g stroke="#1A1A1A" stroke-width="1.5" fill="none">
     <path d="M306 92 L 366 118"/>
     <path d="M306 178 L 366 138"/>
@@ -36,15 +36,15 @@
 
   <!-- nodo softmax -->
   <rect x="560" y="102" width="130" height="52" rx="6" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="2"/>
-  <text x="625" y="126" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#1A1A1A">softmax</text>
-  <text x="625" y="144" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">&#8594; pesi &#945;</text>
+  <text x="625" y="126" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A">softmax</text>
+  <text x="625" y="144" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A">&#8594; pesi &#945;</text>
   <line x1="520" y1="128" x2="556" y2="128" stroke="#1A1A1A" stroke-width="1.5"/>
   <path d="M556 128 L 548 124 L 548 132 Z" fill="#1A1A1A"/>
 
   <!-- output -->
   <rect x="470" y="256" width="180" height="56" rx="6" fill="#B5532C"/>
-  <text x="560" y="282" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#F8F5EE">output del token</text>
-  <text x="560" y="300" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#F8F5EE">= &#931; &#945; · V</text>
+  <text x="560" y="282" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F8F5EE">output del token</text>
+  <text x="560" y="300" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F8F5EE">= &#931; &#945; · V</text>
 
   <!-- frecce verso output: pesi e value -->
   <g fill="none">
@@ -53,5 +53,5 @@
   </g>
   <path d="M466 280 L 456 275 L 458 285 Z" fill="#C9A961"/>
 
-  <text x="360" y="342" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">i pesi &#945; decidono quanto di ogni value entra nella nuova rappresentazione della parola</text>
+  <text x="360" y="342" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A">i pesi &#945; decidono quanto di ogni value entra nella nuova rappresentazione della parola</text>
 </svg>

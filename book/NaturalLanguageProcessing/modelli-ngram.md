@@ -148,11 +148,11 @@ La probabilità dell'intera frase-simbolo del libro è il prodotto delle
 scommesse lungo la catena:
 
 $$
-\begin{align*}
+\begin{aligned}
 P(\text{il gatto nero salta sul muro})
 &= 1 \cdot 0{,}75 \cdot \tfrac{2}{3} \cdot 0{,}5 \cdot 1 \cdot 0{,}5 \cdot 1 \\
 &= 0{,}125,
-\end{align*}
+\end{aligned}
 $$
 
 dove i sette fattori sono, nell'ordine: «il» a inizio frase, «gatto» dopo

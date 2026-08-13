@@ -3,7 +3,7 @@
   <!-- Pannello 1: inizializzazione -->
   <g>
     <rect x="15" y="40" width="210" height="210" fill="none" stroke="#1A1A1A" stroke-width="1.5"/>
-    <text x="120" y="28" font-family="sans-serif" font-size="14" fill="#1A1A1A" text-anchor="middle">1. Inizio casuale</text>
+    <text x="120" y="28" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#1A1A1A" text-anchor="middle">1. Inizio casuale</text>
     <!-- cluster alto-sx -->
     <circle cx="55" cy="85" r="5" fill="#C9A961"/><circle cx="75" cy="70" r="5" fill="#C9A961"/><circle cx="70" cy="100" r="5" fill="#C9A961"/><circle cx="90" cy="88" r="5" fill="#C9A961"/>
     <!-- cluster basso-dx -->
@@ -15,7 +15,7 @@
   <!-- Pannello 2: migrazione -->
   <g>
     <rect x="255" y="40" width="210" height="210" fill="none" stroke="#1A1A1A" stroke-width="1.5"/>
-    <text x="360" y="28" font-family="sans-serif" font-size="14" fill="#1A1A1A" text-anchor="middle">2. I centroidi migrano</text>
+    <text x="360" y="28" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#1A1A1A" text-anchor="middle">2. I centroidi migrano</text>
     <circle cx="295" cy="85" r="5" fill="#B5532C"/><circle cx="315" cy="70" r="5" fill="#B5532C"/><circle cx="310" cy="100" r="5" fill="#B5532C"/><circle cx="330" cy="88" r="5" fill="#B5532C"/>
     <circle cx="400" cy="190" r="5" fill="#2D5A5C"/><circle cx="420" cy="205" r="5" fill="#2D5A5C"/><circle cx="410" cy="220" r="5" fill="#2D5A5C"/><circle cx="435" cy="195" r="5" fill="#2D5A5C"/>
     <!-- frecce di migrazione -->
@@ -29,7 +29,7 @@
   <!-- Pannello 3: convergenza -->
   <g>
     <rect x="495" y="40" width="210" height="210" fill="none" stroke="#1A1A1A" stroke-width="1.5"/>
-    <text x="600" y="28" font-family="sans-serif" font-size="14" fill="#1A1A1A" text-anchor="middle">3. Convergenza</text>
+    <text x="600" y="28" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#1A1A1A" text-anchor="middle">3. Convergenza</text>
     <circle cx="535" cy="85" r="5" fill="#B5532C"/><circle cx="555" cy="70" r="5" fill="#B5532C"/><circle cx="550" cy="100" r="5" fill="#B5532C"/><circle cx="570" cy="88" r="5" fill="#B5532C"/>
     <circle cx="640" cy="190" r="5" fill="#2D5A5C"/><circle cx="660" cy="205" r="5" fill="#2D5A5C"/><circle cx="650" cy="220" r="5" fill="#2D5A5C"/><circle cx="675" cy="195" r="5" fill="#2D5A5C"/>
     <path d="M 549 82 l 7 7 m 0 -7 l -7 7" stroke="#B5532C" stroke-width="2.5" fill="none"/>
@@ -37,5 +37,5 @@
     <circle cx="552.5" cy="85.5" r="16" fill="none" stroke="#B5532C" stroke-width="1.5" stroke-dasharray="3 3"/>
     <circle cx="655.5" cy="202.5" r="16" fill="none" stroke="#2D5A5C" stroke-width="1.5" stroke-dasharray="3 3"/>
   </g>
-  <text x="360" y="280" font-family="sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">✕ = centroide · a ogni iterazione si sposta nella media dei punti assegnati</text>
+  <text x="360" y="280" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">✕ = centroide · a ogni iterazione si sposta nella media dei punti assegnati</text>
 </svg>

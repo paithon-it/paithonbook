@@ -1,6 +1,6 @@
 <svg viewBox="0 0 760 400" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Gerarchia di una rete convoluzionale: dai bordi alle forme agli oggetti, con griglie sempre piu piccole">
   <rect x="0" y="0" width="760" height="400" fill="#F8F5EE"/>
-  <text x="380" y="34" text-anchor="middle" font-family="sans-serif" font-size="17" font-weight="bold" fill="#1A1A1A">Da pixel a concetti: la piramide della rete</text>
+  <text x="380" y="34" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="17" font-weight="bold" fill="#1A1A1A">Da pixel a concetti: la piramide della rete</text>
   <!-- level 1: edges -->
   <g>
     <g stroke="#1A1A1A" stroke-width="1.5">
@@ -16,14 +16,14 @@
       <line x1="58" y1="190" x2="82" y2="190"/>
       <line x1="190" y1="218" x2="190" y2="242"/>
     </g>
-    <text x="130" y="278" text-anchor="middle" font-family="sans-serif" font-size="14" font-weight="bold" fill="#B5532C">bordi</text>
-    <text x="130" y="298" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#5E5852">strati iniziali</text>
-    <text x="130" y="316" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#5E5852">griglia grande, pattern locali</text>
+    <text x="130" y="278" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#B5532C">bordi</text>
+    <text x="130" y="298" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5E5852">strati iniziali</text>
+    <text x="130" y="316" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5E5852">griglia grande, pattern locali</text>
   </g>
   <!-- arrow 1 -->
   <path d="M222 170 L288 170" stroke="#1A1A1A" stroke-width="2" fill="none"/>
   <path d="M281 164 L290 170 L281 176" fill="none" stroke="#1A1A1A" stroke-width="2"/>
-  <text x="256" y="156" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#5E5852">conv + pooling</text>
+  <text x="256" y="156" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#5E5852">conv + pooling</text>
   <!-- level 2: shapes -->
   <g>
     <g stroke="#1A1A1A" stroke-width="1.5">
@@ -35,14 +35,14 @@
     <path d="M376 126 L404 154 L376 154 Z" fill="none" stroke="#2D5A5C" stroke-width="2"/>
     <rect x="316" y="186" width="28" height="28" fill="none" stroke="#2D5A5C" stroke-width="2"/>
     <path d="M372 214 Q390 182 408 214" fill="none" stroke="#2D5A5C" stroke-width="2"/>
-    <text x="360" y="278" text-anchor="middle" font-family="sans-serif" font-size="14" font-weight="bold" fill="#2D5A5C">forme</text>
-    <text x="360" y="298" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#5E5852">strati intermedi</text>
-    <text x="360" y="316" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#5E5852">griglia media, parti di oggetti</text>
+    <text x="360" y="278" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#2D5A5C">forme</text>
+    <text x="360" y="298" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5E5852">strati intermedi</text>
+    <text x="360" y="316" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5E5852">griglia media, parti di oggetti</text>
   </g>
   <!-- arrow 2 -->
   <path d="M432 170 L498 170" stroke="#1A1A1A" stroke-width="2" fill="none"/>
   <path d="M491 164 L500 170 L491 176" fill="none" stroke="#1A1A1A" stroke-width="2"/>
-  <text x="466" y="156" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#5E5852">conv + pooling</text>
+  <text x="466" y="156" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#5E5852">conv + pooling</text>
   <!-- level 3: object (cat face) -->
   <g>
     <rect x="510" y="130" width="80" height="80" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.5"/>
@@ -52,15 +52,15 @@
     <circle cx="542" cy="172" r="2.5" fill="#1A1A1A"/>
     <circle cx="558" cy="172" r="2.5" fill="#1A1A1A"/>
     <path d="M547 182 L553 182 L550 186 Z" fill="#1A1A1A"/>
-    <text x="550" y="278" text-anchor="middle" font-family="sans-serif" font-size="14" font-weight="bold" fill="#C9A961">oggetti</text>
-    <text x="550" y="298" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#5E5852">strati profondi</text>
-    <text x="550" y="316" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#5E5852">griglia piccola, concetti interi</text>
+    <text x="550" y="278" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#C9A961">oggetti</text>
+    <text x="550" y="298" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5E5852">strati profondi</text>
+    <text x="550" y="316" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5E5852">griglia piccola, concetti interi</text>
   </g>
   <!-- output arrow -->
   <path d="M602 170 L668 170" stroke="#1A1A1A" stroke-width="2" fill="none"/>
   <path d="M661 164 L670 170 L661 176" fill="none" stroke="#1A1A1A" stroke-width="2"/>
-  <text x="700" y="164" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#1A1A1A">"gatto"</text>
-  <text x="700" y="182" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#5E5852">classe</text>
+  <text x="700" y="164" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="bold" fill="#1A1A1A">"gatto"</text>
+  <text x="700" y="182" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#5E5852">classe</text>
   <!-- bottom note -->
-  <text x="380" y="368" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#1A1A1A">← risoluzione spaziale in calo · astrazione in crescita →</text>
+  <text x="380" y="368" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A">← risoluzione spaziale in calo · astrazione in crescita →</text>
 </svg>

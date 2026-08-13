@@ -1,6 +1,6 @@
 <svg viewBox="0 0 640 400" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Un punto nuovo classificato in base ai suoi cinque vicini più prossimi">
   <rect x="0" y="0" width="640" height="400" fill="#F8F5EE"/>
-  <text x="320" y="34" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#1A1A1A" font-weight="bold">Il punto nuovo tra i suoi vicini (k = 5)</text>
+  <text x="320" y="34" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" fill="#1A1A1A" font-weight="bold">Il punto nuovo tra i suoi vicini (k = 5)</text>
   <!-- cerchio del vicinato -->
   <circle cx="330" cy="215" r="105" fill="none" stroke="#1A1A1A" stroke-width="1.5" stroke-dasharray="6 5"/>
   <!-- classe A: terracotta -->
@@ -26,12 +26,12 @@
   <line x1="330" y1="215" x2="405" y2="265" stroke="#1A1A1A" stroke-width="1.5"/>
   <!-- punto nuovo: ocra -->
   <circle cx="330" cy="215" r="13" fill="#C9A961" stroke="#1A1A1A" stroke-width="2"/>
-  <text x="330" y="192" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#1A1A1A" font-weight="bold">?</text>
+  <text x="330" y="192" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A" font-weight="bold">?</text>
   <!-- legenda -->
   <circle cx="120" cy="368" r="8" fill="#B5532C"/>
-  <text x="136" y="373" font-family="sans-serif" font-size="13" fill="#1A1A1A">classe A (3 voti)</text>
+  <text x="136" y="373" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A">classe A (3 voti)</text>
   <circle cx="290" cy="368" r="8" fill="#2D5A5C"/>
-  <text x="306" y="373" font-family="sans-serif" font-size="13" fill="#1A1A1A">classe B (2 voti)</text>
+  <text x="306" y="373" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A">classe B (2 voti)</text>
   <circle cx="470" cy="368" r="8" fill="#C9A961" stroke="#1A1A1A" stroke-width="1.5"/>
-  <text x="486" y="373" font-family="sans-serif" font-size="13" fill="#1A1A1A">punto nuovo → A</text>
+  <text x="486" y="373" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A">punto nuovo → A</text>
 </svg>

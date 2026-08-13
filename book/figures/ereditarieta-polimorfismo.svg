@@ -3,9 +3,9 @@
   <!-- classe base -->
   <rect x="235" y="28" width="230" height="86" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="2"/>
   <rect x="235" y="28" width="230" height="30" fill="#B5532C"/>
-  <text x="350" y="48" font-family="sans-serif" font-size="15" font-weight="bold" fill="#F8F5EE" text-anchor="middle">CaricatoreDati</text>
-  <text x="350" y="80" font-family="sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">carica(), astratto</text>
-  <text x="350" y="100" font-family="sans-serif" font-size="13" fill="#2D5A5C" text-anchor="middle">valida(), comune</text>
+  <text x="350" y="48" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="bold" fill="#F8F5EE" text-anchor="middle">CaricatoreDati</text>
+  <text x="350" y="80" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">carica(), astratto</text>
+  <text x="350" y="100" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#2D5A5C" text-anchor="middle">valida(), comune</text>
   <!-- linee di ereditarieta -->
   <line x1="350" y1="114" x2="350" y2="150" stroke="#1A1A1A" stroke-width="1.5"/>
   <line x1="120" y1="150" x2="580" y2="150" stroke="#1A1A1A" stroke-width="1.5"/>
@@ -18,23 +18,23 @@
   <!-- sottoclassi -->
   <rect x="30" y="188" width="180" height="80" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="2"/>
   <rect x="30" y="188" width="180" height="28" fill="#2D5A5C"/>
-  <text x="120" y="207" font-family="sans-serif" font-size="14" font-weight="bold" fill="#F8F5EE" text-anchor="middle">CaricatoreCSV</text>
-  <text x="120" y="236" font-family="sans-serif" font-size="12.5" fill="#B5532C" text-anchor="middle">carica(), ridefinito</text>
-  <text x="120" y="256" font-family="sans-serif" font-size="12.5" fill="#8B847C" text-anchor="middle">valida()  ereditato</text>
+  <text x="120" y="207" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#F8F5EE" text-anchor="middle">CaricatoreCSV</text>
+  <text x="120" y="236" font-family="Inter, system-ui, sans-serif" font-size="12.5" fill="#B5532C" text-anchor="middle">carica(), ridefinito</text>
+  <text x="120" y="256" font-family="Inter, system-ui, sans-serif" font-size="12.5" fill="#8B847C" text-anchor="middle">valida()  ereditato</text>
   <rect x="260" y="188" width="180" height="80" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="2"/>
   <rect x="260" y="188" width="180" height="28" fill="#2D5A5C"/>
-  <text x="350" y="207" font-family="sans-serif" font-size="14" font-weight="bold" fill="#F8F5EE" text-anchor="middle">CaricatoreJSON</text>
-  <text x="350" y="236" font-family="sans-serif" font-size="12.5" fill="#B5532C" text-anchor="middle">carica(), ridefinito</text>
-  <text x="350" y="256" font-family="sans-serif" font-size="12.5" fill="#8B847C" text-anchor="middle">valida()  ereditato</text>
+  <text x="350" y="207" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#F8F5EE" text-anchor="middle">CaricatoreJSON</text>
+  <text x="350" y="236" font-family="Inter, system-ui, sans-serif" font-size="12.5" fill="#B5532C" text-anchor="middle">carica(), ridefinito</text>
+  <text x="350" y="256" font-family="Inter, system-ui, sans-serif" font-size="12.5" fill="#8B847C" text-anchor="middle">valida()  ereditato</text>
   <rect x="490" y="188" width="180" height="80" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="2"/>
   <rect x="490" y="188" width="180" height="28" fill="#2D5A5C"/>
-  <text x="580" y="207" font-family="sans-serif" font-size="13.5" font-weight="bold" fill="#F8F5EE" text-anchor="middle">CaricatoreParquet</text>
-  <text x="580" y="236" font-family="sans-serif" font-size="12.5" fill="#B5532C" text-anchor="middle">carica(), ridefinito</text>
-  <text x="580" y="256" font-family="sans-serif" font-size="12.5" fill="#8B847C" text-anchor="middle">valida()  ereditato</text>
+  <text x="580" y="207" font-family="Inter, system-ui, sans-serif" font-size="13.5" font-weight="bold" fill="#F8F5EE" text-anchor="middle">CaricatoreParquet</text>
+  <text x="580" y="236" font-family="Inter, system-ui, sans-serif" font-size="12.5" fill="#B5532C" text-anchor="middle">carica(), ridefinito</text>
+  <text x="580" y="256" font-family="Inter, system-ui, sans-serif" font-size="12.5" fill="#8B847C" text-anchor="middle">valida()  ereditato</text>
   <!-- polimorfismo -->
   <rect x="150" y="316" width="400" height="52" fill="#C9A961" stroke="#1A1A1A" stroke-width="2"/>
-  <text x="350" y="338" font-family="sans-serif" font-size="14" font-weight="bold" fill="#1A1A1A" text-anchor="middle">for c in caricatori:  c.carica()</text>
-  <text x="350" y="358" font-family="sans-serif" font-size="12.5" fill="#1A1A1A" text-anchor="middle">stesso metodo, tre comportamenti: polimorfismo</text>
+  <text x="350" y="338" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#1A1A1A" text-anchor="middle">for c in caricatori:  c.carica()</text>
+  <text x="350" y="358" font-family="Inter, system-ui, sans-serif" font-size="12.5" fill="#1A1A1A" text-anchor="middle">stesso metodo, tre comportamenti: polimorfismo</text>
   <line x1="120" y1="268" x2="230" y2="316" stroke="#5E5852" stroke-width="1.5" stroke-dasharray="5 4"/>
   <line x1="350" y1="268" x2="350" y2="316" stroke="#5E5852" stroke-width="1.5" stroke-dasharray="5 4"/>
   <line x1="580" y1="268" x2="470" y2="316" stroke="#5E5852" stroke-width="1.5" stroke-dasharray="5 4"/>

@@ -1,38 +1,38 @@
 <svg viewBox="0 0 760 340" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Rapporto tra immagine Docker, container e volume">
   <rect x="0" y="0" width="760" height="340" fill="#F8F5EE"/>
-  <text x="380" y="30" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="bold" fill="#1A1A1A">Immagine, container e volume</text>
+  <text x="380" y="30" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="bold" fill="#1A1A1A">Immagine, container e volume</text>
   <!-- immagine -->
   <rect x="40" y="70" width="180" height="150" rx="8" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="2"/>
-  <text x="130" y="100" text-anchor="middle" font-family="sans-serif" font-size="14" font-weight="bold" fill="#F8F5EE">IMMAGINE</text>
-  <text x="130" y="122" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#F8F5EE">ricetta congelata</text>
-  <text x="130" y="146" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#C9A961">Python 3.12</text>
-  <text x="130" y="164" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#C9A961">scikit-learn</text>
-  <text x="130" y="182" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#C9A961">il tuo codice</text>
-  <text x="130" y="205" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#F8F5EE">immutabile</text>
+  <text x="130" y="100" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#F8F5EE">IMMAGINE</text>
+  <text x="130" y="122" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#F8F5EE">ricetta congelata</text>
+  <text x="130" y="146" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#C9A961">Python 3.12</text>
+  <text x="130" y="164" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#C9A961">scikit-learn</text>
+  <text x="130" y="182" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#C9A961">il tuo codice</text>
+  <text x="130" y="205" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#F8F5EE">immutabile</text>
   <!-- freccia docker run -->
   <line x1="220" y1="145" x2="310" y2="145" stroke="#B5532C" stroke-width="2"/>
   <polygon points="310,145 298,138 298,152" fill="#B5532C"/>
-  <text x="265" y="132" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="bold" fill="#B5532C">docker run</text>
+  <text x="265" y="132" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="bold" fill="#B5532C">docker run</text>
   <!-- container -->
   <rect x="310" y="70" width="180" height="150" rx="8" fill="#F8F5EE" stroke="#B5532C" stroke-width="2.5" stroke-dasharray="7 5"/>
-  <text x="400" y="100" text-anchor="middle" font-family="sans-serif" font-size="14" font-weight="bold" fill="#1A1A1A">CONTAINER</text>
-  <text x="400" y="122" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#5E5852">ricetta in esecuzione</text>
-  <text x="400" y="146" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#5E5852">processo isolato e vivo</text>
-  <text x="400" y="172" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#B5532C">usa e getta:</text>
-  <text x="400" y="190" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#B5532C">allo stop, sparisce tutto</text>
+  <text x="400" y="100" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#1A1A1A">CONTAINER</text>
+  <text x="400" y="122" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#5E5852">ricetta in esecuzione</text>
+  <text x="400" y="146" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#5E5852">processo isolato e vivo</text>
+  <text x="400" y="172" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#B5532C">usa e getta:</text>
+  <text x="400" y="190" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#B5532C">allo stop, sparisce tutto</text>
   <!-- freccia volume bidirezionale -->
   <line x1="400" y1="220" x2="400" y2="265" stroke="#1A1A1A" stroke-width="2"/>
   <polygon points="400,265 393,253 407,253" fill="#1A1A1A"/>
   <polygon points="400,220 393,232 407,232" fill="#1A1A1A"/>
-  <text x="500" y="248" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#1A1A1A">-v cartella:/app/dati</text>
+  <text x="500" y="248" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#1A1A1A">-v cartella:/app/dati</text>
   <!-- volume -->
   <rect x="290" y="270" width="220" height="50" rx="8" fill="#C9A961" stroke="#1A1A1A" stroke-width="2"/>
-  <text x="400" y="292" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#1A1A1A">VOLUME</text>
-  <text x="400" y="310" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#1A1A1A">cartella del tuo PC: i dati sopravvivono</text>
+  <text x="400" y="292" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="bold" fill="#1A1A1A">VOLUME</text>
+  <text x="400" y="310" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#1A1A1A">cartella del tuo PC: i dati sopravvivono</text>
   <!-- copie multiple container -->
   <rect x="560" y="90" width="150" height="40" rx="6" fill="#F8F5EE" stroke="#B5532C" stroke-width="1.5" stroke-dasharray="5 4"/>
-  <text x="635" y="115" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#5E5852">altro container</text>
+  <text x="635" y="115" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#5E5852">altro container</text>
   <rect x="560" y="140" width="150" height="40" rx="6" fill="#F8F5EE" stroke="#B5532C" stroke-width="1.5" stroke-dasharray="5 4"/>
-  <text x="635" y="165" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#5E5852">altro container</text>
-  <text x="635" y="205" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#2D5A5C">1 immagine → N container</text>
+  <text x="635" y="165" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#5E5852">altro container</text>
+  <text x="635" y="205" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#2D5A5C">1 immagine → N container</text>
 </svg>

@@ -1,8 +1,8 @@
 <svg viewBox="0 0 720 300" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Il gradiente si attenua strato dopo strato tornando indietro nella rete">
   <rect x="0" y="0" width="720" height="300" fill="#F8F5EE"/>
-  <text x="360" y="34" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#1A1A1A" font-weight="bold">Il gradiente torna indietro e si spegne</text>
+  <text x="360" y="34" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" fill="#1A1A1A" font-weight="bold">Il gradiente torna indietro e si spegne</text>
   <!-- layers -->
-  <g font-family="sans-serif" font-size="12" fill="#1A1A1A">
+  <g font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A">
     <rect x="60"  y="70" width="70" height="150" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2"/>
     <rect x="185" y="70" width="70" height="150" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2"/>
     <rect x="310" y="70" width="70" height="150" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2"/>
@@ -33,5 +33,5 @@
     <path d="M260 145 l10 -5 v10 z"/>
     <path d="M135 145 l10 -5 v10 z"/>
   </g>
-  <text x="360" y="280" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#1A1A1A">direzione della retropropagazione: dall'uscita (destra) verso l'ingresso (sinistra)</text>
+  <text x="360" y="280" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A">direzione della retropropagazione: dall'uscita (destra) verso l'ingresso (sinistra)</text>
 </svg>

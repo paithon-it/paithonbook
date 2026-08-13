@@ -1,53 +1,53 @@
 <svg viewBox="0 0 800 460" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Schema di un neurone artificiale e timeline degli inverni dell'AI">
   <rect x="0" y="0" width="800" height="460" fill="#F8F5EE"/>
-  <text x="40" y="38" font-family="sans-serif" font-size="16" font-weight="bold" fill="#1A1A1A">Il neurone di Rosenblatt</text>
+  <text x="40" y="38" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="bold" fill="#1A1A1A">Il neurone di Rosenblatt</text>
   <!-- inputs -->
   <circle cx="90" cy="90" r="22" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2"/>
-  <text x="90" y="96" font-family="sans-serif" font-size="14" fill="#1A1A1A" text-anchor="middle">x1</text>
+  <text x="90" y="96" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#1A1A1A" text-anchor="middle">x1</text>
   <circle cx="90" cy="150" r="22" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2"/>
-  <text x="90" y="156" font-family="sans-serif" font-size="14" fill="#1A1A1A" text-anchor="middle">x2</text>
+  <text x="90" y="156" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#1A1A1A" text-anchor="middle">x2</text>
   <circle cx="90" cy="210" r="22" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2"/>
-  <text x="90" y="216" font-family="sans-serif" font-size="14" fill="#1A1A1A" text-anchor="middle">x3</text>
+  <text x="90" y="216" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#1A1A1A" text-anchor="middle">x3</text>
   <!-- weighted connections -->
   <line x1="112" y1="90" x2="300" y2="140" stroke="#C9A961" stroke-width="2"/>
   <line x1="112" y1="150" x2="300" y2="150" stroke="#C9A961" stroke-width="2"/>
   <line x1="112" y1="210" x2="300" y2="160" stroke="#C9A961" stroke-width="2"/>
-  <text x="200" y="100" font-family="sans-serif" font-size="13" fill="#1A1A1A">w1</text>
-  <text x="200" y="142" font-family="sans-serif" font-size="13" fill="#1A1A1A">w2</text>
-  <text x="200" y="200" font-family="sans-serif" font-size="13" fill="#1A1A1A">w3</text>
+  <text x="200" y="100" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A">w1</text>
+  <text x="200" y="142" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A">w2</text>
+  <text x="200" y="200" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A">w3</text>
   <!-- sum node -->
   <circle cx="330" cy="150" r="34" fill="#B5532C" stroke="#1A1A1A" stroke-width="2"/>
-  <text x="330" y="159" font-family="sans-serif" font-size="22" fill="#F8F5EE" text-anchor="middle">&#931;</text>
+  <text x="330" y="159" font-family="Inter, system-ui, sans-serif" font-size="22" fill="#F8F5EE" text-anchor="middle">&#931;</text>
   <!-- threshold -->
   <line x1="364" y1="150" x2="440" y2="150" stroke="#1A1A1A" stroke-width="2"/>
   <rect x="440" y="115" width="90" height="70" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2"/>
   <polyline points="452,172 485,172 485,128 518,128" fill="none" stroke="#B5532C" stroke-width="2"/>
-  <text x="485" y="205" font-family="sans-serif" font-size="12" fill="#5E5852" text-anchor="middle">soglia</text>
+  <text x="485" y="205" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5E5852" text-anchor="middle">soglia</text>
   <!-- output -->
   <line x1="530" y1="150" x2="600" y2="150" stroke="#1A1A1A" stroke-width="2"/>
   <circle cx="632" cy="150" r="26" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="2"/>
-  <text x="632" y="156" font-family="sans-serif" font-size="13" fill="#F8F5EE" text-anchor="middle">0 / 1</text>
-  <text x="632" y="200" font-family="sans-serif" font-size="12" fill="#5E5852" text-anchor="middle">uscita</text>
+  <text x="632" y="156" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F8F5EE" text-anchor="middle">0 / 1</text>
+  <text x="632" y="200" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5E5852" text-anchor="middle">uscita</text>
   <!-- timeline -->
-  <text x="40" y="290" font-family="sans-serif" font-size="16" font-weight="bold" fill="#1A1A1A">Entusiasmi e inverni, 1958&#8211;1980</text>
+  <text x="40" y="290" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="bold" fill="#1A1A1A">Entusiasmi e inverni, 1958&#8211;1980</text>
   <line x1="60" y1="370" x2="740" y2="370" stroke="#1A1A1A" stroke-width="2"/>
   <!-- winter band -->
   <rect x="520" y="340" width="200" height="60" fill="#C9A961" opacity="0.35"/>
-  <text x="620" y="428" font-family="sans-serif" font-size="12" fill="#5E5852" text-anchor="middle">primo inverno dell'AI (~1974&#8211;1980)</text>
+  <text x="620" y="428" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5E5852" text-anchor="middle">primo inverno dell'AI (~1974&#8211;1980)</text>
   <!-- events -->
   <circle cx="100" cy="370" r="7" fill="#B5532C"/>
-  <text x="100" y="332" font-family="sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">1958</text>
-  <text x="100" y="348" font-family="sans-serif" font-size="12" fill="#5E5852" text-anchor="middle">perceptron</text>
+  <text x="100" y="332" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">1958</text>
+  <text x="100" y="348" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5E5852" text-anchor="middle">perceptron</text>
   <circle cx="240" cy="370" r="7" fill="#2D5A5C"/>
-  <text x="240" y="332" font-family="sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">1960</text>
-  <text x="240" y="348" font-family="sans-serif" font-size="12" fill="#5E5852" text-anchor="middle">Mark I</text>
+  <text x="240" y="332" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">1960</text>
+  <text x="240" y="348" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5E5852" text-anchor="middle">Mark I</text>
   <circle cx="400" cy="370" r="7" fill="#B5532C"/>
-  <text x="400" y="332" font-family="sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">1969</text>
-  <text x="400" y="348" font-family="sans-serif" font-size="12" fill="#5E5852" text-anchor="middle">"Perceptrons"</text>
+  <text x="400" y="332" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">1969</text>
+  <text x="400" y="348" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5E5852" text-anchor="middle">"Perceptrons"</text>
   <circle cx="520" cy="370" r="7" fill="#2D5A5C"/>
-  <text x="520" y="404" font-family="sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">1973</text>
-  <text x="520" y="420" font-family="sans-serif" font-size="12" fill="#5E5852" text-anchor="middle">rapporto Lighthill</text>
+  <text x="520" y="404" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">1973</text>
+  <text x="520" y="420" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5E5852" text-anchor="middle">rapporto Lighthill</text>
   <circle cx="720" cy="370" r="7" fill="#B5532C"/>
-  <text x="720" y="332" font-family="sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">~1980</text>
-  <text x="720" y="348" font-family="sans-serif" font-size="12" fill="#5E5852" text-anchor="middle">disgelo</text>
+  <text x="720" y="332" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">~1980</text>
+  <text x="720" y="348" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5E5852" text-anchor="middle">disgelo</text>
 </svg>

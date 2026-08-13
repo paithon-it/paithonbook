@@ -1,39 +1,39 @@
 <svg viewBox="0 0 680 360" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A sinistra tre distribuzioni delle attivazioni, spostate e di larghezza diversa, che vagano lungo la rete; una stazione di Batch Normalization le riporta tutte centrate sullo zero con dispersione unitaria; poi i parametri gamma e beta le riscalano dove serve">
   <rect x="0" y="0" width="680" height="360" fill="#F8F5EE"/>
-  <text x="340" y="30" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="bold" fill="#1A1A1A">Distribuzioni stabilizzate</text>
+  <text x="340" y="30" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="bold" fill="#1A1A1A">Distribuzioni stabilizzate</text>
 
   <!-- asse zero comune -->
   <line x1="40" y1="250" x2="250" y2="250" stroke="#C9C2B4" stroke-width="1.5"/>
-  <text x="145" y="272" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#5E5852">prima: distribuzioni alla deriva</text>
+  <text x="145" y="272" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5E5852">prima: distribuzioni alla deriva</text>
 
   <!-- tre campane spostate e di larghezza diversa (grigie) -->
   <path d="M 55 250 Q 85 175 115 250" fill="none" stroke="#8B847C" stroke-width="1.5"/>
   <path d="M 110 250 Q 155 130 200 250" fill="none" stroke="#8B847C" stroke-width="1.5"/>
   <path d="M 175 250 Q 205 195 235 250" fill="none" stroke="#8B847C" stroke-width="1.5"/>
   <line x1="145" y1="250" x2="145" y2="120" stroke="#1A1A1A" stroke-width="1" stroke-dasharray="4 4"/>
-  <text x="145" y="112" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#1A1A1A">0</text>
+  <text x="145" y="112" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#1A1A1A">0</text>
 
   <!-- freccia BN -->
   <line x1="262" y1="185" x2="322" y2="185" stroke="#1A1A1A" stroke-width="2"/>
   <polygon points="322,185 308,179 308,191" fill="#1A1A1A"/>
-  <text x="292" y="172" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="bold" fill="#B5532C">BN</text>
+  <text x="292" y="172" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="bold" fill="#B5532C">BN</text>
 
   <!-- dopo: una campana centrata teal -->
   <line x1="340" y1="250" x2="500" y2="250" stroke="#C9C2B4" stroke-width="1.5"/>
   <path d="M 360 250 Q 420 120 480 250" fill="none" stroke="#2D5A5C" stroke-width="2"/>
   <line x1="420" y1="250" x2="420" y2="110" stroke="#1A1A1A" stroke-width="1" stroke-dasharray="4 4"/>
-  <text x="420" y="102" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#1A1A1A">0</text>
-  <text x="420" y="272" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#5E5852">dopo: media 0, varianza 1</text>
+  <text x="420" y="102" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#1A1A1A">0</text>
+  <text x="420" y="272" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5E5852">dopo: media 0, varianza 1</text>
 
   <!-- freccia gamma/beta -->
   <line x1="512" y1="185" x2="562" y2="185" stroke="#1A1A1A" stroke-width="2"/>
   <polygon points="562,185 548,179 548,191" fill="#1A1A1A"/>
-  <text x="537" y="172" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="bold" fill="#B5532C">&#947;,&#946;</text>
+  <text x="537" y="172" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="bold" fill="#B5532C">&#947;,&#946;</text>
 
   <!-- ricalibrata terracotta, leggermente spostata e riscalata -->
   <line x1="575" y1="250" x2="665" y2="250" stroke="#C9C2B4" stroke-width="1.5"/>
   <path d="M 585 250 Q 630 155 675 250" fill="none" stroke="#B5532C" stroke-width="2"/>
-  <text x="620" y="272" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#5E5852">riscalata dalla rete</text>
+  <text x="620" y="272" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5E5852">riscalata dalla rete</text>
 
-  <text x="340" y="330" text-anchor="middle" font-family="sans-serif" font-size="12.5" fill="#1A1A1A">ogni strato riceve input su una scala prevedibile, non un bersaglio mobile</text>
+  <text x="340" y="330" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12.5" fill="#1A1A1A">ogni strato riceve input su una scala prevedibile, non un bersaglio mobile</text>
 </svg>

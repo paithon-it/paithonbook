@@ -1,13 +1,13 @@
 <svg viewBox="0 0 720 400" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Un prompt contiene tre esempi svolti (input a freccia output) seguiti da una nuova domanda senza risposta; il prompt entra nel modello congelato che produce la risposta, senza alcun aggiornamento dei pesi">
   <rect x="0" y="0" width="720" height="400" fill="#F8F5EE"/>
-  <text x="360" y="32" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="bold" fill="#1A1A1A">Few-shot: gli esempi stanno dentro il prompt</text>
+  <text x="360" y="32" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="bold" fill="#1A1A1A">Few-shot: gli esempi stanno dentro il prompt</text>
 
   <!-- box prompt -->
   <rect x="30" y="58" width="330" height="290" rx="8" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="2"/>
-  <text x="48" y="82" font-family="sans-serif" font-size="12" font-weight="bold" fill="#5E5852">PROMPT (un solo testo)</text>
+  <text x="48" y="82" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="bold" fill="#5E5852">PROMPT (un solo testo)</text>
 
   <!-- esempi -->
-  <g font-family="monospace" font-size="14" fill="#1A1A1A">
+  <g font-family="JetBrains Mono, ui-monospace, monospace" font-size="14" fill="#1A1A1A">
     <rect x="48" y="98" width="294" height="34" rx="5" fill="#F8F5EE" stroke="#C9A961" stroke-width="1.5"/>
     <text x="62" y="120">mare  &#8594;  sea</text>
     <rect x="48" y="140" width="294" height="34" rx="5" fill="#F8F5EE" stroke="#C9A961" stroke-width="1.5"/>
@@ -15,12 +15,12 @@
     <rect x="48" y="182" width="294" height="34" rx="5" fill="#F8F5EE" stroke="#C9A961" stroke-width="1.5"/>
     <text x="62" y="204">casa  &#8594;  house</text>
   </g>
-  <text x="195" y="238" text-anchor="middle" font-family="sans-serif" font-size="11" font-style="italic" fill="#5E5852">esempi svolti (few-shot)</text>
+  <text x="195" y="238" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" font-style="italic" fill="#5E5852">esempi svolti (few-shot)</text>
 
   <!-- nuova domanda -->
   <rect x="48" y="256" width="294" height="40" rx="5" fill="#B5532C"/>
-  <text x="62" y="281" font-family="monospace" font-size="14" fill="#F8F5EE">albero  &#8594;  ?</text>
-  <text x="195" y="318" text-anchor="middle" font-family="sans-serif" font-size="11" font-style="italic" fill="#5E5852">la domanda vera, senza risposta</text>
+  <text x="62" y="281" font-family="JetBrains Mono, ui-monospace, monospace" font-size="14" fill="#F8F5EE">albero  &#8594;  ?</text>
+  <text x="195" y="318" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" font-style="italic" fill="#5E5852">la domanda vera, senza risposta</text>
 
   <!-- freccia verso modello -->
   <line x1="360" y1="200" x2="430" y2="200" stroke="#1A1A1A" stroke-width="2"/>
@@ -28,17 +28,17 @@
 
   <!-- modello congelato -->
   <rect x="435" y="150" width="150" height="100" rx="8" fill="#2D5A5C"/>
-  <text x="510" y="192" text-anchor="middle" font-family="sans-serif" font-size="14" font-weight="bold" fill="#F8F5EE">modello</text>
-  <text x="510" y="212" text-anchor="middle" font-family="sans-serif" font-size="14" font-weight="bold" fill="#F8F5EE">congelato</text>
-  <text x="510" y="232" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#F8F5EE">pesi invariati</text>
+  <text x="510" y="192" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#F8F5EE">modello</text>
+  <text x="510" y="212" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#F8F5EE">congelato</text>
+  <text x="510" y="232" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#F8F5EE">pesi invariati</text>
 
   <!-- freccia verso risposta -->
   <line x1="585" y1="200" x2="650" y2="200" stroke="#1A1A1A" stroke-width="2"/>
   <path d="M650 200 L 640 195 L 640 205 Z" fill="#1A1A1A"/>
   <rect x="612" y="256" width="80" height="40" rx="5" fill="#C9A961"/>
-  <text x="652" y="281" text-anchor="middle" font-family="monospace" font-size="14" fill="#1A1A1A">tree</text>
+  <text x="652" y="281" text-anchor="middle" font-family="JetBrains Mono, ui-monospace, monospace" font-size="14" fill="#1A1A1A">tree</text>
   <line x1="652" y1="210" x2="652" y2="254" stroke="#1A1A1A" stroke-width="1.5"/>
   <path d="M652 254 L 647 246 L 657 246 Z" fill="#1A1A1A"/>
 
-  <text x="360" y="382" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">nessun aggiornamento dei pesi: la "lezione" vive solo dentro questo singolo prompt</text>
+  <text x="360" y="382" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A">nessun aggiornamento dei pesi: la "lezione" vive solo dentro questo singolo prompt</text>
 </svg>

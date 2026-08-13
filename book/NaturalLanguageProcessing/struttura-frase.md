@@ -71,14 +71,14 @@ di simboli, e $S$ il simbolo iniziale. Una grammatica giocattolo per il
 nostro frammento d'italiano:
 
 $$
-\begin{align*}
+\begin{aligned}
 F &\to \text{AUX} \ \text{SV}
   &\qquad \text{SN} &\to \text{DET} \ \text{N} \\
 \text{SV} &\to \text{V} \ \text{SN}
   &\qquad \text{SN} &\to \text{SN} \ \text{SP} \\
 \text{SV} &\to \text{SV} \ \text{SP}
   &\qquad \text{SP} &\to \text{P} \ \text{SN}
-\end{align*}
+\end{aligned}
 $$
 
 dove $F$ è la frase, SN, SV e SP i sintagmi nominale, verbale e

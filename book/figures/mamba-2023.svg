@@ -3,7 +3,7 @@
   <line x1="380" y1="60" x2="380" y2="410" stroke="#C9C2B4" stroke-width="1.5" stroke-dasharray="4 6"/>
 
   <!-- LEFT: Attention -->
-  <text x="200" y="42" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700" fill="#1A1A1A">Attention</text>
+  <text x="200" y="42" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="700" fill="#1A1A1A">Attention</text>
   <!-- all-pairs arcs among 5 tokens at x=60,130,200,270,340 y=340 -->
   <g fill="none" stroke="#B5532C" stroke-width="1.5">
     <path d="M60,340 Q95,310 130,340"/>
@@ -24,11 +24,11 @@
     <circle cx="270" cy="340" r="13"/>
     <circle cx="340" cy="340" r="13"/>
   </g>
-  <text x="200" y="392" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#1A1A1A">ogni token guarda tutti gli altri</text>
-  <text x="200" y="410" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="700" fill="#B5532C">costo ∝ n²</text>
+  <text x="200" y="392" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A">ogni token guarda tutti gli altri</text>
+  <text x="200" y="410" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="700" fill="#B5532C">costo ∝ n²</text>
 
   <!-- RIGHT: SSM selettivo -->
-  <text x="560" y="42" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700" fill="#1A1A1A">State space selettivo</text>
+  <text x="560" y="42" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="700" fill="#1A1A1A">State space selettivo</text>
   <!-- states (teal squares) at y=210 above each token; tokens at y=340; x=440,505,570,635,700 -->
   <!-- recurrence arrows state->state -->
   <g stroke="#2D5A5C" stroke-width="2" fill="#2D5A5C">
@@ -74,6 +74,6 @@
     <circle cx="635" cy="340" r="13"/>
     <circle cx="700" cy="340" r="13"/>
   </g>
-  <text x="560" y="392" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#1A1A1A">lo stato scorre; un filtro sceglie cosa tenere</text>
-  <text x="560" y="410" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="700" fill="#2D5A5C">costo ∝ n</text>
+  <text x="560" y="392" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A">lo stato scorre; un filtro sceglie cosa tenere</text>
+  <text x="560" y="410" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="700" fill="#2D5A5C">costo ∝ n</text>
 </svg>

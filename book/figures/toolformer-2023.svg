@@ -2,39 +2,39 @@
   <rect x="0" y="0" width="760" height="430" fill="#F8F5EE"/>
   <!-- flusso di testo in ingresso -->
   <rect x="30" y="60" width="200" height="50" fill="none" stroke="#1A1A1A" stroke-width="2"/>
-  <text x="130" y="82" font-family="sans-serif" font-size="12" fill="#1A1A1A" text-anchor="middle">"...400 su 1400,</text>
-  <text x="130" y="99" font-family="sans-serif" font-size="12" fill="#1A1A1A" text-anchor="middle">cioè il ..."</text>
+  <text x="130" y="82" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A" text-anchor="middle">"...400 su 1400,</text>
+  <text x="130" y="99" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A" text-anchor="middle">cioè il ..."</text>
   <line x1="230" y1="85" x2="290" y2="85" stroke="#1A1A1A" stroke-width="1.5"/>
   <polygon points="290,85 280,80 280,90" fill="#1A1A1A"/>
   <!-- decisione -->
   <polygon points="360,45 425,85 360,125 295,85" fill="#C9A961" fill-opacity="0.18" stroke="#C9A961" stroke-width="2"/>
-  <text x="360" y="82" font-family="sans-serif" font-size="12" fill="#1A1A1A" text-anchor="middle">chiamo</text>
-  <text x="360" y="98" font-family="sans-serif" font-size="12" fill="#1A1A1A" text-anchor="middle">un tool?</text>
+  <text x="360" y="82" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A" text-anchor="middle">chiamo</text>
+  <text x="360" y="98" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A" text-anchor="middle">un tool?</text>
   <!-- ramo NO -->
   <line x1="360" y1="125" x2="360" y2="175" stroke="#1A1A1A" stroke-width="1.5"/>
   <polygon points="360,175 355,165 365,165" fill="#1A1A1A"/>
-  <text x="378" y="152" font-family="sans-serif" font-size="12" fill="#5E5852">no: continua a scrivere</text>
+  <text x="378" y="152" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5E5852">no: continua a scrivere</text>
   <rect x="270" y="175" width="180" height="40" fill="none" stroke="#1A1A1A" stroke-width="1.5" stroke-dasharray="5 4"/>
-  <text x="360" y="200" font-family="sans-serif" font-size="12" fill="#5E5852" text-anchor="middle">genera la parola successiva</text>
+  <text x="360" y="200" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5E5852" text-anchor="middle">genera la parola successiva</text>
   <!-- ramo SI -->
   <line x1="425" y1="85" x2="500" y2="85" stroke="#1A1A1A" stroke-width="1.5"/>
   <polygon points="500,85 490,80 490,90" fill="#1A1A1A"/>
-  <text x="462" y="76" font-family="sans-serif" font-size="12" fill="#B5532C" text-anchor="middle">sì</text>
+  <text x="462" y="76" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#B5532C" text-anchor="middle">sì</text>
   <!-- chiamata API -->
   <rect x="500" y="60" width="230" height="50" fill="#2D5A5C" fill-opacity="0.12" stroke="#2D5A5C" stroke-width="2"/>
-  <text x="615" y="90" font-family="monospace" font-size="13" fill="#1A1A1A" text-anchor="middle">[Calculator(400/1400)</text>
+  <text x="615" y="90" font-family="JetBrains Mono, ui-monospace, monospace" font-size="13" fill="#1A1A1A" text-anchor="middle">[Calculator(400/1400)</text>
   <!-- tool esterno -->
   <line x1="615" y1="110" x2="615" y2="160" stroke="#1A1A1A" stroke-width="1.5"/>
   <polygon points="615,160 610,150 620,150" fill="#1A1A1A"/>
   <rect x="540" y="160" width="150" height="46" fill="#B5532C" fill-opacity="0.12" stroke="#B5532C" stroke-width="2"/>
-  <text x="615" y="180" font-family="sans-serif" font-size="12" fill="#1A1A1A" text-anchor="middle">strumento esterno</text>
-  <text x="615" y="197" font-family="sans-serif" font-size="12" fill="#1A1A1A" text-anchor="middle">esegue: → 0.29</text>
+  <text x="615" y="180" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A" text-anchor="middle">strumento esterno</text>
+  <text x="615" y="197" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A" text-anchor="middle">esegue: → 0.29</text>
   <!-- risultato reinserito nel testo -->
   <line x1="615" y1="206" x2="615" y2="250" stroke="#1A1A1A" stroke-width="1.5"/>
   <polygon points="615,250 610,240 620,240" fill="#1A1A1A"/>
   <rect x="120" y="300" width="520" height="60" fill="#C9A961" fill-opacity="0.15" stroke="#C9A961" stroke-width="2"/>
-  <text x="380" y="326" font-family="sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">"...400 su 1400, cioè il [Calculator(400/1400) → 0.29] 29%."</text>
-  <text x="380" y="347" font-family="sans-serif" font-size="12" fill="#5E5852" text-anchor="middle">il risultato rientra nella frase e la generazione riprende</text>
+  <text x="380" y="326" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">"...400 su 1400, cioè il [Calculator(400/1400) → 0.29] 29%."</text>
+  <text x="380" y="347" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5E5852" text-anchor="middle">il risultato rientra nella frase e la generazione riprende</text>
   <line x1="615" y1="250" x2="615" y2="300" stroke="#1A1A1A" stroke-width="0"/>
   <path d="M 615 250 C 615 275, 500 285, 420 300" fill="none" stroke="#1A1A1A" stroke-width="1.5"/>
 </svg>

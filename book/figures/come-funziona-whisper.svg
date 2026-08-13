@@ -3,8 +3,8 @@
   <!-- Onda sonora -->
   <rect x="20" y="70" width="140" height="110" fill="none" stroke="#1A1A1A" stroke-width="2" rx="6"/>
   <polyline points="30,125 40,100 50,150 60,110 70,140 80,95 90,155 100,120 110,135 120,105 130,145 140,125 150,130" fill="none" stroke="#B5532C" stroke-width="2"/>
-  <text x="90" y="205" font-family="sans-serif" font-size="14" fill="#1A1A1A" text-anchor="middle">Onda sonora</text>
-  <text x="90" y="223" font-family="sans-serif" font-size="11" fill="#5E5852" text-anchor="middle">16.000 campioni/s</text>
+  <text x="90" y="205" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#1A1A1A" text-anchor="middle">Onda sonora</text>
+  <text x="90" y="223" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#5E5852" text-anchor="middle">16.000 campioni/s</text>
   <!-- Freccia 1 -->
   <line x1="165" y1="125" x2="200" y2="125" stroke="#1A1A1A" stroke-width="2"/>
   <polygon points="200,125 192,120 192,130" fill="#1A1A1A"/>
@@ -17,28 +17,28 @@
     <rect x="215" y="134" width="18" height="14" fill="#C9A961"/><rect x="235" y="134" width="18" height="14" fill="#2D5A5C"/><rect x="255" y="134" width="18" height="14" fill="#C9A961"/><rect x="275" y="134" width="18" height="14" fill="#B5532C"/><rect x="295" y="134" width="18" height="14" fill="#2D5A5C"/><rect x="315" y="134" width="18" height="14" fill="#C9A961"/>
     <rect x="215" y="152" width="18" height="14" fill="#2D5A5C"/><rect x="235" y="152" width="18" height="14" fill="#C9A961"/><rect x="255" y="152" width="18" height="14" fill="#2D5A5C"/><rect x="275" y="152" width="18" height="14" fill="#C9A961"/><rect x="295" y="152" width="18" height="14" fill="#B5532C"/><rect x="315" y="152" width="18" height="14" fill="#2D5A5C"/>
   </g>
-  <text x="275" y="205" font-family="sans-serif" font-size="14" fill="#1A1A1A" text-anchor="middle">Spettrogramma log-Mel</text>
-  <text x="275" y="223" font-family="sans-serif" font-size="11" fill="#5E5852" text-anchor="middle">tempo × frequenza</text>
+  <text x="275" y="205" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#1A1A1A" text-anchor="middle">Spettrogramma log-Mel</text>
+  <text x="275" y="223" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#5E5852" text-anchor="middle">tempo × frequenza</text>
   <!-- Freccia 2 -->
   <line x1="350" y1="125" x2="385" y2="125" stroke="#1A1A1A" stroke-width="2"/>
   <polygon points="385,125 377,120 377,130" fill="#1A1A1A"/>
   <!-- Encoder -->
   <rect x="390" y="80" width="110" height="90" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="2" rx="6"/>
-  <text x="445" y="120" font-family="sans-serif" font-size="15" fill="#F8F5EE" text-anchor="middle">Encoder</text>
-  <text x="445" y="140" font-family="sans-serif" font-size="11" fill="#F8F5EE" text-anchor="middle">transformer</text>
-  <text x="445" y="205" font-family="sans-serif" font-size="11" fill="#5E5852" text-anchor="middle">rappresentazione</text>
-  <text x="445" y="221" font-family="sans-serif" font-size="11" fill="#5E5852" text-anchor="middle">acustica</text>
+  <text x="445" y="120" font-family="Inter, system-ui, sans-serif" font-size="15" fill="#F8F5EE" text-anchor="middle">Encoder</text>
+  <text x="445" y="140" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#F8F5EE" text-anchor="middle">transformer</text>
+  <text x="445" y="205" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#5E5852" text-anchor="middle">rappresentazione</text>
+  <text x="445" y="221" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#5E5852" text-anchor="middle">acustica</text>
   <!-- Freccia 3 -->
   <line x1="505" y1="125" x2="540" y2="125" stroke="#1A1A1A" stroke-width="2"/>
   <polygon points="540,125 532,120 532,130" fill="#1A1A1A"/>
   <!-- Decoder -->
   <rect x="545" y="80" width="110" height="90" fill="#B5532C" stroke="#1A1A1A" stroke-width="2" rx="6"/>
-  <text x="600" y="120" font-family="sans-serif" font-size="15" fill="#F8F5EE" text-anchor="middle">Decoder</text>
-  <text x="600" y="140" font-family="sans-serif" font-size="11" fill="#F8F5EE" text-anchor="middle">autoregressivo</text>
+  <text x="600" y="120" font-family="Inter, system-ui, sans-serif" font-size="15" fill="#F8F5EE" text-anchor="middle">Decoder</text>
+  <text x="600" y="140" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#F8F5EE" text-anchor="middle">autoregressivo</text>
   <!-- Token in uscita -->
   <line x1="600" y1="175" x2="600" y2="240" stroke="#1A1A1A" stroke-width="2"/>
   <polygon points="600,240 595,232 605,232" fill="#1A1A1A"/>
-  <g font-family="sans-serif" font-size="12">
+  <g font-family="Inter, system-ui, sans-serif" font-size="12">
     <rect x="480" y="248" width="60" height="26" fill="#F8F5EE" stroke="#C9A961" stroke-width="1.5" rx="4"/>
     <text x="510" y="265" fill="#1A1A1A" text-anchor="middle">⟨it⟩</text>
     <rect x="548" y="248" width="60" height="26" fill="#F8F5EE" stroke="#C9A961" stroke-width="1.5" rx="4"/>
@@ -46,5 +46,5 @@
     <rect x="616" y="248" width="76" height="26" fill="#F8F5EE" stroke="#C9A961" stroke-width="1.5" rx="4"/>
     <text x="654" y="265" fill="#1A1A1A" text-anchor="middle">giorno</text>
   </g>
-  <text x="380" y="35" font-family="sans-serif" font-size="16" fill="#1A1A1A" text-anchor="middle" font-weight="bold">Da onda sonora a token: la pipeline di Whisper</text>
+  <text x="380" y="35" font-family="Inter, system-ui, sans-serif" font-size="16" fill="#1A1A1A" text-anchor="middle" font-weight="bold">Da onda sonora a token: la pipeline di Whisper</text>
 </svg>

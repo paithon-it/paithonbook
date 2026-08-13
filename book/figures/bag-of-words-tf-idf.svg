@@ -2,7 +2,7 @@
   <rect x="0" y="0" width="720" height="300" fill="#F8F5EE"/>
   <!-- documento -->
   <rect x="30" y="60" width="200" height="180" rx="6" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="2"/>
-  <text x="130" y="45" font-family="sans-serif" font-size="14" font-weight="bold" fill="#1A1A1A" text-anchor="middle">Documento</text>
+  <text x="130" y="45" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#1A1A1A" text-anchor="middle">Documento</text>
   <line x1="50" y1="90" x2="210" y2="90" stroke="#C9A961" stroke-width="2"/>
   <line x1="50" y1="115" x2="190" y2="115" stroke="#8B847C" stroke-width="1.5"/>
   <line x1="50" y1="140" x2="205" y2="140" stroke="#8B847C" stroke-width="1.5"/>
@@ -12,10 +12,10 @@
   <!-- freccia -->
   <line x1="250" y1="150" x2="330" y2="150" stroke="#1A1A1A" stroke-width="2"/>
   <polygon points="330,150 318,143 318,157" fill="#1A1A1A"/>
-  <text x="290" y="135" font-family="sans-serif" font-size="12" fill="#5E5852" text-anchor="middle">conta</text>
+  <text x="290" y="135" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5E5852" text-anchor="middle">conta</text>
   <!-- vettore di conteggi -->
-  <text x="520" y="45" font-family="sans-serif" font-size="14" font-weight="bold" fill="#1A1A1A" text-anchor="middle">Vettore di conteggi</text>
-  <g font-family="sans-serif" font-size="13" fill="#1A1A1A">
+  <text x="520" y="45" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#1A1A1A" text-anchor="middle">Vettore di conteggi</text>
+  <g font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A">
     <text x="360" y="87" text-anchor="start">rete</text>
     <rect x="440" y="72" width="120" height="22" fill="#B5532C"/>
     <text x="570" y="87" fill="#5E5852">3</text>
@@ -32,5 +32,5 @@
     <rect x="440" y="212" width="4" height="22" fill="#8B847C"/>
     <text x="456" y="227" fill="#5E5852">0</text>
   </g>
-  <text x="360" y="270" font-family="sans-serif" font-size="12" fill="#5E5852">… e così via per tutte le ~50.000 parole del vocabolario (quasi tutte a 0)</text>
+  <text x="360" y="270" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5E5852">… e così via per tutte le ~50.000 parole del vocabolario (quasi tutte a 0)</text>
 </svg>

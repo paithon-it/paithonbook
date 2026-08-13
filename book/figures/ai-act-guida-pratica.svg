@@ -1,37 +1,37 @@
 <svg viewBox="0 0 760 400" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Schema: la piramide dei livelli di rischio dell'AI Act">
   <rect x="0" y="0" width="760" height="400" fill="#F8F5EE"/>
-  <text x="380" y="30" text-anchor="middle" font-family="sans-serif" font-size="17" font-weight="bold" fill="#1A1A1A">I quattro livelli di rischio dell'AI Act</text>
+  <text x="380" y="30" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="17" font-weight="bold" fill="#1A1A1A">I quattro livelli di rischio dell'AI Act</text>
 
   <!-- Tier 1: vietato -->
   <polygon points="225,75 295,75 335,137 185,137" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5"/>
-  <text x="260" y="112" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#F8F5EE">Inaccettabile</text>
+  <text x="260" y="112" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="bold" fill="#F8F5EE">Inaccettabile</text>
 
   <!-- Tier 2: alto rischio -->
   <polygon points="182,141 338,141 379,204 141,204" fill="#C9A961" stroke="#1A1A1A" stroke-width="1.5"/>
-  <text x="260" y="178" text-anchor="middle" font-family="sans-serif" font-size="14" font-weight="bold" fill="#1A1A1A">Alto rischio</text>
+  <text x="260" y="178" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#1A1A1A">Alto rischio</text>
 
   <!-- Tier 3: limitato -->
   <polygon points="139,208 381,208 422,271 98,271" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="1.5"/>
-  <text x="260" y="245" text-anchor="middle" font-family="sans-serif" font-size="14" font-weight="bold" fill="#F8F5EE">Rischio limitato</text>
+  <text x="260" y="245" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#F8F5EE">Rischio limitato</text>
 
   <!-- Tier 4: minimo -->
   <polygon points="95,275 425,275 468,342 52,342" fill="#1A1A1A" stroke="#1A1A1A" stroke-width="1.5"/>
-  <text x="260" y="313" text-anchor="middle" font-family="sans-serif" font-size="14" font-weight="bold" fill="#F8F5EE">Rischio minimo</text>
+  <text x="260" y="313" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#F8F5EE">Rischio minimo</text>
 
   <!-- connectors + annotations -->
   <line x1="315" y1="106" x2="486" y2="106" stroke="#5E5852" stroke-width="1.5"/>
-  <text x="492" y="103" font-family="sans-serif" font-size="12.5" fill="#B5532C" font-weight="bold">Divieto totale</text>
-  <text x="492" y="121" font-family="sans-serif" font-size="12" fill="#5E5852">social scoring, manipolazione</text>
+  <text x="492" y="103" font-family="Inter, system-ui, sans-serif" font-size="12.5" fill="#B5532C" font-weight="bold">Divieto totale</text>
+  <text x="492" y="121" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5E5852">social scoring, manipolazione</text>
 
   <line x1="360" y1="172" x2="486" y2="172" stroke="#5E5852" stroke-width="1.5"/>
-  <text x="492" y="169" font-family="sans-serif" font-size="12.5" fill="#1A1A1A" font-weight="bold">Conformità completa</text>
-  <text x="492" y="187" font-family="sans-serif" font-size="12" fill="#5E5852">log, sorveglianza umana, marchio CE</text>
+  <text x="492" y="169" font-family="Inter, system-ui, sans-serif" font-size="12.5" fill="#1A1A1A" font-weight="bold">Conformità completa</text>
+  <text x="492" y="187" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5E5852">log, sorveglianza umana, marchio CE</text>
 
   <line x1="404" y1="240" x2="486" y2="240" stroke="#5E5852" stroke-width="1.5"/>
-  <text x="492" y="237" font-family="sans-serif" font-size="12.5" fill="#2D5A5C" font-weight="bold">Solo trasparenza</text>
-  <text x="492" y="255" font-family="sans-serif" font-size="12" fill="#5E5852">"stai parlando con un'AI"</text>
+  <text x="492" y="237" font-family="Inter, system-ui, sans-serif" font-size="12.5" fill="#2D5A5C" font-weight="bold">Solo trasparenza</text>
+  <text x="492" y="255" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5E5852">"stai parlando con un'AI"</text>
 
   <line x1="448" y1="308" x2="486" y2="308" stroke="#5E5852" stroke-width="1.5"/>
-  <text x="492" y="305" font-family="sans-serif" font-size="12.5" fill="#1A1A1A" font-weight="bold">Nessun obbligo specifico</text>
-  <text x="492" y="323" font-family="sans-serif" font-size="12" fill="#5E5852">qui sta la maggioranza dei prodotti</text>
+  <text x="492" y="305" font-family="Inter, system-ui, sans-serif" font-size="12.5" fill="#1A1A1A" font-weight="bold">Nessun obbligo specifico</text>
+  <text x="492" y="323" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5E5852">qui sta la maggioranza dei prodotti</text>
 </svg>

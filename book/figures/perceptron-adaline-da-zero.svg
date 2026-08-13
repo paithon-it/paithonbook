@@ -2,41 +2,41 @@
   <rect x="0" y="0" width="680" height="380" fill="#F8F5EE"/>
   <!-- ingressi -->
   <circle cx="80" cy="90" r="26" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2"/>
-  <text x="80" y="96" font-family="sans-serif" font-size="16" fill="#1A1A1A" text-anchor="middle">x₁</text>
+  <text x="80" y="96" font-family="Inter, system-ui, sans-serif" font-size="16" fill="#1A1A1A" text-anchor="middle">x₁</text>
   <circle cx="80" cy="170" r="26" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2"/>
-  <text x="80" y="176" font-family="sans-serif" font-size="16" fill="#1A1A1A" text-anchor="middle">x₂</text>
+  <text x="80" y="176" font-family="Inter, system-ui, sans-serif" font-size="16" fill="#1A1A1A" text-anchor="middle">x₂</text>
   <circle cx="80" cy="250" r="26" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2"/>
-  <text x="80" y="256" font-family="sans-serif" font-size="16" fill="#1A1A1A" text-anchor="middle">x₃</text>
+  <text x="80" y="256" font-family="Inter, system-ui, sans-serif" font-size="16" fill="#1A1A1A" text-anchor="middle">x₃</text>
   <circle cx="80" cy="330" r="26" fill="#F8F5EE" stroke="#C9A961" stroke-width="2"/>
-  <text x="80" y="336" font-family="sans-serif" font-size="16" fill="#1A1A1A" text-anchor="middle">1</text>
+  <text x="80" y="336" font-family="Inter, system-ui, sans-serif" font-size="16" fill="#1A1A1A" text-anchor="middle">1</text>
   <!-- frecce con pesi -->
   <line x1="106" y1="95" x2="264" y2="180" stroke="#1A1A1A" stroke-width="1.5"/>
-  <text x="180" y="118" font-family="sans-serif" font-size="14" fill="#B5532C">w₁</text>
+  <text x="180" y="118" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#B5532C">w₁</text>
   <line x1="106" y1="172" x2="264" y2="192" stroke="#1A1A1A" stroke-width="1.5"/>
-  <text x="180" y="172" font-family="sans-serif" font-size="14" fill="#B5532C">w₂</text>
+  <text x="180" y="172" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#B5532C">w₂</text>
   <line x1="106" y1="245" x2="264" y2="205" stroke="#1A1A1A" stroke-width="1.5"/>
-  <text x="180" y="240" font-family="sans-serif" font-size="14" fill="#B5532C">w₃</text>
+  <text x="180" y="240" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#B5532C">w₃</text>
   <line x1="106" y1="322" x2="264" y2="212" stroke="#1A1A1A" stroke-width="1.5"/>
-  <text x="180" y="296" font-family="sans-serif" font-size="14" fill="#B5532C">w₀ (bias)</text>
+  <text x="180" y="296" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#B5532C">w₀ (bias)</text>
   <!-- nodo somma -->
   <circle cx="300" cy="195" r="38" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5"/>
-  <text x="300" y="204" font-family="sans-serif" font-size="24" fill="#F8F5EE" text-anchor="middle">Σ</text>
+  <text x="300" y="204" font-family="Inter, system-ui, sans-serif" font-size="24" fill="#F8F5EE" text-anchor="middle">Σ</text>
   <!-- freccia verso attivazione -->
   <line x1="338" y1="195" x2="408" y2="195" stroke="#1A1A1A" stroke-width="1.5"/>
   <!-- funzione gradino -->
   <rect x="408" y="155" width="90" height="80" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2"/>
   <polyline points="420,220 453,220 453,172 486,172" fill="none" stroke="#2D5A5C" stroke-width="2"/>
-  <text x="453" y="150" font-family="sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">gradino</text>
+  <text x="453" y="150" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">gradino</text>
   <!-- uscita -->
   <line x1="498" y1="195" x2="560" y2="195" stroke="#1A1A1A" stroke-width="1.5"/>
   <!-- il capitolo fissa la decisione binaria a due valori: percettrone.md,
        «La decisione è dunque binaria: y-cappuccio in {0,1}». Il nodo è
        cresciuto a r=38 (come il nodo somma) perché l'etichetta ci stia. -->
   <circle cx="600" cy="195" r="38" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="2"/>
-  <text x="600" y="201" font-family="sans-serif" font-size="14" fill="#1A1A1A" text-anchor="middle">ŷ ∈ {0,1}</text>
+  <text x="600" y="201" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#1A1A1A" text-anchor="middle">ŷ ∈ {0,1}</text>
   <!-- retroazione aggiornamento pesi -->
   <path d="M 600 233 L 600 300 L 185 300 L 185 210" fill="none" stroke="#C9A961" stroke-width="2" stroke-dasharray="6 5"/>
   <polygon points="185,204 179,216 191,216" fill="#C9A961"/>
-  <text x="392" y="322" font-family="sans-serif" font-size="14" fill="#1A1A1A" text-anchor="middle">se ŷ ≠ y: w ← w + η · (y − ŷ) · x</text>
-  <text x="340" y="40" font-family="sans-serif" font-size="16" fill="#1A1A1A" text-anchor="middle" font-weight="bold">Il perceptron: un neurone implementabile in 30 righe</text>
+  <text x="392" y="322" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#1A1A1A" text-anchor="middle">se ŷ ≠ y: w ← w + η · (y − ŷ) · x</text>
+  <text x="340" y="40" font-family="Inter, system-ui, sans-serif" font-size="16" fill="#1A1A1A" text-anchor="middle" font-weight="bold">Il perceptron: un neurone implementabile in 30 righe</text>
 </svg>

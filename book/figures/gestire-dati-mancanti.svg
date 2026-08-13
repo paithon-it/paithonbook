@@ -1,9 +1,9 @@
 <svg viewBox="0 0 760 380" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Tre strategie per i dati mancanti a confronto: eliminare le righe, imputare un valore fisso, ricostruire dal contesto">
   <rect x="0" y="0" width="760" height="380" fill="#F8F5EE"/>
-  <text x="380" y="34" text-anchor="middle" font-family="sans-serif" font-size="17" font-weight="bold" fill="#1A1A1A">La stessa tabella bucata, tre strategie</text>
+  <text x="380" y="34" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="17" font-weight="bold" fill="#1A1A1A">La stessa tabella bucata, tre strategie</text>
 
   <!-- Panel 1: elimina -->
-  <text x="140" y="72" text-anchor="middle" font-family="sans-serif" font-size="14" font-weight="bold" fill="#B5532C">1 · Elimina (dropna)</text>
+  <text x="140" y="72" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#B5532C">1 · Elimina (dropna)</text>
   <g stroke="#1A1A1A" stroke-width="1.5">
     <rect x="50" y="90" width="60" height="34" fill="#F8F5EE"/><rect x="110" y="90" width="60" height="34" fill="#F8F5EE"/><rect x="170" y="90" width="60" height="34" fill="#F8F5EE"/>
     <rect x="50" y="124" width="60" height="34" fill="#F8F5EE" stroke-dasharray="5 4" stroke="#B5532C"/><rect x="110" y="124" width="60" height="34" fill="#F8F5EE" stroke-dasharray="5 4" stroke="#B5532C"/><rect x="170" y="124" width="60" height="34" fill="#F8F5EE" stroke-dasharray="5 4" stroke="#B5532C"/>
@@ -14,40 +14,40 @@
   <line x1="46" y1="154" x2="234" y2="128" stroke="#B5532C" stroke-width="2"/>
   <line x1="46" y1="196" x2="234" y2="222" stroke="#B5532C" stroke-width="2"/>
   <line x1="46" y1="222" x2="234" y2="196" stroke="#B5532C" stroke-width="2"/>
-  <text x="140" y="255" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">righe con buchi: via</text>
-  <text x="140" y="275" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#B5532C">semplice, ma perdi dati</text>
-  <text x="140" y="293" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#B5532C">(e rischi un campione distorto)</text>
+  <text x="140" y="255" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A">righe con buchi: via</text>
+  <text x="140" y="275" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#B5532C">semplice, ma perdi dati</text>
+  <text x="140" y="293" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#B5532C">(e rischi un campione distorto)</text>
 
   <!-- Panel 2: imputa fisso -->
-  <text x="393" y="72" text-anchor="middle" font-family="sans-serif" font-size="14" font-weight="bold" fill="#C9A961">2 · Imputa un valore fisso</text>
+  <text x="393" y="72" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#C9A961">2 · Imputa un valore fisso</text>
   <g stroke="#1A1A1A" stroke-width="1.5">
     <rect x="303" y="90" width="60" height="34" fill="#F8F5EE"/><rect x="363" y="90" width="60" height="34" fill="#F8F5EE"/><rect x="423" y="90" width="60" height="34" fill="#F8F5EE"/>
     <rect x="303" y="124" width="60" height="34" fill="#F8F5EE"/><rect x="363" y="124" width="60" height="34" fill="#C9A961"/><rect x="423" y="124" width="60" height="34" fill="#F8F5EE"/>
     <rect x="303" y="158" width="60" height="34" fill="#F8F5EE"/><rect x="363" y="158" width="60" height="34" fill="#F8F5EE"/><rect x="423" y="158" width="60" height="34" fill="#F8F5EE"/>
     <rect x="303" y="192" width="60" height="34" fill="#C9A961"/><rect x="363" y="192" width="60" height="34" fill="#F8F5EE"/><rect x="423" y="192" width="60" height="34" fill="#F8F5EE"/>
   </g>
-  <text x="393" y="146" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#1A1A1A">media</text>
-  <text x="333" y="214" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#1A1A1A">media</text>
-  <text x="393" y="255" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">ogni buco = stesso valore</text>
-  <text x="393" y="275" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#C9A961">veloce e robusto,</text>
-  <text x="393" y="293" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#C9A961">ma appiattisce la varianza</text>
+  <text x="393" y="146" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="bold" fill="#1A1A1A">media</text>
+  <text x="333" y="214" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="bold" fill="#1A1A1A">media</text>
+  <text x="393" y="255" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A">ogni buco = stesso valore</text>
+  <text x="393" y="275" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#C9A961">veloce e robusto,</text>
+  <text x="393" y="293" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#C9A961">ma appiattisce la varianza</text>
 
   <!-- Panel 3: contesto -->
-  <text x="633" y="72" text-anchor="middle" font-family="sans-serif" font-size="14" font-weight="bold" fill="#2D5A5C">3 · Ricostruisci dal contesto</text>
+  <text x="633" y="72" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#2D5A5C">3 · Ricostruisci dal contesto</text>
   <g stroke="#1A1A1A" stroke-width="1.5">
     <rect x="543" y="90" width="60" height="34" fill="#F8F5EE"/><rect x="603" y="90" width="60" height="34" fill="#F8F5EE"/><rect x="663" y="90" width="60" height="34" fill="#F8F5EE"/>
     <rect x="543" y="124" width="60" height="34" fill="#F8F5EE"/><rect x="603" y="124" width="60" height="34" fill="#2D5A5C"/><rect x="663" y="124" width="60" height="34" fill="#F8F5EE"/>
     <rect x="543" y="158" width="60" height="34" fill="#F8F5EE"/><rect x="603" y="158" width="60" height="34" fill="#F8F5EE"/><rect x="663" y="158" width="60" height="34" fill="#F8F5EE"/>
     <rect x="543" y="192" width="60" height="34" fill="#2D5A5C"/><rect x="603" y="192" width="60" height="34" fill="#F8F5EE"/><rect x="663" y="192" width="60" height="34" fill="#F8F5EE"/>
   </g>
-  <text x="633" y="146" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#F8F5EE">k-NN</text>
-  <text x="573" y="214" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#F8F5EE">k-NN</text>
+  <text x="633" y="146" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="bold" fill="#F8F5EE">k-NN</text>
+  <text x="573" y="214" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="bold" fill="#F8F5EE">k-NN</text>
   <path d="M 633 100 C 620 112, 612 118, 620 130" fill="none" stroke="#2D5A5C" stroke-width="1.5" stroke-dasharray="4 3"/>
   <path d="M 573 168 C 566 178, 564 184, 570 196" fill="none" stroke="#2D5A5C" stroke-width="1.5" stroke-dasharray="4 3"/>
-  <text x="633" y="255" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">ogni buco = valore dei simili</text>
-  <text x="633" y="275" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#2D5A5C">più fedele ai dati,</text>
-  <text x="633" y="293" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#2D5A5C">ma più costoso</text>
+  <text x="633" y="255" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A">ogni buco = valore dei simili</text>
+  <text x="633" y="275" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#2D5A5C">più fedele ai dati,</text>
+  <text x="633" y="293" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#2D5A5C">ma più costoso</text>
 
   <rect x="50" y="322" width="673" height="40" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.5"/>
-  <text x="386" y="347" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#1A1A1A">Regola d'oro: qualunque strategia scegli, il fit dell'imputer avviene SOLO sul train set</text>
+  <text x="386" y="347" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A">Regola d'oro: qualunque strategia scegli, il fit dell'imputer avviene SOLO sul train set</text>
 </svg>

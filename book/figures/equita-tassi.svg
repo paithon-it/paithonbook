@@ -1,8 +1,8 @@
 <svg width="100%" viewBox="0 0 720 430" xmlns="http://www.w3.org/2000/svg" role="img"
-     font-family="Helvetica, Arial, sans-serif">
+     font-family="Inter, system-ui, sans-serif">
 
   <!-- ===== GRUPPO A ===== -->
-  <text x="182" y="34" text-anchor="middle" font-family="Georgia, serif"
+  <text x="182" y="34" text-anchor="middle" font-family="Fraunces, Georgia, serif"
         font-size="19" font-weight="700" fill="#2D5A5C">Gruppo A</text>
 
   <!-- intestazioni colonna -->
@@ -33,7 +33,7 @@
   <text x="102" y="294" font-size="15" fill="#1A1A1A">FPR = 10/100 = <tspan fill="#B5532C" font-weight="700">0,10</tspan></text>
 
   <!-- ===== GRUPPO B ===== -->
-  <text x="542" y="34" text-anchor="middle" font-family="Georgia, serif"
+  <text x="542" y="34" text-anchor="middle" font-family="Fraunces, Georgia, serif"
         font-size="19" font-weight="700" fill="#2D5A5C">Gruppo B</text>
 
   <text x="506" y="80" text-anchor="middle" font-size="13" fill="#2D5A5C">reale +</text>

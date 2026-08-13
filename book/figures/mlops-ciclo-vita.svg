@@ -20,7 +20,7 @@
   <text x="196" y="82" text-anchor="middle" font-family="Inter, sans-serif" font-size="11.5" fill="#5E5852">i dati cambiano</text>
 
   <!-- centro -->
-  <text x="320" y="230" text-anchor="middle" font-family="Georgia, serif" font-size="24" font-weight="700" fill="#C9A961">MLOps</text>
+  <text x="320" y="230" text-anchor="middle" font-family="Fraunces, Georgia, serif" font-size="24" font-weight="700" fill="#C9A961">MLOps</text>
   <text x="320" y="252" text-anchor="middle" font-family="Inter, sans-serif" font-size="12.5" fill="#5E5852">un anello, non una linea retta</text>
 
   <!-- nodo 1: Dati (in alto) -->

@@ -15,9 +15,12 @@ questo non e' il posto.
 Licenza CC BY-NC-ND 4.0: si cita e si parafrasa attribuendo (titolo
 della sezione e URL), non si ridistribuisce il testo.
 
-## Fondamenta
+## Prima di cominciare
 
 - [Prefazione](https://book.paithon.it/main/prefazione.html): Questo libro è stato scritto una prima volta nel 2019, per uscire su carta. Aveva un indice di quattordici capitoli, una copertina provvisoria e questa prefazione, che in quell'indice era la voce…
+
+## Fondamenta
+
 - [Introduzione](https://book.paithon.it/main/Introduzione/overview.html): Joseph Weizenbaum era un informatico tedesco emigrato negli Stati Uniti e professore al MIT. Nel 1966 presentò al mondo ELIZA, il primo chatbot della storia: un programma con cui si poteva…
   - [Python e l'AI](https://book.paithon.it/main/Introduzione/massimo_comune_divisore.html)
   - [Robotica e AI](https://book.paithon.it/main/Introduzione/applicazioni.html)

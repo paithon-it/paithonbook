@@ -1,11 +1,11 @@
 <svg viewBox="0 0 720 380" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Distribuzione asimmetrica annotata con moda, mediana, media e deviazione standard">
   <rect x="0" y="0" width="720" height="380" fill="#F8F5EE"/>
-  <text x="360" y="34" font-family="sans-serif" font-size="17" font-weight="bold" fill="#1A1A1A" text-anchor="middle">Distribuzione asimmetrica: dove cadono le misure</text>
+  <text x="360" y="34" font-family="Inter, system-ui, sans-serif" font-size="17" font-weight="bold" fill="#1A1A1A" text-anchor="middle">Distribuzione asimmetrica: dove cadono le misure</text>
   <!-- assi -->
   <line x1="60" y1="300" x2="680" y2="300" stroke="#1A1A1A" stroke-width="2"/>
   <line x1="60" y1="300" x2="60" y2="70" stroke="#1A1A1A" stroke-width="2"/>
-  <text x="672" y="322" font-family="sans-serif" font-size="12" fill="#5E5852" text-anchor="end">tempo di risposta (ms)</text>
-  <text x="46" y="80" font-family="sans-serif" font-size="12" fill="#5E5852" text-anchor="middle" transform="rotate(-90 46 80)"></text>
+  <text x="672" y="322" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5E5852" text-anchor="end">tempo di risposta (ms)</text>
+  <text x="46" y="80" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5E5852" text-anchor="middle" transform="rotate(-90 46 80)"></text>
   <!-- curva skewed (coda lunga a destra) -->
   <path d="M 70 299 C 110 296, 130 120, 175 105 C 205 96, 230 120, 265 170 C 310 232, 380 272, 460 288 C 540 298, 610 299, 675 299"
         fill="none" stroke="#1A1A1A" stroke-width="2"/>
@@ -14,29 +14,29 @@
   <!-- moda -->
   <line x1="180" y1="300" x2="180" y2="100" stroke="#2D5A5C" stroke-width="2" stroke-dasharray="6 4"/>
   <circle cx="180" cy="100" r="5" fill="#2D5A5C"/>
-  <text x="180" y="62" font-family="sans-serif" font-size="14" font-weight="bold" fill="#2D5A5C" text-anchor="middle">moda</text>
-  <text x="180" y="78" font-family="sans-serif" font-size="11" fill="#2D5A5C" text-anchor="middle">il picco: valore più frequente</text>
+  <text x="180" y="62" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#2D5A5C" text-anchor="middle">moda</text>
+  <text x="180" y="78" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#2D5A5C" text-anchor="middle">il picco: valore più frequente</text>
   <!-- mediana -->
   <line x1="265" y1="300" x2="265" y2="140" stroke="#1A1A1A" stroke-width="2" stroke-dasharray="6 4"/>
   <circle cx="265" cy="140" r="5" fill="#1A1A1A"/>
-  <text x="265" y="122" font-family="sans-serif" font-size="14" font-weight="bold" fill="#1A1A1A" text-anchor="middle">mediana</text>
-  <text x="278" y="160" font-family="sans-serif" font-size="11" fill="#5E5852" text-anchor="start">50% dei dati a sinistra, 50% a destra</text>
+  <text x="265" y="122" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#1A1A1A" text-anchor="middle">mediana</text>
+  <text x="278" y="160" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#5E5852" text-anchor="start">50% dei dati a sinistra, 50% a destra</text>
   <!-- media -->
   <line x1="340" y1="300" x2="340" y2="196" stroke="#B5532C" stroke-width="2" stroke-dasharray="6 4"/>
   <circle cx="340" cy="196" r="5" fill="#B5532C"/>
-  <text x="345" y="188" font-family="sans-serif" font-size="14" font-weight="bold" fill="#B5532C" text-anchor="start">media</text>
-  <text x="345" y="204" font-family="sans-serif" font-size="11" fill="#B5532C" text-anchor="start">trascinata verso la coda</text>
+  <text x="345" y="188" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#B5532C" text-anchor="start">media</text>
+  <text x="345" y="204" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#B5532C" text-anchor="start">trascinata verso la coda</text>
   <!-- freccia coda -->
   <line x1="480" y1="250" x2="620" y2="250" stroke="#B5532C" stroke-width="2"/>
   <polygon points="620,250 606,244 606,256" fill="#B5532C"/>
-  <text x="550" y="238" font-family="sans-serif" font-size="12" fill="#B5532C" text-anchor="middle">coda lunga: pochi valori enormi</text>
+  <text x="550" y="238" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#B5532C" text-anchor="middle">coda lunga: pochi valori enormi</text>
   <!-- dev standard -->
   <line x1="180" y1="336" x2="340" y2="336" stroke="#2D5A5C" stroke-width="2"/>
   <line x1="180" y1="330" x2="180" y2="342" stroke="#2D5A5C" stroke-width="2"/>
   <line x1="340" y1="330" x2="340" y2="342" stroke="#2D5A5C" stroke-width="2"/>
-  <text x="260" y="360" font-family="sans-serif" font-size="12" fill="#2D5A5C" text-anchor="middle">la deviazione standard misura quanto i dati si allargano</text>
+  <text x="260" y="360" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#2D5A5C" text-anchor="middle">la deviazione standard misura quanto i dati si allargano</text>
   <!-- etichetta ordine -->
   <rect x="480" y="90" width="190" height="58" rx="8" fill="#F8F5EE" stroke="#C9C2B4" stroke-width="1.5"/>
-  <text x="575" y="114" font-family="sans-serif" font-size="13" font-weight="bold" fill="#1A1A1A" text-anchor="middle">Coda a destra?</text>
-  <text x="575" y="134" font-family="sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">moda &lt; mediana &lt; media</text>
+  <text x="575" y="114" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="bold" fill="#1A1A1A" text-anchor="middle">Coda a destra?</text>
+  <text x="575" y="134" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">moda &lt; mediana &lt; media</text>
 </svg>

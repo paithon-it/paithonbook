@@ -3,13 +3,13 @@
   <defs>
     <marker id="fr202" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#1A1A1A"/></marker>
   </defs>
-  <text x="360" y="32" font-family="sans-serif" font-size="18" font-weight="bold" fill="#1A1A1A" text-anchor="middle">Stesso codice, due stili</text>
+  <text x="360" y="32" font-family="Inter, system-ui, sans-serif" font-size="18" font-weight="bold" fill="#1A1A1A" text-anchor="middle">Stesso codice, due stili</text>
 
   <!-- pannello sinistro: goffo -->
   <rect x="40" y="56" width="300" height="240" rx="10" fill="#F8F5EE" stroke="#B5532C" stroke-width="2"/>
   <rect x="40" y="56" width="300" height="38" rx="10" fill="#B5532C"/>
-  <text x="190" y="80" font-family="sans-serif" font-size="13" font-weight="bold" fill="#F8F5EE" text-anchor="middle">Funziona, ma rema contro</text>
-  <g font-family="sans-serif" font-size="11" fill="#1A1A1A">
+  <text x="190" y="80" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="bold" fill="#F8F5EE" text-anchor="middle">Funziona, ma rema contro</text>
+  <g font-family="Inter, system-ui, sans-serif" font-size="11" fill="#1A1A1A">
     <text x="58" y="118">somma = 0</text>
     <text x="58" y="136">for i in range(0, len(temperature)):</text>
     <text x="78" y="154">somma = somma + temperature[i]</text>
@@ -19,21 +19,21 @@
     <text x="78" y="226">if temperature[i] &gt; media:</text>
     <text x="98" y="244">sopra_media.append(...)</text>
   </g>
-  <text x="190" y="280" font-family="sans-serif" font-size="12" fill="#5E5852" text-anchor="middle">14 righe · 3 variabili di appoggio · indici ovunque</text>
+  <text x="190" y="280" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5E5852" text-anchor="middle">14 righe · 3 variabili di appoggio · indici ovunque</text>
 
   <!-- pannello destro: pythonic -->
   <rect x="380" y="56" width="300" height="240" rx="10" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2"/>
   <rect x="380" y="56" width="300" height="38" rx="10" fill="#2D5A5C"/>
-  <text x="530" y="80" font-family="sans-serif" font-size="13" font-weight="bold" fill="#F8F5EE" text-anchor="middle">Pythonic</text>
-  <g font-family="sans-serif" font-size="11" fill="#1A1A1A">
+  <text x="530" y="80" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="bold" fill="#F8F5EE" text-anchor="middle">Pythonic</text>
+  <g font-family="Inter, system-ui, sans-serif" font-size="11" fill="#1A1A1A">
     <text x="398" y="130">media = sum(temperature) /</text>
     <text x="418" y="148">len(temperature)</text>
     <text x="398" y="184">sopra_media = [t for t in temperature</text>
     <text x="418" y="202">if t &gt; media]</text>
   </g>
   <rect x="398" y="222" width="264" height="2" fill="#C9A961"/>
-  <text x="530" y="248" font-family="sans-serif" font-size="12" fill="#5E5852" text-anchor="middle">6 righe · 0 variabili di appoggio</text>
-  <text x="530" y="266" font-family="sans-serif" font-size="12" fill="#5E5852" text-anchor="middle">si legge come una frase</text>
+  <text x="530" y="248" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5E5852" text-anchor="middle">6 righe · 0 variabili di appoggio</text>
+  <text x="530" y="266" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5E5852" text-anchor="middle">si legge come una frase</text>
 
   <!-- frecce verso output comune -->
   <line x1="190" y1="300" x2="320" y2="356" stroke="#1A1A1A" stroke-width="2" marker-end="url(#fr202)"/>
@@ -41,6 +41,6 @@
 
   <!-- output -->
   <rect x="230" y="360" width="260" height="46" rx="23" fill="#C9A961"/>
-  <text x="360" y="382" font-family="sans-serif" font-size="13" font-weight="bold" fill="#1A1A1A" text-anchor="middle">stesso output</text>
-  <text x="360" y="398" font-family="sans-serif" font-size="12" fill="#1A1A1A" text-anchor="middle">[21.3, 18.6]</text>
+  <text x="360" y="382" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="bold" fill="#1A1A1A" text-anchor="middle">stesso output</text>
+  <text x="360" y="398" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A" text-anchor="middle">[21.3, 18.6]</text>
 </svg>

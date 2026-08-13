@@ -1,0 +1,14 @@
+# Gli istanti a cui si fermano le animazioni, quando i default non bastano.
+#
+# I default sono 10%, 50% e 90% del ciclo (vedi `fermi.py`, che spiega perche'
+# non 0 e 100). Vanno bene quasi sempre; dove no, si scrive qui.
+#
+# **Si scrive dopo aver guardato il provino**, non prima:
+#
+#     python3 animazioni/fermi.py --provino
+#
+# La forma e' questa:
+#
+#     [nome-animazione]          # il nome del file, senza estensione
+#     istanti = [0.05, 0.45, 0.95]
+#     # perche': una riga che dica cosa non andava con i default

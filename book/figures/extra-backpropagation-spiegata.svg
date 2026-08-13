@@ -1,8 +1,8 @@
 <svg viewBox="0 0 720 330" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Rete neurale a tre strati: le frecce teal mostrano il forward pass dall'input all'output, le frecce terracotta il backward pass dell'errore in direzione opposta">
   <rect x="0" y="0" width="720" height="330" fill="#F8F5EE"/>
-  <text x="360" y="30" text-anchor="middle" font-family="sans-serif" font-size="15" font-weight="bold" fill="#1A1A1A">Forward pass e backward pass</text>
+  <text x="360" y="30" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="bold" fill="#1A1A1A">Forward pass e backward pass</text>
   <!-- layer labels -->
-  <g font-family="sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">
+  <g font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">
     <text x="140" y="60">input</text>
     <text x="360" y="60">strato nascosto</text>
     <text x="580" y="60">output</text>
@@ -30,22 +30,22 @@
     <line x1="120" y1="295" x2="330" y2="295"/>
     <path d="M330 288 L344 295 L330 302 Z" stroke="none"/>
   </g>
-  <text x="150" y="288" font-family="sans-serif" font-size="12" fill="#2D5A5C">forward: dati → previsione</text>
+  <text x="150" y="288" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#2D5A5C">forward: dati → previsione</text>
   <!-- backward arrow -->
   <g stroke="#B5532C" stroke-width="3" fill="#B5532C">
     <line x1="600" y1="295" x2="390" y2="295"/>
     <path d="M390 288 L376 295 L390 302 Z" stroke="none"/>
   </g>
-  <text x="400" y="288" font-family="sans-serif" font-size="12" fill="#B5532C">backward: errore → correzioni</text>
+  <text x="400" y="288" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#B5532C">backward: errore → correzioni</text>
   <!-- error burst at output -->
   <g stroke="#B5532C" stroke-width="2" fill="none">
     <path d="M612 150 L640 122"/>
     <path d="M616 180 L652 180"/>
     <path d="M612 210 L640 238"/>
   </g>
-  <text x="648" y="108" font-family="sans-serif" font-size="12" fill="#B5532C">errore</text>
+  <text x="648" y="108" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#B5532C">errore</text>
   <!-- legend -->
-  <g font-family="sans-serif" font-size="12" fill="#1A1A1A">
+  <g font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A">
     <rect x="40" y="315" width="14" height="4" fill="#2D5A5C"/>
     <text x="60" y="321">andata (calcolo)</text>
     <rect x="200" y="315" width="14" height="4" fill="#B5532C"/>

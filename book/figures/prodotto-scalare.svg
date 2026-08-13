@@ -7,22 +7,22 @@
   </defs>
   <!-- vettore b (strada) -->
   <line x1="110" y1="310" x2="600" y2="310" stroke="#1A1A1A" stroke-width="2" marker-end="url(#pArrK)"/>
-  <text x="605" y="332" font-family="sans-serif" font-size="16" font-weight="bold" fill="#1A1A1A">b</text>
+  <text x="605" y="332" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="bold" fill="#1A1A1A">b</text>
   <!-- vettore a (bastone) -->
   <line x1="110" y1="310" x2="420" y2="120" stroke="#2D5A5C" stroke-width="2" marker-end="url(#pArrG)"/>
-  <text x="270" y="190" font-family="sans-serif" font-size="16" font-weight="bold" fill="#2D5A5C">a</text>
+  <text x="270" y="190" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="bold" fill="#2D5A5C">a</text>
   <!-- perpendicolare tratteggiata -->
   <line x1="420" y1="120" x2="420" y2="310" stroke="#8B847C" stroke-width="1.5" stroke-dasharray="6 5"/>
   <rect x="404" y="294" width="16" height="16" fill="none" stroke="#8B847C" stroke-width="1.5"/>
   <!-- proiezione evidenziata -->
   <line x1="110" y1="310" x2="420" y2="310" stroke="#B5532C" stroke-width="5"/>
   <line x1="110" y1="352" x2="420" y2="352" stroke="#B5532C" stroke-width="1.5" marker-start="url(#pArrT)" marker-end="url(#pArrT)"/>
-  <text x="265" y="378" font-family="sans-serif" font-size="14" fill="#B5532C" text-anchor="middle">proiezione di a su b  =  |a| · cos θ</text>
+  <text x="265" y="378" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#B5532C" text-anchor="middle">proiezione di a su b  =  |a| · cos θ</text>
   <!-- angolo theta -->
   <path d="M 170 310 A 60 60 0 0 0 161 279" fill="none" stroke="#C9A961" stroke-width="2"/>
-  <text x="185" y="292" font-family="sans-serif" font-size="15" font-weight="bold" fill="#C9A961">θ</text>
+  <text x="185" y="292" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="bold" fill="#C9A961">θ</text>
   <!-- formula in card -->
   <rect x="430" y="60" width="250" height="96" fill="#F8F5EE" stroke="#C9C2B4" stroke-width="1.5" rx="8"/>
-  <text x="555" y="100" font-family="sans-serif" font-size="17" font-weight="bold" fill="#1A1A1A" text-anchor="middle">a · b = |a| |b| cos θ</text>
-  <text x="555" y="132" font-family="sans-serif" font-size="13" fill="#5E5852" text-anchor="middle">lunghezza dell'ombra × lunghezza di b</text>
+  <text x="555" y="100" font-family="Inter, system-ui, sans-serif" font-size="17" font-weight="bold" fill="#1A1A1A" text-anchor="middle">a · b = |a| |b| cos θ</text>
+  <text x="555" y="132" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#5E5852" text-anchor="middle">lunghezza dell'ombra × lunghezza di b</text>
 </svg>

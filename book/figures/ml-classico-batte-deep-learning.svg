@@ -1,9 +1,9 @@
 <svg viewBox="0 0 680 430" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A sinistra dati tabellari dove vince il ML classico, a destra dati non strutturati dove vince il deep learning">
   <rect x="0" y="0" width="680" height="430" fill="#F8F5EE"/>
   <line x1="340" y1="44" x2="340" y2="392" stroke="#C9A961" stroke-width="1.5" stroke-dasharray="4 6"/>
-  <text x="176" y="34" text-anchor="middle" font-family="sans-serif" font-size="14" fill="#1A1A1A">dati tabellari</text>
-  <text x="504" y="34" text-anchor="middle" font-family="sans-serif" font-size="14" fill="#1A1A1A">dati non strutturati</text>
-  <g font-family="sans-serif" font-size="10">
+  <text x="176" y="34" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#1A1A1A">dati tabellari</text>
+  <text x="504" y="34" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#1A1A1A">dati non strutturati</text>
+  <g font-family="Inter, system-ui, sans-serif" font-size="10">
     <rect x="40" y="58" width="272" height="128" fill="none" stroke="#1A1A1A" stroke-width="1.5"/>
     <rect x="40" y="58" width="272" height="30" fill="#2D5A5C"/>
     <line x1="108" y1="58" x2="108" y2="186" stroke="#1A1A1A" stroke-width="1"/>
@@ -30,8 +30,8 @@
     <text x="278" y="174" text-anchor="middle" fill="#2D5A5C">no</text>
   </g>
   <rect x="40" y="212" width="272" height="40" rx="8" fill="none" stroke="#2D5A5C" stroke-width="2"/>
-  <text x="176" y="230" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">vince il ML classico</text>
-  <text x="176" y="245" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#5E5852">gradient boosting, random forest</text>
+  <text x="176" y="230" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A">vince il ML classico</text>
+  <text x="176" y="245" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#5E5852">gradient boosting, random forest</text>
   <g>
     <rect x="392" y="60" width="96" height="60" fill="none" stroke="#1A1A1A" stroke-width="1.5"/>
     <rect x="392" y="60" width="24" height="20" fill="#B5532C"/>
@@ -40,13 +40,13 @@
     <rect x="464" y="80" width="24" height="20" fill="#B5532C"/>
     <rect x="392" y="100" width="24" height="20" fill="#C9A961"/>
     <rect x="440" y="100" width="24" height="20" fill="#2D5A5C"/>
-    <text x="440" y="136" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#5E5852">immagine (pixel)</text>
+    <text x="440" y="136" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#5E5852">immagine (pixel)</text>
   </g>
   <g>
     <polyline points="512,90 524,66 536,108 548,74 560,102 572,70 584,110 596,80 608,96 620,72 632,100 644,86" fill="none" stroke="#2D5A5C" stroke-width="1.5"/>
-    <text x="578" y="136" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#5E5852">audio (onda)</text>
+    <text x="578" y="136" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#5E5852">audio (onda)</text>
   </g>
-  <g font-family="sans-serif" font-size="11">
+  <g font-family="Inter, system-ui, sans-serif" font-size="11">
     <rect x="392" y="156" width="36" height="22" rx="4" fill="none" stroke="#1A1A1A" stroke-width="1.5"/>
     <text x="410" y="171" text-anchor="middle" fill="#1A1A1A">il</text>
     <rect x="436" y="156" width="58" height="22" rx="4" fill="none" stroke="#1A1A1A" stroke-width="1.5"/>
@@ -56,9 +56,9 @@
     <text x="504" y="196" text-anchor="middle" font-size="10" fill="#5E5852">testo (sequenza)</text>
   </g>
   <rect x="368" y="212" width="272" height="40" rx="8" fill="none" stroke="#B5532C" stroke-width="2"/>
-  <text x="504" y="230" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">vince il deep learning</text>
-  <text x="504" y="245" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#5E5852">CNN, transformer</text>
-  <text x="340" y="300" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#1A1A1A">colonne eterogenee e senza geografia</text>
-  <text x="340" y="320" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#1A1A1A">vs. struttura spaziale, sequenziale, percettiva</text>
-  <text x="340" y="360" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#8B847C">non &#232; l'algoritmo pi&#249; nuovo a vincere: &#232; la forma dei dati a scegliere lo strumento</text>
+  <text x="504" y="230" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A">vince il deep learning</text>
+  <text x="504" y="245" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#5E5852">CNN, transformer</text>
+  <text x="340" y="300" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A">colonne eterogenee e senza geografia</text>
+  <text x="340" y="320" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A">vs. struttura spaziale, sequenziale, percettiva</text>
+  <text x="340" y="360" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#8B847C">non &#232; l'algoritmo pi&#249; nuovo a vincere: &#232; la forma dei dati a scegliere lo strumento</text>
 </svg>

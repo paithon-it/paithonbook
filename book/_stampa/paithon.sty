@@ -1,0 +1,320 @@
+%% paithon.sty: lo stile del libro composto in PDF.
+%%
+%% Non e' un file di brand. I colori e i font vengono da
+%% `_static/brand/tokens.css` e `_static/brand/stampa/fonts/`: se un valore
+%% qui e la' non coincidono, quello sbagliato e' questo.
+%%
+%% I font li imposta `_ext/pt_stampa.py` (gli serve il percorso assoluto, che
+%% solo lui conosce) e definisce anche `\ptDisplay` e `\ptDisplayLeggero`.
+%% Qui si usano e basta.
+%%
+%% L'impianto e' quello della bozza del 2019 (*The Legrand Orange Book*):
+%% apertura di capitolo con banda ed etichetta a pillola, mini-indice sotto,
+%% indice generale coi puntini. I colori sono di palette, e le bande sono
+%% disegni geometrici: la bozza usava foto stock, che il libro vieta.
+
+\ProvidesPackage{paithon}[2026/08/13 lo stile della stampa di Paithon Book]
+
+\RequirePackage{xcolor}
+\RequirePackage{tikz}
+\RequirePackage{tcolorbox}
+\RequirePackage{titlesec}
+\RequirePackage{titletoc}
+\RequirePackage{fancyhdr}
+\RequirePackage{microtype}
+\RequirePackage{etoc}
+\RequirePackage{needspace}
+\tcbuselibrary{skins,breakable}
+
+%% ---------------------------------------------------------------- palette
+%% Gli unici colori ammessi nel libro. Vedi `_static/brand/tokens.css`.
+\definecolor{ptTerracotta}{HTML}{B5532C}
+\definecolor{ptTeal}{HTML}{2D5A5C}
+\definecolor{ptOcra}{HTML}{C9A961}
+\definecolor{ptNero}{HTML}{1A1A1A}
+\definecolor{ptCrema}{HTML}{F8F5EE}
+
+\color{ptNero}
+
+%% ------------------------------------------------------------- la pagina
+%% Il margine esterno e' piu' largo dell'interno: e' dove vanno le note e le
+%% figure strette, ed e' l'impianto della bozza.
+%%
+%% `\geometry{...}` e non `\RequirePackage[...]{geometry}`: Sphinx il
+%% pacchetto lo carica gia' con opzioni sue, e caricarlo due volte con
+%% opzioni diverse da «Option clash for package geometry».
+\RequirePackage{geometry}
+\geometry{a4paper,
+  inner=26mm, outer=32mm, top=28mm, bottom=30mm,
+  marginparwidth=22mm, marginparsep=5mm, headsep=8mm}
+
+\linespread{1.08}
+
+%% ------------------------------------------------- testatine e pie' pagina
+%% In basso il numero di pagina e l'indirizzo del libro vivo: le pagine si
+%% fotocopiano e si perdono, e chi si ritrova in mano un foglio deve poter
+%% risalire alla versione aggiornata.
+\newcommand{\ptCasa}{book.paithon.it}
+
+\fancypagestyle{normal}{%
+  \fancyhf{}%
+  \fancyhead[LE]{\ptDisplayLeggero\footnotesize\nouppercase{\leftmark}}%
+  \fancyhead[RO]{\ptDisplayLeggero\footnotesize\nouppercase{\rightmark}}%
+  \fancyfoot[LE,RO]{\footnotesize\color{ptNero}\thepage}%
+  \fancyfoot[RE,LO]{\footnotesize\color{ptTeal}\ptCasa}%
+  \renewcommand{\headrulewidth}{0.4pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\fancypagestyle{plain}{%
+  \fancyhf{}%
+  \fancyfoot[LE,RO]{\footnotesize\color{ptNero}\thepage}%
+  \fancyfoot[RE,LO]{\footnotesize\color{ptTeal}\ptCasa}%
+  \renewcommand{\headrulewidth}{0pt}%
+}
+
+%% ------------------------------------------- i segnalibri del PDF
+%% Una didascalia che contiene una citazione (`{cite}`) diventa anche una
+%% stringa di segnalibro, e hyperref non sa che farsene di `\DUrole` e delle
+%% graffe di `{[}Ans73{]}`: si ferma con «Argument of \Hy@tempa has an extra
+%% }» e quella didascalia perde pezzi.
+%%
+%% `\pdfstringdefDisableCommands` e' il posto dove si dice a hyperref come
+%% leggere un comando quando costruisce una stringa: qui gli si dice di
+%% tenere il testo e buttare l'involucro. In pagina non cambia niente, cambia
+%% solo il pannello dei segnalibri.
+\pdfstringdefDisableCommands{%
+  \def\DUrole#1#2{#2}%
+  \def\sphinxstyleemphasis#1{#1}%
+  \def\sphinxstylestrong#1{#1}%
+  \def\hyperlink#1#2{#2}%
+  \def\sphinxhref#1#2{#2}%
+}
+
+%% Le due definizioni vanno ripetute a documento aperto: `sphinx.sty` le
+%% ridefinisce dopo che questo pacchetto e' stato caricato, e senza questo
+%% le pagine di apertura di capitolo tornavano al `plain` di LaTeX, cioe' al
+%% numero di pagina centrato e senza l'indirizzo del libro.
+\AtBeginDocument{%
+  \fancypagestyle{plain}{%
+    \fancyhf{}%
+    \fancyfoot[LE,RO]{\footnotesize\color{ptNero}\thepage}%
+    \fancyfoot[RE,LO]{\footnotesize\color{ptTeal}\ptCasa}%
+    \renewcommand{\headrulewidth}{0pt}%
+  }%
+  %% Sphinx traduce «(continua dalla pagina precedente)» ma non la riga
+  %% gemella, che restava «(continues on next page)»: in un libro italiano
+  %% si vede, ed e' l'unica stringa inglese rimasta in pagina.
+  \renewcommand{\literalblockcontinuedname}{(continua dalla pagina precedente)}%
+  \renewcommand{\literalblockcontinuesname}{(continua nella pagina seguente)}%
+  %% E l'indice si chiama «Indice». `sphinx-jupyterbook-latex` lo battezza col
+  %% titolo della PRIMA PARTE del toc: si chiamava «Fondamenta», e cambiando
+  %% l'ordine dei capitoli si e' messo a chiamarsi «Prima di cominciare». Non
+  %% si e' mai chiamato indice, e nessuna build lo ha mai detto.
+  \renewcommand{\contentsname}{Indice}%
+  \addto\captionsitalian{\renewcommand{\contentsname}{Indice}}%
+}
+
+%% ------------------------------------------------- apertura di capitolo
+%% Banda, pillola col numero e il titolo, mini-indice delle sezioni.
+%%
+%% La banda e' facoltativa: se il file non c'e' (per esempio prima che
+%% `_stampa/copertina.py` sia girato) l'apertura resta la pillola, che si
+%% regge da sola. Un capitolo non deve smettere di compilare per un disegno.
+%% La banda e' larga quanto il testo, non quanto la pagina. Al vivo sarebbe
+%% piu' vicina alla bozza, ma andrebbe spostata a sinistra di una quantita'
+%% che cambia fra pagina pari e dispari (i margini sono asimmetrici: 26 mm
+%% dentro, 32 fuori), e con `\oddsidemargin` le pagine pari escono sfalsate
+%% di sei millimetri. Larga quanto il testo e' giusta da tutte e due le parti.
+%% Il nome del file e' senza cartella: `latex_additional_files` copia tutto
+%% APPIATTITO nella cartella di compilazione, quindi `bande/capitolo-1.pdf`
+%% qui dentro non esiste e `\IfFileExists` falliva in silenzio, lasciando le
+%% aperture senza banda senza dire niente.
+\newcommand{\ptBanda}[1]{%
+  \IfFileExists{capitolo-#1.pdf}{%
+    \noindent\includegraphics[width=\linewidth]{capitolo-#1.pdf}%
+    \par\vspace{-5mm}%
+  }{}%
+}
+
+%% Il `text width` non e' decorazione: nella bozza il titolo del capitolo 3
+%% («Introduzione a Python e alle principali librerie») usciva dal foglio, e
+%% i titoli di adesso sono piu' lunghi di quello.
+\newcommand{\ptPillola}[2]{%
+  \begin{tikzpicture}
+    \node[rounded corners=7pt, draw=ptTeal, line width=1pt, fill=ptCrema,
+          inner xsep=8mm, inner ysep=4.5mm, align=left,
+          text width=0.78\linewidth, font=\ptDisplay\LARGE, text=ptNero]
+      {\textcolor{ptTerracotta}{#1.}\hspace{3mm}#2};
+  \end{tikzpicture}%
+}
+
+%% Un capitolo senza numero (la prefazione, la bibliografia): stessa pillola,
+%% senza la cifra davanti.
+\newcommand{\ptPillolaSenzaNumero}[1]{%
+  \begin{tikzpicture}
+    \node[rounded corners=7pt, draw=ptTeal, line width=1pt, fill=ptCrema,
+          inner xsep=8mm, inner ysep=4.5mm, align=left,
+          text width=0.78\linewidth, font=\ptDisplay\LARGE, text=ptNero]
+      {#1};
+  \end{tikzpicture}%
+}
+
+%% La forma e' `block` e non `display`: con `display` il titolo lo compone
+%% titlesec da se', dopo il `before-code`, e dentro la pillola non ci arriva.
+%%
+%% E il titolo non si scrive `#1`: in `before-code` titlesec passa il titolo
+%% come argomento all'ULTIMO comando. Per questo `\ptPillola` prende due
+%% argomenti e qui gliene passiamo uno solo: il secondo lo mette titlesec.
+%% Scriverlo `#1` da' «Illegal parameter number», che e' un errore che non
+%% dice affatto questo.
+\titleformat{\chapter}[block]
+  {\normalfont\ptBanda{\thechapter}}
+  {}
+  {0pt}
+  {\ptPillola{\thechapter}}
+  [\vspace{4mm}\ptMiniIndice]
+
+\titleformat{name=\chapter,numberless}[block]
+  {\normalfont}
+  {}
+  {0pt}
+  {\ptPillolaSenzaNumero}
+  [\vspace{4mm}]
+
+\titlespacing*{\chapter}{0pt}{0pt}{10mm}
+
+%% Il mini-indice: solo le sezioni di QUESTO capitolo.
+%%
+%% `\etocsettocstyle{}{}` non e' facoltativo: senza, `\localtableofcontents`
+%% stampa la sua intestazione, che e' un titolo, e comparire dentro
+%% l'apertura di capitolo (che e' gia' un titolo) fa fallire titlesec con
+%% «Nested titles». Qui l'intestazione non serve: il mini-indice sta sotto il
+%% nome del capitolo e si capisce da se'.
+\newcommand{\ptMiniIndice}{%
+  \begingroup
+  \etocsettocstyle{}{}%
+  \etocsetnexttocdepth{section}%
+  \etocsetstyle{section}{}{}
+    {\noindent\makebox[12mm][l]{\color{ptTerracotta}\etocnumber}%
+     \ptDisplayLeggero\etocname\par\vspace{1mm}}{}%
+  \localtableofcontents
+  \endgroup
+}
+
+%% ------------------------------------------------------- titoli interni
+\titleformat{\section}
+  {\ptDisplay\Large}{\color{ptTerracotta}\thesection}{1em}{}
+\titleformat{\subsection}
+  {\ptDisplay\large}{\color{ptTerracotta}\thesubsection}{1em}{}
+\titleformat{\subsubsection}
+  {\ptDisplay\normalsize}{\color{ptTeal}\thesubsubsection}{1em}{}
+
+%% ------------------------------------------------------ indice generale
+\titlecontents{chapter}[0pt]
+  {\addvspace{8pt}\ptDisplay\large}
+  {\textcolor{ptTerracotta}{\thecontentslabel}\hspace{5mm}}
+  {}
+  {\titlerule*[0.7pc]{\textcolor{ptTerracotta}{.}}%
+   \textcolor{ptTerracotta}{\contentspage}}
+\titlecontents{section}[15mm]
+  {\addvspace{1pt}\small}
+  {\contentslabel{11mm}}
+  {}
+  {\titlerule*[0.8pc]{.}\contentspage}
+
+%% ------------------------------------------------------ i due livelli
+%% Il nome dell'ambiente lo decide `_ext/pt_stampa.py`, che lo mette come
+%% classe sul container: Sphinx, per ogni classe, apre `sphinxclass<nome>`
+%% se esiste (vedi `sphinxlatexcontainers.sty`). Quindi tutto lo stile dei
+%% livelli sta qui, e il Python non ne sa niente.
+%%
+%% `breakable` non e' un vezzo: le coppie di livelli nel libro sono quasi
+%% mille, e un riquadro che non si spezza lascerebbe mezze pagine bianche di
+%% continuo.
+%% `\needspace` prima del riquadro: senza, un livello che comincia a due
+%% righe dalla fine della pagina apre un riquadro vuoto con dentro solo la
+%% sua etichetta, e il contenuto va tutto alla pagina dopo. Su quasi mille
+%% coppie succede di continuo, ed e' il difetto piu' visibile della prima
+%% prova.
+\newtcolorbox{sphinxclasspt-elementare}{
+  breakable, enhanced, sharp corners,
+  colback=ptOcra!10, colframe=ptOcra, boxrule=0pt, leftrule=2.5pt,
+  left=5mm, right=4mm, top=4mm, bottom=3mm,
+  before skip=3mm, after skip=3mm,
+  before={\par\needspace{4\baselineskip}},
+  overlay unbroken and first={
+    \node[anchor=north east, font=\ptDisplayLeggero\scriptsize,
+          text=ptOcra!55!ptNero, inner sep=0pt]
+      at ([shift={(-4mm,-2mm)}]frame.north east) {ELEMENTARE};}}
+
+\newtcolorbox{sphinxclasspt-superiore}{
+  breakable, enhanced, sharp corners,
+  colback=white, colframe=ptTeal, boxrule=0pt, leftrule=2.5pt,
+  left=5mm, right=4mm, top=4mm, bottom=3mm,
+  before skip=3mm, after skip=3mm,
+  before={\par\needspace{4\baselineskip}},
+  overlay unbroken and first={
+    \node[anchor=north east, font=\ptDisplayLeggero\scriptsize,
+          text=ptTeal, inner sep=0pt]
+      at ([shift={(-4mm,-2mm)}]frame.north east) {SUPERIORE};}}
+
+%% Una tab che non e' un livello di lettura: riquadro neutro.
+\newtcolorbox{sphinxclasspt-tab}{
+  breakable, enhanced, sharp corners,
+  colback=ptCrema, colframe=ptNero!20, boxrule=0.4pt,
+  left=5mm, right=4mm, top=3mm, bottom=3mm}
+
+%% ------------------------------------------------------- le animazioni
+%% Tre fermi immagine affiancati e il rimando all'animazione dal vivo.
+%% Le tre immagini hanno proporzioni diverse (il disegno e' quello che e'):
+%% si allineano in alto e si lascia che ognuna prenda l'altezza sua.
+\newenvironment{sphinxclasspt-animazione}
+  {\par\medskip\begingroup
+   \setlength{\parindent}{0pt}\centering
+   \setlength{\fboxsep}{0pt}}
+  {\par\endgroup\medskip}
+
+%% Il rimando sotto la terzina.
+\newcommand{\ptRimando}[1]{%
+  {\footnotesize\color{ptTeal}$\triangleright$~#1\par}}
+
+%% -------------------------------------------------- le celle dei notebook
+%% Due pagine del libro sono notebook veri, e `myst-nb` avvolge le loro celle
+%% in `sphinxVerbatimInput` e `sphinxVerbatimOutput`. A definirle era il tema
+%% `jupyterBook`, che qui non si usa: senza queste righe LuaLaTeX si ferma con
+%% «Environment sphinxVerbatimInput undefined» e quelle pagine escono a pezzi.
+%%
+%% L'ingresso e l'uscita si distinguono per il rientro e per il filetto: il
+%% codice che si scrive e il risultato che ne viene non sono la stessa cosa.
+\RequirePackage{changepage}
+\newenvironment{sphinxVerbatimInput}
+  {\colorlet{VerbatimBorderColor}{ptTeal}%
+   \colorlet{VerbatimColor}{ptCrema}%
+   \begin{adjustwidth}{4pt}{}}
+  {\end{adjustwidth}}
+\newenvironment{sphinxVerbatimOutput}
+  {\colorlet{VerbatimBorderColor}{ptOcra}%
+   \colorlet{VerbatimColor}{white}%
+   \begin{adjustwidth}{16pt}{}}
+  {\end{adjustwidth}}
+
+%% ------------------------------------------------ note, avvertenze, codice
+%% Le cornici di Sphinx nascono azzurre, che e' un colore che nel libro non
+%% esiste. Si riportano in palette con l'interfaccia di `sphinxsetup`.
+\sphinxsetup{%
+  div.note_border-TeXcolor={HTML}{2D5A5C},
+  div.note_background-TeXcolor={HTML}{F8F5EE},
+  div.tip_border-TeXcolor={HTML}{2D5A5C},
+  div.tip_background-TeXcolor={HTML}{F8F5EE},
+  div.important_border-TeXcolor={HTML}{C9A961},
+  div.important_background-TeXcolor={HTML}{F8F5EE},
+  div.warning_border-TeXcolor={HTML}{B5532C},
+  div.warning_background-TeXcolor={HTML}{F8F5EE},
+  div.caution_border-TeXcolor={HTML}{B5532C},
+  div.caution_background-TeXcolor={HTML}{F8F5EE},
+  div.attention_border-TeXcolor={HTML}{B5532C},
+  div.attention_background-TeXcolor={HTML}{F8F5EE},
+  VerbatimColor={HTML}{F8F5EE},
+  VerbatimBorderColor={HTML}{C9C2B4},
+  verbatimwithframe=true,
+}

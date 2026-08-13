@@ -1,32 +1,32 @@
 <svg viewBox="0 0 720 496" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Tecniche di prompting divise per cosa dicono le misure: quelle che reggono ovunque, quelle che reggono solo su matematica e logica, e quelle misurate con effetto nullo">
   <rect width="720" height="496" fill="#F8F5EE"/>
-  <text x="30" y="250" font-family="sans-serif" font-size="14" fill="#1A1A1A" text-anchor="middle" transform="rotate(-90 30 250)">cosa dicono le misure</text>
+  <text x="30" y="250" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#1A1A1A" text-anchor="middle" transform="rotate(-90 30 250)">cosa dicono le misure</text>
   <line x1="60" y1="430" x2="60" y2="65" stroke="#1A1A1A" stroke-width="1.5"/>
   <polygon points="52,77 68,77 60,62" fill="#1A1A1A"/>
   <rect x="90" y="60" width="600" height="124" rx="8" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2"/>
-  <text x="106" y="86" font-family="sans-serif" font-size="16" fill="#2D5A5C" font-weight="600">Misurato, e regge</text>
-  <text x="106" y="106" font-family="sans-serif" font-size="12" fill="#5A524A">vale su compiti diversi e su modelli diversi</text>
+  <text x="106" y="86" font-family="Inter, system-ui, sans-serif" font-size="16" fill="#2D5A5C" font-weight="600">Misurato, e regge</text>
+  <text x="106" y="106" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5A524A">vale su compiti diversi e su modelli diversi</text>
   <rect x="106" y="120" width="168" height="34" rx="17" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="1.5"/>
-  <text x="190" y="142" font-family="sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">esempi (few-shot)</text>
+  <text x="190" y="142" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">esempi (few-shot)</text>
   <rect x="290" y="120" width="168" height="34" rx="17" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="1.5"/>
-  <text x="374" y="142" font-family="sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">formato esplicito</text>
+  <text x="374" y="142" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">formato esplicito</text>
   <rect x="474" y="120" width="190" height="34" rx="17" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="1.5"/>
-  <text x="569" y="142" font-family="sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">istruzioni specifiche</text>
+  <text x="569" y="142" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">istruzioni specifiche</text>
   <rect x="90" y="196" width="600" height="124" rx="8" fill="#F8F5EE" stroke="#C9A961" stroke-width="2"/>
-  <text x="106" y="222" font-family="sans-serif" font-size="16" fill="#C9A961" font-weight="600">Misurato, ma solo dove</text>
-  <text x="106" y="242" font-family="sans-serif" font-size="12" fill="#5A524A">matematica e logica: +12 e +14 punti; altrove quasi niente</text>
+  <text x="106" y="222" font-family="Inter, system-ui, sans-serif" font-size="16" fill="#C9A961" font-weight="600">Misurato, ma solo dove</text>
+  <text x="106" y="242" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5A524A">matematica e logica: +12 e +14 punti; altrove quasi niente</text>
   <rect x="106" y="256" width="190" height="34" rx="17" fill="#F8F5EE" stroke="#C9A961" stroke-width="1.5"/>
-  <text x="201" y="278" font-family="sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">catena di pensiero</text>
+  <text x="201" y="278" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">catena di pensiero</text>
   <rect x="312" y="256" width="176" height="34" rx="17" fill="#F8F5EE" stroke="#C9A961" stroke-width="1.5"/>
-  <text x="400" y="278" font-family="sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">self-consistency</text>
+  <text x="400" y="278" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">self-consistency</text>
   <rect x="90" y="332" width="600" height="124" rx="8" fill="#F8F5EE" stroke="#B5532C" stroke-width="2"/>
-  <text x="106" y="358" font-family="sans-serif" font-size="16" fill="#B5532C" font-weight="600">Misurato, effetto nullo</text>
-  <text x="106" y="378" font-family="sans-serif" font-size="12" fill="#5A524A">provate in studi controllati, non spostano niente</text>
+  <text x="106" y="358" font-family="Inter, system-ui, sans-serif" font-size="16" fill="#B5532C" font-weight="600">Misurato, effetto nullo</text>
+  <text x="106" y="378" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5A524A">provate in studi controllati, non spostano niente</text>
   <rect x="106" y="392" width="172" height="34" rx="17" fill="#F8F5EE" stroke="#B5532C" stroke-width="1.5" stroke-dasharray="5 4"/>
-  <text x="192" y="414" font-family="sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">mance e minacce</text>
+  <text x="192" y="414" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">mance e minacce</text>
   <rect x="294" y="392" width="184" height="34" rx="17" fill="#F8F5EE" stroke="#B5532C" stroke-width="1.5" stroke-dasharray="5 4"/>
-  <text x="386" y="414" font-family="sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">«esperto mondiale»</text>
+  <text x="386" y="414" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">«esperto mondiale»</text>
   <rect x="494" y="392" width="116" height="34" rx="17" fill="#F8F5EE" stroke="#B5532C" stroke-width="1.5" stroke-dasharray="5 4"/>
-  <text x="552" y="414" font-family="sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">cortesia</text>
-  <text x="90" y="482" font-family="sans-serif" font-size="12.5" fill="#5A524A">In fondo non ci sono tecniche non verificate: ci sono tecniche verificate che non funzionano.</text>
+  <text x="552" y="414" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">cortesia</text>
+  <text x="90" y="482" font-family="Inter, system-ui, sans-serif" font-size="12.5" fill="#5A524A">In fondo non ci sono tecniche non verificate: ci sono tecniche verificate che non funzionano.</text>
 </svg>

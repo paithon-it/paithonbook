@@ -1,13 +1,13 @@
 <svg viewBox="0 0 680 420" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Tanti alberi di decisione che votano e producono un verdetto di maggioranza">
   <rect x="0" y="0" width="680" height="420" fill="#F8F5EE"/>
-  <text x="340" y="34" text-anchor="middle" font-family="sans-serif" font-size="14" fill="#1A1A1A">stesso input, alberi diversi</text>
+  <text x="340" y="34" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#1A1A1A">stesso input, alberi diversi</text>
   <g>
     <circle cx="100" cy="90" r="14" fill="none" stroke="#1A1A1A" stroke-width="1.5"/>
     <line x1="100" y1="104" x2="72" y2="140" stroke="#1A1A1A" stroke-width="1.5"/>
     <line x1="100" y1="104" x2="128" y2="140" stroke="#1A1A1A" stroke-width="1.5"/>
     <circle cx="72" cy="152" r="12" fill="#2D5A5C"/>
     <circle cx="128" cy="152" r="12" fill="none" stroke="#1A1A1A" stroke-width="1.5"/>
-    <text x="100" y="196" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#2D5A5C">voto: A</text>
+    <text x="100" y="196" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#2D5A5C">voto: A</text>
   </g>
   <g>
     <circle cx="260" cy="90" r="14" fill="none" stroke="#1A1A1A" stroke-width="1.5"/>
@@ -15,7 +15,7 @@
     <line x1="260" y1="104" x2="288" y2="140" stroke="#1A1A1A" stroke-width="1.5"/>
     <circle cx="232" cy="152" r="12" fill="none" stroke="#1A1A1A" stroke-width="1.5"/>
     <circle cx="288" cy="152" r="12" fill="#B5532C"/>
-    <text x="260" y="196" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#B5532C">voto: B</text>
+    <text x="260" y="196" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#B5532C">voto: B</text>
   </g>
   <g>
     <circle cx="420" cy="90" r="14" fill="none" stroke="#1A1A1A" stroke-width="1.5"/>
@@ -23,7 +23,7 @@
     <line x1="420" y1="104" x2="448" y2="140" stroke="#1A1A1A" stroke-width="1.5"/>
     <circle cx="392" cy="152" r="12" fill="#2D5A5C"/>
     <circle cx="448" cy="152" r="12" fill="none" stroke="#1A1A1A" stroke-width="1.5"/>
-    <text x="420" y="196" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#2D5A5C">voto: A</text>
+    <text x="420" y="196" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#2D5A5C">voto: A</text>
   </g>
   <g>
     <circle cx="580" cy="90" r="14" fill="none" stroke="#1A1A1A" stroke-width="1.5"/>
@@ -31,14 +31,14 @@
     <line x1="580" y1="104" x2="608" y2="140" stroke="#1A1A1A" stroke-width="1.5"/>
     <circle cx="552" cy="152" r="12" fill="#2D5A5C"/>
     <circle cx="608" cy="152" r="12" fill="none" stroke="#1A1A1A" stroke-width="1.5"/>
-    <text x="580" y="196" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#2D5A5C">voto: A</text>
+    <text x="580" y="196" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#2D5A5C">voto: A</text>
   </g>
   <line x1="100" y1="210" x2="320" y2="286" stroke="#C9A961" stroke-width="2"/>
   <line x1="260" y1="210" x2="330" y2="286" stroke="#C9A961" stroke-width="2"/>
   <line x1="420" y1="210" x2="350" y2="286" stroke="#C9A961" stroke-width="2"/>
   <line x1="580" y1="210" x2="360" y2="286" stroke="#C9A961" stroke-width="2"/>
   <rect x="230" y="290" width="220" height="56" rx="28" fill="#1A1A1A"/>
-  <text x="340" y="316" text-anchor="middle" font-family="sans-serif" font-size="14" fill="#F8F5EE">maggioranza: A</text>
-  <text x="340" y="336" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#C9A961">3 voti contro 1</text>
-  <text x="340" y="390" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">ogni albero vede dati e feature diversi: gli errori individuali si compensano nel voto</text>
+  <text x="340" y="316" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#F8F5EE">maggioranza: A</text>
+  <text x="340" y="336" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#C9A961">3 voti contro 1</text>
+  <text x="340" y="390" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A">ogni albero vede dati e feature diversi: gli errori individuali si compensano nel voto</text>
 </svg>

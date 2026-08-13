@@ -18,7 +18,7 @@
   <style>
     .ttl   { font-family:Inter, system-ui, sans-serif; font-size:16px; font-weight:600; fill:#1A1A1A; text-anchor:middle; }
     .atom  { font-family:Inter, system-ui, sans-serif; font-size:13px; font-weight:700; fill:#1A1A1A; text-anchor:middle; }
-    .cap   { font-family:Georgia, "Times New Roman", serif; font-size:16px; font-style:italic; fill:#5E5852; text-anchor:middle; }
+    .cap   { font-family:Fraunces, Georgia, serif; font-size:16px; font-style:italic; fill:#5E5852; text-anchor:middle; }
     .bond  { stroke:#8B847C; stroke-width:3; }
     .tie   { stroke:#8B847C; stroke-width:2; }
     .road  { stroke:#C9A961; stroke-width:6; stroke-linecap:round; }

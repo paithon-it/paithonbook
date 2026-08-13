@@ -5,13 +5,13 @@
       <path d="M0,0 L7,3 L0,6" fill="none" stroke="#1A1A1A" stroke-width="1.5"/>
     </marker>
   </defs>
-  <text x="410" y="30" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="bold" fill="#1A1A1A">Dall'audio al testo, in un solo modello</text>
+  <text x="410" y="30" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="bold" fill="#1A1A1A">Dall'audio al testo, in un solo modello</text>
 
   <!-- Stage 1: waveform -->
   <rect x="20" y="90" width="130" height="100" fill="none" stroke="#1A1A1A" stroke-width="1.5"/>
   <polyline points="30,140 42,118 54,162 66,128 78,152 90,110 102,168 114,132 126,150 140,140" fill="none" stroke="#B5532C" stroke-width="2"/>
-  <text x="85" y="212" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">audio</text>
-  <text x="85" y="228" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#5E5852">(forma d'onda)</text>
+  <text x="85" y="212" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A">audio</text>
+  <text x="85" y="228" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5E5852">(forma d'onda)</text>
   <line x1="152" y1="140" x2="182" y2="140" stroke="#1A1A1A" stroke-width="1.5" marker-end="url(#arrow)"/>
 
   <!-- Stage 2: spectrogram (mel bands + time gridlines) -->
@@ -27,18 +27,18 @@
     <line x1="308" y1="100" x2="308" y2="200" stroke="#F8F5EE" stroke-width="1.5"/>
     <rect x="188" y="100" width="150" height="100" fill="none" stroke="#1A1A1A" stroke-width="1.5"/>
   </g>
-  <text x="263" y="220" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">spettrogramma</text>
-  <text x="263" y="236" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#5E5852">log-mel</text>
+  <text x="263" y="220" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A">spettrogramma</text>
+  <text x="263" y="236" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5E5852">log-mel</text>
   <line x1="340" y1="150" x2="370" y2="150" stroke="#1A1A1A" stroke-width="1.5" marker-end="url(#arrow)"/>
 
   <!-- Stage 3: model -->
   <rect x="376" y="105" width="180" height="90" rx="8" fill="none" stroke="#2D5A5C" stroke-width="2"/>
-  <text x="466" y="140" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#1A1A1A">Transformer</text>
-  <text x="466" y="160" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#5E5852">encoder → decoder</text>
+  <text x="466" y="140" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="bold" fill="#1A1A1A">Transformer</text>
+  <text x="466" y="160" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5E5852">encoder → decoder</text>
   <line x1="558" y1="150" x2="588" y2="150" stroke="#1A1A1A" stroke-width="1.5" marker-end="url(#arrow)"/>
 
   <!-- Stage 4: text tokens -->
-  <g font-family="sans-serif" font-size="12" fill="#1A1A1A">
+  <g font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A">
     <rect x="600" y="108" width="150" height="24" rx="4" fill="none" stroke="#B5532C" stroke-width="1.5"/>
     <text x="675" y="124" text-anchor="middle">il</text>
     <rect x="600" y="138" width="150" height="24" rx="4" fill="none" stroke="#B5532C" stroke-width="1.5"/>
@@ -46,5 +46,5 @@
     <rect x="600" y="168" width="150" height="24" rx="4" fill="none" stroke="#B5532C" stroke-width="1.5"/>
     <text x="675" y="184" text-anchor="middle">dorme</text>
   </g>
-  <text x="675" y="220" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">token di testo</text>
+  <text x="675" y="220" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A">token di testo</text>
 </svg>

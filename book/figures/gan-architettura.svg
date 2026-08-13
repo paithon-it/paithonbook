@@ -10,27 +10,27 @@
 
   <!-- rumore z -->
   <rect x="20" y="78" width="122" height="58" rx="8" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="2"/>
-  <text x="81" y="102" text-anchor="middle" font-family="Georgia, serif" font-size="22" font-style="italic" fill="#1A1A1A">z</text>
+  <text x="81" y="102" text-anchor="middle" font-family="Fraunces, Georgia, serif" font-size="22" font-style="italic" fill="#1A1A1A">z</text>
   <text x="81" y="122" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="13" fill="#5E5852">rumore</text>
 
   <!-- Generatore G -->
   <rect x="182" y="70" width="134" height="74" rx="10" fill="#B5532C" stroke="#1A1A1A" stroke-width="2"/>
-  <text x="249" y="104" text-anchor="middle" font-family="Georgia, serif" font-size="30" font-weight="700" fill="#F8F5EE">G</text>
+  <text x="249" y="104" text-anchor="middle" font-family="Fraunces, Georgia, serif" font-size="30" font-weight="700" fill="#F8F5EE">G</text>
   <text x="249" y="126" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="12" fill="#F8F5EE">generatore</text>
 
   <!-- dato sintetico -->
   <rect x="356" y="74" width="156" height="66" rx="8" fill="#F8F5EE" stroke="#B5532C" stroke-width="2.5"/>
-  <text x="434" y="101" text-anchor="middle" font-family="Georgia, serif" font-size="18" font-style="italic" fill="#1A1A1A">x&#771; = G(z)</text>
+  <text x="434" y="101" text-anchor="middle" font-family="Fraunces, Georgia, serif" font-size="18" font-style="italic" fill="#1A1A1A">x&#771; = G(z)</text>
   <text x="434" y="122" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="12" fill="#5E5852">dato sintetico</text>
 
   <!-- dati reali -->
   <rect x="356" y="250" width="156" height="66" rx="8" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="2"/>
-  <text x="434" y="278" text-anchor="middle" font-family="Georgia, serif" font-size="18" font-style="italic" fill="#F8F5EE">x</text>
+  <text x="434" y="278" text-anchor="middle" font-family="Fraunces, Georgia, serif" font-size="18" font-style="italic" fill="#F8F5EE">x</text>
   <text x="434" y="299" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="12" fill="#F8F5EE">dati reali</text>
 
   <!-- Discriminatore D -->
   <rect x="556" y="150" width="120" height="96" rx="10" fill="#C9A961" stroke="#1A1A1A" stroke-width="2"/>
-  <text x="616" y="192" text-anchor="middle" font-family="Georgia, serif" font-size="30" font-weight="700" fill="#1A1A1A">D</text>
+  <text x="616" y="192" text-anchor="middle" font-family="Fraunces, Georgia, serif" font-size="30" font-weight="700" fill="#1A1A1A">D</text>
   <text x="616" y="214" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1A1A1A">discriminatore</text>
 
   <!-- output -->

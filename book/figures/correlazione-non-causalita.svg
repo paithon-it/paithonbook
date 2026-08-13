@@ -1,14 +1,14 @@
 <svg viewBox="0 0 640 340" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Grafo causale con confonditore: il caldo estivo causa sia le vendite di gelato sia gli annegamenti; tra questi ultimi due esiste solo una correlazione spuria">
   <rect x="0" y="0" width="640" height="340" fill="#F8F5EE"/>
   <ellipse cx="320" cy="70" rx="110" ry="40" fill="#C9A961" stroke="#1A1A1A" stroke-width="2"/>
-  <text x="320" y="66" text-anchor="middle" font-family="sans-serif" font-size="17" font-weight="bold" fill="#1A1A1A">Caldo estivo</text>
-  <text x="320" y="86" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">(confonditore Z)</text>
+  <text x="320" y="66" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="17" font-weight="bold" fill="#1A1A1A">Caldo estivo</text>
+  <text x="320" y="86" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A">(confonditore Z)</text>
   <ellipse cx="140" cy="250" rx="105" ry="40" fill="#B5532C" stroke="#1A1A1A" stroke-width="2"/>
-  <text x="140" y="246" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="bold" fill="#F8F5EE">Gelati venduti</text>
-  <text x="140" y="266" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#F8F5EE">(X)</text>
+  <text x="140" y="246" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="bold" fill="#F8F5EE">Gelati venduti</text>
+  <text x="140" y="266" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F8F5EE">(X)</text>
   <ellipse cx="500" cy="250" rx="105" ry="40" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="2"/>
-  <text x="500" y="246" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="bold" fill="#F8F5EE">Annegamenti</text>
-  <text x="500" y="266" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#F8F5EE">(Y)</text>
+  <text x="500" y="246" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="bold" fill="#F8F5EE">Annegamenti</text>
+  <text x="500" y="266" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F8F5EE">(Y)</text>
   <defs>
     <marker id="freccia" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
       <path d="M0,0 L10,4 L0,8 Z" fill="#1A1A1A"/>
@@ -16,9 +16,9 @@
   </defs>
   <line x1="255" y1="105" x2="180" y2="208" stroke="#1A1A1A" stroke-width="2" marker-end="url(#freccia)"/>
   <line x1="385" y1="105" x2="460" y2="208" stroke="#1A1A1A" stroke-width="2" marker-end="url(#freccia)"/>
-  <text x="185" y="150" font-family="sans-serif" font-size="13" fill="#1A1A1A">causa</text>
-  <text x="425" y="150" font-family="sans-serif" font-size="13" fill="#1A1A1A">causa</text>
+  <text x="185" y="150" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A">causa</text>
+  <text x="425" y="150" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A">causa</text>
   <line x1="248" y1="250" x2="392" y2="250" stroke="#B5532C" stroke-width="2" stroke-dasharray="7,6"/>
-  <text x="320" y="238" text-anchor="middle" font-family="sans-serif" font-size="13" font-style="italic" fill="#B5532C">correlazione spuria</text>
-  <text x="320" y="290" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">Nessuna freccia tra X e Y: si muovono insieme solo perché Z muove entrambi</text>
+  <text x="320" y="238" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" font-style="italic" fill="#B5532C">correlazione spuria</text>
+  <text x="320" y="290" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A">Nessuna freccia tra X e Y: si muovono insieme solo perché Z muove entrambi</text>
 </svg>

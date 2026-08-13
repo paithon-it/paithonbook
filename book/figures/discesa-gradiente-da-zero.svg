@@ -15,8 +15,8 @@
   <rect x="0" y="0" width="640" height="360" fill="#F8F5EE"/>
   <line x1="60" y1="310" x2="600" y2="310" stroke="#1A1A1A" stroke-width="1.5"/>
   <line x1="60" y1="310" x2="60" y2="40" stroke="#1A1A1A" stroke-width="1.5"/>
-  <text x="330" y="345" text-anchor="middle" font-family="sans-serif" font-size="14" fill="#1A1A1A">parametro w</text>
-  <text x="30" y="175" text-anchor="middle" font-family="sans-serif" font-size="14" fill="#1A1A1A" transform="rotate(-90 30 175)">loss L(w)</text>
+  <text x="330" y="345" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#1A1A1A">parametro w</text>
+  <text x="30" y="175" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#1A1A1A" transform="rotate(-90 30 175)">loss L(w)</text>
   <path d="M 70 46 Q 335 494 600 46" fill="none" stroke="#2D5A5C" stroke-width="2"/>
   <defs>
     <marker id="punta" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
@@ -36,8 +36,8 @@
   <circle cx="296.8" cy="265.4" r="6" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5"/>
   <circle cx="308.3" cy="267.7" r="6" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5"/>
   <circle cx="335" cy="270" r="8" fill="#C9A961" stroke="#1A1A1A" stroke-width="2"/>
-  <text x="107.9" y="86" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#B5532C">partenza</text>
-  <text x="335" y="296" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#1A1A1A">minimo</text>
-  <text x="430" y="62" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#2D5A5C">passi lunghi dove la pendenza è forte,</text>
-  <text x="430" y="80" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#2D5A5C">corti vicino al fondo</text>
+  <text x="107.9" y="86" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#B5532C">partenza</text>
+  <text x="335" y="296" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A">minimo</text>
+  <text x="430" y="62" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#2D5A5C">passi lunghi dove la pendenza è forte,</text>
+  <text x="430" y="80" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#2D5A5C">corti vicino al fondo</text>
 </svg>

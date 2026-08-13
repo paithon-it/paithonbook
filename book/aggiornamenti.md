@@ -38,6 +38,28 @@ Una versione corrisponde a una **pubblicazione**, non a una giornata di
 lavoro: il libro si scrive tutti i giorni e si pubblica quando un pezzo sta in
 piedi.
 
+(v1-5-0)=
+
+## 1.5.0 · 13 agosto 2026
+
+### Sezioni nuove
+
+- Il libro si scarica in **PDF**, tutto in un file solo. Non è la stampa delle pagine web: è un secondo formato, impaginato come un libro, con l'indice, i numeri di pagina, le aperture di capitolo e i due livelli di lettura che si riconoscono dal riquadro. Il collegamento è qui nella pagina di apertura, sotto il numero di versione, e punta sempre all'ultima edizione.
+- Dove il libro online muove una figura, il PDF mostra **tre fermi immagine** (l'inizio, il mezzo e la fine) e l'indirizzo della pagina in cui quella figura si muove davvero. Vale per tutte e trentacinque le animazioni: tre fotogrammi non sono un'animazione, ma dicono che c'era un prima e un dopo, che è quello che un fermo immagine solo perde.
+
+### Pagine ampliate
+
+- {doc}`Prefazione </prefazione>`. La Prefazione dice adesso **come** il libro è scritto, perché riguarda chi legge: buona parte di queste pagine nasce lavorando con l'intelligenza artificiale, e quello che resta è ciò che l'autore ha verificato e riscritto. Da qui il sottotesto, «l'AI che spiega se stessa... due volte», dove «due volte» vale in tutti e due i sensi: i due livelli di lettura, e la strada che il testo fa per arrivare in pagina. Quello che una AI scrive lo rilegge un'altra AI, che alla stesura non ha partecipato e ha un compito solo, cercare l'errore; poi il testo passa dall'autore, ed è quel passaggio a decidere che cosa resta. La pagina dice anche su che cosa il libro scommette: che versione dopo versione le correzioni diventino rare, e poi rarissime.
+
+### Correzioni
+
+- {doc}`Algebra lineare </Matematica/algebra-lineare>` (Matematica). Più di metà delle figure del libro (185 su 312) non usava i caratteri del progetto: li chiedeva in modo generico, e ogni lettore se le vedeva disegnate con il carattere del proprio sistema, diverso su Windows, su Mac e su Linux. Adesso le etichette delle figure sono le stesse per tutti, e un controllo automatico impedisce che la cosa ricapiti.
+- {doc}`Modelli n-gram </NaturalLanguageProcessing/modelli-ngram>` (Natural Language Processing). Quattro formule erano scritte in un modo che il browser perdona e la stampa no: tre sistemi di equazioni annidati male e una formula spezzata a metà da un a capo. Online si vedevano lo stesso; qui si vedono giuste in tutti e due i formati.
+
+### Impianto
+
+- {doc}`Prefazione </prefazione>`. La **Prefazione** esce da «Fondamenta» e apre il libro per conto suo, dentro una parte nuova dell'indice, «Prima di cominciare». Una prefazione non è un capitolo di fondamenta: viene prima di tutto, e nel libro stampato si vedeva ancora meglio che online.
+
 (v1-4-2)=
 
 ## 1.4.2 · 13 agosto 2026

@@ -1,28 +1,28 @@
 <svg viewBox="0 0 720 400" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Schema della cella LSTM con i tre gate">
   <rect x="0" y="0" width="720" height="400" fill="#F8F5EE"/>
   <rect x="60" y="40" width="600" height="320" fill="none" stroke="#1A1A1A" stroke-width="2" rx="12"/>
-  <text x="360" y="30" font-family="sans-serif" font-size="15" fill="#1A1A1A" text-anchor="middle" font-weight="bold">Cella LSTM</text>
+  <text x="360" y="30" font-family="Inter, system-ui, sans-serif" font-size="15" fill="#1A1A1A" text-anchor="middle" font-weight="bold">Cella LSTM</text>
   <!-- cell state top line -->
   <line x1="20" y1="90" x2="700" y2="90" stroke="#2D5A5C" stroke-width="2"/>
-  <text x="30" y="78" font-family="sans-serif" font-size="13" fill="#2D5A5C">C(t-1)</text>
-  <text x="655" y="78" font-family="sans-serif" font-size="13" fill="#2D5A5C">C(t)</text>
+  <text x="30" y="78" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#2D5A5C">C(t-1)</text>
+  <text x="655" y="78" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#2D5A5C">C(t)</text>
   <!-- forget gate -->
   <rect x="130" y="180" width="110" height="56" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5" rx="8"/>
-  <text x="185" y="204" font-family="sans-serif" font-size="13" fill="#F8F5EE" text-anchor="middle">forget gate</text>
-  <text x="185" y="222" font-family="sans-serif" font-size="12" fill="#F8F5EE" text-anchor="middle">σ · cancella</text>
+  <text x="185" y="204" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F8F5EE" text-anchor="middle">forget gate</text>
+  <text x="185" y="222" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F8F5EE" text-anchor="middle">σ · cancella</text>
   <!-- input gate -->
   <rect x="305" y="180" width="110" height="56" fill="#C9A961" stroke="#1A1A1A" stroke-width="1.5" rx="8"/>
-  <text x="360" y="204" font-family="sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">input gate</text>
-  <text x="360" y="222" font-family="sans-serif" font-size="12" fill="#1A1A1A" text-anchor="middle">σ · scrive</text>
+  <text x="360" y="204" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">input gate</text>
+  <text x="360" y="222" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A" text-anchor="middle">σ · scrive</text>
   <!-- output gate -->
   <rect x="480" y="180" width="110" height="56" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="1.5" rx="8"/>
-  <text x="535" y="204" font-family="sans-serif" font-size="13" fill="#F8F5EE" text-anchor="middle">output gate</text>
-  <text x="535" y="222" font-family="sans-serif" font-size="12" fill="#F8F5EE" text-anchor="middle">σ · legge</text>
+  <text x="535" y="204" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F8F5EE" text-anchor="middle">output gate</text>
+  <text x="535" y="222" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F8F5EE" text-anchor="middle">σ · legge</text>
   <!-- operations on cell line -->
   <circle cx="185" cy="90" r="14" fill="#F8F5EE" stroke="#B5532C" stroke-width="2"/>
-  <text x="185" y="95" font-family="sans-serif" font-size="14" fill="#B5532C" text-anchor="middle">×</text>
+  <text x="185" y="95" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#B5532C" text-anchor="middle">×</text>
   <circle cx="360" cy="90" r="14" fill="#F8F5EE" stroke="#C9A961" stroke-width="2"/>
-  <text x="360" y="95" font-family="sans-serif" font-size="14" fill="#1A1A1A" text-anchor="middle">+</text>
+  <text x="360" y="95" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#1A1A1A" text-anchor="middle">+</text>
   <!-- arrows gates to line -->
   <line x1="185" y1="180" x2="185" y2="106" stroke="#B5532C" stroke-width="1.5"/>
   <polygon points="185,104 180,114 190,114" fill="#B5532C"/>
@@ -34,10 +34,10 @@
   <line x1="620" y1="130" x2="620" y2="320" stroke="#2D5A5C" stroke-width="1.5"/>
   <line x1="620" y1="320" x2="700" y2="320" stroke="#2D5A5C" stroke-width="1.5"/>
   <polygon points="700,320 690,315 690,325" fill="#2D5A5C"/>
-  <text x="660" y="308" font-family="sans-serif" font-size="13" fill="#2D5A5C">h(t)</text>
+  <text x="660" y="308" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#2D5A5C">h(t)</text>
   <!-- input bottom line -->
   <line x1="20" y1="320" x2="360" y2="320" stroke="#1A1A1A" stroke-width="1.5"/>
-  <text x="26" y="308" font-family="sans-serif" font-size="13" fill="#1A1A1A">x(t), h(t-1)</text>
+  <text x="26" y="308" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A">x(t), h(t-1)</text>
   <line x1="185" y1="320" x2="185" y2="236" stroke="#1A1A1A" stroke-width="1.5"/>
   <line x1="360" y1="320" x2="360" y2="236" stroke="#1A1A1A" stroke-width="1.5"/>
   <line x1="360" y1="320" x2="535" y2="320" stroke="#1A1A1A" stroke-width="1.5"/>

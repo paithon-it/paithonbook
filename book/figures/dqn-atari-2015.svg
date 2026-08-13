@@ -1,14 +1,14 @@
 <svg viewBox="0 0 760 400" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Il ciclo di DQN: lo schermo diventa ingresso della rete Q, che stima il valore di ogni azione; l'azione scelta produce una ricompensa, e la transizione finisce in una memoria delle esperienze da cui si ripesca a caso per addestrare la rete">
   <rect x="0" y="0" width="760" height="400" fill="#F8F5EE"/>
-  <text x="380" y="34" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="bold" fill="#1A1A1A">Dallo schermo all'azione, e ritorno</text>
+  <text x="380" y="34" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="bold" fill="#1A1A1A">Dallo schermo all'azione, e ritorno</text>
 
   <!-- la memoria delle esperienze: il blocco laterale di cui parla il testo -->
   <rect x="220" y="70" width="164" height="58" rx="6" fill="#F8F5EE" stroke="#B5532C" stroke-width="2" stroke-dasharray="7 5"/>
-  <text x="302" y="94" text-anchor="middle" font-family="sans-serif" font-size="13.5" font-weight="bold" fill="#B5532C">memoria delle esperienze</text>
-  <text x="302" y="114" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#1A1A1A">un milione di transizioni</text>
+  <text x="302" y="94" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13.5" font-weight="bold" fill="#B5532C">memoria delle esperienze</text>
+  <text x="302" y="114" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#1A1A1A">un milione di transizioni</text>
   <line x1="302" y1="128" x2="302" y2="166" stroke="#B5532C" stroke-width="2"/>
   <path d="M302 176 L 296 164 L 308 164 Z" fill="#B5532C"/>
-  <text x="314" y="152" font-family="sans-serif" font-size="11" fill="#B5532C">si ripesca a caso</text>
+  <text x="314" y="152" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#B5532C">si ripesca a caso</text>
 
   <g transform="translate(0,64)">
   <!-- schermo -->
@@ -20,8 +20,8 @@
   <rect x="118" y="120" width="12" height="8" fill="#B5532C"/>
   <rect x="90" y="150" width="8" height="8" fill="#F8F5EE"/>
   <rect x="72" y="168" width="34" height="6" fill="#C9A961"/>
-  <text x="90" y="200" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#1A1A1A">schermo</text>
-  <text x="90" y="224" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#1A1A1A">84×84 pixel</text>
+  <text x="90" y="200" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="bold" fill="#1A1A1A">schermo</text>
+  <text x="90" y="224" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#1A1A1A">84×84 pixel</text>
 
   <!-- freccia 1 -->
   <line x1="156" y1="152" x2="216" y2="152" stroke="#1A1A1A" stroke-width="2"/>
@@ -29,9 +29,9 @@
 
   <!-- rete Q -->
   <rect x="220" y="112" width="164" height="80" rx="6" fill="#2D5A5C"/>
-  <text x="302" y="146" text-anchor="middle" font-family="sans-serif" font-size="15" font-weight="bold" fill="#F8F5EE">rete Q</text>
-  <text x="302" y="168" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#F8F5EE">stima il valore</text>
-  <text x="302" y="182" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#F8F5EE">di ogni azione</text>
+  <text x="302" y="146" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="bold" fill="#F8F5EE">rete Q</text>
+  <text x="302" y="168" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#F8F5EE">stima il valore</text>
+  <text x="302" y="182" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#F8F5EE">di ogni azione</text>
 
   <!-- freccia 2 -->
   <line x1="386" y1="152" x2="446" y2="152" stroke="#1A1A1A" stroke-width="2"/>
@@ -39,8 +39,8 @@
 
   <!-- azione -->
   <rect x="450" y="122" width="140" height="60" rx="6" fill="#C9A961"/>
-  <text x="520" y="150" text-anchor="middle" font-family="sans-serif" font-size="15" font-weight="bold" fill="#1A1A1A">azione</text>
-  <text x="520" y="170" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#1A1A1A">muovi ← / →</text>
+  <text x="520" y="150" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="bold" fill="#1A1A1A">azione</text>
+  <text x="520" y="170" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#1A1A1A">muovi ← / →</text>
 
   <!-- freccia 3 -->
   <line x1="592" y1="152" x2="640" y2="152" stroke="#1A1A1A" stroke-width="2"/>
@@ -48,13 +48,13 @@
 
   <!-- ricompensa -->
   <rect x="644" y="122" width="96" height="60" rx="6" fill="#B5532C"/>
-  <text x="692" y="148" text-anchor="middle" font-family="sans-serif" font-size="14" font-weight="bold" fill="#F8F5EE">ricompensa</text>
-  <text x="692" y="168" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#F8F5EE">+punteggio</text>
+  <text x="692" y="148" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#F8F5EE">ricompensa</text>
+  <text x="692" y="168" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#F8F5EE">+punteggio</text>
 
   </g>
 
   <!-- la transizione appena vissuta torna indietro e finisce in memoria -->
   <path d="M692 246 L 692 340 L 176 340 L 176 99 L 214 99" fill="none" stroke="#1A1A1A" stroke-width="1.5" stroke-dasharray="6 5"/>
   <path d="M214 99 L 204 94 L 204 104 Z" fill="#1A1A1A"/>
-  <text x="440" y="362" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1A1A1A">ogni transizione (stato, azione, ricompensa, stato dopo) viene messa da parte, non usata subito</text>
+  <text x="440" y="362" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A">ogni transizione (stato, azione, ricompensa, stato dopo) viene messa da parte, non usata subito</text>
 </svg>

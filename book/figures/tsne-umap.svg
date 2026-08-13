@@ -1,6 +1,6 @@
 <svg viewBox="0 0 640 400" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Schema: dati ad alta dimensione rappresentati come groviglio intrecciato a sinistra, freccia di proiezione al centro, mappa piatta 2D con tre cluster separati a destra">
   <rect x="0" y="0" width="640" height="400" fill="#F8F5EE"/>
-  <text x="150" y="48" font-family="sans-serif" font-size="14" fill="#1A1A1A" text-anchor="middle">784 dimensioni</text>
+  <text x="150" y="48" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#1A1A1A" text-anchor="middle">784 dimensioni</text>
   <rect x="40" y="70" width="220" height="260" rx="8" fill="none" stroke="#C9C2B4" stroke-width="1.5"/>
   <path d="M 70 280 C 120 120, 200 320, 230 130 C 240 90, 170 100, 150 180 C 130 260, 220 270, 235 210" fill="none" stroke="#8B847C" stroke-width="1.5"/>
   <circle cx="85" cy="235" r="6" fill="#B5532C"/>
@@ -12,12 +12,12 @@
   <circle cx="160" cy="300" r="6" fill="#C9A961"/>
   <circle cx="120" cy="120" r="6" fill="#2D5A5C"/>
   <circle cx="225" cy="285" r="6" fill="#C9A961"/>
-  <text x="150" y="358" font-family="sans-serif" font-size="13" fill="#5E5852" text-anchor="middle">classi intrecciate, distanze illeggibili</text>
+  <text x="150" y="358" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#5E5852" text-anchor="middle">classi intrecciate, distanze illeggibili</text>
   <line x1="280" y1="200" x2="350" y2="200" stroke="#1A1A1A" stroke-width="2"/>
   <polygon points="350,200 334,192 334,208" fill="#1A1A1A"/>
-  <text x="315" y="182" font-family="sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">t-SNE /</text>
-  <text x="315" y="232" font-family="sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">UMAP</text>
-  <text x="490" y="48" font-family="sans-serif" font-size="14" fill="#1A1A1A" text-anchor="middle">mappa 2D</text>
+  <text x="315" y="182" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">t-SNE /</text>
+  <text x="315" y="232" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">UMAP</text>
+  <text x="490" y="48" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#1A1A1A" text-anchor="middle">mappa 2D</text>
   <rect x="380" y="70" width="220" height="260" rx="8" fill="none" stroke="#C9C2B4" stroke-width="1.5"/>
   <circle cx="430" cy="125" r="6" fill="#B5532C"/>
   <circle cx="452" cy="112" r="6" fill="#B5532C"/>
@@ -31,5 +31,5 @@
   <circle cx="468" cy="284" r="6" fill="#C9A961"/>
   <circle cx="452" cy="296" r="6" fill="#C9A961"/>
   <circle cx="430" cy="282" r="6" fill="#C9A961"/>
-  <text x="490" y="358" font-family="sans-serif" font-size="13" fill="#5E5852" text-anchor="middle">vicinati preservati, cluster leggibili</text>
+  <text x="490" y="358" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#5E5852" text-anchor="middle">vicinati preservati, cluster leggibili</text>
 </svg>

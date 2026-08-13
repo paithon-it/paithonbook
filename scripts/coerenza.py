@@ -33,6 +33,10 @@ toglierli di mezzo prima di rileggere:
   ambiente   scene Manim che l'ambiente di oggi non saprebbe piu' rendere
   lineette   i due travestimenti della lineetta che `CLAUDE.md` vieta: la
              doppia `--` e il trattino singolo spaziato
+  stampa     cio' che serve al PDF e puo' restare indietro in silenzio: i tre
+             fermi immagine di ogni animazione (mancanti, piu' vecchi
+             dell'animazione, orfani) e le figure che dichiarano una famiglia
+             di font generica invece di quelle del brand
   avanti     rimandi in avanti ("vedremo", "prossima sezione"), solo elenco,
              la verifica resta umana
 
@@ -135,7 +139,8 @@ def main():
     args = ap.parse_args()
     attivi = set(args.solo.split(",")) if args.solo else {
         "numref", "cite", "ref", "figure", "toc", "landing", "animazioni",
-        "schede", "ricordare", "avanti", "palette", "clip", "ambiente", "lineette"}
+        "schede", "ricordare", "avanti", "palette", "clip", "ambiente",
+        "lineette", "stampa"}
 
     testi = sorgenti()
     problemi = defaultdict(list)
@@ -211,12 +216,12 @@ def main():
         for p in sorted((LIBRO / "figures").glob("*")):
             if not p.is_file() or p.name in usate:
                 continue
-            # `<nome>-striscia.png` e' il fermo immagine che in impaginazione
-            # sostituisce `<nome>.gif`: per progetto non lo richiama nessuno,
-            # e segnalarlo ogni volta insegna solo a ignorare l'elenco.
-            if p.name.endswith("-striscia.png"):
-                if f"{p.name[:-len('-striscia.png')]}.gif" in usate:
-                    continue
+            # I fermi immagine (`figures/fermi/`) non li richiama nessuna
+            # pagina per progetto: li mette in pagina il PDF, e chi li
+            # controlla e' l'asse `stampa`. Segnalarli qui ogni volta
+            # insegnerebbe solo a ignorare l'elenco.
+            if p.is_dir() or p.parent.name == "fermi":
+                continue
             problemi["figure mai richiamate"].append(p.name)
 
     if "toc" in attivi:
@@ -525,6 +530,70 @@ def main():
                         problemi["ambiente delle clip cambiato"].append(riga.strip())
 
 
+    if "stampa" in attivi:
+        # Il libro esiste anche come PDF (`scripts/genera-pdf.py`), e due cose
+        # che gli servono possono restare indietro in silenzio: i fermi
+        # immagine delle animazioni, che sono tracciati, e i font dichiarati
+        # dalle figure.
+        #
+        # Il controllo sui fermi non si limita a chiedere se i file ci sono.
+        # Tre PNG identici passerebbero qualunque verifica sull'esistenza e
+        # non racconterebbero niente: il senso della terzina e' far vedere che
+        # c'era un prima e un dopo.
+        fermi = LIBRO / "figures" / "fermi"
+        anima = [p for p in sorted((LIBRO / "figures").glob("*.gif"))]
+        for svg in sorted((LIBRO / "figures").glob("*.svg")):
+            if "@keyframes" in svg.read_text(encoding="utf-8", errors="ignore"):
+                anima.append(svg)
+
+        attesi = set()
+        for sorgente in anima:
+            tre = [fermi / f"{sorgente.stem}-{n}.png" for n in (1, 2, 3)]
+            attesi.update(f.name for f in tre)
+            mancano = [f.name for f in tre if not f.is_file()]
+            if mancano:
+                problemi["fermi immagine mancanti"].append(
+                    f"{sorgente.name}  ->  {', '.join(mancano)}")
+            elif min(f.stat().st_mtime for f in tre) < sorgente.stat().st_mtime:
+                problemi["fermi immagine piu' vecchi dell'animazione"].append(
+                    f"{sorgente.name}  (python3 animazioni/fermi.py)")
+
+        if fermi.is_dir():
+            for p in sorted(fermi.glob("*.png")):
+                # I fogli a contatto cominciano per punto e non sono fermi:
+                # si guardano e si buttano, e infatti non sono tracciati.
+                if p.name.startswith(".") or p.name in attesi:
+                    continue
+                problemi["fermi immagine orfani"].append(p.name)
+
+        # Le figure devono dichiarare i font del brand. Non e' un vezzo da
+        # stampa: un `font-family="sans-serif"` generico, come file autonomo,
+        # prende il font di sistema di chi legge, ed e' cosi' che per mesi
+        # meta' delle figure del libro sono uscite in Arial anche online.
+        # La lineetta SPAZIATA dentro una figura. L'asse `palette` cerca la
+        # doppia `--` e la lineetta lunga; questa terza forma passava, ed e'
+        # la piu' facile da scrivere per sbaglio. Le sottrazioni fra numeri
+        # (`2026 - 2017`) non contano: li' e' un segno meno.
+        rx_lin = re.compile(r"(?<![\d>])\s\-\s(?![\d<])")
+        for p in sorted((LIBRO / "figures").glob("*.svg")):
+            for riga in re.findall(r">([^<>]{3,120})<",
+                                   p.read_text(encoding="utf-8", errors="ignore")):
+                if rx_lin.search(riga):
+                    problemi["lineette dentro le figure"].append(
+                        f"{p.name}  ->  {riga.strip()[:60]}")
+
+        rx_fam = re.compile(r'font-family\s*[:=]\s*["\']?([^;"\'>}]+)', re.I)
+        for p in sorted((LIBRO / "figures").glob("*.svg")):
+            testo = p.read_text(encoding="utf-8", errors="ignore")
+            for famiglia in rx_fam.findall(testo):
+                prima = famiglia.split(",")[0].strip().strip("'\"")
+                if prima.lower() in ("sans-serif", "serif", "monospace",
+                                     "georgia", "arial", "helvetica",
+                                     "times new roman", ""):
+                    problemi["figure che non dichiarano i font del brand"].append(
+                        f"{p.name}  ->  {famiglia.strip()}")
+                    break
+
     if "lineette" in attivi:
         # `CLAUDE.md` vieta la lineetta lunga (—) perche' non e' nello stile
         # dell'autore. Ma la stessa cosa si scrive in altri due modi, e sono i
@@ -615,6 +684,10 @@ def main():
               "lineette dentro le figure",
               "script dentro le figure",
               "colori fuori palette (decisione del repo brand)",
+              "fermi immagine mancanti",
+              "fermi immagine piu' vecchi dell'animazione",
+              "fermi immagine orfani",
+              "figure che non dichiarano i font del brand",
               "rimandi in avanti (da leggere)"]
     # Assi che elencano e basta: dicono cosa guardare, non cosa e' rotto, e
     # quindi non fanno fallire niente.

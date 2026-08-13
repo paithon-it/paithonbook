@@ -1,6 +1,6 @@
 <svg viewBox="0 0 720 430" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Un'immagine viene divisa in patch, ogni patch diventa un token con codifica di posizione, la sequenza entra in un Transformer, il token di classe produce la categoria">
   <rect x="0" y="0" width="720" height="430" fill="#F8F5EE"/>
-  <text x="360" y="32" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="bold" fill="#1A1A1A">Da immagine a sequenza di token</text>
+  <text x="360" y="32" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="bold" fill="#1A1A1A">Da immagine a sequenza di token</text>
   <!-- image grid 4x4 -->
   <rect x="34" y="70" width="140" height="140" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="2"/>
   <line x1="69" y1="70" x2="69" y2="210" stroke="#C9C2B4" stroke-width="1.5"/>
@@ -10,23 +10,23 @@
   <line x1="34" y1="140" x2="174" y2="140" stroke="#C9C2B4" stroke-width="1.5"/>
   <line x1="34" y1="175" x2="174" y2="175" stroke="#C9C2B4" stroke-width="1.5"/>
   <rect x="69" y="105" width="35" height="35" fill="#C9A961"/>
-  <text x="104" y="234" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#5E5852">immagine &#8594; 196 patch 16&#215;16</text>
+  <text x="104" y="234" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5E5852">immagine &#8594; 196 patch 16&#215;16</text>
   <!-- arrow to tokens -->
   <line x1="182" y1="140" x2="222" y2="140" stroke="#1A1A1A" stroke-width="2"/>
   <path d="M222 140 L212 135 L212 145 Z" fill="#1A1A1A"/>
   <!-- token sequence -->
   <rect x="230" y="118" width="40" height="44" rx="4" fill="#B5532C"/>
-  <text x="250" y="145" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#F8F5EE">CLS</text>
+  <text x="250" y="145" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F8F5EE">CLS</text>
   <rect x="278" y="118" width="40" height="44" rx="4" fill="#C9A961"/>
-  <text x="298" y="145" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#1A1A1A">1</text>
+  <text x="298" y="145" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A">1</text>
   <rect x="326" y="118" width="40" height="44" rx="4" fill="#C9A961"/>
-  <text x="346" y="145" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#1A1A1A">2</text>
+  <text x="346" y="145" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A">2</text>
   <rect x="374" y="118" width="40" height="44" rx="4" fill="#C9A961"/>
-  <text x="394" y="145" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#1A1A1A">3</text>
-  <text x="432" y="146" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#5E5852">&#8230;</text>
+  <text x="394" y="145" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A">3</text>
+  <text x="432" y="146" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" fill="#5E5852">&#8230;</text>
   <rect x="450" y="118" width="46" height="44" rx="4" fill="#C9A961"/>
-  <text x="473" y="145" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#1A1A1A">196</text>
-  <text x="363" y="184" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#5E5852">+ codifica di posizione</text>
+  <text x="473" y="145" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A">196</text>
+  <text x="363" y="184" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5E5852">+ codifica di posizione</text>
   <!-- arrows down into transformer -->
   <line x1="250" y1="196" x2="250" y2="232" stroke="#1A1A1A" stroke-width="1.5"/>
   <line x1="298" y1="196" x2="298" y2="232" stroke="#1A1A1A" stroke-width="1.5"/>
@@ -36,12 +36,12 @@
   <path d="M394 232 L389 224 L399 224 Z" fill="#1A1A1A"/>
   <!-- transformer box -->
   <rect x="150" y="234" width="420" height="74" rx="8" fill="#2D5A5C"/>
-  <text x="360" y="270" text-anchor="middle" font-family="sans-serif" font-size="15" font-weight="bold" fill="#F8F5EE">Transformer encoder</text>
-  <text x="360" y="292" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#F8F5EE">self-attention: ogni patch guarda tutte le altre</text>
+  <text x="360" y="270" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="bold" fill="#F8F5EE">Transformer encoder</text>
+  <text x="360" y="292" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F8F5EE">self-attention: ogni patch guarda tutte le altre</text>
   <!-- output from CLS -->
   <line x1="250" y1="308" x2="250" y2="352" stroke="#1A1A1A" stroke-width="2"/>
   <path d="M250 352 L245 344 L255 344 Z" fill="#1A1A1A"/>
   <rect x="185" y="356" width="130" height="42" rx="6" fill="#B5532C"/>
-  <text x="250" y="382" text-anchor="middle" font-family="sans-serif" font-size="14" fill="#F8F5EE">classe: gatto</text>
-  <text x="360" y="382" font-family="sans-serif" font-size="12" fill="#5E5852">&#8592; l'uscita del token CLS d&#224; la categoria</text>
+  <text x="250" y="382" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#F8F5EE">classe: gatto</text>
+  <text x="360" y="382" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5E5852">&#8592; l'uscita del token CLS d&#224; la categoria</text>
 </svg>

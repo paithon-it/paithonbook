@@ -1,4 +1,4 @@
-<svg viewBox="0 0 660 430" width="100%" role="img" aria-label="Schema di CLIP: encoder di immagini e di testo producono vettori confrontati in una matrice di similarita, la cui diagonale segna le coppie corrette" xmlns="http://www.w3.org/2000/svg" font-family="sans-serif">
+<svg viewBox="0 0 660 430" width="100%" role="img" aria-label="Schema di CLIP: encoder di immagini e di testo producono vettori confrontati in una matrice di similarita, la cui diagonale segna le coppie corrette" xmlns="http://www.w3.org/2000/svg" font-family="Inter, system-ui, sans-serif">
   <rect x="0" y="0" width="660" height="430" fill="#F8F5EE"/>
   <text x="24" y="32" font-size="17" font-weight="700" fill="#1A1A1A">Una matrice di similarità: la diagonale sono le coppie giuste</text>
 

@@ -25,7 +25,7 @@
     .sm    { font-family:Inter, system-ui, sans-serif; font-size:11px; fill:#5E5852; text-anchor:middle; }
     .res   { font-family:Inter, system-ui, sans-serif; font-size:11px; fill:#B5532C; text-anchor:middle; font-weight:600; }
     .pred  { font-family:Inter, system-ui, sans-serif; font-size:13px; font-weight:600; fill:#B5532C; text-anchor:middle; }
-    .ttl   { font-family:Georgia, 'Times New Roman', serif; font-size:15px; fill:#1A1A1A; text-anchor:middle; font-style:italic; }
+    .ttl   { font-family:Fraunces, Georgia, serif; font-size:15px; fill:#1A1A1A; text-anchor:middle; font-style:italic; }
     .div   { stroke:#8B847C; stroke-width:1.4; stroke-dasharray:4 5; }
   </style>
 

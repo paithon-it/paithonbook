@@ -1,3 +1,4 @@
+:::{only} html
 ```{image} _static/logo-light.svg
 :class: pt-copertina-logo only-light
 :alt: paithon book
@@ -7,14 +8,17 @@
 :class: pt-copertina-logo only-dark
 :alt: paithon book
 ```
+:::
 
 ```{raw} html
 <p class="pt-claim" aria-hidden="true">Il Libro di Intelligenza Artificiale che spiega
 <span class="pt-claim__el">due</span> <span class="pt-claim__sup">volte.</span></p>
+<p class="pt-sottotesto">l'AI che spiega se stessa&hellip; <span class="pt-claim__el">due</span> <span class="pt-claim__sup">volte.</span></p>
 ```
 
 # Il Libro di Intelligenza Artificiale che spiega due volte.
 
+:::{only} html
 In alto nella barra trovi questo comando, <span class="pt-livello-inline"
 aria-hidden="true"><svg class="pt-livello__icona
 pt-livello__icona--elementare" viewBox="0 0 16 16" width="15"
@@ -30,6 +34,24 @@ quotidiana o la trattazione formale con le formule. Ogni concetto che conta è
 spiegato in tutti e due i modi, e nessuno dei due è una versione ridotta
 dell'altro: raccontano la stessa cosa a profondità diverse, quindi scegliendo
 non perdi niente. La scelta vale per tutto il libro e si cambia quando vuoi.
+:::
+
+:::{only} latex
+Ogni concetto che conta è spiegato **due volte**: l'analogia quotidiana e la
+trattazione formale con le formule. In queste pagine le due versioni stanno
+una dopo l'altra e si riconoscono dal riquadro, ocra la prima e con il filetto
+verde la seconda. Nessuna delle due è una versione ridotta dell'altra:
+raccontano la stessa cosa a profondità diverse, quindi si può leggere solo
+quella che serve senza perdere niente.
+:::
+
+E **«due volte» ha un secondo senso**, che riguarda come queste pagine sono
+scritte. Le stende un'intelligenza artificiale; le rilegge **un'altra AI**,
+che alla stesura non ha partecipato e ha un compito solo, cercare l'errore;
+e alla fine passano da me, ed è quel passaggio a decidere che cosa resta.
+Questo libro è, alla lettera, **l'AI che spiega se stessa**. Perché il metodo
+è severo, e su che cosa il libro scommette, sta nella
+{doc}`Prefazione </prefazione>`.
 
 ```{epigraph}
 Invece di cercare di produrre un programma che simuli la mente adulta, perché non provare piuttosto a produrne uno che simuli quella di un bambino?
@@ -37,11 +59,37 @@ Invece di cercare di produrre un programma che simuli la mente adulta, perché n
 <p class="attribution">Alan Turing, <i>Computing Machinery and Intelligence</i>,&nbsp;1950</p>
 ```
 
+% L'attribuzione della citazione qui sopra e' scritta in HTML perche' al sito
+% serve la classe CSS `attribution`. In stampa il blocco raw sparisce e la
+% citazione resterebbe senza autore, quindi si ripete per il solo LaTeX.
+
+:::{only} latex
+*Alan Turing, «Computing Machinery and Intelligence», 1950.*
+:::
+
 Addentrarsi le prime volte nel mondo del Machine Learning e dell'Intelligenza Artificiale con Python può sembrare una sfida complessa, ma con la giusta guida può diventare un viaggio affascinante e gratificante. Paithon Book è qui per rendere questo percorso più semplice e accessibile, offrendo risorse chiare e pratiche, tutte in italiano, per chiunque voglia imparare, indipendentemente dal proprio livello di partenza.
 
+:::{only} html
 Questa versione online del libro **è gratuita** ed **in continuo aggiornamento** per stare al passo con le innovazioni di questa materia: aggiungiamo regolarmente sezioni, argomenti ed esempi in Python. Il codice usa **PyTorch**, NumPy e scikit-learn, e per provarlo non devi installare niente. Dove in alto compare **Esegui il codice**, quel capitolo ha un *notebook*: una copia della pagina in cui i blocchi di codice, invece di stare lì solo da leggere, si eseguono uno dopo l'altro. Il collegamento lo apre su Google Colab, un servizio gratuito che fa girare il codice su una macchina di Google (serve un account Google). Qualche pagina è essa stessa un notebook, e si riconosce dall'icona a razzo 🚀 in alto a destra: lì il codice si esegue restando nel libro. Altrove si legge qui e si copia dove preferisci.
 
 Che cosa è cambiato, e quando, sta scritto: {doc}`Aggiornamenti </aggiornamenti>` è il registro delle sezioni nuove e delle correzioni, una voce per pubblicazione, con il link alla pagina toccata. Questa è la versione **{{ versione }}** ({{ data_versione }}).
+:::
+
+:::{only} latex
+Il libro **è gratuito** ed è in continuo aggiornamento per stare al passo con
+questa materia: sezioni, argomenti ed esempi si aggiungono di continuo. Il
+codice usa **PyTorch**, NumPy e scikit-learn, e online si esegue senza
+installare niente, dentro il libro o su Google Colab. Qui il codice si legge e
+si copia; per eseguirlo, l'indirizzo è nel colophon.
+:::
+
+::::{only} html
+:::{container} pt-scarica
+[**Scarica il libro intero in PDF** · versione {{ versione }}](https://github.com/paithon-it/paithonbook/releases/latest/download/paithon-book.pdf)
+
+Tutti i capitoli in un file solo, impaginato per la lettura e per la stampa. Dove qui il libro anima una figura, là trovi tre fermi immagine e l'indirizzo per vederla muoversi.
+:::
+::::
 
 ---
 
@@ -229,12 +277,12 @@ e blocca completamente il resto.
 
 Esempi:
 
-$
-\begin{align*}
+$$
+\begin{aligned}
 x &= 10, & f(x) &= 10 \\
-x &= -3, & f(x) &= 0 \\
-\end{align*}
-$
+x &= -3, & f(x) &= 0
+\end{aligned}
+$$
 
 E perché occuparsene? Perché un filtro così banale, ripetuto milioni di volte,
 è uno dei mattoni delle reti neurali: è la regola che decide quali segnali
@@ -277,6 +325,7 @@ In $x = 0$ la funzione non è derivabile (il grafico ha un punto angoloso); il s
 
 Ogni progetto ha bisogno di supporto per crescere e migliorare. I progetti open source come questo si basano sul sostegno e l'entusiasmo della comunità. Se questo libro ti è stato utile o credi nel suo valore, ecco come puoi mostrarmi il tuo apprezzamento:
 
+:::{only} html
 - Metti una ⭐ e condividi il progetto GitHub [Paithon Book](https://github.com/paithon-it/paithonbook)
 - Supporta il progetto per contribuire al suo sviluppo ❤️ <span style="display: inline-block; vertical-align: middle;">
     <script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="paithon.it" data-color="#B5532C" data-emoji="🔋"  data-font="Cookie" data-text="Ricarica la mia energia" data-outline-color="#1A1A1A" data-font-color="#ffffff" data-coffee-color="#C9A961" ></script>
@@ -284,5 +333,16 @@ Ogni progetto ha bisogno di supporto per crescere e migliorare. I progetti open 
 
 - Aiutaci a scoprire errori e migliorare il progetto: selezionando un pezzo di testo in qualunque pagina compare un pulsante che apre una segnalazione (un *issue*) già compilata su GitHub, dove la correzione viene discussa e poi accolta.
 - Invia i tuoi feedback ✉ a *info@paithon.it*. Saranno utilizzati esclusivamente per migliorare e arricchire il libro.
+:::
+
+:::{only} latex
+- Metti una stella al progetto su GitHub e condividilo:
+  `github.com/paithon-it/paithonbook`.
+- Aiutaci a scoprire gli errori: ogni pagina del libro online ha un modo
+  rapido per aprire una segnalazione, e chi segnala un errore viene citato
+  nel commit che lo corregge.
+- Manda i tuoi commenti a *info@paithon.it*. Servono solo a migliorare il
+  libro.
+:::
 
 ---

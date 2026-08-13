@@ -1,17 +1,17 @@
 <svg viewBox="0 0 680 340" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Le parole di una email confluiscono nel teorema di Bayes che produce una probabilità di spam">
   <rect x="0" y="0" width="680" height="340" fill="#F8F5EE"/>
-  <text x="340" y="32" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#1A1A1A" font-weight="bold">Da parole a probabilità di spam</text>
+  <text x="340" y="32" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" fill="#1A1A1A" font-weight="bold">Da parole a probabilità di spam</text>
   <!-- parole a sinistra -->
   <rect x="30" y="60" width="150" height="34" rx="6" fill="#B5532C"/>
-  <text x="105" y="82" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#F8F5EE">GRATIS</text>
+  <text x="105" y="82" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F8F5EE">GRATIS</text>
   <rect x="30" y="106" width="150" height="34" rx="6" fill="#B5532C"/>
-  <text x="105" y="128" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#F8F5EE">offerta esclusiva</text>
+  <text x="105" y="128" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F8F5EE">offerta esclusiva</text>
   <rect x="30" y="152" width="150" height="34" rx="6" fill="#2D5A5C"/>
-  <text x="105" y="174" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#F8F5EE">riunione</text>
+  <text x="105" y="174" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F8F5EE">riunione</text>
   <rect x="30" y="198" width="150" height="34" rx="6" fill="#B5532C"/>
-  <text x="105" y="220" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#F8F5EE">clicca qui</text>
+  <text x="105" y="220" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F8F5EE">clicca qui</text>
   <rect x="30" y="244" width="150" height="34" rx="6" fill="#2D5A5C"/>
-  <text x="105" y="266" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#F8F5EE">fattura allegata</text>
+  <text x="105" y="266" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F8F5EE">fattura allegata</text>
   <!-- frecce -->
   <line x1="185" y1="77" x2="270" y2="150" stroke="#1A1A1A" stroke-width="1.5"/>
   <line x1="185" y1="123" x2="270" y2="158" stroke="#1A1A1A" stroke-width="1.5"/>
@@ -20,19 +20,19 @@
   <line x1="185" y1="261" x2="270" y2="188" stroke="#1A1A1A" stroke-width="1.5"/>
   <!-- box Bayes -->
   <rect x="275" y="125" width="170" height="90" rx="8" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="2"/>
-  <text x="360" y="162" text-anchor="middle" font-family="sans-serif" font-size="14" fill="#1A1A1A" font-weight="bold">teorema di Bayes</text>
-  <text x="360" y="188" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#5E5852">P(spam | parole)</text>
+  <text x="360" y="162" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#1A1A1A" font-weight="bold">teorema di Bayes</text>
+  <text x="360" y="188" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#5E5852">P(spam | parole)</text>
   <!-- freccia in uscita -->
   <line x1="450" y1="170" x2="500" y2="170" stroke="#1A1A1A" stroke-width="2"/>
   <path d="M 500 164 L 512 170 L 500 176 Z" fill="#1A1A1A"/>
   <!-- barra probabilità -->
   <rect x="520" y="120" width="46" height="180" rx="6" fill="none" stroke="#1A1A1A" stroke-width="1.5"/>
   <rect x="524" y="140" width="38" height="156" rx="4" fill="#C9A961"/>
-  <text x="543" y="108" text-anchor="middle" font-family="sans-serif" font-size="15" fill="#1A1A1A" font-weight="bold">91%</text>
-  <text x="543" y="318" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#1A1A1A">spam</text>
+  <text x="543" y="108" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="15" fill="#1A1A1A" font-weight="bold">91%</text>
+  <text x="543" y="318" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A">spam</text>
   <!-- legenda -->
   <rect x="245" y="278" width="14" height="14" rx="3" fill="#B5532C"/>
-  <text x="266" y="290" font-family="sans-serif" font-size="12" fill="#1A1A1A">parole tipiche dello spam</text>
+  <text x="266" y="290" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A">parole tipiche dello spam</text>
   <rect x="245" y="300" width="14" height="14" rx="3" fill="#2D5A5C"/>
-  <text x="266" y="312" font-family="sans-serif" font-size="12" fill="#1A1A1A">parole tipiche della posta legittima</text>
+  <text x="266" y="312" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A">parole tipiche della posta legittima</text>
 </svg>

@@ -12,16 +12,23 @@ root: intro.md
 # sinistra un titolo lungo va a capo due o tre volte e la lista diventa un muro.
 
 parts:
-- caption: Fondamenta
+# La prefazione sta in una parte SENZA caption, cioe' fuori da «Fondamenta» e
+# prima di essa. Una prefazione non e' un capitolo di fondamenta: viene prima
+# di tutto, e in un libro stampato si vedeva ancora meglio che online, dove
+# finiva sotto l'intestazione sbagliata.
+#
+# Sta in radice e non in una cartella, e questo non e' un dettaglio di ordine:
+# `conta_capitoli()` e l'asse `landing` di `coerenza.py` chiamano capitolo una
+# voce di primo livello che sta dentro una cartella, quindi di qui non passa.
+# Non entra nel conteggio dei capitoli, non vuole una scheda nella landing e
+# non sposta la numerazione, esattamente come `references.md` e
+# `aggiornamenti.md`.
+- caption: Prima di cominciare
   chapters:
-  # La prefazione sta in radice, non in una cartella, e questo non e' un
-  # dettaglio di ordine: `conta_capitoli()` e l'asse `landing` di
-  # `coerenza.py` chiamano capitolo una voce di primo livello che sta dentro
-  # una cartella, quindi di qui non passa. Non entra nel conteggio dei
-  # capitoli, non vuole una scheda nella landing e non sposta la numerazione,
-  # esattamente come `references.md` e `aggiornamenti.md`.
   - file: prefazione.md
     title: Prefazione
+- caption: Fondamenta
+  chapters:
   - file: Introduzione/overview.md
     title: Introduzione
     sections:

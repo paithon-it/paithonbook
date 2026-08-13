@@ -2,21 +2,21 @@
   <rect x="0" y="0" width="680" height="320" fill="#F8F5EE"/>
   <!-- agente -->
   <rect x="60" y="110" width="180" height="100" rx="10" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5"/>
-  <text x="150" y="152" font-family="sans-serif" font-size="20" fill="#F8F5EE" text-anchor="middle" font-weight="bold">AGENTE</text>
-  <text x="150" y="180" font-family="sans-serif" font-size="13" fill="#F8F5EE" text-anchor="middle">sceglie l'azione (policy)</text>
+  <text x="150" y="152" font-family="Inter, system-ui, sans-serif" font-size="20" fill="#F8F5EE" text-anchor="middle" font-weight="bold">AGENTE</text>
+  <text x="150" y="180" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F8F5EE" text-anchor="middle">sceglie l'azione (policy)</text>
   <!-- ambiente -->
   <rect x="440" y="110" width="180" height="100" rx="10" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="1.5"/>
-  <text x="530" y="152" font-family="sans-serif" font-size="20" fill="#F8F5EE" text-anchor="middle" font-weight="bold">AMBIENTE</text>
-  <text x="530" y="180" font-family="sans-serif" font-size="13" fill="#F8F5EE" text-anchor="middle">reagisce e giudica</text>
+  <text x="530" y="152" font-family="Inter, system-ui, sans-serif" font-size="20" fill="#F8F5EE" text-anchor="middle" font-weight="bold">AMBIENTE</text>
+  <text x="530" y="180" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F8F5EE" text-anchor="middle">reagisce e giudica</text>
   <!-- freccia azione (sopra) -->
   <path d="M 240 130 C 300 70 380 70 434 124" fill="none" stroke="#1A1A1A" stroke-width="2"/>
   <polygon points="440,128 426,124 432,114" fill="#1A1A1A"/>
-  <text x="340" y="66" font-family="sans-serif" font-size="15" fill="#1A1A1A" text-anchor="middle" font-weight="bold">azione aₜ</text>
+  <text x="340" y="66" font-family="Inter, system-ui, sans-serif" font-size="15" fill="#1A1A1A" text-anchor="middle" font-weight="bold">azione aₜ</text>
   <!-- freccia stato+reward (sotto) -->
   <path d="M 440 195 C 380 255 300 255 246 200" fill="none" stroke="#C9A961" stroke-width="2"/>
   <polygon points="240,194 254,197 248,208 " fill="#C9A961"/>
-  <text x="340" y="278 " font-family="sans-serif" font-size="15" fill="#1A1A1A" text-anchor="middle" font-weight="bold">nuovo stato sₜ₊₁ + ricompensa rₜ₊₁</text>
+  <text x="340" y="278 " font-family="Inter, system-ui, sans-serif" font-size="15" fill="#1A1A1A" text-anchor="middle" font-weight="bold">nuovo stato sₜ₊₁ + ricompensa rₜ₊₁</text>
   <!-- ciclo -->
-  <text x="340" y="165" font-family="sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">il ciclo si ripete</text>
-  <text x="340" y="183" font-family="sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">migliaia di volte</text>
+  <text x="340" y="165" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">il ciclo si ripete</text>
+  <text x="340" y="183" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">migliaia di volte</text>
 </svg>

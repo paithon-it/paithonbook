@@ -1,44 +1,44 @@
 <svg viewBox="0 0 760 340" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Confronto tra batching statico e continuous batching sulla GPU">
   <rect x="0" y="0" width="760" height="340" fill="#F8F5EE"/>
-  <text x="380" y="26" font-family="sans-serif" font-size="15" font-weight="bold" fill="#1A1A1A" text-anchor="middle">Richieste impacchettate sulla GPU: statico vs continuo</text>
+  <text x="380" y="26" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="bold" fill="#1A1A1A" text-anchor="middle">Richieste impacchettate sulla GPU: statico vs continuo</text>
   <!-- asse tempo -->
-  <text x="700" y="320" font-family="sans-serif" font-size="11" fill="#1A1A1A">tempo →</text>
+  <text x="700" y="320" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#1A1A1A">tempo →</text>
   <!-- BATCHING STATICO -->
-  <text x="30" y="58" font-family="sans-serif" font-size="12" font-weight="bold" fill="#1A1A1A">Batching statico</text>
+  <text x="30" y="58" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="bold" fill="#1A1A1A">Batching statico</text>
   <!-- slot 1: richiesta lunga -->
   <rect x="120" y="68" width="420" height="24" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="1.5"/>
-  <text x="330" y="84" font-family="sans-serif" font-size="10" fill="#F8F5EE" text-anchor="middle">richiesta A (2000 token)</text>
+  <text x="330" y="84" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#F8F5EE" text-anchor="middle">richiesta A (2000 token)</text>
   <!-- slot 2: corta + spreco -->
   <rect x="120" y="98" width="90" height="24" fill="#C9A961" stroke="#1A1A1A" stroke-width="1.5"/>
-  <text x="165" y="114" font-family="sans-serif" font-size="10" fill="#1A1A1A" text-anchor="middle">B (finita)</text>
+  <text x="165" y="114" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#1A1A1A" text-anchor="middle">B (finita)</text>
   <rect x="210" y="98" width="330" height="24" fill="#F8F5EE" stroke="#B5532C" stroke-width="1.5" stroke-dasharray="5 4"/>
-  <text x="375" y="114" font-family="sans-serif" font-size="10" fill="#B5532C" text-anchor="middle">slot sprecato: GPU ferma per B</text>
+  <text x="375" y="114" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#B5532C" text-anchor="middle">slot sprecato: GPU ferma per B</text>
   <!-- slot 3 -->
   <rect x="120" y="128" width="180" height="24" fill="#C9A961" stroke="#1A1A1A" stroke-width="1.5"/>
-  <text x="210" y="144" font-family="sans-serif" font-size="10" fill="#1A1A1A" text-anchor="middle">C (finita)</text>
+  <text x="210" y="144" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#1A1A1A" text-anchor="middle">C (finita)</text>
   <rect x="300" y="128" width="240" height="24" fill="#F8F5EE" stroke="#B5532C" stroke-width="1.5" stroke-dasharray="5 4"/>
-  <text x="420" y="144" font-family="sans-serif" font-size="10" fill="#B5532C" text-anchor="middle">slot sprecato</text>
+  <text x="420" y="144" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#B5532C" text-anchor="middle">slot sprecato</text>
   <!-- coda -->
   <rect x="560" y="98" width="80" height="54" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.5"/>
-  <text x="600" y="120" font-family="sans-serif" font-size="10" fill="#1A1A1A" text-anchor="middle">D, E in coda:</text>
-  <text x="600" y="136" font-family="sans-serif" font-size="10" fill="#1A1A1A" text-anchor="middle">aspettano A</text>
+  <text x="600" y="120" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#1A1A1A" text-anchor="middle">D, E in coda:</text>
+  <text x="600" y="136" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#1A1A1A" text-anchor="middle">aspettano A</text>
   <!-- CONTINUOUS -->
-  <text x="30" y="200" font-family="sans-serif" font-size="12" font-weight="bold" fill="#1A1A1A">Continuous batching</text>
+  <text x="30" y="200" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="bold" fill="#1A1A1A">Continuous batching</text>
   <!-- slot 1 -->
   <rect x="120" y="210" width="420" height="24" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="1.5"/>
-  <text x="330" y="226" font-family="sans-serif" font-size="10" fill="#F8F5EE" text-anchor="middle">richiesta A (2000 token)</text>
+  <text x="330" y="226" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#F8F5EE" text-anchor="middle">richiesta A (2000 token)</text>
   <!-- slot 2: B poi D -->
   <rect x="120" y="240" width="90" height="24" fill="#C9A961" stroke="#1A1A1A" stroke-width="1.5"/>
-  <text x="165" y="256" font-family="sans-serif" font-size="10" fill="#1A1A1A" text-anchor="middle">B</text>
+  <text x="165" y="256" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#1A1A1A" text-anchor="middle">B</text>
   <rect x="212" y="240" width="328" height="24" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5"/>
-  <text x="376" y="256" font-family="sans-serif" font-size="10" fill="#F8F5EE" text-anchor="middle">D entra subito al posto di B</text>
+  <text x="376" y="256" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#F8F5EE" text-anchor="middle">D entra subito al posto di B</text>
   <!-- slot 3: C poi E -->
   <rect x="120" y="270" width="180" height="24" fill="#C9A961" stroke="#1A1A1A" stroke-width="1.5"/>
-  <text x="210" y="286" font-family="sans-serif" font-size="10" fill="#1A1A1A" text-anchor="middle">C</text>
+  <text x="210" y="286" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#1A1A1A" text-anchor="middle">C</text>
   <rect x="302" y="270" width="238" height="24" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5"/>
-  <text x="421" y="286" font-family="sans-serif" font-size="10" fill="#F8F5EE" text-anchor="middle">E entra al posto di C</text>
+  <text x="421" y="286" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#F8F5EE" text-anchor="middle">E entra al posto di C</text>
   <!-- etichetta piena -->
   <rect x="560" y="240" width="80" height="54" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="1.5"/>
-  <text x="600" y="262" font-family="sans-serif" font-size="10" fill="#2D5A5C" text-anchor="middle">GPU sempre</text>
-  <text x="600" y="278" font-family="sans-serif" font-size="10" fill="#2D5A5C" text-anchor="middle">piena</text>
+  <text x="600" y="262" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#2D5A5C" text-anchor="middle">GPU sempre</text>
+  <text x="600" y="278" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#2D5A5C" text-anchor="middle">piena</text>
 </svg>

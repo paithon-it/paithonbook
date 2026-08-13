@@ -1,29 +1,29 @@
 <svg viewBox="0 0 720 340" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Schema: il modello sceglie tra token in base alla probabilità, senza collegamento ai fatti">
   <rect x="0" y="0" width="720" height="340" fill="#F8F5EE"/>
-  <text x="30" y="36" font-family="sans-serif" font-size="15" fill="#1A1A1A" font-weight="bold">Prompt: «La capitale dell'Australia è …»</text>
+  <text x="30" y="36" font-family="Inter, system-ui, sans-serif" font-size="15" fill="#1A1A1A" font-weight="bold">Prompt: «La capitale dell'Australia è …»</text>
   <rect x="30" y="56" width="300" height="34" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.5"/>
-  <text x="45" y="78" font-family="sans-serif" font-size="13" fill="#1A1A1A">contesto → prossimo token?</text>
+  <text x="45" y="78" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A">contesto → prossimo token?</text>
   <line x1="330" y1="73" x2="390" y2="73" stroke="#1A1A1A" stroke-width="1.5"/>
   <polygon points="390,73 380,68 380,78" fill="#1A1A1A"/>
-  <text x="400" y="60" font-family="sans-serif" font-size="12" fill="#5E5852">distribuzione di probabilità</text>
-  <text x="400" y="90" font-family="sans-serif" font-size="13" fill="#1A1A1A">Sydney</text>
+  <text x="400" y="60" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5E5852">distribuzione di probabilità</text>
+  <text x="400" y="90" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A">Sydney</text>
   <rect x="480" y="78" width="168" height="16" fill="#B5532C"/>
-  <text x="654" y="91" font-family="sans-serif" font-size="12" fill="#B5532C">0.42</text>
-  <text x="400" y="118" font-family="sans-serif" font-size="13" fill="#1A1A1A">Canberra</text>
+  <text x="654" y="91" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#B5532C">0.42</text>
+  <text x="400" y="118" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A">Canberra</text>
   <rect x="480" y="106" width="140" height="16" fill="#2D5A5C"/>
-  <text x="626" y="119" font-family="sans-serif" font-size="12" fill="#2D5A5C">0.35</text>
-  <text x="400" y="146" font-family="sans-serif" font-size="13" fill="#1A1A1A">Melbourne</text>
+  <text x="626" y="119" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#2D5A5C">0.35</text>
+  <text x="400" y="146" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A">Melbourne</text>
   <rect x="480" y="134" width="60" height="16" fill="#C9A961"/>
-  <text x="546" y="147" font-family="sans-serif" font-size="12" fill="#8B847C">0.15</text>
-  <text x="400" y="174" font-family="sans-serif" font-size="13" fill="#1A1A1A">altro…</text>
+  <text x="546" y="147" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#8B847C">0.15</text>
+  <text x="400" y="174" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A">altro…</text>
   <rect x="480" y="162" width="32" height="16" fill="#C9A961" opacity="0.6"/>
-  <text x="518" y="175" font-family="sans-serif" font-size="12" fill="#8B847C">0.08</text>
+  <text x="518" y="175" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#8B847C">0.08</text>
   <rect x="30" y="220" width="300" height="80" fill="none" stroke="#B5532C" stroke-width="2" stroke-dasharray="6 5"/>
-  <text x="50" y="250" font-family="sans-serif" font-size="14" fill="#B5532C" font-weight="bold">Mondo reale / fatti verificati</text>
-  <text x="50" y="274" font-family="sans-serif" font-size="13" fill="#5E5852">Canberra ✓ (ma il modello</text>
-  <text x="50" y="292" font-family="sans-serif" font-size="13" fill="#5E5852">non lo consulta mai)</text>
+  <text x="50" y="250" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#B5532C" font-weight="bold">Mondo reale / fatti verificati</text>
+  <text x="50" y="274" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#5E5852">Canberra ✓ (ma il modello</text>
+  <text x="50" y="292" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#5E5852">non lo consulta mai)</text>
   <line x1="330" y1="260" x2="470" y2="150" stroke="#B5532C" stroke-width="2" stroke-dasharray="4 6"/>
   <line x1="390" y1="195" x2="415" y2="220" stroke="#B5532C" stroke-width="2"/>
   <line x1="415" y1="195" x2="390" y2="220" stroke="#B5532C" stroke-width="2"/>
-  <text x="30" y="326" font-family="sans-serif" font-size="12" fill="#8B847C">Il collegamento tra probabilità e verità non esiste nel meccanismo di generazione.</text>
+  <text x="30" y="326" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#8B847C">Il collegamento tra probabilità e verità non esiste nel meccanismo di generazione.</text>
 </svg>

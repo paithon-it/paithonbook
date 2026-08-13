@@ -1,24 +1,24 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 430" width="100%" role="img" aria-label="Grafico a barre: memoria disponibile e modelli eseguibili con quantizzazione a 4 bit">
   <rect x="0" y="0" width="700" height="430" fill="#F8F5EE"/>
-  <text x="350" y="30" font-family="sans-serif" font-size="15" fill="#1A1A1A" text-anchor="middle" font-weight="bold">Memoria GPU disponibile → modelli possibili (quantizzazione 4 bit)</text>
+  <text x="350" y="30" font-family="Inter, system-ui, sans-serif" font-size="15" fill="#1A1A1A" text-anchor="middle" font-weight="bold">Memoria GPU disponibile → modelli possibili (quantizzazione 4 bit)</text>
   <!-- 8 GB -->
-  <text x="105" y="85" font-family="sans-serif" font-size="14" fill="#1A1A1A" text-anchor="end" font-weight="bold">8 GB</text>
+  <text x="105" y="85" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#1A1A1A" text-anchor="end" font-weight="bold">8 GB</text>
   <rect x="120" y="66" width="130" height="30" fill="#C9A961" stroke="#1A1A1A" stroke-width="1.5"/>
-  <text x="262" y="86" font-family="sans-serif" font-size="13" fill="#1A1A1A">fino a ~8B · chat, riassunti, codice semplice</text>
+  <text x="262" y="86" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A">fino a ~8B · chat, riassunti, codice semplice</text>
   <!-- 16 GB -->
-  <text x="105" y="155" font-family="sans-serif" font-size="14" fill="#1A1A1A" text-anchor="end" font-weight="bold">16 GB</text>
+  <text x="105" y="155" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#1A1A1A" text-anchor="end" font-weight="bold">16 GB</text>
   <rect x="120" y="136" width="230" height="30" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5"/>
-  <text x="362" y="156" font-family="sans-serif" font-size="13" fill="#1A1A1A">fino a ~14B · RAG locale, buon coding</text>
+  <text x="362" y="156" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A">fino a ~14B · RAG locale, buon coding</text>
   <!-- 24 GB -->
-  <text x="105" y="225" font-family="sans-serif" font-size="14" fill="#1A1A1A" text-anchor="end" font-weight="bold">24 GB</text>
+  <text x="105" y="225" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#1A1A1A" text-anchor="end" font-weight="bold">24 GB</text>
   <rect x="120" y="206" width="330" height="30" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="1.5"/>
-  <text x="462" y="226" font-family="sans-serif" font-size="13" fill="#1A1A1A">fino a ~32B · lavoro serio quotidiano</text>
+  <text x="462" y="226" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A">fino a ~32B · lavoro serio quotidiano</text>
   <!-- 48+ GB -->
-  <text x="105" y="295" font-family="sans-serif" font-size="14" fill="#1A1A1A" text-anchor="end" font-weight="bold">48+ GB</text>
+  <text x="105" y="295" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#1A1A1A" text-anchor="end" font-weight="bold">48+ GB</text>
   <rect x="120" y="276" width="450" height="30" fill="#1A1A1A" stroke="#1A1A1A" stroke-width="1.5"/>
-  <text x="582" y="296" font-family="sans-serif" font-size="13" fill="#1A1A1A">~70B · vicino ai modelli via API</text>
+  <text x="582" y="296" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A">~70B · vicino ai modelli via API</text>
   <!-- footnote line -->
   <line x1="120" y1="340" x2="580" y2="340" stroke="#C9C2B4" stroke-width="1.5"/>
-  <text x="120" y="368" font-family="sans-serif" font-size="13" fill="#5E5852">Regola pratica: ~0,5 GB per miliardo di parametri a 4 bit,</text>
-  <text x="120" y="390" font-family="sans-serif" font-size="13" fill="#5E5852">più 1-3 GB di margine per il contesto.</text>
+  <text x="120" y="368" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#5E5852">Regola pratica: ~0,5 GB per miliardo di parametri a 4 bit,</text>
+  <text x="120" y="390" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#5E5852">più 1-3 GB di margine per il contesto.</text>
 </svg>
