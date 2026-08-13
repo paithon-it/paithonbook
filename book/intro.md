@@ -36,15 +36,7 @@ dell'altro: raccontano la stessa cosa a profondità diverse, quindi scegliendo
 non perdi niente. La scelta vale per tutto il libro e si cambia quando vuoi.
 :::
 
-:::{only} latex
-Ogni concetto che conta è spiegato **due volte**: l'analogia quotidiana e la
-trattazione formale con le formule. In queste pagine le due versioni stanno
-una dopo l'altra e si riconoscono dal riquadro, ocra la prima e con il filetto
-verde la seconda. Nessuna delle due è una versione ridotta dell'altra:
-raccontano la stessa cosa a profondità diverse, quindi si può leggere solo
-quella che serve senza perdere niente.
-:::
-
+:::{only} html
 E **«due volte» ha un secondo senso**, che riguarda come queste pagine sono
 scritte. Le stende un'intelligenza artificiale; le rilegge **un'altra AI**,
 che alla stesura non ha partecipato e ha un compito solo, cercare l'errore;
@@ -52,6 +44,7 @@ e alla fine passano da me, ed è quel passaggio a decidere che cosa resta.
 Questo libro è, alla lettera, **l'AI che spiega se stessa**. Perché il metodo
 è severo, e su che cosa il libro scommette, sta nella
 {doc}`Prefazione </prefazione>`.
+:::
 
 ```{epigraph}
 Invece di cercare di produrre un programma che simuli la mente adulta, perché non provare piuttosto a produrne uno che simuli quella di un bambino?

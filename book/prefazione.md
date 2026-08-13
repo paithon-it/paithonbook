@@ -28,7 +28,7 @@ concetto che conta è spiegato due volte, una con un'analogia che non chiede
 prerequisiti e una con le formule al posto giusto, e decidi tu da quale parte
 stare. Il resto è presto detto: nessuna scorciatoia sulle cose difficili,
 nessun entusiasmo che il testo non sia in grado di giustificare, e le fonti
-sempre citate, così che tu possa andare a controllare.
+sempre citate, così che tu possa andare ad approfondire.
 
 Lo scopo di questo libro è introdurre i concetti principali del machine
 learning, del deep learning e del reinforcement learning (che cosa siano lo
@@ -56,9 +56,15 @@ giusto. Chi ha scritto una cosa è l'ultimo a poterci trovare uno sbaglio, e
 questo vale per una macchina esattamente come per una persona.
 
 Solo dopo il testo arriva a me, e quello è il passaggio che decide che cosa
-resta. Non è una formalità: è il punto in cui una spiegazione corretta ma
-fredda viene riscritta, un esempio che non convince viene buttato, e una
-pagina che dice il vero senza spiegare niente torna indietro.
+resta. Non è una formalità, ed è la parte che al posto mio una macchina non sa
+fare: un modello punta ad avere ragione, un libro deve farsi capire, e non è
+la stessa cosa. La prima si misura sui fatti, la seconda si misura su una
+persona che prima non sapeva e adesso sa.
+
+Così una spiegazione esatta ma fredda si riscrive finché non somiglia a come
+la racconterei a voce; un esempio ineccepibile che però non fa scattare niente
+si butta, anche se funziona; e una pagina che dice tutto il vero senza far
+capire niente torna alla domanda da cui era nata, e si ricomincia da lì.
 
 Il metodo è severo per una ragione precisa. Un modello sbaglia con la stessa
 sicurezza con cui dice il vero, e su una materia tecnica sbaglia proprio dove
@@ -66,7 +72,7 @@ chi legge non ha modo di accorgersene: una data spostata di un anno, un numero
 plausibile, una derivazione che sembra tornare. Perciò la regola qui è che
 ogni affermazione fattuale si controlla sulle fonti primarie, ogni esempio
 numerico si rifà a mano e ogni blocco di codice si esegue prima di finire in
-queste pagine; dove un dubbio resta, il testo lo dice invece di nasconderlo.
+queste pagine.
 
 Su una cosa questo libro scommette apertamente. Il testo che leggi oggi è il
 meglio che questo metodo sappia produrre adesso, non il meglio possibile:
@@ -84,6 +90,17 @@ La responsabilità di quello che leggi è mia.
 
 Perché è il non conoscere ciò che genera paura e alimenta false speranze.
 
+% La firma e' in HTML perche' al sito serve l'allineamento a destra. In stampa
+% il blocco raw sparisce, e la prefazione restava senza firma: si ripete per
+% il solo LaTeX, com'e' gia' successo con l'attribuzione della citazione nella
+% pagina di apertura.
+
 ```{raw} html
 <p class="text-right mt-2"><em>Francesco Messina</em></p>
 ```
+
+:::{only} latex
+```{raw} latex
+\vspace{4mm}\hfill\textit{Francesco Messina}\par
+```
+:::

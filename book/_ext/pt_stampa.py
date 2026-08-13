@@ -522,10 +522,11 @@ FRONTESPIZIO = r"""
   {\ptDisplayLeggero\itshape\fontsize{16}{21}\selectfont
    l'AI che spiega se stessa\ldots{}
    \textcolor{ptTeal}{due} \textcolor{ptTerracotta}{volte.}\par}
-  \vspace{11mm}
-  {\ptDisplayLeggero\fontsize{21}{27}\selectfont
-   Machine Learning, Deep Learning\\e Reinforcement Learning con Python\par}
-  \vspace{16mm}
+  % Il sottotitolo lungo («Machine Learning, Deep Learning e Reinforcement
+  % Learning con Python») non e' in copertina: dice di che cosa parla il
+  % libro, e il sottotesto dice gia' che cos'e'. Resta nel colophon, dove
+  % serve per citarlo: li' e' un dato bibliografico, non un richiamo.
+  \vspace{20mm}
   {\ptDisplay\Large Francesco Messina\par}
 \end{flushleft}
 \vspace*{\stretch{2}}
@@ -540,9 +541,8 @@ FRONTESPIZIO = r"""
 \thispagestyle{empty}
 \vspace*{\stretch{1}}
 \begin{flushleft}\footnotesize
-{\ptDisplay\large PAIthon\par}
+{\ptDisplay\large paithon book\par}
 \vspace{1mm}
-Machine Learning, Deep Learning e Reinforcement Learning con Python\\
 di Francesco Messina
 \vspace{7mm}
 
@@ -572,8 +572,7 @@ si trova in \texttt{LICENSE-CODE} nel repository.
 
 {\ptDisplayLeggero\normalsize Come citarlo\par}
 \vspace{1mm}
-Francesco Messina, \textit{PAIthon: Machine Learning, Deep Learning e
-Reinforcement Learning con Python}, versione VERSIONE_SOLA,
+Francesco Messina, \textit{paithon book}, versione VERSIONE_SOLA,
 \texttt{book.paithon.it}.
 \vspace{7mm}
 
@@ -591,6 +590,17 @@ SVG; dove il libro online mostra un'animazione, qui trovi tre fermi
 immagine e l'indirizzo per vederla muoversi.
 \end{flushleft}
 \vspace*{\stretch{2}}
+\clearpage
+
+%% La dedica. Solo qui: e' una pagina che appartiene al libro stampato, dove
+%% la carta bianca attorno a una riga sola e' parte di quello che dice. Sul
+%% sito la stessa riga sarebbe un paragrafo qualsiasi in cima a una pagina.
+\thispagestyle{empty}
+\vspace*{\stretch{1}}
+\begin{flushright}
+  {\ptDisplayLeggero\itshape\large A Mareluna, la mia ReLU.\par}
+\end{flushright}
+\vspace*{\stretch{3}}
 \clearpage
 """
 
@@ -673,6 +683,17 @@ def disfa_jupyterbook_latex(app, config):
         preambolo = preambolo[:inizio] + preambolo[fine + len(SUO_PREAMBOLO_FINE):]
     if "usepackage{paithon}" not in preambolo:
         preambolo += "\n\\usepackage{paithon}\n"
+    # I metadati del PDF: il titolo e' il nome del libro, e la riga lunga
+    # («Machine Learning, Deep Learning...») vive qui invece che in copertina.
+    # E' quello che mostrano un lettore di PDF e un motore di ricerca: dice
+    # di che cosa parla il libro dove serve saperlo, senza occupare la
+    # copertina, dove il sottotesto dice gia' che cos'e'.
+    preambolo += ("\n\\hypersetup{pdftitle={paithon book},"
+                  "pdfauthor={Francesco Messina},"
+                  "pdfsubject={Machine Learning, Deep Learning e "
+                  "Reinforcement Learning con Python},"
+                  "pdfkeywords={intelligenza artificiale, machine learning, "
+                  "deep learning, reinforcement learning, Python, PyTorch}}\n")
     config.latex_elements["preamble"] = preambolo
 
 
