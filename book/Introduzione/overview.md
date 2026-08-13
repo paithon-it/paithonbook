@@ -49,12 +49,24 @@ programma scritto riga per riga da uno che le sue regole se le trova da solo.
 È presente in ognuno di noi quella strana sensazione suscitata dall’osservare un programma che emula i comportamenti umani, come se fosse qualcosa di "vivo" e non un semplice programma che esegue istruzioni.
 
 La possibilità di creare un qualcosa che assomigliasse all'uomo ha sollecitato
-la curiosità di tutti i pensatori del passato. Difatti, nonostante sia entrata
-nella vita di tutti i giorni solo dagli anni Dieci in poi, l'AI non è una
-scienza nuovissima: le sue origini risalgono al periodo immediatamente
-successivo alla Seconda Guerra Mondiale. Nel 1950 Alan Turing, in un articolo
-destinato a fare storia, propose di sostituire la domanda «le macchine possono
-pensare?» con un esperimento concreto, il *gioco dell'imitazione*, oggi noto
+la curiosità di tutti i pensatori del passato. Difatti l'AI non è una scienza
+nuovissima: le sue origini risalgono al periodo immediatamente successivo alla
+Seconda Guerra Mondiale.
+
+Nella vita di tutti i giorni, però, è entrata **due volte**. Negli anni Dieci
+ci è entrata senza farsi notare, dentro il traduttore automatico, i
+suggerimenti di un negozio online, il riconoscimento dei volti nelle
+fotografie: la usavano tutti e quasi nessuno la chiamava per nome. Dal
+novembre 2022, con ChatGPT, è diventata invece qualcosa con cui si parla
+apposta, e in pochi mesi il nome lo conosceva chiunque. Vale la pena tenere
+separati i due momenti, perché il salto che il pubblico ha percepito alla fine
+del 2022 era cominciato cinque anni prima, in un articolo del 2017 che questo
+libro incontrerà al momento giusto: quello che è cambiato allora non è stato
+il motore, è stato il posto in cui l'abbiamo trovato.
+
+Nel 1950 Alan Turing, in un articolo destinato a fare storia, propose di
+sostituire la domanda «le macchine possono pensare?» con un esperimento
+concreto, il *gioco dell'imitazione*, oggi noto
 come **test di Turing**: se conversando a distanza non riesci a capire se
 dall'altra parte c'è una persona o un programma, la questione filosofica
 smette di essere decisiva {cite}`turing1950computing`. Vale la pena essere
@@ -76,16 +88,17 @@ guida autonoma di veicoli. In questo senso, è uno dei campi più antichi e
 trasversali.
 
 Fra il seminario di Dartmouth e i risultati che oggi diamo per scontati, però,
-non c'è una linea che sale. Ci sono due lunghe gelate, e conviene raccontarle
-subito, perché sono l'antidoto migliore sia all'entusiasmo sia alla paura. Le
-promesse degli anni Sessanta (una macchina che traduce, che dimostra teoremi,
-che vede) arrivarono a scadenza senza essere mantenute: nel 1973 il rapporto
-Lighthill, commissionato dal governo britannico, stroncò il campo e portò ai
-primi tagli veri ai finanziamenti. Un secondo gelo arrivò a fine anni Ottanta,
-quando si sgonfiò il mercato dei *sistemi esperti*, programmi che
+non c'è una linea che sale. Ci sono due lunghi **inverni**, e conviene
+raccontarli subito, perché sono l'antidoto migliore sia all'entusiasmo sia
+alla paura. Le promesse degli anni Sessanta (una macchina che traduce, che
+dimostra teoremi, che vede) arrivarono a scadenza senza essere mantenute: nel
+1973 il rapporto Lighthill, commissionato dal governo britannico, stroncò il
+campo e portò ai primi tagli veri ai finanziamenti. Un secondo inverno arrivò
+a fine anni Ottanta, quando si sgonfiò il mercato dei *sistemi esperti*,
+programmi che
 racchiudevano in migliaia di regole scritte a mano il sapere di uno
 specialista: funzionavano nel ristretto, costavano moltissimo da aggiornare e
-non reggevano il mondo vero. Delle ragioni tecniche del primo gelo parla il
+non reggevano il mondo vero. Delle ragioni tecniche del primo inverno parla il
 capitolo sulle reti neurali, perché riguardano da vicino proprio quelle; del
 secondo si sentirà l'eco in tutto il libro, dato che è per non ripetere
 l'errore dei sistemi esperti che oggi le regole non si scrivono più a mano.

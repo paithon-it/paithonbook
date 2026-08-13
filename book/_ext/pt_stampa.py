@@ -598,7 +598,8 @@ immagine e l'indirizzo per vederla muoversi.
 \thispagestyle{empty}
 \vspace*{\stretch{1}}
 \begin{flushright}
-  {\ptDisplayLeggero\itshape\large A Mareluna, la mia ReLU.\par}
+  {\ptDisplayLeggero\itshape\large A Mareluna,\\[2mm]
+   la mia ReLU.\par}
 \end{flushright}
 \vspace*{\stretch{3}}
 \clearpage

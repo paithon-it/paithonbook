@@ -38,6 +38,15 @@ Una versione corrisponde a una **pubblicazione**, non a una giornata di
 lavoro: il libro si scrive tutti i giorni e si pubblica quando un pezzo sta in
 piedi.
 
+(v1-5-1)=
+
+## 1.5.1 · 13 agosto 2026
+
+### Correzioni
+
+- {doc}`Introduzione </Introduzione/overview>`. L'intelligenza artificiale è entrata nella vita di tutti i giorni **due volte**, e la pagina ne faceva un momento solo. Negli anni Dieci ci è entrata senza farsi notare, dentro il traduttore automatico, i suggerimenti di un negozio online, i volti riconosciuti nelle fotografie: la usavano tutti e quasi nessuno la chiamava per nome. Dal novembre 2022, con ChatGPT, è diventata qualcosa con cui si parla apposta. Tenerli separati serve a dire la cosa che conta: il salto che si è percepito alla fine del 2022 era cominciato cinque anni prima, e a cambiare non è stato il motore ma il posto in cui l'abbiamo trovato.
+- {doc}`Introduzione </Introduzione/overview>`. Le due lunghe pause dell'AI si chiamano **inverni**, che è il termine del campo e quello che il libro usa già nel capitolo sulle reti neurali. La pagina le chiamava «gelate»: due parole diverse per la stessa cosa, in due capitoli che si richiamano, sono un inciampo per chi legge.
+
 (v1-5-0)=
 
 ## 1.5.0 · 13 agosto 2026
