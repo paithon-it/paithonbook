@@ -1,6 +1,6 @@
 {
   "_": "Manifesto dell'ambiente di render. Lo scrive animazioni/collaudo.py.",
-  "data": "2026-08-12",
+  "data": "2026-08-13",
   "versioni": {
     "manim": "0.21.0",
     "python": "3.12.13",
@@ -12,47 +12,47 @@
     "attenzione-mascherata.py": {
       "classe": "AttenzioneMascherata",
       "ok": true,
-      "secondi": 5.9
+      "secondi": 4.7
     },
     "backpropagation.py": {
       "classe": "Backpropagation",
       "ok": true,
-      "secondi": 5.2
+      "secondi": 3.9
     },
     "convoluzione.py": {
       "classe": "Convoluzione",
       "ok": true,
-      "secondi": 7.7
+      "secondi": 6.0
     },
     "diffusione-denoising.py": {
       "classe": "DiffusioneDenoising",
       "ok": true,
-      "secondi": 6.9
+      "secondi": 5.4
     },
     "generazione-autoregressiva.py": {
       "classe": "GenerazioneAutoregressiva",
       "ok": true,
-      "secondi": 7.9
+      "secondi": 5.9
     },
     "iterazione-valore.py": {
       "classe": "IterazioneValore",
       "ok": true,
-      "secondi": 7.8
+      "secondi": 6.2
     },
     "limite-centrale.py": {
       "classe": "LimiteCentrale",
       "ok": true,
-      "secondi": 5.4
+      "secondi": 4.2
     },
     "message-passing.py": {
       "classe": "MessagePassing",
       "ok": true,
-      "secondi": 5.4
+      "secondi": 4.0
     },
     "stato-ricorrente.py": {
       "classe": "StatoRicorrente",
       "ok": true,
-      "secondi": 9.0
+      "secondi": 6.9
     }
   }
 }

@@ -79,6 +79,23 @@ lo stato $\mathbf{h}(t)$ è, per costruzione, una statistica sufficiente del pas
 derivata $\mathbf{h}'(t)$ dice come lo stato cambia istante per istante, spinto in parte
 dalla propria inerzia ($\mathbf{A}\,\mathbf{h}$) e in parte dal mondo esterno ($\mathbf{B}\,u$).
 
+Una parola sulla notazione, perché qui si incrociano due tradizioni che danno
+alle stesse cose lettere diverse, e chi arriva dall'una legge male le formule
+dell'altra. Il controllo chiama $\mathbf{x}$ lo stato e $u$ l'ingresso, ed è la
+convenzione con cui S4 ({cite}`gu2022s4`) scrive ancora il suo sistema:
+$\mathbf{x}'(t) = \mathbf{A}\,\mathbf{x}(t) + \mathbf{B}\,u(t)$. La letteratura
+che tratta gli SSM come strati di rete neurale la ribalta e chiama $\mathbf{h}$
+lo stato, $x$ l'ingresso: lo fa Mamba ({cite}`gu2023mamba`), con
+$\mathbf{h}'(t) = \mathbf{A}\,\mathbf{h}(t) + \mathbf{B}\,x(t)$, ed è la forma
+che il campo ha adottato. Non è una questione di gusto: dentro una rete la
+lettera $x$ è già presa dal dato che entra nello strato, e in un SSM quel dato
+è esattamente l'ingresso della ricorrenza, così che uno stato di nome $x$
+finirebbe a dividere la lettera con il proprio ingresso nella stessa equazione.
+Il libro segue la seconda convenzione, che è anche quella con cui $\mathbf{h}$
+indica lo stato nascosto fin dalle reti ricorrenti. L'unico residuo della prima
+è la $u(t)$ qui sopra: appena discretizzeremo, con l'ingresso diventato una
+sequenza di campioni, prenderà il nome di $x_t$.
+
 `````
 
 Finora tutto è continuo: il tempo scorre senza gradini. Ma una frase è una
