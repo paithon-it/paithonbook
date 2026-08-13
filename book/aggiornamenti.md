@@ -38,6 +38,15 @@ Una versione corrisponde a una **pubblicazione**, non a una giornata di
 lavoro: il libro si scrive tutti i giorni e si pubblica quando un pezzo sta in
 piedi.
 
+(v1-4-2)=
+
+## 1.4.2 · 13 agosto 2026
+
+### Pagine ampliate
+
+- {doc}`Support Vector Machine </MachineLearning/svm>` (Machine Learning). La Support Vector Machine adesso si dimostra invece di enunciarsi. La pagina diceva quanto è largo il corridoio fra le due classi, e diceva che nella seconda forma del problema gli esempi compaiono soltanto a coppie, ma non ricavava né l'una né l'altra cosa: e la seconda è quella su cui poggia il kernel trick, cioè metà del capitolo. C'è una sezione nuova che percorre la derivazione per intero, in cinque passi e su tutti e due i livelli, seguendo la strada che Patrick Winston chiamava «l'approccio della strada più larga» nella sedicesima lezione del corso 6.034 del MIT: la regola per decidere da che parte sta un punto, i due vincoli che diventano uno, la larghezza della strada come ombra di una freccia obliqua, i moltiplicatori di Lagrange, e la sostituzione finale da cui salta fuori che i dati entrano nel conto solo attraverso quanto si «vedono» a due a due. Una figura nuova mostra il passaggio che il testo raccontava a parole.
+- {doc}`Support Vector Machine </MachineLearning/svm>` (Machine Learning). Nella derivazione ci sono due pause caffè, e stanno dove le faceva Winston: nei due punti in cui il conto ha un salto che nessuna riga di algebra spiega. Alla prima dice alla classe di essere sicuro che, arrivato lì, anche Vapnik fosse uscito a prendere un caffè; alla seconda aggiunge che quelle pause durano mesi. La sezione si chiude dicendo quanto sono durate davvero: il kernel Vapnik ce l'aveva già nella tesi degli anni Sessanta, e capì che era importante trent'anni dopo.
+
 (v1-4-1)=
 
 ## 1.4.1 · 13 agosto 2026

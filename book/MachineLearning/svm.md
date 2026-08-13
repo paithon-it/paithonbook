@@ -102,7 +102,9 @@ $$
 \text{margine} = \frac{2}{\lVert \mathbf{w}\rVert}.
 $$
 
-Massimizzare il margine equivale allora a *minimizzare*
+Il conto che porta a questa formula occupa due righe e sta più avanti, nella
+sezione sull'approccio della strada più larga, dove il problema viene ricavato
+da capo per intero. Massimizzare il margine equivale allora a *minimizzare*
 $\lVert \mathbf{w}\rVert$, o più comodamente il suo quadrato (differenziabile
 ovunque). Il problema del
 **margine rigido** (*hard margin*) è
@@ -273,68 +275,513 @@ fattore pari alla taglia del dataset.
 
 `````
 
-### Il problema duale, e perché i vettori di supporto sono pochi
+## L'approccio della strada più larga
 
-Fin qui abbiamo scritto il problema nella forma **primale**, cioè cercando
-direttamente $\mathbf{w}$ e $b$. C'è una seconda scrittura equivalente, il
-problema **duale**, che serve a due cose: spiega perché la soluzione dipenda
-solo da una manciata di punti (un fatto finora asserito e mai dimostrato) e
-apre la porta al kernel trick della prossima sezione.
+Fin qui abbiamo enunciato tre cose e non ne abbiamo dimostrata nessuna: che il
+corridoio è largo $2/\lVert \mathbf{w}\rVert$, che a reggere la frontiera sono
+pochi punti, e che il problema si può riscrivere in una forma dove gli esempi
+compaiono soltanto a coppie. È la terza a reggere tutto il resto del capitolo,
+kernel trick compreso, e sarebbe scortese chiederne fiducia. La strada per
+arrivarci è corta (sta in una pagina di algebra) e lungo il percorso succede due
+volte una cosa che all'inizio non era prevedibile.
+
+Il percorso che segue è quello che Patrick Winston chiamava *the widest street
+approach*, l'approccio della strada più larga, nella sedicesima lezione del
+corso 6.034 del MIT {cite}`winston2010svm`. Prendiamo in prestito anche il suo
+vocabolario, che è più concreto del nostro: il corridoio diventa **una strada**,
+le due rette di margine diventano **i marciapiedi**, e quello che cerchiamo è la
+strada più larga che si riesca a far passare fra i più e i meno.
+
+Winston apriva quella lezione con un avvertimento che è anche la ragione per cui
+questa sezione esiste. Quando una derivazione così la si legge in un libro,
+finita e ordinata, viene da pensare che Vapnik l'abbia tirata fuori tutta
+insieme un sabato pomeriggio in cui il tempo era troppo brutto per uscire. Non è
+così che succede. Succede in un altro modo, e alla fine della sezione vedremo
+quale.
+
+### Primo passo: da che parte della strada sei
 
 `````{tab} Elementare
 
-Torna al confine fra i due quartieri e alla frase più sorprendente di tutta la
-sezione: le case lontane dal confine non contano nulla, e potresti cancellarle
-senza spostarlo di un millimetro. Perché?
+Piantiamo una freccia perpendicolare alla strada e chiamiamola $\mathbf{w}$. Di
+lei sappiamo una cosa sola: la direzione, di traverso alla strada. Quanto sia
+lunga non lo sappiamo ancora, e la cosa tornerà utile.
 
-Immagina il confine come un muro elastico teso fra le due parti, e ogni casa
-come una mano che spinge il muro per allontanarlo da sé. Le case addossate al
-corridoio spingono davvero: se togli una di loro, il muro scivola. Le case
-arretrate non toccano il muro, quindi la loro spinta è **esattamente zero**, e
-zero moltiplicato per qualunque cosa resta zero: nella soluzione, il loro
-contributo non c'è proprio. È il motivo per cui la SVM, alla fine, si porta
-appresso solo pochi punti (quelli che spingono) e può dimenticare tutti gli
-altri, anche se erano un milione.
+Arriva un punto nuovo, di cui non conosciamo la classe. Come decidiamo da che
+parte sta? Gli facciamo fare l'ombra sulla freccia: immagina il sole
+esattamente sopra la direzione di $\mathbf{w}$, e guarda quanto in là arriva
+l'ombra del punto lungo quella freccia. Se arriva oltre una certa soglia, il
+punto ha attraversato la strada ed è un più; se resta di qua, è un meno.
+
+Vale la pena notare che cosa abbiamo appena buttato via. Della posizione del
+punto *lungo* la strada non ci importa niente, perché camminando lungo la strada
+non si cambia mai lato: l'ombra la ignora, ed è esattamente ciò che vogliamo.
+Conta solo di quanto la strada la si attraversa. Quell'operazione (proiettare un
+punto su una direzione e leggere un numero solo) è il prodotto scalare, ed è il
+mattone di tutto ciò che segue.
 
 `````
 
 `````{tab} Superiore
 
-Introducendo i moltiplicatori di Lagrange $\alpha_i \ge 0$ per i vincoli di
-margine e eliminando $\mathbf{w}$ e $b$, il problema a margine morbido diventa
+Sia $\mathbf{w}$ un vettore perpendicolare all'asse della strada, di lunghezza
+per ora indeterminata, e sia $\mathbf{u}$ un punto di classe ignota. La
+proiezione di $\mathbf{u}$ su $\mathbf{w}$ è $\mathbf{w}^\top\mathbf{u}$, e la
+decisione si prende confrontandola con una soglia $c$:
 
 $$
-\max_{\alpha}\ \sum_{i=1}^{m}\alpha_i
-- \tfrac{1}{2}\sum_{i,j}\alpha_i\alpha_j\, y_i y_j\,
-k(\mathbf{x}_i, \mathbf{x}_j)
-\quad\text{con}\quad
-0 \le \alpha_i \le C,\ \ \sum_{i=1}^{m}\alpha_i y_i = 0,
+\mathbf{w}^\top\mathbf{u} \ge c
+\quad\Longleftrightarrow\quad
+\mathbf{w}^\top\mathbf{u} + b \ge 0 \;\Rightarrow\; \text{classe } +1,
 $$
 
-e la soluzione primale si ricostruisce come
-$\mathbf{w} = \sum_i \alpha_i y_i \mathbf{x}_i$ (qui $k$ è il prodotto scalare;
-la prossima sezione lo sostituirà con un kernel, ed è tutta lì la comodità di
-questa forma: **gli esempi compaiono solo dentro prodotti scalari**).
+dove si è posto $b = -c$. Questa è la **regola di decisione**, ed è il primo dei
+cinque pezzi che dobbiamo mettere in fila.
 
-La sparsità in vettori di supporto è una conseguenza, non un'osservazione
-empirica. Le condizioni di Karush–Kuhn–Tucker impongono la
-**complementarità**
-
-$$
-\alpha_i\big[\,y_i(\mathbf{w}^\top\mathbf{x}_i + b) - 1 + \xi_i\,\big] = 0 ,
-$$
-
-quindi per ogni punto strettamente fuori dal margine (dove la parentesi quadra
-è diversa da zero) deve essere $\alpha_i = 0$, e quel punto sparisce dalla
-somma che ricostruisce $\mathbf{w}$. Restano solo i punti *sul* margine o
-dentro la fascia: i **vettori di supporto**.
-
-Sui quattro punti dell'esempio numerico i conti si chiudono in una riga:
-$\alpha_1 = \alpha_2 = 0{,}25$ e $\alpha_3 = \alpha_4 = 0$, da cui
-$\mathbf{w} = 0{,}25\,(2,2) = (0{,}5;\,0{,}5)$, esattamente la soluzione
-trovata per via geometrica, con $\sum_i \alpha_i y_i = 0$ rispettato.
+Il guaio è che così com'è non serve a niente: non conosciamo $b$, e di
+$\mathbf{w}$ conosciamo la direzione ma non la lunghezza. Un vettore
+perpendicolare alla strada può essere lungo un metro o un chilometro, e a ogni
+lunghezza corrisponde una soglia $b$ diversa che dà però la stessa frontiera. Ci
+sono infinite coppie $(\mathbf{w}, b)$ che descrivono la stessa retta: mancano
+vincoli, e i prossimi due passi servono a metterne abbastanza da fissarne una
+sola.
 
 `````
+
+### Secondo passo: due vincoli che diventano uno
+
+`````{tab} Elementare
+
+La regola del primo passo dice solo «da che parte», e non basta. Di una casa che
+conosciamo già non vogliamo sapere soltanto che sta dal lato giusto: vogliamo
+che stia anche *lontana* dalla strada, non appiccicata al bordo. Alziamo quindi
+l'asticella. A una casa dei più chiediamo che l'ombra superi la soglia di almeno
+una tacca; a una dei meno, che le resti sotto di almeno una tacca.
+
+Quanto vale una tacca? Lo decidiamo noi, e possiamo dire che vale $1$. Non è un
+atto di fede: ricordi che la lunghezza della freccia $\mathbf{w}$ era rimasta
+libera? Allungandola o accorciandola tutte le ombre si riscalano insieme, quindi
+fissare la tacca a $1$ non è un'ipotesi sui dati, è la scelta del righello. Uno
+dei due gradi di libertà che avanzavano lo abbiamo appena speso.
+
+Restano due regole, una per i più e una per i meno, e portarsene dietro due è
+scomodo. Il trucco è dare a ogni casa un'etichetta numerica che vale $+1$ se è
+un più e $-1$ se è un meno, e moltiplicare la regola per quell'etichetta. Sui
+più non cambia nulla; sui meno si moltiplicano per un numero negativo entrambi i
+lati, il verso della disuguaglianza si rovescia, e le due regole diventano la
+stessa identica riga. Nessuna necessità matematica lo imponeva: è comodità
+dichiarata, e metà della matematica applicata è fatta di comodità dichiarate.
+
+`````
+
+`````{tab} Superiore
+
+Con le etichette $y_i \in \{-1,+1\}$ già introdotte, i due vincoli separati
+
+$$
+\mathbf{w}^\top\mathbf{x}_i + b \ge +1 \ \ (y_i = +1),
+\qquad
+\mathbf{w}^\top\mathbf{x}_i + b \le -1 \ \ (y_i = -1)
+$$
+
+si fondono, moltiplicando ciascuno per il proprio $y_i$, nell'unica scrittura
+
+$$
+y_i\,(\mathbf{w}^\top\mathbf{x}_i + b) - 1 \ge 0,
+\qquad i = 1,\dots,m .
+$$
+
+A questo aggiungiamo la condizione che completa il secondo pezzo: per gli
+esempi che stanno **sul marciapiede** la disuguaglianza vale con l'uguale,
+
+$$
+y_i\,(\mathbf{w}^\top\mathbf{x}_i + b) - 1 = 0
+\qquad\text{per } \mathbf{x}_i \text{ sul margine.}
+$$
+
+Il valore $1$ non è una costante fisica: è la normalizzazione che spende il
+grado di libertà residuo sulla scala di $(\mathbf{w}, b)$. Con quella fissata,
+alla coppia resta un solo grado di libertà da determinare, ed è la lunghezza di
+$\mathbf{w}$: il terzo passo mostra che è proprio lei a misurare la strada.
+
+`````
+
+### Terzo passo: quanto è larga la strada
+
+Adesso la domanda vera. Sappiamo scrivere i vincoli, ma non sappiamo ancora
+misurare la quantità che vogliamo rendere massima.
+
+`````{tab} Elementare
+
+Prendiamo una casa che tocca il marciapiede di sinistra e una che tocca quello
+di destra, e congiungiamole con una freccia. Quella freccia **non** è la
+larghezza della strada, perché va di sghembo: parte in un punto della strada e
+arriva in un altro, e quindi contiene sia l'attraversamento sia un pezzo di
+cammino lungo la strada, che a noi non interessa.
+
+Ma sappiamo già come buttare via il pezzo che non interessa: l'ombra. Facciamo
+fare a quella freccia l'ombra sulla direzione perpendicolare, cioè su
+$\mathbf{w}$ ridotta a lunghezza $1$ (basta dividerla per la propria lunghezza),
+e quello che resta è esattamente la larghezza della strada, come mostra
+{numref}`fig-svm-larghezza`.
+
+Il conto sta nella scheda accanto e occupa due righe, ma il risultato merita di
+essere guardato bene: la larghezza della strada è $2$ diviso la lunghezza della
+freccia $\mathbf{w}$. Delle case non c'è più traccia. Erano il punto di
+partenza, sono servite a fare il conto, e alla fine sono sparite: la larghezza
+dipende soltanto da quanto è lunga la freccia.
+
+E allora il problema, che era «trova la strada più larga», è diventato: **rendi
+$\mathbf{w}$ più corta che puoi**, senza violare i vincoli del secondo passo.
+Sono i vincoli a impedire la risposta stupida (una freccia lunga zero, cioè
+nessuna frontiera).
+
+`````
+
+`````{tab} Superiore
+
+Siano $\mathbf{x}_+$ un esempio positivo sul proprio marciapiede e
+$\mathbf{x}_-$ un esempio negativo sul suo. La larghezza della strada è la
+proiezione della loro differenza sul versore normale $\mathbf{w}/\lVert
+\mathbf{w}\rVert$:
+
+$$
+\text{larghezza}
+= (\mathbf{x}_+ - \mathbf{x}_-)^\top \frac{\mathbf{w}}{\lVert \mathbf{w}\rVert}.
+$$
+
+Sembra dipendere dai due punti scelti, e invece no, perché quei due punti stanno
+sul margine e lì vale l'uguaglianza del secondo passo. Per $\mathbf{x}_+$ (con
+$y=+1$) si ha $\mathbf{w}^\top\mathbf{x}_+ = 1 - b$; per $\mathbf{x}_-$ (con
+$y=-1$) il vincolo $-(\mathbf{w}^\top\mathbf{x}_- + b) = 1$ dà
+$\mathbf{w}^\top\mathbf{x}_- = -1 - b$. Sostituendo, il termine $b$ si elide:
+
+$$
+(\mathbf{x}_+ - \mathbf{x}_-)^\top\mathbf{w} = (1-b) - (-1-b) = 2,
+\qquad\text{quindi}\qquad
+\text{larghezza} = \frac{2}{\lVert \mathbf{w}\rVert}.
+$$
+
+È la formula che avevamo enunciato senza prova. Massimizzare
+$2/\lVert\mathbf{w}\rVert$ equivale a massimizzare $1/\lVert\mathbf{w}\rVert$, e
+quindi a minimizzare $\lVert\mathbf{w}\rVert$, e infine, per pura comodità,
+
+$$
+\min_{\mathbf{w},\,b}\ \tfrac{1}{2}\lVert \mathbf{w}\rVert^2
+\qquad\text{con}\qquad
+y_i(\mathbf{w}^\top\mathbf{x}_i + b) - 1 \ge 0 \ \ \forall i .
+$$
+
+Il quadrato toglie di mezzo la radice quadrata nascosta nella norma e rende la
+funzione differenziabile ovunque, compresa l'origine; il fattore $1/2$ serve solo
+a far sparire il $2$ quando deriveremo. Nessuna delle due mosse cambia il punto
+di minimo, perché elevare al quadrato è monotono sui numeri non negativi. Terzo
+pezzo sistemato.
+
+`````
+
+```{figure} ../figures/svm-larghezza-strada.svg
+:name: fig-svm-larghezza
+:alt: Una strada inclinata delimitata da due marciapiedi tratteggiati e dalla mediana continua. Un cerchio teal sul marciapiede superiore, x meno, e un quadrato terracotta su quello inferiore, x più, sono uniti da una freccia obliqua etichettata x più meno x meno. Da x meno scende un segmento a doppia freccia perpendicolare ai marciapiedi, etichettato due su norma di w, che arriva al marciapiede inferiore ed è la larghezza della strada. Dal piede di quel segmento un tratto grigio spesso corre lungo il marciapiede fino a x più, ed è la componente che la proiezione scarta.
+:width: 90%
+
+La larghezza della strada, ricavata in due righe. La freccia che unisce i due
+vettori di supporto va di sghembo, e si scompone in due pezzi: quello
+perpendicolare ai marciapiedi, che per via dei vincoli vale esattamente
+$2/\lVert\mathbf{w}\rVert$, e quello lungo la strada (in grigio), che la
+proiezione sul versore $\mathbf{w}/\lVert\mathbf{w}\rVert$ butta via.
+```
+
+```{admonition} Il primo caffè
+:class: tip
+È il punto della lezione in cui Winston si ferma. Facciamo una pausa? Andiamo a
+prendere un caffè? Peccato che qui non si possa, dice alla classe, ma se si
+potesse lo faremmo. E aggiunge la frase per cui vale la pena raccontare tutto
+questo: «sono sicuro che quando Vapnik è arrivato a questo punto, è uscito a
+prendere un caffè».
+
+Sembra una battuta buttata lì per far respirare l'aula, e in parte lo è. Ma è
+anche l'unico modo onesto di segnalare una cosa che le derivazioni scritte
+nascondono sistematicamente: qui finisce un pezzo e ne comincia un altro, e fra
+i due c'è un salto che nessuna riga di algebra spiega. Abbiamo una funzione da
+minimizzare e dei vincoli da rispettare, e la mossa successiva non discende da
+quella precedente. Bisogna averla vista da un'altra parte, o inventarla.
+
+Teniamo il conto: caffè numero uno.
+```
+
+### Quarto passo: Lagrange, e la prima sorpresa
+
+`````{tab} Elementare
+
+Il minimo di una funzione libera si sa trovare da tre secoli: si cerca il punto
+dove la pendenza si annulla, perché sul fondo di una conca il terreno è piatto.
+Ma noi liberi non siamo: ci sono i paletti del secondo passo, e il fondo della
+conca cade fuori dal recinto. Il minimo che ci interessa sta *appoggiato* a un
+paletto, e lì il terreno non è piatto per niente.
+
+La ricetta per uscirne ha più di due secoli e porta il nome di Joseph-Louis Lagrange,
+che era nato a Torino nel 1736 e si chiamava Giuseppe Lodovico Lagrangia. L'idea
+è di comprarsi la libertà: a ogni paletto si attacca un prezzo, $\alpha_i$, e
+alla quota del terreno si somma quanto ciascun paletto fa pagare a chi lo tocca.
+Nella funzione nuova (quota più pedaggi) i paletti non compaiono più: il minimo
+si può cercare come se si fosse liberi di andare dove si vuole, perché a tenerci
+dentro il recinto adesso ci pensano i prezzi.
+
+E i prezzi si sistemano da soli. Un paletto che non stiamo nemmeno sfiorando non
+ha nessuna ragione di farci pagare qualcosa, e il suo prezzo viene **zero**.
+Vale la pena tenere a mente questa frase, perché fra poco diventa la
+dimostrazione del fatto che i vettori di supporto sono pochi.
+
+Fatto questo, cerchiamo dove la pendenza si annulla, e succede la prima cosa non
+prevedibile. Viene fuori che la freccia $\mathbf{w}$, cioè la frontiera stessa,
+è una **somma pesata delle case**, con i prezzi come pesi. Non doveva andare
+così: da conti di questo tipo può uscire di tutto, e spesso esce qualcosa di
+intrattabile. Invece è venuta fuori una somma, e questo vuol dire che la
+frontiera non è un oggetto estraneo appoggiato sui dati: è fatta dei dati. E
+siccome molti prezzi valgono zero, è fatta di **pochi** dati.
+
+`````
+
+`````{tab} Superiore
+
+Si costruisce la **lagrangiana**, associando a ogni vincolo un moltiplicatore
+$\alpha_i \ge 0$:
+
+$$
+\mathcal{L}(\mathbf{w}, b, \alpha)
+= \tfrac{1}{2}\lVert \mathbf{w}\rVert^2
+- \sum_{i=1}^{m} \alpha_i\Big[\,y_i(\mathbf{w}^\top\mathbf{x}_i + b) - 1\,\Big],
+$$
+
+dove il primo termine è la quantità da minimizzare e la parentesi quadra è
+esattamente il vincolo del secondo passo, quello che vale zero sui punti di
+margine. Il segno meno, con $\alpha_i \ge 0$, non è arbitrario: se un vincolo è
+violato la parentesi diventa negativa, il termine $-\alpha_i[\,\cdot\,]$ diventa
+positivo e si può far crescere quanto si vuole alzando $\alpha_i$, quindi la
+violazione si paga; se invece il vincolo è rispettato con margine, il valore di
+$\alpha_i$ che conviene è **zero**. La sparsità è già lì, in nuce.
+
+Ora si annullano le derivate. Rispetto a $\mathbf{w}$, che è un vettore, si
+deriva componente per componente e il risultato ha la stessa forma del caso
+scalare (è la convenzione di layout dichiarata nel capitolo di matematica):
+
+$$
+\frac{\partial \mathcal{L}}{\partial \mathbf{w}}
+= \mathbf{w} - \sum_{i=1}^{m}\alpha_i y_i \mathbf{x}_i = \mathbf{0}
+\qquad\Longrightarrow\qquad
+\mathbf{w} = \sum_{i=1}^{m}\alpha_i y_i \mathbf{x}_i .
+$$
+
+Rispetto a $b$, l'unico termine che lo contiene è quello dentro la sommatoria:
+
+$$
+\frac{\partial \mathcal{L}}{\partial b}
+= -\sum_{i=1}^{m}\alpha_i y_i = 0
+\qquad\Longrightarrow\qquad
+\sum_{i=1}^{m}\alpha_i y_i = 0 .
+$$
+
+La prima delle due è la sorpresa, e conviene dirla per esteso: il vettore dei
+pesi $\mathbf{w}$ è una **combinazione lineare degli esempi di addestramento**,
+con coefficienti $\alpha_i y_i$. Guardando il problema di partenza non c'era
+nulla che lo annunciasse, e invece la soluzione vive nello **spazio generato
+dagli esempi**: la frontiera si scrive con i dati e con nient'altro. La seconda
+equazione, $\sum_i \alpha_i y_i = 0$, sembra per ora solo una condizione di
+bilanciamento fra le due classi; fra un attimo cancellerà da sola un termine
+intero.
+
+`````
+
+E qui, alla lavagna, Winston si concede il secondo caffè. Poi aggiunge la frase
+che dà senso anche al primo: «a proposito, queste pause caffè durano mesi». Si
+sta lì a guardare il risultato, si lavora ad altro, ci si preoccupa degli esami,
+ogni tanto ci si ripensa. Prima o poi si torna dal caffè e si fa il passo
+successivo. Caffè numero due: quanto siano durate davvero, quelle due pause, lo
+dice l'ultima parte della sezione.
+
+### Quinto passo: il duale, e la seconda sorpresa
+
+Abbiamo un'espressione per $\mathbf{w}$. La mossa che resta è ovvia e faticosa:
+rimetterla dentro la lagrangiana, e vedere che aspetto prende il problema quando
+$\mathbf{w}$ non c'è più.
+
+`````{tab} Elementare
+
+È solo algebra, e la scheda accanto la svolge per intero. Quello che conta è il
+risultato, che è la seconda cosa non prevedibile del percorso.
+
+Dopo la sostituzione, dei dati non restano né le coordinate né le distanze dalla
+frontiera. Resta una cosa sola: per **ogni coppia** di case, l'ombra dell'una
+sulla direzione dell'altra. Il problema da risolvere e la regola per classificare
+un punto nuovo si scrivono entrambi usando soltanto quelle ombre a due a due.
+
+Detto altrimenti: della mappa del quartiere si può buttare via tutto, tenendo
+solo una tabella che per ogni coppia di case dice quanto si «vedono». Con quella
+tabella si costruisce la frontiera, e senza la mappa. È un fatto che al momento
+sembra soltanto elegante; è invece la porta della prossima sezione, perché se i
+dati entrano **solo** attraverso quelle ombre, allora nessuno ci vieta di
+cambiare il modo di calcolarle.
+
+`````
+
+`````{tab} Superiore
+
+Sostituiamo $\mathbf{w} = \sum_i \alpha_i y_i \mathbf{x}_i$ nei tre pezzi della
+lagrangiana. Il termine quadratico diventa
+
+$$
+\tfrac{1}{2}\lVert\mathbf{w}\rVert^2
+= \tfrac{1}{2}\Big(\sum_i \alpha_i y_i \mathbf{x}_i\Big)^{\!\top}
+        \Big(\sum_j \alpha_j y_j \mathbf{x}_j\Big)
+= \tfrac{1}{2}\sum_{i,j}\alpha_i\alpha_j y_i y_j\,
+  \mathbf{x}_i^\top\mathbf{x}_j ,
+$$
+
+il termine $\sum_i \alpha_i y_i \mathbf{w}^\top\mathbf{x}_i$ è la stessa doppia
+somma **senza** il fattore $1/2$, e il termine
+$\sum_i \alpha_i y_i b = b\sum_i \alpha_i y_i$ si annulla per la seconda
+condizione del quarto passo. Rimane il $+\sum_i\alpha_i$ che veniva dal $-1$
+dentro la parentesi quadra. Sommando i primi due (uno con $1/2$, l'altro intero,
+di segno opposto) resta metà del secondo, cambiata di segno:
+
+$$
+\max_{\alpha}\ \mathcal{L}(\alpha)
+= \sum_{i=1}^{m}\alpha_i
+- \tfrac{1}{2}\sum_{i,j}\alpha_i\alpha_j\, y_i y_j\,
+  \mathbf{x}_i^\top\mathbf{x}_j
+\qquad\text{con}\qquad
+\alpha_i \ge 0,\ \ \sum_{i=1}^{m}\alpha_i y_i = 0 .
+$$
+
+È il **problema duale**: non contiene più né $\mathbf{w}$ né $b$, solo gli $m$
+moltiplicatori. Resta una programmazione quadratica, ma con un dettaglio che
+vale tutta la fatica. Riscriviamo anche la regola di decisione del primo passo
+sostituendoci $\mathbf{w}$:
+
+$$
+\sum_{i=1}^{m}\alpha_i y_i\, \mathbf{x}_i^\top\mathbf{u} + b \ \ge\ 0
+\;\Longrightarrow\; \text{classe } +1 .
+$$
+
+Ecco il dettaglio: in **entrambe** le formule gli esempi compaiono soltanto
+dentro un prodotto scalare, $\mathbf{x}_i^\top\mathbf{x}_j$ nel problema da
+ottimizzare e $\mathbf{x}_i^\top\mathbf{u}$ nella regola di decisione. Non
+servono le coordinate, non serve la dimensione dello spazio, non serve nemmeno
+sapere che cosa siano gli $\mathbf{x}_i$: serve una tabella di prodotti scalari.
+Da questa osservazione, e da nient'altro, nasce il kernel trick.
+
+Due note a margine. La prima: la funzione obiettivo del duale è **concava** e
+il dominio è convesso, quindi ogni massimo locale è anche globale e non ci sono
+ottimi locali in cui restare intrappolati, al contrario di quanto succede
+addestrando una rete neurale. La seconda: passando al
+margine morbido cambia una riga sola, il vincolo $\alpha_i \ge 0$ diventa
+$0 \le \alpha_i \le C$, cioè il parametro $C$ mette un **tetto** a quanto può
+spingere un singolo punto. Tutto il resto, kernel compreso, resta identico.
+
+`````
+
+### Perché i vettori di supporto sono pochi
+
+La sparsità in vettori di supporto, asserita fin dalla prima pagina, adesso si
+dimostra in due righe. È un corollario del percorso appena fatto, non
+un'osservazione empirica.
+
+`````{tab} Elementare
+
+Torniamo alla frase più sorprendente della sezione: le case lontane dal confine
+non contano nulla, e potresti cancellarle senza spostarlo di un millimetro.
+Adesso sappiamo perché.
+
+Immagina il confine come un muro elastico teso fra le due parti, e ogni casa
+come una mano che spinge il muro per allontanarlo da sé. Le case addossate al
+corridoio spingono davvero: se ne togli una, il muro scivola. Le case arretrate
+non toccano il muro, e la loro spinta è **esattamente zero**. Sono i prezzi
+$\alpha_i$ del quarto passo: chi non tocca il proprio paletto non paga pedaggio,
+e il suo prezzo è zero. Ma $\mathbf{w}$, l'abbiamo appena scoperto, è la somma
+delle case *pesata con quei prezzi*, e zero moltiplicato per qualunque cosa resta
+zero: nella soluzione, il contributo delle case arretrate non c'è proprio.
+
+È il motivo per cui la SVM, alla fine, si porta appresso solo i pochi punti che
+spingono e può dimenticare tutti gli altri, anche se erano un milione.
+
+`````
+
+`````{tab} Superiore
+
+Le condizioni di Karush–Kuhn–Tucker, che completano il metodo di Lagrange nel
+caso di vincoli di disuguaglianza, impongono la **complementarità**: per ogni
+$i$, il prodotto fra il moltiplicatore e il proprio vincolo è nullo,
+
+$$
+\alpha_i\Big[\,y_i(\mathbf{w}^\top\mathbf{x}_i + b) - 1 + \xi_i\,\Big] = 0 ,
+$$
+
+(qui già nella forma a margine morbido, con la variabile di slack $\xi_i$; per
+il margine rigido basta porre $\xi_i = 0$). Se un punto è strettamente fuori dal
+margine, la parentesi quadra è diversa da zero, e allora deve essere
+$\alpha_i = 0$: quel punto sparisce dalla somma
+$\mathbf{w} = \sum_i \alpha_i y_i \mathbf{x}_i$ che ricostruisce la soluzione.
+Restano solo i punti *sul* margine o dentro la fascia, cioè i **vettori di
+supporto**.
+
+Sui quattro punti dell'esempio numerico i conti si chiudono in una riga. La
+condizione $\sum_i \alpha_i y_i = 0$ e la ricostruzione di $\mathbf{w}$ danno
+$\alpha_1 = \alpha_2 = 0{,}25$ e $\alpha_3 = \alpha_4 = 0$, da cui
+
+$$
+\mathbf{w} = 0{,}25\,(2,2) = (0{,}5;\ 0{,}5),
+$$
+
+esattamente la soluzione trovata per via geometrica. Come controprova vale
+l'identità $\sum_i \alpha_i = \lVert\mathbf{w}\rVert^2$, che discende
+dall'uguaglianza fra primale e duale all'ottimo: qui $0{,}25 + 0{,}25 = 0{,}5$ e
+$\lVert\mathbf{w}\rVert^2 = 0{,}25 + 0{,}25 = 0{,}5$, e il margine
+$2/\lVert\mathbf{w}\rVert = 2/\sqrt{0{,}5} \approx 2{,}83$ torna con il conto
+della sezione precedente.
+
+`````
+
+### Quanto dura davvero una pausa caffè
+
+Il passo successivo, nella storia vera, arrivò trent'anni dopo.
+
+Vapnik aveva scritto l'idea della strada più larga nella sua tesi a Mosca,
+all'inizio degli anni Sessanta, e per un pezzo non se ne fece niente. Non perché
+l'idea fosse debole, racconta Winston: perché non c'erano macchine su cui
+provarla. Negli anni successivi, sempre con Chervonenkis, costruì la teoria che
+stabilisce *quando* un modello che ha imparato bene sugli esempi visti
+continuerà a funzionare su quelli nuovi {cite}`vapnik1971uniform`: è ciò che
+oggi si chiama teoria dell'apprendimento statistico, e la sua misura di
+complessità, la dimensione VC, porta le iniziali dei due. In Occidente, per
+vent'anni, quel lavoro non lo lesse quasi nessuno.
+
+Nel 1990 Vapnik emigra negli Stati Uniti e finisce ai laboratori Bell di
+Holmdel, nel New Jersey, dove si lavorava al riconoscimento delle cifre scritte
+a mano. È lì che, nel 1992, il kernel diventa la cosa che abbiamo appena visto
+{cite}`boser1992training`. Winston fa notare per inciso il vantaggio di
+studiare cose fatte da gente ancora viva: a Fourier non si può telefonare per
+chiedergli come gli sia venuta, a Vapnik sì. E il seguito lo racconta così. Gli
+articoli mandati alla conferenza NIPS quell'anno furono respinti tutti. Vapnik
+aveva un'opinione bassissima delle reti neurali, e scommise una cena con un
+collega che le SVM le avrebbero battute sulla scrittura a mano; il collega, per
+vincere la cena, provò un kernel polinomiale di grado due, appena appena non
+lineare, e funzionò al primo colpo. Che è quello che intendeva Napoleone,
+commenta Winston, osservando che cosa un soldato è disposto a fare per un
+pezzetto di nastro.
+
+Il kernel Vapnik ce l'aveva già nella tesi. Non aveva mai pensato che fosse
+importante, e furono i risultati sulle cifre a fargli cambiare idea. Fra il
+momento in cui aveva capito i kernel e il momento in cui ne capì l'importanza
+passarono trent'anni.
+
+È qui che la battuta del caffè smette di essere una battuta. La derivazione che
+abbiamo appena percorso sta in una pagina e si legge in un quarto d'ora; le due
+pause in mezzo, per chi la faceva per la prima volta, sono durate una carriera.
+Le grandi idee, chiude Winston, sono seguite da lunghi periodi in cui non
+succede niente, e poi da un momento in cui l'idea di partenza si rivela
+potentissima con appena mezzo giro di vite. E da lì in avanti il mondo non si
+volta più indietro.
 
 ## Il kernel trick: separare l'inseparabile
 
@@ -373,8 +820,9 @@ problema, così com'è, sembra però costoso: se $\phi$ manda in uno spazio a
 migliaia di dimensioni, calcolare e conservare tutti quei
 $\phi(\mathbf{x}_i)$ diventa proibitivo.
 
-Il **kernel trick** è l'osservazione che salva tutto: nel problema duale
-appena scritto, gli esempi compaiono *solo* attraverso prodotti scalari
+Il **kernel trick** è l'osservazione che salva tutto, ed è la ragione per cui
+valeva la pena percorrere il duale passo per passo: là dentro, e nella regola
+di decisione, gli esempi compaiono *solo* attraverso prodotti scalari
 $\phi(\mathbf{x})^\top\phi(\mathbf{z})$. Se esiste una funzione $k$ che
 calcola quel prodotto scalare direttamente dalle coordinate originali,
 
@@ -654,6 +1102,11 @@ su griglia con la cross-validation della sezione sull'overfitting è la prassi.
   si allarga ed è più robusto. I punti già comodamente fuori dal corridoio non
   pesano affatto: a reggere il confine restano sempre e solo le poche case sul
   bordo.
+- La **strada più larga** si ricava in cinque passi, e due volte lungo il
+  percorso salta fuori qualcosa che nessuno aveva chiesto: che la frontiera è
+  fatta dei dati stessi, sommati con un peso, e che i dati entrano nel conto
+  **solo a coppie**, ognuno attraverso l'ombra che fa sull'altro. È la seconda
+  cosa ad aprire la porta al kernel trick.
 - Il **kernel trick** rende curva la frontiera: gli stessi punti si guardano in
   uno spazio con una dimensione in più, e lì tornano separabili da un taglio
   dritto. È il bersaglio sollevato in aria, ogni punto tanto più in alto quanto
@@ -682,6 +1135,16 @@ su griglia con la cross-validation della sezione sull'overfitting è la prassi.
   a **margine massimo**: il corridoio $2/\lVert \mathbf{w}\rVert$ più largo.
   L'idea è di Vapnik e Chervonenkis (1963-64); dai laboratori Bell arrivano
   trent'anni dopo il kernel trick e il margine morbido.
+- La derivazione («l'approccio della strada più larga») va dalla regola di
+  decisione $\mathbf{w}^\top\mathbf{u}+b\ge 0$ ai vincoli
+  $y_i(\mathbf{w}^\top\mathbf{x}_i+b)-1\ge 0$, da lì a
+  $\text{larghezza}=2/\lVert\mathbf{w}\rVert$ per proiezione di
+  $\mathbf{x}_+-\mathbf{x}_-$ sulla normale, e infine, via Lagrange, a
+  $\mathbf{w}=\sum_i\alpha_iy_i\mathbf{x}_i$ e $\sum_i\alpha_iy_i=0$. Sostituendo
+  si ottiene il **duale**
+  $\sum_i\alpha_i-\frac12\sum_{i,j}\alpha_i\alpha_jy_iy_j\,\mathbf{x}_i^\top\mathbf{x}_j$,
+  concavo, in cui gli esempi compaiono **solo** dentro prodotti scalari: da qui,
+  e da nient'altro, il kernel trick.
 - La soluzione dipende solo dai **vettori di supporto**, e non è
   un'osservazione ma un corollario: la complementarità KKT
   $\alpha_i[y_i(\mathbf{w}^\top\mathbf{x}_i+b)-1+\xi_i]=0$ annulla $\alpha_i$

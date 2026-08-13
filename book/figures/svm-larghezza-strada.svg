@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  paithon book - figura: da dove viene 2/||w||.
+  La freccia che unisce x- a x+ va di sghembo, e si decompone in due pezzi: la
+  parte perpendicolare ai marciapiedi, che e' la larghezza della strada, e la
+  parte lungo la strada, che la proiezione butta via. Quest'ultima cade
+  esattamente sul marciapiede inferiore, e non e' un caso: x+ da quel
+  marciapiede non si stacca mai, quindi scorrervi sopra e' l'unico modo di
+  muoversi senza cambiare la propria ombra sulla normale.
+  Coordinate calcolate, non stimate: strada inclinata di 18 gradi, versore
+  lungo la strada (0.9511, -0.309), normale (0.309, 0.9511), semilarghezza 42,
+  piede della proiezione in (235.96, 238.24) sul marciapiede inferiore.
+  Palette-locked, fondo trasparente (leggibile in dark mode).
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 340" role="img"
+     aria-label="Una strada inclinata delimitata da due marciapiedi tratteggiati e dalla mediana continua. Sul marciapiede superiore un cerchio teal, x meno; su quello inferiore un quadrato terracotta, x piu'; entrambi cerchiati in ocra perche' sono vettori di supporto. Una freccia teal obliqua unisce x meno a x piu' ed e' etichettata x piu' meno x meno. Da x meno scende un segmento a doppia freccia, perpendicolare ai marciapiedi, che arriva al marciapiede inferiore: e' la larghezza della strada, etichettata due su norma di w. Dal piede di quel segmento un tratto grigio spesso corre lungo il marciapiede inferiore fino a x piu', ed e' la componente che la proiezione scarta. Una freccia corta terracotta appoggiata alla mediana indica il versore normale w su norma di w.">
+  <defs>
+    <marker id="pt-lr-punta" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1A1A1A"/>
+    </marker>
+    <marker id="pt-lr-misura" viewBox="0 0 10 10" refX="5" refY="5"
+            markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1A1A1A"/>
+    </marker>
+    <marker id="pt-lr-terra" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#B5532C"/>
+    </marker>
+    <marker id="pt-lr-teal" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#2D5A5C"/>
+    </marker>
+  </defs>
+  <style>
+    .plane  { stroke:#1A1A1A; stroke-width:2.6; }
+    .margin { stroke:#5E5852; stroke-width:1.6; stroke-dasharray:6 5; }
+    .teal   { fill:#2D5A5C; }
+    .terra  { fill:#B5532C; }
+    .sv     { fill:none; stroke:#C9A961; stroke-width:2.6; }
+    .diff   { stroke:#2D5A5C; stroke-width:2.2; fill:none; }
+    .meas   { stroke:#1A1A1A; stroke-width:2.2; }
+    .scarto { stroke:#5E5852; stroke-width:4.5; stroke-linecap:round; fill:none; }
+    .squad  { stroke:#5E5852; stroke-width:1.2; fill:none; }
+    .norm   { stroke:#B5532C; stroke-width:2.4; }
+    .guida  { stroke:#5E5852; stroke-width:1; fill:none; }
+    .lbl    { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#5E5852; }
+    .lblv   { font-family:Inter, system-ui, sans-serif; font-size:16px; font-weight:600; fill:#1A1A1A; }
+    .lblm   { font-family:Inter, system-ui, sans-serif; font-size:15px; font-weight:600; fill:#1A1A1A; }
+    .lbld   { font-family:Inter, system-ui, sans-serif; font-size:14px; font-weight:600; fill:#2D5A5C; }
+    .lbln   { font-family:Inter, system-ui, sans-serif; font-size:14px; font-weight:600; fill:#B5532C; }
+  </style>
+
+  <!-- marciapiedi (rette di margine) -->
+  <line class="margin" x1="97.02"  y1="195.06" x2="517.02" y2="58.56"/>
+  <line class="margin" x1="122.98" y1="274.94" x2="542.98" y2="138.44"/>
+
+  <!-- mediana della strada -->
+  <line class="plane" x1="110" y1="235" x2="530" y2="98.5"/>
+
+  <!-- punti di contorno: la stessa scena della figura precedente -->
+  <circle class="teal" cx="150" cy="120" r="7"/>
+  <circle class="teal" cx="120" cy="160" r="7"/>
+  <circle class="teal" cx="245" cy="95"  r="7"/>
+  <circle class="teal" cx="330" cy="72"  r="7"/>
+  <rect class="terra" x="293" y="248" width="14" height="14"/>
+  <rect class="terra" x="373" y="243" width="14" height="14"/>
+  <rect class="terra" x="490" y="178" width="14" height="14"/>
+
+  <!-- componente lungo la strada: quella che la proiezione scarta.
+       Cade sul marciapiede inferiore e lo ricopre di proposito. -->
+  <line class="scarto" x1="235.96" y1="238.24" x2="430" y2="175.19"/>
+
+  <!-- larghezza della strada: proiezione sul versore normale -->
+  <line class="meas" x1="210" y1="158.35" x2="235.96" y2="238.24"
+        marker-start="url(#pt-lr-misura)" marker-end="url(#pt-lr-misura)"/>
+  <polyline class="squad" points="232.87,228.72 242.38,225.63 245.47,235.15"/>
+
+  <!-- freccia differenza, da x- a x+ -->
+  <line class="diff" x1="210" y1="158.35" x2="424" y2="174.73"
+        marker-end="url(#pt-lr-teal)"/>
+
+  <!-- versore normale, appoggiato alla mediana -->
+  <line class="norm" x1="150" y1="222" x2="160.51" y2="254.34"
+        marker-end="url(#pt-lr-terra)"/>
+
+  <!-- i due vettori di supporto -->
+  <circle class="teal" cx="210" cy="158.35" r="7"/>
+  <circle class="sv"   cx="210" cy="158.35" r="12"/>
+  <rect class="terra" x="423" y="168.19" width="14" height="14"/>
+  <circle class="sv"  cx="430" cy="175.19" r="13"/>
+
+  <!-- linee guida verso le etichette poste fuori dalla strada -->
+  <line class="guida" x1="222" y1="284" x2="228" y2="252"/>
+
+  <!-- etichette -->
+  <text class="lblv" x="196" y="134" text-anchor="end">x<tspan font-size="12" dy="4">&#8722;</tspan></text>
+  <text class="lblv" x="444" y="208">x<tspan font-size="12" dy="4">+</tspan></text>
+  <text class="lbld" x="320" y="148" text-anchor="middle">x<tspan font-size="11" dy="4">+</tspan><tspan font-size="14" dy="-4" dx="4">&#8722;</tspan><tspan dx="4">x</tspan><tspan font-size="11" dy="4">&#8722;</tspan></text>
+  <text class="lblm" x="215" y="300" text-anchor="middle">2 / &#8741;w&#8741;</text>
+  <text class="lbln" x="140" y="258" text-anchor="end">w / &#8741;w&#8741;</text>
+  <text class="lbl"  x="392" y="226" text-anchor="middle">componente scartata</text>
+  <text class="lbl"  x="500" y="46"  text-anchor="end">marciapiedi</text>
+</svg>
