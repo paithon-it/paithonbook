@@ -11,11 +11,10 @@ di volte al minuto.
 Le due sezioni precedenti si sono fermate sul punto in cui l'artefatto (dati,
 codice, pesi) è tracciabile e riproducibile. Questa affronta il passo
 successivo, il nodo *Deploy* dell'anello: come si mette un modello **in
-ascolto**. È una
-questione tanto ingegneristica quanto di aspettative (decidere *che cosa
-promettere* a chi userà il servizio) e per una volta il grosso del lavoro non
-riguarda la rete neurale, ma tutto ciò che le sta attorno
-{cite}`kreuzberger2023machine`.
+ascolto**. È una questione tanto ingegneristica quanto di aspettative, perché
+metà del lavoro è decidere *che cosa promettere* a chi userà il servizio. E
+per una volta il grosso non riguarda la rete neurale, ma tutto ciò che le sta
+attorno {cite}`kreuzberger2023machine`.
 
 ## Batch, online, streaming
 
@@ -105,13 +104,15 @@ ovunque, altrimenti si torna al «sul mio computer funzionava». La risposta del
 mestiere è chiudere il modello dentro una scatola che contiene anche tutto ciò
 che gli serve per funzionare: il sistema, l'interprete Python, la versione
 esatta di ogni libreria, i pesi. Sigillata la scatola, quella scatola si
-comporta uguale su qualunque computer. Le tre parole che servono per parlarne
-sono in {numref}`fig-immagine-container-volume`: la scatola sigillata, che
-nessuno modifica più, si chiama **immagine**; una sua copia in funzione si
-chiama **container**, ed è usa e getta, perché per averne un'altra basta
-riaprire l'immagine; e siccome tutto ciò che il container scrive muore con
-lui, quello che deve sopravvivere (i dati, i risultati) si tiene fuori, in uno
-spazio agganciato dall'esterno che si chiama **volume**.
+comporta uguale su qualunque computer.
+
+Le tre parole che servono per parlarne sono in
+{numref}`fig-immagine-container-volume`. La scatola sigillata, che nessuno
+modifica più, si chiama **immagine**. Una sua copia in funzione si chiama
+**container**, ed è usa e getta: per averne un'altra basta riaprire
+l'immagine. E siccome tutto ciò che il container scrive muore con lui, quello
+che deve sopravvivere (i dati, i risultati) si tiene fuori, in uno spazio
+agganciato dall'esterno che si chiama **volume**.
 
 ```{figure} ../figures/docker-per-data-scientist.svg
 :name: fig-immagine-container-volume
@@ -193,20 +194,24 @@ def predici(richiesta: dict) -> dict:
 ```
 
 Due righe fanno la differenza fra un giocattolo e un servizio corretto, e sono
-le due che si dimenticano più spesso. La prima, `modello.eval()`, dice alla
-rete che ha finito di studiare: alcuni suoi pezzi si comportano in un modo
-mentre imparano e in un altro mentre rispondono (il *dropout*, che durante
-l'addestramento spegne a caso una parte della rete per non farle imparare a
-memoria, e la *BatchNorm*, che si tara sul gruppo di esempi che ha davanti), e
-se nessuno glielo dice continuano a comportarsi da studenti: le previsioni
-escono sbagliate senza che niente segnali l'errore. La seconda,
-`torch.no_grad()`, spegne il meccanismo che durante l'addestramento annota ogni
-operazione per poter poi tornare indietro e correggere i pesi. Qui non si
-corregge più niente, e tenerne traccia costa memoria e tempo a ogni richiesta;
-`torch.inference_mode()` è la versione ancora più drastica della stessa
-rinuncia. Il resto (i punteggi grezzi che la rete produce, i *logit*, e la
-`softmax` che li trasforma in probabilità) è esattamente il modello del
-capitolo PyTorch, ora chiamato a rispondere invece che a imparare.
+le due che si dimenticano più spesso.
+
+La prima, `modello.eval()`, dice alla rete che ha finito di studiare. Alcuni
+suoi pezzi si comportano in un modo mentre imparano e in un altro mentre
+rispondono: il *dropout*, che durante l'addestramento spegne a caso una parte
+della rete per non farle imparare a memoria, e la *BatchNorm*, che si tara sul
+gruppo di esempi che ha davanti. Se nessuno glielo dice, quei pezzi continuano
+a comportarsi da studenti, e le previsioni escono sbagliate senza che niente
+segnali l'errore.
+
+La seconda, `torch.no_grad()`, spegne il meccanismo che durante
+l'addestramento annota ogni operazione per poter poi tornare indietro e
+correggere i pesi. Qui non si corregge più niente, e tenerne traccia costa
+memoria e tempo a ogni richiesta; `torch.inference_mode()` è la versione
+ancora più drastica della stessa rinuncia. Il resto (i punteggi grezzi che la
+rete produce, i *logit*, e la `softmax` che li trasforma in probabilità) è
+esattamente il modello del capitolo PyTorch, ora chiamato a rispondere invece
+che a imparare.
 
 ## Ottimizzare l'inferenza
 
@@ -215,20 +220,22 @@ accelerare l'inferenza sono diverse da quelle dell'addestramento, ma una radice 
 comune con il capitolo PyTorch: meno byte da spostare, più velocità.
 
 La prima leva è il **batching dinamico**. Come abbiamo visto parlando di
-prestazioni, la GPU rende al massimo su tanti conti identici in parallelo:
+prestazioni, la GPU rende al massimo su tanti conti identici in parallelo, e
 servire le richieste una per una la lascia mezza vuota. Il server allora
 accumula per qualche millisecondo le richieste che arrivano, le impacchetta in
 un unico batch e le passa al modello in un colpo solo: un filo di latenza in
-più in cambio di molto più throughput. La seconda leva è **ridurre la
-precisione** dei numeri, cioè scriverli con meno cifre. Dentro un calcolatore
-un numero occupa un certo numero di caselle elementari, i *bit*: di solito
-trentadue, e scendere a sedici (il `float16` della precisione mista,
-introdotta nel capitolo PyTorch per l'addestramento) dimezza sia lo spazio
-occupato sia la quantità di numeri da trasportare al secondo fra memoria e
-processore, che è quasi sempre il vero collo di bottiglia. Si perde qualche
-cifra decimale, ed è quasi gratis. La terza leva spinge
-oltre, fino agli **interi**: la **quantizzazione** a `int8`
-{cite}`jacob2018quantization`.
+più in cambio di molto più throughput.
+
+La seconda leva è **ridurre la precisione** dei numeri, cioè scriverli con
+meno cifre. Dentro un calcolatore ogni numero occupa un certo numero di
+caselle elementari, i *bit*, e di solito sono trentadue. Scendendo a sedici
+(il `float16` della precisione mista, che il capitolo PyTorch aveva
+introdotto per l'addestramento) si dimezzano insieme lo spazio occupato e i
+byte da far scorrere fra memoria e processore, che è quasi sempre il vero
+collo di bottiglia. Si perde qualche cifra decimale, ed è quasi gratis.
+
+La terza leva spinge oltre, fino agli **interi**: la **quantizzazione** a
+`int8` {cite}`jacob2018quantization`.
 
 `````{tab} Elementare
 
@@ -287,9 +294,15 @@ gradino**: la scala $S$ la dettano gli estremi, quindi basta un solo canale con
 pesi anomali per allargare il gradino di tutti gli altri e schiacciarli in poche
 decine di livelli. Il rimedio costa una manciata di scalari per strato e si
 chiama quantizzazione **per canale**: una coppia $S, Z$ per ogni riga della
-matrice dei pesi. Su una matrice $256 \times 512$ con un singolo canale fuori
-scala, l'errore relativo sull'uscita della moltiplicazione passa da circa il
-$12\%$ (per tensore) allo $0{,}8\%$ (per canale), a parità di bit. È anche il
+matrice dei pesi.
+
+Quanto pesi lo si misura in poche righe, e conviene farlo perché il numero
+sorprende. Si prende una matrice $256 \times 512$ di pesi normali standard, se
+ne moltiplica **una riga sola** per venti e la si moltiplica per ingressi
+anch'essi normali. Con una scala per tutto il tensore l'errore relativo
+sull'uscita dei $255$ canali **rimasti normali** vale circa il $14\%$: quel
+solo canale ha allargato il gradino di tutti. Con una scala per riga scende a
+circa lo $0{,}7\%$, venti volte meno, a parità di bit memorizzati. È anche il
 ponte verso i metodi per i grandi modelli linguistici della sezione su LLMOps,
 che di quell'idea sono lo sviluppo.
 
@@ -377,15 +390,15 @@ guadagnare in capacità. Dove fermarsi non lo decide la curva ma il bersaglio
 che il team si è dato (lo SLO), ed è questo il senso di sceglierlo prima.
 
 La condizione posta nella didascalia merita il suo paragrafo, perché la curva
-da sola inganna. Quella che sale è la latenza *di servizio*, cioè quanto ci
-mette il modello a rispondere una volta che alla richiesta è arrivato il turno;
-ma ciò che l'utente vive è l'attesa in coda **più** il servizio. Se il sistema
-non sta dietro alle richieste che arrivano, la coda cresce senza fermarsi e
-l'attesa esplode: in quel tratto ingrandire il batch **abbassa** la latenza e
-alza il throughput insieme, perché aumenta la capacità e la coda si smaltisce.
-Il compromesso comincia dopo, quando la capacità ha superato il carico. È anche
-la ragione per cui in un servizio molto sollecitato il batching dinamico non è
-un lusso: spesso è l'unica configurazione stabile.
+da sola inganna. Il tempo segnato sull'asse orizzontale è la latenza *di
+servizio*: quanto ci mette il modello a rispondere una volta che alla richiesta
+è arrivato il turno. Ma ciò che l'utente vive è l'attesa in coda **più** il
+servizio. Se il sistema non sta dietro alle richieste che arrivano, la coda
+cresce senza fermarsi e l'attesa esplode; e in quel tratto ingrandire il batch
+**abbassa** la latenza e alza il throughput insieme, perché aumenta la capacità
+e la coda si smaltisce. Il compromesso comincia dopo, quando la capacità ha
+superato il carico. È anche la ragione per cui in un servizio molto sollecitato
+il batching dinamico non è un lusso: spesso è l'unica configurazione stabile.
 
 `````{tab} Elementare
 
@@ -429,17 +442,21 @@ rispetta lo SLO ma costa dieci volte troppo per richiesta non è dispiegabile
 
 C'è infine una cautela che riguarda *come* si sostituisce un modello con uno
 nuovo, senza rompere niente. Non si spegne la versione vecchia e si accende la
-nuova sperando bene: si procede per gradi. In un rilascio *canary* (dal
-canarino che i minatori portavano sottoterra per accorgersi del gas prima degli
-uomini) la nuova versione riceve dapprima una piccola frazione delle richieste
-in arrivo, e la quota si allarga solo se le metriche tengono; in modalità
-*shadow*, cioè «in ombra», la nuova versione riceve una copia delle richieste
-reali ma le sue risposte non vengono servite a nessuno, solo confrontate con
-quelle della vecchia; un test *A/B* divide gli utenti in due gruppi e misura su
-richieste vere quale delle due versioni funziona meglio. Le tre tornano per
-esteso, ciascuna con la sua analogia, nella sezione sul monitoraggio, che è
-dove si decide quando usarle. È il lato «serving» della stessa prudenza che
-l'anello MLOps chiede a ogni tappa: misurare prima di fidarsi.
+nuova sperando bene: si procede per gradi, e i gradi sono tre.
+
+In un rilascio *canary* la nuova versione riceve dapprima una piccola frazione
+delle richieste in arrivo, e la quota si allarga solo se le metriche tengono;
+il nome viene dal canarino che i minatori portavano sottoterra per accorgersi
+del gas prima degli uomini. In modalità *shadow*, cioè «in ombra», la nuova
+versione riceve una copia delle richieste reali, ma le sue risposte non
+vengono servite a nessuno: si confrontano soltanto con quelle della vecchia. E
+un test *A/B* divide gli utenti in due gruppi e misura su richieste vere quale
+delle due versioni funziona meglio.
+
+Le tre tornano per esteso, ciascuna con la sua analogia, nella sezione sul
+monitoraggio, che è dove si decide quando usarle. È il lato «serving» della
+stessa prudenza che l'anello MLOps chiede a ogni tappa: misurare prima di
+fidarsi.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare

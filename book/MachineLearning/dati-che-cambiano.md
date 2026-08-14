@@ -6,9 +6,9 @@ febbricitante corre a cercare in rete "sintomi influenza" o "febbre alta
 rimedi". Contando queste ricerche si poteva stimare la diffusione
 dell'influenza negli Stati Uniti in tempo quasi reale, con una o due settimane
 di anticipo sui CDC, l'ente federale che raccoglie i dati dai medici. Per
-qualche anno funzionò, e il servizio divenne il manifesto della promessa dei
-*big data*: perché fare sondaggi lenti e costosi, quando i dati arrivano da
-soli?
+qualche anno funzionò, e il servizio divenne il manifesto di una promessa che
+in quegli anni si sentiva dappertutto: adesso che ogni gesto lascia una traccia
+in rete, perché fare sondaggi lenti e costosi, quando i dati arrivano da soli?
 
 Poi arrivò l'inverno 2012–2013. A febbraio 2013 Google Flu Trends stimava una
 quota di visite mediche per sintomi influenzali **più che doppia** rispetto a
@@ -25,7 +25,9 @@ dal giugno 2011 cominciò a **proporre altri termini da cercare** (a chi
 chiedeva dell'influenza suggeriva di cercarne le cure), dal febbraio 2012 a
 **rispondere alle ricerche sui sintomi con le diagnosi possibili** (chi cercava
 «febbre» o «tosse» si vedeva proporre l'influenza). Erano due spinte verso
-l'influenza che arrivavano anche a chi stava benissimo; e intanto i giornali
+l'influenza che arrivavano anche a chi stava benissimo, e la catena si chiude
+da sé: più suggerimenti, più ricerche sull'influenza; e siccome il modello
+contava proprio quelle ricerche, più malati stimati. Intanto i giornali
 parlavano di epidemia e la gente cercava per curiosità, non per febbre. Il
 modello, tarato sul mondo del 2008, continuava a leggere il presente con gli
 occhiali di allora. Questa sezione
@@ -58,6 +60,13 @@ intera. Ma se stanotte qualcuno sostituisce metà delle palline, la manciata
 pescata ieri non dice più nulla sull'urna di oggi. È quello che è successo a
 Google Flu Trends: l'urna (il modo in cui la gente usa un motore di ricerca)
 era cambiata, e nessuno aveva avvisato il modello.
+
+Una parola su questa urna, perché nel resto della sezione compare col suo nome
+tecnico. La **distribuzione** di una cosa è, semplicemente, il resoconto di
+quanto spesso ciascun valore capita: le palline rosse al 30% e le altre al 70%
+*sono* la distribuzione dei colori in quell'urna. Quando più avanti si legge
+«la distribuzione degli input è cambiata», vuol dire esattamente «l'urna non è
+più quella».
 
 `````
 
@@ -99,13 +108,15 @@ prossimo paragrafo.
 
 ## Tre modi in cui il mondo cambia
 
-Non tutti i cambiamenti sono uguali. La letteratura ne distingue tre famiglie
+Non tutti i cambiamenti sono uguali. Chi studia il fenomeno ne distingue tre
+famiglie
 {cite}`quinonero2009dataset`, e vale la pena impararle con esempi quotidiani,
 perché la diagnosi giusta suggerisce il rimedio giusto.
 {numref}`fig-distribution-shift` mostra il caso più semplice da visualizzare:
 i dati nuovi arrivano in una zona che l'addestramento ha quasi ignorato. Il
 grafico va letto in un modo nuovo rispetto a quelli visti finora, dove i punti
-erano esempi: qui sull'asse orizzontale c'è il valore di una caratteristica e
+erano esempi: qui sull'asse orizzontale c'è il valore di una caratteristica (i
+metri quadri, l'età, il numero di ricerche) e
 sulla verticale **quanto spesso** quel valore capita, così che dove la curva è
 alta ci sono tanti esempi e dove è schiacciata quasi nessuno. Due curve
 sfalsate vogliono dire che i valori frequenti ieri non sono quelli frequenti
@@ -116,9 +127,11 @@ oggi.
 :alt: Due curve a campana sfalsate lungo l'asse degli input, una per i dati di addestramento e una spostata a destra per i dati in produzione; una linea tratteggiata indica il punto dove il modello è tarato, lontano dal grosso dei dati nuovi.
 :width: 85%
 
-La distribuzione dei dati di addestramento e quella dei dati incontrati in
-produzione: il modello è accurato dove i dati di ieri abbondavano, ma i dati
-di oggi cadono dove non ha quasi mai visto esempi.
+Due urne a confronto: la curva dei dati di addestramento e quella dei dati che
+il modello incontra una volta al lavoro. La linea tratteggiata segna il valore
+attorno a cui il modello è tarato, cioè dove i dati di ieri si addensavano; i
+dati di oggi cadono in gran parte altrove, dove di esempi non ne ha quasi mai
+visti.
 ```
 
 `````{tab} Elementare
@@ -133,8 +146,15 @@ e risposta non è cambiata; è cambiato il tipo di foto che arriva.
 diagnosticare una malattia che, quando è stato addestrato, colpiva una persona
 su mille. Arriva un'epidemia e diventa una su cinquanta. I sintomi della
 malattia sono identici a prima: cambia solo *quanto spesso* la risposta giusta
-è "positivo". Un modello tarato sulla rarità di ieri resterà troppo prudente,
-e mancherà casi veri.
+è «positivo».
+
+Se i sintomi sono gli stessi, perché il modello dovrebbe sbagliare? Perché la
+rarità, di nascosto, è entrata nel suo giudizio. Un modello che ha imparato su
+un mondo in cui i malati sono uno su mille ha anche imparato che dire «sano»
+paga: ci prende 999 volte su 1000, e per convincerlo del contrario servono
+sintomi molto chiari. Davanti a un caso dubbio resterà prudente e dirà «sano»,
+il che era la scommessa giusta ieri ed è quella sbagliata oggi, che i malati
+sono venti volte tanti.
 
 **Cambia la regola stessa** (*concept shift*, o *drift*). Che cos'è lo spam?
 Le stesse parole ("offerta", "clicca qui", "solo per oggi") che nel 2005
@@ -155,11 +175,11 @@ tre famiglie canoniche sono {cite}`quinonero2009dataset`:
   immagine $\to$ specie è la stessa. È il caso della figura: il modello è
   accurato dove $p_{\text{train}}(x)$ è densa, e viene interrogato dove è
   quasi nulla (di fatto, un'**estrapolazione**).
-- **Label shift** (o *prior probability shift*), cambia $P(y)$, resta
-  invariata $P(X \mid y)$: la malattia si presenta come prima, ma la sua
+- **Label shift** (o *prior probability shift*): cambia $P(y)$, resta
+  invariata $P(X \mid y)$. La malattia si presenta come prima, ma la sua
   prevalenza è diversa. Un classificatore bayesiano tarato sul *prior* vecchio
   produce probabilità a posteriori sistematicamente distorte.
-- **Concept shift** (o *concept drift*), cambia $P(y \mid X)$: la relazione
+- **Concept shift** (o *concept drift*): cambia $P(y \mid X)$. La relazione
   input–etichetta stessa si sposta, gradualmente (i gusti musicali) o di colpo
   (una nuova legge cambia cosa è "transazione sospetta").
 
@@ -189,6 +209,14 @@ validato sul passato, e sul passato funzionava davvero. Il voto d'esame era
 onesto; era la domanda a essere sbagliata. La validazione risponde a "quanto
 sbaglierò su dati *come questi*?", non a "quanto sbaglierò *domani*?".
 
+C'è però un modo di rendere onesta anche la domanda, e vale ogni volta che i
+dati hanno una data sopra: invece di tagliarli a caso, si taglia **nel tempo**.
+Il modello studia su gennaio-ottobre e viene interrogato su novembre-dicembre,
+che al momento dell'addestramento erano il futuro. Se già lì peggiora, in
+mezzo al mondo vero peggiorerà di sicuro; se non peggiora non è una garanzia,
+ma è un indizio molto migliore di un rimescolamento che gli lascia sbirciare
+il domani.
+
 `````
 
 `````{tab} Superiore
@@ -217,15 +245,18 @@ Non esiste la bacchetta magica: nessun algoritmo rende un modello immune al
 tempo. I rimedi più efficaci non sono matematici ma *organizzativi*, e sono
 tre:
 
-1. **Monitoraggio in produzione**, trattare il modello come un impianto, non
-   come un quadro appeso: sorvegliare la distribuzione degli input, la
-   distribuzione delle predizioni e, appena le etichette vere arrivano,
-   l'errore effettivo.
-2. **Retraining periodico**: riaddestrare a intervalli regolari su dati
+1. **Sorvegliare il modello mentre lavora.** «In produzione» vuol dire proprio
+   questo: non più le prove in laboratorio, ma il modello acceso sul serio, con
+   utenti veri e dati che arrivano ogni giorno. Un modello in produzione va
+   trattato come un impianto, non come un quadro appeso, e le cose da tenere
+   d'occhio sono tre: come sono fatte le domande che arrivano, come sono fatte
+   le risposte che dà, e, appena si scopre qual era la risposta giusta, quanto
+   ha sbagliato davvero.
+2. **Riaddestrare a intervalli regolari** (in gergo *retraining*) su dati
    recenti, così che la "fotografia" non invecchi troppo.
-3. **Dati di validazione freschi**: valutare il modello su un campione
-   *nuovo*, raccolto dopo l'addestramento, non sull'ennesimo ritaglio del
-   dataset storico.
+3. **Giudicarlo su dati freschi**: su un campione *nuovo*, raccolto dopo
+   l'addestramento, non sull'ennesimo ritaglio del mucchio di esempi di
+   partenza.
 
 `````{tab} Elementare
 
@@ -275,11 +306,31 @@ distribuzione tendono a essere *confidenti e sbagliate* insieme.
 
 `````
 
-Un trucco pratico per il monitoraggio, tutto fatto con strumenti che già
-conosciamo: addestrare un classificatore a distinguere i dati di
-addestramento da quelli raccolti in produzione. Se non ci riesce (AUC vicina
-a 0,5), le due distribuzioni sono indistinguibili e possiamo dormire
-tranquilli; se ci riesce bene, lo shift è già arrivato.
+C'è un trucco pratico per accorgersene, e usa solo strumenti che già
+conosciamo. Si mescolano i dati di addestramento con quelli raccolti mentre il
+modello lavorava, si cancella qualsiasi altra etichetta e si addestra un
+secondo modello a rispondere a una domanda sola: **questo esempio viene da ieri
+o da oggi?** Se ci riesce, ieri e oggi sono distinguibili, cioè la deriva c'è; e
+il suo punteggio dice pure quanto è grossa.
+
+Il punteggio giusto da guardare qui è l'AUC della sezione sulle metriche, che
+per un detective come questo si legge benissimo: $0{,}5$ vuol dire che sta
+tirando a indovinare, cioè che i due mucchi gli sembrano identici, e $1$ vuol
+dire che li separa senza sbagliare un colpo.
+
+Attenzione però a leggere il silenzio. Un'AUC vicina a $0{,}5$ dice che le due
+epoche sono indistinguibili **per lui**, che è una
+conclusione più debole di «va tutto bene», per due ragioni. La prima è che
+questo detective guarda soltanto le domande in arrivo, non le risposte: del
+cambio di regola, dove le domande restano le stesse e a cambiare è la risposta
+giusta, non può
+accorgersi per costruzione, ed è il caso più insidioso dei tre. La seconda è
+che un'AUC vicina a $0{,}5$ può anche voler dire che gli esempi nuovi
+sono ancora troppo pochi, o che la deriva sta in un intreccio fra più
+caratteristiche che quel detective, preso singolarmente, non coglie: non aver
+trovato non è aver dimostrato che non c'è niente. È uno strumento che vale la
+pena avere, purché letto per quello
+che è: un allarme quando suona, non un certificato quando tace.
 
 ```python
 import numpy as np
@@ -312,9 +363,12 @@ modello che aveva ragione, qualunque cosa avesse mostrato. Un modello di
 credito nega il prestito a chi giudica rischioso: di quelle persone non
 sapremo mai se avrebbero restituito i soldi, e i dati futuri conterranno solo
 le storie di chi il prestito l'ha avuto. In entrambi i casi il modello non
-osserva più il mondo: osserva le conseguenze delle proprie decisioni, e sui
-propri numeri può perfino sembrare sempre più bravo mentre amplifica i gusti
-già espressi e cementa nei dati le proprie distorsioni. Ci torneremo nel
+osserva più il mondo: osserva le conseguenze delle proprie decisioni. E sui
+propri numeri può perfino sembrare sempre più bravo, mentre in realtà sta
+restringendo il mondo a ciò che aveva già deciso: chi guarda un video di cucina
+ne riceve altri dieci di cucina e non scoprirà mai la musica, e chi si è visto
+negare un prestito non avrà mai modo di dimostrare che l'avrebbe restituito.
+Ci torneremo nel
 capitolo sui sistemi di raccomandazione, dove il circuito di retroazione non è
 un effetto collaterale ma la struttura stessa del problema.
 

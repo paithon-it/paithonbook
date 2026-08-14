@@ -3,8 +3,8 @@
 Un mattino di primavera, punti il telefono verso una siepe e apri
 un'applicazione. Un merlo canta, invisibile tra le foglie, e sullo schermo
 compare un nome: *Turdus merula*. L'app si chiama **BirdNET**, nasce dal
-laboratorio di ornitologia della Cornell University insieme al Politecnico di
-Chemnitz, e fa una cosa che cinquant'anni fa sarebbe sembrata magia: riconosce
+laboratorio di ornitologia della Cornell University insieme all'università
+tecnica di Chemnitz, e fa una cosa che cinquant'anni fa sarebbe sembrata magia: riconosce
 centinaia di specie di uccelli dal solo canto (un compito che a un umano
 richiede anni di orecchio allenato). Nessuna parola, nessuna frase: solo un
 fischio modulato, e un modello che sa a chi appartiene.
@@ -121,14 +121,16 @@ Un oggetto, cioè, che sappiamo trattare come un'immagine.
 
 ```{figure} ../figures/whisper-2022.svg
 :name: fig-whisper-pipeline
-:alt: "Catena in quattro stadi: la forma d'onda dell'audio viene convertita in uno spettrogramma log-mel, che entra in un encoder Transformer; il decoder legge l'uscita dell'encoder e produce i token di testo uno dopo l'altro, fino alla trascrizione completa."
+:alt: "Catena in quattro stadi: la forma d'onda dell'audio diventa uno spettrogramma log-mel; lo spettrogramma entra in un unico blocco Transformer, marcato «encoder → decoder»; da lì escono i token di testo, «il», «gatto», «dorme», uno sotto l'altro."
 :width: 100%
 
-La via di prima, quella del riconoscimento vocale: l'onda diventa immagine,
-l'immagine diventa testo. Nel disegno, la parte che legge (l'*encoder*) riassume
-lo spettrogramma e la parte che scrive (il *decoder*) ne ricava le parole, una
-alla volta. Lo spettrogramma resta una tabella di numeri, ed è il punto che la
-prossima sezione mette in discussione.
+La via classica, quella del riconoscimento vocale: l'onda diventa immagine,
+l'immagine diventa testo. Nel disegno il Transformer è un blocco solo, ma dentro
+fa due mestieri: la parte che legge (l'*encoder*) riassume lo spettrogramma e la
+parte che scrive (il *decoder*) ne ricava le parole, una alla volta. È la strada
+che il capitolo sullo Speech Recognition, subito dopo questo, percorre per
+intero. Lo spettrogramma resta una tabella di numeri, ed è il punto che le
+pagine qui sotto mettono in discussione.
 ```
 
 C'è però un secondo modo di guardare l'audio, ed è il vero filo conduttore di
@@ -208,7 +210,8 @@ scrivere.
 
 ## Come è organizzato il capitolo
 
-Il capitolo procede in quattro tappe, dalla comprensione alla creazione.
+Costruite le fondamenta, il capitolo procede in quattro tappe, dalla
+comprensione alla creazione.
 
 - **Classificazione audio**: dare un nome ai suoni. Come si passa dallo
   spettrogramma a un'etichetta o a una lista di tag, dalle prime CNN sullo

@@ -70,13 +70,16 @@ dove viene la distorsione, perché la spiegazione naturale è sbagliata: **non**
 dal fatto che i ritorni di uno stesso episodio siano correlati (una media di
 variabili correlate, in numero fissato e con la stessa media marginale, resta
 non distorta: la correlazione muove la varianza, non il valore atteso). Viene
-dal fatto che il **denominatore è aleatorio**: il numero di visite non è
-deciso in anticipo, ed è correlato con il numeratore, perché gli episodi lunghi
-contribuiscono più righe *e* ritorni sistematicamente più bassi (una visita
-tardiva ha meno futuro davanti). È il classico stimatore-rapporto, dove
-l'attesa del rapporto non è il rapporto delle attese. La distorsione svanisce al
-crescere degli episodi, e la variante si estende meglio all'approssimazione di
-funzione {cite}`sutton2018reinforcement`.
+dal fatto che il **denominatore è aleatorio**: il numero di visite non è deciso
+in anticipo, ed è correlato con il numeratore, perché un episodio che passa
+molte volte per lo stesso stato contribuisce molte righe, e quelle righe non
+sono un campione qualunque dei ritorni possibili. È il classico
+stimatore-rapporto, dove l'attesa del rapporto non è il rapporto delle attese;
+di quanto e in che verso sbagli dipende dal problema, e il conto di poco più
+avanti, dove la variante a ogni visita dà un numero più alto dell'altra, ne è un
+esempio e non una regola. La distorsione svanisce al crescere degli episodi, e
+la variante si estende meglio all'approssimazione di funzione
+{cite}`sutton2018reinforcement`.
 
 Il punto strutturale: qui **non c'è bootstrapping**. Il bersaglio è il ritorno
 osservato, non una stima costruita a partire da altre stime. Ogni stato si
@@ -157,8 +160,9 @@ partita**, quella della prima volta che si è passati di lì, e si chiama *a pri
 visita*: per $s_0$ si mediano $9$, $7{,}1$ e $6{,}39$, cioè
 $22{,}49 : 3 = 7{,}50$; per $s_1$ si mediano $10$, $10$ e $7{,}1$, cioè
 $27{,}1 : 3 = 9{,}03$. Il secondo conta **tutte le righe**, ripassaggi compresi,
-e si chiama *a ogni visita*: per $s_0$ i numeri diventano cinque e la media
-$8{,}10$, per $s_1$ diventano quattro e la media $9{,}28$.
+e si chiama *a ogni visita*: per $s_0$ i numeri diventano cinque
+($9 + 7{,}1 + 9 + 6{,}39 + 9 = 40{,}49$, diviso $5$ fa $8{,}10$) e per $s_1$
+quattro ($10 + 10 + 7{,}1 + 10 = 37{,}1$, diviso $4$ fa $9{,}28$).
 
 `````
 
@@ -199,9 +203,10 @@ diversi di stimare la stessa cosa. E nessuno dei due si avvicina al $9$ e al
 $10$ che la sezione precedente aveva calcolato sullo stesso mondo, per una
 ragione che conviene fissare: là si calcolava il valore della strategia
 **migliore possibile**, qui si misura quello della strategia **che ha giocato
-davvero**, tentennamenti compresi. Sono due domande diverse, e la seconda ha
-per forza una risposta più bassa (in simboli, là $V^*$, qui $V^\pi$). Con tre
-episodi, per di più: la legge dei grandi numeri ha bisogno di ben altro.
+davvero**, tentennamenti compresi. Sono due domande diverse, e la seconda non
+può avere una risposta più alta della prima. Con tre episodi soli, per di più:
+una media si assesta sul valore vero quando i casi mediati sono tanti, e tre
+non lo sono.
 
 ```python
 gamma = 0.9
@@ -262,9 +267,9 @@ che non si aggiorna più.
 
 Per questo un agente Monte Carlo che vuole *migliorare* (e non solo misurare)
 deve continuare a fare mosse che non crede ottime. È lo stesso dilemma fra
-esplorare e sfruttare che ritroveremo nella prossima sezione, e qui si presenta
-nella forma più cruda: senza esplorazione, il metodo semplicemente non vede i
-dati che gli servirebbero.
+esplorare e sfruttare che i bandit avevano isolato in apertura di capitolo, e
+qui si presenta nella forma più cruda: senza esplorazione, il metodo
+semplicemente non vede i dati che gli servirebbero.
 
 `````
 
@@ -281,7 +286,7 @@ l'agente dove si vuole.
 
 Il secondo, praticabile, è restare su policy **$\varepsilon$-soft**, cioè con
 $\pi(a\mid s) \ge \varepsilon/|\mathcal{A}|$ per ogni azione: la
-$\varepsilon$-greedy della prossima sezione è il caso tipico. Il *policy
+$\varepsilon$-greedy già vista sui bandit è il caso tipico. Il *policy
 improvement theorem* continua a valere ristretto a questa classe, quindi
 l'alternanza valuta-migliora converge, ma converge alla migliore policy
 $\varepsilon$-soft, non alla migliore in assoluto {cite}`sutton2018reinforcement`.
@@ -313,10 +318,12 @@ ha lasciato le partite era prudente e la strategia che vuoi giudicare è
 audace, le partite audaci nell'archivio sono poche, e mediarle tutte allo
 stesso modo darebbe un giudizio sulla prudenza, non sull'audacia.
 
-Il rimedio è **pesare** le partite invece di contarle tutte uguali. Una partita
-che la strategia audace avrebbe giocato spesso e che il prudente ha giocato di
-rado vale molto, perché è rara e informativa; una partita tipica del prudente
-e che l'audace non farebbe mai vale poco o niente. Il peso è semplicemente il
+Il rimedio è **pesare** le partite invece di contarle tutte uguali (in inglese
+si chiama *importance sampling*, e il nome vuol dire proprio questo: campionare
+tenendo conto di quanto ogni caso conta). Una partita che la strategia audace
+avrebbe giocato spesso e che il prudente ha giocato di rado vale molto, perché
+è rara e informativa; una partita tipica del prudente e che l'audace non
+farebbe mai vale poco o niente. Il peso è semplicemente il
 rapporto fra quanto era probabile quella sequenza di mosse per l'una e per
 l'altra.
 
@@ -409,21 +416,22 @@ degli attrezzi che il libro riusa di più, e conviene sapere dove ricomparirà.
 
 ```{admonition} Dove ritorna
 :class: seealso
-- Nel **PPO**, un algoritmo di deep reinforcement learning del capitolo
-  successivo, il peso è il rapporto fra quanto la strategia nuova e quella che
-  ha raccolto i dati avrebbero giocato la stessa mossa: lo stesso oggetto,
-  calcolato su una mossa sola invece che su tutta la partita. Il *clipping* di
-  PPO è una fascia stretta attorno a quel peso, sopra e sotto, perché non
-  esploda.
+- Nel **PPO**, uno degli algoritmi più usati del capitolo successivo, il peso è
+  il rapporto fra quanto la strategia nuova e quella che ha raccolto i dati
+  avrebbero giocato la stessa mossa: lo stesso oggetto, calcolato su una mossa
+  sola invece che su tutta la partita. E siccome un peso che esplode è il
+  difetto appena visto, PPO gli mette attorno una fascia, sopra e sotto, oltre
+  la quale il peso viene tosato (*clipping*).
 - Nell'**offline RL**, cioè imparare da un archivio di partite senza poterne
   giocare altre, quell'archivio è tutto ciò che c'è: la condizione appena vista
   (deve contenere tutto quello che la strategia da giudicare potrebbe fare)
-  diventa il problema centrale del capitolo.
-- Nell'**RLHF**, il modo in cui si addestrano gli assistenti conversazionali sui
-  giudizi delle persone, il modello che si sta ottimizzando si allontana passo
-  dopo passo da quello che ha prodotto le risposte giudicate: è la stessa
-  deriva, tenuta a bada dallo stesso rapporto (più una penalità che misura
-  quanto ci si è allontanati dal modello di partenza).
+  diventa il problema centrale della sezione che gli è dedicata.
+- Nell'**RLHF**, il modo in cui gli assistenti conversazionali imparano dai
+  giudizi delle persone su quale di due risposte sia migliore, il programma che
+  si sta migliorando si allontana passo dopo passo da quello che aveva prodotto
+  le risposte giudicate: è la stessa deriva fra chi ha giocato e chi si
+  giudica, tenuta a bada dallo stesso rapporto, più un termine che penalizza
+  quanto ci si è allontanati dal punto di partenza.
 ```
 
 ## Il ponte verso le differenze temporali

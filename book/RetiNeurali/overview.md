@@ -97,10 +97,13 @@ b \leftarrow b + \eta\,(y - \hat{y}),
 $$
 
 dove $y\in\{0,1\}$ è l'etichetta corretta, $\hat{y}$ la predizione ed
-$\eta>0$ il **tasso di apprendimento**. Rosenblatt dimostrò il *teorema di
-convergenza*: se i dati sono linearmente separabili, questa regola trova in un
-numero finito di passi un iperpiano che li separa. Il guaio è tutto in quel
-"se".
+$\eta>0$ il **tasso di apprendimento**. C'è poi il *teorema di convergenza*: se
+i dati sono linearmente separabili, questa regola trova in un numero finito di
+passi un iperpiano che li separa. Non è nell'articolo del 1958, che presenta il
+modello: la dimostrazione arriva con *Principles of Neurodynamics* del 1962
+{cite}`rosenblatt1962principles`, e le forme rigorose che si citano oggi si
+devono a Novikoff {cite}`novikoff1962convergence` e a Block. Il guaio è tutto in
+quel "se".
 
 `````
 
@@ -140,9 +143,10 @@ quello, e quindi lo XOR non lo imparerà mai.
 Le quattro coppie sono $(0,0)\to 0$, $(0,1)\to 1$, $(1,0)\to 1$, $(1,1)\to 0$.
 Un percettrone realizza un separatore lineare $\mathbf{w}^\top\mathbf{x}+b=0$,
 cioè un iperpiano; può risolvere solo problemi **linearmente separabili**. Lo
-XOR non lo è: non esistono $\mathbf{w}$ e $b$ tali che $w_1 x_1 + w_2 x_2 + b$
-risulti positivo esattamente sui due punti con etichetta $1$ e non positivo
-sugli altri due. La soluzione (impilare più neuroni in **strati**) era nota già
+XOR non lo è: poiché il gradino risponde $1$ quando $z\ge 0$, servirebbero
+$\mathbf{w}$ e $b$ tali che $w_1 x_1 + w_2 x_2 + b$ risulti **non negativo** sui
+due punti con etichetta $1$ e **negativo** sugli altri due, e non esistono. La
+soluzione (impilare più neuroni in **strati**) era nota già
 allora, ma mancava un modo efficiente per addestrarla, ed è questa la ragione
 che gli stessi Minsky e Papert indicheranno per la lunga pausa che seguì. Il
 libro contribuì a raffreddare gli entusiasmi e a spostare risorse verso l'AI
@@ -160,8 +164,8 @@ più, in **strati**. Ma come si addestrano i neuroni intermedi, che non hanno
 un'etichetta che dica loro "la risposta giusta era questa"? La risposta è la
 **backpropagation** (retropropagazione dell'errore), resa celebre nel 1986 da
 David Rumelhart, Geoffrey Hinton e Ronald Williams su *Nature*. L'algoritmo
-aveva precursori (Paul Werbos lo aveva formulato nella sua tesi del 1974) ma è
-quel lavoro a farne lo standard.
+aveva precursori (Paul Werbos lo aveva formulato nella tesi di dottorato del
+1974) ma è quel lavoro a farne lo standard.
 
 `````{tab} Elementare
 
@@ -223,10 +227,13 @@ frontiere che la rete sa tracciare ({numref}`fig-confini-multistrato`).
 Gli stessi quattro punti, tre confini. Un neurone solo li separa con una retta;
 uno strato nascosto mette insieme più rette e ritaglia una regione chiusa;
 aggiungendo strati le regioni si combinano fra loro e il contorno segue la
-forma dei dati sempre più da vicino. Attenzione a cosa cambia davvero: non è
-che il terzo confine sia irraggiungibile per gli altri due (con abbastanza
-neuroni in un solo strato ci si arriva lo stesso), è che con più strati lo si
-ottiene con molti meno neuroni.
+forma dei dati sempre più da vicino. Attenzione a cosa cambia davvero, perché i
+due passaggi non sono lo stesso passaggio. Dal primo pannello al secondo si
+guadagna qualcosa che prima non c'era: un neurone solo disegna una retta e
+nient'altro, quindi il confine chiuso gli è precluso comunque lo si addestri.
+Dal secondo al terzo cambia invece soltanto il prezzo: con abbastanza neuroni in
+un solo strato nascosto a quel contorno ci si arriva lo stesso, ma con più
+strati lo si ottiene con molti meno neuroni.
 ```
 
 La progressione di {numref}`fig-confini-multistrato` è la risposta visiva allo
@@ -258,15 +265,20 @@ solo che non lo vediamo né in ingresso né in uscita: lavora in mezzo.
 Con un solo strato nascosto, l'MLP calcola
 
 $$
-\mathbf{h} = \sigma\!\left(W^{(1)}\mathbf{x} + \mathbf{b}^{(1)}\right),
+\mathbf{h} = \sigma\!\left(\mathbf{W}^{[1]}\mathbf{x} + \mathbf{b}^{[1]}\right),
 \qquad
-\hat{\mathbf{y}} = \varphi\!\left(W^{(2)}\mathbf{h} + \mathbf{b}^{(2)}\right).
+\hat{\mathbf{y}} = \varphi\!\left(\mathbf{W}^{[2]}\mathbf{h} + \mathbf{b}^{[2]}\right).
 $$
 
-Qui $W^{(1)}\in\mathbb{R}^{4\times 3}$ e $W^{(2)}\in\mathbb{R}^{2\times 4}$ sono
-le matrici dei pesi, $\mathbf{b}^{(1)}, \mathbf{b}^{(2)}$ i bias, $\sigma$ la
+Qui $\mathbf{W}^{[1]}\in\mathbb{R}^{4\times 3}$ e
+$\mathbf{W}^{[2]}\in\mathbb{R}^{2\times 4}$ sono
+le matrici dei pesi, $\mathbf{b}^{[1]}, \mathbf{b}^{[2]}$ i bias, $\sigma$ la
 non linearità nascosta (tipicamente ReLU) e $\varphi$ l'attivazione d'uscita
-(per esempio softmax). È l'impilamento di trasformazioni lineari e non lineari
+(per esempio softmax). L'indice fra parentesi quadre in alto è il numero dello
+strato, e resta questo per tutto il libro: la parentesi tonda serve per
+distinguere gli **esempi**, come in $\hat{y}^{(i)}$.
+
+È l'impilamento di trasformazioni lineari e non lineari
 a dare la potenza: il *teorema di approssimazione universale* garantisce che
 una rete con un solo strato nascosto abbastanza ampio può approssimare, con
 errore arbitrariamente piccolo, qualunque funzione continua su un insieme
@@ -274,12 +286,32 @@ compatto. Dimostrato prima per attivazioni limitate, come la sigmoide
 ({cite}`cybenko1989approximation`; {cite}`hornik1991approximation`), vale per
 ogni $\sigma$ non polinomiale, ReLU compresa ({cite}`leshno1993multilayer`).
 È però un teorema di esistenza: dice che i pesi giusti ci sono, non che la
-discesa del gradiente li trovi. La non linearità $\sigma$ è essenziale: senza
+discesa del gradiente li trovi. E c'è una seconda cosa che non dice, altrettanto
+importante: **quanto ampio**. Nell'enunciato "abbastanza ampio" non è
+quantificato, e per una funzione qualsiasi di $d$ variabili il numero di neuroni
+necessari cresce esponenzialmente in $d$: la garanzia c'è, il conto è fuori
+portata già per un'immagine piccola. È il vero motivo per cui il teorema
+consola meno di quanto suoni. La non linearità $\sigma$ è essenziale: senza
 di essa, due strati lineari collasserebbero in uno solo.
 
-Il teorema chiarisce anche come leggere {numref}`fig-confini-multistrato`: la
-profondità non sblocca confini altrimenti irraggiungibili, riduce il numero di
-neuroni che servono per ottenerli. Il terzo pannello è disegnato con gli
+Come leggere allora {numref}`fig-confini-multistrato`? Non con il teorema di
+approssimazione universale, che sull'efficienza non dice niente: dice solo che
+uno strato solo, se ampio a piacere, basta. A dire qualcosa sono altri
+risultati, i **teoremi di separazione**, che funzionano per esibizione: mostrano
+una funzione che una rete profonda calcola con pochi neuroni e che una rete più
+piatta non sa approssimare se non pagando una larghezza esponenziale. Telgarsky
+{cite}`telgarsky2016benefits` costruisce funzioni di una variabile, lineari a
+tratti (una sega dai molti denti), che una rete profonda disegna con pochi
+neuroni per strato e che una rete di pochi strati richiederebbe un numero di
+neuroni esponenziale nella profondità risparmiata; Eldan e Shamir
+{cite}`eldan2016power` fanno lo stesso in $d$ dimensioni sul salto più piccolo
+che ci sia, da due strati nascosti a uno: esiste una funzione che due strati
+nascosti realizzano con larghezza polinomiale in $d$ e che uno strato solo non
+approssima senza larghezza esponenziale in $d$. Sono funzioni costruite apposta,
+non un teorema su tutte le funzioni, ed è già abbastanza: dicono che la
+profondità può comprare qualcosa che la larghezza paga carissimo.
+
+Il terzo pannello è disegnato con gli
 spigoli per una ragione: con la ReLU la rete è lineare a tratti e il confine
 resta un poligono, con sempre più lati man mano che gli strati si accumulano,
 finché da lontano sembra una curva. Curvo alla lettera lo è solo con
@@ -314,10 +346,13 @@ multistrato cresciuti, specializzati e resi profondi.
 - McCulloch e Pitts, nel 1943, scrivono il neurone come una regoletta di
   calcolo; Rosenblatt, nel 1958, lo fa *imparare*: gli mostri esempi e lui
   aggiusta da solo le importanze.
-- Un neurone da solo sa dividere i casi con **una riga dritta**. Sullo
-  **XOR** quella riga non esiste, e nel 1969 il libro di Minsky e Papert lo
-  ricorda a tutti nel momento peggiore: seguono anni di disinteresse e di
-  fondi tagliati.
+- Un neurone da solo sa dividere i casi con **una riga dritta**, e sullo
+  **XOR** quella riga non esiste: nel 1969 il libro di Minsky e Papert lo
+  ricorda a tutti. Agli anni di disinteresse e di fondi tagliati che seguirono
+  quel libro contribuì, ma non li decise: a tenere ferme le reti era un
+  problema tecnico (nessuno sapeva correggere i neuroni in mezzo), e i tagli
+  veri arrivarono qualche anno dopo e colpirono l'intelligenza artificiale
+  tutta intera.
 - La **backpropagation** (1986) risolve la domanda che teneva ferma la
   faccenda: come si correggono i neuroni in mezzo, quelli a cui nessuno dice
   quale fosse la risposta giusta.

@@ -81,7 +81,7 @@
   </g>
 
   <!-- ============ FRECCIA + DIDASCALIA ============ -->
-  <text class="cap" x="380" y="270">Spogliate le apparenze, la struttura e la stessa</text>
+  <text class="cap" x="380" y="270">Spogliate le apparenze, la struttura è la stessa</text>
   <line x1="380" y1="286" x2="380" y2="322" stroke="#5E5852" stroke-width="2"
         marker-end="url(#ge-arrow)"/>
 

@@ -17,7 +17,7 @@ un riquadro e un'etichetta.
 
 ```{figure} ../figures/classification-detection-segmentation.svg
 :name: fig-tre-uscite
-:alt: "La stessa fotografia trattata da tre compiti diversi. Nella classificazione l'uscita è una sola etichetta per l'intera immagine. Nella detection sono uno o più riquadri, ciascuno con la sua etichetta. Nella segmentazione è una maschera che segue il contorno esatto di ogni oggetto, pixel per pixel."
+:alt: "La stessa scena, un cane e una palla su un prato, trattata da tre compiti diversi. Nella classificazione l'uscita è una sola etichetta per l'intera immagine, «cane». Nella detection sono due riquadri, uno attorno al cane e uno attorno alla palla, ciascuno con la sua etichetta e la sua confidenza. Nella segmentazione ogni pixel prende un colore secondo la categoria a cui appartiene, sfondo compreso: il cane in terracotta, la palla in ocra, il prato in teal."
 :width: 100%
 
 Stessa foto, tre uscite. Salendo da sinistra a destra cresce la precisione
@@ -51,9 +51,9 @@ termine di **localizzazione** (errore sulle coordinate, tipicamente
 *smooth L1* o una IoU-loss), un termine di **classificazione** (cross-entropy
 sulla classe) e un termine di **objectness** che supervisiona la confidenza,
 spingendola verso l'alto dove un oggetto c'è e verso zero sullo sfondo (in
-YOLOv1 il bersaglio non è uno ma la IoU stessa fra riquadro predetto e
-riquadro vero, così che il punteggio incorpori già la qualità della
-localizzazione; dai successori in poi, semplicemente uno):
+YOLOv1, e ancora in YOLOv2, il bersaglio non è uno ma la IoU stessa fra
+riquadro predetto e riquadro vero, così che il punteggio incorpori già la
+qualità della localizzazione; da YOLOv3 in poi, semplicemente uno):
 
 $$
 \mathcal{L} = \mathcal{L}_{\text{obj}} + \mathcal{L}_{\text{cls}} + \lambda \,\mathcal{L}_{\text{box}} .
@@ -79,21 +79,29 @@ architetturale della detection.
 ## Due stadi contro uno stadio
 
 Storicamente i rilevatori si dividono in due famiglie, e la differenza è un
-classico compromesso tra **accuratezza e velocità**.
+classico compromesso tra **accuratezza e velocità**. Semplificando: gli uni
+guardano l'immagine due volte, prima per capire dove vale la pena guardare e
+poi per guardarci davvero; gli altri una volta sola.
 
 ```{figure} ../figures/yolo-2016.svg
 :name: fig-yolo
 :alt: "Un'immagine coperta da una griglia sette per sette entra una sola volta in una rete convoluzionale, che produce direttamente i riquadri degli oggetti con le rispettive classi. Non c'è nessuna fase separata di proposta delle regioni: ogni cella della griglia è responsabile degli oggetti il cui centro le cade dentro."
 :width: 92%
 
-L'approccio a stadio singolo. La griglia non è una ricerca: è una divisione di
-responsabilità decisa in anticipo, e la rete la attraversa una volta sola.
+L'approccio a stadio singolo, cioè una sola passata sull'immagine. La griglia
+non è una ricerca: è una divisione di responsabilità decisa in anticipo.
 ```
 
-Ciò che {numref}`fig-yolo` rende evidente è cosa si guadagna e cosa si perde.
-Guardare l'immagine una volta sola è quello che rende possibile il tempo
-reale; il prezzo è che ogni cella ha un numero fisso di riquadri da offrire, e
-oggetti piccoli e ammassati nella stessa cella se li contendono.
+Guardiamo la seconda famiglia, quella della passata unica, perché
+{numref}`fig-yolo` rende evidente cosa si guadagna e cosa si perde. Guardare
+l'immagine una volta sola è quello che rende possibile il tempo reale; il prezzo
+lo si legge nella griglia disegnata sopra la foto. Quella griglia non è una
+ricerca: è una divisione del lavoro decisa prima di guardare, in cui ogni
+casella (una **cella**) si prende la responsabilità degli oggetti che le cadono
+dentro. E siccome a ogni cella si concede in partenza un numero fisso di
+riquadri, di solito due, oggetti piccoli e ammassati nella stessa cella se li
+contendono: il terzo passerotto dello stormo non ha una cornice a
+disposizione.
 
 `````{tab} Elementare
 
@@ -216,16 +224,27 @@ ne coprono 60, la IoU è $30/60 = 0{,}5$. Di solito si dice che una predizione
 Quel mezzo però non è una legge di natura, è una convenzione, e alzarla a 0,7
 o a 0,9 può cambiare la classifica fra due rilevatori: uno che indovina sempre
 la categoria ma disegna cornici approssimative peggiora molto più in fretta di
-uno preciso. Per questo i confronti seri non usano una soglia sola.
+uno preciso. Per questo i confronti seri non ne usano una sola: rifanno il
+conto con dieci soglie, da 0,5 a 0,95, e fanno la media dei dieci risultati.
+Così nessuno può vincere scegliendosi il metro su misura.
 
-Da qui si ricava il voto complessivo di un rilevatore, la **mAP**. La sigla sta
-per *mean Average Precision*, e le medie sono due, una dentro l'altra: prima si
-calcola un voto per **ogni categoria** (quanto bene il rilevatore se la cava
-sui gatti, quanto sulle biciclette), poi si fa la media di quei voti **sulle
-categorie**. È un numero fra 0 e 1 che riassume in un colpo solo quanto spesso
-il rilevatore azzecca insieme la cornice e il nome. Più è alto, meglio è, ed è
-il numero con cui due rilevatori si confrontano senza doverli guardare foto per
-foto.
+Da qui si ricava il voto complessivo di un rilevatore, la **mAP**. Si parte
+dalla domanda più semplice che si possa fare a un rilevatore: di tutte le
+cornici che ha disegnato, quante erano giuste? Quella frazione si chiama
+**precisione** ed è il mattone di tutto. Il problema è che dipende da quanto il
+rilevatore è prudente: se disegna una cornice sola, quella di cui è
+sicurissimo, la sua precisione è alta ma si è perso quasi tutto; se ne disegna
+mille, le trova tutte ma ne sbaglia moltissime. Allora non si guarda un valore
+solo: si fa disegnare al rilevatore le sue cornici in ordine di sicurezza, si
+misura la precisione dopo la prima, dopo le prime due, dopo le prime tre, e si
+fa la media di tutte quelle misure. Quel numero, che tiene conto insieme di
+quanto è preciso e di quanto è coraggioso, è il voto su **una** categoria.
+
+Poi si fa la media di quei voti **sulle categorie**, e questa è la seconda
+media, quella che dà la «m» di *mean*. Il risultato è un numero fra 0 e 1 che
+riassume in un colpo solo quanto spesso il rilevatore azzecca insieme la cornice
+e il nome. Più è alto, meglio è, ed è il numero con cui due rilevatori si
+confrontano senza doverli guardare foto per foto.
 
 `````
 
@@ -255,27 +274,34 @@ localizzano con precisione, non solo che indovinano la classe.
 
 `````
 
-Prima del verdetto, però, serve un passaggio di pulizia. La rete non produce
-un riquadro per oggetto: ne produce migliaia (Faster R-CNN, per esempio, tiene
-pronte nove cornici di partenza in ogni punto della griglia, tre taglie per tre
-proporzioni, e i punti della griglia sono migliaia), e attorno a ogni oggetto
-se ne accumulano decine quasi
-identici, ciascuno con la sua confidenza. La **non-maximum suppression** (NMS)
-li sfoltisce con una regola semplice: si ordinano i riquadri per confidenza,
-si tiene il più sicuro e si scartano tutti quelli che gli si sovrappongono
-troppo (IoU sopra una soglia), poi si ripete sui rimasti finché non c'è più
-niente da esaminare. È il passo finale, quasi mai disegnato negli schemi, di
-praticamente ogni rilevatore, da Faster R-CNN a YOLO e SSD: senza, ogni
-oggetto arriverebbe alla valutazione con un grappolo di doppioni, e tutti
-tranne uno conterebbero come errori.
+Prima del verdetto, però, serve un passaggio di pulizia. La rete non produce un
+riquadro per oggetto: ne produce migliaia. In ogni punto della griglia tiene
+pronte le sue cornici di partenza, e i punti della griglia sono a loro volta
+migliaia. Il risultato è che attorno a ogni oggetto se ne accumulano decine
+quasi identiche, ciascuna con la sua **confidenza**, cioè il numero da 0 a 1
+con cui la rete dichiara quanto è sicura che lì dentro un oggetto ci sia
+davvero.
+
+La **non-maximum suppression** (alla lettera «soppressione di ciò che non è il
+massimo», e in genere la si chiama NMS) le sfoltisce con una regola semplice:
+si ordinano i riquadri per confidenza, si tiene il più sicuro e si scartano
+tutti quelli che gli si sovrappongono troppo, poi si ripete sui rimasti finché
+non c'è più niente da esaminare. È il passo finale, quasi mai disegnato negli
+schemi, di praticamente ogni rilevatore delle due famiglie: senza, ogni oggetto
+arriverebbe alla valutazione con un grappolo di doppioni, e tutti tranne uno
+conterebbero come errori.
 
 C'è però una terza via, che il problema lo toglie invece di risolverlo. Una
-famiglia di rilevatori inaugurata da DETR {cite}`carion2020end` chiede alla
-rete un numero fisso di risposte e, durante l'addestramento, le abbina agli
-oggetti veri **una a una**, come si formano le coppie in un ballo: ogni oggetto
-ha un solo inseguitore, quindi i doppioni non nascono affatto, e spariscono
-insieme sia le cornici di partenza sia la fase di pulizia. Il prezzo,
-storicamente, è stato un addestramento molto più lento ad assestarsi.
+famiglia di rilevatori inaugurata nel 2020 da DETR {cite}`carion2020end` (sta
+per *detection transformer*) chiede alla rete un numero fisso di risposte, per
+esempio cento, e durante l'addestramento le abbina agli oggetti veri **una a
+una**: ogni oggetto vero viene assegnato a una sola delle cento risposte, e le
+altre novantotto sono premiate per dire «qui non c'è niente». Chi produce un
+doppione viene quindi punito mentre impara, non ripulito dopo, e alla fine
+dell'addestramento i doppioni non li produce più. Spariscono così sia le
+cornici di partenza sia la fase di pulizia. Il prezzo, storicamente, è stato
+che l'addestramento impiega molto più tempo a stabilizzarsi su un risultato
+buono.
 
 ## Segmentare: dal riquadro alla sagoma
 
@@ -296,7 +322,7 @@ gradino durante la discesa. Sono le connessioni orizzontali della figura, le
 
 ```{figure} ../figures/u-net-clessidra-con-skip.svg
 :name: fig-unet
-:alt: "Schema a forma di U: il braccio discendente di sinistra riduce progressivamente la risoluzione aumentando il numero di canali, in fondo c'è il collo di bottiglia, e il braccio ascendente di destra recupera la risoluzione. Fra livelli corrispondenti dei due bracci corrono connessioni orizzontali tratteggiate, le skip connection."
+:alt: "Schema a forma di U: il braccio discendente di sinistra riduce progressivamente la risoluzione, dall'immagine intera a metà a un quarto; in fondo c'è il collo di bottiglia; il braccio ascendente di destra la recupera per gradi fino alla mappa a piena risoluzione. Fra livelli corrispondenti dei due bracci corrono connessioni orizzontali tratteggiate, le skip connection, che copiano e concatenano."
 :width: 88%
 
 La clessidra della U-Net. Scendendo si capisce *cosa* c'è nell'immagine e si
@@ -343,15 +369,17 @@ sagoma di ogni singola istanza.
 
 ## Risalire di risoluzione: la convoluzione trasposta
 
-Nelle reti di segmentazione c'è un passaggio rimasto nell'ombra. Convoluzioni
-e pooling *riducono* le **mappe**, cioè le griglie di numeri che ogni strato
-consegna al successivo: dopo il ramo discendente della U, quello che comprime,
-un'immagine 512×512 può essersi ristretta a 16×16. (È lo stesso ramo che nella
-sezione precedente abbiamo chiamato **encoder**: la parola vuol dire sempre «la
-parte che riassume», e qui il riassunto è una griglia piccola invece di una
-lista di numeri.) Ma il
-verdetto della segmentazione va dato pixel per pixel, alla risoluzione di
-partenza: serve una metà che riespanda, il **decoder**. Come si risale?
+Nelle reti di segmentazione c'è un passaggio rimasto nell'ombra. Le
+convoluzioni e il **pooling** (il passaggio che riassume ogni quadratino di
+griglia in un numero solo) *riducono* le **mappe**, cioè le griglie di numeri
+che ogni strato consegna al successivo: dopo il ramo discendente della U,
+quello che comprime, un'immagine 512×512 può essersi ristretta a 16×16. Quel
+ramo ha un nome, **encoder**, e vuol dire «la parte che riassume»: è lo stesso
+mestiere che nella sezione sull'apprendimento senza etichette riassumeva
+un'immagine in una lista di numeri, solo che qui il riassunto è una griglia
+piccola. Ma il verdetto della segmentazione va dato pixel per pixel, alla
+risoluzione di partenza: serve una seconda metà che riespanda, e quella si
+chiama **decoder**. Come si risale?
 L'operazione che la *Fully Convolutional Network* {cite}`long2015fully` ha
 reso standard è la **convoluzione trasposta**: una convoluzione che invece di
 rimpicciolire ingrandisce, con numeri che la rete impara.
@@ -361,8 +389,9 @@ rimpicciolire ingrandisce, con numeri che la rete impara.
 :alt: Una mappa due per due con i valori 1, 2, 3 e 4, ciascuno in un colore della palette, viene espansa da un kernel due per due con stride 2 in una mappa quattro per quattro in cui ogni valore diventa un blocco due per due dello stesso colore.
 :width: 95%
 
-Convoluzione trasposta con kernel $2 \times 2$ di tutti 1 e stride 2: ogni
-valore della mappa piccola "timbra" un blocco $2 \times 2$ della mappa grande.
+Convoluzione trasposta con un kernel $2 \times 2$ di tutti 1, applicato ogni
+due caselle: ogni valore della mappa piccola "timbra" un blocco
+$2 \times 2$ della mappa grande.
 ```
 
 `````{tab} Elementare
@@ -376,8 +405,10 @@ $$
 e un timbro, anch'esso $2 \times 2$, con il disegno più semplice possibile:
 tutti 1. La convoluzione trasposta è una timbratura: ogni numero della mappa
 piccola dà un colpo di timbro su una tela più grande, e il valore del numero
-regola la forza della pressione. Con passo 2, i quattro colpi cadono uno
-accanto all'altro senza sovrapporsi, e la tela diventa $4 \times 4$
+regola la forza della pressione. Quanto si sposta il timbro fra un colpo e
+l'altro lo decidiamo noi, e si chiama **passo**. Con passo 2, cioè spostandolo
+di due caselle ogni volta, i quattro colpi cadono uno accanto all'altro senza
+sovrapporsi, e la tela diventa $4 \times 4$
 ({numref}`fig-convoluzione-trasposta`):
 
 $$
@@ -389,10 +420,16 @@ $$
 \end{pmatrix}
 $$
 
-L'1 ha stampato un blocchetto di 1, il 4 un blocchetto di 4. Con questo
-timbro banale abbiamo solo ingrandito la mappa; il punto è che i numeri sul
-timbro non sono fissi, la rete li **impara**. Può scoprire timbri che sfumano
-i bordi e ricostruiscono i dettagli molto meglio di un semplice zoom.
+L'1 ha stampato un blocchetto di 1, il 4 un blocchetto di 4. Con passo 1,
+invece, i colpi si sarebbero sovrapposti e nelle caselle condivise i valori si
+sarebbero sommati. Non è un dettaglio da poco: quando le sovrapposizioni non
+sono uguali dappertutto, certe caselle ricevono due colpi e le loro vicine uno
+solo, e nell'immagine finale compare una trama regolare a quadretti che nella
+scena non c'era.
+
+Con questo timbro banale abbiamo solo ingrandito la mappa; il punto è che i
+numeri sul timbro non sono fissi, la rete li **impara**. Può scoprire timbri che
+sfumano i bordi e ricostruiscono i dettagli molto meglio di un semplice zoom.
 
 `````
 
@@ -446,14 +483,17 @@ produzione individua il graffio o il pezzo mal assemblato prima che arrivi al
 cliente.
 
 Nessuno di questi sistemi è infallibile, e conviene dire con precisione dove
-sta il margine, perché la IoU non è un tasso di errore. Una maschera con IoU
-$0{,}9$ è una maschera buona, e lascia comunque fuori (o dentro) un decimo
-dell'area: su un nodulo, un decimo di volume è una differenza clinica. E
-soprattutto restano gli oggetti mancati del tutto, che in quel numero non
-compaiono affatto, perché la IoU si calcola solo sulle coppie che il sistema ha
-prodotto. In medicina o alla guida sono le due cose insieme, il contorno
-approssimato e l'oggetto non visto, a chiedere un occhio umano. Ma la
-traiettoria è chiara: dal *cosa*, al *dove*, fino al contorno esatto.
+sta il margine, perché la sovrapposizione non è un tasso di errore. Una
+maschera con IoU $0{,}9$ è una maschera buona, e vuol dire che di dieci
+quadretti coperti in tutto, nove sono in comune e uno no: un decimo dell'area è
+sbagliato, per eccesso o per difetto. Su un nodulo, un decimo di volume è una
+differenza clinica. E soprattutto restano gli oggetti mancati del tutto, che in
+quel numero non compaiono affatto: la IoU si calcola confrontando due cornici,
+quindi esiste solo dove il sistema una cornice l'ha disegnata. Un pedone che il
+rilevatore non ha visto non ha nessuna cornice, quindi nessuna IoU, quindi non
+peggiora la media di niente. In medicina o alla guida sono le due cose insieme,
+il contorno approssimato e l'oggetto non visto, a chiedere un occhio umano. Ma
+la traiettoria è chiara: dal *cosa*, al *dove*, fino al contorno esatto.
 
 `````{tab} Elementare
 

@@ -192,10 +192,13 @@ Il risultato che ha sdoganato l'approccio è **DPR** (*Dense Passage
 Retrieval*) {cite}`karpukhin2020dense`: due BERT addestrati in modo
 contrastivo, avvicinare le coppie domanda–passaggio corrette, allontanare i
 negativi, riciclando come negativi gli altri esempi del batch (*in-batch
-negatives*), che sui benchmark di question answering a dominio aperto supera
-un solido BM25 di 9–19 punti assoluti di accuratezza top-20. Non senza limiti:
-su termini rari, sigle ed entità fuori distribuzione il lessicale regge, e gli
-ibridi BM25 + denso restano una scelta di buon senso.
+negatives*). Il salto misurato dagli autori sulle raccolte di question
+answering a dominio aperto dell'epoca è ampio (dai 9 ai 19 punti di
+accuratezza top-20 sopra un BM25 ben tarato), ma quel che resta valido oltre
+quei numeri è il **perché**: il denso recupera ciò che è detto con altre
+parole, il lessicale ciò che è scritto con quelle esatte. E infatti su termini
+rari, sigle ed entità fuori distribuzione il lessicale regge, e gli ibridi
+BM25 + denso restano una scelta di buon senso.
 
 Un raffinamento chiude il quadro: il bi-encoder codifica query e passaggio
 *separatamente*, mentre un **cross-encoder** li concatena in un unico
@@ -296,7 +299,9 @@ può ispezionare e migliorare, ma non è una garanzia di verità.
 Nel modello originale {cite}`lewis2020retrieval` le due metà sono esplicite:
 un retriever DPR fornisce $p_\eta(z \mid x)$, la probabilità di recuperare il
 passaggio $z$ data la domanda $x$, e un generatore seq2seq (BART) fornisce
-$p_\theta(y \mid x, z)$. La risposta marginalizza sui passaggi recuperati:
+$p_\theta(y \mid x, z)$. (Qui $\eta$ sono i parametri del retriever, come nel
+paper: non è il tasso di apprendimento che $\eta$ indica nel resto del libro.)
+La risposta marginalizza sui passaggi recuperati:
 
 $$
 p(y \mid x) \;\approx\; \sum_{z \,\in\, \text{top-}k}
@@ -305,7 +310,11 @@ $$
 
 dove $x$ è la domanda, $y$ la risposta generata, $z$ uno dei $k$ passaggi
 recuperati, $\eta$ i parametri del retriever e $\theta$ quelli del
-generatore. Il tutto si addestra end-to-end sulle sole coppie
+generatore. Il segno di «circa» non è una sciatteria: la somma esatta correrebbe
+su **tutti** i passaggi dell'archivio, e si tronca ai primi $k$ perché per gli
+altri $p_\eta(z \mid x)$ è trascurabile.
+
+Il tutto si addestra end-to-end sulle sole coppie
 domanda–risposta: il gradiente attraversa il generatore e l'encoder delle
 query (l'indice dei passaggi, circa 21 milioni di blocchi da cento parole di
 Wikipedia nell'articolo, resta congelato). La lettura concettuale è la più
@@ -317,9 +326,11 @@ Oggi il termine RAG indica più spesso la variante leggera, senza addestramento
 congiunto: recupero, poi *prompt augmentation* verso un modello già istruito
 col post-training della sezione precedente; è proprio l'instruction tuning a
 rendergli eseguibile una consegna come «rispondi usando solo i passaggi e cita
-le fonti». I limiti però non cambiano: il recall del retriever è il **tetto**
-dell'intero sistema (ciò che non viene recuperato non può entrare nella
-risposta); il generatore può ignorare i passaggi o contraddirli, tanto che la
+le fonti». I limiti però non cambiano: il recall del retriever è il **tetto** di
+ciò che il sistema può dire in modo fondato e citabile (quel che non viene
+recuperato non può entrare nella risposta *a partire dai documenti*; il modello
+può sempre rispondere di suo, ma allora è tornato all'esame a libro chiuso, e
+senza dirlo); il generatore può ignorare i passaggi o contraddirli, tanto che la
 fedeltà alla fonte (*groundedness*) è oggi una metrica di valutazione a sé; e
 una citazione formalmente corretta non rende vera una risposta che ne travisa
 il contenuto.
@@ -351,7 +362,11 @@ che escono. La **similarità del coseno** è un modo di misurare quanto due punt
 della mappa del significato «puntano nella stessa direzione»: dà $1$ quando la
 direzione è identica, $0$ quando non hanno niente a che vedere, e valori
 intermedi in mezzo. Si legge come una percentuale di somiglianza, ed è tutto
-quel che serve per leggere l'uscita del programma.
+quel che serve per leggere l'uscita del programma. (Un avviso per chi poi
+sostituisce un encoder vero a questi numeri scritti a mano: qui le coordinate
+sono tutte positive e allora il coseno sta fra $0$ e $1$, ma in generale scende
+fino a $-1$, e i valori negativi vanno letti come «direzioni opposte», non come
+un guasto.)
 
 ```python
 import torch
@@ -408,19 +423,52 @@ L'output della ricerca merita un momento di attenzione:
 Il primo passaggio è quello giusto, con una somiglianza di $0{,}99$, cioè
 quasi perfetta. Ma guarda il secondo, che sta a $0{,}78$: parla di gatti, ed è
 per questo *vicino* alla domanda sulla mappa, eppure **non risponde**. È il
-quasi-pertinente, l'insidia tipica del retrieval denso: la vicinanza di tema
-non è pertinenza alla domanda. Nei
-sistemi reali è qui che interviene il reranker, e per questo la consegna nel
+quasi-pertinente, l'insidia tipica della ricerca per significato: la vicinanza
+di tema non è pertinenza alla domanda. Nei
+sistemi reali è qui che interviene un secondo lettore, più lento e più
+accurato, che riesamina uno per uno i pochi candidati e li rimette in ordine
+(si chiama **reranker**); e per questo la consegna nel
 prompt dice «usando *solo* i passaggi»: il generatore deve appoggiarsi al
 passaggio [1] e avere la disciplina di ignorare il [2].
 
 Da questo giocattolo a un sistema di produzione i passi sono pochi e tutti già
-nominati: al posto dei vettori scritti a mano, un bi-encoder addestrato alla
-DPR; al posto delle sei righe, milioni di passaggi ottenuti spezzando i
-documenti in blocchi (il *chunking*) e serviti da un indice ANN; al posto del
-`print` finale, la chiamata a un modello istruito. La struttura (codifica,
+nominati. Al posto dei vettori scritti a mano ci va un modello addestrato a
+produrli, con la ricetta della sigla di poco fa, DPR. Al posto delle sei righe
+ci vanno milioni di passaggi, ottenuti spezzando i documenti in blocchi (il
+*chunking*) e serviti da un indice che sa trovare i punti vicini su una mappa
+di milioni di punti senza confrontarli tutti: si accontenta dei quasi-vicini in
+cambio della velocità, e per questo si chiama **approssimato**. Al posto del
+`print` finale ci va la chiamata a un modello istruito. La struttura (codifica,
 coseno, top-$k$, prompt) è esattamente quella che hai appena eseguito.
 
+`````{tab} Elementare
+```{admonition} Da ricordare
+:class: important
+- Un modello da solo risponde **a libro chiuso**: quello che non ha in testa se
+  lo inventa in modo plausibile, e rifargli studiare il libro costa settimane.
+  Il recupero gli apre il libro.
+- **Cercare per parole** è il mestiere antico: l'**indice analitico** dice
+  subito in quali pagine compare una parola, senza doverle sfogliare tutte;
+  poi si ordinano i risultati dando più peso alle parole rare, contando le
+  ripetizioni sempre meno man mano che aumentano, e penalizzando i
+  documenti-fiume.
+- **Cercare per significato** è il mestiere nuovo: ogni passaggio diventa un
+  punto su una mappa dove le cose che vogliono dire cose simili stanno vicine,
+  e la domanda diventa un punto sulla stessa mappa. Vince sui sinonimi
+  («auto» trova «vettura»), perde sui codici e sui nomi esatti, dove serve la
+  parola precisa: per questo i sistemi seri usano tutti e due.
+- **Rispondere** avendo il testo sotto gli occhi si fa in due modi:
+  l'evidenziatore (la risposta è già scritta, basta sottolinearla) o la penna
+  (la risposta si compone con parole proprie, più libera e più rischiosa).
+- La **RAG** mette in fila le due cose: si cerca, si mettono i passaggi
+  trovati davanti al modello, e il modello risponde da lì, citando. **Attenua**
+  le risposte inventate ma non le elimina (se si apre la pagina sbagliata, la
+  risposta è sbagliata con tanto di fonte in bella vista); in cambio si può
+  verificare, e si aggiorna cambiando l'archivio invece del modello.
+```
+`````
+
+`````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
 - Un LLM da solo risponde **a libro chiuso**: ciò che non è nei pesi viene
@@ -442,3 +490,4 @@ coseno, top-$k$, prompt) è esattamente quella che hai appena eseguito.
   recall del retriever è il tetto), e offre citabilità e aggiornabilità;
   l'archivio si cambia, il modello no.
 ```
+`````

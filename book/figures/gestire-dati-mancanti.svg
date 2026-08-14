@@ -19,7 +19,7 @@
   <text x="140" y="293" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#B5532C">(e rischi un campione distorto)</text>
 
   <!-- Panel 2: imputa fisso -->
-  <text x="393" y="72" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#C9A961">2 · Imputa un valore fisso</text>
+  <text x="393" y="72" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#C9A961">2 · Riempi con un valore fisso</text>
   <g stroke="#1A1A1A" stroke-width="1.5">
     <rect x="303" y="90" width="60" height="34" fill="#F8F5EE"/><rect x="363" y="90" width="60" height="34" fill="#F8F5EE"/><rect x="423" y="90" width="60" height="34" fill="#F8F5EE"/>
     <rect x="303" y="124" width="60" height="34" fill="#F8F5EE"/><rect x="363" y="124" width="60" height="34" fill="#C9A961"/><rect x="423" y="124" width="60" height="34" fill="#F8F5EE"/>
@@ -30,7 +30,7 @@
   <text x="333" y="214" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="bold" fill="#1A1A1A">media</text>
   <text x="393" y="255" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A">ogni buco = stesso valore</text>
   <text x="393" y="275" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#C9A961">veloce e robusto,</text>
-  <text x="393" y="293" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#C9A961">ma appiattisce la varianza</text>
+  <text x="393" y="293" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#C9A961">ma riduce lo sparpagliamento</text>
 
   <!-- Panel 3: contesto -->
   <text x="633" y="72" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#2D5A5C">3 · Ricostruisci dal contesto</text>
@@ -49,5 +49,5 @@
   <text x="633" y="293" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#2D5A5C">ma più costoso</text>
 
   <rect x="50" y="322" width="673" height="40" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.5"/>
-  <text x="386" y="347" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A">Regola d'oro: qualunque strategia scegli, il fit dell'imputer avviene SOLO sul train set</text>
+  <text x="386" y="347" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A">Regola d'oro: il valore con cui riempi si calcola SOLO sui dati con cui il modello impara</text>
 </svg>

@@ -16,15 +16,19 @@ La domanda si chiama *sintesi di nuove viste*, ed è il rovescio esatto di
 quella della sezione precedente. Là partivamo dalle immagini per ricavare la
 geometria; qui vogliamo tornare alle immagini, da posizioni nuove. Per
 trent'anni la strada è stata una sola: ricostruire un modello tridimensionale
-(una superficie fatta di triangoli, con le fotografie incollate sopra come
-texture) e poi **renderizzarlo**, cioè calcolare che aspetto avrebbe visto da
-una certa posizione, con la grafica tradizionale. Funziona, e fallisce
-esattamente dove il mondo non è fatto di superfici nette: capelli, foglie,
-fumo, vetro, riflessi.
+(una superficie fatta di triangoli, con le fotografie incollate sopra come si
+incolla la carta da parati) e poi **renderizzarlo**, cioè calcolare che aspetto
+avrebbe visto da una certa posizione, con la grafica tradizionale. Funziona, e
+fallisce esattamente dove il mondo non è fatto di superfici nette: capelli,
+foglie, fumo, vetro, riflessi.
 
 Nel 2020 un articolo di sei autori di Berkeley, San Diego e Google propose di
 smettere di ricostruire l'oggetto e di **addestrare una funzione**
-{cite}`mildenhall2020nerf`. Il metodo si chiama **NeRF**, dall'inglese *neural
+{cite}`mildenhall2020nerf`. «Funzione», qui, vuol dire quello che vuol dire
+sempre: una macchinetta che riceve dei numeri e ne restituisce altri. La
+differenza è che nessuno la scrive, la si addestra, esattamente come si
+addestra una rete; anzi *è* una rete, solo piccola. Il metodo si chiama
+**NeRF**, dall'inglese *neural
 radiance field*, cioè «campo di radianza neurale»: *radianza* è il termine
 tecnico per la luce che parte da un punto in una certa direzione, e *campo*
 vuol dire che quel valore è definito in ogni punto dello spazio, come la
@@ -47,8 +51,11 @@ La scena diventa un oggetto che sa rispondere a quella domanda in ogni punto
 e per ogni direzione, e la risposta la dà una piccola rete neurale.
 
 Due conseguenze, che è il caso di sentire come strane prima di trovarle
-normali. La prima: **la scena non ha una risoluzione**. Puoi chiedere il
-colore in un punto qualsiasi, non c'è una griglia sotto. La seconda: la rete
+normali. La prima: **la scena non ha una risoluzione**. Puoi chiedere il colore
+in un punto qualsiasi, non c'è una griglia sotto. L'immagine che ne ricavi, sì:
+quella la disegni tu, con tutti i pixel che vuoi, e se ne vuoi il doppio fai il
+doppio di domande. È la differenza fra una fotografia, che ha i pixel che ha,
+e una formula, a cui puoi chiedere quanti valori ti pare. La seconda: la rete
 non è addestrata su altre scene e non "sa" cosa siano gli alberi o le sedie.
 **Viene addestrata su questa scena e su nient'altro**, a partire dalle foto
 che le hai dato, e quando hai finito quella rete *è* quella scena. Non è un
@@ -96,8 +103,10 @@ interrogare da punti di vista nuovi.
 ## Il rendering volumetrico, e perché è differenziabile
 
 Avere una funzione che risponde punto per punto non basta: bisogna trasformare
-quelle risposte in un'immagine. Il passaggio è la parte più importante di
-tutto il meccanismo, e non è una rete: è fisica ottocentesca.
+quelle risposte in un'immagine. Il passaggio è la parte più importante di tutto
+il meccanismo, e non è una rete: è fisica ottocentesca, e per la precisione la
+legge con cui la luce si spegne attraversando qualcosa di torbido, che porta i
+nomi di Beer e Lambert e ha quasi due secoli.
 
 Una parola del titolo conviene tradurla subito, perché è il perno di tutto il
 resto. **Differenziabile** vuol dire che di ogni numero in gioco si può sempre
@@ -145,8 +154,18 @@ densi, e si corregge la rete di conseguenza.
 L'addestramento è quindi banale da descrivere: rendi un pixel, confrontalo con
 la foto vera, misura la differenza, correggi. Ripeti per milioni di pixel
 presi a caso da tutte le foto. Nessuno ha mai detto alla rete dove stanno le
-superfici. La geometria compare da sola, perché è l'unica configurazione che
-mette d'accordo tutte le fotografie insieme.
+superfici: la geometria compare da sola.
+
+Vale la pena capire perché non ci sono scorciatoie. Una rete potrebbe cavarsela
+con **una** fotografia mettendo semplicemente un muro dipinto davanti
+all'obiettivo, e non avrebbe capito niente della scena. Ma quel muro, guardato
+dalla posizione della seconda fotografia, si vedrebbe di taglio, e non
+somiglierebbe a niente. Ogni fotografia in più esclude una montagna di
+soluzioni comode, e con qualche decina di fotografie prese tutt'attorno le
+sagome che le spiegano tutte insieme, senza contraddirne nemmeno una, sono
+sostanzialmente quelle vere. Non è una garanzia matematica, ed è per questo che
+sulle zone viste da una sola angolatura, o mai viste, questi metodi si
+inventano quello che vogliono.
 
 `````
 
@@ -214,29 +233,39 @@ campioni lì, perché spendere calcolo nell'aria vuota è sprecarlo.
 
 ## Perché serve la codifica posizionale
 
-C'è un dettaglio che, tolto, fa collassare il metodo in un'immagine sfocata. È
-lo stesso fenomeno che il capitolo sulle PINN descrive come limite delle reti
-sui fronti ripidi, e qui torna con la soluzione in mano.
+C'è un dettaglio che, tolto, fa collassare il metodo in un'immagine sfocata:
+le reti fanno una gran fatica a imparare tutto ciò che cambia in fretta da un
+punto all'altro. È lo stesso limite che il capitolo sulle PINN (le reti a cui
+si insegna una legge fisica) incontrerà davanti a quelle soluzioni che passano
+da un valore all'altro in uno spazio brevissimo, i cosiddetti *fronti ripidi*.
+Qui il problema torna, ma con la soluzione in mano.
 
 `````{tab} Elementare
 
-Una rete a strati densi, alimentata direttamente con le coordinate $(x, y,
-z)$, impara facilmente le cose che cambiano lentamente nello spazio e con
-enorme fatica quelle che cambiano in fretta. Un muro uniforme lo prende
-subito; il bordo netto fra il muro e la finestra, o la trama del legno, quasi
-mai. Il risultato è una scena giusta ma smarrita nella nebbia.
+Una rete alimentata direttamente con le coordinate $(x, y, z)$ impara
+facilmente le cose che cambiano lentamente nello spazio e con enorme fatica
+quelle che cambiano in fretta. Un muro uniforme lo prende subito; il bordo netto
+fra il muro e la finestra, o la trama del legno, quasi mai. Il risultato è una
+scena giusta ma smarrita nella nebbia.
 
 Il rimedio è sorprendente: invece di dare alla rete le coordinate, le si danno
 **molte onde di quelle coordinate**. Onde regolari come quelle disegnate su un
-sismografo (in matematica si chiamano seno e coseno), e a ogni passo se ne
-aggiunge una fitta il doppio della precedente. Due punti vicinissimi, che come numeri
-grezzi si somigliano quasi del tutto, sulle onde ad alta frequenza diventano
-subito diversi, e la rete può finalmente distinguerli.
+sismografo (in matematica si chiamano seno e coseno): la coordinata entra in
+un'onda e ne esce un numero fra $-1$ e $1$, che dice a che punto dell'onda si
+trova. Di onde se ne usano una decina, ciascuna fitta il doppio della
+precedente.
 
-È esattamente lo stesso trucco della codifica posizionale dei Transformer, che
-il libro ha già incontrato: là serviva a dare un'identità a posizioni in una
-frase, qui a dare un'identità a punti nello spazio. Stesso problema, stessa
-soluzione, due campi che non si parlavano.
+Il guadagno si vede con due numeri. I punti $0{,}30$ e $0{,}31$ sono quasi
+identici, e per la rete distinguerli è una tortura. Passati per l'onda più
+lenta restano quasi identici, come previsto. Ma passati per la decima, che è
+cinquecento volte più fitta, uno cade sulla cresta e l'altro nel cavo: due
+valori lontanissimi. La rete non deve più spaccare il capello, le basta
+guardare l'onda giusta.
+
+È esattamente lo stesso trucco che il capitolo sui Transformer chiamerà
+**codifica posizionale**: là serve a dare un'identità a ciascuna posizione
+dentro una frase, qui a darne una a ciascun punto dello spazio. Stesso
+problema, stessa soluzione, due campi che non si parlavano.
 
 `````
 
@@ -286,16 +315,24 @@ rete, e un'immagine ha un milione di pixel. Se la rete è grande, non si
 finisce più. L'idea che ha sbloccato tutto è stata smettere di chiedere alla
 rete di ricordare **anche dove stanno le cose**, e darle un aiuto.
 
-Invece di una rete grande che deve contenere in sé tutta la scena, si tiene
-accanto una tabella di appunti indicizzata per posizione, a più livelli di
-dettaglio, e alla rete si passa ciò che c'è scritto negli appunti vicini al
-punto richiesto. Gli appunti si imparano insieme ai pesi. Così la rete può
-essere minuscola, perché non deve più memorizzare: deve solo interpretare.
+Immagina di appoggiare sulla scena una griglia, e in ogni nodo della griglia un
+foglietto con sopra qualche numero. Quando si chiede il colore di un punto, non
+si costringe più la rete a ricordarsi tutto da sé: si vanno a leggere i
+foglietti dei nodi vicini, si mescolano fra loro secondo quanto sono vicini, e
+si passa alla rete il risultato. La rete deve solo interpretare quei numeri,
+non memorizzare la scena, e quindi può essere piccolissima.
 
-È lo stesso baratto che si incontra ovunque nell'informatica: memoria contro
-calcolo. Qui la memoria costa poco e il calcolo costava tantissimo, e
-spostare il peso da una parte all'altra ha accorciato l'addestramento di
-diversi ordini di grandezza.
+I numeri sui foglietti all'inizio sono a caso, e si imparano esattamente come
+si impara tutto il resto: si rende un pixel, si vede quanto è sbagliato e si
+corregge all'indietro fino ai foglietti, spostandoli un pochino. E le griglie
+non sono una sola ma una quindicina, dalla più larga alla più fitta, così che
+una sappia dov'è il tavolo e un'altra dove sono le venature del legno.
+
+È lo stesso baratto che si incontra ovunque nell'informatica: **memoria contro
+calcolo**, come tenere le tabelline scritte su un foglio invece di rifare la
+moltiplicazione ogni volta. Qui la memoria costa poco e il calcolo costava
+tantissimo, e spostare il peso da una parte all'altra ha accorciato
+l'addestramento di diversi ordini di grandezza.
 
 `````
 
@@ -306,7 +343,8 @@ multirisoluzione**: $L$ livelli di griglia a risoluzioni geometricamente
 crescenti, ciascuno con una tabella di vettori di feature addestrabili
 indicizzata da una funzione hash spaziale. Per un punto si interpolano
 trilinearmente i vettori degli otto vertici di ogni livello, si concatenano, e
-si dà il risultato a un MLP **molto** piccolo (due strati da 64 unità)
+si dà il risultato a due MLP **minuscoli**: uno per la densità, con un solo
+strato nascosto da 64 unità, e uno per il colore, con due
 {cite}`muller2022instant`.
 
 La parte controintuitiva è che le collisioni della tabella hash **non si
@@ -338,10 +376,12 @@ materia e la si proiettasse sullo schermo?
 È l'idea dello **splatting**: la scena si rappresenta come qualche milione di
 granelli sfumati, ciascuno con la sua posizione, la sua forma (schiacciata,
 allungata, orientata come serve), il suo colore e la sua trasparenza. Per fare
-un'immagine, si proietta ogni granello sullo schermo, si ordinano per
-profondità e si sovrappongono. Nessuna ricerca, nessun campionamento a vuoto,
-e le schede grafiche fanno questo tipo di lavoro da trent'anni: è il loro
-mestiere.
+un'immagine, si proietta ogni granello sullo schermo, si ordinano dal più
+vicino al più lontano e si sovrappongono in quell'ordine. L'ordine conta perché
+un granello davanti nasconde in parte quello dietro, ed è la stessa somma
+pesata di prima: chi viene prima conta pieno, chi viene dopo conta per quel che
+resta. Nessuna ricerca, nessun campionamento a vuoto, e le schede grafiche
+fanno questo tipo di lavoro da trent'anni: è il loro mestiere.
 
 Il risultato è che la scena si guarda in tempo reale, muovendosi liberamente,
 con la stessa qualità di prima. E l'addestramento resta quello di sempre:
@@ -396,8 +436,10 @@ geometriche, ma con la loss differenziabile del rendering neurale.
 Conviene dire con precisione che cosa è stato risolto, perché intorno a questi
 metodi la retorica è abbondante.
 
-**Cosa funziona.** Data una manciata di decine di fotografie di una scena
-statica, con pose note, si ottiene una rappresentazione che permette di
+**Cosa funziona.** Date da qualche decina a un centinaio di fotografie di una
+scena statica, cioè quello che si raccoglie girandoci attorno col telefono in
+un paio di minuti, e sapendo da dove sono state scattate, si ottiene una
+rappresentazione che permette di
 guardarla da punti di vista nuovi con realismo fotografico, comprese le
 trasparenze e i riflessi, in tempo reale, con qualche minuto di calcolo. Dieci
 anni fa era fantascienza.
@@ -434,10 +476,13 @@ stanno tutti dalla parte delle apparenze.
 
 ## In pratica: la composizione lungo un raggio
 
-Il cuore del metodo, la composizione volumetrica, sono cinque righe di NumPy e
-si può guardare da vicino senza addestrare niente. Costruiamo un raggio che
-attraversa sei metri di vuoto con una superficie opaca a quattro metri, e
-vediamo che cosa fanno i pesi.
+Il cuore del metodo, la somma pesata lungo il raggio, sono cinque righe di
+NumPy e si può guardare da vicino senza addestrare niente. Costruiamo un raggio
+che attraversa sei metri di vuoto con una superficie opaca a quattro metri, e
+guardiamo quanto conta ciascun punto. Attenzione a una parola che qui cambia
+mestiere: nel codice si chiamano **pesi** i numeri che dicono quanto ogni punto
+del raggio conta nel colore finale, e non hanno niente a che vedere con i pesi
+di una rete.
 
 ```python
 import numpy as np
@@ -470,30 +515,40 @@ print("massa con la nebbia:", round(float(pesi2.sum()), 4),
       "contro", round(float(pesi.max()), 4), "della superficie")
 ```
 
-Tre numeri da leggere con attenzione. La **massa dei pesi** vale $0{,}9975$:
-quasi tutta la luce viene fermata dalla superficie, e il $0{,}25\%$ che passa
-non è un errore di calcolo. È quanto resta davvero di un raggio dopo aver
-attraversato uno strato di quello spessore, e segue una legge fisica: la luce
-superstite cala di un fattore fisso per ogni tratto percorso, il che si scrive
-con l'esponenziale $e^{-\sigma \delta}$, dove $\sigma = 60$ è la densità del
-campione e $\delta = 0{,}1$ m il suo spessore. Qui il prodotto vale $6$, e
-$e^{-6} = 0{,}0025$.
+Tre numeri da leggere con attenzione.
 
-La **profondità attesa** vale $3{,}99$ m senza che nessuno abbia mai calcolato
-una profondità: è la **somma** delle distanze pesata dai $w_i$, ed è il modo in
-cui da un campo di radianza si estrae gratis una mappa di profondità. Non viene
-esattamente quattro, e la ragione merita di essere detta: i pesi sommano a
-$0{,}9975$ e non a uno, quindi quella somma resta un filo corta. Dividendola
-per la massa dei pesi si ottiene esattamente $4{,}00$ m, cioè dove la
-superficie sta davvero. È per questo che in pratica le mappe di profondità si
-normalizzano: dove la scena è semitrasparente, non farlo le accorcia
-sistematicamente.
+**Quanto conta, in tutto, il raggio?** Se si sommano i pesi di tutti i sessanta
+punti viene $0{,}9975$: la superficie ferma il $99{,}75\%$ della luce e il
+restante quarto di punto percentuale passa oltre. Non è un errore di calcolo, è
+fisica. La luce che attraversa qualcosa di torbido non si spegne di colpo: cala
+di una frazione fissa per ogni tratto percorso, e dopo tanti tratti ne resta
+sempre un pochino, mai esattamente zero. Il conto lo si può rifare. La densità
+del campione è $60$ e il suo spessore $0{,}1$ metri, e il loro prodotto,
+$60 \times 0{,}1 = 6$, dice quante volte la luce viene tagliata. Ogni taglio la
+riduce a $0{,}368$ di quel che era, e sei tagli la riducono a $0{,}368$
+moltiplicato per sé stesso sei volte, che fa $0{,}0025$: un quattrocentesimo.
+Quello che passa.
 
-Nel caso della nebbia, infine, il picco dei
-pesi vale $0{,}044$ contro $0{,}9975$: i pesi si spalmano lungo tutto il
-raggio invece di concentrarsi, che è esattamente la firma numerica di
-"nessuna superficie qui", e la ragione per cui questi metodi rendono bene il
-fumo e la foschia, dove una mesh non saprebbe che pesci pigliare.
+**A che distanza sta la superficie?** Il codice non l'ha mai calcolato, eppure
+lo sa: basta fare la media delle distanze dei sessanta punti pesandole per
+quanto ciascun punto conta. I punti che contano zero non spostano niente, quello
+sulla superficie si prende tutto, e viene $3{,}99$ metri. È così che da un campo
+di radianza esce **gratis** anche una mappa di profondità.
+
+Non viene esattamente quattro, e la ragione merita di essere detta perché è un
+errore che si fa davvero. I pesi sommano a $0{,}9975$ e non a uno, quindi non
+è ancora una media: è una somma. Per farne una media va divisa per il totale dei
+pesi, e $3{,}99 / 0{,}9975$ dà esattamente $4{,}00$ metri, cioè dove la
+superficie sta davvero. Chi salta quella divisione ottiene mappe di profondità
+sistematicamente più corte del vero, e tanto più corte quanto più la scena è
+semitrasparente.
+
+**E se non c'è nessuna superficie?** Nel caso della nebbia il punto che conta
+di più conta $0{,}044$, contro lo $0{,}9975$ di prima: nessuno comanda, il
+contributo si spalma su tutto il raggio. È la firma numerica di «qui non c'è un
+muro, c'è del torbido», ed è la ragione per cui questi metodi rendono bene il
+fumo e la foschia, dove una superficie fatta di triangoli non saprebbe che
+pesci pigliare.
 
 `````{tab} Elementare
 

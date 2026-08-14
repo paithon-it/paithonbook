@@ -31,7 +31,7 @@ parola da scrivere, e quale accorgimento di ingegneria rende la generazione
 sostenibile. Tra il gioco di Shannon e GPT-3 c'è un gradino intermedio che
 vale la pena nominare: GPT-2 {cite}`radford2019language`, 1,5 miliardi di
 parametri addestrati nel 2019 su pagine web segnalate dagli utenti di Reddit,
-il cui titolo era già un manifesto; *i modelli di linguaggio sono studenti
+il cui titolo era già un manifesto: *i modelli di linguaggio sono studenti
 multitask senza supervisione*.
 
 ## Una biblioteca sterminata: il pretraining su scala web
@@ -81,7 +81,11 @@ $$
 
 dove $x_t$ è il token in posizione $t$, $p_\theta$ è la distribuzione prodotta
 dal Transformer con parametri $\theta$ (softmax sull'intero vocabolario) e la
-somma corre sugli $n$ token del corpus. È la stessa `nn.CrossEntropyLoss` dei
+somma corre sugli $n$ token del corpus. Quando servirà la loss **per token**,
+cioè la stessa quantità divisa per $n$, la scriveremo $\bar{\mathcal{L}} =
+\mathcal{L}/n$: la distinzione sembra pedanteria e non lo è, perché più avanti
+la perplessità si calcola mettendo all'esponente proprio quella, e chi confonde
+le due sbaglia di un fattore $n$. È la stessa `nn.CrossEntropyLoss` dei
 capitoli precedenti, applicata a un problema di classificazione con decine di
 migliaia di classi (le parole possibili) ripetuto miliardi di volte. Nessuna
 etichetta umana: per questo si parla di apprendimento **auto-supervisionato**.
@@ -98,7 +102,10 @@ risorse, e hanno trovato curve così regolari da chiamarle **leggi di scala**.
 
 `````{tab} Elementare
 La ricetta di un modello di linguaggio ha tre ingredienti: la **taglia del
-modello** (quante manopole interne ha da regolare), la **quantità di testo**
+modello** (quante manopole interne ha da regolare: sono i numeri che
+l'addestramento sposta un'inezia alla volta, e chiamarle **parametri** è il
+modo in cui le si trova scritte ovunque, «un modello da sette miliardi» vuol
+dire sette miliardi di manopole), la **quantità di testo**
 su cui studia, e il **calcolo** (quante ore di computer può bruciare). La
 scoperta del 2020 {cite}`kaplan2020scaling` è che aumentando gli ingredienti
 la qualità migliora in modo *prevedibile*: niente salti misteriosi, una curva
@@ -108,36 +115,45 @@ qualche punto percentuale. La seconda scoperta, del 2022
 {cite}`hoffmann2022training`, è che gli ingredienti vanno **bilanciati**: è
 inutile fare una torta con dieci uova e un cucchiaio di farina. La regola
 pratica emersa (detta "di Chinchilla", dal nome del modello) è circa **20
-parole di studio per ogni manopola del modello**. Molti modelli dell'epoca
+pezzi di testo per ogni manopola del modello**, contati in quei mattoncini di
+poco fa, i token, non in parole. Molti modelli dell'epoca
 erano enormi ma avevano studiato troppo poco: un modello *quattro volte più
-piccolo*, fatto studiare quattro volte di più a parità di calcolo totale, li
-batteva. Da allora "più grande" non basta più: conta il rapporto tra modello e
-dati.
+piccolo*, fatto studiare quasi cinque volte di più a parità di calcolo totale,
+li batteva. Da allora "più grande" non basta più: conta il rapporto tra modello
+e dati.
 `````
 
 `````{tab} Superiore
-Kaplan e colleghi {cite}`kaplan2020scaling` osservano che la loss di test
-segue leggi di potenza in ciascuna delle tre risorse, quando le altre due non
-fanno da collo di bottiglia:
+Kaplan e colleghi {cite}`kaplan2020scaling` osservano che la loss di test **per
+token**, cioè la $\bar{\mathcal{L}}$ di poco fa, segue leggi di
+potenza in ciascuna delle tre risorse, quando le altre due non fanno da collo
+di bottiglia:
 
 $$
-L(N) \approx \left(\frac{N_c}{N}\right)^{\alpha_N}, \qquad
-L(D) \approx \left(\frac{D_c}{D}\right)^{\alpha_D}, \qquad
-L(C_{\min}) \propto C_{\min}^{-\alpha_C^{\min}},
+\bar{\mathcal{L}}(N) \approx \left(\frac{N_c}{N}\right)^{\alpha_N}, \qquad
+\bar{\mathcal{L}}(D) \approx \left(\frac{D_c}{D}\right)^{\alpha_D}, \qquad
+\bar{\mathcal{L}}(C_{\min}) \approx
+\left(\frac{C_c}{C_{\min}}\right)^{\alpha_C^{\min}},
 $$
 
 dove $N$ è il numero di parametri (esclusi gli embedding), $D$ il numero di
 token di addestramento, $C_{\min}$ il calcolo **speso in modo ottimo** fra
 modello e dati (che è la grandezza per cui gli autori raccomandano di fare
 previsioni: la curva a batch size fissato ha un esponente suo, $\approx
-0{,}057$), $N_c$ e $D_c$ costanti di normalizzazione, e gli esponenti misurati
+0{,}057$), $N_c$, $D_c$ e $C_c$ costanti di normalizzazione, e gli esponenti
+misurati
 valgono $\alpha_N \approx 0{,}076$, $\alpha_D \approx 0{,}095$,
 $\alpha_C^{\min} \approx 0{,}050$. Esponenti piccoli: raddoppiare il calcolo,
 speso bene, riduce
 la loss di circa il 3,4% ($2^{-0{,}050} \approx 0{,}966$), poco, ma con
 sorprendente affidabilità su molti ordini di grandezza, il che permette di
 *estrapolare*: si può stimare la loss di un modello da miliardi di parametri
-addestrando modelli da milioni.
+addestrando modelli da milioni. Un'avvertenza sulla forma: scritte così le tre
+leggi mandano la loss a **zero** ingrandendo abbastanza, il che è falso. Valgono
+dentro il regime misurato, e la forma completa che si usa per estrapolare
+davvero somma un termine costante irriducibile, l'entropia del linguaggio
+stesso, che nessuna quantità di parametri toglie di mezzo: è quella che
+Hoffmann e colleghi usano nel paragrafo qui sotto.
 
 Hoffmann e colleghi {cite}`hoffmann2022training` correggono la conclusione
 operativa di Kaplan (che suggeriva di privilegiare $N$): rifacendo le misure
@@ -261,10 +277,12 @@ Il modello produce per ogni token del vocabolario un punteggio grezzo (il
 probabilità:
 
 $$
-p_i = \frac{\exp(z_i / T)}{\sum_{j=1}^{|V|} \exp(z_j / T)},
+p_i = \frac{\exp(z_i / T)}{\sum_{j=1}^{|\mathcal{V}|} \exp(z_j / T)},
 $$
 
-dove $|V|$ è la dimensione del vocabolario e $T > 0$ scala i logit prima
+dove $|\mathcal{V}|$ è la dimensione del vocabolario (il calligrafico distingue
+l'insieme delle parole possibili dalla matrice $\mathbf{V}$ dei *value*), e
+$T > 0$ scala i logit prima
 della normalizzazione: per $T \to 0$ la distribuzione collassa sul massimo
 (si torna alla scelta greedy), per $T \to \infty$ tende all'uniforme.
 Esempio numerico completo con quattro parole e logit
@@ -289,8 +307,8 @@ più piccolo insieme di token (il *nucleo*) la cui probabilità cumulata
 raggiunge la soglia $p$:
 
 $$
-V_p = \text{il più piccolo } V' \subseteq V \text{ tale che }
-\sum_{i \in V'} p_i \ge p,
+\mathcal{V}_p = \text{il più piccolo } \mathcal{V}' \subseteq \mathcal{V} \text{ tale che }
+\sum_{i \in \mathcal{V}'} p_i \ge p,
 $$
 
 ordinando per probabilità decrescente. Con $p=0{,}9$ e $T=1$: la cumulata fa
@@ -328,7 +346,11 @@ C'è un dettaglio pratico che a prima vista sembra un disastro. La generazione
 prodotto rientra come input e si ricomincia. Ma allora, per ogni nuovo token,
 il Transformer dovrebbe rileggere *tutta* la sequenza, e i conti
 dell'attenzione sul prefisso sarebbero sempre gli stessi, rifatti da capo a
-ogni passo. Nessun sistema reale lavora così: tutti usano la **KV cache**.
+ogni passo. Nessun sistema reale lavora così: tutti usano la **KV cache**. Il
+nome dice già tutto, una volta sciolto: K e V sono la *key* e il *value* della
+sezione sull'attenzione, cioè l'etichetta con cui ogni parola si fa trovare e
+l'informazione che consegna; *cache* è la dispensa dove si tiene a portata di
+mano quello che si è già preparato.
 
 `````{tab} Elementare
 Quando leggi un romanzo, non ricominci da pagina 1 ogni volta che ne giri una:
@@ -355,9 +377,12 @@ prefisso; al passo $t$ si calcolano solo
 $\mathbf{q}_t, \mathbf{k}_t, \mathbf{v}_t$ del token nuovo, si appendono
 $\mathbf{k}_t, \mathbf{v}_t$ alla cache e si valuta l'attenzione di
 $\mathbf{q}_t$ contro le $t$ chiavi
-accumulate: costo $O(t\,d + d^2)$ per passo, invece dell'$O(t^2 d + t\,d^2)$ di
+accumulate: costo $O(t\,d + d^2)$ per passo **e per strato**, invece
+dell'$O(t^2 d + t\,d^2)$ di
 un forward rifatto da capo sul prefisso. Sull'intera generazione di $n$ token il
-totale scende da $O(n^3 d + n^2 d^2)$ a $O(n^2 d + n\,d^2)$.
+totale per strato scende da $O(n^3 d + n^2 d^2)$ a $O(n^2 d + n\,d^2)$; per il
+modello intero si moltiplica per gli $L$ strati, ed è la forma con cui vanno
+lette le percentuali del capoverso seguente.
 
 I due termini vanno tenuti distinti, perché è facile portarsi via la morale
 sbagliata. Il termine quadratico è quello dell'attenzione ed è ineliminabile,
@@ -407,8 +432,9 @@ L'osservazione di {numref}`fig-gpt2-multitask` precede GPT-3 e ne spiega la
 premessa. Se il corpus è abbastanza vasto, contiene già esempi impliciti di
 quasi ogni compito linguistico, e un modello che lo prevede bene ha dovuto,
 per forza, imparare a farli. Vale la pena soffermarsi su quanto è strano. Per
-tutto il libro, "adattare un modello" ha significato addestrarlo:
-retropropagazione, gradienti, epoche. Qui no: il compito viene *descritto in
+tutto il libro, "adattare un modello" ha significato addestrarlo, cioè
+mostrargli esempi, misurare quanto sbaglia e spostargli i numeri interni
+un'inezia alla volta, per giorni. Qui no: il compito viene *descritto in
 italiano* (o in inglese), e il modello, completando il testo nel modo più
 probabile, di fatto lo esegue. Il prompt è diventato un'interfaccia di
 programmazione in linguaggio naturale: si "programma" il modello scrivendo, e
@@ -442,18 +468,27 @@ numero della sezione che si può spiegare senza aggiungere niente: è la misura
 che il pretraining minimizza direttamente, e resta il termometro più affidabile
 della qualità *come modello di linguaggio*.
 
+Chi legge al livello Elementare può saltare il capoverso che segue e riprendere
+dopo: dice in formule la stessa cosa del dado, più un errore di conto in cui
+cascano in molti.
+
 In formula, con la stessa definizione del capitolo di matematica e di quello
 sull'NLP, la perplessità è $2^H$, dove $H$ è la cross-entropia media per token
-**espressa in bit**. La parola «bit» non è un vezzo: la loss scritta all'inizio
-di questa sezione usa il logaritmo naturale ed è una somma sugli $n$ token,
-quindi la stessa quantità si scrive $e^{\mathcal{L}/n}$, e chi mette
-$\mathcal{L}/n$ all'esponente di 2 sbaglia di un fattore $\log_2 e = 1{,}4427$.
+**espressa in bit**. La parola «bit» non è un vezzo, ed è il punto in cui si
+sbaglia: la loss di questa sezione usa il logaritmo naturale, quindi la loss
+per token $\bar{\mathcal{L}}$ è in *nat* e non in bit.
+Per passare dagli uni agli altri si moltiplica per $\log_2 e = 1{,}4427$, cioè
+$H = \bar{\mathcal{L}}/\ln 2$, e la perplessità si scrive allora più comodamente
+$e^{\bar{\mathcal{L}}}$. Chi invece mette $\bar{\mathcal{L}}$ tale e quale
+all'esponente di 2 sta usando un esponente più piccolo del dovuto di quel
+fattore, e ottiene la perplessità vera elevata a $\ln 2 = 0{,}693$: su una
+perplessità di 20 ne stampa 8.
 
 Ma nemmeno la perplessità dice quasi nulla di ciò che interessa a chi il modello
 lo usa: sa rispondere a domande di diritto? Sa tradurre? Per questo si
 affiancano batterie di test standardizzati, i **benchmark**: il più citato è
-stato a lungo MMLU (Hendrycks e colleghi, 2021), domande a scelta multipla su
-57 materie, dal diritto alla fisica.
+stato a lungo MMLU {cite}`hendrycks2021measuring`, cinquantasette materie di
+domande a scelta multipla, dal diritto alla fisica.
 
 I benchmark vanno però letti con un sospetto specifico: la **contaminazione**
 dei dati di test.
@@ -515,8 +550,9 @@ progresso graduale in un miracolo apparente.**
 
 `````{tab} Superiore
 
-Le abilità emergenti sono state documentate da Wei e colleghi (2022); la
-critica del *miraggio* è di Schaeffer, Miranda e Koyejo (2023).
+Le abilità emergenti sono state documentate da Wei e colleghi
+{cite}`wei2022emergent`; la critica del *miraggio* è di Schaeffer, Miranda e
+Koyejo {cite}`schaeffer2023emergent`.
 
 L'argomento è preciso. Se l'errore per token cala regolarmente con la scala
 (come le leggi di potenza della sezione precedente predicono), l'accuratezza
@@ -605,7 +641,7 @@ for _ in range(8):
 
 print(" ".join(vocab[i] for i in sequenza))
 # testo sgrammaticato, ovviamente: il "modello" è un generatore casuale.
-# Ma il ciclo - forward, campiona, appendi, ripeti - è quello vero.
+# Ma il ciclo (forward, campiona, appendi, ripeti) è quello vero.
 ```
 
 Sostituisci `modello_giocattolo` con un Transformer addestrato e hai, per
@@ -626,6 +662,35 @@ passaggio costa: la bolletta di ogni singola parola sale insieme alla taglia. A
 meno di non fare in modo che ogni parola ne attraversi solo un pezzetto, che è
 esattamente l'idea della sezione seguente.
 
+`````{tab} Elementare
+```{admonition} Da ricordare
+:class: important
+- Un grande modello linguistico gioca il **gioco di Shannon** su scala
+  industriale: coprire l'ultima parola di una frase vera e provare a
+  indovinarla, miliardi di volte, su una biblioteca raccolta dal web e
+  ripulita. Nessuno gli corregge i compiti: la soluzione era già nel testo.
+- Più **manopole** interne, più testo da leggere e più ore di calcolo danno un
+  modello migliore, e in modo prevedibile. Ma gli ingredienti vanno
+  **bilanciati**, e la regola pratica è una ventina di pezzi di testo per ogni
+  manopola: «quanto è grande?», da sola, ha smesso di essere una domanda
+  sensata.
+- Per scrivere, il modello **non** prende sempre la parola più probabile:
+  verrebbe un testo noioso, che si incarta a ripetere sé stesso. Tira un dado,
+  e tre manopole decidono quanto quel dado è truccato (la **temperatura**) e
+  quante carte restano nel mazzo da cui pescare (il **top-k** e il **top-p**).
+- Il **segnalibro** evita di rileggere tutto da capo a ogni parola: gli appunti
+  già presi restano in memoria. Si risparmia tempo e si paga in spazio, ed è
+  uno dei motivi per cui le conversazioni lunghe costano.
+- Il **prompt** è un modo di programmare scrivendo: potente e fragile insieme.
+  E i punteggi dei test vanno letti sapendo che un modello che ha studiato
+  tutto il web potrebbe aver già visto le domande.
+- Quello che esce da tutto questo è un **completatore** di testo, non un
+  assistente: per quello serve una seconda fase, ed è la sezione sul
+  post-training.
+```
+`````
+
+`````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
 - Un LLM gioca il gioco di Shannon su scala industriale: **cross-entropia sul
@@ -648,3 +713,4 @@ esattamente l'idea della sezione seguente.
 - Il pretraining produce un completatore, non un assistente: per quello serve
   il post-training.
 ```
+`````

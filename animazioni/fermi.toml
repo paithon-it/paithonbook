@@ -12,3 +12,27 @@
 #     [nome-animazione]          # il nome del file, senza estensione
 #     istanti = [0.05, 0.45, 0.95]
 #     # perche': una riga che dica cosa non andava con i default
+
+[vetrina-si-ordina]
+istanti = [0.142, 0.392, 0.90]
+# perche': al 10% il primo confronto e' a meta' scatto e il libro che sale sta
+# sopra quello che scavalca, sovrapposti; al 14,2% lo scatto e' finito e si
+# legge la vetrina nuova. Il secondo fermo va al confronto 4 e non a meta' del
+# ciclo perche' e' quello che porta lo sbaglio (il negativo pescato e' un libro
+# che sarebbe piaciuto), cioe' la cosa che in stampa non si vedrebbe piu'.
+
+[gan-inseguimento]
+istanti = [0.03, 0.45, 0.88]
+# perche': le sette pose durano un settimo di ciclo ciascuna e fra l'una e
+# l'altra c'e' una dissolvenza in cui non si vede nessuna delle due. Il 10%
+# cade proprio li': il primo fermo mostrava la sola campana dei dati veri,
+# senza generatore e senza verdetto, cioe' tutto tranne l'inseguimento che la
+# clip racconta. I tre istanti nuovi cadono dentro la sosta della prima, della
+# quarta e dell'ultima posa.
+
+[broadcasting-si-stende]
+istanti = [0.25, 0.50, 0.90]
+# perche': al 10% la copia della riga e' ancora sopra la riga vera, quindi il
+# fermo immagine mostra una griglia vuota mentre la didascalia dice che la riga
+# si sta stendendo. Al 25% la copia e' scesa di una riga e la prima ha gia' le
+# sue letture: si vede il movimento, che e' il motivo per cui la clip esiste.

@@ -201,15 +201,25 @@ $\eta=0{,}1$, $\eta=1$ o $\eta=7{,}3$ non cambia nemmeno una predizione.
 Diventerà una scelta vera nel capitolo sulla backpropagation, dove la
 correzione non sarà più proporzionale all'errore ma al gradiente di una loss.
 
-Rosenblatt dimostrò il **teorema di convergenza del percettrone**: se i dati
-sono linearmente separabili, l'algoritmo trova in un numero finito di passi un
-iperpiano che li separa. Il teorema dice di più di quanto sembri, nella forma
-che si deve a Novikoff {cite}`novikoff1962convergence`: il numero di correzioni
-è al più $(R/\gamma)^2$, dove $R = \max_i \lVert\mathbf{x}_i\rVert$ è la norma
-massima degli esempi e $\gamma$ il margine del miglior separatore. In quel
-limite **non compaiono né il numero di esempi né la dimensione**: quel che conta
-è quanto è sottile il corridoio fra le due classi, e raddoppiare il dataset non
-raddoppia il lavoro. E non dice l'altra metà: l'iperpiano trovato è uno
+C'è poi il **teorema di convergenza del percettrone**: se i dati sono
+linearmente separabili, l'algoritmo trova in un numero finito di passi un
+iperpiano che li separa. Rosenblatt lo dimostra in *Principles of
+Neurodynamics* (1962) {cite}`rosenblatt1962principles`, non nell'articolo del
+1958 che presenta il modello. Il teorema dice di più di quanto sembri, nella
+forma che si deve a Novikoff {cite}`novikoff1962convergence`: il numero di
+correzioni è al più $(R/\gamma)^2$, dove $R = \max_i \lVert\mathbf{x}_i\rVert$ è
+la norma massima degli esempi e $\gamma$ il margine **geometrico** del miglior
+separatore, cioè la distanza fra quell'iperpiano e il punto più vicino
+($\gamma = \min_i |\mathbf{w}^{*\top}\mathbf{x}_i|$ con
+$\lVert\mathbf{w}^*\rVert = 1$: senza quel vincolo il rapporto non sarebbe
+nemmeno un numero puro, perché basterebbe raddoppiare $\mathbf{w}^*$ per
+raddoppiare $\gamma$). Il limite vale per la versione **senza bias**, o con il
+bias assorbito come ingresso costante: è il trucco della
+{numref}`fig-neurone-con-retroazione`, l'ingresso sempre pari a $1$, e serviva
+proprio qui (assorbito il bias, quella coordinata in più entra anche in $R$). In
+quel limite **non compaiono né il numero di esempi né la dimensione**: quel che
+conta è quanto è sottile il corridoio fra le due classi, e raddoppiare il
+dataset non raddoppia il lavoro. E non dice l'altra metà: l'iperpiano trovato è uno
 qualunque fra quelli che separano, senza alcuna garanzia di margine, che è
 esattamente la differenza con le SVM del capitolo precedente. Il seme
 dell'apprendimento moderno è già qui, anche se la discesa del gradiente su loss
@@ -230,7 +240,7 @@ def addestra(X, y, eta=0.1, epoche=10):
     b = 0.0
     for _ in range(epoche):
         for xi, target in zip(X, y):
-            pred = gradino(w @ xi + b)      # prodotto scalare + bias
+            pred = gradino(w @ xi + b)      # somma pesata + bias
             errore = target - pred
             w += eta * errore * xi          # aggiorna i pesi
             b += eta * errore               # aggiorna il bias
@@ -313,23 +323,66 @@ del modello.
 
 Vale la pena lanciare `addestra` su `y_xor = np.array([0, 1, 1, 0])` e guardare
 che cosa succede, perché quello che si vede non è quello che ci si aspetta. Non
-converge, e fin qui è ovvio; ma nemmeno diverge, e nemmeno vaga. Dalla seconda
-epoca in poi tutti e quattro gli esempi vengono sbagliati, tutti e quattro
-producono una correzione, e le quattro correzioni **si annullano fra loro**:
-alla fine di ogni epoca i parametri sono tornati esattamente dov'erano
-($\mathbf{w} = (-0{,}1,\ 0)$, $b = 0$), e l'uscita stampata è `[1 1 0 0]` alla
-decima epoca come alla centesima. Da fuori una risposta immobile e sbagliata
-(due casi su quattro), da dentro un ciclo. Non è un caso fortunato: è il
-*perceptron cycling theorem*, enunciato nello stesso *Perceptrons* e dimostrato
-per intero da Block e Levin {cite}`block1970boundedness`, che su dati non
-separabili garantisce almeno che i pesi restino limitati.
+converge, e fin qui è ovvio; ma nemmeno diverge, e nemmeno vaga. Le prime due
+epoche sbagliano tre esempi su quattro; dalla **terza** in poi li sbagliano
+tutti e quattro, tutti e quattro producono una correzione, e le quattro
+correzioni **si annullano fra loro**: alla fine di ogni epoca i parametri sono
+tornati esattamente dov'erano ($\mathbf{w} = (-0{,}1,\ 0)$, $b = 0$), e l'uscita
+stampata è `[1 1 0 0]` alla decima epoca come alla centesima.
+
+Le quattro correzioni si seguono sul foglio, e conviene farlo perché è il modo
+più rapido per convincersi che il ciclo non è un caso fortunato. Si parte da
+$\mathbf{w} = (-0{,}1,\ 0)$ e $b = 0$. Il primo esempio, $(0,0)$, riceve $1$ e
+doveva ricevere $0$: la correzione tocca **solo il bias**, perché ogni peso si
+muove in proporzione al proprio ingresso e qui gli ingressi valgono zero, e $b$
+scende a $-0{,}1$. Il secondo, $(0,1)$, e il terzo, $(1,0)$, ricevono $0$ e
+dovevano ricevere $1$: ciascuno alza di $0{,}1$ il peso del proprio ingresso
+acceso, e ciascuno rialza il bias. Il quarto, $(1,1)$, riceve $1$ e doveva
+ricevere $0$: riabbassa entrambi i pesi e riporta il bias dov'era. Fine
+dell'epoca, e siamo al punto di partenza. Da fuori una risposta immobile e
+sbagliata (due casi su quattro), da dentro un ciclo. Non è un caso fortunato: è
+il *perceptron cycling theorem*, enunciato nello stesso *Perceptrons* e
+dimostrato per intero da Block e Levin {cite}`block1970boundedness`, che su dati
+non separabili garantisce almeno che i pesi restino limitati.
 
 `````
 
 ### Che cosa dimostra davvero *Perceptrons*
 
-Lo XOR è il ricordo che è rimasto, ma non è il risultato. Nel libro il
-percettrone non è il neurone di poco fa: è una somma pesata di **predicati**
+Lo XOR è il ricordo che è rimasto, ma non è il risultato.
+
+`````{tab} Elementare
+
+Nel libro il percettrone non è il neurone di poco fa. Immagina una fotografia e
+una squadra di ispettori: ciascuno può guardare **solo qualche punto**
+dell'immagine e risponde sì o no, poi un capo raccoglie le risposte, dà a
+ognuna un peso, somma e decide. La domanda dei teoremi non è se la squadra ce la
+fa, ma **quanti punti deve guardare in una volta sola l'ispettore più affamato**:
+quel numero si chiama **ordine**, e misura quanto il problema si lascia dividere
+in pezzetti.
+
+C'è un compito in cui va malissimo: dire se i punti accesi sono in numero pari o
+dispari. Qui nessun ispettore può accontentarsi della propria zona, perché
+accendere o spegnere un punto qualunque, in un angolo qualunque, ribalta la
+risposta: per rispondere bisogna guardare l'immagine intera in un colpo solo, e
+l'ordine è grande quanto l'immagine. Un altro compito difficile è dire se una
+figura disegnata è tutta d'un pezzo o spezzata in due: più la figura è grande,
+più punti bisogna guardare insieme.
+
+Lo XOR è il caso più piccolo del primo compito, la parità con due punti soli, ed
+è anche per questo che è rimasto nella memoria di tutti: si disegna su un foglio
+in un secondo. Ma è la punta di una famiglia, e la conclusione vera è più
+interessante di un impossibile. Non «una riga non basta», bensì **questo modo di
+costruire le caratteristiche non scala**: funziona sui casi piccoli e diventa
+impraticabile appena il problema cresce, che è un difetto peggiore, perché non
+si vede finché non si prova a ingrandire.
+
+`````
+
+`````{tab} Superiore
+
+Nel libro il percettrone non è il neurone di poco fa: è una somma pesata di
+**predicati**
 qualsiasi, ciascuno dei quali però può guardare solo un pezzetto dell'immagine
 in ingresso, e il numero di punti che il predicato più affamato deve guardare si
 chiama **ordine**. I teoremi sono su quello. Il più celebre dice che per
@@ -341,6 +394,8 @@ due, il numero di punti da guardare insieme cresce con la figura. Lo XOR è la
 parità a due bit, cioè il caso più piccolo di una famiglia: non un impossibile,
 ma il primo gradino di un costo che esplode. Il messaggio non era "una retta non
 basta", era "questo modo di costruire le caratteristiche non scala".
+
+`````
 
 E sulle reti a più strati, cioè sulla cosa per cui il libro è stato usato come
 condanna, *Perceptrons* non dimostra niente, e lo dichiara: parla di un
@@ -365,6 +420,24 @@ schiaccerebbero in un unico strato, con la sua unica riga dritta, di nuovo
 incapace di XOR. È qui che entrano funzioni come la ReLU o la sigmoide, e con
 esse il percettrone multistrato (MLP) e l'algoritmo che lo addestra, la
 *backpropagation*: il tema delle prossime due sezioni.
+
+La {numref}`fig-xor-si-piega` fa vedere il passaggio per intero, ed è la
+risposta che aspettavamo da tre pagine: lo XOR risolto.
+
+```{figure} ../figures/xor-si-piega.svg
+:name: fig-xor-si-piega
+:alt: "Due pannelli affiancati. A sinistra i quattro casi dello XOR agli angoli del quadrato unitario, in terracotta i due con uscita 1 e in teal i due con uscita 0, tagliati da due rette parallele, i due neuroni nascosti, che lasciano in mezzo una fascia con i soli punti terracotta. A destra gli stessi quattro punti si spostano nelle coordinate calcolate da quei neuroni: i due terracotta finiscono esattamente nello stesso posto e i due teal ai lati opposti, e a quel punto una sola retta li separa."
+:width: 95%
+
+Il seguito della {numref}`fig-xor-non-separabile`, cioè lo XOR risolto. Il
+primo strato sono due neuroni, quindi **due** rette invece di una, e la fascia
+che lasciano in mezzo contiene i due casi con uscita $1$. A destra ogni punto è
+ridisegnato nelle coordinate $(h_1, h_2)$ che quei due neuroni calcolano: i due
+casi con uscita $1$ finiscono nello stesso posto, i due con uscita $0$ ai lati
+opposti, e lì il neurone di uscita li separa con una retta sola. I pesi non
+sono scelti a mano: il generatore esegue la rete sui quattro ingressi e
+verifica che risponda $0, 1, 1, 0$.
+```
 
 `````{tab} Elementare
 

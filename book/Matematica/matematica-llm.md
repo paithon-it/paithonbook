@@ -5,12 +5,12 @@ decenni passati fra sistemi non lineari, statistica e linguistica. Quando si
 siede a leggere la letteratura sui modelli linguistici è ragionevolmente
 convinto che gli basterà. Non gli basta, e non per la matematica: per i nomi.
 «Un token non è una *query*. I linguisti non parlano di *chiavi*. Che cos'è
-una *testa*?». Il documento che scrive per rimediare
-{cite}`breeden2026simple` ricostruisce gli stessi modelli usando soltanto
-parole di matematica e di statistica, e alla fine osserva che il muro non era
-il contenuto: era il vocabolario preso in prestito da mestieri diversi (le
-basi di dati, le scienze cognitive, l'elettrotecnica) e appiccicato sopra a
-operazioni che avevano già un nome.
+una *testa*?». Il documento che scrive per rimediare ricostruisce gli stessi
+modelli usando soltanto parole di matematica e di statistica
+{cite}`breeden2026simple`, e alla fine osserva che il muro non era il
+contenuto: era il vocabolario preso in prestito da mestieri diversi (le basi di
+dati, le scienze cognitive, l'elettrotecnica) e appiccicato sopra a operazioni
+che avevano già un nome.
 
 Dei quattro nomi di cui si lamenta, uno serve subito e va tolto di mezzo: un
 **token** è il pezzetto di testo su cui il modello lavora, non proprio una
@@ -27,13 +27,23 @@ domanda più stretta e, per chi ha appena finito cinque sezioni di
 matematica, più urgente: *di che cosa è fatto un modello linguistico, se lo si
 guarda con gli strumenti visti fin qui?*
 
-La risposta breve è che non serve nient'altro. Prodotti scalari e prodotti fra
-matrici dall'algebra lineare, la regola della catena e il valore atteso dalla
-probabilità, la cross-entropia dalla teoria dell'informazione, la derivata
-delle funzioni composte e la discesa del gradiente dall'analisi, il
-*log-sum-exp* dall'analisi numerica. Sono tutti qui dentro. La
-sofisticazione non sta nei pezzi, sta in come vengono composti e in quante
-volte vengono ripetuti.
+La risposta breve è che non serve nient'altro, e l'inventario si scrive in
+cinque righe. Dall'algebra lineare: i prodotti scalari e i prodotti fra
+matrici. Dall'analisi: la derivata delle funzioni composte (quella degli
+ingranaggi, che moltiplica le pendenze) e la discesa del gradiente. Dalla
+probabilità: il modo di spezzare la probabilità di una frase intera nel
+prodotto delle probabilità di una parola dopo l'altra. Dalla teoria
+dell'informazione: la cross-entropia. Dall'analisi numerica: il *log-sum-exp*.
+Sono tutti qui dentro. La sofisticazione non sta nei pezzi, sta in come vengono
+composti e in quante volte vengono ripetuti.
+
+(Una nota sui nomi, perché qui fanno un dispetto. «Regola della catena» in
+matematica indica due cose diverse: nell'analisi è quella che moltiplica le
+pendenze lungo una catena di funzioni, la si è vista con gli ingranaggi; in
+probabilità è quella che spezza la probabilità di una sequenza intera nel
+prodotto dei singoli passi. Servono tutte e due in questa pagina, la seconda
+per dire *che cosa* calcola il modello e la prima per addestrarlo, e il nome
+in comune è una coincidenza storica, non un legame.)
 
 ## Il compito, scritto in una riga di probabilità
 
@@ -45,7 +55,11 @@ sorprendentemente modesto: assegnare probabilità alla parola successiva.
 Un modello linguistico è una macchina che, davanti a un pezzo di testo, dice
 quanto è probabile ogni possibile continuazione. Davanti a «Il gatto nero
 salta sul» darà molta probabilità a «muro», «tetto», «divano», pochissima a
-«pigiama» e praticamente zero a «democrazia».
+«pigiama» e praticamente zero a «democrazia». Sono numeri veri, e sommano a
+uno: qualcosa come $0{,}30$ a «muro», $0{,}18$ a «tetto», $0{,}12$ a «divano»,
+poi una lunga coda di parole possibili che si spartisce il resto, e in fondo
+alla coda «democrazia» con un numero talmente piccolo da non stare in tre
+cifre.
 
 Sembra poco, e invece è tutto: se so scommettere bene sulla parola dopo, so
 anche scrivere. Basta scegliere una parola fra quelle probabili, aggiungerla
@@ -129,7 +143,7 @@ nello spazio delle rappresentazioni ricevono distribuzioni vicine, e questo
 è, in sostanza, uno smoothing implicito e appreso al posto di quelli
 progettati a mano (Laplace, Good–Turing, Kneser–Ney).
 
-Vale la pena notare che cosa *non* cambia. Un modello linguistico ha una
+Un'ultima osservazione su che cosa *non* cambia. Un modello linguistico ha una
 lunghezza massima di contesto fissata a progetto, e tutto ciò che precede
 quella soglia è invisibile: formalmente resta quindi una catena di
 **Markov di ordine finito**, per quanto altissimo
@@ -153,7 +167,7 @@ zeri tranne un $1$ nella sua casella. È la codifica che si chiama *one-hot*,
 «uno acceso». Funziona, nel senso che ogni parola ha la sua lista e nessuna si
 confonde con un'altra, ma butta via l'unica cosa che ci interessava. Prese due
 liste qualsiasi, la loro differenza è sempre la stessa: due caselle diverse, e
-basta. Il libro dichiara così che «gatto» e «cane» sono lontani fra loro
+basta. La codifica dichiara così che «gatto» e «cane» sono lontani fra loro
 esattamente quanto «gatto» e «sebbene». Tutto quello che il modello impara sul
 primo va reimparato da capo sul secondo.
 
@@ -219,12 +233,10 @@ significato.
 Da qui l'obiettivo di calcolo, che è la richiesta precisa da cui nasce tutto
 il resto: entrano tanti vettori quante sono le parole, uno per parola presa da
 sola, e ne devono uscire altrettanti, uno per posizione, ciascuno dei quali
-tenga conto di tutta la frase in cui quella parola si trova. La stessa parola,
-in due frasi diverse, deve uscire con due vettori diversi. In simboli: data la
-sequenza $(\mathbf{e}_1, \dots, \mathbf{e}_n)$, vogliamo produrre una nuova
-sequenza $(\mathbf{h}_1, \dots, \mathbf{h}_n)$, della stessa lunghezza e della
-stessa dimensione $d$, in cui ogni $\mathbf{h}_i$ non dipenda solo dal token in
-posizione $i$.
+tenga conto di tutta la frase in cui quella parola si trova. Stessa quantità di
+liste all'ingresso e all'uscita, stessa lunghezza di ciascuna, e una sola
+differenza: quelle che escono hanno letto la frase. La stessa parola, in due
+frasi diverse, deve uscire con due vettori diversi.
 
 ## Il motore: una media pesata con pesi appresi
 
@@ -268,14 +280,54 @@ ragioni. Il prodotto scalare è simmetrico, e abbiamo appena detto che
 l'influenza non lo è; e poi *quanto* una parola conta e *che cosa* quella
 parola porta con sé sono informazioni diverse. Che «gatto» sia un nome in
 funzione di soggetto è ciò che lo rende rilevante per il verbo; che sia un
-animale piccolo e domestico è ciò che ha da dire. Servono tre estratti
-diversi dello stesso vettore, non uno.
+animale piccolo e domestico è ciò che ha da dire.
+
+Servono quindi tre versioni ridotte dello stesso vettore, non una, e ciascuna
+tiene solo l'informazione che serve al suo mestiere. Come si ricavano lo
+sappiamo già: è la tabella di pesi dell'appartamento. Lì, da (metri quadri,
+stanze, piano) uscivano due numeri nuovi, «ampiezza» e «comodità», ciascuno una
+mescolanza decisa da una riga della tabella. Qui è identico, in grande: la
+lista lunga di una parola passa attraverso una tabella di pesi e ne esce una
+lista più corta, che è appunto una versione ridotta. Di tabelle ce ne sono tre,
+diverse fra loro e tutte imparate dai dati: la prima tiene quello che la parola
+da capire sta *cercando*, la seconda quello che una parola di contesto *offre*,
+la terza quello che quella parola *dice* una volta che il peso è stato deciso.
+
+I tre mestieri, va detto, non li assegna nessuno alle tre tabelle: nascono
+uguali, e a distinguerle è il posto che occupano nel calcolo. La prima e la
+seconda finiscono moltiplicate fra loro per decidere un peso, la terza finisce
+mediata; da mestieri diversi vengono pressioni diverse, e le tre tabelle si
+adattano a quello che gli tocca fare. È lo stesso meccanismo del paragrafo che
+verrà fra qualche pagina sulle copie parallele, e in questa sezione è il punto
+che vale più di tutti: la struttura del calcolo è decisa a progetto, il
+contenuto delle tabelle no.
+
+Adesso la ricetta si chiude. Il punteggio fra la parola $i$ e la parola $j$ è
+il prodotto scalare fra la prima versione ridotta di $i$ e la seconda di $j$:
+un numero solo, alto quando quello che $i$ cerca somiglia a quello che $j$
+offre, e diverso a seconda di chi guarda chi, perché le due tabelle sono
+diverse. Quei punteggi sono numeri qualsiasi, anche negativi, e vanno resi
+proporzioni: si passano alla softmax della sezione di analisi numerica, che li
+rende tutti positivi e a somma uno (ed è la stessa che si calcola sottraendo
+prima il punteggio più grande, il trucco che là si chiamava *log-sum-exp*).
+Sono i pesi $\alpha_{ij}$. E la nuova
+rappresentazione della parola $i$ è la media pesata, con quei pesi, delle terze
+versioni ridotte di tutte le parole. Tre tabelle, un prodotto scalare, una
+softmax e una media: non c'è altro.
 
 `````
 
 `````{tab} Superiore
 
-Siano $\mathbf{e}_1,\dots,\mathbf{e}_n \in \mathbb{R}^d$ i vettori in
+Formalizziamo prima l'obiettivo. Data la sequenza
+$(\mathbf{e}_1, \dots, \mathbf{e}_n)$ con $\mathbf{e}_i \in \mathbb{R}^d$
+($d$ è la dimensione delle rappresentazioni, cioè quanti numeri ha ciascun
+vettore), vogliamo produrre una nuova sequenza
+$(\mathbf{h}_1, \dots, \mathbf{h}_n)$, della stessa lunghezza e della stessa
+dimensione, in cui ogni $\mathbf{h}_i$ non dipenda solo dal token in posizione
+$i$.
+
+Siano dunque $\mathbf{e}_1,\dots,\mathbf{e}_n \in \mathbb{R}^d$ i vettori in
 ingresso. L'uscita dell'aggregazione, per la posizione $i$, è
 
 $$
@@ -289,7 +341,7 @@ definire due cose: da dove vengono i pesi e da dove viene il contenuto.
 
 (Il simbolo è $\mathbf{o}_i$ e non $\mathbf{h}_i$ perché questa è l'uscita di
 **una** aggregazione, e vive in $\mathbb{R}^k$ con $k < d$. La
-rappresentazione contestuale $\mathbf{h}_i \in \mathbb{R}^d$ promessa poco fa
+rappresentazione contestuale $\mathbf{h}_i \in \mathbb{R}^d$ dell'obiettivo
 si ottiene solo più avanti, ricomponendo le $H$ aggregazioni parallele.)
 
 Entrambi da **tre trasformazioni lineari apprese** applicate ai vettori
@@ -353,25 +405,31 @@ pesata dei contenuti.
 
 `````
 
-Questo è tutto, ed è qui che si annidano i nomi. Nella letteratura le tre
-proiezioni si chiamano *query*, *key* e *value*, in prestito dalle basi di
-dati: si interroga una base con una chiave per ottenere un valore. La
+Questo è tutto, ed è qui che si annidano i nomi. Le tre tabelle di pesi (in
+gergo si chiamano *proiezioni*, perché ciascuna proietta una lista lunga in una
+più corta) nella letteratura portano i nomi di *query*, *key* e *value*, presi
+in prestito dalle basi di dati: si interroga una base con una chiave per
+ottenere un valore. La
 metafora è imperfetta, perché non c'è nessuna base di dati e nessuna
 interrogazione: c'è un vettore confrontato con altri vettori. Il libro
 continua a usare i nomi standard, perché sono quelli dei paper e del codice,
-ma vale la pena tenere accanto la traduzione. La tabella che segue serve da
-dizionario per quando quei nomi si incontreranno altrove: per seguire questa
-sezione non serve, ed è la ragione per cui arriva adesso e non all'inizio.
+ma tenere accanto la traduzione aiuta.
+
+La tabella che segue è un dizionario, e come tutti i dizionari **si consulta,
+non si legge**: serve il giorno in cui uno di quei nomi salta fuori in un
+articolo o in un pezzo di codice. Per seguire questa sezione non serve affatto,
+ed è la ragione per cui arriva adesso e non all'inizio; chi vuole andare avanti
+la salti senza rimpianti.
 
 | il nome che si incontra | qui | che cosa fa davvero |
 |---|---|---|
-| *query*, $\mathbf{W}^Q$ | $\mathbf{W}^A$ | estrae ciò a cui la posizione da aggiornare è ricettiva |
-| *key*, $\mathbf{W}^K$ | $\mathbf{W}^B$ | estrae ciò che una posizione di contesto offre, per decidere quanto pesa |
-| *value*, $\mathbf{W}^V$ | $\mathbf{W}^C$ | estrae ciò che quella posizione trasmette, deciso il peso |
-| *attention score* | punteggio di influenza $r_{ij}$ | il prodotto scalare fra i primi due, riscalato |
-| *attention weight* | peso di influenza $\alpha_{ij}$ | il punteggio normalizzato: non negativo, a somma 1 |
-| *softmax* | logit multinomiale inverso | la trasformazione della regressione logistica multinomiale |
-| *head* | relazione | una delle $H$ copie parallele dello stesso meccanismo |
+| *query* (la matrice $\mathbf{W}^Q$) | la prima tabella, $\mathbf{W}^A$ | estrae ciò a cui la posizione da aggiornare è ricettiva |
+| *key* ($\mathbf{W}^K$) | la seconda tabella, $\mathbf{W}^B$ | estrae ciò che una posizione di contesto offre, per decidere quanto pesa |
+| *value* ($\mathbf{W}^V$) | la terza tabella, $\mathbf{W}^C$ | estrae ciò che quella posizione trasmette, deciso il peso |
+| *attention score* | punteggio di influenza, $r_{ij}$ | il prodotto scalare fra le prime due versioni ridotte |
+| *attention weight* | peso di influenza, $\alpha_{ij}$ | il punteggio normalizzato: non negativo, a somma 1 |
+| *softmax* | logit multinomiale inverso | la ricetta che trasforma punteggi qualsiasi in proporzioni |
+| *head* | relazione | una delle copie parallele dello stesso meccanismo |
 
 ## Una forma bilineare di rango basso
 
@@ -380,14 +438,20 @@ chiarisce in un colpo solo quanti parametri servono e perché. Il titolo di
 questa sezione anticipa due parole tecniche, e conviene scioglierle subito.
 Una **forma bilineare** è un modo di misurare l'accordo fra due liste di
 numeri passando per una tabella: si prende la prima lista, la si fa attraversare
-dalla tabella e si fa il prodotto scalare con la seconda. Il **rango** di una
-tabella è quante righe davvero indipendenti contiene, cioè quante ne servono
-per ricostruire tutte le altre combinandole: una tabella grande di rango basso
-è grande solo all'apparenza.
+dalla tabella e si fa il prodotto scalare con la seconda.
+
+Il **rango** di una tabella è un po' più sottile, e conviene vederlo su un
+esempio piccolo. Una tabella di cento righe sembra contenere cento
+informazioni, ma può darsi che la terza riga sia semplicemente la prima più la
+seconda, la quarta il doppio della prima, e così via: allora le righe davvero
+autonome sono due, e le altre novantotto si ricostruiscono combinando quelle.
+Quel conteggio, quante righe autonome ci sono, è il rango. Una tabella grande
+di rango basso è grande solo all'apparenza: i numeri da imparare sono molti di
+meno di quanti se ne vedono.
 
 ```{figure} ../figures/forma-bilineare-rango-basso.svg
 :name: fig-forma-bilineare
-:alt: "A sinistra un quadrato grande etichettato M, di lato d, che rappresenta la matrice di tutte le affinità possibili fra caratteristiche; a destra lo stesso quadrato è mostrato come prodotto di due rettangoli sottili, alti k e larghi d, le trasposte delle due matrici di proiezione. Sotto, il conteggio dei numeri da imparare: circa 151 milioni per il quadrato pieno, circa 3,1 milioni per i due rettangoli."
+:alt: "A sinistra un quadrato grande etichettato M, di lato d, che rappresenta la matrice di tutte le affinità possibili fra caratteristiche; a destra lo stesso quadrato è mostrato come prodotto di due rettangoli sottili: la trasposta della prima matrice di proiezione, alta d e larga k, moltiplicata per la seconda, alta k e larga d. Sotto, il conteggio dei numeri da imparare: circa 151 milioni per il quadrato pieno, circa 3,1 milioni per i due rettangoli."
 :width: 88%
 
 Il quadrato pieno e la sua versione fattorizzata. Imparare il quadrato per
@@ -404,23 +468,28 @@ possibili, dica quanto quella dell'una si accorda con quella dell'altra: la
 riga «è un verbo di movimento» incrocia la colonna «è un nome animato» con un
 numero alto, e così via per ogni coppia. Sarebbe il modo più generale di
 misurare l'affinità fra due parole, e sarebbe anche insostenibile. Prendiamo i
-numeri veri di GPT-3, il modello di cui torneremo a fare i conti più avanti:
-$12\,288$ coordinate per vettore. Quella tabella avrebbe $12\,288$ righe e
+numeri veri di GPT-3, il modello di cui torneremo a fare i conti più avanti: la
+lista di numeri di una parola, lì, è lunga $12\,288$. Quella tabella avrebbe
+$12\,288$ righe e
 $12\,288$ colonne, cioè 151 milioni di caselle, e ce ne vorrebbe una per ogni
 relazione e per ogni strato.
 
-La scorciatoia è non imparare mai la tabella intera, ma due tabelle sottili
-il cui prodotto la ricostruisce approssimativamente. Con $128$ righe ciascuna
-(sempre GPT-3: è la stessa scelta di progetto) sono 3,1 milioni di numeri
-invece di 151 milioni, quarantotto volte meno
+La scorciatoia è non imparare mai la tabella intera, ma due tabelle sottili il
+cui prodotto la ricostruisce approssimativamente. Sottili vuol dire che restano
+lunghe quanto la lista di una parola, $12\,288$, ma alte solo $128$ (sempre
+GPT-3: è la stessa scelta di progetto). Ognuna ha quindi
+$128 \times 12\,288 \approx 1{,}6$ milioni di caselle, e in due fanno $3{,}1$
+milioni invece di $151$: quarantotto volte meno
 ({numref}`fig-forma-bilineare`).
 
 Si perde qualcosa, ovviamente. Le tabelle ottenute in questo modo non sono
-tutte quelle possibili, sono una famiglia ristretta. Ma il risparmio non è
-solo di memoria: meno parametri liberi significa anche meno modi di imparare
-a memoria il rumore dei dati, ed è la stessa idea di *regolarizzazione* che il
-capitolo sul machine learning discute a proposito dell'overfitting. La
-scorciatoia, spesso, è anche il motivo per cui il modello generalizza.
+tutte quelle possibili, sono una famiglia ristretta. Ma il risparmio non è solo
+di memoria: meno manopole vuol dire anche meno modi di imparare a memoria i
+dettagli irrilevanti degli esempi visti, che è il difetto in cui un modello
+cade più volentieri (si chiama *overfitting*, e mettergli dei paletti apposta
+si chiama *regolarizzazione*: ne parla per esteso il capitolo sul machine
+learning). La scorciatoia, spesso, è anche il motivo per cui il modello se la
+cava su esempi che non ha mai visto.
 
 `````
 
@@ -462,8 +531,10 @@ non lo sono. Il perché è nella prossima sezione.
 
 ## Due matrici che nessuno può identificare
 
-Da questa fattorizzazione discende un fatto che vale la pena sapere prima di
-provare a interpretare i pesi di un modello.
+Da questa fattorizzazione discende un fatto curioso, e che riguarda tutti e
+due i mestieri: chi vuole capire cosa un modello ha imparato, e chi deve
+addestrarlo. Per il primo è una brutta notizia, per il secondo ottima, ed è la
+stessa notizia.
 
 `````{tab} Elementare
 
@@ -473,15 +544,22 @@ prima si ritrova uguale sulla seconda: nessuna misura fatta sulle mappe può
 dire quale delle due sia «quella giusta», perché le due mappe descrivono
 esattamente la stessa città.
 
-Alle due tabelle che calcolano l'influenza succede lo stesso, e per la stessa
-ragione. Ruotare una mappa vuol dire cambiare la coppia di numeri con cui si
-indica ogni luogo, lasciando i luoghi dove sono: ruotare una tabella di numeri
-è esattamente questo, riscrivere le stesse quantità rispetto a un'altra scelta
-di assi. Le due tabelle si possono ruotare insieme, in infiniti modi, senza
-che nemmeno un numero cambi nell'uscita del modello: quello che una gira, per
-così dire, l'altra lo gira indietro. Ne segue che chiedersi «che cosa
-significa la riga 7 di quella tabella?» è una domanda mal posta: la riga 7 non
-è determinata dai dati, lo è solo il modo in cui le righe lavorano insieme.
+Alle due tabelle che calcolano l'influenza succede lo stesso, e conviene vedere
+perché in tre passi.
+
+Primo: ruotare la mappa non sposta le case, cambia solo la coppia di numeri con
+cui si scrive dov'è ciascuna. Secondo: le tabelle producono delle liste di
+numeri, e ruotare quelle liste è la stessa faccenda, cioè descrivere le stesse
+frecce partendo da un'altra direzione. Terzo, ed è il punto: una rotazione non
+cambia né le lunghezze né gli angoli fra le frecce, e il prodotto scalare
+della sezione di algebra lineare dipende soltanto da quelli. Ruotando tutto
+insieme, quindi, i punteggi restano identici fino all'ultima cifra: quello che
+la prima tabella gira, la seconda lo gira indietro.
+
+Di rotazioni così ce ne sono infinite, e tutte danno lo stesso identico
+modello. Ne segue che chiedersi «che cosa significa la riga 7 di quella
+tabella?» è una domanda mal posta: la riga 7 non è determinata dai dati, lo è
+solo il modo in cui le righe lavorano insieme.
 
 Questo è un guaio per chi vuole capire cosa un modello ha imparato, ed è
 invece una fortuna per chi lo addestra: quando tantissime configurazioni di
@@ -525,6 +603,18 @@ $\mathbf{W}^O$ e le matrici della parte non lineare vanno composte con
 $\mathbf{R}$ dal lato giusto, e i vettori d'uscita $\mathbf{u}_v$ con
 $\mathbf{R}^{-\top}$.)
 
+Due dettagli del modello vero stringono però la libertà di $\mathbf{R}$, e
+è giusto dirli, perché mostrano che l'indeterminazione è reale ma non
+sconfinata. Il primo è la normalizzazione, che agisce sul flusso residuo e non
+commuta con una trasformazione qualsiasi: normalizzare un vettore ruotato non
+dà il vettore normalizzato e poi ruotato, salvo che $\mathbf{R}$ sia una
+rotazione compatibile. Il secondo è la pratica, diffusissima, di riusare la
+stessa matrice per l'ingresso e per l'uscita (i vettori $\mathbf{u}_v$ sono le
+righe di $\mathbf{E}$): allora $\mathbf{R}$ e $\mathbf{R}^{-\top}$ devono
+coincidere, il che accade solo se $\mathbf{R}$ è ortogonale. L'indeterminazione
+resta, insomma, ma si restringe alle rotazioni, che è esattamente il gruppo di
+cui parla l'analogia che segue.
+
 La situazione è la stessa della **rotazione dei fattori** nell'analisi
 fattoriale, dove i fattori estratti sono determinati solo a meno di una
 trasformazione ortogonale, ed è il motivo per cui esistono i criteri di
@@ -567,10 +657,10 @@ Si specializzano lo stesso, e la ragione è economica: se due copie
 imparassero la stessa cosa, una delle due sarebbe sprecata, e sprecarla
 costa in accuratezza. C'è quindi una pressione implicita a differenziarsi,
 perché ogni copia contribuisce di più quando cattura qualcosa che le altre si
-perdono. È lo stesso motivo per cui, nell'analisi fattoriale, i fattori
-estratti finiscono per essere diversi fra loro: non perché qualcuno abbia
-distribuito i ruoli, ma perché catturare fonti di variazione distinte è il
-modo efficiente di spiegare i dati.
+perdono. Succede lo stesso in una vecchia tecnica della statistica, l'analisi
+fattoriale, dove si prova a spiegare tanti dati con poche cause nascoste:
+nessuno decide quali siano, e vengono fuori diverse fra loro, perché spiegare
+due volte la stessa cosa non spiega niente di nuovo.
 
 Andando a guardare dentro modelli addestrati si trovano davvero copie che
 seguono i legami sintattici, altre le catene di riferimento, altre la
@@ -633,8 +723,9 @@ moltiplicare per dei numeri e sommare: in gergo si dice che l'operazione è
 **lineare**. E fare due volte di fila un'operazione del genere non porta più
 lontano che farne una sola, perché il risultato resta pur sempre una somma di
 multipli dei numeri di partenza, con altri coefficienti. È lo stesso motivo
-per cui raddoppiare e poi triplicare equivale a sestuplicare: due passaggi, un
-solo passaggio possibile. Cento strati tutti lineari equivarrebbero quindi a
+per cui raddoppiare e poi triplicare equivale a sestuplicare: hai fatto due
+passaggi, ma per ottenere lo stesso risultato ne sarebbe bastato uno.
+Cento strati tutti lineari equivarrebbero quindi a
 uno, e tutta la pila collasserebbe in un'unica tabella. Serve, fra
 uno strato e l'altro, una funzione che *pieghi* i numeri, e la più usata è la
 più semplice che si possa immaginare: azzerare i valori negativi e lasciar
@@ -650,7 +741,13 @@ fra una pesata e l'altra.
 
 Nessun parametro è condiviso fra gli strati: ogni strato ha la sua copia
 completa del meccanismo, moltiplicata per il numero di relazioni. Ed è da qui
-che vengono i numeri da capogiro nei nomi dei modelli.
+che vengono i numeri da capogiro. Prendendo GPT-3, che è il modello su cui
+questa sezione fa i conti: novantasei strati, ciascuno con novantasei
+relazioni, ciascuna con le sue tre tabelle, più le tabelle della parte non
+lineare. E ogni singola tabella, l'abbiamo visto, è già di suo qualche milione
+di caselle. Messo tutto insieme si arriva a circa **centosettantacinque
+miliardi** di manopole, ed è il numero che compare nella scheda tecnica del
+modello.
 
 `````
 
@@ -710,32 +807,35 @@ di GPT-3.
 C'è una cosa che la media pesata, così com'è scritta, non sa fare, ed è
 istruttivo che il difetto si veda direttamente dalla formula.
 
-Nel conto del punteggio fra due parole entrano i loro vettori e nient'altro:
-non entra mai il **posto** che occupano nella frase, cioè se una è la seconda
-parola e l'altra la quinta. Detto in simboli: i punteggi $r_{ij}$ dipendono dai
-vettori che stanno nelle posizioni $i$ e $j$, non dai numeri $i$ e $j$. Se si
-mescolano le parole della frase, i punteggi sono gli stessi, solo riordinati:
-l'operazione tratta la sequenza come un **insieme**, un sacchetto di parole
-senza un ordine. Ma
-«il cane morde l'uomo» e «l'uomo morde il cane» non sono la stessa frase, e
-un modello che le confonde non è un modello del linguaggio.
+Nel conto del punteggio fra due parole entrano le loro liste di numeri e
+nient'altro: non entra mai il **posto** che occupano nella frase, cioè se una è
+la seconda parola e l'altra la quinta. Il punteggio dipende da *che cosa* c'è
+in quelle due posizioni, mai da *quali* posizioni siano. Se si mescolano le
+parole della frase, i punteggi restano gli stessi, solo riordinati:
+l'operazione tratta la frase come un sacchetto di parole senza un ordine. Ma
+«il cane morde l'uomo» e «l'uomo morde il cane» non sono la stessa frase, e un
+modello che le confonde non è un modello del linguaggio.
 
-L'informazione di posizione va quindi immessa a mano. La via storica è
-sommare a ogni embedding un vettore che codifica la posizione,
-$\mathbf{e}_i \leftarrow \mathbf{e}_i + \mathbf{p}_i$
-{cite}`vaswani2017attention`. Le soluzioni oggi prevalenti codificano invece
-la posizione **relativa**, cioè la distanza $i - j$ e non gli indici presi
-singolarmente, perché è la distanza fra due parole a governarne il legame, e
-perché un modello che ha imparato la posizione assoluta $10\,000$ non l'ha
-mai vista se le frasi di addestramento erano più corte. Il capitolo sui
+L'informazione di posizione va quindi immessa a mano. La via storica è la più
+diretta: si costruisce una lista di numeri per ogni posizione (una per la
+prima parola, una per la seconda, e così via) e la si **somma** alla lista
+della parola che sta lì {cite}`vaswani2017attention`. Chi legge quel vettore si
+ritrova dentro, mescolate, due informazioni: quale parola è e dove sta.
+
+Le soluzioni oggi prevalenti codificano invece la posizione **relativa**, cioè
+la distanza fra le due parole e non il numero d'ordine di ciascuna, per due
+ragioni. La prima è che il legame fra due parole dipende da quanto sono
+lontane, non da dove cadono nel testo. La seconda è che un modello addestrato
+su frasi corte non ha mai visto la posizione numero diecimila, e non saprebbe
+che farsene; le distanze, invece, sono sempre le stesse. Il capitolo sui
 Transformer entra nel merito degli schemi; qui interessava il punto
-matematico, cioè che il meccanismo di base è invariante rispetto all'ordine e
-che l'ordine va aggiunto da fuori.
+matematico, cioè che il meccanismo di base non sa niente dell'ordine e che
+l'ordine va aggiunto da fuori.
 
-Un secondo intervento riguarda invece la direzione del tempo. Poiché il
-compito è prevedere la parola successiva, la somma sui contesti non può
-correre su tutte le posizioni ma solo su quelle già viste, $j \le i$:
-altrimenti il modello, per indovinare la parola dopo, potrebbe leggersela.
+Un secondo intervento riguarda invece la direzione del tempo. Poiché il compito
+è prevedere la parola successiva, la media pesata non può prendere tutte le
+posizioni ma solo quelle già viste, da lì all'indietro: altrimenti il modello,
+per indovinare la parola dopo, se la leggerebbe.
 
 ## Dall'ultimo vettore alla parola dopo
 
@@ -751,8 +851,10 @@ come tutte le altre. Per sapere quanto quella parola è plausibile qui, si
 confronta la sua lista con il vettore finale: è di nuovo il prodotto scalare,
 il conto dello scontrino, alto quando le due liste puntano dalla stessa parte.
 Vengono fuori cinquantamila punteggi, uno per parola, e si trasformano in
-probabilità con la stessa ricetta usata per i pesi di influenza: si elevano a
-potenza e si dividono per il totale, così sommano a uno.
+probabilità con la stessa ricetta usata per i pesi di influenza, la softmax:
+si prende il numero fisso $e$ della sezione sull'analisi, lo si eleva a
+ciascuno dei punteggi (così spariscono i segni meno e i punteggi alti restano
+alti) e si divide ognuno per il totale, in modo che la somma faccia uno.
 
 Vale la pena fermarsi su che cosa è appena successo, perché è la conclusione
 di tutta la sezione. Prese le ultime due righe da sole, quello che il modello
@@ -814,8 +916,8 @@ le manopole sono miliardi e ciò che si è visto è un pezzo di internet, ma la
 domanda è identica: quali regolazioni rendono meno sorprendente il testo che è
 stato scritto davvero?
 
-C'è una semplificazione che rende il conto praticabile, e vale la pena
-notarla. Per ogni posizione del testo il modello produce una distribuzione su
+C'è una semplificazione che rende il conto praticabile, e non va persa. Per
+ogni posizione del testo il modello produce una distribuzione su
 tutto il vocabolario, ma la realtà, lì, non è una distribuzione: è una parola
 sola, quella che è effettivamente occorsa. Del sacco di probabilità che il
 modello ha prodotto interessa quindi un numero solo, quello assegnato alla
@@ -888,10 +990,10 @@ Il modello intero, in sette righe di italiano:
    spazio di qualche migliaio di dimensioni;
 2. a ogni punto si aggiunge l'informazione di dove si trova nella frase;
 3. ogni posizione guarda tutte quelle che la precedono e assegna a ciascuna
-   un peso, calcolato confrontando due estratti diversi dei rispettivi
-   vettori;
-4. i pesi, resi positivi e a somma uno, servono a fare una media di un terzo
-   estratto: è la nuova rappresentazione di quella posizione;
+   un peso, calcolato confrontando due versioni ridotte diverse dei
+   rispettivi vettori;
+4. i pesi, resi positivi e a somma uno, servono a fare una media di una terza
+   versione ridotta: è la nuova rappresentazione di quella posizione;
 5. la stessa cosa avviene in parallelo in molte copie indipendenti, i cui
    risultati vengono rimescolati insieme;
 6. il risultato viene sommato al vettore di partenza, piegato da una funzione
@@ -988,11 +1090,15 @@ formule qui sopra menziona la sintassi, i concetti o le relazioni fra
 concetti, eppure al crescere di dati e parametri la qualità delle previsioni
 migliora in modo regolare {cite}`kaplan2020scaling` e compaiono comportamenti
 che è naturale descrivere proprio in quei termini {cite}`brown2020language`.
-Non è la
-prima volta che succede in una scienza: la termodinamica emerge dalla
-meccanica statistica, la fluidodinamica dalle interazioni fra molecole, lo
-stormo dal comportamento del singolo storno. In ogni caso il fenomeno
-macroscopico non si legge nelle regole microscopiche, ma non per questo è
+
+Non è la prima volta che succede in una scienza. Uno storno, da solo, segue
+poche regolette meccaniche (stai vicino ai vicini, non urtarli, vai dove vanno
+loro); guardando il cielo sopra Roma al tramonto si vede uno stormo che si
+piega e si allunga come un unico animale, e in nessuna delle regolette c'è
+scritta la parola «stormo». La stessa cosa vale per il calore, che non sta
+dentro nessuna singola molecola ma nel loro agitarsi in tanti, e per il
+comportamento di un fluido, che non sta nella singola goccia. In tutti questi
+casi il fenomeno grande non si legge nelle regole piccole, ma non per questo è
 meno reale. Perché la sola previsione della parola successiva porti così
 lontano è, onestamente, ancora una questione aperta, e la sezione sui grandi
 modelli linguistici, nel capitolo sui Transformer, discute anche i motivi per
@@ -1047,9 +1153,11 @@ R_ruotato = (E @ (O @ W_A).T) @ (E @ (O @ W_B).T).T / np.sqrt(k)
 print(np.allclose(R, R_ruotato))             # True
 ```
 
-Le ultime due verifiche sono il contenuto di due sezioni intere: la matrice
-`M` è $6 \times 6$ ma ha rango $3$, e le due proiezioni ruotate producono
-punteggi identici alle originali fino all'ultima cifra.
+I due `True` in fondo non sono un dettaglio: sono il contenuto di due sezioni
+intere, verificato. La tabella `M` ha sei righe e sei colonne ma di righe
+autonome ne ha tre, cioè è di rango basso; e le due tabelle ruotate insieme
+danno punteggi identici alle originali fino all'ultima cifra, cioè non sono
+identificabili separatamente.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
@@ -1065,13 +1173,13 @@ punteggi identici alle originali fino all'ultima cifra.
   ciò che sanno le altre, in proporzioni decise dai vettori stessi. Le
   proporzioni non le scrive nessuno: sono il risultato di parametri appresi,
   ed è per questo che il modello non riceve la grammatica ma può arrivarci.
-- Servono tre estratti diversi di ogni vettore, perché *quanto* una parola
+- Servono tre versioni ridotte diverse di ogni vettore, perché *quanto* una parola
   conta e *che cosa* ha da dire sono informazioni diverse, e perché
   l'influenza è a senso unico: quanto «gatto» conta per «salta» non è quanto
   «salta» conta per «gatto».
 - I nomi che si trovano in giro (*query*, *key*, *value*, *testa*) vengono da
   mestieri diversi e nascondono più di quanto spieghino: sotto ci sono tre
-  proiezioni, un prodotto scalare e una media.
+  tabelle di pesi, un prodotto scalare e una media.
 - Nessuno assegna i ruoli alle copie parallele del meccanismo: partono
   identiche e casuali, e si specializzano perché due copie che imparano la
   stessa cosa sprecano capacità.

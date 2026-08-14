@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 470" role="img" aria-label="Al centro la finestra di contesto, disegnata come un riquadro che contiene tre blocchi impilati (istruzioni, cronologia, documenti recuperati) e in fondo lo spazio tratteggiato per la risposta. Quattro frecce numerate dicono che cosa si può fare della finestra: la prima esce verso sinistra, verso un riquadro 'memoria esterna', ed è scrivere; la seconda rientra da lì, ed è selezionare, e porta dentro il pezzo che serve a questo passo; la terza è un arco che esce dal bordo alto e vi rientra, cioè resta dentro la finestra, ed è comprimere; la quarta esce verso destra, verso un secondo riquadro 'un'altra finestra', ed è isolare. In fondo la morale: tre mosse spostano roba oltre il bordo, una la rimpicciolisce restando dentro, e nessuna delle quattro aggiunge spazio.">
+  <defs>
+    <marker id="fr-teal" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#2D5A5C"/>
+    </marker>
+    <marker id="fr-ocra" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#C9A961"/>
+    </marker>
+    <marker id="fr-terra" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#B5532C"/>
+    </marker>
+  </defs>
+
+  <!-- 3, comprimere: l'arco che esce dalla finestra e vi rientra -->
+  <path d="M 400 128 C 400 58, 520 58, 520 128" fill="none" stroke="#C9A961" stroke-width="2.5" marker-end="url(#fr-ocra)"/>
+  <text x="460" y="50" text-anchor="middle" font-family="Inter, sans-serif" font-size="13.5" font-weight="700" fill="#1A1A1A">3 &#183; comprimere</text>
+  <text x="460" y="68" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" fill="#5E5852">la stessa cosa, in meno token</text>
+
+  <!-- la finestra di contesto -->
+  <rect x="330" y="130" width="260" height="252" rx="12" fill="#F8F5EE" fill-opacity="0.5" stroke="#1A1A1A" stroke-width="2.5"/>
+  <text x="460" y="153" text-anchor="middle" font-family="Inter, sans-serif" font-size="13.5" font-weight="700" fill="#1A1A1A">finestra di contesto</text>
+
+  <rect x="348" y="166" width="224" height="30" rx="5" fill="#2D5A5C" fill-opacity="0.16" stroke="#2D5A5C" stroke-width="1.5"/>
+  <text x="460" y="186" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#1A1A1A">istruzioni</text>
+
+  <rect x="348" y="204" width="224" height="52" rx="5" fill="#C9A961" fill-opacity="0.2" stroke="#C9A961" stroke-width="1.5"/>
+  <text x="460" y="235" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#1A1A1A">cronologia</text>
+
+  <rect x="348" y="264" width="224" height="52" rx="5" fill="#B5532C" fill-opacity="0.16" stroke="#B5532C" stroke-width="1.5"/>
+  <text x="460" y="295" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#1A1A1A">documenti recuperati</text>
+
+  <rect x="348" y="324" width="224" height="40" rx="5" fill="none" stroke="#5E5852" stroke-width="1.5" stroke-dasharray="5 4"/>
+  <text x="460" y="349" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#5E5852">spazio per la risposta</text>
+
+  <!-- memoria esterna, a sinistra -->
+  <rect x="24" y="210" width="160" height="96" rx="10" fill="#2D5A5C" fill-opacity="0.1" stroke="#2D5A5C" stroke-width="2.5"/>
+  <text x="104" y="242" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#1A1A1A">memoria esterna</text>
+  <text x="104" y="264" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" fill="#5E5852">file, note, appunti:</text>
+  <text x="104" y="280" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" fill="#5E5852">non costano token</text>
+  <text x="104" y="294" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" fill="#5E5852">finché stanno lì</text>
+
+  <!-- 1, scrivere: dalla finestra alla memoria -->
+  <text x="258" y="196" text-anchor="middle" font-family="Inter, sans-serif" font-size="13.5" font-weight="700" fill="#1A1A1A">1 &#183; scrivere</text>
+  <text x="258" y="216" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" fill="#5E5852">fuori quel che</text>
+  <text x="258" y="230" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" fill="#5E5852">non serve adesso</text>
+  <path d="M 328 246 L 188 246" fill="none" stroke="#2D5A5C" stroke-width="2.5" marker-end="url(#fr-teal)"/>
+
+  <!-- 2, selezionare: dalla memoria alla finestra -->
+  <path d="M 188 296 L 328 296" fill="none" stroke="#2D5A5C" stroke-width="2.5" marker-end="url(#fr-teal)"/>
+  <text x="258" y="324" text-anchor="middle" font-family="Inter, sans-serif" font-size="13.5" font-weight="700" fill="#1A1A1A">2 &#183; selezionare</text>
+  <text x="258" y="344" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" fill="#5E5852">dentro il pezzo che</text>
+  <text x="258" y="358" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" fill="#5E5852">serve a questo passo</text>
+
+  <!-- un'altra finestra, a destra -->
+  <rect x="736" y="204" width="160" height="112" rx="10" fill="#B5532C" fill-opacity="0.1" stroke="#B5532C" stroke-width="2.5"/>
+  <text x="816" y="234" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#1A1A1A">un&#8217;altra finestra</text>
+  <text x="816" y="256" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" fill="#5E5852">un sotto-agente con</text>
+  <text x="816" y="272" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" fill="#5E5852">il suo contesto pulito:</text>
+  <text x="816" y="288" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" fill="#5E5852">torna solo il risultato</text>
+
+  <!-- 4, isolare: dalla finestra alla seconda finestra -->
+  <text x="663" y="216" text-anchor="middle" font-family="Inter, sans-serif" font-size="13.5" font-weight="700" fill="#1A1A1A">4 &#183; isolare</text>
+  <text x="663" y="236" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" fill="#5E5852">il pezzo grosso</text>
+  <text x="663" y="250" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" fill="#5E5852">a un&#8217;altra scrivania</text>
+  <path d="M 592 268 L 734 268" fill="none" stroke="#B5532C" stroke-width="2.5" marker-end="url(#fr-terra)"/>
+
+  <!-- morale -->
+  <text x="460" y="416" text-anchor="middle" font-family="Inter, sans-serif" font-size="11.5" fill="#5E5852">Tre mosse spostano roba oltre il bordo della finestra, una la rimpicciolisce restando dentro.</text>
+  <text x="460" y="436" text-anchor="middle" font-family="Inter, sans-serif" font-size="11.5" fill="#5E5852">Nessuna delle quattro aggiunge spazio: lo spazio &#232; quello, e si amministra.</text>
+</svg>

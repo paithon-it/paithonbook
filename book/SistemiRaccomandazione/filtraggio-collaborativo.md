@@ -10,12 +10,13 @@ che le somigliano. Il dettaglio sorprendente è ciò che *ignora*: il sistema
 non sa nulla dei film, né trama, né genere, né regista. Vede solo la matrice
 dei voti, e gli basta.
 
-Il nome è del 1992, e lo coniarono a Xerox PARC per Tapestry, un sistema che
-setacciava posta elettronica e newsgroup servendosi delle reazioni che altri
-lettori avevano lasciato sui documenti {cite}`goldberg1992using`; là le
-reazioni si scrivevano a mano, e due anni dopo GroupLens rese automatico il
-passaggio successivo, cercare i lettori simili al proprio
-{cite}`resnick1994grouplens`. Le due parole dicono esattamente cosa succede.
+Il nome è del 1992, e nasce a Xerox PARC con Tapestry, un sistema che
+setacciava posta elettronica e newsgroup {cite}`goldberg1992using`. Per
+decidere cosa far passare guardava le reazioni che altri lettori avevano
+lasciato sui documenti, e quelle reazioni bisognava scriverle a mano. Due anni
+dopo GroupLens rese automatico il passaggio successivo, cioè trovare da solo i
+lettori con i gusti più vicini ai tuoi {cite}`resnick1994grouplens`. Le due
+parole dicono esattamente cosa succede.
 **Collaborativo** perché ognuno, mettendo un voto, senza saperlo aiuta degli
 sconosciuti che gli somigliano: nessuno collabora di proposito, eppure il
 lavoro è collettivo. **Filtraggio** perché di fronte a un catalogo enorme il
@@ -31,22 +32,32 @@ da dove si comincia: dagli utenti simili, o dagli oggetti simili.
 
 ```{figure} ../figures/recommender-collaborative-filtering.svg
 :name: fig-matrice-voti
-:alt: "Matrice con gli utenti sulle righe e i film sulle colonne, e nelle celle i voti già espressi. Una cella è evidenziata come incognita: il voto che l'utente darebbe a un film che non ha visto. Le righe degli utenti con gusti simili sono marcate, e sono quelle da cui si ricava la stima."
+:alt: "Griglia di cinque utenti per cinque film, con i voti da uno a cinque nelle celle riempite e sei celle lasciate vuote. La cella di Carla su Notting Hill è evidenziata in terracotta: è il voto da prevedere. Un tratteggio marca una riga (Bruno, che ha votato in modo simile a Carla) e un altro marca una colonna (Love Actually, il film votato in modo più simile a Notting Hill): sono le due strade da cui si ricava la stima."
 :width: 92%
 
-Il compito, in una griglia: quanto piacerà *Notting Hill* a Carla? Quasi tutte
-le celle sono vuote, e prevederne una significa guardare le righe di chi ha
-votato in modo simile per i film che entrambi hanno visto (nel disegno, la riga
-di Bruno), oppure le colonne dei film votati in modo simile dalle stesse
-persone (la colonna di *Love Actually*). Le due strade hanno un nome inglese
-ciascuna, *user-based* e *item-based*, e qui portano alla stessa previsione.
+Il compito, in una griglia: quanto piacerà *Notting Hill* a Carla? Prevedere
+una cella vuota significa guardare la riga di chi ha votato in modo simile sui
+film che entrambi hanno visto (nel disegno, la riga di Bruno), oppure la
+colonna dei film votati in modo simile dalle stesse persone (la colonna di
+*Love Actually*). Le due strade hanno un nome inglese ciascuna, *user-based* e
+*item-based*, e qui portano alla stessa previsione, due stelle: il voto di
+Bruno a *Notting Hill* per la prima, quello di Carla a *Love Actually* per la
+seconda.
 ```
 
-Il vuoto di {numref}`fig-matrice-voti` è la difficoltà vera, non un dettaglio
-di rappresentazione. In un catalogo reale ogni utente ha visto una frazione
+Il disegno indica un vicino, non il vincitore di una classifica, e vale la pena
+dire perché. Applicando alla lettera la formula che vedremo fra poco, il più
+somigliante a Carla non è Bruno: è Dario, che con lei ha in comune **un film
+solo**, e su un film solo l'accordo è perfetto per costruzione. È lo stesso
+inganno che questa pagina smonta poche righe più sotto, e capita già qui, su
+una griglia di venticinque caselle.
+
+Il disegno però mente su una cosa, ed è la più importante: lì le celle piene
+sono la maggioranza. In un catalogo vero ogni utente ha visto una frazione
 minuscola dei titoli, quindi due utenti qualsiasi hanno pochissimi film in
-comune su cui misurare la somiglianza: è da qui che nasce il bisogno dei
-fattori latenti della prossima sezione.
+comune su cui misurare la somiglianza. Quel vuoto è la difficoltà vera del
+mestiere, e da lì nasce il bisogno di riassumere persone e film in poche schede
+di numeri, che è il resto di questa pagina.
 
 `````{tab} Elementare
 
@@ -72,48 +83,54 @@ tutte.
 
 Ogni utente $u$ è rappresentato dalla riga $\mathbf{r}_u$ della matrice dei
 voti, un vettore con una componente per film (quasi tutte mancanti). La
-somiglianza tra due utenti è la **similarità del coseno** incontrata nel
-capitolo di richiami, sezione *Algebra lineare*, ristretta all'insieme $I_{uv}$
-dei film votati da entrambi (sui vettori interi si può calcolare solo dopo aver
-deciso cosa mettere nelle componenti mancanti, e imputare zero, che è la pratica
-corrente per il coseno «pieno», significa affermare che il non visto vale quanto
-il detestato: una scelta di modellazione, non una necessità):
+somiglianza fra due utenti è la **similarità del coseno** incontrata nel
+capitolo sui richiami di matematica, sezione *Algebra lineare*, ristretta
+all'insieme $\mathcal{I}_{uv}$ dei film votati da entrambi:
 
 $$
 \mathrm{sim}(u,v) \;=\;
-\frac{\sum_{i \in I_{uv}} r_{ui}\, r_{vi}}
-{\sqrt{\sum_{i \in I_{uv}} r_{ui}^2}\;\sqrt{\sum_{i \in I_{uv}} r_{vi}^2}} .
+\frac{\sum_{i \in \mathcal{I}_{uv}} r_{ui}\, r_{vi}}
+{\sqrt{\sum_{i \in \mathcal{I}_{uv}} r_{ui}^2}\;
+ \sqrt{\sum_{i \in \mathcal{I}_{uv}} r_{vi}^2}} .
 $$
+
+Restringere a $\mathcal{I}_{uv}$ non è pignoleria. Sui vettori interi il coseno
+si può calcolare solo dopo aver deciso cosa mettere nelle componenti mancanti,
+e la scelta corrente per il coseno «pieno», imputare zero, afferma che il non
+visto vale quanto il detestato: è una decisione di modellazione, non una
+necessità.
 
 Il voto previsto per l'utente $u$ sul film $i$ è la media dei voti dei vicini,
 pesata per la somiglianza:
 
 $$
-\hat{r}_{ui} \;=\; \frac{\sum_{v \in N_i(u)} \mathrm{sim}(u,v)\; r_{vi}}
-{\sum_{v \in N_i(u)} \lvert \mathrm{sim}(u,v)\rvert} ,
+\hat{r}_{ui} \;=\; \frac{\sum_{v \in \mathcal{N}_i(u)} \mathrm{sim}(u,v)\; r_{vi}}
+{\sum_{v \in \mathcal{N}_i(u)} \lvert \mathrm{sim}(u,v)\rvert} ,
 $$
 
-dove $N_i(u)$ è il vicinato di $u$, cioè i pochi utenti (tipicamente qualche
-decina) più simili a $u$ fra quelli che hanno votato $i$, e $r_{vi}$ è il voto
-del vicino $v$. La lettera $k$ la teniamo libera: da qui alla fine del capitolo
-indica il numero di fattori latenti, che è tutt'altro conteggio.
+dove $\mathcal{N}_i(u)$ è il vicinato di $u$, cioè i pochi utenti (tipicamente
+qualche decina) più simili a $u$ fra quelli che hanno votato $i$, e $r_{vi}$ è
+il voto del vicino $v$. La lettera $k$ la teniamo libera: da qui alla fine del
+capitolo indica il numero di fattori latenti, che è tutt'altro conteggio.
 
 C'è un guasto in agguato in questa formula, e non è quello che si direbbe. Con
-$|I_{uv}| = 0$ la similarità non è definita e i due utenti semplicemente non si
-vedono: è un falso negativo, sgradevole ma riconoscibile. Con $|I_{uv}| = 1$ la
-formula restituisce $\mathrm{sim}(u,v) = 1$ **sempre**, qualunque siano i due
-voti: anche se uno ha dato 1 e l'altro 5, il numeratore e il denominatore
-coincidono. Il metodo fabbrica cioè un gemello perfetto, con peso massimo nella
-media, a partire da nessuna evidenza; e centrando i voti la cosa si sposta
-appena, perché la correlazione di Pearson su due soli item vale $\pm 1$ sempre.
+$|\mathcal{I}_{uv}| = 0$ la similarità non è definita e i due utenti
+semplicemente non si vedono: è un falso negativo, sgradevole ma riconoscibile.
+Con $|\mathcal{I}_{uv}| = 1$ la formula restituisce $\mathrm{sim}(u,v) = 1$
+**sempre**, qualunque siano i due voti: anche se uno ha dato 1 e l'altro 5, il
+numeratore e il denominatore coincidono. Il metodo fabbrica cioè un gemello
+perfetto, con peso massimo nella media, a partire da nessuna evidenza; e
+centrando i voti la cosa si sposta appena, perché la correlazione di Pearson su
+due soli item vale $\pm 1$ sempre.
 Nel regime di sparsità descritto poco fa le coppie con uno o due film in comune
 sono la maggioranza delle coppie non vuote, quindi questo è il caso tipico, non
 il caso limite. Il correttivo standard è lo **smorzamento per numerosità**
 (*shrinkage*, o *significance weighting*): si moltiplica la similarità per
-$\frac{|I_{uv}|}{|I_{uv}| + \beta}$, con $\beta$ dell'ordine delle decine, così
+$\frac{|\mathcal{I}_{uv}|}{|\mathcal{I}_{uv}| + \beta}$, con $\beta$ da tarare
+sui dati (in letteratura si va da qualche decina al centinaio), così
 una somiglianza vista su due film pesa una frazione di una vista su cinquanta;
-in alternativa si impone una soglia minima su $|I_{uv}|$ e sotto quella soglia
-si dichiara di non sapere.
+in alternativa si impone una soglia minima su $|\mathcal{I}_{uv}|$ e sotto
+quella soglia si dichiara di non sapere.
 
 Questa forma media voti grezzi, e i voti grezzi non sono confrontabili da
 persona a persona: c'è chi dà 5 a tutto e chi non supera mai il 3. Sottrarre a
@@ -124,12 +141,12 @@ scala di $u$:
 
 $$
 \hat{r}_{ui} \;=\; \bar{r}_u \;+\;
-\frac{\sum_{v \in N_i(u)} \mathrm{sim}(u,v)\,\big(r_{vi} - \bar{r}_v\big)}
-{\sum_{v \in N_i(u)} \lvert \mathrm{sim}(u,v)\rvert} .
+\frac{\sum_{v \in \mathcal{N}_i(u)} \mathrm{sim}(u,v)\,\big(r_{vi} - \bar{r}_v\big)}
+{\sum_{v \in \mathcal{N}_i(u)} \lvert \mathrm{sim}(u,v)\rvert} .
 $$
 
 Nella *similarità*, invece, centrare cambia la metrica, e le cambia il nome:
-se la media sottratta è calcolata sui soli film di $I_{uv}$ si ottiene
+se la media sottratta è calcolata sui soli film di $\mathcal{I}_{uv}$ si ottiene
 esattamente la correlazione di Pearson; se è la media di *tutti* i voti
 dell'utente si ottiene il coseno centrato (*mean-centered cosine*), variante
 vicina ma distinta. Le due centrature sono ortogonali: si possono adottare
@@ -138,11 +155,11 @@ un pomeriggio: gran parte della letteratura di settore, fin da GroupLens,
 chiama «correlazione di Pearson» anche la seconda variante, quindi lo stesso
 nome copre due formule diverse a seconda di chi lo scrive.
 
-La variante **item-based** {cite}`sarwar2001item` applica le stesse formule
-alle *colonne* della matrice: similarità tra film, previsione come media dei
-voti di $u$ sui film simili a $i$. In produzione è spesso preferita, ed è la
+La variante **item-based** applica le stesse formule alle *colonne* della
+matrice: similarità fra film, previsione come media dei voti di $u$ sui film
+simili a $i$ {cite}`sarwar2001item`. In produzione è spesso preferita, ed è la
 scelta con cui Amazon ha fatto girare il proprio motore
-{cite}`linden2003amazon`: le similarità tra oggetti
+{cite}`linden2003amazon`: le similarità fra oggetti
 sono più stabili nel tempo e precalcolabili, e il costo per singola
 raccomandazione crolla, perché a richiesta resta solo da guardare i pochi film
 già votati dall'utente.
@@ -153,18 +170,21 @@ I vicini funzionano, e per anni hanno fatto girare i primi sistemi
 commerciali. Ma pagano la sparsità, e la pagano due volte. Due persone con
 gusti gemelli che per caso non hanno votato *nessun* film in comune risultano
 perfette estranee: il metodo non le vede. E due persone che hanno visto un film
-solo in comune risultano gemelle perfette, qualunque voto gli abbiano dato: il
-metodo vede troppo. La radice è la stessa, cioè che il confronto passa dai film
+solo in comune risultano gemelle perfette, qualunque voto gli abbiano dato: con
+un film solo non c'è un andamento da confrontare, la ricetta che misura
+l'accordo non ha su cosa lavorare e risponde «identiche» comunque, anche a chi
+ha dato 1 e a chi ha dato 5. Il metodo, qui, vede troppo. La radice è la
+stessa, cioè che il confronto passa dai film
 in comune, e in una tabella quasi vuota i film in comune sono pochissimi. Serve
 un modo per confrontare due persone che non passi da lì.
 
 ## Fattori latenti: la matrice compressa
 
-La mossa vincente del Netflix Prize fu cambiare rappresentazione. Invece di
-confrontare direttamente righe e colonne, si assume che dietro la gigantesca
-matrice dei voti ci sia una struttura piccola: pochi tratti fondamentali che
-spiegano i gusti. È la **fattorizzazione di matrici** (*matrix
-factorization*) {cite}`koren2009matrix`, illustrata in
+La mossa vincente del Netflix Prize fu cambiare il modo di guardare i dati.
+Invece di confrontare fra loro le righe e le colonne della tabella, si parte da
+un'ipotesi: dietro quella tabella gigantesca c'è una struttura piccola, pochi
+tratti di fondo che bastano a spiegare i gusti. È la **fattorizzazione di
+matrici** (*matrix factorization*) {cite}`koren2009matrix`, illustrata in
 {numref}`fig-matrix-factorization`.
 
 ```{figure} ../figures/matrix-factorization.svg
@@ -175,8 +195,10 @@ factorization*) {cite}`koren2009matrix`, illustrata in
 La matrice dei voti, enorme e quasi vuota, viene approssimata dal prodotto di
 due matrici strette: una scheda di pochi numeri per ogni utente (nel disegno,
 il suo «profilo») e una per ogni film, e il voto previsto è il confronto voce
-per voce fra le due schede. Il disegno lo scrive come un'uguaglianza per
-brevità: nel modello completo si sommano anche due correzioni, quanto quella
+per voce fra le due schede. Il segno in mezzo è un «circa» e non un uguale
+perché due tabelle strette non possono riprodurre esattamente la grande, ed è
+tutto il punto. Il disegno inoltre si ferma al prodotto: nel modello completo
+si sommano anche due correzioni, quanto quella
 persona vota alto in generale e quanto quel film è apprezzato in generale. La
 Q ribaltata, «Qᵀ», è la stessa tabella dei film girata su un fianco, così che
 le schede diventino colonne e le due tabelle combacino.
@@ -265,9 +287,9 @@ sono zeri, sono incognite, e restano fuori dalla somma.
 
 Attenzione a non promuovere questa frase a proprietà generale della
 raccomandazione, perché sull'implicito il metodo canonico fa l'opposto. Hu,
-Koren e Volinsky {cite}`hu2008collaborative` osservano che concentrarsi sul
-solo feedback raccolto lascerebbe in mano *soltanto* esempi positivi, e che il
-segnale negativo, tale e quale, sta proprio nelle celle mancanti. Il loro
+Koren e Volinsky osservano che concentrarsi sul solo feedback raccolto
+lascerebbe in mano *soltanto* esempi positivi, e che il segnale negativo, tale
+e quale, sta proprio nelle celle mancanti {cite}`hu2008collaborative`. Il loro
 modello introduce allora due quantità distinte: una **preferenza**
 $p_{ui} = \mathbb{1}[r_{ui} > 0]$, che vale $1$ se un'interazione c'è stata, e
 una **confidenza** $c_{ui} = 1 + \alpha r_{ui}$, che dice quanto crediamo a
@@ -315,11 +337,13 @@ Per un esempio eseguibile all'istante generiamo invece voti sintetici con la
 stessa struttura, triple (utente, film, voto), così il codice gira senza
 scaricare nulla; per usare MovieLens basterebbe sostituire la generazione con
 la lettura del file dei voti. Due differenze da tenere a mente, perché più
-avanti spiegano dei numeri: i nostri voti finti sono numeri con la virgola,
-quelli di MovieLens sono stelle intere; e la nostra tabella la faremo piena al
-10%, dieci volte più della più piena fra quelle vere, altrimenti su un esempio
-così piccolo non resterebbe abbastanza segnale per imparare qualcosa in
-trenta secondi.
+avanti spiegano dei numeri. I nostri voti finti sono numeri con la virgola,
+quelli di MovieLens sono stelle intere. E la nostra tabella la faremo piena al
+10% circa: più fitta perfino di MovieLens 100K, che con 100.000 voti su
+$943 \times 1.682$ celle sta al 6,3%, ed è un banco di prova fra i meno
+sparsi. Su
+un esempio così piccolo, con la sparsità vera non resterebbe abbastanza
+segnale per imparare qualcosa in trenta secondi.
 
 Il modello è la traduzione letterale dell'idea appena vista. Un
 `nn.Embedding` è una tabella con una riga di numeri per ogni utente (o per
@@ -382,29 +406,32 @@ volte, e in effetti succede: le celle distinte sono 5.723 invece di 6.000. Non
 è un problema per l'esempio (sono due osservazioni concordi della stessa cosa),
 ma è il tipo di dettaglio che su dati veri va guardato.
 
-L'addestramento è un normale ciclo PyTorch: a ogni giro completo sui voti (un
-giro si chiama **epoca**) il modello prevede, l'errore quadratico medio (la
-**MSE** incontrata nel capitolo di Machine Learning) misura di quanto sbaglia,
-e l'ottimizzatore ritocca le schede. È lo stesso metro del Netflix Prize a meno
-di una radice quadrata: il RMSE dell'annuncio è la radice della MSE che vedremo
-stampata, quindi una MSE di $0{,}42$ vale un errore di circa $0{,}65$ stelle.
+L'addestramento è un normale ciclo PyTorch. A ogni giro completo sui voti, e un
+giro si chiama **epoca**, il modello prevede, si misura di quanto ha sbagliato
+e l'ottimizzatore ritocca le schede. La misura è l'errore quadratico medio, la
+**MSE** incontrata nel capitolo di Machine Learning, che è poi il metro del
+Netflix Prize a meno di una radice quadrata: il RMSE dell'annuncio è la radice
+della MSE che vedremo stampata, quindi una MSE di $0{,}42$ vale un errore di
+circa $0{,}65$ stelle.
 
 C'è poi un **freno**, e serve a impedire che i numeri delle schede crescano a
 dismisura pur di far tornare i voti già noti: nel codice è il `weight_decay`
 dell'ottimizzatore, e più è stretto, più il modello è costretto a spiegare i
-voti con schede modeste. Su quel freno conviene essere precisi, perché fa un
-lavoro leggermente diverso da quello che la formula descrive.
+voti con schede modeste. Su quel freno conviene essere precisi, perché la
+ricetta scritta sulla carta dice una cosa e la riga che gira ne fa una
+leggermente diversa.
 
 `````{tab} Elementare
 
-Il freno del programma e il freno di cui parlavamo si somigliano, ma non
-coincidono. Quello del programma, a ogni passo, stringe verso lo zero **tutti**
-i numeri del modello, senza guardare chi sono. Fra questi c'è anche il numero
+Sulla carta il freno tira verso lo zero i numeri delle schede, cioè quelli che
+il modello si sta inventando, e solo quelli. Nel programma invece stringe verso
+lo zero **tutti** i numeri del modello, a ogni passo, senza guardare chi sono.
+Fra questi c'è anche il numero
 che dice «su questo sito, in generale, si vota alto»: quello non andrebbe
 frenato affatto, perché non sta inventando niente, sta constatando un fatto, e
 tirarlo verso lo zero vuol dire spingerlo a dire il falso. Su un esempio
 piccolo come questo la differenza non si vede nei risultati. Vale però la pena
-saperlo: fra la formula scritta su carta e le righe che girano davvero c'è
+saperlo: fra la ricetta scritta sulla carta e le righe che girano davvero c'è
 quasi sempre un piccolo scarto, e chi scrive il codice è l'unico che può
 accorgersene.
 
@@ -459,7 +486,9 @@ diverse e la più interessante è la meno spettacolare.
 
 Sui voti già visti l'errore crolla a $0{,}019$, cioè praticamente a zero, e da
 solo quel numero non dimostra niente: il modello ha $4.501$ numeri da regolare
-per $4.800$ voti di addestramento, quasi uno per voto, e con tanta libertà
+(le $500$ schede da otto voci l'una, più una correzione per ogni utente e per
+ogni film, più la media globale) per $4.800$ voti di addestramento, quasi uno
+per voto, e con tanta libertà
 impararseli a memoria è alla sua portata. È esattamente la situazione in cui
 un errore basso sui dati di casa è la cosa che ci si aspetta di vedere anche da
 un modello che non ha capito niente.
@@ -476,18 +505,21 @@ raccomandazione non può permettersi di guardare solo il primo numero, ed è la
 ragione per cui il codice qui sopra mette da parte il 20% delle triple prima
 ancora di cominciare.
 
-Una nota sul freno, già che i numeri ci sono. A `weight_decay=1e-4` non sta
-frenando quasi nulla, e lo si vede: se frenasse, l'errore sui voti visti non
-arriverebbe a $0{,}019$. Alzandolo a `1e-2` il freno si sente eccome, e il
-modello smette del tutto di personalizzare: $0{,}99$ sui voti visti e $1{,}02$
-su quelli tenuti da parte, cioè la previsione banale. Fra i due estremi c'è una
+Una nota sul freno, già che i numeri ci sono. A `weight_decay=1e-4`, cioè
+$0{,}0001$, non sta frenando quasi nulla, e lo si vede: se frenasse, l'errore
+sui voti visti non arriverebbe a $0{,}019$. Portandolo a `1e-2`, cento volte
+tanto, e lasciando tutto il resto com'è, il freno si sente eccome, e il modello
+smette del tutto di personalizzare: $0{,}987$ sui voti visti e $1{,}015$ su
+quelli tenuti da parte, cioè la previsione banale. Fra i due estremi c'è una
 taratura buona, e trovarla è mestiere: non è un valore che si copia da un
 libro.
 
 Su MovieLens la ricetta è la stessa, con due avvertenze. I voti veri sono
-stelle intere, quindi c'è una quantizzazione che qui non c'è e che alza il
-pavimento dell'errore; e la tabella vera è piena la metà o meno di questa,
-quindi non aspettatevi questi numeri.
+stelle intere, e un giudizio arrotondato all'intero si porta dietro un errore
+che nessun modello potrà mai togliere: c'è quindi una soglia sotto la quale
+non si scende, e qui non c'è. E la tabella vera è più vuota di questa (il 6,3%
+contro il 10%, e i dataset più grandi stanno molto più in basso), quindi non
+aspettatevi questi numeri.
 
 ## Dove il collaborativo si ferma
 
@@ -568,7 +600,8 @@ dato. Prima però, il riepilogo.
   corretto da quanto quella persona vota alto in generale e da quanto quel film
   è apprezzato in generale. Le manopole non le sceglie nessuno: le trova
   l'algoritmo dai soli voti già dati (le celle vuote sono incognite, non zeri),
-  con un freno che gli impedisce di imparare quei voti a memoria.
+  con un freno che dovrebbe impedirgli di imparare quei voti a memoria, e che
+  va tarato: qui è lasco, e a memoria ne impara parecchi.
 - In PyTorch sono due tabelle di schede e un confronto voce per voce: poche
   righe, la stessa idea che ha vinto il Netflix Prize.
 - L'errore va guardato **sui voti messi da parte**, non su quelli con cui il

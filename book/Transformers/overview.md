@@ -1,6 +1,6 @@
 # Transformer: quando l'attenzione basta
 
-Nell'estate del 2017 otto ricercatori, tutti passati per Google Brain e Google
+Nel giugno del 2017 otto ricercatori, tutti passati per Google Brain e Google
 Research, pubblicano un *paper* (un articolo scientifico: il modo in cui chi fa
 ricerca racconta agli altri quello che ha trovato) dal titolo che suona come
 una battuta: *Attention Is All You Need* {cite}`vaswani2017attention`;
@@ -67,12 +67,13 @@ debole. Poi gli **esempi pratici**, le famiglie di modelli (GPT, BERT, T5),
 l'estensione a immagini e **multimodalità**, e che cosa succede quando lo
 stesso modello impara **cento lingue insieme** (compreso il fatto, tutt'altro
 che ovvio, che si possa rifinire un modello in inglese e usarlo in italiano).
-Da lì, tre approfondimenti sul
+Da lì, quattro approfondimenti sul
 presente: i **grandi modelli linguistici** (le leggi di scala, come si genera
-il testo davvero), il **post-training** (istruzioni, preferenze umane,
-allineamento: come un modello di linguaggio diventa un assistente) e il
-**retrieval** (cercare per rispondere: RAG). Chiude uno sguardo alle
-**tendenze**, con i limiti, che non mancano.
+il testo davvero), i **modelli a esperti** (come si compra capacità senza
+comprare, nella stessa misura, calcolo), il **post-training** (istruzioni,
+preferenze umane, allineamento: come un modello di linguaggio diventa un
+assistente) e il **retrieval** (cercare per rispondere: RAG). Chiude uno
+sguardo alle **tendenze**, con i limiti, che non mancano.
 
 Una nota di metodo, coerente col resto del libro: i Transformer sono
 importanti, ma non sono magia. Sotto il cofano ci sono tabelle di numeri e
@@ -87,7 +88,7 @@ Elementare, dove ogni pezzo ha un'immagine al posto della formula.
 - Il **Transformer** (Vaswani et al., 2017, *Attention Is All You Need*)
   elimina ricorrenza e convoluzioni: l'intera architettura si regge sul
   meccanismo di **attenzione**.
-- Rispetto alle RNN risolve due problemi: le **dipendenze lunghe** (ogni
+- Rispetto alle RNN attacca alla radice due problemi: le **dipendenze lunghe** (ogni
   parola vede direttamente ogni altra) e la **parallelizzazione** (le parole si
   possono elaborare tutte insieme invece che in fila, e i cento amici della
   scheda Elementare servono davvero: è quello che permette di addestrare i

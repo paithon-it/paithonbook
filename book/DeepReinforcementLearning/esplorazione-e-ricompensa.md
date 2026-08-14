@@ -1,8 +1,8 @@
 # Esplorazione e ricompensa: curiosità, ricompense rade, reward hacking
 
 Fra i 49 giochi Atari su cui DeepMind mise alla prova il DQN nel 2015, ce n'è
-uno dove l'agente che aveva imparato a giocare a decine di titoli superando i
-campioni umani colleziona un punteggio desolante: **zero**
+uno dove l'agente che su decine di altri titoli reggeva il confronto con un
+collaudatore umano professionista colleziona un punteggio desolante: **zero**
 {cite}`mnih2015human`. Il gioco è *Montezuma's Revenge*, un platform del 1984:
 un esploratore in un tempio azteco deve scendere una scala, saltare una fune,
 scansare un teschio rotolante e raccogliere una chiave prima di ricevere il suo
@@ -10,7 +10,8 @@ primo punto. Decine di mosse esatte, in sequenza, per un solo segnale di
 "bene". Un agente che sceglie mosse a caso non arriverà mai in fondo a quella
 catena: cadrà, morirà, e non vedrà mai una ricompensa da cui imparare. Il muro
 contro cui il DQN sbatté non è la percezione né la memoria: è
-l'**esplorazione** in un mondo dove le ricompense sono **sparse**.
+l'**esplorazione** in un mondo dove le ricompense sono **rade**, o come si dice
+di solito **sparse**: capitano una volta ogni tanto e in mezzo non c'è niente.
 
 ## Il problema delle ricompense sparse
 
@@ -19,9 +20,10 @@ secondo, e l'agente ha un flusso costante di segnali da cui correggersi. Ma
 quando la ricompensa arriva solo dopo lunghe sequenze di azioni giuste (la
 chiave, la porta, il livello), il segnale diventa un ago in un pagliaio.
 Finché l'agente non inciampa *per caso* in quella prima ricompensa, non ha
-nulla che gli dica in che direzione andare. E la probabilità di inciamparci
-per caso, con l'esplorazione casuale, crolla esponenzialmente con la lunghezza
-della catena.
+nulla che gli dica in che direzione andare. E la probabilità di inciamparci per
+caso crolla a precipizio con la lunghezza della catena: se a ogni passo ci sono
+otto mosse possibili e una sola è quella giusta, azzeccarne dieci di fila per
+puro caso capita una volta su un miliardo.
 
 Nel capitolo sul reinforcement learning abbiamo introdotto il dilemma
 esplorazione–sfruttamento e la strategia $\varepsilon$-greedy: agire quasi
@@ -109,8 +111,9 @@ sostanziali proprio su Montezuma's Revenge.
 `````
 
 Il bonus di novità si calcola facilmente quando gli stati sono pochi e
-distinti. Il frammento seguente mostra come, a parità di formula, gli stati più
-rari ricevano la spinta esplorativa più forte:
+distinti. Il frammento seguente applica la stessa identica regola a sei stati
+visitati un numero di volte molto diverso, e mostra come il premio vada quasi
+tutto ai più rari:
 
 ```python
 import numpy as np
@@ -144,6 +147,16 @@ abbiamo ancora molto da imparare. La sorpresa diventa così una **ricompensa
 intrinseca**, generata dall'agente stesso, che affianca quella estrinseca
 dell'ambiente.
 
+Di questa idea esistono due realizzazioni classiche, e vale la pena distinguerle
+perché la sorpresa la misurano in due modi diversi. La prima si chiama **ICM**
+(*Intrinsic Curiosity Module*, modulo di curiosità intrinseca): l'agente si
+costruisce un modello di «che cosa succederà se faccio questo», e ogni volta
+che sbaglia la previsione incassa un premietto. La seconda si chiama **RND**
+(*Random Network Distillation*): due reti fatte allo stesso modo, una congelata
+con pesi tirati a caso e mai toccati, l'altra che si allena a imitarla; dove
+l'imitazione riesce male, l'agente non è ancora passato abbastanza, e proprio
+quello scarto è la misura di novità.
+
 `````{tab} Elementare
 
 Pensa a un bambino che gioca. Nessuno gli dà punti: eppure esplora
@@ -164,10 +177,17 @@ Nel modulo di curiosità intrinseca **ICM** (*Intrinsic Curiosity Module*,
 Pathak e colleghi, 2017 {cite}`pathak2017curiosity`) la ricompensa intrinseca
 è l'**errore di predizione** di un modello di dinamica. La chiave è che la
 previsione non avviene sui pixel grezzi ma in uno **spazio di feature**
-$\phi(s)$ appreso: si allena una rete a codificare lo stato in modo che
-catturi solo ciò che l'agente *può controllare*, ignorando il rumore
-irrilevante dell'ambiente. Un modello *forward* prevede la feature del prossimo
-stato $\hat\phi(s_{t+1})$ da $\phi(s_t)$ e dall'azione $a_t$; la ricompensa
+$\phi(s)$ appreso, che cattura solo ciò che l'agente *può controllare* e ignora
+il rumore irrilevante dell'ambiente. Come si ottenga una proprietà del genere è
+metà del lavoro, e vale la pena dirlo: $\phi$ non si addestra da sé, si addestra
+con un modello di dinamica **inversa**, una rete che da $\phi(s_t)$ e
+$\phi(s_{t+1})$ deve indovinare l'azione $a_t$ che ha portato dall'uno all'altro.
+Per riuscirci $\phi$ è costretta a conservare tutto ciò che le azioni
+influenzano, e non ha ragione di conservare il resto: una foglia che si muove
+per il vento non aiuta a indovinare quale tasto è stato premuto, e quindi esce
+dalla rappresentazione. Su quello spazio, un modello *forward* prevede la
+feature del prossimo stato $\hat\phi(s_{t+1})$ da $\phi(s_t)$ e dall'azione
+$a_t$; la ricompensa
 intrinseca è
 
 $$
@@ -196,21 +216,11 @@ ricorrere a dimostrazioni umane né allo stato interno dell'emulatore: il
 punteggio zero del DQN era già stato scalfito dagli pseudo-conteggi, ma ora,
 tre anni dopo, anche la media umana era superata. Non di più, ed è bene dirlo
 con le parole del lavoro stesso, che sull'esito è prudente: l'agente
-«occasionalmente completa il primo livello». Di livelli, Montezuma's Revenge ne
-ha tre. Superare il punteggio umano medio e risolvere un gioco sono due
-affermazioni diverse, e vale la pena tenerle separate.
+«occasionalmente completa il primo livello». Occasionalmente, e il primo: dopo
+quello il gioco va avanti. Superare il punteggio umano medio e risolvere un
+gioco sono due affermazioni diverse, e vale la pena tenerle separate.
 
 `````
-
-Di questa idea esistono due realizzazioni classiche, e conviene tenerne a mente
-i nomi perché torneranno. La prima si chiama **ICM** (*Intrinsic Curiosity
-Module*, modulo di curiosità intrinseca): l'agente si costruisce un modello di
-«che cosa succederà se faccio questo», e ogni volta che sbaglia la previsione
-incassa un premietto. La seconda si chiama **RND** (*Random Network
-Distillation*): due reti con la stessa architettura, una congelata con pesi
-tirati a caso e mai toccati, l'altra che si allena a imitarla; dove l'imitazione
-riesce male, l'agente non è ancora passato abbastanza, e proprio quello scarto è
-la misura di novità.
 
 Il cuore di RND si scrive in poche righe di PyTorch:
 
@@ -239,7 +249,8 @@ def ricompensa_intrinseca(stati):
     with torch.no_grad():
         obiettivo = target(stati)            # output della rete casuale fissa
     previsione = predictor(stati)
-    # errore per-stato = novità: alto sugli stati poco visti
+    # errore per-stato = novità: alto sugli stati poco visti. La media al posto
+    # della somma della formula cambia solo la scala, che poi si ritara comunque
     return (previsione - obiettivo).pow(2).mean(dim=1)
 
 stati = torch.randn(8, 16)
@@ -269,11 +280,18 @@ uscire davvero. Gli hai insegnato a *inseguire il premietto*, non a uscire.
 
 Per fortuna esiste un modo sicuro di dare questi aiuti. L'idea, dovuta a Andrew
 Ng e colleghi nel 1999, è dare l'aiuto come *differenza di quota*: assegna a
-ogni posto un "livello di vicinanza all'uscita", e premia l'agente solo per la
-differenza di livello fra dove arriva e dove era. Fatta così, la somma dei
-premietti lungo un giro chiuso è sempre zero: girare in tondo non frutta nulla,
-e la strategia migliore resta esattamente quella di prima, solo più facile da
-trovare.
+ogni posto un "livello di vicinanza all'uscita" e premia l'agente solo per la
+differenza di livello fra dove arriva e dove era. Sei alla quota $3$ e arrivi
+alla $5$: prendi $+2$. Torni indietro: prendi $-2$. Avanti e indietro fa zero,
+quindi oscillare davanti alla porta non frutta niente, e la strategia migliore
+resta esattamente quella di prima, solo più facile da trovare.
+
+(Il conto torna così tondo se i premi lontani valgono quanto quelli vicini. Se
+il futuro conta un po' meno del presente, come succede quasi sempre, il giro
+chiuso non fa esattamente zero. La garanzia regge lo stesso, per una ragione un
+po' più sottile: sommando tutti i premietti di un percorso, alla fine sopravvive
+solo la quota del punto di partenza, che è la stessa per qualunque strategia e
+quindi non ne favorisce nessuna.)
 
 `````
 
@@ -324,9 +342,11 @@ intendevamo.
 :alt: "Grafico con l'intensità dell'ottimizzazione in ascissa. Due curve partono insieme e salgono: la metrica surrogata, quella che stiamo effettivamente massimizzando, e l'obiettivo vero. Oltre un punto segnato come punto di Goodhart le due divergono: la surrogata continua a salire, mentre l'obiettivo vero comincia a scendere."
 :width: 92%
 
-Le due curve si separano, e il guaio è che se ne vede una sola. Chi guarda il
-numero che ottimizza vede miglioramenti fino alla fine, anche molto dopo il
-punto in cui le cose hanno cominciato a peggiorare.
+Due curve che si separano: quella che continua a salire è il numero che stiamo
+massimizzando, quella che a un certo punto scende è ciò che volevamo davvero. Il
+guaio è che se ne vede una sola. Chi guarda il numero che ottimizza vede
+miglioramenti fino alla fine, anche molto dopo il punto in cui le cose hanno
+cominciato a peggiorare.
 ```
 
 Il punto di divergenza in {numref}`fig-reward-hacking` porta il nome di
@@ -356,10 +376,7 @@ della ricompensa, perdendo secondo ogni ragionevole intento.
 È la stessa cosa che succede quando si paga un idraulico a numero di tubi
 sostituiti: qualcuno inizierà a sostituire tubi che andavano benissimo. Il
 metro con cui misuri diventa l'obiettivo, e l'obiettivo vero (l'impianto che
-funziona) passa in secondo piano. La chiamano **legge di Goodhart**, anche se
-la frase che si cita sempre (*quando una misura diventa un bersaglio, smette di
-essere una buona misura*) non l'ha scritta l'economista che le dà il nome: l'ha
-scritta un'antropologa, Marilyn Strathern, più di vent'anni dopo.
+funziona) passa in secondo piano.
 
 Con gli agenti è identico, e più insidioso, perché un ottimizzatore
 instancabile cercherà *ogni* scorciatoia possibile. Il problema non è che

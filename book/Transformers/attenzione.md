@@ -5,9 +5,9 @@ davanzale, saltò", e arrivi a "saltò", il tuo cervello non ripassa tutte le
 parole in fila: torna dritto a "gatto". Sai *a che cosa prestare attenzione*.
 Il meccanismo di **attenzione** dà alle reti neurali esattamente questa
 capacità: davanti a una parola, guardare tutte le altre e pesare quanto
-ciascuna conta per capirla. Nato come rattoppo per migliorare le traduzioni
-delle reti ricorrenti, con il Transformer è passato da comprimario a
-protagonista assoluto.
+ciascuna conta per capirla. Nato nel settembre del 2014 come rattoppo per
+migliorare le traduzioni delle reti ricorrenti {cite}`bahdanau2015neural`, con
+il Transformer è passato da comprimario a protagonista assoluto.
 
 ## L'idea: pesare le parole
 
@@ -63,8 +63,8 @@ apprese: una **query** $\mathbf{Q}$ ("che cosa sto cercando?"), una **key**
 $\mathbf{K}$ ("che cosa offro come etichetta?") e un **value** $\mathbf{V}$
 ("che informazione porto?").
 L'affinità tra la parola che elabora e ogni altra è il prodotto scalare
-query·key (la stessa misura di somiglianza tra vettori del capitolo di algebra
-lineare) e la **Scaled Dot-Product Attention** la trasforma in pesi:
+query·key (la stessa misura di somiglianza tra vettori vista in *Algebra
+lineare*) e la **Scaled Dot-Product Attention** la trasforma in pesi:
 
 $$
 \text{Attention}(\mathbf{Q}, \mathbf{K}, \mathbf{V}) =
@@ -77,12 +77,26 @@ la dimensione delle key. La softmax (già incontrata nel capitolo sulle reti
 neurali) normalizza le affinità in pesi che sommano a 1; la divisione per
 $\sqrt{d_k}$ evita che, al crescere della dimensione, i prodotti scalari
 diventino così grandi da saturare la softmax e azzerarne i gradienti. Il conto
-sta in una riga, e vale la pena scriverla perché è l'unica ipotesi in tutto il
-paragrafo: se le componenti di query e key sono indipendenti, a media nulla e
-varianza unitaria, il loro prodotto scalare ha varianza $d_k$, e dividere per
-$\sqrt{d_k}$ la riporta a 1. Il fattore non *impedisce* la saturazione, ne
-toglie la dipendenza da $d_k$: con componenti di varianza diversa da 1 la
-softmax satura lo stesso, a qualunque dimensione. L'output
+sta in due righe, e vale la pena farle perché è lì che stanno le ipotesi.
+Supponiamo che le componenti $q_i$ e $k_i$ siano a media nulla, varianza
+unitaria, indipendenti fra loro e indipendenti al variare di $i$. Allora ogni
+addendo del prodotto scalare ha varianza
+$\mathbb{E}[q_i^2 k_i^2] - (\mathbb{E}[q_i]\,\mathbb{E}[k_i])^2 =
+\mathbb{E}[q_i^2]\,\mathbb{E}[k_i^2] = 1$, dove la fattorizzazione
+dell'aspettazione usa l'indipendenza **fra** $q_i$ e $k_i$; e siccome gli
+addendi sono scorrelati **al variare di $i$**, le varianze si sommano:
+
+$$
+\operatorname{Var}\!\left(\sum_{i=1}^{d_k} q_i k_i\right) = d_k .
+$$
+
+Dividere per $\sqrt{d_k}$ la riporta a 1. Servono dunque due indipendenze
+diverse, una per ciascun passaggio, e una terza ipotesi che di solito non si
+dice: tutto questo vale **all'inizializzazione**, perché appena
+$\mathbf{W}^Q$ e $\mathbf{W}^K$ cominciano ad allenarsi smettono di produrre
+componenti a varianza unitaria. Il fattore infatti non *impedisce* la
+saturazione, ne toglie la dipendenza da $d_k$: con componenti di varianza
+diversa da 1 la softmax satura lo stesso, a qualunque dimensione. L'output
 è, per ogni token, la combinazione dei value pesata dall'attenzione: una
 rappresentazione contestuale calcolata in un unico prodotto tra matrici, per
 tutte le posizioni insieme.
@@ -117,11 +131,11 @@ versione di sé, «cercare» ed «essere trovati» sarebbero la stessa operazion
 con query e key distinte, una parola può cercare qualcosa di molto diverso da
 ciò che offre.
 
-```{admonition} Un antenato: le reti a memoria
+```{admonition} Un cantiere parallelo: le reti a memoria
 :class: note
 Interrogare un archivio con una domanda, pesare quanto ciascun elemento le
 risponde, e restituire la miscela pesata di ciò che quegli elementi contengono:
-questa struttura è stata inventata prima dei Transformer, e per un altro scopo.
+questa struttura è stata costruita prima dei Transformer, e per un altro scopo.
 
 Nel 2014 le **memory network** {cite}`weston2015memory` affrontavano il
 problema di far ragionare una rete su un elenco di fatti («Maria è andata in
@@ -145,9 +159,18 @@ Due cose da portarsi via. La prima è che quella graduatoria sui fatti **è**
 l'attenzione, con la sola differenza che qui l'archivio è un magazzino a parte
 invece della frase stessa. La seconda è che la struttura
 domanda-contro-archivio, con i fatti tenuti fuori dalla rete e consultati al
-momento, è esattamente la forma dei sistemi che nel capitolo su RAG recuperano
-documenti prima di rispondere. Un'idea messa da parte perché la sua epoca non
-aveva né i dati né l'hardware, e tornata due volte sotto altri nomi.
+momento, è esattamente la forma dei sistemi che nella sezione su RAG recuperano
+documenti prima di rispondere.
+
+Sulle date conviene però essere precisi, perché la tentazione di raccontarla
+come una discendenza è forte e sarebbe falsa: l'attenzione per la traduzione è
+del settembre 2014, le memory network dell'ottobre dello stesso anno, la
+versione a graduatoria del marzo 2015. Sono due strade partite quasi insieme,
+da due problemi diversi, e arrivate alla stessa operazione; nessuna delle due
+nasce dall'altra. Quello che le reti a memoria hanno di proprio non è dunque
+l'attenzione, è l'**archivio tenuto fuori dai pesi** e consultato al momento
+della domanda: ed è quel pezzo lì, messo da parte perché la sua epoca non aveva
+né i dati né l'hardware, a tornare cinque anni dopo con un altro nome.
 ```
 
 ## Multi-Head Attention: più letture in parallelo
@@ -184,8 +207,8 @@ apprese. Nel Transformer originale
 $h = 8$ e ogni testa lavora in dimensione $d_k = d_{\text{model}}/h = 64$: il
 costo complessivo resta paragonabile a una singola attenzione a dimensione
 piena, ma il modello può dedicare teste diverse a relazioni diverse
-(sintattiche, semantiche, posizionali) (cosa che l'analisi empirica delle
-teste addestrate conferma almeno in parte).
+(sintattiche, semantiche, posizionali), cosa che l'analisi empirica delle
+teste addestrate conferma almeno in parte.
 `````
 
 ## Dove va a finire l'attenzione: encoder e decoder
@@ -235,8 +258,8 @@ attraversa a ogni strato: i modelli successivi la spostano prima del
 sotto-strato, $\mathbf{x} + \text{SubLayer}(\text{LayerNorm}(\mathbf{x}))$, il
 cosiddetto
 *Pre-LN*, ed è lì che il cammino identità diventa davvero pulito (Xiong e
-colleghi, 2020, mostrano che senza questo spostamento serve un riscaldamento
-graduale del learning rate per addestrare stabilmente).
+colleghi {cite}`xiong2020layer` mostrano che senza questo spostamento serve un
+riscaldamento graduale del learning rate per addestrare stabilmente).
 `````
 
 Scorciatoia e taratura sono la parte che nessuno racconta mai, e senza la quale

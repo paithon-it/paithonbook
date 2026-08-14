@@ -1,11 +1,14 @@
 # Offline reinforcement learning: imparare da dati fissi
 
 Nel 2018 un gruppo dell'Imperial College di Londra ha addestrato un sistema
-(lo hanno chiamato *AI Clinician*) a suggerire i dosaggi di fluidi e
-vasopressori per i pazienti con sepsi in terapia intensiva. Il modello non ha
-mai provato una terapia su un malato vero: ha imparato guardando l'archivio di
-ricoveri passati, con le decisioni prese dai medici e ciò che ne è seguito. È
-l'unica strada possibile, del resto. Nessun comitato etico autorizzerebbe un
+(lo hanno chiamato *AI Clinician*) {cite}`komorowski2018clinician` a suggerire,
+per i pazienti in terapia
+intensiva con una sepsi (un'infezione che dilaga in tutto l'organismo e fa
+crollare la pressione), quanti liquidi somministrare e quanto farmaco dare per
+tenere su quella pressione. Il modello non ha mai provato una terapia su un
+malato vero: ha imparato guardando l'archivio di ricoveri passati, con le
+decisioni prese dai medici e ciò che ne è seguito. È l'unica strada possibile,
+del resto. Nessun comitato etico autorizzerebbe un
 agente a somministrare farmaci «a caso» per esplorare, come fa il Q-learning
 in un videogioco; e nessuno lo lascerebbe sterzare a caso al volante di
 un'auto, o proporre acquisti assurdi a milioni di utenti per misurarne la
@@ -112,10 +115,13 @@ azioni fuori dal supporto dei dati.
 
 `````
 
-Prima di vedere i rimedi, tocchiamo con mano il fenomeno. Il codice qui sotto
-(puro NumPy, eseguibile) stima un valore-azione da un dataset che copre solo
-una fetta dello spazio, e mostra il massimo «naive» cadere su un'azione mai
-osservata, con un valore stimato gonfiato ben lontano da quello vero.
+Prima di vedere i rimedi, tocchiamo con mano il fenomeno, e in miniatura. Le
+mosse possibili sono un numero solo, che va da $-1$ a $+1$ (immagina lo sterzo);
+il voto vero di ciascuna lo conosciamo, ed è massimo a $+0{,}3$. Chi ha raccolto
+i dati, però, è stato prudente e ha provato soltanto la fetta fra $-1{,}0$ e
+$-0{,}2$: la mossa migliore, nell'archivio, non c'è. Il programma qui sotto fa
+passare una curva per quei quaranta punti e poi le chiede il voto di **tutte**
+le mosse, comprese quelle mai provate.
 
 ```python
 import numpy as np
@@ -148,12 +154,15 @@ print(f"vincolato : a*={a_vinc:+.2f}  Q_stimato={Q_stima(a_vinc):+.2f}  "
       f"Q_vero={Q_vero(a_vinc):+.2f}")
 ```
 
-Il massimo naive sceglie un'azione al bordo dello spazio, mai osservata, a cui
-il polinomio assegna un valore assurdamente alto rispetto al suo valore reale.
-Vincolando la ricerca alla zona che i dati coprono davvero (il loro
-**supporto**, che in statistica è appunto l'insieme dei valori effettivamente
-presenti), stima e realtà tornano a coincidere: è, in miniatura, la prima
-famiglia di soluzioni.
+Il voto più alto cade su $a = +1{,}00$, l'estremo opposto rispetto ai dati, dove
+nessuno ha mai messo piede: lì la curva promette $+30{,}1$, e il valore vero è
+$-0{,}49$. Non c'è niente di misterioso, ed è la ragione per cui l'esempio usa
+una curva e non una retta: fuori dal tratto in cui è stata tirata, una curva
+prosegue come le pare, e nessun dato la trattiene. Vincolando invece la ricerca
+alla zona che i dati coprono davvero (il loro **supporto**, che in statistica è
+appunto l'insieme dei valori effettivamente presenti) si sceglie $a = -0{,}21$,
+e stima ($-0{,}25$) e realtà ($-0{,}26$) tornano a coincidere: è, in miniatura,
+la prima famiglia di soluzioni.
 
 ## BCQ: restare vicini a ciò che è stato visto
 
@@ -311,7 +320,11 @@ $$
 
 Dove $\tau \in (0,1)$ è l'**expectile** (in pratica $\tau \approx 0{,}7$–$0{,}9$):
 la perdita asimmetrica $L_2^\tau$ pesa di più i residui positivi, spingendo $V$
-verso l'alto della distribuzione dei $Q$ nel dataset. Il target di $\mathcal{L}_Q$
+verso l'alto della distribuzione dei $Q$ nel dataset. Un dettaglio che sembra di
+implementazione e non lo è: il $Q$ dentro $\mathcal{L}_V$ è una **copia
+ritardata**, come la rete-target di DQN. Senza, le due regressioni si
+inseguirebbero a vicenda senza niente di fermo a cui aggrapparsi, ed è il punto
+esatto in cui una reimplementazione di IQL smette di funzionare. Il target di $\mathcal{L}_Q$
 usa $V(s')$, **non** un massimo su azioni arbitrarie: ecco perché nessuna azione
 OOD viene mai valutata. La policy si estrae infine per *advantage-weighted
 regression*, imitando le azioni del dataset pesate per il loro vantaggio
@@ -392,10 +405,12 @@ inseguire un valore stimato.
 
 `````
 
-Il Decision Transformer non è sempre il migliore: su dati molto sub-ottimali, in
-cui nessuna traiettoria vista raggiunge buoni ritorni, non può inventare
-strategie mai osservate, mentre CQL e IQL riescono talvolta a «ricucire» pezzi di
-traiettorie diverse in una migliore. Ma ha aperto una linea feconda, mostrando
+Il Decision Transformer non è sempre il migliore, e il caso in cui perde si
+capisce bene: se nell'archivio non c'è una sola partita andata a finire bene,
+lui non ha niente da recitare, perché sa soltanto ripetere partite che ha visto.
+CQL e IQL, che i voti li stimano, riescono talvolta a «ricucire» il primo pezzo
+di una partita con il secondo pezzo di un'altra e a tirarne fuori una migliore
+di entrambe. Ma il Decision Transformer ha aperto una linea feconda, mostrando
 che una parte del RL può essere riformulata come apprendimento supervisionato di
 sequenze.
 

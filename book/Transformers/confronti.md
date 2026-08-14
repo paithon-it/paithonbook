@@ -19,8 +19,10 @@ sequenze di lunghezza qualsiasi.
 ```
 
 L'equivalenza di {numref}`fig-rnn-srotolamento` è anche la radice del problema
-che questa sezione racconta. Se il riassunto che la rete si porta dietro
-attraversa la stessa moltiplicazione a ogni passo, dopo cento passi quel
+che questa sezione racconta. Aggiornare il riassunto, a ogni passo, vuol dire
+moltiplicarlo per gli stessi numeri, perché la cella è sempre quella: se il
+riassunto attraversa
+la stessa moltiplicazione a ogni passo, dopo cento passi quel
 fattore è stato applicato cento volte, e un numero poco più piccolo di uno
 diventa quasi zero: $0{,}9$ moltiplicato per sé stesso cento volte fa
 $0{,}000027$, e perfino $0{,}99$ scende a $0{,}37$. È un conto da calcolatrice,
@@ -35,9 +37,17 @@ cosa annotare, cosa cancellare, cosa rileggere (la memoria dura molto di più,
 al prezzo di un meccanismo più complicato). Le **GRU** sono il taccuino
 semplificato: regole più snelle, quasi la stessa resa. Il **Transformer**
 cambia gioco: niente riassunto e niente taccuino, il testo resta tutto
-sott'occhio e ogni parola può andare a rileggersi qualunque altra, in
-qualsiasi momento. La memoria non sbiadisce perché non c'è nulla da ricordare:
-basta guardare.
+sott'occhio e ogni parola può andare a rileggersi qualunque altra. La memoria
+non sbiadisce perché non c'è nulla da ricordare: basta guardare.
+
+Due precisazioni, perché altrimenti sembrano contraddizioni. La prima: «tutte
+le altre» vale per la torre che **legge**; quella che **scrive** ha la regola
+ferrea della sezione precedente, non si sbircia avanti, e guarda solo
+all'indietro. La seconda: leggere tutto insieme fa risparmiare tempo
+soprattutto **mentre il modello studia**, che è quando i cento amici possono
+dividersi il lavoro. Quando poi scrive, le parole gli escono comunque una alla
+volta, perché per scegliere la prossima deve sapere quale ha appena scritto: lì
+i cento amici non servono a niente, e infatti generare resta lento.
 `````
 
 `````{tab} Superiore
@@ -71,12 +81,24 @@ che lo definisce: far guardare ogni parola a tutte le altre.
 Pensa a una riunione dove ognuno deve parlare con ognuno. In quattro sono 6
 conversazioni; in otto, 28; in mille, quasi mezzo milione. **Raddoppiare i
 partecipanti quadruplica circa le chiacchiere**: è la crescita "al quadrato".
-Per il Transformer le parole sono i partecipanti: una frase è una riunione
+Per il Transformer le parole sono i partecipanti, con due differenze da poco:
+ogni parola guarda anche sé stessa, e chi ascolta chi conta separatamente nei
+due versi, quindi in quattro i confronti sono sedici invece di sei. La crescita
+è la stessa, ed è quella che interessa: una frase è una riunione
 veloce, un libro intero è un'assemblea oceanica che nessun computer regge
 volentieri. Le reti ricorrenti, che leggono in fila, non hanno questo
 problema: il loro costo cresce di pari passo con la lunghezza, non al
-quadrato. Ecco perché tanta ricerca di oggi lavora su come far "parlare" le
-parole senza convocare sempre l'assemblea plenaria.
+quadrato.
+
+Ecco perché tanta ricerca lavora su come far parlare le parole senza convocare
+sempre l'assemblea plenaria, e i modi sono tre. Il primo è **decidere in
+anticipo chi parla con chi**: ognuno con i vicini di posto, più qualche
+partecipante scelto che parla con tutti e fa da ponte. Il secondo è **lasciare
+che siano i dati a dirlo**: si osserva che quasi tutta l'attenzione di una
+parola finisce comunque su pochissime altre, e allora si cerca un modo di
+trovare in fretta quelle poche invece di provarle tutte. Il terzo è più
+radicale, e cambia l'aritmetica invece della lista degli invitati: ha un
+capitolo suo, quello sull'attenzione lineare.
 `````
 
 `````{tab} Superiore
@@ -99,29 +121,48 @@ di **sparsificazione di grafi**. Longformer {cite}`beltagy2020longformer`
 toglie archi tenendo una finestra scorrevole attorno a ogni token, qualche
 finestra dilatata per allargare la portata, e un pugno di **token globali**
 collegati a tutti (nel question answering, quelli della domanda): il costo
-scende da $O(n^2)$ a $O(n w)$. BigBird {cite}`zaheer2020big` prende la stessa
+scende da $O(n^2)$ a $O(n w)$, dove $w$ è l'ampiezza della finestra, un numero
+fissato in anticipo e molto minore di $n$. BigBird {cite}`zaheer2020big`
+prende la stessa
 strada dichiarando la cosa: combina una finestra ad anello (un grafo «piccolo
 mondo» alla Watts-Strogatz), archi **casuali** alla Erdős-Rényi e token
 globali, e dimostra che il modello risultante resta un approssimatore
-universale di funzioni su sequenze. Il capitolo sulle reti neurali su grafo
+universale di funzioni su sequenze.
+
+Su quel teorema conviene mettere le ipotesi accanto, che è la regola che questo
+libro si dà e che è facile dimenticare proprio davanti ai risultati che fanno
+comodo. Vale per le funzioni **continue su un dominio limitato**; e vale per
+qualunque schema sparso **che contenga i token globali**, cioè sono loro a
+portare il teorema, non la finestra. Soprattutto, gli stessi autori dimostrano
+il rovescio nella stessa pagina: esiste un compito che l'attenzione piena
+risolve in un numero costante di strati e che **qualunque** attenzione sparsa
+con un numero di archi proporzionale a $n$ costringe a una profondità che
+cresce con $n$. «Universale» vuol dire che ci si arriva, non che ci si arriva
+alla stessa profondità: la sparsificazione non è gratis, baratta ampiezza con
+altezza.
+
+Il capitolo sulle reti neurali su grafo
 riprende questa lettura dall'altro capo, mostrando che la self-attention è
 message passing su un grafo completo, e ne trae la conseguenza: i **Graph
 Transformer** applicano questo modello a un grafo qualunque, e per non perdere
-la topologia devono reintrodurla come codifica posizionale, che si scopre
-essere la generalizzazione esatta delle sinusoidi viste qui.
+la topologia devono reintrodurla come codifica posizionale. Quella codifica
+nasce dallo stesso ragionamento delle sinusoidi viste qui, ma non ne è la
+stessa cosa scritta in generale: là il confronto è fatto numero alla mano, e
+le due famiglie si somigliano senza coincidere.
 
 Longformer e BigBird decidono **in anticipo** quali archi tenere, in base alla
-posizione. Il **Reformer** {cite}`kitaev2020reformer` sceglie la terza strada,
-e cioè non deciderlo affatto: **lascia che siano i dati a dire quali coppie
-contano**. L'osservazione di partenza è che dopo la softmax quasi tutta la
+posizione. Il **Reformer** {cite}`kitaev2020reformer` prende la strada
+opposta, e cioè non deciderlo affatto: **lascia che siano i dati a dire quali
+coppie contano**. L'osservazione di partenza è che dopo la softmax quasi
+tutta la
 massa di attenzione va su pochissime chiavi, quindi calcolare l'intera matrice
 è sprecare lavoro su valori destinati a essere quasi zero; e le chiavi che
 contano sono quelle con prodotto scalare grande, cioè quelle *vicine* alla
 query. Trovare i vicini senza confrontarli tutti è un problema classico, e la
 risposta classica è l'**hashing sensibile alla località** (LSH): una funzione
-che manda vettori simili nello stesso secchiello con alta probabilità. Perché
-l'hashing funzioni, però, query e chiavi devono **coincidere**: se
-$h(\mathbf{q}_j) \neq h(\mathbf{k}_j)$ una query può finire in un secchiello
+$g$ che manda vettori simili nello stesso secchiello con alta probabilità.
+Perché l'hashing funzioni, però, query e chiavi devono **coincidere**: se
+$g(\mathbf{q}_j) \neq g(\mathbf{k}_j)$ una query può finire in un secchiello
 dove la sua stessa
 chiave non c'è. Il Reformer usa quindi la stessa proiezione per entrambe
 (*shared-QK*), rinunciando alla distinzione fra il cercare e l'essere trovati
@@ -167,7 +208,9 @@ campionato eterno.
   **LSTM** e **GRU** aggiungono un taccuino con delle regole e la memoria dura
   di più, ma si legge sempre una parola alla volta.
 - Il **Transformer** tiene tutto il testo sott'occhio: ogni parola può andare a
-  rileggersi qualunque altra, e il lavoro si divide fra tanti processori.
+  rileggersi qualunque altra, e il lavoro si divide fra tanti processori. Vale
+  però soprattutto **mentre studia**: quando scrive, le parole gli escono lo
+  stesso una alla volta.
 - Il prezzo è la riunione dove ognuno parla con ognuno: raddoppiando i
   partecipanti le chiacchiere quadruplicano. Da qui il limite alla lunghezza
   del testo che un modello riesce a tenere davanti.
@@ -191,9 +234,11 @@ campionato eterno.
 - Il **Transformer** collega ogni coppia di posizioni in un passo e si
   addestra in parallelo: dipendenze lunghe *e* velocità. In inferenza, però, la
   generazione resta sequenziale.
-- Il prezzo è il costo **quadratico** $O(n^2)$ nella lunghezza della
-  sequenza: da qui finestre di contesto limitate e la ricerca su attenzioni
-  efficienti.
+- Il prezzo è **quadratico** nella lunghezza della sequenza, e i due termini
+  vanno tenuti distinti: la **memoria** per i punteggi è $O(n^2)$, ed è questo
+  il tetto al contesto; il **tempo** è $O(n^2 d)$, che però nei modelli
+  attuali non è il termine dominante alle lunghezze correnti (i conti stanno
+  nella sezione sui grandi modelli linguistici).
 - Ridurre quel costo vuol dire **togliere archi** da un grafo completo, e le
   strade sono tre: uno schema **fisso** deciso in anticipo (Longformer,
   BigBird), una scelta **guidata dai dati** con l'hashing sensibile alla

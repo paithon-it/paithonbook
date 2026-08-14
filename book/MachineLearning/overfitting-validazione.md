@@ -11,7 +11,7 @@ disciplina.
 Nelle sezioni precedenti abbiamo detto che la posta in gioco non è riprodurre
 gli esempi già visti, ma **generalizzare** a input nuovi. Un modello che azzecca
 ogni risposta sui dati di addestramento e sbaglia su quelli veri non ha imparato
-nulla di utile. Questo capitolo parla di come accorgersene e come porvi rimedio.
+nulla di utile. Questa sezione parla di come accorgersene e come porvi rimedio.
 
 ## Imparare o memorizzare: overfitting e underfitting
 
@@ -67,30 +67,34 @@ il modello sta memorizzando.
 Underfitting e overfitting sono le due facce di un'unica tensione, che ha un nome
 classico: il **compromesso bias-varianza** (*bias-variance tradeoff*).
 
-```{figure} ../figures/bias-varianza.svg
-:name: fig-bias-varianza
-:alt: "Quattro bersagli disposti in una griglia due per due, con le colonne per varianza bassa e alta e le righe per bias basso e alto. Con bias e varianza bassi i colpi sono raccolti al centro; con varianza alta e bias basso sono sparsi ma centrati in media; con bias alto e varianza bassa sono raccolti ma spostati dal centro; con entrambi alti sono sparsi e spostati."
-:width: 78%
-
-I quattro casi sul bersaglio. Il bias è di quanto si è spostato il gruppo dei
-colpi; la varianza è quanto il gruppo è largo. Sono due difetti diversi e si
-correggono in modi opposti.
-```
-
-Prima di leggere la figura serve sapere che cosa sia un colpo, perché il
+Il modo classico di raccontarla è un bersaglio da tiro a segno, ma prima di
+guardarlo serve sapere che cosa sia un colpo, perché il
 modello è uno solo e i fori sul bersaglio sono tanti. Il gioco è questo:
 immagina di rifare l'esperimento da capo molte volte, ogni volta raccogliendo
 un campione di dati nuovo e riaddestrando il modello su quello. **Ogni foro sul
 bersaglio è un addestramento**, e il centro del bersaglio è la risposta giusta.
 Un modello può sbagliare in due modi indipendenti: perché il gruppo dei fori è
 tutto spostato da una parte (sbaglia sempre nello stesso verso) oppure perché è
-sparpagliato (cambia idea a ogni campione).
+sparpagliato (cambia idea a ogni campione). Il primo difetto si chiama
+**bias**, il secondo **varianza**.
+
+```{figure} ../figures/bias-varianza.svg
+:name: fig-bias-varianza
+:alt: "Quattro bersagli disposti in una griglia due per due, con le colonne per varianza bassa e alta e le righe per bias basso e alto. Con bias e varianza bassi i colpi sono raccolti al centro; con varianza alta e bias basso sono sparsi ma centrati in media; con bias alto e varianza bassa sono raccolti ma spostati dal centro; con entrambi alti sono sparsi e spostati."
+:width: 78%
+
+I quattro casi sul bersaglio, con un foro per ogni addestramento. Il bias è di
+quanto si è spostato il gruppo dei
+colpi; la varianza è quanto il gruppo è largo. Sono due difetti diversi e si
+correggono in modi opposti.
+```
 
 Il bersaglio in basso a sinistra di {numref}`fig-bias-varianza`, colpi
 raccolti ma tutti fuori centro, è il più insidioso: un modello del genere è
 molto *coerente*, dà quasi sempre la stessa risposta, e la coerenza si scambia
-facilmente per affidabilità. Aggiungere dati non lo aggiusta, perché il
-problema non è l'incertezza ma la mira.
+facilmente per affidabilità. Raccogliere altri dati serve a stringere il gruppo
+dei fori, non a spostarlo: qui il problema non è che il gruppo sia largo, è che
+è centrato nel punto sbagliato, e altri dati non lo aggiustano.
 
 `````{tab} Elementare
 
@@ -151,8 +155,8 @@ sui **dati nuovi**. Da sinistra l'errore scende, perché il modello è troppo
 rozzo e ogni pezzetto di flessibilità in più lo aiuta; a destra risale, perché
 il modello comincia a imparare a memoria. In mezzo c'è un punto più basso di
 tutti. La curva, insomma, ha la forma di una **U**, e il fondo della U è il
-modello che conviene scegliere. (Sarà una sezione più avanti, sulla *doppia
-discesa*, a raccontare in quali casi la storia non finisca lì.)
+modello che conviene scegliere. (In fondo a questa pagina, parlando di *doppia
+discesa*, vedremo in quali casi la storia non finisca lì.)
 
 ### Distinguerli in pratica: le curve di apprendimento
 
@@ -160,22 +164,25 @@ Bias e varianza, finora, sono una spiegazione. C'è un modo di **misurarli**, e
 risponde alla domanda che costa di più in un progetto vero: *conviene
 raccogliere altri dati, o cambiare modello?*
 
-Si tracciano di nuovo due curve, ma cambiando l'asse orizzontale: non più la
+Si disegnano di nuovo delle curve, ma stavolta sono due e l'asse orizzontale
+cambia: non più la
 complessità del modello, come nella U di poco fa, bensì **la quantità di dati
-usata**. Le due curve sono l'errore sugli esempi con cui il modello ha
+usata**, da pochi esempi a tutti quelli che abbiamo. Le due curve sono
+l'errore sugli esempi con cui il modello ha
 studiato (l'addestramento) e l'errore su esempi tenuti da parte per giudicarlo
-(la **validazione**: la prossima sezione spiega come si mettono da parte e
-perché sia essenziale farlo). La forma che assumono dice quale dei due mali si
-ha davanti.
+(la **validazione**: più avanti in questa pagina si vede come si mettono da
+parte e perché sia essenziale farlo). Guardandole crescere insieme si capisce
+quale dei due mali si ha davanti.
 
 - Le due curve **si avvicinano e si fermano in alto**: il modello sbaglia
-  quanto sui dati che ha visto quanto su quelli che non ha visto, ed è già al
-  suo limite. È **bias**. Altri dati non servono a niente: serve più capacità.
+  tanto sui dati che ha visto quanto su quelli che non ha visto, ed è già al
+  suo limite. È **bias**. Altri dati non servono a niente: serve un modello
+  capace di piegarsi a forme più complicate.
 - Fra le due resta un **divario largo**, e quella di validazione sta ancora
   scendendo: il modello ha imparato bene ciò che ha visto e generalizza meno. È
   **varianza**, e qui altri dati aiutano davvero.
 
-Sono cinque righe di scikit-learn, e vale la pena eseguirle perché il verdetto
+Sono poche righe di scikit-learn, e vale la pena eseguirle perché il verdetto
 è netto.
 
 ```python
@@ -188,6 +195,11 @@ rng = np.random.default_rng(0)
 n = 3000
 X = rng.normal(size=(n, 6))
 y = np.sin(2 * X[:, 0]) + X[:, 1] ** 2 - X[:, 2] + rng.normal(0, 0.3, n)  # non lineare
+
+# i due estremi del campo di gioco, senza i quali "alto" e "basso" non dicono
+# niente: l'errore di chi risponde sempre la media, e il pavimento del rumore
+print(f"rispondere sempre la media: {y.var():.3f}")
+print(f"pavimento del rumore:       {0.3 ** 2:.3f}")
 
 taglie = np.linspace(0.05, 1.0, 8)
 for nome, modello in [("lineare (troppo semplice)", LinearRegression()),
@@ -206,26 +218,45 @@ for nome, modello in [("lineare (troppo semplice)", LinearRegression()),
           f"  divario {va[-1]-tr[-1]:+.3f}")
 ```
 
-Prima dei numeri serve un metro, altrimenti «alto» e «basso» non vogliono dire
-niente. Su questi dati chi rispondesse sempre la media sbaglierebbe di
-$3{,}5$; e siccome il target porta un rumore che nessun modello può prevedere,
-sotto $0{,}09$ non si può scendere nemmeno sapendo tutto. Fra $3{,}5$ e
-$0{,}09$ si gioca la partita.
+Una parola su che cosa sono questi numeri. Qui gli $y$ non sono euro né gradi:
+sono numeri puri, fabbricati apposta dalla riga `y = ...`. E l'errore si misura
+come per la retta di best fit, cioè scarto fra vero e previsto, elevato al
+quadrato e mediato. Un errore di $2{,}3$ vuol dire che, in media, il quadrato
+dello scarto vale $2{,}3$: da solo non dice niente, e infatti le prime due
+righe del programma servono a costruire il metro.
+
+Il primo estremo del metro è **quanto sbaglia chi non ci prova nemmeno**, cioè
+chi risponde sempre la media di tutti gli $y$: su questi dati $3{,}471$. (È la
+varianza di $y$, e attenzione, non c'entra con la varianza del modello di poco
+fa: qui è semplicemente quanto i valori di $y$ sono sparpagliati attorno alla
+loro media.) Il secondo estremo è **quanto sbaglia chi sa tutto**. Non è zero:
+la riga che fabbrica $y$ ci aggiunge un disturbo casuale di ampiezza $0{,}3$,
+che nessun modello può indovinare perché non dipende da niente, e siccome
+l'errore si misura al quadrato quel disturbo costa $0{,}3^2 = 0{,}09$. Fra
+$3{,}471$ e $0{,}09$ si gioca tutta la partita: la strada da percorrere è lunga
+$3{,}471 - 0{,}09 = 3{,}38$.
 
 Il modello lineare, passando da 120 a 2400 esempi, chiude il divario da
-$+0{,}230$ a $+0{,}013$: le due curve si sono **toccate**, e si sono toccate a
-$2{,}3$, cioè poco sotto la metà strada fra il rispondere a caso e il sapere
-tutto. L'errore di addestramento, per giunta, non è affatto migliorato
-($2{,}294$ con 120 esempi, $2{,}321$ con 2400): quel modello ha dato tutto
-quello che aveva, e altri diecimila esempi non sposterebbero nulla. Se serve
-di meglio, serve un modello diverso.
+$+0{,}230$ a $+0{,}013$: le due curve si sono **toccate**. Ma si sono toccate a
+$2{,}3$, e $2{,}3$ è ancora quasi in cima: dai $3{,}471$ di partenza sono
+scesi appena $1{,}14$ su $3{,}38$, cioè un terzo della strada. (Metà strada
+sarebbe stata $0{,}09 + 3{,}38/2 = 1{,}78$, parecchio più in basso.)
+L'errore di addestramento, per giunta, non è migliorato di un'unghia, anzi è
+salito appena ($2{,}294$ con 120 esempi, $2{,}321$ con 2400). Il rialzo è
+normale, ed è il segno che stiamo cercando: con pochi esempi una retta riesce a
+passare un po' più vicino a tutti; con tanti non ce la fa più, perché la forma
+giusta non è una retta e i punti in più non fanno che ricordarglielo. Quel
+modello ha dato tutto quello che aveva, e altri diecimila esempi non
+sposterebbero nulla. Se serve di meglio, serve un modello diverso.
 
 La foresta (una **foresta casuale**, un modello fatto di tanti alberi di
-decisione che votano: la incontreremo fra due sezioni, e qui basta sapere che è
-molto più flessibile di una retta) arriva a $0{,}031$ sull'addestramento e
+decisione che votano: la incontreremo nella sezione sugli alberi, e qui basta
+sapere che è molto più flessibile di una retta) arriva a $0{,}031$
+sull'addestramento e
 $0{,}215$ in validazione, con un divario di $+0{,}184$ ancora aperto: ha
-imparato benissimo ciò che ha visto e generalizza un po' meno, ma il suo
-$0{,}215$ è già vicino al pavimento di $0{,}09$. Diagnosi opposta e ricetta
+imparato benissimo ciò che ha visto e generalizza un po' meno. Ma il suo
+$0{,}215$, sul metro di prima, è a un passo dal traguardo: della strada da
+$3{,}471$ a $0{,}09$ ne ha percorso il $96\%$. Diagnosi opposta e ricetta
 opposta: qui i dati in più pagano.
 
 Il valore di questa diagnostica è che si fa **prima** di spendere. Raccogliere
@@ -248,16 +279,22 @@ più dati, andrebbe meglio».
 ## Train, validation e test: perché il test non si tocca
 
 Per accorgersi dell'overfitting bisogna misurare l'errore su dati che il modello
-**non ha usato** per imparare. Da qui la regola d'oro: si divide il dataset in
-tre parti, ciascuna con un compito distinto.
+**non ha usato** per imparare. Da qui la regola d'oro: si divide il mucchio
+degli esempi in tre parti, ciascuna con un compito distinto. Sono, nell'ordine,
+**studio, prove ed esame**.
 
-- **Training set**: i dati su cui il modello impara i suoi parametri (i numeri
-  interni, la $\theta$ del capitolo introduttivo).
-- **Validation set**, i dati su cui si scelgono gli *iperparametri*, cioè le
+- **Training set** (lo studio): i dati su cui il modello impara i suoi parametri
+  (i numeri interni, la $\theta$ dell'apertura del capitolo). È la fetta più
+  grossa.
+- **Validation set** (le prove): i dati su cui si scelgono gli *iperparametri*,
+  cioè le
   scelte di contorno che non si imparano dai dati: quanto complesso può essere
   il modello, quanto forte il freno alla memorizzazione che vedremo tra poco.
-- **Test set**: i dati che si guardano **una sola volta**, alla fine, per
-  stimare onestamente le prestazioni nel mondo reale.
+- **Test set** (l'esame): i dati che si guardano **una sola volta**, alla fine,
+  per stimare onestamente le prestazioni nel mondo reale.
+
+Quanto grandi? Non c'è una regola sacra: proporzioni tipiche sono $60/20/20$ o
+$80/10/10$, cioè in ogni caso la maggior parte degli esempi allo studio.
 
 `````{tab} Elementare
 
@@ -275,7 +312,7 @@ Usare il test per selezionare modelli introduce una forma sottile di *data
 leakage*: si finisce per fare overfitting sul test stesso, e la stima
 dell'errore di generalizzazione diventa distorta verso il basso. Il validation
 set esiste proprio per assorbire tutte le decisioni intermedie e preservare
-l'imparzialità del test. Suddivisioni tipiche: $60/20/20$ o $80/10/10$. La
+l'imparzialità del test. La
 selezione dei modelli avviene su training + validation; il test resta un
 osservatore neutrale che entra in scena solo a giochi fatti.
 
@@ -312,10 +349,15 @@ numeri guarda anche il test per farsi la sua media, un pezzo di informazione
 del test è già entrato nell'addestramento.
 ```
 
-Quasi mai i dati si danno al modello così come sono. Prima si sistemano: si
-riportano le colonne a una scala comune, perché i metri quadri e il numero di
-stanze non si schiaccino a vicenda (lo strumento che lo fa si chiama *scaler*,
-e per farlo deve calcolare media e ampiezza di ogni colonna); si riempiono le
+Quasi mai i dati si danno al modello così come sono. Prima si sistemano, e la
+prima cosa che si sistema sono le scale. Nella tabella delle case i metri
+quadri stanno attorno a $100$ e le stanze attorno a $3$: chiunque misuri
+distanze fra esempi, o penalizzi pesi grandi, sta di fatto ascoltando quasi
+solo i metri quadri, non perché contino di più ma perché i loro numeri sono più
+grossi. Il rimedio è riportare tutte le colonne su una scala comune (lo
+strumento che lo fa si chiama *scaler*, e per farlo deve calcolare, di ogni
+colonna, il valore medio e quanto i valori se ne discostano di solito).
+Poi si riempiono le
 caselle vuote con un valore plausibile, per esempio la media della colonna (si
 chiama **imputazione**); si scartano le colonne che non servono. Tutte queste
 operazioni **imparano qualcosa dai dati**, e qui sta la trappola: se lo
@@ -334,33 +376,43 @@ dipende troppo da *quali* esempi sono finiti nel validation. La
 **k-fold cross-validation** aggira il problema riutilizzando i dati con
 intelligenza.
 
+Si badi bene: qui il test, quello dell'esame, resta chiuso nel cassetto dove
+l'abbiamo messo. Quello che si divide in blocchi è **soltanto la parte di
+studio**, e ciò che ruota è il blocco delle prove.
+
 ```{figure} ../figures/cross-validation-il-test-che-non-bara.svg
 :name: fig-cross-validation
-:alt: "Cinque righe, una per giro. In ciascuna, i dati sono divisi in cinque blocchi: uno fa da test e gli altri quattro da training, e il blocco di test scorre di una posizione a ogni riga, dal primo al quinto. A destra di ogni riga il punteggio ottenuto in quel giro. In fondo, il risultato è la media dei cinque punteggi con la loro deviazione standard."
+:alt: "Cinque righe, una per giro. In ciascuna, i dati di addestramento sono divisi in cinque blocchi: uno fa da validazione e gli altri quattro da training, e il blocco di validazione scorre di una posizione a ogni riga, dal primo al quinto. A destra di ogni riga il punteggio ottenuto in quel giro. In fondo, il risultato è la media dei cinque punteggi con la loro deviazione standard."
 :width: 92%
 
-Il blocco di test ruota. Alla fine ogni esempio ha fatto da test esattamente
-una volta, e il risultato non è un numero ma un numero con la sua
+Il blocco di validazione ruota. Alla fine ogni esempio ha fatto da giudice
+esattamente una volta, e il risultato non è un numero ma un numero con la sua
 variabilità.
 ```
-
-La riga finale di {numref}`fig-cross-validation` è la parte che si tende a
-buttare via: non la media dei cinque punteggi, ma la loro **dispersione**, cioè
-di quanto i cinque giri si discostano dalla media (in statistica la si riassume
-in un numero, la *deviazione standard*: quanto in media un giro si scosta dal
-risultato medio). Se due modelli distano meno di quella, la classifica fra loro
-dipende da come sono caduti i blocchi, non da quale sia migliore.
 
 `````{tab} Elementare
 
 Dividi i dati di addestramento in $k$ blocchi uguali (di solito $k=5$ o $10$).
-A turno, ogni blocco fa da validation mentre gli altri $k-1$ addestrano il
+A turno, ogni blocco fa da giudice mentre gli altri $k-1$ addestrano il
 modello. Ottieni così $k$ misure di errore, ognuna su un pezzo diverso di dati,
-e ne fai la **media**. È come far correggere il compito a cinque professori
-diversi invece che a uno solo: il giudizio finale è più affidabile e meno
-soggetto al caso.
+e ne fai la **media**. È come fare cinque compiti in classe su cinque parti
+diverse del programma invece di giocarsi tutto su una sola interrogazione: il
+giudizio finale è più affidabile e meno soggetto al caso.
 
 `````
+
+La riga finale di {numref}`fig-cross-validation` è la parte che si tende a
+buttare via: non la media dei cinque punteggi, ma la loro **dispersione**, cioè
+di quanto i cinque giri si discostano dalla media. In statistica la si riassume
+in un numero, la *deviazione standard*: quanto, in media, un giro si scosta dal
+risultato medio.
+
+Serve a non prendere per differenze quelle che sono oscillazioni. Poniamo che
+un modello faccia $0{,}81$ e un altro $0{,}83$, e che i cinque giri di ciascuno
+ballino di $\pm 0{,}05$: quei due centesimi di scarto sono più piccoli del
+ballo, e a rifare la divisione in blocchi la classifica potrebbe benissimo
+capovolgersi. Fra quei due modelli, semplicemente, la cross-validation non sa
+scegliere, e dire il contrario è dare un significato al caso.
 
 `````{tab} Superiore
 
@@ -411,47 +463,69 @@ scores = cross_val_score(modello, X_train, y_train, cv=5,
 print(-scores.mean())                  # errore medio di validazione
 ```
 
-## Mettere un freno: regolarizzazione L1 e L2
+## Mettere un freno: la regolarizzazione
 
 Un modo diretto per contrastare l'overfitting è impedire al modello di diventare
-troppo "estremo". La **regolarizzazione** aggiunge all'errore da minimizzare un
+troppo "estremo". Il trucco è furbo, e per capirlo conviene ricordare che
+addestrare vuol dire **rendere più piccolo possibile un numero**, quello che
+misura quanto il modello sbaglia: girare le manopole finché quel numero scende.
+
+La **regolarizzazione** cambia le carte in tavola aggiungendo a quel numero un
 secondo addendo, una **penalità** che cresce con la grandezza dei pesi (i
-numeri per cui il modello moltiplica ogni caratteristica): così il modello paga
-un prezzo ogni volta che alza troppo un peso, e lo fa solo se ne vale davvero
-la pena. Quanto sia caro quel prezzo è una manopola che decidiamo noi, e nelle
+numeri per cui il modello moltiplica ogni caratteristica). Da quel momento il
+modello non sta più minimizzando soltanto l'errore, sta minimizzando
+«errore più spesa in pesi»: alzare un peso continua a convenire se fa scendere
+l'errore *più* di quanto fa salire la spesa, e smette di convenire quando serve
+solo a rincorrere un punto isolato. Quanto sia caro quel prezzo lo decidiamo
+noi, ed è una manopola che nelle
 formule si chiama $\lambda$ (la lettera greca *lambda*): $\lambda$ a zero vuol
 dire nessun freno, $\lambda$ grande vuol dire freno tirato.
+
+Restano da scegliere le unità della spesa, cioè come si conta quanto è «grande»
+un peso, e i due modi classici hanno nomi che sembrano codici da magazzino,
+**L1** e **L2**. Vogliono dire poco più della cifra che portano: L1 somma i
+pesi elevati alla prima (in valore assoluto), L2 li somma elevati al quadrato.
+Sembra un dettaglio contabile e non lo è.
+
+Quello che di solito si impara come una regola da mandare a memoria («la L1
+azzera i pesi inutili, la L2 no») è in realtà una questione di forme, e si può
+disegnare.
+
+Immagina un piano con due soli pesi, $w_1$ e $w_2$, uno per asse. È lo stesso
+gesto della collina nella nebbia: gli assi non portano più i dati, portano le
+manopole del modello, e **ogni punto del piano è una scelta possibile dei due
+numeri**. Dire al modello «non spendere
+più di tanto in pesi» significa allora recintare una regione attorno
+all'origine e obbligarlo a restare dentro. Se la spesa si conta sommando i
+**valori assoluti** (la L1), il recinto è un rombo con le punte sugli assi: per
+star dentro basta che $|w_1| + |w_2|$ non superi il budget, e i due estremi
+sono spendere tutto su un peso solo, che sono appunto le punte. Se si conta
+sommando i **quadrati** (la L2) il recinto è un cerchio.
+
+E l'errore? Fuori dal recinto l'errore ha la forma di una **conca**, con il
+punto più basso dove starebbe la soluzione senza freni. Disegniamo su questa
+conca le linee che uniscono i punti di pari errore, le stesse curve di livello
+di una carta topografica: sono anelli che si stringono attorno al fondo. Ora,
+il modello vorrebbe scendere il più possibile, ma non può uscire dal recinto:
+il meglio che può fare è fermarsi sul punto del recinto che sta più in basso, e
+quel punto è dove il primo anello che si allarga dal fondo tocca il bordo.
+
+Ed è qui che la forma decide.
 
 ```{figure} ../figures/regolarizzazione-l1-l2.svg
 :name: fig-l1-l2
 :alt: "Due piani con i pesi w1 e w2 sugli assi. A sinistra la L1: la regione ammessa è un rombo con i vertici sugli assi, e le curve di livello dell'errore lo toccano proprio in un vertice, dove w1 è esattamente zero. A destra la L2: la regione è un cerchio, e il punto di contatto cade in una posizione qualsiasi del bordo, dove entrambi i pesi sono piccoli ma nessuno è zero."
 :width: 96%
 
-La differenza sta negli spigoli. Il rombo della L1 ha i vertici sugli assi, e
-un vertice è il punto che una curva di livello incontra per primo: da lì i
-pesi esattamente nulli. Il cerchio della L2 non ha spigoli, e non privilegia
-nessuna direzione.
+La differenza sta negli spigoli. A sinistra il recinto della L1, un rombo con
+le punte sugli assi, e gli anelli dell'errore che lo toccano proprio in una
+punta: lì un peso è esattamente zero. A destra il cerchio della L2, che di
+punte non ne ha e non privilegia nessuna direzione.
 ```
 
-{numref}`fig-l1-l2` spiega con un disegno quello che di solito si impara come
-una regola da mandare a memoria («la L1 azzera i pesi inutili, la L2 no»), e
-vale la pena leggerla con calma perché la ragione è tutta lì e non è
-misteriosa.
-
-Immagina un piano con due soli pesi, $w_1$ e $w_2$, uno per asse: ogni punto
-del piano è una scelta possibile dei due numeri. Dire al modello «non spendere
-più di tanto in pesi» significa recintare una regione attorno all'origine e
-obbligarlo a restare dentro: se la spesa si conta sommando i **valori
-assoluti** il recinto è un rombo con le punte sugli assi; se si conta sommando
-i **quadrati** è un cerchio. Fuori dal recinto, l'errore del modello ha la
-forma di una collina con il fondo dove starebbe la soluzione senza freni: se
-disegniamo le linee che uniscono i punti di pari errore (le stesse curve di
-livello di una carta topografica), sono anelli che si stringono attorno a quel
-fondo. La soluzione col freno è dove il primo di quegli anelli, allargandosi,
-tocca il recinto.
-
-Ed è qui che la forma decide: un anello che si allarga incontra un rombo quasi
-sempre in una **punta**, e le punte del rombo stanno sugli assi, cioè in punti
+Un anello che si allarga incontra un rombo quasi
+sempre in una **punta**, come mostra {numref}`fig-l1-l2`, e le punte del rombo
+stanno sugli assi, cioè in punti
 dove uno dei due pesi vale esattamente zero. Un cerchio invece non ha punte, e
 il primo contatto cade in un posto qualunque del bordo, dove entrambi i pesi
 sono piccoli ma nessuno è nullo. Ecco perché sommare i valori assoluti seleziona
@@ -461,7 +535,7 @@ formula, è la forma del recinto.
 `````{tab} Elementare
 
 Pensa alla regolarizzazione come a un budget di spesa sui pesi del modello.
-Senza limiti, per passare su ogni punto il modello gonfia i suoi coefficienti
+Senza limiti, per passare su ogni punto il modello gonfia i suoi pesi
 a dismisura: è così che nasce la curva contorta. Imponendo un tetto alla spesa
 totale, lo costringi a essere sobrio, e le curve sobrie sono più morbide,
 quindi generalizzano meglio. Due modi di contare la spesa:
@@ -472,9 +546,9 @@ quindi generalizzano meglio. Due modi di contare la spesa:
   $0{,}01$, e quel risparmio non vale mai la pena.)
 - **Lasso (L1)**: penalizza la *somma dei valori assoluti*. Qui l'ultimo
   centesimo costa quanto il primo, quindi conviene sempre azzerare del tutto un
-  peso che non serve: tende a spingere a **zero netto** i pesi delle feature
-  inutili, di fatto selezionandole. È lo stesso fatto che il rombo con le punte
-  sugli assi racconta con la geometria.
+  peso che non serve: tende a spingere a **zero netto** i pesi delle
+  caratteristiche inutili, che è come cancellarle dalla tabella. È lo stesso
+  fatto che il rombo con le punte sugli assi racconta con la geometria.
 
 `````
 
@@ -505,6 +579,20 @@ cross-validation. La geometria spigolosa della norma $\ell_1$ è ciò che rende
 *sparse* le soluzioni del Lasso, annullando interi coefficienti: un selettore
 automatico di feature.
 
+Due cose le formule le dicono in silenzio, e vale la pena dirle ad alta voce.
+La prima è che l'indice $j$ corre da $1$ a $n$, cioè sulle sole
+caratteristiche: l'**intercetta non è penalizzata**. Se lo fosse, il modello
+dipenderebbe dall'origine scelta per $y$, e sommare mille a tutte le etichette
+(misurare in gradi Kelvin invece che in Celsius) cambierebbe la soluzione, il
+che non ha senso. La seconda è che la penalità mette sullo stesso piano pesi
+che vivono su scale diverse, e quindi **presuppone feature standardizzate**: il
+peso che moltiplica un reddito in euro è piccolo per forza, e la penalità lo
+lascerebbe in pace mentre schiaccia quello di una percentuale. Vale qui la
+stessa avvertenza che il libro dà per il k-NN e per le SVM, con la differenza
+che qui è meno visibile, perché un modello mal regolarizzato funziona
+comunque, solo peggio: `Ridge` e `Lasso` non standardizzano da soli, e vanno
+messi in una pipeline dietro uno `StandardScaler`.
+
 L'**Elastic Net** somma le due penalità,
 $\lambda\big(\alpha\sum_j|\theta_j| + \tfrac{1-\alpha}{2}\sum_j\theta_j^2\big)$,
 e non è un compromesso pigro: rimedia a un difetto preciso del Lasso. Fra due
@@ -513,6 +601,15 @@ instabile (basta cambiare il campione perché scelga l'altra), mentre il termine
 $\ell_2$ le fa entrare o uscire **insieme**, il cosiddetto *grouping effect*.
 Con feature molte e correlate, che è il caso normale sui dati reali, è la
 scelta di partenza più sensata delle due pure.
+
+Un avvertimento sulla lettera $\alpha$, che in questa sezione fa due mestieri
+diversi. Nella formula dell'Elastic Net è il **rapporto di miscela** fra le due
+penalità ($\alpha = 1$ è Lasso puro, $\alpha = 0$ è Ridge puro) e non ha niente
+a che vedere con la loro intensità, che resta $\lambda$. Nel codice, invece,
+l'argomento `alpha` di `Ridge`, `Lasso` ed `ElasticNet` è proprio
+l'**intensità**, cioè il nostro $\lambda$, mentre la miscela lì si chiama
+`l1_ratio`. Sono due tradizioni che si sono incrociate su una lettera sola:
+conviene guardare che cosa fa il parametro, non come si chiama.
 
 `````
 
@@ -536,14 +633,17 @@ eleganza estetica: è ciò che permette di generalizzare.
 ## Quando la U non basta: la doppia discesa
 
 C'è un punto in cui il quadro appena disegnato entra in tensione con la
-pratica del deep learning, e vale la pena affrontarlo invece di ignorarlo. La
-curva a U di poche pagine fa dice: oltre una certa complessità l'errore sui
-dati nuovi risale. Eppure una
-grande rete neurale che riconosce immagini (una rete è un modello fatto a
-strati, il protagonista dei prossimi capitoli) ha milioni di parametri contro
-le poche decine di migliaia di esempi su cui la si addestra: azzera l'errore di
-training, il che significa memorizzare ogni esempio rumore compreso, e
-ciononostante generalizza.
+pratica delle reti profonde, e vale la pena affrontarlo invece di ignorarlo. La
+curva a U di poco fa dice: oltre una certa complessità l'errore sui
+dati nuovi risale.
+
+Guardiamo allora una grande rete neurale che riconosce immagini (una rete è un
+modello fatto a strati, il protagonista dei prossimi capitoli). Ha milioni di
+manopole regolabili e le si danno da studiare qualche decina di migliaia di
+esempi: molte più manopole che esempi, il che vuol dire che le basta assegnarne
+qualcuna a ciascuno per impararli tutti a memoria, rumore compreso. E infatti
+lo fa, l'errore di addestramento va a zero. Secondo la U dovremmo essere
+nel disastro, e invece quella rete generalizza benissimo.
 
 ```{figure} ../figures/double-descent.svg
 :name: fig-double-descent
@@ -556,10 +656,14 @@ di continuare a salire.
 ```
 
 Il punto interessante di {numref}`fig-double-descent` è il **picco**, non le
-discese. Sta dove il modello ha esattamente la capacità necessaria per
-interpolare i dati e nessuna di più: è costretto a una sola soluzione, e
-quella soluzione è pessima. Con più capacità le soluzioni tornano a essere
-tante, e fra tante l'addestramento ne sceglie una regolare.
+discese, e per capirlo serve l'immagine della curva che passa per dei punti.
+Il picco sta dove il modello ha esattamente le manopole che servono per passare
+per tutti i dati e nemmeno una di più: di curve così ne esiste una sola, il
+modello è costretto a prendere quella, e quella è una curva che fra un punto e
+l'altro impazzisce. Appena si aggiungono manopole, invece, le curve che passano
+per tutti i punti tornano a essere infinite, e fra infinite ce n'è anche
+qualcuna tranquilla: la parte sorprendente, di cui si parla fra poco, è che
+l'addestramento tende proprio a quelle.
 
 `````{tab} Elementare
 
@@ -569,23 +673,24 @@ l'errore sul test, dopo essere risalito come previsto, **è tornato a scendere**
 Non un caso fortunato: un fenomeno riproducibile, chiamato **doppia discesa**.
 
 La curva, insomma, non è una U ma una U seguita da una seconda discesa. Il
-picco sta esattamente nel punto di **interpolazione**: quando il modello ha
-giusto i parametri sufficienti per azzerare l'errore di training. Lì è
-costretto a passare per tutti i punti, rumore compreso, nell'unico modo che
-gli riesce: contorcendosi. È il momento peggiore.
+picco sta esattamente nel punto di **interpolazione**, cioè dove il modello
+riesce per la prima volta a passare per tutti i punti (in matematica si dice
+*interpolare*) e non gli avanza niente.
 
-Oltre quel punto, però, di soluzioni che passano per tutti i dati ce ne sono
-infinite, e l'addestramento non ne sceglie una a caso: la discesa del gradiente
-(la procedura a piccoli passi vista con la retta di best fit) parte da valori
-piccoli e si ferma appena i dati sono spiegati, quindi tende verso le soluzioni
-«più lisce» fra quelle disponibili. Avere parametri in
-eccesso non è più libertà di sbagliare, è **libertà di scegliere una soluzione
-gentile**.
+Un'immagine per vederlo: far passare una curva per venti punti. Con una curva
+che ha esattamente venti numeri da scegliere, uno per ogni punto, non c'è
+margine: la curva è obbligata, e fra un punto e l'altro impazzisce. Con molta
+più libertà, invece, puoi scegliere fra le infinite curve che passano per quei
+punti la meno tormentata.
 
-Un'immagine: far passare una curva per venti punti. Con una curva che ha venti
-numeri da scegliere, uno per ogni punto, non c'è margine: la curva è obbligata,
-e fra un punto e l'altro impazzisce. Con molta più libertà puoi scegliere, fra
-le infinite curve che passano per quei punti, la meno tormentata.
+E l'addestramento sceglie davvero quella? In buona parte sì, e la ragione sta
+nel modo in cui procede. La discesa del gradiente
+(la procedura a piccoli passi vista con la retta di best fit) parte da numeri
+piccoli, sorteggiati vicino allo zero, e si muove a passettini finché i dati
+non tornano; appena tornano, si ferma. Il risultato è che non va mai a cercare
+lontano una soluzione strana, se ce n'è una mansueta lì vicino. Avere manopole
+in eccesso non è più libertà di sbagliare, è **libertà di scegliere una
+soluzione gentile**.
 
 `````
 
@@ -625,6 +730,21 @@ La doppia discesa dice *che* le reti sovradimensionate generalizzano. Resta la
 domanda su *perché*, e c'è un risultato che offre una risposta diversa e
 sorprendentemente concreta.
 
+Prima però serve un'immagine di che cosa sia una **rete neurale**, perché qui
+la si pota come una pianta (ci sarà un capitolo intero a raccontarla: quel che
+segue basta per questa pagina). Immagina tanti nodi disposti a strati, e fra un
+nodo e il successivo un filo che porta il segnale moltiplicandolo per un
+numero: quel numero è il **peso** del collegamento, uno dei tanti parametri che
+l'addestramento aggiusta. E i **pesi iniziali**, quelli da cui la messa a punto
+parte, sono sorteggiati a caso. Sembra strano, e invece è necessario: se
+partissero tutti dallo stesso valore, tutti i fili riceverebbero la stessa
+correzione e resterebbero uguali per sempre, e una rete di fili identici non
+serve a niente. Il sorteggio li rende diversi, e ognuno può specializzarsi.
+Una rete grande ha milioni di questi
+fili. Un peso quasi nullo è un filo che di fatto non trasmette niente:
+tagliarlo non cambia la risposta, e **potare** vuol dire proprio tagliare i
+fili più deboli; quello che resta dopo il taglio è una **sottorete**.
+
 ```{figure} ../figures/lottery-ticket-hypothesis.svg
 :name: fig-biglietto-vincente
 :alt: "A sinistra una rete densa con tutte le sue connessioni disegnate in grigio. A destra la stessa rete con evidenziato un sottoinsieme molto più piccolo di connessioni e nodi, il biglietto vincente, che addestrato da solo a partire dalla propria inizializzazione originale raggiunge la stessa accuratezza della rete intera."
@@ -636,20 +756,13 @@ pesi iniziali, quelli che aveva nella rete grande.
 ```
 
 La condizione in coda a {numref}`fig-biglietto-vincente` è ciò che rende
-l'ipotesi interessante invece che ovvia. Se si riprende la stessa sottorete e
+questa idea, che si chiama **ipotesi del biglietto vincente**, interessante
+invece che ovvia. Se si riprende la stessa sottorete e
 la si inizializza da capo a caso, non impara altrettanto bene: il biglietto
 non è la forma della sottorete, è la coppia fra la forma e i numeri con cui è
 nata. Sovradimensionare, in questa lettura, serve a comprare molti biglietti.
 
 `````{tab} Elementare
-
-Serve prima un'immagine di che cosa sia una **rete neurale**, perché qui la si
-pota come una pianta. Immagina tanti nodi disposti a strati, e fra un nodo e il
-successivo un filo che porta il segnale moltiplicandolo per un numero: quel
-numero è il **peso** del collegamento, ed è uno dei tanti parametri che
-l'addestramento aggiusta. Una rete grande ha milioni di questi fili. Un peso
-quasi nullo è un filo che di fatto non trasmette niente: tagliarlo non cambia
-la risposta, e «potare» vuol dire proprio tagliare i fili più deboli.
 
 Il punto di partenza è un paradosso noto da tempo. Prendi una rete addestrata,
 elimina i pesi più piccoli: puoi buttarne via il $90\%$ senza quasi perdere
@@ -725,6 +838,11 @@ sezione.
   sono sparpagliate è un difetto di **stabilità**. Si correggono in modi
   opposti, e mettendo la flessibilità del modello su un asse l'errore sui dati
   nuovi disegna una **U**: si sceglie il fondo.
+- Prima di spendere per raccogliere altri dati, si guardano le **curve di
+  apprendimento**: si riaddestra con sempre più esempi e si guarda l'errore. Se
+  quello sugli esempi di scuola e quello sui casi nuovi si sono già raggiunti e
+  fermati, altri dati non servono e va cambiato modello; se fra i due resta un
+  divario, i dati in più pagano.
 - Per accorgersene bisogna misurare su dati che il modello non ha usato: si
   divide in tre, **studio, prove, esame**. L'esame (il *test*) si apre una sola
   volta, alla fine: ogni sbirciata lo consuma e il voto diventa più generoso

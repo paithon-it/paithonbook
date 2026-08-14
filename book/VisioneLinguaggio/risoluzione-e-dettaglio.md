@@ -17,8 +17,9 @@ architetturali: ogni pixel in più si paga in contesto, e non in proporzione.
 ## Il conto, in due righe
 
 Il meccanismo è quello del Vision Transformer {cite}`dosovitskiy2021image`: una
-patch quadrata di lato fisso, un token. Da qui il numero di token è aritmetica
-elementare, e la sua conseguenza sul costo dell'attenzione non lo è.
+tessera quadrata di lato fisso diventa un pezzo della sequenza (in gergo, una
+*patch* e un *token*). Da qui il numero dei pezzi è aritmetica elementare, e la
+sua conseguenza sul costo dell'attenzione non lo è.
 
 `````{tab} Elementare
 
@@ -235,11 +236,13 @@ altre contromisure, $13 \cdot 1024 = 13\,312$ token.
 
 ## Seconda risposta: comprimere i token
 
-Tredicimila token per una pagina non sono sostenibili, e la seconda risposta
-attacca quel numero riducendo i token *dopo* l'encoder e *prima* del modello di
-linguaggio: l'immagine viene guardata ad alta risoluzione, ma quello che entra
-nel contesto è più corto. Resta da decidere **come** si comprime, e c'è un modo
-che butta via informazione e uno che non la butta.
+Tagliando a riquadri, però, i pezzi si moltiplicano: una pagina divisa in dodici
+riquadri più la miniatura sono tredici passaggi dell'encoder, e più di
+tredicimila tessere messe in fila. Tante non sono sostenibili, e la seconda
+risposta attacca quel numero riducendo le tessere *dopo* l'encoder e *prima* del
+modello di linguaggio: l'immagine viene guardata ad alta risoluzione, ma quello
+che entra nel contesto è più corto. Resta da decidere **come** si comprime, e
+c'è un modo che butta via informazione e uno che non la butta.
 
 `````{tab} Elementare
 
@@ -495,7 +498,8 @@ L'uscita è il riassunto numerico della sezione:
 
 Le tre righe della tabella sono il vincolo; le quattro sotto sono le due
 contromisure. Il tiling compra un encoder che confronta $3{,}2$ volte meno
-coppie (in lavoro totale, come si è visto, un buon 10-20% in meno) pagando mille
+coppie (in lavoro totale, come si è visto, fra il 6% e il 24% in meno, tanto
+meno quanto più l'encoder è largo) pagando mille
 token di ridondanza, e il pixel shuffle riporta quei $5120$ token a $1280$, meno
 di un terzo di quanto vedrebbe l'immagine monolitica. Nessuna delle due ha
 toccato la prima tabella.

@@ -34,12 +34,12 @@ quadratico a lineare.
 
 ```{figure} ../figures/kv-cache-generazione.svg
 :name: fig-kv-cache-cresce
-:alt: "Sequenza di passi di generazione affiancati. A ogni token prodotto, la cache delle chiavi e dei valori si allunga di una colonna, e il blocco di memoria occupato cresce di passo in passo senza mai liberarsi, fino a dominare l'occupazione."
+:alt: "Quattro passi di generazione, uno sotto l'altro, sulla frase «Il gatto dorme sul». A ogni passo la fila dei riquadri si allunga di uno: il token appena prodotto è l'unico calcolato in quel passo, quelli di prima restano in cache e non si ricalcolano. A destra di ogni fila il conteggio delle coppie chiave-valore conservate, da una a quattro."
 :width: 96%
 
 La cache che non smette di crescere. Ogni token generato ne aggiunge un pezzo,
-e quel pezzo resta: la memoria occupata non dipende dal modello ma da quanto
-si è scritto finora.
+e quel pezzo resta: la memoria occupata cresce con quanto si è scritto finora,
+e nessun passo la libera.
 ```
 
 {numref}`fig-kv-cache-cresce` è il muro in una figura, ed è il motivo per cui

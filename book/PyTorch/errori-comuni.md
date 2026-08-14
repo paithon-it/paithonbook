@@ -154,8 +154,10 @@ fatta al confine.
 
 Sul *type promotion* elemento per elemento vale la pena essere precisi, perché
 la formula che si legge di solito («le stesse regole di NumPy») è vera solo in
-parte. Confrontando `torch.result_type` con `np.result_type` su tutte le 81
-coppie dei tipi qui elencati, **dieci divergono**, e sono tutte del tipo intero
+parte. Confrontando `torch.result_type` con `np.result_type` su tutte le
+coppie dei tipi che le due librerie hanno in comune (il `bfloat16` in NumPy
+non esiste, quindi i tipi confrontabili sono otto e le coppie $8^2 = 64$),
+**dieci divergono**, e sono tutte del tipo intero
 per decimale: a differenza di NumPy, in PyTorch un intero non spinge mai un
 decimale a una precisione più alta. `int64 + float32` dà `float32` in torch e
 `float64` in NumPy; `torch.tensor([1,2,3]) * 2.5` dà `float32`, mentre
@@ -288,13 +290,34 @@ comune di tutti, quello che chiude questa lista: una loss di addestramento che
 scende benissimo mentre quella di validazione risale. Il codice funziona, non
 c'è niente da correggere in PyTorch, e proprio per questo lo si scopre tardi.
 
-- **`optimizer.zero_grad()` dimenticato.** I gradienti si accumulano, quindi il
-  passo effettivo cresce a ogni iterazione. Che cosa si vede dipende
-  dall'ottimizzatore, e vale la pena saperlo perché il sintomo ovvio è quello
-  sbagliato: con `Adam` la loss di solito esplode, ma con `SGD`, misurando, la
-  loss all'inizio scende *più in fretta* del normale. È il caso peggiore, non
-  il più innocuo, proprio perché il bug si traveste da successo, e chi cerca la
-  divergenza conclude che lo `zero_grad()` c'è.
+- **`optimizer.zero_grad()` dimenticato.** I gradienti si accumulano, quindi
+  al passo $t$ quello che si usa è la somma dei $t$ gradienti precedenti,
+  all'incirca $t\,\bar{g}$, dove $\bar{g}$ è il gradiente medio visto finora.
+  Che cosa si veda dipende dall'ottimizzatore, e conviene saperlo perché la
+  polarità è l'opposto di quella che ci si aspetta. Con **SGD** il passo vale
+  $\eta \, t \, \bar{g}$ e cresce insieme alla somma: con un learning rate
+  piccolo la loss resta *migliore* di quella del ciclo corretto per tutta la
+  corsa ($0{,}043$ contro $0{,}690$, misurando), con uno grande diverge fino a
+  $4{,}5 \cdot 10^{3}$ (su MNIST è arrivata a $177$, dove una loss sana sta a
+  $2{,}3$, e il modello ha finito per tirare a indovinare). Con **Adam** non
+  esplode mai, in nessuna prova, e la ragione è strutturale:
+  l'aggiornamento vale $\hat{m}/(\sqrt{\hat{v}} + \varepsilon)$, cioè è
+  invariante di scala, quindi un gradiente che cresce come $t\,\bar{g}$ si
+  semplifica fra numeratore e denominatore e il passo resta quello di sempre.
+  A $\eta = 10^{-3}$ il bug è perfino *più bravo* del ciclo corretto. Il caso
+  peggiore è quindi Adam, cioè proprio l'ottimizzatore che il capitolo
+  raccomanda come default: lì il bug si traveste da successo e resta
+  invisibile per sempre, perché non c'è nessuna divergenza a denunciarlo.
+- **La predizione e il target non hanno la stessa forma.** `nn.MSELoss` e
+  `nn.L1Loss` non protestano: applicano il broadcasting e mediano su una
+  matrice $N \times N$ di residui incrociati, cioè confrontano ogni predizione
+  con *ogni* etichetta. Con predizioni $(8, 1)$ e target $(8,)$ la MSE
+  restituisce $1{,}8507$ invece di $2{,}0946$; con la L1 lo scarto è dello
+  $0{,}3\%$, indistinguibile dal rumore, e il modello passa la notte a
+  ottimizzare la cosa sbagliata. La `BCEWithLogitsLoss` è l'eccezione gentile,
+  perché si rifiuta e lo dice (`Target size must be the same as input size`).
+  Il rimedio è una riga sola, e va scritta prima di ogni loss:
+  `assert pred.shape == target.shape`.
 - **`optimizer.step()` dimenticato.** I gradienti si calcolano ma nessuno
   aggiorna i pesi: la loss resta piatta, identica, epoca dopo epoca.
 - **Softmax applicata due volte.** Se l'ultimo strato del modello ha già una
@@ -325,7 +348,12 @@ c'è niente da correggere in PyTorch, e proprio per questo lo si scopre tardi.
   essere zero esatto.
 - **`shuffle=True` sul `DataLoader` di test.** Non è un errore di per sé, ma
   rende impossibile confrontare le predizioni con le etichette in un ordine
-  stabile, e ogni valutazione racconta una storia leggermente diversa.
+  stabile. Quello che invece **non** cambia è il voto: con `model.eval()`
+  l'accuratezza misurata è identica cifra per cifra con il mescolamento acceso
+  e con quello spento, perché sono gli stessi esempi in un altro ordine.
+  L'unico numero che balla è la media delle medie per batch, che però è un
+  errore di conto per conto suo, quello spiegato in [dal notebook agli
+  script](dal-notebook-agli-script.md), e si sistema lì.
 
 ## Il grafico è il messaggio d'errore
 

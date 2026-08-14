@@ -32,14 +32,12 @@ agente che arriva in fondo da uno che si perde.
 
 Questa sezione ne dà la versione essenziale, quella che serve a un agente: la
 meccanica del budget, il *lost in the middle*, le forme di memoria. Il tema ha
-però un capitolo dedicato (*Prompt, contesto e loop*) che lo allarga oltre
-l'agente, in tre livelli concentrici: il **prompt engineering** (come si
-scrive il singolo messaggio), il **context engineering** come disciplina a sé
-(le quattro mosse per governare la finestra, e i modi in cui un contesto si
-guasta) e il **loop engineering** (il ciclo che ri-riempie la finestra a ogni
-passo, e che non lascia passare un risultato finché qualcosa non lo ha
-verificato). Qui restiamo sul filo del ragionamento agentico; là si guarda il
-quadro intero.
+però un capitolo tutto suo più avanti, *Prompt, contesto e loop*, che lo
+allarga oltre l'agente: come si scrive il singolo messaggio, come si governa
+la finestra e in quanti modi un contesto si guasta, e come si costruisce il
+ciclo che quella finestra la ri-riempie a ogni passo senza lasciar passare un
+risultato che nessuno ha verificato. Qui restiamo sul filo del ragionamento
+agentico; là si guarda il quadro intero.
 
 ## Il prompt come artefatto, non come incantesimo
 
@@ -103,8 +101,12 @@ peggiorato le risposte di oggi. Il prompt magico non esiste; esiste il prompt
 ## La finestra è piccola e preziosa
 
 Se il contesto è l'interfaccia, la finestra di contesto è lo schermo su cui la
-disegniamo, ed è uno schermo finito. Ogni modello ha un tetto massimo di token
-che può leggere in una volta, e riempirlo non è gratis. Lo sappiamo dal
+disegniamo, ed è uno schermo finito. Ogni modello ha un tetto massimo di
+**token** che può leggere in una volta, e riempirlo non è gratis. Token è
+l'unità in cui si conta il testo qui dentro: i pezzetti in cui una frase viene
+tagliata prima di entrare nel modello, ciascuno grande all'incirca una parola,
+spesso un po' meno. Da qui in avanti «quanto costa» vorrà sempre dire «quanti
+token». Lo sappiamo dal
 capitolo sui Transformer: il segnalibro che il modello si tiene per non
 rileggere ogni volta da capo (la **KV cache**) cresce con la lunghezza del
 contesto; e il prezzo che si paga in memoria, in secondi di attesa e in denaro
@@ -115,7 +117,7 @@ sempre un cattivo affare.
 
 ```{figure} ../figures/context-window.svg
 :name: fig-context-window
-:alt: "Una barra orizzontale rappresenta il budget di token di una finestra di contesto, ripartita in segmenti di ampiezza diversa: il system prompt, le descrizioni degli strumenti, la cronologia della conversazione, i documenti recuperati e lo spazio che resta per la risposta."
+:alt: "Una barra orizzontale rappresenta il budget di una finestra di contesto da centoventottomila token, ripartita in segmenti di ampiezza diversa e via via crescente: il system prompt (circa seimila token), le descrizioni degli strumenti (diecimila), la cronologia della conversazione (trentacinquemila, e cresce a ogni turno), i documenti allegati (cinquantottomila) e, tratteggiato in coda, lo spazio che resta per la risposta: diciannovemila token. In fondo l'avvertenza che i valori sono indicativi."
 :width: 92%
 
 La finestra come budget da ripartire. Ogni segmento toglie spazio agli altri,
@@ -124,7 +126,9 @@ finché il modello non la tronca a metà.
 ```
 
 Messa così, come in {numref}`fig-context-window`, la finestra smette di
-sembrare un limite tecnico e diventa quello che è davvero: un **budget**. Il
+sembrare un limite tecnico e diventa quello che è davvero: un **budget**. I
+centoventottomila token in cima al disegno sono grosso modo un romanzo, e
+sembrano tantissimi finché non si guarda come se li dividono i convitati. Il
 primo segmento della barra, il *system prompt*, è il foglio di istruzioni di
 fondo che il programma antepone sempre, uguale a ogni richiesta, e che
 l'utente non vede né scrive: è la parte fissa della spesa. E come ogni budget
@@ -233,10 +237,12 @@ diventano operative.
 documenti, biglietti: entrano comunque. Per il resto, con lo spazio che
 avanza, metti prima l'indispensabile, poi il molto utile, e ciò che resta
 fuori resta fuori. Se un oggetto quasi ci sta, a volte lo porti a metà (la
-crema in un flaconcino invece del barattolone). E i regali più importanti li
-metti in cima, dove li ritrovi subito. Il context builder fa la valigia del
-modello: obbligatori dentro, il resto per priorità fino a esaurire il budget,
-il più prezioso bene in vista.
+crema in un flaconcino invece del barattolone). E se sai che chi la aprirà
+guarderà per prima cosa quello che sta sopra e quello che sta sotto, mentre
+quello sepolto in mezzo rischia di non vederlo, le cose che contano le metti
+ai due estremi. Il context builder fa la valigia del modello: gli obbligatori
+dentro, il resto per priorità fino a esaurire il budget, e il più prezioso
+mai nel mezzo.
 
 `````
 
@@ -362,10 +368,12 @@ print(f"\nToken usati: {usati}/{BUDGET}")
 
 L'esecuzione mostra le decisioni prese: dei cinque passaggi, i due più
 rilevanti entrano interi, il terzo viene troncato per riempire l'ultimo
-spazio, i due meno rilevanti restano fuori. E la disposizione finale è a **V**:
-il passaggio decisivo, quello che contiene il 2017, finisce in fondo, a ridosso
-della domanda; il secondo apre; il frammento troncato, che è la parte meno
-utile perché non afferma niente, finisce nel mezzo, dove perderlo costa meno.
+spazio, i due meno rilevanti restano fuori. E la disposizione finale ha la
+forma di una **V**, cioè molto ai due estremi e poco nel mezzo, che è
+esattamente il rovescio della pila di fogli: il passaggio decisivo, quello che
+contiene il 2017, finisce in fondo, a ridosso della domanda; il secondo apre;
+il frammento troncato, che è la parte meno utile perché non afferma niente,
+finisce nel mezzo, dove perderlo costa meno.
 
 ```text
 Sei un assistente che risponde citando solo i passaggi forniti. Se l'informazione non c'e', dillo.
@@ -380,9 +388,12 @@ Token usati: 58/58
 ```
 
 Il numero in fondo è il conteggio del prompt **davvero montato**, marcatori
-compresi, non la somma dei pezzi che abbiamo scelto: sono otto token di
-differenza su cinquanta, cioè il sedici per cento, ed è esattamente il tipo di
-sforamento che si scopre quando il modello tronca la risposta a metà.
+compresi, non la somma dei pezzi che abbiamo scelto. Quelli, contati a parte,
+pesano cinquantuno token: quindici il system prompt, undici la domanda,
+venticinque i tre passaggi messi in fila. I sette che mancano all'appello sono
+i `[fonte 0.95]` e simili, cioè il quattordici per cento in più di quanto
+sembrava di aver speso: esattamente il tipo di sforamento che si scopre quando
+il modello tronca la risposta a metà.
 
 Sono poche decine di righe che non «capiscono» nulla, eppure incarnano tre
 scelte di progetto: cosa è obbligatorio, cosa entra per priorità, dove va il

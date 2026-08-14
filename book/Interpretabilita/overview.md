@@ -10,22 +10,22 @@ nulla: un rilevatore di neve travestito da riconoscitore di canidi. Poi
 mostrarono dieci sue predizioni, errori compresi, a ventisette studenti di
 machine learning, chiedendo se il modello fosse affidabile e come pensavano che
 decidesse: senza altro in mano, in dieci dissero di fidarsi, e meno della metà
-sospettò della neve. Quando comparvero le *spiegazioni*, che evidenziavano su
-quali porzioni dell'immagine si basava ogni risposta (come si ottengano lo
-vedremo in questo capitolo, ed è il metodo che quei tre autori proposero
-insieme all'esperimento), l'inganno crollò: i fiduciosi scesero a tre, e
-venticinque studenti su ventisette indicarono la neve {cite}`ribeiro2016why`.
-L'esperimento era costruito apposta per dimostrare una cosa: senza una
-spiegazione, nemmeno gli addetti ai lavori si accorgono di un modello che
-funziona per la ragione sbagliata.
+sospettò della neve. Allora diedero loro le *spiegazioni*, cioè le porzioni di
+immagine su cui ogni risposta si era basata, evidenziate sopra la foto.
+L'inganno crollò: i fiduciosi scesero a tre, e venticinque studenti su
+ventisette indicarono la neve {cite}`ribeiro2016why`. Era una messinscena
+costruita apposta per dimostrare una cosa sola: senza una spiegazione, nemmeno
+gli addetti ai lavori si accorgono di un modello che funziona per la ragione
+sbagliata. Il metodo che disegna quelle macchie lo proposero gli stessi autori
+insieme all'esperimento, e lo vedremo in questo capitolo.
 
 La storia ha un antenato illustre. All'inizio del Novecento, a Berlino, un
 cavallo di nome **Hans il Sapiente** sembrava saper contare: gli si chiedeva
 «quanto fa sette più cinque?» e lui batteva lo zoccolo dodici volte. Nel 1904
 lo psicologo Oskar Pfungst scoprì l'inganno, e nel 1907 lo raccontò in un
-libro: Hans non faceva aritmetica,
-leggeva i movimenti involontari di chi poneva la domanda, che si irrigidiva
-appena lo zoccolo raggiungeva il numero giusto. Bastava che l'esaminatore non
+libro: Hans non faceva aritmetica, leggeva i movimenti involontari di chi gli
+poneva la domanda. L'esaminatore si irrigidiva appena lo zoccolo raggiungeva il
+numero giusto, e il cavallo si fermava lì. Bastava che l'esaminatore non
 conoscesse la risposta, e Hans sbagliava. Da allora si chiama **effetto Clever
 Hans** ogni sistema che *sembra* risolvere un problema mentre in realtà ne
 risolve un altro, più facile e nascosto. Il classificatore di husky è un Clever
@@ -50,13 +50,14 @@ ottenerla quando il modello non la offre da sé.
 
 Fin quando la posta in gioco è suggerire un film, poco male. Ma quando un
 modello decide se concedere un mutuo, se un tumore è maligno o se rilasciare un
-imputato, la domanda «perché?» diventa una questione di fiducia, di giustizia e
-perfino di legge: il Regolamento generale sulla protezione dei dati europeo
-(GDPR, applicabile dal 2018) ha introdotto norme sulle decisioni automatizzate
-e un «diritto alla spiegazione» per chi le subisce. Che quel diritto esista
-davvero, e fin dove arrivi, i giuristi lo discutono ancora: il testo obbliga a
-fornire «informazioni significative sulla logica utilizzata», e quanto questo
-costringa a motivare la *singola* decisione è il punto controverso.
+imputato, la domanda «perché?» diventa una questione di fiducia e di giustizia.
+È anche, da qualche anno, una questione di legge. Il Regolamento generale sulla
+protezione dei dati europeo (GDPR, applicabile dal 2018) ha introdotto norme
+sulle decisioni automatizzate e un «diritto alla spiegazione» per chi le
+subisce. Fin dove arrivi quel diritto, però, i giuristi lo discutono ancora. Il
+testo obbliga a fornire «informazioni significative sulla logica utilizzata»,
+e il punto controverso è se questo basti a pretendere il motivo della *singola*
+decisione.
 
 `````{tab} Elementare
 
@@ -158,8 +159,9 @@ regolatore.
 
 ## Una mappa delle spiegazioni
 
-Il campo dell'*explainable AI* può sembrare una giungla di sigle. Tre assi,
-ortogonali tra loro, mettono ordine e ci accompagneranno per tutto il capitolo.
+Il campo dell'*explainable AI* può sembrare una giungla di sigle. Tre domande,
+indipendenti l'una dall'altra, mettono ordine e ci accompagneranno per tutto il
+capitolo.
 
 `````{tab} Elementare
 
@@ -197,7 +199,7 @@ distinguiamo lungo tre assi.
 - **Globale vs locale.** Una spiegazione *globale* descrive il comportamento
   del modello sull'intero dominio: quali feature contano in media, che forma
   ha la dipendenza. Una spiegazione *locale* riguarda una singola predizione
-  $f(x_0)$: perché *questo* input ha prodotto *questa* uscita. I due livelli
+  $f(\mathbf{x}_0)$: perché *questo* input ha prodotto *questa* uscita. I due livelli
   richiedono metodi diversi; un modello con superficie decisionale complessa
   può essere globalmente incomprensibile ma localmente approssimabile.
 - **Model-specific vs model-agnostic.** Un metodo *specifico* sfrutta la
@@ -221,18 +223,19 @@ cambia; una macchia colorata sopra una fotografia; una classifica di colonne.
 Cinque cose che non si assomigliano per niente. Quando una sezione dice
 «spiegazione», la prima domanda utile è quale delle cinque.
 
-C'è poi una quarta domanda, che non è un asse tecnico ma decide quale risposta
-sia quella giusta: **si vuole spiegare il modello, o il fenomeno?** Sono cose
-diverse, e la differenza si misura. Se due colonne dicono quasi la stessa cosa
-e il modello ne guarda una sola, un metodo che chiede «su che cosa si appoggia
-questo programma» dà tutto il merito alla colonna usata e zero all'altra; un
-metodo che chiede «che cosa dice il dato» lo divide a metà, perché
-l'informazione sta in tutte e due. Nessuna delle due risposte è sbagliata:
-rispondono a domande diverse. Chi cerca un difetto nel modello vuole la prima;
-chi cerca una causa nel mondo vuole la seconda, e da un modello predittivo non
-la otterrà comunque, perché il modello ha visto correlazioni e non esperimenti.
-Questa forcella tornerà tre volte nel capitolo, ogni volta che due metodi
-entrambi ragionevoli daranno due numeri diversi per lo stesso caso.
+C'è poi una quarta domanda, che non riguarda il funzionamento di un metodo ma
+decide quale risposta sia quella giusta: **si vuole spiegare il modello, o il
+fenomeno?** Sono cose diverse, e la differenza si misura. Mettiamo che due
+colonne dicano quasi la stessa cosa e che il modello ne guardi una sola. Un
+metodo che chiede «su che cosa si appoggia questo programma» dà tutto il merito
+alla colonna usata e zero all'altra; un metodo che chiede «che cosa dice il
+dato» lo divide a metà, perché l'informazione sta in tutte e due. Nessuna delle
+due risposte è sbagliata: rispondono a domande diverse. Chi cerca un difetto nel
+modello vuole la prima; chi cerca una causa nel mondo vuole la seconda, e da un
+modello predittivo non la otterrà comunque, perché il modello ha visto
+correlazioni e non esperimenti. Questa forcella tornerà quattro volte nel
+capitolo, ogni volta che due metodi entrambi ragionevoli daranno due numeri
+diversi per lo stesso caso.
 
 L'esempio più pulito di interpretabilità *intrinseca* (cioè che il modello ha
 già per come è costruito, senza bisogno di strumenti esterni) è un albero di
@@ -273,8 +276,9 @@ strettissimo, prima specie; sotto 1,75 cm, seconda; sopra, terza. Nessuna
 spiegazione post-hoc, il modello *è* la propria spiegazione, e sta in sette
 righe. Se lo stesso dato lo diamo in pasto a una foresta casuale da centinaia
 di alberi (tanti alberi diversi che votano insieme sbagliano meno di uno solo,
-come si è visto nel capitolo sugli ensemble) l'accuratezza sale ma la
-leggibilità sparisce, ed è lì che nascono i metodi del capitolo.
+come si è visto nella sezione sugli alberi e gli ensemble del capitolo sul
+machine learning) l'accuratezza sale ma la leggibilità sparisce, ed è lì che
+nascono i metodi del capitolo.
 
 ## Spiegare non è essere fedeli
 
@@ -303,16 +307,17 @@ una spiegazione bella e infedele ci fa fidare di un modello che non lo merita.
 Una famiglia importante di spiegazioni post-hoc costruisce un modello
 surrogato $g$, interpretabile, che approssima la scatola nera $f$ in un
 intorno del punto di interesse. La sua qualità si misura con la **fedeltà
-locale**, cioè quanto $g$ e $f$ concordano sui punti $z$ campionati vicino a
-$x_0$. La si quantifica per il suo rovescio, misurando quanto i due
-*discordano*:
+locale**, cioè quanto $g$ e $f$ concordano sui punti $\mathbf{z}$ campionati
+vicino a $\mathbf{x}_0$. La si quantifica per il suo rovescio, misurando quanto
+i due *discordano*:
 
 $$
-\text{infedeltà}(g; x_0) = \mathbb{E}_{z \sim \pi_{x_0}}
-\big[\, \ell\!\left(g(z),\, f(z)\right) \,\big],
+\text{infedeltà}(g; \mathbf{x}_0) = \mathbb{E}_{\mathbf{z} \sim \pi_{\mathbf{x}_0}}
+\big[\, \ell\!\left(g(\mathbf{z}),\, f(\mathbf{z})\right) \,\big],
 $$
 
-dove $\pi_{x_0}$ è una distribuzione di prossimità centrata su $x_0$ e $\ell$
+dove $\pi_{\mathbf{x}_0}$ è una distribuzione di prossimità centrata su
+$\mathbf{x}_0$ e $\ell$
 una loss adatta al tipo di uscita: l'indicatrice di disaccordo per etichette
 discrete, uno scarto quadratico per probabilità o punteggi continui. La
 quantità cresce quando la fedeltà cala: tanto più è piccola, tanto più $g$ è
@@ -351,23 +356,28 @@ esistono spiegazioni verificate e spiegazioni che ci raccontiamo.
 
 ## Come è organizzato il capitolo
 
-Con questa mappa in tasca, il capitolo procede lungo i tre assi.
+Con questa mappa in tasca, il capitolo procede seguendo quelle tre domande.
 
-Cominceremo dai **modelli trasparenti** (regressione lineare e logistica,
-alberi di decisione, sistemi a regole) già incontrati nel capitolo sul Machine
-Learning, riletti qui per la domanda «quanto sono leggibili?», e dalle misure
-di **importanza delle feature** (globali) che dicono su cosa un modello si
-appoggia in media. Passeremo poi alle **spiegazioni locali**, perché *questa*
-singola predizione: **LIME**, il metodo del caso husky, che approssima il
-modello con un surrogato lineare nell'intorno del punto; **SHAP**, che
-distribuisce il «merito» di una predizione tra le feature con una regola presa
-dalla teoria dei giochi; e le spiegazioni **controfattuali**, che rispondono a
-«cosa sarebbe dovuto cambiare nell'input perché la decisione fosse diversa?».
-Chiuderemo con l'**attribuzione nelle reti profonde** (saliency map, gradienti
-integrati, mappe di attenzione che avevamo visto nascere nel capitolo sui
-Transformer) e con la giovane **interpretabilità meccanicistica**, che prova a
-smontare una rete circuito per circuito, come un ingegnere inverso apre un
-chip per capirne la logica.
+Cominceremo dai **modelli trasparenti**: la regressione lineare e logistica,
+gli alberi di decisione, i sistemi a regole. Li abbiamo già incontrati nel
+capitolo sul Machine Learning, e qui li rileggiamo con un'altra domanda in
+testa, quanto sono leggibili. Vengono poi le misure di **importanza delle
+feature**, che dicono su che cosa un modello si appoggia in media, su tutti gli
+esempi insieme.
+
+Passeremo quindi alle **spiegazioni locali**, quelle che riguardano *questa*
+singola predizione. Sono tre: **LIME**, il metodo del caso husky, che
+approssima il modello con un surrogato lineare nell'intorno del punto; **SHAP**,
+che distribuisce il «merito» di una predizione tra le feature con una regola
+presa dalla teoria dei giochi; e le spiegazioni **controfattuali**, che
+rispondono a «cosa sarebbe dovuto cambiare nell'input perché la decisione fosse
+diversa?».
+
+Chiuderemo con l'**attribuzione nelle reti profonde**, cioè saliency map,
+gradienti integrati e le mappe di attenzione che avevamo visto nascere nel
+capitolo sui Transformer. E con la giovane **interpretabilità meccanicistica**,
+che prova a smontare una rete circuito per circuito, come un ingegnere inverso
+apre un chip per capirne la logica.
 
 Un filo, sopra a tutto, tiene insieme il capitolo con quello sull'**AI
 responsabile**: aprire la scatola nera non è un vezzo accademico, ma il primo

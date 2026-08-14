@@ -123,14 +123,13 @@ sono la stessa cosa, e la differenza tornerà utile: il punteggio è un numero f
 zero e uno, la decisione è il sì o il no che si ottiene tagliandolo a una certa
 altezza.
 
-Su questi ingredienti si contano gli errori. Si usano le stesse due misure del
-capitolo di Machine Learning, il **tasso di veri positivi** e il **tasso di
-falsi positivi**: «tasso» vuol dire soltanto «ogni quanti su cento», cioè una
-percentuale scritta come frazione, e sono rispettivamente la quota di casi veri
-che il modello prende e la quota di falsi allarmi su chi non c'entrava nulla. La
-differenza rispetto a quel capitolo è una sola, ed è decisiva: qui i conti si
-fanno **separatamente per ciascun gruppo** e poi si confrontano
-({numref}`fig-equita-tassi`).
+Su questi ingredienti si contano gli errori, e le misure sono le stesse due del
+capitolo di Machine Learning. Il **tasso di veri positivi** è la quota di casi
+veri che il modello prende; il **tasso di falsi positivi** è la quota di falsi
+allarmi su chi non c'entrava nulla. «Tasso» vuol dire soltanto «ogni quanti su
+cento», cioè una percentuale scritta come frazione. La differenza rispetto a
+quel capitolo è una sola, ed è decisiva: qui i conti si fanno **separatamente
+per ciascun gruppo** e poi si confrontano ({numref}`fig-equita-tassi`).
 
 ```{figure} ../figures/equita-tassi.svg
 :name: fig-equita-tassi
@@ -250,7 +249,7 @@ non è pedanteria: è il perno della sezione successiva.
 
 `````
 
-## Il risultato di impossibilità
+## I risultati di impossibilità
 
 Arriviamo al nodo. Le richieste appena viste non entrano in conflitto per caso:
 alcune di esse sono **matematicamente incompatibili** ogni volta che i gruppi
@@ -337,10 +336,11 @@ $0{,}30$ contro $0{,}10$. È esattamente la forma del caso COMPAS
 la calibrazione. Il teorema di Chouldechova parla di $\text{VPP}$, che è una
 proprietà della decisione $\hat{Y}$, non di $S$.
 
-**Secondo teorema: Kleinberg, Mullainathan e Raghavan (2016), calibrazione.**
-Il risultato gemello, indipendente e quasi simultaneo, riguarda i punteggi
-continui {cite}`kleinberg2017inherent`. Le tre condizioni in gioco sono la
-calibrazione e i due **bilanciamenti di classe**: che il punteggio *medio*
+**Secondo teorema: Kleinberg, Mullainathan e Raghavan (2017), calibrazione.**
+Il risultato gemello, indipendente e quasi simultaneo (i due preprint escono a
+un mese di distanza, nel settembre e nell'ottobre del 2016), riguarda i
+punteggi continui {cite}`kleinberg2017inherent`. Le tre condizioni in gioco
+sono la calibrazione e i due **bilanciamenti di classe**: che il punteggio *medio*
 ricevuto dai positivi sia lo stesso nei due gruppi, e che lo stesso valga per i
 negativi. Coesistono solo nei casi degeneri (prevalenze identiche o predizione
 perfetta). È un enunciato sui punteggi medi, non sui tassi della matrice di
@@ -361,15 +361,29 @@ Vale la pena vedere perché quelle ipotesi non sono un dettaglio, perché è la
 parte che insegna. Se le si lascia cadere, l'incompatibilità sparisce. Si
 prendano due gruppi con un punteggio calibrato **per costruzione** in entrambi
 (l'etichetta estratta con probabilità pari al punteggio, quindi
-$P(Y=1\mid S=s, A=a)=s$ esattamente) e prevalenze $0{,}50$ e $0{,}45$: con una
-soglia per gruppo, $0{,}584$ e $0{,}537$, si ottiene
-$\text{TPR}=0{,}489$ e $\text{FPR}=0{,}202$ in **tutti e due**, cioè equalized
-odds pieno, con la calibrazione intatta perché le soglie non toccano $S$. A
-divergere è il valore predittivo, $0{,}707$ contro $0{,}664$: esattamente come
-impone l'identità di Chouldechova. Non è una smentita di Pleiss, è il suo
-contrappunto: due soglie sono due classificatori, e l'ipotesi era che ce ne
-fosse uno solo. Il post-processing di Hardt, Price e Srebro, che la sezione
-sulle mitigazioni richiama, vive proprio in questo spiraglio.
+$P(Y=1\mid S=s, A=a)=s$ esattamente) e punteggi distribuiti come due Beta,
+$\text{Beta}(3;\,3)$ e $\text{Beta}(2{,}7;\,3{,}3)$, la cui media (che qui *è*
+la prevalenza) vale $0{,}50$ e $0{,}45$. Con una soglia per gruppo, $0{,}584$ e
+$0{,}537$, si ottiene $\text{TPR}=0{,}489$ e $\text{FPR}=0{,}202$ in **tutti e
+due**, cioè equalized odds pieno, con la calibrazione intatta perché le soglie
+non toccano $S$. A divergere è il valore predittivo, $0{,}708$ contro $0{,}664$:
+esattamente come impone l'identità di Chouldechova. Non è una smentita di
+Pleiss, è il suo contrappunto: due soglie sono due classificatori, e l'ipotesi
+era che ce ne fosse uno solo. Il post-processing di Hardt, Price e Srebro, che
+la sezione sulle mitigazioni richiama, vive proprio in questo spiraglio.
+
+Quei numeri si rifanno in forma chiusa, senza bisogno di simulare: per
+$S \sim \text{Beta}(a,b)$ la massa di punteggio sopra la soglia vale
+
+$$
+\mathbb{E}\bigl[S\,\mathbb{1}\{S \ge t\}\bigr]
+   = \frac{a}{a+b}\,P\bigl(\text{Beta}(a+1,b) \ge t\bigr),
+$$
+
+dove $t$ è la soglia e $\mathbb{1}\{\cdot\}$ vale $1$ quando la condizione è
+vera e $0$ altrimenti. Da lì il TPR si ottiene dividendo quella massa per la
+prevalenza $p$; il FPR sottraendola da $P(S \ge t)$ e dividendo per $1-p$; il
+VPP dividendola per $P(S \ge t)$.
 
 **E la terna dei criteri statistici.** Per *independence*, *separation* e
 *sufficiency* il risultato è più severo, come riassumono Barocas, Hardt e
@@ -384,7 +398,7 @@ ottenuto con due soglie.
 
 `````
 
-### Quel che il teorema non dice: i tassi di base sono misure
+### Quel che i teoremi non dicono: i tassi di base sono misure
 
 Tutti e tre i risultati partono dallo stesso presupposto, e conviene guardarlo
 in faccia perché è il punto in cui il capitolo rischia di smentire sé stesso.
@@ -497,7 +511,7 @@ che qualcuno considera essa stessa una forma di disparità di trattamento.
   l'equalized odds a partire da un qualsiasi punteggio già addestrato (una
   costruzione geometrica sulle curve ROC dei due gruppi).
 
-Il risultato di impossibilità della sezione precedente resta sullo sfondo, e
+I risultati di impossibilità della sezione precedente restano sullo sfondo, e
 il post-processing è il posto in cui si vede meglio che cosa comprano davvero
 queste tecniche. Le soglie per gruppo raggiungono l'equalized odds senza toccare
 il punteggio, quindi senza toccarne la calibrazione; ciò che non possono fare è
@@ -510,8 +524,11 @@ le prevalenze differiscono. Nessuna delle tre leve annulla il conflitto: sposta
 ## Equità individuale
 
 Le definizioni viste finora guardano ai gruppi in media. Una famiglia
-alternativa sposta l'obiettivo sul singolo, ed è la *fairness through awareness*
-di Cynthia Dwork e colleghi {cite}`dwork2012fairness`.
+alternativa sposta l'obiettivo sul singolo: due persone che si somigliano
+devono ricevere lo stesso trattamento, e poco importa da quale gruppo
+vengano. È la strada aperta da Cynthia Dwork e colleghi
+{cite}`dwork2012fairness`, che le diedero il nome di *fairness through
+awareness*.
 
 `````{tab} Elementare
 
@@ -653,8 +670,12 @@ allarmi (`FPR`) e quanti dei sì del modello erano giusti (`VPP`).
 
 Le due righe della calibrazione sono **essenzialmente identiche**: in ogni
 fascia di punteggio, la frazione reale di positivi è pressoché la stessa fra i
-gruppi (e coincide con il punteggio medio della fascia, come impone la
-calibrazione per costruzione). La calibrazione, cioè, *vale*. Eppure, con la
+gruppi, e coincide con il punteggio medio della fascia, come impone la
+calibrazione per costruzione. La calibrazione, cioè, *vale*. Le briciole di
+differenza che restano non sono un difetto di calibrazione, e conviene dire
+perché, visto che vanno tutte nello stesso verso: dentro una stessa fascia il
+Gruppo B ha più punteggi addossati al bordo basso, e la media di fascia lo
+segue. È la fascia a essere larga, non il punteggio a mentire. Eppure, con la
 soglia unica, la quota di falsi allarmi è tre volte più alta nel Gruppo A
 ($0{,}346$ contro $0{,}110$) e diverge nettamente anche il TPR ($0{,}658$
 contro $0{,}348$): le due metà dell'equalized odds saltano entrambe.
@@ -716,8 +737,9 @@ delle opzioni, quantifica i compromessi, smaschera le incompatibilità. Ma
 *quale* criterio far valere non discende dai dati: è una scelta di valore, che
 va posta in chiaro e discussa, non nascosta dentro una funzione obiettivo. Con
 lo stesso spirito affronteremo, nelle sezioni successive, la privacy e la
-robustezza dei modelli, e più avanti l'interpretabilità come strumento per
-rendere queste scelte finalmente ispezionabili.
+robustezza dei modelli; e chi vuole lo strumento che rende queste scelte
+ispezionabili lo trova nel capitolo sull'interpretabilità, che in questo libro
+viene appena prima.
 
 `````{tab} Elementare
 

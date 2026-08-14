@@ -2,7 +2,7 @@
 
 Le prime immagini generate da una GAN, nel 2014, erano cifre sgranate e
 faccine indistinte, appena qualche decina di pixel di lato. Ian Goodfellow le
-mostrava con orgoglio, ma un occhio distratto le scambiava per rumore. Dieci
+mostrava con orgoglio, ma nessuno le avrebbe scambiate per fotografie. Cinque
 anni dopo, il sito già incontrato in apertura di capitolo,
 *thispersondoesnotexist.com*, serve a ripetizione volti fotorealistici di
 persone che non esistono. In mezzo c'è la storia di questa sezione: una
@@ -125,7 +125,7 @@ danno il *controllo*, il duello dà il realismo.
 `````{tab} Superiore
 L'innovazione è architetturale: una rete di *mapping* trasforma $\mathbf{z}$ in uno spazio latente intermedio $\mathcal{W}$, più disaccoppiato; i vettori di stile $\mathbf{w}$ modulano ogni strato del generatore via *adaptive instance normalization* (AdaIN); rumore stocastico separato controlla i dettagli ad alta frequenza. Il risultato è il controllo *scale-specific*.
 
-La risoluzione $1024\times1024$, invece, StyleGAN la eredita: viene dalla **Progressive GAN** degli stessi autori {cite}`karras2018progressive`, che l'anno prima aveva imparato a salire fino a lì facendo crescere le due reti un livello per volta, e che StyleGAN dichiara come propria configurazione di base, «da cui ereditiamo le reti e tutti gli iperparametri». Là si era imparato a *salire* la scala; qui si impara a decidere che cosa succede a ciascun gradino. StyleGAN2 (2020) elimina poi i caratteristici artefatti "a goccia" ridisegnando la normalizzazione: con quella revisione la ricetta si assesta, ed è la forma in cui la famiglia è rimasta il riferimento per la generazione di volti.
+La risoluzione $1024\times1024$, invece, StyleGAN la eredita: viene dalla **Progressive GAN** dello stesso gruppo {cite}`karras2018progressive`, che l'anno prima aveva imparato a salire fino a lì facendo crescere le due reti un livello per volta, e che StyleGAN dichiara come propria configurazione di base, «da cui ereditiamo le reti e tutti gli iperparametri». Là si era imparato a *salire* la scala; qui si impara a decidere che cosa succede a ciascun gradino. StyleGAN2 (2020) elimina poi i caratteristici artefatti "a goccia" ridisegnando la normalizzazione: con quella revisione la ricetta si assesta, ed è la forma in cui la famiglia è entrata nell'uso corrente.
 `````
 
 ## pix2pix e CycleGAN: tradurre le immagini
@@ -185,11 +185,13 @@ con due risposte possibili prima ancora di arrivare alla macchina.
 
 ## Il passaggio di testimone ai modelli di diffusione
 
-Verso il 2021 il primato cambia mano. Il paper *Diffusion Models Beat GANs on
-Image Synthesis* {cite}`dhariwal2021diffusion` segna il sorpasso: i **modelli
-di diffusione** superano le GAN in qualità e, soprattutto, in stabilità di
-addestramento e diversità dei campioni; le GAN soffrivano di training
-instabile e *mode collapse*. L'idea è opposta a quella avversaria: si insegna
+Verso il 2021 il primato cambia mano, e a dare il nome al sorpasso è il paper
+*Diffusion Models Beat GANs on Image Synthesis* {cite}`dhariwal2021diffusion`,
+che lo argomenta sulla qualità delle immagini. Ma la ragione per cui il
+passaggio è stato così rapido sta altrove, e sono i due difetti che questo
+capitolo ha già raccontato: i **modelli di diffusione** si addestrano con la
+stessa stabilità di un qualunque modello supervisionato, e non conoscono il
+*mode collapse*. L'idea è opposta a quella avversaria: si insegna
 alla rete a rimuovere gradualmente il rumore da un'immagine, partendo dal
 rumore puro fino all'immagine. Su questa base nascono **Stable Diffusion**
 {cite}`rombach2022high` e **DALL·E 2** (OpenAI, 2022): a entrambi si descrive a

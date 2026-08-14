@@ -215,6 +215,10 @@ sphinx:
     # ma lo chiama una macro. Si rifa' con lo stesso Chromium quando cambia
     # nel brand.
     - _stampa/marchio.pdf
+    # Il fregio di copertina, che sta sotto il blocco del titolo. Stessa
+    # storia del marchio: lo chiama il frontespizio, non l'albero del
+    # documento. Lo rifa' `python3 book/_stampa/copertina.py`.
+    - _stampa/fregio.pdf
     # Le bande di apertura dei capitoli NON si elencano qui: sono una per
     # capitolo e cambierebbero a ogni capitolo nuovo. Le aggiunge
     # `_ext/pt_stampa.py`, che le trova da se'. (E comunque `latex_additional_files`

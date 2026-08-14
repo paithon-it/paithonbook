@@ -38,6 +38,22 @@ Una versione corrisponde a una **pubblicazione**, non a una giornata di
 lavoro: il libro si scrive tutti i giorni e si pubblica quando un pezzo sta in
 piedi.
 
+(v1-5-2)=
+
+## 1.5.2 · 14 agosto 2026
+
+### Pagine ampliate
+
+- **Tre figure nuove**, dove il testo elencava e basta: le quattro mosse con cui si amministra la finestra di contesto, le tre forme di una rete che impara più compiti insieme, e il righello che traduce l'entropia in «quante facce ha il dado equivalente».
+
+### Correzioni
+
+- **Tutti e trentatré i capitoli sono stati riletti da capo**, con il codice eseguito davvero e i conti rifatti a mano. Non è una rilettura di forma: sono usciti errori di sostanza in quasi ogni capitolo, e i più gravi erano affermazioni che il libro smentiva da sé qualche pagina dopo. Qualche esempio: il clipping di PPO è asimmetrico e taglia da un lato solo, il gradiente della funzione di partizione era annunciato e mai derivato, TransE la composizione ce l'ha (a mancargli è un'altra cosa), e «PALLA sta in sette frame» è falso, il minimo è sei.
+- **I sette capitoli d'apertura sono stati riscritti per essere più leggeri.** Un capitolo può essere tutto vero e restare illeggibile, e quelle sono le pagine dove arriva chi non ha basi. A leggerli è stato un ragazzo di tredici anni che non aveva mai sentito parlare di intelligenza artificiale, e ogni punto in cui si è fermato è stato riscritto: il conto con il seno che «non è un conto che posso rifare, è un numero da credere», la matrice che «gira e stira lo spazio» dopo un esempio che non gira niente, gli alberi che «si trovano a casa» prima che il libro dica che cos'è un albero.
+- **Le figure adesso mostrano quello che le didascalie promettono.** Erano decine i casi in cui il testo accreditava un disegno di qualcosa che non c'era: «quasi tutte le celle sono vuote» di una griglia piena al settantadue per cento, «ogni tacca vale dieci volte la precedente» di un disegno senza tacche, «le caselle sono numerate a partire da zero» dove i numeri non c'erano. In una figura sulle GAN una freccia diceva l'esatto contrario di quanto la pagina spiega per tre paragrafi.
+- {doc}`Allineamento e governance </AIResponsabile/allineamento-e-governance>` (AI responsabile). L'elenco delle pratiche vietate dall'**AI Act** era rimasto indietro: il regolamento europeo del 24 luglio 2026 lo ha allungato, e dal 2 dicembre 2026 sono vietati anche i sistemi che generano materiale intimo non consensuale e materiale di abuso sessuale su minori.
+- **La copertina del PDF non è più mezza pagina vuota**: sotto il titolo c'è una conca disegnata con le sue curve di livello e la discesa che ne trova il fondo, cioè il gesto che il libro racconta dal capitolo di matematica fino all'ultimo. La traiettoria è calcolata, non disegnata a occhio.
+
 (v1-5-1)=
 
 ## 1.5.1 · 13 agosto 2026

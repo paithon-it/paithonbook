@@ -21,8 +21,9 @@ consuma. È un **voto**, un numero che il modello dà a ogni risposta possibile:
 basso se la risposta è sensata, alto se è assurda. Poteva chiamarsi punteggio,
 o stranezza, o altezza. Si chiama energia per due motivi: la formula che lo
 calcola è, lettera per lettera, quella con cui i fisici descrivono una
-calamita, e quella parola porta con sé un'immagine comoda, le risposte buone
-come il fondo di una valle.
+calamita (la prima sezione dice quale, e da dove viene), e quella
+parola porta con sé un'immagine comoda, le risposte buone come il fondo di una
+valle.
 
 E c'è una ragione precisa per cui il fondo, e non la cima. Una pallina, nel
 mondo, cade: nei punti bassi ci va da sola, mentre in cima a un monte non ci
@@ -47,20 +48,28 @@ a una domanda senza essere costretti a rispondere, insieme, a tutte le altre.
 :width: 92%
 
 Il paesaggio che dà il nome al capitolo: in basso le risposte sensate, in alto
-quelle assurde. Chi scende soltanto (nel disegno, *hill climbing*) si ferma
-nella conca più vicina, e quando le conche sono i ricordi è esattamente quello
-che si vuole; chi ogni tanto accetta di risalire (*simulated annealing*, la
-ricottura simulata) può cambiare valle. Sono due mosse per due problemi
-diversi, e il capitolo le incontra in quest'ordine.
+quelle assurde, e in orizzontale (nel disegno, «spazio delle soluzioni») tutte
+le risposte possibili messe in fila. Chi scende soltanto si ferma nella conca
+più vicina, e quando le conche sono i ricordi è esattamente quello che si
+vuole: nel disegno la mossa si chiama *hill climbing*, «scalata della
+collina», perché il nome è nato dove si cercava il punto più alto, e qui il
+paesaggio è rovesciato. Chi invece ogni tanto accetta di risalire (*simulated
+annealing*, la ricottura simulata, ed è la scossa del fabbro che riscalda il
+metallo: la «T» del disegno è la temperatura, ne parla la seconda sezione) può
+cambiare valle. Sono due mosse per due problemi diversi, e il capitolo le
+incontra in quest'ordine.
 ```
 
 La seconda mossa di {numref}`fig-paesaggio-energia`, quella che accetta di
 risalire, anticipa una differenza di mentalità che attraversa tutto il
-capitolo. Dove i modelli visti finora *ottimizzano* (cercano la risposta
-migliore e si fermano lì), questi
+capitolo. Dove un classificatore o un regressore *ottimizzano* (cercano la
+risposta migliore e si fermano lì), i modelli di questo capitolo
 **campionano**: ne producono una alla volta, pescandola con la frequenza
 giusta, e per riuscirci accettano di peggiorare per un tratto, perché è
-l'unico modo di uscire da una valle e vederne un'altra.
+l'unico modo di uscire da una valle e vederne un'altra. Non è una novità
+assoluta, e sarebbe scorretto farla passare per tale: i generatori dei due
+capitoli precedenti campionano anche loro, e quello di diffusione lo fa con
+una mossa che è parente stretta di quella che si incontra qui.
 
 Un modello probabilistico, per dire quanto è verosimile una risposta, deve
 tenere il conto di tutte le risposte possibili: le probabilità sommano a uno,
@@ -134,16 +143,19 @@ tutt'altro che ovvia, che moltissimi compiti non ne hanno mai avuto bisogno.
 Perché lo stesso oggetto continua a riaffiorare sotto nomi diversi, e finché
 lo si incontra un pezzo per volta non lo si riconosce.
 
-Prendiamo i modelli di diffusione del capitolo precedente. Generano partendo
-da un'immagine tutta sporca di rumore e pulendola un poco alla volta, e ogni
-passo di pulitura ha il suo paesaggio: all'inizio liscio, con poche valli
-larghe, poi via via più dettagliato. Quello che quei modelli imparano, punto
-per punto, è la **pendenza** di quei paesaggi: da che parte si scende e quanto
-ripido. Ha un nome tecnico, *score*, ed è la pendenza del paesaggio di energia
-di quel passo. Ripulire un'immagine un poco alla volta *è* scendere lungo
-quella successione di paesaggi.
+Prendiamo i modelli di diffusione del capitolo precedente. Partono da
+un'immagine tutta sporca di rumore e arrivano, mille passi più tardi, a
+un'immagine pulita; e ogni passo ha il suo paesaggio: all'inizio liscio, con
+poche valli larghe, poi via via più dettagliato. Quello che quei modelli
+imparano, punto per punto, è la **pendenza** di quei paesaggi: da che parte si
+scende e quanto ripido. Ha un nome tecnico, *score*, ed è la pendenza del
+paesaggio di energia di quel passo. Attraversare quella successione di
+paesaggi, dal più liscio al più dettagliato, *è* generare.
 
-Le architetture JEPA del prossimo capitolo sono energie che nessuno ha mai
+Le architetture **JEPA** del prossimo capitolo (*Joint-Embedding Predictive
+Architecture*, cioè architettura predittiva a incorporamento congiunto: sono i
+modelli che invece di ridisegnare il mondo ne confrontano
+due riassunti) sono energie che nessuno ha mai
 trasformato in percentuali: giudicano quanto un pezzo di mondo osservato e uno
 da predire stiano bene insieme. Le reti di Hopfield «moderne» richiamano un
 ricordo con lo stesso conto con cui i Transformer prestano attenzione
@@ -207,9 +219,10 @@ verdetto.
   di un paesaggio, e le reti di Hopfield di oggi richiamano un ricordo con lo
   stesso conto con cui i modelli di linguaggio decidono a quali parole
   guardare.
-- Nelle prossime pagine: la memoria che si ripara da sola, le reti che
+- Nelle prossime pagine, cinque: la memoria che si ripara da sola, le reti che
   imparano scaldandosi e raffreddandosi, i modi di girare intorno al conto
-  impossibile, e i paesaggi che si usano oggi.
+  impossibile, il giudizio a coppie («questa risposta sta bene con questa
+  domanda?») e i paesaggi che si usano oggi.
 ```
 `````
 

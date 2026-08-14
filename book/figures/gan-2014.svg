@@ -44,5 +44,5 @@
 
   <!-- feedback loop to generator -->
   <path d="M 695 210 L 695 345 L 211 345 L 211 174" fill="none" stroke="#C9A961" stroke-width="2" stroke-dasharray="7 5" marker-end="url(#gan-ocra)"/>
-  <text x="453" y="338" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5E5852" text-anchor="middle">segnale di apprendimento (il verdetto torna al generatore)</text>
+  <text x="453" y="338" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5E5852" text-anchor="middle">segnale di apprendimento (la correzione torna al generatore)</text>
 </svg>

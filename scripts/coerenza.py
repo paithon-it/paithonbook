@@ -18,8 +18,11 @@ toglierli di mezzo prima di rileggere:
   toc        file sotto book/ non elencati in _toc.yml
   landing    schede di intro.md che non corrispondono ai capitoli del _toc.yml
              (mancanti, di troppo, fuori ordine, o col numero scritto a mano)
-  animazioni capitoli senza nemmeno una figura animata (solo elenco: zero clip
-             puo' essere una scelta), e capitoli oltre il tetto di 10
+  animazioni capitoli senza nemmeno una figura animata: zero clip puo' essere
+             la scelta giusta, ma va DICHIARATA in animazioni/senza-clip.toml
+             con la ragione, altrimenti e' un difetto (perche' «ci abbiamo
+             pensato» e «non ce lo siamo chiesti» da fuori si somigliano);
+             e capitoli oltre il tetto di 10
   schede     gruppi di tab contigui, che `sphinx-inline-tabs` FONDE in un
              gruppo solo con quattro linguette (si vede solo in build)
   ricordare  riquadri «Da ricordare» FUORI dalle schede, mentre
@@ -39,6 +42,12 @@ toglierli di mezzo prima di rileggere:
              di font generica invece di quelle del brand
   avanti     rimandi in avanti ("vedremo", "prossima sezione"), solo elenco,
              la verifica resta umana
+  verso      rimandi che vanno dalla parte sbagliata: «come abbiamo visto»
+             seguito da un capitolo che il lettore non ha ancora letto (e il
+             contrario, «vedremo» verso un capitolo gia' letto). L'ordine di
+             lettura sta nel _toc.yml, il link risolve benissimo e nessuna
+             build se ne accorge: trovato a mano in Visione e linguaggio (4
+             casi, verso i capitoli 21 e 24), in Audio (6) e in Speech (2)
 
   scripts/coerenza.py            # tutto
   scripts/coerenza.py --solo numref,cite
@@ -79,11 +88,29 @@ causa giusta): e' una cosa che si vede leggendo, non contando. Il conteggio che
 invece funziona, e che sta qui sotto, e' quello dei riquadri «Da ricordare»
 fuori dalle schede, perche' li' la marca e' una direttiva MyST e non una
 convenzione tipografica.
+
+Un TERZO asse provato e scartato (agosto 2026), e questo e' un buco noto che
+resta aperto apposta. L'asse `lineette` maschera i blocchi di codice, per non
+segnalare i segni meno e le opzioni da riga di comando: quindi non vede una
+lineetta vietata scritta dentro un **commento**, che invece e' prosa a tutti
+gli effetti (in Transformers ne e' stata trovata una a mano).
+
+Estendere il controllo ai soli commenti sembra ovvio e non lo e'. Misurato su
+tutto il libro, togliendo i separatori `# ---` e gli intervalli numerici,
+resta **un solo** candidato, ed e' un falso positivo:
+`# modellino lineare ... normalizzata z = (x - mu)/sigma`. Nei commenti si
+scrivono formule, e in una formula il trattino spaziato e' un segno meno: il
+controllo segnalerebbe soprattutto quelle. Il libro e' pulito su questo asse, e
+il costo di tenerlo pulito con gli occhi e' minore del rumore che produrrebbe
+un controllo che sbaglia piu' spesso di quanto azzecchi.
 """
 
 from __future__ import annotations
 
 import argparse
+import functools
+import hashlib
+import json
 import re
 import shutil
 import subprocess
@@ -108,6 +135,25 @@ RX = {
     "avanti": re.compile(
         r"[^.\n]*\b(vedremo|vedrai|prossima sezione|prossimo capitolo|"
         r"piu[' ]avanti|torneremo|approfondiremo)\b[^.\n]*\.", re.I),
+    # Le due formule con cui una frase dichiara da che parte sta il rimando.
+    # Servono all'asse `verso`, e sono volutamente strette: meglio non vedere
+    # un difetto che accusarne uno che non c'e', perche' un elenco con dentro
+    # del rumore lo si smette di leggere.
+    "indietro": re.compile(
+        r"\b(abbiamo (gia' |gia |già )?(visto|incontrato|derivato|costruito|"
+        r"definito|studiato|introdotto)|come sappiamo|(gia'|gia|già) "
+        r"(visto|vista|viste|visti|incontrato|incontrata)|"
+        r"(nel capitolo|nella sezione) precedente|poco fa|"
+        r"come si (e'|è) visto|che conosciamo)", re.I),
+    # NON e' una formula di richiamo all'indietro «del capitolo su X»: nomina
+    # un capitolo e basta, e nel libro compare piu' spesso per annunciare
+    # («lo raccontano il capitolo sui Transformer e il capitolo su MLOps»)
+    # che per ricordare. Messa fra le formule all'indietro produceva due
+    # segnalazioni su tre false.
+    "poi": re.compile(
+        r"\b(vedremo|vedrai|lo vedremo|piu' avanti|più avanti|"
+        r"nel prossimo capitolo|nella prossima sezione|torneremo|"
+        r"approfondiremo|riprenderemo|lo riprende|ne parliamo)", re.I),
 }
 
 
@@ -125,6 +171,88 @@ def sorgenti() -> dict[str, str]:
             if "_static" not in p.parts and "_build" not in p.parts}
 
 
+@functools.lru_cache(maxsize=1)
+def _tempi_git() -> dict[str, int]:
+    """{percorso relativo: data dell'ultimo commit che lo tocca}, in una passata.
+
+    Serve perche' **la data di modifica di un file non dice niente in CI**: un
+    `git checkout` scrive tutto l'albero in un istante solo, quindi ogni file
+    risulta modificato nello stesso momento e ogni confronto fra due date
+    diventa un sorteggio. In locale funzionava e sul runner no: l'asse `stampa`
+    dichiarava «22 fermi immagine piu' vecchi dell'animazione» su un albero in
+    cui nessuno aveva toccato niente.
+
+    Una sola invocazione di `git log` per tutto il repository: farne una per
+    file (qui sarebbero un centinaio e passa) costa secondi e da' lo stesso
+    risultato. E' la stessa mossa che fa `date_git()` in `genera-radice.py`,
+    per la stessa ragione.
+    """
+    fuori: dict[str, int] = {}
+    try:
+        uscita = subprocess.run(
+            ["git", "-C", str(QUI), "log", "--format=%ct", "--name-only",
+             "--no-renames"],
+            capture_output=True, text=True, check=True, timeout=180).stdout
+    except Exception:
+        return fuori          # senza git si ripiega sulle date dei file
+    ct = 0
+    for riga in uscita.splitlines():
+        riga = riga.rstrip()
+        if not riga:
+            continue
+        if riga.isdigit():
+            ct = int(riga)
+        else:
+            fuori.setdefault(riga, ct)   # la prima e' la piu' recente
+    return fuori
+
+
+@functools.lru_cache(maxsize=1)
+def _sporchi() -> set[str]:
+    """I file che in questo momento divergono da HEAD (o non sono tracciati)."""
+    try:
+        uscita = subprocess.run(
+            ["git", "-C", str(QUI), "status", "--porcelain"],
+            capture_output=True, text=True, check=True, timeout=60).stdout
+    except Exception:
+        return set()
+    return {r[3:].strip().strip('"') for r in uscita.splitlines() if len(r) > 3}
+
+
+def quando(percorso: Path) -> float:
+    """Quanto e' «recente» un file, in modo che regga anche in CI.
+
+    Per un file committato e pulito vale la data del commit; per uno modificato
+    o non ancora tracciato vale la data di modifica, che e' recentissima e
+    quindi lo fa risultare piu' nuovo di qualunque cosa sia committata. Le due
+    scale sono confrontabili perche' sono entrambe epoch.
+    """
+    try:
+        rel = str(percorso.resolve().relative_to(QUI))
+    except ValueError:
+        return percorso.stat().st_mtime
+    if rel in _sporchi():
+        return percorso.stat().st_mtime
+    ct = _tempi_git().get(rel)
+    return float(ct) if ct is not None else percorso.stat().st_mtime
+
+
+@functools.lru_cache(maxsize=1)
+def _impronte_fermi() -> dict[str, str]:
+    """Il registro che `animazioni/fermi.py` scrive quando genera i fermi."""
+    reg = QUI / "animazioni" / "impronte-fermi.json"
+    if not reg.is_file():
+        return {}
+    try:
+        return json.loads(reg.read_text(encoding="utf-8"))
+    except Exception:
+        return {}
+
+
+def _impronta(file: Path) -> str:
+    return hashlib.sha256(file.read_bytes()).hexdigest()[:16]
+
+
 def chiavi_bib() -> set[str]:
     chiavi = set()
     for b in LIBRO.rglob("*.bib"):
@@ -140,7 +268,7 @@ def main():
     attivi = set(args.solo.split(",")) if args.solo else {
         "numref", "cite", "ref", "figure", "toc", "landing", "animazioni",
         "schede", "ricordare", "avanti", "palette", "clip", "ambiente",
-        "lineette", "stampa"}
+        "lineette", "stampa", "verso"}
 
     testi = sorgenti()
     problemi = defaultdict(list)
@@ -345,10 +473,22 @@ def main():
         # che infatti e' rimasta ferma mentre il libro raddoppiava. Contarla
         # non invecchia.
         #
-        # Zero clip NON e' un errore e non entra nel totale: il tetto di 5-10
-        # per capitolo e' un tetto, non una quota, e un capitolo dove il tempo
-        # non e' mai il contenuto sta bene fermo. E' un elenco da guardare, per
-        # decidere una volta e non dimenticarsene per venti capitoli.
+        # Zero clip era un avviso e basta, e non e' bastato: elencare i
+        # capitoli scoperti senza chiedere niente a nessuno li ha lasciati
+        # scoperti. Adesso e' un difetto, con una sola via d'uscita: dichiarare
+        # il capitolo in `animazioni/senza-clip.toml` scrivendo perche' li' il
+        # tempo non e' il contenuto. La differenza che conta non e' fra un
+        # capitolo animato e uno fermo (un capitolo fermo puo' essere la scelta
+        # giusta), e' fra essersela chiesta e non essersela chiesta, e dal di
+        # fuori le due cose si somigliano. Una riga in un file le separa.
+        esenti = {}
+        senza = QUI / "animazioni" / "senza-clip.toml"
+        if senza.is_file():
+            try:
+                import tomllib
+                esenti = tomllib.loads(senza.read_text(encoding="utf-8"))
+            except Exception as e:      # un toml rotto non deve zittire l'asse
+                problemi["senza-clip.toml illeggibile"].append(str(e))
         toc = LIBRO / "_toc.yml"
         if toc.is_file():
             animate = set()
@@ -371,8 +511,10 @@ def main():
                         usate |= set(RX["fig_uso"].findall(t))
                         usate |= set(RX["img_uso"].findall(t))
                 clip = sorted(usate & animate)
-                if not clip:
-                    problemi["capitoli senza figure animate"].append(cartella)
+                if not clip and cartella not in esenti:
+                    problemi["capitoli senza figure animate (dichiarali in "
+                             "animazioni/senza-clip.toml, con la ragione)"
+                             ].append(cartella)
                 elif len(clip) > 10:
                     problemi["capitoli oltre il tetto di 10 clip"].append(
                         f"{cartella}  ->  {len(clip)}: {', '.join(clip)}")
@@ -458,19 +600,11 @@ def main():
         # quando cambia una riga che il render puo' vedere.
         import ast
 
-        def _ct(rel):
-            r = subprocess.run(["git", "log", "-1", "--format=%ct", "--", rel],
-                               cwd=QUI, capture_output=True, text=True)
-            try:
-                return int(r.stdout.strip())
-            except ValueError:
-                return 0
-
         for sorg in sorted((QUI / "animazioni").glob("*.py")):
             gif = LIBRO / "figures" / (sorg.stem + ".gif")
             if not gif.is_file():
                 continue
-            if not (_ct("animazioni/" + sorg.name) > _ct("book/figures/" + gif.name)):
+            if not (quando(sorg) > quando(gif)):
                 continue
             sha = subprocess.run(
                 ["git", "log", "-1", "--format=%H", "--", "book/figures/" + gif.name],
@@ -554,9 +688,22 @@ def main():
             if mancano:
                 problemi["fermi immagine mancanti"].append(
                     f"{sorgente.name}  ->  {', '.join(mancano)}")
-            elif min(f.stat().st_mtime for f in tre) < sorgente.stat().st_mtime:
-                problemi["fermi immagine piu' vecchi dell'animazione"].append(
-                    f"{sorgente.name}  (python3 animazioni/fermi.py)")
+            else:
+                # Non si confrontano le date: si confronta l'impronta del
+                # contenuto, registrata da fermi.py quando ha scattato i tre
+                # fotogrammi. Le date qui non funzionano in nessuna delle due
+                # versioni: la data di modifica la azzera il checkout della CI,
+                # e la data del commit puo' risultare invertita se i PNG e la
+                # loro animazione finiscono in commit diversi (e' successo).
+                # L'impronta e' l'unica cosa che dice davvero da quale
+                # animazione vengono quei fermi.
+                registrata = _impronte_fermi().get(sorgente.name)
+                if registrata is None:
+                    problemi["fermi immagine senza impronta"].append(
+                        f"{sorgente.name}  (python3 animazioni/fermi.py)")
+                elif registrata != _impronta(sorgente):
+                    problemi["fermi immagine piu' vecchi dell'animazione"].append(
+                        f"{sorgente.name}  (python3 animazioni/fermi.py)")
 
         if fermi.is_dir():
             for p in sorted(fermi.glob("*.png")):
@@ -653,6 +800,112 @@ def main():
                     problemi["lineette scritte in ASCII (-- oppure - )"].append(
                         f"{f}:{n}  {pulita.strip()[:88]}")
 
+    if "verso" in attivi:
+        # Il difetto piu' insidioso di questo libro non e' un fatto sbagliato:
+        # e' una frase giusta messa nel verso sbagliato. «Come abbiamo visto»
+        # seguito da un rimando a un capitolo che il lettore non ha ancora
+        # letto, e che gli chiede un ricordo che non puo' avere. In Visione e
+        # linguaggio (capitolo 17) ce n'erano quattro, verso i capitoli 21 e
+        # 24; in Audio sei, in Speech due. Nessuna build se ne accorge, perche'
+        # il link risolve benissimo: e' l'ordine di lettura a non tornare, e
+        # l'ordine di lettura sta nel _toc.yml.
+        toc = LIBRO / "_toc.yml"
+        if toc.is_file():
+            capitoli = [f for f in re.findall(
+                r"^  - file:\s*(\S+)", toc.read_text(encoding="utf-8"), re.M)
+                if "/" in f]
+            pos: dict[str, int] = {}
+            for i, f in enumerate(capitoli):
+                pos.setdefault(f.split("/")[0], i)
+            # in quale capitolo vive ciascun :name: (i target sono globali,
+            # quindi il nome da solo non dice dove sta)
+            cap_di_nome = {n: f.split("/")[0]
+                           for f, t in testi.items()
+                           for n in RX["name"].findall(t)}
+            for f, t in testi.items():
+                mio = pos.get(f.split("/")[0])
+                if mio is None:
+                    continue
+                for chiave in ("numref", "ref", "doc"):
+                    for m in RX[chiave].finditer(t):
+                        bersaglio = m.group(1).strip()
+                        if chiave == "doc":
+                            parti = [p for p in bersaglio.split("/")
+                                     if p not in ("", ".", "..")]
+                            cap = parti[0] if len(parti) > 1 else None
+                        else:
+                            cap = cap_di_nome.get(bersaglio)
+                        suo = pos.get(cap)
+                        if suo is None or suo == mio:
+                            continue
+                        # solo la frase che PRECEDE il rimando: una frase che
+                        # dice «vedremo» dopo il link parla d'altro. Si taglia
+                        # sul punto, non sui due punti e sul punto e virgola:
+                        # in italiano non chiudono la frase, e la formula del
+                        # richiamo sta quasi sempre prima di loro («come
+                        # abbiamo visto, vale anche qui: {numref}...»).
+                        prima = t[max(0, m.start() - 220):m.start()]
+                        prima = re.split(r"(?<=[.!?])\s|\n\n", prima)[-1]
+                        coda = prima.strip()[-90:]
+                        if suo > mio and RX["indietro"].search(prima):
+                            problemi["rimandi all'indietro che puntano in avanti"].append(
+                                f"{f}  ->  {cap}  …{coda}")
+                        elif suo < mio and RX["poi"].search(prima):
+                            problemi["rimandi in avanti che puntano indietro"].append(
+                                f"{f}  ->  {cap}  …{coda}")
+
+            # I richiami in PROSA, che sono la forma vera: il libro scrive
+            # «come abbiamo visto nel capitolo sulle GAN», non un {doc}.
+            # Misurato prima di scrivere questo pezzo: 409 formule di richiamo
+            # all'indietro in tutto il libro, e zero con un link accanto. Un
+            # asse che guardasse solo i link guarderebbe l'unica forma che il
+            # libro non usa.
+            #
+            # Il nome del capitolo da solo non basta come indizio («PyTorch»
+            # compare ovunque come parola): dev'essere preceduto da un
+            # connettivo che dichiara il rimando (capitolo, sezione, parlando
+            # di). Senza quel vincolo l'elenco si riempie di termini tecnici e
+            # smette di essere letto.
+            righe = toc.read_text(encoding="utf-8").splitlines()
+            titoli: dict[str, str] = {}
+            for i, r in enumerate(righe):
+                mfile = re.match(r"^  - file:\s*(\S+)", r)
+                if not mfile or "/" not in mfile.group(1):
+                    continue
+                cap = mfile.group(1).split("/")[0]
+                for succ in righe[i + 1:i + 3]:
+                    mtit = re.match(r"^    title:\s*(.+?)\s*$", succ)
+                    if mtit:
+                        titoli.setdefault(mtit.group(1).strip().lower(), cap)
+                        break
+            if titoli:
+                rx_titoli = re.compile("|".join(
+                    re.escape(a) for a in sorted(titoli, key=len, reverse=True)), re.I)
+                rx_connettivo = re.compile(r"capitolo|sezione|parlando|parte", re.I)
+                for f, t in testi.items():
+                    mio = pos.get(f.split("/")[0])
+                    if mio is None:
+                        continue
+                    for m in RX["indietro"].finditer(t):
+                        # la finestra si ferma al primo punto: oltre c'e' una
+                        # frase diversa, e una frase diversa puo' legittimamente
+                        # annunciare un capitolo che viene dopo
+                        finestra = re.split(
+                            r"(?<=[.!?])\s", t[m.end():m.end() + 200])[0]
+                        for mt in rx_titoli.finditer(finestra):
+                            cap = titoli[mt.group(0).lower()]
+                            suo = pos.get(cap)
+                            if suo is None or suo <= mio:
+                                continue
+                            if not rx_connettivo.search(
+                                    finestra[max(0, mt.start() - 45):mt.start()]):
+                                continue
+                            frase = " ".join(
+                                t[m.start():m.end() + mt.end()].split())
+                            problemi["rimandi all'indietro che puntano in avanti"].append(
+                                f"{f}  ->  {cap}  …{frase[:120]}")
+                            break
+
     if "avanti" in attivi:
         for f, t in testi.items():
             for frase in RX["avanti"].findall(t):
@@ -676,7 +929,8 @@ def main():
               "schede contigue, che la build fonde",
               "capitoli oltre il tetto di 10 clip",
               "clip fuori dalla tabella del README",
-              "capitoli senza figure animate",
+              "capitoli senza figure animate (dichiarali in "
+              "animazioni/senza-clip.toml, con la ragione)",
               "lineette scritte in ASCII (-- oppure - )",
               "«Da ricordare» fuori dalle schede",
               "clip piu' vecchie del loro sorgente",
@@ -685,14 +939,16 @@ def main():
               "script dentro le figure",
               "colori fuori palette (decisione del repo brand)",
               "fermi immagine mancanti",
+              "fermi immagine senza impronta",
               "fermi immagine piu' vecchi dell'animazione",
               "fermi immagine orfani",
               "figure che non dichiarano i font del brand",
+              "rimandi all'indietro che puntano in avanti",
+              "rimandi in avanti che puntano indietro",
               "rimandi in avanti (da leggere)"]
     # Assi che elencano e basta: dicono cosa guardare, non cosa e' rotto, e
     # quindi non fanno fallire niente.
     solo_elenco = {"rimandi in avanti (da leggere)",
-                   "capitoli senza figure animate",
                    "colori fuori palette (decisione del repo brand)",
                    "«Da ricordare» fuori dalle schede"}
     totale = 0
@@ -710,8 +966,8 @@ def main():
             totale += len(v)
 
     print(f"\n{totale} problemi da correggere"
-          f" ({len(problemi.get('rimandi in avanti (da leggere)', []))} rimandi da leggere a mano,"
-          f" {len(problemi.get('capitoli senza figure animate', []))} capitoli senza clip)")
+          f" ({len(problemi.get('rimandi in avanti (da leggere)', []))}"
+          f" rimandi da leggere a mano)")
     return 1 if totale else 0
 
 

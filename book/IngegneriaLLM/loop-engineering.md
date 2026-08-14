@@ -163,8 +163,9 @@ comuni.
 - **Integrazione con strumenti esterni.** Il loop non è un monologo: propone
   modifiche da far approvare (le *pull request*), commenta le segnalazioni
   aperte (i *ticket*), chiama servizi esterni tramite un protocollo condiviso
-  che descrive quali operazioni un modello può richiedere e come (dal 2024
-  quello diffuso è l'**MCP**, *Model Context Protocol*), registra il lavoro
+  che descrive quali operazioni un modello può richiedere e come (dal 2024 ce
+  n'è uno aperto e adottato da più fornitori, l'**MCP**, *Model Context
+  Protocol*), registra il lavoro
   nella storia del progetto con `git`. È così che il ciclo tocca il mondo
   invece di limitarsi a produrre testo.
 
@@ -196,10 +197,12 @@ Il pattern è due sotto-agenti con **contesti separati** e **prompt distinti**:
 il *maker* riceve il compito e produce la modifica; il *checker* riceve solo
 il risultato e i criteri, e restituisce un verdetto (passa / non passa) con le
 motivazioni. La separazione dei contesti serve a due scopi. Primo, evita che
-il maker «corregga il proprio compito»: un modello che valuta il testo che ha
-appena generato è condizionato dalla propria traccia di ragionamento e tende a
-ratificarla, ed è un effetto misurato, non un timore
-{cite}`panickssery2024selfpreference`. Secondo, **attenua la correlazione dei
+il maker «corregga il proprio compito»: messo a giudicare, un modello preferisce
+il testo che ha prodotto lui a uno equivalente prodotto da altri, e lo fa tanto
+più quanto meglio riconosce come proprio il testo che sta leggendo. È un
+effetto misurato, non un timore {cite}`panickssery2024selfpreference`, e la
+conseguenza per il loop è immediata: chi ha scritto è il peggior candidato a
+dire se quel che ha scritto va bene. Secondo, **attenua la correlazione dei
 fallimenti**: se lo stesso agente, con lo
 stesso contesto, sbaglia a produrre *e* a giudicare, i due errori sono
 perfettamente correlati e il controllo è teatro. Un checker con contesto
@@ -249,7 +252,7 @@ si esegue in un secondo, quante volte si vuole. Nei domini dove manca
 (scrivere una relazione, progettare un'interfaccia) il cancello va costruito a
 mano, ed è lì che il loop engineering diventa difficile.
 
-È anche il banco su cui la cosa fu misurata per la prima volta. Nel 2021, per
+È anche il banco che ha reso questa forma di giudizio la norma. Nel 2021, per
 valutare Codex (un modello addestrato sul codice, antenato degli assistenti di
 programmazione di oggi), OpenAI pubblicò **HumanEval**: 164 problemi scritti a
 mano, ciascuno con una manciata di test, dove una soluzione conta solo se li
@@ -263,11 +266,14 @@ sugli Agenti ha già introdotto e che qui rileggiamo dal lato del loop. ReAct
 pensiero è legato a ciò che gli strumenti hanno davvero riportato, ReAct si
 inventa meno cose del ragionamento lasciato a sé stesso, cioè della
 chain-of-thought {cite}`wei2022chain`, che pensa a voce alta senza mai andare a
-controllare. Questo non vuol dire che ReAct la batta sempre. I due metodi sono
-stati messi a confronto su raccolte di domande costruite apposta, in cui per
-rispondere bisogna incrociare più informazioni cercandole una dopo l'altra; e
-lì la chain-of-thought resta avanti,
-mentre il risultato migliore arriva dai due metodi usati insieme. Reflexion
+controllare. Questo non vuol dire che ReAct la batta sempre, e gli stessi
+autori lo misurano. Su una raccolta di domande costruite apposta perché per
+rispondere si debbano incrociare più informazioni cercandole una dopo l'altra,
+la chain-of-thought resta avanti (29,4 contro 27,4 di risposte esatte); su una
+raccolta di affermazioni da verificare come vere o false è ReAct a passare
+davanti (60,9 contro 56,3). Il risultato migliore, in tutti e due i casi,
+arriva dai due metodi usati insieme: uno parte e l'altro subentra quando il
+primo si arena. Reflexion
 {cite}`shinn2023reflexion` ha aggiunto il tassello mancante:
 dopo un fallimento, l'agente **riflette a parole** sul proprio errore, scrive
 quella riflessione in memoria e la usa per condizionare il tentativo
@@ -307,9 +313,10 @@ Ecco lo scheletro in puro Python, eseguibile. Il *generatore* è un finto LLM,
 che al posto di ragionare guarda l'ultimo motivo di rifiuto e corregge quello:
 è una caricatura di ciò che fa un modello vero, ma commette lo stesso gesto,
 che è il gesto della sezione (il **contenuto** del fallimento guida il
-tentativo dopo). Il *verificatore*, invece, è reale (controlla che uno slug
-rispetti tre regole) e il ciclo itera finché il cancello passa o finiscono i
-tentativi:
+tentativo dopo). Il *verificatore*, invece, è reale: controlla che uno **slug**
+(il pezzo di indirizzo web che si ricava da un titolo, tutto minuscolo e con i
+trattini al posto degli spazi) rispetti tre regole. Il ciclo itera finché il
+cancello passa o finiscono i tentativi:
 
 ```python
 # Un loop generate -> verify -> refine. Il generatore e' un finto LLM;
@@ -368,8 +375,19 @@ tentativo 4: 'guida-pytorch' -> ok
 accettato: guida-pytorch
 ```
 
+```{figure} ../figures/cancello-che-respinge.svg
+:name: fig-cancello-che-respinge
+:alt: "Una esecuzione del ciclo genera, verifica e raffina: la stringa candidata si riscrive a ogni tentativo, il cancello resta chiuso tre volte e si apre alla quarta, e ogni rifiuto lascia la sua riga nella colonna della memoria, che non ne perde nessuna."
+:width: 100%
+
+Lo stesso ciclo, ma in esecuzione. Il candidato riparte da capo a ogni giro;
+i motivi del rifiuto no, si accumulano, e sono quelli che il generatore
+rilegge. Alla quarta il cancello si apre, e le tre righe restano tutte lì.
+```
+
 Poche righe che non «capiscono» nulla, eppure incarnano la spina dorsale del
-loop esterno: un cancello che non si compiace, una memoria del fallimento che
+loop esterno, ed è quella che {numref}`fig-cancello-che-respinge` mostra in
+funzione: un cancello che non si compiace, una memoria del fallimento che
 cresce, un tetto ai tentativi. In un sistema vero il generatore è il modello e
 la `verifica` è la vera suite di test, ma l'ossatura è questa.
 
@@ -393,8 +411,10 @@ Il banco di prova disegnato in {numref}`fig-swe-bench` è **SWE-bench**
 {cite}`jimenez2024swebench`, che nel capitolo sugli Agenti abbiamo già usato e
 discusso. Il suo pregio è anche il suo limite, e vale la pena ricordarlo qui
 fra i problemi. Un banco di prova così misura ciò che i test
-sanno vedere: una patch che li supera peggiorando la leggibilità o
-introducendo un debito passa lo stesso, e nessuna percentuale lo registra. E
+sanno vedere: una **patch** (l'elenco delle righe da togliere e da aggiungere,
+che è la forma in cui si propone una modifica al codice) che li supera
+peggiorando la leggibilità o introducendo un debito passa lo stesso, e nessuna
+percentuale lo registra. E
 c'è un'obiezione più dura, che negli Agenti abbiamo riportata per esteso:
 rileggendo a mano i successi, una quota consistente si rivela già scritta
 dentro la segnalazione da risolvere {cite}`aleithan2024swebenchplus`. Un
@@ -414,8 +434,8 @@ $$
 
 dove $n$ è il numero di passi del ciclo: moltiplicare venti volte un numero
 appena sotto l'uno porta molto più in basso di quanto sembri. Con
-$p = 0{,}05$ e $n = 20$ si ottiene
-$P(\text{pulito}) \approx 0{,}36$; cioè due giri su tre inciampano da qualche
+$p = 0{,}05$ e $n = 20$ il conto è $0{,}95^{20} \approx 0{,}36$, cioè quasi due
+giri su tre inciampano da qualche
 parte. Il conto però regge solo finché ogni passo sbaglia per conto suo, e nei
 loop veri non è così: il *context poisoning* visto nel context engineering fa
 sì che uno sbaglio ne tiri dietro altri. Quando gli errori vengono a grappoli
@@ -425,6 +445,10 @@ quello che è, un conto all'ingrosso e non una regola sicura. Resta la ragione
 per cui il
 **cancello di verifica** non è un lusso: alzando l'affidabilità effettiva di
 ogni passo, tiene il prodotto lontano dallo zero.
+
+Il cancello però lavora dentro il ciclo, e contro l'aritmetica c'è una seconda
+difesa che sta invece attorno: non consegnare al loop tutto il potere il primo
+giorno.
 
 `````{tab} Elementare
 
@@ -453,9 +477,11 @@ quando le metriche lo giustificano:
   una *allow-list* (quali file, quali comandi, quali repository) e sotto
   monitoraggio continuo. Vi si sale solo dopo che L2 ha dato numeri buoni.
 
-A ogni livello si accompagnano le difese di sicurezza già viste per gli agenti:
-**allow-list e deny-list** dei comandi e delle risorse, worktree isolati come
-recinto, e cancelli umani ai punti irreversibili.
+A ogni livello si accompagnano le difese che il capitolo sull'**AI
+responsabile** mette in fila per la sicurezza degli LLM: il **minimo dei
+permessi** che servono al compito (quali file, quali comandi, quali archivi),
+i worktree isolati come recinto, e la **conferma umana** davanti a ogni azione
+irreversibile.
 
 `````
 
@@ -470,7 +496,7 @@ l'ingegnere» non è retorica: chi mantiene il sistema deve **leggere ciò che
 parte**, non solo guardare la spia verde dei test. Un loop che nessuno capisce
 più è un passivo, per quanto verdi siano i suoi cancelli.
 
-Il terzo problema è **economico**, e ci riporta al capitolo su LLMOps. Ogni
+Il terzo problema è **economico**, e ci riporta alla sezione su LLMOps. Ogni
 giro del loop consuma token, apre chiamate, occupa macchine: un ciclo
 schedulato che gira ogni notte ha una **bolletta** e va messo a budget come
 qualsiasi processo. E siccome gira quando non lo guardi, va **monitorato** con
@@ -538,7 +564,8 @@ sorvegliato mentre lavora.
 - Onestà sui limiti: il **comprehension debt** {cite}`osmani2026comprehension`
   (i loop amplificano il giudizio
   buono *e* cattivo; chi mantiene deve leggere ciò che parte), la sicurezza
-  (allow/deny-list, cancelli umani) e il **costo** per giro, da mettere a budget
+  (permessi minimi, cancelli umani ai punti irreversibili, come nel capitolo
+  sull'**AI responsabile**) e il **costo** per giro, da mettere a budget
   e monitorare come insegna LLMOps. E lo statuto delle fonti: il vocabolario
   del loop engineering viene da chi costruisce, non da chi misura; qui si
   riporta il meccanismo, che dura, non i nomi degli attrezzi, che cambiano.

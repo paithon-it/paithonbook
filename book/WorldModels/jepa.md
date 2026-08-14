@@ -176,16 +176,18 @@ che vede la foto intera, scrive la descrizione giusta; il voto misura quanto
 le due descrizioni combaciano. Se allievo e insegnante potessero mettersi
 d'accordo, la truffa sarebbe immediata: rispondere entrambi, sempre, «boh»
 (descrizioni identiche, voti perfetti, e nessuno dei due che abbia mai
-guardato la foto). Il trucco che rompe la truffa: come insegnante si usa una
-**copia lenta dell'allievo**. Non è una seconda rete addestrata a parte: è
-l'allievo stesso *com'era in media nelle ultime settimane* (i suoi pesi,
-mescolati poco alla volta). Questo insegnante non ascolta le lamentele sul
-voto (nessun segnale di addestramento lo raggiunge: tecnicamente, non riceve
-gradiente) e cambia idea solo al ritmo a cui l'allievo migliora *davvero*. Con
-lui non ci si può accordare al ribasso: l'unico modo di prendere buoni voti è
-inseguire le sue descrizioni, che si muovono piano e non colludono. È una
-soluzione empirica (perché funzioni così bene è ancora oggetto di studio) ma
-funziona.
+guardato la foto). Il trucco che rompe la truffa è togliere all'insegnante
+ogni voce in capitolo: le lamentele sul voto non lo raggiungono mai (in gergo:
+non riceve gradiente), quindi non ha modo di accordarsi con l'allievo per
+abbassare l'asticella, e all'allievo non resta che inseguire le descrizioni
+dell'altro. C'è poi una seconda accortezza: come insegnante si usa una **copia
+lenta dell'allievo**, non una seconda rete addestrata a parte ma l'allievo
+stesso *com'era in media nelle ultime settimane* (i suoi pesi, mescolati poco
+alla volta), così il bersaglio si sposta piano e cambia idea solo al ritmo a
+cui l'allievo migliora *davvero*. Delle due, quella che impedisce la truffa è
+la prima; la lentezza serve a rendere l'esercizio stabile, e alla fine della
+sezione lo misuriamo. È una soluzione empirica (perché funzioni così bene è
+ancora oggetto di studio) ma funziona.
 
 `````
 
@@ -214,7 +216,7 @@ coordinata dei due encoder verso la costante, perché il bersaglio insegue e non
 può contrattare. L'EMA aggiunge lentezza e stabilità al bersaglio, ed è
 un'ottima cosa nei sistemi veri, ma non è lei a reggere il muro: nel giocattolo
 in fondo a questa sezione, toglierla e tenere il solo stop-gradient non produce
-alcun collasso (la varietà delle rappresentazioni, anzi, raddoppia). È
+alcun collasso (la varietà delle rappresentazioni, anzi, sale da 1,0 a 1,6). È
 comunque la stessa scoperta empirica che aveva sorpreso la comunità con BYOL
 nel 2020 {cite}`grill2020bootstrap`: niente coppie negative, niente termini
 contrastivi, eppure niente collasso. Una comprensione teorica
@@ -271,12 +273,14 @@ prevedere; la loss è la distanza $L_2$ media tra le rappresentazioni predette
 e quelle prodotte dall'encoder target:
 
 $$
-\mathcal{L} = \frac{1}{M} \sum_{i=1}^{M}
-\big\lVert\, \hat{\mathbf{s}}_y^{(i)} - \mathbf{s}_y^{(i)} \,\big\rVert_2^2,
+\mathcal{L} = \frac{1}{M} \sum_{i=1}^{M} \sum_{j \in B_i}
+\big\lVert\, \hat{\mathbf{s}}_{y,j} - \mathbf{s}_{y,j} \,\big\rVert_2^2,
 $$
 
-dove $\hat{\mathbf{s}}_y^{(i)}$ e $\mathbf{s}_y^{(i)}$ sono le rappresentazioni (a livello di
-patch) predette e bersaglio del blocco $i$. Un dettaglio architetturale è
+dove $B_i$ è l'insieme delle patch del blocco bersaglio $i$, e
+$\hat{\mathbf{s}}_{y,j}$ e $\mathbf{s}_{y,j}$ sono le rappresentazioni predette e bersaglio
+della singola patch $j$: il confronto avviene patch per patch, non fra due
+riassunti di blocco. Un dettaglio architetturale è
 decisivo: l'encoder target elabora l'immagine **intera**, e i bersagli si
 ottengono mascherando la sua *uscita*, non il suo ingresso; così ogni
 rappresentazione-bersaglio incorpora il contesto globale ed è semanticamente
@@ -369,7 +373,7 @@ ancora: **quattro blocchi transformer**, l'ultimo dei quali sostituisce la
 self-attention con una cross-attention a query appresa. Quattro blocchi
 transformer sopra un backbone congelato non sono una testa, sono un modello.
 
-Da qui la cautela sulla lettura, ed è la stessa che due sezioni più avanti
+Da qui la cautela sulla lettura, ed è la stessa che nell'ultima sezione
 applicheremo al probing di Othello-GPT: il protocollo misura quanto le
 rappresentazioni congelate rendano **estraibile** l'informazione sul
 movimento, non quanto il modello la «capisca», e fra le due ipotesi
@@ -384,8 +388,8 @@ tutti, ed è per questo che il protocollo va dichiarato insieme al numero.
 
 Nel giugno 2025 arriva il passo successivo, ed è quello che riporta tutta
 questa storia al punto di partenza del capitolo: usare il modello per *agire*.
-**V-JEPA 2** {cite}`assran2025vjepa` scala la ricetta (un modello da 1,2
-miliardi di parametri, pre-addestrato su oltre un milione di ore di video da
+**V-JEPA 2** {cite}`assran2025vjepa` scala la ricetta (un modello da oltre un
+miliardo di parametri, pre-addestrato su più di un milione di ore di video da
 internet) e i punteggi di comprensione salgono di conseguenza: 77,3% su
 Something-Something-v2, e sull'anticipazione delle azioni di Epic-Kitchens-100
 (prevedere, guardando una cucina in soggettiva, che cosa farà la persona nel
@@ -407,9 +411,9 @@ muove qualcosa di fisico.
 `````{tab} Elementare
 
 E come impara, questo robot? Non gli si mostra come si fa. Gli si fanno
-guardare delle registrazioni di bracci robotici al lavoro: poco più di sessanta
-ore, prese da una raccolta pubblica che chiunque può scaricare (una raccolta di
-dati fatta apposta per addestrare si chiama **dataset**). Le registrazioni
+guardare delle registrazioni di bracci robotici al lavoro: una sessantina
+d'ore, prese da una raccolta pubblica che chiunque può scaricare (una raccolta
+di dati fatta apposta per addestrare si chiama **dataset**). Le registrazioni
 dicono anche come si è mosso il braccio istante per istante, perché è
 un'informazione che la macchina scrive da sé mentre lavora. Quel che nessuno ha
 annotato è tutto il resto: che compito si stesse svolgendo, se sia riuscito, se
@@ -421,11 +425,11 @@ non aveva mai visto, senza un solo minuto di pratica lì dentro. Si chiama
 **zero-shot**, «a colpo zero»: nemmeno un tentativo di prova.
 
 Qui però serve la cifra, non l'aggettivo, perché «riesce» dice troppo.
-Raggiungere un punto gli riesce sempre. Posare un oggetto dove va, quasi
-sempre. Afferrare una tazza, due volte su tre. Afferrare una scatola, una volta
-su quattro. E per ogni singolo gesto il robot passa **sedici secondi** a
-immaginare le alternative prima di muovere un dito. È un inizio notevole; non è
-un maggiordomo.
+Raggiungere un punto gli riesce sempre. Posare un oggetto dove va, circa tre
+volte su quattro. Afferrare una tazza, due volte su tre. Afferrare una
+scatola, una volta su quattro. E per ogni singolo gesto il robot passa
+**sedici secondi** a immaginare le alternative prima di muovere un dito. È un
+inizio notevole; non è un maggiordomo.
 
 `````
 
@@ -441,8 +445,8 @@ azioni, interlacciati nel tempo, con l'azione definita come la variazione dello
 stato dell'end-effector fra fotogrammi adiacenti. *Unlabeled*, nel paper, vuol
 dire un'altra cosa, dichiarata a chiare lettere: nessun meta-dato su
 ricompensa, su quale compito fosse in corso, o su se il tentativo sia riuscito.
-È una distinzione che tornerà utile fra due pagine, perché Genie le azioni
-davvero non ce le ha e deve inferirsele.
+È una distinzione che tornerà utile nella sezione seguente, perché Genie le
+azioni davvero non ce le ha e deve inferirsele.
 
 La pianificazione è un *Cross-Entropy Method* in orizzonte recedente con
 $T = 1$: si campionano sequenze di azioni, si valuta l'esito previsto contro

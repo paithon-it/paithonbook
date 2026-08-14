@@ -88,7 +88,7 @@ superficie ({numref}`fig-stack-pytorch`).
 :width: 85%
 
 Lo stack: il tuo modello è normale codice Python, ma ogni operazione scende
-nel motore C++ (ATen e autograd) e da lì sull'hardware disponibile.
+nel motore di calcolo scritto in C++ e da lì sull'hardware disponibile.
 ```
 
 `````{tab} Elementare
@@ -116,11 +116,18 @@ lavoro è netta: Python decide *cosa* calcolare, il motore C++ decide *come*.
 
 PyTorch si installa come qualunque pacchetto Python; sul sito ufficiale
 (`pytorch.org`) un selettore genera il comando adatto a sistema operativo e
-GPU. La versione CPU, sufficiente per tutto questo capitolo, è una riga:
+GPU. Per tutto questo capitolo basta la versione CPU, ed è una riga:
 
 ```bash
-pip install torch torchvision
+pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
 ```
+
+L'indirizzo in coda conviene non saltarlo. Su Linux il pacchetto che `pip`
+scarica di default si porta dentro le librerie CUDA di NVIDIA: qualche
+gigabyte che su una macchina senza scheda grafica non serve a niente, e che
+paghi in banda e in disco senza accorgertene. Su Windows e su macOS il
+pacchetto predefinito è già quello per la sola CPU, e la riga si accorcia a
+`pip install torch torchvision`.
 
 E questo è il primo contatto, un assaggio delle due cose che vedremo nelle
 prossime sezioni: i **tensori** (le scatole in cui PyTorch tiene i numeri) e i

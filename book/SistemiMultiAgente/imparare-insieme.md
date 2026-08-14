@@ -126,7 +126,9 @@ Sembra poco. Portiamo i passi da tre a cinque, e le decisioni per persona
 diventano $1+2+4+8+16 = 31$: i piani individuali sono $2^{31}$, poco più di due
 miliardi, e le coppie da confrontare oltre quattro miliardi di miliardi. Due
 soccorritori, due cose da vedere, due da fare, cinque passi. Non c'è nessun
-computer, e non ci sarà.
+computer, e non ci sarà: si è **dimostrato** che di questo problema non esiste
+una soluzione esatta in tempo utile, e che non basta nemmeno accontentarsi di
+una risposta approssimata, perché anche quella resta fuori portata.
 
 `````
 
@@ -206,10 +208,11 @@ dell'agente $i$ è
 
 $$
 \nabla_{\theta^i} J \;=\; \mathbb{E}\Big[\textstyle\sum_t
-\nabla_{\theta^i} \log \pi^i_{\theta}(a^i_t \mid o^i_t)\; G_t\Big],
+\nabla_{\theta^i} \log \pi^i_{\theta^i}(a^i_t \mid o^i_t)\; G_t\Big],
 $$
 
-dove $\theta^i$ sono i parametri dell'agente $i$, $\pi^i_\theta$ la sua policy,
+dove $\theta^i$ sono i parametri dell'agente $i$, $\pi^i_{\theta^i}$ la sua
+policy,
 $o^i_t$ la sua osservazione al passo $t$ e $G_t$ il ritorno scontato **della
 squadra**. Il fattore di sinistra riguarda solo $i$; quello di destra riguarda
 tutti. L'agente $i$ vede il proprio ritocco moltiplicato per un numero a cui
@@ -280,9 +283,11 @@ se uno dei cinque avesse scritto la sua parte come gli capita. La seconda impara
 **scomporre il valore**, cioè a stimare quanto ciascuno ha contribuito
 partendo dal solo risultato di squadra: è la via che il resto della sezione
 segue, perché si porta dietro anche il modo di addestrare insieme e poi giocare
-ognuno per conto proprio. Con questo la sezione salda anche un debito lasciato
-aperto dalle topologie, dove attribuire una colpa lungo una gerarchia era
-rimasto un problema senza rimedio.
+ognuno per conto proprio. È lo stesso problema che le topologie avevano lasciato
+aperto, attribuire una colpa lungo una gerarchia; con l'avvertenza che qui gli
+strumenti ci sono perché c'è una ricompensa numerica e un gradiente, mentre là
+la catena era fatta di riassunti in italiano, e nessuno di questi metodi vi si
+trasferisce.
 
 ## Barare in allenamento, non in partita
 
@@ -345,10 +350,10 @@ Il massimo è che vadano tutti e due su A, e vale $2$. Perché ciascuno ci arriv
 da solo, A deve avere il voto individuale più alto per entrambi. Ma se per il
 primo agente A vale più di B, allora, per la regola, la squadra con il primo su
 A non può fare peggio della squadra con il primo su B, a parità di mossa del
-secondo. Mettiamo il secondo su B: la casella $(A, B)$ dovrebbe valere almeno
-quanto la casella $(B, B)$. La tabella dice $0$ contro $1$. Non torna, e non
-tornerà mai. Le situazioni che questa ricetta perde sono proprio quelle in cui
-bisogna accordarsi su una **convenzione arbitraria**, come guidare tutti a
+secondo. Mettiamo il secondo su B: la casella «io A, l'altro B» dovrebbe valere
+almeno quanto la casella «io B, l'altro B». La tabella dice $0$ contro $1$.
+Non torna, e non tornerà mai. Le situazioni che questa ricetta perde sono
+proprio quelle in cui bisogna accordarsi su una **convenzione arbitraria**, come guidare tutti a
 destra o tutti a sinistra: lì la mossa giusta per me dipende da quella
 dell'altro in un modo che nessun voto individuale può contenere.
 
@@ -389,9 +394,9 @@ regredire non è la transizione: è $Q^i(x, a^1, \dots, a^N)$, un valore **attes
 lungo la traiettoria futura**, e quella traiettoria la generano le policy
 $\pi^{-i}$ dal passo successivo in poi. Tenendo $P$ e $r$ identiche e cambiando
 soltanto la policy dell'avversario, il numero da regredire a parità di ingresso
-cambia: basta un gioco stocastico minimo (due stati, due agenti, due azioni) e
-una valutazione esatta di $Q^1$ sotto due policy diverse dell'agente $2$ per
-vedere le due tabelle separarsi di una frazione ben visibile del valore medio.
+cambia, e per vederlo basta scrivere un passo di ricorsione: il valore atteso
+dallo stato successivo è una media sulle azioni che gli altri giocheranno **lì**,
+pesate con le **loro** policy correnti, che è esattamente la cosa che si muove.
 La transizione è ferma; il bersaglio no.
 
 È il motivo per cui MADDPG tiene comunque le reti target e, nel lavoro
@@ -399,13 +404,16 @@ originale, gli *ensemble* di policy: sono contromisure alla non stazionarietà
 **residua**, e non esisterebbero se questa fosse stata eliminata «per
 costruzione». Da cui la conseguenza già enunciata in apertura di sezione, che
 qui va ribadita perché è facile crederla revocata: **le garanzie di convergenza
-del capitolo precedente, qui, non valgono**. Il Q-learning converge perché itera
-un operatore di Bellman fisso; qui l'operatore si muove insieme alle policy
-altrui, e per gli algoritmi di questa sezione una dimostrazione analoga non
+del reinforcement learning a un agente solo, qui, non valgono**. Il Q-learning
+converge perché itera un operatore di Bellman fisso; qui l'operatore si muove
+insieme alle policy altrui, e per gli algoritmi di questa sezione una dimostrazione analoga non
 c'è. Funzionano in pratica, che è un'affermazione diversa e va tenuta distinta.
 
-I costi sono due e vanno detti: l'ingresso del critico cresce linearmente in $N$
-(e con esso il numero di campioni necessari a coprirlo), e serve un critico per
+I costi sono due e vanno detti. Il primo: l'ingresso del critico cresce
+linearmente in $N$, ma quello che deve coprire è lo spazio delle azioni
+**congiunte**, che cresce come $|\mathcal{A}|^N$, e i campioni necessari con
+esso; è il vero limite di scala del metodo, e non si legge dalla dimensione
+dell'ingresso. Il secondo: serve un critico per
 agente non appena le ricompense non coincidono, cioè in ogni scenario
 competitivo o misto.
 
@@ -470,15 +478,18 @@ Nel 1959 Arthur Samuel, ingegnere IBM, pubblica sull'*IBM Journal of Research
 and Development* uno studio su un programma che gioca a dama. Dentro c'è
 un'idea che regge ancora oggi: per allenarlo, Samuel ne teneva due copie, che
 chiamava alpha e beta. Alpha aggiustava i propri coefficienti **dopo ogni
-mossa**; beta teneva gli stessi per tutta la durata di una partita. Il contrasto
+mossa**, e ogni tanto scartava i termini che sembravano non servire
+sostituendoli con altri pescati da una lista di riserva; beta teneva gli stessi
+per tutta la durata di una partita. Il contrasto
 è lì, ed è tutto: uno dei due si muove *dentro* la partita, l'altro sta fermo
 finché la partita non è finita, ed è proprio questo a farne un avversario
 stabile contro cui misurarsi. Quando alpha vinceva, il suo sistema di punteggio
 passava a beta e si ricominciava. Quando invece perdeva, alpha si prendeva un
-segno nero, e al terzo il suo polinomio veniva scombinato di forza azzerando il
-coefficiente del termine principale: una ripartenza casuale, mezzo secolo prima
-che si chiamasse così. Il programma non aveva un maestro: aveva se stesso, un
-passo indietro.
+segno nero, e raggiunto un certo numero di segni neri (di solito tre) il suo
+polinomio veniva scombinato di forza azzerando il
+coefficiente del termine principale: una perturbazione deliberata per uscire da
+un massimo secondario, ed è esattamente la ragione che Samuel ne dà. Il
+programma non aveva un maestro: aveva se stesso, un passo indietro.
 
 Il meccanismo prezioso del **self-play** non è il risparmio di partite umane:
 è che il **curriculum si genera da solo**. Un avversario troppo forte non
@@ -492,9 +503,11 @@ perché l'avversario è forte quanto te, sempre, essendo te. Nessuno dei due vin
 troppo spesso, e le partite restano informative.
 
 È la linea che porta ad **AlphaGo** {cite}`silver2016mastering`, già raccontato
-nel capitolo sul deep reinforcement learning: una rete di policy addestrata
+nel capitolo sul deep reinforcement learning: una rete di policy (quella che
+sceglie la mossa) addestrata
 prima sulle mosse dei giocatori umani e poi affinata giocando contro copie di
-sé, e una rete di valore addestrata proprio sulle partite così generate, il
+sé, e una rete di valore (quella che dice chi sta vincendo) addestrata proprio
+sulle partite così generate, il
 tutto dentro una ricerca ad albero Monte Carlo. L'anno dopo la stessa squadra
 toglie di mezzo anche il punto di partenza umano: **AlphaGo Zero**
 {cite}`silver2017mastering` parte dalle sole regole del gioco e da pesi
@@ -543,13 +556,15 @@ $A_{ij} > 0 \iff f(i) > f(j)$: un ordine totale semplicemente non c'è.
 
 Il self-play ingenuo è, in questa notazione, l'iterazione della miglior risposta
 alla strategia corrente: si sceglie l'indice
-$i_{t+1} \in \arg\max_i (\mathbf{A}\,\pi_t)_i$ e si pone
-$\pi_{t+1} = \mathbf{e}_{i_{t+1}}$, il versore della strategia pura
+$i_{t+1} \in \arg\max_i (\mathbf{A}\,\boldsymbol{\pi}_t)_i$ e si pone
+$\boldsymbol{\pi}_{t+1} = \mathbf{e}_{i_{t+1}}$, il versore della strategia pura
 corrispondente. In un gioco
 ciclico l'orbita di quell'iterazione è un ciclo, e la quantità che si sta
-massimizzando (il guadagno contro $\pi_t$) resta massima a ogni passo mentre la
+massimizzando (il guadagno contro $\boldsymbol{\pi}_t$) resta massima a ogni
+passo mentre la
 quantità che interessa davvero, la **sfruttabilità**
-$\varepsilon(\pi) = \max_i (\mathbf{A}\,\pi)_i$, cioè quanto ricava contro $\pi$
+$\varepsilon(\boldsymbol{\pi}) = \max_i (\mathbf{A}\,\boldsymbol{\pi})_i$, cioè
+quanto ricava contro $\boldsymbol{\pi}$
 il miglior avversario possibile, resta al valore peggiore. Una strategia pura
 in sasso-carta-forbici ha $\varepsilon = 1$ qualunque essa sia; l'unico
 equilibrio è la miscela uniforme, che ha $\varepsilon = 0$ e che **nessuna
@@ -640,7 +655,8 @@ dice.
 
 Le ultime due righe mostrano l'alternativa. Allenandosi contro la media di
 tutte le versioni passate, invece che contro l'ultima, la popolazione converge
-in duemila generazioni a $(0{,}33; 0{,}33; 0{,}34)$, cioè all'equilibrio, e la
+in duemila generazioni a $(0{,}33; 0{,}33; 0{,}34)$, cioè all'equilibrio (il
+pareggio di cui parlava l'apertura del capitolo), e la
 sua sfruttabilità scende a $0{,}008$: praticamente zero. Notate però il
 soggetto della frase, perché è tutta la differenza: a essere imbattibile non è
 un agente, è la **popolazione**. Il campione da schierare non è l'ultimo nato,
@@ -649,8 +665,9 @@ un agente, è la **popolazione**. Il campione da schierare non è l'ultimo nato,
 Su scala industriale, questa è la *league* di AlphaStar
 {cite}`vinyals2019grandmaster`. Ci convivono gli agenti **principali**, che
 devono battere tutti e si allenano contro la lega intera pescando gli avversari
-con probabilità che dipende dal tasso di vittoria (una versione prioritaria del
-gioco fittizio); gli **sfruttatori**, di due tipi, addestrati non a essere forti
+con probabilità che dipende dal tasso di vittoria, cioè allenandosi contro il
+mucchio ma incontrando più spesso quelli che li battono; gli **sfruttatori**, di
+due tipi, addestrati non a essere forti
 in generale ma a trovare il punto debole di qualcun altro, gli uni degli agenti
 principali del momento, gli altri della lega nel suo insieme; e le versioni
 **congelate** di tutti costoro, che una volta entrate nella lega ci restano per
@@ -662,11 +679,17 @@ memoria, partite e calcolo, e il conto del «Costo del coordinamento» torna a
 presentarsi qui, sul lato dell'addestramento.
 
 E torniamo ai pesci dell'Adriatico. Le orbite chiuse che Volterra trovò nelle
-sue due equazioni non sono una curiosità zoologica: la dinamica con cui una
-popolazione di strategie evolve in un gioco ciclico ha la stessa forma
-matematica, e gira attorno all'equilibrio senza mai caderci dentro. Prede e
+sue due equazioni non sono una curiosità zoologica, e il legame è più stretto di
+un'analogia: se invece di far saltare la popolazione da un vertice all'altro la
+si lascia scivolare con continuità, premiando le strategie che rendono di più
+(è la **dinamica del replicatore**, il modo standard di scrivere l'evoluzione di
+una popolazione di strategie), sasso-carta-forbici dà esattamente equazioni
+della forma di Volterra, con le stesse orbite chiuse attorno all'equilibrio e
+nessuna che ci cada dentro. Prede e
 predatori, sasso e carta: quando ciascuno insegue l'altro e l'altro nel
-frattempo si sposta, il sistema non converge, orbita.
+frattempo si sposta, il sistema non converge, orbita. La miglior risposta del
+codice qui sopra è la versione a scatti della stessa storia, e il gioco fittizio
+è quello che rompe l'orbita mediando su tutto il passato.
 
 ## Una GAN è un sistema multi-agente a due
 

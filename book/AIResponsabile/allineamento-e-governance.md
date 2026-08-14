@@ -1,9 +1,10 @@
 # Allineamento e governance: dai valori umani alle regole
 
 Nel dicembre 2016 alcuni ricercatori di OpenAI addestrano un agente a giocare
-a *CoastRunners*, una gara di motoscafi {cite}`openai2016faulty`. L'obiettivo dichiarato era semplice:
-vincere la corsa. Ma il punteggio del gioco non premiava l'arrivo: premiava il
-colpire una serie di bersagli disseminati lungo il percorso. L'agente lo
+a *CoastRunners*, una gara di motoscafi {cite}`openai2016faulty`. L'obiettivo
+dichiarato era semplice: vincere la corsa. Ma il punteggio del gioco non
+premiava l'arrivo: premiava il colpire una serie di bersagli disseminati lungo
+il percorso. L'agente lo
 scoprì, e trovò una scorciatoia geniale e assurda: invece di correre, faceva
 girare la barca in tondo dentro una piccola laguna, colpendo all'infinito gli
 stessi bersagli che ricomparivano, prendendo fuoco, andando contromano e
@@ -15,13 +16,13 @@ Questa distanza (tra la **lettera** di un obiettivo e la sua **intenzione**) è
 il cuore del problema dell'**allineamento**. La parola dice quello che sembra
 dire: due cose sono allineate quando si sovrappongono, come due righe messe una
 sull'altra, e un sistema è allineato quando quello che fa combacia con quello
-che volevamo. (Nel capitolo sulla traduzione automatica la stessa parola indica
-un'altra cosa, quale parola di una lingua corrisponde a quale parola
-dell'altra: sono due usi diversi, e qui vale questo.) Finché il sistema è un
-motoscafo in un videogioco, la scorciatoia fa sorridere. Quando lo stesso
-meccanismo
-governa un modello che parla con milioni di persone, o che filtra domande di
-lavoro e richieste di prestito, smette di far sorridere. Questa sezione chiude
+che volevamo. (Nella sezione sulla traduzione automatica, dentro il capitolo di
+Natural Language Processing, la stessa parola indica un'altra cosa: quale
+parola di una lingua corrisponde a quale parola dell'altra. Sono due usi
+diversi, e qui vale questo.) Finché il sistema è un motoscafo in un videogioco,
+la scorciatoia fa sorridere. Quando lo stesso meccanismo governa un modello che
+parla con milioni di persone, o che filtra domande di lavoro e richieste di
+prestito, smette di far sorridere. Questa sezione chiude
 il capitolo affrontando le due facce di quella distanza: come si prova a
 *orientare* il comportamento di un sistema verso ciò che vogliamo davvero
 (l'allineamento), e quale impalcatura di regole e verifiche prova a tenere il
@@ -45,7 +46,7 @@ surrogato di «vinci la gara».
 
 ```{figure} ../figures/problema-allineamento.svg
 :name: fig-problema-allineamento
-:alt: "Schema in tre riquadri incolonnati: l'intenzione umana («vinci la gara») viene tradotta in una metrica dichiarata («massimizza i punti»), che l'addestramento trasforma in un obiettivo appreso («gira in tondo sui bonus»). Fra il primo e il secondo riquadro è marcato il primo scarto, la metrica cattura l'intenzione?; fra il secondo e il terzo il secondo scarto, il modello persegue davvero la metrica? In basso il comportamento previsto (taglia il traguardo) contro quello reale (punteggio massimo, gara mai finita)."
+:alt: "Schema in tre riquadri messi in fila da sinistra a destra: l'intenzione umana («vinci la gara») viene tradotta in una metrica dichiarata («massimizza i punti»), che l'addestramento trasforma in un obiettivo appreso («gira in tondo sui bonus»). Sotto la freccia fra il primo e il secondo riquadro pende il primo scarto, la metrica cattura l'intenzione?; sotto quella fra il secondo e il terzo il secondo scarto, il modello persegue davvero la metrica? In basso il comportamento previsto (taglia il traguardo) contro quello reale (punteggio massimo, gara mai finita)."
 :width: 92%
 
 Due traduzioni, due occasioni di sbagliare. Dall'intenzione al numero che
@@ -214,18 +215,19 @@ Il procedimento è in due tempi. I confronti umani addestrano un **reward
 model** che impara a dare voti; quel modello fa poi da giudice mentre la
 *policy* del linguaggio (cioè il modello generativo, visto come la regola che
 sceglie il prossimo token) viene ottimizzata con **PPO**, l'algoritmo di
-reinforcement learning descritto nel capitolo dedicato, sotto una **penalità
-KL** che misura quanto la policy si è allontanata da quella di partenza e la
-riporta indietro. Quella penalità è la difesa contro il reward hacking appena
-misurato, ed è anche l'ammissione che il reward model è un surrogato: se fosse
+reinforcement learning descritto nel capitolo sul deep reinforcement learning,
+sotto una **penalità KL** che misura quanto la policy si è allontanata da
+quella di partenza e la riporta indietro. Quella penalità è la difesa contro il
+reward hacking appena misurato, ed è anche l'ammissione che il reward model è
+un surrogato: se fosse
 l'obiettivo vero, non ci sarebbe ragione di impedire di ottimizzarlo fino in
 fondo.
 
 Vale la pena notare che InstructGPT non è il primo lavoro a portare l'RLHF sul
-linguaggio (l'avevano già fatto Ziegler e colleghi nel 2019 e Stiennon e
-colleghi nel 2020, sul riassunto automatico): è il primo a farlo per il
-*seguire istruzioni*, che è la capacità da cui dipende tutto l'uso
-conversazionale.
+linguaggio: l'avevano già fatto Ziegler e colleghi nel 2019, sullo stile e sul
+riassunto, e Stiennon e colleghi nel 2020, sul solo riassunto. InstructGPT è il
+primo a farlo per il *seguire istruzioni*, che è la capacità da cui dipende
+tutto l'uso conversazionale.
 
 `````
 
@@ -257,9 +259,10 @@ dentro la formula invece di addestrarlo a parte.
 
 Il confronto di {numref}`fig-rlhf-vs-dpo` spiega la fortuna della DPO meglio di
 qualsiasi argomento teorico, e la ragione riguarda anche chi non addestrerà mai
-un modello. La colonna di destra elenca cosa si smette di tenere in piedi: dove
-l'RLHF richiede di tenere in memoria fino a quattro modelli insieme e di far
-generare risposte a ogni passo, la DPO ne tiene due e legge dati già raccolti. È
+un modello. La riga sotto ciascuna delle due pipeline elenca cosa si smette di
+tenere in piedi: dove l'RLHF richiede di tenere in memoria fino a quattro
+modelli insieme e di far generare risposte a ogni passo, la DPO ne tiene due e
+legge dati già raccolti. È
 la differenza fra una tecnica che possono permettersi pochi laboratori e una che
 può usare un gruppo qualsiasi, ed è il motivo per cui l'allineamento ha smesso
 di essere una cosa che fanno in tre.
@@ -348,17 +351,17 @@ difese diverse.
 
 ```{figure} ../figures/allucinazioni-perche-modelli-inventano.svg
 :name: fig-allucinazioni
-:alt: "Il prompt «La capitale dell'Australia è…» entra nel modello, che produce una distribuzione di probabilità sul token successivo: Sydney 0,42, Canberra 0,35, Melbourne 0,15, altro 0,08. Accanto, separato e non collegato da alcuna freccia, un riquadro rappresenta il mondo reale e i fatti verificati: il modello non lo consulta."
+:alt: "Il prompt «La capitale dell'Australia è…» entra nel modello, che produce una distribuzione di probabilità sul token successivo: Sydney 0,42, Canberra 0,35, Melbourne 0,15, altro 0,08. In basso a sinistra un riquadro tratteggiato rappresenta il mondo reale e i fatti verificati, con dentro la risposta giusta, Canberra; il tratteggio che lo collegherebbe alla distribuzione è sbarrato da una croce, perché quel collegamento non esiste."
 :width: 92%
 
 Perché un modello inventa. L'esempio è inventato apposta per far vedere il
 meccanismo (sulla capitale dell'Australia i modelli in circolazione rispondono
-bene): quel che conta è la freccia che manca, quella verso i fatti. La parola
-si sceglie per probabilità, e in questo schema «Sydney» è più probabile di
-«Canberra» perché compare più spesso, non perché sia la risposta giusta.
+bene): quel che conta è il collegamento sbarrato, quello verso i fatti. La
+parola si sceglie per probabilità, e in questo schema «Sydney» è più probabile
+di «Canberra» perché compare più spesso, non perché sia la risposta giusta.
 ```
 
-La freccia assente in {numref}`fig-allucinazioni` spiega perché le
+Il collegamento sbarrato di {numref}`fig-allucinazioni` spiega perché le
 allucinazioni non siano un difetto da correggere ma una conseguenza del
 meccanismo. Il modello non sta consultando niente e sbagliando: sta facendo
 esattamente ciò per cui è addestrato, cioè scegliere la continuazione
@@ -412,12 +415,12 @@ prestito il vocabolario della sicurezza informatica.
 
 ```{figure} ../figures/red-teaming.svg
 :name: fig-red-teaming
-:alt: "Ciclo chiuso in quattro stazioni disposte ad anello: 1 policy (cosa il modello non deve fare), 2 attacco (jailbreak, injection, attacchi automatizzati), 3 scoperta (falle documentate e classificate), 4 patch (fine-tuning, filtri, system prompt). Una freccia riporta dalla patch all'attacco, con la nota che ogni patch invita un nuovo attacco."
+:alt: "Ciclo chiuso in quattro stazioni disposte ad anello e percorse in senso orario: 1 policy (cosa il modello non deve fare), 2 attacco (jailbreak, injection, attacchi automatizzati), 3 scoperta (falle documentate e classificate), 4 patch (fine-tuning, filtri, system prompt), e dalla patch di nuovo alla policy. Al centro dell'anello la nota «si ricomincia: ogni patch invita un nuovo attacco»."
 :width: 78%
 
-Il red teaming non è un collaudo che si supera una volta: è un anello. La
-freccia di ritorno è la parte onesta del disegno, perché ogni correzione
-cambia la superficie d'attacco invece di eliminarla.
+Il red teaming non è un collaudo che si supera una volta: è un anello. Il
+tratto che dalla patch torna alla policy è la parte onesta del disegno, perché
+ogni correzione cambia la superficie d'attacco invece di eliminarla.
 ```
 
 L'anello di {numref}`fig-red-teaming` comincia dalla policy, e non è un
@@ -517,6 +520,10 @@ scuola o lavori.
 - **Manipolare** le persone con tecniche che aggirano la loro consapevolezza, o
   **sfruttare le vulnerabilità** di chi è fragile per età, disabilità o
   condizione economica.
+- **Fabbricare immagini intime di una persona riconoscibile senza il suo
+  consenso**, e il materiale di abuso sessuale su minori. È la voce aggiunta
+  nel 2026, e colpisce le applicazioni che «spogliano» una fotografia: non per
+  come sono fatte, ma per quello che producono.
 - Dedurre da un volto la **razza, le opinioni politiche, la religione o
   l'orientamento sessuale** di qualcuno.
 - **Riconoscere i volti in tempo reale nei luoghi pubblici**, ma attenzione:
@@ -538,13 +545,19 @@ più regole deve rispettare.
 L'**AI Act** {cite}`euaiact2024`, entrato in vigore nell'agosto 2024, struttura
 gli obblighi su quattro livelli di rischio. I numeri di articolo che seguono
 valgono la pena: sono la sola cosa che permette a chi legge di andare a
-verificare, e a differenza delle date di applicazione (scaglionate, e già
-modificate una volta: conviene guardarle sul testo consolidato invece di
-fidarsi di un libro) non cambiano.
+verificare, e sono anche la parte più stabile del testo. Stabile non vuol dire
+immobile: il regolamento è già stato emendato una volta, nel luglio del 2026
+(il regolamento (UE) 2026/1744, il *digital omnibus*), che ha allungato
+l'elenco delle pratiche vietate e rinviato alcune scadenze. Le **date** di
+applicazione, in particolare, sono scaglionate e si sono già spostate: quelle
+vanno guardate sul testo consolidato, non su un libro.
 
 - **inaccettabile** (pratiche vietate, art. 5(1)): tecniche manipolative o
   subliminali (a), sfruttamento delle vulnerabilità dovute a età, disabilità o
-  condizione socioeconomica (b), *social scoring* da parte di enti pubblici o
+  condizione socioeconomica (b), generazione o manipolazione di immagini intime
+  di una persona identificabile senza il suo consenso (ba) e di materiale
+  pedopornografico (bb), le due voci inserite dal *digital omnibus* e
+  applicabili dal 2 dicembre 2026, *social scoring* da parte di enti pubblici o
   privati (c), **polizia predittiva** basata unicamente sulla profilazione o
   sui tratti di personalità (d), scraping non mirato di volti da internet o da
   telecamere per costruire archivi di riconoscimento (e), riconoscimento delle
@@ -611,9 +624,9 @@ registri di cosa il sistema ha deciso, garantire che una persona possa
 intervenire, dichiarare che una decisione è stata presa da un sistema
 automatico) sono la parte che riguarda chi quelle decisioni le subisce: senza
 traccia scritta e senza un umano responsabile, un reclamo non ha nemmeno un
-posto dove essere depositato. Chi vuole tirare il filo trova il seguito nel
-capitolo sull'interpretabilità, che è la parte tecnica della stessa domanda:
-poter dire *perché* il sistema ha deciso così.
+posto dove essere depositato. Chi vuole tirare il filo trova la parte tecnica
+della stessa domanda, poter dire *perché* il sistema ha deciso così, nel
+capitolo sull'interpretabilità, che in questo libro viene appena prima.
 
 Dietro le regole c'è poi un dibattito che vale la pena rendere esplicito, perché
 divide anche gli addetti ai lavori: è quello annunciato all'inizio del capitolo,

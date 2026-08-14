@@ -49,16 +49,18 @@ dello stesso tipo, con la gravità al posto del caffè.
 E vale la pena fermarsi su quel conto minuto per minuto, perché non è un
 esempio qualsiasi: **quello che abbiamo appena fatto a mano è il metodo
 classico**. Da settant'anni i calcolatori risolvono le equazioni differenziali
-così, avanzando un passettino alla volta lungo una fitta rete di puntini (si
-chiama **griglia**) stesa sul tratto di tempo, o di spazio, che ci interessa.
-Più i passettini sono piccoli, più il risultato è preciso e più conti servono;
-noi ne abbiamo fatti tre a mano, un calcolatore ne fa miliardi. Quando in
-questo capitolo si parla di **metodi classici**, o di **solutori** classici,
-si parla di lui: è maturo, accurato, velocissimo, ed è tuttora quello che si
-usa quasi sempre. Due cose però gli costano fatica, e sono esattamente quelle
-su cui giocano le PINN: la rete di puntini va costruita su misura per la forma
-del problema, e quando le grandezze in gioco sono molte il numero di puntini
-esplode.
+così, avanzando un passettino alla volta lungo una fitta rete di puntini stesa
+su quello che ci interessa. Quella rete di puntini si chiama **griglia**. Per
+il caffè i puntini sono istanti, uno ogni minuto. Per una sbarra di ferro
+scaldata a un capo sarebbero anche punti lungo la sbarra, perché lì la
+temperatura cambia da posto a posto oltre che da un momento all'altro. Più i passettini sono piccoli, più il
+risultato è preciso e più conti servono; noi ne abbiamo fatti tre a mano, un
+calcolatore ne fa miliardi. Quando in questo capitolo si parla di **metodi
+classici**, o di **solutori** classici, si parla di lui: è maturo, accurato,
+velocissimo, ed è tuttora quello che si usa quasi sempre. Due cose però gli
+costano fatica, e sono esattamente quelle su cui gioca il metodo di questo
+capitolo: la rete di puntini va costruita su misura per la forma del problema,
+e quando le grandezze in gioco sono molte il numero di puntini esplode.
 
 `````
 
@@ -101,12 +103,14 @@ benissimo, ma la griglia va costruita su misura, ed è un lavoro a sé.
 ## Una rete come candidata soluzione
 
 Nel 2019 Maziar Raissi, Paris Perdikaris e George Karniadakis propongono di
-saldare i due mondi {cite}`raissi2019physics`. L'idea delle **Physics-Informed
-Neural Networks** (PINN, cioè reti neurali informate dalla fisica) sta in una
-frase: una rete neurale come *candidata soluzione* dell'equazione (una curva
-che si propone come risposta, e che verrà corretta finché non lo è davvero),
-penalizzata quando **viola la fisica**; i dati (pochi, sporchi) e la legge
-(esatta) collaborano nella stessa loss.
+saldare i due mondi {cite}`raissi2019physics`, e chiamano **Physics-Informed
+Neural Networks** (PINN, cioè reti neurali informate dalla fisica) il modo per
+farlo: un nome che avevano già usato in due preprint di due anni prima.
+L'idea sta in una frase: una rete neurale fa da *candidata soluzione*
+dell'equazione, cioè si propone come risposta e viene corretta finché non lo è
+davvero, e ogni volta che **viola la fisica** paga una penalità. I dati, pochi
+e sporchi, e la legge, esatta, collaborano dentro la stessa loss, cioè dentro
+quel punteggio da abbassare che ci accompagna da inizio libro.
 
 `````{tab} Elementare
 
@@ -160,37 +164,43 @@ come faremo per $u'(0)$ nella prossima sezione); i $(x_j, t_j)$ sono $N_c$
 **punti di collocazione**
 estratti a caso nel dominio (nessuna griglia) e $\lambda$ bilancia i due
 termini. Il tocco elegante è il calcolo delle derivate di $u_\theta$ rispetto
-agli *ingressi*: le fornisce la **differenziazione automatica**, la stessa
-regola della catena del backpropagation {cite}`rumelhart1986learning`
-applicata a $x$ e $t$ anziché ai pesi. In PyTorch è una chiamata a
-`torch.autograd.grad` {cite}`paszke2019pytorch`, e le derivate sono esatte a
-meno della precisione di macchina: niente differenze finite, niente passo di
+agli *ingressi*: le fornisce la **differenziazione automatica**, cioè la
+regola della catena della backpropagation applicata a $x$ e $t$ anziché ai
+pesi {cite}`rumelhart1986learning`. In PyTorch è una chiamata a
+`torch.autograd.grad` {cite}`paszke2019pytorch`: derivate esatte a meno della
+precisione di macchina, senza differenze finite e senza passo di
 discretizzazione da scegliere.
 
 `````
 
 ## Perché ci interessa
 
-Tre proprietà rendono la ricetta interessante, tutte figlie della stessa
+Tre proprietà rendono la ricetta interessante, e nascono tutte dalla stessa
 radice: la soluzione non è più una tabella di valori calcolati sui puntini di
-una griglia, ma abita dentro la rete, che si può interrogare in qualunque
-punto, anche fra un puntino e l'altro. Primo: **niente griglia da costruire**.
-I punti di collocazione si spargono a pioggia anche in un **dominio** (la
-regione in cui cerchiamo la soluzione) dalla forma complicata, il condotto di
-un'aorta o il profilo di un'ala: non che i metodi classici non ci arrivino, ci
-arrivano da decenni, ma prima devono coprire quella forma di una griglia fatta
-su misura, che è un mestiere a sé. E la stessa proprietà conta ancora di più
-quando le grandezze in gioco sono molte, perché il conto dei puntini è
-spietato e si fa in un rigo: dieci puntini bastano a coprire un segmento, per
-un quadrato ne servono cento, per un cubo mille, e con dieci grandezze in
-gioco diventano un uno seguito da dieci zeri. Lì una griglia non è costosa: è
-impossibile. Che una rete ci arrivi davvero, però, non è automatico: è materia
-di ricerca ancora aperta, e i risultati in dimensione molto alta si ottengono
-con varianti costruite apposta, non con la ricetta base
-{cite}`hu2024tackling`. Secondo: **dati scarsi**. Dove il
-laboratorio arriva con tre sensori, la legge riempie i vuoti con l'unico
-filo coerente con l'equazione. Terzo, il più sorprendente: i **problemi
-inversi**.
+una griglia. Abita dentro la rete, e la rete si può interrogare in qualunque
+punto, anche fra un puntino e l'altro.
+
+La prima è che **non c'è nessuna griglia da costruire**. I punti di
+collocazione si spargono a pioggia anche in un **dominio** (la regione in cui
+cerchiamo la soluzione) dalla forma complicata, il condotto di un'aorta o il
+profilo di un'ala. Non che i metodi classici non ci arrivino: ci arrivano da
+decenni. Ma prima devono ricoprire quella forma con una griglia fatta su
+misura, e costruirla è un mestiere a sé.
+
+La stessa proprietà conta ancora di più quando le grandezze in gioco sono
+molte, cioè quando la soluzione non dipende solo dal tempo ma da dieci cose
+insieme. Il conto dei puntini è spietato e si fa in un rigo: dieci puntini
+bastano a coprire un segmento, per un quadrato ne servono cento, per un cubo
+mille, e per dieci grandezze un uno seguito da dieci zeri. Lì una griglia non
+è costosa: è impossibile. Che poi una rete ci arrivi davvero non è automatico,
+ed è materia di ricerca ancora aperta: quando le grandezze sono tante davvero,
+i risultati si ottengono con varianti costruite apposta, non con la ricetta
+base {cite}`hu2024tackling`.
+
+La seconda proprietà è quella dei **dati scarsi**. Dove il laboratorio arriva con
+tre sensori, la legge riempie i vuoti: fra le infinite curve che passano
+vicino a quei tre punti restano solo quelle che l'equazione ammette, e sono
+pochissime. La terza, la più sorprendente, è quella dei **problemi inversi**.
 
 `````{tab} Elementare
 
@@ -243,17 +253,19 @@ Chiariamolo prima di innamorarcene: le PINN **non mandano in pensione i
 solutori classici**. Il loro territorio è un altro: dove dati e leggi vanno
 fusi nella stessa stima, dove le grandezze in gioco sono troppe perché una
 griglia stia in piedi, dove il problema è inverso. Lì i solutori classici
-arrancano, e la penna di Le Verrier torna a scrivere. Altrove no.
+arrancano, e torna a scrivere la penna di Le Verrier, che da qualche
+irregolarità osservata ricavò un pianeta che nessuno aveva visto. Altrove no.
 
 `````{tab} Elementare
 
 Su un problema ordinario (regola nota, forma regolare, nessuna misura da
 tenere insieme alla legge) il conto a passettini vince, e non di poco: è più
 rapido, è più preciso, e c'è di più, si sa **dimostrare** quanto sbaglia e che
-migliora se si accorciano i passi. Di una rete addestrata, che si ferma dove
-capita che si fermi, questo non si sa dire. Una PINN può metterci minuti dove
-il metodo di sempre impiega millisecondi, e ogni tanto sbaglia senza che nulla
-lo segnali.
+migliora se si accorciano i passi. Di una rete addestrata questo non si sa
+dire: l'addestramento finisce quando smette di migliorare, e nessuno può
+garantire quanto lontana sia rimasta dalla risposta. Una PINN può metterci
+minuti dove il metodo di sempre impiega millisecondi, e ogni tanto sbaglia
+senza che nulla lo segnali.
 
 `````
 
@@ -263,9 +275,14 @@ Su un problema standard (equazione nota, geometria regolare, nessun dato da
 integrare) differenze finite ed elementi finiti restano più veloci, più
 accurati e con garanzie di convergenza che un'ottimizzazione non convessa non
 può offrire: per un metodo classico si dimostra un ordine di convergenza,
-l'errore scende come $O(h^p)$ al raffinarsi del passo $h$, mentre la discesa
-del gradiente su una loss non convessa si ferma in un minimo locale qualsiasi
-e non promette nulla. Una PINN può richiedere minuti di addestramento dove un
+l'errore scende come $O(h^p)$ al raffinarsi del passo $h$. Il teorema ha le
+sue ipotesi, e senza di quelle la garanzia non vale: lo schema dev'essere
+consistente **e stabile** (per uno schema esplicito sul
+calore, infittire solo in spazio fa divergere), e la soluzione esatta
+abbastanza regolare, perché su un urto l'ordine $p$ crolla comunque. Ma sono
+ipotesi verificabili in anticipo, mentre la discesa del gradiente su una loss
+non convessa si ferma in un minimo locale qualsiasi e non promette nulla. Una
+PINN può richiedere minuti di addestramento dove un
 solutore maturo impiega millisecondi, e a volte fallisce senza preavviso
 {cite}`karniadakis2021physics`.
 
@@ -280,8 +297,9 @@ non di possibilità.
 ## Come è organizzato il capitolo
 
 Dalla cornice al banco di lavoro: nella prossima sezione costruiremo il metodo
-per intero, con una PINN in PyTorch; rete, residuo fisico, loss composita,
-fino al problema inverso con un coefficiente che fingeremo di non conoscere.
+per intero, con una PINN in PyTorch; la rete, la misura di quanto viola la
+regola, il punteggio che mette insieme i due controlli, e infine il problema
+inverso, con un pezzo di legge che fingeremo di non conoscere.
 Chiuderemo con le applicazioni reali (fluidodinamica, clima, biomedicina) e
 una mappa onesta dei limiti: quando convengono, quando no.
 
@@ -292,8 +310,9 @@ una mappa onesta dei limiti: quando convengono, quando no.
 - Un'**equazione differenziale** non dice dov'è una grandezza ma **come
   cambia** (il caffè si raffredda tanto più in fretta quanto più è caldo).
   Sapendo da dove si parte, e cosa succede ai bordi quando conta anche lo
-  spazio, la storia è determinata tutta. Vale per le equazioni ben educate
-  che incontreremo qui, il caffè e la molla. Per certe equazioni molto più
+  spazio (ai due capi della sbarra che si scalda, per dire), la storia è
+  determinata tutta. Vale per le equazioni ben educate che incontreremo qui,
+  il caffè e la molla della prossima sezione. Per certe equazioni molto più
   difficili, come quelle di un fluido che scorre nello spazio, nessuno è
   ancora riuscito a dimostrare che una risposta unica ci sia sempre: è un
   problema aperto della matematica, e i nostri due esempi non lo toccano.

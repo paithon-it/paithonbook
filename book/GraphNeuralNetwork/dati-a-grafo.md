@@ -28,17 +28,17 @@ nodi, che useremo come filo conduttore per l'intera sezione.
 
 ```{figure} ../figures/grafo-anatomia.svg
 :name: fig-grafo-anatomia
-:alt: Un grafo non diretto di cinque nodi con i suoi archi; accanto a ogni nodo un vettore di tre feature; a destra la matrice di adiacenza A e la matrice delle feature X.
+:alt: Un grafo non diretto di cinque nodi con i suoi archi; accanto a ogni nodo un vettore di tre feature; il nodo 3 e i tre archi che ne escono sono in terracotta, gli altri quattro nodi in teal; a destra la matrice di adiacenza A e la matrice delle feature X.
 :width: 100%
 
 Un grafo di 5 nodi. Accanto a ogni nodo, le tre caselle sono le sue
 **caratteristiche**: un numero per casella. A destra le stesse informazioni
 messe in tabella: la tabella $\mathbf{A}$ dice chi è collegato a chi (si chiama
 **matrice di adiacenza**), la tabella $\mathbf{X}$ raccoglie le caselle di
-tutti i nodi, una riga per nodo. In terracotta il **vicinato** del nodo 3, cioè
-l'insieme dei nodi a cui è collegato: sono tre, e per questo si dice che il
-nodo 3 ha **grado** 3 (il grado è quanti vicini ha un nodo; che qui coincida
-col numero che gli fa da nome è un caso).
+tutti i nodi, una riga per nodo. In terracotta i tre archi che escono dal nodo
+3: portano al suo **vicinato**, cioè ai nodi a cui è collegato, e siccome sono
+tre si dice che il nodo 3 ha **grado** 3 (il grado è quanti vicini ha un nodo;
+che qui coincida col numero che gli fa da nome è un caso).
 ```
 
 Prima di formalizzare, sistemiamo tre distinzioni che tornano di continuo.
@@ -213,10 +213,11 @@ esempio se una molecola è tossica.
   prevediamo l'argomento di ciascun articolo.
 - **Livello-arco.** Si prevede se un arco esiste, o esisterà, tra due nodi: la
   **link prediction**. È il motore del «forse conosci…» di un social e del «chi
-  ha comprato questo…» di un negozio online. Non a caso il grafo bipartito
-  utente-prodotto e la previsione di collegamento sono esattamente il modo in
-  cui abbiamo descritto la raccomandazione nel capitolo sui sistemi di
-  raccomandazione: consigliare un film è prevedere un arco mancante.
+  ha comprato questo…» di un negozio online. È anche, alla lettera, la forma
+  del problema che il capitolo sui sistemi di raccomandazione, il prossimo,
+  affronterà per intero: un grafo con gli utenti da una parte e i prodotti
+  dall'altra, e consigliare un film vuol dire prevedere un arco che ancora non
+  c'è.
 - **Livello-grafo.** Si prevede una proprietà dell'*intero* grafo, riassunto in
   un solo verdetto. L'esempio principe è la chimica: una molecola è un grafo di
   atomi e legami, e vogliamo prevedere se è solubile, tossica, o efficace come

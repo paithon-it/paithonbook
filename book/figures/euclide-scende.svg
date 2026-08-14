@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  paithon book, figura animata: l'algoritmo di Euclide, una divisione per volta
+  Generata da animazioni/svg/euclide-scende.py: non modificare a mano.
+  Palette-locked, fondo trasparente, animazione in CSS puro (nessuno script).
+  Lo stato di riposo è quello finale: chi non anima (stampa, PDF,
+  prefers-reduced-motion) vede la figura conclusa.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 356"
+     role="img" aria-label="L'algoritmo di Euclide applicato a 60 e 48. Ogni riga è una coppia di numeri: 60 diviso 48 dà resto 12, e due frecce portano il divisore al posto del dividendo e il resto al posto del divisore, così la coppia diventa (48, 12). La divisione seguente, 48 = 4 × 12 + 0, dà resto zero: la coppia diventa (12, 0), il ciclo si ferma e il 12 rimasto a sinistra è il massimo comune divisore.">
+  <style>
+    svg  { --d: 8.8s; }
+    .ax  { stroke:#C5BEAA; stroke-width:2; fill:none; }
+    .axc { stroke:#E2DCC9; stroke-width:1.5; }
+    .lbl { font-family:Inter, system-ui, sans-serif; font-size:15px; fill:#1A1A1A; }
+    .lbs { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#5A524A; }
+    .ttl { font-family:Fraunces, Georgia, serif; font-size:16px; font-style:italic; fill:#1A1A1A; }
+    rect.box  { fill:none; stroke:#C5BEAA; stroke-width:1.6; }
+    rect.cop  { stroke:#2D5A5C; stroke-width:2.6; }
+    rect.res  { stroke:#B5532C; stroke-width:2.6; }
+    rect.esi  { fill:#B5532C; stroke:#B5532C; stroke-width:2.6; }
+    text.num  { font-family:Inter, system-ui, sans-serif; font-size:20px; font-weight:600; fill:#1A1A1A; }
+    text.zer  { fill:#5A524A; }
+    text.esi  { fill:#F8F5EE; }
+    .fre      { fill:none; stroke-width:1.8; }
+    .fre.cop  { stroke:#2D5A5C; }
+    .fre.res  { stroke:#B5532C; }
+    .div      { font-family:Inter, system-ui, sans-serif; font-size:15px; fill:#5A524A; }
+    .nota     { font-family:Inter, system-ui, sans-serif; font-size:14px; fill:#5A524A; }
+    .esito    { font-family:Inter, system-ui, sans-serif; font-size:18px; font-weight:700; fill:#B5532C; }
+    .ter      { fill:#B5532C; font-weight:600; }
+    .tea      { fill:#2D5A5C; font-weight:600; }
+        @keyframes eu0{0.00%{opacity:1}15.50%{opacity:1}20.00%{opacity:0.42}100.00%{opacity:0.42}}
+    @keyframes eu1{0.00%{opacity:0}20.50%{opacity:0}25.00%{opacity:1}40.50%{opacity:1}45.00%{opacity:0.42}100.00%{opacity:0.42}}
+    @keyframes eu2{0.00%{opacity:0}45.50%{opacity:0}50.00%{opacity:1}100.00%{opacity:1}}
+    @keyframes eu3{0.00%{opacity:0}45.50%{opacity:0}50.00%{opacity:1}75.00%{opacity:1}79.50%{opacity:0.0}100.00%{opacity:0.0}}
+    @keyframes eu4{0.00%{opacity:0}70.50%{opacity:0}75.00%{opacity:1}100.00%{opacity:1}}
+    @keyframes eu5{0.00%{opacity:0}70.50%{opacity:0}75.00%{opacity:1}100.00%{opacity:1}}
+    @media (prefers-reduced-motion:reduce) { .tappa { animation:none !important; } }
+  </style>
+  <defs><marker id="eu-cop" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#2D5A5C"/></marker><marker id="eu-res" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#B5532C"/></marker></defs><text class="lbs" x="129" y="44" text-anchor="middle">dividendo</text><text class="lbs" x="247" y="44" text-anchor="middle">divisore</text><text class="lbs" x="365" y="44" text-anchor="middle">resto</text><text class="lbs" x="462" y="44">la divisione</text><g class="tappa" opacity="0.42" style="animation:eu0 var(--d) infinite"><rect class="box cop" x="96" y="62" width="66" height="40" rx="7"/><text class="num cop" x="129" y="89" text-anchor="middle">60</text><rect class="box cop" x="214" y="62" width="66" height="40" rx="7"/><text class="num cop" x="247" y="89" text-anchor="middle">48</text><rect class="box res" x="332" y="62" width="66" height="40" rx="7"/><text class="num res" x="365" y="89" text-anchor="middle">12</text><text class="div" x="462" y="88">60 = 1 × 48 + <tspan class="ter">12</tspan></text></g><g class="tappa" opacity="0.42" style="animation:eu1 var(--d) infinite"><line class="fre cop" x1="247" y1="108" x2="129" y2="146" marker-end="url(#eu-cop)"/><line class="fre res" x1="365" y1="108" x2="247" y2="146" marker-end="url(#eu-res)"/><rect class="box cop" x="96" y="154" width="66" height="40" rx="7"/><text class="num cop" x="129" y="181" text-anchor="middle">48</text><rect class="box cop" x="214" y="154" width="66" height="40" rx="7"/><text class="num cop" x="247" y="181" text-anchor="middle">12</text><rect class="box res" x="332" y="154" width="66" height="40" rx="7"/><text class="num res" x="365" y="181" text-anchor="middle">0</text><text class="div" x="462" y="180">48 = 4 × 12 + <tspan class="ter">0</tspan></text></g><g class="tappa" opacity="1" style="animation:eu2 var(--d) infinite"><line class="fre cop" x1="247" y1="200" x2="129" y2="238" marker-end="url(#eu-cop)"/><line class="fre res" x1="365" y1="200" x2="247" y2="238" marker-end="url(#eu-res)"/><rect class="box zer" x="214" y="246" width="66" height="40" rx="7"/><text class="num zer" x="247" y="273" text-anchor="middle">0</text><text class="nota" x="462" y="260">il divisore è 0: si ferma</text></g><g class="tappa" opacity="0" style="animation:eu3 var(--d) infinite"><rect class="box cop" x="96" y="246" width="66" height="40" rx="7"/><text class="num cop" x="129" y="273" text-anchor="middle">12</text></g><g class="tappa" opacity="1" style="animation:eu4 var(--d) infinite"><rect class="box esi" x="96" y="246" width="66" height="40" rx="7"/><text class="num esi" x="129" y="273" text-anchor="middle">12</text></g><g class="tappa" opacity="1" style="animation:eu5 var(--d) infinite"><text class="esito" x="462" y="284">MCD(60, 48) = 12</text></g><text class="lbl" x="40" y="316">A ogni passo si scala di un posto: <tspan class="tea">il divisore</tspan> diventa dividendo,</text><text class="lbl" x="40" y="338"><tspan class="ter">il resto</tspan> diventa divisore. Quando il divisore è zero, il MCD è a sinistra.</text>
+</svg>

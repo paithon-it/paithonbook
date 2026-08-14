@@ -204,11 +204,11 @@ avvicinando RWKV alla GLA. **RWKV-7**, nome in codice *Goose*
 generalizzata**, con l'evoluzione di stato (nella convenzione del capitolo)
 
 $$
-\mathbf{S}_t = \mathbf{S}_{t-1}\,\big(\operatorname{Diag}(\mathbf{w}_t) - \hat{\kappa}_t\,(\mathbf{a}_t \odot \hat{\kappa}_t)^\top\big) + \mathbf{v}_t\, \tilde{\mathbf{k}}_t^\top ,
+\mathbf{S}_t = \mathbf{S}_{t-1}\,\big(\operatorname{Diag}(\mathbf{w}_t) - \hat{\boldsymbol{\kappa}}_t\,(\mathbf{a}_t \odot \hat{\boldsymbol{\kappa}}_t)^\top\big) + \mathbf{v}_t\, \tilde{\mathbf{k}}_t^\top ,
 $$
 
 dove $\mathbf{w}_t$ è un decadimento vettoriale, un valore per canale (l'erede del gate
-diagonale di Finch), $\hat{\kappa}_t$ è una chiave di *rimozione* normalizzata
+diagonale di Finch), $\hat{\boldsymbol{\kappa}}_t$ è una chiave di *rimozione* normalizzata
 e disaccoppiata dalla chiave di scrittura $\tilde{\mathbf{k}}_t$, e $\mathbf{a}_t$ è un tasso di
 apprendimento **appreso in contesto**, anch'esso canale per canale. La
 transizione di stato è dunque un fattore diagonale più una correzione di rango
@@ -224,17 +224,17 @@ fissa può fare (che resta confinato nella classe $\text{TC}^0$).
 
 RWKV ha una particolarità sociologica che vale la pena notare, in un campo
 dominato dai grandi laboratori: RWKV-4 è stata scalata fino a 14 miliardi di
-parametri (la più grande RNN densa del suo tempo) e RWKV-7 è distribuita con
-pesi aperti sotto licenza Apache 2.0, in una gamma di taglie da circa 0,19 a
-2,9 miliardi di parametri. È la dimostrazione che un'architettura competitiva
-può crescere fuori dai recinti industriali.
+parametri (la più grande RNN densa del suo tempo) e il lavoro che presenta
+RWKV-7 rilascia quattro modelli, da circa 0,19 a 2,9 miliardi di parametri, con
+pesi aperti sotto licenza Apache 2.0. È la dimostrazione che un'architettura
+competitiva può crescere fuori dai recinti industriali.
 
 ## xLSTM: il ritorno di Hochreiter
 
 La terza architettura ha il sapore di un ritorno. Nel capitolo sull'NLP abbiamo
 studiato la **LSTM** {cite}`hochreiter1997long`, la cella con uno stato di
-memoria $c_t$ governato da alcuni interruttori, i *gate*: è la cella che negli
-anni Novanta risolse il problema per cui una rete ricorrente, su una sequenza
+memoria $\mathbf{c}_t$ governato da alcuni interruttori, i *gate*: è la cella
+che negli anni Novanta risolse il problema per cui una rete ricorrente, su una sequenza
 lunga, smetteva semplicemente di imparare (il gradiente che svanisce), e che
 per un decennio ha dominato l'elaborazione delle sequenze. All'inizio i gate
 erano
@@ -248,11 +248,14 @@ Transformer. Il risultato è **xLSTM**, di Beck e colleghi, presentato a
 NeurIPS 2024 {cite}`beck2024xlstm`.
 
 La domanda di partenza è schietta: che cosa mancava alla LSTM per reggere il
-confronto? Due cose, secondo gli autori. Primo, un modo di **rivedere le decisioni
-di memoria** in modo più netto: da qui il *gating esponenziale*. Secondo, una
-memoria più **capiente e parallelizzabile**: da qui il passaggio da una cella
-scalare a una matriciale. xLSTM offre due tipi di blocco, che rispondono a queste
-due esigenze.
+confronto? Due cose, secondo gli autori. Primo, un modo di **rivedere le
+decisioni di memoria** in modo più netto, cioè interruttori capaci di
+spalancarsi davvero invece di fermarsi sempre un po' prima (nei paper si chiama
+*gating esponenziale*). Secondo, una memoria più **capiente** e che si possa
+riempire tutta insieme invece che una casella per volta: da qui il passaggio da
+una cella con un solo posto a una cella a griglia (da *scalare* a
+*matriciale*). xLSTM offre due tipi di blocco, che rispondono a queste due
+esigenze.
 
 `````{tab} Elementare
 
@@ -289,14 +292,16 @@ memoria e i muscoli di oggi.
 `````{tab} Superiore
 
 **sLSTM** (memoria *scalare*) conserva la struttura classica ma introduce il
-**gating esponenziale**. La cella e il suo normalizzatore evolvono come
+**gating esponenziale**. Qui ogni cella tiene un numero solo, e le formule si
+leggono per una cella alla volta: la memoria e il suo normalizzatore evolvono
+come
 
 $$
 c_t = f_t\, c_{t-1} + i_t\, z_t,
 \qquad
 n_t = f_t\, n_{t-1} + i_t,
 \qquad
-h_t = o_t \odot \frac{c_t}{n_t},
+h_t = o_t\, \frac{c_t}{n_t},
 $$
 
 dove $z_t$ è l'input candidato, $f_t, o_t$ i gate di *forget* e *output* e
@@ -338,13 +343,14 @@ $$
 che tiene il massimo corrente dei logaritmi dei gate e viene sottratto prima di
 esponenziare: è il classico trucco *log-sum-exp*. Perché il risultato resti
 davvero identico, però, va riscalato anche il fondo del denominatore, che
-diventa $\max\big(|\mathbf{n}_t^\top \mathbf{q}_t|,\, e^{-m_t}\big)$, come nella versione a 7
-miliardi di parametri {cite}`beck2025xlstm7b`: la soglia fissa $1$ scritta
-sopra non si riscala con il resto e, quando il denominatore la urta,
-l'uscita cambia (in una simulazione con gate di input molto dispersi la
-differenza arriva all'ordine dell'unità, mentre con la soglia riscalata resta
-a $10^{-15}$). Nella sLSTM il problema non si pone, perché lì la lettura è un
-rapporto puro.
+diventa $\max\big(|\mathbf{n}_t^\top \mathbf{q}_t|,\, e^{-m_t}\big)$: è la forma
+stabilizzata che gli autori danno in appendice {cite}`beck2024xlstm`, e la
+ragione è aritmetica. Sottrarre $m_t$ rimpicciolisce di $e^{-m_t}$ tanto
+$\mathbf{C}_t$ quanto $\mathbf{n}_t$; se anche la soglia porta lo stesso fattore, esso si
+semplifica e le due scritture coincidono per costruzione, mentre la soglia
+fissa $1$ non si riscala con il resto e, appena il massimo entra in gioco,
+l'uscita è un'altra. Nella sLSTM il problema non si pone, perché lì la lettura
+è un rapporto puro.
 
 `````
 
@@ -365,8 +371,8 @@ mentre il modello impara guardando tutto il testo insieme e riletta, quando il
 modello scrive, una parola alla volta a costo sempre uguale. Sono, insieme ai
 due modelli della sezione precedente, variazioni sullo stesso tema.
 
-E il tema è quello che la tabella di poco fa metteva in fila: a cambiare, da
-un'architettura all'altra, è **solo il modo in cui la memoria di ieri
+E il tema è quello che la tabella della sezione precedente metteva in fila: a
+cambiare, da un'architettura all'altra, è **solo il modo in cui la memoria di ieri
 sopravvive a oggi**. RetNet la sbiadisce con un ritmo deciso una volta per
 tutte. La bottega grande di xLSTM la sbiadisce con un ritmo che ricalcola a
 ogni parola. RWKV ha percorso tutta la scala in quattro anni: dal ritmo fisso

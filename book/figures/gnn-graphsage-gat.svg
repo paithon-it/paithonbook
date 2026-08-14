@@ -6,11 +6,11 @@
   (grigio, archi tratteggiati chiari) -> se ne aggrega solo un sottoinsieme.
   A DESTRA GAT: lo stesso nodo con gli stessi sei vicini, ma gli archi hanno
   SPESSORE diverso, proporzionale al peso di attenzione alpha_ij (terracotta):
-  un vicino conta molto piu degli altri. Etichette in basso: «campionamento»
+  un vicino conta molto più degli altri. Etichette in basso: «campionamento»
   vs «attenzione». Palette-locked, fondo trasparente.
 -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 400" role="img"
-     aria-label="Confronto di due strategie di aggregazione dei vicini. A sinistra GraphSAGE: un nodo centrale color ocra circondato da sei vicini; solo tre di essi, in teal, sono campionati e collegati da archi pieni, mentre gli altri tre sono sbiaditi in grigio con archi tratteggiati, a indicare che se ne usa solo un sottoinsieme. A destra la rete ad attenzione GAT: lo stesso nodo con gli stessi sei vicini, ma gli archi hanno spessori diversi, in terracotta, proporzionali al peso di attenzione: un vicino ha l'arco molto piu spesso e conta piu degli altri. In basso, le etichette campionamento a sinistra e attenzione a destra.">
+     aria-label="Confronto di due strategie di aggregazione dei vicini. A sinistra GraphSAGE: un nodo centrale color ocra circondato da sei vicini; solo tre di essi, in teal, sono campionati e collegati da archi pieni, mentre gli altri tre sono sbiaditi in grigio con archi tratteggiati, a indicare che se ne usa solo un sottoinsieme. A destra la rete ad attenzione GAT: lo stesso nodo con gli stessi sei vicini, ma gli archi hanno spessori diversi, in terracotta, proporzionali al peso di attenzione: un vicino ha l'arco molto più spesso e conta più degli altri. In basso, le etichette campionamento a sinistra e attenzione a destra.">
   <style>
     .node   { fill:#F8F5EE; stroke:#1A1A1A; stroke-width:2; }
     .hub    { fill:#C9A961; stroke:#1A1A1A; stroke-width:2.5; }

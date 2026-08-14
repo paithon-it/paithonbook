@@ -2,9 +2,10 @@
 
 Nel 2021 un gruppo di ricercatori guidato da Nicholas Carlini diede a GPT-2 (il
 modello linguistico di OpenAI addestrato su un'enorme raccolta di testi del
-web) un gran numero di frasi da cui partire, e si mise a leggere le risposte. In mezzo al
-mare di frasi plausibili ne trovarono alcune che *non erano* plausibili: erano
-*vere*. Il modello sputava, parola per parola, il nome completo di una persona
+web) un gran numero di frasi da cui partire, e si mise a leggere le risposte.
+In mezzo al mare di frasi plausibili ne trovarono alcune che *non erano*
+plausibili: erano *vere*. Il modello sputava, parola per parola, il nome
+completo di una persona
 reale, il suo indirizzo, un numero di telefono, un'email: informazioni
 comparse una manciata di volte nei dati di addestramento, e da lì
 *memorizzate*. Nessuno aveva chiesto al modello di ricordarle: l'aveva fatto
@@ -43,13 +44,13 @@ farli correggere (rettifica, art. 16), farli cancellare (cancellazione, art.
 
 ```{figure} ../figures/gdpr-e-llm.svg
 :name: fig-flusso-dati-personali
-:alt: "Il percorso di un dato personale dentro un sistema basato su LLM, in quattro stazioni: raccolta, addestramento (dove i dati diventano pesi del modello), inferenza (il prompt che contiene dati personali) e output. Sotto le prime due stazioni è indicata la base giuridica che le dovrebbe giustificare: legittimo interesse per la raccolta, contratto o consenso per il servizio. In basso i quattro diritti dell'interessato: accesso, rettifica, cancellazione, opposizione."
+:alt: "Il percorso di un dato personale dentro un sistema basato su LLM, in quattro stazioni in fila: raccolta, addestramento (dove i dati diventano pesi del modello), inferenza (il prompt che contiene dati personali) e output. Sotto la seconda e la terza stazione pende la base giuridica che le dovrebbe giustificare: legittimo interesse per l'addestramento, contratto o consenso per l'inferenza. In basso i quattro diritti dell'interessato, accesso, rettifica, cancellazione e opposizione, con la nota che dentro i pesi del modello sono difficili da esercitare."
 :width: 100%
 
-Le stazioni che un dato personale attraversa, e la legge che le accompagna. La
-raccolta e l'uso per un servizio hanno bisogno di ragioni diverse: quella buona
-per la prima non vale automaticamente per l'altra. E i quattro diritti in basso
-seguono il dato per tutto il percorso.
+Le stazioni che un dato personale attraversa, e la legge che le accompagna.
+Addestrare un modello e servire una richiesta hanno bisogno di ragioni diverse:
+quella buona per il primo non vale automaticamente per la seconda. E i quattro
+diritti in basso seguono il dato per tutto il percorso.
 ```
 
 Il punto che {numref}`fig-flusso-dati-personali` rende difficile da aggirare è
@@ -106,13 +107,15 @@ matematica*, non un rammendo a posteriori.
 
 ## Privacy differenziale: rumore calibrato al singolo
 
-La risposta più solida a questa domanda nasce nel 2006 nella comunità
-crittografica, con la **privacy differenziale** di Cynthia Dwork e colleghi
-{cite}`dwork2006calibrating`. L'idea, elegante, ribalta la prospettiva: invece
-di chiedersi «questo output rivela qualcosa?», si chiede «l'output cambierebbe se
-un singolo individuo entrasse o uscisse dai dati?». Se la risposta è «quasi per
-niente», allora nessun individuo può essere in pericolo, perché la sua presenza
-non lascia traccia rilevabile.
+Contro una falla del genere non basta rattoppare a valle: serve una nozione di
+riservatezza che si possa *garantire* in partenza, e che valga anche contro un
+avversario a cui non abbiamo pensato. La risposta più solida nasce nel 2006
+nella comunità crittografica, ed è la **privacy differenziale** di Cynthia
+Dwork e colleghi {cite}`dwork2006calibrating`. L'idea, elegante, ribalta la
+prospettiva: invece di chiedersi «questo output rivela qualcosa?», si chiede
+«l'output cambierebbe se un singolo individuo entrasse o uscisse dai dati?». Se
+la risposta è «quasi per niente», allora nessun individuo può essere in
+pericolo, perché la sua presenza non lascia traccia rilevabile.
 
 `````{tab} Elementare
 
@@ -193,10 +196,29 @@ scegliendo $\varepsilon = 0{,}5$, il rumore ha scala
 $b = \Delta f / \varepsilon = 1/0{,}5 = 2$, cioè al $42$ si somma un valore
 estratto da $\mathrm{Lap}(0, 2)$, che è la distribuzione di Laplace vista sopra.
 
-Quanto sporco è, in pratica? Lo scarto cade entro $\pm 3$ circa tre volte su
-quattro, ma non sempre, e vale la pena guardare i cinque tiri qui sotto invece
-di fidarsi della media: due volte su cinque lo scarto supera le cinque unità. È
-il prezzo di $\varepsilon = 0{,}5$ su un conteggio piccolo, e si vede a occhio.
+Quanto sporco è, in pratica? In `numpy` il meccanismo sta in tre righe, ed è
+eseguibile così com'è:
+
+```python
+import numpy as np
+rng = np.random.default_rng(0)
+
+def conteggio_privato(conteggio_vero, epsilon):
+    sensibilita = 1.0                       # un individuo cambia il conteggio di 1
+    b = sensibilita / epsilon               # scala del rumore di Laplace
+    return conteggio_vero + rng.laplace(0.0, b)
+
+vero = 42
+stime = [conteggio_privato(vero, epsilon=0.5) for _ in range(5)]
+print("vero:", vero, " privati:", np.round(stime, 1))
+# vero: 42  privati: [42.6 40.8 37.  35.2 44. ]
+```
+
+La media rassicura, i singoli tiri no, ed è su questi che conviene fermarsi.
+Sull'insieme lo scarto cade entro $\pm 3$ circa tre volte su quattro (per la
+precisione $1 - e^{-3/2} \approx 0{,}78$); ma di questi cinque tiri due arrivano
+a cinque unità e le passano, e uno sbaglia di quasi sette. È il prezzo di
+$\varepsilon = 0{,}5$ su un conteggio piccolo, e si vede a occhio.
 
 Resta da dire con precisione **che cosa** si è comprato, perché la formula
 rassicurante («adesso nessuno può sapere se quella persona c'era») è più forte
@@ -218,23 +240,6 @@ differenziale non lo impedisce e non pretende di farlo: dice soltanto che la
 *sua partecipazione* non ha cambiato quasi nulla. È una distinzione sottile e
 va tenuta, perché è il confine esatto fra ciò che questa tecnica garantisce e
 ciò che le viene attribuito.
-
-In `numpy` il meccanismo sta in tre righe, ed è eseguibile così com'è:
-
-```python
-import numpy as np
-rng = np.random.default_rng(0)
-
-def conteggio_privato(conteggio_vero, epsilon):
-    sensibilita = 1.0                       # un individuo cambia il conteggio di 1
-    b = sensibilita / epsilon               # scala del rumore di Laplace
-    return conteggio_vero + rng.laplace(0.0, b)
-
-vero = 42
-stime = [conteggio_privato(vero, epsilon=0.5) for _ in range(5)]
-print("vero:", vero, " privati:", np.round(stime, 1))
-# vero: 42  privati: [42.6 40.8 37.  35.2 44. ]
-```
 
 ### Portare la privacy dentro l'addestramento
 
@@ -356,24 +361,8 @@ Decentrare i dati riduce il rischio, non lo azzera.
 
 ## Esempi avversari: ingannare la rete a comando
 
-Passiamo dalla discrezione alla fragilità. Un avviso prima di cominciare, perché
-riguarda un simbolo. In letteratura il raggio della perturbazione ammessa si
-scrive $\varepsilon$, cioè con **la stessa lettera** che qui sopra era il budget
-di privacy differenziale: sono le notazioni standard di due campi diversi, che
-in un libro come questo finiscono nella stessa pagina. Qui la perturbazione la
-chiamiamo $\rho$, perché la $\varepsilon$ della privacy è dentro il nome delle
-sue definizioni ($\varepsilon$-DP) e rinominare quella sarebbe peggio. Quando
-leggerai un articolo sugli esempi avversari, la $\rho$ di queste pagine lì si
-chiamerà $\varepsilon$.
-
-Lo stesso incrocio capita, più avanti, con $\delta$, e lì il rimedio è un altro:
-la perturbazione è un **vettore** e si scrive $\boldsymbol{\delta}$, mentre il
-margine della $(\varepsilon,\delta)$-DP è un numero e resta tondo. Due
-collisioni, due soluzioni diverse, e la ragione è la stessa: si rinomina ciò che
-si può rinominare senza rompere un nome proprio, e dove non si può si usa la
-forma dei simboli.
-
-Nel 2013 Szegedy e colleghi {cite}`szegedy2014intriguing` scoprirono una
+Passiamo dalla discrezione alla fragilità. Nel 2013 Szegedy e colleghi
+{cite}`szegedy2014intriguing` scoprirono una
 proprietà sconcertante delle reti neurali: si può prendere un'immagine
 classificata correttamente, aggiungerle una perturbazione così piccola da essere
 **invisibile all'occhio**, e far cambiare idea alla rete con altissima
@@ -384,7 +373,7 @@ esempio è diventato un'icona, e lo riproduce schematicamente la
 
 ```{figure} ../figures/esempio-avversario.svg
 :name: fig-esempio-avversario
-:alt: Tre riquadri in fila collegati da un piu e da un uguale. Nel primo una sagoma stilizzata di panda con etichetta panda 58 per cento. Nel secondo una griglia di rumore impercettibile etichettata epsilon per il segno del gradiente. Nel terzo la stessa identica sagoma di panda con l'etichetta errata gibbone 99 per cento in terracotta.
+:alt: Tre riquadri in fila collegati da un piu e da un uguale. Nel primo una sagoma stilizzata di panda con etichetta panda 58 per cento. Nel secondo una griglia di rumore impercettibile etichettata rho per il segno del gradiente della loss rispetto all'input. Nel terzo la stessa identica sagoma di panda con l'etichetta errata gibbone 99 per cento in terracotta.
 :width: 100%
 
 La ricetta di un esempio avversario. All'immagine di un panda, riconosciuta con
@@ -400,6 +389,21 @@ al $58\%$ quando aveva ragione, ed è sicuro al $99\%$ quando ha torto. La
 confidenza che stampa non è una misura di quanto sia affidabile, ed è una delle
 ragioni per cui non ci si può appoggiare a quel numero come se fosse una
 garanzia.
+
+Un avviso sui simboli, prima di passare alle formule, perché nel riquadro di
+mezzo ne compare uno che spiazza. In letteratura il raggio della perturbazione
+ammessa si scrive $\varepsilon$: la **stessa lettera** che qui sopra era il
+budget di privacy differenziale, perché sono le notazioni standard di due campi
+diversi che in un libro come questo finiscono nella stessa pagina. Qui la
+perturbazione la chiamiamo $\rho$, perché la $\varepsilon$ della privacy è
+dentro il nome delle sue definizioni ($\varepsilon$-DP) e rinominare quella
+sarebbe peggio. Con $\delta$ l'incrocio si ripete e il rimedio cambia: la
+perturbazione è un **vettore** e si scrive $\boldsymbol{\delta}$, mentre il
+margine della $(\varepsilon,\delta)$-DP è un numero e resta tondo. Dietro le due
+soluzioni c'è una regola sola: si rinomina ciò che si può rinominare senza
+rompere un nome proprio, e dove non si può si usa la forma dei simboli. Quando
+leggerai un articolo sugli esempi avversari, la $\rho$ di queste pagine lì si
+chiamerà $\varepsilon$.
 
 `````{tab} Elementare
 
@@ -543,21 +547,22 @@ prendere sul serio la provenienza dei dati di addestramento.
 
 ## Marchiare il sintetico: watermarking e provenienza
 
-La provenienza vale anche dall'altro capo del tubo. Se un modello genera testo,
-immagini o voce indistinguibili dal vero, come si riconosce a posteriori che
-sono stati generati?
+Fin qui il problema era che cosa *entra* in un modello; adesso guardiamo che
+cosa ne *esce*. Se un modello genera testo, immagini o voce indistinguibili dal
+vero, come si riconosce a posteriori che sono stati fabbricati?
 
 ```{figure} ../figures/deepfake-watermarking.svg
 :name: fig-watermarking-testo
-:alt: "Confronto fra due righe di testo in cui ogni parola è colorata secondo l'appartenenza a una lista verde o a una lista rossa. Nel testo naturale le parole verdi sono circa la metà e non lasciano traccia. Nel testo con watermark le parole verdi sono circa il settanta per cento: un eccesso statistico rilevabile."
+:alt: "Due istogrammi affiancati, che contano quante parole di ciascuna lista compaiono in un brano. A sinistra il testo naturale: barre verde-azzurre (lista verde) e nere (lista rossa) alternate e tutte della stessa altezza, con sotto la scritta «verdi circa 50 per cento: nessuna traccia». A destra il testo con watermark: le barre verde-azzurre sono più del doppio delle nere, e sotto la scritta «verdi circa 70 per cento: eccesso rilevabile». In basso la legenda dei due colori."
 :width: 90%
 
 La filigrana su un testo è uno sbilanciamento. Nessuna parola, presa da sola,
 è sospetta: è la proporzione sull'intero brano a non essere quella del caso.
 ```
 
-La regola del gioco che {numref}`fig-watermarking-testo` disegna è più semplice
-di quanto sembri, e conviene averla in mente prima di guardarla. Prima di
+La regola del gioco è più semplice di quanto la
+{numref}`fig-watermarking-testo` faccia sospettare, e conviene averla in mente
+prima di guardarla. Prima di
 scrivere ogni parola, il modello tira a sorte: divide in due metà tutte le
 parole che potrebbe usare, chiama «verdi» quelle di una metà e «rosse» quelle
 dell'altra, e poi sceglie un po' più spesso del normale fra le verdi. Il sorteggio
@@ -566,11 +571,10 @@ controllare un testo rifà tutti i sorteggi, riconta le parole verdi e vede se
 sono troppe. In un testo scritto da una persona sarebbero circa la metà, perché
 quel sorteggio la persona non lo conosceva.
 
-La figura mostra anche il limite del metodo, oltre al suo funzionamento. Se la
-firma è statistica, serve una quantità di testo sufficiente perché lo
-sbilanciamento si distingua dal caso: su una frase corta non c'è niente da
-misurare, e riscrivere il brano con parole proprie diluisce l'eccesso fino a
-cancellarlo.
+E il limite si legge nella figura stessa, in filigrana: quello che si misura è
+una **proporzione**, quindi serve abbastanza testo perché lo sbilanciamento si
+distingua dal caso. Su una frase corta non c'è niente da misurare, e riscrivere
+il brano con parole proprie diluisce l'eccesso fino a cancellarlo.
 
 `````{tab} Elementare
 
@@ -590,13 +594,13 @@ schema ritrova il segno anche dopo una compressione moderata. SynthID di Google
 DeepMind applica questa idea a immagini, audio e video.
 
 La **provenienza dichiarata** fa l'opposto: invece di nascondere, allega. Lo
-standard **C2PA** attacca al file una scheda con scritto chi l'ha creato, con
-quale strumento e come è stato modificato. La domanda ovvia è: e chi mi
-impedisce di scrivermela io, una scheda così, e attaccarla a un video falso
-dicendo che l'ha girato una televisione? La risposta sta in quel «firmata
-crittograficamente»: la scheda porta un sigillo che solo chi possiede una certa
-chiave segreta può produrre, e che chiunque può controllare senza possederla. Se
-il sigillo non torna, la scheda è falsa e si vede subito.
+standard **C2PA** attacca al file una scheda, *firmata crittograficamente*, con
+scritto chi l'ha creato, con quale strumento e come è stato modificato. La
+domanda ovvia è: e chi mi impedisce di scrivermela io, una scheda così, e
+attaccarla a un video falso dicendo che l'ha girato una televisione? La
+risposta sta in quel «firmata»: la scheda porta un sigillo che solo chi possiede
+una certa chiave segreta può produrre, e che chiunque può controllare senza
+possederla. Se il sigillo non torna, la scheda è falsa e si vede subito.
 
 La differenza pratica è netta e vale la pena tenerla a mente: **la filigrana
 nascosta sopravvive a una foto dello schermo, la scheda allegata no**, perché
@@ -663,9 +667,9 @@ semplice dei classificatori, una regressione logistica giocattolo (un
 modellino che, dato un esempio con trenta caratteristiche numeriche, stima una
 probabilità). L'esperimento: scegliamo un caso che il modello azzecca, poi
 spostiamo ogni caratteristica di un soffio, tutte nella direzione che danneggia
-di più il modello (le mille dita di prima, qui sono trenta), e guardiamo la
-predizione ribaltarsi. Se non programmi, il codice si può saltare: quello che
-conta sono le righe stampate alla fine.
+di più il modello (trenta piccole spinte concordi, invisibili una per una: sono
+le dita del titolo), e guardiamo la predizione ribaltarsi. Se non programmi, il
+codice si può saltare: quello che conta sono le righe stampate alla fine.
 
 Due dettagli del codice meritano di essere annunciati, perché sono lì proprio
 per evitare che l'esperimento si autoconvinca. Il primo: l'esempio non è
@@ -790,8 +794,10 @@ si muove lungo $\operatorname{sign}\!\big((\hat{y}-y)\,\mathbf{w}\big)$ e sposta
 il punteggio (il logit) di $\rho\,\lVert \mathbf{w}\rVert_1$ in modulo,
 sempre nel verso che fa crescere la loss. Nell'esempio $y=1$ e $\hat{y}<y$,
 quindi la direzione è $-\operatorname{sign}(\mathbf{w})$ e il logit *cala* di
-$\rho\,\lVert \mathbf{w}\rVert_1 = 3{,}54$: quanto basta a far scendere
-la probabilità da $0{,}890$ a $0{,}190$. È una quantità che cresce con il numero
+$\rho\,\lVert \mathbf{w}\rVert_1 = 3{,}54$ (il codice non lo stampa, ma
+`np.linalg.norm(w, 1)` vale $23{,}58$, e $0{,}15 \times 23{,}58 = 3{,}54$):
+quanto basta a far scendere la probabilità da $0{,}890$ a $0{,}190$, perché il
+logit di partenza era $2{,}09$. È una quantità che cresce con il numero
 di dimensioni. In alta dimensione (dove vivono immagini e testi) bastano tante
 piccole spinte concordi per scavallare il confine. La stessa formula in PyTorch
 si scriverebbe con `x.requires_grad_(True)`, un passaggio `loss.backward()` e
@@ -851,7 +857,7 @@ disegnare dentro il modello.
   esce dai dati, aggiungendo rumore (meccanismo di Laplace) calibrato alla
   sensibilità. È un **limite all'inferenza**, non un'impossibilità di dedurre
   ({cite}`dwork2014algorithmic`: *nothing is learned* è irraggiungibile), e non
-  copre le inferenze sulla popolazione. Il valore di $\rho$ va sempre
+  copre le inferenze sulla popolazione. Il valore di $\varepsilon$ va sempre
   guardato: $e^{0{,}5}\approx 1{,}65$, ma $e^{8}\approx 3000$.
   **DP-SGD** {cite}`abadi2016deep` la porta nel deep learning con clipping
   per-esempio + rumore gaussiano, a circa un punto di accuratezza su MNIST.

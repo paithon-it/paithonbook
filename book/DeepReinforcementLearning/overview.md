@@ -4,10 +4,11 @@ Nel 2013 un laboratorio londinese ancora poco noto, DeepMind, pubblica un
 risultato che sembra un giochino e invece è uno spartiacque: una rete neurale
 impara a giocare a *Breakout*, il classico dei mattoncini dell'Atari 2600,
 guardando **solo i pixel dello schermo** e il punteggio. Nessuno le ha spiegato
-le regole, cosa sia la pallina, cosa sia la racchetta. Dopo qualche ora di
-allenamento non solo gioca bene: scopre da sola la tattica di scavare un tunnel
-sul lato del muro per far rimbalzare la pallina dietro i mattoni. Una strategia
-che molti giocatori umani impiegano settimane a inventare.
+le regole, cosa sia la pallina, cosa sia la racchetta. Alla fine di un
+addestramento che vale settimane di gioco non si limita a giocare bene: scopre
+da sola la tattica di scavare un tunnel sul lato del muro per far rimbalzare la
+pallina dietro i mattoni. Nessuno gliel'ha insegnata, e nel punteggio non c'era
+scritta.
 
 Nel capitolo precedente abbiamo visto il *reinforcement learning* classico:
 un agente, degli stati, delle azioni, delle ricompense, e algoritmi come il
@@ -107,7 +108,7 @@ che il capitolo affronterà entrambe.
 
 ```{figure} ../figures/dqn-atari-2015.svg
 :name: fig-dqn-atari
-:alt: "Ciclo di DQN: i pixel dello schermo del gioco entrano in una rete convoluzionale che stima il valore Q di ciascuna azione possibile; si sceglie l'azione col valore più alto, l'emulatore la esegue e restituisce la ricompensa. La transizione appena vissuta non viene usata subito: un percorso tratteggiato la porta in un blocco a parte, la memoria delle esperienze, da cui si ripescano a caso i ricordi con cui si addestra la rete."
+:alt: "Ciclo di DQN: i pixel dello schermo del gioco entrano in una rete che stima il valore Q di ciascuna azione possibile; si sceglie l'azione col valore più alto, l'emulatore la esegue e restituisce la ricompensa. La transizione appena vissuta non viene usata subito: un percorso tratteggiato la porta in un blocco a parte, la memoria delle esperienze, da cui si ripescano a caso i ricordi con cui si addestra la rete."
 :width: 100%
 
 Dai pixel all'azione, senza niente in mezzo. Alla rete non si dice cosa sia
@@ -116,38 +117,39 @@ persona.
 ```
 
 Il blocco laterale di {numref}`fig-dqn-atari`, la memoria delle esperienze, è
-quello che rende stabile tutto il resto, e la sezione sul prezzo da pagare ci
-tornerà sopra. Addestrare sui fotogrammi nell'ordine in cui arrivano significa
-dare alla rete esempi consecutivi, e quindi quasi identici fra loro; ripescarli
-a caso dalla memoria li rimescola, e la rete torna a vedere situazioni diverse
-una dall'altra.
+uno dei due accorgimenti che rendono stabile tutto il resto, e la sezione sul
+prezzo da pagare ci tornerà sopra. Addestrare sui fotogrammi nell'ordine in cui
+arrivano significa dare alla rete esempi consecutivi, e quindi quasi identici
+fra loro; ripescarli a caso dalla memoria li rimescola, e la rete torna a vedere
+situazioni diverse una dall'altra.
 
 Quel primo lavoro, *Playing Atari with Deep Reinforcement Learning* (Mnih e
 colleghi, 2013), diventa nel 2015 un articolo su *Nature*, *Human-level
 control through deep reinforcement learning*: **un'unica architettura**, senza
-ritocchi specifici per gioco, raggiunge o supera il livello di un giocatore
-umano professionista in molti dei 49 titoli Atari testati. È la prova che
-pixel grezzi e ricompensa scarna bastano.
+ritocchi specifici per gioco, regge il confronto con un collaudatore umano
+professionista su 49 titoli Atari, e in ventinove di essi ne raggiunge almeno
+il 75% del punteggio. È la prova che pixel grezzi e ricompensa scarna bastano.
 
 L'anno dopo arriva il colpo che raggiunge il grande pubblico. L'articolo su
 *Nature* del gennaio 2016 (Silver e colleghi) presenta **AlphaGo** e la
 vittoria per 5 a 0 sul campione europeo Fan Hui; due mesi più tardi, a Seul,
-lo stesso programma batte per 4 a 1 Lee Sedol, fra i più forti giocatori al
-mondo. Il Go, un gioco con più configurazioni che atomi nell'universo, era a
-lungo considerato fuori portata per le macchine. Deep reinforcement learning e
-ricerca ad albero, insieme. Il deep RL smette di essere una curiosità da
-laboratorio.
+una versione più forte dello stesso programma batte per 4 a 1 Lee Sedol, fra i
+più forti giocatori al mondo. Il Go, un gioco con più configurazioni che atomi
+nell'universo, era a lungo considerato fuori portata per le macchine. Deep
+reinforcement learning e ricerca ad albero, insieme. Il deep RL smette di
+essere una curiosità da laboratorio.
 
 ## Il prezzo: instabilità e campioni costosi
 
-L'entusiasmo non deve nascondere il conto da pagare. Il deep RL è notoriamente
-capriccioso.
+L'entusiasmo non deve nascondere il conto da pagare. Il deep RL (l'abbreviazione
+di *deep reinforcement learning*, e da qui in avanti si userà spesso) è
+notoriamente capriccioso.
 
 `````{tab} Elementare
 
-Due difficoltà su tutte. La prima: l'allenamento è **instabile**, come
-inseguire il proprio riflesso in uno specchio che si muove ogni volta che ci
-si avvicina; piccole modifiche possono far crollare tutto. La seconda: serve
+Due difficoltà su tutte. La prima: l'allenamento è **instabile**, come cercare
+di colpire la propria ombra, che si sposta ogni volta che ti muovi tu; piccole
+modifiche possono far crollare tutto. La seconda: serve
 **una quantità enorme di partite**. L'agente impara per tentativi, e di
 tentativi ne vuole milioni: settimane di gioco. In un videogioco simulato va
 bene; con un robot vero che si può rompere, molto meno.
@@ -178,7 +180,7 @@ accorgimenti che le impediscono di esplodere: la memoria delle esperienze e la
 copia congelata. Poi si cambia famiglia. Invece di dare un voto a ogni mossa e
 scegliere la migliore, si può imparare **direttamente a decidere**: è la strada
 dei metodi a *gradiente di policy*, e passa per l'idea di affiancare al
-giocatore un giudice, per l'algoritmo che oggi si usa quasi sempre (PPO), per la
+giocatore un giudice, per l'algoritmo che oggi si prova per primo (PPO), per la
 ricerca ad albero che sta dietro ad AlphaGo, e per il modo in cui si addestrano
 oggi gli assistenti conversazionali. Quella strada serve subito, perché nel
 **controllo continuo** (un braccio robotico, uno sterzo) le mosse non sono un

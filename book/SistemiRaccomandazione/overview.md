@@ -1,33 +1,41 @@
 # Sistemi di Raccomandazione
 
-Il 2 ottobre 2006 Netflix (che allora campava spedendo DVD per posta) pubblica
-un annuncio senza precedenti: un milione di dollari a chiunque riesca a
-migliorare del 10% il suo sistema di raccomandazione, Cinematch. Del 10% *che
-cosa*, conviene dirlo subito, perché la gara si gioca tutta lì: dell'errore con
-cui il sistema prevede le stelle che un utente darà a un film. Il metro è il
-**RMSE**, la radice dell'errore quadratico medio incontrata nel capitolo di
-Machine Learning, sezione *Metriche*: si legge in stelle, e dice di quanto la
-previsione sbaglia in media. Cinematch stava a $0{,}9525$ stelle; l'assegno
-andava a chi scendeva sotto $0{,}8572$. Per
-partecipare basta scaricare un dataset che all'epoca sembra sterminato: poco
-più di 100 milioni di voti, da una a cinque stelle, dati da circa 480.000
+Il 2 ottobre 2006 Netflix, che allora campava spedendo DVD per posta, mette in
+palio un milione di dollari. Li prende chi riesce a migliorare del 10% il suo
+sistema di raccomandazione, Cinematch.
+
+Del 10% *che cosa*, conviene dirlo subito, perché la gara si gioca tutta lì.
+Cinematch prevede quante stelle un utente darà a un film, e ogni previsione
+sbaglia di un po'. Il metro della gara è quanto sbaglia, e si misura in stelle:
+un errore medio, calcolato però in un modo che punisce le cantonate più di
+quanto premi le mezze misure. Ha un nome che ritroverai ovunque, **RMSE**, e il
+capitolo di Machine Learning lo definisce per esteso. Cinematch stava a
+$0{,}9525$ stelle: togliere il 10% vuol dire scendere sotto $0{,}8572$, ed è
+quella la soglia dell'assegno.
+
+Per partecipare basta scaricare un dataset che all'epoca sembra sterminato:
+poco più di 100 milioni di voti, da una a cinque stelle, dati da circa 480.000
 utenti anonimi a 17.770 film. La gara diventa un caso mondiale: migliaia di
 squadre, forum incandescenti, ricercatori universitari e ingegneri che di
-notte inseguono decimali. E dura molto più del previsto: quasi tre anni. Solo
+notte inseguono decimali. E dura molto più del previsto, quasi tre anni. Solo
 il 21 settembre 2009 Netflix consegna l'assegno al team **BellKor's Pragmatic
-Chaos**, che ha superato Cinematch del 10,06%: battendo sul filo di lana i
-rivali di *The Ensemble*, fermi su un punteggio equivalente ma con una
-consegna arrivata venti minuti più tardi.
+Chaos**, che chiude a $0{,}8567$ stelle: il 10,06% meglio di Cinematch, cioè
+la soglia passata per un pelo. Sul filo di lana: i rivali di
+*The Ensemble* erano arrivati allo stesso punteggio, ma avevano consegnato
+venti minuti più tardi.
 
 L'ironia arriva dopo, e vale come lezione per tutto il capitolo. Quella
-soluzione da un milione di dollari **non fu mai adottata per intero**: era un
-mosaico di oltre cento modelli combinati, troppo costoso da portare in
-produzione (cioè da far girare davvero, tutti i giorni, per i clienti veri) per
-il guadagno che prometteva; e nel frattempo il business stava
-migrando dai DVD allo streaming, dove prevedere il voto in stelle conta meno
-di prevedere che cosa guarderai stasera. In produzione finirono però due
-ingredienti emersi durante la gara, e uno dei due, la **fattorizzazione di
-matrici** {cite}`koren2009matrix`, è il protagonista di questo capitolo.
+soluzione da un milione di dollari **non fu mai adottata per intero**. Era un
+mosaico di oltre cento modelli combinati, e portarlo in produzione (cioè farlo
+girare davvero, tutti i giorni, per i clienti veri) costava più di quanto
+promettesse di rendere. Nel frattempo il business stava migrando dai DVD allo
+streaming, dove prevedere il voto in stelle conta meno di prevedere che cosa
+guarderai stasera. Due ingredienti emersi durante la gara, invece, in
+produzione ci finirono davvero. Uno è una rete che impara a riconoscere le
+combinazioni di gusti che ricorrono fra gli spettatori, e si chiama macchina di
+Boltzmann ristretta: il capitolo sui modelli a energia la racconta per intero.
+L'altro è la **fattorizzazione di matrici**, che è la protagonista di questo
+capitolo {cite}`koren2009matrix`.
 Fattorizzare vuol dire scomporre in fattori, come si fa da sempre con i numeri
 ($12 = 3 \times 4$): qui si scompone una tabella, e i fattori sono due tabelle
 strette al posto di una larghissima.
@@ -35,20 +43,20 @@ strette al posto di una larghissima.
 Una parola sul nome, prima di partire, perché in italiano «raccomandazione»
 significa due cose e una delle due è la spintarella. Qui vale l'altra, quella
 del consiglio: raccomandare è consigliare, e un sistema di raccomandazione è
-una macchina che consiglia. Il senso brutto però non è del tutto fuori luogo, e
-il capitolo se ne accorge alla fine, quando la domanda diventa se una macchina
-che decide cosa vedi ti stia servendo o spingendo. Conviene leggere tutto il
-resto con quella domanda in mano.
+una macchina che consiglia. Il senso brutto, però, non è del tutto fuori luogo.
+Una macchina che decide cosa vedi ti sta servendo, o ti sta spingendo? L'ultima
+sezione del capitolo affronta la domanda, e conviene leggere tutto il resto
+tenendola in mano.
 
 ## Non «qual è il film più bello», ma «quale piacerà a te»
 
 Un motore di ricerca risponde a una domanda che fai tu. Un sistema di
 raccomandazione risponde a una domanda che non hai fatto: *tra queste
-centomila cose, quali vale la pena mostrarti?* Quelle cose, nel gergo del
-settore, si chiamano **oggetti** (in inglese *item*): film, canzoni, prodotti,
-articoli, video, a seconda del catalogo; qui useremo spesso «film» perché
-l'esempio è quello, ma il discorso non cambia. La differenza cruciale è che
-non esiste una risposta valida per tutti.
+centomila cose, quali vale la pena mostrarti?* Quelle cose sono film, canzoni,
+prodotti, articoli, video, a seconda del catalogo. Nel gergo del settore si
+chiamano tutte **oggetti** (in inglese *item*), e qui useremo spesso «film»,
+perché l'esempio è quello. La differenza cruciale è che non esiste una risposta
+valida per tutti.
 
 `````{tab} Elementare
 
@@ -77,13 +85,16 @@ $\mathcal{U}\times\mathcal{I}$.
 
 `````
 
-## Il carburante: feedback esplicito e implicito
+## Il carburante: quello che diciamo e quello che facciamo
 
-Da dove impara, il libraio automatico? Da due tipi di segnale molto diversi.
-Entrambi si chiamano, quando si parla di tutti e due insieme, **interazioni**:
-ogni volta che una persona incontra un oggetto e lascia una traccia (un voto,
-un click, un acquisto, dieci minuti di visione, un brano saltato), quella
-traccia è un'interazione, ed è tutto ciò che il sistema ha in mano.
+Da dove impara, una macchina che consiglia? Da quello che le persone lasciano
+dietro di sé. Ogni volta che qualcuno incontra un film e lascia una traccia (un
+voto, un click, un acquisto, dieci minuti di visione, un brano saltato), quella
+traccia si può registrare, ed è tutto ciò che il sistema ha in mano. Le tracce
+si chiamano **interazioni**, e sono di due specie molto diverse: quelle che
+diciamo apposta e quelle che ci scappano mentre facciamo altro. In inglese si
+chiamano *feedback* **esplicito** e **implicito**, e la distinzione conta più
+di quanto sembri.
 
 `````{tab} Elementare
 
@@ -127,14 +138,15 @@ Visto da lontano sembra il solito apprendimento supervisionato: dati storici
 in ingresso, una predizione in uscita. Visto da vicino, tre cose lo rendono
 un animale a parte.
 
-La prima è la **sparsità**. La materia prima è una tabella con un utente per
-riga e un film per colonna, e i voti nelle celle, come in
-{numref}`fig-matrice-utenti-film`. Il punto è quante celle sono vuote: nel
-dataset del Netflix Prize i 100 milioni di voti sembrano tanti, ma la tabella
-completa avrebbe $480.000 \times 17.770 \approx 8{,}5$ miliardi di celle, ne
-era piena appena l'1,2%. Nei cataloghi industriali di oggi, con milioni di
-oggetti, si supera facilmente il 99,9% di vuoto. Raccomandare significa
-riempire quei buchi in modo sensato.
+La prima si vede guardando la materia prima, che è una tabella: un utente per
+riga, un film per colonna, i voti nelle celle, come in
+{numref}`fig-matrice-utenti-film`. Il punto è quante celle sono **vuote**. Nel
+Netflix Prize i 100 milioni di voti sembrano tanti, ma la tabella completa
+avrebbe $480.000 \times 17.770 \approx 8{,}5$ miliardi di celle: cento milioni
+su otto miliardi e mezzo fa l'1,2%, ed è quanto ne era piena. Nei cataloghi
+industriali di oggi, con milioni di oggetti, si
+supera facilmente il 99,9% di vuoto. Quel vuoto ha un nome, **sparsità**, e
+raccomandare significa riempirlo in modo sensato.
 
 ```{figure} ../figures/matrice-utenti-film.svg
 :name: fig-matrice-utenti-film
@@ -147,14 +159,14 @@ Prevedere il valore di una cella vuota (qui, il voto di Anna al film D) è
 l'intero problema.
 ```
 
-La seconda anomalia è che **non esiste una «risposta giusta» osservabile**.
-Un classificatore di cifre può essere confrontato con l'etichetta vera; qui
+La seconda anomalia è che **non esiste una «risposta giusta» da guardare**.
+Un classificatore di cifre si può confrontare con l'etichetta vera. Qui invece
 la domanda riguarda un fatto che non è avvenuto: *se* ti avessimo mostrato
-quel film, ti sarebbe piaciuto? (una domanda del genere si dice
-**controfattuale**). Per la stragrande maggioranza delle coppie utente–film
-questa risposta non verrà mai osservata, e la valutazione deve arrangiarsi con
-approssimazioni: nascondere una parte delle interazioni note e verificare se
-il modello le recupera. *Quale* parte si nasconde non è un dettaglio di
+quel film, ti sarebbe piaciuto? Una domanda così si dice **controfattuale**, e
+per la stragrande maggioranza delle coppie utente-film non avrà mai una
+risposta osservata. La valutazione deve allora arrangiarsi con un ripiego: si
+nasconde una parte delle interazioni che si conoscono, e si guarda se il
+modello le ritrova. *Quale* parte si nasconde non è un dettaglio di
 procedura: è la decisione che sposta i risultati più di quasi ogni scelta di
 modello, e la riprenderemo quando parleremo di come si misura una classifica.
 

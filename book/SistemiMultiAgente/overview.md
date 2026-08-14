@@ -11,14 +11,16 @@ di migliaia.
 A provarci, fra il dicembre 2005 e il febbraio 2006, è stato un gruppo di
 fisici dei sistemi complessi (CNR-INFM, Sapienza, Istituto Superiore di Sanità)
 dentro il progetto europeo **StarFlag**. Il lavoro sul campo lo guidava Andrea
-Cavagna; Irene Giardina firmò l'algoritmo con cui gli uccelli vennero
-riconosciuti da un'immagine all'altra, e fra i dodici autori dell'articolo
+Cavagna; l'algoritmo con cui gli uccelli vennero riconosciuti da un'immagine
+all'altra lo disegnarono lui e Irene Giardina, e a scriverne il codice fu
+Massimiliano Viale; fra i dodici autori dell'articolo
 compaiono anche Nicola Cabibbo e Giorgio Parisi, che nel 2021 avrebbe ricevuto
 il Nobel per la fisica per i suoi contributi alla comprensione dei sistemi
 fisici complessi. Il laboratorio era la terrazza di Palazzo Massimo, al Museo
 Nazionale Romano, che guarda gli alberi del posatoio nella piazza davanti alla
 stazione Termini: tre postazioni fotografiche sincronizzate, due a venticinque
-metri l'una dall'altra e la terza poco più in là, tutte a trenta metri sopra la
+metri l'una dall'altra e la terza a due metri e mezzo da una delle due, tutte a
+trenta metri sopra la
 strada, per dieci fotogrammi al secondo (che nessuna macchina reggeva da sola:
 su ogni postazione ne stavano due, che scattavano a turno cinque volte al
 secondo). Da due immagini, con la stessa geometria con cui due occhi ricavano
@@ -103,10 +105,11 @@ Il test empirico usa proprio questa differenza. Su dieci stormi di rarefazione
 molto diversa ($r_1$, la distanza media dal primo vicino, va da $0{,}68$ a
 $1{,}51$ m) il raggio di interazione $r_c$ cresce con $r_1$ in modo netto
 ($R^2 = 0{,}78$), mentre il numero di vicini interagenti non mostra alcuna
-correlazione con la rarefazione ($n_c^{-1/3}$ contro $r_1$: $R^2 = 0{,}0002$).
+correlazione con la rarefazione ($n_c^{-1/3}$ contro $r_1$: $R^2 = 0{,}00021$).
 Il raggio segue la densità, il grado no: in media
 $n_c = 6{,}5 \pm 0{,}9$ (errore standard) {cite}`ballerini2008interaction`. Nel
-linguaggio delle Graph Neural Network, la regola metrica costruisce un grafo a
+linguaggio dei grafi, che il capitolo sulle Graph Neural Network riprenderà per
+esteso, la regola metrica costruisce un grafo a
 raggio fisso e la topologica il grafo **diretto** dei $k$ vicini più prossimi,
 in cui ogni nodo sceglie i propri $k$ archi uscenti: il grado uscente è
 costante per costruzione (quello entrante no, perché la scelta non va
@@ -135,18 +138,20 @@ esiste, e conviene non riscoprirlo male.
 Quello che è cambiato è il costo di partenza. Con un modello di linguaggio,
 far nascere dieci agenti costa una riga di codice: è sempre lo stesso modello,
 e a distinguerli è soltanto il foglio di istruzioni che ciascuno si trova
-davanti prima di cominciare («tu scrivi codice e non discuti le scelte altrui»,
-«tu cerchi errori e non ne proponi la correzione»). Dieci fogli diversi, e la
-squadra è in piedi.
+davanti prima di cominciare (il *prompt di sistema*: «tu scrivi codice e non
+discuti le scelte altrui», «tu cerchi errori e non ne proponi la correzione»).
+Dieci fogli diversi, e la squadra è in piedi.
 
 Conviene fissare subito un esempio, perché nelle prossime pagine si parlerà a
 lungo di quanto costa una squadra e di che forma darle, e il prezzo di una cosa
 non dice niente finché non si sa che cosa sia. Prendiamo la richiesta: «apri
 questo file di vendite e dimmi quali negozi stanno peggiorando». Un agente la
-legge e decide i passi da fare. Un secondo scrive il programma che apre il file
-e fa i conti. Un terzo lo esegue in un ambiente separato e controlla che non
-cancelli niente e che i numeri tornino. Il primo, letto il risultato, scrive la
-risposta. È il sistema di programmazione presentato insieme al framework AutoGen
+riceve e tiene le fila. Un secondo scrive il programma che apre il file
+e fa i conti. Un terzo lo legge e dice soltanto una cosa: se è sicuro
+eseguirlo, cioè se non cancella niente e non combina danni. A quel punto il
+primo lo esegue davvero e rimanda il risultato al secondo, che lo interpreta e
+scrive la risposta. È il sistema di programmazione presentato insieme al
+framework AutoGen
 {cite}`wu2024autogen`, ed è la squadra a cui pensare ogni volta che in questo
 capitolo si parla di agenti che si passano messaggi. Il capitolo sugli **Agenti**
 ha già descritto quei ruoli uno per uno (un pianificatore, un esecutore, un
@@ -176,9 +181,10 @@ sono costruiti tutti allo stesso modo.
 Tre colleghi rispondono a una domanda difficile e ognuno, da solo, ci prende
 sette volte su dieci. Decidendo a maggioranza il gruppo ci prende quasi otto
 volte su dieci (78%), e con nove colleghi il 90%: perché il gruppo sbagli
-servono almeno due errori insieme, che sono più rari di uno. Da dove escano
-esattamente quel 78 e quel 90 lo vedremo elencando i casi uno per uno nella
-sezione «Mettersi d'accordo»: è un conto che si fa a mano e vale la pena
+servono almeno due errori insieme, che sono più rari di uno. Da dove esca
+esattamente quel 78 lo vedremo elencando i casi uno per uno nella
+sezione «Protocolli e consenso» (il 90 esce allo stesso modo, con molti più
+casi da elencare): è un conto che si fa a mano e vale la pena
 rifarlo, ma per adesso basta il senso.
 
 Il conto però vale solo se i tre sbagliano in modo *diverso*. Se hanno studiato
@@ -192,16 +198,17 @@ amplifica la tendenza di fondo, qualunque sia.
 
 `````{tab} Superiore
 
-È il **teorema della giuria di Condorcet** (1785). Con $n$ votanti indipendenti,
-ciascuno corretto con probabilità $p$, e decisione a maggioranza semplice, la
-probabilità che il gruppo abbia ragione è
+È il **teorema della giuria di Condorcet** (1785). Con $n$ votanti indipendenti
+che scelgono fra **due** alternative, ciascuno corretto con probabilità $p$, e
+decisione a maggioranza semplice, la probabilità che il gruppo abbia ragione è
 
 $$
-P_n = \sum_{k=\lceil (n+1)/2 \rceil}^{n} \binom{n}{k}\, p^{k} (1-p)^{\,n-k},
+P_n = \sum_{k=\lfloor n/2 \rfloor + 1}^{n} \binom{n}{k}\, p^{k} (1-p)^{\,n-k},
 $$
 
 dove $\binom{n}{k}$ è il numero di modi in cui $k$ votanti su $n$ possono
-azzeccare. L'andamento asintotico è una dicotomia: al crescere di $n$,
+azzeccare e la somma parte dalla più piccola maggioranza stretta. L'andamento
+asintotico è una dicotomia: al crescere di $n$,
 $P_n \to 1$ se $p > 1/2$ e $P_n \to 0$ se $p < 1/2$. Con $p = 0{,}7$ si ha
 $P_3 = 0{,}784$, $P_5 = 0{,}837$, $P_9 = 0{,}901$; con $p = 0{,}4$,
 $P_3 = 0{,}352$ e $P_9 = 0{,}267$.
@@ -222,9 +229,12 @@ tema della prossima sezione.
 Questo capitolo poggia su due capitoli precedenti, e ne anticipa uno. Dagli
 **Agenti** vengono il ciclo osserva-ragiona-agisci e i ruoli specializzati: qui
 diamo per acquisito il singolo agente e studiamo ciò che nasce quando sono
-molti. Dal **Reinforcement Learning** viene il processo decisionale di Markov,
+molti. Dal **Reinforcement Learning** viene il processo decisionale di Markov
+(il modo di descrivere un mondo in cui si osserva una situazione, si sceglie una
+mossa, si incassa un premio e si finisce nella situazione successiva),
 insieme alla *policy* (la regola con cui un agente sceglie che mossa fare in una
-data situazione, indicata di solito con la lettera greca $\pi$) e
+data situazione, indicata di solito con la lettera greca $\pi$, che qui non ha
+niente a che vedere con il $3{,}14$ della circonferenza) e
 all'**assegnazione del merito**: la ricompensa arriva alla fine di una partita e
 bisogna capire quale delle mosse se la sia guadagnata. Con più agenti quella
 domanda si sdoppia, e non chiede più soltanto *quale mossa* ha prodotto il
@@ -284,12 +294,12 @@ storni, a cui la regola dei sei o sette vicini non l'ha insegnata nessuno?
 
 - **Il costo del coordinamento**: quando più agenti battono un singolo agente
   ben progettato, con i conti in mano (chiamate, token, giri di conversazione).
-- **Topologie: chi parla con chi**: le forme del grafo di comunicazione
+- **Chi parla con chi**: le forme del grafo di comunicazione
   (catena, stella con un coordinatore, dibattito, gerarchia) e cosa ciascuna fa
   a costo, latenza e qualità.
 - **Protocolli e consenso**: come si parla (messaggi tipizzati, atti
-  linguistici) e come si decide (voto, quorum), fino al caso duro in cui un
-  partecipante si guasta o mente: i generali bizantini.
+  linguistici) e come si decide (voto di maggioranza, dibattito), fino al caso
+  duro in cui un partecipante si guasta o mente: i generali bizantini.
 - **Imparare insieme**: l'apprendimento per rinforzo multi-agente,
   l'addestramento centralizzato con esecuzione decentralizzata e il *self-play*
   incontrato dietro AlphaGo.
@@ -340,7 +350,8 @@ storni, a cui la regola dei sei o sette vicini non l'ha insegnata nessuno?
 - Così lo stormo resta unito anche quando si dirada, perché il grado di
   interazione non dipende dalla densità ($r_c \propto \rho^{-1/3}$); una regola
   metrica, come quella dei **boids** {cite}`reynolds1987flocks`, tiene molto
-  meno, come mostrano le simulazioni a regola metrica dello stesso lavoro.
+  meno, e lo mostrano le simulazioni dello stesso lavoro, dove uno stormo a
+  regola metrica si spezza in più tronconi molto più spesso di uno topologico.
 - La tesi del capitolo: **il comportamento del gruppo è una proprietà della
   regola di interazione, non della bravura dei singoli**. Stessi individui,
   regola diversa, collettivo diverso.

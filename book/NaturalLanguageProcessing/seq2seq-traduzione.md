@@ -121,7 +121,12 @@ fa da input allo strato $\ell$, per rappresentazioni via via più astratte.
 
 `````
 
-In PyTorch entrambe le varianti sono un argomento del costruttore:
+In PyTorch la lettura nei due sensi si chiede scrivendo `bidirectional=True`
+quando si costruisce la rete, e non c'è altro da fare. Nella stessa riga
+compare anche `num_layers=2`, che chiede due celle impilate una sopra l'altra:
+la seconda non legge le parole, legge quello che ha capito la prima. Sono i due
+modi in cui una rete ricorrente si può far crescere, in larghezza (le due
+direzioni) e in altezza (gli strati):
 
 ```python
 import torch
@@ -142,31 +147,52 @@ print(h.shape)    # torch.Size([4, 1, 128]): 2 strati x 2 direzioni
 
 ## Comprimere una frase in un vettore
 
-Torniamo alla traduzione. Nel 2014 due gruppi, Cho e colleghi a Montréal
-{cite}`cho2014learning` (lo stesso paper che introduce la GRU) e Sutskever,
-Vinyals e Le a Google {cite}`sutskever2014sequence`, arrivano alla stessa
-architettura, oggi nota come **encoder–decoder** o **seq2seq**. L'idea è di
-una semplicità disarmante: una prima rete ricorrente (l'*encoder*, «chi
-codifica») legge tutta la frase sorgente e la comprime nel suo stato finale, un
-unico **vettore di contesto**; una seconda rete (il *decoder*, «chi decodifica»)
-parte da quel vettore e genera la traduzione parola per parola, come un modello
-di linguaggio «condizionato» dalla frase di partenza.
+Torniamo alla traduzione. Nel 2014 due gruppi di ricerca arrivano, per strade
+loro, alla stessa idea, e l'idea è di una semplicità disarmante: **due reti
+ricorrenti, una di fronte all'altra**. La prima legge la frase da tradurre e
+non scrive niente; la seconda scrive la traduzione e non legge l'originale. Fra
+le due passa una fila di numeri, e basta.
+
+La prima si chiama *encoder*, «chi codifica», e il suo mestiere è ridurre la
+frase di partenza a quel pacchetto di numeri; la seconda si chiama *decoder*,
+«chi decodifica», e il suo mestiere è srotolare il pacchetto in una frase
+dell'altra lingua, una parola per volta. Il pacchetto ha un nome, **vettore di
+contesto**, e non è altro che l'ultimo riassunto scritto dall'encoder: quello
+che gli resta in mano dopo aver letto l'ultima parola. L'architettura si chiama
+**encoder–decoder**, o **seq2seq**, e i due lavori che la propongono nello
+stesso anno sono di Kyunghyun Cho e colleghi a Montréal
+{cite}`cho2014learning`, che è lo stesso articolo in cui nasce la GRU, e di
+Ilya Sutskever, Oriol Vinyals e Quoc Le a Google
+{cite}`sutskever2014sequence`.
+
+Il decoder, mentre scrive, fa esattamente quello che fa un modello di
+linguaggio: scommette sulla parola successiva. Con una differenza: la sua
+scommessa non parte dal nulla, parte dal pacchetto ricevuto. Si dice allora che
+è **condizionato** dalla frase di partenza, che è il modo tecnico di dire «gli
+è stato detto di che cosa deve parlare».
 
 ```{figure} ../figures/seq2seq-2014.svg
 :name: fig-encoder-decoder
-:alt: "Schema encoder-decoder: l'encoder legge una a una le parole della frase inglese e le comprime in un unico vettore di contesto; da quel vettore il decoder genera le parole italiane una dopo l'altra, riusando a ogni passo la parola appena prodotta."
+:alt: "Schema encoder-decoder: l'encoder legge una a una le tre parole della frase inglese «the cat sleeps» e le comprime in un unico vettore di contesto; da quel vettore il decoder genera la traduzione francese «le chat dort», una parola dopo l'altra."
 :width: 100%
 
 Due reti e un vettore in mezzo. L'encoder finisce di leggere prima che il
 decoder cominci a scrivere: fra i due passa solo quel vettore, e nient'altro.
 ```
 
-Il «nient'altro» di {numref}`fig-encoder-decoder` è il fatto architetturale
-da cui discendono le due sezioni successive, e conviene fissarlo. Quel vettore
-di contesto è una fila di numeri **di lunghezza decisa in anticipo**, mille per
+Il «nient'altro» di {numref}`fig-encoder-decoder` è il fatto da cui discende
+tutto il resto della sezione, e conviene fissarlo bene. Quel vettore di
+contesto è una fila di numeri **di lunghezza decisa in anticipo**, mille per
 esempio, e resta di mille numeri sia che la frase da tradurre abbia cinque
 parole sia che ne abbia cinquanta: nessuno spazio in più per le frasi lunghe,
 per quanto ce ne sarebbe bisogno.
+
+E c'è un dettaglio che tornerà utile fra due pagine, quindi mettiamolo a fuoco
+adesso. L'encoder, mentre legge, produce **un riassunto dopo ogni parola**: uno
+dopo «il», uno dopo «il gatto», uno dopo «il gatto nero», e così via fino in
+fondo. Sono tanti riassunti quante sono le parole, ciascuno con la sua fila di
+numeri. Di tutti questi, però, ne viene passato al decoder uno solo, l'ultimo.
+Gli altri esistono, sono già stati calcolati, e vengono buttati via.
 
 `````{tab} Elementare
 
@@ -236,7 +262,7 @@ $33{,}3$ è il sistema di *riferimento*, non lo stato dell'arte, che su quel
 compito stava a $37{,}0$; la rete pura non lo raggiunge, e ci si avvicina
 ($36{,}5$) solo quando la si usa per riordinare le mille ipotesi prodotte dal
 sistema statistico. Nel 2014 il neurale non ha ancora vinto: la data del
-sorpasso è il 2016, ed è la storia della prossima sezione. L'aneddoto
+sorpasso è il 2016, ed è la storia con cui si chiude questa sezione. L'aneddoto
 dell'inversione è invece documentato
 nei numeri: invertire l'ordine delle parole sorgente fa scendere la
 perplessità di test da $5{,}8$ a $4{,}7$ e salire il BLEU da $25{,}9$ a
@@ -252,29 +278,34 @@ visibilmente al crescere della lunghezza della frase.
 
 La soluzione arriva nel giro di pochi mesi, da Dzmitry Bahdanau, Kyunghyun Cho
 e Yoshua Bengio {cite}`bahdanau2015neural`, e nasce da una domanda tanto ovvia
-quanto ben posta: perché costringere il decoder a lavorare a memoria? La frase
-sorgente è ancora lì, con tutti gli stati che l'encoder ha prodotto leggendo
-una parola dopo l'altra. Basta lasciare che il decoder, a ogni passo, **torni a
-guardarli tutti**, dando a ciascuno un peso diverso a seconda di quanto serve
-*adesso*. Questi pesi sono l'**attenzione**: un numero per ogni parola della
-frase di partenza, ricalcolato a ogni parola prodotta, che dice quanta parte
-dell'attenzione del decoder va lì.
+quanto ben posta: perché costringere il decoder a lavorare a memoria, se i
+riassunti intermedi ci sono già?
+
+Ricordate: l'encoder ne aveva prodotto uno per parola, e li avevamo buttati via
+tutti tranne l'ultimo. Smettiamo di buttarli. Teniamoli lì tutti, in fila, e
+lasciamo che il decoder, ogni volta che deve scrivere una parola, **li guardi
+tutti quanti** e decida da sé a quali dare retta adesso. Non «guarda solo il
+quinto»: dà a ciascuno un voto, alto per quelli che gli servono, basso per gli
+altri, e poi li mescola in proporzione ai voti. Quei voti sono l'**attenzione**:
+un numero per ogni parola della frase di partenza, ricalcolato da capo a ogni
+parola prodotta.
 
 ```{figure} ../figures/attention-prima-dei-transformer.svg
 :name: fig-allineamento-traduzione
-:alt: "Una griglia di allineamento fra le parole della frase inglese, sulle colonne, e le parole italiane generate, sulle righe. Le celle più scure indicano dove il decoder ha guardato di più a ogni passo: la diagonale è marcata ma non perfetta, e in un punto due parole italiane si collegano a una sola inglese."
+:alt: "Due file di parole, una sopra l'altra: in alto la frase inglese «the black cat sleeps», in basso la traduzione italiana «il gatto nero dorme». Delle linee collegano le parole delle due file, e il loro spessore è il peso dell'attenzione. Le linee spesse legano «the» a «il» e «sleeps» a «dorme» senza incrociarsi, mentre al centro si incrociano: «black» va a «nero» e «cat» a «gatto». Due linee sottili, fra le stesse parole del centro, sono i pesi piccoli rimasti."
 :width: 88%
 
-L'allineamento che nessuno ha annotato. La griglia dice, per ogni parola
-prodotta, dove il modello ha guardato: nessuno gliel'ha insegnato, si legge a
-posteriori dai pesi che si è dato da solo.
+L'allineamento che nessuno ha annotato. Le linee dicono, per ogni parola
+prodotta, dove il modello ha guardato: nessuno gliel'ha insegnato, si leggono
+a posteriori dai pesi che si è dato da solo.
 ```
 
-Il fatto che la diagonale di {numref}`fig-allineamento-traduzione` sia
-imperfetta è la notizia, non un difetto. Dove le due lingue ordinano le parole
-in modo diverso l'allineamento si spezza e attraversa la griglia, ed è
-esattamente il caso che un decoder costretto a leggere in ordine non poteva
-gestire.
+Il fatto che le due linee centrali di {numref}`fig-allineamento-traduzione` si
+incrocino è la notizia, non un difetto: in inglese l'aggettivo precede il nome,
+in italiano lo segue, e il modello va a prendersi le parole fuori ordine, terza
+prima e seconda dopo. È la cosa che con il vettore unico non si poteva fare, e
+non perché fosse difficile: perché nel vettore unico l'informazione su dove
+stava ciascuna parola era già stata schiacciata via.
 
 ```{figure} ../figures/seq2seq-attenzione.svg
 :name: fig-seq2seq-attenzione
@@ -286,10 +317,22 @@ spessore di ogni freccia è il peso di attenzione, massimo su «gatto».
 ```
 
 Come mostra {numref}`fig-seq2seq-attenzione`, mentre produce *«cat»* il
-decoder concentra il peso su «gatto», tiene d'occhio «nero» e quasi ignora il
-resto. E a ogni passo la mappa cambia: per *«wall»* il peso si sposterà su
-«muro». Il collo di bottiglia sparisce, perché nessun vettore fisso deve più
-contenere l'intera frase.
+decoder dà il voto più alto a «gatto» (0,62), tiene d'occhio «nero» (0,20) e
+quasi ignora il resto. E a ogni passo la mappa cambia: per *«wall»* il voto
+grosso si sposterà su «muro».
+
+(Nella figura quei voti sono chiamati **pesi**, ed è il termine che si usa
+ovunque, ma attenzione a non confonderli con i pesi della sezione precedente,
+quelli che una rete impara e si tiene: questi cambiano a ogni parola prodotta e
+non sono roba che il modello possiede, sono roba che il modello *decide sul
+momento*.)
+
+Con questo, il collo di bottiglia del vettore unico sparisce: nessuna fila di
+numeri di lunghezza fissa deve più contenere l'intera frase. Resta invece
+intatto l'altro collo di bottiglia, quello della sezione precedente, cioè il
+fatto che tutto questo si legge e si scrive in fila, un passo dopo l'altro. Due
+strozzature diverse: l'attenzione ne toglie una, e sarà il capitolo dopo a
+togliere l'altra.
 
 `````{tab} Elementare
 
@@ -335,35 +378,102 @@ allineamento tra le due frasi: appresa senza alcuna supervisione esplicita.
 
 `````
 
-Vale la pena dirlo in modo esplicito: questa è **la stessa attenzione** che
-ritroveremo nel capitolo sui Transformer. Cambierà solo il modo di calcolare i
-punteggi: non più una piccola rete addestrata apposta, ma un conto diretto e
-molto più economico fra le due file di numeri da confrontare (la *scaled
-dot-product attention*, che vedremo là). E cadrà l'impalcatura
-ricorrente attorno. L'idea di fondo, «una media pesata di tutti gli stati, con
-pesi softmax appresi», nasce qui, come rattoppo per la traduzione.
+Vale la pena dirlo in modo esplicito, perché è il ponte verso il capitolo
+successivo: questa è **la stessa attenzione** dei Transformer. E siccome è
+l'idea che di là diventa tutto, conviene guardarla una volta con i numeri sotto
+gli occhi.
+
+Immaginiamo che i riassunti siano corti, tre numeri l'uno, e che ce ne siano
+tre soltanto:
+
+| riassunto | numeri | voto |
+|---|---|---|
+| dopo «il» | `2, 0, 1` | 0,10 |
+| dopo «il gatto» | `0, 4, 2` | 0,70 |
+| dopo «il gatto nero» | `1, 1, 0` | 0,20 |
+
+I voti li ha decisi il decoder, guardando che cosa gli serve *adesso*, e sono
+tre numeri positivi che sommano a uno: si spartiscono un totale fisso, proprio
+come si spartisce l'attenzione di una persona. Se ne do di più a uno, ne resta
+di meno per gli altri, esattamente come quando in classe ascolto il professore
+e allora non sento chi mi parla da dietro.
+
+Adesso si mescola. Per la prima casella: $0{,}10 \times 2 + 0{,}70 \times 0 +
+0{,}20 \times 1 = 0{,}4$. Per la seconda: $0{,}10 \times 0 + 0{,}70 \times 4 +
+0{,}20 \times 1 = 3{,}0$. Per la terza: $0{,}10 \times 1 + 0{,}70 \times 2 +
+0{,}20 \times 0 = 1{,}5$. Il risultato è una fila di numeri nuova, `0,4 · 3,0 ·
+1,5`, e si vede a occhio che somiglia molto al secondo riassunto e poco agli
+altri: è il riassunto che il decoder aveva votato di più. Questa operazione,
+mescolare più file di numeri dando a ciascuna un peso, si chiama **media
+pesata**, ed è tutta l'attenzione. La fila che ne esce va dritta al decoder, che
+la usa per scrivere la parola successiva: al posto del solito pacchetto sempre
+uguale, adesso ne riceve uno confezionato apposta per il passo che sta facendo.
+
+Cambieranno due cose, nel capitolo dopo. La prima è **come si decidono i
+voti**. Qui li calcola un pezzo di rete apposito, addestrato insieme al resto:
+gli si danno il riassunto e lo stato del decoder, e sputa fuori un numero. Là
+il conto sarà diretto e molto più economico, fatto sulle due file di numeri
+senza nessun pezzo in mezzo. La seconda è che cadrà tutta l'impalcatura
+ricorrente attorno: resterà solo l'attenzione, che qui nasce come rattoppo per
+la traduzione e là diventa l'architettura intera.
 
 ## Generare la frase: greedy e beam search
 
-Resta un problema che finora abbiamo dato per scontato: a ogni passo il
-decoder produce una *distribuzione* di probabilità sul vocabolario. Come si
-sceglie la parola? L'istinto dice: prendi la più probabile e vai avanti
-(strategia **greedy**, «ingorda»). Ma la parola migliore *adesso* non porta
-sempre alla frase migliore *alla fine*.
+Resta un problema che finora abbiamo dato per scontato. Il decoder, a ogni
+passo, non sceglie una parola: assegna una percentuale a **tutte** le parole
+che conosce, decine di migliaia di numeri che sommano a uno. Come si passa da
+quell'elenco a una parola sola? L'istinto dice: prendi la più alta e vai
+avanti. Si chiama strategia **greedy**, «ingorda», ed è quello che fa chiunque
+abbia fretta. Ma la parola migliore *adesso* non porta sempre alla frase
+migliore *alla fine*.
+
+(E chi gli dice di smettere? Fra le voci del suo elenco ce n'è una che non è
+una parola: è il segnale di fine frase, lo stesso `</s>` incontrato con gli
+n-gram. Quando il decoder scommette su quello, ha deciso che la traduzione è
+finita, e ci si ferma. È una scommessa come le altre, e come le altre può
+sbagliare: un modello che lo tira fuori troppo presto tronca la frase, uno che
+non lo tira fuori mai continua a scrivere finché qualcuno non lo interrompe.)
 
 `````{tab} Elementare
 
-Facciamo i conti su un esempio piccolo. Il decoder deve iniziare la
-traduzione e propone: «A» con probabilità 0,50, «The» con 0,40. La strategia
-greedy sceglie «A» e non torna più indietro. Ma guardiamo un passo più in là:
-dopo «A», la parola «black» ha probabilità 0,30, quindi la coppia «A black»
-vale 0,50 × 0,30 = 0,15; dopo «The», invece, «black» ha probabilità 0,60, e
-«The black» vale 0,40 × 0,60 = 0,24. La strada che partiva peggio è arrivata
-meglio! La **beam search** («ricerca a fascio») rimedia tenendo aperte le $k$
-strade più promettenti invece di una sola: con $k=2$ conserva sia «A» sia
-«The», scopre al passo dopo che «The black» è in testa, e prosegue fino a
-«The black cat…». È come sciogliere un dubbio al bivio non scegliendo subito,
-ma facendo qualche passo lungo entrambe le strade prima di decidere.
+Facciamo i conti su un esempio piccolo, in cui per comodità facciamo finta che
+le parole in gioco siano pochissime. Il decoder deve iniziare la traduzione e
+propone: «A» con probabilità 0,50, «The» con 0,40. La strategia greedy sceglie
+«A» e non torna più indietro.
+
+Ma guardiamo un passo più in là. Il punteggio di una frase intera è il
+**prodotto** delle probabilità incontrate lungo la strada, per la stessa
+ragione per cui si moltiplicavano i voti del filtro antispam: sono cose che
+devono capitare tutte insieme, e due cose che devono capitare insieme si
+moltiplicano. Allora: dopo «A», la parola «black» ha probabilità 0,30, quindi
+la coppia «A black» vale 0,50 × 0,30 = 0,15; dopo «The», invece, «black» ha
+probabilità 0,60, e «The black» vale 0,40 × 0,60 = 0,24. La strada che partiva
+peggio è arrivata
+meglio! La **beam search** («ricerca a fascio») rimedia tenendo aperte le
+poche strade più promettenti invece di una sola. Quante, lo si decide prima, e
+quel numero lo si chiama $k$: con $k=2$ si conservano sia «A» sia «The», al
+passo dopo si scopre che «The black» è in testa, e si prosegue fino a «The
+black cat…». È come sciogliere un dubbio al bivio non scegliendo subito, ma
+facendo qualche passo lungo entrambe le strade prima di decidere. Le strade
+scartate lungo il cammino si dicono **potate**, come i rami di un albero, ed è
+il motivo per cui questi disegni si fanno a forma di albero: dal tronco
+partono tutte le continuazioni possibili, e a ogni passo se ne tagliano quasi
+tutte.
+
+C'è però un difetto da correggere, e si vede proprio dai numeri dell'esempio.
+Le probabilità sono numeri minori di uno, e moltiplicandone due si ottiene
+sempre qualcosa di più piccolo di ciascuna: 0,50 diventa 0,15 al secondo passo
+e 0,12 al terzo. Quindi ogni parola in più fa scendere il punteggio, sempre,
+anche quando la frase sta andando benissimo. Lasciata a sé, la ricerca
+preferirebbe sistematicamente le traduzioni corte, e finirebbe per troncare le
+frasi a metà.
+
+Si rimedia mettendo tutte le strade sullo stesso metro prima di confrontarle:
+invece del punteggio complessivo si guarda **quanto vale in media una singola
+parola** di quella strada. Una frase di dieci parole e una di tre diventano
+così paragonabili, perché di ciascuna si guarda la qualità per parola e non il
+totale. La correzione si chiama **penalità di lunghezza**, e serve a togliere
+alle frasi brevi un vantaggio che non si sono guadagnate.
 
 `````
 
@@ -402,26 +512,28 @@ partenza, ed è un dettaglio che vale la pena tenere a mente prima di citare
 :alt: "Albero di beam search con larghezza due su tre passi: al primo passo restano nel fascio «A» (0,50) e «The» (0,40); al secondo «The black» (0,24) supera «A black» (0,15); al terzo l'ipotesi migliore è «The black cat» (0,19). I rami scartati sono in grigio tratteggiato."
 :width: 100%
 
-Beam search con $k=2$ sull'esempio del testo: i numeri sono le probabilità
-cumulate. La greedy si sarebbe fermata su «A» al primo passo; il fascio
-recupera «The black cat».
+Beam search con $k=2$ sull'esempio del testo. Ogni numero è il punteggio della
+strada intera fino a lì, cioè il prodotto di tutte le probabilità incontrate
+lungo il cammino. La greedy si sarebbe fermata su «A» al primo passo; il
+fascio recupera «The black cat».
 ```
 
-In {numref}`fig-beam-search` i rami in terracotta sono le ipotesi nel fascio,
-quelli grigi le potature: il ramo spesso è la traduzione che la strategia
-greedy non avrebbe mai trovato.
+In {numref}`fig-beam-search` i rami in terracotta sono le due strade tenute
+aperte, quelli grigi tratteggiati i rami potati: il ramo spesso è la traduzione
+che la strategia ingorda non avrebbe mai trovato.
 
 ## 2016: la traduzione neurale entra in produzione
 
 ```{figure} ../figures/traduzione-automatica-da-regole-a-llm.svg
 :name: fig-paradigmi-traduzione
-:alt: "Linea del tempo con i quattro paradigmi della traduzione automatica: i sistemi a regole scritte da linguisti, i metodi statistici basati su corpora paralleli, la traduzione neurale con encoder-decoder e attenzione, e infine i modelli linguistici generalisti che traducono senza essere stati costruiti per farlo."
+:alt: "Linea del tempo con i quattro paradigmi della traduzione automatica: i sistemi a regole scritte da linguisti, i metodi statistici che imparano da testi già tradotti da esseri umani, la traduzione neurale con encoder-decoder e attenzione, e infine i modelli linguistici generalisti che traducono senza essere stati costruiti per farlo."
 :width: 100%
 
 Quattro modi di tradurre, in settant'anni. A ogni passaggio si sposta chi
-fornisce la conoscenza della lingua: prima il linguista, poi il corpus, poi il
-modello addestrato apposta, infine un modello che non era stato pensato per
-questo.
+fornisce la conoscenza della lingua: prima il linguista che scrive le regole,
+poi una montagna di testi già tradotti da esseri umani (un romanzo e la sua
+traduzione, gli atti di un parlamento in due lingue), poi un modello addestrato
+apposta, infine un modello che non era stato pensato per questo.
 ```
 
 L'ultimo passaggio di {numref}`fig-paradigmi-traduzione` è il più singolare, e
@@ -432,13 +544,28 @@ quella che ha portato la traduzione neurale in produzione.
 
 Questa storia ha una data di consegna. Nel settembre 2016 Google annuncia GNMT
 (*Google Neural Machine Translation*) {cite}`wu2016google`: un encoder–decoder
-di LSTM a 8 strati con attenzione (esattamente la ricetta di questa sezione,
-in grande) che sostituisce in produzione il sistema statistico a frasi usato
-per un decennio. Si parte dalla coppia cinese→inglese, circa 18 milioni di
-traduzioni al giorno; nelle valutazioni umane fianco a fianco gli errori di
-traduzione calano in media del 60% sulle principali coppie di lingue. Per la
-prima volta le reti ricorrenti che abbiamo studiato traducono, ogni giorno,
-per centinaia di milioni di persone.
+con l'attenzione, esattamente la ricetta di questa sezione, ma in grande: otto
+**strati** di celle impilate per l'encoder e altrettanti per il decoder. L'idea
+dell'impilamento è che il primo strato legge le parole, il secondo legge quello
+che ha capito il primo, e così via, ogni piano un po' più astratto del
+precedente.
+
+Questa rete prende il posto del sistema che Google usava davvero, quello dietro
+al bottone «traduci» che chiunque poteva premere: un sistema statistico che
+lavorava a pezzi di frase, imparando da montagne di testi già tradotti quali
+gruppi di parole si scambiano con quali. Aveva retto per un decennio. Si parte
+dalla coppia cinese-inglese, circa 18 milioni di traduzioni al giorno.
+
+E il miglioramento non è misurato con un punteggio calcolato da un programma,
+ma da esseri umani. Google mette delle persone bilingui davanti alla stessa
+frase tradotta dal vecchio sistema e dal nuovo, senza dire quale sia quale, e
+chiede di dare un voto a ciascuna; poi confronta i voti. Nel mucchio ci mette
+anche una traduzione fatta da un traduttore umano, che prende il voto più alto
+di tutti ed è il metro di riferimento. Il risultato: della distanza che
+separava il vecchio sistema dal traduttore umano, il nuovo ne recupera in media
+il 60 per cento sulle principali coppie di lingue. Per la prima volta le reti
+ricorrenti che abbiamo studiato traducono, ogni giorno, per centinaia di
+milioni di persone.
 
 Questa storia ha anche un seguito che il capitolo sui Transformer riprende per
 intero. Pochi mesi dopo, invece di un modello per coppia di lingue, lo stesso

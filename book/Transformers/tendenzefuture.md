@@ -85,14 +85,17 @@ leggere.
 
 `````{tab} Superiore
 
-Il **Universal Transformer** {cite}`dehghani2019universal` sostituisce gli $N$
+L'**Universal Transformer** {cite}`dehghani2019universal` (l'articolo è del
+luglio 2018, presentato a ICLR l'anno successivo, che è la data della voce in
+bibliografia) sostituisce gli $N$
 strati distinti con **un solo blocco applicato ricorrentemente in profondità**,
 cioè con i pesi legati fra le iterazioni. La motivazione dichiarata è
 recuperare il *bias induttivo* ricorrente che il Transformer aveva buttato via
 insieme alla ricorrenza temporale, e che serve sui compiti a struttura
 gerarchica e sulla generalizzazione a lunghezze non viste in addestramento.
 
-Sopra ci mettono l'**Adaptive Computation Time** di Graves: a ogni iterazione,
+Sopra ci mettono l'**Adaptive Computation Time** di Graves
+{cite}`graves2016adaptive`: a ogni iterazione,
 per **ogni posizione**, una piccola unità emette una probabilità di
 arresto; le posizioni che si fermano vengono copiate invariate mentre le altre
 continuano a essere aggiornate, e una penalità sul numero di passi (il *ponder
@@ -109,7 +112,8 @@ dall'architettura, mentre una ricorrenza in profondità lo fa dipendere dai dati
 
 Sarebbe però scorretto presentare la Turing-incompletezza del Transformer
 standard come un fatto assodato, perché la letteratura contiene anche il
-risultato opposto: Pérez, Barceló e Marinković dimostrano che il Transformer
+risultato opposto: Pérez, Barceló e Marinković {cite}`perez2021attention`
+dimostrano che il Transformer
 encoder-decoder è Turing-completo, con precisione aritmetica arbitraria e un
 numero **illimitato di passi di decodifica**. E quell'ultima ipotesi è
 esattamente la generazione autoregressiva, cioè la seconda strada di cui parla

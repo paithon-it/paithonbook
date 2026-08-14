@@ -13,7 +13,7 @@
     .pt   { fill:#2D5A5C; }
     .pc1  { stroke:#B5532C; stroke-width:3.4; stroke-linecap:round; }
     .pc2  { stroke:#C9A961; stroke-width:3.2; stroke-linecap:round; }
-    .proj { stroke:#5E5852; stroke-width:1.3; stroke-dasharray:4 4; }
+    .proj { stroke:#5E5852; stroke-width:1.3; stroke-dasharray:2 2; }
     .foot { fill:#B5532C; }
     .lpc1 { font-family:Inter, system-ui, sans-serif; font-size:14px; font-weight:600; fill:#B5532C; }
     .lpc2 { font-family:Inter, system-ui, sans-serif; font-size:13px; font-weight:600; fill:#5E5852; }
@@ -30,13 +30,13 @@
   <line class="pc2" x1="212" y1="142" x2="268" y2="238"/>
 
   <!-- proiezioni perpendicolari di tre punti sull'asse PC1 -->
-  <line class="proj" x1="156" y1="225" x2="162" y2="235"/>
-  <line class="proj" x1="219" y1="214" x2="214" y2="205"/>
-  <line class="proj" x1="261" y1="166" x2="266" y2="175"/>
+  <line class="proj" x1="156" y1="225" x2="161.8" y2="235.0"/>
+  <line class="proj" x1="219" y1="214" x2="213.8" y2="205.0"/>
+  <line class="proj" x1="261" y1="166" x2="266.2" y2="175.0"/>
   <!-- piedi delle proiezioni (sulla retta PC1) -->
-  <circle class="foot" cx="162" cy="235" r="3"/>
-  <circle class="foot" cx="214" cy="205" r="3"/>
-  <circle class="foot" cx="266" cy="175" r="3"/>
+  <circle class="foot" cx="161.8" cy="235.0" r="3"/>
+  <circle class="foot" cx="213.8" cy="205.0" r="3"/>
+  <circle class="foot" cx="266.2" cy="175.0" r="3"/>
 
   <!-- nuvola di punti (allungata lungo PC1) -->
   <circle class="pt" cx="148" cy="252" r="4.5"/>

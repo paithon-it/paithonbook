@@ -249,21 +249,48 @@ catena** vista nel capitolo di analisi e ottimizzazione:
 
 $$
 \frac{\partial \mathcal{L}}{\partial \theta}
-= \frac{\partial \mathcal{L}}{\partial z}\,
-  \frac{\partial z}{\partial \theta},
+= \sum_{j=1}^{m} \frac{\partial \mathcal{L}}{\partial z_j}\,
+  \frac{\partial z_j}{\partial \theta},
+\qquad \text{cioè} \qquad
+\nabla_{\theta} \mathcal{L}
+= \left( \frac{\partial \mathbf{z}}{\partial \theta} \right)^{\!\top}
+  \nabla_{\mathbf{z}} \mathcal{L},
 $$
 
-dove $z$ è una quantità intermedia. Composta lungo tutto il grafo, questa
-regola è precisamente l'algoritmo di **backpropagation** del capitolo
-precedente: un'unica passata all'indietro calcola il gradiente rispetto a
-*tutti* i parametri in tempo proporzionale a quello della passata in avanti.
+dove $\mathbf{z}$ raccoglie le $m$ quantità intermedie che dipendono da
+$\theta$, $\partial \mathbf{z} / \partial \theta$ è la matrice delle loro
+derivate (la **Jacobiana**) e $\nabla_{\mathbf{z}} \mathcal{L}$ è il gradiente
+già calcolato a valle. Composta lungo tutto il grafo, questa regola è
+precisamente l'algoritmo di **backpropagation** del capitolo precedente.
 
-Tre dettagli operativi che incontreremo di continuo. I gradienti si
+Nella riga qui sopra ci sono due cose che una catena a un solo cammino non
+direbbe, e sono esattamente le due che contano nella pratica. La prima è la
+**trasposta**: la modalità reverse non costruisce mai la Jacobiana, calcola
+direttamente il prodotto fra la sua trasposta e il vettore che arriva da valle
+(un *vector-Jacobian product*, uno per nodo), ed è da lì che viene il costo di
+una sola passata, quale che sia il numero di parametri. Materializzare la
+Jacobiana costerebbe una passata per ciascuna uscita. La seconda è la
+**sommatoria**: un parametro che alimenta più rami riceve un contributo per
+ramo, e i contributi si sommano. È la ragione strutturale per cui `.grad` è un
+`+=` e non un `=`, e il punto in cui il grafo smette di essere una catena.
+
+Quattro dettagli operativi che incontreremo di continuo. I gradienti si
 **accumulano**: una `backward()` successiva, su un nuovo forward, somma in
-`x.grad` invece di sovrascrivere (ripetere la *stessa* chiamata sullo stesso
-grafo, invece, solleva un errore, salvo `retain_graph=True`), per questo il
-training loop azzera i gradienti a ogni passo. Il
-blocco `with torch.no_grad():` sospende la registrazione; indispensabile in
+`x.grad` invece di sovrascrivere, per questo il training loop azzera i
+gradienti a ogni passo. Ripetere la *stessa* chiamata sullo stesso grafo,
+invece, solleva un errore, e la ragione dice che cosa `backward()` faccia
+davvero: percorrendolo **libera** i valori intermedi salvati durante l'andata,
+quelli della {numref}`fig-autograd-due-passate`. Il grafo resta, gli appunti
+per percorrerlo no. Chiederli in prestito è `retain_graph=True`, e serve tutte
+le volte che da una sola passata in avanti partono due passate all'indietro
+(due loss che pescano da un tronco comune, il generatore di una GAN che
+alimenta due obiettivi); costa memoria, quindi non si mette per abitudine.
+Secondo: il gradiente si deposita solo sulle **foglie** del grafo, i tensori
+creati da noi con `requires_grad=True`, e i parametri di un modello lo sono
+tutti. Su un tensore intermedio, cioè prodotto da un'operazione, `.grad`
+resta `None` con tanto di avviso: per leggerlo a metà strada si chiama
+`y.retain_grad()` prima del backward. Terzo: il blocco
+`with torch.no_grad():` sospende la registrazione, indispensabile in
 valutazione, quando i gradienti non servono e il grafo sarebbe solo memoria
 sprecata. Infine `t.detach()` restituisce una vista del tensore staccata dal
 grafo, e le operazioni in-place sui tensori tracciati vanno evitate perché

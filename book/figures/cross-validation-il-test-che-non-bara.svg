@@ -1,11 +1,11 @@
-<svg viewBox="0 0 600 340" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Schema della 5-fold cross-validation: il fold di test ruota a ogni iterazione">
+<svg viewBox="0 0 600 340" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Schema della 5-fold cross-validation: il blocco di validazione ruota a ogni giro">
   <rect x="0" y="0" width="600" height="340" fill="#F8F5EE"/>
-  <text x="300" y="30" font-family="Inter, system-ui, sans-serif" font-size="15" fill="#1A1A1A" text-anchor="middle">5-fold cross-validation: il test ruota</text>
+  <text x="300" y="30" font-family="Inter, system-ui, sans-serif" font-size="15" fill="#1A1A1A" text-anchor="middle">5-fold cross-validation: il blocco di prova ruota</text>
   <!-- legend -->
   <rect x="150" y="46" width="18" height="14" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="1.5"/>
   <text x="174" y="58" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A">training</text>
   <rect x="250" y="46" width="18" height="14" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5"/>
-  <text x="274" y="58" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A">test</text>
+  <text x="274" y="58" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A">validazione</text>
   <!-- rows: each iteration, 5 folds of width 76 starting x=120 -->
   <!-- iter 1 -->
   <text x="105" y="102" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#5E5852" text-anchor="end">giro 1</text>

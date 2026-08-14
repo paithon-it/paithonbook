@@ -98,7 +98,7 @@ dei due capitoli.
 
 ```{figure} ../figures/mamba-2023.svg
 :name: fig-attenzione-vs-ssm
-:alt: "Due schemi affiancati sulla stessa sequenza di token. A sinistra, sotto il titolo Attention, l'attenzione piena: ogni token è collegato a tutti gli altri, e il numero di connessioni cresce col quadrato della lunghezza (costo proporzionale a n²). A destra, sotto il titolo State space selettivo, i token sono collegati in catena a uno stato che si aggiorna passando da uno al successivo; su ogni passaggio un piccolo rombo ocra rappresenta il filtro che decide, token per token, quanto di ciò che arriva entra nello stato (costo proporzionale a n)."
+:alt: "Due schemi affiancati sulla stessa sequenza di token. A sinistra, sotto il titolo Attention, l'attenzione piena: archi collegano ogni token a tutti gli altri, e il numero di connessioni cresce col quadrato della lunghezza (costo proporzionale a n²). A destra, sotto il titolo State space selettivo, una fila di quadrati collegati da frecce è lo stato, che si aggiorna passando da un token al successivo; sul collegamento verticale fra ciascun token e lo stato sta un piccolo rombo ocra, il filtro che decide, token per token, quanto di ciò che arriva entra nello stato (costo proporzionale a n)."
 :width: 100%
 
 Due modi di portarsi dietro il passato. L'attenzione lo tiene tutto e lo

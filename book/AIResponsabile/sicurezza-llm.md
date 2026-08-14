@@ -12,7 +12,7 @@ perché le parole delle persone e i comandi delle macchine viaggiavano sullo
 stesso paio di fili. Non c'era nessun errore di programmazione da correggere.
 C'era un canale solo.
 
-Il problema la rete telefonica lo ha risolto nel decennio successivo, nell'unico
+Il problema la rete telefonica lo ha risolto nel giro di un decennio, nell'unico
 modo davvero strutturale che esista: mandando i comandi delle macchine (in gergo
 la **segnalazione**: non «segnalare un problema», ma i messaggi che gli
 apparati si scambiano per far funzionare la telefonata) su un filo **separato**
@@ -685,11 +685,11 @@ può rendere bravo; il confine bisogna costruirlo altrove.
   È il guaio di chi detta una lettera al telefono, ed è il guaio del fischietto
   nella cornetta: parole che diventano ordini perché passano di lì dove passano
   gli ordini.
-- **Jailbreak** e **prompt injection** hanno vittime diverse: nel primo è
-  l'utente a insistere per farsi dare quello che il fornitore vieta; nella
-  seconda l'ordine lo ha lasciato un estraneo dentro un documento, la vittima è
-  l'utente in buona fede, e chi attacca non ha bisogno di parlare con il
-  sistema.
+- **Jailbreak** («evasione dal carcere») e **prompt injection** («iniezione nel
+  prompt») hanno vittime diverse: nel primo è l'utente a insistere per farsi
+  dare quello che il fornitore vieta; nella seconda l'ordine lo ha lasciato un
+  estraneo dentro un documento, la vittima è l'utente in buona fede, e chi
+  attacca non ha bisogno di parlare con il sistema.
 - Addestrare un modello a rifiutare è assumere un ottimo portiere, non
   installare una porta blindata: la sua fermezza dipende da come gli si
   presentano le cose, e vacilla quando due doveri tirano in direzioni opposte o
@@ -701,8 +701,6 @@ può rendere bravo; il confine bisogna costruirlo altrove.
   lettura di roba scritta da estranei e un modo per mandare qualcosa fuori.
   Se ci sono tutti e tre, la fuga di dati non deve rompere niente, deve solo
   farsi eseguire.
-- **Jailbreak** vuol dire «evasione dal carcere», **prompt injection**
-  «iniezione nel prompt»: la prima la fa l'utente, la seconda un estraneo.
 - Le difese, in ordine di quanto reggono: le raccomandazioni scritte nel prompt
   (utili, ma non sono un confine), un secondo controllo che ispeziona quello che
   entra e quello che esce (al prezzo di attese in più e di blocchi ingiusti), i

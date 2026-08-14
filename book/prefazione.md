@@ -1,10 +1,9 @@
 # Prefazione
 
 Questo libro è stato scritto una prima volta nel 2019, per uscire su carta.
-Aveva un indice di quattordici capitoli, una copertina provvisoria e questa
-prefazione, che in quell'indice era la voce numero uno. Su carta non è mai
-uscito, e il manoscritto è rimasto in un cassetto: la prima forma in cui
-arriva a qualcuno è questa, online e gratuita.
+Aveva un indice di quattordici capitoli. Su carta non è mai uscito, e il
+manoscritto è rimasto in un cassetto: la prima forma in cui arriva a qualcuno
+è questa, online e gratuita.
 
 Con il senno di poi è stata una fortuna. Quell'indice si fermava al deep
 reinforcement learning e prometteva codice in TensorFlow e Keras; la parola

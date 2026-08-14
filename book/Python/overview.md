@@ -18,9 +18,12 @@ senso accademico. Ha vinto per altre ragioni.
 
 `````{tab} Elementare
 
-Python si legge quasi come inglese scarno. Una riga come
-`if voto >= 18: print("promosso")` si indovina prima ancora di sapere che cosa
-sia un programma: è scritta come la diresti a voce. Le regole di scrittura di
+Un **programma** è un elenco di istruzioni scritte in un file di testo, che il
+computer esegue una dopo l'altra dall'alto in basso. Nient'altro: niente di
+misterioso, un foglio di ordini in fila. E Python si legge quasi come inglese
+scarno. Una riga come `if voto >= 18: print("promosso")` si indovina prima
+ancora di aver scritto il primo programma: è come la diresti a voce, «se il
+voto è almeno diciotto, scrivi *promosso*». Le regole di scrittura di
 un linguaggio (dove vanno i due punti, gli a capo, le parentesi) si chiamano la
 sua **sintassi**, e quella di Python è breve e leggera: sta in un pomeriggio, e
 poi il tempo lo passi a pensare a *cosa* dire, non a *come* scriverlo. Per chi
@@ -74,7 +77,18 @@ non per il computer, che lo salta. In questo libro i commenti dicono che cosa
 fa la riga accanto, e la freccia `->` dentro un commento significa «e viene
 fuori questo».
 
-Eseguendola compaiono i diciannove aforismi che Tim Peters codificò nel 1999.
+Su quel «viene fuori» c'è una cosa da chiarire subito, perché altrimenti
+confonde per tutto il capitolo. Nell'interprete, se scrivi una riga che *vale*
+qualcosa (un conto, il nome di una variabile) e premi Invio, lui te ne mostra
+il risultato di sua iniziativa, senza che tu glielo abbia chiesto: è fatto per
+conversare. In un programma salvato in un file, invece, quella stessa riga
+calcola e non dice niente, e per vedere il risultato bisogna chiederlo con
+`print`. Il codice di questo libro è scritto come lo si digiterebbe
+nell'interprete, ed è per questo che nei prossimi esempi troverai spesso righe
+che mostrano un valore senza `print` accanto.
+
+Eseguendo `import this` compaiono i diciannove aforismi che Tim Peters
+codificò nel 1999.
 Tra questi: *"Explicit is better than implicit"* («meglio esplicito che
 implicito»), *"Simple is better than complex"* («meglio semplice che
 complicato»), *"Readability counts"* («la leggibilità conta»). Non è poesia
@@ -96,18 +110,23 @@ una cosa e la fa bene. Non serve ancora capire ogni termine di questo elenco:
   l'algebra lineare veloce; quasi tutto il resto poggia su di lui.
 - **Pandas**: dati tabellari. Il `DataFrame` è un foglio di calcolo
   programmabile: caricare, pulire e trasformare i dati prima di darli a un
-  modello.
+  **modello**, che è il nome che in questo campo si dà a un programma che
+  invece di seguire regole scritte da noi le ricava dagli esempi che gli
+  diamo.
 - **Matplotlib**: visualizzazione. I grafici con cui esplori i dati e racconti
   i risultati.
-- **scikit-learn**, machine learning *classico*: regressione, alberi, SVM,
-  clustering, metriche, tutto dietro le stesse due parole d'ordine, `fit`
-  (impara dai dati) e `predict` (prevedi): un modo di chiedere le cose che non
-  cambia da un modello all'altro, ed è quel che si intende con **API uniforme**
-  (l'API di una libreria è l'insieme dei comandi con cui le si parla).
+- **scikit-learn**: la cassetta degli attrezzi del machine learning *classico*,
+  quello che viene prima delle reti neurali. Dentro ci sono decine di modelli
+  diversi, e li si comanda tutti con le stesse due parole: `fit` (impara da
+  questi dati) e `predict` (adesso prevedi). Imparato a usarne uno, li sai
+  usare tutti, ed è quel che si intende con **API uniforme** (l'API di una
+  libreria è l'insieme dei comandi con cui le si parla).
 - **PyTorch** (Facebook AI Research, 2016; oggi Meta), deep learning: reti
   neurali, differenziazione automatica, addestramento su **GPU** (la scheda
-  grafica, che sa fare moltissimi conti tutti insieme). È la libreria attorno
-  a cui è costruito il codice di questo libro; il suo concorrente storico è
+  grafica, che sa fare moltissimi conti tutti insieme). Qui la torre cambia
+  natura: PyTorch non è costruito su NumPy, ha un proprio motore di calcolo in
+  C++, e con NumPy si scambia i dati senza copiarli. È la libreria attorno a
+  cui è costruito il codice di questo libro; il suo concorrente storico è
   **TensorFlow** (Google, 2015).
 
 ```{figure} ../figures/stack-scientifico-python.svg
@@ -115,9 +134,11 @@ una cosa e la fa bene. Non serve ancora capire ogni termine di questo elenco:
 :alt: "Diagramma a strati: alla base Python, sopra NumPy, poi Pandas Matplotlib e scikit-learn, in cima PyTorch e TensorFlow."
 :width: 85%
 
-La torre delle librerie scientifiche di Python: ogni strato poggia su quello
-sotto. NumPy è la base numerica su cui sono costruite le librerie di analisi e
-di deep learning.
+La torre delle librerie scientifiche di Python. Pandas, Matplotlib e
+scikit-learn poggiano davvero su NumPy: per funzionare hanno bisogno che sia
+installato, e lo dichiarano. PyTorch e TensorFlow stanno in cima in un altro
+senso: i conti se li fanno per conto proprio, con un motore tutto loro, e con
+NumPy si limitano a scambiarsi i dati.
 ```
 
 `````{tab} Elementare
@@ -198,24 +219,35 @@ browser e un account Google.
 scrivono comandi al computer invece di cliccare: si chiama *Terminale* su macOS
 e Linux, *Prompt dei comandi* (o *PowerShell*) su Windows. Su Linux e macOS
 Python c'è già; su Windows si scarica da `python.org`, ricordando di spuntare
-«Add Python to PATH» durante l'installazione. Poi, quattro gesti:
+«Add Python to PATH» durante l'installazione: è la casella che dice al
+terminale dove Python è stato messo, e senza di essa il comando qui sotto
+risponderà che non lo trova. Poi, quattro gesti:
 
 ```text
-python3 --version        # c'è? (su Windows il comando è "python")
-python3                  # apre l'interprete: compare il prompt >>>
+python3 --version        # c'è? risponde con il numero, per esempio "Python 3.12.3"
+python3                  # apre l'interprete: compaiono tre maggiori, >>>
 >>> import this          # si scrive un'istruzione, si preme Invio
 >>> exit()               # si esce
 ```
 
+Quei tre maggiori si chiamano **prompt**: sono l'invito a scrivere, il modo in
+cui l'interprete dice «tocca a te». Finché li vedi, sei dentro l'interprete e
+non nel terminale.
+
 Le istruzioni scritte all'interprete si perdono quando lo si chiude. Per tenere
 un programma lo si scrive in un file di testo con estensione `.py` (per esempio
 `primo.py`, con dentro `print("ciao")`) e lo si esegue con `python3 primo.py`.
-Se un programma non finisce più (capita: basta un ciclo scritto male) si ferma
+Il file lo si può scrivere con qualunque editor di testo, ma conviene
+usarne uno che conosca Python e segnali gli errori mentre scrivi: i due più
+diffusi sono **Visual Studio Code** e **PyCharm**, gratuiti entrambi. Se un
+programma non finisce più (capita: basta un ciclo scritto male) si ferma
 premendo `Ctrl+C`.
 
-**Le librerie** non arrivano con Python: si installano una volta, con `pip`, e
-conviene farlo dentro un **ambiente virtuale**, cioè una cartella-scatola che
-tiene le librerie di *questo* progetto separate da quelle di tutti gli altri:
+**Le librerie** non arrivano con Python: si installano una volta con **`pip`**,
+il programma che va a prenderle in rete e le mette al posto giusto (il nome è
+già installato insieme a Python, si usa e basta). E conviene installarle dentro
+un **ambiente virtuale**, cioè una cartella-scatola che tiene le librerie di
+*questo* progetto separate da quelle di tutti gli altri:
 
 ```text
 python3 -m venv .venv           # crea la scatola dentro la cartella del progetto
@@ -223,9 +255,17 @@ source .venv/bin/activate       # la apre (su Windows: .venv\Scripts\activate)
 pip install numpy pandas matplotlib scikit-learn
 ```
 
+Due parole sui comandi. Il `-m` vuol dire «esegui il modulo che si chiama
+così», ed è il modo di lanciare uno strumento che viaggia dentro Python invece
+che un file scritto da te; `venv` è quello strumento. `source` esegue le
+istruzioni contenute in un file senza aprire una finestra nuova, e serve
+proprio perché l'apertura della scatola deve valere per il terminale che hai
+davanti. Che abbia funzionato lo vedi subito: all'inizio della riga del
+terminale compare `(.venv)`, e resta lì finché la scatola è aperta.
+
 ```{figure} ../figures/preparare-ambiente-python.svg
 :name: fig-ambiente-python
-:alt: "Anatomia di un ambiente di lavoro: il sistema operativo con la sua installazione di Python; dentro, la cartella del progetto, che contiene un ambiente virtuale isolato con le proprie librerie e la propria versione degli strumenti, separato dal Python di sistema."
+:alt: "Anatomia di un ambiente di lavoro: in basso il sistema operativo, con l'installazione di Python valida per tutta la macchina; sopra, la cartella del progetto, che contiene i file di codice e un ambiente virtuale isolato con il proprio interprete e le proprie librerie; a lato l'editor, collegato da una freccia all'interprete dell'ambiente virtuale."
 :width: 92%
 
 L'ambiente virtuale è una scatola dentro il progetto. Le librerie che installa
@@ -234,8 +274,13 @@ diverse della stessa libreria senza incontrarsi.
 ```
 
 La separazione di {numref}`fig-ambiente-python` risparmia la classe di
-problemi più frustrante per chi comincia: un aggiornamento fatto per un
-progetto che rompe silenziosamente un altro. Il Python di sistema resta
+problemi più frustrante per chi comincia. Un esempio di quelli che capitano
+davvero: hai un lavoro che gira, non lo tocchi da mesi, e nel frattempo per un
+esercizio nuovo aggiorni una libreria. La versione nuova ha cambiato il nome di
+un comando, il lavoro di prima smette di funzionare, e nessuno ti dice che è
+stato l'aggiornamento: te ne accorgi settimane dopo, quando riapri quel
+progetto e non parte più. Con una scatola per progetto non succede, perché
+l'aggiornamento resta dentro la sua. Il Python di sistema resta
 intoccato, e cestinare un progetto significa cestinare anche il suo ambiente.
 Per lavorare come si lavora davvero, `pip install jupyterlab` e poi
 `jupyter lab` aprono nel browser i notebook di cui sopra, questa volta sulla

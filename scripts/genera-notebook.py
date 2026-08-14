@@ -78,15 +78,24 @@ SITO = "https://book.paithon.it/main"
 # Sotto questa soglia un notebook non vale il pulsante.
 MINIMO_CELLE = 3
 
-# Capitoli rinviati: il loro codice dipende da librerie che non possiamo
-# eseguire in CI, quindi il notebook non sarebbe verificato, e un pulsante
-# "Esegui" su codice non provato e' una promessa che non possiamo mantenere.
-# Il motivo sta accanto al nome, cosi' si sa cosa serve per sbloccarli.
+# Capitoli rinviati: del loro codice qui non si puo' verificare cio' che
+# conta, quindi il notebook non sarebbe provato, e un pulsante "Esegui" su
+# codice non provato e' una promessa che non possiamo mantenere. Il motivo sta
+# accanto al nome, cosi' si sa che cosa manca davvero.
 RINVIATI = {
-    # Resta solo questo: i kernel Triton non si compilano senza una GPU, e in
-    # un runner non c'e'. Le celle non sarebbero verificate, quindi il capitolo
-    # non pubblica il notebook.
-    "GPU": "triton e una GPU vera per compilare i kernel",
+    # Resta solo questo, e la ragione NON e' quella che questa riga ha dato per
+    # mesi ("i kernel Triton non si compilano senza una GPU"): e' falsa, ed e'
+    # stata smentita su una macchina senza GPU. Con TRITON_INTERPRET=1 il
+    # kernel di GPU/kernel-e-cuda.md gira in interprete sulla CPU e dà i numeri
+    # che il testo promette (con a=2 e b=1: da 3 esce 7, da -4 esce 0), e
+    # triton.compile con GPUTarget("cuda", 90, 32) lo traduce in PTX
+    # .target sm_90a, con 8 fma.rn.f32 e nessuna mul.f32/add.f32 separata,
+    # senza che quella scheda ci sia. Cio' che resta fuori portata e' il
+    # comportamento su silicio: prestazioni, scelta del backend, esecuzione
+    # distribuita. E comunque, a prescindere: il capitolo ha due sole celle
+    # eseguibili contro MINIMO_CELLE = 3, quindi un notebook non nascerebbe in
+    # ogni caso. La copertura del suo codice si fa a mano.
+    "GPU": "silicio vero, e solo per il comportamento a runtime",
 }
 
 # Pacchetti da installare, dedotti dagli import del codice.
@@ -331,6 +340,20 @@ def componi(nome: str, pagine: list[pathlib.Path]):
         celle.append(cella_codice(
             "# Su Colab quasi tutto c'è già; questa riga serve altrove.\n"
             f"%pip install -q {' '.join(pacchetti)}", tag="pt-setup"))
+
+    # Nel libro ogni riga che produce un valore porta il suo «# -> ...», e un
+    # blocco ne mostra spesso sei. Un notebook, di suo, stampa solo l'ultima
+    # espressione della cella: il lettore che preme «Esegui il codice» vedeva
+    # un output su sei, e la convenzione che la pagina gli aveva appena
+    # insegnato veniva smentita dal canale che la pagina gli offre per
+    # provarla. Questa riga allinea le due cose.
+    celle.append(cella_codice(
+        "# Mostra il valore di ogni riga, come i commenti «# ->» del libro.\n"
+        "try:\n"
+        "    from IPython.core.interactiveshell import InteractiveShell\n"
+        "    InteractiveShell.ast_node_interactivity = 'all'\n"
+        "except ImportError:      # fuori da IPython non serve e non c'è\n"
+        "    pass", tag="pt-setup"))
 
     preludio = PRELUDI / f"{nome}.py"
     testo_preludio = preludio.read_text() if preludio.exists() else None

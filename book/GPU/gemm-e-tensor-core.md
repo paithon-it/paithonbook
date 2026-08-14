@@ -134,21 +134,54 @@ ancora memory-bound. E il tiling in shared memory non può cavarsela da sé:
 servirebbe $T \ge 41$ per superare il primo ginocchio e, in `float16` (dove
 $I \approx T/2$), $T \ge 323$ per superare il secondo, cioè una tessera che
 occuperebbe oltre 400 KB contro i 164 KB di shared memory configurabile di una
-A100. In shared memory non ci sta, e non è un problema di generosità del
-progettista: è il livello sbagliato.
+A100. E non è questione di scegliere meglio la taglia: la tessera più grande
+che in quei 164 KB ci sta è $204 \times 204$ (due blocchi da $T^2$ elementi a
+2 byte l'uno), e dà $I \approx 102$. **Nessuna** tessera in shared memory
+arriva a 161, e quella $128 \times 128$ dei GEMM industriali si ferma a 64.
 
-Ecco perché i GEMM veri impilano **un secondo livello di tessere nei registri**
-di ogni thread, sotto quello in shared memory. È quel livello, non il primo, a
-portare il prodotto oltre il ginocchio, ed è possibile per la ragione vista
-nella sezione sulla memoria: il register file di un SM è il banco on-chip più
-capiente che ci sia. Quanto al tetto: l'$n/6$ della sezione precedente è un
-*ideale* che richiederebbe le tre matrici intere on-chip, e per fortuna non
-serve raggiungerlo. L'intensità realmente raggiungibile non cresce con $n$, ma
-con la **radice** della memoria veloce disponibile (è il risultato classico di
-Hong e Kung sulla complessità di I/O {cite}`hongkung1981io`, che dà
-$\Omega(n^3/\sqrt{M})$ trasferimenti e quindi $I = O(\sqrt{M})$); e basta
-superare il ginocchio, cosa che una tessera $128 \times 128$ ottiene. È proprio
-questa gerarchia a due livelli l'architettura dei GEMM industriali.
+La domanda diventa allora chi li salvi davvero, quei GEMM, dato che veloci lo
+sono. La risposta sta un piano più giù ed è la **cache L2**. Il modello usato
+finora (ogni lettura che esce dall'SM arriva fino alla HBM) è lo stesso modello
+crudo del kernel ingenuo, e sbaglia allo stesso modo: le tessere di
+$\mathbf{A}$ e di $\mathbf{B}$ che blocchi diversi si portano sul tavolo sono
+*le stesse*, e a servirle è la L2 senza disturbare la memoria. Il conto, su un
+GEMM $8192 \times 8192 \times 8192$ in `float16` con tessere $128 \times 128$:
+nel modello crudo dalla HBM escono $2MNK/T$ elementi, cioè circa **17 GB**, che
+a $1{,}935$ TB/s valgono $8{,}9$ ms contro i $3{,}5$ ms di calcolo dei tensor
+core; con il riuso in L2 dalla HBM $\mathbf{A}$ e $\mathbf{B}$ escono una volta
+sola e $\mathbf{C}$ ci rientra una volta sola, cioè circa **400 MB** e
+$0{,}21$ ms. Stesso kernel, stessi FLOP: nel primo conto è bloccato dalla
+memoria, nel secondo dai tensor core.
+
+E allora a che serve il **secondo livello di tessere nei registri** che i GEMM
+veri impilano davvero sotto il primo? Non a spostare il punto sul roofline
+della HBM: lì il traffico lo decide soltanto la tessera in shared memory, e la
+micro-tessera nei registri non ne cambia un byte. Serve a un problema diverso e
+altrettanto reale, un piano più su: la **banda della shared memory**. Ogni SM
+la serve con 32 banchi da 4 byte per colpo di clock, cioè 128 byte per ciclo,
+che su una A100 fanno circa 19 TB/s aggregati (la stessa cifra che il paper di
+FlashAttention attribuisce alla SRAM on-chip). Per alimentare 312 TFLOP/s di
+tensor core servono dunque **16 FLOP per ogni byte letto dalla shared**, e un
+thread che vada a prendersi i due operandi di ogni singolo prodotto ne fa
+$0{,}5$: due FLOP ogni quattro byte in `float16`. Con una micro-tessera
+$R \times R$ tenuta nei registri, invece, ogni thread legge $2R$ valori e ne
+ricava $R^2$ prodotti, cioè $R/2$ FLOP per byte. È la stessa aritmetica del
+tiling, con la shared al posto della HBM e i registri al posto della shared: il
+riuso si ricompra un piano più giù, ed è possibile per la ragione vista nella
+sezione sulla memoria, che il register file di un SM è il banco on-chip più
+capiente che ci sia.
+
+Ed è questa, più della gerarchia in sé, la morale che il capitolo si è
+guadagnato: **c'è un roofline per ogni livello della piramide**, ciascuno con
+la sua banda e il suo ginocchio, e ogni livello di tiling esiste per superare
+il proprio. Quanto al tetto, l'$n/6$ della sezione precedente è un *ideale* che
+richiederebbe le tre matrici intere on-chip, e per fortuna non serve
+raggiungerlo: l'intensità realmente raggiungibile non cresce con $n$, ma con la
+**radice** della memoria veloce disponibile (è il risultato classico di Hong e
+Kung sulla complessità di I/O {cite}`hongkung1981io`, che dà
+$\Omega(n^3/\sqrt{M_\text{chip}})$ trasferimenti e quindi
+$I = O(\sqrt{M_\text{chip}})$, dove $M_\text{chip}$ è la memoria veloce
+disponibile e non va confusa con le $M$ righe di $\mathbf{A}$).
 `````
 
 Chi programma può vedere la struttura del tiling scritta per esteso, senza GPU,
@@ -357,19 +390,42 @@ altrimenti sembrerebbero magia:
   viste in «Prestazioni e scala» non sono un vezzo da datacenter, sono
   l'interruttore che accende il pezzo di silicio più veloce che hai.
 
-Sulla prima regola vale la pena aggiungere due precisazioni, perché prese
-insieme spiegano i casi in cui «ho arrotondato le dimensioni e non è cambiato
-niente». La prima: il requisito vero non è sulle dimensioni logiche ma
+Tutte e due queste regole promettono un guadagno quasi gratuito, e tutte e due
+capita che non lo diano. Le ragioni sono due, e nessuna delle due è quella che
+si sospetta: le schede qui sotto le spiegano.
+
+`````{tab} Elementare
+Succede di arrotondare le misure e di non vedere cambiare niente, e la prima
+ragione è che non conta solo *quante* caselle ha una riga: conta **dove la riga
+comincia**. Una tabella con le misure giuste ma appoggiata di sghembo, che
+comincia mezzo passo più in là di dove il timbro se l'aspetta, costringe a
+leggere di traverso, e la strada veloce si chiude lo stesso.
+
+La seconda ragione con le tessere non c'entra niente: c'entra con **quante
+officine restano ferme all'ultimo giro**. Se i quadratini da calcolare sono un
+po' più di un multiplo esatto delle officine disponibili, l'ultimo giro ne
+impegna due o tre e tutte le altre stanno a guardare, e il tempo quasi
+raddoppia. È il motivo per cui certe taglie «tonde» vanno peggio di taglie
+vicine, e chi non conosce questo secondo effetto dà la colpa alla tessera, che
+non c'entra.
+`````
+
+`````{tab} Superiore
+La prima precisazione: il requisito vero non è sulle dimensioni logiche ma
 sull'**allineamento in byte** (multipli di 16 byte sulla dimensione
 principale), quindi una matrice con $M$, $N$ e $K$ multipli di 8 ma con un
-*passo di riga* storto esce comunque dalla strada veloce. La seconda: esiste
-una quantizzazione gemella che non dipende dalla tessera ma dal **numero di
-SM**, la *wave quantization*. Se il numero di tessere da calcolare supera di
-poco un multiplo degli SM disponibili (108 su A100), l'ultimo giro impegna
-pochissime officine e tutte le altre restano ferme: il tempo raddoppia quasi.
-È per questo che certe taglie di batch «tonde» vanno peggio di taglie vicine, e
-chi non conosce questo secondo effetto lo attribuisce alla tessera, che non
-c'entra.
+*passo di riga* storto (lo *stride*, cioè la distanza in memoria fra l'inizio
+di una riga e l'inizio della successiva, che in una vista o in una fetta non
+coincide con la larghezza) esce comunque dalla strada veloce.
+
+La seconda: esiste una quantizzazione gemella che non dipende dalla tessera ma
+dal **numero di SM**, la *wave quantization*. Se il numero di tessere da
+calcolare supera di poco un multiplo degli SM disponibili (108 su A100),
+l'ultimo giro impegna pochissime officine e tutte le altre restano ferme: il
+tempo raddoppia quasi. È per questo che certe taglie di batch «tonde» vanno
+peggio di taglie vicine, e chi non conosce questo secondo effetto lo attribuisce
+alla tessera, che non c'entra.
+`````
 
 Il tiling, insomma, è il ponte tra i due limiti del roofline: abbatte i byte
 (riuso in shared memory) e mette al lavoro i FLOP (tensor core). La stessa
@@ -426,10 +482,17 @@ GEMM è il primo, e più puro, esempio di una lezione che tornerà a ogni pagina
   $\mathbf{A}$ e $\mathbf{B}$ in **shared memory** una volta sola, riusandoli:
   con tessere $T \times T$ l'intensità sale a circa $T/4$ FLOP/byte. Con
   $T = 32$ fa 8, che è ancora **a sinistra** di ogni ginocchio (10 con i CUDA
-  core, 161 con i tensor core su A100): a portare il GEMM oltre il ginocchio è
-  il **secondo** livello di tessere, quello nei registri. L'$n/6$ è un tetto
-  ideale; il raggiungibile cresce come $\sqrt{M}$, non come $n$
-  {cite}`hongkung1981io`.
+  core, 161 con i tensor core su A100), e nessuna tessera che stia nei 164 KB di
+  shared di una A100 ci arriva: la più grande è $204 \times 204$, cioè
+  $I \approx 102$. A tenere i GEMM veri lontani dal muro della HBM è la **cache
+  L2**, che serve le tessere che i blocchi si ripassano (su un GEMM $8192^3$ in
+  `float16` il traffico scende da 17 GB a circa 400 MB, e il tempo da $8{,}9$ a
+  $0{,}21$ ms contro $3{,}5$ ms di calcolo). Il **secondo** livello di tessere,
+  quello nei registri, risolve un problema diverso: la **banda della shared
+  memory**, circa 19 TB/s su A100 contro i 16 FLOP/byte che i tensor core
+  pretendono. C'è un roofline per ogni livello della piramide, e ogni tiling
+  supera il proprio. L'$n/6$ è un tetto ideale; il raggiungibile cresce come
+  $\sqrt{M_\text{chip}}$, non come $n$ {cite}`hongkung1981io`.
 - I **tensor core** (dal 2017, Volta) eseguono un piccolo prodotto-matrice con
   accumulo $\mathbf{D} = \mathbf{A}\mathbf{B} + \mathbf{C}$ per colpo di clock
   (64 FMA per unità, su tessere $4\times4$ nella forma Volta), in **precisione

@@ -60,7 +60,7 @@ Invece di cercare di produrre un programma che simuli la mente adulta, perché n
 *Alan Turing, «Computing Machinery and Intelligence», 1950.*
 :::
 
-Addentrarsi le prime volte nel mondo del Machine Learning e dell'Intelligenza Artificiale con Python può sembrare una sfida complessa, ma con la giusta guida può diventare un viaggio affascinante e gratificante. Paithon Book è qui per rendere questo percorso più semplice e accessibile, offrendo risorse chiare e pratiche, tutte in italiano, per chiunque voglia imparare, indipendentemente dal proprio livello di partenza.
+L'intelligenza artificiale ha la fama di essere una materia per pochi, e in giro si trovano soprattutto due cose: articoli che promettono tutto senza spiegare niente, e testi che spiegano bene ma danno per acquisiti tre esami di matematica. Questo libro prova a stare nel mezzo, in italiano, partendo da zero e senza saltare i passaggi difficili: se una cosa è complicata te lo dice, e poi te la spiega lo stesso.
 
 :::{only} html
 Questa versione online del libro **è gratuita** ed **in continuo aggiornamento** per stare al passo con le innovazioni di questa materia: aggiungiamo regolarmente sezioni, argomenti ed esempi in Python. Il codice usa **PyTorch**, NumPy e scikit-learn, e per provarlo non devi installare niente. Dove in alto compare **Esegui il codice**, quel capitolo ha un *notebook*: una copia della pagina in cui i blocchi di codice, invece di stare lì solo da leggere, si eseguono uno dopo l'altro. Il collegamento lo apre su Google Colab, un servizio gratuito che fa girare il codice su una macchina di Google (serve un account Google). Qualche pagina è essa stessa un notebook, e si riconosce dall'icona a razzo 🚀 in alto a destra: lì il codice si esegue restando nel libro. Altrove si legge qui e si copia dove preferisci.
@@ -319,7 +319,7 @@ In $x = 0$ la funzione non è derivabile (il grafico ha un punto angoloso); il s
 Ogni progetto ha bisogno di supporto per crescere e migliorare. I progetti open source come questo si basano sul sostegno e l'entusiasmo della comunità. Se questo libro ti è stato utile o credi nel suo valore, ecco come puoi mostrarmi il tuo apprezzamento:
 
 :::{only} html
-- Metti una ⭐ e condividi il progetto GitHub [Paithon Book](https://github.com/paithon-it/paithonbook)
+- Metti una ⭐ e condividi il progetto GitHub [paithon book](https://github.com/paithon-it/paithonbook)
 - Supporta il progetto per contribuire al suo sviluppo ❤️ <span style="display: inline-block; vertical-align: middle;">
     <script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="paithon.it" data-color="#B5532C" data-emoji="🔋"  data-font="Cookie" data-text="Ricarica la mia energia" data-outline-color="#1A1A1A" data-font-color="#ffffff" data-coffee-color="#C9A961" ></script>
 </span>

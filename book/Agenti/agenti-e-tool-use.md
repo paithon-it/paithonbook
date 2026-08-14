@@ -36,10 +36,12 @@ dentro perché funzioni, che in gergo si chiamano gli **argomenti** (per una
 calcolatrice, il conto da fare; per una ricerca, le parole da cercare: niente
 a che vedere con gli argomenti di cui si discute).
 Quando il modello ritiene che serva uno strumento, non risponde con del testo
-per l'utente: emette una **richiesta strutturata** («chiama `calcola` con
-argomento `"4831 * 7092"`»). Il sistema che ospita il modello intercetta la
-richiesta, esegue davvero la funzione, e restituisce il risultato al modello
-come nuovo pezzo di contesto. Solo allora il modello continua.
+per l'utente: emette una **richiesta strutturata**, cioè non una frase per una
+persona ma una riga in un formato fisso, che un programma sa leggere senza
+interpretarla («chiama `calcola` con argomento `"4831 * 7092"`»). Il sistema
+che ospita il modello intercetta la richiesta, esegue davvero la funzione, e
+restituisce il risultato al modello come nuovo pezzo di contesto. Solo allora
+il modello continua.
 
 ```{figure} ../figures/function-calling-llm-strumenti.svg
 :name: fig-function-calling
@@ -63,19 +65,24 @@ in mano l'esecuzione, solo la richiesta.
 Scrivere a mano il catalogo, sistema per sistema, funziona finché i sistemi
 sono due o tre. Da qui nasce l'idea di un **protocollo comune**, cioè di una
 lingua unica con cui chiedere a qualunque sistema esterno «che strumenti hai?»
-e «esegui questo». Quello che si è diffuso si chiama **MCP** (*Model Context
-Protocol*, «protocollo per il contesto del modello»), e la sua architettura è
-in {numref}`fig-mcp`.
+e «esegui questo». Un protocollo di questo genere è **MCP** (*Model Context
+Protocol*, «protocollo per il contesto del modello»), proposto da Anthropic
+nel 2024, e la sua architettura è in {numref}`fig-mcp`. Conviene guardarla per
+la forma più che per il nome. Protocolli di questo genere ne nascono e ne
+muoiono parecchi, e quale finirà per imporsi è il tipo di cosa che si legge
+sui giornali fra un anno; la forma invece è la stessa per tutti, ed è quella
+che vale la pena avere in testa.
 
 ```{figure} ../figures/mcp-spiegato.svg
 :name: fig-mcp
-:alt: "Architettura a tre livelli: un host, cioè l'applicazione che contiene il modello, tiene al proprio interno due client; ciascun client parla, tramite un protocollo comune, con un server distinto; ogni server espone verso ciò che gestisce le proprie primitive: strumenti e risorse nel primo caso, che governa dei file, strumenti e prompt nel secondo, che governa un archivio di dati."
+:alt: "A sinistra un riquadro grande, l'applicazione che contiene il modello: dentro ci stanno il modello e due connettori, marcati client 1 e client 2. Ciascun connettore è collegato, con lo stesso protocollo, a un riquadro esterno diverso, il server A e il server B: uno per ogni sistema con cui si vuole parlare. Ogni server dichiara che cosa mette a disposizione, e a destra si vede su cosa comanda: il primo su dei file, il secondo su un archivio di dati. In fondo la scritta: una porta sola, tante periferiche."
 :width: 100%
 
 Lo stesso catalogo, ma standardizzato. A parlare il protocollo non è il
-modello: è l'applicazione che lo ospita, la quale apre un canale verso ogni
-sistema esterno e li interroga tutti allo stesso modo. Al modello arrivano poi
-strumenti come gli altri, senza che debba sapere da dove vengono.
+modello: è l'applicazione che lo ospita, la quale apre **un canale per ogni
+sistema esterno** (nel disegno sono due, uno che governa dei file e uno che
+governa un archivio di dati) e li interroga tutti allo stesso modo. Al modello
+arrivano poi strumenti come gli altri, senza che debba sapere da dove vengono.
 ```
 
 Il salto di {numref}`fig-mcp` rispetto al catalogo scritto a mano è di scala,
@@ -124,9 +131,13 @@ Schema. Per una calcolatrice:
 }
 ```
 
-Le tre righe che avvolgono il parametro non sono cerimoniale: `type`,
-`properties` e `required` sono ciò che rende quel blocco un JSON Schema
-valido, e senza di esse ogni interfaccia reale lo rifiuta. Il nome della
+Le tre righe che avvolgono il parametro non sono cerimoniale: `type` dice che
+gli argomenti arrivano raccolti in un oggetto, `properties` elenca i campi di
+quell'oggetto e `required` dichiara quali non si possono omettere. Nessuna
+delle tre è necessaria perché lo schema sia *valido* (uno schema senza
+`required` è legittimo e vuol dire «sono tutti facoltativi»), ma è su quelle
+righe che il modello decide cosa scrivere, e uno schema che non dice cosa è
+obbligatorio glielo lascia indovinare. Il nome della
 chiave che lo contiene invece cambia da un fornitore all'altro
 (`parameters`, `input_schema`, `inputSchema`); la forma dello schema no, ed è
 quella che vale la pena ricordare.
@@ -169,9 +180,9 @@ testo e la generazione riparte da lì, come se il numero l'avesse scritto lui.
 
 Il dettaglio da guardare in {numref}`fig-toolformer` è dove sta la chiamata:
 non prima o dopo il testo, ma **dentro**, in mezzo a una parola e l'altra. È
-questo che rende sensato il criterio di apprendimento che segue: se
-l'inserzione è interna alla frase, si può misurare se aiuta a scrivere il
-seguito.
+questo che rende sensato il criterio di apprendimento che segue: se la
+chiamata sta dentro la frase, si può misurare se ha aiutato a scrivere quello
+che viene dopo.
 
 `````{tab} Elementare
 
@@ -225,7 +236,10 @@ esattamente il confine di questa sezione. Toolformer decide *dove* chiamare,
 non *come* comporre: non sa usare gli strumenti in **catena** (l'uscita di uno
 come ingresso di un altro) né in modo **interattivo** (raffinare la richiesta
 guardando il risultato), ed è ciò che serve a un agente. È il salto che
-affronta il pattern della prossima sezione.
+affronta il pattern delle prossime pagine, e conviene dire subito che non gli
+è succeduto: quel pattern è dell'ottobre 2022, Toolformer del febbraio
+successivo. Non sono due tappe di una scala, sono due risposte a due domande
+diverse.
 
 `````
 
@@ -233,8 +247,9 @@ affronta il pattern della prossima sezione.
 
 Uno strumento, da solo, non basta a fare un agente. Serve una **procedura**:
 quando pensare, quando agire, come usare ciò che l'azione ha restituito. Il
-pattern diventato lo standard di fatto si chiama **ReAct** (da *Reasoning +
-Acting*) proposto da Shunyu Yao e colleghi {cite}`yao2023react`. L'idea è
+pattern che ha dato il nome a questo modo di procedere si chiama **ReAct** (da
+*Reasoning + Acting*) ed è stato proposto nel 2022 da Shunyu Yao e colleghi
+{cite}`yao2023react`. L'idea è
 intrecciare, in un unico flusso, tre tipi di passi: un **pensiero**
 (*Thought*, il ragionamento ad alta voce), un'**azione** (*Action*, la
 chiamata a uno strumento) e un'**osservazione** (*Observation*, il risultato
@@ -267,8 +282,8 @@ mentre un loop agentico è fatto in buona parte di altro (scegliere uno
 strumento, leggere un risultato, decidere se ripetere). La ragione per cui il
 pensiero esplicito serve *qui* è un'altra, e più prosaica: dà al modello un
 posto dove scrivere a che punto è del compito prima di scegliere l'azione. È
-la stessa idea che ritroveremo, con altro nome, parlando di context
-engineering. ReAct la porta nel mondo delle azioni: il pensiero decide *quale*
+la stessa idea che ritroveremo, chiamata **foglio di brutta**, parlando di
+context engineering. ReAct la porta nel mondo delle azioni: il pensiero decide *quale*
 strumento usare e *come* interpretare ciò che è tornato, e l'osservazione
 àncora il pensiero successivo a un fatto reale invece che a una fantasia.
 
@@ -287,6 +302,12 @@ senza mai controllare, costruirebbe teorie eleganti e magari sbagliate. Uno che
 controllasse a caso, senza ragionare, si perderebbe tra mille indizi inutili.
 ReAct fa fare al modello tutti e due i mestieri: pensa per decidere dove
 guardare, guarda per correggere ciò che pensa.
+
+Non è però un guadagno gratis, e conviene saperlo subito. Un detective che
+deve controllare ogni intuizione prima di proseguire fa meno voli di fantasia,
+ma diventa anche più rigido: segue lo schema e ragiona di meno per conto suo.
+E si aggiunge un modo di fallire che prima non c'era: il registro che va a
+consultare può non dirgli niente di utile, e a quel punto è fermo.
 
 `````
 
@@ -317,8 +338,9 @@ quello che è: uno **scambio**, non un guadagno secco. Sulla verifica di fatti
 (FEVER) ReAct supera la sola chain-of-thought; sulla domanda-risposta
 multi-hop (HotpotQA) le resta appena sotto. Le allucinazioni crollano (nei
 fallimenti passano da oltre metà a zero) ma il ragionamento si irrigidisce
-sulla forma pensiero-azione-osservazione, e gli errori di ragionamento
-**triplicano**; per giunta nasce un modo di fallire che prima non esisteva, la
+sulla forma pensiero-azione-osservazione, e gli errori di ragionamento quasi
+**triplicano**, dal 16% al 47% delle traiettorie fallite esaminate; per
+giunta nasce un modo di fallire che prima non esisteva, la
 ricerca che torna a mani vuote. Il risultato migliore del lavoro non è ReAct da
 solo: è la combinazione dei due, che si alternano quando l'uno si arena.
 
@@ -592,8 +614,8 @@ dei documenti.
   è il modello stesso, può convincersi di avere ragione avendo torto, e perfino
   rovinare una risposta che era buona.
 - Il **giro dell'agente** (guarda, pensa, agisci, ripeti fino alla risposta) è
-  lo stesso del mini-agente in venti righe e degli assistenti che navigano il
-  web ed eseguono codice. Quello che cambia, nei sistemi veri, è tutto il
+  lo stesso del mini-agente di poche decine di righe e degli assistenti che
+  navigano il web ed eseguono codice. Quello che cambia, nei sistemi veri, è tutto il
   lavoro di rendere il giro robusto quando qualcosa va storto.
 ```
 
@@ -617,8 +639,8 @@ dei documenti.
 - **ReAct** {cite}`yao2023react` intreccia in un loop **Thought → Action →
   Observation**: le osservazioni àncorano il ragionamento a fatti reali e le
   allucinazioni crollano, ma è uno **scambio**, non un guadagno secco (gli
-  errori di ragionamento triplicano e si aggiunge il fallimento della ricerca a
-  vuoto). La traccia è ispezionabile, **non** fedele
+  errori di ragionamento quasi triplicano, dal 16% al 47%, e si aggiunge il
+  fallimento della ricerca a vuoto). La traccia è ispezionabile, **non** fedele
   {cite}`turpin2023unfaithful, lanham2023faith`: contano le azioni, non i
   pensieri.
 - **Reflexion** {cite}`shinn2023reflexion` aggiunge una **memoria verbale**
@@ -629,8 +651,8 @@ dei documenti.
   verificabile); con un giudice auto-prodotto, o con il solo giudizio del
   modello, può confermare l'errore o peggiorare una risposta giusta.
 - Il **ciclo dell'agente** (osserva, pensa, agisci, ripeti fino alla risposta)
-  è la stessa ossatura del mini-agente in venti righe e degli assistenti che
-  navigano il web ed eseguono codice; la differenza è la robustezza attorno.
+  è la stessa ossatura del mini-agente di poche decine di righe e degli
+  assistenti che navigano il web ed eseguono codice; la differenza è la robustezza attorno.
 ```
 
 `````

@@ -16,9 +16,10 @@ conversazione riferita molti anni dopo, quindi va presa con la cautela che
 meritano gli aneddoti) che a suggerirglielo fu John von Neumann: "chiamala
 entropia: nessuno sa davvero cosa sia, e in ogni discussione partirai in
 vantaggio". Vera o abbellita che sia la battuta, il nome è rimasto. E ci
-riguarda da vicino: la funzione di costo con cui addestreremo quasi tutti i
-classificatori di questo libro (la *cross-entropy*) discende in linea diretta
-da quell'articolo del 1948.
+riguarda da vicino: il punteggio d'errore con cui addestreremo quasi tutti i
+**classificatori** di questo libro (cioè i modelli che devono scegliere fra
+alternative: gatto o cane, spam o no) discende in linea diretta da
+quell'articolo del 1948, e si chiama *cross-entropy*.
 
 ## La sorpresa di un evento
 
@@ -61,6 +62,14 @@ probabilità**. Una moneta truccata dà testa $9$ volte su $10$: la testa è
 Ce lo aspettavamo già. La croce invece è "una su $1/0{,}1 = 10$", cioè quanto
 un dado a dieci facce, e vale $3{,}32$ bit: rara, e perciò molto informativa.
 Sono i due numeri che torneranno fra poco.
+
+Trovare quei due esponenti richiede una calcolatrice, e va benissimo prenderli
+come sono; verificarli invece si può a mano, andando nel verso facile, cioè
+elevando il due. Se $0{,}15$ è giusto, allora $2^{0{,}15}$ deve fare $1{,}11$,
+e infatti fa $1{,}11$. Se $3{,}32$ è giusto, $2^{3{,}32}$ deve fare $10$: sta
+fra $2^3 = 8$ e $2^4 = 16$, e viene $9{,}98$. (Che un due si possa elevare a un
+esponente con la virgola non è ovvio, ed è spiegato più avanti in questa stessa
+sezione, dov'è la prima volta che serve davvero.)
 
 `````
 
@@ -154,30 +163,52 @@ delle ragioni per cui è lei l'oggetto su cui si costruisce.
 
 ## Confrontare distribuzioni: cross-entropia e divergenza KL
 
-Fin qui una sola distribuzione. Ma nel machine learning ce ne sono sempre
-*due*: la distribuzione **vera** dei dati, che chiamiamo $p$, e quella che il
-**modello** crede vera, che chiamiamo $q$. Serve un modo per misurare quanto la
-seconda sbaglia rispetto alla prima.
+Fin qui una sola sorgente e una sola tabella di probabilità. Ma nel machine
+learning ce ne sono sempre *due*, e vale la pena dire di quali si tratta. La
+prima descrive come vanno le cose davvero: quanto spesso, nel mondo, esce
+ciascuna risposta. Nessuno la conosce per intero (con la moneta truccata sì,
+perché l'abbiamo truccata noi; con le foto di gatti no), ma esiste, e la
+chiamiamo $p$. La seconda è quello che il **modello** crede: le probabilità che
+assegna lui, e che sono sbagliate finché non impara. La chiamiamo $q$. Serve un
+modo per misurare quanto la seconda sbaglia rispetto alla prima.
 
 ```{figure} ../figures/cross-entropy-kl-divergence.svg
 :name: fig-cross-entropia-kl
-:alt: "Due distribuzioni disegnate sugli stessi assi: p, la realtà, e q, il modello, che le somiglia ma è spostata e di forma diversa. Lo spazio fra le due curve segnala visivamente che il modello non coincide con la realtà, e quindi che descrivere i dati con le sue credenze costa qualcosa in più."
+:alt: "Due distribuzioni disegnate sugli stessi assi, sull'asse orizzontale le parole del vocabolario e sul verticale la probabilità: p, la realtà, e q, il modello, che le somiglia ma è spostata a destra e di forma diversa. Una parentesi in alto misura lo scarto fra i due picchi. Sulla coda sinistra un punto evidenziato segnala il caso peggiore, quello in cui la realtà assegna probabilità e il modello quasi nessuna. In basso la formula che lega le due misure."
 :width: 88%
 
 Le due curve e il fatto che non combaciano. La cross-entropia misura il costo
 totale di descrivere $p$ usando $q$; la divergenza KL misura solo il
-sovrapprezzo, cioè quanto si paga in più rispetto a conoscere $p$. Lo scarto
-fra le curve è un promemoria visivo, non la misura: la KL non è l'area fra le
-due (quella sarebbe simmetrica, e la KL non lo è) ma una media, pesata da $p$,
-di quanto $q$ sbaglia in ciascun punto. La formula qui sotto lo dice
-esattamente.
+sovrapprezzo, cioè quanto si paga in più rispetto a conoscere $p$, ed è la
+sottrazione scritta in fondo al disegno. Due avvertenze sul resto. Lo spazio
+bianco fra le due curve è un promemoria visivo e non la misura: le due misure
+vere sono definite fra poche righe. E il punto segnato sulla coda di sinistra è
+il caso che costa di più, quello in cui la realtà ogni tanto produce una parola
+e il modello le aveva dato quasi zero: essere colti di sorpresa lì è la cosa
+più cara che possa capitare, ed è per questo che la scritta accanto dice che il
+conto «esplode».
 ```
 
 La distinzione che {numref}`fig-cross-entropia-kl` rende visiva spiega perché
-in pratica si minimizzi la cross-entropia e non la KL. Le due differiscono per
-l'entropia di $p$, che è una proprietà dei dati e non dipende dal modello:
-minimizzare l'una o l'altra porta agli stessi pesi, ma la prima non richiede
-di conoscere $p$.
+in pratica si minimizzi la cross-entropia e non la KL. Le due quantità
+differiscono per una sola cosa, la sorpresa media della realtà $p$, che
+dipende dai dati e non da chi li prevede: è la stessa qualunque modello si
+usi. Spingere in basso l'una o l'altra porta quindi esattamente allo stesso
+modello, e la cross-entropia ha il vantaggio di potersi calcolare **anche senza
+conoscere $p$**.
+
+A prima vista sembra impossibile, visto che nella definizione la $p$ c'è. Il
+punto è che non serve la tabella completa delle probabilità vere: bastano gli
+esiti veri, uno alla volta. Ogni foto etichettata «gatto» è la realtà che si
+presenta e dice «stavolta è toccato a me», e facendo la media della sorpresa
+del modello su tutte le foto che si hanno, la $p$ entra nel conto da sé, senza
+che nessuno l'abbia mai scritta.
+
+La KL, invece, quella tabella la vorrebbe davvero, perché al suo interno c'è la
+sorpresa media della realtà, che dagli esempi non si ricava. Ed è la ragione
+per cui, dovendo sceglierne una, si minimizza la cross-entropia. È poi la
+situazione in cui ci si trova sempre: gli esempi si hanno, la legge che li ha
+prodotti no.
 
 `````{tab} Elementare
 
@@ -282,20 +313,20 @@ che useremo nei capitoli sulle reti neurali e su PyTorch.
 Dall'entropia si ricava una misura più parlante, cara a chi costruisce modelli
 di linguaggio.
 
-```{figure} ../figures/entropia-di-shannon.svg
-:name: fig-entropia-due-monete
-:alt: "Due monete a confronto. Quella equa, con probabilità 50 e 50, ha entropia pari a 1 bit: il massimo possibile per due esiti. Quella truccata, 90 contro 10, ha entropia 0,47 bit: sapendo che esce quasi sempre testa, ogni lancio informa meno della metà."
-:width: 92%
+```{figure} ../figures/perplessita-righello.svg
+:name: fig-perplessita-righello
+:alt: "Due righelli paralleli e allineati: in alto le facce del dado equivalente, con le tacche a 1, 2, 4, 8 e 16; in basso i bit di sorpresa media, con le tacche a 0, 1, 2, 3 e 4. Le tacche cadono negli stessi punti perché raddoppiare le facce costa un bit. Quattro linee verticali tratteggiate collegano i due righelli e segnano quattro sorgenti: la moneta truccata a 0,47 bit e 1,4 facce, la moneta equa a 1 bit e 2 facce, il dado onesto a 2,59 bit e 6 facce, un modello di linguaggio di perplessità 20 a 4,32 bit e 20 facce."
+:width: 96%
 
-L'entropia misura quanto c'è da imparare. Una moneta prevedibile porta poca
-informazione a ogni lancio, e la perplessità traduce quel numero in «quante
-facce ha il dado equivalente».
+Un righello solo, con due scritte diverse sui due bordi. La perplessità non
+aggiunge niente all'entropia: la dice in facce invece che in bit, e le facce
+raddoppiano dove i bit crescono di uno.
 ```
 
-Il salto da {numref}`fig-entropia-due-monete` alla perplessità è una
-riscrittura, non un concetto nuovo: si torna indietro dall'esponente al numero
-di alternative. Per la moneta equa $2^1 = 2$ facce, per quella truccata
-$2^{0{,}47} \approx 1{,}4$.
+Il salto alla perplessità è una riscrittura, non un concetto nuovo: si torna
+indietro dall'esponente al numero di alternative. Per la moneta equa $2^1 = 2$
+facce, per quella truccata $2^{0{,}47} \approx 1{,}4$, e in
+{numref}`fig-perplessita-righello` sono lo stesso punto letto sui due bordi.
 
 Quel secondo conto merita una riga, perché «due elevato a zero virgola
 quarantasette» non è più «due moltiplicato per sé stesso un certo numero di
@@ -341,9 +372,12 @@ Natural Language Processing.
 ## Il limite della compressione
 
 Chiudiamo con la conseguenza più concreta del lavoro di Shannon: l'entropia è
-un **limite alla compressione**. Nessun programma, per quanto ingegnoso, può
-comprimere senza perdite una sorgente sotto la sua **entropia per simbolo**:
-in media, sotto quella soglia non si scende.
+un **limite alla compressione**. Comprimere un file, come fa un programma tipo
+`zip` o `gzip`, vuol dire riscriverlo più corto in modo da poterlo poi
+ricostruire identico. Shannon dimostrò che quel «più corto» ha un fondo:
+nessun programma, per quanto ingegnoso, può scendere sotto l'**entropia per
+simbolo** del messaggio, cioè sotto la sorpresa media che ogni carattere porta
+con sé. In media, sotto quella soglia non si scende.
 
 L'aggettivo «per simbolo» non è un dettaglio, ed è il punto in cui la frase
 detta male diventa falsa. La sorpresa media $H$ calcolata sulle sole frequenze
@@ -351,13 +385,16 @@ delle lettere descrive una sorgente **senza memoria**, una che estrae ogni
 lettera indipendentemente dalle precedenti. Una lingua non è così: dopo una
 «q» arriva quasi sempre una «u», dopo «il gatto ne» le continuazioni plausibili
 sono poche. Per una sorgente con memoria il limite vero è più basso, ed è la
-sorpresa media di ogni lettera **dato tutto ciò che la precede**. La differenza
-si tocca con mano: le sole frequenze dei caratteri dei sorgenti di questo libro
-danno circa $4{,}75$ bit per simbolo, e un banale `gzip` scende a $2{,}90$,
-cioè al $61\%$ di quel presunto limite invalicabile. Non ha violato nessun
-teorema: sta
-sfruttando proprio la ridondanza fra un simbolo e il successivo, che quel conto
-ignorava.
+sorpresa media di ogni lettera **dato tutto ciò che la precede**.
+
+La differenza si tocca con mano, e si può rifare a casa: prendendo i file di
+testo con cui questo libro è scritto (una ventina di megabyte) e contando
+soltanto quanto è frequente ciascun carattere, la sorpresa media viene circa
+$4{,}7$ bit a carattere. Poi si passa il tutto a `gzip`, che è il compressore
+più ordinario che ci sia, e il file esce a circa $2{,}9$ bit a carattere, cioè
+a poco più del $60\%$ di quel presunto limite invalicabile. Non ha violato
+nessun teorema: sta sfruttando proprio la ridondanza fra un carattere e il
+successivo, che quel conto ignorava.
 
 È la stessa quantità che Shannon stimò nel 1951 per l'inglese scritto in circa
 **un bit per lettera** {cite}`shannon1951prediction`, e va confrontata con i
@@ -366,9 +403,15 @@ di quante sono. Uno zip morde bene un testo perché quella ridondanza c'è tutta
 non morde più niente su un file già compresso, dove è già stata spremuta via.
 
 Comprimere è l'arte del Morse portata al suo limite matematico: scorciatoie a
-ciò che è frequente. E un modello che predice bene, assegnando poca sorpresa
-alla realtà, è per ciò stesso un buon compressore: predire e comprimere, ci
-dice Shannon, sono in fondo la stessa cosa.
+ciò che è frequente. E qui si chiude il cerchio con il machine learning, in un
+passaggio che vale la pena fare per esteso. Un compressore ha bisogno di sapere
+che cosa è frequente, per dare a quello le scorciatoie. Un modello che predice
+bene sa esattamente questo, anzi qualcosa di più: sa che cosa è frequente
+*proprio lì*, dopo le parole appena lette. Chi ha un modello così può scrivere
+il messaggio in un modo diverso e più corto: invece del testo, le sorprese, e
+dove il modello indovina la sorpresa è quasi zero, quindi non c'è quasi niente
+da scrivere. Predire e comprimere, ci dice Shannon, sono in fondo la stessa
+cosa.
 
 ## In pratica, con NumPy
 

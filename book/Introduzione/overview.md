@@ -18,60 +18,92 @@ frase e leggendo la risposta. L'articolo che lo descrive si apre così
 Nei programmi che sembrano intelligenti, osservava, questa massima si compie
 alla perfezione: finché il meccanismo resta nascosto la macchina appare
 prodigiosa; appena qualcuno lo spiega, l'incanto si sgretola. E il meccanismo
-di ELIZA sta in poche righe: il programma imitava uno psicoterapeuta,
-riconosceva nella frase dell'utente uno schema che conosceva e la rigirava
-sotto forma di domanda. «Mi sento triste» diventava «Perché ti senti triste?»;
-alla parola «madre» rispondeva «Mi parli della sua famiglia». Nessuna
-comprensione, nessuna memoria di ciò che era stato detto due frasi prima: un
-elenco di schemi e di sostituzioni.
+di ELIZA sta in poche righe. Il programma vero e proprio non imitava nessuno:
+era un motore che riconosceva **schemi**, cioè pezzi di frase fatti a stampo,
+del tipo «mi sento ___» o «mia madre ___». La parte da recitare gliela
+assegnava un *copione*, un foglio di regole scritto a parte che si poteva
+cambiare senza toccare il programma. Il copione più celebre si chiamava DOCTOR
+e gli faceva sostenere la conversazione di uno psicoterapeuta: riconosceva nella
+frase dell'utente uno schema noto e gliela rigirava addosso. «Mi sento
+infelice» diventava «pensa che venire qui la aiuterà a non sentirsi infelice?»,
+e alla parola «madre» rispondeva «mi parli della sua famiglia». Nessuna
+comprensione, e come memoria soltanto una pila di frasi già dette, messe da
+parte per essere ritirate fuori quando la conversazione si fermava.
 
-Eppure Weizenbaum, che voleva dimostrare proprio la superficialità della
-comunicazione fra uomo e macchina, rimase sgomento davanti al numero di
-persone che al suo programma attribuivano sentimenti umani: la sua stessa
-segretaria, che pure sapeva benissimo come fosse fatto, gli chiese di uscire
-dalla stanza per poterci parlare in privato {cite}`weizenbaum1976computer`. Ma
-siamo
-sicuri che sia solo una semplice lista di istruzioni quella da lui creata? O
-c'è qualcosa di più? Se è un semplice programma, perché attribuirgli una
-parola così ricca di significato come l'*intelligenza*?
+Quella separazione fra il motore e il foglio delle regole vale la pena
+notarla, perché è il primo passo della strada che percorreremo. Nel 1966 le
+regole le scriveva ancora una persona, a mano, una per una; ma stavano già
+fuori dal programma, come un testo che il programma legge. I capitoli che
+seguono raccontano che cosa succede quando quel foglio non lo scrive più
+nessuno.
 
-E poi, cos'è questa intelligenza artificiale (o **AI** dall'inglese
-*Artificial Intelligence*), che così velocemente, anno dopo anno,
-perfezionamento dopo perfezionamento, sembra sfuggire inesorabilmente a ogni
-tentativo di definizione precisa? Sono le domande da cui parte questo
-capitolo. Alla prima si può rispondere subito, ed è un no: ELIZA era davvero
-soltanto una lista di istruzioni, e non c'era niente di più. Alla seconda si
-risponde alla fine di questa pagina, quando avremo visto che cosa distingue un
-programma scritto riga per riga da uno che le sue regole se le trova da solo.
+Eppure Weizenbaum voleva dimostrare esattamente il contrario di quello che
+ottenne: voleva far vedere quanto fosse superficiale la comunicazione fra uomo
+e macchina. Rimase sgomento davanti al numero di persone che al suo programma
+attribuivano sentimenti umani. La sua stessa segretaria, che pure sapeva
+benissimo come fosse fatto, gli chiese di uscire dalla stanza per poterci
+parlare in privato {cite}`weizenbaum1976computer`. Ma siamo sicuri che quella
+da lui creata sia soltanto una lista di istruzioni? O c'è qualcosa di più? Se è
+un semplice programma, perché attribuirgli una parola così ricca di significato
+come l'*intelligenza*?
 
-## Le Origini dell'Intelligenza Artificiale
+E poi: che cos'è, esattamente, questa intelligenza artificiale? In inglese si
+dice *Artificial Intelligence*, e la sigla **AI** è quella che si legge
+dappertutto. Ogni anno la si perfeziona, e ogni anno sembra sfuggire un po' di
+più a una definizione precisa.
 
-È presente in ognuno di noi quella strana sensazione suscitata dall’osservare un programma che emula i comportamenti umani, come se fosse qualcosa di "vivo" e non un semplice programma che esegue istruzioni.
+Sono le due domande da cui parte questo capitolo. La prima ha una risposta
+breve e deludente: no, non c'era niente di più. ELIZA era davvero soltanto una
+lista di istruzioni, e il resto di questa pagina serve a dire perché per certi
+altri programmi la stessa risposta non basti. La seconda ha bisogno di più
+spazio, e la troverai poco più avanti, quando avremo visto che cosa distingue
+un programma scritto riga per riga da uno che le sue regole se le trova da
+solo.
 
-La possibilità di creare un qualcosa che assomigliasse all'uomo ha sollecitato
-la curiosità di tutti i pensatori del passato. Difatti l'AI non è una scienza
-nuovissima: le sue origini risalgono al periodo immediatamente successivo alla
-Seconda Guerra Mondiale.
+## Le origini dell'intelligenza artificiale
 
-Nella vita di tutti i giorni, però, è entrata **due volte**. Negli anni Dieci
-ci è entrata senza farsi notare, dentro il traduttore automatico, i
-suggerimenti di un negozio online, il riconoscimento dei volti nelle
-fotografie: la usavano tutti e quasi nessuno la chiamava per nome. Dal
+L'idea di costruire qualcosa che somigli a noi è vecchia quanto il pensiero, e
+più avanti in questa pagina la ritroveremo in Aristotele e in Cartesio. La
+scienza che ci prova davvero, invece, è giovane: nasce nel decennio successivo
+alla Seconda Guerra Mondiale, quando per la prima volta ci sono delle macchine
+su cui provare.
+
+Nella vita di tutti i giorni è entrata **due volte**. Negli anni Dieci
+(il decennio 2010-2019) ci è entrata senza farsi notare, dentro il traduttore
+automatico, i suggerimenti di un negozio online, il riconoscimento dei volti
+nelle fotografie: la usavano tutti e quasi nessuno la chiamava per nome. Dal
 novembre 2022, con ChatGPT, è diventata invece qualcosa con cui si parla
 apposta, e in pochi mesi il nome lo conosceva chiunque. Vale la pena tenere
 separati i due momenti, perché il salto che il pubblico ha percepito alla fine
-del 2022 era cominciato cinque anni prima, in un articolo del 2017 che questo
-libro incontrerà al momento giusto: quello che è cambiato allora non è stato
-il motore, è stato il posto in cui l'abbiamo trovato.
+del 2022 era cominciato cinque anni prima, in un articolo del 2017 intitolato
+*Attention Is All You Need*, «l'attenzione è tutto ciò che serve»: da lì è nata
+la famiglia di modelli con cui oggi si conversa, e la incontreremo al momento
+giusto. Nel 2022,
+cioè, la tecnologia sotto il cofano non era nuova: era nuovo il posto in cui la
+incontravamo. Prima stava nascosta dentro servizi che facevano altro (traduci
+questa pagina, suggerisci un film), e nessuno ci parlava; da allora è diventata
+una casella bianca in cui si scrive, e che risponde.
+
+Ma torniamo all'inizio, che è più indietro di quanto sembri.
 
 Nel 1950 Alan Turing, in un articolo destinato a fare storia, propose di
 sostituire la domanda «le macchine possono pensare?» con un esperimento
 concreto, il *gioco dell'imitazione*, oggi noto
 come **test di Turing**: se conversando a distanza non riesci a capire se
 dall'altra parte c'è una persona o un programma, la questione filosofica
-smette di essere decisiva {cite}`turing1950computing`. Vale la pena essere
-precisi su che cosa quel gioco misuri, perché il seguito del libro ci
-tornerà: misura l'indistinguibilità in una conversazione, non la comprensione.
+smette di essere decisiva {cite}`turing1950computing`.[^gioco-imitazione]
+
+[^gioco-imitazione]: Nella forma in cui Turing lo introduce il gioco non
+    riguarda affatto le macchine: i giocatori sono tre, un uomo, una donna e un
+    interrogante che deve indovinare chi dei due sia l'uomo. La macchina entra
+    solo nella pagina successiva, e la domanda diventa: che succede se a fare
+    quella parte è un calcolatore? La versione «umano contro programma» che
+    tutti chiamano test di Turing è la lettura moderna, non l'esperimento
+    originale.
+
+Vale la pena essere
+precisi su che cosa quel gioco misuri, perché il libro ci tornerà: misura se
+una conversazione regge, non se dall'altra parte qualcuno ha capito qualcosa.
 Che l'asticella sia più bassa di quanto sembri lo abbiamo appena visto con
 ELIZA, che di comprensione non ne aveva nessuna e riusciva lo stesso a
 commuovere le persone; ne riparleremo nel capitolo sul linguaggio naturale.
@@ -79,84 +111,119 @@ commuovere le persone; ne riparleremo nel capitolo sul linguaggio naturale.
 Il termine *intelligenza artificiale* compare per la prima volta nel 1955,
 nella proposta con cui John McCarthy, Marvin Minsky, Nathaniel Rochester e
 Claude Shannon chiedevano i fondi per un seminario estivo al Dartmouth
-College; è quel seminario, nell'estate del 1956, a essere ricordato come
-l'atto di nascita ufficiale della disciplina. È una scienza che si può
-applicare potenzialmente a ogni sfera del pensiero umano, in quanto si occupa
-di rendere automatiche alcune attività intellettive come il riconoscimento di
-immagini, il gioco degli scacchi, la dimostrazione di teoremi matematici e la
-guida autonoma di veicoli. In questo senso, è uno dei campi più antichi e
-trasversali.
+College; è quel seminario, nell'estate del 1956, a essere ricordato come l'atto
+di nascita ufficiale della disciplina. Il suo mestiere è rendere automatiche
+attività che fino a quel momento richiedevano una testa: riconoscere immagini,
+giocare a scacchi, dimostrare teoremi, guidare un'automobile. Tocca quindi
+potenzialmente ogni angolo del pensiero umano, ed è insieme uno dei campi più
+giovani che esistano: quando nasce, la fisica ha tre secoli di storia alle
+spalle e i calcolatori elettronici sono in circolazione da una decina d'anni.
 
 Fra il seminario di Dartmouth e i risultati che oggi diamo per scontati, però,
-non c'è una linea che sale. Ci sono due lunghi **inverni**, e conviene
-raccontarli subito, perché sono l'antidoto migliore sia all'entusiasmo sia
-alla paura. Le promesse degli anni Sessanta (una macchina che traduce, che
-dimostra teoremi, che vede) arrivarono a scadenza senza essere mantenute: nel
-1973 il rapporto Lighthill, commissionato dal governo britannico, stroncò il
-campo e portò ai primi tagli veri ai finanziamenti. Un secondo inverno arrivò
-a fine anni Ottanta, quando si sgonfiò il mercato dei *sistemi esperti*,
-programmi che
-racchiudevano in migliaia di regole scritte a mano il sapere di uno
-specialista: funzionavano nel ristretto, costavano moltissimo da aggiornare e
-non reggevano il mondo vero. Delle ragioni tecniche del primo inverno parla il
-capitolo sulle reti neurali, perché riguardano da vicino proprio quelle; del
-secondo si sentirà l'eco in tutto il libro, dato che è per non ripetere
-l'errore dei sistemi esperti che oggi le regole non si scrivono più a mano.
+non c'è una linea che sale. Ci sono due lunghi **inverni**: si chiamano così i
+periodi in cui le promesse non vengono mantenute e i soldi spariscono. Conviene
+raccontarli subito, perché sono l'antidoto migliore sia all'entusiasmo sia alla
+paura.
 
-E se dicessi che uno dei primi test al mondo di auto a guida autonoma è stato
-effettuato in Italia, su una “fiammante” Lancia Thema? Ebbene sì: a partire
-dal 1996, all’Università di Parma, un team di ricercatori e ingegneri
-coordinato dal prof. Alberto Broggi ha sviluppato un vero e proprio prototipo
-di guida autonoma, un’autovettura dotata di visione “stereo” (due telecamere
-che lavorano in coppia, come gli occhi umani) e di un computer di bordo del
-tutto ordinario per l'epoca, un Pentium 200 MMX: un processore incomparabilmente
-più lento di quello del telefono che oggi tieni in tasca. Era in grado di sterzare da
-sola, restare al centro della corsia di marcia e localizzare gli eventuali
-ostacoli sul percorso. Il suo nome è ARGO e nel giugno 1998, nella prova
-“MilleMiglia in Automatico”, percorse quasi 2.000 km di strade e autostrade
-italiane guidando in autonomia per oltre il 90% del tragitto.
+Il primo arriva negli anni Settanta. Le promesse del decennio precedente (una
+macchina che traduce, che dimostra teoremi, che vede) erano andate a scadenza
+senza essere mantenute, e nel 1973 un rapporto commissionato al matematico
+James Lighthill dallo Science Research Council britannico stroncò il campo,
+aprendo la strada ai primi tagli veri ai finanziamenti nel Regno Unito. Il
+secondo arriva a fine anni Ottanta, quando si sgonfia il mercato dei *sistemi
+esperti*: programmi che racchiudevano in migliaia di regole scritte a mano il
+sapere di uno specialista. Funzionavano nel ristretto, costavano moltissimo da
+aggiornare e non reggevano il mondo vero.
 
-Nel 2010 il gruppo di Broggi è riuscito a far guidare autonomamente delle auto dall’Italia… alla Cina! La sfida si chiamava VIAC (VisLab Intercontinental Autonomous Challenge) e ha coinvolto quattro veicoli su un viaggio di circa 13.000 chilometri da Parma a Shanghai, percorso in larga parte senza intervento umano.
+Di questo secondo inverno si sentirà l'eco in tutto il libro, perché il modo di
+lavorare che gli è succeduto ne è il rovescio esatto, e fra due sezioni vedremo
+quale. Le **reti neurali** (i programmi ispirati alla forma del cervello, che
+sono il grosso di quello che incontreremo) hanno invece avuto un inverno tutto
+loro, che si apre nel 1969, con un libro che ne dimostrava i limiti, e si
+chiude nel 1986, quando si trova il modo di addestrarle sul serio. Viene prima
+degli altri due, dura molto di più, ed è una vicenda parallela: la racconta il
+capitolo dedicato a loro.
+
+E se dicessi che una delle auto a guida autonoma più interessanti degli anni
+Novanta è stata costruita in Italia, su una «fiammante» Lancia Thema? Ebbene
+sì. A partire dal 1996, all'Università di Parma, un gruppo di ricercatori e
+ingegneri coordinato dal prof. Alberto Broggi ha costruito un prototipo di auto
+che si guida da sola. Il suo nome è ARGO. Vedeva con due telecamere in bianco e
+nero montate in coppia, come i nostri due occhi, e le sue decisioni le prendeva
+un computer di bordo del tutto ordinario per l'epoca, un Pentium 200 MMX: un
+processore incomparabilmente più lento di quello del telefono che oggi tieni in
+tasca. Sapeva sterzare da sola, restare al centro della corsia e accorgersi
+degli ostacoli davanti. Nel giugno 1998, nella prova «MilleMiglia in
+Automatico», percorse quasi 2.000 km di strade e autostrade italiane guidando
+in autonomia per oltre il 90% del tragitto.
+
+Il primato non è di essere arrivati per primi: negli stessi anni la VaMP di
+Ernst Dickmanns girava sulle autostrade europee e la Navlab 5 della Carnegie
+Mellon University, in Pennsylvania, attraversava gli Stati Uniti. Il primato è
+**come**: quelle macchine portavano armadi di elettronica costruita apposta,
+ARGO due telecamere e un personal computer, e dimostrò che per stare in corsia
+poteva bastare molto meno ferro di quanto tutti credessero.
+
+Nel 2010 il gruppo di Broggi è riuscito a far guidare autonomamente delle auto
+dall'Italia… alla Cina! La sfida si chiamava VIAC (VisLab Intercontinental
+Autonomous Challenge): quasi sedicimila chilometri da Parma a Shanghai, con due
+veicoli in marcia (più due di riserva) e una regola d'ingaggio che vale la pena
+dire, perché è la parte interessante. I due procedevano in fila: quello di
+testa apriva la strada e ogni tanto un umano interveniva, per scegliere il
+percorso o togliere le castagne dal fuoco; quello dietro seguiva il primo in
+completa autonomia. Non sedicimila chilometri senza nessuno al volante,
+dunque, ma qualcosa che nel 2010 era comunque senza precedenti.
 
 Torniamo indietro, però, e di parecchio: prima di Turing e dei calcolatori
 c'erano stati duemila anni di gente che pensava alle stesse
-cose {cite}`russell2020artificial`. Aristotele, nel IV secolo a.C., fu il primo
-a formulare un insieme preciso di leggi che governano la parte razionale della
-mente: sviluppò un sistema basato sui **sillogismi**, cioè ragionamenti in cui
-la conclusione discende da due premesse per pura forma. L'esempio che sanno
-tutti è «tutti gli uomini sono mortali; Socrate è un uomo; quindi Socrate è
-mortale»: per tirare la conclusione non serve sapere chi fosse Socrate, basta
-la struttura delle prime due frasi. È questo che vuol dire ottenere le
-conclusioni «meccanicamente», ed è la prima volta nella storia che qualcuno
-prova a scrivere le regole del pensiero come si scriverebbero quelle di un
-gioco. Hobbes, nel Seicento, ipotizzò che il ragionamento umano avesse a che
-fare con meccanismi simili al calcolo numerico, come se noi «eseguissimo»
-addizioni e sottrazioni nei nostri pensieri. Pascal scrisse che la «macchina
-aritmetica» produce effetti che sembrano più vicini al pensiero di tutte le
-azioni degli animali, e costruì la Pascalina, una delle prime macchine
-calcolatrici (la prima in assoluto risulta essere quella di Wilhelm Schickard,
-nel 1623). Infine, Cartesio fornì la prima discussione chiara sulla
-distinzione tra mente e materia.
+cose {cite}`russell2020artificial`.
+
+Aristotele, nel IV secolo a.C., fu il primo a mettere per iscritto le regole
+del ragionamento corretto. Il suo sistema si regge sui **sillogismi**: catene
+di tre frasi in cui la terza discende dalle prime due per la sola forma in cui
+sono scritte. L'esempio che sanno tutti è «tutti gli uomini sono mortali;
+Socrate è un uomo; quindi Socrate è mortale». Per tirare la conclusione non
+serve sapere chi fosse Socrate: basta la struttura delle prime due frasi. È
+questo che vuol dire ottenere le conclusioni «meccanicamente», ed è la prima
+volta nella storia che qualcuno prova a scrivere le regole del pensiero come si
+scriverebbero quelle di un gioco.
+
+Poi bisogna aspettare quasi due millenni, e arrivare al Seicento, quando
+compaiono le prime macchine che fanno di conto. Hobbes ipotizzò che ragionare
+fosse una specie di calcolo, come se dentro la testa eseguissimo addizioni e
+sottrazioni. Pascal costruì una di quelle macchine, la Pascalina, e scrisse che
+la macchina aritmetica produce effetti che sembrano più vicini al pensiero di
+quanto lo sia tutto ciò che fanno gli animali (la prima macchina calcolatrice
+in assoluto risulta però essere quella di Wilhelm Schickard, del 1623).
+Cartesio, infine, tracciò la prima distinzione netta fra
+mente e materia, sostenendo che il pensiero è fatto di una sostanza diversa dal
+corpo e non obbedisce alle stesse leggi. Una macchina, invece, è materia e
+nient'altro: se Cartesio avesse ragione, nessuna macchina potrebbe mai avere
+una mente. È l'obiezione con cui l'intelligenza artificiale fa i conti da
+quando esiste.
 
 I filosofi hanno esplorato la maggior parte dei concetti riguardanti l'AI, ma
 il passaggio a una scienza vera e propria richiedeva qualcosa che i filosofi
-non davano: scrivere quelle idee in formule, cioè in una forma che una
-macchina possa eseguire. La matematica a metà del '900 ereditava dal passato
-tutta una serie di strumenti buoni allo scopo: l'algebra, la probabilità, e
-poi tre discipline nate per far prendere decisioni alle macchine e alle
-organizzazioni. La **ricerca operativa** studia come scegliere il piano
-migliore quando le risorse sono poche (quali camion mandare su quali strade);
-la **teoria del controllo** come tenere un sistema sulla rotta voluta,
-correggendolo di continuo, ed è la matematica del termostato e del pilota
-automatico; la **teoria dei giochi** come decidere quando dall'altra parte c'è
-qualcuno che decide a sua volta. D'improvviso, questi campi sono apparsi come
-facce dello stesso
-poliedro, il cui scopo è la progettazione di sistemi che massimizzano nel
-tempo una **funzione obiettivo**, cioè un punteggio che misura quanto bene il
-sistema sta svolgendo il proprio compito. Questo, a grandi linee, corrisponde
-allo scopo dell’AI: la costruzione di sistemi che agiscono “nel modo migliore
-possibile”. L’idea merita un momento di attenzione, perché tornerà in ogni
-capitolo del libro.
+non davano. Una macchina non capisce le frasi, sa soltanto fare conti: perché
+un'idea le arrivi, bisogna prima ridurla a un calcolo, e nessuno l'aveva mai
+fatto per il ragionamento. La matematica a metà del '900 ereditava dal passato
+tutta una serie di strumenti buoni allo scopo: l'algebra, la probabilità, e poi tre
+discipline nate per far prendere decisioni alle macchine e alle organizzazioni.
+La **ricerca operativa** studia come scegliere il piano migliore quando le
+risorse sono poche (quali camion mandare su quali strade); la **teoria del
+controllo** come tenere un sistema sulla rotta voluta, correggendolo di
+continuo, ed è la matematica del termostato e del pilota automatico; la
+**teoria dei giochi** come decidere quando dall'altra parte c'è qualcuno che
+decide a sua volta.
+
+Guardati da vicino, i tre facevano in fondo la stessa cosa. Ognuno inventava un
+punteggio che dice quanto bene sta andando (quanto costa il giro dei camion, di
+quanto la temperatura si scosta da quella voluta, quanto si guadagna in una
+partita) e poi cercava le mosse che lo fanno salire. Quel punteggio ha un nome,
+ed è uno dei pochi che conviene imparare adesso: si chiama **funzione
+obiettivo**. È a grandi linee anche lo scopo dell'AI, costruire sistemi che
+agiscono «nel modo migliore possibile», e per questo l'idea merita un momento
+di attenzione: tornerà in ogni capitolo del libro.
 
 `````{tab} Elementare
 Immagina un robot aspirapolvere a cui assegni un punteggio: $+1$ per ogni
@@ -165,7 +232,7 @@ salotto raccoglie $30$ briciole e sbatte $5$ volte, totalizza $30 - 5 = 25$
 punti. Quel numero è la sua funzione obiettivo: non gli spieghiamo *come*
 pulire, gli diciamo solo *che punteggio* vogliamo veder salire. Qualunque
 cambiamento nel suo comportamento che porti il totale sopra $25$ è un
-miglioramento; “agire nel modo migliore possibile” significa, alla fine,
+miglioramento; «agire nel modo migliore possibile» significa, alla fine,
 scegliere le mosse che rendono quel punteggio il più alto possibile. Buona
 parte dell'intelligenza artificiale moderna, sotto sotto, funziona così: si
 sceglie un numero da massimizzare (o un errore da rendere minimo) e si lascia
@@ -176,13 +243,13 @@ il libro: quel punteggio lo scriviamo noi, e non è mai *esattamente* la cosa
 che vogliamo. Un aspirapolvere pagato a briciole raccolte, se è abbastanza
 bravo, può scoprire che gli conviene rovesciare il cestino e raccoglierle una
 seconda volta. Ha fatto il punteggio più alto e ha sporcato il salotto: ha
-obbedito alla lettera tradendo l'intenzione. Il fenomeno ha un nome
-(*reward hacking*) e più avanti nel libro una sezione tutta sua.
+obbedito alla lettera tradendo l'intenzione. Il fenomeno ha un nome, *reward
+hacking*, e una sezione tutta sua nel capitolo sul deep reinforcement learning.
 `````
 
 `````{tab} Superiore
 Formalmente, si descrive il comportamento del sistema con dei parametri
-$\theta$ e se ne misura la qualità con un’utilità attesa
+$\theta$ e se ne misura la qualità con un'utilità attesa
 
 $$
 J(\theta) = \mathbb{E}\!\left[\, U \mid \theta \,\right],
@@ -223,7 +290,10 @@ Le eccezioni si contano, e sono istruttive, perché sono i due modi in cui si
 può uscire dal quadro. Le GAN sostituiscono la minimizzazione di una funzione
 con l'equilibrio di un gioco fra due reti in competizione, e allora la loss
 smette di dire se le cose stanno andando bene; i metodi non parametrici come
-il k-NN non hanno parametri da ottimizzare affatto. Va aggiunta una crepa che
+il k-NN non hanno una manopola da regolare per addestramento, perché al posto
+dei parametri conservano i dati stessi (è questo che significa «non
+parametrico»: non che non ci siano numeri da scegliere, ma che quanto il
+modello si porta dietro cresce con i dati anziché essere fissato in partenza). Va aggiunta una crepa che
 non è un'eccezione ma un limite della cornice, dichiarato dagli stessi autori
 che l'hanno resa canonica: $J$ è il punteggio che *scriviamo noi*, non quello
 che vogliamo davvero, e un sistema abbastanza bravo massimizza il primo anche
@@ -233,20 +303,22 @@ sua nel capitolo sul deep reinforcement learning.
 
 Detto questo, l'AI non è una costola della teoria del controllo: nacque anzi
 proprio per superarne i limiti {cite}`russell2020artificial`. Quella matematica
-sapeva tenere in rotta un sistema descritto da poche variabili numeriche, e si
-fermava lì; il linguaggio naturale, la visione artificiale, la pianificazione
-erano problemi che si ponevano completamente fuori dal suo campo d'azione, ed
-è per affrontarli che il campo si è staccato.
+sapeva tenere in rotta un sistema descritto da pochi numeri che cambiano nel
+tempo (la velocità, la temperatura, l'angolo del timone), e si fermava lì.
+Capire una frase, riconoscere che cosa c'è in una fotografia, decidere in che
+ordine fare le cose per arrivare a un obiettivo: erano problemi che si ponevano
+completamente fuori dal suo campo d'azione, ed è per affrontarli che il campo
+si è staccato.
 
-## Algoritmi Intelligenti
+## Che cos'è un algoritmo
 
-Abbiamo appena nominato gli algoritmi, ma cosa sono nello specifico? Un
-**algoritmo**, prima di tutto, è una ricetta: una lista finita di passi
-precisi che, eseguiti nell'ordine giusto, portano a un risultato. Uno dei
-primi algoritmi della storia si può far risalire a Euclide, che oltre due
-millenni fa ideò un metodo per calcolare il massimo comune divisore di due
-numeri, per esempio, applicandolo a $12$ e $8$ si ottiene $4$. È esattamente
-il procedimento che proveremo a scrivere, in Python, nella pagina che segue
+Fin qui abbiamo parlato di programmi e di regole scritte a mano, senza mai
+chiamarli con il loro nome. Un **algoritmo**, prima di tutto, è una ricetta:
+una lista finita di passi precisi che, eseguiti nell'ordine giusto, portano a
+un risultato. Uno dei primi della storia si può far risalire a Euclide, che
+oltre due millenni fa trovò il modo di calcolare il massimo comune divisore di
+due numeri: applicato a $12$ e $8$, per dire, restituisce $4$. È esattamente il
+procedimento che proveremo a scrivere, in Python, nella pagina che segue
 («Python e l'AI»): è un *notebook*, cioè una pagina in cui il codice non si
 legge soltanto, si esegue.
 
@@ -258,16 +330,21 @@ quadrate, tutte uguali e senza tagliarne nessuna; la piastrella più grande che
 funziona è quella da $4 \times 4$. Il trucco di Euclide per trovarlo è
 elegante: dividi il numero grande per il piccolo e guarda il **resto**. $12$
 diviso $8$ dà resto $4$; ora ripeti con $8$ e $4$: resto $0$. Appena compare
-il resto zero, l'ultimo numero *per cui* hai diviso (qui $4$) è il MCD.
-Niente elenchi di divisori, niente tentativi: due divisioni e hai finito. E il
-bello è che non peggiora quando i numeri crescono: per due numeri lunghi cento
-cifre bastano poche centinaia di divisioni, mentre provare i divisori uno per
-uno, come si fa a scuola, ne chiederebbe più di quanti sono gli atomi
-dell'universo osservabile.
+il resto zero, l'ultimo numero *per cui* hai diviso (qui $4$) è il MCD. Niente
+elenchi di divisori, niente tentativi: due divisioni e hai finito. E se il
+resto viene zero già alla prima, va bene lo stesso, hai solo finito prima:
+$12$ diviso $6$ dà resto $0$, e il MCD è $6$.
+
+Il bello è che il metodo non peggiora quando i numeri crescono: per due numeri
+lunghi cento cifre bastano qualche centinaio di divisioni, mentre provare i
+divisori uno per uno, come si fa a scuola, ne chiederebbe fino a un $1$ seguito
+da cento zeri. Per darti la misura di quanto sia grande quel numero: gli atomi
+dell'intero universo osservabile si stimano intorno a un $1$ seguito da
+ottanta zeri, cioè cento miliardi di miliardi di volte di meno.
 `````
 
 `````{tab} Superiore
-L’algoritmo sfrutta l’identità
+L'algoritmo sfrutta l'identità
 $\mathrm{MCD}(a, b) = \mathrm{MCD}(b,\, a \bmod b)$, con caso base
 $\mathrm{MCD}(a, 0) = a$, dove $a \bmod b$ è il resto della divisione intera.
 La correttezza segue dal fatto che ogni divisore comune di $a$ e $b$ divide
@@ -287,48 +364,92 @@ librerie non eseguono questo ciclo tale e quale, ma sue raffinature
 (l'algoritmo di Lehmer, in CPython).
 `````
 
-## Quando le Regole non si Scrivono
+La {numref}`fig-euclide-scende` mostra la stessa discesa su un'altra coppia di
+numeri, $60$ e $48$: sono quelli su cui lavoreremo in Python nella pagina che
+segue.
+
+```{figure} ../figures/euclide-scende.svg
+:name: fig-euclide-scende
+:alt: "L'algoritmo di Euclide applicato a 60 e 48. Ogni riga è una tappa, con tre scatole (dividendo, divisore, resto) e accanto la divisione per esteso: 60 = 1 × 48 + 12, poi 48 = 4 × 12 + 0. Due frecce per riga portano il divisore al posto del dividendo e il resto al posto del divisore, così la coppia (60, 48) diventa (48, 12) e poi (12, 0). Quando il divisore è zero il ciclo si ferma, e il 12 rimasto a sinistra è il massimo comune divisore."
+:width: 92%
+
+La discesa di Euclide su 60 e 48: a ogni passo il divisore prende il posto del
+dividendo e il resto quello del divisore, e i numeri si accorciano. Quando il
+divisore arriva a zero ci si ferma, e quello rimasto a sinistra è il massimo
+comune divisore. Due divisioni in tutto, senza provare nemmeno un candidato.
+```
+
+## Quando le regole non si scrivono
 
 L'algoritmo di Euclide è una ricetta, e le ricette hanno un autore: qualcuno
 ha capito come si fa e ne ha scritto i passi. Per duemila anni ogni algoritmo
 è stato così, e così è ancora la maggior parte dei programmi che usi ogni
 giorno: chi li ha scritti sapeva già che cosa dovevano fare, riga per riga.
 
-Il salto che rende necessario tutto il resto di questo libro sta qui. Prova a
-scrivere la ricetta per riconoscere un gatto in una fotografia. Non i passi
-generici («cerca le orecchie a punta»), ma i passi precisi, sui numeri che
-compongono l'immagine, che funzionino anche col gatto di spalle, in
-controluce, mezzo nascosto dietro una sedia. Nessuno c'è mai riuscito, e non
-per pigrizia: quella ricetta non la sappiamo, per quanto siamo capacissimi di
-eseguirla con gli occhi in un decimo di secondo.
+Il salto che rende necessario tutto il resto di questo libro sta qui. Serve
+prima una cosa che di solito si dà per scontata: per un computer una fotografia
+è un rettangolo di puntini, e ogni puntino (si chiama **pixel**) è una terna di
+numeri che dicono quanto rosso, quanto verde e quanto blu ci sono lì. Una foto
+da telefono ne ha qualche milione.
+
+Adesso prova a scrivere la ricetta per riconoscere un gatto in una fotografia.
+Non può parlare di orecchie a punta: deve dire che cosa fare con quei milioni
+di numeri, e deve funzionare anche col gatto di spalle, in controluce, mezzo
+nascosto dietro una sedia. Nessuno c'è mai riuscito, e non per pigrizia: quella
+ricetta non la sappiamo, per quanto siamo capacissimi di eseguirla con gli
+occhi in un decimo di secondo.
 
 E allora si cambia mestiere. Invece di scrivere le regole, si raccolgono gli
-**esempi** (migliaia di fotografie già marcate «gatto» e «non gatto») e si
-lascia che sia il programma a trovare da solo che cosa distingue le une dalle
-altre. Le regole non le scrive nessuno: **emergono dai dati**. È questo che
-significa, in questo libro, dire che un programma *impara*, ed è la ragione
-per cui qui i dati contano quanto il codice.
+**esempi** (migliaia di fotografie con scritto accanto «gatto» oppure «non
+gatto») e si lascia che sia il programma a trovare da solo che cosa distingue
+le une dalle altre. Le regole non le scrive nessuno: **emergono dai dati**. È
+questo che significa, in questo libro, dire che un programma *impara*, ed è la
+ragione per cui qui i dati contano quanto il codice.
 
-Da qui i tre nomi del titolo, che a questo punto si dicono in una riga
-ciascuno:
+Qui nascono due parole che sentirai dappertutto, e tanto vale prenderle subito.
+La fase in cui il programma guarda gli esempi e aggiusta se stesso si chiama
+**addestramento**; quello che ne esce, cioè il programma già aggiustato e
+pronto a rispondere su fotografie che non ha mai visto, si chiama **modello**.
+Il «gatto» scritto accanto a ciascuna foto si chiama **etichetta**.
+
+Le fotografie etichettate a mano sono il caso più facile da raccontare, non
+l'unico né il più diffuso. La risposta giusta può essere già dentro il
+materiale che si ha: si copre una parola in mezzo a una frase e si chiede al
+programma di indovinarla, e a quel punto le etichette sono infinite e gratuite,
+perché le fornisce il testo stesso. È così che si addestrano i modelli di cui
+oggi si parla di più, e ci arriveremo con calma; ma conviene sapere fin d'ora
+che «imparare dagli esempi» non vuol dire per forza che qualcuno abbia
+etichettato qualcosa.
+
+Da qui i tre nomi che incontrerai più spesso, in questo libro e fuori, e che a
+questo punto si dicono in una riga ciascuno:
 
 - il **machine learning** (apprendimento automatico) è l'idea appena detta:
   ricavare le regole dagli esempi invece di scriverle a mano;
 - il **deep learning** (apprendimento profondo) è il modo di farlo che ha
-  vinto: reti neurali a molti strati, in cui ogni strato ricava dai numeri
-  dello strato sotto una descrizione un po' più astratta (dai pixel ai bordi,
-  dai bordi alle forme, dalle forme al gatto);
+  vinto: le **reti neurali**, cioè programmi fatti di molti passaggi
+  elementari disposti in fila per **strati**, dove ogni strato ricava dai
+  numeri dello strato precedente una descrizione un po' più astratta (dai
+  pixel ai bordi, dai bordi alle forme, dalle forme al gatto). «Profondo» vuol
+  dire proprio questo, e nient'altro: che gli strati sono tanti, uno sopra
+  l'altro, e per questo si dicono anche **reti profonde**. Come siano fatte
+  davvero lo smonta il capitolo dedicato: qui basta l'idea che siano molti
+  passaggi semplici, uno dopo l'altro, e che nessuno abbia scritto a mano che
+  cosa ciascuno debba cercare;
 - il **reinforcement learning** (apprendimento per rinforzo) è il caso in cui
   gli esempi giusti non esistono e il programma impara dalle conseguenze delle
   proprie azioni: prova, riceve un punteggio, riprova. È quello che
-  incontreremo nella prossima pagina, con il robot che impara a camminare.
+  incontreremo poco più avanti, nella pagina dedicata alla robotica, con il
+  robot che impara a camminare.
 
-Non sono tre cerchi uno dentro l'altro, benché vengano disegnati spesso così.
-Il deep learning è davvero un modo di fare machine learning; ma il
-reinforcement learning è un *problema*, non una tecnica, e lo si affronta con
-o senza reti profonde. E l'intelligenza artificiale è più larga di tutti e
-tre: comprende anche i programmi che ragionano su regole scritte a mano, cioè
-la sua metà classica, quella dei sistemi esperti del secondo inverno.
+Spesso li si vede disegnati come tre cerchi uno dentro l'altro, e non è così.
+Il deep learning è davvero un modo di fare machine learning. Il reinforcement
+learning, invece, è una *situazione* in cui ci si trova, non un attrezzo che si
+sceglie: dice che gli esempi giusti non ci sono e che l'unico giudizio è un
+punteggio, e ci si può stare dentro con le reti profonde o senza. E
+l'intelligenza artificiale è più larga di tutti e tre: comprende anche i
+programmi che ragionano su regole scritte a mano, cioè la sua metà classica,
+quella dei sistemi esperti del secondo inverno.
 
 Da qui una definizione da tenersi in tasca, provvisoria come tutte quelle
 buone: **l'intelligenza artificiale si occupa di far svolgere a una macchina
@@ -344,10 +465,11 @@ di istruzioni, ed è proprio per questo che il suo incanto si sgretola appena
 lo si spiega. I programmi di cui parla questo libro qualcosa di più ce
 l'hanno, ma è meno misterioso e più scomodo di quanto si immagini: nessuno ha
 scritto le regole che seguono, e quindi nessuno, nemmeno chi li ha costruiti,
-sa elencarle tutte. Da lì vengono sia i risultati sia i guai, e a entrambi il
-libro dedica dei capitoli.
+sa elencarle tutte. Da lì vengono sia i risultati sia i guai: dei modi per
+sbirciare comunque là dentro parla il capitolo sull'interpretabilità, dei danni
+che quei programmi possono fare quello sull'AI responsabile.
 
-## Perché Proprio Adesso
+## Perché proprio adesso
 
 Se le regole si ricavano dagli esempi, servono gli esempi; e servono macchine
 capaci di macinarli. È la risposta alla domanda che tutti fanno, cioè perché
@@ -355,27 +477,34 @@ un campo nato negli anni Cinquanta abbia cominciato a funzionare solo di
 recente: perché servivano tre ingredienti insieme, e per decenni ce n'erano al
 massimo due.
 
-L'AI è in profondo debito con l'evoluzione dell'informatica e
-dell'elettronica, che hanno messo a disposizione sistemi operativi, linguaggi
-di programmazione (es: Python), **librerie** (PyTorch, TensorFlow...), cioè
-raccolte di codice già scritto e collaudato che si usa invece di rifarlo, ed
-architetture sempre più potenti: i processori (CPU), le schede grafiche (GPU)
-nate per i videogiochi e diventate il motore del deep learning, i chip
-dedicati (TPU), che permettono la creazione di modelli in tempi brevi. Ed è in
-debito con Internet, che ha fatto molto più che diffondere articoli e video:
-ha reso raccoglibili i **dati** su cui questi modelli si addestrano, dalle
+L'AI è in profondo debito con l'informatica e con l'elettronica, che le hanno
+apparecchiato la tavola. Le hanno dato i linguaggi con cui si scrivono i
+programmi, Python fra questi. Le hanno dato le **librerie**, cioè raccolte di
+codice già scritto e collaudato che si usano invece di rifarlo da capo (PyTorch,
+che useremo in tutto il libro, e TensorFlow). E le hanno dato macchine sempre
+più veloci: prima i processori normali, le CPU; poi le schede grafiche, le GPU,
+che erano nate per far girare i videogiochi e si sono rivelate perfette per
+addestrare le reti neurali, perché sanno fare moltissimi conti semplici tutti
+insieme; infine i chip costruiti apposta per questo mestiere, come le TPU di
+Google.
+
+Ed è in debito con Internet, che ha fatto molto più che diffondere articoli e
+video: ha reso raccoglibili i **dati** su cui i modelli si addestrano, dalle
 grandi collezioni di immagini già etichettate al testo del web. Dati, potenza
 di calcolo e algoritmi maturi sono i tre ingredienti, e il capitolo sul deep
-learning li conta uno per uno; quanto pesi ciascuno, in numeri, lo dicono le
-leggi di scala nel capitolo sui Transformer.
+learning li conta uno per uno; quanto pesi ciascuno dei tre si può perfino
+misurare, e lo fa il capitolo sui **Transformer**, che sono i modelli nati da
+quell'articolo del 2017 di cui si diceva all'inizio.
 
 Il debito, peraltro, è stato ripagato con gli interessi
 {cite}`russell2020artificial`: parecchie idee nate nei laboratori di
-intelligenza artificiale hanno poi fatto il giro dell'informatica intera e
-oggi si usano ovunque senza ricordarne la provenienza. La più visibile a
-chiunque programmi è la **gestione automatica della memoria**: il fatto che un
-programma possa creare oggetti a volontà senza doverli poi cancellare a mano
-uno per uno, che è esattamente quello che Python fa per te e che in altri
-linguaggi resta un lavoro (e una fonte di errori) del programmatore. Ed è con
-Python che, nella pagina qui accanto, scriveremo il primo algoritmo di questo
-libro.
+intelligenza artificiale hanno poi fatto il giro dell'informatica intera e oggi
+si usano ovunque senza ricordarne la provenienza. La più diffusa è la
+**gestione automatica della memoria**. Un programma, mentre gira, chiede
+continuamente al computer un po' di spazio in cui mettere quello che sta
+maneggiando, e quello spazio prima o poi va restituito, altrimenti si esaurisce
+e tutto si ferma. Per anni tenerne il conto è stato un lavoro di chi
+programmava, e una fonte inesauribile di errori; l'idea che a restituirlo possa
+pensarci il linguaggio da solo è nata studiando l'AI, e oggi è quello che
+Python fa per te senza che tu debba accorgertene. Ed è con Python che, nella
+pagina che segue, scriveremo il primo algoritmo di questo libro.

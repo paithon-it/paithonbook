@@ -53,8 +53,8 @@ In un prototipo conta quasi solo un **requisito funzionale**: il modello è
 accurato? In produzione dominano i **requisiti non-funzionali**, che nella
 fase di ricerca sono invisibili: affidabilità, latenza, throughput,
 scalabilità, riproducibilità, manutenibilità nel tempo. Uno studio-intervista
-con professionisti del settore {cite}`shankar2022operationalizing` sintetizza
-ciò che separa i team che ci riescono in **tre V**:
+con professionisti del settore riassume in **tre V** ciò che separa i team che
+ci riescono {cite}`shankar2022operationalizing`:
 
 - **Velocity**, la capacità di iterare in fretta: cambiare un'idea,
   riaddestrare e valutare in ore, non in settimane. È ciò che rende
@@ -98,9 +98,9 @@ comunque, con la stessa aria sicura, anche quando risponde peggio di quello di
 prima. Senza una soglia scritta prima, non c'è modo automatico di
 accorgersene.
 
-Uno studio di ingegneria del software condotto in Microsoft {cite}`amershi2019software`
-mette in fila nove fasi ricorrenti di un progetto di machine learning, che qui
-raggruppiamo in sei momenti:
+Uno studio di ingegneria del software condotto in Microsoft mette in fila nove
+fasi ricorrenti di un progetto di machine learning
+{cite}`amershi2019software`, che qui raggruppiamo in sei momenti:
 
 1. **Dati**: raccolta, pulizia, etichettatura. È dove si consuma la maggior
    parte del tempo, e dove nasce la maggior parte degli errori.
@@ -149,11 +149,11 @@ più, va segnato pure il lancio dei dadi, perché qui dentro c'è del caso.
 
 Tradotta dalla cucina al mestiere, l'analogia dice così: la ricetta è il
 programma, gli ingredienti sono i dati, il forno è il computer con le sue
-librerie, e la torta è il modello addestrato. Congelare i primi non basta se
-la torta la si butta via: rifarla identica costa ore, e chi la mangia non può
-aspettarle. Le tre cose da tenere sotto chiave, allora, si chiamano **codice,
-dati e modello**, con il forno (l'ambiente) come quarta condizione da non
-dimenticare.
+librerie, e la torta è il modello addestrato. E la torta si conserva anche
+lei, non solo la ricetta: rifarla identica costa ore di forno, e chi la deve
+mangiare non può aspettarle. Le cose da tenere sotto chiave, allora, sono
+**codice, dati e modello**, con il forno (l'ambiente) come quarta condizione
+da non dimenticare.
 
 `````
 
@@ -212,17 +212,17 @@ def fissa_seed(seed: int = 42) -> None:
     #              generator=torch.Generator().manual_seed(seed))
 ```
 
-Fissare il seme è il primo passo e non è l'ultimo: da solo non basta. Restano
-di mezzo le versioni delle librerie, che cambiando cambiano i risultati, e un
-fatto sorprendente dell'aritmetica dei calcolatori: **sommare gli stessi
-numeri in ordine diverso non dà esattamente lo stesso totale**. I numeri con la
-virgola vengono arrotondati a ogni passaggio, e l'ordine in cui il calcolo li
-combina dipende da quanti esempi viaggiano insieme, da quale variante
-dell'algoritmo la libreria sceglie per quella forma di dati, da quanti
-processori se lo dividono. Le ultime cifre ballano; e in produzione ballano di
-più, perché lì quanti esempi viaggiano insieme lo decide il servizio momento
-per momento (è il *batching dinamico* della sezione sul deployment, che a
-quella ripetibilità rinuncia per scelta).
+Fissare il seme è il primo passo, non l'ultimo. Restano di mezzo le versioni
+delle librerie, che cambiando cambiano i risultati, e un fatto sorprendente
+dell'aritmetica dei calcolatori: **sommare gli stessi numeri in ordine diverso
+non dà esattamente lo stesso totale**. I numeri con la virgola vengono
+arrotondati a ogni passaggio, e l'ordine in cui il calcolo li combina non è
+sempre lo stesso: dipende da quanti esempi viaggiano insieme, da quale
+variante dell'algoritmo la libreria sceglie per quella forma di dati, da
+quanti processori se lo dividono. Le ultime cifre ballano. In produzione
+ballano di più, perché lì quanti esempi viaggiano insieme lo decide il
+servizio momento per momento: è il *batching dinamico* della sezione sul
+deployment, che a quella ripetibilità rinuncia per scelta.
 
 Conviene allora distinguere due promesse diverse, perché costano diversamente.
 La **riproducibilità bit a bit**, due esecuzioni che danno numeri identici fino
@@ -242,9 +242,9 @@ Durante l'esplorazione si provano decine, poi centinaia di configurazioni:
 ritmi di apprendimento diversi, architetture diverse, feature diverse. Senza un
 registro, dopo una settimana nessuno ricorda *quale* combinazione aveva dato
 quel 94%. Registrare, per ogni singola esecuzione (una *run*), che cosa si era
-impostato e com'è andata è la pratica che in gergo si chiama **experiment
-tracking**; strumenti come MLflow o Weights & Biases la industrializzano, ma
-l'idea non dipende dallo strumento e sta in poche righe.
+impostato e com'è andata: è la pratica che in gergo si chiama **experiment
+tracking**. Esistono servizi che la industrializzano, con interfacce e grafici,
+ma l'idea non dipende da nessuno di loro e sta in poche righe.
 
 `````{tab} Elementare
 
@@ -363,8 +363,9 @@ può cambiare *tutto*.
 Sculley e colleghi catalogano le forme di debito specifiche dell'ML, tra cui:
 
 - **Glue code**, la valanga di codice di raccordo attorno a una libreria di ML
-  generica: spesso il 95% di un sistema è incollaggio e solo il 5% è
-  apprendimento vero.
+  generica. Gli autori arrivano a dire che un sistema maturo può ritrovarsi con
+  al massimo il 5% di codice di apprendimento e almeno il 95% di incollaggio:
+  non è una misura, è l'ordine di grandezza a cui vogliono che si pensi.
 - **Pipeline jungles**: trasformazioni dei dati che si stratificano fino a
   diventare grovigli impossibili da modificare in sicurezza.
 - **Configuration debt**: la proliferazione di manopole (iperparametri,
@@ -374,16 +375,16 @@ Sculley e colleghi catalogano le forme di debito specifiche dell'ML, tra cui:
   feature a monte cambia distribuzione. Da qui il principio **CACE**:
   *Changing Anything Changes Everything*.
 
-Come si misura se un sistema è pronto per la produzione? La **ML Test Score**
-{cite}`breck2017ml` è una rubrica di 28 controlli concreti su quattro aree
-(dati e feature, sviluppo del modello, infrastruttura, monitoraggio) e il voto
-complessivo è dettato dall'area più debole: non basta un modello brillante se
-il monitoraggio è assente. All'estremo opposto della maturità c'è la
-**Continuous Delivery for Machine Learning** {cite}`sato2019continuous`, che
-estende al ML le pratiche di consegna continua del software: automatizzare
-l'intero ciclo (dati, training, valutazione, deploy), così che qualunque
-modello sia riproducibile e rilasciabile in modo affidabile, in ogni momento,
-con un clic invece che con un rito manuale.
+Come si misura se un sistema è pronto per la produzione? Una rubrica nota come
+**ML Test Score** mette in fila 28 controlli concreti su quattro aree (dati e
+feature, sviluppo del modello, infrastruttura, monitoraggio)
+{cite}`breck2017ml`. Il voto complessivo è dettato dall'area più debole: non
+basta un modello brillante se il monitoraggio è assente. All'estremo opposto
+della maturità sta la **Continuous Delivery for Machine Learning**
+{cite}`sato2019continuous`, che estende al ML le pratiche di consegna continua
+del software: automatizzare l'intero ciclo (dati, training, valutazione,
+deploy), così che qualunque modello sia riproducibile e rilasciabile in modo
+affidabile, in ogni momento, con un comando invece che con un rito manuale.
 
 `````
 

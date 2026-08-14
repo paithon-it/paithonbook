@@ -28,7 +28,8 @@ disegnata noi; qui il modello se la costruisce da sé.
 Nel testo scritto lo stesso passaggio è già avvenuto, ed è il precedente da cui
 questa storia nasce. Prima ogni parola aveva il suo gruppetto di numeri
 **fisso**, identico in qualunque frase (sono i *word embedding*, word2vec e
-simili, visti nella sezione sugli embedding); poi si è passati a numeri che
+simili, visti in [Rappresentare il
+testo](../NaturalLanguageProcessing/rappresentare-testo.md)); poi si è passati a numeri che
 **cambiano con la frase intorno**, così che la «pesca» del contadino e la
 «pesca» del pescatore smettano di essere la stessa cosa, ed è il salto dei
 grandi modelli pre-addestrati come BERT. Nell'audio è successo negli ultimi
@@ -116,6 +117,12 @@ migliaia di ore di audio senza etichette, a wav2vec 2.0 bastano appena **dieci
 minuti** di parlato trascritto per imparare a riconoscere la voce con una
 qualità che, solo pochi anni prima, richiedeva centinaia di ore.
 
+Con un'avvertenza che conviene tenersi, perché quel numero gira quasi sempre
+senza: l'orecchio da solo non ci arriva. Accanto a lui lavora un secondo
+modello, che sa com'è fatta la lingua e scarta le parole improbabili, ed è la
+coppia a fare il risultato. L'ascolto di montagne di audio risolve il problema
+di quante trascrizioni servono; non insegna l'italiano.
+
 `````
 
 `````{tab} Superiore
@@ -135,8 +142,8 @@ suono senza definirlo a mano.
 
 Attenzione a *come* avviene la scelta, perché non è quella che verrà definita
 nella sezione sui codec neurali: qui non si cerca l'entrata più vicina in
-distanza. $\mathbf{z}_t$ viene proiettato su una matrice di logit
-$\mathbf{L} \in \mathbb{R}^{G \times V}$ (con $G = 2$ gruppi e $V = 320$ voci) e l'indice
+distanza. $\mathbf{z}_t$ viene proiettato su una griglia di $G \times V$
+**logit** (con $G = 2$ gruppi e $V = 320$ voci per gruppo) e l'indice
 è l'`argmax` della **Gumbel-softmax** di quei logit, cioè della softmax dei
 logit perturbati con rumore di Gumbel e temperatura $\tau$; all'indietro si usa
 lo *straight-through*, che rende derivabile una scelta discreta. La differenza
@@ -183,8 +190,7 @@ Il cuore del compito si vede in poche righe di NumPy, e la domanda a cui
 risponde è semplice: il modello punta sull'unità giusta o su uno dei
 distrattori? Per ciascuno dei candidati misuriamo quanto somiglia a ciò che il
 modello si è fatto in mente del tratto coperto, e trasformiamo i punteggi in
-probabilità che sommano a uno. Un modello ben addestrato ne concentra quasi
-tutta sull'unità corretta.
+probabilità che sommano a uno.
 
 ```python
 import numpy as np
@@ -220,6 +226,15 @@ print("scelto:", int(prob.argmax()), "(0 = unita' giusta)")
 prob. per candidato: [0.672 0.    0.    0.271 0.056]
 scelto: 0 (0 = unita' giusta)
 ```
+
+L'unità giusta vince, ma il margine merita uno sguardo: si prende due terzi
+della probabilità, e un distrattore pescato a caso se ne prende un quarto. Non è
+un difetto del conto, è la dimensione. Il coseno fra due vettori presi a caso si
+allontana da zero tanto più quanto meno numeri quei vettori hanno, e otto sono
+pochissimi: capita spesso che un distrattore finisca vicino al bersaglio per
+puro accidente. Nel modello vero i vettori hanno centinaia di componenti e i
+distrattori sono cento, non quattro, e il compito che sembra facile qui torna a
+essere difficile là.
 
 ## HuBERT: darsi le etichette da soli
 
@@ -293,10 +308,10 @@ motore dell'apprendimento) e differiscono nel *bersaglio*. Uno lo riconosce
 tra distrattori (contrastivo), l'altro lo predice come una classe (predizione
 mascherata su unità date da un clustering iterativo). Due risposte alla stessa
 domanda: quale «alfabeto del suono» far indovinare al modello, e come
-definirlo senza etichette umane. E differiscono anche in *come* quel bersaglio
-viene definito: wav2vec 2.0 lo sceglie con la Gumbel-softmax sui logit, in linea
-con il resto dell'addestramento, mentre HuBERT lo prende da un k-means fatto a
-parte e rifatto ogni tanto.
+definirlo senza etichette umane. E differiscono anche in *quando* quel bersaglio
+viene deciso: wav2vec 2.0 se lo costruisce mentre impara, con lo stesso
+addestramento che poi lo deve indovinare, mentre HuBERT lo prende da un
+raggruppamento fatto a parte, prima, e rifatto ogni tanto.
 
 ## A cosa servono
 
@@ -306,9 +321,9 @@ parte dei sistemi audio moderni. Il caso di scuola è il riconoscimento vocale
 capitolo successivo userà per intero)
 a **basse risorse**: lingue e dialetti per cui esistono poche ore trascritte
 partono da un encoder addestrato su tanto audio non etichettato e raggiungono
-prestazioni prima impensabili; il collegamento diretto con la pipeline ASR del
-capitolo sullo Speech Recognition, dove la testa CTC o il decoder con
-attenzione si limiterà a rifinire ciò che il pretraining ha già preparato. Ma
+prestazioni prima impensabili. Il collegamento con il capitolo sullo Speech
+Recognition è diretto: la parte che lì trasformerà le rappresentazioni in parole
+non fa che rifinire ciò che il pretraining ha già preparato. Ma
 gli stessi vettori servono a classificare suoni ambientali, identificare chi
 parla, riconoscere emozioni o lingua, e (come vedremo) fanno da
 rappresentazione di partenza anche per la **generazione** di audio, dove le

@@ -7,32 +7,44 @@ e quando si romperà. Ma la pressione dentro un vaso non si misura senza
 infilarci un catetere: un gesto invasivo, rischioso, che sull'arteria malata
 proprio non si può fare. Quello che si riesce ad avere, invece, è un'immagine:
 iniettando un tracciante e filmandolo con la risonanza, si vede *dove va* il
-sangue, la sua concentrazione istante per istante. La velocità, in qualche
-modo, è sotto gli occhi. La pressione no.
+sangue, la sua concentrazione istante per istante. E siccome la macchia di
+tracciante viaggia con il sangue che la porta, guardarla spostarsi è quasi
+vedere la corrente: la velocità, in qualche modo, è sotto gli occhi. La
+pressione no.
 
 Nel 2020 Maziar Raissi, Alireza Yazdani e George Karniadakis pubblicano su
 *Science* un lavoro che chiude proprio questo divario
 {cite}`raissi2020hidden`: il metodo si chiama *Hidden Fluid Mechanics*, e fa
 una cosa che a prima vista sembra magia. Dà in pasto a una rete le immagini
-del tracciante (la sola concentrazione, niente sensori di pressione) e le
-impone di rispettare le equazioni di Navier–Stokes, la fisica esatta di come
-un fluido si muove. La rete, per essere coerente con quelle equazioni *e* con
-il filmato, è costretta a ricostruire i **campi** che nel filmato non ci sono:
-velocità e, soprattutto, **pressione**. (Un campo, qui, è semplicemente una
+del tracciante (nell'articolo sono immagini simulate: la sola concentrazione,
+niente sensori di pressione) e le impone di rispettare le equazioni di
+Navier–Stokes, con cui si descrive il moto di un fluido. La rete, per essere
+coerente con quelle equazioni *e* con il filmato, è costretta a ricostruire i
+**campi** che nel filmato non ci sono: velocità e, soprattutto,
+**pressione**. (Un campo, qui, è semplicemente una
 grandezza che ha un valore in ogni punto dello spazio e in ogni istante: la
 velocità del sangue in quel punto, la pressione in quel punto.)
 
 La magia si scioglie appena si guarda cosa dicono quelle equazioni, ed è bene
 scioglierla subito. Navier–Stokes non è un elenco di fatti separati: **lega**
-la velocità alla pressione, dice che un fluido accelera dove la pressione
-cala e rallenta dove cresce. Quindi le due grandezze non sono indipendenti, e
-chi conosce l'una in tutti i punti e in tutti gli istanti ha già, implicita,
-l'altra. Il filmato del tracciante dà la prima; la legge, imposta come vincolo
-nella loss, tira fuori la seconda. Su una simulazione di aneurisma
+la velocità alla pressione, e dice una cosa precisa, che un fluido accelera
+verso i punti dove la pressione è più bassa. Le due grandezze non sono quindi
+indipendenti, ed è un legame che si può percorrere all'indietro: vista
+l'accelerazione del sangue in ogni punto e in ogni istante, di quanto la
+pressione debba calare da un punto al vicino non si è più liberi di
+decidere. Il filmato del tracciante dà la velocità; la legge, imposta come
+vincolo nella loss, tira fuori la pressione. Su una simulazione di aneurisma
 intracranico il metodo stima la pressione che nessuno strumento aveva
-misurato. Questa è la vera ragione per cui vale la pena studiare le PINN: non
-tanto rifare quello che i solutori classici fanno già benissimo, ma leggere il
-non misurabile a partire dal misurabile.
+misurato.
+
+Con un limite che va detto subito, perché è dentro l'equazione e non nel
+metodo: in un fluido incomprimibile la pressione compare solo attraverso le
+sue *differenze*, quindi da lì si ricava di quanto la pressione cambia da un
+punto all'altro, non a che livello stia. Il valore assoluto resta indefinito
+finché non lo si aggancia a una misura sola, da qualche parte. È moltissimo lo
+stesso, ed è la vera ragione per cui vale la pena studiare le PINN: non tanto
+rifare quello che i solutori classici fanno già benissimo, ma leggere il non
+misurabile a partire dal misurabile.
 
 ## Il problema inverso, cioè il superpotere
 
@@ -102,23 +114,27 @@ E non è nemmeno un vantaggio della *rete*. La stessa formulazione (residuo
 discreto più dati, minimizzati insieme al parametro incognito) si può montare
 su un campo discretizzato su griglia anziché su una rete neurale, ed è quello
 che fanno Karnakov, Litvinov e Koumoutsakos con ODIL, riportando su problemi
-inversi di riferimento un costo computazionale **da tre a cinque ordini di
-grandezza inferiore** a quello delle PINN {cite}`karnakov2024discrete`. Il
+di riferimento un costo computazionale **da due a cinque ordini di grandezza
+inferiore** a quello delle PINN: due o tre nell'inferenza di una
+conducibilità, che è il caso inverso, cinque su un problema a valori iniziali
+risolto con Newton, e su una CPU sola {cite}`karnakov2024discrete`. Il
 problema inverso resta il terreno migliore per le PINN, ma «migliore per le
 PINN» non vuol dire «senza rivali».
 
 `````
 
 In codice, la promozione del parametro a incognita addestrabile è tre righe,
-le stesse richiamate dalla sezione precedente: il coefficiente fisico è un
-tensore come un altro, e finisce nella lista che l'ottimizzatore aggiorna.
+le stesse della sezione precedente con un altro coefficiente al posto della
+rigidezza della molla: il parametro fisico diventa una manopola come tutte le
+altre, e finisce nella lista di quelle che l'addestramento aggiorna.
 
-```python
-import torch
+```{code-block} python
+:class: pt-non-eseguibile
 
 # Il parametro fisico ignoto (qui la diffusivita', cioe' quanto in fretta
 # il calore si propaga nel materiale) diventa una manopola addestrabile,
-# indistinguibile da un peso qualsiasi della rete.
+# indistinguibile da un peso qualsiasi della rete. `rete` e' la candidata
+# soluzione della sezione precedente.
 alpha = torch.nn.Parameter(torch.tensor(0.5))          # valore iniziale di comodo
 ottimizzatore = torch.optim.Adam(                      # ottimizzato insieme ai pesi
     list(rete.parameters()) + [alpha], lr=1e-3
@@ -135,8 +151,9 @@ sono ancora una promessa da verificare.
 *Hidden Fluid Mechanics*: ricostruire campi di velocità e pressione da dati di
 imaging sparsi e rumorosi, imponendo Navier–Stokes come vincolo
 {cite}`raissi2020hidden`. Il valore non è la velocità di calcolo (un solutore
-maturo è più rapido) ma la capacità di *assimilare* misure reali e inferire
-ciò che quelle misure non contengono.
+maturo è più rapido) ma la capacità di tenere conto di misure reali tutte
+insieme, che in gergo si dice *assimilarle*, e di ricavare da lì ciò che
+quelle misure non contengono.
 
 **Identificazione di parametri nei materiali.** Da poche misure di
 deformazione o di temperatura, stimare grandezze nascoste trattandole come
@@ -167,31 +184,36 @@ interessante di tutte.
 
 Sarebbe disonesto fermarsi qui. Le PINN hanno modi di fallire ben documentati,
 e conoscerli è parte del mestiere. Il riferimento obbligato è il lavoro di
-Krishnapriyan, Gholami, Zhe, Kirby e Mahoney
-{cite}`krishnapriyan2021characterizing`, che mostra una cosa scomoda: **una
-PINN può fallire anche su equazioni semplici**, non per un difetto della rete
-(è abbastanza espressiva) ma perché l'impostazione stessa rende il paesaggio
-della loss quasi impossibile da percorrere per la discesa del gradiente.
+Krishnapriyan, Gholami, Zhe, Kirby e Mahoney, che mostra una cosa scomoda:
+**una PINN può fallire anche su equazioni semplici**
+{cite}`krishnapriyan2021characterizing`. Non perché la rete sia troppo povera
+per disegnare quella curva, che lo saprebbe fare benissimo, ma perché il modo
+in cui il problema è impostato rende quasi impercorribile la discesa verso il
+punteggio minimo.
 
 Il primo motivo è che la loss è un **tiro alla fune**.
 
 `````{tab} Elementare
 
-Ricordi la loss della PINN: due termini sommati, uno che tira verso i dati e
-uno che tira verso la fisica. È letteralmente un tiro alla fune, con due
-squadre alle estremità della corda. E c'è una manopola che decide quanto è
-forte una delle due squadre: è quel numero 100 che nella sezione precedente
-moltiplicava il termine della partenza. Chi scrive le formule la chiama
-$\lambda$, «lambda», che è solo una lettera greca usata come nome.
+Ricordi la loss della PINN: due termini sommati, uno che tira verso la fisica
+e uno che tira verso quello che si sa già, cioè le misure e il punto di
+partenza. È letteralmente un tiro alla fune, con due squadre alle estremità
+della corda. E c'è una manopola che decide quanto è forte una delle due
+squadre: è quel numero 100 che nella sezione precedente moltiplicava il
+termine della partenza. Chi scrive le formule le dà per nome una lettera
+greca, «lambda»; e la mette davanti all'uno o all'altro termine secondo quale
+delle due squadre gli sembra debole, il che non cambia niente, perché a
+contare è solo il rapporto fra le due forze.
 
 Se la giri troppo da una parte, la fisica vince e la rete produce una curva
 liscia e regolare che però ignora le misure; se la giri troppo dall'altra, la
 rete si incolla ai dati rumorosi e se ne infischia della legge. La soluzione
 buona sta dove le due forze si bilanciano, ma trovare quel punto è un'arte,
-non una formula: con la manopola su 1 esce un risultato, su 100 un altro, e
-nessuna ricetta universale dice quale sia il valore giusto. Si prova, si
-sbaglia, si riprova. Lo abbiamo già visto succedere nella sezione precedente,
-e non su un caso patologico: sulla molla.
+non una formula: nessuna ricetta universale dice quale sia il valore giusto.
+Si prova, si sbaglia, si riprova. Sulla molla della sezione precedente
+l'abbiamo fatto: con la manopola su 1 la curva finiva lontana dalla risposta,
+con la manopola su 100 molto più vicina, e il solo modo di saperlo era che
+lì, per una volta, la risposta la conoscevamo.
 
 `````
 
@@ -205,25 +227,31 @@ l'uno peggiora l'altro, e il peso $\lambda$ ne stabilisce a mano il
 compromesso. Peggio: il termine fisico contiene operatori differenziali di
 ordine alto (derivate seconde, a volte quarte) che rendono il problema **mal
 condizionato**, nel senso preciso visto nei richiami di analisi numerica, e la
-discesa rallenta o si blocca. De Ryck e colleghi {cite}`deryck2024operator`
-individuano la radice del guasto non nell'ottimizzatore ma nell'equazione: a
-essere mal condizionato è un preciso operatore differenziale, il quadrato
-hermitiano di quello della PDE. Nel regime in cui la rete si comporta come un
-modello lineare, quell'operatore coincide con l'Hessiano della loss, ed è da
+discesa rallenta o si blocca. De Ryck e colleghi individuano la radice del
+guasto non nell'ottimizzatore ma in un operatore preciso, che mette insieme il
+**quadrato hermitiano** dell'operatore della PDE e il nucleo tangente del
+modello: se quello è mal condizionato l'addestramento è lento o impraticabile
+{cite}`deryck2024operator`. Nel regime in cui la rete si comporta come un
+modello lineare quell'operatore coincide con l'Hessiano della loss, ed è da
 questa lettura che gli autori ricavano il precondizionamento che propongono.
-Krishnapriyan et al. {cite}`krishnapriyan2021characterizing` mostrano
-che è proprio la regolarizzazione soft (imporre la PDE come penalità anziché
-come vincolo esatto) a deformare il paesaggio, e propongono rimedi come la
-*curriculum regularization* (partire da una versione addolcita dell'equazione
-e irrigidirla gradualmente) e una decomposizione sequenziale nel tempo, con
-guadagni fino a uno o due ordini di grandezza sull'errore.
+
+Krishnapriyan e colleghi guardano la stessa cosa da un altro lato e puntano il
+dito sulla regolarizzazione soft, cioè sull'imporre la PDE come penalità
+anziché come vincolo esatto: è quella, mostrano, a deformare il paesaggio, e
+fra i guai che porta c'è proprio un problema peggio condizionato
+{cite}`krishnapriyan2021characterizing`. I
+rimedi che propongono sono due, e valgono fino a uno o due ordini di grandezza
+sull'errore: la *curriculum regularization*, cioè partire da una versione
+addolcita dell'equazione e irrigidirla gradualmente, e una decomposizione
+sequenziale nel tempo.
 
 `````
 
-Il secondo motivo ha un nome tecnico ma un'intuizione semplice: lo **spectral
-bias**. Le reti neurali imparano prima le componenti *lisce* di una funzione
-(gli andamenti lenti, le tendenze globali) e faticano molto di più con le
-componenti ad **alta frequenza**, le oscillazioni rapide e i dettagli fini.
+Il secondo motivo è che una rete impara prima le parti *lisce* di una
+funzione, gli andamenti lenti e le tendenze d'insieme, e fatica molto di più
+con le oscillazioni rapide e i dettagli fini, cioè con le **alte frequenze**.
+Anche questo ha un nome tecnico, lo **spectral bias**, ma l'intuizione è tutta
+lì.
 
 `````{tab} Elementare
 
@@ -240,13 +268,12 @@ dettagli che contano.
 
 `````{tab} Superiore
 
-Il fenomeno, documentato da Rahaman et al. {cite}`rahaman2019spectral` e
-noto anche come *frequency principle* {cite}`xu2020frequency`, è che una
-rete a strati
-densi apprende le componenti di Fourier a bassa frequenza in poche iterazioni
-e quelle ad alta frequenza in un numero di iterazioni molto maggiore: la
-velocità di apprendimento decresce con la frequenza. Per una PINN è un
-problema strutturale, perché molte soluzioni interessanti (fronti ripidi,
+Una rete a strati densi apprende le componenti di Fourier a bassa frequenza in
+poche iterazioni e quelle ad alta frequenza in un numero di iterazioni molto
+maggiore: la velocità di apprendimento decresce con la frequenza. Il fenomeno
+è documentato da Rahaman e colleghi {cite}`rahaman2019spectral` e va anche
+sotto il nome di *frequency principle* {cite}`xu2020frequency`. Per una PINN è
+un problema strutturale, perché molte soluzioni interessanti (fronti ripidi,
 strati limite, regimi turbolenti) vivono proprio nelle alte frequenze. Si
 mitiga con accorgimenti: *Fourier features* in ingresso, funzioni di
 attivazione periodiche, riscalamenti.
@@ -261,12 +288,20 @@ farci passi enormi. Si costruisce senza fatica un problema la cui rigidezza
 cresce di cinque ordini di grandezza mentre il contenuto in frequenza della
 soluzione non si muove di un millimetro. Alle PINN i problemi stiff danno
 comunque filo da torcere, ma per la ragione vista poco sopra, non per lo
-spectral bias: Wang, Teng e Perdikaris {cite}`wang2021understanding`
-identificano il modo di fallire proprio nello squilibrio dei gradienti che la
-rigidezza produce, e De Ryck e colleghi {cite}`deryck2024operator` nel
-condizionamento dell'operatore. Quel che lo spectral bias spiega davvero sono
-i fronti ripidi e gli strati limite, che sono *localmente* ad alta frequenza,
-e fra questi il transitorio iniziale di un problema stiff.
+spectral bias: Wang, Teng e Perdikaris riconoscono il modo di fallire nello
+squilibrio dei gradienti che la rigidezza produce
+{cite}`wang2021understanding`, De Ryck e colleghi nel condizionamento
+dell'operatore {cite}`deryck2024operator`. Quel che lo spectral bias spiega
+davvero sono i fronti ripidi e gli strati limite, che sono *localmente* ad
+alta frequenza, e fra questi il transitorio iniziale di un problema stiff.
+
+C'è poi un caso che lo spectral bias non copre affatto, ed è il più duro:
+quando la soluzione ha una **discontinuità vera**, come l'urto di una legge di
+conservazione non viscosa. Lì il residuo puntuale non è nemmeno definito
+sull'urto, perché le derivate non esistono, e la PINN in forma forte non ha a
+che cosa aggrapparsi: non è che impari piano, è che il problema che sta
+minimizzando non è quello giusto. La strada, in quel caso, è riscrivere il
+vincolo in forma **debole** o integrale, che è un'altra famiglia di metodi.
 
 Sugli **orizzonti temporali lunghi** agisce invece un secondo modo di
 fallire, da tenere distinto dal primo: non è lo spectral bias detto in altre
@@ -285,28 +320,29 @@ correggere.
 `````
 
 E poi c'è il confronto onesto con i solutori classici, che vale la pena
-ripetere senza sconti. Su un problema *standard* (equazione nota, geometria
-regolare, nessun dato sperimentale da fondere) le differenze finite e gli
-elementi finiti, cioè i due modi classici di stendere la griglia e avanzare
-visti in apertura di capitolo, fatti bene **vincono quasi sempre**: sono più
-veloci di ordini di grandezza, più accurati, e portano in dote qualcosa che a
-una rete addestrata manca del tutto, la garanzia dimostrata che infittendo la
-griglia l'errore scende, e di quanto. Una PINN che impiega
-minuti dove un solutore maturo impiega millisecondi, e che ogni tanto fallisce
-senza preavviso, non è un progresso: è un passo indietro. Le PINN convengono
-dove i classici arrancano (dati e leggi da fondere, dimensioni troppe per
-qualunque griglia, problemi inversi) non altrove.
+ripetere senza sconti. Su un problema *standard* (equazione nota, forma
+regolare, nessun dato sperimentale da fondere) il conto a passettini visto in
+apertura di capitolo, nelle sue due versioni mature (le differenze finite e
+gli elementi finiti), fatto bene **vince quasi sempre**: è più veloce di
+ordini di grandezza, più accurato, e porta in dote qualcosa che a una rete
+addestrata manca del tutto: la garanzia, dimostrata sotto ipotesi che si sanno
+controllare, che infittendo la griglia l'errore scende, e di quanto. Una PINN
+che impiega minuti dove un solutore maturo impiega millisecondi, e che ogni
+tanto fallisce senza preavviso, non è un progresso: è un passo indietro. Le
+PINN convengono dove i classici arrancano (dati e leggi da fondere, dimensioni
+troppe per qualunque griglia, problemi inversi) non altrove.
 
 ## Oltre le PINN: imparare il mestiere, non il compito
 
 C'è un limite più profondo di tutti quelli visti finora, e superarlo apre la
-direzione più promettente. Una PINN risolve **un** problema, e uno soltanto:
-fissati una volta per tutte la regione in cui si cerca la soluzione (il
-**dominio**), quello che accade ai suoi bordi (le **condizioni al contorno**)
-e ciò che alimenta il fenomeno dall'esterno, per esempio una fiamma sotto una
-sbarra (la **sorgente**). Cambia la condizione iniziale e devi riaddestrare da
-capo. È come se, per ogni caffè con una temperatura di partenza diversa,
-dovessi rifare tutti i calcoli daccapo.
+direzione più promettente. Una PINN risolve **un** problema, e uno soltanto.
+Quando l'addestramento finisce sono fissati per sempre la regione in cui si
+cerca la soluzione (il **dominio**), il punto da cui si parte (la
+**condizione iniziale**), quello che accade ai bordi (le **condizioni al
+contorno**) e ciò che alimenta il fenomeno dall'esterno, per esempio una
+fiamma sotto una sbarra (la **sorgente**). Cambia uno solo di questi
+ingredienti e si riaddestra da capo: è come se, per ogni caffè che parte da
+una temperatura diversa, si dovessero rifare tutti i conti.
 
 `````{tab} Elementare
 
@@ -329,15 +365,21 @@ $\mathcal{G}: \mathcal{A} \to \mathcal{U}$ tra **spazi di funzioni**:
 l'ingresso non è un vettore ma una funzione intera (il campo delle condizioni
 iniziali, dei coefficienti, della sorgente) e l'uscita è la funzione
 soluzione. Due architetture hanno segnato il campo. Il **DeepONet** di Lu,
-Jin, Pang, Zhang e Karniadakis {cite}`lu2021learning` poggia sul teorema di
-approssimazione universale *degli operatori*, dimostrato da Tianping Chen e
-Hong Chen nel 1995 {cite}`chen1995universal`: una rete *branch* codifica la
+Jin, Pang, Zhang e Karniadakis poggia sul teorema di approssimazione
+universale *degli operatori*, dimostrato da Tianping Chen e Hong Chen nel 1995
+per operatori **continui** su un compatto di funzioni, e come tutti i teoremi
+di quella famiglia dice che una rete abbastanza grande esiste, non quanto
+debba essere grande {cite}`chen1995universal`: una rete *branch* codifica la
 funzione d'ingresso campionata su un insieme di sensori, una rete *trunk*
 codifica il punto di query, e il loro prodotto scalare dà il valore della
-soluzione lì. Il **Fourier Neural Operator** di Li, Kovachki, Azizzadenesheli,
-Liu, Bhattacharya, Stuart e Anandkumar {cite}`li2021fourier` parametrizza il
-nucleo integrale direttamente nello spazio di Fourier: ogni strato trasforma,
-filtra le basse frequenze con pesi appresi, antitrasforma. Il risultato è
+soluzione lì {cite}`lu2021learning`. Il **Fourier Neural Operator** di Li,
+Kovachki e colleghi parametrizza il nucleo integrale direttamente nello spazio
+di Fourier {cite}`li2021fourier`: ogni strato trasforma, tiene le sole
+frequenze basse e le ripesa con parametri appresi, antitrasforma. Le alte
+frequenze non sono perdute per sempre, altrimenti il filtro sarebbe un
+passa-basso e basta: a rimetterle in gioco sono la trasformazione lineare che
+scorre accanto al ramo spettrale e le nonlinearità fra uno strato e l'altro.
+Il risultato è
 *invariante alla risoluzione* (addestri su una griglia, valuti su un'altra) e
 su Navier–Stokes gli autori dichiarano un'inferenza fino a circa **tre ordini
 di grandezza** più rapida di un solutore pseudospettrale.
@@ -346,27 +388,28 @@ Quella cifra però va presa con le stesse pinze che questo capitolo pretende di
 usare sulle PINN, e sarebbe scorretto non farlo. Nel corpo dello stesso
 articolo il cronometro dà 5 millisecondi contro 2,2 secondi, cioè **440
 volte**, non mille. Il confronto non è a parità di accuratezza: il solutore
-pseudospettrale è quello che ha *generato* i dati di addestramento, e gli
-stessi autori riportano per il loro operatore l'8% di errore alla viscosità
-più bassa. E il confronto è già stato rifatto da altri: McGreivy e Hakim, in
-una rassegna sistematica del settore, replicano quel risultato con un metodo
-Discontinuous Galerkin e trovano un vantaggio di **7 volte**, per di più
-mettendo l'operatore neurale su GPU contro un portatile
-{cite}`mcgreivy2024weak`. La stessa rassegna esamina 76 articoli e ne trova 60
-che si confrontano con una baseline debole. Gli operatori neurali restano la
-direzione più interessante di tutte; i loro numeri di targa vanno letti come
-si leggono tutti gli altri.
+pseudospettrale è quello che ha *generato* i dati di addestramento, e altrove
+nello stesso articolo, nella tabella dell'accuratezza, l'errore relativo
+dell'operatore alle due viscosità più basse che provano sta fra l'8% e il 19%
+a seconda di quanti esempi gli si danno da studiare. E il confronto è già
+stato rifatto da altri: McGreivy e Hakim, in una rassegna sistematica del
+settore, replicano quel risultato con un metodo Discontinuous Galerkin e
+trovano un vantaggio di **7 volte**, per di più mettendo l'operatore neurale
+su GPU contro un portatile {cite}`mcgreivy2024weak`. E fra gli articoli che
+dichiarano di battere un metodo numerico classico, la stessa rassegna ne trova
+60 su 76 che si confrontano con una baseline debole. Gli operatori neurali
+restano la direzione più interessante di tutte; i loro numeri di targa vanno
+letti come si leggono tutti gli altri.
 
 `````
 
-Ed eccoci al meteo. I modelli neurali che prevedono il tempo globale in pochi
-secondi (là dove i centri di calcolo tradizionali macinano equazioni per ore
-su un supercomputer) sono costruiti proprio su operatori appresi, cioè su reti
-che hanno imparato *il metodo* invece della singola risposta; nello spirito
-del Fourier Neural Operator, uno dei due capostipiti della famiglia, che
-lavora scomponendo il campo nelle onde elementari di cui è fatto. Le
-architetture concrete variano poi da modello a modello (reti su grafo,
-Transformer, varianti spettrali). Una
+Ed eccoci al meteo. I modelli neurali che prevedono il tempo su tutto il
+pianeta in pochi secondi, là dove i centri di calcolo tradizionali macinano
+equazioni per ore su un supercomputer, sono costruiti proprio su operatori
+appresi: reti che hanno imparato *il metodo* invece della singola risposta. È
+lo spirito del Fourier Neural Operator, che lavora scomponendo il campo nelle
+onde elementari di cui è fatto; le architetture concrete poi variano da
+modello a modello (reti su grafo, Transformer, varianti spettrali). Una
 previsione che prima richiedeva ore di supercalcolo esce ora in un tempo
 brevissimo, a parità sorprendente di qualità sulle scale di alcuni giorni. È
 un risultato che va maneggiato con prudenza (restano aperte questioni su
@@ -376,7 +419,8 @@ passa dall'imparare l'operatore dai dati.
 
 ## Congedo: far collaborare conoscenza e dati
 
-Chiudiamo qui il capitolo, e con esso la parte tecnica di questo libro. Le
+Chiudiamo qui il capitolo, e con esso la lunga rassegna di modelli che occupa
+gran parte di questo libro. Le
 PINN valgono, alla fine, più come *simbolo* che come tecnica: le migliori fra
 quelle che abbiamo incontrato non hanno chiesto di scegliere tra la
 conoscenza umana e i dati. Per secoli la scienza ha scritto leggi e le ha
@@ -391,9 +435,13 @@ i dati non coprono; i dati piegano la fisica dove il modello è incompleto.
 Non una che sostituisce l'altra: una collaborazione, scritta in una loss.
 
 È l'ultima delle tante idee che abbiamo montato pezzo per pezzo, dai vettori
-dei primi capitoli fino a qui. Nelle Conclusioni proviamo a guardare l'intero
-percorso dall'alto: a cercare il disegno che, capitolo per capitolo, era
-troppo vicino per vedersi.
+dei primi capitoli fino a qui. Da qui in avanti il libro cambia domanda: non
+più che cosa un modello sa fare, ma che cosa succede quando lo si mette
+davanti a delle persone. I capitoli che seguono parlano di portarlo in
+produzione e tenercelo, di farsi spiegare perché decide quello che decide, e
+di che cosa dobbiamo a chi quelle decisioni le subisce. Solo alla fine, nelle
+Conclusioni, guarderemo l'intero percorso dall'alto: a cercare il disegno che,
+capitolo per capitolo, era troppo vicino per vedersi.
 
 `````{tab} Elementare
 
@@ -422,8 +470,9 @@ troppo vicino per vedersi.
   compito**: una volta addestrate rispondono a qualunque situazione simile
   senza rifare la fatica. È il motivo per cui certe previsioni meteo escono in
   secondi anziché in ore. I confronti di velocità che si leggono in giro
-  vanno però verificati: rifatti da altri, i mille di partenza sono diventati
-  sette {cite}`mcgreivy2024weak`.
+  vanno però verificati: una di queste reti era stata data per mille volte più
+  rapida del metodo classico, e quando altri hanno rifatto il confronto per
+  bene è risultata sette volte più rapida {cite}`mcgreivy2024weak`.
 ```
 
 `````
@@ -438,7 +487,7 @@ troppo vicino per vedersi.
   una variabile addestrabile, stimata *insieme* alla soluzione. Il vantaggio
   sui classici è di **uniformità**, non di complessità: lo stato aggiunto dà
   il gradiente in due risoluzioni {cite}`plessix2006adjoint`, e sugli stessi
-  benchmark ODIL costa da tre a cinque ordini di grandezza meno
+  benchmark ODIL costa da due a cinque ordini di grandezza meno
   {cite}`karnakov2024discrete`.
 - Applicazioni reali dove il vantaggio è concreto: emodinamica e fluidodinamica,
   identificazione di parametri nei materiali, inversione geofisica. I grandi

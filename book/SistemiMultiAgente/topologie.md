@@ -16,9 +16,8 @@ squadra di agenti, e in fondo al conto dei token ha lasciato una frase che vale
 la pena riprendere: **la topologia decide l'esponente**. Detta senza simboli: se
 ognuno legge tutto quello che dicono gli altri il conto cresce molto più in
 fretta che se ognuno legge soltanto il proprio pezzo, e non di una quantità
-fissa, ma di un divario che si allarga man mano che la squadra cresce. La stessa
-squadra di quattro agenti costa $O(N^2R^2)$ token nel primo caso e $O(NR^2)$ nel
-secondo. Non cambia il modello, non cambia il numero dei partecipanti: cambia
+fissa, ma di un divario che si allarga man mano che la squadra cresce. Non
+cambia il modello, non cambia il numero dei partecipanti: cambia
 chi parla con chi.
 
 Un avviso sulla parola, perché in questo capitolo ha due sensi e li ha vicini.
@@ -89,12 +88,12 @@ $$
 \qquad
 \Delta(G) = \max_{v \in V} \deg(v),
 \qquad
-b(v) = \frac{\bigl|\{(s,t) : v \in \mathrm{sp}(s,t)\}\bigr|}{\binom{N}{2}},
+\ell(v) = \frac{\bigl|\{(s,t) : v \in \mathrm{sp}(s,t)\}\bigr|}{\binom{N}{2}},
 $$
 
 dove $\mathrm{diam}(G)$ è il **diametro** (il più lungo dei cammini minimi,
 cioè il caso peggiore di quanti passaggi servono), $\Delta(G)$ è il **grado
-massimo** (quanti canali fanno capo al nodo più connesso) e $b(v)$ è il
+massimo** (quanti canali fanno capo al nodo più connesso) e $\ell(v)$ è il
 **carico** del nodo, cioè la frazione di coppie $(s,t)$ per cui almeno un
 cammino minimo $\mathrm{sp}(s,t)$ attraversa $v$ senza averlo come estremo. È
 una versione semplificata della centralità di intermediazione (la *betweenness*)
@@ -107,9 +106,9 @@ stelle $\kappa(G) = 1$, e ogni nodo interno è un punto di articolazione.
 
 Sugli **alberi** le tre non sono indipendenti, ed è questo a rendere il progetto
 interessante. Con $N-1$ archi in tutto non c'è margine: abbassare il diametro
-obbliga a concentrare gli archi da qualche parte, il che alza $\Delta$ e $b$; e
-siccome $\kappa(G) = 1$, il nodo con $b$ alto è per costruzione quello la cui
-rimozione taglia più coppie. In una rete di calcolatori $b(v)$ alto significa un
+obbliga a concentrare gli archi da qualche parte, il che alza $\Delta$ e $\ell$; e
+siccome $\kappa(G) = 1$, il nodo con $\ell$ alto è per costruzione quello la cui
+rimozione taglia più coppie. In una rete di calcolatori $\ell(v)$ alto significa un
 instradatore congestionato; in una squadra di agenti significa una finestra di
 contesto che deve contenere tutto ciò che transita, e questo è un limite più
 duro, perché la qualità della lettura degrada molto prima del limite dichiarato
@@ -118,7 +117,7 @@ duro, perché la qualità della lettura degrada molto prima del limite dichiarat
 Va detto subito fin dove arriva questo vincolo, perché è facile prenderlo per
 una legge e non lo è: è la conseguenza di aver scelto la famiglia di grafi più
 povera di archi che esista. Non discende dalle definizioni di
-$\mathrm{diam}$, $\Delta$ e $b$, discende da $|E| = N-1$. Concedendo qualche arco
+$\mathrm{diam}$, $\Delta$ e $\ell$, discende da $|E| = N-1$. Concedendo qualche arco
 in più il baratto si scioglie, e questa sezione ci torna sopra quando avrà la
 tabella davanti.
 
@@ -176,7 +175,8 @@ cantiere non rallenta, si ferma.
 
 `````{tab} Superiore
 
-Con $N$ lavoratori la stella ha $\mathrm{diam}(G) = 2$ e $\Delta(G) = N$, tutto
+Con $N$ lavoratori (quindi $N+1$ nodi in tutto, supervisore compreso) la stella
+ha $\mathrm{diam}(G) = 2$ e $\Delta(G) = N$, tutto
 concentrato sul centro. Ma il costo che morde non è il numero di archi, è ciò
 che vi scorre dentro: il supervisore riceve $N$ rapporti, e se ciascuno è lungo
 $\bar{m}$ token la sua finestra cresce come
@@ -319,10 +319,12 @@ D = \log_b\!\bigl(N(b-1)+1\bigr) - 1,
 \qquad
 \mathrm{diam}(G) = 2D,
 \qquad
-\Delta(G) = b+1,
+\Delta(G) = b+1 \;\; (D \ge 2),
 $$
 
-dove $D$ è il numero di livelli sotto la radice. Il diametro passa da lineare a
+dove $D$ è il numero di livelli sotto la radice. Il $b+1$ è il grado di un nodo
+interno, $b$ figli più il genitore, e vale appena esiste un nodo interno che non
+sia la radice: a $D = 1$ l'albero è la stella e il massimo torna a essere $b$. Il diametro passa da lineare a
 **logaritmico** in $N$: è tutto il guadagno della gerarchia, e con $b = 2$ e
 $N = 15$ vale $D = 3$, $\mathrm{diam}(G) = 6$ contro i $14$ della catena.
 
@@ -352,7 +354,10 @@ multi-agente si affronta con la scomposizione del valore, e ne parla la sezione
 `````
 
 Le prime tre topologie sono grafi di agenti veri, e allora conviene misurarle
-invece di ragionarci a intuito. Il codice che segue costruisce quattro grafi da
+invece di ragionarci a intuito. Un avviso di vocabolario, perché da qui in
+avanti si usa quello dei grafi: l'organigramma lì si chiama **albero**, il capo
+supremo si chiama **radice**, le persone in fondo che non hanno sottoposti sono
+le **foglie**. Il codice che segue costruisce quattro grafi da
 quindici agenti e ne calcola quattro numeri, che sono le tre domande sulla festa
 più una. Il **diametro** è la prima domanda (per quante mani passa una notizia,
 nel caso peggiore). Il **carico** è la seconda (quanto lavoro fa il più carico,
@@ -365,7 +370,10 @@ abbiamo lasciato da parte: una maglia in cui ogni nodo ha più strade per
 raggiungere ogni altro. Ne prendiamo la versione più regolare che esista,
 l'**ipercubo** a quattro dimensioni: sedici agenti numerati da 0 a 15, e un arco
 fra due agenti quando i loro numeri, scritti in binario, differiscono per una
-sola cifra. Sono quattro archi a testa, uno in più dell'albero binario.
+sola cifra. La ricetta esatta non serve per il seguito: serve sapere che cosa ne
+esce, cioè una maglia in cui ogni agente ha esattamente quattro vicini e in cui
+nessuno sta più al centro di un altro. Quattro archi a testa, uno in più del
+capo intermedio dell'albero binario.
 
 ```python
 import numpy as np
@@ -459,10 +467,13 @@ irrobustire per primo non è quello che sembra.
 E poi c'è l'ultima riga. L'ipercubo batte l'albero binario su **tutte e tre** le
 grandezze insieme: diametro $4$ contro $6$, carico $21\%$ contro $54\%$,
 connettività residua $100\%$ contro $37\%$, cioè togliendo il nodo più
-sollecitato non si scollega nessuno. E lo paga con un solo arco a testa in più,
-quattro invece di tre. Non è un caso fortunato: in un grafo abbastanza regolare
-nessun nodo è speciale, quindi il traffico si distribuisce da sé, e con più
-cammini fra ogni coppia togliere un nodo non spezza niente. Il baratto a tre di
+sollecitato non si scollega nessuno. E lo paga con un arco in più sul nodo più
+connesso, quattro invece di tre; ma lo paga su **tutti** i nodi, non su
+qualcuno, perché nell'ipercubo ogni nodo ne ha quattro, mentre nell'albero tre
+ce li hanno solo i sei capi intermedi, la radice ne ha due e le otto foglie uno:
+in tutto trentadue archi contro quattordici. Non è un caso fortunato: in un grafo
+abbastanza regolare nessun nodo è speciale, quindi il traffico si distribuisce
+da sé, e con più cammini fra ogni coppia togliere un nodo non spezza niente. Il baratto a tre di
 poche pagine fa era **il prezzo degli alberi**, non una legge sui grafi: negli
 alberi vale perché fra due nodi c'è una strada sola, e chi sta su quella strada
 la porta tutta.
@@ -493,17 +504,22 @@ gli altri, e non gli serve saperlo; un componente di controllo decide, a ogni
 ciclo, chi lasciar agire.
 
 L'architettura nasce con **Hearsay-II**, sviluppato alla Carnegie Mellon
-University (la prima versione del nucleo è dell'autunno del 1973) dentro il
-programma quinquennale sulla comprensione del parlato finanziato dalla DARPA,
+University (l'implementazione del nucleo comincia nell'autunno del 1973 e finisce
+quattro mesi dopo) dentro il programma quinquennale sulla comprensione del
+parlato finanziato dalla DARPA,
 e raccontato nel 1980 in un lungo articolo di rassegna su *ACM Computing
 Surveys* firmato da Lee Erman, Frederick Hayes-Roth, Victor Lesser e Raj Reddy
 {cite}`erman1980hearsay`. Il compito era riconoscere parlato continuo su un
 vocabolario di 1011 parole per interrogare una raccolta di abstract di
 informatica («*Which abstracts refer to theory of computation?*»), con
-interpretazioni corrette nel 90% delle frasi di prova.
+interpretazioni corrette nel 90% delle frasi di prova: erano ventitré frasi,
+mai viste prima dal sistema, ed è bene saperlo, perché una percentuale su
+ventitré casi vuol dire due frasi sbagliate.
 
-Il motivo per cui la lavagna nasce **lì** è il capitolo sullo Speech
-Recognition di questo libro. Riconoscere il parlato vuol dire far collaborare
+Il motivo per cui la lavagna nasce **lì**, dentro un riconoscitore di parlato,
+è il ritratto in miniatura del problema che questa topologia risolve (il
+riconoscimento del parlato avrà poi un capitolo suo, più avanti nel libro).
+Riconoscere il parlato vuol dire far collaborare
 conoscenze di natura incompatibile (l'acustica del segnale, le sillabe, il
 lessico, la sintassi, la semantica del dominio) nessuna delle quali è
 affidabile da sola: l'acustica propone parole plausibili e sbagliate, la
@@ -540,8 +556,9 @@ risultato, e se è sbagliato non si sa da quale mano sia uscito l'errore.
 
 L'architettura ha tre pezzi, e conviene chiamarli con i nomi originali. La
 **blackboard** è una memoria globale strutturata in *livelli* di astrazione
-crescente (in Hearsay-II: parametro, segmento, sillaba, parola, sequenza di
-parole, frase), su cui vivono le ipotesi, ciascuna con il proprio intervallo
+crescente (in Hearsay-II sono sette: parametro, segmento, sillaba, parola,
+sequenza di parole, frase, e in cima l'interrogazione alla base dati), su cui
+vivono le ipotesi, ciascuna con il proprio intervallo
 temporale e un punteggio di credibilità. Le **knowledge source** sono programmi
 indipendenti, ciascuno una coppia condizione-azione: la condizione dichiara a
 quali cambiamenti della lavagna il modulo reagisce, l'azione dice cosa scrive
@@ -720,8 +737,9 @@ con un cancello dentro ogni anello. Un compito **troppo grande per un
 supervisore solo** chiede una **gerarchia**, tenuta più larga che alta perché
 la perdita per riassunto è esponenziale nella profondità mentre il guadagno sul
 diametro è solo logaritmico; ma «più larga» ha un limite, ed è quanto ciascun
-capo intermedio riesce a leggere, cioè la finestra $c_0 + b\,\bar{m}$ già vista
-per la stella. Si allarga la ramificazione finché quella regge, e non oltre:
+capo intermedio riesce a leggere: la sua finestra deve contenere un rapporto per
+ogni sottoposto, esattamente come quella del supervisore della stella, e cresce
+con quelli. Si allarga la ramificazione finché quella regge, e non oltre:
 oltre si è semplicemente rifatta la stella, con i suoi guai.
 Un compito in cui contributi **eterogenei** devono incontrarsi
 senza un ordine stabilito in anticipo chiede una **lavagna**. Un compito in cui
@@ -742,8 +760,8 @@ verifica, è nel frattempo un ottimo posto dove aspettare.
   che cosa resta in piedi se proprio quello si ferma.
 - Nelle forme in cui fra due partecipanti c'è **una strada sola** (la fila, il
   capo cantiere, l'organigramma) quelle tre cose si comprano una vendendo le
-  altre. Non è una legge: dando a ciascuno un collegamento in più, in modo che le
-  strade fra due qualsiasi siano parecchie, si possono avere tutte e tre insieme,
+  altre. Non è una legge: dando a ciascuno qualche collegamento in più, in modo
+  che le strade fra due qualsiasi siano parecchie, si possono avere tutte e tre insieme,
   e in fondo alla sezione lo si vede coi numeri. Qui non si fa lo stesso perché
   ogni collegamento in più è roba da leggere per qualcuno, e quello è il conto
   che esplode.
@@ -797,8 +815,8 @@ verifica, è nel frattempo un ottimo posto dove aspettare.
   vendendo le altre; il vincolo è del numero di archi, non delle tre grandezze,
   e un grafo regolare ben connesso le prende tutte insieme (l'ipercubo $Q_4$ fa
   diametro $4$, carico $21\%$ e connettività residua $100\%$ contro $6$, $54\%$
-  e $37\%$ dell'albero binario, con un grado in più). Qui non si usa perché ogni
-  arco in più è una finestra di contesto in più, cioè il conto quadratico della
+  e $37\%$ dell'albero binario, con più del doppio degli archi). Qui non si usa
+  perché ogni arco in più è una finestra di contesto in più, cioè il conto quadratico della
   sezione precedente.
 - **Supervisore e lavoratori** (stella): ottimizza controllo e tracciabilità,
   c'è un posto solo dove sta la verità sul compito {cite}`wu2024autogen`; paga

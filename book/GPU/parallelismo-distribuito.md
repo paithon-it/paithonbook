@@ -372,7 +372,7 @@ Un'ultima onestà, nello stesso spirito della sezione «Prestazioni e scala»:
 quasi nessun lettore di questo libro avrà un cluster su cui provare tutto
 questo, e va benissimo così. Ma la tassonomia (dati, tensor, pipeline,
 sharding) non è folklore da datacenter: è la mappa che spiega *come* nascono i
-modelli di cui leggiamo i nomi ogni settimana. E la prima delle strategie,
+modelli di cui leggiamo i nomi ogni settimana. E l'ultima delle quattro,
 FSDP, è alla portata già di **due schede infilate nello stesso computer**: non
 serve un nodo di datacenter, basta una macchina con due GPU. Se un giorno vi
 troverete in quella situazione, con un modello che in una scheda sola non entra,

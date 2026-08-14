@@ -66,7 +66,9 @@ Attenzione a un tranello di vocabolario, perché da qui in avanti la parola
 **frequenza di campionamento**, e si scrive in hertz esattamente come la
 frequenza di un suono: la prima dice quanto è fitto il nostro metro, la seconda
 quanto è acuto ciò che stiamo misurando. Sono numeri diversi, e quando più
-avanti un disegno avrà «16 kHz» in una didascalia e «3 kHz» su un asse non è una
+avanti un disegno dirà che la finestra è lunga «400 campioni, cioè 25 millesimi
+di secondo» (sedicimila misure al secondo, dunque) e insieme mostrerà un asse
+delle frequenze che si ferma a tremila oscillazioni al secondo, non è una
 contraddizione: sono le due grandezze, non la stessa due volte.
 
 `````{tab} Elementare
@@ -77,8 +79,9 @@ vediamo sulle ruote delle auto nei film. Con il suono succede lo stesso. La
 regola è semplice: bisogna misurare **più del doppio** delle volte rispetto alla
 vibrazione più rapida che vogliamo catturare. L'orecchio umano arriva a circa
 $20\,000$ oscillazioni al secondo (20 kHz), quindi servono più di $40\,000$
-misure al secondo: i CD ne fanno $44\,100$, che stanno larghi apposta. Per la voce al telefono bastano $8\,000$, che è esattamente il doppio
-dei 4 kHz sotto i quali la voce "vive" quasi tutta. E c'è una via di mezzo,
+misure al secondo: i CD ne fanno $44\,100$, che stanno larghi apposta. Per la
+voce al telefono bastano $8\,000$: la linea taglia tutto quello che sta sopra i
+$3\,400$ hertz, e sotto quella soglia la voce "vive" quasi tutta. E c'è una via di mezzo,
 $16\,000$ misure al secondo, che è quella scelta dalla maggior parte dei
 sistemi di questo capitolo: prende tutta la voce senza sprecare memoria, ed è il
 numero che ritroverai nelle figure e nel codice.
@@ -96,7 +99,7 @@ f_s > 2\,f_{\max}.
 $$
 
 dove $f_{\max}$ è la frequenza oltre la quale lo **spettro** del segnale (che
-costruiamo nella sezione seguente, con la trasformata di Fourier) è nullo: per
+costruiamo fra poche righe, con la trasformata di Fourier) è nullo: per
 un segnale che non sia una sinusoide pura, «la frequenza più alta» non è
 definibile senza quella decomposizione, ed è la ragione per cui l'enunciato di
 Nyquist si appoggia a uno strumento che il capitolo introduce fra poco.
@@ -210,8 +213,8 @@ bisogna sentirla oscillare un po' di volte, e quel po' di tempo è esattamente
 l'istante che si perde.
 
 I numeri della finestra da 25 millesimi di secondo, che è quella usata qui e nel
-resto del libro: colloca un suono nel tempo con un'incertezza di circa tre
-millesimi di secondo, e distingue due frequenze che distano una ventina di
+resto del libro: colloca un suono nel tempo con un'incertezza di tre millesimi e
+mezzo di secondo, e distingue due frequenze che distano una ventina di
 hertz. Allungala a 100 millesimi e la seconda cifra migliora di quattro volte
 (scende a sei hertz), ma la prima peggiora esattamente di quattro (sale a
 quattordici millesimi di secondo). Il prodotto delle due non cambia mai, e sotto
@@ -313,10 +316,13 @@ $$
 mentre l'implementazione di Slaney, che `librosa` usa per impostazione
 predefinita, tiene la scala lineare sotto 1 kHz e logaritmica sopra. Le due non
 danno le stesse bande: con i parametri del codice qui sotto ($f_s = 16$ kHz, 40
-bande) la decima banda è centrata a 636 Hz con la formula HTK e a 773 Hz con
-quella di Slaney, il 22 % più in alto. È una differenza che va dichiarata quando
-si confrontano due sistemi, ed è il motivo per cui il codice della prossima
-pagina passa `htk=True`: perché faccia davvero il conto scritto qui sopra.
+bande) la decima banda è centrata a 594 Hz con la formula HTK e a 736 Hz con
+quella di Slaney, il 24 % più in alto. I centri si leggono da
+`librosa.mel_frequencies(n_mels=42, fmax=8000, htk=…)[1:-1]`, perché per 40
+bande triangolari servono 42 frequenze e le due estreme sono bordi, non centri.
+È una differenza che va dichiarata quando
+si confrontano due sistemi, ed è il motivo per cui il codice qui sotto passa
+`htk=True`: perché faccia davvero il conto scritto qui sopra.
 
 La pipeline degli MFCC {cite}`davis1980comparison` è: (1) spettro di potenza
 dalla STFT; (2) banco di filtri triangolari spaziati sulla scala mel; (3)
@@ -336,8 +342,9 @@ lecite. Caduta l'ipotesi, è caduta la ragione: una rete non chiede feature
 scorrelate, e la DCT le fa pagare un prezzo, perché mescolando tutte le bande in
 ogni coefficiente **distrugge la località in frequenza** su cui una convoluzione
 lavora. Per questo dagli anni Dieci si è tornati allo **spettrogramma log-mel
-grezzo**, che è ciò che ricevono in ingresso tutti i modelli del resto di questo
-capitolo (l'AST prende 128 bande log-mel, Whisper 80), mentre i 13 MFCC restano
+grezzo**, che è ciò che ricevono in ingresso i modelli del resto di questo
+capitolo (l'AST della prossima sezione prende 128 bande log-mel; Whisper, che è
+del capitolo dopo, ne prende 80, e 128 nelle versioni più recenti), mentre i 13 MFCC restano
 una feature d'archivio, ancora comoda dove serve un vettore piccolo (HuBERT li
 usa proprio per il primo raggruppamento).
 
@@ -429,6 +436,10 @@ incomprensibile.
   orecchio (preciso sui suoni gravi, approssimativo sugli acuti) e la
   riassumono in pochi numeri per finestrella: meno dati, ma quelli che contano
   davvero, e il modello ha un compito più facile.
+- I modelli di oggi però si fermano **un passo prima**: prendono l'immagine
+  riletta a orecchio e saltano il riassunto finale, che serviva a macchine molto
+  più piccole di loro. È il primo esempio di una cosa che si ripeterà: un
+  accorgimento intelligente smette di servire quando cambia chi lo usa.
 ```
 
 `````

@@ -41,8 +41,10 @@ porta scritto addosso il proprio contesto.
 `````
 
 `````{tab} Superiore
-L'encoder è una pila di $N = 6$ strati identici (nel modello base,
-$d_{\text{model}} = 512$), ciascuno con due sotto-strati:
+L'encoder è una pila di $L = 6$ strati identici (nel modello base,
+$d_{\text{model}} = 512$; l'articolo del 2017 chiama $N$ questo numero, ma qui
+si usa $L$ come nel resto del libro, dove $N$ serve ad altro), ciascuno con due
+sotto-strati:
 
 1. **Multi-Head Self-Attention**: ogni posizione attende a tutte le posizioni
    dell'input, catturando le relazioni a coppie in un solo passo;
@@ -56,7 +58,7 @@ sezione
 precedente (dove si è detto anche perché i modelli successivi preferiscono il
 Pre-LN). Si noti la divisione dei ruoli: l'attenzione *mescola*
 informazione tra le posizioni, la FFN la *trasforma* posizione per posizione;
-è l'alternanza dei due movimenti, ripetuta per $N$ strati, a costruire
+è l'alternanza dei due movimenti, ripetuta per $L$ strati, a costruire
 rappresentazioni via via più astratte.
 `````
 
@@ -74,7 +76,7 @@ saprebbe fare nulla.
 `````
 
 `````{tab} Superiore
-Anche il decoder ha $N = 6$ strati, ma con tre sotto-strati ciascuno:
+Anche il decoder ha $L = 6$ strati, ma con tre sotto-strati ciascuno:
 
 1. **Masked Multi-Head Self-Attention**: come la self-attention dell'encoder,
    ma con una maschera che azzera (pone a $-\infty$ prima della softmax) le
@@ -90,8 +92,9 @@ proiezione lineare sul vocabolario (nel paper con i pesi legati a quelli
 dell'embedding, §3.4) e una softmax danno la distribuzione del token
 successivo. Da quella distribuzione si sceglie **un** token, ed è il suo
 embedding a rientrare come input al passo dopo: non la distribuzione, che è un
-vettore di $|V|$ probabilità e non ha modo di entrare in un ingresso fatto per
-un token. Come si sceglie (il più probabile, uno estratto a sorte, o il token
+vettore di $|\mathcal{V}|$ probabilità e non ha modo di entrare in un ingresso
+fatto per un token. Come si sceglie (il più probabile, uno estratto a sorte, o
+il token
 vero durante l'addestramento, che è il *teacher forcing*) è una questione a sé,
 e la sezione sui grandi modelli linguistici la affronta per intero.
 `````
@@ -110,8 +113,9 @@ Il dettaglio da non perdere nella {numref}`fig-attenzione-mascherata` è che le
 caselle si spengono **prima** che i punteggi diventino intensità, non dopo:
 cancellare le intensità già calcolate lascerebbe righe che non sommano più a
 uno, cioè evidenziature con un pezzo di colore mancante. Spegnere i punteggi a
-monte (tecnicamente: ponendoli a $-\infty$ prima della softmax) li fa uscire
-come zeri esatti, e la ridistribuzione resta corretta.
+monte (tecnicamente: ponendoli a $-\infty$ prima della softmax, cioè prima del
+passaggio che trasforma i punteggi in intensità) li fa uscire come zeri esatti,
+e la ridistribuzione resta corretta.
 
 ## Positional encoding: dare un ordine alle parole
 
@@ -156,16 +160,38 @@ Il **positional encoding** del paper originale è deterministico, fatto di
 sinusoidi a frequenze diverse:
 
 $$
-PE_{(pos,\, 2i)} = \sin\!\left(\frac{pos}{10000^{2i/d_{\text{model}}}}\right)
+\text{PE}_{(\text{pos},\, 2i)} = \sin(\text{pos}\;\omega_i)
 \qquad
-PE_{(pos,\, 2i+1)} = \cos\!\left(\frac{pos}{10000^{2i/d_{\text{model}}}}\right)
+\text{PE}_{(\text{pos},\, 2i+1)} = \cos(\text{pos}\;\omega_i) ,
+\qquad
+\omega_i = 10000^{-2i/d_{\text{model}}}
 $$
 
-dove $pos$ è la posizione del token e $i$ indicizza le coordinate del vettore.
-Ogni posizione riceve così una firma unica, sommata all'embedding del token;
-la scelta sinusoidale fa sì che la firma della posizione $pos + k$ sia una
-trasformazione lineare di quella di $pos$ (una rotazione a blocchi di angolo
-$k\omega_i$, e questo è un teorema, non un'opinione). Da lì gli autori
+dove $\text{pos}$ è la posizione del token e $i$ **non** indicizza le
+coordinate ma le **coppie** di coordinate, cioè le frequenze: $i$ va da $0$ a
+$d_{\text{model}}/2 - 1$, e ogni $i$ riempie le due coordinate $2i$ e $2i+1$
+con un seno e un coseno della stessa frequenza $\omega_i$. È il punto in cui si
+sbaglia scrivendo il codice, perché il paper scrive «$i$ is the dimension» e
+lascia credere che arrivi a $d_{\text{model}}$.
+
+Ogni posizione riceve così una firma unica, sommata all'embedding del token; e
+la scelta sinusoidale fa sì che la firma della posizione $\text{pos} + k$ sia
+una trasformazione lineare di quella di $\text{pos}$ **con una matrice che
+dipende solo da $k$**. La clausola in grassetto è tutto il contenuto: che due
+vettori siano legati da *qualche* matrice è vero sempre e non dice niente; che
+la matrice sia la stessa per ogni $\text{pos}$ è ciò che rende la distanza
+relativa una cosa rappresentabile. Ed è una riga di trigonometria, quindi vale
+la pena scriverla: dalle formule di addizione,
+
+$$
+\begin{pmatrix} \sin((\text{pos}+k)\,\omega_i) \\ \cos((\text{pos}+k)\,\omega_i) \end{pmatrix}
+=
+\begin{pmatrix} \cos k\omega_i & \sin k\omega_i \\ -\sin k\omega_i & \cos k\omega_i \end{pmatrix}
+\begin{pmatrix} \sin(\text{pos}\,\omega_i) \\ \cos(\text{pos}\,\omega_i) \end{pmatrix},
+$$
+
+cioè una rotazione di angolo $k\omega_i$ su ciascuna coppia, e $\text{pos}$ è
+sparito dalla matrice. Da lì gli autori
 *ipotizzarono* che la rete potesse rappresentare facilmente le distanze
 *relative*: è una congettura, e va detto che la loro stessa ablazione la
 indebolisce, perché con positional embedding **appresi** i risultati sono
@@ -185,6 +211,14 @@ capitolo sulle reti neurali, la stessa per tutte le parole, che prende la
 rappresentazione di una parola e la trasforma in una versione più lavorata.
 Riunione, lavoro individuale, riunione, lavoro individuale: la torre del
 Transformer è tutta qui.
+
+Una cosa sorprendente, che tornerà utile più avanti: è il momento di lavoro
+individuale, non la riunione, a contenere quasi tutto quello che il modello ha
+imparato. Contando i numeri che la rete regola mentre impara (si chiamano
+**parametri**, ed è quello che si conta quando si dice «un modello da sette
+miliardi»), due terzi buoni di ogni piano stanno nel lavoro individuale, e solo
+un terzo nell'attenzione. La parte concettualmente più semplice è anche quella
+dove il modello tiene la roba.
 `````
 
 `````{tab} Superiore
@@ -196,11 +230,12 @@ $$
 \mathbf{W}_2 + \mathbf{b}_2
 $$
 
-Nel modello base la dimensione interna è $d_{ff} = 2048$, quattro volte
+Nel modello base la dimensione interna è $d_{\text{ff}} = 2048$, quattro volte
 $d_{\text{model}} = 512$: la FFN espande, applica la non linearità,
 ricomprime. Pur essendo la parte concettualmente più semplice, contiene circa
-due terzi dei parametri di uno strato di **encoder** ($2\,d\,d_{ff} = 8d^2$
-contro i $4d^2$ delle quattro proiezioni dell'attenzione); negli strati di
+due terzi dei parametri di uno strato di **encoder**
+($2\,d\,d_{\text{ff}} = 8d^2$ contro i $4d^2$ delle quattro proiezioni
+dell'attenzione); negli strati di
 decoder, che hanno una seconda attenzione, la quota scende a metà. Nei grandi
 modelli linguistici, che sono decoder-only e quindi senza cross-attention, si
 torna ai due terzi, ed è lì che risiede gran parte della capacità. Una linea di
@@ -209,8 +244,8 @@ durante l'addestramento.
 
 Questa è però la FFN del **paper originale**. I modelli successivi ne hanno
 cambiato la non linearità: prima la **GELU**, una ReLU ammorbidita (BERT,
-GPT-2), poi le varianti *gated* e in particolare **SwiGLU**, oggi lo standard
-di fatto:
+GPT-2), poi le varianti *gated* e in particolare **SwiGLU**, che è la scelta
+prevalente nei modelli recenti:
 
 $$
 \text{FFN}_{\text{SwiGLU}}(\mathbf{x}) =
@@ -219,8 +254,8 @@ $$
 \qquad \mathrm{Swish}(z) = z\,\sigma(z).
 $$
 
-dove $\mathbf{W}_1, \mathbf{W}_3 \in \mathbb{R}^{d \times d_{ff}}$ e
-$\mathbf{W}_2 \in \mathbb{R}^{d_{ff} \times d}$, e $\odot$ è il prodotto
+dove $\mathbf{W}_1, \mathbf{W}_3 \in \mathbb{R}^{d \times d_{\text{ff}}}$ e
+$\mathbf{W}_2 \in \mathbb{R}^{d_{\text{ff}} \times d}$, e $\odot$ è il prodotto
 elemento per elemento. (Shazeer chiama $\mathbf{V}$ la matrice del cancello;
 qui la lettera è già impegnata dai *value* dell'attenzione, e riusarla sarebbe
 una trappola.)
@@ -241,9 +276,10 @@ sul tavolo: c'è l'attenzione della sezione precedente, c'è una piccola rete di
 neuroni come quelle del capitolo sulle reti neurali, ci sono una scorciatoia e
 una taratura attorno a ciascuna delle due. Il Transformer non è un pezzo nuovo,
 è un modo di impilare quei quattro, sempre nello stesso ordine, per sei piani
-e poi per sessanta. È il motivo per cui l'architettura ha retto dieci anni di
-ingrandimenti senza cambiare forma: non c'era una forma da cambiare, c'era una
-sequenza da ripetere.
+e poi per sessanta. È il motivo per cui l'architettura ha retto senza cambiare
+forma ingrandimenti di tre ordini di grandezza (dai 65 milioni di parametri del
+modello base del 2017 ai 175 miliardi di GPT-3, tre anni dopo): non c'era una
+forma da cambiare, c'era una sequenza da ripetere.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
@@ -261,14 +297,15 @@ sequenza da ripetere.
   consulta quello che l'altra torre ha capito della frase originale.
 - L'attenzione da sola non sa in che ordine stanno le parole: a ciascuna viene
   sommato prima un **posto numerato**, la firma della sua posizione (calcolata
-  a tavolino nel paper, imparata dal modello in quelli successivi).
+  a tavolino nel paper del 2017; i modelli successivi la fanno in altri modi,
+  ma il posto numerato serve a tutti).
 ```
 `````
 
 `````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
-- Il Transformer originale è **encoder–decoder**: $N = 6$ strati per torre,
+- Il Transformer originale è **encoder–decoder**: $L = 6$ strati per torre,
   $d_{\text{model}} = 512$, 8 teste di attenzione.
 - Ogni strato alterna **attenzione** (le posizioni si scambiano informazione)
   e **FFN** (ogni posizione rielabora per conto suo), con residual e layer

@@ -143,8 +143,9 @@ $$
 $$
 
 applicata componente per componente e sempre maggiore di zero (in aritmetica
-esatta: in `float32` si appiattisce a zero esatto già per $x \le -16{,}64$,
-perché $\exp(x)$ sparisce nell'arrotondamento di $-1 + \exp(x)$, e un
+esatta: per $x<0$ vale $\exp(x)$, ma il calcolo passa da $-1 + \exp(x)$, e in
+`float32` quella somma arrotonda a $-1$ appena $\exp(x)$ scende sotto
+$2^{-25}$, cioè da $x \approx -17{,}3$ in giù; da lì $\phi$ è zero esatto, e un
 denominatore che si azzera è il modo tipico in cui questa implementazione si
 rompe). La softmax aveva anche un denominatore che
 normalizzava i pesi: lo si conserva come un secondo accumulatore
@@ -230,14 +231,14 @@ n'era dimenticato.
 
 ```{figure} ../figures/attenzione-lineare-ricorrenza.svg
 :name: fig-attenzione-lineare-ricorrenza
-:alt: A sinistra lo stato-matrice S di dimensione fissa d per d aggiornato token per token sommando il prodotto esterno tra il value v e la key trasformata phi(k), e la lettura che moltiplica S per la query trasformata phi(q); a destra, per contrasto, la KV cache dei Transformer rappresentata come una pila di coppie key-value che si allunga a ogni nuovo token.
+:alt: Due pannelli affiancati. A sinistra l'attenzione classica: a ogni passo da t=1 a t=4 la cache si allunga di una coppia chiave-valore, e la pila cresce verso l'alto passo dopo passo. A destra l'attenzione lineare: quattro riquadri identici, uno per passo, collegati da frecce, ciascuno una matrice di stato S della stessa taglia, aggiornata dal prodotto esterno fra il valore v e la chiave k.
 :width: 85%
 
-Due modi di ricordare. A sinistra l'attenzione lineare: un'unica tabella di
-numeri, sempre della stessa taglia, in cui ogni parola somma la propria
-informazione sotto la propria etichetta, e che si rilegge facendole una
-domanda. A destra la memoria dei Transformer, che invece *cresce* di una
-coppia etichetta-informazione a ogni parola.
+Due modi di ricordare. A sinistra la memoria dei Transformer, che *cresce* di
+una coppia etichetta-informazione a ogni parola. A destra l'attenzione
+lineare: un'unica tabella di numeri, sempre della stessa taglia, in cui ogni
+parola somma la propria informazione sotto la propria etichetta, e che si
+rilegge facendole una domanda.
 ```
 
 Come mostra {numref}`fig-attenzione-lineare-ricorrenza`, i due schemi
@@ -299,7 +300,7 @@ esattamente come alla prima.
 La {numref}`fig-stato-ricorrente` mostra la parte "economica" del patto: la
 memoria non cresce. Ma mostra anche, senza dirlo, il prezzo: le celle si
 sommano l'una sull'altra, e ciò che è stato scritto non si può più separare. È
-il tema della sezione *Il limite dell'accumulo*, più avanti.
+il tema di *Il limite dell'accumulo*, più avanti in questa pagina.
 
 `````{tab} Elementare
 
@@ -437,10 +438,10 @@ produce una proiezione lineare, non un'ortogonalizzazione, e con chiavi
 casuali il **crosstalk** (le briciole degli altri value che il retrieval
 raccoglie insieme a quello cercato) non compare a una soglia: cresce da subito
 come $\sqrt{N/d}$ con il numero $N$ di associazioni scritte. A $N \approx d$
-l'interferenza vale ormai quanto il valore cercato (misurato: errore relativo
-medio $0{,}97$ a $N=d=32$, contro $0{,}46$ a $N=d/4$), quindi il richiamo
-pulito vuole $N$ **ben minore** di $d$, non $N \le d$. Ed essendo la
-transizione l'identità, non
+l'interferenza vale ormai quanto il valore cercato: con chiavi casuali di norma
+unitaria in $d=32$, l'errore relativo medio del richiamo è $0{,}99$ a $N=d$ e
+$0{,}46$ a $N=d/4$, cioè proprio $\sqrt{N/d}$. Il richiamo pulito vuole quindi
+$N$ **ben minore** di $d$, non $N \le d$. Ed essendo la transizione l'identità, non
 c'è modo di **dimenticare**: una scrittura spuria fatta all'inizio resta a
 disturbare per sempre. È la ragione per cui l'attenzione lineare pura, così
 com'è, resta indietro rispetto all'attenzione softmax proprio sui compiti di

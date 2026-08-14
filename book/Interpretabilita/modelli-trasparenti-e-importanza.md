@@ -17,12 +17,12 @@ posta è alta.
 
 Ci sono due strade per capire un modello. La prima è sceglierlo **trasparente
 per costruzione**, così semplice che la sua logica si legge a occhio nudo. La
-seconda è tenere il modello com'è (magari una grande rete) e interrogarlo da
-fuori con strumenti che ne rivelano il comportamento. Questa sezione apre il
-capitolo percorrendo la prima strada, i modelli intrinsecamente
-interpretabili, e imboccando la seconda con il primo attrezzo del kit
-*post-hoc*: l'**importanza delle feature**. Per un panorama sistematico
-dell'intero campo il riferimento è il manuale di Molnar
+seconda è tenere il modello com'è, magari una grande rete, e interrogarlo da
+fuori con strumenti che ne rivelano il comportamento.
+
+Questa sezione percorre la prima strada per intero, e poi imbocca la seconda
+con il primo attrezzo che vi si incontra: l'**importanza delle feature**. Per
+un panorama sistematico dell'intero campo il riferimento è il manuale di Molnar
 {cite}`molnar2022interpretable`.
 
 ## Modelli trasparenti per costruzione
@@ -40,16 +40,17 @@ somma pesata delle feature, e i pesi *sono* la storia che il modello racconta.
 La retta e ciò che le sfugge. Ogni punto è un esempio (una casa, con i suoi
 metri quadri e il suo prezzo) e il segmento verticale è di quanto il modello
 sbaglia proprio su quello: si chiama **residuo**. La retta scelta è quella che
-li rende complessivamente più corti, e li lascia tutti in bella vista.
+li rende complessivamente più piccoli (si minimizza la somma dei loro
+quadrati), e li lascia tutti in bella vista.
 ```
 
 C'è una qualità di {numref}`fig-retta-residui` che le reti profonde non hanno,
-ed è il motivo di questa sezione: l'errore è *localizzato*. Si vede su quale
-esempio il modello sbaglia e di quanto, e la regola che ha usato per rispondere
-è una sola riga di somma, leggibile per intero. Con una rete non si può fare né
-l'una cosa né l'altra: l'errore non si può appoggiare a nessun pezzo del
-modello in particolare, e la regola non si può leggere. Trasparente non vuol
-dire accurato: vuol dire che non c'è niente da scoprire dopo.
+ed è il motivo di questa sezione: la regola che ha prodotto quella retta si
+legge per intero, ed è una riga sola di somma. I residui invece si misurano
+anche per una rete, perché basta confrontare la risposta con la verità: quello
+che con una rete non si può fare è aprire la regola e vedere quale pezzo del
+conto ha portato lì. Trasparente non vuol dire accurato: vuol dire che non c'è
+niente da scoprire dopo.
 
 `````{tab} Elementare
 
@@ -98,7 +99,7 @@ foglia, e quel percorso *è* la spiegazione.
 
 ```{figure} ../figures/alberi-di-decisione.svg
 :name: fig-albero-percorso
-:alt: "Un albero di decisione con la radice in alto: a ogni nodo una domanda su una singola caratteristica con una soglia, e due rami a seconda della risposta, «sì» da una parte e «no» dall'altra; scendendo di nodo in nodo si arriva a una foglia, che porta la predizione."
+:alt: "Un albero di decisione con la radice in alto. Ogni nodo porta una domanda su una singola caratteristica con una soglia: alla radice «reddito maggiore di 30 mila?», e sotto «età maggiore di 40?» e «rate in corso?». Dalla radice partono due rami, etichettati «sì» e «no», e scendendo si arriva a una delle quattro foglie colorate, che portano la decisione: approva, verifica, rifiuta, verifica."
 :width: 90%
 
 La spiegazione è il percorso. Per sapere perché un esempio ha ricevuto quella
@@ -201,31 +202,38 @@ progetto.
 
 ## L'importanza delle feature: quali colonne contano
 
+Passiamo agli strumenti che interrogano un modello già addestrato, quale che
+sia. La prima domanda, la più naturale, è: **su quali colonne si regge?**
+Vogliamo cioè una classifica delle feature, ordinate per quanto contano nelle
+predizioni.
+
+Prima di costruirla, conviene sgombrare il campo da una cosa che con
+l'importanza si confonde di continuo, perché le somiglia ed è quasi sempre il
+passo che viene subito dopo.
+
 ```{figure} ../figures/feature-selection.svg
 :name: fig-feature-selection
-:alt: "A sinistra un grafico a barre con il punteggio di otto feature, una barra per feature, e una riga orizzontale che fa da soglia: tre barre la superano, le altre cinque restano sotto. A destra la tabella dei dati ridotta alle sole tre feature che hanno superato la soglia."
+:alt: "A sinistra un grafico a barre con il punteggio di otto feature, una barra per feature, e una riga orizzontale tratteggiata che fa da soglia: tre barre la superano, le altre cinque restano sotto. A destra restano solo le tre colonne che hanno superato la soglia, disegnate come tre rettangoli affiancati."
 :width: 100%
 
 Misurare e decidere sono due mestieri diversi. Il grafico a sinistra è una
-classifica: si misura. La riga orizzontale è una decisione, e dove farla
-passare non lo dice nessun dato.
+classifica: si misura, e il punteggio scritto sotto è uno dei tanti possibili.
+La riga tratteggiata è una decisione, e dove farla passare non lo dice nessun
+dato.
 ```
 
-La distinzione che {numref}`fig-feature-selection` rende evidente è fra
-*misurare* e *decidere*. Una classifica di importanza è un fatto misurabile;
-la soglia è una scelta, e va giustificata con qualcosa d'altro (il costo di
-raccogliere una colonna, un vincolo di interpretabilità, una prova che il
-modello ridotto non peggiora). Di quel taglio, che si chiama **selezione delle
-feature** e appartiene al capitolo sul machine learning, qui non ci occuperemo
-più: lo nominiamo una volta sola perché non venga confuso con l'importanza, che
-è la cosa che stiamo per definire.
+Quello che {numref}`fig-feature-selection` mette in fila è il taglio: si
+misura, si tira una riga, si buttano via le colonne che restano sotto. Si
+chiama **selezione delle feature**, e non è quello di cui parla questa sezione.
+Una classifica di importanza è un fatto misurabile; la soglia è una scelta, e
+va giustificata con qualcosa d'altro (il costo di raccogliere una colonna, un
+vincolo di leggibilità, una prova che il modello ridotto non peggiora). Lo
+nominiamo una volta sola, perché non venga confuso con l'importanza, che è la
+cosa che stiamo per definire.
 
-Passiamo agli strumenti che interrogano un modello già addestrato, quale che
-sia. La prima domanda, la più naturale, è: **su quali colonne si regge?**
-Vogliamo una classifica delle feature per quanto contano nelle predizioni.
-Cominciamo dal metodo più generale e robusto (la permutazione), perché non
-guarda dentro il modello: lo tratta come una scatola chiusa che riceve input e
-sputa predizioni.
+Fatta la distinzione, cominciamo dal metodo più generale e robusto, la
+permutazione, che non guarda dentro il modello: lo tratta come una scatola
+chiusa a cui si danno degli input e che restituisce delle predizioni.
 
 ### Permutation importance
 
@@ -308,9 +316,10 @@ colonna su cui il taglio è stato fatto.
 Le foreste casuali offrono quindi gratis una seconda misura, la **mean decrease
 in impurity** (MDI): quanto ogni feature, sommando su tutti gli alberi, ha
 ridotto l'impurità negli split in cui compare. È l'attributo
-`feature_importances_` che abbiamo già incontrato nel capitolo sugli alberi e
-gli ensemble. È rapidissima (si calcola durante l'addestramento) ma va letta
-con prudenza, per una ragione che vale la pena rendere esplicita.
+`feature_importances_` che abbiamo già incontrato nella sezione sugli alberi e
+gli ensemble del capitolo sul machine learning. È rapidissima (si calcola
+durante l'addestramento) ma va letta con prudenza, per una ragione che vale la
+pena rendere esplicita.
 
 `````{tab} Elementare
 
@@ -355,8 +364,9 @@ anche quando quel taglio era sovradattamento.
 Rispetto alla permutation importance, la MDI ha due svantaggi: è legata alla
 struttura interna del modello (vale solo per gli alberi) ed è misurata sui dati
 di addestramento. La permutazione, calcolata su un *hold-out*, è model-agnostic
-e riflette la generalizzazione; è la stima che il capitolo sugli ensemble già
-raccomandava di preferire. Con una precisazione che il lavoro di Strobl impone:
+e riflette la generalizzazione; è la stima che la sezione sugli alberi e gli
+ensemble già raccomandava di preferire. Con una precisazione che il lavoro di
+Strobl impone:
 la permutazione **non è immune per natura** al secondo meccanismo, e la loro
 soluzione completa prevede alberi a selezione non distorta *più* subsampling
 senza reimmissione. Quello che mette al riparo la stima raccomandata qui è che
@@ -368,7 +378,7 @@ conta *in media su tutto il dataset*, non per la singola predizione.
 
 `````
 
-## Come agisce una feature: PDP e ICE
+## Come agisce una feature: PDP, ICE e ALE
 
 Sapere *quanto* una feature conta non dice *come* agisce: se il prezzo salga o
 scenda con la metratura, se l'effetto sia lineare o si spenga oltre una soglia.
@@ -530,8 +540,9 @@ di dire «questa colonna non serve».
 un'impurità di $0{,}047$: più di `s2`, di `age`, di `s1` e di `s4`, che sono
 indicatori clinici veri. Il `rumore_bin`, altrettanto inutile, prende
 $0{,}006$. Fra due colonne che valgono entrambe esattamente zero c'è un fattore
-**sette**, e l'unica differenza fra loro è quanti valori distinti contengono:
-309 la prima, due la seconda. È il bias verso l'alta cardinalità, misurato
+**sette**, e l'unica differenza fra loro è quanti valori distinti contengono
+nei dati su cui gli alberi sono cresciuti: 309, cioè uno per riga, la prima;
+due la seconda. È il bias verso l'alta cardinalità, misurato
 invece che affermato; e si noti `sex`, che è binaria ma vera, ferma a $0{,}007$,
 cioè al livello del rumore binario. La permutazione, sulle stesse due colonne
 inventate, dà $+0{,}004$ e $-0{,}002$: zero entrambe, come dev'essere.

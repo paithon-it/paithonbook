@@ -1,6 +1,6 @@
-<svg viewBox="0 0 760 420" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Grafico: all'aumentare dell'ottimizzazione la metrica-proxy continua a salire mentre l'obiettivo vero, dopo un punto di divergenza detto punto di Goodhart, comincia a scendere">
-  <rect x="0" y="0" width="760" height="420" fill="#F8F5EE"/>
-  <text x="380" y="34" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="17" font-weight="bold" fill="#1A1A1A">La metrica sale, l'intento la abbandona</text>
+<svg viewBox="0 0 790 420" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Grafico: all'aumentare dell'ottimizzazione la metrica-proxy continua a salire mentre l'obiettivo vero, dopo un punto di divergenza detto punto di Goodhart, comincia a scendere">
+  <rect x="0" y="0" width="790" height="420" fill="#F8F5EE"/>
+  <text x="395" y="34" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="17" font-weight="bold" fill="#1A1A1A">La metrica sale, l'intento la abbandona</text>
 
   <!-- axes -->
   <line x1="95" y1="70" x2="95" y2="350" stroke="#1A1A1A" stroke-width="1.5"/>

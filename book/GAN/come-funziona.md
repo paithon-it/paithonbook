@@ -72,7 +72,7 @@ Messi uno di fronte all'altro, $G$ e $D$ compongono l'architettura completa dell
 
 ```{figure} ../figures/gan-architettura.svg
 :name: fig-gan-architettura
-:alt: "Schema di una GAN: un vettore di rumore entra nel generatore che produce un dato falso; dati falsi e dati reali entrano nel discriminatore che restituisce una probabilità reale/falso."
+:alt: "Schema di una GAN: un vettore di rumore z entra nel generatore, che produce un dato falso; dati falsi e dati reali entrano nel discriminatore, che restituisce una probabilità reale/falso; in basso una freccia tratteggiata riporta i gradienti dell'errore dal discriminatore al generatore."
 :width: 90%
 
 Architettura di una GAN. Il generatore trasforma il rumore in un dato
@@ -81,14 +81,16 @@ ciascuno, quanto è probabile che sia autentico. La freccia tratteggiata in
 basso è la correzione che dal giudizio torna indietro verso il generatore.
 ```
 
-Le due figure disegnano lo stesso circuito, ma servono a guardare due cose
-diverse: {numref}`fig-gan-architettura` mette i nomi ai pezzi e alle grandezze
-che si scambiano, {numref}`fig-gan-circuito` ripercorre il giro completo, ed è
-la figura da tenere sott'occhio per la sezione che segue.
+Le due figure disegnano lo stesso circuito, e la differenza è la lingua:
+{numref}`fig-gan-architettura` lo scrive con i simboli, e chiama il segnale di
+ritorno con il suo nome tecnico (i gradienti dell'errore);
+{numref}`fig-gan-circuito` lo dice a parole. Chi preferisce incontrare i
+simboli più tardi guardi la seconda, ed è anche quella da tenere sott'occhio
+per la sezione che segue.
 
 ```{figure} ../figures/gan-2014.svg
 :name: fig-gan-circuito
-:alt: "Circuito di una GAN: il rumore casuale z entra nel generatore G, che produce un campione falso; il discriminatore D riceve sia campioni reali dal dataset sia il falso, e per ciascuno decide se è vero o finto; il suo verdetto torna indietro come segnale di apprendimento sia a D sia a G."
+:alt: "Circuito di una GAN: il rumore casuale z entra nel generatore G, che produce un campione falso; il discriminatore D riceve sia campioni reali dal dataset sia il falso, e per ciascuno decide se è vero o finto; dal verdetto una freccia tratteggiata torna indietro fino al generatore, ed è il segnale con cui G impara. Fra i dati reali e il generatore non passa nessuna freccia."
 :width: 96%
 
 Il circuito completo. La freccia di ritorno verso il generatore è il punto:
@@ -147,13 +149,49 @@ $$
 + \mathbb{E}_{\mathbf{z}\sim p_z}\big[\log\big(1 - D(G(\mathbf{z}))\big)\big] .
 $$
 
-Qui $p_{\text{dati}}$ è la distribuzione dei dati reali, $p_z$ il prior del rumore, $D(\mathbf{x})$ la probabilità stimata di autenticità e $G(\mathbf{z})$ il campione generato. $D$ massimizza $V$ (vuole $D(\mathbf{x})$ grande sui reali e $1-D(G(\mathbf{z}))$ grande sui falsi); $G$ minimizza il secondo termine (vuole $D(G(\mathbf{z}))\to 1$). La dimostrazione di Goodfellow sta in due passaggi che vale la pena avere sott'occhio. Primo: per $G$ fissato, il discriminatore che massimizza $V$ è
+Qui $p_{\text{dati}}$ è la distribuzione dei dati reali, $p_z$ il prior del rumore, $D(\mathbf{x})$ la probabilità stimata di autenticità e $G(\mathbf{z})$ il campione generato. $D$ massimizza $V$ (vuole $D(\mathbf{x})$ grande sui reali e $1-D(G(\mathbf{z}))$ grande sui falsi); $G$ minimizza il secondo termine, l'unico che dipenda da lui (vuole $D(G(\mathbf{z}))\to 1$).
+
+La dimostrazione di Goodfellow sta in due passaggi, e conviene rifarli per intero: il secondo è quello che dice *che cosa* una GAN stia davvero minimizzando, ed è un risultato che si cita spesso e si deriva di rado. Prima però le ipotesi, che non sono innocue: le due reti hanno **capacità illimitata**, cioè $D$ è una funzione qualsiasi a valori in $[0,1]$ e non una rete con un numero finito di pesi, e le distribuzioni in gioco hanno densità.
+
+**Primo passaggio: il discriminatore ottimo.** Fissato $G$, il secondo integrale si riscrive nello spazio dei dati invece che in quello del rumore, perché spingere $\mathbf{z}$ attraverso $G$ è esattamente ciò che definisce $p_G$:
+
+$$
+V(D,G) = \int p_{\text{dati}}(\mathbf{x})\log D(\mathbf{x})\,d\mathbf{x}
+       + \int p_z(\mathbf{z})\log\big(1-D(G(\mathbf{z}))\big)\,d\mathbf{z}
+       = \int \Big[\, p_{\text{dati}}(\mathbf{x})\log D(\mathbf{x})
+       + p_G(\mathbf{x})\log\big(1-D(\mathbf{x})\big) \Big]\,d\mathbf{x}.
+$$
+
+Ed è qui che serve l'ipotesi di capacità illimitata: poiché $D$ non ha vincoli, l'integrale si massimizza massimizzando l'integrando **punto per punto**, cioè scegliendo per ogni $\mathbf{x}$ separatamente il numero $y = D(\mathbf{x}) \in [0,1]$ che rende massima $a\log y + b\log(1-y)$, con $a = p_{\text{dati}}(\mathbf{x})$ e $b = p_G(\mathbf{x})$. Derivando in $y$:
+
+$$
+\frac{d}{dy}\big[a\log y + b\log(1-y)\big] = \frac{a}{y} - \frac{b}{1-y} = 0
+\;\Longleftrightarrow\; a(1-y) = b\,y \;\Longleftrightarrow\; y = \frac{a}{a+b},
+$$
+
+e la derivata seconda $-a/y^2 - b/(1-y)^2$ è negativa, quindi quel punto è un massimo e non un minimo. Da cui
 
 $$
 D^*(\mathbf{x}) = \frac{p_{\text{dati}}(\mathbf{x})}{p_{\text{dati}}(\mathbf{x}) + p_G(\mathbf{x})},
 $$
 
-cioè proprio l'ottimo bayesiano della mistura descritta sopra. Secondo: sostituendo $D^*$ in $V$ si ottiene $V(D^*,G) = -\log 4 + 2\,\mathrm{JSD}\big(p_{\text{dati}} \,\|\, p_G\big)$, dove $\mathrm{JSD}$ è la divergenza di Jensen-Shannon, non negativa e nulla se e solo se le due distribuzioni coincidono. L'obiettivo ideale ha dunque minimo globale esattamente in $p_G = p_{\text{dati}}$, e lì $D^*(\mathbf{x})=\tfrac{1}{2}$ sul supporto dei dati: l'esperto non sa più distinguere.
+cioè proprio l'ottimo bayesiano della mistura descritta sopra. Il conto vale dove $a+b>0$: fuori dall'unione dei due supporti l'integrando è nullo e $D^*$ non è definito, ed è la ragione per cui tutti gli enunciati che seguono dicono «sul supporto dei dati» e non «ovunque».
+
+**Secondo passaggio: che cosa resta da minimizzare.** Si sostituisce $D^*$ in $V$ e si chiama $C(G) = V(D^*,G)$ ciò che rimane, funzione del solo generatore:
+
+$$
+C(G) = \mathbb{E}_{\mathbf{x}\sim p_{\text{dati}}}\!\Big[\log \frac{p_{\text{dati}}}{p_{\text{dati}}+p_G}\Big]
+     + \mathbb{E}_{\mathbf{x}\sim p_G}\!\Big[\log \frac{p_G}{p_{\text{dati}}+p_G}\Big].
+$$
+
+Il passaggio chiave è far comparire la **mistura** $m = (p_{\text{dati}}+p_G)/2$, che si ottiene dividendo per $2$ sopra e sotto dentro ciascun logaritmo: $\frac{p}{p_{\text{dati}}+p_G} = \frac{1}{2}\cdot\frac{p}{m}$, e il fattore $\tfrac12$ esce da ognuno dei due termini come un $-\log 2$. Restano due divergenze di Kullback-Leibler:
+
+$$
+C(G) = -\log 4 + \mathrm{KL}\big(p_{\text{dati}} \,\|\, m\big) + \mathrm{KL}\big(p_G \,\|\, m\big)
+     = -\log 4 + 2\,\mathrm{JSD}\big(p_{\text{dati}} \,\|\, p_G\big),
+$$
+
+dove l'ultima uguaglianza è la definizione stessa della divergenza di Jensen-Shannon, $\mathrm{JSD}(p\,\|\,q) = \tfrac12\mathrm{KL}(p\,\|\,m) + \tfrac12\mathrm{KL}(q\,\|\,m)$. La $\mathrm{JSD}$ è non negativa e si annulla se e solo se le due distribuzioni coincidono, quindi $C(G)$ ha minimo globale $-\log 4 \approx -1{,}386$ esattamente in $p_G = p_{\text{dati}}$; e lì $D^*(\mathbf{x})=\tfrac{1}{2}$ sul supporto dei dati, cioè l'esperto non sa più distinguere.
 
 Questa però è una *caratterizzazione* dell'ottimo, non una promessa di arrivarci, e le due cose vanno tenute separate. La prova di convergenza del paper suppone che a ogni passo $D$ raggiunga il proprio ottimo dato $G$, e soprattutto che a muoversi sia la densità $p_G$, dove $V$ è convessa; nell'addestramento vero si muovono i parametri $\theta_G$ di una rete, e lì la convessità che regge la dimostrazione non c'è più. Lo scrivono gli autori stessi, subito dopo la dimostrazione: usare un percettrone multistrato per definire $G$ introduce molti punti critici nello spazio dei parametri, e le reti funzionano bene in pratica «despite their lack of theoretical guarantees».
 
@@ -175,28 +213,64 @@ campane sono separate il verdetto è netto; quando si sovrappongono diventa un
 mezzo dappertutto, cioè una moneta lanciata in aria.
 ```
 
-Il pannello di sotto non è disegnato a mano: è la formula di $D^*$ valutata
-sulle due curve del pannello di sopra, punto per punto. E la formula dice una
-cosa che il disegno rende evidente: il verdetto guarda il **rapporto** fra le
-due altezze, non la loro distanza. Dove le due curve sono alte uguali il
-verdetto sta a un mezzo, anche se lì di roba ce n'è pochissima; dove una
-prevale sull'altra si allontana da un mezzo, anche se le due sono vicine.
+Il pannello di sotto non è disegnato a mano: è il verdetto migliore possibile
+contro quel generatore, calcolato punto per punto sulle due curve del pannello
+di sopra. E dice una cosa che il disegno rende evidente: quel che conta è il
+**rapporto** fra le due altezze, non la loro distanza. Dove le due curve sono
+alte uguali il verdetto sta a un mezzo, anche se lì di roba ce n'è pochissima;
+dove una prevale sull'altra si allontana da un mezzo, anche se le due sono
+vicine.
 
-Due cose si muovono insieme, ed è utile guardarle separatamente. La prima è il
-punto in cui il verdetto vale esattamente un mezzo, cioè il confine oltre il
-quale l'esperto cambia idea: parte da circa $-0{,}8$ e scivola verso destra
-mentre il generatore avanza. La seconda è l'altezza della gobba, cioè quanto
-l'esperto è sicuro nel suo terreno migliore: parte da $0{,}93$ e scende a
-$0{,}74$, a $0{,}64$, fino a $0{,}50$. Il confine si sposta e nel frattempo si
-sgonfia, e quando la gobba tocca il mezzo il confine non c'è più: non è che
+`````{tab} Elementare
+
+Nell'animazione due cose si muovono insieme, e conviene guardarle una per
+volta.
+
+La prima è il **confine**: il punto in cui il verdetto passa esattamente per il
+mezzo, cioè dove l'esperto smette di dire "falso" e comincia a dire "vero".
+All'inizio sta a sinistra, perché a sinistra il falsario è di casa; poi scivola
+verso destra mentre il falsario avanza.
+
+La seconda è l'**altezza della gobba**, cioè quanto l'esperto è sicuro nel suo
+terreno migliore. Delle sette pose, la prima gli concede $0{,}93$ (quasi
+certezza) e l'ultima $0{,}50$ (nessuna); in mezzo la gobba scende a $0{,}90$,
+$0{,}87$, $0{,}82$, $0{,}74$, $0{,}64$. Il confine si sposta e intanto la gobba
+si sgonfia, e quando la gobba tocca il mezzo il confine non c'è più: non è che
 l'esperto abbia sbagliato posto, è che non c'è più un posto giusto.
 
-C'è anche una ragione per cui la curva di sotto **non attraversa tutto il
-riquadro**. Il rapporto fra due densità è definito ovunque, ma dove non c'è né
-vero né falso non c'è niente da giudicare, e disegnarlo lì direbbe al lettore
-«certamente falso» in una regione vuota. È lo stesso perimetro che la
-dimostrazione si dà quando conclude $D^*(\mathbf{x}) = \tfrac{1}{2}$ **sul supporto dei
-dati**.
+C'è infine una ragione per cui la curva di sotto **non attraversa tutto il
+riquadro**: dove non c'è né vero né falso non c'è niente da giudicare, e
+tirare la linea anche lì direbbe «certamente falso» in una regione vuota.
+
+`````
+
+`````{tab} Superiore
+
+Il pannello inferiore è $D^*$ del passaggio precedente, valutato sulle due
+gaussiane del pannello superiore: i dati veri sono
+$\mathcal{N}(0,\ 0{,}55^2)$ e stanno fermi, il generatore parte da
+$\mathcal{N}(-1{,}75,\ 1{,}05^2)$ e raggiunge i dati in sette pose, con media e
+deviazione standard interpolate linearmente. Due grandezze si muovono insieme.
+
+Il **punto di indifferenza**, dove $D^*=\tfrac12$ e quindi
+$p_{\text{dati}}=p_G$: vale $-0{,}80$, $-0{,}72$, $-0{,}63$, $-0{,}53$,
+$-0{,}42$, $-0{,}29$ nelle prime sei pose (il picco dei dati veri sta
+nell'origine), e alla settima non esiste più, perché le due densità coincidono
+ovunque.
+
+Il **massimo di $D^*$**, cioè la fiducia dell'esperto nel suo terreno migliore:
+$0{,}93$, $0{,}90$, $0{,}87$, $0{,}82$, $0{,}74$, $0{,}64$, $0{,}50$. Il
+confine si sposta e il contrasto si appiattisce insieme a lui; all'ultima posa
+$D^*$ è la costante $\tfrac12$, e di un confine non c'è più traccia.
+
+La curva **non attraversa tutto il riquadro** per la stessa ragione per cui la
+dimostrazione conclude $D^*(\mathbf{x}) = \tfrac{1}{2}$ **sul supporto dei dati**: il
+rapporto fra due densità è definito ovunque, ma dove entrambe sono trascurabili
+non c'è niente da giudicare, e disegnarlo lì direbbe al lettore «certamente
+falso» in una regione vuota. La figura taglia dove la densità totale scende
+sotto $0{,}02$.
+
+`````
 
 ## L'addestramento alternato
 
@@ -205,7 +279,7 @@ solo. Si procede **a turni**: un passo per $D$, un passo per $G$, e così via,
 con la discesa del gradiente stocastica già incontrata nei capitoli precedenti
 (*stocastica* vuol dire che a ogni passo si guarda un pugno di esempi presi a
 caso, non tutti insieme). Mentre si aggiorna una rete, i parametri dell'altra
-restano fermi.
+restano fermi: è il «congelamento», e fra poco vedremo che cosa lo garantisce.
 
 Nel codice, il punteggio unico del gioco si spezza in due conti dell'errore,
 uno per rete: sono le due **loss** che si vedono qui sotto, `loss_D` e
@@ -318,29 +392,35 @@ campionati, il secondo fattore non esiste, e per aggirare la rottura servono
 stimatori a punteggio in stile REINFORCE o rilassamenti continui come
 Gumbel-softmax.
 
-Un esempio minimo dà la misura della differenza fra le due informazioni. Con un
-$D$ giocattolo su un dato di quattro numeri, il verdetto è
-$D(\tilde{\mathbf{x}}) = 0{,}427161$: un solo numero, che dice "propendo per il falso" e
+Un esempio minimo dà la misura della differenza fra le due informazioni, ed è
+un conto che si rifà in cinque righe. Il $D$ giocattolo è
+`nn.Sequential(nn.Linear(4, 8), nn.Tanh(), nn.Linear(8, 1))` inizializzato
+dopo `torch.manual_seed(8)`, il dato generato è
+$\tilde{\mathbf{x}} = [\,0{,}30,\ -0{,}70,\ 1{,}20,\ 0{,}10\,]$ e la loss è la
+`binary_cross_entropy_with_logits` verso l'etichetta "reale". Il verdetto è
+$D(\tilde{\mathbf{x}}) = 0{,}409823$: un solo numero, che dice "propendo per il falso" e
 nient'altro. Il gradiente sullo stesso dato è invece
 
 $$
 \frac{\partial \mathcal{L}_G}{\partial \tilde{\mathbf{x}}} =
-[\,-0{,}02442,\ +0{,}07015,\ -0{,}02293,\ -0{,}02082\,],
+[\,-0{,}03570,\ -0{,}08145,\ -0{,}07891,\ +0{,}15839\,],
 $$
 
-quattro numeri che dicono di alzare la prima, la terza e la quarta componente e
-di abbassare nettamente la seconda. Muovendo il dato di mezzo passo in senso
-opposto al gradiente il verdetto sale a $0{,}428544$: piccolo, perché il passo è
-piccolo, ma nella direzione voluta, e ottenuto senza che nessuno abbia mai
-mostrato al generatore un dato autentico.
+quattro numeri che dicono di alzare le prime tre componenti e di abbassare
+nettamente la quarta. Muovendo il dato di mezzo passo in senso opposto al
+gradiente, cioè $\tilde{\mathbf{x}} \leftarrow \tilde{\mathbf{x}} - 0{,}5\,\partial
+\mathcal{L}_G / \partial \tilde{\mathbf{x}}$, il verdetto sale a $0{,}417891$: poco,
+perché il passo è piccolo, ma nella direzione voluta, e ottenuto senza che
+nessuno abbia mai mostrato al generatore un dato autentico.
 
 `````
 
-Le due sezioni che seguono nel capitolo dipendono da questo passaggio più di
-quanto sembri. I "gradienti che svaniscono" di cui si parlerà fra poco sono
-gradienti *di questo tipo*, e il *gradient penalty* citato in fondo alla
-sezione è una penalità sulla ripidità di $D$ rispetto al proprio ingresso:
-entrambe le cose riguardano il vettore che torna indietro, non il verdetto.
+Le due parti che seguono dipendono da questo passaggio più di quanto sembri. I
+"gradienti che svaniscono" di cui si parlerà fra poco sono proprio questa
+correzione che si assottiglia fino a sparire, e il *gradient penalty* citato in
+fondo alla sezione è una penalità sulla ripidità di $D$ rispetto al proprio
+ingresso: entrambe le cose riguardano la lista che torna indietro, non il
+verdetto.
 
 ### Gli altri due dettagli
 
@@ -367,9 +447,12 @@ lavoro; su reti grandi il risparmio è però notevole.
 
 Secondo dettaglio: nel suo turno, il falsario chiede all'esperto di trattare
 i propri falsi come "reali" e impara da quanto il verdetto se ne discosta. È
-una versione più *generosa* del gioco, e il motivo per cui serve è quello
-appena visto. La correzione non è il voto, è **di quanto il voto cambierebbe**:
-quando l'esperto è sicurissimo che il quadro sia falso, il suo giudizio è
+una versione più *generosa* del gioco, e conviene dire subito che, a rigore,
+non è più lo stesso gioco: con questa regola il punteggio unico di cui si è
+parlato sopra non basta più a raccontare tutti e due i giocatori. Il motivo per
+cui la si adotta lo stesso è quello appena visto: la correzione non è il voto,
+è **di quanto il voto cambierebbe**; e quando l'esperto è sicurissimo che il
+quadro sia falso, il suo giudizio è
 schiacciato contro il fondo della scala, e un piccolo miglioramento del quadro
 non lo sposta di una virgola. Un principiante corretto così è come uno studente
 che prende zero a ogni compito senza mai sapere quale zero fosse meno grave:
@@ -395,13 +478,36 @@ però che l'innocuità dipende dall'ordine delle righe: in una variante che
 azzeri i gradienti in cima all'iterazione, o che legga `.grad` fra i due passi,
 `.detach()` torna necessario.
 
-C'è poi una scelta nascosta nella riga `criterio(D(G(z)), uni)`: chiedere che i
-falsi siano etichettati "reale" equivale a **massimizzare** $\log D(G(\mathbf{z}))$,
-invece di minimizzare $\log(1-D(G(\mathbf{z})))$ come nella formula minimax. Le due
-formulazioni hanno lo stesso punto fisso, e questa fornisce gradienti più
-forti proprio all'inizio, quando $G$ è pessimo e $D(G(\mathbf{z})) \approx 0$ farebbe
-saturare l'obiettivo originale: è il *non-saturating loss* già suggerito nel
-paper del 2014.
+C'è poi una scelta nascosta nella riga `criterio(D(G(z)), uni)`, ed è la
+formulazione che si usa davvero, qui come in qualunque implementazione:
+chiedere che i falsi siano etichettati "reale" equivale a **massimizzare**
+$\log D(G(\mathbf{z}))$, invece di minimizzare $\log(1-D(G(\mathbf{z})))$ come nella formula
+minimax. È la *non-saturating loss*, già suggerita nel paper del 2014, e il
+motivo per cui la si preferisce sta tutto in una derivata.
+
+Sia $s$ il logit che $D$ produce sul campione falso, cosicché
+$D(G(\mathbf{z})) = \sigma(s)$. Scritte entrambe come qualcosa da **minimizzare**, le
+due perdite del generatore sono $\mathcal{L}^{\text{sat}} = \log\big(1-\sigma(s)\big)$
+e $\mathcal{L}^{\text{ns}} = -\log \sigma(s)$; ricordando che
+$\sigma' = \sigma(1-\sigma)$, i due fattori $\sigma$ si semplificano in modi
+opposti e restano
+
+$$
+\frac{\partial \mathcal{L}^{\text{sat}}}{\partial s} = -\,\sigma(s),
+\qquad
+\frac{\partial \mathcal{L}^{\text{ns}}}{\partial s} = -\big(1-\sigma(s)\big).
+$$
+
+Le due spingono nello stesso verso (verso $s$ grande, cioè $D(G(\mathbf{z}))\to 1$),
+ma con forze che agli estremi si scambiano. Quando $G$ è pessimo e $D$ lo
+smaschera, diciamo $D(G(\mathbf{z})) = 0{,}01$, la prima ha modulo $0{,}01$ e la
+seconda $0{,}99$: **novantanove volte più grande**. In generale il rapporto fra
+le due vale $(1-\sigma)/\sigma = e^{-s}$ e cresce senza limite man mano che $D$
+si convince, mentre all'equilibrio $\sigma=\tfrac12$ le due coincidono. La loss
+minimax non è debole in generale, quindi: è debole **proprio dove servirebbe di
+più**, all'inizio dell'addestramento, ed è il senso della frase con cui il
+paper la liquida, «same fixed point» ma gradienti «much stronger early in
+learning».
 
 Non sono però lo stesso gioco, ed è meglio dirlo esplicitamente perché il
 capitolo ha appena costruito due sezioni sull'idea di un punteggio unico: con
@@ -430,7 +536,11 @@ L'eleganza teorica delle GAN convive con una fama meritata di addestramento capr
   l'altro con ritocchi piccoli, ogni miglioramento resta acquisito e
   l'equilibrio si sposta un poco alla volta; se i passi sono troppo grandi,
   ogni correzione disfa la precedente e nessuno dei due consolida niente. Due
-  lottatori che si sbilanciano a vicenda invece di allenarsi.
+  lottatori che si sbilanciano a vicenda invece di allenarsi. Ed è qui che si
+  paga il prezzo annunciato poco fa: chiedere all'esperto quanto manca perché
+  il quadro passi per vero tiene viva la correzione anche quando il falsario è
+  pessimo, ma quando l'esperto è molto più bravo di lui quella stessa domanda
+  restituisce correzioni grosse e che saltano da un turno all'altro.
 - **Mode collapse.** Il falsario scopre *un solo* falso che inganna sempre
   l'esperto e si limita a rifarlo. Risultato: $G$ genera sempre la stessa
   immagine (o pochissime varianti), buttando via tutta la varietà dei dati
@@ -496,27 +606,40 @@ bellissime e tutte uguali sembrano un successo, una per volta.
 Non è una cautela retorica, ed è una di quelle affermazioni che conviene
 misurare invece di ripetere. Si prende il ciclo scritto qui sopra, riga per
 riga, e gli si dà un compito minuscolo di cui conosciamo già la risposta: al
-posto delle immagini, dei punti sparsi attorno a otto mucchietti disposti in
-cerchio. Il vantaggio di un compito così è che permette di controllare quello
-che sulle facce non si potrebbe controllare, cioè quanti mucchietti il
-generatore ha davvero imparato e quanti dei suoi punti finiscono su uno di
-essi.
+posto delle immagini, quattromila punti sparsi attorno a otto mucchietti
+disposti in cerchio (otto gaussiane di deviazione standard $0{,}05$ sui vertici
+di un ottagono di raggio $2$). Generatore e discriminatore sono due reti con
+due strati nascosti da $128$ unità, si allenano con Adam a passo
+$2\cdot 10^{-4}$ su gruppi da $256$ per quattrocento giri, e l'unica cosa che
+cambia da un addestramento all'altro è il numero da cui parte il sorteggio (i
+semi da $0$ a $3$). Il vantaggio di un compito così è che permette di
+controllare quello che sulle facce non si potrebbe controllare: quanti
+mucchietti il generatore ha davvero imparato (diciamo coperto quello che
+riceve almeno l'uno per cento dei suoi punti) e quanti dei suoi punti cadono
+entro tre deviazioni standard da un mucchietto, che chiameremo i punti «a
+segno».
 
-Quattro addestramenti identici in tutto tranne il numero da cui parte il
-sorteggio. Alla fine, le due loss dei quattro sono in pratica lo stesso numero:
-`loss_D` fra $1{,}09$ e $1{,}16$, `loss_G` fra $1{,}01$ e $1{,}15$. La qualità
-no: la frazione di punti generati che cade davvero su un mucchietto va dal
-$26\%$ al $62\%$, e fra il migliore e il peggiore c'è un fattore due e mezzo.
-Il peggiore dei quattro, per giunta, ha la seconda `loss_G` più bassa: la
-classifica secondo la loss e quella secondo la qualità non si somigliano.
-
-Dentro un singolo addestramento la cosa è ancora più netta, perché **la loss
-del generatore sale mentre il generatore migliora**. All'inizio, quando non ha
-imparato niente (nessun mucchietto coperto, nessun punto a segno), la sua loss
-vale $0{,}59$. Quattrocento giri dopo, con tutti e otto i mucchietti coperti e
-più della metà dei punti a segno, vale $1{,}09$: quasi il doppio. Un criterio
+Il risultato più netto sta dentro un singolo addestramento, e si ripete in
+tutti e quattro: **la loss del generatore sale mentre il generatore migliora**.
+Al primo giro non ha imparato niente (nessun mucchietto coperto, nessun punto a
+segno) e la sua loss vale fra $0{,}68$ e $0{,}73$. Quattrocento giri dopo vale
+di più in tutti e quattro i casi: fra $0{,}76$ e $0{,}81$ nei tre che sono
+arrivati a coprire tutti e otto i mucchietti, $1{,}27$ nel quarto. Un criterio
 di arresto che aspettasse la loss più bassa avrebbe fermato tutto al primo
 giro, con un generatore buono a niente.
+
+Poi c'è la differenza fra un addestramento e l'altro. I tre che convergono
+finiscono con loss che si somigliano fin quasi alla seconda cifra (`loss_D` fra
+$1{,}33$ e $1{,}36$, `loss_G` fra $0{,}76$ e $0{,}81$: entrambe vicine ai valori
+che il gioco assume all'equilibrio, quando l'esperto tira a indovinare) e con
+qualità che invece non si somigliano: i punti a segno vanno dal $79\%$ al
+$91\%$. Il quarto è il
+caso da guardare con attenzione, perché è l'unico finito in *mode collapse*
+(cinque mucchietti su otto) e lì le loss *lo dicono*, $0{,}97$ e $1{,}27$: il
+discriminatore ha preso il sopravvento. Ma è esattamente la diagnosi di
+partenza, non una smentita: le loss non hanno misurato la qualità, hanno
+misurato chi dei due stesse vincendo. Che nel quarto caso le due cose
+coincidano è una fortuna, non un metodo, e i primi tre lo mostrano.
 
 Serve una misura che giudichi un **insieme** di immagini invece di una sola:
 in gergo, la loro *distribuzione*, cioè come si spartiscono fra i vari tipi
@@ -580,7 +703,7 @@ L'**Inception Score** {cite}`salimans2016improved` combina le due richieste in
 un'unica quantità:
 
 $$
-\text{IS} = \exp\Big( \mathbb{E}_{\mathbf{x} \sim p_G}\big[\, D_{\text{KL}}
+\text{IS} = \exp\Big( \mathbb{E}_{\mathbf{x} \sim p_G}\big[\, \mathrm{KL}
 \big( p(y \mid \mathbf{x})\,\|\,p(y) \big) \,\big] \Big),
 $$
 
@@ -597,19 +720,20 @@ La **Fréchet Inception Distance** {cite}`heusel2017gans` abbandona le classi e
 lavora sulle attivazioni di uno strato intermedio (il vettore da $2048$
 componenti del *pooling* finale di Inception). Si approssimano le due
 popolazioni di attivazioni, reali e generate, con due gaussiane
-$\mathcal{N}(\mu_r, \Sigma_r)$ e $\mathcal{N}(\mu_g, \Sigma_g)$, e si misura la
+$\mathcal{N}(\boldsymbol{\mu}_r, \boldsymbol{\Sigma}_r)$ e
+$\mathcal{N}(\boldsymbol{\mu}_g, \boldsymbol{\Sigma}_g)$, e si misura la
 distanza di Fréchet fra le due, che per gaussiane ha forma chiusa:
 
 $$
-\text{FID} = \lVert \mu_r - \mu_g \rVert_2^2
-+ \operatorname{Tr}\!\Big( \Sigma_r + \Sigma_g
-- 2\big(\Sigma_r \Sigma_g\big)^{1/2} \Big).
+\text{FID} = \lVert \boldsymbol{\mu}_r - \boldsymbol{\mu}_g \rVert_2^2
++ \operatorname{Tr}\!\Big( \boldsymbol{\Sigma}_r + \boldsymbol{\Sigma}_g
+- 2\big(\boldsymbol{\Sigma}_r \boldsymbol{\Sigma}_g\big)^{1/2} \Big).
 $$
 
 Il primo termine confronta i centri delle due nuvole, il secondo la loro forma:
 è quest'ultimo a far pagare il collasso *di varianza*, perché un generatore che
 ripete sempre la stessa uscita ha covarianza nulla e paga
-$\operatorname{Tr}(\Sigma_r)$ anche col centro azzeccato. Il FID correla meglio
+$\operatorname{Tr}(\boldsymbol{\Sigma}_r)$ anche col centro azzeccato. Il FID correla meglio
 dell'IS con il giudizio umano ed è oggi lo standard di fatto.
 
 Restano quattro avvertenze da tenere a mente quando si leggono due FID a
@@ -624,21 +748,25 @@ ma non esattamente ciò che dice di misurare.
 E soprattutto: il FID vede **solo i primi due momenti**. Approssimare due
 popolazioni di attivazioni con due gaussiane significa non poterle distinguere
 quando media e covarianza coincidono, per quanto diverse siano davvero. Un
-esempio costruito apposta lo mostra bene: se i dati reali sono una mistura di
-due gaussiane separate e il generatore emette un'unica gaussiana con la stessa
-media e la stessa covarianza dell'insieme, il FID scende sotto $10^{-3}$, cioè
-al livello che in letteratura si legge come «indistinguibile dal vero», mentre
-il generatore ha buttato via un modo su due e riempie di campioni proprio la
-voragine che li separa (un quarto delle sue uscite cade dove i dati reali ne
-mettono il due per cento). Il termine sulle covarianze smaschera il
-collasso su un punto; la perdita di modi a momenti invariati, no.
+esempio costruito apposta lo mostra bene, e sta in una dimensione sola: i dati
+reali sono la mistura in parti uguali di $\mathcal{N}(-3,\,1)$ e
+$\mathcal{N}(+3,\,1)$, il generatore emette la sola $\mathcal{N}(0,\,10)$, che
+di quella mistura ha esattamente la media e la varianza. Per costruzione il FID
+fra le due è **zero**, e su un campione finito di $50\,000$ punti per parte
+resta a $3{,}6\cdot 10^{-4}$, cioè indistinguibile da zero. Eppure quel
+generatore ha perso per strada l'intera struttura a due modi, e riempie di
+campioni proprio la voragine che li separa: nella fascia $|x| < 1$ finisce il
+$25\%$ delle sue uscite contro il $2{,}3\%$ dei dati reali. Il termine sulle
+covarianze smaschera il collasso su un punto; la perdita di modi a momenti
+invariati, no.
 
 `````
 
 Vale la pena fissare un punto che tornerà: queste due misure non giudicano
 un'immagine, giudicano un **insieme** di immagini contro un altro insieme. Non
 esiste il FID di una foto. È la conseguenza tecnica di ciò che una GAN cerca
-di fare, cioè avvicinare $p_G$ a $p_{\text{dati}}$: si valuta l'obiettivo
+di fare, cioè avvicinare il mucchio delle immagini che genera a quello delle
+immagini vere (in simboli, $p_G$ a $p_{\text{dati}}$): si valuta l'obiettivo
 dichiarato, non il singolo prodotto. Il FID sarà anche l'unità di misura con
 cui, nel capitolo sui modelli di diffusione, la nuova famiglia dimostrerà di
 aver superato le GAN.
@@ -679,8 +807,8 @@ quadro venga smascherato proprio per la ripetizione; dosare i turni delle due
 reti perché nessuna delle due prenda troppo vantaggio sull'altra.
 
 Nessuno di questi trucchi è una bacchetta magica: l'addestramento avversario
-resta un'arte oltre che una scienza, ma è proprio da questa tensione che
-nascono i risultati più sorprendenti del deep learning generativo.
+resta un'arte oltre che una scienza, ed è da questa tensione che sono nati i
+risultati su cui le GAN si sono costruite la propria fama.
 
 `````{tab} Elementare
 
@@ -704,7 +832,8 @@ nascono i risultati più sorprendenti del deep learning generativo.
   l'esperto è troppo bravo, il suo giudizio è talmente schiacciato sul "falso"
   che non si muove più, e senza movimento non c'è correzione: si rimedia
   chiedendo al falsario, nel suo turno, di far passare i propri quadri per
-  autentici; il prezzo sono correzioni più sbalzate.
+  autentici; il prezzo sono correzioni più sbalzate, e un duello che non si
+  lascia più tenere con un punteggio solo.
 - **La loss, cioè il conto dell'errore, non misura la qualità**: dice solo chi
   dei due sta vincendo. Si giudica confrontando *insiemi* di immagini, mai una
   alla volta: con l'**Inception Score** (nitidezza e varietà secondo un giudice

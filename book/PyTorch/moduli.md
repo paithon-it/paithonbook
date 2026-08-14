@@ -171,21 +171,6 @@ addestrarlo serve prima di tutto un modo di misurare *quanto sbaglia*: la
 funzione di perdita, o **loss**. `torch.nn` le offre come moduli pronti; le
 due che useremo più spesso coprono i due grandi casi.
 
-```{figure} ../figures/loss-function-cosa-ottimizziamo.svg
-:name: fig-mse-vs-crossentropy
-:alt: "Due curve a confronto. L'errore quadratico medio cresce come una parabola all'allontanarsi della predizione dal valore vero, penalizzando poco gli errori piccoli. La cross-entropy invece diverge: quando il modello assegna probabilità quasi nulla alla classe giusta, la penalità tende all'infinito."
-:width: 96%
-
-Due forme, due caratteri. La parabola perdona gli errori piccoli; la
-cross-entropy non perdona la sicurezza sbagliata, e cresce senza limite quando
-il modello esclude la risposta giusta.
-```
-
-Il comportamento agli estremi mostrato in {numref}`fig-mse-vs-crossentropy` è
-la ragione della scelta, più della matematica che le distingue. In
-classificazione ciò che deve fare male non è sbagliare di poco, è essere
-convinti del contrario: la cross-entropy è costruita esattamente per questo.
-
 ```python
 loss_regressione = nn.MSELoss()            # per predire numeri continui
 loss_classi = nn.CrossEntropyLoss()        # per scegliere tra classi
@@ -211,8 +196,20 @@ probabilità (la softmax) la fa lei, al suo interno.
 
 `````{tab} Superiore
 Per la regressione, `nn.MSELoss` calcola
-$\mathcal{L} = \frac{1}{N}\sum_{i=1}^{N} (\hat{y}_i - y_i)^2$, dove l'indice
-$i$ scorre gli $N$ esempi del batch. Per la classificazione a $K$ classi,
+
+$$
+\mathcal{L} = \frac{1}{N D} \sum_{i=1}^{N} \sum_{k=1}^{D}
+              (\hat{y}_{ik} - y_{ik})^2,
+$$
+
+dove $i$ scorre gli $N$ esempi del batch e $k$ le $D$ uscite di ciascun
+esempio: la media è su **tutti gli elementi** del tensore, non sugli esempi.
+Quando l'uscita è una sola, come qui, le due letture coincidono e la
+distinzione non si vede; in regressione multi-uscita no. Chi somma i quadrati
+di un esempio e poi media sugli esempi ottiene un numero $D$ volte più grande
+di quello che restituisce il modulo: misurato su forme $(4, 3)$, $6{,}7676$
+contro $2{,}2559$. Il punto di minimo è lo stesso, la scala del gradiente no,
+e con essa il learning rate che serviva. Per la classificazione a $K$ classi,
 `nn.CrossEntropyLoss` combina in un solo modulo `LogSoftmax` e `NLLLoss`: dati
 i logit $z_1, \dots, z_K$ e la classe vera $c$ di un singolo esempio,
 
@@ -222,10 +219,10 @@ $$
 \hat{y}_k = \frac{e^{z_k}}{\sum_{j=1}^{K} e^{z_j}} .
 $$
 
-dove qui $k$ e $j$ scorrono le $K$ classi, non gli esempi. Come per la MSE,
-sul batch il modulo restituisce la **media** di questi termini sugli $N$
-esempi (`reduction='mean'`, il default): è il "numero solo" del codice qui
-sopra. Applicarla ai logit, e non a probabilità già normalizzate, non è un
+dove qui $k$ e $j$ scorrono le $K$ classi, non gli esempi. Sul batch il modulo
+restituisce la **media** di questi termini sugli $N$ esempi
+(`reduction='mean'`, il default): è il "numero solo" del codice qui sopra, e
+qui la media è davvero per esempio, perché di termini ce n'è uno per esempio. Applicarla ai logit, e non a probabilità già normalizzate, non è un
 capriccio: il calcolo congiunto del logaritmo e della softmax è numericamente
 più stabile (evita underflow con il *log-sum-exp trick*), e per questo
 l'ultimo strato del modello **non** deve avere la softmax. Se servono le
@@ -233,6 +230,25 @@ probabilità (per leggere l'output, non per addestrare), si applica
 `torch.softmax(logits, dim=1)` a valle. Con etichette intere il target ha
 shape $(N,)$ e dtype `int64`, non serve il one-hot.
 `````
+
+Messe una accanto all'altra, le due funzioni hanno caratteri diversi prima
+ancora che formule diverse, e si vede meglio disegnandole
+({numref}`fig-mse-vs-crossentropy`).
+
+```{figure} ../figures/loss-function-cosa-ottimizziamo.svg
+:name: fig-mse-vs-crossentropy
+:alt: "Due curve a confronto. L'errore quadratico medio cresce come una parabola all'allontanarsi della predizione dal valore vero, penalizzando poco gli errori piccoli. La cross-entropy invece diverge: quando il modello assegna probabilità quasi nulla alla classe giusta, la penalità tende all'infinito."
+:width: 96%
+
+Due forme, due caratteri. La parabola perdona gli errori piccoli; la
+cross-entropy non perdona la sicurezza sbagliata, e cresce senza limite quando
+il modello esclude la risposta giusta.
+```
+
+Il comportamento agli estremi è la ragione della scelta, più della matematica
+che le distingue. In classificazione ciò che deve fare male non è sbagliare di
+poco, è essere convinti del contrario: la cross-entropy è costruita
+esattamente per questo.
 
 Il modello esiste e sa dire quanto sbaglia. Manca chi usa quel numero per
 correggerlo, ed è l'argomento della sezione seguente.

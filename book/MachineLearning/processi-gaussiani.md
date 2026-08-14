@@ -3,10 +3,18 @@
 C'è una differenza sottile ma decisiva tra due previsioni del tempo. «Domani
 24 gradi» è una cifra secca: sembra sicura, ma non dice nulla su quanto
 fidarsi. «Domani tra 21 e 27» dice di meno e comunica di più: oltre alla
-stima, dichiara *quanto il modello non sa*. Tutti i modelli visti finora in
-questo capitolo (la retta di regressione, la logistica, il k-NN) rispondono
-alla prima maniera: un numero, prendere o lasciare. In questa sezione
-incontriamo un modello che risponde alla seconda: il **processo gaussiano**.
+stima, dichiara *quanto il modello non sa*. Quasi tutti i modelli visti finora
+in questo capitolo (la retta di best fit, la regressione logistica, il k-NN)
+rispondono alla prima maniera: un numero, prendere o lasciare. In questa
+sezione incontriamo un modello che risponde alla seconda: il **processo
+gaussiano**.
+
+Il nome, per una volta, si spiega in una riga. **Gaussiano** perché tutto ciò
+che il modello dice ha la forma della curva a campana di Gauss, quella con un
+valore centrale e un margine attorno. E **processo** non nel senso del
+tribunale né del tempo che scorre: è il termine con cui in statistica si
+indica un'intera famiglia di quantità imparentate fra loro, qui i valori che la
+curva vera può assumere in ogni punto.
 
 L'idea ha radici minerarie. Nel 1951 Danie Krige, un giovane ingegnere
 sudafricano, affrontava il problema più costoso delle miniere d'oro del
@@ -78,18 +86,28 @@ La regola del kernel è il buon senso del geometra: **punti vicini hanno valori
 simili**. Se a Modena ci sono 24 gradi, a Bologna (quaranta chilometri), mi
 aspetto quasi la stessa temperatura; ad Ancona, duecento chilometri più in là,
 la mia misura modenese dice ormai poco. Il kernel trasforma questa intuizione
-in un numero tra 0 e 1: vicini quasi gemelli valgono quasi 1, lontani estranei
-valgono quasi 0. E ha una manopola fondamentale, il **raggio di influenza**:
-fin dove arriva l'effetto di una misura? Con un raggio corto ogni osservazione
-parla solo del suo vicinato e le curve possono zigzagare; con un raggio lungo
-ogni misura si fa sentire lontano e le curve escono morbide e distese.
+in un numero tra 0 e 1: due punti a un passo l'uno dall'altro valgono quasi 1,
+due punti lontanissimi quasi 0.
+
+E ha una manopola fondamentale, il **raggio di influenza**:
+fin dove arriva l'effetto di una misura? La collega alle curve un ragionamento
+breve. Se il raggio è corto, la mia misura a Modena non dice niente su Bologna,
+quindi il valore a Bologna resta libero di essere qualunque cosa: fra due
+chiodi vicini il filo può fare quello che vuole, e le curve zigzagano. Se il
+raggio è lungo, la misura di Modena impegna anche Bologna a starle vicino, e a
+sua volta Bologna impegna Ferrara: i valori sono legati fra loro a catena, e
+una catena del genere non può fare scatti bruschi. Ne escono curve morbide e
+distese.
 
 Diamo un'idea con i numeri, misurando le distanze **in unità di raggio**: se il
-raggio d'influenza è quaranta chilometri (Modena-Bologna), «distanza 1» vuol
-dire quaranta chilometri, «distanza 2» ottanta, e così via. La somiglianza cala
+raggio d'influenza è quaranta chilometri, «distanza 1» vuol dire quaranta
+chilometri, «distanza 2» ottanta, e così via. La somiglianza cala
 come una campana, cioè non in proporzione alla distanza ma al suo **quadrato**:
-a distanza 1 vale $0{,}61$, a distanza 2 (dove il quadrato è quattro volte più
-grande) crolla a $0{,}14$, a distanza 3 (nove volte) ad appena $0{,}01$.
+a distanza $1$ vale $0{,}61$, a distanza $2$ (dove il quadrato è quattro volte
+più grande) crolla a $0{,}14$, a distanza $3$ (nove volte) ad appena $0{,}01$.
+Già a un raggio pieno di distanza, quindi, la somiglianza è scesa a poco più
+della metà: «quasi gemelli» vuol dire molto più vicini di così.
+
 L'influenza di una misura, insomma, non si spegne piano: sparisce.
 
 `````
@@ -119,8 +137,9 @@ la pena scriverla, perché è il pezzo di matematica più elegante dei processi
 gaussiani:
 
 $$
-\log p(y \mid \mathbf{X}) =
--\tfrac{1}{2} y^\top \big(\mathbf{K} + \sigma_n^2\mathbf{I}\big)^{-1} y
+\log p(\mathbf{y} \mid \mathbf{X}) =
+-\tfrac{1}{2} \mathbf{y}^\top
+\big(\mathbf{K} + \sigma_n^2\mathbf{I}\big)^{-1} \mathbf{y}
 -\tfrac{1}{2} \log\big\lvert \mathbf{K} + \sigma_n^2\mathbf{I} \big\rvert
 -\tfrac{m}{2}\log 2\pi .
 $$
@@ -163,15 +182,16 @@ che alza la mano e ammette di non avere dati per rispondere.
 `````{tab} Superiore
 
 Siano $\mathbf{X}$ gli $m$ punti di addestramento
-$\mathbf{x}_1, \dots, \mathbf{x}_m$ con osservazioni rumorose $y$ (la solita
-$m$ del capitolo: il numero di esempi), e $\mathbf{X}_*$ gli $m_*$ punti dove
-vogliamo predire. Il posteriore è gaussiano con media e
-covarianza in forma chiusa {cite}`rasmussen2006gaussian`:
+$\mathbf{x}_1, \dots, \mathbf{x}_m$ con osservazioni rumorose $\mathbf{y}$ (la
+solita $m$ del capitolo: il numero di esempi), e $\mathbf{X}_*$ gli $m_*$ punti
+dove vogliamo predire. Il posteriore è gaussiano con media e covarianza in
+forma chiusa {cite}`rasmussen2006gaussian`:
 
 $$
-\mu_* = \mathbf{K}_*^\top \big(\mathbf{K} + \sigma_n^2 \mathbf{I}\big)^{-1} y,
+\boldsymbol{\mu}_* = \mathbf{K}_*^\top
+\big(\mathbf{K} + \sigma_n^2 \mathbf{I}\big)^{-1} \mathbf{y},
 \qquad
-\Sigma_* = \mathbf{K}_{**} - \mathbf{K}_*^\top
+\boldsymbol{\Sigma}_* = \mathbf{K}_{**} - \mathbf{K}_*^\top
 \big(\mathbf{K} + \sigma_n^2 \mathbf{I}\big)^{-1} \mathbf{K}_*,
 $$
 
@@ -179,21 +199,25 @@ dove $\mathbf{K} \in \mathbb{R}^{m \times m}$ è la matrice del kernel tra i
 punti di addestramento ($K_{ij} = k(\mathbf{x}_i, \mathbf{x}_j)$),
 $\mathbf{K}_* \in \mathbb{R}^{m \times m_*}$ quella tra addestramento e punti
 nuovi, $\mathbf{K}_{**}$ quella tra i punti nuovi,
-$\sigma_n^2$ la varianza del rumore di misura e $I$ la matrice identità. Le
-due formule si leggono bene. La media $\mu_*$ è una **combinazione pesata
-delle osservazioni** $y$, con pesi dettati dal kernel: il kriging di Krige,
-appunto. La covarianza $\Sigma_*$ è la varianza del prior ($\mathbf{K}_{**}$)
+$\sigma_n^2$ la varianza del rumore di misura, $\mathbf{y}$ il vettore delle
+osservazioni e $\mathbf{I}$ la matrice identità. Le
+due formule si leggono bene. La media $\boldsymbol{\mu}_*$ è una
+**combinazione pesata delle osservazioni** $\mathbf{y}$, con pesi dettati dal
+kernel: il kriging di Krige, appunto. La covarianza $\boldsymbol{\Sigma}_*$ è
+la varianza del prior ($\mathbf{K}_{**}$)
 *meno*
 ciò che i dati spiegano: vicino ai dati la sottrazione mangia quasi tutto e
 l'incertezza crolla; lontano non sottrae nulla e si torna all'incertezza del
 prior.
 
 La banda al 95% **sulla funzione** è
-$\mu_* \pm 2\sqrt{\operatorname{diag}(\Sigma_*)}$, ed è quella che
+$\boldsymbol{\mu}_* \pm 2\sqrt{\operatorname{diag}(\boldsymbol{\Sigma}_*)}$,
+ed è quella che
 `scikit-learn` restituisce con `return_std=True`. Attenzione a non confonderla
 con l'intervallo su una **nuova osservazione**, che è un'altra cosa: lì al
 posteriore sulla funzione va aggiunto il rumore di misura, cioè
-$\mu_* \pm 2\sqrt{\operatorname{diag}(\Sigma_*) + \sigma_n^2}$. La differenza
+$\boldsymbol{\mu}_* \pm
+2\sqrt{\operatorname{diag}(\boldsymbol{\Sigma}_*) + \sigma_n^2}$. La differenza
 non è cosmetica: sui punti già osservati la prima tende a zero, la seconda non
 scende mai sotto $\sigma_n$. Se la domanda è «che valore misurerò domani» serve
 la seconda; se è «quanto vale la grandezza vera», la prima.
@@ -244,36 +268,54 @@ for x, mu, s in zip(X_test.ravel(), media, dev_std):
 ```
 
 La riga chiave è `return_std=True`: accanto a ogni previsione arriva la sua
-deviazione standard, cioè l'ampiezza tipica dell'incertezza, e stampiamo un
-intervallo largo **due volte** quella (in una campana gaussiana, fra due
-deviazioni standard sotto e due sopra la media cade circa il 95% dei casi: è
-una proprietà della curva, non una scelta nostra, e per questo l'intervallo
-$\mu \pm 2\sigma$ si legge come «quasi certamente il valore sta lì dentro»).
+**deviazione standard**, cioè di quanto il valore vero, tipicamente, si scosta
+dalla stima. Nella stampa la raddoppiamo, e non a caso: in una curva a campana,
+fra due deviazioni standard sotto la media e due sopra cade circa il $95\%$ dei
+casi. È una proprietà della campana, non una scelta nostra, ed è la ragione per
+cui un intervallo largo due deviazioni standard per parte si legge come «quasi
+certamente il valore sta lì dentro».
 
-Il risultato racconta la storia della figura, e la racconta in tre gradini, non
+Il programma stampa questo:
+
+```text
+x = 1.5  ->  f(x) = +0.83 ± 0.20
+x = 3.0  ->  f(x) = +0.07 ± 0.36
+x = 8.0  ->  f(x) = +0.12 ± 1.38
+```
+
+E racconta la storia della figura in tre gradini, non
 in due. A $x = 1{,}5$, accanto a un dato osservato, la banda è strettissima
 ($\pm 0{,}20$). A $x = 3{,}0$ siamo ancora *dentro* l'intervallo esplorato, ma
-in mezzo al buco fra due gruppi di misure (gli otto punti estratti cadono fra
-$0{,}10$ e $5{,}48$, e fra $1{,}62$ e $3{,}64$ non ce n'è nessuno): la banda si
+in mezzo a un buco: gli otto punti sorteggiati cadono tutti fra $0{,}10$ e
+$5{,}48$, però fra $1{,}62$ e $3{,}64$ non ce n'è nessuno, e $3{,}0$ sta
+proprio in quel vuoto. La banda si
 allarga già a $\pm 0{,}36$, quasi il doppio, pur restando utile. A $x = 8{,}0$,
-fuori da tutto ciò che il modello ha visto, si spalanca a $\pm 1{,}38$, fin
-quasi all'ampiezza del prior. È la lezione della sezione: l'incertezza non
+fuori da tutto ciò che il modello ha visto, si spalanca a $\pm 1{,}38$, cioè
+quasi quanto era prima di vedere qualsiasi dato. È la lezione della sezione:
+l'incertezza non
 distingue «dentro» da «fuori», distingue **vicino a un dato** da **lontano da
 un dato**. E il modello non finge di sapere: allarga le braccia.
 
 ## Il conto da pagare, e dove conviene
 
 Tanta eleganza ha un prezzo, e va detto senza giri di parole: il processo
-gaussiano **non scala**.
+gaussiano **regge male i dati tanti**.
 
 `````{tab} Elementare
 
-Per ogni previsione, il processo gaussiano non consulta un riassunto: riapre
-*tutto* l'archivio delle osservazioni e le confronta tra loro, come un medico
+Il processo gaussiano non si costruisce un riassunto dei dati da consultare
+poi: tiene *tutte* le osservazioni e le confronta a due a due, come un medico
 che a ogni visita rileggesse le cartelle di tutti i pazienti mai avuti. Con
-cento pazienti funziona benissimo; con un milione è impensabile. E il costo
-non cresce piano: raddoppiare i dati moltiplica il lavoro per otto, passare da
-mille a diecimila punti lo moltiplica per mille. È il motivo per cui non
+cento pazienti funziona benissimo; con un milione è impensabile.
+
+E il conto è peggiore di quanto l'immagine suggerisca. Confrontare tutte le
+coppie sarebbe già un lavoro che cresce col **quadrato** del numero di
+pazienti: raddoppiandoli, le coppie quadruplicano. Ma non basta guardarle una
+per una: quelle somiglianze vanno risolte tutte insieme, come un sistema di
+equazioni in cui ogni riga tira le altre, e questo aggiunge un fattore. Il
+risultato è che il lavoro cresce col **cubo**: raddoppiare i dati lo moltiplica
+per otto ($2 \times 2 \times 2$), e passare da mille a diecimila punti lo
+moltiplica per mille. È il motivo per cui non
 addestreremo mai un processo gaussiano sulle foto di tutto internet.
 
 `````
@@ -342,7 +384,8 @@ aperto il cofano del suo motore.
   concava: da qui le ripartenze multiple.
 - La **banda d'incertezza** si stringe sui punti osservati e si riapre dove i
   dati mancano, buchi interni compresi: il modello dichiara quanto non sa.
-  $\mu_* \pm 2\sqrt{\operatorname{diag}(\Sigma_*)}$ è la banda **sulla
+  $\boldsymbol{\mu}_* \pm
+  2\sqrt{\operatorname{diag}(\boldsymbol{\Sigma}_*)}$ è la banda **sulla
   funzione**; per una nuova osservazione va aggiunto $\sigma_n^2$.
 - Il costo cresce come il **cubo del numero di esempi**: raddoppiare i dati
   costa otto volte il tempo. Improponibile sui grandi dataset, perfetto con

@@ -43,13 +43,14 @@ all'automobile.
 
 ```{figure} ../figures/rag-lewis-2020.svg
 :name: fig-rag-lewis
-:alt: "Schema del RAG originale: la domanda entra in un cercatore (retriever) che consulta un indice costruito su Wikipedia e ne estrae i passaggi più rilevanti; domanda e passaggi entrano insieme nel generatore, che scrive la risposta. Cercatore e generatore sono addestrati insieme, tenendo però fisso l'indice dei documenti: per questo l'archivio si può sostituire senza riaddestrare."
+:alt: "Schema del RAG originale, da sinistra a destra: la domanda dell'utente entra in un cercatore, che pesca in un archivio ricavato da Wikipedia (una fila di riquadri, ventun milioni di brani) e ne tira fuori i pochi più pertinenti, disegnati come una seconda fila di riquadri; da lì una freccia risale a chi scrive la risposta, il generatore, al quale arriva anche una freccia diretta dal cercatore. Le due sigle in etichetta, DPR e BART, sono i due modelli usati nell'articolo originale. In fondo al disegno: la risposta è condizionata insieme dalla domanda e dai passaggi recuperati."
 :width: 96%
 
-Il primo passo fuori dai pesi. Il disegno ha tre pezzi: chi cerca nell'archivio
-(il *retriever*, il cercatore), l'archivio stesso e chi scrive la risposta (il
-generatore). La conoscenza non sta più solo nel modello: una parte vive in un
-archivio che si può aggiornare senza riaddestrare niente.
+Il primo passo fuori dai **pesi**, cioè fuori da quel che il modello si porta
+dietro dall'addestramento e non può più cambiare. Il disegno ha tre pezzi: chi
+cerca nell'archivio (il *retriever*, il cercatore), l'archivio stesso e chi
+scrive la risposta (il generatore). La conoscenza non sta più solo nel modello:
+una parte vive in un archivio che si può aggiornare senza riaddestrare niente.
 ```
 
 {numref}`fig-rag-lewis` è il precedente diretto di tutto questo capitolo, ed è
@@ -119,9 +120,11 @@ sollevata l'eccezione»*) e solo dopo sceglie la mossa. È l'idea del
 **chain-of-thought** {cite}`wei2022chain`, la catena di ragionamento che nel
 capitolo sui Transformer abbiamo visto migliorare i compiti di ragionamento.
 Conviene però dire subito dove il guadagno è stato misurato davvero, perché è
-più stretto di come lo si racconta di solito: una meta-analisi su oltre cento
-lavori lo trova concentrato sui compiti **matematici e simbolici**, e piccolo
-altrove {cite}`sprague2025cot`. In un agente il pensiero scritto serve
+più stretto di come lo si racconta di solito: una rassegna che rimette insieme
+i risultati di oltre cento lavori lo trova concentrato sui compiti
+**matematici e simbolici** (quelli in cui si manipolano numeri e regole, come
+un'espressione algebrica o un problema di logica), e piccolo altrove
+{cite}`sprague2025cot`. In un agente il pensiero scritto serve
 soprattutto a un'altra cosa, dare al modello un posto dove annotare a che
 punto è del compito prima di scegliere la mossa: è il collante fra il pensare
 e il fare, non una cura generale.
@@ -144,10 +147,9 @@ ingredienti, e conviene tenerli distinti perché ognuno ha problemi suoi.
   raccoglie il risultato e decide se continuare o fermarsi.
 - La **memoria** è ciò che l'agente si porta dietro. Nel breve termine è la
   finestra di contesto: la memoria di lavoro, limitata, che abbiamo studiato
-  parlando di contesti lunghi e di quel segnalibro con cui il modello evita di
-  rileggere da capo ciò che ha già letto (la **KV cache**, dalle iniziali di
-  *key* e *value*, i due ingredienti dell'attenzione che vengono messi da
-  parte). Nel lungo termine è una memoria
+  parlando di contesti lunghi, insieme al segnalibro con cui il modello evita
+  di rileggere da capo ciò che ha già letto (nel capitolo sui Transformer si
+  chiama **KV cache**). Nel lungo termine è una memoria
   *esterna*: un archivio di documenti o di ricordi passati da cui pescare
   quando serve, senza tenere tutto in testa.
 
@@ -215,7 +217,9 @@ riempie in fretta, come vedremo parlando di context engineering.
 ## Perché adesso
 
 Le tre idee (un motore linguistico, degli strumenti, un ciclo) non sono nuove.
-L'AI classica costruiva agenti già negli anni Settanta. Perché allora gli
+L'AI classica, quella fatta di regole scritte a mano da un programmatore,
+costruiva agenti già negli anni Settanta, e fra poco ne vedremo due. Perché
+allora gli
 agenti *basati su LLM* (dall'inglese *large language model*, «grande modello
 di linguaggio»: è la sigla con cui d'ora in poi chiameremo il modello che
 completa il testo) nascono solo ora? La risposta sta in una capacità che i
@@ -277,7 +281,8 @@ come GUS, che conducevano una conversazione riempiendo le caselle di un modulo
 agenti: avevano una percezione (quello che arriva dall'esterno), una
 **politica** (in inglese *policy*: la regola che, vista la situazione, sceglie
 la mossa successiva, ed è la stessa parola del capitolo sul reinforcement
-learning) e delle azioni (le risposte, o la prenotazione a modulo completo).
+learning, l'apprendimento per tentativi e ricompense) e delle azioni (le
+risposte, o la prenotazione a modulo completo).
 
 `````{tab} Elementare
 
@@ -334,7 +339,9 @@ abbiamo solo montato insieme.
   e il problema aperto di dare loro un voto: valutare un agente che agisce,
   non solo un testo che risponde, è difficile quanto (e più di) dare un voto a
   una risposta libera, quella per cui non esiste una soluzione unica, di cui
-  parleremo più avanti nel capitolo su MLOps, alla sezione LLMOps. SWE-bench
+  parleremo più avanti nel capitolo su MLOps (il mestiere di portare un modello
+  dal laboratorio all'uso di tutti i giorni), nella sezione dedicata agli
+  LLM. SWE-bench
   {cite}`jimenez2024swebench` è un esempio di come si prova a farlo su compiti
   reali.
 

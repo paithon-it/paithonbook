@@ -18,13 +18,14 @@ tenerla alta, su quelle sbagliate.
 La macchina di Boltzmann è il caso in cui sull'energia si costruisce una
 probabilità. La memoria di Hopfield è un caso più sottile, e vale la pena non
 liquidarlo: lì l'energia ha una variabile sola, non due. L'indizio corrotto
-non compare nella formula dell'energia e non sposta il paesaggio di un
+non entra nel conto dell'energia e non sposta il paesaggio di un
 millimetro: sceglie soltanto il punto da cui far partire la discesa. E la
 risposta non è il minimo più basso di tutti (se lo fosse, quella rete
 restituirebbe sempre lo stesso ricordo qualunque indizio le si desse, e non
 sarebbe una memoria associativa): è il fondovalle in cui si finisce partendo
 di lì. Il tutorial lo mette in conto, e anzi lo dice: in molte situazioni
-reali la procedura d'inferenza dà un risultato approssimato, che può essere o
+reali la procedura d'inferenza (il momento in cui il modello, messo davanti a
+una domanda, cerca la risposta) dà un risultato approssimato, che può essere o
 non essere il minimo globale. Ma la cornice è molto più larga, e contiene una
 liberazione.
 
@@ -67,7 +68,13 @@ $$
 $$
 
 dove $\hat{y}$ è la risposta predetta: nessuna somma su $\mathcal{Y}$, solo
-una ricerca del minimo. Un modello probabilistico si ottiene come caso
+una ricerca del minimo. «Solo», però, va preso per quello che è: il minimo
+esiste sotto ipotesi (continuità di $E_\theta$ e compattezza di $\mathcal{Y}$,
+o coercività dell'energia), e quando $\mathcal{Y}$ è ad alta dimensione
+trovarlo è a sua volta un'ottimizzazione non convessa, con gli stessi minimi
+locali del resto del capitolo. Il vantaggio è di non dover sommare su
+$\mathcal{Y}$, non di avere l'inferenza gratis. Un modello probabilistico si
+ottiene come caso
 particolare tramite la distribuzione di Gibbs:
 
 $$
@@ -76,9 +83,15 @@ P_\theta(y \mid \mathbf{x}) = \frac{e^{-\beta E_\theta(\mathbf{x}, y)}}
 $$
 
 dove $\beta > 0$ è una temperatura inversa e il denominatore è la funzione di
-partizione $Z_\theta(\mathbf{x})$, l'integrale (o la somma) su *tutte* le risposte
-possibili. Quando $\mathcal{Y}$ è grande o continuo e ad alta dimensione ($y$
-= un'immagine, un video, una frase), $Z_\theta(\mathbf{x})$ è intrattabile: è il muro
+partizione **condizionata** $Z_\theta(\mathbf{x})$, l'integrale (o la somma) su
+*tutte* le risposte possibili: un parente stretto della $Z(\theta)$ della
+sezione precedente, ma non lo stesso oggetto, perché lì si integrava sui dati
+e qui sulle risposte. Quando $\mathcal{Y}$ è grande o continuo e ad alta
+dimensione ($y$
+= un'immagine, un video, una frase, e allora sarebbe più onesto scriverlo
+$\mathbf{y}$: il libro tiene $y$ tondo perché la stessa formula deve valere
+quando $y$ è un'etichetta), $Z_\theta(\mathbf{x})$ può addirittura non esistere,
+e quando esiste è intrattabile: è il muro
 della sezione precedente. La tesi del tutorial è che per decidere, ordinare o
 pianificare serve solo l'$\arg\min$, che di $Z$ non ha alcun bisogno:
 rinunciare alla normalizzazione non è una perdita ma un vantaggio
@@ -95,8 +108,9 @@ superficie piatta, energia bassa su tutto, modello inutile. Il tutorial lo
 dice in un modo che vale la pena riportare, perché è una lezione di metodo.
 Nella sua tabella comparativa mette in fila i modi di misurare l'errore
 durante l'addestramento e, accanto a ciascuno, la difesa che quel modo offre
-contro il collasso (in gergo, il **margine** che pretende fra una coppia
-giusta e una sbagliata). Il primo della lista è anche il più ingenuo, quello
+contro il collasso: quanto dislivello quel modo di misurare l'errore pretende
+fra una coppia giusta e una sbagliata prima di dichiararsi soddisfatto (in
+gergo, il **margine**). Il primo della lista è anche il più ingenuo, quello
 che si limita ad abbassare l'energia sui dati, e nella colonna della difesa ha
 scritto «none», niente {cite}`lecun2006tutorial`. Non è un difetto sottile da
 manuale avanzato: è la prima riga della tabella.
@@ -116,7 +130,9 @@ volta è come puntellare un tendone con tre paletti.
 Il secondo: cambiare la porta invece di istruire il buttafuori. Se la porta è
 larga un metro, non può passare una folla, qualunque cosa lui dica: si
 costruisce il modello in modo che il numero di risposte a cui *può* dare
-energia bassa sia limitato in partenza. Nessun controesempio da cercare. E il
+energia bassa sia limitato in partenza. Nessuna coppia sbagliata da andare a
+cercare, e infatti nel gergo del campo quelle coppie si chiamano
+**controesempi**, che è la parola con cui torneranno. E il
 fatto che il primo metodo non regga quando le risposte possibili sono
 tantissime (per una foto sono più di quante se ne possano contare) è
 esattamente l'argomento su cui poggia la proposta di LeCun per i *world
@@ -140,7 +156,11 @@ $$
 \mathcal{L} = \max\!\big(0,\; m + E_\theta(\mathbf{x}, y) - E_\theta(\mathbf{x}, \bar{y})\big),
 $$
 
-dove $m > 0$ è il margine preteso fra coppia giusta e coppia sbagliata. La
+dove $m > 0$ è il margine preteso fra coppia giusta e coppia sbagliata. E qui
+c'è un costo che di solito passa sotto silenzio: $\bar{y}$ è a sua volta un
+$\arg\min$ su $\mathcal{Y}$, cioè **un'inferenza completa a ogni passo di
+addestramento**. Il problema dei metodi contrastivi non è soltanto quanti
+controesempi servano; è che trovarne uno *buono* costa quanto rispondere. La
 massima verosimiglianza appartiene alla stessa famiglia: il suo termine
 contrastivo è la log-partizione, che solleva l'energia di *ogni* risposta con
 forza proporzionale alla sua verosimiglianza, e nel limite $\beta \to \infty$

@@ -6,11 +6,12 @@ destinate a fare il giro del mondo: la Neckarfront, la fila di case sul fiume
 che è la cartolina della loro città, ridipinta nello stile della *Notte
 stellata* di van Gogh, dell'*Urlo* di Munch, di una composizione di Kandinsky
 {cite}`gatys2016image`. Nessun pittore e nessun filtro fotografico: solo una
-rete convoluzionale e una discesa del gradiente. Il metodo aveva un difetto
+rete convoluzionale e la solita correzione a piccoli passi. Il metodo aveva un
+difetto
 (minuti di calcolo per una singola immagine) ma l'idea era irresistibile, e
 l'anno dopo scappò dal laboratorio: nel giugno 2016 l'app **Prisma** la portò
-in tasca a milioni di persone, con oltre dieci milioni di download nelle prime
-settimane e più di settanta milioni entro fine anno. Per un'estate i social si
+in tasca a milioni di persone, con dieci milioni di download nelle prime
+settimane e settanta milioni in quattro mesi. Per un'estate i social si
 riempirono di gatti dipinti alla van Gogh.
 
 Dietro il giocattolo c'è una domanda seria: che cosa sono, per una rete
@@ -28,12 +29,14 @@ Il neural style transfer combina il *contenuto* di una foto (cosa c'è) con lo
 
 ## L'idea capovolta: si ottimizza l'immagine, non la rete
 
-In tutto il libro, finora, "addestrare" ha voluto dire una cosa sola: il
-gradiente scende sui **pesi** della rete finché le predizioni migliorano. Il
-neural style transfer capovolge lo schema. La rete (una VGG pre-addestrata su
-ImageNet {cite}`simonyan2015very`) non impara nulla: i suoi pesi restano
-**congelati**. A muoversi, un passo di gradiente alla volta, sono i **pixel
-dell'immagine**.
+In tutto il libro, finora, "addestrare" ha voluto dire una cosa sola: si
+correggono a piccoli passi i **pesi** della rete, cioè i numeri interni che
+decidono come si comporta, finché le sue risposte non migliorano. Il neural
+style transfer capovolge lo schema. La rete, una **VGG** (il nome viene dal
+laboratorio di Oxford che la costruì) già addestrata a riconoscere oggetti sul
+grande archivio di foto etichettate ImageNet {cite}`simonyan2015very`, non
+impara nulla: i suoi pesi restano **congelati**. A muoversi, un piccolo passo
+alla volta, sono i **pixel dell'immagine**.
 
 `````{tab} Elementare
 
@@ -43,6 +46,13 @@ la scena somiglia ancora alla tua foto, e quanto la pennellata somiglia a
 quella del quadro che vuoi imitare. Tu ritocchi la tela un pochino, gliela
 rimostri, ritocchi ancora: centinaia di volte, sempre nella direzione che
 migliora i suoi due giudizi. Alla fine la tela è la tua foto, ma dipinta.
+
+Una domanda che viene naturale: da che cosa si parte, la prima volta? Da quello
+che si vuole, ed è una scelta che conta. Si può partire dalla foto stessa, e
+allora il critico ha già metà del lavoro fatto e si arriva prima. Oppure si può
+partire da una tela di puntini a caso, quello che si chiama **rumore**, come
+uno schermo televisivo senza segnale: ci vuole più pazienza, ma siccome i
+puntini a caso sono ogni volta diversi, ogni volta esce un quadro diverso.
 
 Il critico è la rete convoluzionale: ha già imparato a "vedere" su milioni di
 immagini e qui non deve imparare altro. Ciò che cambia, ritocco dopo ritocco,
@@ -76,12 +86,16 @@ usato a fin di bene.
 
 `````
 
-Perché proprio una CNN pre-addestrata? Perché, come abbiamo visto nel
-capitolo sul Deep Learning e ritrovato nel transfer learning, i suoi strati
-formano una **gerarchia**: i primi rispondono a bordi, colori e texture,
-quelli profondi a parti di oggetti e a oggetti interi
-{cite}`zeiler2014visualizing`. È esattamente la scala che serve per parlare,
-con la stessa rete, sia di pennellate sia di case e campanili.
+Perché proprio una rete già addestrata? Perché, come abbiamo visto nel capitolo
+sul Deep Learning e ritrovato nella sezione sul transfer learning, i suoi strati
+formano una **gerarchia**. Ogni strato è fatto di rilevatori che si accendono
+quando trovano quello che cercano, e più si va in profondità più quello che
+cercano è grande: i primi si accendono su bordi, colori e piccole trame, quelli
+profondi su parti di oggetti e su oggetti interi
+{cite}`zeiler2014visualizing`. Serve proprio questo, perché una pennellata e un
+campanile stanno a due scale diversissime e qui vanno giudicati tutti e due,
+dalla stessa rete, nello stesso momento: ai primi strati si guarda la
+pennellata, agli ultimi il campanile.
 
 ## Contenuto e stile: cosa c'è, come è dipinto
 
@@ -98,12 +112,26 @@ rappresenta il quadro: quella è la mano, non il soggetto. È come la grafia di
 un amico: la riconosci su qualunque parola, perché non dipende da *cosa*
 scrive ma da *come* scrive.
 
-Nella rete succede lo stesso. Il "cosa c'è" abita negli strati profondi, che
-rispondono agli oggetti e alla loro disposizione. Il "come è dipinto" abita in
-una domanda diversa: *quali coppie di motivi elementari compaiono insieme?*
-Pennellata spessa insieme a giallo acceso, tratto a spirale insieme a blu
-notte. Contando queste coppie in tutta l'immagine (senza badare a *dove*
-compaiono) si ottiene una specie di carta d'identità della mano del pittore.
+Nella rete succede lo stesso. Il "cosa c'è" abita negli strati profondi, quelli
+che si accendono sugli oggetti e sulla loro disposizione.
+
+Il "come è dipinto" abita invece in una domanda diversa, e conviene arrivarci
+per gradi. Prendi uno dei primi strati: dentro ci sono qualche decina o
+centinaio di rilevatori, e ciascuno si accende su una cosa diversa, uno sulle
+righe oblique, uno sul giallo acceso, uno sulle curve strette, uno sul blu
+scuro. Quelli sono i **motivi elementari**: non li ha scelti nessuno, se li è
+costruiti la rete addestrandosi su ImageNet, e sono gli stessi qualunque quadro
+le si metta davanti.
+
+Adesso la domanda: *quali di questi rilevatori si accendono insieme, negli
+stessi punti del quadro?* Nella *Notte stellata* «curva stretta» e «blu scuro»
+si accendono quasi sempre nello stesso posto, perché van Gogh disegna le
+spirali col blu; «riga obliqua» e «giallo» pure. Si prendono allora tutte le
+coppie possibili di rilevatori e si conta, per ciascuna, quanto spesso i due si
+accendono insieme, **senza segnarsi dove**. Quella tabella di conteggi è la
+carta d'identità della mano del pittore: dice quali ingredienti vanno assieme e
+non dice niente su dove stiano, ed è esattamente per questo che si può
+appiccicare a un'altra scena.
 
 `````
 
@@ -157,15 +185,22 @@ decidono a quale delle due voci dare più importanza.
 $\alpha$ e $\beta$ sono due manopole. Con $\alpha$ alto comanda il giudice del
 contenuto: la foto resta quasi intatta, con una leggera patina pittorica. Con
 $\beta$ alto comanda il giudice dello stile: le pennellate prendono il
-sopravvento e la scena scivola verso l'astratto. In pratica lo stile parte
-svantaggiato (è più "difficile da accontentare") e gli si dà molto più peso:
-con $\alpha = 1$ e $\beta = 1000$, un errore di stile conta mille volte un
-pari errore di contenuto. Trovare l'equilibrio giusto è questione di gusto,
-letteralmente: si prova e si guarda il risultato. Attenzione a un tranello,
-però: quel mille non è un numero universale. Dipende da come si calcolano le
-due voci, e il codice più avanti le calcola in un altro modo, per cui lì lo
-stesso equilibrio si ottiene con un $\beta$ molto più grande. Il valore va
-riletto ogni volta insieme alla ricetta che lo accompagna.
+sopravvento e la scena scivola verso l'astratto.
+
+In pratica allo stile si dà molto più peso, per esempio $\alpha = 1$ contro
+$\beta = 1000$, e la ragione non è che lo stile sia più importante: è che i due
+giudizi si misurano in unità diverse. Uno confronta attivazioni, l'altro
+conteggi di coppie, e i loro numeri nascono di taglia diversa, come confrontare
+metri e chilometri. I due pesi servono prima di tutto a rimetterli sulla stessa
+scala. Trovare poi l'equilibrio giusto è questione di gusto, letteralmente: si
+prova e si guarda il risultato.
+
+Attenzione però a un tranello: quel mille non è un numero universale. Se si
+cambia il modo di fare i conti dei due giudizi, cambia anche il rapporto che
+li mette in pari, e il codice della prossima sezione li conta in un altro modo,
+per cui lì lo stesso equilibrio si ottiene con un $\beta$ molto più grande. Un
+numero del genere va sempre riletto insieme alla ricetta che lo accompagna, e
+mai copiato da solo.
 
 `````
 
@@ -268,20 +303,29 @@ for passo in range(300):
     opt.step()
 ```
 
-Tre dettagli pratici, e sono anche le tre differenze rispetto al paper. Primo:
-partire dalla *foto* invece che dal rumore fa convergere prima e piega
-leggermente il risultato verso la struttura della foto, ma non lo rende «più
-fedele» in generale (gli autori osservano che l'inizializzazione incide poco
-sull'esito); in cambio si rinuncia alla varietà, perché da
-un'inizializzazione fissa esce sempre la stessa immagine, mentre dal rumore se
-ne possono generare quante se ne vuole. Secondo: il paper
-originale usava **L-BFGS**, che su questo problema converge in meno passi; in
-PyTorch è `optim.LBFGS([img])` con una *closure*, al prezzo di un po' di
-codice in più. Adam funziona bene ed è il gemello del training loop che già
-conosciamo. Terzo: gli autori sostituivano i `MaxPool2d` della VGG con
-`nn.AvgPool2d(2, 2)`, che a loro dire dà risultati leggermente più gradevoli
-(le immagini del paper sono fatte così); qui usiamo la `vgg19` di torchvision
-com'è, come fa anche il tutorial ufficiale di PyTorch.
+Tre dettagli pratici, e sono anche le tre differenze rispetto all'articolo
+originale di Gatys.
+
+**Da dove si parte.** Qui si parte dalla foto, mentre nell'articolo si partiva
+dai puntini a caso. Partire dalla foto fa arrivare al risultato in meno passi e
+piega un po' l'esito verso la struttura della foto, ma non lo rende «più
+fedele» in generale: gli autori osservano che il punto di partenza incide poco
+sull'esito finale. Quello a cui si rinuncia è la varietà, perché da una
+partenza sempre uguale esce sempre la stessa immagine, mentre dai puntini a
+caso se ne possono generare quante se ne vuole.
+
+**Chi decide i passi.** Il ritocco della tela è affidato a un ottimizzatore,
+cioè al pezzo di codice che, saputo di quanto si è sbagliato, decide come
+muovere i pixel. Gli autori usavano L-BFGS, che su un problema come questo
+arriva in meno passi ma va richiamato in un modo tutto suo; noi usiamo Adam,
+che è lo stesso del ciclo di addestramento visto nel capitolo su PyTorch e
+funziona benissimo.
+
+**Un ritocco alla rete.** Gli autori, dove la VGG tiene solo il valore più
+grande di ogni quadratino, preferivano tenerne la media
+(`MaxPool2d` sostituito da `nn.AvgPool2d(2, 2)`), che a loro dire dà risultati
+leggermente più gradevoli, e le immagini famose sono fatte così. Qui usiamo la
+`vgg19` di torchvision com'è, come fa anche il tutorial ufficiale di PyTorch.
 
 ## L'eredità: da minuti a millisecondi
 
@@ -297,14 +341,19 @@ tempo reale. È la
 famiglia di tecniche che ha reso possibili app come Prisma, con il compromesso
 di una rete da addestrare *per ciascuno stile*.
 
-La storia poi è proseguita altrove. CycleGAN {cite}`zhu2017unpaired` ha
-imparato a "tradurre" foto in quadri (e viceversa) con reti avversarie, senza
-nemmeno bisogno di coppie di esempi; e oggi il trasferimento di stile è una
-delle tante abilità dei **modelli di diffusione**, che con un'istruzione
-testuale ridipingono un'immagine in qualunque maniera {cite}`rombach2022high`.
-Ne parleremo nel capitolo sulle GAN, nella sezione sulle evoluzioni. Ma l'idea
-di fondo (contenuto e stile come statistiche diverse dentro una stessa rete)
-nasce qui, da una passeggiata sul Neckar.
+La storia poi è proseguita altrove. Per insegnare a un programma a tradurre
+una foto in un quadro il modo ovvio sarebbe mostrargli tante coppie, la
+stessa identica scena fotografata e dipinta, e nessuno le ha: Monet è morto e
+non torna a dipingere su commissione. CycleGAN {cite}`zhu2017unpaired` ha
+risolto il problema imparando **senza coppie**, da due mucchi separati e non
+corrispondenti, tante foto da una parte e tanti Monet dall'altra. E oggi il
+trasferimento di stile è una delle tante abilità dei **modelli di diffusione**,
+che con un'istruzione scritta ridipingono un'immagine in qualunque maniera
+{cite}`rombach2022high`. Di tutti e due parla il capitolo sulle GAN (sta per
+*generative adversarial network*, le «reti generative avversarie»), nella
+sezione sulle evoluzioni. Ma l'idea di fondo, contenuto e stile come due
+conteggi diversi dentro una stessa rete, nasce qui, da una passeggiata sul
+Neckar.
 
 `````{tab} Elementare
 

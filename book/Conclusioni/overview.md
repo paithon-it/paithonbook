@@ -1,18 +1,20 @@
 # Conclusioni
 
-Siamo partiti, nell'introduzione, da una frase di Joseph Weizenbaum: "si dice
-che spiegare significhi dissolvere" {cite}`weizenbaum1966eliza`. Dopo
-{{ n_capitoli_meno_uno_lettere }} capitoli, dall'algebra lineare alle reti che
-generano immagini, dagli alberi di decisione agli agenti che usano strumenti,
-dal codice che fa correre una scheda grafica alle domande su chi risponde
-quando un modello sbaglia, possiamo dire com'è andata: dei meccanismi non è
-rimasto quasi niente di prodigioso, e l'intelligenza artificiale continua a non
-lasciarsi definire, perché ogni volta che una cosa si spiega smette di sembrare
-intelligenza e diventa "solo" un algoritmo. Ma ora abbiamo qualcosa che
-all'inizio non avevamo: gli strumenti per capire *come* queste macchine
-funzionano davvero, e per distinguere ciò che sanno fare da ciò che sembrano
-fare. Vale la pena ripercorrere la strada all'indietro, per vedere il disegno
-che i singoli capitoli, da vicino, non lasciavano intravedere.
+Siamo partiti, nell'introduzione, da una frase di Joseph Weizenbaum: «si dice
+che spiegare significhi dissolvere» {cite}`weizenbaum1966eliza`. Adesso
+possiamo dire com'è andata. Sono passati {{ n_capitoli_meno_uno_lettere }}
+capitoli, dall'algebra lineare alle reti che generano immagini, dagli alberi di
+decisione agli agenti che usano strumenti, dal codice che fa correre una scheda
+grafica alle domande su chi risponde quando un modello sbaglia. Dei meccanismi
+non è rimasto quasi niente di prodigioso. E l'intelligenza artificiale continua
+a non lasciarsi definire, perché ogni volta che una cosa si spiega smette di
+sembrare intelligenza e diventa "solo" un algoritmo.
+
+Ma adesso abbiamo qualcosa che all'inizio non avevamo: gli strumenti per capire
+*come* queste macchine funzionano davvero, e per distinguere ciò che sanno fare
+da ciò che sembrano fare. Vale la pena ripercorrere la strada all'indietro, per
+vedere il disegno che i singoli capitoli, da vicino, non lasciavano
+intravedere.
 
 ## Il percorso, guardato dall'alto
 
@@ -23,26 +25,28 @@ le quantità nel carrello della spesa e ne fa un totale; l'apprendimento è una
 discesa lungo un gradiente, cioè lungo una pendenza; una previsione è una
 distribuzione di probabilità, cioè non una risposta secca ma un elenco di
 risposte possibili, ciascuna con la fiducia che il modello le assegna. Da lì il
-machine learning classico ci ha insegnato la disciplina fondamentale: separare
-*training* e *test*, temere l'overfitting (cioè l'imparare a memoria), misurare
-con onestà. Una disciplina che vale identica per un modello con dieci parametri
-(le manopole che l'addestramento regola) e per uno con mille miliardi.
+machine learning classico ci ha insegnato la disciplina fondamentale: tenere
+separati i dati su cui si impara da quelli su cui si misura, temere
+l'overfitting (cioè l'imparare a memoria), misurare con onestà. Una disciplina
+che vale identica per un modello con dieci parametri (le manopole che
+l'addestramento regola) e per uno con mille miliardi.
 
 **Il secondo tratto** sono le reti neurali, che hanno cambiato la scala e ci
-hanno costretti a guardare anche sotto il cofano: con PyTorch abbiamo impilato
-strati e scritto a mano il ciclo di addestramento (il *training loop*), e col
+hanno costretti a guardare anche sotto il cofano. Con PyTorch abbiamo impilato
+strati e scritto a mano il ciclo di addestramento (il *training loop*); col
 capitolo sulla [GPU](../GPU/overview.md) abbiamo visto perché una
 moltiplicazione di matrici è veloce solo se la memoria collabora. Le reti
-convoluzionali hanno insegnato alle macchine a vedere (lo spartiacque è
+convoluzionali hanno insegnato alle macchine a vedere, e lo spartiacque è
 AlexNet, che nel 2012 vince la gara di riconoscimento di immagini ImageNet con
-un margine che nessuno si aspettava); i modelli di sequenza e i Transformer
-{cite}`vaswani2017attention` a leggere e scrivere, e poi a tenere insieme
-[visione e linguaggio](../VisioneLinguaggio/overview.md) nello stesso modello;
-e poi il suono, la voce, i grafi (i dati fatti di puntini collegati da linee, e
-i [sistemi che ti raccomandano cosa
-guardare](../SistemiRaccomandazione/overview.md)), le serie temporali, le
-equazioni della fisica. Sono i capitoli in cui la stessa matematica cambia
-mestiere a seconda della forma dei dati.
+un margine che nessuno si aspettava. I modelli di sequenza, e i Transformer
+dopo di loro, hanno insegnato alle macchine a leggere e a scrivere
+{cite}`vaswani2017attention`; e poi a tenere insieme [visione e
+linguaggio](../VisioneLinguaggio/overview.md) nello stesso modello. Sono venuti
+poi il suono, la voce, i grafi (i dati fatti di puntini collegati da linee), i
+[sistemi che ti raccomandano cosa
+guardare](../SistemiRaccomandazione/overview.md), le serie temporali, le
+equazioni della fisica: i capitoli in cui la stessa matematica cambia mestiere
+a seconda della forma dei dati.
 
 **Il terzo tratto** viene dopo il secondo non in ordine di tempo, ma perché
 cambia la domanda: non più solo riconoscere quello che c'è (questa foto è un
@@ -51,24 +55,27 @@ decidere cosa farne. I modelli generativi: dalle GAN alla diffusione, e i
 [modelli a energia](../ModelliEnergia/overview.md) che, guardati da vicino,
 sono la diffusione scritta in un'altra lingua. Il [reinforcement
 learning](../ReinforcementLearning/overview.md), dove l'agente non riceve le
-risposte giuste ma le scopre agendo, come AlphaGo nel 2016. Le architetture
-nate per non pagare il costo quadratico dell'attenzione (leggere un testo, per
-un Transformer, costa quanto il quadrato della sua lunghezza), dall'[attenzione
-lineare](../AttenzioneLineare/overview.md) ai [modelli a spazio di
+risposte giuste ma le scopre agendo: è così che AlphaGo, nel 2016, è diventato
+più forte dei maestri umani da cui aveva imparato le prime mosse. Poi le
+architetture nate da un conto che non si regge: leggere un testo, per un
+Transformer, costa quanto il quadrato della sua lunghezza, e su un testo lungo
+diventa proibitivo. Da lì l'[attenzione
+lineare](../AttenzioneLineare/overview.md) e i [modelli a spazio di
 stati](../StateSpaceModel/overview.md). E gli [agenti](../Agenti/overview.md)
 che usano strumenti, il modo in cui li si [programma a
-parole](../IngegneriaLLM/overview.md), quello che succede [quando diventano
-molti](../SistemiMultiAgente/overview.md) e i [modelli del
+parole](../IngegneriaLLM/overview.md), quello che succede [quando
+diventano molti](../SistemiMultiAgente/overview.md) e i [modelli del
 mondo](../WorldModels/overview.md) che provano a immaginare le conseguenze di
 un'azione prima di compierla.
 
 `````{tab} Elementare
 Attenzione a una cosa, però: "terzo tratto" non vuol dire "il più recente".
-Diverse di queste idee sono vecchie quanto il libro le racconta, e più vecchie
-delle reti che hanno reso famoso il deep learning. I modelli a energia nascono
-dalla fisica dei primi anni Ottanta; l'impalcatura matematica del
-reinforcement learning è degli anni Cinquanta, cioè di quando i calcolatori
-occupavano una stanza. Quello che è successo a metà degli anni Dieci non è che
+Diverse di queste idee sono molto più vecchie di quanto la loro posizione nel
+libro lasci pensare, e più vecchie delle reti che hanno reso famoso il deep
+learning. I modelli a energia nascono dalla fisica dei primi anni Ottanta;
+l'impalcatura matematica del reinforcement learning è degli anni Cinquanta,
+cioè di quando i calcolatori occupavano una stanza. Quello che è successo a
+metà degli anni Dieci non è che
 qualcuno abbia inventato queste idee: è che finalmente c'erano i dati e le
 macchine per farle funzionare.
 `````
@@ -90,7 +97,13 @@ L'indice segue le domande, non le date, ed è la ragione per cui questo ripasso
 ha un ordine e la storia ne ha un altro.
 `````
 
-E poi gli ultimi capitoli, che non parlano di architetture ma di **mestiere**: portare un modello in produzione e tenerlo in vita ([MLOps](../MLOps/overview.md)), aprirlo per capire perché ha deciso così ([interpretabilità](../Interpretabilita/overview.md)), e rispondere delle sue conseguenze ([AI responsabile](../AIResponsabile/overview.md)). Non sono appendici morali messe in fondo per buona educazione: sono la parte del lavoro che decide se quello che hai costruito serve a qualcuno o fa danni.
+E poi gli ultimi capitoli, che non parlano di architetture ma di **mestiere**:
+portare un modello in produzione e tenerlo in vita
+([MLOps](../MLOps/overview.md)), aprirlo per capire perché ha deciso così
+([interpretabilità](../Interpretabilita/overview.md)), rispondere delle sue
+conseguenze ([AI responsabile](../AIResponsabile/overview.md)). Non sono
+appendici morali messe in fondo per buona educazione: sono la parte del lavoro
+che decide se quello che hai costruito serve a qualcuno o fa danni.
 
 Argomenti diversissimi, e in mezzo quasi settant'anni di storia: dal
 percettrone di Rosenblatt del 1958 ai modelli di oggi. Eppure, sotto, sempre le
@@ -109,9 +122,13 @@ fili. I capitoli sul mestiere (produzione, interpretabilità, responsabilità)
 non stanno su questo asse: stanno attorno a tutto.
 ```
 
-Se dovessimo comprimere l'intero libro in tre parole, sarebbero **dati**, **rappresentazioni** e **ottimizzazione** ({numref}`fig-fili-conduttori`). Sono i fili che attraversano ogni capitolo, dal più elementare al più avanzato.
+Se dovessimo comprimere l'intero libro in tre parole, sarebbero **dati**,
+**rappresentazioni** e **ottimizzazione** ({numref}`fig-fili-conduttori`). Sono
+i fili che attraversano ogni capitolo, dal più elementare al più avanzato.
 
-I **dati** sono il carburante: nessun modello sa più di ciò che ha visto. Le **rappresentazioni apprese** sono il cuore della rivoluzione del deep learning.
+I **dati** sono il carburante: nessun modello sa più di ciò che ha visto. Le
+**rappresentazioni apprese** sono il cuore di quello che il deep learning ha
+cambiato.
 
 `````{tab} Elementare
 Per decenni, per far riconoscere un gatto a un computer, un esperto doveva
@@ -124,23 +141,35 @@ per guardare i dati è ciò che chiamiamo rappresentazione appresa.
 `````
 
 `````{tab} Superiore
-Una rete profonda è una funzione composta $f_\theta = f^{(L)} \circ \dots \circ f^{(1)}$ che trasforma l'input grezzo $X$ in una sequenza di rappresentazioni intermedie sempre più astratte. Gli strati nascosti non sono altro che *feature apprese*: coordinate in uno spazio latente dove esempi semanticamente simili finiscono vicini. È il principio degli *embedding*, e la ragione per cui una sola rete pre-addestrata si riadatta a molti compiti.
+Una rete profonda è una funzione composta
+$f_\theta = f^{(L)} \circ \dots \circ f^{(1)}$ che trasforma l'input grezzo
+$\mathbf{x}$ in una sequenza di rappresentazioni intermedie sempre più
+astratte. Gli strati nascosti non sono altro che *feature apprese*: coordinate
+in uno spazio latente dove esempi semanticamente simili finiscono vicini. È il
+principio degli *embedding*, e la ragione per cui una sola rete pre-addestrata
+si riadatta a molti compiti.
 
 Il feature engineering manuale del machine learning classico non è sparito, ma
 va detto dove è finito, perché le destinazioni sono due e il libro le insegna
 in capitoli diversi. Una parte è stata assorbita dentro $\theta$ e delegata
 all'ottimizzazione, ed è la parte che si racconta di solito. L'altra si è
 spostata nell'**architettura**, come bias induttivo: la convoluzione dichiara
-che la posizione assoluta non conta, una rete su grafo che l'ordine dei nodi
-non conta, e sono proprietà della forma della funzione, vere per ogni valore di
-$\theta$ e anche a rete non addestrata. Non sono state imparate: sono state
-scritte a mano dal progettista, prima che l'ottimizzazione cominciasse.
+che un motivo va riconosciuto ovunque compaia, una rete su grafo che l'ordine
+con cui si elencano i nodi non cambia la risposta. Sono proprietà della forma
+della funzione, vere per ogni valore di $\theta$ e anche a rete non addestrata:
+non sono state imparate, le ha scritte a mano il progettista prima che
+l'ottimizzazione cominciasse.
 `````
 
-E l'**ottimizzazione** è il motore che rende tutto questo possibile: apprendere significa cercare i parametri che minimizzano un errore.
+E l'**ottimizzazione** è il motore che rende tutto questo possibile: apprendere
+significa cercare i parametri che minimizzano un errore.
 
 `````{tab} Elementare
-Immagina di regolare le manopole di un vecchio mixer per far suonare bene una canzone. Giri un po' una manopola, ascolti se è migliorato, correggi. Addestrare un modello è la stessa cosa, con milioni di manopole: a ogni passo il modello guarda quanto ha sbagliato e sposta ciascuna manopola nella direzione che riduce l'errore, un pochino. Ripetuto abbastanza volte, funziona.
+Immagina di regolare le manopole di un vecchio mixer per far suonare bene una
+canzone. Giri un po' una manopola, ascolti se è migliorato, correggi.
+Addestrare un modello è la stessa cosa, con milioni di manopole: a ogni passo
+il modello guarda quanto ha sbagliato e sposta ciascuna manopola nella
+direzione che riduce l'errore, un pochino. Ripetuto abbastanza volte, funziona.
 
 Con un mixer vero la direzione giusta la scopri provando, e con milioni di
 manopole non finiresti mai. Il modello non prova: la **calcola**. Per ogni
@@ -156,16 +185,16 @@ empirico** su un campione etichettato:
 
 $$
 \theta^\star = \arg\min_{\theta}\ \mathcal{L}(\theta)
-= \arg\min_{\theta}\ \frac{1}{m}\sum_{i=1}^{m} \ell\big(f_\theta(X^{(i)}),\, y^{(i)}\big),
+= \arg\min_{\theta}\ \frac{1}{m}\sum_{i=1}^{m} \ell\big(f_\theta(\mathbf{x}^{(i)}),\, y^{(i)}\big),
 $$
 
 dove $\theta$ sono i parametri, $\mathcal{L}$ la funzione di costo, $\ell$ la
 perdita sul singolo esempio (nel capitolo sul machine learning quel ruolo lo
 aveva $\mathcal{L}$, che qui passa a indicare il totale), $f_\theta$ il
-modello, e $X^{(i)}$, $y^{(i)}$ l'input e il target dell'$i$-esimo degli $m$
-esempi di addestramento. Cambia $f_\theta$ e, per i modelli differenziabili
-(dalla regressione lineare al Transformer), la macchina che risolve è la
-discesa del gradiente stocastica.
+modello, e $\mathbf{x}^{(i)}$, $y^{(i)}$ l'input e il target dell'$i$-esimo
+degli $m$ esempi di addestramento. Cambia $f_\theta$ e, per i modelli
+differenziabili (dalla regressione lineare al Transformer), la macchina che
+risolve è la discesa del gradiente stocastica.
 
 Il perimetro di quella scrittura, però, va dichiarato, perché è più stretto del
 libro, e le eccezioni sono istruttive. **Le [GAN](../GAN/overview.md)** non ci
@@ -194,49 +223,57 @@ infinite architetture.
 
 ## Dove sta andando
 
-I tre grafici qui sotto rispondono a una domanda semplice: quanto migliora un
-modello se gli diamo più potenza di calcolo, più dati o più parametri, cioè
-le manopole da regolare? Ogni retta mostra l'errore che il modello commette (la
+Per capire dove va un campo, la domanda utile non è quale modello sia il più
+bravo adesso: quella risposta scade in pochi mesi. La domanda utile è che cosa
+succede quando si dà a un modello più risorse.
+
+I tre grafici qui sotto rispondono proprio a quella: quanto migliora un modello
+se gli diamo più potenza di calcolo, più dati o più parametri, cioè più
+manopole da regolare? Ogni retta mostra l'errore che il modello commette (la
 *loss*: più è bassa, meglio è) al crescere di una delle tre risorse, mentre le
 altre due abbondano. E in nessuno dei tre compare un "ginocchio", cioè un punto
 in cui il miglioramento si ferma, almeno fin dove le misure arrivano.
 
 ```{figure} ../figures/scaling-laws-2020.svg
 :name: fig-leggi-di-scala-tre
-:alt: "Tre grafici affiancati, tutti in scala logaritmica su entrambi gli assi. In ciascuno la loss cala come una retta discendente al crescere rispettivamente della potenza di calcolo, della quantità di dati e del numero di parametri: nessuna delle tre curve mostra un ginocchio o un punto di arresto nell'intervallo misurato."
+:alt: "Tre grafici affiancati, tutti in scala logaritmica su entrambi gli assi e senza numeri sugli assi. In ciascuno la loss cala come una retta discendente al crescere rispettivamente del calcolo, della quantità di dati e del numero di parametri; accanto a ogni retta l'esponente della legge di potenza: meno 0,050 per il calcolo, meno 0,095 per i dati, meno 0,076 per i parametri. Nessuna delle tre rette mostra un ginocchio o un punto di arresto."
 :width: 100%
 
-Tre risorse, tre rette. Gli assi sono in scala logaritmica: ogni tacca vale
-dieci volte la precedente, non una in più. Una retta che scende vuol dire
-quindi che per guadagnare ancora un poco bisogna moltiplicare la risorsa, non
-aggiungerne un pezzetto. E ogni retta è misurata mentre le altre due risorse
-abbondano: se ne manca una, la discesa si ferma lì, per colpa di quella.
-Ridisegnata dai dati di {cite}`kaplan2020scaling`; il primo pannello riguarda
-il calcolo speso nel modo migliore possibile, non il calcolo grezzo.
+Tre risorse, tre rette. Gli assi sono in scala logaritmica: un passo lungo
+l'asse non aggiunge una quantità, la moltiplica per dieci. Una retta che scende
+vuol dire quindi che per guadagnare ancora un poco bisogna moltiplicare la
+risorsa, non aggiungerne un pezzetto. E ogni retta vale mentre le altre due
+risorse abbondano: se ne manca una, la discesa si ferma lì, per colpa di
+quella. Schema ridisegnato sugli esponenti misurati da
+{cite}`kaplan2020scaling`; il primo pannello riguarda il calcolo speso nel modo
+migliore possibile, non il calcolo grezzo.
 ```
 
 L'assenza di un ginocchio in {numref}`fig-leggi-di-scala-tre` è ciò che ha
 orientato gli anni che sono seguiti, ed è anche il suo limite: quelle rette
 raccontano solo il tratto che qualcuno ha davvero provato, e più in là nessuno
-sa. È bene tenerlo a mente leggendo le pagine che seguono.
+sa. È bene tenerlo a mente in quel che segue.
 
 Questo capitolo, nella sua prima stesura, indicava come "direzioni future" i
 modelli di fondazione (in inglese *foundation model*: uno solo, enorme,
 riadattato a mille compiti), la multimodalità e gli agenti. Nel frattempo sono
 entrati nel libro, anche se non nella forma prevista: la multimodalità ha un
 capitolo suo ([visione e linguaggio](../VisioneLinguaggio/overview.md)), gli
-[agenti](../Agenti/overview.md) ne hanno uno e altri due sono cresciuti
-accanto a quello ([prompt, contesto e loop](../IngegneriaLLM/overview.md) e i
-[sistemi multi-agente](../SistemiMultiAgente/overview.md)); i modelli di
-fondazione, invece, non sono diventati un capitolo ma una sezione, dentro
-quello sui [Transformer](../Transformers/llm.md). È il modo più onesto di dire
-quanto corre il campo, e la ragione per cui qui non troverai profezie, ma i
-fronti su cui si lavora davvero.
+[agenti](../Agenti/overview.md) ne hanno uno e altri due sono cresciuti accanto
+a quello ([prompt, contesto e loop](../IngegneriaLLM/overview.md) e i [sistemi
+multi-agente](../SistemiMultiAgente/overview.md)). I modelli di fondazione, in
+compenso, hanno fatto una fine più curiosa: non sono diventati né un capitolo
+né una sezione, si sono sciolti dentro quello sui Transformer, dove il
+[pre-addestramento su scala web](../Transformers/llm.md) e l'[adattamento che
+viene dopo](../Transformers/post-training.md) sono due sezioni separate e la
+parola non serve più a tenerle insieme. È il modo più onesto di dire quanto
+corre il campo, e la ragione per cui qui non troverai profezie, ma i fronti su
+cui si lavora davvero.
 
 Con un avvertimento, perché questa è la sezione più deperibile del libro: è
-scritta al presente, e il presente a cui si riferisce è il numero di versione
-che trovi in cima all'indice. Si rilegge a ogni pubblicazione, ed è normale che
-invecchi prima del resto.
+scritta al presente, e il presente a cui si riferisce è quello della versione
+che stai leggendo. Si rilegge a ogni pubblicazione, ed è normale che invecchi
+prima del resto.
 
 `````{tab} Elementare
 La novità che ha cambiato tutto resta questa: non addestriamo più un modello
@@ -280,13 +317,14 @@ cambierebbe.
 `````
 
 `````{tab} Superiore
-I **foundation model** {cite}`bommasani2021opportunities` funzionano così:
-pre-addestramento auto-supervisionato su corpora enormi, poi adattamento via
-fine-tuning o prompting. Le *scaling laws* {cite}`kaplan2020scaling` hanno
-mostrato che la **cross-entropy loss** cala in modo prevedibile con parametri,
-dati e calcolo, e {cite}`hoffmann2022training` ne ha poi corretto la
-conclusione operativa sull'allocazione fra parametri e dati. Che a una loss più
-bassa corrispondano *capacità* nuove è un'affermazione diversa, e più fragile:
+I **foundation model** funzionano così: pre-addestramento auto-supervisionato
+su corpora enormi, poi adattamento via fine-tuning o prompting
+{cite}`bommasani2021opportunities`. Le *scaling laws* hanno mostrato che la
+**cross-entropy loss** cala in modo prevedibile con parametri, dati e calcolo
+{cite}`kaplan2020scaling`, e Hoffmann e colleghi ne hanno poi corretto la
+conclusione operativa sull'allocazione fra parametri e dati
+{cite}`hoffmann2022training`. Che a una loss più bassa corrispondano *capacità*
+nuove è un'affermazione diversa, e più fragile:
 è la faccenda delle abilità emergenti, che il capitolo sui
 [Transformer](../Transformers/llm.md) discute con il dubbio, motivato, che
 siano in buona parte un artefatto della metrica scelta. In ogni caso le leggi
@@ -310,14 +348,16 @@ una risposta corretta da una risposta corretta *per il motivo giusto*, perché
 guarda dentro il modello invece di fermarsi al comportamento.
 
 **L'affidabilità degli agenti.** Componendo più passi gli errori si accumulano:
-nel caso peggiore, con passi indipendenti e ogni errore fatale, la probabilità
-di una traiettoria pulita è $(1-p)^n$, che precipita. Le due ipotesi vanno
-dichiarate, perché nessuna delle due vale per un agente vero (i passi sono
-correlati, e riflessione e re-planning ne recuperano una parte), quindi quel
-conto è un caso peggiore e non una previsione; ma la morale regge, e non basta
-essere bravi a un passo. Difficile è anche misurarlo: valutare un agente vuol
-dire giudicare una traiettoria e non una risposta, distinguendo il successo
-raggiunto per la strada giusta da quello arrivato per caso.
+detta $p$ la probabilità di sbagliare un singolo passo e $n$ la lunghezza della
+traiettoria, nel caso peggiore (passi indipendenti, ogni errore fatale) la
+probabilità di arrivare in fondo senza inciampi è $(1-p)^n$, che precipita. Le
+due ipotesi vanno dichiarate, perché nessuna delle due vale per un agente vero:
+i passi sono correlati, e riflessione e re-planning recuperano una parte degli
+errori. Quel conto è quindi un caso peggiore e non una previsione; ma la morale
+regge, e non basta essere bravi a un passo. Difficile è anche misurarlo:
+valutare un agente vuol dire giudicare una traiettoria e non una risposta,
+distinguendo il successo raggiunto per la strada giusta da quello arrivato per
+caso.
 
 **Il conto fisico.** Energia, acqua, silicio e la concentrazione di tutto
 questo in pochi attori: un problema di politica industriale travestito da
@@ -331,7 +371,9 @@ cambierebbe l'ordine dei capitoli di un libro come questo.
 
 ## Una nota onesta
 
-Sarebbe disonesto chiudere con il solo entusiasmo. Questi sistemi hanno limiti strutturali, cioè che dipendono da come sono fatti, non incidenti temporanei.
+Sarebbe disonesto chiudere con il solo entusiasmo. Questi sistemi hanno limiti
+che dipendono da come sono fatti, non incidenti passeggeri in attesa della
+prossima versione: sono limiti strutturali.
 
 ```{figure} ../figures/open-weights-vs-closed.svg
 :name: fig-aperti-chiusi
@@ -345,13 +387,14 @@ della nuvola no.
 ```
 
 Che i due assi siano indipendenti dice una cosa, ed è quella della didascalia.
-L'asse orizzontale, da solo, ne dice un'altra, che riguarda direttamente i
-limiti appena elencati. Un modello di cui si possono scaricare i pesi è un file
-che chiunque può tenersi: chiunque può misurarne i difetti, sondarlo e
-smentirlo. Un modello che si raggiunge solo attraverso un'interfaccia, cioè
-mandando domande al server di chi lo possiede e ricevendo risposte, si può
-verificare solo con il permesso di quel qualcuno, e quel permesso può essere
-tolto. Non è una questione di mercato: è una questione di chi può sapere cosa.
+L'asse orizzontale, da solo, ne dice un'altra, e riguarda proprio i limiti di
+cui parla questa sezione: chi è nella posizione di accorgersene. Un modello di
+cui si possono scaricare i pesi è un file che chiunque può tenersi, e quindi
+misurarne i difetti, sondarlo, smentirlo. Un modello che si raggiunge solo
+attraverso un'interfaccia, cioè mandando domande al server di chi lo possiede e
+ricevendo risposte, si può verificare solo con il permesso di quel qualcuno, e
+quel permesso può essere tolto. Non è una questione di mercato: è una questione
+di chi può sapere cosa.
 
 `````{tab} Elementare
 Un modello linguistico non "sa" le cose: prevede la parola più probabile dopo
@@ -365,7 +408,10 @@ neutrale.
 `````
 
 `````{tab} Superiore
-Un modello linguistico è pre-addestrato a massimizzare la verosimiglianza del testo, non la verità: la fluidità di una frase non ne garantisce la correttezza. A peggiorare le cose, la confidenza che il modello esprime è spesso mal calibrata; da qui le allucinazioni sicure di sé.
+Un modello linguistico è pre-addestrato a massimizzare la verosimiglianza del
+testo, non la verità: la fluidità di una frase non ne garantisce la
+correttezza. A peggiorare le cose, la confidenza che il modello esprime è
+spesso mal calibrata; da qui le allucinazioni sicure di sé.
 
 I *bias* non sono un bug ma una proprietà attesa dell'apprendimento statistico
 {cite}`bender2021dangers`, e conviene non ridurli a una sola causa. In parte i
@@ -378,7 +424,10 @@ responsabile](../AIResponsabile/overview.md) distingue quattro sorgenti proprio
 perché richiedono rimedi diversi, e due di quelle quattro non si aggiustano con
 i dati.
 
-A valle restano questioni aperte: impatto ambientale dell'addestramento, concentrazione di potere in pochi attori, effetti sul lavoro e sull'informazione. L'AI Act europeo (2024) è un primo tentativo di regolazione. Il fact-check umano, per noi, non è opzionale.
+A valle restano questioni aperte: impatto ambientale dell'addestramento,
+concentrazione di potere in pochi attori, effetti sul lavoro e
+sull'informazione. L'AI Act europeo, entrato in vigore nel 2024, è un primo
+tentativo di regolarle. Il fact-check umano, per noi, non è opzionale.
 `````
 
 ## Come continuare a imparare
@@ -394,17 +443,27 @@ nel capitolo su PyTorch, nella sezione su [come si replica un
 paper](../PyTorch/replicare-un-paper.md): quattro mosse e tre verifiche che si
 fanno senza nemmeno addestrare.
 
-Se è la prima volta e un paper ti sembra un altro pianeta, comincia da qui: apri
-il notebook di un capitolo con il pulsante "Esegui il codice", cambia un numero
-e guarda che cosa si rompe. È lo stesso mestiere, a un decimo della fatica, e
+:::{only} html
+Se è la prima volta e un paper ti sembra un altro pianeta, comincia da qui:
+apri il notebook di un capitolo con il pulsante "Esegui il codice", cambia un
+numero e guarda che cosa si rompe. È lo stesso mestiere, a un decimo della
+fatica, e insegna più di una lettura.
+:::
+
+:::{only} latex
+Se è la prima volta e un paper ti sembra un altro pianeta, comincia da qui:
+prendi il codice di un capitolo, mandalo in esecuzione, cambia un numero e
+guarda che cosa si rompe. È lo stesso mestiere, a un decimo della fatica, e
 insegna più di una lettura.
+:::
 
 Tieni i classici a portata: Géron {cite}`geron2022hands` per la pratica,
 Chollet {cite}`chollet2021deep` per l'intuizione, Goodfellow, Bengio e
 Courville {cite}`goodfellow2016deep` per la teoria, la documentazione di
 scikit-learn e PyTorch come compagne quotidiane. Un'avvertenza sui primi due:
-il loro codice è in Keras, non in PyTorch. Quello che insegnano non dipende dal
-framework, ma è meglio saperlo prima di aprirli.
+quando arrivano al deep learning il codice è in Keras e TensorFlow, non in
+PyTorch. Quello che insegnano non dipende dal framework, ma è meglio saperlo
+prima di aprirli.
 
 E, capitolo per capitolo, questo libro ha già in bibliografia i manuali di
 riferimento, che sui rispettivi argomenti dicono molto più di un generalista:
@@ -420,15 +479,24 @@ integralmente e gratuitamente online. Sono tutti in inglese, come quasi tutta
 la letteratura di questo campo: è una delle ragioni per cui questo libro esiste
 in italiano.
 
-Poi mettiti alla prova: partecipa a una competizione su Kaggle (il sito dove
-chiunque può misurarsi su un problema di dati vero, con una classifica e il
-codice degli altri partecipanti sotto gli occhi), contribuisci a un progetto
-open source, tieni un quaderno degli esperimenti falliti. Insegnano più dei
-successi.
+Poi mettiti alla prova: partecipa a una competizione su Kaggle, contribuisci a
+un progetto open source, tieni un quaderno degli esperimenti falliti, che
+insegnano più dei successi. Kaggle è il sito dove chiunque può misurarsi su un
+problema di dati vero, con una classifica e il codice degli altri partecipanti
+sotto gli occhi: è il posto più rapido per scoprire quanto manca fra un modello
+che gira e un modello che regge.
 
+:::{only} html
 E torna qui: questa versione del libro si aggiorna, e i capitoli nascono anche
 dalle segnalazioni di chi legge. Se un passaggio non ti torna, selezionalo e
-mandacelo: il pulsante che compare serve esattamente a questo.
+mandacelo: i pulsanti che compaiono servono esattamente a questo.
+:::
+
+:::{only} latex
+E torna alla versione online: si aggiorna, e i capitoli nascono anche dalle
+segnalazioni di chi legge. Se un passaggio non ti torna, selezionalo lì e
+mandacelo: i pulsanti che compaiono servono esattamente a questo.
+:::
 
 ## Un ultimo messaggio
 
@@ -444,16 +512,16 @@ questi strumenti: curiosità senza reverenza, entusiasmo senza fede, e
 quell'onestà intellettuale che fa dire "non lo so,
 verifichiamo" invece di "l'ha detto il modello".
 
-E resterà vero quello che Weizenbaum aveva notato per primo, nella stessa
-pagina del 1966 da cui siamo partiti: quando il funzionamento di un programma
-viene spiegato in modo abbastanza chiaro, "la sua magia si sbriciola", e chi
-guarda lo sposta "dallo scaffale marcato *intelligente* a quello riservato alle
-curiosità". È successo con ELIZA, e succede ancora: è la ragione per cui
-l'intelligenza artificiale non si lascia definire, perché ogni volta che ne
-capiamo un pezzo quel pezzo smette di contare. Ma per te queste macchine non
-sono più una scatola nera: sai di che cosa sono fatte, dati, rappresentazioni e
-ottimizzazione, e sai anche perché leggere davvero dentro un modello addestrato
-resti un problema aperto. Il resto è pratica.
+E resterà vero quello che Weizenbaum aveva notato nella stessa pagina del 1966
+da cui siamo partiti: quando il funzionamento di un programma viene spiegato in
+modo abbastanza chiaro «l'incanto si sgretola», e chi guarda lo sposta «dallo
+scaffale marcato *intelligente* a quello riservato alle curiosità». È successo
+con ELIZA, e succede ancora: è la ragione per cui l'intelligenza artificiale
+non si lascia definire, perché ogni volta che ne capiamo un pezzo quel pezzo
+smette di contare. Ma per te queste macchine non sono più una scatola nera. Sai
+di che cosa sono fatte: dati, rappresentazioni, ottimizzazione. E sai anche
+perché leggere davvero dentro un modello addestrato resti un problema aperto.
+Il resto è pratica.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
@@ -471,8 +539,8 @@ resti un problema aperto. Il resto è pratica.
 - Le "direzioni future" invecchiano in fretta: il modello di fondazione (uno
   solo, enorme, riadattato a mille compiti), i modelli che capiscono testo,
   immagini e suono tutti insieme e gli agenti erano previsioni scritte in
-  questo stesso capitolo, e oggi sono testo del libro. Restano varianti delle
-  stesse tre idee, non magia.
+  questo stesso capitolo, e oggi sono capitoli e sezioni del libro. Restano
+  varianti delle stesse tre idee, non magia.
 - I fronti davvero aperti sono quelli in cui **fare più grande non basta**: il
   costo dei testi lunghissimi, il capire *perché* un modello ha risposto così,
   la fiducia in un agente che lavora da solo per venti passi, e il conto di
@@ -490,7 +558,8 @@ resti un problema aperto. Il resto è pratica.
 `````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
-- Tutto il libro poggia su tre idee ricorrenti: **dati**, **rappresentazioni apprese** e **ottimizzazione**.
+- Tutto il libro poggia su tre idee ricorrenti: **dati**, **rappresentazioni
+  apprese** e **ottimizzazione**.
 - L'apprendimento è, per il grosso del libro, la minimizzazione di un rischio
   empirico, $\theta^\star = \arg\min_\theta \mathcal{L}(\theta)$. Le eccezioni
   sono istruttive e vanno tenute a mente: GAN (gioco minimax), reinforcement
@@ -499,9 +568,9 @@ resti un problema aperto. Il resto è pratica.
   obiettivi di natura diversa.
 - Le "direzioni future" invecchiano in fretta: foundation model, multimodalità
   e agenti erano previsioni scritte in questo capitolo, e oggi sono testo del
-  libro (due capitoli, più altri due cresciuti attorno agli agenti, e una
-  sezione sui modelli di fondazione). Restano varianti delle stesse tre idee,
-  non magia.
+  libro (due capitoli, più altri due cresciuti attorno agli agenti; i foundation
+  model non hanno nemmeno una sezione propria, si sono sciolti dentro quello sui
+  Transformer). Restano varianti delle stesse tre idee, non magia.
 - I fronti davvero aperti sono quelli in cui **scalare non basta**: il costo
   dell'attenzione sui contesti lunghi, l'interpretabilità, l'affidabilità degli
   agenti, il conto energetico e industriale.

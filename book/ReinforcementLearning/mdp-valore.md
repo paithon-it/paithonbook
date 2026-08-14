@@ -130,8 +130,10 @@ problema molto più duro. In pratica si fa una delle due cose, ed entrambe
 compaiono in questo libro: si **impila una finestra** di osservazioni recenti,
 come il DQN con i quattro fotogrammi, oppure si dà all'agente una **memoria**,
 cioè una rete ricorrente il cui stato nascosto fa da riassunto approssimato di
-tutto ciò che si è visto finora. Quando nei capitoli successivi si vedrà una
-policy con dentro una LSTM, la ragione è questa.
+tutto ciò che si è visto finora. È la ragione per cui, nel capitolo sui *world
+model*, l'agente sceglie l'azione leggendo due cose e non una: ciò che vede in
+questo istante, e lo stato nascosto di una rete ricorrente che ha visto tutto
+il resto.
 
 `````
 
@@ -306,7 +308,7 @@ $$
 È un sistema di equazioni lineari: una relazione di consistenza fra il valore
 di uno stato e quello dei suoi successori. Da qui partono tutti gli algoritmi
 che incontreremo: a cominciare dalla *value iteration* e dalla *policy
-iteration* qui sotto, fino al *Q-learning* della prossima sezione.
+iteration* qui sotto, fino al *Q-learning* con cui il capitolo si chiude.
 
 `````
 
@@ -330,6 +332,12 @@ giro, ricomincia da capo con i numeri nuovi, e poi ancora, finché i numeri
 smettono di muoversi. A quel punto ogni casella dice quanto vale *davvero*, e
 la strategia migliore è in omaggio: da ogni casella, scegli la mossa che rende
 di più.
+
+Un dettaglio del "giro" che vale la pena fissare adesso, perché altrimenti i
+conti della pagina seguente sembrano sbagliati: dentro un giro i numeri che si
+leggono sono sempre quelli con cui il giro è cominciato, anche per una casella
+che si è già riscritta. Si compila una scheda nuova guardando la vecchia, non
+si corregge la vecchia mentre la si legge.
 
 `````
 
@@ -368,6 +376,9 @@ partita è finita e non c'è più niente da raccogliere; e si comincia scrivendo
 $0$ anche sulle altre due caselle, tanto per avere un punto di partenza.
 
 `````{tab} Elementare
+
+Vale la regola di prima: dentro un giro si leggono i numeri con cui il giro è
+cominciato.
 
 **Primo giro.** Cominciamo da $s_1$, la casella accanto all'obiettivo. Scendere
 paga $10$ subito e porta nell'obiettivo, che vale $0$: in tutto
@@ -439,13 +450,17 @@ $4{,}8 \times 10^{44}$ posizioni legali, il Go su goban $19\times19$ circa
 $2{,}08 \times 10^{170}$: due conti fatti sul serio dal matematico John Tromp e
 dai suoi collaboratori, il Go nel 2016 (numero esatto, tutte e centosettantuno
 le cifre) e gli scacchi nel 2021. E un solo fotogramma in scala di grigi di un
-videogioco Atari, $84$ pixel per $84$ con $256$ livelli, dà $256^{7056}$
-situazioni possibili: un numero di quasi diciassettemila cifre, mentre per
-contare tutti gli atomi dell'universo osservabile ne basta un'ottantina. Non è
+videogioco Atari, $84$ pixel per $84$ (cioè $7056$ punti) con $256$ livelli di
+grigio ciascuno, dà $256^{7056}$ situazioni possibili: un numero di quasi
+diciassettemila cifre, mentre per contare tutti gli atomi dell'universo
+osservabile ne basta un'ottantina. Non è
 che su quei mondi la tabella sia lenta: non c'è nessun universo in cui la si
 possa scrivere. Un milione di stati è poco.
 
-Su tre stati l'onda si esaurisce in due passi. Su una griglia si vede meglio.
+Il premio, si è visto, non resta fermo dov'è: risale il mondo una casella per
+giro, come un'onda che parte dal traguardo e va all'indietro. Su tre stati
+quell'onda si esaurisce in due passi, e non c'è granché da guardare. Su una
+griglia si vede meglio.
 
 ```{figure} ../figures/iterazione-valore.gif
 :name: fig-iterazione-valore
@@ -463,8 +478,9 @@ numeri perché lì la partita è finita. Il valore parte dall'obiettivo e risale
 di una casella per
 giro, aggirando i muri, finché i numeri smettono di muoversi: qui bastano sei
 giri, quanti sono i passi della casella più lontana. A destra della griglia, il
-contatore dei giri e la formula dell'aggiornamento, che è quella della scheda
-Superiore qui sopra.
+contatore dei giri e la formula dell'aggiornamento: è quella della scheda
+Superiore qui sopra, senza la somma sugli stati d'arrivo, perché qui ogni mossa
+porta sempre nella stessa casella e non c'è niente da mediare.
 ```
 
 Su un mondo come questo, dove ogni mossa porta sempre nella stessa casella e il
@@ -533,9 +549,9 @@ C'è però un dettaglio che finora abbiamo dato per scontato, ed è enorme. Per
 fare quei conti ("ricompensa della mossa più valore dello stato d'arrivo"),
 bisogna *sapere in anticipo* dove porta ogni mossa e quanto paga. Value
 iteration e policy iteration richiedono cioè di conoscere il **modello
-dell'ambiente**: la mappa, con dentro tutte le mosse e i loro esiti (in simboli,
-le due funzioni $P$ e $r$ della scheda qui sopra). È pianificare un viaggio con
-la mappa già in mano.
+dell'ambiente**: la mappa, cioè per ogni mossa dove si finisce (e con quale
+probabilità, quando l'esito è incerto) e quanto si incassa a farla. È
+pianificare un viaggio con la mappa già in mano.
 Ma il robot del nostro labirinto la mappa non ce l'ha, e il mondo reale quasi
 mai la consegna: nessuno fornisce a un agente le probabilità di transizione
 del traffico o di una partita a Go.

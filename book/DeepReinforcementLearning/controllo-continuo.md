@@ -10,15 +10,17 @@ zampe che deve imparare a camminare. A ogni istante il controllore non decide
 con la virgola, magari negativo per frenare, magari $3{,}4$, magari $3{,}41$.
 Non c'è un menu di mosse da scorrere: c'è un continuo di forze da dosare.
 
-È lo scoglio con cui si chiude il capitolo su DQN. L'operatore $\max_a$, cuore
+È lo scoglio con cui si chiude la sezione su DQN. L'operatore $\max_a$, cuore
 del Q-learning, richiede di *enumerare* le azioni per trovare la migliore. Con
 un joystick funziona; con uno sterzo, un acceleratore o sette giunti che si
 muovono insieme, le combinazioni sono infinite e l'`argmax` diventa
 intrattabile. Dall'altra parte, i metodi a gradiente di policy che abbiamo
 visto (REINFORCE, actor-critic, A3C, PPO) gestiscono nativamente le azioni
-continue, ma nella loro forma *on-policy* buttano via ogni esperienza dopo
-averla usata una volta e soffrono di varianza elevata: per un robot vero, dove
-ogni tentativo costa secondi di usura reale, è un lusso che non ci si può
+continue, ma nella loro forma *on-policy* (imparano solo dalla strategia che
+stanno giocando in quel momento) buttano via ogni esperienza dopo averla usata
+una volta, e in più il loro apprendimento **balla**, cioè la stessa strategia,
+rigiocata, dà correzioni molto diverse fra loro. Per un robot vero, dove ogni
+tentativo costa secondi di usura reale, sono due lussi che non ci si può
 permettere. Servono metodi che uniscano le due virtù: *azioni continue* e
 *riuso dei dati* alla maniera off-policy di DQN.
 
@@ -42,7 +44,7 @@ dire all'attore se la mossa proposta è buona e in che direzione ritoccarla.
 `````{tab} Superiore
 
 Nel controllo continuo lo spazio delle azioni è $\mathcal{A}\subseteq
-\mathbb{R}^{d}$: un vettore di $d$ comandi reali (le coppie ai giunti, lo
+\mathbb{R}^{n}$: un vettore di $n$ comandi reali (le coppie ai giunti, lo
 sterzo, l'accelerazione). Il Q-learning sceglie l'azione con
 
 $$
@@ -51,7 +53,7 @@ $$
 
 un problema di ottimizzazione da risolvere *a ogni passo* e per ogni stato. Con
 $\mathcal{A}$ discreto e piccolo è una scansione; con $\mathcal{A}$ continuo è
-un'ottimizzazione non convessa in $\mathbb{R}^d$, impraticabile *online*. La
+un'ottimizzazione non convessa in $\mathbb{R}^n$, impraticabile *online*. La
 soluzione è approssimare quel massimo con una policy parametrica $\mu_\theta(s)$
 che restituisce direttamente l'azione, addestrata in modo che $\mu_\theta(s)
 \approx \arg\max_a Q(s,a)$. Vogliamo inoltre un metodo *off-policy*, che riusi
@@ -70,7 +72,10 @@ off-policy di DQN.
 
 L'idea è tenere due reti che collaborano. L'**attore** guarda la situazione e
 propone un'azione precisa: non un ventaglio di possibilità con le loro
-probabilità, ma esattamente la spinta da dare, un numero per ciascun motore. Il
+probabilità, come faceva la policy della sezione precedente, ma esattamente la
+spinta da dare, un numero per ciascun motore. È ancora una policy, ma
+*deterministica*, cioè che nella stessa situazione risponde sempre la stessa
+cosa, senza tirare dadi. Il
 **critico** è il vecchio Q-network con una modifica: oltre alla situazione
 riceve in ingresso *anche* l'azione proposta, e restituisce un numero solo,
 quanto vale fare quella mossa lì. Il critico impara come in DQN, inseguendo un
@@ -91,8 +96,9 @@ seguire la bussola della pendenza.
 
 Per non restare fermo su ciò che già conosce, l'attore aggiunge alle sue azioni
 un po' di **rumore** casuale: piccole spinte imprevedibili che lo fanno provare
-varianti nuove. È l'equivalente continuo del "tirare a caso ogni tanto" che in
-DQN serviva a esplorare.
+varianti nuove. È l'equivalente continuo del "ogni tanto tira a caso invece di
+prendere la mossa migliore" con cui il Q-learning del capitolo precedente
+esplorava.
 
 `````
 
@@ -116,8 +122,14 @@ $$
 Il primo fattore, $\nabla_a Q_\phi$, è la pendenza del critico *rispetto
 all'azione*: dice come cambiare $a$ per aumentare il valore. Il secondo,
 $\nabla_\theta \mu_\theta$, propaga quella direzione ai parametri dell'attore.
-L'aspettazione è su stati campionati dal replay buffer $\mathcal{D}$: DDPG è
-quindi *off-policy*. Il critico si addestra sul bersaglio di Bellman
+
+Un passaggio, qui, è un'approssimazione e non un'uguaglianza, e conviene non
+farselo scivolare addosso. Il teorema vale per stati distribuiti secondo
+$\rho^\mu$, cioè secondo la policy **corrente**; scriverci sotto $s\sim\mathcal{D}$,
+gli stati del replay buffer raccolti da policy vecchie, è la mossa che rende DDPG
+*off-policy* e costa un termine che si butta via. Funziona, ma non discende dalla
+regola della catena: è una scelta, ed è la stessa che si fa in tutti i metodi
+attore-critico off-policy. Il critico si addestra sul bersaglio di Bellman
 
 $$
 y = r + \gamma\, Q_{\phi'}\!\big(s', \mu_{\theta'}(s')\big),
@@ -126,10 +138,10 @@ $$
 dove $\phi'$ e $\theta'$ sono i parametri delle reti target, aggiornate con
 uno scorrimento lento (*Polyak averaging*) $\phi' \leftarrow \tau\phi +
 (1-\tau)\phi'$, con $\tau\ll 1$. L'esplorazione avviene aggiungendo rumore
-all'azione in fase di raccolta, $a = \mu_\theta(s) + \mathcal{N}$: nel paper
-originale un processo di Ornstein-Uhlenbeck (rumore temporalmente correlato,
-utile in sistemi con inerzia), ma nella pratica un semplice rumore gaussiano
-indipendente funziona altrettanto bene.
+all'azione in fase di raccolta, $a = \mu_\theta(s) + \epsilon$: nel paper
+originale $\epsilon$ è un processo di Ornstein-Uhlenbeck (rumore temporalmente
+correlato, utile in sistemi con inerzia), ma nella pratica un semplice rumore
+gaussiano indipendente funziona altrettanto bene.
 
 `````
 
@@ -142,13 +154,13 @@ Il primo è la **sovrastima del valore**, lo stesso male che affliggeva DQN. Il
 critico ha errori di stima in ogni direzione; l'attore, addestrato a cercare le
 azioni che il critico valuta di più, si infila proprio dove il critico ha
 sbagliato *per eccesso*. Quegli errori ottimistici vengono così selezionati,
-amplificati e reimmessi nel bersaglio di Bellman, dove tendono ad accumularsi.
-Il secondo è l'**ipersensibilità agli iperparametri**: piccole variazioni nei
-tassi di apprendimento, nella scala del rumore o nella dimensione delle reti
-possono fare la differenza tra un agente che impara a camminare e uno che crolla
-a terra. E non serve nemmeno cambiare un parametro: basta rilanciare lo stesso
-addestramento cambiando il numero da cui parte il generatore casuale (il
-*seme*), e i risultati possono essere molto diversi. È la ragione per cui in
+amplificati e reimmessi nel bersaglio che il critico insegue, dove tendono ad
+accumularsi. Il secondo è l'**ipersensibilità agli iperparametri**: piccole
+variazioni nei tassi di apprendimento, nella scala del rumore o nella dimensione
+delle reti possono fare la differenza tra un agente che impara a camminare e uno
+che crolla a terra. E non serve nemmeno cambiare un parametro: basta rilanciare
+lo stesso addestramento cambiando il seme del generatore casuale, e i risultati
+possono essere molto diversi. È la ragione per cui in
 questo campo un risultato si riporta su molte ripetizioni, come abbiamo fatto
 con la ricerca ad albero: una prova sola non dice quasi niente.
 
@@ -164,11 +176,17 @@ correzioni mirate, ognuna rivolta a un difetto preciso.
 `````{tab} Elementare
 
 **Due giudici, non uno.** Il primo trucco combatte l'ottimismo del critico
-tenendo *due* critici indipendenti invece di uno, e fidandosi sempre del più
-prudente: per calcolare il valore di riferimento si prende il **minimo** dei
-due voti. Se un giudice si è illuso e ha dato un voto troppo alto, l'altro fa
-da freno. È come chiedere un preventivo a due meccanici e regolarsi sul più
-cauto: si sbaglia meno per eccesso.
+tenendo *due* critici invece di uno, e fidandosi sempre del più prudente: per
+calcolare il valore di riferimento si prende il **minimo** dei due voti. Se un
+giudice si è illuso e ha dato un voto troppo alto, l'altro fa da freno. È come
+chiedere un preventivo a due meccanici e regolarsi sul più cauto: si sbaglia
+meno per eccesso.
+
+E vale l'avvertenza già vista per il Double DQN, perché è la stessa: i due
+giudici non sono estranei fra loro, hanno studiato sugli stessi dati e inseguito
+lo stesso bersaglio, quindi tendono a illudersi insieme. Il minimo attenua, non
+guarisce, e semmai sposta il difetto: al posto di un voto un po' troppo alto se
+ne prende uno un po' troppo basso.
 
 **L'attore parla di meno.** Il secondo trucco è rallentare l'attore: i critici
 si aggiornano a ogni passo, l'attore solo una volta ogni due. Prima di cambiare
@@ -207,15 +225,19 @@ ancora immature. **(c) Target policy smoothing.** L'azione target è
 
 $$
 \tilde a' = \mu_{\theta'}(s') + \epsilon,
-\qquad \epsilon \sim \operatorname{clip}\big(\mathcal{N}(0,\sigma),\,-c,\,c\big),
+\qquad \epsilon \sim \operatorname{clip}\big(\mathcal{N}(0,\sigma^2),\,-c,\,c\big),
 $$
 
 così che il bersaglio sia liscio rispetto all'azione: previene lo
 sfruttamento, da parte dell'attore, di picchi acuti ed erronei nella superficie
-del critico. I tre interventi curano uno per uno i due difetti elencati sopra
-(la sovrastima con il primo e il terzo, l'inseguimento di stime immature con il
-secondo), e il valore dell'algoritmo sta tutto lì: resta concettualmente DDPG, e
-dove DDPG è nervoso in genere non lo è.
+del critico. Dei due difetti elencati sopra, TD3 attacca frontalmente **il
+primo**, la sovrastima, con il clipped double-Q e il target smoothing; il terzo
+accorgimento cura un difetto che sopra non era in elenco e va aggiunto, cioè
+l'attore che insegue stime ancora immature. Sull'ipersensibilità agli
+iperparametri, invece, TD3 non promette nulla: ne attenua i sintomi perché
+l'addestramento è meno nervoso, non perché il problema sia risolto. Il valore
+dell'algoritmo sta tutto lì: resta concettualmente DDPG, e dove DDPG è nervoso in
+genere non lo è.
 
 `````
 
@@ -223,8 +245,9 @@ dove DDPG è nervoso in genere non lo è.
 
 Quasi in contemporanea con TD3, Tuomas Haarnoja e colleghi propongono una
 filosofia diversa: **SAC**, *Soft Actor-Critic* {cite}`haarnoja2018soft`. Qui
-l'attore torna **stocastico** (restituisce una distribuzione di probabilità
-sulle azioni, non un singolo valore) e cambia l'obiettivo stesso
+l'attore torna **stocastico**, cioè l'opposto di deterministico: invece di una
+sola spinta restituisce un ventaglio di spinte possibili con le loro
+probabilità, e la mossa vera la si estrae da lì. E cambia l'obiettivo stesso
 dell'apprendimento.
 
 `````{tab} Elementare
@@ -254,7 +277,7 @@ SAC ottimizza l'obiettivo di **massima entropia**: al ritorno somma l'entropia
 della policy in ogni stato,
 
 $$
-J(\pi) = \sum_{t} \mathbb{E}\Big[\, r_t + \alpha\, \mathcal{H}\big(\pi(\cdot\mid s_t)\big)\Big],
+J(\pi) = \sum_{t=0}^{T} \mathbb{E}\Big[\, r_t + \alpha\, \mathcal{H}\big(\pi(\cdot\mid s_t)\big)\Big],
 \qquad
 \mathcal{H}\big(\pi(\cdot\mid s)\big) = -\,\mathbb{E}_{a\sim\pi}\big[\log \pi(a\mid s)\big].
 $$
@@ -283,13 +306,13 @@ conseguenza dell'obiettivo.
 
 ## Lo scheletro dell'aggiornamento, in PyTorch
 
-I tre algoritmi condividono lo stesso ciclo off-policy: si pesca un minibatch
-dal replay buffer, si aggiorna il critico verso il bersaglio di Bellman e
-l'attore verso l'azione che il critico premia. Ecco il cuore nella variante
-DDPG, senza gli orpelli; TD3 aggiunge il secondo critico e il rumore sul
-bersaglio, SAC il premio alla varietà, che in termini tecnici è l'**entropia**
-della policy, cioè quanto le sue scelte restano imprevedibili: è esattamente ciò
-che la manopola della temperatura dosa.
+I tre algoritmi condividono lo stesso ciclo off-policy: si pesca un pugno di
+esperienze passate dal quaderno del replay, si aggiorna il critico verso il
+bersaglio che insegue e l'attore verso l'azione che il critico premia. Ecco il
+cuore nella variante DDPG, senza gli orpelli; TD3 aggiunge il secondo critico e
+il rumore sul bersaglio, SAC il premio alla varietà, che in termini tecnici è
+l'**entropia** della policy, cioè quanto le sue scelte restano imprevedibili: è
+esattamente ciò che la manopola della temperatura dosa.
 
 ```{code-block} python
 :class: pt-non-eseguibile
@@ -310,8 +333,9 @@ with torch.no_grad():
 # --- aggiornamento del critico: avvicina Q(s, a) al bersaglio ---
 q = q_net(s, a)                                    # Q sulle azioni realmente eseguite
 # ATTENZIONE alla forma: q e y devono essere entrambi (B,). Se q_net restituisce
-# (B, 1) e y e' (B,), mse_loss NON solleva: fa broadcasting a (B, B) e minimizza
-# la loss sbagliata. E' l'errore piu' comune nelle implementazioni di DDPG.
+# (B, 1) e y e' (B,), mse_loss non solleva niente: stampa un UserWarning, fa
+# broadcasting a (B, B) e minimizza la loss sbagliata. E chi non legge i warning
+# non se ne accorge: e' l'errore piu' comune nelle implementazioni di DDPG.
 perdita_critico = F.mse_loss(q.squeeze(-1), y)
 opt_critico.zero_grad()
 perdita_critico.backward()

@@ -95,6 +95,18 @@ In pratica, scrivendo una pagina:
   `#2D5A5C`, ocra `#C9A961`, warm-black `#1A1A1A`, cream `#F8F5EE`), leggibili
   anche in tema scuro. Niente immagini generate da AI, niente stock, niente
   gradienti. Se una figura non aggiunge comprensione, non serve;
+- **animazioni**: dove **il tempo è il contenuto** (qualcosa che scorre,
+  converge, si accumula, si propaga, si genera passo dopo passo) la figura può
+  muoversi, e i generatori stanno in `animazioni/svg/`, uno per figura. Regola
+  vincolante: il disegno **fermo è lo stato finale**, con le coordinate vere e
+  nessuna trasformazione, perché è quello che vedono la stampa, il PDF e chi ha
+  chiesto al sistema di ridurre le animazioni; il movimento parte dall'inverso
+  e finisce sull'identità. Solo `@keyframes` CSS, mai `<script>`. Se scrivi un
+  capitolo nuovo, la domanda «qui il tempo è il contenuto?» va **posta e
+  risposta**: se la risposta è no, si dichiara il capitolo in
+  `animazioni/senza-clip.toml` scrivendo perché. Un capitolo a zero clip che
+  non compare là fa fallire il controllo, e non per pignoleria: è già successo
+  che nessuno se lo chiedesse per venticinque capitoli di fila;
 - **la firma visiva non si modifica da qui**: colori, tipografia, sfondo
   animato, regole di stampa e lo stile delle figure animate vivono in
   `book/_static/brand`, che è un submodule del design system condiviso col

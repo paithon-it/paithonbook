@@ -89,9 +89,9 @@ decidere a quale nodo del grafo un nome si riferisce, usando il contesto.
 Il gradino gemello, e in pratica il più costoso, è la **risoluzione delle
 entità**: capire che «F.C. Juventus», «Juventus Football Club» e «la Juve»
 sono un nodo solo, e che due schede prodotto con nomi diversi descrivono lo
-stesso oggetto. È il problema di togliere i doppioni, su una scala enorme, e le
-aziende che mantengono knowledge graph ci spendono la maggior parte dello
-sforzo.
+stesso oggetto. È il problema di togliere i doppioni, su una scala enorme, ed è
+la voce su cui chi mantiene un knowledge graph spende gran parte del proprio
+lavoro.
 
 L'ultimo gradino è l'**estrazione di relazioni**: dedurre dal testo che fra due
 entità esiste un certo legame. Oggi si fa in larga parte chiedendolo a un
@@ -173,34 +173,44 @@ parentela non è casuale: entrambi trasformano un problema con soli positivi in
 un problema di discriminazione.
 
 C'è poi un vincolo che sembra implementativo e non lo è: gli embedding delle
-entità vanno rinormalizzati a $\lVert \mathbf{e} \rVert_2 = 1$ a ogni epoca.
-Senza, il modello ha una scappatoia banale, cioè far crescere le norme finché
-la loss scende senza che nessuna relazione sia stata imparata.
+entità vanno rinormalizzati a $\lVert \mathbf{e} \rVert_2 = 1$, e nell'algoritmo
+del paper la riga sta all'inizio di **ogni iterazione**, non a fine
+addestramento. Senza, il modello ha una scappatoia banale, cioè far crescere le
+norme finché la loss scende senza che nessuna relazione sia stata imparata.
 
-I limiti di una traslazione sono espressivi, non implementativi, e si elencano
-in quattro righe. Le relazioni **uno-a-molti** e **molti-a-uno** non sono
-rappresentabili: se $(h, r, t_1)$ e $(h, r, t_2)$ sono entrambe vere, TransE
-forza $\mathbf{t}_1 \approx \mathbf{t}_2$, cioè fa collassare entità distinte.
-Le relazioni **simmetriche** ($r(a,b) \Leftrightarrow r(b,a)$) richiedono
-$\mathbf{r} \approx -\mathbf{r}$, cioè $\mathbf{r} \approx \mathbf{0}$. Le
-relazioni **riflessive** collassano tutto allo stesso modo.
+I limiti di una traslazione sono espressivi, non implementativi. Le relazioni
+**uno-a-molti** e **molti-a-uno** non sono rappresentabili: se $(h, r, t_1)$ e
+$(h, r, t_2)$ sono entrambe vere, TransE forza
+$\mathbf{t}_1 \approx \mathbf{t}_2$, cioè fa collassare entità distinte. Le
+relazioni **simmetriche** ($r(a,b) \Leftrightarrow r(b,a)$) richiedono
+$\mathbf{r} \approx -\mathbf{r}$, cioè $\mathbf{r} \approx \mathbf{0}$, e con
+la relazione annullata collassano anche le due entità. Le relazioni
+**riflessive** finiscono allo stesso modo.
 
-La quarta è quella che fallisce più duramente, e va detta perché riguarda
-relazioni ordinarissime. Le relazioni **transitive** (`antenato-di`,
-`parte-di`, `sottoclasse-di`, cioè la norma in qualunque grafo con
-un'ontologia) chiedono che da $(a,r,b)$ e $(b,r,c)$ segua $(a,r,c)$: la
-traslazione dovrebbe soddisfare insieme $\mathbf{a} + 2\mathbf{r} \approx
-\mathbf{c}$ e $\mathbf{a} + \mathbf{r} \approx \mathbf{c}$, cioè di nuovo
-$\mathbf{r} \approx \mathbf{0}$, e stavolta senza nemmeno una via d'uscita
-degenere che tenga in piedi la loss. Le prime tre si lasciano approssimare a
-un prezzo (l'una-a-molti facendo coincidere due entità, la simmetrica
-annullando la relazione); la transitiva no. Ed è per questo che la
-**composizione** (che è la transitività vista come «applicare $r$ due volte»)
-compare fra i meriti dei modelli venuti dopo. Da qui la discendenza: modelli
-bilineari come DistMult, la sua estensione ai numeri complessi ComplEx (che
-recupera l'antisimmetria), e le rotazioni di RotatE, che sostituiscono la
-traslazione con una rotazione nel piano complesso e catturano simmetria,
-antisimmetria e composizione.
+Il caso che manca chiede una precisazione, perché è il punto in cui il racconto
+corrente sbaglia bersaglio. Una traslazione **compone** benissimo: se dalla
+coppia $r_1(a,b)$ e $r_2(b,c)$ deve seguire $r_3(a,c)$, basta porre
+$\mathbf{r}_3 = \mathbf{r}_1 + \mathbf{r}_2$, ed è per questo che nella
+tassonomia diventata standard con RotatE (Sun e colleghi, 2019) TransE è dato
+capace di composizione, di inversione e di antisimmetria, e incapace della sola
+simmetria. Quel che non regge è il caso particolare in cui le tre relazioni
+sono **la stessa**, cioè la **transitività** (`antenato-di`, `parte-di`,
+`sottoclasse-di`: la norma in qualunque grafo con un'ontologia). Lì servirebbero
+insieme $\mathbf{a} + 2\mathbf{r} \approx \mathbf{c}$ e
+$\mathbf{a} + \mathbf{r} \approx \mathbf{c}$, cioè ancora una volta
+$\mathbf{r} \approx \mathbf{0}$.
+
+Il seguito della famiglia sistema altre caselle, e conviene dire quali, perché
+non è la transitività. I modelli **bilineari** come DistMult sono simmetrici
+per costruzione, e quindi perdono l'antisimmetria che TransE aveva; la loro
+estensione ai numeri complessi, **ComplEx**, la recupera ma perde la
+composizione; **RotatE** sostituisce la traslazione con una rotazione nel piano
+complesso e le tiene insieme tutte e quattro. La transitività però resta fuori
+anche di lì, per lo stesso motivo algebrico: se una rotazione applicata due
+volte deve dare sé stessa, e ha modulo uno, allora è l'identità, e la relazione
+torna a non spostare niente. A reggere le gerarchie servono famiglie di altro
+tipo, che rappresentano un'entità non come un punto ma come un oggetto capace
+di **contenerne** un altro (ordini parziali, scatole, spazi iperbolici).
 
 Poi c'è la via che questo capitolo ha costruito. **R-GCN**
 {cite}`schlichtkrull2018modeling` porta il message passing sui grafi
@@ -308,9 +318,11 @@ paga il prezzo di costruirlo.
   di ogni relazione una **freccia** sempre uguale: da «Roma», seguendo la
   freccia «capitale-di», si atterra vicino a «Italia». Funziona, ma una freccia
   porta in **un solo** punto, e quindi non può legare un attore a dieci film né
-  reggere le relazioni che si concatenano (se sei antenato di mio nonno sei
-  antenato mio). Da lì una lunga discendenza di modelli che sostituiscono la
-  freccia con qualcosa di più flessibile.
+  reggere le relazioni che si ereditano lungo la catena (se sei antenato di mio
+  nonno sei antenato mio): là la freccia dovrebbe valere sia un passo sia due,
+  e l'unica freccia che lo fa è quella lunga zero. Da lì una lunga discendenza
+  di modelli che sostituiscono la freccia con qualcosa di più flessibile, senza
+  però che nessuno di loro risolva proprio quest'ultimo caso.
 - L'altra via è portare il **passaparola** dei capitoli precedenti su questo
   grafo, usando una ricetta di riscrittura diversa per ogni tipo di arco.
 - Il vantaggio che resta, e per cui vale la pena pagare la manutenzione, non è
@@ -339,9 +351,13 @@ paga il prezzo di costruirlo.
 - **TransE** {cite}`bordes2013translating` fa delle relazioni delle
   **traslazioni** ($\mathbf{h}+\mathbf{r}\approx\mathbf{t}$), cioè prende sul
   serio l'aritmetica delle analogie del capitolo di NLP. Non regge le relazioni
-  uno-a-molti, le simmetriche e le riflessive, e soprattutto le **transitive**,
-  che sono l'unico caso senza nemmeno una soluzione degenere; da lì la
-  discendenza (DistMult, ComplEx, RotatE, che recupera la composizione).
+  uno-a-molti, le simmetriche e le riflessive; la **composizione** invece la
+  regge ($\mathbf{r}_3 = \mathbf{r}_1 + \mathbf{r}_2$), ed è il suo caso
+  particolare, la **transitività**, a forzare $\mathbf{r} \approx \mathbf{0}$.
+  Da lì la discendenza (DistMult perde l'antisimmetria, ComplEx la recupera e
+  perde la composizione, RotatE le tiene tutte), che però la transitività non
+  la risolve: per le gerarchie servono rappresentazioni che contengono invece
+  di spostare (ordini, scatole, spazi iperbolici).
 - **R-GCN** {cite}`schlichtkrull2018modeling` porta il message passing sul
   grafo eterogeneo con una matrice di pesi per tipo di relazione, controllata
   con matrici di base condivise per non esplodere in parametri.

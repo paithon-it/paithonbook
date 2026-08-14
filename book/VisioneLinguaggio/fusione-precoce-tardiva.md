@@ -38,19 +38,19 @@ della sezione è il prezzo di questa idea.
 
 ## Un alfabeto anche per i pixel
 
-L'attrezzo per costruire quei simboli non è nuovo in questo libro: lo abbiamo
-già montato per il suono, nella sezione sui **codec neurali** del capitolo
-sull'audio. Là il problema era identico nella forma: un'onda è una grandezza
-continua, un modello di linguaggio mangia simboli discreti, e un alfabeto per
-il suono in natura non esiste, va costruito. La risposta era la
+L'attrezzo per costruire quei simboli serve ogni volta che una grandezza
+continua deve entrare in un modello che mangia simboli discreti, e non è un
+attrezzo dei soli pixel: il capitolo sull'audio lo rimonterà tal quale per il
+suono, nella sezione sui **codec neurali**, perché là il problema avrà la stessa
+forma (un'onda è continua, e un alfabeto per il suono in natura non esiste, va
+costruito). La risposta, di qua e di là, è la
 **quantizzazione vettoriale** del VQ-VAE {cite}`oord2017neural`: si prepara un
 catalogo finito di file di numeri campione (il *codebook*), e ogni pezzetto di
 segnale, che l'encoder ha già ridotto a una fila di numeri, viene sostituito dal
 campione del catalogo che gli somiglia di più. Di quel pezzetto non si conserva
 la fila: si conserva il suo **numero di catalogo**. Quel numero è il token.
 
-Sui pixel si fa esattamente la stessa cosa, cambiando solo che cosa entra
-nell'encoder. Il gesto è quello: comprimere, arrotondare al prototipo più
+Sui pixel il gesto è tutto qui: comprimere, arrotondare al prototipo più
 vicino, tenere l'indice.
 
 ```{figure} ../figures/vq-vae-rappresentazioni-discrete.svg
@@ -101,16 +101,18 @@ fotografia non ha un verso di lettura, quell'ordine ce lo siamo inventato noi.
 `````{tab} Superiore
 
 Sia $\mathcal{C} = \{\mathbf{e}_1, \dots, \mathbf{e}_K\}$ il codebook appreso e $\mathbf{z}$ la fila di numeri
-prodotta dall'encoder per una porzione di immagine. La quantizzazione è la
-stessa vista per l'audio,
+prodotta dall'encoder per una porzione di immagine. La quantizzazione ha la
+forma che il capitolo sull'audio riprenderà per il suono,
 
 $$
 k^\star = \arg\min_{k \in \{1, \dots, K\}} \lVert \mathbf{z} - \mathbf{e}_k \rVert^2,
 $$
 
-con $k^\star$ token della porzione, e l'addestramento attraversa l'$\arg\min$
-non differenziabile con lo *straight-through estimator* già discusso in quel
-capitolo. Quel che cambia rispetto all'audio è la forma del dominio: non una
+con $k^\star$ token della porzione. L'$\arg\min$ non è differenziabile, e il
+gradiente non attraverserebbe la quantizzazione: lo si aggira con lo
+*straight-through estimator*, cioè copiando il gradiente del decoder tal quale
+sull'uscita dell'encoder, come se l'arrotondamento fosse l'identità. Quel che
+cambia rispetto al suono è la forma del dominio: non una
 sequenza monodimensionale di frame, ma un reticolo bidimensionale di patch, che
 va **linearizzato** (di norma in ordine raster) per diventare una sequenza.
 
@@ -190,8 +192,8 @@ costruzione.
 $V$ **all'ingresso**, e da lì in avanti non esistono più due flussi: c'è una
 sequenza sola, $\mathbf{s} = (s_1, \dots, s_n)$ con $s_t \in V$, che un unico
 Transformer attraversa dal primo strato all'ultimo con la stessa attenzione e
-gli stessi pesi. L'obiettivo è quello del capitolo sui modelli di linguaggio,
-senza aggiunte:
+gli stessi pesi. L'obiettivo è quello dei grandi modelli linguistici, visto nel
+capitolo sui Transformer, senza aggiunte:
 
 $$
 \mathcal{L}(\theta) = -\sum_{t=1}^{n} \log p_\theta(s_t \mid s_{<t}),
@@ -349,10 +351,10 @@ encoder continui.
 A questo punto la domanda diventa più precisa. La fusione precoce ci serviva
 per un motivo solo: rendere l'immagine qualcosa che il modello possa
 **emettere**, non solo leggere. Ma quel motivo richiede davvero che l'immagine
-sia fatta di simboli discreti? Il capitolo sui modelli di diffusione ha
-mostrato un modo completamente diverso di generare un'immagine, che con i
-vocabolari non ha niente a che fare: partire dal rumore e toglierne un velo
-alla volta, come si è visto nella sezione sul funzionamento della diffusione.
+sia fatta di simboli discreti? Di modi per generare un'immagine ne esiste un
+altro, che con i vocabolari non ha niente a che fare, e il capitolo sui modelli
+di diffusione lo costruirà per intero: si parte da un quadrato di puro rumore e
+se ne toglie un velo alla volta, finché sotto i veli compare la figura.
 
 Transfusion {cite}`zhou2024transfusion` prende sul serio l'ipotesi: un solo
 Transformer, un solo insieme di parametri, ma **due obiettivi diversi** a
@@ -398,8 +400,8 @@ motivazione è che l'ordine raster è una finzione: gli elementi di un'immagine
 sono co-presenti, non successivi, e imporre loro una causalità è un vincolo
 gratuito.
 
-**I due obiettivi.** La perdita è la somma dei due termini che il libro ha già
-incontrato separatamente,
+**I due obiettivi.** La perdita è la somma di due termini che nel resto del
+libro vivono separati, uno per il testo e uno per l'immagine,
 
 $$
 \mathcal{L} = \mathcal{L}_{\text{LM}} + \lambda\, \mathcal{L}_{\text{DDPM}},
@@ -408,8 +410,10 @@ $$
 dove $\mathcal{L}_{\text{LM}}$ è la cross-entropia sul token successivo
 calcolata sulle sole posizioni testuali, $\mathcal{L}_{\text{DDPM}}$ è
 l'errore quadratico sul rumore stimato calcolato sulle sole posizioni visive
-(la $\mathbb{E}\lVert \epsilon - \epsilon_\theta(\mathbf{x}_t, t) \rVert^2$ della sezione
-sulla diffusione) e $\lambda$ pesa il secondo rispetto al primo (nel lavoro
+(la $\mathbb{E}\lVert \epsilon - \epsilon_\theta(\mathbf{x}_t, t) \rVert^2$ che
+il capitolo sulla diffusione deriverà per esteso: $\epsilon$ è il rumore davvero
+aggiunto, $\epsilon_\theta$ quello che il modello stima di dover togliere)
+e $\lambda$ pesa il secondo rispetto al primo (nel lavoro
 originale $\lambda = 5$). Le due perdite non riguardano parametri diversi:
 attraversano gli stessi strati, e ogni peso del Transformer riceve gradienti da
 entrambe. Restano specifici della modalità soltanto gli innesti agli estremi
@@ -562,10 +566,10 @@ meno.
   {cite}`liu2023visual` è **asimmetrico**: l'immagine è una condizione, e la
   softmax finale copre solo il vocabolario del testo. Non può generare
   immagini perché non ha simboli per dirle.
-- La **quantizzazione vettoriale** del VQ-VAE {cite}`oord2017neural`, già usata
-  per il suono nei codec neurali, dà all'immagine i suoi simboli: un codebook
-  di prototipi, l'indice del più vicino come token. Con un codebook da 8.192
-  voci, un'immagine $512 \times 512$ diventa 1.024 token da 13 bit.
+- La **quantizzazione vettoriale** del VQ-VAE {cite}`oord2017neural`, la stessa
+  che i codec neurali useranno per il suono, dà all'immagine i suoi simboli: un
+  codebook di prototipi, l'indice del più vicino come token. Con un codebook da
+  8.192 voci, un'immagine $512 \times 512$ diventa 1.024 token da 13 bit.
 - **Tardiva** è la fusione di due encoder addestrati a parte che si incontrano
   vicino all'uscita; **precoce** è un vocabolario unico all'ingresso, con un
   solo Transformer e un solo obiettivo autoregressivo

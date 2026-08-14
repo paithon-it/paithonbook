@@ -114,9 +114,7 @@ simboli; il codice si può anche solo guardare da lontano, cogliendone la taglia
 kernel Triton riesca a stare in così poche righe; la lettura riga per riga sta
 nella scheda Superiore.
 
-```{code-block} python
-:class: pt-non-eseguibile
-
+```python
 import torch
 import triton
 import triton.language as tl
@@ -180,9 +178,21 @@ CUDA (dove invece scriveresti esplicitamente cosa fa *un* thread) e un livello
 sotto PyTorch. `BLOCK_SIZE` è un `tl.constexpr`, cioè una costante nota a
 tempo di compilazione: Triton la usa per generare codice specializzato
 (srotolare cicli, dimensionare i registri), ed è uno dei pomelli su cui
-l'autotuning cerca il valore migliore. Il codice qui sopra è illustrativo: per
-girare servono una GPU e Triton installato, e in pratica lo si lascia scrivere
-a TorchInductor.
+l'autotuning cerca il valore migliore.
+
+E il codice qui sopra non è illustrativo: gira. Non serve nemmeno una GPU per
+guardarlo lavorare, perché con la variabile d'ambiente `TRITON_INTERPRET=1`
+Triton esegue il kernel in un interprete sulla CPU, un thread per volta: con
+$a = 2$ e $b = 1$ da $3$ esce $7$ e da $-4$ esce $0$, cioè esattamente i numeri
+promessi qualche riga più su. E se si vuole vedere che cosa il compilatore ne
+fa, `triton.compile` lo traduce nel **PTX** (l'assembly delle GPU NVIDIA) per
+un'architettura scelta a tavolino, `sm_90` per esempio, senza che
+quell'architettura sia presente. Vale la pena guardarci dentro, perché c'è la
+morale della sezione scritta in linguaggio macchina: la moltiplicazione e la
+somma non compaiono come istruzioni separate, al loro posto c'è una sola
+`fma.rn.f32` (*fused multiply-add*), la fusione già avvenuta dentro una singola
+istruzione. Quello per cui una GPU vera serve davvero è misurare quanto va
+veloce, non sapere che cosa calcola.
 
 `````
 

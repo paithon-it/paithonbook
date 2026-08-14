@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 420" role="img" aria-label="Tre modi di far imparare più compiti a una rete, affiancati. A sinistra, «un tronco, tante teste»: dall'ingresso sale un unico blocco condiviso e da lì partono tre frecce verso tre teste, una per compito. Al centro, «due reti tenute vicine»: due colonne separate, ciascuna con il proprio ingresso e la propria testa, collegate da tre frecce tratteggiate a doppia punta che rappresentano la penalità che impedisce loro di allontanarsi. A destra, «condiviso sotto, separato sopra»: un tronco comune in basso che si biforca a metà in due rami distinti, ciascuno con la sua testa.">
+  <defs>
+    <marker id="fr-mc" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1A1A1A"/>
+    </marker>
+    <marker id="fr-mc-o" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#C9A961"/>
+    </marker>
+  </defs>
+
+  <!-- ================= A: un tronco, tante teste ================= -->
+  <text x="165" y="32" text-anchor="middle" font-family="Inter, sans-serif" font-size="13.5" font-weight="700" fill="#1A1A1A">un tronco, tante teste</text>
+
+  <rect x="60" y="60" width="64" height="42" rx="6" fill="#B5532C" fill-opacity="0.16" stroke="#B5532C" stroke-width="2"/>
+  <text x="92" y="86" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" fill="#1A1A1A">testa 1</text>
+  <rect x="133" y="60" width="64" height="42" rx="6" fill="#B5532C" fill-opacity="0.16" stroke="#B5532C" stroke-width="2"/>
+  <text x="165" y="86" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" fill="#1A1A1A">testa 2</text>
+  <rect x="206" y="60" width="64" height="42" rx="6" fill="#B5532C" fill-opacity="0.16" stroke="#B5532C" stroke-width="2"/>
+  <text x="238" y="86" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" fill="#1A1A1A">testa 3</text>
+
+  <path d="M 135 146 L 100 106" fill="none" stroke="#1A1A1A" stroke-width="2" marker-end="url(#fr-mc)"/>
+  <path d="M 165 146 L 165 106" fill="none" stroke="#1A1A1A" stroke-width="2" marker-end="url(#fr-mc)"/>
+  <path d="M 195 146 L 230 106" fill="none" stroke="#1A1A1A" stroke-width="2" marker-end="url(#fr-mc)"/>
+
+  <rect x="105" y="148" width="120" height="102" rx="8" fill="#2D5A5C" fill-opacity="0.14" stroke="#2D5A5C" stroke-width="2.5"/>
+  <text x="165" y="192" text-anchor="middle" font-family="Inter, sans-serif" font-size="11.5" font-weight="700" fill="#1A1A1A">tronco</text>
+  <text x="165" y="209" text-anchor="middle" font-family="Inter, sans-serif" font-size="11.5" font-weight="700" fill="#1A1A1A">condiviso</text>
+
+  <path d="M 165 283 L 165 252" fill="none" stroke="#1A1A1A" stroke-width="2" marker-end="url(#fr-mc)"/>
+  <rect x="125" y="285" width="80" height="30" rx="6" fill="none" stroke="#5E5852" stroke-width="1.5"/>
+  <text x="165" y="305" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" fill="#5E5852">ingresso</text>
+
+  <text x="165" y="352" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" fill="#5E5852">Il lavoro si fa una volta sola, e ogni</text>
+  <text x="165" y="368" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" fill="#5E5852">testa lo traduce nella sua risposta.</text>
+
+  <!-- ================= B: due reti tenute vicine ================= -->
+  <text x="465" y="32" text-anchor="middle" font-family="Inter, sans-serif" font-size="13.5" font-weight="700" fill="#1A1A1A">due reti tenute vicine</text>
+
+  <rect x="378" y="60" width="64" height="42" rx="6" fill="#B5532C" fill-opacity="0.16" stroke="#B5532C" stroke-width="2"/>
+  <text x="410" y="86" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" fill="#1A1A1A">testa 1</text>
+  <rect x="488" y="60" width="64" height="42" rx="6" fill="#B5532C" fill-opacity="0.16" stroke="#B5532C" stroke-width="2"/>
+  <text x="520" y="86" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" fill="#1A1A1A">testa 2</text>
+
+  <path d="M 410 146 L 410 106" fill="none" stroke="#1A1A1A" stroke-width="2" marker-end="url(#fr-mc)"/>
+  <path d="M 520 146 L 520 106" fill="none" stroke="#1A1A1A" stroke-width="2" marker-end="url(#fr-mc)"/>
+
+  <rect x="380" y="148" width="60" height="102" rx="8" fill="#2D5A5C" fill-opacity="0.14" stroke="#2D5A5C" stroke-width="2.5"/>
+  <text x="410" y="196" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" font-weight="700" fill="#1A1A1A">rete</text>
+  <text x="410" y="211" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" font-weight="700" fill="#1A1A1A">A</text>
+  <rect x="490" y="148" width="60" height="102" rx="8" fill="#2D5A5C" fill-opacity="0.14" stroke="#2D5A5C" stroke-width="2.5"/>
+  <text x="520" y="196" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" font-weight="700" fill="#1A1A1A">rete</text>
+  <text x="520" y="211" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" font-weight="700" fill="#1A1A1A">B</text>
+
+  <path d="M 444 170 L 486 170" fill="none" stroke="#C9A961" stroke-width="2" stroke-dasharray="4 3" marker-start="url(#fr-mc-o)" marker-end="url(#fr-mc-o)"/>
+  <path d="M 444 199 L 486 199" fill="none" stroke="#C9A961" stroke-width="2" stroke-dasharray="4 3" marker-start="url(#fr-mc-o)" marker-end="url(#fr-mc-o)"/>
+  <path d="M 444 228 L 486 228" fill="none" stroke="#C9A961" stroke-width="2" stroke-dasharray="4 3" marker-start="url(#fr-mc-o)" marker-end="url(#fr-mc-o)"/>
+  <text x="465" y="266" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" font-weight="700" fill="#9A7B2E">penalità</text>
+
+  <path d="M 410 283 L 410 252" fill="none" stroke="#1A1A1A" stroke-width="2" marker-end="url(#fr-mc)"/>
+  <path d="M 520 283 L 520 252" fill="none" stroke="#1A1A1A" stroke-width="2" marker-end="url(#fr-mc)"/>
+  <rect x="380" y="285" width="60" height="30" rx="6" fill="none" stroke="#5E5852" stroke-width="1.5"/>
+  <text x="410" y="305" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" fill="#5E5852">ingresso</text>
+  <rect x="490" y="285" width="60" height="30" rx="6" fill="none" stroke="#5E5852" stroke-width="1.5"/>
+  <text x="520" y="305" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" fill="#5E5852">ingresso</text>
+
+  <text x="465" y="352" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" fill="#5E5852">Niente è condiviso per forza: una penalità</text>
+  <text x="465" y="368" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" fill="#5E5852">impedisce alle due di allontanarsi.</text>
+
+  <!-- ================= C: condiviso sotto, separato sopra ================= -->
+  <text x="765" y="32" text-anchor="middle" font-family="Inter, sans-serif" font-size="13.5" font-weight="700" fill="#1A1A1A">condiviso sotto, separato sopra</text>
+
+  <rect x="686" y="60" width="64" height="42" rx="6" fill="#B5532C" fill-opacity="0.16" stroke="#B5532C" stroke-width="2"/>
+  <text x="718" y="86" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" fill="#1A1A1A">testa 1</text>
+  <rect x="780" y="60" width="64" height="42" rx="6" fill="#B5532C" fill-opacity="0.16" stroke="#B5532C" stroke-width="2"/>
+  <text x="812" y="86" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" fill="#1A1A1A">testa 2</text>
+
+  <path d="M 718 138 L 718 106" fill="none" stroke="#1A1A1A" stroke-width="2" marker-end="url(#fr-mc)"/>
+  <path d="M 812 138 L 812 106" fill="none" stroke="#1A1A1A" stroke-width="2" marker-end="url(#fr-mc)"/>
+
+  <rect x="688" y="140" width="60" height="44" rx="8" fill="#C9A961" fill-opacity="0.22" stroke="#C9A961" stroke-width="2.5"/>
+  <text x="718" y="167" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" font-weight="700" fill="#1A1A1A">specifico</text>
+  <rect x="782" y="140" width="60" height="44" rx="8" fill="#C9A961" fill-opacity="0.22" stroke="#C9A961" stroke-width="2.5"/>
+  <text x="812" y="167" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" font-weight="700" fill="#1A1A1A">specifico</text>
+
+  <path d="M 742 210 L 725 188" fill="none" stroke="#1A1A1A" stroke-width="2" marker-end="url(#fr-mc)"/>
+  <path d="M 788 210 L 805 188" fill="none" stroke="#1A1A1A" stroke-width="2" marker-end="url(#fr-mc)"/>
+
+  <rect x="705" y="212" width="120" height="42" rx="8" fill="#2D5A5C" fill-opacity="0.14" stroke="#2D5A5C" stroke-width="2.5"/>
+  <text x="765" y="238" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" font-weight="700" fill="#1A1A1A">generico, condiviso</text>
+
+  <path d="M 765 283 L 765 256" fill="none" stroke="#1A1A1A" stroke-width="2" marker-end="url(#fr-mc)"/>
+  <rect x="725" y="285" width="80" height="30" rx="6" fill="none" stroke="#5E5852" stroke-width="1.5"/>
+  <text x="765" y="305" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" fill="#5E5852">ingresso</text>
+
+  <text x="765" y="352" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" fill="#5E5852">Dove si finisce quasi sempre: si divide</text>
+  <text x="765" y="368" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" fill="#5E5852">dove i compiti smettono di somigliarsi.</text>
+</svg>

@@ -8,30 +8,39 @@ spezzata in `token` + `izzazione`. Quella decisione è il risultato di un
 algoritmo che ha letto un corpus enorme e ha scelto, uno per uno, i mattoncini
 da tenere. Questa sezione apre quell'algoritmo.
 
-Il punto di partenza è un vicolo cieco. Se il vocabolario contiene parole
-intere, non chiude mai: qualunque soglia scegliate, prima o poi arriverà una
-parola che non c'è. Un cognome (*Rossellini*), un refuso (*gattto*), un
-termine tecnico (*ortogonalizzazione*), un composto tedesco costruito sul
-momento. Il sistema la sostituisce con un simbolo speciale, `<UNK>`, e da quel
-momento quella parola per il modello non esiste più: era il nome del paziente,
-il numero di serie, il soggetto della frase, e adesso è un buco. Peggio:
-`<UNK>` non si può nemmeno *generare*, perché un modello che scrive non ha
-modo di riempirlo.
+Il punto di partenza è un vicolo cieco. Immaginate di riempire il vocabolario
+di parole intere, e di dover decidere quante tenerne: cinquantamila, centomila,
+un milione. Qualunque numero scegliate, quel vocabolario non si chiude mai,
+perché prima o poi arriverà una parola che non c'è. Un cognome
+(*Rossellini*), un refuso (*gattto*), un termine tecnico
+(*ortogonalizzazione*), un composto tedesco costruito sul momento. Il sistema
+la sostituisce con un simbolo speciale, `<UNK>` (da *unknown*, sconosciuto), e
+da quel momento quella parola per il modello non esiste più: era il nome del
+paziente, il numero di serie, il soggetto della frase, e adesso è un buco.
+Peggio: questi programmi non si limitano a leggere, scrivono anche, e `<UNK>`
+non si può *scrivere*. Un modello che lo tirasse fuori avrebbe prodotto un
+buco, e nessuno saprebbe con che cosa riempirlo.
 
 All'estremo opposto c'è la soluzione radicale: un vocabolario di singoli
 caratteri. Le parole sconosciute spariscono per costruzione, perché ogni testo
-è fatto di lettere che il vocabolario contiene tutte. Ma si paga due volte. La
-prima: le sequenze si allungano di brutto, perché una parola italiana media
-sta attorno ai cinque o sei caratteri, e la lunghezza si paga cara.
-L'**attenzione**, il meccanismo con cui un modello moderno guarda tutte le
-parole della frase insieme e decide quali contano (la incontreremo fra qualche
-sezione, con la traduzione automatica, e per esteso nel capitolo sui
-Transformer), confronta ogni posizione con ogni altra: raddoppiare le posizioni
-quadruplica i confronti. Il costo cresce cioè con il **quadrato** della
-lunghezza, e una sequenza cinque volte più lunga costa venticinque volte il
-lavoro. La seconda: il modello deve reimparare da zero che le lettere si
-raggruppano in parole, spendendo capacità per riscoprire una struttura che gli
-si poteva regalare.
+è fatto di lettere che il vocabolario contiene tutte. Ma si paga due volte.
+
+**La prima: le sequenze si allungano di brutto.** Una parola italiana media sta
+attorno ai cinque o sei caratteri, quindi contare a lettere invece che a parole
+allunga il testo di cinque volte. E la lunghezza si paga cara. Il motivo è un
+meccanismo che incontreremo fra qualche sezione, con la traduzione automatica,
+e per esteso nel capitolo sui Transformer: l'**attenzione**, cioè il modo in
+cui un modello moderno guarda tutte le parole della frase insieme e decide
+quali contano davvero. Per farlo confronta ogni posizione con ogni altra, e
+quel conto cresce con il **quadrato** della lunghezza: raddoppiare le posizioni
+quadruplica i confronti, e una sequenza cinque volte più lunga costa
+venticinque volte il lavoro.
+
+**La seconda: si spreca il modello.** Un modello ha una quantità finita di
+numeri regolabili dentro di sé, ed è quella la sua capienza: tutto ciò che
+impara deve stare lì. Partire dalle lettere vuol dire spenderne una parte per
+riscoprire che *g*, *a*, *t*, *t*, *o* stanno spesso in quest'ordine, cioè per
+riscoprire le parole, che gliele si poteva regalare in partenza.
 
 Le **sotto-parole** (*subword*) stanno in mezzo, e sono il compromesso che ha
 vinto: le parole frequenti restano intere (un token per *rosso*), quelle rare
@@ -40,9 +49,9 @@ spiega come si costruisce, concretamente, quell'elenco di pezzi.
 
 ## Il dilemma del vocabolario
 
-Prima di guardare gli algoritmi vale la pena capire *cosa* stiamo ottimizzando,
-perché la scelta della taglia del vocabolario non è un dettaglio: è un baratto
-fra due costi che tirano in direzioni opposte.
+Prima di guardare gli algoritmi vale la pena capire che cosa stiamo cercando di
+rendere migliore, perché la scelta della taglia del vocabolario non è un
+dettaglio: è un baratto fra due costi che tirano in direzioni opposte.
 
 `````{tab} Elementare
 
@@ -96,12 +105,21 @@ limita a riempire i posti disponibili nel modo che ritiene migliore.
 ## Byte Pair Encoding: da compressore a tokenizzatore
 
 Il primo e più usato di questi algoritmi non nasce nella linguistica
-computazionale, ma nella compressione dei dati. Nel febbraio 1994 Philip Gage
-pubblica sul *C Users Journal* un algoritmo semplicissimo
-{cite}`gage1994new`: trova la coppia di byte adiacenti più frequente nel file,
-sostituiscila ovunque con un byte inutilizzato, annota la sostituzione in una
-tabella, ripeti. Alla fine il file è più corto e la tabella dice come
-ricostruirlo. Il nome che Gage gli dà è **byte pair encoding**, BPE.
+computazionale, ma nel mestiere di far stare i file in meno spazio. Serve
+allora una parola sola, che poi torna fino in fondo alla sezione: il **byte**.
+Un byte è il mattoncino minimo con cui un computer scrive qualunque cosa, otto
+caselle che valgono 0 o 1; le combinazioni possibili sono $2^8 = 256$, né una
+di più né una di meno, e un file di testo non è che una fila di byte. Di quei
+256 valori, però, un testo qualunque ne usa solo una parte, quelli che
+corrispondono alle lettere, alle cifre e alla punteggiatura che contiene: tutti
+gli altri restano liberi, e sono i «byte inutilizzati» della ricetta che segue.
+
+Nel febbraio 1994 Philip Gage pubblica sul *C Users Journal* un algoritmo
+semplicissimo {cite}`gage1994new`: trova la coppia di byte adiacenti più
+frequente nel file, sostituiscila ovunque con uno di quei byte liberi, annota
+la sostituzione in una tabella, ripeti. Alla fine il file è più corto (dove
+c'erano due byte adesso ce n'è uno) e la tabella dice come ricostruirlo. Il
+nome che Gage gli dà è **byte pair encoding**, BPE.
 
 ```{figure} ../figures/tokenizzazione-bpe.svg
 :name: fig-tokenizzazione-bpe
@@ -114,9 +132,12 @@ numero.
 ```
 
 La catena di {numref}`fig-tokenizzazione-bpe` chiarisce un equivoco diffuso:
-il modello non vede mai le parole, né i caratteri. Vede identificativi
-numerici, e il confine fra un identificativo e l'altro lo ha deciso un
-algoritmo di frequenze, non la grammatica.
+il modello non vede mai le parole, né i caratteri. Vede numeri. Quei numeri non
+significano niente, sono i numeri di riga del vocabolario: una volta che
+l'elenco dei pezzi è stato deciso, lo si scrive in ordine e il pezzo che sta
+alla riga 4821 diventa, per il modello, «4821». È un codice d'inventario, come
+il numero di scaffale in un magazzino, e il confine fra un pezzo e l'altro lo
+ha deciso un algoritmo di frequenze, non la grammatica.
 
 Una ventina d'anni dopo, nel 2015, Rico Sennrich, Barry Haddow e Alexandra Birch
 {cite}`sennrich2016neural` si accorgono che quell'algoritmo di compressione
@@ -124,9 +145,10 @@ risolve un problema completamente diverso: la traduzione automatica delle
 parole rare. Cambiano una cosa sola, cioè fondono caratteri (e sequenze di
 caratteri) invece che byte, e invece di comprimere si fermano quando il
 vocabolario ha raggiunto la taglia voluta. Nel loro articolo il numero di
-fusioni è, testualmente, l'unico iperparametro dell'algoritmo. Il lavoro viene
-presentato ad ACL nel 2016 ed è, ancora oggi, la base di quasi tutti i
-tokenizzatori in circolazione.
+fusioni è, testualmente, l'unico **iperparametro** dell'algoritmo: l'unica
+manopola, cioè, che chi lo usa deve girare a mano, perché tutto il resto lo
+decidono i conteggi. Il lavoro viene presentato nel 2016 alla conferenza ACL
+ed è, ancora oggi, la base di quasi tutti i tokenizzatori in circolazione.
 
 `````{tab} Elementare
 
@@ -196,13 +218,17 @@ distribuzione delle parole è fortemente sbilanciata.
 `````
 
 Una precisazione tecnica che eviterà confusione più avanti. Così com'è
-descritto, BPE non sa dove finisce una parola: `basso` e `bassotto` gli
-arrivano come due sequenze separate, e i pezzi imparati non portano traccia
-della loro posizione. Le implementazioni reali aggiungono un marcatore, un
-simbolo di fine parola come `</w>` nel lavoro originale, oppure un marcatore
-di *inizio* attaccato allo spazio, che è la strada di SentencePiece e che
-vedremo fra poco. Nell'esempio che segue lo omettiamo per non appesantire i
-conti.
+descritto, BPE lavora su una parola per volta e non lascia sui pezzi nessuna
+traccia di *dove* si trovavano. Il guaio si vede in uscita: il pezzo `to`
+ritagliato dalla fine di `bassotto` e il pezzo `to` che apre una parola come
+`tornare` sono, per il modello, la stessa identica voce del vocabolario, anche
+se il primo è una desinenza e il secondo l'inizio di un verbo. Nel rimettere
+insieme i pezzi, poi, non c'è modo di sapere dove finisce una parola e comincia
+la successiva. Le implementazioni reali aggiungono perciò un marcatore: nel
+lavoro originale è un simbolo di fine parola, `</w>`; altrove è un simbolo che
+segna l'*inizio*, attaccato allo spazio che precede la parola, ed è la strada
+di SentencePiece che vedremo fra poco. Nell'esempio che segue lo omettiamo per
+non appesantire i conti.
 
 ## L'esempio svolto: cinque parole, quattro fusioni
 
@@ -270,26 +296,29 @@ corpus, quindi i suoi pezzi si trovano insieme più spesso di chiunque altro e
 si saldano per primi. È il motivo per cui, nei tokenizzatori veri, *casa* o
 *the* sono un token solo mentre *ortogonalizzazione* ne prende cinque.
 
-I quattro passi si vedono meglio tutti insieme che descritti a parole
-({numref}`fig-bpe-fusioni`): a ogni giro una coppia si salda, l'elenco delle
-fusioni si allunga di una riga, e le parole si accorciano.
+Il risultato dei quattro passi, e l'elenco che li registra, stanno tutti nella
+{numref}`fig-bpe-fusioni`: a sinistra come sono ridotte le cinque parole a fine
+corsa, a destra le quattro fusioni in ordine, ciascuna con il conteggio che le
+ha fatte vincere.
 
 ```{figure} ../figures/bpe-fusioni.svg
 :name: fig-bpe-fusioni
-:alt: Le cinque parole del corpus giocattolo, ciascuna spezzata in scatole, una per token, con accanto la propria frequenza. A ogni passo la coppia adiacente più frequente si salda in una scatola sola e la fusione entra nell'elenco a destra con il suo conteggio: ss 25, sso 20, ro 14, rosso 9. Dopo quattro fusioni la parola rosso è un token unico e il corpus è passato da 146 a 78 token.
+:alt: A sinistra le cinque parole del corpus giocattolo dopo quattro fusioni, ciascuna spezzata in scatole, una per token, con accanto la propria frequenza: basso è b, a, sso; bassotto è b, a, sso, t, t, o; bosso è b, o, sso; rosso è una scatola sola, evidenziata; rossetto è ro, ss, e, t, t, o. A destra le quattro fusioni in ordine con il loro conteggio: ss 25, sso 20, ro 14, rosso 9. In basso a sinistra il totale, 78 token contro i 146 caratteri di partenza.
 :width: 96%
 
-A ogni passo la coppia adiacente più frequente diventa un simbolo solo: le
-fusioni si accumulano in un elenco ordinato e il corpus si accorcia, finché
-`rosso` sta in un token solo.
+Il corpus dopo quattro fusioni, e l'elenco ordinato che le registra. La parola
+più frequente, `rosso`, è finita in una scatola sola, e il testo è passato da
+146 pezzi a 78.
 ```
 
 Dopo quattro fusioni il vocabolario contiene le sette lettere del corpus
 (`a b e o r s t`) più `ss`, `sso`, `ro`, `rosso`. Al passo successivo si
 presenterebbe un pareggio, `b`+`a` e `a`+`sso` a quota 8, e serve una regola
 di spareggio: la fissiamo in modo esplicito nel codice qui sotto (a parità di
-conteggio, la coppia prima in ordine alfabetico), perché un tokenizzatore deve
-essere riproducibile bit per bit.
+conteggio, la coppia prima in ordine alfabetico). Non è pignoleria: un
+tokenizzatore, rilanciato domani sullo stesso corpus, deve produrre esattamente
+lo stesso vocabolario, altrimenti tutto ciò che il modello ha imparato punta ai
+pezzi sbagliati.
 
 ### La parola mai vista
 
@@ -297,25 +326,29 @@ Il collaudo è tokenizzare qualcosa che nel corpus non c'era. Prendiamo
 `bassetto`. Si parte dalle lettere, `b a s s e t t o`, e si riapplicano le
 fusioni imparate **nell'ordine in cui sono state imparate**. Con le prime
 quattro: `ss` si applica (`b a ss e t t o`), `sso` no (dopo la doppia s c'è
-una e), `ro` no, `rosso` no. Con dieci fusioni, come nel codice della prossima
-sezione, il corpus fa in tempo a imparare anche `to`, `tto` ed `etto` (nascono
-tutte e tre dalle uniche due parole che finiscono così, `bassotto` e
-`rossetto`), e il risultato è
+una e), `ro` no, `rosso` no.
+
+Fermarsi a quattro fusioni sarebbe però un vocabolario ridicolo: lasciamo
+correre l'algoritmo fino a dieci, che è quello che fa il programma della
+prossima pagina. Le sei che si aggiungono sono, in ordine, `a`+`sso` → `asso`,
+`b`+`asso` → `basso`, `t`+`o` → `to`, `t`+`to` → `tto`, `e`+`tto` → `etto`,
+`ro`+`ss` → `ross`. Con queste in mano, `bassetto` esce così:
 
 ```
 b | a | ss | etto
 ```
 
 Quattro token, nessun `<UNK>`, e due dei quattro sono pezzi imparati. C'è però
-un dettaglio che merita attenzione, perché smonta un equivoco comune: nel
-vocabolario, a quel punto, c'è il token `basso`, eppure in `bassetto` la `b` e
-la `a` restano due token separati. Il motivo è che l'unica strada per cui
-quelle due lettere si saldano passa per `a`+`sso` e poi `b`+`asso`, e in
-`bassetto` dopo la doppia s non c'è una o: la catena si spezza al primo anello,
-e la coppia `b`+`a`, che pure è frequente, non è mai stata imparata come
-fusione a sé. **BPE non cerca la scomposizione migliore: riapplica una
-ricetta.** La segmentazione che ne esce somiglia spesso alla morfologia, ma non
-è morfologia, e quando le due divergono vince la ricetta.
+un dettaglio che merita attenzione, perché smonta un equivoco comune. Nel
+vocabolario, a quel punto, il token `basso` c'è (è la sesta fusione), eppure in
+`bassetto` la `b` e la `a` restano due token separati. Il motivo è che l'unica
+strada per cui quelle due lettere si saldano passa prima per `a`+`sso` e poi
+per `b`+`asso`, e in `bassetto` dopo la doppia s non c'è una o: la prima delle
+due fusioni non scatta, la catena si spezza al primo anello, e la coppia
+`b`+`a`, che pure nel corpus è frequente, non è mai stata imparata come fusione
+a sé. **BPE non cerca la scomposizione migliore: riapplica una ricetta.** La
+segmentazione che ne esce somiglia spesso alla morfologia, ma non è morfologia,
+e quando le due divergono vince la ricetta.
 
 Un caso più estremo: un cognome come `rossellini`, mai visto, diventa
 
@@ -324,25 +357,31 @@ ross | e | l | l | i | n | i
 ```
 
 sette token per una parola sola. È il prezzo che le sotto-parole fanno pagare a
-ciò che è raro, ed è la radice di due delle conseguenze pratiche di cui
-parleremo alla fine.
+ciò che è raro, e alla fine della sezione lo ritroveremo due volte: nei numeri,
+che si spezzano a casaccio, e nelle lingue diverse dall'inglese, che si
+frammentano più dell'inglese.
 
 E c'è dell'altro, che conviene guardare in faccia invece di girarci intorno,
 perché è il punto in cui la promessa «niente resta fuori» mostra la sua
-condizione. Le lettere `l`, `i` e `n` nel nostro corpus giocattolo non
-compaiono mai: il vocabolario di partenza sono le sette lettere di `basso`,
-`bassotto`, `bosso`, `rosso` e `rossetto`, cioè `a b e o r s t`. Un
-tokenizzatore vero, che prima di emettere un pezzo controlla di averlo nel
-vocabolario, per `rossellini` restituirebbe quattro `<UNK>` su sette token. Il
-codice della prossima sezione non lo fa soltanto perché riapplica le fusioni
-alla cieca, senza chiedersi se i simboli rimasti siano simboli noti: è un
-programma didattico, non un tokenizzatore di produzione. Il punto vero è che a
-livello di **carattere** l'assenza di `<UNK>` non è una proprietà
-dell'algoritmo, è una scommessa sull'alfabeto di partenza: si vince finché il
-corpus di addestramento conteneva ogni carattere che potrà mai arrivare. Con
+condizione.
+
+Guardate le lettere di `rossellini`. Le `l`, le `i` e la `n` nel nostro corpus
+giocattolo non compaiono mai: quel corpus è fatto di cinque parole, e le
+lettere che ci stanno dentro sono sette in tutto, `a b e o r s t`. Un
+tokenizzatore vero, prima di consegnare un pezzo, controlla di averlo nel
+vocabolario; e siccome quelle cinque lettere nel vocabolario non ci sono, al
+posto loro metterebbe cinque `<UNK>`, uno per ciascuna. Sette token, cinque dei
+quali buchi. Il programma della prossima pagina non lo fa soltanto perché
+riapplica le fusioni alla cieca, senza mai chiedersi se i simboli rimasti siano
+noti: è un programma didattico, non un tokenizzatore di produzione.
+
+Il punto vero è quello, però, e vale la pena metterlo per iscritto.
+L'affermazione «con le sotto-parole non resta fuori niente» non è una proprietà
+dell'algoritmo: è una **scommessa sull'alfabeto di partenza**. Si vince finché
+il corpus di addestramento conteneva ogni carattere che potrà mai arrivare. Con
 cinque parole la scommessa è persa in partenza; con un corpus vero è quasi
 sempre vinta, e a tradirla bastano un ideogramma raro o un'emoji uscita l'anno
-scorso. È il buco che il livello dei **byte**, fra qualche pagina, chiuderà per
+scorso. È il buco che il livello dei byte, fra qualche pagina, chiuderà per
 costruzione e per sempre.
 
 ## Trenta righe di Python
@@ -585,12 +624,12 @@ intravisto con `rossellini`: se una lettera non era nel corpus di partenza,
 niente la rappresenta.
 
 La soluzione è scendere ancora di un piano: sotto i caratteri ci sono i
-**byte**, e i byte sono 256. Un byte è il mattoncino minimo con cui un computer
-scrive qualunque cosa, otto caselle che valgono 0 o 1: le combinazioni sono
-$2^8 = 256$, né una di più né una di meno. Non sono 256 *nel corpus*, sono 256
-*e basta*, e non li ha scelti nessuno guardando dei testi: qualunque cosa
-esista o esisterà, sul computer è una sequenza di quei 256 mattoncini. Partendo
-da lì, il vocabolario di base copre tutto per costruzione, la scommessa
+**byte**, quelli con cui si è aperta la sezione, e i byte sono 256. Ed è qui
+che sta tutta la differenza: non sono 256 *nel corpus*, sono 256 *e basta*, e
+non li ha scelti nessuno guardando dei testi. Qualunque cosa esista o
+esisterà, sul computer è una sequenza di quei 256 mattoncini: un ideogramma ne
+occuperà tre, un'emoji quattro, ma saranno sempre e solo quelli. Partendo da
+lì, il vocabolario di base copre tutto per costruzione, la scommessa
 sull'alfabeto non c'è più, e la parola «sconosciuto» esce definitivamente dal
 dizionario.
 
@@ -660,31 +699,35 @@ tokenizzatore.
 ## Quattro conseguenze che incontrerete davvero
 
 Fin qui la meccanica. Ma la ragione per cui vale la pena conoscerla è che il
-tokenizzatore, che sembra un dettaglio di preprocessing, produce quattro
-effetti visibili a chiunque usi un modello di linguaggio, e nessuno dei
-quattro è una curiosità: sono tutti conseguenze dirette dell'algoritmo appena
-descritto.
+tokenizzatore, che sembra un dettaglio della preparazione dei dati, produce
+quattro effetti visibili a chiunque usi un modello di linguaggio, e nessuno
+dei quattro è una curiosità: sono tutti conseguenze dirette dell'algoritmo
+appena descritto.
 
 **Primo: i numeri si spezzano in modo irregolare, e l'aritmetica ne soffre.**
 Le fusioni si scelgono per frequenza, e le cifre non fanno eccezione. Le
-sequenze numeriche comuni in un corpus web (gli anni recenti, i numeri tondi,
-`100`, `000`, le cifre singole) diventano token unici; quelle rare no. Il
-risultato è che un numero non viene spezzato secondo il suo *valore
-posizionale*, cioè in unità, decine, centinaia, ma secondo la frequenza delle
-sue sottostringhe: numeri di lunghezza uguale possono ricevere segmentazioni
-di forma completamente diversa, e la stessa cifra può trovarsi ogni volta in un
-token diverso. Chiedere a un modello di sommare due numeri lunghi significa
-chiedergli di allineare colonne che nella sua rappresentazione non sono
-allineate. Non spiega da solo tutti gli errori di calcolo dei modelli, ma è un
-contributo strutturale e riconosciuto: tanto che vari tokenizzatori recenti
-forzano la segmentazione delle cifre, una per una o a gruppi fissi di tre,
-proprio per restituire al modello una griglia regolare.
+sequenze numeriche comuni sul web (gli anni recenti, i numeri tondi, `100`,
+`000`, le cifre singole) si guadagnano un token tutto loro; quelle rare no.
+
+Il guaio si vede con due numeri quasi uguali. Su un corpus in cui `2024` è
+frequentissimo e `2025` meno, il primo può uscire come **un token solo** e il
+secondo come **due**, `20` e `25`. Due numeri della stessa lunghezza, tagliati
+in modo diverso, e la cifra `2` che nel primo caso sta dentro un pezzo unico e
+nel secondo apre il pezzo `20`. Adesso pensate a come si fa una somma in
+colonna a scuola: si incolonnano le unità sotto le unità, le decine sotto le
+decine. Chiedere a un modello di sommare due numeri lunghi significa
+chiedergli di incolonnare cifre che nella sua rappresentazione non sono
+incolonnate affatto, perché è stato tagliato tutto secondo la frequenza e non
+secondo il posto che ogni cifra occupa. Non spiega da solo tutti gli errori di
+calcolo dei modelli, ma è un contributo strutturale e riconosciuto: tanto che
+vari tokenizzatori recenti forzano la segmentazione delle cifre, una per una o
+a gruppi fissi di tre, proprio per restituire al modello una griglia regolare.
 
 **Secondo: l'italiano costa più token dell'inglese, a parità di significato.**
 
 ```{figure} ../figures/italiano-costa-piu-token.svg
 :name: fig-italiano-token
-:alt: "La stessa frase scritta in inglese e in italiano, con i confini di token marcati sopra ciascuna. Nella versione inglese le parole restano quasi tutte intere e i token sono pochi; nella versione italiana molte parole risultano spezzate in due o tre pezzi, e il conto totale dei token è sensibilmente più alto."
+:alt: "La stessa frase scritta in inglese e in italiano, una sopra l'altra, con i confini fra un token e l'altro marcati sopra ciascuna. In inglese, «The cat is on the table», le sei parole restano sei token interi. In italiano, «Il gatto è sopra il tavolo», due parole si spezzano in due pezzi ciascuna, «gatto» in «g» e «atto» e «tavolo» in «tav» e «olo», e i token diventano otto."
 :width: 96%
 
 Stessa frase, due conti diversi. Le parole italiane si frammentano perché il
@@ -692,53 +735,68 @@ vocabolario è stato costruito su un corpus in prevalenza inglese, e i posti se
 li sono presi le sottostringhe inglesi.
 ```
 
-Come mostra {numref}`fig-italiano-token`, il costo non è metaforico, e conviene
-dire in che valuta si paga. In denaro, prima di tutto: i servizi che danno
-accesso a un modello di linguaggio fanno pagare a token, quindi la stessa
-richiesta scritta in italiano costa qualche decina di percento più della stessa
-richiesta in inglese. E poi in **finestra di contesto**, che è la quantità di
-testo che un modello riesce a tenere davanti agli occhi in una volta sola,
-misurata anch'essa in token: un documento che in inglese ci sta, in italiano
-può non starci. Anche questo è aritmetica di
-fusioni. Se il corpus su cui il tokenizzatore è
-stato addestrato è in prevalenza inglese, le fusioni che "pagano" sono le
-sottostringhe inglesi, e i posti nel vocabolario finiscono lì. Le parole
-italiane vengono allora ricostruite con pezzi presi in prestito, e si
-frammentano. Si aggiunge un secondo effetto, indipendente e cumulativo: le
-lingue morfologicamente ricche moltiplicano le forme. *Gatto*, *gatta*,
-*gatti*, *gatte*, *gattino*, *gattini* sono sei parole distinte da imparare, e
-ognuna singolarmente più rara del corrispondente inglese *cat*, che sta al
-posto di quasi tutte. Più rara vuol dire meno probabile che meriti un token
-suo. Le conseguenze sono concrete e tutte nella stessa direzione: lo stesso
-testo occupa più posti nella finestra di contesto, costa di più dove si paga a
-token, e fa lavorare di più l'attenzione. Quest'ultima in modo non lineare: se
-una lingua consuma il 50% di token in più, il costo quadratico dell'attenzione
-su quel testo cresce di $1{,}5^2 = 2{,}25$ volte. È una disparità che non
-nasce da una scelta contro l'italiano, ma dalla composizione di un corpus, e
-che si corregge solo addestrando il tokenizzatore su dati più bilanciati.
+Come mostra {numref}`fig-italiano-token`, il costo non è metaforico. Nasce da
+due cause indipendenti che tirano nella stessa direzione.
+
+La prima è la composizione del corpus. Se il testo su cui il tokenizzatore è
+stato addestrato è in prevalenza inglese, le fusioni che «pagano» sono quelle
+inglesi, e i posti nel vocabolario finiscono lì. Alle parole italiane restano i
+pezzi avanzati, presi in prestito da altre parole, e si frammentano.
+
+La seconda è la nostra grammatica. Le lingue che declinano e coniugano tutto
+moltiplicano le forme: *gatto*, *gatta*, *gatti*, *gatte*, *gattino*,
+*gattini* sono sei parole distinte, ciascuna delle quali va imparata per conto
+suo, e ciascuna singolarmente più rara dell'inglese *cat*, che sta al posto di
+quasi tutte. Più rara vuol dire meno probabile che si meriti un token suo.
+
+E in che valuta si paga? In tre.
+
+- **In denaro.** I servizi che danno accesso a un modello di linguaggio (un
+  programma che, dato un testo, scommette su come continua: è il tema di una
+  sezione più avanti) fanno pagare un tanto a token. La stessa richiesta
+  scritta in italiano costa dunque più della stessa richiesta in inglese, e di
+  quanto dipende dal tokenizzatore: nella frase della figura sono otto token
+  contro sei, cioè un terzo in più.
+- **In posti occupati.** Un modello può tenere davanti agli occhi solo una
+  certa quantità di testo per volta, misurata anch'essa in token: è la sua
+  **finestra di contesto**. Un documento che in inglese ci sta, in italiano può
+  non starci.
+- **In lavoro.** E qui il conto non è proporzionale, per via del costo
+  quadratico dell'attenzione di cui si diceva all'inizio: se una lingua consuma
+  il 50 per cento di token in più, l'attenzione su quel testo costa
+  $1{,}5^2 = 2{,}25$ volte tanto.
+
+È una disparità che non nasce da una scelta contro l'italiano, ma dalla
+composizione di un corpus, e che si corregge solo addestrando il tokenizzatore
+su dati più bilanciati.
 
 **Terzo: uno spazio in più o in meno cambia i token.** Nei tokenizzatori
-moderni lo spazio non è un separatore invisibile, è parte del token: `▁gatto`
-e `gatto` sono due voci diverse del vocabolario, con due embedding diversi e
-due statistiche diverse. Ne segue che un **prompt** (il testo che si scrive al
-modello per farlo lavorare: una domanda, un'istruzione, l'inizio di un
-documento da completare) che finisce con uno spazio mette il modello in una
-condizione differente da uno che finisce senza, perché
-la continuazione naturale del primo è un token *senza* la barretta iniziale,
-che è la variante rara. È il motivo per cui uno spazio di troppo in coda a una
-richiesta può degradare la risposta in modo apparentemente inspiegabile, e
-perché nei programmi che completano un testo già iniziato conviene non
-lasciarne. Non è
-fragilità del modello: è che gli avete dato in ingresso una sequenza diversa
-da quella che credevate.
+moderni lo spazio non è un separatore invisibile, è attaccato al token che lo
+segue: `▁gatto` e `gatto` sono due voci diverse del vocabolario, con due
+posizioni diverse sulla mappa e due storie diverse alle spalle. La prima è
+comunissima, perché quasi sempre *gatto* è preceduto da uno spazio; la seconda
+è rara, perché ricorre solo dove *gatto* attacca senza spazio davanti, cioè
+quasi mai.
+
+Ne segue una cosa che sorprende chiunque non l'abbia mai sentita. Il testo che
+si scrive a un modello per farlo lavorare (una domanda, un'istruzione, l'inizio
+di un documento da completare) si chiama **prompt**. Se il vostro prompt
+finisce con uno spazio, quello spazio l'avete già speso voi, e al modello
+tocca continuare con un token *senza* barretta iniziale, cioè con la variante
+rara, quella su cui ha molta meno esperienza. Un solo carattere invisibile in
+coda alla richiesta, e la risposta può peggiorare senza che si capisca il
+perché. Non è fragilità del modello: è che gli avete dato in ingresso una
+sequenza diversa da quella che credevate.
 
 **Quarto: il vocabolario si fissa prima dell'addestramento e non si cambia
-dopo.** Questa è la conseguenza più vincolante, ed è architetturale. Dentro il
-modello c'è una tabella con **una riga per ogni token del vocabolario**: la
-riga contiene i numeri con cui quel pezzo di parola viene rappresentato, ed è
-quello che negli altri capitoli si chiama matrice di embedding. In uscita ce
-n'è una seconda, con **una colonna per ogni token**, che serve a decidere quale
-pezzo scrivere. Aggiungere un token al vocabolario vuol dire allora aggiungere
+dopo.** Questa è la conseguenza più vincolante, e riguarda com'è fatto il
+modello per dentro. In ingresso c'è una tabella con **una riga per ogni token
+del vocabolario**: la riga contiene i numeri con cui quel pezzo di parola viene
+rappresentato, ed è quella che nel resto del libro si chiama *matrice di
+embedding*. In uscita ce n'è una seconda che fa il lavoro opposto, e infatti è
+girata di novanta gradi: ha **una colonna per ogni token**, e serve a dare a
+ciascun pezzo un punteggio per decidere quale scrivere. Una per entrare, una
+per uscire. Aggiungere un token al vocabolario vuol dire allora aggiungere
 una riga e una colonna vuote a due tabelle che l'addestramento ha già
 riempito: numeri che nessuno ha mai regolato, in mezzo a numeri regolati per
 mesi. E cambiare la segmentazione di un token esistente è peggio, perché
@@ -765,17 +823,23 @@ quell'alfabeto ce l'aveva già mezzo pronto (i caratteri) e il lavoro è stato
 scegliere i raggruppamenti giusti.
 
 Altri segnali quell'alfabeto non ce l'hanno affatto. L'audio è un'onda
-continua, e per darla in pasto a un Transformer bisogna prima inventarsi dei
-simboli: è esattamente quello che fanno i codec neurali del capitolo
-sull'audio, dove un quantizzatore vettoriale sceglie, da un catalogo fisso di
-suoni campione, quello che somiglia di più al frammento che ha davanti, e ne
-scrive il numero di catalogo. Il problema è lo stesso di questa sezione, la
-soluzione è
-diversa perché diversa è la materia prima. E la domanda che resta aperta, in
-entrambi i casi, è se il testo e il suono debbano davvero passare per dei
-simboli, o se un giorno i modelli lavoreranno direttamente sui byte grezzi.
-Per ora la risposta è economica più che teorica: i simboli accorciano le
-sequenze, e la lunghezza delle sequenze è ciò che si paga.
+continua, e per darlo in pasto allo stesso tipo di modello bisogna prima
+inventarsi dei simboli. Il modo è più semplice di quanto sembri: ci si prepara
+un catalogo fisso di frammenti sonori campione, diciamo mille, e poi si scorre
+la registrazione un pezzetto alla volta, si cerca nel catalogo il campione che
+somiglia di più a quello che si ha davanti, e al posto del suono si scrive il
+suo numero di catalogo. L'onda diventa così una fila di numeri fra mille, cioè
+un testo in un alfabeto di mille lettere. Questo mestiere ha un nome che
+incontrerete nel capitolo sull'audio, ed è il **codec neurale**; il pezzo che
+sceglie il campione più vicino si chiama *quantizzatore vettoriale*. Il
+problema è lo stesso di questa sezione, la soluzione è diversa perché diversa è
+la materia prima.
+
+E la domanda che resta aperta, in entrambi i casi, è se il testo e il suono
+debbano davvero passare per dei simboli, o se un giorno i modelli lavoreranno
+direttamente sui byte grezzi. Per ora la risposta è economica più che teorica:
+i simboli accorciano le sequenze, e la lunghezza delle sequenze è ciò che si
+paga.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
@@ -797,12 +861,13 @@ sequenze, e la lunghezza delle sequenze è ciò che si paga.
   (indispensabile per cinese e giapponese, che gli spazi non li usano) e il
   testo si ricompone identico. Sotto i caratteri ci sono i **byte**, che sono
   256 comunque vada: partendo da lì non resta fuori più niente, mai.
-- Le conseguenze si toccano con mano: **i numeri** vengono spezzati a casaccio
-  e i conti ne soffrono; **l'italiano costa più token dell'inglese**, cioè più
-  soldi e più posto occupato nella memoria di lavoro del modello; **uno spazio
-  di troppo** in fondo a una richiesta cambia davvero la domanda; e il
-  vocabolario, una volta scelto, **non si cambia più**, perché fa parte del
-  modello quanto i numeri che ha imparato.
+- Le conseguenze si toccano con mano: **i numeri** vengono spezzati secondo la
+  frequenza e non secondo il posto delle cifre, e i conti ne soffrono;
+  **l'italiano costa più token dell'inglese**, cioè più soldi e più posti
+  occupati nella finestra di contesto; **uno spazio di troppo** in fondo a una
+  richiesta cambia davvero la domanda; e il vocabolario, una volta scelto,
+  **non si cambia più**, perché fa parte del modello quanto i numeri che ha
+  imparato.
 ```
 `````
 

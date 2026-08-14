@@ -31,7 +31,8 @@ pezzetti di audio ai pochi caratteri del testo.
 `````
 
 `````{tab} Superiore
-Abbiamo un input $X = (x_1, \dots, x_T)$ di $T$ frame e un target
+Abbiamo un input $\mathbf{X} = (\mathbf{x}_1, \dots, \mathbf{x}_T)$ di $T$
+frame e un target
 $y = (y_1, \dots, y_U)$ di $U$ token (caratteri o sotto-parole): è la
 trascrizione che nella panoramica chiamavamo $W$, vista qui come sequenza di
 simboli. Con $T \gg U$, l'allineamento è **monotono** (l'audio scorre in
@@ -84,6 +85,18 @@ indovinarlo: li considera tutti insieme, somma le probabilità di quelli che
 danno la trascrizione corretta, e spinge la rete ad alzare quel totale. Come
 lo alzi (spostando i voti su un modo o sull'altro) sono affari suoi. Nota il
 trucco del vuoto: senza il ∅ in mezzo, le due «L» si fonderebbero in una sola.
+
+I modi sono tanti anche per una parola di cinque lettere: sui sette frame del
+disegno sono undici, e sui cinquanta che «palla» occupa davvero sono quasi
+ventiquattro miliardi. Sommarli tutti sembra un lavoro impossibile, e invece
+si fa in fretta, perché i modi che cominciano allo stesso modo si possono
+contare una volta sola.
+
+C'è però un prezzo, e fra qualche pagina conterà. La rete vota un frame alla
+volta, e ogni voto lo dà guardando il suono e nient'altro: non si rilegge mai
+quello che ha già scritto. Non sa, cioè, che dopo «c-a-n» in italiano viene
+molto più facilmente una «e» che una «q». È un'ignoranza che le costerà cara, e
+a cui qualcun altro dovrà rimediare al posto suo.
 `````
 
 `````{tab} Superiore
@@ -91,29 +104,35 @@ La probabilità di una trascrizione $y$ è la somma su tutti i percorsi
 frame-level $\pi$ che, collassati, la producono:
 
 $$
-p(y \mid X) = \sum_{\pi \,\in\, \mathcal{B}^{-1}(y)}
-\prod_{t=1}^{T} p_t(\pi_t \mid X),
+p(y \mid \mathbf{X}) = \sum_{\pi \,\in\, \mathcal{B}^{-1}(y)}
+\prod_{t=1}^{T} p_t(\pi_t \mid \mathbf{X}),
 $$
 
 dove $\pi = (\pi_1, \dots, \pi_T)$ è un allineamento a livello di frame,
-$p_t(\pi_t \mid X)$ è la probabilità che la rete assegna al simbolo $\pi_t$ al
-frame $t$, e $\mathcal{B}$ è la funzione di collasso. La somma ha un numero
-esponenziale di termini, ma si calcola in tempo $O(T \cdot U)$ (lineare nella
+$p_t(\pi_t \mid \mathbf{X})$ è la probabilità che la rete assegna al simbolo
+$\pi_t$ al frame $t$, e $\mathcal{B}$ è la funzione di collasso. Quanti sono i
+termini si conta con la stessa formula, mettendo tutte le $p_t$ a uno: per
+`PALLA` sono undici sui sette frame della figura, mille e uno su dieci frame,
+quasi ventiquattro miliardi sui cinquanta che quella parola occupa davvero. La
+somma si calcola comunque in tempo $O(T \cdot U)$ (lineare nella
 lunghezza dell'audio, a trascrizione fissata) con l'algoritmo di
 programmazione dinamica *forward-backward*, che lavora sul reticolo dei
 $2U+1$ simboli della trascrizione estesa con i blank. Si addestra minimizzando
-$\mathcal{L} = -\log p(y \mid X)$.
+$\mathcal{L} = -\log p(y \mid \mathbf{X})$.
 
 Due limiti strutturali, e sono conseguenze dirette della formula. Il primo: la
-CTC emette esattamente un simbolo per frame, quindi $\mathcal{B}^{-1}(y)$ è
-vuoto appena $U > T$, e per una parola con due lettere uguali di fila serve
-almeno un frame in più per il vuoto che le separa (`PALLA` sta in sette frame,
-non in cinque). È il motivo per cui il metodo serve all'ascolto e non alla
+CTC emette esattamente un simbolo per frame, quindi i frame devono bastare, e
+la soglia è $T \ge U + r$, dove $r$ conta le coppie di simboli uguali
+consecutivi in $y$, ciascuna delle quali vuole in mezzo un vuoto che la
+separi; sotto quella soglia $\mathcal{B}^{-1}(y)$ è l'insieme vuoto e la loss
+non è nemmeno definita. `PALLA` ha $U = 5$ e $r = 1$: in cinque frame non ci
+sta, in sei ci sta in un modo solo (`P A L ∅ L A`), e da lì in poi i modi si
+moltiplicano. È il motivo per cui il metodo serve all'ascolto e non alla
 sintesi vocale, dove il testo in ingresso è più corto del suono in uscita
 {cite}`graves2012sequence`. Il secondo, il più citato: nel prodotto non compare
 nessun fattore della forma $p(y_u \mid y_{<u})$, cioè le predizioni ai vari
-frame sono **condizionatamente indipendenti** dato $X$. Non è che la CTC
-modelli «non bene» le dipendenze fra i caratteri in uscita: non ha il posto
+frame sono **condizionatamente indipendenti** dato $\mathbf{X}$. Non è che la
+CTC modelli «non bene» le dipendenze fra i caratteri in uscita: non ha il posto
 dove metterle. Torneremo su questo punto parlando del modello di linguaggio,
 perché è di lì che discende tutto il resto.
 `````
@@ -123,7 +142,7 @@ perché è di lì che discende tutto il resto.
 Fin qui abbiamo detto come si **addestra** un modello CTC, non come gli si fa
 scrivere una frase. Sono due cose diverse, e la differenza è più grossa di
 quanto sembri: il passaggio dai voti della rete alla trascrizione si chiama
-**decodifica**, ed è un capitolo a sé.
+**decodifica**, ed è una storia a sé.
 
 Il modo ovvio è prendere, frame per frame, il simbolo che ha ricevuto il voto
 più alto, e poi collassare la sequenza. Si chiama decodifica del **percorso
@@ -154,7 +173,8 @@ silenzio; sommando come fa la CTC, la risposta è «A».
 Non è un caso costruito ad arte: succede ogni volta che una trascrizione è
 sostenuta da tanti percorsi mediocri e un'altra da un percorso solo, molto
 convinto. E succede più spesso di quanto si creda, perché di percorsi che
-danno la stessa parola ce ne sono a milioni.
+danno la stessa parola ce ne sono a miliardi, come abbiamo appena contato per
+«palla».
 
 `````
 
@@ -163,22 +183,30 @@ danno la stessa parola ce ne sono a milioni.
 Il *best path* massimizza il singolo allineamento,
 
 $$
-\pi^{*} = \arg\max_{\pi} \prod_{t=1}^{T} p_t(\pi_t \mid X),
+\pi^{*} = \arg\max_{\pi} \prod_{t=1}^{T} p_t(\pi_t \mid \mathbf{X}),
 \qquad \hat{y} = \mathcal{B}(\pi^{*}),
 $$
 
 mentre l'obiettivo che il modello è stato addestrato a massimizzare è
-$\arg\max_y p(y \mid X)$, cioè la **somma** su $\mathcal{B}^{-1}(y)$. Le due
+$\arg\max_y p(y \mid \mathbf{X})$, cioè la **somma** su
+$\mathcal{B}^{-1}(y)$. Le due
 quantità sono diverse perché $\mathcal{B}$ non è iniettiva: molti percorsi
 cadono sulla stessa etichettatura, e la loro massa può battere il massimo
 puntuale. Con l'esempio a $T = 2$ della scheda accanto,
 $p(\varnothing\varnothing) = 0{,}36$ contro $p(\texttt{A}) = 0{,}64$.
 
 Graves e colleghi lo scrivono già nel paper del 2006
-{cite}`graves2006connectionist`, dedicandoci una sezione: il *best path* non
-garantisce di trovare l'etichettatura più probabile, e per l'$\arg\max$ esatto
-non si conosce un algoritmo trattabile in generale. Si approssima quindi con
-una ricerca a fascio.
+{cite}`graves2006connectionist`, nella sezione in cui costruiscono il
+classificatore: per l'$\arg\max$ esatto «non conosciamo un algoritmo di
+decodifica trattabile in generale», e il *best path*, che è l'alternativa
+gratuita, non garantisce di trovare l'etichettatura più probabile. Il rimedio
+che propongono è la *prefix search decoding*, che lavora sui **prefissi**
+invece che sui percorsi e, dato tempo a sufficienza, l'etichettatura più
+probabile la trova davvero; il tempo però non basta quasi mai, perché il
+numero di prefissi da espandere cresce esponenzialmente con la lunghezza
+dell'audio. Quella che si usa oggi è la sua versione con il freno a mano: una
+ricerca a fascio sui prefissi, che di prefissi ne tiene aperti $k$ e getta gli
+altri.
 
 `````
 
@@ -198,9 +226,9 @@ modello di linguaggio, che a ogni passo della ricerca aggiunge il proprio
 giudizio al punteggio, e la lista delle prime $n$ ipotesi, che la ricerca
 produce come sottoprodotto e che si può riordinare a posteriori.
 
-Il conto della scheda si rifà in dieci righe, ed è il modo più rapido di
-convincersene (chi non programma può saltare il riquadro: fa esattamente i
-conti della tabella qui sopra).
+Il conto della scheda si rifà enumerando i quattro percorsi, ed è il modo più
+rapido di convincersene (chi non programma può saltare il riquadro: fa
+esattamente i conti della tabella qui sopra).
 
 ```python
 import itertools
@@ -266,10 +294,12 @@ di ciò che ha sentito. Il modello fa lo stesso: genera un carattere, si
 
 `````{tab} Superiore
 Al passo $i$ il decoder costruisce un vettore di contesto come media pesata
-degli stati dell'encoder $h_j$:
+degli stati dell'encoder $\mathbf{h}_j$ (è la stessa formula dell'attenzione
+di Bahdanau vista nella traduzione automatica, con l'audio al posto della
+frase sorgente):
 
 $$
-c_i = \sum_{j=1}^{T_{\text{enc}}} \alpha_{ij}\,h_j,
+\mathbf{c}_i = \sum_{j=1}^{T_{\text{enc}}} \alpha_{ij}\,\mathbf{h}_j,
 \qquad \sum_j \alpha_{ij} = 1,
 $$
 
@@ -304,7 +334,11 @@ ascoltato tutto, e per giunta può perdere il segno. Nella pratica quella
 scelta non esiste, perché esiste una terza famiglia che tiene le due cose
 insieme: il **trasduttore neurale** (in sigla RNN-T), proposto da Alex Graves
 nel 2012 {cite}`graves2012sequence`, cioè da chi aveva scritto la CTC sei anni
-prima.
+prima. Quella data va guardata: il trasduttore non arriva *dopo* i modelli con
+attenzione per rimediare ai loro difetti, li precede di tre anni (*Listen,
+Attend and Spell* è del 2015 e arriva in conferenza l'anno dopo). È nato dal
+lato della CTC, per togliere alla CTC il difetto che il suo autore le
+conosceva meglio di chiunque.
 
 `````{tab} Elementare
 
@@ -325,25 +359,34 @@ senza mai dimenticare quello che ha già messo giù.
 `````{tab} Superiore
 
 Il trasduttore accoppia tre reti: un *encoder* (o *transcription network*) che
-produce $h_t$ dai frame acustici, una *prediction network* che produce $g_u$
-dai soli token già emessi $y_{<u}$, e una piccola *joint network* che fonde le
-due e proietta sul vocabolario esteso col vuoto,
+produce $\mathbf{h}_t$ dai frame acustici, una *prediction network* che produce
+$\mathbf{g}_u$ dai soli token già emessi $y_{<u}$, e una piccola *joint
+network* che fonde le due e proietta sul vocabolario esteso col vuoto,
 
 $$
-p(k \mid t, u) = \mathrm{softmax}\big(W\,\phi(h_t + g_u)\big).
+p(k \mid t, u) =
+\mathrm{softmax}\big(\mathbf{W}\,\phi(\mathbf{h}_t + \mathbf{g}_u)\big),
 $$
+
+dove $k$ è il simbolo candidato, $\phi$ una non linearità (di solito una
+tangente iperbolica) e $\mathbf{W}$ la proiezione sul vocabolario. Nella
+formulazione originale del 2012 le due reti si sommavano direttamente nello
+spazio delle uscite; la *joint network* con la non linearità in mezzo è la
+forma che si è imposta dopo, ed è quella che si trova nelle librerie.
 
 Lo spazio degli allineamenti non è più una sequenza di $T$ etichette ma un
 reticolo $T \times U$: emettere un token muove di uno in verticale, emettere il
 vuoto muove di uno in orizzontale, e ogni cammino monotono dall'angolo in basso
 a sinistra a quello in alto a destra è un allineamento valido. La probabilità
 della trascrizione è ancora la somma su tutti i cammini, calcolata con lo
-stesso forward-backward della CTC, e la loss è ancora $-\log p(y \mid X)$.
+stesso forward-backward della CTC, e la loss è ancora
+$-\log p(y \mid \mathbf{X})$.
 
 Due conseguenze, ed è tutto il punto. La prediction network è a tutti gli
 effetti un modello di linguaggio interno, condizionato sui token già emessi:
 il trasduttore modella cioè le dipendenze uscita-uscita che la CTC non ha dove
-mettere. E $h_t$ dipende solo dai frame fino a $t$ (con un encoder causale),
+mettere. E $\mathbf{h}_t$ dipende solo dai frame fino a $t$ (con un encoder
+causale),
 quindi la decodifica è frame-sincrona e non ha bisogno della fine dell'audio:
 si trascrive mentre si ascolta.
 
@@ -352,18 +395,18 @@ si trascrive mentre si ascolta.
 Non è un'architettura di nicchia: è quella su cui gira, dal 2019, la dettatura
 in tempo reale sui telefoni {cite}`he2019streaming`, dove la risposta deve
 arrivare mentre si parla e il modello deve stare dentro un dispositivo. Vale la
-pena tenerlo a mente nella prossima sezione, quando parleremo di che cosa oggi
-serva davvero la vecchia catena a stadi.
+pena tenerlo a mente fra qualche pagina, quando ci chiederemo a che cosa serva
+ancora, oggi, la vecchia catena a stadi.
 
 ## Whisper e i Transformer end-to-end
 
 Nel settembre 2022 OpenAI rilascia **Whisper**: un unico Transformer
-encoder-decoder che riceve lo spettrogramma log-mel e produce direttamente il
-testo.
+encoder-decoder che riceve lo spettrogramma log-mel (l'immagine a bande del
+suono, misurata come la sente l'orecchio) e produce direttamente il testo.
 
 ```{figure} ../figures/come-funziona-whisper.svg
 :name: fig-whisper
-:alt: "Catena in cinque stadi: l'onda sonora in ingresso diventa uno spettrogramma, che entra in un encoder Transformer; l'uscita dell'encoder alimenta un decoder, che emette i token di testo uno dopo l'altro. Non ci sono moduli separati per il dizionario di pronuncia o per il modello di linguaggio."
+:alt: "Catena di quattro blocchi in fila: l'onda sonora in ingresso, campionata sedicimila volte al secondo, diventa uno spettrogramma log-Mel (tempo per frequenza), che entra in un encoder Transformer; l'uscita dell'encoder alimenta un decoder autoregressivo, e sotto il decoder escono i token di testo uno dopo l'altro, «⟨it⟩ Buon giorno». Non ci sono moduli separati per il dizionario di pronuncia o per il modello di linguaggio."
 :width: 96%
 
 La catena di Whisper, tutta qui. Fra lo spettrogramma e il testo non c'è
@@ -382,11 +425,14 @@ rete, scritte da qualcuno per altri scopi e non per addestrare un modello.
 «Debole» non vuol dire «non curata»: gli autori le ripuliscono con filtri
 automatici (via quelle prodotte da altri riconoscitori, via le coppie in cui
 la lingua parlata non è quella scritta, via i duplicati) e ispezionano a mano
-le fonti che sbagliano di più, buttandole. Il materiale raccolto sfiora il
-centinaio di lingue; quelle su cui il modello impara davvero a trascrivere
-sono una settantina, e non sono servite allo stesso modo: l'inglese ha due
-terzi di quelle ore, e da lì viene buona parte del divario di qualità che si
-sente passando all'italiano. Con lo stesso modello Whisper
+le fonti che sbagliano di più, buttandole. Il materiale sfiora il centinaio di
+lingue (l'inglese e altre novantasei), ma non le serve allo stesso modo:
+l'inglese si prende due terzi di quelle ore, e la maggior parte delle altre
+sta sotto le mille. Da lì viene il divario di qualità che si sente passando
+all'italiano, e gli autori ne misurano la regola: il tasso di errore si
+dimezza ogni volta che le ore di una lingua si moltiplicano per sedici. Non è
+una classifica fra lingue, è una legge di scala, e dice quanto costa fare
+meglio. Con lo stesso modello Whisper
 trascrive, traduce verso l'inglese e riconosce la lingua, guidato da istruzioni
 speciali (in gergo *token* speciali, cioè simboli che non si pronunciano)
 inserite nel decoder.
@@ -396,11 +442,12 @@ una distinzione che vale la pena tenere. La grandezza che misurano è la
 robustezza *zero-shot*: senza essere mai stato addestrato su un certo
 benchmark, Whisper vi si comporta meglio di quanto la sua accuratezza altrove
 lascerebbe prevedere, e degrada più lentamente man mano che si alza il rumore
-di fondo (con poco rumore i modelli specializzati lo battono ancora). È una
+di fondo (nel confronto del paper, sull'audio pulito, i modelli addestrati
+apposta per quel benchmark restavano davanti). È una
 misura di *quanto si peggiora fuori casa*, non di quanto si è bravi. E ha un
 fianco scoperto, che il paper dichiara: i dati vengono dal web, dove stanno
 anche i benchmark, e il controllo delle sovrapposizioni è stato fatto su un
-solo dataset e sulle trascrizioni, non sull'audio.
+solo dataset (TED-LIUM 3) e sulle trascrizioni, non sull'audio.
 
 Non è però Whisper ad aver mandato in pensione la catena a stadi: il passaggio
 a una rete sola era cominciato anni prima, con la CTC e con i modelli ad
@@ -456,10 +503,12 @@ come Whisper o come LAS, un modello di linguaggio ce l'ha già dentro: lo ha
 imparato senza volerlo, perché genera ogni token guardando quelli che ha già
 scritto. Per lui un LM esterno è un accessorio, utile sui termini rari o di
 dominio (nomi propri, sigle, gergo medico) e poco altro. Un modello CTC no, ed
-è esattamente il contrario: l'indipendenza condizionale fra i frame gli vieta
-per costruzione di modellare il testo in uscita, quindi un modello di
-linguaggio interno **non ce l'ha**. Per lui il LM esterno non è un
-miglioramento marginale: è il pezzo che gli manca, e senza di quello i
+è esattamente il contrario: decide ogni frame per conto suo, guardando il
+suono e mai le lettere che ha già scritto (è l'indipendenza condizionale di
+cui sopra), e questo gli vieta per costruzione di modellare il testo in
+uscita: un modello di linguaggio interno **non ce l'ha**. Per lui il LM
+esterno non è un miglioramento marginale: è il pezzo che gli manca, e senza di
+quello i
 caratteri escono quasi giusti ma sparpagliati su parole che non esistono. Il
 trasduttore sta in mezzo, e ora si capisce perché: la sua *prediction network*
 è il modello di linguaggio interno che alla CTC mancava.
@@ -553,8 +602,9 @@ Tiriamo le fila, ciascuno al proprio livello.
   {cite}`graves2012sequence` tiene il reticolo monotono e ci aggiunge una
   *prediction network*, cioè un LM interno.
 - **Addestramento e decodifica non sono la stessa cosa**: il *best path* non
-  massimizza $p(y \mid X)$, e la beam search del CTC **somma** i percorsi che
-  collassano nello stesso prefisso invece di metterli in concorrenza.
+  massimizza $p(y \mid \mathbf{X})$, e la beam search del CTC **somma** i
+  percorsi che collassano nello stesso prefisso invece di metterli in
+  concorrenza.
 - I Transformer end-to-end come **Whisper** {cite}`radford2022robust`
   uniscono tutto in un solo modello multilingue; la loro robustezza è
   *zero-shot*, cioè relativa, e i loro loop nascono dall'allineamento

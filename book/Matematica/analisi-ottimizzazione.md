@@ -54,8 +54,10 @@ che cerchiamo quando vogliamo minimizzare una loss.
 
 ## Le derivate che tornano di continuo
 
-In pratica non calcoliamo mai il limite a mano: bastano poche regole. E tre
-famiglie di funzioni compaiono ovunque nel machine learning.
+Nessuno, in pratica, va a misurare la pendenza punto per punto: per le funzioni
+che si incontrano di solito la derivata si ricava da poche regole, imparate una
+volta e riusate sempre, come le tabelline. E tre famiglie di funzioni compaiono
+ovunque nel machine learning.
 
 `````{tab} Elementare
 
@@ -67,11 +69,12 @@ una presentazione, perché ritornano in tre sezioni di questo capitolo e poi in
 mezzo libro.
 
 **Il logaritmo è la domanda inversa dell'elevamento a potenza.** Se
-l'elevamento chiede «quanto fa $2$ moltiplicato per sé stesso $3$ volte?»
-(risposta: $8$), il logaritmo chiede «quante volte devo moltiplicare $2$ per
-sé stesso per arrivare a $8$?», e la risposta è $3$. Si scrive $\log_2 8 = 3$,
-e quel $2$ in basso si chiama *base*. Con la base $10$ è ancora più
-immediato: $\log_{10} 1000 = 3$, perché $1000$ è $10\times10\times10$. Due
+l'elevamento chiede «quanto fa $2^3$, cioè $2\times2\times2$?» (risposta:
+$8$), il logaritmo chiede la stessa cosa dall'altro capo: «quanti $2$ devo
+moltiplicare fra loro per arrivare a $8$?», e la risposta è $3$. Si scrive
+$\log_2 8 = 3$, e quel $2$ in basso si chiama *base*. Con la base $10$ è
+ancora più immediato: $\log_{10} 1000 = 3$, perché $1000$ è
+$10\times10\times10$. Due
 cose lo rendono prezioso, e sono le sole che servono qui. La prima: **schiaccia
 i numeri enormi**. Fra $1000$ e $1\,000\,000$ ci sono novecentonovantanovemila
 unità di differenza, ma fra i loro logaritmi ce ne sono tre: è il motivo per
@@ -88,10 +91,12 @@ particolare che si usa quasi sempre. Quel simbolo $e$ non è una variabile: è
 un numero fisso, $e \approx 2{,}718$, come $\pi$ vale $3{,}14$. Vale la pena
 sapere da dove salta fuori, perché non è arbitrario: fra tutte le curve di
 crescita, $e^x$ è quella che in ogni punto **cresce esattamente quanto vale**.
-Se in un certo istante vale $5$, sta salendo con pendenza $5$. È il modo
-matematico di dire «raddoppia sempre allo stesso ritmo», e descrive gli
-interessi composti, la crescita di una popolazione e il decadimento di una
-sostanza. Nel libro compare dentro due funzioni che incontrerai presto, la
+Se in un certo istante vale $5$, sta salendo con pendenza $5$; quando vale
+$10$, sale il doppio più in fretta. Da qui viene la proprietà per cui la si
+usa: in intervalli di tempo uguali una crescita così non aggiunge ogni volta
+la stessa quantità, la **moltiplica** ogni volta per lo stesso fattore. È il
+comportamento degli interessi composti, della crescita di una popolazione e,
+letto al contrario, del decadimento di una sostanza. Nel libro compare dentro due funzioni che incontrerai presto, la
 **sigmoide** e la **softmax**: due ricette che prendono i punteggi grezzi
 sputati da un modello (numeri qualsiasi, anche negativi) e li rimettono in
 riga come probabilità, cioè numeri fra zero e uno che sommati fanno uno. Il
@@ -146,19 +151,25 @@ ogni anello unisce i punti in cui il modello sbaglia allo stesso modo, e il
 centro è il fondo della conca. Il **gradiente** disegnato sopra è la freccia
 che in ogni punto indica dove il terreno sale più ripido (nel disegno compare
 col segno meno, $-\nabla\mathcal{L}$, perché per scendere si va nel verso
-opposto: il tridente rovesciato $\nabla$ è il simbolo che lo indica, si legge
+opposto: il triangolino capovolto $\nabla$ è il simbolo che lo indica, si legge
 «nabla»). Quella freccia taglia sempre ad angolo retto l'anello su cui si
 trova.
 ```
 
-La perpendicolarità visibile in {numref}`fig-curve-di-livello` non è un
-dettaglio grafico ma una **conseguenza** della definizione che daremo fra
-poco: lungo una curva di livello il costo, per costruzione, non cambia, quindi
-in quella direzione la sua variazione è nulla, e la direzione di massima
-variazione non può che esserle ortogonale. Ed è la stessa perpendicolarità a
-spiegare perché il percorso zigzaghi quando la conca, invece di essere tonda,
-si allunga in una valle stretta: la direzione più ripida punta verso il fianco
-più vicino, non verso il fondo.
+Quell'angolo retto di {numref}`fig-curve-di-livello` non è un vezzo del
+disegnatore, ed è utile capire da dove viene. Camminare lungo un anello vuol
+dire, per definizione dell'anello, restare alla stessa quota: in quella
+direzione il costo non cambia di niente. La direzione in cui il costo cambia
+*di più* è dunque la più lontana possibile da quella, e sul piano la più
+lontana possibile da una direzione è quella a novanta gradi. Ecco perché la
+freccia esce sempre perpendicolare all'anello (chi preferisce la parola tecnica
+la trova come «ortogonale»: vuol dire la stessa cosa).
+
+È lo stesso angolo retto a spiegare un fastidio che si incontra sempre. Se la
+conca invece di essere tonda si allunga in una valle stretta, gli anelli
+diventano ovali schiacciati, e la perpendicolare a un ovale schiacciato punta
+verso il fianco vicino, non verso il fondo lontano. Il percorso allora
+zigzaga da una parete all'altra e avanza poco.
 
 `````{tab} Elementare
 
@@ -234,22 +245,33 @@ composte.
 :alt: "In alto una catena di funzioni annidate: x entra in f, l'uscita di f entra in g, quella di g entra in h e si arriva alla loss. In basso il percorso inverso: a ogni anello è associata la sua derivata locale, f primo uguale 2, g primo uguale 3, h primo uguale 0,5, e le tre si moltiplicano fra loro dando una derivata totale di 3. Una nota chiude: ogni anello conosce solo il proprio tratto, il prodotto conosce la catena intera."
 :width: 92%
 
-La regola della catena in un numero. Nessun anello sa dove porti la catena:
-conosce solo quanto amplifica ciò che gli arriva, e il prodotto di quegli
-effetti locali dà l'effetto complessivo.
+La regola della catena in un numero. Le tre funzioni si chiamano $f$, $g$ e
+$h$, e l'apostrofo accanto al nome (si legge «f primo») è il modo consueto di
+indicare la derivata di quella funzione: $f' = 2$ vuol dire che quel tratto
+di catena amplifica per due. Nessun anello sa dove porti la catena: conosce
+solo quanto amplifica ciò che gli arriva, e il prodotto di quegli effetti
+locali dà l'effetto complessivo.
 ```
 
-L'ultima riga di {numref}`fig-regola-catena` è tutto il backpropagation in
-una frase. Il calcolo si può fare localmente, anello per anello, senza che
-nessuno abbia in testa la funzione intera: è questo che rende derivabile una
-rete da milioni di parametri con lo stesso sforzo per ogni peso.
+L'ultima riga di {numref}`fig-regola-catena` riassume tutto in una frase.
+Il calcolo si può fare localmente, anello per anello, senza che nessuno abbia
+in testa la funzione intera, ed è questo che rende derivabile una rete da
+milioni di parametri con lo stesso sforzo per ogni peso. La procedura che lo fa
+ha un nome che si incontra ovunque, ed è quello che compare fra due righe: si
+chiama *backpropagation*, cioè «propagazione all'indietro».
 
 `````{tab} Elementare
 
 Immagina tre ingranaggi: A muove B, B muove C. Se A gira due volte più in
 fretta di B, e B una volta e mezza più in fretta di C, allora A gira rispetto
-a C di $2 \times 1{,}5 = 3$ volte. Le pendenze lungo la catena si
-**moltiplicano**. Il *backpropagation* è esattamente questo: moltiplicare le
+a C di $2 \times 1{,}5 = 3$ volte. Gli effetti lungo la catena si
+**moltiplicano**.
+
+E un ingranaggio è una derivata travestita, perché «quanti giri fa B per ogni
+giro di A» è esattamente la domanda della derivata: *se muovo un po'
+l'ingresso, di quanto si muove l'uscita?* Sostituendo agli ingranaggi gli
+strati di una rete, la conclusione è la stessa: le pendenze si moltiplicano una
+dopo l'altra. Il *backpropagation* è questo e nient'altro: moltiplicare le
 pendenze strato per strato, partendo dall'uscita e risalendo verso l'ingresso.
 
 `````
@@ -267,19 +289,21 @@ $$
 il prodotto tra la pendenza della funzione esterna $f$ (valutata in $g(w)$) e
 quella della funzione interna $g$. In una rete profonda la catena si allunga
 di un anello per strato, e le derivate si moltiplicano una dopo l'altra. Il
-**backpropagation** {cite}`rumelhart1986learning` applica questa regola in
+**backpropagation** applica questa regola in
 ordine inverso (dall'uscita agli ingressi) riutilizzando i fattori condivisi
 tra i cammini. È ciò che permette di calcolare il gradiente rispetto a milioni
 di parametri in un'unica passata all'indietro, invece di derivare ogni peso da
-capo.
+capo {cite}`rumelhart1986learning`.
 
 `````
 
 ## La discesa del gradiente
 
-Ora abbiamo tutto: la pendenza (il gradiente) e la certezza che il fondo della
-valle è dove il costo è minimo. La ricetta è quella dell'escursionista nella
-nebbia: un passo in discesa, ricalcola, ripeti ({numref}`fig-discesa-gradiente`).
+Ora abbiamo tutto: uno strumento che dice da che parte si scende (il gradiente)
+e un posto dove si vuole arrivare, il fondo della valle, che è per l'appunto il
+punto in cui il costo è più piccolo. La ricetta è quella dell'escursionista
+nella nebbia: un passo in discesa, ricalcola, ripeti
+({numref}`fig-discesa-gradiente`).
 
 ```{figure} ../figures/discesa-gradiente.svg
 :name: fig-discesa-gradiente
@@ -360,7 +384,7 @@ moderni come Adam.
 
 `````
 
-## Minimi locali, globali e la resa del deep learning
+## Minimi locali e globali: perché al deep learning basta così
 
 La discesa del gradiente scende sempre. Ma "in fondo a cosa", esattamente?
 
@@ -449,7 +473,8 @@ for _ in range(20):
 print(round(theta, 3))              # -> 2.919, ormai vicino al minimo 3
 ```
 
-Cambia `eta` e osserva: con un valore piccolo (`0.01`) la convergenza rallenta
+Cambia `eta` e osserva: con un valore piccolo (`0.01`) l'avvicinamento al
+minimo, che in gergo si chiama **convergenza**, rallenta
 (dopo venti passi $\theta$ è a $-1{,}67$, ancora lontano); con uno troppo
 grande (`1.1`) $\theta$ **diverge** oscillando, cioè scappa via invece di
 avvicinarsi, saltando a ogni passo da una parte all'altra del minimo e sempre

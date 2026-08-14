@@ -28,18 +28,19 @@ per tutt'altro mestiere: il **gradiente**.
 
 ## Saliency maps: il gradiente come mappa di importanza
 
-Conviene ricordare in due righe che cos'è, perché tutto quel che segue ci si
-appoggia. Il gradiente di una quantità rispetto a una manopola risponde alla
-domanda: «di quanto cambia la quantità, se giro la manopola di un nulla?» (la
-parola tecnica per quel «di quanto cambia se la giro appena» è **derivata**).
-Nell'addestramento le manopole erano i pesi della rete e la quantità era
-l'errore, e girare le manopole nel verso che abbassa l'errore *è*
-l'addestramento, come si è visto nel capitolo sulle reti neurali. Adesso
-puntiamo lo stesso strumento altrove: teniamo ferme le manopole dei pesi e
-chiamiamo manopola ogni **pixel di ingresso**, mentre la quantità da guardare
-non è più l'errore, ma il punteggio che la rete assegna alla classe che ha
-predetto. Il risultato è una *saliency map*,
-proposta da Simonyan, Vedaldi e Zisserman nel 2014 {cite}`simonyan2014deep`.
+Conviene ricordare in due righe che cos'è, il gradiente, perché tutto quel che
+segue ci si appoggia. Il gradiente di una quantità rispetto a una manopola
+risponde alla domanda: «di quanto cambia la quantità, se giro la manopola di un
+nulla?». La parola tecnica per quel «di quanto cambia se la giro appena» è
+**derivata**. Nell'addestramento le manopole erano i pesi della rete e la
+quantità era l'errore, e girare le manopole nel verso che abbassa l'errore *è*
+l'addestramento, come si è visto nel capitolo sulle reti neurali.
+
+Adesso puntiamo lo stesso strumento altrove. Teniamo ferme le manopole dei pesi
+e chiamiamo manopola ogni **pixel di ingresso**; la quantità da guardare non è
+più l'errore, ma il punteggio che la rete assegna alla classe che ha predetto.
+Il risultato è una *saliency map*, proposta da Simonyan, Vedaldi e Zisserman
+nel 2014 {cite}`simonyan2014deep`.
 
 `````{tab} Elementare
 
@@ -116,26 +117,28 @@ neve, smascherando l'inganno.
 
 `````{tab} Superiore
 
-Sia $A^k \in \mathbb{R}^{u \times v}$ la $k$-esima *feature map* dell'ultimo
-strato convoluzionale e $y^c$ il punteggio della classe $c$. Grad-CAM procede in
-due mosse. Prima calcola un peso per ogni mappa, mediando spazialmente il
-gradiente della classe rispetto a quella mappa:
+Sia $\mathbf{A}^k \in \mathbb{R}^{u \times v}$ la $k$-esima *feature map*
+dell'ultimo strato convoluzionale e $y^c$ il punteggio della classe $c$.
+Grad-CAM procede in due mosse. Prima calcola un peso per ogni mappa, mediando
+spazialmente il gradiente della classe rispetto a quella mappa:
 
 $$
 \alpha_k^c = \frac{1}{Z} \sum_{i}\sum_{j}
    \frac{\partial y^c}{\partial A^k_{ij}},
 $$
 
-dove $Z = u\,v$ è il numero di posizioni (un *global average pooling* del
-gradiente). Poi combina le mappe pesate e tiene solo il contributo positivo:
+dove $A^k_{ij}$ è il valore della mappa nella posizione $(i,j)$ e $Z = u\,v$ è
+il numero di posizioni (un *global average pooling* del gradiente). Poi combina
+le mappe pesate e tiene solo il contributo positivo:
 
 $$
-L^c_{\text{Grad-CAM}} = \mathrm{ReLU}\!\left( \sum_k \alpha_k^c\, A^k \right).
+\mathbf{L}^c_{\text{Grad-CAM}} =
+   \mathrm{ReLU}\!\left( \sum_k \alpha_k^c\, \mathbf{A}^k \right).
 $$
 
 Il peso $\alpha_k^c$ misura quanto la mappa $k$ conta per la classe $c$; la
 $\mathrm{ReLU}$ scarta le regioni che *abbassano* il punteggio, tenendo solo
-quelle che lo sostengono. La heatmap $L^c$ ha la bassa risoluzione dello strato
+quelle che lo sostengono. La heatmap $\mathbf{L}^c$ ha la bassa risoluzione dello strato
 convoluzionale ($7\times 7$ in una ResNet su input $224\times 224$) e va
 sovracampionata alle dimensioni dell'immagine per la sovrapposizione. A
 differenza della saliency, non risale ai pixel: guadagna in robustezza al rumore
@@ -159,10 +162,9 @@ l'ingresso non cambia più niente, perché la rete è già convinta. Il paradoss
 che il gradiente dichiara «questo pixel non conta» proprio quando quel pixel è
 la ragione per cui la rete è così sicura.
 
-Sundararajan, Taly e Yan,
-nel 2017, hanno affrontato la questione partendo non da un'euristica ma da due
-**assiomi**: proprietà che una buona spiegazione *deve* soddisfare
-{cite}`sundararajan2017axiomatic`.
+Nel 2017 Sundararajan, Taly e Yan hanno affrontato la questione partendo non da
+un'euristica, ma da due **assiomi**, cioè da due proprietà che una buona
+spiegazione *deve* soddisfare {cite}`sundararajan2017axiomatic`.
 
 Il primo è la **sensibilità**, e va enunciato con la sua condizione, altrimenti
 dice il falso: se un ingresso e il riferimento neutro da cui si parte
@@ -181,10 +183,11 @@ Invece di misurare la pendenza solo nel punto di arrivo, immagina di partire
 da un'immagine «neutra» (di solito tutta nera, la *baseline*) e di arrivare
 piano piano all'immagine vera, mescolandole in tante tappe: 10% vera e 90%
 nera, poi 20 e 80, e così via fino al 100%. A ogni tappa ti chiedi di quanto
-cambierebbe la fiducia della rete se toccassi appena quel pixel, e alla fine
-fai la media di tutte le risposte. Così, anche se all'arrivo la rete è satura e
-non reagisce più, hai comunque registrato la sua reazione lungo tutta la
-salita, quando reagiva eccome.
+cambierebbe la fiducia della rete se toccassi appena quel pixel; alla fine fai
+la media di tutte le risposte e la moltiplichi per quanto quel pixel è cambiato
+fra la partenza e l'arrivo. Così, anche se all'arrivo la rete è satura e non
+reagisce più, hai comunque registrato la sua reazione lungo tutta la salita,
+quando reagiva eccome.
 
 Questo metodo ha una proprietà bellissima da controllare: se sommi le
 attribuzioni di tutti i pixel, ottieni esattamente *quanto* la rete è passata
@@ -287,15 +290,23 @@ la somma che si accumula, e la riga che segna dove deve arrivare.
 ```
 
 Due cose si leggono in {numref}`fig-gradienti-integrati` e non nella formula.
-La prima è **quanto** la saturazione morda: sull'esempio della figura la
-pendenza vale $3{,}76$ a un ottavo del cammino e $0{,}009$ all'ultimo ottavo,
-quattrocento volte meno. Un metodo che guardi solo il punto d'arrivo lavora su
-quel $0{,}009$, ed è la ragione per cui restituisce quasi zero anche per una
-componente che è tutta la spiegazione. La seconda è che la barra di destra si
-ferma **esattamente** sulla riga, e quella non è una coincidenza né un
-aggiustamento: è la completezza, e il fatto che valga anche con soli otto passi
-è ciò che rende la somma di Riemann un'approssimazione onesta e non una
-speranza.
+
+La prima è **quanto** la saturazione morda. Sull'esempio della figura la
+pendenza vale $3{,}76$ nel primo degli otto passi e $0{,}0088$ nell'ultimo (il
+disegno arrotonda a $0{,}01$): oltre quattrocento volte meno. Un metodo che
+guardi solo il punto d'arrivo lavora su quel numero lì, ed è la ragione per cui
+restituisce quasi zero anche per una componente che è tutta la spiegazione.
+
+La seconda è che la barra di destra si ferma sulla riga, e conviene separare
+due cose che lì sembrano una sola. Che la riga sia il posto giusto lo dice la
+completezza, ed è un teorema: l'**integrale** dei gradienti lungo il cammino fa
+esattamente $f(\mathbf{x}) - f(\mathbf{x}')$, sempre. Che ci arrivi anche una
+somma di **otto** rettangoli è un'altra faccenda, e non è garantita da nessun
+assioma: dipende dalla regola di quadratura. Presi i rettangoli sul punto
+medio, come qui, lo scarto è di $2{,}7 \cdot 10^{-5}$, meno di un centesimo di
+pixel sul disegno, e a occhio la barra tocca la riga; presi con l'altezza del bordo
+sinistro, gli stessi otto passi sbaglierebbero del $25\%$ e la barra sforerebbe
+vistosamente. Il conto torna per teorema, l'approssimazione del conto no.
 
 ## Le mappe dicono dove, non che cosa
 
@@ -322,10 +333,16 @@ semplice quanto crudele. Prendi una rete addestrata, produci la sua mappa, poi
 **cancella quello che ha imparato**: randomizza i pesi, strato per strato, e
 rifai la mappa. Se la mappa fosse una spiegazione del modello, dovrebbe
 disintegrarsi, perché il modello non c'è più. Per diversi metodi popolari, la
-mappa cambia pochissimo, e resta riconoscibile come una sagoma dell'oggetto. I
-due che abbiamo visto qui (i colpetti pixel per pixel e i faretti di Grad-CAM)
-non sono fra i bocciati; a fallire il test sono due varianti più elaborate che
-non abbiamo incontrato.
+mappa cambia pochissimo, e resta riconoscibile come una sagoma dell'oggetto.
+
+Chi passa e chi no, dei metodi visti qui, va detto senza sconti. I colpetti
+pixel per pixel e i faretti di Grad-CAM reagiscono, e il test lo superano; a
+fallirlo del tutto sono due varianti più elaborate che non abbiamo incontrato.
+Gli **Integrated Gradients** stanno in mezzo, ed è il caso più insidioso: la
+mappa cambia davvero (perfino i segni si ribaltano), ma la sagoma
+dell'ingresso resta lì, ben visibile, perché il metodo moltiplica il gradiente
+per l'ingresso. A occhio si continua a «vedere il cane» anche quando la rete
+non sa più niente.
 
 La conclusione è spiacevole e va detta: quelle mappe stavano in buona parte
 descrivendo l'**immagine**, non la rete. Somigliavano a un rilevatore di
@@ -358,32 +375,42 @@ Un metodo che superi i test deve cambiare drasticamente in entrambi i casi.
 Diversi metodi molto usati non lo fanno, e le loro mappe restano visivamente
 simili all'originale: si comportano, per usare l'espressione degli autori, come
 un rilevatore di bordi indipendente dal modello. Vale la pena nominarli, perché
-è l'informazione operativa: sono **Guided BackProp** e **Guided Grad-CAM**, che
-restano riconoscibili anche a pesi randomizzati. Metodi come le saliency
-semplici e Grad-CAM se la cavano meglio di altri, ma il punto metodologico
-resta, ed è quello che vale la pena portarsi via: **la plausibilità visiva di
-una spiegazione non è una prova della sua fedeltà**, e un occhio umano non
-distingue le due cose. Un metodo di attribuzione va sottoposto a un test che
-possa farlo fallire, esattamente come un modello.
+è l'informazione operativa. A **fallire** sono **Guided BackProp** e **Guided
+Grad-CAM**, invarianti ai pesi degli strati alti e quindi riconoscibili anche a
+rete randomizzata. A **passare** sono il gradiente semplice e Grad-CAM (il
+secondo purché la randomizzazione stia a valle dell'ultimo strato
+convoluzionale, che è il solo che Grad-CAM guardi).
+
+In mezzo stanno i metodi che moltiplicano il gradiente per l'ingresso, cioè
+**gradient $\odot$ input** e gli **Integrated Gradients**. Qui gli autori
+osservano che le mappe cambiano, e cambiano perfino di segno, ma che la
+struttura dell'ingresso resta chiaramente prevalente nelle maschere: chi
+moltiplica per l'ingresso, quando il gradiente si fa rumoroso, finisce per
+restituire soprattutto l'ingresso. È il caso più insidioso, perché il metodo
+*è* sensibile al modello e nondimeno l'occhio continua a riconoscere l'oggetto. Il punto metodologico è quello, ed è quello
+che vale la pena portarsi via: **la plausibilità visiva di una spiegazione non è
+una prova della sua fedeltà**, e un occhio umano non distingue le due cose. Un
+metodo di attribuzione va sottoposto a un test che possa farlo fallire,
+esattamente come un modello.
 
 `````
 
 Il che non rende inutili le mappe: le ricolloca. Sono strumenti di
 **esplorazione** (dove guardare, quali ipotesi formulare, quale scorciatoia
-sospettare in un dataset) e non certificati di funzionamento. La sezione
-seguente mostra che lo stesso identico dubbio, con la stessa struttura, si è
-posto per l'oggetto che sembrava metterne al riparo: i pesi di attenzione.
+sospettare in un dataset) e non certificati di funzionamento. Lo stesso
+identico dubbio, con la stessa struttura, si è posto per l'oggetto che sembrava
+metterne al riparo, ed è quello di cui parliamo adesso: i pesi di attenzione.
 
 ## L'attenzione è una spiegazione?
 
 C'è una tentazione naturale, per chi lavora con i Transformer del capitolo
-dedicato: i pesi di **attenzione** {cite}`vaswani2017attention` sono già lì,
-e sembrano dire su quali parole il modello si è
-concentrato. Vale la pena richiamare in una riga di che si tratta: per
-decidere che cosa fare di una parola, il modello distribuisce una specie di
-sguardo sulle altre parole della frase, dando a ciascuna un peso; quei pesi
-sono l'attenzione, e sommano sempre a uno, come le fette di una torta divisa
-fra tutte le parole. Perché non usarli come spiegazione, gratis?
+dedicato: i pesi di **attenzione** sono già lì, e sembrano dire su quali parole
+il modello si è concentrato {cite}`vaswani2017attention`. Vale la pena
+richiamare in una riga di che si tratta: per decidere che cosa fare di una
+parola, il modello distribuisce una specie di sguardo sulle altre parole della
+frase, dando a ciascuna un peso; quei pesi sono l'attenzione, e sommano sempre
+a uno, come le fette di una torta divisa fra tutte le parole. Perché non
+usarli come spiegazione, gratis?
 
 La comunità ci ha discusso a lungo. Nel 2019 Jain e Wallace
 {cite}`jain2019attention`, con un articolo
@@ -399,14 +426,15 @@ di **cautela**: i pesi di attenzione sono un indizio suggestivo, non una
 prova; una heatmap di attenzione va letta come una traccia, non come una
 confessione.
 
-Un'avvertenza sulla portata, però, va messa accanto al risultato, perché il
-titolo è più largo dell'esperimento: Jain e Wallace studiano **un solo strato**
-di attenzione sopra un encoder ricorrente (una BiLSTM), su compiti di
-classificazione, domanda-risposta e inferenza testuale, non l'auto-attenzione a
-più teste e più strati di un Transformer, che nel loro articolo non compare mai.
-Nel lavoro stesso, anzi, il comportamento **cambia con l'architettura**: gli
-encoder più semplici, a media pesata, si comportano meglio secondo gli stessi
-criteri. Il risultato è quindi un monito metodologico solido, non un teorema sui
+Accanto al risultato va però messa un'avvertenza sulla portata, perché il
+titolo è più largo dell'esperimento. Jain e Wallace studiano **un solo strato**
+di attenzione, appoggiato per lo più sopra un encoder ricorrente (una BiLSTM),
+su compiti di classificazione, domanda-risposta e inferenza testuale.
+L'auto-attenzione a più teste e più strati di un Transformer nel loro articolo
+non compare mai, né come esperimento né come parola. Nel lavoro stesso, anzi, il
+comportamento **cambia con l'architettura**: sull'encoder più semplice, che si
+limita a mediare gli embedding, gli stessi criteri danno un esito migliore. Il
+risultato è quindi un monito metodologico solido, non un teorema sui
 Transformer.
 
 C'è però una domanda tecnica che precede quella filosofica, e che di solito
@@ -451,7 +479,8 @@ di attenzione di ogni strato mescolandola con l'identità, che rappresenta
 appunto il passaggio diretto,
 
 $$
-A^{(l)} = \tfrac{1}{2} W^{(l)}_{\text{att}} + \tfrac{1}{2} I ,
+\mathbf{A}^{(l)} = \tfrac{1}{2} \mathbf{W}^{(l)}_{\text{att}}
+   + \tfrac{1}{2} \mathbf{I} ,
 $$
 
 e si moltiplicano gli strati fra loro per ottenere quanto di ogni token di
@@ -487,11 +516,12 @@ entrambe non stava leggendo: stava risolvendo.
 
 ## Interpretabilità meccanicistica: fare reverse-engineering dei circuiti
 
-Attribuzione e probing dicono *cosa* pesa e *dove* sta l'informazione, ma non
-*come* la rete la calcola. La frontiera (giovane, ambiziosa, ancora molto
-aperta) punta più in alto: **fare reverse-engineering** dei calcoli interni,
-come si smonta un circuito elettronico per capire cosa fa ciascun componente.
-È l'**interpretabilità meccanicistica**.
+L'attribuzione dice *cosa* pesa, il sondaggio degli strati (il *probing* di
+poco fa) dice *dove* sta l'informazione; nessuno dei due dice *come* la rete la
+calcola. La frontiera, giovane e ambiziosa e ancora molto aperta, punta più in
+alto: **fare reverse-engineering** dei calcoli interni, come si smonta un
+circuito elettronico per capire cosa fa ciascun componente. È
+l'**interpretabilità meccanicistica**.
 
 `````{tab} Elementare
 
@@ -568,7 +598,7 @@ di sparsità. La sovrapposizione resta una spiegazione teorica solida del
 *perché* i neuroni siano illeggibili; che gli sparse autoencoder siano *la*
 cura è ancora un programma di ricerca, non un risultato acquisito. E nessuno,
 in ogni caso, ha ancora «letto» un modello di grande scala per intero. La posta
-in gioco, però, è alta, ne parliamo qui sotto.
+in gioco, però, è alta, e ne parliamo fra poco.
 
 `````
 
@@ -592,14 +622,16 @@ modelli.
 
 ```{figure} ../figures/interpretabilita-scatola-nera.svg
 :name: fig-sparse-autoencoder
-:alt: "A sinistra uno strato di attivazioni disegnato come un fascio di direzioni aggrovigliate, in cui ogni neurone mescola più concetti. Una freccia le fa attraversare uno sparse autoencoder. A destra le feature che ne escono, disegnate come caselle separate, ciascuna con il nome di un concetto leggibile."
+:alt: "A sinistra quattro neuroni disegnati come cerchi, n1, n2, n3 e n4, da cui partono linee che si incrociano: ogni neurone tiene dentro pezzi di concetti diversi. Le linee entrano tutte in un riquadro al centro, lo sparse autoencoder. A destra ne escono quattro caselle separate, ciascuna col nome di un concetto leggibile: ponte Golden Gate, sintassi Python, tono adulatorio, sequenze di DNA. In basso la scritta «un groviglio di neuroni entra, migliaia di feature nitide escono»."
 :width: 96%
 
-La mossa che scioglie il groviglio. Le attivazioni aggrovigliate entrano da
-sinistra e ne escono riscritte: al posto di neuroni che mescolano più cose,
-caselle che ne tengono una sola. Dentro la freccia ci sono due mosse insieme, e
-servono tutte e due: le caselle in uscita sono **molte di più** dei neuroni in
-entrata, e a ogni esempio se ne accendono **pochissime**.
+La mossa che scioglie il groviglio. A sinistra i neuroni, con le linee che si
+incrociano perché ciascuno tiene dentro pezzi di cose diverse; a destra quello che ne
+esce, una casella per concetto leggibile. Il disegno ne mette quattro e quattro
+per stare in pagina, ma il numero è proprio il punto, e sta scritto in basso:
+le caselle in uscita sono **migliaia**, molte di più dei neuroni in entrata, e
+a ogni esempio se ne accendono **pochissime**. Sono due mosse, e servono tutte
+e due.
 ```
 
 La direzione di {numref}`fig-sparse-autoencoder` sembra paradossale (per capire
@@ -617,10 +649,10 @@ accorgersene *prima* che si manifestino: è il ponte, che riprenderemo nel
 capitolo sull'AI responsabile, tra l'interpretabilità come curiosità
 scientifica e l'interpretabilità come strumento di controllo.
 
-Il quadro concettuale finisce qui. Le due sezioni che seguono sono di bottega:
-rifanno coi numeri, e con poche righe di codice, i due metodi centrali del
-capitolo, gli Integrated Gradients e Grad-CAM. Chi non programma può saltarle e
-andare al riquadro finale.
+Il quadro concettuale finisce qui. Quel che resta di questa pagina è di
+bottega: rifà coi numeri, e con poche righe di codice, i due metodi centrali
+del capitolo, gli Integrated Gradients e Grad-CAM. Chi non programma può
+saltare direttamente al riquadro finale.
 
 ## Integrated Gradients coi numeri: un esempio eseguibile
 
@@ -774,9 +806,11 @@ volevamo poter vedere.
   la rete guarda non dice che cosa ci trovi. E i **controlli di sanità**
   (Adebayo e colleghi, 2018) mostrano che, cancellando ciò che il modello ha
   imparato, per parecchi metodi la mappa resta quasi identica: descriveva
-  l'immagine, non la rete. I due metodi di questa sezione il test lo superano;
-  a fallirlo sono due varianti più elaborate che qui non abbiamo incontrato.
-  Una spiegazione che sembra sensata non è per questo fedele.
+  l'immagine, non la rete. I colpetti pixel per pixel e Grad-CAM il test lo
+  superano; a fallirlo sono due varianti più elaborate che qui non abbiamo
+  incontrato; e gli Integrated Gradients stanno in mezzo, perché la mappa
+  cambia ma la sagoma della foto resta lì a farla sembrare sensata. Una
+  spiegazione che sembra sensata non è per questo fedele.
 - I **pesi di attenzione** sono un indizio, non una prova: pesi molto diversi
   possono portare alla stessa risposta. E guardare un solo strato non basta,
   perché una parte dell'informazione salta l'attenzione e prende la scorciatoia
@@ -818,8 +852,10 @@ volevamo poter vedere.
   **controlli di sanità** {cite}`adebayo2018sanity` mostrano che per diversi
   metodi popolari la mappa cambia pochissimo randomizzando i pesi del modello:
   descriveva l'immagine, non la rete. Nel paper i bocciati sono **Guided
-  BackProp** e **Guided Grad-CAM**, mentre gradiente semplice e Grad-CAM
-  passano. La plausibilità visiva di una spiegazione
+  BackProp** e **Guided Grad-CAM**; gradiente semplice e Grad-CAM passano; i
+  metodi che moltiplicano per l'ingresso (gradient $\odot$ input e gli
+  **Integrated Gradients**) cambiano, anche di segno, ma conservano visibile la
+  struttura dell'ingresso. La plausibilità visiva di una spiegazione
   non è una prova della sua fedeltà.
 - I **pesi di attenzione** non sono di per sé una spiegazione affidabile
   (dibattito *«Attention is not Explanation»*, {cite}`jain2019attention` e

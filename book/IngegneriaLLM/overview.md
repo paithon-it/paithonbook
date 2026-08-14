@@ -102,13 +102,14 @@ distribuzione, eventualmente riscalata e troncata dai parametri di decoding
 (temperatura, top_p) che vedremo nella sezione sul prompt: a temperatura non
 nulla, lo stesso $C$ può dare risposte diverse (e non solo a temperatura non
 nulla, come vedremo lì). Programmare significa progettare $C$. Il meccanismo che rende
-possibile tutto questo è l'**in-context learning**, isolato su larga scala da
-Brown e colleghi nel lavoro su GPT-3 {cite}`brown2020language`: bastano poche
+possibile tutto questo è l'**in-context learning**, documentato su larga scala
+da Brown e colleghi nel lavoro su GPT-3 {cite}`brown2020language`: bastano poche
 coppie richiesta → risposta nel contesto (il *few-shot*), perché il modello
 esegua un compito nuovo *senza alcun aggiornamento dei pesi*. Gli esempi non
-addestrano: **condizionano**. Ne abbiamo dato la forma probabilistica nel
-capitolo sui Transformer; qui ci basta la conseguenza: la programmazione
-avviene nel testo.
+addestrano: **condizionano**. La scoperta è raccontata nel capitolo sui
+Transformer e ne abbiamo scritto la forma probabilistica nella sezione di
+context engineering del capitolo sugli **Agenti**; qui ci basta la
+conseguenza: la programmazione avviene nel testo.
 
 `````
 
@@ -127,7 +128,7 @@ concentrici ({numref}`fig-ingegneria-cerchi`), dal più piccolo al più grande.
 
 ```{figure} ../figures/ingegneria-llm-cerchi.svg
 :name: fig-ingegneria-cerchi
-:alt: "Tre cerchi concentrici. Al centro, il cerchio più piccolo, è etichettato \"prompt\": il singolo messaggio inviato al modello. Il cerchio mediano che lo racchiude è etichettato \"contesto\": l'intera finestra passata al modello, comprendente istruzioni di sistema, esempi, memoria, documenti recuperati e descrizioni degli strumenti, con il prompt come sua parte. Il cerchio esterno che racchiude entrambi è etichettato \"loop\": il processo iterativo che a ogni passo ricostruisce e ripulisce il contesto, con verifica dei risultati e stato conservato all'esterno della finestra. Le frecce lungo il cerchio esterno indicano la ciclicità del processo."
+:alt: "Tre cerchi concentrici. Al centro, il più piccolo, porta la scritta \"prompt: il singolo messaggio\". Il cerchio mediano che lo racchiude porta la scritta \"contesto: la finestra come sistema\". Il cerchio esterno che racchiude entrambi porta la scritta \"loop: il processo iterativo\". A destra, una legenda ripete i tre nomi per esteso: prompt engineering, context engineering, loop engineering. In fondo, la riga che spiega il disegno: ogni cerchio contiene il precedente, il prompt nel contesto e il contesto nel loop."
 :width: 70%
 
 I tre livelli del «programmare a parole», l'uno dentro l'altro: il **prompt** (il
@@ -250,14 +251,15 @@ corregge. È noioso come tutta l'ingegneria, ed è per questo che funziona.
 Tre proprietà rendono l'attività ingegneristica e non magica. **Primo, i
 vincoli sono reali e quantificabili**: la finestra ha un tetto di token, e
 ogni token pesa su latenza, memoria (la KV cache vista nel capitolo sui
-Transformer) e denaro; il **costo per token** che è materia del capitolo su
-LLMOps. Non si ottimizza «la qualità» in astratto ma la qualità *sotto vincolo
+Transformer) e denaro, e del **costo per token** si occupa la sezione su
+LLMOps, nel capitolo su MLOps. Non si ottimizza «la qualità» in astratto ma la
+qualità *sotto vincolo
 di budget*. **Secondo, si misura**: una versione del prompt o della politica
 di contesto si valuta su una batteria di casi e si confronta (A/B) con la
 precedente prima di sostituirla, senza misura non c'è miglioramento, solo
 opinioni. **Terzo, si versiona**: come abbiamo anticipato nel capitolo sugli
 agenti, *il prompt è codice*, va messo sotto controllo di versione e trattato
-come un artefatto del software, tema che ritroveremo in LLMOps. Con una
+come un artefatto del software, tema che ritroveremo in MLOps. Con una
 avvertenza di onestà intellettuale: è un'ingegneria **giovane**, fatta oggi
 più di euristiche che di garanzie. La terminologia stessa è in assestamento,
 per un buon tratto si è chiamato tutto «prompt engineering», finché non si è
@@ -345,7 +347,7 @@ Il capitolo segue i tre cerchi, dal centro verso l'esterno.
 - Si dice **ingegneria** e non magia per tre motivi: i **vincoli** sono reali
   (finestra finita, costo per token), i risultati si **misurano** e si
   confrontano, e il prompt si **versiona**; «il prompt è codice», come in
-  LLMOps.
+  MLOps.
 - È un mestiere **giovane**: più euristiche che garanzie, terminologia ancora in
   assestamento. Onestà sui limiti, zero formule magiche: si spostano le
   probabilità, non si comanda l'output.

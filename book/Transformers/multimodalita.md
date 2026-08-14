@@ -1,4 +1,4 @@
-# Grandi modelli di linguaggio e multimodalità
+# Le famiglie di modelli, e oltre il testo
 
 L'architettura del 2017 era una macchina per tradurre. Quello che è successo
 dopo somiglia a ciò che accadde col motore a scoppio: inventato per la
@@ -55,7 +55,8 @@ riguarda tutto il testo, e a parità di calcolo si impara molto di più.
 `````{tab} Superiore
 **GPT** (OpenAI, 2018) è un Transformer *decoder-only* con maschera causale,
 addestrato come modello di linguaggio autoregressivo: massimizza
-$\prod_t p(x_t \mid x_1, \dots, x_{t-1})$. La linea di scala culmina in GPT-3
+$\prod_t p(x_t \mid x_1, \dots, x_{t-1})$, dove $x_t$ è il token in posizione
+$t$ e il prodotto corre su tutta la sequenza. La linea di scala culmina in GPT-3
 {cite}`brown2020language` (175 miliardi di parametri), che mostra capacità
 *few-shot*: adattarsi a un compito descritto nel prompt, senza aggiornare i
 pesi. **BERT** {cite}`devlin2019bert` (Google) è *encoder-only* e
@@ -76,10 +77,14 @@ campioni plausibili; il **discriminatore**, che è ELECTRA, riceve la sequenza
 così corrotta e classifica **ogni posizione** come originale o sostituita. Il
 segnale viene da tutta la sequenza, il compito binario è più economico del
 softmax sul vocabolario, e a valle si getta il generatore e si rifinisce il
-discriminatore. Gli autori riportano che un modello addestrato su una sola GPU
-per quattro giorni supera GPT su GLUE pur avendo usato trenta volte meno
-calcolo, e che alla scala grande si eguagliano RoBERTa e XLNet con meno di un
-quarto del loro.
+discriminatore. Il guadagno che gli autori misurano è tutto sull'asse del
+**calcolo**: alla scala grande ELECTRA arriva alla resa dei modelli mascherati
+confrontabili dell'epoca spendendo meno di un quarto del loro addestramento, e
+la versione piccola, quattro giorni su una sola GPU, se la cava meglio di un
+modello autoregressivo che di calcolo ne aveva consumato trenta volte tanto.
+Non è una vittoria di architettura, è una vittoria di **obiettivo**: la stessa
+rete impara di più dalle stesse frasi perché le viene chiesto qualcosa su ogni
+posizione invece che su una su sette.
 
 La somiglianza con una **GAN** è dichiarata dagli autori stessi, e istruttiva
 soprattutto per dove si rompe: il generatore **non** è addestrato a ingannare
@@ -128,8 +133,8 @@ Il passaggio mostrato in {numref}`fig-vit` è meno innocente di quanto sembri.
 Tagliare e mettere in fila butta via quello che le reti per le immagini del
 capitolo sul deep learning (le *convoluzioni*, i filtri che guardano un pezzetto
 di foto alla volta) davano per scontato, cioè che i pixel vicini siano
-imparentati: il ViT quella parentela deve impararla dai dati, e infatti ha
-bisogno di molti più esempi per farlo.
+imparentati: il Vision Transformer quella parentela deve impararla dai dati, e
+infatti ha bisogno di molti più esempi per farlo.
 
 `````{tab} Elementare
 E le immagini? Il trucco è di una semplicità disarmante: si taglia la foto in
@@ -147,9 +152,11 @@ modulo e gli chiedi di spiegartelo.
 Il **Vision Transformer** (ViT {cite}`dosovitskiy2021image`) suddivide
 l'immagine in patch (tipicamente $16 \times 16$ pixel), le proietta
 linearmente in embedding e le tratta come token, con un positional encoding
-per la posizione spaziale; con pre-addestramento su dataset molto grandi
-raggiunge e supera le CNN del capitolo sulla visione, pur non avendo il loro
-*bias induttivo* di località. Sul fronte multimodale, **CLIP**
+per la posizione spaziale. La cosa da portarsi via è la condizione: senza il
+*bias induttivo* di località delle CNN del capitolo sulla visione, il ViT
+regge il confronto **solo** se pre-addestrato su dataset molto grandi, e sotto
+quella soglia resta indietro. La località non è gratis: o la si mette
+nell'architettura, o la si compra in dati. Sul fronte multimodale, **CLIP**
 {cite}`radford2021learning` allinea in uno spazio comune embedding di immagini
 e testi tramite addestramento contrastivo su coppie immagine–didascalia; i
 modelli generativi di immagini come DALL·E e Stable Diffusion usano componenti
@@ -176,9 +183,13 @@ stessa domanda, e ciascuna si paga in modo diverso.
 Il caso più clamoroso di attenzione applicata a un dominio che con il testo non
 c'entra nulla è arrivato nel novembre 2020, alla CASP14, la gara biennale in cui
 si sfidano i programmi che prevedono la forma delle proteine: **AlphaFold 2**
-predice la struttura tridimensionale delle proteine con un'accuratezza vicina a
-quella dei metodi sperimentali, chiudendo di fatto un problema aperto da mezzo
-secolo.
+predice la struttura tridimensionale delle proteine con un'accuratezza
+confrontabile con quella dei metodi sperimentali **nella maggior parte dei
+casi**, e per i domini a catena singola chiude di fatto un problema aperto da
+mezzo secolo. Le due clausole non sono prudenza di maniera: restano fuori i
+complessi fra più catene, le regioni disordinate, gli stati alternativi della
+stessa proteina e l'effetto delle mutazioni, e la formula «problema risolto»
+che circolò allora era del comunicato, non dei valutatori.
 
 ```{figure} ../figures/alphafold-2.svg
 :name: fig-alphafold
@@ -255,14 +266,17 @@ l'incertezza dichiarata ha un significato fisico. La seconda: dipendendo
 dall'MSA, il metodo è più debole dove la storia evolutiva è povera (proteine
 orfane, anticorpi progettati, molecole di sintesi).
 
-Il database pubblico che ne è seguito contiene oltre **200 milioni** di
-strutture predette, praticamente ogni proteina nota.
+Il database pubblico che ne è seguito copre la quasi totalità di UniProt, cioè
+quasi ogni sequenza proteica catalogata (restano fuori le catene troppo corte o
+troppo lunghe, quelle con amminoacidi non standard e le proteine virali): nel
+giro di due anni la predizione di struttura è passata da problema di ricerca a
+servizio di consultazione.
 
 `````
 
 ## Vantaggi e sfide
 
-Il quadro va chiuso con la stessa onestà del capitolo sui confronti. I
+Il quadro va chiuso con la stessa onestà della sezione sui confronti. I
 vantaggi sono reali: gestione di contesti lunghi, addestramento parallelo,
 un'unica architettura per testo, immagini e audio. Ma le sfide non sono
 dettagli:
@@ -315,7 +329,8 @@ dettagli:
   qualche token e far dire alla rete, **per ogni posizione**, se è originale o
   intrusa, dà segnale su tutta la sequenza invece che sul solo $15\%$
   mascherato, e a parità di calcolo rende molto di più.
-- **ViT** tratta l'immagine come una frase di tessere $16\times16$; i modelli
+- **ViT** tratta l'immagine come una frase di tessere $16\times16$, e paga in
+  **dati** la località che le CNN hanno gratis nell'architettura; i modelli
   **multimodali** (CLIP, GPT-4) allineano testo e immagini.
 - Costi computazionali, bias nei dati e allucinazioni sono limiti
   strutturali, da mettere in conto quanto i vantaggi.

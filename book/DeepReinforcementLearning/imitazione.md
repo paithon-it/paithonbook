@@ -1,9 +1,10 @@
 # Imparare guardando: imitazione e clonazione comportamentale
 
 Nel 1989, alla Carnegie Mellon, un furgone attrezzato percorreva le strade
-attorno al campus guidato da una rete neurale con un solo strato nascosto. Si
-chiamava **ALVINN**, riceveva in ingresso l'immagine di una telecamera e la
-lettura di un telemetro laser, e restituiva l'angolo di sterzata
+attorno al campus guidato da una rete neurale piccolissima, un solo strato di
+neuroni fra l'ingresso e l'uscita. Si chiamava **ALVINN**, riceveva l'immagine
+di una telecamera e la lettura di un telemetro laser (uno strumento che misura
+a che distanza sono le cose), e restituiva l'angolo di sterzata
 {cite}`pomerleau1989alvinn`. Non aveva imparato per tentativi ed errori, il che
 sarebbe stato imprudente su una strada vera: era stato addestrato a
 **riprodurre, per ogni immagine di strada, l'angolo di sterzata corretto**.
@@ -67,8 +68,8 @@ azioni continue. Non compaiono ricompense, non compare l'equazione di Bellman,
 non compare il bootstrapping: è **regressione o classificazione**, con tutto
 ciò che ne consegue in termini di stabilità e di strumenti già noti.
 
-Il libro l'ha già incontrata in tre punti, e conviene riconoscerla. Nel
-capitolo sui metodi a gradiente di policy, la rete di policy di AlphaGo è
+Il libro l'ha già incontrata in tre punti, e conviene riconoscerla. Nella
+sezione sui metodi a gradiente di policy, la rete di policy di AlphaGo è
 pre-addestrata in modo supervisionato su partite umane prima del *self-play*.
 Nel post-addestramento dei modelli linguistici, la fase di *supervised
 fine-tuning* che precede l'RLHF è clonazione comportamentale su dimostrazioni
@@ -123,6 +124,15 @@ finire, etichettate dal maestro. Ha un costo, ed è chiaro anche detto così: il
 maestro deve essere lì, disponibile a rispondere, e non basta più una scatola di
 vecchie registrazioni.
 
+C'è poi una strada del tutto diversa, che aggredisce lo stesso problema
+dall'altro capo. Invece di copiare *che cosa fa* il maestro, si prova a capire
+*che cosa sta cercando di ottenere*: si impara il premio, non la strategia.
+Costa di più, e in cambio regge meglio se il mondo cambia un poco, perché
+descrive l'obiettivo invece delle reazioni. Ha però un difetto suo, e non
+piccolo: guardando soltanto il comportamento, di obiettivi che lo spiegherebbero
+altrettanto bene ce n'è un'infinità, e sceglierne uno guardando solo quello è
+impossibile.
+
 `````
 
 `````{tab} Superiore
@@ -134,8 +144,10 @@ distribuzione**, con la particolarità di essere **causato dal modello stesso**:
 non è il mondo che cambia, è la politica che si porta in una regione che non
 conosce, e più sbaglia più ci si porta.
 
-Il risultato di riferimento è di Ross, Gordon e Bagnell
-{cite}`ross2011reduction`. Se la politica appresa ha un tasso d'errore $\epsilon$
+Il risultato che inquadra il problema è di Ross e Bagnell
+{cite}`ross2010efficient`, e vale la pena
+attribuirlo a loro perché il lavoro che tutti citano, quello del 2011, lo
+riprende come premessa. Se la politica appresa ha un tasso d'errore $\epsilon$
 sotto la distribuzione dell'esperto, su un orizzonte $T$ il costo aggiuntivo
 della clonazione comportamentale cresce in generale come $O(\epsilon T^2)$: il
 fattore $T$ in più rispetto all'ideale $O(\epsilon T)$ è esattamente la
@@ -147,21 +159,36 @@ semplice: iterare. Si addestra una politica sulle dimostrazioni, la si
 **esegue** per raccogliere gli stati che *lei* visita, si chiede all'esperto
 l'azione corretta **su quegli stati**, si aggiunge tutto al dataset e si
 riaddestra. Ripetendo, la distribuzione di addestramento converge a quella
-d'uso, e la garanzia torna lineare in $T$ **a una condizione**, che è nascosta
-in una costante e va tirata fuori. Il bound è
+d'uso, e la garanzia torna lineare in $T$ **a certe condizioni**, che sono
+nascoste in una costante e in un pedice e vanno tirate fuori tutte e due. Il
+bound, dopo $N$ giri, è
 
 $$
 J(\hat\pi) \;\le\; J(\pi^\star) + u\,T\,\epsilon_N + O(1),
 $$
 
-dove $u$ misura di quanto un singolo errore può peggiorare il costo-per-andare
-dell'esperto. Nei compiti **recuperabili** $u$ è $O(1)$ e la garanzia è
+dove $\epsilon_N$ **non** è il tasso d'errore del paragrafo precedente: è
+l'errore della migliore politica *col senno di poi*, misurato sulla media di
+tutte le distribuzioni di stati accumulate nei $N$ giri. Che quel numero sia
+piccolo non è gratis: lo garantisce il fatto che i giri si comportino come un
+algoritmo *no-regret*, e servono $N$ dell'ordine di $u\,T$ perché il resto sia
+davvero $O(1)$. La garanzia, poi, vale per **una** delle politiche prodotte lungo
+la sequenza, non necessariamente per l'ultima, ed è il motivo per cui in pratica
+si tiene la migliore su un insieme di validazione.
+
+Quanto a $u$, misura di quanto un singolo errore può peggiorare il
+costo-per-andare dell'esperto. Nei compiti **recuperabili** $u$ è $O(1)$ e la
+garanzia è
 effettivamente lineare; ma se un errore porta in uno stato da cui non si torna
 (il fosso della metafora di due paragrafi fa) $u$ può crescere come $T$, e si
-torna al quadrato. È un'ipotesi che vale la pena tenere presente perché
-l'esperimento di questa sezione la **viola**: il sistema del codice è instabile,
-cioè per costruzione non recuperabile senza correzione. DAgger raccoglie gli
-stati giusti; non promette che da quegli stati si possa tornare.
+torna al quadrato. Conviene tenere l'ipotesi in mente leggendo l'esperimento di
+questa sezione, perché lì è **soddisfatta**, e non per caso: il sistema lasciato
+a sé diverge, ma il controllore esperto lo riporta verso lo zero da qualunque
+punto (moltiplica lo scarto per $0{,}85$ a ogni passo), quindi un errore isolato
+costa una quantità limitata e indipendente dall'orizzonte. È per questo che tre
+giri di DAgger bastano a tornare al livello del maestro. Dove invece il fosso è
+un fosso vero, DAgger raccoglie comunque gli stati giusti, ma non promette che
+da lì si possa tornare.
 
 Il prezzo, poi, è che serve un esperto **interrogabile durante
 l'addestramento**, non solo un archivio di registrazioni: e nella maggior parte
@@ -180,12 +207,15 @@ motivo per cui l'RLHF non si ferma alla fase supervisionata: il modello di
 ricompensa addestrato sulle preferenze è, di fatto, una ricompensa inferita da
 comportamento umano.
 
-Il difetto strutturale, però, gli sta accanto fin dal primo lavoro che definisce
-il problema {cite}`ng2000algorithms`, e va detto: l'RL inverso, nella sua forma
+Il difetto strutturale, però, gli sta accanto fin dal lavoro che ne dà i primi
+algoritmi {cite}`ng2000algorithms`, e va detto: l'RL inverso, nella sua forma
 nuda, è **mal posto**. Infinite funzioni di ricompensa rendono ottimo lo stesso
 comportamento osservato, a cominciare da quella identicamente nulla, sotto la
-quale ogni politica è ottima. In generale la ricompensa si recupera solo a meno
-di una scala e di un termine di *shaping potential-based*. È un oggetto che il
+quale ogni politica è ottima: l'insieme delle ricompense compatibili con una
+politica osservata non è una retta, è un poliedro. Nemmeno chiedendo molto di
+più, cioè che l'ordinamento di *tutte* le politiche resti quello, si arriva a una
+risposta sola: si arriva a una scala positiva e a un termine di *shaping
+potential-based*, e non oltre. È un oggetto che il
 capitolo rincontrerà: nella sezione sull'esplorazione si dimostra che aggiungere
 alla ricompensa un termine della forma $\gamma\Phi(s')-\Phi(s)$ lascia
 invariata la policy ottima, *per qualunque* $\Phi$. Là quella proprietà è una
@@ -255,9 +285,12 @@ allena(politica, S_dim, A_dim)
 with torch.no_grad():
     print(f"errore per singolo passo sugli stati dimostrati: "
           f"{F.mse_loss(politica(S_dim), A_dim).item():.6f}  (praticamente perfetto)")
-    fuori = torch.tensor([[3.0]])
-    print(f"ma a s=3,0 l'esperto direbbe {esperto(fuori).item():+.3f} "
-          f"e la clonazione dice {politica(fuori).item():+.3f}")
+    # fuori dalla fascia dimostrata: che cosa propone, e che cosa servirebbe?
+    for x in (3.0, 4.0, 20.0):
+        fuori = torch.tensor([[x]])
+        print(f"a s={x:5.1f}: l'esperto direbbe {esperto(fuori).item():+7.3f}, "
+              f"la clonazione dice {politica(fuori).item():+.3f} "
+              f"(per rientrare servirebbe piu' di {0.25 * x:.2f})")
 
 _, _, fe = episodio(esperto, avvio(64), g, raffica=True)
 _, _, fc = episodio(politica, avvio(64), g, raffica=True)
@@ -304,15 +337,21 @@ $0{,}000000$, e qualunque valutazione fatta sui dati di addestramento direbbe
 che il modello è impeccabile.
 
 A $s = 3{,}0$, però, dove non è mai stata, l'esperto correggerebbe di
-$-1{,}200$ e la clonazione propone $-0{,}824$. Non è un errore assurdo, è una
-correzione **troppo debole di un terzo**, ed è tutto ciò che serve: su un
-sistema instabile una correzione insufficiente lascia crescere lo stato, che al
-passo dopo è ancora più lontano da ciò che si conosce, dove la correzione è
-ancora peggiore.
+$-1{,}200$ e la clonazione propone $-0{,}824$: una correzione **troppo debole
+di un terzo**. Sembra poco, e invece siamo sul filo. Su questo sistema lo stato
+rientra solo se la correzione vale almeno un quarto dello scarto (perché
+$1{,}25\,s + a$ scenda sotto $s$ serve $|a| > 0{,}25\,s$), e a $s = 3{,}0$ quel
+quarto la clonazione lo copre appena: $0{,}824$ contro lo $0{,}75$ che serviva.
+Poco più in là non lo copre più, perché fuori dalla fascia dimostrata la rete
+non cresce con lo scarto, si **appiattisce**: a $s = 4$ propone $-0{,}904$ dove
+ne servirebbe $1{,}00$, e a $s = 20$ propone ancora $-1{,}015$ dove ne
+servirebbero $5{,}00$. Da lì in poi lo stato cresce, e più cresce più si
+allontana da ciò che la clonazione conosce. La folata, che vale $4{,}0$, la
+scaraventa esattamente di là.
 
 Il risultato: dopo la folata l'esperto torna a $0{,}071$ e **la clonazione
-finisce a $74{,}6$**. Tre ordini di grandezza, partendo da un errore per passo
-pari a zero.
+finisce a $74{,}6$**. Mille volte più lontano dal centro della corsia, partendo
+da un errore per passo pari a zero.
 
 Poi i tre giri di DAgger: $0{,}102$, $0{,}077$, $0{,}082$. Riportare
 l'esperto a etichettare gli stati in cui era finito **l'allievo** basta a
@@ -343,10 +382,12 @@ esperimento a portarcelo è una perturbazione **esterna**, che gli diamo noi, e
 che in un colpo solo lo scaraventa a quattro volte il bordo della fascia.
 
 Nel racconto della guida, invece, fuori dalla fascia l'allievo ci arriva **da
-solo**, un errore alla volta, ed è proprio quell'accumulo il $T^2$ di Ross,
-Gordon e Bagnell. Qui la spinta iniziale è un espediente: il modo più rapido di
-mettere l'allievo dove non è mai stato, per mostrare cosa succede una volta che
-ci si trova. Quello che l'esperimento dimostra, e lo dimostra bene, è la seconda
+solo**, un errore alla volta, ed è proprio quell'accumulo a far crescere il
+danno con il *quadrato* della durata del percorso invece che in proporzione a
+essa: su un tragitto dieci volte più lungo il danno non decuplica, si moltiplica
+per cento. Qui la spinta iniziale è un espediente, il modo più rapido di mettere
+l'allievo dove non è mai stato per mostrare cosa succede una volta che ci si
+trova. Quello che l'esperimento dimostra, e lo dimostra bene, è la seconda
 metà del ragionamento: **fuori dalla fascia dimostrata una politica clonata
 sbaglia in modo sistematico, e su un sistema instabile sbagliare in modo
 sistematico è irrecuperabile.** La prima metà, cioè che a portarla fuori bastino
@@ -410,7 +451,9 @@ i suoi stessi errori, resta un risultato teorico, e questo codice non la prova.
   **ricompensa** invece della politica. Costa di più ed è più trasferibile,
   perché una ricompensa descrive l'obiettivo mentre una politica descrive solo
   delle reazioni. È la ragione per cui l'RLHF non si ferma alla fase
-  supervisionata. È però **mal posto**: la ricompensa si recupera a meno di una
-  scala e di un termine di shaping potential-based.
+  supervisionata. È però **mal posto**: dalla sola politica osservata le
+  ricompense compatibili formano un poliedro (la nulla compresa), e anche
+  imponendo di preservare l'ordinamento di *tutte* le politiche non si va oltre
+  una scala positiva e un termine di shaping potential-based.
 ```
 `````

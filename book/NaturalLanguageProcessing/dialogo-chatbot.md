@@ -16,10 +16,11 @@ erano cose private.
 
 Sessant'anni dopo, milioni di persone conversano ogni giorno con delle
 macchine. In quest'ultima sezione mettiamo insieme gli attrezzi del capitolo e
-li puntiamo sul compito più antico e ambizioso dell'NLP: il **dialogo**;
-perché una conversazione è più di una fila di frasi, come sono fatte le tre
-famiglie di sistemi di dialogo, come si dà loro un voto, e perché la storia
-della segretaria non è un aneddoto d'epoca ma una questione ancora aperta.
+li puntiamo sul compito più antico e ambizioso dell'NLP, il **dialogo**.
+Vedremo perché una conversazione è più di una fila di frasi, come sono fatte
+le tre famiglie di sistemi di dialogo, come si dà loro un voto, e perché la
+storia della segretaria non è un aneddoto d'epoca ma una questione ancora
+aperta.
 
 ## Che cosa c'è in una conversazione
 
@@ -63,10 +64,12 @@ Quarto: i **sottintesi**. «All'aperto *ne* è rimasto uno»: ne... di che? Di
 tavoli all'aperto, ma nessuno lo ripete, il filo del discorso lo regge. «*Lo*
 prendiamo»: lo, quel tavolo lì. È l'**anafora** di cui si diceva all'inizio del
 capitolo: le parole piccole pescano il significato in quello che è già stato
-detto. Qui però c'è un salto in più: là il significato stava nella stessa
-frase, qui sta in una **battuta precedente**, pronunciata da un'altra persona.
-Morale: per dialogare non basta capire l'ultima frase, bisogna ricordare la
-partita.
+detto. (Nulla a che vedere con l'anafora delle poesie, quella figura retorica
+che ripete la stessa parola in testa a più versi: stesso nome, due mestieri
+lontanissimi.) Qui però c'è un salto in più rispetto all'inizio del capitolo:
+là il significato stava nella stessa frase, qui sta in una **battuta
+precedente**, pronunciata da un'altra persona. Morale: per dialogare non basta
+capire l'ultima frase, bisogna ricordare la partita.
 
 `````
 
@@ -120,17 +123,18 @@ Della prima famiglia conosciamo già il capostipite. Nella sezione sulla
 cassetta degli attrezzi abbiamo aperto il cofano di ELIZA e trovato **pattern
 matching**: lo schema «mi sento X» agganciato e rigirato in «Da quanto tempo
 ti senti X?». ELIZA era in realtà un impianto a copioni intercambiabili, e il
-copione celebre (DOCTOR) imitava uno psicoterapeuta di scuola rogersiana.
+copione celebre (DOCTOR) imitava uno psicoterapeuta di scuola rogersiana,
+quella che invece di dare consigli rimanda al paziente le sue stesse parole.
 Scelta astutissima: è l'unico interlocutore che può rispondere a tutto con una
 domanda, rimandare ogni affermazione al mittente e non sapere *niente* del
 mondo senza destare sospetti. (Nei primi anni Settanta lo psichiatra Kenneth
-Colby costruì il contrario, PARRY, simulazione di un paziente paranoide: nel
-1972 i due programmi furono perfino fatti dialogare tra loro attraverso
-ARPANET.)
+Colby costruì il contrario, PARRY, che simulava un paziente paranoide: nel 1972
+i due programmi furono perfino messi a conversare fra loro attraverso ARPANET,
+la rete di calcolatori americana da cui sarebbe nata internet.)
 
 Vale la pena ricostruirla, perché è il programma più istruttivo del capitolo:
-bastano le espressioni regolari della prima sezione e un dizionario. Ecco una
-mini-ELIZA italiana:
+bastano le espressioni regolari della prima sezione e una tabellina di
+sostituzioni. Ecco una mini-ELIZA italiana:
 
 ```python
 import re
@@ -182,27 +186,39 @@ grammaticalmente giusto, a creare l'illusione di essere ascoltati. L'ordine
 delle regole conta (la prima che aggancia vince), e il ripiego finale copre
 tutto il resto del mondo, gatto sul muro compreso. L'ELIZA vera aveva più
 copioni, più varianti di risposta e un rudimento di memoria, ma il principio è
-tutto qui. E qui è anche il limite: nessuno stato, nessun mondo. Ogni battuta
-ricomincia da zero: il contrario esatto di ciò che la telefonata al ristorante
-ci ha mostrato essere una conversazione.
+tutto qui.
+
+E qui è anche il limite. ELIZA **non tiene niente da parte**: finita una
+battuta, la dimentica, e alla battuta dopo riparte da zero come se fosse la
+prima. Quello che un interlocutore dovrebbe tenere da parte (chi sono io, di
+che cosa stiamo parlando, che cosa ci siamo già detti) ha un nome che tornerà
+fra poco: si chiama **stato del dialogo**, ed è la memoria della partita.
+ELIZA non ne ha, ed è il contrario esatto di ciò che la telefonata al
+ristorante ci ha mostrato essere una conversazione.
 
 ### Il modulo da riempire: i sistemi a frame
 
-La seconda famiglia nasce nel 1977 allo Xerox PARC, con un articolo firmato da
-sei nomi pesanti dell'AI: Bobrow, Kaplan, Kay, Norman, Thompson e Winograd
+La seconda famiglia nasce nel 1977 allo Xerox PARC, il laboratorio californiano
+in cui in quegli anni si inventava metà dell'informatica che usiamo oggi (il
+mouse con le finestre sullo schermo, per dire, viene di lì). L'articolo lo
+firmano in sei, e sono sei fra i nomi più noti dell'intelligenza artificiale di
+allora: Bobrow, Kaplan, Kay, Norman, Thompson e Winograd
 {cite}`bobrow1977gus`. Il loro sistema si chiamava GUS, faceva l'agente di
-viaggio e prenotava voli per San Diego. L'idea che introduce, il **frame**, è
-di quelle che sopravvivono ai decenni: quasi cinquant'anni dopo è ancora
-l'ossatura degli assistenti vocali.
+viaggio e prenotava voli per San Diego.
+
+L'idea che introduce si chiama **frame**, cioè «modulo» nel senso del foglio da
+compilare, ed è di quelle che sopravvivono ai decenni: quasi cinquant'anni
+dopo è ancora l'ossatura degli assistenti vocali.
 
 `````{tab} Elementare
 
-Pensate a uno sportello pubblico. L'impiegato ha davanti un modulo con delle
-caselle (*dove*, *quando*, *quanti*, *a che nome*) e la conversazione gli
-serve a riempirle: fa domande solo per le caselle vuote, e se in una battuta
-sola dite «un tavolo per quattro domani alle otto» ne riempie tre in un colpo
-senza richiederle. Alla fine rilegge il modulo per conferma, e la pratica
-parte.
+Pensate a uno sportello pubblico. L'impiegato ha davanti un modulo (in inglese
+*frame*, ed è la parola che dà il nome a tutta la famiglia) con delle caselle:
+*dove*, *quando*, *quanti*, *a che nome*. La conversazione gli serve a
+riempirle, e questo spiega tutto il suo comportamento: fa domande solo per le
+caselle ancora vuote, e se in una battuta sola dite «un tavolo per quattro
+domani alle otto» ne riempie tre in un colpo senza richiederle. Alla fine
+rilegge il modulo per conferma, e la pratica parte.
 
 Un assistente vocale fa la stessa identica cosa, con moduli invisibili. «Che
 tempo fa domani a Roma?»: l'assistente riconosce *quale* modulo tirare fuori
@@ -247,9 +263,11 @@ dire.
 ### Prevedere la risposta: i sistemi generativi
 
 La terza famiglia rovescia l'approccio: perché scrivere regole e moduli, se
-abbiamo le trascrizioni di milioni di conversazioni? Trattiamo la risposta
-come una *traduzione* del turno precedente: stessa architettura
-encoder–decoder della sezione sulla traduzione, cambiano solo i dati.
+abbiamo le trascrizioni di milioni di conversazioni? Trattiamo la risposta come
+una *traduzione* del turno precedente, e usiamo la stessa identica macchina
+della sezione sulla traduzione: una rete che legge la battuta ricevuta e una
+che scrive la risposta. Cambiano solo i dati: al posto delle frasi in italiano
+e in inglese, botte e risposte.
 
 `````{tab} Elementare
 
@@ -352,7 +370,8 @@ prudenza, in entrambe le direzioni: ELIZA ha mostrato già nel 1966 che
 ingannare un interlocutore per qualche minuto è un'asticella bassa (il test
 misura anche la nostra propensione a farci ingannare) e, al contrario,
 superare una conversazione non certifica nessuna comprensione. Per questo oggi
-il test di Turing è un esperimento mentale fondativo, non una metrica.
+il test di Turing è un esperimento mentale fondativo, e non uno strumento con
+cui misurare davvero qualcosa.
 
 ## La lezione di Weizenbaum
 
@@ -370,23 +389,34 @@ mai immaginato «che esposizioni brevissime a un programma per calcolatore
 relativamente semplice potessero indurre un pensiero delirante così potente in
 persone del tutto normali»; lo scandalizzò, più di tutto, la proposta di
 psichiatri veri di usare programmi come il suo per la psicoterapia su larga
-scala. La sua tesi, spesso semplificata in generico allarme, era precisa: c'è
-differenza tra *decidere* (un'operazione di calcolo, delegabile) e
-*giudicare*, che poggia su esperienza e responsabilità. La domanda giusta non
-è cosa le macchine *possono* fare, ma cosa *dobbiamo* affidare loro.
+scala. La sua tesi, spesso semplificata in generico allarme, era invece
+precisa, e sta in due verbi: c'è differenza fra *decidere* e *giudicare*.
+
+Decidere è trovare la risposta giusta secondo un criterio che qualcuno ha già
+fissato: qual è la strada più corta, se questo conto torna, quale di questi
+mille documenti contiene una certa parola. È un'operazione di calcolo, e a una
+macchina si delega volentieri. Giudicare è un'altra cosa: stabilire se un
+ragazzo va bocciato, se una persona è pericolosa, se questa cura vale la pena
+per questo paziente. Lì non c'è nessun criterio scritto da nessuna parte: ci
+sono un'esperienza di vita e una responsabilità di cui qualcuno risponde. La
+domanda giusta, diceva Weizenbaum, non è cosa le macchine *possono* fare, ma
+cosa *dobbiamo* affidare loro.
 
 Cinquant'anni dopo, la questione si è fatta concreta su tre fronti, e merita
 un tono sobrio: né allarme, né alzata di spalle.
 
-- **Antropomorfizzazione.** I sistemi attuali sono incomparabilmente più
-  fluenti di ELIZA, e la fluidità amplifica l'effetto: scambiare la forma del
-  linguaggio per comprensione è l'errore contro cui mette in guardia la
-  critica dei «pappagalli stocastici» {cite}`bender2021dangers`, dove
-  *stocastico* vuol dire «governato dal caso»: un pappagallo che ripete quello
-  che ha sentito, scegliendo di volta in volta secondo le probabilità che ha
-  imparato, senza sapere che cosa sta dicendo. Non è solo
-  un equivoco filosofico: un chatbot che dice «io», ha un nome proprio e
-  simula esitazioni umane *sceglie* di spingere quel riflesso.
+- **Antropomorfizzazione**, cioè la nostra abitudine ad attribuire qualità
+  umane a ciò che umano non è, dal cane di casa alla macchina che «non vuole
+  partire». I sistemi attuali sono incomparabilmente più fluenti di ELIZA, e la
+  fluidità amplifica l'effetto: scambiare la forma del linguaggio per
+  comprensione è l'errore contro cui mette in guardia la critica dei
+  «pappagalli stocastici» {cite}`bender2021dangers`, dove *stocastico* vuol
+  dire «governato dal caso»: un pappagallo che ripete quello che ha sentito,
+  scegliendo di volta in volta secondo le probabilità che ha imparato, senza
+  sapere che cosa sta dicendo. E non è solo un equivoco filosofico. Quando un
+  chatbot dice «io», ha un nome proprio e fa finta di esitare come farebbe una
+  persona, quel riflesso non lo subisce: lo asseconda, per scelta di chi
+  l'ha costruito.
 - **Privacy.** Chi protestò per i registri di ELIZA era in anticipo di
   sessant'anni. A un interlocutore che non giudica si confidano cose che non
   si scrivono in un modulo: oggi quelle conversazioni sono dati, che possono
@@ -407,12 +437,13 @@ fare a occhi aperti: sapendo che dall'altra parte non c'è nessuno, per quanto
 forte sia l'impressione contraria.
 
 Con questo il cerchio del capitolo si chiude. Siamo partiti dalle espressioni
-regolari e siamo arrivati a modelli che conversano; abbiamo visto il gatto
-nero saltare sul muro in tutte le rappresentazioni possibili, dai conteggi
-agli embedding agli stati di una LSTM. L'ultimo passo (l'architettura che ha
-mandato in pensione la ricorrenza e reso possibili gli interlocutori
-artificiali di oggi) merita un capitolo intero: i **Transformer** ci aspettano
-alla prossima pagina.
+regolari e siamo arrivati a modelli che conversano, e per strada abbiamo visto
+il gatto nero saltare sul muro in tutti i modi in cui una macchina lo può
+scrivere: come conteggi in un sacchetto, come punti su una mappa di
+significati, come riassunto che scorre dentro una rete che legge in fila.
+L'ultimo passo, l'architettura che ha mandato in pensione quella lettura in
+fila e ha reso possibili gli interlocutori artificiali di oggi, merita un
+capitolo intero: i **Transformer** ci aspettano alla prossima pagina.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare

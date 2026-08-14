@@ -7,37 +7,56 @@ prende senso dalla scia di quelle che la precedono. «Il gatto nero salta sul
 muro» non è un sacchetto di parole mescolabili a piacere: l'ordine *è* il
 significato.
 
-Un modello che vuole capire o generare testo deve quindi fare due cose che una
-rete come quelle viste finora non sa fare (le si chiama *feed-forward*, «che va
-solo in avanti», perché il segnale le attraversa da un capo all'altro senza
-tornare mai indietro): trattare l'input come una **sequenza** di lunghezza
-variabile, e portarsi dietro una **memoria del contesto** man mano che avanza.
-Questa sezione racconta come, tra gli anni Ottanta e il 2017, si è passati
-dalle prime reti con memoria fino alla vigilia dei Transformer.
+Le reti viste finora non sanno farlo, e conviene dire perché. Sono fatte a
+strati, e i numeri le attraversano da un capo all'altro senza tornare mai
+indietro: entra un blocco di dati, esce una risposta, fine. Per questo si
+chiamano *feed-forward*, «che vanno solo in avanti». Vogliono in ingresso
+sempre la stessa quantità di roba, e fra una risposta e l'altra non si ricordano
+niente.
+
+Un modello che vuole capire o generare testo deve invece fare due cose in più:
+accettare una **sequenza** di lunghezza qualsiasi (le frasi non hanno tutte lo
+stesso numero di parole) e portarsi dietro una **memoria di quello che ha già
+letto** man mano che avanza. Questa sezione racconta come, tra gli anni Ottanta
+e il 2017, si è passati dalle prime reti con memoria fino alla vigilia dei
+Transformer, che sono l'architettura su cui oggi si costruiscono i grandi
+modelli linguistici, e che hanno un capitolo tutto loro subito dopo questo.
 
 ## Le reti ricorrenti: una memoria che scorre nel tempo
 
 L'idea delle **reti neurali ricorrenti** (RNN, *Recurrent Neural Network*) è
 elegante: invece di guardare tutta la frase in un colpo solo, la rete la
-percorre un elemento alla volta e mantiene uno **stato nascosto** (un vettore
-di numeri) che aggiorna a ogni passo. Quello stato è la sua memoria di lavoro:
-riassume «tutto ciò che ho letto finora».
+percorre una parola alla volta e tiene da parte una fila di numeri, sempre
+della stessa lunghezza, che aggiorna a ogni passo. Quella fila si chiama
+**stato nascosto** ed è la sua memoria di lavoro: riassume «tutto ciò che ho
+letto finora». Nascosto perché non è la risposta della rete, non si vede da
+fuori: è un appunto che la rete tiene per sé.
+
+Prima del disegno, due parole che ricorrono da qui in avanti. Il blocchetto di
+conti che si ripete si chiama **cella**, ed è l'unico pezzo di rete che esiste
+davvero. Dentro la cella ci sono dei numeri regolabili, ed è con quelli che si
+moltiplica tutto ciò che entra: si chiamano **pesi**, e sono ciò che la rete
+impara. Sono anche tutto ciò che la rete possiede: quando si dice che un
+modello «ha sette miliardi di parametri» si sta contando quei numeri lì.
+
+Ecco allora perché una rete ricorrente resta piccola anche su testi
+lunghissimi: la cella è una sola, e i suoi pesi sono sempre gli stessi al passo
+3 e al passo tremila. Il modo migliore per vederlo è «srotolarla», come nel
+disegno qui sotto: si disegna una copia della cella per ogni istante e si
+guarda lo stato passare di mano in mano.
 
 ```{figure} ../figures/rnn-srotolata.svg
 :name: fig-rnn-srotolata
-:alt: La stessa cella ricorrente ripetuta ai passi t-1, t e t+1, con lo stato nascosto passato in avanti da una cella all'altra; a ogni passo entra un input ed esce una predizione.
+:alt: La stessa cella ricorrente ripetuta ai passi t-1, t e t+1, con lo stato nascosto passato in avanti da una cella all'altra; a ogni passo entra una parola ed esce la scommessa sulla parola successiva.
 :width: 95%
 
-Una RNN «srotolata» nel tempo. È **sempre la stessa cella** (stessi pesi)
-applicata a ogni passo: riceve la parola di turno e il riassunto di tutto
-quello che è venuto prima, e produce il riassunto aggiornato più una
-predizione. Nella notazione delle formule: entrano $\mathbf{x}_t$ e
-$\mathbf{h}_{t-1}$, escono $\mathbf{h}_t$ e $\hat{\mathbf{y}}_t$.
+Una RNN «srotolata» nel tempo. È
+**sempre la stessa cella**, applicata a ogni passo: riceve la parola di turno e
+il riassunto di tutto quello che è venuto prima, e produce il riassunto
+aggiornato più la sua scommessa (qui indicata con $\hat{y}$: a seconda del
+compito sarà la parola successiva, o l'etichetta di quella corrente). Le tre
+copie del disegno sono tre momenti diversi, non tre pezzi diversi di rete.
 ```
-
-Il modo migliore per capirla è «srotolarla», come in {numref}`fig-rnn-srotolata`:
-disegniamo una copia della cella per ogni istante di tempo e vediamo lo stato
-passare di mano in mano.
 
 `````{tab} Elementare
 
@@ -85,9 +104,9 @@ gradiente non attraversa mai il confine, quindi **la rete non può imparare
 dipendenze più lunghe del blocco**. Lo stato in avanti sì, continua a
 propagarsi e a portare informazione; è il segnale di apprendimento che si
 ferma. Quando si legge che una ricorrente «fatica sulle dipendenze lunghe»,
-una parte del problema è matematica (il gradiente che svanisce, argomento della
-prossima sezione) e una parte è questa, cioè una scelta di ingegneria presa per
-far entrare l'addestramento in memoria.
+una parte del problema è matematica (il gradiente che svanisce, di cui parliamo
+qui sotto) e una parte è questa, cioè una scelta di ingegneria presa per far
+entrare l'addestramento in memoria.
 
 `````
 
@@ -134,20 +153,29 @@ Bengio, Patrice Simard e Paolo Frasconi {cite}`bengio1994learning`.
 
 ## LSTM e GRU: cancelli per la memoria
 
-La soluzione, proposta da Sepp Hochreiter e Jürgen Schmidhuber
-{cite}`hochreiter1997long`, è la **LSTM** (*Long Short-Term Memory*).
-L'intuizione: dare alla cella una memoria protetta (un anello in cui il segnale
-gira senza attenuarsi, che gli autori chiamano *constant error carousel*) e due
-cancelli che decidono che cosa scriverci dentro e che cosa leggerne.
+La soluzione la propongono nel 1997 Sepp Hochreiter e Jürgen Schmidhuber
+{cite}`hochreiter1997long`, e si chiama **LSTM** (*Long Short-Term Memory*,
+memoria a breve termine lunga: il nome è un gioco di parole, ed è appunto una
+memoria di lavoro che però dura).
 
-Il terzo cancello, quello che decide che cosa **cancellare**, non c'era nel
-lavoro del 1997 e arriva tre anni dopo, con Felix Gers, Jürgen Schmidhuber e
-Fred Cummins {cite}`gers2000learning`. Nasce da un difetto scoperto all'uso, ed
-è il rovescio esatto del problema di partenza: su un flusso che non finisce mai
-(un testo che continua, un segnale che arriva senza sosta) una memoria che non
-si azzera mai satura, e la cella smette di essere sensibile a qualunque novità.
-La forma con tre cancelli è quella che oggi si chiama LSTM senz'altra
-specificazione, ed è quella che segue.
+L'intuizione è di dare alla cella due memorie invece di una. La prima è quella
+che già c'era, il riassunto riscritto da capo a ogni passo. La seconda è un
+**taccuino protetto**, che a ogni passo non viene riscritto: viene ritoccato,
+con piccole aggiunte e piccole cancellature. Quello che ci si scrive resta lì
+finché qualcuno non decide di toglierlo, e proprio per questo un'informazione
+può sopravvivere a cento parole di distanza. A decidere che cosa scriverci e
+che cosa leggerne sono due **cancelli**, cioè due manopole che la rete impara
+ad aprire e chiudere da sé.
+
+Il terzo cancello, quello che decide che cosa **cancellare**, nel lavoro del
+1997 non c'era: arriva tre anni dopo, con Felix Gers, Jürgen Schmidhuber e Fred
+Cummins {cite}`gers2000learning`, e nasce da un difetto scoperto all'uso. Se il
+taccuino si può solo scrivere e mai cancellare, prima o poi si riempie, e da
+quel momento nessuna informazione nuova ci trova più posto. Su un testo che
+finisce va bene lo stesso; su un flusso che non finisce mai (una trasmissione,
+un sensore, una conversazione senza fine) è fatale. La forma con tre cancelli è
+quella che oggi si chiama LSTM senz'altra specificazione, ed è quella che
+segue.
 
 ```{figure} ../figures/lstm-gru-cancelli-memoria.svg
 :name: fig-cella-lstm
@@ -160,18 +188,52 @@ riscriverla da capo a ogni passo.
 ```
 
 Il dettaglio decisivo di {numref}`fig-cella-lstm` è la linea orizzontale che
-passa da sinistra a destra quasi indisturbata, e conviene dire perché sia
-decisiva. Una rete impara correggendo i propri numeri, e per correggerli deve
-poter risalire all'indietro fino al punto in cui l'errore è nato: quel segnale
-di ritorno si chiama **gradiente**, ed è il segnale che dice a ogni pezzo della
-rete quanto e in che verso spostarsi. In una RNN semplice il riassunto viene
-rimoltiplicato per gli stessi numeri a ogni passo, e ripetere una
-moltiplicazione cento volte porta o a zero o all'infinito, come succede a
-$0{,}9$ elevato a cento (quasi zero) e a $1{,}1$ elevato a cento (un numero
-enorme): il segnale di ritorno o si spegne o esplode, e la rete non impara più
-niente sulle cose lontane. Nella LSTM la strada principale è fatta invece di
-**somme**, e su una somma il segnale di ritorno passa senza attenuarsi: può
-viaggiare all'indietro per molti passi restando leggibile.
+passa da sinistra a destra quasi indisturbata, ed è quella il taccuino. Perché
+sia decisiva richiede tre passaggi, e vale la pena farli.
+
+**Primo: che cosa vuol dire «riscrivere il riassunto».** Fin qui l'abbiamo
+detto a parole, ma dentro il computer quel riassunto è una fila di numeri. E
+anche la parola nuova è una fila di numeri: prima di entrare nella rete, ogni
+parola viene sostituita dalle sue coordinate sulla mappa dei significati, quelle
+della sezione sugli embedding. Riscrivere il riassunto vuol dire allora
+moltiplicarlo per i pesi della cella e sommarci la fila di numeri della parola
+nuova. Non è una metafora: a ogni passo i numeri del riassunto vengono
+letteralmente moltiplicati per gli stessi numeri, quelli della cella, che è
+sempre la stessa.
+
+**Secondo: perché ripetere una moltiplicazione fa danni.** Una rete impara
+correggendo i propri pesi, e per correggerli deve poter risalire all'indietro
+fino al punto in cui l'errore è nato. Quel segnale di ritorno si chiama
+**gradiente**, e dice a ogni pezzo della rete quanto e in che verso spostarsi.
+Tornando indietro di cento passi, però, il gradiente attraversa cento volte la
+stessa moltiplicazione, e ripetere cento volte una moltiplicazione porta o a
+zero o all'infinito: $0{,}9$ elevato a cento fa $0{,}000027$, e $1{,}1$ elevato
+a cento fa quasi quattordicimila. Il segnale di ritorno o si spegne o esplode,
+e la rete non impara più niente sulle cose lontane.
+
+**Terzo: perché le somme salvano.** Nella LSTM la strada principale, quella del
+taccuino, funziona per **aggiunte**: al passo dopo il taccuino è quello di
+prima più una piccola correzione.
+
+E su una somma il segnale di ritorno passa intero. Il perché si tocca con mano
+con due numeri. Se scrivo $b = 0{,}9 \times a$ e poi cambio $a$ di un
+centesimo, $b$ cambia di nove millesimi: il cambiamento è arrivato attenuato, e
+ripetendo cento volte non arriva più niente, come abbiamo appena visto. Se
+invece scrivo $b = a + c$ e cambio $a$ di un centesimo, $b$ cambia di **un
+centesimo esatto**: la somma non tocca la parte che le passa attraverso, si
+limita ad aggiungerle qualcosa accanto. Il segnale di ritorno funziona allo
+stesso modo, all'incontrario: attraversando cento somme arriva com'era partito,
+attraversando cento moltiplicazioni per $0{,}9$ arriva ridotto a meno di un
+trentamillesimo.
+
+Guardando la figura si vede che una moltiplicazione c'è anche lì, sulla
+sinistra: è il cancello che dimentica, e serve appunto a cancellare. Ma è una
+sola per passo, e soprattutto è **una manopola che la rete controlla**: se
+quello che c'è scritto sul taccuino serve ancora, la rete tiene il cancello
+spalancato, quella moltiplicazione è per uno, e non attenua niente. Nella RNN
+semplice invece la moltiplicazione è obbligatoria e sempre la stessa, e nessuno
+può disattivarla. È tutta qui la differenza fra riscrivere un foglio da capo e
+annotare a margine.
 
 `````{tab} Elementare
 
@@ -189,6 +251,15 @@ dimentica, sembrava superfluo (perché mai insegnare a una memoria a
 cancellarsi?) e fu aggiunto solo tre anni dopo, quando ci si accorse che su un
 testo che non finisce mai il foglietto si riempie e non c'è più spazio per
 niente di nuovo. Saper dimenticare, si scoprì, è parte del saper ricordare.
+
+Esiste anche una versione più snella della stessa idea, proposta nel 2014 da
+Kyunghyun Cho e colleghi e chiamata **GRU** (*Gated Recurrent Unit*, «unità
+ricorrente con i cancelli»: il nome descrive esattamente quello che è). Gli
+interruttori sono due invece di tre, e il taccuino protetto non è separato dal
+foglietto dei riassunti, è lo stesso foglio. Meno pezzi, meno numeri da
+imparare, e nella maggior parte dei casi risultati paragonabili. Nel resto
+della sezione le due sigle compaiono spesso appaiate, LSTM e GRU: sono due
+tagli dello stesso vestito.
 
 `````
 
@@ -230,10 +301,17 @@ separato: spesso rende quanto la LSTM con meno parametri.
 
 ## In pratica, con PyTorch
 
-Tutta questa storia (cella ricorrente, gate, stato nascosto) in PyTorch si
-condensa in un piccolo `nn.Module`. Le tre celle (`nn.RNN`, `nn.LSTM`,
-`nn.GRU`) espongono la stessa interfaccia: si sostituiscono l'una all'altra
-cambiando una sola parola.
+Tutta questa storia (cella, cancelli, stato nascosto) in PyTorch si condensa in
+poche righe. Il compito che scegliamo per l'esempio è quello della sezione sulla
+classificazione: leggere una recensione e dire se è entusiasta o stroncatoria.
+
+Chi non programma può leggere il blocco come si legge una ricetta, perché i tre
+pezzi hanno i nomi delle cose di cui abbiamo appena parlato: `nn.Embedding` è la
+tabella che trasforma ogni parola nella sua fila di numeri, `nn.LSTM` è la cella
+con i suoi cancelli, `nn.Linear` è la bilancia finale che dall'ultimo riassunto
+ricava il verdetto. E siccome le tre celle disponibili, `nn.RNN`, `nn.LSTM` e
+`nn.GRU`, si usano tutte allo stesso modo, per cambiarne una basta cambiare
+quella parola lì e rilanciare.
 
 ```python
 import torch
@@ -252,11 +330,12 @@ class ClassificatoreSentiment(nn.Module):
         return self.out(h[:, -1])  # ultimo passo -> logit per CrossEntropyLoss
 ```
 
-Il training loop è quello che conosciamo dal capitolo su PyTorch, con
-`nn.CrossEntropyLoss` sui logit. E passare da `nn.LSTM` a `nn.RNN` o `nn.GRU`
-basta per confrontare le tre architetture sullo stesso problema: quasi sempre
-LSTM e GRU battono la RNN semplice, proprio perché non «dimenticano» le
-dipendenze lontane.
+Il ciclo di addestramento è quello che conosciamo dal capitolo su PyTorch. E
+provare, come si è detto, costa una parola: si scambia `nn.LSTM` con `nn.RNN` o
+con `nn.GRU` e si guarda quante risposte esatte escono. Su frasi lunghe LSTM e
+GRU battono quasi sempre la RNN semplice, e il perché lo abbiamo appena visto:
+il taccuino protetto lascia arrivare il segnale di ritorno anche da lontano,
+il foglietto riscritto da capo no.
 
 ## Il collo di bottiglia sequenziale
 
@@ -269,9 +348,15 @@ non di memoria ma di **calcolo**.
 Una RNN legge in ordine, come una persona: per calcolare il passo 100 deve
 prima aver fatto il 99, che dipende dal 98, e così via. Non puoi «saltare
 avanti». Su una frase lunga significa cento passi obbligatoriamente in fila,
-uno dopo l'altro. È come una catena di montaggio con una sola postazione:
-per quanti operai (o schede grafiche) tu abbia, devono aspettare il proprio
-turno.
+uno dopo l'altro.
+
+Perché è un guaio? Perché le macchine su cui girano queste reti sono fatte
+apposta per il contrario. Una **scheda grafica** (la stessa che nel computer di
+casa disegna i videogiochi, e che in gergo si chiama GPU) non è brava a fare un
+conto difficile: è brava a fare *migliaia di conti facili tutti insieme*.
+Metterle davanti una rete ricorrente è come una catena di montaggio con una
+postazione sola: per quanti operai tu abbia, devono aspettare il proprio turno,
+e la fila non si accorcia.
 
 `````
 
@@ -303,7 +388,9 @@ eliminare del tutto la ricorrenza e tenere solo l'attenzione; è la tesi di
 reso possibili i grandi modelli linguistici di oggi e a cui è dedicato un
 intero capitolo. Le RNN, LSTM e GRU restano però fondamentali: sono il modo
 più limpido per capire cosa significhi «memoria del contesto», e sopravvivono
-là dove i dati arrivano in streaming o le risorse sono scarse.
+dove i dati arrivano un pezzo alla volta e non finiscono mai (il segnale di un
+sensore, l'audio di un microfono acceso) o dove il computer è piccolo e la
+corrente poca.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
@@ -318,10 +405,12 @@ là dove i dati arrivano in streaming o le risorse sono scarse.
   pagina uno non resta quasi niente: sono le **dipendenze lontane** che si
   dissolvono.
 - La **LSTM** aggiunge al foglietto tre interruttori (dimentica, annota,
-  mostra) e una memoria protetta che non viene riscritta da capo a ogni passo:
-  così un'informazione può restare intatta finché serve. Curiosamente
-  l'interruttore che *dimentica* è arrivato tre anni dopo gli altri due, ed è
-  il più importante quando il testo non finisce mai.
+  mostra) e un taccuino protetto che non viene riscritto da capo a ogni passo,
+  solo ritoccato: così un'informazione può restare intatta finché serve.
+  Curiosamente l'interruttore che *dimentica* è arrivato tre anni dopo gli
+  altri due, ed è il più importante quando il testo non finisce mai. La **GRU**
+  è la stessa idea in versione più snella, due interruttori invece di tre e un
+  foglio solo invece di due.
 - Il limite che resta non è di memoria ma di **tempo**: una rete ricorrente
   legge in fila, e per fare il passo cento deve aver fatto il novantanove. È
   una catena di montaggio con una postazione sola, e non c'è computer che la

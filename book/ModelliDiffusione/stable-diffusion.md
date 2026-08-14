@@ -22,7 +22,10 @@ trasloco: la diffusione che conosciamo fa le valigie, lascia i pixel e si
 trasferisce in uno spazio compresso, decine di volte più piccolo, dove ogni
 passo di pulitura costa una frazione. Per capire il trasloco, però, dobbiamo
 prima conoscere il traslocatore: una rete che si chiama *variational
-autoencoder*, e che in questo libro incontriamo qui per la prima volta.
+autoencoder*. Il libro l'ha finora solo nominata di sfuggita, nel capitolo sul
+reinforcement learning profondo, e ne ha usato una variante fra i codec
+neurali dell'audio: qui la guardiamo per esteso, perché è lei che porta i
+mobili.
 
 ## Il prezzo dei pixel
 
@@ -64,7 +67,9 @@ passare da una strettoia. La variante che ci serve, il **variational
 autoencoder** (VAE) di Diederik Kingma e Max Welling {cite}`kingma2014auto`, è
 del 2014 (più vecchia della diffusione moderna e persino delle GAN) e tornerà
 più avanti nel libro. Qui ci serve l'essenziale: che cosa fa e perché rende lo
-spazio latente un posto dove si può lavorare.
+spazio latente un posto dove si può lavorare. Per parlarne useremo un'immagine
+che ci accompagnerà fino alla fine del capitolo: la rete che comprime è un
+**archivista** e la rappresentazione compatta che scrive è una **scheda**.
 
 ```{figure} ../figures/vae-auto-encoding-variational-bayes.svg
 :name: fig-vae
@@ -268,8 +273,8 @@ $16\,384$ valori invece di $786\,432$: è qui che si paga l'affitto ridotto
 dello spazio latente.
 
 **3. Condizionamento testuale.** $\tau$ è il text encoder di CLIP
-{cite}`radford2021learning`, il modello contrastivo incontrato nel capitolo
-sui Transformer: congelato, trasforma il prompt in una sequenza di 77
+{cite}`radford2021learning`, il modello contrastivo del capitolo su visione e
+linguaggio: congelato, trasforma il prompt in una sequenza di 77
 embedding da 768 dimensioni. Questi entrano nella U-Net tramite strati di
 **cross-attention** inseriti a più risoluzioni, la stessa identica formula del
 capitolo sui Transformer:
@@ -314,7 +319,7 @@ due conti, non il primo, ad aver cambiato chi può partecipare.
 ## Due bussole: quanto dare retta alla richiesta
 
 Manca un ingrediente, quello che decide *quanto* l'immagine obbedisce alla
-richiesta. L'occhiata alla commissione, da sola, è un suggerimento più che un
+richiesta. L'occhiata al testo, da sola, è un suggerimento più che un
 ordine: lasciato libero, il modello tende a produrre immagini plausibili che
 rispettano il testo solo in parte; il gatto c'è, l'acquerello si è perso per
 strada. Il correttivo standard, usato da Stable Diffusion e da praticamente

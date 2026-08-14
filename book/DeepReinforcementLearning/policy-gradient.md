@@ -101,7 +101,7 @@ theorem* {cite}`sutton2000policy`:
 
 $$
 \nabla_\theta J(\theta) =
-\mathbb{E}\Big[ \sum_{t=0}^{T} \nabla_\theta \log \pi_\theta(a_t \mid s_t)\, G_t \Big],
+\mathbb{E}\Big[ \sum_{t=0}^{T} \gamma^{\,t}\,\nabla_\theta \log \pi_\theta(a_t \mid s_t)\, G_t \Big],
 $$
 
 dove $G_t=\sum_{k\ge t}\gamma^{\,k-t} r_k$ è il ritorno osservato a partire dal
@@ -126,11 +126,13 @@ $$
 \theta \leftarrow \theta + \alpha\, \nabla_\theta \log \pi_\theta(a_t \mid s_t)\, G_t ,
 $$
 
-con $\alpha$ il passo di apprendimento. Un'avvertenza di rigore: il gradiente
-esatto dell'obiettivo scontato conterrebbe un fattore $\gamma^{\,t}$ davanti a
-ciascun addendo della somma; la prassi, che seguiamo qui, lo omette, ottenendo
-una direzione leggermente distorta rispetto a $\nabla_\theta J(\theta)$ ma che
-non soffoca il segnale dei passi lontani nel tempo. Chi ha letto la sezione
+con $\alpha$ il passo di apprendimento. E qui c'è un'avvertenza di rigore, perché
+l'aggiornamento appena scritto **non** è la formula del teorema: il $\gamma^{\,t}$
+davanti a ciascun addendo è sparito. Ometterlo è la prassi, ed è la prassi che
+seguiamo anche noi, ma va detto che cosa costa: la direzione che si ottiene è
+leggermente distorta rispetto a $\nabla_\theta J(\theta)$, in cambio di non
+soffocare il segnale dei passi lontani nel tempo, che con lo sconto esatto
+peserebbero quasi nulla. Chi ha letto la sezione
 sui bandit
 riconosce la struttura: il *bandit a gradiente* era esattamente questo, in un
 mondo con un solo stato, dove la softmax sulle preferenze $H(a)$ faceva le
@@ -173,12 +175,25 @@ passo e corregge subito la rotta. Impara più in fretta e in modo più stabile.
 
 Nell'architettura **Actor-Critic** convivono due reti. L'*attore* è la policy
 $\pi_\theta(a\mid s)$; il *critico* stima la funzione valore $V_\phi(s)$. Al
-ritorno grezzo $G_t$ si sostituisce il **vantaggio** (*advantage*), di solito
-l'errore di differenza temporale:
+ritorno grezzo $G_t$ si sostituisce il **vantaggio** (*advantage*), che è per
+definizione
 
 $$
-A_t = r_t + \gamma\, V_\phi(s_{t+1}) - V_\phi(s_t) .
+A^\pi(s,a) = Q^\pi(s,a) - V^\pi(s),
 $$
+
+cioè quanto quella singola azione vale più (o meno) della media delle azioni che
+$\pi$ giocherebbe in quello stato. Nessuno dei due termini è noto, quindi in
+pratica lo si *stima*, e la stima più economica è l'errore di differenza
+temporale:
+
+$$
+\hat A_t = r_t + \gamma\, V_\phi(s_{t+1}) - V_\phi(s_t) .
+$$
+
+Da qui in avanti scriveremo $A_t$ per questa stima, com'è d'uso in deep RL, ma
+vale la pena ricordare che è uno stimatore e non la definizione: coincide con
+$A^\pi$ solo se il critico ha ragione, cioè se $V_\phi = V^\pi$.
 
 $A_t$ misura di quanto l'azione compiuta ha superato le *aspettative*
 codificate dal critico: è positivo se l'esito è stato migliore del previsto. La
@@ -193,6 +208,11 @@ $$
 = b(s)\,\nabla_\theta 1 = 0 .
 $$
 
+Il primo passaggio usa l'**identità della log-derivata**,
+$\pi_\theta\,\nabla_\theta\log\pi_\theta = \nabla_\theta \pi_\theta$, che è la
+stessa che fa comparire il $\log$ nel teorema di poco fa; il secondo scambia la
+derivata con la somma. È scritto per azioni discrete, e nel continuo la somma
+diventa un integrale e lo scambio va giustificato, ma la conclusione non cambia.
 L'unica cosa che serve è che $b$ **non dipenda dall'azione**: qualunque
 funzione del solo stato si può sottrarre gratis. Sostituire il ritorno $G_t$ con
 $r_t+\gamma V_\phi(s_{t+1})$ è invece *bootstrapping*, e rende la stima
@@ -229,9 +249,9 @@ passi giorni a regolarne i parametri.
 :alt: "Dalla policy vecchia, al centro, si dipartono due frecce. La prima è un passo breve che resta dentro una fascia consentita disegnata attorno al punto di partenza, e viene accettata. La seconda è un salto lungo che esce dalla fascia: l'aggiornamento viene tagliato al bordo, e oltre quel bordo non porta più alcun vantaggio."
 :width: 84%
 
-Il guinzaglio di PPO. Non impedisce di migliorare: toglie il premio a chi
-prova a migliorare troppo in una volta, e così l'aggiornamento resta vicino
-alla policy che ha generato i dati.
+Il guinzaglio di PPO. Non impedisce di migliorare: toglie il premio a chi prova
+a migliorare troppo in una volta, per tenere l'aggiornamento vicino alla policy
+che ha generato i dati. È un incentivo, non un divieto, e la differenza conta.
 ```
 
 Il taglio disegnato in {numref}`fig-ppo-clipping` esiste perché i dati
@@ -241,9 +261,9 @@ nuova le somiglia; un passo troppo lungo userebbe dati che non descrivono più i
 comportamento dell'agente. La fascia disegnata attorno al punto di partenza è
 proprio quella somiglianza, misurata come rapporto fra la probabilità che la
 nuova strategia assegna a una mossa e quella che le assegnava la vecchia: un
-rapporto di $1$ vuol dire «non è cambiato niente», e la fascia consentita nel
-disegno va da $0{,}8$ a $1{,}2$, cioè permette di cambiare quella probabilità al
-massimo di un quinto per volta.
+rapporto di $1$ vuol dire «non è cambiato niente», e la fascia disegnata va da
+$0{,}8$ a $1{,}2$, cioè un quinto in meno e un quinto in più: oltre quel bordo
+l'obiettivo smette di premiare, e quindi di spingere.
 
 `````{tab} Elementare
 
@@ -274,18 +294,35 @@ già visto là: può assumere valori enormi e mandare in aria la stima. Il
 *clipping* **toglie il premio**, campione per campione, a chi spinge $\rho_t$
 fuori dall'intervallo $[1-\epsilon,1+\epsilon]$.
 
+Ma lo toglie **da un lato solo**, e quale lato dipende dal segno del vantaggio:
+è il dettaglio che il nome nasconde, e conviene fare il conto invece di fidarsi.
+Se l'azione è andata meglio del previsto ($A_t>0$) il $\min$ morde a destra:
+oltre $1+\epsilon$ l'obiettivo si appiattisce e il gradiente si annulla, mentre
+sotto $1-\epsilon$ il gradiente resta pieno, perché rendere *meno* probabile
+un'azione buona non è il rischio da cui ci si vuole difendere. Se l'azione è
+andata peggio del previsto ($A_t<0$) i due lati si scambiano: il taglio scatta
+sotto $1-\epsilon$, e sopra $1+\epsilon$ non scatta affatto. Con $\epsilon=0{,}2$,
+$A_t=-1$ e $\rho_t=5$, cioè un rapporto fuori scala di venticinque volte
+dall'estremo consentito, l'obiettivo vale $-5$ e la sua derivata rispetto a
+$\rho_t$ vale $-1$: gradiente intero, niente tosatura. Metà dei campioni fuori
+banda, insomma, non viene tosata affatto.
+
 Conviene dire con precisione che cosa questo garantisce, perché è meno di quanto
 il nome suggerisca. È un'euristica **del primo ordine e per campione**, non un
 vincolo: niente impedisce a $\rho_t$ di finire fuori dall'intervallo, il
-gradiente si annulla solo dove il campione è già stato tosato, e PPO fa più
+gradiente si annulla solo dove il campione è già stato tosato (e si è appena
+visto quanto poco spesso sia), e PPO fa più
 epoche di minibatch sugli stessi dati. Ancora prima: al primo passo di ogni
 aggiornamento la nuova policy coincide con la vecchia, tutti i rapporti valgono
 $1$ e **nulla è tosato**, quindi quel passo è esattamente quello dell'obiettivo
-non vincolato. Misurata sul serio, la regione di fiducia in divergenza di
-Kullback-Leibler non la tiene: Engstrom e colleghi
-{cite}`engstrom2020implementation` verificano che nessuno degli algoritmi
-esaminati la mantiene, PPO compreso, e nonostante PPO sia addestrato proprio
-con un obiettivo che tosa quei rapporti.
+non vincolato. E misurato sul serio il recinto non tiene: Engstrom e colleghi
+{cite}`engstrom2020implementation` verificano che **nessuno** dei tre algoritmi
+che confrontano riesce a tenere i rapporti dentro l'intervallo
+$[1-\epsilon,1+\epsilon]$, PPO compreso, che pure è addestrato con un obiettivo
+che quei rapporti li tosa. Attenzione però a quale recinto si sta misurando:
+questo è il vincolo sui rapporti, non la regione di fiducia in divergenza di
+Kullback-Leibler della formula qui sotto, che TRPO impone davvero, quasi per
+costruzione, e che gli stessi autori misurano e trovano rispettata.
 
 Detto così il tosaggio sembra un trucco, e invece è l'approssimazione
 economica di un'idea precisa che lo precede. **TRPO** (*Trust Region Policy
@@ -302,7 +339,7 @@ $$
 
 Il vincolo definisce una **regione di fiducia**, cioè l'intorno entro il quale
 l'approssimazione lineare dell'obiettivo è ancora credibile. La ragione per cui
-serve è quella che il capitolo ha già raccontato con la metafora del
+serve è quella che la sezione ha già raccontato con la metafora del
 guinzaglio: una policy non è un modello supervisionato qualunque, perché
 determina i dati che raccoglierà, e un passo troppo lungo non produce un errore
 recuperabile ma una policy che smette di visitare gli stati utili.
@@ -352,7 +389,9 @@ che lo esegue è spesso più larga della distanza fra due algoritmi.
 Finora la policy ha sempre risposto d'istinto: stato dentro, azione fuori, un
 passaggio nella rete. Ma un giocatore forte, prima di muovere, **pensa**:
 prova mentalmente qualche continuazione, valuta dove porta, sceglie. Quel
-pensare ha un algoritmo, si chiama **ricerca ad albero Monte Carlo** (MCTS), e
+pensare ha un algoritmo, si chiama **ricerca ad albero Monte Carlo** (MCTS,
+dalle iniziali inglesi; e «Monte Carlo», come al casinò, è il nome che i
+matematici danno ai metodi che fanno i conti tirando a sorte), e
 il libro lo nominerà spesso da qui in avanti (AlphaGo, AlphaZero, MuZero, e i
 modelli linguistici che ragionano esplorando più strade). Vale la pena vederlo
 una volta per bene, anche perché è un vecchio amico travestito.
@@ -362,9 +401,11 @@ una volta per bene, anche perché è un vecchio amico travestito.
 Il problema è che le continuazioni sono troppe. Agli scacchi, dopo tre mosse a
 testa, i seguiti sono milioni; nel Go, molti di più. Esaminarle tutte è
 impossibile, quindi bisogna guardare a fondo **solo dove conviene**. Ma per
-sapere dove conviene bisognerebbe aver già guardato. È lo stesso dilemma dei
-bandit a più braccia: sfruttare quello che sembra buono, o esplorare quello di
-cui si sa poco?
+sapere dove conviene bisognerebbe aver già guardato. È lo stesso dilemma delle
+slot machine del capitolo precedente (i «bandit a più braccia», che si chiamano
+così perché una slot machine è un bandito con una leva sola, e lì di leve ce ne
+sono tante): tirare quella che finora ha pagato meglio, o provarne una di cui si
+sa poco?
 
 MCTS lo risolve costruendo un albero delle possibilità **a poco a poco**,
 ripetendo migliaia di volte lo stesso giro di quattro mosse:
@@ -444,7 +485,9 @@ V(s_L) = (1-\lambda)\, v_\theta(s_L) + \lambda\, z_L ,
 $$
 
 dove $z_L$ è l'esito di un rollout giocato fino in fondo con una policy veloce e
-$\lambda = 0{,}5$ nella configurazione del match contro Fan Hui. Rete di valore
+$\lambda = 0{,}5$ (è il simbolo del paper, e non ha niente a che vedere con il
+$\lambda$ della *generalized advantage estimation* di poche pagine fa: qui è
+soltanto il peso con cui si mescolano due giudizi). Rete di valore
 e partita giocata a caso pesano quindi identico, che è un modo educato per dire
 che nel 2016 della rete non ci si fidava ancora abbastanza. La simulazione
 casuale sparisce del tutto solo con **AlphaGo Zero** (2017), dove la rete di
@@ -474,15 +517,18 @@ cosa.
 ### In pratica: le visite si concentrano
 
 Che l'albero cresca storto non è un modo di dire, ed è la cosa più facile da
-verificare. Prendiamo un albero giocattolo di profondità quattro con sedici
-foglie di valore noto e nascondiamo la migliore in mezzo alle altre.
+verificare. Prendiamo un albero giocattolo: due strade a ogni bivio e quattro
+bivi in fila, cioè $2\times2\times2\times2 = 16$ finali possibili, ognuno con il
+suo valore. La migliore la nascondiamo in mezzo alle altre.
 
 Una precauzione, prima di leggere i numeri, e vale per tutto il resto del
 capitolo. Un algoritmo che a ogni passo tira dei dadi produce, a ogni ripetizione
 dell'esperimento, un risultato diverso: un numero solo non è una proprietà
 dell'algoritmo, è una proprietà di quella ripetizione. Quindi la ricerca qui
-sotto si lancia **sessanta volte**, cambiando il seme del generatore casuale, e
-di ciò che ne esce si guardano la mediana e le code.
+sotto si lancia **sessanta volte**, cambiando ogni volta il numero da cui parte
+il generatore casuale (il *seme*), e di ciò che ne esce non si guarda un
+risultato, si guardano il valore di mezzo (la **mediana**: la metà delle
+sessanta prove sta sotto, l'altra metà sopra) e gli estremi.
 
 ```python
 import math
@@ -573,12 +619,15 @@ visite finisce sulla foglia migliore, contro il $6{,}2\%$ che le toccherebbe
 tirando a caso.
 
 Su sessanta semi, però, quella quota ha **mediana $50{,}5\%$** e oscilla fra il
-$16\%$ e l'$89\%$, con la metà centrale fra il $33\%$ e il $60\%$; le visite al
-ramo giusto hanno mediana $1582$ e vanno da $593$ a $1965$, cioè il $1922$ del
-seme $7$ è vicino al massimo osservato. Peggio, in **nove semi su sessanta** il
-ramo più visitato alla radice non è quello che contiene la foglia migliore: la
-regola «si gioca la mossa più visitata», che poco fa abbiamo presentato come la
-scelta più solida, in quei casi sbaglia.
+$16\%$ e l'$89\%$; scartando le quindici prove più basse e le quindici più alte,
+le trenta di mezzo stanno fra il $33\%$ e il $60\%$. Le visite al ramo giusto
+hanno mediana $1582$ e vanno da $593$ a $1965$, cioè il $1922$ del seme $7$ è
+vicino al massimo osservato. Peggio, in **nove semi su sessanta** il ramo più
+visitato alla radice non è quello che contiene la foglia migliore: la regola
+«si gioca la mossa più visitata», che poco fa abbiamo presentato come la scelta
+più solida, in quei casi sbaglia. Nove su sessanta è circa una volta su sette:
+abbastanza da ricordarsi che è una regola pratica e non un teorema, e che qui i
+giri di ricerca sono duemila mentre in una partita vera sono molti di più.
 
 Nessuna di queste cifre smentisce il punto della sezione, ed è esattamente
 questo il motivo per cui vanno riportate. La quota oscilla, la forma no:
@@ -595,6 +644,12 @@ algoritmo, ma una sintesi: una rete di policy che proponeva mosse promettenti,
 una rete di valore che stimava chi fosse in vantaggio, e la ricerca ad albero
 Monte Carlo appena vista, che usava entrambe per esplorare in profondità solo
 le linee più sensate.
+
+Con una prudenza che oggi fa sorridere. Per giudicare una posizione raggiunta in
+fondo alla ricerca, AlphaGo non si affidava soltanto alla rete di valore: ne
+faceva la media, mezzo e mezzo, con l'esito di una partita tirata avanti alla
+svelta e quasi a caso fino alla fine. Nel 2016 della rete non ci si fidava
+ancora abbastanza; un anno dopo basterà da sola.
 
 ```{figure} ../figures/alphago-2016.svg
 :name: fig-alphago
@@ -618,9 +673,9 @@ partite umane: parte dalle sole regole del Go e impara *tabula rasa*, dal
 nulla, soltanto affrontando copie di sé, fino a battere nettamente la versione
 che aveva sconfitto Lee Sedol. Nel 2018 **AlphaZero** {cite}`silver2018general`
 generalizza la ricetta: la stessa architettura, senza ritocchi per gioco,
-padroneggia Go, scacchi e shogi, superando i migliori programmi
-specializzati. È la dimostrazione più limpida di cosa nasce dall'unione di RL,
-ricerca ad albero e reti profonde.
+padroneggia Go, scacchi e shogi, e in tutti e tre batte il programma più forte
+del momento (nel Go, il suo stesso predecessore). È la dimostrazione più limpida
+di cosa nasce dall'unione di RL, ricerca ad albero e reti profonde.
 
 ## Un ultimo salto: allineare i modelli linguistici
 

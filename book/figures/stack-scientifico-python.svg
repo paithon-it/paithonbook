@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
   paithon book, figura: lo stack scientifico di Python come strati
-  sovrapposti. Ogni libreria poggia su quella sotto: Python (base) →
-  NumPy → Pandas/Matplotlib/scikit-learn → PyTorch e TensorFlow.
+  sovrapposti. Python (base) → NumPy → Pandas/Matplotlib/scikit-learn
+  poggiano davvero l'uno sull'altro; PyTorch e TensorFlow no, e infatti
+  sopra il secondo strato la freccia non c'e'.
   Palette-locked: box color cream, bordi terracotta/teal/ocra/warm-black,
   testo warm-black e grigi warm. Fondo trasparente (leggibile in light e
   dark). Nessun colore fuori palette.
@@ -21,8 +22,11 @@
   <polygon points="250,246 245,256 255,256" fill="#8B847C"/>
   <line class="conn" x1="250" y1="194" x2="250" y2="172"/>
   <polygon points="250,168 245,178 255,178" fill="#8B847C"/>
-  <line class="conn" x1="250" y1="106" x2="250" y2="84"/>
-  <polygon points="250,80 245,90 255,90" fill="#8B847C"/>
+  <!-- fra strato 2 e strato 3 NON c'e' una freccia: PyTorch e TensorFlow
+       hanno un motore di calcolo proprio e non poggiano sugli strati sotto.
+       La didascalia della pagina dice esattamente questo. -->
+  <text x="250" y="97" text-anchor="middle" font-family="Inter, system-ui, sans-serif"
+        font-size="10.5" fill="#5E5852">motore di calcolo proprio: non poggiano, si scambiano i dati</text>
 
   <!-- Strato 3 (deep learning): PyTorch e TensorFlow -->
   <rect class="box" x="30"  y="24" width="212" height="54" rx="6" stroke="#B5532C" stroke-width="2.5"/>

@@ -65,7 +65,13 @@ scritta in memoria. La transizione moltiplica **a destra**, e non è un
 dettaglio di scrittura: con lo stato fatto di colonne indicizzate dalle
 chiavi, è da quel lato che il fattore agisce sui canali di chiave (e che
 $\mathbf{I} - \beta_t \mathbf{k}_t \mathbf{k}_t^\top$ cancella la traccia lasciata da $\mathbf{k}_t$); a sinistra
-sbiadirebbe i canali dei valori, che è un'altra cosa.
+sbiadirebbe i canali dei valori, che è un'altra cosa. Nelle sezioni precedenti
+di questo capitolo la stessa transizione compariva **a sinistra**,
+$\mathbf{h}_t = \bar{\mathbf{A}}\mathbf{h}_{t-1} + \dots$, e non è una contraddizione: lì lo stato
+era il vettore colonna $\mathbf{h}$ di un singolo canale, cioè una riga di $\mathbf{S}$
+trasposta, e trasporre scambia i due lati. L'unico caso in cui il lato non
+conta davvero è quello di un fattore **scalare**, come l'$\alpha_t$ di Mamba-2,
+che commuta con tutto.
 
 Gli assi di progetto sono tre, e ciascuno ha un prezzo e un guadagno.
 
@@ -91,22 +97,27 @@ $$
 \underbrace{\alpha_t\,(\mathbf{I} - \beta_t \mathbf{k}_t \mathbf{k}_t^\top)}_{\text{Gated DeltaNet}}
 $$
 
-dove $\alpha_t \in (0,1)$ è un fattore di **oblio** e $\beta_t \in (0,1)$ la
+dove $\alpha_t$ è un fattore di **oblio** compreso fra $0$ e $1$ (un numero
+solo dove moltiplica l'identità, un valore per canale dove compare dentro
+$\mathrm{Diag}$) e $\beta_t \in (0,1)$ la
 **forza di riscrittura** della delta rule. Si va dall'accumulo puro (identità,
 non si dimentica nulla) al decadimento scalare uniforme, a quello diagonale
 per-canale, alla correzione mirata di Householder che *cancella* la vecchia
 associazione prima di scrivere la nuova, fino alla combinazione dei due
 (decadimento globale *più* correzione mirata) del Gated DeltaNet
-{cite}`yang2024gateddelta`. Una precisazione: i primi tre gradini sono
-nidificati (ciascuno contiene il precedente come caso particolare), ma il
-passo da $\mathrm{Diag}(\alpha_t)$ alla delta rule non è un'inclusione: un
-decadimento diagonale generico e la correzione mirata di Householder sono
-capacità **complementari**, nessuna delle due contiene l'altra, e il Gated
-DeltaNet esiste proprio per unirle. Lungo tutta la catena, però, il conto è lo
-stesso: si paga in complessità della transizione (via via più difficile da
-rendere parallelizzabile) ciò che si guadagna in *state tracking* e in *recall*
-preciso, un guadagno che nei primi tre gradini si accumula per inclusione e
-negli ultimi due si somma per complementarità.
+{cite}`yang2024gateddelta`. Due precisazioni, perché la fila non è una scala
+regolare. La prima: i primi tre gradini sono nidificati (ciascuno contiene il
+precedente come caso particolare), ma il passo da $\mathrm{Diag}(\alpha_t)$
+alla delta rule non è un'inclusione, perché il decadimento diagonale e la
+correzione mirata di Householder sono capacità **complementari** e nessuna
+delle due contiene l'altra. La seconda: quello che il Gated DeltaNet unisce
+non è la coppia appena nominata. Il suo $\alpha_t$ è uno **scalare**, quindi
+mette insieme il decadimento *globale* (il secondo gradino) con la delta rule,
+e contiene il secondo e il quarto ma non il terzo: il gating per canale della
+GLA resta fuori anche dall'ultimo gradino. Lungo tutta la catena, però, il
+conto è lo stesso: si paga in complessità della transizione (via via più
+difficile da rendere parallelizzabile) ciò che si guadagna in *state tracking*
+e in *recall* preciso.
 
 **3. Il grado di dipendenza dai dati.** La transizione può essere **fissa**
 (scelta a priori, uguale per ogni token, come il $\gamma$ di RetNet o il
@@ -181,8 +192,8 @@ pagliaio) e si chiede al modello di recuperarlo verbatim. In **MQAR**
 si interroga il modello su chiavi arbitrarie. Sono proprio i compiti su cui la
 dimensione dello stato diventa il collo di bottiglia. I progressi nella
 transizione aiutano (la delta rule di DeltaNet, che *riscrive* invece di
-accumulare, sposta in avanti la frontiera e ottiene risultati forti su MQAR
-proprio perché usa meglio lo spazio disponibile) ma non spostano il tetto:
+accumulare, sposta in avanti la frontiera proprio perché usa meglio lo spazio
+disponibile) ma non spostano il tetto:
 finché lo stato è di taglia fissa, per il retrieval esatto su contesti
 sufficientemente lunghi l'attenzione piena resta superiore. Non è una gara che
 le ricorrenze lineari possano vincere sul suo stesso terreno; è una gara che
@@ -193,13 +204,13 @@ conviene **non giocare da sole**.
 ## Il meglio dei due mondi: gli ibridi
 
 Se l'attenzione piena vince sul recall esatto e la ricorrenza lineare vince
-sul costo, la mossa ovvia è non scegliere. È esattamente ciò che, nella
-pratica, dà oggi i risultati migliori: le architetture **ibride**, che
+sul costo, la mossa ovvia è non scegliere. È la strada che ricorre in tutti i
+lavori recenti: le architetture **ibride**, che
 alternano **pochi strati di attenzione piena** a **molti strati lineari o
 SSM**. Pochi strati di biblioteca dove serve ritrovare alla lettera, molti
-strati di quaderno per tutto il resto, e il costo complessivo resta vicino a
-quello lineare, perché l'attenzione, essendo confinata a una minoranza di
-strati, pesa poco sul totale.
+strati di quaderno per tutto il resto. Il costo che cresce al quadrato non
+sparisce, ma lo paga una minoranza di strati, e finché il contesto non diventa
+smisurato pesa poco sul totale.
 
 `````{tab} Elementare
 
@@ -291,11 +302,12 @@ stesso scheletro sotto il prossimo nome che farà rumore.
   dimenticare nulla, sbiadire tutto in blocco, sbiadire cassetto per cassetto,
   oppure cancellare di mira la vecchia voce che sta per essere riscritta); e se
   queste scelte sono fisse per ogni parola oppure decise dalla parola stessa,
-  che è ciò che compra il ragionamento basato sul contenuto. Sbiadire cassetto
-  per cassetto e cancellare di mira la vecchia voce non sono uno il
-  perfezionamento dell'altro, fanno cose diverse, e c'è un'architettura che le
-  usa tutt'e due insieme: si chiama **Gated DeltaNet**, cioè DeltaNet con in
-  più la manopola dello sbiadire.
+  che è ciò che compra il ragionamento basato sul contenuto. Sbiadire e
+  cancellare di mira la vecchia voce non sono uno il perfezionamento
+  dell'altro, fanno cose diverse, e c'è un'architettura che le usa tutt'e due
+  insieme: si chiama **Gated DeltaNet**, cioè DeltaNet con in più la manopola
+  dello sbiadire, quella che sbiadisce tutto in blocco (lo sbiadire cassetto
+  per cassetto, invece, non ci sta dentro: resta un ramo per conto suo).
 - **La dualità** di Mamba-2 {cite}`dao2024mamba2` dimostra che uno *state space
   model* che sbiadisce tutto in blocco è esattamente un'attenzione lineare che
   guarda solo all'indietro: le due famiglie sono due viste della stessa cosa.
@@ -308,11 +320,12 @@ stesso scheletro sotto il prossimo nome che farà rumore.
   frase in un testo lunghissimo e chiedere di ripescarla (è *l'ago nel
   pagliaio*), e riempire la memoria di centinaia di coppie nome-numero per poi
   chiedere a bruciapelo il numero di un nome qualsiasi.
-- **Gli ibridi** sono lo stato dell'arte: pochi strati di attenzione piena (gli
-  archivisti, che ripescano la citazione esatta quando serve) intervallati a
-  molti strati a memoria fissa (i cronisti, che tengono il filo a costo basso).
-  Fanno così Jamba {cite}`lieber2024jamba`, Samba {cite}`ren2024samba` e le
-  varianti ibride di Gated DeltaNet {cite}`yang2024gateddelta` e Mamba-2.
+- **Gli ibridi** sono la ricetta che ricorre in tutti i lavori recenti: pochi
+  strati di attenzione piena (gli archivisti, che ripescano la citazione esatta
+  quando serve) intervallati a molti strati a memoria fissa (i cronisti, che
+  tengono il filo a costo basso). Fanno così Jamba {cite}`lieber2024jamba`,
+  Samba {cite}`ren2024samba` e le varianti ibride di Gated DeltaNet
+  {cite}`yang2024gateddelta` e Mamba-2.
 - **Prospettiva sobria**: non un «killer dei Transformer» ma un **ecosistema
   misto**. Le ricorrenze lineari danno il meglio sui testi lunghissimi, quando
   la memoria deve restare costante, sui dati che arrivano in flusso continuo e
@@ -335,9 +348,10 @@ stesso scheletro sotto il prossimo nome che farà rumore.
   struttura della transizione ($\mathbf{I} \to \alpha_t \mathbf{I} \to
   \mathrm{Diag}(\alpha_t) \to \mathbf{I}-\beta_t \mathbf{k}_t \mathbf{k}_t^\top
   \to \alpha_t(\mathbf{I}-\beta_t \mathbf{k}_t \mathbf{k}_t^\top)$, via via più
-  ricca, ma non è una scala in cui ogni gradino contiene il precedente: gli
-  ultimi due modi di aggiornare la memoria fanno cose diverse, e l'ultimo
-  gradino li mette insieme), e quanto è data-dipendente (fisso vs generato
+  ricca, ma non è una scala in cui ogni gradino contiene il precedente:
+  decadimento per canale e cancellazione mirata fanno cose diverse, e l'ultimo
+  gradino unisce quest'ultima con il decadimento **globale**, non con quello
+  per canale), e quanto è data-dipendente (fisso vs generato
   dall'input, che compra il ragionamento basato sul contenuto).
 - **La dualità SSD** di Mamba-2 {cite}`dao2024mamba2` dimostra che un SSM a
   transizione scalare ($\alpha_t \mathbf{I}$) è esattamente un'attenzione
@@ -349,11 +363,11 @@ stesso scheletro sotto il prossimo nome che farà rumore.
   quanto il valore cercato. L'attenzione piena, che conserva ogni token nella
   KV cache, resta superiore sul retrieval verbatim (benchmark *needle in a
   haystack*, MQAR): al prezzo del costo quadratico.
-- **Gli ibridi** sono lo stato dell'arte: pochi strati di attenzione piena
-  intervallati a molti strati lineari/SSM (Jamba {cite}`lieber2024jamba`, Samba
-  {cite}`ren2024samba`, le varianti ibride di Gated DeltaNet
-  {cite}`yang2024gateddelta` e Mamba-2). Recall esatto dove serve, costo lineare
-  per il resto.
+- **Gli ibridi** sono la ricetta che ricorre in tutti i lavori recenti: pochi
+  strati di attenzione piena intervallati a molti strati lineari/SSM (Jamba
+  {cite}`lieber2024jamba`, Samba {cite}`ren2024samba`, le varianti ibride di
+  Gated DeltaNet {cite}`yang2024gateddelta` e Mamba-2). Recall esatto dove
+  serve, costo basso per il resto.
 - **Prospettiva sobria**: non un «killer dei Transformer» ma un **ecosistema
   misto**. I punti di forza delle ricorrenze lineari sono il contesto
   lunghissimo, l'inferenza a memoria costante, lo streaming e i dispositivi con

@@ -24,5 +24,5 @@
   <circle cx="430" cy="100" r="8" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5"/>
   <text x="418" y="105" text-anchor="end" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="bold" fill="#1A1A1A">punto operativo</text>
   <!-- regione utile -->
-  <text x="255" y="300" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#2D5A5C">↑ throughput utile: dentro il budget</text>
+  <text x="265" y="262" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#2D5A5C">↑ throughput utile: dentro il budget</text>
 </svg>

@@ -45,28 +45,46 @@ andare più veloci e consumare meno.
 
 `````{tab} Superiore
 
-Le misure di riferimento sono quelle di Horowitz {cite}`horowitz2014computing`:
-in un nodo tecnologico a 45 nm, una moltiplicazione-accumulo in virgola mobile
-costa qualche picojoule (una moltiplicazione-accumulo in `float32` sta attorno
-a $4{,}6$), mentre **leggere un dato a 32 bit dalla DRAM ne costa circa 640**,
-cioè più di due ordini di grandezza. Un accesso a memoria *on-chip* costa
-invece quanto l'aritmetica stessa, dell'ordine dei $5$ pJ: il salto dei due
-ordini di grandezza è tutto nell'**uscita dal chip**. Finché il dato resta
-dentro il silicio, toccarlo costa quanto calcolarci sopra; appena esce, costa
-cento volte tanto. I valori assoluti dipendono dal nodo e dal progetto, ma il
-**rapporto** è la cosa robusta, e nel tempo è peggiorato: la densità dei
+Le misure di riferimento vengono da un'unica tabella: l'energia per operazione
+in un nodo tecnologico a 45 nm, compilata da Horowitz e resa nota dalla sua
+relazione sul problema energetico del calcolo {cite}`horowitz2014computing`.
+Vale la pena sapere che quella tabella circola in più versioni, e che la più
+citata non è quella della relazione ma la sua ripresa nella letteratura
+successiva sulle reti compresse: i singoli valori differiscono un poco (la
+moltiplicazione in virgola mobile a 32 bit è data ora $3{,}7$ ora $4$
+picojoule, la lettura dalla DRAM ora $640$ picojoule ora qualche nanojoule),
+mentre i **rapporti** non differiscono affatto, ed è quello che conta qui. Chi
+rifà i conti con l'altra versione trova il pareggio a sessantacinque FLOP per
+byte invece che a settanta: la morale non cambia, ma il numero sì, e conviene
+sapere da dove viene il proprio.
+
+Una moltiplicazione-accumulo in `float32` mette insieme una moltiplicazione
+($3{,}7$ picojoule) e un'addizione ($0{,}9$), quindi costa **poco meno di
+cinque picojoule**, mentre **leggere un dato a 32 bit dalla DRAM ne costa circa
+640**:
+più di due ordini di grandezza. Un accesso alla memoria che sta *dentro* il
+chip costa invece quanto l'aritmetica stessa, dell'ordine dei $5$ pJ, e il
+salto dei due ordini di grandezza è tutto nell'**uscita dal chip**. Finché il
+dato resta nel silicio, toccarlo costa quanto calcolarci sopra; appena esce,
+costa cento volte tanto. I valori assoluti dipendono dal nodo e dal progetto,
+ma il rapporto è la cosa robusta, e nel tempo è peggiorato: la densità dei
 transistor è migliorata più in fretta dell'energia per bit trasportato.
 
 Da un rapporto fra costi unitari, però, non segue ancora niente sul budget
-totale: per sapere dove finisce l'energia serve sapere **quante operazioni si
+totale. Per sapere dove finisce l'energia serve sapere **quante operazioni si
 fanno per ogni byte letto**, cioè l'intensità aritmetica del modello roofline,
 la stessa grandezza con cui la sezione sulle metriche di servizio ha distinto
-prefill e decode. Con i numeri qui sopra il pareggio cade attorno a $70$
-FLOP/byte. Al di sotto l'energia se ne va quasi tutta in movimento di dati, ed
-è il caso della generazione token per token, dove l'intensità è dell'ordine
-dell'unità e la quota spesa in aritmetica è di qualche punto percentuale. Al di
-sopra domina invece l'aritmetica: la lettura di un prompt lungo, o una passata
-di addestramento, stanno dall'altra parte del ginocchio. La leva del movimento
+prefill e decode. Il pareggio cade **attorno ai settanta FLOP/byte**, e il
+conto è breve: 640 picojoule ogni quattro byte fanno 160 pJ per byte, mentre
+una moltiplicazione-accumulo da $4{,}6$ pJ vale due operazioni, cioè $2{,}3$ pJ
+per FLOP.
+
+Al di sotto di quella soglia l'energia se ne va quasi tutta in movimento di
+dati, ed è il caso della generazione token per token, dove l'intensità è
+dell'ordine dell'unità e la quota spesa in aritmetica è di qualche punto
+percentuale. Al di sopra domina invece l'aritmetica: la lettura di un prompt
+lungo, o una passata di addestramento, stanno dall'altra parte del
+ginocchio. La leva del movimento
 dei dati è dunque enorme dove il carico è memory-bound, che è quasi tutta
 l'inferenza interattiva, e modesta dove non lo è. È la
 giustificazione economica di tutta l'ingegneria del capitolo sulle GPU: il
@@ -229,9 +247,8 @@ servizio più a lungo**.
 
 `````{tab} Superiore
 
-Si distingue fra carbonio **operativo** (quello della sezione *Dal joule al
-grammo*, $E \times \text{PUE} \times I$) e carbonio **incorporato**, cioè le
-emissioni
+Si distingue fra carbonio **operativo** (quello del conto di poco fa,
+$E \times \text{PUE} \times I$) e carbonio **incorporato**, cioè le emissioni
 di fabbricazione, trasporto e smaltimento, che si ammortizzano sulla vita utile
 del dispositivo. Il conto complessivo è
 
@@ -271,12 +288,13 @@ Nella corsa alla scala degli ultimi anni, ogni volta che addestrare è diventato
 più economico il risparmio è stato in buona parte reinvestito in modelli più
 grandi anziché incassato: è l'effetto di rimbalzo che va sotto il nome di
 paradosso di Jevons. Non è però una legge, ed è onesto dire che la questione è
-aperta: il consumo elettrico complessivo dei centri dati, per esempio, è
-rimasto sostanzialmente piatto per quasi un decennio a fronte di una crescita
-enorme del carico di lavoro, cioè in un caso in cui l'efficienza la crescita
-l'ha assorbita davvero. Il rimbalzo è un effetto documentato e frequente, non
-un destino: l'argomento non è contro l'efficienza, è contro il crederla
-sufficiente da sola.
+aperta. C'è almeno un caso, e non piccolo, in cui l'efficienza la crescita l'ha
+assorbita davvero: fra il 2010 e il 2018 il consumo elettrico complessivo dei
+centri dati del mondo è cresciuto di circa il sei per cento, mentre il lavoro
+che ci girava dentro si moltiplicava per più di sei. Otto anni, non un secolo, e
+prima dell'ondata che questo libro racconta: la misura serve a dire che il
+rimbalzo è un effetto documentato e frequente, non un destino. L'argomento non
+è contro l'efficienza, è contro il crederla sufficiente da sola.
 
 La seconda riguarda i numeri. Quasi tutte le cifre pubblicate su questo tema
 sono **stime**, ottenute da ipotesi su hardware, utilizzo e mix energetico che
@@ -308,8 +326,10 @@ molto.
   oggetto che si accende di rado. Là conviene consumare meno, qui durare di
   più.
 - Le cifre pubblicate sono quasi tutte stime, con ipotesi che raramente sono
-  dichiarate: si misura in casa propria. E l'efficienza da sola non basta,
-  perché finora ogni risparmio è stato reinvestito in modelli più grandi.
+  dichiarate: si misura in casa propria. E l'efficienza da sola non basta a far
+  scendere i consumi, perché il risparmio tende a essere reinvestito in modelli
+  più grandi invece che incassato. Tende, non deve: è successo anche il
+  contrario.
 ```
 `````
 
@@ -339,7 +359,9 @@ molto.
   acceleratore molto usato e **dominante** per un dispositivo poco usato: là si
   ottimizza il joule, qui la durata.
 - Le cifre pubblicate sono stime con ipotesi spesso implicite: si misura in
-  casa propria. E l'efficienza da sola non basta, perché storicamente il
-  risparmio è stato reinvestito in modelli più grandi.
+  casa propria. E l'efficienza da sola non basta, perché il risparmio tende a
+  essere reinvestito in scala (l'effetto di rimbalzo); ma non sempre, e fra il
+  2010 e il 2018 i centri dati sono cresciuti del sei per cento a fronte di un
+  carico moltiplicato per più di sei.
 ```
 `````

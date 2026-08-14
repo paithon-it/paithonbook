@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 400" role="img" aria-label="Due righelli paralleli e allineati: in alto le facce del dado equivalente (perplessità), con le tacche a 1, 2, 4, 8 e 16; in basso i bit di entropia, con le tacche a 0, 1, 2, 3 e 4. Le tacche si corrispondono verticalmente perché raddoppiare le facce costa un bit. Quattro linee verticali tratteggiate collegano i due righelli e segnano quattro sorgenti: la moneta truccata a 0,47 bit e 1,4 facce, la moneta equa a 1 bit e 2 facce, il dado a sei facce a 2,59 bit e 6 facce, un modello di linguaggio di perplessità 20 a 4,32 bit e 20 facce.">
+  <!-- righello superiore: le facce -->
+  <text x="180" y="112" text-anchor="end" font-family="Inter, sans-serif" font-size="12" font-weight="700" fill="#1A1A1A">quante facce ha</text>
+  <text x="180" y="130" text-anchor="end" font-family="Inter, sans-serif" font-size="12" font-weight="700" fill="#1A1A1A">il dado equivalente</text>
+  <line x1="200" y1="120" x2="800" y2="120" stroke="#C9A961" stroke-width="2.5"/>
+  <line x1="200" y1="120" x2="200" y2="108" stroke="#C9A961" stroke-width="2.5"/>
+  <line x1="330" y1="120" x2="330" y2="108" stroke="#C9A961" stroke-width="2.5"/>
+  <line x1="460" y1="120" x2="460" y2="108" stroke="#C9A961" stroke-width="2.5"/>
+  <line x1="590" y1="120" x2="590" y2="108" stroke="#C9A961" stroke-width="2.5"/>
+  <line x1="720" y1="120" x2="720" y2="108" stroke="#C9A961" stroke-width="2.5"/>
+  <text x="200" y="98" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#9A7B2E">1</text>
+  <text x="330" y="98" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#9A7B2E">2</text>
+  <text x="460" y="98" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#9A7B2E">4</text>
+  <text x="590" y="98" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#9A7B2E">8</text>
+  <text x="720" y="98" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#9A7B2E">16</text>
+
+  <!-- righello inferiore: i bit -->
+  <text x="180" y="294" text-anchor="end" font-family="Inter, sans-serif" font-size="12" font-weight="700" fill="#1A1A1A">quanti bit di</text>
+  <text x="180" y="312" text-anchor="end" font-family="Inter, sans-serif" font-size="12" font-weight="700" fill="#1A1A1A">sorpresa media</text>
+  <line x1="200" y1="300" x2="800" y2="300" stroke="#2D5A5C" stroke-width="2.5"/>
+  <line x1="200" y1="300" x2="200" y2="312" stroke="#2D5A5C" stroke-width="2.5"/>
+  <line x1="330" y1="300" x2="330" y2="312" stroke="#2D5A5C" stroke-width="2.5"/>
+  <line x1="460" y1="300" x2="460" y2="312" stroke="#2D5A5C" stroke-width="2.5"/>
+  <line x1="590" y1="300" x2="590" y2="312" stroke="#2D5A5C" stroke-width="2.5"/>
+  <line x1="720" y1="300" x2="720" y2="312" stroke="#2D5A5C" stroke-width="2.5"/>
+  <text x="200" y="330" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#2D5A5C">0 bit</text>
+  <text x="330" y="330" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#2D5A5C">1</text>
+  <text x="460" y="330" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#2D5A5C">2</text>
+  <text x="590" y="330" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#2D5A5C">3</text>
+  <text x="720" y="330" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#2D5A5C">4</text>
+
+  <!-- le quattro sorgenti -->
+  <line x1="261" y1="120" x2="261" y2="300" stroke="#5E5852" stroke-width="1.5" stroke-dasharray="4 4"/>
+  <circle cx="261" cy="120" r="5" fill="#C9A961" stroke="#1A1A1A" stroke-width="1.5"/>
+  <circle cx="261" cy="300" r="5" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="271" y="196" font-family="Inter, sans-serif" font-size="11.5" font-weight="700" fill="#1A1A1A">moneta truccata</text>
+  <text x="271" y="212" font-family="Inter, sans-serif" font-size="10.5" fill="#5E5852">0,47 bit, cioè 1,4 facce</text>
+
+  <line x1="330" y1="120" x2="330" y2="300" stroke="#5E5852" stroke-width="1.5" stroke-dasharray="4 4"/>
+  <circle cx="330" cy="120" r="5" fill="#C9A961" stroke="#1A1A1A" stroke-width="1.5"/>
+  <circle cx="330" cy="300" r="5" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="340" y="244" font-family="Inter, sans-serif" font-size="11.5" font-weight="700" fill="#1A1A1A">moneta equa</text>
+  <text x="340" y="260" font-family="Inter, sans-serif" font-size="10.5" fill="#5E5852">1 bit, cioè 2 facce</text>
+
+  <line x1="536" y1="120" x2="536" y2="300" stroke="#5E5852" stroke-width="1.5" stroke-dasharray="4 4"/>
+  <circle cx="536" cy="120" r="5" fill="#C9A961" stroke="#1A1A1A" stroke-width="1.5"/>
+  <circle cx="536" cy="300" r="5" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="546" y="196" font-family="Inter, sans-serif" font-size="11.5" font-weight="700" fill="#1A1A1A">dado onesto</text>
+  <text x="546" y="212" font-family="Inter, sans-serif" font-size="10.5" fill="#5E5852">2,59 bit, cioè 6 facce</text>
+
+  <line x1="762" y1="120" x2="762" y2="300" stroke="#5E5852" stroke-width="1.5" stroke-dasharray="4 4"/>
+  <circle cx="762" cy="120" r="5" fill="#C9A961" stroke="#1A1A1A" stroke-width="1.5"/>
+  <circle cx="762" cy="300" r="5" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="752" y="244" text-anchor="end" font-family="Inter, sans-serif" font-size="11.5" font-weight="700" fill="#1A1A1A">un modello di linguaggio</text>
+  <text x="752" y="260" text-anchor="end" font-family="Inter, sans-serif" font-size="10.5" fill="#5E5852">4,32 bit, cioè 20 facce</text>
+
+  <!-- morale -->
+  <text x="500" y="368" text-anchor="middle" font-family="Inter, sans-serif" font-size="11.5" fill="#5E5852">Un righello solo, letto in due modi: ogni bit in più raddoppia le facce.</text>
+  <text x="500" y="386" text-anchor="middle" font-family="Inter, sans-serif" font-size="11.5" fill="#5E5852">Le tacche cadono negli stessi punti; sopra i numeri raddoppiano, sotto crescono di uno.</text>
+</svg>

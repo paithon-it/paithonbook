@@ -13,17 +13,18 @@ sorveglia) è il codice. Nel machine learning il codice è spesso la parte
 
 Da questa asimmetria nasce un'idea che negli ultimi anni ha un nome:
 **data-centric AI**. La provocazione, resa popolare da Andrew Ng intorno al
-2021, è semplice: abbiamo passato un decennio a limare architetture per rubare
-un decimale di accuratezza a un *benchmark* (una prova standard su cui i
-modelli si confrontano, come un compito in classe uguale per tutti), mentre
-il guadagno più grande,
-nei sistemi reali, si ottiene quasi sempre migliorando i *dati* (etichette più
-coerenti, esempi più rappresentativi, meno rumore). Se è così, i dati non
-possono restare un allegato del codice: vanno trattati come **cittadini di
-prima classe**, versionati, testati e sorvegliati con la stessa disciplina. La
-sezione precedente ha stabilito che riprodurre un modello richiede tre
-artefatti: codice, dati, modello. Questa entra nel più grande e trascurato dei
-tre, e nel sistema di tubature che lo trasporta {cite}`huyen2022designing`.
+2021, è semplice. Per un decennio si sono limate le architetture per rubare un
+decimale di accuratezza a un *benchmark*, cioè a una prova standard su cui i
+modelli si confrontano, come un compito in classe uguale per tutti. Ma nei
+sistemi reali il guadagno più grande si ottiene quasi sempre migliorando i
+*dati*: etichette più coerenti, esempi più rappresentativi, meno rumore.
+
+Se è così, i dati non possono restare un allegato del codice: vanno trattati
+come **cittadini di prima classe**, versionati, testati e sorvegliati con la
+stessa disciplina. La sezione precedente ha stabilito che riprodurre un
+modello richiede tre artefatti: codice, dati, modello. Questa entra nel più
+grande e trascurato dei tre, e nel sistema di tubature che lo trasporta
+{cite}`huyen2022designing`.
 
 ## Versionare i dati
 
@@ -72,15 +73,15 @@ corrotto in transito.
 
 Nel repository si versiona allora solo un *puntatore* (un piccolo file di
 testo che contiene l'hash e l'indirizzo del magazzino remoto), mentre
-l'artefatto vero vive in un *object store* (un bucket S3, un disco di rete).
-Strumenti come DVC (*Data Version Control*) industrializzano esattamente
-questo pattern, ma il concetto è indipendente dal tool: è lo stesso meccanismo
-con cui `git` identifica i propri oggetti. Sopra i puntatori si costruisce
-infine il **lineage** (la *provenienza*): il grafo che lega ogni modello alla
-versione esatta dei dati e del codice che lo hanno generato. È ciò che
-permette, mesi dopo, di rispondere alla domanda più temuta in un audit («da
-dove viene questa predizione?») risalendo la catena fino al singolo dato
-grezzo.
+l'artefatto vero vive in un *object store*, cioè un archivio di rete che
+conserva blocchi di byte e li restituisce a chi ne conosce la chiave. Esistono
+strumenti che industrializzano questo
+schema, ma non aggiungono niente al concetto: è lo stesso meccanismo con cui
+`git` identifica i propri oggetti. Sopra i puntatori si costruisce infine il
+**lineage** (la *provenienza*): il grafo che lega ogni modello alla versione
+esatta dei dati e del codice che lo hanno generato. È ciò che permette, mesi
+dopo, di rispondere alla domanda più temuta in un audit («da dove viene questa
+predizione?») risalendo la catena fino al singolo dato grezzo.
 
 `````
 
@@ -94,11 +95,12 @@ le variabili in cui il modello «vede» il mondo; e solo alla fine si
 **addestra**. Una catena del genere si chiama **pipeline**, che alla lettera è
 una conduttura: il dato entra da un capo, attraversa una stazione dopo
 l'altra e ne esce pronto. Ognuno di questi passaggi usa gli strumenti di
-manipolazione dei dati del capitolo su Python (i filtri e i raggruppamenti di
-Pandas, la vettorizzazione di NumPy) ma il salto di qualità non è tecnico, è
-organizzativo: la catena deve essere **riproducibile** (rieseguendola sugli
-stessi dati grezzi si riottiene lo stesso dataset) e **orchestrata** (i
-passaggi si succedono in un ordine dichiarato, non a mano in un notebook).
+manipolazione dei dati del capitolo su Python, i filtri e i raggruppamenti di
+Pandas e la vettorizzazione di NumPy. Ma il salto di qualità non è tecnico, è
+organizzativo, e chiede due cose alla catena. Che sia **riproducibile**:
+rieseguendola sugli stessi dati grezzi si riottiene lo stesso dataset. E che
+sia **orchestrata**: i passaggi si succedono in un ordine dichiarato, non a
+mano in un notebook.
 
 ```{figure} ../figures/feature-engineering.svg
 :name: fig-feature-engineering
@@ -143,10 +145,11 @@ governabile. L'**idempotenza**: rieseguire uno stadio sugli stessi input
 produce lo stesso output, senza effetti collaterali accumulati (condizione per
 poter ripartire da metà catena dopo un errore). E la **materializzazione
 versionata** degli stadi intermedi, così che un cambiamento a valle non
-obblighi a ricalcolare tutto da capo. Orchestratori come Airflow, Dagster o
-Prefect gestiscono lo scheduling, le dipendenze e i tentativi di ripristino;
-ma, come per il versionamento, lo strumento è secondario rispetto al
-principio. Automatizzare l'intera catena (da dato grezzo a modello valutato)
+obblighi a ricalcolare tutto da capo. Il programma che tiene insieme il tutto
+si chiama **orchestratore**: decide in che ordine far girare gli stadi, quali
+possono andare in parallelo e cosa ritentare quando uno fallisce. Ma, come per
+il versionamento, lo strumento è secondario rispetto al principio.
+Automatizzare l'intera catena (da dato grezzo a modello valutato)
 con un comando solo è il cuore della *Continuous Delivery for Machine
 Learning* {cite}`sato2019continuous`: finché un pezzo della pipeline resta un
 rito manuale, l'intero sistema non è né riproducibile né rilasciabile in modo
@@ -211,13 +214,21 @@ di ML, dove si leggono poche colonne di tabelle larghe, è la voce dominante.
 **Compressione**: dentro una colonna i valori sono omogenei per tipo e spesso
 per contenuto, il che abilita codifiche specializzate (dizionario per le
 categorie a bassa cardinalità, run-length per i valori ripetuti, delta per i
-timestamp) prima ancora della compressione generica. Rapporti fra **due e
-dieci volte** rispetto al CSV equivalente sono ordinari, e la posizione dentro
-quell'intervallo la decidono proprio le codifiche appena elencate: una tabella
-di colonne categoriche a bassa cardinalità o ordinate sta in alto (e può
-superare il dieci), una di float casuali crolla verso il due, e una tabella
-mista come quelle su cui si addestra di solito sta nel mezzo, attorno a tre o
-quattro.
+timestamp) prima ancora della compressione generica. Rispetto al CSV
+equivalente il guadagno è di **qualche volta**, e a decidere quante è proprio
+la prima di quelle codifiche. Su tabelle da duecentomila righe, misurate qui,
+sei colonne di categorie con sei valori distinti stanno in un file **molte
+volte** più piccolo, perché il dizionario sostituisce ogni stringa con un
+indice: quante volte lo decide la lunghezza delle stringhe, e con nomi di città
+il rapporto arriva a diciannove. Sei colonne di numeri casuali con la virgola
+scendono a **poco più di due volte**, perché lì non c'è niente da riconoscere,
+e una tabella mista come quelle su cui si addestra di solito sta **attorno al
+tre**. Le colonne ordinate, che l'intuizione metterebbe in alto, non ci vanno,
+e la ragione è istruttiva: la codifica che le comprimerebbe davvero (memorizzare
+le differenze fra un valore e il precedente) **non è quella che le librerie
+scelgono da sole**. Chiedendola esplicitamente il guadagno raddoppia; lasciando
+fare al default resta modesto, perché il dizionario, su valori quasi tutti
+diversi, non ha niente da riusare.
 
 **Predicate pushdown**: Parquet memorizza per ogni gruppo di righe le
 statistiche di ciascuna colonna (minimo, massimo, conteggio dei nulli), quindi
@@ -236,11 +247,12 @@ rappresentazione **in memoria**, colonnare, indipendente dal linguaggio. Il suo
 valore è l'eliminazione della **serializzazione** ai confini: due processi, o
 due librerie in linguaggi diversi, che parlano Arrow si scambiano una tabella
 senza copiarla né convertirla. È la ragione per cui lo stesso formato compare
-sotto motori che non si somigliano affatto, ed è anche il motore dietro il tipo
-stringa di Pandas, che da pandas 3.0 è un tipo dedicato e, se PyArrow è
-installato, è **Arrow di serie**: la differenza sulle colonne testuali (che con
-il vecchio `object` di NumPy era sostanziale) non è più un'opzione da attivare,
-è il comportamento normale della libreria.
+sotto motori che non si somigliano affatto, ed è anche ciò che sta sotto il
+tipo stringa di Pandas. Vale la pena provarlo, perché è cambiato di recente e
+in silenzio: dalla versione 3 le colonne di testo hanno un tipo dedicato,
+appoggiato ad Arrow quando PyArrow è installato, e quella differenza (con il
+vecchio `object` di NumPy era sostanziale) non è più un'opzione da attivare, è
+il comportamento normale della libreria.
 
 La regola pratica, sintetica: **CSV per scambiare con un umano, Parquet per
 tutto il resto**; e se una tabella attraversa un confine di processo o di
@@ -575,19 +587,20 @@ accettarne i sottotipi.
 - **Versionare i dati**: `git` non basta (file grandi e binari); si usa
   l'**hash del contenuto** come indirizzo (*content-addressable storage*), da
   cui immutabilità, deduplicazione e **lineage** che lega ogni modello ai dati
-  esatti che l'hanno prodotto. DVC è un esempio, il concetto è indipendente dal
-  tool.
+  esatti che l'hanno prodotto. Gli strumenti che lo fanno cambiano; il
+  meccanismo è quello con cui `git` indirizza i propri oggetti.
 - Una **pipeline di dati** (estrazione → pulizia → feature → training) va
   resa **riproducibile e orchestrata** (un DAG di stadi idempotenti), per non
   degenerare nella *pipeline jungle*; automatizzarla per intero è il cuore della
   CD4ML {cite}`sato2019continuous`.
 - Il **formato** in cui i dati stanno fra uno stadio e l'altro non è un
   dettaglio: un formato **colonnare** (**Parquet**) legge solo le colonne che
-  servono, comprime molto meglio perché i valori simili sono vicini, salta
-  interi blocchi grazie alle statistiche, e ha uno **schema con i tipi** che al
-  CSV manca. **Arrow** fa la stessa cosa **in memoria**, e serve a passarsi una
-  tabella fra processi o linguaggi senza convertirla. CSV per un umano,
-  Parquet per tutto il resto.
+  servono, comprime meglio perché i valori simili sono vicini (misurato:
+  quasi venti volte su colonne categoriche, poco più di due su float casuali,
+  attorno al tre su una tabella mista), salta interi blocchi grazie alle
+  statistiche, e ha uno **schema con i tipi** che al CSV manca. **Arrow** fa la
+  stessa cosa **in memoria**, e serve a passarsi una tabella fra processi o
+  linguaggi senza convertirla. CSV per un umano, Parquet per tutto il resto.
 - Il **feature store** centralizza la definizione delle feature: stessa ricetta
   in addestramento (*offline*) e in produzione (*online*), riuso tra modelli,
   freschezza e **point-in-time correctness** contro il *leakage* temporale.

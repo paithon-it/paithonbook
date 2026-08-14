@@ -15,10 +15,11 @@ lui non c'era, e per lui non esiste una risposta già pronta. Non è colpa della
 formula, perché i pesi appresi si applicherebbero tali e quali anche a lui: un
 nodo in più cambia l'elenco di chi è collegato a chi soltanto lì attorno, dove
 arrivano i suoi archi. È la ricetta di addestramento a presupporre di avere
-davanti l'intero grafo. Il secondo limite è di **scala**: ad ogni strato ogni
-nodo somma *tutti* i suoi vicini, e i vicini dei vicini, e così via; su un
-grafo di miliardi di archi, dove qualche
-nodo-celebrità ha milioni di connessioni, questa somma esplode. Questa sezione
+davanti l'intero grafo. Il secondo limite è di **scala**: per calcolare un nodo
+servono *tutti* i suoi vicini, per calcolare quelli servono i vicini dei vicini,
+e così a ritroso di uno strato per volta; su un grafo di miliardi di archi, dove
+qualche nodo-celebrità ha milioni di connessioni, quel cono si allarga fino a
+inghiottire mezza rete. Questa sezione
 racconta le due idee che hanno tolto la GNN dal laboratorio e l'hanno messa in
 produzione da Pinterest a Google Maps (*GraphSAGE* e la *Graph Attention
 Network*) e poi fa il giro delle cose che oggi, con questi strumenti, si
@@ -90,10 +91,11 @@ Hamilton et al. ne propongono tre varianti:
   $\tilde{\mathbf{D}}^{-1}\tilde{\mathbf{A}}$, la normalizzazione **per righe**
   che la sezione precedente aveva scartato in favore della simmetrica
   $\hat{\mathbf{A}}$. Sulla catena di quattro nodi di quella sezione, con
-  $\mathbf{X} = (1,2,3,4)^\top$, i due operatori danno
+  $\mathbf{X} = (1,2,3,4)^\top$, un passo dei due operatori dà
   $(1{,}500,\, 2{,}000,\, 3{,}000,\, 3{,}500)$ contro
-  $(1{,}316,\, 2{,}075,\, 3{,}300,\, 3{,}225)$: un 14% di scarto già sul primo
-  nodo.
+  $(1{,}316,\, 2{,}075,\, 3{,}300,\, 3{,}225)$: sul primo nodo la media per
+  righe esce del $14\%$ più alta ($1{,}500 / 1{,}316$), e il conto si rifà a
+  mente, perché la prima riga è semplicemente $(1+2)/2$.
 - **pool**: ogni vicino passa per uno stesso piccolo strato denso, poi si
   prende il massimo elemento per elemento (*max-pooling*):
   $\max\{\sigma(\mathbf{W}_{\text{pool}}\,\mathbf{h}_u + \mathbf{b}) : u \in \mathcal{S}(v)\}$.
@@ -146,7 +148,7 @@ scelti a sorte; in quello di destra si tengono tutti, ma pesati.
 
 ```{figure} ../figures/gnn-graphsage-gat.svg
 :name: fig-gnn-graphsage-gat
-:alt: "A sinistra GraphSAGE: un nodo centrale con sei vicini, di cui solo tre campionati (pieni, archi solidi) e tre sbiaditi (archi tratteggiati); si aggrega solo il sottoinsieme campionato. A destra GAT: lo stesso nodo con gli stessi sei vicini tutti presenti, ma gli archi hanno spessore diverso, proporzionale al peso di attenzione: un vicino conta molto più degli altri."
+:alt: "A sinistra GraphSAGE: un nodo centrale con sei vicini, di cui solo tre campionati (pieni, archi solidi) e tre sbiaditi (archi tratteggiati); si aggrega solo il sottoinsieme campionato. A destra GAT: lo stesso nodo con gli stessi sei vicini tutti presenti, ma gli archi hanno spessore diverso, proporzionale al peso di attenzione, dal più grosso in alto a sinistra al più sottile in basso a sinistra."
 :width: 100%
 
 Due modi di guardare lo stesso vicinato. **GraphSAGE** (sinistra) ne
@@ -311,8 +313,9 @@ La scelta dell'aggregatore non è un dettaglio implementativo: decide il
 **potere espressivo** della rete, cioè quali grafi diversi essa riesce a
 distinguere. Il risultato di riferimento è di Xu, Hu, Leskovec e Jegelka nel
 2019 {cite}`xu2019powerful`, e lega le GNN a un classico test di isomorfismo,
-il **1-WL** di Weisfeiler–Lehman (noto anche come *color refinement*; la
-gerarchia $k$-WL, che il paper non usa, è strettamente più forte). Il test
+il **1-WL** di Weisfeiler–Lehman (noto anche come *color refinement*; le
+versioni di ordine superiore, $k$-WL, che il paper non usa, distinguono grafi
+che 1-WL confonde). Il test
 colora iterativamente i nodi impastando la propria etichetta con il
 *multinsieme* delle etichette dei vicini: è esattamente la struttura del
 message passing.
@@ -398,15 +401,17 @@ sistema che Pinterest mette in produzione nel 2018
 suggerire contenuti su un grafo bipartito di miliardi di *pin* e bacheche.
 PinSage è, nella sostanza, un GraphSAGE portato a scala web: campiona i vicini
 con brevi cammini casuali e li aggrega, girando su un grafo di tre miliardi di
-nodi. Come discusso nel capitolo sui sistemi di raccomandazione, raccomandare è
-*link prediction* su un grafo utente-prodotto, ed è lì che le GNN danno il meglio.
+nodi. Raccomandare, come si è detto all'inizio del capitolo, è *link
+prediction* su un grafo utente-prodotto, ed è il capitolo seguente, dedicato ai
+sistemi di raccomandazione, a riprendere il tema per intero.
 
 **Rilevamento frodi.** Le transazioni finanziarie formano un grafo (conti nei
 nodi, pagamenti negli archi) e le frodi vivono nelle *relazioni*: anelli di
 conti che si rimpallano denaro, account che gravitano attorno a un mulo. Un
 classificatore che guardi i conti uno per uno non lo vede; una GNN, che
-propaga segnale lungo gli archi, sì. È oggi uno strumento standard
-nell'antiriciclaggio e nella difesa dei pagamenti.
+propaga segnale lungo gli archi, sì. È il motivo per cui l'antiriciclaggio e la
+difesa dei pagamenti sono fra i primi luoghi in cui queste reti sono entrate in
+esercizio.
 
 **Mappe e traffico.** Dal 2020 le stime del **tempo di percorrenza in Google
 Maps** sono calcolate da una GNN sviluppata con DeepMind: la rete stradale è
@@ -497,17 +502,15 @@ meno.
 
 ## Graph Transformer: togliere il vincolo del vicinato
 
-Uno dei limiti appena elencati ha una radice **topologica**: il message passing
-fa parlare **solo i nodi collegati**, quindi l'informazione lontana deve
-attraversare molti strati e si strozza nei colli di bottiglia del grafo (è
-l'over-squashing). Viene naturale chiedersi cosa succeda a togliere quel
-vincolo, e la risposta arriva dall'altro capo del libro. Anticipiamola: cura
-quello e non l'altro. L'oversmoothing non ha la stessa radice, perché non è una
-questione di distanza ma una proprietà dell'operatore, e togliere il vincolo
-del vicinato non lo attenua, lo **peggiora**: su un grafo completo con cappi
-l'operatore normalizzato ha il secondo autovalore esattamente **zero**, cioè un
-solo passo azzera ogni differenza fra i nodi (sulla catena di quattro nodi
-valeva $0{,}729$: più il grafo è connesso, più il collasso è rapido).
+Uno dei limiti appena elencati, l'**over-squashing**, dipende da com'è fatto il
+grafo: il message passing fa parlare **solo i nodi collegati**, quindi
+l'informazione lontana deve attraversare molti strati e si strozza nei passaggi
+obbligati. Viene naturale chiedersi cosa succeda a togliere quel vincolo, e la
+risposta arriva dall'altro capo del libro. Anticipiamola, perché è meno lieta
+di come la si racconta di solito: cura quello e non l'altro. L'oversmoothing non nasce dalla distanza fra i nodi, ma
+dal fatto che a ogni giro si media con i vicini; e se i vicini diventano tutti,
+mediare è ancora più rapido a cancellare le differenze. Togliere il vincolo del
+vicinato, insomma, non lo attenua: lo **peggiora**.
 
 `````{tab} Elementare
 
@@ -555,8 +558,21 @@ un grafo qualunque invece che soltanto su una fila.
 Un **Graph Transformer** sostituisce l'aggregazione sui vicini con
 un'attenzione su **tutte** le coppie di nodi. Il beneficio è strutturale:
 ogni nodo raggiunge ogni altro in **un solo passo**, quindi l'over-squashing
-sparisce per costruzione e non serve profondità per avere portata. Il costo
-altrettanto: $O(N^2)$ nel numero di nodi, che su un grafo da milioni di nodi
+sparisce per costruzione e non serve profondità per avere portata.
+
+L'affermazione fatta sopra, che l'oversmoothing invece peggiora, si misura in
+una riga. Su un grafo completo con i cappi l'adiacenza $\tilde{\mathbf{A}}$ è
+$\mathbf{J}$, la matrice fatta di soli uno, tutti i gradi valgono $N$ e quindi
+$\hat{\mathbf{A}} = \tilde{\mathbf{D}}^{-1/2}\tilde{\mathbf{A}}
+\tilde{\mathbf{D}}^{-1/2} = \mathbf{J}/N$, il cui spettro è $1$ una volta e $0$
+le altre $N-1$ volte: il secondo autovalore è **esattamente zero**, e un solo
+passo porta tutti i nodi allo stesso valore.
+Sulla catena di quattro nodi della sezione precedente lo stesso autovalore
+valeva $0{,}729$, cioè servivano decine di passi. Più il grafo è connesso, più
+il collasso è rapido, e il grafo completo è il caso estremo.
+
+Il costo dell'attenzione piena è altrettanto strutturale del beneficio:
+$O(N^2)$ nel numero di nodi, che su un grafo da milioni di nodi
 non è praticabile senza le stesse approssimazioni sparse viste nel capitolo sui
 Transformer (e il cerchio si chiude, perché quelle approssimazioni erano
 descritte proprio come sparsificazione di un grafo).
@@ -585,11 +601,12 @@ nodo dopo una proiezione lineare
 ($\mathbf{p}_i^0 = \mathbf{C}^0\mathbf{p}_i + \mathbf{c}^0$ con
 $\mathbf{C}^0 \in \mathbb{R}^{d \times k}$, poi
 $\mathbf{h}_i^0 = \hat{\mathbf{h}}_i^0 + \mathbf{p}_i^0$), non si concatena: la
-proiezione serve proprio perché $k$ e $d$ non coincidono, ed è la stessa scelta
-fra sommare e concatenare che il capitolo sui Transformer discute per la
-codifica sinusoidale. Diverse implementazioni successive concatenano invece; e
-vale la pena notare che la codifica entra **solo allo strato d'ingresso**, non
-negli strati intermedi.
+proiezione serve proprio perché $k$ e $d$ non coincidono. È la stessa mossa che
+il capitolo sui Transformer descrive per la codifica sinusoidale, dove la firma
+della posizione si **somma** all'embedding del token invece di affiancarglisi.
+Diverse implementazioni successive concatenano invece; e vale la pena notare
+che la codifica entra **solo allo strato d'ingresso**, non negli strati
+intermedi.
 
 La giustificazione è quella già stabilita in questo capitolo: gli autovettori
 sono i modi di variazione del grafo ordinati per frequenza, e su un grafo a
@@ -635,9 +652,11 @@ canale per il lontano.
 Niente di tutto questo va preso sulla fiducia, e non c'è bisogno di prenderlo:
 si verifica su una catena di nodi, che è una sequenza travestita da grafo. Il
 conto fa due cose distinte, ed è importante tenerle separate, perché è
-esattamente confondendole che si arriva a dire più del vero: mostra che gli
-autovettori del laplaciano di una catena *sono* sinusoidi ordinate per
-frequenza, e mostra che *non* sono quelle di Vaswani.
+esattamente confondendole che si arriva a dire più del vero: mostra che le
+«frequenze» di una catena *sono* onde ordinate dalla più lenta alla più rapida,
+e mostra che *non* sono le onde con cui i Transformer segnano la posizione delle
+parole. Come per gli altri riquadri di codice del capitolo, chi non programma
+può saltarlo: la conclusione è nelle due righe di commento che lo seguono.
 
 ```python
 import numpy as np

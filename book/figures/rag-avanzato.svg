@@ -1,5 +1,5 @@
-<svg viewBox="0 0 680 380" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Pipeline di RAG avanzato: la domanda viene riscritta, poi cercata in parallelo con ricerca densa e sparsa, i risultati vengono fusi in una lista di candidati, un reranker li riordina per precisione e solo i primi passano al modello linguistico">
-  <rect x="0" y="0" width="680" height="380" fill="#F8F5EE"/>
+<svg viewBox="0 0 700 380" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Pipeline di RAG avanzato: la domanda viene riscritta, poi cercata in parallelo con ricerca densa e sparsa, i risultati vengono fusi in una lista di candidati, un reranker li riordina per precisione e solo i primi passano al modello linguistico">
+  <rect x="0" y="0" width="700" height="380" fill="#F8F5EE"/>
   <!-- Domanda -->
   <rect x="20" y="150" width="100" height="60" rx="8" fill="none" stroke="#1A1A1A" stroke-width="2"/>
   <text x="70" y="178" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">domanda</text>

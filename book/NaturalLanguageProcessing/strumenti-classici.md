@@ -9,35 +9,47 @@ scriveva «mi sento triste», ELIZA agganciava lo schema «mi sento X» e
 riassemblava i pezzi in «Da quanto tempo ti senti X?», seguendo regole scritte
 a mano da Weizenbaum stesso. Tutto qui.
 
-Prima dei modelli neurali che occuperanno il resto del capitolo, l'NLP era in
+Prima delle reti neurali che occuperanno il resto del capitolo, l'NLP era in
 larga parte questo: schemi, regole, conteggi. Sarebbe però un errore liquidare
-questi attrezzi come pezzi da museo. Sono ovunque, anche oggi: nel comando
-`grep` con cui i programmatori setacciano file da mezzo secolo, nel modulo web
-che ti avvisa che «l'indirizzo email non è valido», nella pulizia dei dati che
-(chiedete a chiunque lavori nel settore) occupa la parte più grossa di
-qualunque progetto reale. Prima di insegnare a una rete neurale a leggere,
-conviene imparare a usare la cassetta degli attrezzi.
+questi attrezzi come pezzi da museo. Sono ovunque, anche oggi: nel modulo di
+iscrizione che ti avvisa che «l'indirizzo email non è valido», nei comandi con
+cui i programmatori setacciano file da mezzo secolo, e soprattutto in quel
+lavoro poco raccontato che è **rimettere in ordine i dati** prima di darli in
+pasto a qualunque programma. Che poi vuol dire: togliere le righe doppie,
+uniformare le date scritte in quattro modi, accorgersi che «Milano» e «MILANO»
+sono la stessa città. Chiedete a chiunque lavori nel settore quanto tempo
+porta via: è la parte più grossa di qualunque progetto reale. Prima di
+insegnare a una rete neurale a leggere, conviene imparare a usare la cassetta
+degli attrezzi.
 
 ```{figure} ../figures/nlp-classico-era-llm.svg
 :name: fig-nlp-classico-vs-llm
-:alt: "Due approcci affiancati allo stesso problema. A sinistra la pipeline classica: una catena di stadi separati, ciascuno costruito e messo a punto a mano, dalla normalizzazione all'analisi fino alla risposta. A destra l'approccio a prompt: un solo modello che riceve l'istruzione in linguaggio naturale e produce direttamente la risposta."
+:alt: "Due catene di lavoro sovrapposte, per lo stesso risultato. In alto la strada classica, in quattro stadi: si raccolgono i dati, li si etichetta a mano, si addestra un modello, lo si valuta; il cartellino dice «settimane». In basso la strada a prompt, in tre stadi: si scrive l'istruzione con qualche esempio, risponde un modello generalista che nessuno ha addestrato per quel compito, si controlla l'uscita; il cartellino dice «ore». Sotto, tre righe mettono a confronto i costi delle due strade."
 :width: 100%
 
-Due modi di risolvere lo stesso compito. A destra c'è il modo di oggi: un
-unico modello a cui si scrive in italiano che cosa si vuole. A sinistra, una
-catena di passaggi separati, ciascuno costruito a mano. La colonna di sinistra
-non è obsoleta: è ispezionabile un passaggio alla volta, e quando serve sapere
-*perché* è uscita una certa risposta, resta l'unica delle due che lo dice.
+Due strade per lo stesso risultato, e due conti diversi. In alto quella
+classica: dati raccolti, etichettati a mano, un modello addestrato apposta e
+messo alla prova. In basso quella di oggi: si scrive l'istruzione in italiano,
+e risponde un modello che per quel compito non è stato addestrato. La prima
+chiede settimane prima di dare qualcosa e poi costa pochissimo a ogni testo;
+la seconda parte in poche ore e paga a ogni chiamata.
 ```
 
-Vale la pena tenere {numref}`fig-nlp-classico-vs-llm` in mente per tutta la
-sezione, perché il confronto non è fra vecchio e nuovo ma fra trasparente e
-opaco. Il testo che si scrive al modello unico della colonna di destra si
-chiama **prompt**, ed è la parola con cui si indica oggi qualunque richiesta
-fatta a un modello di linguaggio: la ritroveremo alla fine del capitolo. Gli
-strumenti della colonna di sinistra, quelli che seguono, si spiegano in una
-riga e si correggono a mano; è per questo che sopravvivono dentro i sistemi
-moderni, nei punti in cui serve una garanzia e non una probabilità.
+Il testo che si scrive al modello della seconda strada si chiama **prompt**,
+ed è la parola con cui si indica oggi qualunque richiesta fatta a un modello:
+la ritroveremo alla fine del capitolo. E si paga «a ogni chiamata» perché
+quel modello non sta sul vostro computer: sta sui server di qualcun altro, e
+ogni volta che gli mandate un testo scatta il tassametro.
+
+{numref}`fig-nlp-classico-vs-llm` mette a confronto tempi e costi, che è il
+modo in cui la scelta si presenta a chi deve consegnare un lavoro. Ma c'è una
+seconda ragione, e riguarda proprio gli attrezzi di questa sezione: si
+spiegano in una riga, si ispezionano un passaggio alla volta e si correggono a
+mano. Un modello vi dice che quell'indirizzo email è valido *quasi sempre*;
+un'espressione regolare o combacia o non combacia, e se sbaglia potete aprirla
+e vedere dove. Quando serve sapere *perché* è uscita una certa risposta, o
+serve una garanzia invece di un «molto probabilmente», sono ancora loro a
+stare dentro i sistemi moderni.
 
 ## Le espressioni regolari: descrivere uno schema, non una parola
 
@@ -47,17 +59,23 @@ CAP, tutti gli importi in euro. La risposta ha un nome intimidatorio,
 **espressioni regolari** (*regular expressions*, o *regex*): la descrizione di
 una *forma* invece che di una parola, e la si scrive con una riga di simboli.
 
-Il nome è intimidatorio e la storia è curiosa. Nascono negli anni Cinquanta dai
-lavori del logico Stephen Kleene, che studiava i modelli matematici dei neuroni
-di McCulloch e Pitts, cioè i primi neuroni artificiali, gli antenati delle reti
-del capitolo omonimo: le espressioni regolari e le reti neurali, gli attrezzi
-«vecchi» e quelli «nuovi» di questo capitolo, condividono l'atto di nascita. A
-portarle nei programmi fu Ken Thompson, uno dei padri del sistema operativo
-Unix, alla fine degli anni Sessanta: prima nell'editor QED e poi in `ed`, il
-primo editor di Unix. Da lì viene anche il nome del comando `grep`, quello con
-cui ancora oggi si cerca dentro un file da riga di comando: è la sigla di
-`g/re/p`, l'istruzione che in `ed` voleva dire «cerca ovunque (`g`)
-l'espressione regolare (`re`) e stampa (`p`)».
+Il nome è intimidatorio, e la storia è curiosa quanto basta a renderlo
+simpatico. Le espressioni regolari nascono negli anni Cinquanta, e non nascono
+per cercare nei testi: nascono per descrivere che cosa sa riconoscere una rete
+di neuroni artificiali. Il logico Stephen Kleene stava studiando i modellini
+matematici di neurone proposti nel 1943 da Warren McCulloch e Walter Pitts, gli
+stessi da cui parte il capitolo sulle reti neurali, e per dire quali sequenze
+di segnali una rete del genere sa distinguere si inventò questa notazione. Vale
+la pena fermarsi un secondo su questo: gli attrezzi «vecchi» e quelli «nuovi»
+di questo capitolo hanno lo stesso atto di nascita.
+
+A portarle dentro i programmi fu Ken Thompson, uno dei padri del sistema
+operativo Unix, alla fine degli anni Sessanta. Le mise in due programmi per
+scrivere testo, QED e poi `ed`, e da lì viene il nome di `grep`, il comando che
+i programmatori usano ancora oggi per cercare dentro un file digitandone il
+nome invece che con il mouse. `grep` è la sigla di `g/re/p`, l'istruzione che
+in `ed` voleva dire «cerca ovunque (`g`) l'espressione regolare (`re`) e stampa
+quello che trovi (`p`)».
 
 `````{tab} Elementare
 
@@ -75,6 +93,17 @@ lettera (qui voglio una cifra, qui una lettera qualsiasi, qui uno spazio).
 Quando un sito ti dice al volo che il numero di telefono che hai digitato non
 è valido, nove volte su dieci c'è un'espressione regolare che ha confrontato
 quello che hai scritto con lo schema atteso e ha trovato che non combacia.
+
+C'è però una cosa che questi superpoteri non sanno fare, e non per distrazione.
+Un'espressione regolare **non sa contare**. Scorre il testo da sinistra a
+destra e a ogni carattere ricorda solo in che punto dello schema si trova, non
+quante volte ci è già passata. Quindi non c'è modo di scriverne una che
+verifichi «ogni parentesi aperta ne ha una chiusa» quando le parentesi si
+possono annidare quanto si vuole: dovrebbe tenere il conto di quante ne ha
+aperte, e non ha dove segnarlo. Vale per le parentesi e vale per le frasi
+dentro le frasi, che sono la stessa cosa fatta di parole: «il gatto che dorme
+sul divano che ho comprato quando…». Per quelle serviranno gli attrezzi delle
+prossime sezioni.
 
 `````
 
@@ -112,14 +141,18 @@ applicato a un input ostile il tempo può degradare fino a essere esponenziale.
 
 `````
 
-In Python le espressioni regolari vivono nel modulo `re`. Prima di leggere il
-codice conviene avere sotto mano il minimo dizionario per decifrarlo, perché
-sono cinque simboli e poi si legge tutto: `\d` vuol dire «una cifra qualsiasi»,
-`{5}` vuol dire «cinque volte quello che precede», `{1,2}` vuol dire «una o due
-volte», le parentesi quadre elencano le lettere ammesse (`[oaie]` = «una fra
-queste quattro») e `\b` segna il confine di una parola, cioè impedisce di
-pescare un pezzo dentro una parola più lunga. Con questo, `\b\d{5}\b` si legge
-«cinque cifre isolate», ed è un CAP.
+In Python le espressioni regolari vivono in una cassetta di funzioni già
+pronte, che si chiama `re` e che il programma richiama con la prima riga,
+`import re`. Prima di leggere il codice conviene avere sotto mano il minimo
+dizionario per decifrarlo, perché sono cinque simboli e poi si legge tutto:
+`\d` vuol dire «una cifra qualsiasi», `{5}` vuol dire «cinque volte quello che
+precede», `{1,2}` vuol dire «una o due volte», le parentesi quadre elencano le
+lettere ammesse (`[oaie]` = «una fra queste quattro») e `\b` segna il confine
+di una parola, cioè impedisce di pescare un pezzo dentro una parola più lunga.
+Con questo, `\b\d{5}\b` si legge «cinque cifre isolate», ed è un CAP. Una
+convenzione e basta: la `r` che precede le virgolette, come in `r"\d{5}"`,
+serve solo a dire a Python di prendere le barre rovesciate alla lettera invece
+di interpretarle a modo suo.
 
 Mettiamo alla prova la nostra frase preferita, arricchita di qualche dettaglio
 da estrarre:
@@ -158,18 +191,24 @@ capitolo.
 
 ## Normalizzare il testo: decidere cosa è «la stessa parola»
 
-Il secondo attrezzo è meno appariscente ma altrettanto indispensabile. Un
-calcolatore è un pignolo assoluto: per lui `Muro`, `muro` e `MURO` sono tre
-parole diverse, perché confronta una lettera per volta e la `M` maiuscola non è
-la `m` minuscola. C'è di peggio, ed è il caso in cui il pignolo ha ragione da
-vendere e il risultato è comunque assurdo: `perché` può essere scritto in due
-modi che sullo schermo sono identici, o con una `é` sola, o con una `e` seguita
-da un accento a parte che le si posa sopra. Sono due modi di codificare lo
-stesso segno previsti entrambi da Unicode (la convenzione internazionale che
-assegna un numero a ogni carattere di ogni lingua del mondo), e per un
-calcolatore che confronta numeri quella parola è diversa da sé stessa. Prima di
-contare le parole di un testo (cosa che faremo, eccome, nella prossima
-sezione), bisogna dunque decidere quali varianti contare *insieme*. Questa
+Il secondo attrezzo è meno appariscente ma altrettanto indispensabile, e parte
+da un fatto che vale la pena mettere a fuoco adesso, perché regge tutto il
+capitolo: **per un calcolatore ogni lettera è un numero**. Esiste una
+convenzione internazionale, Unicode, che assegna un numero a ogni carattere di
+ogni lingua del mondo, e confrontare due parole vuol dire confrontare due file
+di numeri.
+
+Da qui la pignoleria. Per una macchina `Muro`, `muro` e `MURO` sono tre parole
+diverse: la `M` maiuscola e la `m` minuscola hanno numeri diversi, punto. C'è
+di peggio, ed è il caso in cui la macchina ha ragione da vendere e il risultato
+è comunque assurdo. La parola `perché` si può scrivere in due modi che sullo
+schermo sono identici: o con una `é` sola, che è un numero solo, o con una `e`
+seguita da un segno di accento a parte che le si posa sopra, e allora sono due
+numeri. Stesso disegno sulla pagina, contenuto diverso in memoria, e la parola
+risulta diversa da sé stessa.
+
+Prima di contare le parole di un testo, cosa che faremo eccome nella prossima
+sezione, bisogna dunque decidere quali varianti contare *insieme*. Questa
 scelta si chiama **normalizzazione**.
 
 `````{tab} Elementare
@@ -218,8 +257,14 @@ l'italiano il compromesso è quasi sempre favorevole.
 
 `````
 
-In Python bastano poche righe, senza librerie esterne, per una pipeline di
-normalizzazione essenziale:
+In Python bastano poche righe per una catena di normalizzazione essenziale. Il
+programma fa tre cose in fila: uniforma le codifiche (è la prima riga, quella
+che risolve il caso del `perché` scritto in due modi: `NFKC` è il nome della
+regola che sceglie sempre la versione a un carattere solo), manda tutto in
+minuscolo, butta via la punteggiatura e le parole-colla. Nella terza riga,
+`[^\w\s]` si legge «tutto ciò che **non** è né una lettera o cifra (`\w`) né
+uno spazio (`\s`)»: il `^` dentro le parentesi quadre rovescia l'elenco, e
+quindi quel pezzo di schema aggancia esattamente la punteggiatura.
 
 ```python
 import re
@@ -239,15 +284,20 @@ normalizza("Il gatto NERO salta sul muro!")
 ```
 
 Quando serve tutto questo? Quando si rappresenta il testo *contando le
-parole*: nei motori di ricerca classici e nei modelli a sacchetto di parole
-che vedremo nella prossima sezione, normalizzare bene fa la differenza tra
-trovare e non trovare un documento. I modelli neurali moderni, invece, hanno
-progressivamente smesso di buttare via l'informazione: maiuscole, accenti e
-desinenze *portano significato* («Rosa è rosa» perde qualcosa, tutto
-minuscolo), e i loro tokenizzatori (li incontreremo tra poche pagine)
-preferiscono conservare il testo com'è e spezzarlo in unità più piccole della
-parola. La normalizzazione aggressiva è un attrezzo da usare quando si conta,
-non un obbligo universale.
+parole*, ed è proprio quello che faremo nella prossima sezione: lì, e nei
+motori di ricerca classici, normalizzare bene fa la differenza tra trovare e
+non trovare un documento.
+
+Le reti neurali moderne, invece, hanno progressivamente smesso di buttare via
+l'informazione, perché maiuscole, accenti e desinenze *portano significato*.
+Mandate tutto in minuscolo e la frase «Rosa è rosa» diventa «rosa è rosa»:
+avete perso il nome proprio, e con lui la battuta. Al posto della potatura
+usano un taglio diverso, che conserva il testo com'è e lo spezza in unità più
+piccole della parola: *straordinariamente* non finisce nel dizionario intero,
+ci finiscono `stra`, `ordinaria` e `mente`, che ricorrono in mille altre
+parole. Come si scelgano quei pezzi è il tema di una sezione fra due, quella
+sui **tokenizzatori**. La normalizzazione aggressiva è dunque un attrezzo da
+usare quando si conta, non un obbligo universale.
 
 ## La distanza di edit: quante mosse da una parola all'altra
 
@@ -268,12 +318,13 @@ La distanza di edit è un gioco: quante mosse servono, al minimo, per
 trasformare una parola in un'altra? Le mosse permesse sono tre: **sostituire**
 una lettera, **cancellarne** una, **inserirne** una. Ogni mossa costa 1.
 
-Da *casa* a *cosa*: sostituisci la prima *a* con una *o*, una mossa. Distanza
-1. Da *carta* a *casa* servono invece due mosse: cancella la *r* (*carta* →
-   *cata*), poi sostituisci la *t* con una *s* (*cata* → *casa*). Distanza 2,
-   e puoi provare quanto vuoi, con meno di due mosse non ce la fai: le parole
-   hanno lunghezze diverse (quindi almeno una cancellazione è obbligatoria) e
-   una cancellazione da sola non basta mai a far combaciare il resto.
+Da *casa* a *cosa*: sostituisci la prima *a* con una *o*, una mossa sola,
+distanza 1. Da *carta* a *casa* servono invece due mosse: cancella la *r*
+(*carta* → *cata*), poi sostituisci la *t* con una *s* (*cata* → *casa*).
+Distanza 2, e puoi provare quanto vuoi, con meno di due mosse non ce la fai:
+le parole hanno lunghezze diverse (quindi almeno una cancellazione è
+obbligatoria) e una cancellazione da sola non basta mai a far combaciare il
+resto.
 
 Ecco il senso della misura: più piccola è la distanza, più le parole si
 somigliano. «Gatot» dista 2 da «gatto» ma 5 da «divano», e le cinque mosse si
@@ -282,10 +333,12 @@ possono contare: *gatot* → *digatot* (due inserimenti, la *d* e la *i*) →
 una *n*) → *divano* (cancella la *t* finale). Per questo il correttore
 scommette su «gatto».
 
-L'unica difficoltà vera è garantire che le mosse trovate siano davvero *il
-minimo*: per due parole corte si fa a occhio, per due parole lunghe no. Il
-computer allora disegna una griglia, con una parola in orizzontale e l'altra in
-verticale, e in ogni casella scrive quante mosse servono per arrivare fin lì:
+Ma attenzione: quella che abbiamo appena contato è *una* strada da cinque
+mosse, e nessuno ci ha ancora garantito che sia la più corta. È l'unica
+difficoltà vera di questo gioco. Per due parole di quattro lettere si fa a
+occhio; per due parole lunghe le strade sono troppe. Il computer allora disegna
+una griglia, con una parola in orizzontale e l'altra in verticale, e in ogni
+casella scrive quante mosse servono per arrivare fin lì:
 
 |   | (niente) | m | a | r | e |
 |---|---|---|---|---|---|
@@ -297,12 +350,25 @@ verticale, e in ogni casella scrive quante mosse servono per arrivare fin lì:
 
 La prima riga e la prima colonna sono facili: per passare da niente a *m*,
 *ma*, *mar*, *mare* servono 1, 2, 3, 4 inserimenti. Ogni altra casella si
-riempie guardando le tre vicine (sopra, a sinistra, in diagonale), prendendo la
-più piccola e aggiungendo 1, tranne quando le due lettere che si incrociano
-sono uguali: in quel caso si copia la diagonale senza pagare niente. Arrivati
-in fondo a destra si legge la risposta, **2**: da *muro* a *mare* bastano due
-sostituzioni, *u* → *a* e *o* → *e*. Il vantaggio della griglia è che nessuna
-scorciatoia può sfuggire, perché sono state provate tutte, e che il conto si
+riempie guardando le tre vicine, quella sopra, quella a sinistra e quella in
+diagonale in alto a sinistra: si prende la più piccola delle tre e si aggiunge
+1. C'è un solo sconto: se la lettera in cima alla colonna e quella all'inizio
+della riga sono la stessa, si copia la diagonale senza pagare niente, perché
+quelle due lettere già combaciano e non c'è nessuna mossa da fare.
+
+Facciamone una insieme, la casella della riga *u* e della colonna *a*. Sopra
+c'è 1, a sinistra c'è 1, in diagonale c'è 0. La *u* e la *a* sono lettere
+diverse, quindi niente sconto: prendo la più piccola delle tre, cioè 0, e
+aggiungo 1. Fa **1**, ed è il numero che vedete nella tabella. Provatene
+un'altra e vedrete che il meccanismo è sempre questo.
+
+Arrivati in fondo a destra si legge la risposta, **2**: da *muro* a *mare*
+bastano due sostituzioni, *u* → *a* e *o* → *e*. E adesso il punto delicato di
+prima, quello del minimo. La griglia lo garantisce perché ogni casella prende
+il **minimo** delle tre vicine, e quelle tre sono le uniche vie per arrivarci:
+l'ultima lettera o si cancella (arrivo da sopra), o si inserisce (arrivo da
+sinistra), o si mette in coppia con l'altra (arrivo dalla diagonale). Non c'è
+una quarta strada, quindi non c'è scorciatoia che possa sfuggire, e il conto si
 fa in un lampo anche su parole lunghe.
 
 `````
@@ -357,8 +423,9 @@ mossa dalla parola giusta.
 
 `````
 
-L'implementazione segue la ricorrenza alla lettera, tenendo in memoria solo la
-riga precedente della tabella:
+Il programma fa esattamente quello che avete fatto voi a mano sulla griglia,
+una riga per volta, e di tutta la tabella tiene in memoria solo la riga
+precedente, perché è l'unica che serve per calcolare quella dopo:
 
 ```python
 def levenshtein(a, b):
@@ -380,74 +447,97 @@ levenshtein("gatot", "gatto") # 2
 
 ## Dal refuso al correttore: l'idea del canale rumoroso
 
-Con la distanza di edit in mano, il correttore ortografico è a un passo. Ma il
-passo è più sottile di «suggerisci la parola più vicina». Se digito «cassa»,
-era un refuso per *casa*, per *cassia*, o era proprio *cassa*? La cornice
-giusta viene dalla **teoria dell'informazione**, la disciplina fondata da
-Claude Shannon nel 1948 {cite}`shannon1948mathematical` per studiare che cosa
-succede a un messaggio quando viaggia lungo un canale che lo può sporcare (una
-linea telefonica disturbata, una radio, un disco graffiato). L'idea che
-prendiamo da lì è questa: immaginate che chi scrive avesse in mente la parola
-giusta, e che questa sia passata attraverso un **canale rumoroso** (le dita, la
-tastiera, la fretta) che ogni tanto la storpia. Il correttore deve risalire il
-canale, e lo fa in due tempi. Prima si fa una lista corta di parole
-*plausibili*: quelle a distanza di edit 1 o 2 da ciò che è arrivato. Il 2 non è
-una legge di natura, è una scelta pratica di chi costruisce il correttore, e
-poggia su un dato: la stragrande maggioranza dei refusi sta a una sola mossa
-dalla parola giusta, e allargare la ricerca a 3 farebbe entrare nella lista
-migliaia di candidati per pochissimi refusi in più. Poi, dentro quella lista,
-si sceglie la parola che meglio bilancia due fattori: quanto è *frequente*
-nella lingua, e quanto è *facile* che il rumore l'abbia trasformata proprio in
-ciò che si legge. È un'idea messa in pratica già nel 1990 da Mark Kernighan,
-Kenneth Church e William Gale con un correttore puramente statistico[^kern], ed
-è la stessa logica del vostro telefono: «gatot» viene corretto in «gatto»
-perché *gatto* è frequente e lo scambio di due lettere adiacenti è un errore di
-battitura tipicissimo.
+Con la distanza di edit in mano, il correttore ortografico sembra fatto:
+suggerisci la parola più vicina e via. Non funziona, e basta un esempio per
+capire perché. Digito «pesca», e la parola più vicina, a distanza 1, è «pesce»;
+ma «pesca» esiste, ed è quasi sempre proprio quello che volevo scrivere. La
+vicinanza da sola non basta mai: bisogna anche chiedersi *quanto è verosimile
+che io abbia sbagliato in quel modo*.
+
+La cornice giusta viene dalla **teoria dell'informazione**, la disciplina
+fondata da Claude Shannon nel 1948 {cite}`shannon1948mathematical`. Shannon
+studiava che cosa succede a un messaggio quando viaggia lungo un canale che lo
+può sporcare: una linea telefonica disturbata, una radio, un disco graffiato.
+Il correttore prende in prestito quell'immagine. Chi scrive aveva in mente la
+parola giusta; poi quella parola è passata dentro un **canale rumoroso** (le
+dita, la tastiera, la fretta) che ogni tanto la storpia. Correggere vuol dire
+risalire il canale e indovinare che cosa c'era all'ingresso.
+
+Si fa in due tempi.
+
+**Primo tempo: una lista corta di sospetti.** Ci si tengono le parole del
+vocabolario a distanza di edit 1 o 2 da quello che è arrivato. Il 2 non è una
+legge di natura, è una scelta pratica, e poggia su un dato: la stragrande
+maggioranza dei refusi sta a una sola mossa dalla parola giusta. Allargare a 3
+farebbe entrare migliaia di candidati per pochissimi refusi in più.
+
+**Secondo tempo: il confronto fra i sospetti.** A ogni candidato si danno due
+voti e li si **moltiplica**, come si fa per due cose che devono capitare
+insieme. Il primo voto è quanto quella parola è frequente nella lingua; il
+secondo è quanto è facile che il rumore l'abbia trasformata proprio in ciò che
+si legge. Quest'ultimo non lo decide nessuno a mano: si conta, su un archivio
+di refusi veri, quante volte una certa svista è capitata davvero. Prendiamo
+«gatot». Il candidato *gatto* è frequente (diciamo una parola su ventimila) e
+l'errore che servirebbe è lo scambio di due lettere vicine, che è la svista più
+comune che esista, diciamo una volta su venti. Il candidato *gatot* così com'è,
+se anche fosse una parola, sarebbe rarissimo. Il primo prodotto è enormemente
+più grande del secondo, e il telefono scrive *gatto*.
+
+È un'idea messa in pratica già nel 1990 da Mark Kernighan, Kenneth Church e
+William Gale, con un correttore che non conteneva nemmeno una regola di
+grammatica: solo conteggi[^kern].
 
 [^kern]: Il nome di battesimo qui non è un vezzo. Mark D. Kernighan, degli AT&T
 Bell Laboratories, non va confuso con Brian W. Kernighan, coautore del
-linguaggio C e uno degli artefici di quell'Unix da cui vengono `ed` e `grep`,
-raccontati poche pagine fa: stesso cognome, stessi laboratori, argomenti
-confinanti. L'articolo del 1990 è *A Spelling Correction Program Based on a
-Noisy Channel Model*, presentato a COLING.
+linguaggio di programmazione C e uno degli artefici di quell'Unix da cui
+vengono `ed` e `grep`, raccontati poche pagine fa: stesso cognome, stessi
+laboratori, argomenti confinanti. L'articolo del 1990 è *A Spelling Correction
+Program Based on a Noisy Channel Model*.
 
-La distanza di edit, del resto, non corregge solo refusi: varianti pesate
-della stessa ricorrenza allineano sequenze di DNA in bioinformatica e
-deduplicano anagrafiche («Giovanni Rossi» contro «Givanni Rossi») nei database
-di mezzo mondo. E non abbiamo finito di incontrarla: la ritroveremo nel
-capitolo sul riconoscimento vocale, dove (contata a livello di parola invece
-che di lettera) misura gli errori dei trascrittori automatici con la metrica
-WER. Chi volesse approfondire l'intera cassetta degli attrezzi di questa
-sezione trova la trattazione di riferimento in Jurafsky e Martin
-{cite}`jurafsky2026speech`.
+La griglia della distanza di edit, del resto, non corregge solo refusi. Con
+qualche ritocco (per esempio facendo costare più di 1 certe mosse) la stessa
+tabella mette in fila due sequenze di DNA in biologia, e ritrova le persone
+registrate due volte in un archivio, «Giovanni Rossi» contro «Givanni Rossi».
+E non abbiamo finito di incontrarla: tornerà nel capitolo sul riconoscimento
+vocale come metro di giudizio dei programmi che trascrivono il parlato. Lì le
+mosse non si contano più sulle lettere ma sulle parole, cioè quante parole un
+programma ha sbagliato, saltato o aggiunto rispetto a quello che era stato
+detto davvero; il rapporto fra queste e il totale è il **WER**, *word error
+rate*, il tasso di errore per parola. Chi volesse approfondire l'intera
+cassetta degli attrezzi di questa sezione trova la trattazione di riferimento
+in Jurafsky e Martin {cite}`jurafsky2026speech`.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
 - Un'**espressione regolare** descrive una *forma* («cinque cifre di fila»),
   non una parola precisa: è la funzione Trova con i superpoteri. Perfetta per
-  estrarre e per controllare che un dato sia scritto bene, incapace (e non per
-  distrazione, per un limite matematico) di seguire frasi dentro frasi e di
-  capire un significato.
+  estrarre e per controllare che un dato sia scritto bene, incapace di capire
+  un significato e incapace, per un limite preciso e non per distrazione, di
+  seguire le frasi dentro le frasi: per farlo dovrebbe tenere il conto di
+  quante ne ha aperte, e non sa contare.
 - ELIZA, `grep`, il modulo che vi dice che l'email non è valida: cercare
   schemi è l'NLP «a regole», ed è ancora ovunque nel lavoro di ripulire i dati.
 - **Normalizzare** vuol dire decidere che cosa contare come «la stessa
   parola»: tutto minuscolo, via le parole-colla, e le forme di uno stesso
   verbo raggruppate. Lo **stemming** lavora di forbici (taglia la coda), la
   **lemmatizzazione** di dizionario (*andavamo* → *andare*).
-- Si normalizza con decisione quando si *conta* (motori di ricerca, sacchetto
-  di parole). I modelli neurali di oggi preferiscono conservare il testo com'è
-  e spezzarlo in pezzi più piccoli della parola: è il tema della prossima
-  sezione.
+- Si normalizza con decisione quando si *conta*, ed è quello che faremo nella
+  prossima sezione (motori di ricerca, sacchetto di parole). I modelli neurali
+  di oggi preferiscono invece conservare il testo com'è e spezzarlo in pezzi
+  più piccoli della parola: come si scelgono quei pezzi è il tema della sezione
+  sui tokenizzatori, due più avanti.
 - La **distanza di edit** è il numero minimo di mosse (sostituisci, cancella,
   inserisci) per passare da una parola all'altra: *gatot* dista 2 da *gatto* e
   5 da *divano*. Si calcola riempendo una griglia, senza che nessuna
   scorciatoia possa sfuggire.
-- Il **correttore ortografico** la usa dentro l'idea del *canale rumoroso*: fra
-  le parole vicine a quella digitata vince quella frequente che il rumore delle
-  dita trasforma facilmente in ciò che si è letto. La stessa distanza, contata
-  sulle parole invece che sulle lettere, tornerà nel capitolo sul
-  riconoscimento vocale per misurare gli errori di una trascrizione.
+- Il **correttore ortografico** la usa dentro l'idea del *canale rumoroso*:
+  prima si fa la lista corta delle parole vicine a quella digitata, poi si dà a
+  ciascuna due voti e li si moltiplica. Primo voto: quanto quella parola è
+  comune. Secondo voto: quanto è facile che un dito distratto la trasformi
+  proprio in ciò che è arrivato. Vince il prodotto più alto. La stessa
+  distanza, contata sulle parole invece che sulle lettere, tornerà nel capitolo
+  sul riconoscimento vocale per misurare gli errori di una trascrizione.
 ```
 `````
 
@@ -464,8 +554,9 @@ sezione trova la trattazione di riferimento in Jurafsky e Martin
   fisse, la **lemmatizzazione** risale alla forma di dizionario
   (*andavamo* → *andare*).
 - Normalizzare in modo aggressivo serve quando si *conta* (ricerca,
-  *bag-of-words*); i modelli neurali moderni preferiscono conservare il testo e
-  spezzarlo in unità sotto la parola: è il tema della prossima sezione.
+  *bag-of-words*: la prossima sezione); i modelli neurali moderni preferiscono
+  conservare il testo e spezzarlo in unità sotto la parola, ed è il tema della
+  sezione sui tokenizzatori, due più avanti.
 - La **distanza di Levenshtein** {cite}`levenshtein1966binary` è il numero
   minimo di inserzioni, cancellazioni e sostituzioni tra due stringhe; si
   calcola per programmazione dinamica in tempo $O(nm)$.

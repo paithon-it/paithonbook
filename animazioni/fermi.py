@@ -33,9 +33,33 @@ indietro in silenzio: per questo c'e' `--verifica`, e per questo controlla
 anche che i tre fotogrammi **siano diversi fra loro**. Tre immagini identiche
 passerebbero qualunque controllo sull'esistenza dei file e non
 racconterebbero niente.
+
+## Perche' un'impronta e non una data
+
+Perche' le date, qui, mentono in tutti e due i modi in cui si possono leggere.
+
+La **data di modifica** del file non sopravvive a un `git checkout`: in CI
+l'albero viene scritto tutto nello stesso istante, quindi ogni file risulta
+coetaneo di ogni altro e il confronto diventa un sorteggio. In locale il
+controllo passava e sul runner dichiarava «22 fermi immagine piu' vecchi
+dell'animazione» su un albero che nessuno aveva toccato.
+
+La **data del commit** e' meglio ma non basta: se i PNG e la loro animazione
+finiscono in due commit diversi (succede quando un `git add` largo di un'altra
+sessione porta dentro i file a meta' lavoro), i fermi possono risultare
+committati *prima* della figura da cui sono stati generati, e il controllo
+grida al lupo su una terzina perfettamente allineata.
+
+Quello che si vuole sapere non e' quando, e' **da quale versione**: per questo
+`genera()` registra in `impronte-fermi.json` l'impronta del contenuto
+dell'animazione che ha appena fotografato, e `--verifica` confronta quella. Un
+controllo che segnala cose che non sono difetti viene disattivato, ed e' peggio
+di non averlo.
 """
 
 import argparse
+import hashlib
+import json
 import pathlib
 import sys
 import tomllib
@@ -151,6 +175,31 @@ def uguali(uno: pathlib.Path, due: pathlib.Path) -> bool:
                                      b.convert("RGB")).getbbox() is None
 
 
+IMPRONTE = pathlib.Path(__file__).resolve().parent / "impronte-fermi.json"
+
+
+def impronta(file: pathlib.Path) -> str:
+    """L'impronta del contenuto di un'animazione, non la sua data."""
+    return hashlib.sha256(file.read_bytes()).hexdigest()[:16]
+
+
+def impronte_registrate() -> dict[str, str]:
+    if not IMPRONTE.is_file():
+        return {}
+    try:
+        return json.loads(IMPRONTE.read_text(encoding="utf-8"))
+    except Exception:
+        return {}
+
+
+def registra(nomi: dict[str, str]) -> None:
+    """Aggiorna il registro delle impronte, senza perdere le altre voci."""
+    tutte = impronte_registrate() | nomi
+    IMPRONTE.write_text(
+        json.dumps(dict(sorted(tutte.items())), indent=1, ensure_ascii=False)
+        + "\n", encoding="utf-8")
+
+
 def genera(solo: str | None = None) -> list[str]:
     from playwright.sync_api import sync_playwright
 
@@ -176,6 +225,7 @@ def genera(solo: str | None = None) -> list[str]:
             marca = "  <- due fotogrammi uguali" if gemelli else ""
             print(f"  {file.stem:38} {' '.join(f'{i:.0%}' for i in istanti)}{marca}")
             problemi += [f"{file.stem}: {g} sono identici" for g in gemelli]
+            registra({file.name: impronta(file)})
         pagina.close()
         browser.close()
 
@@ -196,9 +246,13 @@ def verifica() -> list[str]:
         if mancanti:
             problemi.append(f"{file.stem}: mancano {', '.join(mancanti)}")
             continue
-        if min(f.stat().st_mtime for f in tre) < file.stat().st_mtime:
-            problemi.append(f"{file.stem}: i fermi sono piu' vecchi "
-                            f"dell'animazione")
+        registrata = impronte_registrate().get(file.name)
+        if registrata is None:
+            problemi.append(f"{file.stem}: i fermi non dichiarano da quale "
+                            f"animazione vengono (rilancia fermi.py)")
+        elif registrata != impronta(file):
+            problemi.append(f"{file.stem}: i fermi vengono da una versione "
+                            f"precedente dell'animazione")
         for a, b in ((tre[0], tre[1]), (tre[1], tre[2]), (tre[0], tre[2])):
             if uguali(a, b):
                 problemi.append(f"{file.stem}: {a.name} e {b.name} sono "

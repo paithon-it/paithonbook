@@ -99,22 +99,23 @@ rilevamento degli eventi sonori.
 `````{tab} Superiore
 
 Nella classificazione a **etichetta singola** le classi sono mutuamente
-esclusive: si usa una **softmax** sulle $K$ classi e la cross-entropia, come in
+esclusive: si usa una **softmax** sulle $C$ classi (la stessa $C$ dell'overview
+del capitolo) e la cross-entropia, come in
 visione. La softmax normalizza a somma 1, imponendo la competizione tra le
 alternative.
 
 Nel **tagging multi-etichetta** ogni classe è invece una domanda sì/no
 indipendente. Si sostituisce la softmax con una **sigmoide** su ciascuna delle
-$K$ uscite e si addestra con la **binary cross-entropy** sommata sulle classi:
+$C$ uscite e si addestra con la **binary cross-entropy** sommata sulle classi:
 
 $$
-\hat{y}_k = \sigma(z_k) = \frac{1}{1 + e^{-z_k}},
+\hat{y}_c = \sigma(z_c) = \frac{1}{1 + e^{-z_c}},
 \qquad
-\mathcal{L} = -\sum_{k=1}^{K}\Big[\,y_k \log \hat{y}_k + (1-y_k)\log(1-\hat{y}_k)\,\Big],
+\mathcal{L} = -\sum_{c=1}^{C}\Big[\,y_c \log \hat{y}_c + (1-y_c)\log(1-\hat{y}_c)\,\Big],
 $$
 
-dove $z_k$ è il logit della classe $k$, $\hat{y}_k \in (0,1)$ la probabilità
-*indipendente* che quel suono sia presente e $y_k \in \{0,1\}$ l'etichetta
+dove $z_c$ è il logit della classe $c$, $\hat{y}_c \in (0,1)$ la probabilità
+*indipendente* che quel suono sia presente e $y_c \in \{0,1\}$ l'etichetta
 vera. Nessun vincolo di somma: più classi possono essere «accese» insieme. Il
 **rilevamento degli eventi sonori** (*sound event detection*, il cuore delle
 sfide DCASE) spinge oltre, chiedendo una predizione per ogni istante (un
@@ -220,7 +221,8 @@ ne ricaveremo due caratteristiche elementari, finestra per finestra.
 
 Due misure, semplicissime. La prima è l'**energia**: quanto è «forte» il suono
 in quella finestra (grande quando l'onda oscilla ampia, quasi zero nel
-silenzio). La seconda è lo **zero-crossing rate**: quante volte l'onda
+silenzio). La seconda è lo **zero-crossing rate**, che nella tabella qui sotto
+troverai abbreviato in `zcr`: quante volte l'onda
 attraversa lo zero, cioè passa dal positivo al negativo. Un tono basso e pieno
 oscilla lentamente e attraversa lo zero *poche* volte; un sibilo o un rumore,
 fatto di frequenze alte, lo attraversa *tantissime* volte: è la differenza tra

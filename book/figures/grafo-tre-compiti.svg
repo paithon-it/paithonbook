@@ -75,8 +75,8 @@
     <circle class="node" cx="70"  cy="175" r="14"/><text class="nlbl" x="70"  y="180">5</text>
     <!-- etichetta unica del grafo -->
     <rect class="tag" x="72" y="6" width="76" height="24" rx="12"/>
-    <text class="tagl" x="110" y="22">proprieta?</text>
+    <text class="tagl" x="110" y="22">proprietà?</text>
     <text class="title" x="110" y="230">livello-grafo</text>
-    <text class="sub"   x="110" y="250">una molecola: e' tossica?</text>
+    <text class="sub"   x="110" y="250">una molecola: è tossica?</text>
   </g>
 </svg>

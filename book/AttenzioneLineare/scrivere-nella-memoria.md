@@ -73,9 +73,11 @@ viene progettato, e non cambia mai (è la strada di RetNet, che incontreremo
 nella prossima sezione). Nel secondo il modello lo **calcola parola per
 parola** a partire da ciò che sta leggendo: davanti a una cosa importante
 sbiadisce poco, davanti a un intercalare sbiadisce molto (è la strada di
-Mamba-2, che è il modello a cavallo fra questo capitolo e il prossimo). Nessuno
-dei due, comunque, è un numero scritto a mano da una persona: è il modello ad
-avere imparato, durante l'addestramento, come sceglierlo.
+Mamba-2, che è il modello a cavallo fra questo capitolo e il prossimo). La
+differenza fra i due sta tutta lì: nel primo caso il valore è deciso una volta
+sola, in fase di progetto, e la rete se lo tiene così com'è per sempre; nel
+secondo non c'è nessun valore da tenere, perché a essere stato appreso durante
+l'addestramento è il *modo* di ricalcolarlo a ogni parola.
 
 E c'è un terzo modo, il più fine. Sbiadire *tutta la lavagna allo stesso
 ritmo* è grossolano: magari in una parte della lavagna c'è un dettaglio che
@@ -121,9 +123,14 @@ $$
 
 dove ora $\alpha_t \in (0,1)^d$ è un *vettore* di gate, uno per canale di
 chiave, e $\operatorname{Diag}(\alpha_t)$ è la matrice diagonale che ne fa i
-coefficienti (moltiplica lo stato da destra, come la transizione della delta
-rule che vedremo tra poco). Ogni colonna della memoria, cioè il canale della
-chiave $i$, decade al proprio ritmo: $\alpha_{t,i}\to 1$ conserva il canale $i$
+coefficienti. Il **lato** da cui moltiplica non è un dettaglio di scrittura:
+con la convenzione di questo capitolo ($\mathbf{S} = \sum_i \mathbf{v}_i \mathbf{k}_i^\top$,
+lettura $\mathbf{o} = \mathbf{S}\mathbf{q}$) le colonne di $\mathbf{S}$ sono
+indicizzate dai canali della chiave e le righe da quelli del valore, quindi
+moltiplicando **da destra** ogni colonna decade al proprio ritmo, che è quel
+che si vuole; da sinistra sbiadirebbero i canali del valore, che è un'altra
+cosa. (Anche la transizione della delta rule, fra poco, sta da quel lato e per
+la stessa ragione.) Così $\alpha_{t,i}\to 1$ conserva il canale $i$
 (nel limite si torna all'accumulo puro), $\alpha_{t,i}\to 0$ lo azzera. Il
 vettore è ricavato dall'input con una proiezione a **basso rango** (un collo di
 bottiglia stretto, dimensione 16) seguita da una sigmoide, così da generare $d$
@@ -174,10 +181,10 @@ Il parametro $\beta$ dosa quanto dare retta all'errore: con $\beta = 1$
 **ignoro** e lascio $7$. È esattamente come si corregge un tiro: non riparti
 da zero, aggiusti in proporzione a quanto hai sbagliato.
 
-Come per il fattore di sbiadimento della pagina precedente, quella manopola non
-la gira una persona: il modello la calcola da sé a ogni parola, in base a
-quello che sta leggendo, e a essere stato appreso durante l'addestramento è il
-modo di calcolarla.
+Come il fattore di sbiadimento di poco fa, quella manopola non la gira una
+persona: il modello la calcola da sé a ogni parola, in base a quello che sta
+leggendo, e a essere stato appreso durante l'addestramento è il modo di
+calcolarla.
 
 `````
 
@@ -392,8 +399,10 @@ unitario) sull'obiettivo *linearizzato* $-\mathbf{v}_t^\top \mathbf{S}\, \mathbf
 $\mathcal{L}_t$ coincide solo se valgono **due** condizioni: che la memoria non
 abbia ancora nulla da dire sulla chiave corrente ($\mathbf{S}_{t-1} \mathbf{k}_t = 0$, per
 esempio con chiavi mutuamente ortogonali) *e* che la scrittura sia a piena
-forza, $\beta_t = 1$. La prima da sola non basta: con chiavi ortonormali e
-$\beta_t = 0{,}5$ le due ricorrenze divergono già dopo pochi passi. E il gate
+forza, $\beta_t = 1$. La prima da sola non basta, e si vede subito: con chiavi
+ortonormali la delta rule scrive $\beta_t\, \mathbf{v}_t \mathbf{k}_t^\top$ dove l'accumulo
+scrive $\mathbf{v}_t \mathbf{k}_t^\top$, quindi a $\beta_t = 0{,}5$ le due memorie si separano
+già al primo token, di un fattore due. E il gate
 $\alpha_t$ è, in questa lettura, un **weight decay adattivo**: la contrazione
 $\mathbf{S} \leftarrow \alpha_t \mathbf{S}$ che l'ottimizzazione applica per non lasciare che i
 vecchi coefficienti si accumulino all'infinito, regolata token per token. Ogni
@@ -410,18 +419,18 @@ particolari (basta spegnerle un pezzo per volta).
 
 ```{figure} ../figures/famiglia-ricorrenze-lineari.svg
 :name: fig-famiglia-ricorrenze-lineari
-:alt: Cinque riquadri in fila che mostrano la matrice di transizione di stato di ciascuna ricorrenza lineare, dalla più semplice alla più espressiva. Primo riquadro, attenzione lineare, matrice identità I con la diagonale piena e il resto vuoto. Secondo riquadro, Mamba-2 e RetNet, scalare alpha per identità, la diagonale uniforme scurita da un unico fattore. Terzo riquadro, GLA e RWKV-6, diagonale Diag(alpha) con celle di intensità diversa lungo la diagonale. Quarto riquadro, DeltaNet, identità meno beta k k trasposto, con un blocco fuori diagonale che rappresenta la correzione householder. Quinto riquadro, Gated DeltaNet, alpha per parentesi identità meno beta k k trasposto, che combina il decadimento diagonale e il blocco di correzione.
+:alt: Cinque riquadri in fila, sotto una freccia che va da «accumulo puro» a «oblio + correzione mirata», mostrano la matrice di transizione di stato di ciascuna ricorrenza lineare. Primo riquadro, attenzione lineare, matrice identità I, la sola diagonale piena e il fondo vuoto. Secondo riquadro, RetNet e Mamba-2, alpha per identità, la diagonale uniforme ma di tinta più chiara, cioè scalata da un unico fattore. Terzo riquadro, GLA e RWKV-6, Diag(alpha), la diagonale a segmenti di intensità diversa. Quarto riquadro, DeltaNet, identità meno beta k k trasposto, la diagonale piena su un fondo velato che occupa tutto il quadrato, perché la correzione di rango uno tocca anche fuori dalla diagonale. Quinto riquadro, Gated DeltaNet, alpha per parentesi identità meno beta k k trasposto, con la diagonale scalata del secondo riquadro sopra il fondo velato del quarto.
 :width: 85%
 
 Lo «zoo» delle memorie di questo capitolo, in fila da quella che sa fare meno a
 quella che sa fare di più. In ogni riquadro c'è la regola con cui la memoria di
 ieri sopravvive a oggi: tenerla tutta, sbiadirla tutta uguale, sbiadirla zona
-per zona, cancellare la voce che si sta per riscrivere, e le ultime due cose
-insieme. Il resto del meccanismo non cambia mai.
+per zona, cancellare la voce che si sta per riscrivere, e infine sbiadire tutta
+uguale *e* cancellare. Il resto del meccanismo non cambia mai.
 ```
 
-La stessa figura, messa in fila: cinque modi di far sopravvivere la memoria di
-ieri, dal più semplice al più raffinato.
+La stessa storia, messa in tabella: cinque modi di far sopravvivere la memoria
+di ieri, dal più semplice al più raffinato.
 
 `````{tab} Elementare
 

@@ -25,14 +25,14 @@ vuol dire, per questo servizio, *andare veloce*.
 
 ## Scomporre la latenza
 
-La generazione ha due fasi, incontrate nel capitolo sui Transformer parlando di
-KV cache. Nella prima il modello legge il **prompt**, tutti i token insieme in
-una sola passata, e si prende gli appunti su ciò che ha letto (le *key* e le
-*value* che finiscono in cache): è il
-**prefill**. Nella seconda genera un token alla volta, ciascuno condizionato ai
-precedenti: è il **decode**, la fase memory-bound su cui è costruita l'intera
-sezione precedente. Le due metriche di base cadono esattamente su questa
-frattura.
+La generazione ha due fasi, e le abbiamo incontrate nel capitolo sui
+Transformer parlando di KV cache. Nella prima il modello legge la domanda,
+tutte le parole insieme in una sola passata, e si prende gli appunti su ciò che
+ha letto: sono le *key* e le *value* che finiscono in cache, e questa fase si
+chiama **prefill**. Nella seconda scrive la risposta un token alla volta,
+ciascuno condizionato ai precedenti: è il **decode**, la fase in cui a fare da
+collo di bottiglia è la memoria, quella su cui è costruita l'intera sezione
+precedente. Le due metriche di base cadono esattamente su questa frattura.
 
 `````{tab} Elementare
 
@@ -307,19 +307,21 @@ e il goodput cade a 15,8, quasi il $15\%$ in meno della prima. Il grafico del
 throughput dice che la seconda configurazione è migliore; quello del goodput
 dice il contrario, e ha ragione lui.
 
-## Le medie mentono, e qui in tre modi
+C'è poi una grandezza che si misura per richiesta e non è un tempo: quanti
+token quella richiesta consuma. Vale la pena guardarla qui, perché è la stessa
+di cui parla tutta questa sezione, vista dal lato del conto invece che da
+quello dell'orologio.
 
-La sezione sul deployment ha già stabilito che uno SLO si scrive sui percentili
-alti (p95, p99) e non sulla media, e «Sorvegliare un modello vivo» li ha messi
-in cima al cruscotto.
-
-```{figure} ../figures/costo-api-llm-guida-prezzi.svg
+```{figure} ../figures/costo-per-forma-di-richiesta.svg
 :name: fig-costo-per-caso-uso
-:alt: "Barre orizzontali che confrontano il costo per mille operazioni in quattro casi d'uso diversi, da una classificazione breve fino a un'elaborazione lunga con molto contesto: fra il primo e l'ultimo il costo cambia di circa quattrocento volte, pur trattandosi dello stesso modello."
+:alt: "Quattro barre orizzontali in scala logaritmica che confrontano quanti token consuma un'operazione a seconda della forma della richiesta: una quarantina per classificare una frase, circa quattromilatrecento per una domanda su documenti allegati, circa novemila per una conversazione di otto turni, circa sessantatremila per un report tratto da un dossier lungo. Le tacche verticali segnano cento, mille, diecimila e centomila token."
 :width: 96%
 
-Lo stesso modello, costi incomparabili. A cambiare non è il prezzo per token
-ma quanti token servono, e quello lo decide come è fatta la richiesta.
+Stesso modello, consumi incomparabili. La conversazione è la riga da guardare:
+se ogni turno aggiunge 250 token e la storia si rilegge da capo ogni volta,
+$250 \times (1 + 2 + \dots + 8)$ fa novemila token processati. Le barre sono
+in scala logaritmica, quindi la lunghezza non è proporzionale al valore: le
+tacche dicono dove cadono le decadi.
 ```
 
 Il divario di {numref}`fig-costo-per-caso-uso` dice una cosa sola, e non
@@ -327,11 +329,16 @@ riguarda i listini: quello che fa il costo è **quanti token servono**, cioè
 quanto testo entra e quanto ne esce, e quello lo decide la forma della
 richiesta. Classificare una frase manda poche parole e ne riceve una;
 riassumere un documento lungo ne manda migliaia; una conversazione le rimanda
-tutte a ogni turno. È la stessa grandezza di cui parla questa sezione, vista
-dal lato del conto invece che da quello del tempo: i token che si pagano sono
-gli stessi che occupano la finestra, riempiono la KV cache e allungano la
-latenza, e ottimizzare l'una cosa ottimizza le altre. Sul tempo, poi, la regola
-dei percentili vale doppio, per tre ragioni specifiche della generazione.
+tutte a ogni turno. I token che si pagano sono gli stessi che occupano la
+finestra, riempiono la KV cache e allungano la latenza: ottimizzare l'una cosa
+ottimizza le altre, ed è la leva su cui si chiude questa pagina.
+
+## Le medie mentono, e qui in tre modi
+
+La sezione sul deployment ha già stabilito che uno SLO si scrive sui percentili
+alti (p95, p99) e non sulla media, e «Sorvegliare un modello vivo» li ha messi
+in cima al cruscotto. Quando il modello genera, quella regola vale doppio, per
+tre ragioni sue.
 
 La prima è che i percentili vanno riportati **per ciascuna metrica**, non sulla
 latenza complessiva: la p99 del TTFT e quella del TPOT si degradano per cause
@@ -360,8 +367,9 @@ totale risulta più stretta di quella del singolo passo. Lì il problema non è 
 coda, è il **budget totale**, venti volte più grande, che sfonda lo SLO da
 solo.
 
-La terza si vede nell'esempio appena fatto: a batch 64 il TTFT **medio** è 457
-ms, dentro l'obiettivo di 500 ms, mentre la p99 è 893 ms, quasi il doppio.
+La terza si vede nel confronto fra le due configurazioni di poco fa: a batch 64
+il TTFT **medio** è 457 ms, dentro l'obiettivo di 500 ms, mentre la p99 è 893
+ms, quasi il doppio.
 Peggiorano entrambe, ma una sola delle due attraversa la riga che conta: chi
 riportasse la media direbbe in buona fede che il sistema rispetta la promessa,
 e sarebbe smentito da una richiesta su cento. È il modo più comune in cui un
@@ -446,14 +454,16 @@ cache dei prefissi è una **superficie condivisa fra utenti diversi**, e il TTFT
 diventa esso stesso un segnale osservabile: se un sistema riusa i prefissi fra
 clienti distinti, una risposta anormalmente rapida a un prompt tentato rivela
 che *qualcun altro* ha già inviato quel testo. È un canale laterale a base di
-tempo, della stessa famiglia degli attacchi che il capitolo sull'AI responsabile
-affronterà parlando di privacy, e le difese sono di progetto, non di taratura:
-partizionare la cache per cliente e condividere solo i prefissi dichiarati
-pubblici, tipicamente l'istruzione di sistema del prodotto. Stessa disciplina
-per la correttezza: una cache che ignori con quale modello, con quale
-*adattatore* (i pochi pesi aggiunti per specializzarlo, la LoRA vista nel
-capitolo sui Transformer) e con quale precisione i blocchi sono stati
-calcolati restituisce gli appunti di un altro modello, e nessuno se ne accorge.
+tempo, della stessa famiglia degli attacchi che il capitolo sull'AI
+responsabile affronterà parlando di privacy. Le difese sono di progetto, non di
+taratura: si partiziona la cache per cliente, e si condividono solo i prefissi
+dichiaratamente pubblici, tipicamente l'istruzione di sistema del prodotto.
+
+Stessa disciplina per la correttezza. I blocchi in cache dipendono da tre cose:
+da quale modello li ha calcolati, con quale *adattatore* (i pochi pesi aggiunti
+per specializzarlo, la LoRA vista nel capitolo sui Transformer) e con quale
+precisione. Una cache che non le tenga in conto restituisce gli appunti di un
+altro modello, e nessuno se ne accorge.
 
 ## Misurare in venti righe
 
@@ -579,8 +589,8 @@ sbagliata non produce un fallimento rumoroso, produce un successo apparente.
   migliora mentre la p99 peggiora è una regressione.
 - Il **riuso del prefisso** è la leva che resta: istruzione di sistema,
   documenti allegati e cronologia di conversazione rendono identica una parte
-  della KV cache. Un **albero dei prefissi** {cite}`zheng2024sglang` la condivide
-  fra richieste diverse (possibile perché la cache è già paginata in blocchi
+  della KV cache. Un **albero dei prefissi** la condivide
+  fra richieste diverse {cite}`zheng2024sglang` (possibile perché la cache è già paginata in blocchi
   {cite}`kwon2023efficient`) e in una conversazione porta il prefill totale da
   quadratico a lineare nei turni.
 - La cache condivisa è però una **superficie fra utenti**: un TTFT anormalmente

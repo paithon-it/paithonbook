@@ -57,14 +57,14 @@ lavoro.
 
 Il conto di {numref}`fig-clip-matrice` spiega perché conti tanto la dimensione
 del **batch**, cioè quante coppie si mettono sul tavolo insieme a ogni passo di
-addestramento (è il tema di una sezione più avanti). Con $N$ coppie ogni riga
-porta una risposta giusta e $N - 1$ sbagliate: raddoppiare il batch raddoppia le
-alternative sbagliate che ogni immagine deve scartare, e l'esame si fa più
-difficile.
+addestramento (ci si torna più avanti in questa pagina). Con $N$ coppie ogni
+riga porta una risposta giusta e $N - 1$ sbagliate: raddoppiare il batch
+raddoppia le alternative sbagliate che ogni immagine deve scartare, e l'esame si
+fa più difficile.
 
 Le celle da riempire, però, sono $N^2$, e raddoppiando il batch diventano quattro
 volte tante. Attenzione a che cosa costa: non i prodotti fra numeri che riempiono
-la tabella, che accanto al lavoro delle due torri sono briciole (le torri
+la tabella, che accanto al lavoro dei due encoder sono briciole (gli encoder
 elaborano $N$ immagini e $N$ testi, e quel conto cresce del doppio insieme al
 batch). A crescere di quattro volte è **l'ingombro**: quella tabella va tenuta
 tutta insieme in memoria, e ogni riga, per fare la sua media, ha bisogno di tutte
@@ -315,8 +315,8 @@ con $\tau = 0{,}07$ ne costa circa un decimo.
 ## Perché la temperatura e il batch non sono dettagli
 
 Quel confronto dice una cosa importante: la temperatura non è un parametro
-cosmetico, decide *quanto* piccole differenze di coseno diventino grandi
-differenze di probabilità, e quindi che cosa il modello si sforzi di
+cosmetico, decide *quanto* piccole differenze di somiglianza diventino grandi
+differenze di fiducia, e quindi che cosa il modello si sforzi di
 correggere.
 
 `````{tab} Elementare
@@ -408,7 +408,27 @@ def loss_contrastiva(emb_img, emb_txt, logit_scale):
     perdita_i2t = F.cross_entropy(logits, bersagli)
     perdita_t2i = F.cross_entropy(logits.t(), bersagli)
     return (perdita_i2t + perdita_t2i) / 2
+
+
+# Gli stessi conti fatti a mano poco fa, rifatti dalla libreria: si parte
+# direttamente dalla tabella delle somiglianze, saltando i due encoder.
+somiglianze = torch.tensor([[0.30, 0.10, 0.05, 0.02],
+                            [0.08, 0.28, 0.12, 0.04],
+                            [0.04, 0.15, 0.32, 0.09],
+                            [0.06, 0.03, 0.10, 0.26]])
+bersagli = torch.arange(4)
+for tau in (0.07, 0.5):
+    logits = somiglianze / tau
+    perdita = (F.cross_entropy(logits, bersagli)
+               + F.cross_entropy(logits.t(), bersagli)) / 2
+    print(f"tau = {tau}: loss simmetrica = {perdita:.3f}")
+# tau = 0.07: loss simmetrica = 0.148
+# tau = 0.5: loss simmetrica = 1.082
 ```
+
+Le ultime righe rifanno i conti della tabella di poco fa: la stessa matrice, la
+stessa loss, solo la temperatura cambiata. Quei due numeri, $0{,}148$ e
+$1{,}082$, si possono così ritrovare invece che crederli sulla parola.
 
 Vale la pena notare che cosa *non* c'è: nessuna etichetta, nessun numero di
 classi, nessuna testa di classificazione. L'unica informazione supervisionata è
@@ -424,25 +444,26 @@ ci si aspetta.
 
 `````{tab} Elementare
 
-Prendiamo ottanta fotografie vere e quaranta didascalie, diamole a un modello
+Prendiamo ottanta fotografie, otto per ciascuno di dieci soggetti (aerei,
+gatti, cavalli, navi e così via), più quaranta didascalie, diamole a un modello
 CLIP pubblico e misuriamo tutte le vicinanze. Viene fuori questo: una fotografia
 somiglia alla didascalia che il modello stesso sceglie per lei circa $0{,}27$, e
 a una **qualunque altra fotografia** circa $0{,}76$. Cioè ogni foto è molto più
 vicina a una foto che non c'entra niente che alla frase che la descrive.
 
 Non è un guasto, e non impedisce al meccanismo di funzionare: sulle stesse
-ottanta immagini, con un compito facile a dieci categorie, il classificatore
-scritto a parole indovina nove volte su dieci. Funziona perché il confronto che
-conta non è mai «foto contro frase, in assoluto»: è sempre «questa foto, con
-quale delle dieci frasi va meglio?». Fra le frasi la graduatoria è giusta, ed è
-tutto quello che serve.
+ottanta immagini, con quel compito facile a dieci categorie, il classificatore
+scritto a parole indovina quasi nove volte su dieci. Funziona perché il
+confronto che conta non è mai «foto contro frase, in assoluto»: è sempre
+«questa foto, con quale delle dieci frasi va meglio?». Fra le frasi la
+graduatoria è giusta, ed è tutto quello che serve.
 
 La mappa, insomma, è una sola, ma ci sono due quartieri: le fotografie da una
-parte, le frasi dall'altra, e i due gruppi non si toccano mai: basta una riga
+parte, le frasi dall'altra, e i due gruppi non si toccano mai. Basta una riga
 tracciata una volta sola per dire di ogni punto, senza sbagliarne nemmeno uno su
-centoventi, se è una foto o una frase. L'addestramento non ha mai chiesto ai due quartieri di
-mescolarsi: ha chiesto che, **dentro** al quartiere delle frasi, quella giusta
-stesse davanti a tutte le altre. E quello lo ottiene benissimo.
+centoventi, se è una foto o una frase. L'addestramento non ha mai chiesto ai due
+quartieri di mescolarsi: ha chiesto che, **dentro** al quartiere delle frasi,
+quella giusta stesse davanti a tutte le altre. E quello lo ottiene benissimo.
 
 Ne segue una regola pratica che vale la pena ricordare: il numero di somiglianza
 fra una foto e una frase non si confronta con quello fra due foto. Sono due
@@ -455,15 +476,25 @@ e la applica ai primi sbaglia tutte le volte.
 
 Il fenomeno ha un nome, **modality gap**, e una descrizione sistematica in Liang
 e colleghi {cite}`liang2022mind`, che trovano le due modalità immerse «a
-distanza di braccio» nello spazio che condividono. Misurato qui su
-`clip-vit-base-patch32`, con ottanta fotografie e quaranta didascalie: la
-distanza fra i due centroidi vale $\approx 1{,}1$ (gli embedding stanno sulla
+distanza di braccio» nello spazio che condividono. Il conto qui sotto è rifatto
+in casa, e vale la pena scrivere con che cosa, perché senza il protocollo un
+numero non si può controllare: `clip-vit-base-patch32`, ottanta fotografie di
+CIFAR-10 (otto per ciascuna delle dieci classi) e quaranta didascalie generiche,
+quattro per classe sullo stampo `a photo of a {classe}`. La distanza fra i due
+centroidi vale $\approx 1{,}1$ (gli embedding stanno sulla
 sfera unitaria, dove il massimo possibile è $2$); il coseno medio della coppia
 migliore è $\approx 0{,}27$ contro $\approx 0{,}76$ fra due immagini qualunque;
 e proiettando tutto sulla direzione che unisce i due centroidi le due nuvole non
 si sovrappongono per niente, tanto che una regressione logistica risponde
-«immagine o testo?» con accuratezza $1{,}000$ in validazione incrociata.
-L'ampiezza del divario dipende dal modello e dai dati; la sua esistenza no.
+«immagine o testo?» con accuratezza $1{,}000$ in validazione incrociata. Sulle
+stesse ottanta immagini, e con un solo prompt per classe, la classificazione
+zero-shot a dieci vie ne prende $0{,}875$: il divario non le impedisce di
+funzionare, ed è il punto.
+I decimali dipendono dalle scelte appena elencate, e in particolare quel
+$0{,}76$ è alto perché le immagini di CIFAR-10 sono $32 \times 32$ e si
+somigliano fra loro più di quanto si somiglino fotografie a piena risoluzione:
+su queste il valore scende, senza che la forbice si chiuda. L'ampiezza del
+divario dipende dunque dal modello e dai dati; la sua esistenza no.
 
 Che non si chiuda non è un difetto dell'ottimizzazione: è ciò che
 l'ottimizzazione chiede. La InfoNCE dipende soltanto dai **rapporti** fra le
@@ -642,17 +673,21 @@ si consumerebbero tutte a correggerlo, invece che a imparare.[^siglip-segno]
 
 `````
 
-La conseguenza pratica è che ogni addendo della somma dipende da una sola
-coppia. Non c'è più niente da normalizzare su tutto il batch, il calcolo si può
-spezzare in blocchi che si scambiano gli embedding a turno, e soprattutto la
-qualità dell'addestramento smette di dipendere dall'avere un batch enorme: sotto
-la soglia delle sedicimila coppie la sigmoide stacca nettamente la softmax, e
-oltre le trentaduemila nessuna delle due guadagna più molto, il che toglie
-alla dimensione del batch il ruolo di prerequisito. È lo stesso allineamento,
-ottenuto togliendo un vincolo invece di aggiungere un pezzo.
+La conseguenza pratica è che ogni pezzo del conto, cioè ogni casella, dipende da
+una coppia sola. Non c'è più niente da normalizzare su tutto il batch, il
+calcolo si può spezzare in blocchi che si scambiano gli embedding a turno, e
+soprattutto la qualità dell'addestramento smette di dipendere dall'avere un
+batch enorme. Sul
+proprio impianto gli autori misurano due soglie: sotto le sedicimila coppie la
+sigmoide stacca la softmax di parecchio, e oltre le trentaduemila nessuna delle
+due guadagna più molto. Sono i numeri di quelle prove, non costanti di natura, e
+a un altro modello su altri dati verranno diversi; quello che non dipende dai
+numeri è la direzione, cioè che alla dimensione del batch viene tolto il ruolo
+di prerequisito. È lo stesso allineamento, ottenuto togliendo un vincolo invece
+di aggiungere un pezzo.
 
-Vale la pena registrare anche un risultato di metodo, arrivato dallo stesso
-periodo: ALIGN {cite}`jia2021scaling` ha addestrato la stessa architettura a due
+Vale la pena registrare anche un risultato di metodo, arrivato negli stessi mesi
+di CLIP: ALIGN {cite}`jia2021scaling` ha addestrato la stessa architettura a due
 torri su oltre un miliardo di coppie immagine-testo raccolte senza costosi
 passaggi di filtraggio, praticamente il web così com'è. Il messaggio, che sono
 gli autori stessi a formulare, è che la scala del corpus compensa il suo

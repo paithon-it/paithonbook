@@ -9,9 +9,10 @@ che segue, e perché la sua intrattabilità non è una difficoltà tecnica fra l
 tante, è un muro.
 
 Una rete di venticinque neuroni accesi o spenti, come quella della memoria
-associativa, ha trentatré milioni di configurazioni: un computer le passa in
-rassegna in una frazione di secondo, e $Z$ si calcola davvero
-($2^{25} = 33\,554\,432$). Aggiungiamone settantacinque. Con cento neuroni le
+associativa, ha trentatré milioni di configurazioni ($2^{25} = 33\,554\,432$),
+e $Z$ si calcola davvero: contarle è questione di istanti, e valutare
+l'energia di ciascuna, che è il conto vero, richiede meno di un minuto
+(misurato: quarantasette secondi). Aggiungiamone settantacinque. Con cento neuroni le
 configurazioni diventano un numero lungo trentuno cifre, e a un miliardo al
 secondo servirebbero quasi **tremila volte l'età dell'universo** per contarle
 tutte ($2^{100} \approx 1{,}27 \times 10^{30}$, cioè circa
@@ -22,9 +23,13 @@ quella strada è chiusa.
 
 `````{tab} Elementare
 
-Torniamo al paesaggio. Per dire quanto è *alta* una valle rispetto alle
+Torniamo al paesaggio, e immaginiamo che ci piova sopra: l'acqua si raccoglie
+nelle valli, e quanto più una valle è profonda tanta più acqua ci finisce
+dentro. La pioggia raccolta, allora, è la probabilità: una risposta molto
+plausibile è una valle molto profonda, cioè un posto molto bagnato. Per dire
+quanto è *alta* una valle rispetto alle
 altre non serve nulla di speciale: si guardano le due altezze e si
-confrontano. Per dire invece che una valle contiene «il 30% di tutta la
+confrontano. Per dire invece che una valle raccoglie «il 30% di tutta la
 pioggia che cade sul continente» bisogna aver misurato l'intero continente,
 valle per valle. La funzione di partizione è la misura dell'intero
 continente: è ciò che trasforma un'altezza in una percentuale.
@@ -59,19 +64,40 @@ di diffusione del capitolo precedente.
 
 Il punto di attrito è il gradiente della log-verosimiglianza. Da
 $p_\theta(\mathbf{x}) = e^{-E_\theta(\mathbf{x})}/Z(\theta)$ segue
-$\log p_\theta(\mathbf{x}) = -E_\theta(\mathbf{x}) - \log Z(\theta)$, e derivando rispetto ai
-parametri:
+$\log p_\theta(\mathbf{x}) = -E_\theta(\mathbf{x}) - \log Z(\theta)$, e il primo
+addendo si deriva senza storie. Tutto sta nel secondo, ed è il passaggio da
+cui dipende il resto del capitolo:
+
+$$
+\nabla_\theta \log Z(\theta)
+= \frac{1}{Z(\theta)} \int \nabla_\theta e^{-E_\theta(\mathbf{x}')}\, d\mathbf{x}'
+= - \int \underbrace{\frac{e^{-E_\theta(\mathbf{x}')}}{Z(\theta)}}_{=\ p_\theta(\mathbf{x}')}
+\nabla_\theta E_\theta(\mathbf{x}')\, d\mathbf{x}'
+= - \mathbb{E}_{\mathbf{x}' \sim p_\theta}\!\left[\nabla_\theta E_\theta(\mathbf{x}')\right].
+$$
+
+Tre mosse, e conviene nominarle: si scambiano derivata e integrale (lecito per
+convergenza dominata, se $\nabla_\theta e^{-E_\theta}$ è dominata da una
+funzione integrabile in un intorno di $\theta$); si deriva l'esponenziale; e
+si riconosce che il rapporto rimasto sotto integrale **è** la densità del
+modello, il che trasforma un integrale su tutto lo spazio in un valore atteso
+che si può stimare per campionamento. Mettendo insieme:
 
 $$
 \nabla_\theta \log p_\theta(\mathbf{x})
 = -\nabla_\theta E_\theta(\mathbf{x})
-+ \mathbb{E}_{\mathbf{x}' \sim p_\theta}\!\left[\nabla_\theta E_\theta(\mathbf{x}')\right],
++ \mathbb{E}_{\mathbf{x}' \sim p_\theta}\!\left[\nabla_\theta E_\theta(\mathbf{x}')\right].
 $$
 
-dove il primo termine (**fase positiva**) abbassa l'energia sul dato
+La log-verosimiglianza si **massimizza**, quindi i parametri si muovono nel
+verso di questo gradiente: il primo termine (**fase positiva**) abbassa allora
+l'energia sul dato
 osservato e il secondo (**fase negativa**) la rialza sui campioni *del
-modello*. Il termine che dà problemi non è $Z$ in sé, ma quel valore atteso:
-per calcolarlo bisogna saper campionare da $p_\theta$, cioè dal modello che
+modello*. Mediando anche il primo su $p_{\text{dati}}$ si ottiene la forma
+simmetrica «media sui dati meno media sul modello» già incontrata nella
+macchina di Boltzmann. Il termine che dà problemi non è $Z$ in sé, ma quel
+valore atteso: la terza mossa lo ha reso stimabile, non gratuito, e per
+stimarlo bisogna saper campionare da $p_\theta$, cioè dal modello che
 stiamo ancora addestrando.
 
 Il tutorial di LeCun {cite}`lecun2006tutorial` legge la stessa formula in
@@ -91,9 +117,12 @@ visitandone dei pezzi: non calcolare, campionare. Serve però un modo di
 produrre risposte davvero pescate dal modello, cioè che escano fuori con la
 frequenza che il paesaggio prescrive, e il modo classico è lasciar vagare
 qualcosa sul paesaggio abbastanza a lungo perché passi in ogni punto il tempo
-che gli spetta. Nel caso continuo la ricetta più usata porta il nome del
-fisico francese Paul Langevin, che nel 1908 la scrisse per il moto browniano,
-ed è quasi uno slogan: **scendere lungo la pendenza dell'energia, con addosso
+che gli spetta. Quando le risposte non sono acceso e spento ma numeri con la
+virgola (un'immagine vera, per dire, dove ogni pixel può avere qualunque
+sfumatura), la ricetta più usata porta il nome del fisico francese Paul
+Langevin, che nel 1908 la scrisse per il **moto browniano**, il tremolio di un
+granello di polline sull'acqua sotto gli urti delle molecole, ed è quasi uno
+slogan: **scendere lungo la pendenza dell'energia, con addosso
 un po' di rumore**.
 
 `````{tab} Elementare
@@ -137,12 +166,23 @@ $$
 \qquad \mathbf{z}_k \sim \mathcal{N}(0, \mathbf{I}),
 $$
 
-dove $\epsilon > 0$ è il passo e $\mathbf{z}_k$ il rumore gaussiano. Per
+dove $\epsilon > 0$ è il passo (un **tempo**, non una lunghezza) e
+$\mathbf{z}_k$ il rumore gaussiano. Per
 $k \to \infty$, con $\epsilon \to 0$ e $k\epsilon \to \infty$ (il passo si
 accorcia, ma il tempo totale percorso dalla catena deve crescere senza
 limite), la distribuzione di $\mathbf{x}_k$ converge a
-$p_\theta \propto e^{-E_\theta}$. A passo fissato, com'è nel codice qui sotto
-e nella pratica degli EBM, la catena si assesta invece su una distribuzione
+$p_\theta \propto e^{-E_\theta}$. Il teorema vuole però anche delle ipotesi
+sul paesaggio, e vale la pena enunciarle perché l'esempio qui sotto ne viola
+una: $\nabla_{\mathbf{x}} E_\theta$ globalmente lipschitziano, o almeno una
+condizione di dissipatività che tenga la catena al finito. Con
+$E(x) = (x^2-1)^2$ il gradiente cresce come $x^3$, non è lipschitziano, e a
+passo fissato la ricorsione **diverge** oltre una soglia:
+$|1 - 2\epsilon(x^2-1)| > 1$, cioè $|x| > \sqrt{1 + 1/\epsilon}$, che a
+$\epsilon = 0{,}01$ vale $10{,}05$ (verificato: da $10{,}00$ la catena torna
+in una buca, da $10{,}05$ esplode in nove passi). Non si vede mai, perché
+lassù la densità vale $e^{-9800}$, ma è una divergenza vera e non
+un'approssimazione: quella catena, a rigore, è transiente. A passo fissato, com'è nel codice qui sotto
+e nella pratica degli EBM, la catena si assesta poi su una distribuzione
 leggermente distorta, con un errore dell'ordine di $\epsilon$: lo
 eliminerebbe un test di accettazione alla Metropolis (la variante MALA), a
 cui di solito si rinuncia in cambio della semplicità. Si noti che compare
@@ -152,10 +192,21 @@ normalizzazione: è l'osservazione su cui poggia tutto il resto della sezione.
 
 La versione stocastica su minibatch, che sostituisce il gradiente esatto con
 quello stimato, è la *stochastic gradient Langevin dynamics*
-{cite}`welling2011bayesian`: un passo di discesa dimezzato ($\epsilon/2$) più
-un rumore di ampiezza $\sqrt{\epsilon}$, che per $\epsilon$ piccolo è molto
-più grande della deriva (a $\epsilon = 0{,}01$ vale $0{,}1$ contro $0{,}005$),
-con il passo che decresce. Nella pratica degli EBM la catena si tronca dopo poche
+{cite}`welling2011bayesian`, nata per campionare la distribuzione a posteriori
+dei *parametri* e poi passata di peso al campionamento dei dati: un passo di
+discesa dimezzato ($\epsilon/2$) più un rumore di deviazione standard
+$\sqrt{\epsilon}$. Il $\tfrac12$ e la radice non sono scelte di gusto: sono
+ciò che rende la ricorsione la discretizzazione di Eulero–Maruyama della
+diffusione $d\mathbf{x} = -\tfrac12 \nabla_{\mathbf{x}} E_\theta\, dt + d\mathbf{W}$,
+che ha $p_\theta$ come misura invariante. Le due ampiezze **non si
+confrontano fra loro**: hanno dimensioni diverse ($[\text{tempo}]^{1/2}$ e
+$[\text{tempo}]$), e su un intervallo di tempo fissato i due contributi
+restano dello stesso ordine, che è precisamente il motivo per cui il limite
+continuo esiste. Quello che in Welling e Teh diventa trascurabile al
+decrescere del passo è un'altra cosa ancora: il rumore del **gradiente su
+minibatch**, che scala come $\epsilon$ e finisce sotto quello iniettato; ed è
+lì che la catena passa senza soluzione di continuità dall'ottimizzazione al
+campionamento. Nella pratica degli EBM la catena si tronca dopo poche
 decine di passi (*short-run MCMC*) e si conservano i campioni in un serbatoio
 da cui ripartire, l'erede diretto della persistent contrastive divergence
 della sezione precedente.
@@ -163,8 +214,11 @@ della sezione precedente.
 `````
 
 Il codice che segue costruisce il paesaggio più semplice in cui la faccenda si
-vede: due valli e una collinetta in mezzo (in formula, l'energia a doppia buca
-$E(x) = (x^2 - 1)^2$, con i minimi in $x = \pm 1$). Ci mette sopra ventimila
+vede: due valli e una collinetta in mezzo. In formula è l'energia a doppia
+buca $E(x) = (x^2 - 1)^2$, e i conti si fanno a mente: in $x = 1$ e in
+$x = -1$ la parentesi vale zero, quindi l'energia vale zero (sono i due
+fondovalle), mentre in $x = 0$ vale $(0-1)^2 = 1$, che è la collinetta.
+Ci mette sopra ventimila
 palline, le fa vibrare con la ricetta di Langevin e alla fine guarda dove si
 sono distribuite, senza aver mai calcolato $Z$. Poi, per pura verifica, $Z$ la
 calcola: in un paesaggio a una sola dimensione si può, ed è l'unico modo per
@@ -224,24 +278,56 @@ frazione x>0 (campioni) = 0.497   (esatto 0.500)
 ```
 
 Le due colonne coincidono entro pochi millesimi (lo scarto più largo è di
-0,006, nel bin centrale): le catene hanno ricostruito la distribuzione senza
+0,006, nella riga centrale, quella che raccoglie le palline finite fra $-0,5$
+e $+0,5$: un tratto di paesaggio così, in gergo, si chiama **bin**, e da qui
+in avanti la parola torna qualche volta): le catene hanno ricostruito la
+distribuzione senza
 che $Z$ sia mai entrata nel ciclo. Quell'ultimo millesimo, però, non è tutto
-rumore statistico: dentro c'è il bias di passo finito di cui sopra. Per
-vederlo, una sola esecuzione non basta, e vale la pena spiegare perché. Con
+rumore statistico. Dentro c'è un errore di natura diversa, ed è colpa del
+**passo**: la pallina non scivola giù per il pendio con continuità, lo scende
+a saltelli, e $\epsilon$ (nel codice, `eps`) è quanto dura ogni saltello. Una
+scala di gradini non è una rampa. Più i saltelli sono brevi, più la fotografia
+finale somiglia a quella
+vera; con saltelli di durata finita resta uno scarto che non è statistico e
+che nessuna quantità di catene fa sparire.
+
+Per vederlo, una sola esecuzione non basta, e vale la pena spiegare perché. Con
 ventimila catene l'incertezza statistica su un bin vale circa 0,003, cioè
 quanto l'effetto che vogliamo misurare: il numero stampato qui sopra, da solo,
-non sa distinguere le due cose. Ripetendo l'esperimento su sei semi diversi, a
-tempo totale costante $k\epsilon = 20$, lo scarto **medio** sul bin
-$[-0{,}5;\,+0{,}5)$ passa da $+0{,}0032 \pm 0{,}0008$ con $\epsilon = 0{,}01$
-a $+0{,}0024 \pm 0{,}0011$ con $\epsilon = 0{,}002$ e a
-$-0{,}0002 \pm 0{,}0009$ con $\epsilon = 0{,}0005$: in media la barriera è
-sovrappesata, e la sovrappesatura si riduce accorciando il passo, che è
-esattamente ciò che correggerebbe il test di accettazione di Metropolis. Sul
-singolo seme, invece, il segno cambia: con $\epsilon = 0{,}0005$ tre
-esecuzioni su sei danno uno scarto negativo. La lezione vale ben oltre questo
-esempio: un effetto sistematico grande quanto il rumore si vede solo
-ripetendo, e un numero solo, per quanto stampato con quattro cifre, non
-dimostra niente.
+non sa distinguere le due cose. Allora si ripete: sei esecuzioni con sei
+sorteggi diversi (i semi da 0 a 5), tutte a parità di *tempo percorso*
+($k\epsilon = 20$, dove $k$ è il numero di passi: se si dimezza il passo si
+raddoppiano i passi, così la passeggiata dura sempre lo stesso). Lo scarto
+**medio** sul bin centrale vale $+0{,}0032 \pm 0{,}0008$ con
+$\epsilon = 0{,}01$, poi $+0{,}0024 \pm 0{,}0011$ con $\epsilon = 0{,}002$ e
+$-0{,}0002 \pm 0{,}0009$ con $\epsilon = 0{,}0005$ (il numero dopo il $\pm$
+dice di quanto quella media balla da un sorteggio all'altro).
+
+E adesso la parte onesta, perché sei ripetizioni **non bastano ancora**: fra i
+primi due punti c'è una differenza di 0,0008 con incertezze di 0,0008 e
+0,0011, cioè nessuna differenza. Chi si fermasse qui avrebbe due punti
+indistinguibili e uno compatibile con zero, e concluderebbe per fede. La
+strada che chiude la questione è la stessa che questa sezione ha già usato per
+$Z$: in una dimensione **si può calcolare la risposta esatta**. La
+distribuzione su cui la catena a passo $\epsilon$ si assesta davvero è
+l'autovettore di Perron del suo operatore di transizione, e su una griglia
+fine si trova per iterazione. Il suo scarto sul bin centrale vale
+$+0{,}00357$ a $\epsilon = 0{,}01$, $+0{,}00071$ a $\epsilon = 0{,}002$ e
+$+0{,}00018$ a $\epsilon = 0{,}0005$: sempre positivo (la barriera è
+sovrappesata), e il rapporto scarto/$\epsilon$ resta fra $0{,}35$ e $0{,}36$
+su due ordini di grandezza di passo. Ecco l'errore «dell'ordine di
+$\epsilon$» annunciato nella scheda Superiore, non annunciato ma misurato.
+Sparirebbe aggiungendo, dopo ogni saltello, un controllo che
+ogni tanto lo rifiuta (si chiama test di accettazione di Metropolis), ed è la
+mossa a cui i modelli a energia rinunciano per semplicità.
+
+Il confronto fra le due colonne di numeri è la lezione, e vale ben oltre
+questo esempio. Sul singolo seme il segno cambia perfino: con
+$\epsilon = 0{,}0005$ tre esecuzioni su sei danno uno scarto negativo, mentre
+il valore vero è positivo. E la stima a $\epsilon = 0{,}002$ sbaglia di tre
+volte tanto. Un effetto sistematico più piccolo del rumore non si vede
+ripetendo di più: si vede cambiando strumento, e un numero solo, per quanto
+stampato con quattro cifre, non dimostra niente.
 
 Vale la pena notare anche *perché* qui funziona così bene, per non trarne una
 lezione sbagliata: la barriera fra le due buche è alta un'unità di energia
@@ -305,10 +391,18 @@ J(\theta) = \frac{1}{2}\,
 $$
 
 che a prima vista è inservibile (lo score dei dati non lo conosciamo) ma che
-un'integrazione per parti, lecita sotto condizioni di regolarità e di
-decadimento all'infinito delle densità in gioco (qui sempre assunte, come in
-{cite}`hyvarinen2005estimation`), trasforma in una quantità calcolabile su un
-campione:
+un'integrazione per parti trasforma in una quantità calcolabile su un
+campione. Le ipotesi vale la pena scriverle, perché non sono formalità: oltre
+alla regolarità e al decadimento all'infinito ($p_{\text{dati}}(\mathbf{x})\,
+\nabla_{\mathbf{x}} \log p_\theta(\mathbf{x}) \to 0$ per $\lVert\mathbf{x}\rVert
+\to \infty$, che è ciò che annulla il termine di bordo), servono
+$p_{\text{dati}}$ **strettamente positiva e differenziabile su tutto**
+$\mathbb{R}^D$ e a **supporto connesso**. Sono le due che si rompono davvero:
+i dati veri vivono su una varietà di dimensione molto minore dello spazio in
+cui stanno (una fotografia di volti non riempie $\mathbb{R}^{D}$), e senza
+connessione due densità con lo stesso score possono differire di un fattore
+costante da una componente all'altra, cioè lo score non identifica più la
+densità. Sotto quelle ipotesi {cite}`hyvarinen2005estimation`:
 
 $$
 J(\theta) = \mathbb{E}_{\mathbf{x} \sim p_{\text{dati}}}
@@ -317,27 +411,61 @@ J(\theta) = \mathbb{E}_{\mathbf{x} \sim p_{\text{dati}}}
 + \text{cost.},
 $$
 
-dove $\nabla_{\mathbf{x}}^2$ è la matrice hessiana rispetto a $\mathbf{x}$ e la costante non
-dipende da $\theta$ {cite}`hyvarinen2005estimation`. Niente $Z$, niente
+dove $\nabla_{\mathbf{x}}^2$ è la matrice hessiana rispetto a $\mathbf{x}$ e la costante,
+che vale $\tfrac{1}{2}\mathbb{E}\lVert\nabla_{\mathbf{x}} \log
+p_{\text{dati}}\rVert^2$, non
+dipende da $\theta$ {cite}`hyvarinen2005estimation`. Vale la pena nominarla,
+perché è lei a dire *perché* $J$ è un obiettivo sensato: essendo la prima
+forma una media di norme al quadrato, $J \ge 0$, e $J = 0$ se e solo se i due
+score coincidono quasi ovunque. Niente $Z$, niente
 catene di Markov: solo derivate del modello. Il costo si è spostato sulla
-traccia dell'hessiana, che in alta dimensione è cara.
+traccia dell'hessiana, e va quantificato, perché è l'unico costo del capitolo
+che si lascia contare: sono $D$ retropropagazioni per ogni esempio, con $D$ la
+dimensione del dato. Su un'immagine è proibitivo, ed è la ragione per cui in
+pratica la si stima con una proiezione casuale (lo *sliced score matching*)
+invece di calcolarla.
 
 Il colpo di scena arriva nel 2011: Pascal Vincent dimostra che lo score
 matching su dati **perturbati con rumore gaussiano** equivale, a meno di
 costanti, ad addestrare un *denoising autoencoder*
 {cite}`vincent2011connection`. Con $\tilde{\mathbf{x}} = \mathbf{x} + \sigma \boldsymbol{\varepsilon}$ e
 $\boldsymbol{\varepsilon} \sim \mathcal{N}(0, \mathbf{I})$, dove $\sigma$ è qui la deviazione
-standard del rumore e non la sigmoide di poco fa, il bersaglio dello score sul
-dato perturbato è noto in forma chiusa,
+standard del rumore e non la sigmoide di poco fa, e $\boldsymbol{\varepsilon}$
+è il rumore iniettato e non il passo $\epsilon$ della catena di Langevin
+(stessa lettera greca, due mestieri: qui è un vettore, e va in grassetto), il
+bersaglio dello score sul dato perturbato è noto in forma chiusa,
 $\nabla_{\tilde{\mathbf{x}}} \log q_\sigma(\tilde{\mathbf{x}} \mid \mathbf{x}) = -(\tilde{\mathbf{x}} - \mathbf{x})/\sigma^2 = -\boldsymbol{\varepsilon}/\sigma$,
-e l'obiettivo diventa una regressione: predire il rumore iniettato. È il
-**denoising score matching**, niente hessiana e niente MCMC, ed è, riga per
-riga, la loss dei modelli di diffusione del capitolo precedente
-{cite}`song2021score`.
+e l'obiettivo diventa una regressione: predire il rumore iniettato.
+
+Resta però da capire perché regredire sullo score **condizionato** a $\mathbf{x}$
+dia lo score della **marginale** $q_\sigma(\tilde{\mathbf{x}})$, che è quello
+che serve per generare, e il ponte è il teorema di Vincent. Sta in due
+osservazioni: la prima è l'identità
+
+$$
+\nabla_{\tilde{\mathbf{x}}} \log q_\sigma(\tilde{\mathbf{x}})
+= \mathbb{E}_{\mathbf{x} \mid \tilde{\mathbf{x}}}\!\left[
+\nabla_{\tilde{\mathbf{x}}} \log q_\sigma(\tilde{\mathbf{x}} \mid \mathbf{x})\right],
+$$
+
+cioè lo score della marginale è la media del bersaglio condizionale sui dati
+compatibili con $\tilde{\mathbf{x}}$; la seconda è che il minimo di una
+regressione quadratica *è* la media condizionale del bersaglio. Chi minimizza
+la regressione, quindi, ottiene esattamente lo score della marginale. È il
+**denoising score matching**, niente hessiana e niente MCMC, ed è la loss dei
+modelli di diffusione del capitolo precedente {cite}`song2021score` a meno di
+una **riponderazione per livello di rumore**, che non è un dettaglio: senza
+di essa il bersaglio $-\boldsymbol{\varepsilon}/\sigma$ farebbe esplodere il
+peso dei livelli di rumore piccoli, e il fattore che si usa (proporzionale a
+$\sigma^2$) è precisamente quello che cancella l'$1/\sigma$ e lascia la
+regressione sul rumore in forma pulita.
 
 Il prezzo c'è, e non è quello che si direbbe: ciò che si impara non è lo score
-dei dati, è lo score dei dati **sporcati**, cioè della densità $q_\sigma$
-convoluta con la gaussiana. I due coincidono solo nel limite
+dei dati, è lo score dei dati **sporcati**, cioè della densità marginale
+$q_\sigma$, che è $p_{\text{dati}}$ convoluta con la gaussiana (e si noti che
+$q_\sigma(\tilde{\mathbf{x}})$ e $q_\sigma(\tilde{\mathbf{x}} \mid \mathbf{x})$
+sono due oggetti diversi, come sempre nella notazione delle densità). I due
+score coincidono solo nel limite
 $\sigma \to 0$, e a $\sigma$ finito resta un errore sistematico che nessuna
 quantità di dati riduce. È esattamente il motivo per cui i modelli di
 diffusione non usano un solo livello di rumore ma un'intera scala di livelli,
@@ -358,7 +486,11 @@ energia impara l'altezza del paesaggio, e la pendenza si ricava da quella; un
 modello di diffusione impara direttamente la pendenza, una freccia per ogni
 punto, e non si preoccupa che esista davvero una superficie di cui quelle
 frecce siano la discesa. Sono due cose diverse, e a rigore niente garantisce
-che le frecce imparate siano la pendenza di qualcosa. Ci si guadagna in
+che le frecce imparate siano la pendenza di qualcosa. Che sia possibile
+sbagliare si vede con quattro frecce: disponile lungo il bordo di un quadrato
+in modo che ognuna punti alla successiva, in tondo. Sembrano un pendio, ma
+seguendole si torna al punto di partenza dopo essere sempre scesi, e un
+paesaggio in cui si scende sempre tornando dove si era non esiste. Ci si guadagna in
 stabilità dell'addestramento, e a chi genera immagini l'altra cosa non è mai
 importata.
 
@@ -368,7 +500,8 @@ La terza strada è la più obliqua e ha il fascino delle idee che spostano il
 problema invece di risolverlo. Michael Gutmann e Aapo Hyvärinen, nel 2010,
 osservano che stimare una densità è difficile, ma **distinguere** i dati veri
 da rumore fabbricato da noi è un problema di classificazione, e a classificare
-siamo bravi {cite}`gutmann2010noise`.
+siamo bravi {cite}`gutmann2010noise`. Il metodo si chiama **stima contrastiva
+col rumore**, e la sigla inglese con cui lo si trova ovunque è **NCE**.
 
 `````{tab} Elementare
 
@@ -385,9 +518,10 @@ delle GAN, quella a cui tocca dire se l'immagine che ha davanti viene dal
 mondo o l'ha fabbricata l'altra rete. Ed è la stessa mossa con cui si insegna
 a un computer a rappresentare con dei numeri le parole di una lingua o i nodi
 di un grafo: gli si mostrano accostamenti veri e accostamenti inventati, e gli
-si chiede di distinguerli (nel capitolo sulle Graph Neural Network la si trova
-col suo nome inglese, *negative sampling*). La famiglia è più larga di quanto
-il nome lasci pensare.
+si chiede di distinguerli. Per le parole sono gli *word embedding* del
+capitolo sul natural language processing; nel capitolo sulle Graph Neural
+Network la stessa mossa torna col suo nome inglese, *negative sampling*. La
+famiglia è più larga di quanto il nome lasci pensare.
 
 `````
 
@@ -395,11 +529,17 @@ il nome lasci pensare.
 
 La **noise-contrastive estimation** (NCE) affianca ai dati un rumore di
 riferimento $p_n$ noto e campionabile, e addestra un classificatore logistico
-a distinguere le due sorgenti. Il lavoro del 2010 {cite}`gutmann2010noise`
+a distinguere le due sorgenti. Il rumore va scelto **strettamente positivo
+dovunque lo siano i dati**, e non è una precauzione da manuale: dove non
+arrivano campioni di rumore la densità dei dati non è identificabile, e il
+lavoro del 2010 lo enuncia come condizione del teorema, non come consiglio.
+Quel lavoro {cite}`gutmann2010noise`
 tratta il caso con tanti campioni di rumore quanti dati ($\nu = 1$); nella
 formulazione generale, che gli stessi autori danno due anni dopo sul *Journal
 of Machine Learning Research* {cite}`gutmann2012noise`, con $\nu$ campioni di
-rumore per ogni dato la probabilità a posteriori che $\mathbf{x}$ venga dai dati è
+rumore per ogni dato si mescolano le due sorgenti in proporzione
+$\tfrac{1}{1+\nu}$ e $\tfrac{\nu}{1+\nu}$, e da Bayes su queste due
+probabilità a priori la probabilità a posteriori che $\mathbf{x}$ venga dai dati è
 
 $$
 P(\text{dati} \mid \mathbf{x})
@@ -411,8 +551,12 @@ e si massimizza la log-verosimiglianza di questa classificazione binaria. La
 mossa decisiva è che $\log Z$ viene trattata come un **parametro in più**,
 stimato insieme agli altri: il modello non normalizzato
 $\log p_\theta(\mathbf{x}) = -E_\theta(\mathbf{x}) - c$ impara anche $c$, perché al
-classificatore la costante *serve* per calibrarsi, al contrario della massima
-verosimiglianza, dove sarebbe stata assorbita e persa
+classificatore la costante *serve* per calibrarsi. Con la massima
+verosimiglianza la stessa mossa non è semplicemente inutile, è **impossibile**:
+lasciando $c$ libero, la verosimiglianza si fa crescere quanto si vuole
+mandando $c \to -\infty$, cioè dichiarando il modello sempre più
+«concentrato», e il problema non ha soluzione. È il vincolo di
+normalizzazione a impedirlo, ed è esattamente ciò a cui NCE rinuncia
 {cite}`gutmann2010noise`.
 
 Il *negative sampling* di word2vec {cite}`mikolov2013distributed` (il secondo
@@ -436,24 +580,27 @@ un rapporto fra densità, non una densità.
   - Che cosa fa con la misura del continente ($Z$)
   - Che cosa costa
 * - **Campionamento** (Langevin e parenti)
-  - La ignora: è un numero uguale dappertutto, e un numero uguale dappertutto
-    non ha pendenza
+  - Non la calcola mai, la sostituisce: quello che serve all'addestramento non
+    è il numero, è una media sulle risposte che il modello si immagina, e per
+    produrle basta la pendenza sotto i piedi
   - Tempo. Le palline restano intrappolate da una parte quando le montagne
     sono alte, e in alta dimensione lo sono; e da dentro non si vede
-* - **Score matching** (e la sua forma denoising)
+* - **Score matching**, cioè imparare la pendenza (e la sua forma *denoising*,
+    su dati sporcati apposta)
   - La elimina, perché sparisce nel passaggio dall'altezza alla pendenza
-  - Nella forma originale un conto sulle derivate seconde (l'hessiana), caro
-    in alta dimensione; nella forma denoising, il fatto che la pendenza
+  - Nella forma originale un conto su come la pendenza stessa cambia da un
+    punto al vicino (in gergo le derivate seconde, l'hessiana), caro
+    in alta dimensione; nella forma *denoising*, il fatto che la pendenza
     imparata è quella dei dati sporcati di rumore, non dei dati
-* - **NCE** e parenti
+* - **NCE** (*noise-contrastive estimation*, la domanda sì o no) e parenti
   - La stima come un numero qualunque, insieme a tutto il resto
   - Dipende dal rumore che si sceglie: se è troppo diverso dai dati,
     distinguere diventa banale e non si impara nulla
 ```
 
 Tre modi di non pagare il conto, e nessuno dei tre gratis. Resta una quarta
-possibilità, la più radicale, che è anche la tesi del prossimo paragrafo del
-capitolo: **non chiedere mai la probabilità**. Se ciò che serve è decidere,
+possibilità, la più radicale, che è anche la tesi della sezione seguente:
+**non chiedere mai la probabilità**. Se ciò che serve è decidere,
 ordinare, pianificare (non stampare percentuali), l'energia basta da sola, e il
 conto non si apre nemmeno.
 

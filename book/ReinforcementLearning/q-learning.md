@@ -207,12 +207,13 @@ convergenza appena citata vuole ogni coppia $(s,a)$ visitata infinite volte, e
 per assicurarlo serve $\sum_t \varepsilon_t = \infty$, che con
 $\varepsilon_t \propto 1/t$ si ottiene. Questa condizione, unita al fatto che la
 policy diventi greedy nel limite, è ciò che si chiama **GLIE** (*greedy in the
-limit with infinite exploration*), sotto cui anche il SARSA della prossima
-sezione converge alla policy ottima {cite}`singh2000convergence`: si noti che
+limit with infinite exploration*), sotto cui anche il SARSA di qui a poco
+converge alla policy ottima {cite}`singh2000convergence`: si noti che
 GLIE è la coppia di requisiti, non la ricetta $\varepsilon_t = 1/t$, che ne è
 soltanto un modo comodo di soddisfarli. Con un $\varepsilon$ che si spegne
 esponenzialmente le mosse esplorative sono invece quasi certamente in numero
-finito, perché $\sum_t \varepsilon_0 \lambda^t < \infty$. In pratica lo scambio
+finito, perché una serie geometrica di ragione minore di uno ha somma finita.
+In pratica lo scambio
 si accetta. La scelta di $\varepsilon$ regola il compromesso
 *exploration–exploitation*, uno dei nodi teorici centrali del reinforcement
 learning.
@@ -283,8 +284,9 @@ sconto, che rende il premio meno appetitoso quanto più lo si fa aspettare.
 :width: 85%
 
 La politica appresa dal Q-learning sulla griglia: da ogni cella la freccia
-indica l'azione con $Q$ più alta. Il valore della meta "retrocede" fino alla
-partenza, un passo per episodio.
+indica l'azione con $Q$ più alta a fine addestramento. È il risultato che
+stampa il codice di qui a poco; la strada per arrivarci, cioè il valore della
+meta che retrocede una casella per volta, il disegno non la mostra.
 ```
 
 All'inizio la tabella dei voti è tutta a zero. Fissiamo un tasso di
@@ -298,7 +300,10 @@ lì, quindi dalla casella d'arrivo non c'è più niente da aspettarsi. La sorpre
 è tutta lì: si aspettava $0$, ha incassato $1$. Dandole retta a metà, il voto
 dell'ultima mossa passa da $0$ a $0{,}5$.
 
-Un episodio dopo, tocca alla casella che veniva prima. Da lì la mossa non paga
+Alla casella che veniva prima tocca solo un episodio dopo, e conviene capire
+perché: quando l'agente ci è passato, in questa partita, il voto della casella
+d'arrivo era ancora zero, e correggere verso zero non muove niente. Adesso
+invece il $0{,}5$ c'è, e alla prossima partita servirà. Da lì la mossa non paga
 niente, ma porta in una casella dove ormai c'è scritto un voto di $0{,}5$:
 scontato, vale $0{,}9 \times 0{,}5 = 0{,}45$. La sorpresa è di nuovo positiva
 (si aspettava $0$, la prospettiva vale $0{,}45$) e dandole retta a metà il voto
@@ -328,46 +333,100 @@ Q(s^-,\rightarrow) \leftarrow 0 + 0{,}5\,\big[\,0 + 0{,}9\cdot 0{,}5 - 0\,\big] 
 $$
 
 Entrambi i conti usano $r$ come ricompensa **osservata** e sfruttano il fatto
-che in questo mondo la transizione non paga alcun costo di passo: con il $-1$
-per mossa del labirinto della sezione sugli MDP il secondo aggiornamento
-darebbe $0{,}5\,[-1 + 0{,}45] = -0{,}275$.
+che in questo mondo la transizione non paga alcun costo di passo: in un mondo
+che penalizzasse ogni mossa con $-1$, il secondo aggiornamento darebbe
+$0{,}5\,[-1 + 0{,}45] = -0{,}275$.
 
 `````
 
 Ecco il meccanismo TD in azione: la ricompensa non salta dappertutto in una
 volta, ma **retrocede** verso la partenza un passo per episodio, come una
-macchia che si allarga all'indietro dalla meta. In codice, il nucleo
-dell'algoritmo è compatto:
+macchia che si allarga all'indietro dalla meta. In codice sta tutto in una
+pagina, ambiente compreso:
 
 ```python
 import numpy as np
 
 # Griglia 3x4: 12 stati, 4 azioni (0=su 1=giù 2=sinistra 3=destra)
-n_stati, n_azioni = 12, 4
-Q = np.zeros((n_stati, n_azioni))       # tabella dei voti, tutta a zero
+RIGHE, COLONNE = 3, 4
+MURO, META, TRAPPOLA = (1, 1), (0, 3), (1, 3)
+MOSSE = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+LIBERE = [(i, j) for i in range(RIGHE) for j in range(COLONNE)
+          if (i, j) not in (MURO, META, TRAPPOLA)]
 
+n_stati, n_azioni = RIGHE * COLONNE, 4
+Q = np.zeros((n_stati, n_azioni))       # tabella dei voti, tutta a zero
 alpha, gamma, epsilon = 0.5, 0.9, 0.1
+rng = np.random.default_rng(20260807)
+
+def indice(cella):
+    return cella[0] * COLONNE + cella[1]
+
+def ambiente(cella, a):
+    """Dove si finisce, quanto si incassa, se la partita e' finita."""
+    i, j = cella[0] + MOSSE[a][0], cella[1] + MOSSE[a][1]
+    if not (0 <= i < RIGHE and 0 <= j < COLONNE) or (i, j) == MURO:
+        i, j = cella                          # contro un muro si resta fermi
+    if (i, j) == META:     return (i, j), 1.0, True
+    if (i, j) == TRAPPOLA: return (i, j), -1.0, True
+    return (i, j), 0.0, False
 
 def epsilon_greedy(s):
-    if np.random.rand() < epsilon:
-        return np.random.randint(n_azioni)   # esplora: mossa a caso
-    return int(np.argmax(Q[s]))              # sfrutta: mossa col voto piu alto
+    if rng.random() < epsilon:
+        return int(rng.integers(n_azioni))    # esplora: mossa a caso
+    return int(np.argmax(Q[s]))               # sfrutta: mossa col voto piu alto
 
-def aggiorna(s, a, r, s_next):
+def aggiorna(s, a, r, s_next, fine):
     # target TD: usa la stima migliore dello stato successivo (off-policy)
-    td_target = r + gamma * np.max(Q[s_next])
-    Q[s, a] += alpha * (td_target - Q[s, a])   # correggi verso il target
+    td_target = r if fine else r + gamma * np.max(Q[s_next])
+    Q[s, a] += alpha * (td_target - Q[s, a])  # correggi verso il target
+
+# Inizi esplorativi: ogni episodio comincia da una casella sorteggiata.
+for _ in range(5000):
+    cella = LIBERE[rng.integers(len(LIBERE))]
+    for _ in range(100):
+        s = indice(cella)
+        a = epsilon_greedy(s)
+        cella_dopo, r, fine = ambiente(cella, a)
+        aggiorna(s, a, r, indice(cella_dopo), fine)
+        if fine:
+            break
+        cella = cella_dopo
+
+FRECCE = "^v<>"
+def voto(cella):
+    if cella == MURO:     return "  muro"
+    if cella == META:     return "    +1"
+    if cella == TRAPPOLA: return "    -1"
+    s = indice(cella)
+    return f"{FRECCE[int(np.argmax(Q[s]))]}{Q[s].max():5.2f}"
+
+for i in range(RIGHE):
+    print(" | ".join(voto((i, j)) for j in range(COLONNE)))
+
+# > 0.81 | > 0.90 | > 1.00 |     +1
+# ^ 0.73 |   muro | ^ 0.90 |     -1
+# ^ 0.66 | > 0.73 | ^ 0.81 | < 0.73
 ```
 
-La funzione `aggiorna` è il Q-learning per intero; per ottenere SARSA
-basterebbe passare l'azione realmente scelta `a_next` e sostituire
-`np.max(Q[s_next])` con `Q[s_next, a_next]`. Una nota su `alpha`: qui è
-costante, e un passo costante viola la seconda condizione di Robbins-Monro,
-cioè rinuncia alla garanzia di convergenza in cambio di una reattività che in
-pratica conviene quasi sempre. L'ambiente vero e proprio, che dato $(s,a)$
-restituisce $r$ e $s'$, è omesso qui, ma è ciò che, ripetuto per migliaia di
-episodi, riempie la tabella e fa emergere le frecce della
-{numref}`fig-labirinto`.
+Quelle frecce sono, una per una, quelle della {numref}`fig-labirinto`, e i
+numeri accanto si controllano a mano: la casella da cui basta una mossa per
+arrivare vale il premio pieno, $1{,}00$, e ogni passo indietro lo moltiplica per
+lo sconto, $0{,}90$, poi $0{,}81$, poi $0{,}73$.
+
+Tre note sul codice. La funzione `aggiorna` è il Q-learning per intero; per
+ottenere SARSA basterebbe passare l'azione realmente scelta `a_next` e
+sostituire `np.max(Q[s_next])` con `Q[s_next, a_next]`. `alpha` qui è costante,
+e un passo che non si accorcia mai insegue per sempre le ultime sorprese invece
+di assestarsi: si rinuncia alla garanzia teorica di convergenza, che chiede un
+passo che rimpicciolisca col tempo come sui bandit, in cambio di una reattività
+che in pratica conviene quasi sempre. E ogni episodio comincia da una casella
+sorteggiata invece che dalla partenza: si chiamano **inizi esplorativi**, e
+dentro un simulatore, che possiamo far ripartire dove vogliamo, costano una
+riga. Senza, le caselle fuori dal cammino migliore verrebbero visitate troppo di
+rado, la loro riga resterebbe quasi vuota e la loro freccia sarebbe un
+sorteggio: si provi a far cominciare tutti gli episodi dalla partenza, in basso
+a sinistra, e a guardare che cosa succede all'ultima riga della griglia.
 
 ## Fra un passo e la fine: quanti passi guardare avanti
 
@@ -500,9 +559,13 @@ sorpresa che corregge, il bersaglio a un passo, l'esplorazione dosata)
 restano tutte. È una **rappresentazione** diversa. Al posto della tabella serve
 qualcosa che, vista una situazione mai incontrata, sappia indovinare i suoi voti
 somigliandola a quelle che ha già visto, e quel qualcosa sono le reti neurali.
-È il capitolo che comincia adesso, e questa è la ragione per cui esiste; con una
-avvertenza che conviene portarsi dietro: buttata via la tabella, si butta via
-anche la garanzia di convergenza di Watkins e Dayan.
+È il capitolo che comincia alla pagina dopo questa, ed è la ragione per cui
+esiste; con un'avvertenza che conviene portarsi dietro. La dimostrazione che il
+Q-learning arriva prima o poi ai voti giusti, quella di Watkins e Dayan, vale
+per una tabella e per una tabella soltanto: buttata via la tabella, quella
+promessa non c'è più, e il deep reinforcement learning è in buona parte il
+mestiere di far funzionare lo stesso qualcosa che nessuno ha dimostrato che
+funzioni.
 
 `````{tab} Elementare
 

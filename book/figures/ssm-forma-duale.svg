@@ -42,7 +42,7 @@
   <text x="302" y="76" font-size="13" text-anchor="middle" fill="#2D5A5C">y<tspan font-size="10" dy="5">t+1</tspan></text>
 
   <!-- formula ricorrente -->
-  <text x="103" y="315" font-size="13.5" fill="#1A1A1A">ricorrenza:  h ← A<tspan dx="-10" dy="-4">&#8254;</tspan><tspan dx="0" dy="4"></tspan> h + B<tspan dx="-10" dy="-4">&#8254;</tspan><tspan dx="0" dy="4"></tspan> x</text>
+  <text x="103" y="315" font-size="13.5" fill="#1A1A1A">ricorrenza:  h ← <tspan text-decoration="overline">A</tspan> h + <tspan text-decoration="overline">B</tspan> x</text>
   <text x="200" y="337" font-size="13.5" text-anchor="middle" fill="#1A1A1A">y = C h</text>
 
   <!-- ============ CENTRO: equivalenza ============ -->
@@ -70,7 +70,7 @@
 
   <!-- il filtro copre tutta la sequenza, non una finestra -->
   <rect x="462" y="134" width="282" height="32" rx="8" fill="none" stroke="#2D5A5C" stroke-width="2" stroke-dasharray="5 4"/>
-  <text x="508" y="122" font-size="12" fill="#2D5A5C" font-weight="600">kernel K<tspan dx="-10" dy="-4">&#8254;</tspan><tspan dx="0" dy="4"></tspan>, lungo quanto la sequenza</text>
+  <text x="508" y="122" font-size="12" fill="#2D5A5C" font-weight="600">kernel <tspan text-decoration="overline">K</tspan>, lungo quanto la sequenza</text>
 
   <line x1="478" y1="168" x2="478" y2="206" stroke="#2D5A5C" stroke-width="1.6" marker-end="url(#sfd-teal)"/>
   <circle cx="478" cy="216" r="8" fill="#2D5A5C"/>
@@ -90,9 +90,9 @@
   <circle cx="730" cy="216" r="8" fill="#2D5A5C"/>
   <text x="620" y="248" font-size="12" text-anchor="middle" fill="#2D5A5C">tutta l'uscita y, in un colpo solo</text>
   <!-- kernel espanso -->
-  <text x="498" y="294" font-size="13" fill="#1A1A1A">kernel:  K<tspan dx="-10" dy="-4">&#8254;</tspan><tspan dx="0" dy="4"></tspan> = ( C B<tspan dx="-10" dy="-4">&#8254;</tspan><tspan dx="0" dy="4"></tspan> ,  C A<tspan dx="-10" dy="-4">&#8254;</tspan><tspan dx="0" dy="4"></tspan> B<tspan dx="-10" dy="-4">&#8254;</tspan><tspan dx="0" dy="4"></tspan> ,  … )</text>
+  <text x="498" y="294" font-size="13" fill="#1A1A1A">kernel:  <tspan text-decoration="overline">K</tspan> = ( C <tspan text-decoration="overline">B</tspan> ,  C <tspan text-decoration="overline">A</tspan> <tspan text-decoration="overline">B</tspan> ,  … )</text>
   <!-- formula convoluzione -->
-  <text x="587" y="332" font-size="13.5" fill="#1A1A1A">y = x ∗ K<tspan dx="-10" dy="-4">&#8254;</tspan><tspan dx="0" dy="4"></tspan></text>
+  <text x="587" y="332" font-size="13.5" fill="#1A1A1A">y = x ∗ <tspan text-decoration="overline">K</tspan></text>
 
   <!-- legenda -->
   <circle cx="300" cy="376" r="7" fill="#C9A961"/>

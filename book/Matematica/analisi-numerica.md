@@ -49,9 +49,13 @@ mantissa.
 :alt: "Tre barre che mostrano come si spartiscono i bit in tre formati. Il float32 ha un bit di segno, 8 bit di esponente (la portata) e 23 bit di mantissa (la precisione). Il float16 ha 5 bit di esponente e 10 di mantissa, con portata ridotta a un massimo di circa 65.504. Il bfloat16 ha 8 bit di esponente, la stessa portata del float32, e solo 7 bit di mantissa, cioè una grana più grossa."
 :width: 96%
 
-Lo stesso budget di sedici bit, speso in due modi. Il float16 tiene la
-precisione e perde la portata; il bfloat16 fa il contrario, e per addestrare
-una rete è quasi sempre il baratto giusto.
+Lo stesso budget di sedici bit, speso in due modi. Rispetto al `float32`
+tutti e due perdono qualcosa, perché hanno metà delle caselle; la scelta è
+*che cosa*. Il `float16` sacrifica la portata e si tiene più cifre; il
+`bfloat16` fa l'opposto, tiene la stessa portata del `float32` e paga con la
+grana più grossa, e per addestrare una rete è quasi sempre il baratto giusto.
+(La `b` sta per *brain*: il formato nasce nel gruppo Google Brain, non è una
+sigla tecnica.)
 ```
 
 La distinzione di {numref}`fig-formati-virgola-mobile` fra **portata** e
@@ -134,28 +138,35 @@ riesca a scrivere.
 È la differenza fra un errore e una catastrofe. Quel singolo numero, entrando
 nei conti dello strato successivo, sovrasta da solo tutti gli altri
 contributi, e da lì in poi la risposta della rete non ha più niente a che
-vedere con l'immagine che ha davanti. Hong e colleghi hanno misurato tutti e
-trentadue i bit, uno per uno, su diciannove reti addestrate
-{cite}`hong2019terminal`: il danno indiscriminato viene dai bit
-dell'esponente, e in una sola direzione (da $0$ a $1$, quella che fa crescere
-il numero); il bit del segno, che al più cambia un peso di un fattore due, non
-produce danni sistematici. Nei modelli che hanno provato, quasi tutti avevano
-almeno un parametro capace, da solo, di spazzare via oltre il novanta per cento
-dell'accuratezza. Una ResNet50 (una rete per il riconoscimento di immagini, fra le
-più usate come termine di paragone) passa dal suo $76\%$ di risposte corrette
-su ImageNet, la raccolta di fotografie etichettate su cui si misurano questi
-modelli, al livello del **tiro a caso**: come rispondere a sorte fra mille
-categorie.
+vedere con l'immagine che ha davanti.
+
+Qualcuno è andato a misurarlo. Hong e colleghi hanno ribaltato i bit di
+diciannove reti addestrate {cite}`hong2019terminal`: uno per uno e in tutte e
+due le direzioni sulle otto più piccole, a campione sulle più grandi, dove
+provarli tutti non si poteva (per una sola rete da 138 milioni di parametri il
+conto completo avrebbe richiesto più di due anni e mezzo di calcolo). Il
+risultato è netto. Il danno indiscriminato viene dai bit dell'esponente, e in
+una sola direzione, da $0$ a $1$, quella che fa crescere il numero; il bit del
+segno, che ribalta il verso di un peso senza toccarne la taglia, non produce
+danni sistematici. E tutte e diciannove le reti avevano almeno un parametro
+capace, da solo, di spazzare via oltre il novanta per cento dell'accuratezza.
+
+Per una ResNet50 (una rete per il riconoscimento di immagini, fra le più usate
+come termine di paragone) vuol dire scendere dal suo $76\%$ di risposte
+corrette su ImageNet, la raccolta di fotografie etichettate su cui si misurano
+questi modelli, a **meno dell'otto per cento**: un bit solo, e la rete non
+riconosce quasi più niente.
 
 La differenza rispetto al software tradizionale è che qui **non si vede**. Un
 bit sbagliato in un programma normale di solito produce un crash o un risultato
 palesemente assurdo; in una rete produce una risposta plausibile e sbagliata,
 indistinguibile da una risposta giusta se non si conosce quella giusta. È il
 motivo per cui il tema ha un nome tutto suo, *corruzione silenziosa dei dati*,
-e per cui la robustezza di un sistema di ML ha due facce distinte: quella ai
-**dati** (che il mondo cambi sotto il modello, o che qualcuno gli sottoponga
-apposta immagini costruite per ingannarlo: sono la *deriva* e gli *esempi
-avversari*, discussi nel capitolo sull'AI responsabile) e quella
+e per cui la robustezza di un sistema di ML ha due facce distinte. C'è quella
+ai **dati**, che a sua volta si sdoppia: il mondo può cambiare sotto il modello
+(è la *deriva*, e ne parla il capitolo sul machine learning) oppure qualcuno
+può sottoporgli apposta immagini costruite per ingannarlo (sono gli *esempi
+avversari*, e ne parla il capitolo sull'AI responsabile). E c'è quella
 all'**hardware**, che non riguarda il modello ma il silicio su cui gira.
 ```
 
@@ -200,10 +211,13 @@ logaritmico, dove i prodotti diventano somme.
 
 ## Il trucco log-sum-exp
 
-Nessuna funzione soffre di questi problemi quanto la **softmax**, che chiude
-quasi ogni classificatore trasformando dei punteggi grezzi $z_i$ (i *logit*) in
-probabilità. La sua definizione contiene esponenziali, e gli esponenziali
-straripano. La cura è un'idea semplice ed elegante.
+Nessuna funzione soffre di questi problemi quanto la **softmax**. È l'ultimo
+passaggio di quasi ogni modello che deve scegliere fra alternative: gli strati
+sputano fuori un punteggio grezzo per ciascuna alternativa, un numero qualsiasi
+che di per sé non vuol dire niente (per tradizione si chiamano *logit*), e la
+softmax li rimette in riga come probabilità, tutte positive e a somma uno. La
+sua definizione contiene esponenziali, e gli esponenziali straripano. La cura è
+un'idea semplice ed elegante.
 
 `````{tab} Elementare
 
@@ -222,9 +236,12 @@ $\tfrac{2}{4}$ e $\tfrac{20}{40}$ sono lo stesso numero. Ora, moltiplicare
 tutti gli $e^{z}$ per una stessa quantità equivale a **sottrarre uno stesso
 numero a tutti i punteggi** prima di esponenziare, perché è così che si
 comportano le potenze. Sottraendo il massimo, $1002$, i punteggi diventano
-$(-2,\ -1,\ 0)$, gli esponenziali restano piccoli e comodi, e le probabilità
-sono identiche a prima, cifra per cifra. Sottrarre il massimo prima di
-esponenziare: tutto qui.
+$(-2,\ -1,\ 0)$, e adesso gli esponenziali sono tre numeri comodissimi:
+$e^{-2}=0{,}135$, $e^{-1}=0{,}368$, $e^{0}=1$. La loro somma fa $1{,}503$, e
+dividendo ciascuno per la somma vengono le tre probabilità: $9{,}0\%$,
+$24{,}5\%$ e $66{,}5\%$. Sono quelle che sarebbero uscite dal conto
+impossibile di prima, e adesso il conto si può fare. Sottrarre il massimo
+prima di esponenziare: tutto qui.
 
 `````
 
@@ -304,13 +321,17 @@ amplifica a dismisura.
 `````{tab} Elementare
 
 Pensa alla bilancia del capitano di poco fa. Se ti chiedo quanto pesa la barca,
-un chilo di errore sulla misura ti dà un chilo di errore sulla risposta: su
-ottantamila chili è un errore dello $0{,}001\%$, e la domanda è ben
-condizionata. Se ti chiedo quanto pesa il capitano, e l'unico modo è sottrarre
-due pesate da ottantamila chili, un chilo di errore su ciascuna diventa quasi
-il **tre per cento** della risposta. La *stessa* imprecisione, sulla *stessa*
-bilancia, in proporzione pesa più di duemila volte tanto. Non è colpa di chi fa
-i conti né della bilancia: è la domanda a essere fatta male.
+un chilo di errore sulla misura ti dà un chilo di errore sulla risposta: un
+chilo su ottantamila è lo $0{,}00125\%$, cioè poco più di un millesimo di punto
+percentuale, e la domanda è ben condizionata.
+
+Se ti chiedo quanto pesa il capitano, invece, la risposta la ricavo da due
+pesate, e le due imprecisioni si sommano: nel caso peggiore sbaglio di un chilo
+in un verso sulla prima e di un chilo nell'altro sulla seconda, cioè di due
+chili sulla differenza. Due chili su settanta sono il **due virgola nove per
+cento**. La *stessa* imprecisione, sulla *stessa* bilancia, in proporzione pesa
+più di duemila volte tanto ($2{,}9$ diviso $0{,}00125$ fa circa $2\,300$). Non
+è colpa di chi fa i conti né della bilancia: è la domanda a essere fatta male.
 
 È una distinzione che conviene tenere, perché quando un risultato numerico
 esce sbagliato le cause possibili sono due e si confondono spesso. Una è che
@@ -377,13 +398,17 @@ vivono su scale lontanissime. Il prezzo è nell'ordine delle centinaia di
 migliaia, le stanze sono tre. Ciascuna di queste caratteristiche (in gergo si
 dicono *feature*, «caratteristiche» appunto) parla una lingua sua.
 
-Per il modello è un guaio, ed è esattamente il guaio della sezione
-precedente: gli chiediamo di regolare insieme una manopola che va spostata di
-diecimila alla volta e una che va spostata di mezzo. È come cercare il fondo
-di una valle lunga trenta chilometri e larga dieci metri: la direzione più
-ripida punta quasi sempre contro la parete più vicina, non verso il fondo, e
-la discesa del gradiente della sezione sull'analisi passa il tempo a rimbalzare
-da un fianco all'altro invece di avanzare ({numref}`fig-condizionamento`).
+Per il modello è un guaio, ed è esattamente il guaio della sezione precedente.
+Il modello moltiplica ogni caratteristica per un peso, e il peso è una delle
+sue manopole. Ma il prezzo arriva in centinaia di migliaia, quindi al suo peso
+basta muoversi di un pelo perché il risultato cambi moltissimo; il numero di
+stanze arriva in unità, quindi al suo peso tocca muoversi parecchio per farsi
+sentire. Una manopola sensibilissima e una insensibile, da regolare insieme e
+con lo stesso passo: è come cercare il fondo di una valle lunga trenta
+chilometri e larga dieci metri, dove la direzione più ripida punta quasi sempre
+contro la parete più vicina e non verso il fondo, e la discesa del gradiente
+della sezione sull'analisi passa il tempo a rimbalzare da un fianco all'altro
+invece di avanzare ({numref}`fig-condizionamento`).
 
 Il rimedio si chiama **standardizzare** e consiste in due gesti su ciascuna
 colonna di dati, presa una alla volta: togliere a tutti i valori la loro media,

@@ -202,8 +202,9 @@ token discreti e a ricostruirla da quelli. I token nascono dallo stesso
 principio di quantizzazione visto nella sezione precedente, portato alle sue
 conseguenze: l'audio diventa qualche centinaio di simboli al secondo invece di
 decine di migliaia di campioni. Ma il numero che conta davvero non è quello: è
-quanti **passi in fila** servono. Con il codec di MusicGen (50 frame al secondo,
-quattro token per frame, prodotti in un colpo solo) si generano 50 passi
+quanti **passi in fila** servono. Con il codec di MusicGen (50 frame al secondo
+e quattro token per ciascun frame, che il modello emette quattro alla volta, in
+un modo che vedremo fra poco) si generano una cinquantina di passi
 sequenziali per ogni secondo di musica, contro i 16.000 di WaveNet. È un fattore
 trecento sul costo della generazione, ed è tutta la ragione per cui questa via
 ha vinto.
@@ -249,8 +250,9 @@ risultato ha insieme le due qualità che, prese da sole, si escludevano:
 La novità di AudioLM sta proprio qui: è il primo sistema a combinare i **token
 semantici** di un modello auto-supervisionato con i **token acustici** di un
 codec neurale, due famiglie con ruoli complementari. I **token
-semantici** provengono da un modello auto-supervisionato della famiglia vista
-nella sezione precedente, nel paper, w2v-BERT, parente stretto di wav2vec 2.0
+semantici** provengono da un modello auto-supervisionato della famiglia vista in
+[Imparare dal suono senza etichette](rappresentazioni-auto-supervisionate.md);
+nel paper è w2v-BERT, parente stretto di wav2vec 2.0
 e HuBERT: catturano il contenuto fonetico e la struttura a lungo termine, ma
 buttano via gran parte del dettaglio acustico. I **token acustici** vengono
 invece dal codec neurale (SoundStream): codificano il segnale in modo da
@@ -293,7 +295,7 @@ and Controllable Music Generation*) rivendica proprio la semplicità: **un
 singolo** Transformer autoregressivo, non una cascata, che genera i token di
 un codec (EnCodec) condizionato da una descrizione testuale.
 
-Il condizionamento sul testo è la stessa idea vista con i modelli di
+Il condizionamento sul testo è la stessa idea che ritroveremo con i modelli di
 diffusione: una descrizione («un riff di chitarra elettrica anni Settanta,
 ritmo incalzante») viene codificata da un encoder di testo e usata per
 *guidare* la generazione, così che i token prodotti realizzino quella
@@ -363,8 +365,8 @@ sezione del capitolo), che si può trattare quasi come una figura, oppure il
 riassunto compatto che l'encoder di un codec produce prima di arrotondarlo in
 token, quello che nella sezione precedente abbiamo chiamato **latente** (è la
 stessa strategia della diffusione latente di Stable Diffusion, trasferita al
-suono). I due filoni corrono paralleli e si contendono lo stato dell'arte a
-seconda del compito.
+suono). I due filoni corrono paralleli, e quale dei due convenga dipende dal
+compito più che dall'anno.
 
 Detto ciò che funziona, l'onestà impone di dire ciò che ancora non funziona.
 La **coerenza a lungo termine** resta fragile: un modello sa produrre trenta

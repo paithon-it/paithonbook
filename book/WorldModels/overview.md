@@ -115,8 +115,9 @@ emergenze (un motore in fiamme, una raffica in atterraggio) su un aereo vero:
 si usa il simulatore, dove un errore non costa niente e la stessa situazione
 si può ripetere cento volte in un pomeriggio. Il DQN di quel capitolo è un
 allievo senza simulatore: ogni cosa che impara la impara schiantandosi per
-davvero, e per questo gli servono milioni di partite. Tu no: dopo qualche
-pallina persa a *Breakout* hai già in testa un piccolo *Breakout* tascabile
+davvero, e per questo gli servono decine di milioni di fotogrammi, cioè
+settimane di gioco senza mai staccare. Tu no: dopo qualche pallina persa a
+*Breakout* hai già in testa un piccolo *Breakout* tascabile
 («se la racchetta è qui e la pallina scende lì, la manco») e le mosse le
 ripassi lì dentro, gratis. Chi possiede un simulatore interno spreme da ogni
 esperienza vera decine di esperienze immaginate. L'unico rischio è fidarsi di
@@ -210,11 +211,11 @@ genera campionando un token alla volta. L'argomento che LeCun ripete nei
 seminari è di natura moltiplicativa: se a ogni token la probabilità di uscire
 dall'insieme delle continuazioni accettabili è $\epsilon$, e l'errore non è
 recuperabile, la probabilità che una sequenza di $n$ token resti accettabile
-decade come $(1-\epsilon)^n$, con $\epsilon = 0{,}01$ e $n = 500$ resta appena
-$0{,}99^{500} \approx 0{,}007$, meno dell'1%. Le obiezioni colpiscono proprio
-le ipotesi: gli errori non sono né indipendenti né irrecuperabili (i modelli,
-empiricamente, si correggono), e nulla fissa $\epsilon$ costante al crescere
-di scala e addestramento {cite}`kaplan2020scaling`. Esperimenti di *probing*,
+decade come $(1-\epsilon)^n$: con $\epsilon = 0{,}01$ e $n = 500$ ne resta
+appena $0{,}99^{500} \approx 0{,}007$, meno dell'1%. Le obiezioni colpiscono
+proprio le ipotesi: gli errori non sono né indipendenti né irrecuperabili (i
+modelli, empiricamente, si correggono), e nulla fissa $\epsilon$ costante al
+crescere di scala e addestramento {cite}`kaplan2020scaling`. Esperimenti di *probing*,
 inoltre, indicano che reti addestrate solo su sequenze di mosse (l'esempio
 celebre è il gioco dell'Otello) sviluppano rappresentazioni interne dello
 stato della scacchiera: un world model implicito, per quanto rudimentale,
@@ -244,7 +245,7 @@ predice fra due riassunti: una rete riassume il presente, un'altra riassume il
 futuro, e la previsione avviene fra i due riassunti). Ce ne sono due versioni,
 I-JEPA per le immagini e V-JEPA per i video, e tutte e due prevedono nello
 **spazio delle rappresentazioni**, che è poi lo «spazio delle idee» del titolo
-della prossima sezione: il posto in cui una scena è già diventata un riassunto
+di quella sezione: il posto in cui una scena è già diventata un riassunto
 e non è più un mosaico di puntini colorati. Qui il capitolo precedente torna
 utile per intero, perché una JEPA è un modello a energia: la stessa idea del
 buttafuori che assegna un voto di compatibilità, e gli stessi due problemi, il
@@ -267,10 +268,10 @@ o soltanto saperla imitare?
 - Chi non ha il simulatore impara schiantandosi nel mondo vero; chi ce l'ha si
   allena nella propria immaginazione, come i piloti prima di salire su un
   aereo. La seconda strada costa incomparabilmente meno esperienza (ai
-  programmi che imparano a giocare senza simulatore servono milioni di partite
-  a *Breakout*, a te bastano pochi minuti), ma ha un prezzo: se il simulatore
-  è impreciso ci si allena a vincere un gioco che non esiste, e l'imprecisione
-  si somma quanto più lontano si prova a guardare.
+  programmi che imparano a giocare senza simulatore servono settimane di
+  *Breakout* giocato senza mai fermarsi, a te bastano pochi minuti), ma ha un
+  prezzo: se il simulatore è impreciso ci si allena a vincere un gioco che non
+  esiste, e l'imprecisione si somma quanto più lontano si prova a guardare.
 - Il **senso comune** non è un elenco di fatti, è un repertorio di previsioni
   (le cose non sostenute cadono, quel che è nascosto continua a esistere) che
   i bambini costruiscono guardando. Nessuno etichetta niente: il maestro è il

@@ -2,14 +2,15 @@
 
 Nella sezione precedente abbiamo costruito S4 e i suoi parenti: uno *state
 space model* nasce come sistema dinamico continuo e, una volta discretizzato,
-diventa una ricorrenza lineare a stato fisso,
-$\mathbf{h}_t = \bar{\mathbf{A}}\, \mathbf{h}_{t-1} + \bar{\mathbf{B}}\, x_t$, con la sua doppia natura (ricorrente
-per l'inferenza, convoluzionale per l'addestramento). È una macchina potente e
-a lungo raggio. Ha però un limite di fondo, che finora abbiamo lasciato sullo
-sfondo: è **invariante nel tempo**.
+diventa una ricorrenza lineare a stato fisso (a ogni passo lo stato di prima si
+riduce un po', ci si somma quello che entra adesso, e da lì si legge l'uscita),
+con la sua doppia natura (ricorrente per l'inferenza, convoluzionale per
+l'addestramento). È una macchina potente e a lungo raggio. Ha però un limite di
+fondo, che finora abbiamo lasciato sullo sfondo: è **invariante nel tempo**.
 
 Invariante nel tempo, in gergo *lineare tempo-invariante* (LTI), vuol dire che
-i suoi parametri $\bar{\mathbf{A}}, \bar{\mathbf{B}}, \mathbf{C}$ sono gli stessi a ogni passo. La stessa
+le sue tre regole (di quanto lo stato si riduce, come l'ingresso vi entra, come
+se ne legge l'uscita) sono le stesse a ogni passo. La stessa
 matrice di transizione governa il primo token e il millesimo; lo stesso filtro
 scorre su tutta la sequenza, indifferente a ciò che legge. È proprio questa
 rigidità a regalare a S4 la forma «tutto insieme» (un unico filtro fisso, in
@@ -32,16 +33,17 @@ sistemi dinamici.
 
 Il meccanismo di Mamba si chiama **S6**: è l'SSM di tipo S4 con in più la
 *selezione*, in cui i parametri diventano funzione del token. Il nome inganna,
-perché sembra un gradino di una scala e non lo è: gli autori chiamano S6 «i
-modelli S4 con un meccanismo di selezione, calcolati con uno scan», mentre S5,
-incontrato fra le tappe verso il linguaggio, è il modello di un altro gruppo di
-ricerca, e dopo S6 non arriverà nessun S7. La conseguenza tecnica è importante
+perché sembra un gradino di una scala e non lo è: è un'abbreviazione che gli
+autori introducono di passaggio, «i modelli S4 con un meccanismo di selezione,
+calcolati con uno scan», e la successione dei numeri non racconta una
+progressione (S5, incontrato fra le tappe verso il linguaggio, è il modello di
+un altro gruppo di ricerca). La conseguenza tecnica è importante
 e va guardata in faccia: se le regole cambiano a ogni parola, il sistema non è
 più invariante nel tempo. E un sistema che cambia regola strada facendo non ha
 un filtro unico: la forma «tutto insieme», che era il segreto
 dell'addestramento veloce di S4, semplicemente non è più applicabile. Bisognerà
-procurarsi un'altra strada per lavorare in parallelo, e sarà lo *scan* della
-prossima sezione. Ma prima il guadagno, che ripaga il sacrificio.
+procurarsi un'altra strada per lavorare in parallelo, e sarà lo *scan* di cui
+parliamo qui sotto. Ma prima il guadagno, che ripaga il sacrificio.
 
 `````{tab} Elementare
 
@@ -132,10 +134,11 @@ autorizza a fondere i passi a coppie, poi a gruppi di quattro, di otto, invece
 di percorrerli in fila da sinistra a destra. Questo è il *parallel scan* (o
 *associative scan*: «scan» è la passata che percorre la sequenza accumulando i
 risultati parziali), e ne esistono due versioni che vale la pena distinguere,
-perché più avanti ne scriveremo una sola. Quella **a raddoppio** compone a ogni
-turno le posizioni distanti prima 1, poi 2, poi 4: arriva in un numero di turni
-pari al logaritmo di $L$, facendo però qualche operazione in più di quante ne
-servirebbero (dell'ordine di $L\log L$ invece di $L$). Quella di **Blelloch**,
+perché più avanti ne scriveremo una sola. Detta $L$ la lunghezza della
+sequenza, quella **a raddoppio** compone a ogni turno le posizioni distanti
+prima 1, poi 2, poi 4: arriva in un numero di turni pari al logaritmo di $L$,
+facendo però qualche operazione in più di quante ne servirebbero (dell'ordine
+di $L\log L$ invece di $L$). Quella di **Blelloch**,
 con una passata che sale e una che scende, di operazioni ne fa dell'ordine di
 $L$, come la versione in fila. Quel che conta qui vale per tutte e due: il
 numero di **turni** crolla da $L$ al suo logaritmo (raddoppiando la lunghezza
@@ -175,8 +178,9 @@ e va avanti impiega mille addizioni, una dopo l'altra: nessuno può aiutarlo,
 perché per fare la sua somma deve aspettare quella di prima. Se invece i
 ragazzi si mettono in coppia, e ogni coppia somma i suoi due numeri, in un
 colpo solo i mille numeri diventano cinquecento; poi cinquecento diventano
-duecentocinquanta, e così via. Dopo dieci giri si è arrivati in fondo. Il
-lavoro totale è lo stesso, ma il tempo di attesa crolla, perché a ogni giro
+duecentocinquanta, e così via. Dopo dieci giri si è arrivati in fondo. Di
+addizioni se ne fanno più o meno quante prima (secondo come si raggruppa,
+qualcuna in più), ma il tempo di attesa crolla, perché a ogni giro
 lavorano tutti insieme. La ricorrenza di Mamba si può svolgere così: non è una
 somma, ma si comporta come una somma, nel senso che si può cominciare a
 raggruppare i passi da dove si vuole. Ed è per questo che perdere la forma
@@ -278,8 +282,8 @@ due volte che quel ciclo si può evitare, e le promesse conviene verificarle.
 
 La prima riguarda la sezione precedente: se le regole **non** cambiano da un
 passo all'altro, lo stesso risultato si ottiene con un filtro unico che scorre
-sulla sequenza. Congeliamo allora $\mathbf{B}$, $\mathbf{C}$ e $\Delta$, costruiamo il filtro
-$\bar{\mathbf{K}}$ e confrontiamo.
+sulla sequenza. Congeliamo allora i tre parametri che dipendevano dal token,
+costruiamo quel filtro e confrontiamo.
 
 ```python
 torch.manual_seed(0)
@@ -409,8 +413,9 @@ Detta $\mathbf{u}$ l'attivazione in ingresso al blocco, il flusso è:
 3. **Attivazione SiLU**: si applica $\mathrm{SiLU}(x) = x\,\sigma(x)$ (nota anche
    come *Swish*), la parente liscia della ReLU incontrata tra le funzioni di
    attivazione, dove $\sigma$ è la sigmoide.
-4. **SSM selettivo (S6)**: il ramo attraversa il nucleo della sezione precedente,
-   con $\mathbf{B}_t, \mathbf{C}_t, \Delta_t$ generati dall'input e calcolato via parallel scan.
+4. **SSM selettivo (S6)**: il ramo attraversa il nucleo selettivo descritto in
+   apertura di sezione, con $\mathbf{B}_t, \mathbf{C}_t, \Delta_t$ generati
+   dall'input e calcolato via parallel scan.
 5. **Gating moltiplicativo**: l'uscita dell'SSM viene moltiplicata elemento per
    elemento dal ramo parallelo passato per SiLU, $\mathbf{y} \odot \mathrm{SiLU}(\mathbf{z})$. È il
    *gate* che regola, canale per canale, quanto dell'uscita ricorrente lasciar
@@ -442,12 +447,14 @@ sente, perché a ogni parola nuova il modello non deve rileggersi tutto quello
 che ha scritto finora: gli basta il suo riassunto, che è sempre della stessa
 misura.
 
-La seconda è la **portata**: Mamba regge sequenze lunghissime, dell'ordine del
-milione di passi. Per farsi un'idea di quanto sia, un passo qui è più o meno
-una parola, e un milione di parole sono una decina di romanzi. Non solo testo,
-per giunta: la stessa ricetta si applica ai segnali audio (dove un passo è un
-campione sonoro) e alle sequenze di DNA (dove un passo è una lettera del
-genoma), ed è un segno che il meccanismo non ha niente di specificamente
+La seconda è la **portata**, ed è il punto in cui conviene essere precisi su
+dove è stata misurata. Le sequenze da un milione di passi su cui Mamba continua
+a migliorare non sono testo: sono suono grezzo (dove un passo è un campione
+sonoro, e un milione di campioni è poco più di un minuto di registrazione) e
+sequenze di DNA (dove un passo è una lettera del genoma). Sul linguaggio i
+contesti provati nell'articolo restano molto più corti, dell'ordine delle
+migliaia di parole. Che la stessa ricetta funzioni su tre materiali così
+diversi è comunque il segno che il meccanismo non ha niente di specificamente
 linguistico.
 
 `````
@@ -463,10 +470,12 @@ Il bilancio, in termini di meccanismi e non di classifiche:
   ogni token generato. È da qui che viene il vantaggio di throughput in
   generazione.
 - **Scaling** verificato fino a sequenze dell'ordine di $10^6$ passi, cioè su
-  ordini di grandezza dove l'attenzione piena non è praticabile.
+  ordini di grandezza dove l'attenzione piena non è praticabile. Le misure a
+  quella lunghezza sono su **audio** grezzo e **genomica**; sul linguaggio i
+  contesti dell'articolo restano di qualche migliaio di token.
 - Il meccanismo non è specifico del testo: gli stessi blocchi si addestrano su
-  **audio** grezzo e su **genomica**, dove le sequenze sono lunghe e non hanno
-  una struttura a token discreti come il linguaggio.
+  audio e su DNA, dove le sequenze sono lunghe e non hanno una struttura a
+  token discreti come il linguaggio.
 
 `````
 
@@ -517,9 +526,10 @@ stessa cosa.
   le due si moltiplicano. Niente attenzione, nessun altro tipo di stazione.
 - Cosa se ne ricava: **il lavoro cresce di pari passo con la lunghezza** (testo
   doppio, lavoro doppio, non quadruplo), la memoria durante la generazione non
-  cresce mai, e si reggono sequenze dell'ordine del milione di passi, anche
-  fuori dal linguaggio (audio, DNA). Uscito nel 2023 come articolo non ancora
-  giudicato da nessuno (*preprint*), respinto dal convegno ICLR nel 2024 e
+  cresce mai, e si reggono sequenze dell'ordine del milione di passi, misurate
+  però fuori dal linguaggio (un minuto di suono grezzo, un tratto di genoma).
+  Uscito nel 2023 come articolo non ancora giudicato da nessuno (*preprint*),
+  respinto dal convegno ICLR nel 2024 e
   pubblicato lo stesso anno al convegno COLM, che lo ha premiato: è anche una
   buona lezione su come funziona il giudizio nella ricerca.
 ```
@@ -543,7 +553,8 @@ stessa cosa.
   dinamici.
 - Comporre due passi della ricorrenza dà un passo dello stesso tipo (la
   famiglia è chiusa) e la composizione è **associativa**: da qui il **parallel
-  scan**, con lavoro $O(L)$ ma profondità $O(\log L)$, su unità generiche e non
+  scan**, con profondità $O(\log L)$ e lavoro $O(L)$ nella versione di Blelloch
+  ($O(L\log L)$ in quella a raddoppio), su unità generiche e non
   sui tensor core. Le ottimizzazioni hardware-aware (*kernel fusion* in SRAM e
   **ricomputazione** nel backward) evitano di materializzare lo stato espanso
   in HBM.
@@ -553,10 +564,11 @@ stessa cosa.
   normalizzazione e residui. Un solo tipo di blocco, senza attenzione né MLP a
   parte.
 - Cosa ottiene: **tempo lineare** nella lunghezza, inferenza a **memoria
-  costante** (nessuna KV cache che cresce), scaling fino a $\sim 10^6$ passi, e
-  lo stesso impianto applicabile ad audio e genomica. Uscito nel 2023 come
-  articolo non ancora giudicato da nessuno (*preprint*), respinto dal convegno
-  ICLR nel 2024 e pubblicato lo stesso anno al convegno COLM, che lo ha premiato
+  costante** (nessuna KV cache che cresce), scaling verificato fino a
+  $\sim 10^6$ passi su audio grezzo e genomica (sul linguaggio, contesti molto
+  più corti), e lo stesso impianto valido per tutte e tre le modalità. Uscito
+  nel 2023 come articolo non ancora giudicato da nessuno (*preprint*), respinto
+  dal convegno ICLR nel 2024 e pubblicato lo stesso anno al convegno COLM, che lo ha premiato
   (*Outstanding Paper*), con i limiti che Mamba-2 affronterà.
 ```
 

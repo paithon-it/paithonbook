@@ -39,7 +39,7 @@ distingue: fra un giro e il successivo qualcosa resta.
 ```
 
 Vale la pena tenere {numref}`fig-ciclo-percezione-azione` come unità di misura
-per tutto il capitolo. Ogni partecipante a un protocollo è uno di questi
+per tutto quello che segue. Ogni partecipante a un protocollo è uno di questi
 anelli, e i messaggi che si scambiano entrano dalla stazione «percezione» ed
 escono da quella «azione»: parlare, per un agente, è agire.
 
@@ -214,9 +214,9 @@ esiste un oggetto che prima non esisteva: un contratto, con un responsabile e
 una scadenza. È la stessa aritmetica dei biglietti sul frigorifero, portata su
 scala di sistema: dopo l'aggiudicazione la domanda «questo compito ha un
 titolare?» ha una risposta che il programma sa dare da sé, senza rileggere
-niente. Per questo la struttura si ritrova, di rado citata, in ogni
-orchestratore moderno che chiede a più agenti se sono in grado di svolgere un
-compito prima di affidarlo.
+niente. Per questo la struttura si ritrova, di rado citata, in molti
+orchestratori moderni, tutte le volte che si chiede a più agenti se sono in
+grado di svolgere un compito prima di affidarlo.
 
 ## Aggregare i giudizi: il conto di Condorcet
 
@@ -256,7 +256,8 @@ ne servirebbero cinque, e si arriva a $0{,}901$.
 `````{tab} Superiore
 
 È il **teorema della giuria di Condorcet**. Con $n$ votanti che decidono in
-modo **indipendente**, ciascuno corretto con probabilità $p$, e regola di
+modo **indipendente** fra **due** alternative, ciascuno corretto con
+probabilità $p$, e regola di
 maggioranza semplice, la probabilità che il verdetto collettivo sia corretto è
 
 $$
@@ -267,7 +268,15 @@ dove $\binom{n}{k}$ conta i modi in cui $k$ votanti su $n$ possono essere
 quelli corretti, $p^k(1-p)^{n-k}$ è la probabilità di ciascuno di quei modi e
 l'estremo inferiore della somma è la più piccola maggioranza stretta (per $n$
 dispari, $(n+1)/2$; si prende $n$ dispari proprio per non dover arbitrare i
-pareggi). Il teorema ha due parti: per $p > 1/2$ la successione $P_n$, letta
+pareggi).
+
+L'ipotesi delle due sole alternative non è cosmetica, e vale la pena
+tenerla presente per il seguito: le risposte di un agente non sono binarie, e
+con molte alternative la formula smette di dare l'accuratezza della maggioranza
+e ne diventa un limite inferiore, perché i voti sbagliati si disperdono invece
+di sommarsi su un'unica risposta falsa.
+
+Il teorema ha due parti: per $p > 1/2$ la successione $P_n$, letta
 sui valori dispari di $n$, è crescente e tende a $1$; per $p < 1/2$ è
 decrescente e tende a $0$. Il voto non aggiunge competenza, **amplifica la
 tendenza di fondo**, qualunque essa sia: sopra la soglia converge alla verità,
@@ -292,14 +301,18 @@ Qui arriva il punto della sezione, e conviene dirlo senza attenuanti. Il
 teorema di Condorcet ha un'ipotesi, l'**indipendenza**, e nei sistemi
 multi-agente costruiti oggi quell'ipotesi è quasi sempre falsa.
 
-Dieci istanze dello stesso modello, con lo stesso prompt di sistema, davanti
+Dieci copie dello stesso modello, con lo stesso prompt di sistema, davanti
 alla stessa domanda, non sono dieci votanti: sono **un votante interrogato
 dieci volte**. Non è un sospetto, è una conseguenza di come sono fatte. Un
-modello addestrato è una funzione con dei parametri fissi: se si spegne il caso
-nella generazione (la temperatura a zero) dieci istanze restituiscono la stessa
-identica uscita, e la correlazione fra i voti è $1$ per costruzione. Alzando la
-temperatura si campiona intorno a quella funzione, non se ne ottiene una
-diversa: cambia il percorso di generazione, restano identici i pesi, i dati su
+modello addestrato è una macchina con dentro dei numeri che non cambiano più
+(i **pesi**, quelli che l'addestramento ha aggiustato una volta per tutte);
+l'unica cosa che varia da una risposta all'altra è che, parola per parola, il
+modello non prende sempre la più probabile ma ogni tanto ne pesca una vicina,
+e quanto spesso lo faccia si regola con una manopola che si chiama
+**temperatura**. Portata a zero, il caso si spegne e dieci copie restituiscono
+la stessa identica uscita: la correlazione fra i voti è $1$ per costruzione.
+Alzandola si cambia il percorso di generazione, non la macchina: restano
+identici i pesi, i dati su
 cui il modello si è addestrato e le lacune che quei dati hanno lasciato. Un
 errore **sistematico** vive esattamente lì (una formula memorizzata male,
 un'ambiguità letta sempre nello stesso verso, un fatto che nei testi di
@@ -324,7 +337,8 @@ Sulle altre gli errori sono indipendenti come vuole Condorcet.
 Diciamo che una domanda su cinque è una trappola, e che sulle altre quattro
 ogni agente ci prende sette volte su otto. Sono numeri scelti apposta perché il
 singolo agente, sul totale delle domande, resti corretto le solite sette volte
-su dieci: uguale a prima, indistinguibile da fuori se guardi un agente alla
+su dieci: quattro quinti per sette ottavi fa esattamente sette decimi, quindi
+uguale a prima, indistinguibile da fuori se guardi un agente alla
 volta.
 
 Cambia tutto quando voti. Con tre agenti passi da $0{,}784$ a $0{,}766$: poco.
@@ -464,8 +478,7 @@ firme in calce non lo è.
 
 L'indipendenza, però, non è tutto o niente: un po' se ne può comprare, e ogni
 modo di comprarla ha il suo prezzo. Si può **campionare a temperatura non
-nulla**, cioè lasciare che il modello, parola per parola, non prenda sempre la
-più probabile ma peschi ogni tanto fra quelle che le stanno vicino, così che i
+nulla**, cioè alzare quella manopola perché i
 percorsi di generazione divergano. Si può chiedere esplicitamente **percorsi di
 ragionamento diversi** (risolvi per stima, poi per calcolo esatto, poi
 verificando all'indietro). Si può **cambiare il modo in cui la domanda è
@@ -544,10 +557,14 @@ complessità, e chiarisce esattamente che cosa il dibattito compri
 {cite}`irving2018ai`. Un giudice che valuta direttamente una risposta esibita
 da un solo agente può decidere, con gioco ottimale, le domande in **NP**:
 quelle per cui esiste un certificato breve, verificabile in tempo polinomiale.
-Il gioco del dibattito, con due agenti in competizione e lo stesso giudice
-polinomiale, arriva a **PSPACE**: una classe molto più ampia, perché
+Il gioco del dibattito, con due agenti in competizione, arriva a **PSPACE**:
+una classe molto più ampia, perché
 l'alternanza fra i due giocatori corrisponde all'alternanza dei quantificatori
-in un gioco a informazione perfetta. Il guadagno non viene dal fatto che i
+in un gioco a informazione perfetta. Le ipotesi però contano, e sono tre: i
+dibattenti hanno potenza di calcolo illimitata (è un limite superiore, non una
+promessa pratica), il giudice è polinomiale ma **scelto in funzione del
+problema**, e il numero di turni **cresce con il problema**; a numero di turni
+fissato non si arriva a PSPACE ma solo a un gradino della gerarchia polinomiale. Il guadagno non viene dal fatto che i
 dibattenti siano più bravi, ma dal fatto che il giudice non deve esaminare
 l'intero albero degli argomenti: gli basta seguire il ramo che i due, con
 interessi opposti, hanno scelto di contestare.
@@ -556,11 +573,11 @@ Due avvertenze, e sono sostanziali. La prima: il risultato vale con gioco
 ottimale e giudice affidabile, cioè capace di valutare correttamente l'ultimo
 passaggio conteso. Un giudice sensibile alla **posizione** dell'intervento, alla
 sua **lunghezza** o alla somiglianza con il proprio stile (sono esattamente i
-tre bias documentati per l'*LLM-as-a-judge* nella sezione su LLMOps: *position*,
-*verbosity* e *self-enhancement*) rompe l'ipotesi, e il gioco premia la
-persuasione invece della verità. La seconda riguarda proprio questo capitolo: due
-dibattenti istanziati dallo **stesso modello** ereditano la correlazione della
-sezione precedente. Se entrambi condividono lo stesso errore sistematico,
+tre bias dell'*LLM-as-a-judge*, *position*, *verbosity* e *self-enhancement*,
+che il capitolo su MLOps misurerà più avanti) rompe l'ipotesi, e il gioco premia
+la persuasione invece della verità. La seconda riguarda proprio questo capitolo: due
+dibattenti istanziati dallo **stesso modello** ereditano la correlazione appena
+descritta. Se entrambi condividono lo stesso errore sistematico,
 nessuno dei due lo contesta, l'errore non entra mai nel dibattito e il giudice
 non ha nulla su cui esercitare la propria verifica. Il dibattito rende
 *ispezionabile* il disaccordo che c'è, non crea quello che manca.
@@ -715,9 +732,10 @@ garbo con cui produce quelle vere. Ecco la ragione tecnica per cui la
 **ridondanza ingenua non basta**: aggiungere copie protegge dai guasti, non
 dalle bugie, e le architetture multi-agente costruite sull'idea «se sono in
 tanti, qualcuno se ne accorgerà» stanno applicando la contromisura sbagliata al
-guasto sbagliato. È lo stesso terreno del capitolo sull'**AI responsabile**,
-dove la robustezza non è la capacità di non rompersi ma quella di comportarsi
-in modo prevedibile quando qualcosa (o qualcuno) prova a farti sbagliare.
+guasto sbagliato. È lo stesso terreno su cui tornerà, in chiusura di libro, il
+capitolo sull'**AI responsabile**, dove la robustezza non è la capacità di non
+rompersi ma quella di comportarsi in modo prevedibile quando qualcosa (o
+qualcuno) prova a farti sbagliare.
 
 Va detto con onestà fin dove arriva l'analogia. Il teorema descrive un
 avversario che sceglie la strategia peggiore possibile e può coordinarsi con

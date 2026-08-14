@@ -52,31 +52,6 @@ $P(A\cup B)=P(A)+P(B)-P(A\cap B)$.
 
 Spesso non ci interessa l'esito grezzo, ma un numero che gli associamo.
 
-```{figure} ../figures/variabili-aleatorie-momenti-percentili.svg
-:name: fig-densita-percentili
-:alt: "Due grafici affiancati sulla stessa distribuzione asimmetrica. A sinistra la densità di probabilità, con media e mediana segnate e l'area sotto la curva fino al novantacinquesimo percentile evidenziata. A destra la funzione di ripartizione, che sale da zero a uno, e su cui lo stesso percentile si legge come l'ascissa a cui la curva raggiunge 0,95."
-:width: 100%
-
-La stessa variabile, due modi di guardarla. A sinistra la **densità**, che
-disegna quali valori escono spesso e quali di rado: lì la probabilità è
-l'*area* sotto la curva. A destra la **funzione di ripartizione**, che per
-ogni valore risponde alla domanda «quanta parte dei casi sta sotto questo
-numero?» e sale da $0$ a $1$: lì la stessa probabilità è l'*altezza* della
-curva, cioè un punto da leggere invece di un'area da calcolare.
-```
-
-La corrispondenza fra i due grafici di {numref}`fig-densita-percentili` non è
-un vezzo: risponde alla domanda che si fa più spesso su una misura, cioè
-«sotto quale valore cade il novantacinque per cento dei casi?». Quel valore si
-chiama **novantacinquesimo percentile**, e i percentili si leggono sul grafico
-di destra perché lì basta partire dall'altezza $0{,}95$ e scendere a leggere il
-numero corrispondente. Sul grafico di sinistra la stessa domanda vorrebbe che
-si calcolasse un'area, che è un conto e non una lettura. È l'abitudine dei
-tecnici che sorvegliano un servizio online: invece di dire «in media il sito
-risponde in mezzo secondo» dicono «il novantacinquesimo percentile del tempo
-di risposta è due secondi», che è un modo di parlare non della giornata
-tipica, ma di quanto vanno male le giornate storte.
-
 `````{tab} Elementare
 
 Una **variabile aleatoria** è un numero il cui valore dipende dal caso. Se lancio
@@ -103,6 +78,38 @@ In entrambi i casi la *funzione di ripartizione* $F(x)=P(X\le x)$ raccoglie
 l'informazione cumulata fino a $x$.
 
 `````
+
+La stessa curva si può disegnare in due modi, e conviene saperli riconoscere
+tutti e due, perché nel resto del libro compaiono entrambi.
+
+```{figure} ../figures/variabili-aleatorie-momenti-percentili.svg
+:name: fig-densita-percentili
+:alt: "Due grafici affiancati sulla stessa distribuzione asimmetrica. A sinistra la densità di probabilità, intitolata PDF, con media e mediana segnate da due linee tratteggiate e la coda oltre il novantacinquesimo percentile riempita di colore. A destra la funzione di ripartizione, intitolata CDF, che sale da zero a uno, e su cui lo stesso percentile si legge entrando dall'altezza 0,95 e scendendo sull'asse orizzontale."
+:width: 100%
+
+La stessa variabile, due modi di guardarla. A sinistra la **densità** appena
+descritta, che disegna quali valori escono spesso e quali di rado: lì la
+probabilità è l'*area* sotto la curva, e infatti la zona colorata è il cinque
+per cento dei casi che cadono oltre il valore segnato. A destra una seconda
+curva, che per ogni valore risponde alla domanda «quanta parte dei casi sta
+sotto questo numero?» e perciò sale da $0$ a $1$: lì la stessa probabilità è
+l'*altezza* della curva, cioè un punto da leggere invece di un'area da
+calcolare. Il nome tecnico della seconda è **funzione di ripartizione**. (Le
+due sigle in cima ai grafici sono le abbreviazioni inglesi con cui si trovano
+ovunque: *PDF* per la densità, *CDF* per la ripartizione.)
+```
+
+La corrispondenza fra i due grafici di {numref}`fig-densita-percentili` non è
+un vezzo: risponde alla domanda che si fa più spesso su una misura, cioè
+«sotto quale valore cade il novantacinque per cento dei casi?». Quel valore si
+chiama **novantacinquesimo percentile**, e i percentili si leggono sul grafico
+di destra perché lì basta partire dall'altezza $0{,}95$ e scendere a leggere il
+numero corrispondente. Sul grafico di sinistra la stessa domanda vorrebbe che
+si calcolasse un'area, che è un conto e non una lettura. È l'abitudine dei
+tecnici che sorvegliano un servizio online: invece di dire «in media il sito
+risponde in mezzo secondo» dicono «il novantacinquesimo percentile del tempo
+di risposta è due secondi», che è un modo di parlare non della giornata
+tipica, ma di quanto vanno male le giornate storte.
 
 ## Il centro e la larghezza
 
@@ -133,16 +140,28 @@ media descrive un valore tipico che quasi nessuno osserva.
 
 `````{tab} Elementare
 
-Il **valore atteso** $\mathbb{E}[X]$ è la media dei valori possibili, ciascuno
-pesato dalla sua probabilità: è il risultato medio che ci aspettiamo "a lungo
-andare". Per un dado onesto vale $\tfrac{1+2+3+4+5+6}{6}=3{,}5$: un numero che
-non uscirà mai in un singolo lancio, ma attorno al quale si assesta la media
-di tanti lanci. La **varianza** $\mathrm{Var}(X)$ misura invece quanto
-tipicamente ci si allontana dal centro: piccola se i valori sono raccolti,
-grande se sono sparpagliati. La sua radice quadrata, la **deviazione
-standard**, esprime quello scarto tipico nelle stesse unità dei valori: per il
-dado vale circa $1{,}7$ punti, cioè rispetto al centro $3{,}5$ i risultati si
-sparpagliano tipicamente di un punto e mezzo o due.
+Il **valore atteso** è la media dei valori possibili, ciascuno pesato dalla sua
+probabilità: è il risultato medio che ci aspettiamo "a lungo andare". Si scrive
+$\mathbb{E}[X]$, e si legge «valore atteso di X» (la E doppia sta per
+*expected*, atteso, e $X$ è il nome della grandezza che stiamo guardando). Per
+un dado onesto vale $\tfrac{1+2+3+4+5+6}{6}=3{,}5$: un numero che non uscirà
+mai in un singolo lancio, ma attorno al quale si assesta la media di tanti
+lanci.
+
+La **varianza**, che si scrive $\mathrm{Var}(X)$ e si legge «varianza di X»,
+misura invece quanto tipicamente ci si allontana da quel centro: piccola se i
+valori sono raccolti, grande se sono sparpagliati. Il conto è meno spaventoso
+del nome, e sul dado si fa a mano in un minuto. Si guarda di quanto ciascuna
+faccia dista dal centro $3{,}5$ (sono $-2{,}5$, $-1{,}5$, $-0{,}5$, $0{,}5$,
+$1{,}5$, $2{,}5$), si eleva ogni scarto al quadrato (per togliere di mezzo i
+segni: $6{,}25$, $2{,}25$, $0{,}25$, $0{,}25$, $2{,}25$, $6{,}25$) e si fa la
+media: $17{,}5$ diviso $6$ fa circa $2{,}92$. Quella è la varianza.
+
+Il quadrato però ha gonfiato tutto, e per tornare a parlare in punti di dado si
+fa la radice: $\sqrt{2{,}92} \approx 1{,}7$. Questa è la **deviazione
+standard**, ed è la forma leggibile delle due: dice che rispetto al centro
+$3{,}5$ i risultati si sparpagliano tipicamente di un punto e mezzo o due, che
+guardando le facce di un dado è proprio quello che ci si aspetta.
 
 `````
 
@@ -198,9 +217,10 @@ ciò che si accumula attorno a un valore medio.
 
 La distribuzione normale, che si abbrevia $\mathcal{N}(\mu,\sigma^2)$: le due
 lettere greche sono il centro della campana ($\mu$, «mu») e il suo scarto
-tipico ($\sigma$, «sigma»). Nella sigla lo scarto compare al quadrato solo per
-tradizione, perché è la *varianza* a essere elencata; la larghezza che si vede
-nel disegno resta $\sigma$. Circa il $68\%$ della probabilità cade entro
+tipico ($\sigma$, «sigma»), cioè di quanto in genere i valori si allontanano
+dal centro. Nella sigla il secondo numero è scritto al quadrato perché per
+tradizione si elenca la varianza e non lo scarto; la larghezza che si vede nel
+disegno resta $\sigma$. Circa il $68\%$ della probabilità cade entro
 $\mu\pm\sigma$ e circa il $95\%$ entro $\mu\pm 2\sigma$.
 ```
 
@@ -268,15 +288,19 @@ la scala delle attivazioni fra uno strato e l'altro, e non la famiglia, tanto
 che il default di PyTorch campiona da un'uniforme e non da una normale.)
 
 Il teorema dice **che** si converge, non **quanto in fretta**, e la seconda
-domanda ha una risposta separata: la disuguaglianza di Berry–Esseen limita la
-distanza dalla normale con
-$\sup_z |F_n(z)-\Phi(z)| \le C\,\rho_3 / (\sigma^3\sqrt{n})$, dove $\rho_3 =
-\mathbb{E}|X-\mu|^3$. È l'**asimmetria** della distribuzione di partenza a
-governare la velocità, non la sua "stranezza" percepita. Misurato con la
-statistica di Kolmogorov–Smirnov sulla somma standardizzata: partendo da un
-dado uniforme (asimmetria nulla) la distanza dalla normale è già $0{,}069$ con
-$n=3$; partendo da una Bernoulli$(0{,}01)$ resta $0{,}45$ a $n=30$, e da una
-lognormale$(0;\,2)$ resta $0{,}25$. Il caso «piatto» è il più gentile di tutti,
+domanda ha una risposta separata. Una garanzia grossolana la dà la
+disuguaglianza di Berry–Esseen,
+$\sup_z |F_n(z)-\Phi(z)| \le C\,\rho_3 / (\sigma^3\sqrt{n})$ con $\rho_3 =
+\mathbb{E}|X-\mu|^3$: la distanza cala come $1/\sqrt{n}$, e davanti c'è un
+momento terzo **assoluto**, che non sa distinguere una coda lunga da un lato
+sola da due code lunghe simmetriche. A separarle è lo sviluppo di Edgeworth, il
+cui primo termine correttivo è proporzionale all'**asimmetria** e si annulla
+quando la distribuzione di partenza è simmetrica: è quella, e non la
+"stranezza" percepita, a governare la velocità. Misurato con la statistica di
+Kolmogorov–Smirnov sulla somma standardizzata: partendo da un dado uniforme
+(asimmetria nulla) la distanza dalla normale è già $0{,}069$ con $n=3$;
+partendo da una Bernoulli$(0{,}01)$ resta $0{,}45$ a $n=30$, e da una
+lognormale$(0;\,2)$ resta $0{,}27$. Il caso «piatto» è il più gentile di tutti,
 non il più ostile.
 
 `````
@@ -304,8 +328,8 @@ di «qualunque sia la forma dei singoli contributi».
 
 La seconda va detta con più cautela di quanto si faccia di solito. Qui bastano
 tre addendi, ma non è un merito del teorema: è un merito del dado, che è
-**simmetrico**, cioè non ha una coda più lunga dell'altra. La simmetria è
-esattamente la cosa che rende veloce la convergenza, ed è per questo che il
+**simmetrico**, cioè non ha una coda più lunga dell'altra. È proprio la
+simmetria a far arrivare in fretta la campana, ed è per questo che il
 caso più «piatto» è anche il più facile. Con una distribuzione di partenza
 molto sbilanciata (un evento che capita una volta su cento, un valore che ogni
 tanto è enorme) la campana non si vede nemmeno dopo trenta addendi. Il teorema
@@ -374,9 +398,10 @@ sbilanciate.
 
 `````
 
-Che il prior domini si vede meglio spostandolo. Teniamo lo stesso test
-($99\%$ di sensibilità, $5\%$ di falsi positivi) e rendiamo la malattia dieci
-volte più rara, una persona su mille invece di una su cento.
+Che a comandare sia quanto la malattia è diffusa, e non quanto il test è
+buono, si vede meglio spostando proprio quel dato. Teniamo lo stesso test
+(individua il $99\%$ dei malati e sbaglia sul $5\%$ dei sani) e rendiamo la
+malattia dieci volte più rara, una persona su mille invece di una su cento.
 
 ```{figure} ../figures/teorema-bayes-test-medici.svg
 :name: fig-bayes-test
@@ -385,7 +410,11 @@ volte più rara, una persona su mille invece di una su cento.
 
 Lo stesso test su una malattia dieci volte più rara. I falsi positivi non
 cambiano di molto (vengono dai sani, che sono tanti); i positivi veri sì, e la
-probabilità di essere davvero malati crolla dal $17\%$ al $2\%$.
+probabilità di essere davvero malati crolla dal $17\%$ al $2\%$. Nel disegno
+compaiono due termini del mestiere: **prevalenza** è quanto la malattia è
+diffusa nella popolazione (qui una persona su mille, cioè lo $0{,}1\%$), e
+**falso negativo** è il caso opposto del falso allarme, cioè un malato a cui il
+test dice che sta bene.
 ```
 
 Il test non è peggiorato di una virgola fra {numref}`fig-bayes-test` e
@@ -402,7 +431,7 @@ il caso si spegne e resta solo il margine.
 
 ```{figure} ../figures/grandi-numeri-tanti-dati.svg
 :name: fig-legge-grandi-numeri
-:alt: "Grafico della media osservata al crescere del numero di prove: nelle prime decine oscilla ampiamente sopra e sotto il valore vero, poi le oscillazioni si restringono progressivamente e la curva si assesta sulla linea orizzontale del valore atteso, senza però toccarla esattamente."
+:alt: "Grafico della media osservata al crescere del numero di prove: nelle prime decine oscilla ampiamente sopra e sotto il valore vero, poi le oscillazioni si restringono progressivamente e la curva si assesta sulla linea orizzontale del valore atteso, senza però toccarla esattamente. Due linee punteggiate a imbuto racchiudono le oscillazioni e portano l'etichetta «errore tipico circa uno diviso radice di n»."
 :width: 92%
 
 Le oscillazioni non spariscono: si restringono. È una differenza che conta,
@@ -410,9 +439,14 @@ perché nessun numero di prove rende la media *uguale* al valore vero.
 ```
 
 La forma a imbuto di {numref}`fig-legge-grandi-numeri` è la stessa che governa
-quanti dati servono per addestrare o per valutare un modello. Le oscillazioni
-si stringono come $1/\sqrt{n}$: per dimezzare l'incertezza di una misura non
-bastano il doppio dei dati, ne servono quattro volte tanti.
+quanti dati servono per addestrare o per valutare un modello, e l'imbuto si
+stringe più lentamente di quanto verrebbe da sperare: non in proporzione al
+numero di prove, ma alla sua **radice quadrata**. Il conto è quello: con cento
+prove l'incertezza vale un certo tanto, e per dimezzarla non basta arrivare a
+duecento, bisogna arrivare a quattrocento, perché quello che deve raddoppiare è
+la radice, e la radice di quattrocento è il doppio della radice di cento
+($20$ contro $10$). Quattro volte i dati per metà dell'errore: è una tassa che
+si paga in tutto il libro.
 
 `````{tab} Elementare
 
@@ -427,12 +461,17 @@ Dopo dieci teste di fila la moneta non "deve" croce, il lancio successivo resta
 50 e 50. Quello che succede è che le dieci teste iniziali pesano sempre meno
 man mano che i lanci si accumulano, finché diventano irrilevanti nella media.
 
-Due condizioni non sono pignoleria: le osservazioni devono essere
-**indipendenti** e provenire dalla **stessa distribuzione**. Se si influenzano
-a vicenda, o se la distribuzione cambia strada facendo, la garanzia salta:
-mille recensioni scritte dagli amici del ristoratore non valgono mille
-recensioni di clienti qualsiasi. È la stessa ragione per cui un dataset
-raccolto male non migliora aggiungendone altro raccolto allo stesso modo.
+Due condizioni non sono pignoleria, e conviene tenerle distinte perché si
+rompono in modi diversi. La prima è che le osservazioni siano
+**indipendenti**, cioè che nessuna influenzi le altre: se le prime recensioni
+di un ristorante sono entusiaste, chi scrive dopo le ha lette e si adegua, e
+mille voti così non valgono mille pareri raccolti separatamente. La seconda è
+che vengano tutte dalla **stessa distribuzione**, cioè che si stia misurando
+sempre la stessa cosa: mille recensioni scritte dagli amici del ristoratore
+misurano l'amicizia, non la cucina, e sommarle a quelle dei clienti fa una
+media di due cose diverse. Se salta l'una o l'altra, la garanzia non vale più,
+ed è la ragione per cui una raccolta di dati fatta male non migliora
+aggiungendone altra raccolta allo stesso modo.
 
 `````
 
@@ -470,7 +509,7 @@ esempi, quattro decimi di punto sono **due risposte esatte in più**. Due.
 
 ```{figure} ../figures/intervalli-di-confidenza.svg
 :name: fig-intervalli-confidenza
-:alt: "Tre modelli su un asse dell'accuratezza da 80 a 92 per cento, ciascuno con la sua stima puntuale e una barra d'errore. Il modello A sta all'87,2% e il modello B all'86,8%: le loro barre si sovrappongono ampiamente, e una nota dice che con intervalli sovrapposti non c'è un vincitore. Il modello C sta all'81,0%, con la barra nettamente staccata dalle altre due."
+:alt: "Tre modelli su un asse dell'accuratezza da 80 a 92 per cento, ciascuno con la sua stima puntuale e una barra d'errore. Il modello A sta all'87,2% e il modello B all'86,8%: le loro barre si sovrappongono quasi per intero, e una nota dice che con intervalli sovrapposti non c'è un vincitore. Il modello C sta all'81,0%, con la barra molto più in basso, che con le altre due non si sovrappone."
 :width: 90%
 
 Le stesse tre misure, con l'incertezza disegnata. A e B non sono
@@ -487,7 +526,8 @@ corretta.
 `````{tab} Elementare
 
 L'accuratezza sul test set non è *la* prestazione del modello: è una **stima**
-della prestazione vera, calcolata su un campione finito. Il numero che
+della prestazione vera, calcolata su un **campione**, cioè su un gruppo
+limitato di casi pescati dal mucchio di tutti quelli possibili. Il numero che
 interessa davvero (quanto il modello risponderebbe bene su tutti i casi
 possibili) non lo conosceremo mai.
 
@@ -504,11 +544,17 @@ il nome che si dà alla parte di un risultato dovuta al caso e non al merito
 (niente a che vedere con i suoni: è un'immagine presa dalle
 telecomunicazioni).
 
-Quel numero non piove dal cielo, e una regola pratica basta a rifarlo a mente:
-il margine, in punti percentuali, è circa $100/\sqrt{n}$ quando il modello è
-sul $50\%$, e un po' meno quando è più bravo di così, perché un modello che
-sbaglia poco ha anche meno modo di variare. Con $n=500$ fa circa $4{,}5$ punti
-al $50\%$ e circa $3$ all'$87\%$. Anche il «$95\%$» ha un significato preciso:
+Quel numero non piove dal cielo, e una regola pratica basta a rifarlo a mente,
+in due mosse. La prima: quando il modello è sul $50\%$, il margine in punti
+percentuali è circa $100/\sqrt{n}$, e con $n=500$ fa circa $4{,}5$ punti
+($\sqrt{500}$ è poco più di $22$). La seconda: un modello più bravo del $50\%$
+ha anche meno modo di variare (chi sbaglia raramente non può sbagliare in tanti
+modi diversi), quindi quel margine va ridotto, e di quanto lo dice un fattore
+che dipende solo dall'accuratezza. Vale $1$ al $50\%$, cioè non riduce niente;
+vale circa $0{,}8$ all'$80\%$, circa due terzi all'$87\%$, circa la metà al
+$93\%$. Ecco i tre punti: $4{,}5$ moltiplicato per due terzi fa $3$.
+
+Anche il «$95\%$» ha un significato preciso:
 non è la fiducia che riponiamo nel singolo numero, è la percentuale di volte
 in cui una procedura del genere, ripetuta su tanti campioni diversi, contiene
 davvero il valore giusto. Una volta su venti sbaglia, e questo è messo in
@@ -641,9 +687,10 @@ incontra in capitoli lontanissimi fra loro. La propone Judea Pearl, e la chiama
 I gradini sono tre, e ognuno risponde a un tipo di domanda che il gradino
 sotto non sa nemmeno formulare.
 
-**Vedere.** «Fra chi compra il gelato, quanti annegano?» È una domanda
-sull'associazione: si guardano i dati e si contano. Tutto ciò che si fa con una
-regressione, un classificatore o una tabella pivot sta qui.
+**Vedere.** «Fra chi compra il gelato, quanti annegano?» È una domanda che si
+risolve guardando i dati e contando. Tutto ciò che si fa con una tabella, un
+grafico o un modello che prevede sta qui: si osserva quello che è successo e si
+cercano le regolarità.
 
 **Fare.** «Se vietassi il gelato, gli annegamenti calerebbero?» Non è la stessa
 domanda, e non si risponde con gli stessi dati. Osservare chi compra il gelato
@@ -656,11 +703,14 @@ uscito quel giorno?» Riguarda un caso singolo e un mondo che non è accaduto.
 Non basta nemmeno l'esperimento, perché l'esperimento dice cosa succede in
 media, non cosa sarebbe successo a *lui*.
 
-Pearl osserva, e vale la pena riportarlo, che i modelli addestrati sui dati
-stanno quasi tutti sul primo gradino, e ci stanno benissimo: «la civetta è un
-buon cacciatore senza capire perché il topo vada da A a B». Predire non
-richiede capire. Il punto è sapere quale domanda si sta facendo, perché salire
-un gradino richiede sempre qualcosa che nei dati non c'è.
+I modelli addestrati sui dati stanno quasi tutti sul primo gradino, e ci stanno
+benissimo. Pearl lo dice con un'immagine che vale la pena riportare: «la
+civetta è un buon cacciatore senza capire perché il topo vada da A a B». La
+civetta ha visto migliaia di topi e sa dove sarà questo fra un secondo, il che
+le basta per prenderlo; delle ragioni per cui il topo si sposta non sa niente,
+e non le servono. Predire, insomma, non richiede capire. Il punto è sapere
+quale domanda si sta facendo, perché salire un gradino richiede sempre qualcosa
+che nei dati non c'è.
 
 `````
 
@@ -697,27 +747,17 @@ grande sicurezza.
 
 `````
 
-I tre gradini etichettano cose che il libro affronta separatamente, e conviene
-tenerne una mappa, anche se i nomi che seguono arrivano da capitoli che devono
-ancora venire: qui servono solo come indirizzo.
-
-Al **primo** gradino sta tutto ciò che si limita a guardare i dati e a
-contare, cioè la gran parte del machine learning di questo libro.
-
-Al **secondo** stanno i modi di *provare* qualcosa sul mondo invece di
-osservarlo soltanto: i **test A/B**, dove si mostrano due versioni di un
-prodotto a due gruppi scelti a caso e si confrontano i risultati (ne parla il
-capitolo su MLOps, che è quello dedicato a far vivere i modelli in
-produzione), e il **reinforcement learning**, dove un programma non riceve i
-dati ma li produce agendo, e quindi decide da sé cosa finirà per osservare.
-
-Al **terzo** stanno le domande su ciò che non è successo: «a questo cliente il
-prestito è stato negato; glielo avrebbero dato con mille euro di reddito in
-più?». Si chiamano **spiegazioni controfattuali** e ne parla il capitolo
-sull'interpretabilità.
-
-Non è una gerarchia di merito: è una gerarchia di **cosa serve avere** per
-rispondere.
+Non è una gerarchia di merito, è una gerarchia di **cosa serve avere** per
+rispondere, e il libro la attraversa tutta. Sul primo gradino, quello di chi
+guarda i dati e conta, sta la gran parte di quello che leggeremo. Sul secondo,
+quello di chi il mondo lo tocca invece di limitarsi a guardarlo, stanno i
+**test A/B** (si mostrano due versioni di un prodotto a due gruppi di utenti
+scelti a caso e si confrontano i risultati) e l'apprendimento per rinforzo,
+dove un programma i dati non li riceve, se li produce agendo. Sul terzo stanno
+le domande su ciò che non è successo, tipo «a questo cliente il prestito è
+stato negato; glielo avrebbero dato con mille euro di reddito in più?»: si
+chiamano **spiegazioni controfattuali**. Ognuno dei tre ha il suo capitolo più
+avanti, e non serve andarlo a cercare adesso.
 
 ## Dalla probabilità all'apprendimento
 
@@ -747,13 +787,16 @@ sorprendenti possibile*. Lancio una moneta 10 volte e vedo 7 teste: quale
 valore di $p$ (la probabilità che esca testa) spiega meglio quel che ho
 osservato?
 
-Il modo di rispondere è provarli tutti e tenere il migliore. Se la moneta
-fosse equa, $p=0{,}5$, la probabilità di vedere proprio 7 teste su 10 è circa
-il $12\%$: possibile, non entusiasmante. Se fosse $p=0{,}6$ sale al $21\%$, se
-fosse $p=0{,}7$ arriva al $27\%$, e se fosse $p=0{,}8$ ridiscende al $20\%$.
-Il massimo cade a $0{,}7$, cioè esattamente sulla proporzione osservata, ed è
-questo che si intende quando si dice che $0{,}7$ è il valore «che rende
-l'osservazione più probabile».
+Il modo di rispondere è provarli tutti e tenere il migliore. Per ogni valore di
+$p$ si calcola quanto sarebbe probabile vedere proprio 7 teste su 10 (il conto
+esatto qui non lo facciamo: è quello che dà la probabilità di un certo numero
+di successi in un certo numero di prove, e in questo capitolo lo prendiamo per
+buono). I risultati sono questi. Se la moneta fosse equa, $p=0{,}5$, quella
+probabilità è circa il $12\%$: possibile, non entusiasmante. Se fosse $p=0{,}6$
+sale al $21\%$, se fosse $p=0{,}7$ arriva al $27\%$, e se fosse $p=0{,}8$
+ridiscende al $20\%$. Il massimo cade a $0{,}7$, cioè esattamente sulla
+proporzione osservata, ed è questo che si intende quando si dice che $0{,}7$ è
+il valore «che rende l'osservazione più probabile».
 
 Quel «quanto è probabile l'osservazione, se il parametro valesse così» ha un
 nome, ed è il nome che compare nel titolo di questa sezione, nella figura e

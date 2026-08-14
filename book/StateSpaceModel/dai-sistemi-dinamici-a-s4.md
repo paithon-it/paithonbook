@@ -30,9 +30,10 @@ riceve, si modifica e restituisce, senza salti. Entra un segnale, dentro c'è
 uno stato che cambia in continuazione, ed esce un altro segnale. Le tre
 grandezze sono legate da due regole, che dicono l'una come lo stato cambia da
 un istante al successivo e l'altra come si legge l'uscita a partire dallo
-stato. Chi ha in mano il capitolo di analisi numerica riconoscerà in quelle
-regole due **equazioni differenziali**: mettono in relazione una grandezza con
-la sua velocità di variazione, cioè con quanto sta cambiando in questo momento.
+stato. Quelle due regole sono, in matematica, due **equazioni differenziali**:
+mettono in relazione una grandezza con la sua velocità di variazione, cioè con
+quanto sta cambiando in questo momento (la velocità di variazione è la derivata
+della sezione su analisi e ottimizzazione, e qui basta leggerla così).
 
 `````{tab} Elementare
 
@@ -105,8 +106,7 @@ tradurlo dal continuo al discreto.
 
 ## Dal continuo al discreto
 
-Il passaggio si chiama **discretizzazione** ed è lo stesso problema che
-abbiamo incontrato nel capitolo di analisi numerica: al posto di seguire il
+Il passaggio si chiama **discretizzazione**: al posto di seguire il
 cambiamento istante per istante, si va avanti a salti, di lunghezza fissa.
 Chiamiamo $\Delta$ la durata di un salto (il tempo che passa tra una misura e
 la successiva) e riscriviamo il sistema in modo che vada di stato in stato,
@@ -118,8 +118,8 @@ confusione: **non esiste un solo modo di discretizzare**. Quello che succede
 lo indovinano in modi diversi. I due modelli principali di questo capitolo ne
 usano due, e non vanno scambiate. S4 adotta la **trasformazione bilineare**
 (nota anche come metodo di Tustin), che immagina il tratto non visto come un
-trapezio. Mamba (l'altro protagonista del capitolo, quello che due sezioni più
-avanti insegnerà a questa macchina a scegliere) adotta lo **zero-order hold**
+trapezio. Mamba (l'altro protagonista del capitolo, quello che nella prossima
+sezione insegnerà a questa macchina a scegliere) adotta lo **zero-order hold**
 (ZOH, «tenuta di ordine zero»), che immagina l'ingresso fermo per tutto il
 tratto. Attribuire lo ZOH a S4 è un errore che si trova spesso in giro.
 
@@ -134,18 +134,23 @@ mezzo. È lo stesso compromesso di ogni fotografia a scatti di un movimento
 fluido.
 
 Le due regole (bilineare e ZOH) sono due modi diversi di indovinare cosa
-succede *tra* un campione e l'altro, e la geometria delle medie basta a
+succede *tra* un campione e l'altro, e basta un po' di geometria a
 raccontarli. Immagina di dover calcolare quanta acqua è entrata nella vasca
 durante il tratto che non hai visto, sapendo solo l'apertura del rubinetto
-all'inizio e alla fine. Il conto più sbrigativo è a **rettangoli**: prendi
-l'apertura iniziale e fai finta che resti quella fino in fondo (è lo
-*zero-order hold*, la scelta di Mamba). Il conto più accurato è a **trapezi**:
-tieni conto anche di come l'apertura è cambiata alla fine del tratto (è la
-bilineare, la scelta di S4). Il risultato è lo stesso tipo di regola passo
-dopo passo; cambia quanto errore ti porti dietro a ogni salto, e l'errore, a
-forza di salti, si accumula. Torneremo su questa differenza alla fine del
-capitolo: è il pezzo che Mamba-3, il modello più recente della famiglia,
-rifarà con più cura.
+all'inizio e alla fine. Lo *zero-order hold*, la scelta di Mamba, tiene
+l'apertura ferma per tutto il tratto, come se il rubinetto non si fosse mosso:
+la figura da misurare è un **rettangolo**. La bilineare, la scelta di S4, tiene
+conto di come l'apertura è cambiata da un capo all'altro: il lato di sopra si
+inclina, e la figura diventa un **trapezio**. Il risultato è lo stesso tipo di
+regola passo dopo passo; cambia quanto errore ti porti dietro a ogni salto, e
+l'errore, a forza di salti, si accumula.
+
+Le stesse due figure torneranno più avanti nel capitolo per una seconda
+domanda, e le due domande conviene non confonderle. Qui si è deciso come si
+muove il rubinetto durante il tratto; là si tratterà di stabilire quanta, di
+quell'acqua, resta davvero nella vasca alla fine, visto che intanto lo scarico
+lavora. Anche in quel secondo conto Mamba si accontenta del rettangolo, ed è il
+pezzo che Mamba-3, il modello più recente della famiglia, rifarà a trapezi.
 
 `````
 
@@ -170,7 +175,7 @@ $\Delta\,\varphi_1(\Delta \mathbf{A})\,\mathbf{B}$ con $\varphi_1(z)=\sum_{k\ge 
 una serie definita anche quando $\mathbf{A}$ è singolare (per $\mathbf{A}$ diagonale con un
 autovalore nullo la formula scritta con l'inversa non si può valutare, la serie
 sì). In codice si usa la serie, o `expm1`, non il quoziente: per $a$ piccolo la
-differenza $e^{\Delta a}-1$ perde tutte le cifre significative.
+differenza $e^{\Delta a}-1$ perde le cifre significative.
 
 Se $\mathbf{A}$ è diagonale, ogni suo autovalore $a$ si discretizza per conto suo:
 $\bar{a} = e^{\Delta a}$ e $\bar{b} = \frac{e^{\Delta a}-1}{a}\,b$, ben definito
@@ -222,10 +227,11 @@ una RNN.
 
 Dall'altro la forma **convoluzionale**: se il sistema non cambia nel tempo, si
 può dimostrare che l'intera uscita è una singola convoluzione dell'ingresso
-con un filtro fisso. E la convoluzione la conosciamo dal capitolo sulle reti
-convoluzionali: un filtro che scorre lungo il segnale. Due differenze. La
-prima è che qui il filtro è lungo quanto tutta la sequenza, non una finestrella
-di pochi elementi. La seconda è che nessuno lo scrive a mano: si ricava, con
+con un filtro fisso. E la convoluzione la conosciamo dalle reti convoluzionali
+del capitolo sul deep learning: un filtro che scorre lungo il segnale. Due
+differenze. La prima è che qui il filtro è lungo quanto tutta la sequenza, non
+una finestrella di pochi elementi. La seconda è che nessuno lo scrive a mano:
+si ricava, con
 un conto, dalle tre regole del sistema, ed è per questo che il modello impara
 le regole e non il filtro. Il vantaggio è che una convoluzione si calcola in un
 colpo solo, in parallelo su tutta la sequenza: proprio ciò che serve per
@@ -290,7 +296,7 @@ alla stessa struttura non è un caso, come vedremo. La
 
 ```{figure} ../figures/ssm-forma-duale.svg
 :name: fig-ssm-forma-duale
-:alt: "A sinistra la forma ricorrente dell'SSM come catena di stati: da h_{t-1} una freccia moltiplicata per A-bar arriva a h_t, l'ingresso x_t entra moltiplicato per B-bar, e da h_t esce y_t moltiplicato per C; la stessa cella si ripete lungo la sequenza. A destra la forma convoluzionale: un unico kernel lungo K-bar = (C B-bar, C A-bar B-bar, C A-bar^2 B-bar, ...) copre l'intera sequenza di ingresso x e produce tutte le uscite y insieme. Fra le due viste il simbolo ≡ (identicamente uguale), con sotto la scritta \"stessa funzione\" e la precisazione \"(sistema invariante, LTI)\"."
+:alt: "A sinistra, sotto il titolo Forma ricorrente (inferenza, costo costante per passo), due riquadri uguali marcati SSM in fila: fra l'uno e l'altro corre la freccia dello stato h_t, dal basso entra in ciascuno il proprio ingresso x_t e verso l'alto ne esce la propria uscita y_t; una freccia tratteggiata a destra dice che la stessa cella si ripete lungo la sequenza. Sotto il disegno, le due formule della ricorrenza: h aggiornato come A-bar per h più B-bar per x, e y uguale a C per h. A destra, sotto il titolo Forma convoluzionale (addestramento, in parallelo), un unico riquadro tratteggiato lungo quanto tutta la sequenza di ingresso, il kernel K-bar, con una freccia per ogni posizione che scende sulla riga delle uscite: tutta l'uscita y in un colpo solo. Sotto, la definizione del kernel come (C B-bar, C A-bar B-bar, ...) e y uguale a x convoluto K-bar. Fra le due viste il simbolo ≡ (identicamente uguale), con sotto la scritta \"stessa funzione\" e la precisazione \"(sistema invariante, LTI)\"."
 :width: 85%
 
 Le due facce della stessa macchina, quando le sue regole non cambiano da un
@@ -433,9 +439,10 @@ passa dall'una all'altra, così il modello riesce a trattenere un'informazione
 finché gli serve.
 
 **Hyena** (2023), infine, prova la via più diretta: se l'ingrediente vincente
-è un filtro lungo che scorre su tutta la frase (come quelli visti nel capitolo
-sulle reti convoluzionali, ma lunghi quanto l'intero testo), tanto vale
-imparare direttamente il filtro, senza passare dal sistema dinamico. Funziona
+è un filtro lungo che scorre su tutta la frase (come quelli delle reti
+convoluzionali del capitolo sul deep learning, ma lunghi quanto l'intero
+testo), tanto vale imparare direttamente il filtro, senza passare dal sistema
+dinamico. Funziona
 quasi come l'attenzione, costando molto meno.
 
 `````

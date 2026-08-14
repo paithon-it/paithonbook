@@ -113,9 +113,9 @@ si fissa un elenco chiuso di categorie di oggetti, si cercano nel testo generato
 quelle parole (con una tabella di sinonimi e di plurali), e si conta la frazione
 di oggetti nominati che nell'immagine non risultano **annotati**, cioè che
 nell'elenco scritto a mano da chi ha preparato le fotografie non compaiono.
-Funziona, è stata la prima misura del campo, ed è ancora l'unica che guarda quel
-che il modello scrive di sua iniziativa. Porta però con sé quattro fragilità che
-non si possono togliere.
+Funziona, è stata la prima misura del campo, ed è il capostipite della famiglia
+che guarda quel che il modello scrive di sua iniziativa invece di interrogarlo.
+Porta però con sé quattro fragilità che non si possono togliere.
 
 Vede solo gli oggetti dell'elenco: un colore sbagliato, un conteggio sbagliato,
 una relazione spaziale rovesciata sono invisibili. Dipende dalla completezza
@@ -143,9 +143,9 @@ si chiede più al modello di descrivere, gli si chiede «c'è una forchetta in
 questa immagine?» e si accetta solo sì o no. La risposta è una parola sola, la
 verità sta nell'elenco di quel che c'è, e nessun giudice deve interpretare
 niente; è la ragione per cui il protocollo esiste, perché l'alternativa (mettere
-a correggere un secondo modello di linguaggio, il *modello giudice* del capitolo
-sull'MLOps) porta in dote i propri difetti proprio là dove si vuole misurare un
-difetto.
+a correggere un secondo modello di linguaggio, il modello giudice,
+l'*LLM-as-a-judge* del capitolo sull'MLOps) porta in dote i propri difetti
+proprio là dove si vuole misurare un difetto.
 
 Il cuore del metodo, però, non è il formato binario: è **come si scelgono gli
 oggetti assenti**. Chiedere «c'è una zebra?» davanti a una cucina non misura
@@ -551,6 +551,21 @@ forchetta c'è: si scambia un tipo di errore con l'altro.
 
 `````
 
+{numref}`fig-decodifica-per-differenza` mostra il meccanismo su un vocabolario
+giocattolo di sei parole.
+
+```{figure} ../figures/decodifica-per-differenza.svg
+:name: fig-decodifica-per-differenza
+:alt: Tre passi di decodifica, uno per parola. In alto la risposta cresce: un piatto, un coltello e un bicchiere. Sotto, per ogni passo, tre colonne di barre sullo stesso vocabolario di sei parole: le probabilità con la foto, quelle con la foto resa illeggibile e quelle che restano dopo aver sottratto le seconde dalle prime. Ai primi due passi la sottrazione conferma o premia la parola che l'immagine porta davvero; al terzo forchetta è la più alta in tutte e due le letture, quindi non viene dalla foto, e sottraendo sprofonda sotto bicchiere, che era seconda.
+:width: 96%
+
+Il rimedio visto nel tempo: a ogni parola due letture, una sottrazione e una
+scelta. Al terzo passo «forchetta» guida tutte e due le letture, ed è proprio
+questo a condannarla: quello che il modello direbbe comunque non viene
+dall'immagine. I numeri sono un esempio giocattolo, con $\alpha = 1$ e
+$\beta = 0{,}1$.
+```
+
 **Una seconda passata.** Il terzo rimedio prende la risposta già scritta, la
 scompone in affermazioni elementari («c'è un piatto», «c'è una forchetta», «la
 forchetta è a sinistra del piatto») e verifica ciascuna con l'immagine in mano,
@@ -572,8 +587,8 @@ priore resta la strada più economica verso una perdita bassa. I rimedi spostano
 il punto di equilibrio, rendono le affermazioni falsificabili, rendono più caro
 dire ciò che si direbbe comunque, mettono un secondo paio di occhi. Riducono,
 non curano. È la domanda del capitolo sull'AI responsabile, posta a un sistema
-che vede: quanto è fragile, davvero, una volta messo nel mondo. E la prossima
-pagina la rende meno accademica.
+che vede: quanto è fragile, davvero, una volta messo nel mondo. E il blocco che
+chiude questa sezione la rende meno accademica.
 
 ## Dalla percezione all'azione
 
@@ -622,9 +637,10 @@ p_\theta\big(k_j \mid k_{<j},\, E(\mathbf{I}),\, \mathbf{x}\big),
 $$
 
 dove $k_j$ è il token del gradino della componente $j$, $\mathbf{I}$ l'osservazione ed
-$\mathbf{x}$ l'istruzione in lingua naturale. È la fattorizzazione autoregressiva del
-capitolo sui modelli di linguaggio, applicata a una sequenza lunga sette, con la
-stessa cross-entropia come perdita. È l'impostazione di RT-2
+$\mathbf{x}$ l'istruzione in lingua naturale. È la fattorizzazione
+autoregressiva dei grandi modelli linguistici, vista nel capitolo sui
+Transformer, applicata a una sequenza lunga sette, con la stessa cross-entropia
+come perdita. È l'impostazione di RT-2
 {cite}`brohan2023rt2`, che addestra il modello in **co-fine-tuning** su una
 miscela di traiettorie robotiche e di dati visione-linguaggio del web: le
 traiettorie insegnano a muoversi, il resto della miscela impedisce al modello di
@@ -714,9 +730,10 @@ provare sul pezzo.
 
 Resta il fatto che il meccanismo è di una economia notevole. Non c'è
 un'architettura per l'azione: c'è la stessa macchina di tutto il capitolo, con
-un vocabolario un po' più largo. E c'è, insieme, il motivo per cui questa pagina
-viene dopo l'altra e non prima: un sistema che allucina una forchetta scrive una
-parola di troppo, lo stesso sistema che comanda una mano allucina un movimento.
+un vocabolario un po' più largo. E c'è, insieme, il motivo per cui l'azione sta
+in coda all'allucinazione e non altrove: un sistema che allucina una forchetta
+scrive una parola di troppo, lo stesso sistema che comanda una mano allucina un
+movimento.
 
 ## Cinque domande, una bussola
 

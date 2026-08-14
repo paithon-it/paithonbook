@@ -10,19 +10,10 @@ che fa l'apprendimento supervisionato: mostragli abbastanza coppie
 
 ## Imparare una funzione dagli esempi
 
-```{figure} ../figures/feature-label-tipi-dati-ml.svg
-:name: fig-tipi-di-feature
-:alt: "I tre tipi di feature affiancati con un esempio ciascuno: numerica, come i metri quadri, su cui hanno senso somme e differenze; categorica, come il quartiere, dove i valori sono nomi senza ordine; ordinale, come la classe energetica, dove esiste un ordine ma non una distanza."
-:width: 96%
-
-Tre tipi di colonna, tre cose che si possono fare con i numeri. Confonderli è
-l'errore che porta un modello a calcolare la media fra «Milano» e «Roma».
-```
-
 I dati di partenza sono quasi sempre una **tabella**: una riga per esempio (un
 appartamento, un'email, un paziente) e una colonna per caratteristica. Ma non
-tutte le colonne sono fatte della stessa pasta, ed è la distinzione che mostra
-{numref}`fig-tipi-di-feature`:
+tutte le colonne sono fatte della stessa pasta, e la differenza sta in che cosa
+ha senso farci sopra:
 
 - una colonna **numerica** contiene numeri veri, su cui somme, differenze e
   medie hanno un senso: i metri quadri di una casa, la sua età;
@@ -33,7 +24,19 @@ tutte le colonne sono fatte della stessa pasta, ed è la distinzione che mostra
   energetica A, B, C; «lieve», «moderato», «grave») ma non sappiamo di quanto
   disti uno dall'altro.
 
-Questa è la prima decisione di ogni progetto e non la prende il modello: la
+```{figure} ../figures/feature-label-tipi-dati-ml.svg
+:name: fig-tipi-di-feature
+:alt: "I tre tipi di feature affiancati con un esempio ciascuno: numerica, come i metri quadri, su cui hanno senso somme e differenze; categorica, come il quartiere, dove i valori sono nomi senza ordine; ordinale, come la classe energetica, dove esiste un ordine ma non una distanza."
+:width: 96%
+
+Le tre colonne appena elencate, una accanto all'altra, con sotto le operazioni
+che ciascuna ammette. Confonderle è
+l'errore che porta un modello a calcolare la media fra «Milano» e «Roma».
+```
+
+Decidere di quale dei tre tipi è ciascuna colonna, come in
+{numref}`fig-tipi-di-feature`, è la prima decisione di ogni progetto, e non la
+prende il modello: la
 prende chi prepara i dati. Se al quartiere «Milano» assegniamo il numero 1 e a
 «Roma» il 2 per poterli dare in pasto a un programma (si dice **codificare**
 una colonna), quella colonna per il modello è numerica a tutti gli effetti: ci
@@ -41,9 +44,9 @@ farà sopra medie e differenze, e crederà che Roma sia il doppio di Milano e ch
 fra le due ci sia qualcosa a 1,5. È un ordine, e sono delle distanze, che
 nessuno intendeva metterci.
 
-Riprendiamo il vettore delle caratteristiche del capitolo di algebra lineare.
 Di ogni appartamento teniamo tre numeri in fila (metri quadri, stanze, piano):
-un elenco ordinato di numeri si chiama **vettore**, e lo scriviamo
+un elenco ordinato di numeri si chiama **vettore**, ed è lo stesso oggetto del
+capitolo di algebra lineare. Lo scriviamo
 $\mathbf{x}$, in grassetto minuscolo, proprio per ricordare che non è un numero
 solo. A ciascun appartamento associamo poi un'etichetta $y$ (il prezzo). Il
 "supervisore" è proprio quella $y$ nota: qualcuno, in passato, ha già
@@ -142,9 +145,16 @@ Due volti dello stesso problema. Nella regressione (sinistra) la retta
 Il modello più semplice, e sorprendentemente utile, ipotizza che ogni
 caratteristica spinga la risposta in proporzione: raddoppia i metri quadri e,
 grosso modo, il prezzo raddoppia; una stanza in più vale sempre lo stesso
-tanto, che sia la seconda o la quinta. Ogni caratteristica ha il suo peso, si
-moltiplica e si somma, e nient'altro: in gergo, la risposta è una
-**combinazione lineare** delle caratteristiche.
+tanto, che sia la seconda o la quinta.
+
+Il conto allora è di quelli che si fanno a mano. A ogni caratteristica si
+attacca un numero che dice quanto quella caratteristica conta: si chiama
+**peso**, e non ha niente a che vedere con i chili. Poi si moltiplica ogni
+caratteristica per il suo peso, si sommano i risultati, e la somma è la
+risposta. Nient'altro: niente potenze, niente caratteristiche moltiplicate fra
+loro. Una risposta ottenuta così, moltiplicando e sommando e basta, in gergo si
+chiama **combinazione lineare** delle caratteristiche, e la parola «lineare»
+tornerà spessissimo con questo significato.
 
 `````{tab} Elementare
 
@@ -159,10 +169,23 @@ $b$ è il punto di partenza. Un esempio con i numeri: se ogni metro quadro vale
 $w = 2\,000$ € e il punto di partenza è $b = 50\,000$ €, un appartamento di
 $80$ m² viene stimato $\hat{y} = 2\,000 \cdot 80 + 50\,000 = 210\,000$ €. Fra
 tutte le rette possibili scegliamo quella che passa "più in mezzo" ai punti:
-la *retta di best fit*. Come misuriamo quanto è
-buona? Guardiamo, per ogni casa, la distanza in verticale tra il prezzo vero e
-quello previsto, la eleviamo al quadrato (così gli errori non si annullano tra
-loro) e facciamo la media. Più questo numero è piccolo, migliore è la retta.
+la *retta di best fit* (l'espressione inglese vuol dire «che si adatta
+meglio», e in italiano si dice anche retta di regressione).
+
+Come misuriamo quanto è buona? Guardiamo, per ogni casa, di quanto il prezzo
+previsto manca quello vero. Con la retta di prima e tre case: una di $80$ m²
+venduta a $210\,000$ € (previsto $210\,000$, errore zero); una di $60$ m²
+venduta a $160\,000$ € (previsto $170\,000$, sbagliamo di $+10\,000$); una di
+$100$ m² venduta a $260\,000$ € (previsto $250\,000$, sbagliamo di
+$-10\,000$). Se sommassimo gli scarti così come sono, il $+10\,000$ e il
+$-10\,000$ si cancellerebbero a vicenda e il totale verrebbe zero: la retta
+sembrerebbe perfetta, e non lo è. Per questo prima li **eleviamo al quadrato**,
+che li rende tutti positivi, e poi facciamo la media. Contando in migliaia di
+euro, i tre scarti sono $0$, $+10$ e $-10$; al quadrato diventano $0$, $100$ e
+$100$; la loro media è $(0 + 100 + 100)/3 \approx 67$. Attenzione a non leggerlo
+come una cifra in euro: avendo elevato al quadrato, quel $67$ è in *migliaia di
+euro al quadrato*, e serve solo per confrontare una retta con un'altra. Più è
+piccolo, migliore è la retta.
 
 Resta la domanda vera: **come la troviamo**, visto che di rette ce ne sono
 infinite e provarle tutte è impossibile? Non a caso, e nemmeno a tentativi
@@ -172,10 +195,17 @@ scendere: non vedi il fondovalle, ma con un piede senti da che parte il terreno
 scende, e fai un passo in quella direzione. Poi rifai la stessa cosa da dove sei
 arrivato, e così via, finché il terreno non è più in discesa da nessuna parte.
 
-Qui la collina è l'errore, e la posizione sul fianco sono i due numeri $w$ e
-$b$: cambiando $w$ e $b$ ci si sposta sul terreno, e l'altezza è quanto la
-retta sbaglia. La matematica sa dire, senza provare, da che parte l'errore
-cala: quella direzione si chiama **gradiente**, e la procedura che ripete il
+Qui la collina è l'errore. Ricordi che due numeri sono un punto su un foglio?
+Vale anche adesso, con la differenza che i due numeri non descrivono una casa
+ma il modello: la coppia $(w, b)$ è la nostra posizione sul fianco della
+collina, e l'altezza del terreno in quel punto è quanto la retta corrispondente
+sbaglia. Cambiare $w$ e $b$ vuol dire camminare, e scendere vuol dire
+sbagliare meno. E il piede che tasta il terreno? È il pezzo che la matematica
+sa fare da sola: l'errore, a differenza di una collina vera, è scritto in una
+formula, e da una formula si può *calcolare* la pendenza in un punto senza
+muovere un passo, come si calcola l'inclinazione di una rampa conoscendone la
+misura invece di salirci sopra. Quella direzione di massima discesa si chiama
+**gradiente**, e la procedura che ripete il
 passo si chiama **discesa del gradiente**. Quanto è lungo il passo lo decidiamo
 noi, e non è un dettaglio: passi troppo corti impiegano un'eternità, passi
 troppo lunghi scavalcano il fondovalle e rimbalzano da un fianco all'altro.
@@ -227,39 +257,33 @@ numeri la risposta: siccome un modello lavora solo su numeri, decidiamo per
 convenzione che «no» si scrive $0$ e «sì» si scrive $1$ (è una nostra scelta di
 scrittura, non una proprietà del mondo, e nulla cambierebbe scambiandole).
 Fatto questo, la differenza salta all'occhio: un prezzo può valere
-$310\,000$, mentre «spam sì/no» vive solo tra $0$ e $1$. La **regressione
-logistica** (che, malgrado il nome, classifica) risolve il problema
-schiacciando l'uscita lineare dentro l'intervallo $(0,1)$, e la si legge come
-la probabilità che la risposta sia «sì».
-
-```{figure} ../figures/regressione-logistica.svg
-:name: fig-sigmoide-soglia
-:alt: "La curva sigmoide che sale da zero a uno, con una linea orizzontale tratteggiata alla soglia di 0,5. I punti che cadono sotto la soglia sono assegnati alla classe 0, quelli sopra alla classe 1; vicino alla soglia la curva è ripida, agli estremi si appiattisce."
-:width: 84%
-
-Dalla retta alla probabilità. La sigmoide non decide: produce un numero fra
-zero e uno, e la decisione arriva dopo, quando si sceglie dove tagliare.
-```
-
-La separazione fra i due gesti in {numref}`fig-sigmoide-soglia` conta più di
-quanto sembri, e tornerà nel capitolo sulle metriche. Il modello produce una
-probabilità; la soglia a $0{,}5$ è una convenzione, non un risultato, e
-spostarla è il modo più economico di scegliere quale errore preferiamo pagare:
-abbassandola si segnalano più email come spam, quindi più messaggi buoni
-finiscono nel cestino ma meno spam passa; alzandola succede l'opposto. Nessuno
-dei due errori sparisce, si scambiano l'uno con l'altro, e la cosa notevole è
-che si può fare senza riaddestrare niente.
+$310\,000$, mentre «spam sì/no» sta solo fra $0$ e $1$. La **regressione
+logistica** (che, malgrado il nome, classifica: il nome le è rimasto addosso
+perché il conto che fa dentro è ancora quello della regressione) risolve il
+problema in due mosse.
 
 `````{tab} Elementare
 
-Prima calcoliamo un punteggio lineare, come nella regressione: moltiplichiamo
-ogni caratteristica per il suo peso, sommiamo tutto e aggiungiamo il numero di
-partenza. Poi lo facciamo
-passare in una funzione a forma di "S", la **sigmoide**, che comprime qualsiasi
-numero in un valore tra $0$ e $1$: lo leggiamo come una *probabilità*. Un
-punteggio molto positivo esce vicino a $1$ ("quasi certo spam"), uno molto
-negativo vicino a $0$, e lo zero cade esattamente a $0{,}5$: è la linea di
-confine, il punto in cui il modello è indeciso e cambia idea.
+**Prima mossa: un punteggio.** Si moltiplica ogni caratteristica per il suo
+peso, si somma tutto e si aggiunge il numero di partenza, esattamente come per
+la retta di prima. Ne esce un numero solo, che può essere qualsiasi cosa,
+$-7$ o $+412$.
+
+**Seconda mossa: schiacciarlo.** Quel numero passa dentro una funzione a forma
+di «S», la **sigmoide**, che qualunque cosa le si dia restituisce un valore
+compreso fra $0$ e $1$. Un punteggio molto positivo esce vicino a $1$ («quasi
+certo spam»), uno molto negativo vicino a $0$, e lo zero cade esattamente a
+metà, $0{,}5$.
+
+Quel numero fra zero e uno lo leggiamo come una **probabilità**: non la
+probabilità del lancio di un dado, ma la sicurezza del modello. $0{,}9$ vuol
+dire «ci scommetterei»; $0{,}52$ vuol dire «non ne ho idea, ma se proprio devo
+dico sì».
+
+E la risposta secca, quando serve? La si ottiene con una terza mossa che
+facciamo noi, non il modello: si fissa un valore di taglio, per abitudine
+$0{,}5$, e si risponde «sì» sopra e «no» sotto. Il paragrafo che segue la
+figura è tutto su quel taglio, perché è meno innocente di quanto sembri.
 
 `````
 
@@ -286,9 +310,77 @@ si accorda con l'interpretazione probabilistica e mantiene la loss convessa.
 
 `````
 
+```{figure} ../figures/regressione-logistica.svg
+:name: fig-sigmoide-soglia
+:alt: "La curva sigmoide che sale da zero a uno, con una linea orizzontale tratteggiata alla soglia di 0,5. I punti che cadono sotto la soglia sono assegnati alla classe 0, quelli sopra alla classe 1; vicino alla soglia la curva è ripida, agli estremi si appiattisce."
+:width: 84%
+
+Dalla retta alla probabilità. La sigmoide non decide: produce un numero fra
+zero e uno, e la decisione arriva dopo, quando si sceglie dove tagliare.
+```
+
+I due gesti che {numref}`fig-sigmoide-soglia` tiene separati (produrre un
+numero, e poi decidere) contano più di quanto sembri, e torneranno nella
+sezione sulle metriche. Il punto in cui si taglia si chiama **soglia**, e
+quel $0{,}5$ è una convenzione, non un risultato: possiamo spostarlo.
+Abbassandolo si segnalano più email come spam, quindi meno spam passa ma più
+messaggi buoni finiscono nel cestino; alzandolo succede l'opposto. Nessuno dei
+due errori sparisce, si scambiano l'uno con l'altro. La cosa notevole è che
+per farlo non serve riaddestrare niente: il modello resta quello, cambia solo
+dove mettiamo il taglio.
+
+C'è poi una cosa che vale la pena sapere prima di scrivere la prima riga di
+codice, perché è una piccola sorpresa.
+
+`````{tab} Elementare
+
+Quando in scikit-learn si scrive `LogisticRegression()` e basta, non si ottiene
+la regressione logistica «pura» descritta qui sopra. La libreria ci aggiunge di
+suo un **freno**, cioè quel prezzo alla complessità che vedremo nella prossima
+sezione: senza dire niente, tiene i pesi più piccoli di quanto sarebbero.
+
+Non è un capriccio, ed è quasi sempre un bene. Immagina di avere dati così
+facili che una linea li separa alla perfezione: il modello, per prendere pieni
+voti, non deve solo azzeccare le risposte, deve anche essere *sicuro*, e per
+essere più sicuro gli basta ingigantire i pesi. Un punteggio di $10$ dà una
+probabilità del $99{,}99\%$, uno di $100$ ne dà una ancora più vicina a $1$: non
+c'è mai un motivo per fermarsi, e senza freno i pesi crescono all'infinito. Il
+freno è ciò che dice «basta così».
+
+È comunque il tipo di dettaglio
+che va saputo, perché il modello che gira non è quello scritto nel libro di
+testo, e chi confronta i due numeri senza saperlo pensa di aver sbagliato i
+conti.
+
+`````
+
+`````{tab} Superiore
+
+Va detto che cosa gira davvero quando si scrive `LogisticRegression()`, perché
+non è la stima di massima verosimiglianza: scikit-learn aggiunge di suo una
+penalità $\ell_2$ sui
+pesi, di intensità `C=1.0` (in quella parametrizzazione $C$ è l'*inverso* della
+forza del freno, come nelle SVM). Il modello che esce, quindi, minimizza la
+cross-entropy **più** quella penalità, e la differenza non è cosmetica: sui
+quattro punti $x = -2, -1, 1, 2$ con etichette $0, 0, 1, 1$ (una dimensione,
+linearmente separabili) il coefficiente
+stimato vale $1{,}01$ con i default e $8{,}85$ chiedendo `C=np.inf`. Il secondo
+non è il numero «giusto»: sotto separazione perfetta il massimo di
+verosimiglianza
+**non esiste**, i pesi vorrebbero andare all'infinito, e ciò che li ferma è
+proprio il freno. Chi vuole la stima non regolarizzata deve chiederla
+sapendo che cosa sta chiedendo.
+
+`````
+
 ## k-NN: chiedi ai vicini
 
-Non tutti i modelli imparano dei parametri. Alcuni si limitano a *ricordare*.
+Non tutti i modelli imparano dei parametri. Alcuni si limitano a *ricordare*, e
+il capostipite è il **k-NN** (dall'inglese *k-nearest neighbors*, i $k$ vicini
+più prossimi): tiene da parte tutti gli esempi che ha visto e, davanti a un
+caso nuovo, va a cercare i $k$ che gli somigliano di più e li fa votare. Quel
+$k$, cioè quanti vicini interpellare, è la scelta che decide tutto, e va fatta
+prima di cominciare.
 
 ```{figure} ../figures/knn-classificare-per-somiglianza.svg
 :name: fig-knn
@@ -299,16 +391,20 @@ Nessun addestramento, solo un conteggio. La classe del punto nuovo è quella
 che vince fra i suoi $k$ vicini, e cambiare $k$ può cambiare il verdetto.
 ```
 
-Il cerchio disegnato in {numref}`fig-knn` è tutta la scelta di progetto:
-allargandolo si includono vicini più lontani, e la decisione diventa più
-stabile ma meno sensibile alle strutture locali. Con $k=1$ il modello ripete
-il vicino più prossimo, **rumore** compreso. Vale la pena fermarsi su questa
+Il cerchio disegnato in {numref}`fig-knn` è tutta la scelta: allargandolo si
+interpellano vicini via via più lontani, e la risposta diventa più stabile
+(pochi voti strani non la ribaltano) ma anche più grossolana, perché smette di
+accorgersi delle particolarità di quel pezzetto di quartiere. Con $k=1$ il
+modello ripete pari pari il vicino più prossimo, **rumore** compreso. Vale la
+pena fermarsi su questa
 parola, perché da qui in avanti torna in ogni sezione: il rumore non ha niente
 a che fare con il suono, è tutto ciò che nei dati è accidente invece che
 regola. L'errore di chi ha misurato, la casa venduta a poco perché il
 proprietario aveva fretta, la giornata storta: cose che sono successe davvero e
 che non si ripeteranno. Con $k$ pari al numero di esempi, all'estremo opposto,
-il modello risponde sempre la classe più frequente.
+votano tutti e il modello risponde sempre la stessa cosa, cioè la **classe**
+più frequente (d'ora in avanti «classe» è il nome tecnico di quelle che finora
+abbiamo chiamato categorie: spam e non spam sono due classi).
 
 `````{tab} Elementare
 
@@ -329,8 +425,13 @@ distanza, tipicamente euclidea,
 $\lVert \mathbf{x} - \mathbf{x}^{(i)}\rVert_2$, e si prendono i $k$ più
 vicini. In classificazione si assegna la classe di maggioranza; in regressione
 si fa la media dei loro $y^{(i)}$. Non esiste una fase di ottimizzazione: il
-costo si sposta interamente sulla previsione, $O(m)$ per query nella versione
-ingenua. Il valore di $k$ regola il compromesso: $k$ piccolo segue il rumore,
+costo si sposta interamente sulla previsione, ed è $O(mn)$ per query nella
+versione ingenua, non $O(m)$: le distanze da calcolare sono $m$, una per
+esempio, ma ciascuna costa $n$ operazioni, una per colonna. Vale la pena
+notare quel fattore $n$, perché il numero di colonne non pesa solo sul conto:
+è la quantità che decide se il metodo funziona, e la sezione su riduzione e
+clustering la mette al centro. Il valore di $k$ regola il compromesso: $k$
+piccolo segue il rumore,
 $k$ grande liscia troppo. La distanza euclidea, inoltre, impone di
 normalizzare le feature, altrimenti quella con la scala più ampia domina il
 conto.
@@ -338,8 +439,8 @@ conto.
 Due raffinamenti sono già in scikit-learn. Il **voto pesato**
 (`weights="distance"`) fa contare di più i vicini più prossimi invece di dare
 a tutti e $k$ lo stesso peso. Le **strutture di indicizzazione** (KD-tree,
-ball-tree) abbattono il costo per query da $O(m)$ a circa $O(\log m)$
-partizionando lo spazio in anticipo. Proprio quegli indici, però, smettono di
+ball-tree) partizionano lo spazio in anticipo e abbattono il numero di distanze
+da calcolare, da $m$ a circa $\log m$. Proprio quegli indici, però, smettono di
 essere utili oltre poche decine di dimensioni, per la ragione dell'avvertenza
 qui sotto.
 
@@ -350,24 +451,39 @@ qui sotto.
 sull'idea che «vicino» voglia dire «simile». Ricordando che ogni colonna della
 tabella è una direzione e ogni esempio un punto, «tante dimensioni» vuol dire
 semplicemente «tante colonne»: cento misure per ogni paziente, mille parole
-contate per ogni email. Lassù quell'idea si sgretola: distribuendo punti a
-caso, le distanze fra tutte le coppie diventano quasi identiche, e lo scarto
-fra il vicino più prossimo e il più lontano si assottiglia fino a sparire. È
+contate per ogni email. Lassù quell'idea si sgretola, e la ragione si capisce
+coi dadi.
+
+La distanza fra due punti si ottiene **sommando** gli scarti su *tutte* le
+colonne. Con una colonna sola quella somma ha un addendo, e due esempi possono
+essere identici o lontanissimi: il caso decide tutto. Con mille colonne gli
+addendi sono mille, e succede quello che succede lanciando mille dadi: il
+totale cade quasi sempre attorno a $3\,500$, perché i lanci alti e quelli bassi
+si compensano a vicenda, e vedere mille sei di fila non capita mai. Allo stesso
+modo, due esempi qualsiasi saranno un po' diversi su certe colonne e un po'
+simili su altre, e la somma finisce quasi sempre attorno allo stesso valore. Le
+distanze fra tutte le coppie si assomigliano, e lo scarto fra il vicino più
+prossimo e il più lontano si assottiglia fino a sparire. È
 come chiedere a qualcuno di indicare il migliore amico in una folla dove tutti
 stanno esattamente alla stessa distanza: la domanda perde senso, e il voto dei
 $k$ vicini diventa un voto casuale.
 
-Per questo k-NN va quasi sempre preceduto da una riduzione della dimensionalità
-o da una selezione seria delle feature. Il fenomeno, con i conti, è la
-**maledizione della dimensionalità**, ed è il punto di partenza del capitolo su
-riduzione e clustering.
+Per questo k-NN va quasi sempre preceduto da un lavoro che riduca le colonne,
+o tenendo solo quelle che servono o riassumendole in poche. Il fenomeno, con i
+conti, è la **maledizione della dimensionalità**, ed è il punto di partenza
+della sezione su riduzione e clustering.
 ```
 
 ## Un'ombra all'orizzonte: l'overfitting
 
-C'è un tranello in agguato. Un modello abbastanza flessibile può imparare *a
-memoria* gli esempi di addestramento (rumore compreso) e poi fallire su dati
-nuovi, come uno studente che ripete le soluzioni senza aver capito il metodo.
+C'è un tranello in agguato. Un modello abbastanza **flessibile** (cioè capace
+di piegarsi a qualsiasi forma: una curva contorta lo è, una retta no) può
+imparare *a memoria* gli esempi di addestramento, rumore compreso, e poi
+fallire su dati nuovi. Attenzione a non confonderlo con lo studente
+dell'apertura del capitolo, quello che studia con le soluzioni a fianco: là
+guardare le soluzioni era il metodo giusto, qui il guaio è **ricopiarle senza
+averle capite**, e accorgersene è possibile solo interrogandolo su un esercizio
+che non ha mai visto.
 È l'**overfitting**, il problema centrale del machine learning applicato: lo
 affrontiamo nella sezione dedicata, insieme all'idea di tenere sempre da parte
 dati che il modello non ha mai visto per misurarne l'onestà.
@@ -385,10 +501,12 @@ reg = LinearRegression().fit(X_train, y_prezzo)
 prezzo_stimato = reg.predict(X_nuovo)
 
 # Classificazione lineare: prevede una probabilità, poi una classe
-clf = LogisticRegression().fit(X_train, y_spam)      # y_spam in {0, 1}
-prob_spam = clf.predict_proba(X_nuovo)[:, 1]         # P(spam) in (0, 1)
+clf = LogisticRegression().fit(X_train, y_spam)      # y_spam vale 0 oppure 1
+# predict_proba dà due colonne, la probabilità del no e quella del sì:
+# [:, 1] vuol dire «tieni la seconda», cioè quanto è probabile lo spam
+prob_spam = clf.predict_proba(X_nuovo)[:, 1]
 
-# k-NN: nessun parametro, "vota" con i 5 vicini più simili
+# k-NN: niente da stimare, "vota" con i 5 vicini più simili
 knn = KNeighborsClassifier(n_neighbors=5).fit(X_train, y_spam)
 etichetta = knn.predict(X_nuovo)
 ```
@@ -435,8 +553,8 @@ per tutto il resto del libro.
   chi prepara i dati: una categorica codificata come intero acquista un ordine
   e delle distanze che nessuno intendeva metterci.
 - **k-NN** è non parametrico: non stima parametri, ricorda i dati e li fa votare.
-  Costo $O(m)$ per query, e la concentrazione delle distanze lo affossa in alta
-  dimensione.
+  Costo $O(mn)$ per query ($m$ distanze da $n$ coordinate ciascuna), e la
+  concentrazione delle distanze lo affossa in alta dimensione.
 - Attenzione all'**overfitting**: imparare a memoria non è capire. Ne parliamo
   nella sezione dedicata.
 ```

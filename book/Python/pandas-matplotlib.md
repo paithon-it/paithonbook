@@ -51,7 +51,10 @@ df = pd.DataFrame({
 })
 ```
 
-Ogni colonna è una Series; tutte insieme formano la tabella. Il vantaggio
+Quello fra le graffe è un **dizionario**, lo stesso della pagina sulle basi: le
+chiavi diventano i nomi delle colonne, e il valore di ciascuna è la lista dei
+dati di quella colonna, dall'alto in basso. Ogni colonna è una Series; tutte
+insieme formano la tabella. Il vantaggio
 rispetto a Excel è che ogni operazione è ripetibile e documentata: la scrivi
 una volta e la riesegui su un milione di righe senza cambiare nulla.
 
@@ -98,7 +101,25 @@ Da qui in avanti `df` è questa tabella caricata da file, non più quella scritt
 a mano poche righe fa: il nome è lo stesso perché `df` (da *dataframe*) è il
 nome che quasi tutti danno alla tabella su cui stanno lavorando in quel
 momento. Nel notebook compagno di questo capitolo il file `vendite.csv` viene
-creato all'avvio, così le righe che seguono funzionano davvero.
+creato all'avvio con sei clienti e quattro colonne (nome, età, città, spesa), e
+un paio di caselle lasciate vuote di proposito; le righe che seguono girano su
+quello. Ecco che cosa risponde la prima:
+
+```text
+    nome   eta   citta  spesa
+0    Ada  34.0  Milano  120.5
+1  Bruno   NaN  Torino   89.0
+2  Carla  41.0  Milano  240.0
+3  Dario  36.0  Napoli    NaN
+4  Elena  52.0  Milano  310.0
+```
+
+Da leggere ci sono due cose oltre ai dati. La colonna senza intestazione a
+sinistra, con 0, 1, 2, 3, 4, è l'**indice**: le etichette di riga di cui si
+parlava poco fa, che qui pandas ha messo da sé perché il file non ne aveva. E
+quei due `NaN` sono le caselle vuote: torneranno più avanti in questa pagina, e sono il
+motivo per cui la colonna `eta`, che contiene numeri interi, viene mostrata con
+la virgola.
 
 Questi tre metodi sono il rituale d'apertura di ogni analisi. `head()` ti dice
 *che aspetto* hanno i dati; `info()` ti dice *quanti* sono e se ci sono buchi
@@ -148,7 +169,12 @@ ambiguo di indicizzare.
 Da qui la regola che evita l'errore più frequente del mestiere: per *leggere*
 va bene qualunque forma, per **scrivere** si usa `.loc`. `df[df["eta"] > 30]`
 è un oggetto nuovo, quindi `df[df["eta"] > 30]["spesa"] = 0` modifica quello e
-lascia `df` com'era (pandas 3 lo segnala con un `ChainedAssignmentError`). La
+lascia `df` com'era. Pandas 3 lo segnala con un `ChainedAssignmentError` che,
+malgrado il nome, è un **avviso e non un'eccezione**: il programma non si
+ferma, tira dritto, e la modifica che credevi di aver fatto semplicemente non
+c'è. In uno script che filtra gli avvisi, o in un notebook con mille righe di
+output, il gesto sbagliato passa in silenzio, ed è questo che lo rende
+l'errore più frequente del mestiere. La
 forma che funziona è una sola, `df.loc[df["eta"] > 30, "spesa"] = 0`, perché
 seleziona e assegna in un passo solo. Nota per chi cerca in rete: con il
 Copy-on-Write, predefinito da pandas 3, il vecchio `SettingWithCopyWarning` non
@@ -189,9 +215,20 @@ df.groupby("citta").agg(
 )
 ```
 
+La prima riga è la più lunga catena di punti e quadre vista finora, e si legge
+da sinistra a destra come una frase, un pezzo per volta: «prendi `df`,
+raggruppalo per città, di quel che esce tieni la colonna `spesa`, e di quella
+fai la media». Ogni pezzo lavora su ciò che ha prodotto il pezzo precedente, e
+questo modo di incatenare le operazioni è lo stile normale di pandas.
+
 Il secondo esempio calcola due riassunti in una volta e dà a ciascuno il nome
 che si vuole: a sinistra dell'uguale il nome della colonna che uscirà, a destra
 la coppia «da quale colonna prendere i valori, che conto farci sopra».
+
+Eseguendole sulla nostra tabella, Napoli risponde `NaN`: il suo unico cliente
+ha la spesa mancante, e una media senza nemmeno un valore da mediare non
+esiste. È il primo incontro con le caselle vuote, ed è il tema di cui parliamo
+qui sotto.
 
 `````{tab} Elementare
 
@@ -266,6 +303,17 @@ cliente si può stimare quanto avrebbe speso). Costa di più, e si fa con un
 modello: è materia dei capitoli sul machine learning, qui basta sapere che
 esiste.
 
+C'è però una cautela che conviene conoscere fin d'ora, perché riguarda il
+*quando* e non il *come*. Quando si costruisce un modello, i dati si dividono
+in due mucchi: uno con cui il modello impara e uno, tenuto da parte e mai
+guardato, con cui alla fine lo si giudica. È l'unico modo di sapere se ha
+imparato davvero o se ha soltanto imparato a memoria gli esempi che gli
+abbiamo dato. E allora anche la mediana con cui riempi i buchi va calcolata
+**solo sul primo mucchio**: se la calcoli su tutti i dati, un pezzetto di
+quello che il modello dovrà indovinare gli è già passato sotto gli occhi, e il
+voto d'esame diventa più alto di quanto meriti. Il nome tecnico di questo
+guaio, che ritroverai spesso, è *data leakage*.
+
 `````
 
 `````{tab} Superiore
@@ -309,7 +357,14 @@ $$
 
 Il cappuccio sopra la $y$ è la notazione, che ritroverai in tutto il libro, per
 «valore *previsto* dalla retta», da tenere distinto dal valore misurato
-davvero. Costruire quattro insiemi di dati che coincidono su tutte e quattro
+davvero. Vale la pena fare il conto una volta, perché è la distinzione su cui
+poggia mezzo libro: nel primo insieme, dove $x$ vale $10$, la retta prevede
+$\hat{y} = 3 + 0{,}5 \cdot 10 = 8$, mentre il punto misurato in quel posto sta
+a $8{,}04$. La differenza fra i due, qui quattro centesimi, è l'**errore** su
+quel punto, ed è la quantità che ogni modello di questo libro cercherà di
+rendere piccola.
+
+Costruire quattro insiemi di dati che coincidono su tutte e quattro
 queste misure è un lavoro di precisione, ed è il punto: sulla carta sono
 indistinguibili. Ma basta disegnarli ({numref}`fig-anscombe`) per scoprire che
 raccontano quattro storie completamente diverse.
@@ -354,9 +409,8 @@ distinti. Nel codice qui sotto non compaiono né l'una né gli altri, e non è u
 dimenticanza: le funzioni `plt.qualcosa` lavorano sulla figura *corrente*,
 quella aperta in quel momento, il che va benissimo per un grafico veloce.
 Quando i grafici diventano due o più, o quando li si vuole affiancare, si
-prendono i due oggetti per nome, `fig, ax = plt.subplots()`, e si chiamano i
-metodi su `ax` (`ax.scatter(...)`, `ax.set_xlabel(...)`): è la forma che si
-trova nella documentazione e nel codice altrui.
+prendono i due oggetti per nome e si chiamano i metodi su `ax`, come vedremo
+subito dopo.
 
 ```python
 import matplotlib.pyplot as plt
@@ -382,6 +436,18 @@ due. È il modo di dire «questo è finito». Quanto ai *bins* dell'istogramma,
 sono le barre in cui l'intervallo dei valori viene diviso: cambiarne il numero
 cambia il disegno, e vale la pena provarne due o tre, perché troppo poche
 nascondono la forma e troppe la sbriciolano.
+
+Ecco infine la forma con gli oggetti presi per nome, che è quella che troverai
+nella documentazione e nel codice altrui. Fa esattamente lo stesso lavoro delle
+prime quattro righe del blocco qui sopra:
+
+```python
+fig, ax = plt.subplots()          # il foglio e il riquadro, ciascuno col suo nome
+ax.scatter(df["eta"], df["spesa"])
+ax.set_xlabel("età")              # sugli Axes i metodi si chiamano set_qualcosa
+ax.set_ylabel("spesa")
+plt.show()
+```
 
 Lo scatter rivela relazioni e valori anomali; l'istogramma mostra se una
 variabile è simmetrica, asimmetrica o bimodale (con due "gobbe" invece di

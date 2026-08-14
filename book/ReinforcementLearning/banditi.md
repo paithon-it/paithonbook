@@ -144,7 +144,8 @@ per smentirla.
 
 Quanto costi si misura su un banco di prova, sempre lo stesso: è quello di
 Sutton e Barto {cite}`sutton2018reinforcement`, i due autori del manuale
-classico della materia, e tutti i numeri di questa sezione vengono da lì.
+classico della materia. Il banco è il loro; le percentuali di questa sezione
+no, escono dal codice in fondo, che lo rifà da capo.
 
 `````{tab} Elementare
 
@@ -222,9 +223,9 @@ tiri", cioè se la stima è la media di tutti i tiri, il primo tiro se lo porta
 via da solo:
 la stima salta di colpo sul numero appena visto, e su quella leva l'ottimismo è
 finito. Resta il giro forzato sulle altre nove, e infatti anche così si arriva
-al **71,3%**, quasi il doppio del 36,7% dell'agente avido; ma metà del guadagno
-se n'è andata, perché con il passo fisso si sale all'**86,6%**, il risultato
-migliore fra le strategie di questa sezione.
+al **71,3%**, quasi il doppio del 36,7% dell'agente avido; ma quasi un terzo
+del guadagno se n'è andato, perché con il passo fisso si sale all'**86,6%**, il
+risultato migliore fra le strategie di questa sezione.
 
 `````
 
@@ -251,10 +252,11 @@ consuma abbastanza lentamente da arrivare all'**86,6%**.
 
 È un trucco, però, e conviene dire perché. L'ottimismo si esaurisce: dopo che
 tutte le leve sono state provate abbastanza, la spinta a esplorare sparisce.
-Su un problema stazionario va benissimo; su uno non stazionario, dove il mondo
-cambia e servirebbe tornare a esplorare, non serve a niente. Come scrivono
-Sutton e Barto, l'inizio del tempo capita una volta sola, e non conviene
-puntarci troppo.
+Se le leve rendono sempre allo stesso modo (si dice che il problema è
+**stazionario**) va benissimo; se invece cambiano carattere nel tempo, e
+servirebbe tornare a esplorare perché quel che si era imparato non vale più,
+non serve a niente. Come scrivono Sutton e Barto, l'inizio del tempo capita una
+volta sola, e non conviene puntarci troppo.
 
 ### UCB: esplorare in proporzione a quanto poco si sa
 
@@ -367,11 +369,18 @@ La regola di aggiornamento è di buon senso: se la ricompensa appena incassata �
 ho tirato e abbasso quello di tutte le altre; se è peggiore, faccio l'opposto.
 
 Quel confronto con la media è il pezzo importante e si chiama **termine di
-riferimento**. Senza, l'algoritmo confronterebbe la ricompensa con lo zero, che
-è un numero arbitrario: se tutte le leve pagano attorno a mille, tutte le
-ricompense sembrano ottime e i voti salgono tutti insieme senza distinguere
-nulla. Con il riferimento, quel che conta non è quanto ho preso, ma quanto ho
-preso **rispetto al solito**.
+riferimento** (in inglese *baseline*, ed è il nome che si legge nel codice).
+Senza, l'algoritmo confronterebbe la ricompensa con lo zero, che è un numero
+arbitrario: se tutte le leve pagano attorno a mille, tutte le ricompense
+sembrano ottime e i voti salgono tutti insieme senza distinguere nulla. Con il
+riferimento, quel che conta non è quanto ho preso, ma quanto ho preso
+**rispetto al solito**.
+
+Quanto conti si misura, ed è tanto. Sul banco di prova di prima il metodo dei
+voti azzecca la leva migliore l'**84,1%** delle volte. Se poi si aggiungono
+quattro punti a tutte le ricompense, cosa che non cambia nulla del problema
+(fra le leve le differenze restano quelle), con il riferimento si resta
+all'**83,8%** e senza si crolla al **48,5%**.
 
 `````
 
@@ -421,9 +430,11 @@ l'algoritmo indifferente all'origine della scala delle ricompense.
 
 ## Alla prova: duemila banchi da mille tiri
 
-I numeri citati qui sopra non sono presi da un paper, sono usciti dal codice
-che segue. Le quattro strategie basate sui valori vivono in un solo blocco,
-perché differiscono solo per come scelgono l'azione e per come iniziano.
+I numeri citati qui sopra non sono copiati da nessuno, sono usciti dal codice
+che segue. Le quattro strategie basate sui valori (avida, $\varepsilon$-greedy,
+ottimista, UCB) vivono in un solo blocco, perché differiscono solo per come
+scelgono l'azione e per come iniziano; le sei righe stampate sono le stesse
+quattro, con due valori di $\varepsilon$ e due modi di fare il passo.
 
 ```python
 import numpy as np
@@ -452,17 +463,19 @@ def prova(eps, q0=0.0, c=None, alpha=None):
         centri[t-1] = (a == ottima).mean()
     return 100 * centri[-100:].mean()
 
-print(f"greedy               {prova(eps=0.0):5.1f}%")
-print(f"eps-greedy 0,01      {prova(eps=0.01):5.1f}%")
-print(f"eps-greedy 0,1       {prova(eps=0.1):5.1f}%")
-print(f"ottimista Q1=5       {prova(eps=0.0, q0=5.0, alpha=0.1):5.1f}%")
-print(f"UCB c=2              {prova(eps=0.0, c=2.0):5.1f}%")
+print(f"greedy                    {prova(eps=0.0):5.1f}%")
+print(f"eps-greedy 0,01           {prova(eps=0.01):5.1f}%")
+print(f"eps-greedy 0,1            {prova(eps=0.1):5.1f}%")
+print(f"ottimista Q1=5, passo 0,1 {prova(eps=0.0, q0=5.0, alpha=0.1):5.1f}%")
+print(f"ottimista Q1=5, media     {prova(eps=0.0, q0=5.0):5.1f}%")
+print(f"UCB c=2                   {prova(eps=0.0, c=2.0):5.1f}%")
 
-# greedy                36.7%
-# eps-greedy 0,01       59.1%
-# eps-greedy 0,1        80.2%
-# ottimista Q1=5        86.6%
-# UCB c=2               85.9%
+# greedy                     36.7%
+# eps-greedy 0,01            59.1%
+# eps-greedy 0,1             80.2%
+# ottimista Q1=5, passo 0,1  86.6%
+# ottimista Q1=5, media      71.3%
+# UCB c=2                    85.9%
 ```
 
 Un risultato merita attenzione, ed è quello di chi esplora una volta su cento:
@@ -470,10 +483,12 @@ dopo mille tiri sta al **59,1%**, contro l'**80,2%** di chi esplora una volta su
 dieci, e sembra il peggiore dei rimedi. Ma sta ancora salendo. Esplorando una
 volta su cento impiega dieci volte più tempo a farsi un'idea di tutte le leve, e
 alla fine supera l'altro, che invece continuerà per sempre a buttare un tiro su
-dieci: allungando l'esperimento, il sorpasso arriva attorno al decimillesimo
-tiro. La classifica dipende insomma da quanto è lunga la partita, e questa è una
-morale generale: **quanto esplorare si decide guardando l'orizzonte**, cioè il
-numero di tiri che si hanno davanti, non i primi mille.
+dieci: portando `PASSI` da mille a trentamila nel codice qui sopra, il sorpasso
+si vede arrivare attorno al decimillesimo tiro, e alla fine i due valgono
+**91,6%** e **89,0%**, con le parti invertite. La classifica dipende insomma da
+quanto è lunga la partita, e questa è una morale generale: **quanto esplorare
+si decide guardando l'orizzonte**, cioè il numero di tiri che si hanno davanti,
+non i primi mille.
 
 Il bandit a gradiente ha una struttura diversa e sta in un blocco a sé, dove si
 vede anche l'esperimento sulla baseline.
@@ -516,19 +531,21 @@ Un bandit non è un giocattolo teorico, ed è probabilmente la parte di
 reinforcement learning che più spesso finisce in produzione, proprio perché
 rinuncia a tutto il resto.
 
-**Test A/B, e il loro superamento.** Un test A/B classico manda metà del
-traffico a ciascuna variante fino alla fine dell'esperimento: è la
-sperimentazione clinica di Thompson, con gli stessi costi. Un'allocazione
-adattiva sposta progressivamente il traffico verso la variante che sta
-vincendo, e paga in complessità statistica (i dati non sono più raccolti in
-modo indipendente dalla decisione) quello che guadagna in denaro non buttato.
+**Test A/B, e il loro superamento.** Un test A/B è la prova che si fa quando si
+hanno due versioni di una pagina, di un annuncio o di un prezzo e si vuole
+sapere quale rende di più: si mostra la prima a metà dei visitatori e la seconda
+all'altra metà, fino alla fine dell'esperimento. È la sperimentazione clinica di
+Thompson, con gli stessi costi. Chi la fa in modo adattivo sposta via via i
+visitatori verso la versione che sta vincendo, e paga in difficoltà di lettura
+statistica (i dati non sono più raccolti allo stesso modo per tutti) quello che
+guadagna in denaro non buttato.
 
 **Esplorazione nei sistemi di raccomandazione.** Un catalogo ha continuamente
 oggetti nuovi, di cui nessuno sa nulla: mostrarli è esplorare, e non mostrarli
 mai garantisce che nessuno saprà mai se erano buoni. È il problema che il
-capitolo sui sistemi di raccomandazione, più avanti nel libro, chiamerà **avvio
-a freddo**, qui letto dal lato della decisione invece che da quello della
-rappresentazione.
+capitolo sui sistemi di raccomandazione, più avanti nel libro, chiamerà
+**partenza a freddo**, qui letto dal lato della decisione invece che da quello
+della rappresentazione.
 
 **Ricerca di iperparametri.** Qui il collegamento è letterale. Il *successive
 halving* e **Hyperband** del capitolo sul machine learning sono algoritmi di

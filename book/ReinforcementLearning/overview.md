@@ -22,7 +22,10 @@ un'**azione**, l'ambiente passa a un nuovo stato e gli consegna una ricompensa;
 poi il ciclo ricomincia ({numref}`fig-rl-ciclo`). Quello che l'agente cerca di
 rendere più grande possibile non è la ricompensa di adesso, ma la somma di
 tutte quelle che verranno da qui alla fine: quella somma ha un nome, **ritorno**
-(in inglese *return*), e da qui in avanti la useremo continuamente.
+(in inglese *return*), e da qui in avanti la useremo continuamente. Con una
+regola di impazienza, che la sezione sugli MDP renderà precisa: nella somma un
+premio lontano entra ridotto, perché dieci euro oggi valgono più di dieci euro
+l'anno prossimo.
 
 ```{figure} ../figures/rl-ciclo-interazione.svg
 :name: fig-rl-ciclo
@@ -44,8 +47,10 @@ $-5$ e che un metro guadagnato vale $+1$. È una scelta di progetto, ed è una
 scelta seria, perché un agente ottimizza esattamente i numeri che gli sono
 stati dati e non le intenzioni di chi glieli ha dati: premiato per la velocità,
 può imparare a buttarsi in avanti e cadere in fretta. Nel capitolo di deep
-reinforcement learning una sezione intera è dedicata a questo mestiere, che si
-chiama *reward shaping*.
+reinforcement learning la sezione su esplorazione e ricompensa ci torna per
+esteso: aggiungere premi intermedi per guidare l'agente si chiama *reward
+shaping*, e c'è una forma garantita a non spostare la strategia migliore, più
+molte che la spostano senza avvisare.
 
 La regola con cui l'agente sceglie, situazione per situazione, si chiama
 **politica**, all'inglese **policy**. Le due parole indicano la stessa cosa e in
@@ -182,12 +187,15 @@ potenza. Nei primi anni Novanta, all'IBM, Gerald Tesauro costruì
 metodo, che vedremo, del correggere le proprie previsioni un passo alla volta)
 che imparò a giocare a backgammon quasi al livello dei campioni umani,
 giocando oltre un milione di partite contro sé stessa e scoprendo aperture che
-i maestri poi adottarono. Nel 2015 DeepMind pubblicò su *Nature* il **DQN**,
-un agente che imparava a giocare a decine di videogiochi **Atari** partendo
-dai soli pixel dello schermo e dal punteggio, senza sapere nulla delle regole.
-E nel marzo 2016 **AlphaGo** batté 4-1 il campione Lee Sedol al Go, un gioco
-considerato fuori portata per le macchine a causa del suo spazio combinatorio
-immenso: un risultato che molti si aspettavano lontano un decennio.
+i maestri poi adottarono. Nel 2015 DeepMind pubblicò su *Nature* il **DQN**
+(*Deep Q-Network*, e il capitolo successivo lo smonta pezzo per pezzo): un
+agente che imparava a giocare a decine di videogiochi della vecchia console
+**Atari**, partendo dai soli pixel dello schermo e dal punteggio, senza sapere
+nulla delle regole. E nel marzo 2016 **AlphaGo** batté
+4-1 il campione Lee Sedol al Go, un gioco considerato fuori portata per le
+macchine perché le posizioni possibili sono troppe per elencarle (quante, di
+preciso, lo si vede nella sezione sugli MDP): un risultato che molti si
+aspettavano lontano un decennio.
 
 ## Come è organizzato questo capitolo
 

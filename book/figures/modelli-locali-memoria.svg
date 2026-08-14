@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 430" width="100%" role="img" aria-label="Grafico a barre: quanti miliardi di parametri entrano in memorie di taglia diversa, con i pesi scritti a 4 bit">
+  <rect x="0" y="0" width="700" height="430" fill="#F8F5EE"/>
+  <text x="350" y="30" font-family="Inter, system-ui, sans-serif" font-size="15" fill="#1A1A1A" text-anchor="middle" font-weight="bold">Quanti parametri entrano in memoria, con i pesi a 4 bit</text>
+  <!-- 8 GB -->
+  <text x="105" y="85" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#1A1A1A" text-anchor="end" font-weight="bold">8 GB</text>
+  <rect x="120" y="66" width="75" height="30" fill="#C9A961" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="207" y="86" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A">~10 B</text>
+  <!-- 16 GB -->
+  <text x="105" y="155" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#1A1A1A" text-anchor="end" font-weight="bold">16 GB</text>
+  <rect x="120" y="136" width="150" height="30" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="282" y="156" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A">~26 B</text>
+  <!-- 24 GB -->
+  <text x="105" y="225" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#1A1A1A" text-anchor="end" font-weight="bold">24 GB</text>
+  <rect x="120" y="206" width="225" height="30" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="357" y="226" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A">~42 B</text>
+  <!-- 48 GB -->
+  <text x="105" y="295" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#1A1A1A" text-anchor="end" font-weight="bold">48 GB</text>
+  <rect x="120" y="276" width="450" height="30" fill="#1A1A1A" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="582" y="296" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A">~90 B</text>
+  <!-- footnote line -->
+  <line x1="120" y1="340" x2="580" y2="340" stroke="#C9C2B4" stroke-width="1.5"/>
+  <text x="120" y="368" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#5E5852">A 4 bit un miliardo di parametri (una B) occupa circa 0,5 GB.</text>
+  <text x="120" y="390" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#5E5852">Si tolgono 3 GB di margine per il contesto, e si divide il resto per 0,5.</text>
+</svg>

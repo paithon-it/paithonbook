@@ -23,9 +23,9 @@ Collins pubblica su *Cell* la scoperta di un nuovo antibiotico: hanno
 addestrato una rete neurale a leggere le molecole come grafi (atomi nei nodi,
 legami chimici negli archi) e a prevedere quali fermassero la crescita dei
 batteri. Passata al setaccio una libreria di composti, la rete ha segnalato
-una molecola che nessuno associava agli antibiotici; funziona anche su un
-ceppo di *Acinetobacter baumannii* resistente a tutti gli antibiotici provati.
-L'hanno chiamata **halicin**, in omaggio a HAL
+una molecola che nessuno associava agli antibiotici; nei topi ha curato anche
+un'infezione da *Acinetobacter baumannii* resistente a tutti gli antibiotici
+provati. L'hanno chiamata **halicin**, in omaggio a HAL
 9000. Il filo che unisce i sette ponti di Königsberg a un antibiotico del XXI
 secolo è proprio l'oggetto di questo capitolo: le **reti neurali su grafo**
 (*Graph Neural Networks*, GNN).
@@ -198,8 +198,9 @@ contesto). A livello di **arco**: *link prediction*, cioè stimare la
 probabilità che esista un arco $(u,v)$ a partire dalla coppia
 $(\mathbf{h}_u^{(K)}, \mathbf{h}_v^{(K)})$. A livello di **grafo**: si
 aggregano ($\mathrm{READOUT}$) tutti i vettori dei nodi in un unico vettore del
-grafo, su cui fare classificazione o regressione; il regime *induttivo*, in cui
-a test si incontrano grafi mai visti in addestramento.
+grafo, su cui fare classificazione o regressione; qui il regime è di norma
+*induttivo*, perché ogni esempio è un grafo a sé e a test se ne incontrano di
+mai visti in addestramento.
 
 `````
 
@@ -219,12 +220,15 @@ Il capitolo procede dal dato all'architettura.
   sono **fatti**: le triple, l'assunzione di mondo aperto (un arco che manca
   vuol dire «non lo so»), le entità come punti e le relazioni come frecce, e a
   che serve poter rispondere **navigando** invece che recuperando.
-- **Oltre la GCN: GraphSAGE, GAT e applicazioni**. Le varianti che hanno reso
-  le GNN utilizzabili su scala reale, *GraphSAGE*, che campiona i vicini per
-  scalare a grafi enormi, e la *Graph Attention Network* (GAT), che pesa i
-  vicini con l'attenzione incontrata nel capitolo sui Transformer, e una
-  carrellata di applicazioni, dalla chimica alla frode, dalle mappe ai sistemi
-  di raccomandazione.
+- **Oltre la GCN: GraphSAGE, GAT e applicazioni**. Le due varianti che hanno
+  reso le GNN utilizzabili su scala reale: *GraphSAGE*, che campiona i vicini
+  per scalare a grafi enormi, e la *Graph Attention Network* (GAT), che pesa i
+  vicini con l'attenzione incontrata nel capitolo sui Transformer. Poi come si
+  passa dai nodi a un verdetto sull'intero grafo, e fin dove quel verdetto
+  riesce a distinguere due grafi diversi; una carrellata di applicazioni, dalla
+  chimica alla frode, dalle mappe ai sistemi di raccomandazione; i limiti; e
+  infine i *Graph Transformer*, cioè il tentativo di rifare la strada al
+  contrario.
 
 ## Tre fili che tornano
 

@@ -16,7 +16,8 @@ complesso.
 La differenza tra machine learning classico e deep learning non sta in una
 matematica esoterica: sta in *chi* decide quali caratteristiche dei dati
 contano. Quelle caratteristiche, in gergo, si chiamano **feature**: sono i
-numeri che descrivono un dato e su cui il modello ragiona.
+numeri che descrivono un dato e su cui il modello, cioè il programma che impara
+dagli esempi, fa i suoi conti.
 
 `````{tab} Elementare
 
@@ -59,15 +60,22 @@ chiama *representation learning*.
 
 ## Rappresentazioni gerarchiche: dai bordi agli oggetti
 
-Cosa impara davvero uno strato? Quando nel 2014 Zeiler e Fergus
-{cite}`zeiler2014visualizing` riuscirono a "visualizzare" ciò a cui rispondono
-i neuroni di una **rete convoluzionale** (il tipo di rete fatto apposta per le
-immagini, di cui parla la sezione che segue), il
-risultato somigliava in modo sorprendente alla corteccia di Hubel e Wiesel: i
-primi strati reagiscono a bordi e linee orientate; gli strati intermedi a
-texture e a parti (un occhio, una ruota, la trama di un tessuto); gli ultimi
-strati a interi oggetti. La profondità costruisce astrazione, un livello alla
-volta ({numref}`fig-gerarchia-feature`).
+Una rete profonda è fatta di **strati**: gruppi di neuroni messi in fila, dove
+il primo riceve i numeri dell'immagine e ognuno dei successivi riceve quello che
+ha prodotto quello prima di lui. (Un neurone, qui, non è una cellula: è un
+pezzetto di conto, che prende dei numeri, li somma dopo averli pesati e ne
+restituisce uno.) Cosa impara davvero uno strato?
+
+Nel 2014 Zeiler e Fergus {cite}`zeiler2014visualizing` trovarono il modo di
+"visualizzarlo", cioè di risalire, per ogni neurone di una **rete
+convoluzionale** (il tipo di rete fatto apposta per le immagini, di cui parla
+la sezione che segue), alla forma che lo fa accendere. Il risultato somigliava
+in modo sorprendente alla corteccia di Hubel e Wiesel: i primi strati reagiscono
+a bordi e linee orientate; gli strati intermedi a parti riconoscibili (un
+occhio, una ruota) e a *texture*, cioè trame che si ripetono, come la stoffa di
+un tessuto o il pelo di un animale; gli ultimi strati a interi oggetti. La
+profondità costruisce astrazione, un livello alla volta
+({numref}`fig-gerarchia-feature`).
 
 ```{figure} ../figures/gerarchia-feature.svg
 :name: fig-gerarchia-feature
@@ -86,7 +94,7 @@ piccoli: tratti dritti, curve, angoli. Poi combini quei tratti in parti
 riconoscibili: due cerchi diventano occhi, due triangoli diventano orecchie.
 Alla fine le parti si assemblano in un gatto intero.
 
-La rete fa esattamente questo, ma al contrario di come lo racconteremmo noi:
+La rete fa esattamente questo, ma senza che nessuno gliel'abbia insegnato:
 nessuno le dice "questo è un occhio". Impara da sola che, per riconoscere i
 gatti nelle foto, conviene prima trovare i bordi, poi comporli in parti, poi
 comporre le parti in animali.
@@ -135,11 +143,37 @@ Pensa a un fuoco. Ti serve la legna, l'ossigeno e una scintilla: se manca anche
 uno solo dei tre, non parte. Il deep learning è rimasto "spento" per anni non
 perché mancasse l'idea, ma perché mancava la combustione completa.
 
-La legna sono i **dati**: milioni di immagini etichettate, che prima di
-Internet semplicemente non esistevano. L'ossigeno è il **calcolo**: le schede
-grafiche (GPU), nate per i videogiochi, si sono rivelate perfette per i conti
-delle reti. La scintilla sono gli **algoritmi** giusti al momento giusto. Nel
-2012, per la prima volta, i tre elementi c'erano tutti.
+La legna sono i **dati**: milioni di immagini **etichettate**, cioè fotografie
+accanto a cui qualcuno ha scritto a mano che cosa c'è dentro. Prima di Internet
+non esistevano, perché raccoglierle e descriverle una per una era un lavoro
+fuori portata. L'ossigeno è il **calcolo**: le schede grafiche (GPU), nate per i
+videogiochi, si sono rivelate perfette per i conti delle reti.
+
+La scintilla sono gli **algoritmi**, e vale la pena dire quali, perché tre
+accorgimenti precisi fanno la differenza fra la rete del 2012 e quelle che non
+imparavano.
+
+Il primo riguarda la funzione che ogni neurone applica al numero che gli è
+uscito dai conti. Prima si usava una curva che schiaccia qualunque numero in un
+intervallo stretto: grande o piccolo che fosse, quello che ne usciva era sempre
+più o meno uguale, e la rete non aveva più modo di accorgersi della differenza.
+Al suo posto si adotta una regola molto più semplice: i numeri positivi passano
+come sono, i negativi diventano zero. Se entra 5 esce 5, se entra $-3$ esce 0.
+Si chiama **ReLU**.
+
+Il secondo combatte il guaio peggiore di una rete: impararsi a memoria le
+fotografie dell'addestramento. Sembrerebbe un pregio, e invece è il modo più
+sicuro di fallire, perché una rete che le ricorda a mente va benissimo su quelle
+e male su tutte le altre, che sono poi le uniche che conteranno. Il rimedio è
+spegnere a caso, a ogni passata sulle fotografie, una parte dei neuroni: se un
+neurone potrebbe non esserci al giro dopo, gli altri non possono appoggiarsi
+solo a lui, e la rete è costretta a distribuire quello che sa invece di
+depositarlo tutto in un punto (**dropout**).
+
+Il terzo è moltiplicare gli esempi ritagliando e specchiando le fotografie che
+già si hanno, per dare alla rete più materiale senza doverne etichettare altre
+(**data augmentation**). Nel 2012, per la prima volta, i tre elementi c'erano
+tutti.
 
 `````
 
@@ -171,19 +205,28 @@ combinazione, alla scala giusta.
 
 ## Profondo, non solo largo
 
-Resta un'obiezione teorica seria. C'è un risultato matematico, il **teorema di
-approssimazione universale** ({cite}`cybenko1989approximation`;
-{cite}`hornik1991approximation`, che lo dimostrano per attivazioni
-rispettivamente sigmoidali e limitate; nella forma generale che copre anche la
-ReLU, {cite}`leshno1993multilayer`), il quale dice che basta *un solo* strato
-intermedio, purché lo si faccia abbastanza largo, per imitare con la precisione
-che si vuole qualunque regola che leghi ingressi e uscite senza salti bruschi.
-Una condizione c'è, ed è essenziale: la funzione che ogni neurone applica al
+Fin qui abbiamo dato per buono che impilare strati serva a qualcosa. C'è però un
+risultato matematico che sembra dire il contrario, e conviene affrontarlo
+subito.
+
+Si chiama **teorema di approssimazione universale**, e dice questo: basta *un
+solo* strato in mezzo, fra l'ingresso e l'uscita. Purché lo si faccia
+abbastanza largo, cioè con abbastanza neuroni, quella rete a un piano solo sa
+imitare con la precisione che si vuole qualunque regola che leghi ingressi e
+uscite senza salti bruschi.[^universalita]
+
+Una condizione c'è, ed è essenziale. La funzione che ogni neurone applica al
 proprio risultato, l'**attivazione** (la ReLU, per esempio, che azzera i numeri
 negativi e lascia passare i positivi), non deve essere un *polinomio*, cioè una
-somma di potenze come $3x^2-x+5$; se lo fosse, la rete saprebbe produrre solo
-polinomi. Se una rete "piatta" e larga è già universale, perché impilare tanti
-strati?
+somma di potenze come $3x^2-x+5$. Il motivo è che sommare e moltiplicare
+polinomi dà sempre e solo altri polinomi: se l'attivazione fosse uno di quelli,
+tutto ciò che la rete sa produrre sarebbe un polinomio, cioè una curva liscia e
+regolare, e le curve lisce non bastano a descrivere qualunque legame fra
+ingresso e uscita. La ReLU non è un polinomio proprio per questo: ha uno
+spigolo, nel punto in cui smette di azzerare e comincia a lasciar passare, e
+nessuna somma di potenze fa un angolo.
+
+Se una rete "piatta" e larga sa già imitare tutto, perché impilare tanti strati?
 
 `````{tab} Elementare
 
@@ -191,11 +234,18 @@ Il teorema dice che *in teoria* un solo strato basta. Ma "in teoria" nasconde
 una fregatura: quel singolo strato potrebbe aver bisogno di un numero enorme,
 impraticabile, di neuroni.
 
-La profondità permette di **riusare** il lavoro. Se ho già imparato a
-riconoscere un occhio, lo uso sia per il gatto sia per il cane senza reimpararlo
-da capo. Una rete larga e piatta deve invece reinventare ogni forma da zero,
-ogni volta. Andare in profondità è come scrivere funzioni che chiamano altre
-funzioni, invece di riscrivere sempre tutto il codice a mano.
+Quello che manca alla rete piatta è la possibilità di **costruire sopra**. In
+una rete a un solo strato ogni neurone guarda i pixel grezzi e nient'altro:
+nessuno può partire da una forma che un altro ha già trovato per comporla con
+una seconda. Un occhio va descritto ogni volta a partire dai pixel, e le
+combinazioni di pixel che fanno un occhio sono innumerevoli: cambia la luce,
+cambia l'inclinazione, cambia la taglia, e ogni variante va prevista da capo.
+
+Con più strati il secondo lavora su ciò che ha trovato il primo, il terzo su
+ciò che ha trovato il secondo. È la differenza tra una ricetta scritta tutta
+come "prendi la farina, prendi l'uovo, prendi il burro" e una che a un certo
+punto dice "prepara la besciamella", dando per fatto un pezzo di strada già
+percorso: la seconda arriva allo stesso piatto con molte parole in meno.
 
 `````
 
@@ -222,34 +272,49 @@ Due avvertenze sul quantificatore, che è dove il teorema promette meno di quant
 sembri. La prima: è un risultato di **esistenza**, cioè di densità. Dice che la
 rete c'è, non che la discesa del gradiente la trovi, né quanti esempi servano
 per impararla. La seconda: il teorema da solo non dà **nessun limite** su $N$,
-il numero di neuroni; sono le stime successive a mostrare che per classi di
-funzioni fissate $N$ cresce esponenzialmente nella **dimensione dell'ingresso**,
-e che la profondità evita quella crescita. Esistono famiglie di funzioni
-rappresentabili da reti profonde con un numero di
-neuroni *polinomiale* nella profondità, ma che richiedono larghezza
-*esponenziale* se ci si limita a un solo strato {cite}`telgarsky2016benefits`.
-Montúfar e colleghi {cite}`montufar2014number` mostrano che il numero di
-regioni lineari che una rete ReLU può generare cresce esponenzialmente con la
-profondità e solo polinomialmente con la larghezza. Tradotto: la profondità compra efficienza espressiva. È più
-economico comporre trasformazioni che allargarne una sola.
+il numero di neuroni. Quel limite dipende dalla classe di funzioni che si vuole
+approssimare, e conviene non generalizzare la frase che si sente più spesso.
+Per le classi definite dalla sola regolarità (derivate limitate fino a un certo
+ordine) il numero di neuroni cresce esponenzialmente nella **dimensione
+dell'ingresso**, ed è la maledizione della dimensionalità, che colpisce
+qualunque schema di approssimazione lineare e non le reti in particolare. Ma
+non è una legge universale: Barron {cite}`barron1993universal` individua una
+classe più ristretta, definita da una condizione sulla trasformata di Fourier,
+per cui l'errore quadratico scende come $O(1/N)$ **senza** dipendere dalla
+dimensione. La crescita esponenziale è una proprietà della classe di funzioni,
+non delle reti a uno strato in quanto tali.
+
+Sulla profondità, invece, le separazioni sono nette e dimostrate. Esistono
+famiglie di funzioni rappresentabili da reti profonde con un numero di neuroni
+*polinomiale* nella profondità, ma che richiedono larghezza *esponenziale* se
+ci si limita a un solo strato {cite}`telgarsky2016benefits`; Eldan e Shamir
+{cite}`eldan2016power` esibiscono una funzione che una rete con **due** strati
+nascosti rappresenta con un numero di neuroni polinomiale nella dimensione
+dell'ingresso, e che una rete con **uno solo** non riesce ad approssimare oltre
+una certa soglia a meno di renderla esponenzialmente larga. Montúfar e colleghi
+{cite}`montufar2014number` mostrano che il numero di regioni lineari che una
+rete ReLU può generare cresce esponenzialmente con la profondità e solo
+polinomialmente con la larghezza. Tradotto: la profondità compra efficienza
+espressiva. È più economico comporre trasformazioni che allargarne una sola.
 
 `````
 
-Questa gerarchia si legge anche nel codice. Una piccola rete convoluzionale in
-PyTorch è, letteralmente, una pila di strati che vanno dal semplice al
-complesso:
+Questa gerarchia si legge anche nel codice. Una piccola rete convoluzionale
+scritta in PyTorch, la libreria del capitolo precedente, è letteralmente una
+pila di strati che vanno dal semplice al complesso. Di che cosa faccia ciascuno
+di quegli strati parla la sezione seguente: qui conta solo vedere la pila.
 
 ```python
 from torch import nn
 
-# input: un batch di immagini RGB, shape (N, 3, 128, 128): canali prima
+# in ingresso: un gruppo di immagini a colori, alte e larghe 128 pixel
 model = nn.Sequential(
     nn.Conv2d(3, 32, 3), nn.ReLU(),    # primi strati: bordi e linee
     nn.MaxPool2d(2),
     nn.Conv2d(32, 64, 3), nn.ReLU(),   # strati intermedi: texture e parti
     nn.MaxPool2d(2),
     nn.Conv2d(64, 128, 3), nn.ReLU(),  # parti più grandi, oggetti
-    nn.AdaptiveAvgPool2d(1),           # media globale di ogni feature map
+    nn.AdaptiveAvgPool2d(1),           # media di ogni foglio di risultati
     nn.Flatten(),
     nn.Linear(128, 10),                # la classe finale (un logit per classe)
 )
@@ -258,12 +323,18 @@ model = nn.Sequential(
 I tre numeri dentro `nn.Conv2d(3, 32, 3)` si leggono così: quanti "fogli" di
 numeri arrivano (3, cioè rosso, verde e blu), quanti filtri diversi applicare
 (32) e quanto è larga la finestra che ciascun filtro guarda per volta (3 per 3
-pixel). L'ultima riga produce dieci numeri, uno per classe: si chiamano
+pixel). Ognuno di quei filtri produce un foglio di risultati, e quel foglio ha
+un nome che accompagnerà tutto il capitolo: si chiama **feature map**, ed è la
+mappa che segna punto per punto dove nell'immagine il filtro ha trovato ciò che
+cerca (la sezione seguente mostra come nasce). La riga
+`nn.AdaptiveAvgPool2d(1)` riduce ciascuna di quelle mappe a un numero solo, la
+sua media. L'ultima riga produce dieci numeri, uno per classe: si chiamano
 **logit**, sono punteggi grezzi, e vince il più alto (per trasformarli in
-probabilità serve un ultimo passaggio, la *softmax*). Ogni `nn.Conv2d` più in
-basso nella pila costruisce feature più astratte a
-partire da quelle dello strato precedente: la stessa scala dai bordi agli
-oggetti della {numref}`fig-gerarchia-feature`, resa in poche righe.
+probabilità serve un ultimo passaggio, la *softmax*, che li schiaccia tutti fra
+zero e uno facendo in modo che sommati diano uno). Ogni `nn.Conv2d` più avanti
+nella pila costruisce feature più astratte a partire da quelle dello strato
+precedente: la stessa scala dai bordi agli oggetti della
+{numref}`fig-gerarchia-feature`, resa in poche righe.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
@@ -275,12 +346,16 @@ oggetti della {numref}`fig-gerarchia-feature`, resa in poche righe.
   poi pezzi riconoscibili (un occhio, una ruota), infine l'oggetto intero.
 - Non è esplosa prima del 2012 perché servivano tre cose insieme, come la
   legna, l'ossigeno e la scintilla: milioni di **fotografie già etichettate**,
-  **schede grafiche** abbastanza veloci e gli **accorgimenti** giusti per far
-  imparare la rete. Nel 2012 c'erano tutte e tre, e alla gara di ImageNet vinse
-  AlexNet.
+  **schede grafiche** abbastanza veloci e tre accorgimenti precisi (la **ReLU**
+  al posto delle funzioni che spegnevano il segnale, il **dropout** contro
+  l'imparare a memoria, il moltiplicare le foto con ritagli e specchiature).
+  Nel 2012 c'erano tutte e tre, e alla gara di ImageNet vinse AlexNet.
+  (La ReLU è la regola più semplice possibile: i numeri positivi passano come
+  sono, i negativi diventano zero.)
 - Uno strato solo, se lo si facesse enorme, in teoria basterebbe. Ma la
-  profondità arriva allo stesso risultato con molti meno neuroni, perché
-  **riusa** il lavoro già fatto invece di rifarlo ogni volta.
+  profondità arriva allo stesso risultato con molti meno neuroni, perché ogni
+  strato può **costruire sopra** quello che ha trovato il precedente, invece di
+  descrivere ogni forma a partire dai pixel.
 ```
 `````
 
@@ -302,10 +377,20 @@ oggetti della {numref}`fig-gerarchia-feature`, resa in poche righe.
 
 [^backprop-storia]: Il conto che sta sotto la retropropagazione (partire
     dall'errore in fondo alla rete e risalire all'indietro, strato per strato,
-    per sapere quanto ciascun peso ha contribuito) era già noto ai matematici
-    dal 1970, quando Seppo Linnainmaa lo descrisse in tutta generalità: è
-    quella che oggi si chiama *differenziazione automatica in modalità
-    inversa*. Paul Werbos la applicò alle reti neurali nel 1981, e a metà anni
-    Ottanta fu riscoperta per conto proprio da LeCun e da Parker. Il merito
-    del 1986 è averla mostrata al mondo, con esperimenti convincenti, nel
-    posto giusto: un articolo su *Nature*.
+    per sapere quanto ciascun **peso**, cioè ciascuno dei numeri regolabili
+    della rete, ha contribuito) era già noto ai matematici dal 1970, quando
+    Seppo Linnainmaa lo descrisse in tutta generalità: è quella che oggi si
+    chiama *differenziazione automatica in modalità inversa*. Paul Werbos la
+    applicò alle reti neurali in un lavoro presentato nel 1981 e pubblicato
+    l'anno dopo, e a metà anni Ottanta fu riscoperta per conto proprio da LeCun
+    e da Parker. Il merito del 1986 è averla mostrata al mondo, con esperimenti
+    convincenti, nel posto giusto: un articolo su *Nature*.
+
+[^universalita]: Il teorema arriva in tre tempi. Cybenko lo dimostra nel 1989
+    {cite}`cybenko1989approximation` per le attivazioni a forma di S, cioè per
+    quelle curve che schiacciano i numeri in un intervallo stretto e che si
+    chiamano *sigmoidi*; Hornik lo estende nel 1991
+    {cite}`hornik1991approximation` a
+    tutte quelle che restano confinate fra due valori; la forma generale,
+    quella che copre anche la ReLU, arriva nel 1993 con Leshno e colleghi
+    {cite}`leshno1993multilayer`.

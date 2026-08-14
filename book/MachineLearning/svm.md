@@ -4,19 +4,20 @@ Disegna due nuvole di punti su un foglio (pallini blu a sinistra, quadratini
 rossi a destra) e traccia una retta che li separi. Facile. Ora traccia
 *un'altra* retta che li separi lo stesso, e poi un'altra ancora: se le due
 nuvole sono ben distinte, di rette buone ce ne sono infinite. Quale scegliere?
-La regressione logistica del capitolo sull'apprendimento supervisionato ne
+La regressione logistica della sezione sull'apprendimento supervisionato ne
 sceglie una, e nemmeno si pone la domanda. La **Support Vector Machine** (SVM)
 invece sì, e con una risposta di netta
 eleganza geometrica: tra tutte le rette che separano, scegli la più *prudente*
 (quella che lascia il corridoio più largo possibile tra le due classi).
 
-L'idea del margine massimo è vecchia, e non nasce dove si crede: la formularono
-in Unione Sovietica **Vladimir Vapnik e Alexey Chervonenkis**, che dal 1962
-lavoravano all'Istituto di Problemi di Controllo di Mosca e la pubblicarono nel
-1963-64 col nome di *metodo del ritratto generalizzato*
-{cite}`vapnik1963pattern`. Quello che nasce trent'anni dopo nei laboratori Bell
-sono i due innesti che la rendono praticabile, e sono anche le due sezioni che
-seguono: il **kernel trick** (Boser, Guyon e Vapnik, 1992
+L'idea del margine massimo è vecchia, e non nasce dove si crede: nasce a Mosca,
+all'Istituto di Problemi di Controllo, dove dal 1962 **Vladimir Vapnik** ne
+discuteva con Alexander Lerner e **Alexey Chervonenkis**. Il nome era *metodo
+del ritratto generalizzato*, e lo pubblicano Vapnik e Lerner nel 1963
+{cite}`vapnik1963pattern`; l'anno dopo Vapnik e Chervonenkis ne ricavano il
+classificatore lineare a margine rigido. Quello che nasce trent'anni dopo nei
+laboratori Bell sono i due innesti che la rendono praticabile, e sono anche le
+due sezioni che seguono: il **kernel trick** (Boser, Guyon e Vapnik, 1992
 {cite}`boser1992training`) e il **margine morbido** (Cortes e Vapnik, 1995
 {cite}`cortes1995support`). Un algoritmo che ha aspettato trent'anni due idee.
 
@@ -49,16 +50,27 @@ la soluzione.
 Come mostra {numref}`fig-svm-margine`, la soluzione poggia su pochissimi
 punti: quelli che toccano i bordi del corridoio. Tutti gli altri, per quanto
 numerosi, sono irrilevanti: potresti spostarli o cancellarli e il confine non
-si muoverebbe di un millimetro. Sono i punti sul bordo a «reggere»
-l'iperpiano, e per questo si chiamano **vettori di supporto**. È una
+si muoverebbe di un millimetro. Sono i punti sul bordo a «reggere» la
+frontiera, e per questo si chiamano **vettori di supporto**. Il «supporto» è
+questo, e il «vettore» viene da come li scriviamo: un esempio è un elenco
+ordinato di numeri, uno per colonna, e un elenco del genere si chiama vettore
+(lo abbiamo incontrato nella sezione sull'apprendimento supervisionato). Un
+vettore di supporto, insomma, è semplicemente **uno dei pochi esempi appoggiati
+al bordo del corridoio**.
+
+È una
 differenza sostanziale rispetto alla regressione logistica, la cui frontiera
 dipende (sia pur poco) da *tutti* i dati.
 
 ## Il classificatore a massimo margine
 
-Formalizziamo la geometria del corridoio. La frontiera è un **iperpiano**: una
-retta in due dimensioni, un piano in tre, un oggetto piatto di dimensione
-$n-1$ in uno spazio a $n$ dimensioni.
+Adesso mettiamo in numeri la geometria del corridoio. La frontiera è quello che
+in matematica si chiama un **iperpiano**, e la parola spaventa più della cosa:
+in due dimensioni è una retta, in tre un piano, e in cento dimensioni è
+l'oggetto che fa lo stesso mestiere, cioè taglia lo spazio in due metà, solo
+che non lo possiamo disegnare. Sta sempre una dimensione sotto lo spazio che
+divide: una retta (una dimensione) in un piano (due), un piano (due) in una
+scatola (tre).
 
 `````{tab} Elementare
 
@@ -134,8 +146,15 @@ $(-1,-1)$, e due del quartiere rosso, a $(2,2)$ e $(3,3)$. Le due case più
 vicine fra loro, una per quartiere, sono $(0,0)$ e $(2,2)$: sono loro a
 decidere tutto. Il corridoio più largo possibile è quello che va dall'una
 all'altra, e il confine passa esattamente a metà strada, per il punto
-$(1,1)$, messo di traverso rispetto alla diagonale. La larghezza del corridoio
-è la distanza fra le due case, circa $2{,}8$.
+$(1,1)$, messo di traverso rispetto alla diagonale.
+
+Quanto è largo il corridoio? Qui è la distanza fra le due case, e si calcola
+con Pitagora: da $(0,0)$ a $(2,2)$ ci sono $2$ passi in orizzontale e $2$ in
+verticale, quindi $\sqrt{2^2 + 2^2} = \sqrt{8} \approx 2{,}8$. Attenzione però,
+qui va bene perché le due case sono messe proprio l'una di fronte all'altra
+attraverso la strada; se fossero sfalsate, la distanza fra loro conterebbe
+anche un pezzo di cammino *lungo* la strada, che con la larghezza non c'entra.
+Più avanti vedremo come togliere quel pezzo di troppo.
 
 E le altre due case, quelle più arretrate? Prova a cancellarle dal foglio: il
 confine non si sposta di un millimetro, perché non toccano il corridoio. Le
@@ -277,13 +296,19 @@ fattore pari alla taglia del dataset.
 
 ## L'approccio della strada più larga
 
-Fin qui abbiamo enunciato tre cose e non ne abbiamo dimostrata nessuna: che il
-corridoio è largo $2/\lVert \mathbf{w}\rVert$, che a reggere la frontiera sono
-pochi punti, e che il problema si può riscrivere in una forma dove gli esempi
-compaiono soltanto a coppie. È la terza a reggere tutto il resto del capitolo,
-kernel trick compreso, e sarebbe scortese chiederne fiducia. La strada per
-arrivarci è corta (sta in una pagina di algebra) e lungo il percorso succede due
-volte una cosa che all'inizio non era prevedibile.
+Fin qui abbiamo chiesto fiducia su due cose e non ne abbiamo dimostrata
+nessuna: che si sappia calcolare **quanto è larga** la strada (ci serve, visto
+che vogliamo la più larga di tutte), e che a reggere la frontiera siano
+soltanto pochi punti, i vettori di supporto.
+
+Adesso le dimostriamo tutte e due, e lungo il percorso salterà fuori una terza
+cosa che nessuno aveva cercato: il problema si può riscrivere in una forma in
+cui gli esempi non compaiono più uno per uno, ma **soltanto a coppie**, e di
+ogni coppia serve un numero solo. Sembra un dettaglio contabile ed è il perno di
+tutto il resto della sezione, kernel trick compreso.
+
+La strada per arrivarci è corta, sta in una pagina di algebra, e lungo il
+percorso succede due volte una cosa che all'inizio non era prevedibile.
 
 Il percorso che segue è quello che Patrick Winston chiamava *the widest street
 approach*, l'approccio della strada più larga, nella sedicesima lezione del
@@ -308,17 +333,24 @@ lei sappiamo una cosa sola: la direzione, di traverso alla strada. Quanto sia
 lunga non lo sappiamo ancora, e la cosa tornerà utile.
 
 Arriva un punto nuovo, di cui non conosciamo la classe. Come decidiamo da che
-parte sta? Gli facciamo fare l'ombra sulla freccia: immagina il sole
-esattamente sopra la direzione di $\mathbf{w}$, e guarda quanto in là arriva
-l'ombra del punto lungo quella freccia. Se arriva oltre una certa soglia, il
-punto ha attraversato la strada ed è un più; se resta di qua, è un meno.
+parte sta? Gli facciamo fare l'**ombra sulla freccia**. Immagina la freccia
+appoggiata per terra, con la coda nell'origine, e una luce che arriva
+perpendicolare a lei: l'ombra del punto cade sulla freccia, in un certo punto,
+e quel punto lo possiamo misurare come una distanza dalla coda. Ne esce un
+numero solo. Se supera una certa soglia, il
+punto ha attraversato la strada ed è un più; se resta al di qua, è un meno.
 
 Vale la pena notare che cosa abbiamo appena buttato via. Della posizione del
 punto *lungo* la strada non ci importa niente, perché camminando lungo la strada
 non si cambia mai lato: l'ombra la ignora, ed è esattamente ciò che vogliamo.
-Conta solo di quanto la strada la si attraversa. Quell'operazione (proiettare un
-punto su una direzione e leggere un numero solo) è il prodotto scalare, ed è il
-mattone di tutto ciò che segue.
+Conta solo di quanto la strada la si attraversa. Quell'operazione (fare l'ombra
+di un punto su una direzione e leggerne un numero solo) si chiama **prodotto
+scalare**, ed è il mattone di tutto ciò che segue. È la stessa cosa del
+«moltiplica a coppie e somma» di poco fa: si moltiplica ogni coordinata del
+punto per la coordinata corrispondente della freccia e si sommano i risultati.
+Due descrizioni molto diverse, un unico conto, ed è proprio questa doppia
+natura, geometrica e aritmetica insieme, che alla fine della sezione farà il
+miracolo.
 
 `````
 
@@ -420,20 +452,24 @@ arriva in un altro, e quindi contiene sia l'attraversamento sia un pezzo di
 cammino lungo la strada, che a noi non interessa.
 
 Ma sappiamo già come buttare via il pezzo che non interessa: l'ombra. Facciamo
-fare a quella freccia l'ombra sulla direzione perpendicolare, cioè su
-$\mathbf{w}$ ridotta a lunghezza $1$ (basta dividerla per la propria lunghezza),
-e quello che resta è esattamente la larghezza della strada, come mostra
-{numref}`fig-svm-larghezza`.
+fare a quella freccia l'ombra sulla direzione perpendicolare alla strada, e
+quello che resta è esattamente la larghezza, come mostra
+{numref}`fig-svm-larghezza`. Una accortezza sola: la freccia $\mathbf{w}$ ci
+serve qui come direzione e non come lunghezza, quindi prima la si accorcia
+finché è lunga esattamente $1$, dividendo tutte le sue coordinate per la sua
+lunghezza. Una freccia di lunghezza $1$ indica una direzione e basta.
 
-Il conto sta nella scheda accanto e occupa due righe, ma il risultato merita di
-essere guardato bene: la larghezza della strada è $2$ diviso la lunghezza della
-freccia $\mathbf{w}$. Delle case non c'è più traccia. Erano il punto di
-partenza, sono servite a fare il conto, e alla fine sono sparite: la larghezza
-dipende soltanto da quanto è lunga la freccia.
+Il conto è di due righe e sta nella scheda accanto, ma il risultato si può
+raccontare, perché è sorprendente. Viene fuori che la larghezza della strada
+vale sempre $2$ diviso la lunghezza della freccia $\mathbf{w}$. Sempre: delle
+due case, che erano il punto di partenza, non resta traccia. Il $2$ non è un
+numero magico ma la conseguenza di come abbiamo fissato l'asticella al passo
+precedente, cioè a $+1$ da una parte e $-1$ dall'altra: fra i due c'è appunto
+una distanza di $2$, ed è quella che riemerge qui.
 
 E allora il problema, che era «trova la strada più larga», è diventato: **rendi
-$\mathbf{w}$ più corta che puoi**, senza violare i vincoli del secondo passo.
-Sono i vincoli a impedire la risposta stupida (una freccia lunga zero, cioè
+$\mathbf{w}$ più corta che puoi**, senza infrangere le regole del secondo passo.
+Sono quelle regole a impedire la risposta stupida (una freccia lunga zero, cioè
 nessuna frontiera).
 
 `````
@@ -486,10 +522,10 @@ pezzo sistemato.
 :width: 90%
 
 La larghezza della strada, ricavata in due righe. La freccia che unisce i due
-vettori di supporto va di sghembo, e si scompone in due pezzi: quello
-perpendicolare ai marciapiedi, che per via dei vincoli vale esattamente
-$2/\lVert\mathbf{w}\rVert$, e quello lungo la strada (in grigio), che la
-proiezione sul versore $\mathbf{w}/\lVert\mathbf{w}\rVert$ butta via.
+esempi appoggiati ai marciapiedi va di sghembo, e si scompone in due pezzi:
+quello che attraversa la strada, che vale esattamente
+$2/\lVert\mathbf{w}\rVert$ (cioè $2$ diviso la lunghezza di $\mathbf{w}$), e
+quello che corre lungo la strada, in grigio, che l'ombra butta via.
 ```
 
 ```{admonition} Il primo caffè
@@ -522,20 +558,34 @@ paletto, e lì il terreno non è piatto per niente.
 
 La ricetta per uscirne ha più di due secoli e porta il nome di Joseph-Louis Lagrange,
 che era nato a Torino nel 1736 e si chiamava Giuseppe Lodovico Lagrangia. L'idea
-è di comprarsi la libertà: a ogni paletto si attacca un prezzo, $\alpha_i$, e
-alla quota del terreno si somma quanto ciascun paletto fa pagare a chi lo tocca.
-Nella funzione nuova (quota più pedaggi) i paletti non compaiono più: il minimo
-si può cercare come se si fosse liberi di andare dove si vuole, perché a tenerci
-dentro il recinto adesso ci pensano i prezzi.
+è di trasformare i divieti in prezzi. A ogni paletto si attacca un numero,
+$\alpha_i$ (si legge «alfa i-esimo», e la $i$ dice soltanto di quale paletto
+stiamo parlando), e alla quota del terreno si somma quanto ciascun paletto fa
+pagare a chi lo tocca. Nella funzione nuova, quota più pedaggi, i paletti non
+compaiono più.
 
-E i prezzi si sistemano da soli. Un paletto che non stiamo nemmeno sfiorando non
-ha nessuna ragione di farci pagare qualcosa, e il suo prezzo viene **zero**.
+E il recinto? Non c'è più nemmeno lui, ed è esattamente il punto: la mossa non
+serve a impedirci fisicamente di uscire, serve a **rendere sconveniente**
+uscire. Fuori dal recinto il pedaggio cresce a dismisura, tanto da mangiarsi
+qualunque guadagno di quota; e allora possiamo cercare il minimo come se si
+fosse liberi di andare dove si vuole, sicuri che il minimo cadrà dentro. Un
+problema con le regole è diventato un problema senza regole, ed è tutto quello
+che serviva.
+
+Restano da scegliere i prezzi, e la cosa notevole è che si scelgono da soli:
+sono i valori che rendono quel pedaggio il più caro possibile, e per ogni
+paletto la matematica dice qual è. Il caso che ci interessa è quello dei
+paletti che non stiamo nemmeno sfiorando: quelli non hanno nessuna ragione di
+farci pagare qualcosa, e il loro prezzo viene **zero**.
 Vale la pena tenere a mente questa frase, perché fra poco diventa la
 dimostrazione del fatto che i vettori di supporto sono pochi.
 
 Fatto questo, cerchiamo dove la pendenza si annulla, e succede la prima cosa non
 prevedibile. Viene fuori che la freccia $\mathbf{w}$, cioè la frontiera stessa,
-è una **somma pesata delle case**, con i prezzi come pesi. Non doveva andare
+si ottiene **sommando fra loro le case**, ciascuna moltiplicata per il proprio
+prezzo. (Sommare due case vuol dire sommare i loro elenchi di numeri, coordinata
+per coordinata: come si sommano due frecce mettendole in fila una dopo l'altra.)
+Non doveva andare
 così: da conti di questo tipo può uscire di tutto, e spesso esce qualcosa di
 intrattabile. Invece è venuta fuori una somma, e questo vuol dire che la
 frontiera non è un oggetto estraneo appoggiato sui dati: è fatta dei dati. E
@@ -602,13 +652,15 @@ dice l'ultima parte della sezione.
 
 ### Quinto passo: il duale, e la seconda sorpresa
 
-Abbiamo un'espressione per $\mathbf{w}$. La mossa che resta è ovvia e faticosa:
-rimetterla dentro la lagrangiana, e vedere che aspetto prende il problema quando
-$\mathbf{w}$ non c'è più.
+Abbiamo scoperto come è fatta la freccia $\mathbf{w}$. La mossa che resta è
+ovvia e faticosa: rimettere quella scoperta dentro la funzione «quota più
+pedaggi» del passo precedente, e vedere che aspetto prende il problema quando
+$\mathbf{w}$ non compare più.
 
 `````{tab} Elementare
 
-È solo algebra, e la scheda accanto la svolge per intero. Quello che conta è il
+È solo algebra, e la scheda accanto la svolge per intero: sostituzioni e
+raccoglimenti, niente idee nuove. Quello che conta è il
 risultato, che è la seconda cosa non prevedibile del percorso.
 
 Dopo la sostituzione, dei dati non restano né le coordinate né le distanze dalla
@@ -683,9 +735,9 @@ spingere un singolo punto. Tutto il resto, kernel compreso, resta identico.
 
 ### Perché i vettori di supporto sono pochi
 
-La sparsità in vettori di supporto, asserita fin dalla prima pagina, adesso si
-dimostra in due righe. È un corollario del percorso appena fatto, non
-un'osservazione empirica.
+Che i punti che contano siano pochi lo abbiamo detto fin dalla prima pagina, e
+finora era una promessa. Adesso si dimostra in due righe, e discende dal
+percorso appena fatto: non è un fatto osservato provando, è una conseguenza.
 
 `````{tab} Elementare
 
@@ -758,17 +810,19 @@ vent'anni, quel lavoro non lo lesse quasi nessuno.
 
 Nel 1990 Vapnik emigra negli Stati Uniti e finisce ai laboratori Bell di
 Holmdel, nel New Jersey, dove si lavorava al riconoscimento delle cifre scritte
-a mano. È lì che, nel 1992, il kernel diventa la cosa che abbiamo appena visto
-{cite}`boser1992training`. Winston fa notare per inciso il vantaggio di
+a mano. È lì che, nel 1992, nasce l'idea che occuperà la prossima sezione: si
+prende la tabella delle ombre a due a due appena trovata e si cambia il modo di
+riempirla, ed è il **kernel** {cite}`boser1992training`. Winston fa notare per
+inciso il vantaggio di
 studiare cose fatte da gente ancora viva: a Fourier non si può telefonare per
 chiedergli come gli sia venuta, a Vapnik sì. E il seguito lo racconta così. Gli
 articoli mandati alla conferenza NIPS quell'anno furono respinti tutti. Vapnik
 aveva un'opinione bassissima delle reti neurali, e scommise una cena con un
 collega che le SVM le avrebbero battute sulla scrittura a mano; il collega, per
-vincere la cena, provò un kernel polinomiale di grado due, appena appena non
-lineare, e funzionò al primo colpo. Che è quello che intendeva Napoleone,
-commenta Winston, osservando che cosa un soldato è disposto a fare per un
-pezzetto di nastro.
+vincere la cena, provò una frontiera appena appena curva invece che dritta, e
+funzionò al primo colpo. A Napoleone si attribuisce l'osservazione che un
+soldato si batte a lungo e con ferocia per un pezzetto di nastro colorato; ecco,
+commenta Winston, questo è il pezzetto di nastro, ed era una cena.
 
 Il kernel Vapnik ce l'aveva già nella tesi. Non aveva mai pensato che fosse
 importante, e furono i risultati sulle cifre a fargli cambiare idea. Fra il
@@ -785,9 +839,10 @@ volta più indietro.
 
 ## Il kernel trick: separare l'inseparabile
 
-Fin qui, però, la SVM traccia solo iperpiani: frontiere *diritte*. E se le due
-classi sono intrecciate in modo che nessuna retta le separi: pensa a un
-bersaglio, con una classe al centro e l'altra tutt'intorno ad anello? Qui
+Fin qui, però, la SVM traccia solo frontiere *diritte*. E se le due classi sono
+intrecciate in modo che nessuna retta le separi? Pensa a un
+bersaglio, con una classe al centro e l'altra tutt'intorno ad anello: nessuna
+riga tirata su quel foglio le divide. Qui
 entra in gioco l'idea più affascinante di tutta la storia delle SVM, quella
 che le ha rese celebri: il **kernel trick**.
 
@@ -801,6 +856,17 @@ salgono in alto. Ora le due classi stanno a quote diverse, e un semplice
 *piano orizzontale* (una lastra di vetro infilata a mezz'aria) le separa
 nettamente. Non abbiamo cambiato i punti: li abbiamo guardati in uno spazio
 con una dimensione in più, e lì il problema è diventato lineare.
+
+Il guaio è che sollevare i punti costa. Nei casi utili le dimensioni da
+aggiungere non sono una ma migliaia, a volte infinite, e nessun calcolatore
+può reggerle. E qui sta il trucco: il passo precedente ci ha lasciato una
+frontiera che si calcola **usando soltanto le ombre a due a due**, cioè un
+numero per ogni coppia di punti. Se sappiamo produrre direttamente quei numeri
+*come sarebbero dopo il sollevamento*, il sollevamento non serve più farlo.
+
+La regola che li produce si chiama **kernel**, ed è tutto ciò che serve. Si
+sceglie il kernel, e lo spazio sollevato resta un'idea: non lo si costruisce
+mai.
 
 `````
 
@@ -870,38 +936,40 @@ di chi prova a scriversene uno.
 :alt: "A sinistra, in due dimensioni, un disco di punti teal circondato da un anello di punti terracotta, non separabili da una retta; una freccia phi al centro. A destra, dopo la mappa, gli stessi punti giacciono su una parabola: gli interni in basso, gli esterni in alto, e una retta orizzontale tratteggiata li separa."
 :width: 100%
 
-Il kernel trick. A sinistra due classi non separabili da una retta nel piano.
-Aggiungendo l'altezza $r^2 = x^2 + y^2$ (freccia $\phi$), a destra i punti si
-«sollevano» e un semplice piano orizzontale li separa. Il kernel calcola i
-prodotti scalari in quello spazio senza costruirlo mai.
+Il kernel trick. A sinistra due classi che nessuna retta separa: un disco al
+centro e un anello intorno. A destra gli stessi punti dopo il sollevamento, con
+l'altezza pari alla distanza dal centro elevata al quadrato: i punti del disco
+restano in basso, quelli dell'anello salgono, e una retta orizzontale basta a
+dividerli.
 ```
 
 Come illustra {numref}`fig-svm-kernel`, ciò che era un anello inseparabile
-diventa, dopo la mappa, un problema lineare banale. Il parametro $\gamma$ del
-kernel RBF merita un commento: è il **raggio d'influenza** di ogni punto.
+diventa, dopo il sollevamento, un problema lineare banale.
+
+Fra i kernel c'è un preferito, e si chiama **RBF** (sono le iniziali di *radial
+basis function*, «funzione a base radiale»: radiale perché guarda solo la
+distanza fra due punti, in qualunque direzione). Ha una manopola sola, che nelle
+formule si chiama $\gamma$, «gamma», e vale la pena capire che cosa fa, perché è
+il **raggio d'influenza** di ogni punto.
 
 `````{tab} Elementare
 
-Prima di tutto, il collegamento con la pagina precedente, perché sembrano due
-storie diverse e sono la stessa. Là abbiamo sollevato i punti in aria per
-separarli con una lastra di vetro; qui diciamo che il kernel misura quanto due
-punti si somigliano. Il ponte è questo: **il kernel è il prodotto scalare dei
-punti già sollevati**, cioè misura quanto due punti si somigliano *nel nuovo
-spazio*, senza che nessuno debba costruirlo. Sollevamento e somiglianza sono la
-stessa cosa vista da due lati: si sceglie la somiglianza, e il sollevamento
-viene dietro gratis.
+Il kernel RBF si racconta meglio con i lampioni. Pensa a ogni punto come a un
+lampione acceso di notte: illumina bene chi
+gli sta accanto, sempre meno chi si allontana, per niente chi è lontano, e il
+numero che il kernel restituisce per due punti è quanta luce dell'uno arriva
+all'altro. Sta fra $0$ e $1$, e vale $1$ solo per il lampione stesso.
 
-Pensa allora a ogni punto come a un lampione acceso di notte: illumina bene chi
-gli sta accanto, sempre meno chi si allontana, per niente chi è lontano. Il
-kernel misura proprio questa «luce» su una scala da $0$ a $1$, dove $1$ vuol
-dire «stesso punto». Chiamiamo *portata* del lampione la distanza alla quale la
-luce è scesa a poco più di un terzo, cioè $0{,}37$: mettiamo un metro e mezzo.
+Chiamiamo *portata* del lampione la distanza alla quale la
+luce è scesa a poco più di un terzo, cioè a $0{,}37$: mettiamo un metro e mezzo.
 Chi sta a un metro e mezzo si vede ancora. E chi sta al doppio, a tre metri?
-Non riceve la metà della luce, e nemmeno un terzo: la formula fa scendere la
-luce con il **quadrato** della distanza, e a distanza doppia il conto è
-$0{,}37$ elevato alla quarta, cioè appena $0{,}018$, meno di due centesimi. Per
-lui è già buio. Ecco perché il raggio d'influenza di un punto finisce così
-bruscamente.
+Non riceve la metà della luce, e nemmeno un terzo. Il motivo è che a decidere
+non è la distanza ma il suo **quadrato**, e raddoppiando la distanza il
+quadrato si moltiplica per quattro: è come se quel lampione, per lui, fosse
+lontano quattro portate invece di una. La luce che gli arriva è quindi $0{,}37$
+moltiplicato per sé stesso quattro volte, cioè $0{,}018$: meno di due
+centesimi, praticamente buio. Ecco perché il raggio d'influenza di un punto
+finisce così bruscamente.
 
 La manopola $\gamma$ decide quanto è stretto il cono di luce, ed è la portata
 **al contrario**: $\gamma$ grande, luce corta, e la frontiera viene frastagliata

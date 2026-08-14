@@ -14,9 +14,14 @@ learning abbiamo visto che già AlexNet, nel 2012, la usava in modo aggressivo
 (ritagli casuali, riflessioni, perturbazioni di colore). Bastano i primi due,
 calcolano gli autori, per ricavare da ogni immagine oltre duemila varianti
 possibili {cite}`krizhevsky2012imagenet`, ed è una moltiplicazione, non una
-magia: da un'immagine di 256 pixel di lato se ne ritaglia una di 224, e
-l'angolo del ritaglio può cadere in $32 \times 32 = 1024$ posizioni diverse,
-che lo specchio raddoppia a $2048$.
+magia. Il conto si rifà a mano. Da un'immagine di 256 pixel di lato se ne
+ritaglia una di 224: il bordo sinistro del ritaglio può quindi scivolare di
+$256 - 224 = 32$ colonne, e il bordo alto di altrettante righe, il che fa
+$32 \times 32 = 1024$ ritagli diversi. Lo specchio li raddoppia, e si arriva a
+$2048$. (A essere pignoli le posizioni sono $33 \times 33$, perché una la
+occupa il ritaglio tutto a sinistra e le altre trentadue sono gli scivolamenti:
+gli autori arrotondano alla potenza di due, che è il numero tondo per un
+computer, e la sostanza non cambia.)
 
 ## Cambiare i pixel, non l'etichetta
 
@@ -39,9 +44,9 @@ giusta dipende dal *compito*, non dall'immagine.
 `````
 
 `````{tab} Superiore
-Sia $(x, y)$ una coppia immagine–etichetta. Una trasformazione $T$ è ammessa
-per il compito se la coppia $(T(x), y)$ è ancora un esempio plausibile della
-stessa distribuzione: l'etichetta resta valida e l'immagine trasformata
+Sia $(\mathbf{x}, y)$ una coppia immagine–etichetta. Una trasformazione $T$ è
+ammessa per il compito se la coppia $(T(\mathbf{x}), y)$ è ancora un esempio
+plausibile della stessa distribuzione: l'etichetta resta valida e l'immagine trasformata
 somiglia a qualcosa che il modello potrà davvero incontrare. L'insieme delle
 trasformazioni ammesse è **conoscenza a priori sul dominio** che iniettiamo
 nel modello: il flip orizzontale appartiene alle invarianze di "gatto contro
@@ -57,10 +62,10 @@ tecnico.
 
 ```{figure} ../figures/data-augmentation.svg
 :name: fig-data-augmentation
-:alt: La sagoma stilizzata di un gatto e quattro varianti generate con flip orizzontale, ritaglio, rotazione lieve e variazione di colore; sotto ogni variante compare la stessa etichetta, gatto.
+:alt: La sagoma stilizzata di una foglia e cinque varianti, ottenute specchiandola, ruotandola, ritagliandola più da vicino, abbassandone la luminosità e spargendoci sopra dei grani di colore; da tutte e cinque parte una linea che converge su un'unica etichetta, «foglia sana».
 :width: 95%
 
-Da una sola immagine, quattro esempi "nuovi": i pixel cambiano, l'etichetta no.
+Da una sola immagine, cinque esempi "nuovi": i pixel cambiano, l'etichetta no.
 ```
 
 Come mostra {numref}`fig-data-augmentation`, da una fotografia ne ricaviamo
@@ -69,15 +74,21 @@ molte: tutte diverse per la rete, tutte identiche per l'etichettatore.
 ## Ogni epoca un'immagine nuova, ma mai all'esame
 
 In pratica le trasformazioni non si applicano una volta per tutte: si
-estraggono **a caso, al volo**, ogni volta che un'immagine viene caricata. Il
-dataset su disco non cresce di un byte, ma la rete non rivede mai due volte la
-stessa identica immagine. E c'è una regola d'oro che non ammette eccezioni
-disinvolte: l'augmentation si applica **solo al training set**. Sul validation
-e sul test set si fanno soltanto le operazioni deterministiche, cioè quelle che
-danno sempre lo stesso risultato: ridimensionare, ritagliare al centro e
-**normalizzare**, che vuol dire riportare i numeri dei pixel su una scala
-fissa, la stessa per tutte le immagini, così che una foto scattata in
-controluce e una scattata al sole partano dallo stesso metro.
+estraggono **a caso, al volo**, ogni volta che un'immagine viene caricata. La
+raccolta di foto sul disco non cresce di un byte, ma la rete non rivede mai due
+volte la stessa identica immagine. Un giro completo su tutte le foto si chiama
+**epoca**, e a ogni epoca le stesse foto tornano deformate in modo diverso.
+
+E c'è una regola d'oro che non ammette eccezioni disinvolte. Le foto sono
+divise in tre mucchi: quelle su cui la rete si allena (il **training set**),
+quelle su cui controlliamo strada facendo come sta andando per aggiustare le
+nostre scelte (il **validation set**) e quelle che restano chiuse in un
+cassetto fino alla fine, per il giudizio conclusivo (il **test set**).
+L'augmentation si applica **solo al primo mucchio**. Sugli altri due si fanno
+soltanto le operazioni che danno sempre lo stesso risultato: ridimensionare,
+ritagliare al centro e **normalizzare**, che vuol dire riportare i numeri dei
+pixel su una scala fissa, la stessa per tutte le immagini, così che una foto
+scattata in controluce e una scattata al sole partano dallo stesso metro.
 
 `````{tab} Elementare
 È la differenza tra i compiti a casa e il compito in classe. A casa
@@ -87,13 +98,16 @@ classe, invece, dev'essere uguale per tutti e ripetibile: se ogni studente
 ricevesse una versione deformata a caso, il voto non misurerebbe più niente.
 Il test set è il compito in classe del modello: deve dirci come andrà sulle
 foto vere, così come sono, e deve dare lo stesso risultato ogni volta che lo
-ripetiamo.
+ripetiamo. Il validation set, in mezzo ai due, è la simulazione che si fa la
+settimana prima: serve a noi per decidere che cosa cambiare, quindi anche lui
+va lasciato uguale a sé stesso, altrimenti non si capisce se a migliorare sia
+stato il modello o il caso.
 `````
 
 `````{tab} Superiore
 A ogni epoca, per ogni esempio, si campiona una trasformazione $T$ da una
 distribuzione fissata (un flip con probabilità $0{,}5$, un ritaglio con scala
-casuale, una perturbazione di colore) e si addestra su $(T(x), y)$: il numero
+casuale, una perturbazione di colore) e si addestra su $(T(\mathbf{x}), y)$: il numero
 di varianti potenziali è di fatto illimitato, a costo zero di memoria. In
 valutazione la pipeline dev'essere deterministica, per due ragioni: la metrica
 deve riflettere la distribuzione di *deployment* (le foto arrivano intere, non
@@ -107,10 +121,11 @@ fatto a parità di questa scelta.
 
 ## In pratica, con torchvision
 
-Nella sezione sul transfer learning la pipeline di preprocessing ce la dava la
-rete stessa (`pesi.transforms()`). Per aggiungere l'augmentation la scriviamo
-a mano con `torchvision.transforms`, tenendo le due pipeline (training e test)
-rigorosamente separate.
+Nella sezione sul transfer learning la catena di operazioni da fare a ogni
+immagine prima di darla alla rete ce la dava la rete stessa
+(`pesi.transforms()`). Per aggiungere l'augmentation la scriviamo a mano con
+`torchvision.transforms`, tenendo rigorosamente separate le due catene, quella
+dell'allenamento e quella dell'esame.
 
 ```{code-block} python
 :class: pt-non-eseguibile
@@ -145,18 +160,21 @@ train_dl = DataLoader(train_ds, batch_size=32, shuffle=True)
 test_dl  = DataLoader(test_ds,  batch_size=32)
 ```
 
-Il resto (modello, loss, training loop) è identico a quello della sezione
-precedente: l'augmentation vive tutta dentro il `Dataset`. E la scelta delle
-trasformazioni segue il compito: per un classificatore di cifre o di cartelli
-stradali, il `RandomHorizontalFlip` va tolto.
+Tutto il resto, la rete e il ciclo che la addestra, è identico a quello della
+sezione precedente: l'augmentation vive tutta dentro il `Dataset`, cioè nel
+punto in cui le immagini vengono lette. E la scelta delle trasformazioni segue
+il compito: per un classificatore di cifre o di cartelli stradali, il
+`RandomHorizontalFlip` va tolto.
 
-## Perché funziona: un altro modo di regolarizzare
+## Perché funziona: un altro modo di mettere il freno
 
-Nel capitolo sul machine learning abbiamo messo un freno ai modelli con la
-regolarizzazione $\ell_2$; in quello sul deep learning, con il dropout
-{cite}`srivastava2014dropout`: modi diversi di impedire a una rete di imparare
-a memoria. L'augmentation appartiene alla stessa famiglia (è una
-**regolarizzazione**) ma agisce sui dati invece che sui pesi.
+Impedire a una rete di imparare a memoria è un problema vecchio, e il libro ci
+ha già messo mano due volte: nel capitolo sul machine learning penalizzando i
+modelli che si affidano troppo a pochi numeri grossi (la regolarizzazione
+$\ell_2$), in quello sul deep learning spegnendo a caso una parte della rete a
+ogni passo, il dropout {cite}`srivastava2014dropout`. Tutti questi freni si
+chiamano **regolarizzazioni**, e l'augmentation è uno di loro, con una
+differenza: agisce sui dati invece che sulla rete.
 
 `````{tab} Elementare
 Uno studente che rifà cento volte lo stesso identico esercizio finisce per
@@ -170,13 +188,13 @@ che vogliamo: l'idea di gatto, non i pixel di *quel* gatto.
 
 `````{tab} Superiore
 L'addestramento standard minimizza il rischio empirico
-$\hat{R}(\theta) = \frac{1}{n}\sum_{i=1}^{n} \mathcal{L}\big(f_\theta(x_i), y_i\big)$,
+$\hat{R}(\theta) = \frac{1}{n}\sum_{i=1}^{n} \mathcal{L}\big(f_\theta(\mathbf{x}_i), y_i\big)$,
 dove la distribuzione empirica concentra tutta la massa sugli $n$ punti
 osservati. L'augmentation sostituisce ogni punto con una nuvola di varianti:
 
 $$
 \hat{R}_{\text{aug}}(\theta) \;=\; \frac{1}{n}\sum_{i=1}^{n}
-\mathbb{E}_{T\sim\tau}\Big[\mathcal{L}\big(f_\theta(T(x_i)),\, y_i\big)\Big],
+\mathbb{E}_{T\sim\tau}\Big[\mathcal{L}\big(f_\theta(T(\mathbf{x}_i)),\, y_i\big)\Big],
 $$
 
 dove $\tau$ è la distribuzione sulle trasformazioni ammesse. In altre parole
@@ -200,9 +218,12 @@ macchina fotografica scatterebbe, eppure aiutano.
 **Mixup** è come proiettare due diapositive sullo stesso schermo, una al 70%
 e una al 30% di luminosità: un'immagine che è per sette decimi un gatto e per
 tre decimi un cane. Anche la risposta richiesta si mescola nelle stesse
-proporzioni: "70% gatto, 30% cane". Sembra assurdo, ma costringe la rete a
-sfumare con gradualità tra una classe e l'altra invece di decidere per
-scommessa. **Cutout** è ancora più semplice: si copre un rettangolo a caso
+proporzioni: "70% gatto, 30% cane". Sembra assurdo, e serve a curare un vizio
+preciso. Una rete addestrata solo su risposte secche («questo è un gatto,
+punto») impara a essere sicurissima sempre, anche quando non ha capito niente,
+perché il gioco premia soltanto chi si sbilancia. Chiedendole ogni tanto una
+risposta a metà la si costringe a essere sicura solo dove ha davvero visto
+qualcosa. **Cutout** è ancora più semplice: si copre un rettangolo a caso
 della foto, come con un post-it. Se la rete riconosceva i gatti solo dalle
 orecchie, con il post-it sulle orecchie dovrà imparare anche zampe e coda.
 Infine, invece di scegliere a mano le trasformazioni, si può lasciare che sia
@@ -210,7 +231,9 @@ un algoritmo a cercare la combinazione migliore per il nostro archivio di
 foto: ne prova tante per davvero, addestra ogni volta un modello, guarda quale
 combinazione gli fa prendere il voto più alto a un esame di prova, e tiene
 quella. È l'idea delle *policy apprese* (una *policy*, qui, è semplicemente la
-lista delle trasformazioni scelte, con quanto forte applicarle).
+lista delle trasformazioni scelte, con quanto forte applicarle). Costa
+carissimo, ed è per questo che quasi nessuno la ricerca da sé: si scaricano le
+combinazioni già trovate da chi aveva le macchine per cercarle.
 `````
 
 `````{tab} Superiore
@@ -218,13 +241,13 @@ lista delle trasformazioni scelte, con quanto forte applicarle).
 interpolazione convessa di coppie del training set:
 
 $$
-\tilde{x} = \lambda x_i + (1-\lambda)\, x_j,
+\tilde{\mathbf{x}} = \lambda \mathbf{x}_i + (1-\lambda)\, \mathbf{x}_j,
 \qquad
 \tilde{y} = \lambda y_i + (1-\lambda)\, y_j,
 $$
 
-dove $x_i, x_j$ sono due immagini, $y_i, y_j$ le rispettive etichette in
-codifica one-hot e $\lambda \in [0,1]$ è estratto da una distribuzione
+dove $\mathbf{x}_i, \mathbf{x}_j$ sono due immagini, $y_i, y_j$ le rispettive
+etichette in codifica one-hot e $\lambda \in [0,1]$ è estratto da una distribuzione
 $\mathrm{Beta}(\alpha, \alpha)$, dove l'iperparametro $\alpha$ regola
 l'intensità della mescolanza: con $\alpha$ piccolo (il paper usa valori tra
 $0{,}1$ e $0{,}4$) $\lambda$ si concentra vicino a $0$ o a $1$, e le miscele
@@ -246,9 +269,10 @@ ricerca a due soli iperparametri (numero e intensità delle trasformazioni).
 ## Quando aiuta, e quando no
 
 L'augmentation rende di più dove i dati scarseggiano: con poche centinaia di
-immagini per classe può valere parecchi punti di accuratezza, ed è la prima
-cosa da provare quando il modello va in overfitting (insieme, non in
-alternativa, al transfer learning visto nella sezione precedente). Ma non è
+immagini per categoria può far salire di parecchi punti percentuali la quota di
+foto indovinate, ed è la prima cosa da provare quando il modello impara a
+memoria invece di capire (insieme, non in alternativa, al transfer learning
+visto nella sezione precedente). Ma non è
 una moltiplicazione miracolosa: le varianti di una foto portano *meno*
 informazione di altrettante foto nuove, perché raccontano sempre la stessa
 scena.

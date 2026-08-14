@@ -529,7 +529,22 @@ FRONTESPIZIO = r"""
   \vspace{20mm}
   {\ptDisplay\Large Francesco Messina\par}
 \end{flushleft}
-\vspace*{\stretch{2}}
+\vspace*{\stretch{1}}
+% Il fregio: una conca e la discesa che la trova, con la traiettoria
+% calcolata davvero (`book/_stampa/copertina.py`). Prima qui c'erano due
+% terzi di pagina vuota, e la prima immagine del libro era il vuoto.
+% Se il file non c'e' la copertina resta quella di prima: nessuno se ne
+% accorge tranne chi la guarda.
+% Va a tutta larghezza della CARTA, non del testo: dentro i margini
+% sembrerebbe una figura incollata in copertina, e la texture di punti si
+% interromperebbe su due bordi verticali che non c'entrano niente. Lo
+% spostamento e' quello che riporta al bordo sinistro del foglio: un pollice
+% (l'origine di TeX) piu' il margine della pagina dispari, che e' quella su
+% cui cade sempre la copertina.
+\IfFileExists{fregio.pdf}{%
+  \noindent\hspace*{-\dimexpr 1in+\oddsidemargin\relax}%
+  \includegraphics[width=\paperwidth]{fregio.pdf}\par
+  \vspace*{\stretch{1}}}{\vspace*{\stretch{1}}}
 \begin{flushleft}
   {\color{ptTeal}\normalsize VERSIONE_E_DATA\par}
   \vspace{2mm}

@@ -180,7 +180,7 @@ destra della barra verticale. È da $\mathbf{h}_{t+1}$, e solo da lì, che escon
 parametri della miscela: se l'azione non entrasse nella ricorrenza, M
 predirebbe lo stesso futuro qualunque cosa l'agente faccia, e sarebbe inutile
 proprio per la cosa a cui serve, immaginare le conseguenze di una scelta. La
-convenzione sui pedici è la stessa del controller di due paragrafi più sotto,
+convenzione sui pedici è la stessa del controller del paragrafo seguente,
 dove $a_t$ si sceglie leggendo $\mathbf{z}_t$ e $\mathbf{h}_t$: $\mathbf{h}_t$ esiste *prima* che
 l'azione sia decisa, e la riga di codice `nn.LSTM(dim_z + dim_a, dim_h)` in
 fondo alla sezione è la ricorrenza qui sopra.
@@ -230,7 +230,8 @@ delle reti, quello che dopo ogni errore ritocca ogni peso di un soffio nella
 direzione che conviene (in gergo si chiama seguire il **gradiente**). Basta un
 metodo alla Darwin: si provano 64 piloti presi un po' a caso, si tengono quelli
 che hanno guidato meglio, si fa una nuova generazione somigliante a loro, e si
-ricomincia. Dopo qualche centinaio di generazioni, si guida.
+ricomincia. Ci vuole pazienza (nell'articolo le generazioni sono
+milleottocento), ma alla fine si guida.
 
 `````
 
@@ -276,7 +277,12 @@ nell'ambiente **vero**: l'unico esperimento allenato davvero dentro il sogno è
 l'altro, lo sparatutto, cioè lo scenario *Take Cover* di VizDoom (la versione
 di *Doom* usata nella ricerca). Lì lo stesso schema usa un codice da 64
 numeri, una memoria da 512 unità e un controller da 1088 parametri: la ricetta
-è identica, le taglie no.
+è la stessa, le taglie no. (Chi prova a rifare quel 1088 con $64 + 512$ non ci
+arriva, e la ragione è una differenza vera: su *Take Cover* il controller legge
+anche lo stato di **cella** della LSTM, quindi in ingresso ha
+$64 + 512 + 512 = 1088$ numeri, e da lì ricava un comando solo, andare a
+sinistra o a destra. Il conto dei parametri, a rigore, farebbe uno in più per
+via del termine costante, e il paper riporta la larghezza dell'ingresso.)
 
 `````{tab} Elementare
 
@@ -307,7 +313,7 @@ a_t = C(\mathbf{z}_t, \mathbf{h}_t), \qquad
 \mathbf{h}_{t+1} = \mathrm{LSTM}\big(\mathbf{h}_t,\, [\mathbf{z}_t ; a_t]\big),
 $$
 
-dove la terza uguaglianza è la ricorrenza della sezione precedente, qui senza
+dove la terza uguaglianza è la ricorrenza di M scritta poco fa, qui senza
 più nessun fotogramma a rifornirla: il codice che entra al passo dopo è quello
 che M ha appena inventato. Il campionamento dalla miscela avviene a
 **temperatura** $\tau$: un parametro che gonfia ($\tau > 1$) o spegne
@@ -395,7 +401,12 @@ sogno: un modello che al passo 19 sembra tornato buono ha comunque già sbagliat
 di 0,43, e su quell'errore ci ha costruito sopra tutti i passi seguenti. La
 terza è che il numero di passi affidabili non è una proprietà del modello da
 solo: dipende da quanto scarto si è disposti a tollerare. Qui la tolleranza è
-0,25, cioè circa un ventottesimo dell'escursione dell'altalena, ed è dichiarata
+0,25, e nei sedici passi che il sogno regge l'altalena percorre poco più di
+cinque unità: si sta accettando uno scarto pari a un ventesimo scarso di quel
+movimento. (Il confronto va fatto sui passi buoni. Prendendo tutto il tracciato
+l'escursione raddoppia, ma i suoi estremi cadono **dopo** la rottura, cioè
+dentro il tratto che stiamo dichiarando inaffidabile: dividere per quelli
+farebbe sembrare la tolleranza più piccola di quello che è.) È dichiarata
 apposta: chi non la dichiara non sta dichiarando neanche l'**orizzonte**, cioè
 fino a che punto il sogno vale la pena di essere ascoltato. Una quarta cosa,
 infine, la figura non può mostrarla, ed è bene non dedurla da qui: *quanto in
@@ -544,13 +555,17 @@ in questo scheletro, 1088 su *Take Cover*, che è il gioco in cui il sogno è
 stato davvero adoperato per allenare).
 
 Due avvertenze prima di metterci le mani. La prima: con i pesi non addestrati
-la ricorrenza converge a un punto fisso in due o tre passi, e da lì in poi il
-sogno è lo stesso qualunque fotogramma lo abbia iniziato. Partendo da cinque
-scene diverse, dopo dieci passi la distanza fra i cinque codici sognati è
-scesa di più di tremila volte rispetto a quella fra i codici di partenza, e i
-tre comandi finali coincidono fino alla quarta cifra. Cambiare il fotogramma
-iniziale, che è la prima cosa che viene in mente di provare, non produce
-nessun effetto visibile: qui si guarda il percorso dei dati, non il contenuto.
+la ricorrenza dimentica quasi subito da dove è partita, e dopo due o tre passi
+il sogno prosegue uguale qualunque fotogramma lo abbia iniziato. Il modo di
+misurarlo: cinque fotogrammi casuali al posto di uno, le stesse identiche
+azioni per tutti e cinque, e si guarda la distanza media fra i cinque codici
+sognati. Dopo dieci passi è scesa di più di tremila volte rispetto a quella
+fra i codici di partenza (fra 3.300 e 4.700 volte, sui sei semi provati), e
+ciascuno dei tre comandi finali, confrontato fra un sogno e l'altro, cambia per
+meno di un millesimo. Cambiare il
+fotogramma iniziale, che è la prima cosa che viene in mente di provare, non
+produce nessun effetto visibile: qui si guarda il percorso dei dati, non il
+contenuto.
 La seconda: questo M ha una testa deterministica, predice *un* codice e non una
 miscela, quindi non ha la manopola della temperatura, che di una distribuzione
 da riscaldare ha bisogno per esistere.

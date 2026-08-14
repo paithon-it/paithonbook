@@ -2,16 +2,23 @@
 
 Ogni autunno, tra il 2010 e il 2017, i laboratori di visione artificiale di
 mezzo mondo si sfidavano su **ImageNet**: oltre un milione di fotografie da
-classificare in mille categorie, dal cane pastore alla tazza da caffè. C'era
-una classifica, e quella classifica racconta una storia. Nel 2011 l'errore del
-sistema migliore era intorno al 26%, dove «errore» vuol dire questo: su cento
-fotografie, in ventisei nemmeno una delle **cinque** risposte che il programma
-poteva proporre era quella giusta. Nel 2015 lo stesso errore era sceso sotto il
-4%, meglio
-del 5,1% sbagliato da una persona che si era allenata a fare esattamente lo
-stesso lavoro, cioè a mettere l'etichetta giusta sulle stesse
-fotografie[^annotatore]. In quattro anni un problema considerato durissimo è
-stato quasi chiuso.
+classificare in mille categorie, dal cane pastore alla tazza da caffè. C'era una
+classifica, e quella classifica racconta una storia.
+
+Una parola sulla regola, perché senza non si capiscono i numeri. Ogni programma
+poteva proporre **cinque** etichette per fotografia, e la risposta contava
+giusta se fra quelle cinque c'era quella vera. Non è generosità: in una
+fotografia di solito c'è più di una cosa, e fra mille categorie ce ne sono di
+vicinissime (il pastore tedesco e il pastore belga sono due voci distinte),
+quindi pretendere un'unica risposta avrebbe misurato anche la fortuna. Quel
+punteggio si chiama **errore top-5**.
+
+Nel 2011 l'errore del sistema migliore era intorno al 26%: su cento fotografie,
+in ventisei nemmeno una delle cinque proposte era quella giusta. Nel 2015 lo
+stesso errore era sceso sotto il 4%, meglio del 5,1% sbagliato da una persona
+che si era allenata a fare esattamente lo stesso lavoro, cioè a mettere
+l'etichetta giusta sulle stesse fotografie[^annotatore]. In quattro anni un
+problema considerato durissimo è stato quasi chiuso.
 
 Dietro quel crollo non ci sono soltanto "più dati e computer più potenti". C'è
 una manciata di **architetture** (modi diversi di impilare gli strati di una
@@ -48,49 +55,80 @@ manoscritte **MNIST**. Introduce già i tre principi delle CNN: connettività
 locale, condivisione dei pesi (da cui l'equivarianza alla traslazione) e
 sottocampionamento, che aggiunge una tolleranza approssimata a spostamenti e
 piccole deformazioni.
+
+Vale la pena notare un dettaglio che ritorna: lo strato convoluzionale C3 non
+collega ogni mappa in uscita a tutte quelle in ingresso, ma segue una tabella
+di connessione **sparsa**, scritta a mano. LeCun ne dà due ragioni, e la prima
+è economica: tenere il numero di connessioni entro limiti ragionevoli (la
+seconda è rompere la simmetria, così che mappe diverse imparino cose diverse).
+Già nel 1998, insomma, il costo del calcolo entrava nel disegno della rete.
 `````
 
 ## AlexNet: la notte in cui il deep learning vinse
 
-Per oltre un decennio le CNN restarono una curiosità. La svolta arriva nel
-2012, quando **AlexNet** {cite}`krizhevsky2012imagenet` vince la sfida
-ImageNet con un margine imbarazzante: un errore *top-5* (la risposta giusta
-non compare nemmeno tra le prime cinque proposte) del 15,3%, contro il 26,2%
-del secondo classificato, che usava ancora tecniche "artigianali". Come
-succederà con ResNet qualche pagina più avanti, il numero della classifica è
-quello della **sottomissione**: il 15,3% è la media delle risposte di sette
-reti, due delle quali pre-addestrate su un archivio di immagini dieci volte più
-grande, mentre la singola rete descritta nell'articolo, quella di cui parlano i
-prossimi paragrafi, si ferma al 18,2%. Anche così il salto è tale che fu il
-momento in cui il resto del campo capì che il deep learning funzionava.
+Per oltre un decennio le reti convoluzionali restarono una curiosità. La svolta
+arriva nel 2012, quando **AlexNet** {cite}`krizhevsky2012imagenet` vince la
+sfida ImageNet con un margine imbarazzante: errore top-5 del 15,3%, contro il
+26,2% del secondo classificato, che usava ancora tecniche "artigianali".
+
+Quel 15,3%, però, è il punteggio di ciò che il gruppo ha **consegnato alla
+gara**, e non è una rete sola. Sono sette reti fatte lavorare insieme: per ogni
+fotografia ciascuna assegna un punteggio a ciascuna delle mille categorie, i
+sette punteggi si mediano categoria per categoria, e le cinque categorie col
+totale più alto sono la risposta. Due delle sette avevano in più un allenamento
+preliminare su un archivio di immagini dieci volte più grande. La singola rete
+descritta nell'articolo, quella di cui parlano i prossimi paragrafi, si ferma al
+18,2%. Anche così il salto è tale che fu il momento in cui il resto del campo
+capì che il deep learning funzionava. (La stessa distinzione fra la rete e la
+squadra tornerà con ResNet, più avanti in questa sezione.)
 
 ```{figure} ../figures/alexnet-2012.svg
 :name: fig-alexnet
-:alt: "In alto, lo stack di AlexNet: otto strati addestrabili, prima i convolutivi poi i densi, distribuiti su due GPU che lavorano in parallelo, con la nota di due schede GTX 580 per circa sei giorni di addestramento. In basso, il confronto dell'errore top-5 delle sottomissioni a ImageNet: 26,2% per i metodi costruiti a mano, 15,3% per AlexNet."
+:alt: "A sinistra, la pila degli otto strati addestrabili di AlexNet: cinque convolutivi e poi tre densi; sotto la pila, due riquadri per le due schede grafiche e la nota «2× GTX 580, circa sei giorni». A destra, il confronto dell'errore top-5 delle sottomissioni a ImageNet: 26,2% per i metodi costruiti a mano, 15,3% per AlexNet."
 :width: 96%
 
-Profondità più GPU. Il salto dell'errore in basso è la parte che fece
-notizia; la riga sopra, due schede da gioco per sei giorni, è quella che rese
-l'esperimento ripetibile da chiunque.
+Profondità più GPU. Il salto dell'errore, a destra, è la parte che fece
+notizia; la riga in fondo a sinistra, due schede da gioco per sei giorni, è
+quella che rese l'esperimento ripetibile da chiunque.
 ```
 
-Il dettaglio di {numref}`fig-alexnet` che vale più della classifica è la
-divisione fra due GPU. Non era una scelta di eleganza ma di necessità (la
-memoria di una scheda sola non bastava) e per farla gli autori dovettero
-spezzare la rete a metà: il primo caso in cui l'hardware disponibile ha
-disegnato l'architettura, e non l'ultimo.
+La riga in fondo a sinistra della {numref}`fig-alexnet`, le due schede grafiche
+da videogioco, non era una scelta di eleganza: la memoria di una scheda sola non
+bastava a contenere la rete, e per farcela stare gli autori la divisero in due
+metà, una per scheda, che si scambiano informazione soltanto a certi strati.
+
+Non è la prima volta che il costo del calcolo disegna una rete: già in LeNet-5,
+quattordici anni prima, LeCun aveva rinunciato a collegare ogni pezzo di uno
+strato a tutto quello che stava sotto, e la prima delle due ragioni che ne dà è
+tenere basso il numero di collegamenti. Ma è la prima volta che il vincolo si
+vede nella **forma** dell'architettura, e non sarà l'ultima.
 
 `````{tab} Elementare
 AlexNet è, in fondo, una LeNet cresciuta: molti più strati, molte più
-"lenti", e per la prima volta addestrata su schede grafiche (GPU) invece che su
-normali processori. Con più muscoli e qualche trucco nuovo per non "imparare a
-memoria", ha imparato a distinguere migliaia di oggetti diversi in fotografie
-vere, sfocate e disordinate come quelle che scattiamo tutti i giorni.
+"lenti", e per la prima volta addestrata su schede grafiche (le **GPU**, le
+schede nate per far girare i videogiochi) invece che su normali processori.
+
+In più ha qualche accorgimento nuovo per non "imparare a memoria" le fotografie
+dell'addestramento. Impararle a memoria sembrerebbe un pregio e invece è il
+guaio peggiore: una rete che le ricorda a mente va benissimo su quelle e male su
+tutte le altre, che sono poi le uniche che conteranno. Con più muscoli e quegli
+accorgimenti, AlexNet ha imparato a distinguere migliaia di oggetti diversi in
+fotografie vere, sfocate e disordinate come quelle che scattiamo tutti i giorni.
 `````
 
 `````{tab} Superiore
-Otto strati con pesi (cinque convoluzionali, tre *fully-connected*), circa
-$60$ milioni di parametri, addestrata su due GPU. Le tre scelte decisive:
+Otto strati con pesi (cinque convoluzionali, tre *fully-connected*) e circa
+$60$ milioni di parametri, addestrata su due GPU. Il numero esatto dipende da
+quale versione si conta, ed è utile saperlo perché in giro circolano tutte e
+tre. $60\,965\,224$ è la rete dell'articolo, con tre convoluzioni che guardano
+solo la metà dei canali perché l'altra metà sta sull'altra scheda.
+$62\,378\,344$ è la stessa architettura senza quella divisione, cioè con ogni
+filtro che vede tutti i canali. $61\,100\,840$, infine, è ciò che dichiara
+`torchvision.models.alexnet()`, che non implementa nessuna delle due ma la
+variante più snella che Krizhevsky ridisegnò nel 2014 in un secondo articolo,
+quello sulla parallelizzazione (i primi due strati passano da 96 e 256 filtri a
+64 e 192, il quarto da 384 a 256): è la versione che quasi tutti eseguono
+credendo di eseguire quella dell'articolo del 2012. Le tre scelte decisive:
 attivazioni **ReLU** al posto di $\tanh$ (gradienti che non saturano,
 addestramento molto più rapido), **dropout** negli strati densi per contenere
 l'overfitting, e **data augmentation** aggressiva (ritagli, riflessioni,
@@ -109,16 +147,23 @@ idee destinate a diventare equipaggiamento standard di quasi tutte le reti
 venute dopo.
 
 `````{tab} Elementare
-In ogni punto dell'immagine la rete accumula, strato dopo strato, tante
-"opinioni" diverse: una segnala un bordo, un'altra una macchia di colore,
-un'altra ancora una trama. La prima idea di NiN è una lente piccolissima che
-guarda un solo punto alla volta, ma legge *tutte* le opinioni raccolte su quel
-punto e le fonde in un giudizio più maturo: una piccola riunione di esperti
-convocata pixel per pixel. La seconda idea riguarda il finale. Invece di
-collegare tutto a un enorme "ufficio" di neuroni che decide la classe (dove le
-reti dell'epoca concentravano quasi tutti i loro collegamenti) NiN prepara una
-mappa per ogni categoria e guarda quanto ciascuna mappa si accende in media:
-la più accesa vince. Milioni di collegamenti sostituiti da una media.
+Ogni lente che scorre sull'immagine lascia dietro di sé un foglio di numeri, uno
+per punto: quanto lì sotto c'era la cosa che cercava. Sono le **mappe** della
+sezione precedente, e la rete ne accumula tante, strato dopo strato. Guardando
+un singolo punto dell'immagine, quella pila di mappe è una collezione di
+opinioni su quel punto: una dice che lì c'è un bordo, un'altra una macchia di
+colore, un'altra ancora una trama.
+
+La prima idea di NiN è una lente piccolissima che guarda un solo punto alla
+volta, ma legge *tutte* le opinioni raccolte lì e le fonde in un giudizio più
+maturo: una piccola riunione di esperti convocata pixel per pixel.
+
+La seconda idea riguarda il finale. Invece di collegare tutto a un enorme
+"ufficio" di neuroni che decide la categoria (dove le reti dell'epoca
+concentravano quasi tutti i loro collegamenti) NiN prepara una mappa per ogni
+categoria e ne fa la media, cioè guarda quanto quella mappa ha risposto forte
+nell'insieme dell'immagine: vince la categoria con la media più alta. Milioni di
+collegamenti sostituiti da una media.
 `````
 
 `````{tab} Superiore
@@ -133,8 +178,13 @@ in network*. All'altro capo della rete, il **global average pooling** elimina
 gli strati *fully-connected* finali: l'ultimo strato convoluzionale produce
 una mappa di attivazione per classe, ogni mappa viene ridotta alla propria
 media spaziale e il vettore risultante va dritto alla softmax. Zero parametri
-dove AlexNet ne concentrava oltre il 90% (nei tre strati densi), e meno
-overfitting.
+dove AlexNet ne concentrava il **94%**, e meno overfitting. È un numero che si
+conta a mano in una riga: le tre matrici dense sono $9216\times4096$,
+$4096\times4096$ e $4096\times1000$, cioè $58\,621\,952$ pesi, che con i
+rispettivi bias fanno $58\,631\,144$ parametri, il 94% dei $62\,378\,344$ della
+versione non divisa (e il 96% dei $60\,965\,224$ di quella dell'articolo).
+Tutto il resto, cioè i cinque strati convoluzionali che fanno il lavoro, sta in
+quel poco che avanza.
 `````
 
 Tenete a mente entrambe le idee: le ritroveremo tra poco, dentro la rete che
@@ -149,10 +199,20 @@ impilassimo tanti? Nasce **VGG**, elegante nella sua monotonia.
 
 `````{tab} Elementare
 Invece di una lente grande che guarda molto in una volta sola, VGG usa tante
-lenti piccole, una dopo l'altra. Due lenti piccole in fila "vedono" quanto una
-lente più grande, ma la rete diventa più profonda e impara pattern più ricchi
-usando meno pezzi. È il principio del mattoncino Lego: pochi pezzi uguali,
-combinati in tanti strati.
+lenti piccole, una dopo l'altra.
+
+Due lenti piccole in fila "vedono" quanto una lente più grande, e il conto si fa
+a mente. La prima lente guarda tre pixel per volta. La seconda guarda tre
+risultati della prima, e ciascuno di quei tre riassumeva tre pixel: il primo i
+pixel da 1 a 3, il secondo da 2 a 4, il terzo da 3 a 5. Messi insieme, la
+seconda lente sta guardando i pixel da 1 a 5, cioè quanto una lente da cinque.
+Tre lenti in fila arrivano a sette.
+
+Il guadagno è doppio. Fra una lente e l'altra la rete piega i numeri, quindi ci
+sono più passaggi in cui può succedere qualcosa di interessante; e i numeri da
+imparare sono meno, perché due quadratini da tre per tre hanno diciotto caselle
+e uno da cinque per cinque ne ha venticinque. È il principio del mattoncino
+Lego: pochi pezzi uguali, combinati in tanti strati.
 `````
 
 `````{tab} Superiore
@@ -162,6 +222,28 @@ intermedie e **meno parametri**. Su $C$ canali, un filtro $5\times 5$ costa
 $25C^2$ pesi, due filtri $3\times 3$ solo $2\cdot 9C^2 = 18C^2$. VGG-16 e
 VGG-19 spingono la profondità a 16–19 strati e diventano il punto di
 riferimento per il *transfer learning* degli anni successivi.
+
+Il campo recettivo si conta con una regola sola, che vale la pena scrivere
+perché serve ogni volta che si progetta una pila di strati:
+
+$$
+r_\ell = r_{\ell-1} + (k_\ell - 1)\prod_{i<\ell} s_i ,
+$$
+
+dove $r_\ell$ è il lato della regione di immagine che un neurone dello strato
+$\ell$ riesce a vedere, $k_\ell$ è il lato del suo kernel e $s_i$ gli stride
+degli strati che lo precedono. Con soli $3\times3$ a stride $1$ il prodotto
+vale sempre $1$ e la successione è $r_0=1$, poi $3$, $5$, $7$: due strati
+arrivano a $5$, esattamente come una $5\times5$, e tre a $7$. È il conto che
+giustifica l'intera scelta di VGG.
+
+Il prezzo, però, non sta dove ci si aspetta. VGG-16 ha $138\,357\,544$
+parametri, **2,3 volte** AlexNet, e l'$89{,}4\%$ è ancora nei tre strati densi
+finali: esattamente il difetto che *Network in Network* aveva appena mostrato
+come evitare, e che VGG non raccoglie. Per dare la misura: gli stessi 138
+milioni sono 2,3 volte anche una ResNet-152 ($60\,192\,808$ parametri), che di
+strati ne ha centocinquantadue contro sedici. La profondità, da sola, non è ciò
+che costa.
 `````
 
 ## GoogLeNet e i moduli Inception
@@ -184,39 +266,62 @@ Ogni modulo esegue in **parallelo** convoluzioni $1\times 1$, $3\times 3$,
 $5\times 5$ e un *pooling*, poi concatena le uscite lungo i canali,
 elaborando così l'immagine a **più scale** simultaneamente. Le convoluzioni
 $1\times 1$ fungono da collo di bottiglia che riduce i canali prima delle
-convoluzioni costose. Risultato: 22 strati ma solo $\approx 5$ milioni di
-parametri, un dodicesimo di AlexNet, con accuratezza persino superiore.
+convoluzioni costose. Risultato: 22 strati con pesi e, dichiara l'articolo,
+circa $5$ milioni di parametri, con accuratezza persino superiore ad AlexNet.
+
+Quella cifra però va presa per quello che è, cioè il numero dell'articolo.
+Ricostruendo la rete dalla sua Tabella 1 se ne contano $6{,}99$ milioni, e
+`torchvision.models.googlenet(aux_logits=False)` ne dichiara $6{,}62$;
+attivando i due **classificatori ausiliari** (i rami intermedi che durante
+l'addestramento iniettano un segnale di supervisione a metà rete) si arriva a
+$13{,}0$ milioni, più del doppio della cifra dell'articolo. Lo scarto viene da
+lì e da una batch normalization che le implementazioni moderne mettono e che
+nel 2014 non c'era. Il rapporto con i $60\,965\,224$ parametri di AlexNet è quindi fra
+**8,7 e 9,2 volte**, non dodici: resta un ordine di grandezza risparmiato, che
+è il punto, ma il numero preciso dipende da che cosa si conta.
 `````
 
-Anche la seconda idea di NiN è all'appello: GoogLeNet rinuncia ai grandi
-strati *fully-connected* di AlexNet e VGG e chiude con un *global average
-pooling* seguito da un unico strato lineare. È in buona parte per questo che
-i suoi parametri sono così pochi.
+Anche la seconda idea di NiN è all'appello. GoogLeNet rinuncia all'enorme
+ufficio di neuroni con cui AlexNet e VGG chiudevano, e al suo posto mette
+proprio la media delle mappe, seguita da un solo strato che sceglie la
+categoria. È in buona parte per questo che ha così pochi numeri da imparare:
+una decina di volte meno di AlexNet, e per di più sbagliando meno.
 
 ## ResNet: insegnare alle reti a non dimenticare l'input
 
 Restava un muro. Impilando strati oltre una certa soglia, le reti non solo
-smettevano di migliorare: peggioravano, e non per overfitting; sbagliavano di
-più anche sui dati di addestramento. Questo **problema di degradazione** viene
-risolto da **ResNet** {cite}`he2016deep` di He, Zhang, Ren e Sun, che porta la
-profondità a 152 strati e vince l'edizione 2015 di ImageNet. Una singola
-ResNet-152 scende intorno al 4,5% di errore top-5; il 3,57% con cui vince
-l'edizione non lo fa una rete sola ma un gruppo di sei reti
-residue interrogate tutte insieme, che poi mettono ai voti le loro risposte
-(si chiama *ensemble*, ed è un trucco che funziona quasi sempre: reti
-addestrate in modo leggermente diverso sbagliano su immagini diverse, e la
-media degli errori è più bassa di ciascuno). Non è la fine della corsa: la
-competizione andrà avanti fino al 2017 e l'errore scenderà ancora, fino al
-2,25% dell'ultima edizione, ma ormai la domanda interessante non era più
-quella.
+smettevano di migliorare: peggioravano. E il sospetto ovvio, che stessero
+imparando a memoria le fotografie di addestramento (l'*overfitting*, che si
+riconosce perché la rete migliora su quelle e peggiora su tutte le altre), qui
+non regge: sbagliavano di più **anche** sulle fotografie di addestramento, cioè
+proprio su quelle che avevano sotto gli occhi. Questo **problema di
+degradazione** viene risolto da **ResNet** {cite}`he2016deep` di He, Zhang, Ren
+e Sun, che porta la
+profondità a 152 strati e vince l'edizione 2015 di ImageNet.
+
+Anche qui il numero della classifica va letto per quello che è. Una singola
+ResNet-152 scende intorno al 4,5% di errore top-5; il 3,57% con cui la squadra
+vince non lo fa una rete sola, ma sei reti interrogate tutte insieme, che poi
+mettono ai voti le loro risposte. Si chiama *ensemble*, ed è un trucco che
+funziona quasi sempre: reti addestrate in modo leggermente diverso sbagliano su
+immagini diverse, e quando una sbaglia le altre cinque la contraddicono, così il
+gruppo sbaglia meno di ciascuno dei suoi membri.
+
+Non è la fine della corsa: la competizione andrà avanti fino al 2017 e l'errore
+scenderà ancora, fino al 2,25% dell'ultima edizione. Ma ormai la domanda non era
+più «quanto si può scendere su ImageNet»: era come portare le stesse reti dove
+servivano davvero, dentro un telefono o un'automobile, ed è la domanda con cui
+si chiude questa sezione.
 
 ```{figure} ../figures/residuo-skip-connection.svg
 :name: fig-skip-connection
 :alt: L'input x di un blocco attraversa due strati peso; una connessione laterale porta lo stesso x, non modificato, fino a un nodo somma che lo aggiunge all'uscita degli strati prima dell'attivazione finale.
 :width: 55%
 
-La connessione residua: l'input $\mathbf{x}$ salta gli strati interni e viene
-sommato alla loro uscita $\mathcal{F}(\mathbf{x})$ prima dell'attivazione.
+La connessione residua. Quello che entra nel blocco (la $\mathbf{x}$ in cima)
+scavalca i due strati interni lungo la linea di destra e viene sommato al loro
+risultato, che il disegno chiama $\mathcal{F}(\mathbf{x})$: è la scorciatoia.
+Solo dopo la somma i numeri passano dalla ReLU.
 ```
 
 `````{tab} Elementare
@@ -227,6 +332,10 @@ all'uscita, dove viene ri-sommato. Così il blocco deve imparare solo la
 **correzione** da apportare, non l'intera risposta. E se non serve correggere
 nulla, può lasciar passare l'input senza rovinarlo: aggiungere strati non fa
 più danni.
+
+Perché prima li facesse, quei danni, non è del tutto chiaro nemmeno oggi. Quello
+che si sa è che la soluzione buona esisteva anche nella rete profonda, e che la
+rete non riusciva a trovarla: la scorciatoia gliela mette a portata di mano.
 `````
 
 `````{tab} Superiore
@@ -240,12 +349,46 @@ $$
 dove $\mathbf{x}$ è l'input del blocco, $\{\mathbf{W}_i\}$ i suoi pesi e
 $\mathbf{y}$
 l'uscita (a cui si applica poi la non-linearità). Il blocco apprende il
-**residuo** $\mathcal{F} = \mathcal{H} - \mathbf{x}$ rispetto alla mappa
-desiderata $\mathcal{H}$: azzerare $\mathcal{F}$ per ottenere l'identità è
-facile, ricostruire l'identità da zero no. In più il termine additivo
-$\mathbf{x}$ apre una via diretta al gradiente durante la *backpropagation*.
+**residuo** $\mathcal{F}(\mathbf{x}) = \mathcal{H}(\mathbf{x}) - \mathbf{x}$
+rispetto alla mappa desiderata $\mathcal{H}$: azzerare $\mathcal{F}$ per
+ottenere l'identità è facile, ricostruire l'identità da zero no. In più il
+termine additivo $\mathbf{x}$ apre una via diretta al gradiente durante la
+*backpropagation*.
 
-Attenzione però a non usare quest'ultima osservazione come spiegazione della
+Quella somma ha però una precondizione che l'equazione nasconde:
+$\mathcal{F}(\mathbf{x})$ e $\mathbf{x}$ devono avere la **stessa forma**.
+Quando un blocco raddoppia i canali o dimezza la risoluzione con uno stride,
+sommarli non è approssimativo, è un errore di dimensione e basta
+(`RuntimeError`). L'articolo lo prevede nella sua equazione (2), dove la
+scorciatoia porta una proiezione lineare,
+
+$$
+\mathbf{y} = \mathcal{F}(\mathbf{x}, \{\mathbf{W}_i\}) + \mathbf{W}_s\mathbf{x},
+$$
+
+realizzata come una convoluzione $1\times1$ con lo stesso stride; in
+`torchvision` è il modulo `downsample`, che compare **solo** sul primo blocco di
+uno stage, e solo dove serve davvero. In una ResNet-50 il primo blocco del primo
+stage ce l'ha, perché il collo di bottiglia quadruplica i canali da 64 a 256; in
+una ResNet-18 lo stesso blocco non ce l'ha, perché lì la forma non cambia
+affatto. Non è un dettaglio di implementazione: è il
+punto in cui l'argomento «azzerare $\mathcal{F}$ dà l'identità gratis» smette
+di valere, perché lì la scorciatoia non è l'identità ma una trasformazione con
+pesi da imparare.
+
+Le versioni profonde, poi, non impilano quel blocco così com'è. Da ResNet-50 in
+su si usa il blocco a **collo di bottiglia**: tre convoluzioni al posto di due,
+una $1\times1$ che riduce i canali, una $3\times3$ che lavora nello spazio
+ridotto e una $1\times1$ che li riporta su. È la convoluzione $1\times1$ di NiN
+nel suo secondo mestiere, ed è ciò che rende sostenibile il conto. Con 256
+canali in ingresso, due $3\times3$ da $256$ a $256$ costano
+$2\cdot 9\cdot 256^2 = 1\,179\,648$ pesi; una $1\times1$ ($256\to64$), una
+$3\times3$ ($64\to64$) e una $1\times1$ ($64\to256$) ne costano
+$16\,384 + 36\,864 + 16\,384 = 69\,632$, diciassette volte meno. È per questo
+che una rete di 152 strati sta in $60$ milioni di parametri, meno della metà di
+VGG-16 che di strati ne ha sedici.
+
+Attenzione però a non usare la via diretta al gradiente come spiegazione della
 degradazione, che è l'inversione di causa più diffusa su ResNet: gli autori
 la escludono espressamente, perché le reti lisce con cui fanno il confronto
 erano addestrate con batch normalization e i loro gradienti all'indietro
@@ -259,8 +402,9 @@ funzionino resta materia di studio.
 La connessione residua apre una strada, e nel 2017 un gruppo tra Cornell,
 Tsinghua e Facebook AI Research (Gao Huang, Zhuang Liu, Laurens van der Maaten
 e Kilian Weinberger) la percorre fino in fondo con **DenseNet**
-{cite}`huang2017densely`, premiata come miglior articolo, a pari merito con un
-altro lavoro, alla conferenza CVPR. Se ResNet **somma** l'input all'uscita del
+{cite}`huang2017densely`, premiata (a pari merito con un altro lavoro) come
+miglior articolo della CVPR, il congresso principale della visione
+artificiale. Se ResNet **somma** l'input all'uscita del
 blocco, DenseNet li **affianca**: dentro un
 blocco denso ogni strato riceve le feature di **tutti** gli strati precedenti,
 messe una accanto all'altra invece che sommate (l'operazione si chiama
@@ -275,8 +419,8 @@ Il blocco denso: ogni strato riceve, affiancate, le feature di
 tutti gli strati precedenti (non una sola scorciatoia come nel blocco residuo,
 ma tutte). Le mappe che uno strato produce, una per filtro, si chiamano
 **canali**: affiancarle vuol dire tenerle tutte una accanto all'altra invece di
-sommarle, e nel disegno ogni strato ne aggiunge $k$ di nuove alla pila che ha
-ricevuto.
+sommarle, e nel disegno ogni strato ne aggiunge alla pila un numero fisso,
+sempre lo stesso, che si chiama $k$.
 ```
 
 `````{tab} Elementare
@@ -342,11 +486,17 @@ canali con una lente che guarda un solo punto: è la convoluzione $1\times1$ di
 *Network in Network*, che abbiamo incontrato poco fa e che qui trova il suo
 impiego più importante.
 
-Il risultato ha la stessa forma di prima, ma costa **quasi nove volte meno**. E
-il motivo per cui costa meno è semplice: nella versione ordinaria ogni
-combinazione «quale pixel del quadratino» per «quale canale di partenza» per
-«quale canale di arrivo» ha il suo peso, e quei tre elenchi si moltiplicano fra
-loro. Separando, due dei tre si **sommano** invece di moltiplicarsi.
+Il risultato ha la stessa forma di prima, e costa parecchio meno. Con i numeri
+dell'esempio qui sotto (un quadratino di tre per tre, 64 opinioni in entrata e
+128 in uscita) si passa da $73\,728$ numeri da imparare a $8\,768$: otto volte e
+mezzo di meno. Più sono le opinioni in uscita, più ci si avvicina a nove volte,
+che è il tetto e non si supera mai.
+
+Il motivo è semplice. Nella versione ordinaria ogni combinazione «quale pixel
+del quadratino» per «quale opinione di partenza» per «quale opinione di arrivo»
+ha il suo peso, e quei tre elenchi si moltiplicano fra loro:
+$9 \times 64 \times 128$. Separando, due dei tre si **sommano** invece di
+moltiplicarsi: $9 \times 64$, più $64 \times 128$.
 
 È il tipo di risparmio che non si ottiene tagliando qualcosa, ma accorgendosi
 che si stava pagando due volte. Su questo mattone sono costruite quasi tutte le
@@ -375,8 +525,12 @@ $$
 \;\xrightarrow[\;C_{\text{out}} \to \infty\;]{}\; k^2 ,
 $$
 
-cioè il risparmio tende a $k^2$ ($9$ per i filtri $3\times3$ e si avvicina già
-molto a quel limite con qualche decina di canali in uscita). Da notare che è la
+cioè il risparmio tende a $k^2$, che per i filtri $3\times3$ fa $9$. Ma ci
+arriva piano, e conviene non promettere il limite: con $C_{\text{out}}=32$ il
+rapporto vale $7{,}0$, cioè il 78% del limite; a $128$ canali $8{,}4$; a $256$
+ancora soltanto $8{,}7$. Il «quasi nove volte» è la promessa asintotica, e
+l'esempio numerico qui sotto, che di canali in uscita ne usa 128, sta
+misurabilmente al di sotto. Da notare che è la
 **fattorizzazione** a produrre il guadagno, non un taglio: il tensore d'uscita
 ha esattamente la stessa forma, e ciò che si perde è l'espressività delle
 combinazioni spazio-canale congiunte, che l'esperienza mostra essere in gran
@@ -442,10 +596,10 @@ teorico = (K * K * C_OUT) / (K * K + C_OUT)
 print(f"previsto dalla formula: {teorico:.2f}x   (limite: {K * K}x)")
 ```
 
-Da $73\,728$ pesi a $8\,768$, cioè **$8{,}41$ volte meno**, con il tensore
-d'uscita di forma identica. E il numero misurato coincide con quello previsto
-dalla formula fino all'ultima cifra, perché qui non c'è niente di empirico: è
-aritmetica.
+Da $73\,728$ pesi a $8\,768$, cioè **$8{,}41$ volte meno**, e il risultato ha
+esattamente la stessa forma di prima. Il numero misurato coincide fino
+all'ultima cifra con quello che si ottiene sulla carta, perché qui non c'è
+niente di sperimentale: è aritmetica.
 
 Un avvertimento su come si usa quel numero, perché è l'errore più comune di chi
 progetta reti per il telefono: il fattore nove sta nei pesi e nelle
@@ -468,13 +622,18 @@ che nel 2019 le dà una risposta precisa, il *compound scaling*.
 `````{tab} Elementare
 Per fare una torta doppia non si raddoppia solo la farina: si aumentano tutti
 gli ingredienti in proporzione, o il risultato è immangiabile. Una rete può
-crescere in tre modi: più strati (profondità), strati più larghi (larghezza),
-immagini d'ingresso più grandi (risoluzione). Invece di puntare tutto su uno
-solo, EfficientNet li fa crescere insieme, in proporzioni fisse trovate una
-volta per tutte: a ogni raddoppio del budget di calcolo, la profondità aumenta
-di circa il 20%, la larghezza del 10% e la risoluzione del 15%. Ripetendo la
-ricetta si ottiene una famiglia di reti, dalla più piccola (adatta a un
-telefono) alla più grande.
+crescere in tre modi: più strati (la **profondità**), più lenti per strato (la
+**larghezza**), immagini d'ingresso più grandi (la **risoluzione**). Invece di
+puntare tutto su uno solo, EfficientNet li fa crescere insieme, in proporzioni
+fisse trovate una volta per tutte: ogni volta che si accetta di spendere il
+doppio in conti, la profondità aumenta di circa il 20%, la larghezza del 10% e
+la risoluzione del 15%.
+
+Sembrano aumenti minuscoli per un raddoppio, e invece bastano esattamente,
+perché i tre si moltiplicano fra loro; e larghezza e risoluzione contano due
+volte ciascuna, perché agiscono su due dimensioni. Il conto viene poco meno di
+due, che è quello che si voleva. Ripetendo la ricetta si ottiene una famiglia di
+reti, dalla più piccola (adatta a un telefono) alla più grande.
 `````
 
 `````{tab} Superiore
@@ -498,9 +657,10 @@ rispetto alle CNN precedenti.
 `````
 
 La seconda direzione è automatizzare la ricerca stessa: nella **neural
-architecture search** un algoritmo esplora lo spazio delle possibili
-architetture e seleziona le più promettenti; la rete base di EfficientNet è
-stata trovata proprio così, non disegnata a mano. E la storia non è finita:
+architecture search** è un algoritmo a disegnare la rete. Non le prova tutte,
+che sarebbe impossibile: ne prova alcune, guarda quali vanno meglio e da quelle
+ricava le prossime da provare. La rete base di EfficientNet è stata trovata
+proprio così, non disegnata a mano. E la storia non è finita:
 dal 2020 i **Vision Transformer** {cite}`dosovitskiy2021image`, reti basate
 sull'**attenzione** (è il nome di un meccanismo preciso, non la parola di tutti
 i giorni) e nate per il linguaggio, hanno dimostrato di poter competere
@@ -510,15 +670,17 @@ ai Transformer.
 
 ## L'architettura conta quanto i dati
 
-Nessuna di queste reti ha vinto solo con più esempi o più GPU. LeNet ha dato
-la convoluzione, AlexNet ha dimostrato che scala, NiN ha ripensato il filtro e
-il finale della rete, VGG ha reso la profondità sistematica, Inception ha
-aggiunto la multi-scala, ResNet ha reso la profondità finalmente addestrabile,
-DenseNet ha portato il riuso delle feature alle estreme conseguenze. Ogni
-salto è nato da un'**idea strutturale** su come far scorrere l'informazione
-dentro la rete. I dati sono il carburante, ma la forma del motore decide
-quanto lontano si arriva, ed è una lezione che vale ancora oggi, dai
-Transformer in poi.
+Nessuna di queste reti ha vinto solo con più esempi o più GPU. Ogni salto è nato
+da un'**idea strutturale** su come far scorrere l'informazione dentro la rete:
+dove farla passare, dove farla saltare, dove farla incontrare con se stessa. E
+quasi tutte quelle idee sono nate dal vincolo opposto a quello che uno si
+aspetterebbe, cioè non da «come faccio a metterci più roba» ma da «come faccio a
+spendere meno»: la tabella di connessione di LeNet, la divisione in due schede
+di AlexNet, il finale a media di NiN, i colli di bottiglia di Inception e di
+ResNet, la convoluzione separata di MobileNet.
+
+I dati sono il carburante, ma la forma del motore decide quanto lontano si
+arriva, ed è una lezione che vale ancora oggi, dai Transformer in poi.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
@@ -561,11 +723,16 @@ Transformer in poi.
 - **AlexNet** (2012): ReLU, dropout e GPU portano le CNN a vincere ImageNet.
 - **NiN** (2013): convoluzioni $1\times 1$ come mini-rete pixel per pixel e
   *global average pooling* al posto degli strati densi.
-- **VGG** (2014): profondità con soli filtri $3\times 3$ impilati.
+- **VGG** (2014): profondità con soli filtri $3\times 3$ impilati (campo
+  recettivo $r_\ell = r_{\ell-1} + (k_\ell-1)\prod_{i<\ell}s_i$), ma
+  $138$ milioni di parametri, l'$89{,}4\%$ nei tre densi finali.
 - **Inception/GoogLeNet** (2014): elaborare a più scale in parallelo, con
   colli di bottiglia $1\times 1$.
 - **ResNet** (2015): la connessione residua $\mathbf{y}=\mathcal{F}(\mathbf{x})+\mathbf{x}$
-  rende addestrabili reti di centinaia di strati.
+  rende addestrabili reti di centinaia di strati; dove le forme non
+  coincidono la scorciatoia porta una proiezione $\mathbf{W}_s\mathbf{x}$, e
+  dalla ResNet-50 in su il blocco è a **collo di bottiglia**
+  ($1\times1$, $3\times3$, $1\times1$).
 - **DenseNet** (2017): ogni strato riceve, concatenate, le feature di
   **tutti** i precedenti (pochi parametri, molta memoria).
 - La **convoluzione separabile in profondità** (MobileNet, Xception) fattorizza

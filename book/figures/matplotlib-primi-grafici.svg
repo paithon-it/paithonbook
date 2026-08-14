@@ -49,6 +49,6 @@
   <text x="580" y="330" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A">Tick + etichette</text>
   <text x="580" y="345" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A">dei valori</text>
   <line x1="576" y1="338" x2="435" y2="356" stroke="#1A1A1A" stroke-width="1.5"/>
-  <text x="580" y="415" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5E5852">Una Figure può contenere</text>
-  <text x="580" y="430" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5E5852">più Axes (subplot)</text>
+  <text x="580" y="415" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5E5852">Una Figure può</text>
+  <text x="580" y="430" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5E5852">contenere più Axes</text>
 </svg>

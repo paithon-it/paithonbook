@@ -1,8 +1,10 @@
 """La convoluzione: il kernel che scorre e costruisce la mappa di attivazione.
 
 Il tempo è il contenuto: la finestra che scivola è l'operazione stessa.
-L'immagine è una barra verticale, il kernel un rilevatore di bordi: la mappa
-in uscita risponde ai due bordi con segno opposto (−3 e +3) e ignora l'interno.
+L'immagine è una barra verticale spessa un pixel, il kernel un rilevatore di
+bordi: in ogni posizione la barra cade sotto una sola colonna del kernel, e la
+mappa risponde −3 se è la destra, +3 se è la sinistra, 0 se è quella centrale,
+che ha pesi nulli.
 
     python3 .claude/skills/anima-manim/driver.py render animazioni/convoluzione.py
 """

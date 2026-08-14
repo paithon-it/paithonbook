@@ -25,7 +25,8 @@ teorica e pratica, ed è la ragione per cui questa sezione chiude il cerchio del
 capitolo. Teorica: gli State Space Model e l'attenzione non sono due famiglie
 distinte, ma **due viste della stessa cosa**. Pratica: da quella equivalenza
 discende un algoritmo che si scrive come una sequenza di moltiplicazioni di
-matrici, riaccende i tensor core, e rende il modello parecchie volte più veloce.
+matrici, cioè che riporta il calcolo proprio sul reparto dove sta quasi tutta
+la potenza della scheda.
 
 ## State Space Duality: un SSM è un'attenzione
 
@@ -71,7 +72,10 @@ $$
 \mathbf{S}_t = \alpha_t\, \mathbf{S}_{t-1} + \mathbf{v}_t\, \mathbf{k}_t^\top, \qquad \mathbf{o}_t = \mathbf{S}_t\, \mathbf{q}_t,
 $$
 
-con transizione $\alpha_t \mathbf{I}$ (uno scalare per l'identità). La SSD mostra che
+con transizione $\alpha_t \mathbf{I}$ (uno scalare per l'identità). Qui, e solo
+qui, il lato da cui la transizione moltiplica lo stato non conta: uno scalare
+commuta, mentre un fattore diagonale o di rango uno andrebbe scritto a destra,
+come vedremo nell'ultima sezione. La SSD mostra che
 questa è *precisamente* la forma cui si riduce un SSM quando si impone
 $\mathbf{A} = a\mathbf{I}$, con $a$ scalare fisso (uno per testa): la discretizzazione fa il
 resto, perché la transizione discreta diventa $\bar{\mathbf{A}}_t = a_t \mathbf{I}$ con
@@ -87,7 +91,16 @@ $$
 \mathbf{S}_t = a_t\, \mathbf{S}_{t-1} + \mathbf{x}_t\, \mathbf{B}_t^\top, \qquad \mathbf{y}_t = \mathbf{S}_t\, \mathbf{C}_t,
 $$
 
-è la stessa riga della tabella. Srotolandola dallo stato iniziale nullo, l'uscita
+è la stessa riga della tabella. Un avvertimento sulla scrittura, perché
+altrimenti stona con il resto del capitolo: qui $\mathbf{B}_t$ è già la matrice
+**discretizzata**, quella che altrove scriviamo $\bar{\mathbf{B}}_t$, e il passo
+$\Delta_t$ sta dentro, non davanti. È la convenzione del paper SSD, che
+dichiara in una nota di aver dato ai parametri discreti le lettere dei
+continui per alleggerire la notazione; più avanti, quando ricomparirà
+$\bar{\mathbf{B}}_t = \Delta_t \mathbf{B}_t$, saremo tornati alle lettere del
+capitolo.
+
+Srotolando la ricorrenza dallo stato iniziale nullo, l'uscita
 al passo $i$ è
 
 $$
@@ -115,8 +128,8 @@ sequenza, e le due cose comparirebbero nella stessa formula. Questa è, alla
 lettera, un'attenzione mascherata: la stessa
 $\mathrm{softmax}(\mathbf{Q}\mathbf{K}^\top)\mathbf{V}$ dei Transformer {cite}`vaswani2017attention`, con
 la softmax rimpiazzata dalla maschera $\mathbf{M}$. La matrice $\mathbf{M}$ ha una struttura
-particolare, detta **1-semiseparabile**: ogni suo blocco interamente contenuto
-nel triangolo inferiore ha rango al più uno, perché ogni elemento si
+particolare, detta **1-semiseparabile**: ogni sua sottomatrice interamente
+contenuta nel triangolo inferiore ha rango al più uno, perché ogni elemento si
 fattorizza nei prodotti cumulati degli $a_t$. È questa struttura a fare da
 ponte: i sistemi a spazio di stati con transizione scalare *sono* le attenzioni
 con maschera semiseparabile.
@@ -135,21 +148,19 @@ riscritta. Mamba-2 occupa il secondo gradino, quello che sbiadisce tutto in
 blocco. Arrivando dai sistemi dinamici invece che dall'attenzione, ci ritroviamo
 esattamente lì: è la prova che le due strade (quella partita dall'attenzione e
 quella partita da Kálmán) portavano alla stessa città. La stessa funzione ha
-una forma **lineare e ricorrente**, di costo $O(L)$ nella lunghezza (la vista
-«SSM»), e una forma **quadratica e attention-like**, la grande tabella dei
-confronti fra tutte le coppie di parole, mascherata (la vista «attenzione»).
-Non è un'analogia: è un'uguaglianza.
+una forma **ricorrente**, che costa quanto la lunghezza del testo (la vista
+«SSM»), e una forma **a tabella**, la grande griglia dei confronti fra tutte le
+coppie di parole, mascherata perché ciascuna guardi solo all'indietro (la vista
+«attenzione»). Non è un'analogia: è un'uguaglianza.
 
 ## Perché conviene: i tensor core
 
 La dualità non sarebbe che un'eleganza teorica se non pagasse in velocità.
 Paga, e la chiave è una rinuncia apparentemente minima. In Mamba-1 ogni
 cassetto della memoria sbiadiva a velocità propria; Mamba-2 impone che, dentro
-un gruppo, sbiadiscano tutti alla stessa. In formule: la matrice di stato $\mathbf{A}$,
-diagonale, non ha più $N$ valori distinti per canale ma un solo scalare
-ripetuto, $\mathbf{A} = a\mathbf{I}$, da cui una transizione discreta $\bar{\mathbf{A}}_t = a_t \mathbf{I}$. Sembra
-una perdita di espressività, ed è ciò che rende l'algoritmo esprimibile come
-pura moltiplicazione di matrici.
+un gruppo, sbiadiscano tutti alla stessa. Sembra una perdita di espressività,
+ed è invece ciò che rende l'algoritmo esprimibile come pura moltiplicazione di
+matrici.
 
 `````{tab} Elementare
 
@@ -177,6 +188,10 @@ l'attenzione.
 
 `````{tab} Superiore
 
+La rinuncia, in formule: la matrice di stato $\mathbf{A}$, diagonale, non ha più
+$N$ valori distinti per canale ma un solo scalare ripetuto, $\mathbf{A} = a\mathbf{I}$,
+da cui una transizione discreta $\bar{\mathbf{A}}_t = a_t \mathbf{I}$.
+
 Il motivo per cui il matmul batte lo scan è nell'hardware. Un tensor core esegue
 un piccolo prodotto matrice–matrice per ciclo: su una GPU moderna è lì che
 risiede la stragrande maggioranza dei FLOP disponibili. Un *selective scan* come
@@ -187,8 +202,10 @@ generiche, molto meno dense di FLOP. Sta usando la frazione lenta della GPU.
 Con la transizione $\bar{\mathbf{A}}_t = a_t \mathbf{I}$ l'algoritmo pratico non forma davvero
 l'intera matrice lunghezza per lunghezza (sarebbe $O(L^2)$ in memoria). Si
 adotta una **decomposizione a blocchi** (*chunked scan*): la sequenza si spezza
-in blocchi di lunghezza $Q$; dentro ciascun blocco si calcola la forma
-quadratica, attention-like, come un prodotto di matrici sui tensor core; tra un
+in blocchi di lunghezza $Q$ (la lettera è quella del paper, e non c'entra con
+le query $\mathbf{Q}$, che essendo una matrice restano in grassetto); dentro
+ciascun blocco si calcola la forma quadratica, attention-like, come un prodotto
+di matrici sui tensor core; tra un
 blocco e il successivo si passa solo lo **stato** riassuntivo, con un termine
 di rango basso, in forma ricorrente. Si interpola così tra le due viste della
 dualità: quadratica dentro il blocco, lineare tra i blocchi.
@@ -197,7 +214,8 @@ Sul costo conviene essere precisi, perché è qui che si annida il malinteso.
 Il conto torna **lineare nella lunghezza**: $O\big(L\,N\,(Q+P)\big)$ con
 blocchi di lunghezza $Q$, stato $N$ e dimensione di testa $P$, che nel caso
 del Teorema 6.1 del paper ($P = N$, blocchi dell'ordine di $N$) diventa
-$O(L\,N^2)$. Rispetto alla forma quadratica $O(L^2)$ è un
+$O(L\,N^2)$. Rispetto alla forma quadratica, che di operazioni ne fa
+$O(L^2 N)$, è un
 guadagno enorme, rispetto alla ricorrenza pura non si risparmia nulla, anzi con
 blocchi lunghi si fanno più operazioni. Il punto non è farne meno, è **farne
 di un tipo diverso**: tutte moltiplicazioni di matrici, cioè lavoro che la
@@ -222,7 +240,8 @@ parallele che sfruttano le GPU.
 ## Mamba-3
 
 L'ultimo anello di questa catena è **Mamba-3**, di Lahoti, Li e colleghi con
-Dao e Gu, presentato come *Oral* a ICLR 2026 {cite}`lahoti2026mamba3`.
+Dao e Gu, che a ICLR 2026 {cite}`lahoti2026mamba3` è finito fra i pochi lavori
+esposti dal palco invece che a un poster (in gergo un *Oral*).
 Trattandosi di un lavoro recente conviene leggerlo per ciò che aggiunge di
 qualitativo più che per le cifre puntuali, ancora da assestare. Le novità
 rispetto a Mamba-2 sono tre, e tutte lavorano sul *come* lo stato evolve, non
@@ -238,16 +257,17 @@ intervalli, e bisogna indovinare cosa succede *tra* un campione e l'altro. Il
 punto delicato è quanta parte di ciò che entra in quel tratto finisce nella
 memoria. Torniamo al rubinetto: più a lungo lo tieni aperto e più forte lo
 apri, più acqua entra, e la quantità è la superficie della figura che ha per
-base la durata del tratto e per altezza l'apertura. Se l'apertura resta quella
-iniziale, quella figura è un **rettangolo**, ed è il conto sbrigativo che fa
-Mamba-1: prende il valore all'inizio e lo moltiplica per la durata, come se
-restasse quello fino in fondo. Rapido, ma con un errore che a ogni passo si
-accumula.
+base la durata del tratto e per altezza l'apertura. Mamba-1 usa una sola
+altezza, l'apertura del campione che sta leggendo: quella figura è un
+**rettangolo**, ed è il conto sbrigativo, il valore di adesso moltiplicato per
+la durata, come se fosse stato quello per tutto il tratto. Rapido, ma con un
+errore che a ogni passo si accumula.
 
-Mamba-3 rifà lo stesso conto a **trapezi**, cioè tenendo conto anche
-dell'apertura alla fine del tratto: si tira un segmento fra il valore iniziale
-e quello finale e si misura la superficie sotto di lui. E c'è una furbizia in
-più, tipica di questo capitolo: quanto contano i due estremi non è deciso una
+Mamba-3 rifà lo stesso conto a **trapezi**, cioè guardando tutte e due le
+aperture, quella di adesso e quella del campione precedente: si tira un
+segmento fra i due valori e si misura la superficie sotto di lui. E c'è una
+furbizia in più, tipica di questo capitolo: quanto contano i due estremi non è
+deciso una
 volta per tutte a metà e metà, lo decide il modello a ogni passo, in base a ciò
 che legge (il trapezio della geometria, quello che fa la media, è il caso
 particolare in cui i due estremi pesano uguale). L'errore a ogni passo è

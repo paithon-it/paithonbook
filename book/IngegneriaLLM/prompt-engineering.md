@@ -58,8 +58,9 @@ generazione, un `Traduzione:` finale, l'inizio di un blocco JSON, un'etichetta
 attesa). Non è uno schema rigido: molti prompt utili contengono solo
 istruzione e input. Ma la distinzione è operativa, perché ciascuna parte si
 può isolare e migliorare da sola, e perché separare nettamente **istruzione**
-e **dato** è una difesa contro un problema concreto, la *prompt injection*,
-che vedremo tra poco.
+e **dato** è una difesa contro un problema concreto, la *prompt injection*
+(istruzioni ostili nascoste dentro il materiale su cui il modello deve
+lavorare), che vedremo in fondo alla sezione.
 
 `````
 
@@ -133,11 +134,12 @@ prime tre parole fanno il 91 per cento, e sono quelle che restano. Ma quella
 cumulata la calcola sulla distribuzione **già riscalata dalla temperatura**, e
 quindi alzando la temperatura il taglio si sposta da sé: con gli stessi numeri
 della figura, passare da $T = 1$ a $T = 2$ porta il nucleo da tre token a
-quattro, senza che nessuno abbia toccato il $p$. Su un vocabolario vero
-l'effetto è molto più grosso: con cinquanta candidati e $p = 0{,}9$, il nucleo
-passa da 2 token a $T = 0{,}2$ a 38 token a $T = 3$. Girarle insieme nella
-stessa direzione non raddoppia l'effetto: lo moltiplica, e in un modo che non
-si controlla più a mente.
+quattro, senza che nessuno abbia toccato il $p$. E più candidati ci sono, più
+lo scarto cresce: con cinquanta parole in gara lo stesso $p = 0{,}9$ ne lascia
+passare un paio a temperatura bassa e quasi quaranta a temperatura alta, e il
+vocabolario di un modello vero di parole ne ha decine di migliaia. Girarle
+insieme nella stessa direzione non raddoppia l'effetto: lo moltiplica, e in un
+modo che non si controlla più a mente.
 
 La distinzione di {numref}`fig-due-manopole` è quella che si perde più spesso
 in pratica, e porta a girare entrambe le manopole nella stessa direzione
@@ -157,9 +159,11 @@ Immagina che il modello, a ogni parola, abbia un ventaglio di alternative con
 probabilità diverse. La **temperatura** è quanto lo lasci «osare». A
 temperatura bassa (vicina a 0) sceglie quasi sempre l'opzione più probabile:
 risposte prevedibili, adatte quando vuoi un fatto o un'estrazione
-precisa (chiedi due volte, ottieni quasi sempre la stessa cosa: *quasi*, e
-più avanti si vede perché il «sempre» non lo può promettere nessuno). A
-temperatura alta pesca
+precisa. Chiedi due volte, e ottieni quasi sempre la stessa cosa: *quasi*, e
+il «sempre» non te lo può promettere nessuno, perché il servizio che fa i conti
+non li rifà mai due volte in modo perfettamente identico (dipende anche da
+quante altre richieste sta servendo in quell'istante), e ogni tanto una parola
+cambia. A temperatura alta pesca
 più volentieri anche tra le alternative meno probabili: risposte più varie e
 sorprendenti, adatte a scrivere, inventare, fare brainstorming, ma anche più a
 rischio di sbandare. Il **top_p** è una manopola imparentata: invece di
@@ -194,9 +198,13 @@ un semplice *top-k* fisso non fa. Si legge spesso che i due parametri agiscono
 ammesso, e la conclusione che se ne trae è che si possano regolare
 indipendentemente. **Non è così**, e la ragione sta nell'ordine: il nucleo si
 calcola sulla distribuzione *già riscalata*, quindi la sua cardinalità è
-funzione di $T$ a $p$ fissato. È verificabile in tre righe: su cinquanta logit
-gaussiani e $p = 0{,}9$, il nucleo contiene 2 token a $T = 0{,}2$, 16 a
-$T = 1$ e 38 a $T = 3$. La raccomandazione della guida DAIR.AI di regolarne
+funzione di $T$ a $p$ fissato. È verificabile in tre righe, e il protocollo va
+scritto perché il numero dipende da quanto è appuntita la distribuzione di
+partenza: con cinquanta logit estratti da una gaussiana di deviazione standard
+2 (in NumPy, `default_rng(0).normal(scale=2, size=50)`) e $p = 0{,}9$, il
+nucleo contiene 2 token a $T = 0{,}2$, 16 a $T = 1$ e 38 a $T = 3$. Con logit
+più concentrati i tre numeri cambiano; il fatto che crescano con $T$ no, ed è
+quello il punto. La raccomandazione della guida DAIR.AI di regolarne
 **uno solo** per volta resta quindi valida, ma non perché gli effetti si
 confondano nella testa di chi guarda: perché si compongono davvero. La
 derivazione completa e il confronto con *top-k* e *beam search* sono nel
@@ -406,11 +414,12 @@ sensibilmente l'accuratezza su benchmark di ragionamento aritmetico e logico
 rispetto alla singola catena; il prezzo è lineare nel calcolo: $N$ generazioni
 invece di una, mentre la latenza resta
 circa quella di una singola generazione se le catene, indipendenti per
-costruzione, si campionano in parallelo. In fattura il fattore è più basso di
-$N$, perché le catene condividono lo stesso prefisso (istruzione ed esempi) e
-a moltiplicarsi sono soprattutto i token *generati*: il conto va rifatto sul
-proprio rapporto fra lunghezza del prompt e lunghezza delle risposte, non dato
-per $N$. È un compromesso di puro
+costruzione, si campionano in parallelo. In fattura il fattore può scendere
+sotto $N$, ma non da sé: le catene condividono lo stesso prefisso (istruzione
+ed esempi), e quel prefisso si paga una volta sola soltanto se qualcosa lo
+sfrutta, cioè se si chiedono $N$ campioni in una chiamata unica oppure se il
+fornitore sconta il contesto già visto. Senza nessuna delle due, $N$ chiamate
+separate si pagano $N$ volte per intero. È un compromesso di puro
 context/compute engineering: si compra affidabilità spendendo campioni.
 
 Vale la pena dichiarare l'ipotesi che sta sotto all'«intuizione statistica»,
@@ -520,12 +529,15 @@ E il vincolo non è gratuito. Tam e colleghi {cite}`tam2024format` confrontano
 decoding vincolato, istruzioni di formato e conversione a posteriori su più
 modelli e dataset, e osservano «un calo significativo delle capacità di
 ragionamento sotto restrizioni di formato», tanto più marcato quanto più
-stretto è il vincolo. Il quadro non è uniforme: i formati rigidi aiutano i
-compiti di classificazione ed estrazione, e danneggiano quelli che richiedono
-passaggi (matematica, domande a più salti), cioè proprio quelli per cui le due
-sezioni precedenti hanno insegnato a spendere token in ragionamento. Dove
-servono tutt'e due le cose, la mossa che il paper misura come meno dannosa è
-la più ovvia: far ragionare libero, e strutturare in un secondo passaggio.
+stretto è il vincolo. Il quadro non è uniforme: i formati rigidi **aiutano** i
+compiti di classificazione, dove restringere le risposte possibili toglie modi
+di sbagliare, e danneggiano quelli che richiedono passaggi (matematica,
+domande a più salti), cioè proprio quelli per cui le due sezioni precedenti
+hanno insegnato a spendere token in ragionamento. La raccomandazione degli
+autori è di conseguenza asimmetrica: vincolo stretto dove si classifica,
+vincolo lasco dove si ragiona. E dove servono tutt'e due le cose, la strada
+che il paper esamina è la più ovvia: far ragionare libero e strutturare in un
+secondo passaggio, invece di chiedere le due cose alla stessa generazione.
 
 `````
 
@@ -539,7 +551,7 @@ software vero, non un giocattolo conversazionale.
 
 ```{figure} ../figures/prompt-engineering-le-prove.svg
 :name: fig-prove-prompting
-:alt: "Le tecniche di prompting divise in tre fasce secondo cosa dicono le misure. In alto quelle che reggono su compiti e modelli diversi: esempi few-shot, formato esplicito, istruzioni specifiche. In mezzo quelle che reggono solo su matematica e logica, dove valgono dodici e quattordici punti mentre altrove non spostano quasi niente: catena di pensiero e self-consistency. In fondo quelle provate in studi controllati e risultate senza effetto: mance e minacce, «sei un esperto mondiale», cortesia."
+:alt: "Le tecniche di prompting divise in tre fasce secondo cosa dicono le misure. In alto quelle che reggono su compiti e modelli diversi: esempi few-shot, formato esplicito, istruzioni specifiche. In mezzo quelle che reggono solo su matematica e ragionamento simbolico, dove valgono dodici e quattordici punti mentre altrove non spostano quasi niente: catena di pensiero e self-consistency. In fondo quelle provate in studi controllati e risultate senza effetto: mance e minacce, «sei un esperto mondiale», cortesia."
 :width: 92%
 
 Non tutte le tecniche hanno lo stesso sostegno, e la scala non è «quanto sono
@@ -555,7 +567,8 @@ per mancanza di prove, ma perché studi controllati le hanno provate e non hanno
 trovato niente di consistente. Meincke e colleghi hanno messo alla prova
 proprio la mancia e la minaccia (quest'ultima sostenuta in pubblico anche da
 Sergey Brin, secondo cui «i modelli tendono a fare meglio se li minacci»), e
-non hanno trovato alcun effetto significativo sulle prestazioni di benchmark
+non hanno trovato alcun effetto significativo sulle prestazioni misurate su due
+batterie di domande difficili
 {cite}`meincke2025threats`; sulla cortesia lo stesso gruppo aveva già misurato
 che a volte aiuta e a volte peggiora, e che «formule di prompting particolari,
 come essere gentili con l'AI, non hanno un valore universale»
@@ -565,12 +578,17 @@ persa, e continuare a ripeterla costa token a ogni chiamata.
 
 La fascia di mezzo dice l'altra metà della storia, ed è la più facile da
 leggere male. La catena di pensiero non «fa ragionare» il modello in generale:
-la meta-analisi di Sprague e colleghi, su oltre cento lavori,
-{cite}`sprague2025cot` trova un guadagno medio di 12,3 punti sui compiti di
-matematica e 14,2 su quelli di logica simbolica, mentre altrove il vantaggio è
-prossimo allo zero. Su MMLU, per dirne una, chiedere i passaggi dà quasi
-esattamente la stessa accuratezza del rispondere di getto, **tranne** quando la
-domanda o la risposta contengono un segno di uguale. La regola pratica che ne
+la meta-analisi di Sprague e colleghi {cite}`sprague2025cot`, su oltre cento
+lavori più venti raccolte di prove rifatte dagli autori su quattordici modelli,
+trova un guadagno medio di 14,2 punti sul **ragionamento simbolico** (contare,
+sostituire, applicare regole formali) e di 12,3 sulla **matematica**; sul
+ragionamento logico scende già a 6,9, e su tutto il resto la media passa da
+56,1 senza catena a 56,8 con, cioè non si muove. Su MMLU, per dirne una (una
+batteria di domande a scelta multipla su cinquantasette materie, dalla storia
+alla medicina, con cui si misura quanto un modello sa in generale), chiedere i
+passaggi dà quasi esattamente la stessa accuratezza del rispondere di getto,
+**tranne** quando la domanda o la risposta del modello contengono un segno di
+uguale. La regola pratica che ne
 esce è netta: se il compito ha dentro un calcolo o una manipolazione di
 simboli, i passaggi servono; se è una domanda di conoscenza o di giudizio, si
 stanno pagando token per niente.
@@ -603,7 +621,7 @@ distinzione che costa poco fare e che evita di trasformare in legge quello che
 
 Il prompt è un'interfaccia potente e, proprio per questo, esposta. Tre rischi
 meritano un nome fin da ora, anche se il tema tornerà, con metodi di valutazione
-e mitigazione, nel capitolo su LLMOps.
+e mitigazione, nella sezione su LLMOps.
 
 - **Prompt injection.** Se nel contesto entra testo non fidato (una pagina
   web, una mail, un documento dell'utente), quel testo può contenere
@@ -693,7 +711,7 @@ il loop, che affrontiamo nelle sezioni seguenti.
   la validità sintattica, non quella di contenuto, e sui compiti a ragionamento
   il vincolo di formato **costa** accuratezza {cite}`tam2024format`. E ricorda
   i rischi (**prompt injection, jailbreak, allucinazioni**) che riprenderemo
-  in LLMOps.
+  nella sezione su LLMOps.
 ```
 
 `````

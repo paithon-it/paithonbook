@@ -6,9 +6,9 @@ reso celebre è controintuitiva e brutale: aggiungere programmatori a un
 progetto software già in ritardo lo fa ritardare di più. La ragione che porta
 non è di psicologia aziendale, è aritmetica. Due persone hanno un canale di
 comunicazione da mantenere, tre ne hanno tre, quattro sei, dieci quarantacinque:
-i canali crescono come $n(n-1)/2$, cioè come il quadrato, mentre il lavoro
-utile cresce al più in proporzione alle persone. Passata una certa soglia il
-secondo termine si mangia il primo.
+i canali crescono come $n(n-1)/2$, cioè, quando le persone sono tante, come il
+quadrato, mentre il lavoro utile cresce al più in proporzione alle persone.
+Passata una certa soglia il secondo termine si mangia il primo.
 
 Chi mette al lavoro più agenti si trova davanti un conto della stessa forma,
 il quadrato, ma di origine diversa. Qui a moltiplicarsi non sono i canali fra
@@ -52,8 +52,9 @@ nuovo dovrà essere riletto da tutti quelli che parleranno dopo.
 
 Il conto è quello che si fa a scuola sommando i primi numeri: $1+2+3+\dots+32$
 fa $528$. Se invece i turni fossero otto, la somma $1+2+\dots+8$ farebbe $36$.
-Quattro volte i turni, quasi **quindici** volte le righe lette. Questo è tutto
-il problema: quando raddoppi le persone attorno al tavolo non raddoppi il
+Quattro volte i turni, quasi **quindici** volte le righe lette. E siccome
+quindici è quasi quattro per quattro, ecco tutto il problema: quando raddoppi
+le persone attorno al tavolo non raddoppi il
 costo della riunione, quasi lo quadruplichi, perché ogni nuovo partecipante
 non solo parla, ma va anche ascoltato da tutti gli altri.
 
@@ -101,18 +102,23 @@ anche per un solista che lavori da solo abbastanza a lungo. Stessa forma,
 meccanismo diverso.
 
 Vale la pena guardare l'altro regime possibile, il *broadcast*, dove a ogni giro
-tutti leggono e tutti scrivono insieme invece che a turno. La trascrizione
-cresce di $N\bar{m}$ a giro e la leggono in $N$, per un totale di circa
+tutti leggono e tutti scrivono insieme invece che a turno. Ciascuno legge
+l'enunciato del compito e la trascrizione dei giri già chiusi, che cresce di
+$N\bar{m}$ a giro, per un totale di
 
 $$
-\text{token}_{\text{broadcast}}(N, R) \;=\; N R\,c_0 \;+\;
+\text{token}_{\text{broadcast}}(N, R) \;=\; N R\,(c_0 + \bar{m}) \;+\;
 N^{2}\,\bar{m}\,\frac{R(R-1)}{2},
 $$
 
-cioè lo **stesso ordine** $O(\bar{m}N^2R^2)$, con una costante appena più bassa.
-Con i numeri di questa sezione ($N = 4$, $R = 8$) fa $288.000$ token contro i
-$328.000$ del turno a turno, il 12% in meno, e il rapporto resta sotto uno per
-ogni $N$ e $R$. Attenzione a non leggerlo come un risparmio: la ragione dello
+cioè lo **stesso ordine** $O(\bar{m}N^2R^2)$ **con la stessa costante di testa**:
+lo sconto sta in un termine di grado inferiore, e quindi si vede sui numeri
+piccoli e sparisce al crescere dei turni. Con i numeri di questa sezione
+($N = 4$, $R = 8$) fa $304.000$ token contro i
+$328.000$ del turno a turno, il 7% in meno; a $R = 64$ il rapporto è già
+$0{,}99$. Resta sotto uno per
+ogni squadra di almeno due agenti, ma sempre meno. Attenzione a non leggerlo
+come un risparmio: la ragione dello
 sconto è che dentro un giro **nessuno legge gli altri**. Chi parla per $t$-esimo
 nel regime a turni ha già davanti i $t-1$ interventi del giro in corso; in
 *broadcast* tutti leggono la stessa trascrizione, ferma al giro precedente, e
@@ -124,9 +130,10 @@ altro.
 
 `````
 
-Mettiamo dei numeri. Contesto iniziale $c_0 = 2000$ token, messaggi da
-$\bar{m} = 500$ token, otto giri di parola a testa. Poche righe di Python, che
-non fanno altro che eseguire la somma, rendono la crescita visibile:
+Mettiamo dei numeri: duemila token di istruzioni iniziali, che ciascuno si
+rilegge sempre uguali a ogni turno, messaggi da cinquecento token, otto giri di
+parola a testa. Poche righe di Python, che non fanno altro che eseguire la
+somma, rendono la crescita visibile:
 
 ```python
 # Costo in token di una conversazione a trascrizione condivisa:
@@ -165,12 +172,15 @@ agenti  turni  token letti  finestra finale  costo
 Il caso da tenere a mente è la terza riga. Quattro agenti che si parlano per
 otto giri leggono **328.000 token** contro i 34.000 di un solista che lavora
 otto turni: non quattro volte tanto, quasi **dieci** volte tanto. I token
-*scritti*, invece, sono esattamente quattro volte (16.000 contro 4.000): tutto
+*scritti*, invece, sono esattamente quattro volte (32 turni per 500 token fanno
+16.000, contro gli 8 per 500 del solista, cioè 4.000): tutto
 lo scarto sta sul lato della lettura, la parte del conto che nessuno guarda
 perché non produce niente di visibile.
 
 C'è un secondo effetto, meno contabile e più insidioso. All'ultimo turno la
-finestra contiene 18.000 token di verbale, e l'informazione decisiva (una
+**finestra** di chi parla (il testo che si ritrova davanti prima di rispondere,
+e che è tutto quello di cui dispone) contiene 18.000 token di verbale, e
+l'informazione decisiva (una
 decisione presa al decimo turno, un vincolo enunciato al terzo) sta sepolta in
 mezzo, ed è la posizione da cui un modello recupera peggio: quello che sta
 all'inizio e alla fine di una finestra lunga pesa molto più di quello che sta in
@@ -218,7 +228,10 @@ mai quel rapporto in due ore.
 
 Sia $s \in [0,1]$ la frazione **intrinsecamente seriale** del lavoro (quella
 che va svolta da un solo esecutore, indipendentemente da quanti ce ne siano) e
-$1-s$ la frazione parallelizzabile. Normalizzando a 1 il tempo del singolo
+$1-s$ la frazione parallelizzabile. L'ipotesi nascosta, e conviene dirla perché
+è quella che si viola più spesso, è che il problema abbia **taglia fissa**: si
+divide sempre lo stesso lavoro fra più esecutori, non se ne fa di più.
+Normalizzando a 1 il tempo del singolo
 esecutore, con $N$ esecutori il tempo è $s + (1-s)/N$ e l'accelerazione vale
 
 $$
@@ -268,8 +281,9 @@ vale l'*ultimo* agente aggiunto, rispetto a quello che costa?».
 
 Sul rapporto in dieci ore la risposta si legge senza formule. Passare da quattro
 persone a otto accorcia il lavoro da $4{,}75$ ore a $3{,}875$: si guadagna meno
-di un'ora, cioè mezza volta scarsa di accelerazione in più, e la si paga, stando
-alla tabella dei token di poco fa, con un conto che sale da dieci a
+di un'ora, cioè mezza volta scarsa di accelerazione in più. E se quei quattro e
+quegli otto sono gli agenti della tabella di poco fa (due esempi diversi, stesse
+proporzioni), la si paga con un conto che sale da dieci a
 trentaquattro volte quello di un solista. Nessuna aritmetica sensata approva
 quella spesa. E quella mezza volta è ancora la stima **generosa**, perché viene
 dalla curva che finge che coordinarsi non costi niente: tenendo conto anche del
@@ -301,10 +315,10 @@ fila di venti funzioni nove volte su dieci servirebbero bambini corretti nel
 $99{,}5\%$ dei casi, un livello che nessun sistema reale raggiunge su compiti
 aperti.
 
-Ora però mettiamo al decimo posto un adulto che ha in tasca il foglio con la
-frase originale e la confronta prima di passarla avanti. La fila si spezza in
-due tronconi da dieci, e l'errore accumulato nel primo non entra nel secondo:
-non è un dettaglio organizzativo, è la differenza fra un sistema che funziona
+Ora però mettiamo a metà della fila di venti un adulto che ha in tasca il foglio
+con la frase originale e la confronta prima di passarla avanti. La fila si
+spezza in due tronconi da dieci, e l'errore accumulato nel primo non entra nel
+secondo: non è un dettaglio organizzativo, è la differenza fra un sistema che funziona
 e uno che no.
 
 `````
@@ -396,7 +410,9 @@ quarto.
 **Primo: il compito si decompone.** Se il lavoro si spezza in parti quasi
 indipendenti (analizzare cinquanta documenti, provare otto ipotesi diverse,
 tradurre venti capitoli) il parallelismo è reale e Amdahl è generoso, perché
-$s$ è piccolo. Il segnale è preciso: le parti non devono scambiarsi
+$s$ è piccolo; e se aggiungendo agenti si analizzano *più* documenti invece che
+gli stessi in meno tempo, il tetto di Amdahl non è nemmeno il metro giusto,
+perché lì la taglia del problema non è fissa. Il segnale è preciso: le parti non devono scambiarsi
 informazioni *durante* il lavoro, solo alla fine. Se invece i pezzi devono
 consultarsi di continuo, non è decomposizione: è la trascrizione condivisa del
 primo conto con un altro nome, e la bolletta è quella.
@@ -508,12 +524,14 @@ raccogliere aneddoti hanno fatto una cosa più noiosa e più utile. Hanno
 raccolto le trascrizioni di sistemi multi-agente al lavoro davvero, cioè tutto
 quello che gli agenti si erano detti e avevano fatto dall'inizio alla fine, su
 sette dei framework più diffusi. Sei esperti ne hanno lette e catalogate a
-mano circa centocinquanta, mettendosi prima d'accordo su come giudicarle e
+mano centocinquanta, prese da cinque di quei framework, mettendosi prima
+d'accordo su come giudicarle e
 poi misurando quanto spesso, sulla stessa trascrizione, davano davvero lo
 stesso giudizio; da lì è uscito un elenco ordinato dei modi di fallire, che
-chiamano MAST. Poi lo stesso lavoro di catalogazione è stato fatto su altre
-milleseicento trascrizioni da un modello al posto delle persone, dopo aver
-controllato che sui casi già giudicati dagli esperti desse le stesse risposte.
+chiamano MAST. Con l'elenco in mano la catalogazione è stata poi estesa a
+milleseicentoquarantadue trascrizioni in tutto, affidandola a un modello al
+posto delle persone dopo aver controllato che sui casi già giudicati dagli
+esperti desse le stesse risposte.
 Ne escono quattordici modi ricorrenti in tre famiglie, e
 sono le famiglie la parte da ricordare, perché dicono *dove* guardare.
 
@@ -564,10 +582,13 @@ risolvendo un problema immaginario.
 **Il confronto è contro un singolo agente ben progettato.** È la clausola che
 salta più spesso, e senza di essa qualunque architettura vince. Un solista con
 un buon prompt di sistema, gli strumenti giusti e un validation gate è un
-avversario ben diverso da un solista improvvisato: misurato contro di lui, il
-guadagno delle squadre sui banchi di prova diffusi si assottiglia spesso fino
-a diventare minimo {cite}`cemri2025why`, e la letteratura, giovane, è ancora
-lontana da un verdetto netto {cite}`xi2023rise`.
+avversario ben diverso da un solista improvvisato, ed è contro di lui che il
+conto va fatto. La letteratura, richiamata proprio in apertura del lavoro sui
+fallimenti reali, riporta che sui banchi di prova diffusi il guadagno delle
+squadre resta spesso minimo rispetto ai sistemi a un agente solo, e perfino
+rispetto a confronti elementari come campionare $N$ risposte dallo stesso
+modello e tenere la migliore secondo un verificatore {cite}`cemri2025why`; ed è
+una letteratura giovane, ancora lontana da un verdetto netto {cite}`xi2023rise`.
 
 **A parità di budget.** Se la squadra consuma 328.000 token, il termine di
 paragone onesto non è il solista da 34.000: è il solista a cui si danno gli

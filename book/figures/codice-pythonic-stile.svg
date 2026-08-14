@@ -1,4 +1,4 @@
-<svg viewBox="0 0 720 430" width="100%" role="img" aria-label="Confronto tra due versioni dello stesso programma: a sinistra la versione goffa con cicli a indice in quattordici righe, a destra la versione Pythonic in sei righe; entrambe producono lo stesso output" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="0 0 720 430" width="100%" role="img" aria-label="Confronto tra due versioni dello stesso programma: a sinistra la versione goffa, otto righe con due cicli a indice e due variabili di appoggio; a destra la versione Pythonic, due sole istruzioni di cui una list comprehension; entrambe producono lo stesso output" xmlns="http://www.w3.org/2000/svg">
   <rect x="0" y="0" width="720" height="430" fill="#F8F5EE"/>
   <defs>
     <marker id="fr202" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#1A1A1A"/></marker>
@@ -19,7 +19,7 @@
     <text x="78" y="226">if temperature[i] &gt; media:</text>
     <text x="98" y="244">sopra_media.append(...)</text>
   </g>
-  <text x="190" y="280" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5E5852" text-anchor="middle">14 righe · 3 variabili di appoggio · indici ovunque</text>
+  <text x="190" y="280" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5E5852" text-anchor="middle">8 righe · 2 variabili di appoggio (somma, i) · indici ovunque</text>
 
   <!-- pannello destro: pythonic -->
   <rect x="380" y="56" width="300" height="240" rx="10" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2"/>
@@ -32,7 +32,7 @@
     <text x="418" y="202">if t &gt; media]</text>
   </g>
   <rect x="398" y="222" width="264" height="2" fill="#C9A961"/>
-  <text x="530" y="248" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5E5852" text-anchor="middle">6 righe · 0 variabili di appoggio</text>
+  <text x="530" y="248" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5E5852" text-anchor="middle">2 righe · nessuna variabile di appoggio</text>
   <text x="530" y="266" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5E5852" text-anchor="middle">si legge come una frase</text>
 
   <!-- frecce verso output comune -->

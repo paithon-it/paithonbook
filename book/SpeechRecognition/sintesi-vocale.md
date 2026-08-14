@@ -56,10 +56,10 @@ diceva quali suoni-parola ci fossero dentro; qui è il pezzo che, letto il
 testo, decide quali suoni *produrre*. Stesso nome, freccia rovesciata: è il
 punto in cui la specularità della figura si vede meglio.
 
-Perché tante tappe? Un secondo di parlato contiene decine di migliaia di
-campioni audio, ma solo un'ottantina di colonne di mel-spettrogramma (una ogni
-dodici millesimi e mezzo di secondo, nella ricetta di Tacotron 2 che vedremo
-fra poco): fra le duecento e le trecento volte di meno. È molto
+Perché tante tappe? Nella ricetta di Tacotron 2, che vedremo fra poco, un
+secondo di parlato sono ventiquattromila campioni audio e ottanta colonne di
+mel-spettrogramma (una ogni dodici millesimi e mezzo di secondo): trecento
+volte di meno. È molto
 più facile per un modello decidere prima *che suoni* produrre e *con che
 ritmo* (poche colonne compatte), e lasciare a uno specialista (il *vocoder*)
 il compito di aggiungere il dettaglio fine dell'onda. Ma prima ancora dei
@@ -179,9 +179,10 @@ di Speech Plus, anch'esso derivato dal lavoro di Klatt), e quando negli anni
 arrivarono voci molto migliori rifiutò sempre di cambiarla: «La tengo perché
 non ho ancora sentito una voce che mi piaccia di più, e perché ormai mi ci
 identifico». Quel timbro metallico era diventato *la sua* voce: al punto che un
-team di ingegneri lavorò anni per emularne l'hardware ormai
-introvabile, e Hawking approvò il risultato nel gennaio 2018, due mesi prima di
-morire. Klatt, l'uomo che gli aveva prestato la voce, era morto
+gruppo di tecnici lavorò per anni a emularne l'hardware ormai introvabile, e il
+26 gennaio 2018, sette settimane prima che morisse, gli portarono a casa
+l'emulatore su un Raspberry Pi. Hawking alzò le sopracciglia, che nel suo
+codice voleva dire sì. Klatt, l'uomo che gli aveva prestato la voce, era morto
 trent'anni prima, dopo che un tumore alla tiroide gli aveva tolto la propria.
 
 La seconda generazione, dominante dagli anni Novanta, è la **sintesi
@@ -222,9 +223,11 @@ volta: ogni tanto il dito scivola, e il modello salta una parola o balbetta
 una sillaba due volte. **FastSpeech 2** {cite}`ren2021fastspeech` rovescia il
 metodo: prima decide *quanto dura* ogni suono, poi riempie tutte le colonne
 in un colpo solo, in parallelo. Più veloce di ordini di grandezza (cioè
-decine o centinaia di volte, non del venti per cento), e niente
-balbuzie: al prezzo di una piccola perdita di espressività, è la scelta
-tipica quando la voce deve rispondere all'istante.
+decine o centinaia di volte, non del venti per cento), e niente balbuzie. In
+cambio, la melodia della frase va decisa in anticipo invece di venir fuori
+strada facendo: è per questo che FastSpeech 2 si porta dietro anche un pezzo
+che stima l'intonazione e uno che stima il volume, suono per suono. È la
+scelta tipica quando la voce deve rispondere all'istante.
 
 `````
 
@@ -232,17 +235,19 @@ tipica quando la voce deve rispondere all'istante.
 
 Tacotron 2 è un seq2seq autoregressivo: un encoder (convoluzioni + BiLSTM)
 trasforma la sequenza di caratteri o fonemi $c = (c_1, \dots, c_n)$ negli
-stati $h_1, \dots, h_n$; un decoder genera il mel-spettrogramma
-$M = (m_1, \dots, m_T)$, con $m_t \in \mathbb{R}^{80}$ (80 bande mel), una
+stati $\mathbf{h}_1, \dots, \mathbf{h}_n$; un decoder genera il
+mel-spettrogramma
+$\mathbf{M} = (\mathbf{m}_1, \dots, \mathbf{m}_T)$, con
+$\mathbf{m}_t \in \mathbb{R}^{80}$ (80 bande mel), una
 colonna alla volta:
 
 $$
-m_t = f_\theta(m_1, \dots, m_{t-1}, c),
+\mathbf{m}_t = f_\theta(\mathbf{m}_1, \dots, \mathbf{m}_{t-1}, c),
 $$
 
-dove il testo in ingresso si chiama $c$ e non $x$ perché in questo capitolo
-$x$ è già il vettore acustico di un frame: qui la freccia va nell'altro verso,
-e all'ingresso c'è il testo. È una funzione autoregressiva ma
+dove il testo in ingresso si chiama $c$ e non $\mathbf{x}$ perché in questo
+capitolo $\mathbf{x}$ è già il vettore acustico di un frame: qui la freccia va
+nell'altro verso, e all'ingresso c'è il testo. È una funzione autoregressiva ma
 **deterministica**: niente densità da
 massimizzare, la loss è l'errore quadratico sui frame mel, più un predittore
 di stop che decide quando la frase è finita. Ogni passo è condizionato da un
@@ -296,11 +301,13 @@ capitolo sull'Audio, quando generava musica) lavora come un amanuense: scrive
 l'onda un campione alla volta (e i campioni sono più di ventimila al secondo)
 decidendo ognuno sulla base di tutti i precedenti. Qualità mai sentita prima,
 ma una lentezza proverbiale: nella versione originale, generare un secondo di
-audio poteva costare minuti di calcolo. **HiFi-GAN** risolve il problema con
-una vecchia conoscenza: il falsario e l'esperto d'arte del capitolo sulle GAN.
-Una rete-falsario impara a produrre l'onda intera in un colpo solo, una
-squadra di reti-esperto prova a distinguere l'audio vero da quello fabbricato,
-e i due si allenano a vicenda finché il falso diventa indistinguibile.
+audio poteva costare minuti di calcolo. **HiFi-GAN** risolve il problema
+mettendo al lavoro due reti che si sfidano: da una parte un falsario,
+dall'altra un esperto d'arte. È l'idea delle **GAN**, a cui più avanti nel
+libro è dedicato un capitolo intero, e qui basta il gioco: una rete-falsario
+impara a produrre l'onda intera in un colpo solo, una squadra di reti-esperto
+prova a distinguere l'audio vero da quello fabbricato, e le due si allenano a
+vicenda finché il falso diventa indistinguibile.
 Risultato: qualità paragonabile a WaveNet, ma molto **più veloce del tempo
 reale**, che vuol dire questo: per fabbricare un secondo di parlato ci mette
 molto meno di un secondo, tanto che in un secondo di calcolo ne produce minuti.
@@ -314,22 +321,25 @@ niente, serve a fare migliaia di moltiplicazioni insieme.
 
 WaveNet {cite}`oord2016wavenet` è la stessa rete della sezione *Generare suono
 e musica* del capitolo sull'Audio; qui compare condizionata sul mel e con i
-campioni chiamati $a$, perché $x$ in questa sezione è già il testo in ingresso
-a Tacotron 2. Modella l'onda in modo autoregressivo:
+campioni chiamati $a$, perché in questo capitolo $\mathbf{x}$ è già il vettore
+acustico di un frame. Modella l'onda in modo autoregressivo:
 
 $$
-p(a \mid M) = \prod_{t=1}^{T'} p(a_t \mid a_1, \dots, a_{t-1}, M),
+p(\mathbf{a} \mid \mathbf{M}) =
+\prod_{t=1}^{T'} p(a_t \mid a_1, \dots, a_{t-1}, \mathbf{M}),
 $$
 
-dove $a_t$ è il campione audio al passo $t$ (quantizzato su 256 livelli con
+dove $\mathbf{a}$ è l'onda intera, $a_t$ il campione audio al passo $t$
+(quantizzato su 256 livelli con
 compansione $\mu$-law nella versione originale), $T'$ è il numero di campioni
 dell'onda (da non confondere con il $T$ delle colonne di mel: qui i campioni
-sono centinaia di volte più numerosi) e $M$ è il mel-spettrogramma
+sono centinaia di volte più numerosi) e $\mathbf{M}$ è il mel-spettrogramma
 che condiziona la generazione. L'architettura usa convoluzioni causali
 **dilatate**, con dilatazione che raddoppia a ogni strato: il campo recettivo
 cresce esponenzialmente e copre centinaia di millisecondi di contesto. Il
-limite è strutturale: $T'$ passi sequenziali, cioè oltre ventimila per un
-secondo di audio a 22.050 Hz. HiFi-GAN {cite}`kong2020hifi` sostituisce
+limite è strutturale: $T'$ passi sequenziali, cioè ventiquattromila per ogni
+secondo di audio alla frequenza di Tacotron 2 (22.050 in LJSpeech, il corpus
+del codice in fondo alla sezione). HiFi-GAN {cite}`kong2020hifi` sostituisce
 l'autoregressione con un gioco avversario nel senso esatto del capitolo sulle
 GAN: il generatore è una pila di convoluzioni trasposte che sovracampiona il
 mel fino alla frequenza dell'onda; i discriminatori sono due famiglie:
@@ -355,9 +365,12 @@ frase si può pronunciare bene in mille modi diversi.
 Come si giudica un doppiatore? Lo si ascolta. Il **MOS** (*mean opinion
 score*, punteggio medio di opinione) è esattamente questo: si fa ascoltare la
 stessa frase a un gruppo di persone e si chiede un voto da 1 («pessima») a 5
-(«eccellente»); il MOS è la media. Se trenta ascoltatori danno in media 4,2, il
-sistema è vicino, ma non pari, a una registrazione umana, che nella stessa
-prova prende di solito tra 4,5 e 4,6.
+(«eccellente»); il MOS è la media. Il voto da solo, però, non dice niente:
+per leggerlo serve il termine di paragone, cioè quanto hanno preso, **nella
+stessa prova**, delle registrazioni di voce umana vera, infilate fra le altre
+senza dirlo a nessuno. Se il sistema prende 4,2 e le registrazioni 4,5, quei
+tre decimi sono il divario; lo stesso 4,2 in una prova dove le registrazioni
+prendono 3,9 direbbe l'opposto.
 
 Un avvertimento che vale più del numero: quel voto medio ha senso *dentro* una
 prova, non fra prove diverse. Trenta persone in una stanza con le cuffie

@@ -9,24 +9,25 @@ volte costa meno che impararne una sola.
 
 L'idea che questo valga anche per una rete neurale ha un articolo di
 riferimento e una data: Rich Caruana, 1997, in un lavoro il cui titolo è
-semplicemente *Multitask Learning* {cite}`caruana1997multitask`. La tesi è
-netta: addestrare una rete su più compiti collegati insieme, facendo sì che
-partano tutti dallo stesso lavoro preliminare (una **rappresentazione
-condivisa**: gli stessi numeri intermedi, calcolati una volta sola, da cui poi
-ciascun compito ricava la sua risposta), fa funzionare meglio **ciascuno** di
-quei compiti su esempi mai visti, che è quello che chiamiamo *generalizzazione*.
-Non è un trucco per risparmiare memoria: è il compito in più che
-insegna qualcosa al compito principale.
+semplicemente *Multitask Learning* {cite}`caruana1997multitask`.
+
+La tesi è netta. Si addestra una rete su più compiti collegati, tutti insieme, e
+si fa in modo che partano dallo stesso lavoro preliminare: gli stessi numeri
+intermedi, calcolati una volta sola, da cui poi ciascun compito ricava la sua
+risposta. È la **rappresentazione condivisa**. Il risultato è che **ciascuno**
+dei compiti funziona meglio su esempi mai visti, che è quello che chiamiamo
+*generalizzazione*. Non è un trucco per risparmiare memoria: è il compito in più
+che insegna qualcosa al compito principale.
 
 Vale la pena affrontarla qui perché è una tecnica che il libro incontra
-dappertutto senza mai chiamarla per nome. Il rilevatore di oggetti che predice
-insieme che cosa c'è nella foto e in che punto si trova (la classe e le
-coordinate del riquadro) fa multi-compito. Il **modello linguistico**, quello
-che completa e genera testo, viene preparato indovinando pezzi mancanti in
-decine di modi diversi, e ognuno di quei modi è un compito a sé: multi-compito
-anche lui. Il
-sistema di raccomandazione che stima insieme la probabilità di un clic e quella
-di un acquisto fa multi-compito, e la seconda è rara quanto preziosa.
+dappertutto senza mai chiamarla per nome. Il rilevatore di oggetti che dice
+insieme che cosa c'è nella foto e in che punto si trova (la categoria e le
+quattro coordinate del riquadro che lo racchiude) fa multi-compito. La rete che
+da una sola fotografia di una strada stima insieme quanto è lontano ogni pixel
+e a quale oggetto appartiene fa multi-compito. Il sistema di raccomandazione che
+stima insieme la probabilità che tu clicchi su un prodotto e quella che tu lo
+compri fa multi-compito, e la seconda è rara quanto preziosa: di acquisti se ne
+vedono molti meno che di clic, e il compito abbondante aiuta quello raro.
 
 ## Un tronco, tante teste
 
@@ -46,10 +47,14 @@ specializzati che da quello stesso archivio ricavano risposte diverse. Nessuno
 rilegge i documenti da capo per ogni domanda.
 
 Non è l'unica forma possibile. A volte i compiti sono parenti ma non abbastanza
-da poter condividere tutto: allora si tengono reti separate e si chiede solo
-che **non si allontanino troppo** l'una dall'altra, con una penalità che le
-tiene vicine. Costa di più, ma non obbliga due compiti diversi a usare per
-forza la stessa identica rappresentazione.
+da poter condividere tutto: allora si tengono due reti separate, ciascuna col
+suo lavoro, e si chiede solo che **non si allontanino troppo** l'una
+dall'altra. Vicine, qui, vuol dire con numeri simili al loro interno: alla fine
+di ogni passo si controlla quanto i pesi dell'una differiscono da quelli
+dell'altra, e più la differenza cresce più aumenta la multa. Sono due uffici
+distinti che però tengono le procedure allineate. Costa di più, perché le reti
+sono due, ma non obbliga due compiti diversi a usare per forza la stessa
+identica preparazione.
 
 Nella pratica si finisce quasi sempre in mezzo: **condiviso in basso, separato
 in alto**. In basso una rete impara cose generiche (i bordi, le forme, la
@@ -90,7 +95,29 @@ parallelo no, perché il primo è ancora nella loss.
 
 `````
 
+```{figure} ../figures/multi-compito-tronco-teste.svg
+:name: fig-multi-compito-forme
+:alt: "Tre modi di far imparare più compiti a una rete, affiancati. A sinistra, «un tronco, tante teste»: dall'ingresso sale un unico blocco condiviso e da lì partono tre frecce verso tre teste, una per compito. Al centro, «due reti tenute vicine»: due colonne separate, ciascuna con il proprio ingresso e la propria testa, collegate da tre frecce tratteggiate a doppia punta, la penalità che impedisce loro di allontanarsi. A destra, «condiviso sotto, separato sopra»: un tronco comune in basso che si biforca a metà in due rami distinti, ciascuno con la sua testa."
+:width: 96%
+
+Le tre forme, una accanto all'altra. Quello che cambia è **dove** passa la
+linea fra ciò che i compiti fanno insieme e ciò che ciascuno fa per conto suo:
+nel primo disegno passa in cima, nel secondo non passa affatto (le due reti non
+condividono niente), nel terzo passa a metà altezza.
+```
+
+Messe in fila come in {numref}`fig-multi-compito-forme`, le tre forme si
+rivelano tre risposte alla stessa domanda: fino a che altezza i compiti si
+somigliano. La prima scommette che si somiglino fino in cima, e ci rimette se la
+scommessa è sbagliata. La seconda non scommette niente, e il conto lo paga in
+numeri da imparare, che sono il doppio. La terza sceglie un'altezza, ed è
+l'unica delle tre che si può regolare.
+
 ## Perché funziona: il compito in più fa da freno
+
+Che funzioni è un fatto sperimentale vecchio di trent'anni; il perché, invece,
+non è uno solo. Conviene tenere separate le ragioni, perché dicono cose diverse
+su quando aspettarsi un guadagno e quando no.
 
 `````{tab} Elementare
 
@@ -98,17 +125,25 @@ Il guadagno viene da tre parti, e conviene tenerle distinte perché non sono la
 stessa cosa.
 
 Il primo è il più ovvio: **più segnale**. Il compito in più porta con sé altre
-etichette, quindi altre occasioni di capire com'è fatto l'ingresso. È
-particolarmente prezioso quando il compito che ci sta a cuore ha poche
-etichette (costano, o sono rare) e quello di contorno ne ha tante.
+**etichette**, cioè altre risposte giuste scritte accanto agli esempi, come «in
+questa foto c'è un gatto». Le etichette costano, perché quasi sempre è una
+persona a doverle scrivere una per una, e a volte sono semplicemente rare (di
+persone che comprano ce ne sono molte meno di persone che guardano). Ogni
+etichetta in più è un'occasione in più di capire com'è fatto l'ingresso, e il
+guadagno è massimo quando il compito che ci sta a cuore ne ha poche e quello di
+contorno ne ha tante. Al contrario, se del compito principale abbiamo già
+esempi in abbondanza, questo primo vantaggio si assottiglia fino a sparire.
 
 Il secondo è più sottile ed è il vero motivo per cui la cosa funziona: il
 compito in più fa da **freno**. Una rete lasciata sola con un compito trova la
 scorciatoia più comoda per risolverlo, e le scorciatoie sono proprio ciò che
 non generalizza. Se la stessa rappresentazione deve servire anche a un secondo
 compito, quelle scorciatoie smettono di essere convenienti, perché al secondo
-non servono. La rete è spinta verso soluzioni più generali, che è la
-definizione stessa di regolarizzazione.
+non servono. La rete è spinta verso soluzioni più generali, e questo è
+esattamente ciò che in gergo si chiama **regolarizzazione**: qualunque
+accorgimento che, restringendo le strade che la rete può prendere, la costringa
+a una risposta che vale in generale invece che a una perfetta sugli esempi già
+visti.
 
 Il terzo è di attenzione: certi compiti **dicono alla rete dove guardare**. Se
 per rispondere alla seconda domanda serve un dettaglio che per la prima
@@ -154,19 +189,23 @@ stessa rappresentazione e finiscono peggio di quando erano separati. Studiare
 latino aiuta l'italiano; studiare latino la sera prima di una gara di nuoto
 non aiuta il nuoto, e toglie ore all'allenamento.
 
-Il meccanismo del danno è concreto: il tronco ha una capacità finita, e ogni
-pezzo di quella capacità speso per un compito che non c'entra è un pezzo tolto
-a quello che conta. Peggio: i due compiti possono chiedere al tronco cose
-incompatibili, e allora ogni passo che accontenta l'uno scontenta l'altro, e
-l'addestramento passa il tempo a oscillare invece di migliorare.
+Il meccanismo del danno è concreto. Il tronco ha una **capacità** finita: i
+numeri che può regolare sono tanti, ma sono un numero preciso, e quello che
+riesce a tenere a mente è limitato da quanti sono. Ogni pezzo di quella capacità
+speso per un compito che non c'entra è un pezzo tolto a quello che conta.
+Peggio: i due compiti possono chiedere al tronco cose incompatibili, e allora
+ogni passo che accontenta l'uno scontenta l'altro, e l'addestramento passa il
+tempo a oscillare invece di migliorare.
 
-C'è poi un problema più prosaico e altrettanto insidioso: **quanto pesa
-ciascun compito** nella somma? Se un compito misura un errore in metri e un
-altro una probabilità, i loro numeri non sono paragonabili, e chi ha i numeri
-più grossi finisce per comandare l'addestramento senza che nessuno l'abbia
-deciso. Si può regolare a mano, provando, oppure lasciare che sia la rete a
-capire quanto fidarsi di ciascun compito: quelli su cui è molto incerta pesano
-meno.
+C'è poi un problema più prosaico e altrettanto insidioso. Quando la rete impara
+due cose insieme, l'errore che si cerca di ridurre è **uno solo**: si prende
+quanto sbaglia sul primo compito, si prende quanto sbaglia sul secondo e si
+sommano. Ma quanto deve pesare ciascuno dei due in quella somma? Se un compito
+misura un errore in metri e un altro una probabilità, i loro numeri non sono
+paragonabili, e chi ha i numeri più grossi finisce per comandare l'addestramento
+senza che nessuno l'abbia deciso. Si può regolare a mano, provando, oppure
+lasciare che sia la rete a capire quanto fidarsi di ciascun compito: quelli su
+cui è molto incerta pesano meno.
 
 E la domanda a monte, «questi due compiti sono imparentati?», non ha una
 formula. Si risponde provando.
@@ -225,12 +264,22 @@ tenendo quelli che aiutano.
 ## In pratica: il guadagno si misura, e può essere negativo
 
 L'affermazione «un compito imparentato aiuta, uno che non c'entra niente
-danneggia» si può verificare, e l'esperimento sta in una pagina. Costruiamo una
-situazione realistica: il compito che ci interessa ha **poche etichette**
-(quaranta), il compito ausiliario ne ha molte (ottocento). Poi confrontiamo tre
-addestramenti sullo stesso identico tronco. Il codice qui sotto è lungo, ma si
-può saltare senza perdere il filo: quello che conta sono i tre numeri che
-stampa, commentati subito dopo.
+danneggia» si può verificare, e l'esperimento sta in una pagina.
+
+L'impianto è questo. Si inventa una **quantità nascosta**: un numero che non si
+vede, ricavato dall'ingresso con una regola fissa. Il compito **principale**,
+quello che ci sta a cuore, chiede di indovinare proprio quel numero, e di
+esempi etichettati ne ha pochissimi, quaranta. Accanto gli si mette un compito
+**ausiliario**, cioè un compito di contorno che serve solo ad aiutare il primo,
+e di esempi ne ha molti, ottocento. Di ausiliari ne proviamo due: uno
+imparentato, che chiede il *quadrato* della stessa quantità nascosta, e uno che
+non c'entra niente, il cui bersaglio è puro caso e che nessuna rete può
+imparare.
+
+Poi si confrontano tre addestramenti sullo stesso identico tronco: senza
+ausiliario, con quello imparentato, con quello inutile. Il codice qui sotto è
+lungo, ma si può saltare senza perdere il filo: quello che conta sono i tre
+numeri che stampa, commentati subito dopo.
 
 ```python
 import torch
@@ -284,9 +333,12 @@ for ausiliario in (None, "parente", "rumore"):
           f"   ({100 * (media - base) / base:+.0f}%)")
 ```
 
-Media su cinque semi, per non leggere il rumore. I numeri da soli non dicono
-niente (sono la scala della quantità che stiamo predicendo): conta il confronto
-fra i tre.
+Ogni numero è la media di cinque prove che differiscono solo per il **seme**,
+cioè per il punto da cui parte il generatore di numeri casuali: pesi iniziali
+diversi, dati diversi. Una prova sola misurerebbe anche la fortuna. E i numeri
+presi da soli non dicono niente, perché dipendono da quanto sono grandi le
+quantità che stiamo cercando di indovinare, che le abbiamo scelte noi: conta il
+confronto fra i tre.
 
 - **nessun ausiliario**: errore $0{,}2829$. Quaranta esempi sono pochi, e si
   vede;
@@ -304,13 +356,33 @@ vada non fa niente. **Male che vada fa danno.** Va però letto per quello che è
 il bersaglio del terzo braccio è rumore puro, un caso estremo che nessuna rete
 può imparare, quindi quello che l'esperimento misura con precisione è la prima
 delle due cause di danno, la capacità del tronco sprecata. Un compito diverso
-ma *imparabile* fa in genere molto meno danno di così. Che compiti in
-competizione peggiorino il risultato è comunque un fatto documentato su scala
-ben più grande di questa {cite}`standley2020tasks`, e quanto danno facciano
-dipende da una domanda che nessuna formula risolve, cioè se i compiti siano
-davvero imparentati. Stabilire quali stiano bene insieme è ancora, in larga
-parte, un problema aperto: si misura empiricamente, provandoli a coppie, più
-che deducendolo.
+ma *imparabile* fa in genere molto meno danno di così.
+
+C'è una seconda cosa che quel $+25\%$ non dice, ed è la manopola che
+l'esperimento non tocca. Nel codice i due errori si sommano con peso uguale,
+cioè $\lambda_1 = \lambda_2 = 1$ (le $\lambda$ sono i pesi con cui i due compiti
+entrano nella somma): la scelta più innocente possibile, e anche la meno
+difendibile, visto che la sezione precedente ha detto che sono proprio quei pesi
+a comandare l'addestramento senza che nessuno l'abbia deciso. Rifacendo le
+stesse cinque prove con l'ausiliario pesato $\lambda = 0{,}1$ il danno scende a
+$+7\%$, e con $\lambda = 0{,}01$ a $+1{,}5\%$. Il trasferimento negativo,
+insomma, non è una proprietà della sola coppia di compiti: è una proprietà della
+coppia **e** del peso che le si dà.
+
+E per simmetria va detto anche del primo numero, il migliore dei tre. Il compito
+«parente» è imparentato quanto è possibile esserlo: il suo bersaglio si ricava
+dalla stessa quantità nascosta del compito principale con un conto fisso (il
+quadrato), e nient'altro. Non ha una sola difficoltà propria: chi ha imparato
+l'uno ha già in mano tutto quello che serve all'altro. Il $-65\%$ è dunque
+vicino al tetto di quello che un compito in più può fare, non a un caso tipico:
+due compiti davvero distinti condividono una parte della struttura, non tutta.
+
+Che compiti in competizione peggiorino il risultato è comunque un fatto
+documentato su scala ben più grande di questa {cite}`standley2020tasks`, e
+quanto danno facciano dipende da una domanda che nessuna formula risolve, cioè
+se i compiti siano davvero imparentati. Stabilire quali stiano bene insieme è
+ancora, in larga parte, un problema aperto: si misura empiricamente,
+provandoli a coppie, più che deducendolo.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
@@ -335,7 +407,9 @@ che deducendolo.
   compiti su cui è più incerta.
 - Misurato su un caso costruito apposta: un compito ausiliario imparentato ha
   tolto il **65%** dell'errore, uno fatto di numeri casuali ne ha **aggiunto il
-  25%**. Non è una tecnica neutra.
+  25%**. Non è una tecnica neutra. Sono però i due estremi, e contati dando ai
+  due compiti lo stesso peso nella somma: dando all'ausiliario un peso dieci
+  volte minore, il danno scende dal 25% al 7%.
 ```
 `````
 
@@ -366,6 +440,9 @@ che deducendolo.
   invece di cercarli a mano.
 - Misurato su un caso costruito: un ausiliario imparentato toglie il **65%**
   dell'errore, un ausiliario fatto di puro rumore ne **aggiunge il 25%**. Non è
-  una tecnica neutra.
+  una tecnica neutra. Entrambi i numeri sono estremi (il «parente» è una
+  funzione deterministica del bersaglio principale) e valgono a
+  $\lambda_t$ uguali: con l'ausiliario pesato $0{,}1$ il danno scende al 7%, con
+  $0{,}01$ all'1,5%.
 ```
 `````

@@ -37,7 +37,8 @@ strozzatura, e il resto lo decide lei.
 
 La parola *codec* non è nuova. Ogni volta che ascoltate un brano in streaming
 o salvate un vocale, un codec ha ridotto l'audio a una frazione della sua
-dimensione. Il più famoso, l'**MP3** (standardizzato nel 1993), comprime
+dimensione. Il più famoso, l'**MP3** (specifica chiusa nel 1992, pubblicata
+come standard ISO l'anno dopo), comprime
 buttando via ciò che l'orecchio non sente: si appoggia a un modello
 psicoacustico (un insieme di **regole fisse**, scritte a mano da ingegneri)
 che decide quali frequenze sono mascherate da altre e quindi eliminabili. È un
@@ -81,15 +82,16 @@ $\mathbf{Z} = E(\mathbf{x})$ a **frequenza di frame** molto più bassa del tasso
 $\hat{\mathbf{x}} = D(\mathbf{Z})$. L'obiettivo minimizza una perdita di ricostruzione, spesso
 combinando errore nel dominio del tempo e nello spettro (multi-scala
 tempo–frequenza), ed è tipicamente affiancato da un **discriminatore** in stile
-GAN che spinge $\hat{\mathbf{x}}$ a suonare realistico, non solo a minimizzare l'errore
-medio.
+GAN (il capitolo dedicato, più avanti, ne racconta il meccanismo per intero)
+che spinge $\hat{\mathbf{x}}$ a suonare realistico, non solo a minimizzare
+l'errore medio.
 
 Fin qui è compressione con rappresentazione **continua**: ogni $\mathbf{z}$ è un vettore di
 numeri reali. La novità che ci interessa è renderla **discreta**: sostituire
 ogni vettore latente con un simbolo preso da un insieme finito. È il passaggio
 che trasforma un compressore in un *tokenizzatore* del suono, e apre la porta
-ai modelli di linguaggio sull'audio. Il come è il tema delle prossime due
-sezioni.
+ai modelli di linguaggio sull'audio. Il come è il tema delle due parti che
+seguono.
 
 `````
 
@@ -284,16 +286,20 @@ bitrate dice quanto costa, non quanto suona bene.
 
 `````
 
-Il risultato è una rappresentazione a due assi
-({numref}`fig-audio-codec-rvq`): lungo il **tempo**, un frame ogni manciata di
-millisecondi; lungo la **profondità**, gli $N$ token della cascata RVQ per
-ciascun frame. Un secondo di audio diventa così una piccola griglia di interi:
-con i parametri di sopra, 8 token per ciascuno dei 75 frame, cioè **600
-simboli** al posto di 24.000 campioni.
+Il risultato è una rappresentazione a due assi: lungo il **tempo**, un frame
+ogni manciata di millisecondi; lungo la **profondità**, gli $N$ token della
+cascata RVQ per ciascun frame. {numref}`fig-audio-codec-rvq` mostra il secondo
+asse, che è quello nuovo: un frame solo, e la pila di token che ne esce, con
+l'encoder che lo produce e il decoder che lo rilegge. Un secondo di audio
+diventa così una piccola griglia di interi: con i parametri di sopra, 8 token
+per ciascuno dei 75 frame, cioè **600 simboli** al posto di 24.000 campioni.
 
 Da quei 600 numeri il decoder tira fuori un suono che *suona* come l'originale,
-e la parola «ricostruire» va presa con le pinze. Addestrato con un
-discriminatore, quel decoder è a tutti gli effetti un generatore condizionato: a
+e la parola «ricostruire» va presa con le pinze. Quel decoder non impara solo a
+sbagliare poco: accanto a lui, durante l'addestramento, c'è un
+**discriminatore**, una seconda rete il cui unico mestiere è smascherare l'audio
+finto (è il meccanismo delle GAN, a cui il libro dedica un capitolo più avanti).
+Sotto quella pressione diventa a tutti gli effetti un generatore condizionato: a
 bitrate bassi il dettaglio fine (la grana, le code di riverbero, le frequenze
 più alte) non viene recuperato, viene **risintetizzato** in modo plausibile. Per
 questo la fedeltà campione per campione crolla mentre la qualità percepita
@@ -404,11 +410,13 @@ voce che nessun latente sceglie **non viene più aggiornata**, quindi resta dov'
 e continua a non essere scelta. Il codebook effettivo si riduce in silenzio a
 una frazione di $K$, mentre il bitrate nominale $N \log_2 K \cdot f_r$ resta
 quello di prima: si pagano tutti i bit e se ne usa una parte. Si chiama
-**codebook collapse**, e in una simulazione con 64 voci ne restano vive una
-dozzina. I rimedi sono di ingegneria e stanno nei codec citati qui sopra:
+**codebook collapse**, e quanto morda dipende da come si parte: inizializzando i
+prototipi con valori piccoli e casuali, in una simulazione a 64 voci ne restano
+vive fra un terzo e la metà, e il conto cambia a ogni seme. I rimedi sono di
+ingegneria e stanno nei codec citati qui sopra:
 EnCodec {cite}`defossez2023high` sostituisce le voci inutilizzate con campioni
-presi dal batch corrente (il *restart*, che nella stessa simulazione riporta le
-voci vive a 64 su 64); altri quantizzano in uno spazio di dimensione più bassa e
+presi dal batch corrente (il *restart*, che nella stessa simulazione le riporta
+tutte e 64 in gioco); altri quantizzano in uno spazio di dimensione più bassa e
 normalizzano prototipi e latenti. Un codebook va sempre misurato per quante voci
 **usa davvero**, non per quante ne dichiara.
 
@@ -426,9 +434,9 @@ fuori dal proprio ambito: PESQ e STOI, per dire, nascono per il parlato rovinato
 da rumore o da codec a forma d'onda e si comportano male sull'uscita di un
 decoder che il segnale se lo reinventa. Per questo i lavori del settore
 continuano a chiudere con prove d'ascolto umane, il protocollo **MUSHRA**, con un
-riferimento nascosto e un'ancora di bassa qualità mescolati agli altri stimoli:
-è da lì che vengono i punteggi citati poco fa. Quando un lavoro riporta un solo
-numero oggettivo, quel numero è un indizio, non la qualità.
+riferimento nascosto e un'ancora di bassa qualità mescolati agli altri stimoli,
+così che chi ascolta non sappia mai cosa sta giudicando. Quando un lavoro
+riporta un solo numero oggettivo, quel numero è un indizio, non la qualità.
 
 Il principio della cascata sul residuo, però, è esattamente quello che hai
 appena eseguito.

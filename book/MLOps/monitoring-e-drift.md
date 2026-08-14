@@ -85,19 +85,20 @@ e per latenza {cite}`breck2017ml`.
 `````
 
 Questo affina i tre controlli abbozzati nella sezione «Quando i dati cambiano»
-(ingressi, uscite, errore) e aggiunge sotto di essi lo strato più prosaico e
-più spesso dimenticato: un modello può servire predizioni perfette e restare
-inutile perché risponde in tre secondi quando l'utente ne aspetta uno, o
+(ingressi, uscite, errore) e aggiunge sotto di essi lo strato più prosaico, e
+più spesso dimenticato. Un modello può servire predizioni perfette e restare
+inutile: perché risponde in tre secondi quando l'utente ne aspetta uno, o
 perché va in errore su un input malformato che nessuno aveva previsto. La
 correttezza è inutile se il servizio è morto.
 
 ## Rilevare il drift in pratica
 
-Il secondo livello (la sorveglianza delle distribuzioni) è quello dove si
-gioca la partita del *drift*. Nella sezione «Quando i dati cambiano» abbiamo
-classificato i modi in cui il mondo può divergere dall'addestramento
-{cite}`quinonero2009dataset`, e non li ripetiamo qui; bastano i loro nomi, con
-accanto che cosa vuol dire ciascuno. Il **covariate shift** è quando cambia il
+Il secondo livello, quello che guarda che tipo di richieste stanno arrivando e
+che risposte stanno uscendo, è dove si gioca la partita del *drift*. Nella
+sezione «Quando i dati cambiano» abbiamo classificato i modi in cui il mondo
+può divergere dall'addestramento {cite}`quinonero2009dataset`, e non li
+ripetiamo qui; bastano i loro nomi, con accanto che cosa vuol dire ciascuno. Il
+**covariate shift** è quando cambia il
 *tipo di richieste che arrivano*: arriva altra gente, con altre
 caratteristiche. Il **label shift** è quando cambiano le *proporzioni delle
 risposte giuste*: le frodi erano una su cento e adesso sono una su dieci. Il
@@ -172,8 +173,9 @@ cambia). Le tre decisioni operative sono:
   abituale qui è quello sbagliato. Alle taglie di una finestra di produzione
   (migliaia di record) il KS ha una potenza enorme e rifiuta l'ipotesi nulla su
   scostamenti che nessun modello sente: uno spostamento di due decimi di
-  deviazione standard, su $n = 2000$ per finestra, dà $p \sim 10^{-7}$ in
-  praticamente ogni finestra. Il problema non è la molteplicità dei test ma la
+  deviazione standard, su $n = 2000$ per finestra, dà tipicamente
+  $p \sim 10^{-7}$, e il rifiuto arriva su ogni finestra simulata. Il problema
+  non è la molteplicità dei test ma la
   **taglia del campione**, e correggere per Bonferroni non lo tocca, perché i
   $p$-value non sono al limite, sono a molti ordini di grandezza sotto
   qualunque soglia. L'allarme va quindi fondato sull'**ampiezza** ($D$, o una
@@ -206,13 +208,19 @@ Due cose che {numref}`fig-deriva-ks` mostra e una formula non dice. La prima è
 comunque a coincidere per costruzione, ma nel mezzo, e per due normali sfalsate
 esattamente a metà strada fra le due medie. La seconda è che la soglia
 disegnata è sull'**ampiezza**, non sul $p$-value: qui $0{,}10$, decisa sul
-significato pratico. Con duemila osservazioni per finestra, la taglia presa a
-esempio poche righe più su, il test respingerebbe l'ipotesi nulla già al mese
-1, dove $D$ vale sei centesimi: il valore critico al cinque per cento scende a
-$0{,}043$, e su venti coppie di finestre simulate il rifiuto arriva
-diciannove volte, con $p$ dell'ordine di $10^{-5}$. Alla stessa deriva, con
-cinquecento osservazioni, il rifiuto arriva otto volte su venti. Non è cambiato
-il mondo fra i due casi: è cambiata la taglia del campione.
+significato pratico.
+
+Con duemila osservazioni per finestra, la taglia presa a esempio poche righe
+più su, il test respingerebbe l'ipotesi nulla già al mese 1, quando $D$ vale
+sei centesimi e la soglia di ampiezza, che sta a dieci centesimi, è ancora
+lontana. Il valore
+critico al cinque per cento, a quella taglia, scende a $0{,}043$. Simulando le
+due finestre di quel mese (due normali di uguale varianza sfalsate di
+$0{,}15$ deviazioni standard, duemila osservazioni ciascuna, duemila prove) il
+rifiuto arriva **in circa il $99\%$ dei casi**, con un $p$ tipico dell'ordine
+di $10^{-5}$. Alla stessa identica deriva, con cinquecento osservazioni per
+finestra, il rifiuto scende a **poco più della metà** delle prove. Non è
+cambiato il mondo fra i due casi: è cambiata la taglia del campione.
 
 Mettiamo insieme le tre decisioni in poche righe eseguibili. Il codice confronta
 una finestra di riferimento con una corrente, in cui iniettiamo di proposito uno
@@ -364,7 +372,8 @@ automatizzate tengono un umano *nell'anello* alle soglie alte della piramide,
 e valutano ogni candidato al retraining su dati **freschi e possibilmente non
 contaminati** dalle scelte del modello in carica. Il caso limite, in cui il
 feedback loop non è un incidente ma la struttura stessa del problema, lo
-vedremo nel capitolo sui sistemi di raccomandazione.
+abbiamo già visto nel capitolo sui sistemi di raccomandazione: lì il modello
+decide che cosa l'utente può vedere, e quindi che cosa potrà mai cliccare.
 
 `````
 

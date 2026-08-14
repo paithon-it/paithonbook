@@ -1,0 +1,31 @@
+# I capitoli che restano fermi, e perché.
+#
+# Il libro anima dove **il tempo è il contenuto**: qualcosa che scorre,
+# converge, si accumula, si propaga, si genera passo dopo passo. Non tutti i
+# capitoli ne hanno uno, e va benissimo: una tassonomia, un'architettura, un
+# confronto si spiegano meglio fermi.
+#
+# Quello che non va bene è non essersela chiesta. Le animazioni sono nate in
+# una prima ondata su quindici capitoli; poi il libro è arrivato a
+# trentacinque e nessuno ha più posto la domanda, perché la lista dei capitoli
+# scoperti era scritta a mano e non si aggiornava. Risultato: venticinque
+# capitoli senza una clip, e chi leggeva la parte nuova del libro non ne
+# vedeva più nessuna.
+#
+# Ora la domanda la fa il controllo: `python3 scripts/coerenza.py --solo
+# animazioni` segnala come difetto ogni capitolo a zero clip che non compaia
+# qui. Dichiararlo costa una riga; dimenticarsene non è più possibile.
+#
+# Formato: il nome della cartella del capitolo, e una `ragione` che dica
+# perché il tempo, lì, non è il contenuto. La ragione è per una persona, non
+# per la macchina: scrivila come la diresti a voce.
+
+[Conclusioni]
+ragione = """
+È un capitolo di ripasso, e ogni meccanismo che nomina (la discesa del
+gradiente, le GAN, la diffusione, gli agenti) ha già la sua casa altrove: è
+là che va animato, non qui. Le tre cose temporali che il capitolo cita hanno
+il tempo su un asse (le leggi di scala, il decadimento degli errori lungo una
+catena di passi, la cronologia delle idee), e una figura ferma le mostra
+tutte insieme, cioè meglio di quanto le mostrerebbe una a turno.
+"""

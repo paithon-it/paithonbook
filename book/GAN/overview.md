@@ -10,17 +10,22 @@ rimetterle insieme, e si arena. Goodfellow obietta che così non funzionerà,
 ma tornando a casa gli viene un'idea diversa: e se invece di una rete sola ne
 mettessi *due*, una a fabbricare immagini e una a smascherarle, e le facessi
 combattere? Quella notte scrive il codice. Funziona quasi al primo colpo. Ne
-esce *Generative Adversarial Nets* (Goodfellow et al., 2014), uno dei paper
-più citati del decennio: *generative adversarial networks*, alla lettera reti
-generative avversarie, cioè reti che fabbricano qualcosa e che imparano a
+esce *Generative Adversarial Nets* {cite}`goodfellow2014generative`, uno dei
+paper più citati del decennio: *generative adversarial networks*, alla lettera
+reti generative avversarie, cioè reti che fabbricano qualcosa e che imparano a
 farlo sfidandosi.
 
 ## Generare, non classificare
 
-Fin qui, in questo libro, i modelli hanno soprattutto *risposto a domande su
-dati esistenti*: questa email è spam? questa cifra è un 7? Un modello
-generativo fa il movimento opposto: **produce dati nuovi e plausibili** che
-non esistevano prima.
+Il libro ha già incontrato reti che *producono* qualcosa, e parecchie: un
+modello linguistico scrive la parola dopo, un vocoder ricostruisce l'onda
+sonora di una frase, un sintetizzatore legge un testo ad alta voce. Tutte
+quelle, però, mentre imparavano avevano sotto gli occhi la risposta giusta: la
+parola che veniva davvero dopo, l'onda che quella frase aveva davvero. Chi deve
+disegnare un gatto mai esistito non ce l'ha e non può averla, perché non esiste
+un originale da cui misurare la distanza. La domanda di questo capitolo è
+proprio questa: come si insegna a una rete a **fabbricare dati nuovi e
+plausibili** quando non c'è niente con cui confrontarli.
 
 `````{tab} Elementare
 
@@ -45,8 +50,9 @@ esplicitamente o implicitamente, la distribuzione dei dati $p_{\text{dati}}(\mat
 così da poterne campionare esempi nuovi. Una GAN la apprende in modo
 *implicito*: non stima una densità in forma chiusa, ma costruisce un
 **campionatore** $G(\mathbf{z})$ che trasforma un rumore semplice $\mathbf{z} \sim p_z$
-(tipicamente gaussiano) in campioni indistinguibili da quelli reali; la
-distribuzione da cui questi campioni provengono si indica con $p_G$.
+(tipicamente gaussiano) in campioni che l'addestramento spinge a diventare
+indistinguibili da quelli reali; la distribuzione da cui questi campioni
+provengono si indica con $p_G$.
 
 `````
 
@@ -91,7 +97,8 @@ l'addestramento delle due reti in un unico ciclo di feedback.
 
 Conviene dire subito che cosa sia, quel segnale, perché è il perno
 dell'intero capitolo e non è il verdetto. Ciò che risale da $D$ verso $G$ è il
-gradiente della loss rispetto al **dato generato**, $\partial \mathcal{L}_G /
+gradiente della loss del generatore rispetto al **dato generato**
+$\tilde{\mathbf{x}} = G(\mathbf{z})$, cioè $\partial \mathcal{L}_G /
 \partial \tilde{\mathbf{x}}$: non un numero ma un vettore, con una componente per ogni
 numero del dato, che dice in che verso spostare ciascuna di quelle componenti
 perché il verdetto cambi. È una direzione, non un voto, e la sua esistenza
@@ -172,11 +179,12 @@ più avanti.
 
 Le GAN hanno spostato il confine di ciò che una macchina può *fabbricare*. Da
 questa idea nascono i **volti fotorealistici** di persone inesistenti: la
-famiglia StyleGAN di NVIDIA (Karras et al., 2019) alimenta siti come *This
-Person Does Not Exist*, dove ogni ricarica mostra un volto sintetico
-indistinguibile da una fotografia. Da qui arrivano anche i **deepfake** (volti
-sostituiti nei video) con tutto il loro carico di rischi per disinformazione e
-consenso, un tema su cui questo libro sceglie l'onestà più che l'entusiasmo. E
+famiglia StyleGAN di NVIDIA {cite}`karras2019style` alimenta siti come *This
+Person Does Not Exist*, dove ogni ricarica mostra un volto sintetico che a un
+primo sguardo non si distingue da una fotografia. Da qui arrivano anche i
+**deepfake** (volti sostituiti nei video) con tutto il loro carico di rischi
+per disinformazione e consenso, un tema su cui questo libro sceglie l'onestà
+più che l'entusiasmo. E
 arriva l'**arte generata**, con un ritratto prodotto da una GAN battuto
 all'asta da Christie's nel 2018: l'episodio, e la questione di chi ne sia
 l'autore, sono raccontati in chiusura di capitolo.

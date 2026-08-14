@@ -37,8 +37,9 @@ $$
 \text{Attention}(\mathbf{Q},\mathbf{K},\mathbf{V}) = \text{softmax}\!\big(\mathbf{Q}\mathbf{K}^\top/\sqrt{d_k}\big)\mathbf{V},
 $$
 
-dove le righe di $Q$ sono le *query* (una per posizione), quelle di $K$ le
-*key* e quelle di $V$ i *value*; $d_k$ è la dimensione delle key, e la
+dove le righe di $\mathbf{Q}$ sono le *query* (una per posizione), quelle di
+$\mathbf{K}$ le *key* e quelle di $\mathbf{V}$ i *value*; $d_k$ è la
+dimensione delle key, e la
 divisione per $\sqrt{d_k}$ tiene i punteggi in una scala in cui la softmax non
 satura. Le due matrici $N \times N$ che compaiono qui dentro, i punteggi e le
 loro versioni normalizzate, sono ciò di cui parleremo per il resto della
@@ -69,12 +70,16 @@ va nel taglio: se ne va nella corsa.
 
 `````{tab} Superiore
 Per una sequenza di lunghezza $N$ e teste di dimensione $d_k$, l'attenzione
-materializza due matrici $N \times N$: i punteggi $\mathbf{S} = \mathbf{Q}\mathbf{K}^\top/\sqrt{d_k}$ e i
-pesi $P = \text{softmax}(S)$. Il calcolo è $O(N^2 d_k)$ FLOP, ma il dato che
-uccide le prestazioni è la **memoria**: $S$ e $P$ occupano $O(N^2)$ byte e
-vengono scritte e rilette dalla HBM più volte (produci $S$, la rileggi per la
-softmax, rileggi $P$ per il prodotto con $V$). Un numero concreto: con
-$N = 8192$, una sola matrice $S$ ha $N^2 \approx 67$ milioni di elementi; in
+materializza due matrici $N \times N$: i punteggi
+$\mathbf{S} = \mathbf{Q}\mathbf{K}^\top/\sqrt{d_k}$ e i
+pesi $\mathbf{P} = \text{softmax}(\mathbf{S})$. Il calcolo è $O(N^2 d_k)$ FLOP,
+ma il dato che uccide le prestazioni è la **memoria**: $\mathbf{S}$ e
+$\mathbf{P}$ occupano $O(N^2)$ byte e
+vengono scritte e rilette dalla HBM più volte (produci $\mathbf{S}$, la rileggi
+per la softmax, rileggi $\mathbf{P}$ per il prodotto con $\mathbf{V}$). Un
+numero concreto: con
+$N = 8192$, una sola matrice $\mathbf{S}$ ha $N^2 \approx 67$ milioni di
+elementi; in
 `float16` (2 byte) sono circa $134$ MB (*per testa, per strato*). La memoria
 cresce quadraticamente, e con essa il traffico verso la HBM.
 
@@ -92,11 +97,19 @@ sotto il ginocchio di entrambe le schede.
 
 Le operazioni della softmax in mezzo (gli esponenziali, le riduzioni per riga,
 le scritture e riletture della matrice $N \times N$) hanno intensità quasi
-nulla e dimezzano ancora il conto: l'attenzione intera, non fusa, sta a circa
-32 FLOP/byte. La conclusione onesta è che nella forma standard, in attenzione,
+nulla e dimezzano ancora il conto. Vale la pena farlo per esteso, perché è un
+bilancio che si rifà in due righe. Sempre con $N = 8192$ e $d_k = 64$ in
+`float16`: i conti sono i $2N^2 d_k$ del primo matmul più gli altrettanti del
+secondo, più una manciata di operazioni per elemento della softmax, in tutto
+circa $17{,}5$ GFLOP; i byte sono quattro passaggi della matrice $N \times N$
+(scrivi $\mathbf{S}$, la rileggi, scrivi $\mathbf{P}$, la rileggi) a 2 byte per
+elemento, più le briciole di $\mathbf{Q}$, $\mathbf{K}$, $\mathbf{V}$ e
+dell'uscita, in tutto circa $541$ MB. Il rapporto fa **32 FLOP/byte**: è lì che
+sta l'attenzione intera, non fusa. La conclusione onesta è che nella forma
+standard, in attenzione,
 **niente** è compute-bound; e quindi la cura non è fondere la softmax con i
-matmul, è non far mai atterrare $S$ in HBM. Non serve una GPU più potente nei
-FLOP: serve *non spostare* quei byte.
+matmul, è non far mai atterrare $\mathbf{S}$ in HBM. Non serve una GPU più
+potente nei FLOP: serve *non spostare* quei byte.
 `````
 
 ## L'idea: lavorare a tessere, mai scrivere la matrice
@@ -147,28 +160,38 @@ conosci solo alla fine. La risposta è la *online softmax* del prossimo passaggi
 `````
 
 `````{tab} Superiore
-Formalmente, si spezzano $Q$, $K$, $V$ in blocchi di righe. Fissato il blocco
-di query $Q_i$, si itera sui blocchi $(K_j, V_j)$: si carica $K_j, V_j$ in
+Formalmente, si spezzano $\mathbf{Q}$, $\mathbf{K}$, $\mathbf{V}$ in blocchi di
+righe. Fissato il blocco
+di query $\mathbf{Q}_i$, si itera sui blocchi $(\mathbf{K}_j, \mathbf{V}_j)$:
+si carica $\mathbf{K}_j, \mathbf{V}_j$ in
 **shared memory**, si calcola il tile di punteggi
-$S_{ij} = Q_i K_j^\top/\sqrt{d_k}$, e si
-aggiorna l'output *sul posto*, senza mai scrivere l'intera matrice $S$ in HBM.
-Qui $Q_i$ è il blocco di query corrente (quello che resta fermo sul tavolo) e
-$K_j, V_j$ il blocco di key e value in transito, per cui $S_{ij}$ è la tessera
-di punteggi che nasce dal loro incontro: $B_r \times B_c$, non l'intera riga di
-$S$.
-(Quest'ordine dei cicli, con il blocco di query fermo e $K,V$ che scorrono, è
+$\mathbf{S}_{ij} = \mathbf{Q}_i \mathbf{K}_j^\top/\sqrt{d_k}$, e si
+aggiorna l'output *sul posto*, senza mai scrivere l'intera matrice $\mathbf{S}$
+in HBM.
+Qui $\mathbf{Q}_i$ è il blocco di query corrente (quello che resta fermo sul
+tavolo) e $\mathbf{K}_j, \mathbf{V}_j$ il blocco di key e value in transito,
+per cui $\mathbf{S}_{ij}$ è la tessera
+di punteggi che nasce dal loro incontro: $B_r \times B_c$, cioè $B_r$ righe di
+query per $B_c$ chiavi (le due misure del blocchetto, che il kernel sceglie in
+base a quanta shared memory ha), e non l'intera riga di $\mathbf{S}$.
+(Quest'ordine dei cicli, con il blocco di query fermo e $\mathbf{K},\mathbf{V}$
+che scorrono, è
 quello reso canonico dalla seconda versione dell'algoritmo, che incontreremo a
 breve; l'articolo del 2022 li annidava al contrario, ma l'idea non cambia.) La
-memoria on-chip trattiene solo i tile correnti; la HBM vede scorrere $K,V$ una
-volta per ogni blocco di query, e la matrice $S$ mai. La **memoria extra**
+memoria on-chip trattiene solo i tile correnti; la HBM vede scorrere
+$\mathbf{K},\mathbf{V}$ una
+volta per ogni blocco di query, e la matrice $\mathbf{S}$ mai. La **memoria
+extra**
 scende così da $O(N^2)$ a $O(N)$: da scrivere restano solo l'output e le
 statistiche di riga.
 
 Sui FLOP, invece, va detta una cosa che si sente ripetere al contrario. In
 avanti i conti sono quelli di prima, a meno del riscalamento dell'accumulatore
 a ogni blocco (ed è proprio quel di più, non-matmul, che FlashAttention-2 andrà
-a limitare). All'indietro no: non avendo salvato $S$ e $P$, il `backward` deve
-**ricalcolarle** da $Q, K, V$, ed è esattamente il motivo per cui bastava
+a limitare). All'indietro no: non avendo salvato $\mathbf{S}$ e $\mathbf{P}$,
+il `backward` deve
+**ricalcolarle** da $\mathbf{Q}, \mathbf{K}, \mathbf{V}$, ed è esattamente il
+motivo per cui bastava
 salvare l'output e due statistiche per riga. Il conto: in avanti $4N^2 d_k$
 FLOP, all'indietro $8N^2 d_k$ nella versione standard e $10 N^2 d_k$ qui, cioè
 **un quarto in più sul passaggio all'indietro** e un sesto in più sul totale.
@@ -190,11 +213,11 @@ sotto i tre nomi diversi.
 Anche il traffico verso la HBM crolla: il paper lo conta in
 $\Theta(N^2 d_k^2 / M)$ accessi, dove $M$ è la taglia della memoria on-chip,
 contro il $\Theta(N d_k + N^2)$ dell'attenzione standard. Resta quadratico in
-$N$, ma diviso per un fattore $M/d_k^2$ che, con una SRAM on-chip di qualche
-decina di migliaia di elementi per SM, vale qualche unità con $d_k = 128$ e
-più di una decina con $d_k = 64$ (il paper si limita a dire che $d_k^2$ è
-molte volte più piccolo di $M$). È un fattore che su un carico memory-bound
-conta. È l'idea del tiling in shared memory del GEMM, applicata
+$N$, ma diviso per un fattore $M/d_k^2$ che si può mettere in cifre, perché il
+paper quantifica $M$: 192 KB di SRAM per SM su A100, cioè poco meno di
+centomila elementi in `float16`. Il fattore vale allora una sestina con
+$d_k = 128$ e una ventina con $d_k = 64$: su un carico memory-bound è tanto. È
+l'idea del tiling in shared memory del GEMM, applicata
 all'attenzione: caricare una volta, riusare in tanti, non tornare al
 magazzino.
 
@@ -221,7 +244,8 @@ da nessuna parte.
 
 La online softmax vista nel tempo: la finestra della memoria veloce scorre sui
 blocchi di chiavi e valori e a ogni blocco l'accumulatore si ricalibra ($\alpha$
-riscala $l$ e $O$ quando arriva un massimo più grande), finché $O/l$ dà lo
+riscala la somma corrente $l$ e l'uscita $\mathbf{o}$ quando arriva un massimo
+più grande, ed è la colonna $O$ della tabella), finché $\mathbf{o}/l$ dà lo
 stesso numero della softmax calcolata in un colpo solo.
 ```
 
@@ -269,13 +293,17 @@ nuovo blocco con massimo locale $\tilde m$, le regole di aggiornamento sono
 $$
 m^{\text{new}} = \max(m, \tilde m), \quad
 l^{\text{new}} = e^{\,m - m^{\text{new}}}\, l + \!\sum_{i \in \text{blocco}}\! e^{\,s_i - m^{\text{new}}}, \quad
-O^{\text{new}} = e^{\,m - m^{\text{new}}}\, O + \!\sum_{i \in \text{blocco}}\! e^{\,s_i - m^{\text{new}}}\, v_i,
+\mathbf{o}^{\text{new}} = e^{\,m - m^{\text{new}}}\, \mathbf{o} + \!\sum_{i \in \text{blocco}}\! e^{\,s_i - m^{\text{new}}}\, \mathbf{v}_i,
 $$
 
-dove $O$ è l'output accumulato (somma pesata dei $v_i$) e il fattore
+dove $\mathbf{o}$ è la riga di uscita accumulata (la somma pesata dei
+$\mathbf{v}_i$, cioè un vettore, e per questo minuscolo grassetto: la $O$
+maiuscola in queste pagine è già presa dalla notazione della complessità) e il
+fattore
 $e^{\,m - m^{\text{new}}}$ corregge ciò che avevamo già sommato quando compare un
-massimo nuovo; alla fine si divide, $O \leftarrow O/l$. Tutto qui: due scalari di
-stato per riga, e la matrice $N \times N$ non viene mai scritta.
+massimo nuovo; alla fine si divide, $\mathbf{o} \leftarrow \mathbf{o}/l$. Tutto
+qui: due scalari di stato per riga, e la matrice $N \times N$ non viene mai
+scritta.
 `````
 
 ## Cosa si guadagna (e cosa costa)
@@ -300,10 +328,13 @@ modello *genera* la risposta, però, quella tabella non esiste nemmeno (si
 elabora una parola per volta, e i confronti sono una riga sola): lì il peso è
 un altro, ed è la **KV cache**, cioè il taccuino in cui il modello conserva
 quello che ha già letto per non rileggerlo a ogni parola. Quel taccuino cresce
-in proporzione alla lunghezza del testo, non al suo quadrato, ma è pesante: per
-un modello da otto miliardi di parametri sono circa 128 KB per parola, cioè
-**16 GB per centomila parole di contesto**, su una scheda che ne ha 80, e per
-una sola conversazione. FlashAttention non lo tocca. È un altro mestiere, e lo
+in proporzione alla lunghezza del testo, non al suo quadrato, ma è pesante, e
+il conto si fa in una riga: per un modello da otto miliardi di parametri sono
+trentadue strati, otto teste di chiave e valore da 128 numeri l'una, chiavi
+**e** valori da tenere entrambi, due byte a numero, cioè
+$2 \times 32 \times 8 \times 128 \times 2$ byte, esattamente **128 KB per
+parola**. Su centomila parole di contesto fanno **tredici gigabyte**, su una
+scheda che ne ha ottanta, e per una sola conversazione. FlashAttention non lo tocca. È un altro mestiere, e lo
 raccontano la sezione sui modelli linguistici del capitolo sui Transformer e il
 capitolo su MLOps, dove si trovano anche le tecniche che quel problema lo
 affrontano davvero. Vale anche la pena dire, per onestà, che FlashAttention

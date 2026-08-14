@@ -87,6 +87,9 @@ ma dicono che c'era un prima e un dopo.
 python3 animazioni/fermi.py             # i tre PNG per tutte e 35
 python3 animazioni/fermi.py --provino   # i fogli a contatto, DA GUARDARE
 python3 animazioni/fermi.py --verifica  # sono allineati alle animazioni?
+                                        # (per impronta, non per data:
+                                        #  le date non sopravvivono al
+                                        #  checkout della CI)
 ```
 
 Escono in `book/figures/fermi/`, sono **tracciati**, e valgono per tutte e due
@@ -115,10 +118,18 @@ controllo, che non può dimenticarsene:
 python3 scripts/coerenza.py --solo animazioni
 ```
 
-Elenca i capitoli a zero clip e quelli che sforano il tetto. Zero **non** è un
-errore e non fa fallire niente: un capitolo dove il tempo non è mai il contenuto
-sta bene fermo. È un elenco da guardare quando nasce un capitolo, per decidere
-una volta invece di non deciderlo mai.
+Elenca i capitoli a zero clip e quelli che sforano il tetto. **Zero clip fa
+fallire il controllo**, e c'è un modo solo per sbloccarlo: dichiarare il
+capitolo in `animazioni/senza-clip.toml`, scrivendo perché lì il tempo non è il
+contenuto.
+
+Sembra una formalità e non lo è, perché la distinzione che conta non è fra un
+capitolo animato e uno fermo (fermo può essere la scelta giusta, e per le
+Conclusioni lo è): è fra **essersela chiesta e non essersela chiesta**, e
+dall'esterno le due cose si somigliano al punto da confondersi. Elencare e
+basta non è bastato: la prima versione di questa riga diceva «è un elenco da
+guardare», e infatti nessuno l'ha guardato. Una riga da scrivere invece si
+nota, e costa meno di un minuto.
 
 | Sorgente | Figura nel libro | Sezione |
 |---|---|---|
@@ -126,13 +137,17 @@ una volta invece di non deciderlo mai.
 | `svg/attacco-epsilon.py` | `fig-attacco-epsilon` | `AIResponsabile/privacy-e-robustezza.md` |
 | `svg/autovettori.py` | `fig-autovettori` | `Matematica/algebra-lineare.md` |
 | `svg/bpe-fusioni.py` | `fig-bpe-fusioni` | `NaturalLanguageProcessing/tokenizzatori.md` |
+| `svg/broadcasting-si-stende.py` | `fig-broadcasting-si-stende` | `Python/numpy.md` |
+| `svg/cancello-che-respinge.py` | `fig-cancello-che-respinge` | `IngegneriaLLM/loop-engineering.md` |
 | `svg/ciclo-addestramento.py` | `fig-ciclo-addestramento` | `PyTorch/addestramento.md` |
 | `svg/ciclo-agente.py` | `fig-ciclo-agente` | `Agenti/agenti-e-tool-use.md` |
 | `svg/ctc-collassa.py` | `fig-ctc-allineamento` | `SpeechRecognition/modelli-asr.md` |
+| `svg/decodifica-per-differenza.py` | `fig-decodifica-per-differenza` | `VisioneLinguaggio/vedere-quel-che-non-ce.md` |
 | `svg/deriva-ks.py` | `fig-deriva-ks` | `MLOps/monitoring-e-drift.md` |
 | `svg/diffusione-avanti.py` | `fig-diffusione-avanti` | `ModelliDiffusione/come-funziona.md` |
 | `svg/dqn-stabilita.py` | `fig-dqn-stabilita` | `DeepReinforcementLearning/dqn.md` |
 | `svg/dropout.py` | `fig-dropout` | `DeepLearning/ottimizzazione-regolarizzazione.md` |
+| `svg/euclide-scende.py` | `fig-euclide-scende` | `Introduzione/overview.md` |
 | `svg/finestra-spettrogramma.py` | `fig-finestra-spettrogramma` | `Audio/dal-suono-alle-feature.md` |
 | `svg/flash-attention-blocchi.py` | `fig-flash-attention-blocchi` | `GPU/flash-attention.md` |
 | `svg/formiche-feromone.py` | `fig-formiche-feromone` | `SistemiMultiAgente/sciami-e-simulazioni.md` |
@@ -146,8 +161,10 @@ una volta invece di non deciderlo mai.
 | `svg/percettrone-impara.py` | `fig-percettrone-impara` | `RetiNeurali/percettrone.md` |
 | `svg/pinn-residuo.py` | `fig-pinn-residuo` | `PINN/come-funziona.md` |
 | `svg/scan-parallelo.py` | `fig-scan-parallelo` | `StateSpaceModel/mamba.md` |
+| `svg/vetrina-si-ordina.py` | `fig-vetrina-si-ordina` | `SistemiRaccomandazione/raccomandazione-neurale.md` |
 | `svg/sogno-diverge.py` | `fig-sogno-diverge` | `WorldModels/mondi-in-miniatura.md` |
 | `svg/xor-non-separabile.py` | `fig-xor-non-separabile` | `RetiNeurali/percettrone.md` |
+| `svg/xor-si-piega.py` | `fig-xor-si-piega` | `RetiNeurali/percettrone.md` |
 | `attenzione-mascherata.py` | `fig-attenzione-mascherata` | `Transformers/architettura.md` |
 | `backpropagation.py` | `fig-backpropagation-animata` | `RetiNeurali/backpropagation.md` |
 | `convoluzione.py` | `fig-convoluzione-animata` | `DeepLearning/reti-convoluzionali.md` |

@@ -121,9 +121,11 @@ resa esplicita nelle sue tre componenti apprendibili.
 
 ## Dalla formula alla matrice: la GCN
 
-La MPNN è un telaio: per avere un modello concreto bisogna scegliere le tre
-mosse. La scelta più celebre (semplice, veloce, e ancora oggi il primo modello
-che si prova su un grafo) è la **Graph Convolutional Network** (GCN),
+Lo schema delle tre mosse è un telaio, non un modello: per avere qualcosa che
+gira bisogna decidere *come* si scrive il bigliettino, *come* si riassumono e
+*come* si riscrive la scheda. La scelta più celebre (semplice, veloce, e ancora
+oggi il primo modello che si prova su un grafo) è la
+**Graph Convolutional Network** (GCN),
 presentata nel 2017 da Thomas Kipf e Max Welling {cite}`kipf2017semi`. La sua
 regola di propagazione, da uno strato al successivo, sta in una riga:
 
@@ -250,8 +252,8 @@ autovalori in $[0,2]$, alla forma
 $\tilde{\mathbf{D}}^{-1/2}\tilde{\mathbf{A}}\tilde{\mathbf{D}}^{-1/2}$ con
 $\tilde{\mathbf{D}}$ calcolata su $\tilde{\mathbf{A}}$, cappi inclusi.
 Attenzione a non leggerci più di quanto ci sia: scala stabile non vuol dire
-informazione conservata, e fra due pagine vedremo che tutto ciò che non giace
-lungo l'autovettore dominante svanisce comunque.
+informazione conservata, e poco più avanti in questa stessa pagina vedremo che
+tutto ciò che non giace lungo l'autovettore dominante svanisce comunque.
 
 Quel che distingue davvero la forma simmetrica è la **simmetria** stessa:
 $\hat{\mathbf{A}}$ è autoaggiunta, quindi ha autovalori reali e una base di
@@ -277,10 +279,11 @@ numero piccolo di strati e si addestra come una qualunque rete profonda.
 
 ### Da dove viene la formula: le frequenze di un grafo
 
-Quella frase, «cade naturalmente dai polinomi di Čebyšëv», è stata finora un
-assegno che non abbiamo coperto. Vale la pena coprirlo, perché la derivazione
-è breve e in fondo c'è un premio: spiega da sola il difetto più famoso delle
-GNN.
+Arrivati qui la domanda viene da sé: quella formula da dove esce? La risposta è
+che nessuno l'ha inventata a tavolino, è quel che **resta** di un conto più
+grande, e finora è stato un assegno che non abbiamo coperto. Vale la pena
+coprirlo, perché il conto è breve e in fondo c'è un premio: spiega da sola il
+difetto più famoso delle GNN.
 
 `````{tab} Elementare
 
@@ -310,8 +313,8 @@ La GCN è quello che resta dopo aver tagliato tutto il superfluo: e quel che
 resta è un filtro che **attenua le alte frequenze**, cioè che smussa le
 differenze fra vicini.
 
-Tieni a mente questa frase, perché torna fra due pagine con un'aria molto
-meno amichevole.
+Tieni a mente questa frase, perché nei prossimi paragrafi torna con un'aria
+molto meno amichevole.
 
 `````
 
@@ -456,10 +459,16 @@ loro.)
 Sulla catena di quattro nodi che useremo fra poco, con
 $\mathbf{X} = (1,2,3,4)^\top$, i quattro autovalori di $\hat{\mathbf{A}}$
 valgono $1$, $0{,}729$, $0{,}167$ e $-0{,}229$. Applicando $\hat{\mathbf{A}}$
-venti volte, il rapporto fra il valore di ogni nodo e la radice del suo grado è
-$1{,}571$, $1{,}572$, $1{,}574$, $1{,}575$: i quattro nodi, che partivano da
-valori distinti, sono diventati indistinguibili. Dopo cento applicazioni sono
-identici fino alla quarta cifra.
+venti volte a $\mathbf{X}$, il rapporto fra il valore di ogni nodo e la radice
+del suo grado con cappio vale $1{,}5714$, $1{,}5724$, $1{,}5739$, $1{,}5748$:
+i quattro nodi, che partivano da valori distinti, coincidono ormai nelle prime
+due cifre decimali. Il divario fra il più alto e il più basso è $3{,}4 \cdot
+10^{-3}$ e si stringe come la potenza $K$-esima del secondo autovalore,
+$0{,}729^K$: a cinquanta applicazioni vale $2{,}6 \cdot 10^{-7}$ e a cento
+$3{,}5 \cdot 10^{-14}$. Anche lì i quattro numeri restano diversi fra loro (in
+doppia precisione li separano ancora centocinquanta passi elementari), ma è
+una differenza che nessun modello può più usare: al passo successivo della
+rete, moltiplicata per pesi dell'ordine dell'unità, resta quello che era.
 
 A rigore l'argomento vale per l'operatore lineare $\hat{\mathbf{A}}^K$, cioè
 per la GCN privata di $\mathbf{W}$ e della non linearità. Nella rete completa i
@@ -470,11 +479,12 @@ per la rete intera è un teorema con le sue condizioni.
 
 `````
 
-Questo è l'**oversmoothing** di cui la sezione sui limiti parlerà come di un
-fenomeno osservato, e adesso sappiamo che non è una sfortuna sperimentale: è
-quello che fa, per costruzione, un filtro passa-basso applicato molte volte.
-Non c'è un baco da correggere nell'implementazione. C'è da decidere quanti
-strati mettere, oppure cambiare l'operatore.
+Questo è l'**oversmoothing**, che l'ultima sezione del capitolo elencherà fra i
+limiti come un fenomeno osservato; adesso sappiamo che non è una sfortuna
+sperimentale, è quello che fa, per costruzione, un filtro che smussa (in gergo
+un **filtro passa-basso**) applicato molte volte. Non c'è un baco da correggere
+nell'implementazione. C'è da decidere quanti strati mettere, oppure cambiare
+l'operatore.
 
 ## Un passo di propagazione, coi numeri
 
@@ -487,9 +497,11 @@ della sola propagazione $\hat{\mathbf{A}}\,\mathbf{H}$.
 
 Prima di leggere le tabelle conviene sapere che cosa si sta per vedere, perché
 in due righe si dice tutto. Ogni collegamento porta un **peso**, e il peso è
-tanto più piccolo quanti più vicini hanno i due nodi che collega: qui vengono
-$0{,}500$ per i due nodi di bordo, che hanno un vicino solo, e $0{,}408$ e
-$0{,}333$ per gli altri collegamenti. Il nuovo valore di un nodo è la somma dei
+tanto più piccolo quanti più vicini hanno i due nodi che collega, contando
+anche il cappio che ciascuno ha verso sé stesso. Qui i pesi sono tre: $0{,}500$
+sui due cappi dei nodi di bordo, che di vicini ne hanno uno solo; $0{,}408$ sui
+due archi che uniscono un nodo di bordo a uno interno; $0{,}333$ sull'arco fra
+i due nodi interni e sui loro cappi. Il nuovo valore di un nodo è la somma dei
 valori dei vicini (e del proprio), ciascuno moltiplicato per il peso del
 collegamento: da lì in poi è una moltiplicazione e un'addizione. Le tabelle qui
 sotto sono il conto esatto di quei pesi; chi non ha voglia di rifarlo può
@@ -598,8 +610,9 @@ propagazione: lo stato finale $\mathbf{h}_v^{(K)}$ dipende da tutti i nodi $u$
 per cui esiste un cammino di lunghezza $\le K$ fino a $v$ (il **campo
 recettivo** a $K$ salti, l'analogo esatto del campo recettivo che cresce con la
 profondità nelle CNN). Da qui due indicazioni pratiche. Primo, la profondità va
-scelta in base al **diametro** del vicinato utile: due o tre strati bastano
-quasi sempre, perché il numero di nodi raggiunti cresce in fretta col grado.
+scelta in base a **quanti salti di distanza** sta l'informazione che serve: due
+o tre strati bastano quasi sempre, perché il numero di nodi raggiunti cresce in
+fretta col grado.
 Secondo, andare troppo profondi è controproducente: applicando molte volte
 $\hat{\mathbf{A}}$ le rappresentazioni dei nodi convergono verso un unico punto
 e diventano indistinguibili; il fenomeno dell'*over-smoothing*, per cui in
@@ -680,9 +693,10 @@ numero di classi. Il punto sottile è che $\mathbf{z}_v$ dipende, tramite
 $\hat{\mathbf{A}}$, dalle feature dell'intero vicinato a due salti: il
 gradiente di $\mathcal{L}$ fluisce quindi indietro anche attraverso nodi
 **non** etichettati, che partecipano all'addestramento pur senza comparire
-nella somma. La GCN originale raggiunge circa l'$81{,}5\%$ di accuratezza sul
-test di Cora: un balzo netto rispetto ai metodi precedenti, ottenuto con appena
-due strati e $140$ nodi etichettati.
+nella somma. Nel loro articolo Kipf e Welling riportano su Cora l'$81{,}5\%$ di
+accuratezza contro il $75{,}7\%$ del miglior metodo che confrontano: quel salto,
+ottenuto con appena due strati e $140$ nodi etichettati, è la ragione per cui la
+GCN si è imposta.
 
 `````
 

@@ -32,7 +32,8 @@ e tutto il resto della sezione è la storia della risposta:
 Non è solo una questione di soldi. C'è una seconda ragione per lasciare fermi i
 pesi che esistono già: un modello di linguaggio riaddestrato su qualche milione
 di didascalie perde per strada una parte di quello che sapeva fare con il testo
-puro (la **dimenticanza catastrofica** del capitolo sul deep learning).
+puro: è la **dimenticanza catastrofica**, imparare una cosa nuova cancellandone
+una vecchia, che il capitolo sui Transformer incontra sui modelli multilingua.
 Congelare non è soltanto un risparmio: è una garanzia sul comportamento che si
 vuole conservare.
 
@@ -106,24 +107,27 @@ ogni richiesta.
 ## Tre risposte, dalla più elaborata alla più povera
 
 Le soluzioni che hanno lasciato il segno sono tre, e conviene percorrerle in
-ordine di complessità **decrescente**, che è anche l'ordine cronologico
-rovesciato. Non è un caso: qui la storia va dal complicato al semplice, e questa
-sezione esiste soprattutto per spiegare perché.
+ordine di complessità **decrescente**, che qui coincide con l'ordine
+cronologico: è il rovescio di come di solito vanno queste cose. Non è un caso, e
+questa sezione esiste soprattutto per spiegare perché.
 
 ```{figure} ../figures/vlm-connettori.svg
 :name: fig-vlm-connettori
 :alt: Tre architetture affiancate con lo stesso encoder visivo congelato in basso e lo stesso modello di linguaggio congelato in alto; cambia solo il pezzo in mezzo. A sinistra Flamingo, con un Perceiver Resampler che produce 64 token e li inietta in due nuovi strati di cross-attention gated inseriti fra i blocchi congelati del modello di linguaggio. Al centro BLIP-2, con un Q-Former in cui 32 query apprese interrogano l'immagine e ne escono 32 token messi in testa al prompt. A destra LLaVA, con un proiettore che porta ogni patch nello spazio dei token e consegna 576 token in testa al prompt. Il pezzo che si addestra è in terracotta piena, quelli congelati hanno il contorno tratteggiato.
 :width: 85%
 
-Gli stessi due modelli congelati, tre saldature diverse: al calare della
-complessità del connettore cresce il numero di token visivi che arrivano al
-modello di linguaggio.
+Gli stessi due modelli congelati, tre saldature diverse, e il conto del
+connettore che scende da sinistra a destra. I primi due comprimono a un numero
+fisso di vettori (64 e 32, qualunque immagine arrivi); il terzo non comprime
+affatto, consegna una tessera per token, ed è il più leggero dei tre.
 ```
 
 Come mostra {numref}`fig-vlm-connettori`, i blocchi alle estremità non cambiano
-mai. Cambia il pezzo in mezzo, e con esso due grandezze che si muovono in
-direzioni opposte: quanti parametri si addestrano e quanti token visivi
-arrivano a destinazione.
+mai. Cambia il pezzo in mezzo, e cambiano con lui due grandezze: quanti
+parametri si addestrano, che calano da sinistra a destra di quasi tre ordini di
+grandezza, e se ci sia o no una compressione. Le prime due colonne comprimono e
+la terza no, ed è quest'ultima distinzione, non il conto dei parametri, la
+ragione per cui la sezione finisce come finisce.
 
 ### Aggiungere strati nuovi dentro il modello congelato
 
@@ -240,12 +244,12 @@ in mano solo le risposte: la foto non la vede più.
 Il guadagno si legge nei numeri, e qui l'encoder ne produce 257 per ogni foto.
 Da dove viene quel 257: l'immagine è da 224 puntini di lato, le tessere da 14,
 quindi ne stanno 16 per riga e 16 per colonna, in tutto 256, più una fila di
-numeri in più che riassume l'intera fotografia. (Due pagine fa erano 576 perché
-lì l'immagine era da 336 puntini: il numero delle tessere cambia ogni volta che
-cambiano la foto o la tessera, non è mai un numero fisso.) Da 257 si scende a 32,
-otto volte meno; e siccome ogni risposta è per giunta una fila un po' più corta
-(768 numeri invece di 1024), i numeri che arrivano al modello di linguaggio sono
-circa undici volte meno.
+numeri in più che riassume l'intera fotografia. (Qualche paragrafo fa erano 576
+perché lì l'immagine era da 336 puntini: il numero delle tessere cambia ogni
+volta che cambiano la foto o la tessera, non è mai un numero fisso.) Da 257 si
+scende a 32, otto volte meno; e siccome ogni risposta è per giunta una fila un
+po' più corta (768 numeri invece di 1024), nel punto più stretto del passaggio
+i numeri sono circa undici volte meno di quelli che l'encoder aveva prodotto.
 
 Il questionario però è stato scritto **una volta per tutte**, e le domande sono
 sempre quelle che in media servivano di più. Se arriva una richiesta a cui quelle
@@ -603,8 +607,8 @@ qui.
 - **Questionario fisso** {cite}`li2023blip2`: 32 domande scritte una volta per
   tutte in addestramento vengono poste a ogni foto, e ne escono 32 risposte: dai
   257 vettori con cui la foto era stata descritta si scende a 32, e siccome ogni
-  risposta è anche un po' più corta, al modello di linguaggio arrivano circa
-  undici volte meno numeri. **Tabella di conversione**
+  risposta è anche un po' più corta, nel punto più stretto passano circa undici
+  volte meno numeri. **Tabella di conversione**
   {cite}`liu2023visual`: una tessera entra, un token esce, nessun riassunto
   (circa quattro milioni di caselle, poi una ventina di milioni con due tabelle
   in fila).

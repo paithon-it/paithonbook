@@ -20,8 +20,8 @@ filmiamo la distruzione e insegniamo a una rete a **proiettare il film al
 contrario**. Prendi una fotografia e aggiungile rumore, un pizzico alla volta,
 finché non resta che pulviscolo: questo è il verso facile, la goccia che
 si disperde. Poi addestra una rete a percorrere la pellicola all'indietro, un
-fotogramma per volta. Se impara bene, potrà partire da rumore puro (un pulviscolo nuovo,
-mai vista) e riavvolgerla fino a un'immagine che non è mai esistita.
+fotogramma per volta. Se impara bene, potrà partire da rumore puro (un pulviscolo
+nuovo, mai visto) e riavvolgerla fino a un'immagine che non è mai esistita.
 
 ## Il film proiettato al contrario
 
@@ -53,7 +53,7 @@ Per **generare** un'immagine nuova si parte dalla fine: si tira a caso una
 manciata di pulviscolo appena estratto e si ripete mille volte il giro di domanda e
 risposta, dal passo 1.000 al passo 1. A ogni passo emerge qualcosa (una massa
 scura, una sagoma, un gatto) e all'ultimo fotogramma c'è un'immagine che non
-esisteva da nessuna parte: la rete ha imparato che aspetto ha il mondo, e la
+esisteva da nessuna parte: la rete ha imparato che aspetto ha il mondo, e il
 rumore iniziale, sempre diverso, decide quale immagine del mondo verrà fuori.
 
 Attenzione a una cosa, però, perché è il punto in cui quasi tutti i racconti
@@ -118,12 +118,13 @@ limite variazionale a questa forma, è il tema della prossima sezione.
 
 ```{figure} ../figures/ddpm-denoising-iterativo.svg
 :name: fig-ddpm-passi
-:alt: "Catena lunga di stati intermedi fra un'immagine nitida e il rumore puro: procedendo verso destra ogni passo aggiunge un poco di rumore, procedendo verso sinistra la rete ne toglie un poco. Nessuno dei due sensi salta stati: il percorso è fatto di moltissimi passi piccoli."
+:alt: "Cinque riquadri in fila fra un paesaggio nitido e il rumore puro, etichettati x0, x1, x2, tre puntini di sospensione e xT: il paesaggio si copre di puntini di riquadro in riquadro. La freccia in alto, verso destra, è il processo che aggiunge rumore e non si impara; quella in basso, verso sinistra, è il processo che la rete apprende."
 :width: 100%
 
-L'idea di fondo, quella del 2015, in una figura: tanti passi piccoli invece
-di pochi grandi. Ogni passo chiede alla rete un compito facile, e la difficoltà si
-distribuisce sull'intera catena.
+L'idea di fondo, quella del 2015. I riquadri disegnati sono cinque, ma i tre
+puntini stanno per le centinaia che non ci stanno nel foglio: è il punto della
+figura, tanti passi piccoli invece di pochi grandi. Ogni passo chiede alla rete
+un compito facile, e la difficoltà si distribuisce sull'intera catena.
 ```
 
 Quello che {numref}`fig-ddpm-passi` rende evidente è anche il costo del
@@ -153,20 +154,19 @@ produrre, che è il punto dolente del capitolo precedente.
 
 Poi c'è l'epilogo che non è più storia della ricerca ma storia e basta: il
 2022. Nel giro di pochi mesi OpenAI presenta DALL·E 2 (aprile), Google
-      risponde con Imagen (maggio, annunciato ma non accessibile al pubblico),
-      Midjourney apre la beta a tutti (luglio) e soprattutto, in agosto,
-      arriva **Stable Diffusion**: nato dai *latent diffusion models* del
-      gruppo di Björn Ommer a Monaco di Baviera {cite}`rombach2022high` e
-      rilasciato **con i pesi aperti**: i pesi sono i milioni di numeri che
-      una rete si ritrova dentro dopo l'addestramento, cioè tutto quello che
-      ha imparato, e rilasciarli vuol dire mettere in rete un file che
-      chiunque può scaricare e far girare a casa propria. Per la prima volta
-      si può scrivere «un gatto nero che salta sul muro, in stile acquerello»
-      e vedere l'immagine materializzarsi sul proprio computer, non nel data
-      center di qualcun altro. La generazione di immagini smette di essere una
-      demo e diventa un fenomeno pubblico, con il suo seguito di entusiasmo,
-      cause legali sui dati di addestramento e domande aperte sul lavoro
-      creativo, su cui torneremo.
+risponde con Imagen (maggio, annunciato ma non accessibile al pubblico),
+Midjourney apre la beta a tutti (luglio) e soprattutto, in agosto, arriva
+**Stable Diffusion**: nato dai *latent diffusion models* del gruppo di Björn
+Ommer a Monaco di Baviera {cite}`rombach2022high` e rilasciato **con i pesi
+aperti**: i pesi sono i milioni di numeri che una rete si ritrova dentro dopo
+l'addestramento, cioè tutto quello che ha imparato, e rilasciarli vuol dire
+mettere in rete un file che chiunque può scaricare e far girare a casa propria.
+Per la prima volta si può scrivere «un gatto nero che salta sul muro, in stile
+acquerello» e vedere l'immagine materializzarsi sul proprio computer, non nel
+data center di qualcun altro. La generazione di immagini smette di essere una
+demo e diventa un fenomeno pubblico, con il suo seguito di entusiasmo, cause
+legali sui dati di addestramento e domande aperte sul lavoro creativo, su cui
+torneremo.
 
 ## Il falsario e il restauratore
 
@@ -252,9 +252,10 @@ con una sola valutazione della rete, un DDPM con molte, e la diffusione paga
 in tempo ciò che guadagna in stabilità dell'addestramento e in copertura della
 varietà. Da lì in poi, buona parte del lavoro sulla diffusione è servito ad
 accorciare quel conto, e nel farlo ha spesso rimesso in gioco un
-discriminatore, cioè proprio l'idea del capitolo precedente. Ma dal 2022 in
-poi, quando leggete «immagine generata dall'AI», nella stragrande maggioranza
-dei casi dietro c'è una diffusione.
+discriminatore, cioè proprio l'idea del capitolo precedente. Quel che è certo
+è che dal 2022 in poi i generatori di immagini arrivati al pubblico si sono
+costruiti su questo meccanismo e non sul duello: è la ragione per cui il resto
+del capitolo lo smonta pezzo per pezzo.
 
 ## Come è organizzato il capitolo
 
@@ -266,8 +267,8 @@ il meccanismo in miniatura, funzionante, in poche righe di Python. Poi il
 su una sua versione compressa decine di volte, che è il segreto per cui Stable
 Diffusion {cite}`rombach2022high` gira su un computer di casa, e come si fa a
 ordinargli che cosa disegnare scrivendolo a parole. Infine **l'incontro con i
-Transformer** {cite}`vaswani2017attention`, quelli del capitolo sul
-linguaggio: si può buttare via la rete di visione e mettere al suo posto uno
+Transformer** {cite}`vaswani2017attention`, quelli del capitolo che porta il
+loro nome: si può buttare via la rete di visione e mettere al suo posto uno
 di loro {cite}`peebles2023scalable`, e la risposta ha cambiato il modo in cui
 si costruiscono questi modelli, video compresi.
 
@@ -286,9 +287,10 @@ si costruiscono questi modelli, video compresi.
   cosa umile: «dimmi che aspetto aveva il disturbo che ho aggiunto». La
   risposta esatta la conosciamo sempre, visto che il disturbo l'abbiamo messo
   noi: è come studiare su un libro di esercizi con le soluzioni in fondo.
-- Dal 2021 la diffusione **supera le GAN** in qualità e in varietà dei
-  risultati; nel 2022, con DALL·E 2, Imagen, Midjourney e soprattutto Stable
-  Diffusion, scaricabile da chiunque, diventa un fenomeno di massa.
+- Nel 2021 un lavoro di riferimento misura che la diffusione **batte le GAN**
+  migliori in qualità e in varietà dei risultati; nel 2022, con DALL·E 2,
+  Imagen, Midjourney e soprattutto Stable Diffusion, scaricabile da chiunque,
+  diventa un fenomeno di massa.
 - Rispetto alle GAN: niente duello fra falsario e detective, quindi niente
   allenamenti che si incartano e nessun rifugio in un unico quadro vincente.
   Il conto si paga in attesa: il falsario dipinge in una pennellata sola, il

@@ -24,6 +24,6 @@
 
   <!-- Quality axis note -->
   <line x1="140" y1="285" x2="620" y2="285" stroke="#2D5A5C" stroke-width="1.5" stroke-dasharray="4 4"/>
-  <text x="140" y="310" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5E5852">&#8592; meno memoria, piu' approssimazione</text>
-  <text x="620" y="310" text-anchor="end" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5E5852">piu' precisione, piu' memoria &#8594;</text>
+  <text x="140" y="310" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5E5852">&#8592; meno memoria, più approssimazione</text>
+  <text x="620" y="310" text-anchor="end" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5E5852">più precisione, più memoria &#8594;</text>
 </svg>

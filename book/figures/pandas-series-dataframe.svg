@@ -6,7 +6,7 @@
   <rect x="235" y="52" width="90" height="34" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="1.5"/>
   <rect x="325" y="52" width="105" height="34" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="1.5"/>
   <text x="182" y="74" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F8F5EE" text-anchor="middle">temperatura</text>
-  <text x="280" y="74" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F8F5EE" text-anchor="middle">umidita</text>
+  <text x="280" y="74" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F8F5EE" text-anchor="middle">umidità</text>
   <text x="377" y="74" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F8F5EE" text-anchor="middle">regione</text>
   <!-- indice di riga -->
   <rect x="40" y="86" width="90" height="34" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5"/>

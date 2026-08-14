@@ -9,16 +9,16 @@ discussione: le si è aggiunta un po' di attenzione, le si è appesa l'etichetta
 con il numero del passo, ma l'impalcatura (guardare da lontano e poi da vicino,
 con i ponti diretti fra le due viste) è rimasta quella del microscopio.
 
-Nel 2023 William Peebles, allora dottorando a Berkeley, e Saining Xie,
-professore alla New York University, si fanno la domanda che a quel punto del
-libro dovrebbe suonare familiare: la U-Net serve *davvero*? O anche qui, come
+Alla fine del 2022 William Peebles, allora dottorando a Berkeley, e Saining
+Xie, professore alla New York University, si fanno la domanda che a quel punto
+del libro dovrebbe suonare familiare: la U-Net serve *davvero*? O anche qui, come
 era successo nel 2017 per la traduzione con la caduta delle reti ricorrenti,
 vale il titolo di quel paper: *attention is all you need*
 {cite}`vaswani2017attention`? La loro risposta si chiama **DiT**, *Diffusion
 Transformer* {cite}`peebles2023scalable`, presentata alla International
 Conference on Computer Vision del 2023. E la storia ha un seguito che ne
-misura il peso: un anno dopo ritroveremo lo stesso Peebles, insieme a Tim
-Brooks, alla guida di un progetto chiamato Sora.
+misura il peso: poco più di un anno dopo ritroveremo lo stesso Peebles,
+insieme a Tim Brooks, alla guida di un progetto chiamato Sora.
 
 ## Affettare la scheda: le tessere come parole
 
@@ -80,8 +80,10 @@ $N = 256$, con $p = 4$ sono 64, con $p = 8$ sono 16. Dimezzare $p$ quadruplica
 i token e con essi il costo di una passata a parità di parametri: nel paper la
 taglia XL passa da 29,1 Gflops con $p = 4$ a 118,6 con $p = 2$, cioè un fattore
 $4{,}08$, e non di più. Il termine quadratico dell'attenzione c'è, ma a queste
-lunghezze di sequenza vale meno del 4% del totale, perché i termini lineari nel
-numero di token (proiezioni e MLP) valgono tutto il resto: è a risoluzioni
+lunghezze di sequenza vale meno del 4% del totale: per blocco pesa $2N^2 d$
+contro i $12Nd^2$ delle proiezioni e dell'MLP, cioè un rapporto $N/(6d)$ che
+per DiT-XL/2, dove la larghezza è $d = 1152$, fa
+$256/(6 \cdot 1152) \approx 3{,}7\%$. È a risoluzioni
 molto maggiori che quel termine diventa il vincolo, ed è il tema del capitolo
 sull'attenzione lineare. Da qui la nomenclatura del paper: quattro taglie
 (DiT-S, B, L, XL)
@@ -177,15 +179,16 @@ singola passata in avanti. Messi in quell'ordine, la qualità dei campioni
 migliora al crescere dei Gflops con una regolarità impressionante, e non
 importa *da dove* i Gflops vengano: più strati, più larghezza o più tessere per
 via di tessere più piccole, la curva è la stessa. È l'eco delle **leggi di
-scala** viste per i modelli di linguaggio {cite}`kaplan2020scaling`,
-{cite}`hoffmann2022training`.
+scala** viste per i modelli di linguaggio
+{cite}`kaplan2020scaling,hoffmann2022training`.
 
 Va detto subito che cosa questo **non** significa, perché è il passo che si fa
 più facilmente ed è sbagliato: non significa che l'architettura non conti più.
-Le ablazioni dello stesso lavoro, quelle richiamate dieci righe fa, mostrano
-che a Gflops sostanzialmente pari il modo di iniettare il condizionamento
-cambia la qualità in misura tutt'altro che marginale, ed è lì che adaLN-zero
-vince. Le due affermazioni stanno insieme senza contraddirsi, a patto di
+Lo stesso lavoro contiene anche delle *ablazioni* (gli esperimenti in cui si
+cambia un pezzo solo e si guarda che effetto fa) sul modo di far entrare il
+condizionamento, e a Gflops sostanzialmente pari quel modo cambia la qualità in
+misura tutt'altro che marginale: è lì che adaLN-zero vince. Le due
+affermazioni stanno insieme senza contraddirsi, a patto di
 enunciarle con precisione: **dentro una stessa famiglia architetturale** il
 calcolo predice la qualità meglio della taglia o del numero di tessere presi da
 soli. Il disegno del blocco resta una scelta, e sbagliarla costa; la
@@ -193,7 +196,7 @@ regolarità dice dove spendere il prossimo Gflop, non che l'ingegneria sia
 finita.
 
 In cima alla curva sta il modello più grande con le tessere più piccole,
-DiT-XL/2: un Transformer da poche centinaia di milioni di parametri che, su
+DiT-XL/2: un Transformer da seicentosettantacinque milioni di parametri che, su
 immagini generate a partire dalla categoria richiesta, raggiunge la qualità dei
 migliori modelli con U-Net del periodo, compresi quelli di Dhariwal e Nichol
 {cite}`dhariwal2021diffusion` e il latent diffusion di Rombach e colleghi
@@ -265,15 +268,17 @@ e immagini di durate, risoluzioni e proporzioni variabili; e la qualità dei
 campioni migliora «sensibilmente» al crescere del calcolo di addestramento; il
 confronto mostrato è tra lo stesso modello a calcolo base, quadruplo e
 trentaduplo, cioè lo stesso modello a cui si è fatto fare quattro volte e poi
-trentadue volte più lavoro, che è la manopola della sezione precedente. È la
+trentadue volte più lavoro, che è la manopola del paragrafo qui sopra. È la
 ricetta DiT, estesa di una dimensione: dove il ViT affettava
 un'immagine, qui si affetta un blocco di fotogrammi.
 
 Altrettanto va detto ciò che il rapporto *non* dice: quanti parametri, su
 quali dati, con quali dettagli architetturali; è un documento aziendale con
 dimostrazioni scelte, non un articolo passato da revisione. E il titolo
-rilancia una tesi che il rapporto stesso incrina, documentando bicchieri che
-si rovesciano senza rompersi e liquidi che sfidano la gravità: generare video
+rilancia una tesi che il rapporto stesso incrina, ammettendo di non modellare
+correttamente la fisica di interazioni elementari (l'esempio che sceglie è il
+vetro che si rompe, e il campione mostrato è un bicchiere che si rovescia
+senza rompersi mentre il liquido lo attraversa): generare video
 credibili significa aver *capito* il mondo, o solo averne imparato le
 apparenze? È la domanda del capitolo sui **World Model**, più avanti nel
 libro, dove i video generativi verranno discussi proprio come candidati
@@ -294,10 +299,10 @@ il rapporto fra il testo e l'immagine. In Stable Diffusion il testo era un
 consulente esterno: trasformato una volta per tutte dall'encoder di CLIP
 {cite}`radford2021learning`, veniva soltanto *consultato* dalla U-Net, e
 l'informazione fluiva in un senso solo. In MM-DiT il testo e l'immagine sono
-**due sequenze di token alla pari**, due corsie con pesi propri (proiezioni e
-MLP separati per modalità) che si incontrano in un'attenzione congiunta sulla
-sequenza concatenata: a ogni blocco i token del testo guardano quelli
-dell'immagine e viceversa. La famiglia arriva fino a 8 miliardi di parametri, e
+**due sequenze di token alla pari**: due corsie che conservano ciascuna i propri
+pesi ma si incontrano nell'attenzione, così che a ogni blocco i token del testo
+guardino quelli dell'immagine e viceversa.
+La famiglia arriva fino a 8 miliardi di parametri, e
 la scala si comporta anche qui in modo regolare e prevedibile. L'impostazione
 ha fatto scuola: la riprende, tra gli altri, FLUX (2024), del gruppo di autori
 originali di Stable Diffusion.
@@ -338,24 +343,25 @@ elaborate.
 `````
 
 La seconda novità è la meno appariscente e riguarda l'archivista, non il
-restauratore: il latente passa da 4 a **16 canali**. È la correzione diretta
+restauratore: il latente passa da 4 a **16 canali**, cioè da quattro a sedici
+numeri per ogni casella della scheda. È la correzione diretta
 del limite discusso nella sezione precedente, cioè il soffitto che il
 compressore impone alla qualità finale; a parità di fattore di compressione,
-più canali significano una ricostruzione nettamente migliore, ed è la ragione
-per cui le scritte e i dettagli fini smettono di essere il difetto
+più canali significano una ricostruzione nettamente migliore, ed è una delle
+ragioni per cui le scritte e i dettagli fini smettono di essere il difetto
 caratteristico della famiglia. Chi legge il capitolo in ordine ha appena visto
 descrivere il traslocatore come un dettaglio di efficienza: questa è la misura
 di quanto quel dettaglio pesasse.
 
 La terza tocca il cuore probabilistico del capitolo: Stable Diffusion 3
 abbandona la catena di rumore di DDPM per il **rectified flow**
-{cite}`liu2023rectified`, che rientra nella famiglia dei cammini gaussiani del
-*flow matching* di Yaron Lipman e colleghi {cite}`lipman2023flow`. L'idea
-merita le due lenti.
+{cite}`liu2023rectified`, un parente stretto del *flow matching* di Yaron
+Lipman e colleghi {cite}`lipman2023flow` (in che senso parente lo dice la
+scheda Superiore). L'idea merita le due lenti.
 
 ```{figure} ../figures/flow-matching-traiettorie-dritte.svg
 :name: fig-traiettorie-dritte
-:alt: "Due percorsi che uniscono gli stessi due estremi, il rumore e l'immagine. Il primo, della diffusione classica, è una linea tortuosa che serpeggia e richiede moltissimi passi brevi per essere seguita senza errore. Il secondo, del flow matching, è quasi un segmento rettilineo, e bastano pochi passi lunghi per percorrerlo."
+:alt: "Due percorsi fra gli stessi due estremi, un cerchio «rumore» a sinistra e un cerchio «dati, immagine» a destra. In alto, in terracotta, quello della diffusione: una linea che serpeggia, con nove puntini a segnare le fermate. In basso, in teal, quello del flow matching: una freccia dritta con tre sole fermate."
 :width: 92%
 
 Stessi estremi, due strade. Su una linea dritta si può camminare a grandi
@@ -567,7 +573,8 @@ per molti) si è accentuata in entrambe le direzioni.
 E la lezione finale è quella che questo libro ripete dal primo capitolo. Nel
 2015 la diffusione nasce da un'analogia termodinamica; nel 2024 genera un
 minuto di video da una frase. In mezzo, nessun colpo di genio isolato: un
-autoencoder variazionale del 2014 nato per comprimere, una U-Net del 2015 nata
+autoencoder variazionale del 2014 nato come modello generativo e finito qui a
+fare il compressore, una U-Net del 2015 nata
 per i microscopi {cite}`ronneberger2015u`, l'attenzione nata nel 2015 per
 tradurre e promossa a protagonista nel 2017 {cite}`vaswani2017attention`, le
 patch di un ViT del 2021 nato per classificare {cite}`dosovitskiy2021image`

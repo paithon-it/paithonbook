@@ -51,9 +51,12 @@ bara sulle proporzioni, e si bara in modo controllato: alle lingue piccole si
 danno più turni di quanti gliene spetterebbero, e a quelle grandi meno, con una
 manopola che dice quanto appiattire. Girata a fondo, tutte le lingue avrebbero
 lo stesso numero di turni; lasciata ferma, ognuna avrebbe i turni che le
-toccano. La si mette in mezzo. Nei fatti mBERT la gira poco (una lingua che vale
-l'uno per cento dei testi arriva al quattro), e i modelli venuti dopo, che
-puntavano di più sulle lingue rare, la girano molto di più.
+toccano. La si mette in mezzo. Il primo modello multilingue costruito così (si
+chiama **mBERT**, e legge centoquattro Wikipedia) la gira poco: una lingua che
+vale l'uno per cento dei testi si ritrova il quattro per cento dei turni, cioè
+quasi quattro volte tanto. I modelli venuti dopo, che puntavano di più sulle
+lingue rare, la girano molto di più: la stessa lingua arriva al venti per
+cento.
 
 `````
 
@@ -115,12 +118,20 @@ punto nello spazio, settecentosessantotto un punto in un luogo che non si
 disegna ma si ragiona allo stesso modo. Chiamiamola **mappa del significato**,
 perché la proprietà che conta è quella di una mappa: frasi che vogliono dire
 cose simili finiscono in indirizzi vicini. Ebbene, «il gatto nero salta sul
-muro» e «the black cat jumps on the wall» finiscono a due passi l'una
-dall'altra, pur essendo in due lingue di cui al modello nessuno ha mai
-raccontato l'esistenza. E la conseguenza pratica arriva subito: un programma
-addestrato a riconoscere qualcosa guardando gli indirizzi delle frasi inglesi
-funziona anche sugli indirizzi delle frasi italiane, perché stanno nello stesso
-quartiere.
+muro» e «the black cat jumps on the wall» finiscono nella stessa regione, pur
+essendo in due lingue di cui al modello nessuno ha mai raccontato l'esistenza.
+
+Vale la pena essere precisi su *quanto* vicine, perché il modo in cui la cosa
+si misura è più interessante dello slogan. I due quartieri, quello italiano e
+quello inglese, non sono sovrapposti: sono **affiancati e paralleli**. Fra
+l'uno e l'altro c'è uno spostamento, e la scoperta è che quello spostamento
+dipende solo dalla **coppia di lingue** e non dalla frase: calcolato una volta
+come media su molte coppie, e applicato a una frase italiana qualsiasi, porta
+proprio dove sta la sua traduzione inglese. Non è dunque che le due frasi
+coincidano; è che le due lingue occupano due copie della stessa mappa. E la
+conseguenza pratica arriva subito: un programma addestrato a riconoscere
+qualcosa guardando gli indirizzi delle frasi inglesi funziona anche sugli
+indirizzi delle frasi italiane, perché la forma del quartiere è la stessa.
 
 `````{tab} Elementare
 
@@ -142,8 +153,15 @@ riusare la stessa struttura. Non allinea le lingue perché glielo chiediamo:
 allinea per avarizia, perché tenerle separate costerebbe più memoria di quanta
 ne abbia.
 
+Un indizio a favore viene dallo smontare il modello pezzo per pezzo: a contare
+sono i **piani della torre**, non i lettori in parallelo di ciascun piano. Con
+un lettore solo per piano il trasferimento fra lingue tiene ancora; con pochi
+piani crolla. È la profondità a costruire il pezzo di rappresentazione che le
+lingue hanno in comune.
+
 Detto onestamente: la questione è ancora aperta, e chi vi dice di sapere
-esattamente perché mBERT funzioni sta semplificando.
+esattamente perché il modello degli esercizi a buchi multilingue (si chiama
+**mBERT**) funzioni sta semplificando.
 
 `````
 
@@ -153,20 +171,25 @@ Le prove sono di tre tipi, e vale la pena distinguerle perché portano in
 direzioni diverse.
 
 **Sovrapposizione di vocabolario.** Che la sovrapposizione dei sottotoken
-correli positivamente con il trasferimento zero-shot, e su molti compiti (NER,
-POS tagging, inferenza, parsing di dipendenze, question answering), è il
-risultato di Wu e Dredze {cite}`wu2019beto`, che misura mBERT su cinque compiti
-e trentanove lingue. Ma è correlazione, e due lavori la ridimensionano da
-direzioni diverse. Pires e colleghi {cite}`pires2019multilingual` misurano la
-stessa quantità su NER e POS e trovano la resa di mBERT **piatta** al variare
-della sovrapposizione: resta fra il 40% e il 70% perfino per coppie di lingue
-quasi prive di parole in comune, mentre un BERT solo inglese, tenuto come
-termine di paragone, dipende direttamente dalla sovrapposizione. Karthikeyan e
+correli positivamente con il trasferimento zero-shot, e su compiti molto
+diversi fra loro (riconoscimento di entità, POS tagging, inferenza, parsing di
+dipendenze, classificazione di documenti), è il risultato di Wu e Dredze
+{cite}`wu2019beto`, che misura mBERT su cinque compiti e trentanove lingue. Ma
+è correlazione, e due lavori la ridimensionano da direzioni diverse. Pires e
+colleghi {cite}`pires2019multilingual` mettono in grafico la resa sul
+riconoscimento di entità contro la sovrapposizione, per ogni coppia fra
+sedici lingue, e la trovano **piatta**: resta fra il 40% e il 70% di F1 perfino
+per le coppie quasi prive di pezzi in comune, mentre un BERT solo inglese,
+tenuto come termine di paragone, ci precipita fino a sfiorare lo zero.
+Karthikeyan e
 colleghi {cite}`karthikeyan2020cross` costruiscono lingue sintetiche con
 sovrapposizione **nulla** e osservano un calo minimo. Il trasferimento
 sopravvive dunque senza pezzi condivisi, e nemmeno serve l'alfabeto condiviso:
-urdu (in grafia araba) e hindi (in devanagari) si trasferiscono al 91% pur non
-avendo un carattere in comune.
+un mBERT rifinito sul solo urdu (in grafia araba) etichetta le parti del
+discorso dell'hindi (in devanagari) con 91 punti di accuratezza, pur non
+avendo mai visto una parola annotata in devanagari e non avendo le due lingue
+un carattere in comune. Nel verso opposto, hindi verso urdu, si scende a 86: la
+simmetria non è garantita nemmeno qui.
 
 C'è anche la prova per la strada opposta. Artetxe, Ruder e Yogatama
 {cite}`artetxe2020cross` prendono un modello **monolingue**, ne congelano tutto
@@ -189,8 +212,11 @@ un rovescio molto concreto.
 
 Un dato che mette d'accordo tutti: l'allineamento non è uniforme lungo la
 pila. Cercando, per una frase in una lingua, la sua traduzione fra molte
-candidate in un'altra, sono gli strati **intermedi** a funzionare meglio
-(intorno al quinto-ottavo in mBERT), non gli ultimi. Gli strati alti tornano a
+candidate in un'altra (dopo averla traslata dello spostamento medio di cui
+sopra), sono gli strati **intermedi** a funzionare meglio: nei dodici strati di
+mBERT il massimo cade sul settimo e sull'ottavo, come si legge dalla Figura 3
+di Pires e colleghi {cite}`pires2019multilingual`, e non in cima. Gli strati
+alti tornano a
 specializzarsi sulla lingua; nel mezzo abita quel che c'è di più vicino a una
 interlingua. Il che suggerisce che le rappresentazioni siano insieme
 *language-agnostic* e *language-specific*, a profondità diverse.
@@ -248,12 +274,23 @@ parallelo esplicito diventa meno necessario.
 La via a **doppio encoder** (LaBSE {cite}`feng2022language` e affini) cambia
 granularità: non predice token, allinea *frasi*. Con un batch di $N$ coppie
 parallele e una loss contrastiva su una matrice di somiglianze $N \times N$,
-si massimizza la diagonale e si minimizza il resto. È letteralmente la loss
-di CLIP {cite}`radford2021learning`, che il capitolo su visione e linguaggio
-disegnerà nella {numref}`fig-clip-matrice`, con la
-coppia (immagine, didascalia) sostituita da (frase, traduzione), e ne eredita
-tutto: i negativi gratis che crescono come $N^2$, l'importanza del batch
-grande, la temperatura. Il prodotto è un embedding di frase confrontabile fra
+si massimizza la diagonale e si minimizza il resto. È la stessa **forma** della
+loss che il capitolo su visione e linguaggio disegnerà nella
+{numref}`fig-clip-matrice` per CLIP {cite}`radford2021learning`, con la
+coppia (immagine, didascalia) al posto di (frase, traduzione), e ne condivide
+il meccanismo che conta: i negativi gratis, che crescono come $N^2$ e rendono
+prezioso il batch grande.
+
+Sull'ordine conviene però essere precisi, perché è facile raccontarla al
+contrario: LaBSE è del luglio 2020 e CLIP del febbraio 2021, quindi non eredita
+niente da CLIP. Entrambi discendono dalla stessa idea più antica, il *dual
+encoder* con graduatoria sulle traduzioni di Guo e colleghi (2018). E il
+dettaglio in cui le due divergono è istruttivo: dove CLIP scala le somiglianze
+con una **temperatura appresa**, LaBSE sottrae un **margine** fisso alla
+diagonale, cioè chiede alla coppia giusta non solo di vincere ma di vincere di
+uno scarto. Due modi diversi di dire alla stessa loss quanto essere severa.
+
+Il prodotto è un embedding di frase confrontabile fra
 lingue, che serve a recuperare traduzioni, a ripulire corpora paralleli
 raccolti dal web e a cercare in un archivio scrivendo la domanda in un'altra
 lingua.
@@ -290,8 +327,10 @@ La seconda: il trasferimento non è uniforme, ed è più facile fra lingue con l
 stessa struttura sintattica. Il salto fra lingue soggetto-verbo-oggetto
 (italiano, inglese, francese) è molto più agevole di quello verso lingue
 soggetto-oggetto-verbo (turco, coreano, giapponese): sull'etichettatura delle
-parti del discorso, l'unica misurata su questa griglia da Pires e colleghi, si
-passa da 81,6 punti restando dentro il gruppo SVO a 66,5 uscendone. La tabella
+parti del discorso, l'unica misurata su questa griglia da Pires e colleghi, il
+punteggio è la percentuale di parole a cui il modello assegna l'etichetta
+giusta, e si passa da 81,6 su cento restando dentro il gruppo SVO a 66,5
+uscendone. La tabella
 per intero dice però una cosa più precisa di «stessa struttura, salto facile»:
 da SOV a SOV si ottiene 64,2, da SOV a SVO 64,0, cioè lo stesso. Non c'è
 simmetria, e il caso facile non è «le lingue che si somigliano»: è **SVO verso

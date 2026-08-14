@@ -66,8 +66,9 @@ fino in fondo. Ma un piano rigido non sa reagire a ciò che non aveva previsto
 (un test che rivela un secondo bug, un file che non esiste) e allora serve una
 fase di **re-planning**: quando un sotto-obiettivo fallisce, si torna dal
 pianificatore e si aggiorna la lista. È lo stesso
-spendere-calcolo-per-ragionare del *test-time compute* visto nel capitolo sui
-Transformer, ma speso *prima* di agire anziché durante: la pianificazione è
+spendere-calcolo-per-ragionare del *calcolo al momento dell'inferenza* visto
+nel capitolo sui Transformer, ma speso *prima* di agire anziché durante: la
+pianificazione è
 ragionamento su come muoversi, scritto in anticipo. Nessuno dei due estremi
 vince sempre; i sistemi robusti mescolano: un piano di massima, rivisto quando
 la realtà lo smentisce.
@@ -83,11 +84,13 @@ specializzato**, che si passano il lavoro e conversano tra loro.
 
 ```{figure} ../figures/sistemi-multi-agente.svg
 :name: fig-orchestratore-worker
-:alt: "Uno schema gerarchico: in alto un agente orchestratore riceve il compito e lo suddivide, delegandolo a tre agenti esecutori disposti sotto di lui. Ciascun esecutore ha i propri strumenti e lavora sul proprio pezzo; i risultati risalgono all'orchestratore, che li ricompone nella risposta finale."
+:alt: "Uno schema gerarchico su tre livelli: in alto un agente orchestratore, che divide e sintetizza, delega con tre frecce ad altrettanti esecutori disposti sotto di lui; ciascuno ha il proprio mestiere, la ricerca sul web, l'interrogazione di un database, la lettura di documenti. Dai tre esecutori scendono tre linee tratteggiate, etichettate «risultati», che convergono in un unico riquadro in basso: la risposta unica."
 :width: 90%
 
-Uno che divide, tre che eseguono (nel disegno sono etichettati *worker*, che è
-il termine inglese per gli esecutori). La specializzazione non sta nel modello,
+Uno che divide, l'**orchestratore**, e tre che eseguono (nel disegno sono
+etichettati *worker*, che è il termine inglese per gli esecutori). I tre
+risultati si ricompongono in una risposta sola.
+La specializzazione non sta nel modello,
 che può essere lo stesso per tutti: sta nelle istruzioni e negli strumenti che
 ciascun ruolo riceve.
 ```
@@ -151,10 +154,11 @@ che un agente solo non risolveva, non per il gusto della squadra.
 `````
 
 Questa è l'idea; i meccanismi con cui una squadra di agenti si organizza
-davvero (quanto costa il coordinamento e quando lo ripaga, quale grafo di
-comunicazione conviene, come ci si mette d'accordo quando i partecipanti non
-sono affidabili, e come si può *imparare* a coordinarsi invece di essere
-programmati per farlo) hanno un capitolo dedicato più avanti.
+davvero (quanto costa il coordinamento e quando lo ripaga, chi conviene che
+parli con chi, come ci si mette d'accordo quando i partecipanti non sono
+affidabili, e come si può *imparare* a coordinarsi invece di essere
+programmati per farlo) hanno un capitolo tutto loro più avanti, *Sistemi
+multi-agente*.
 
 ## La memoria che dura
 
@@ -327,6 +331,8 @@ aver registrato, per ciascuno, l'esito, i passi, i token e se la traiettoria era
 «pulita»:
 
 ```python
+import math
+
 # ogni episodio: esito, passi, token consumati, traiettoria valida?
 episodi = [
     {"successo": True,  "passi": 4,  "token": 2100, "traiettoria_ok": True},
@@ -347,6 +353,18 @@ print(f"episodi: {n}")
 print(f"tasso di successo: {tasso_successo:.0%}")
 print(f"successi con traiettoria valida: {traiettorie_ok:.0%}")
 print(f"token medi per episodio: {token_medi:.0f}")
+
+# quanto vale davvero quel 60%? Intervallo di Wilson al 95%: e' l'intervallo
+# per una proporzione che regge anche su pochi episodi, dove la formula
+# ingenua p +- z*sqrt(p(1-p)/n) darebbe estremi fuori da [0, 1].
+z = 1.96
+p = tasso_successo
+centro = (p + z**2 / (2*n)) / (1 + z**2 / n)
+raggio = z * math.sqrt(p*(1-p)/n + z**2 / (4*n**2)) / (1 + z**2 / n)
+print(f"intervallo al 95%: da {centro - raggio:.0%} a {centro + raggio:.0%}")
+
+# e quanti episodi servirebbero per una barra d'errore di 5 punti?
+print(f"episodi per +/- 5 punti: {z**2 * p * (1-p) / 0.05**2:.0f}")
 ```
 
 ```text
@@ -354,6 +372,8 @@ episodi: 5
 tasso di successo: 60%
 successi con traiettoria valida: 67%
 token medi per episodio: 4240
+intervallo al 95%: da 23% a 88%
+episodi per +/- 5 punti: 369
 ```
 
 I numeri raccontano più del solo «60%». Un compito è riuscito *per caso*, con
@@ -364,14 +384,19 @@ inciampato all'ultimo; un caso ben diverso da chi ha sbagliato tutto. Il tasso
 di successo da solo appiattisce queste differenze; costo e traiettoria le
 fanno riemergere.
 
-Detto questo, quei quattro numeri stampati vanno guardati con sospetto, ed è
-il difetto che il codice illustra suo malgrado: **cinque episodi non
-misurano niente**. Su tre successi su cinque, l'intervallo di confidenza al
-95% va dal 23% all'88%: quel «60%» è compatibile sia con un agente che
-fallisce tre volte su quattro, sia con uno che riesce quasi sempre. Per una
-barra d'errore di cinque punti attorno al 60% servirebbero circa
-**trecentosettanta** episodi. È la ragione per cui i benchmark seri di agenti
-riportano una dispersione, e non un numero solo.
+Detto questo, il primo di quei numeri va guardato con sospetto, ed è il
+difetto che il codice illustra suo malgrado, calcolandoselo da sé nelle ultime
+due righe: **cinque episodi non misurano niente**. Provate cinque volte, il
+caso da solo può farvi sembrare bravi o scarsi, e non c'è modo di distinguere
+le due cose. Il conto che lo dice si chiama **intervallo di confidenza**: si
+prende il risultato osservato e ci si chiede fra quali due valori può stare
+davvero quello vero, tenendo conto di quanto poche sono le prove. Su tre
+successi su cinque quell'intervallo va dal 23% all'88%, e quel «60%» è dunque
+compatibile sia con un agente che fallisce tre volte su quattro, sia con uno
+che riesce quasi sempre: non stiamo misurando l'agente, stiamo misurando il
+caso. Per stringere l'incertezza a cinque punti attorno al 60% servirebbero
+**trecentosessantanove** episodi invece di cinque. È la ragione per cui i
+benchmark seri di agenti riportano l'incertezza, e non un numero solo.
 
 I benchmark seri costruiscono proprio su queste idee. **AgentBench**
 {cite}`liu2023agentbench` mette gli LLM alla prova come agenti in **otto
@@ -391,11 +416,15 @@ se stesso**. Riesaminando a mano i successi di SWE-bench, Aleithan e colleghi
 {cite}`aleithan2024swebenchplus` hanno trovato che circa una correzione
 riuscita su tre ($32{,}67\%$) non era stata risolta ma **letta**, perché la
 soluzione era già scritta nella segnalazione o nei commenti sotto; e che
-un'altra quota simile passava grazie a test troppo deboli per bocciare
-alcunché. Filtrate le istanze difettose, il risultato di un sistema noto
-scendeva dal $12{,}5\%$ al $4{,}0\%$: un fattore tre fra il numero pubblicato e
-quello che resta. È la ragione per cui esiste SWE-bench *Verified*, un
-sottoinsieme di cinquecento istanze rilette a mano.
+un'altra quota quasi uguale ($31{,}08\%$) passava grazie a test troppo deboli
+per bocciare alcunché. Buttate via le istanze difettose (le singole
+segnalazioni di cui il benchmark è fatto), il sistema che allora guidava la
+classifica scendeva dal $12{,}47\%$ al $3{,}97\%$: un fattore tre fra il numero
+pubblicato e quello che resta. Difetti della stessa famiglia avevano già
+prodotto, qualche
+mese prima, **SWE-bench Verified**: cinquecento istanze rilette una per una
+da sviluppatori professionisti e tenute solo se il problema era posto bene e i
+test erano all'altezza di giudicarlo.
 
 Niente di tutto ciò toglie valore al benchmark, che resta il migliore esempio
 di questo capitolo. Sposta però la morale: i compiti lunghi e realistici sono
@@ -405,8 +434,9 @@ mai soltanto una proprietà dell'agente.
 C'è infine una faccia della valutazione che non è una metrica ma una rete di
 sicurezza. Un agente non solo *risponde*: *agisce*, e un'azione può fare danni
 (eseguire codice, spendere soldi, scrivere su un archivio). Valgono qui,
-rafforzati, gli stessi presidi che vedremo parlando di modelli messi in
-produzione. I **guardrail**, che prendono il nome dalle barriere di
+rafforzati, gli stessi presidi che vedremo parlando di modelli messi **in
+produzione**, cioè in mano a chi li userà davvero e non più a chi li sta
+provando. I **guardrail**, che prendono il nome dalle barriere di
 protezione delle strade, sono filtri su ciò che entra e su ciò che esce, e
 fermano sia le richieste ostili sia le azioni pericolose. E c'è
 l'**LLM-as-a-judge**, cioè un secondo modello promosso a esaminatore: utile
@@ -425,7 +455,9 @@ promettenti: l'idea di un modello che pianifica, usa strumenti, collabora e
 ricorda è potente, e i primi risultati su compiti reali, per quanto modesti,
 erano impensabili pochi anni fa. Ma sono anche **fragili**, e i loro difetti
 non sono dettagli da limare: sono strutturali. Gli errori si **accumulano**
-lungo la catena, e un compito lungo li amplifica. Il **costo** cresce con i
+lungo la catena, e un compito lungo li amplifica: se a ogni mossa se ne sbaglia
+una su dieci, arrivare in fondo a dieci mosse senza un solo errore capita poco
+più di una volta su tre. Il **costo** cresce con i
 passi, con gli agenti, con i giri di conversazione. E l'**imprevedibilità**
 che rende versatile un motore linguistico è la stessa che rende difficile
 garantire cosa farà: più libertà d'azione, meno controllo.

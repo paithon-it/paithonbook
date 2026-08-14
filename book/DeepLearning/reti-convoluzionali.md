@@ -1,24 +1,32 @@
 # Reti convoluzionali (CNN)
 
-Prendi una foto di un gatto e spostalo di dieci pixel a destra: per te è
-ancora, banalmente, un gatto. Per una rete fatta come quelle del capitolo
-scorso, invece, è diventato un input completamente diverso. Questo scarto tra
-come *noi* vediamo un'immagine e come la vede una rete neurale ordinaria è il
-problema che le **reti convoluzionali** (Convolutional Neural Networks, CNN)
-sono nate per risolvere. L'idea affonda le radici nella biologia (gli studi di
-Hubel e Wiesel sulla corteccia visiva del gatto negli anni Sessanta) e prende
-forma nel *Neocognitron* di Fukushima {cite}`fukushima1980neocognitron` e
-nella LeNet-5 di Yann LeCun (1998), che leggeva le cifre scritte a mano sugli
-assegni. Nel 2012 AlexNet, di Krizhevsky, Sutskever e Hinton, vince la
-competizione ImageNet con un margine tale da riaccendere l'intero campo del
-deep learning.
+Per un computer una fotografia è una tabella di numeri: uno per ogni pixel, o
+tre se la foto è a colori. Prendi la foto di un gatto e spostalo di dieci pixel
+a destra: per te è ancora, banalmente, un gatto; per la tabella, invece, quasi
+nessun numero è rimasto dov'era, e una rete fatta come quelle del capitolo sulle
+reti neurali si ritrova davanti un ingresso completamente nuovo.
+
+Questo scarto tra come *noi* vediamo un'immagine e come la vede una rete neurale
+ordinaria è il problema che le **reti convoluzionali** (Convolutional Neural
+Networks, CNN) sono nate per risolvere. L'idea affonda le radici negli stessi
+esperimenti di Hubel e Wiesel sulla corteccia del gatto: prende forma nel
+*Neocognitron* di Fukushima {cite}`fukushima1980neocognitron`, una rete a strati
+che imita proprio quella catena di rivelatori, e arriva a maturazione nella
+LeNet-5 di Yann LeCun (1998), che leggeva le cifre scritte a mano sugli assegni
+bancari.
 
 ## Perché uno strato denso non basta
 
+Prima di costruire qualcosa di nuovo conviene capire perché il pezzo che
+abbiamo già, lo strato **denso** (il "completamente connesso" del capitolo
+sulle reti neurali), sulle immagini non funziona. Le ragioni sono due, e
+nessuna delle due è un dettaglio: il numero di pesi da imparare, che diventa
+ingestibile, e il fatto che una rete fatta così tratti la stessa forma come due
+cose diverse a seconda di *dove* si trova nell'immagine.
+
 `````{tab} Elementare
 
-Uno strato **denso** (il "completamente connesso" che conosciamo dal capitolo
-sulle reti neurali) collega *ogni* pixel a *ogni* neurone. Sembra generoso, ma
+Uno strato denso collega *ogni* pixel a *ogni* neurone. Sembra generoso, ma
 è uno spreco. Una foto a colori di 256×256 pixel non sono 65.536 numeri ma il
 triplo: ogni pixel ne porta **tre**, uno per il rosso, uno per il verde e uno
 per il blu, e $256 \times 256 \times 3$ fa 196.608, quasi 200.000. Uno strato
@@ -58,8 +66,14 @@ Il cuore della rete è la **convoluzione**: un piccolo filtro (o *kernel*),
 tipicamente $3\times3$, che scivola su tutta l'immagine. In ogni posizione
 sovrappone il filtro alla porzione di immagine sottostante, moltiplica valore
 per valore e somma il tutto in *un* numero. Quel numero misura quanto bene
-quella porzione somiglia al motivo che il filtro cerca: un bordo verticale,
-una macchia di colore, una texture.
+quella porzione somiglia al **motivo** che il filtro cerca, cioè al disegno
+ricorrente che lo interessa: un bordo verticale, una macchia di colore, una
+trama.
+
+I nove numeri di cui un filtro $3\times3$ è fatto non li scrive nessuno a mano:
+sono pesi come tutti gli altri della rete, e sono esattamente ciò che
+l'addestramento aggiusta. Un filtro, in altre parole, è una domanda che la rete
+impara a formulare da sé.
 
 ```{figure} ../figures/convoluzione.svg
 :name: fig-convoluzione
@@ -79,10 +93,15 @@ volta, ma quella *stessa* finestra visita ogni angolo dell'immagine.
 
 Immagina uno stampino traforato con nove caselle, che fai scorrere su una
 pagina a quadretti. In ogni punto guardi i nove quadretti sotto lo stampino,
-li combini secondo una ricetta fissa e scrivi il risultato su un foglio nuovo.
-Lo stampino non cambia mai mentre scorre: se è bravo a trovare un bordo, lo
-trova ovunque nell'immagine, in alto come in basso. È questo il trucco che
-mancava allo strato denso.
+li combini secondo una ricetta e scrivi il risultato su un foglio nuovo. La
+ricetta sono i nove numeri dello stampino, e sono quelli che la rete impara:
+all'inizio sono presi a caso e non trovano niente, e a forza di esempi
+diventano un cercatore di bordi o di macchie.
+
+Il punto è che lo stampino non cambia mai mentre scorre: la ricetta è la stessa
+in tutti i punti della pagina. Se è brava a trovare un bordo, lo trova ovunque
+nell'immagine, in alto come in basso. È questo il trucco che mancava allo
+strato denso.
 
 `````
 
@@ -115,11 +134,12 @@ per canale $c$ e posizione $(m,n)$, $a_{i,j}$ l'attivazione risultante.
 :width: 90%
 
 La stessa operazione in movimento, con un filtro che cerca **bordi verticali**.
-In alto la regola scritta in simboli, che dice questo: moltiplica i nove valori
-sotto la finestra per i nove pesi del filtro, e somma tutto. La mappa risponde
-$-3$ dove la barra comincia, $+3$ dove finisce e $0$ nel mezzo, dove la
-finestra è centrata sulla barra e i due bordi, che hanno segno opposto, si
-annullano.
+Sotto i tre riquadri, la regola scritta in simboli, che dice questo: moltiplica
+i nove valori sotto la finestra per i nove pesi del filtro, e somma tutto. La
+barra è spessa
+un pixel, quindi in ogni posizione finisce sotto una sola colonna del filtro: la
+mappa risponde $-3$ quando cade sotto la colonna destra, $+3$ quando cade sotto
+la sinistra e $0$ quando cade sotto quella centrale, i cui pesi valgono zero.
 ```
 
 Vale la pena rifare i conti della {numref}`fig-convoluzione-animata`. Il filtro
@@ -127,28 +147,35 @@ Vale la pena rifare i conti della {numref}`fig-convoluzione-animata`. Il filtro
 $1$ e lo sfondo $0$. Quando la barra finisce sotto la colonna destra del
 filtro, ogni riga contribuisce $-1$ e le tre righe insieme danno $-3$; quando
 finisce sotto la colonna sinistra, $+3$; quando è al centro, il peso che la
-moltiplica è $0$ e le altre due colonne vedono solo sfondo. Il
-filtro non "vede" la barra: vede i suoi **bordi**, e li segna con segno opposto
-a seconda del verso. È già un abbozzo di ciò che i primi strati di una CNN
-imparano da soli.
+moltiplica è $0$ e le altre due colonne vedono solo sfondo. Il filtro non
+misura quanto la barra è chiara: misura il **contrasto** tra il lato destro e
+il lato sinistro della propria finestra, e il segno dice da che parte sta il
+chiaro. È già un abbozzo di ciò che i primi strati di una CNN imparano da soli.
 
 ## Campi recettivi locali e pesi condivisi
 
-Due principi rendono tutto ciò possibile. Il **campo recettivo locale**: ogni
-neurone convoluzionale guarda solo una piccola finestra dell'input, non
-l'intera immagine. La **condivisione dei pesi**: lo stesso kernel viene usato
-in ogni posizione, quindi i pochi pesi che lo compongono sono riutilizzati
-migliaia di volte.
+Due principi rendono tutto ciò possibile, e conviene dar loro un nome perché
+tornano dappertutto. Il primo è il **campo recettivo locale**: ogni casella
+della mappa dei risultati (che è poi un neurone come quelli del capitolo sulle
+reti neurali, solo con pochissimi ingressi) guarda una finestra piccola, non
+l'immagine intera. Il secondo è la **condivisione dei pesi**: lo stesso filtro
+si usa in ogni posizione, quindi i pochi numeri che lo compongono vengono
+riutilizzati migliaia di volte.
 
 `````{tab} Elementare
 
 Un filtro $3\times3$ su un'immagine a colori guarda nove caselle, e di ogni
-casella i tre numeri del colore: $3\times3\times3 = 27$ pesi. Più un ultimo
-numero, che la rete somma sempre al risultato per regolare la propria soglia di
-attenzione (si chiama *bias*): $27+1 = 28$
-numeri da imparare, in tutto. Con 32 filtri diversi arrivi a meno di mille parametri,
-contro i milioni dello strato denso. Pochi pesi, riusati ovunque: la rete
-impara *cosa* cercare, non *dove*.
+casella i tre numeri del colore: $3\times3\times3 = 27$ pesi.
+
+Più un ultimo numero, sempre lo stesso, che si somma al risultato in ogni
+posizione. Alza o abbassa in blocco l'intera mappa, e serve a regolare quanto
+forte debba essere la somiglianza prima che il filtro dica «l'ho trovato»: se
+vale $-2$, una somiglianza da 1 non basta più a produrre un risultato positivo.
+Si chiama *bias*, e fa $27+1 = 28$ numeri da imparare per filtro.
+
+Con 32 filtri diversi sono $28 \times 32 = 896$ pesi, meno di mille, contro i
+milioni dello strato denso. Pochi pesi, riusati ovunque: la rete impara *cosa*
+cercare, non *dove*.
 
 `````
 
@@ -164,24 +191,36 @@ lo spazio delle ipotesi e quindi il rischio di overfitting.
 `````
 
 L'uscita di un filtro è una **feature map**: una mappa che segna, punto per
-punto, *dove* nell'immagine è presente il motivo cercato. Un layer produce una
-pila di feature map, una per filtro; i primi layer imparano motivi elementari
-(bordi, angoli), i più profondi li combinano in parti sempre più astratte
-(occhi, ruote, volti).
+punto, *dove* nell'immagine è presente il motivo cercato. Uno strato
+convoluzionale (in inglese *layer*, e nel libro le due parole si alternano)
+produce una pila di feature map, una per filtro; i primi strati imparano motivi
+elementari (bordi, angoli), i più profondi li combinano in parti sempre più
+astratte (occhi, ruote, volti).
 
-## Il pooling: ridurre per generalizzare
+## Il pooling: mappe più piccole, e cosa si guadagna
 
 Dopo la convoluzione si applica quasi sempre il **pooling**, che rimpicciolisce
-le feature map tenendo solo l'informazione saliente. Il più comune è il
-**max pooling**: su ogni finestra (di solito $2\times2$) conserva il valore
-massimo.
+le feature map tenendo di ogni zona solo il valore più forte. Il più comune è
+il **max pooling**: su ogni finestra (di solito $2\times2$) conserva il massimo.
+Su un quadratino che contiene $1$, $7$, $3$ e $2$, esce $7$, e gli altri tre
+numeri si perdono.
 
 `````{tab} Elementare
 
 Il max pooling è come chiedere, per ogni quadratino $2\times2$: "il motivo qui
-intorno c'è, sì o no?", tenendo solo la risposta più forte. Dimezza larghezza
-e altezza, quindi alleggerisce il calcolo, e regala un po' di tolleranza: se il
-motivo si sposta di un pixel, il massimo della zona resta lo stesso.
+intorno c'è, sì o no?", tenendo solo la risposta più forte. Dimezza larghezza e
+altezza, quindi tutto quello che viene dopo lavora su un quarto dei numeri. È
+questo il guadagno sicuro.
+
+Ce n'è un secondo, ma più piccolo di come lo si racconta di solito. Se il motivo
+si sposta di un pixel e resta dentro lo stesso quadratino, il massimo di quel
+quadratino non cambia, e dopo il pooling la mappa è identica: lo spostamento è
+stato assorbito. Se invece scavalca il confine fra due quadratini, cambia
+eccome. Su una mappa piena di valori diversi uno spostamento di un solo pixel
+altera quasi sempre il risultato.
+
+È un baratto, non un regalo: si guadagnano leggerezza e un po' di tolleranza,
+si perde precisione su dove le cose stanno.
 
 `````
 
@@ -194,10 +233,13 @@ y_{i,j} = \max_{(m,n)\,\in\,\mathcal{R}_{i,j}} x_{m,n}.
 $$
 
 Non ha parametri da apprendere. Sottocampionando, aumenta il campo recettivo
-effettivo dei layer successivi; e in cambio dell'equivarianza esatta, che a
-stride 2 sopravvive solo per gli spostamenti pari, offre una modesta
-tolleranza alle traslazioni di un pixel. Non è un'aggiunta gratuita, è un
-baratto.
+effettivo dei layer successivi; e in cambio dell'equivarianza esatta, che con
+finestre prese a passo 2 (lo **stride**, cioè di quanti pixel avanza la
+finestra a ogni scatto, ripreso fra poco) sopravvive solo per gli spostamenti
+pari, offre una modesta tolleranza alle traslazioni di un pixel. Modesta è la
+parola giusta: su un picco isolato spostato di un pixel la mappa risultante
+resta identica circa una volta su due, su feature map dense di valori diversi
+praticamente mai. Non è un'aggiunta gratuita, è un baratto.
 
 `````
 
@@ -205,10 +247,18 @@ baratto.
 
 Lo schema classico alterna blocchi **conv → ReLU → pool**, ripetuti alcune
 volte, e chiude con uno o più strati densi che trasformano le feature astratte
-in una decisione (la classe dell'immagine). Due manopole governano lo
-scorrimento del filtro: lo **stride**, di quanti pixel salta la finestra a
-ogni passo, e il **padding**, la cornice di zeri aggiunta ai bordi per non
-perdere i pixel di frontiera.
+in una decisione, cioè nella classe dell'immagine: gatto, cane, tazza da caffè.
+
+La ReLU sta in mezzo, fra il filtro e il pooling, e non è un ornamento: è lei a
+rendere davvero diversi due strati impilati. Una convoluzione è fatta di
+moltiplicazioni e somme, e applicarne una al risultato di un'altra, senza niente
+in mezzo, darebbe ancora moltiplicazioni e somme: una convoluzione sola, un po'
+più larga. È il piegare i numeri (buttare via i negativi) a far sì che il
+secondo strato veda qualcosa che il primo non poteva produrre da solo.
+
+Due manopole governano poi lo scorrimento del filtro: lo **stride**, di quanti
+pixel salta la finestra a ogni passo, e il **padding**, la cornice di zeri
+aggiunta ai bordi per non perdere i pixel di frontiera.
 
 `````{tab} Elementare
 
@@ -216,10 +266,12 @@ Le due manopole si capiscono meglio con un esempio. Se la finestra avanza di un
 pixel per volta (**stride** 1) e all'immagine si aggiunge attorno una cornice
 spessa uno (**padding** 1), un filtro $3\times3$ restituisce una mappa grande
 esattamente quanto l'immagine di partenza: da $28\times28$ pixel escono
-$28\times28$ risultati. Senza quella cornice ne uscirebbero $26\times26$,
-perché vicino al bordo la finestra sporgerebbe fuori e quelle posizioni non si
-possono usare. Se invece il passo diventa 2, la finestra ne salta uno ogni
-volta e la mappa esce **dimezzata**, $14\times14$.
+$28\times28$ risultati. Senza quella cornice ne uscirebbero $26\times26$, e il
+conto si fa a mente: la finestra è larga 3, può cominciare dal primo pixel e
+deve finire entro il ventottesimo, quindi le posizioni buone sono
+$28 - 3 + 1 = 26$, una in meno per lato. Se invece si tiene la cornice e si
+porta il passo a 2, la finestra salta una posizione ogni volta e la mappa esce
+**dimezzata**, $14\times14$.
 
 È il ritmo con cui le mappe si rimpiccioliscono man mano che si sale nella
 rete, ed è una scelta di chi la progetta: più le mappe si stringono, meno conti
@@ -236,13 +288,34 @@ o = \left\lfloor \frac{n + 2p - k}{s} \right\rfloor + 1,
 $$
 
 dove $n$ è la dimensione d'ingresso, $k$ quella del kernel, $p$ il padding, $s$
-lo stride e $\lfloor \cdot \rfloor$ la parte intera inferiore, che serve perché
-la divisione non cade quasi mai su un numero intero: le posizioni in cui la
-finestra sporgerebbe dal bordo non si contano. Un esempio con i
+lo stride e $\lfloor \cdot \rfloor$ la parte intera inferiore. Un esempio con i
 numeri del codice qui sotto, ingresso $n=28$, kernel $k=3$, padding $p=1$,
 stride $s=1$: $o = \lfloor(28 + 2 - 3)/1\rfloor + 1 = 28$, la risoluzione non
 cambia. Con `padding="same"` si sceglie appunto $p$ affinché $o=n$ (a stride
 1): l'uscita conserva la risoluzione dell'ingresso.
+
+Due precisazioni, perché la formula così com'è nasconde altrettante ipotesi.
+
+La prima: **a stride 1 la parte intera non serve**, perché dividere per uno dà
+sempre un intero, ed è il caso di ogni esempio di questa pagina e di entrambi i
+blocchi di codice. Conta da stride 2 in su, dove le posizioni in cui la
+finestra sporgerebbe dal bordo semplicemente non si contano. E lì va saputo che
+arrotondare per difetto è una convenzione, non l'unica possibile:
+`nn.MaxPool2d(..., ceil_mode=True)` arrotonda per eccesso, tenendo anche
+l'ultima finestra incompleta. Con $n=61$ e $k=s=2$ la prima dà $30$ e la
+seconda $31$, e due reti che si credono uguali si ritrovano con mappe di
+dimensione diversa.
+
+La seconda: la formula assume **dilatazione 1**, cioè un filtro i cui pesi
+guardano pixel adiacenti. Con dilatazione $d$ i pesi si distanziano fra loro e
+il filtro copre $d(k-1)+1$ pixel invece di $k$, quindi
+
+$$
+o = \left\lfloor \frac{n + 2p - d(k-1) - 1}{s} \right\rfloor + 1 .
+$$
+
+Con $n=28$, $k=3$, $p=1$, $s=1$ e $d=2$ l'uscita è $26$, non $28$: un $3\times3$
+dilatato di due è largo cinque pixel e mangia i bordi come una $5\times5$.
 
 `````
 
@@ -265,12 +338,15 @@ model = nn.Sequential(
 ```
 
 Nota il ritmo ricorrente: le mappe si restringono (28 → 14 → 7), mentre il
-numero di filtri cresce (32 → 64). La rete scambia risoluzione spaziale con
-ricchezza semantica, finché le poche feature rimaste bastano allo strato denso
-per decidere. Un dettaglio tutto di PyTorch: lo strato `nn.Linear` finale
-vuole sapere esattamente quanti numeri riceve (qui
-$64 \cdot 7 \cdot 7 = 3136$) e il conto delle dimensioni resta a chi progetta
-la rete, non alla libreria.
+numero di filtri cresce (32 → 64). È uno scambio: la rete rinuncia a sapere
+*dove* le cose stanno con precisione, e in cambio si porta dietro più tipi
+diversi di cose trovate, finché le poche rimaste bastano allo strato denso per
+decidere.
+
+Un dettaglio tutto di PyTorch: `nn.Flatten()` srotola la pila di mappe in
+un'unica fila di numeri, e lo strato `nn.Linear` finale vuole sapere
+esattamente quanti ne riceve (qui $64 \cdot 7 \cdot 7 = 3136$). Quel conto resta
+a chi progetta la rete, non alla libreria.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare

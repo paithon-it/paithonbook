@@ -317,7 +317,7 @@ troppo bassa è quasi sempre un sintomo di potenza sprecata.
 Il «dipende» diventa una regola usabile se si guarda alla quantità giusta, che
 non è il numero di warp ma il numero di **accessi in volo**: per saturare la
 banda servono byte in viaggio pari a banda × latenza (è la legge di Little).
-Su una A100 da 80 GB, con $1{,}9$ TB/s e una latenza HBM dell'ordine dei
+Su una A100 da 80 GB, con $1{,}935$ TB/s e una latenza HBM dell'ordine dei
 $400$ ns, fanno circa $770$ KB su tutto il chip, cioè circa 7 KB per ciascuno
 dei 108 SM. Se ogni thread legge 4 byte, un warp in volo ne porta 128 e servono
 una cinquantina di richieste pendenti per SM, cioè quasi tutti i warp residenti:

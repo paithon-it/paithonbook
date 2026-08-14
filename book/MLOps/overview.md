@@ -13,33 +13,34 @@ gestione delle risorse di calcolo. La morale della figura è brutale e onesta:
 addestrare il modello è la parte più piccola del lavoro. Tutto il resto (il
 grosso) è il sistema che gli sta intorno.
 
-Non è un dettaglio da ingegneri pignoli. Nel settore si ripete spesso che una
-quota altissima di modelli non arrivi mai **in produzione**, cioè non finisca
-mai davanti a persone vere che lo usano ogni giorno, e che molti di quelli che
-ci arrivano inciampino proprio nel passaggio finale: un'osservazione diffusa,
-più aneddotica che misurata. Ma il problema di fondo è documentato: una
-rassegna di casi reali {cite}`paleyes2022challenges` lo ricostruisce progetto
-per progetto, mostrando quanti ostacoli costellino *ogni* tappa del percorso
-che porta un modello dal prototipo al servizio (raccolta e verifica dei dati,
-consegna del modello al mondo reale, il *deployment*, monitoraggio,
-manutenzione). Non perché i modelli sbaglino le predizioni in laboratorio, ma
-perché nessuno aveva pensato a come alimentarli, aggiornarli, sorvegliarli.
-Questo capitolo parla esattamente di quel «tutto il resto». Il suo nome,
-ormai, è **MLOps**: *ML* per machine learning, *Ops* per le operazioni, cioè
-il mestiere di tenere in funzione ciò che è in funzione.
+Non è un dettaglio da ingegneri pignoli. Nel settore si ripete spesso che
+moltissimi modelli non arrivino mai **in produzione**, cioè non finiscano mai
+davanti a persone vere che li usano ogni giorno. È un'osservazione diffusa e
+più aneddotica che misurata, e non è su quella che ci appoggiamo. Il problema
+di fondo, però, è documentato. Una rassegna di casi reali lo ricostruisce
+progetto per progetto, e mostra quanti ostacoli costellino *ogni* tappa del
+percorso che porta un modello dal prototipo al servizio: raccogliere e
+verificare i dati, consegnare il modello al mondo reale (il *deployment*),
+sorvegliarlo, mantenerlo {cite}`paleyes2022challenges`. Non è che i modelli
+sbaglino le predizioni in laboratorio. È che nessuno aveva pensato a come
+alimentarli, aggiornarli, tenerli d'occhio. Questo capitolo parla esattamente
+di quel «tutto il resto». Il suo nome, ormai, è **MLOps**: *ML* per machine
+learning, *Ops* per le operazioni, cioè il mestiere di tenere in funzione ciò
+che è in funzione.
 
 ## Il modello è la punta dell'iceberg
 
 L'errore di prospettiva è comprensibile: fino a qui, in tutto il libro, «fare
 machine learning» ha significato scegliere un modello, addestrarlo, misurarne
-l'accuratezza. In un **notebook**, sul proprio computer, il lavoro sembra
-finito quando la metrica sul *test set* è buona. (Un notebook, qui, non è un
+l'accuratezza. E tutto questo si fa in un **notebook**, che qui non è un
 computer portatile: è il foglio elettronico su cui si scrive un programma un
 pezzetto alla volta, vedendo subito il risultato di ognuno. È comodissimo per
-provare, ed è lì che nasce quasi ogni modello.) Ma un modello che nessuno usa non
-serve a niente, e la distanza tra «funziona nel mio notebook» e «funziona per
-migliaia di persone, ogni giorno, per anni» è enorme, ed è quasi tutta fuori
-dal modello.
+provare, ed è lì che nasce quasi ogni modello. Sul proprio computer il lavoro
+sembra finito quando la metrica sui dati di prova è buona.
+
+Ma un modello che nessuno usa non serve a niente. E la distanza fra «funziona
+nel mio notebook» e «funziona per migliaia di persone, ogni giorno, per anni»
+è enorme, ed è quasi tutta fuori dal modello.
 
 `````{tab} Elementare
 
@@ -60,45 +61,47 @@ ingredienti, dalla cucina che va tenuta pulita ogni giorno.
 
 `````{tab} Superiore
 
-Sculley e colleghi {cite}`sculley2015hidden` inquadrano il fenomeno con il
-linguaggio del **debito tecnico**: come nel software tradizionale scorciatoie
-prese in fretta si pagano con gli interessi più avanti, un sistema di
-apprendimento automatico accumula un debito *aggiuntivo* e più insidioso,
-perché nasconde la sua complessità nei **dati**, non solo nel codice. Il
-sistema in produzione comprende pipeline di raccolta e validazione dei dati,
+Sculley e colleghi inquadrano il fenomeno con il linguaggio del **debito
+tecnico** {cite}`sculley2015hidden`. Nel software tradizionale le scorciatoie
+prese in fretta si pagano con gli interessi più avanti; un sistema di
+apprendimento automatico ne accumula uno *aggiuntivo* e più insidioso, perché
+nasconde la propria complessità nei **dati** e non solo nel codice. Il sistema
+in produzione comprende pipeline di raccolta e validazione dei dati,
 estrazione e trasformazione delle *feature*, un livello di *serving* che
 espone il modello, monitoraggio, gestione della configurazione e delle
 risorse: il codice di addestramento è una frazione minima del totale.
 
 Il debito più caratteristico è l'**entanglement**, riassunto dal principio
 **CACE**: *Changing Anything Changes Everything*. In un modello di ML nessuna
-*feature* è davvero indipendente: cambiare la distribuzione di un solo
-ingresso, aggiungerne o toglierne uno, ritoccare un iperparametro ripesa tutti
-gli altri e sposta le predizioni ovunque, in modi non locali e difficili da
-prevedere. È l'opposto della modularità a cui l'ingegneria del software
-tradizionale ci ha abituati, ed è la ragione per cui un sistema di ML non si
-governa con le sole pratiche del software classico.
+*feature* è davvero indipendente. Cambiare la distribuzione di un solo
+ingresso, aggiungerne o toglierne uno, ritoccare un iperparametro: ognuna di
+queste mosse ripesa tutte le altre e sposta le predizioni ovunque, in modi non
+locali e difficili da prevedere. È l'opposto della modularità a cui
+l'ingegneria del software tradizionale ci ha abituati, ed è la ragione per cui
+un sistema di ML non si governa con le sole pratiche del software classico.
 
 `````
 
 ## Che cos'è MLOps
 
-Il nome ricalca **DevOps**, il modo di lavorare con cui, in chi costruisce
-software, chi scrive i programmi (*Dev*, lo sviluppo) e chi li tiene in
-funzione (*Ops*, le operazioni) hanno smesso di essere due mondi separati. Il
-patto è che tutto ciò che sta in mezzo diventi automatico e tracciato: si
-conserva ogni versione del programma invece dell'ultima soltanto, una macchina
-la prova e la consegna da sé a ogni modifica (è la **CI/CD**, integrazione e
-distribuzione continue), si sorveglia ciò che è in funzione. Il risultato è
-che pubblicare una versione nuova diventa un gesto ordinario invece che una
-notte in bianco. MLOps prende quella cultura e la porta al ciclo di vita del
-machine learning {cite}`kreuzberger2023machine`. Con una complicazione in più,
-che è il cuore di tutto: nel software classico la cosa da conservare versione
-per versione è una sola, il codice; qui gli **artefatti** (i pezzi che
-compongono il lavoro finito) sono **tre**, il codice, i dati e il modello
-addestrato. E due dei tre non sono testo, il che cambia tutto: gli strumenti
-con cui il software tiene la propria cronologia da decenni sono fatti per il
-testo, e su una cartella di immagini o su un file di pesi non funzionano.
+Il nome ricalca **DevOps**. Chi costruisce software si divideva in due mondi
+separati: chi scrive i programmi (*Dev*, lo sviluppo) e chi li tiene in
+funzione (*Ops*, le operazioni). DevOps è il modo di lavorare con cui quei due
+mondi hanno smesso di essere separati, e il patto è che tutto ciò che sta in
+mezzo diventi automatico e tracciato. Si conserva ogni versione del programma
+invece dell'ultima soltanto; una macchina la prova e la consegna da sé a ogni
+modifica (è la **CI/CD**, integrazione e distribuzione continue); si sorveglia
+ciò che è in funzione. Il risultato è che pubblicare una versione nuova
+diventa un gesto ordinario invece che una notte in bianco.
+
+MLOps prende quella cultura e la porta al ciclo di vita del machine learning
+{cite}`kreuzberger2023machine`. Con una complicazione in più, che è il cuore
+di tutto. Nel software classico la cosa da conservare versione per versione è
+una sola, il codice; qui i pezzi che compongono il lavoro finito (gli
+**artefatti**) sono **tre**: il codice, i dati e il modello addestrato. E due
+dei tre non sono testo. Gli strumenti con cui il software tiene la propria
+cronologia da decenni sono fatti apposta per il testo, e su una cartella di
+immagini o su un file di pesi non funzionano.
 
 `````{tab} Elementare
 
@@ -120,23 +123,23 @@ accorgersi in tempo se qualcosa va storto.
 
 `````{tab} Superiore
 
-La definizione operativa {cite}`kreuzberger2023machine` poggia su una
-tripletta versionata: **dati + codice + modello**. Rendere un esperimento
-riproducibile significa poter ricostruire una predizione a partire da (a) la
-versione esatta del dataset di addestramento, (b) la versione del codice e
-degli iperparametri, (c) i pesi del modello che ne sono risultati. Da qui le
+La definizione operativa poggia su una tripletta versionata: **dati + codice +
+modello** {cite}`kreuzberger2023machine`. Rendere un esperimento riproducibile
+significa poter ricostruire una predizione a partire da (a) la versione esatta
+del dataset di addestramento, (b) la versione del codice e degli
+iperparametri, (c) i pesi del modello che ne sono risultati. Da qui le
 pratiche cardine: *data versioning* e *feature store* per gli ingressi,
 *experiment tracking* per legare metriche e configurazioni, *model registry*
 per i modelli, pipeline automatizzate che rieseguono l'intero percorso (da
 dato grezzo a modello servito) con un comando solo.
 
 L'obiettivo non è la sofisticazione, ma l'**automazione** e la
-**tracciabilità**: ridurre il lavoro manuale che si fa a mano ogni volta,
-rendere ogni rilascio ripetibile e ogni predizione riconducibile agli
-artefatti che l'hanno prodotta. È la tesi di fondo dei testi che hanno
-sistematizzato la disciplina, da *Designing Machine Learning Systems*
-{cite}`huyen2022designing` in poi: un modello in produzione non è un risultato,
-è un **processo** da tenere in vita.
+**tracciabilità**: ridurre il lavoro che si rifà a mano ogni volta, rendere
+ogni rilascio ripetibile e ogni predizione riconducibile agli artefatti che
+l'hanno prodotta. È la tesi di fondo dei testi che hanno sistematizzato la
+disciplina, *Designing Machine Learning Systems* fra i primi
+{cite}`huyen2022designing`: un modello in produzione non è un risultato, è un
+**processo** da tenere in vita.
 
 `````
 
@@ -183,11 +186,11 @@ che i dati sono cambiati, tira la freccia che riporta all'inizio.
 
 `````{tab} Superiore
 
-Uno studio di Microsoft {cite}`amershi2019software` ha formalizzato il flusso
-di lavoro del ML in **nove fasi**: definizione dei requisiti del modello,
-raccolta dei dati, pulizia dei dati, etichettatura, *feature engineering*,
-addestramento, valutazione, deployment e monitoraggio. Il punto qualificante
-dello studio non è l'elenco, ma la sua **topologia**: le fasi non formano una
+Uno studio condotto in Microsoft ha formalizzato il flusso di lavoro del ML in
+**nove fasi** {cite}`amershi2019software`: definizione dei requisiti del
+modello, raccolta dei dati, pulizia dei dati, etichettatura, *feature
+engineering*, addestramento, valutazione, deployment e monitoraggio. Il punto
+qualificante non è l'elenco, ma la sua **topologia**: le fasi non formano una
 catena lineare ma un grafo con molti cicli di ritorno. Il monitoraggio
 retroagisce sulla raccolta dei dati (è la freccia del *drift*); una
 valutazione insoddisfacente rimanda al *feature engineering* o alla raccolta;
@@ -205,7 +208,7 @@ questa la ragione strutturale per cui il ciclo è un anello e non un segmento.
 
 ```{figure} ../figures/dal-notebook-alla-produzione.svg
 :name: fig-cinque-tappe
-:alt: "Cinque tappe in fila dal notebook alla produzione: l'esperimento nel notebook, l'estrazione in programmi di cui si conserva ogni versione, il rilascio dietro uno sportello a cui altri programmi possono rivolgersi, il confezionamento in una scatola che si comporta uguale su qualsiasi computer e infine la sorveglianza continua. Solo la prima tappa è quella che di solito si considera «il lavoro»."
+:alt: "Cinque tappe in fila dal notebook alla produzione: l'esperimento nel notebook, l'estrazione in programmi di cui si conserva ogni versione, il rilascio dietro uno sportello a cui altri programmi possono rivolgersi, il confezionamento in una scatola che si comporta uguale su qualsiasi computer e infine la sorveglianza continua. Una freccia tratteggiata torna dall'ultima tappa alla prima. Solo la prima è quella che di solito si considera «il lavoro»."
 :width: 100%
 
 Il notebook è la prima delle cinque caselle, non l'ultima. Dopo di lui il
@@ -215,7 +218,8 @@ possono bussare (l'*API*); lo sportello viene chiuso in una scatola che si
 comporta uguale su qualsiasi computer (il *container*); e solo allora si apre
 al pubblico, sorvegliato. Le quattro tappe che seguono la prima non aggiungono
 intelligenza al modello: aggiungono le condizioni perché quell'intelligenza
-serva a qualcuno.
+serva a qualcuno. E la freccia che torna indietro in fondo è l'anello: da lì
+si ricomincia.
 ```
 
 La proporzione di {numref}`fig-cinque-tappe` è il messaggio dell'intero
@@ -226,13 +230,14 @@ addestra una rete e ne stampa l'accuratezza è, a tutti gli effetti, il punto
 di partenza di questo capitolo, non un traguardo.
 
 Perché un notebook non basta lo si capisce elencando ciò che non fa. Non mette
-il modello a disposizione di chi deve usarlo, e non decide se farlo caso per
-caso, mentre l'utente aspetta, o tutti insieme durante la notte, un lotto alla
-volta (in gergo un *batch*, e la parola tornerà spesso). Non sa dire se
-i dati di oggi somigliano ancora a quelli di ieri. Non tiene traccia di quale
-versione dei dati ha prodotto quali pesi, così che tra sei mesi si possa
-capire *perché* una predizione è quella. Non si riaddestra da solo quando il
-mondo cambia. Ognuna di queste mancanze è una sezione di questo capitolo.
+il modello a disposizione di chi deve usarlo. Non decide *come* metterlo a
+disposizione: un caso per volta, mentre l'utente aspetta, oppure tutti insieme
+durante la notte, un mucchio alla volta (in gergo un *batch*, e la parola
+tornerà spesso). Non sa dire se i dati di oggi somigliano ancora a quelli di
+ieri. Non tiene traccia di quale versione dei dati ha prodotto quali pesi, così
+che tra sei mesi si possa capire *perché* una predizione è quella. Non si
+riaddestra da solo quando il mondo cambia. Ognuna di queste mancanze è una
+sezione di questo capitolo.
 
 ## Come è organizzato il capitolo
 

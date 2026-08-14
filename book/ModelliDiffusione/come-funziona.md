@@ -12,18 +12,19 @@ puro fino a un'immagine; e siccome ogni pulviscolo appena estratto è diverso
 dall'altro, in fondo alla scala troverà ogni volta un'immagine diversa. Nuova.
 
 Il capitolo si è aperto con la promessa di smontare questo giocattolo pezzo
-per pezzo; questa sezione la mantiene: l'andata, il ritorno, uno sguardo
-sotto il cofano, la scorciatoia di DDIM, la rete che fa il lavoro e infine
-tutto il meccanismo in miniatura, funzionante, in PyTorch. La
+per pezzo; questa sezione la mantiene: l'andata, il ritorno, il viaggio dal
+rumore all'immagine, uno sguardo sotto il cofano, la scorciatoia di DDIM, la
+rete che fa il lavoro e infine tutto il meccanismo in miniatura, funzionante,
+in PyTorch. La
 {numref}`fig-diffusione-processo` è la mappa del viaggio.
 
 ```{figure} ../figures/diffusione-processo.svg
 :name: fig-diffusione-processo
-:alt: Due file di riquadri. In alto il processo in avanti, in teal, un paesaggio stilizzato che di riquadro in riquadro si copre di puntini fino a diventare rumore puro, con frecce verso destra. In basso il processo inverso, in terracotta, la rete che a ogni passo stima il disturbo, con frecce verso sinistra, fino a recuperare il paesaggio.
+:alt: Due file di quattro riquadri, etichettate x0, x1, xt, xT. In alto il processo in avanti, in teal, un paesaggio stilizzato che di riquadro in riquadro si copre di puntini fino a diventare rumore puro, con frecce verso destra. In basso gli stessi quattro riquadri in terracotta e le frecce verso sinistra, ognuna con sopra il simbolo della rete che stima il disturbo, fino a recuperare il paesaggio.
 :width: 100%
 
 I due processi della diffusione: l'andata (in alto) rovina l'immagine di
-partenza fino alla rumore puro, seguendo una ricetta fissa; il ritorno (in
+partenza fino al rumore puro, seguendo una ricetta fissa; il ritorno (in
 basso) risale la catena un gradino alla volta, e a ogni gradino è una rete a
 dire dove sta il disturbo.
 ```
@@ -74,7 +75,8 @@ senza poter fare altrimenti, quanto disturbo aggiungere.
 
 `````{tab} Superiore
 
-Il processo diretto è la catena di Markov già dichiarata nel capitolo:
+Il processo diretto è la catena di Markov già dichiarata all'apertura del
+capitolo:
 
 $$
 q(\mathbf{x}_t \mid \mathbf{x}_{t-1}) = \mathcal{N}\!\left(\mathbf{x}_t;\ \sqrt{1-\beta_t}\,\mathbf{x}_{t-1},\
@@ -116,24 +118,25 @@ rumore gaussiano puro, indipendente dal dato di partenza.
 
 `````
 
-La scorciatoia ha una conseguenza che vale la pena vedere prima di proseguire.
-Siccome per arrivare a un livello di rovina qualsiasi non serve percorrere la
-catena, l'andata si può guardare tutta in una volta, come una manopola con
-mille tacche: a ogni tacca corrisponde una dose di disegno e una dose di
+In quella ricetta c'è una scorciatoia, e ha una conseguenza che vale la pena
+vedere prima di proseguire: per portare un'immagine a un livello di rovina
+qualsiasi non serve percorrere la catena un anello per volta, ci si arriva in
+un colpo solo. E allora l'andata si può guardare tutta in una volta, come una
+manopola con mille tacche: a ogni tacca corrisponde una dose di disegno e una dose di
 disturbo, e le due dosi sono decise in partenza, non da quello che è successo
 per strada. La {numref}`fig-diffusione-avanti` ne mostra sei.
 
 ```{figure} ../figures/diffusione-avanti.svg
 :name: fig-diffusione-avanti
-:alt: "Sei riquadri affiancati mostrano la stessa figura in sei momenti del processo di rovina, dal disegno nitido al rumore completo. Sotto ogni riquadro due numeri: quanto resta del disegno, che scende da 1 quasi a zero, e quanto disturbo c'è sopra, che sale da zero a 1. Il disegno è già quasi sparito quando il disturbo ha appena finito di salire."
+:alt: "Sei riquadri affiancati mostrano la stessa figura geometrica alle tacche t = 0, 100, 250, 450, 700 e 1000 del processo di rovina, e si scoprono uno alla volta da sinistra a destra: nel primo il disegno è nitido, nell'ultimo non si distingue più niente. Sotto ogni riquadro due numeri, quanto resta del disegno e quanto disturbo c'è sopra: 1,00 e 0,00; 0,95 e 0,32; 0,72 e 0,69; 0,36 e 0,93; 0,08 e 1,00; 0,01 e 1,00. Le due file di numeri si scambiano il posto fra la seconda tacca e la terza."
 :width: 100%
 
 Il verso facile, in sei tacche della manopola. Sotto ogni riquadro, le due
-dosi: quanto disegno è rimasto e quanto disturbo c'è sopra. Le due non si
-scambiano il posto a metà strada, ed è la cosa più utile della figura: alla
-tacca 450 il disegno è già sceso a un terzo mentre il disturbo è quasi al
-massimo, e da lì in poi la manopola aggiunge poco perché non c'è quasi più
-niente da coprire.
+dosi: quanto disegno è rimasto e quanto disturbo c'è sopra. Le due si scambiano
+il posto molto prima di metà catena, fra la tacca 100 e la 250 e non alla 500,
+ed è la cosa più utile della figura: già alla tacca 450 il disegno è sceso a un
+terzo mentre il disturbo è al 93 per cento, e da lì in poi la manopola aggiunge
+poco perché non c'è quasi più niente da coprire.
 ```
 
 Il ritorno, che è la parte difficile, la figura non lo mostra, e non è una
@@ -171,16 +174,17 @@ voto alto. Milioni di carte dopo, la rete ha imparato a rispondere a ogni
 livello di rovina.
 
 Ma perché chiedere il disturbo e non direttamente la foto pulita? Prova a
-metterti nei panni della rete al passo 900, davanti a una schermata quasi
-tutto rumore: «dimmi la foto originale» è una richiesta da veggente; dovrebbe
-inventare di sana pianta dettagli che nel rumore non ci sono più. «Dimmi il
+metterti nei panni della rete al passo 900, davanti a una schermata fatta
+quasi tutta di rumore: «dimmi la foto originale» è una richiesta da veggente;
+dovrebbe inventare di sana pianta dettagli che nel rumore non ci sono più. «Dimmi il
 disturbo» è invece un compito dello stesso formato a ogni livello: il
 pulviscolo ha sempre lo stesso aspetto statistico, media zero e la stessa
 ampiezza tipica, al passo 10 come al passo 990. È come interrogare uno
 studente sempre con domande dello stesso tipo, invece che con quesiti la cui
-difficoltà cambia in modo selvaggio. E le due risposte si equivalgono: chi
+difficoltà cambia in modo selvaggio. Attenzione però a che cosa si equivale e
+che cosa no: le due *risposte* portano la stessa informazione, perché chi
 conosce il disturbo e la ricetta con cui è stato mescolato ricava la foto con
-una sottrazione.
+una sottrazione; le due *domande* no, ed è tutto il punto.
 
 `````
 
@@ -202,7 +206,8 @@ ma teniamo a mente che sono due, perché a poche decine di passi smetteranno di
 equivalersi (ci torniamo con DDIM). Si noti che $\tilde{\beta}_1 = 0$: la
 seconda scelta spiega da sé perché all'ultimo passo non si aggiunga rumore
 fresco. La scelta di modellare il ritorno
-con una gaussiana è legittimata dal risultato citato nel capitolo: per passi
+con una gaussiana è legittimata dal risultato di Feller citato in apertura di
+capitolo: per passi
 $\beta_t$ piccoli, il vero inverso $q(\mathbf{x}_{t-1} \mid \mathbf{x}_t)$ è
 approssimativamente gaussiano. Il contributo chiave di Ho, Jain e Abbeel
 {cite}`ho2020denoising` è la **riparametrizzazione** della media: invece di
@@ -254,7 +259,7 @@ gradino alla volta, interrogando la rete a ogni passo.
 
 ```{figure} ../figures/diffusione-denoising.gif
 :name: fig-diffusione-denoising
-:alt: "Animazione: un quadrato di rumore casuale in scala di grigi si trasforma progressivamente, in cinque passi etichettati da t=1000 a t=0, nella cifra 3 disegnata in pixel art."
+:alt: "Animazione: un quadrato di rumore casuale in scala di grigi si trasforma progressivamente, attraverso sei stati etichettati t = 1000, 800, 600, 400, 200 e 0, nella cifra 3 disegnata in pixel art. Sotto il quadrato resta ferma la formula del passo inverso. Il rumore non cala in modo liscio: resta fitto fino a t = 600 e la cifra affiora solo verso t = 400."
 :width: 70%
 
 Il processo inverso su una cifra: a ogni passo la rete dice dove sta il
@@ -273,7 +278,7 @@ disturbo non cala in modo liscio ma resta lì a lungo e se ne va tardi.
 `````{tab} Elementare
 
 La procedura è un rituale in tre mosse, ripetuto mille volte. Si parte da una
-manciata di pulviscolo appena estratto, mai vista prima; poi, dal passo 1.000 al passo 1:
+manciata di pulviscolo appena estratto, mai visto prima; poi, dal passo 1.000 al passo 1:
 
 1. **correggi**: mostra alla rete la schermata e il numero del passo, fatti
    dire dov'è il disturbo, e cancellane una scheggia;
@@ -285,15 +290,18 @@ manciata di pulviscolo appena estratto, mai vista prima; poi, dal passo 1.000 al
 
 Le proporzioni sono l'esatto contrario di quello che il buon senso si aspetta,
 ed è la cosa più importante di tutta la sezione: **la manciata di rumore nuovo è
-dalle sette alle dieci volte più grande della scheggia appena cancellata**.
-Non un pizzico: una manciata. A ogni passo lo schermo si sposta molto più per
-il rumore che gli si è buttato sopra che per il disturbo che gli si è tolto.
+dalle sette alle dieci volte più grande della scheggia appena cancellata**, e
+lo è per i primi novecento passi su mille. Non un pizzico: una manciata. Per
+quasi tutto il viaggio lo schermo si sposta molto più per il rumore che gli si
+è buttato sopra che per il disturbo che gli si è tolto. Solo nell'ultimo
+decimo del percorso la manciata si rimpicciolisce, fino a pareggiare la
+scheggia sull'ultimo gradino, dove poi sparisce del tutto.
 
 Come fa allora a uscirne un'immagine, se a ogni giro si toglie poco e si
 rimette molto? Per una differenza che non sta nella quantità ma nella
 *direzione*. La scheggia che si cancella è **mirata**: la rete indica dove il
 disturbo sta davvero, e la cancellatura punta sempre da quella parte. Il rumore
-che si getta è **casuale**, e ogni volta diversa: mille manciate a caso non
+che si getta è **casuale**, e ogni volta diverso: mille manciate a caso non
 formano nessuna figura, si pestano i piedi a vicenda e restano dove sono. Una
 spinta piccola ma sempre nella stessa direzione, ripetuta mille volte, arriva
 lontano; mille spinte grandi ma a casaccio, no.
@@ -307,13 +315,13 @@ calare di cento. Nessuno ha ripulito niente un velo alla volta: si è alzata la
 voce di qualcosa che era sempre stato lì.
 
 Il rimescolamento, quindi, non è una svista da tollerare: è metà del
-meccanismo. Nei primi passi la rete tira a indovinare (nella rumore quasi puro
+meccanismo. Nei primi passi la rete tira a indovinare (nel rumore quasi puro
 non c'è ancora niente da vedere) e fidarsi della sua prima proposta
 congelerebbe una direzione presa alla cieca; lo scossone tiene la partita
 aperta finché l'immagine non si decide da sola. È anche il motivo per cui il
 risultato cambia a ogni esecuzione: rumore iniziale diverso, scossoni diversi,
 immagine diversa. Il costo si vede: mille interrogazioni della rete per *ogni*
-immagine (il conto salato di cui parlava il capitolo).
+immagine (il conto salato annunciato all'apertura del capitolo).
 
 `````
 
@@ -345,10 +353,15 @@ $$
 = \frac{\sqrt{\alpha_t\,(1-\bar{\alpha}_t)}}{\sqrt{\beta_t}},
 $$
 
-che con lo schedule di DDPM vale **da 7 a 10 lungo tutta la catena** (7,0 a
-$t = 100$, 9,7 a $t = 250$, 9,5 a $t = 500$, 7,0 a $t = 999$). A ogni passo,
-per tutto il viaggio, il rumore iniettato sposta il punto quasi un ordine di
-grandezza più di quanto lo sposti la correzione.
+che con lo schedule di DDPM vale **da 7 a 10 per i primi novecento passi della
+generazione**, cioè da $t = 1000$ fino a $t = 100$ (7,0 a $t = 1000$, 9,5 a
+$t = 500$, 9,7 a $t = 250$, 7,0 a $t = 100$, con il massimo di 10,0 attorno a
+$t = 350$). Per il novanta per cento del viaggio, dunque, il rumore iniettato
+sposta il punto di quasi un ordine di grandezza più di quanto lo sposti la
+correzione. Il rapporto cede solo nella coda: negli ultimi cento passi scende
+fino a $\sqrt{\alpha_1} \approx 1$, e a $t = 1$ il rimescolamento non c'è
+affatto. Cioè: la ripulitura arriva a pesare quanto il rimescolamento soltanto
+alla fine, quando l'immagine è già decisa.
 
 Il livello di rumore, allora, come scende? Poco per volta, e per il modo in
 cui i tre contributi si compongono, non per la loro taglia. Scomponendo il
@@ -357,7 +370,7 @@ riscalatura per $1/\sqrt{\alpha_t}$ lo alza di $+0{,}0049$, la correzione lo
 abbassa di $-0{,}0105$ (tutto il proprio valore, perché è allineata al rumore
 che c'è), l'iniezione lo rialza di $+0{,}0052$ (molto meno del proprio
 $0{,}1002$, perché è indipendente e si somma in varianza). Netto: $-0{,}0004$,
-un quattromillesimo, contro un $\sigma_t$ di $0{,}1$. La correzione vince un
+quattro decimillesimi, contro un $\sigma_t$ di $0{,}1$. La correzione vince un
 tiro alla fune contro le altre due mosse, e lo vince di pochissimo.
 
 Il segnale, invece, la riscalatura la incassa e basta: nessuno degli altri due
@@ -366,11 +379,13 @@ a ogni passo. Sull'intera catena il rapporto segnale/rumore passa da
 $\sqrt{\bar{\alpha}_T / (1-\bar{\alpha}_T)} = 0{,}0064$ a circa $100$, un
 fattore quindicimila, di cui **157 dall'amplificazione del segnale** e 100
 dalla riduzione del rumore. Descrivere il campionamento come «togliere un velo
-di rumore alla volta» racconta quindi metà del guadagno e circa un centesimo
-del gesto, e tace la riscalatura, che è l'altra metà.
+di rumore alla volta» racconta quindi metà del guadagno e circa un decimo del
+gesto (a $t = 500$ la correzione vale $0{,}0105$ su uno spostamento
+complessivo di $0{,}1008$), e tace la riscalatura, che è l'altra metà.
 
 Il termine stocastico non è dunque un vezzo, ed è il pezzo più grosso del
-passo: il processo inverso è esso stesso una catena di distribuzioni, non una
+passo per quasi tutto il viaggio: il processo inverso è esso stesso una catena
+di distribuzioni, non una
 funzione deterministica, e campionare da $p_\theta(\mathbf{x}_{t-1} \mid \mathbf{x}_t)$
 richiede sia la media sia il rumore di varianza $\sigma_t^2$. Il prezzo
 computazionale è esplicito: $T$ valutazioni complete della rete per ogni
@@ -490,9 +505,11 @@ processo continuo: una sola teoria, due dialetti.
 
 ## Accelerare il ritorno: DDIM
 
-Mille passi per un'immagine sono tanti, e la prima scorciatoia importante
-arriva già nel 2021: i *Denoising Diffusion Implicit Models* (DDIM) di Jiaming
-Song, Chenlin Meng e Stefano Ermon {cite}`song2021denoising`. La promessa è
+Mille passi per un'immagine sono tanti, e la prima scorciatoia importante non
+si fa attendere: arriva a meno di quattro mesi da DDPM, nell'ottobre del 2020
+(poi a ICLR l'anno dopo), e sono i *Denoising Diffusion Implicit Models*
+(DDIM) di Jiaming Song, Chenlin Meng e Stefano Ermon
+{cite}`song2021denoising`. La promessa è
 notevole: **lo stesso identico modello già addestrato**, nessun
 riaddestramento, campioni di qualità paragonabile in una cinquantina di passi
 invece di mille, e ancora accettabili a venti (nel paper, da 10 a 50 volte più
@@ -536,14 +553,17 @@ ogni gradino.
 
 E poiché la generazione non deve più simulare fedelmente una catena
 markoviana passo-passo, può percorrere una sottosequenza
-$\tau_1 < \dots < \tau_S$ di $\{1, \dots, T\}$ con $S \ll T$: nel paper,
-$S = 50$ produce campioni vicini a quelli dei 1.000 passi di DDPM, $S = 20$
-resta utilizzabile ma già sensibilmente peggiore, e sotto i venti passi la
-qualità precipita (un compromesso regolabile tra costo e fedeltà). La mappa
+$\tau_1 < \dots < \tau_S$ di $\{1, \dots, T\}$ con $S \ll T$. Gli autori
+dichiarano qualità paragonabile a quella dei mille passi già fra i venti e i
+cento; la loro stessa tabella, letta con attenzione, dice qualcosa di un po'
+più prudente, cioè che la parità piena arriva verso i cinquanta, che a venti
+qualcosa si paga e che sotto i venti la qualità precipita. È un compromesso
+regolabile fra costo e fedeltà, non un pasto gratis. La mappa
 deterministica
 rumore→immagine rende inoltre significative le interpolazioni in $\mathbf{x}_T$ e la
 ricostruzione (quasi) esatta di un'immagine dal suo rumore. Non è un caso che
-tutto ciò ricordi la vista continua della sezione precedente: il campionatore
+tutto ciò ricordi la vista continua di poche pagine fa, quella sotto il cofano:
+il campionatore
 DDIM con $\eta = 0$ è, in effetti, una discretizzazione dell'ODE del flusso di
 probabilità associata alla SDE di {cite}`song2021score`.
 
@@ -574,7 +594,7 @@ il ritorno, che li traghettano intatti.
 Resta da dirle a che punto della scala sta lavorando. Il numero del passo
 entra come un'etichetta attaccata alla foto: «questo è il livello 700 su
 1000». Così una sola rete serve tutti i livelli di rovina: quando il rumore è
-tanta sgrossa le forme, quando è poca rifinisce i dettagli.
+tanto sgrossa le forme, quando è poco rifinisce i dettagli.
 
 `````
 
@@ -653,6 +673,14 @@ def rumorizza(x0, t, eps):
     ab = alpha_bar[t].unsqueeze(1)                     # (B, 1)
     return ab.sqrt() * x0 + (1.0 - ab).sqrt() * eps    # (B, 2)
 ```
+
+Una cosa il giocattolo la lascia correre, e conviene dirla perché il capitolo
+ci tornerà sopra: la spirale ha deviazione standard circa $0{,}5$ per
+coordinata, non $1$, mentre lo schedule di DDPM è tarato su dati a varianza
+unitaria. Qui non fa danno (il segnale è la metà del previsto, quindi la
+catena lo affoga un po' prima del dovuto, e la spirale riemerge lo stesso);
+in Stable Diffusion sì, e vedremo che quella riscalatura diventa una costante
+scritta dentro il modello.
 
 Poi la rete. Al posto della U-Net (i dati non sono immagini) basta una piccola
 rete a strati densi, un MLP; il numero del passo entra come l'etichetta
@@ -733,15 +761,30 @@ def campiona(n_campioni=1000):
     return x                             # (n_campioni, 2)
 
 nuovi = campiona()
-print(nuovi.shape)   # torch.Size([1000, 2]): punti nuovi, disposti a spirale
+print(nuovi.shape)   # torch.Size([1000, 2]): mille coppie di coordinate
+
+# "nuovi" e' una parola grossa: verifichiamola senza disegnare niente. Si
+# confronta quanto dista un punto generato dal piu' vicino dell'archivio con
+# quanto distano fra loro due punti dell'archivio: se i due numeri si
+# somigliano, i generati cadono *fra* quelli di partenza, cioe' sulla spirale
+# ma in posti dove non c'era nessuno
+da_archivio = torch.cdist(nuovi, x0).min(dim=1).values
+fra_archivio = torch.cdist(x0, x0).fill_diagonal_(float("inf")).min(dim=1).values
+print(f"generato -> archivio: {da_archivio.median():.3f}   "
+      f"archivio -> archivio: {fra_archivio.median():.3f}")
+# generato -> archivio: 0.009   archivio -> archivio: 0.006
 ```
 
 Disegnando `nuovi` con un grafico a dispersione si vede la spirale riemergere
-dalla nuvola gaussiana: punti *nuovi*, non copie dei duemila punti di
-partenza (se la
+dalla nuvola gaussiana, e le due mediane stampate dicono la stessa cosa senza
+bisogno di disegnare: un punto generato dista dall'archivio ($0{,}009$) quanto
+due punti dell'archivio distano fra loro ($0{,}006$), cioè cade sulla spirale
+ma **in mezzo** agli altri, non sopra a uno di loro. Punti *nuovi*, non copie
+dei duemila di partenza. (Tutto il ciclo è questione di meno di un minuto su
+un portatile; se la
 forma esce solo abbozzata, quasi sempre l'addestramento è stato troppo breve:
 con poche migliaia di passi la nuvola non si è ancora decisa, i trentamila
-del ciclo servono davvero). Due
+del ciclo servono davvero.) Due
 esperimenti valgono la pena: interrompere il campionamento a metà strada, per
 vedere la forma «mezza decisa»; e passare da questi punti alle immagini, dove
 l'unica modifica sostanziale è sostituire l'MLP con una U-Net e le coppie di
@@ -769,7 +812,9 @@ carattere per carattere.
   manciata di rumore nuovo (tranne all'ultimo passo, dove la terza mossa si
   salta).
 - La cosa da non dimenticare è che **quella manciata è dalle sette alle dieci
-  volte più grande della scheggia**: il passo non «solleva un velo», rimescola
+  volte più grande della scheggia**, e lo è per i primi novecento passi su
+  mille (poi cala, e sull'ultimo gradino le due si pareggiano): il passo non
+  «solleva un velo», rimescola
   molto più di quanto pulisca. L'immagine esce fuori lo stesso perché la
   cancellatura è sempre mirata mentre il rumore nuovo è sempre a caso, e perché
   il volume, salendo a ogni passo, alla fine ha fatto crescere di
@@ -811,9 +856,10 @@ carattere per carattere.
   rumore stimato, riscala per $1/\sqrt{\alpha_t}$, inietta rumore fresco di
   deviazione standard $\sigma_t$ (tranne all'ultimo).
 - Il rapporto fra iniezione e sottrazione è
-  $\sqrt{\alpha_t(1-\bar{\alpha}_t)}/\sqrt{\beta_t}$, cioè **da 7 a 10 su
-  tutta la catena**: si inietta molto più di quanto si sottragga. Il livello
-  di rumore cala lo stesso, ma di un quattromillesimo per passo, perché la
+  $\sqrt{\alpha_t(1-\bar{\alpha}_t)}/\sqrt{\beta_t}$, cioè **da 7 a 10 per i
+  primi novecento passi** (scende a 1 solo negli ultimi cento): si inietta
+  molto più di quanto si sottragga. Il livello di rumore cala lo stesso, ma
+  pochissimo per passo (quattro decimillesimi a $t = 500$), perché la
   sottrazione è allineata al rumore mentre l'iniezione si somma in varianza. E
   metà del guadagno sul rapporto segnale/rumore (fattore $157$ su $15\,000$
   complessivi) non viene dalla sottrazione ma dalla **riscalatura**.

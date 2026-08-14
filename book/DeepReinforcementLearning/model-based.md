@@ -7,8 +7,8 @@ fare da sola una cosa preziosa (*provare le mosse prima di farle*). «Se scarto
 questa carta lui pesca e chiude… allora no.» La mossa cattiva muore
 nell'immaginazione, senza costarti la partita. È questa la differenza, ancora
 oggi imbarazzante, fra un essere umano e un agente come il DQN incontrato nella
-sezione su DQN: a noi bastano pochi minuti per
-capire *Breakout*, all'agente servono decine di milioni di fotogrammi. La
+sezione su DQN: a noi bastano pochi minuti per capire *Breakout*, all'agente
+servono decine di milioni di fotogrammi. La
 parola tecnica per questa distanza è **sample efficiency**, l'efficienza nei
 campioni (quanta esperienza serve per imparare) ed è il problema che questa
 sezione affronta di petto.
@@ -25,18 +25,19 @@ mosse nella testa, come al tavolo da gioco.
 
 ```{figure} ../figures/model-based-loop.svg
 :name: fig-model-based-loop
-:alt: Anello a quattro blocchi. L'esperienza reale raccolta dall'ambiente addestra un modello appreso della dinamica e della ricompensa; dal modello si srotolano rollout immaginati (planning); i rollout aggiornano policy e valore senza toccare l'ambiente; la policy agisce di nuovo nel mondo. Il ramo dai rollout immaginati verso policy e valore è in terracotta.
+:alt: Anello a quattro blocchi. L'esperienza reale raccolta dall'ambiente addestra un modello appreso della dinamica e della ricompensa; dal modello si srotolano traiettorie immaginate; queste aggiornano policy e valore senza toccare l'ambiente; la policy agisce di nuovo nel mondo. La freccia dalle traiettorie immaginate verso policy e valore è arancione, ed è l'unica del giro a non toccare il mondo vero.
 :width: 90%
 
 Il ciclo del reinforcement learning basato su modello. L'esperienza reale
 serve ad addestrare il modello; dentro il modello si «immaginano» traiettorie
-che addestrano policy e valore. Il ramo in terracotta è quello immaginato:
+che addestrano policy e valore. La freccia arancione è quella immaginata:
 migliora la policy senza spendere un solo passo nell'ambiente vero.
 ```
 
 La {numref}`fig-model-based-loop` riassume l'idea: un anello tocca il mondo
-vero, un altro (in terracotta) vive solo nella testa dell'agente. Tutto il
-gioco del model-based sta nel far girare molto il secondo pagando poco il primo.
+vero, un altro (quello con la freccia arancione) vive solo nella testa
+dell'agente. Tutto il gioco del model-based sta nel far girare molto il secondo
+pagando poco il primo.
 
 `````{tab} Elementare
 
@@ -86,9 +87,9 @@ concedere al modello.
 L'idea non è nuova. Nel 1990 Richard Sutton (lo stesso del libro di
 riferimento su cui poggia mezzo capitolo {cite}`sutton2018reinforcement`)
 presenta **Dyna** {cite}`sutton1990integrated`, ripresa l'anno dopo in una
-versione più diffusa {cite}`sutton1991dyna`: un'architettura tanto semplice quanto
-lungimirante: mentre l'agente gioca, impara *contemporaneamente* due cose (una
-policy, come sempre, e un modellino del mondo) e usa il modellino per
+versione più diffusa {cite}`sutton1991dyna`. È un'architettura tanto semplice
+quanto lungimirante: mentre l'agente gioca, impara *contemporaneamente* due cose
+(una policy, come sempre, e un modellino del mondo) e usa il modellino per
 «ripassare» esperienze mai vissute davvero.
 
 `````{tab} Elementare
@@ -130,19 +131,23 @@ modello).
 
 `````
 
-Vale la pena vedere Dyna-Q al lavoro su un ambiente minuscolo. Un corridoio di
-sei caselle: si parte a sinistra, l'obiettivo è la casella più a destra, e la
-ricompensa arriva solo entrando nell'obiettivo.
+Vale la pena vedere Dyna al lavoro su un ambiente minuscolo (**Dyna-Q**, si
+scrive per esteso, perché i giudizi che aggiorna sono le $Q$ del Q-learning). Un
+corridoio di sei caselle: si parte a sinistra, l'obiettivo è la casella più a
+destra, e la ricompensa arriva solo entrando nell'obiettivo.
 
 Prima però va scelto **che cosa guardare**, ed è la parte istruttiva. La
 tentazione è guardare la policy appresa e verificare che dica «vai sempre a
-destra»: solo che il corridoio è così facile che il Q-learning tabellare puro,
+destra»: solo che il corridoio è così facile che il Q-learning con la tabella,
 senza un solo ripasso, impara la stessa identica policy. Sarebbe una misura che
-non misura. Ciò che il planning cambia davvero è la quantità che il testo ha
+non misura. Ciò che il ripasso cambia davvero è la quantità che il testo ha
 appena promesso, cioè **quanto in fretta la ricompensa si propaga all'indietro**
 fino allo stato di partenza. Perciò il codice qui sotto esegue lo stesso ciclo
-due volte, con e senza ripassi, e stampa il valore dello stato iniziale su dieci
-semi.
+due volte, con e senza ripassi, e a ogni giro stampa quanto vale, per l'agente,
+trovarsi nella casella di partenza: zero vuol dire «di qui non ho ancora
+imparato che si guadagna qualcosa», e più il numero sale più la buona notizia
+è arrivata fin laggiù. Ogni giro è un **episodio**, cioè una partita dall'inizio
+alla fine, e di partite se ne giocano trenta, ripetendo tutto su dieci semi.
 
 ```python
 import numpy as np
@@ -197,17 +202,26 @@ for n_plan in (0, 20):
 ```
 
 La policy, come previsto, è la stessa nei due casi: `[1, 1, 1, 1, 1]`, vai
-sempre a destra. Il valore dello stato di partenza no. Senza ripassi, dopo tre
+sempre a destra. Il valore della casella di partenza no. Senza ripassi, dopo tre
 episodi vale ancora $0{,}000$ (la notizia della ricompensa non è arrivata fin
 laggiù) e dopo trenta si ferma a $0{,}156$. Con venti ripassi per ogni mossa
-vera, dopo tre episodi vale già $0{,}200$ e dopo dieci $0{,}808$, cioè
-praticamente il valore esatto, che in questo corridoio è
-$\gamma^{4} = 0{,}95^{4} \approx 0{,}815$.
+vera, dopo tre episodi vale già $0{,}200$ e dopo dieci $0{,}808$.
 
-È tutto il guadagno del model-based in un numero: la stessa esperienza reale,
-digerita nel modello, arriva **cinque volte più in là** nello stesso tempo. Se
-avessimo guardato solo la policy non avremmo visto niente, e avremmo attribuito
-al planning un merito che in questo ambiente non ha.
+Quel $0{,}808$ è praticamente la risposta esatta, e la risposta esatta si
+calcola a mano. Un premio lontano conta un po' meno di uno vicino, e nel codice
+ogni passo di attesa lo sconta del $5\%$, cioè lo moltiplica per $0{,}95$. Chi
+si trova sulla casella accanto all'obiettivo incassa $1$ alla mossa dopo, e per
+lui quel premio vale $1$; chi sta una casella più indietro deve aspettare una
+mossa in più e per lui vale $0{,}95$; due caselle indietro, $0{,}95\times0{,}95$.
+La partenza è quattro caselle più indietro, quindi $0{,}95^{4} \approx 0{,}815$,
+ed è lì che il valore deve arrivare.
+
+È tutto il guadagno del model-based in due numeri. Dopo trenta episodi per parte
+il ripasso ha portato la casella di partenza a $0{,}815$, cioè esattamente dove
+doveva arrivare, mentre senza ripassi si è fermata a $0{,}156$: **cinque volte
+più in basso**, e ancora lontanissima dal bersaglio. Se avessimo guardato solo
+la policy non avremmo visto niente, e avremmo attribuito ai ripassi un merito
+che in questo ambiente non hanno.
 
 ## Il tallone d'Achille: l'errore che si accumula
 
@@ -225,8 +239,18 @@ ognuno la ripete con un piccolo errore, e dopo dieci passaggi la frase è
 irriconoscibile. Un modello del mondo fa lo stesso quando gli chiedi di
 immaginare lontano: la prima previsione è quasi giusta, ma la seconda parte da
 quella «quasi», la terza dal «quasi del quasi», e l'errore si gonfia a ogni
-passo. Morale: le previsioni utili sono quelle a breve. La cura, trovata dai
-ricercatori nel 2019, è disarmante nella sua semplicità: invece di far partire
+passo.
+
+*Quanto* si gonfi, però, dipende dal mondo che stai immaginando, ed è la parte
+che sfugge. Ci sono sistemi che si rimettono a posto da soli, come una biglia in
+fondo a una scodella: lì uno scarto piccolo resta piccolo per sempre, e si può
+sognare a lungo senza troppi danni. E ci sono sistemi instabili, come la biglia
+in equilibrio sulla scodella rovesciata, dove ogni passaggio ingrandisce lo
+scarto invece di smorzarlo: bastano pochi passi e il sogno non ha più niente a
+che vedere con la realtà.
+
+Morale: le previsioni utili sono quelle a breve. La cura è disarmante nella sua
+semplicità, e nel 2019 trova la formulazione che farà scuola: invece di far partire
 i sogni dall'inizio della partita e tirarli avanti a lungo, si parte da uno
 stato *vero*, appena visitato, e si immagina solo pochi passi. Sogni corti,
 ancorati alla realtà, e l'errore non fa in tempo ad accumularsi.
@@ -235,11 +259,14 @@ ancorati alla realtà, e l'errore non fa in tempo ad accumularsi.
 
 `````{tab} Superiore
 
-Se il modello sbaglia di una quantità $\epsilon$ a ogni passo, ogni passo
-successivo parte da uno stato già sbagliato, e quanto quell'errore si gonfi
-dipende da quanto la dinamica **amplifica le perturbazioni**. Con una dinamica
-$L$-Lipschitz, cioè che moltiplica al più per $L$ la distanza fra due stati
-vicini, lo scarto dopo $k$ passi è maggiorato da
+Il conto si fa su una dinamica **deterministica**, che è il caso in cui «lo
+scarto» è una distanza fra due stati e non fra due distribuzioni (nel caso
+stocastico la stessa idea regge, ma va riscritta in distanza di Wasserstein, e la
+costante non è più la stessa). Se il modello sbaglia di una quantità $\epsilon$
+a ogni passo, ogni passo successivo parte da uno stato già sbagliato, e quanto
+quell'errore si gonfi dipende da quanto la dinamica **amplifica le
+perturbazioni**. Con una dinamica $L$-Lipschitz, cioè che moltiplica al più per
+$L$ la distanza fra due stati vicini, lo scarto dopo $k$ passi è maggiorato da
 
 $$
 \epsilon \sum_{i=0}^{k-1} L^{\,i} ,
@@ -286,7 +313,7 @@ prestigio: pianifica in profondità *senza conoscere le regole del gioco*.
 
 `````{tab} Elementare
 
-MuZero è l'erede di AlphaZero, l'algoritmo che nel capitolo sui gradienti di
+MuZero è l'erede di AlphaZero, l'algoritmo che nella sezione sui gradienti di
 policy abbiamo visto padroneggiare Go, scacchi e shogi partendo dalle sole
 regole. Ma ad AlphaZero le regole erano *date*: sapeva con esattezza, per ogni
 mossa, quale posizione ne sarebbe seguita. MuZero no: se le costruisce da solo
@@ -448,15 +475,15 @@ ricerca aperta.
   aggiusta le sue valutazioni e si annota che cosa è successo, poi si concede
   qualche "ripasso" pescando a caso fra le transizioni annotate. Una mossa
   vera, tanti ripassi immaginati, e la ricompensa si propaga all'indietro
-  molto più in fretta: nel corridoio dell'esempio, a parità di partite
-  giocate, arriva cinque volte più lontano.
+  molto più in fretta: nel corridoio dell'esempio, a parità di partite giocate,
+  la casella di partenza finisce a un valore cinque volte più alto, che è poi
+  quello giusto.
 - Immaginare lontano è il gioco del telefono senza fili: ogni previsione parte
   da una precedente già un po' sbagliata e l'errore si gonfia a ogni passaggio.
   *Quanto* si gonfi dipende dal sistema: dove gli scarti si riassorbono da sé
   l'errore resta piccolo per sempre, dove il sistema li ingigantisce esplode in
-  pochi passi. La cura trovata dai ricercatori nel 2019 è tenere i sogni
-  **corti** e farli partire da situazioni davvero visitate, così l'errore non fa
-  in tempo ad accumularsi.
+  pochi passi. La cura è tenere i sogni **corti** e farli partire da situazioni
+  davvero visitate, così l'errore non fa in tempo ad accumularsi.
 - **MuZero** (2020) le regole del gioco se le costruisce da solo guardando le
   partite, e non si fa un modello che ridisegna la scacchiera pezzo per pezzo:
   tiene solo il riassunto che serve a rispondere a "chi è in vantaggio, che

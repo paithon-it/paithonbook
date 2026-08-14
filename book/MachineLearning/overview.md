@@ -6,13 +6,19 @@ titolo modesto (*Some Studies in Machine Learning Using the Game of Checkers*
 programma che giocava a dama, e la parte sorprendente è questa: dopo migliaia
 di partite contro sé stesso, il programma giocava **meglio del suo autore**.
 Non perché Samuel gli avesse insegnato le mosse giuste una per una, ma perché
-il programma le aveva ricavate dall'esperienza. (Se giocava contro sé stesso,
-chi gli diceva quale mossa fosse quella buona? L'esito della partita: vinta,
-promuove tutte le posizioni attraversate per arrivarci; persa, le declassa un
-po'. Il credito si distribuisce all'indietro, dalla fine all'inizio, ed è il
-terzo dei tre modi di imparare che vedremo fra poche pagine.) In quelle pagine compare, tra
-le prime volte nella storia, l'espressione *machine learning*: la capacità di
-un calcolatore di migliorare a un compito senza essere riprogrammato a mano.
+il programma le aveva ricavate dall'esperienza.
+
+Se giocava contro sé stesso, però, chi gli diceva quale mossa fosse quella
+buona? Nessuno, e infatti il programma non lo sapeva sul momento: lo scopriva
+alla fine. A partita finita si guardava indietro e dava un voto a tutte le
+posizioni per cui era passato, un po' più alto se aveva vinto, un po' più basso
+se aveva perso. Ripetuto per migliaia di partite, quel voto diventa un fiuto per
+le posizioni che portano bene. È il terzo dei tre modi di imparare, e lo
+ritroviamo poco più avanti in questa pagina.
+
+In quell'articolo compare, tra le prime volte nella storia, l'espressione
+*machine learning*: la capacità di un calcolatore di migliorare a un compito
+senza essere riprogrammato a mano.
 
 È un'idea che ribalta il modo consueto di pensare al software.
 
@@ -56,8 +62,10 @@ $\theta$.
 Vale la pena fermarsi su come si chiama il risultato di tutto questo, perché è
 la parola che tornerà in ogni pagina del libro: il **modello**. Non è il
 modellino di un aeroplano né chi sfila in passerella. È il programma *dopo* che
-ha visto i dati: la regola che quei dati hanno prodotto, con dentro tutti i
-numeri che l'hanno resa proprio quella e non un'altra. Il codice che scriviamo
+ha visto i dati: la regola che quei dati hanno prodotto. Una regola del genere,
+dentro un calcolatore, è fatta di numeri (quanto conta la parola «vincita»,
+quanto conta un mittente sconosciuto), e sono proprio quei numeri a rendere la
+regola quella lì e non un'altra. Il codice che scriviamo
 resta sempre lo stesso; il modello è ciò che ne esce quando lo si è fatto
 passare su un mucchio di esempi. E *come* faccia a trovare quelle regolarità,
 chi gli dica di guardare le parole di un'email e non il colore dello schermo, è
@@ -107,8 +115,9 @@ A seconda del tipo di esperienza a disposizione, il machine learning si
 divide in tre grandi famiglie (chi scrive di ricerca le chiama *paradigmi*).
 
 **Apprendimento supervisionato.** È il caso del filtro antispam: ogni esempio
-arriva con la sua **risposta giusta** (l'etichetta). Il modello impara la
-corrispondenza tra domanda e risposta (input → output). Se l'output è una
+arriva con la sua **risposta giusta** (l'etichetta). Il modello impara a legare
+la domanda alla risposta: quello che entra si chiama *input*, quello che esce
+*output*, e sono due parole che d'ora in poi useremo sempre. Se l'output è una
 categoria si parla di *classificazione* (spam / non spam, gatto / cane); se è
 un numero su una scala **continua**, cioè una scala in cui fra due valori ce
 n'è sempre un altro (2,5 metri quadri esistono, 2,5 stanze no), si parla di
@@ -147,19 +156,22 @@ addestramento supervisionato è, in fondo, questo problema di minimizzazione.
 modello riceve solo gli input e deve scoprire da sé una struttura nascosta.
 L'esempio classico è il *clustering*: raggruppare i clienti di un negozio in
 segmenti simili senza sapere in anticipo quali segmenti esistano. Rientrano qui
-anche la **riduzione della dimensionalità**, cioè togliere colonne a una
-tabella senza perderne l'essenza (le «dimensioni» sono proprio le colonne, e
-alla sezione dedicata si vedrà perché il nome sia quello), e i sistemi che
-rilevano anomalie in una transazione.
+anche la **riduzione della dimensionalità** (le «dimensioni» sono le colonne
+della tabella, una per caratteristica, e la prossima sezione spiega perché si
+chiamino così), cioè descrivere ogni esempio con
+meno numeri senza perderne l'essenza; e i sistemi che rilevano anomalie in una
+transazione.
 
-**Apprendimento per rinforzo.** Non ci sono né etichette né dataset fisso: c'è
-un **agente** che compie azioni in un ambiente e riceve, di tanto in tanto, una
-**ricompensa**. L'agente impara per tentativi la strategia che massimizza la
-ricompensa nel tempo. È un ingrediente essenziale di come AlphaGo di DeepMind
-ha imparato il Go (2016, in coppia con l'apprendimento supervisionato su
-partite umane; la versione Zero del 2017 imparò col solo rinforzo), e
-in fondo è proprio ciò che faceva il programma di dama di Samuel: giocare,
-vedere l'esito, e correggere la propria strategia. Vincere era la ricompensa.
+**Apprendimento per rinforzo.** Non ci sono etichette, e non c'è nemmeno un
+mucchio di esempi fissato in partenza: c'è un **agente** (un programma che
+agisce, non una persona) che compie azioni in un ambiente e riceve, di tanto in
+tanto, una **ricompensa**. L'agente impara per tentativi la strategia che
+massimizza la ricompensa nel tempo. È il modo in cui il programma AlphaGo, del
+laboratorio DeepMind, imparò nel 2016 a battere i campioni del go, un antico
+gioco da tavolo orientale: quella prima versione studiò anche partite umane
+etichettate, mentre la versione dell'anno dopo imparò solo giocando contro sé
+stessa. Che poi è esattamente ciò che faceva il programma di dama di Samuel:
+giocare, vedere l'esito, correggere la strategia. Vincere era la ricompensa.
 
 ## Dall'idea al modello: il flusso di un progetto
 
@@ -174,30 +186,40 @@ fare meglio ({numref}`fig-workflow-ml`).
 :width: 95%
 
 Il flusso tipico di un progetto ML. Dopo la valutazione si torna quasi sempre
-indietro a rivedere feature e modello: l'apprendimento è iterativo.
+indietro a rivedere feature e modello, e si ricomincia il giro.
 ```
 
 I passaggi, in ordine:
 
 1. **Dati**: raccogliere esempi e ripulirli (valori mancanti, duplicati,
-   errori). Spesso è la fase più lunga e ingrata dell'intero progetto.
+   errori). Spesso è la fase più lunga e ingrata dell'intero progetto. Di
+   solito si organizzano in una **tabella**: una riga per esempio, una colonna
+   per ogni cosa che di quell'esempio abbiamo misurato.
 2. **Feature**: un modello non sa leggere un'email, sa fare conti su dei
-   numeri. Le **feature** (in italiano: le *caratteristiche*) sono i numeri con
+   numeri. Le **feature** (in italiano: le *caratteristiche*, e sono proprio le
+   colonne della tabella) sono i numeri con
    cui descriviamo ogni esempio, e sceglierli è un lavoro nostro. Di un'email
    possiamo prendere quante parole ha, quanti punti esclamativi, quante volte
    compare la parola «vincita», se il mittente è in rubrica: cinque numeri, e
    quell'email per il modello è diventata quei cinque numeri. Cambiando i numeri
    che si prendono cambia la risposta, ed è per questo che si dice che
    rappresentare bene un problema è metà della soluzione.
-3. **Modello**: scegliere una famiglia di modelli e **addestrarla** sui dati.
+3. **Modello**: decidere che *forma* dare al modello (una retta? un albero di
+   domande? una rete?) e poi **addestrarlo** sui dati.
    Dentro un modello ci sono dei numeri regolabili, come le manopole di un
    vecchio amplificatore: si chiamano **parametri** (nelle formule del libro:
    $\theta$, la lettera greca *theta*). Addestrare vuol dire girare quelle
    manopole finché il modello sbaglia il meno possibile, e «quanto sbaglia» è a
    sua volta un numero, che si chiama **loss** (la *perdita*: quanto ci costa
-   ogni risposta sbagliata).
+   ogni risposta sbagliata). Attenzione a non confondere i due momenti: la
+   forma la scegliamo prima, i numeri dentro li trova l'addestramento, e
+   «modello» in senso stretto è il risultato dei due messi insieme.
 4. **Valutazione**: misurare le prestazioni su dati **mai visti** in
    addestramento, per stimare come il modello si comporterà nel mondo reale.
+   Perché non riusare gli esempi di prima, che ci sono già? Perché su quelli un
+   modello può cavarsela benissimo limitandosi a ricordarli, e ricordare non è
+   un'abilità che ci serva: quello che vogliamo sapere è come se la caverà
+   domani, su un'email che nessuno ha ancora scritto.
 5. **Deploy**: se i numeri convincono, mettere il modello **in produzione**,
    cioè lasciarlo lavorare sul serio, con utenti veri e dati che arrivano ogni
    giorno, e sorvegliarlo, perché i dati del mondo cambiano nel tempo.
@@ -208,9 +230,12 @@ feature o il modello, e si ricomincia il giro.
 
 `````{tab} Elementare
 
-In pratica il passaggio "training" è sorprendentemente breve da scrivere.
-Con una libreria come scikit-learn addestrare un modello e usarlo sono due
-righe: `.fit()` per imparare dai dati, `.predict()` per prevedere su casi nuovi.
+In pratica l'addestramento (in inglese *training*, ed è la parola che si sente
+più spesso) è sorprendentemente breve da scrivere. Con una **libreria**, cioè
+una cassetta di attrezzi già pronti che qualcun altro ha costruito, addestrare
+un modello e usarlo sono due sole richieste: `.fit()` per imparare dai dati,
+`.predict()` per prevedere su casi nuovi. La cassetta degli attrezzi che
+useremo in questo capitolo si chiama scikit-learn.
 
 `````
 
@@ -224,25 +249,29 @@ memorizzazione degli esempi già visti.
 `````
 
 ```python
-from sklearn.tree import DecisionTreeClassifier
+from sklearn.tree import DecisionTreeClassifier   # un albero di decisione,
+                                                  # cioè una catena di domande
+                                                  # sì/no: lo vediamo fra poco
 
-# X_train: le feature di ogni esempio, y_train: l'etichetta da prevedere
+# X_train: le feature di ogni esempio, y_train: l'etichetta da prevedere.
+# Per convenzione le X sono maiuscole (una tabella) e le y minuscole (una
+# sola colonna di risposte); X_test sono gli esempi tenuti da parte.
 modello = DecisionTreeClassifier()
 modello.fit(X_train, y_train)       # training: il modello impara dai dati
 y_pred = modello.predict(X_test)    # previsione su dati mai visti in training
 ```
 
-## Perché questo capitolo non è archeologia
+## Questi metodi non sono roba da museo
 
-C'è una scena che si ripete in ogni team alle prime armi. Arriva un problema
+C'è una scena che si ripete in ogni squadra alle prime armi. Arriva un problema
 (prevedere quali clienti abbandoneranno il servizio, a partire da una tabella
 di età, contratti, consumi, reclami) e qualcuno propone subito una rete
-neurale profonda, perché è quella di cui parlano tutti. Dopo due settimane di
-messa a punto la rete arriva faticosamente a pareggiare un *gradient boosting*
-(uno dei metodi di questo capitolo, che incontreremo fra qualche sezione: tanti
+neurale profonda, perché è quella di cui parlano tutti. Passano due settimane
+di messa a punto, e alla fine la rete arriva faticosamente a pareggiare un
+*gradient boosting*, cioè uno dei metodi di questo capitolo: tanti
 piccoli modelli semplici messi in fila, ognuno a correggere gli errori del
-precedente) che un collega scettico aveva addestrato in dieci minuti lasciando
-tutte le manopole come le trovava.
+precedente. Quel gradient boosting l'aveva addestrato in dieci minuti un
+collega scettico, senza toccare nemmeno una impostazione.
 
 ```{figure} ../figures/ml-classico-batte-deep-learning.svg
 :name: fig-tabellari-vs-non-strutturati
@@ -251,44 +280,52 @@ tutte le manopole come le trovava.
 
 Non c'è un vincitore assoluto, c'è un confine. A sinistra i dati già in
 tabella, dove le colonne *sono già* le caratteristiche buone; a destra le
-foto, il suono e il testo, dove le caratteristiche vanno estratte dai pixel o
-dai campioni, ed è lì che le reti profonde non hanno rivali.
+foto, il suono e il testo, dove le caratteristiche vanno ricavate dai puntini
+di un'immagine o dall'onda di un suono, ed è lì che le reti profonde non hanno
+rivali.
 ```
 
-Il confine tracciato in {numref}`fig-tabellari-vs-non-strutturati` è quello che
-quella scena ignora ogni volta.
+C'è un confine, e {numref}`fig-tabellari-vs-non-strutturati` lo disegna. È
+quello che la scena di prima ignora ogni volta, e vale la pena capire dove
+passa.
 
 `````{tab} Elementare
 
 Il deep learning ha ridefinito cosa è possibile con immagini, audio e
 linguaggio. Ma dedurne che sia lo strumento migliore per qualsiasi problema è
-un errore di categoria, e su un'ampia fascia di casi reali, probabilmente la
-maggioranza di quelli che un'azienda incontra, i metodi di questo capitolo
-restano la scelta più sensata.
+come cercare l'attrezzo migliore in assoluto: la domanda è mal posta. Su
+un'ampia fascia di casi reali i metodi di questo capitolo restano la scelta più
+sensata.
 
 La distinzione che conta non è l'età dell'algoritmo, ma **la forma dei dati**.
 In una tabella, la colonna "codice postale", quella "reddito annuo" e quella
 "ha un contratto attivo" non hanno nulla in comune: unità diverse, scale
-diverse, significati diversi. Non c'è vicinanza spaziale come fra due pixel
-adiacenti, né ordine come fra due parole in una frase. Sono **variabili senza
-geografia**, e le reti neurali sono costruite proprio per sfruttare una
-geografia: hanno pezzi fatti apposta per guardare i pixel vicini fra loro, e
-altri fatti apposta per guardare quali parole di una frase si riferiscono a
-quali (li vedremo, si chiamano convoluzioni e attenzione). Su una tabella
+diverse, significati diversi. Fra due colonne non c'è vicinanza, come ce n'è
+fra due puntini accanto in una fotografia, e non c'è ordine, come ce n'è fra
+due parole in una frase. Sono **colonne senza geografia**, e le reti neurali
+sono costruite proprio per sfruttare una geografia: hanno pezzi fatti apposta
+per guardare i puntini vicini fra loro, e altri fatti apposta per guardare
+quali parole di una frase si riferiscono a quali. Su una tabella
 quella struttura non c'è, e il vantaggio evapora.
 
-Gli alberi, al contrario, si trovano a casa: dividono una colonna alla volta con
-una soglia, non chiedono che le scale siano confrontabili, e gestiscono
-naturalmente variabili categoriche e valori mancanti.
+Gli **alberi di decisione**, al contrario, si trovano a casa. Un albero è una
+catena di domande con risposta sì o no, una per volta e ciascuna su una colonna
+sola: «i metri quadri sono più di ottanta?», poi «il contratto è ancora
+attivo?», e via così fino a una risposta. Che le colonne abbiano unità e scale
+diverse non gli importa, perché non le mescola mai fra loro; e una domanda si
+può fare anche su un nome («il quartiere è Milano?») o sul fatto che una
+casella sia rimasta vuota.
 
 Tre casi in cui il classico resta la scelta giusta:
 
-- **dati tabulari**, che sono la forma più comune dei dati aziendali;
-- **pochi esempi**, con qualche migliaio di righe una rete profonda non ha
-  abbastanza materiale per imparare le feature da sola;
-- **serve spiegare la decisione**: un albero o una regressione si leggono, e
-  quando una decisione va motivata a un cliente o a un regolatore questo non è
-  un dettaglio.
+- **dati in tabella**, che sono la forma più comune dei dati di un'azienda;
+- **pochi esempi**: con qualche migliaio di righe una rete profonda non ha
+  abbastanza materiale. Le reti, infatti, hanno un talento che i metodi di
+  questo capitolo non hanno, cioè costruirsi da sole le caratteristiche a
+  partire dai dati grezzi, ma per riuscirci di esempi ne vogliono tantissimi;
+- **serve spiegare la decisione**: un albero si può ripercorrere domanda per
+  domanda, e quando un rifiuto va motivato a un cliente o a un'autorità che
+  vigila, poter dire *perché* non è un dettaglio.
 
 `````
 
@@ -330,9 +367,10 @@ valutare su dati mai visti): cambieranno i modelli, non la grammatica.
   esempi già etichettati (le email marchiate «spam» e «non spam») e le regole
   emergono da sole dai dati.
 - Su **dati in tabella**, con pochi esempi o quando la decisione va spiegata a
-  un cliente o a un regolatore, i metodi di questo capitolo battono ancora
+  un cliente o a un'autorità, i metodi di questo capitolo battono ancora
   regolarmente il deep learning: fra le colonne di una tabella non c'è quella
-  vicinanza che le reti profonde sanno sfruttare fra pixel o fra parole.
+  vicinanza che le reti profonde sanno sfruttare fra i puntini di una foto o
+  fra le parole di una frase.
 - Un programma **impara** (Mitchell) se, facendo pratica, diventa più bravo in
   un compito e questo «più bravo» si può misurare: servono il **compito**,
   l'**esperienza** e la **misura**.

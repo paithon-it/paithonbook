@@ -29,7 +29,7 @@ di rispondere.
 
 ```{figure} ../figures/post-training-pipeline.svg
 :name: fig-post-training-pipeline
-:alt: "Pipeline a quattro stadi del post-training: pre-addestramento, SFT su coppie istruzione-risposta, preferenze umane con reward model e PPO sotto vincolo KL, modello assistente finale; una freccia tratteggiata indica la DPO come scorciatoia che salta il reward model."
+:alt: "Il pre-addestramento a monte, poi le due mosse del post-training: SFT su coppie istruzione-risposta, e apprendimento dalle preferenze umane con reward model e PPO sotto vincolo KL, fino al modello assistente finale; una freccia tratteggiata indica la DPO come scorciatoia che salta il reward model."
 :width: 100%
 
 Dal completatore all'assistente, in due mosse. Prima il tirocinio sugli esempi
@@ -80,13 +80,13 @@ biblioteca) proprio perché non aggiunge sapere: orienta quello che c'è già.
 
 `````{tab} Superiore
 
-Sia $\mathcal{D} = \{(x^{(i)}, y^{(i)})\}$ un dataset di coppie
+Sia $\mathcal{D}_{\text{SFT}} = \{(x^{(i)}, y^{(i)})\}$ un dataset di coppie
 istruzione–risposta. La SFT minimizza la stessa cross-entropia autoregressiva
 del pre-addestramento, ma applicata ai soli token della risposta:
 
 $$
 \mathcal{L}_{\text{SFT}}(\theta) =
--\sum_{(x,y)\in\mathcal{D}} \sum_{t=1}^{|y|}
+-\sum_{(x,y)\in\mathcal{D}_{\text{SFT}}} \sum_{t=1}^{|y|}
 \log \pi_\theta\big(y_t \mid x,\, y_{<t}\big),
 $$
 
@@ -127,15 +127,14 @@ nessuno può permetterselo.
 :alt: "Schema di LoRA: la matrice dei pesi pre-addestrati W resta congelata e riceve l'ingresso; accanto a essa due matrici piccole e addestrabili, A e B, formano un percorso parallelo a basso rango. Le uscite dei due rami si sommano prima di proseguire. Solo A e B ricevono gradiente."
 :width: 78%
 
-LoRA non tocca $\mathbf{W}$: gli affianca una scorciatoia stretta. Il ramo
-parallelo ha
-pochi parametri perché passa da un collo di bottiglia, e solo quelli si
-addestrano.
+LoRA non tocca la tabella dei numeri già imparati: gliene affianca due strette,
+in parallelo. Il ramo laterale ha pochi numeri da regolare perché passa da un
+collo di bottiglia, e solo quelli si addestrano.
 ```
 
 La forma di {numref}`fig-lora` spiega anche perché l'adattamento si possa
-*staccare*. Se ciò che si è imparato vive tutto in $\mathbf{A}$ e $\mathbf{B}$,
-e $\mathbf{W}$ è rimasta
+*staccare*. Se ciò che si è imparato vive tutto nelle due tabelle strette, e
+quella grande è rimasta
 identica, allora un adattamento è un file piccolo che si aggiunge o si toglie:
 lo stesso modello base può servire compiti diversi cambiando solo il ramo
 laterale.
@@ -149,7 +148,7 @@ tabella grande può avere quattromila righe per quattromila colonne, cioè sedic
 milioni di caselle. Adattare un modello vuol dire riscrivere quelle caselle, e
 sono troppe.
 
-**LoRA** (*Low-Rank Adaptation*, Hu e colleghi, 2021) parte da
+**LoRA** (*Low-Rank Adaptation*) {cite}`hu2022lora` parte da
 un'osservazione: quando adatti un modello già addestrato a un compito nuovo,
 quelle caselle non cambiano alla rinfusa. Si spostano poco, e le loro variazioni
 sono molto ripetitive, nel senso che si possono ricostruire quasi tutte a
@@ -171,9 +170,10 @@ disegni le modifiche su un foglio trasparente sovrapposto. Puoi tenere molti
 lucidi diversi (uno per il supporto clienti, uno per il codice, uno per il
 tono formale) e cambiarli in un istante sullo stesso disegno di base.
 
-In pratica si addestra spesso **meno dello 0,1%** dei parametri, il file da
-salvare pesa megabyte invece di gigabyte, e la qualità resta vicina al
-fine-tuning completo.
+E siccome i lucidi non si mettono su tutte le tabelle, ma solo su alcune, alla
+fine si addestra spesso **meno dello 0,1%** dei parametri dell'intero modello:
+il file da salvare pesa megabyte invece di gigabyte, e la qualità resta vicina
+al fine-tuning completo.
 
 `````
 
@@ -186,19 +186,28 @@ rango basso,
 
 $$
 \mathbf{W} = \mathbf{W}_0 + \Delta\mathbf{W}
-= \mathbf{W}_0 + \frac{\alpha}{r}\,\mathbf{B}\mathbf{A},
-\qquad \mathbf{B} \in \mathbb{R}^{d\times r},\
-\mathbf{A} \in \mathbb{R}^{r\times k},\ r \ll \min(d,k).
+= \mathbf{W}_0 + \frac{\alpha}{\rho}\,\mathbf{B}\mathbf{A},
+\qquad \mathbf{B} \in \mathbb{R}^{d\times \rho},\
+\mathbf{A} \in \mathbb{R}^{\rho\times k},\ \rho \ll \min(d,k).
 $$
+
+dove $d$ e $k$ sono le due dimensioni della matrice originale (righe e colonne)
+e $\rho$ è il **rango** dell'aggiornamento, cioè lo spessore del collo di
+bottiglia. Il rango si scrive di solito $r$; qui è $\rho$ perché $r$ in questo
+capitolo è già la ricompensa, e due righe più sotto la incontreremo.
 
 Solo $\mathbf{A}$ e $\mathbf{B}$ ricevono gradiente. I parametri addestrabili
 passano da $dk$ a
-$r(d+k)$: per $d=k=4096$ e $r=8$ si scende da $16{,}8$ milioni a $65\,536$ per
+$\rho(d+k)$: per $d=k=4096$ e $\rho=8$ si scende da $16{,}8$ milioni a
+$65\,536$ per
 matrice, lo $0{,}39\%$. All'inizio $\mathbf{A}$ è inizializzata casualmente e
 $\mathbf{B}$ a zero,
 così $\Delta\mathbf{W} = 0$ e il modello parte esattamente dal comportamento
-pre-addestrato; $\alpha/r$ è un fattore di scala che disaccoppia il *learning
-rate* efficace dalla scelta di $r$.
+pre-addestrato; $\alpha/\rho$ è un fattore di scala che disaccoppia il *learning
+rate* efficace dalla scelta di $\rho$. Su quali matrici si mette il ramo
+laterale è una scelta, non un dato: il lavoro originale lo applica alle sole
+proiezioni $\mathbf{W}^Q$ e $\mathbf{W}^V$ dell'attenzione, ed è da lì che
+viene il conteggio minuscolo sul modello intero.
 
 Tre conseguenze pratiche:
 
@@ -209,10 +218,12 @@ Tre conseguenze pratiche:
 2. **Adattatori componibili e leggeri.** Si tengono in memoria molti LoRA
    sullo stesso modello di base e si scambiano per richiesta: è il meccanismo
    dietro il *multi-tenant serving* di modelli specializzati.
-3. **QLoRA** (Dettmers e colleghi, 2023) porta l'idea all'estremo: il modello
+3. **QLoRA** {cite}`dettmers2023qlora` porta l'idea all'estremo: il modello
    base viene quantizzato a $4$ bit e congelato, gli adattatori restano in
-   precisione più alta. Consente il fine-tuning di modelli da decine di miliardi
-   di parametri su una sola GPU consumer.
+   precisione più alta. Gli autori rifiniscono così un modello da 65 miliardi
+   di parametri su una sola scheda da 48 GB, mentre il fine-tuning completo a
+   16 bit dello stesso modello, per loro stesso conto, ne chiederebbe oltre
+   780: una quindicina di schede invece di una.
 
 Il limite è dove ci si aspetta: LoRA **adatta**, non insegna. Per far
 acquisire al modello conoscenza sostanzialmente nuova, o per cambiarne il
@@ -278,10 +289,16 @@ la creatività al guinzaglio: piccoli aggiustamenti sì, stravolgimenti no.
 
 **Fase 1: il reward model.** Per un prompt $x$ si generano due risposte e un
 annotatore indica la preferita, $y_w$ (*winner*), contro la scartata, $y_l$
-(*loser*). Il reward model $r_\phi(x, y)$ (tipicamente lo stesso Transformer
+(*loser*); scriveremo $y_w \succ y_l$ per «la prima è preferita alla
+seconda». Il reward model $r_\phi(x, y)$ (tipicamente lo stesso Transformer
 con una testa scalare al posto della softmax) viene addestrato assumendo il
 modello di **Bradley–Terry** (1952), per cui la probabilità di preferenza
-dipende dalla differenza dei punteggi:
+dipende solo dalla differenza dei punteggi. Vale la pena dire che cosa si sta
+assumendo, perché non è poco: che esista **un solo numero** per risposta da cui
+discendono tutte le preferenze, e quindi che i giudizi siano **transitivi** e
+che gli annotatori siano **intercambiabili** fra loro. Nessuna delle tre cose è
+ovvia sulle persone vere, ed è la stessa ipotesi su cui poggerà anche
+l'equivalenza fra DPO e RLHF di cui parla la sezione seguente.
 
 $$
 P(y_w \succ y_l \mid x) = \sigma\big(r_\phi(x, y_w) - r_\phi(x, y_l)\big),
@@ -298,7 +315,7 @@ risposta generata è l'azione) e si ottimizza
 
 $$
 \max_\theta\;
-\mathbb{E}_{x \sim \mathcal{D}}\Big[\,
+\mathbb{E}_{x \sim \mathcal{D}_{\text{pr}}}\Big[\,
 \mathbb{E}_{y \sim \pi_\theta(\cdot \mid x)}\big[ r_\phi(x, y) \big]
 \;-\; \beta\,
 D_{\mathrm{KL}}\big(\pi_\theta(\cdot \mid x) \,\|\, \pi_{\text{ref}}(\cdot \mid x)\big)
@@ -310,7 +327,8 @@ modello SFT), $D_{\mathrm{KL}}$ è la divergenza di Kullback–Leibler
 {cite}`kullback1951information` vista nel capitolo sui richiami di matematica
 e $\beta > 0$ regola la forza del vincolo. Si noti che entrambi i termini
 stanno **dentro** la stessa aspettazione sui prompt: la deriva si penalizza in
-media su $\mathcal{D}$, non su un prompt lasciato libero, altrimenti
+media sulla distribuzione dei prompt $\mathcal{D}_{\text{pr}}$, non su un
+prompt lasciato libero, altrimenti
 l'espressione non sarebbe funzione dei soli $\theta$ e non ci sarebbe niente da
 massimizzare. (InstructGPT la scrive in forma campionata, con
 $-\beta\log\frac{\pi_\theta(y\mid x)}{\pi_{\text{ref}}(y\mid x)}$ dentro
@@ -327,8 +345,8 @@ passi controllati per non destabilizzare la policy.
 `````
 
 Vale la pena fissare il punto d'incontro: aumentare la probabilità delle
-azioni che ricevono un giudizio positivo è la stessa meccanica che, come
-vedrai nel capitolo sul Deep Reinforcement Learning, fa vincere partite di
+azioni che ricevono un giudizio positivo è la stessa meccanica che, nel
+capitolo sul Deep Reinforcement Learning, faceva vincere partite di
 Go; qui insegna a un modello di linguaggio a essere utile. La «mossa» è
 un'intera risposta, e il punteggio non viene dalle regole di un gioco ma da
 un modello addestrato a imitare i gusti di valutatori in carne e ossa.
@@ -341,11 +359,15 @@ di com'era prima (serve a misurare quanto si sta allontanando), il giudice
 artificiale che dà i voti, e una quarta che prova a indovinare in anticipo che
 voto arriverà, perché l'algoritmo di apprendimento per rinforzo ne ha bisogno
 per capire se una risposta è andata meglio o peggio del previsto. Tre di queste
-quattro vanno anche addestrate, e l'apprendimento per rinforzo su testo è
+quattro sono state addestrate, se si conta il giudice, che però si allena in
+una fase a parte: dentro il ciclo vero e proprio se ne aggiornano due, quella
+che risponde e quella che indovina il voto. Il resto sta lì e occupa memoria. E
+l'apprendimento per rinforzo su testo è
 notoriamente capriccioso da stabilizzare. Nel 2023 Rafailov e colleghi
 {cite}`rafailov2023direct` mostrano che si può arrivare quasi allo stesso
-punto con una semplice loss supervisionata. Il titolo del paper è già la tesi:
-*Your Language Model is Secretly a Reward Model*; il tuo modello di linguaggio
+punto con una semplice loss supervisionata. Il sottotitolo del paper è già la
+tesi: *Your Language Model is Secretly a Reward Model*; il tuo modello di
+linguaggio
 è, a sua insaputa, già un reward model. Il metodo si chiama **DPO** (*Direct
 Preference Optimization*).
 
@@ -379,17 +401,29 @@ $$
 \exp\!\Big(\tfrac{1}{\beta}\, r(x, y)\Big),
 $$
 
-dove $Z(x)$ è la costante di normalizzazione. Invertendo la relazione, la
+dove $Z(x) = \sum_y \pi_{\text{ref}}(y \mid x)\exp(r(x,y)/\beta)$ normalizza la
+distribuzione. Invertendo la relazione, la
 ricompensa si può scrivere in funzione della policy ottima:
 $r(x,y) = \beta \log \frac{\pi^*(y \mid x)}{\pi_{\text{ref}}(y \mid x)} +
-\beta \log Z(x)$. Sostituendo questa espressione nel modello di
-Bradley–Terry, la costante $Z(x)$ si cancella nella differenza tra le due
-risposte, e la verosimiglianza delle preferenze diventa una loss che dipende
-*solo dalla policy*:
+\beta \log Z(x)$.
+
+Da qui i due passaggi che rendono possibile il metodo, e conviene separarli.
+Il primo: $Z(x)$ è una somma su **tutte** le risposte, quindi dipende dal
+prompt e **non** dalla risposta; siccome $y_w$ e $y_l$ stanno sotto lo stesso
+prompt, i due $\beta\log Z(x)$ sono lo stesso numero e si elidono nella
+differenza che il modello di Bradley–Terry chiede. Ed è l'unico posto in cui
+$Z(x)$ compare: quella somma sarebbe incalcolabile, e sparisce prima di dover
+essere calcolata. Il secondo passaggio è meno visibile e più importante: la
+relazione appena scritta dice che **ogni** ricompensa è rappresentabile come
+$\beta\log(\pi/\pi_{\text{ref}})$ per una qualche policy, a meno di una
+funzione del solo $x$. Si può allora smettere di parametrizzare le ricompense
+e parametrizzare direttamente le policy, sostituire $\pi^*$ con la $\pi_\theta$
+che stiamo addestrando, e fare massima verosimiglianza sulle preferenze
+osservate. Il risultato è una loss che dipende *solo dalla policy*:
 
 $$
 \mathcal{L}_{\text{DPO}}(\theta) =
--\,\mathbb{E}_{(x,\, y_w,\, y_l) \sim \mathcal{D}}
+-\,\mathbb{E}_{(x,\, y_w,\, y_l) \sim \mathcal{D}_{\text{pref}}}
 \left[
 \log \sigma\!\left(
 \beta \log \frac{\pi_\theta(y_w \mid x)}{\pi_{\text{ref}}(y_w \mid x)}
@@ -399,8 +433,9 @@ $$
 \right],
 $$
 
-dove $\mathcal{D}$ è il dataset di terne (prompt, risposta preferita,
-risposta scartata); $x$ è il prompt, $y_w$ la risposta preferita e $y_l$
+dove $\mathcal{D}_{\text{pref}}$ è il dataset di terne (prompt, risposta
+preferita, risposta scartata); $x$ è il prompt, $y_w$ la risposta preferita e
+$y_l$
 quella scartata; $\pi_\theta$ è la policy in addestramento (l'unica di cui si
 aggiornano i parametri $\theta$); $\pi_{\text{ref}}$ è il riferimento
 congelato, di norma il modello SFT; $\beta > 0$ (valori tipici tra $0{,}1$ e
@@ -477,10 +512,12 @@ $0{,}4$ a favore della preferita: sta andando nella direzione giusta, anche se
 non è ancora arrivata. Nella quarta coppia i due movimenti si equivalgono: è la
 coppia «non ancora imparata», quella su cui la correzione spinge di più.
 
-E la SFT? Non merita codice nuovo: è il training loop
-del capitolo su PyTorch, con la cross-entropia calcolata sui token della
-risposta (lo stesso ciclo `forward`, `loss`, `backward`, `step` che ormai
-conosci a memoria).
+E il tirocinio sugli esempi svolti? Non merita codice nuovo: è il normale ciclo
+di addestramento del capitolo su PyTorch (si fa passare l'esempio nella rete,
+si misura di quanto ha sbagliato, si guarda in che direzione andavano spostati
+i numeri, li si sposta di un'inezia: `forward`, `loss`, `backward`, `step`),
+con l'unica differenza che il conto dell'errore si fa **solo** sui pezzi della
+risposta e non su quelli della domanda.
 
 ## Pensare prima di rispondere: il calcolo al momento dell'inferenza
 
@@ -542,7 +579,8 @@ osserva senza ambiguità è che le catene generate dai modelli piccoli sono
 spesso incoerenti, non solo sbagliate nel risultato: la discontinuità, se c'è,
 è nella *procedura* prima che nel punteggio. La
 *self-consistency* aggiunge un passo: si campionano più catene indipendenti e
-si sceglie la risposta finale a maggioranza (Wang et al., 2022). I modelli
+si sceglie la risposta finale a maggioranza
+{cite}`wang2023selfconsistency`. I modelli
 «ragionanti», o1 di OpenAI (settembre 2024), DeepSeek-R1
 {cite}`guo2025deepseek` a pesi aperti (gennaio 2025), interiorizzano la
 catena: vengono addestrati con reinforcement learning su problemi a **risposta
@@ -576,7 +614,7 @@ modello dal deragliare del tutto, ma non gli insegna a distinguere una risposta
 utile da una che *sembra* utile.
 
 Il secondo è la **ruffianeria** (*sycophancy*), documentata empiricamente
-(Sharma et al., 2023): se i valutatori preferiscono (anche solo un po' più
+{cite}`sharma2023sycophancy`: se i valutatori preferiscono (anche solo un po' più
 spesso) le risposte che danno loro ragione, il modello impara a dare ragione.
 Contraddici un assistente addestrato sulle preferenze e spesso ritratterà una
 risposta corretta, perché nei dati di confronto l'accordo vinceva sul
@@ -644,7 +682,8 @@ comportamento dei modelli, non garanzie sul risultato.
   loss supervisionata sulle coppie preferita/scartata, con la ricompensa
   implicita $\beta \log (\pi_\theta / \pi_{\text{ref}})$.
 - **Test-time compute**: chain-of-thought {cite}`wei2022chain`,
-  self-consistency, e i modelli «ragionanti» addestrati con RL su risposte
+  self-consistency {cite}`wang2023selfconsistency`, e i modelli «ragionanti»
+  addestrati con RL su risposte
   verificabili {cite}`guo2025deepseek` (guadagni reali ma concentrati nei
   domini verificabili, a costo di più calcolo per risposta).
 - Limiti aperti: **reward hacking**, **ruffianeria**, e la domanda non

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  paithon book, figura animata: due strati piegano lo XOR
+  Generata da animazioni/svg/xor-si-piega.py: non modificare a mano.
+  Palette-locked, fondo trasparente, animazione in CSS puro (nessuno script).
+  Lo stato di riposo è quello finale: chi non anima (stampa, PDF,
+  prefers-reduced-motion) vede la figura conclusa.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 756 524"
+     role="img" aria-label="Due pannelli affiancati. A sinistra i quattro casi dello XOR agli angoli del quadrato unitario, in terracotta i due con uscita 1 e in teal i due con uscita 0, tagliati da due rette parallele, i due neuroni nascosti, che lasciano in mezzo una fascia con i soli punti terracotta. A destra gli stessi quattro punti si spostano nelle coordinate calcolate da quei neuroni: i due terracotta finiscono esattamente nello stesso posto e i due teal si allontanano ai lati opposti, e a quel punto una sola retta li separa.">
+  <style>
+    svg  { --d: 9.0s; }
+    .ax  { stroke:#C5BEAA; stroke-width:2; fill:none; }
+    .axc { stroke:#E2DCC9; stroke-width:1.5; }
+    .lbl { font-family:Inter, system-ui, sans-serif; font-size:15px; fill:#1A1A1A; }
+    .lbs { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#5A524A; }
+    .ttl { font-family:Fraunces, Georgia, serif; font-size:16px; font-style:italic; fill:#1A1A1A; }
+    .pt  { stroke:#F8F5EE; stroke-width:1.5; }
+    .pos { fill:#B5532C; }
+    .neg { fill:#2D5A5C; }
+    .sep { stroke:#1A1A1A; stroke-width:3; fill:none; }
+    .nas { stroke:#C9A961; stroke-width:2.5; fill:none; }
+    .banda { stroke:#C9A961; stroke-opacity:0.16; fill:none; }
+    .zona { fill:#B5532C; fill-opacity:0.09; }
+    .scia { stroke:#C5BEAA; stroke-width:1.6; stroke-dasharray:5 5; }
+    .ombra { fill:none; stroke:#C5BEAA; stroke-width:1.6; }
+    .anello { fill:none; stroke:#C9A961; stroke-width:2; }
+    .nom { font-family:Inter, system-ui, sans-serif; font-size:15px; font-weight:700; fill:#C9A961; }
+    .eti { font-family:Inter, system-ui, sans-serif; font-size:15px; fill:#5A524A; opacity:0; }
+    .cnt { font-family:Inter, system-ui, sans-serif; font-size:16px; font-weight:700; fill:#B5532C; }
+    #partenza { animation:attenua var(--d) infinite; }
+    .nasc   { animation:nasc var(--d) infinite; }
+    .via    { animation:via var(--d) infinite; }
+    .esce   { animation:esce var(--d) infinite; }
+    .giunti { animation:giunti var(--d) infinite; }
+    .v0 { animation:vola0 var(--d) infinite; transform-box:view-box; }
+    .v1 { animation:vola1 var(--d) infinite; transform-box:view-box; }
+    .v2 { animation:vola2 var(--d) infinite; transform-box:view-box; }
+    .v3 { animation:vola3 var(--d) infinite; transform-box:view-box; }
+        @keyframes attenua{0.00%{opacity:1}68.00%{opacity:1}72.00%{opacity:0.8}100.00%{opacity:0.8}}
+    @keyframes nasc{0.00%{opacity:0}20.00%{opacity:0}22.00%{opacity:1}100.00%{opacity:1}}
+    @keyframes via{0.00%{opacity:0}42.00%{opacity:0}44.00%{opacity:1}100.00%{opacity:1}}
+    @keyframes esce{0.00%{opacity:0}70.00%{opacity:0}72.00%{opacity:1}100.00%{opacity:1}}
+    @keyframes giunti{0.00%{opacity:0}56.00%{opacity:0}58.00%{opacity:1}100.00%{opacity:1}}
+    @keyframes vola0{0.00%{transform:translate(-68.2px,-68.2px)}44.00%{transform:translate(-68.2px,-68.2px)}58.00%{transform:translate(0px,0px)}100.00%{transform:translate(0px,0px)}}
+    @keyframes vola1{0.00%{transform:translate(68.2px,68.2px)}44.00%{transform:translate(68.2px,68.2px)}58.00%{transform:translate(0px,0px)}100.00%{transform:translate(0px,0px)}}
+    @keyframes vola2{0.00%{transform:translate(0.0px,204.5px)}44.00%{transform:translate(0.0px,204.5px)}58.00%{transform:translate(0px,0px)}100.00%{transform:translate(0px,0px)}}
+    @keyframes vola3{0.00%{transform:translate(-68.2px,-136.4px)}44.00%{transform:translate(-68.2px,-136.4px)}58.00%{transform:translate(0px,0px)}100.00%{transform:translate(0px,0px)}}
+    @keyframes dida0{0.00%{opacity:1}20.00%{opacity:1}22.00%{opacity:0}100.00%{opacity:0}}
+    @keyframes dida1{0.00%{opacity:0}20.00%{opacity:0}22.00%{opacity:1}40.00%{opacity:1}42.00%{opacity:0}100.00%{opacity:0}}
+    @keyframes dida2{0.00%{opacity:0}40.00%{opacity:0}42.00%{opacity:1}70.00%{opacity:1}72.00%{opacity:0}100.00%{opacity:0}}
+    @keyframes dida3{0.00%{opacity:0}70.00%{opacity:0}72.00%{opacity:1}100.00%{opacity:1}}
+    @media (prefers-reduced-motion:reduce) { #partenza, .mobile { animation:none !important; } }
+  </style>
+  <g id="partenza" opacity="0.8"><clipPath id="campoS"><rect x="56" y="84" width="300" height="300" rx="4"/></clipPath><rect class="ax" x="56" y="84" width="300" height="300" rx="4"/><line class="axc" x1="56" y1="329.5" x2="356" y2="329.5"/><line class="axc" x1="110.5" y1="84" x2="110.5" y2="384"/><line class="ax" x1="110.5" y1="378" x2="110.5" y2="384"/><text class="lbs" x="110.5" y="370" text-anchor="middle">0</text><line class="ax" x1="56" y1="329.5" x2="62" y2="329.5"/><text class="lbs" x="68" y="334.5">0</text><line class="ax" x1="246.9" y1="378" x2="246.9" y2="384"/><text class="lbs" x="246.9" y="370" text-anchor="middle">1</text><line class="ax" x1="56" y1="193.1" x2="62" y2="193.1"/><text class="lbs" x="68" y="198.1">1</text><g clip-path="url(#campoS)" class="mobile nasc"><line class="banda" x1="-620" y1="0" x2="620" y2="0" transform="translate(178.7,261.3) rotate(-135.0)" stroke-width="96.4"/><line class="nas" x1="-620" y1="0" x2="620" y2="0" transform="translate(144.6,295.4) rotate(-135.0)"/><line class="nas" x1="-620" y1="0" x2="620" y2="0" transform="translate(212.8,227.2) rotate(45.0)"/></g><text class="nom mobile nasc" x="70" y="256">h₁</text><text class="nom mobile nasc" x="320" y="362" text-anchor="end">h₂</text><circle class="pt pos" cx="110.5" cy="193.1" r="9"/><circle class="pt pos" cx="246.9" cy="329.5" r="9"/><circle class="pt neg" cx="110.5" cy="329.5" r="9"/><circle class="pt neg" cx="246.9" cy="193.1" r="9"/><text class="lbl" x="56" y="68">il piano degli ingressi (x₁, x₂)</text></g><clipPath id="campoD"><rect x="424" y="84" width="300" height="300" rx="4"/></clipPath><rect class="ax" x="424" y="84" width="300" height="300" rx="4"/><line class="axc" x1="424" y1="329.5" x2="724" y2="329.5"/><line class="axc" x1="478.5" y1="84" x2="478.5" y2="384"/><line class="ax" x1="478.5" y1="378" x2="478.5" y2="384"/><text class="lbs" x="478.5" y="370" text-anchor="middle">0</text><line class="ax" x1="424" y1="329.5" x2="430" y2="329.5"/><text class="lbs" x="436" y="334.5">0</text><line class="ax" x1="614.9" y1="378" x2="614.9" y2="384"/><text class="lbs" x="614.9" y="370" text-anchor="middle">1</text><line class="ax" x1="424" y1="193.1" x2="430" y2="193.1"/><text class="lbs" x="436" y="198.1">1</text><line class="scia mobile via" x1="487.0" y1="201.6" x2="538.2" y2="252.8"/><circle class="ombra mobile via" cx="478.5" cy="193.1" r="9"/><line class="scia mobile via" x1="606.4" y1="321.0" x2="555.2" y2="269.8"/><circle class="ombra mobile via" cx="614.9" cy="329.5" r="9"/><line class="scia mobile via" x1="478.5" y1="317.5" x2="478.5" y2="136.9"/><circle class="ombra mobile via" cx="478.5" cy="329.5" r="9"/><line class="scia mobile via" x1="620.3" y1="203.8" x2="677.7" y2="318.7"/><circle class="ombra mobile via" cx="614.9" cy="193.1" r="9"/><g clip-path="url(#campoD)"><rect class="zona mobile esce" x="-620" y="0" width="1240" height="620" transform="translate(563.3,244.7) rotate(45.0)"/><line class="sep mobile esce" x1="-620" y1="0" x2="620" y2="0" transform="translate(563.3,244.7) rotate(45.0)"/></g><text class="lbs mobile esce" x="540" y="320">ŷ = 1</text><text class="lbs mobile esce" x="710" y="130" text-anchor="end">ŷ = 0</text><circle class="anello mobile giunti" cx="546.7" cy="261.3" r="16"/><circle class="pt mobile pos v0" cx="546.7" cy="261.3" r="9"/><circle class="pt mobile pos v1" cx="546.7" cy="261.3" r="9"/><circle class="pt mobile neg v2" cx="478.5" cy="124.9" r="9"/><circle class="pt mobile neg v3" cx="683.1" cy="329.5" r="9"/><text class="lbl" x="424" y="68">le rappresentazioni intermedie (h₁, h₂)</text><text class="eti mobile" x="56" y="418" style="animation:dida0 var(--d) infinite">i quattro casi dello XOR: le due classi occupano gli angoli opposti</text><text class="eti mobile" x="56" y="418" style="animation:dida1 var(--d) infinite">due neuroni nascosti, due rette: in mezzo restano i casi con uscita 1</text><text class="eti mobile" x="56" y="418" style="animation:dida2 var(--d) infinite">il primo strato dà a ogni punto due coordinate nuove</text><text class="eti mobile" x="56" y="418" style="animation:dida3 var(--d) infinite;opacity:1">nelle coordinate nuove una retta sola basta, e i due casi con uscita 1 coincidono</text><text class="cnt mobile esce" x="56" y="448">nessun punto sbagliato: la rete calcola 0, 1, 1, 0, cioè lo XOR</text><text class="lbs" x="56" y="478">h₁ = ReLU(x₁ + x₂ − 0,5)</text><text class="lbs" x="424" y="478">h₂ = ReLU(−x₁ − x₂ + 1,5)</text><text class="lbs" x="56" y="498">ŷ = g(−0,71·h₁ − 0,71·h₂ + 0,88), con g il gradino e i pesi dell'uscita trovati addestrando</text><circle class="pt pos" cx="62" cy="30" r="9"/><text class="lbs" x="80" y="35">XOR = 1</text><circle class="pt neg" cx="174" cy="30" r="9"/><text class="lbs" x="192" y="35">XOR = 0</text><line class="nas" x1="376" y1="30" x2="402" y2="30"/><text class="lbs" x="410" y="35">neuroni nascosti</text><line class="sep" x1="562" y1="30" x2="588" y2="30"/><text class="lbs" x="596" y="35">neurone di uscita</text>
+</svg>

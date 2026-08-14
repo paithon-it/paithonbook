@@ -17,7 +17,7 @@ della sezione e URL), non si ridistribuisce il testo.
 
 ## Prima di cominciare
 
-- [Prefazione](https://book.paithon.it/main/prefazione.html): Questo libro è stato scritto una prima volta nel 2019, per uscire su carta. Aveva un indice di quattordici capitoli, una copertina provvisoria e questa prefazione, che in quell'indice era la voce…
+- [Prefazione](https://book.paithon.it/main/prefazione.html): Questo libro è stato scritto una prima volta nel 2019, per uscire su carta. Aveva un indice di quattordici capitoli.
 
 ## Fondamenta
 
@@ -119,7 +119,7 @@ della sezione e URL), non si ridistribuisce il testo.
   - [POS tagging ed entità](https://book.paithon.it/main/NaturalLanguageProcessing/etichettare-sequenze.html)
   - [Sintassi e parsing](https://book.paithon.it/main/NaturalLanguageProcessing/struttura-frase.html)
   - [Dialogo e chatbot](https://book.paithon.it/main/NaturalLanguageProcessing/dialogo-chatbot.html)
-- [Transformer](https://book.paithon.it/main/Transformers/overview.html): Nell'estate del 2017 otto ricercatori, tutti passati per Google Brain e Google Research, pubblicano un paper (un articolo scientifico: il modo in cui chi fa ricerca racconta agli altri quello che ha…
+- [Transformer](https://book.paithon.it/main/Transformers/overview.html): Nel giugno del 2017 otto ricercatori, tutti passati per Google Brain e Google Research, pubblicano un paper (un articolo scientifico: il modo in cui chi fa ricerca racconta agli altri quello che ha…
   - [Il meccanismo di attenzione](https://book.paithon.it/main/Transformers/attenzione.html)
   - [La struttura del Transformer](https://book.paithon.it/main/Transformers/architettura.html)
   - [Confronto coi modelli precedenti](https://book.paithon.it/main/Transformers/confronti.html)
@@ -205,7 +205,7 @@ della sezione e URL), non si ridistribuisce il testo.
   - [Message passing](https://book.paithon.it/main/GraphNeuralNetwork/message-passing.html)
   - [I knowledge graph](https://book.paithon.it/main/GraphNeuralNetwork/knowledge-graph.html)
   - [GraphSAGE, GAT e applicazioni](https://book.paithon.it/main/GraphNeuralNetwork/architetture-applicazioni.html)
-- [Sistemi di raccomandazione](https://book.paithon.it/main/SistemiRaccomandazione/overview.html): Il 2 ottobre 2006 Netflix (che allora campava spedendo DVD per posta) pubblica un annuncio senza precedenti: un milione di dollari a chiunque riesca a migliorare del 10% il suo sistema di…
+- [Sistemi di raccomandazione](https://book.paithon.it/main/SistemiRaccomandazione/overview.html): Il 2 ottobre 2006 Netflix, che allora campava spedendo DVD per posta, mette in palio un milione di dollari. Li prende chi riesce a migliorare del 10% il suo sistema di raccomandazione, Cinematch.
   - [Il filtraggio collaborativo](https://book.paithon.it/main/SistemiRaccomandazione/filtraggio-collaborativo.html)
   - [La raccomandazione neurale](https://book.paithon.it/main/SistemiRaccomandazione/raccomandazione-neurale.html)
 - [Serie temporali](https://book.paithon.it/main/SerieTemporali/overview.html): Negli anni Settanta dell'Ottocento William Thomson, professore a Glasgow (il mondo lo avrebbe conosciuto come Lord Kelvin), fece costruire a Londra una macchina di ottone, corde e pulegge che…
@@ -238,6 +238,6 @@ della sezione e URL), non si ridistribuisce il testo.
 
 ## Chiusura
 
-- [Conclusioni](https://book.paithon.it/main/Conclusioni/overview.html): Siamo partiti, nell'introduzione, da una frase di Joseph Weizenbaum: "si dice che spiegare significhi dissolvere" .
+- [Conclusioni](https://book.paithon.it/main/Conclusioni/overview.html): Siamo partiti, nell'introduzione, da una frase di Joseph Weizenbaum: «si dice che spiegare significhi dissolvere» . Adesso possiamo dire com'è andata.
 - [Bibliografia](https://book.paithon.it/main/references.html): Le opere citate nel libro, in ordine alfabetico. Nel testo le citazioni compaiono come rimandi tra parentesi quadre: ogni rimando porta qui.
 - [Aggiornamenti](https://book.paithon.it/main/aggiornamenti.html): Questo libro non esce e finisce: cambia. Una sezione si aggiunge, un conto sbagliato si corregge, una spiegazione che non ha funzionato si riscrive.

@@ -104,13 +104,13 @@ con un'unica definizione tecnica.
 
 In Europa la reazione a questi problemi è stata anche normativa, e ci riguarda
 da vicino. Nel marzo del 2023 il **Garante per la protezione dei dati
-personali** italiano è stata la prima autorità occidentale a fermare ChatGPT, e
-vale la pena dire *perché*, visto che un'autorità non spegne un servizio per
-capriccio: contestava che agli utenti non fosse stato spiegato quali dati
-venissero raccolti né in base a quale diritto li si usasse per addestrare il
-modello, e che non ci fosse alcun controllo dell'età di chi lo usava. Il
-servizio tornò disponibile qualche settimana dopo, con un'informativa e uno
-sbarramento sull'età.
+personali** italiano è stato la prima autorità occidentale a fermare ChatGPT.
+Vale la pena dire perché, visto che un'autorità non spegne un servizio per
+capriccio. Contestava, in sostanza, tre cose: che agli utenti non fosse stato
+spiegato quali dati venissero raccolti; che non ci fosse una ragione ammessa
+dalla legge per usarli nell'addestramento del modello; che non esistesse alcun
+controllo dell'età di chi lo usava. Il servizio tornò disponibile qualche
+settimana dopo, con un'informativa e uno sbarramento sull'età.
 
 E soprattutto l'Unione Europea ha approvato nel 2024 il primo regolamento
 **orizzontale** al mondo sull'intelligenza artificiale, l'**AI Act**
@@ -156,19 +156,19 @@ Nessuna di queste dimensioni si ottiene con un numero da tenere d'occhio o con
 un pezzo di software da installare. Sono proprietà del *sistema nel suo
 contesto d'uso*, non del solo codice.
 
-## Perché il tema esplode adesso
+E conviene dire subito anche che cosa resta fuori, perché la prima cosa che
+viene in mente sentendo «pericoli dell'intelligenza artificiale» è spesso
+quella dei film. C'è chi ritiene che un giorno una macchina molto più capace di
+noi possa sfuggirci di mano in modo irreparabile: è il **rischio esistenziale**,
+e sulle sue probabilità le opinioni degli esperti vanno da «è fantascienza» a
+«bisogna fermare tutto». Qui non ne parliamo, e non perché sia una domanda
+sciocca: perché non esistono ancora metodi per misurarlo, e questo è un libro
+su ciò che si sa fare. Ci occupiamo dei danni che si possono misurare adesso,
+quelli su cui esistono metriche e correzioni. Il dibattito fra le due
+preoccupazioni, che è vivo e serio, lo riprendiamo alla fine del capitolo, dove
+parliamo delle regole.
 
-Conviene dire subito che cosa questo capitolo fa e cosa non fa, perché la prima
-cosa che viene in mente sentendo «pericoli dell'intelligenza artificiale» è
-spesso quella dei film. C'è chi ritiene che un giorno una macchina molto più
-capace di noi possa sfuggirci di mano in modo irreparabile: è il **rischio
-esistenziale**, e su quanto sia vicino, o se sia una preoccupazione sensata, le
-opinioni degli esperti vanno da «è fantascienza» a «bisogna fermare tutto».
-Qui non ne parliamo, e non perché sia una domanda sciocca: perché non esistono
-ancora metodi per misurarlo, e questo è un libro su ciò che si sa fare. Ci
-occupiamo dei danni che si possono misurare adesso, quelli su cui esistono
-metriche e correzioni. Il dibattito fra le due preoccupazioni, che è vivo e
-serio, lo riprendiamo alla fine del capitolo, dove parliamo delle regole.
+## Perché il tema esplode adesso
 
 I pregiudizi nei sistemi automatici non sono una scoperta del 2016: se ne
 discuteva già negli anni Novanta. Ciò che è cambiato è la scala. Fino a poco
@@ -221,15 +221,14 @@ quelli più strutturali.
 Prima l'**equità e i *bias***: da dove nasce un pregiudizio (dai dati, dalle
 etichette, dalla scelta stessa dell'obiettivo), come lo si *misura* e quali
 tecniche provano a mitigarlo, senza illudersi che esista una cura definitiva.
-Per misurarlo non serve niente di nuovo: si riusa la tabella a quattro caselle
-del capitolo di Machine Learning (quella del rilevatore di fumo: c'era davvero
-un incendio o no, ha suonato o no), che lì si chiama **matrice di confusione**.
-L'unica differenza, ma è quella decisiva, è che qui la si compila
-*separatamente per ogni gruppo* e poi si confrontano i risultati. Ricorrono due
-misure che quel capitolo ha già presentato: la quota di casi veri che il
-sistema riesce a prendere (il **tasso di veri positivi**, che è la stessa cosa
-che là si chiama *recall*) e la quota di falsi allarmi sui casi che veri non
-erano (il **tasso di falsi positivi**).
+Per misurarlo non serve niente di nuovo. Si riusa la tabella a quattro caselle
+del capitolo di Machine Learning, quella del rilevatore di fumo: c'era davvero
+un incendio o no, ha suonato o no. Là si chiama **matrice di confusione**.
+L'unica differenza è anche quella decisiva: qui la tabella si compila
+*separatamente per ogni gruppo*, e poi si confrontano i risultati. Da lì
+tornano due numeri già visti, quanti dei casi veri il sistema riesce a prendere
+(il **tasso di veri positivi**, che là si chiama anche *recall*) e quanti falsi
+allarmi dà su chi non c'entrava nulla (il **tasso di falsi positivi**).
 
 Poi **privacy, robustezza e sicurezza**: come un modello può, senza volerlo,
 lasciar trapelare i dati su cui è stato addestrato; e come un avversario possa

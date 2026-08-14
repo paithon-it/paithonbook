@@ -29,10 +29,13 @@ nell'array i valori stanno di fila, e il processore può leggerli a blocchi.
 
 Quel che {numref}`fig-array-vs-lista` mostra è il motivo per cui l'array esiste:
 scorrere valori messi di fila è l'operazione per cui un processore è costruito,
-mentre inseguire un rimando alla volta è quella che gli riesce peggio. Vale la
-pena essere precisi su chi ne beneficia, perché è una confusione facile e la
-riprenderemo alla fine della pagina: la compattezza serve al codice in C che
-attraversa l'array tutto insieme, non a un ciclo scritto in Python.
+mentre inseguire un **rimando** alla volta (un rimando è un bigliettino che
+invece del numero porta scritto l'indirizzo in cui il numero si trova) è quella
+che gli riesce peggio. Vale la pena essere precisi su chi ne beneficia, perché è
+una confusione facile e la riprenderemo alla fine della pagina: la compattezza
+serve al motore interno di NumPy, che è scritto in **C** (un linguaggio molto
+più vicino alla macchina di Python, veloce da eseguire e scomodo da scrivere) e
+che attraversa l'array tutto insieme; non serve a un ciclo scritto in Python.
 
 Una nota di passaggio, perché è la domanda che viene subito: in Python il `+`
 fra due liste non somma i numeri, attacca la seconda in coda alla prima
@@ -90,13 +93,20 @@ import numpy as np
 
 np.array([1, 2, 3])          # da una lista Python
 np.zeros((2, 3))             # tabella di zeri con 2 righe e 3 colonne
-np.ones(4)                   # vettore di 1: array([1., 1., 1., 1.])
-np.arange(0, 10, 2)          # come range, ma array: [0 2 4 6 8]
+np.ones(4)                   # vettore di 1 -> array([1., 1., 1., 1.])
+np.arange(0, 10, 2)          # come range, ma array -> array([0, 2, 4, 6, 8])
 np.linspace(0, 1, 5)         # 5 punti equispaziati tra 0 e 1 inclusi
 
 rng = np.random.default_rng(0)   # generatore con seme, per risultati riproducibili
-rng.normal(size=(2, 2))          # matrice 2x2 di numeri casuali "a campana"
+rng.normal(size=(2, 2))          # tabella 2x2 di numeri casuali "a campana"
 ```
+
+Nell'ultima riga `size=(2, 2)` è un argomento passato **con il suo nome**, la
+scrittura vista nella sezione sulle funzioni: dice quanto dev'essere grande il
+risultato. E «a campana» è la forma che si vede disegnando quanti numeri escono
+vicino a ciascun valore: quasi tutti vicino allo zero, sempre meno man mano che
+ci si allontana, in modo simmetrico. È la distribuzione più comune in natura e
+in statistica, e il capitolo di matematica la chiamerà con il suo nome.
 
 La prima riga contiene una parolina che vale la pena guardare: `as`. `import
 numpy as np` vuol dire «importa numpy e, qui dentro, chiamalo `np`»: è un
@@ -132,7 +142,7 @@ cui l'array si estende (in una tabella: le righe e le colonne).
 
 ```{figure} ../figures/numpy-indexing-reshape-vettoriale.svg
 :name: fig-slicing-numpy
-:alt: "Un array di quattro righe per sei colonne disegnato come griglia, con tre selezioni evidenziate su copie affiancate: un'intera riga, un'intera colonna e una sottomatrice rettangolare presa incrociando un intervallo di righe e uno di colonne."
+:alt: "Un array di quattro righe per sei colonne disegnato come un'unica griglia, con tre selezioni evidenziate in tre colori diversi e spiegate da una legenda a lato: un'intera riga, un'intera colonna e una sottomatrice due per due presa incrociando un intervallo di righe e uno di colonne."
 :width: 96%
 
 Lo slicing visto sulla griglia. Il primo indice sceglie fra le righe, il
@@ -143,7 +153,24 @@ selezione.
 Conviene tenere a mente, guardando {numref}`fig-slicing-numpy`, che nessuna
 delle tre selezioni copia i dati. Sono **viste** sullo stesso array in
 memoria, e scriverci dentro modifica l'originale: è la differenza più
-insidiosa rispetto allo slicing delle liste, che invece copia.
+insidiosa rispetto alla fetta di una lista, che invece è una copia. Val la pena
+vederla succedere, perché letta e basta non fa impressione:
+
+```python
+lista = [10, 20, 30, 40]
+fetta = lista[1:3]          # una copia
+fetta[0] = 999
+lista                       # -> [10, 20, 30, 40]   la lista e' intatta
+
+vettore = np.array([10, 20, 30, 40])
+vista = vettore[1:3]        # NON una copia: una finestra sugli stessi numeri
+vista[0] = 999
+vettore                     # -> array([ 10, 999,  30,  40])   l'array e' cambiato
+```
+
+Non è un difetto, è il motivo per cui NumPy è veloce: una fetta di un array da
+un milione di elementi non costa niente, perché non si porta via niente. Ma se
+ti serve una copia vera devi chiederla, e si chiede con `.copy()`.
 
 ```python
 x = np.array([10, 20, 30, 40, 50])
@@ -152,6 +179,9 @@ x[-1]       # np.int64(50)  l'ultimo: gli indici negativi contano dalla fine
 x[1:4]      # array([20, 30, 40])  slice: da 1 incluso a 4 escluso
 
 M = np.arange(12).reshape(3, 4)   # i numeri 0..11 ridisposti in 3 righe e 4 colonne
+                                  # con un argomento solo, arange parte da zero;
+                                  # reshape attaccato col punto lavora su cio' che
+                                  # arange ha appena prodotto, senza dargli un nome
 M[1, 2]     # np.int64(6)  seconda riga, terza colonna: gli indici sono 1 e 2
 M[:, 0]     # tutte le righe, colonna 0 -> array([0, 4, 8])
 M[0]        # prima riga intera -> array([0, 1, 2, 3])
@@ -265,7 +295,8 @@ sono uguali oppure se uno dei due vale $1$: quel lato viene esteso senza copia.
 Con $a$ di forma $(4,)$ e $b$ di forma $(3,1)$:
 
 $$
-(4,) \;\oplus\; (3,1) \;\to\; (1,4)\;\oplus\;(3,1)\;\to\;(3,4).
+(4,) \;\text{ con }\; (3,1) \;\longrightarrow\;
+(1,4) \;\text{ con }\; (3,1) \;\longrightarrow\; (3,4).
 $$
 
 L'asse mancante di $a$ viene inserito a sinistra come $1$, poi ogni asse-$1$ è
@@ -276,6 +307,21 @@ volte. È il meccanismo che permette, per esempio, di sottrarre la media di
 colonna da un'intera matrice di dati con `X - X.mean(axis=0)`.
 
 `````
+
+Il movimento è più facile da vedere che da descrivere
+({numref}`fig-broadcasting-si-stende`).
+
+```{figure} ../figures/broadcasting-si-stende.svg
+:name: fig-broadcasting-si-stende
+:alt: La riga di quattro numeri scende di riga in riga e la colonna di tre numeri attraversa le colonne; in ogni cella restano due caselle tratteggiate con i valori letti, e la griglia di tre righe per quattro colonne si riempie con le somme.
+:width: 95%
+
+Il *durante* del broadcasting: la riga scende di riga in riga, la colonna
+attraversa le colonne, e dove sono passate resta una coppia di caselle
+tratteggiate. Quelle caselle sono letture dello stesso dato, non copie: dodici
+celle si riempiono a partire da sette numeri soltanto, perché il lato che si
+stende non viene ricopiato, viene riletto.
+```
 
 ## Vettorizzazione: quanto conta davvero
 
@@ -329,10 +375,13 @@ buona località di cache e, dove disponibile, vettorizzazione SIMD.
 Vale la pena essere espliciti su quale dei due fattori pesa, perché la
 conclusione sbagliata è a portata di mano: il guadagno non viene dal
 *contenitore*, viene dalla sparizione del ciclo. La prova è misurabile e va nel
-verso opposto all'intuizione: un ciclo Python che indicizza un `ndarray` è più
-lento dello stesso ciclo su una lista (sul milione di elementi qui sopra, circa
-$102$ ms contro $41$ ms di tempo di CPU), perché ogni `v[i]` deve *incartare* il
-numero grezzo in un oggetto `np.float64` che nella lista esiste già. La
+verso opposto all'intuizione: **lo stesso** ciclo Python, che legge un elemento
+per volta e scrive in una lista, costa circa il triplo se a leggerlo è un
+`ndarray` invece di una lista (sul milione di elementi qui sopra, dell'ordine
+di $90$ ms contro $30$ di tempo di CPU; l'unica cosa che cambia fra le due
+misure è il contenitore letto). La ragione è che ogni `v[i]` deve *incartare*
+il numero grezzo in un oggetto `np.float64`, mentre nella lista quell'oggetto
+esiste già. La
 contiguità serve al ciclo in C, non a quello in Python: un `ndarray` non è
 veloce perché è un `ndarray`, è veloce quando lo si tocca tutto in una volta.
 Chi "ottimizza" un ciclo Python convertendo la lista in array lo rallenta.
@@ -381,7 +430,10 @@ di volte.
 ```{admonition} Da ricordare
 :class: important
 - In un `ndarray` i valori sono tutti dello **stesso tipo** e stanno **uno
-  accanto all'altro**: è da qui che viene la sua velocità rispetto a una lista.
+  accanto all'altro**: è questo che permette di scrivere i conti su tutto il
+  blocco in una volta. La velocità viene da lì, cioè dal `for` che sparisce,
+  non dal contenitore: un `for` scritto a mano su un `ndarray` è più lento
+  dello stesso `for` su una lista.
 - `array`, `zeros`, `ones`, `arange`, `linspace`, `default_rng` creano array; le
   parentesi quadre ne scelgono un pezzo, e una **condizione fra le quadre**
   (`x[x > 25]`) fa da colino, tenendo solo gli elementi che la soddisfano.
@@ -390,8 +442,9 @@ di volte.
 - **Vettorizzare** vuol dire sostituire un `for` con un'operazione su tutto
   l'array: il codice è più corto e da cento a mille volte più veloce, perché il
   ciclo sparisce.
-- Il segno `@` fa i prodotti fra vettori e matrici, `np.linalg` il resto. Per
-  risolvere un sistema si usa `solve`.
+- Il segno `@` fa i prodotti fra vettori e matrici e `np.linalg` raccoglie il
+  resto dell'algebra lineare: qui basta sapere che esistono e che ognuno di
+  quei conti è una riga sola, il significato arriva col capitolo di matematica.
 ```
 
 `````
@@ -401,8 +454,9 @@ di volte.
 ```{admonition} Da ricordare
 :class: important
 - L'`ndarray` è una **vista tipizzata** su un blocco di memoria, contigua
-  quando gli stride sono quelli della forma: da qui la sua velocità rispetto
-  alle liste Python, e da qui il fatto che una slice resti una vista.
+  quando gli stride sono quelli della forma: da qui il fatto che una slice
+  resti una vista, e la possibilità di far scendere il ciclo nel codice
+  compilato (che è dove nasce il guadagno, vedi sotto).
 - `array`, `zeros`, `ones`, `arange`, `linspace`, `default_rng` creano array;
   slicing e **indicizzazione booleana** li selezionano senza cicli (lo slicing
   dà una vista, la maschera booleana una copia).

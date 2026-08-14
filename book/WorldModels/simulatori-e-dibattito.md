@@ -76,7 +76,7 @@ etichette: i video di internet non dicono quale azione è stata premuta. La
 soluzione è inferirla come variabile latente *discreta*:
 
 $$
-\mathbf{z}_t = \mathrm{tok}(\mathbf{x}_t),
+\mathbf{z}_t = \mathrm{tok}(\mathbf{x}_{1:t}),
 \qquad
 \tilde{a}_t = q\big(f_\phi(\mathbf{x}_{1:t+1})\big) \in \{1, \dots, 8\},
 \qquad
@@ -85,11 +85,12 @@ $$
 
 dove $\mathbf{x}_{1:t+1}$ sono i fotogrammi osservati fino al tempo $t+1$;
 $\mathrm{tok}$ è il tokenizer, il primo dei tre moduli, che di ogni fotogramma
-fa una manciata di token discreti $\mathbf{z}_t$ (lo stesso mestiere del $\mathbf{z}$ del VAE
-nella prima sezione, ma con un vocabolario finito invece di 32 numeri
-continui); $f_\phi$ è un encoder che riassume la transizione dal fotogramma $t$
-al $t+1$; $q$ è una quantizzazione vettoriale su un codebook di appena
-$|\mathcal{A}| = 8$ codici (un tetto fissato dagli autori perché il joystick resti
+fa una manciata di token discreti $\mathbf{z}_t$ guardando anche quelli che lo
+precedono (è causale nel tempo, non lavora un'immagine per volta: fa lo stesso
+mestiere del $\mathbf{z}$ del VAE nella prima sezione, ma con un vocabolario finito
+invece di 32 numeri continui); $f_\phi$ è un encoder che riassume la
+transizione dal fotogramma $t$ al $t+1$; $q$ è una quantizzazione vettoriale
+su un codebook di appena $|\mathcal{A}| = 8$ codici (un tetto fissato dagli autori perché il joystick resti
 maneggiabile per un giocatore umano); e $g_\theta$ è il modello di dinamica,
 che predice i **token** del fotogramma successivo a partire dai token del
 passato *e* dall'azione latente $\tilde{a}_t$. A riportare i token in pixel è
@@ -185,19 +186,16 @@ scacchiera contraffatta, si lascia proseguire il calcolo e si osserva che la
 distribuzione sulle mosse legali si adegua alla scacchiera modificata, non
 alla sequenza di input. La rappresentazione, dunque, *guida* la predizione.
 
-Due poscritti metodologici. Neel Nanda e collaboratori (2023)
-{cite}`nanda2023emergent` hanno mostrato che la rappresentazione è in realtà
-*lineare*, purché la si cerchi nel sistema di riferimento giusto: non
-«nero/bianco» ma «mia/dell'avversario», relativo a chi muove; un monito su
-quanto le conclusioni del probing dipendano dalle coordinate scelte. E Keyon
-Vafa e colleghi (2024) {cite}`vafa2024evaluating` hanno raffreddato
-gli entusiasmi sul fronte opposto: un transformer addestrato sui percorsi dei
-taxi di Manhattan dà indicazioni svolta-per-svolta valide nel 99% dei casi, ma
-la mappa implicita che si può ricostruire dai suoi output contiene strade
-inesistenti e cavalcavia impossibili, e basta imporre qualche deviazione
-perché le prestazioni crollino. Un modello può essere localmente accurato e
-globalmente incoerente: il world model c'è, ma può essere una mappa
-sbrindellata.
+Un poscritto metodologico, prima di tirare le somme. Neel Nanda e collaboratori
+(2023) {cite}`nanda2023emergent` hanno mostrato che la rappresentazione è in
+realtà *lineare*, purché la si cerchi nel sistema di riferimento giusto: non
+«nero/bianco» ma «mia/dell'avversario», relativo a chi muove. L'1,7% delle
+sonde non lineari, quindi, non diceva che l'informazione fosse codificata in
+modo intricato: quelle sonde stavano compensando una scelta di coordinate. È
+il monito che vale per ogni probing, ed è lo stesso incontrato con le sonde di
+V-JEPA: quel che una sonda estrae dipende dalle coordinate in cui la si fa
+guardare e da quanto la si lascia lavorare, e va dichiarato insieme al
+risultato.
 
 `````
 
@@ -237,7 +235,8 @@ in addestramento. Nella **guida autonoma** il problema sono gli scenari rari:
 il bambino che sbuca tra due auto, il carico che cade dal camion. Raccoglierli
 su strada è impraticabile, oltre che inaccettabile; un world model generativo
 li produce in quantità e in sicurezza, ed è dal 2023 la scommessa di più di un
-laboratorio del settore (GAIA-1 di Wayve fu il primo a mostrarla in pubblico).
+laboratorio del settore (GAIA-1 di Wayve è stato fra i primi a mostrarla in
+pubblico).
 Nei **videogiochi e negli ambienti di addestramento**, infine,
 il cerchio si chiude: DeepMind presenta Genie 2 esplicitamente come generatore
 di ambienti illimitati in cui addestrare e valutare agenti; il rimedio a un
@@ -256,10 +255,14 @@ cui la correzione è *gratis*. Vuoi sapere se il modello ha previsto bene?
 Aspetta il fotogramma successivo: la risposta esatta arriva da sola, milioni
 di volte per ogni ora di filmato. E ogni video è un piccolo esperimento di
 fisica già eseguito (bicchieri che cadono, palle che rimbalzano, porte che
-sbattono) registrato senza che nessuno lo abbia allestito. Con il testo di
-qualità che comincia a scarseggiare, come si è visto nel capitolo sui
-Transformer, il video è la più grande riserva di esperienza del mondo non
-ancora spremuta: ecco perché tutti scavano qui.
+sbattono) registrato senza che nessuno lo abbia allestito. E il testo, invece,
+non è infinito: il capitolo sui Transformer lo dice due volte, con le leggi di
+scala (una ventina di token per ogni parametro, e il conto cresce con il
+modello) e con la constatazione che i corpora del web si stanno esaurendo come
+fonte gratuita di testo di qualità. Le pagine scritte dagli esseri umani
+restano quelle che sono. Il video è
+la più grande riserva di esperienza del mondo non ancora spremuta: ecco perché
+tutti scavano qui.
 
 `````
 

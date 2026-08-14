@@ -100,7 +100,8 @@ Q / L_k & \text{se la formica } k \text{ ha usato l'arco } (i,j),\\[2pt]
 \end{cases}
 $$
 
-dove $L_k$ è la lunghezza del giro completo costruito dalla formica $k$ e $Q$ è
+dove $m$ è il numero di formiche della colonia, $L_k$ è la lunghezza del giro
+completo costruito dalla formica $k$ e $Q$ è
 una costante di scala dell'algoritmo (nessun rapporto con il valore-azione
 $Q$ del Reinforcement Learning; nel lavoro originale la sua influenza risulta
 trascurabile). Il quoziente $Q/L_k$ è la differenza che conta fra questa
@@ -114,22 +115,32 @@ registra il traffico, registra il **merito**.
 
 `````
 
-Questo è uno dei pochi meccanismi del libro in cui **il tempo è il contenuto**:
-non c'è niente da vedere in un fotogramma solo, perché quello che decide è
-l'accumulo. In {numref}`fig-formiche-feromone` ci sono sei giri della colonia
-sul ponte doppio, con le due strade che cambiano spessore man mano che il
-feromone si deposita.
+Una differenza fra le formiche vere e quelle artificiali conviene averla in
+mente prima di guardare la figura, perché è tutta lì. Le vere lasciano sempre la
+stessa quantità di feromone e a fare la selezione è la frequenza: sulla strada
+corta si passa più spesso. Le artificiali fanno il giro una volta per ciclo e
+lasciano una quantità **tanto maggiore quanto più corto è stato il giro**: il
+tempo non lo si misura più contando i passaggi, entra tutto in una volta, alla
+fine.
+
+L'accumulo è anche una delle poche cose del libro che un disegno fermo non
+riesce a mostrare: in un fotogramma solo non c'è niente da vedere, perché è
+proprio l'accumularsi a decidere. In {numref}`fig-formiche-feromone` ci sono sei giri della
+colonia sulle due strade, che cambiano spessore man mano che il feromone si
+deposita.
 
 ```{figure} ../figures/formiche-feromone.svg
 :name: fig-formiche-feromone
 :alt: "Il formicaio a sinistra e il cibo a destra, uniti da due strade: una lunga che sale in alto e una corta che passa in basso. Giro dopo giro entrambe si ispessiscono, perché su entrambe passano formiche, ma la corta molto più in fretta, e il divario fra le due cresce. Il contatore sotto dice quante formiche su cento scelgono la corta: si parte da cinquanta e si arriva a ottantadue."
 :width: 88%
 
-Sei giri della colonia sul ponte doppio: lo spessore di ciascuna strada è il
+Sei giri della colonia sulle due strade: lo spessore di ciascuna è il
 feromone che ci si è accumulato sopra. Si parte in parità, cinquanta e
 cinquanta, e si finisce con l'ottantadue per cento delle formiche sulla strada
-corta. I numeri li calcola la figura, con le due formule qui sopra e niente
-altro.
+corta. I numeri li calcola la figura, con le due formule qui sopra nel caso più
+spoglio: scelta guidata dal solo feromone (nessun termine di visibilità) e
+deposito proporzionale alla bontà del giro. L'evaporazione qui non c'è ancora,
+arriva nella sezione seguente.
 ```
 
 Due cose vale la pena guardare, e la seconda è quella che conta.
@@ -137,8 +148,9 @@ Due cose vale la pena guardare, e la seconda è quella che conta.
 La prima è *dove* cambia la pendenza: il salto grosso è fra il primo e il
 secondo giro (sedici punti, contro i sette del secondo e i quattro del terzo),
 cioè quando le due strade sono ancora percorse dallo stesso numero di
-formiche e a fare la differenza è **solo** il $Q/L$. Da lì in poi il vantaggio
-si rinforza da sé.
+formiche e a fare la differenza è **solo** quanto ciascuna lascia alla fine del
+giro, il doppio da una parte e la metà dall'altra perché uno dei due giri è
+lungo la metà. Da lì in poi il vantaggio si rinforza da sé.
 
 La seconda è che **anche la strada lunga si ispessisce**. Non è un dettaglio del
 disegno: è il difetto del meccanismo. Finché le formiche passano, il feromone si
@@ -203,11 +215,14 @@ locale.)
 Srotolando la ricorsione si vede che cosa sia davvero la traccia:
 
 $$
-\tau_{ij}(t) \;=\; \sum_{s \le t} (1-\rho)^{\,t-s}\;\Delta\tau_{ij}(s),
+\tau_{ij}(t) \;=\; (1-\rho)^{\,t}\,\tau_{ij}(0) \;+\;
+\sum_{s=1}^{t} (1-\rho)^{\,t-s}\;\Delta\tau_{ij}(s),
 $$
 
 cioè una **media mobile esponenziale** della qualità recente di quell'arco, con
-i contributi vecchi pesati sempre meno. Due conseguenze quantitative. La prima:
+i contributi vecchi pesati sempre meno; il primo addendo è la traccia iniziale,
+una costantina positiva uguale su tutti gli archi, e si spegne da sé nei primi
+cicli. Due conseguenze quantitative. La prima:
 la traccia non diverge. Se un arco riceve un deposito costante $\Delta$ a ogni
 ciclo, la serie geometrica converge al punto fisso $\tau^{\ast} = \Delta/\rho$,
 che con $\rho = 0{,}5$ vale il doppio di un singolo deposito. La seconda: la
@@ -261,7 +276,7 @@ riporta dritti allo stormo dell'apertura. Nel 1995, alla International
 Conference on Neural Networks di Perth, James Kennedy e Russell Eberhart
 presentano la **particle swarm optimization** {cite}`kennedy1995particle`.
 Una riga delle loro conclusioni spiega mezza storia: gli autori sono uno
-psicologo sociale e un ingegnere elettronico. Erano partiti provando a simulare
+psicologo sociale e un ingegnere elettrotecnico. Erano partiti provando a simulare
 uno stormo, ispirandosi ai *boids* di Reynolds {cite}`reynolds1987flocks` e ai
 modelli di volo coordinato di Heppner e Grenander, e hanno scoperto che quel
 giocattolo, tolti i pezzi giusti, **ottimizzava**.
@@ -328,10 +343,11 @@ $c_1 = c_2 = 2$ non è arbitrario: moltiplicando per $2$ un numero uniforme in
 $[0,1]$ si ottiene un fattore di media $1$, così che ciascuna delle due spinte,
 **in media**, porti la particella esattamente sul proprio attrattore, e quindi
 la faccia sorpassare circa una volta su due. Il sorpasso è deliberato: gli
-autori riportano che rimuovendo il termine di inerzia (cioè sostituendo la
-velocità invece di correggerla) l'algoritmo diventa inefficace nel trovare gli
-ottimi globali. È la stessa ragione dell'evaporazione delle formiche, in veste
-meccanica: un sistema che va solo dove è già andato bene smette di cercare.
+autori riportano che togliendo il termine di velocità precedente, che nel 1995
+chiamano *momentum* (cioè sostituendo la velocità invece di correggerla),
+l'algoritmo diventa inefficace nel trovare gli ottimi globali. È la stessa
+ragione dell'evaporazione delle formiche, in veste meccanica: un sistema che va
+solo dove è già andato bene smette di cercare.
 
 `````
 
@@ -500,9 +516,11 @@ preelaborazione.
 ## Perché non usare il gradiente
 
 Sia le formiche sia le particelle hanno una proprietà che va guardata in faccia:
-non usano mai la **derivata** della funzione da minimizzare. Vedono solo il suo
+non usano mai la **derivata** della funzione da minimizzare, cioè la sua
+pendenza. Vedono solo il suo
 valore, in un punto alla volta. Il capitolo di matematica ha dedicato una
-sezione alla discesa del gradiente, che è il metodo con cui si addestra ogni
+sezione alla discesa del gradiente (scendere seguendo quella pendenza), che è
+il metodo con cui si addestra ogni
 rete di questo libro; qui abbiamo un'altra famiglia, e il confronto va fatto
 per bene, perché è il punto in cui la divulgazione su questi metodi diventa
 disonesta.
@@ -620,46 +638,55 @@ valore già a tre zeri dopo la virgola.
 Un paio di conti per non farsi un'idea sbagliata. Le valutazioni della funzione
 sono $30 \times 61 = 1830$: in due dimensioni sono niente, in mille sarebbero
 ancora $1830$ e non basterebbero. E il risultato è **probabilistico**: ripetendo
-lo stesso esperimento con trecento semi diversi, e contando come riuscite le
-prove che chiudono sotto $10^{-2}$, lo sciame arriva al minimo globale in $277$
+lo stesso esperimento con trecento semi diversi (da $0$ a $299$, e tutto il
+resto identico), e contando come riuscite le prove che chiudono sotto
+$10^{-2}$, lo sciame arriva al minimo globale in $277$
 casi su $300$, cioè poco più di nove volte su dieci, non sempre.
 
 Resta il confronto con il gradiente, ed è il punto in cui la divulgazione su
 questi metodi imbroglia quasi sempre. Fatta partire da **un solo** punto preso a
 caso, una discesa del gradiente ordinaria (passo $0{,}005$, duemila iterazioni)
-chiude sotto $10^{-2}$ una volta su trecento, e nelle altre duecentonovantanove
+chiude sotto $10^{-2}$ due volte su trecento, e nelle altre duecentonovantotto
 si ferma ordinatamente nella fossetta in cui è nata. Duecentosettantasette contro
-uno: un confronto splendido e scorretto, perché schiera trenta esploratori
+due: un confronto splendido e scorretto, perché schiera trenta esploratori
 contro uno solo, e viola la clausola che questo stesso capitolo ha enunciato
 come regola vincolante due sezioni fa, **a parità di budget**.
 
 Rifacciamolo per bene. Al gradiente si danno **trenta ripartenze** per prova,
 cioè gli stessi trenta punti iniziali che ha lo sciame, e si tiene il migliore
-dei trenta. Allora chiude $62$ prove su $300$, cioè una su cinque, contro le
-nove su dieci dello sciame. Lo sciame vince ancora, e vince nettamente, ma vince
-tre volte tanto e non trecento. Se poi si guarda la spesa, il confronto è
-perfino generoso verso il gradiente: le trenta discese sono sessantamila passi,
-contro le $1830$ valutazioni dello sciame.
+dei trenta. Allora chiude $67$ prove su $300$, cioè poco più di una su cinque,
+contro le nove su dieci dello sciame. Lo sciame vince ancora, e vince
+nettamente, ma vince quattro volte tanto e non centoquaranta. Se poi si guarda
+la spesa, il confronto è perfino generoso verso il gradiente: le trenta discese
+sono sessantamila passi, contro le $1830$ valutazioni dello sciame.
 
-Due avvertenze sui numeri, perché il primo è più fragile di quanto sembri. La
-partenza singola non è riproducibile come il resto del capitolo: cambiando seme
-si ottiene qualunque cosa fra $0$ e $4$ su $300$, e il risultato dipende dai due
-iperparametri al punto che con un passo di $0{,}01$ scende a zero. Quell'«una
-volta su trecento» è l'esito di un'esecuzione, non una costante, e conviene
-affiancargli la ragione geometrica, che invece è solida: la fossetta centrale è
-larga circa $1 \times 1$ su un dominio di lato $10{,}24$, cioè occupa poco meno
-dell'$1\%$ dell'area, e un punto preso a caso ci cade circa una volta su cento.
-La seconda avvertenza è che a trenta ripartenze il conto elementare
-$1 - (1 - 0{,}0095)^{30} \approx 0{,}25$ prevederebbe $75$ prove su $300$ invece
-di $62$: la differenza sono le partenze nate nella fossetta giusta che non
-arrivano abbastanza in fondo entro duemila passi. Nascere nel bacino buono è
-necessario, non sufficiente.
+I due numeri del gradiente si tengono poi l'un l'altro, ed è così che si sa che
+non sono un caso fortunato. Le partenze singole in tutto sono novemila (trecento
+prove per trenta punti ciascuna) e ne riescono $72$, cioè lo $0{,}8\%$: vicino
+alla stima puramente geometrica, perché la fossetta centrale è larga circa
+$1 \times 1$ su un dominio di lato $10{,}24$ e occupa poco meno dell'$1\%$
+dell'area. Da quel tasso, il conto elementare per trenta ripartenze
+indipendenti (la probabilità che almeno una vada a segno è uno meno la
+probabilità che sbaglino tutte e trenta, cioè
+$1 - (1 - 0{,}008)^{30} \approx 0{,}21$) prevede $64$ prove su
+$300$, e ne escono $67$. Si può anche verificare ciò che il conto sottintende,
+e il risultato è più netto di quanto ci si aspetti: i semi che hanno almeno un
+punto di partenza dentro la fossetta centrale sono $66$, e riescono tutti e
+$66$; le prove riuscite sono $67$, quindi una sola ce l'ha fatta partendo tutta
+da fuori. Nascere nel bacino giusto, qui, è sempre bastato e quasi sempre è
+servito.
+Il gradiente con trenta ripartenze non ha imparato niente in più, ha soltanto
+avuto trenta dadi da tirare invece di uno. (E il suo numero dipende dal passo
+più di quanto dipenda dal metodo: con $0{,}01$ al posto di $0{,}005$ non ci
+arriva mai, in nessuna delle trecento prove.)
 
 Un'ultima nota sui tre numeri in cima al programma, quelli che pesano le tre
 spinte (tirare dritto per dove stavo andando, tornare dove sono stato meglio io,
 andare dove è stato meglio il gruppo). Non sono i valori del 1995 ma quelli oggi
-standard, e non sono stati trovati provando: vengono da un conto che dice per
-quali valori la velocità delle particelle **non esplode**. Con spinte troppo
+standard, e non sono stati trovati provando: vengono dal **fattore di
+costrizione** di Clerc e Kennedy (2002), un conto che dice per
+quali valori la velocità delle particelle **non esplode** (dà $0{,}7298$ e
+$1{,}496$, che arrotondati sono i tre numeri qui sopra). Con spinte troppo
 forti lo sciame si sparpaglia e non torna più; con questi tre numeri sta insieme
 da sé, e nessuno deve tarare a mano l'ampiezza dei passi.
 
@@ -669,9 +696,9 @@ Gli sciami mettono molte unità stupide a risolvere un problema. Con i modelli d
 linguaggio si può fare una cosa che prima non si poteva: mettere molte unità
 **non** stupide a fare qualcosa che un problema di ottimizzazione non è, cioè
 comportarsi. Il lavoro di riferimento è quello di Park e colleghi del 2023
-{cite}`park2023generative`, che il capitolo sugli Agenti ha già presentato nella
-sezione sulla memoria: venticinque agenti in un paese simulato, ciascuno con un
-archivio di ricordi in linguaggio naturale. Il risultato più citato è un
+{cite}`park2023generative`, che il capitolo sugli Agenti ha già presentato
+parlando della memoria che dura: venticinque agenti in un paese simulato,
+ciascuno con un archivio di ricordi in linguaggio naturale. Il risultato più citato è un
 comportamento emerso: un'agente decide di dare una festa di San Valentino,
 l'invito si propaga di bocca in bocca senza che nessuno lo instradi, e alla fine
 tredici agenti su venticinque ne sanno qualcosa e cinque si presentano.
@@ -693,7 +720,9 @@ somigliano alla domanda ma sono di sei mesi fa.
 
 Prima di sommarli bisogna però saperli misurare, e la **recenza** si misura
 così: ogni ora che passa il ricordo perde mezzo punto percentuale di freschezza,
-sempre lo stesso mezzo punto sul valore che gli era rimasto. Da lì escono i tre
+sempre lo stesso mezzo punto sul valore che gli era rimasto. L'orologio però non
+parte da quando il ricordo è nato, parte dall'ultima volta che è stato
+ripescato: un fatto di sei mesi fa a cui hai ripensato ieri è fresco. Da lì escono i tre
 numeri della prima colonna qui sotto: dopo un'ora resta $0{,}995$, dopo
 cinquanta ore $0{,}778$, dopo duecento ore $0{,}367$, cioè poco più di un terzo.
 
@@ -892,10 +921,10 @@ ciascuno, ma che cosa può scrivere ciascuno, a chi, quando, e chi decide dopo.
   pagano in tentativi: sulla valle piena di fossette dell'esempio lo sciame
   trova il fondo vero in $277$ prove su $300$. Il confronto va però fatto
   **a parità di esploratori**, altrimenti si bara: una discesa del gradiente
-  lanciata da un punto solo ci arriva una volta su trecento, ma lanciata dagli
-  stessi trenta punti dello sciame ci arriva una volta su cinque. Lo sciame
-  vince tre volte, non trecento. E quando le variabili sono tantissime il
-  rapporto si rovescia: non sono un'alternativa generale.
+  lanciata da un punto solo ci arriva due volte su trecento, ma lanciata dagli
+  stessi trenta punti dello sciame ci arriva poco più di una volta su cinque.
+  Lo sciame vince quattro volte, non centoquaranta. E quando le variabili sono
+  tantissime il rapporto si rovescia: non sono un'alternativa generale.
 - Nelle **società simulate** {cite}`park2023generative` il pezzo da capire è
   come si scelgono i ricordi da rimettere davanti all'agente: quanto è recente,
   quanto è importante, quanto c'entra con quello che sta facendo, e i tre
@@ -956,8 +985,9 @@ ciascuno, ma che cosa può scrivere ciascuno, a chi, quando, e chi decide dopo.
   minimo globale in 277 prove su 300 con 1830 valutazioni. Il termine di
   paragone va preso **a parità di budget**, come impone la regola prudente del
   «Costo del coordinamento»: la discesa del gradiente a partenza singola chiude
-  1 prova su 300, ma con trenta ripartenze, cioè con gli stessi trenta punti
-  iniziali dello sciame, ne chiude 62. In alta dimensione il rapporto si
+  2 prove su 300, ma con trenta ripartenze, cioè con gli stessi trenta punti
+  iniziali dello sciame, ne chiude 67, e sono esattamente i semi che avevano un
+  punto nato nella conca giusta. In alta dimensione il rapporto si
   rovescia, e non sono un'alternativa generale.
 - Nelle **società simulate** {cite}`park2023generative` il pezzo da capire è il
   recupero a tre termini (recenza, importanza, pertinenza) **normalizzati** e

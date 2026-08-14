@@ -31,16 +31,16 @@ alle lettere giuste.
 `````{tab} Superiore
 
 Formalmente l'ASR è un problema di **trasduzione di sequenze**: da una sequenza
-di vettori acustici $X = (x_1, \dots, x_T)$ vogliamo la sequenza di parole
-$\hat{W}$ più probabile,
+di vettori acustici $\mathbf{X} = (\mathbf{x}_1, \dots, \mathbf{x}_T)$
+vogliamo la sequenza di parole $\hat{W}$ più probabile,
 
 $$
-\hat{W} = \arg\max_{W} P(W \mid X).
+\hat{W} = \arg\max_{W} P(W \mid \mathbf{X}).
 $$
 
-Qui $X$ è tipicamente lunga centinaia o migliaia di passi (uno ogni dieci
-millisecondi circa), mentre $W$ conta poche decine di parole: input e output
-hanno lunghezze molto diverse e non allineate una-a-una. Gestire questo
+Qui $\mathbf{X}$ è tipicamente lunga centinaia o migliaia di passi (uno ogni
+dieci millisecondi circa), mentre $W$ conta poche decine di parole: input e
+output hanno lunghezze molto diverse e non allineate una-a-una. Gestire questo
 disallineamento temporale è il cuore tecnico del problema.
 
 `````
@@ -88,12 +88,14 @@ Applicando il teorema di Bayes, il problema si scompone nel classico modello a
 *canale rumoroso*:
 
 $$
-\hat{W} = \arg\max_{W}\ \underbrace{P(X \mid W)}_{\text{modello acustico}}\
+\hat{W} = \arg\max_{W}\
+\underbrace{P(\mathbf{X} \mid W)}_{\text{modello acustico}}\
 \underbrace{P(W)}_{\text{modello di linguaggio}}.
 $$
 
-(Il denominatore $P(X)$ di Bayes è sparito legittimamente: non dipende da $W$,
-quindi non altera l'argmax.) Il **modello acustico** $P(X \mid W)$ misura
+(Il denominatore $P(\mathbf{X})$ di Bayes è sparito legittimamente: non dipende
+da $W$, quindi non altera l'argmax.) Il **modello acustico**
+$P(\mathbf{X} \mid W)$ misura
 quanto i suoni osservati siano compatibili con una data sequenza di parole;
 storicamente era un *Hidden Markov Model* con emissioni modellate da misture
 di gaussiane (GMM). Il **modello di
@@ -165,12 +167,12 @@ di Fourier a tempo breve e lo si filtra su scala **Mel** (che imita la
 sensibilità non lineare dell'orecchio umano); il logaritmo delle energie di
 banda dà il *log-mel*, e una trasformata coseno discreta (DCT), che decorrela
 i coefficienti, lo comprime nei **MFCC** (*Mel-Frequency Cepstral
-Coefficients*): un vettore $x_t \in \mathbb{R}^{d}$ di una dozzina di
+Coefficients*): un vettore $\mathbf{x}_t \in \mathbb{R}^{d}$ di una dozzina di
 componenti per frame (una quarantina se si aggiungono le derivate prima e
 seconda). I sistemi neurali end-to-end, Whisper compreso, si
 fermano di solito al log-mel (la decorrelazione serviva alle covarianze
-diagonali delle GMM); in entrambi i casi è la matrice $X$ così ottenuta a
-entrare nel modello acustico.
+diagonali delle GMM); in entrambi i casi è la matrice $\mathbf{X}$ così
+ottenuta a entrare nel modello acustico.
 
 `````
 

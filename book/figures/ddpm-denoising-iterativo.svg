@@ -1,11 +1,11 @@
-<svg viewBox="0 0 680 320" width="100%" role="img" aria-label="Schema del processo di diffusione: da un'immagine nitida a rumore puro tramite aggiunta di rumore, e ritorno tramite denoising iterativo della rete" xmlns="http://www.w3.org/2000/svg" font-family="Inter, system-ui, sans-serif">
-  <rect x="0" y="0" width="680" height="320" fill="#F8F5EE"/>
+<svg viewBox="0 0 700 320" width="100%" role="img" aria-label="Schema del processo di diffusione: da un'immagine nitida a rumore puro tramite aggiunta di rumore, e ritorno tramite denoising iterativo della rete" xmlns="http://www.w3.org/2000/svg" font-family="Inter, system-ui, sans-serif">
+  <rect x="0" y="0" width="700" height="320" fill="#F8F5EE"/>
   <text x="24" y="30" font-size="17" font-weight="700" fill="#1A1A1A">Diffusione: distruggere è fissato, ricostruire si impara</text>
 
   <!-- forward arrow -->
-  <line x1="60" y1="70" x2="620" y2="70" stroke="#B5532C" stroke-width="2"/>
-  <polygon points="620,70 610,65 610,75" fill="#B5532C"/>
-  <text x="340" y="60" font-size="13" fill="#B5532C" text-anchor="middle">processo diretto q: aggiungi rumore (nessun apprendimento)</text>
+  <line x1="56" y1="70" x2="684" y2="70" stroke="#B5532C" stroke-width="2"/>
+  <polygon points="684,70 674,65 674,75" fill="#B5532C"/>
+  <text x="368" y="60" font-size="13" fill="#B5532C" text-anchor="middle">processo diretto q: aggiungi rumore (nessun apprendimento)</text>
 
   <!-- five frames -->
   <g stroke="#1A1A1A" stroke-width="1.5" fill="#F8F5EE">
@@ -46,15 +46,17 @@
 
   <!-- labels -->
   <g font-size="13" fill="#1A1A1A" text-anchor="middle">
-    <text x="96" y="220">x₀ (immagine)</text>
+    <text x="96" y="220">x₀</text>
     <text x="232" y="220">x₁</text>
     <text x="368" y="220">x₂</text>
     <text x="504" y="220">…</text>
-    <text x="640" y="220">x_T (rumore)</text>
+    <text x="640" y="220">x<tspan dy="4" font-size="10">T</tspan></text>
+    <text x="96" y="238" font-size="11">(immagine)</text>
+    <text x="640" y="238" font-size="11">(rumore)</text>
   </g>
 
   <!-- reverse arrow -->
-  <line x1="620" y1="256" x2="60" y2="256" stroke="#2D5A5C" stroke-width="2"/>
-  <polygon points="60,256 70,251 70,261" fill="#2D5A5C"/>
-  <text x="340" y="278" font-size="13" fill="#2D5A5C" text-anchor="middle">processo inverso p_θ: la rete impara a togliere il rumore, un passo alla volta</text>
+  <line x1="684" y1="256" x2="56" y2="256" stroke="#2D5A5C" stroke-width="2"/>
+  <polygon points="56,256 66,251 66,261" fill="#2D5A5C"/>
+  <text x="368" y="278" font-size="13" fill="#2D5A5C" text-anchor="middle">processo inverso (appreso): a ogni passo la rete stima il rumore</text>
 </svg>

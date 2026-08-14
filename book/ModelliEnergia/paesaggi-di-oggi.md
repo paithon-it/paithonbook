@@ -1,32 +1,42 @@
 # Paesaggi di oggi
 
 Le reti di Hopfield non si usano più, le RBM quasi neanche. Sarebbe facile
-archiviare l'energia come un capitolo di storia del deep learning, e sarebbe
+archiviare l'energia come un pezzo di storia del deep learning, e sarebbe
 sbagliato: il linguaggio è rimasto, e tre luoghi diversi lo parlano oggi
-correntemente. Uno è dichiarato, gli altri due no.
+correntemente. Nel primo lo si parla dichiarandolo, e sono i ricercatori che
+scrivono «modello a energia» nel titolo; negli altri due no, e sono i
+generatori di immagini e le memorie associative di oggi, che quel linguaggio
+lo usano senza nominarlo.
 
 ## Il ritorno dichiarato: modelli a energia sulle immagini
 
 Il ritorno esplicito arriva nel 2019, quando Yilun Du e Igor Mordatch mostrano
 che un modello a energia (in inglese *energy-based model*, che nella
-letteratura si abbrevia sempre in **EBM**) si può addestrare su immagini vere,
+letteratura si abbrevia in **EBM**) si può addestrare su immagini vere,
 e lo fanno con gli attrezzi della sezione sulla partizione, senza inventarne
 di nuovi {cite}`du2019implicit`. Il paesaggio è una rete convoluzionale come
-quelle del capitolo sulla visione. Le risposte sbagliate su cui alzare il
+quelle del capitolo sul deep learning. Le risposte sbagliate su cui alzare il
 terreno se le fabbrica il modello stesso, lasciando rotolare qualche pallina
 con la ricetta di Langevin. E le palline non ripartono da capo ogni volta: si
 tengono in un serbatoio e riprendono da dove erano arrivate, che è parola per
-parola l'idea che Tieleman aveva proposto nel 2008 per le macchine di
-Boltzmann ristrette {cite}`tieleman2008training`, undici anni prima e su
-piccole immagini in bianco e nero invece che su fotografie a colori
-(CIFAR-10). La qualità delle immagini generate supera quella degli altri
+parola l'idea della sezione precedente, quella con cui si faceva proseguire il
+sogno invece di rifarlo da capo {cite}`tieleman2008training`. Undici anni
+separano le due cose, e le separa anche la taglia del problema: allora
+minuscole cifre in bianco e nero, qui fotografie a colori di animali e mezzi
+di trasporto (l'archivio si chiama CIFAR-10), e più su fino alle immagini di
+ImageNet.
+
+La qualità delle immagini generate supera quella degli altri
 modelli che imparano dalle probabilità e si avvicina, senza raggiungerla, a
 quella delle GAN dell'epoca. Ma il valore del lavoro è un altro: mostrare che
 la famiglia è viva, e mettere in luce la proprietà che le è tipica. Un solo
 modello serve a generare, a completare immagini a cui manca un pezzo, a
 segnalare quello che è fuori posto e a mescolare concetti sommando i loro
-paesaggi, perché tutte queste cose sono la stessa cosa: cercare un punto
-basso, con vincoli diversi.
+paesaggi (sommare due paesaggi vuol dire che un punto sta in basso solo se sta
+in basso in tutti e due, e allora le valli che sopravvivono sono quelle che le
+due richieste hanno in comune: «giovane» più «sorridente» lascia in piedi le
+facce giovani e sorridenti). Tutte queste cose sono la stessa cosa: cercare un
+punto basso, con vincoli diversi.
 
 L'anno dopo arriva l'osservazione che ribalta la prospettiva. Will Grathwohl
 e colleghi notano che **un classificatore è già un modello a energia**, e
@@ -36,11 +46,12 @@ nessuno se n'era accorto {cite}`grathwohl2020your`.
 
 Una rete che classifica immagini produce, per ogni immagine, un pugno di
 numeri: uno per classe, tanto più alto quanto più la rete crede in quella
-classe. Di solito quei numeri si normalizzano e si legge la classe vincente,
-buttando via il resto. Ma dentro c'è di più: se sommi in modo opportuno tutti
-i punteggi di un'immagine, ottieni una misura di quanto *quell'immagine* sia
-tipica nel suo insieme: non quale classe sia, ma se sia un'immagine
-plausibile. Cioè, esattamente, un'energia.
+classe. Di solito quei numeri si riscalano in percentuali che sommano a cento
+e si legge la classe vincente, buttando via il resto. Ma dentro c'è di più.
+Prendi il punteggio più alto, e poi correggilo un poco verso l'alto se anche
+gli altri sono alti: quello che ottieni è una specie di «quanto forte grida
+questa immagine», ed è una misura di quanto *quell'immagine* sia tipica nel
+suo insieme, non di quale classe sia. Cioè, esattamente, un'energia.
 
 Il seguito è la parte interessante. Addestrando la stessa rete a fare bene
 tutte e due le cose (riconoscere la classe *e* dare energia bassa alle
@@ -67,15 +78,27 @@ p_\theta(\mathbf{x}) = \sum_{y} p_\theta(\mathbf{x}, y)
 = \frac{e^{\operatorname{logsumexp}_y f_\theta(\mathbf{x})[y]}}{Z(\theta)},
 $$
 
-da cui l'energia marginale
+dove $\operatorname{logsumexp}_y f[y] = \log \sum_y e^{f[y]}$ è il massimo
+«ammorbidito» dei logit (vale sempre almeno quanto il più grande, e un po' di
+più quando anche gli altri sono grandi), da cui l'energia marginale
 $E_\theta(\mathbf{x}) = -\operatorname{logsumexp}_y f_\theta(\mathbf{x})[y]$
-{cite}`grathwohl2020your`. La softmax è invariante alla traslazione dei logit,
-quindi questa informazione (il livello assoluto, non le differenze) è
-precisamente ciò che l'addestramento standard *butta via*. JEM (*Joint
-Energy-based Model*) la recupera addestrando la rete sulla fattorizzazione
+{cite}`grathwohl2020your`. Perché non la si veda mai, in un classificatore
+normale, è questione di gradienti e non di assenza: la softmax è invariante
+alla traslazione dei logit, quindi la cross-entropy **non vincola** il loro
+livello assoluto, che resta libero di andare dove capita. L'informazione è lì
+(tanto che il logsumexp di una rete addestrata alla maniera solita si usa così
+com'è per riconoscere il fuori distribuzione); semplicemente nessuno le ha mai
+chiesto di essere sensata. JEM (*Joint
+Energy-based Model*) gliela chiede, massimizzando la log-verosimiglianza
+congiunta nella forma
 $\log p_\theta(\mathbf{x}, y) = \log p_\theta(y \mid \mathbf{x}) + \log p_\theta(\mathbf{x})$: il primo
-termine è la solita cross-entropy, il secondo è un EBM addestrato con Langevin
-e serbatoio, come in {cite}`du2019implicit`. Il risultato riportato è un
+termine è la solita cross-entropy cambiata di segno, il secondo è un EBM
+addestrato con Langevin
+e serbatoio, come in {cite}`du2019implicit`. Da notare, in un capitolo che ha
+dedicato una sezione a $Z$: quel $Z(\theta)$ esiste solo se
+$\int \sum_y e^{f_\theta(\mathbf{x})[y]}\, d\mathbf{x}$ converge, che per una rete
+convoluzionale qualunque nessuno garantisce. La lettura «un classificatore è
+un'energia» è sempre vera; la densità che ne segue, sotto condizione. Il risultato riportato è un
 classificatore con calibrazione migliore, rilevamento di fuori distribuzione
 più affidabile e maggiore robustezza agli attacchi avversari, al prezzo di un
 addestramento più fragile, che è il difetto ereditario di tutta la famiglia.
@@ -96,15 +119,16 @@ l'immagine è ancora tutta rumore il paesaggio è liscio, con poche valli larghe
 in cui è difficile sbagliare direzione; scendendo di grado diventa più
 dettagliato, con valli più strette, quelle che distinguono un volto
 dall'altro. Quello che il modello impara, per ogni grado di sporco, è la
-pendenza del paesaggio corrispondente, cioè lo *score* della sezione
-precedente; e generare è una **discesa rumorosa** lungo quella successione di
+pendenza del paesaggio corrispondente, cioè lo *score* della seconda via;
+e generare è una **discesa rumorosa** lungo quella successione di
 paesaggi, parente stretta della dinamica di Langevin {cite}`song2021score`.
 «Rumorosa» va preso alla lettera, ed è il punto che il capitolo sulla
 diffusione misura: a ogni passo si rimette dentro rumore fresco in quantità
-molto maggiore di quanta ne tolga il passo di discesa. Non è quindi una
-ripulitura progressiva, ed è esattamente ciò che dice anche il nome di
-Langevin: la pallina non viene accompagnata a valle, viene spinta a valle e
-scossa insieme.
+molto maggiore di quanta ne tolga il passo di discesa. Il livello di sporco
+cala lo stesso, ma di pochissimo per volta, e come saldo fra tre mosse che
+tirano in versi diversi: nessuno sta togliendo un velo alla volta. È
+esattamente ciò che dice anche il nome di Langevin: la pallina non viene
+accompagnata a valle, viene spinta a valle e scossa insieme.
 
 Attraversarli in fila, invece di rotolare in uno solo, è anche il rimedio al
 guaio della prima via: una pallina lasciata subito nel paesaggio più
@@ -117,11 +141,16 @@ di cui sarebbero la pendenza.
 Il secondo è più sorprendente, e chiude un cerchio con il capitolo sui
 Transformer. Le reti di Hopfield di oggi non sono quelle del 1982: i neuroni
 non sono più soltanto accesi o spenti, e soprattutto la formula dell'energia è
-stata riscritta. Dmitry Krotov e lo stesso Hopfield, nel 2016, la riscrivono
-in modo da moltiplicare la capienza {cite}`krotov2016dense`; Mete Demircigil e
+stata riscritta. Dmitry Krotov e lo stesso Hopfield, nel 2016, sostituiscono
+al prodotto fra due neuroni una potenza di grado $n$, e la capienza smette di
+crescere in proporzione ai neuroni per crescere come $N^{n-1}$: da lineare a
+polinomiale {cite}`krotov2016dense`. Mete Demircigil e
 colleghi, l'anno dopo, spingono la stessa idea fino a una capienza che cresce
-in modo esponenziale {cite}`demircigil2017model`; e Hubert Ramsauer e colleghi
-portano il tutto ai valori continui, trovando la cosa che nessuno si aspettava
+in modo esponenziale nel numero di neuroni {cite}`demircigil2017model`: dove
+la rete del 1982 guadagna un ricordo ogni sette neuroni in più, questa
+raddoppia il numero di ricordi ogni due. E Hubert Ramsauer e colleghi portano
+il tutto ai valori continui, dove un neurone non è più acceso o spento ma
+porta un numero qualsiasi, trovando la cosa che nessuno si aspettava
 {cite}`ramsauer2021hopfield`. Il loro articolo si intitola, non a caso,
 *Hopfield Networks is All You Need*: il conto con cui una di queste memorie
 richiama un ricordo è, a meno di un passaggio, lo stesso con cui un
@@ -159,7 +188,7 @@ toccano cose che il libro ha già trattato.
 
 ```{figure} ../figures/quattro-rinunce.svg
 :name: fig-quattro-rinunce
-:alt: Quattro righe affiancate. A sinistra, in terracotta e barrate, le cose a cui rinunciare: modelli generativi, modelli probabilistici, metodi contrastivi, reinforcement learning. A destra, in teal, le alternative proposte: architetture a incorporamento congiunto, modelli a energia, metodi regolarizzati, controllo predittivo basato su modello. Sotto, in piccolo, il rimando ai capitoli del libro che trattano ciascuna coppia.
+:alt: Quattro righe affiancate, sotto le intestazioni «abbandonare» e «in favore di». A sinistra, in terracotta e precedute da un simbolo di divieto, le cose a cui rinunciare: modelli generativi, modelli probabilistici, metodi contrastivi, reinforcement learning. A destra, in teal e raggiunte da una freccia, le alternative proposte: architetture a incorporamento congiunto, modelli a energia, metodi regolarizzati, controllo predittivo su modello. Sotto ciascuna alternativa, in piccolo e in grigio, una riga che dice dove il libro la tratta o in che cosa consiste.
 :width: 92%
 
 Le quattro rinunce con cui LeCun chiude le sue conferenze, ridisegnate. In
@@ -191,13 +220,16 @@ modello quando la previsione sbaglia.
 
 La **prima** riga è la più contestata, e non conviene nasconderlo. Rinunciare
 ai modelli generativi in favore delle architetture a incorporamento congiunto
+(le JEPA nominate in apertura di capitolo)
 è una tesi sul modo giusto di costruire un *modello del mondo*, non un
 verdetto sulla generazione in quanto tale: mentre la slide circolava, i
-modelli generativi hanno prodotto i migliori generatori di immagini che
-conosciamo (di diffusione, cioè, come questo capitolo ha mostrato, modelli a
+modelli generativi hanno prodotto i generatori di immagini del capitolo
+precedente (di diffusione, cioè, come questo capitolo ha mostrato, modelli a
 energia) e i modelli linguistici che hanno cambiato il dibattito pubblico.
 L'argomento di LeCun non è che quei sistemi non funzionino; è che predire ogni
-pixel spende capacità sull'imprevedibile, e che per prevedere il mondo
+pixel costringe la rete a spendere i suoi neuroni e il suo addestramento su
+dettagli che nessuno potrebbe indovinare (la forma esatta di una foglia mossa
+dal vento), e che per prevedere il mondo
 convenga prevedere non i pixel ma il *riassunto* che la rete se ne fa:
 confrontare due riassunti, invece di ridisegnare ogni pixel. È una previsione sul
 futuro della ricerca, e come tutte le previsioni va tenuta distinta dai
@@ -250,17 +282,21 @@ risultati e i suoi limiti, non come una profezia.
   Addestrarlo anche come tale migliora calibrazione, rilevamento del fuori
   distribuzione e robustezza.
 - I **modelli di diffusione** sono modelli a energia che non lo dichiarano:
-  loss di denoising score matching, campo dello score
-  $-\nabla_{\mathbf{x}} E_t(\mathbf{x})$ a ogni livello di rumore $t$,
+  loss di denoising score matching (riponderata per livello di rumore), campo
+  dello score $-\nabla_{\mathbf{x}} E_t(\mathbf{x})$ a ogni livello $t$,
   campionamento parente di Langevin lungo la successione di paesaggi, dal più
-  liscio al più dettagliato.
+  liscio al più dettagliato. Con la riserva detta nella sezione sulla
+  partizione: imparano le frecce, e che siano la pendenza di una superficie
+  vera nessuno lo garantisce.
 - Le **Hopfield moderne** hanno energia riprogettata {cite}`krotov2016dense`,
-  capacità esponenziale {cite}`demircigil2017model` e, agli stati continui,
+  capienza esponenziale {cite}`demircigil2017model` e, agli stati continui,
   una regola di aggiornamento che è la *scaled dot-product attention*
-  {cite}`ramsauer2021hopfield`: con $\beta = 1/\sqrt{d_k}$, un solo passo di
+  {cite}`ramsauer2021hopfield`: con $\beta = 1/\sqrt{d_k}$ (la temperatura
+  inversa coincide col fattore di scala dell'attenzione), un solo passo di
   aggiornamento e una proiezione dei pattern sui value. Sulle teste vere il
-  punto fisso è di solito uno stato metastabile (una media di più ricordi),
-  non un ricordo singolo.
+  punto fisso è raramente un ricordo singolo: nei primi strati è una media di
+  tutti i pattern, più in alto uno stato metastabile, cioè la media di un
+  sottoinsieme.
 - Le **quattro rinunce** di LeCun {cite}`lecun2022path`: generativo →
   incorporamento congiunto, probabilistico → energia, contrastivo →
   regolarizzato, RL → controllo predittivo. La seconda è la tesi di questo

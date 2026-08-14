@@ -7,7 +7,7 @@
   Palette-locked: terracotta #B5532C, teal #2D5A5C, ocra #C9A961,
   warm-black #1A1A1A. Fondo trasparente (light e dark).
 -->
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 540" width="100%" role="img"
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-32 0 752 540" width="100%" role="img"
      aria-label="Quattro pannelli impilati che condividono l'asse del tempo. Dall'alto: la serie osservata con tendenza e oscillazione; il trend, una linea liscia crescente; la stagionalita, un'onda periodica regolare; il residuo, piccole barrette attorno allo zero.">
   <style>
     .frame { fill:none; stroke:#8B847C; stroke-width:1; opacity:0.55; }

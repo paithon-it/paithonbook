@@ -3,14 +3,19 @@
 Nel dicembre 2017, dal palco di NIPS, la più importante conferenza mondiale di
 machine learning (oggi si chiama NeurIPS), Ali Rahimi ritirò un premio per un
 lavoro di dieci anni prima e ne approfittò per dire una cosa scomoda: «il
-machine learning è diventato alchimia». Non ce l'aveva con i risultati, che ci
-sono: ce l'aveva con le fondamenta. Perché la discesa del gradiente funzioni
-non lo sappiamo davvero, mostrò, esibendo un problema minuscolo in cui
-l'ottimizzazione si inchioda pur avendo pendenze tutt'altro che nulle; di che
-cosa faccia esattamente uno degli ingredienti che tutti mettevano nelle reti
-«come disciplina non sappiamo quasi niente»; e i sistemi che costruiamo si
-rompono in modi che non ci spieghiamo, come quella volta che cambiando il modo
-di arrotondare i numeri dentro una libreria l'errore passò dal 25% al 99%.
+machine learning è diventato alchimia».
+
+Non ce l'aveva con i risultati, che ci sono: ce l'aveva con le fondamenta.
+Facciamo funzionare le cose, disse, senza sapere davvero *perché* funzionino, e
+portò tre esempi. Il primo era un problemino minuscolo su cui la discesa del
+gradiente si pianta: non perché sia arrivata in fondo alla discesa, ma pur
+avendo ancora sotto i piedi un terreno in pendenza. Il secondo era un
+ingrediente che a quel tempo tutti mettevano nelle reti (si chiama *batch
+normalization*, e il libro la incontrerà più avanti) di cui, a suo dire, «come
+disciplina non sappiamo quasi niente». Il terzo era la storia di un sistema che
+si era rotto in un modo inspiegabile: qualcuno aveva cambiato il modo di
+arrotondare i numeri dentro una libreria, e l'errore era passato dal 25% al
+99%.
 
 Gli **iperparametri**, in quel discorso, non erano nominati nemmeno una volta.
 Ma se c'è un posto in cui l'alchimia si vede a occhio nudo sono loro: ricette
@@ -19,12 +24,17 @@ che arrivano senza che nessuno sappia spiegare fino in fondo perché.
 
 Un iperparametro è una **scelta che facciamo noi prima di cominciare e che
 l'addestramento non cambia**. Sono le manopole del modello, e nessun
-addestramento le gira da solo: quanto è lungo il passo della discesa del
-gradiente (il *learning rate* della sezione sull'apprendimento supervisionato),
-quanto in profondità può crescere un albero o quanti strati ha una rete, quanto
-è tirato il freno alla memorizzazione (la $\lambda$ della regolarizzazione).
-L'addestramento aggiusta i parametri, cioè i numeri interni; le manopole
-restano dove le abbiamo messe noi, e da dove le mettiamo dipende, spesso in
+addestramento le gira da solo. Qualche esempio già incontrato: quanto è lungo
+il passo della discesa del gradiente (il *learning rate* della sezione
+sull'apprendimento supervisionato) e quanto è tirato il freno alla
+memorizzazione (la $\lambda$, la lettera greca *lambda*, della sezione sulla
+regolarizzazione). Qualche esempio che incontreremo: quante domande di fila può
+fare un albero di decisione, quanti strati ha una rete.
+
+Non vanno confusi con i **parametri**: quelli sono i numeri interni che
+l'addestramento aggiusta da sé, girando finché il modello sbaglia il meno
+possibile. Le manopole, invece, restano dove le abbiamo messe noi, e da dove le
+mettiamo dipende, spesso in
 modo drammatico, la qualità del risultato. Nella sezione su overfitting e
 validazione abbiamo già stabilito *dove* giudicare queste scelte: sul
 validation set, o meglio in cross-validation, mai sul test. Resta la domanda
@@ -38,7 +48,9 @@ Rahimi; farlo per bene è un problema di ricerca (nel senso letterale di
 L'idea più naturale è la forza bruta: per ogni manopola si sceglie una manciata
 di valori candidati e si prova **ogni combinazione**, tenendo quella con il
 punteggio di validazione migliore. È la *grid search*, la ricerca a griglia:
-semplice, esaustiva entro la griglia, facilissima da eseguire in parallelo. E
+semplice, esaustiva entro la griglia, e facilissima da spalmare su più
+calcolatori, perché ogni combinazione è indipendente dalle altre e nessuno deve
+aspettare nessuno (è quel che si intende con «si esegue **in parallelo**»). E
 con un difetto che non perdona.
 
 `````{tab} Elementare
@@ -47,11 +59,16 @@ Pensa a una macchina del caffè professionale con quattro regolazioni:
 macinatura, temperatura, pressione, tempo di estrazione. Cinque livelli
 ciascuna. Per assaggiare tutte le combinazioni servono
 $5 \times 5 \times 5 \times 5 = 625$ caffè. E siccome un solo assaggio può
-ingannare (magari quella tazzina è venuta bene per caso), ne servono cinque
-per ogni combinazione, la cross-validation che già conosciamo: 3 125 caffè. Se
-ogni "caffè" è un addestramento da due minuti, sono più di quattro giorni di
-macchina; aggiungi una quinta manopola a cinque livelli e i giorni diventano
-ventuno. È l'**esplosione combinatoria**: ogni manopola in più *moltiplica* le
+ingannare (magari quella tazzina è venuta bene per caso), ogni combinazione va
+provata cinque volte: è la cross-validation della sezione precedente, che
+divide i dati in cinque blocchi e fa girare il blocco di prova. Quindi
+$625 \times 5 = 3\,125$ caffè.
+
+Se ogni «caffè» è un addestramento da due minuti, sono
+$3\,125 \times 2 = 6\,250$ minuti, cioè quattro giorni e un terzo di macchina
+accesa. E se aggiungi una quinta manopola, sempre a cinque livelli, le
+combinazioni si moltiplicano ancora per cinque e i giorni diventano ventuno. È
+l'**esplosione combinatoria**: ogni manopola in più *moltiplica* le
 prove, non le somma.
 
 `````
@@ -80,16 +97,24 @@ le combinazioni **a caso** dentro gli stessi intervalli. Nel 2012 James
 Bergstra e Yoshua Bengio mostrarono che questa mossa apparentemente pigra è,
 quasi sempre, la più efficiente {cite}`bergstra2012random`. Il motivo sta in
 un fatto empirico: in quasi tutti i problemi **poche manopole contano
-davvero**, e non sappiamo in anticipo quali ({numref}`fig-grid-vs-random`).
+davvero**, e non sappiamo in anticipo quali.
+
+{numref}`fig-grid-vs-random` mostra il caso più semplice, due sole manopole di
+cui una decisiva e l'altra ininfluente. Il quadrato è lo spazio delle prove
+possibili, una manopola per lato, e ogni pallino è una prova. La curva a
+campana disegnata sopra il quadrato dice come va il punteggio al variare della
+manopola che conta: più in alto, meglio è, e il colmo della campana è il valore
+che stiamo cercando.
 
 ```{figure} ../figures/grid-vs-random.svg
 :name: fig-grid-vs-random
-:alt: Due pannelli affiancati. In ciascuno, un quadrato rappresenta lo spazio di due iperparametri e una curva a campana sopra il quadrato mostra come il punteggio dipende dal solo parametro importante, sull'asse orizzontale. A sinistra nove punti in griglia tre per tre si proiettano su appena tre posizioni dell'asse orizzontale; a destra nove punti casuali si proiettano su nove posizioni distinte, e uno cade quasi sul massimo della curva.
+:alt: Due pannelli affiancati. In ciascuno, un quadrato rappresenta lo spazio di due iperparametri e una curva a campana sopra il quadrato mostra come il punteggio dipende dal solo iperparametro importante, sull'asse orizzontale. A sinistra nove punti in griglia tre per tre si proiettano su appena tre posizioni dell'asse orizzontale; a destra nove punti casuali si proiettano su nove posizioni distinte, e uno cade quasi sul massimo della curva.
 :width: 95%
 
-Nove prove in griglia esplorano solo tre valori del parametro che conta davvero
-(curva in alto); nove prove casuali ne esplorano nove, e una atterra a un passo
-dal massimo.
+Nove prove in griglia (a sinistra) si affacciano su appena tre valori della
+manopola che conta, perché tre a tre stanno in colonna. Nove prove casuali (a
+destra) ne toccano nove diversi, e una finisce a un passo dal colmo della
+campana.
 ```
 
 `````{tab} Elementare
@@ -128,11 +153,13 @@ con cui cade tra $10^{-2}$ e $10^{-1}$.
 
 ## Tornei a eliminazione: successive halving e Hyperband
 
-Griglia e caso condividono uno spreco: dedicano lo **stesso budget** a ogni
+Griglia e caso condividono uno spreco: dedicano lo **stesso tempo** a ogni
 candidato, anche a quelli che dopo pochissimo allenamento sono già palesemente
-senza speranza. Gli approcci *multi-fidelity* ribaltano la logica: valutazioni
-economiche e approssimate per scremare, valutazioni costose e accurate solo per
-i migliori. Come un torneo a eliminazione diretta.
+senza speranza. C'è una famiglia di metodi che ribalta la logica: prove brevi e
+grossolane per scremare, prove lunghe e accurate solo per i pochi che si sono
+salvati. Come un torneo a eliminazione diretta. (Il nome tecnico è
+*multi-fidelity*, cioè «a più livelli di fedeltà»: la prova breve è una versione
+poco fedele di quella vera.)
 
 L'unità di misura di tutta questa sezione è l'**epoca**: una passata completa
 sull'insieme di addestramento, cioè il modello che ha visto una volta ciascuno
@@ -144,12 +171,19 @@ in litri.
 
 Un torneo di tennis non fa giocare cento partite a ogni iscritto: fa giocare a
 tutti *una* partita, e solo chi vince continua. Il *successive halving* fa lo
-stesso con le configurazioni: parti con 81 candidate e concedi a ciascuna una
+stesso con le combinazioni di manopole: parti con 81 candidate e concedi a
+ciascuna una
 sola epoca di addestramento; le 27 migliori ne ricevono tre; le 9 migliori
-nove; le 3 migliori ventisette; la finalista arriva a 81. Ogni turno costa
-all'incirca lo stesso (81 epoche in tutto) e i turni sono cinque: circa 400
-epoche totali, contro le oltre seimila che servirebbero per addestrare fino in
-fondo tutte le 81 candidate. C'è però un rischio: eliminare i "diesel", le
+nove; le 3 migliori ventisette; la finalista arriva a 81.
+
+Il bello è che ogni turno costa quanto gli altri, perché a ogni giro i
+sopravvissuti si riducono a un terzo e le epoche a testa si triplicano:
+$81 \times 1$, poi $27 \times 3$, poi $9 \times 9$, poi $3 \times 27$, poi
+$1 \times 81$. Fanno 81 epoche per turno, e i turni sono cinque: 405 epoche in
+tutto. Addestrare fino in fondo tutte e 81 le candidate ne costerebbe
+$81 \times 81 = 6\,561$, sedici volte tanto.
+
+C'è però un rischio: eliminare i "diesel", le
 configurazioni che partono piano ma finirebbero forte. Hyperband copre il
 rischio organizzando più tornei con regole diverse: alcuni spietati
 (tantissimi iscritti, primo turno brevissimo), altri clementi (pochi iscritti,
@@ -191,30 +225,43 @@ L'*early stopping* (che vedremo all'opera nel capitolo su PyTorch) è il caso
 limite di questa idea: un torneo con un solo iscritto, che si ritira quando la
 validazione smette di migliorare.
 
-Un dettaglio pratico che separa il torneo del libro da quello che gira davvero
-in un centro di calcolo. Il successive halving come lo abbiamo descritto è
-**sincrono**: per decidere chi passa il turno aspetta che *tutte* le
-configurazioni di quel turno abbiano finito, come una gara in cui la
-premiazione si fa solo quando è arrivato anche l'ultimo. Su una macchina sola
-non cambia niente, perché le prove si fanno comunque una per volta; su cento
-macchine in parallelo è uno spreco, perché novantanove restano a girarsi i
-pollici aspettando la centesima, e basta una configurazione lenta a bloccare
-tutto. La versione **asincrona** (nota come ASHA) toglie la barriera: appena
-una configurazione ha consumato il budget del suo turno ed è abbastanza buona
-rispetto a quelle già arrivate lì, viene **promossa subito**, e la macchina che
-si libera prende il lavoro successivo. Si accetta di decidere con informazione
-parziale in cambio di non lasciare nessuno fermo, ed è quasi sempre il baratto
-giusto.
+C'è un dettaglio pratico che separa il torneo descritto qui da quello che gira
+davvero quando le prove sono distribuite su molte macchine.
+
+Il successive halving, così come lo abbiamo raccontato, è **sincrono**: per
+decidere chi passa il turno aspetta che *tutte* le prove di quel turno abbiano
+finito, come una gara in cui la premiazione si fa solo quando è arrivato anche
+l'ultimo. Su una macchina sola non cambia niente, perché le prove si fanno
+comunque una per volta. Su cento macchine è uno spreco: novantanove restano a
+girarsi i pollici aspettando la centesima, e basta una candidata lenta a
+bloccare tutto.
+
+La versione **asincrona** (nota come ASHA) toglie la barriera, e lo fa
+cambiando il criterio di promozione. Invece di chiedere «sei fra le migliori
+tre di nove?», che è una domanda a cui non si può rispondere finché le nove non
+sono arrivate, chiede: «rispetto a chi è già passato di qui prima di te, saresti
+nel terzo migliore?». È una classifica parziale, fatta sulle candidate finite
+fino a quel momento, e si può rispondere subito. Chi supera la prova viene
+promosso all'istante, e la macchina che si libera prende il lavoro successivo.
+Si accetta di decidere con informazione incompleta in cambio di non lasciare
+nessuno fermo, ed è quasi sempre il baratto giusto.
 
 ## Cercare con giudizio: l'ottimizzazione bayesiana
 
 Griglia, caso e tornei condividono un ultimo difetto, il più profondo: ogni
 prova **ignora ciò che le precedenti hanno scoperto**. Se dieci esperimenti
-hanno già mostrato che i learning rate alti fanno divergere il modello,
+hanno già mostrato che con un passo troppo lungo l'errore, invece di scendere,
+schizza fuori controllo (si dice che il modello *diverge*: rimbalza da un
+fianco all'altro della valle e se ne allontana),
 l'undicesimo estratto a caso può cascarci di nuovo. L'**ottimizzazione
 bayesiana** {cite}`snoek2012practical` tratta la ricerca degli iperparametri
-come un problema di apprendimento a sua volta: costruisce un modello di *come
-le manopole influenzano il punteggio* e lo usa per decidere dove provare.
+come un problema di apprendimento a sua volta: impara a prevedere *quale
+punteggio darà una combinazione di manopole prima di provarla*, e usa quella
+previsione per decidere dove provare. Si finisce così con due modelli in
+scena, uno dentro l'altro: quello che vogliamo addestrare, e questo secondo che
+studia il primo dall'esterno. Il nome «bayesiana» viene dal modo in cui il
+secondo aggiorna le sue convinzioni ogni volta che arriva una prova nuova, e
+porta il nome del reverendo Thomas Bayes.
 
 `````{tab} Elementare
 
@@ -225,11 +272,14 @@ completa di zone d'ombra dove non sa ancora nulla. Il quarto pozzo lo piazza
 dove la *promessa* è massima: un po' dove la mappa dice bene (sfruttare ciò
 che sa), un po' dove la mappa è bianca (esplorare ciò che ignora).
 L'ottimizzazione bayesiana funziona così: dopo ogni addestramento aggiorna la
-sua mappa del punteggio e sceglie la configurazione successiva chiedendosi *di
+sua mappa del punteggio e sceglie la combinazione successiva chiedendosi *di
 quanto mi aspetto di battere il mio record, se provo qui?* La domanda ha un
-nome, **miglioramento atteso** (*expected improvement*), e ha il pregio di
-spegnersi da sola nelle zone che non promettono nulla e non nascondono più
-sorprese.
+nome, **miglioramento atteso** (*expected improvement*), ed è una domanda sola
+che tiene insieme le due esigenze. La risposta è alta dove la mappa promette
+bene, e anche dove la mappa è bianca, perché lì il record potrebbe essere
+battuto di parecchio. Ed è bassa, cioè quasi zero, dove il terreno è stato già
+scavato e si è rivelato secco: là non c'è più niente da sapere e niente da
+sperare, e il metodo smette di andarci senza che nessuno glielo debba dire.
 
 `````
 
@@ -271,9 +321,10 @@ a cominciare dalla scelta del kernel.
 
 ## Alla prova del codice
 
-scikit-learn offre le due strategie di base con la stessa interfaccia:
-`GridSearchCV` e `RandomizedSearchCV` incapsulano il ciclo "prova una
-configurazione, valutala in cross-validation, tieni la migliore". Le proviamo
+scikit-learn offre le due strategie di base con la stessa forma d'uso:
+`GridSearchCV` e `RandomizedSearchCV` racchiudono in un solo oggetto il giro
+«prova una combinazione, valutala in cross-validation, tieni la migliore», e
+lo ripetono da soli. Le proviamo
 su un classificatore SVC, una *support vector machine*, che qui usiamo come
 scatola nera: ci basta sapere che ha due manopole delicate, `C` e `gamma`. Sono
 entrambe **parametri di scala**, e vuol dire che quello che conta è il loro
@@ -294,7 +345,7 @@ X, y = load_digits(return_X_y=True)
 X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.2, random_state=42)   # il test resta nel cassetto
 
-# Grid search: 4 x 4 = 16 combinazioni, x 5 fold = 80 addestramenti
+# Grid search: 4 x 4 = 16 combinazioni, x 5 blocchi di CV = 80 addestramenti
 griglia = {"C": [0.1, 1, 10, 100],
            "gamma": [1e-4, 1e-3, 1e-2, 1e-1]}
 ricerca_griglia = GridSearchCV(SVC(), griglia, cv=5, n_jobs=-1)
@@ -313,30 +364,46 @@ print(ricerca_casuale.best_params_, round(ricerca_casuale.best_score_, 3))
 print(ricerca_casuale.score(X_test, y_test))
 ```
 
-Il trucco di `loguniform` è lo stesso che useremo per il learning rate di una
-rete neurale: si campiona l'esponente, non il valore. scikit-learn implementa
+Il trucco di `loguniform` merita una riga, perché tornerà ogni volta che si
+sceglie un learning rate: **si sorteggia l'esponente, non il valore**. Invece
+di estrarre un numero a caso fra $0{,}00001$ e $1$, che nel $99\%$ dei casi
+darebbe qualcosa di grande, si estrae un numero a caso fra $-5$ e $0$, poniamo
+$-3{,}2$, e si usa $10^{-3{,}2}$. Così ogni ordine di grandezza ha le stesse
+probabilità degli altri.
+
+scikit-learn implementa
 anche il successive halving (`HalvingGridSearchCV` e `HalvingRandomSearchCV`,
 ancora marcati come sperimentali); per l'ottimizzazione bayesiana e i tornei
 in versione moderna la libreria di riferimento è **Optuna**, in cui lo spazio
-di ricerca si descrive direttamente nel codice e la potatura anticipata
-elimina in corsa le prove peggiori.
+di ricerca si descrive direttamente nel codice e le prove peggiori vengono
+interrotte in corsa.
 
 ## Le avvertenze sul foglietto
 
-Tre avvertenze, prima di chiudere. La prima è il **costo**: ogni punto dello
-spazio di ricerca vale $k$ addestramenti completi, e nessun algoritmo elimina
-questo fattore (lo spende meglio). Griglia e caso almeno si parallelizzano
-senza sforzo; l'ottimizzazione bayesiana si parallelizza peggio: le varianti
-batch esistono (già Snoek e colleghi ne proponevano una
-{cite}`snoek2012practical`), ma pagano in efficienza per prova. La
-seconda è la **riproducibilità**. Un computer non sa tirare a caso davvero:
+Tre avvertenze, prima di chiudere.
+
+La prima è il **costo**. Ogni combinazione provata non costa un addestramento
+ma cinque, perché la si giudica in cross-validation su cinque blocchi, e quel
+fattore cinque non lo toglie nessun algoritmo: i metodi furbi lo spendono
+meglio, non lo evitano. Griglia e caso hanno almeno il vantaggio di spalmarsi
+su tante macchine senza sforzo; l'ottimizzazione bayesiana no, perché è fatta
+per scegliere la prossima prova dopo aver visto l'esito della precedente.
+Esistono varianti che ne lanciano un gruppo alla volta (già Snoek e colleghi ne
+proponevano una {cite}`snoek2012practical`), ma ogni prova, presa da sola,
+rende meno.
+
+La seconda è la **riproducibilità**. Un computer non sa tirare a caso davvero:
 produce numeri che *sembrano* casuali partendo da un numero iniziale, il
 **seme** (in inglese *seed*, il `random_state` del codice qui sopra). Stesso
 seme, stessa sequenza di numeri «a caso», stesso risultato domani e sul
 computer di un altro; seme non fissato, esito diverso a ogni esecuzione, e
-allora nessuno può ripetere il tuo esperimento, nemmeno tu. E un confronto fra
-metodi che non dichiari spazio di ricerca e budget non è un confronto (è
-aneddotica). La terza avvertenza è la più subdola.
+allora nessuno può ripetere il tuo esperimento, nemmeno tu. Alla stessa
+famiglia appartiene un'altra dimenticanza: dire «il metodo A batte il metodo B»
+senza dichiarare in quale intervallo si è cercato e quante prove si sono fatte
+non è un confronto, è un aneddoto, perché a parità di tempo il vincitore può
+capovolgersi.
+
+La terza avvertenza è la più subdola.
 
 `````{tab} Elementare
 

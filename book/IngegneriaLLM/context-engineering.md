@@ -18,7 +18,7 @@ engineering* {cite}`karpathy2025context`, ha spostato l'unità di misura del
 mestiere: non più la singola frase («trovare l'incantesimo giusto») ma il
 **governo dell'intero contesto** che riempie la finestra a ogni passo.
 
-È il tema di questo capitolo, e la sezione precedente sul prompt engineering
+È il tema di questa sezione, e quella precedente sul prompt engineering
 ne ha aperto la porta: là abbiamo lavorato sul *singolo messaggio*, sulla
 frase scritta bene. Qui saliamo di un livello e trattiamo la finestra come un
 **sistema** da progettare nel suo insieme. Il *repository* (un archivio di
@@ -62,8 +62,9 @@ intendi. Le molecole formano **cellule**, che hanno una memoria: il sistema
 ricorda chi sei tra un messaggio e l'altro. Le cellule si organizzano in
 **organi** che svolgono funzioni complesse: un flusso a più passi, in cui il
 modello può chiedere al programma di fare qualcosa per lui (cercare, calcolare,
-aprire un archivio) e poi usare il risultato. E in cima, gli **organismi**
-interi. Non serve
+aprire un archivio) e poi usare il risultato. E in cima ci sono proposte che
+guardano al contesto come a un unico ambiente continuo, ma sono ricerca
+aperta, non attrezzi da usare oggi. Non serve
 imparare la biologia: serve l'idea che il contesto non è tutto uguale: c'è quello
 semplice come un mattone e quello complesso come un corpo, e sapere a che
 altezza della scala stai lavorando ti dice quanta cura serve.
@@ -163,6 +164,24 @@ messaggio.
 
 `````
 
+```{figure} ../figures/context-quattro-mosse.svg
+:name: fig-context-quattro-mosse
+:alt: "Al centro la finestra di contesto, un riquadro che contiene tre blocchi impilati (istruzioni, cronologia, documenti recuperati) e in fondo lo spazio tratteggiato per la risposta. Quattro frecce numerate: la prima esce verso sinistra, verso un riquadro «memoria esterna», ed è scrivere; la seconda rientra da lì, ed è selezionare; la terza è un arco che esce dal bordo alto e vi rientra, cioè resta dentro la finestra, ed è comprimere; la quarta esce verso destra, verso un secondo riquadro «un'altra finestra», ed è isolare."
+:width: 96%
+
+Le quattro mosse, disegnate rispetto al bordo della finestra. Tre spostano
+roba oltre quel bordo, una la rimpicciolisce restando dentro, e nessuna delle
+quattro aggiunge spazio.
+```
+
+Messe una accanto all'altra come in {numref}`fig-context-quattro-mosse`, le
+quattro mosse rivelano di essere quattro risposte alla stessa domanda: dove
+sta la roba rispetto al bordo della finestra. Fuori e recuperabile (scrivere),
+fuori e da riportare dentro un pezzo alla volta (selezionare), dentro ma più
+corta (comprimere), fuori e affidata a qualcun altro che ha un bordo suo
+(isolare). La finestra resta grande quanto era: quello che cambia è la
+disciplina con cui la si riempie.
+
 ## Come si guasta un contesto
 
 Un contesto più lungo non è un contesto migliore. Anzi: quasi tutti i modi in cui
@@ -220,9 +239,12 @@ evidenze si sovrappongono più di quanto la distinzione dei nomi suggerisca.
 Liu e colleghi {cite}`liu2024lost` misurano la **posizione** (la curva di
 accuratezza in funzione di dove sta l'informazione ha la forma a U, come visto
 nel capitolo sugli Agenti) e insieme la **lunghezza**: sul QA multi-documento
-fanno variare il numero di documenti in finestra e trovano che con venti o
-trenta documenti l'accuratezza scende **sotto** quella a libro chiuso, cioè
-sotto il risultato che lo stesso modello otterrebbe senza alcun documento.
+fanno variare il numero di documenti in finestra e trovano che, su
+GPT-3.5-Turbo, con venti o trenta documenti l'accuratezza scende **sotto**
+quella a libro chiuso, cioè sotto il 56,1 per cento che lo stesso modello
+ottiene senza alcun documento. Il numero è di un modello solo e di quel
+momento, e non va portato in giro come una soglia universale; quello che si
+porta in giro è il fatto che la curva, a un certo punto, gira verso il basso.
 Aggiungere contesto, oltre una certa soglia, costa più di quanto renda. Dallo
 stesso lavoro viene un secondo punto che conviene tenere: i modelli a contesto
 esteso **non usano il proprio contesto meglio** di quelli da cui derivano, e
@@ -285,8 +307,8 @@ più contesto strutturato riduce gli errori) è sensata.
 
 `````
 
-C'è una variante «leggera» di questa stessa idea che merita una riga. Un
-gruppo di IBM Research ha studiato i **cognitive tools**: schemi di
+C'è una variante «leggera» di questa stessa idea che merita una riga. Ebouky,
+Bartezzaghi e Rigotti hanno studiato i **cognitive tools**: schemi di
 ragionamento riusabili («scomponi il problema», «verifica il risultato») che
 si mettono nel contesto per **dare un'impalcatura** al modo in cui il modello
 procede, tirandone fuori un ragionamento senza riaddestrare nulla
@@ -298,7 +320,7 @@ degli «organi»: non un singolo prompt, ma uno strumento cognitivo che
 orchestra più passi.
 
 La direzione è chiara, ed è anche il senso della rassegna del 2025 che ha
-passato in rassegna oltre mille articoli scientifici sul tema
+setacciato oltre mille e quattrocento articoli scientifici sul tema
 {cite}`mei2025context`: il
 context engineering sta diventando una **disciplina** con i suoi modelli
 mentali, le sue tattiche e i suoi modi di fallire; proprio come, a suo tempo,
@@ -325,8 +347,9 @@ testo: è un sistema, e va progettata come tale.
   poi viene ripetuto come se fosse vero; un contesto così lungo che il modello
   si fissa su quello che c'è scritto dentro e dimentica quello che sa; dettagli
   inutili che tirano la risposta fuori strada; pezzi che si contraddicono a
-  vicenda. Più lungo **non** vuol dire migliore: sopra una certa mole, il
-  modello risponde peggio di come risponderebbe senza niente.
+  vicenda. Più lungo **non** vuol dire migliore: in una misura fatta su un
+  modello di qualche anno fa, oltre una ventina di documenti in finestra le
+  risposte erano peggiori di quelle date senza alcun documento.
 - La cosa si può scrivere una volta e riusare: un **progetto** che contiene
   regole, esempi, documentazione e, decisivo, la **prova con cui si stabilisce
   se il lavoro è finito**. Quest'ultima è il ponte verso la prossima sezione.
@@ -357,8 +380,9 @@ testo: è un sistema, e va progettata come tale.
   ha appreso), **confusion** (token irrilevanti usati perché presenti) e
   **clash** (contesto contraddittorio). Il *lost in the middle*
   {cite}`liu2024lost` misura sia la **posizione** (curva a U) sia la
-  **lunghezza**: oltre venti documenti si scende sotto il risultato a libro
-  chiuso, e la finestra dichiarata non è la finestra utile.
+  **lunghezza**: sul modello lì misurato, oltre venti documenti si scende sotto
+  il risultato a libro chiuso, e la finestra dichiarata non è la finestra
+  utile.
 - Il **PRP** rende il context engineering una **procedura ripetibile**: regole,
   esempi, documentazione e **validation gate** (il criterio oggettivo che dice
   se il lavoro è finito). Quest'ultimo anticipa il **loop

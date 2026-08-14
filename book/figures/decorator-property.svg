@@ -2,14 +2,14 @@
   <rect x="0" y="0" width="700" height="360" fill="#F8F5EE"/>
   <!-- scatola esterna: il decorator -->
   <rect x="150" y="50" width="400" height="260" rx="10" fill="none" stroke="#2D5A5C" stroke-width="2"/>
-  <text x="350" y="78" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="bold" fill="#2D5A5C" text-anchor="middle">@cronometro: la funzione avvolta</text>
+  <text x="350" y="78" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="bold" fill="#2D5A5C" text-anchor="middle">@cronometra: la funzione avvolta</text>
   <!-- prima -->
   <rect x="190" y="96" width="320" height="40" fill="#C9A961" stroke="#1A1A1A" stroke-width="1.5"/>
   <text x="350" y="121" font-family="Inter, system-ui, sans-serif" font-size="13.5" fill="#1A1A1A" text-anchor="middle">PRIMA: inizio = perf_counter()</text>
   <!-- funzione originale -->
   <rect x="190" y="156" width="320" height="52" fill="#B5532C" stroke="#1A1A1A" stroke-width="2"/>
   <text x="350" y="178" font-family="Inter, system-ui, sans-serif" font-size="14.5" font-weight="bold" fill="#F8F5EE" text-anchor="middle">funzione originale</text>
-  <text x="350" y="197" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F8F5EE" text-anchor="middle">somma_quadrati(n), intatta</text>
+  <text x="350" y="197" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F8F5EE" text-anchor="middle">addestra(), intatta</text>
   <!-- dopo -->
   <rect x="190" y="228" width="320" height="40" fill="#C9A961" stroke="#1A1A1A" stroke-width="1.5"/>
   <text x="350" y="253" font-family="Inter, system-ui, sans-serif" font-size="13.5" fill="#1A1A1A" text-anchor="middle">DOPO: stampa la durata</text>

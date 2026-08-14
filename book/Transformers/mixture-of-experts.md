@@ -6,10 +6,14 @@ ventinove restano sullo scaffale. Possedere una conoscenza e consultarla sono
 due costi diversi, e nessuno si sognerebbe di confonderli.
 
 Il Transformer che abbiamo montato nella sezione sull'architettura fa
-esattamente il contrario. Ogni token attraversa **tutti** i pesi di tutti gli
-strati: le matrici dell'attenzione, la rete feed-forward, piano dopo piano
-fino in cima, senza saltarne uno. Da qui un'aritmetica spietata: raddoppiare i
-parametri raddoppia il calcolo per token, in addestramento e in inferenza. La
+esattamente il contrario. Ogni token attraversa **tutti** i numeri che la rete
+ha imparato, a ogni piano: quelli dell'attenzione e quelli della rete
+feed-forward, dal primo piano fino in cima, senza saltarne uno. (Quei numeri
+stanno in tabelle di righe e colonne, che in matematica si chiamano *matrici*,
+e presi tutti insieme sono i **parametri** del modello, quelli che si contano
+quando si dice «un modello da sette miliardi».) Da qui un'aritmetica spietata:
+raddoppiare i parametri raddoppia il calcolo per ogni parola, sia mentre il
+modello studia sia quando scrive. La
 sezione sui grandi modelli linguistici ha mostrato che crescere conviene (le
 leggi di scala {cite}`kaplan2020scaling` {cite}`hoffmann2022training` sono
 curve lisce, prevedibili, che premiano ogni raddoppio) ma ha mostrato anche il
@@ -49,8 +53,10 @@ apre una terza via, e il prezzo di quella via (un router che può sbagliare, e
 memoria per esperti che quasi sempre stanno fermi) è l'argomento delle pagine
 che seguono.
 
-L'idea sta in una riga: **sostituire l'unica rete feed-forward di ogni strato
-con $N$ copie indipendenti**, gli *esperti*, e aggiungere davanti un piccolo
+L'idea sta in una riga: **sostituire l'unica rete feed-forward di ogni strato**
+(«strato» è il nome tecnico di quelli che nella torre della sezione
+sull'architettura avevamo chiamato piani) **con $N$ copie indipendenti**, gli
+*esperti*, e aggiungere davanti un piccolo
 **router** che per ogni token ne sceglie $k$, di solito uno o due.
 L'attenzione resta esattamente com'era. Il modello possiede i parametri di
 tutti gli esperti; ogni token ne attraversa soltanto $k$.
@@ -84,13 +90,13 @@ riga. La redazione costa trenta; il singolo articolo costa due.
 
 Facciamo il conto su un modello di taglia realistica, con
 $d_{\text{model}} = 4096$, dimensione interna della feed-forward
-$d_{ff} = 4\,d_{\text{model}} = 16384$ e $L = 32$ strati. Per ogni strato:
+$d_{\text{ff}} = 4\,d_{\text{model}} = 16384$ e $L = 32$ strati. Per ogni strato:
 
 $$
-\underbrace{2\,d_{\text{model}}\,d_{ff}}_{\text{FFN}} = 134{,}2 \text{ M},
+\underbrace{2\,d_{\text{model}}\,d_{\text{ff}}}_{\text{FFN}} = 134{,}2 \text{ M},
 \qquad
-\underbrace{4\,d_{\text{model}}^2}_{\mathbf{W}_Q, \mathbf{W}_K, \mathbf{W}_V,
-\mathbf{W}_O} = 67{,}1 \text{ M},
+\underbrace{4\,d_{\text{model}}^2}_{\mathbf{W}^Q, \mathbf{W}^K, \mathbf{W}^V,
+\mathbf{W}^O} = 67{,}1 \text{ M},
 $$
 
 dove il primo termine sono le due matrici della rete feed-forward e il secondo
@@ -98,8 +104,8 @@ le quattro proiezioni dell'attenzione. In tutto $201{,}3$ M per strato, cioè
 $6{,}44$ miliardi di parametri sui 32 strati (embedding esclusi): un modello
 «da 7 miliardi», nel gergo corrente. La FFN è quella classica a due matrici
 della sezione sull'architettura; con una variante *gated* come SwiGLU le
-matrici diventano tre, e allora dipende da cosa si tiene fisso: a $d_{ff}$
-invariato il primo termine cresce di metà, mentre riducendo $d_{ff}$ a
+matrici diventano tre, e allora dipende da cosa si tiene fisso: a $d_{\text{ff}}$
+invariato il primo termine cresce di metà, mentre riducendo $d_{\text{ff}}$ a
 $\tfrac{8}{3}d_{\text{model}}$, che è la pratica corrente vista nella sezione
 sull'architettura, resta identico. In nessuno dei due casi cambiano i rapporti
 che seguono.
@@ -108,7 +114,7 @@ Ora sostituiamo ogni FFN con $N = 8$ esperti della stessa taglia. I parametri
 **totali** diventano
 
 $$
-L\,\bigl(N \cdot 2\,d_{\text{model}}\,d_{ff} + 4\,d_{\text{model}}^2\bigr)
+L\,\bigl(N \cdot 2\,d_{\text{model}}\,d_{\text{ff}} + 4\,d_{\text{model}}^2\bigr)
 = 32 \times (8 \times 134{,}2 + 67{,}1)\text{ M} = 36{,}5 \text{ miliardi},
 $$
 
@@ -116,7 +122,7 @@ mentre i parametri **attivi**, quelli che un singolo token attraversa
 davvero, con $k = 1$ valgono
 
 $$
-L\,\bigl(k \cdot 2\,d_{\text{model}}\,d_{ff} + 4\,d_{\text{model}}^2\bigr)
+L\,\bigl(k \cdot 2\,d_{\text{model}}\,d_{\text{ff}} + 4\,d_{\text{model}}^2\bigr)
 = 32 \times (134{,}2 + 67{,}1)\text{ M} = 6{,}44 \text{ miliardi},
 $$
 
@@ -124,7 +130,7 @@ cioè **esattamente** quanto il modello denso di partenza. Quasi sei volte i
 parametri ($36{,}5 / 6{,}44 \approx 5{,}7$) a parità di aritmetica per
 token. Con $k = 2$ ed esperti della stessa taglia gli attivi salgono a
 $10{,}7$ miliardi, $1{,}7$ volte il denso; per pareggiare del tutto si riduce
-la $d_{ff}$ di ciascun esperto, così che due esperti dimezzati costino quanto
+la $d_{\text{ff}}$ di ciascun esperto, così che due esperti dimezzati costino quanto
 una FFN intera.
 
 Il router, in tutto questo, è rumore di fondo: una matrice
@@ -222,7 +228,7 @@ G(\mathbf{x})_3 = \frac{e^{1{,}5}}{e^{2{,}0} + e^{1{,}5}} = 0{,}378 .
 $$
 
 Il costo del router è $O(N\,d_{\text{model}})$ per token, contro
-$O(k\,d_{\text{model}}\,d_{ff})$ degli esperti: con i valori della sezione
+$O(k\,d_{\text{model}}\,d_{\text{ff}})$ degli esperti: con i valori della sezione
 precedente, $32\,768$ moltiplicazioni contro i $134$ milioni di un solo
 esperto. Il meccanismo di selezione è, in termini di calcolo, gratis.
 
@@ -317,14 +323,22 @@ Perché quel prodotto spinge verso il carico uniforme? Entrambi i vettori $f$ e
 $P$ stanno sul simplesso ($\sum_i f_i = \sum_i P_i = 1$) e tendono a essere
 **allineati**, perché l'instradamento segue l'$\arg\max$ delle stesse
 probabilità che compongono $P$: gli esperti con $P_i$ alto sono di norma
-quelli con $f_i$ alto. In quel regime il prodotto scalare si comporta come
-$\sum_i P_i^2$, e per la disuguaglianza di Cauchy-Schwarz
+quelli con $f_i$ alto. In quel regime si può **sostituire** $f_i$ con $P_i$
+(una sostituzione dichiarata, non una conseguenza: è lecita solo dove
+l'$\arg\max$ è netto) e il prodotto scalare si comporta come $\sum_i P_i^2$.
+Su quella somma vale Cauchy-Schwarz, applicata a $P$ e al vettore di tutti
+uno, che insieme al vincolo $\sum_i P_i = 1$ dà
 
 $$
+1 = \Bigl(\sum_{i=1}^{N} P_i \cdot 1\Bigr)^{\!2}
+\;\le\; \Bigl(\sum_{i=1}^{N} P_i^2\Bigr)\Bigl(\sum_{i=1}^{N} 1^2\Bigr)
+= N \sum_{i=1}^{N} P_i^2 ,
+\qquad\text{cioè}\qquad
 \sum_{i=1}^{N} P_i^2 \;\ge\; \frac{1}{N},
 $$
 
-con uguaglianza se e solo se la distribuzione è uniforme. Moltiplicando per
+con uguaglianza se e solo se $P$ è proporzionale al vettore di tutti uno, cioè
+se e solo se il carico è uniforme. Moltiplicando per
 $N$ si ottiene un termine che vale $1$ sul carico uniforme e cresce man mano
 che il carico si concentra. È un argomento euristico, non un teorema: con
 punteggi quasi in pareggio l'allineamento fra $f$ e $P$ si allenta, ed
@@ -417,10 +431,12 @@ sbilanciato, la scheda affollata fa aspettare tutte le altre, che restano
 ferme a guardare. Il bilanciamento, insomma, non serve solo alla qualità del
 modello: serve a non pagare venti schede per farne lavorare tre.
 
-In inferenza il problema è ancora più netto. Generare testo è un lavoro
-limitato dalla **memoria**, non dal calcolo: il collo di bottiglia è leggere i
-pesi a ogni parola, non moltiplicarli (l'abbiamo intravisto parlando della KV
-cache, e il capitolo sull'MLOps ci tornerà sopra con i numeri). Un modello con
+Quando poi il modello **scrive**, il problema è ancora più netto, e conviene
+dirlo per esteso perché è controintuitivo. Il tempo che ci mette a produrre una
+parola non se ne va a fare i conti: se ne va ad **andare a prendere** dalla
+memoria i numeri con cui fare i conti. Sono decine di miliardi di numeri, vanno
+letti tutti, e leggerli costa più che moltiplicarli (il capitolo sull'MLOps ci
+tornerà sopra con i numeri). Un modello con
 pochi parametri attivi ma tantissimi totali attacca il lato sbagliato del
 problema, e resta pesante da servire.
 
@@ -496,24 +512,27 @@ arriva a contenere fino a 137 miliardi di parametri, due ordini di grandezza
 sopra i modelli linguistici densi dell'epoca. È anche il lavoro che mette a
 fuoco lo squilibrio di carico e il collasso del router (osservato prima da
 Eigen, Ranzato e Sutskever {cite}`eigen2013learning`, che lo curavano con un
-tetto imposto a mano sulle assegnazioni) e che introduce le loss ausiliarie
-per correggerlo durante l'addestramento.
+tetto imposto a mano sulle assegnazioni) e che introduce la voce in più nella
+pagella del modello, la *loss ausiliaria*, per correggerlo mentre impara.
 
 Nel 2020 GShard {cite}`lepikhin2021gshard` (presentato a ICLR l'anno
 successivo, che è la data della voce in bibliografia) porta il meccanismo dentro
 il Transformer nella forma che ancora usiamo: la rete feed-forward di uno strato
 ogni due sostituita da un banco di esperti, due esperti per token, il tetto alla
 capacità con i token che cadono, e gli esperti sparsi su centinaia di schede che
-si scambiano token in continuazione. Pochi mesi dopo Switch Transformer
-{cite}`fedus2022switch` fa la mossa controintuitiva: **un solo esperto per
+si scambiano token in continuazione. Sette mesi dopo, nel gennaio 2021, Switch
+Transformer {cite}`fedus2022switch` (uscito su rivista l'anno dopo, che è la
+data in bibliografia) fa la mossa controintuitiva: **un solo esperto per
 token**. Il ragionamento del 2017
 diceva che ne servivano almeno due per avere un gradiente sensato sul router;
 Fedus, Zoph e Shazeer mostrano che il gradiente arriva comunque, e che il
 top-1 dimezza il traffico dell'all-to-all, semplifica il codice e permette
 capacità più piccole. Con il top-1 arrivano anche gli accorgimenti che rendono
-stabile l'addestramento, come calcolare il router in `float32` mentre il resto
-del modello sta in mezza precisione: la softmax su punteggi vicini è sensibile
-all'arrotondamento, e un esperto scelto per un errore di terza cifra è un
+stabile l'addestramento. Il più istruttivo riguarda le cifre con cui si scrivono
+i numeri: per andare più in fretta il modello ne usa poche (mezza precisione,
+`float16`), ma i punteggi del router si calcolano con il doppio delle cifre
+(`float32`), perché quando due esperti sono quasi in pareggio è la terza cifra
+a decidere chi entra, e un esperto scelto per un errore di arrotondamento è un
 esperto sbagliato.
 
 Da allora l'architettura sparsa è di uso comune nei modelli di frontiera, ed è
@@ -532,7 +551,12 @@ Il codice qui sotto implementa lo strato per intero: esperti, router, top-$k$,
 softmax sui soli scelti, combinazione pesata. Non c'è nessuna delle
 ottimizzazioni vere (il *dispatch* efficiente dei token, l'all-to-all, la
 capacità con i buffer preallocati), e il ciclo `for` sugli esperti sarebbe
-inaccettabile su scala; ma la struttura è quella, e si legge. Chi legge al
+inaccettabile su scala; ma la struttura è quella, e si legge. Manca però anche
+una cosa che non è un'ottimizzazione, ed è bene dirlo forte perché è la sola
+che riguarda la **correttezza**: non c'è la loss di bilanciamento. Chi prendesse
+questo strato e lo addestrasse così com'è otterrebbe, puntualmente, il collasso
+descritto due sezioni sopra. Calcolarla sarebbe questione di poche righe a
+partire da `indici` e `punteggi`, che il `forward` ha già in mano. Chi legge al
 livello Elementare può saltare da qui alla fine della sezione: il conto che
 chiude la pagina è raccontato senza formule nel riquadro finale.
 
@@ -600,9 +624,9 @@ parametri (un *parametro* è uno dei numeri che la rete regola durante
 l'addestramento: sono quelli che si contano quando si dice «un modello da sette
 miliardi»); otto ne fanno $264\,704$, più i $512$ del router: $265\,216$ in
 tutto. Ogni token ne attraversa due, cioè $66\,176$: esattamente un quarto dei
-parametri degli esperti, il rapporto $N/k = 8/2$ (sul totale il rapporto è
-$4{,}008$, perché il router lo pagano tutti i token). Quattro volte i
-parametri, lo stesso conto.
+parametri degli esperti, cioè la frazione $k/N = 2/8$ (contando anche il
+router, che lo pagano tutti i token, i totali sono $4{,}008$ volte gli
+attivi invece di $4$ esatti). Quattro volte i parametri, lo stesso conto.
 
 Lo strato è intercambiabile con la FFN di un blocco Transformer: stessa forma
 in ingresso, stessa forma in uscita. Ed è precisamente questa
