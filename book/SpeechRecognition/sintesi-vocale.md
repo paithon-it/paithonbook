@@ -3,21 +3,28 @@
 New York, estate del 1939. Nel padiglione della Bell all'Esposizione
 universale, una giovane donna siede a una console che ricorda un piccolo
 organo: una quindicina di tasti sotto le dita, una barra sotto il polso, un
-pedale sotto il piede. Il presentatore invita la macchina a salutare, e dagli
-altoparlanti esce una voce, gommosa, un po' subacquea, ma comprensibile:
-*«Good afternoon, radio audience»*. Non è una registrazione. Il **Voder** di
-Homer Dudley, ingegnere dei Bell Labs, la voce la *genera* sul momento: i
-tasti dosano l'energia nelle bande di frequenza, la barra sceglie tra il
-ronzio delle vocali e il soffio delle consonanti, il pedale disegna
-l'intonazione. La voce, letteralmente, si *suona*, e imparare a suonarla
-richiedeva circa un anno di pratica, raccontava Helen Harper, la più abile
-delle venti operatrici addestrate per l'occasione.
+pedale sotto il piede. Il presentatore fa una domanda, la donna muove le dita,
+e dagli altoparlanti esce una voce che risponde: gommosa, un po' subacquea, ma
+si capisce. Non è una registrazione. Il **Voder** di
+Homer Dudley, ingegnere dei Bell Labs, la voce la *genera* sul momento. I
+tasti dosano l'energia alle varie altezze sonore, dalle più gravi alle più
+acute. La barra sceglie fra le due sorgenti di suono che la macchina ha in
+pancia: il ronzio, che sta sotto le vocali, e il soffio, che sta sotto le
+consonanti come la «s» (mettiti una mano in gola e prova a dire *aaa* e poi
+*sss*: la prima ti fa vibrare sotto le dita, la seconda no). Il pedale disegna
+l'intonazione. La voce, letteralmente, si *suona*, e a suonarla bene, scrivono
+gli ingegneri della Bell, ci vuole «circa un anno»: sei mesi per imparare a
+fare tutti i suoni, altri sei per farli suonare naturali. Alle due esposizioni
+del 1939 servivano ventiquattro operatrici, e per trovarle ne provarono
+oltre trecento, tutte centraliniste.
 
 Quasi novant'anni dopo, la **sintesi vocale** (TTS, *Text-to-Speech*) legge ad
 alta voce le indicazioni stradali, gli audiolibri, i messaggi mentre guidiamo.
-Il problema è ancora quello del Voder: trasformare simboli scritti in un'onda
-di pressione che un orecchio accetti come voce umana. Solo che al posto delle
-dita di Helen Harper, oggi, ci sono le reti neurali.
+Il problema è ancora quello del Voder, tolte le dita: fabbricare da zero
+un'onda di pressione, cioè un'aria che vibra, che un orecchio accetti come
+voce umana. Solo che al Voder la voce gliela dettava una persona, tasto per
+tasto, mentre oggi si parte da del testo scritto e a fabbricare l'onda sono le
+reti neurali.
 
 ## Il viaggio inverso
 
@@ -33,38 +40,51 @@ l'orecchio e non come la misurerebbe uno strumento (è questo che significa il
 parole; il TTS ci arriva scendendo dalle parole, e da lì ricostruisce l'onda
 ({numref}`fig-tts-pipeline`).
 
-Un avvertimento, perché «punto d'incontro» non voglia dire più di quel che
-deve: è lo stesso *tipo* di oggetto, non lo stesso oggetto. Chi riconosce e
-chi sintetizza scelgono finestre e passi diversi (venticinque millesimi di
-secondo e una finestrella ogni dieci da una parte, cinquanta e una ogni dodici
-e mezzo dall'altra), perché servono a due mestieri diversi: il
-mel-spettrogramma di Tacotron 2 non si dà in pasto all'encoder di Whisper.
+«Punto d'incontro» va inteso però nel senso giusto: è la stessa cosa, ma
+disegnata con un righello diverso, e i due righelli non sono
+intercambiabili.[^stesso-tipo]
 
 ```{figure} ../figures/tts-pipeline.svg
 :name: fig-tts-pipeline
 :alt: "Diagramma di flusso a sei stadi della sintesi vocale: il testo «Sono le 9:30» entra nel blocco testo, passa per la normalizzazione che lo scioglie in «nove e trenta», per la conversione in fonemi, per il modello acustico che produce il mel-spettrogramma e per il vocoder, e ne esce un'onda sonora pronunciata."
 :width: 95%
 
-La pipeline della sintesi vocale, speculare a quella dell'ASR: il testo viene
-normalizzato, convertito in fonemi, trasformato in mel-spettrogramma dal
-modello acustico e infine in onda sonora dal vocoder.
+Dal testo alla voce, tappa per tappa. Prima si
+riscrive il testo come va pronunciato («9:30» diventa «nove e trenta»), poi lo
+si traduce nei suoni veri della lingua, poi da quei suoni si disegna
+l'immagine a bande del parlato, e in fondo l'immagine ridiventa un'onda che si
+può ascoltare. Ogni tappa ha un nome, e le prossime pagine le prendono una per
+una.
 ```
 
-Attenzione a un nome che torna e cambia mestiere. Nella pipeline del
-riconoscimento il **modello acustico** era il pezzo che, ascoltando il suono,
-diceva quali suoni-parola ci fossero dentro; qui è il pezzo che, letto il
-testo, decide quali suoni *produrre*. Stesso nome, freccia rovesciata: è il
-punto in cui la specularità della figura si vede meglio.
+Attenzione a un nome che torna e cambia mestiere. Nel riconoscimento il
+**modello acustico** era il pezzo che, ascoltando il suono, diceva quali
+suoni ci fossero dentro; qui è il pezzo che, letto il testo, decide
+quali suoni *produrre*. Stesso nome, freccia rovesciata: è il punto in cui la
+specularità della figura si vede meglio.
 
-Perché tante tappe? Nella ricetta di Tacotron 2, che vedremo fra poco, un
-secondo di parlato sono ventiquattromila campioni audio e ottanta colonne di
-mel-spettrogramma (una ogni dodici millesimi e mezzo di secondo): trecento
-volte di meno. È molto
-più facile per un modello decidere prima *che suoni* produrre e *con che
-ritmo* (poche colonne compatte), e lasciare a uno specialista (il *vocoder*)
-il compito di aggiungere il dettaglio fine dell'onda. Ma prima ancora dei
-suoni c'è un lavoro sporco di cui nessuno parla volentieri: sistemare il
-testo.
+Perché tante tappe, invece di andare dritti dal testo all'onda? Perché l'onda
+è lunghissima. Dentro un computer è la fila di **campioni** di cui parlavamo
+nella sezione precedente: la pressione dell'aria misurata a intervalli
+regolari, migliaia di volte al secondo. In **Tacotron 2**, il modello che
+vedremo fra poco, un secondo di parlato sono ventiquattromila campioni in
+fila. La stessa mezza frase, disegnata come immagine a bande, sta in ottanta
+colonne: una ogni dodici millesimi e mezzo di secondo, e siccome in un secondo
+di millesimi ce ne sono mille, mille diviso dodici e mezzo fa appunto ottanta.
+
+Ventiquattromila contro ottanta: trecento volte meno. Attenzione a cosa dice
+davvero questo trecento. Non dice che l'immagine sia trecento volte più
+piccola, perché ogni colonna non è un numero solo, sono ottanta misure, una
+per banda: in tutto fanno seimilaquattrocento numeri contro ventiquattromila,
+cioè quasi quattro volte meno, che non è granché. Dice che i **passi** da fare
+uno dopo l'altro sono trecento volte meno, e quando le decisioni vanno prese
+in fila, ciascuna aspettando la precedente, è quello il numero che conta.
+
+Ecco perché il lavoro si divide in due. Prima si decide *che suoni* produrre e
+*con che ritmo*, e sono ottanta colonne al secondo: poche, e si possono
+guardare tutte insieme. Poi uno specialista (il *vocoder*) ci mette sopra il
+dettaglio fine dell'onda. Ma prima ancora dei suoni c'è un lavoro sporco di
+cui nessuno parla volentieri: sistemare il testo.
 
 ## Mettere ordine nel testo: la normalizzazione
 
@@ -74,8 +94,9 @@ sistema TTS deve decidere *quali parole* corrispondono a ciò che è scritto.
 
 `````{tab} Elementare
 
-Immagina di dettare un telegramma al telefono: non puoi dire «1901», devi
-scioglierlo a voce («millenovecentouno»). La normalizzazione è esattamente
+Immagina di dettare un messaggio a qualcuno che lo deve scrivere sotto
+dettatura: «1901» non lo puoi mostrare, lo devi sciogliere a voce
+(«millenovecentouno»). La normalizzazione è esattamente
 questo lavoro, fatto da un programma. «Il dott. Rossi arriva l'1/3 alle 9:30»
 deve diventare «il dottor Rossi arriva il primo marzo alle nove e trenta»:
 «dott.» si scioglie in «dottore» (anzi, «dottor» davanti al nome), «1/3» è una
@@ -162,28 +183,41 @@ dati, ed è lì che si gioca la naturalezza.
 
 ## Da robot a persona: tre generazioni di sintesi
 
-La prima generazione automatizza proprio il Voder: al posto delle dita di Helen
-Harper ci sono regole scritte a mano, una per ogni suono da produrre. Si chiama
+La prima generazione automatizza proprio il Voder: al posto delle dita
+dell'operatrice ci sono regole scritte a mano, una per ogni suono da
+produrre. Si chiama
 **sintesi per formanti**, dal nome della cosa che imita: quando parliamo, la
 gola e la bocca cambiano forma e fanno risuonare più forte certe frequenze e
 non altre, ed è da quelle poche frequenze esaltate (le *formanti*) che
-l'orecchio distingue una «a» da una «i». La macchina non registra nessuna voce:
-fabbrica quelle risonanze con generatori di suono e filtri, seguendo la
-ricetta. Si capisce benissimo, non si stanca mai, e non somiglia a nessuno: è
-la voce robotica per definizione. Il suo capolavoro è il **DECtalk** (1984),
-figlio del lavoro di Dennis Klatt al MIT, la cui voce principale (*Perfect
-Paul*, modellata sulla voce dello stesso Klatt) è entrata nella storia per un
-caso particolare: Stephen Hawking. Dalla metà degli anni Ottanta Hawking parlò
-attraverso un sintetizzatore a formanti della stessa famiglia (il CallText 5010
-di Speech Plus, anch'esso derivato dal lavoro di Klatt), e quando negli anni
-arrivarono voci molto migliori rifiutò sempre di cambiarla: «La tengo perché
-non ho ancora sentito una voce che mi piaccia di più, e perché ormai mi ci
-identifico». Quel timbro metallico era diventato *la sua* voce: al punto che un
-gruppo di tecnici lavorò per anni a emularne l'hardware ormai introvabile, e il
-26 gennaio 2018, sette settimane prima che morisse, gli portarono a casa
-l'emulatore su un Raspberry Pi. Hawking alzò le sopracciglia, che nel suo
-codice voleva dire sì. Klatt, l'uomo che gli aveva prestato la voce, era morto
-trent'anni prima, dopo che un tumore alla tiroide gli aveva tolto la propria.
+l'orecchio distingue una «a» da una «i». La macchina non registra nessuna
+voce: fabbrica quelle risonanze da zero, con generatori di suono e filtri, e
+la ricetta gliela scrive una persona. Si capisce benissimo, non si stanca mai,
+e non somiglia a nessuno: è la voce robotica per definizione.
+
+Le ricette migliori le scrisse **Dennis Klatt**, al MIT, e per scriverle prese
+a modello la propria voce: la misurò, e mise nelle regole le frequenze che ci
+aveva trovato. Non è una registrazione (nessun pezzo di Klatt finisce nella
+macchina) ma il risultato gli somiglia, ed è la voce che tutti conoscono come
+*Perfect Paul*. Klatt la mise nel **DECtalk** (1984), il sintetizzatore più
+famoso di quella generazione; e dallo stesso suo lavoro derivava anche un
+apparecchio di un'altra ditta, il CallText 5010 di Speech Plus, che ha una
+voce della stessa famiglia. Fu quest'ultimo a entrare nella storia, perché era
+quello di Stephen Hawking.
+
+Hawking era il fisico più famoso del mondo, e una malattia degenerativa dei
+nervi gli aveva tolto prima l'uso delle gambe, poi delle mani, infine la voce.
+Dalla metà degli anni Ottanta parlò attraverso quella macchina: sceglieva le
+parole una a una su uno schermo, comandando un interruttore con i muscoli che
+poteva ancora muovere, e il sintetizzatore le leggeva ad alta voce. Quando
+negli anni arrivarono voci molto migliori rifiutò sempre di cambiarla: «La
+tengo perché non ho ancora sentito una voce che mi piaccia di più, e perché
+ormai mi ci identifico». Quel timbro metallico era diventato *la sua* voce, al
+punto che un gruppo di tecnici lavorò per anni a emularne l'elettronica ormai
+introvabile, e il 26 gennaio 2018, sette settimane scarse prima che morisse, gli
+portarono a casa l'emulatore su un Raspberry Pi, un computer grande come un
+mazzo di carte, e glielo montarono sulla carrozzina. Hawking scrisse: «I love
+it». Klatt, l'uomo che gli aveva prestato la voce, era morto trent'anni prima,
+dopo che un tumore alla tiroide gli aveva tolto la propria.
 
 La seconda generazione, dominante dagli anni Novanta, è la **sintesi
 concatenativa**: si registrano ore di parlato di uno speaker professionista,
@@ -194,19 +228,33 @@ voce umana) ma le giunture si sentono, e il sistema è rigido: per cambiare
 stile, o anche solo correggere un'intonazione, bisogna tornare in studio di
 registrazione.
 
-La terza generazione è quella neurale, e comincia nel 2016, quando WaveNet
-{cite}`oord2016wavenet` dimostra che una rete può generare direttamente
-l'onda audio, campione per campione, con una qualità mai sentita prima. Nel
-giro di due anni la ricetta si assesta nella forma a due stadi della nostra
-pipeline.
+La terza generazione è quella neurale, e comincia nel 2016 con **WaveNet**
+{cite}`oord2016wavenet`, che fa una cosa che nessuno credeva possibile:
+fabbrica l'onda sonora un campione alla volta, ventiquattromila al secondo,
+con una rete sola e una qualità mai sentita prima. Dimostrato che si poteva,
+restava il problema che ci metteva un'eternità, ed è per aggirarlo che nel
+giro di due anni la ricetta si assesta nella forma a due stadi che è ancora
+quella di oggi.
 
 ## Il TTS neurale, in due stadi
 
+Attenzione a non confondere i due stadi con le tappe della figura di prima:
+quelle erano cinque, e le prime (sciogliere il testo, tradurlo in suoni) sono
+lavoro di preparazione. I due stadi sono gli ultimi due, cioè le due reti
+neurali vere e proprie. Il primo stadio prende il testo, ormai sciolto e
+tradotto in suoni, e ne disegna l'immagine a bande. Il secondo prende
+quell'immagine e ne fabbrica l'onda che esce dall'altoparlante. Sono due
+mestieri talmente diversi che quasi sempre li fanno due reti separate,
+addestrate una indipendentemente dall'altra.
+
 ### Primo stadio: dal testo al mel-spettrogramma
 
-Il modello di riferimento è **Tacotron 2** {cite}`shen2018natural`, di
-Google. Se lo schema ti suona familiare, è perché lo è: è un
-encoder-decoder con attenzione, lo stesso della traduzione automatica.
+Il modello di riferimento è **Tacotron 2** {cite}`shen2018natural`, di Google,
+e la macchina che c'è dentro l'abbiamo già vista: è la stessa del traduttore
+automatico del capitolo sul linguaggio naturale, quella in cui una parte della
+rete legge e un'altra scrive, con l'attenzione che si sposta sul punto giusto
+(in gergo, un encoder-decoder con attenzione). Cambia solo cosa scrive in
+uscita.
 
 `````{tab} Elementare
 
@@ -220,14 +268,25 @@ leggere segue il rigo. Se una vocale va tenuta a lungo, l'attenzione resta
 ferma lì per più colonne. Il risultato è quasi indistinguibile da una
 registrazione, ma il metodo ha il difetto di chi scrive una lettera alla
 volta: ogni tanto il dito scivola, e il modello salta una parola o balbetta
-una sillaba due volte. **FastSpeech 2** {cite}`ren2021fastspeech` rovescia il
-metodo: prima decide *quanto dura* ogni suono, poi riempie tutte le colonne
-in un colpo solo, in parallelo. Più veloce di ordini di grandezza (cioè
-decine o centinaia di volte, non del venti per cento), e niente balbuzie. In
-cambio, la melodia della frase va decisa in anticipo invece di venir fuori
-strada facendo: è per questo che FastSpeech 2 si porta dietro anche un pezzo
-che stima l'intonazione e uno che stima il volume, suono per suono. È la
-scelta tipica quando la voce deve rispondere all'istante.
+una sillaba due volte. È lo stesso difetto dei riconoscitori con attenzione
+della sezione precedente di questo capitolo, con la freccia girata dall'altra
+parte.
+
+**FastSpeech 2** {cite}`ren2021fastspeech` rovescia il metodo: prima decide
+*quanto dura* ogni suono, poi riempie tutte le colonne in un colpo solo, in
+parallelo. Come faccia a sapere quanto dura un suono è una domanda giusta, e
+la risposta è che gliel'hanno insegnato: prima di addestrarlo, un altro
+programma passa su tutte le registrazioni e segna dove comincia e dove finisce
+ogni suono, così il modello ha degli esempi da cui imparare. Quel programma,
+per inciso, è un sistema della generazione precedente, uno di quelli che
+hanno retto il riconoscimento vocale per trent'anni: il metodo nuovo si
+appoggia al vecchio per la parte che non sa fare da sé. Il risultato è
+una sintesi più veloce di ordini di grandezza (cioè decine o centinaia di
+volte, non del venti per cento), e senza balbuzie. In cambio, la melodia della
+frase va decisa in anticipo invece di venir fuori strada facendo: è per questo
+che FastSpeech 2 si porta dietro anche un pezzo che stima l'intonazione e uno
+che stima il volume, suono per suono. È la scelta tipica quando la voce deve
+rispondere all'istante.
 
 `````
 
@@ -260,7 +319,7 @@ professionisti; nel confronto diretto sulla stessa frase, però, gli ascoltatori
 preferiscono ancora la registrazione vera, in modo statisticamente
 significativo. Le due misure non si contraddicono: dicono che la media dei voti
 è uno strumento più grossolano del confronto appaiato, ed è una lezione che
-torna nella sezione sul MOS.
+torna più avanti in questa stessa pagina, quando parleremo del MOS.
 
 FastSpeech 2 elimina l'autoregressione
 con un *variance adaptor* a tre rami (durate, pitch, energia): il predittore di
@@ -281,17 +340,25 @@ esterno (nel paper il Montreal Forced Aligner, costruito sopra un sistema
 HMM della generazione precedente), applicato ai dati prima
 dell'addestramento. L'allineamento, insomma, non sparisce: esce dal modello e
 diventa un passo di preparazione dei dati, comprato da un impianto che il
-modello dichiara superato. Gli stessi autori indicano il farne a meno come
-lavoro futuro.
+modello dichiara superato. La scelta è deliberata (gli autori adottano
+l'allineatore esterno *al posto* del maestro autoregressivo di FastSpeech 1,
+per avere allineamenti più accurati) ma sanno bene che resta un debito: in
+nota, nella stessa pagina, scrivono che lavoreranno a una sintesi non
+autoregressiva senza modelli di allineamento esterni.
 
 `````
 
 ### Secondo stadio: il vocoder
 
-Il nome chiude un cerchio: *vocoder*, da *voice coder*, è il termine nato ai
-Bell Labs proprio per il sistema di analisi e sintesi della voce di Homer
-Dudley, di cui il Voder era la vetrina da esposizione. Oggi indica il modello
-che trasforma il mel-spettrogramma nell'onda vera e propria.
+Il **vocoder** è il modello che prende l'immagine a bande e ne fabbrica l'onda
+vera e propria, quella che si può ascoltare. Il nome chiude un cerchio, e vale
+la pena raccontarlo: *vocoder* sta per *voice coder*, e ai Bell Labs indicava
+la macchina con cui Homer Dudley faceva due cose opposte. Prima smontava una
+voce nelle sue poche misure essenziali, perché quelle poche misure occupano
+sul cavo del telefono molto meno spazio della voce intera e quindi costano
+meno da spedire; poi, all'altro capo, dalle misure rimontava una voce. Il
+Voder era la metà «rimonta» di quel lavoro, messa in vetrina all'Esposizione
+universale con una tastiera al posto del cavo.
 
 `````{tab} Elementare
 
@@ -301,13 +368,17 @@ capitolo sull'Audio, quando generava musica) lavora come un amanuense: scrive
 l'onda un campione alla volta (e i campioni sono più di ventimila al secondo)
 decidendo ognuno sulla base di tutti i precedenti. Qualità mai sentita prima,
 ma una lentezza proverbiale: nella versione originale, generare un secondo di
-audio poteva costare minuti di calcolo. **HiFi-GAN** risolve il problema
-mettendo al lavoro due reti che si sfidano: da una parte un falsario,
-dall'altra un esperto d'arte. È l'idea delle **GAN**, a cui più avanti nel
-libro è dedicato un capitolo intero, e qui basta il gioco: una rete-falsario
-impara a produrre l'onda intera in un colpo solo, una squadra di reti-esperto
-prova a distinguere l'audio vero da quello fabbricato, e le due si allenano a
-vicenda finché il falso diventa indistinguibile.
+audio poteva costare minuti di calcolo. **HiFi-GAN** risolve il problema con
+una gara fra falsario ed esperti d'arte. È l'idea delle **GAN**, le reti
+avversarie generative, a cui più avanti nel libro è dedicato un capitolo
+intero: qui basta il gioco. Una rete-falsario impara a produrre l'onda intera
+in un colpo solo, e delle reti-esperto provano a distinguere l'audio vero da
+quello fabbricato. Gli esperti sono parecchi, e non è un dettaglio: uno solo
+si farebbe fregare, perché un difetto che si sente al rallentatore può sparire
+a velocità normale e viceversa. Ognuno ascolta l'onda a modo suo, e il
+falsario deve ingannarli tutti. Falsario ed esperti si allenano a vicenda
+finché il falso non si distingue più.
+
 Risultato: qualità paragonabile a WaveNet, ma molto **più veloce del tempo
 reale**, che vuol dire questo: per fabbricare un secondo di parlato ci mette
 molto meno di un secondo, tanto che in un secondo di calcolo ne produce minuti.
@@ -356,9 +427,11 @@ GPU, con naturalezza percepita alla pari dei vocoder autoregressivi.
 
 ## Quanto è naturale? L'orecchio come giudice
 
-Per l'ASR avevamo il WER: si confronta la trascrizione con il riferimento e
-si contano gli errori. Per la sintesi un «riferimento» non esiste: la stessa
-frase si può pronunciare bene in mille modi diversi.
+Per il riconoscimento avevamo il WER, il tasso di errore sulle parole: si
+confronta la trascrizione con quella giusta e si contano le correzioni che
+servono. Per la sintesi una «trascrizione giusta» non esiste: la stessa frase
+si può pronunciare bene in mille modi diversi, e nessuno di quei modi è più
+vero degli altri.
 
 `````{tab} Elementare
 
@@ -370,14 +443,16 @@ per leggerlo serve il termine di paragone, cioè quanto hanno preso, **nella
 stessa prova**, delle registrazioni di voce umana vera, infilate fra le altre
 senza dirlo a nessuno. Se il sistema prende 4,2 e le registrazioni 4,5, quei
 tre decimi sono il divario; lo stesso 4,2 in una prova dove le registrazioni
-prendono 3,9 direbbe l'opposto.
+prendono 3,9 direbbe l'opposto, cioè che la voce sintetica è piaciuta più di
+quella vera.
 
-Un avvertimento che vale più del numero: quel voto medio ha senso *dentro* una
-prova, non fra prove diverse. Trenta persone in una stanza con le cuffie
-giudicano in un modo, trenta persone a casa propria in un altro, e lo stesso
-sistema può prendere 4,5 in uno studio e 3,7 in un altro senza essere
-cambiato di una virgola. Confrontare il MOS di un articolo con quello di un
-altro non dice niente. L'alternativa più affidabile è il **test A/B**: due
+C'è una ragione precisa per cui quel paragone deve stare dentro la stessa
+prova. Trenta persone in una stanza con le cuffie giudicano in un modo, trenta
+persone a casa propria in un altro, e lo stesso sistema può prendere 4,5 in
+uno studio e 3,7 in un altro senza essere cambiato di una virgola. Confrontare
+il MOS di un articolo con quello di un altro, quindi, non dice niente: è come
+confrontare i voti di due professori diversi. L'alternativa più affidabile è
+il **test A/B**: due
 versioni della stessa frase, «quale preferisci?». Chiedere quale delle due si
 preferisce è una domanda più facile, e più fine, che chiedere un voto in
 assoluto. Non esiste comunque una formula che sostituisca le
@@ -414,32 +489,44 @@ sistema TTS passa ancora dall'orecchio umano.
 C'è un rovescio della medaglia, ed è bene guardarlo senza allarmismi ma senza
 sconti. Gli stessi modelli di questa sezione, addestrati sulla voce di una
 persona specifica (oggi bastano pochi minuti di registrazione, e i sistemi più
-recenti si accontentano di secondi) producono un **clone vocale**. Il fenomeno
-delle truffe è documentato: già nel 2019 il *Wall Street Journal* riportò il
-caso di un dirigente di un'azienda energetica britannica convinto al telefono,
-da una voce clonata che imitava l'amministratore delegato della casa madre
-tedesca, a trasferire 220.000 euro a un presunto fornitore ungherese. Da
-allora lo schema si è ripetuto, fino alle telefonate-trappola che imitano la
-voce di un familiare. La questione di fondo è il **consenso**: la voce è un
-dato biometrico e un pezzo di identità (Hawking, che rifiutò per trent'anni
-voci «migliori» della sua, lo sapeva bene) e clonarla senza permesso è una
-forma di furto. Il *watermarking* (una filigrana inudibile incorporata
-nell'onda sintetica per riconoscerla dopo, come il filo di sicurezza in una
-banconota) è la contromisura tecnica più promettente, ma insegue. Finché
-insegue, la difesa che funziona non è tecnica ed è vecchia come il telefono:
-se una voce chiede soldi o dati con urgenza, si riattacca e si richiama il
-numero che si conosce; e una parola d'ordine concordata in famiglia costa
-niente e non si clona. Vale anche il rovescio del rovescio: la stessa
-tecnologia restituisce la voce a chi la sta perdendo per una malattia
-neurodegenerativa, registrandola prima che scompaia. Come sempre, lo strumento
-non sceglie l'uso.
+recenti si accontentano di secondi) producono un **clone vocale**.
+
+Le truffe sono già successe. Nel 2019 il *Wall Street Journal* raccontò
+questa: l'amministratore delegato di un'azienda energetica britannica riceve
+una telefonata, e dall'altra parte c'è la voce del capo della casa madre
+tedesca, che gli chiede di pagare con urgenza un fornitore ungherese.
+Riconosce la voce e trasferisce 220.000 euro. La voce era fabbricata. Da
+allora lo schema si è ripetuto in tutte le taglie, fino
+alle telefonate che imitano la voce di un familiare in difficoltà.
+
+La questione di fondo è il **consenso**. La voce è un dato biometrico, cioè
+una misura del corpo che identifica una persona come un'impronta digitale, ed
+è anche un pezzo della sua identità: Hawking, che rifiutò per trent'anni voci
+«migliori» della sua, lo sapeva bene. Clonarla senza permesso è una forma di
+furto.
+
+La contromisura tecnica più promettente è il *watermarking*, una filigrana
+inudibile incorporata nell'onda sintetica per riconoscerla dopo, come il filo
+di sicurezza in una banconota; ma arriva sempre un passo dietro a chi fabbrica
+le voci. Finché è così, la difesa che funziona non è tecnica ed è vecchia come
+il telefono: se una voce chiede soldi o dati con urgenza, si riattacca e si
+richiama il numero che si conosce. E una parola d'ordine concordata in
+famiglia costa niente e non si clona.
+
+Vale anche il rovescio del rovescio: la stessa tecnologia restituisce la voce
+a chi la sta perdendo per una malattia neurodegenerativa, registrandola prima
+che scompaia. Come sempre, lo strumento non sceglie l'uso.
 
 ## In pratica: sintetizzare una frase
 
-`torchaudio` offre pipeline preaddestrate che impacchettano i due stadi. Qui
-usiamo Tacotron 2 con un vocoder WaveRNN (un parente autoregressivo
-alleggerito di WaveNet) per pronunciare la traduzione del nostro esempio
-ricorrente:
+Tutto quello che questa sezione ha raccontato si può anche, semplicemente,
+ascoltare. `torchaudio` tiene pronti i due stadi
+già addestrati, e bastano una decina di righe per metterli in fila: qui
+Tacotron 2 disegna l'immagine a bande, e un vocoder di nome WaveRNN (un
+parente alleggerito di WaveNet, che scrive anche lui un campione alla volta)
+la trasforma in onda. La frase da pronunciare è la traduzione inglese
+dell'esempio che il libro si porta dietro dal capitolo sul linguaggio
+naturale, «il gatto nero salta sul muro».
 
 ```{code-block} python
 :class: pt-lento
@@ -449,7 +536,7 @@ import torchaudio
 import soundfile as sf
 
 # bundle preaddestrato: Tacotron 2 (da caratteri) + vocoder WaveRNN,
-# voce inglese femminile (dataset LJSpeech)
+# voce inglese femminile (registrazioni LJSpeech)
 bundle = torchaudio.pipelines.TACOTRON2_WAVERNN_CHAR_LJSPEECH
 
 processor = bundle.get_text_processor()   # testo -> ID dei caratteri
@@ -458,23 +545,44 @@ vocoder = bundle.get_vocoder()            # mel-spettrogramma -> onda
 
 testo = "The black cat jumps on the wall."
 
+# inference_mode: stiamo solo usando i modelli, non addestrandoli,
+# quindi PyTorch può risparmiare memoria e tempo
 with torch.inference_mode():
     token, lunghezze = processor(testo)
-    mel, mel_len, _ = tacotron2.infer(token, lunghezze)
-    onda, onda_len = vocoder(mel, mel_len)
+    mel, mel_len, _ = tacotron2.infer(token, lunghezze)   # il primo stadio
+    onda, onda_len = vocoder(mel, mel_len)                # il secondo
 
-# salva il risultato: onda ha forma (batch, campioni), qui se ne prende il primo
+# onda contiene un gruppo di frasi: qui ce n'è una sola, ed è la prima
 sf.write("gatto.wav", onda[0].cpu().numpy(), vocoder.sample_rate)
 print(onda.shape, vocoder.sample_rate)  # es. torch.Size([1, ...]) e 22050
 ```
 
-Un *bundle*, qui, è la confezione già pronta: i due modelli e i numeri che
-hanno imparato, scaricati insieme. I pesi di questo sono addestrati su una voce
-inglese: dagli una frase italiana e la leggerà con un buffo accento anglofono.
-Per l'italiano esistono modelli aperti addestrati su corpora nostrani, in
-particolare della famiglia **VITS** {cite}`kim2021vits`, che invece di
-incatenare due stadi li fonde in un unico modello addestrato da capo a
-fondo.
+Adesso apri `gatto.wav` e ascoltalo. Sono un paio di secondi, ed è il punto di
+tutta la sezione: nessuna descrizione scritta dice quello che dicono quei due
+secondi.
+
+Qualche parola sul codice. Un *bundle* è la confezione già pronta: i due
+modelli e i numeri che hanno imparato (i **pesi**), scaricati insieme. Quei
+pesi sono addestrati su una voce inglese, quindi dagli una frase italiana e la
+leggerà con un buffo accento anglofono: provaci, è la cosa più divertente
+della pagina.
+
+Il numero stampato in fondo, 22.050, è quanti campioni al secondo ha questa
+voce, e qui vale la pena fermarsi un attimo, perché di numeri del genere il
+capitolo ne ha già detti tre diversi: sedicimila per il microfono del telefono
+nel riconoscimento, ventiquattromila per Tacotron 2 nell'articolo che lo
+presenta, e adesso 22.050 per le registrazioni su cui questo modello è
+addestrato. Non è un'incoerenza e non ce n'è uno giusto: è una scelta, come
+decidere ogni quanti millimetri mettere una tacca sul righello. Più tacche
+vuol dire più fedeltà e più spazio occupato, e ciascuno sceglie il suo. Quello
+che conta è non mescolarli: un modello addestrato con un righello va usato con
+quello.
+
+Per l'italiano esistono modelli aperti (cioè scaricabili e usabili da
+chiunque, pesi compresi) addestrati su registrazioni nostrane, in particolare
+della famiglia **VITS** {cite}`kim2021vits`, che invece di incatenare due
+stadi li fonde in un modello solo, addestrato dall'inizio alla fine in un
+pezzo unico come Whisper.
 
 Il cerchio del capitolo si chiude qui: sappiamo trasformare la voce in testo e
 il testo in voce. Messe in fila (ASR, un modello che decide cosa rispondere,
@@ -491,12 +599,15 @@ Anche qui, il ripasso su due livelli.
   → si sciolgono numeri e sigle → si scrivono i suoni → si disegna
   l'immagine a bande del suono → si costruisce l'onda. Quell'immagine a bande
   (il **mel-spettrogramma**) è il punto in cui i due viaggi si toccano.
+- Attenzione al **modello acustico**, che nei due viaggi fa mestieri opposti:
+  all'andata ascolta i suoni e dice quali sono, al ritorno legge il testo e
+  decide quali suoni produrre. Stesso nome, freccia rovesciata.
 - Sciogliere il testo (la **normalizzazione**) è il lavoro meno appariscente e
   quello dove si sbaglia di più: «1901» è «millenovecentouno» o «uno nove zero
-  uno» a seconda di cosa sia. Poi si passa dalle lettere ai suoni (il
-  **G2P**): la c di *casa* e la c di *ciao* sono la stessa lettera e due suoni
-  diversi. E sopra tutto c'è la **prosodia**, la musica della frase: pause,
-  durate, intonazione.
+  uno» a seconda di cosa sia. Poi si passa dalle lettere ai suoni veri, i
+  **fonemi**, e il passaggio si chiama **G2P**: la c di *casa* e la c di
+  *ciao* sono la stessa lettera e due fonemi diversi. E sopra tutto c'è la
+  **prosodia**, la musica della frase: pause, durate, intonazione.
 - Tre generazioni di macchine parlanti: quella **per formanti** (fabbrica i
   suoni da zero seguendo regole, ed è la voce robotica di Hawking), quella
   **concatenativa** (ritagli di voce vera ricuciti insieme), quella
@@ -530,8 +641,9 @@ Anche qui, il ripasso su due livelli.
   contesto; il **G2P** converte i grafemi in **fonemi** (la c di *casa* è
   /k/, quella di *ciao* è /tʃ/): facile in italiano, difficile in inglese.
   Sopra tutto c'è la **prosodia**: intonazione, durate, pause.
-- Tre generazioni: sintesi **per formanti** (robotica: DECtalk, la voce di
-  Hawking), **concatenativa** (ritagli di voce vera ricuciti), **neurale**.
+- Tre generazioni: sintesi **per formanti** (robotica: le regole di Klatt, il
+  DECtalk e la voce di Hawking), **concatenativa** (ritagli di voce vera
+  ricuciti), **neurale**.
 - Il TTS neurale lavora in **due stadi**: un modello acustico testo→mel
   (**Tacotron 2**, seq2seq con attenzione; **FastSpeech 2**, parallelo e più
   stabile, ma con le durate fornite da un allineatore forzato esterno) e un
@@ -545,3 +657,13 @@ Anche qui, il ripasso su due livelli.
 ```
 
 `````
+
+[^stesso-tipo]: Chi riconosce e chi sintetizza ritagliano il suono in modo
+    diverso, perché servono a due mestieri diversi. Il riconoscimento misura
+    una finestrella di venticinque millesimi di secondo e ne comincia una
+    nuova ogni dieci; Tacotron 2, il modello di sintesi che vedremo fra poco,
+    usa finestrelle di cinquanta millesimi e una nuova ogni dodici e mezzo.
+    Sono immagini a bande fatte con righelli diversi, e infatti quella
+    prodotta da un sintetizzatore non si dà in pasto a un riconoscitore
+    addestrato con l'altro righello: le colonne non cadono dove se le
+    aspetta.

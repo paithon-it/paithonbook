@@ -10,19 +10,24 @@ zampe che deve imparare a camminare. A ogni istante il controllore non decide
 con la virgola, magari negativo per frenare, magari $3{,}4$, magari $3{,}41$.
 Non c'è un menu di mosse da scorrere: c'è un continuo di forze da dosare.
 
-È lo scoglio con cui si chiude la sezione su DQN. L'operatore $\max_a$, cuore
-del Q-learning, richiede di *enumerare* le azioni per trovare la migliore. Con
-un joystick funziona; con uno sterzo, un acceleratore o sette giunti che si
-muovono insieme, le combinazioni sono infinite e l'`argmax` diventa
-intrattabile. Dall'altra parte, i metodi a gradiente di policy che abbiamo
-visto (REINFORCE, actor-critic, A3C, PPO) gestiscono nativamente le azioni
-continue, ma nella loro forma *on-policy* (imparano solo dalla strategia che
-stanno giocando in quel momento) buttano via ogni esperienza dopo averla usata
-una volta, e in più il loro apprendimento **balla**, cioè la stessa strategia,
-rigiocata, dà correzioni molto diverse fra loro. Per un robot vero, dove ogni
-tentativo costa secondi di usura reale, sono due lussi che non ci si può
-permettere. Servono metodi che uniscano le due virtù: *azioni continue* e
-*riuso dei dati* alla maniera off-policy di DQN.
+È lo scoglio annunciato in fondo alla sezione su DQN. Prendere il voto più alto
+vuol dire scorrere le mosse una per una: con un joystick si può, con uno sterzo,
+un acceleratore o sette giunti che si muovono insieme le combinazioni sono
+infinite e non si scorre più niente.
+
+I metodi a gradiente di policy della sezione precedente (REINFORCE,
+attore-critico, A3C, PPO) su questo non hanno problemi: imparano a decidere,
+non a votare, e una quantità da dosare la sanno produrre. Ma hanno due difetti
+loro. Il primo: imparano soltanto dalla strategia che stanno giocando in quel
+momento (in gergo sono *on-policy*, il contrario dell'*off-policy* di DQN), e
+quindi ogni esperienza si usa una volta e poi si butta. Il secondo: il loro
+apprendimento
+**balla**, cioè la stessa strategia, rigiocata, dà correzioni molto diverse fra
+loro. Per un robot vero, dove ogni tentativo costa secondi di usura reale, sono
+due lussi che non ci si può permettere.
+
+Servono metodi che uniscano le due virtù: mosse da dosare, come nei gradienti di
+policy, e riuso delle esperienze passate, come nel quaderno di DQN.
 
 ## Il problema del controllo continuo
 
@@ -64,23 +69,25 @@ campione-efficiente {cite}`sutton2018reinforcement`.
 
 ## DDPG: un attore deterministico guidato dal critico
 
-Il primo algoritmo a chiudere il cerchio è **DDPG**, *Deep Deterministic Policy
-Gradient*, presentato da Lillicrap e colleghi di DeepMind nel 2016
-{cite}`lillicrap2016continuous`. Il nome dice quasi tutto: un attore
-*deterministico* addestrato con un *gradiente di policy*, dentro l'impianto
-off-policy di DQN.
+Il primo algoritmo a tenere insieme le due virtù appena chieste è **DDPG**,
+*Deep Deterministic Policy Gradient*, presentato da Lillicrap e colleghi di
+DeepMind nel 2016 {cite}`lillicrap2016continuous`.
 
 L'idea è tenere due reti che collaborano. L'**attore** guarda la situazione e
 propone un'azione precisa: non un ventaglio di possibilità con le loro
-probabilità, come faceva la policy della sezione precedente, ma esattamente la
-spinta da dare, un numero per ciascun motore. È ancora una policy, ma
-*deterministica*, cioè che nella stessa situazione risponde sempre la stessa
-cosa, senza tirare dadi. Il
-**critico** è il vecchio Q-network con una modifica: oltre alla situazione
-riceve in ingresso *anche* l'azione proposta, e restituisce un numero solo,
-quanto vale fare quella mossa lì. Il critico impara come in DQN, inseguendo un
-bersaglio calcolato con le copie congelate delle due reti; l'attore impara a
-proporre le azioni che il critico premia di più.
+probabilità, come faceva la strategia della sezione precedente, ma esattamente
+la spinta da dare, un numero per ciascun motore. È **deterministica**, cioè
+nella stessa situazione risponde sempre la stessa cosa, senza tirare dadi: da lì
+la seconda D del nome. Il **critico** è la vecchia rete dei voti di DQN con una
+modifica: oltre alla situazione riceve in ingresso *anche* l'azione proposta, e
+restituisce un numero solo, quanto vale fare quella mossa lì.
+
+Il critico impara come in DQN, inseguendo un **bersaglio**, cioè il voto che
+quella mossa dovrebbe avere secondo i conti del momento; e come in DQN quel
+bersaglio si calcola con delle copie congelate delle due reti, per la stessa
+ragione di allora, cioè perché un bersaglio che si sposta insieme a chi lo
+insegue non si raggiunge mai. L'attore, dal canto suo, impara a proporre le
+azioni che il critico premia di più.
 
 `````{tab} Elementare
 
@@ -155,14 +162,16 @@ critico ha errori di stima in ogni direzione; l'attore, addestrato a cercare le
 azioni che il critico valuta di più, si infila proprio dove il critico ha
 sbagliato *per eccesso*. Quegli errori ottimistici vengono così selezionati,
 amplificati e reimmessi nel bersaglio che il critico insegue, dove tendono ad
-accumularsi. Il secondo è l'**ipersensibilità agli iperparametri**: piccole
-variazioni nei tassi di apprendimento, nella scala del rumore o nella dimensione
-delle reti possono fare la differenza tra un agente che impara a camminare e uno
-che crolla a terra. E non serve nemmeno cambiare un parametro: basta rilanciare
-lo stesso addestramento cambiando il seme del generatore casuale, e i risultati
-possono essere molto diversi. È la ragione per cui in
-questo campo un risultato si riporta su molte ripetizioni, come abbiamo fatto
-con la ricerca ad albero: una prova sola non dice quasi niente.
+accumularsi. Il secondo è l'**ipersensibilità agli iperparametri**, cioè alle
+manopole che si decidono prima di cominciare e non si imparano: la velocità con
+cui le reti si correggono, quanto rumore aggiungere, quanto farle grandi.
+Ritoccarne una di poco può fare la differenza fra un agente che impara a
+camminare e uno che crolla a terra. E non serve nemmeno ritoccarla: basta
+rilanciare lo stesso identico addestramento cambiando il seme, cioè il numero da
+cui parte il sorteggio interno, e i risultati possono essere molto diversi. È la
+ragione per cui in questo campo un risultato si riporta su molte ripetizioni,
+come abbiamo appena fatto con la ricerca ad albero: una prova sola non dice
+quasi niente.
 
 ## TD3: tre correzioni chirurgiche
 
@@ -194,9 +203,17 @@ strategia, conviene che i giudici abbiano le idee chiare; un attore che insegue
 critici ancora confusi rincorre bersagli sbagliati.
 
 **Bersagli sfumati.** Il terzo trucco aggiunge un pizzico di rumore all'azione
-usata nel calcolo del bersaglio, così che azioni quasi identiche ricevano voti
-quasi identici. Impedisce all'attore di aggrapparsi a un picco stretto e
-probabilmente illusorio del critico.
+usata nel calcolo del voto di riferimento, così che azioni quasi identiche
+ricevano voti quasi identici. Impedisce all'attore di aggrapparsi a un picco
+stretto e probabilmente illusorio del critico.
+
+Va detto anche su che cosa questi tre trucchi non promettono niente. Dei due
+difetti elencati poco fa attaccano il primo, l'ottimismo dei voti, e lo
+attaccano in due: i due giudici e i bersagli sfumati. L'attore che parla di meno
+cura invece un difetto in più, che nell'elenco non c'era, cioè l'attore che
+insegue giudizi ancora acerbi. Sul secondo difetto, la sensibilità alle manopole,
+TD3 non dice nulla: l'addestramento è meno nervoso e quindi se ne soffre meno,
+ma il problema è ancora tutto lì.
 
 `````
 
@@ -231,8 +248,8 @@ $$
 così che il bersaglio sia liscio rispetto all'azione: previene lo
 sfruttamento, da parte dell'attore, di picchi acuti ed erronei nella superficie
 del critico. Dei due difetti elencati sopra, TD3 attacca frontalmente **il
-primo**, la sovrastima, con il clipped double-Q e il target smoothing; il terzo
-accorgimento cura un difetto che sopra non era in elenco e va aggiunto, cioè
+primo**, la sovrastima, con il clipped double-Q e il target smoothing; il *delayed
+policy update* cura un difetto che sopra non era in elenco e va aggiunto, cioè
 l'attore che insegue stime ancora immature. Sull'ipersensibilità agli
 iperparametri, invece, TD3 non promette nulla: ne attenua i sintomi perché
 l'addestramento è meno nervoso, non perché il problema sia risolto. Il valore
@@ -248,7 +265,9 @@ filosofia diversa: **SAC**, *Soft Actor-Critic* {cite}`haarnoja2018soft`. Qui
 l'attore torna **stocastico**, cioè l'opposto di deterministico: invece di una
 sola spinta restituisce un ventaglio di spinte possibili con le loro
 probabilità, e la mossa vera la si estrae da lì. E cambia l'obiettivo stesso
-dell'apprendimento.
+dell'apprendimento. Il *soft* del nome vuol dire «morbido», ed è un'allusione
+proprio a questo: dove prima l'agente puntava tutto sulla mossa migliore, adesso
+tiene aperto un ventaglio.
 
 `````{tab} Elementare
 
@@ -355,9 +374,10 @@ with torch.no_grad():
         p_t.mul_(1 - tau).add_(tau * p)
 ```
 
-Il segno meno nella `perdita_attore` è tutto ciò che serve. Gli ottimizzatori
-sanno soltanto *minimizzare*, quindi per far salire il voto del critico gli si
-dà da minimizzare quel voto cambiato di segno. Il resto lo fa la
+Il segno meno nella `perdita_attore` è tutto ciò che serve. L'ottimizzatore (il
+pezzo di libreria che ritocca i pesi a ogni passo, qui `opt_attore`) sa fare una
+cosa sola, *far scendere* il numero che gli si dà: quindi per far salire il voto
+del critico gli si dà da far scendere quel voto cambiato di segno. Il resto lo fa la
 retropropagazione, cioè il meccanismo con cui una rete si corregge partendo
 dall'errore in uscita e risalendo verso i pesi: qui parte dal voto, attraversa
 il critico, arriva all'azione, e da lì entra nei parametri dell'attore. È
@@ -367,22 +387,23 @@ per farla valere di più.
 
 ## Onestà sui limiti
 
-Questi metodi off-policy sono molto più **campione-efficienti** di PPO e A3C:
-riusando ogni transizione molte volte dal replay buffer, imparano da meno
-interazioni con l'ambiente (decisivo quando ogni tentativo consuma un robot
-vero). Il prezzo è la **stabilità**. DDPG, in particolare, è fragile e
-capriccioso; TD3 e SAC lo domano, ma restano più delicati da mettere a punto
-di un PPO ben tarato, che spesso si preferisce proprio perché "perdona" di
-più. Non esiste il vincitore assoluto: la scelta dipende da quanto costano i
-campioni e da quanta cura si può dedicare alla taratura.
+Questi tre metodi hanno un pregio grosso: riusano ogni esperienza molte volte,
+pescandola dal quaderno, e quindi imparano da molte meno prove nel mondo. È
+decisivo quando ogni tentativo consuma un robot vero. Il prezzo è la
+**stabilità**. DDPG, in particolare, è fragile e capriccioso; TD3 e SAC lo
+domano, ma restano più delicati da mettere a punto di un PPO ben tarato (PPO è
+l'algoritmo della sezione precedente, quello che «perdona» gli errori di
+taratura), e per questo spesso si preferisce lui. Non esiste il vincitore
+assoluto: la scelta dipende da quanto costa una prova e da quanta cura si può
+dedicare alla messa a punto.
 
 C'è poi un limite che nessuno di questi algoritmi risolve da sé, il
-**sim-to-real gap**. Addestrare un robot direttamente nel mondo fisico è lento
-e rischioso, così quasi sempre si impara in simulazione, dove i campioni sono
-abbondanti e le cadute non rompono nulla. Ma il simulatore non è la realtà:
-attriti, ritardi dei motori, giochi meccanici e rumore dei sensori non
-coincidono mai del tutto. Una policy perfetta nel simulatore può inciampare al
-primo passo reale. Colmare quello scarto (con randomizzazione dei parametri
+**sim-to-real gap**, lo scarto fra simulazione e mondo fisico. Addestrare un
+robot direttamente nel mondo fisico è lento e rischioso, così quasi sempre si
+impara in simulazione, dove le prove sono infinite e le cadute non rompono
+nulla. Ma il simulatore non è la realtà: attriti, ritardi dei motori, giochi
+meccanici e rumore dei sensori non coincidono mai del tutto. Una strategia
+perfetta nel simulatore può inciampare al primo passo reale. Colmare quello scarto (con randomizzazione dei parametri
 fisici, calibrazione, adattamento sul campo) è un problema di ricerca ancora
 aperto, e ci ricorda che l'algoritmo di controllo è solo un pezzo del percorso
 che porta un robot a muoversi nel mondo.

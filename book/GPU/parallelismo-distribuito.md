@@ -1,36 +1,64 @@
 # Oltre una GPU: parallelismo distribuito
 
-Facciamo un conto che mette le cose in prospettiva, e facciamolo per esteso,
-perché è il genere di conto che conviene rifare invece di prendere per buono.
-Un modello come GPT-3 ha 175 miliardi di parametri. Tenerli in mezza precisione
-costa 2 byte l'uno, cioè 350 GB solo per i pesi (175 miliardi per 2: un
-miliardo di byte è un gigabyte).
+I modelli di cui leggiamo i nomi ogni settimana non nascono su una scheda: ne
+servono centinaia, a volte migliaia, tutte sullo stesso compito. Quasi nessun
+lettore di questo libro avrà un impianto del genere sotto mano, e va benissimo
+così. Ma il modo in cui quelle schede si spartiscono il lavoro è la cosa che
+spiega meglio *come* l'intelligenza artificiale di oggi viene costruita, e si
+racconta con quattro immagini: un tavolo di persone che si passano i conti, un
+registro strappato a metà, una catena di montaggio e un manuale diviso in
+fascicoli.
+
+Prima però vale la pena vedere *perché* una scheda non basta, e vederlo con un
+conto vero invece che a parole.
+
+Un modello come GPT-3 ha 175 miliardi di **parametri**: sono i numeri che la
+rete impara, quelli che il libro chiama anche **pesi** (le due parole si usano
+l'una per l'altra, e faremo lo stesso). Scritti nel formato corto che la sezione
+«Prestazioni e scala» chiama *mezza precisione*, ciascuno occupa 2 byte invece
+di 4. In tutto $175 \cdot 10^9 \times 2 = 350$ miliardi di byte, cioè
+**350 GB** di soli pesi.
 
 Ma addestrare è un'altra faccenda, perché durante l'addestramento in memoria
-non ci sono solo i pesi. Con l'ottimizzatore Adam, nella versione a precisione
-mista, per **ogni** parametro vanno tenuti:
+non ci sono solo i pesi. C'è anche la contabilità di chi guida l'apprendimento,
+cioè di chi a ogni passo decide di quanto spostare ciascun peso: quel «chi» si
+chiama **ottimizzatore**, e il più usato, **Adam** {cite}`kingma2015adam`, non
+guarda soltanto la correzione del momento, si tiene anche un po' di memoria di
+come quel peso si è mosso di recente (il capitolo sul deep learning gli dedica
+una sezione). Quella memoria va conservata numero per numero, per tutta la
+durata dell'addestramento. L'inventario completo, per **ogni** parametro, è
+questo:
 
 - i **pesi** in mezza precisione, 2 byte, quelli che il modello usa per
   calcolare;
 - i **gradienti**, cioè le correzioni da applicare, altri 2 byte;
-- una copia dei pesi in precisione piena, 4 byte, che serve perché sommare
-  correzioni minuscole a numeri corti le farebbe sparire per arrotondamento;
-- le due **statistiche** che Adam si tiene per ogni parametro (una media delle
-  correzioni recenti e una loro misura di dispersione), 4 byte ciascuna.
+- una copia dei pesi in precisione piena, 4 byte. Serve perché in un numero
+  corto le cifre sono poche, e sommargli una correzione minuscola non lo cambia
+  affatto: come aggiungere un millimetro a una misura presa al metro, il
+  risultato torna arrotondato uguale a prima e la correzione sparisce invece di
+  accumularsi;
+- le due **statistiche** di Adam, 4 byte l'una e quindi 8 in tutto: la media
+  delle correzioni recenti (per non farsi sballottare dal singolo esempio) e una
+  misura di quanto quelle correzioni ballano, che serve a fare passi corti dove
+  il terreno è accidentato e passi lunghi dove è liscio.
 
-Sommando: $2 + 2 + 4 + 4 + 4 = 16$ byte per parametro, dei quali i 350 GB di
-prima sono soltanto la prima voce. Per 175 miliardi di parametri fanno **2,8
-terabyte**, cioè 2800 GB. Una GPU da datacenter di fascia alta, una H100, ha 80
-GB di memoria: $2800 / 80 = 35$, ci vorrebbero trentacinque schede *soltanto
-per contenere lo stato dell'addestramento*, prima ancora di parlare di
-velocità. Alcuni modelli non stanno in una GPU sola, né per memoria, né per
-tempo.
+Sommando, e contando due volte l'ultima voce perché le statistiche sono due:
+$2 + 2 + 4 + 4 + 4 = 16$ byte per parametro, dei quali i 350 GB di prima sono
+soltanto il primo addendo. Per 175 miliardi di parametri fanno
+$175 \cdot 10^9 \times 16 = 2800$ miliardi di byte, cioè **2,8 terabyte**.
+Tutto questo insieme (pesi, correzioni, copia precisa e statistiche) ha un nome
+che tornerà spesso: è lo **stato dell'addestramento**, e deve stare in memoria
+dal primo esempio all'ultimo. Una GPU da datacenter di fascia alta, una
+H100, ha 80 GB di memoria: $2800 / 80 = 35$, ci vorrebbero trentacinque schede
+soltanto per *contenerlo*, prima ancora di parlare di velocità. Alcuni modelli
+non stanno in una GPU sola, né per memoria, né per tempo.
 
 Nella sezione «Prestazioni e scala» del capitolo su PyTorch abbiamo già visto
-la strategia più comune per usare più schede: il **parallelismo dati** con
-`DistributedDataParallel`, con l'analogia degli insegnanti che si spartiscono
-i compiti e poi mediano le correzioni. Qui la riprendiamo in due righe, ne
-mettiamo a fuoco il limite, e poi andiamo *oltre*: una tassonomia dei modi di
+la strategia più comune per usare più schede: il **parallelismo dati**, che in
+PyTorch si accende con una riga (`DistributedDataParallel`) e che lì era
+raccontato con l'analogia degli insegnanti che si spartiscono i compiti da
+correggere e poi mediano le correzioni. Qui la riprendiamo in due righe, ne
+mettiamo a fuoco il limite, e poi andiamo *oltre*: una mappa dei modi di
 dividere il lavoro quando un modello è troppo grande perché una GPU basti a
 sé.
 
@@ -40,30 +68,34 @@ o otto, collegate fra loro da connessioni interne molto veloci. Un **cluster**
 è un insieme di nodi collegati in rete, che lavorano allo stesso compito: fra
 due schede dello stesso nodo i dati volano, fra due nodi diversi devono passare
 per la rete, che è molto più lenta. Quasi tutte le scelte che seguono nascono
-da questa differenza.
-
-Non è materia da tutti i giorni (quasi nessun lettore avrà un cluster
-sotto mano) ma è esattamente così che vengono addestrati i modelli di
-frontiera, e capirne la mappa spiega molto di come funziona l'AI moderna.
+da questa differenza. (Attenzione a una parola che in questa pagina fa due
+mestieri: quando si dice «rete» in questo senso si intendono i cavi che
+collegano i computer, non la rete neurale. Per quest'ultima, qui, diremo sempre
+«il modello».)
 
 ## Ripasso: il parallelismo dati e il suo limite
 
 Il parallelismo dati non divide il modello: divide i *dati*. Ogni GPU riceve
-una **copia identica** della rete e una fetta diversa del mini-batch, calcola le
-proprie correzioni, e alla fine tutte si mettono d'accordo facendone la media.
-L'operazione con cui si mettono d'accordo si chiama **all-reduce**: vuol dire
-«ognuno mette dentro il suo, e alla fine tutti hanno lo stesso risultato». Dopo
-la media, le repliche applicano lo stesso aggiornamento e restano perfettamente
-uguali. È il primo dei tre pannelli in {numref}`fig-parallelismo-strategie`.
+una **copia identica** del modello e una fetta diversa del mini-batch (il
+mazzetto di esempi che si guardano in una volta sola prima di aggiornare i
+pesi), calcola le proprie correzioni, e alla fine tutte si mettono d'accordo
+facendone la media. L'operazione con cui si mettono d'accordo si chiama
+**all-reduce**: ogni scheda mette dentro i propri numeri, si sommano, e alla
+fine tutte quante hanno in mano lo stesso risultato. Dopo la media, le repliche
+applicano lo stesso aggiornamento e restano perfettamente uguali. È il primo
+dei tre pannelli in {numref}`fig-parallelismo-strategie`, che vale la pena
+guardare adesso solo nella sua prima colonna: le altre due sono le strategie
+delle sezioni che seguono, e le si capisce meglio quando ci si arriva.
 
 ```{figure} ../figures/parallelismo-strategie.svg
 :name: fig-parallelismo-strategie
 :alt: "Tre pannelli affiancati. DATI: due GPU con lo stesso modello replicato ma fette di dati diverse (dati A e dati B), i gradienti mediati con un all-reduce. TENSOR: una singola matrice di pesi W tagliata a metà, colonna sinistra su GPU 0 e destra su GPU 1, i due risultati ricomposti con un all-gather. PIPELINE: GPU 0 tiene gli strati 1-2 e GPU 1 gli strati 3-4, i micro-batch scorrono come su una catena di montaggio."
 :width: 100%
 
-Tre modi di dividere il lavoro su più GPU. **Dati**: si replica il modello e si
-spartiscono gli esempi. **Tensor**: si taglia una singola matrice di pesi tra
-le GPU. **Pipeline**: si mettono strati diversi su GPU diverse.
+Tre modi di dividere il lavoro su più GPU, uno per sezione. **Dati**: si
+replica il modello e si spartiscono gli esempi (è il pannello di questa
+sezione). **Tensor**: si taglia in due un singolo tabellone di numeri del
+modello. **Pipeline**: si mettono strati diversi su GPU diverse.
 ```
 
 Il punto delicato è come avviene quella media senza intasare la rete. Il modo
@@ -73,22 +105,30 @@ nome preciso.
 
 `````{tab} Elementare
 
-Immagina le GPU disposte in cerchio, come persone attorno a un tavolo, ognuna
-con la propria lista di numeri da sommare a quella delle altre. Invece di
-gridare tutti verso una persona sola (che non riuscirebbe mai a stare dietro a
-tutti) ciascuno parla **solo col vicino di destra**: gli passa un pezzetto
+Immagina le schede disposte in cerchio, come persone attorno a un tavolo,
+ognuna con la propria lista di numeri da sommare a quella delle altre. Invece
+di gridare tutti verso una persona sola (che non riuscirebbe mai a stare dietro
+a tutti) ciascuno parla **solo col vicino di destra**: gli passa un pezzetto
 della somma parziale, riceve un pezzetto dal vicino di sinistra, e così via
 finché il giro non si chiude. A quel punto ciascuno ha finito **un pezzo** del
 totale, non il totale intero: perché tutti abbiano tutto se ne fa un secondo
 giro, uguale al primo, in cui i pezzi già finiti si passano di mano in mano.
-Due giri, quindi, non uno: ed è per questo che il traffico si conta due volte.
-Il bello è che nessuno è mai sovraccarico: il lavoro di comunicazione è
-spalmato in modo uniforme, e resta lo stesso che ci siano quattro persone o
-quaranta.
+Due giri, quindi, non uno: chi vuole tenere il conto di quanti dati si
+spediscono deve ricordarsi di contarli due volte.
+
+Il bello è che nessuno è mai sovraccarico, e che aggiungere gente non peggiora
+le cose. Il motivo si vede con un conto in testa: se le persone raddoppiano, la
+lista viene tagliata in pezzetti che sono la metà, e ciascuno ne passa il
+doppio; il numero di passaggi cresce, la quantità di roba che ciascuno spedisce
+resta quella. Con quattro persone o con quaranta, ogni scheda manda in giro
+all'incirca due volte la propria lista, e non di più.
+
 Questa danza si chiama *ring all-reduce* ed è il motivo per cui il
-parallelismo dati scala bene. Il limite è un altro, e nasce dalla parola
-«copia»: se ogni persona attorno al tavolo deve tenere in tasca l'intero
-elenco telefonico, quando l'elenco diventa enorme non c'è tasca che tenga.
+parallelismo dati regge bene su tante schede. Il limite è un altro, e nasce
+dalla parola «copia»: nell'analogia, oltre ai numeri da sommare, ciascuno ha
+davanti a sé anche una copia intera del manuale con cui lavora, cioè il
+modello. Finché è un opuscolo va bene. Quando diventa un elenco telefonico da
+mille pagine, non c'è tasca che tenga.
 
 `````
 
@@ -134,25 +174,34 @@ strategie che seguono, che invece di replicare **spezzano**.
 
 ## Spezzare la matrice: il tensor parallelism
 
-La prima idea è tagliare il modello dove è più grosso: le sue matrici di pesi.
-Invece di replicare l'intera matrice su ogni GPU, se ne mette **un pezzo** su
-ciascuna, e ognuna calcola la propria fetta del prodotto. È il secondo pannello
-di {numref}`fig-parallelismo-strategie`, ed è l'idea alla base di **Megatron-LM**
+La prima idea è tagliare il modello dove è più grosso. Un modello, dentro, è
+fatto in buona parte di grandi tabelloni di numeri: uno per strato, e farlo
+lavorare vuol dire moltiplicare i numeri che entrano per i numeri del
+tabellone. Un tabellone così, in matematica, si chiama **matrice**, ed è
+l'oggetto di cui parla il capitolo sulla matematica. Invece di tenerne una
+copia intera su ogni GPU, se ne mette **un pezzo** su ciascuna, e ognuna
+calcola la propria fetta del risultato. È il secondo pannello di
+{numref}`fig-parallelismo-strategie`, ed è l'idea alla base di **Megatron-LM**
 {cite}`shoeybi2019megatron`.
 
 `````{tab} Elementare
 
 Due contabili devono sommare le colonne di un registro gigantesco. Copiare
 l'intero registro a entrambi sarebbe uno spreco: meglio strapparlo a metà per
-il lungo (le prime colonne a uno, le ultime all'altro). Ciascuno somma la sua
-metà, in parallelo, e alla fine si scambiano i due risultati parziali per
-rimetterli insieme. Nessuno dei due ha mai avuto l'intero registro in mano:
-sta metà in una testa e metà nell'altra. Le reti neurali sono fatte in gran
-parte di questi tabelloni di numeri (le matrici dei pesi) e tagliarle così
-permette di far girare uno strato che, intero, non entrerebbe in una scheda
-sola. Il prezzo è che i due contabili devono parlarsi in continuazione, a ogni
-strato: conviene solo se sono seduti vicini, con una linea diretta velocissima
-tra loro.
+il lungo, le prime colonne a uno e le ultime all'altro. Ciascuno somma la sua
+metà, in parallelo, e poi i due si scambiano i risultati parziali per rimetterli
+insieme. Nessuno dei due ha mai avuto l'intero registro in mano: sta metà in
+una testa e metà nell'altra. È così che si fa girare uno strato che, intero,
+non entrerebbe in una scheda sola.
+
+Il punto delicato è che quello scambio non avviene una volta sola alla fine. Il
+totale di ogni pagina serve per cominciare la pagina dopo, quindi i due
+contabili devono fermarsi, mettere insieme i pezzi e ripartire **a ogni
+pagina**: e un modello di pagine ne ha decine, una per strato. Finché i due
+sono seduti allo stesso tavolo, passarsi un foglio non costa quasi niente. Se
+sono in due edifici diversi, quel fermarsi continuo diventa la voce di spesa
+principale. Per questo tagliare i tabelloni conviene solo fra schede vicine,
+unite da una linea diretta velocissima.
 
 `````
 
@@ -207,11 +256,18 @@ l'auto arriva in fondo la prima è già ferma. Tre operai, ma quasi sempre uno
 solo lavora. Il rimedio è non mandare un'auto sola, ma un flusso continuo:
 appena la prima postazione ha finito il telaio di un'auto e l'ha passato
 avanti, comincia subito quello dell'auto successiva. Presto tutte e tre le
-postazioni lavorano insieme, ciascuna su un'auto diversa. In una rete neurale
-le «auto» sono pezzetti del mini-batch (i **micro-batch**) che si fanno
-scorrere lungo gli strati. Il tempo iniziale in cui le postazioni si
-riempiono, e quello finale in cui si svuotano, è tempo sprecato: si chiama
-**bolla**, e più micro-batch si mandano in fila, più diventa trascurabile.
+postazioni lavorano insieme, ciascuna su un'auto diversa. Nel modello le
+«auto» sono pezzetti del mazzetto di esempi, i **micro-batch**, che si fanno
+scorrere lungo gli strati.
+
+Il tempo iniziale in cui le postazioni si riempiono, e quello finale in cui si
+svuotano, è tempo sprecato. Ha un nome che viene dal disegno con cui si
+rappresentano queste cose (una riga per postazione, il tempo che scorre in
+orizzontale, il lavoro come una barra piena): all'inizio e alla fine restano
+due sacche vuote, e quelle sacche si chiamano **bolla**. Quanto costa la bolla
+si conta: con quattro postazioni e una macchina sola se ne va in fumo il 75%
+del tempo, con trentadue macchine in fila si scende sotto il 9%. Più
+micro-batch si mandano di seguito, più la bolla si assottiglia.
 
 `````
 
@@ -255,29 +311,37 @@ dell'NVLink.
 
 ## Non replicare, spartire: ZeRO e FSDP
 
-Torniamo al difetto del parallelismo dati: con $K$ GPU ci sono $K$ copie
-identiche di tutto (pesi, gradienti, stati dell'ottimizzatore). Una montagna
-di memoria sprecata a ripetere le stesse cose. E se, invece di replicare, si
-**spartisse**? Ogni GPU custodisce solo una $K$-esima parte dello stato, e
-quando le serve un pezzo che non ha, se lo fa passare al volo dalla collega
-che lo tiene. È l'idea di **ZeRO** {cite}`rajbhandari2020zero`, che in PyTorch
-prende il nome di **FSDP**: *Fully Sharded Data Parallel*
-{cite}`zhao2023pytorchfsdp`.
+Torniamo al difetto del parallelismo dati: con otto GPU ci sono otto copie
+identiche di tutto, cioè otto volte lo stato dell'addestramento del conto di
+apertura (pesi, correzioni e le due statistiche che l'ottimizzatore si tiene per
+ogni peso). Una montagna di memoria sprecata a ripetere le stesse cose. E se,
+invece di replicare, si **spartisse**? Ogni GPU custodisce solo la propria
+fetta, e quando le serve un pezzo che non ha, se lo fa passare al volo dalla
+collega che lo tiene.
+
+I due nomi con cui questa idea si incontra sono sigle inglesi, e conviene
+scioglierle subito perché dicono esattamente quello che fanno: **ZeRO**
+{cite}`rajbhandari2020zero` sta per «ottimizzatore senza copie ripetute»
+(*Zero Redundancy Optimizer*), e la sua realizzazione in PyTorch si chiama
+**FSDP**, «parallelismo dati con tutto spartito» (*Fully Sharded Data
+Parallel*) {cite}`zhao2023pytorchfsdp`. Il verbo inglese per «spartire», qui,
+è *shard*, e da lì viene lo **sharding** che si incontra ovunque si parli di
+questa famiglia di tecniche.
 
 `````{tab} Elementare
 
 Torniamo agli insegnanti che correggono i compiti. Nel parallelismo dati
 ognuno teneva in tasca una fotocopia *completa* della griglia di valutazione:
 comodo, ma se la griglia è un tomo di mille pagine, tenerne una copia intera a
-testa è uno spreco enorme di zaini. L'alternativa: si strappa il tomo in
-$K$ fascicoli e ogni insegnante ne porta uno solo. Quando arriva la domanda la
-cui regola sta a pagina 700, l'insegnante che non ce l'ha la chiede al collega
-che tiene quel fascicolo, se la fa fotocopiare *giusto per quella correzione*, e
-appena finito butta la fotocopia. Un po' più di viavai tra colleghi, in cambio
-di zaini $K$ volte più leggeri. È così che modelli enormi riescono a girare su
-GPU «normali»: nessuna scheda tiene mai il modello intero, solo la sua fetta,
-radunando i pezzi che servono un attimo prima di usarli e liberandoli subito
-dopo.
+testa è uno spreco enorme di zaini. L'alternativa: se gli insegnanti sono otto,
+si strappa il tomo in otto fascicoli e ognuno ne porta uno solo. Quando arriva
+la domanda la cui regola sta a pagina 700, l'insegnante che non ce l'ha la
+chiede al collega che tiene quel fascicolo, se la fa fotocopiare *giusto per
+quella correzione*, e appena finito butta la fotocopia. Un po' più di viavai tra
+colleghi, in cambio di zaini otto volte più leggeri. È così che modelli enormi
+riescono a girare su GPU «normali»: nessuna scheda tiene mai il modello intero,
+solo la sua fetta, radunando i pezzi che servono un attimo prima di usarli e
+liberandoli subito dopo.
 
 `````
 
@@ -339,44 +403,60 @@ model = FSDP(model, device_id=rank, auto_wrap_policy=policy)
 ## Il quadro d'insieme
 
 Nella pratica queste strategie non si scelgono a esclusione: si **combinano**.
-Addestrare un modello di frontiera significa quasi sempre impilarne tre insieme
-(da qui il nome **3D parallelism**), e a decidere quale va dove è sempre la
-stessa domanda: quanto spesso le schede devono fermarsi a parlarsi. Chi ha
-bisogno di parlare molto sta *dentro* un nodo, dove le schede sono unite da un
-collegamento interno velocissimo (l'**NVLink**); chi si accontenta di parlare di
-rado si allarga *fra* i nodi, dove c'è la rete.
+Addestrare un modello di frontiera significa quasi sempre impilarne tre
+insieme, e siccome sono tre tagli in tre direzioni diverse (fra gli esempi,
+dentro un tabellone, lungo la fila degli strati) l'uso ha chiamato la
+combinazione **3D parallelism**, come i tre assi di uno spazio.
 
-Quindi: il tensor parallelism dentro ogni nodo, perché a ogni strato obbliga
-tutte le schede a mettere insieme un risultato e ad aspettarsi a vicenda prima
-di poter proseguire, e questa attesa non si può nascondere dietro il calcolo; il
-pipeline parallelism a spezzare gli strati lungo i gruppi di nodi; il
-parallelismo dati fra i nodi, che si scambia i gradienti una volta per passo.
+A decidere quale strategia va dove c'è una domanda sola: **quanto spesso le
+schede devono fermarsi a parlarsi**. Prima però va detta la cosa che rende
+quella domanda sensata, perché è la stessa mossa dell'occupancy vista
+all'inizio del capitolo: mandare dati e fare conti sono due attività distinte e
+possono avvenire *insieme*, quindi una comunicazione che parte mentre la scheda
+sta ancora calcolando non si paga quasi. Si paga invece quella che obbliga
+tutti a incrociare le braccia finché non è finita.
 
-A questi se ne aggiungono altri due, più specialistici. Il **sequence
-parallelism** {cite}`korthikanti2023activation` taglia il testo per il lungo,
-spartendone i pezzi fra le schede, e serve ad alleggerire la memoria occupata
-dalle **attivazioni**, cioè dai risultati intermedi che ogni strato produce e
-che vanno tenuti da parte fino al viaggio di ritorno. L'**expert parallelism**
-riguarda i modelli *Mixture of Experts*, quelli in cui la rete non è una sola ma
-un mazzo di reti specializzate fra cui un selettore smista ogni parola in
-arrivo: lì si mettono esperti diversi su schede diverse.
+Da qui la distribuzione. Il tensor parallelism sta **dentro** ogni nodo: a ogni
+strato obbliga le schede a mettere insieme un risultato e ad aspettarsi a
+vicenda, e quell'attesa è di quelle che nessuno può coprire con altro lavoro,
+perché il calcolo dopo dipende proprio da lei. Serve quindi il collegamento più
+veloce che esista, quello interno al nodo (si chiama **NVLink**). Il pipeline
+parallelism spezza gli strati fra gruppi di nodi, e si scambia poca roba. Il
+parallelismo dati sta **fra** i nodi, dove c'è la rete lenta: gli basta un giro
+di medie a ogni passo, cioè a ogni mazzetto di esempi.
+
+A questi se ne aggiungono altri due, più specialistici, e sono due modi di
+tagliare che i primi tre non coprono. Il **sequence parallelism**
+{cite}`korthikanti2023activation` divide il testo in tratti e ne dà uno per
+scheda (le prime mille parole a una, le seconde mille a un'altra), per
+alleggerire la memoria che si mangiano le **attivazioni**, cioè i risultati
+intermedi che ogni strato produce e che vanno conservati fino al passaggio
+all'indietro, quello in cui il modello impara dai propri errori.
+L'**expert parallelism** riguarda i modelli *Mixture of Experts*, quelli in cui
+il modello non è uno solo ma un mazzo di modelli specializzati fra cui un
+selettore smista ogni parola in arrivo: lì si mettono esperti diversi su schede
+diverse.
 
 Dietro tutta questa ingegneria c'è una tensione di fondo che vale la pena
-nominare: il **memory wall**. La dimensione dei modelli è cresciuta molto più
-in fretta della memoria che si riesce a mettere su una singola GPU: è per
-questo che *spartire* lo stato, e non solo replicarlo, è diventato
-inevitabile, e che FSDP è oggi la via pratica per addestrare modelli grandi su
-un numero ragionevole di schede.
+nominare: il **memory wall**, il muro della memoria. La dimensione dei modelli
+è cresciuta molto più in fretta della memoria che si riesce a mettere su una
+singola GPU: è per questo che *spartire* lo stato, e non solo replicarlo, è
+diventato inevitabile, e che FSDP è oggi la via pratica per addestrare modelli
+grandi su un numero ragionevole di schede.
 
 Un'ultima onestà, nello stesso spirito della sezione «Prestazioni e scala»:
 quasi nessun lettore di questo libro avrà un cluster su cui provare tutto
-questo, e va benissimo così. Ma la tassonomia (dati, tensor, pipeline,
-sharding) non è folklore da datacenter: è la mappa che spiega *come* nascono i
-modelli di cui leggiamo i nomi ogni settimana. E l'ultima delle quattro,
-FSDP, è alla portata già di **due schede infilate nello stesso computer**: non
-serve un nodo di datacenter, basta una macchina con due GPU. Se un giorno vi
-troverete in quella situazione, con un modello che in una scheda sola non entra,
-saprete da che parte guardare.
+questo, e va benissimo così. Ma le quattro strategie (spartire gli esempi,
+spartire i tabelloni, spartire gli strati, spartire lo stato) non sono folklore
+da datacenter: sono la mappa che spiega *come* nascono i modelli di cui
+leggiamo i nomi ogni settimana. E l'ultima, FSDP, è alla portata già di **due
+schede infilate nello stesso computer**. Perché proprio lei: il parallelismo
+dati su due schede è facilissimo da accendere ma non risolve il problema del
+modello che non ci sta, visto che ogni scheda ne tiene una copia intera;
+spezzare i tabelloni o gli strati risolve, ma vuole che si rimetta mano a come
+il modello è scritto. FSDP risolve *e* costa una riga di codice al posto di
+un'altra. Se un giorno vi troverete con un modello che in una scheda sola non
+entra, è da lì che si comincia.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare

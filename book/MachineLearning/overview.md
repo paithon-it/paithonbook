@@ -3,18 +3,21 @@
 Nel 1959 un ingegnere dell'IBM di nome Arthur Samuel pubblicò un articolo dal
 titolo modesto (*Some Studies in Machine Learning Using the Game of Checkers*
 {cite}`samuel1959some`) che oggi suona profetico. Samuel aveva scritto un
-programma che giocava a dama, e la parte sorprendente è questa: dopo migliaia
-di partite contro sé stesso, il programma giocava **meglio del suo autore**.
-Non perché Samuel gli avesse insegnato le mosse giuste una per una, ma perché
-il programma le aveva ricavate dall'esperienza.
+programma che giocava a dama, e la parte sorprendente è questa: giocando contro
+sé stesso, il programma arrivò a giocare **meglio del suo autore**. Non perché
+Samuel gli avesse insegnato le mosse giuste una per una, ma perché le aveva
+ricavate dall'esperienza.
 
 Se giocava contro sé stesso, però, chi gli diceva quale mossa fosse quella
-buona? Nessuno, e infatti il programma non lo sapeva sul momento: lo scopriva
-alla fine. A partita finita si guardava indietro e dava un voto a tutte le
-posizioni per cui era passato, un po' più alto se aveva vinto, un po' più basso
-se aveva perso. Ripetuto per migliaia di partite, quel voto diventa un fiuto per
-le posizioni che portano bene. È il terzo dei tre modi di imparare, e lo
-ritroviamo poco più avanti in questa pagina.
+buona? Nessuno, ed è qui l'idea. Il programma dava un voto alla posizione che
+aveva davanti, poi guardava qualche mossa più in là, e correggeva il voto di
+adesso avvicinandolo a quello che vedeva **dopo**. Nessuno gli diceva chi
+avesse ragione: a fare da maestro era la propria stessa valutazione, presa un
+passo più avanti, dove si vede meglio. Ripetuto per tutta la partita e per
+tutte le partite, quel voto diventa un fiuto per le posizioni che portano bene.
+È il terzo dei tre modi di imparare, che questa pagina presenta poco più
+avanti, e la sua forma matura ha un nome che ritroveremo, apprendimento per
+differenze temporali.
 
 In quell'articolo compare, tra le prime volte nella storia, l'espressione
 *machine learning*: la capacità di un calcolatore di migliorare a un compito

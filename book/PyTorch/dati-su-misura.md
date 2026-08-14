@@ -1,7 +1,8 @@
 # Dati su misura: `Dataset`, `DataLoader` e trasformazioni
 
-Nei manuali il dataset arriva sempre pronto: una riga di codice, MNIST si
-scarica da solo, le immagini sono già quadrate, già etichettate, già divise in
+Nei manuali il dataset arriva sempre pronto: una riga di codice e MNIST, la
+raccolta di cifre scritte a mano su cui abbiamo addestrato il primo modello, si
+scarica da solo, con le immagini già quadrate, già etichettate, già divise in
 addestramento e test. Nella vita reale il primo giorno di un progetto
 assomiglia piuttosto a questo: una cartella con quattromila fotografie, i nomi
 dei file scritti da tre persone diverse, due immagini corrotte, una classe con
@@ -65,28 +66,29 @@ sbagliare tutto mentre invece funziona benissimo.
 `ImageFolder` copre il caso fortunato. Appena i dati stanno in un CSV, in un
 database, in file audio con le etichette in un foglio a parte (o appena
 servono più informazioni della sola classe), si scrive la propria classe. È
-meno lavoro di quanto sembri: il contratto è di **tre metodi**.
+meno lavoro di quanto sembri: si scrivono **tre metodi**, e due soli di quelli
+sono il contratto vero, cioè le domande che PyTorch verrà davvero a farci; il
+terzo è il costruttore, che serve a noi per prepararci.
 
 ```{figure} ../figures/ereditarieta-polimorfismo.svg
 :name: fig-ereditarieta-dataset
-:alt: "Gerarchia di classi: in cima una classe base che definisce un metodo di validazione comune; sotto, tre sottoclassi che la ereditano e ridefiniscono ciascuna il proprio metodo di caricamento, uno per le immagini, uno per il CSV, uno per l'audio. Chi le usa chiama sempre gli stessi metodi, senza sapere quale sottoclasse ha davanti."
+:alt: "Gerarchia di classi: in cima Dataset, con i due metodi __len__ e __getitem__; sotto, tre sottoclassi che li scrivono ciascuna a modo proprio, una che apre file .jpg, una che legge una riga di CSV, una che apre file .wav. In basso il DataLoader, collegato a tutte e tre, che chiede sempre le stesse due cose senza sapere quale delle tre ha davanti."
 :width: 92%
 
 Uno stampo di partenza, tre versioni specializzate. Chi consuma i dati non sa
-da dove vengano: fa sempre le stesse tre domande, e ognuna delle tre versioni
+da dove vengano: chiede sempre le stesse due cose, e ognuna delle tre versioni
 risponde a modo suo, leggendo immagini, un foglio di calcolo o dei file audio.
 ```
 
 La {numref}`fig-ereditarieta-dataset` mostra il meccanismo che permette al
 `DataLoader` di funzionare con qualunque `Dataset` senza saperne nulla, ed è
-l'ereditarietà incontrata nella sezione sui
-[moduli](moduli.md), usata qui per un altro scopo. In cima c'è `Dataset`, lo
-stampo di PyTorch, che non contiene quasi niente: dichiara soltanto quali tre
-domande gli si possono fare. Sotto ci sono le classi che noi scriviamo, una per
-tipo di dato, e ciascuna risponde a quelle tre domande a modo proprio. Il
-guadagno è che il `DataLoader` non deve conoscerle: gli basta sapere che
-qualunque cosa erediti da `Dataset` sa rispondere. Finché la vostra classe
-rispetta il contratto dei tre metodi, per il resto di PyTorch è
+l'ereditarietà incontrata nella sezione sui [moduli](moduli.md), usata qui per
+un altro scopo. In cima c'è `Dataset`, lo stampo di PyTorch, che non contiene
+quasi niente: dice soltanto quali due domande gli si possono fare. Sotto ci
+sono le classi che scriviamo noi, una per tipo di dato, e ciascuna risponde a
+quelle due domande a modo proprio. Il guadagno è che il `DataLoader` non deve conoscerle:
+gli basta sapere che qualunque cosa erediti da `Dataset` sa rispondere. Finché
+la nostra classe rispetta il contratto, per il resto di PyTorch è
 indistinguibile da `ImageFolder`, anche se legge un tipo di dato che chi ha
 scritto la libreria non aveva previsto.
 
@@ -118,11 +120,13 @@ class DatasetImmagini(Dataset):
 ```
 
 `````{tab} Elementare
-Sono tre risposte a tre domande che il `DataLoader` continuerà a fare per
-tutto l'addestramento. *Come ti prepari?* (`__init__`: qui si fa il lavoro
-lento una volta sola, elencare i file, leggere il CSV degli indici.) *Quanti
-esempi hai?* (`__len__`.) *Dammi il numero 137* (`__getitem__`: qui si fa il
-lavoro veloce, ed è la parte che verrà eseguita milioni di volte).
+Sono tre metodi, ma le domande sono due, ed è la distinzione che la
+{numref}`fig-ereditarieta-dataset` disegna. Le due domande che il `DataLoader`
+farà per tutto l'addestramento sono *quanti esempi hai?* (`__len__`) e *dammi
+il numero 137* (`__getitem__`: qui si fa il lavoro veloce, ed è la parte che
+verrà eseguita milioni di volte). Il terzo metodo, `__init__`, nessuno ce lo
+chiede: è la nostra preparazione, quella che avviene una volta sola prima di
+cominciare, dove si elencano i file o si legge il foglio con le etichette.
 
 La regola pratica sta tutta in questa divisione del lavoro: **in `__init__` le
 cose pesanti, in `__getitem__` le cose leggere**. Se in `__init__` carichi in
@@ -193,17 +197,25 @@ ancora un gatto. Farlo durante l'esame significherebbe invece dare a ogni
 studente domande diverse e a caso: il voto non sarebbe più confrontabile, né
 con quello di ieri né con quello di un altro modello.
 
-E la `Normalize`? Sposta i numeri in modo che abbiano media attorno a zero:
-alle reti riesce molto più facile imparare quando i numeri in ingresso sono
-piccoli e centrati, per lo stesso motivo per cui è più facile trovare la
-strada in una città con l'origine al centro anziché in un angolo lontano. I sei
-numeri della riga (tre medie e tre deviazioni standard, una per colore) sono le
-statistiche di **ImageNet**, la grande raccolta pubblica di fotografie
-etichettate su cui, dal 2012 in poi, si è misurata la visione artificiale e su
-cui è addestrata la maggior parte dei modelli che si scaricano già pronti. Si
-usano quelli quando si parte da uno di quei modelli, perché il modello se li
-aspetta: sono i numeri con cui gli sono state date le immagini quando ha
-imparato.
+E la `Normalize`? Sposta i numeri in modo che si distribuiscano attorno allo
+zero, ed è così che le reti imparano meglio. È la stessa comodità per cui, per
+raccontare com'è andata una verifica, si dice «due sopra la media» e «uno
+sotto» invece di elencare i voti: i numeri diventano piccoli, e la differenza
+fra un compagno e l'altro si vede a colpo d'occhio invece di essere nascosta
+dentro cifre che si somigliano tutte.
+
+I numeri della riga sono sei perché sono due per colore: la media dei valori di
+quel colore, e una misura di quanto quei valori si sparpagliano attorno alla
+media (si chiama **deviazione standard**). Da dove vengono lo dice il commento:
+sono le statistiche di **ImageNet**, la grande raccolta pubblica di fotografie
+etichettate su cui, dal 2012 in poi, si è misurata la visione artificiale.
+
+E qui c'è una domanda legittima: perché usare i numeri di ImageNet su delle
+foto di pizza? Perché è quello che si fa quasi sempre, cioè non partire da zero
+ma da un modello già addestrato su ImageNet, che quei numeri se li aspetta,
+perché sono quelli con cui gli sono state date le immagini quando ha imparato.
+Chi invece addestra davvero da zero se li calcola sulle proprie foto, e viene
+meglio: come si fa è scritto in fondo a questa sezione.
 `````
 
 `````{tab} Superiore
@@ -261,9 +273,13 @@ vassoi successivi sono già pronti quando servono.
 
 `pin_memory` è il piano d'appoggio accanto al passavivande: i dati vengono
 messi in una zona di memoria da cui la GPU può prenderli senza passaggi
-intermedi. `drop_last` butta via l'ultimo vassoio se è mezzo vuoto, con
-duemila esempi e batch da 32, l'ultimo ne ha 16, e nei modelli con la batch
-normalization un batch anomalo può dare statistiche strane.
+intermedi.
+
+`drop_last` butta via l'ultimo vassoio se è mezzo vuoto: con duemila esempi e
+vassoi da 32, l'ultimo ne ha 16, e ci sono tipi di strato che dai numeri del
+vassoio ricavano delle statistiche, e su un vassoio grande la metà quelle
+statistiche vengono storte. Il capitolo sul deep learning dirà quali.
+
 `persistent_workers` dice di non licenziare gli aiutanti alla fine di ogni
 giro per riassumerli subito dopo: se prepararsi costa loro qualche secondo,
 quei secondi si pagano una volta invece che a ogni epoca. E `shuffle=True`
@@ -301,8 +317,9 @@ personalizzato deve togliere `shuffle`.
 
 ## Quando gli esempi non hanno la stessa forma: `collate_fn`
 
-Il meccanismo che impila gli esempi in un batch pretende che abbiano tutti la
-stessa forma. Con le immagini ridimensionate è vero per costruzione; con il
+Il pezzo che impila gli esempi in un batch (si chiama *collate*, che in inglese
+vuol dire proprio «mettere in ordine dei fogli sciolti», e nel codice compare
+come `collate_fn`) pretende che abbiano tutti la stessa forma. Con le immagini ridimensionate è vero per costruzione; con il
 testo, l'audio o le serie temporali non lo è quasi mai: una frase è lunga
 sette parole, la successiva quarantatré. La soluzione è sostituire quel
 meccanismo con il proprio.
@@ -342,6 +359,18 @@ print(imbottite.shape, lunghezze.shape, etichette.shape)
 # le lunghezze vere sono tutte diverse, la larghezza del batch e' la massima:
 print(lunghezze[:8].tolist(), "-> larghezza", imbottite.shape[1])
 ```
+
+I numeri cambiano a ogni esecuzione, perché le frasi sono sorteggiate, ma la
+forma di quello che esce è sempre questa:
+
+```text
+torch.Size([32, 39]) torch.Size([32]) torch.Size([32])
+[20, 14, 14, 32, 36, 15, 39, 9] -> larghezza 39
+```
+
+Trentadue frasi, ciascuna larga trentanove, che è la lunghezza della più lunga
+del vassoio; e accanto le trentadue lunghezze vere, tutte diverse. La frase che
+ne aveva nove è stata allungata con trenta zeri.
 
 Le **lunghezze** vanno restituite insieme ai dati e non sono un dettaglio.
 Dopo l'imbottitura tutte le frasi del vassoio hanno la stessa larghezza, e gli
@@ -384,9 +413,13 @@ loader = DataLoader(dati_train, batch_size=32, sampler=campionatore)
 
 Il campionamento pesato è una delle tre leve possibili: le altre sono pesare
 la *loss* (`weight` in `CrossEntropyLoss`) e generare esempi sintetici della
-classe rara. Il capitolo sul machine learning discute quando conviene
-ciascuna, e soprattutto perché in questi casi l'accuratezza smette di essere
-una metrica onesta: si guardano [precisione, richiamo e
+classe rara. Il capitolo sul machine learning discute quando conviene ciascuna.
+
+E discute anche perché, quando le classi sono sbilanciate così, l'accuratezza
+smette di dire la verità. Basta un conto: se su duemila foto millenovecento
+sono pizza, un modello che risponde «pizza» a occhi chiusi, sempre, prende
+novantacinque su cento e non ha imparato niente. Servono misure che guardino
+anche le classi rare, e sono [precisione, richiamo e
 F1](../MachineLearning/metriche.md).
 
 ## Dividere i dati senza barare
@@ -444,10 +477,14 @@ Nella maggior parte dei progetti che non riguardano i modelli giganti, la colpa
 ferma ad aspettare il successivo. Vale la pena tenerlo a mente, perché è la
 diagnosi che quasi nessuno prova per prima e quasi sempre è quella giusta.
 
-Come ci si accorge: si guarda quanto è occupata la scheda grafica mentre
-l'addestramento gira. Se sta al cento per cento in modo stabile, il collo di
+Come ci si accorge, se una scheda grafica c'è: si guarda quanto è occupata
+mentre l'addestramento gira, con il comando `nvidia-smi` scritto in un'altra
+finestra del terminale. Se sta al cento per cento in modo stabile, il collo di
 bottiglia è il calcolo; se invece salta dal cento a zero e ritorno, la scheda
-sta aspettando i dati, e ogni ottimizzazione del modello sarà tempo perso.
+sta aspettando i dati, e ogni ottimizzazione del modello sarà tempo perso. Chi
+lavora sulla sola CPU non ha quel termometro, e allora si cronometra a mano:
+un'epoca intera, poi un'epoca in cui il modello non fa niente e si scorrono
+soltanto i dati. Se i due tempi si somigliano, il modello non c'entra.
 
 `````{tab} Elementare
 I rimedi, dal più efficace al meno:
@@ -494,29 +531,36 @@ accesso paga anche la latenza. Impacchettarli in pochi archivi letti in
 sequenza sposta il lavoro dove l'hardware è veloce.
 `````
 
-Il capitolo sulle [prestazioni](prestazioni.md) riprende il discorso dal lato
-del calcolo.
+C'è poi un secondo motivo per impacchettare i file, che si paga una volta e
+serve per sempre. Mentre si scorre tutta la collezione per riscriverla, la si sta già
+leggendo: costa zero calcolare intanto **media e deviazione standard di ogni
+colore**, cioè i sei numeri che servono a `Normalize` e che qualche pagina fa
+avevamo preso in prestito da ImageNet. Sui propri dati si calcolano, e vengono
+meglio.
 
-E c'è un secondo motivo per fare quel passaggio, che si paga una volta e serve
-per sempre: mentre si scorre il dataset per impacchettarlo, si calcolano
-**media e deviazione standard per canale**, i due vettori di tre numeri che
-servono a `Normalize`. Sono statistiche del *training set* e vanno calcolate
-solo su quello (calcolarle su tutto è la stessa forma di *leakage* dello scaler
-tarato prima dello split, vista nel capitolo sul Machine Learning). Con un
-modello pre-addestrato si usano invece quelle del dataset originale, ed è il
-motivo per cui `EfficientNet_B0_Weights.DEFAULT.transforms()` porta con sé i
-numeri di ImageNet: le feature apprese si aspettano ingressi centrati come lo
-erano allora.
+Due avvertenze, e sono le stesse di sempre. La prima: quei sei numeri si
+calcolano **solo sulle foto di addestramento**, mai su tutte. Calcolarli su
+tutte vuol dire far entrare nelle mie decisioni anche le foto d'esame, e il
+voto non è più onesto: è la stessa perdita di informazione della divisione
+fatta a caso su esempi che si assomigliano, e il capitolo sul machine learning
+la tratta per esteso. La seconda: se si parte da un modello già addestrato da
+altri, i sei numeri non si calcolano affatto, si prendono quelli con cui è
+stato addestrato lui. Le librerie li tengono insieme ai pesi proprio per
+questo, e un modello a cui si danno immagini centrate diversamente da come le
+ricorda risponde peggio senza dire niente.
 
 Il tubo che porta i file dentro la rete è fatto: da qui in avanti si può
-tornare a occuparsi del modello, sapendo che i dati arrivano.
+tornare a occuparsi del modello, sapendo che i dati arrivano. La sezione sulle
+[prestazioni](prestazioni.md) riprenderà il discorso dall'altro lato, quello
+del calcolo.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
-- Un `Dataset` risponde a **tre domande**: come ti prepari (una volta sola, e
-  lì si mette il lavoro lento), quanti esempi hai, dammi il numero 137 (ed è
-  la risposta che verrà chiesta milioni di volte, quindi dev'essere veloce).
+- Un `Dataset` si scrive con **tre metodi**: la preparazione, che avviene una
+  volta sola e dove va messo il lavoro lento; e le due domande che il
+  `DataLoader` gli farà davvero, quanti esempi hai e dammi il numero 137 (la
+  seconda gli verrà chiesta milioni di volte, quindi dev'essere veloce).
 - Se le foto stanno in una cartella per classe, `ImageFolder` fa tutto da sé.
   I nomi delle classi li assegna in **ordine alfabetico**: vanno riletti da
   lui, mai riscritti a mano in un altro ordine.

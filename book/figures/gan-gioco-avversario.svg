@@ -68,5 +68,5 @@
   <line x1="810" y1="448" x2="200" y2="448" stroke="#C9A961" stroke-width="2.5" stroke-dasharray="7 5"/>
   <line x1="200" y1="448" x2="200" y2="156" stroke="#C9A961" stroke-width="2.5" stroke-dasharray="7 5" marker-end="url(#arrowO)"/>
   <line x1="578" y1="448" x2="578" y2="276" stroke="#C9A961" stroke-width="2.5" stroke-dasharray="7 5" marker-end="url(#arrowO)"/>
-  <text x="515" y="468" text-anchor="middle" font-size="13" fill="#5E5852">il verdetto genera il gradiente che addestra entrambe le reti</text>
+  <text x="515" y="468" text-anchor="middle" font-size="13" fill="#5E5852">dal verdetto nasce la correzione che addestra entrambe le reti</text>
 </svg>

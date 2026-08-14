@@ -4,7 +4,7 @@ Le prime immagini generate da una GAN, nel 2014, erano cifre sgranate e
 faccine indistinte, appena qualche decina di pixel di lato. Ian Goodfellow le
 mostrava con orgoglio, ma nessuno le avrebbe scambiate per fotografie. Cinque
 anni dopo, il sito già incontrato in apertura di capitolo,
-*thispersondoesnotexist.com*, serve a ripetizione volti fotorealistici di
+*thispersondoesnotexist.com*, sforna a ripetizione volti fotorealistici di
 persone che non esistono. In mezzo c'è la storia di questa sezione: una
 sequenza di idee (quasi una all'anno) che ha trasformato un'intuizione fragile
 in una delle famiglie di modelli generativi più influenti del decennio.
@@ -12,34 +12,41 @@ Ripercorriamola, seguendo il filo delle idee più che il calendario.
 
 I due personaggi restano quelli: un falsario che dipinge e un esperto che
 giudica. Quello che cambia, di variante in variante, è come sono fatti dentro
-(DCGAN), che cosa gli si mette in mano oltre al rumore (conditional GAN), da
-dove il falsario prende le proprie decisioni (StyleGAN) e che cosa gli si
-chiede di conservare mentre dipinge (CycleGAN). Ogni variante, insomma, si
+(DCGAN), che cosa gli si mette in mano oltre al rumore (conditional GAN), in
+che momento del lavoro gli si danno le istruzioni (StyleGAN) e che cosa gli si
+chiede di conservare mentre dipinge (pix2pix e CycleGAN). Ogni variante, insomma, si
 legge bene come una modifica al regolamento di quel duello.
 
 ## DCGAN: dare occhi alla rete
 
 La prima GAN girava soprattutto su **strati densi** (*fully-connected*), cioè
-strati in cui ogni numero in uscita dipende da tutti i numeri in entrata,
-tutti allo stesso modo: un'immagine, per uno strato così, è una lista
-disordinata di numeri, e il fatto che due pixel siano vicini non gli dice
-niente. Ma un'immagine ha una struttura spaziale: pixel vicini sono correlati.
-Una variante convoluzionale c'era già nel paper del 2014, e addestrarla era un
-terno al lotto: quel che mancava non era l'idea, era una ricetta che stesse in
-piedi. Arriva a fine 2015 con la **DCGAN** (*Deep Convolutional GAN*) di
-Radford, Metz e Chintala {cite}`radford2016unsupervised`.
+strati in cui ogni numero in uscita dipende da tutti i numeri in entrata, senza
+che la loro posizione conti niente: un'immagine, per uno strato così, è una
+lista disordinata di numeri, e il fatto che due pixel (i puntini di cui si è
+parlato finora) siano vicini non gli dice niente. Ma in un'immagine la posizione conta, e pixel vicini quasi sempre si
+somigliano: un pezzo di cielo è azzurro tutto intorno.
+
+Una variante che ne teneva conto c'era già nel paper del 2014, e addestrarla
+era un terno al lotto: quel che mancava non era l'idea, era una ricetta che
+stesse in piedi. Arriva a fine 2015 con la **DCGAN** (*Deep Convolutional GAN*)
+di Radford, Metz e Chintala {cite}`radford2016unsupervised`.
 
 `````{tab} Elementare
-L'idea è dare alla rete lo strumento giusto per "vedere": la convoluzione,
-cioè far scorrere piccoli filtri sull'immagine per riconoscere contorni,
-texture, forme. È il discriminatore ad analizzarla così, con gli stessi filtri
-di un classificatore qualsiasi; il generatore fa il percorso inverso, e parte
-da un pugno di numeri casuali per "gonfiarli" fino a un'immagine intera.
+L'idea è dare alla rete lo strumento giusto per "vedere": far scorrere sopra
+l'immagine, casella per casella, una piccola griglia di numeri che reagisce a
+una certa forma (un bordo verticale, una macchia chiara su fondo scuro, la
+grana di un tessuto). Quella griglietta si chiama **filtro**, e l'operazione è
+la **convoluzione**; quali numeri mettere nei filtri è precisamente ciò che la
+rete impara. È il discriminatore ad analizzare l'immagine così, con gli stessi
+filtri di un classificatore qualsiasi; il generatore fa il percorso inverso, e
+parte da un pugno di numeri casuali per "gonfiarli" fino a un'immagine intera.
 
-Gonfiare come, se i numeri di partenza sono cento e i puntini d'arrivo un
-milione? A ogni passaggio la rete prende la griglia che ha in mano e ne
-restituisce una più larga, raddoppiando il lato: da $4\times4$ a $8\times8$, poi
-$16\times16$, e così via. I puntini in più non sono copiati da nessuna parte,
+Gonfiare come, se i numeri di partenza sono un centinaio e i puntini d'arrivo
+un milione? Il primo passaggio dispone quel centinaio di numeri in una griglia
+minuscola, $4\times4$, ma spessa: in ogni casella non un valore solo, bensì una
+pila di valori. Da lì in poi, a ogni passaggio la rete prende la griglia che ha
+in mano e ne restituisce una più larga, raddoppiando il lato: da $4\times4$ a
+$8\times8$, poi $16\times16$, e così via, mentre la pila si assottiglia. I puntini in più non sono copiati da nessuna parte,
 sono *decisi*: dove il vecchio puntino era uno solo, il passaggio successivo ne
 mette quattro, e quanto ciascuno dei quattro debba essere chiaro o scuro lo
 stabiliscono i filtri, che è esattamente ciò che la rete impara. Con questa
@@ -58,18 +65,19 @@ Il paper mostra anche che lo spazio latente $\mathcal{Z}$ è **semanticamente st
 Una GAN base genera "qualcosa di plausibile", ma non possiamo chiederle *cosa*. La **conditional GAN** {cite}`mirza2014conditional`, proposta già a fine 2014, pochi mesi dopo il paper originale, aggiunge il timone: si passa alla rete anche un'etichetta, e la generazione la rispetta.
 
 `````{tab} Elementare
-Insieme al rumore casuale forniamo un'informazione in più, per esempio "voglio
-un 7" su MNIST (la raccolta di cifre scritte a mano che da decenni si usa per
-le prove: settantamila immaginette minuscole, 28 pixel per lato, ciascuna con
-accanto la cifra che rappresenta), oppure "un gatto". La richiesta si consegna
-alla rete come tutto il resto, cioè sotto forma di numeri: una cifra fra zero e
-nove è già un numero, e per un'etichetta a parole basta assegnare a ciascuna
-parola il suo, così che "voglio un 7" diventi una manciata di numeri accodata
-al rumore. Sia il generatore sia il discriminatore
-ricevono questa etichetta: il primo la usa come istruzione, il secondo per
-giudicare non solo *se* l'immagine è verosimile, ma se corrisponde davvero
-all'etichetta richiesta. Così smettiamo di pescare a caso e cominciamo a
-ordinare su misura.
+Insieme ai numeri casuali forniamo un'informazione in più: "voglio un 7",
+oppure "un gatto". Il primo esempio viene da MNIST, la raccolta di cifre
+scritte a mano che da decenni si usa per le prove: settantamila immaginette
+minuscole, 28 pixel per lato, ciascuna con accanto la cifra che rappresenta.
+
+La richiesta si consegna alla rete come tutto il resto, cioè sotto forma di
+numeri. Una cifra fra zero e nove è già un numero; per un'etichetta a parole si
+decide una volta per tutte un numero per ciascuna parola possibile, e "voglio
+un gatto" diventa una manciata di numeri accodata al rumore. Sia il generatore
+sia il discriminatore ricevono questa etichetta: il primo la usa come
+istruzione, il secondo per giudicare non solo *se* l'immagine è verosimile, ma
+se corrisponde davvero all'etichetta richiesta. Così smettiamo di pescare a
+caso e cominciamo a ordinare su misura.
 `````
 
 `````{tab} Superiore
@@ -99,22 +107,32 @@ ricco (da un'etichetta discreta a un'intera frase).
 
 ## StyleGAN: il fotorealismo
 
-Con **StyleGAN** (NVIDIA {cite}`karras2019style`) e il successivo StyleGAN2 il generatore cambia impianto, e non per generare *meglio* ma per generare in modo governabile. È la tecnologia dietro i volti impossibili da smascherare a occhio.
+È la tecnologia dietro i volti impossibili da smascherare a occhio, ed è quella
+che ha reso famose le GAN presso chi non le ha mai studiate. Ma il cambiamento
+che StyleGAN {cite}`karras2019style` porta non è nella qualità delle immagini:
+è nel **governo** di ciò che si ottiene. Il generatore di NVIDIA cambia
+impianto per farsi guidare, non per disegnare meglio.
 
 `````{tab} Elementare
 StyleGAN non "disegna" il volto tutto in una volta: lo costruisce a livelli,
 dal grossolano al fine. Gli strati iniziali decidono posa e forma del viso,
 quelli intermedi i lineamenti, quelli finali dettagli come lentiggini e
 ciocche di capelli. A ogni livello inietta uno "stile", e la parola merita di
-essere sciolta: uno stile, qui, è una manciata di numeri, una specie di
-manopola con molte tacche che invece di essere fissata una volta per tutte
-all'ingresso viene consegnata al singolo livello e decide come quel livello
-lavorerà. Cambiando i numeri consegnati ai primi livelli cambia la posa;
-cambiando quelli consegnati agli ultimi cambiano le lentiggini. Per questo si
-possono mescolare tratti di volti diversi (la struttura di uno, il colore di
-pelle di un altro) come un fotomontaggio impossibile ma perfettamente
-coerente: basta prendere le manopole dei primi livelli da un volto e quelle
-degli ultimi da un altro.
+essere sciolta: uno stile, qui, è una fila di manopole, una manciata di numeri
+che invece di essere fissata una volta per tutte all'ingresso viene consegnata
+al singolo livello e decide come quel livello lavorerà. Cambiando le manopole
+dei primi livelli cambia la posa; cambiando quelle degli ultimi cambiano le
+lentiggini. Per questo si possono mescolare tratti di volti diversi (la
+struttura di uno, il colore di pelle di un altro) come un fotomontaggio
+impossibile ma perfettamente coerente: basta prendere le manopole dei primi
+livelli da un volto e quelle degli ultimi da un altro.
+
+Una cosa StyleGAN però non l'ha inventata, e conviene dirla perché è quella che
+si nota per prima: le immagini grandi come una fotografia vera erano già state
+conquistate l'anno prima dal modello da cui parte, la **Progressive GAN**, che
+aveva imparato a far crescere le due reti un pezzo alla volta, dalle immagini
+piccole a quelle grandi. StyleGAN eredita quella scala e ci aggiunge il
+controllo.
 
 Che poi il risultato sia una fotografia e non un disegno non dipende dai
 livelli: dipende, come sempre in questo capitolo, dall'esperto, che è stato
@@ -130,14 +148,21 @@ La risoluzione $1024\times1024$, invece, StyleGAN la eredita: viene dalla **Prog
 
 ## pix2pix e CycleGAN: tradurre le immagini
 
-Se condizioniamo una GAN non su un'etichetta ma su un'*intera immagine*, otteniamo un traduttore visivo: schizzo → foto, mappa → satellite, giorno → notte. È **pix2pix** {cite}`isola2017image`. Ha però un vincolo: servono coppie allineate (lo stesso soggetto nei due domini), difficili da procurare. **CycleGAN** {cite}`zhu2017unpaired` rimuove il vincolo.
+Se condizioniamo una GAN non su un'etichetta ma su un'*intera immagine*,
+otteniamo un traduttore visivo: schizzo → foto, mappa → satellite, giorno →
+notte. È **pix2pix** {cite}`isola2017image`. Ha però un vincolo: servono
+coppie allineate, cioè lo stesso soggetto ripreso nei due mondi che si vogliono
+tradurre l'uno nell'altro (in gergo, i due **domini**), e coppie così sono
+difficili da procurare. **CycleGAN** {cite}`zhu2017unpaired` rimuove il
+vincolo.
 
 ```{figure} ../figures/cyclegan-ciclo.svg
 :name: fig-cyclegan
 :alt: "Diagramma del ciclo di CycleGAN: una foto x viene tradotta dal generatore G in stile Monet, poi il generatore F la riporta indietro, ottenendo una ricostruzione che deve coincidere con la x di partenza."
 :width: 90%
 
-Il vincolo di *cycle-consistency*: tradurre e poi ritradurre deve riportare al punto di partenza.
+Il vincolo di andata e ritorno (in inglese *cycle-consistency*): tradurre e poi
+ritradurre deve riportare al punto di partenza.
 ```
 
 `````{tab} Elementare
@@ -172,16 +197,18 @@ medica o su un fotogramma di sorveglianza è una trappola, perché il risultato
 ha l'aria di un'informazione e non lo è. La **generazione
 di dati sintetici**: volti, lastre mediche, scene stradali per addestrare
 altri modelli quando i dati reali sono scarsi o sensibili, con l'avvertenza
-che un dato sintetico eredita i *bias* di chi l'ha generato. E l'**arte**: nel
-2018 il ritratto *Edmond de Belamy*, prodotto con una GAN dal collettivo
-francese Obvious, fu battuto da Christie's per 432.500 dollari, presentato
-dalla casa d'aste come la prima opera generata da un algoritmo mai passata
-sotto il martello di una grande casa (la stima di partenza era di
-7.000–10.000 dollari). Il dibattito sull'autorialità dell'arte
-generativa si aprì proprio lì, e con un'ironia utile: buona parte del codice e
-del lavoro sui dati era di Robbie Barrat, un altro artista, cosa che Obvious
-riconobbe pubblicamente dopo l'asta. La domanda "di chi è l'opera" nasce già
-con due risposte possibili prima ancora di arrivare alla macchina.
+che un dato sintetico eredita le distorsioni di chi l'ha generato (i *bias*: se
+il generatore ha visto soltanto volti chiari, soltanto quelli saprà fare).
+
+E l'**arte**. Nel 2018 il ritratto *Edmond de Belamy*, prodotto con una GAN dal
+collettivo francese Obvious, fu battuto da Christie's per 432.500 dollari, con
+una stima di partenza di 7.000–10.000: la casa d'aste lo presentava come il
+primo ritratto generato da un algoritmo mai arrivato all'asta. Il dibattito
+sull'autorialità dell'arte generativa si aprì proprio lì, e con un'ironia
+utile: buona parte del codice e del lavoro sui dati era di Robbie Barrat, un
+altro artista, cosa che Obvious riconobbe pubblicamente dopo l'asta. La domanda
+"di chi è l'opera" nasce già con due risposte possibili prima ancora di
+arrivare alla macchina.
 
 ## Il passaggio di testimone ai modelli di diffusione
 
@@ -190,10 +217,12 @@ Verso il 2021 il primato cambia mano, e a dare il nome al sorpasso è il paper
 che lo argomenta sulla qualità delle immagini. Ma la ragione per cui il
 passaggio è stato così rapido sta altrove, e sono i due difetti che questo
 capitolo ha già raccontato: i **modelli di diffusione** si addestrano con la
-stessa stabilità di un qualunque modello supervisionato, e non conoscono il
-*mode collapse*. L'idea è opposta a quella avversaria: si insegna
-alla rete a rimuovere gradualmente il rumore da un'immagine, partendo dal
-rumore puro fino all'immagine. Su questa base nascono **Stable Diffusion**
+stessa tranquillità di una rete a cui si mostra la risposta giusta, e non
+conoscono il *mode collapse*. L'idea è opposta a quella avversaria: si insegna
+alla rete a ripulire un'immagine sporcata da una grana casuale, partendo da
+un'immagine fatta di sola grana. («Rumore» è la stessa parola usata finora, ma
+qui indica una cosa diversa: non i numeri casuali in ingresso, bensì la
+sporcizia sparsa sopra un'immagine.) Su questa base nascono **Stable Diffusion**
 {cite}`rombach2022high` e **DALL·E 2** (OpenAI, 2022): a entrambi si descrive a
 parole quello che si vuole ("un gatto nero seduto su un muro al tramonto") e
 loro lo disegnano, ed è così che la generazione di immagini su richiesta è
@@ -213,9 +242,12 @@ rimesso in gioco un discriminatore, cioè proprio l'idea avversaria di questo
 capitolo.
 
 C'è di più, ed è la ragione migliore per aver letto questo capitolo anche
-volendo usare soltanto la diffusione: un discriminatore lavora
-**dentro** Stable Diffusion. Il pezzo che riporta la versione ridotta e
-compatta ai pixel veri e propri è addestrato anche con una loss avversaria, ed
+volendo usare soltanto la diffusione: un discriminatore è servito a costruire
+**un pezzo di** Stable Diffusion. Alla fine di tutto il lavoro c'è una parte
+che riporta quella versione ridotta e compatta ai pixel veri e propri, e la si
+chiama decodificatore: ecco, è stata addestrata anche con una loss avversaria,
+cioè con un esperto contro. Finito l'addestramento l'esperto se ne va, come nel
+duello di questo capitolo, ed
 è quella parte a tenere nitide le ricostruzioni. Il duello, insomma, non è
 finito in soffitta: è passato dal centro della scena a un ruolo di
 manutenzione. Ma il centro di gravità si è spostato.
@@ -225,10 +257,11 @@ manutenzione. Ma il centro di gravità si è spostato.
 La stessa tecnologia che genera volti fotorealistici genera **deepfake**:
 video e audio falsi ma credibili di persone reali. Le implicazioni sono serie:
 disinformazione, frodi, abusi non consensuali. Chi lavora con questi modelli
-ha una responsabilità concreta: verificare le fonti, sostenere sistemi di
-*watermarking* e provenienza dei contenuti, e ricordare che "verosimile" non
-significa "vero". La potenza generativa e la vigilanza critica devono crescere
-insieme.
+ha una responsabilità concreta: verificare le fonti, sostenere i sistemi che
+marchiano un contenuto generato con una filigrana invisibile (il
+*watermarking*) e ne registrano la provenienza, e ricordare che "verosimile"
+non significa "vero". La potenza generativa e la vigilanza critica devono
+crescere insieme.
 ```
 
 Le varianti che abbiamo visto sono altrettante modifiche al regolamento del
@@ -254,8 +287,9 @@ duello, e conviene ripassarle così.
   insieme all'esperto: da sola si lascia aggirare.
 - Dal 2021 il testimone passa ai **modelli di diffusione** (Stable Diffusion,
   DALL·E 2). Le GAN restano dove conta la velocità (un colpo solo contro decine
-  di passaggi), e un discriminatore continua a lavorare dentro gli strumenti di
-  oggi.
+  di passaggi), e l'idea avversaria continua a servire per **costruire** gli
+  strumenti di oggi, anche quando poi nel prodotto finito l'esperto non c'è
+  più.
 ```
 
 `````

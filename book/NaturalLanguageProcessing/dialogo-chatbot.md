@@ -188,9 +188,10 @@ tutto il resto del mondo, gatto sul muro compreso. L'ELIZA vera aveva più
 copioni, più varianti di risposta e un rudimento di memoria, ma il principio è
 tutto qui.
 
-E qui è anche il limite. ELIZA **non tiene niente da parte**: finita una
-battuta, la dimentica, e alla battuta dopo riparte da zero come se fosse la
-prima. Quello che un interlocutore dovrebbe tenere da parte (chi sono io, di
+E qui è anche il limite. Quel rudimento di memoria era poca cosa: ELIZA
+metteva da parte una frase per ripescarla quando non sapeva che dire, ma della
+conversazione non teneva il filo, e a ogni battuta ripartiva praticamente da
+zero. Quello che un interlocutore dovrebbe tenere da parte (chi sono io, di
 che cosa stiamo parlando, che cosa ci siamo già detti) ha un nome che tornerà
 fra poco: si chiama **stato del dialogo**, ed è la memoria della partita.
 ELIZA non ne ha, ed è il contrario esatto di ciò che la telefonata al
@@ -200,7 +201,7 @@ ristorante ci ha mostrato essere una conversazione.
 
 La seconda famiglia nasce nel 1977 allo Xerox PARC, il laboratorio californiano
 in cui in quegli anni si inventava metà dell'informatica che usiamo oggi (il
-mouse con le finestre sullo schermo, per dire, viene di lì). L'articolo lo
+scrivania con le finestre sullo schermo, per dire, viene di lì). L'articolo lo
 firmano in sei, e sono sei fra i nomi più noti dell'intelligenza artificiale di
 allora: Bobrow, Kaplan, Kay, Norman, Thompson e Winograd
 {cite}`bobrow1977gus`. Il loro sistema si chiamava GUS, faceva l'agente di

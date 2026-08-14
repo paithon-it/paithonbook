@@ -1,12 +1,19 @@
 # Confronto con i modelli precedenti
 
-Ogni nuova architettura va giudicata contro ciò che sostituisce. Prima del
-2017 il trattamento delle sequenze era il regno delle reti ricorrenti: RNN e
-le loro varianti raffinate, LSTM e GRU, che abbiamo incontrato nel capitolo
-sul Natural Language Processing. Vale la pena metterle accanto al Transformer
-con onestà: capire *perché* ha vinto, e anche *dove* non vince affatto.
+Ogni nuova architettura va giudicata contro ciò che sostituisce. Prima del 2017
+il testo lo trattavano le **reti ricorrenti**, quelle che leggono una parola
+alla volta portandosi dietro un riassunto di quel che è venuto prima: la
+capostipite si chiama RNN (*recurrent neural network*), e le due varianti
+raffinate che l'hanno soppiantata si chiamano LSTM e GRU. Le abbiamo incontrate
+nel capitolo sul Natural Language Processing. Vale la pena metterle accanto al
+Transformer con onestà: capire *perché* ha vinto, e anche *dove* non vince
+affatto.
 
 ## Tre generazioni di memoria
+
+Le tre generazioni sono le tre ricorrenti, RNN, LSTM e GRU; il Transformer non
+è la quarta, è quello che chiude la serie cambiando gioco. E per capire perché
+la serie sia finita conviene guardare da vicino il difetto della prima.
 
 ```{figure} ../figures/rnn-reti-con-memoria.svg
 :name: fig-rnn-srotolamento
@@ -19,15 +26,22 @@ sequenze di lunghezza qualsiasi.
 ```
 
 L'equivalenza di {numref}`fig-rnn-srotolamento` è anche la radice del problema
-che questa sezione racconta. Aggiornare il riassunto, a ogni passo, vuol dire
-moltiplicarlo per gli stessi numeri, perché la cella è sempre quella: se il
-riassunto attraversa
-la stessa moltiplicazione a ogni passo, dopo cento passi quel
-fattore è stato applicato cento volte, e un numero poco più piccolo di uno
-diventa quasi zero: $0{,}9$ moltiplicato per sé stesso cento volte fa
-$0{,}000027$, e perfino $0{,}99$ scende a $0{,}37$. È un conto da calcolatrice,
-e vale la pena farlo, perché è tutta lì la ragione per cui l'inizio di un testo
-lungo sbiadisce.
+che questa sezione racconta. Quel «riassunto» che la rete si porta dietro è,
+come sempre in questo capitolo, una lista di numeri, e la scatola che lo
+aggiorna a ogni parola (nel disegno, la **cella**) è sempre la stessa, con
+dentro sempre gli stessi numeri: aggiornare il riassunto vuol dire dunque
+moltiplicarlo, parola dopo parola, per quegli stessi numeri.
+
+Ed è lì che casca tutto, perché una moltiplicazione ripetuta cento volte non
+perdona. Diciamo che il fattore sia $0{,}9$, cioè che a ogni passo il ricordo
+conservi nove decimi di sé: non sembra una perdita grave. Dopo cento parole
+resta $0{,}9$ moltiplicato per sé stesso cento volte, cioè $0{,}000027$, che di
+quel ricordo è meno di un trentamillesimo. E anche partendo da $0{,}99$, che è
+quasi non perdere niente, dopo cento parole si è scesi a $0{,}37$: più di metà
+del ricordo è svanito senza che nessuno l'abbia buttato via. Il numero $0{,}9$
+qui è messo per far vedere il meccanismo, non è misurato su una rete vera; ma
+qualunque fattore minore di uno finisce nello stesso posto, ed è tutta lì la
+ragione per cui l'inizio di un testo lungo sbiadisce.
 
 `````{tab} Elementare
 Le **RNN** leggono una parola alla volta portandosi dietro un riassunto
@@ -40,14 +54,21 @@ cambia gioco: niente riassunto e niente taccuino, il testo resta tutto
 sott'occhio e ogni parola può andare a rileggersi qualunque altra. La memoria
 non sbiadisce perché non c'è nulla da ricordare: basta guardare.
 
-Due precisazioni, perché altrimenti sembrano contraddizioni. La prima: «tutte
-le altre» vale per la torre che **legge**; quella che **scrive** ha la regola
-ferrea della sezione precedente, non si sbircia avanti, e guarda solo
-all'indietro. La seconda: leggere tutto insieme fa risparmiare tempo
-soprattutto **mentre il modello studia**, che è quando i cento amici possono
-dividersi il lavoro. Quando poi scrive, le parole gli escono comunque una alla
-volta, perché per scegliere la prossima deve sapere quale ha appena scritto: lì
-i cento amici non servono a niente, e infatti generare resta lento.
+Due precisazioni, perché il «qualunque altra» va preso con le pinze. La prima:
+vale per la torre che **legge** (l'encoder); quella che **scrive** (il decoder)
+ha la regola ferrea della sezione precedente, non si sbircia avanti, e guarda
+solo all'indietro.
+
+La seconda riguarda la velocità, ed è il vero motivo per cui il Transformer ha
+vinto. Se le parole si guardano tutte insieme invece che in fila, il lavoro si
+può spartire fra migliaia di processori che macinano in parallelo: sono i
+«cento amici» del capitolo, quelli che con un libro da leggere in fila non
+servivano a niente e qui invece servono eccome. Attenzione però a quando:
+succede **mentre il modello studia**, cioè quando ha davanti tutto il testo e
+può lavorarci sopra in una volta sola. Quando poi scrive, le parole gli escono
+comunque una alla volta, perché per scegliere la prossima deve sapere quale ha
+appena scritto: lì i cento amici tornano a girarsi i pollici, e infatti generare
+resta lento.
 `````
 
 `````{tab} Superiore
@@ -78,13 +99,20 @@ Il Transformer non è gratis, e il suo tallone d'Achille è proprio il gesto
 che lo definisce: far guardare ogni parola a tutte le altre.
 
 `````{tab} Elementare
-Pensa a una riunione dove ognuno deve parlare con ognuno. In quattro sono 6
-conversazioni; in otto, 28; in mille, quasi mezzo milione. **Raddoppiare i
-partecipanti quadruplica circa le chiacchiere**: è la crescita "al quadrato".
+Pensa a una riunione dove ognuno deve parlare con ognuno. In quattro, le coppie
+possibili sono sei: le puoi contare con le dita (io con te, io con lui, io con
+lei, tu con lui, tu con lei, lui con lei). La regola per non contarle a mano è
+semplice: ognuno parla con tutti tranne sé stesso, quindi $4 \times 3 = 12$,
+ma così ogni conversazione è stata contata due volte, e $12 : 2 = 6$. In otto
+diventano $8 \times 7 : 2 = 28$; in mille, $1000 \times 999 : 2 = 499\,500$,
+quasi mezzo milione. **Raddoppiare i partecipanti quadruplica circa le
+chiacchiere**: è la crescita "al quadrato".
+
 Per il Transformer le parole sono i partecipanti, con due differenze da poco:
-ogni parola guarda anche sé stessa, e chi ascolta chi conta separatamente nei
-due versi, quindi in quattro i confronti sono sedici invece di sei. La crescita
-è la stessa, ed è quella che interessa: una frase è una riunione
+ogni parola guarda anche sé stessa, e chi guarda chi conta separatamente nei
+due versi (che "salta" guardi "gatto" è un conto, che "gatto" guardi "salta" è
+un altro). Quindi in quattro i confronti non sono sei ma $4 \times 4 = 16$. La
+crescita però è la stessa, ed è quella che interessa: una frase è una riunione
 veloce, un libro intero è un'assemblea oceanica che nessun computer regge
 volentieri. Le reti ricorrenti, che leggono in fila, non hanno questo
 problema: il loro costo cresce di pari passo con la lunghezza, non al
@@ -96,9 +124,12 @@ anticipo chi parla con chi**: ognuno con i vicini di posto, più qualche
 partecipante scelto che parla con tutti e fa da ponte. Il secondo è **lasciare
 che siano i dati a dirlo**: si osserva che quasi tutta l'attenzione di una
 parola finisce comunque su pochissime altre, e allora si cerca un modo di
-trovare in fretta quelle poche invece di provarle tutte. Il terzo è più
-radicale, e cambia l'aritmetica invece della lista degli invitati: ha un
-capitolo suo, quello sull'attenzione lineare.
+trovare in fretta quelle poche invece di provarle tutte. Il terzo non tocca la
+lista degli invitati, la butta via: invece di calcolare tutti i confronti e poi
+scartarne la maggior parte, riordina i conti in modo che i confronti non
+vengano mai fatti uno per uno. Costa una rinuncia (il modo in cui i punteggi
+diventano intensità va cambiato) e ha un capitolo suo, quello sull'attenzione
+lineare.
 `````
 
 `````{tab} Superiore
@@ -188,16 +219,22 @@ materializzare la matrice di attenzione.
 
 ## Un bilancio onesto
 
-Messi su una bilancia: il Transformer domina quando i dati sono tanti,
-l'hardware è parallelo e le dipendenze sono lunghe (esattamente il regime dei
-grandi modelli linguistici). Le architetture ricorrenti restano sensate su
-sequenze molto lunghe a risorse limitate e nei sistemi che devono rispondere
-mentre i dati arrivano, uno alla volta, senza poter aspettare la fine del
-testo. E come idea non sono affatto morte: due linee di ricerca recenti
+Messi su una bilancia, il Transformer vince quando ricorrono tre condizioni
+insieme: c'è tantissimo testo su cui studiare, c'è una macchina che sa fare
+molti conti insieme invece che uno dopo l'altro, e conta capire legami fra
+parole molto distanti fra loro. Sono esattamente le condizioni in cui vivono i
+sistemi tipo ChatGPT, e non è un caso. Le architetture ricorrenti restano
+sensate quando le risorse sono poche e il testo è lunghissimo, e nei sistemi
+che devono rispondere mentre le parole arrivano, una alla volta, senza poter
+aspettare la fine (i sottotitoli in diretta, per dire, o un traduttore che
+lavora mentre l'altro parla). E come idea non sono affatto morte: due linee di
+ricerca recenti
 rimettono in mezzo un riassunto che si aggiorna passo per passo, proprio come
 facevano le RNN, ma costruito in modo da non pagare il costo della riunione
-plenaria. Si chiamano *attenzioni lineari* e *state space model* (il più noto
-si chiama Mamba), e hanno un capitolo ciascuna subito dopo questo. In altre
+plenaria. Si chiamano *attenzioni lineari* e *state space model* (in italiano
+«modelli a spazio di stato», dove lo stato è appunto il riassunto che si
+aggiorna; il più noto si chiama Mamba), e hanno un capitolo ciascuna subito
+dopo questo. In altre
 parole: il Transformer ha vinto la partita del decennio, non necessariamente il
 campionato eterno.
 

@@ -9,12 +9,13 @@ coordinare le riunioni del progetto c'è un giovane studente, Gerald Sussman.
 
 Gli obiettivi conviene leggerli nell'ordine in cui sono scritti. Primo:
 dividere l'immagine ripresa dalla telecamera in regioni che sono «oggetti
-probabili», regioni che sono «sfondo probabile» e regioni che sono «caos»
-(l'analisi figura-sfondo). Secondo: descrivere quelle regioni. Terzo e ultimo,
+probabili», regioni che sono «sfondo probabile» e regioni che sono «caos», cioè
+separare le figure da ciò che sta loro dietro (nel promemoria, l'analisi
+*figura-sfondo*). Secondo: descrivere quelle regioni. Terzo e ultimo,
 il riconoscimento degli oggetti (nel promemoria, *object identification*), che
 deve «dare un nome agli oggetti confrontandoli con un vocabolario di oggetti
 noti». Per luglio erano previste scene di oggetti
-non sovrapposti (palle, mattoncini, cilindri) con facce di colore uniforme e
+non sovrapposti (palle, mattoncini, cilindri) con superfici di colore uniforme e
 sfondo omogeneo; ad agosto si sarebbe passati a superfici e sfondi complicati,
 e poi a «oggetti come utensili, tazze e simili».
 
@@ -79,8 +80,9 @@ informazione linguistica smettono di essere separate.
 
 ## Fare dell'immagine una sequenza
 
-La prima domanda ha una risposta condivisa da quasi tutti i sistemi di oggi, e
-il lettore la conosce già: il **Vision Transformer**
+La prima delle due cose da fare, dare all'immagine dei pezzi, ha una risposta
+condivisa da quasi tutti i sistemi di oggi, e il lettore la conosce già: il
+**Vision Transformer**
 {cite}`dosovitskiy2021image` del capitolo sui Transformer. Vale la pena
 richiamarne il gesto, perché tutto il resto ci poggia sopra, e sta in due mosse.
 
@@ -111,15 +113,23 @@ sappiamo già come si combinano.
 
 Si taglia la foto a tessere quadrate, come un mosaico, e si mettono le tessere
 in fila indiana come se fossero le parole di una frase. Con un'immagine da
-$224 \times 224$ puntini e tessere da $16 \times 16$ vengono
-$14 \times 14 = 196$ tessere: una «frase» di 196 pezzi. Ogni tessera diventa
-una fila di numeri, con attaccata un'etichetta che dice in che posizione del
-mosaico stava, altrimenti la rete non saprebbe quale tessera confina con quale.
+$224 \times 224$ puntini e tessere da $16 \times 16$ ne stanno
+$224 : 16 = 14$ per riga e altrettante per colonna, cioè $14 \times 14 = 196$
+tessere: una «frase» di 196 pezzi. Ogni tessera diventa una fila di numeri, con
+attaccata un'etichetta che dice in che posizione del mosaico stava, altrimenti
+la rete non saprebbe quale tessera confina con quale.
 
 Sembra poco, ed è invece il passaggio che apre la porta: dal momento in cui
 un'immagine è una fila di pezzi, come le parole di una frase, tutto ciò che
-sappiamo fare con le frasi si può provare anche con le foto. Il prezzo si paga
-sul numero di tessere.
+sappiamo fare con le frasi si può provare anche con le foto.
+
+Il prezzo si paga sul numero di tessere, e non in proporzione. Per capire ogni
+tessera il modello la confronta con tutte le altre: con 196 tessere i confronti
+sono $196 \times 196$, poco meno di quarantamila. Adesso raddoppiamo il lato
+della foto, da 224 a 448 puntini: le tessere diventano quattro volte tante
+($448 : 16 = 28$ per riga, cioè $28 \times 28 = 784$), e i confronti, che sono
+tessere per tessere, sedici volte tanti. È il conto che tornerà in tutto il
+capitolo.
 
 `````
 
@@ -144,20 +154,21 @@ quadruplica $N$ e moltiplica per sedici quel costo.
 
 `````
 
-Risolta la prima domanda, resta la seconda, ed è quella che ha generato le
-architetture di cui parleremo: **in quale punto** l'immagine e il testo si
-incontrano.
+Risolta quella, resta l'altra, ed è la domanda che ha generato le architetture
+di cui parleremo: **in quale punto** l'immagine e il testo si incontrano.
 
 ## Tre modi di far incontrare due flussi
 
-Le risposte che hanno resistito sono tre, e non sono tre epoche destinate a
-superarsi a vicenda: convivono, e servono a cose diverse.
+I due flussi sono quelli di sempre, l'immagine e il testo, adesso che tutti e
+due sono diventati una fila di pezzi. Le risposte che hanno resistito sono tre,
+e non sono tre epoche destinate a superarsi a vicenda: convivono, e servono a
+cose diverse.
 
 La prima **allinea due spazi senza fonderli**: due reti separate, una per le
 immagini e una per i testi, imparano a mandare una foto e la sua didascalia in
 due punti vicini di una stessa mappa, e a tenere lontane le coppie che non si
-corrispondono. Vicini rispetto a che cosa, sarà la prima domanda della sezione
-apposita, perché la risposta è meno ovvia di così. È l'idea di CLIP
+corrispondono. Vicini rispetto a che cosa, la sezione apposita se lo
+chiede alla fine, perché la risposta è meno ovvia di così. È l'idea di CLIP
 {cite}`radford2021learning`, addestrato su 400 milioni di coppie di immagine e
 testo raccolte dal web: il modello che ne esce non scrive una riga, ma sa dire
 quanto un'immagine e un testo si somigliano.
@@ -168,7 +179,8 @@ fra un encoder visivo e un modello che parla bene si costruisce un raccordo (un
 Il grosso dei pesi resta congelato, si addestra il raccordo.
 
 La terza rinuncia alla distinzione: **un solo modello, un solo vocabolario**.
-L'immagine viene ridotta a simboli discreti, token come le parole, e un unico
+L'immagine viene ridotta a simboli presi da un elenco finito, token come le
+parole, e un unico
 Transformer li legge e li scrive tutti insieme.
 
 Chiedersi *dove* si incontrano i due flussi è una buona bussola: spiega quasi
@@ -188,13 +200,15 @@ muro?»). Per fare conversazione, no.
 
 Nel secondo c'è un interprete che sussurra: la prima persona guarda, e passa
 alla seconda, in forma comprensibile, quello che ha visto. Chi parla resta uno
-solo, e impara a fidarsi di ciò che gli viene sussurrato.
+solo, e non cambia mestiere: continua a parlare come ha sempre fatto, e tutto il
+lavoro sta nell'insegnare all'interprete a sussurrargli bene.
 
 Nel terzo si insegna a tutti e due la stessa lingua fin dall'inizio: niente più
-da tradurre, ma va rifatto tutto da capo.
+da tradurre, in compenso nessuno dei due può portarsi dietro quello che aveva
+imparato prima, e la scuola va rifatta da capo per entrambi.
 
 Nessuno dei tre ha vinto: il primo cerca, il secondo conversa, il terzo
-produce.
+produce, cioè sa tirar fuori anche un'immagine e non soltanto parole.
 
 `````
 
@@ -290,25 +304,30 @@ Le cinque sezioni seguono l'ordine delle domande: allineare due spazi,
 collegarli, fonderli, pagare il conto della risoluzione, e infine controllare
 che il sistema abbia davvero guardato.
 
-- **Allineare due spazi**, l'addestramento contrastivo di CLIP
-  {cite}`radford2021learning`: due encoder, uno spazio condiviso, e la
-  classificazione senza esempi che ne discende come effetto collaterale.
-- **Innestare gli occhi**, i connettori fra un encoder visivo e un modello di
-  linguaggio congelato: proiezione lineare, query apprese, cross-attention.
-- **Fusione precoce e tardiva**, l'immagine ridotta a token discreti: cosa si
-  guadagna in simmetria e cosa si perde nella quantizzazione.
-- **Il costo del dettaglio**, la risoluzione: perché una foto grande esplode
-  nel contesto, come la si spezza in riquadri, e cosa serve per leggere un
-  documento invece che riconoscere una scena.
-- **Vedere quel che non c'è**, l'allucinazione visiva e la valutazione di
-  questi sistemi, fino ai modelli che dalla percezione passano all'azione.
+- **Allineare due spazi**: due reti separate imparano a segnare una foto e la
+  sua didascalia vicine sulla stessa mappa, ed è l'addestramento contrastivo di
+  CLIP {cite}`radford2021learning`. Da lì viene fuori, come effetto collaterale,
+  un classificatore che si scrive a parole.
+- **Innestare gli occhi**: il raccordo fra un encoder visivo e un modello di
+  linguaggio lasciato fermo. Di raccordi ne sono stati provati tre, e ha vinto
+  il più semplice.
+- **Fusione precoce e tardiva**, cioè presto o tardi lungo il percorso:
+  l'immagine ridotta a simboli di un elenco fin dall'ingresso, come le parole.
+  Cosa si guadagna a poterla anche produrre, e cosa si perde nell'arrotondarla
+  alla voce di catalogo più vicina.
+- **Il costo del dettaglio**, cioè quanti puntini si danno da guardare: perché
+  una foto grande occupa tanto posto, come la si spezza in riquadri, e cosa
+  serve per leggere un documento invece che riconoscere una scena.
+- **Vedere quel che non c'è**: un modello che parla di una fotografia senza
+  averla guardata, come lo si misura, e i sistemi che dalla percezione passano
+  all'azione.
 
 `````{tab} Elementare
 
 ```{admonition} Da ricordare
 :class: important
-- Nel 1966, al MIT, si pensava di far vedere una macchina in un'estate: separare
-  gli oggetti dallo sfondo, descriverli e dar loro un nome «confrontandoli con un
+- Nel 1966, al MIT, si pensava di insegnare a vedere a una macchina in
+  un'estate: separare gli oggetti dallo sfondo, descriverli e dar loro un nome «confrontandoli con un
   vocabolario di oggetti noti». La scaletta era giusta; mancava il modo di legare
   i puntini di una fotografia alle parole di una lingua, e ci sono voluti
   sessant'anni.

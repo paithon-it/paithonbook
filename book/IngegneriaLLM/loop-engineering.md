@@ -1,46 +1,45 @@
 # Loop engineering: progettare il ciclo
 
-Nei primi anni la domanda, in ogni team che provava a costruire qualcosa
-con un LLM, è stata sempre la stessa: qual è il prompt giusto? Si limava una
+Nei primi anni di questa tecnologia la domanda, in ogni squadra che provava a
+costruire qualcosa con un LLM, è stata sempre la stessa: qual è il prompt
+giusto? Si limava una
 frase, si aggiungeva un esempio, si spostava una parola, come chi cerca la
 combinazione di una cassaforte. Poi, tra chi con questi strumenti costruisce
 davvero, la domanda ha cominciato a spostarsi. Nel 2026 Boris Cherny, tra gli
-autori di Claude Code (uno degli assistenti di programmazione che si usano da
-riga di comando), l'ha riassunta in una battuta: non fa quasi
-più prompt al modello, e costruisce invece loop che quei prompt li fanno per
-lui {cite}`cherny2026loops`. Non è una provocazione: è uno spostamento di
-leva. La cosa su cui vale la
-pena lavorare non è più il singolo messaggio, ma il **sistema di controllo** che
-attorno a quel messaggio decide quando parte, cosa gli si mette davanti, come si
-verifica il risultato e cosa succede dopo.
+autori di Claude Code (un assistente di programmazione che non ha finestre né
+bottoni: gli si scrive e risponde, come si faceva con i computer prima che
+arrivassero i mouse), l'ha riassunta in una battuta: non fa quasi più prompt
+al modello, scrive **loop** (giri, cicli) che quei prompt li fanno per lui
+{cite}`cherny2026loops`. Non è una provocazione: è uno spostamento di leva. La
+cosa su cui vale la pena lavorare non è più il singolo messaggio, ma il
+**sistema di controllo** che attorno a quel messaggio decide quando parte,
+cosa gli si mette davanti, come si verifica il risultato e cosa succede dopo.
 
-Conviene dire subito da dove viene il materiale di questa sezione, perché è
-diverso da quello delle due precedenti. Il vocabolario del loop engineering è
-recente e lo hanno scritto quasi tutto dei praticanti, cioè persone che questi
-cicli li costruiscono e ne raccontano il funzionamento, non gruppi di ricerca
-che li misurano. Quello che riportiamo qui è il **meccanismo** (la cadenza, lo
-stato tenuto fuori dalla finestra, il cancello di verifica, l'isolamento),
-perché è la parte che ha buone probabilità di sopravvivere ai nomi con cui
-oggi la si chiama; dove un'affermazione è di mestiere e non misurata, lo
-diciamo.
+Questa sezione sale così al terzo e più esterno dei cerchi da cui è partito il
+capitolo: dopo il **prompt** (il singolo messaggio) e il **contesto** (la
+finestra come sistema), il **loop**. È l'anello in cui il prompt e il contesto
+smettono di essere una cosa che scrivi *tu, adesso* e diventano una cosa che
+un programma monta, esegue e rimette in moto, magari mentre dormi. Peter
+Steinberger lo dice quasi con le stesse parole di Cherny: non si fanno più
+prompt agli agenti che programmano, si progettano i cicli che quei prompt li
+fanno da soli {cite}`steinberger2026loops`. E Addy Osmani ne trae una
+conseguenza che è metà tecnica e metà morale {cite}`osmani2026loop`: il ciclo
+va costruito da
+chi ha intenzione di **restare l'ingegnere**, cioè di continuare a capire e a
+rispondere di quello che esce, non da chi vuole premere «vai» e andarsene.
 
-Nelle due sezioni precedenti abbiamo lavorato sul **prompt** (il singolo
-messaggio) e sul **contesto**: la finestra come sistema. Questa sezione sale
-al terzo e più esterno dei cerchi concentrici da cui è partito il capitolo: il
-**loop**. È l'anello in cui il prompt e il contesto smettono di essere una
-cosa che scrivi *tu, adesso* e diventano una cosa che un programma monta,
-esegue e rimette in moto, magari mentre dormi. Peter Steinberger lo dice in
-una riga («non dovresti più fare prompt agli agenti che programmano: dovresti
-progettare i cicli che fanno i prompt al posto tuo»)
-{cite}`steinberger2026loops`, e Addy Osmani ne trae il punto che è metà
-tecnico e metà etico {cite}`osmani2026loop`: costruisci il loop come chi ha
-intenzione di **restare l'ingegnere**, non come chi vuole solo premere «vai» e
-andarsene. La differenza, come vedremo, è tutta lì.
+Una nota, perché qui le fonti sono diverse da quelle delle due sezioni
+precedenti: il vocabolario del loop engineering lo hanno scritto quasi tutto
+dei praticanti, gente che questi cicli li costruisce, non gruppi di ricerca
+che li misurano. Di quel racconto teniamo il **meccanismo**, che ha buone
+probabilità di durare più dei nomi; e dove un'affermazione è di mestiere e non
+misurata, lo diciamo.
 
 ## Il ciclo come unità di progetto
 
-Prima, però, una parola che cambia peso, e conviene dirlo invece di lasciarlo
-capire. Aprendo il capitolo il «loop» era la conversazione: tu chiedi, guardi
+Prima, però, va detto che una parola qui cambia significato, e conviene dirlo
+invece di lasciarlo capire. Aprendo il capitolo il «loop» era la
+conversazione: tu chiedi, guardi
 la risposta, storci il naso, richiedi meglio. Quel loop esiste ancora ed è il
 più comune di tutti; solo che lo giri **tu**, a mano, e finisce quando chiudi
 la finestra. Qui il loop diventa un'altra cosa: lo stesso giro affidato a un
@@ -51,11 +50,10 @@ qui in avanti, non è più una persona davanti a una tastiera.
 
 L'unità di lavoro del loop engineering non è la richiesta, ma il **ciclo**:
 una sequenza che si ripete (*pianifica, esegui, verifica, rifletti*) e poi
-ricomincia, portandosi dietro ciò che ha imparato. Non è un'idea nuova: è la
-stessa spina dorsale del ciclo *osserva → ragiona → agisci* che abbiamo
-incontrato nel capitolo sugli Agenti. La novità del loop engineering è
-riconoscere che di cicli, in un sistema serio, ce ne sono **due, annidati**, e
-che sono cose diverse.
+ricomincia, portandosi dietro ciò che ha imparato. Non è un'idea nuova, è la
+stessa ossatura del giro *osserva, ragiona, agisci* con cui lavora un agente.
+La novità del loop engineering è riconoscere che di cicli, in un sistema
+serio, ce ne sono **due, annidati**, e che sono cose diverse.
 
 `````{tab} Elementare
 
@@ -73,6 +71,11 @@ intagliature, ma la cadenza, il registro, il controllo, la ripartenza. Un
 artigiano bravissimo senza capobottega lavora finché lo guardi; con un buon
 capobottega lavora anche di notte, e quello che consegna è già stato
 controllato.
+
+Nella bottega, l'artigiano e il capobottega sono tutti e due dei programmi. Tu
+sei il proprietario: non stai al banco e non fai i turni, ma decidi quanta
+corda dare al capobottega, e la bottega resta tua, compreso quello che ne
+esce.
 
 `````
 
@@ -107,9 +110,10 @@ Il ciclo esterno, disegnato per esteso, ha quattro stazioni. La
 {numref}`fig-loop-ciclo` le mostra chiuse in cerchio, con un dettaglio che è
 il cuore di tutta la sezione: alla stazione di verifica c'è un **cancello**,
 cioè un controllo che decide se il giro può chiudersi o va rifatto, e a
-deciderlo non è il modello. Più avanti vedremo che nei sistemi che toccano
-cose difficili da disfare se ne mette un secondo, presidiato da una persona;
-qui basta il primo.
+deciderlo non è il modello. Più avanti vedremo che dove il lavoro tocca cose
+difficili da disfare (mandare una mail a un cliente, cancellare dei dati,
+pubblicare qualcosa) di cancelli se ne mette un secondo, e a tenerlo è una
+persona; qui basta il primo.
 
 ```{figure} ../figures/loop-engineering-ciclo.svg
 :name: fig-loop-ciclo
@@ -123,60 +127,61 @@ consegnato, chi non lo supera torna indietro con il motivo del rifiuto.
 
 ## I componenti di un loop
 
-Un capobottega non è un'idea astratta: è fatto di attrezzi concreti. Il repo
-*loop-engineering* di Cobus Greyling {cite}`greyling2026loop` raccoglie il
-repertorio di
-chi questi cicli li costruisce sul serio. Vale la pena elencarlo, perché ogni
-voce risponde a un problema pratico che il ciclo esterno pone. Gli esempi
-vengono quasi tutti dal mondo di chi programma, che di questi loop è il primo
-cantiere: ogni voce nomina prima la **funzione**, che resta, e poi l'attrezzo
-di oggi, che è solo il modo in cui quella funzione si realizza adesso; dove
-compare un attrezzo del mestiere, accanto c'è la sua traduzione in parole
-comuni.
+Un capobottega non è un'idea astratta: è fatto di attrezzi concreti. Cobus
+Greyling {cite}`greyling2026loop` ne ha raccolto il repertorio, e vale la pena
+scorrerlo, perché ogni voce risponde a un problema pratico che il ciclo
+esterno pone. Gli esempi vengono quasi tutti dal mondo di chi programma, che
+di questi loop è il primo cantiere; e di ogni voce diciamo prima a che cosa
+serve, che è la parte che dura, poi come si chiama l'attrezzo che oggi la fa.
 
-- **Automazione e scheduling.** Il loop ha una *cadenza*: una sveglia
-  programmata (un *cron*) che lo avvia ogni notte, un campanello (un *webhook*)
-  che lo sveglia ogni volta che qualcuno consegna una modifica, una coda che
-  gli passa compiti. Senza cadenza non c'è ciclo, c'è solo un comando che
-  qualcuno lancia a mano.
-- **Worktree isolati.** Ogni giro lavora in una copia separata del progetto.
-  Così più esecuzioni girano **in parallelo senza pestarsi i piedi**, e un giro
-  che fa danni li fa in un recinto, non sulla copia buona. Il programma che
-  custodisce il codice e la sua storia si chiama git; nel suo gergo, quella
-  copia separata è un *worktree*.
-- **Istruzioni riusabili.** Le istruzioni non si riscrivono ogni volta: si
-  impacchettano in unità richiamabili per nome, tenute sotto controllo di
-  versione come il codice, così che una correzione fatta una volta valga per
-  tutti i giri successivi (nei ferri del 2026 si chiamano *skill*). È il
-  **prompt come codice** del context engineering, portato al livello del loop.
+- **La sveglia.** Il loop parte da sé, a una cadenza sua: ogni notte a un'ora
+  fissata (l'orologio che lo fa partire, nei sistemi che ospitano i programmi,
+  si chiama *cron*), oppure ogni volta che succede qualcosa, per esempio
+  quando un programmatore aggiunge del codice al progetto (l'avviso che
+  arriva in quel momento si chiama *webhook*). Senza una sveglia non c'è
+  ciclo, c'è solo un comando che qualcuno lancia a mano.
+- **Il recinto.** Ogni giro lavora su una copia separata del progetto, non su
+  quella buona. Così più giri possono andare insieme senza pestarsi i piedi, e
+  quello che combina danni li combina nella sua copia. Il programma che
+  custodisce il codice e la sua storia si chiama git; nel suo gergo una di
+  quelle copie separate è un *worktree*.
+- **Le istruzioni riusabili.** Le istruzioni non si riscrivono ogni volta: si
+  impacchettano una volta sola, si dà loro un nome, e si tengono in archivio
+  accanto al codice, con la loro storia delle modifiche. Così una correzione
+  fatta oggi vale per tutti i giri di domani (negli attrezzi del 2026 questi
+  pacchetti si chiamano *skill*). È l'idea, già incontrata nel capitolo sugli
+  Agenti, che un prompt vada trattato come si tratta il codice: archiviato,
+  corretto in un posto solo, con la storia delle sue versioni.
 - **Chi fa e chi controlla, separati.** Il lavoro si divide in due ruoli
-  affidati a due **agenti distinti**, cioè a due copie del modello con
-  istruzioni e contesto propri: un *implementatore* che produce, un
-  *verificatore* che giudica. Ci torniamo tra poco: è il pezzo più importante.
-- **Memoria e stato esterni.** Lo stato del loop non vive nella conversazione,
-  ma in **file** che il ciclo legge e riscrive: uno con il punto a cui si è
-  arrivati, uno con il piano e le decisioni prese (nei repo che li usano si
-  chiamano `STATE.md` e `LOOP.md`, e sono file di testo semplice). Sono la
-  memoria a lungo termine dell'agente, discussa negli Agenti, qui in forma
-  leggibile anche da un umano, che è il punto: chi arriva la mattina dopo
-  capisce che cosa è successo di notte senza rileggere una conversazione.
-- **Integrazione con strumenti esterni.** Il loop non è un monologo: propone
-  modifiche da far approvare (le *pull request*), commenta le segnalazioni
-  aperte (i *ticket*), chiama servizi esterni tramite un protocollo condiviso
-  che descrive quali operazioni un modello può richiedere e come (dal 2024 ce
-  n'è uno aperto e adottato da più fornitori, l'**MCP**, *Model Context
-  Protocol*), registra il lavoro
-  nella storia del progetto con `git`. È così che il ciclo tocca il mondo
-  invece di limitarsi a produrre testo.
+  affidati a due **agenti distinti**, cioè a due copie del modello ciascuna
+  con le sue istruzioni e la sua finestra: una produce, l'altra giudica. Ci
+  torniamo fra poco: è il pezzo più importante.
+- **La memoria fuori dalla finestra.** Quello che il ciclo sa non vive nella
+  conversazione, ma in **file** che legge e riscrive a ogni giro: uno con il
+  punto a cui si è arrivati, uno con il piano e le decisioni prese. Sono la
+  memoria a lungo termine di cui parlava il capitolo sugli Agenti, qui in una
+  forma che legge anche una persona, e questo è il punto: chi arriva la
+  mattina dopo capisce che cosa è successo di notte senza doversi rileggere
+  una conversazione.
+- **Le mani sul mondo.** Il loop non parla soltanto: propone modifiche da far
+  approvare, risponde nelle segnalazioni aperte (quelle che gli utenti scrivono
+  quando qualcosa non funziona), registra il proprio lavoro nella storia del
+  progetto. E può rivolgersi a programmi esterni, purché
+  qualcuno gli abbia detto quali operazioni esistono e come si chiedono: dal
+  2024 c'è un modo aperto di dirglielo, adottato da più fornitori, che si
+  chiama **MCP** (*Model Context Protocol*). È così che il ciclo tocca il
+  mondo invece di limitarsi a produrre testo.
 
-Nessuno di questi attrezzi è «intelligente». Sono impalcatura, e come tutta la
-buona impalcatura, è ciò che tiene in piedi la parte intelligente.
+Nessuno di questi attrezzi è «intelligente». Sono impalcatura, e come ogni
+buona impalcatura sono quello che tiene in piedi la parte intelligente.
 
-### Due agenti, non uno: il maker e il checker
+### Due agenti, non uno: chi fa e chi controlla
 
-Fra i componenti, la separazione tra chi fa e chi controlla merita una riga in
-più, perché è controintuitiva: costa un secondo agente, eppure quasi sempre
-ripaga.
+Fra i componenti, la separazione fra chi fa e chi controlla merita qualche
+riga in più, perché a prima vista sembra uno spreco: vuol dire far lavorare il
+modello due volte invece che una, e quindi pagare due volte, in tempo e in
+denaro. Eppure quasi sempre ripaga. (I due ruoli, in inglese, si chiamano
+*maker* e *checker*, e così si trova scritto lo schema.)
 
 `````{tab} Elementare
 
@@ -188,6 +193,18 @@ non quello che ha scritto. Tenere due ruoli separati serve proprio a questo:
 il controllore arriva senza aver visto la fatica di chi ha prodotto, e giudica
 il risultato per quello che è. Nel loop, il *maker* scrive, il *checker*
 controlla, e sono due «persone» diverse: due agenti con teste separate.
+
+Qui è lecito obiettare: se sono due copie dello stesso modello, che senso ha?
+Uno pensa come l'altro. La risposta è che la differenza non sta nella testa,
+sta in quello che ciascuno ha davanti. Il primo ha davanti il compito e tutta
+la strada che ha fatto per svolgerlo; il secondo ha davanti solo il risultato
+e i criteri con cui giudicarlo, e non sa nemmeno di chi sia. Non è un
+dettaglio: è stato misurato che un modello, messo a giudicare, tende a
+preferire il testo che ha scritto lui, e lo preferisce di più quanto meglio lo
+riconosce come proprio. Toglierglielo di mezzo cambia il verdetto. Restano
+naturalmente i punti ciechi comuni: quello che il modello non sa vedere non lo
+vede nemmeno da controllore, ed è per questo che sopra il controllore c'è
+sempre un cancello che non è un modello.
 
 `````
 
@@ -209,33 +226,36 @@ perfettamente correlati e il controllo è teatro. Un checker con contesto
 pulito, e magari con criteri più severi, quella correlazione la abbassa; non
 la annulla. Se maker e checker sono lo stesso modello cambia il
 condizionamento, non i punti ciechi, e un errore che nasce da una lacuna del
-modello lo vedono tutt'e due allo stesso modo. Quanto ne resta non lo sappiamo:
-nessuno ha misurato la correlazione residua fra due istanze dello stesso
-modello con contesti separati, ed è una delle ragioni per cui, sopra il
-checker, il cancello resta deterministico. In cambio
+modello lo vedono tutt'e due allo stesso modo. Quanto ne resta non lo
+sappiamo, e una misura diretta di quella correlazione residua, fra due istanze
+dello stesso modello con contesti separati, non ci risulta: è una delle
+ragioni per cui, sopra il checker, il cancello resta deterministico. In cambio
 si paga un secondo giro di inferenza (token e latenza in più) che va messo a
 bilancio come ogni altra spesa del loop.
 
 `````
 
-## Il validation gate: verificare, non sperare
+## Il cancello di verifica: verificare, non sperare
 
 Arriviamo alla stazione che dà senso a tutte le altre: la **verifica**. Nel
 ciclo della {numref}`fig-loop-ciclo` è il punto in cui si decide se il giro è
 riuscito, e la scelta di progetto è netta: la verifica dev'essere un
 **cancello**, non un augurio. Un cancello ha due stati, aperto o chiuso; non
-esiste il «quasi passato». Nel caso del codice i controlli sono tre, e sono
-tutti automatici: i **test** devono passare (piccoli programmi scritti apposta
-per verificare che il codice faccia quel che promette), il **linter** non deve
-protestare (un programma che rilegge il codice e segnala le sciatterie: una
-variabile mai usata, una riga scritta in un modo che confonde), e i **tipi**
-devono tornare (ogni valore deve essere della specie che il codice si aspetta:
-un numero dove serve un numero, un testo dove serve un testo). Tutto questo
-*prima* di considerare fatto il lavoro, non dopo averlo già spedito.
+esiste il «quasi passato». (In inglese si chiama *validation gate*, ed è la
+stessa cosa: il cancello che convalida.)
+
+Nel caso del codice i controlli sono tre, tutti automatici. I **test** devono
+passare: sono piccoli programmi scritti apposta per verificare che il codice
+faccia quel che promette. Il **linter** non deve protestare: è un programma
+che rilegge il codice e segnala le sciatterie, un valore calcolato e poi mai
+usato, una riga scritta in un modo che confonde. E i **tipi** devono tornare:
+ogni valore dev'essere della specie che il codice si aspetta, un numero dove
+serve un numero, un testo dove serve un testo. Tutto questo *prima* di
+considerare fatto il lavoro, non dopo averlo già spedito.
 
 ```{figure} ../figures/codex-2021.svg
 :name: fig-codice-verificato
-:alt: "Una descrizione in linguaggio naturale entra nel modello, che genera del codice Python. Il codice non viene accettato così com'è: viene eseguito contro una batteria di test, e solo se li supera è considerato corretto; altrimenti si torna indietro a rigenerare."
+:alt: "Una descrizione in linguaggio naturale entra nel modello Codex, che genera del codice Python. Il codice non viene accettato così com'è: passa ai test unitari, e conta come corretto solo se li supera tutti. In basso a sinistra, la scheda del banco di prova HumanEval: 164 problemi, circa 7,7 test ciascuno."
 :width: 96%
 
 Il cancello, applicato al codice. Il modello propone; a decidere se la
@@ -243,41 +263,55 @@ proposta vale è l'esecuzione dei test, che è un giudizio esterno e non
 opinabile.
 ```
 
-La ragione per cui la programmazione è il terreno d'elezione di questi loop si
-legge in {numref}`fig-codice-verificato`: esiste un **oracolo** automatico e
-gratuito. «Oracolo» qui non ha niente a che vedere con il futuro: in
-informatica è il nome di qualcosa che sa dire, senza discutere, se un
+La ragione per cui la programmazione è il campo naturale di questi loop si
+legge in {numref}`fig-codice-verificato`: per il codice esiste un **oracolo**
+automatico e gratuito. «Oracolo» qui non ha niente a che vedere con il futuro:
+in informatica è il nome di qualcosa che sa dire, senza discutere, se un
 risultato è giusto o sbagliato. Per il codice quell'oracolo sono i test, e li
-si esegue in un secondo, quante volte si vuole. Nei domini dove manca
-(scrivere una relazione, progettare un'interfaccia) il cancello va costruito a
-mano, ed è lì che il loop engineering diventa difficile.
+si esegue in un secondo, quante volte si vuole.
 
-È anche il banco che ha reso questa forma di giudizio la norma. Nel 2021, per
-valutare Codex (un modello addestrato sul codice, antenato degli assistenti di
-programmazione di oggi), OpenAI pubblicò **HumanEval**: 164 problemi scritti a
-mano, ciascuno con una manciata di test, dove una soluzione conta solo se li
-supera **tutti** {cite}`chen2021evaluating`. È la forma pura del cancello:
-nessun giudizio, nessuna sfumatura, un programma che gira o non gira.
+Fuori dal codice l'oracolo non c'è: nessun programma dice se una relazione è
+scritta bene o se un'interfaccia si capisce. Lì il cancello va costruito a
+mano, e somiglia più a una lista di controllo con delle domande a cui si
+risponde sì o no («ci sono tutti i dati richiesti?», «le cifre tornano con
+quelle del bilancio?»), oppure a una persona che guarda prima che si spedisca.
+Ed è lì che il loop engineering diventa difficile.
+
+È anche il banco di prova che ha reso questa forma di giudizio la norma. Nel
+2021, per valutare Codex (un modello addestrato sul codice, antenato degli
+assistenti di programmazione di oggi), OpenAI pubblicò **HumanEval**: 164
+problemi scritti a mano, ciascuno con una manciata di test, dove una soluzione
+conta solo se li supera **tutti** {cite}`chen2021evaluating`. È la forma pura
+del cancello: nessun giudizio, nessuna sfumatura, un programma che gira o non
+gira.
 
 Questa idea ha una radice accademica precisa, in due lavori che il capitolo
-sugli Agenti ha già introdotto e che qui rileggiamo dal lato del loop. ReAct
-{cite}`yao2023react` ha mostrato che intrecciare **ragionamento e azione**
-(pensare a parole *e* usare strumenti) rende più del solo agire. E siccome ogni
-pensiero è legato a ciò che gli strumenti hanno davvero riportato, ReAct si
-inventa meno cose del ragionamento lasciato a sé stesso, cioè della
-chain-of-thought {cite}`wei2022chain`, che pensa a voce alta senza mai andare a
-controllare. Questo non vuol dire che ReAct la batta sempre, e gli stessi
-autori lo misurano. Su una raccolta di domande costruite apposta perché per
-rispondere si debbano incrociare più informazioni cercandole una dopo l'altra,
-la chain-of-thought resta avanti (29,4 contro 27,4 di risposte esatte); su una
-raccolta di affermazioni da verificare come vere o false è ReAct a passare
-davanti (60,9 contro 56,3). Il risultato migliore, in tutti e due i casi,
-arriva dai due metodi usati insieme: uno parte e l'altro subentra quando il
-primo si arena. Reflexion
-{cite}`shinn2023reflexion` ha aggiunto il tassello mancante:
-dopo un fallimento, l'agente **riflette a parole** sul proprio errore, scrive
-quella riflessione in memoria e la usa per condizionare il tentativo
-successivo. È esattamente la stazione «rifletti» del nostro ciclo.
+sugli Agenti ha già introdotto e che qui rileggiamo dal lato del loop. Il
+primo si chiama ReAct {cite}`yao2023react`, e mostra che intrecciare
+**ragionamento e azione** (pensare a parole *e* usare strumenti) rende più del
+solo agire. Siccome ogni pensiero è agganciato a quello che gli strumenti
+hanno davvero riportato, ReAct si inventa meno cose del ragionamento lasciato
+a sé stesso, cioè della catena di pensiero della sezione sul prompt
+{cite}`wei2022chain`, che pensa a voce alta senza mai andare a controllare.
+
+Questo non vuol dire che ReAct vinca sempre, e sono gli stessi autori a
+misurarlo. Su una raccolta di domande che per rispondere obbligano a incrociare
+più informazioni, cercandole una dopo l'altra, la catena di pensiero resta
+avanti: risponde giusto nel 29,4 per cento dei casi contro il 27,4. Su una
+raccolta di affermazioni da confrontare con una fonte per dire se reggono, è
+ReAct a passare davanti: 60,9 contro 56,3. Sono scarti piccoli, due punti nel
+primo caso e quasi cinque nel secondo, e la loro piccolezza è il risultato
+interessante: nessuno dei due metodi vince in assoluto, e quale sia il
+migliore dipende dal compito. Il risultato più alto, in tutti e due i casi,
+arriva infatti dai due usati in coppia, uno che parte e l'altro che subentra
+quando il primo si arena, con la catena di pensiero nella sua versione a più
+tentativi e voto di maggioranza vista nella sezione sul prompt: 35,1 sulle
+domande a più passaggi e 64,6 sulle affermazioni da verificare.
+
+Il secondo lavoro si chiama Reflexion {cite}`shinn2023reflexion`, e aggiunge
+il tassello mancante: dopo un fallimento l'agente **riflette a parole** sul
+proprio errore, scrive quella riflessione in memoria e se la ritrova davanti
+al tentativo dopo. È esattamente la stazione «rifletti» del nostro ciclo.
 
 `````{tab} Elementare
 
@@ -309,14 +343,17 @@ bruciando token.
 
 `````
 
-Ecco lo scheletro in puro Python, eseguibile. Il *generatore* è un finto LLM,
-che al posto di ragionare guarda l'ultimo motivo di rifiuto e corregge quello:
-è una caricatura di ciò che fa un modello vero, ma commette lo stesso gesto,
-che è il gesto della sezione (il **contenuto** del fallimento guida il
-tentativo dopo). Il *verificatore*, invece, è reale: controlla che uno **slug**
-(il pezzo di indirizzo web che si ricava da un titolo, tutto minuscolo e con i
-trattini al posto degli spazi) rispetti tre regole. Il ciclo itera finché il
-cancello passa o finiscono i tentativi:
+Ecco lo scheletro in puro Python, eseguibile. Chi non legge il Python può
+saltare il blocco e guardare le quattro righe di risultato che vengono dopo:
+si vede il cancello che respinge tre volte e si apre alla quarta.
+
+Nel programma il generatore è un finto modello: invece di ragionare, guarda
+l'ultimo motivo di rifiuto e corregge quello. È una caricatura, ma fa la cosa
+che conta in questa sezione, cioè lasciarsi guidare dal **contenuto** del
+fallimento. Il verificatore invece è vero: controlla che uno **slug** rispetti
+tre regole. Slug è il pezzo di indirizzo web che si ricava da un titolo, tutto
+minuscolo e con i trattini al posto degli spazi. Il ciclo va avanti finché il
+cancello si apre o finiscono i tentativi:
 
 ```python
 # Un loop generate -> verify -> refine. Il generatore e' un finto LLM;
@@ -387,46 +424,49 @@ rilegge. Alla quarta il cancello si apre, e le tre righe restano tutte lì.
 
 Poche righe che non «capiscono» nulla, eppure incarnano la spina dorsale del
 loop esterno, ed è quella che {numref}`fig-cancello-che-respinge` mostra in
-funzione: un cancello che non si compiace, una memoria del fallimento che
+funzione: un cancello che non fa sconti, una memoria del fallimento che
 cresce, un tetto ai tentativi. In un sistema vero il generatore è il modello e
-la `verifica` è la vera suite di test, ma l'ossatura è questa.
+la `verifica` è la batteria di test del progetto, ma l'ossatura è questa.
 
 ## Tenere il ciclo in mano: gli errori si moltiplicano
 
 Fin qui la parte esaltante. Ora quella onesta, perché un loop mal governato è
-uno strumento per sbagliare più in fretta. Tre problemi vanno guardati in
-faccia.
+uno strumento per sbagliare più in fretta. Prima però guardiamo il metro con
+cui questi cicli vengono misurati, perché è un metro che ha i suoi limiti.
 
 ```{figure} ../figures/swe-bench-agenti-programmano.svg
 :name: fig-swe-bench
-:alt: "Catena di valutazione: da una issue reale di GitHub e dal codice del repository si parte, l'agente produce una patch, la patch viene applicata e sottoposta ai test del progetto, e il verdetto è binario, la issue è risolta oppure no."
+:alt: "Catena di valutazione: da una segnalazione di malfunzionamento vera, aperta su GitHub, e dal codice del progetto si parte; l'agente produce una modifica; la modifica viene applicata e sottoposta ai test che il progetto già aveva; e il verdetto è binario, il problema è risolto oppure no."
 :width: 100%
 
 Un banco di prova che non ammette interpretazioni. Il compito viene da una
-issue vera, il giudizio dai test che il progetto già aveva: nessuno dei due
-l'ha scritto chi valuta.
+segnalazione vera (una *issue*, nel gergo di chi programma), il giudizio dai
+test che il progetto già aveva: né l'uno né gli altri li ha scritti chi
+valuta.
 ```
 
 Il banco di prova disegnato in {numref}`fig-swe-bench` è **SWE-bench**
 {cite}`jimenez2024swebench`, che nel capitolo sugli Agenti abbiamo già usato e
-discusso. Il suo pregio è anche il suo limite, e vale la pena ricordarlo qui
-fra i problemi. Un banco di prova così misura ciò che i test
-sanno vedere: una **patch** (l'elenco delle righe da togliere e da aggiungere,
-che è la forma in cui si propone una modifica al codice) che li supera
-peggiorando la leggibilità o introducendo un debito passa lo stesso, e nessuna
-percentuale lo registra. E
-c'è un'obiezione più dura, che negli Agenti abbiamo riportata per esteso:
-rileggendo a mano i successi, una quota consistente si rivela già scritta
-dentro la segnalazione da risolvere {cite}`aleithan2024swebenchplus`. Un
-oracolo automatico è una gran cosa, ma resta un oracolo su ciò che qualcuno ha
-deciso di misurare.
+discusso. Il suo pregio è anche il suo limite. Un banco così misura ciò che i
+test sanno vedere, e i test non sanno vedere tutto: una modifica che li supera
+lasciando dietro di sé del codice più difficile da leggere passa comunque, e
+nel punteggio non se ne trova traccia. Il guaio si paga più tardi, quando
+qualcuno dovrà rimetterci le mani, ed è per questo che chi programma lo chiama
+un **debito**. E c'è un'obiezione più dura, che negli Agenti abbiamo riportata
+per esteso: rileggendo a mano le prove superate, in circa una su tre la
+soluzione era già scritta dentro la segnalazione da risolvere
+{cite}`aleithan2024swebenchplus`, cioè l'agente aveva la risposta sotto gli
+occhi insieme alla domanda. Un giudice automatico è una gran cosa, ma giudica
+solo ciò che qualcuno ha deciso di misurare.
 
-Il primo problema è **aritmetico**, e lo abbiamo già incontrato negli Agenti:
-gli errori si accumulano lungo il ciclo. Chiamiamo $p$ la probabilità che un
-singolo passo introduca un errore che nessuno intercetta; allora $1 - p$ è la
-probabilità che quel passo vada liscio, e se ogni passo sbaglia per conto
-proprio, con lo stesso rischio $p$ tutte le volte, la probabilità che il loop
-attraversi $n$ passi senza guai è
+Detto questo, tre problemi vanno guardati in faccia. Il primo è
+**aritmetico**, e lo abbiamo già incontrato negli Agenti: gli errori si
+accumulano lungo il ciclo. Chiamiamo $p$ la probabilità che un singolo passo
+introduca un errore che nessuno intercetta (una probabilità si scrive come una
+frazione di uno: $p = 0{,}05$ vuol dire cinque volte su cento). Allora
+$1 - p$ è la probabilità che quel passo vada liscio, e se ogni passo sbaglia
+per conto proprio, con lo stesso rischio $p$ tutte le volte, la probabilità
+che il loop attraversi $n$ passi senza guai è
 
 $$
 P(\text{pulito}) = (1 - p)^n,
@@ -434,17 +474,25 @@ $$
 
 dove $n$ è il numero di passi del ciclo: moltiplicare venti volte un numero
 appena sotto l'uno porta molto più in basso di quanto sembri. Con
-$p = 0{,}05$ e $n = 20$ il conto è $0{,}95^{20} \approx 0{,}36$, cioè quasi due
-giri su tre inciampano da qualche
-parte. Il conto però regge solo finché ogni passo sbaglia per conto suo, e nei
-loop veri non è così: il *context poisoning* visto nel context engineering fa
-sì che uno sbaglio ne tiri dietro altri. Quando gli errori vengono a grappoli
-quella moltiplicazione smette di essere la risposta esatta (i giri tendono a
-dividersi fra del tutto puliti e rovinati in blocco), quindi prendila per
-quello che è, un conto all'ingrosso e non una regola sicura. Resta la ragione
-per cui il
-**cancello di verifica** non è un lusso: alzando l'affidabilità effettiva di
-ogni passo, tiene il prodotto lontano dallo zero.
+$p = 0{,}05$ e $n = 20$ il conto è $0{,}95^{20} \approx 0{,}36$: su cento giri
+ne arrivano puliti in fondo trentasei, e i restanti sessantaquattro inciampano
+da qualche parte. Un rischio del cinque per cento a ogni passo, che a leggerlo
+sembra poco, diventa la maggioranza dei giri andati storti.
+
+Il conto però regge solo finché ogni passo sbaglia per conto suo, e nei loop
+veri non è così: l'avvelenamento del contesto, visto nella sezione precedente,
+fa sì che uno sbaglio ne tiri dietro altri. Quando gli errori vengono a
+grappoli quella moltiplicazione smette di essere la risposta esatta: i giri
+tendono a dividersi fra del tutto puliti e rovinati in blocco, invece di
+sparpagliarsi. Va presa per quello che è, insomma, un conto all'ingrosso e non
+una regola sicura, e serve a dare l'ordine di grandezza di un rischio che
+l'intuito sottovaluta.
+
+Resta il motivo per cui il **cancello di verifica** non è un lusso, e sta
+proprio in come è definito quel $p$: non è la probabilità di sbagliare, è la
+probabilità di sbagliare **senza che nessuno se ne accorga**. Un cancello
+intercetta, e quindi abbassa $p$; e siccome quel numero viene moltiplicato per
+sé stesso venti volte, abbassarlo un po' cambia moltissimo il risultato.
 
 Il cancello però lavora dentro il ciclo, e contro l'aritmetica c'è una seconda
 difesa che sta invece attorno: non consegnare al loop tutto il potere il primo
@@ -455,10 +503,12 @@ giorno.
 Nessuno dà a un nuovo assunto le chiavi dell'azienda il primo giorno. La prima
 settimana scrive solo **relazioni** che tu leggi: osserva e riferisce, decidi
 tu. Guadagnata un po' di fiducia, può **proporre correzioni** che tu approvi
-prima che partano. Solo dopo, e solo per cose di cui ti fidi, lavora **da solo,
-anche di notte**. Con i loop è identico: si concede autonomia a scaglioni, non
-tutta subito. Chi consegna le chiavi al primo giorno non sta risparmiando
-tempo: sta preparando il disastro che dovrà poi ripulire.
+prima che partano: ecco il secondo cancello promesso all'inizio della sezione,
+quello che non è un controllo automatico ma una persona che guarda e dà il via
+libera. Solo dopo, e solo per cose di cui ti fidi, il nuovo assunto lavora **da
+solo, anche di notte**. Con i loop è identico: si concede autonomia a
+scaglioni, non tutta subito. Chi consegna le chiavi il primo giorno non sta
+risparmiando tempo: sta preparando il disastro che dovrà poi ripulire.
 
 `````
 
@@ -485,25 +535,32 @@ irreversibile.
 
 `````
 
-Il secondo problema è più sottile e non si risolve con un test. Addy Osmani lo
-chiama **comprehension debt** {cite}`osmani2026comprehension`, il debito di
-comprensione (l'espressione, va detto, circolava già prima di lui): un loop produce più
-codice, più modifiche, più decisioni di quante un umano ne legga: e il conto,
-prima o poi, arriva. I loop **amplificano il giudizio**: quello buono e quello
-cattivo con la stessa efficienza. Un'architettura pulita si propaga in fretta;
-un errore di impostazione anche. Per questo la regola del «restare
-l'ingegnere» non è retorica: chi mantiene il sistema deve **leggere ciò che
-parte**, non solo guardare la spia verde dei test. Un loop che nessuno capisce
-più è un passivo, per quanto verdi siano i suoi cancelli.
+Il secondo problema è più sottile e non si risolve con un test. Un loop produce
+più codice, più modifiche, più decisioni di quante una persona ne riesca a
+leggere, e quello che nessuno ha letto resta un debito: qualcuno, un giorno,
+dovrà capirlo, e lo capirà quando serve, cioè quando qualcosa si è rotto. Addy
+Osmani lo chiama **comprehension debt** {cite}`osmani2026comprehension`, debito
+di comprensione, e l'espressione, va detto, circolava già prima di lui. Il
+punto è che i loop **amplificano il giudizio**, quello buono e quello cattivo
+con la stessa efficienza: una scelta di partenza azzeccata si moltiplica in
+fretta su tutto il lavoro, e una sbagliata pure. Per questo la regola del
+«restare l'ingegnere»
+non è retorica: chi mantiene il sistema deve **leggere ciò che parte**, non
+solo guardare la spia verde dei test. Un loop che nessuno capisce più è un
+peso, per quanto verdi siano i suoi cancelli.
 
-Il terzo problema è **economico**, e ci riporta alla sezione su LLMOps. Ogni
-giro del loop consuma token, apre chiamate, occupa macchine: un ciclo
-schedulato che gira ogni notte ha una **bolletta** e va messo a budget come
-qualsiasi processo. E siccome gira quando non lo guardi, va **monitorato** con
-la stessa cura: metriche di riuscita, costo per giro, tasso di intervento
-umano, allarmi quando qualcosa degenera. Il loop engineering, in fondo, sposta
-la leva dal prompt al sistema; ma un sistema, a differenza di una frase, va
-sorvegliato mentre lavora.
+Il terzo problema è **economico**. Ogni giro del loop si porta dietro del
+testo da far leggere al modello, cioè dei token, e ogni chiamata al modello si
+paga; in più occupa dei computer, che qualcuno affitta. Un ciclo che parte
+ogni notte, insomma, ha una **bolletta**, e va messo a bilancio come qualsiasi
+altra cosa che consuma. E siccome lavora quando nessuno lo guarda, va anche
+**sorvegliato**: quante volte è andato a buon fine, quanto è costato ogni
+giro, quante volte è dovuta intervenire una persona, e un allarme che suoni se
+qualcosa comincia a degenerare. Di come si tengano in funzione, giorno dopo
+giorno, i sistemi costruiti sui modelli si occupa il capitolo su **MLOps**. Il
+loop engineering, in
+fondo, sposta la leva dal prompt al sistema; ma un sistema, a differenza di
+una frase, va sorvegliato mentre lavora.
 
 `````{tab} Elementare
 
@@ -526,8 +583,9 @@ sorvegliato mentre lavora.
   che non converge gira per sempre.
 - **Gli errori si moltiplicano.** Un giro lungo con un rischio piccolo a ogni
   passo finisce male più spesso di quanto l'intuito dica: venti passi con il
-  cinque per cento di rischio ciascuno arrivano puliti in fondo solo una volta
-  su tre. È la ragione per cui il cancello non è un lusso.
+  cinque per cento di rischio ciascuno arrivano puliti in fondo trentasei volte
+  su cento, cioè poco più di una su tre. È la ragione per cui il cancello non
+  è un lusso.
 - **L'autonomia si concede a scaglioni**, come a un nuovo assunto: prima solo
   relazioni da leggere, poi proposte da approvare, e solo alla fine, e solo
   dentro confini scritti, il permesso di fare da sé.
@@ -551,7 +609,8 @@ sorvegliato mentre lavora.
   engineering progetta (schedulato, con stato persistente **fuori** dalla
   finestra e verifica esterna).
 - Il ciclo esterno ha quattro stazioni (**pianifica → esegui → verifica →
-  rifletti**) e un **cancello** (spesso umano) che può fermarlo. I suoi
+  rifletti**) e alla verifica un **cancello deterministico**, a cui nei sistemi
+  che toccano cose irreversibili se ne aggiunge un secondo, umano. I suoi
   componenti: scheduling, worktree isolati, skill riusabili, split
   **maker/checker**, stato su file, integrazione (MCP/git/ticket).
 - La **verifica è un cancello, non un augurio**: un predicato deterministico

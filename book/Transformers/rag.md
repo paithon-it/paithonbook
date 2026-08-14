@@ -26,17 +26,19 @@ primo mestiere, il più antico.
 
 ## Trovare l'ago: l'information retrieval
 
-Il problema è presto detto: data una richiesta (una **query**) trovare, in una
-collezione che può contenere milioni di documenti, i pochi che servono. La
-parola *query* è la stessa incontrata nel meccanismo di attenzione, dove era la
-domanda che una parola pone alle altre; qui è la domanda che si pone a un
-archivio. Non è un caso che si chiamino uguale, ed è anzi il filo di tutta la
-sezione: interrogare, confrontare, pesare le risposte è sempre lo stesso gesto,
-una volta dentro una frase e una volta dentro una biblioteca. È il
-problema dei motori di ricerca, ma è nato ben prima del web, nelle biblioteche
-digitalizzate degli anni Sessanta e Settanta. E la prima domanda è di pura
-ingegneria: come si cerca in milioni di documenti *senza leggerli tutti* a
-ogni richiesta?
+Il problema è presto detto: data una richiesta, trovare in una collezione che
+può contenere milioni di documenti i pochi che servono. È il problema dei motori
+di ricerca, ma è nato ben prima del web, nelle biblioteche digitalizzate degli
+anni Sessanta e Settanta.
+
+Chi lo studia chiama quella richiesta una **query**, ed è la stessa parola che
+nel meccanismo di attenzione indicava la domanda che una parola pone alle altre:
+là si cercava una parola dentro una frase, qui un documento dentro un archivio,
+ma il gesto è identico. Si formula una domanda, la si confronta con tutto quello
+che potrebbe rispondere, si pesa quanto ciascuno risponde bene, e si tiene la
+miscela dei migliori. È il filo di tutta questa sezione, e vale la pena tenerlo
+in mano. La prima domanda però è di pura ingegneria: come si cerca in milioni
+di documenti *senza leggerli tutti* a ogni richiesta?
 
 `````{tab} Elementare
 
@@ -118,15 +120,20 @@ posto).
 
 `````
 
-## Quando le parole non bastano: il retrieval denso
+## Quando le parole non bastano: cercare per significato
 
 L'indice invertito ha un difetto congenito: cerca **parole**, non significati.
 Chi scrive «abitazione» non trova il documento che dice «casa». Il rimedio è la
 stessa **mappa del significato** incontrata parlando delle cento lingue: ogni
-parola, e poi ogni frase, diventa un punto su una mappa, con la regola che
-cose che vogliono dire cose simili finiscono in punti vicini. Su una mappa del
-genere si possono perfino fare dei conti, ed è quello che mostra la figura qui
-sotto.
+parola, e poi ogni frase, diventa un punto su una mappa, con la regola che cose
+che vogliono dire cose simili finiscono in punti vicini. Cercare, allora, non è
+più confrontare parole: è misurare distanze. Il modo di cercare che ne esce si
+chiama **retrieval denso**, dove «denso» sta per il tipo di indirizzi che usa:
+non una casella per ogni parola del vocabolario, quasi tutte vuote, ma poche
+centinaia di numeri tutti pieni e tutti significativi.
+
+Su una mappa del genere si possono perfino fare dei conti, ed è quello che
+mostra la figura qui sotto.
 
 ```{figure} ../figures/word2vec-2013.svg
 :name: fig-aritmetica-vettori
@@ -138,10 +145,12 @@ spostamento che porta da «donna» a «regina»: la relazione «la versione rega
 di» è diventata una direzione.
 ```
 
-La proprietà di {numref}`fig-aritmetica-vettori` è ciò che rende possibile il
-recupero denso di questa sezione. Se parole con significati vicini finiscono
-in punti vicini, allora cercare diventa una questione di distanza, e non
-serve più che la domanda e il documento condividano le stesse parole.
+{numref}`fig-aritmetica-vettori` dice, in realtà, qualcosa di più forte di
+quanto serva qui: mostra che sulla mappa non solo le cose simili stanno vicine,
+ma le *relazioni* fra le cose diventano direzioni, tanto che si possono
+sommare e sottrarre. Per cercare basta la metà debole di questa proprietà, cioè
+la vicinanza; ma vale la pena vedere la metà forte, perché è la prova che
+quella mappa non è disposta a caso.
 
 Nell'overview del capitolo sul NLP avevamo elencato i sinonimi tra le insidie
 della lingua: «auto», «macchina» e «vettura» indicano lo stesso oggetto. Ma
@@ -167,8 +176,9 @@ sono semplicemente **i punti più vicini**, parole in comune o no.
 Attenzione però a non pensionare il catalogo. Se cerchi «errore E-52 della
 lavatrice», vuoi *esattamente* E-52, non «un errore simile»: sui codici, sui
 nomi propri, sulle sigle, il confronto letterale resta imbattibile, perché lì
-il significato *è* la parola esatta. Per questo i sistemi seri usano spesso
-entrambi gli approcci insieme, e fanno decidere ai risultati.
+il significato *è* la parola esatta. Per questo i sistemi seri fanno cercare
+tutti e due, il catalogo e il libraio, e poi fondono le due liste di risultati
+in una sola, tenendo in cima quello che compare in alto in entrambe.
 
 `````
 
@@ -253,15 +263,17 @@ il paragrafo dato: prima trova i passaggi in una collezione, poi rispondi, che
 
 ## Il libro aperto: la RAG
 
-Tutti i pezzi sono sul tavolo: un retriever che trova i passaggi giusti e un
-generatore che sa scrivere. La **Retrieval-Augmented Generation** li mette in
-fila, ed è la pipeline di {numref}`fig-rag-pipeline`: la domanda va al
-retriever, che consulta l'archivio indicizzato e restituisce i passaggi più
-pertinenti; domanda e passaggi vengono montati in un **prompt aumentato**; il
-modello di linguaggio genera la risposta appoggiandosi ai passaggi, citandoli.
-Il nome viene dal lavoro di Patrick Lewis e colleghi
-{cite}`lewis2020retrieval`, che nel 2020 hanno mostrato come saldare le due
-metà in un unico modello addestrabile.
+Tutti i pezzi sono sul tavolo: un cercatore che trova i passaggi giusti e un
+modello di linguaggio che sa scrivere. La **Retrieval-Augmented Generation**,
+«generazione aumentata dal recupero», li mette semplicemente in fila, ed è la
+catena di {numref}`fig-rag-pipeline`. La domanda va al cercatore, che consulta
+l'archivio e restituisce i passaggi più pertinenti. Domanda e passaggi vengono
+poi incollati insieme in un unico testo, che si dà in pasto al modello: è
+questo che si chiama **prompt aumentato**, cioè la richiesta con attaccati i
+documenti che servono a rispondere. E il modello scrive la risposta
+appoggiandosi a quei passaggi, citandoli. Il nome viene dal lavoro di Patrick
+Lewis e colleghi {cite}`lewis2020retrieval`, che nel 2020 hanno mostrato come
+saldare le due metà in un unico modello addestrabile.
 
 ```{figure} ../figures/rag-pipeline.svg
 :name: fig-rag-pipeline
@@ -350,23 +362,26 @@ dietro, e perché è una mitigazione, non una cura.
 
 ## Un retriever denso in miniatura
 
-Chiudiamo con il codice. Costruiamo un cercatore denso completo (embedding,
-similarità del coseno, top-$k$, prompt aumentato) su un archivio di sei
-passaggi. Gli embedding sono fittizi ma didattici: quattro dimensioni
-leggibili (gatti, muri e casa, automobili, cucina) al posto delle centinaia di
-dimensioni opache di un encoder vero. Tutto il resto è identico a un sistema
-reale.
+Chiudiamo con il codice. Costruiamo un cercatore per significato completo su un
+archivio di sei passaggi: si calcolano gli indirizzi, si misura quanto ciascuno
+è vicino alla domanda, si tengono i due migliori, si monta il prompt aumentato.
+Gli indirizzi qui sono scritti a mano e hanno quattro sole coordinate, ognuna
+con un significato leggibile (quanto il passaggio parla di gatti, di muri e
+casa, di automobili, di cucina), al posto delle centinaia di coordinate opache
+che produrrebbe un modello vero. Tutto il resto è identico a un sistema in
+funzione.
 
-Una riga per chi legge al livello Elementare e vuole comunque capire i numeri
-che escono. La **similarità del coseno** è un modo di misurare quanto due punti
-della mappa del significato «puntano nella stessa direzione»: dà $1$ quando la
-direzione è identica, $0$ quando non hanno niente a che vedere, e valori
-intermedi in mezzo. Si legge come una percentuale di somiglianza, ed è tutto
-quel che serve per leggere l'uscita del programma. (Un avviso per chi poi
-sostituisce un encoder vero a questi numeri scritti a mano: qui le coordinate
-sono tutte positive e allora il coseno sta fra $0$ e $1$, ma in generale scende
-fino a $-1$, e i valori negativi vanno letti come «direzioni opposte», non come
-un guasto.)
+Due righe per chi legge al livello Elementare e vuole comunque capire i numeri
+che escono. Ogni passaggio è un punto sulla mappa, e un punto sulla mappa si
+può guardare anche come una freccia che parte dall'origine e arriva lì: la
+**similarità del coseno** misura quanto due di quelle frecce puntano nella
+stessa direzione. Dà $1$ quando la direzione è identica, $0$ quando le due non
+hanno niente a che vedere, e valori intermedi in mezzo; si legge come una
+percentuale di somiglianza, ed è tutto quel che serve per leggere l'uscita del
+programma. (Un avviso per chi poi mette un modello vero al posto di questi
+numeri scritti a mano: qui le coordinate sono tutte positive e allora il coseno
+sta fra $0$ e $1$, ma in generale scende fino a $-1$, e i valori negativi vanno
+letti come «direzioni opposte», non come un guasto.)
 
 ```python
 import torch
@@ -431,15 +446,18 @@ accurato, che riesamina uno per uno i pochi candidati e li rimette in ordine
 prompt dice «usando *solo* i passaggi»: il generatore deve appoggiarsi al
 passaggio [1] e avere la disciplina di ignorare il [2].
 
-Da questo giocattolo a un sistema di produzione i passi sono pochi e tutti già
-nominati. Al posto dei vettori scritti a mano ci va un modello addestrato a
-produrli, con la ricetta della sigla di poco fa, DPR. Al posto delle sei righe
-ci vanno milioni di passaggi, ottenuti spezzando i documenti in blocchi (il
-*chunking*) e serviti da un indice che sa trovare i punti vicini su una mappa
-di milioni di punti senza confrontarli tutti: si accontenta dei quasi-vicini in
-cambio della velocità, e per questo si chiama **approssimato**. Al posto del
-`print` finale ci va la chiamata a un modello istruito. La struttura (codifica,
-coseno, top-$k$, prompt) è esattamente quella che hai appena eseguito.
+Da questo giocattolo a un sistema vero, di quelli che stanno dietro a un
+servizio in funzione, i passi sono pochi. Al posto degli indirizzi scritti a
+mano ci va un modello addestrato apposta a produrli: quello che ha fatto scuola
+si chiama **DPR**, *Dense Passage Retrieval*, e sono due encoder addestrati
+insieme a mettere vicine le domande e i passaggi che le soddisfano. Al posto
+delle sei righe ci vanno milioni di passaggi, ottenuti spezzando i documenti in
+blocchi (il *chunking*) e serviti da un indice che sa trovare i punti vicini su
+una mappa di milioni di punti senza confrontarli tutti: si accontenta dei
+quasi-vicini in cambio della velocità, e per questo si chiama **approssimato**.
+Al posto del `print` finale ci va la chiamata a un modello istruito. La
+struttura (si codifica, si misura il coseno, si tengono i primi $k$, si monta
+il prompt) è esattamente quella che hai appena eseguito.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare

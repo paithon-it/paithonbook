@@ -12,9 +12,11 @@ Il difetto sta nel tipo di conti che lo scan fa fare. Una scheda grafica sa
 fare due cose, e non le fa affatto alla stessa velocità. La prima è prendere
 due numeri, moltiplicarli, e ripetere: operazioni minute, una per volta,
 ciascuna con i suoi due numeri da andare a prendere in memoria. La seconda è
-moltiplicare due **tabelle** di numeri, che è un'operazione sola con dentro
-migliaia di moltiplicazioni tutte uguali, disposte in un ordine noto in
-anticipo: si caricano i numeri una volta e si fa tutto il lavoro sul posto. Per
+moltiplicare fra loro due **tabelle** di numeri (in matematica una tabella di
+numeri si chiama **matrice**, e da qui in poi le due parole vogliono dire la
+stessa cosa), che è un'operazione sola con dentro migliaia di moltiplicazioni
+tutte uguali, disposte in un ordine noto in anticipo: si caricano i numeri una
+volta e si fa tutto il lavoro sul posto. Per
 questa seconda operazione, e solo per questa, le schede moderne hanno un
 reparto dedicato, i **tensor core**, ed è lì che sta la stragrande maggioranza
 della loro potenza. Lo scan di Mamba-1 fa conti del primo tipo, e quel reparto
@@ -30,14 +32,20 @@ la potenza della scheda.
 
 ## State Space Duality: un SSM è un'attenzione
 
-Il titolo del paper è programmatico (*Transformers are SSMs*) ed è il rovescio
-della medaglia di quello che avevamo incontrato nel capitolo sull'attenzione
-lineare, *Transformers are RNNs* {cite}`katharopoulos2020transformers`. Lì
-avevamo tolto dall'attenzione il pezzo che costava di più e trovato sotto una
-rete ricorrente a stato fisso. Qui si parte dall'altro capo (un SSM, cioè un
-sistema dinamico misurato a intervalli) e si scopre che, con la giusta
-restrizione, è **esattamente** un'attenzione mascherata. La chiamano **State
-Space Duality** (SSD): la dualità tra spazio degli stati e attenzione.
+Il risultato, detto in una riga, è questo: una macchina a spazio degli stati,
+purché si accetti di semplificarne un pezzo, non somiglia all'attenzione, *è*
+l'attenzione. Più precisamente un'**attenzione mascherata**, cioè
+un'attenzione a cui è vietato guardare avanti, che confronta ogni parola solo
+con quelle che l'hanno preceduta. Gli autori chiamano questo fatto **State
+Space Duality** (SSD), la dualità fra spazio degli stati e attenzione.
+
+Il titolo del loro articolo è programmatico, *Transformers are SSMs*, ed è il
+rovescio della medaglia di quello che avevamo incontrato nel capitolo
+sull'attenzione lineare, *Transformers are RNNs*
+{cite}`katharopoulos2020transformers`. Lì avevamo tolto dall'attenzione il
+pezzo che costava di più e trovato sotto una rete ricorrente a stato fisso; qui
+si parte dall'altro capo, da un sistema dinamico misurato a intervalli, e si
+arriva all'attenzione.
 
 `````{tab} Elementare
 
@@ -49,11 +57,13 @@ oggetti che avevamo trattato come parenti lontani.
 Immagina due dialetti che si sono sviluppati in valli diverse e che, messi a
 confronto, risultano essere la stessa lingua. Da una parte gli State Space
 Model, nati dalla teoria del controllo, con il loro stato che evolve nel tempo.
-Dall'altra l'attenzione, nata dalla traduzione automatica, con la sua matrice
-che confronta ogni parola con ogni altra. Mamba-2 dimostra che, appena si
-sceglie la versione più semplice dello stato di un SSM, i due dialetti
-coincidono: le stesse frasi, dette in due modi. Non «si assomigliano»: sono la
-stessa identica operazione, scritta con simboli diversi.
+Dall'altra l'attenzione, nata dalla traduzione automatica, con la sua tabella
+che confronta ogni parola con ogni altra. Mamba-2 dimostra che i due dialetti
+coincidono, a una condizione: che si prenda la versione più semplice del
+riassunto, quella in cui tutte le sue caselle sbiadiscono alla stessa velocità
+invece che ognuna alla propria. Allora sono le stesse frasi, dette in due modi.
+Non «si assomigliano»: sono la stessa identica operazione, scritta con simboli
+diversi.
 
 E se sono la stessa operazione, si può calcolare in due modi: passo dopo passo,
 come un SSM, oppure formando una grande tabella di confronti, come l'attenzione.
@@ -147,7 +157,8 @@ per cassetto, e chi cancella di mira la vecchia voce che sta per essere
 riscritta. Mamba-2 occupa il secondo gradino, quello che sbiadisce tutto in
 blocco. Arrivando dai sistemi dinamici invece che dall'attenzione, ci ritroviamo
 esattamente lì: è la prova che le due strade (quella partita dall'attenzione e
-quella partita da Kálmán) portavano alla stessa città. La stessa funzione ha
+quella partita dai sistemi dinamici di Kálmán) portavano alla stessa
+città. La stessa funzione ha
 una forma **ricorrente**, che costa quanto la lunghezza del testo (la vista
 «SSM»), e una forma **a tabella**, la grande griglia dei confronti fra tutte le
 coppie di parole, mascherata perché ciascuna guardi solo all'indietro (la vista
@@ -155,12 +166,12 @@ coppie di parole, mascherata perché ciascuna guardi solo all'indietro (la vista
 
 ## Perché conviene: i tensor core
 
-La dualità non sarebbe che un'eleganza teorica se non pagasse in velocità.
-Paga, e la chiave è una rinuncia apparentemente minima. In Mamba-1 ogni
-cassetto della memoria sbiadiva a velocità propria; Mamba-2 impone che, dentro
-un gruppo, sbiadiscano tutti alla stessa. Sembra una perdita di espressività,
-ed è invece ciò che rende l'algoritmo esprimibile come pura moltiplicazione di
-matrici.
+La dualità sarebbe solo un'eleganza teorica se non pagasse in velocità. Paga, e
+la chiave è una rinuncia apparentemente minima. In Mamba-1 ogni cassetto della
+memoria sbiadiva a velocità propria; Mamba-2 impone che sbiadiscano tutti alla
+stessa. Sembra una perdita di espressività, cioè di cose che il modello sa
+distinguere, ed è invece ciò che rende l'algoritmo esprimibile come pura
+moltiplicazione di matrici.
 
 `````{tab} Elementare
 
@@ -216,7 +227,7 @@ blocchi di lunghezza $Q$, stato $N$ e dimensione di testa $P$, che nel caso
 del Teorema 6.1 del paper ($P = N$, blocchi dell'ordine di $N$) diventa
 $O(L\,N^2)$. Rispetto alla forma quadratica, che di operazioni ne fa
 $O(L^2 N)$, è un
-guadagno enorme, rispetto alla ricorrenza pura non si risparmia nulla, anzi con
+guadagno enorme; rispetto alla ricorrenza pura non si risparmia nulla, anzi con
 blocchi lunghi si fanno più operazioni. Il punto non è farne meno, è **farne
 di un tipo diverso**: tutte moltiplicazioni di matrici, cioè lavoro che la
 pressa accetta. Ne seguono due conseguenze di progetto: la struttura è
@@ -229,23 +240,22 @@ più memoria associativa: meno *crosstalk*, richiamo più preciso.
 `````
 
 Vale la pena fermarsi sul senso di questa mossa. Mamba-1 aveva reso l'SSM
-selettivo pagando con lo scan; Mamba-2 recupera il parallelismo pieno delle
-matrici accettando una transizione di stato più semplice, e lo fa proprio
-perché la dualità gli garantisce che quella forma più semplice è ancora
-un'attenzione: non un modello impoverito, ma lo stesso oggetto scritto in modo
-che l'hardware lo digerisca. È il compromesso tipico di questa famiglia:
+selettivo pagando con lo scan. Mamba-2 recupera il parallelismo pieno delle
+matrici accettando una transizione di stato più semplice, e può permetterselo
+proprio perché la dualità gli garantisce che quella forma più semplice è ancora
+un'attenzione. Non un modello impoverito, quindi: lo stesso oggetto, scritto in
+modo che l'hardware lo digerisca. È il compromesso tipico di questa famiglia:
 qualche grado di libertà in meno sulla transizione, in cambio di forme
 parallele che sfruttano le GPU.
 
 ## Mamba-3
 
 L'ultimo anello di questa catena è **Mamba-3**, di Lahoti, Li e colleghi con
-Dao e Gu, che a ICLR 2026 {cite}`lahoti2026mamba3` è finito fra i pochi lavori
-esposti dal palco invece che a un poster (in gergo un *Oral*).
-Trattandosi di un lavoro recente conviene leggerlo per ciò che aggiunge di
-qualitativo più che per le cifre puntuali, ancora da assestare. Le novità
-rispetto a Mamba-2 sono tre, e tutte lavorano sul *come* lo stato evolve, non
-sulla struttura generale.
+Dao e Gu, che a ICLR 2026 è finito fra i pochi lavori esposti dal palco invece
+che a un poster, in gergo un *Oral* {cite}`lahoti2026mamba3`. Trattandosi di un
+lavoro recente conviene leggerlo per ciò che aggiunge di qualitativo più che
+per le cifre puntuali, ancora da assestare. Le novità rispetto a Mamba-2 sono
+tre, e tutte lavorano sul *come* lo stato evolve, non sulla struttura generale.
 
 La prima riguarda la **discretizzazione**, cioè il modo di trasformare il sistema
 continuo in una ricorrenza, che avevamo introdotto all'inizio del capitolo.
@@ -265,7 +275,7 @@ errore che a ogni passo si accumula.
 
 Mamba-3 rifà lo stesso conto a **trapezi**, cioè guardando tutte e due le
 aperture, quella di adesso e quella del campione precedente: si tira un
-segmento fra i due valori e si misura la superficie sotto di lui. E c'è una
+segmento fra i due valori e si misura la superficie che gli sta sotto. E c'è una
 furbizia in più, tipica di questo capitolo: quanto contano i due estremi non è
 deciso una
 volta per tutte a metà e metà, lo decide il modello a ogni passo, in base a ciò
@@ -273,10 +283,11 @@ che legge (il trapezio della geometria, quello che fa la media, è il caso
 particolare in cui i due estremi pesano uguale). L'errore a ogni passo è
 più piccolo, e la conseguenza pratica è curiosa: Mamba-1 e Mamba-2 avevano
 bisogno, prima del cuore selettivo, di una **piccola convoluzione causale** (un
-mini-filtro che mescola qualche parola vicina) per funzionare bene. Con la
-discretizzazione più fine, e con un piccolo ritocco in più, quel pezzo
-aggiuntivo diventa **opzionale**: il modello lavora bene anche senza. Una
-regola migliore per fare i conti, e una stampella in meno.
+mini-filtro che mescola qualche parola vicina) per funzionare bene. Con il
+conto più fine, e con un ritocco in più (un numero fisso aggiunto ai due pezzi
+che scrivono nella memoria e la rileggono), quel filtro diventa **opzionale**:
+il modello lavora bene anche senza. Una regola migliore per fare i conti, e una
+stampella in meno.
 
 `````
 
@@ -336,11 +347,25 @@ Perché serve? Ci sono compiti in cui la risposta dipende dal *contare* o dal
 *tenere il segno*: capire se il numero di parentesi aperte è pari o dispari,
 tenere il conto di qualcosa che si ripete a cicli (come le ore su un
 quadrante, dove dopo il dodici si ricomincia), seguire uno stato che si
-alterna. Una memoria
-che sa solo sbiadire fatica; una che sa ruotare può, letteralmente, «girare la
-lancetta» a ogni passo e ricordare a che punto del ciclo si trova. Gli
+alterna. Una memoria che sa solo sbiadire fatica; una che sa ruotare può,
+letteralmente, «girare la lancetta» a ogni passo e ricordare a che punto del
+ciclo si trova. Sulle parentesi si vede bene: basta che a ogni parentesi la
+lancetta faccia mezzo giro, e dopo un numero pari di parentesi è tornata
+esattamente al punto di partenza, dopo un numero dispari è dalla parte opposta
+del quadrante. Le due situazioni si distinguono a colpo d'occhio, mentre una
+memoria che può solo affievolirsi non ha modo di tenerle separate. Gli
 ingegneri lo chiamano *state tracking*, tenere traccia dello stato, ed è
 storicamente un punto debole delle ricorrenze lineari.
+
+E qui torna il filo con i Transformer, che è la ragione per cui questa è la più
+concettuale delle tre novità. Dentro un modello ogni parola è una fila di numeri, che si
+può guardare come una freccia; e anche i Transformer, per dire a che punto
+della frase sta una parola, fanno ruotare la sua freccia di un angolo che
+cresce con la posizione.
+La differenza è che lì la rotazione viene aggiunta apposta da fuori, mentre qui
+nasce da sola dal modo in cui la memoria evolve; e l'angolo, invece di
+dipendere solo da quanto si è andati avanti, dipende da ciò che si sta
+leggendo.
 
 `````
 
@@ -373,8 +398,8 @@ La terza novità è più ingegneristica.
 
 `````{tab} Elementare
 
-Finora ogni corsia del modello teneva un piccolo taccuino tutto suo, e i
-taccuini non si parlavano. Mamba-3 fa condividere a più corsie un
+Finora ogni corsia del modello teneva un taccuino tutto suo, e i taccuini non
+si parlavano. Mamba-3 fa condividere a più corsie un
 taccuino comune, più capiente. Il vantaggio sta nel modo di lavorare delle
 schede grafiche: andare a prendere i dati in memoria costa più che farci i
 conti sopra, quindi conviene, a ogni viaggio, portare a casa più lavoro utile.
@@ -426,10 +451,10 @@ dove sta quasi tutta la potenza.
 Poi **Mamba-2**, che riconcilia le due famiglie del libro. Nella sua versione
 più semplice (tutte le corsie di un gruppo dimenticano alla stessa velocità)
 questa macchina *è* un'attenzione che guarda solo all'indietro, e scritta così
-il suo calcolo diventa una moltiplicazione di tabelle: la pressa si riaccende,
+il suo calcolo diventa una moltiplicazione di tabelle: la pressa si accende,
 la memoria può crescere, e le corsie si organizzano in gruppi come le teste
-dell'attenzione. È il punto in cui le due strade di questo libro (attenzione
-lineare e sistemi dinamici) si rivelano una sola.
+dell'attenzione. È il punto in cui le due strade di questi due capitoli
+(attenzione lineare e sistemi dinamici) si rivelano una sola.
 
 Infine **Mamba-3**, che non cambia l'impianto ma ne raffina il funzionamento
 interno: i conti sull'intervallo rifatti a trapezi invece che a rettangoli (e
@@ -472,12 +497,11 @@ al costo lineare.
   dinamica con tre mosse: i conti sull'intervallo rifatti a **trapezi** invece
   che a rettangoli, con il peso dei due estremi deciso volta per volta dal
   modello (e il mini-filtro che stava prima del cuore selettivo diventa
-  **opzionale**, purché si aggiunga il ritocco che l'accompagna); uno stato che
-  oltre a sbiadire sa **ruotare**, come una lancetta su un quadrante (utile per
-  contare e tenere il segno, ed è la stessa idea con cui i Transformer
-  codificano la posizione ruotando); e un taccuino di memoria **condiviso** fra
-  più corsie (più qualità senza rallentare la generazione). Lavoro recente: la
-  direzione è solida, le cifre da confermare.
+  **opzionale**, purché si aggiunga il numero fisso che l'accompagna); uno
+  stato che oltre a sbiadire sa **ruotare**, come una lancetta su un quadrante,
+  utile per contare e tenere il segno; e un taccuino di memoria **condiviso**
+  fra più corsie, che dà più qualità senza rallentare la generazione. Lavoro
+  recente: la direzione è solida, le cifre da confermare.
 - L'arco **S4 → Mamba → Mamba-2 → Mamba-3**: da un sistema che tratta ogni
   token con la stessa regola e ricorda a lungo, a uno che sceglie cosa
   ricordare, a uno riconciliato con l'attenzione e veloce, a uno raffinato nel

@@ -1,25 +1,28 @@
 # GEMM: la moltiplicazione di matrici, spremuta
 
-Prendi un addestramento qualunque (una CNN, un Transformer, un banale
-percettrone multistrato) mettici sopra un *profiler* (uno strumento che
-cronometra il programma pezzo per pezzo e dice quanto tempo se ne va in
-ciascuno) e guarda dove finisce il
-tempo. In cima alla lista trovi quasi sempre la stessa voce, e non ha un nome
-altisonante: si chiama **GEMM**, *GEneral Matrix Multiply*. È il nome che la
-moltiplicazione tra due matrici porta da decenni nelle librerie BLAS, lo
-standard del calcolo numerico, ed è probabilmente la singola routine più
-ottimizzata della storia dell'informatica: a ogni generazione di hardware
-qualcuno la riscrive da capo per spremerne l'ultima goccia.
+Prendi l'addestramento di una rete neurale qualunque e mettici sopra un
+*profiler*: uno strumento che cronometra il programma pezzo per pezzo e dice
+quanto tempo se ne va in ciascuno. Guarda poi dove il tempo è finito. In cima
+alla lista trovi quasi sempre la stessa voce, ed è la moltiplicazione fra due
+**matrici**, cioè fra
+due tabelloni di numeri: una tabella per una tabella, e viene fuori una terza
+tabella.
+
+Quell'operazione, nelle **librerie** di calcolo (le raccolte di pezzi di
+programma già scritti e collaudati, che chiunque richiama invece di
+riscriverseli), porta da decenni una sigla: **GEMM**, *GEneral Matrix
+Multiply*, moltiplicazione generale fra matrici. È
+probabilmente il pezzo di codice più ottimizzato della storia
+dell'informatica: a ogni generazione di hardware qualcuno lo riscrive da capo
+per spremerne l'ultima goccia.
 
 Non è un caso. Nella sezione «Prestazioni e scala» del capitolo su PyTorch
 abbiamo detto che una rete neurale, vista dall'hardware, è quasi soltanto una
-cosa: moltiplicazioni tra matrici. Dallo strato di AlexNet
-{cite}`krizhevsky2012imagenet` in poi, il grosso dei **FLOP** di qualunque rete
-è GEMM (FLOP, come si è detto nella sezione sull'architettura, sta per
-*floating-point operation*: un conto elementare su un numero con la virgola,
-una moltiplicazione o una somma). E la sezione «La memoria: il vero collo di bottiglia» ha lasciato in
-sospeso una promessa; mostrare *per esteso, proprio qui,* il trucco con cui la
-si rende veloce, il **tiling**. È il momento di mantenerla.
+cosa: moltiplicazioni fra matrici. Da AlexNet {cite}`krizhevsky2012imagenet` in
+poi, il grosso dei conti di qualunque rete si riduce a quella. E la sezione «La
+memoria: il vero collo di bottiglia» ha lasciato in sospeso una promessa,
+mostrare per esteso il trucco con cui la si rende veloce, il **tiling**: è il
+momento di mantenerla.
 
 ## Il conto, e il problema della versione ingenua
 
@@ -29,20 +32,26 @@ tabella e una colonna della seconda, le si moltiplica numero per numero e si
 somma il tutto. In simboli, $\mathbf{C} = \mathbf{A}\,\mathbf{B}$, con
 $\mathbf{A}$ di forma $(M, K)$ (cioè con $M$ righe e $K$ colonne) e
 $\mathbf{B}$ di forma $(K, N)$, dà una matrice $\mathbf{C}$ di forma $(M, N)$.
-Il conto in sé è semplice e i FLOP si contano a occhio; il problema, come
-sempre su una GPU, non è *quanti conti* fai, ma *quanti byte* muovi per farli.
+Quanti conti servano si vede a occhio; il problema, come sempre su una GPU, non
+è *quanti conti* fai, ma *quanti byte* muovi per farli.
 
 `````{tab} Elementare
 Una riga per una colonna, moltiplica e somma: facile. Ma immagina di farlo
 davvero *una casella alla volta*,
 andando ogni volta a ripescare la riga e la colonna dal magazzino lontano: la
 memoria globale della sezione precedente. Due caselle vicine sulla stessa riga
-usano la *stessa* riga della prima matrice: eppure, alla cieca, vai a
+usano la *stessa* riga della prima tabella: eppure, alla cieca, vai a
 riprenderla da capo per ognuna. È come cucinare cento piatti identici correndo
-in dispensa a prendere gli stessi ingredienti cento volte. I conti sono pochi,
-i viaggi in dispensa tantissimi: e sappiamo dalla sezione sulla memoria che
-sono i viaggi, non i conti, a decidere il tempo. La versione ingenua della
-moltiplicazione tra matrici è, in una parola, *affamata di banda*.
+in dispensa a prendere gli stessi ingredienti cento volte.
+
+Attenzione a non fraintendere: i conti da fare sono tantissimi, ed è proprio
+per questo che qui se ne va il tempo di un addestramento. Il punto è che i
+conti fatti **per ogni viaggio in dispensa** sono pochissimi, e la sezione
+sulla memoria ha stabilito che è quel rapporto, e non il totale, a decidere se
+un calcolo va veloce: quanti conti si fanno per ogni byte che ci si è fatti
+portare. Fatta una casella alla volta, la moltiplicazione fra matrici sta in
+fondo a quella classifica: consuma tutti i byte al secondo che la memoria
+riesce a consegnare, e tiene le unità di calcolo per lo più ferme.
 `````
 
 `````{tab} Superiore
@@ -103,8 +112,16 @@ della seconda, li porta sul ripiano vicino ai calcolatori (la shared memory) e
 li tiene lì finché ha finito di usarli per tutta la tessera del risultato che
 sta calcolando. Ogni numero, caricato una volta, viene riusato molte volte
 prima di essere buttato. Più grande è la tessera, più prodotti spremi da ogni
-viaggio in dispensa, con un limite: sul ripiano ci sta solo una manciata di
-pagine, e la tessera non può crescere oltre.
+viaggio in dispensa, con un limite: il ripiano è piccolo, ci sta una cassetta e
+poco più, e oltre quella misura la tessera non può crescere.
+
+E siccome il gioco funziona, i programmi veri lo giocano **due volte, una
+dentro l'altra**. Il primo livello è quello appena descritto: dalla dispensa al
+ripiano della squadra. Il secondo sta un gradino più su: ogni singolo
+lavoratore, dal ripiano comune, si tira in mano un quadratino ancora più
+piccolo e ci lavora senza tornare a consultare il ripiano per ogni conto.
+Stessa mossa, scala diversa, e il motivo è sempre quello: anche al ripiano
+comune, se ci vanno tutti a rovistare a ogni prodotto, si forma la coda.
 `````
 
 `````{tab} Superiore
@@ -220,9 +237,11 @@ B = np.random.randn(80, 64)
 print(np.allclose(matmul_a_blocchi(A, B), A @ B))   # True
 ```
 
-Il triplo ciclo su tessere è lo scheletro di *ogni* GEMM veloce, dalla CPU alla
-GPU: cambia solo chi fa i blocchi (i thread di un blocco CUDA) e dove vive la
-tessera (la shared memory dell'SM). La logica è questa.
+Il triplo ciclo su tessere è lo scheletro di *ogni* moltiplicazione fra matrici
+veloce, dalla CPU alla GPU. Quello che cambia da una macchina all'altra sono
+solo due cose: chi esegue i conti di una tessera (su una GPU, i lavoratori di
+una stessa squadra) e dove la tessera viene tenuta mentre la si usa (il ripiano
+condiviso della squadra, la shared memory). La logica è questa.
 
 ## I tensor core: un intero prodotto in un colpo
 
@@ -233,17 +252,28 @@ per il prodotto tra matrici: il **tensor core**.
 
 `````{tab} Elementare
 Immagina un ragioniere che deve compilare una piccola tabellina, quattro righe
-per quattro colonne. Cella per cella, a mano, è un lavoro noioso. Ora immagina
-un timbro speciale che stampa un intero blocco della tabellina in un colpo
-solo: appoggi, premi, fatto. Il tensor core è quel timbro. Là dove un
-calcolatore normale fa una moltiplicazione a ogni battito di clock, il tensor
-core ne compie **sessantaquattro**, e alla fine, su una scheda intera, le
-moltiplicazioni fra matrici vanno una quindicina di volte più veloci. E c'è di
-più: per fare le moltiplicazioni lavora con i numeri «arrotondati» a metà
-precisione (quelli della sezione «Prestazioni e scala», più corti e più svelti
-da leggere), ma tiene il totale che va sommando in precisione piena, così che
-la lunga somma non perda per strada le cifre che contano. È il gesto di chi
-pesa gli ingredienti a occhio, perché tanto non cambia il piatto, ma il conto
+per quattro colonne. Cella per cella, a mano, è un lavoro noioso: sono sedici
+celle, e ognuna è una somma di quattro prodotti, quindi in tutto sessantaquattro
+moltiplicazioni. Ora immagina un timbro speciale che stampa la tabellina intera
+in un colpo solo: appoggi, premi, fatto. Il tensor core è quel timbro. Là dove
+una postazione di calcolo normale fa una moltiplicazione per ogni battito del
+metronomo del chip (il clock dell'inizio del capitolo, che batte più di un
+miliardo di volte al secondo), il tensor core ne fa **sessantaquattro**.
+
+Il guadagno sull'intera scheda però non è di sessantaquattro volte, ed è un
+conto che si fa in testa. Sulla scheda che li ha introdotti i timbri erano uno
+ogni otto postazioni normali: otto postazioni fanno otto conti a battito, il
+timbro che sta al loro posto ne fa sessantaquattro, cioè **otto volte tanto**.
+Sulle schede di oggi il rapporto è salito a una quindicina, perché i timbri
+sono diventati più grandi e a ogni battito ne stampano di più.
+
+E c'è un secondo gesto, che vale la pena capire perché è furbo. Per fare le
+moltiplicazioni il timbro lavora con numeri «arrotondati», scritti con la metà
+dello spazio (quelli della *mezza precisione* incontrata nella sezione
+«Prestazioni e scala»: due byte invece di quattro, meno cifre e più velocità di
+lettura); il totale che va accumulando, però, lo tiene nel formato lungo, per
+non perdere per strada le cifre che contano. È il gesto di chi pesa gli
+ingredienti a occhio, perché tanto un grammo non cambia il piatto, ma il conto
 della spesa lo tiene all'ultimo centesimo, perché lì gli errori si sommano.
 `````
 
@@ -294,28 +324,43 @@ Nella GPU il dato sta fermo in memoria e i calcolatori vanno a prenderlo. Il
 tiling serve a ridurre i viaggi, ma i viaggi ci sono.
 
 L'idea opposta è tenere fermi i calcolatori e far **scorrere** i dati
-attraverso di loro, come su una catena di montaggio. Si dispone una griglia di
-piccole unità, ognuna capace di una sola mossa: «moltiplica, e aggiungi il
+attraverso di loro, come su una catena di montaggio. Si dispone una scacchiera
+di piccole unità, ognuna capace di una sola mossa: «moltiplica, e aggiungi il
 risultato al totale che ti sta passando davanti».
 
-Nella variante che ha avuto più fortuna il lavoro comincia **caricando** una
-delle due matrici nella griglia, un numero per postazione, dove resterà ferma
-per tutto il tempo: quei numeri non attraversano niente, aspettano. Poi i
-numeri dell'altra matrice entrano da sinistra e scorrono lungo le righe. E
-dall'alto verso il basso, di postazione in postazione, scende il **totale che
-si sta formando**: ogni unità lo riceve, gli aggiunge il proprio prodotto, e lo
-passa alla postazione sotto. In fondo alla colonna il totale esce già finito,
-ed è la casella del risultato.
+Chi costruisce una macchina così deve decidere che cosa resta fermo nelle
+caselle e che cosa scorre, e da quella scelta nascono varianti diverse. In
+quella che ha avuto più fortuna il lavoro comincia **caricando** una delle due
+tabelle nella scacchiera, un numero per casella, dove resterà ferma per tutto
+il tempo: quei numeri non attraversano niente, aspettano. Poi i numeri
+dell'altra tabella entrano da sinistra e scorrono lungo le righe. E dall'alto
+verso il basso, di casella in casella, scende il **totale che si sta
+formando**: ogni unità lo riceve, gli aggiunge il proprio prodotto, e lo passa
+alla casella sotto. In fondo alla colonna il totale esce già finito, ed è una
+casella del risultato.
 
 Il guadagno è tutto lì, in quel passaggio da vicino a vicino: un numero letto
-una volta sola dalla memoria attraversa un'intera fila di postazioni,
-servendole tutte senza essere mai riletto, e il totale si costruisce
-camminando, invece di essere ripescato ogni volta da qualche parte. È
-letteralmente la catena di montaggio: il pezzo scende lungo la linea e a ogni
-postazione qualcuno gli aggiunge un componente. Si chiama **array sistolico**
-perché i dati pulsano attraverso la griglia come il sangue spinto dal cuore, e
-il nome lo scelse chi lo inventò, alla Carnegie Mellon, alla fine degli anni
-Settanta.
+una volta sola dalla memoria attraversa un'intera fila di caselle, servendole
+tutte senza essere mai riletto, e il totale si costruisce camminando, invece di
+essere ripescato ogni volta da qualche parte. È letteralmente la catena di
+montaggio: il pezzo scende lungo la linea e a ogni postazione qualcuno gli
+aggiunge un componente. Una macchina fatta così si chiama **array sistolico**,
+dove *array* qui vuol dire «schiera», la scacchiera di macchinette, e non la
+fila di numeri della sezione sui kernel. «Sistolico» perché i dati la
+attraversano a ondate regolari come il sangue spinto dal cuore: la sistole è il
+battito con cui il cuore lo spinge, e chi inventò questa macchina alla Carnegie
+Mellon, alla fine degli anni Settanta, prese il nome proprio da lì.
+
+Non è un esercizio da manuale: è così che sono fatti i chip costruiti apposta
+per l'intelligenza artificiale, a partire dalla **TPU** di Google, che di
+caselle ne ha una scacchiera da 256 per 256. Il prezzo di tanta specializzazione
+è la rigidità. Una macchina del genere sa fare benissimo una cosa sola: se la
+tabella da moltiplicare è più piccola della scacchiera, buona parte delle
+caselle moltiplica zeri per niente, e se l'operazione da fare non è una
+moltiplicazione fra tabelle, la scacchiera non serve e bisogna uscirne. Una GPU
+è più lenta di lei sul suo terreno e sa fare tutto il resto: è la stessa
+tensione fra la lepre e il formicaio della prima sezione, spostata di un
+livello.
 
 `````
 
@@ -366,48 +411,63 @@ della prima sezione, spostata di un livello.
 
 ## In pratica: forme «tonde» e mezza precisione
 
-Chiudiamo con un'onestà dovuta. Quasi certamente non scriverai mai un GEMM a
-mano: librerie come cuBLAS e cuDNN, e generatori come **CUTLASS** o **Triton**
-{cite}`tillet2019triton` (che abbiamo incontrato nella sezione sui kernel) lo fanno
-meglio di quanto potrebbe chiunque, sfruttando tiling multilivello e tensor
-core in modi che cambiano a ogni architettura. Perché allora capire il tiling?
-Perché spiega due regole pratiche che spostano davvero il cronometro, e che
-altrimenti sembrerebbero magia:
+Chiudiamo con un'onestà dovuta. Quasi certamente non scriverai mai a mano una
+moltiplicazione fra matrici: esistono librerie che la fanno meglio di quanto
+potrebbe chiunque, sfruttando tessere a più livelli e tensor core in modi che
+cambiano a ogni generazione di schede. Sono quelle che PyTorch chiama sotto
+sotto ogni volta che una rete gira (**cuBLAS** per le matrici, **cuDNN** per le
+convoluzioni, scritte da NVIDIA), più i due strumenti che quel codice lo
+generano invece di averlo già scritto, **CUTLASS** e **Triton**
+{cite}`tillet2019triton`.
+
+Perché allora capire il tiling? Perché spiega due regole pratiche che spostano
+davvero il cronometro, e che altrimenti sembrerebbero magia:
 
 - **Dai alle matrici forme «tonde»**, cioè misure che siano multipli di numeri
   come 8, 16 o 64 invece di misure qualsiasi. Se le dimensioni sono multiple
-  della tessera (e dei blocchi che i tensor core divorano) le tessere si
-  riempiono senza avanzi, e nessun lavoratore resta a processare un bordo
+  della tessera (e dei blocchetti che i tensor core divorano) le tessere si
+  riempiono senza avanzi, e nessun lavoratore resta a lavorare su un bordo
   incompleto. È il motivo per cui conviene portare al multiplo di 8 più vicino
   la *dimensione nascosta* di un modello (quanti numeri usa per rappresentare
   al proprio interno una parola o un'immagine) o la *taglia del vocabolario*
   (quante parole diverse conosce): un guadagno spesso gratuito. Una forma
   «storta» lascia i tensor core mezzi vuoti.
-- **Usa la mezza precisione**, cioè numeri scritti con la metà delle cifre
-  (16 bit invece di 32): occupano metà spazio e si leggono in metà tempo. I
-  tensor core esistono per lei: senza `autocast`
-  (o `bfloat16`) girano a una frazione della loro potenza. Le quattro righe
-  viste in «Prestazioni e scala» non sono un vezzo da datacenter, sono
-  l'interruttore che accende il pezzo di silicio più veloce che hai.
+- **Usa la mezza precisione**, cioè numeri scritti nella metà dello spazio, 16
+  cifre binarie invece di 32 (una cifra binaria, un *bit*, è un sì o un no, e
+  otto di fila fanno un byte: con 16 bit si scrivono numeri meno precisi, con
+  32 più precisi). Occupano metà spazio e si leggono in metà tempo, e i tensor
+  core esistono per loro: senza, girano a una frazione della propria potenza.
+  Le quattro righe di `autocast` viste in «Prestazioni e scala» non sono un
+  vezzo da datacenter, sono l'interruttore che accende il pezzo di silicio più
+  veloce che hai.
 
 Tutte e due queste regole promettono un guadagno quasi gratuito, e tutte e due
-capita che non lo diano. Le ragioni sono due, e nessuna delle due è quella che
-si sospetta: le schede qui sotto le spiegano.
+capita che non lo diano. Le ragioni sono due, e vale la pena conoscerle perché
+nessuna delle due riguarda la tessera, che è la cosa a cui si dà la colpa: le
+schede qui sotto le spiegano.
 
 `````{tab} Elementare
 Succede di arrotondare le misure e di non vedere cambiare niente, e la prima
-ragione è che non conta solo *quante* caselle ha una riga: conta **dove la riga
-comincia**. Una tabella con le misure giuste ma appoggiata di sghembo, che
-comincia mezzo passo più in là di dove il timbro se l'aspetta, costringe a
-leggere di traverso, e la strada veloce si chiude lo stesso.
+ragione è che non conta solo *quante* caselle ha una riga: conta **da che punto
+della memoria la riga comincia**. Torniamo al furgone della sezione sulla
+memoria, quello che consegna solo pacchi già ordinati per via: le consegne
+piene partono solo dall'inizio di una via, mai da metà. Una tabella con le
+misure giuste, ma il cui primo numero si trova a metà via, costringe a spezzare
+ogni consegna in due, e la strada veloce si chiude lo stesso. Capita più spesso
+di quanto si creda: per esempio quando si lavora su un ritaglio di una tabella
+più grande invece che sulla tabella intera.
 
-La seconda ragione con le tessere non c'entra niente: c'entra con **quante
-officine restano ferme all'ultimo giro**. Se i quadratini da calcolare sono un
-po' più di un multiplo esatto delle officine disponibili, l'ultimo giro ne
-impegna due o tre e tutte le altre stanno a guardare, e il tempo quasi
-raddoppia. È il motivo per cui certe taglie «tonde» vanno peggio di taglie
-vicine, e chi non conosce questo secondo effetto dà la colpa alla tessera, che
-non c'entra.
+La seconda ragione non riguarda le tessere né le misure della tabella: riguarda
+**quante officine restano ferme all'ultimo giro**, cioè quante ne restano
+inutilizzate quando il lavoro non si divide in parti uguali (le officine sono
+le unità in cui la GPU è divisa, quelle della prima sezione, ed è un
+centinaio). Il lavoro si distribuisce a giri: una tessera a testa, e quando
+hanno finito un'altra a testa. Se le tessere da calcolare sono, poniamo,
+centodieci, le prime cento vanno in un giro pieno e le dieci rimaste ne
+occupano un secondo tutto per loro, con novanta officine a guardare. Due giri
+per fare poco più del lavoro di uno: il tempo quasi raddoppia. È il motivo per
+cui certe misure «tonde» vanno peggio di misure vicine, e chi non conosce
+questo secondo effetto dà la colpa alla tessera, che non c'entra.
 `````
 
 `````{tab} Superiore
@@ -427,12 +487,15 @@ peggio di taglie vicine, e chi non conosce questo secondo effetto lo attribuisce
 alla tessera, che non c'entra.
 `````
 
-Il tiling, insomma, è il ponte tra i due limiti del roofline: abbatte i byte
-(riuso in shared memory) e mette al lavoro i FLOP (tensor core). La stessa
-idea (riorganizzare un calcolo per non rileggere mai dalla HBM ciò che si può
-tenere vicino) è precisamente ciò che, applicato all'attenzione, dà la
-**FlashAttention** {cite}`dao2022flashattention` della prossima sezione. Il
-GEMM è il primo, e più puro, esempio di una lezione che tornerà a ogni pagina.
+Il tiling, insomma, tiene insieme i due limiti che il grafico della sezione
+precedente (il roofline, quello che dice se sei bloccato dal magazzino o dai
+cuochi) metteva uno di fronte all'altro: taglia i byte da spostare, perché
+riusa quel che ha già sul tavolo, e in cambio dà da lavorare ai tensor core.
+La stessa idea, cioè riorganizzare un calcolo per non tornare mai a rileggere
+dalla memoria lontana ciò che si può tenere vicino, applicata ai confronti fra
+le parole di un testo dà la **FlashAttention** {cite}`dao2022flashattention`
+della prossima sezione. La moltiplicazione fra matrici è il primo, e più puro,
+esempio di una lezione che tornerà a ogni pagina.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
@@ -460,9 +523,12 @@ GEMM è il primo, e più puro, esempio di una lezione che tornerà a ogni pagina
   postazione. Si chiama **array sistolico** {cite}`kung1982why` ed è la scelta
   della TPU di Google {cite}`jouppi2017datacenter`: bravissima a fare questa
   cosa, inadatta a tutto il resto.
-- Le due regole pratiche che restano, e che valgono anche a chi non scriverà
-  mai un kernel: dare alle tabelle misure **tonde** (multipli di 8 o 16) e
-  usare i **numeri corti**. Sono spesso guadagni gratuiti.
+- Le due regole pratiche che restano, e che valgono anche per chi non scriverà
+  mai un programma per GPU: dare alle tabelle misure **tonde** (multipli di 8 o
+  16) e usare la **mezza precisione**, i numeri scritti nella metà dello
+  spazio. Sono guadagni quasi sempre gratuiti, e quando non arrivano la colpa
+  non è della tessera: o la tabella comincia nel punto sbagliato della memoria,
+  o l'ultimo giro di lavoro lascia quasi tutte le officine a guardare.
 ```
 `````
 

@@ -116,8 +116,8 @@
   <!-- callout shared memory -->
   <rect x="70" y="446" width="16" height="16" class="shm"/>
   <text class="shmlbl" x="94" y="459">un blocco T x T per volta in shared memory</text>
-  <rect x="430" y="446" width="16" height="16" fill="#B5532C" fill-opacity="0.42" stroke="#B5532C" stroke-width="2"/>
-  <text class="shmlbl" x="454" y="459" fill="#B5532C">tessera di C = banda-riga di A &#183; banda-colonna di B</text>
+  <rect x="70" y="468" width="16" height="16" fill="#B5532C" fill-opacity="0.42" stroke="#B5532C" stroke-width="2"/>
+  <text class="shmlbl" x="94" y="481" fill="#B5532C">tessera di C = banda-riga di A &#183; banda-colonna di B</text>
 
   <!-- nota sullo scorrimento lungo K -->
   <text class="note" x="270" y="228" text-anchor="middle">si scorre lungo K, a blocchi</text>

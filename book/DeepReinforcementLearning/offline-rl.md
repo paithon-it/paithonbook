@@ -1,18 +1,19 @@
 # Offline reinforcement learning: imparare da dati fissi
 
-Nel 2018 un gruppo dell'Imperial College di Londra ha addestrato un sistema
-(lo hanno chiamato *AI Clinician*) {cite}`komorowski2018clinician` a suggerire,
-per i pazienti in terapia
-intensiva con una sepsi (un'infezione che dilaga in tutto l'organismo e fa
-crollare la pressione), quanti liquidi somministrare e quanto farmaco dare per
-tenere su quella pressione. Il modello non ha mai provato una terapia su un
-malato vero: ha imparato guardando l'archivio di ricoveri passati, con le
-decisioni prese dai medici e ciò che ne è seguito. È l'unica strada possibile,
-del resto. Nessun comitato etico autorizzerebbe un
-agente a somministrare farmaci «a caso» per esplorare, come fa il Q-learning
-in un videogioco; e nessuno lo lascerebbe sterzare a caso al volante di
-un'auto, o proporre acquisti assurdi a milioni di utenti per misurarne la
-reazione.
+Nel 2018 un gruppo dell'Imperial College di Londra ha addestrato un sistema a
+curare la sepsi, cioè un'infezione che dilaga in tutto l'organismo e fa crollare
+la pressione. Lo hanno chiamato *AI Clinician*
+{cite}`komorowski2018clinician`, e il suo compito era suggerire, per un
+paziente in terapia intensiva, quanti liquidi somministrargli e quanto farmaco
+dargli per tenere su la pressione.
+
+Quel sistema non ha mai provato una terapia su un malato vero: ha imparato
+guardando l'archivio dei ricoveri passati, con le decisioni prese dai medici e
+ciò che ne è seguito. È l'unica strada possibile, del resto. Nessun comitato
+etico autorizzerebbe un agente a somministrare farmaci «a caso» per esplorare,
+come fa il Q-learning in un videogioco; e nessuno lo lascerebbe sterzare a caso
+al volante di un'auto, o proporre acquisti assurdi a milioni di utenti per
+misurarne la reazione.
 
 Eppure è proprio così (provando, sbagliando, esplorando) che gli agenti dei
 capitoli precedenti imparano. Il **reinforcement learning offline** (o *batch
@@ -60,17 +61,20 @@ problema.
 
 `````
 
-Verrebbe da pensare che sia facile: il Q-learning è già *off-policy*; impara
-la policy ottima anche mentre ne segue un'altra, come abbiamo visto nella
-sezione sul Q-learning. Basta dargli in pasto le transizioni del diario invece
-di raccoglierle sul momento, e lasciarlo lavorare. Purtroppo, fatto così,
-fallisce quasi sempre. Capire *perché* è il cuore di tutto l'argomento.
+Verrebbe da pensare che sia facile, e la ragione l'abbiamo già vista nella
+sezione su DQN. Il Q-learning tira ogni tanto una mossa a caso per esplorare,
+ma sui suoi appunti scrive sempre quanto vale la mossa *migliore*: si allena
+insomma su una strategia diversa da quella che sta giocando, ed è l'*off-policy*
+di allora. Se sa fare questo, dovrebbe saper imparare anche da partite giocate
+da altri e finite da un pezzo. Basterebbe dargli in pasto il diario invece delle
+esperienze fresche, e lasciarlo lavorare. Purtroppo, fatto così, fallisce quasi
+sempre. Capire *perché* è il cuore di tutto l'argomento.
 
 ## Il buco nero delle azioni mai viste
 
-Il colpevole ha un nome tecnico: **distributional shift**, lo scarto tra la
-distribuzione di azioni presente nel dataset e quella che la nuova policy
-vorrebbe seguire.
+Il colpevole è la differenza fra le mosse che nel diario ci sono e le mosse che
+l'agente, imparando, vorrebbe fare. Ha un nome tecnico, **distributional
+shift**, e un modo molto più chiaro di raccontarlo.
 
 `````{tab} Elementare
 
@@ -115,13 +119,18 @@ azioni fuori dal supporto dei dati.
 
 `````
 
-Prima di vedere i rimedi, tocchiamo con mano il fenomeno, e in miniatura. Le
-mosse possibili sono un numero solo, che va da $-1$ a $+1$ (immagina lo sterzo);
-il voto vero di ciascuna lo conosciamo, ed è massimo a $+0{,}3$. Chi ha raccolto
-i dati, però, è stato prudente e ha provato soltanto la fetta fra $-1{,}0$ e
-$-0{,}2$: la mossa migliore, nell'archivio, non c'è. Il programma qui sotto fa
-passare una curva per quei quaranta punti e poi le chiede il voto di **tutte**
-le mosse, comprese quelle mai provate.
+Prima di vedere i rimedi, tocchiamo con mano il fenomeno, e in miniatura. La
+mossa è un numero solo, che va da $-1$ a $+1$: immagina lo sterzo. Il voto vero
+di ogni posizione dello sterzo lo conosciamo noi: la posizione perfetta è
+$+0{,}3$, e lì il voto vale $0$; tutte le altre valgono meno di zero, tanto meno
+quanto più ci si allontana da quel punto. Zero è il massimo, insomma, e i voti
+sono numeri negativi.
+
+Chi ha raccolto i dati, però, è stato prudente: ha provato soltanto la fetta fra
+$-1{,}0$ e $-0{,}2$, quaranta volte in tutto. **La mossa migliore, nell'archivio,
+non c'è**, e tutto l'esempio serve a mostrare che cosa succede per questo. Il
+programma qui sotto fa passare una curva per quei quaranta punti e poi le chiede
+il voto di **tutte** le mosse, comprese quelle mai provate.
 
 ```python
 import numpy as np
@@ -154,24 +163,35 @@ print(f"vincolato : a*={a_vinc:+.2f}  Q_stimato={Q_stima(a_vinc):+.2f}  "
       f"Q_vero={Q_vero(a_vinc):+.2f}")
 ```
 
-Il voto più alto cade su $a = +1{,}00$, l'estremo opposto rispetto ai dati, dove
-nessuno ha mai messo piede: lì la curva promette $+30{,}1$, e il valore vero è
-$-0{,}49$. Non c'è niente di misterioso, ed è la ragione per cui l'esempio usa
-una curva e non una retta: fuori dal tratto in cui è stata tirata, una curva
-prosegue come le pare, e nessun dato la trattiene. Vincolando invece la ricerca
-alla zona che i dati coprono davvero (il loro **supporto**, che in statistica è
-appunto l'insieme dei valori effettivamente presenti) si sceglie $a = -0{,}21$,
-e stima ($-0{,}25$) e realtà ($-0{,}26$) tornano a coincidere: è, in miniatura,
-la prima famiglia di soluzioni.
+Il voto più alto cade sullo sterzo tutto a destra, dove nessuno ha mai messo
+piede: lì la curva promette $+30{,}1$, e il valore vero è $-0{,}49$. Trenta,
+quando il voto migliore che esista vale zero.
+
+Non c'è niente di misterioso, ed è la ragione per cui l'esempio usa una curva
+molto flessibile invece di una retta. Una curva del genere passa docilmente in
+mezzo ai quaranta punti che ha, e fuori da quel tratto prosegue come le pare:
+non ha più nessun dato che la trattenga, e le basta una piccola pendenza
+sbagliata al bordo per schizzare in alto nel giro di un intervallo. Più la curva
+è flessibile, più forte è lo schizzo.
+
+Vincolando invece la ricerca alla zona che i dati coprono davvero (il loro
+**supporto**, che in statistica è appunto l'insieme dei valori effettivamente
+presenti) si sceglie $-0{,}21$, e stima ($-0{,}25$) e realtà ($-0{,}26$) tornano
+a coincidere. È, in miniatura, la prima famiglia di soluzioni, e mostra anche
+che cosa costa: la mossa perfetta, $+0{,}3$, resta irraggiungibile, perché
+nell'archivio non c'è. Si è rinunciato al meglio in cambio di non prendere
+lucciole per lanterne, ed è un baratto che l'RL offline fa continuamente.
 
 ## BCQ: restare vicini a ciò che è stato visto
 
-Il primo algoritmo pensato apposta per il RL offline profondo è **BCQ**
-(*Batch-Constrained deep Q-learning*), di Scott Fujimoto, David Meger e Doina
-Precup {cite}`fujimoto2019off`, presentato nel 2019. L'idea è quella suggerita
-dall'esempio: se il guaio nasce dal valutare azioni fuori distribuzione, allora
-non valutiamole affatto. BCQ limita il $\max$ alle sole azioni *plausibili*
-secondo il dataset.
+L'idea è quella suggerita dall'esempio, e più semplice di così non si può: se il
+guaio nasce dal dare un voto a mosse mai provate, allora non diamoglielo. Si
+cercherà il voto più alto soltanto fra le mosse che nell'archivio compaiono
+davvero.
+
+Il primo algoritmo a farlo, pensato apposta per il RL offline con le reti
+profonde, è **BCQ** (*Batch-Constrained deep Q-learning*), di Scott Fujimoto,
+David Meger e Doina Precup {cite}`fujimoto2019off`, presentato nel 2019.
 
 `````{tab} Elementare
 
@@ -184,8 +204,15 @@ e si tiene la migliore.
 
 La differenza è tutta qui: alle ricette che nessuno ha mai scritto non viene mai
 chiesto un voto, quindi nessun voto di fantasia può vincere, perché non è mai
-stato dato. Un margine per migliorare resta, perché alle ricette proposte è
-concesso un piccolo ritocco imparato; ma è un ritocco, non un'invenzione.
+stato dato.
+
+E allora BCQ non può fare altro che ripetere la nonna? No, e per due motivi. Il
+primo è che fra le ricette plausibili può scegliere la *migliore*, mentre la
+nonna a volte sbagliava; già questo basta a fare meglio di lei. Il secondo è che
+a ciascuna ricetta proposta è concesso un ritocco piccolo, di cui BCQ impara la
+misura. Il ritocco è un rischio, certo, ma di taglia controllata: si resta
+accanto a qualcosa che è stato davvero cucinato, e non si inventa un piatto in
+mezzo al nulla.
 
 `````
 
@@ -207,13 +234,14 @@ recinto attorno ai dati e non uscirne.
 
 ## CQL: essere pessimisti sull'ignoto
 
-BCQ mette un recinto *esplicito* attorno alle azioni. Un anno dopo, nel 2020,
-Aviral Kumar, Aurick Zhou, George Tucker e Sergey Levine propongono un approccio
-più elegante che non ha bisogno di un modello generativo separato: **CQL**
-(*Conservative Q-Learning*) {cite}`kumar2020conservative`. Invece di vietare le
-azioni mai viste (in gergo *out-of-distribution*, «fuori distribuzione»,
-abbreviato **OOD**), le rende *poco appetibili*, intervenendo direttamente sulla
-quantità che l'addestramento cerca di minimizzare, la *loss*.
+BCQ mette un recinto attorno alle mosse ammesse, e per farlo gli serve una
+seconda rete, quella che imita chi ha raccolto i dati. Si può ottenere lo stesso
+effetto senza quella seconda rete, e nel 2020 Aviral Kumar, Aurick Zhou, George
+Tucker e Sergey Levine mostrano come: **CQL** (*Conservative Q-Learning*)
+{cite}`kumar2020conservative`. Invece di vietare le azioni mai viste (in gergo
+*out-of-distribution*, «fuori distribuzione», abbreviato **OOD**), le rende
+*poco appetibili*, intervenendo direttamente sul numero che l'addestramento
+cerca di far scendere (la *loss*, la misura di quanto la rete sta sbagliando).
 
 `````{tab} Elementare
 
@@ -223,9 +251,10 @@ quelli documentati nei quaderni, mi fido di ciò che c'è scritto». In questo m
 nessun piatto sconosciuto potrà mai battere, sulla carta, un piatto ben
 documentato: il critico non correrà mai dietro a una fantasia.
 
-CQL insegna esattamente questa prudenza alla rete dei voti. A ogni
-aggiornamento aggiunge due spinte: **abbassa** i voti delle azioni fuori dal
-dataset e **alza** quelli delle azioni davvero presenti. Il risultato è un
+CQL insegna esattamente questa prudenza alla rete dei voti. Una rete non impara
+in un colpo solo: si corregge migliaia di volte, un pochino per volta, e a ogni
+correzione CQL aggiunge due spinte. **Abbassa** i voti delle mosse che nel
+diario non compaiono, e **alza** quelli delle mosse che ci sono davvero. Il risultato è un
 sistema di voti *conservativo* (pessimista su tutto ciò che non ha visto) che
 difficilmente si fa abbagliare dall'ignoto. Perde forse qualche occasione
 buona ma nascosta; in cambio non si getta mai in un burrone che non ha mai
@@ -274,11 +303,16 @@ più di quanto offra la concorrenza.
 CQL valuta ancora le azioni OOD, salvo poi penalizzarle. Nel 2022 Ilya
 Kostrikov, Ashvin Nair e Sergey Levine portano l'idea alle estreme conseguenze
 con **IQL** (*Implicit Q-Learning*) {cite}`kostrikov2022offline`: costruire
-una policy migliore di quella che ha raccolto i dati *senza mai interrogare la
-rete dei voti su un'azione che non sia nel dataset*. Se non guardi mai fuori,
-non puoi essere ingannato da ciò che c'è fuori. «Implicito» è il nome di quel
-che non si fa: il massimo sulle azioni non viene mai calcolato, lo si ottiene di
-sbieco come sottoprodotto di una regressione, senza doverlo mai nominare.
+una strategia migliore di quella che ha raccolto i dati *senza mai chiedere alla
+rete dei voti che voto darebbe a una mossa che nel diario non c'è*. Se non
+guardi mai fuori, non puoi essere ingannato da ciò che c'è fuori.
+
+«Implicito» è il nome di quello che non si fa. Fin qui, per sapere quanto vale
+una situazione, si prendeva il voto della mossa migliore fra tutte quelle
+possibili: è lì che entravano le mosse mai provate. IQL quel confronto non lo
+fa mai; il numero che ne sarebbe uscito lo ottiene per un'altra strada, come
+sottoprodotto di una stima fatta sui soli dati, e la mossa fantasma non viene
+nemmeno nominata.
 
 `````{tab} Elementare
 
@@ -332,8 +366,11 @@ $Q(s,a)-V(s)$.
 
 `````
 
-Il nucleo di IQL, in PyTorch, è una perdita volutamente sbilanciata, che tira
-la stima del «meglio già fatto» verso l'alto dei voti realmente osservati:
+Il nucleo di IQL, in PyTorch, sta in poche righe. È una misura d'errore
+volutamente sbilanciata: con `tau=0.8` una stima troppo bassa viene rimproverata
+quattro volte più di una stima troppo alta ($0{,}8$ contro $0{,}2$). E siccome
+sbagliare per difetto costa quattro volte di più, alla stima conviene stare in
+alto: si posa vicino ai voti migliori fra quelli osservati, invece che nel mezzo.
 
 ```python
 import torch
@@ -408,38 +445,49 @@ inseguire un valore stimato.
 Il Decision Transformer non è sempre il migliore, e il caso in cui perde si
 capisce bene: se nell'archivio non c'è una sola partita andata a finire bene,
 lui non ha niente da recitare, perché sa soltanto ripetere partite che ha visto.
-CQL e IQL, che i voti li stimano, riescono talvolta a «ricucire» il primo pezzo
-di una partita con il secondo pezzo di un'altra e a tirarne fuori una migliore
-di entrambe. Ma il Decision Transformer ha aperto una linea feconda, mostrando
-che una parte del RL può essere riformulata come apprendimento supervisionato di
-sequenze.
+
+CQL e IQL invece i voti li stimano, e questo dà loro un potere in più: sanno
+«ricucire». Un voto dice quanto vale *una situazione*, non una partita intera;
+quindi se due partite mediocri passano tutte e due per la stessa situazione,
+l'inizio buono della prima si può attaccare al finale buono della seconda, e ne
+esce un percorso migliore di entrambe, che nel diario non c'è. Il Decision
+Transformer, che le partite le racconta intere, questa cucitura non la sa fare.
+Ha però aperto una linea feconda, mostrando che una parte del reinforcement
+learning si può riformulare come apprendimento supervisionato di sequenze.
 
 ## Un filo che torna: le preferenze dell'RLHF
 
 Questa prospettiva illumina qualcosa che abbiamo già incontrato. Nella sezione
-sui metodi a gradiente di policy abbiamo visto l'RLHF, con cui si allineano i
-modelli linguistici {cite}`ouyang2022training`: valutatori umani confrontano le
-risposte del modello, e le loro preferenze addestrano un modello di ricompensa.
+sui metodi a gradiente di policy abbiamo visto l'**RLHF**, il modo in cui si
+addestrano oggi gli assistenti conversazionali {cite}`ouyang2022training`: delle
+persone confrontano a due a due le risposte del modello e dicono quale
+preferiscono; da quei confronti si costruisce un giudice automatico, il *modello
+di ricompensa*, che da lì in poi assegna i voti al posto loro.
 
-Quelle preferenze sono un dataset raccolto **a tornate**, e la distinzione conta.
-Non è vero che nessuno torni mai dagli annotatori: il lavoro stesso che ha
-introdotto la ricetta dice che i due passi (raccolta dei confronti e
-ottimizzazione) «possono essere iterati di continuo», raccogliendo nuovi
-confronti sulla policy migliore del momento per addestrare un nuovo modello di
-ricompensa. Ma fra una tornata e l'altra l'ottimizzazione va avanti contro un
-modello di ricompensa **fermo**, e il grosso dei confronti viene da risposte di
-policy precedenti, non da quella che si sta addestrando in quel momento.
+Quei confronti formano un archivio, e come tutti gli archivi di questa sezione
+resta fermo mentre l'addestramento va avanti. Fermo però non vuol dire chiuso
+per sempre: il lavoro che ha introdotto la ricetta dice che i due passi
+(raccogliere confronti e ottimizzare) «possono essere iterati di continuo»,
+tornando dalle persone a chiedere nuovi giudizi sulle risposte della versione
+migliore del momento. Si raccoglie a tornate. Ma fra una tornata e l'altra il
+giudice non cambia di una virgola, e il grosso dei confronti su cui è stato
+costruito viene da risposte di versioni precedenti.
 
-È abbastanza perché l'RLHF erediti le stesse tensioni: la policy tende ad
-allontanarsi dalla distribuzione dei dati e a «sfruttare» il modello di
-ricompensa dove questo è poco vincolato. E le contiene con gli stessi strumenti,
-un termine di penalità che tiene la nuova policy *vicina* a quella di partenza,
-cugino diretto della prudenza di BCQ e CQL. Anzi, il distinguo rende il punto
-più interessante, perché spiega *perché* si itera: iterare è il modo di
-ricomprare, ogni tanto, i dati che l'ottimizzazione ha consumato allontanandosi.
-Imparare da dati fissi, dalla terapia intensiva agli assistenti
-conversazionali, pone sempre la stessa domanda: quanto possiamo fidarci di ciò
-che non abbiamo mai visto?
+Tanto basta perché l'RLHF erediti le tensioni di tutta la sezione. Il modello si
+allontana dalle risposte che le persone hanno davvero giudicato, e proprio là
+dove nessuno ha giudicato niente il giudice automatico è più facile da
+imbrogliare: è il risotto al peperoncino, con altri ingredienti. E il rimedio è
+della stessa famiglia: al punteggio che il modello cerca di far salire si
+sottrae una penalità, che cresce man mano che le sue risposte si allontanano da
+quelle di partenza. Allontanarsi resta possibile, ma costa, ed è una cugina
+diretta della prudenza di BCQ e di CQL.
+
+Anzi, il distinguo spiega proprio *perché* si itera. Ottimizzando, il modello si
+sposta fuori dalla zona che i vecchi confronti coprivano, e quei confronti
+valgono sempre meno; tornare dalle persone serve a farsi dire come sono le
+risposte di adesso, non quelle di prima. Imparare da dati fissi, dalla terapia
+intensiva agli assistenti conversazionali, pone sempre la stessa domanda: quanto
+possiamo fidarci di ciò che non abbiamo mai visto?
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
@@ -464,10 +512,10 @@ che non abbiamo mai visto?
   dice anche quanto punteggio si vuole ancora totalizzare, e lui produce le
   mosse che di solito portano lì. Nessun voto da stimare, quindi nessun voto
   gonfiato.
-- Anche le preferenze umane con cui si allineano i modelli linguistici sono un
-  archivio, che si riapre a tornate ma resta fermo mentre l'addestramento va
-  avanti: stesso problema, e stesso rimedio, cioè restare vicini a ciò che
-  l'archivio contiene davvero.
+- Anche i confronti con cui le persone giudicano le risposte di un assistente
+  conversazionale sono un archivio, che si riapre a tornate ma resta fermo
+  mentre l'addestramento va avanti: stesso problema, e stesso rimedio, cioè
+  restare vicini a ciò che l'archivio contiene davvero.
 ```
 `````
 

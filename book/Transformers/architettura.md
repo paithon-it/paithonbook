@@ -1,12 +1,13 @@
 # La struttura del Transformer
 
 Il meccanismo di attenzione è il motore; adesso montiamo l'automobile. Il
-Transformer del paper originale è una macchina per tradurre: da un lato entra
-una frase ("The cat jumps on the wall"), dall'altro esce la traduzione ("Il
-gatto salta sul muro"). Per farlo combina due torri di blocchi identici
-(l'**encoder** che legge, il **decoder** che scrive), più un ingrediente
-facile da sottovalutare: un modo per dire alla rete *in che ordine* stanno le
-parole.
+Transformer descritto in *Attention Is All You Need*, l'articolo del 2017 da
+cui questo capitolo è partito, è una macchina per tradurre: da un lato entra
+una frase ("The black cat jumps on the wall"), dall'altro esce la traduzione
+("Il gatto nero salta sul muro"). Per farlo combina due torri di blocchi
+identici (l'**encoder** che legge, il **decoder** che scrive), più un
+ingrediente facile da sottovalutare: un modo per dire alla rete *in che ordine*
+stanno le parole.
 
 ```{figure} ../figures/architettura-transformer.svg
 :name: fig-blocco-transformer
@@ -15,10 +16,9 @@ parole.
 
 Il blocco che si ripete, sempre uguale a sé stesso. I due mestieri sono la
 riunione (l'attenzione, dove le parole si scambiano informazioni) e il lavoro
-individuale (la **rete feed-forward**, dove ogni parola rielabora per conto
-suo); attorno a entrambi c'è l'impalcatura della sezione precedente, cioè la
-scorciatoia (**connessione residua**) e la taratura (**normalizzazione**), che
-permette di impilarne decine senza che l'addestramento si rompa.
+individuale, dove ogni parola rielabora per conto suo; attorno a entrambi c'è
+l'impalcatura della sezione precedente, cioè la scorciatoia e la taratura, che
+permette di impilare decine di blocchi senza che i primi smettano di imparare.
 ```
 
 Conviene fissare {numref}`fig-blocco-transformer` prima di scendere nei
@@ -26,18 +26,33 @@ dettagli, perché tutto il capitolo gira attorno a questa figura: encoder e
 decoder non sono due macchine diverse, sono due pile dello stesso blocco,
 montate in modo leggermente diverso.
 
+Una parola serve prima di cominciare, perché torna dieci volte in questa
+pagina. Dentro la rete ogni parola è diventata una lista di numeri, e quella
+lista è ciò che il libro chiama la sua **rappresentazione**: non è la parola
+scritta, è quello che il modello ne ha capito finora, e cambia a ogni piano.
+Tutto il lavoro delle due torri consiste nel riscriverla.
+
 ## L'encoder: la torre che legge
 
+Cominciamo dalla torre che legge, perché è la più semplice delle due: fa una
+cosa sola, prendere la frase di partenza e capirla il meglio possibile.
+
 `````{tab} Elementare
-L'encoder è una squadra di lettori disposti in colonna, nel modello originale
-sei piani. Al primo piano la frase arriva "grezza"; ogni piano la rilegge con
-il meccanismo di attenzione (ogni parola guarda tutte le altre) e poi ciascuna
-parola viene rielaborata per conto suo da una piccola rete di neuroni, prima
-di passare il risultato al piano di sopra. Piano dopo piano, la
-rappresentazione di ogni parola si arricchisce: "nero" al sesto piano non è
-più solo un colore, è *il colore di quel gatto in quella frase*. Alla fine
-della salita, l'encoder consegna una versione della frase in cui ogni parola
-porta scritto addosso il proprio contesto.
+L'encoder è una pila di sei piani identici, e a ogni piano c'è un lettore che
+rilegge tutta la frase. Al primo piano le parole arrivano "grezze", cioè con la
+rappresentazione che avevano da sole, fuori da qualunque frase: "nero" vale
+"nero" e basta. Ogni piano la rilegge con il meccanismo di attenzione (ogni
+parola guarda tutte le altre e si arricchisce di quello che ha visto), poi
+ciascuna parola viene rielaborata per conto suo da una piccola rete di neuroni,
+e il risultato sale al piano di sopra. Piano dopo piano la rappresentazione di
+ogni parola si specializza: "nero" al sesto piano non è più solo un colore, è
+*il colore di quel gatto in quella frase*. Alla fine della salita, l'encoder
+consegna una versione della frase in cui ogni parola porta scritto addosso il
+proprio contesto.
+
+Perché sei piani e non quattro? Come per le otto teste della sezione
+precedente, perché funzionava: è un numero provato sul campo, e i modelli
+venuti dopo sono arrivati a decine e centinaia di piani.
 `````
 
 `````{tab} Superiore
@@ -64,15 +79,24 @@ rappresentazioni via via più astratte.
 
 ## Il decoder: la torre che scrive
 
+Quello che esce dalla torre che legge, però, non è ancora una traduzione: è solo
+una frase capita bene. A trasformarla in un'altra frase ci pensa la seconda
+torre, ed è la più delicata delle due, perché deve scrivere.
+
 `````{tab} Elementare
 Il decoder genera la traduzione una parola alla volta, e mentre lo fa consulta
 due fonti: quello che ha *già scritto* (per non contraddirsi) e quello che
 l'encoder *ha letto* (per restare fedele all'originale). C'è però una regola
-ferrea, la stessa dei compiti in classe: **non si sbircia avanti**. Quando il
-decoder impara a produrre la quarta parola, può guardare solo le prime tre: se
-durante l'addestramento potesse leggere la risposta intera, "imparerebbe" a
-copiare, e al momento di generare davvero, senza soluzione da copiare, non
-saprebbe fare nulla.
+ferrea, la stessa dei compiti in classe: **non si sbircia avanti**. Per capirla
+serve sapere come si addestra questa macchina, che è più semplice di quanto
+sembri: le si danno milioni di frasi con accanto la traduzione giusta, scritta
+da una persona, e la si costringe a indovinarla parola per parola, controllando
+ogni volta quanto ci è andata vicina. La traduzione giusta, insomma, durante lo
+studio ce l'ha davvero sotto gli occhi. Ed è proprio per questo che le si copre:
+quando impara a produrre la quarta parola può guardare solo le prime tre, altrimenti
+"imparerebbe" a copiare la quarta dalla soluzione, e il giorno in cui la
+soluzione non c'è (cioè sempre, una volta finito lo studio) non saprebbe fare
+nulla.
 `````
 
 `````{tab} Superiore
@@ -109,13 +133,25 @@ tutte le altre; le caselle verso il futuro si spengono, e ogni riga
 ridistribuisce tutto il colore dell'evidenziatore su ciò che precede.
 ```
 
-Il dettaglio da non perdere nella {numref}`fig-attenzione-mascherata` è che le
-caselle si spengono **prima** che i punteggi diventino intensità, non dopo:
-cancellare le intensità già calcolate lascerebbe righe che non sommano più a
-uno, cioè evidenziature con un pezzo di colore mancante. Spegnere i punteggi a
-monte (tecnicamente: ponendoli a $-\infty$ prima della softmax, cioè prima del
-passaggio che trasforma i punteggi in intensità) li fa uscire come zeri esatti,
-e la ridistribuzione resta corretta.
+La griglia di {numref}`fig-attenzione-mascherata` è l'evidenziatore della
+sezione precedente messo in tabella. Righe e colonne sono le parole nell'ordine
+in cui stanno nella frase: una riga per ogni parola che guarda, una colonna per
+ogni parola guardata, e in ogni casella l'intensità di colore che la prima dà
+alla seconda. La casella dove riga e colonna portano lo stesso nome (la
+diagonale) è la parola che guarda sé stessa, e resta accesa; le caselle alla
+sua destra sono le parole che vengono dopo, cioè il futuro, e sono quelle da
+spegnere. Le intensità di una riga sommano sempre a uno, perché ogni parola ha
+esattamente una unità di colore da distribuire.
+
+Il dettaglio da non perdere è **quando** si spengono, ed è il passaggio in due
+tempi visto nella sezione precedente: prima si calcolano i punteggi, poi la
+softmax li trasforma in intensità che sommano a uno. Spegnere dopo lascerebbe
+righe che non sommano più a uno, cioè evidenziature con un pezzo di colore
+mancante e una parola che pesa meno delle altre senza motivo. Si spegne quindi
+prima, sui punteggi, e allora è la softmax stessa a ridistribuire sul passato
+tutto il colore che sarebbe andato al futuro. Il modo di spegnerli è elegante:
+al posto del punteggio si mette meno infinito, e siccome $e$ elevato a meno
+infinito fa zero, dalla softmax quelle caselle escono come zeri esatti.
 
 ## Positional encoding: dare un ordine alle parole
 
@@ -123,36 +159,69 @@ C'è un problema nascosto. L'attenzione tratta la frase come un *sacchetto* di
 parole: se mescolassi "il gatto morde il cane" in "il cane morde il gatto", i
 confronti sarebbero gli stessi fra le stesse parole, quindi gli stessi
 punteggi e la stessa evidenziatura. Per l'attenzione le due frasi sono
-identiche; per chi legge sono opposte. Le RNN l'ordine ce l'avevano gratis
-(leggevano in fila); il Transformer deve aggiungerlo esplicitamente.
+identiche; per chi legge sono opposte. Le reti che leggevano in fila l'ordine
+ce l'avevano gratis; il Transformer deve aggiungerlo apposta.
+
+Il rimedio è quello che si fa a teatro: dare a ogni parola un **posto
+numerato**. Prima che entri nella rete, alla sua lista di numeri se ne somma
+un'altra che dice «io sono la parola in prima posizione», «in seconda», e così
+via, e da lì in avanti "gatto" in prima posizione e "gatto" in quinta non sono
+più identici. Resta da decidere come si scrive quel numero di posto, ed è la
+parte inaspettatamente interessante.
 
 ```{figure} ../figures/positional-encoding.svg
 :name: fig-positional-encoding
 :alt: "Più onde sinusoidali sovrapposte, di frequenza decrescente: le prime oscillano rapidamente, le ultime lentamente. Letta in verticale a una data posizione, la combinazione dei valori delle diverse onde forma la firma numerica di quella posizione."
 :width: 88%
 
-Le frequenze del positional encoding. Nessuna onda da sola dice dove siamo;
-lette insieme in una colonna danno a ogni posizione una firma diversa da tutte
-le altre.
+Le frequenze del positional encoding. Nessuna onda da sola dice dove siamo: la
+firma di una posizione è la fila verticale dei punti che tutte le onde toccano
+lì (qui il disegno ne mostra tre, in un modello vero sono centinaia), e due
+posizioni non ricevono mai la stessa.
 ```
 
 La firma della posizione c'è, ma non è scritta come un semplice contatore (1,
-2, 3, …), ed è quello che mostra {numref}`fig-positional-encoding`: è fatta di
-più orologi che girano a velocità diverse, come le lancette delle ore, dei
-minuti e dei secondi. Le lancette lente dicono in quale parte della frase
-siamo, quelle veloci distinguono i vicini immediati, e lette tutte insieme
-danno a ogni posizione una combinazione che non si ripete. Un contatore solo
-avrebbe una scala sola, e con una scala sola o si distinguono i lontani o si
-distinguono i vicini, non entrambi.
+2, 3, …), ed è quello che mostra {numref}`fig-positional-encoding`. Il
+contatore, in effetti, sarebbe la prima idea di chiunque, e ha due difetti
+concreti. Il primo è che cresce senza fermarsi: la parola numero
+diecimila porterebbe addosso il numero diecimila, e una rete davanti a un
+ingresso mille volte più grande di tutti gli altri va in tilt. Il secondo è che
+normalizzarlo non aiuta: se per tenerlo piccolo si divide per la lunghezza
+della frase, «metà frase» diventa 0,5 sia in una frase di sei parole sia in una
+di seicento, e la stessa firma finisce a significare due cose diverse.
+
+La soluzione del 2017 tiene insieme le due esigenze con un'idea sola:
+**lancette**. Immagina più orologi affiancati, uno veloce, uno medio, uno lento.
+Nessuna lancetta si allontana mai, perché gira e torna: qualunque posizione
+della frase, il numero che se ne legge resta sempre nella stessa fascia. E la
+lancetta veloce distingue i vicini immediati, quella lenta dice in quale parte
+della frase siamo: due scale insieme invece di una.
+
+Il legame con la figura è che l'altezza della punta di una lancetta, disegnata
+mano a mano che l'orologio avanza, è proprio un'**onda** che sale e scende: le
+tre curve del disegno sono tre lancette a tre velocità. La firma di una
+posizione è allora la fila verticale dei tre punti che le tre onde toccano lì.
+
+Una lancetta sola, certo, si ripete: alle tre di notte e alle tre di pomeriggio
+la lancetta delle ore sta nello stesso posto. Ma tutte e tre insieme no, ed è
+esattamente perché girano a velocità che non sono l'una multipla dell'altra: la
+combinazione delle tre non si ripete per un tratto lunghissimo, molto più lungo
+di qualunque frase.
 
 `````{tab} Elementare
-La soluzione è dare a ogni parola un "posto numerato", come a teatro: prima di
-entrare nella rete, alla rappresentazione di ogni parola viene sommata una
-piccola firma che dice "sono la parola in prima posizione", "in seconda", e
-così via. Il numero del posto non è scritto in cifre, è scritto con le
-lancette di cui parla la figura qui sopra, ma il senso è quello: "gatto" in
-prima posizione e "gatto" in quinta non sono più identici. Stessa parola,
-poltrona diversa, e la rete può accorgersi che l'ordine conta.
+Il posto numerato, dunque, c'è, ma il numero non è scritto in cifre: è scritto
+con le lancette di cui parla la figura qui sopra. La sostanza però è quella del
+teatro: stessa parola, poltrona diversa, e la rete può accorgersi che l'ordine
+conta. Vale la pena notare quanto sia sbrigativo il modo in cui la firma viene
+consegnata: non si aggiunge un pezzo in fondo alla lista della parola, si
+**somma** numero per numero alla lista che c'è già. Parola e posizione finiscono
+mescolate negli stessi numeri, e alla rete tocca imparare a distinguerle.
+
+Nel 2017 quelle firme erano calcolate a tavolino, con una formula scritta a
+mano prima di cominciare: il modello non le impara, se le trova già pronte. I
+modelli venuti dopo fanno diversamente (alcuni gliele fanno imparare, altri
+scrivono direttamente quanto due parole sono distanti invece di dove stanno),
+ma il posto numerato, in una forma o nell'altra, serve a tutti.
 `````
 
 `````{tab} Superiore
@@ -203,22 +272,45 @@ l'attenzione da sola è permutation-invariant) resta lo stesso.
 
 ## La feed-forward network: il lavoro individuale
 
+Manca un pezzo solo, ed è quello che nella {numref}`fig-blocco-transformer`
+sta subito dopo l'attenzione. Ha un nome inglese, *feed-forward network*, che
+vuol dire soltanto «rete che va in avanti», cioè senza cappi né ritorni:
+i numeri entrano da una parte ed escono dall'altra.
+
 `````{tab} Elementare
 Dopo ogni "riunione" di attenzione (dove le parole si scambiano informazioni),
 c'è un momento di lavoro individuale: ogni parola, per conto suo, rielabora
 quello che ha appena sentito. È una piccola rete di neuroni come quelle del
-capitolo sulle reti neurali, la stessa per tutte le parole, che prende la
-rappresentazione di una parola e la trasforma in una versione più lavorata.
-Riunione, lavoro individuale, riunione, lavoro individuale: la torre del
-Transformer è tutta qui.
+capitolo sulle reti neurali, identica per tutte le parole, e quello che fa è
+semplice da dire, in tre mosse. Prima la lista di numeri della parola viene
+fatta passare per una tabella che ne restituisce una **quattro volte più
+lunga**: i numeri in più non sono inventati, sono altrettante miscele diverse
+di quelli di partenza, e servono a mettere in evidenza combinazioni che nella
+lista corta stavano schiacciate insieme. Poi si azzerano tutti i valori
+negativi (non si tolgono, si mettono a zero: la lista resta lunga uguale), ed è
+il solo momento in cui questa parte della rete fa una scelta invece di una
+miscela. Infine una seconda tabella la riporta alla lunghezza di partenza,
+tenendo di quel materiale largo solo quello che serve. Riunione, lavoro
+individuale, riunione, lavoro individuale: la torre del Transformer è tutta
+qui.
 
 Una cosa sorprendente, che tornerà utile più avanti: è il momento di lavoro
-individuale, non la riunione, a contenere quasi tutto quello che il modello ha
-imparato. Contando i numeri che la rete regola mentre impara (si chiamano
-**parametri**, ed è quello che si conta quando si dice «un modello da sette
-miliardi»), due terzi buoni di ogni piano stanno nel lavoro individuale, e solo
-un terzo nell'attenzione. La parte concettualmente più semplice è anche quella
-dove il modello tiene la roba.
+individuale, non la riunione, a contenere la maggior parte di quello che il
+modello ha imparato. Contando i numeri che la rete regola mentre impara (si
+chiamano **parametri**, ed è quello che si conta quando si dice «un modello da
+sette miliardi»), in un piano della torre che legge due terzi stanno nel lavoro
+individuale e solo un terzo nell'attenzione.
+
+Il conto è alla portata. L'attenzione usa quattro tabelle grandi uguali: una per
+la query, una per la key, una per il value, una per rimettere insieme le
+risposte delle otto teste. Il lavoro individuale ne usa due sole, ma ciascuna
+quattro volte più grande, perché è quella che allarga e quella che ricomprime:
+sono otto tabelle della prima taglia. Otto contro quattro, due terzi contro un
+terzo. (Nei piani della torre che scrive di attenzioni ce ne sono due, la sua e
+la consultazione dell'altra torre, quindi lì si va a otto contro otto e la quota
+scende a metà; ma i grandi modelli linguistici di oggi tengono solo la torre che
+scrive **senza** consultare nessuno, e tornano ai due terzi.) La parte
+concettualmente più semplice è anche quella dove il modello tiene la roba.
 `````
 
 `````{tab} Superiore
@@ -271,15 +363,28 @@ addestramento.
 `````
 
 Con la feed-forward il giro è completo, e vale la pena guardare indietro un
-momento. In questa pagina non è comparso nessun ingrediente che non fosse già
-sul tavolo: c'è l'attenzione della sezione precedente, c'è una piccola rete di
-neuroni come quelle del capitolo sulle reti neurali, ci sono una scorciatoia e
-una taratura attorno a ciascuna delle due. Il Transformer non è un pezzo nuovo,
-è un modo di impilare quei quattro, sempre nello stesso ordine, per sei piani
-e poi per sessanta. È il motivo per cui l'architettura ha retto senza cambiare
-forma ingrandimenti di tre ordini di grandezza (dai 65 milioni di parametri del
-modello base del 2017 ai 175 miliardi di GPT-3, tre anni dopo): non c'era una
-forma da cambiare, c'era una sequenza da ripetere.
+momento. In questa pagina un solo ingrediente era nuovo davvero, il posto
+numerato; tutti gli altri erano già sul tavolo. C'è l'attenzione della sezione
+precedente, c'è una piccola rete di neuroni come quelle del capitolo sulle reti
+neurali, ci sono una scorciatoia e una taratura attorno a ciascuna delle due.
+Il Transformer non è un pezzo nuovo, è un modo di impilare quei quattro, sempre
+nello stesso ordine, per sei piani e poi per sessanta.
+
+È il motivo per cui l'architettura ha retto senza cambiare forma mentre i
+modelli diventavano quasi tremila volte più grandi: dai 65 milioni di parametri
+del modello base del 2017 ai 175 miliardi di GPT-3, tre anni dopo. Non c'era
+una forma da cambiare, c'era una sequenza da ripetere.
+
+E il nome GPT-3 dice anche un'altra cosa, che vale la pena anticipare perché
+altrimenti si resta con l'idea che il Transformer sia una macchina per tradurre
+e basta. Quella macchina non traduce, chiacchiera, perché tiene **solo la torre
+che scrive** e butta via quella che legge: e con la torre che legge se ne va
+anche il momento in cui il decoder la consultava, cioè dei tre pezzi di ogni
+suo piano ne restano due. Quel che rimane, davanti a un pezzo di testo
+qualsiasi, fa esattamente quello che sa fare, cioè continuarlo; e continuare un
+testo, se il testo è una domanda, somiglia molto a rispondere. Le famiglie di
+modelli che nascono da questa potatura sono l'argomento di una delle prossime
+sezioni.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare

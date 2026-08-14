@@ -8,10 +8,14 @@ sperando che smetta. La buona notizia è che quel messaggio non è mai davvero
 nuovo. Sotto la varietà apparente ci sono **tre** errori, e sono sempre gli
 stessi tre: la forma dei dati, il loro tipo, il dispositivo su cui abitano.
 
-Un tensore ha esattamente queste tre proprietà oltre ai numeri che contiene
-(`shape`, `dtype`, `device`) ed è per questo che sbagliare significa quasi
-sempre sbagliare una delle tre. Chi impara a riconoscerle a colpo d'occhio
-smette di debuggare per tentativi.
+La ragione per cui sono sempre quei tre è semplice. Un tensore, oltre ai numeri
+che contiene, porta con sé esattamente tre informazioni: la sua forma
+(`shape`), il tipo dei suoi numeri (`dtype`) e il dispositivo su cui abita
+(`device`). Quando due tensori si incontrano, PyTorch controlla che quelle tre
+combacino; i numeri dentro non li giudica nessuno, perché non c'è niente da
+giudicare. Quindi ogni volta che la libreria si ferma, si è rotto uno di quei
+tre patti, e chi impara a riconoscerli a colpo d'occhio smette di cercare
+l'errore per tentativi.
 
 ```python
 x = torch.randn(32, 3, 224, 224)
@@ -30,13 +34,22 @@ RuntimeError: mat1 and mat2 shapes cannot be multiplied (32x784 and 128x10)
 ```
 
 È il più frequente in assoluto, e il messaggio (una volta imparato a leggerlo)
-dice già tutto: PyTorch ha provato a moltiplicare una matrice $32 \times 784$
+dice già tutto: PyTorch ha provato a moltiplicare una tabella $32 \times 784$
 per una $128 \times 10$, e non si può, perché il numero di colonne della prima
 ($784$) non coincide con il numero di righe della seconda ($128$). È la regola
 del prodotto fra matrici vista nel capitolo di algebra lineare, e il motivo per
 cui esiste è che ogni riga della prima matrice viene accoppiata a una colonna
 della seconda, numero per numero: se le due file non hanno la stessa lunghezza,
 gli accoppiamenti non si chiudono.
+
+I numeri dicono anche *dove* è successo, ed è la parte che si impara a leggere.
+Il $32$ è il numero di esempi nel mini-batch (il "mucchietto" di cui parla il
+capitolo dall'inizio: nel codice si chiama sempre così, *batch*); il $784$ sono
+i pixel di un'immagine MNIST srotolata, $28 \times 28$. Il $128$ e il $10$ sono
+la seconda tabella, cioè lo strato d'uscita del nostro percettrone: prende 128
+numeri e ne produce 10, uno per cifra. Traduzione del messaggio: sono arrivate
+32 immagini appiattite direttamente allo strato finale, perché fra i due manca
+lo strato nascosto, quello che avrebbe dovuto portarle da $784$ a $128$.
 
 `````{tab} Elementare
 Pensa ai tensori come a scatole con un'etichetta che dice quante cose
@@ -205,7 +218,9 @@ nella stessa stanza, e il trasloco va chiesto esplicitamente con `.to(device)`.
 
 Il caso classico è aver spostato il modello e dimenticato i dati:
 
-```python
+```{code-block} python
+:class: pt-non-eseguibile
+
 device = "cuda" if torch.cuda.is_available() else "cpu"
 modello = modello.to(device)               # il modello trasloca...
 
@@ -214,10 +229,14 @@ for X, y in loader:
     ...
 ```
 
-Attenzione a una differenza sottile: `modello.to(device)` sposta il modello
-*sul posto*, mentre `X.to(device)` restituisce una **copia** e non modifica
-`X`. Scrivere `X.to(device)` senza riassegnare è una riga che sembra
-funzionare e non fa nulla.
+Attenzione a una differenza sottile, e conviene guardare il segno `=`.
+`modello.to(device)` sposta il modello davvero, sul posto: dopo quella riga il
+modello sta di là, anche senza scrivere nient'altro. `X.to(device)` invece
+**non tocca `X`**: fabbrica una copia di `X` che sta di là e la restituisce, e
+se quella copia non la si mette da nessuna parte va persa. Ecco perché nel
+codice sopra c'è `X = X.to(device)` e non `X.to(device)` e basta: la seconda
+forma è una riga che sembra funzionare e non fa nulla, e non dà nessun errore
+finché il tensore non arriva al modello.
 `````
 
 `````{tab} Superiore
@@ -251,8 +270,9 @@ stacca dal grafo, `cpu` fa il trasloco, `numpy` converte.
 ## Un metodo, non un rimedio
 
 I tre errori sopra si risolvono in trenta secondi *se* si legge il messaggio.
-Vale la pena rendere esplicito il metodo, perché funziona anche per il
-quarto errore, quello che non è in nessun elenco.
+Vale la pena rendere esplicito il metodo con cui li si risolve, perché quello
+funziona anche sugli errori che nessun elenco contiene, compresi quelli che
+nasceranno il mese prossimo.
 
 1. **Leggi il traceback dal basso verso l'alto.** Quando un programma Python si
    ferma non stampa una frase, stampa un elenco: è il *traceback*, la catena di
@@ -278,7 +298,7 @@ scende affatto, e non c'è niente di rosso da leggere.
 
 ```{figure} ../figures/overfitting-memoria.svg
 :name: fig-curva-nervosa
-:alt: "Una nube di punti attraversata da due curve. La prima è semplice e coglie la tendenza generale, lasciando i punti sparsi attorno a sé. La seconda è nervosa e passa esattamente per ogni punto, comprese le oscillazioni che sono soltanto rumore."
+:alt: "Una decina di punti disposti lungo una tendenza crescente, attraversati da due curve. La prima è quasi una retta e coglie la tendenza generale, lasciando i punti un po' sopra e un po' sotto. La seconda è nervosa, sale e scende fra un punto e l'altro e passa esattamente per ognuno."
 :width: 92%
 
 La curva che passa per tutti i punti non ha capito meglio: ha memorizzato. Sul
@@ -286,37 +306,48 @@ training set il suo errore è zero, ed è proprio questo a doverci insospettire.
 ```
 
 {numref}`fig-curva-nervosa` è la forma grafica dell'errore silenzioso più
-comune di tutti, quello che chiude questa lista: una loss di addestramento che
-scende benissimo mentre quella di validazione risale. Il codice funziona, non
-c'è niente da correggere in PyTorch, e proprio per questo lo si scopre tardi.
+comune di tutti, e non sta nella lista che segue perché non è una riga di
+codice sbagliata: è la loss di addestramento che scende benissimo mentre quella
+di validazione risale, cioè un modello che memorizza invece di imparare. Il
+codice funziona, non c'è niente da correggere in PyTorch, e proprio per questo
+lo si scopre tardi. Se ne parla per esteso nella sezione dopo l'elenco, quella
+sulle curve.
 
-- **`optimizer.zero_grad()` dimenticato.** I gradienti si accumulano, quindi
-  al passo $t$ quello che si usa è la somma dei $t$ gradienti precedenti,
-  all'incirca $t\,\bar{g}$, dove $\bar{g}$ è il gradiente medio visto finora.
-  Che cosa si veda dipende dall'ottimizzatore, e conviene saperlo perché la
-  polarità è l'opposto di quella che ci si aspetta. Con **SGD** il passo vale
-  $\eta \, t \, \bar{g}$ e cresce insieme alla somma: con un learning rate
-  piccolo la loss resta *migliore* di quella del ciclo corretto per tutta la
-  corsa ($0{,}043$ contro $0{,}690$, misurando), con uno grande diverge fino a
-  $4{,}5 \cdot 10^{3}$ (su MNIST è arrivata a $177$, dove una loss sana sta a
-  $2{,}3$, e il modello ha finito per tirare a indovinare). Con **Adam** non
-  esplode mai, in nessuna prova, e la ragione è strutturale:
-  l'aggiornamento vale $\hat{m}/(\sqrt{\hat{v}} + \varepsilon)$, cioè è
-  invariante di scala, quindi un gradiente che cresce come $t\,\bar{g}$ si
-  semplifica fra numeratore e denominatore e il passo resta quello di sempre.
-  A $\eta = 10^{-3}$ il bug è perfino *più bravo* del ciclo corretto. Il caso
-  peggiore è quindi Adam, cioè proprio l'ottimizzatore che il capitolo
-  raccomanda come default: lì il bug si traveste da successo e resta
-  invisibile per sempre, perché non c'è nessuna divergenza a denunciarlo.
-- **La predizione e il target non hanno la stessa forma.** `nn.MSELoss` e
-  `nn.L1Loss` non protestano: applicano il broadcasting e mediano su una
-  matrice $N \times N$ di residui incrociati, cioè confrontano ogni predizione
-  con *ogni* etichetta. Con predizioni $(8, 1)$ e target $(8,)$ la MSE
-  restituisce $1{,}8507$ invece di $2{,}0946$; con la L1 lo scarto è dello
-  $0{,}3\%$, indistinguibile dal rumore, e il modello passa la notte a
-  ottimizzare la cosa sbagliata. La `BCEWithLogitsLoss` è l'eccezione gentile,
-  perché si rifiuta e lo dice (`Target size must be the same as input size`).
-  Il rimedio è una riga sola, e va scritta prima di ogni loss:
+- **`optimizer.zero_grad()` dimenticato.** Senza quella riga i gradienti si
+  sommano invece di sostituirsi, e al giro numero $t$ la correzione che il
+  modello applica non è quella dell'ultimo errore: è la somma di tutte quelle
+  dei $t$ giri precedenti, cioè grosso modo $t$ volte la correzione media. La
+  parte interessante è che **cosa si vede dipende dall'ottimizzatore**, e non
+  nel verso che ci si aspetta. Con **SGD** il passo cresce insieme alla somma:
+  con un learning rate piccolo la loss resta perfino *migliore* di quella del
+  ciclo corretto per tutta la corsa ($0{,}043$ contro $0{,}690$ in una misura
+  su una regressione giocattolo), con uno grande esplode (fino a
+  $4{,}5 \cdot 10^{3}$, e su MNIST fino a $177$, dove una loss sana sta a
+  $2{,}3$: il modello aveva finito per tirare a indovinare). Con **Adam** non
+  esplode mai, in nessuna prova, e la ragione è strutturale: Adam non usa il
+  gradiente così com'è, lo divide per una misura di quanto quel gradiente è
+  grande di solito. È una frazione in cui il numero cresce sopra e sotto
+  insieme, quindi moltiplicare il gradiente per $t$ si semplifica e il passo
+  resta lungo come sempre.
+  Con Adam, anzi, il risultato esce spesso perfino *migliore* di quello del
+  ciclo corretto (su un batch fatto apposta per essere mandato a memoria, loss
+  esattamente $0$ col bug contro $3 \cdot 10^{-3}$ senza), ed è proprio questo
+  il pericolo: nessuna divergenza, nessun segnale, niente che denunci il bug.
+  Il caso peggiore è quindi l'ottimizzatore che il capitolo raccomanda come
+  default.
+- **La predizione e il target non hanno la stessa forma.** Se le predizioni
+  sono una colonna di otto numeri e le etichette una riga di otto, `nn.MSELoss`
+  e `nn.L1Loss` non protestano: allineano le due forme allargandole (è il
+  *broadcasting* già visto sui tensori) e finiscono per confrontare **ogni**
+  predizione con **ogni** etichetta, sessantaquattro coppie invece di otto. Il
+  numero che esce non è quindi l'errore, è una media di errori incrociati che
+  non significa niente. Su una prova con otto esempi la MSE restituisce
+  $1{,}8507$ al posto di $2{,}0946$, cioè il dodici per cento sotto; con la L1
+  lo scarto è dello $0{,}3\%$, indistinguibile dal rumore, e il modello passa
+  la notte a ottimizzare la cosa sbagliata senza che nulla lo denunci. La
+  `BCEWithLogitsLoss` è l'eccezione gentile, perché si rifiuta e lo dice
+  (`Target size must be the same as input size`). Il rimedio è una riga sola,
+  e va scritta prima di ogni loss:
   `assert pred.shape == target.shape`.
 - **`optimizer.step()` dimenticato.** I gradienti si calcolano ma nessuno
   aggiorna i pesi: la loss resta piatta, identica, epoca dopo epoca.
@@ -324,9 +355,11 @@ c'è niente da correggere in PyTorch, e proprio per questo lo si scopre tardi.
   `nn.Softmax` e si usa `nn.CrossEntropyLoss`, la trasformazione avviene due
   volte: il modello impara comunque qualcosa, ma molto peggio. La loss vuole i
   **logit** (si veda il [flusso di lavoro](flusso-di-lavoro.md)).
-- **`model.eval()` dimenticato in valutazione.** Con dropout e batch norm
-  attivi, le metriche di test risultano peggiori e (cosa più insidiosa)
-  diverse a ogni esecuzione.
+- **`model.eval()` dimenticato in valutazione.** Il modello resta in modalità
+  studio, cioè con addosso i «trucchi» che servono solo mentre impara (il
+  dropout, e altri strati a doppia personalità che il capitolo sul deep
+  learning presenta): le metriche di test risultano peggiori e, cosa più
+  insidiosa, diverse a ogni esecuzione.
 - **Memoria che cresce a ogni epoca.** `perdita` non è un numero: è un numero
   *più* tutta la catena di operazioni che l'ha prodotto, che PyTorch conserva
   perché servirà al calcolo della derivata. Accumulare `totale += perdita`
@@ -419,7 +452,9 @@ learning rate (di un fattore tre, non del dieci per cento) e, se non basta,
 ingrandisci il modello. Curva che salta: abbassa il learning rate (di un
 fattore tre) o aumenta la dimensione del batch, che è l'altro modo di rendere
 meno rumoroso il gradiente. Divario che si allarga: servono i freni, cioè
-regolarizzazione, data augmentation o semplicemente fermarsi prima.
+qualcosa che renda la vita più difficile al modello mentre studia (deformare
+un po' gli esempi a ogni giro, spegnergli a caso qualche neurone) oppure, più
+semplicemente, fermarsi prima.
 
 E un collaudo che vale i cinque minuti che costa, da fare **prima** di lanciare
 l'addestramento vero: prendi un solo mucchietto di esempi, una decina, e
@@ -521,9 +556,10 @@ plt.plot(storia["val"], label="validazione", linestyle="--")
 plt.xlabel("epoche"); plt.ylabel("loss"); plt.legend()
 ```
 
-Tre errori con un messaggio, sette senza, e un metodo che vale per tutti e
-dieci. È la sezione a cui si torna, e vale la pena rileggerne il riassunto la
-prima volta che qualcosa si rompe.
+Tre errori che si annunciano, otto che tacciono, più il sovradattamento delle
+curve, che è di gran lunga il più comune di tutti e si merita una sezione sua.
+Il metodo, però, vale per tutti e dodici. È la sezione a cui si torna, e vale la
+pena rileggerne il riassunto la prima volta che qualcosa si rompe.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare

@@ -38,6 +38,17 @@ Una versione corrisponde a una **pubblicazione**, non a una giornata di
 lavoro: il libro si scrive tutti i giorni e si pubblica quando un pezzo sta in
 piedi.
 
+(v1-5-3)=
+
+## 1.5.3 · 14 agosto 2026
+
+### Correzioni
+
+- **Altri quindici capitoli sono stati riscritti per essere più leggeri.** A leggerli è stato un ragazzo di tredici anni che non aveva mai sentito parlare di intelligenza artificiale, e ogni punto in cui si è fermato è stato riscritto. In un capitolo si era fermato duecento volte. Le sue domande sono quelle che un libro dovrebbe prevenire: «da che parte tirare, per andare dove?» sulle GAN, «per me giocare e imparare sono la stessa cosa» sul reinforcement learning, «mi fate credere che un numero si spezza in due pezzi senza farmi mai vedere come» sull'attenzione lineare.
+- **Il libro non manda più a leggere l'altro livello.** Era il difetto più diffuso: una pagina del percorso semplice concludeva un ragionamento usando qualcosa spiegato solo nella scheda avanzata, che quel lettore per definizione non apre. In un capitolo c'era scritto a lettere («il fattore otto è quello che il livello Superiore chiama 8× di banda buttata via»), in un altro erano quarantasette fra simboli e formule nel testo comune, ora zero.
+- **Fatti e numeri: una citazione che gli autori non hanno mai scritto** (attribuita agli autori di HyDE), due numeri che non stanno in nessuna versione dei paper citati, le operatrici del Voder che erano ventiquattro e non venti, e la frase famosa della loro dimostrazione del 1939, che non compare né nell'articolo né nel filmato superstite. Più un esperimento che il lettore non poteva rifare, perché il protocollo taceva su tre dettagli che decidono il risultato.
+- **Alcune figure dicevano il contrario del testo.** In due disegni delle GAN la freccia raccontava che è il verdetto a tornare indietro, mentre il capitolo spende tre pagine a spiegare che il verdetto non è ciò che torna. E un grafico dichiarato in scala logaritmica aveva perso l'asse, cioè l'unica cosa che permette di leggerlo.
+
 (v1-5-2)=
 
 ## 1.5.2 · 14 agosto 2026

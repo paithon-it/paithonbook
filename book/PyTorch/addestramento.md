@@ -13,17 +13,24 @@ mettere le mani.
 ## Il rito: i cinque passi
 
 Eccole, le cinque righe. Tutto il resto della sezione non fa che spiegarle e
-metterle al lavoro su un problema vero. Prima, due parole che nel codice
-compaiono senza presentazioni. L'**ottimizzatore** è il pezzo che a ogni giro
-corregge i pesi del modello; il **learning rate** è la sua manopola
+metterle al lavoro su un problema vero. Prima, però, due parole che nel codice
+compaiono senza presentazioni.
+
+L'**ottimizzatore** è il pezzo che a ogni giro corregge i pesi del modello. Il
+**learning rate** (in italiano si dice anche, più brevemente, il **passo**: le
+due parole in questo libro vogliono dire la stessa cosa) è la sua manopola
 principale, e decide quanto è grande ogni correzione: un passo corto impara
 piano ma non sbaglia strada, un passo lungo va veloce ma rischia di scavalcare
-il punto buono. L'ottimizzatore più semplice si chiama **SGD** (dall'inglese
-*stochastic gradient descent*, discesa del gradiente a caso: «a caso» perché
-guarda ogni volta un pacchetto di esempi presi a sorte invece di tutti) e usa
-lo stesso passo per tutti i pesi; **Adam** è quello che si prova per primo in
-quasi ogni progetto, per la ragione che mostra
-{numref}`fig-adam-passo-per-peso`.
+il punto buono.
+
+Di ottimizzatori ce ne sono parecchi, e per adesso ne bastano due. Il più
+semplice si chiama **SGD**, dall'inglese *stochastic gradient descent*, discesa
+del gradiente a caso; «a caso» perché a ogni giro guarda un pacchetto di
+esempi sorteggiati invece di tutti quanti, ed è il modo in cui gli esempi
+arrivano a una rete, come vedremo fra poco. SGD usa lo stesso passo per tutti i
+pesi. **Adam** invece dà a ciascun peso il passo suo, ed è la ragione per cui
+si prova per primo in quasi ogni progetto ({numref}`fig-adam-passo-per-peso`).
+Il nome non è di persona: sta per *adaptive moment estimation*.
 
 ```{figure} ../figures/adam-ottimizzatore.svg
 :name: fig-adam-passo-per-peso
@@ -35,14 +42,15 @@ sceglie una diversa per ogni parametro, in base a quanto quel parametro si è
 mosso finora.
 ```
 
-La differenza mostrata in {numref}`fig-adam-passo-per-peso` è il motivo per
-cui `Adam` è quasi sempre il primo ottimizzatore da provare. Con SGD il
-learning rate va tarato bene perché è uno solo per tutti; con Adam il valore
-di partenza è meno critico, perché ciascun peso lo riscala per conto proprio.
+La conseguenza pratica: con SGD il learning rate va tarato bene, perché è uno
+solo per tutti; con Adam il valore di partenza è meno critico, perché ciascun
+peso lo riscala per conto proprio.
 
-Nel codice le cose hanno il nome inglese: `criterion` è la funzione di perdita,
-`dataloader` è il cameriere che porta i pacchetti di esempi (la prossima
-sezione lo costruisce), `optimizer` è l'ottimizzatore appena presentato.
+Nel codice le cose hanno il nome inglese: `criterion` è la funzione di perdita
+(sì, la stessa che il capitolo chiama *loss* e che qui a volte si chiama
+«criterio»: sono tre nomi per un oggetto solo), `dataloader` è un cameriere che
+porta i pacchetti di esempi e che costruiremo nel prossimo paragrafo,
+`optimizer` è l'ottimizzatore appena presentato.
 
 ```{code-block} python
 :class: pt-non-eseguibile
@@ -50,24 +58,37 @@ sezione lo costruisce), `optimizer` è l'ottimizzatore appena presentato.
 for X_batch, y_batch in dataloader:
     y_pred = model(X_batch)             # 1. forward: la previsione
     loss = criterion(y_pred, y_batch)   # 2. loss: quanto abbiamo sbagliato
-    optimizer.zero_grad()               # 3. via i gradienti vecchi
+    optimizer.zero_grad()               # 3. via i gradienti del giro prima
     loss.backward()                     # 4. backward: calcola i gradienti
     optimizer.step()                    # 5. aggiorna i pesi
 ```
 
+Il terzo passo è quello che a prima vista sembra fuori posto: si butta via una
+cosa prima di averla calcolata. La ragione è che PyTorch, quando calcola i
+gradienti, non li scrive sopra ai vecchi: li **somma** a quelli che trova.
+Disastroso qui, perché al secondo giro il modello si correggerebbe usando anche
+l'errore del primo; comodo in un caso solo, che è quello di chi ha una macchina
+piccola e vuole far finta di avere pacchetti grandi, e che la sezione su
+[replicare un paper](replicare-un-paper.md) riprende. Fuori da quel caso, si fa
+piazza pulita prima, ed è per questo che il gesto sta *prima* del calcolo e non
+dopo l'uso.
+
 Quelle cinque righe dicono l'ordine, non il movimento:
-{numref}`fig-ciclo-addestramento` le fa girare per tre mini-batch e mostra, a
-ogni passo, che cosa cambia dentro il modello.
+{numref}`fig-ciclo-addestramento` le fa girare tre volte, cioè su tre pacchetti
+di esempi in fila (il nome tecnico è *mini-batch*, e il prossimo paragrafo
+racconta perché gli esempi arrivino a pacchetti), e mostra a ogni passo che
+cosa cambia dentro il modello.
 
 ```{figure} ../figures/ciclo-addestramento.svg
 :name: fig-ciclo-addestramento
 :alt: "I cinque passi del ciclo di addestramento in fila, con una freccia che dal quinto torna al primo. Sotto, lo stato del modello: le barre dei gradienti di sei pesi e la posizione di quei sei pesi rispetto al valore di partenza. Il quarto passo, backward, riempie le barre dei gradienti; il quinto, step, sposta i pesi; le barre restano piene fino allo zero_grad del giro successivo, che le riporta a zero. A destra la loss dei tre giri, che scende: 2,35 poi 2,29 poi 2,25."
 :width: 96%
 
-Tre giri dello stesso ciclo: i gradienti compaiono quando `backward()` li
-calcola, restano finché lo `zero_grad()` del giro dopo non li toglie di mezzo
-(li toglie davvero: `p.grad` torna a `None`, non a zero), e nel mezzo `step()`
-sposta i pesi. La loss, intanto, scende a ogni giro.
+Tre giri dello stesso ciclo, su una rete piccola presa a esempio. I gradienti
+compaiono quando `backward()` li calcola, restano finché lo `zero_grad()` del
+giro dopo non li toglie di mezzo, e intanto `step()` sposta i pesi. A destra la
+loss dei tre giri: parte da $2{,}35$, che è quanto vale per chi tira a
+indovinare fra dieci cifre, e a ogni giro scende un poco.
 ```
 
 `````{tab} Elementare
@@ -137,8 +158,16 @@ test_data = datasets.MNIST(root="data", train=False, download=True,
                            transform=transforms.ToTensor())
 
 train_loader = DataLoader(train_data, batch_size=64, shuffle=True)
-test_loader = DataLoader(test_data, batch_size=256)
+test_loader = DataLoader(test_data, batch_size=256)   # niente shuffle, pacchetti piu' grandi
 ```
+
+Le due righe finali non sono uguali per caso, e la ragione è la stessa per tutte
+e due: in esame il modello non impara. Il mescolamento serve a non fargli
+imparare a memoria l'ordine delle carte, quindi in esame non serve. E la
+dimensione del pacchetto, in addestramento, decide anche ogni quanti esempi il
+modello si corregge: 64 vuol dire una correzione ogni 64 immagini. In esame non
+si corregge niente, quindi si può prendere il pacchetto più capiente che la
+memoria regge, e si guadagna solo velocità.
 
 `````{tab} Elementare
 Il `Dataset` è la dispensa: sa quanti esempi ci sono e sa consegnarti
@@ -176,7 +205,10 @@ della discesa *stocastica*.
 Mettiamo insieme tutto quello che il capitolo ha costruito: tensori, modello,
 loss, dati. Questo è un programma completo che scarica MNIST, addestra il
 percettrone multistrato della sezione precedente e lo valuta su immagini mai
-viste.
+viste. Ci sono dentro tre chiamate che non abbiamo ancora presentato
+(`model.train()`, `model.eval()` e il blocco `torch.no_grad()`): per ora si
+possono leggere come «adesso studia» e «adesso rispondi e basta», e la sezione
+subito dopo il codice se ne occupa per esteso.
 
 ```{code-block} python
 :class: pt-lento
@@ -236,19 +268,22 @@ La riga che conta le risposte giuste merita di essere sciolta, perché è quella
 che produce il numero di cui il modello si vanta, e sta tutta in una riga sola.
 `y_pred` è una tabella con una riga per immagine e dieci punteggi per riga;
 `argmax(dim=1)` scorre ciascuna riga e restituisce la **posizione** del
-punteggio più alto, cioè la cifra che il modello ha scelto. Il confronto `== y`
-mette a fianco la risposta vera e produce una colonna di sì e no; `.sum()` conta
-i sì (che valgono uno) e `.item()` estrae quel conteggio come numero Python
-normale, da poter sommare al totale. Quattro gesti, quattro parole, e sono gli
-stessi quattro che torneranno in ogni programma del capitolo.
+punteggio più alto, cioè la cifra che il modello ha scelto (`dim` sta per
+*dimension*, cioè quale asse percorrere: `dim=1` è il secondo, quello dei dieci
+punteggi, perché il primo, `dim=0`, è quello delle immagini). Il confronto
+`== y` mette a fianco la risposta vera e produce una colonna di sì e no;
+`.sum()` conta i sì (che valgono uno) e `.item()` estrae quel conteggio come
+numero Python normale, da poter sommare al totale. Quattro gesti, quattro
+parole, e sono gli stessi quattro che torneranno in ogni programma del
+capitolo. Il rapporto fra i sì e il totale è l'**accuratezza**: la quota di
+risposte giuste, e basta.
 
 Cinque epoche, e l'accuratezza sul test arriva attorno al **97–98%**:
-novantasette cifre su cento lette correttamente da $101\,770$ numeri che
-un'ora fa erano casuali. Il tempo dipende molto dalla macchina, e vale la pena
-dirlo per non lasciare aspettative sbagliate: su una GPU sono decine di
-secondi, su una CPU normale (quattro core, nient'altro di speciale) siamo
-nell'ordine dei minuti, sette in una misura fatta su questa macchina, che
-chiudeva a $97{,}5\%$.
+novantasette cifre su cento lette correttamente da $101\,770$ numeri che prima
+di partire erano casuali. Quanto ci vuole dipende molto dalla macchina, e vale
+la pena dirlo per non lasciare aspettative sbagliate: su una GPU sono decine di
+secondi, su una CPU normale si va sui minuti (su questa macchina, quattro core
+e nient'altro di speciale, sette minuti, con un $97{,}5\%$ alla quinta epoca).
 
 ## Studiare e dare l'esame: `train()` ed `eval()`
 
@@ -319,6 +354,22 @@ autograd.
 Il numero stampato a fine epoca merita rispetto: è la differenza tra
 *imparare* e *imparare a memoria*.
 
+Prima però va sistemata una parola, perché da qui in avanti ne compaiono due
+dove finora ce n'era una. Nel programma qui sopra i mucchi di dati sono due,
+addestramento e **test**, e a fine epoca abbiamo guardato il test. Facendo
+così, però, il test smette di essere quello che deve essere: se lo guardo a
+ogni epoca e in base a quel numero decido quando fermarmi o che cosa cambiare,
+allora quelle immagini hanno partecipato alle mie decisioni, e il voto che mi
+danno non è più il voto di uno che non le aveva mai viste.
+
+Per questo i mucchi in un progetto serio sono **tre**. L'addestramento è quello
+su cui il modello impara. La **validazione** è quello che si guarda spesso, a
+ogni epoca, per decidere: è la simulazione d'esame, e la si può consumare senza
+danno perché serve proprio a quello. Il **test** è quello che si tocca una
+volta sola, alla fine, e che dà il voto vero. Nel programma qui sopra ne
+abbiamo usati due per non appesantire il codice, ed è una scorciatoia comune
+negli esempi: fuori dagli esempi, il terzo mucchio si ritaglia.
+
 ```{figure} ../figures/curve-overfitting-validazione.svg
 :name: fig-curve-overfitting
 :alt: Due curve di perdita in funzione delle epoche. La curva di addestramento scende con continuità; quella di validazione scende, tocca un minimo e poi risale. Una linea tratteggiata verticale segna il punto di arresto anticipato in corrispondenza del minimo della validazione.
@@ -330,15 +381,24 @@ dell'arresto anticipato marca il momento giusto per fermarsi.
 ```
 
 `````{tab} Elementare
-Guarda le due curve in {numref}`fig-curve-overfitting`. Quella
-dell'addestramento è come i voti nei compiti fatti a casa: migliorano sempre,
-perché il modello rivede gli stessi esercizi. Quella della validazione è la
-simulazione d'esame con domande nuove. All'inizio migliorano insieme: buon
-segno. Poi la validazione si ferma e comincia a peggiorare, mentre
-l'addestramento continua a salire: da lì in avanti il modello sta imparando a
-memoria, è l'**overfitting** che abbiamo incontrato nel capitolo sul machine
-learning. La mossa giusta è fermarsi al punto migliore della validazione, e
-tenere da parte la copia del modello salvata in quel momento.
+Guarda le due curve in {numref}`fig-curve-overfitting`. Attenzione al verso:
+qui in verticale c'è l'**errore**, quindi *scendere* è migliorare. La curva
+dell'addestramento è come i compiti fatti a casa: l'errore cala sempre, perché
+il modello rivede gli stessi esercizi. Quella della validazione è la
+simulazione d'esame con domande nuove. All'inizio scendono insieme, ed è buon
+segno. Poi quella della validazione tocca il fondo e ricomincia a salire,
+mentre quella dell'addestramento continua a scendere: da lì in avanti il
+modello non sta più imparando, sta imparando **a memoria**, ed è
+l'**overfitting** incontrato nel capitolo sul machine learning. La mossa giusta
+è fermarsi nel punto più basso della validazione, e tenere da parte la copia
+del modello salvata in quel momento.
+
+Nel programma di poco fa niente di tutto questo c'è: cinque epoche e via,
+perché su MNIST cinque epoche non bastano a mandare a memoria sessantamila
+immagini. Aggiungerlo però costa poco, ed è un `if`: a ogni epoca si guarda il
+numero della validazione, se è il migliore finora si salva una copia del
+modello, e se non migliora per un po' di epoche di fila si esce dal ciclo. Come
+si salva una copia è l'argomento delle prossime righe.
 `````
 
 `````{tab} Superiore
@@ -362,10 +422,13 @@ learning.
 ## Salvare il lavoro: lo `state_dict`
 
 Un modello addestrato va messo al sicuro. In PyTorch non si salva l'oggetto
-modello: si salva il suo **`state_dict`**, il dizionario che associa a ogni
-tensore del modello il suo nome. Dentro non ci sono solo i pesi imparati: ci
-sono anche i *buffer*, cioè i numeri che il modello si tiene da parte senza
-impararli (le medie mobili della batch norm, per esempio).
+modello: si salva il suo **`state_dict`**, cioè l'elenco di tutti i suoi numeri
+con accanto il nome del pezzo a cui appartengono (in Python un elenco fatto
+così, dove a ogni nome corrisponde una cosa, si chiama *dizionario*). Dentro
+non ci sono solo i pesi imparati: ci sono anche i *buffer*, cioè i numeri che
+il modello si tiene da parte senza impararli, perché li ha misurati sui dati
+invece di ricavarli dall'errore. Ne incontreremo un caso nel capitolo sul deep
+learning; qui basta sapere che nel file finiscono anche quelli.
 
 Il motivo per cui non si salva l'oggetto intero è pratico. Salvare l'oggetto
 significherebbe mettere nel file anche la classe Python che lo descrive, e
@@ -403,14 +466,17 @@ in cui l'avevi interrotto.
 
 La ragione è che l'ottimizzatore, mentre corregge i pesi, si costruisce una
 memoria di come si sono mossi finora: è proprio quella memoria che gli permette
-di dare a ciascun peso il passo giusto. Ricaricare i pesi e ripartire con un
-ottimizzatore appena creato è come rimettere in corsa un ciclista da fermo, nel
-punto esatto in cui l'avevi lasciato: la posizione è quella giusta, ma lo
-slancio è perduto, e la prima pedalata è sbagliata. Misurato: dopo una ripresa
-fatta così il primo passo vale il massimo che quella manopola consente, quello
-di chi parte da zero, mentre la corsa non interrotta ne avrebbe fatto uno
-molto più corto. Di quanto più corto dipende dal problema; che sia più corto,
-sempre.
+di dare a ciascun peso il passo giusto, e in particolare di **accorciarlo** man
+mano che ci si avvicina. Ricaricare i pesi e ripartire con un ottimizzatore
+appena creato è come rimettere qualcuno alla guida nel punto esatto in cui lo
+avevi lasciato, ma senza dirgli che sta arrivando in curva: la posizione è
+giusta, la velocità no, ed è troppa.
+
+Misurato, e la direzione è quella che sorprende: dopo una ripresa fatta così il
+primo passo non è timido, è il **più lungo** che quella manopola consenta,
+perché un ottimizzatore appena nato non ha ancora nessun motivo per moderarsi.
+La corsa non interrotta, alla stessa altezza, ne avrebbe fatto uno molto più
+corto. Di quanto più corto dipende dal problema; che sia più corto, sempre.
 
 Il rimedio costa una riga: nel file si mette anche lo stato
 dell'ottimizzatore, e al ritorno lo si ricarica.
@@ -428,12 +494,15 @@ manopola consenta. Ricaricando lo stato, invece, il passo coincide
 esattamente con quello della traiettoria mai interrotta.
 
 Di quanto sia più lungo dipende dal problema, e quindi va detto su quale è
-misurato: su una quadratica $\mathcal{L}(\theta) = \frac{1}{2}\|\theta\|^2$
-con cento parametri, venti passi di Adam con $\eta = 0{,}1$ e poi la ripresa,
-il passo successivo misura $0{,}100$ senza lo stato dell'ottimizzatore contro
-$0{,}0294$ ricaricandolo (torch 2.13). Un fattore $3{,}4$ qui, un fattore
-$2{,}4$ sulla stessa quadratica con un parametro solo, e nessun messaggio
-d'errore in nessuno dei due casi.
+misurato e come. Il problema: una quadratica
+$\mathcal{L}(\theta) = \frac{1}{2}\|\theta\|^2$ con cento parametri
+inizializzati da una normale standard, venti passi di Adam con $\eta = 0{,}1$,
+poi la ripresa. La misura: la media quadratica dello spostamento sui cento
+parametri, al primo passo dopo la ripresa. Viene $0{,}100$ senza lo stato
+dell'ottimizzatore (cioè esattamente $\eta$, come previsto) contro $0{,}0294$
+ricaricandolo (torch 2.13). Un fattore $3{,}4$ qui, un fattore $2{,}4$ sulla
+stessa quadratica con un parametro solo, e nessun messaggio d'errore in nessuno
+dei due casi.
 
 Lo stesso vale per tutto ciò che ha uno `state_dict` e che il ciclo tocca:
 lo *scheduler* del learning rate, il `GradScaler` della precisione mista, il
@@ -446,19 +515,25 @@ progetto:
 ```python
 from torch import optim
 
-ottimizzatore = optim.Adam(model.parameters(), lr=1e-3)
+optimizer = optim.Adam(model.parameters(), lr=1e-3)
 
 # checkpoint per RIPRENDERE: i pesi da soli non bastano
 torch.save({"epoca": 5,
             "modello": model.state_dict(),
-            "ottimizzatore": ottimizzatore.state_dict()}, "checkpoint.pt")
+            "ottimizzatore": optimizer.state_dict()}, "checkpoint.pt")
 
 stato = torch.load("checkpoint.pt")
 model.load_state_dict(stato["modello"])
-ottimizzatore.load_state_dict(stato["ottimizzatore"])   # la riga che si dimentica
+optimizer.load_state_dict(stato["ottimizzatore"])   # la riga che si dimentica
 print(f"ripresa dall'epoca {stato['epoca']}; lo stato dell'ottimizzatore "
       f"ha le chiavi {list(stato['ottimizzatore'])}")
+# ripresa dall'epoca 5; lo stato dell'ottimizzatore ha le chiavi ['state', 'param_groups']
 ```
+
+Le due chiavi stampate dicono che cosa c'era da salvare: in `state` c'è la
+memoria accumulata su ciascun peso, in `param_groups` ci sono le impostazioni
+dell'ottimizzatore, il learning rate per primo. Senza `state`, la ripresa
+riparte senza memoria.
 
 La sezione [dal notebook agli script](dal-notebook-agli-script.md) riprende
 questo file e ci aggiunge le altre due cose che servono a rileggerlo fra sei

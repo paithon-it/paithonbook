@@ -1,26 +1,29 @@
 # Tensori e autograd
 
 Dentro PyTorch ogni cosa è un tensore: l'immagine da classificare, la frase
-tradotta in numeri, ogni peso della rete. Il nome stesso della libreria lo
-porta scritto: *Torch* accende i tensori, *Py* li porta in Python. E accanto
-ai tensori vive il secondo protagonista, più discreto ma decisivo:
-**autograd**, il meccanismo che osserva i calcoli mentre avvengono e sa
-risalire alle derivate. Capire questi due oggetti significa capire il motore
-su cui gira tutto il deep learning moderno.
+tradotta in numeri, e ognuno dei numeri che la rete si tiene dentro e che
+impara col tempo, i suoi **pesi**. Il nome stesso della libreria lo porta
+scritto: *Torch*, la torcia, era la libreria di partenza, e *Py* dice che
+adesso si guida da Python. Accanto ai tensori vive il secondo protagonista,
+più discreto ma decisivo: **autograd**, il meccanismo che osserva i calcoli
+mentre avvengono e sa risalire alle derivate. Capire questi due oggetti
+significa capire il motore su cui gira tutto il deep learning moderno.
 
 ## Che cos'è un tensore
 
 Scalari, vettori e matrici li abbiamo già incontrati nel capitolo di algebra
-lineare. Il tensore è semplicemente il passo successivo: la stessa idea di
-"mettere i numeri in fila" portata a un numero qualunque di dimensioni.
+lineare: un numero solo, una fila di numeri, una tabella di numeri. Il tensore
+è semplicemente il passo successivo, la stessa idea portata avanti finché si
+vuole: si continua ad aggiungere direzioni lungo cui i numeri si estendono, e
+ciascuna di quelle direzioni si chiama **asse**.
 
 ```{figure} ../figures/tensori-scala.svg
 :name: fig-tensori-scala
-:alt: "Quattro oggetti in fila: un singolo quadrato (scalare, rank 0), una riga di quattro celle (vettore, rank 1), una griglia 3x3 (matrice, rank 2) e una pila di tre griglie (tensore 3D, rank 3)."
+:alt: "Quattro oggetti in fila, collegati da frecce, ciascuno con sotto il nome e la sua forma: un singolo quadrato (scalare, rank 0), una riga di quattro celle (vettore, rank 1, forma (4,)), una griglia 3 per 3 (matrice, rank 2, forma (3, 3)) e una pila di tre griglie 3 per 3 (tensore 3D, rank 3, forma (3, 3, 3))."
 :width: 90%
 
-La scala dei tensori. Salendo di *rank* si aggiunge ogni volta un asse: da un
-numero solo, a una fila, a una griglia, a una pila di griglie.
+La scala dei tensori. Ogni gradino aggiunge un asse: da un numero solo, a una
+fila, a una griglia, a una pila di griglie.
 ```
 
 `````{tab} Elementare
@@ -37,10 +40,13 @@ direzioni lungo cui si estende ({numref}`fig-tensori-scala`):
 - una **pila di tabelle** (una foto a colori: una griglia per il rosso, una
   per il verde, una per il blu) ha tre assi.
 
-Il numero di assi si chiama **rank**; le lunghezze lungo ciascun asse formano
-la **shape** (la "forma"). Una foto RGB $256 \times 256$ è, in PyTorch, un
-tensore di shape $(3, 256, 256)$, prima i tre colori, poi le due dimensioni
-della griglia: rank 3.
+Due parole per due cose, e sono inglesi perché così le troverai scritte nel
+codice: il numero di assi si chiama **rank**, le lunghezze lungo ciascun asse
+formano la **shape** (la "forma"). Una foto a colori $256 \times 256$ è, in
+PyTorch, un tensore di shape $(3, 256, 256)$: rank 3, e i tre colori vengono
+scritti **per primi**, prima delle due misure della griglia. È una convenzione,
+non una legge di natura (altre librerie mettono i colori in fondo), e conviene
+saperlo perché quando la forma non torna il primo sospetto è averla invertita.
 
 `````
 
@@ -66,8 +72,12 @@ soltanto la struttura dati: un array $n$-dimensionale con un `dtype` omogeneo
 
 ## Creare tensori e farci i conti
 
-Un `torch.Tensor` si crea da liste Python, con le funzioni di fabbrica, o
-direttamente da un array NumPy: le due librerie sono parenti strette.
+Un tensore si può fabbricare in tre modi: scrivendo i numeri a mano in una
+lista Python, chiedendo a PyTorch di riempirlo lui (sono le funzioni che
+vedremo fra un attimo, `zeros`, `ones`, `randn`), oppure partendo da un array
+di **NumPy**, la libreria di calcolo numerico vista nel capitolo su Python. Con
+quest'ultima PyTorch va d'accordo così bene che i due si passano i dati senza
+nemmeno ricopiarli.
 
 ```python
 import torch
@@ -82,12 +92,17 @@ M.dtype        # torch.float32
 torch.zeros(2, 3)        # matrice 2x3 di zeri
 torch.ones(5)            # vettore di uno
 torch.randn(3, 3)        # numeri a caso, quasi tutti fra -2 e 2, centrati sullo zero
-torch.arange(0, 10, 2)   # tensor([0, 2, 4, 6, 8])
+torch.arange(0, 10, 2)   # da 0 a 10 di 2 in 2, 10 escluso: tensor([0, 2, 4, 6, 8])
 ```
 
+Le ultime quattro righe fabbricano tensori pieni senza che si debba scrivere i
+numeri a mano, e la terza, quella che li sorteggia, non è un capriccio: una
+rete comincia la sua vita con dei numeri a caso dentro, e riempire un tensore
+di zeri o di numeri sorteggiati è il gesto con cui la si mette al mondo.
+
 Sui tensori valgono le operazioni dell'algebra lineare che già conosciamo
-(somma, prodotto per scalare, prodotto matriciale) e ogni riga viene eseguita
-nell'istante in cui la scrivi, come in NumPy:
+(somma, prodotto per scalare, prodotto fra matrici) e ogni riga viene eseguita
+nell'istante in cui la scrivi, esattamente come in NumPy:
 
 ```python
 a = torch.tensor([1., 2., 3.])
@@ -102,9 +117,14 @@ a.reshape(3, 1)  # nuova forma: gli stessi numeri in colonna, 3x1
 
 `````{tab} Elementare
 
-Due cose da notare. Primo: il risultato compare all'istante, con i numeri già
+Tre cose da notare. Primo: il risultato compare all'istante, con i numeri già
 dentro (puoi controllare ogni passaggio come su una calcolatrice, senza
-"avviare" nulla). Secondo: il **broadcasting**, che conosciamo già da NumPy,
+"avviare" nulla). Secondo: il simbolo `@` è quello del prodotto fra matrici, e
+su due semplici file di numeri come queste fa la cosa più elementare che quel
+prodotto sappia fare, cioè moltiplicarle a due a due e sommare tutto
+($1 \cdot 10 + 2 \cdot 20 + 3 \cdot 30 = 140$); è il **prodotto scalare**, e
+il conto è scritto per esteso nel commento apposta perché lo si possa
+rifare. Terzo: il **broadcasting**, che conosciamo già da NumPy,
 funziona identico. Se scrivi `a + 5`, PyTorch capisce da solo che vuoi sommare
 $5$ a *ciascuno* dei tre numeri, come un insegnante che alza di un punto tutti
 i voti della classe senza bisogno di scrivere la regola tre volte: il
@@ -147,12 +167,27 @@ Ogni tensore vive su un *device*. Di default è la CPU; spostarlo su una GPU
 (se c'è) è una chiamata a `.to()`, e tutto il resto del codice non cambia.
 
 ```python
+# se una scheda grafica c'è usa quella, altrimenti la CPU
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
-M = torch.randn(1000, 1000)
-M = M.to(device)          # ora vive sulla GPU (se disponibile)
-prodotto = M @ M          # calcolato dove vive il tensore
+M = torch.randn(1000, 1000)   # una matrice grande: un milione di numeri
+M = M.to(device)              # trasloca dove dice `device`
+prodotto = M @ M              # calcolato dove vive il tensore
+print(prodotto.shape, prodotto.device)
+# su una macchina senza scheda grafica: torch.Size([1000, 1000]) cpu
 ```
+
+La prima riga è un modo compatto di scrivere una scelta, e si legge da
+sinistra: prendi `"cuda"` *se* c'è una scheda utilizzabile, *altrimenti*
+`"cpu"`. È il gesto con cui comincia quasi ogni programma PyTorch, e da qui in
+avanti lo ritroveremo identico. L'ultima riga stampa dove il risultato è
+finito, e su una macchina senza scheda grafica stampa `cpu`: non è un guasto,
+è la scelta della prima riga che si vede all'opera. Su un computer con una
+scheda NVIDIA la stessa identica riga stamperebbe `cuda:0`.
+
+La matrice è di mille per mille perché su matrici piccole la differenza fra i
+due dispositivi non si vede: il vantaggio della scheda grafica comincia quando
+i conti da fare sono tanti.
 
 `````{tab} Elementare
 
@@ -184,35 +219,46 @@ deep learning. Il codice resta identico; cambia solo la velocità.
 ## Autograd: la derivata calcolata da sola
 
 Addestrare una rete significa girare le sue tante manopole interne (i
-**parametri**, cioè i pesi) finché l'errore che commette, quello che il
-mestiere chiama *loss* e scrive $\mathcal{L}$, non diventa piccolo. Per sapere
-da che parte girare ciascuna manopola serve il **gradiente**: la derivata
-dell'errore rispetto a ogni parametro, che dice se aumentandolo l'errore sale
-o scende, e di quanto. Calcolarlo a mano per una rete con milioni di pesi è
-impensabile: qui entra la **differenziazione automatica** (*autodiff*), il
-vero cuore di PyTorch.
+**parametri**, cioè i pesi di cui si diceva in apertura) finché l'errore che
+commette non diventa piccolo. Quell'errore ha un nome che ricorrerà per tutto
+il libro: si chiama **loss**, la perdita.
+
+Per sapere da che parte girare ciascuna manopola serve il **gradiente**. È di
+nuovo una derivata, ma stavolta la cosa che si sposta di un soffio non è il
+dato che entra: è la manopola. Il gradiente dice, per ogni singolo peso, che
+cosa succede alla loss se quel peso lo si alza appena: sale o scende, e di
+quanto. Chi vuole meno errore gira ogni manopola dalla parte in cui il numero
+scende. Farlo a mano per una rete con milioni di pesi è impensabile, e qui
+entra la **differenziazione automatica** (*autodiff*), il vero cuore di
+PyTorch.
 
 ```{figure} ../figures/extra-backpropagation-spiegata.svg
 :name: fig-autograd-due-passate
-:alt: "Una rete a tre strati percorsa in due sensi. Le frecce di andata vanno dall'ingresso all'uscita e calcolano le attivazioni; le frecce di ritorno vanno dall'uscita all'ingresso e propagano il gradiente, riusando i valori memorizzati durante l'andata."
+:alt: "Una rete con tre neuroni in ingresso, due nello strato nascosto e uno in uscita, percorsa in due sensi. Sotto, due frecce opposte: quella verso destra è etichettata «forward: dati verso previsione», quella verso sinistra «backward: errore verso correzioni». Accanto al neurone d'uscita, dei raggi segnalano l'errore commesso."
 :width: 96%
 
-I due sensi di marcia. L'andata calcola e *ricorda*; il ritorno riusa quei
-valori memorizzati, ed è per questo che il gradiente costa all'incirca quanto
-una seconda passata e non quanto milioni di derivate separate.
+I due sensi di marcia: all'andata i dati attraversano la rete e producono una
+previsione, al ritorno l'errore risale la stessa strada e diventa una
+correzione per ogni peso incontrato.
 ```
 
-Vale la pena fermarsi sul «ricorda» della {numref}`fig-autograd-due-passate`,
-perché spiega un comportamento di PyTorch che altrimenti sorprende. L'andata
-(la **passata in avanti**, che in inglese si chiama *forward pass*: i dati
-entrano da una parte, attraversano gli strati e escono dall'altra) non si
-limita a calcolare il risultato: appunta anche tutti i valori intermedi, perché
-al ritorno serviranno. Quindi più strati ha la rete, cioè più è **profonda**,
-più appunti restano in memoria durante l'andata. E se il gradiente non lo
-chiederemo mai, quegli appunti sono peso morto: dirlo in anticipo si può, ed è
-ciò che fa il comando `torch.no_grad()`, che li fa **non prendere affatto**.
-Attenzione alla sfumatura, perché è il punto in cui si sbaglia: `no_grad()` non
-libera memoria già occupata, impedisce che venga occupata.
+Nella {numref}`fig-autograd-due-passate` c'è però una cosa che il disegno non
+può mostrare, e che spiega un comportamento di PyTorch altrimenti sorprendente:
+per poter tornare indietro, l'andata deve **ricordare**. Una rete è
+fatta di **strati**, cioè di stazioni in fila: i dati entrano dalla prima,
+ognuna li trasforma un po' e passa il risultato alla successiva, finché
+dall'ultima esce la risposta. Il viaggio di andata si chiama **passata in
+avanti** (in inglese *forward pass*).
+
+Ora, quel viaggio non si limita a calcolare la risposta: a ogni stazione
+appunta anche il risultato di passaggio, perché al ritorno servirà. Quindi più
+stazioni ha la rete, cioè più è **profonda**, più appunti restano in memoria
+durante l'andata.
+
+Ecco come si accende tutto questo, sull'esempio più piccolo possibile: un solo
+numero al posto di una rete, così si può controllare il risultato a mente. La
+prima riga chiede a PyTorch di tenere d'occhio `x`; le due dopo fanno un conto
+e chiedono la strada del ritorno.
 
 ```python
 x = torch.tensor(3.0, requires_grad=True)   # "osserva questo tensore"
@@ -220,7 +266,7 @@ x = torch.tensor(3.0, requires_grad=True)   # "osserva questo tensore"
 y = x**2 + 2*x            # y = x² + 2x: il grafo si costruisce da solo
 y.backward()              # passata all'indietro
 
-x.grad                    # dy/dx = 2x + 2  ->  tensor(8.)
+x.grad                    # la derivata di y in x=3  ->  tensor(8.)
 ```
 
 `````{tab} Elementare
@@ -230,12 +276,21 @@ operazione eseguita a partire dai tensori "osservati". Alla fine gli chiedi:
 "com'è cambiato il risultato al variare di questo ingresso?" e lui,
 riavvolgendo il nastro all'indietro, ti risponde con la derivata esatta.
 
+Il riavvolgimento non è una magia, ed è la parte che vale la pena capire.
+Nessun conto complicato è complicato *tutto insieme*: è una catena di gesti
+elementari, un'elevazione al quadrato, una moltiplicazione, una somma. Di
+ciascuno di questi la derivata è nota una volta per tutte, come una tabellina.
+Quindi chi ha annotato la catena può ripercorrerla al contrario, applicare a
+ogni anello la sua tabellina e comporre i risultati: alla fine del nastro ha in
+mano la derivata dell'intera catena, senza averla mai scritta.
+
 È ciò che fa autograd: dichiarando `requires_grad=True` accendi il
 registratore su `x`; ogni calcolo successivo viene annotato; e la chiamata
 `y.backward()` riavvolge il nastro, depositando la derivata in `x.grad`. Nel
-codice sopra $y = x^2 + 2x$, la cui derivata è $2x + 2$; valutata in $x = 3$
-dà $8$, esattamente il numero restituito. Non abbiamo scritto nessuna formula
-di derivata: l'ha ricostruita la libreria.
+codice sopra $y = x^2 + 2x$, e il numero che esce è $8$: lo stesso che nella
+pagina di apertura del capitolo avevamo controllato a mano spostando $x$ da
+$3$ a $3{,}01$. Non abbiamo scritto nessuna formula di derivata: l'ha
+ricostruita la libreria.
 
 `````
 
@@ -297,6 +352,16 @@ grafo, e le operazioni in-place sui tensori tracciati vanno evitate perché
 possono invalidare i valori salvati per la passata a ritroso.
 
 `````
+
+Resta da dire che cosa succede quando il registratore **non** serve, ed è il
+caso più comune di tutti: il modello ha finito di imparare e lo si sta soltanto
+usando. Gli si dà una foto, lui risponde, e nessuno ha intenzione di correggere
+niente. Lì tutti quegli appunti sono peso morto, e si può dire in anticipo di
+non prenderli: è il comando `torch.no_grad()`, che si scrive attorno al pezzo
+di codice da cui non ci si aspetta nessuna correzione. Attenzione alla
+sfumatura, perché è il punto in cui si sbaglia: `no_grad()` non svuota una
+memoria già piena, impedisce che si riempia. Lo useremo a ogni valutazione, da
+qui alla fine del capitolo.
 
 Tensori e autograd sono i due oggetti su cui poggia tutto il resto del
 capitolo: dalla prossima sezione non si farà che comporli.

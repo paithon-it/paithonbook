@@ -1,26 +1,35 @@
-# Flash Attention: l'attenzione che non spreca memoria
+# FlashAttention: l'attenzione che non spreca memoria
 
 Chiedere a un modello di riassumere un romanzo intero, o di rispondere su un
 contratto di cento pagine, fino a pochi anni fa era impensabile, e non per una
-carenza di intelligenza. L'ostacolo era idraulico, nel senso letterale: non
-mancava la capacità di calcolare, mancava la portata dei tubi che portano i
-numeri fin sotto ai calcolatori. Di mezzo c'è una tabella che cresce con il
-*quadrato* della lunghezza del testo. Raddoppia le parole e quella tabella
+carenza di intelligenza. L'ostacolo era di portata: non mancava la capacità di
+calcolare, mancava la possibilità di far arrivare abbastanza in fretta i numeri
+fin sotto alle unità che li calcolano. Di mezzo c'è una tabella che cresce con
+il *quadrato* della lunghezza del testo. Raddoppia le parole e quella tabella
 quadruplica; moltiplicale per dieci e diventa cento volte più grande. A un
 certo punto non ci sta più nella memoria della GPU, e anche quando ci sta,
 spostarla avanti e indietro costa così tanto tempo da rendere tutto
 insopportabilmente lento. Questa sezione racconta l'idea (sorprendentemente
 semplice nella sostanza) che ha fatto saltare quel muro.
 
-Un ripasso, prima di cominciare. Nel capitolo sui **Transformer** abbiamo visto
-*cosa* fa l'attenzione: ogni parola del testo viene confrontata con tutte le
-altre, i punteggi di somiglianza vengono trasformati in percentuali che sommano
-a cento, e con quelle percentuali si fa una media di ciò che le altre parole
-portano con sé. Quello che si ottiene è, per ogni parola, un riassunto pesato
-del resto della frase. Lì il problema era *quale* informazione l'attenzione
-raccoglie; qui il problema è un altro, tutto hardware: *come* si esegue quel
-conto senza affogare nel traffico di memoria. Non ri-deriviamo l'attenzione
-(diamo per acquisito il capitolo sui Transformer) e ci concentriamo sul *come*.
+Serve prima sapere che cos'è l'attenzione, il meccanismo su cui i modelli
+linguistici sono costruiti. Il capitolo sui **Transformer** le è dedicato per
+intero e ne racconta il *perché*; qui basta il *che cosa*, in tre passi, perché
+sono i tre passi che si tratta di eseguire in fretta. Primo: ogni parola del testo
+viene confrontata con tutte le altre, e da ogni confronto esce un punteggio di
+somiglianza. È la grande tabella. Secondo: i punteggi di ciascuna riga vengono
+trasformati in percentuali che sommano a cento, e questa trasformazione ha un
+nome che ricorrerà per tutta la sezione, la **softmax**. Terzo: quelle
+percentuali dicono in che proporzione mescolare. Ogni parola si porta dietro
+una manciata di numeri, che è il modo in cui il modello dice che cosa
+significa lì dentro; se «salta» ha preso il 70% su «gatto» e il 20% su «muro»,
+il suo risultato è fatto per sette decimi dei numeri di «gatto» e per due di
+quelli di «muro». Quello che ne esce è, per ogni parola, un riassunto del resto
+della frase pesato su quanto ciascuna le interessa.
+
+Là il problema sarà *quale* informazione l'attenzione raccoglie; qui è un
+altro, tutto hardware: *come* si eseguono quei tre passi senza affogare nel
+traffico di memoria.
 
 `````{tab} Elementare
 Il punto da tenere a mente è uno solo, ed è una questione di conteggio: se le
@@ -57,15 +66,17 @@ gerarchia di memoria e del roofline delle sezioni precedenti).
 Immagina di dover confrontare ogni parola di un testo con ogni altra parola.
 Con mille parole, sono un milione di confronti: una tabella di mille righe per
 mille colonne. Fin qui, tanti conti ma niente di drammatico. Il guaio è *dove*
-metti quella tabella. È troppo grande per il tavolo di lavoro veloce (la
-memoria on-chip), quindi la GPU la scrive nel magazzino lontano (la memoria
-grande e lenta) e poi deve tornare a prenderla per fare il passo successivo,
-la softmax, e poi *di nuovo* per l'ultima moltiplicazione. Tre spedizioni al
-magazzino per una tabella enorme che, alla fine, non serviva nemmeno tenere:
-era solo un passaggio intermedio. È come impastare tutta la pasta del mondo,
-stenderla su un tavolo lungo un chilometro solo per tagliarla, e correre
-avanti e indietro per tutta la lunghezza a ogni operazione. Il tempo non se ne
-va nel taglio: se ne va nella corsa.
+metti quella tabella. È troppo grande per il tavolo di lavoro veloce, il
+ripiano accanto ai calcolatori, quindi la GPU la scrive nel magazzino lontano
+e poi deve tornare a prenderla per fare il secondo passo (le percentuali) e
+*di nuovo* per il terzo (la media). Tre spedizioni al magazzino per una tabella
+enorme che, alla fine, non serviva nemmeno tenere: era solo un passaggio
+intermedio.
+
+È come dover tenere la sfoglia in un capannone lontano perché sul tavolo non ci
+sta, e correre fin là a ogni operazione: una volta per tagliarla, una per
+condirla, una per infornarla. Il tempo non se ne va nel taglio: se ne va nella
+corsa.
 `````
 
 `````{tab} Superiore
@@ -122,11 +133,13 @@ tabella dei punteggi. E allora perché scriverla? L'algoritmo è **IO-aware**
 ottimizza il movimento dei dati, non i conti, e (dettaglio cruciale) dà il
 **risultato esatto**, non un'approssimazione.
 
-Due ingredienti lo rendono possibile ({numref}`fig-flash-attention`): il
-**tiling**, cioè lo stesso «carica una tessera, riusala» del GEMM della sezione
-precedente, applicato qui alle tre tabelle dell'attenzione; e la **online
-softmax**, che permette di calcolare le percentuali *a pezzi* invece che tutte
-insieme.
+Due ingredienti lo rendono possibile ({numref}`fig-flash-attention`). Il primo
+è il **tiling**, cioè lo stesso «carica una tessera, riusala» della sezione
+precedente. Qui le tessere si ritagliano non nella tabella dei confronti, che
+non esisterà mai, ma nell'elenco delle parole di partenza: si tiene ferma una
+manciata di parole e si fa scorrere davanti a loro tutto il resto, un
+blocchetto per volta. Il secondo ingrediente è la **online softmax**, che
+permette di calcolare le percentuali *a pezzi* invece che tutte insieme.
 
 ```{figure} ../figures/flash-attention-tiling.svg
 :name: fig-flash-attention
@@ -143,20 +156,28 @@ solo.
 
 `````{tab} Elementare
 Il trucco è non costruire mai la tabella gigante. Tieni ferma sul tavolo di
-lavoro una manciata di parole da elaborare (una *tessera*, come le tessere del
-GEMM) e fai scorrere il testo
-sorgente a blocchetti: prendi le prime parole da confrontare, calcoli i loro punteggi,
-aggiorni il risultato; butti via quel blocchetto, prendi il successivo, e così
-via fino alla fine. Sul tavolo, in ogni istante, c'è solo un pezzetto piccolo:
-quello che stai usando *adesso*. La tabella da un milione di caselle non viene
-mai scritta per intero da nessuna parte: esiste solo un blocchetto alla volta,
-e sparisce appena hai finito di usarlo. Meno viaggi al magazzino, stesso
-risultato.
+lavoro una manciata di parole, quelle di cui ti stai occupando adesso (una
+*tessera*, come le tessere della sezione precedente), e fai scorrere davanti a
+loro tutto il resto del testo a blocchetti: prendi le prime parole con cui
+confrontarle, calcoli i punteggi, aggiorni il risultato; butti via quel
+blocchetto, prendi il successivo, e così via fino alla fine. Sul tavolo, in
+ogni istante, c'è solo un pezzetto piccolo. La tabella da un milione di caselle
+non viene mai scritta per intero da nessuna parte: esiste un blocchetto alla
+volta, e sparisce appena hai finito di usarlo. Meno viaggi al magazzino, stesso
+identico risultato.
 
-C'è però un'insidia da risolvere: come fai a calcolare le *percentuali* (la
-softmax trasforma i punteggi in pesi che sommano a 100%) se non hai ancora visto
-tutti i punteggi? Per fare una percentuale ti serve il totale, e il totale lo
-conosci solo alla fine. La risposta è la *online softmax* del prossimo passaggio.
+Il prezzo si paga più tardi, ed è giusto dirlo subito. Quando la rete impara,
+dopo aver letto il testo in avanti rifà la strada all'indietro per capire quali
+numeri correggere, e in quel secondo passaggio le servirebbero proprio i
+punteggi che sono stati buttati: non avendoli, se li rifà. Qualche conto in più,
+quindi, in cambio di molti viaggi in meno. È un baratto che conviene, perché i
+conti sono la cosa che una GPU fa quasi gratis e i viaggi sono quella che le
+costa.
+
+Resta un'insidia da risolvere, ed è la più bella di questa sezione: come fai a
+calcolare delle *percentuali* se non hai ancora visto tutti i punteggi? Per
+fare una percentuale ti serve il totale, e il totale lo conosci solo alla fine.
+La risposta è la *online softmax* del prossimo passaggio.
 `````
 
 `````{tab} Superiore
@@ -229,36 +250,64 @@ pezzo per volta, e qui entra la online softmax.
 
 ### La online softmax, con i numeri
 
-Il perno di tutto è calcolare una softmax vedendo i punteggi **a blocchi**, senza
-mai averli tutti sotto gli occhi insieme, e ottenendo comunque il risultato
-esatto. Serve tenere solo due numeri di riepilogo: il **massimo corrente** $m$ e
-la **somma corrente** $l$. In {numref}`fig-flash-attention-blocchi` si vedono
-aggiornarsi blocco dopo blocco, insieme alla cosa che conta di più: le celle
-fuori dalla finestra restano vuote, perché quella matrice non viene mai scritta
-da nessuna parte.
+Il perno di tutto è calcolare le percentuali vedendo i punteggi **a blocchi**,
+senza mai averli tutti sotto gli occhi insieme, e ottenendo comunque il
+risultato esatto. Bastano due numeri di riepilogo, che la scheda Elementare
+racconta come due foglietti e il conto qui sotto chiama $m$ (il punteggio più
+alto visto finora) e $l$ (il totale accumulato finora). In
+{numref}`fig-flash-attention-blocchi` si vedono aggiornarsi blocco dopo blocco,
+insieme alla cosa che conta di più: le celle fuori dalla finestra restano
+vuote, perché quella tabella non viene mai scritta da nessuna parte.
 
 ```{figure} ../figures/flash-attention-blocchi.svg
 :name: fig-flash-attention-blocchi
 :alt: Una riga di otto punteggi divisa in quattro blocchi da due: una finestra scorre da sinistra a destra e in ogni istante mostra i numeri di un solo blocco, mentre fuori le celle restano vuote perché la matrice dei punteggi non viene mai scritta. Sotto, una tabella si riempie riga per riga con il massimo del blocco, il massimo corrente m, il fattore di riscalatura alfa, la somma corrente l e l'output accumulato O: quando arriva un massimo più grande alfa scende sotto 1 e l'accumulatore viene riscalato. Alla fine O diviso l coincide con la softmax calcolata in un colpo solo.
 :width: 95%
 
-La online softmax vista nel tempo: la finestra della memoria veloce scorre sui
-blocchi di chiavi e valori e a ogni blocco l'accumulatore si ricalibra ($\alpha$
-riscala la somma corrente $l$ e l'uscita $\mathbf{o}$ quando arriva un massimo
-più grande, ed è la colonna $O$ della tabella), finché $\mathbf{o}/l$ dà lo
-stesso numero della softmax calcolata in un colpo solo.
+Gli stessi due foglietti, al lavoro su una riga di otto punteggi letti a due a
+due: sono $1, 3, 2, 4, 1, 0, 5, 2$, e i valori che si portano dietro sono
+$1, 4, 2, 5, 3, 0, 6, 2$. In alto la finestra della memoria veloce: in ogni
+istante contiene un solo blocchetto, e tutto il resto della riga resta vuoto,
+perché quella tabella non viene mai scritta da nessuna parte. Sotto, la tabella
+di marcia: a ogni blocchetto si aggiornano il record ($m$, il punteggio più
+alto visto finora) e il totale ($l$), insieme al risultato che si sta
+accumulando ($O$). Quando arriva un punteggio più alto del record, cioè alla
+seconda e alla quarta riga, il fattore $\alpha$ (qui $0{,}368$, perché il
+record sale di un punto) riesprime rispetto al nuovo record quello che era già
+stato messo da parte. Alla fine $O$ diviso $l$ vale $5{,}257$, lo stesso numero
+che darebbe il calcolo fatto in un colpo solo su tutti e otto.
 ```
 
 `````{tab} Elementare
-È lo stesso gesto di chi tiene una media aggiornata senza scrivere ogni singolo
-valore. La maestra deve fare la media di trecento compiti ma sul banco ne stanno
-dieci per volta: tiene due foglietti, «somma finora» e «quanti finora», li
-aggiorna a ogni mucchietto, e alla fine divide. Il risultato è identico a quello
-che otterrebbe stendendo tutti i trecento compiti sul pavimento in una volta
-sola. La online softmax fa così con i punteggi dell'attenzione: aggiorna a ogni
-blocco il totale (e il valore più grande visto finora, che serve a tenere i conti
-in scala), e alla fine ottiene *esattamente* le stesse percentuali del calcolo in
-un colpo unico. Nessuna approssimazione: solo la stessa somma, fatta a rate.
+Partiamo dal gesto facile: fare un totale a rate. Devi dire quanto pesa ogni
+sacco rispetto al totale di tutti, ma sulla bilancia ne stanno due per volta.
+Tieni un foglietto con «totale finora». Primo mucchietto, 10 e 30: il foglietto
+dice 40. Secondo mucchietto, 20 e 40: il foglietto dice 100. A quel punto
+dividi ciascun sacco per 100 e hai le percentuali (10%, 30%, 20%, 40%), che
+sono esattamente quelle che avresti ottenuto stendendo tutti i sacchi per terra
+in una volta sola. Nessuna approssimazione: la stessa somma, fatta a rate.
+
+I foglietti però sono **due**, non uno, e il secondo è la parte meno ovvia. Nel
+calcolo vero i punteggi, prima di essere sommati, non vengono presi così come
+sono: si passa prima per un'operazione che li ingigantisce, e che ha una regola
+semplice, **ogni punto in più moltiplica per 2,7 circa**. Un punteggio di due
+punti più alto pesa quindi $2{,}7 \times 2{,}7$, quasi sette volte tanto; dieci
+punti più alto pesa ventiduemila volte tanto. Con punteggi anche moderatamente
+alti si arriva a numeri che il computer non riesce più a scrivere.
+
+Il rimedio è quello delle classifiche: invece del punteggio assoluto si segna
+la distanza dal primo, «a tre punti dal record». Serve dunque un secondo
+foglietto con **il punteggio più alto visto finora**, e ogni cosa si misura
+rispetto a lui.
+
+Da qui l'unico momento in cui la faccenda si fa interessante. Se in un
+mucchietto salta fuori un punteggio più alto del record, il totale accumulato
+era espresso rispetto al vecchio record e va riespresso rispetto al nuovo. Ed è
+qui che quel «2,7 a punto» torna utile: se il record sale di un punto, tutto
+quello che si era già messo da parte va diviso per 2,7, cioè moltiplicato per
+0,37. Una moltiplicazione sola, si aggiorna il foglietto e si tira avanti. Alla
+fine si divide per il totale, e i pesi che vengono fuori sono *esattamente*
+quelli del calcolo fatto in un colpo unico.
 `````
 
 `````{tab} Superiore
@@ -311,35 +360,43 @@ scritta.
 Il risultato è netto: la memoria che l'attenzione richiede non cresce più con
 il *quadrato* della lunghezza del testo, ma in proporzione a essa. A testi
 corti il guadagno è modesto, ma cresce con la lunghezza, ed è proprio sui testi
-lunghi, dove la vecchia attenzione esauriva la memoria (*out of memory*) o
+lunghi, dove la vecchia attenzione esauriva la memoria della scheda o
 rallentava fino a fermarsi, che FlashAttention cambia le carte in tavola. Una
-versione
-successiva, **FlashAttention-2** {cite}`dao2023flashattention2`, spreme ancora
-di più l'hardware ripartendo meglio il lavoro tra i gruppi di thread e
-limitando le operazioni più lente (quelle diverse dalle moltiplicazioni di
-matrici, che i tensor core non sanno accelerare) con un altro sostanziale
-guadagno di velocità, nell'ordine del raddoppio rispetto alla prima versione.
+versione successiva, **FlashAttention-2** {cite}`dao2023flashattention2`,
+spreme ancora di più l'hardware: ripartisce meglio il lavoro fra i gruppi di
+lavoratori e riduce le operazioni che i tensor core non sanno accelerare,
+quelle diverse dalla moltiplicazione fra tabelle. Ne esce un tempo di
+esecuzione grosso modo dimezzato rispetto alla prima versione.
 
-Va però detto con precisione **che cosa** questo risolve, perché è facile
-attribuirgli un merito che è di un'altra tecnica. In addestramento, e nella
-prima passata con cui un modello legge la domanda che gli abbiamo fatto, il
-termine quadratico era il vincolo, e FlashAttention lo toglie. Mentre il
-modello *genera* la risposta, però, quella tabella non esiste nemmeno (si
-elabora una parola per volta, e i confronti sono una riga sola): lì il peso è
-un altro, ed è la **KV cache**, cioè il taccuino in cui il modello conserva
-quello che ha già letto per non rileggerlo a ogni parola. Quel taccuino cresce
-in proporzione alla lunghezza del testo, non al suo quadrato, ma è pesante, e
-il conto si fa in una riga: per un modello da otto miliardi di parametri sono
-trentadue strati, otto teste di chiave e valore da 128 numeri l'una, chiavi
-**e** valori da tenere entrambi, due byte a numero, cioè
-$2 \times 32 \times 8 \times 128 \times 2$ byte, esattamente **128 KB per
-parola**. Su centomila parole di contesto fanno **tredici gigabyte**, su una
-scheda che ne ha ottanta, e per una sola conversazione. FlashAttention non lo tocca. È un altro mestiere, e lo
-raccontano la sezione sui modelli linguistici del capitolo sui Transformer e il
-capitolo su MLOps, dove si trovano anche le tecniche che quel problema lo
-affrontano davvero. Vale anche la pena dire, per onestà, che FlashAttention
-**non** rende l'attenzione meno che quadratica nei conti: quello è il mestiere
-del capitolo sull'attenzione lineare.
+Va però detto con precisione **che cosa** tutto questo risolve, perché è facile
+attribuirgli un merito che è di un'altra tecnica. Ci sono due momenti in cui la
+tabella dei confronti viene costruita per intero: mentre il modello impara, e
+nella prima passata con cui legge la domanda che gli abbiamo fatto. In tutti e
+due il vincolo è quella tabella, e FlashAttention lo toglie. Mentre il modello
+*scrive* la risposta, invece, la tabella non esiste nemmeno: si procede una
+parola per volta, e i confronti da fare sono una riga sola. Lì il
+peso è un altro, ed è la **KV cache**, cioè il taccuino in cui il modello
+conserva quello che ha già letto per non rileggerlo da capo a ogni parola
+(le due lettere stanno per *key* e *value*, chiave e valore, i due ingredienti
+del confronto che vanno conservati entrambi).
+
+Quel taccuino cresce in proporzione alla lunghezza del testo, non al suo
+quadrato, ma è pesante, e il conto vale la pena di farlo con i numeri di un
+modello vero, uno da otto miliardi di numeri imparati. Ha trentadue strati e
+ognuno tiene il proprio taccuino; dentro ogni strato ci sono otto «teste» che
+leggono il testo in parallelo, e ognuna descrive una parola con 128 numeri; di
+ogni parola vanno conservate chiave e valore, quindi due volte tanto; e ogni
+numero occupa due byte. In tutto $2 \times 32 \times 8 \times 128 \times 2$
+byte, cioè $131\,072$ byte, che sono esattamente **128 KB** (un KB è 1024 byte)
+**per ogni parola letta**. Su centomila parole di contesto fanno **tredici
+gigabyte**, per una conversazione sola, su una scheda che di gigabyte ne ha
+ottanta. FlashAttention non lo tocca: è un altro
+mestiere, e lo raccontano la sezione sui modelli linguistici del capitolo sui
+Transformer e il capitolo su MLOps, dove si trovano anche le tecniche che quel
+problema lo affrontano davvero. Vale anche la pena dire, per onestà, che
+FlashAttention **non** riduce il numero di conti da fare, che resta
+proporzionale al quadrato della lunghezza: quello è il mestiere del capitolo
+sull'attenzione lineare.
 
 Onestà anche sul codice: quello che in queste pagine sta in un'idea semplice,
 nel codice
@@ -350,8 +407,8 @@ un progetto normale, ed è giusto così. In PyTorch lo usi senza nemmeno saperlo
 la funzione `scaled_dot_product_attention` sceglie da sé, fra le varie
 implementazioni che ha in casa (in gergo i *backend*), quella più adatta alla
 scheda che ha davanti, e su GPU recenti quella è proprio FlashAttention. Le
-righe qui sotto si possono guardare da lontano: sono cinque, e l'unica che conta
-è l'ultima.
+righe qui sotto si possono guardare da lontano: quella che conta è la
+penultima, dove si chiama la funzione; tutto il resto è preparare i numeri.
 
 ```{code-block} python
 :class: pt-non-eseguibile
@@ -380,10 +437,12 @@ generazione.
 FlashAttention è l'esempio più limpido di un filo conduttore che attraversa
 tutto questo capitolo, ed è il modo migliore per chiuderlo dal lato
 dell'hardware: **la storia della velocità sulle GPU è la storia di come
-nascondere il movimento dei dati**. Ogni tecnica che abbiamo incontrato
-(coalescenza, tiling in shared memory, fusione dei kernel, e ora l'attenzione
-IO-aware) è una variazione sullo stesso tema: fare più conti per ogni byte
-spostato, e tenere il byte il più vicino possibile ai core.
+nascondere il movimento dei dati**. Ogni tecnica incontrata fin qui è una
+variazione sullo stesso tema: chiedere i dati in fila invece che sparsi,
+portare una tessera sul tavolo e riusarla, fare tre conti in un viaggio invece
+che in tre, e adesso non scrivere affatto una tabella che serviva solo di
+passaggio. Sempre la stessa cosa: fare più conti per ogni byte spostato, e
+tenere il byte il più vicino possibile a chi calcola.
 
 I kernel più veloci di oggi portano questa idea ancora più in là. Restando al
 livello concettuale (niente istruzioni di basso livello) le leve sono tre.
@@ -398,22 +457,23 @@ i primi finiscono, il materiale nuovo è lì pronto, e nessuno resta mai fermo a
 aspettare. La copia dal magazzino e il lavoro sul banco avvengono *nello stesso
 momento*, sovrapposti, invece che uno dopo l'altro.
 
-**La seconda: tavoli di lavoro più potenti, e pezzi più piccoli.** I tavoli
-sono i *tensor core*, che a ogni generazione stampano più tabelline per
-battito; i pezzi più piccoli sono i numeri scritti con ancora meno cifre (dopo
-i sedici bit della mezza precisione sono arrivati gli otto), che occupano metà
-spazio e viaggiano in metà tempo. C'è però un rovescio, ed è la morale di tutto
-il capitolo: più il tavolo è veloce, più è facile che a mancare siano i pezzi e
-non le braccia.
+**La seconda: macchine più potenti, e pezzi più piccoli.** Le macchine sono i
+*tensor core*, i timbri della sezione sul GEMM, che a ogni generazione stampano
+più tabelline per battito; i pezzi più piccoli sono i numeri scritti con ancora
+meno cifre binarie (dopo i sedici della mezza precisione sono arrivati gli
+otto), che occupano metà spazio e viaggiano in metà tempo. C'è però un
+rovescio, ed è la morale di tutto il capitolo: più la macchina è veloce, più è
+facile che a mancare siano i pezzi e non le braccia.
 
 **La terza: dare a ciascuno un ruolo fisso.** Invece di far fare a ogni squadra
 un po' di tutto, alcune squadre fanno *solo* i portapacchi e altre *solo* il
 montaggio, come in una catena vera: un operaio dedicato a un compito lo fa
-meglio di uno che salta di continuo da un lavoro all'altro, e così i tavoli
-restano riforniti e i corridoi sempre occupati.
+meglio di uno che salta di continuo da un lavoro all'altro, e così le macchine
+non restano mai senza materiale e nessuno dei due lavori si ferma ad aspettare
+l'altro.
 
 Tutte e tre servono alla stessa cosa: far arrivare i pezzi *mentre* si lavora,
-così che il tavolo non si fermi mai.
+così che il banco non si fermi mai.
 `````
 
 `````{tab} Superiore
@@ -466,9 +526,9 @@ capitolo.
   **blocchetti**, uno per volta, buttando via ogni blocchetto appena usato. Il
   risultato non è un'approssimazione: è lo stesso identico numero di prima.
 - A rendere possibile il lavoro a blocchetti è la **online softmax**, il gesto
-  della maestra che corregge dieci compiti per volta: due foglietti (il totale
-  finora e il valore più grande visto finora), aggiornati a ogni mucchietto,
-  e alla fine le stesse percentuali del calcolo in un colpo unico.
+  di chi pesa i sacchi due per volta tenendo un foglietto con il totale finora:
+  qui i foglietti sono due, il totale e il punteggio più alto visto fin lì, e
+  alla fine danno le stesse percentuali del calcolo in un colpo unico.
 - Non fa **meno** conti degli altri: ne fa altrettanti, e nel viaggio di
   ritorno (quello in cui la rete impara dai propri errori) qualcuno in più,
   perché avendo buttato i blocchetti se li deve rifare. È un baratto voluto:

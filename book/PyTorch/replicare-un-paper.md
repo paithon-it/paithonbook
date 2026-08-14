@@ -11,13 +11,17 @@ matrice, e la matrice ha una forma precisa.
 
 Quello che questa sezione insegna è un **metodo**, ed è la cosa più
 trasferibile che si possa imparare qui dentro. Il modello su cui lo mettiamo
-alla prova usa due strati che il libro spiegherà più avanti, la **convoluzione**
-(capitolo sul deep learning) e l'**attenzione multi-testa** (capitolo sui
-Transformer): qui contano solo come scatole con una forma in ingresso e una in
-uscita, e non serve sapere che cosa facciano dentro per verificare che il
-montaggio sia giusto. Anzi, è precisamente il punto: gli invarianti si
-controllano senza aprire le scatole, ed è per questo che il metodo funziona
-anche su un articolo di cui non si è capito tutto.
+alla prova usa due strati che il libro spiegherà più avanti: la
+**convoluzione**, nel capitolo sul deep learning, e l'**attenzione
+multi-testa**, in quello sui Transformer.
+
+Non serve sapere che cosa facciano dentro. Contano come scatole di cui si
+conosce solo che forma entra e che forma esce, ed è precisamente il punto:
+quello che si controlla sono le **proprietà che devono valere comunque**, prima
+e a prescindere da qualunque addestramento (nel gergo si chiamano
+*invarianti*), e quelle si verificano dal di fuori, senza aprire le scatole.
+Per questo il metodo funziona anche su un articolo di cui non si è capito
+tutto.
 
 ## Il metodo, in quattro mosse
 
@@ -76,13 +80,20 @@ letto la teoria è, per una volta, un vantaggio: mostra che il metodo non
 richiede di aver capito prima il modello, e che si può montare qualcosa
 correttamente pur non sapendo ancora perché funzioni.
 
-La prima equazione del paper costruisce la sequenza di ingresso: l'immagine
-viene tagliata in quadratini, ognuno viene proiettato in un vettore, si
-aggiunge un token speciale e le posizioni. Eccola come appare sull'articolo;
-non serve decifrarla simbolo per simbolo, perché dice in notazione compatta
-esattamente la frase appena letta (le parentesi mettono in fila i quadratini,
-$\mathbf{E}$ li proietta, la somma finale aggiunge le posizioni), e tradurla
-in codice è il lavoro di questa sezione.
+La prima equazione del paper costruisce la sequenza di ingresso, e in parole
+dice questo: l'immagine viene tagliata in quadratini (in inglese *patch*, ed è
+la parola che si troverà nel codice), ognuno viene trasformato in una fila di
+numeri, si mette davanti a tutti un quadratino in più che immagine non è, e
+infine si dice al modello in che ordine stavano. Quest'ultimo passo serve
+perché, una volta tagliata, l'immagine è diventata un mucchio di pezzi
+sciolti: senza qualcosa che lo dica, il modello non saprebbe più quale stava in
+alto a sinistra.
+
+Eccola come appare sull'articolo. Non serve decifrarla simbolo per simbolo:
+dice in notazione compatta esattamente la frase appena letta, con le parentesi
+quadre che mettono i quadratini in fila, $\mathbf{E}$ che li trasforma e la
+somma finale che aggiunge le posizioni. I simboli sono sciolti qui sotto per
+chi li vuole, ma il conto che conta viene dopo.
 
 $$
 \mathbf{z}_0 = [\, \mathbf{x}_{\text{class}} ;\;
@@ -94,11 +105,12 @@ dove $\mathbf{x}_p^{i}$ è la $i$-esima patch appiattita, $\mathbf{E} \in
 \mathbb{R}^{(P^2 \cdot C) \times D}$ è la proiezione lineare condivisa,
 $\mathbf{x}_{\text{class}}$ è un vettore imparabile premesso alla sequenza e
 $\mathbf{E}_{\text{pos}} \in \mathbb{R}^{(N+1) \times D}$ sono le codifiche di
-posizione. Con immagini $224 \times 224$, patch $P = 16$ e $C = 3$ canali si
-ottengono $N = (224/16)^2 = 196$ patch, ciascuna di $16 \cdot 16 \cdot 3 = 768$
-numeri. Il quadrato viene da lì: $224/16 = 14$ è il numero di quadratini che
-stanno su **una** riga, e l'immagine è una griglia, quindi le righe sono
-altrettante e i quadratini in tutto sono $14 \times 14$.
+posizione. Con immagini $224 \times 224$, patch $P = 16$ e $C = 3$ canali (i
+tre colori, rosso verde e blu, di cui è fatta ogni foto) si ottengono
+$N = (224/16)^2 = 196$ patch, ciascuna di $16 \cdot 16 \cdot 3 = 768$ numeri.
+Il quadrato viene da lì: $224/16 = 14$ è il numero di quadratini che stanno su
+**una** riga, e l'immagine è una griglia, quindi le righe sono altrettante e i
+quadratini in tutto sono $14 \times 14$.
 
 Una coincidenza da segnalare, perché altrimenti confonde: il $768$ appena
 calcolato ($16 \cdot 16 \cdot 3$, quanti numeri contiene una patch) e il $768$
@@ -138,7 +150,18 @@ class IncorporazionePatch(nn.Module):
         return x + self.posizioni                 # broadcast su tutto il batch
 ```
 
-Le righe da guardare sono due: la convoluzione e il token di classe.
+La colonna di commenti a destra del `forward` è la terza mossa in atto, il
+metro da falegname, e vale la pena leggerla ad alta voce. `B` è il numero di
+immagini nel vassoio, e resta uguale per tutto il percorso. Si entra con
+$(B, 3, 224, 224)$, cioè immagini a tre colori da 224 pixel di lato. La
+convoluzione dà $(B, 768, 14, 14)$: la griglia si è ridotta a 14 per 14, che
+sono i quadratini, e per ciascuno ci sono ora 768 numeri. La riga dopo
+appiattisce quella griglia e scambia due assi, e ottiene $(B, 196, 768)$, cioè
+196 quadratini in fila ($14 \times 14$), 768 numeri ciascuno. Poi si mette in
+testa il quadratino in più e diventano $(B, 197, 768)$: è la forma che il
+modello si porterà dietro identica per tutti e dodici i blocchi che seguono.
+
+Nel codice le righe da guardare sono due: la convoluzione e il token di classe.
 
 `````{tab} Elementare
 **La convoluzione.** Del pezzo di codice `nn.Conv2d` basta sapere, per ora,
@@ -191,8 +214,18 @@ learning rate diverso; dettaglio che il paper riporta in appendice, ed
 esattamente il tipo di nota che fa fallire una replica.
 `````
 
-Le equazioni 2 e 3 sono il blocco Transformer, con la normalizzazione **prima**
-dei sottoblocchi (*pre-norm*) e due connessioni residue:
+Le equazioni 2 e 3 descrivono il blocco che poi si ripete dodici volte, e in
+esse compaiono tre sigle e due parole che il libro spiegherà per esteso nel
+capitolo sui Transformer. Qui bastano una riga a testa. **MSA** è l'attenzione
+multi-testa, cioè la scatola in cui i quadratini si guardano fra loro e ognuno
+raccoglie qualcosa dagli altri. **MLP** è una coppia di strati come quelli già
+visti, che lavora su ogni posizione per conto suo. **LN** è la
+*LayerNorm*, che rimette i numeri su una scala comoda prima di darli in pasto
+alle altre due. *Pre-norm* vuol dire soltanto che quella rimessa in scala
+avviene **prima** delle scatole e non dopo. E la **connessione residua** è il
+`+ z` in fondo a ciascuna riga: quello che la scatola ha prodotto non
+sostituisce l'ingresso, gli si somma, così il segnale originale ha sempre una
+strada libera per arrivare in fondo.
 
 $$
 \begin{aligned}
@@ -231,19 +264,23 @@ class BloccoTransformer(nn.Module):
 ```
 
 Due trappole in dieci righe, ed è normale. `nn.MultiheadAttention` restituisce
-una **tupla** (output, pesi): dimenticare `[0]` produce un errore di tipo poco
-comprensibile. E `batch_first=True` non è il default: senza, il modulo si
-aspetta tensori $(L, B, D)$ e non $(B, L, D)$; un errore che *non* solleva
-eccezioni se $B$ e $L$ per caso coincidono, e che quindi va messo lì e
+**due** cose insieme, il risultato e i pesi dell'attenzione: dimenticare il
+`[0]` che tiene solo la prima produce un errore di tipo poco comprensibile. E
+`batch_first=True` non è il default: senza, il modulo si aspetta i tre assi
+nell'ordine (posizione, esempio, numeri) e non (esempio, posizione, numeri).
+È un errore che *non* solleva eccezioni quando gli esempi del vassoio sono
+tanti quante le posizioni della sequenza, e che quindi va messo lì e
 dimenticato.
 
 ## Verificare senza addestrare
 
 Ora arriva la parte che fa la differenza. La tabella 1 del paper dichiara, per
-la variante **ViT-Base**: $L = 12$ strati, dimensione nascosta $D = 768$,
-dimensione dell'MLP $3072$, $12$ teste di attenzione, **86 milioni** di
-parametri. Tutti e cinque i numeri si controllano in trenta secondi, senza una
-GPU e senza dati.
+la variante **ViT-Base**: $12$ strati, dimensione nascosta $768$, dimensione
+dell'MLP $3072$, $12$ teste di attenzione, **86 milioni** di parametri. I primi
+quattro numeri li abbiamo copiati nel codice, e sono quindi ciò che abbiamo
+dichiarato; il quinto no, il quinto **discende** dagli altri quattro, ed è per
+questo che è l'unico che verifica davvero qualcosa. Si controlla in trenta
+secondi, senza una GPU e senza dati.
 
 ```python
 modello = nn.Sequential(
@@ -262,6 +299,11 @@ print(f"{n_parametri:,}")                          # 85,797,120
 Il conto torna, e vale la pena rifarlo a mano una volta, perché è il tipo di
 verifica che smaschera qualunque svista:
 
+Nella prima riga i due $768$ sono i due numeri diversi di cui si diceva poco
+fa: quello di sinistra è quanto entra nella proiezione ($16 \cdot 16 \cdot 3$,
+i valori di una patch), quello di destra quanto ne esce (`d_modello`, la
+scelta degli autori). Che siano uguali resta una coincidenza.
+
 | Pezzo | Formula | Parametri |
 |---|---|---|
 | Proiezione delle patch | $768 \cdot 768 + 768$ | $590\,592$ |
@@ -270,8 +312,9 @@ verifica che smaschera qualunque svista:
 | Attenzione, per blocco | $4 \cdot (768^2 + 768)$ | $2\,362\,368$ |
 | MLP, per blocco | $2 \cdot 768 \cdot 3072 + 3072 + 768$ | $4\,722\,432$ |
 | Due LayerNorm, per blocco | $2 \cdot 2 \cdot 768$ | $3\,072$ |
+| **Un blocco intero** | $2\,362\,368 + 4\,722\,432 + 3\,072$ | $7\,087\,872$ |
 | **12 blocchi** | $12 \cdot 7\,087\,872$ | $85\,054\,464$ |
-| **Totale** | | $\mathbf{85\,797\,120}$ |
+| **Totale** | $590\,592 + 768 + 151\,296 + 85\,054\,464$ | $\mathbf{85\,797\,120}$ |
 
 Due righe hanno un fattore che sembra piovere dall'alto, e vale la pena
 scioglierlo perché il testo invita a rifare il conto a mano. Il **4**
@@ -284,17 +327,31 @@ riscala di nuovo con due parametri imparati per canale, un moltiplicatore e
 uno spostamento: due numeri per ciascuno dei $768$ canali, e i normalizzatori
 per blocco sono due, da cui $2 \cdot 2 \cdot 768$.
 
-Poco meno di $86$ milioni: il numero dichiarato dal paper, che qui non
-comprende né la LayerNorm finale dell'equazione 4 né la testa di
-classificazione (altri $768K + K$ parametri, con $K$ le classi: un peso per
-ogni coppia canale-classe, più un bias per classe). La verifica si può portare
-fino in fondo su `torchvision.models.vit_b_16`, che con $K = 1000$ ha
-$85\,797\,120 + 1\,536 + (768 \cdot 1000 + 1000) = 86\,567\,656$ parametri,
-esatto fino all'ultima cifra: con $768 \cdot K$ mancherebbero mille parametri.
-Se il nostro conteggio fosse uscito attorno ai $43$ milioni sapremmo, senza
-ipotesi, di aver usato sei blocchi invece di dodici; se fosse uscito $170$
-milioni, di aver raddoppiato qualcosa. È una verifica che costa niente e che
-quasi nessuno fa.
+Poco meno di $86$ milioni: è il numero che dichiara il paper. Il nostro conto,
+però, si è fermato prima di due pezzi finali, e sono quelli che ci mancano per
+arrivare a un modello completo. Il primo è la LayerNorm dell'equazione 4, che
+vale $2 \cdot 768 = 1\,536$ con lo stesso conto di prima. Il secondo è la
+**testa di classificazione**, cioè lo strato che dai 768 numeri del token di
+classe ricava un punteggio per ciascuna delle $K$ classi: sono $768 \cdot K$
+pesi, uno per ogni coppia canale-classe, più $K$ bias, uno per classe.
+
+La verifica si può quindi portare fino in fondo su
+`torchvision.models.vit_b_16`, che è lo stesso modello con $K = 1000$ classi:
+
+$$
+85\,797\,120 + 1\,536 + (768 \cdot 1000 + 1000) = 86\,567\,656,
+$$
+
+ed è esattamente il numero che quel modello riporta, fino all'ultima cifra.
+Vale la pena notare che il $+K$ in coda non è un dettaglio decorativo:
+scordarsi i mille bias della testa farebbe chiudere il conto mille parametri
+sotto, e in una verifica che si vanta di essere esatta all'unità mille
+parametri si vedono.
+
+Se invece il nostro conteggio fosse uscito attorno ai $43$ milioni sapremmo,
+senza dover fare ipotesi, di aver usato sei blocchi invece di dodici; se fosse
+uscito $170$ milioni, di aver raddoppiato qualcosa. È una verifica che costa
+niente e che quasi nessuno fa.
 
 Lo stesso controllo, strato per strato, lo dà `torchinfo`:
 
@@ -304,6 +361,14 @@ summary(modello, input_size=(1, 3, 224, 224),
         col_names=["input_size", "output_size", "num_params"])
 ```
 
+Quello che stampa è una tabella, una riga per strato, con la forma in ingresso,
+la forma in uscita e quanti parametri quel pezzo si porta dietro; in fondo, la
+somma. Serve per due cose: quando la catena si spezza, per vedere in quale riga
+la forma smette di combaciare, e quando il totale non torna, per capire su
+quale blocco è andato perso. Sul nostro modello l'ultima riga dice
+`Total params: 85,797,120`, cioè lo stesso numero di due righe fa, ma stavolta
+con davanti il dettaglio di dove sta ciascun pezzo.
+
 ## Quando i numeri non tornano
 
 Architettura verificata, e poi? Qui comincia il territorio onesto. Riprodurre
@@ -311,14 +376,21 @@ la *struttura* di un paper è alla portata di chiunque; riprodurne i **risultati
 spesso non lo è, e non per colpa di chi ci prova.
 
 Il ViT è un caso esemplare proprio in questo. La tesi dell'articolo è che
-l'architettura raggiunge o supera le CNN **solo dopo** un pre-addestramento su
-grandi quantità di dati: ImageNet-21k, o il JFT-300M interno a Google (300
-milioni di immagini, mai reso pubblico). Addestrato da zero sul solo
-ImageNet-1k, lo stesso identico codice dà risultati mediocri, e questo è un
-*risultato* del paper, non un fallimento della replica. Sapere in anticipo che
-la riproduzione completa è impossibile cambia l'obiettivo: si replica
-l'architettura, si verifica sui pesi pubblicati, e si addestra su un problema
-alla propria portata usando il *transfer learning*.
+l'architettura raggiunge o supera le reti convoluzionali (le **CNN**, la
+famiglia di modelli per immagini del capitolo sul deep learning) **solo dopo**
+essere stata addestrata una prima volta su quantità di dati enormi, e solo
+allora rifinita sul compito che interessa: è quello che si chiama
+*pre-addestramento*. Nel paper quelle quantità sono ImageNet-21k, o il
+JFT-300M interno a Google, trecento milioni di immagini mai rese pubbliche.
+Addestrato da zero sul solo ImageNet-1k, lo stesso identico codice dà risultati
+mediocri, e questo è un *risultato* del paper, non un fallimento della replica.
+
+Sapere in anticipo che la riproduzione completa è impossibile cambia
+l'obiettivo, e in meglio: si replica l'architettura, la si verifica scaricando
+i pesi che gli autori hanno pubblicato, e si addestra su un problema alla
+propria portata partendo da quei pesi invece che da zero. Quest'ultima mossa si
+chiama *transfer learning*, ed è l'argomento del capitolo sulla visione
+artificiale.
 
 Quando invece i numeri dovrebbero tornare e non tornano, la lista dei sospetti
 è quasi sempre questa, in ordine di frequenza:
@@ -331,12 +403,15 @@ Quando invece i numeri dovrebbero tornare e non tornano, la lista dei sospetti
    solo "lr $= 10^{-3}$" ne sta omettendo metà.
 3. **La dimensione del batch e l'accumulo.** Chi ha 8 GPU e chi ne ha una non
    stanno addestrando lo stesso modello, a meno di accumulare i gradienti.
-4. **Regolarizzazione**: weight decay (e su quali parametri; di solito non su
-   bias e LayerNorm), dropout, *stochastic depth*, *label smoothing*,
-   clipping.
-5. **L'inizializzazione**, quando non è quella di default.
-6. **Il protocollo di valutazione**: quale split, quante *crop* in test, se la
-   metrica riportata è la migliore o l'ultima.
+4. **I freni**, cioè tutto quello che si mette apposta per rendere la vita più
+   difficile al modello mentre impara. Ce n'è una famiglia intera, con nomi che
+   il libro incontrerà più avanti (weight decay, dropout, *label smoothing*),
+   e un paper che ne omette uno solo è già un altro esperimento.
+5. **L'inizializzazione**, cioè da quali numeri partono i pesi, quando non è
+   quella che la libreria mette di suo.
+6. **Il protocollo di valutazione**: su quale porzione di dati si misura, in
+   quanti modi si ritaglia ogni immagine di prova, e se il numero riportato è
+   il migliore ottenuto o l'ultimo.
 7. **Il caso**: il seme, e quanti semi sono stati provati.
 
 `````{tab} Elementare
@@ -462,8 +537,8 @@ qualunque articolo che dichiari un'architettura e dei numeri.
 - Nel ViT, una `Conv2d` con `kernel_size = stride = patch` *è* la proiezione
   lineare delle patch: riconoscere queste equivalenze fa parte del mestiere.
 - ViT-Base ha $85\,797\,120$ parametri senza LayerNorm finale né testa (la
-  testa ne aggiunge $768K + K$): il conto si rifà a mano e smaschera qualunque
-  svista strutturale.
+  testa ne aggiunge $768 \cdot K + K$): il conto si rifà a mano e smaschera
+  qualunque svista strutturale.
 - Riprodurre l'**architettura** è quasi sempre possibile; riprodurre i
   **risultati** spesso no: dati non pubblici, iperparametri omessi, hardware
   diverso. Dirlo è parte del lavoro.

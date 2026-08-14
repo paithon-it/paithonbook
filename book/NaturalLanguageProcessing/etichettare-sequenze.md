@@ -535,8 +535,10 @@ ricevuto l'etichetta giusta, su cento. Ma attenzione alle percentuali gonfiate.
 Prova a immaginare il sistema più stupido possibile: per ogni parola guarda
 qual è il mestiere che quella parola fa più spesso nei testi già etichettati,
 e scrive sempre quello, senza mai guardare il contesto. Un sistema così, che
-non ha capito niente di niente, sull'inglese dei giornali azzecca già **92
-parole su cento**, perché la maggioranza delle parole un mestiere solo ce l'ha.
+non ha capito niente di niente, sull'inglese dei giornali azzecca già **92 parole su cento**, perché tantissime
+parole sono facili: «il» è quasi sempre un articolo, «velocemente» quasi sempre
+un avverbio. Le parole ambigue sono meno numerose, ma sono quelle che si usano
+di più, e in un testo vero coprono più della metà delle parole scritte.
 I sistemi seri stanno oltre il **97**. Ecco perché quei numeri vanno letti
 sapendo da dove si parte: fra il 92 e il 97 c'è tutto il lavoro, e ci sono tutte
 le parole ambigue, cioè le uniche su cui valga la pena discutere.

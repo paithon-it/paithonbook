@@ -6,7 +6,9 @@ brulichio emergono la memoria, il linguaggio, il riconoscere il volto di un
 amico in mezzo alla folla. L'idea, vecchia quasi quanto i computer, è
 seducente: se il cervello *è* fatto di neuroni, forse per costruire una
 macchina che impara basta costruire neuroni artificiali e collegarli fra loro.
-Da questa intuizione nasce tutto il deep learning. Ma conviene sgombrare
+Da questa intuizione nasce tutto il **deep learning**, che è poi il nome che si
+dà all'apprendimento automatico quando i neuroni artificiali si impilano in
+molte file: «profondo» vuol dire questo, e nient'altro. Ma conviene sgombrare
 subito il campo da un equivoco.
 
 ## Un'ispirazione, non una copia
@@ -29,6 +31,11 @@ quella del distratto in fondo alla sala. Il presidente somma i voti, ciascuno
 moltiplicato per quanto ci fidiamo di chi lo esprime. Se il totale supera una
 certa soglia, il verdetto è "sì"; altrimenti "no". Un neurone artificiale è
 esattamente questo: prende dei numeri in ingresso, li pesa, li somma e decide.
+
+Due nomi, perché torneranno a ogni pagina. Quel "quanto ci fidiamo" di
+ciascun giurato è un numero, e si chiama **peso**. E il presidente ha una sua
+inclinazione ancora prima di sentire la giuria, chi parte prevenuto verso il
+sì e chi verso il no: anche quella è un numero, e si chiama **bias**.
 
 `````
 
@@ -63,18 +70,19 @@ carta, senza apprendimento: i pesi li fissava a mano il progettista.
 
 Il salto arriva nel 1958 con Frank Rosenblatt e il suo **percettrone**. Non
 solo un neurone che decide, ma un neurone che *impara*: aggiusta i propri pesi
-guardando gli errori che commette. La stampa dell'epoca si entusiasma fino
-all'iperbole: il *New York Times* scrisse di una macchina che un giorno
+guardando gli errori che commette. La stampa dell'epoca si entusiasma oltre
+ogni misura: il *New York Times* scrisse di una macchina che un giorno
 avrebbe "camminato, parlato e avuto coscienza di sé".
 
 `````{tab} Elementare
 
 Il percettrone impara come un allievo con un maestro severo. Riceve un
-esempio, prova a rispondere, e il maestro gli dice se ha sbagliato. Se la
-risposta era troppo bassa, il percettrone alza i pesi degli ingressi che
-spingevano verso il "sì"; se era troppo alta, li abbassa. Un esempio dopo
-l'altro, i pesi si assestano finché gli errori diventano rari. Nessuno gli ha
-scritto la regola: l'ha ricavata dai dati.
+esempio, prova a rispondere sì o no, e il maestro gli dice se ha sbagliato. Se
+doveva dire sì e ha detto no, alza i pesi degli indizi che in quell'esempio
+erano accesi, così la prossima volta il totale verrà più alto e supererà la
+soglia; se doveva dire no e ha detto sì, li abbassa. Un esempio dopo l'altro,
+i pesi si assestano finché gli errori diventano rari. Nessuno gli ha scritto la
+regola: l'ha ricavata dai dati.
 
 `````
 
@@ -110,31 +118,45 @@ quel "se".
 ## L'inverno: lo scandalo dello XOR (1969)
 
 Nel 1969 Marvin Minsky e Seymour Papert pubblicano *Perceptrons*
-{cite}`minsky1969perceptrons`, un libro di matematica rigorosa che è passato
-alla storia per una cosa che non contiene. Che un neurone solo sappia tracciare
-una sola linea di separazione, e che quindi certe funzioni elementari gli
-sfuggano, si sapeva già: è un'osservazione di poche righe, e i due autori la
-danno per nota. Il controesempio simbolo, quello che tutti ricordano, è lo
-**XOR**, l'"o esclusivo". I loro teoremi veri sono un'altra cosa, più forte, e
-li vediamo nella sezione dedicata al percettrone.
+{cite}`minsky1969perceptrons`, un libro di matematica rigorosa, passato alla
+storia per una cosa che non contiene.
+
+Il fatto è questo. Un neurone solo, dovendo dividere i casi in due gruppi, sa
+tracciare una riga dritta e nient'altro. Esistono allora regole semplicissime
+che gli restano precluse, perché per separarne i casi una riga non basta.
+Nel 1969 questo si sapeva benissimo: è un'osservazione di poche righe, e i due
+autori la danno per nota. L'esempio che tutti ricordano è lo **XOR**, l'"o
+esclusivo". I teoremi veri del libro sono un'altra cosa, più forte, e li
+vediamo nella sezione dedicata al percettrone.
+
+E qui il titolo di questa sezione. Al 1969 seguirono anni in cui i soldi per
+l'intelligenza artificiale si ritirarono e molti gruppi di ricerca chiusero:
+sono l'**inverno dell'AI**, e sono la ragione per cui fra il libro di Minsky e
+Papert e la ripresa passano quasi vent'anni. Quanta parte di colpa tocchi
+davvero a quel libro è una questione aperta, e la riprendiamo nella sezione sul
+percettrone: meno di quanta gliene attribuisca il racconto corrente.
 
 `````{tab} Elementare
 
 Lo XOR risponde "vero" quando i due ingressi sono diversi (uno acceso e uno
-spento) e "falso" quando sono uguali. Disegna i quattro casi su un foglio a
-quadretti: il primo ingresso in orizzontale, il secondo in verticale, e i
-quattro casi diventano i quattro angoli di un quadrato. I due "veri" finiscono
-su angoli opposti, i due "falsi" sugli altri due. Ora prova a separare i veri
-dai falsi con **una sola retta**: è impossibile, qualunque riga tu tracci ne
-lascia sempre uno dalla parte sbagliata.
+spento) e "falso" quando sono uguali. Scriviamo acceso come $1$ e spento come
+$0$: le combinazioni possibili sono quattro, e sono $(0,0)$, $(0,1)$, $(1,0)$ e
+$(1,1)$. Le prime due cifre le mettiamo in orizzontale su un foglio a
+quadretti, le seconde in verticale, e i quattro casi diventano i quattro angoli
+di un quadrato. I due "veri", $(0,1)$ e $(1,0)$, finiscono su angoli opposti; i
+due "falsi", $(0,0)$ e $(1,1)$, sugli altri due, di nuovo opposti fra loro. Ora
+prova a separare i veri dai falsi con **una sola retta**: è impossibile,
+qualunque riga tu tracci ne lascia sempre uno dalla parte sbagliata.
 
 E perché mai un neurone dovrebbe essere legato a una retta? Perché fa una cosa
 sola: moltiplica ogni ingresso per il suo peso, somma e confronta il totale con
-una soglia. Su quel foglio a quadretti i punti in cui il totale raggiunge la
-soglia stanno tutti allineati, e sono proprio una riga dritta: da una parte il
-neurone dice sì, dall'altra no. Cambiare i pesi inclina quella riga, cambiare
-il bias la sposta, ma una riga resta. Un percettrone singolo sa disegnare solo
-quello, e quindi lo XOR non lo imparerà mai.
+una soglia. Su quel foglio a quadretti i punti in cui il totale pareggia la
+soglia stanno tutti allineati, e formano proprio una riga dritta: da una parte
+il neurone dice sì, dall'altra no. Cambiare i pesi inclina quella riga,
+cambiare il bias la sposta, ma una riga resta. Un percettrone singolo sa
+disegnare solo quello, e quindi lo XOR non lo imparerà mai. (Che quei punti
+siano allineati non è una cosa da bersi sulla fiducia: nella prossima sezione
+li calcoliamo, due punti veri con due numeri veri, e la riga si vede.)
 
 `````
 
@@ -160,8 +182,11 @@ storiografia recente invita a non attribuirlo a un libro solo
 ## La rinascita: la backpropagation (1986)
 
 La chiave era là da vedere: se un neurone solo non basta, se ne mettono di
-più, in **strati**. Ma come si addestrano i neuroni intermedi, che non hanno
-un'etichetta che dica loro "la risposta giusta era questa"? La risposta è la
+più, in **strati**. Resta però una domanda: che risposta dovrebbero dare i
+neuroni in mezzo? Per quelli in fondo lo sappiamo, perché ogni esempio di
+addestramento si porta dietro la risposta giusta (si chiama **etichetta**:
+«questa foto è un gatto»). Per quelli in mezzo non l'ha scritta nessuno. La
+risposta è la
 **backpropagation** (retropropagazione dell'errore), resa celebre nel 1986 da
 David Rumelhart, Geoffrey Hinton e Ronald Williams su *Nature*. L'algoritmo
 aveva precursori (Paul Werbos lo aveva formulato nella tesi di dottorato del
@@ -174,8 +199,10 @@ Backpropagation è il modo di distribuire la colpa all'indietro: parte dal
 difetto finale e risale la catena, assegnando a ogni stazione una quota di
 responsabilità. Chi ha contribuito di più all'errore riceve la correzione più
 grande. Ripetuto su migliaia di esempi, questo "attribuire la colpa e
-correggere" fa sì che anche gli operai in mezzo alla catena (i neuroni
-nascosti) imparino il loro mestiere.
+correggere" fa sì che anche gli operai in mezzo alla catena imparino il loro
+mestiere. Quegli operai in mezzo hanno un nome: si chiamano neuroni
+**nascosti**, e "nascosto" vuol dire soltanto che non si affacciano né
+sull'ingresso né sull'uscita.
 
 `````
 
@@ -199,64 +226,83 @@ una passata all'indietro è dello stesso ordine di una in avanti.
 ## L'anatomia di un percettrone multistrato
 
 Il modello che nasce da questa storia è il **percettrone multistrato** (MLP,
-*multilayer perceptron*): neuroni organizzati in strati successivi, dove
-l'uscita di uno strato è l'ingresso del prossimo
-({numref}`fig-percettrone-multistrato`).
+*multilayer perceptron*). I neuroni si mettono in fila, e ogni fila è uno
+**strato**: l'uscita di uno strato è l'ingresso del prossimo. Il primo strato è
+la porta da cui entrano i dati e si chiama **strato di input**, l'ultimo
+produce la risposta e si chiama **strato di output**, e quelli in mezzo sono i
+nascosti di poco fa ({numref}`fig-percettrone-multistrato`). Nel disegno ogni
+pallino è un neurone e ogni filo un peso.
 
 ```{figure} ../figures/percettrone-multistrato.svg
 :name: fig-percettrone-multistrato
 :alt: Diagramma di un percettrone multistrato con tre nodi di input, quattro nodi nello strato nascosto e due nodi di output, tutti collegati tra strati adiacenti.
 :width: 85%
 
-Un percettrone multistrato: lo strato di input (3 nodi) passa i dati a uno
-strato nascosto (4 nodi), che a sua volta alimenta lo strato di output
-(2 nodi). Ogni connessione porta un peso; l'informazione fluisce da sinistra
+Un percettrone multistrato: lo strato di input (3 neuroni) passa i dati a uno
+strato nascosto (4 neuroni), che a sua volta alimenta lo strato di output
+(2 neuroni). Ogni collegamento porta un peso; l'informazione va da sinistra
 a destra.
 ```
 
 Quanti neuroni mettere in mezzo, e quanti strati, non lo dice nessuna formula:
 il 3-4-2 della figura è un esempio, e nella pratica quelle misure si scelgono
-provando. Ciò che cambia davvero, aggiungendo strati, è la **forma** delle
-frontiere che la rete sa tracciare ({numref}`fig-confini-multistrato`).
+provando. Ciò che cambia davvero, aggiungendo strati, è la **forma** del
+confine con cui la rete separa i casi ({numref}`fig-confini-multistrato`).
 
 ```{figure} ../figures/reti-multistrato.svg
 :name: fig-confini-multistrato
-:alt: "Tre pannelli sulla stessa nube di quattro punti, due pieni e due vuoti. Con un solo neurone il confine di decisione è una retta. Con uno strato nascosto diventa una regione triangolare, ottenuta combinando tre rette. Con più strati le regioni si compongono in una figura chiusa a venti lati, che da lontano sembra una curva ma conserva gli spigoli."
+:alt: "Tre riquadri sugli stessi quattro punti, due pieni e due vuoti. Con un solo neurone il confine fra i due gruppi è una riga dritta. Con uno strato nascosto diventa una regione triangolare, ottenuta combinando tre righe. Con più strati le regioni si compongono in una figura chiusa a venti lati, che da lontano sembra una curva ma conserva gli spigoli."
 :width: 100%
 
-Gli stessi quattro punti, tre confini. Un neurone solo li separa con una retta;
-uno strato nascosto mette insieme più rette e ritaglia una regione chiusa;
-aggiungendo strati le regioni si combinano fra loro e il contorno segue la
-forma dei dati sempre più da vicino. Attenzione a cosa cambia davvero, perché i
-due passaggi non sono lo stesso passaggio. Dal primo pannello al secondo si
-guadagna qualcosa che prima non c'era: un neurone solo disegna una retta e
-nient'altro, quindi il confine chiuso gli è precluso comunque lo si addestri.
-Dal secondo al terzo cambia invece soltanto il prezzo: con abbastanza neuroni in
-un solo strato nascosto a quel contorno ci si arriva lo stesso, ma con più
-strati lo si ottiene con molti meno neuroni.
+Gli stessi quattro punti, tre confini. Un neurone solo li separa con una riga
+dritta; uno strato nascosto mette insieme più righe e ritaglia una regione
+chiusa; aggiungendo strati le regioni si combinano fra loro e il bordo segue
+la forma dei dati sempre più da vicino.
 ```
 
-La progressione di {numref}`fig-confini-multistrato` è la risposta visiva allo
-scandalo dello XOR raccontato poco sopra. I quattro punti disegnati qui non
-sono lo XOR, anzi: sono un problema che una retta risolve, mostrato per
-confronto. Il problema del percettrone non era che imparasse male, era che una
-retta sola non può separare **i quattro casi dello XOR**, per quanto bene la si
-posizioni. Serviva un secondo strato, non un addestramento migliore.
+I quattro punti del disegno non sono lo XOR: sono un caso più facile, che una
+riga sola risolve benissimo, e stanno lì per far vedere che cosa si guadagna
+mano a mano che gli strati aumentano. Lo XOR risolto arriva nella prossima
+sezione. Il senso però è lo stesso: il guaio del percettrone non era che
+imparasse male, era che una riga sola non può separare **i quattro casi dello
+XOR** per quanto bene la si giri. Serviva un secondo strato, non un
+addestramento migliore.
+
+E i due passaggi del disegno non sono lo stesso passaggio, il che è la cosa
+meno ovvia della figura.
+
+Dal primo riquadro al secondo si guadagna qualcosa che prima non c'era. Un
+neurone solo disegna una riga e nient'altro, quindi un confine chiuso gli è
+precluso comunque lo si addestri; due righe che si incrociano ritagliano invece
+uno spicchio, tre un triangolo, ed è il triangolo del secondo riquadro.
+
+Dal secondo al terzo, invece, non si guadagna niente di nuovo: si risparmia. Lo
+dice un teorema, che nella sua forma esatta sta qui sotto nel livello
+Superiore: a un contorno come quello del terzo riquadro ci si arriverebbe anche
+con un solo strato nascosto, purché di neuroni ce ne sia un numero abbastanza
+grande. Con più strati ne bastano molti meno, ed è il vero motivo per cui le
+reti si fanno profonde.
 
 `````{tab} Elementare
 
 Tre strati, tre ruoli. Lo **strato di input** non calcola nulla: è la porta da
 cui entrano i dati (i tre numeri che descrivono l'esempio). Gli **strati
 nascosti** sono la fabbrica: ogni neurone combina ciò che riceve e passa avanti
-qualcosa di un po' più grosso di quello che ha ricevuto. In una rete che guarda
+qualcosa di più elaborato di quello che ha ricevuto. In una rete che guarda
 fotografie, per dire, i neuroni del primo strato reagiscono a cose minime, un
 bordo chiaro-scuro, una macchia di colore; quelli del secondo mettono insieme
 quei bordi e reagiscono a un angolo, a un cerchietto; più avanti si arriva a un
 occhio, a un muso, a una faccia intera. Nessuno glielo ha insegnato: viene
 fuori così dall'addestramento. Lo **strato di output** tira le somme e
 produce la risposta: qui due numeri, per esempio quanto la rete è convinta di
-ciascuna delle due risposte possibili ("gatto" o "cane"). "Nascosto" vuol dire
-solo che non lo vediamo né in ingresso né in uscita: lavora in mezzo.
+ciascuna delle due risposte possibili ("gatto" o "cane").
+
+C'è però una condizione, ed è il motivo per cui esiste una delle sezioni che
+seguono. Fra uno strato e l'altro deve succedere qualcosa che non sia
+soltanto moltiplicare e sommare. Se ogni strato si limitasse a quello, dieci
+strati in fila darebbero lo stesso risultato di uno solo: moltiplicare per $2$
+e poi per $3$ è come moltiplicare per $6$, e tutta la pila non servirebbe a
+niente.
 
 `````
 
@@ -321,20 +367,27 @@ attivazioni derivabili come la sigmoide o la tangente iperbolica.
 
 ## Come è organizzato questo capitolo
 
-Da qui in avanti smontiamo l'MLP pezzo per pezzo, in tre sezioni. La prima
-torna sul **percettrone**, il neurone singolo, e sulla regola con cui impara: è
-il mattone, e il suo limite è la ragione di tutto il resto. La seconda sono le
-**funzioni di attivazione**, il piccolo gesto non lineare senza cui la
-profondità non servirebbe a niente. La terza è la **backpropagation**, cioè il
-meccanismo con cui l'errore risale la rete e corregge ogni peso, e con essa la
-**discesa del gradiente**, il modo in cui quelle correzioni si fanno in
-pratica. Chi ha le derivate nello zaino ci riconoscerà la regola della catena
-applicata con ordine, ma la parte principale è raccontata anche senza. Restano
-fuori due scelte pratiche che meritano una sezione a sé, e l'avranno nel
-capitolo sul deep learning: da dove far partire i pesi, e come tenere a bada una
-rete che impara troppo bene i dati che ha visto. È la cerniera del libro: tutto
-ciò che segue (visione artificiale, NLP, modelli generativi) sono percettroni
-multistrato cresciuti, specializzati e resi profondi.
+Da qui in avanti smontiamo l'MLP pezzo per pezzo, in tre sezioni.
+
+La prima torna sul **percettrone**, il neurone singolo, e sulla regola con cui
+impara: è il mattone, e il suo limite è la ragione di tutto il resto. La
+seconda sono le **funzioni di attivazione**, cioè proprio quel qualcosa che
+deve succedere fra uno strato e l'altro perché impilarne dieci non equivalga a
+impilarne uno. La terza è la **backpropagation**, il meccanismo con cui
+l'errore risale la rete e dice a ogni peso di quanto muoversi; e con essa la
+**discesa del gradiente**, il modo in cui quelle correzioni si fanno davvero,
+un passettino alla volta, sempre nella direzione che fa scendere l'errore
+(«gradiente» è il nome che prende, tutto insieme, l'elenco di quelle
+direzioni). Chi ha le derivate nello zaino ci riconoscerà la
+regola della catena applicata con ordine, ma la parte principale è raccontata
+anche senza.
+
+Restano fuori due scelte pratiche, che riprende il capitolo sul deep learning:
+da dove far partire i pesi, e come impedire a una rete di imparare a memoria
+gli esempi che ha visto invece della regola che li governa (quando succede, sui
+casi nuovi sbaglia). È la cerniera del libro: tutto ciò che viene dopo (la
+visione artificiale, il linguaggio, i modelli che generano immagini e testo)
+sono percettroni multistrato cresciuti, specializzati e resi profondi.
 
 `````{tab} Elementare
 
@@ -357,8 +410,9 @@ multistrato cresciuti, specializzati e resi profondi.
   faccenda: come si correggono i neuroni in mezzo, quelli a cui nessuno dice
   quale fosse la risposta giusta.
 - Una rete è una pila: i dati entrano, attraversano uno o più strati che li
-  rimescolano, e dall'ultimo esce la risposta. Fra uno strato e l'altro ci
-  vuole sempre un passaggio che non sia una semplice proporzione.
+  rimescolano, e dall'ultimo esce la risposta. Fra uno strato e l'altro deve
+  succedere qualcosa che non sia moltiplicare e sommare, altrimenti dieci
+  strati in fila valgono quanto uno solo.
 ```
 
 `````

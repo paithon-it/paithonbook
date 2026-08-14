@@ -7,8 +7,10 @@ di una telecamera e la lettura di un telemetro laser (uno strumento che misura
 a che distanza sono le cose), e restituiva l'angolo di sterzata
 {cite}`pomerleau1989alvinn`. Non aveva imparato per tentativi ed errori, il che
 sarebbe stato imprudente su una strada vera: era stato addestrato a
-**riprodurre, per ogni immagine di strada, l'angolo di sterzata corretto**.
-Apprendimento supervisionato, non prove ed errori.
+**riprodurre, per ogni immagine di strada, l'angolo di sterzata corretto**. Gli
+si mostrava la risposta giusta e lo si correggeva finché non la indovinava, che
+è il modo di imparare più comune di tutti e che nel libro si chiama
+apprendimento supervisionato.
 
 C'è un dettaglio di quella storia che sembra un'inezia ed è invece la tesi di
 questa sezione, arrivata con trent'anni di anticipo. Le immagini su cui ALVINN
@@ -16,10 +18,11 @@ imparò, nel lavoro del 1989, erano **simulate**. Quando Pomerleau passò alle
 registrazioni di un guidatore vero, due anni dopo, si trovò davanti a un
 ostacolo che dovette aggirare a mano: un guidatore bravo non esce mai dalla
 corsia, quindi nelle sue registrazioni non c'è un solo fotogramma che mostri
-come si rimedia a un'auto storta. Dovette fabbricarseli, deformando le immagini
-per ricavarne viste spostate rispetto al centro della corsia
-{cite}`pomerleau1991efficient`. Perché fosse necessario è esattamente ciò che
-segue.
+come si rimedia a un'auto storta. Se li dovette fabbricare, deformando le foto
+buone per ottenerne altre scattate come se l'auto fosse un po' fuori centro
+{cite}`pomerleau1991efficient`. Il resto della sezione spiega perché quel
+lavoro in più non fosse un capriccio, ma la sola cosa che tenesse in piedi il
+furgone.
 
 L'imitazione è, in un certo senso, l'idea più ovvia di tutte, e per questo vale
 la pena capire bene perché non basta. Nei capitoli precedenti l'agente impara
@@ -46,7 +49,9 @@ conversazionale è esattamente questa: si raccolgono risposte scritte da persone
 e si insegna al modello a scriverne di simili.
 
 I pregi sono seri e vanno detti. È **stabile**, perché è addestramento
-supervisionato ordinario, senza nessuna delle instabilità dei metodi a valore.
+supervisionato ordinario: nessuno dei tormenti visti fin qui nei metodi che
+imparano dei voti, cioè il bersaglio che si sposta mentre lo insegui e i voti
+che crescono senza fermarsi della triade fatale.
 È **efficiente**, perché ogni dimostrazione insegna qualcosa subito, mentre un
 agente che esplora butta via migliaia di tentativi. Ed è **sicura**, perché non
 serve far provare al sistema mosse a caso nel mondo vero.
@@ -112,6 +117,12 @@ Ed ecco il paradosso: più l'esperto è bravo, peggio è. Un maestro perfetto no
 sbaglia mai, quindi non si trova mai nella condizione di dover rimediare,
 quindi non ti insegna mai a rimediare. È la sola cosa che ti servirà davvero.
 
+Attenzione però a dove porta il paradosso, perché la conclusione ovvia è
+sbagliata: non conviene affatto un maestro scarso. Un maestro scarso ti mostra
+sì come si finisce storti, ma ti insegna anche le sue cattive abitudini, e tu le
+copi tutte. Quello che serve è un maestro bravo *messo nei guai*, cioè che
+mostri come si esce da situazioni in cui, di suo, non finirebbe mai.
+
 Il rimedio, una volta capito il problema, si scrive da sé: non basta far
 vedere. Bisogna **lasciar provare l'allievo, guardare dove finisce, e chiedere
 al maestro cosa avrebbe fatto lì**. Le situazioni che contano sono quelle in
@@ -126,12 +137,16 @@ vecchie registrazioni.
 
 C'è poi una strada del tutto diversa, che aggredisce lo stesso problema
 dall'altro capo. Invece di copiare *che cosa fa* il maestro, si prova a capire
-*che cosa sta cercando di ottenere*: si impara il premio, non la strategia.
+*che cosa sta cercando di ottenere*: si impara il premio, non la strategia. Si
+chiama **apprendimento per rinforzo inverso**, e «inverso» perché di solito si
+parte da un premio e se ne ricava un comportamento, mentre qui si fa il
+percorso contrario.
+
 Costa di più, e in cambio regge meglio se il mondo cambia un poco, perché
 descrive l'obiettivo invece delle reazioni. Ha però un difetto suo, e non
-piccolo: guardando soltanto il comportamento, di obiettivi che lo spiegherebbero
-altrettanto bene ce n'è un'infinità, e sceglierne uno guardando solo quello è
-impossibile.
+piccolo: guardando soltanto il comportamento, di obiettivi che lo
+spiegherebbero altrettanto bene ce n'è un'infinità, e dal solo comportamento
+non c'è modo di scegliere fra loro.
 
 `````
 
@@ -225,21 +240,32 @@ proprietà, due lati.
 
 `````
 
-## In pratica: basta uscire dalla fascia dimostrata
+## In pratica: che cosa succede appena si esce da ciò che il maestro ha mostrato
 
 L'affermazione centrale di questa sezione si può toccare con mano in mezza
-pagina. Prendiamo un **sistema instabile**, cioè uno che lasciato a sé peggiora
-da solo invece di rimettersi a posto: è l'auto storta del racconto qui sopra,
-scritta in numeri. Lo «stato» è un numero solo, e dice di quanto siamo fuori
-posto: zero vuol dire dritti in mezzo alla corsia, e più il numero cresce (in
-positivo o in negativo) più siamo storti. Instabile significa che senza
-correzione quel numero, a ogni passo, si moltiplica per $1{,}25$: da solo non
-torna a zero, esplode.
+pagina. È l'auto storta del racconto qui sopra, scritta in numeri, e i numeri
+sono pochissimi.
+
+Di quanto siamo fuori posto lo dice un numero solo, che chiameremo $s$: zero
+vuol dire dritti in mezzo alla corsia, e più cresce (in positivo o in negativo)
+più siamo storti. Il sistema è **instabile**, cioè lasciato a sé peggiora invece
+di rimettersi a posto: senza correzioni quel numero, a ogni passo, si moltiplica
+per $1{,}25$. La correzione che diamo la chiameremo $a$, e si somma: al passo
+dopo lo scarto vale $1{,}25\,s + a$.
+
+Da qui esce il numero che conta in tutta la sezione. Il sistema, da solo,
+aggiunge allo scarto un quarto di se stesso ($1{,}25 - 1 = 0{,}25$). Perché
+l'auto si raddrizzi invece di storcersi ancora, la correzione deve come minimo
+cancellare quell'aggiunta: deve cioè valere almeno **un quarto dello scarto**.
 
 L'esperto è un controllore che sa cosa fare ovunque, anche lontanissimo da
-zero, e siccome è bravo dallo zero non si allontana mai. Poi, a metà episodio,
-diamo una folata di vento che l'esperto nelle sue registrazioni non ha mai
-preso.
+zero: la sua regola è correggere in proporzione allo scarto, così da riportarlo
+ogni volta all'$85\%$ di quello che era. A $s = 3$ corregge di $1{,}2$, e il
+conto torna: $1{,}25 \times 3 = 3{,}75$, meno $1{,}2$ fa $2{,}55$, che è
+esattamente l'$85\%$ di $3$. A $s = 20$ correggerà di $8$, e così via. E siccome
+è bravo, dallo zero non si allontana mai. Poi, a
+metà partita, diamo una folata di vento che l'esperto nelle sue registrazioni
+non ha mai preso.
 
 ```python
 import torch
@@ -297,8 +323,8 @@ _, _, fc = episodio(politica, avvio(64), g, raffica=True)
 print(f"\ndopo la folata: |stato| finale esperto {fe.abs().mean():.3f}, "
       f"clonazione {fc.abs().mean():.1f}")
 
-# DAgger: si aggiungono gli stati in cui è finita LA POLITICA, etichettati
-# dall'esperto. Sono proprio quelli che le dimostrazioni non contenevano.
+# DAgger: si aggiungono le situazioni in cui e' finito L'ALLIEVO, etichettate
+# dall'esperto. Sono proprio quelle che le dimostrazioni non contenevano.
 S_tot, A_tot = S_dim, A_dim
 for giro in (1, 2, 3):
     S_v, A_v, _ = episodio(politica, avvio(64), g, raffica=True)
@@ -329,23 +355,26 @@ for nome, colonna in (("esperto, senza folata   ", 0),
     print(f"{nome}: mediana {(v[3] + v[4]) / 2:.4g}, da {v[0]:.4g} a {v[-1]:.4g}")
 ```
 
-I numeri raccontano la storia meglio di qualunque spiegazione.
+I numeri raccontano la storia meglio di qualunque spiegazione. (Nelle stampe,
+`|stato|` con le due stanghette vuol dire «quanto è grande lo scarto», senza
+guardare se siamo storti da una parte o dall'altra.)
 
 L'esperto vive in una fascia strettissima, fra $-1{,}00$ e $+0{,}71$. Su quella
 fascia la clonazione impara **perfettamente**: l'errore per singolo passo è
 $0{,}000000$, e qualunque valutazione fatta sui dati di addestramento direbbe
 che il modello è impeccabile.
 
-A $s = 3{,}0$, però, dove non è mai stata, l'esperto correggerebbe di
-$-1{,}200$ e la clonazione propone $-0{,}824$: una correzione **troppo debole
-di un terzo**. Sembra poco, e invece siamo sul filo. Su questo sistema lo stato
-rientra solo se la correzione vale almeno un quarto dello scarto (perché
-$1{,}25\,s + a$ scenda sotto $s$ serve $|a| > 0{,}25\,s$), e a $s = 3{,}0$ quel
-quarto la clonazione lo copre appena: $0{,}824$ contro lo $0{,}75$ che serviva.
-Poco più in là non lo copre più, perché fuori dalla fascia dimostrata la rete
-non cresce con lo scarto, si **appiattisce**: a $s = 4$ propone $-0{,}904$ dove
-ne servirebbe $1{,}00$, e a $s = 20$ propone ancora $-1{,}015$ dove ne
-servirebbero $5{,}00$. Da lì in poi lo stato cresce, e più cresce più si
+A $s = 3{,}0$, però, dove non è mai stata, l'esperto correggerebbe di $1{,}200$
+e la clonazione propone $0{,}824$: una correzione **più debole di un terzo**.
+(Da qui in poi guardiamo solo quanto è grande la correzione e non il suo segno,
+perché la direzione è sempre la stessa: verso il centro della corsia.) Sembra
+poco, e invece siamo sul filo. Il minimo che serve a raddrizzarsi, a $s = 3$, è
+un quarto di $3$, cioè $0{,}75$: la clonazione lo copre appena.
+
+Poco più in là non lo copre più, perché fuori dalla fascia che ha visto la rete
+non cresce insieme allo scarto, si **appiattisce**: a $s = 4$ propone $0{,}904$
+dove ne servirebbe $1{,}00$, e a $s = 20$ propone ancora $1{,}015$ dove ne
+servirebbero $5{,}00$. Da lì in poi lo scarto cresce, e più cresce più si
 allontana da ciò che la clonazione conosce. La folata, che vale $4{,}0$, la
 scaraventa esattamente di là.
 
@@ -364,13 +393,16 @@ cambiati **quali situazioni stanno nel mucchio degli esempi**.
 Le ultime righe del codice servono a non prendere lucciole per lanterne, e sono
 la parte più importante da leggere.
 
-Primo, quel $74{,}6$ è **un seme**. Ripetendo l'esperimento su otto semi
-indipendenti, lo stato finale della clonazione dopo la folata ha mediana
-$322$ e va da $77$ a $472$: il numero del racconto è l'estremo basso di una
-distribuzione la cui mediana è più di quattro volte più grande. La conclusione
-qualitativa non cambia di una virgola (la clonazione finisce fuori strada in
-tutti e otto i casi, di due o tre ordini di grandezza), ma la cifra precisa non
-è una proprietà dell'algoritmo: è una proprietà di quella ripetizione.
+Primo, quel $74{,}6$ è **un seme**, cioè una singola ripetizione, quella che
+esce dal numero da cui è partito il sorteggio interno. Rifacendo tutto da capo
+con otto semi diversi, lo stato finale della clonazione dopo la folata ha
+mediana $322$ e va da $77$ a $472$: il numero del racconto sta perfino **sotto**
+il più mite degli otto, e la mediana è più di quattro volte più grande. La
+conclusione qualitativa non cambia di una virgola (la clonazione finisce fuori
+strada in tutti e otto i casi, finendo cento o mille volte più lontano
+dell'esperto), ma la cifra precisa non è una proprietà dell'algoritmo: è una
+proprietà di quella ripetizione, e per giunta quella che fa apparire il guaio
+più piccolo di com'è.
 
 Secondo, e conta di più: **senza la folata non succede niente**. Sugli stessi
 otto semi, lasciata a sé, la clonazione chiude con mediana $0{,}0285$ (fra
@@ -382,15 +414,21 @@ esperimento a portarcelo è una perturbazione **esterna**, che gli diamo noi, e
 che in un colpo solo lo scaraventa a quattro volte il bordo della fascia.
 
 Nel racconto della guida, invece, fuori dalla fascia l'allievo ci arriva **da
-solo**, un errore alla volta, ed è proprio quell'accumulo a far crescere il
-danno con il *quadrato* della durata del percorso invece che in proporzione a
-essa: su un tragitto dieci volte più lungo il danno non decuplica, si moltiplica
-per cento. Qui la spinta iniziale è un espediente, il modo più rapido di mettere
-l'allievo dove non è mai stato per mostrare cosa succede una volta che ci si
-trova. Quello che l'esperimento dimostra, e lo dimostra bene, è la seconda
-metà del ragionamento: **fuori dalla fascia dimostrata una politica clonata
+solo**, un errore alla volta. E qui conviene contare, perché il conto è la parte
+sorprendente. Le occasioni di sbagliare sono tante quanti i passi del percorso;
+e ogni singolo sbaglio non si paga una volta sola, perché lascia l'allievo in
+una zona che non conosce per tutti i passi che restano. Tanti inciampi
+possibili, e ciascuno che si paga a lungo: le due quantità si moltiplicano fra
+loro invece di sommarsi, e il danno cresce come il **quadrato** della durata del
+percorso invece che in proporzione a essa. Su un tragitto dieci volte più lungo
+il danno non decuplica: si moltiplica per cento.
+
+Qui la spinta iniziale è un espediente, il modo più rapido di mettere l'allievo
+dove non è mai stato per mostrare cosa succede una volta che ci si trova. Quello
+che l'esperimento dimostra, e lo dimostra bene, è la seconda metà del
+ragionamento: **fuori dalle situazioni che il maestro ha mostrato l'allievo
 sbaglia in modo sistematico, e su un sistema instabile sbagliare in modo
-sistematico è irrecuperabile.** La prima metà, cioè che a portarla fuori bastino
+sistematico è irrecuperabile.** La prima metà, cioè che a portarlo fuori bastino
 i suoi stessi errori, resta un risultato teorico, e questo codice non la prova.
 
 `````{tab} Elementare

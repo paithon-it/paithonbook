@@ -62,7 +62,7 @@ più semplice del testo: tre città.
 
 ```{figure} ../figures/one-hot-label-encoding.svg
 :name: fig-one-hot
-:alt: "La stessa colonna di dati, quattro città (Milano, Roma, Napoli, Roma), codificata in due modi. Con l'ordinal encoding diventa una sola colonna di interi, 0, 2, 1, 2, che però introduce un ordine e delle distanze fra le città che non ne hanno. Con il one-hot diventa una colonna per città, riempita di zeri e con un solo uno per riga: tutte le città restano equidistanti."
+:alt: "La stessa colonna di dati, quattro righe e tre città (Milano, Roma, Napoli, Roma), codificata in due modi. Con l'ordinal encoding diventa una sola colonna di interi, 0, 2, 1, 2, che però introduce un ordine e delle distanze fra le città che non ne hanno. Con il one-hot diventa una colonna per città, riempita di zeri e con un solo uno per riga: tutte le città restano equidistanti."
 :width: 96%
 
 Due codifiche, due significati impliciti. Numerare in fila (è la codifica che
@@ -570,8 +570,9 @@ grafica da laboratorio, circa **65 ore**.
 
 Il secondo è calcolare una volta sola il vettore di ciascuna delle diecimila
 frasi (diecimila letture, non cinquanta milioni) e poi confrontare i vettori a
-due a due. Ogni confronto è un conticino fra due file di numeri, e cinquanta
-milioni di conticini sono **cinque secondi**. È la differenza fra un'idea e un
+due a due. Le diecimila letture costano **cinque secondi**, e i cinquanta milioni di
+confronti che seguono, essendo conticini fra file di numeri già pronte, un
+centesimo di secondo. È la differenza fra un'idea e un
 prodotto.
 
 Un'ultima avvertenza, perché è il punto in cui si sbaglia più spesso. Tutto

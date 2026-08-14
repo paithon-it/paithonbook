@@ -1,53 +1,66 @@
 # Context engineering: il contesto è l'interfaccia
 
-Due squadre costruiscono un assistente per l'assistenza clienti. Si rivolgono
-allo stesso identico modello, dallo stesso fornitore, con le stesse
-impostazioni. Una ottiene
-risposte precise e nel tono giusto; l'altra, risposte vaghe che inventano
-politiche di rimborso mai esistite. Nessuno ha addestrato niente: la
-differenza sta tutta in *cosa* le due squadre scrivono nella finestra del
-modello prima di premere invio (quali istruzioni, quali esempi, quali
-documenti, in quale ordine). Il modello è lo stesso motore; cambia il
-carburante che gli versi nel serbatoio.
+Due squadre costruiscono un assistente che risponde ai clienti di un negozio.
+Si rivolgono allo stesso identico modello, dallo stesso fornitore, con le
+stesse impostazioni. Una ottiene risposte precise e nel tono giusto; l'altra,
+risposte vaghe che inventano politiche di rimborso mai esistite. Nessuno ha
+addestrato niente: la differenza sta tutta in *cosa* le due squadre scrivono
+davanti al modello prima di premere invio, cioè quali istruzioni, quali
+esempi, quali documenti e in quale ordine. Il modello è lo stesso motore;
+cambia il carburante che gli versi nel serbatoio.
 
-È il cuore di questo capitolo. Con un LLM istruito non si programma scrivendo
-codice: si programma scrivendo il **contesto**. Nel capitolo sui Transformer
-abbiamo chiamato questa scoperta *in-context learning* (si descrive un compito
-nel prompt e il modello lo esegue, senza toccare un solo peso) e abbiamo detto
-che il prompt è «un'interfaccia di programmazione in linguaggio naturale,
-potente e fragile insieme». Il **context engineering** è il mestiere che nasce
-da lì: l'arte di riempire bene una finestra limitata. Per un po' lo si è
+Quello «davanti al modello» ha un nome preciso ed è il perno di questa
+sezione. Un modello legge tutto in un colpo solo, e quanto testo riesca a
+tenere davanti agli occhi in una volta è un numero fisso, deciso da chi l'ha
+costruito. Quello spazio si chiama **finestra di contesto**, e ciò che ci
+scrivi dentro si chiama **contesto**. Larga quanto vuoi, resta finita.
+
+È il cuore di questo capitolo: con un modello di oggi non si programma
+scrivendo codice, si programma scrivendo il contesto. Il modello non si tocca
+e non si modifica; l'unica cosa su cui hai davvero le mani è il testo che gli
+metti davanti. Nel capitolo sui Transformer questa scoperta ha un nome
+inglese, l'*in-context learning*, l'imparare dal contesto: gli descrivi il
+compito lì dentro, magari con due esempi, e lui lo esegue senza che nessuno
+abbia cambiato una virgola dentro di lui. È un modo di comandare un programma
+scrivendo in italiano invece che in codice, e come tutti i comandi è potente e
+fragile insieme: una parola diversa cambia la risposta.
+
+Il mestiere che nasce da lì si chiama **context engineering**, l'ingegneria
+del contesto, ed è l'arte di riempire bene quella finestra. Per un po' lo si è
 chiamato *prompt engineering*, come se il problema fosse trovare la formula
-magica, la frase che sblocca il modello. Chi costruisce applicazioni LLM ha
-imparato che il problema vero è un altro: non la frase perfetta, ma il
-**governo di ciò che entra nella finestra** a ogni passo (un problema di
-ingegneria, con vincoli, budget e compromessi).
+magica, la frase che sblocca il modello. Chi costruisce applicazioni ha
+imparato che il problema vero è un altro: non la frase perfetta, ma il governo
+di **tutto** ciò che entra nella finestra, a ogni passo, con i vincoli e i
+compromessi di qualunque problema di ingegneria.
 
-E per un agente il problema è ancora più acuto. Come abbiamo visto nelle sezioni
-sul tool use, il ciclo osserva → ragiona → agisci **riempie il contesto da sé**:
-ogni pensiero, ogni chiamata a uno strumento, ogni osservazione di ritorno è
-testo che si accumula. Dopo dieci passi la finestra trabocca di cronologia, e
+E per un agente il problema è ancora più acuto. Come abbiamo visto nelle
+sezioni precedenti, il ciclo osserva → ragiona → agisci **riempie il contesto
+da sé**: ogni pensiero, ogni chiamata a uno strumento, ogni osservazione di
+ritorno è testo che si accumula. Dopo dieci passi la finestra trabocca di
+cronologia, cioè dell'elenco di tutto quel che si è detto e fatto finora, e
 decidere cosa tenere e cosa buttare non è un dettaglio: è ciò che distingue un
 agente che arriva in fondo da uno che si perde.
 
-Questa sezione ne dà la versione essenziale, quella che serve a un agente: la
-meccanica del budget, il *lost in the middle*, le forme di memoria. Il tema ha
-però un capitolo tutto suo più avanti, *Prompt, contesto e loop*, che lo
-allarga oltre l'agente: come si scrive il singolo messaggio, come si governa
-la finestra e in quanti modi un contesto si guasta, e come si costruisce il
-ciclo che quella finestra la ri-riempie a ogni passo senza lasciar passare un
-risultato che nessuno ha verificato. Qui restiamo sul filo del ragionamento
-agentico; là si guarda il quadro intero.
+Qui ne diamo la versione essenziale, quella che serve a un agente: come si
+spende lo spazio, dove il modello legge bene e dove male, e che forme prende
+la memoria. Il tema ha però un capitolo tutto suo più avanti, *Prompt,
+contesto e loop*, che lo allarga oltre l'agente. Là si vedrà come si scrive il
+singolo messaggio, in quanti modi un contesto si guasta, e come si costruisce
+il ciclo che quella finestra la ri-riempie a ogni passo. Qui restiamo sul filo
+del ragionamento dell'agente; là si guarda il quadro intero.
 
 ## Il prompt come artefatto, non come incantesimo
 
-Cominciamo col ridimensionare la parola «prompt». Nell'uso comune evoca la frase
-d'istruzione che si scrive nella casella della chat. Ma nelle applicazioni serie
-il prompt è un **artefatto strutturato**, cioè un oggetto costruito a pezzi e
-non una frase scritta di getto: lo monta il programma prima di interpellare il
-modello, ed è fatto di parti con ruoli diversi. Le istruzioni di fondo, gli
-esempi che mostrano il comportamento voluto, il formato preciso in cui vogliamo
-la risposta, e solo alla fine la richiesta dell'utente.
+Cominciamo col ridimensionare la parola «prompt». Nell'uso comune evoca la
+frase d'istruzione che si scrive nella casella della chat. Ma in
+un'applicazione vera fra l'utente e il modello c'è di mezzo un programma, ed è
+quel programma a comporre il testo che il modello riceve: prende l'ultima cosa
+scritta dall'utente e le cuce attorno tutto il resto, ogni volta da capo.
+
+Il prompt, allora, non è una frase scritta di getto: è un **oggetto montato a
+pezzi**, e i pezzi hanno ruoli diversi. Le istruzioni di fondo, gli esempi che
+mostrano il comportamento voluto, il formato preciso in cui vogliamo la
+risposta, e solo alla fine la richiesta dell'utente.
 
 `````{tab} Elementare
 
@@ -100,20 +113,33 @@ peggiorato le risposte di oggi. Il prompt magico non esiste; esiste il prompt
 
 ## La finestra è piccola e preziosa
 
-Se il contesto è l'interfaccia, la finestra di contesto è lo schermo su cui la
-disegniamo, ed è uno schermo finito. Ogni modello ha un tetto massimo di
-**token** che può leggere in una volta, e riempirlo non è gratis. Token è
-l'unità in cui si conta il testo qui dentro: i pezzetti in cui una frase viene
-tagliata prima di entrare nel modello, ciascuno grande all'incirca una parola,
-spesso un po' meno. Da qui in avanti «quanto costa» vorrà sempre dire «quanti
-token». Lo sappiamo dal
-capitolo sui Transformer: il segnalibro che il modello si tiene per non
-rileggere ogni volta da capo (la **KV cache**) cresce con la lunghezza del
-contesto; e il prezzo che si paga in memoria, in secondi di attesa e in denaro
-per ogni parola che entra ed esce (il **costo per token**) sarà uno dei temi
-del capitolo su MLOps. Un prompt gonfio è una bolletta più salata e una
-risposta più lenta. Riempire la finestra fino all'orlo «per sicurezza» è quasi
-sempre un cattivo affare.
+La finestra di contesto ha una misura, e la misura è un numero preciso. Non si
+conta in parole né in pagine, ma in **token**: i pezzetti in cui una frase
+viene tagliata prima di entrare nel modello, ciascuno grande all'incirca una
+parola, spesso un po' meno. Ogni modello dichiara quanti token riesce a
+leggere in una volta, e oltre quel numero non si va.
+
+Riempirli, poi, non è gratis, e da qui in avanti «quanto costa» vorrà sempre
+dire «quanti token».
+
+Il prezzo si paga in tre valute, e le conosciamo già. In **memoria**, perché
+il segnalibro che il modello si tiene per non rileggere ogni volta da capo (nel
+capitolo sui Transformer lo chiamavamo **KV cache**) cresce con la lunghezza
+del contesto. In **secondi di attesa**, perché più testo c'è, più tempo passa
+prima che compaia la risposta. E in **denaro**, perché un modello si paga a
+consumo, un tanto per ogni token che entra e per ogni token che esce: quel
+listino si chiama *costo per token*, e sarà uno dei temi del capitolo su
+MLOps. Un prompt gonfio è una bolletta più salata e una risposta più lenta, e
+riempire la finestra fino all'orlo «per sicurezza» è quasi sempre un cattivo
+affare.
+
+Il disegno che segue mostra come una finestra si riempie in una giornata di
+lavoro vera. Due delle voci hanno un nome che non abbiamo ancora dato. La
+prima è il *system prompt*: il foglio di istruzioni di fondo che il programma
+antepone sempre, uguale a ogni richiesta, e che l'utente non vede né scrive. La
+seconda sono le *definizioni tool*, cioè il catalogo degli strumenti della
+prima sezione, con nome, descrizione e argomenti di ciascuno: sta lì dentro
+perché il modello lo legge come legge tutto il resto, e quindi si paga.
 
 ```{figure} ../figures/context-window.svg
 :name: fig-context-window
@@ -128,14 +154,12 @@ finché il modello non la tronca a metà.
 Messa così, come in {numref}`fig-context-window`, la finestra smette di
 sembrare un limite tecnico e diventa quello che è davvero: un **budget**. I
 centoventottomila token in cima al disegno sono grosso modo un romanzo, e
-sembrano tantissimi finché non si guarda come se li dividono i convitati. Il
-primo segmento della barra, il *system prompt*, è il foglio di istruzioni di
-fondo che il programma antepone sempre, uguale a ogni richiesta, e che
-l'utente non vede né scrive: è la parte fissa della spesa. E come ogni budget
-si può spendere bene o male, perché le voci competono fra loro. Una descrizione
-di strumento scritta larga, una cronologia che nessuno pota mai, dieci
-documenti recuperati dove ne bastavano tre: nessuna di queste è un errore in
-sé, ma insieme mangiano lo spazio della risposta.
+sembrano tantissimi finché non si guarda quanti se ne prende ciascun
+commensale. E come ogni budget si può spendere bene o male, perché le voci
+competono fra loro: una descrizione di strumento scritta larga, una cronologia
+che nessuno accorcia mai, dieci documenti recuperati dove ne bastavano tre.
+Nessuna di queste è un errore in sé, ma insieme mangiano lo spazio della
+risposta, che è l'ultimo segmento e l'unico che nessuno pensa a contare.
 
 C'è di peggio, e va contro l'intuizione: **anche quando lo spazio ci sarebbe,
 riempirlo può danneggiare la risposta**. Nel 2023 Nelson Liu e colleghi lo
@@ -179,12 +203,12 @@ contesto.
 
 ## La memoria: oltre la finestra
 
-La finestra, allora, è la **memoria di lavoro** dell'agente: piccola, veloce,
-volatile (quello che tiene «in testa» adesso). Ma un agente serio ha bisogno
-anche di ricordare oltre il singolo scambio: chi è l'utente, cosa si è detto
-ieri, cosa contengono mille pagine di documentazione che non entrerebbero mai
-tutte nella finestra. Serve una **memoria a lungo termine**, e per forza deve
-stare *fuori* dal contesto.
+La finestra, allora, è quello che l'agente tiene «in testa» adesso: la sua
+**memoria di lavoro**, veloce da consultare, stretta, e che sparisce appena la
+conversazione finisce. Ma un agente serio deve ricordare anche oltre il singolo
+scambio: chi è l'utente, cosa si è detto ieri, cosa contengono mille pagine di
+documentazione che nella finestra non entrerebbero mai tutte insieme. Serve
+una **memoria a lungo termine**, e per forza deve stare *fuori* dal contesto.
 
 `````{tab} Elementare
 
@@ -192,12 +216,21 @@ stare *fuori* dal contesto.
 A mente tieni giusto le poche cose che ti servono *ora*: è veloce, ma ci sta
 poco e svanisce. Il taccuino invece contiene tutto quello che hai annotato nel
 tempo: non lo leggi tutto insieme, lo apri alla pagina giusta quando ti serve.
+
 Un agente fa lo stesso. Nel breve termine usa un **foglio di brutta** dentro
 la finestra: ci scrive i risultati intermedi, i conti a metà, gli appunti del
-compito in corso. Nel lungo termine tiene un archivio esterno (un grande
-schedario) e la sua bravura sta nel **pescare dallo schedario solo la pagina
-che serve adesso** e portarla nella finestra, invece di tenere tutto aperto
-sul tavolo (dove non ci starebbe, e dove si perderebbe nel mezzo).
+compito in corso. Nel lungo termine tiene uno **schedario** fuori, e la sua
+bravura sta nel pescarne solo la pagina che serve adesso, invece di tenere
+tutto aperto sul tavolo (dove non ci starebbe, e dove si perderebbe nel mezzo).
+
+Nello schedario finiscono tre generi di cose, e conviene distinguerle perché si
+recuperano in modi diversi. I **documenti**, che si vanno a cercare come
+abbiamo visto parlando di RAG. I **riassunti** di quello che si è già detto:
+quando una conversazione si allunga troppo, invece di portarsela dietro parola
+per parola se ne tiene un sunto, che costa una frazione dello spazio. E i
+**fatti sull'utente**, cioè le poche cose che valgono sempre (come si chiama,
+che lingua parla, cosa ha già chiesto tre volte), tenute a parte e rimesse
+davanti al modello quando c'entrano.
 
 `````
 
@@ -222,22 +255,33 @@ ricordare è un token in meno per ragionare.
 
 `````
 
+Vale la pena insistere su dove sia la difficoltà, perché non è dove sembra.
+Ricordare è facile: uno schedario si allarga quanto si vuole, e scriverci
+dentro non costa quasi niente. La difficoltà è a ogni singolo passo, quando
+bisogna decidere che cosa di tutto quel materiale merita di occupare la
+finestra *adesso*. Ogni riga che ci metti per ricordare è una riga in meno per
+ragionare, e il conto lo si paga subito. Non è un problema di memoria, è un
+problema di scelta: la domanda difficile non è cosa tenere, è cosa lasciare
+fuori.
+
 ## Assemblare il contesto, con un budget
 
-Mettiamo insieme le tre lezioni (il prompt come artefatto, la finestra
-costosa, il *lost in the middle*) in un pezzo di codice che le rende concrete.
-Un **context builder** è la funzione che, a ogni passo, monta il prompt
-effettivo rispettando un **budget di token**. Non è un dettaglio
-implementativo: è il punto in cui le decisioni di context engineering
-diventano operative.
+Mettiamo insieme le tre lezioni (il prompt montato a pezzi, la finestra
+costosa, l'informazione che si perde nel mezzo) in un pezzo di codice che le
+rende concrete. Il programma di cui parlavamo all'inizio, quello che a ogni
+passo cuce insieme il testo da mandare al modello, ha un nome: si chiama
+**context builder**, il montatore del contesto. Non è un dettaglio da
+programmatori: è il punto in cui le decisioni di questa sezione smettono di
+essere opinioni e diventano righe che qualcuno esegue.
 
 `````{tab} Elementare
 
 È come fare la valigia con un limite di peso. Alcune cose non si discutono,
 documenti, biglietti: entrano comunque. Per il resto, con lo spazio che
 avanza, metti prima l'indispensabile, poi il molto utile, e ciò che resta
-fuori resta fuori. Se un oggetto quasi ci sta, a volte lo porti a metà (la
-crema in un flaconcino invece del barattolone). E se sai che chi la aprirà
+fuori resta fuori. Se qualcosa quasi ci sta, a volte lo porti a metà, sapendo
+che è un compromesso zoppo: mezzo maglione non tiene caldo, e come vedremo
+anche mezzo passaggio di testo non afferma niente. E se sai che chi la aprirà
 guarderà per prima cosa quello che sta sopra e quello che sta sotto, mentre
 quello sepolto in mezzo rischia di non vederlo, le cose che contano le metti
 ai due estremi. Il context builder fa la valigia del modello: gli obbligatori
@@ -369,10 +413,11 @@ print(f"\nToken usati: {usati}/{BUDGET}")
 L'esecuzione mostra le decisioni prese: dei cinque passaggi, i due più
 rilevanti entrano interi, il terzo viene troncato per riempire l'ultimo
 spazio, i due meno rilevanti restano fuori. E la disposizione finale ha la
-forma di una **V**, cioè molto ai due estremi e poco nel mezzo, che è
-esattamente il rovescio della pila di fogli: il passaggio decisivo, quello che
-contiene il 2017, finisce in fondo, a ridosso della domanda; il secondo apre;
-il frammento troncato, che è la parte meno utile perché non afferma niente,
+forma di una **V**: molto ai due estremi, poco nel mezzo. È la risposta
+esatta alla pila di fogli, cioè al fatto che il modello legge bene l'inizio e
+la fine e trascura il centro. Il passaggio decisivo, quello che contiene il
+2017, finisce in fondo, a ridosso della domanda; il secondo apre; il frammento
+troncato, che è la parte meno utile perché tagliato a metà non afferma niente,
 finisce nel mezzo, dove perderlo costa meno.
 
 ```text
@@ -389,46 +434,49 @@ Token usati: 58/58
 
 Il numero in fondo è il conteggio del prompt **davvero montato**, marcatori
 compresi, non la somma dei pezzi che abbiamo scelto. Quelli, contati a parte,
-pesano cinquantuno token: quindici il system prompt, undici la domanda,
-venticinque i tre passaggi messi in fila. I sette che mancano all'appello sono
-i `[fonte 0.95]` e simili, cioè il quattordici per cento in più di quanto
-sembrava di aver speso: esattamente il tipo di sforamento che si scopre quando
-il modello tronca la risposta a metà.
+pesano cinquantuno token: quindici il system prompt, undici la domanda (dieci
+di testo più la parola «Domanda:»), venticinque i tre passaggi messi in fila.
+I sette che mancano all'appello sono i `[fonte 0.95]` e simili: sette token su
+cinquantuno, cioè quasi il quattordici per cento in più di quanto sembrava di
+aver speso. È esattamente il tipo di sforamento che si scopre tardi, quando il
+modello tronca la risposta a metà.
 
 Sono poche decine di righe che non «capiscono» nulla, eppure incarnano tre
 scelte di progetto: cosa è obbligatorio, cosa entra per priorità, dove va il
 pezzo più importante. In un sistema reale la rilevanza non è un numero scritto
-a mano ma esce da un recupero (il RAG), il conteggio dei token usa il vero
-tokenizzatore del modello, e le politiche sono più ricche, ma l'ossatura è
-questa, ed è questa a fare la differenza tra le due squadre da cui siamo
-partiti.
+a mano ma esce dalla ricerca nell'archivio della sezione precedente; il
+conteggio dei token non si fa a parole ma con lo stesso programma che li taglia
+davvero per quel modello, il **tokenizzatore**; e le politiche sono più ricche.
+Ma l'ossatura è questa, ed è questa a fare la differenza tra le due squadre da
+cui siamo partiti.
 
 ## Pensare costa token: il ragionamento come context engineering
 
-Un'ultima osservazione chiude il cerchio. Nelle sezioni sul tool use abbiamo
-fatto «ragionare ad alta voce» l'agente prima di agire: è la
-**chain-of-thought** {cite}`wei2022chain`, i passaggi intermedi scritti nel
-contesto prima della conclusione. Vista con gli occhi di questa sezione, la
-catena di ragionamento è *anch'essa* context engineering: si spende
-deliberatamente una parte del budget in token di «pensiero» per comprarne
-qualità di risposta. Il ragionamento non è gratis (occupa finestra, costa
-latenza) ma spesso rende più di quanto costa.
+Un'ultima osservazione chiude il cerchio. Nelle sezioni precedenti abbiamo
+fatto «ragionare ad alta voce» l'agente prima di agire, cioè scrivere i
+passaggi intermedi nel contesto prima della conclusione: è la catena di
+ragionamento, la **chain-of-thought** {cite}`wei2022chain`. Vista con gli occhi
+di questa sezione, quella catena è *anch'essa* ingegneria del contesto: si
+spende deliberatamente una parte del budget in token di «pensiero» per
+comprarne qualità di risposta. Il ragionamento non è gratis, perché occupa
+finestra e fa aspettare, ma spesso rende più di quanto costa.
 
-L'idea si può spingere oltre. Invece di una singola catena lineare, si possono
-esplorare **più linee di ragionamento in parallelo**, valutarle e tenere le
-migliori: è il **Tree of Thoughts** («albero di pensieri»)
+L'idea si può spingere oltre. Invece di seguire un unico filo fino in fondo, si
+possono aprire **più strade di ragionamento**, guardare dove portano e tenere
+solo le migliori: è il **Tree of Thoughts** («albero di pensieri»)
 {cite}`yao2023tree`. L'immagine è quella di chi risolve un labirinto: a ogni
 bivio si prova una strada, e se dopo qualche passo non promette niente di
 buono si torna al bivio e si prende l'altra, invece di andare avanti per
-inerzia. Al posto di un unico filo di ragionamento c'è un ventaglio di strade
-tentate e abbandonate. Il guadagno in problemi che richiedono
+inerzia. Le strade si possono anche tentare tutte insieme, ma la cosa che
+conta è un'altra, ed è quella che il filo unico non permette: poter **tornare
+indietro** da una strada che non promette. Il guadagno in problemi che richiedono
 pianificazione è reale; il prezzo pure, ed è sempre lo stesso: più token, più
 tempo, più costo. È il compromesso di fondo del context engineering, in una
 forma nuova: la finestra è un budget, e ogni cosa che ci metti (istruzioni,
 esempi, memoria recuperata, o il pensiero stesso del modello) la paghi, e va
 messa dove rende di più.
 
-Sei righe per rileggere la sezione.
+Sei punti per rileggere la sezione.
 
 `````{tab} Elementare
 
@@ -453,7 +501,8 @@ Sei righe per rileggere la sezione.
   l'agente scrive i conti a metà; a lungo termine uno **schedario esterno** da
   cui pescare solo la pagina che serve adesso (i documenti recuperati, i
   riassunti di quello che si è detto, i fatti sull'utente tenuti a parte). Il
-  problema difficile non è ricordare, è decidere cosa dimenticare.
+  problema difficile non è ricordare, è decidere cosa **lasciare fuori** dalla
+  finestra adesso: ogni riga spesa a ricordare è una riga in meno per ragionare.
 - Assemblare il contesto è come fare la **valigia con un limite di peso**:
   prima l'indispensabile, poi il resto per priorità finché entra, e quel che
   quasi ci sta lo porti a metà. La cosa più importante va messa dove la

@@ -5,14 +5,27 @@ gatto nero che salta su un muro, e ti risponderà con delle parole. Magari con
 delle ottime parole: la descrizione di un gatto nero che salta su un muro,
 scritta bene. Non è pigrizia e non è un rifiuto: è la forma dell'ultimo strato.
 Qualunque cosa quel modello abbia capito guardando, per uscire deve passare da
-un unico collo di bottiglia, la scelta di una voce da un elenco chiuso, il
-**vocabolario**; e in quell'elenco ci sono soltanto parole.
+un unico collo di bottiglia: scegliere una voce da un elenco chiuso, il
+**vocabolario**. E in quell'elenco ci sono soltanto parole.
 
 Vale la pena guardarla in faccia, questa asimmetria, perché non è un dettaglio
 di implementazione. Detta in una riga: il sistema ha un occhio in ingresso e una
 bocca in uscita, e nessuna mano. L'immagine entra, e serve a scegliere le parole;
 ma fra le cose che il modello sa produrre ci sono solo parole, perché solo di
 parole è fatto l'elenco da cui pesca.
+
+`````{tab} Elementare
+
+Al momento di scrivere la parola successiva, il modello ha davanti due cose di
+natura diversa. Da una parte quello che ha già scritto e la fotografia, che gli
+servono per decidere; dall'altra l'elenco da cui deve pescare, e in
+quell'elenco ci sono soltanto parole. La fotografia sta dalla parte di chi
+decide, non da quella delle cose che si possono pescare: è una **condizione**,
+non una voce del catalogo.
+
+`````
+
+`````{tab} Superiore
 
 La stessa cosa, in formula, si vede a colpo d'occhio. Un modello costruito
 innestando un encoder visivo su un modello di linguaggio, come quelli della
@@ -30,25 +43,33 @@ il modello produce, a destra quel che gli è stato messo davanti per produrlo.
 L'immagine sta a destra: è una **condizione**, non un valore che $y_t$ possa
 assumere.
 
+`````
+
 Da qui la domanda ingenua che è anche quella giusta: e se anche l'immagine
-avesse i suoi token? Se in $V$ ci fossero, accanto alle parole, dei simboli che
-stanno per pezzi di immagine, la stessa softmax potrebbe emetterli, e produrre
-un disegno diventerebbe *lo stesso gesto* che produrre una frase. Il resto
-della sezione è il prezzo di questa idea.
+avesse i suoi token? Se nell'elenco ci fossero, accanto alle parole, dei simboli
+che stanno per pezzi di immagine, l'ultimo strato potrebbe pescare anche quelli,
+e produrre un disegno diventerebbe *lo stesso gesto* che produrre una frase. Il
+resto della sezione è il prezzo di questa idea.
 
 ## Un alfabeto anche per i pixel
 
 L'attrezzo per costruire quei simboli serve ogni volta che una grandezza
-continua deve entrare in un modello che mangia simboli discreti, e non è un
-attrezzo dei soli pixel: il capitolo sull'audio lo rimonterà tal quale per il
-suono, nella sezione sui **codec neurali**, perché là il problema avrà la stessa
-forma (un'onda è continua, e un alfabeto per il suono in natura non esiste, va
-costruito). La risposta, di qua e di là, è la
-**quantizzazione vettoriale** del VQ-VAE {cite}`oord2017neural`: si prepara un
-catalogo finito di file di numeri campione (il *codebook*), e ogni pezzetto di
-segnale, che l'encoder ha già ridotto a una fila di numeri, viene sostituito dal
-campione del catalogo che gli somiglia di più. Di quel pezzetto non si conserva
-la fila: si conserva il suo **numero di catalogo**. Quel numero è il token.
+**continua**, cioè che può assumere qualunque valore, tutte le cifre dopo la
+virgola comprese, deve entrare in un modello che mangia simboli, cioè voci di un
+elenco finito.
+
+Come funziona è presto detto. Si prepara un catalogo finito di file di numeri
+campione (il *codebook*), e ogni pezzetto di segnale, che l'encoder ha già
+ridotto a una fila di numeri, viene sostituito dal campione del catalogo che gli
+somiglia di più. Di quel pezzetto non si conserva la fila: si conserva il suo
+**numero di catalogo**, e quel numero è il token. Il gesto si chiama
+**quantizzazione vettoriale**, ed è quello del VQ-VAE {cite}`oord2017neural`, le
+cui prime due lettere stanno proprio per questo.
+
+Non è un attrezzo dei soli pixel: il capitolo sull'audio lo rimonterà tal quale
+per il suono, nella sezione sui **codec neurali**, perché là il problema avrà la
+stessa forma. Un'onda è continua, e un alfabeto per il suono in natura non
+esiste: va costruito.
 
 Sui pixel il gesto è tutto qui: comprimere, arrotondare al prototipo più
 vicino, tenere l'indice.
@@ -81,10 +102,12 @@ Facciamo il conto su una foto di 512 pixel per lato. I quadratini sono 32 per
 riga e 32 per colonna, in tutto 1.024, e altrettanti sono i numeri della lista.
 Per scrivere un numero di catalogo fra 1 e 8.192 bastano 13 cifre di quelle che
 usa un calcolatore, che sono soltanto 0 e 1: con tredici di quelle cifre si
-contano infatti $2^{13} = 8.192$ cose diverse. Tredici cifre per 1.024 quadratini
-fanno 13.312 cifre in tutto, poco più di 1,6 kilobyte. La fotografia grezza,
-invece, ha 512 per 512 puntini e ciascuno porta tre numeri (rosso, verde e blu)
-da otto cifre l'uno: 786 kilobyte. Circa 470 volte meno. E il punto non è il risparmio (per
+contano infatti $2^{13} = 8.192$ cose diverse. Tredici cifre per 1.024
+quadratini fanno 13.312 cifre in tutto; e siccome otto di quelle cifre fanno un
+byte, sono poco più di 1,6 kilobyte. La fotografia grezza, invece, ha 512 per
+512 puntini e ciascuno porta tre numeri (rosso, verde e blu) da otto cifre
+l'uno, cioè un byte per numero: $512 \times 512 \times 3 = 786.432$ byte, 786
+kilobyte. Circa 470 volte meno. E il punto non è il risparmio (per
 quello esistono già i formati di compressione), è che adesso l'immagine è una
 **lista di simboli presi da un elenco fisso**, esattamente come una frase è una
 lista di parole prese da un dizionario. Da qui in poi, per una macchina che
@@ -146,11 +169,11 @@ casi.
 
 `````{tab} Elementare
 
-Pensa a una redazione. Nella prima, il fotografo e chi scrive lavorano in
-stanze separate: il fotografo guarda le sue immagini e passa a chi scrive un
-foglietto con quello che ha visto, poi esce di scena. Chi scrive prende il
-foglietto e fa il suo mestiere, che è mettere in fila delle parole. La
-collaborazione avviene alla fine, vicino all'uscita, e il prodotto è sempre e
+Pensa a una redazione. Nella prima, il fotografo e chi scrive lavorano in stanze
+separate: il fotografo guarda le sue immagini, passa a chi scrive quello che ha
+visto, ed esce di scena. Che gli passi un foglietto riassunto o il fascicolo
+intero della sezione precedente, qui non cambia niente: quel che conta è che chi
+riceve fa un mestiere solo, mettere in fila delle parole. Il prodotto è sempre e
 soltanto un testo: da quella redazione non esce mai una fotografia, perché chi
 tiene la penna non ha mai avuto in mano una macchina fotografica.
 
@@ -218,11 +241,12 @@ vocabolario.
 `````
 
 La stessa ricetta si estende oltre le immagini ferme. Emu3 {cite}`wang2024emu3`
-tokenizza allo stesso modo testo, immagini **e video**, con un quantizzatore
-che comprime anche nel tempo (quattro fotogrammi consecutivi diventano un solo
-strato di token, altrimenti un secondo di ripresa costerebbe quanto le
-ventiquattro o trenta fotografie che lo compongono) e addestra da zero un unico
-Transformer con l'unico obiettivo di predire il token successivo. Lo stesso
+riduce a numeri di catalogo, allo stesso modo, testo, immagini **e video**. Qui
+il catalogo comprime anche nel tempo: quattro fotogrammi consecutivi diventano
+un solo gruppo di token, altrimenti un secondo di ripresa costerebbe quanto le
+ventiquattro o trenta fotografie che lo compongono. Sopra ci sta un unico
+Transformer addestrato da zero, con l'unico obiettivo di predire il simbolo
+successivo. Lo stesso
 modello genera e capisce: nella stessa sequenza di simboli sta la richiesta di
 produrre un'immagine e la domanda su un'immagine già data. Che il video entri
 quasi senza modifiche è un'indicazione: quel che rende la fusione precoce
@@ -244,10 +268,11 @@ esistente: il pre-addestramento va rifatto da zero, su migliaia di miliardi di
 token.
 
 La seconda è più interessante, ed è che il modello che ne esce è **più difficile
-da addestrare**. Non «più lento»: instabile. La curva del costo, quella che
-durante l'addestramento dovrebbe scendere piano piano fino alla fine, a un certo
-punto schizza verso l'alto e non torna più; e lo fa tardi, quando una fetta
-importante del calcolo è già stata spesa.
+da addestrare**. Non «più lento»: instabile. Qui «costo» smette di voler dire
+soldi e torna a essere il punteggio dell'errore, quello che l'addestramento deve
+far scendere. La sua curva, che dovrebbe calare piano piano fino alla fine, a un
+certo punto schizza verso l'alto e non torna più; e lo fa tardi, quando una
+fetta importante del calcolo è già stata spesa.
 
 `````{tab} Elementare
 
@@ -259,12 +284,13 @@ di sbagliato, ciascuno sta solo cercando di farsi sentire, ma il livello sale e
 sale, e a un certo punto l'amplificatore non ce la fa più: quel che esce
 dall'altoparlante non è più musica, è un fischio.
 
-Nel modello a fusione precoce i due cantanti sono le due modalità, e
-l'amplificatore condiviso sono i pesi. Testo e immagini hanno statistiche
-diverse (una tessera di mosaico è molto meno prevedibile di un articolo
-determinativo, e la loro «voce» dentro la rete ha ampiezze diverse), ma passano
-per gli stessi parametri, e ciascuna, per contare qualcosa nel risultato, tende
-a farsi un po' più grossa. I numeri interni crescono, lentamente, per milioni
+Nel modello a fusione precoce i due cantanti sono le due **modalità**, cioè
+l'immagine e il testo, e l'amplificatore condiviso sono i pesi. Testo e immagini
+sono fatti in modo molto diverso: indovinare quale sarà la prossima tessera di
+mosaico è molto più difficile che indovinare un articolo determinativo, e i
+numeri che le due cose fanno girare dentro la rete non hanno la stessa taglia.
+Passano però per gli stessi pesi, e ciascuna, per contare qualcosa nel
+risultato, tende a farsi un po' più grossa. I numeri interni crescono, lentamente, per milioni
 di passi; e poiché sono memorizzati con una precisione finita, prima o poi si
 esce dall'intervallo in cui quei numeri hanno ancora un senso, e
 l'addestramento salta. La cura è quella che userebbe un fonico: mettere un
@@ -333,12 +359,13 @@ finché non è troppo tardi.
 
 `````
 
-C'è poi un costo di natura diversa, e non si cura con una normalizzazione:
-**quantizzare butta via**. L'encoder continuo della fusione tardiva conserva
-tutto quello che ha visto in un vettore di numeri reali; il tokenizzatore lo
-arrotonda a una voce di catalogo, e la differenza non è recuperabile da nessuna
-parte a valle. Con i numeri di prima, ogni patch di $16 \times 16$ pixel (768
-byte di colori) diventa uno fra 8.192 simboli: quel che sopravvive è la
+C'è poi un costo di natura diversa, e non si cura con nessuno degli accorgimenti
+di prima: **arrotondare butta via**. L'encoder della fusione tardiva descrive
+quello che ha visto con file di numeri con la virgola, tutte le cifre che
+servono; il mosaicista, cioè il tokenizzatore, arrotonda ciascuna alla voce di
+catalogo più vicina, e la differenza non è recuperabile da nessuna parte a
+valle. Con i numeri di prima, ogni quadratino di $16 \times 16$ pixel (768 byte
+di colori) diventa uno fra 8.192 simboli: quel che sopravvive è la
 struttura grossa, non il tratto sottile. Il caso peggiore è il testo dentro
 l'immagine, perché un carattere di un documento fotografato sta proprio nella
 scala di dettaglio che l'arrotondamento cancella, ed è una limitazione che i
@@ -360,9 +387,11 @@ Transfusion {cite}`zhou2024transfusion` prende sul serio l'ipotesi: un solo
 Transformer, un solo insieme di parametri, ma **due obiettivi diversi** a
 seconda del tipo di token che sta trattando. Sul testo, la predizione del token
 successivo di sempre. Sull'immagine, la diffusione: niente catalogo, niente
-arrotondamento, le tessere restano file di numeri (per l'esattezza, la versione
-compressa che ne dà un altro modello, come nella diffusione latente) e quel che
-il modello impara è a indovinare il disturbo da togliere.
+arrotondamento, le tessere restano file di numeri, e quel che il modello impara
+è a indovinare il disturbo da togliere. (Per l'esattezza non sono le tessere
+grezze, ma una loro versione più compatta che un altro modello prepara a parte:
+è l'accorgimento con cui lavorano quasi tutti i generatori di immagini, e il
+capitolo sulla diffusione lo spiegherà a suo tempo.)
 
 `````{tab} Elementare
 
@@ -430,7 +459,8 @@ blocco e torna a scrivere parole.
 
 `````
 
-La maschera di attenzione è l'unico pezzo davvero nuovo, e sta in poche righe.
+La regola su chi può guardare chi (in gergo, la **maschera** di attenzione) è
+l'unico pezzo davvero nuovo, e sta in poche righe.
 Costruiamola per una sequenza di nove posizioni: tre token di testo, un blocco
 immagine di quattro patch, altri due token di testo.
 
@@ -477,8 +507,9 @@ XXXXXXXX.
 XXXXXXXXX
 ```
 
-Le prime tre righe e le ultime due sono la scaletta causale che conosciamo. Le
-quattro righe centrali sono il blocco immagine: ciascuna vede tutte e quattro
+Le prime tre righe e le ultime due sono la regola di sempre per le parole:
+ognuna guarda solo all'indietro, ed è la maschera **causale**. Le quattro righe
+centrali sono il blocco immagine: ciascuna vede tutte e quattro
 le patch, comprese quelle che vengono dopo, e vede tutto il testo che precede.
 Nessuna riga di testo, invece, guarda avanti. In PyTorch questa matrice si
 passa a `nn.MultiheadAttention` come `attn_mask`, con l'avvertenza che lì la
@@ -491,16 +522,17 @@ Le tre strade non si superano a vicenda, e la scelta si fa sul meccanismo.
 
 Se il compito è **capire** (descrivere una foto, rispondere a domande su un
 grafico, leggere un documento), la fusione tardiva è la scelta ragionevole e lo
-resta: riusa due modelli già addestrati, non paga il dazio della
-quantizzazione, e chiede solo un connettore. Pagare per una simmetria che non
-si userà è cattiva ingegneria.
+resta: riusa due modelli già addestrati, non paga il dazio dell'arrotondamento a
+catalogo, e chiede solo un connettore. Pagare per la mano quando basta la bocca
+è cattiva ingegneria.
 
 Se il compito è **produrre immagini e testo dentro lo stesso sistema**, o
-peggio alternarli (una risposta che contiene un diagramma, una figura corretta
+peggio alternarli (una risposta che contiene un diagramma, un disegno corretto
 alla luce di quanto detto due paragrafi prima), allora la strada del connettore
-chiede due modelli e una cerniera fra i due, e la cerniera è esattamente il
-punto in cui l'informazione si perde. Un vocabolario comune, o un modello con
-due obiettivi, tiene tutto in un contesto solo.
+chiede due modelli, uno che capisce e uno che disegna, e un passaggio di
+consegne fra i due; e quel passaggio, che è fatto di parole, è il punto in cui
+l'informazione si perde. Un vocabolario comune, o un modello con due obiettivi,
+tiene tutto in un contesto solo.
 
 Onestà d'obbligo, per chiudere: il campo non ha deciso, e i sistemi reali sono
 spesso ibridi (un encoder continuo per capire, un decoder generativo per
@@ -510,8 +542,9 @@ poco senso e invecchia in fretta: è che la condivisione dei parametri
 *dovrebbe* produrre un **trasferimento** fra le due direzioni. Imparare a
 disegnare un gatto dovrebbe aiutare a riconoscerlo, perché per generarlo
 bisogna sapere com'è fatto, mentre per descriverlo spesso basta indovinare
-dalla didascalia (il problema che l'overview del capitolo ha chiamato
-allucinazione visiva).
+quello che di solito si scrive sotto una foto del genere, cioè parlare della
+fotografia senza averla guardata: il problema che l'overview del capitolo ha
+chiamato allucinazione visiva.
 
 La prova che deciderebbe la questione ha allora questa forma: a parità di
 parametri, di dati e di calcolo, la capacità di *capire* di un modello a

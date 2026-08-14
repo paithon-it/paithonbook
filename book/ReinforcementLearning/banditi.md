@@ -4,20 +4,23 @@ Nel 1933, sulle pagine della rivista *Biometrika*, William R. Thompson pone una
 domanda che nasce da un disagio pratico {cite}`thompson1933likelihood`. In una
 sperimentazione clinica si assegnano i pazienti a due trattamenti e si aspetta
 la fine per sapere quale funzioni meglio. Ma a metà strada un'idea di quale sia
-il migliore già ce l'abbiamo: continuare ad assegnare metà dei pazienti al
-trattamento che sta perdendo è il prezzo che si paga per essere sicuri.
-Thompson si chiede se quel prezzo si possa ridurre spostando via via
-l'assegnazione verso il trattamento che sta andando meglio, senza per questo
-smettere di raccogliere prove sull'altro.
+il migliore già ce l'abbiamo. Metà dei pazienti continua comunque a ricevere il
+trattamento che sta perdendo, e quella metà è il prezzo che si paga per essere
+sicuri alla fine. Thompson si chiede se il prezzo si possa ridurre spostando
+via via l'assegnazione verso il trattamento che sta andando meglio, senza per
+questo smettere di raccogliere prove sull'altro.
 
 Una risposta la diede lui stesso, e vale la pena anticiparla perché la storia
-ha un finale: assegnare ogni paziente al trattamento con la probabilità che
-quel trattamento sia davvero il migliore, viste le prove raccolte fino a quel
-momento. Chi va meglio riceve più pazienti, ma nessuno viene scartato finché
-resta un dubbio. L'idea rimase quasi ignorata per decenni e porta il nome del
-suo autore, *Thompson sampling*; è una delle ricette usate oggi nei test A/B
-adattivi di cui si parla in fondo a questa sezione. Qui però prendiamo altre
-tre strade, più semplici da raccontare e più facili da mettere in codice.
+ha un finale. Ogni paziente va assegnato tirando a sorte, ma con un dado
+truccato: il trattamento che ha più probabilità di essere il migliore esce più
+spesso. Quella probabilità non la si conosce, la si stima dalle prove raccolte
+fino a quel momento, e a ogni paziente in più il dado si ritrucca. Chi va
+meglio riceve più pazienti, ma nessuno viene scartato finché resta un dubbio.
+L'idea rimase quasi ignorata per decenni e porta il nome del suo autore,
+*Thompson sampling*; è una delle ricette usate oggi per mandare più visitatori
+alla versione di un sito che sta rendendo di più, cosa di cui si parla in fondo
+a questa sezione. Qui però prendiamo altre tre strade, più semplici da
+raccontare e più facili da mettere in codice.
 
 È il **dilemma fra esplorare e sfruttare** annunciato nella panoramica del
 capitolo, e qui si presenta nella forma più pura che esista, perché manca tutto
@@ -37,20 +40,31 @@ guadagnare.
 
 `````{tab} Elementare
 
-Hai dieci leve davanti. Ognuna, quando la tiri, ti dà una somma che cambia ogni
-volta: alcune leve sono in media generose, altre in media avare, ma nessuna
-è costante e tu non sai quali siano quali. Hai mille tiri.
+Hai dieci leve davanti. Ognuna, quando la tiri, ti dà un punteggio che cambia
+ogni volta: alcune leve sono in media generose, altre in media avare, ma
+nessuna è costante e tu non sai quali siano quali. Hai mille tiri. Non sono
+soldi, sono punti, e possono benissimo essere negativi; e non esiste la scelta
+di non giocare, la domanda non è *se* tirare ma *quale* leva tirare.
+
+Questo è il senso del titolo. Nella panoramica lo **stato** era quello che
+l'agente vede del mondo in questo istante, la schermata del videogioco; qui la
+schermata è sempre la stessa, sono sempre quelle dieci leve, e non cambia mai
+per nulla di quello che fai. Un solo stato, appunto.
 
 Tutto ciò che puoi fare è tenere un quaderno: per ogni leva, la media di quanto
 ti ha reso finora. Quella media è la tua **stima**. All'inizio è pessima
 perché si basa su un tiro o due; con l'uso migliora.
 
 Il quaderno si aggiorna senza rifare la somma da capo, con una regola che vale
-la pena guardare in faccia perché ritorna dappertutto in questo libro:
+la pena guardare in faccia perché ritorna dappertutto in questo libro. Dentro
+c'è un numero che decidiamo noi, fra zero e uno, e che dice quanta retta dare
+alla novità: lo chiameremo il **passo**.
 
 > stima nuova = stima vecchia + passo × (quello che ho appena visto − stima vecchia)
 
-Cioè: sposto la stima verso la sorpresa, di un tanto deciso dal passo.
+Cioè: sposto la stima verso la sorpresa, e di quanto lo decide il passo. Con un
+passo di zero non mi muovo mai, con un passo di uno butto via tutto il vecchio
+e credo solo all'ultimo tiro.
 
 Se il passo è "uno diviso il numero di volte che ho tirato questa leva", si
 ottiene esattamente la media di tutti i tiri, e conviene vederlo su due numeri
@@ -62,7 +76,19 @@ Funziona così a ogni tiro: il passo che si accorcia è quello che tiene in
 equilibrio le vecchie osservazioni con la nuova.
 
 Se invece il passo lo tengo **fisso**, le osservazioni recenti pesano di più e
-quelle vecchie svaniscono piano piano: è quello che serve se le leve cambiano
+quelle vecchie svaniscono piano piano. Anche questo si vede sugli stessi due
+numeri, con il passo fermo a un mezzo e partendo sempre da $0$. Incasso $4$: la
+stima diventa $0 + 0{,}5 \times (4 - 0) = 2$. Incasso $6$: la stima diventa
+$2 + 0{,}5 \times (6 - 2) = 4$.
+
+Quel $4$ non è la media di $4$ e $6$, che sarebbe $5$, e vale la pena
+smontarlo: metà arriva dal $6$ appena visto ($0{,}5 \times 6 = 3$), un quarto
+dal $4$ di prima ($0{,}25 \times 4 = 1$), e l'ultimo quarto è ancora lo zero da
+cui sono partito, che infatti non porta niente ma occupa il suo posto. Sono le
+due cose che il passo fisso fa sempre: l'ultimo tiro pesa il doppio del
+penultimo, e tutto quello che sta dietro (compreso il numero di partenza, che
+non è un'osservazione ma solo un punto da cui cominciare) si dimezza a ogni
+tiro nuovo, finché non conta più niente. È quello che serve se le leve cambiano
 carattere nel tempo, cosa che nel mondo reale succede sempre.
 
 `````
@@ -150,24 +176,24 @@ no, escono dal codice in fondo, che lo rifà da capo.
 `````{tab} Elementare
 
 Il banco è fatto così. Dieci leve, mille tiri in tutto. Ogni leva ha un suo
-**valore vero**, cioè quanto rende in media, e questo valore viene sorteggiato
-attorno allo zero: qualche leva rende un po' più di zero, qualcuna un po' meno,
+**valore vero**, cioè quanto rende in media. Quei dieci valori li sorteggia,
+prima di cominciare, chi ha costruito l'esperimento, e li sorteggia attorno
+allo zero: qualche leva rende un po' più di zero, qualcuna un po' meno,
 nessuna moltissimo. Quando tiri una leva incassi il suo valore vero più un
-errore casuale, di solito non più grande di uno: ecco perché due tiri della
-stessa leva danno numeri diversi, ed ecco perché le tue stime, all'inizio, non
-valgono niente. E poiché con dieci leve sorteggiate una volta sola si rischia di
-essere fortunati o sfortunati per caso, l'esperimento intero si rifà da capo
-duemila volte con leve nuove e si fa la media dei risultati.
+errore casuale, che di solito sta fra il meno uno e il più uno: ecco perché
+due tiri della stessa leva danno numeri diversi, ed ecco perché le tue stime,
+all'inizio, non valgono niente. E poiché con dieci leve sorteggiate una volta
+sola si rischia di essere fortunati o sfortunati per caso, l'esperimento intero
+si rifà da capo duemila volte con leve nuove e si fa la media dei risultati.
 
 Il punteggio con cui si giudica una strategia è la percentuale di volte in cui,
-**negli ultimi cento tiri**, sta tirando davvero la leva migliore. Ultimi cento
-e non tutti e mille, perché all'inizio nessuno può saperlo: quel che interessa è
-che cosa ha imparato alla fine.
-
-Un avvertimento per non prendere troppo alla lettera la macchinetta del casinò:
-qui quello che si incassa non sono soldi, è un punteggio che può benissimo
-essere negativo, e non esiste la scelta di non giocare. La domanda non è se
-convenga tirare, è **quale** leva tirare.
+**negli ultimi cento tiri**, sta tirando davvero la leva migliore. Qui c'è una
+cosa da dire, perché sembra una contraddizione e non lo è: qual è la leva
+migliore l'agente non lo sa e non lo saprà mai, ma chi ha costruito
+l'esperimento sì, perché quei valori li ha sorteggiati lui. È il vantaggio di
+un banco di prova su una vera macchinetta da casinò, e serve esattamente a
+questo: dare un voto. Ultimi cento tiri e non tutti e mille, perché all'inizio
+sbagliare è inevitabile: quel che interessa è che cosa ha imparato alla fine.
 
 `````
 
@@ -184,16 +210,22 @@ finale possono aver pagato prezzi molto diversi per arrivarci.
 
 `````
 
-Su quel banco l'agente avido sceglie la leva migliore solo nel **36,7%** dei
+Su quel banco, negli ultimi cento tiri e in media su tutti e duemila gli
+esperimenti, l'agente avido sceglie la leva migliore solo nel **36,7%** dei
 casi: dopo mille tentativi, due volte su tre sta ancora tirando la leva
 sbagliata.
 
 Basta pochissimo per cambiare le cose. Con $\varepsilon$-greedy, cioè una leva
-a caso una volta ogni dieci, si sale all'**80,2%**. La sua virtù non è di non
-avere parametri, perché $\varepsilon$ è un parametro a tutti gli effetti e
-poche pagine più avanti vedremo che va scelto guardando quanto dura la partita;
-la sua virtù è di essere **robusta**: sbagliare $\varepsilon$ di un fattore
-dieci costa molto meno che non esplorare affatto. Il suo difetto, però, è
+a caso una volta ogni dieci, si sale all'**80,2%**. Non è però una ricetta
+senza numeri da scegliere: $\varepsilon$ è un numero, lo si sceglie, e poche
+pagine più avanti si vedrà che va scelto guardando quanto dura la partita. Ha
+comunque una virtù: sbagliarlo per difetto costa poco. Azzardare una volta su
+cento invece che una su dieci, cioè dieci volte di meno, sullo stesso banco dà
+il **59,1%**: parecchio sotto l'80,2%, ma parecchio sopra il 36,7% di chi non
+azzarda mai. Sbagliarlo per eccesso invece costa carissimo, e il motivo
+si vede a occhio: chi azzarda a ogni tiro non sfrutta mai quello che ha
+imparato, tira sempre a caso, e con dieci leve indovina una volta su dieci
+esattamente come al primo tiro. Il difetto vero, però, è un altro, ed è
 altrettanto chiaro: quando esplora, esplora **a casaccio**. Tira con la stessa
 probabilità la leva che potrebbe essere la seconda migliore e quella che ha già
 dimostrato dieci volte di essere pessima. Le tre idee che seguono spendono
@@ -223,9 +255,13 @@ tiri", cioè se la stima è la media di tutti i tiri, il primo tiro se lo porta
 via da solo:
 la stima salta di colpo sul numero appena visto, e su quella leva l'ottimismo è
 finito. Resta il giro forzato sulle altre nove, e infatti anche così si arriva
-al **71,3%**, quasi il doppio del 36,7% dell'agente avido; ma quasi un terzo
-del guadagno se n'è andato, perché con il passo fisso si sale all'**86,6%**, il
-risultato migliore fra le strategie di questa sezione.
+al **71,3%**, quasi il doppio del 36,7% dell'agente avido. Una parte del
+guadagno però se n'è andata, e conviene misurarla invece di dirla a occhio. Con
+il passo fisso si arriva all'**86,6%**, il risultato migliore fra le strategie
+di questa sezione, cioè quasi cinquanta punti sopra l'avido
+($86{,}6 - 36{,}7 = 49{,}9$); con la media se ne guadagnano trentaquattro e
+mezzo ($71{,}3 - 36{,}7 = 34{,}6$). Quindici punti su cinquanta sono rimasti
+sul tavolo, quasi un terzo.
 
 `````
 
@@ -260,10 +296,10 @@ volta sola, e non conviene puntarci troppo.
 
 ### UCB: esplorare in proporzione a quanto poco si sa
 
-Le tre lettere stanno per *upper confidence bound*, "estremo superiore
-dell'intervallo di confidenza", e il nome dice già il metodo: il numero su cui
-si decide non è la stima di una leva, ma il valore più alto che quella leva
-potrebbe ancora avere viste le prove raccolte finora.
+Il numero su cui si decide, qui, non è la stima di una leva: è il valore più
+alto che quella leva potrebbe ancora avere viste le prove raccolte finora. Da
+lì il nome, che sono tre lettere per *upper confidence bound*, alla lettera «il
+tetto di quello che ancora ci si può ragionevolmente aspettare».
 
 `````{tab} Elementare
 
@@ -279,10 +315,19 @@ dadi, la leva con la somma più alta. Una leva mediocre ma poco esplorata può
 vincere il confronto proprio grazie al bonus; ogni volta che la si tira il
 bonus cala, finché la sua mediocrità non emerge e smette di essere scelta.
 
-Il bonus cresce anche col passare del tempo, e non è un dettaglio: significa
-che una leva trascurata a lungo torna prima o poi in cima alla lista. Nessuna
-leva viene abbandonata per sempre, ma le peggiori vengono ricontrollate sempre
-più di rado.
+C'è un ultimo pezzo, e non è un dettaglio: il bonus di una leva cresce anche
+per il solo passare del tempo, cioè anche nei tiri in cui quella leva non la si
+tira. Il motivo è che l'ignoranza si misura per confronto. Se in cento tiri ho
+provato una leva due volte, di lei so poco; se in mille tiri l'ho sempre
+provata due volte, di lei so poco esattamente come prima, ma di tutte le altre
+adesso so molto di più, e la sproporzione è cresciuta. Il risultato è che una
+leva trascurata a lungo torna prima o poi in cima alla lista: nessuna viene
+abbandonata per sempre, ma le peggiori vengono ricontrollate sempre più di
+rado.
+
+Sul solito banco di prova UCB azzecca la leva migliore l'**85,9%** delle volte:
+praticamente quanto l'ottimismo iniziale, e nettamente meglio della leva a caso
+una volta ogni dieci.
 
 `````
 
@@ -346,23 +391,34 @@ sull'esplorazione nel deep RL dovrà inventarsi altro.
 
 ### Il bandit a gradiente: preferenze, non valori
 
-Il **gradiente** che dà il nome al metodo è quello del capitolo di matematica,
-la direzione lungo cui una quantità cresce più in fretta: qui i voti delle leve
-non si stimano, si spingono a ogni tiro un poco nella direzione che fa salire la
-ricompensa che ci si aspetta.
+L'ultima strategia della sezione butta via il quaderno delle stime. Per ogni
+leva tiene un voto, e dopo ogni tiro lo sposta un poco nel verso che le sembra
+faccia incassare di più. Il **gradiente** del titolo è quello del capitolo di
+matematica, la direzione lungo cui una quantità cresce più in fretta: qui la
+quantità da far crescere è quanto ci si aspetta di incassare, e i voti sono le
+manopole da girare.
 
 `````{tab} Elementare
 
 Le strategie viste finora stimano *quanto vale* ogni leva e poi decidono. Se ne
-può fare a meno: si può imparare direttamente una **preferenza**, un voto senza
-unità di misura, e tirare ogni leva tanto più spesso quanto più alto è il suo
-voto.
+può fare a meno: si può imparare direttamente una **preferenza**, cioè un voto
+che non è una previsione di guadagno e non ha unità di misura, e poi tirare
+ogni leva tanto più spesso quanto più alto è il suo voto.
 
-Su come si passa dai voti alle probabilità c'è però una cosa da mettere subito
-in chiaro, perché è tutto il punto del paragrafo che segue: non conta il voto in
-sé, conta **quanto è più alto degli altri**. Alzare tutti i voti della stessa
-quantità non cambia niente, come in una classifica a punti: se do un punto in
-più a tutti, l'ordine e i distacchi restano identici.
+Dai voti alle probabilità si passa così: si confrontano i dieci voti fra loro,
+e ciascuna leva viene tirata tanto più spesso quanto più il suo voto **supera**
+gli altri. Non conta il posto in classifica, contano i distacchi, e vale la
+pena vedere quanto in fretta crescono. Con dieci voti tutti uguali si tira del
+tutto a caso, una leva su dieci. Se una leva prende un punto di vantaggio su
+tutte le altre, viene tirata circa una volta su quattro. Con due punti di
+vantaggio siamo già a quasi una volta su due, e con tre a più di due volte su
+tre: pochi punti di distacco bastano a prendersi quasi tutti i tiri.
+
+C'è però una cosa da mettere subito in chiaro, perché è tutto il punto del
+paragrafo che segue: non conta il voto in sé, conta **quanto è più alto degli
+altri**. Alzare tutti i voti della stessa quantità non cambia niente, come in
+una classifica a punti: se do un punto in più a tutti, l'ordine e i distacchi
+restano identici.
 
 La regola di aggiornamento è di buon senso: se la ricompensa appena incassata è
 **migliore della media** di quelle ricevute finora, alzo il voto della leva che
@@ -370,17 +426,23 @@ ho tirato e abbasso quello di tutte le altre; se è peggiore, faccio l'opposto.
 
 Quel confronto con la media è il pezzo importante e si chiama **termine di
 riferimento** (in inglese *baseline*, ed è il nome che si legge nel codice).
-Senza, l'algoritmo confronterebbe la ricompensa con lo zero, che è un numero
-arbitrario: se tutte le leve pagano attorno a mille, tutte le ricompense
-sembrano ottime e i voti salgono tutti insieme senza distinguere nulla. Con il
-riferimento, quel che conta non è quanto ho preso, ma quanto ho preso
-**rispetto al solito**.
+Senza, l'algoritmo confronta la ricompensa con lo zero, che è un numero
+arbitrario, e succede questo: se tutte le leve pagano attorno a mille, ogni
+tiro sembra un successo, e il voto della leva appena tirata sale forte
+qualunque cosa quella leva valga davvero. A decidere non è più quale leva rende
+di più, ma quale capita di tirare, e siccome una leva che sale viene tirata più
+spesso, il primo colpo di fortuna si autoalimenta. La differenza vera fra le
+leve c'è ancora, ma è di qualche unità sopra un mille, e resta sepolta. Con il
+riferimento, quel che conta non è quanto ho preso ma quanto ho preso **rispetto
+al solito**, e quel mille sparisce dal conto.
 
 Quanto conti si misura, ed è tanto. Sul banco di prova di prima il metodo dei
-voti azzecca la leva migliore l'**84,1%** delle volte. Se poi si aggiungono
-quattro punti a tutte le ricompense, cosa che non cambia nulla del problema
-(fra le leve le differenze restano quelle), con il riferimento si resta
-all'**83,8%** e senza si crolla al **48,5%**.
+voti azzecca la leva migliore l'**84,1%** delle volte. Aggiungiamo adesso
+quattro punti a tutte le ricompense: quattro tanto per dire, serve solo un
+numero abbastanza grande da coprire le differenze fra le leve, che su questo
+banco sono dell'ordine dell'uno. Il problema non cambia in nulla, perché fra le
+leve i distacchi restano quelli. Con il riferimento si resta all'**83,8%**;
+senza, si crolla al **48,5%**.
 
 `````
 
@@ -431,10 +493,11 @@ l'algoritmo indifferente all'origine della scala delle ricompense.
 ## Alla prova: duemila banchi da mille tiri
 
 I numeri citati qui sopra non sono copiati da nessuno, sono usciti dal codice
-che segue. Le quattro strategie basate sui valori (avida, $\varepsilon$-greedy,
-ottimista, UCB) vivono in un solo blocco, perché differiscono solo per come
-scelgono l'azione e per come iniziano; le sei righe stampate sono le stesse
-quattro, con due valori di $\varepsilon$ e due modi di fare il passo.
+che segue. Le prime quattro strategie (l'avida, quella che azzarda ogni tanto,
+l'ottimista e UCB) stanno in un blocco solo, perché fra loro cambiano in due
+punti soltanto: come scelgono la leva e da quale numero partono le stime. Le
+righe stampate sono sei e non quattro perché chi azzarda compare due volte, con
+due frequenze diverse, e l'ottimista anche, con i due modi di fare il passo.
 
 ```python
 import numpy as np
@@ -483,10 +546,12 @@ dopo mille tiri sta al **59,1%**, contro l'**80,2%** di chi esplora una volta su
 dieci, e sembra il peggiore dei rimedi. Ma sta ancora salendo. Esplorando una
 volta su cento impiega dieci volte più tempo a farsi un'idea di tutte le leve, e
 alla fine supera l'altro, che invece continuerà per sempre a buttare un tiro su
-dieci: portando `PASSI` da mille a trentamila nel codice qui sopra, il sorpasso
-si vede arrivare attorno al decimillesimo tiro, e alla fine i due valgono
-**91,6%** e **89,0%**, con le parti invertite. La classifica dipende insomma da
-quanto è lunga la partita, e questa è una morale generale: **quanto esplorare
+dieci. Allungando la prova da mille a trentamila tiri (nel codice qui sopra è
+la costante `PASSI`), il sorpasso arriva attorno al decimillesimo tiro, e alla
+fine chi azzarda una volta su cento sta al **91,6%** e chi azzarda una volta su
+dieci all'**89,0%**: le parti si sono invertite. La classifica dipende insomma
+da quanto è lunga la partita, e questa è una morale generale:
+**quanto esplorare
 si decide guardando l'orizzonte**, cioè il numero di tiri che si hanno davanti,
 non i primi mille.
 
@@ -527,32 +592,43 @@ print(f"  ... senza baseline                  {gradiente(shift=4.0, baseline=Fal
 
 ## Dove si incontrano davvero
 
-Un bandit non è un giocattolo teorico, ed è probabilmente la parte di
-reinforcement learning che più spesso finisce in produzione, proprio perché
-rinuncia a tutto il resto.
+Un bandit non è un giocattolo teorico. È anzi probabilmente la parte di
+reinforcement learning che più spesso finisce dentro programmi che girano
+davvero, tutti i giorni, e ci finisce proprio perché rinuncia a tutto il resto.
 
 **Test A/B, e il loro superamento.** Un test A/B è la prova che si fa quando si
 hanno due versioni di una pagina, di un annuncio o di un prezzo e si vuole
 sapere quale rende di più: si mostra la prima a metà dei visitatori e la seconda
 all'altra metà, fino alla fine dell'esperimento. È la sperimentazione clinica di
-Thompson, con gli stessi costi. Chi la fa in modo adattivo sposta via via i
-visitatori verso la versione che sta vincendo, e paga in difficoltà di lettura
-statistica (i dati non sono più raccolti allo stesso modo per tutti) quello che
-guadagna in denaro non buttato.
+Thompson, con gli stessi costi. Chi lo fa **in modo adattivo** sposta via via i
+visitatori verso la versione che sta vincendo, e il *Thompson sampling* di
+inizio sezione, quello che nessuno aveva guardato per decenni, è una delle
+ricette con cui lo si fa: risparmia il denaro che avrebbe
+buttato sulla versione perdente, e in cambio si complica la vita quando deve
+tirare le somme, perché le due versioni non sono più state mostrate allo stesso
+numero di persone né nello stesso momento, e i conti statistici che si fanno di
+solito presuppongono di sì.
 
 **Esplorazione nei sistemi di raccomandazione.** Un catalogo ha continuamente
 oggetti nuovi, di cui nessuno sa nulla: mostrarli è esplorare, e non mostrarli
 mai garantisce che nessuno saprà mai se erano buoni. È il problema che il
 capitolo sui sistemi di raccomandazione, più avanti nel libro, chiamerà
-**partenza a freddo**, qui letto dal lato della decisione invece che da quello
-della rappresentazione.
+**partenza a freddo**. Là la domanda sarà come descrivere un oggetto di cui non
+si sa niente; qui è che cosa conviene fare mentre non si sa niente.
 
-**Ricerca di iperparametri.** Qui il collegamento è letterale. Il *successive
-halving* e **Hyperband** del capitolo sul machine learning sono algoritmi di
-bandit: ogni configurazione è una leva, addestrarla per un'epoca è un tiro, e
-il problema si chiama *best-arm identification*, che è la variante in cui non
-interessa massimizzare le ricompense lungo la strada ma solo indovinare alla
-fine qual era la leva migliore.
+**Scegliere le impostazioni di un modello.** Qui il collegamento è letterale.
+Un modello di machine learning, prima di essere addestrato, va regolato: quanto
+grande farlo, quanto in fretta farlo imparare, e così via. Sono decine di
+combinazioni possibili, provarle tutte fino in fondo costerebbe giorni, e allora
+si prova ciascuna un pochino e si insiste sulle più promettenti. Descritto così
+è un bandit, e infatti lo è: ogni combinazione è una leva, e provarla un po' è
+un tiro. Il *successive halving* («dimezzamento successivo») e **Hyperband**,
+che è costruito sopra il primo, fanno esattamente questo, e il capitolo sul
+machine learning li racconta per esteso. Con una differenza
+rispetto alla macchinetta del casinò, e ha pure un nome, *best-arm
+identification*: qui non interessa incassare molto lungo la strada, i tiri
+spesi sono solo il costo della ricerca, interessa soltanto indovinare alla fine
+quale fosse la leva migliore.
 
 Fra il bandit e il reinforcement learning pieno c'è un gradino intermedio che
 copre buona parte delle applicazioni reali: il **bandit contestuale**, in cui
@@ -585,6 +661,10 @@ prossima sezione.
   nel 36,7% dei casi. Tirare una leva a caso una volta ogni dieci porta
   all'80,2%, ma è un'esplorazione cieca, che spreca tiri sulle leve già
   bocciate.
+- **Quanto** azzardare non è una costante universale: si decide guardando
+  quanti tiri si hanno davanti. Chi azzarda di rado impara più lentamente ma
+  spreca meno, e su una partita abbastanza lunga finisce davanti a chi azzarda
+  spesso.
 - Due modi di spenderla meglio: partire da stime **troppo generose**, così che
   ogni leva deluda e l'agente le giri tutte da solo (86,6%, ma il trucco si
   consuma e non serve se il mondo cambia); oppure aggiungere a ogni stima un
@@ -593,13 +673,14 @@ prossima sezione.
 - Si può anche non stimare nulla e imparare direttamente dei **voti**, alzando
   quello della leva appena tirata se ha reso più del solito e abbassandolo se ha
   reso meno. Il confronto "rispetto al solito" non è un dettaglio: senza,
-  aggiungendo quattro punti a tutte le ricompense il metodo crolla dall'84% al
-  48%.
-- Non sono giocattoli: si incontrano nei test A/B che spostano il traffico verso
-  la variante che sta vincendo, nel decidere quali oggetti nuovi mostrare in un
-  catalogo, e nella ricerca degli iperparametri (ogni configurazione è una leva,
-  addestrarla un po' è un tiro). Il gradino successivo è il caso in cui prima di
-  scegliere si guarda la situazione, ma le proprie scelte non la cambiano.
+  aggiungendo quattro punti a tutte le ricompense il metodo crolla dall'84,1%
+  al 48,5%.
+- Non sono giocattoli: si incontrano nei test A/B che spostano i visitatori
+  verso la versione che sta vincendo, nel decidere quali oggetti nuovi mostrare
+  in un catalogo, e nel regolare le impostazioni di un modello prima di
+  addestrarlo (ogni combinazione è una leva, provarla un po' è un tiro). Il
+  gradino successivo è il caso in cui prima di scegliere si guarda la
+  situazione, ma le proprie scelte non la cambiano.
 ```
 
 `````
@@ -630,7 +711,7 @@ prossima sezione.
   funzionare su qualunque insieme di leve (Lai e Robbins).
 - Il **bandit a gradiente** impara preferenze invece di valori, ed è REINFORCE
   con baseline in miniatura. La baseline non è un dettaglio: traslando le
-  ricompense di $+4$, senza di essa si passa dall'84% al 48%.
+  ricompense di $+4$, senza di essa si passa dall'84,1% al 48,5%.
 - Si incontrano davvero in test A/B adattivi, esplorazione nei sistemi di
   raccomandazione e ricerca di iperparametri (Hyperband è *best-arm
   identification*). Il gradino successivo è il **bandit contestuale**, dove

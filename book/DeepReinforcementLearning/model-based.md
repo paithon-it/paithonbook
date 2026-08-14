@@ -6,10 +6,10 @@ giocato migliaia di partite: ne bastano due o tre perché la testa cominci a
 fare da sola una cosa preziosa (*provare le mosse prima di farle*). «Se scarto
 questa carta lui pesca e chiude… allora no.» La mossa cattiva muore
 nell'immaginazione, senza costarti la partita. È questa la differenza, ancora
-oggi imbarazzante, fra un essere umano e un agente come il DQN incontrato nella
-sezione su DQN: a noi bastano pochi minuti per capire *Breakout*, all'agente
-servono decine di milioni di fotogrammi. La
-parola tecnica per questa distanza è **sample efficiency**, l'efficienza nei
+oggi imbarazzante, fra un essere umano e un agente come il DQN di tre sezioni
+fa: a noi bastano pochi minuti per capire *Breakout* (il gioco dei mattoncini da
+abbattere con una pallina), all'agente servono decine di milioni di fotogrammi.
+La parola tecnica per questa distanza è **sample efficiency**, l'efficienza nei
 campioni (quanta esperienza serve per imparare) ed è il problema che questa
 sezione affronta di petto.
 
@@ -28,16 +28,16 @@ mosse nella testa, come al tavolo da gioco.
 :alt: Anello a quattro blocchi. L'esperienza reale raccolta dall'ambiente addestra un modello appreso della dinamica e della ricompensa; dal modello si srotolano traiettorie immaginate; queste aggiornano policy e valore senza toccare l'ambiente; la policy agisce di nuovo nel mondo. La freccia dalle traiettorie immaginate verso policy e valore è arancione, ed è l'unica del giro a non toccare il mondo vero.
 :width: 90%
 
-Il ciclo del reinforcement learning basato su modello. L'esperienza reale
-serve ad addestrare il modello; dentro il modello si «immaginano» traiettorie
-che addestrano policy e valore. La freccia arancione è quella immaginata:
-migliora la policy senza spendere un solo passo nell'ambiente vero.
+Il giro dell'agente che si costruisce un simulatore. Le mosse fatte davvero
+servono ad addestrare il simulatore; lì dentro se ne immaginano tante altre, e
+sono quelle a migliorare la strategia. La freccia arancione è il pezzo
+immaginato: l'unico che non costa un solo passo nel mondo vero.
 ```
 
-La {numref}`fig-model-based-loop` riassume l'idea: un anello tocca il mondo
-vero, un altro (quello con la freccia arancione) vive solo nella testa
-dell'agente. Tutto il gioco del model-based sta nel far girare molto il secondo
-pagando poco il primo.
+Il disegno mostra due giri, non uno. Il primo tocca il mondo vero: si agisce, si
+guarda cosa succede, si usa quel poco per aggiustare il simulatore. Il secondo
+(quello con la freccia arancione) vive solo nella testa dell'agente. Tutto il
+gioco sta nel far girare molto il secondo pagando poco il primo.
 
 `````{tab} Elementare
 
@@ -131,15 +131,16 @@ modello).
 
 `````
 
-Vale la pena vedere Dyna al lavoro su un ambiente minuscolo (**Dyna-Q**, si
-scrive per esteso, perché i giudizi che aggiorna sono le $Q$ del Q-learning). Un
-corridoio di sei caselle: si parte a sinistra, l'obiettivo è la casella più a
-destra, e la ricompensa arriva solo entrando nell'obiettivo.
+Vale la pena vedere Dyna al lavoro su un ambiente minuscolo. Il nome per esteso
+è **Dyna-Q**, con la $Q$ del Q-learning appiccicata in coda, perché i giudizi
+che va ad aggiornare sono proprio quelli: quanto vale ciascuna mossa in ciascuna
+casella. Il corridoio ha sei caselle: si parte a sinistra, l'obiettivo è la
+casella più a destra, e la ricompensa arriva solo entrando nell'obiettivo.
 
 Prima però va scelto **che cosa guardare**, ed è la parte istruttiva. La
-tentazione è guardare la policy appresa e verificare che dica «vai sempre a
+tentazione è guardare la strategia appresa e verificare che dica «vai sempre a
 destra»: solo che il corridoio è così facile che il Q-learning con la tabella,
-senza un solo ripasso, impara la stessa identica policy. Sarebbe una misura che
+senza un solo ripasso, impara la stessa identica strategia. Sarebbe una misura che
 non misura. Ciò che il ripasso cambia davvero è la quantità che il testo ha
 appena promesso, cioè **quanto in fretta la ricompensa si propaga all'indietro**
 fino allo stato di partenza. Perciò il codice qui sotto esegue lo stesso ciclo
@@ -201,20 +202,28 @@ for n_plan in (0, 20):
           f"dopo 10 {np.median(v[:, 9]):.3f}, alla fine {np.median(v[:, -1]):.3f}")
 ```
 
-La policy, come previsto, è la stessa nei due casi: `[1, 1, 1, 1, 1]`, vai
-sempre a destra. Il valore della casella di partenza no. Senza ripassi, dopo tre
+La strategia appresa, come previsto, è la stessa nei due casi:
+`[1, 1, 1, 1, 1]`, vai sempre a destra. Il valore della casella di partenza no. Senza ripassi, dopo tre
 episodi vale ancora $0{,}000$ (la notizia della ricompensa non è arrivata fin
 laggiù) e dopo trenta si ferma a $0{,}156$. Con venti ripassi per ogni mossa
-vera, dopo tre episodi vale già $0{,}200$ e dopo dieci $0{,}808$.
+vera, dopo tre episodi vale già $0{,}200$, dopo dieci $0{,}808$ e alla
+trentesima $0{,}815$.
 
-Quel $0{,}808$ è praticamente la risposta esatta, e la risposta esatta si
-calcola a mano. Un premio lontano conta un po' meno di uno vicino, e nel codice
-ogni passo di attesa lo sconta del $5\%$, cioè lo moltiplica per $0{,}95$. Chi
+Quel $0{,}815$ è la risposta esatta, e la risposta esatta si calcola a mano.
+Prima però va detto perché un premio lontano conta meno di uno vicino: non è una
+legge di natura, è una scelta di chi programma, e si fa per due motivi. Un
+agente che dà lo stesso peso a un guadagno fra tre mosse e a uno fra tremila non
+ha nessun motivo di sbrigarsi; e su una partita che potrebbe non finire mai, la
+somma di tutti i premi futuri sarebbe infinita per chiunque, il che renderebbe
+ogni strategia buona quanto le altre. Nel codice
+ogni passo di attesa sconta il premio del $5\%$, cioè lo moltiplica per
+$0{,}95$. Chi
 si trova sulla casella accanto all'obiettivo incassa $1$ alla mossa dopo, e per
 lui quel premio vale $1$; chi sta una casella più indietro deve aspettare una
 mossa in più e per lui vale $0{,}95$; due caselle indietro, $0{,}95\times0{,}95$.
-La partenza è quattro caselle più indietro, quindi $0{,}95^{4} \approx 0{,}815$,
-ed è lì che il valore deve arrivare.
+Dalla partenza al traguardo ci sono cinque mosse, ma l'ultima incassa il premio
+subito e non aspetta niente: le attese vere sono quattro, quindi
+$0{,}95^{4} \approx 0{,}815$, ed è lì che il valore deve arrivare.
 
 È tutto il guadagno del model-based in due numeri. Dopo trenta episodi per parte
 il ripasso ha portato la casella di partenza a $0{,}815$, cioè esattamente dove
@@ -227,10 +236,11 @@ che in questo ambiente non hanno.
 
 C'è un motivo se Dyna, nell'esempio, «immagina» transizioni di *un solo passo*
 già osservate, e non intere partite inventate di sana pianta. È il problema
-strutturale di ogni approccio model-based: l'errore del modello **si compone**
-man mano che il sogno si allunga (una di quelle traiettorie immaginate, in
-gergo, è un *rollout*). Una predizione appena imprecisa a un passo diventa una
-predizione mediocre a cinque passi e un'assurdità a venti.
+strutturale di ogni approccio model-based: più il sogno si allunga, più
+l'errore del modello **si compone**, cioè non si somma soltanto, si moltiplica su
+se stesso. Una predizione appena imprecisa a un passo diventa una predizione
+mediocre a cinque passi e un'assurdità a venti. (Una di quelle partite
+immaginate, in gergo, si chiama *rollout*.)
 
 `````{tab} Elementare
 
@@ -250,10 +260,12 @@ scarto invece di smorzarlo: bastano pochi passi e il sogno non ha più niente a
 che vedere con la realtà.
 
 Morale: le previsioni utili sono quelle a breve. La cura è disarmante nella sua
-semplicità, e nel 2019 trova la formulazione che farà scuola: invece di far partire
-i sogni dall'inizio della partita e tirarli avanti a lungo, si parte da uno
-stato *vero*, appena visitato, e si immagina solo pochi passi. Sogni corti,
-ancorati alla realtà, e l'errore non fa in tempo ad accumularsi.
+semplicità, e nel 2019 trova la formulazione che farà scuola, un algoritmo che
+si chiama **MBPO** («ottimizzare la strategia basandosi su un modello»): invece
+di far partire i sogni dall'inizio della partita e
+tirarli avanti a lungo, si parte da una situazione *vera*, appena visitata, e si
+immagina solo pochi passi. Sogni corti, ancorati alla realtà, e l'errore non fa
+in tempo ad accumularsi.
 
 `````
 
@@ -303,10 +315,11 @@ si evita dove mente.
 
 ## MuZero: pianificare senza conoscere le regole
 
-Fin qui abbiamo dato per scontato di poter osservare lo «stato» del mondo. Ma
-in Go, negli scacchi, in un videogioco Atari, ciò che l'agente riceve sono
-posizioni sulla scacchiera o pixel sullo schermo, e la dinamica vera (le
-regole) può essere ignota o troppo complessa da scrivere a mano. Nel 2020 un
+Fin qui abbiamo dato per scontata una cosa: che l'agente, per costruirsi il suo
+simulatore, sappia sempre com'è fatto il mondo in cui si trova. Ma in Go, negli
+scacchi, in un videogioco Atari, quello che riceve sono pietre su una griglia o
+puntini colorati su uno schermo, e le regole che li fanno muovere possono
+essergli ignote, o essere troppo complicate da scrivere a mano. Nel 2020 un
 gruppo di DeepMind guidato da Julian Schrittwieser presenta **MuZero**
 {cite}`schrittwieser2020mastering`, che fa un passo che sembra un gioco di
 prestigio: pianifica in profondità *senza conoscere le regole del gioco*.
@@ -361,16 +374,24 @@ qui: AlphaZero pianifica su un modello *fornito*, MuZero su un modello
 
 ## Dreamer: allenare la policy nel sogno
 
-C'è una terza via, che il capitolo sui World Model racconta per esteso e che
-qui richiamiamo solo come tassello del quadro model-based. Invece di
-pianificare al momento della decisione, come fa MCTS in MuZero, si può
-apprendere un **world model** (un simulatore interno dell'ambiente) e poi
-allenare *interamente dentro di esso* una policy. Il simulatore è a sua volta
-una rete, quindi derivabile: la correzione può scorrere all'indietro lungo le
-traiettorie immaginate, esattamente come scorre dentro una rete qualunque. È
-l'*immaginazione latente*, dove «latente» significa che il simulatore non
-ridisegna il mondo pixel per pixel, ma ne tiene solo il riassunto che serve a
-decidere.
+Le strade viste finora sono due. Dyna immagina un passo alla volta e con quello
+aggiusta i propri giudizi; MuZero, al momento di decidere, si ferma ed esplora
+un albero di continuazioni. Ce n'è una terza, che il capitolo sui World Model
+racconta per esteso e che qui serve solo a completare il quadro: costruirsi un
+simulatore interno dell'ambiente (un **world model**) e allenare la strategia
+*interamente lì dentro*, senza mai fermarsi a pianificare.
+
+Perché questa terza via funzioni così bene c'è una ragione precisa, e sta nel
+fatto che anche il simulatore è una rete neurale. Una rete sa correggersi
+all'indietro: si parte da com'è andata a finire e si risale, un pezzo alla
+volta, fino ai numeri interni che hanno prodotto quel risultato. Ora, se il
+simulatore è una rete e il pilota pure, allora la catena all'indietro non si
+ferma alla fine della partita immaginata: risale lungo tutta la partita, mossa
+dopo mossa, fino alla prima. Il pilota impara quindi non solo *che* la manovra è
+finita male, ma anche *quale* dettaglio della manovra andava cambiato.
+
+Il simulatore, poi, non ridisegna il mondo puntino per puntino: ne tiene solo il
+riassunto che serve a decidere, e in gergo quel riassunto si chiama **latente**.
 
 `````{tab} Elementare
 
@@ -437,8 +458,8 @@ class ModelloDinamica(nn.Module):
 
 # Rollout BREVE immaginato (stile MBPO): parte da stati reali, pochi passi.
 modello = ModelloDinamica(dim_s=4, dim_a=1)
-policy = nn.Sequential(nn.Linear(4, 1), nn.Tanh())    # policy giocattolo
-s = torch.randn(32, 4)                                # 32 stati REALI dal buffer
+policy = nn.Sequential(nn.Linear(4, 1), nn.Tanh())    # strategia giocattolo
+s = torch.randn(32, 4)                                # 32 situazioni VERE gia' vissute
 for _ in range(3):                                    # orizzonte corto: 3 passi
     a = policy(s)                                     # (32, 1)
     s, r = modello(s, a)                              # transizioni SINTETICHE
@@ -454,15 +475,21 @@ chirurgica proprio quelle crepe: emergono policy che incassano ritorni
 immaginari altissimi e falliscono nel mondo vero. È il *model exploitation*, e
 nel capitolo sui World Model se ne vede l'esempio da manuale: l'agente che,
 dentro il proprio sogno di *Doom*, scopre movimenti per cui i mostri «non
-sparano mai». Il compromesso è strutturale: più ci si fida del modello
-(rollout lunghi, tutta la policy allenata nel sogno), più si guadagna in
-efficienza e più ci si espone al suo bias; più lo si tiene a bada (rollout
-corti ancorati a stati reali, ensemble che misurano l'incertezza), più si è
-robusti ma si torna a spendere esperienza vera. I metodi model-free, per
-contro, non hanno un modello da sfruttare e restano competitivi quando i
-campioni costano poco. Non c'è un vincitore assoluto: c'è una manopola, e
-sapere dove metterla (quanta fiducia concedere al sogno) è oggi materia di
-ricerca aperta.
+sparano mai».
+
+Il compromesso è strutturale, e si può leggere come una manopola. Girata da una
+parte c'è la fiducia: sogni lunghi, tutta la strategia allenata
+nell'immaginazione, pochissima esperienza vera spesa, e in cambio si eredita in
+pieno l'errore sistematico del simulatore. Girata dall'altra c'è la prudenza:
+sogni corti che partono da situazioni davvero visitate, e più simulatori
+addestrati in parallelo per vedere dove vanno d'accordo e dove no. Il
+disaccordo, di per sé, non dice quale abbia ragione; dice che i dati visti non
+bastavano a stabilirlo, e quindi che di quel pezzo di mondo nessuno sa
+abbastanza. È il modo più semplice di sapere dove non fidarsi. Si è più
+robusti, e si torna a spendere esperienza vera. I metodi model-free, per
+contro, non hanno nessun modello da sfruttare e restano competitivi quando i
+campioni costano poco. Non c'è un vincitore assoluto: c'è quella manopola, e
+sapere dove metterla è oggi materia di ricerca aperta.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare

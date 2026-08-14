@@ -6,12 +6,9 @@
   <rect x="90" y="60" width="600" height="124" rx="8" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2"/>
   <text x="106" y="86" font-family="Inter, system-ui, sans-serif" font-size="16" fill="#2D5A5C" font-weight="600">Misurato, e regge</text>
   <text x="106" y="106" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5A524A">vale su compiti diversi e su modelli diversi</text>
-  <rect x="106" y="120" width="168" height="34" rx="17" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="1.5"/>
-  <text x="190" y="142" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">esempi (few-shot)</text>
-  <rect x="290" y="120" width="168" height="34" rx="17" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="1.5"/>
-  <text x="374" y="142" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">formato esplicito</text>
-  <rect x="474" y="120" width="190" height="34" rx="17" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="1.5"/>
-  <text x="569" y="142" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">istruzioni specifiche</text>
+  <rect x="106" y="120" width="238" height="34" rx="17" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="1.5"/>
+  <text x="225" y="142" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">esempi svolti (few-shot)</text>
+  <text x="360" y="142" font-family="Inter, system-ui, sans-serif" font-size="12.5" fill="#5A524A">in cima ci arriva poco: una sola tecnica</text>
   <rect x="90" y="196" width="600" height="124" rx="8" fill="#F8F5EE" stroke="#C9A961" stroke-width="2"/>
   <text x="106" y="222" font-family="Inter, system-ui, sans-serif" font-size="16" fill="#C9A961" font-weight="600">Misurato, ma solo dove</text>
   <text x="106" y="242" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5A524A">matematica e simbolico: +12 e +14 punti; altrove quasi niente</text>

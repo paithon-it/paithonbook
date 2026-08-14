@@ -22,13 +22,13 @@ si rompe un vetro. È l'audio *oltre* la voce: non più «cosa hai detto», ma
 
 ## Dallo spettrogramma alla classe
 
-Il punto di partenza è l'estrazione delle feature vista nella prima sezione:
-dall'onda grezza allo **spettrogramma mel**, la versione compressa e
-«a misura d'orecchio» dello spettro che abbiamo descritto in
-[Dal suono alle feature](dal-suono-alle-feature.md). Una volta che
-il suono è quella tabella tempo–frequenza, classificarlo è un compito da rete
-convoluzionale, la stessa macchina che nel capitolo di visione riconosceva un
-gatto in una foto.
+Il punto di partenza è quello costruito nella prima sezione, [Dal suono alle
+feature](dal-suono-alle-feature.md): l'onda diventa una tabella con il tempo su
+un asse e le frequenze sull'altro, riletta come la sente un orecchio (lo
+**spettrogramma mel**). Da lì in avanti il suono non è più un suono, è
+un'immagine. E riconoscere un'immagine è il mestiere delle **reti
+convoluzionali**, in sigla CNN: la stessa macchina che nel capitolo di visione
+riconosceva un gatto in una foto.
 
 `````{tab} Elementare
 
@@ -42,6 +42,12 @@ finché non impara a collegare la sagoma al nome del suono. La cosa
 sorprendente è che non serve inventare un metodo nuovo: è lo *stesso* tipo di
 rete che riconosce i gatti nelle foto, perché ormai il suono, per lei, *è* una
 foto.
+
+E c'è un regalo in più, che viene proprio da quella somiglianza. Una rete che ha
+già passato mesi a guardare fotografie ha imparato a riconoscere bordi, macchie,
+righe, motivi che si ripetono: roba che sulla lastra sonora c'è eccome. Allora
+non si riparte da zero. Si prende quella rete e le si fanno vedere
+spettrogrammi finché non si riabitua, e in poco tempo diventa brava anche lì.
 
 `````
 
@@ -128,7 +134,8 @@ con metriche che confrontano gli intervalli predetti con quelli veri.
 
 Un modello vale quanto i dati su cui impara, e per i suoni del mondo il
 riferimento è **AudioSet**, pubblicato da Google nel 2017
-{cite}`gemmeke2017audioset`. La sua scala è ciò che ne cambia le regole.
+{cite}`gemmeke2017audioset`. Quello che lo rende diverso da tutto ciò che
+c'era prima non è come è fatto: è quanto è grosso.
 
 `````{tab} Elementare
 
@@ -147,9 +154,13 @@ sempre.
 
 `````{tab} Superiore
 
-AudioSet conta $2\,084\,320$ clip da 10 secondi e un'**ontologia** di 632
-categorie sonore organizzate a gerarchia; di queste, 527 formano il benchmark
-di classificazione standard su cui si confrontano i modelli. Le etichette sono
+L'articolo che presenta AudioSet {cite}`gemmeke2017audioset` descrive
+un'**ontologia** di 632 categorie sonore organizzate a gerarchia e una prima
+raccolta di $1\,789\,621$ segmenti da 10 secondi. La raccolta pubblicata è poi
+cresciuta oltre l'articolo, e la versione che si scarica oggi conta
+$2\,084\,320$ clip su 527 categorie: sono queste ultime a formare il benchmark
+di classificazione standard su cui si confrontano i modelli, e quando si citano
+quei due numeri la fonte è la pagina del dataset, non il paper. Le etichette sono
 **deboli** (*weak labels*): indicano la presenza di un suono nella clip, senza
 localizzazione temporale, ed essendo multi-etichetta si prestano naturalmente
 al setup sigmoide + BCE visto sopra. La metrica di riferimento non è
@@ -164,29 +175,45 @@ modello e il pre-addestramento della precisione di ogni singola annotazione.
 
 ## Quando l'attenzione arriva all'audio: l'AST
 
-Fino al 2021 la mappa era chiara: gli spettrogrammi si classificano con le CNN,
-punto. Poi è arrivato l'**Audio Spectrogram Transformer** (AST) di Gong, Chung
-e Glass {cite}`gong2021ast`, e ha tolto le convoluzioni dall'equazione.
+Fino al 2021 la mappa era chiara: gli spettrogrammi si classificano con le reti
+convoluzionali, punto. Poi è arrivato l'**Audio Spectrogram Transformer** (AST)
+di Gong, Chung e Glass {cite}`gong2021ast`, e ha buttato via proprio quelle. Le
+convoluzioni sono i **filtri che scorrono**: piccole griglie di numeri, larghe
+pochi quadretti, che passano sull'immagine un pezzetto alla volta cercando
+sempre la stessa cosa (un bordo, una macchia, una riga). Erano il pezzo di
+macchina attorno a cui tutto il resto era costruito.
 
 `````{tab} Elementare
 
-Ricordi il trucco con cui il Transformer ha imparato a guardare le foto? Si
-taglia l'immagine in tante tessere quadrate, si mettono in fila come le parole
-di una frase, e il modello impara a «guardare» le tessere lontane che contano:
-lo abbiamo visto con il [Vision
-Transformer](../Transformers/multimodalita.md). L'AST fa esattamente la stessa
-cosa, ma sulla radiografia del suono: taglia lo spettrogramma in tessere, le
-mette in fila e lascia che l'attenzione colleghi, per esempio, un colpo secco
-all'inizio con la sua eco un istante dopo, anche se sulla lastra sono lontani.
-Niente filtri che scorrono: solo tessere che si guardano tra loro.
+Torna il trucco con cui il Transformer ha imparato a guardare le foto. Si taglia
+l'immagine in tante tessere quadrate, le si mette in fila come le parole di una
+frase, e poi ogni tessera guarda tutte le altre e decide quali le interessano.
+Quel «guardare le altre e scegliere» è ciò che in questo libro si chiama
+**attenzione**, e lo abbiamo incontrato con il [Vision
+Transformer](../Transformers/multimodalita.md).
+
+L'AST fa la stessa identica cosa sulla radiografia del suono: taglia lo
+spettrogramma in tessere, le mette in fila e lascia che ciascuna guardi le
+altre, collegando per esempio un colpo secco all'inizio con la sua eco un
+istante dopo, anche se sulla lastra sono lontani. Niente filtri che scorrono:
+solo tessere che si guardano tra loro.
+
+Non è gratis, però, ed è la parte che di solito non si racconta. I filtri che
+scorrono portavano con sé un'idea già pronta (quello che conta sta vicino a
+quello che gli sta accanto), e a un modello che riceve un'idea in regalo bastano
+meno esempi per imparare. Le tessere quell'idea non ce l'hanno e se la devono
+costruire dai dati, quindi di esempi ne chiedono molti di più: addestrato da
+zero su poca roba, un Transformer audio resta dietro a una rete convoluzionale.
+La scappatoia è quella di prima: partire da una rete che ha già guardato milioni
+di **fotografie** e riadattarla agli spettrogrammi.
 
 `````
 
 `````{tab} Superiore
 
 L'AST applica un Transformer in stile ViT direttamente allo spettrogramma
-log-mel, senza alcuna convoluzione: è il primo modello di classificazione
-audio puramente attentivo. Lo spettrogramma viene suddiviso in **patch**
+log-mel, senza alcuna convoluzione, e si presenta come il primo modello di
+classificazione audio puramente attentivo. Lo spettrogramma viene suddiviso in **patch**
 $16 \times 16$ (parzialmente sovrapposte), ciascuna proiettata linearmente in
 un embedding e trattata come un token, con un *positional embedding* per la
 posizione tempo–frequenza; da lì in poi è il consueto stack di
@@ -210,26 +237,38 @@ abbondano.
 
 ## Un classificatore di suoni in miniatura
 
-I modelli di questa sezione girano su GPU e su milioni di clip; qui ne
-costruiamo una versione tascabile che gira sul portatile, per toccare con mano
-l'idea di **estrarre feature e decidere**. Non calcoleremo un vero
+I modelli di questa sezione girano su schede grafiche potenti (le **GPU**) e su
+milioni di clip; qui ne costruiamo una versione tascabile che gira sul
+portatile, per toccare con mano l'idea di **estrarre feature e decidere**. Non
+calcoleremo un vero
 spettrogramma, per quello c'è la pipeline di [Dal suono alle
 feature](dal-suono-alle-feature.md), ma partiremo dalla forma d'onda grezza e
 ne ricaveremo due caratteristiche elementari, finestra per finestra.
 
 `````{tab} Elementare
 
-Due misure, semplicissime. La prima è l'**energia**: quanto è «forte» il suono
-in quella finestra (grande quando l'onda oscilla ampia, quasi zero nel
+Prima una parola che tornerà in ogni riga: **finestra**. Non guardiamo mai il
+suono tutto insieme, lo tagliamo a fettine di qualche centesimo di secondo e
+misuriamo dentro ciascuna. Una fettina è una finestra, e le misure si rifanno da
+capo per ognuna.
+
+Le misure sono due, semplicissime. La prima è l'**energia**: quanto è «forte» il
+suono in quella finestra (grande quando l'onda oscilla ampia, quasi zero nel
 silenzio). La seconda è lo **zero-crossing rate**, che nella tabella qui sotto
-troverai abbreviato in `zcr`: quante volte l'onda
-attraversa lo zero, cioè passa dal positivo al negativo. Un tono basso e pieno
+troverai abbreviato in `zcr`: quanto spesso l'onda attraversa lo zero, cioè
+passa dal positivo al negativo. Non è un conteggio ma una frazione, e per questo
+esce sempre fra 0 e 1: vale $0{,}5$ se metà delle coppie di campioni vicini
+cambia segno, quasi $0$ se non cambia quasi mai. Un tono basso e pieno
 oscilla lentamente e attraversa lo zero *poche* volte; un sibilo o un rumore,
 fatto di frequenze alte, lo attraversa *tantissime* volte: è la differenza tra
-una «ooo» profonda e una «sss» sibilante. Con queste due sole misure possiamo
-già distinguere tre situazioni: silenzio (poca energia), tono (energia alta,
-pochi attraversamenti), rumore (energia intermedia, molto meno del tono e molto
-più del silenzio, ma tantissimi attraversamenti).
+una «ooo» profonda e una «sss» sibilante.
+
+Con queste due sole misure distinguiamo già tre situazioni, purché le si guardi
+**in ordine**. Prima l'energia: se è quasi zero c'è **silenzio**, e non serve
+chiedere altro. Se invece del suono c'è, allora si guarda quante volte l'onda
+attraversa lo zero: pochi attraversamenti vuol dire **tono**, tantissimi vuol
+dire **rumore**. L'ordine non è un dettaglio, come si vedrà fra poco guardando i
+numeri veri.
 
 `````
 
@@ -254,14 +293,15 @@ spettrali di [Dal suono alle feature](dal-suono-alle-feature.md).
 
 `````
 
-Generiamo un segnale sintetico in tre parti (un tono puro, del silenzio, del
-rumore) e classifichiamo ogni finestra con una regoletta a soglie. Il codice è
-NumPy puro e deterministico (seed fissato):
+Generiamo un segnale finto in tre parti (un tono puro, del silenzio, del
+rumore) e classifichiamo ogni finestra con una regoletta a soglie. Il generatore
+di numeri casuali parte da un valore fissato in partenza, così chi esegue il
+codice ottiene esattamente i numeri stampati qui sotto e non altri:
 
 ```python
 import numpy as np
 
-rng = np.random.default_rng(0)   # seed esplicito: risultato riproducibile
+rng = np.random.default_rng(0)   # punto di partenza fissato: numeri sempre uguali
 fs = 8000                        # frequenza di campionamento (Hz)
 dur = 0.15                       # durata di ogni segmento (secondi)
 n = int(fs * dur)                # campioni per segmento
@@ -281,7 +321,9 @@ def zcr(x):
     "Zero-crossing rate: frazione di cambi di segno tra campioni adiacenti."
     return float(np.mean(np.abs(np.diff(np.sign(x)))) / 2)
 
-L = 400  # lunghezza finestra: 400 campioni = 50 ms
+L = 400  # finestra: 400 campioni che qui, a 8 kHz, fanno 50 ms
+         # (nella prima sezione 400 campioni erano 25 ms perche' li' si
+         #  misurava 16.000 volte al secondo invece di 8.000)
 SOGLIA_E, SOGLIA_Z = 0.01, 0.20   # soglie di decisione
 
 def classifica(e, z):
@@ -299,7 +341,8 @@ for i in range(0, len(segnale) - L + 1, L):
     print(f"{i//L:>8} | {e:>9.4f} | {z:>6.3f} | {classifica(e, z)}")
 ```
 
-L'output mostra la separazione netta delle tre situazioni:
+L'output mostra come le due misure, prese in quest'ordine, separino le tre
+situazioni:
 
 ```text
 finestra |   energia |    zcr | classe
@@ -315,17 +358,38 @@ finestra |   energia |    zcr | classe
        8 |    0.0909 |  0.509 | rumore
 ```
 
-Il tono ha energia alta ($0{,}5$, la potenza media di una sinusoide di
-ampiezza 1) e ZCR bassissimo (una sinusoide a 200 Hz campionata a 8 kHz
-attraversa lo zero solo ogni 20 campioni: più il suono è acuto, più fitti sono
-quei passaggi, ed è tutto il legame fra questa misura e le frequenze). Il
-silenzio ha energia praticamente
-nulla, e la soglia sull'energia lo cattura *prima* di guardare lo ZCR, che nel
-fondo casuale è persino alto, ma non conta più. Il rumore ha energia
-intermedia e ZCR elevato. Due numeri per finestra e tre soglie: nessuna rete,
-eppure la logica è la stessa dei modelli grandi; *estrarre feature che
-separano le classi, poi decidere*. La differenza è che una CNN o un AST
-imparano le feature migliori da soli, invece di riceverle scritte a mano.
+Il tono ha energia $0{,}5$, e quel numero si può controllare: l'onda oscilla fra
+$-1$ e $1$, e la media dei quadrati di un'oscillazione regolare viene sempre
+esattamente la metà del quadrato del suo picco, qui $0{,}5$. (È lo stesso conto
+per cui i 230 volt della corrente di casa sono il valore *efficace* di un'onda
+che di picco arriva a 325.)
+
+Il suo zcr, invece, è bassissimo: $0{,}049$. Ecco il conto. Il tono del codice
+fa 200 oscillazioni al secondo e noi misuriamo 8.000 volte al secondo, quindi
+ogni oscillazione la campioniamo 40 volte ($8000$ diviso $200$). Ma ogni
+oscillazione attraversa lo zero **due** volte, una salendo e una scendendo:
+quindi un attraversamento ogni 20 campioni, e $1$ diviso $20$ fa $0{,}05$,
+cioè quello che troviamo nella tabella a meno degli arrotondamenti ai bordi.
+Più il suono è acuto, più fitti sono quei passaggi: è tutto il legame fra questa
+misura e le frequenze.
+
+Il silenzio ha energia praticamente nulla, e sullo zcr c'è una cosa che vale la
+pena guardare: vale circa $0{,}5$, cioè **quanto quello del rumore**. Non è una
+stranezza, è come l'abbiamo costruito: il nostro «silenzio» è rumore anche lui,
+solo trecento volte più piccolo. In un fondo così ogni minuscolo sbalzo casuale
+attraversa lo zero, esattamente come fanno gli sbalzi grossi del rumore vero.
+Contare gli attraversamenti, da solo, non li distingue affatto.
+
+E allora perché la regola funziona? Perché le due domande si fanno in un ordine
+preciso: prima l'energia, che manda il silenzio fuori gioco, e solo dopo lo zcr,
+che a quel punto deve separare soltanto il tono dal rumore, e lì la differenza è
+enorme ($0{,}05$ contro $0{,}5$, dieci volte). Una regola a soglie non è un
+elenco di condizioni: è una scaletta, e cambiare l'ordine la rompe.
+
+Due numeri per finestra e due soglie, nessuna rete, e la logica è già quella dei
+modelli grandi: *estrarre feature che separano le classi, poi decidere*. La
+differenza è che una rete convoluzionale o un AST le feature migliori se le
+imparano da soli, invece di riceverle scritte a mano.
 
 `````{tab} Elementare
 
@@ -369,10 +433,11 @@ imparano le feature migliori da soli, invece di riceverle scritte a mano.
 - **Etichetta singola** (una sola classe, softmax + cross-entropia) e
   **tagging multi-etichetta** (più suoni insieme, sigmoide + BCE) sono problemi
   diversi; il **rilevamento di eventi sonori** aggiunge il *quando*.
-- **AudioSet** {cite}`gemmeke2017audioset` (oltre 2 milioni di clip da 10 s,
-  527 classi di benchmark, etichette *deboli*) cambia le regole: contano scala
-  e pre-addestramento più della precisione della singola annotazione (metrica:
-  mAP).
+- **AudioSet** {cite}`gemmeke2017audioset` cambia le regole con la scala: il
+  paper definisce l'ontologia (632 categorie), la raccolta pubblicata arriva a
+  oltre 2 milioni di clip da 10 s su 527 classi di benchmark, con etichette
+  *deboli*. Contano scala e pre-addestramento più della precisione della
+  singola annotazione (metrica: mAP).
 - L'**Audio Spectrogram Transformer** {cite}`gong2021ast` applica un
   Transformer in stile ViT alle patch dello spettrogramma, senza convoluzioni;
   in cambio del campo recettivo globale, chiede molti dati o il transfer da

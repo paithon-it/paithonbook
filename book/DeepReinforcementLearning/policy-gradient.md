@@ -3,25 +3,39 @@
 Seul, marzo 2016. Alla trentasettesima mossa della seconda partita contro il
 campione Lee Sedol, il programma AlphaGo appoggia una pietra in un punto che
 nessun giocatore professionista avrebbe scelto: i commentatori pensano a un
-errore. Era invece una mossa che, secondo le stime del programma stesso, un
-umano avrebbe giocato circa una volta su diecimila. Lee Sedol si alza dal
-tavolo per un quarto d'ora. Quella mossa non era stata copiata da nessun
-archivio di partite: era il frutto di una *strategia* appresa giocando milioni
-di volte contro se stesso.
+errore. (Il Go si gioca appoggiando pietre bianche e nere sugli incroci di una
+griglia, e vince chi circonda più territorio.) Era invece una mossa che, secondo
+le stime del programma stesso, un umano avrebbe giocato circa una volta su
+diecimila. Lee Sedol si alza dal tavolo per un quarto d'ora. Quella mossa non
+era stata copiata da nessun archivio di partite: era il frutto di una
+*strategia* appresa giocando milioni di volte contro se stesso.
 
 Come si insegna a una macchina una strategia? Nei metodi basati sul valore,
 che abbiamo incontrato con il Q-learning, impariamo a stimare *quanto vale una
 situazione* e *quanto vale una mossa in quella situazione* (nel capitolo
-precedente le due stime si chiamavano $V$ e $Q$), e poi ne ricaviamo l'azione
-migliore scegliendo di volta in volta quella col valore più alto. I metodi a
-**gradiente di policy** ribaltano la prospettiva: invece di valutare e poi
-decidere, imparano *direttamente a decidere*. Il «gradiente» del nome è il modo
-in cui in matematica si chiama una pendenza: la direzione lungo cui una
-quantità cresce più in fretta, e quindi la direzione in cui conviene fare un
-passo. Qui la quantità che si vuole far crescere è la ricompensa, e a fare il
-passo sono i pesi della rete.
+precedente le due stime si chiamavano rispettivamente $V$ e $Q$), e poi ne
+ricaviamo l'azione migliore scegliendo di volta in volta quella col valore più
+alto. I metodi a **gradiente di policy** ribaltano la prospettiva: invece di
+valutare e poi decidere, imparano *direttamente a decidere*. Il «gradiente» del
+nome è il modo in cui in matematica si chiama una pendenza: la direzione lungo
+cui una quantità cresce più in fretta, e quindi la direzione in cui conviene
+fare un passo. Qui la quantità che si vuole far crescere è la ricompensa.
+
+E a fare il passo sono i **pesi** di una rete neurale: i numeri, dentro la rete,
+che decidono come una situazione si trasforma in una decisione. In tutta questa
+sezione, quando si dice che «la strategia cambia» o che «si fa un passo», si
+intende sempre questo: qualche milione di numeri che si sposta un pochino.
 
 ## Imparare la policy, non il valore
+
+Perché conviene ribaltare così la prospettiva? Per due motivi, e il primo è
+quello che regge mezzo capitolo: dare un voto a ogni mossa e poi prendere la
+migliore funziona finché le mosse si possono contare, e smette di funzionare
+quando la mossa è una quantità da dosare, come di quanto girare uno sterzo. Lì
+non c'è più un elenco da scorrere. Il secondo motivo è di tutt'altro genere: una
+strategia imparata così può *tirare i dadi*, cioè nella stessa situazione fare
+a volte una cosa e a volte un'altra, e contro un avversario che ti studia essere
+prevedibili è una condanna.
 
 `````{tab} Elementare
 
@@ -33,8 +47,10 @@ probabili i comportamenti che in passato hanno fruttato un premio, meno
 probabili quelli finiti male. Non calcoliamo un punteggio per poi decidere:
 regoliamo direttamente le probabilità con cui l'animale sceglie.
 
-Una **policy** è esattamente questo: una funzione che, data una situazione,
-dice con quale probabilità compiere ciascuna azione.
+Una **policy** è esattamente questo: data una situazione, dice con quale
+probabilità compiere ciascuna azione. In italiano si direbbe «strategia», ed è
+quello che vuol dire; il libro usa le due parole come sinonimi, perché *policy*
+è il termine che si legge dappertutto e conviene averlo in mano.
 
 `````
 
@@ -169,6 +185,10 @@ previsto" oppure "peggio del previsto". L'attore non deve più aspettare la fine
 della partita per sapere com'è andata: riceve un giudizio immediato a ogni
 passo e corregge subito la rotta. Impara più in fretta e in modo più stabile.
 
+Attore e critico non sono due persone, naturalmente: sono due reti neurali, che
+si allenano insieme sulla stessa partita. Una impara a decidere, l'altra impara
+a prevedere come andrà a finire.
+
 `````
 
 `````{tab} Superiore
@@ -232,17 +252,25 @@ affina le sue stime, l'attore le usa come segnale.
 
 ## A3C e PPO: gli algoritmi che funzionano davvero
 
-Su queste fondamenta poggiano gli algoritmi usati in pratica. **A3C**
-{cite}`mnih2016asynchronous` fa girare molti attori in parallelo su copie
-dell'ambiente, ciascuno che gioca la propria partita: siccome nello stesso
-istante stanno vivendo situazioni diverse fra loro, l'addestramento è più
-stabile, e nel frattempo si sfruttano tutti i core della CPU. La sigla sta per
-*Asynchronous Advantage Actor-Critic*, cioè attore-critico, con il vantaggio, e
-in parallelo: le tre cose appena dette. **PPO** (*Proximal Policy
-Optimization* {cite}`schulman2017proximal`) è l'algoritmo che oggi si prova per
-primo, e la ragione non è che sia il più potente: è che **perdona la taratura**,
-cioè funziona ragionevolmente su una gamma larga di problemi senza che qualcuno
-passi giorni a regolarne i parametri.
+Su REINFORCE e sull'attore-critico, messi insieme, poggiano i due algoritmi che
+si usano davvero.
+
+**A3C** {cite}`mnih2016asynchronous` fa giocare molte copie dell'agente
+insieme, ciascuna la propria partita in una copia sua del gioco. Il guadagno è
+lo stesso della memoria delle esperienze in DQN, ottenuto per un'altra strada.
+Lì si rimescolavano esperienze pescate da momenti lontani fra loro; qui le
+esperienze arrivano già diverse l'una dall'altra, perché nello stesso istante
+ogni copia si trova in un punto diverso della sua partita. La rete non si
+ritrova mai a correggersi dieci volte di fila su
+situazioni quasi identiche, e l'addestramento balla di meno. Come effetto
+collaterale, si usano tutti i processori della macchina invece di uno. La sigla
+sta per *Asynchronous Advantage Actor-Critic*: attore-critico, con il
+vantaggio, e in parallelo, cioè le tre cose appena dette.
+
+**PPO** (*Proximal Policy Optimization* {cite}`schulman2017proximal`) è
+l'algoritmo che oggi si prova per primo, e la ragione non è che sia il più
+potente: è che **perdona la taratura**, cioè funziona ragionevolmente su una
+gamma larga di problemi senza che qualcuno passi giorni a regolarne le manopole.
 
 ```{figure} ../figures/ppo-2017.svg
 :name: fig-ppo-clipping
@@ -250,28 +278,40 @@ passi giorni a regolarne i parametri.
 :width: 84%
 
 Il guinzaglio di PPO. Non impedisce di migliorare: toglie il premio a chi prova
-a migliorare troppo in una volta, per tenere l'aggiornamento vicino alla policy
-che ha generato i dati. È un incentivo, non un divieto, e la differenza conta.
+a migliorare troppo in una volta, per tenere l'aggiornamento vicino alla
+strategia che ha generato le partite. È un incentivo e non un divieto, e la
+differenza conta: niente impedisce all'aggiornamento di uscire dalla fascia,
+semplicemente uscirne non frutta più. La sezione ci torna sopra, perché il nome
+promette più di quanto mantenga.
 ```
 
-Il taglio disegnato in {numref}`fig-ppo-clipping` esiste perché i dati
-invecchiano in fretta. Le esperienze raccolte sono state generate dalla
-strategia vecchia, e dicono in che direzione conviene muoversi solo finché la
-nuova le somiglia; un passo troppo lungo userebbe dati che non descrivono più il
-comportamento dell'agente. La fascia disegnata attorno al punto di partenza è
-proprio quella somiglianza, misurata come rapporto fra la probabilità che la
-nuova strategia assegna a una mossa e quella che le assegnava la vecchia: un
-rapporto di $1$ vuol dire «non è cambiato niente», e la fascia disegnata va da
-$0{,}8$ a $1{,}2$, cioè un quinto in meno e un quinto in più: oltre quel bordo
-l'obiettivo smette di premiare, e quindi di spingere.
+Il guinzaglio di {numref}`fig-ppo-clipping` esiste perché le esperienze
+invecchiano in fretta. Le partite da cui l'agente sta imparando le ha giocate
+con la strategia di prima, non con quella che sta diventando: dicono in che
+direzione conviene muoversi, ma solo finché le due si somigliano ancora. Con un
+passo troppo lungo quei ricordi finiscono per descrivere il comportamento di
+qualcun altro.
+
+E quanto si somigliano si può misurare, mossa per mossa. Si guarda che
+probabilità le dava la strategia vecchia e che probabilità le dà la nuova, e si
+fa il rapporto fra le due: se la mossa aveva il $10\%$ e adesso ha il $12\%$ il
+rapporto vale $1{,}2$, se non è cambiato niente vale $1$. La fascia disegnata
+nella figura va appunto da $0{,}8$ a $1{,}2$, cioè un quinto in meno e un quinto
+in più.
+
+E che succede fuori da lì? Ricordiamo che tutto questo mestiere consiste nel far
+salire un numero, la ricompensa attesa, spostando i pesi della rete. Ecco: fuori
+dalla fascia quel numero smette di salire per quanto ci si sposti. Il passo
+successivo non è vietato, semplicemente non frutta più niente, e una rete che
+cerca il guadagno non ha nessun motivo di farlo.
 
 `````{tab} Elementare
 
 Il rischio, quando aggiorni una strategia, è esagerare: un solo passo troppo
 lungo può rovinare l'apprendimento di ore intere. PPO fa esattamente ciò che
-suggerisce il nome (*proximal*, "vicino"): cambia la policy solo di poco per
-volta, senza mai allontanarsi troppo da quella attuale. Piccoli passi prudenti,
-ma tanti.
+suggerisce il nome (*proximal*, «vicino»): fa in modo che allontanarsi molto
+dalla strategia attuale non convenga, così i passi vengono piccoli e prudenti.
+Piccoli, ma tanti.
 
 `````
 
@@ -386,15 +426,18 @@ che lo esegue è spesso più larga della distanza fra due algoritmi.
 
 ## Pensare prima di agire: la ricerca ad albero Monte Carlo
 
-Finora la policy ha sempre risposto d'istinto: stato dentro, azione fuori, un
-passaggio nella rete. Ma un giocatore forte, prima di muovere, **pensa**:
-prova mentalmente qualche continuazione, valuta dove porta, sceglie. Quel
-pensare ha un algoritmo, si chiama **ricerca ad albero Monte Carlo** (MCTS,
-dalle iniziali inglesi; e «Monte Carlo», come al casinò, è il nome che i
-matematici danno ai metodi che fanno i conti tirando a sorte), e
-il libro lo nominerà spesso da qui in avanti (AlphaGo, AlphaZero, MuZero, e i
-modelli linguistici che ragionano esplorando più strade). Vale la pena vederlo
-una volta per bene, anche perché è un vecchio amico travestito.
+Finora la strategia ha sempre risposto d'istinto: la situazione entra da un lato
+della rete, la mossa esce dall'altro, e in mezzo non c'è nessuna riflessione. Ma
+un giocatore forte, prima di muovere, **pensa**: prova mentalmente qualche
+continuazione, valuta dove porta, sceglie.
+
+Quel pensare ha un algoritmo, e si chiama **ricerca ad albero Monte Carlo**
+(MCTS, dalle iniziali inglesi; e «Monte Carlo», come al casinò, è il nome che i
+matematici danno ai metodi che fanno i conti tirando a sorte). Il libro lo
+nominerà spesso da qui in avanti: AlphaGo, AlphaZero, MuZero, e i modelli
+linguistici (i programmi che scrivono testo, come quelli dietro agli assistenti
+conversazionali) quando esplorano più ragionamenti prima di rispondere. Vale la
+pena vederlo una volta per bene, anche perché è un vecchio amico travestito.
 
 `````{tab} Elementare
 
@@ -506,29 +549,35 @@ ricerca invece che con un massimo esatto.
 `````
 
 L'idea è più generale del gioco da tavolo, ed è il motivo per cui conviene
-averla in tasca: **quando si può simulare, si può pensare**. MuZero la usa
-senza conoscere le regole, imparandosi da solo un modello del gioco che non
-ridisegna la scacchiera pezzo per pezzo ma ne tiene un riassunto interno (in
-gergo, **latente**), il minimo che serve per pianificarci dentro; la sezione sul
-RL basato su modello ci torna sopra. E i modelli linguistici che esplorano più
-catene di ragionamento prima di rispondere fanno, con altri nomi, la stessa
-cosa.
+averla in tasca: **quando si può simulare, si può pensare**. Il programma
+MuZero, per esempio, la usa senza nemmeno conoscere le regole del gioco: se le
+costruisce da solo, guardando le partite. E il modello che si costruisce non
+ridisegna la scacchiera pezzo per pezzo, ne tiene solo un riassunto interno, il
+minimo che serve per pianificarci dentro. La sezione sul RL basato su modello ci
+torna sopra. Anche i modelli linguistici che esplorano più catene di
+ragionamento prima di rispondere fanno, con altri nomi, la stessa cosa.
 
 ### In pratica: le visite si concentrano
 
 Che l'albero cresca storto non è un modo di dire, ed è la cosa più facile da
 verificare. Prendiamo un albero giocattolo: due strade a ogni bivio e quattro
 bivi in fila, cioè $2\times2\times2\times2 = 16$ finali possibili, ognuno con il
-suo valore. La migliore la nascondiamo in mezzo alle altre.
+suo valore. Il migliore lo mettiamo noi, nascosto in mezzo agli altri: la
+risposta giusta la sappiamo, l'algoritmo no, e il gioco è vedere se ci arriva.
+Due parole di gergo, che tornano nel codice e nei risultati: la **radice** è il
+punto di partenza dell'albero, le **foglie** sono le sue punte, cioè i sedici
+finali.
 
 Una precauzione, prima di leggere i numeri, e vale per tutto il resto del
-capitolo. Un algoritmo che a ogni passo tira dei dadi produce, a ogni ripetizione
-dell'esperimento, un risultato diverso: un numero solo non è una proprietà
-dell'algoritmo, è una proprietà di quella ripetizione. Quindi la ricerca qui
-sotto si lancia **sessanta volte**, cambiando ogni volta il numero da cui parte
-il generatore casuale (il *seme*), e di ciò che ne esce non si guarda un
-risultato, si guardano il valore di mezzo (la **mediana**: la metà delle
-sessanta prove sta sotto, l'altra metà sopra) e gli estremi.
+capitolo. Se lancio un dado una volta e fa sei, non posso dire che quel dado fa
+sempre sei: ho misurato quel lancio, non il dado. Lo stesso vale per un
+algoritmo che a ogni passo tira a sorte. Quindi la ricerca qui sotto si lancia
+**sessanta volte**, cambiando ogni volta il *seme*, cioè il numero da cui parte
+il sorteggio (dentro un computer il caso non è vero caso: è una sequenza
+calcolata, che dipende tutta da quel numero iniziale, e cambiarlo è il modo di
+rifare l'esperimento daccapo). Di ciò che ne esce non si guarda un risultato: si
+guardano il valore di mezzo (la **mediana**: la metà delle sessanta prove sta
+sotto, l'altra metà sopra) e gli estremi.
 
 ```python
 import math
@@ -616,7 +665,7 @@ Sul seme $7$, quello dell'esempio, il ramo che porta alla foglia buona riceve
 **1922 visite su 2000** e l'altro $78$: dopo poche decine di prove la ricerca ha
 smesso di sprecare tempo di là. In fondo all'albero, il $58\%$ di tutte le
 visite finisce sulla foglia migliore, contro il $6{,}2\%$ che le toccherebbe
-tirando a caso.
+tirando a caso, cioè una foglia su sedici.
 
 Su sessanta semi, però, quella quota ha **mediana $50{,}5\%$** e oscilla fra il
 $16\%$ e l'$89\%$; scartando le quindici prove più basse e le quindici più alte,
@@ -625,17 +674,18 @@ hanno mediana $1582$ e vanno da $593$ a $1965$, cioè il $1922$ del seme $7$ è
 vicino al massimo osservato. Peggio, in **nove semi su sessanta** il ramo più
 visitato alla radice non è quello che contiene la foglia migliore: la regola
 «si gioca la mossa più visitata», che poco fa abbiamo presentato come la scelta
-più solida, in quei casi sbaglia. Nove su sessanta è circa una volta su sette:
+più solida, in quei casi sbaglia. Nove su sessanta è quasi una volta su sei:
 abbastanza da ricordarsi che è una regola pratica e non un teorema, e che qui i
 giri di ricerca sono duemila mentre in una partita vera sono molti di più.
 
-Nessuna di queste cifre smentisce il punto della sezione, ed è esattamente
-questo il motivo per cui vanno riportate. La quota oscilla, la forma no:
-l'albero cresce storto su tutti e sessanta i semi, e mai una volta le visite si
-distribuiscono uniformemente. Un numero singolo a tre cifre avrebbe fatto
-sembrare l'algoritmo più preciso di quanto sia, e la regola della mossa più
-visitata più sicura di quanto sia; è il motivo per cui in deep RL i risultati si
-riportano su molte ripetizioni, e non su una.
+Nessuna di queste cifre smentisce il punto della sezione, e proprio per questo
+si possono riportare senza imbarazzo. La quota oscilla, la forma no: l'albero
+cresce storto su tutti e sessanta i semi, e mai una volta le visite si
+distribuiscono uniformemente. Ma se avessimo tenuto il solo numero del seme $7$,
+con la sua bella cifra decimale, l'algoritmo sarebbe sembrato più preciso di
+quanto sia, e la regola della mossa più visitata più sicura di quanto sia. È il
+motivo per cui in questo campo i risultati si riportano su molte ripetizioni, e
+non su una.
 
 ## Da AlphaGo ad AlphaZero
 
@@ -661,28 +711,43 @@ quel gradino sono ancora le partite umane; è il pezzo tratteggiato, ed è il
 primo che i successori toglieranno.
 ```
 
-Il ciclo di {numref}`fig-alphago` è il motivo per cui i suoi successori
-poterono fare a meno delle partite umane. Se la ricerca produce mosse migliori di quelle che
-le reti sanno proporre, allora il sistema ha una fonte di supervisione interna:
-non gli serve un maestro, gli basta giocare contro sé stesso e imparare da
-dove la ricerca lo ha portato. Le reti erano state addestrate prima su partite umane,
-poi affinate con RL giocando contro se stesse.
+Il ciclo di {numref}`fig-alphago` è il motivo per cui i successori di AlphaGo
+poterono fare a meno delle partite umane, e poggia su un fatto che vale la pena
+enunciare da solo: **la ricerca gioca meglio delle due reti che la guidano**. Se
+ci si pensa è quasi ovvio. La rete propone di getto, guardando la posizione; la
+ricerca, prima di decidere, prova per davvero migliaia di continuazioni. Quindi
+la mossa che esce dalla ricerca è quasi sempre migliore di quella che la rete
+avrebbe scelto da sola, ed è un esempio su cui la rete può allenarsi.
+
+Ecco la fonte di supervisione interna: non serve un maestro, basta giocare
+contro sé stessi e imparare da dove la ricerca ha portato. Nel 2016 AlphaGo
+questo giro lo faceva solo a metà: le sue due reti erano state prima addestrate
+su partite umane, e solo dopo affinate giocando contro se stesse. Quel gradino
+umano è il pezzo tratteggiato della figura, ed è il primo che cadrà.
 
 Un anno dopo, **AlphaGo Zero** {cite}`silver2017mastering` elimina persino le
 partite umane: parte dalle sole regole del Go e impara *tabula rasa*, dal
 nulla, soltanto affrontando copie di sé, fino a battere nettamente la versione
 che aveva sconfitto Lee Sedol. Nel 2018 **AlphaZero** {cite}`silver2018general`
-generalizza la ricetta: la stessa architettura, senza ritocchi per gioco,
-padroneggia Go, scacchi e shogi, e in tutti e tre batte il programma più forte
-del momento (nel Go, il suo stesso predecessore). È la dimostrazione più limpida
-di cosa nasce dall'unione di RL, ricerca ad albero e reti profonde.
+generalizza la ricetta: lo stesso programma, senza ritocchi per gioco,
+padroneggia Go, scacchi e shogi (gli scacchi giapponesi), e in tutti e tre batte
+il programma più forte del momento; nel Go, quel programma è il suo stesso
+predecessore. È la dimostrazione più limpida di cosa nasce dall'unione di
+apprendimento per rinforzo, ricerca ad albero e reti profonde.
 
 ## Un ultimo salto: allineare i modelli linguistici
 
 Lo stesso meccanismo (aumentare la probabilità di ciò che riceve un giudizio
-positivo) è oggi al cuore dell'addestramento dei modelli linguistici.
+positivo) è oggi al cuore dell'addestramento dei modelli linguistici, i
+programmi che stanno dietro agli assistenti conversazionali.
+
 **Allineare** un modello vuol dire portarlo a fare ciò che chi lo interroga
-intende davvero, e non solo ciò che gli riesce meglio.
+intende davvero. Non è scontato, perché un modello linguistico nasce sapendo
+fare una cosa sola: indovinare come prosegue un testo. A «spiegami perché il
+cielo è azzurro» un continuatore di testi può rispondere benissimo con un'altra
+domanda, o con l'indice di un libro di fisica: sono continuazioni plausibili, e
+non sono la risposta che si voleva. L'allineamento serve a chiudere quella
+distanza.
 
 ```{figure} ../figures/instructgpt-2022.svg
 :name: fig-instructgpt
@@ -708,8 +773,10 @@ apprezzano. La stessa idea che ha portato una macchina a giocare la mossa 37
 aiuta oggi un assistente a rispondere in modo utile e onesto.
 
 Il disegno comincia dagli ordinamenti, ma prima c'è un passo che non si vede:
-il modello viene addestrato a imitare risposte scritte da persone. È clonazione
-comportamentale, e la sezione sull'imitazione ci torna sopra per esteso.
+il modello viene addestrato a imitare risposte scritte da persone, cioè a
+copiare quello che avrebbe fatto qualcuno di bravo. Si chiama **clonazione
+comportamentale**, ed è la scorciatoia più ovvia di tutte: la sezione
+sull'imitazione ci torna sopra per esteso, e spiega perché da sola non basta.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
@@ -733,10 +800,11 @@ comportamentale, e la sezione sull'imitazione ci torna sopra per esteso.
   conviene, si prova un ramo nuovo, si tira fino alla fine e si riporta
   indietro il risultato. L'albero cresce **storto di proposito**, profondo
   dove promette e appena accennato altrove, e la mossa scelta è la **più
-  visitata**, non quella con la media più alta. Su sessanta ripetizioni
-  dell'esperimento l'albero cresce storto sempre, ma *quanto* storto cambia
-  parecchio da una prova all'altra: è il motivo per cui i risultati si contano
-  su molte prove e non su una.
+  visitata**, non quella con la media più alta. È però una regola pratica, non un
+  teorema: su sessanta ripetizioni dell'esperimento l'albero cresce storto
+  sempre, ma *quanto* storto cambia parecchio, e in nove casi su sessanta il
+  ramo più visitato è quello sbagliato. È il motivo per cui i risultati si
+  contano su molte prove e non su una.
 - **AlphaGo** e **AlphaZero** uniscono la strategia, la stima di chi sta
   vincendo e quella esplorazione ad albero. Nel 2016 la ricerca si fidava a
   metà della rete e a metà delle partite tirate a caso; solo con AlphaGo Zero,

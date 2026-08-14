@@ -223,7 +223,7 @@ preferisce pagare.
 
 La diagonale di {numref}`fig-curva-roc` è il termine di paragone che rende
 leggibile tutto il resto: è ciò che otterrebbe un modello che tira a
-indovinare. Più la curva se ne stacca verso l'alto, meglio va, e l'**AUC** è il
+indovinare. Più la curva sale verso l'angolo in alto a sinistra, meglio va, e l'**AUC** è il
 modo di ridurre quello «stacco» a un numero solo: è l'area che resta sotto la
 curva. Il suo pregio è di riassumere *tutte* le soglie, senza che se ne debba
 fissare una.

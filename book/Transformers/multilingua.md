@@ -38,25 +38,37 @@ un elenco delle lingue. Non gli fai vedere nemmeno una traduzione. Gli chiedi
 sempre e solo di indovinare le parole coperte, in un pentolone dove ogni
 tanto la frase è in italiano, ogni tanto in turco, ogni tanto in coreano.
 
-Una cosa sola cambia davvero, ed è la scatola dei mattoncini: il vocabolario di
-pezzi di parola è **uno solo per tutte le lingue**. Chi impacchetta i pezzi
-guarda cento lingue insieme e tiene i più utili complessivamente, così molti
-pezzi finiscono per essere condivisi (i numeri, i nomi propri, le radici
-latine e greche, i prefissi che l'italiano e lo spagnolo hanno in comune).
+Una cosa sola cambia davvero, ed è la scatola dei mattoncini. Prima di dare un
+testo a un modello lo si spezza in pezzi (i *token*), e l'elenco dei pezzi
+ammessi si decide una volta per tutte, all'inizio, con un programma che scorre
+i testi e tiene i frammenti che tornano più spesso. Qui quel programma li conta
+su cento lingue insieme invece che su una, e il risultato è **un elenco solo
+per tutte**: molti pezzi finiscono per essere condivisi, come i numeri, i nomi
+propri, le radici latine e greche, i prefissi che l'italiano e lo spagnolo
+hanno in comune.
 
-Resta un problema di dosi. Se dai al modello i testi in proporzione a quanti
-ce ne sono, l'inglese sommerge tutto e le lingue piccole spariscono: la
-Wikipedia inglese ha ordini di grandezza più voci di quella in curdo. Allora si
-bara sulle proporzioni, e si bara in modo controllato: alle lingue piccole si
-danno più turni di quanti gliene spetterebbero, e a quelle grandi meno, con una
-manopola che dice quanto appiattire. Girata a fondo, tutte le lingue avrebbero
-lo stesso numero di turni; lasciata ferma, ognuna avrebbe i turni che le
-toccano. La si mette in mezzo. Il primo modello multilingue costruito così (si
-chiama **mBERT**, e legge centoquattro Wikipedia) la gira poco: una lingua che
-vale l'uno per cento dei testi si ritrova il quattro per cento dei turni, cioè
-quasi quattro volte tanto. I modelli venuti dopo, che puntavano di più sulle
-lingue rare, la girano molto di più: la stessa lingua arriva al venti per
-cento.
+Resta un problema di dosi. Chiamiamo «turno» una frase estratta dal calderone e
+data in pasto al modello: l'addestramento è fatto di miliardi di turni, e ogni
+turno tocca a una lingua sola. Se le frasi si estraggono a caso, in proporzione
+a quante ce ne sono, l'inglese sommerge tutto e le lingue piccole spariscono:
+fra la Wikipedia inglese e quella in curdo il divario è di ordini di grandezza,
+cioè non di qualche volta ma di centinaia di volte. Allora si bara sulle
+proporzioni, e si bara in modo controllato: alle lingue piccole si danno più
+turni di quanti gliene spetterebbero, e a quelle grandi meno, con una manopola
+che dice quanto appiattire. Girata a fondo, tutte le lingue avrebbero lo stesso
+numero di turni; lasciata ferma, ognuna avrebbe i turni che le toccano. La si
+mette in mezzo, e la formula che traduce la posizione della manopola in numeri
+sta nella scheda accanto.
+
+Quanto in mezzo, non c'è un accordo. Il primo modello multilingue costruito
+così (si chiama **mBERT**, e legge centoquattro Wikipedia) la gira poco: una
+lingua che vale l'uno per cento dei testi si ritrova quasi il quattro per cento
+dei turni, cioè quasi quattro volte i suoi. I modelli venuti dopo, che
+puntavano di più sulle lingue rare, la girano molto di più: la stessa lingua
+arriva al venti per cento, venti volte i suoi. E la manopola conta, perché è quella che decide se
+al curdo, quando si compila l'elenco dei mattoncini, toccheranno pezzi di parola
+sensati o solo lettere sciolte; ma ogni turno regalato a una lingua rara è un
+turno tolto a una comune, e su dove metterla si litiga.
 
 `````
 
@@ -123,15 +135,31 @@ essendo in due lingue di cui al modello nessuno ha mai raccontato l'esistenza.
 
 Vale la pena essere precisi su *quanto* vicine, perché il modo in cui la cosa
 si misura è più interessante dello slogan. I due quartieri, quello italiano e
-quello inglese, non sono sovrapposti: sono **affiancati e paralleli**. Fra
-l'uno e l'altro c'è uno spostamento, e la scoperta è che quello spostamento
-dipende solo dalla **coppia di lingue** e non dalla frase: calcolato una volta
-come media su molte coppie, e applicato a una frase italiana qualsiasi, porta
-proprio dove sta la sua traduzione inglese. Non è dunque che le due frasi
-coincidano; è che le due lingue occupano due copie della stessa mappa. E la
-conseguenza pratica arriva subito: un programma addestrato a riconoscere
-qualcosa guardando gli indirizzi delle frasi inglesi funziona anche sugli
-indirizzi delle frasi italiane, perché la forma del quartiere è la stessa.
+quello inglese, non sono sovrapposti: sono **affiancati e paralleli**. Fra l'uno
+e l'altro c'è uno spostamento, e lo si misura nel modo più elementare che ci
+sia: si prendono mille frasi italiane con accanto la loro traduzione inglese, si
+guarda di quanto ciascuna coppia è distanziata sulla mappa, e di tutti quegli
+scarti si fa la media. La scoperta è che quella media *funziona*: sommata a una
+frase italiana qualsiasi, anche una che nelle mille non c'era, porta proprio nel
+punto dove sta la sua traduzione inglese. Lo spostamento, cioè, dipende solo
+dalla **coppia di lingue** e non dalla frase. Non è dunque che le due frasi
+coincidano; è che le due lingue occupano due copie della stessa mappa, una
+accanto all'altra.
+
+La conseguenza pratica arriva subito, e va enunciata con cura, perché lo
+spostamento appena descritto sembrerebbe mandarla all'aria. Se un programma
+impara a riconoscere qualcosa guardando dove cadono le frasi inglesi (dire se
+una recensione è arrabbiata, per esempio: impara che gli arrabbiati stanno da
+quella parte del quartiere inglese), lo stesso programma funziona anche sulle
+frasi italiane, pur senza aver mai visto una frase italiana e pur senza che
+nessuno gli tolga di mezzo lo spostamento. Il motivo è che **lo spostamento fra
+i due quartieri è piccolo rispetto alle distanze che contano dentro un
+quartiere**: separa l'italiano dall'inglese molto meno di quanto una recensione
+arrabbiata sia separata da una entusiasta. Il confine imparato in inglese, se
+lo si appoggia sul quartiere italiano, cade quindi ancora al posto giusto. Che
+poi non ci cada perfettamente è vero, ed è la ragione per cui il trasferimento
+funziona bene ma non benissimo: l'ultima sezione di questa pagina misura quanto
+si perde.
 
 `````{tab} Elementare
 
@@ -153,15 +181,17 @@ riusare la stessa struttura. Non allinea le lingue perché glielo chiediamo:
 allinea per avarizia, perché tenerle separate costerebbe più memoria di quanta
 ne abbia.
 
-Un indizio a favore viene dallo smontare il modello pezzo per pezzo: a contare
-sono i **piani della torre**, non i lettori in parallelo di ciascun piano. Con
-un lettore solo per piano il trasferimento fra lingue tiene ancora; con pochi
-piani crolla. È la profondità a costruire il pezzo di rappresentazione che le
-lingue hanno in comune.
+Un indizio a favore viene dallo smontare il modello pezzo per pezzo. Un
+modello, ricordiamolo, è una torre di piani uguali, e a ogni piano lavorano in
+parallelo otto lettori con l'evidenziatore (le *teste* di attenzione della
+seconda sezione). Si può togliere roba nell'una o nell'altra direzione, e i due
+tagli non si equivalgono: lasciando un lettore solo per piano il
+trasferimento fra lingue tiene ancora, mentre togliendo piani crolla. È la
+**profondità** a costruire il pezzo di rappresentazione che le lingue hanno in
+comune, non l'ampiezza.
 
 Detto onestamente: la questione è ancora aperta, e chi vi dice di sapere
-esattamente perché il modello degli esercizi a buchi multilingue (si chiama
-**mBERT**) funzioni sta semplificando.
+esattamente perché mBERT funzioni sta semplificando.
 
 `````
 
@@ -225,8 +255,9 @@ interlingua. Il che suggerisce che le rappresentazioni siano insieme
 
 ## Allinearlo di proposito
 
-Se l'allineamento emerge da solo, si può anche chiederlo esplicitamente. Le
-due strade seguite corrispondono a due granularità: il token e la frase.
+Se l'allineamento emerge da solo, si può anche chiederlo esplicitamente. Le due
+strade seguite si distinguono per la taglia di quel che si chiede di allineare:
+la prima lavora sulle singole parole, la seconda sulle frasi intere.
 
 `````{tab} Elementare
 
@@ -237,10 +268,11 @@ italiano, al modello conviene sbirciare nell'inglese, e viceversa. Non gli si
 dice «queste due sono la stessa cosa»: gli si rende conveniente scoprirlo.
 
 La seconda strada lavora su frasi intere e ha una forma che ritroverai più
-avanti, in un capitolo che parla di tutt'altro. Si prendono due lettori, si dà a
-uno la frase italiana e all'altro l'inglese, e si chiede: dato un mucchietto di
-frasi da una parte e il mucchietto mescolato delle loro traduzioni dall'altra,
-**appaiale**. Immaginalo come una griglia, le frasi italiane sulle righe e
+avanti, in un capitolo che parla di tutt'altro. Si prendono due modelli
+separati, uno che legge solo italiano e uno che legge solo inglese, e si chiede
+loro questo: dato un mucchietto di frasi da una parte e il mucchietto mescolato
+delle loro traduzioni dall'altra, **appaiale**. Immaginalo come una griglia, le
+frasi italiane sulle righe e
 quelle inglesi sulle colonne: in ogni casella si scrive quanto quelle due si
 somigliano, e si allena il modello a far venire i numeri grossi sulla diagonale
 (dove ogni frase incontra la sua traduzione) e piccoli dappertutto altrove. È la
@@ -303,12 +335,20 @@ Dal punto di vista di chi lavora, tutto questo serve a una procedura sola, e
 conviene enunciarla per intero perché è la ragione pratica per cui i modelli
 multilingui esistono.
 
-Si pre-addestra un modello su molte lingue. Lo si rifinisce su un compito
-usando i dati etichettati di **una lingua sola**, tipicamente l'inglese,
-perché è lì che i dataset stanno. Poi lo si usa su tutte le altre, **senza un
-solo esempio etichettato** in quelle lingue. Si chiama *zero-shot
-cross-lingual transfer*, e per una lingua come l'italiano, ricca ma non quanto
-l'inglese, è spesso la differenza fra avere un classificatore e non averlo.
+Si pre-addestra un modello su molte lingue, cioè gli si fa fare per settimane
+l'esercizio a buchi del pentolone. Poi lo si **rifinisce**, che vuol dire
+rimetterlo a studiare per poche ore su un compito preciso, con esempi che hanno
+accanto la risposta giusta scritta da una persona: gli si spostano gli stessi
+numeri interni di prima, solo di pochissimo e in una direzione sola. Quegli
+esempi con la risposta accanto si chiamano **dati etichettati**, e una raccolta
+di dati etichettati si chiama un **dataset**.
+
+Il punto è che per rifinire basta **una lingua sola**, tipicamente l'inglese,
+perché è lì che i dataset stanno. Poi si usa il modello su tutte le altre,
+**senza un solo esempio etichettato** in quelle lingue: si chiama *zero-shot
+cross-lingual transfer*, «trasferimento fra lingue a zero esempi», e per una
+lingua come l'italiano, ricca ma non quanto l'inglese, è spesso la differenza
+fra avere un programma che funziona e non averlo.
 
 Due avvertenze, che non si trovano nei tutorial.
 
@@ -323,20 +363,28 @@ qui non viene cancellato un compito precedente ma una proprietà emersa per
 conto suo lungo la strada; e si attenua continuando a far fare al modello, in
 sottofondo, anche il vecchio esercizio a buchi mentre impara il compito nuovo.
 
-La seconda: il trasferimento non è uniforme, ed è più facile fra lingue con la
-stessa struttura sintattica. Il salto fra lingue soggetto-verbo-oggetto
-(italiano, inglese, francese) è molto più agevole di quello verso lingue
-soggetto-oggetto-verbo (turco, coreano, giapponese): sull'etichettatura delle
-parti del discorso, l'unica misurata su questa griglia da Pires e colleghi, il
-punteggio è la percentuale di parole a cui il modello assegna l'etichetta
-giusta, e si passa da 81,6 su cento restando dentro il gruppo SVO a 66,5
-uscendone. La tabella
-per intero dice però una cosa più precisa di «stessa struttura, salto facile»:
-da SOV a SOV si ottiene 64,2, da SOV a SVO 64,0, cioè lo stesso. Non c'è
-simmetria, e il caso facile non è «le lingue che si somigliano»: è **SVO verso
-SVO**, che è anche il caso in cui casca l'italiano. Chi misura la resa
-sull'italiano e ne deduce la resa «sulle altre lingue» sta misurando la cosa
-più facile che c'era da misurare.
+La seconda: il trasferimento non è uniforme, e il modo in cui non lo è riserva
+una sorpresa. Le lingue si possono raggruppare per l'ordine in cui mettono le
+parole in una frase: l'italiano, l'inglese e il francese sono lingue **SVO**,
+soggetto-verbo-oggetto («il gatto morde il cane»); il turco, il coreano e il
+giapponese sono lingue **SOV**, soggetto-oggetto-verbo, e direbbero «il gatto
+il cane morde». Pires e colleghi hanno misurato il trasferimento in tutte e
+quattro le combinazioni possibili, sull'etichettatura delle parti del discorso
+(per ogni parola, dire se è nome, verbo o aggettivo), e il punteggio è la
+percentuale di parole etichettate giuste, mediata su tutte le coppie di lingue
+di ciascun gruppo. Rifinendo su una lingua del primo gruppo e usando su
+un'altra del primo gruppo si ottiene 81,6; rifinendo sul primo e usando sul
+secondo si scende a 66,5.
+
+Fin qui sembra la solita morale, «lingue simili, salto facile». Le altre due
+combinazioni la smentiscono: rifinendo su una lingua SOV e usando su un'altra
+SOV si ottiene 64,2, e rifinendo su una SOV per usare su una SVO si ottiene
+64,0, cioè lo stesso numero. Fra due lingue costruite allo stesso modo, dunque,
+il salto è facile in un caso e non nell'altro: non c'è simmetria, e il caso
+facile non è «le lingue che si somigliano», è **partire da una lingua SVO**,
+che è poi il caso in cui casca l'italiano. Chi misura la resa sull'italiano e
+ne deduce la resa «sulle altre lingue» sta misurando la cosa più facile che
+c'era da misurare.
 
 ## La maledizione della multilingualità
 
@@ -397,13 +445,17 @@ funzionanti senza avere dataset italiani di dimensioni comparabili.
 
 Ma la stessa comodità nasconde due cose. La prima è che *funziona meglio del
 previsto* non vuol dire *funziona come in inglese*: il divario esiste, ed è
-sistematicamente più grande sui compiti che dipendono dalla morfologia, che in
-italiano è più ricca. La seconda è che le lingue davvero minoritarie, incluse
-quelle di questo paese, non godono di nulla di tutto ciò: non hanno il testo
-per entrare nel vocabolario condiviso, e la maledizione della multilingualità
-fa il resto. La copertura linguistica dei modelli è, in buona misura, la
-mappa di quali lingue hanno un'abbondante presenza scritta online, che non è la
-mappa di quali lingue si parlano.
+sistematicamente più grande dove conta la **morfologia**, cioè il modo in cui
+una parola cambia forma. In inglese il verbo «to walk» fa «walk», «walks»,
+«walked», «walking»: quattro forme. In italiano «camminare» ne fa una
+cinquantina, e il modello deve imparare che sono tutte lo stesso verbo, con
+molti meno esempi per ciascuna. La seconda è che le lingue davvero minoritarie
+non godono di nulla di tutto ciò: il sardo, il friulano, il ladino, il
+napoletano scritto non hanno abbastanza testo online per meritarsi pezzi propri
+nell'elenco dei mattoncini, e la maledizione della multilingualità fa il resto.
+La copertura linguistica dei modelli è, in buona misura, la mappa di quali
+lingue hanno un'abbondante presenza scritta online, che non è la mappa di quali
+lingue si parlano.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare

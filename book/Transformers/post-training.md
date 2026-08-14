@@ -1,31 +1,37 @@
 # Dopo il pre-addestramento: istruzioni, preferenze, allineamento
 
 Prova a chiedere a un modello *solo* pre-addestrato: «Scrivi una poesia sul
-mare». Una risposta perfettamente plausibile è: «— disse la maestra alla
-classe, richiudendo il registro». Non è un guasto: è il compito che gli
-abbiamo insegnato. Un modello pre-addestrato **completa** il testo nel modo
-più probabile, e sul web quella frase compare più spesso dentro un racconto
-scolastico che all'inizio di una poesia. GPT-3 {cite}`brown2020language` era
+mare». Una risposta perfettamente plausibile è: «disse la maestra alla classe,
+richiudendo il registro». Sembra una presa in giro e non lo è: il modello ha
+trattato la tua richiesta come una battuta pronunciata da qualcuno dentro un
+racconto, e ha scritto quello che nel racconto viene dopo. Non è un guasto, è
+il compito che gli abbiamo insegnato. Un modello pre-addestrato **completa** il
+testo nel modo più probabile, e sul web una frase così compare più spesso in
+mezzo a una scena scolastica che in cima a una poesia. GPT-3 {cite}`brown2020language` era
 esattamente questo: un completatore geniale, capace di proseguire qualunque
 testo, ma senza la minima nozione di cosa significhi *rispondere* a qualcuno.
 
 Tra GPT-3 (2020) e ChatGPT (novembre 2022) il salto che tutti hanno percepito
-non è (o non è solo) questione di scala. È il **post-training**: una seconda
+non è (o non è solo) questione di taglia. È il **post-training**: una seconda
 fase di addestramento, molto più corta e mirata, che trasforma il completatore
-in un assistente. La prova più eloquente sta nel paper di InstructGPT
-{cite}`ouyang2022training`, il fratello maggiore di ChatGPT: nelle valutazioni
-umane, le risposte di un modello da 1,3 miliardi di parametri rifinito con il
-post-training venivano *preferite* a quelle del GPT-3 da 175 miliardi (un
-modello più di cento volte più grande). Quel che manca al gigante non sono le
-conoscenze: è la disposizione a usarle per aiutarti.
+in un assistente. La prova più eloquente sta nell'articolo su InstructGPT
+{cite}`ouyang2022training`, il fratello maggiore di ChatGPT. Si misura la taglia
+di questi modelli contando i numeri che regolano mentre imparano, i
+**parametri**: ebbene, davanti a valutatori in carne e ossa, le risposte di un
+modello da 1,3 miliardi di parametri passato per il post-training venivano
+*preferite* a quelle del GPT-3 da 175 miliardi, cioè a un modello più di cento
+volte più grande. Quel che manca al gigante non sono le conoscenze: è la
+disposizione a usarle per aiutarti.
 
-La ricetta, schematizzata in {numref}`fig-post-training-pipeline`, ha due
-mosse principali: prima si insegna il *formato* con esempi svolti
-(l'**instruction tuning**), poi si affina il *gusto* con i giudizi umani
-(l'apprendimento dalle **preferenze**, via reinforcement learning o con la
-scorciatoia DPO). Chiuderemo con un terzo ingrediente, più recente: spendere
-più calcolo *al momento della risposta*, facendo «ragionare» il modello prima
-di rispondere.
+La ricetta, schematizzata in {numref}`fig-post-training-pipeline`, ha due mosse
+principali: prima si insegna il *formato* con esempi svolti (l'**instruction
+tuning**), poi si affina il *gusto* con i giudizi delle persone (l'apprendimento
+dalle **preferenze**, per cui esistono due strade, quella lunga e la scorciatoia
+che si chiama DPO). In mezzo alle due ci fermeremo su un problema di puro
+ingombro, cioè come si fa a rifinire un modello quando i suoi numeri non stanno
+nella memoria che si ha. E chiuderemo con un terzo ingrediente, più recente:
+spendere più calcolo *al momento della risposta*, facendo «ragionare» il modello
+prima di rispondere.
 
 ```{figure} ../figures/post-training-pipeline.svg
 :name: fig-post-training-pipeline
@@ -76,6 +82,13 @@ la cosa da fare non è continuarla, ma eseguirla. È un tirocinio
 sorprendentemente breve (migliaia di esempi contro i miliardi di frasi della
 biblioteca) proprio perché non aggiunge sapere: orienta quello che c'è già.
 
+Il tirocinio però ha un limite preciso, e conviene vederlo subito perché è la
+ragione per cui la storia non finisce qui: l'apprendista impara a **imitare** i
+compiti svolti, non a distinguere un lavoro eccellente da uno appena
+accettabile. Nessuno gli ha mai fatto vedere due risposte con scritto quale
+delle due è meglio. E per moltissime richieste (la poesia sul mare, appunto)
+non esiste *la* risposta giusta da fargli copiare.
+
 `````
 
 `````{tab} Superiore
@@ -112,15 +125,28 @@ su questa asimmetria.
 
 ## Adattare senza riaddestrare tutto: LoRA
 
-Prima di proseguire, un problema pratico. Tutto quello che abbiamo descritto
-(e tutto ciò che segue) presuppone di poter aggiornare i pesi del modello. Ma
-un modello da $7$ miliardi di parametri a $32$ bit occupa circa $28$ GB solo
-per i pesi (quattro byte a parametro) e l'addestramento ne richiede il triplo
-abbondante: perché mentre impara, oltre al valore di ogni peso, bisogna tenere
-in memoria di quanto e in che direzione va corretto, più un paio di medie che
-l'algoritmo di ottimizzazione si porta dietro per non sobbalzare a ogni passo.
-Tre o quattro copie della stessa tabella, insomma. Fuori dai laboratori, quasi
-nessuno può permetterselo.
+Prima di proseguire, un problema pratico che tutto quel che precede e tutto
+quel che segue danno per risolto: per rifinire un modello bisogna poterne
+riscrivere i numeri interni, e quei numeri sono tanti.
+
+Il conto si fa in tre passaggi. Un modello «da sette miliardi» ha sette
+miliardi di numeri da tenere, e ciascuno, nel formato più comune, occupa quattro
+caselle di memoria (quattro *byte*): sono ventotto miliardi di caselle, e un
+miliardo di caselle è un **gigabyte**, quindi **28 GB** solo per tenerlo fermo.
+
+Per farlo imparare, però, servono altre tre tabelle grandi uguali. La prima dice,
+per ogni numero, di quanto e in che direzione andrebbe corretto. Le altre due
+servono all'algoritmo che poi lo sposta, che per non sobbalzare a ogni singolo
+esempio non guarda solo la correzione di adesso ma la media delle ultime: una
+tabella tiene la media di quelle correzioni, l'altra la media di quanto erano
+grandi, che gli serve per capire quali numeri sono agitati e vanno mossi con
+prudenza. Quattro copie della stessa tabella, dunque, **oltre cento gigabyte**.
+
+E la parola che manca è dove devono starci. Non nel disco del computer, dove
+cento gigabyte non sono niente, ma nella memoria di una **scheda grafica**, il
+processore che fa i conti: le schede più diffuse ne hanno fra le otto e le
+ventiquattro, le più costose ottanta. Fuori dai laboratori, per un modello che
+in questo campo è fra i piccoli, quasi nessuno può permetterselo.
 
 ```{figure} ../figures/lora-fine-tuning-efficiente.svg
 :name: fig-lora
@@ -151,19 +177,23 @@ sono troppe.
 **LoRA** (*Low-Rank Adaptation*) {cite}`hu2022lora` parte da
 un'osservazione: quando adatti un modello già addestrato a un compito nuovo,
 quelle caselle non cambiano alla rinfusa. Si spostano poco, e le loro variazioni
-sono molto ripetitive, nel senso che si possono ricostruire quasi tutte a
-partire da poche righe di base.
+sono molto **ripetitive**: se guardi la tabella delle sole correzioni, le sue
+righe si somigliano moltissimo fra loro, tanto che quasi tutte si possono
+ottenere da un pugno di righe di base, mescolandole in dosi diverse. Un esempio
+minuscolo rende l'idea: una tabella di mille righe in cui ogni riga è una
+qualche moltiplicazione di due sole righe modello non ha mille righe da
+imparare, ne ha due più i moltiplicatori.
 
 Ed è esattamente quello che LoRA fa. La tabella grande la congela, non la tocca
-più; accanto le mette due tabelle **sottili** (una da quattromila righe per
-otto colonne, l'altra da otto righe per quattromila colonne), e impara solo
-quelle. Moltiplicandole fra loro, con la regola di moltiplicazione delle
-tabelle, il risultato è di nuovo una tabella quattromila per quattromila: la
-stessa dimensione dell'originale, che quindi le si può sommare sopra. Ma i
-numeri da imparare erano $4000 \times 8 + 8 \times 4000$, cioè sessantaquattromila
-invece di sedici milioni: quattro per mille. Il numero otto è la manopola, e si
-chiama **rango**: più è alto, più la correzione può essere ricca, e più numeri
-ci sono da imparare.
+più; accanto le mette due tabelle **sottili**, una da quattromila righe per
+otto colonne e una da otto righe per quattromila colonne, e impara solo quelle.
+Esiste un modo standard di moltiplicare due tabelle fra loro (lo stesso che il
+capitolo di matematica chiama prodotto di matrici) e da quelle due, moltiplicate
+in quest'ordine, ne esce una quattromila per quattromila: la stessa forma
+dell'originale, e quindi le si può sommare sopra. Ma i numeri da imparare erano
+$4000 \times 8 + 8 \times 4000 = 64\,000$ invece di sedici milioni, cioè lo
+$0{,}4\%$. Le otto colonne sono la manopola, e si chiamano il **rango**: più è
+alto, più la correzione può essere ricca, e più numeri ci sono da imparare.
 
 L'analogia è il lucido da architetto: la pianta originale resta intatta, tu
 disegni le modifiche su un foglio trasparente sovrapposto. Puoi tenere molti
@@ -354,22 +384,34 @@ un modello addestrato a imitare i gusti di valutatori in carne e ossa.
 ## DPO: imparare dalle preferenze senza il giudice
 
 L'RLHF funziona, ma è un cantiere pesante. In memoria, tutte insieme, devono
-starci quattro reti: quella che sta imparando a rispondere, una copia congelata
-di com'era prima (serve a misurare quanto si sta allontanando), il giudice
-artificiale che dà i voti, e una quarta che prova a indovinare in anticipo che
-voto arriverà, perché l'algoritmo di apprendimento per rinforzo ne ha bisogno
-per capire se una risposta è andata meglio o peggio del previsto. Tre di queste
-quattro sono state addestrate, se si conta il giudice, che però si allena in
-una fase a parte: dentro il ciclo vero e proprio se ne aggiornano due, quella
-che risponde e quella che indovina il voto. Il resto sta lì e occupa memoria. E
-l'apprendimento per rinforzo su testo è
-notoriamente capriccioso da stabilizzare. Nel 2023 Rafailov e colleghi
-{cite}`rafailov2023direct` mostrano che si può arrivare quasi allo stesso
-punto con una semplice loss supervisionata. Il sottotitolo del paper è già la
-tesi: *Your Language Model is Secretly a Reward Model*; il tuo modello di
-linguaggio
-è, a sua insaputa, già un reward model. Il metodo si chiama **DPO** (*Direct
-Preference Optimization*).
+starci **quattro reti**. La prima è quella che sta imparando a rispondere. La
+seconda è una copia congelata di com'era prima di cominciare, e serve alla
+regola d'oro appesa in cucina: per sapere di quanto il cuoco si sta allontanando
+dalla ricetta di partenza bisogna avere sotto mano la ricetta di partenza, e
+questo costa una copia intera del modello. La terza è il giudice artificiale che
+dà i voti. La quarta prova a indovinare in anticipo il voto che arriverà, e
+sembra un capriccio ma non lo è: sapere che una risposta ha preso sette non dice
+niente se non si sa che cosa ci si aspettava. Sette dove si sperava in cinque è
+un successo e va premiato, sette dove si sperava in nove è un passo indietro.
+
+Quattro reti in memoria, e ciascuna che può guastare le altre: se il giudice
+sbaglia, la prima impara a compiacerlo; se la quarta stima male, la prima riceve
+premi e punizioni fuori misura. Non stupisce che addestrare così un modello di
+linguaggio sia notoriamente instabile, nel senso preciso che due addestramenti
+fatti con gli stessi ingredienti possono finire uno bene e uno male. Nel 2023
+Rafailov e colleghi
+{cite}`rafailov2023direct` mostrano che si può arrivare quasi allo stesso punto
+con un normale addestramento a esempi svolti, come il tirocinio di poco fa. Il
+sottotitolo del loro articolo è già la tesi: *Your Language Model is Secretly a
+Reward Model*, il tuo modello di linguaggio è, a sua insaputa, già un giudice.
+
+Dietro c'è un'osservazione che si può dire in italiano. Chiedersi «quanto piace
+questa risposta?» e chiedersi «quanto questo modello la ritiene più probabile di
+quanto la ritenesse prima?» risulta, a conti fatti, la stessa domanda: se il
+modello ha imparato dai giudizi, il suo voto è già scritto in quanto si è mosso
+rispetto al punto di partenza. E se il voto è già lì dentro, la rete che lo dà
+non serve. Il metodo si chiama **DPO** (*Direct Preference Optimization*,
+ottimizzazione diretta delle preferenze).
 
 `````{tab} Elementare
 
@@ -381,8 +423,8 @@ confronti. Per ogni coppia già valutata (piatto preferito, piatto scartato),
 ritocca la ricetta in modo da rendere un po' più probabile il preferito e un
 po' meno probabile lo scartato. E il ritocco è dosato con intelligenza: se il
 cuoco *già* favorisce il piatto giusto, il confronto non insegna quasi nulla e
-la correzione è minima; se invece sta ancora dalla parte sbagliata, la
-correzione è energica. Anche la regola d'oro sopravvive, incorporata nel
+la correzione è minima; se invece è ancora in pareggio, o peggio sta dalla parte
+sbagliata, la correzione è energica. Anche la regola d'oro sopravvive, incorporata nel
 metodo: i ritocchi si misurano sempre *rispetto alla ricetta di partenza*,
 così il cuoco migliora senza stravolgere. Stessa destinazione dell'RLHF, senza
 l'intermediario, e senza il cantiere.
@@ -459,19 +501,27 @@ La loss DPO è così compatta che possiamo scriverla per intero. Prima però
 serve capire in che unità di misura sono scritti i numeri che seguono, perché
 sono tutti negativi e a prima vista sembrano andare al contrario.
 
-La probabilità che un modello dia a una risposta intera è il prodotto delle
-probabilità dei suoi token, e moltiplicando cinquanta numeri minori di uno si
-ottiene una cifra come $0{,}000000\ldots$: impronunciabile, e per un computer
-indistinguibile da zero. Si passa allora al **logaritmo**, che trasforma i
-prodotti in somme e schiaccia quelle scale impossibili in numeri maneggevoli.
-Il logaritmo di una probabilità è sempre **negativo** (perché le probabilità
-sono minori di uno) e vale zero solo per la certezza assoluta. La regola di
-lettura è dunque questa: **più il numero è vicino a zero, più il modello è
-convinto**. $-11{,}9$ è una risposta che il modello considera più probabile di
-una da $-12{,}3$, esattamente come $-3$ gradi è più caldo di $-8$.
+Una risposta è fatta di tante parole in fila, e perché esca *quella* risposta
+devono uscire tutte: la sua probabilità è il prodotto delle probabilità delle
+sue parole, una per una. Moltiplicando cinquanta numeri minori di uno si ottiene
+però una cifra come $0{,}000000\ldots$, con decine di zeri: impronunciabile, e
+per un computer indistinguibile da zero. Si passa allora al **logaritmo**, che è
+un modo di riscrivere i numeri per cui i prodotti diventano somme e le scale
+impossibili diventano maneggevoli: $0{,}001$ diventa $-6{,}9$, e
+$0{,}000001$ diventa $-13{,}8$, cioè il doppio. Siccome le probabilità sono
+sempre minori di uno, il loro logaritmo è sempre **negativo**, e vale zero solo
+per la certezza assoluta.
 
-La funzione riceve queste log-probabilità totali delle risposte, sotto la
-policy e sotto il riferimento:
+La regola di lettura è dunque questa: **più il numero è vicino a zero, più il
+modello è convinto**. $-11{,}9$ è una risposta che il modello considera più
+probabile di una da $-12{,}3$, esattamente come $-3$ gradi è più caldo di $-8$.
+Basta questa regola per leggere i numeri che seguono.
+
+La funzione qui sotto riceve quattro liste di questi numeri: quanto il modello
+che sta imparando (il cuoco) ritiene probabile la risposta preferita e quella
+scartata, e quanto le riteneva probabili la copia congelata di partenza (la
+ricetta). Chi non legge Python può saltare il blocco: il commento ai numeri,
+subito dopo, è in italiano.
 
 ```python
 import torch
@@ -498,31 +548,47 @@ logp_w_ref    = torch.tensor([-12.5, -46.0,  -8.9, -30.5])
 logp_l_ref    = torch.tensor([-11.7, -46.5,  -9.1, -30.1])
 
 print(dpo_loss(logp_w_policy, logp_l_policy, logp_w_ref, logp_l_ref))
-# tensor(0.6548): poco sotto log(2) ~ 0.693, apprendimento appena iniziato
+# tensor(0.6548): poco sotto 0.693, apprendimento appena iniziato
 ```
 
+Quello $0{,}693$ non è un numero a caso, ed è facile vedere da dove viene.
+Quando il modello è in perfetto pareggio su una coppia, cioè quando alla domanda
+«quale delle due preferisci?» risponde «una vale l'altra», dà a ciascuna
+probabilità $1/2$; e la funzione qui sopra restituisce il logaritmo di quella
+probabilità cambiato di segno, cioè $0{,}693$, che è appunto quanto vale il
+logaritmo di 2. È il voto di chi non ha ancora imparato niente. Ottenerne
+$0{,}655$, appena sotto, vuol dire che il modello sta cominciando a piegarsi
+dalla parte giusta e non ha ancora fatto molta strada. Man mano che impara il
+numero scende verso lo zero.
+
 I numeri fittizi nascondono un dettaglio istruttivo, e adesso si può leggere.
-Nella prima coppia la policy, in assoluto, considera più probabile la risposta
+Nella prima coppia il cuoco, in assoluto, considera più probabile la risposta
 *scartata* ($-11{,}9$ contro $-12{,}3$: ricorda, più vicino a zero vuol dire più
 convinto). Alla DPO però non importa il valore assoluto, importa il **movimento
-rispetto al punto di partenza**: rispetto al riferimento la preferita ha
+rispetto al punto di partenza**: rispetto alla ricetta congelata la preferita ha
 guadagnato terreno ($-12{,}3$ contro $-12{,}5$, cioè $+0{,}2$) e la scartata ne
 ha perso ($-11{,}9$ contro $-11{,}7$, cioè $-0{,}2$), quindi un divario di
 $0{,}4$ a favore della preferita: sta andando nella direzione giusta, anche se
-non è ancora arrivata. Nella quarta coppia i due movimenti si equivalgono: è la
-coppia «non ancora imparata», quella su cui la correzione spinge di più.
+non è ancora arrivata. Nella quarta coppia, invece, i due movimenti si
+equivalgono ($+0{,}3$ e $+0{,}3$): il cuoco è rimasto in pareggio, non ha
+imparato niente da quel confronto, ed è la coppia su cui la correzione spinge di
+più.
 
 E il tirocinio sugli esempi svolti? Non merita codice nuovo: è il normale ciclo
 di addestramento del capitolo su PyTorch (si fa passare l'esempio nella rete,
 si misura di quanto ha sbagliato, si guarda in che direzione andavano spostati
 i numeri, li si sposta di un'inezia: `forward`, `loss`, `backward`, `step`),
-con l'unica differenza che il conto dell'errore si fa **solo** sui pezzi della
-risposta e non su quelli della domanda.
+con una sola differenza: il conto dell'errore si fa **solo** sui pezzi della
+risposta e non su quelli della domanda. La ragione è che non vogliamo insegnare
+al modello a inventare domande, ma a rispondere a quelle che riceve: la domanda
+gliela si fa leggere, non ripetere.
 
-## Pensare prima di rispondere: il calcolo al momento dell'inferenza
+## Pensare prima di rispondere: spendere calcolo mentre si risponde
 
-C'è un terzo asse, ortogonale ai primi due: invece di (o oltre a) migliorare
-i *pesi*, si può spendere più *calcolo al momento della risposta*.
+Le due mosse viste finora, il tirocinio e il gusto imparato dai giudizi, hanno
+in comune di cambiare i numeri interni del modello una volta per tutte. C'è un
+terzo modo, che non li tocca affatto e agisce in un momento diverso: lasciare
+che il modello spenda più tempo e più calcolo **mentre risponde**.
 
 ```{figure} ../figures/reasoning-test-time-compute.svg
 :name: fig-test-time-compute
@@ -545,11 +611,11 @@ risposta migliora nettamente l'accuratezza.
 `````{tab} Elementare
 
 È la regola che conosci dal compito di matematica: «mostra i passaggi». Alla
-domanda «un treno parte alle 9:47 e arriva alle 11:23: quanto dura il
-viaggio?», sparare il risultato a colpo d'occhio fa sbagliare spesso; scrivere
-i passaggi, da 9:47 a 10:00 sono 13 minuti, poi un'ora fino alle 11:00, poi
-altri 23: totale 96 minuti, cioè 1 ora e 36 (porta quasi sempre al risultato
-giusto). Con i modelli funziona allo stesso modo: se l'esempio che gli mostri
+domanda «un treno parte alle 9:47 e arriva alle 11:23: quanto dura il viaggio?»,
+sparare il risultato a colpo d'occhio fa sbagliare spesso. Scrivere i passaggi
+porta quasi sempre alla risposta giusta: da 9:47 a 10:00 sono 13 minuti, poi
+un'ora fino alle 11:00, poi altri 23; totale 96 minuti, cioè 1 ora e 36. Con i
+modelli funziona allo stesso modo: se l'esempio che gli mostri
 contiene i passaggi, o se glieli chiedi esplicitamente, il modello li scrive e
 sbaglia meno, perché ogni passaggio può appoggiarsi ai precedenti invece di
 indovinare tutto in un colpo. Un raffinamento semplice: fargli risolvere lo
@@ -602,16 +668,19 @@ Chiudiamo con l'onestà che questo libro deve al lettore: il post-training
 migliora i modelli, ma non è una soluzione, e i suoi difetti hanno nomi
 precisi.
 
-Il primo è il **reward hacking**: quando ottimizzi un surrogato del tuo vero
-obiettivo, prima o poi ottieni il surrogato e perdi l'obiettivo. Il reward
-model imita i giudizi umani, e i giudizi umani hanno debolezze sistematiche:
-tendiamo a premiare le risposte lunghe, sicure di sé, ben impaginate. Un
-modello ottimizzato contro quel giudice impara la prolissità e la sicurezza
-esibita *prima ancora* dell'utilità: massimizza il voto, non il valore. La
-regola d'oro appesa in cucina («resta vicino alla ricetta di partenza», in
-termini tecnici la penalità KL) mitiga il problema, non lo guarisce: tiene il
-modello dal deragliare del tutto, ma non gli insegna a distinguere una risposta
-utile da una che *sembra* utile.
+Il primo si chiama **reward hacking**, «imbrogliare il premio». Il giudice
+artificiale imita i giudizi delle persone, e i giudizi delle persone hanno
+debolezze sistematiche: premiamo volentieri le risposte lunghe, sicure di sé,
+ben impaginate, anche quando dicono meno. Un modello messo a inseguire quel
+giudice impara la prolissità e la sicurezza esibita *prima ancora*
+dell'utilità, perché sono più facili da produrre e prendono lo stesso voto.
+Detta in generale: quando si insegue una misura al posto della cosa che la
+misura voleva rappresentare, prima o poi si ottiene la misura e si perde la
+cosa. La regola d'oro appesa in cucina («resta vicino alla ricetta di
+partenza», che in termini tecnici si scrive come una penalità sulla distanza
+dal modello di partenza) mitiga il problema, non lo guarisce: tiene il modello
+dal deragliare del tutto, ma non gli insegna a distinguere una risposta utile
+da una che *sembra* utile.
 
 Il secondo è la **ruffianeria** (*sycophancy*), documentata empiricamente
 {cite}`sharma2023sycophancy`: se i valutatori preferiscono (anche solo un po' più
@@ -621,14 +690,18 @@ risposta corretta, perché nei dati di confronto l'accordo vinceva sul
 disaccordo. È l'esempio perfetto di ottimizzazione riuscita dell'obiettivo
 sbagliato.
 
-E c'è la domanda che nessuna loss può chiudere: **allineato a chi?** Le
-«preferenze umane» dell'RLHF sono, in concreto, le preferenze di qualche
-decina di annotatori che seguono le linee guida di un'azienda. Persone
-diverse, culture diverse, contesti diversi preferiscono risposte diverse: la
-scelta di quali giudizi contino è una decisione di chi costruisce il modello,
-non un fatto tecnico. Per questo l'**allineamento** è oggi un'area di ricerca
-a pieno titolo, non un ritocco finale: abbiamo strumenti per orientare il
-comportamento dei modelli, non garanzie sul risultato.
+E c'è la domanda che nessun addestramento può chiudere. Tutto il lavoro di
+questa pagina serve a far sì che un modello si comporti come vorremmo, e quel
+lavoro ha un nome, **allineamento**: allineare il comportamento del modello a
+ciò che le persone considerano utile e accettabile. Solo che a quel punto la
+domanda diventa **allineato a chi?** Le «preferenze umane» sono, in concreto,
+le preferenze di qualche decina di persone assunte per dare quei giudizi, che
+seguono le linee guida scritte da un'azienda. Persone diverse, culture diverse,
+contesti diversi preferiscono risposte diverse: la scelta di quali giudizi
+contino è una decisione di chi costruisce il modello, non un fatto tecnico. Per
+questo l'allineamento è oggi un'area di ricerca a pieno titolo, non un ritocco
+finale: abbiamo strumenti per orientare il comportamento dei modelli, non
+garanzie sul risultato.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
@@ -642,6 +715,12 @@ comportamento dei modelli, non garanzie sul risultato.
   con accanto la risposta di un professionista), studiati uno per uno. Non
   aggiunge sapere, quello era già in biblioteca: insegna che a un'istruzione
   non si dà un seguito, si dà esecuzione.
+- **Il lucido da architetto** {cite}`hu2022lora`: rifinire un modello vuol dire
+  riscriverne i numeri, e sono troppi per la memoria di quasi chiunque. Allora
+  si congela la tabella grande e si impara solo una coppia di tabelle sottili
+  messe di fianco: meno di un numero su mille, un file da megabyte invece che
+  da gigabyte, e adattamenti che si mettono e si tolgono come lucidi
+  sovrapposti a una pianta.
 - **Il palato artificiale** {cite}`christiano2017deep`: giudicare è più facile
   che scrivere, quindi alle persone si chiede solo quale di due risposte
   preferiscono; da quei confronti si distilla un giudice automatico, e il
@@ -675,6 +754,11 @@ comportamento dei modelli, non garanzie sul risultato.
 - **SFT / instruction tuning**: la stessa cross-entropia del
   pre-addestramento su coppie (istruzione, risposta) scritte da persone;
   insegna il *formato*, non nuove conoscenze.
+- **LoRA** {cite}`hu2022lora`: l'aggiornamento si parametrizza a **rango basso**
+  ($\mathbf{W}_0 + \frac{\alpha}{\rho}\mathbf{B}\mathbf{A}$), la matrice
+  originale resta congelata, i parametri addestrabili scendono di tre ordini di
+  grandezza e l'adattatore si può fondere prima del deployment o scambiare a
+  caldo.
 - **RLHF** {cite}`christiano2017deep`: confronti umani → reward model
   (Bradley–Terry) → ottimizzazione con PPO e **penalità KL** verso il
   modello di partenza, per non finire nei punti ciechi del giudice.

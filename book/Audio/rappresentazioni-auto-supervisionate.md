@@ -14,16 +14,22 @@ veri (riconoscere il parlato, classificare suoni, generare musica) con *poche*
 etichette? È l'idea dell'apprendimento **auto-supervisionato**
 (*self-supervised*).
 
-Il titolo della sezione contiene la parola che regge tutto il resto, e conviene
-fissarla subito: **rappresentazione**. È il gruppetto di numeri con cui un
-modello si tiene in mente un pezzetto di suono, qualche centinaio di numeri per
-ogni cinquantesimo di secondo, che nessuno ha scritto a mano e che nessuno
-saprebbe leggere uno per uno. Una rappresentazione è *migliore* di un'altra
-quando i pezzetti che si somigliano davvero finiscono vicini e quelli diversi
-finiscono lontani: a quel punto qualunque domanda a valle («che vocale è?»,
-«che strumento sta suonando?») diventa facile da rispondere. Anche lo
-spettrogramma della prima sezione era una rappresentazione, ma l'avevamo
-disegnata noi; qui il modello se la costruisce da sé.
+C'è una parola che regge tutto il resto della sezione, e conviene fissarla
+subito: **rappresentazione**. È il gruppetto di numeri con cui un modello si
+tiene in mente un pezzetto di suono: qualche centinaio di numeri ogni venti
+millesimi di secondo, cioè cinquanta gruppetti per ogni secondo di audio, che
+nessuno ha scritto a mano e che nessuno saprebbe leggere uno per uno.
+
+Quando è che una rappresentazione è *migliore* di un'altra? Immagina di
+appendere ogni pezzetto di suono in un punto di una stanza enorme, scegliendo il
+punto in base ai suoi numeri. Una buona rappresentazione è quella che appende
+vicini i pezzetti che si somigliano davvero e lontani quelli diversi: tutte le
+«s» in un angolo, tutte le «a» in un altro, i colpi di tamburo da tutt'altra
+parte. Se la stanza è ordinata così, qualunque domanda arrivi dopo («che vocale
+è?», «che strumento sta suonando?») si risponde tracciando una riga fra due
+zone, e diventa facile. Anche lo spettrogramma della prima sezione era una
+rappresentazione, ma l'avevamo disegnata noi; qui il modello se la costruisce da
+sé.
 
 Nel testo scritto lo stesso passaggio è già avvenuto, ed è il precedente da cui
 questa storia nasce. Prima ogni parola aveva il suo gruppetto di numeri
@@ -42,13 +48,20 @@ modello impara *da sé* una rappresentazione migliore.
 
 ## Il problema delle etichette
 
-Il paradigma è lo stesso incontrato nel capitolo sui Transformer con il
-**pretraining** dei modelli linguistici, e nella visione artificiale con il
-**transfer learning**: prima una lunga fase di studio senza etichette, su una
-mole enorme di dati grezzi, per imparare rappresentazioni generali; poi una
-breve fase di rifinitura (*fine-tuning*) sul compito specifico, con i pochi
-dati etichettati che si hanno. Il pre-addestramento fa il lavoro pesante una
-volta sola; a valle, ogni compito riparte da lì.
+Il problema è di conti, e si fa in fretta. Un'ora di parlato richiede a un
+trascrittore diverse ore di lavoro; le ore di parlato che servirebbero sono
+migliaia; e per una lingua parlata da poche persone quel lavoro non lo ha fatto
+mai nessuno e non lo farà. Le **etichette**, cioè le risposte giuste scritte da
+un umano accanto a ogni esempio, sono la cosa più cara che c'è.
+
+La via d'uscita è spezzare l'apprendimento in due tempi. Prima una lunga fase di
+studio su una massa enorme di audio senza risposte, per imparare come è fatto il
+suono in generale; poi una breve rifinitura sul compito vero, con le poche
+etichette che si hanno. Il primo tempo si chiama **pre-addestramento**
+(*pretraining*), il secondo **rifinitura** (*fine-tuning*), e il paradigma non è
+nuovo: è lo stesso dei modelli linguistici del capitolo sui Transformer, e
+quello che nella visione artificiale si chiama *transfer learning*. Il lavoro
+pesante si fa una volta sola, e ogni compito successivo riparte da lì.
 
 `````{tab} Elementare
 
@@ -105,23 +118,29 @@ invece che a parole.
 Torna il gioco della frase da completare. Se copro una parola in «Il gatto
 nero salta sul ___», tu indovini «muro» perché conosci come funziona la
 lingua. wav2vec 2.0 gioca lo stesso gioco con il suono: prende un pezzo di
-audio, ne **nasconde** dei tratti, e chiede al modello di indovinare che cosa
-c'era sotto. Ma con un aiuto: non deve inventare il suono esatto da zero
-(sarebbe un'impresa), gli si mette davanti l'unità giusta insieme a qualche
-unità sbagliata (dei «distrattori») e deve solo **riconoscere** quale è quella
-buona. Come un test a risposta multipla in cui l'orecchio, per rispondere
-bene, è costretto a capire come è fatto il parlato.
+audio, ne **copre** dei pezzetti, e chiede al modello di indovinare che cosa
+c'era sotto.
+
+Ma con un aiuto, perché inventare il suono esatto da zero sarebbe un'impresa
+disperata. Il modello ha davanti un piccolo elenco di pezzetti-tipo, una specie
+di alfabeto sonoro che si è costruito lui stesso: ognuno di quei pezzetti-tipo
+si chiama **unità**. Sotto la parte coperta c'è una di quelle unità, e il gioco
+è indovinare **quale**: gli si mette davanti quella giusta insieme a qualche
+unità sbagliata (i «distrattori») e deve solo riconoscerla. È un test a risposta
+multipla, e per rispondere bene l'orecchio è costretto a capire come è fatto il
+parlato.
 
 La cosa notevole è quanto rende. Dopo aver ascoltato in questo modo decine di
 migliaia di ore di audio senza etichette, a wav2vec 2.0 bastano appena **dieci
 minuti** di parlato trascritto per imparare a riconoscere la voce con una
 qualità che, solo pochi anni prima, richiedeva centinaia di ore.
 
-Con un'avvertenza che conviene tenersi, perché quel numero gira quasi sempre
-senza: l'orecchio da solo non ci arriva. Accanto a lui lavora un secondo
-modello, che sa com'è fatta la lingua e scarta le parole improbabili, ed è la
-coppia a fare il risultato. L'ascolto di montagne di audio risolve il problema
-di quante trascrizioni servono; non insegna l'italiano.
+Quel numero, però, quasi sempre viene raccontato a metà, e la metà che manca è
+importante. Il modello che ha imparato ad ascoltare non ci arriva da solo:
+accanto a lui lavora un secondo modello, che non ascolta niente e sa soltanto
+com'è fatta la lingua, e che scarta le parole improbabili. Il risultato è della
+coppia. Ascoltare montagne di audio risolve il problema di quante trascrizioni
+servono; non insegna l'italiano.
 
 `````
 
@@ -177,9 +196,11 @@ di dati etichettati e 53.000 ore non etichettate in pre-addestramento
 Quel numero però va letto per intero, perché è la cifra più citata del paper ed
 è quasi sempre citata male: è ottenuto **decodificando con un modello di lingua
 Transformer**. Il solo modello acustico, nella stessa configurazione, sta a
-$40{,}2/38{,}7$ (Tab. 9 del paper); con un modello di lingua a 4-grammi si passa
+$40{,}2/38{,}7$ (la tabella in appendice che smonta il contributo della
+decodifica, e che vale la pena aprire); con un modello di lingua a 4-grammi si passa
 a $6{,}6/10{,}3$, e solo con quello Transformer si arriva a $4{,}8/8{,}2$. Fra il
-primo e l'ultimo c'è un fattore otto. Il pre-addestramento risolve il problema
+primo e l'ultimo l'errore si divide per otto sul test pulito e per quasi cinque
+su quello difficile. Il pre-addestramento risolve il problema
 delle **etichette acustiche**, non sostituisce il modello di lingua: è una
 distinzione che il capitolo sullo Speech Recognition riprenderà pari pari,
 quando metterà in fila i pezzi di una pipeline di riconoscimento.
@@ -188,22 +209,25 @@ quando metterà in fila i pezzi di una pipeline di riconoscimento.
 
 Il cuore del compito si vede in poche righe di NumPy, e la domanda a cui
 risponde è semplice: il modello punta sull'unità giusta o su uno dei
-distrattori? Per ciascuno dei candidati misuriamo quanto somiglia a ciò che il
-modello si è fatto in mente del tratto coperto, e trasformiamo i punteggi in
-probabilità che sommano a uno.
+distrattori? Ogni candidato è un gruppetto di numeri. Per misurare quanto
+somiglia a ciò che il modello si è fatto in mente del pezzetto coperto si
+calcola un solo numero, che vale 1 quando i due gruppetti dicono la stessa cosa
+e 0 quando non hanno niente in comune: si chiama **similarità del coseno**. I
+cinque punteggi vengono poi riscalati in modo che sommino a uno, così si leggono
+come probabilità: quanta fiducia il modello mette su ciascun candidato.
 
 ```python
 import numpy as np
 
 rng = np.random.default_rng(0)
-d = 8  # dimensione dei vettori latenti
+d = 8  # quanti numeri ha ogni gruppetto (nei modelli veri sono centinaia)
 
-# c: rappresentazione contestuale del frame MASCHERATO, prodotta dal Transformer.
-# In un modello ben addestrato e' vicina all'unita' giusta e lontana dai distrattori.
+# c: quello che il modello si e' fatto in mente del pezzetto COPERTO.
+# In un modello ben addestrato e' vicino all'unita' giusta e lontano dai distrattori.
 c = rng.standard_normal(d)
 
-# q_true: l'unita' quantizzata corretta (qui una versione "vicina" a c);
-# i distrattori sono unita' pescate da altri frame mascherati della stessa frase.
+# q_true: l'unita' corretta (qui una versione "vicina" a c);
+# i distrattori sono unita' pescate da altri pezzetti coperti della stessa frase.
 q_true = c + 0.3 * rng.standard_normal(d)
 q_dist = rng.standard_normal((4, d))
 candidati = np.vstack([q_true, q_dist])      # (5, d): il vero piu' 4 distrattori
@@ -213,10 +237,12 @@ def coseno(a, B):                            # coseno tra a e ogni riga di B
     B = B / np.linalg.norm(B, axis=1, keepdims=True)
     return B @ a
 
-kappa = 0.1                                  # temperatura
+kappa = 0.1                                  # "temperatura": piu' e' bassa,
+                                             # piu' la scelta esce netta
 punteggi = coseno(c, candidati) / kappa
 prob = np.exp(punteggi - punteggi.max())
-prob /= prob.sum()                           # softmax sui candidati
+prob /= prob.sum()                           # softmax: i punteggi riscalati
+                                             # cosi' che sommino a uno
 
 print("prob. per candidato:", prob.round(3))
 print("scelto:", int(prob.argmax()), "(0 = unita' giusta)")
@@ -229,17 +255,27 @@ scelto: 0 (0 = unita' giusta)
 
 L'unità giusta vince, ma il margine merita uno sguardo: si prende due terzi
 della probabilità, e un distrattore pescato a caso se ne prende un quarto. Non è
-un difetto del conto, è la dimensione. Il coseno fra due vettori presi a caso si
-allontana da zero tanto più quanto meno numeri quei vettori hanno, e otto sono
-pochissimi: capita spesso che un distrattore finisca vicino al bersaglio per
-puro accidente. Nel modello vero i vettori hanno centinaia di componenti e i
-distrattori sono cento, non quattro, e il compito che sembra facile qui torna a
-essere difficile là.
+un difetto del conto: è che i gruppetti di numeri, qui, sono cortissimi.
+
+Vale una regola che tornerà spesso: più numeri ha un gruppetto, più è difficile
+che due gruppetti pescati a caso si somiglino. Con pochi numeri, invece, succede
+in continuazione, per puro accidente. Qui ne abbiamo otto, che è pochissimo, ed
+è il motivo per cui un distrattore preso a caso finisce quasi addosso al
+bersaglio.
+
+Nel modello vero i numeri sono centinaia, e allora due gruppetti a caso non si
+somigliano quasi mai: un distrattore qualunque si scarterebbe senza fatica. Il
+compito resta difficile lo stesso, ma per un'altra ragione, e conviene tenerla
+presente. I distrattori veri non sono presi a caso: sono unità pescate da altri
+punti coperti della *stessa* frase, quindi suoni imparentati con quello da
+indovinare. E sono cento, non quattro.
 
 ## HuBERT: darsi le etichette da soli
 
-L'obiettivo contrastivo di wav2vec 2.0 funziona, ma ha una fragilità: dipende
-da quanto sono «buoni» i bersagli quantizzati, e definirli bene è delicato.
+Il gioco di wav2vec 2.0 funziona, ma poggia tutto su una cosa delicata:
+l'elenco di pezzetti-tipo in mezzo a cui il modello deve riconoscere quello
+giusto. Se quell'elenco è fatto male il gioco premia la risposta sbagliata, e
+costruirlo bene *mentre* lo si sta già usando è tutt'altro che semplice.
 Nel 2021 Wei-Ning Hsu e colleghi, sempre a Facebook AI, propongono con **HuBERT**
 (*Hidden-Unit BERT*) una strada diversa e sorprendentemente semplice
 {cite}`hsu2021hubert`: invece di riconoscere l'unità giusta tra distrattori,
@@ -302,45 +338,51 @@ risorse su Librispeech {cite}`hsu2021hubert`.
 
 `````
 
-Vale la pena notare la parentela: wav2vec 2.0 e HuBERT condividono la stessa
-ossatura (encoder convoluzionale più Transformer, con il mascheramento come
-motore dell'apprendimento) e differiscono nel *bersaglio*. Uno lo riconosce
-tra distrattori (contrastivo), l'altro lo predice come una classe (predizione
-mascherata su unità date da un clustering iterativo). Due risposte alla stessa
-domanda: quale «alfabeto del suono» far indovinare al modello, e come
-definirlo senza etichette umane. E differiscono anche in *quando* quel bersaglio
-viene deciso: wav2vec 2.0 se lo costruisce mentre impara, con lo stesso
-addestramento che poi lo deve indovinare, mentre HuBERT lo prende da un
-raggruppamento fatto a parte, prima, e rifatto ogni tanto.
+Vale la pena notare la parentela, perché i due si somigliano più di quanto
+sembri. Dentro sono fatti allo stesso modo, e il motore è identico: coprire dei
+pezzi di audio e costringere il modello a tirare fuori quello che c'era sotto.
+Cambia il **bersaglio**, cioè che cosa esattamente gli si chiede di indovinare.
+Uno gliela fa riconoscere in mezzo a dei distrattori, come in un test a
+crocette; l'altro gli chiede di dirne il nome, e i nomi possibili sono quelli
+dell'alfabeto provvisorio.
+
+E cambia anche *quando* il bersaglio viene deciso. wav2vec 2.0 se lo costruisce
+mentre impara, con lo stesso addestramento che poi lo deve indovinare: l'elenco
+si muove sotto i piedi del gioco. HuBERT invece se lo prepara a parte, prima di
+cominciare, e lo rifà solo ogni tanto: mentre si gioca, l'elenco sta fermo.
 
 ## A cosa servono
 
 Queste rappresentazioni pre-addestrate sono diventate un **mattone** di buona
-parte dei sistemi audio moderni. Il caso di scuola è il riconoscimento vocale
-(in sigla **ASR**, da *automatic speech recognition*, ed è la sigla che il
-capitolo successivo userà per intero)
-a **basse risorse**: lingue e dialetti per cui esistono poche ore trascritte
-partono da un encoder addestrato su tanto audio non etichettato e raggiungono
-prestazioni prima impensabili. Il collegamento con il capitolo sullo Speech
-Recognition è diretto: la parte che lì trasformerà le rappresentazioni in parole
-non fa che rifinire ciò che il pretraining ha già preparato. Ma
-gli stessi vettori servono a classificare suoni ambientali, identificare chi
-parla, riconoscere emozioni o lingua, e (come vedremo) fanno da
-rappresentazione di partenza anche per la **generazione** di audio, dove le
-unità discrete imparate qui diventano un vocabolario su cui un modello può
-«scrivere» suono come un modello linguistico scrive testo.
+parte dei sistemi audio moderni. Il caso di scuola è il riconoscimento vocale,
+che d'ora in poi chiameremo con la sua sigla inglese, **ASR** (*automatic speech
+recognition*), la stessa che userà per intero il capitolo successivo.
 
-Onestà d'obbligo, però, sui limiti. Queste rappresentazioni catturano molto
-bene la **fonetica** e la struttura locale del segnale (quali suoni, come si
-concatenano, con quale timbro), perché è esattamente ciò che il compito di
-mascheramento premia. Catturano molto meno il **significato** ad alto livello:
-un encoder auto-supervisionato «sa» che due frammenti suonano simili, non che
-una frase è ironica o che una domanda richiede una certa risposta. È un
-orecchio finissimo, non una mente che comprende. Per arrivare al senso servono
-i moduli a valle (un decoder linguistico, un modello di dialogo), che su
-questo orecchio si appoggiano. Il pretraining audio risolve il problema delle
-etichette, non quello della comprensione: distinguere le due cose è il primo
-passo per usarlo bene.
+Serve soprattutto dove le trascrizioni scarseggiano: una lingua parlata da poche
+persone, un dialetto, un mestiere di cui nessuno ha mai raccolto registrazioni
+annotate. Si parte da un modello che ha ascoltato montagne di audio senza
+etichette, gli si mostrano le poche ore trascritte che esistono, e si arriva a
+risultati che prima erano impensabili. Il collegamento con il capitolo sullo
+Speech Recognition è diretto: la parte che lì trasformerà le rappresentazioni in
+parole non fa che rifinire ciò che il pre-addestramento ha già preparato.
+
+Gli stessi numeri servono poi a classificare suoni ambientali, a identificare
+chi parla, a riconoscere emozioni o lingua, e (come vedremo nelle prossime due
+sezioni) fanno da punto di partenza anche per la **generazione** di audio: i
+pezzetti-tipo imparati qui diventano un vocabolario su cui un modello può
+«scrivere» suono, come un modello linguistico scrive testo.
+
+Onestà d'obbligo, però, sui limiti. Queste rappresentazioni colgono benissimo
+i suoni e come si incastrano fra loro: quali sono, in che ordine, con che
+timbro. È esattamente ciò che il gioco della parte coperta premia, e non c'è da
+stupirsi.
+
+Colgono molto meno il **significato**. Un modello addestrato così sa che due
+frammenti suonano simili, non sa se una frase è ironica o se una domanda vuole
+una certa risposta. È un orecchio finissimo, non una mente che comprende. Il
+senso lo mettono i pezzi che vengono dopo, che su questo orecchio si appoggiano.
+Il pre-addestramento audio risolve il problema delle etichette, non quello della
+comprensione: distinguere le due cose è il primo passo per usarlo bene.
 
 `````{tab} Elementare
 

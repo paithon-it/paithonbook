@@ -22,9 +22,12 @@ prodotto.
 
 Questa sezione mostra come, restando dentro PyTorch e senza aggiungere alcuno
 strumento: cinque file di Python semplice, e un comando che si lancia dal
-terminale. Il che comincia a fare venire in mente la produzione: argomento del
-[capitolo sull'MLOps](../MLOps/dal-notebook-alla-produzione.md), che riprende
-il discorso da qui in poi.
+**terminale**, cioè quella finestra in cui, invece di cliccare, si scrivono
+comandi e il computer risponde. È già la soglia di quello che nel mestiere si
+chiama «mandare un modello in produzione», cioè metterlo al lavoro sul serio
+per qualcuno che non sia chi l'ha scritto: il
+[capitolo sull'MLOps](../MLOps/dal-notebook-alla-produzione.md) riprende il
+discorso da qui in poi.
 
 ## Il laboratorio e il prodotto
 
@@ -125,21 +128,32 @@ la loss restituita da PyTorch è già una **media sul batch**, e la media delle
 medie non è la media. Con i numeri: due vassoi, il primo con dieci esempi che
 sbagliano in media di $1$, il secondo con due esempi che sbagliano in media di
 $4$. La media vera sui dodici esempi è $(10 \cdot 1 + 2 \cdot 4)/12 = 1{,}5$;
-la media delle due medie è $(1 + 4)/2 = 2{,}5$, cioè quasi il doppio, perché
-conta i due esempi del secondo vassoio come se fossero dieci. Moltiplicare
+la media delle due medie è $(1 + 4)/2 = 2{,}5$, cioè due terzi più alta del
+vero, perché conta i due esempi del secondo vassoio come se fossero dieci. Moltiplicare
 ciascuna media per il numero di esempi del suo vassoio, sommare, e dividere
-alla fine per il totale rimette le cose a posto. Non è un caso di scuola:
-`drop_last=False` fa sì che l'ultimo batch sia quasi sempre più piccolo degli
-altri. E `@torch.no_grad()` scritto sopra la funzione con la chiocciola (in
-Python si chiama **decoratore**: una riga che avvolge la funzione e ne cambia
-il comportamento senza toccarne il corpo) evita di dover ricordare il blocco
-`with` a ogni chiamata: la funzione *è* una valutazione, non può essere altro.
+alla fine per il totale rimette le cose a posto. Non è un caso di scuola: a
+meno di chiedere il contrario, il `DataLoader` l'ultimo vassoio lo serve anche
+se è mezzo vuoto, quindi c'è quasi sempre un batch più piccolo degli altri.
+
+Il secondo dettaglio è la riga `@torch.no_grad()` scritta sopra la seconda
+funzione. Quella chiocciola in Python si chiama **decoratore**: è una riga che
+avvolge la funzione e ne cambia il comportamento senza toccarne il corpo. Qui
+dice «tutto quello che succede qui dentro succede a registratore spento», ed
+evita di dover ricordare il blocco `with` a ogni chiamata. La funzione *è* una
+valutazione, e non può essere altro.
 
 ## Il punto d'ingresso
 
 `train.py` è l'unico file che si lancia, e l'unico che conosce i valori
 concreti. Tutto ciò che potrebbe cambiare da un esperimento all'altro diventa
 un argomento della riga di comando.
+
+Leggendolo si incontrano dei nomi che qui non sono scritti da nessuna parte,
+`data_setup.crea_dataloader` e `model_builder.CNNSemplice`: sono le funzioni
+che stanno negli altri due file, quelli che costruiscono i `DataLoader` e il
+modello, e che non riportiamo perché il capitolo li ha già scritti pagina per
+pagina. È esattamente il punto della divisione in file: `train.py` non ha
+bisogno di sapere come sono fatti dentro, gli basta chiamarli per nome.
 
 ```{code-block} python
 :class: pt-non-eseguibile
@@ -189,7 +203,14 @@ if __name__ == "__main__":      # eseguito solo se si lancia questo file
     main()
 ```
 
-Da terminale, un esperimento diventa una riga:
+A trasportare i valori da fuori a dentro il programma è `argparse`, la parte di
+Python che legge quello che si è scritto nel terminale dopo il nome del file e
+lo consegna al codice sotto forma di numeri e di parole. Ogni `add_argument`
+dichiara una manopola: come si chiama da fuori (`--lr`), di che tipo è il
+valore, e quanto vale se nessuno la tocca. In quest'ultimo campo si incontra
+`1e-3`, che è il modo in cui i programmi scrivono $0{,}001$: si legge «uno per
+dieci alla meno tre», cioè uno diviso mille. Da terminale, un esperimento
+diventa quindi una riga:
 
 ```bash
 python train.py --dati dati/ --epoche 20 --lr 0.001
@@ -198,18 +219,25 @@ python train.py --dati dati/ --epoche 20 --lr 0.0001 --unita-nascoste 256
 
 `````{tab} Elementare
 La riga `if __name__ == "__main__":` è la più misteriosa del blocco e ha una
-spiegazione semplice: dice "esegui `main()` **solo** se qualcuno ha lanciato
-questo file direttamente, non se un altro file mi ha importato". Senza,
-importare `train.py` da un test o da un altro script farebbe partire un intero
-addestramento come effetto collaterale. E c'è un motivo più concreto: su
-Windows e su macOS il `DataLoader` con più *worker* riesegue il modulo in ogni
-processo figlio, e senza quella riga ogni figlio farebbe ripartire
-l'addestramento da capo; Python se ne accorge e blocca tutto con un errore.
+spiegazione semplice: dice «esegui `main()` **solo** se qualcuno ha lanciato
+questo file direttamente, non se un altro file è venuto a prendersi qualcosa da
+qui». Senza, aprire `train.py` da un altro programma per riusarne una funzione
+farebbe partire un intero addestramento senza che nessuno l'abbia chiesto.
 
-L'ultima riga di `main()` salva, insieme ai pesi, anche i nomi delle classi,
-gli argomenti usati e la memoria dell'ottimizzatore. È il gesto che distingue
-un modello utile da un file misterioso: fra sei mesi quel `.pt` da solo non
-dirà né che cosa predice, né come è stato ottenuto, né da dove ripartire.
+Ce n'è anche un motivo più concreto, che riguarda gli aiutanti del
+`DataLoader`. Su Windows e su macOS ciascuno di loro è un programma nuovo, che
+per sapere che cosa deve fare rilegge da capo il file da cui è nato: senza
+quella riga, ognuno rileggendolo farebbe ripartire l'addestramento, e ogni
+addestramento farebbe nascere altri aiutanti, all'infinito. Python se ne accorge
+e blocca tutto con un errore.
+
+L'ultima riga di `main()` salva. E salva più dei soli pesi: insieme a quelli
+finiscono nel file i nomi delle classi, tutte le manopole con cui è stato
+lanciato l'esperimento, e la memoria dell'ottimizzatore vista nella sezione sul
+[training loop](addestramento.md). È il gesto che distingue un modello utile da
+un file misterioso: fra sei mesi quel `.pt`, da solo, non direbbe né che cosa
+predice, né come è stato ottenuto, né da dove ripartire. Il codice della
+funzione che lo scrive sta poche righe più sotto, subito dopo queste schede.
 `````
 
 `````{tab} Superiore
@@ -222,10 +250,16 @@ la nozione di *tre artefatti da versionare* (codice, dati, configurazione)
 discussa in [dal notebook alla
 produzione](../MLOps/dal-notebook-alla-produzione.md).
 
-Sul salvataggio conviene essere espliciti: un `state_dict` nudo non è
-autosufficiente. Il minimo utile è un dizionario che contenga i pesi, lo stato
-dell'ottimizzatore, l'epoca raggiunta, la mappatura classe → indice e la
-configurazione:
+Da PyTorch 2.6 `torch.load` usa `weights_only=True` come default, quindi un
+file che contiene oggetti Python arbitrari va ricaricato con
+`weights_only=False`, o, meglio, salvato con dentro solo tipi elementari, come
+qui: `vars(args)` è un dizionario di stringhe e numeri, non un `Namespace`,
+proprio per questo.
+`````
+
+Ed ecco la funzione che salva, che è il posto in cui il capitolo mette in fila
+tutto quello che ha detto sui checkpoint: i pesi, lo stato
+dell'ottimizzatore, l'epoca raggiunta, i nomi delle classi e la configurazione.
 
 ```python
 # utils.py
@@ -242,42 +276,47 @@ def salva_modello(modello, ottimizzatore, epoca, percorso, classi, argomenti):
                 "config": argomenti}, percorso)
 ```
 
-Le due righe centrali sono quelle che di solito mancano, ed è la distinzione
-già vista nella sezione [sul training loop](addestramento.md): senza lo stato
-dell'ottimizzatore il file serve a **ripartire da capo**, non a **riprendere**.
-Con Adam la differenza si misura: il primo passo dopo la ripresa vale
-$\approx \eta$ pieno, contro i pochi centesimi di $\eta$ della traiettoria non
-interrotta. Vale per tutto ciò che ha uno `state_dict` e che il ciclo tocca,
-scheduler e `GradScaler` compresi.
-
-Da PyTorch 2.6 `torch.load` usa `weights_only=True` come default, quindi un
-file che contiene oggetti Python arbitrari va ricaricato con
-`weights_only=False`, o, meglio, salvato con dentro solo tipi elementari, come
-qui: `vars(args)` è un dizionario di stringhe e numeri, non un `Namespace`,
-proprio per questo.
-`````
-
-## Riproducibilità: fissare il caso
-
-Uno script che dà un risultato diverso a ogni esecuzione non è un esperimento.
-Il minimo indispensabile sta in poche righe, che vanno chiamate **prima** di
-creare modello e `DataLoader`.
+Delle cinque voci che finiscono nel file, quelle che di solito mancano sono
+`"ottimizzatore"` ed `"epoca"`, ed è la distinzione già vista nella sezione
+[sul training loop](addestramento.md): senza lo stato dell'ottimizzatore il
+file serve a **ripartire da capo**, non a **riprendere**.
 
 ```{figure} ../figures/salvare-ricaricare-confrontare-modelli.svg
 :name: fig-serializzazione
 :alt: "Ciclo di serializzazione: dal modello addestrato si salva lo state_dict su disco, insieme alla configurazione e al seme; per ricaricarlo si ricostruisce prima l'architettura e poi vi si caricano i pesi. Un ramo laterale mostra il confronto fra due checkpoint diversi sulla stessa metrica."
 :width: 96%
 
-Salvare i pesi non basta. Lo `state_dict` è solo un dizionario di numeri: per
-rimetterlo al suo posto serve un'architettura identica, e quindi la
-configurazione va salvata insieme.
+Salvare i pesi non basta. Nel file finisce solo un elenco di numeri: per
+rimetterli al loro posto serve un modello fatto esattamente come quello di
+partenza, e quindi la configurazione va salvata insieme.
 ```
 
-L'asimmetria di {numref}`fig-serializzazione` è la fonte del più comune errore
-di ricaricamento. Il salvataggio parte da un oggetto vivo e produce numeri; il
-ricaricamento deve fare il contrario, e i numeri da soli non sanno dire in che
-forma andavano. È per questo che configurazione e seme viaggiano nello stesso
-checkpoint.
+L'asimmetria disegnata in {numref}`fig-serializzazione` è la fonte del più
+comune errore di ricaricamento. Il salvataggio parte da un modello vivo e
+produce numeri, e sembra facile; il ricaricamento deve fare il contrario, e i
+numeri da soli non sanno dire in che forma andavano rimessi. È per questo che
+configurazione e seme viaggiano nello stesso file dei pesi.
+
+## Riproducibilità: fissare il caso
+
+Uno script che dà un risultato diverso a ogni esecuzione non è un esperimento.
+Il minimo indispensabile sta in poche righe, ed è la funzione che `train.py`
+chiama per prima, prima ancora di costruire il modello e i `DataLoader`: se il
+caso lo si fissa dopo che i pesi sono già stati sorteggiati, non si è fissato
+niente.
+
+Prima però conviene sapere che cosa sia un seme, perché il codice qui sotto
+senza quello è indecifrabile. Il caso, in un computer, non esiste: quello che
+c'è è una lunghissima sequenza di numeri prestabilita, calcolata con una
+formula, che *sembra* casuale. Il **seme** è il punto da cui si comincia a
+leggerla. Stesso seme, stesso punto di partenza, stessa sequenza, e quindi
+stessi pesi iniziali e stesso ordine di mescolamento dei dati: stesso
+risultato, oggi e fra un anno.
+
+Le righe sono quattro perché ogni libreria ha la sua sequenza, e vanno
+avvisate tutte: quella di Python, quella di NumPy (che le trasformazioni delle
+immagini usano), e quelle di PyTorch, una per il processore e una per le schede
+grafiche.
 
 ```python
 # utils.py
@@ -293,11 +332,6 @@ def fissa_seme(seme: int = 42) -> None:
 ```
 
 `````{tab} Elementare
-Il caso, in un computer, non è mai davvero casuale: è una lunga sequenza
-prestabilita di numeri che sembrano casuali, e il **seme** è il punto da cui
-si comincia a leggerla. Stesso seme, stessa sequenza, stessi pesi iniziali,
-stesso ordine di mescolamento dei dati, quindi stesso risultato.
-
 Attenzione a che cosa significa e a che cosa non significa. Fissare il seme
 serve a **confrontare**: se cambio il learning rate e il risultato migliora, con
 il seme fisso so che il merito è del learning rate. Non serve a dire che il

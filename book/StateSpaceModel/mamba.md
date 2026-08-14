@@ -31,13 +31,16 @@ sistemi dinamici.
 
 ## La selettività (S6)
 
-Il meccanismo di Mamba si chiama **S6**: è l'SSM di tipo S4 con in più la
-*selezione*, in cui i parametri diventano funzione del token. Il nome inganna,
-perché sembra un gradino di una scala e non lo è: è un'abbreviazione che gli
-autori introducono di passaggio, «i modelli S4 con un meccanismo di selezione,
-calcolati con uno scan», e la successione dei numeri non racconta una
-progressione (S5, incontrato fra le tappe verso il linguaggio, è il modello di
-un altro gruppo di ricerca). La conseguenza tecnica è importante
+Il cuore di Mamba è un SSM di tipo S4 in cui le regole non sono più decise una
+volta per tutte: le sceglie, parola per parola, ciò che sta entrando. Gli
+autori chiamano **S6** questo meccanismo, e il nome inganna, perché sembra il
+numero d'ordine di una serie, il modello che viene dopo S5, e non lo è: è
+un'abbreviazione introdotta di passaggio, «i modelli S4 con un meccanismo di
+selezione, calcolati con uno scan». Di progressione non ce n'è nessuna, tanto
+che S5, incontrato fra le tappe verso il linguaggio, è il modello di un altro
+gruppo di ricerca.
+
+La conseguenza tecnica è importante
 e va guardata in faccia: se le regole cambiano a ogni parola, il sistema non è
 più invariante nel tempo. E un sistema che cambia regola strada facendo non ha
 un filtro unico: la forma «tutto insieme», che era il segreto
@@ -108,10 +111,10 @@ ricorrente, e con essa il problema di come addestrarla in parallelo.
 `````
 
 Il guadagno concettuale è quello che gli autori chiamano *ragionamento basato
-sul contenuto*. Un SSM invariante nel tempo può ricordare a lungo, ma non può
-**selezionare**: se gli si chiede di copiare solo certe parole e ignorarne
-altre in base a ciò che sono (il compito di *selective copying*) inciampa,
-perché la sua dinamica è la stessa per tutti. Lo stesso vale per le *induction
+sul contenuto*. Il gioco delle parole da copiare e di quelle da lasciar
+cadere, che è il compito di *selective copying*, un SSM invariante nel tempo lo
+sbaglia: sa ricordare a lungo, ma la sua dinamica è la stessa per tutti. Lo
+stesso vale per le *induction
 heads*, il meccanismo con cui un modello, visto una volta lo schema «A è
 seguito da B», lo completa la volta successiva: richiede di agganciare il
 presente a un preciso episodio passato, cioè di scegliere *cosa* propagare. La
@@ -128,26 +131,24 @@ ricorrenza lineare ha due proprietà che ci salvano, e conviene tenerle
 distinte. La prima è che **comporre due passi dà ancora un passo dello stesso
 tipo**: due aggiornamenti consecutivi si possono fondere in uno solo, che ha la
 stessa forma di ciascuno dei due. La seconda è che quella composizione è
-**associativa**, perché comporre funzioni lo è: raggruppare i passi in un modo
-o nell'altro dà lo stesso risultato. È la seconda a essere decisiva, perché
-autorizza a fondere i passi a coppie, poi a gruppi di quattro, di otto, invece
-di percorrerli in fila da sinistra a destra. Questo è il *parallel scan* (o
-*associative scan*: «scan» è la passata che percorre la sequenza accumulando i
-risultati parziali), e ne esistono due versioni che vale la pena distinguere,
-perché più avanti ne scriveremo una sola. Detta $L$ la lunghezza della
-sequenza, quella **a raddoppio** compone a ogni turno le posizioni distanti
-prima 1, poi 2, poi 4: arriva in un numero di turni pari al logaritmo di $L$,
-facendo però qualche operazione in più di quante ne servirebbero (dell'ordine
-di $L\log L$ invece di $L$). Quella di **Blelloch**,
-con una passata che sale e una che scende, di operazioni ne fa dell'ordine di
-$L$, come la versione in fila. Quel che conta qui vale per tutte e due: il
-numero di **turni** crolla da $L$ al suo logaritmo (raddoppiando la lunghezza
-se ne aggiunge uno soltanto, e da un migliaio di passi in fila si scende a una
-decina di turni). È il compromesso tipico del calcolo parallelo, dove si
-accettano più conti in cambio di meno attesa. Ogni turno tiene occupati
-migliaia di core della GPU: quelli generici, però, non le sue unità dedicate a
-moltiplicare matrici, e in fondo alla pagina vedremo che è un problema. La
-convoluzione se n'è andata, ma il parallelismo resta.
+**associativa**: raggruppare i passi in un modo o nell'altro dà lo stesso
+risultato, come in una somma di tanti numeri, dove si può cominciare a sommare
+da dove si vuole.
+
+È la seconda a essere decisiva, perché autorizza a fondere i passi a coppie,
+poi a gruppi di quattro, di otto, invece di percorrerli in fila da sinistra a
+destra. Questo è il *parallel scan*, dove «scan» è la passata che percorre la
+sequenza accumulando i risultati parziali. I conti da fare, a seconda di come
+si raggruppa, restano tanti quanti erano oppure crescono un poco. Quello che
+crolla è l'**attesa**: raddoppiando la lunghezza della sequenza si aggiunge un
+turno soltanto, e dove prima c'erano mille passi in fila adesso ci sono una
+decina di turni. È il compromesso tipico del calcolo parallelo, dove si
+accettano più conti in cambio di meno attesa.
+
+Ogni turno tiene occupati migliaia di core della GPU: quelli generici, però,
+non le sue unità dedicate a moltiplicare matrici, e in fondo alla pagina
+vedremo che è un problema. La convoluzione se n'è andata, ma il parallelismo
+resta.
 
 La {numref}`fig-scan-parallelo` mette le due strade sullo stesso orologio.
 
@@ -161,27 +162,31 @@ stesso orologio: in verticale i turni, in orizzontale le posizioni della
 sequenza. A sinistra si va in fila, una composizione per turno, e il risultato
 definitivo (il pallino pieno) avanza di una posizione alla volta: servono
 undici turni. A destra si compongono le posizioni distanti prima 1, poi 2, poi
-4, poi 8, e siccome a ogni turno raddoppia il tratto di sequenza già riassunto
+4, poi 8, e siccome a ogni turno raddoppia il tratto di sequenza già riassunto,
 dopo quattro turni ogni posizione ha il suo risultato. Le due strade danno gli
 stessi numeri; cambia solo quanto c'è da aspettare.
 ```
 
-Non basta però la matematica: Mamba deve fare i conti con la **gerarchia di
-memoria** della scheda grafica, ed è qui che sta la parte «hardware-aware».
+Non basta però l'algoritmo. Mamba deve fare i conti anche con il modo in cui
+una scheda grafica tiene i dati, la sua **gerarchia di memoria**, ed è qui che
+sta la parte «hardware-aware».
 
 `````{tab} Elementare
 
 Prima lo *scan*, che è la parola inglese per «passata»: il modo di svolgere in
 fretta un conto che sembra doversi fare in fila. Immagina una classe che deve
 sommare mille numeri scritti alla lavagna. Un solo ragazzo che parte dal primo
-e va avanti impiega mille addizioni, una dopo l'altra: nessuno può aiutarlo,
+e va avanti fa quasi mille addizioni, una dopo l'altra: nessuno può aiutarlo,
 perché per fare la sua somma deve aspettare quella di prima. Se invece i
 ragazzi si mettono in coppia, e ogni coppia somma i suoi due numeri, in un
 colpo solo i mille numeri diventano cinquecento; poi cinquecento diventano
-duecentocinquanta, e così via. Dopo dieci giri si è arrivati in fondo. Di
-addizioni se ne fanno più o meno quante prima (secondo come si raggruppa,
-qualcuna in più), ma il tempo di attesa crolla, perché a ogni giro
-lavorano tutti insieme. La ricorrenza di Mamba si può svolgere così: non è una
+duecentocinquanta, e così via. Dopo dieci giri si è arrivati in fondo, perché
+dimezzando mille dieci volte si arriva a uno. Di addizioni se ne fanno più o
+meno quante prima, qualcuna in più secondo come si raggruppa, ma il tempo di
+attesa crolla, perché a ogni giro lavorano tutti insieme. (Una differenza con
+la classe c'è: al modello non serve solo il totale finale, ma il totale fino a
+ciascuna posizione. È il conto della figura qui sopra, e si raggruppa allo
+stesso modo.) La ricorrenza di Mamba si può svolgere così: non è una
 somma, ma si comporta come una somma, nel senso che si può cominciare a
 raggruppare i passi da dove si vuole. Ed è per questo che perdere la forma
 «tutto insieme» non è la catastrofe che sembrava.
@@ -196,7 +201,10 @@ movimento dopo movimento senza mai muoverti, e scendi in cantina una volta
 sola alla fine, per archiviare il totale.
 
 Mamba fa esattamente questo. Il foglietto veloce è la memoria interna della
-GPU; l'archivio lontano è la sua memoria principale. Il modello carica una
+scheda grafica, l'archivio lontano è la sua memoria principale. Attenzione a
+non confonderli con il riassunto del modello: qui si parla della scrivania su
+cui la scheda fa i suoi conti, non di ciò che il modello ricorda del testo. Il
+modello carica una
 volta i parametri, svolge tutta la ricorrenza sul «foglietto» e riporta in
 archivio solo il risultato, senza mai scrivere in cantina gli ingombranti
 stati intermedi. E c'è un secondo trucco da contabile parsimonioso: quei
@@ -225,6 +233,16 @@ proprietà a permettere di riassociare l'albero dello scan. Non è invece
 commutativo, e non potrebbe esserlo: l'ordine dei fattori è l'ordine della
 sequenza.
 
+Delle due versioni classiche dello scan conviene tenere presente la differenza,
+perché più avanti ne scriveremo una sola. Detta $L$ la lunghezza della
+sequenza, quella **a raddoppio** compone a ogni turno le posizioni distanti
+prima 1, poi 2, poi 4: raggiunge la profondità $O(\log L)$, ma con un lavoro
+$O(L\log L)$, cioè qualche operazione più del necessario. Quella di
+**Blelloch**, con una passata che sale e una che scende, ha la stessa
+profondità $O(\log L)$ e lavoro $O(L)$, come la versione sequenziale. In
+entrambe il numero di turni crolla da $L$ al suo logaritmo, ed è il numero di
+turni ciò che si paga in attesa.
+
 La GPU, dal canto suo, ha una memoria ad alta capacità ma lenta, la **HBM**, e
 una memoria molto più piccola e veloce, la **SRAM** on-chip. Il collo di
 bottiglia di una ricorrenza selettiva è che lo stato espanso ha forma
@@ -251,9 +269,10 @@ costo dello stato espanso in HBM.
 Vale la pena vedere, ridotta all'osso, la ricorrenza che lo scan calcola in
 fretta. Il codice che segue si può leggere anche senza saper programmare: le
 prime righe dicono che cosa entra, e il ciclo `for` (che vuol dire «per ogni
-passo, ripeti quanto segue») è la vasca da bagno di inizio capitolo, scritta in
-Python. A ogni giro il livello di prima viene ridotto un po', si aggiunge
-quello che entra adesso, e si legge il risultato.
+passo, ripeti quanto segue») è la vasca da bagno di inizio capitolo, quella in
+cui il livello cala da solo e risale con l'acqua che entra, scritta in Python.
+A ogni giro il livello di prima viene ridotto un po', si aggiunge quello che
+entra adesso, e si legge il risultato.
 
 ```python
 import torch
@@ -360,8 +379,8 @@ Il meccanismo selettivo è il motore; attorno gli serve una carrozzeria. Il
 {cite}`fu2023h3`, che per primo aveva adattato gli SSM al linguaggio mettendo
 attorno al nucleo ricorrente una valvola (la stessa idea del capitolo
 precedente: due rami che si moltiplicano, e uno regola quanto dell'altro lascia
-passare), e il *gated MLP*, cioè la versione con valvola dello strato di
-proiezione dei Transformer. Il risultato è un unico mattone omogeneo, che si
+passare), e il *gated MLP*, cioè lo strato che nei Transformer segue
+l'attenzione, dotato anche lui di una valvola. Il risultato è un unico mattone omogeneo, che si
 impila su se stesso a formare l'intera rete: non si alternano blocchi di tipo
 diverso, come nei Transformer, ce n'è uno solo, ripetuto.
 
@@ -376,7 +395,8 @@ principale (a sinistra) passa per tre lavorazioni, la copia parallela (a
 destra) per una sola e diventa la valvola che regola quanto della prima
 lasciar passare. In alto le due si moltiplicano e una proiezione rimette il
 pezzo nella forma di partenza. Il tratteggio che scavalca tutto è la
-scorciatoia che fa arrivare il pezzo di partenza anche in cima.
+scorciatoia che fa arrivare il pezzo di partenza anche in cima, così che le
+lavorazioni aggiungano al pezzo invece di sostituirlo.
 ```
 
 Seguiamo il percorso di {numref}`fig-blocco-mamba` dal basso verso l'alto.
@@ -450,7 +470,8 @@ misura.
 La seconda è la **portata**, ed è il punto in cui conviene essere precisi su
 dove è stata misurata. Le sequenze da un milione di passi su cui Mamba continua
 a migliorare non sono testo: sono suono grezzo (dove un passo è un campione
-sonoro, e un milione di campioni è poco più di un minuto di registrazione) e
+sonoro: in un secondo di registrazione ce ne stanno circa sedicimila, quindi un
+milione di campioni è poco più di un minuto) e
 sequenze di DNA (dove un passo è una lettera del genoma). Sul linguaggio i
 contesti provati nell'articolo restano molto più corti, dell'ordine delle
 migliaia di parole. Che la stessa ricetta funzioni su tre materiali così
@@ -486,16 +507,19 @@ giudicato. Il giudizio, nella ricerca, lo danno le riviste e i convegni, che
 affidano ogni lavoro ad altri studiosi del campo; e il primo convegno a cui
 Mamba fu sottoposto, ICLR, nel 2024 lo respinse, con un rifiuto che fece
 discutere. Pochi mesi dopo un altro convegno, COLM, lo ha accettato e gli ha
-assegnato un premio come uno dei lavori migliori dell'anno. Il vaglio, quindi,
-c'è stato; e resta la ragione per cui in queste pagine i primati e le
-misure di velocità non li abbiamo riportati: come sempre nella ricerca recente,
-non tutto ciò che il primo articolo annuncia si regge intatto alla prova del
-tempo, mentre i meccanismi sì. Lo *scan* selettivo, in particolare, non
-sfruttava appieno le unità di calcolo matriciale delle GPU: un dettaglio
-ingegneristico che sembra minore ma pesa parecchio in pratica. E lo stato di
-dimensione fissa,
-che è la forza di Mamba in efficienza, resta il suo limite quando serve
-ritrovare un dettaglio preciso in un contesto molto lungo. Sono
+assegnato un premio come uno dei lavori migliori dell'anno.
+
+Il vaglio, quindi, c'è stato. E resta valido il motivo per cui in queste
+pagine i primati e le misure di velocità non li abbiamo riportati: come sempre
+nella
+ricerca recente, non tutto ciò che il primo articolo annuncia si regge intatto
+alla prova del tempo, mentre i meccanismi sì.
+
+Di nodi aperti, però, ne restano due. Lo *scan* selettivo non sfruttava appieno
+le unità di calcolo matriciale delle GPU: un dettaglio ingegneristico che
+sembra minore e in pratica pesa parecchio. E lo stato di dimensione fissa, che
+è la forza di Mamba in efficienza, resta il suo limite quando serve ritrovare
+un dettaglio preciso in un contesto molto lungo. Sono
 proprio questi i nodi che la sezione successiva scioglie: Mamba-2 riscrive il
 selective scan come una moltiplicazione di matrici (recuperando i *tensor
 core* della GPU) e, nel farlo, svela una parentela inattesa. Perché dietro
@@ -515,8 +539,8 @@ stessa cosa.
   filtro unico, e il modo «tutto insieme» di fare i conti se ne va. Resta il
   modo passo dopo passo.
 - Il prezzo si recupera con lo **scan**, cioè svolgendo la catena a gruppi
-  invece che in fila (a coppie, poi a quattro, poi a otto): le operazioni sono
-  le stesse, i turni di attesa crollano. In più Mamba tiene i conti nella
+  invece che in fila (a coppie, poi a quattro, poi a otto): di operazioni se ne
+  fanno più o meno quante prima, ma i turni di attesa crollano. In più Mamba tiene i conti nella
   memoria piccola e vicina della scheda grafica, come il contabile che non
   scende in cantina a ogni riga, e i risultati intermedi che gli serviranno
   dopo li **rifà** invece di conservarli.

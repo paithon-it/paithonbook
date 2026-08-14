@@ -280,7 +280,8 @@ Naive Bayes conta le parole dentro ciascuna delle due etichette possibili
 tutti e due) e lascia che la regola di Bayes tiri le somme. C'è un'alternativa
 più diretta: imparare, per ogni parola, un **peso** che dica quanto spinge
 verso un'etichetta o l'altra, e sommare le spinte. Si chiama **regressione
-logistica**, ha una sezione tutta sua nel capitolo sul machine learning, e qui
+logistica**, il capitolo sul machine learning la presenta fra i modelli
+supervisionati, e qui
 la mettiamo al lavoro sul testo.
 
 `````{tab} Elementare

@@ -112,8 +112,8 @@
   </g>
 
   <!-- legenda -->
-  <rect x="636" y="346" width="16" height="16" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5"/>
-  <text x="660" y="359" font-family="Inter, sans-serif" font-size="11.5" fill="#1A1A1A">coppie vere: la loss le spinge in alto</text>
-  <rect x="636" y="372" width="16" height="16" fill="#2D5A5C" fill-opacity="0.08" stroke="#1A1A1A" stroke-width="1.2" stroke-opacity="0.3"/>
-  <text x="660" y="385" font-family="Inter, sans-serif" font-size="11.5" fill="#1A1A1A">negativi del batch: la loss le spinge in basso</text>
+  <rect x="590" y="346" width="16" height="16" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="614" y="359" font-family="Inter, sans-serif" font-size="11.5" fill="#1A1A1A">coppie vere: la loss le spinge in alto</text>
+  <rect x="590" y="372" width="16" height="16" fill="#2D5A5C" fill-opacity="0.08" stroke="#1A1A1A" stroke-width="1.2" stroke-opacity="0.3"/>
+  <text x="614" y="385" font-family="Inter, sans-serif" font-size="11.5" fill="#1A1A1A">negativi del batch: la loss le spinge in basso</text>
 </svg>

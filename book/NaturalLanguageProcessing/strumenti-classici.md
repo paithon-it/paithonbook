@@ -449,10 +449,11 @@ levenshtein("gatot", "gatto") # 2
 
 Con la distanza di edit in mano, il correttore ortografico sembra fatto:
 suggerisci la parola più vicina e via. Non funziona, e basta un esempio per
-capire perché. Digito «pesca», e la parola più vicina, a distanza 1, è «pesce»;
-ma «pesca» esiste, ed è quasi sempre proprio quello che volevo scrivere. La
-vicinanza da sola non basta mai: bisogna anche chiedersi *quanto è verosimile
-che io abbia sbagliato in quel modo*.
+capire perché. Digito «cane» quando volevo «case»: le due parole distano una
+mossa sola, ma a distanza uno da «cane» ci sono anche «pane», «rane», «cani»,
+«can» e altre. Sono tutte ugualmente vicine, e la vicinanza non sa dire quale
+volevo: bisogna anche chiedersi *quanto è verosimile che io abbia sbagliato in
+quel modo*, e quanto quella parola è frequente.
 
 La cornice giusta viene dalla **teoria dell'informazione**, la disciplina
 fondata da Claude Shannon nel 1948 {cite}`shannon1948mathematical`. Shannon
@@ -478,8 +479,9 @@ secondo è quanto è facile che il rumore l'abbia trasformata proprio in ciò ch
 si legge. Quest'ultimo non lo decide nessuno a mano: si conta, su un archivio
 di refusi veri, quante volte una certa svista è capitata davvero. Prendiamo
 «gatot». Il candidato *gatto* è frequente (diciamo una parola su ventimila) e
-l'errore che servirebbe è lo scambio di due lettere vicine, che è la svista più
-comune che esista, diciamo una volta su venti. Il candidato *gatot* così com'è,
+l'errore che servirebbe è lo scambio di due lettere vicine, una svista che
+capita eccome quando si scrive in fretta sulla tastiera, diciamo una volta su
+venti. Il candidato *gatot* così com'è,
 se anche fosse una parola, sarebbe rarissimo. Il primo prodotto è enormemente
 più grande del secondo, e il telefono scrive *gatto*.
 

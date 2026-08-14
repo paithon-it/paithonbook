@@ -30,12 +30,12 @@ e tutto il resto della sezione è la storia della risposta:
 > comincino a parlarsi?
 
 Non è solo una questione di soldi. C'è una seconda ragione per lasciare fermi i
-pesi che esistono già: un modello di linguaggio riaddestrato su qualche milione
+pesi che esistono già. Un modello di linguaggio riaddestrato su qualche milione
 di didascalie perde per strada una parte di quello che sapeva fare con il testo
-puro: è la **dimenticanza catastrofica**, imparare una cosa nuova cancellandone
-una vecchia, che il capitolo sui Transformer incontra sui modelli multilingua.
-Congelare non è soltanto un risparmio: è una garanzia sul comportamento che si
-vuole conservare.
+puro: impara una cosa nuova cancellandone una vecchia. È la **dimenticanza
+catastrofica**, che il capitolo sui Transformer incontra sui modelli
+multilingua. Congelare non è soltanto un risparmio: è una garanzia sul
+comportamento che si vuole conservare.
 
 ## Che cosa deve fare, di preciso, il pezzo in mezzo
 
@@ -58,18 +58,21 @@ parola, e quel posto si paga.
 `````{tab} Elementare
 
 Prendiamo numeri veri. Un encoder molto usato lavora su immagini da
-$336 \times 336$ puntini e le taglia in tessere da $14 \times 14$: vengono
-$24 \times 24 = 576$ tessere, cioè 576 vettori. Adesso immagina di allegare
+$336 \times 336$ puntini e le taglia in tessere da $14 \times 14$: siccome
+$336 : 14 = 24$, ne stanno 24 per riga e 24 per colonna, cioè
+$24 \times 24 = 576$ tessere, e quindi 576 vettori. Adesso immagina di allegare
 quell'immagine a una domanda di venti parole. La sequenza che entra nel modello
 di linguaggio è fatta di 596 pezzi, e 576 su 596 sono immagine: il 97%. La tua
-domanda è una briciola dentro un contesto interamente occupato dalla foto.
+domanda è una briciola dentro un contesto quasi interamente occupato dalla foto.
 
 Peggio: il costo dell'attenzione, il meccanismo con cui ogni pezzo guarda tutti
 gli altri, non cresce come la lunghezza della sequenza, cresce come il suo
 **quadrato** (è il conto fatto nel capitolo sui Transformer: se i pezzi
 raddoppiano, le coppie da confrontare quadruplicano). Se al posto di 576 tessere
-ne passassimo 32, la sequenza scenderebbe da 596 a 52 pezzi e il costo
-dell'attenzione si dividerebbe per centotrenta circa.
+ne passassimo 32 (un numero che fra poco incontreremo davvero), la sequenza
+scenderebbe da 596 a 52 pezzi, cioè undici volte e mezzo più corta; e siccome il
+costo va col quadrato, undici e mezzo per undici e mezzo fa circa centotrenta
+volte meno.
 
 Ecco perché «quanti» è una domanda seria e non un dettaglio di
 implementazione: comprimere l'immagine in pochi vettori fa risparmiare
@@ -116,10 +119,11 @@ questa sezione esiste soprattutto per spiegare perché.
 :alt: Tre architetture affiancate con lo stesso encoder visivo congelato in basso e lo stesso modello di linguaggio congelato in alto; cambia solo il pezzo in mezzo. A sinistra Flamingo, con un Perceiver Resampler che produce 64 token e li inietta in due nuovi strati di cross-attention gated inseriti fra i blocchi congelati del modello di linguaggio. Al centro BLIP-2, con un Q-Former in cui 32 query apprese interrogano l'immagine e ne escono 32 token messi in testa al prompt. A destra LLaVA, con un proiettore che porta ogni patch nello spazio dei token e consegna 576 token in testa al prompt. Il pezzo che si addestra è in terracotta piena, quelli congelati hanno il contorno tratteggiato.
 :width: 85%
 
-Gli stessi due modelli congelati, tre saldature diverse, e il conto del
-connettore che scende da sinistra a destra. I primi due comprimono a un numero
-fisso di vettori (64 e 32, qualunque immagine arrivi); il terzo non comprime
-affatto, consegna una tessera per token, ed è il più leggero dei tre.
+Gli stessi due modelli congelati, tre saldature diverse. Il conto del connettore
+scende da sinistra a destra (miliardi di parametri, poi 188 milioni, poi 21), e
+i primi due comprimono a un numero fisso di vettori (64 e 32, qualunque immagine
+arrivi) mentre il terzo non comprime affatto: consegna un token per ogni
+tessera, ed è il più leggero dei tre.
 ```
 
 Come mostra {numref}`fig-vlm-connettori`, i blocchi alle estremità non cambiano
@@ -137,14 +141,16 @@ blocchi congelati si inseriscono strati nuovi di **cross-attention**, dove le
 query vengono dal testo e le chiavi e i valori dall'immagine (il testo chiede,
 l'immagine risponde), e sono questi strati (più il pezzo che prepara i vettori
 visivi) l'unica cosa che si addestra. Encoder visivo e modello di linguaggio
-restano entrambi fermi; gli strati nuovi entrano ogni quarto blocco nel modello
-da nove miliardi di parametri e ogni settimo in quello da ottanta.
+restano entrambi fermi; gli strati nuovi entrano ogni quarto blocco nella
+versione di Flamingo da nove miliardi di parametri, e ogni settimo in quella da
+ottanta.
 
 Aprire un modello addestrato e infilarci dentro strati inizializzati a caso è
 però pericoloso: al primo passo quegli strati emettono rumore, il rumore si
 somma alle attivazioni costruite in mesi di addestramento, e il comportamento
 che si voleva conservare va in pezzi prima ancora di cominciare. La soluzione è
-un dettaglio di due caratteri, e vale la pena guardarlo da vicino.
+più povera di quanto il problema faccia temere (sta tutta in un numero solo), e
+vale la pena guardarla da vicino.
 
 `````{tab} Elementare
 
@@ -160,14 +166,19 @@ identico a com'era; poi l'addestramento scopre che alzarla conviene, perché
 aiuta a indovinare le parole giuste, e la alza da sé.
 
 Resta il problema di quante file di numeri consegnare: un'immagine ne dà
-centinaia, un video ne dà centinaia per fotogramma, e il modello ne vuole sempre
-lo stesso numero. Il pezzo che se ne occupa ne fa uscire sempre 64, qualunque sia
+centinaia, un video ne dà centinaia per ogni fotogramma, e gli strati nuovi sono
+fatti per riceverne sempre lo stesso numero, altrimenti andrebbero ridisegnati a
+ogni cambio di formato. Il pezzo che se ne occupa ne fa uscire sempre 64, qualunque sia
 la roba che entra, ed ecco come. Le 64 righe da riempire ci sono già, sono fisse,
 e sono le domande che il pezzo ha imparato a fare in addestramento: per ogni
 riga, va a guardare tutto quello che è entrato, prende soprattutto da dove trova
 la risposta e scrive lì il riassunto. Che il materiale sia poco o tanto non
 cambia il numero di righe, cambia solo dove ciascuna va a pescare: è un modulo
 con 64 caselle, non un imbuto tarato su una quantità.
+
+Il conto da tenere a mente è che tutto questo, gli strati nuovi più il pezzo che
+riempie le 64 righe, pesa **miliardi** di numeri da imparare: è un modello dentro
+il modello.
 
 E qui siamo già in vista del punto delicato della sezione, perché un modulo lo si
 compila prima di sapere che cosa vi verrà cercato dentro.
@@ -218,7 +229,7 @@ modello dentro il modello.
 
 `````
 
-### Un imbuto con domande fisse
+### Un questionario con domande fisse
 
 La seconda risposta, il **Q-Former** di BLIP-2 {cite}`li2023blip2` nel 2023,
 tiene l'idea della compressione e butta via quella degli strati inseriti nel
@@ -243,13 +254,18 @@ in mano solo le risposte: la foto non la vede più.
 
 Il guadagno si legge nei numeri, e qui l'encoder ne produce 257 per ogni foto.
 Da dove viene quel 257: l'immagine è da 224 puntini di lato, le tessere da 14,
-quindi ne stanno 16 per riga e 16 per colonna, in tutto 256, più una fila di
-numeri in più che riassume l'intera fotografia. (Qualche paragrafo fa erano 576
-perché lì l'immagine era da 336 puntini: il numero delle tessere cambia ogni
-volta che cambiano la foto o la tessera, non è mai un numero fisso.) Da 257 si
-scende a 32, otto volte meno; e siccome ogni risposta è per giunta una fila un
-po' più corta (768 numeri invece di 1024), nel punto più stretto del passaggio
-i numeri sono circa undici volte meno di quelli che l'encoder aveva prodotto.
+quindi ne stanno 16 per riga e 16 per colonna, in tutto 256, a cui l'encoder
+aggiunge una fila che riassume l'intera fotografia. (Qualche paragrafo fa erano
+576 perché lì l'immagine era da 336 puntini, e la fila di riassunto non veniva
+usata: il numero cambia ogni volta che cambiano la foto o la tessera, non è mai
+fisso.) Da 257 si scende a 32, otto volte meno. E ciascuna delle 32 risposte è
+anche una fila più corta, 768 numeri invece dei 1024 con cui l'encoder descrive
+ogni tessera: mettendo insieme le due cose, i numeri che passano sono
+$32 \times 768$ contro $257 \times 1024$, cioè circa undici volte meno.
+
+Tutto questo il questionario lo fa con una macchina sua, che pesa 188 milioni di
+caselle: poca cosa accanto ai due modelli che collega, ma il conto va tenuto,
+perché fra poco lo confronteremo con quello delle altre due strade.
 
 Il questionario però è stato scritto **una volta per tutte**, e le domande sono
 sempre quelle che in media servivano di più. Se arriva una richiesta a cui quelle
@@ -297,8 +313,9 @@ qualcosa che descrive l'immagine.
 
 La terza risposta, LLaVA {cite}`liu2023visual` nello stesso 2023, è talmente
 scarna che a raccontarla sembra mancare un pezzo. Niente compressione, niente
-query apprese, niente strati nuovi. C'è una **matrice**: ogni vettore di patch
-viene moltiplicato per essa e diventa un token, e i token si mettono in fila
+query apprese, niente strati nuovi. C'è una **matrice** (il pezzo, d'ora in
+avanti, si chiama **proiettore**): la fila di numeri di ogni tessera viene
+moltiplicata per quella matrice e diventa un token, e i token si mettono in fila
 davanti al prompt come fossero parole.
 
 `````{tab} Elementare
@@ -314,13 +331,15 @@ nessuna selezione, nessun riassunto, nessuna domanda decisa in anticipo.
 
 Quanto costa una tabella del genere? Ha una casella per ogni coppia
 «numero in ingresso, numero in uscita»: $1024 \times 4096$, cioè poco più di
-quattro milioni di caselle. Il modello di linguaggio a cui si salda ne ha sette
-miliardi, quindi la saldatura pesa lo $0{,}06\%$ del pezzo che collega, sei
-centesimi di punto percentuale. Una versione successiva dello stesso lavoro mette
-due tabelle in fila invece di una, e guarda le immagini da $336$ puntini invece
-che da $224$: è quella dei 576 pezzi di poco fa, e la saldatura le costa ventuno
-milioni di caselle, cioè lo $0{,}3\%$. Sempre un'inezia, ma cinque volte
-l'inezia di prima.
+quattro milioni di caselle. Il modello di linguaggio a cui si salda ha sette
+miliardi di parametri, quindi la saldatura pesa lo $0{,}06\%$ del pezzo che
+collega, sei centesimi di punto percentuale. Una versione successiva dello
+stesso lavoro mette due tabelle in fila invece di una, e guarda le immagini da
+$336$ puntini invece che da $224$: è quella dei 576 pezzi di poco fa. La prima
+tabella resta quella di prima, da $1024 \times 4096$; la seconda parte da un
+token già tradotto, quindi è da $4096 \times 4096$, quattro volte più grande, e
+in tutto fanno ventuno milioni di caselle, lo $0{,}3\%$. Sempre un'inezia, ma
+cinque volte l'inezia di prima.
 
 `````
 
@@ -354,9 +373,9 @@ ha finito per prendere.
 
 ## Perché ha vinto il più semplice
 
-Se il Q-Former è più sofisticato, e la cross-attention gated è più elegante e più
-rispettosa del modello congelato, perché la strada che si è imposta è quella
-della matrice? La risposta non è estetica, e non è nemmeno «perché costa meno
+Se il questionario è più sofisticato, e gli strati con la manopola del volume
+sono più eleganti e più rispettosi del modello congelato, perché la strada che
+si è imposta è quella della matrice? La risposta non è estetica, e non è nemmeno «perché costa meno
 addestrarla». È che gli altri due connettori fanno una cosa che sembrava un
 pregio ed è un difetto: **comprimono**. E comprimere significa scegliere che
 cosa dell'immagine conta, **prima** di sapere quale sarà la domanda.
@@ -419,23 +438,24 @@ troppi.
 
 `````
 
-## Due tirocini, in quest'ordine
+## Due tempi, in quest'ordine
 
 Resta da dire come si addestra la saldatura: in due tempi, con due obiettivi
 diversi e due insiemi di pesi congelati diversi. L'ordine non è negoziabile.
 
 **Primo tempo, allineamento.** Si congela tutto e si addestra il solo connettore
-su coppie immagine-didascalia, con la solita loss autoregressiva: data
-l'immagine, scrivi la sua didascalia. Nel primo lavoro su LLaVA questa fase usa
+su coppie immagine-didascalia, con l'obiettivo di sempre di un modello di
+linguaggio: data l'immagine, scrivi la sua didascalia, una parola dopo l'altra.
+Nel primo lavoro su LLaVA questa fase usa
 595 000 coppie filtrate da un grande corpus di immagini e testi del web. Non si
 insegna niente di nuovo ai due modelli: si insegna al connettore dove scrivere.
 
 **Secondo tempo, istruzioni visive.** Si scongela anche il modello di
 linguaggio (l'encoder visivo di norma resta fermo) e si continua su **dialoghi
 che riguardano immagini**. È l'instruction tuning descritto nel capitolo sui
-Transformer, applicato a un modello che adesso ha un occhio: non lo rispieghiamo
-qui, e vale anche in questa versione che serva pochissimo materiale rispetto al
-pre-addestramento.
+Transformer, applicato a un modello che adesso ha un occhio, e non lo
+rispieghiamo qui. Vale anche in questa versione la cosa che là sorprende di più:
+rispetto al pre-addestramento serve pochissimo materiale.
 
 `````{tab} Elementare
 
@@ -444,9 +464,9 @@ significa non impararne bene nessuna.
 
 La prima è di traduzione pura: il connettore deve capire dove mettere le cose.
 Se qui lasciassi libero anche il modello di linguaggio, quello si adatterebbe ai
-vettori sgangherati che il connettore gli manda all'inizio, invece di
-costringerlo a mandarli fatti bene; è come insegnare a un principiante lasciando
-che sia l'orchestra ad aggiustarsi sui suoi errori.
+vettori sgangherati che il connettore gli manda all'inizio; e allora il
+connettore non avrebbe mai il motivo di mandarli fatti bene. È come insegnare a
+un principiante lasciando che sia l'orchestra ad aggiustarsi sui suoi errori.
 
 La seconda è di comportamento: rispondere alla domanda, e non limitarsi a
 descrivere la foto. Qui il modello di linguaggio deve poter cambiare, perché il
@@ -482,9 +502,9 @@ classico dell'ottimizzazione congiunta di due componenti mal condizionate.
 Un dettaglio metodologico di questa seconda fase merita di essere raccontato,
 perché è interessante e perché ha un limite che si vede a occhio nudo. I dati di
 istruzione visiva del primo LLaVA non sono stati scritti da persone davanti a
-delle fotografie: sono stati **generati da un modello di solo testo**, a cui
-delle immagini si davano soltanto due surrogati simbolici, le didascalie già
-disponibili e le coordinate dei riquadri degli oggetti annotati. Da quel
+delle fotografie: sono stati **generati da un modello di solo testo**, a cui delle immagini si
+davano soltanto due sostituti scritti: le didascalie già disponibili e le
+coordinate dei riquadri degli oggetti annotati. Da quel
 materiale uscivano conversazioni, descrizioni dettagliate e domande di
 ragionamento, per un totale di 158 000 esempi (58 000 dialoghi, 23 000
 descrizioni, 77 000 ragionamenti).
@@ -498,7 +518,7 @@ generatore inventa dentro un ragionamento plausibile ci finisce come se fosse
 vero. Chi studia quel materiale ne eredita lo stile, e con lo stile anche la
 sicurezza con cui il generatore afferma cose che non poteva sapere. La sezione
 sull'allucinazione visiva ci tornerà sopra; qui basti annotare che una parte del
-difetto nasce in addestramento, non in inferenza.
+difetto nasce in addestramento, e non nel momento in cui il modello risponde.
 
 ## Il connettore in dieci righe
 
@@ -577,7 +597,8 @@ elenco, e lo fa senza riaddestrare niente di grosso.
 Restano due domande, e sono le prossime due sezioni. Se l'immagine entra dalla
 stessa porta delle parole, perché non farne davvero delle parole, simboli di un
 vocabolario, così che il modello possa anche *scriverne*? E poi: 576 token
-bastano per riconoscere una scena e non per leggere una tabella, ma
+bastano per riconoscere una scena e non per leggere una tabella stampata dentro
+la fotografia, ma
 moltiplicarli significa pagare il fattore quadratico calcolato all'inizio. Il
 conto del dettaglio è il vero limite pratico di tutto quello che abbiamo visto
 qui.

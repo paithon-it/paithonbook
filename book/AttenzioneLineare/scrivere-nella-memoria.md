@@ -2,7 +2,7 @@
 
 Nella sezione precedente abbiamo scoperto che l'attenzione lineare è, sotto
 mentite spoglie, una rete ricorrente: al posto dell'archivio di appunti che si
-allunga a ogni parola, un'unica memoria di dimensione fissa. Immaginatela come
+allunga a ogni parola, un'unica memoria di dimensione fissa. Immaginala come
 un registro che funziona da **rubrica**: ogni parola che passa vi aggiunge una
 voce «etichetta → informazione», sommandola a quelle che ci sono già, e per
 rispondere a una domanda la rubrica si rilegge invece di ripercorrere tutto il
@@ -45,21 +45,24 @@ preciso. E **non corregge**: se una voce era sbagliata, l'unico modo per
 rimediare è scriverne un'altra sopra che la contraddica; la vecchia resta lì a
 disturbare. Da qui due idee semplici e complementari per scrivere *meglio*
 nella memoria: **dimenticare** (i gate) e **correggere** (la delta rule). Sono
-le due mosse da cui nasce, come vedremo, l'intera famiglia delle ricorrenze
-lineari moderne.
+le due mosse da cui nasce, come vedremo, l'intera famiglia di modelli di questo
+capitolo e del prossimo, quelli che tengono una memoria di taglia fissa e la
+riscrivono a ogni parola (nei paper si chiamano *ricorrenze lineari*).
 
 ## Dimenticare: i gate
 
 La prima idea è lasciare che le voci vecchie sbiadiscano da sole. Invece di
 tramandare la memoria intatta, la si moltiplica a ogni passo per un fattore di
 decadimento minore di uno: ciò che è stato scritto tempo fa pesa sempre meno,
-finché svanisce. È il **gate di dimenticanza**: lo stesso *forget gate* che
-Gers, Schmidhuber e Cummins aggiunsero alle LSTM nel 2000
-{cite}`gers2000learning`, riportato qui nella sua forma più essenziale.
+finché svanisce. È il **gate di dimenticanza**, e non è un'idea nuova: è lo
+stesso *forget gate* che Gers, Schmidhuber e Cummins aggiunsero nel 2000 alle
+LSTM, le celle ricorrenti che abbiamo incontrato nel capitolo sull'NLP
+{cite}`gers2000learning`. Qui torna nella sua forma più spoglia, un numero che
+moltiplica.
 
 `````{tab} Elementare
 
-Pensate al registro come a una lavagna su cui l'inchiostro sbiadisce. A ogni
+Pensa al registro come a una lavagna su cui l'inchiostro sbiadisce. A ogni
 passo tutte le voci si affievoliscono un po': quelle appena scritte sono nitide,
 quelle vecchie quasi invisibili. Se il fattore di sbiadimento è $0{,}9$, dopo
 dieci passi una voce vale $0{,}9^{10} \approx 0{,}35$ di quanto valeva: circa
@@ -73,7 +76,8 @@ viene progettato, e non cambia mai (è la strada di RetNet, che incontreremo
 nella prossima sezione). Nel secondo il modello lo **calcola parola per
 parola** a partire da ciò che sta leggendo: davanti a una cosa importante
 sbiadisce poco, davanti a un intercalare sbiadisce molto (è la strada di
-Mamba-2, che è il modello a cavallo fra questo capitolo e il prossimo). La
+**Mamba-2**, un modello che incontreremo nel prossimo capitolo e che si
+comporta, da questo lato, esattamente così). La
 differenza fra i due sta tutta lì: nel primo caso il valore è deciso una volta
 sola, in fase di progetto, e la rete se lo tiene così com'è per sempre; nel
 secondo non c'è nessun valore da tenere, perché a essere stato appreso durante
@@ -86,10 +90,13 @@ poter sbiadire **una zona della lavagna alla volta**: tenere nitida quella con
 le cose che contano (fattore $0{,}99$, quasi non svanisce) e cancellare in
 fretta quella degli appunti di servizio (fattore $0{,}5$, dimezza a ogni
 passo). È la differenza tra abbassare le luci di tutta la stanza e regolare
-ogni lampada singolarmente, e il modello che lo fa si chiama **GLA**, sigla di
-*gated linear attention*: la troverete citata anche più avanti, ed è
-semplicemente questa, l'attenzione lineare con un interruttore per ogni zona
-della lavagna.
+ogni lampada singolarmente.
+
+Le zone, poi, non sono zone a caso: sono i *canali*, cioè le posizioni della
+fila di numeri con cui il modello scrive ogni parola, e c'è un interruttore per
+ciascuna. Il modello che lo fa si chiama **GLA**, cioè attenzione lineare con
+gli interruttori (in inglese *gated linear attention*): la troverai citata
+anche più avanti, ed è semplicemente questo.
 
 `````
 
@@ -150,38 +157,57 @@ se quella voce contraddice ciò che c'è già.
 
 ## Correggere: la delta rule
 
-La seconda idea è più sottile e viene da lontano. Nel 2021 Schlag, Irie e
-Schmidhuber {cite}`schlag2021linear` osservano che il Transformer lineare è, a
-tutti gli effetti, un vecchio **fast weight programmer** degli anni Novanta di
-Schmidhuber. Il nome dice che in queste reti convivono due memorie con due
+La seconda idea si dice in una riga: prima di scrivere, guardare che cosa c'è
+già scritto. Viene da lontano, e per arrivarci conviene passare da una
+scoperta del 2021.
+
+In quell'anno Schlag, Irie e Schmidhuber si accorgono che l'attenzione lineare
+(nei paper la chiamano anche *Transformer lineare*: è la stessa cosa) è a tutti
+gli effetti una rete che Schmidhuber aveva progettato negli anni Novanta, il
+**fast weight programmer**, il «programmatore di pesi veloci»
+{cite}`schlag2021linear`. Il nome dice che in queste reti convivono due memorie con due
 velocità diverse: una **lenta**, i pesi appresi durante l'addestramento, che
 cambiano nel corso di giorni di calcolo e poi restano fermi per sempre; e una
 **veloce**, il nostro registro, che cambia a ogni parola letta. La rete lenta
 non contiene le risposte: contiene le istruzioni con cui, mentre legge,
 riscrive al volo la memoria veloce. E se è una rete che si riprogramma da sé,
-allora conviene programmarla bene: prima di scrivere, guardare cosa c'è già.
+tanto vale insegnarle a farlo con criterio.
 
 `````{tab} Elementare
 
 Torniamo alla rubrica. L'accumulo puro è chi, ogni volta che scopre un numero
-di telefono, aggiunge una riga nuova: anche se quel contatto era già in
-rubrica, magari con un numero sbagliato. Le righe si accavallano e chi
-consulta la rubrica si sente rispondere un miscuglio del numero vecchio e di
-quello nuovo, in cui non si riconosce più né l'uno né l'altro.
+di telefono, lo scrive sopra a quello che c'era senza nemmeno guardarlo: anche
+se quel contatto era già in rubrica, magari con un numero sbagliato. Le due
+scritte si sovrappongono, e chi consulta la rubrica si sente rispondere un
+miscuglio del numero vecchio e di quello nuovo, in cui non si riconosce più né
+l'uno né l'altro.
 
 La **delta rule** fa la cosa sensata: prima di scrivere, *cerca il contatto* e
 legge il numero attualmente memorizzato. Poi scrive soltanto la
 **correzione**: la differenza tra quello giusto e quello che c'era. Un esempio
-con i numeri: alla chiave «Mario» la memoria oggi risponde $7$, ma il valore
+con i numeri: alla voce «Mario» la memoria oggi risponde $7$, ma il valore
 giusto è $10$; l'errore è $10 - 7 = 3$. Con un «passo di correzione» pari a
-$\beta = 0{,}5$ scrivo solo $0{,}5 \times 3 = 1{,}5$, e la memoria passa a
-rispondere $8{,}5$: si avvicina alla verità senza cancellare tutto di colpo.
-Il parametro $\beta$ dosa quanto dare retta all'errore: con $\beta = 1$
-**sovrascrivo** del tutto (la memoria risponde $10$), con $\beta = 0$
-**ignoro** e lascio $7$. È esattamente come si corregge un tiro: non riparti
-da zero, aggiusti in proporzione a quanto hai sbagliato.
+metà (nelle formule questa manopola si chiama *beta*, e si scrive $\beta$)
+scrivo solo $0{,}5 \times 3 = 1{,}5$, e la memoria passa a rispondere $8{,}5$:
+si avvicina alla verità senza cancellare tutto di colpo. La manopola dosa
+quanto dare retta all'errore: al massimo, $\beta = 1$, **sovrascrivo** del
+tutto (la memoria risponde $10$); a zero **ignoro** e lascio $7$. È esattamente
+come si corregge un tiro: non riparti da zero, aggiusti in proporzione a quanto
+hai sbagliato.
 
-Come il fattore di sbiadimento di poco fa, quella manopola non la gira una
+Due modi di dire la stessa cosa, e conviene fissarlo perché più avanti la
+tabella userà l'altro: scrivere la differenza, oppure cancellare la vecchia
+risposta e rimetterne una nuova, danno lo stesso numero. Togliere metà del $7$
+e metterci metà del $10$ fa $3{,}5 + 5 = 8{,}5$, cioè quello di prima. Quanto
+si cancella e quanto si scrive li decide la stessa manopola.
+
+Da qui una conseguenza che tornerà utile fra poco: girata a zero, la manopola
+non spegne solo la correzione, spegne la scrittura. Se non scrivo la
+differenza, non scrivo niente, e la memoria resta com'era.
+
+Correggere in proporzione all'errore è una vecchia idea dell'ingegneria: la
+formularono Widrow e Hoff nel 1960, per una macchina che imparava aggiustandosi
+da sé. Come il fattore di sbiadimento di poco fa, la manopola non la gira una
 persona: il modello la calcola da sé a ogni parola, in base a quello che sta
 leggendo, e a essere stato appreso durante l'addestramento è il modo di
 calcolarla.
@@ -249,20 +275,20 @@ risponde alla parola numero cento, e quello dipende da tutte le novantanove
 correzioni precedenti. Ogni passo aspetta quello prima, e una scheda grafica
 che potrebbe fare mille conti insieme ne fa uno.
 
-Il modello con la delta rule è dunque nato subito, ma nato lento: sono gli
-stessi Schlag, Irie e Schmidhuber a proporlo nel 2021 con il nome di
-**DeltaNet**, e ad addestrarlo davvero come modello linguistico, solo con un
-algoritmo che procede in fila lungo la sequenza, spreca le schede grafiche e
-non scala oltre le taglie piccole. Nel 2024 Yang e colleghi (NeurIPS 2024)
+Il modello con la delta rule è dunque nato subito, ma nato lento. Lo propongono
+nel 2021 gli stessi Schlag, Irie e Schmidhuber, con il nome di **DeltaNet**, e
+lo addestrano davvero come modello linguistico. L'algoritmo che avevano,
+però, procede in fila lungo la sequenza: spreca le schede grafiche e non regge
+oltre le taglie piccole. Nel 2024 Yang e colleghi (NeurIPS 2024)
 {cite}`yang2024deltanet` lo sbloccano: un algoritmo **chunk-parallel** che
 spezza la sequenza in blocchi e, dentro ogni blocco, riesce a fare i conti
-tutti insieme passando allo stato soltanto un riassunto compatto (tecnicamente,
-una rappresentazione a matrici di rango basso, la cosiddetta forma *WY*). Da
+tutti insieme, passando al blocco successivo soltanto un riassunto compatto di
+quello appena chiuso (nei paper quel riassunto si chiama forma *WY*). Da
 lì in avanti la delta rule è addestrabile alla scala dei modelli linguistici. E
 il guadagno si vede dove ci si aspetta: quando il compito è ritrovare il valore
 giusto legato a una chiave incontrata prima (il numero di telefono del contatto
-giusto, per restare alla rubrica), DeltaNet fa meglio delle altre memorie a
-foglio unico di questo capitolo e si avvicina all'attenzione dei Transformer,
+giusto, per restare alla rubrica), DeltaNet fa meglio delle altre memorie di
+taglia fissa di questo capitolo e si avvicina all'attenzione dei Transformer,
 che su quel terreno resta il metro di paragone perché non butta via niente.
 
 ## Unire oblio e correzione: Gated DeltaNet
@@ -271,10 +297,10 @@ A questo punto abbiamo due mosse che risolvono difetti diversi, e la domanda
 si fa naturale: perché scegliere? Il gate **svuota in fretta** la memoria, ma
 in modo **uniforme e indiscriminato**: non sa *cosa* sta buttando via. La
 delta rule fa **correzioni mirate** su singole chiavi, ma da sola **non
-svuota**: tende a lasciare la memoria piena di tracce, sia pure aggiustate.
-Yang, del MIT, con Kautz e Hatamizadeh di NVIDIA (ICLR 2025)
-{cite}`yang2024gateddelta` osserva che sono **complementari** e li mette
-insieme in **Gated DeltaNet**.
+svuota**: tende a lasciare la memoria piena di tracce, sia pure aggiustate. Le
+due mosse sono dunque **complementari**, e conviene tenerle insieme: è quello
+che fanno Yang, del MIT, con Kautz e Hatamizadeh di NVIDIA in **Gated
+DeltaNet**, presentato a ICLR nel 2025 {cite}`yang2024gateddelta`.
 
 `````{tab} Elementare
 
@@ -292,8 +318,9 @@ scritto sia giusto. Se si smette di passare lo straccio, resta la sola
 correzione: le voci sono precise, ma la lavagna a un certo punto si riempie. Se
 si smette di correggere, resta il solo straccio, e questa è la parte
 sorprendente: non si torna al registro che sommava e basta, si ottiene una
-lavagna che sbiadisce e non scrive più niente, perché nel meccanismo la stessa
-manopola dosa quanto correggere *e* quanto scrivere. Insieme, invece, i due
+lavagna che sbiadisce e non scrive più niente: è la conseguenza vista con
+Mario, dove la manopola girata a zero spegneva la correzione e con lei la
+scrittura, perché quel che si scrive *è* la correzione. Insieme, invece, i due
 gesti fanno il mestiere per intero: buttare via in fretta ciò che non serve e
 tenere in ordine ciò che si conserva.
 
@@ -348,7 +375,7 @@ descritto una macchina che fa esattamente questo.
 
 `````{tab} Elementare
 
-Ricordate la retta di best fit? Data una nuvola di punti, cercavamo la retta
+Ricordi la retta di best fit? Data una nuvola di punti, cercavamo la retta
 che minimizza l'errore quadratico: la somma dei quadrati degli scarti tra
 valori veri e previsti. Facevamo tutto in una volta, con l'intero dataset
 sotto gli occhi.
@@ -358,9 +385,11 @@ Il suo compito è imparare a rispondere bene: data un'etichetta, restituire
 l'informazione giusta. A ogni parola arriva una nuova coppia
 (etichetta, informazione) e la rubrica fa **un piccolo passo** per rispondere
 meglio, senza poter rileggere il passato. È la versione «in tempo reale» della
-retta di best
-fit: non risolvi il problema in blocco, lo aggiusti in continuazione a ogni
-esempio che passa. Ecco perché la delta rule assomigliava a correggere un tiro:
+retta di best fit: non risolvi il problema in blocco, lo aggiusti in
+continuazione a ogni esempio che passa. Il passo lo abbiamo già visto in
+numeri: la rubrica che rispondeva $7$, dopo la correzione risponde $8{,}5$, e
+si avvicina al $10$ senza arrivarci in un colpo solo. Ecco perché la delta rule
+assomigliava a correggere un tiro:
 non *assomiglia* a imparare, è imparare, nell'unico modo in cui una macchina
 lo fa, cioè guardare di quanto ha sbagliato e spostarsi un po' in quella
 direzione.
@@ -413,20 +442,25 @@ quanto fedelmente segue il gradiente di $\mathcal{L}_t$.
 `````
 
 La {numref}`fig-famiglia-ricorrenze-lineari` mette in fila lo «zoo» delle
-memorie di questo capitolo: si parte da quella che tiene tutto e si sale un
-gradino alla volta, fino all'ultima, che le contiene tutte come casi
-particolari (basta spegnerle un pezzo per volta).
+memorie di questo capitolo e del prossimo: si parte da quella che tiene tutto e
+si sale un gradino alla volta, fino all'ultima, che tiene insieme le due mosse.
+(Nella figura compaiono due nomi che appartengono al seguito: RWKV-6, che è
+un'architettura della prossima sezione e sbiadisce zona per zona come GLA, e
+Mamba-2, che vedremo da vicino nel prossimo capitolo.)
 
 ```{figure} ../figures/famiglia-ricorrenze-lineari.svg
 :name: fig-famiglia-ricorrenze-lineari
 :alt: Cinque riquadri in fila, sotto una freccia che va da «accumulo puro» a «oblio + correzione mirata», mostrano la matrice di transizione di stato di ciascuna ricorrenza lineare. Primo riquadro, attenzione lineare, matrice identità I, la sola diagonale piena e il fondo vuoto. Secondo riquadro, RetNet e Mamba-2, alpha per identità, la diagonale uniforme ma di tinta più chiara, cioè scalata da un unico fattore. Terzo riquadro, GLA e RWKV-6, Diag(alpha), la diagonale a segmenti di intensità diversa. Quarto riquadro, DeltaNet, identità meno beta k k trasposto, la diagonale piena su un fondo velato che occupa tutto il quadrato, perché la correzione di rango uno tocca anche fuori dalla diagonale. Quinto riquadro, Gated DeltaNet, alpha per parentesi identità meno beta k k trasposto, con la diagonale scalata del secondo riquadro sopra il fondo velato del quarto.
 :width: 85%
 
-Lo «zoo» delle memorie di questo capitolo, in fila da quella che sa fare meno a
-quella che sa fare di più. In ogni riquadro c'è la regola con cui la memoria di
-ieri sopravvive a oggi: tenerla tutta, sbiadirla tutta uguale, sbiadirla zona
-per zona, cancellare la voce che si sta per riscrivere, e infine sbiadire tutta
-uguale *e* cancellare. Il resto del meccanismo non cambia mai.
+Lo «zoo» delle memorie di questi due capitoli, in fila da quella che sa fare
+meno a quella che sa fare di più. In ogni quadrato è disegnato che cosa resta
+della memoria di ieri: la diagonale è ciò che sopravvive, e il fondo è ciò che
+viene toccato oltre la diagonale. Diagonale piena vuol dire tenere tutto;
+diagonale scolorita, sbiadire tutto allo stesso modo; diagonale a segmenti,
+sbiadire zona per zona; fondo velato, cancellare la voce che si sta per
+riscrivere. L'ultimo riquadro tiene insieme la diagonale scolorita del secondo
+e il fondo velato del quarto. Il resto del meccanismo non cambia mai.
 ```
 
 La stessa storia, messa in tabella: cinque modi di far sopravvivere la memoria
@@ -437,9 +471,9 @@ di ieri, dal più semplice al più raffinato.
 | Modello | Che cosa fa della memoria di ieri |
 | :--- | :--- |
 | Attenzione lineare | La tiene tutta, intatta, e ci somma sopra la voce nuova. |
-| Mamba-2 / RetNet | La sbiadisce tutta allo stesso ritmo, poi ci somma sopra la voce nuova. |
+| Mamba-2 / RetNet | La sbiadisce tutta allo stesso ritmo, poi ci somma sopra la voce nuova. I due si dividono proprio sul ritmo: RetNet lo fissa una volta per tutte, Mamba-2 lo ricalcola a ogni parola. |
 | GLA | La sbiadisce **zona per zona**, ogni zona al suo ritmo, poi ci somma sopra la voce nuova. |
-| DeltaNet | Non la sbiadisce, ma prima di scrivere **cancella la vecchia voce** proprio dell'etichetta che sta per riscrivere, e ne scrive la correzione. |
+| DeltaNet | Non la sbiadisce, ma prima di scrivere **sbianchetta la vecchia voce** proprio dell'etichetta che sta per riscrivere, tanto quanto dice la manopola, e ci scrive sopra la correzione. |
 | Gated DeltaNet | Le due cose insieme: sbiadisce tutto, e in più cancella e riscrive la voce di turno. |
 
 Cinque righe, una storia sola: **cambia soltanto la prima mossa**, quella che
@@ -472,10 +506,11 @@ il fattore $\beta_t$).
 Questa è la struttura profonda che unifica l'intera famiglia, ed è la stessa
 che, nel prossimo capitolo, ritroveremo arrivando da tutt'altra strada: quella
 dei sistemi dinamici degli **State Space Model**. Non è un caso che Mamba-2 (il
-modello che sbiadisce tutta la lavagna allo stesso ritmo, ma decidendo il ritmo
+modello che sbiadisce tutta la memoria allo stesso ritmo, ma decidendo il ritmo
 parola per parola) compaia due volte, qui tra le attenzioni lineari e là tra
-gli SSM: è il ponte fra le due famiglie, e la sua «dualità» tra stato e
-attenzione è la prova che sono due viste della stessa cosa.
+gli SSM: è il ponte fra le due famiglie. I suoi autori lo scrivono infatti in
+due modi, una volta come memoria che si aggiorna e una volta come attenzione, e
+chiamano *dualità* quella doppia scrittura.
 
 `````{tab} Elementare
 

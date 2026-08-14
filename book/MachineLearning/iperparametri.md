@@ -7,15 +7,18 @@ machine learning è diventato alchimia».
 
 Non ce l'aveva con i risultati, che ci sono: ce l'aveva con le fondamenta.
 Facciamo funzionare le cose, disse, senza sapere davvero *perché* funzionino, e
-portò tre esempi. Il primo era un problemino minuscolo su cui la discesa del
+portò tre esempi. Uno era un problemino minuscolo su cui la discesa del
 gradiente si pianta: non perché sia arrivata in fondo alla discesa, ma pur
-avendo ancora sotto i piedi un terreno in pendenza. Il secondo era un
-ingrediente che a quel tempo tutti mettevano nelle reti (si chiama *batch
-normalization*, e il libro la incontrerà più avanti) di cui, a suo dire, «come
-disciplina non sappiamo quasi niente». Il terzo era la storia di un sistema che
-si era rotto in un modo inspiegabile: qualcuno aveva cambiato il modo di
-arrotondare i numeri dentro una libreria, e l'errore era passato dal 25% al
-99%.
+avendo ancora sotto i piedi un terreno in pendenza. Un altro era un ingrediente
+che a quel tempo tutti mettevano nelle reti (si chiama *batch normalization*, e
+il libro la incontrerà più avanti) di cui, a suo dire, «come disciplina non
+sappiamo quasi niente». Il terzo era la storia di un sistema che si era rotto
+senza che nessuno capisse perché: qualcuno aveva cambiato il modo di
+arrotondare i numeri dentro una libreria, e l'errore era passato da meno del
+25% a quasi il 99%. La spiegazione arrivò dopo, e vale la pena darla perché
+smentisce a metà l'aneddoto: quell'arrotondamento portava a uno un numero che
+doveva restare appena sotto, e da lì usciva una divisione per zero. Un difetto
+del programma, quindi, non del metodo.
 
 Gli **iperparametri**, in quel discorso, non erano nominati nemmeno una volta.
 Ma se c'è un posto in cui l'alchimia si vede a occhio nudo sono loro: ricette
@@ -67,7 +70,8 @@ $625 \times 5 = 3\,125$ caffè.
 Se ogni «caffè» è un addestramento da due minuti, sono
 $3\,125 \times 2 = 6\,250$ minuti, cioè quattro giorni e un terzo di macchina
 accesa. E se aggiungi una quinta manopola, sempre a cinque livelli, le
-combinazioni si moltiplicano ancora per cinque e i giorni diventano ventuno. È
+combinazioni si moltiplicano ancora per cinque e i giorni diventano quasi
+ventidue. È
 l'**esplosione combinatoria**: ogni manopola in più *moltiplica* le
 prove, non le somma.
 

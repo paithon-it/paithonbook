@@ -53,11 +53,13 @@ vedremo, fa una grande differenza sulla memoria a lungo termine.
 C'è poi una proprietà che tornerà in ogni pagina del capitolo, e conviene
 prenderla subito. Finché la regola di aggiornamento **resta la stessa a ogni
 passo**, lo stesso calcolo si può fare in due modi: «passo dopo passo», una
-parola alla volta, oppure «tutto insieme», facendo scorrere un unico filtro
-lungo su tutta la sequenza. Sono la stessa identica cosa vista da due lati, e
-questa è la **doppia natura** di cui parleremo: si addestra il modello nel
-secondo modo, che è veloce perché fa tutti i conti in una volta, e lo si usa
-nel primo, che è economico perché non tiene niente in sospeso.
+parola alla volta, oppure «tutto insieme», facendo scorrere sull'intera
+sequenza un unico **filtro**: una fila di pesi che dice quanto conta ciò che si
+è letto, a seconda di quanto tempo fa lo si è letto. Sono la stessa identica
+cosa vista da due lati, e questa è la **doppia natura** di cui parleremo: si
+addestra il modello nel secondo modo, che è veloce perché fa tutti i conti in
+una volta, e lo si usa nel primo, che è economico perché a ogni parola gli
+basta il riassunto di prima.
 
 `````
 
@@ -84,17 +86,19 @@ sull'attenzione lineare, raggiunta però dalla teoria dei segnali.
 
 ## Due strade, una meta
 
-L'attenzione lineare e gli *state space model* nascono da mondi diversi (l'una
-dal meccanismo di attenzione, gli altri dai sistemi dinamici) ma convergono
-sullo stesso oggetto: una **ricorrenza lineare a stato fisso**, addestrabile
-in parallelo e capace di generare a memoria costante. Detta in italiano, è la
-macchina descritta qui sopra: tiene un riassunto di taglia sempre uguale (lo
-**stato**) e a ogni parola lo aggiorna con una regola semplice, di quelle in
-cui il nuovo riassunto è il vecchio più ciò che entra (è ciò che significa
-«lineare»); si addestra lavorando su tutta la sequenza in una volta sola, e
-poi genera una parola alla volta senza che la memoria cresca mai. Questa
-frase, con parole diverse, tornerà a ogni sezione: è il punto d'arrivo comune
-dei due capitoli.
+L'attenzione lineare del capitolo precedente e gli *state space model* di
+questo nascono da mondi diversi, e arrivano alla stessa macchina. È quella
+appena descritta: tiene un riassunto di taglia sempre uguale (lo **stato**) e a
+ogni parola lo aggiorna con una regola semplice, in cui il nuovo riassunto è il
+vecchio, un po' sbiadito, più ciò che entra adesso. Si addestra lavorando su
+tutta la sequenza in una volta sola, e poi genera una parola alla volta senza
+che la memoria cresca mai.
+
+Il nome per esteso di quella macchina è **ricorrenza lineare a stato fisso**:
+«ricorrenza» perché ogni passo riparte dal risultato del passo precedente, «a
+stato fisso» perché il riassunto non si allarga mai. L'attenzione lineare ci
+arriva dal meccanismo di attenzione, gli *state space model* dai sistemi
+dinamici; la macchina, alla fine, è la stessa.
 
 ```{figure} ../figures/mamba-2023.svg
 :name: fig-attenzione-vs-ssm
@@ -108,10 +112,11 @@ sopra, decidendo di volta in volta che cosa vale la pena scrivere.
 
 Il confronto di {numref}`fig-attenzione-vs-ssm` mostra anche dove sta il
 prezzo. Un riassunto di taglia fissa deve, prima o poi, dimenticare qualcosa.
-Il tema del capitolo è la **selettività** (il rombo sul lato destro della
+Il primo dei due fili che attraversano il capitolo è la **selettività** (il
+rombo sul lato destro della
 figura): decidere *cosa* scrivere nello stato, e cosa lasciar cadere, in
 funzione di ciò che sta arrivando. Vale la pena essere precisi su che cosa
-promette, perché è facile chiedergli troppo: la selettività cambia *come* si
+promette, perché è facile chiedere troppo alla selettività: cambia *come* si
 usa lo spazio del riassunto, non lo allarga. Il tetto di un riassunto di
 taglia fissa resta, ed è l'argomento dell'ultima sezione del capitolo.
 
@@ -125,10 +130,10 @@ disegno.
 
 Ma prima c'è una tensione da sciogliere. La doppia natura «passo dopo passo» /
 «tutto insieme» vale solo se il sistema è **invariante nel tempo**: le stesse
-regole a ogni passo. Ed è proprio questa rigidità che **Mamba**
-{cite}`gu2023mamba` romperà, rendendo il sistema *selettivo*, per dargli
-qualcosa che a S4 mancava: la capacità di scegliere, in base al contenuto,
-cosa ricordare e cosa dimenticare.
+regole a ogni passo. Ed è proprio questa rigidità che **Mamba** romperà,
+rendendo il sistema *selettivo*, per dargli qualcosa che a S4 mancava: la
+capacità di scegliere, in base al contenuto, cosa ricordare e cosa dimenticare
+{cite}`gu2023mamba`.
 
 ## Come è organizzato il capitolo
 
@@ -136,8 +141,8 @@ Quattro tappe, dall'idea di base alla frontiera.
 
 **Dai sistemi dinamici a S4**: che cos'è una macchina che riassume il passato
 in un pugno di numeri, come si adatta a una sequenza fatta di passi separati, e
-come si fa a darle una memoria lunga (sono i due modelli che danno il titolo
-alla sezione, HiPPO e S4).
+come si fa a darle una memoria lunga (sono HiPPO e S4, e il secondo dà il
+titolo alla sezione).
 
 **Mamba**: come si insegna alla macchina a scegliere, invece di trattare tutte
 le parole allo stesso modo; che cosa costa quella scelta (si perde il modo
@@ -146,7 +151,7 @@ tenendo conto di com'è fatta davvero una scheda grafica.
 
 **La dualità**: la scoperta che questa macchina, scritta in un altro modo, *è*
 l'attenzione dei Transformer, e che riscriverla così la fa girare molto più in
-fretta. Poi le tre raffinature più recenti, con Mamba-3.
+fretta. Poi le tre messe a punto più recenti, con Mamba-3.
 
 **Panorama e limiti**: una mappa che tiene insieme questo capitolo e il
 precedente, che cosa un riassunto di taglia fissa non potrà mai fare, e le

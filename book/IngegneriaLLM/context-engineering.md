@@ -1,73 +1,80 @@
 # Context engineering: la finestra come sistema
 
-Apri un'applicazione LLM seria e guarda cosa arriva davvero al modello a ogni
-richiesta. Quasi nulla di quel testo lo ha battuto una persona sulla tastiera.
-C'è il *system prompt*, cioè le istruzioni di fondo che il programma antepone
-sempre, quelle del regista visto nella sezione scorsa. Ci sono alcuni esempi
-già svolti, tenuti da parte in un archivio e ripescati perché somigliano al
-caso di adesso. C'è un pezzo di documentazione andato a prendere in quel
-momento, in un manuale che nella finestra non ci starebbe mai per intero. C'è
-il riassunto degli scambi precedenti, perché il modello non ricorda nulla da
-solo. C'è il risultato dell'ultima operazione che il modello ha chiesto al
-programma di eseguire per lui (una ricerca, una query, un calcolo). E in
-fondo, ultima, la breve frase dell'utente. La domanda dell'utente è la punta
-dell'iceberg; sotto c'è un intero **payload** (il carico) assemblato dal
-codice. Quando
-Andrej Karpathy, nel 2025, ha proposto di chiamare tutto questo *context
-engineering* {cite}`karpathy2025context`, ha spostato l'unità di misura del
-mestiere: non più la singola frase («trovare l'incantesimo giusto») ma il
-**governo dell'intero contesto** che riempie la finestra a ogni passo.
+Se potessimo aprire una di quelle applicazioni che le aziende costruiscono
+attorno a un modello, e guardare che cosa gli arriva davvero a ogni richiesta,
+troveremmo che quasi nulla di quel testo lo ha battuto una persona sulla
+tastiera. C'è il *system prompt*, cioè le istruzioni
+di fondo che il programma antepone sempre, quelle del regista visto nella
+sezione scorsa. Ci sono alcuni esempi già svolti, tenuti da parte in un
+archivio e ripescati perché somigliano al caso di adesso. C'è un pezzo di
+manuale, la pagina che serve a questa domanda e non le altre mille, andata a
+prendere in quel momento perché il manuale intero nella finestra non ci
+starebbe mai. C'è il riassunto degli scambi
+precedenti, perché il modello non ricorda nulla da solo. C'è il risultato
+dell'ultima operazione che il modello ha chiesto al programma di eseguire per
+lui: una ricerca sul web, un calcolo, una domanda a un archivio. E in fondo,
+ultima, la breve frase dell'utente.
 
-È il tema di questa sezione, e quella precedente sul prompt engineering
-ne ha aperto la porta: là abbiamo lavorato sul *singolo messaggio*, sulla
-frase scritta bene. Qui saliamo di un livello e trattiamo la finestra come un
-**sistema** da progettare nel suo insieme. Il *repository* (un archivio di
-codice pubblico, «repo» per brevità) *context-engineering-intro*
-di Cole Medin {cite}`medin2025contextintro` lo dice con uno slogan efficace,
-che vale la pena riportare come
-affermazione di chi costruisce, non come teorema: il context engineering non
-sono «parole magiche», è un sistema completo (regole, esempi, documentazione,
-validazione) e sta al prompt engineering come una **sceneggiatura** sta a un
-*post-it*. Un post-it dice cosa fare in una riga; una sceneggiatura dà a ogni
-scena il contesto per recitarla bene.
+Quella frase è la punta dell'iceberg; sotto c'è tutto il carico montato dal
+programma, il payload di cui si diceva aprendo il capitolo.
+Quando Andrej Karpathy, nel 2025, ha dato credito al nome *context
+engineering* per il mestiere di montarlo {cite}`karpathy2025context`, ha spostato
+l'oggetto del lavoro: non più la singola frase («trovare l'incantesimo
+giusto») ma il **governo dell'intero contesto** che riempie la finestra a ogni
+passo.
 
-Una precisazione di perimetro, per non ripeterci. La **meccanica** di questo
-sistema, il budget di token come problema di zaino (scegliere cosa mettere in
-uno spazio che non basta per tutto), il *context builder* che
-assembla il prompt a ogni passo, il *lost in the middle* di Liu e colleghi
-{cite}`liu2024lost`, le forme di memoria dentro e fuori la finestra: l'abbiamo
-già smontata pezzo per pezzo nel capitolo sugli **Agenti**, nella sua sezione
-di context engineering. Non la riscriviamo. Qui prendiamo un'angolazione
-diversa e complementare: **come si pensa** il contesto (un modello mentale a
-scale di complessità), **quali mosse** lo governano, **come si guasta**, e
-**come lo si rende una procedura ripetibile**.
+È il tema di questa sezione. Quella precedente ne ha aperto la porta: là
+abbiamo lavorato sul singolo messaggio, sulla frase scritta bene; qui saliamo
+di un livello e trattiamo la finestra come un **sistema** da progettare nel
+suo insieme. Cole Medin, uno che di mestiere costruisce queste applicazioni,
+lo dice con uno slogan efficace {cite}`medin2025contextintro`: il context
+engineering non sono «parole magiche», è un sistema completo (regole, esempi,
+documentazione, prove di collaudo) e sta al prompt engineering come una
+**sceneggiatura** sta a un *post-it*. Un post-it dice cosa fare in una riga;
+una sceneggiatura dà a ogni scena il contesto per recitarla bene. È
+un'affermazione di chi costruisce, non un risultato misurato, e la riportiamo
+per quello che è.
 
-## Una scala di complessità: dagli atomi ai campi
+Una precisazione, per non ripeterci. Del contesto abbiamo già smontato la
+**meccanica** nel capitolo sugli **Agenti**: come si sceglie cosa mettere in
+una finestra che non basta per tutto, come il programma rimonta quel carico a
+ogni giro, dove si tengono i ricordi che nella finestra non stanno, e perché
+un testo lungo viene letto peggio proprio nella sua parte centrale (una cosa
+che sorprende, e su cui torneremo più avanti). Quella parte non la
+riscriviamo. Qui prendiamo un'angolazione diversa e complementare:
+**come si pensa** il contesto (un modello mentale a scale di complessità),
+**quali mosse** lo governano, **come si guasta**, e **come lo si rende una
+procedura ripetibile**.
 
-Il primo passo è avere un'immagine mentale di *quanto* è complesso il contesto
-che stiamo montando. Il repo *Context-Engineering* di David Kim
-{cite}`kim2025contextengineering` propone una
-metafora presa in prestito dalla biologia: come la materia vivente sale di
+## Una scala di complessità: dagli atomi agli organi
+
+Il primo passo è avere un'immagine di *quanto* è complesso il contesto che
+stiamo montando. David Kim, che di questa materia tiene una raccolta di
+appunti molto seguita {cite}`kim2025contextengineering`, propone una metafora
+presa in prestito dalla biologia: come la materia vivente sale di
 complessità dagli atomi agli organismi, così il contesto sale da una singola
 istruzione fino a interi ecosistemi di componenti che collaborano. È una
-metafora didattica (un modo di ordinare le idee, non una tassonomia
-scientifica) e come tale la usiamo.
+metafora didattica, un modo di ordinare le idee e non una classificazione
+scientifica, e come tale la usiamo.
 
 `````{tab} Elementare
 
-Pensa a come si costruisce qualcosa di vivo. Parti dagli **atomi**: i mattoni più
-piccoli, una singola regola («rispondi in italiano»). Metti insieme più atomi e
-ottieni una **molecola**: l'istruzione più due o tre esempi che mostrano cosa
-intendi. Le molecole formano **cellule**, che hanno una memoria: il sistema
-ricorda chi sei tra un messaggio e l'altro. Le cellule si organizzano in
-**organi** che svolgono funzioni complesse: un flusso a più passi, in cui il
-modello può chiedere al programma di fare qualcosa per lui (cercare, calcolare,
-aprire un archivio) e poi usare il risultato. E in cima ci sono proposte che
-guardano al contesto come a un unico ambiente continuo, ma sono ricerca
-aperta, non attrezzi da usare oggi. Non serve
-imparare la biologia: serve l'idea che il contesto non è tutto uguale: c'è quello
-semplice come un mattone e quello complesso come un corpo, e sapere a che
-altezza della scala stai lavorando ti dice quanta cura serve.
+Pensa a come si costruisce qualcosa di vivo. Alla base ci sono gli **atomi**,
+i pezzi più piccoli: una singola regola, «rispondi in italiano». Metti insieme
+più atomi e ottieni una **molecola**: l'istruzione più due o tre esempi che
+mostrano cosa intendi. Un gradino sopra ci sono le **cellule**, e quello che
+si aggiunge è la memoria: il sistema si ricorda chi sei da un messaggio
+all'altro. Le cellule si organizzano in **organi**, cioè in lavori a più
+passi, dove il modello può chiedere al programma di fare qualcosa per lui
+(cercare, calcolare, aprire un archivio) e poi usare il risultato. Ancora più
+in su c'è chi propone di trattare tutto il contesto come una cosa sola,
+continua, invece che come pezzi distinti: sono idee di ricerca, non attrezzi
+da usare oggi, e le nominiamo solo perché nessuno te le venda per tali.
+
+Della biologia non ti serve altro. Quello che serve è l'idea che il contesto
+non è tutto uguale, che ce n'è di semplice come un atomo e di complesso come
+un corpo, e che sapere a che altezza della scala stai lavorando ti dice quanta
+cura serve.
 
 `````
 
@@ -98,32 +105,38 @@ scetticismo che merita ogni cosa non ancora misurata.
 `````
 
 La scala non è solo ordine mentale: dice anche **dove va speso lo sforzo**. Un
-task semplice vive negli atomi e nelle molecole: un buon prompt basta. Un
-agente vive negli organi, e lì il collo di bottiglia non è più la frase, è la
-*gestione* di ciò che entra ed esce dalla finestra a ogni giro.
+compito semplice vive negli atomi e nelle molecole, e lì un buon prompt basta.
+Un **agente**, cioè il programma che usa il modello a più riprese e a ogni
+ripresa può fargli usare uno strumento, vive negli organi: lì il collo di
+bottiglia non è più la frase, è amministrare quello che entra ed esce dalla
+finestra a ogni giro.
 
 ## Quattro mosse: scrivere, selezionare, comprimere, isolare
 
-Salendo di scala, il contesto diventa qualcosa da **gestire attivamente**,
-come si gestisce la memoria di un programma. Tra chi costruisce agenti si è
-imposto un framing comune (reso popolare dalle note di LangChain
-{cite}`langchain2025context`) che
-raccoglie tutte le tattiche in quattro mosse. Vale la pena tenerle a mente
-come un piccolo repertorio.
+Più si sale di scala, più il contesto va amministrato invece che scritto e
+basta. Chi costruisce agenti ha finito per raccogliere tutte le tattiche in
+quattro mosse sole, ed è una divisione comoda che si è imposta a partire dalle
+note di LangChain, una delle cassette di attrezzi già pronti con cui questi
+sistemi si costruiscono {cite}`langchain2025context`. Vale la pena tenerle a
+mente come un piccolo repertorio.
 
 `````{tab} Elementare
 
-Immagina di lavorare su una scrivania minuscola, come già negli agenti: ci sta
-poca roba, e va tenuta in ordine. Hai quattro gesti a disposizione.
-**Scrivere** fuori:
-quello che non ti serve *adesso* lo appunti su un foglio di lato, così libera il
-tavolo ma resta recuperabile. **Selezionare**: quando ti serve qualcosa, vai a
-prendere *solo quella cosa* dal foglio o dallo schedario, non svuoti il cassetto
-sul tavolo. **Comprimere**: una pila di appunti lunga la riscrivi in tre righe di
-sunto, che occupano molto meno spazio. **Isolare**: se il compito è grosso, lo
-spezzi e ne dai un pezzo a un collega, con la *sua* scrivania, così la tua non si
-intasa. Quattro gesti semplici, ripetuti a ogni passo, che tengono la finestra
-pulita.
+Immagina di lavorare su una scrivania minuscola, come già negli agenti: sul
+tavolo ci sta poca roba, e accanto hai uno schedario grande quanto vuoi. Da
+qui i quattro gesti.
+
+**Scrivere**: quello che adesso non ti serve lo metti nello schedario, così
+libera il tavolo e non è perso. **Selezionare**: quando ti serve qualcosa, vai
+a prendere *solo quella cosa*, non svuoti il cassetto sul tavolo.
+**Comprimere**: una pila di appunti lunga la riscrivi in tre righe di sunto,
+che occupano molto meno spazio. **Isolare**: se il compito è grosso, lo spezzi
+e ne affidi un pezzo a un collega che ha la *sua* scrivania, così la tua non
+si intasa. Il collega, qui, non è una persona: è un'altra copia dello stesso
+modello, con una finestra sua, a cui il programma dà un pezzo di lavoro e da
+cui riprende solo il risultato.
+
+Quattro gesti semplici, ripetuti a ogni passo, che tengono la finestra pulita.
 
 `````
 
@@ -184,32 +197,36 @@ disciplina con cui la si riempie.
 
 ## Come si guasta un contesto
 
-Un contesto più lungo non è un contesto migliore. Anzi: quasi tutti i modi in cui
-un'applicazione LLM peggiora con l'uso hanno a che fare con un contesto che si
-sporca. Drew Breunig ne ha proposto un catalogo utile
-{cite}`breunig2025contexts`, che qui riprendiamo con
-parole nostre. Quattro guasti ricorrenti:
+Un contesto più lungo non è un contesto migliore. Anzi: quasi tutti i modi in
+cui le risposte peggiorano via via che si va avanti hanno a che fare con un
+contesto che si sporca. Drew Breunig, che di queste applicazioni scrive da
+anni, ne ha proposto un catalogo utile {cite}`breunig2025contexts`, che qui
+riprendiamo con parole nostre. Quattro guasti ricorrenti:
 
-- **Context poisoning**, un errore o un'allucinazione entra nel contesto e vi
-  si **sedimenta**: da lì in poi il modello lo tratta come un fatto acquisito
-  e ci costruisce sopra, avvelenando ogni passo successivo. È il più insidioso
-  perché si **autoalimenta**.
-- **Context distraction**, il contesto cresce tanto che il modello si
-  **fissa** su ciò che ci legge dentro e trascura quello che aveva imparato in
-  addestramento: si perde tra i propri passi passati invece di guardare avanti,
-  e nei casi osservati arriva a ripetere azioni che ha già fatto.
-- **Context confusion**, informazione superflua ma presente **confonde**:
-  dettagli irrilevanti spingono verso risposte fuori fuoco, perché il modello
-  «li usa» solo perché ci sono. L'esempio di Breunig è il catalogo degli
-  strumenti: un modello piccolo che sbaglia con quarantasei strumenti a
-  disposizione e ci riesce con diciannove.
-- **Context clash**, pezzi di contesto in **contraddizione** tra loro (due
-  documenti che si smentiscono, una policy vecchia accanto a una nuova): il
-  modello non sa a chi credere e la risposta ne risente.
+- **L'avvelenamento** (*context poisoning*): un errore, o una cosa che il
+  modello si è inventato di sana pianta (un'**allucinazione**), entra nel
+  contesto e ci resta. Da lì in poi il modello la tratta come un fatto
+  acquisito e ci costruisce sopra. È il guasto peggiore, perché si alimenta da
+  sé.
+- **La distrazione** (*context distraction*): il contesto cresce tanto che il
+  modello si fissa su ciò che ci legge dentro e trascura quello che sapeva già
+  da prima, cioè quello che aveva imparato durante l'addestramento. Si perde
+  fra i propri passi passati invece di guardare avanti, e nei casi osservati
+  arriva a rifare azioni che aveva già fatto.
+- **La confusione** (*context confusion*): informazione inutile ma presente,
+  che il modello usa soltanto perché è lì, e che tira la risposta fuori fuoco.
+  L'esempio di Breunig riguarda l'elenco degli strumenti fra cui il modello
+  deve scegliere per rispondere: un modello piccolo, di quelli che girano su un
+  computer normale, messo davanti a quarantasei strumenti prende quello
+  sbagliato e la richiesta fallisce; con lo stesso compito e diciannove
+  strumenti in elenco sceglie giusto.
+- **Il litigio** (*context clash*): pezzi di contesto che si contraddicono fra
+  loro, due documenti che si smentiscono, il regolamento vecchio accanto a
+  quello nuovo. Il modello non sa a chi credere, e la risposta ne risente.
 
 `````{tab} Elementare
 
-Il più subdolo è il primo, il *poisoning*, e funziona come una diceria. Basta
+Il più insidioso è il primo, l'avvelenamento, e funziona come una diceria. Basta
 che in un gruppo entri una voce falsa («il negozio chiude alle 18») e da quel
 momento tutti la ripetono come vera: chi arriva dopo la sente già «confermata»
 da tre persone e non la mette in dubbio. Nel contesto succede lo stesso: se al
@@ -227,6 +244,15 @@ che si è detto prima, e lui continuerà a rileggerlo. Una chat nuova parte dal
 foglio bianco, ed è l'unico modo che hai, da fuori, di togliere una diceria dal
 gruppo.
 
+Che «più lungo» non voglia dire «migliore» non è un'impressione, è stato
+misurato. In una prova di Liu e colleghi diventata famosa si dava al modello
+una domanda e un mucchio di documenti in cui cercare la risposta, e si
+spostava il documento giusto dentro il mucchio, ora in cima, ora in mezzo, ora
+in fondo. Quando i documenti erano venti o trenta e quello giusto capitava nel
+mezzo, il modello rispondeva **peggio** di quando non gliene davano nessuno e
+doveva rispondere a memoria: il materiale in più, oltre una certa quantità,
+non aiutava, faceva danno.
+
 `````
 
 `````{tab} Superiore
@@ -240,7 +266,8 @@ Liu e colleghi {cite}`liu2024lost` misurano la **posizione** (la curva di
 accuratezza in funzione di dove sta l'informazione ha la forma a U, come visto
 nel capitolo sugli Agenti) e insieme la **lunghezza**: sul QA multi-documento
 fanno variare il numero di documenti in finestra e trovano che, su
-GPT-3.5-Turbo, con venti o trenta documenti l'accuratezza scende **sotto**
+GPT-3.5-Turbo, **nel caso peggiore** (cioè quando il documento rilevante
+capita in mezzo) con venti o trenta documenti l'accuratezza scende **sotto**
 quella a libro chiuso, cioè sotto il 56,1 per cento che lo stesso modello
 ottiene senza alcun documento. Il numero è di un modello solo e di quel
 momento, e non va portato in giro come una soglia universale; quello che si
@@ -261,14 +288,16 @@ deduplicazione delle fonti combatte clash.
 
 `````
 
-## Il PRP: context engineering come procedura ripetibile
+## Scrivere il contesto una volta sola: il PRP
 
-Se il context engineering è un sistema, allora dovrebbe potersi **scrivere una
-volta e riusare**, non reinventare a ogni task. È l'idea del **Product
-Requirements Prompt (PRP)**, proposta nel repo di Cole Medin per gli assistenti
-di *coding*. Un PRP è un *blueprint*: un documento che impacchetta in modo
-sistematico tutto ciò che serve a portare a termine un compito, così che
-l'assistente non parta da un contesto vuoto.
+Un contesto montato bene costa fatica, e quella fatica si può **fare una volta
+sola**: invece di rimettere insieme tutto da capo a ogni lavoro, si prepara in
+anticipo un foglio con dentro quello che serve, e si consegna quello. L'idea è
+di Cole Medin, e nasce per gli assistenti che scrivono codice, ma il gesto
+vale anche per chi usa soltanto la chat: un foglio di istruzioni preparato
+bene, da incollare all'inizio, fa la stessa cosa. Il nome che gli ha dato è
+**PRP**, *Product Requirements Prompt*, cioè il prompt che descrive per intero
+che cosa si vuole ottenere.
 
 `````{tab} Elementare
 
@@ -307,25 +336,25 @@ più contesto strutturato riduce gli errori) è sensata.
 
 `````
 
-C'è una variante «leggera» di questa stessa idea che merita una riga. Ebouky,
-Bartezzaghi e Rigotti hanno studiato i **cognitive tools**: schemi di
-ragionamento riusabili («scomponi il problema», «verifica il risultato») che
-si mettono nel contesto per **dare un'impalcatura** al modo in cui il modello
-procede, tirandone fuori un ragionamento senza riaddestrare nulla
-{cite}`ebouky2025cognitive`.
-È lo stesso spirito del PRP applicato non al codice ma al pensiero: invece di
-sperare che il modello ragioni bene, gli si fornisce l'impalcatura del
-ragionamento come parte del contesto. Rientra nella scala di prima al livello
-degli «organi»: non un singolo prompt, ma uno strumento cognitivo che
-orchestra più passi.
+C'è una variante «leggera» della stessa idea che merita una riga. Al posto del
+progetto per un lavoro solo, si mette nel contesto un metodo di lavoro: schemi
+di ragionamento riusabili, «scomponi il problema», «verifica il risultato»,
+che fanno da impalcatura a come il modello procede. Ebouky, Bartezzaghi e
+Rigotti li hanno studiati sotto il nome di **cognitive tools**, strumenti
+cognitivi, e mostrano che con questi nel contesto il modello ragiona meglio
+senza che dentro gli si sia toccato niente {cite}`ebouky2025cognitive`. È lo
+stesso spirito del PRP applicato non al codice ma al pensiero, e sta anch'esso
+al livello degli «organi» della scala di prima: non un singolo prompt, ma
+qualcosa che mette in fila più passi.
 
-La direzione è chiara, ed è anche il senso della rassegna del 2025 che ha
-setacciato oltre mille e quattrocento articoli scientifici sul tema
-{cite}`mei2025context`: il
-context engineering sta diventando una **disciplina** con i suoi modelli
-mentali, le sue tattiche e i suoi modi di fallire; proprio come, a suo tempo,
-lo è diventata l'ingegneria del software. La finestra non è una casella di
-testo: è un sistema, e va progettata come tale.
+La direzione è chiara, ed è anche il senso di un lavoro del 2025 che ha
+setacciato oltre mille e quattrocento articoli scientifici sul tema per
+metterli in fila {cite}`mei2025context`: il context engineering sta diventando
+una **disciplina**, con le sue immagini mentali, le sue tattiche e i suoi modi
+di fallire. È la stessa strada che ha percorso, decenni fa, il mestiere di
+scrivere programmi, quando ha smesso di essere un'arte individuale e si è dato
+delle regole. La finestra non è una casella di testo: è un sistema, e va
+progettata come tale.
 
 `````{tab} Elementare
 
@@ -335,7 +364,7 @@ testo: è un sistema, e va progettata come tale.
   programma monta ogni volta rimettendoci dentro le istruzioni di fondo, gli
   esempi, i pezzi di documento che servono e il riassunto di quanto già detto.
   Progettare quel pacco è il mestiere; la tua frase ne è l'ultima riga.
-- Il contesto non è tutto uguale: c'è quello semplice come un mattone (una
+- Il contesto non è tutto uguale: c'è quello semplice come un atomo (una
   regola sola) e quello complesso come un corpo (più passi coordinati). Sapere
   a che altezza si sta lavorando dice quanta cura serve. Le proposte in cima a
   quella scala sono ancora **ricerca**, non tecniche pronte, e va detto.
@@ -347,12 +376,13 @@ testo: è un sistema, e va progettata come tale.
   poi viene ripetuto come se fosse vero; un contesto così lungo che il modello
   si fissa su quello che c'è scritto dentro e dimentica quello che sa; dettagli
   inutili che tirano la risposta fuori strada; pezzi che si contraddicono a
-  vicenda. Più lungo **non** vuol dire migliore: in una misura fatta su un
-  modello di qualche anno fa, oltre una ventina di documenti in finestra le
-  risposte erano peggiori di quelle date senza alcun documento.
-- La cosa si può scrivere una volta e riusare: un **progetto** che contiene
-  regole, esempi, documentazione e, decisivo, la **prova con cui si stabilisce
-  se il lavoro è finito**. Quest'ultima è il ponte verso la prossima sezione.
+  vicenda. Più lungo **non** vuol dire migliore: nella misura vista sopra, con
+  venti o trenta documenti in finestra e quello giusto nel mezzo, le risposte
+  erano peggiori di quelle date senza alcun documento.
+- Il contesto si può preparare una volta e riusare: un **foglio di progetto**
+  con dentro le regole, gli esempi, i pezzi di manuale che servono e,
+  decisivo, la **prova con cui si stabilisce se il lavoro è finito**.
+  Quest'ultima è il ponte verso la prossima sezione.
 ```
 
 `````
@@ -380,9 +410,9 @@ testo: è un sistema, e va progettata come tale.
   ha appreso), **confusion** (token irrilevanti usati perché presenti) e
   **clash** (contesto contraddittorio). Il *lost in the middle*
   {cite}`liu2024lost` misura sia la **posizione** (curva a U) sia la
-  **lunghezza**: sul modello lì misurato, oltre venti documenti si scende sotto
-  il risultato a libro chiuso, e la finestra dichiarata non è la finestra
-  utile.
+  **lunghezza**: sul modello lì misurato, con venti o trenta documenti e nel
+  caso peggiore (rilevante in mezzo) si scende sotto il risultato a libro
+  chiuso, e la finestra dichiarata non è la finestra utile.
 - Il **PRP** rende il context engineering una **procedura ripetibile**: regole,
   esempi, documentazione e **validation gate** (il criterio oggettivo che dice
   se il lavoro è finito). Quest'ultimo anticipa il **loop

@@ -18,7 +18,7 @@ si fa quando si addestra un modello.
 
 ```{figure} ../figures/flusso-di-lavoro-pytorch.svg
 :name: fig-flusso-pytorch
-:alt: Sei riquadri numerati collegati in anello (problema, dati, modello, addestramento, valutazione, uso) con una freccia tratteggiata che dalla valutazione torna al modello e segnala il ciclo di miglioramento.
+:alt: Sei riquadri numerati collegati in sequenza (il problema, i dati, il modello, l'addestramento, la valutazione, salvare e usare) e una freccia tratteggiata che dalla quinta stazione torna alla terza, etichettata «non va? si cambia una cosa sola e si riprova».
 :width: 90%
 
 Il flusso di lavoro di un progetto PyTorch. Il percorso si attraversa una
@@ -26,11 +26,17 @@ volta in linea retta e poi decine di volte in circolo tra le stazioni 3 e 5:
 è lì, non nella scrittura del modello, che si consuma il tempo.
 ```
 
-Le prime due stazioni non hanno niente a che vedere con PyTorch e sono quelle
-che decidono l'esito: capire **che cosa si vuole predire** e **da quali dati**.
-Le tre centrali sono il ciclo vero e proprio. L'ultima è quella che quasi
-sempre si dimentica di pianificare, e che il
-[capitolo sull'MLOps](../MLOps/overview.md) riprende per esteso.
+Le sei stazioni, per nome: **problema**, **dati**, **modello**,
+**addestramento**, **valutazione**, **uso**.
+
+Le prime due non hanno niente a che vedere con PyTorch e sono quelle che
+decidono l'esito: capire che cosa si vuole predire, e da quali dati. Le tre
+centrali (scegliere il modello, addestrarlo, misurarlo) sono il ciclo vero e
+proprio, e si ripercorrono decine di volte. L'ultima, mettere il modello al
+lavoro per qualcuno che non sia chi l'ha costruito, è quella che quasi sempre
+si dimentica di pianificare, e la riprende per esteso il
+[capitolo sull'MLOps](../MLOps/overview.md), che si occupa appunto del mestiere
+di tenere in piedi modelli che qualcuno usa davvero.
 
 `````{tab} Elementare
 È lo stesso ordine con cui si prepara una ricetta nuova. Prima decidi che
@@ -40,8 +46,10 @@ distingue chi cucina bene) **assaggi** (5), e l'assaggio non lo fai sul
 cucchiaio che hai già leccato: usi una porzione che non hai ancora toccato,
 altrimenti ti convinci che sia buono solo perché lo hai fatto tu. Se manca
 sale, torni indietro e cambi *una cosa sola*, altrimenti al secondo assaggio
-non saprai se è merito del sale o del tempo di cottura. Alla fine scrivi la
-ricetta su un foglio (6), perché fra un mese non te la ricorderai.
+non saprai se è merito del sale o del tempo di cottura. E alla fine il piatto
+lo porti in tavola (6), che è il momento in cui scopri se piace anche a chi non
+l'ha cucinato: la sola prova che conta, e l'unica che quasi nessuno mette in
+conto quando comincia.
 `````
 
 `````{tab} Superiore
@@ -118,13 +126,30 @@ class RegressioneLineare(nn.Module):
 
 modello = RegressioneLineare()
 print(modello.state_dict())   # peso e bias, per ora casuali
+# OrderedDict({'strato.weight': tensor([[0.7645]]), 'strato.bias': tensor([0.8300])})
 ```
 
-Adesso il ciclo, con una sola aggiunta rispetto alla sezione precedente: ogni
-tanto ci si ferma a misurare anche sui dati messi da parte.
+Lo `state_dict`, che già conosciamo, qui contiene due soli numeri, ed è
+interessante che siano già pieni: nessuno ha ancora addestrato niente, ma un
+modello nasce sempre con dei numeri a caso dentro, sorteggiati da PyTorch nel
+momento in cui lo si costruisce. È da lì che l'addestramento parte, e per
+questo `manual_seed` conta: fissa anche quel sorteggio. (Il $0{,}7645$ che esce
+dal caso somiglia al $0{,}7$ vero per pura coincidenza; il bias, $0{,}83$
+contro $0{,}3$, è bello lontano.)
+
+Adesso il ciclo. Rispetto alla sezione precedente cambiano tre cose, e vale la
+pena dirle prima perché altrimenti sembrano contraddizioni. Primo: qui i
+quaranta punti entrano tutti insieme a ogni giro, non a pacchetti, perché sono
+quaranta e starebbero in un pacchetto solo; quindi qui «epoca» e «un giro di
+correzione» coincidono, mentre su MNIST un'epoca erano quasi mille giri.
+Secondo: l'ottimizzatore è SGD e non Adam, perché con due soli parametri il
+vantaggio di Adam (un passo diverso per ciascuno) non si vede, e SGD lascia
+vedere meglio quello che succede. Terzo: ogni tanto ci si ferma a misurare
+anche sui dati messi da parte.
 
 ```python
 criterio = nn.L1Loss()                                     # errore assoluto medio
+# lr e' il learning rate, il "passo" della sezione precedente
 ottimizzatore = torch.optim.SGD(modello.parameters(), lr=0.01)
 
 for epoca in range(1000):
@@ -145,6 +170,18 @@ for epoca in range(1000):
 print(modello.state_dict())
 ```
 
+Ecco che cosa stampa, che è la parte da guardare:
+
+```text
+epoca    0 | train 0.5552 | test 0.5740
+epoca  199 | train 0.0103 | test 0.0003
+epoca  398 | train 0.0013 | test 0.0138
+epoca  597 | train 0.0103 | test 0.0003
+epoca  796 | train 0.0013 | test 0.0138
+epoca  995 | train 0.0103 | test 0.0003
+OrderedDict({'strato.weight': tensor([[0.6968]]), 'strato.bias': tensor([0.3025])})
+```
+
 Alla fine `state_dict()` stampa due numeri molto vicini a $0{,}7$ e $0{,}3$:
 $0{,}6968$ e $0{,}3025$, cioè $0{,}70$ e $0{,}30$ arrotondati al centesimo. Non
 identici, perché la discesa del gradiente si ferma quando è *abbastanza*
@@ -152,22 +189,40 @@ vicina. È una verifica che nella maggior parte dei problemi veri non potremo
 mai fare, e proprio per questo vale la pena farla almeno una volta: qui
 sappiamo con certezza che la macchina funziona.
 
-Un dettaglio sul `199` del "termometro", che sembra un capriccio e non lo è:
-verso la fine la perdita non si ferma su un valore, **alterna** fra due
-($0{,}0013$ e $0{,}0103$), un giro sì e un giro no. Stampandola ogni $200$
-epoche la si campionerebbe sempre nello stesso punto del ciclo, e si vedrebbero
-quattro numeri identici di fila: il modello sembrerebbe fermo sull'ottimo,
-mentre in realtà gli sta girando attorno. La scheda Superiore qui sotto spiega
-perché succede, e non è un difetto: è come si comporta questa funzione di
-perdita quando il passo è fisso.
+Guardando la tabella si nota che le ultime righe si ripetono: $0{,}0103$ e
+$0{,}0013$ tornano a turno. Non è un caso, ed è la cosa più istruttiva di tutto
+l'esempio: verso la fine la perdita non si ferma su un valore, **alterna** fra
+quei due, un giro sì e un giro no.
+
+Perché lo faccia si dice in una riga. Questa misura dell'errore corregge sempre
+della stessa quantità, che si sia lontanissimi o a un capello dal bersaglio:
+sbagliare di $10$ e sbagliare di $0{,}001$ producono la stessa spinta. Non
+«frena» avvicinandosi. E il passo è fisso, sempre $0{,}01$. Quindi, arrivata a
+un capello dal punto giusto, la correzione lo scavalca; il giro dopo lo
+scavalca all'indietro; e da lì in poi ci balla attorno per sempre, con
+un'oscillazione grande più o meno quanto il passo.
+
+Ecco perché il "termometro" stampa ogni $199$ epoche e non ogni $200$, che
+sembra un capriccio e non lo è. Stampando ogni $200$, cioè un numero pari, si
+guarderebbe sempre lo stesso piede del ballo: dopo la prima riga si vedrebbero
+quattro righe con lo stesso identico numero, e il modello sembrerebbe fermo
+sull'ottimo mentre gli sta girando attorno. Col $199$ i due piedi si vedono
+tutti e due, ed è la verità.
 
 `````{tab} Elementare
 La `L1Loss` è la scelta più leggibile che ci sia: è la **distanza media** tra
 quello che il modello dice e quello che dovrebbe dire. Se stampa $0{,}05$ e
 stiamo predicendo dei prezzi in euro, il modello sbaglia in media di cinque
 centesimi. Un numero che si può raccontare a chiunque, senza spiegare che cosa
-sia un quadrato di un errore. Il valore stampato *sul test* è quello che conta:
-è il voto preso su domande mai viste.
+sia un quadrato di un errore.
+
+Il numero da guardare è quello di destra, misurato sui dieci punti messi da
+parte: è l'unico preso su domande mai viste. E qui va detto che stiamo
+prendendo la stessa scorciatoia della sezione precedente, guardandolo sei volte
+durante la corsa: su un problema truccato come questo è innocuo, perché non
+stiamo decidendo niente in base a quel numero, lo stiamo solo guardando
+scendere. In un progetto vero quel ruolo lo farebbe un terzo mucchio, la
+validazione, e il test resterebbe chiuso fino alla fine.
 `````
 
 `````{tab} Superiore
@@ -192,10 +247,14 @@ passi.
 
 ## Loss e ultimo strato: una scelta che dipende dal problema
 
-La domanda "quale loss uso?" ha una risposta quasi meccanica, e il tipo di
-problema la determina insieme alla forma dell'ultimo strato. Vale la pena
-tenere questa tabella sott'occhio: metà degli errori dei principianti nascono
-da una riga sbagliata qui.
+"Quale loss uso?" è una domanda che ha una risposta quasi meccanica: la decide
+il tipo di problema, e insieme a lei decide anche la forma dell'ultimo strato.
+I tipi di problema, in fondo, sono quattro, e sono quattro modi di fare una
+domanda a un modello: *quanto?*, *sì o no?*, *quale fra tanti?*, *quali fra
+tanti?* Ognuno ha la sua riga nella tabella. Le due lettere che vi compaiono
+stanno per «quanti numeri entrano nell'ultimo strato» ($d$) e «quante categorie
+ci sono» ($K$). Vale la pena tenerla sott'occhio: metà degli errori dei
+principianti nascono da una riga sbagliata qui.
 
 | Tipo di problema | Ultimo strato | Funzione di perdita | Per leggere l'output |
 |---|---|---|---|
@@ -207,25 +266,33 @@ da una riga sbagliata qui.
 `````{tab} Elementare
 Le quattro righe sono i quattro tipi di domanda che si possono fare a un
 modello. **Quanto?** (un prezzo, una temperatura): l'ultimo strato dà un numero
-solo e lo si legge com'è. **Sì o no?** (è spam, non è spam): un numero solo,
+solo e lo si legge com'è; nel gergo questo caso si chiama **regressione**, ed è
+quello del nostro esempio con la retta. **Sì o no?** (è spam, non è spam): un numero solo,
 che poi va schiacciato fra zero e uno per leggerlo come probabilità, ed è ciò
 che fa la `sigmoid`. **Quale, fra tanti?** (quale cifra, quale animale): tanti
 numeri quante sono le categorie, e vince il più alto. **Quali, fra tanti?** (la
 foto contiene un cane *e* un prato *e* una palla): di nuovo tanti numeri, ma
 ognuno è un sì/no per conto suo, e più di uno può essere sì. È quello che si
 chiama *multi-etichetta*, e la differenza con la riga di sopra è tutta lì: là
-si sceglie una risposta, qui se ne accendono quante se ne vuole. Le due lettere
-delle formule stanno per «quanti numeri entrano» ($d$) e «quante categorie ci
-sono» ($K$).
+si sceglie una risposta, qui se ne accendono quante se ne vuole.
 
 La riga da leggere con più attenzione è la terza. Quando le classi sono più di
-due, il modello non dà probabilità: dà dei **punteggi grezzi**, uno per
-classe, che possono essere negativi o enormi. La funzione di perdita se li
-aspetta proprio così: è lei a trasformarli in probabilità, al suo interno.
-Aggiungere la trasformazione anche nel modello significa farla due volte, e il
-risultato è un modello che impara male senza dare nessun errore: nessun
-messaggio rosso, solo numeri che non salgono. È il bug più silenzioso di
-tutti.
+due, il modello non dà probabilità: dà dei **punteggi grezzi**, uno per classe,
+che possono essere negativi o enormi. Quei punteggi hanno un nome, ed è la
+sillaba che si trova nei nomi delle funzioni: si chiamano **logit**, ed è per
+questo che la funzione di perdita per il sì/no si chiama
+`BCEWithLogitsLoss`, cioè «con i logit». La funzione di perdita se li aspetta
+proprio così: è lei a trasformarli in probabilità, al suo interno.
+
+L'ultima colonna della tabella non contraddice questo, e vale la pena essere
+espliciti perché è il punto dove ci si incarta. La `softmax` va usata **dopo**,
+sul risultato, quando si vuole leggere una probabilità da mostrare a qualcuno;
+non va messa **dentro** il modello, come ultimo strato. Sono due righe di
+codice che si assomigliano e fanno cose opposte: la prima è una lettura e non
+tocca l'addestramento, la seconda fa applicare la trasformazione due volte, una
+dal modello e una dalla loss. Il risultato è un modello che impara male senza
+dare nessun errore: nessun messaggio rosso, solo numeri che non migliorano. È
+il bug più silenzioso di tutti.
 `````
 
 `````{tab} Superiore
@@ -245,8 +312,9 @@ binaria), che rialza il contributo della classe rara.
 
 ## Il ciclo di miglioramento: una leva alla volta
 
-Il modello gira, il numero non è buono abbastanza. È il momento in cui si
-consuma il grosso di un progetto, ed è anche quello in cui si prendono le
+Il modello gira, e il numero che conta (quello sui dati messi da parte, non
+quello sui dati su cui ha studiato) non è buono abbastanza. È il momento in cui
+si consuma il grosso di un progetto, ed è anche quello in cui si prendono le
 decisioni peggiori: si cambiano cinque cose insieme, il risultato migliora, e
 non si sa quale delle cinque abbia funzionato, quindi non si sa nemmeno quale
 spingere ancora.
@@ -258,16 +326,21 @@ sensato in cui provare, dal più efficace al più illusorio.
 1. **Più dati, o dati migliori.** È quasi sempre la leva più potente, e quasi
    sempre la più noiosa. Mille esempi in più valgono di solito più di
    qualunque astuzia architetturale.
-2. **Addestrare più a lungo**, tenendo d'occhio la curva di validazione: se
-   sale, si è passato il punto di fermarsi.
-3. **Un modello più capiente**: più strati, più unità per strato. Solo dopo
-   aver verificato che il modello *piccolo* non ce la fa: non che i dati siano
-   sbagliati.
-4. **Il learning rate.** Tra tutti i numeri regolabili è quello che conta di
-   più: cambiarlo per un fattore dieci in su o in giù spesso fa la
+2. **Addestrare più a lungo**, tenendo d'occhio l'errore sulla validazione, la
+   simulazione d'esame vista nella sezione precedente: se ricomincia a salire,
+   si è passato il momento di fermarsi.
+3. **Un modello più capiente**: più strati, più unità per strato. Ma solo dopo
+   essersi accertati che il modello piccolo non ce la faccia davvero, e che il
+   problema non siano invece i dati: un modello grande su dati sbagliati impara
+   soltanto a memoria le cose sbagliate.
+4. **Il learning rate**, cioè il passo. Tra tutti i numeri regolabili è quello
+   che conta di più: cambiarlo per un fattore dieci in su o in giù spesso fa la
    differenza tra un modello che impara e uno che non parte.
-5. **I freni** (dropout, weight decay), ma solo se il divario tra
-   addestramento e validazione si sta allargando.
+5. **I freni**: tutto ciò che rende la vita un po' più difficile al modello
+   mentre studia, apposta perché non si limiti a memorizzare (i nomi che
+   incontrerai sono *dropout* e *weight decay*, e li spiega il capitolo sul
+   deep learning). Si mettono solo se la distanza fra l'errore in addestramento
+   e quello in validazione si sta allargando.
 6. **Cambiare del tutto approccio**: un'altra architettura, o partire da un
    modello già addestrato da altri; il *transfer learning* del [capitolo sulla
    visione](../VisioneArtificiale/classificazione-transfer.md).
@@ -323,11 +396,17 @@ with torch.no_grad():                           # interruttore 2: niente gradien
 print(stima.item())        # ~ 0.7 * 0.95 + 0.3 = 0.965
 ```
 
-La riga con `next(modello.parameters()).device` è un piccolo trucco che vale
-la pena adottare: chiede al modello stesso dove abita, invece di ricordarselo
-in una variabile globale che prima o poi si disallinea. Che cosa succede
-quando una delle tre condizioni salta (e come si legge il messaggio d'errore
-che ne esce) è l'argomento della sezione [sui tre errori più
+La riga con `next(modello.parameters()).device` merita una spiegazione, perché
+sembra peggio di quello che è. Un modello, come i suoi dati, sta fisicamente da
+qualche parte: nella memoria del processore o in quella della scheda grafica. E
+i due possono lavorare insieme solo se stanno nello stesso posto. Quella riga
+prende il primo peso che il modello ha in casa, gli chiede dove abita, e ci
+manda il dato nuovo. Il vantaggio è che così la risposta viene dal modello
+stesso invece che da un appunto scritto altrove nel programma, che prima o poi
+qualcuno cambierà senza ricordarsi di aggiornare anche questo.
+
+Che cosa succede quando una delle tre condizioni salta, e come si legge il
+messaggio d'errore che ne esce, è l'argomento della sezione [sui tre errori più
 comuni](errori-comuni.md).
 
 Il mestiere sta in queste sei stazioni e nel ciclo che le lega. Il resto del

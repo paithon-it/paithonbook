@@ -818,9 +818,10 @@ studiare cose fatte da gente ancora viva: a Fourier non si può telefonare per
 chiedergli come gli sia venuta, a Vapnik sì. E il seguito lo racconta così. Gli
 articoli mandati alla conferenza NIPS quell'anno furono respinti tutti. Vapnik
 aveva un'opinione bassissima delle reti neurali, e scommise una cena con un
-collega che le SVM le avrebbero battute sulla scrittura a mano; il collega, per
-vincere la cena, provò una frontiera appena appena curva invece che dritta, e
-funzionò al primo colpo. A Napoleone si attribuisce l'osservazione che un
+collega che le SVM le avrebbero battute sulla scrittura a mano. Fu il collega a
+mettersi alla prova: usò un kernel appena appena curvo (un polinomio di grado
+due, cioè la più timida delle frontiere non dritte) e funzionò al primo colpo,
+facendo vincere la cena a chi l'aveva sfidato. A Napoleone si attribuisce l'osservazione che un
 soldato si batte a lungo e con ferocia per un pezzetto di nastro colorato; ecco,
 commenta Winston, questo è il pezzetto di nastro, ed era una cena.
 

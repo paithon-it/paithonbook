@@ -357,9 +357,11 @@ colonne che ciascun albero può guardare.
 ```
 
 Il primo sorteggio di {numref}`fig-foresta-voto` è il bootstrap, che c'era già
-nel bagging. Il **secondo**, quello sulle colonne, è il contributo specifico di
-Breiman: togliendo a turno a ciascun albero la colonna più ovvia, li si
-costringe a scoprire strade diverse.
+nel bagging. Il **secondo**, quello sulle colonne, era stato proposto da altri
+pochi anni prima (Tin Kam Ho, e poi Amit e Geman) e la foresta casuale lo mette
+insieme al primo: togliendo a turno a ciascun albero la colonna più ovvia, li
+si costringe a scoprire strade diverse. Il contributo di Breiman è la
+combinazione, e la teoria che spiega perché funziona.
 
 `````{tab} Elementare
 
@@ -387,7 +389,7 @@ regressione, ed è una convenzione, non un default: in scikit-learn
 `RandomForestClassifier` estrae davvero $\sqrt{n}$ colonne, ma
 `RandomForestRegressor` ha `max_features=1.0`, cioè le guarda tutte. Chi scrive
 `RandomForestRegressor()` e basta ottiene quindi un bagging di alberi, **senza
-il secondo sorteggio** che è il contributo di Breiman; se lo vuole, deve
+il secondo sorteggio** che distingue la foresta dal bagging; se lo vuole, deve
 chiederlo (`max_features="sqrt"`, oppure `1/3`). Il vincolo sulle colonne
 abbassa la correlazione $\rho$ tra gli alberi: nella formula della
 varianza della media, è esattamente la leva che fa scendere il termine

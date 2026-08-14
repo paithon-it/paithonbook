@@ -171,7 +171,7 @@ usata**, da pochi esempi a tutti quelli che abbiamo. Le due curve sono
 l'errore sugli esempi con cui il modello ha
 studiato (l'addestramento) e l'errore su esempi tenuti da parte per giudicarlo
 (la **validazione**: più avanti in questa pagina si vede come si mettono da
-parte e perché sia essenziale farlo). Guardandole crescere insieme si capisce
+parte e perché sia essenziale farlo). Guardandole scendere si capisce
 quale dei due mali si ha davanti.
 
 - Le due curve **si avvicinano e si fermano in alto**: il modello sbaglia
@@ -239,7 +239,7 @@ $3{,}471 - 0{,}09 = 3{,}38$.
 Il modello lineare, passando da 120 a 2400 esempi, chiude il divario da
 $+0{,}230$ a $+0{,}013$: le due curve si sono **toccate**. Ma si sono toccate a
 $2{,}3$, e $2{,}3$ è ancora quasi in cima: dai $3{,}471$ di partenza sono
-scesi appena $1{,}14$ su $3{,}38$, cioè un terzo della strada. (Metà strada
+scesi appena $1{,}17$ su $3{,}38$, cioè un terzo della strada. (Metà strada
 sarebbe stata $0{,}09 + 3{,}38/2 = 1{,}78$, parecchio più in basso.)
 L'errore di addestramento, per giunta, non è migliorato di un'unghia, anzi è
 salito appena ($2{,}294$ con 120 esempi, $2{,}321$ con 2400). Il rialzo è

@@ -9,14 +9,18 @@ cresciuta parecchio, e finita la guerra era tornata a scendere. Meno pesca per
 tutti, e a guadagnarci erano stati solo quelli che mangiano gli altri.
 
 D'Ancona portò il problema a Vito Volterra, di cui nel luglio del 1926 sarebbe
-diventato genero. Volterra rispose quello stesso anno, per i Lincei, con
-*Variazioni e fluttuazioni del numero d'individui in specie animali
-conviventi*: due equazioni differenziali, una per le prede e una per i
-predatori, ciascuna con un termine che dipende dall'altra popolazione. La
-risposta al quesito di
-D'Ancona c'era, ma la cosa che vale la pena tenere è un'altra: quelle due
-popolazioni **non convergono** a un equilibrio, ci girano attorno all'infinito.
-Ognuna insegue l'altra, e l'altra nel frattempo si è spostata.
+diventato genero. Volterra rispose quello stesso anno, negli atti
+dell'Accademia dei Lincei, con *Variazioni e fluttuazioni del numero
+d'individui in specie animali conviventi*. La risposta erano due formule, una
+per le prede e una per i predatori, che dicono di quanto cambia ciascuna
+popolazione da un istante al successivo; e in ciascuna delle due compare
+l'altra, perché i predatori crescono se ci sono molte prede e le prede calano se
+ci sono molti predatori.
+
+La risposta al quesito di D'Ancona c'era, ma la cosa che vale la pena tenere è
+un'altra: quelle due popolazioni **non si fermano mai** su un valore di
+equilibrio, ci girano attorno all'infinito. Ognuna insegue l'altra, e l'altra
+nel frattempo si è spostata.
 
 Tenete a mente quelle orbite, perché torneranno alla fine della sezione con
 altri nomi. Le sezioni precedenti hanno *progettato* il coordinamento:
@@ -114,21 +118,28 @@ niente prosegui», per ogni cosa che ciascuno potrebbe trovarsi davanti.
 
 Contiamo quanti piani diversi si potrebbero scrivere, nel caso più misero
 immaginabile: due soccorritori, due sole cose che ciascuno può vedere, due sole
-cose che può fare, e tre passi in tutto. Un piano per una persona deve dire
-cosa fare al primo passo (1 caso), poi cosa fare per ciascuna delle 2 cose che
-può aver visto, poi per ciascuna delle 4 combinazioni di due osservazioni (le 2
-cose che poteva vedere al primo passo, moltiplicate per le 2 del secondo: due
-per due, quattro): in tutto $1 + 2 + 4 = 7$ decisioni, ognuna fra 2 azioni, cioè
-$2^7 = 128$ piani possibili. Per due persone insieme, $128 \times 128 = 16.384$ coppie di piani
-da confrontare per trovare la migliore.
+cose che può fare, e tre passi in tutto.
+
+Il piano di una persona deve dire che cosa fare al primo passo, e lì il caso è
+uno solo perché non ha ancora visto niente. Al secondo passo deve dire che cosa
+fare per ciascuna delle due cose che può aver visto: due casi. Al terzo, per
+ciascuna delle combinazioni di due osservazioni di fila, cioè le due del primo
+passo per le due del secondo: quattro casi. Uno più due più quattro fa sette
+decisioni da prendere, e ognuna è fra due azioni: bisogna quindi moltiplicare
+fra loro sette due, e viene centoventotto piani diversi. Per due persone insieme
+le coppie di piani sono centoventotto per centoventotto, cioè
+sedicimilatrecentottantaquattro.
 
 Sembra poco. Portiamo i passi da tre a cinque, e le decisioni per persona
-diventano $1+2+4+8+16 = 31$: i piani individuali sono $2^{31}$, poco più di due
-miliardi, e le coppie da confrontare oltre quattro miliardi di miliardi. Due
+diventano uno più due più quattro più otto più sedici, cioè trentuno: adesso i
+due da moltiplicare fra loro sono trentuno, e fanno poco più di due miliardi di
+piani per una persona sola. Le coppie da confrontare sono due miliardi per due
+miliardi, cioè oltre quattro miliardi di miliardi. E siamo ancora a due
 soccorritori, due cose da vedere, due da fare, cinque passi. Non c'è nessun
-computer, e non ci sarà: si è **dimostrato** che di questo problema non esiste
-una soluzione esatta in tempo utile, e che non basta nemmeno accontentarsi di
-una risposta approssimata, perché anche quella resta fuori portata.
+computer che ce la faccia, e non ci sarà: si è **dimostrato** che di questo
+problema non esiste una soluzione esatta in tempo utile, e che non basta nemmeno
+accontentarsi di una risposta approssimata, perché anche quella resta fuori
+portata.
 
 `````
 
@@ -171,13 +182,17 @@ Il libro ha già incontrato l'assegnazione del merito, ma su un altro asse. Nel
 reinforcement learning il problema era **temporale**: il premio arriva alla fine
 della partita, e bisogna capire quale mossa se lo sia guadagnato. La prima
 risposta era spalmarlo all'indietro su tutte le mosse, contando meno quelle più
-lontane nel tempo; poi si è affinata affiancando a chi decide un secondo pezzo
-di programma che tiene il conto di quanto ci si aspettava di guadagnare in
-quella situazione, così da poter dire non «hai preso otto» ma «hai preso due più
-di quanto ci si aspettasse». Chi decide si chiama **attore**, chi tiene il conto
-si chiama **critico**, e i due nomi tornano per tutta la sezione. Con più agenti
-al merito temporale se ne aggiunge uno **strutturale**, e la domanda cambia di
-natura: la squadra ha vinto, chi è stato bravo?
+lontane nel tempo.
+
+Poi si è affinata, e conviene dirlo con calma perché i due nomi che ne escono
+tornano per tutta la sezione. A chi decide le mosse si affianca un secondo pezzo
+di programma, che non decide niente: tiene il conto di quanto ci si aspettava di
+guadagnare in ciascuna situazione. Così, invece di dire «hai preso otto», si può
+dire «hai preso due più di quanto ci si aspettasse», che è un giudizio molto più
+utile. Chi decide si chiama **attore**; chi tiene il conto si chiama **critico**.
+
+Con più agenti, al merito nel tempo se ne aggiunge uno **fra compagni**, e la
+domanda cambia di natura: la squadra ha vinto, chi è stato bravo?
 
 `````{tab} Elementare
 
@@ -269,41 +284,49 @@ varianza**, non l'isolamento del contributo di $i$.
 
 `````
 
-La contromisura ovvia, dare a ciascuno una ricompensa sua, sposta il problema
-invece di risolverlo: ricompense individuali scritte a mano sono il terreno di
-coltura del *reward hacking* già visto nel deep reinforcement learning, e un
-agente che ottimizza la propria può danneggiare la squadra in perfetta buona
-fede. La strada che ha funzionato è l'opposta: tenere una ricompensa sola e
-ricavarne il merito di ciascuno, invece di dichiararlo in anticipo. Le vie sono
-due. La prima misura **per differenza**: si confronta com'è andata con come
-sarebbe andata se quel membro, al posto della mossa che ha fatto, ne avesse
-fatta una qualsiasi fra le sue solite, lasciando ferme quelle degli altri;
-sulla relazione di gruppo, è chiedersi che voto avrebbe preso lo stesso lavoro
-se uno dei cinque avesse scritto la sua parte come gli capita. La seconda impara a
-**scomporre il valore**, cioè a stimare quanto ciascuno ha contribuito
-partendo dal solo risultato di squadra: è la via che il resto della sezione
-segue, perché si porta dietro anche il modo di addestrare insieme e poi giocare
-ognuno per conto proprio. È lo stesso problema che le topologie avevano lasciato
-aperto, attribuire una colpa lungo una gerarchia; con l'avvertenza che qui gli
-strumenti ci sono perché c'è una ricompensa numerica e un gradiente, mentre là
-la catena era fatta di riassunti in italiano, e nessuno di questi metodi vi si
-trasferisce.
+La contromisura ovvia, dare a ciascuno un premio suo, sposta il problema invece
+di risolverlo. Premi individuali scritti a mano sono il terreno di coltura di un
+guaio già visto nel deep reinforcement learning, quello di chi trova il modo di
+far salire il proprio punteggio senza fare la cosa per cui il punteggio era
+stato inventato; e un agente che insegue il proprio numero può danneggiare la
+squadra in perfetta buona fede.
+
+La strada che ha funzionato è l'opposta: tenere un premio solo e **ricavarne**
+il merito di ciascuno, invece di dichiararlo in anticipo. Le vie sono due. La
+prima misura **per differenza**: si confronta come è andata con come sarebbe
+andata se quel membro, al posto della mossa che ha fatto, ne avesse fatta una a
+caso fra quelle che di solito fa, e tutti gli altri avessero giocato
+esattamente come hanno giocato. Sulla relazione di gruppo, è chiedersi che voto
+avrebbe preso lo stesso lavoro se uno dei cinque avesse scritto la sua parte
+come gli capitava, e gli altri quattro no.
+
+La seconda impara a **scomporre il risultato**, cioè a stimare quanto ciascuno
+ha contribuito partendo dal solo voto di squadra: è la via che il resto della
+sezione segue, perché si porta dietro anche il modo di addestrare insieme e poi
+giocare ognuno per conto proprio. È lo stesso problema che le topologie avevano
+lasciato aperto, cioè attribuire una colpa lungo un organigramma; ma con una
+differenza che conta. Qui il merito si può inseguire perché c'è un punteggio, e
+un punteggio si può derivare, cioè si può chiedere di quanto cambierebbe
+ritoccando ciascuna manopola. Là la catena era fatta di riassunti in italiano, e
+nessuno di questi metodi vi si trasferisce.
 
 ## Barare in allenamento, non in partita
 
-L'asimmetria che salva è questa: durante l'addestramento il simulatore è
-nostro, e possiamo leggere lo stato globale, le azioni di tutti, perfino
-quantità che nessun agente potrà mai osservare; in esecuzione no, e ciascuno ha
-soltanto la propria osservazione. La ricetta che ne discende si chiama
-**CTDE**, addestramento centralizzato ed esecuzione decentralizzata, e la sua
-regola d'oro si enuncia in una riga: l'informazione privilegiata si usa solo
-dove **non servirà** durante la partita. Un critico serve ad addestrare
-l'attore e poi si butta via; una funzione valore di squadra serve a distribuire
-il merito e poi non serve più. L'unica cosa che deve sopravvivere alla fine
-dell'addestramento è la regola con cui ciascun agente sceglie la propria mossa a
-partire da quello che vede lui, e soltanto da quello. Se sopravvivesse qualcosa
-che per funzionare ha bisogno di sapere anche che cosa vedono gli altri, in
-partita non funzionerebbe.
+L'asimmetria che salva è questa. Agenti come questi non imparano nel mondo vero,
+imparano dentro un **simulatore**: un mondo finto costruito al computer, in cui
+si può rigiocare la stessa situazione mille volte senza rompere niente. E quel
+simulatore è nostro, quindi in allenamento possiamo guardarci dentro quanto ci
+pare: la situazione completa, le mosse di tutti, perfino cose che nessun agente
+potrà mai osservare. In partita no, e ciascuno ha soltanto quello che vede lui.
+
+La ricetta che ne discende si chiama **CTDE**, addestramento centralizzato ed
+esecuzione decentralizzata, e la sua regola d'oro sta in una riga:
+l'informazione privilegiata si usa solo dove **non servirà** durante la partita.
+Il critico serve ad addestrare l'attore, e poi si butta via. L'unica cosa che
+deve sopravvivere alla fine dell'addestramento è la regola con cui ciascun
+agente sceglie la propria mossa a partire da quello che vede lui, e soltanto da
+quello. Se sopravvivesse qualcosa che per funzionare ha bisogno di sapere anche
+che cosa vedono gli altri, in partita non funzionerebbe.
 
 `````{tab} Elementare
 
@@ -315,15 +338,15 @@ a bordo campo. Nessuno grida allo scandalo: la ripresa dall'alto serviva
 *prima*.
 
 La prima ricetta è esattamente questa. Ogni agente ha un **attore**, che guarda
-solo il proprio pezzo di campo e decide, e in allenamento un **critico** (il
-giudice di cui sopra) che guarda tutto: la situazione completa e la mossa di
-ciascuno. Così il terreno si muove molto meno, perché un giudizio dato sapendo
-che cosa hanno fatto *tutti* non scade appena gli altri cambiano abitudini: le
-loro abitudini non gli servivano, gli servivano le loro mosse, e quelle gliele
-abbiamo messe sul tavolo.
+solo il proprio pezzo di campo e decide; e in allenamento gli sta accanto un
+**critico**, cioè quello che dà i voti, che invece guarda tutto: la situazione
+completa e la mossa di ciascuno. Così il terreno si muove molto meno, perché un
+voto dato sapendo che cosa hanno fatto *tutti* non scade appena gli altri
+cambiano abitudini: le loro abitudini non gli servivano, gli servivano le loro
+mosse, e quelle gliele abbiamo messe sul tavolo.
 
 Molto meno, però, non vuol dire fermo, e la differenza va detta perché è quella
-che spiega tutti i puntelli che vengono dopo. Il giudice sa che cosa hanno fatto
+che spiega tutti i puntelli che vengono dopo. Il critico sa che cosa hanno fatto
 tutti **adesso**, ma il voto che deve dare riguarda come andrà a finire, e come
 andrà a finire dipende da come giocheranno gli altri da qui in poi. Se quelli
 migliorano, lo stesso identico istante di gioco merita un voto diverso. Il
@@ -343,19 +366,24 @@ mosse a testa (A e B), e questo punteggio di squadra:
 
 |  | l'altro fa A | l'altro fa B |
 |:--|:--:|:--:|
-| **io faccio A** | $2$ | $0$ |
-| **io faccio B** | $0$ | $1$ |
+| **io faccio A** | 2 | 0 |
+| **io faccio B** | 0 | 1 |
 
-Il massimo è che vadano tutti e due su A, e vale $2$. Perché ciascuno ci arrivi
-da solo, A deve avere il voto individuale più alto per entrambi. Ma se per il
-primo agente A vale più di B, allora, per la regola, la squadra con il primo su
-A non può fare peggio della squadra con il primo su B, a parità di mossa del
-secondo. Mettiamo il secondo su B: la casella «io A, l'altro B» dovrebbe valere
-almeno quanto la casella «io B, l'altro B». La tabella dice $0$ contro $1$.
-Non torna, e non tornerà mai. Le situazioni che questa ricetta perde sono
-proprio quelle in cui bisogna accordarsi su una **convenzione arbitraria**, come guidare tutti a
-destra o tutti a sinistra: lì la mossa giusta per me dipende da quella
-dell'altro in un modo che nessun voto individuale può contenere.
+Il meglio che può capitare è che vadano tutti e due su A, e vale due. Perché
+ciascuno ci arrivi da solo, dunque, A deve essere la mossa con il voto
+individuale più alto per tutti e due.
+
+Ma proviamo a crederci e vediamo dove va a finire. Se per il primo agente A vale
+più di B, allora, per la regola, mettendolo su A la squadra non può fare peggio
+che mettendolo su B, a parità di mossa del secondo. Mettiamo il secondo su B: ne
+segue che la casella «io A, l'altro B» dovrebbe valere almeno quanto la casella
+«io B, l'altro B». La tabella dice zero contro uno. Non torna, e non tornerà mai
+con nessun voto individuale, per quanto lo si scelga bene.
+
+Le situazioni che questa ricetta perde sono proprio quelle in cui bisogna
+accordarsi su una **convenzione arbitraria**, come guidare tutti a destra o
+tutti a sinistra: lì la mossa giusta per me dipende da quella dell'altro, e
+nessun voto dato a me da solo può dirmelo.
 
 `````
 
@@ -458,38 +486,44 @@ arbitraria ne è il caso da manuale.
 
 `````
 
-C'è una terza ricetta, e il suo interesse è metodologico prima che tecnico.
-**MAPPO** {cite}`yu2022surprising` non inventa nulla: prende il PPO del
-capitolo sul deep reinforcement learning, quello che limita di quanto la policy
-può spostarsi a ogni aggiornamento, lascia a ogni agente il suo attore
-decentralizzato e gli affianca **una sola funzione valore centralizzata**, che
-in addestramento vede lo stato globale. Il titolo del lavoro dichiara la
-sorpresa: un metodo semplice, con le manopole girate per bene, regge il
-confronto con architetture costruite apposta per il caso multi-agente. E sono
-manopole noiose: rimettere i punteggi su una scala comune, non insistere troppe
-volte sugli stessi dati prima di buttarli, spostarsi poco per volta. Vale la
-pena tenerlo accanto alla regola prudente del «Costo del coordinamento»: prima
-di credere che serva la macchina complicata, conviene misurare fin dove arriva
-quella semplice messa a punto per bene.
+C'è una terza ricetta, e il suo interesse è di metodo prima che tecnico.
+**MAPPO** {cite}`yu2022surprising` non inventa nulla: prende un algoritmo del
+capitolo sul deep reinforcement learning, quello che a ogni aggiornamento
+impedisce a un agente di cambiare troppo il proprio modo di giocare, lascia a
+ciascuno il suo attore che vede solo il proprio pezzo, e gli affianca **un
+critico solo per tutta la squadra**, che in allenamento guarda tutto. Il titolo
+del lavoro dichiara la sorpresa: un metodo semplice, con le manopole girate per
+bene, regge il confronto con architetture costruite apposta per il caso
+multi-agente. E sono manopole noiose: rimettere i punteggi su una scala comune,
+non insistere troppe volte sugli stessi dati prima di buttarli, spostarsi poco
+per volta. Vale la pena tenerlo accanto alla regola prudente del «Costo del
+coordinamento»: prima di credere che serva la macchina complicata, conviene
+misurare fin dove arriva quella semplice messa a punto per bene.
 
 ## L'avversario sei tu di ieri
 
 Nel 1959 Arthur Samuel, ingegnere IBM, pubblica sull'*IBM Journal of Research
 and Development* uno studio su un programma che gioca a dama. Dentro c'è
-un'idea che regge ancora oggi: per allenarlo, Samuel ne teneva due copie, che
-chiamava alpha e beta. Alpha aggiustava i propri coefficienti **dopo ogni
-mossa**, e ogni tanto scartava i termini che sembravano non servire
-sostituendoli con altri pescati da una lista di riserva; beta teneva gli stessi
-per tutta la durata di una partita. Il contrasto
-è lì, ed è tutto: uno dei due si muove *dentro* la partita, l'altro sta fermo
-finché la partita non è finita, ed è proprio questo a farne un avversario
-stabile contro cui misurarsi. Quando alpha vinceva, il suo sistema di punteggio
+un'idea che regge ancora oggi. Per giudicare una posizione sulla scacchiera il
+programma usava una formula che sommava alcune caratteristiche (quanti pezzi ho
+io, quanti ne ha lui, chi controlla il centro e così via), ciascuna con un peso
+che diceva quanto contava. Per allenarlo, Samuel ne teneva due copie, che
+chiamava alpha e beta. Alpha aggiustava i propri pesi **dopo ogni mossa**, e
+ogni tanto buttava via le caratteristiche che sembravano non servire
+sostituendole con altre pescate da una lista di riserva; beta teneva la sua
+formula ferma per tutta la partita.
+
+Il contrasto è lì, ed è tutto: uno dei due si muove *dentro* la partita, l'altro
+sta fermo finché la partita non è finita, ed è proprio questo a farne un
+avversario stabile contro cui misurarsi. Quando alpha vinceva, la sua formula
 passava a beta e si ricominciava. Quando invece perdeva, alpha si prendeva un
-segno nero, e raggiunto un certo numero di segni neri (di solito tre) il suo
-polinomio veniva scombinato di forza azzerando il
-coefficiente del termine principale: una perturbazione deliberata per uscire da
-un massimo secondario, ed è esattamente la ragione che Samuel ne dà. Il
-programma non aveva un maestro: aveva se stesso, un passo indietro.
+segno nero, e raggiunto un certo numero di segni neri (di solito tre) la sua
+formula veniva scombinata di forza, azzerando il peso della caratteristica più
+importante. È un guasto provocato apposta, e la ragione che Samuel ne dà è
+proprio quella: se il programma si è arenato su un modo di giocare che sembra
+buono soltanto perché non ne ha provati altri, l'unico modo di scoprirlo è
+costringerlo a cambiare. Il programma non aveva un maestro: aveva se stesso, un
+passo indietro.
 
 Il meccanismo prezioso del **self-play** non è il risparmio di partite umane:
 è che il **curriculum si genera da solo**. Un avversario troppo forte non
@@ -503,12 +537,14 @@ perché l'avversario è forte quanto te, sempre, essendo te. Nessuno dei due vin
 troppo spesso, e le partite restano informative.
 
 È la linea che porta ad **AlphaGo** {cite}`silver2016mastering`, già raccontato
-nel capitolo sul deep reinforcement learning: una rete di policy (quella che
-sceglie la mossa) addestrata
-prima sulle mosse dei giocatori umani e poi affinata giocando contro copie di
-sé, e una rete di valore (quella che dice chi sta vincendo) addestrata proprio
-sulle partite così generate, il
-tutto dentro una ricerca ad albero Monte Carlo. L'anno dopo la stessa squadra
+nel capitolo sul deep reinforcement learning: una rete che sceglie la mossa,
+addestrata prima sulle partite dei giocatori umani e poi affinata giocando
+contro copie di sé, e una rete che dice chi sta vincendo, addestrata proprio
+sulle partite così generate. Le due lavorano dentro un terzo meccanismo, che
+prima di muovere prova a immaginare come proseguirebbe la partita, non però
+tutte le continuazioni possibili (sono troppe) ma alcune migliaia pescate a
+caso, dando la precedenza a quelle che le due reti giudicano promettenti.
+L'anno dopo la stessa squadra
 toglie di mezzo anche il punto di partenza umano: **AlphaGo Zero**
 {cite}`silver2017mastering` parte dalle sole regole del gioco e da pesi
 casuali, e tutto il suo addestramento è self-play. È la prova più netta del
@@ -649,47 +685,51 @@ passate il guadagno resta a zero, con qualche sussulto verso l'alto nelle
 generazioni in cui quell'insieme è sbilanciato. La quarta è la più severa: la
 **sfruttabilità** dell'agente corrente, cioè quanto ci ricava contro di lui il
 miglior avversario possibile (più è alta, più l'agente è facile da battere),
-resta $1$, il massimo, a ogni generazione. Dopo sei generazioni il campione è
-fragile esattamente quanto il primo giorno, e la curva dei progressi non lo
-dice.
+resta al massimo a ogni generazione. Dopo sei generazioni il campione è fragile
+esattamente quanto il primo giorno, e la colonna dei progressi non lo dice.
 
-Le ultime due righe mostrano l'alternativa. Allenandosi contro la media di
-tutte le versioni passate, invece che contro l'ultima, la popolazione converge
-in duemila generazioni a $(0{,}33; 0{,}33; 0{,}34)$, cioè all'equilibrio (il
-pareggio di cui parlava l'apertura del capitolo), e la
-sua sfruttabilità scende a $0{,}008$: praticamente zero. Notate però il
-soggetto della frase, perché è tutta la differenza: a essere imbattibile non è
-un agente, è la **popolazione**. Il campione da schierare non è l'ultimo nato,
-è il mucchio.
+Le ultime due righe mostrano l'alternativa. Allenandosi contro la media di tutte
+le versioni passate, invece che contro l'ultima, in duemila generazioni la
+popolazione si assesta su un terzo di sasso, un terzo di carta e un terzo di
+forbici: è l'equilibrio, il pareggio di cui parlava l'apertura del capitolo, e
+la sua sfruttabilità scende quasi a zero. Notate però il soggetto della frase,
+perché è tutta la differenza: a essere imbattibile non è un agente, è la
+**popolazione**. Il campione da schierare non è l'ultimo nato, è il mucchio.
 
 Su scala industriale, questa è la *league* di AlphaStar
-{cite}`vinyals2019grandmaster`. Ci convivono gli agenti **principali**, che
-devono battere tutti e si allenano contro la lega intera pescando gli avversari
-con probabilità che dipende dal tasso di vittoria, cioè allenandosi contro il
-mucchio ma incontrando più spesso quelli che li battono; gli **sfruttatori**, di
-due tipi, addestrati non a essere forti
-in generale ma a trovare il punto debole di qualcun altro, gli uni degli agenti
-principali del momento, gli altri della lega nel suo insieme; e le versioni
-**congelate** di tutti costoro, che una volta entrate nella lega ci restano per
-sempre. Gli sfruttatori sono la parte controintuitiva: sono agenti pagati per
-non essere bravi, cioè per specializzarsi in una singola strategia che umilia il
-campione del momento, ed esistono per esibire una debolezza che il campione, da
-solo, non incontrerebbe mai. La lega però non è gratis: ogni avversario in più è
-memoria, partite e calcolo, e il conto del «Costo del coordinamento» torna a
-presentarsi qui, sul lato dell'addestramento.
+{cite}`vinyals2019grandmaster`, cioè una lega in cui convivono tre tipi di
+partecipanti.
+
+Ci sono gli agenti **principali**, quelli che devono battere tutti: si allenano
+contro la lega intera, ma non pescando gli avversari a caso, bensì incontrando
+più spesso quelli che li stanno battendo. Ci sono gli **sfruttatori**, che sono
+la parte controintuitiva: agenti pagati per *non* essere bravi in generale, e
+per specializzarsi invece in una singola strategia che umilia qualcun altro. Ne
+esistono di due tipi, quelli che vanno a caccia dei punti deboli dei campioni
+del momento e quelli che vanno a caccia dei punti deboli della lega nel suo
+insieme; e servono a far incontrare al campione una debolezza che da solo non
+incontrerebbe mai. E poi ci sono le versioni **congelate** di tutti costoro,
+che una volta entrate nella lega ci restano per sempre.
+
+La lega però non è gratis: ogni avversario in più è memoria, partite e calcolo,
+e il conto del «Costo del coordinamento» torna a presentarsi qui, sul lato
+dell'addestramento.
 
 E torniamo ai pesci dell'Adriatico. Le orbite chiuse che Volterra trovò nelle
-sue due equazioni non sono una curiosità zoologica, e il legame è più stretto di
-un'analogia: se invece di far saltare la popolazione da un vertice all'altro la
-si lascia scivolare con continuità, premiando le strategie che rendono di più
-(è la **dinamica del replicatore**, il modo standard di scrivere l'evoluzione di
-una popolazione di strategie), sasso-carta-forbici dà esattamente equazioni
-della forma di Volterra, con le stesse orbite chiuse attorno all'equilibrio e
-nessuna che ci cada dentro. Prede e
-predatori, sasso e carta: quando ciascuno insegue l'altro e l'altro nel
-frattempo si sposta, il sistema non converge, orbita. La miglior risposta del
-codice qui sopra è la versione a scatti della stessa storia, e il gioco fittizio
-è quello che rompe l'orbita mediando su tutto il passato.
+sue due formule non sono una curiosità zoologica, e il legame è più stretto di
+un'analogia. Nel programma qui sopra la popolazione salta di colpo da una
+strategia pura all'altra, tutta sasso e poi tutta carta; ma si può anche
+lasciarla scivolare con continuità, facendo crescere a poco a poco la quota di
+chi rende di più (è la **dinamica del replicatore**, il modo standard di
+descrivere l'evoluzione di una popolazione di strategie). Fatto così,
+sasso-carta-forbici dà esattamente formule della stessa famiglia di quelle di
+Volterra, con le stesse orbite chiuse attorno all'equilibrio e nessuna che ci
+cada dentro.
+
+Prede e predatori, sasso e carta: quando ciascuno insegue l'altro e l'altro nel
+frattempo si sposta, il sistema non si ferma, gira. Il salto da una strategia
+all'altra del programma qui sopra è la versione a scatti della stessa storia, e
+allenarsi contro tutto il passato è quello che rompe l'orbita.
 
 ## Una GAN è un sistema multi-agente a due
 
@@ -702,9 +742,9 @@ la seconda, il **discriminatore**, guarda un esemplare e dice se è vero o falso
 Il generatore vince quando inganna, il discriminatore quando smaschera.
 Nient'altro.
 
-Detta così, una GAN è un sistema multi-agente con $N = 2$, e riconoscerlo non è
-un gioco di parole: spiega i suoi guasti tipici meglio di quanto li spieghi la
-teoria delle reti.
+Detta così, una GAN è un sistema multi-agente con due soli partecipanti, e
+riconoscerlo non è un gioco di parole: spiega i suoi guasti tipici meglio di
+quanto li spieghi la teoria delle reti.
 
 `````{tab} Elementare
 
@@ -715,21 +755,26 @@ salita dell'altro. Quello che si può sperare è un **pareggio**, cioè la
 situazione in cui a nessuno dei due conviene più cambiare mossa da solo.
 
 Da lì si capiscono i due modi in cui l'addestramento di una GAN va storto, e
-sono i due che questa sezione ha già raccontato con altri nomi.
+sono i due che questa sezione ha già raccontato con altri nomi. Per raccontarli
+chiamiamo le due reti come si chiamano di solito quando si spiega una GAN: il
+**falsario** è quello che fabbrica i falsi, il **poliziotto** è quello che cerca
+di riconoscerli.
 
-Il primo è l'**oscillazione**: le due reti girano in tondo invece di
+Il primo modo è l'**oscillazione**: le due reti girano in tondo invece di
 avvicinarsi, come i pesci dell'Adriatico e come sasso, carta e forbici. Il
 falsario impara a battere il poliziotto di adesso; il poliziotto impara a
 battere quel falsario lì; il falsario cambia di nuovo, e si ricomincia. Ognuno
 insegue l'altro, e l'altro nel frattempo si è spostato.
 
-Il secondo si chiama **collasso dei modi**, e guardato da qui è il self-play
-ingenuo visto dall'altro lato. Il falsario scopre l'unica cosa che riesce a far
-passare per buona al poliziotto del momento (mettiamo: un certo tipo di volto) e
-si mette a produrre soltanto quella. Contro l'avversario corrente vince quasi
-sempre, quindi il suo punteggio è ottimo; ma di tutto il resto ha smesso di
-saper fare qualunque cosa. È, parola per parola, il «batte l'ultima versione e
-perde contro quella di due generazioni fa».
+Il secondo, guardato da qui, è l'allenarsi contro l'ultima versione visto
+dall'altro lato. Il falsario scopre l'unica cosa che riesce a far passare per
+buona al poliziotto del momento (mettiamo: un certo tipo di volto) e si mette a
+produrre soltanto quella. Contro l'avversario corrente vince quasi sempre,
+quindi il suo punteggio è ottimo; ma di tutto il resto ha smesso di saper fare
+qualunque cosa. È, parola per parola, il «batte l'ultima versione e perde contro
+quella di due generazioni fa». Il nome che ha in letteratura è **collasso dei
+modi**, dove i «modi» sono i tipi diversi di immagine che il falsario dovrebbe
+saper fare, e collassare vuol dire che di tutti quei tipi ne è rimasto uno.
 
 E allora non stupisce che fra le contromisure ce ne sia una che qui si riconosce
 subito, anche se il capitolo sulle GAN non la elenca fra le proprie: far vedere
@@ -772,14 +817,15 @@ proprie: mostrare al discriminatore anche campioni prodotti da versioni
 
 ## Il critico che vede tutto
 
-Resta da vedere quanto poco codice serva a scrivere la struttura di CTDE.
-L'esempio qui sotto è lo scheletro di MADDPG: attori decentralizzati, uno per
-agente, ciascuno con la sola osservazione che avrà anche in esecuzione; e
-critici centralizzati che ricevono la concatenazione delle osservazioni **e**
-delle azioni di tutti. Manca tutto il resto (l'archivio delle partite passate da
-cui si ripescano gli esempi, le copie congelate delle reti che servono a tenere
-fermi i conti mentre si impara, i passi di ottimizzazione veri e propri), perché
-qui il punto è soltanto chi vede che cosa.
+Resta da vedere quanto poco codice serva a scrivere la struttura di CTDE, cioè
+allenarsi guardando tutto e giocare guardando poco. L'esempio qui sotto è lo
+scheletro della prima ricetta di questa sezione: un attore per agente, che vede
+soltanto quello che vedrà anche in partita, e accanto a ciascuno un critico che
+riceve invece le osservazioni **e** le mosse di tutti. Manca tutto il resto
+(l'archivio delle partite passate da cui si ripescano gli esempi, le copie
+congelate delle reti che servono a tenere fermi i conti mentre si impara, i passi
+di addestramento veri e propri), perché qui il punto è soltanto chi vede che
+cosa.
 
 ```python
 import torch
@@ -837,7 +883,8 @@ print(critici[0](oss, azioni).shape)  # torch.Size([4, 1])
 
 Due righe raccontano tutta l'architettura. La penultima è l'esecuzione:
 `attori[i](oss[i])`, ogni agente con la propria osservazione e nient'altro, ed è
-ciò che girerà sul robot o dentro il processo. L'ultima è l'addestramento:
+ciò che girerà sul robot, o dentro il programma vero, a lavoro finito. L'ultima
+è l'addestramento:
 `critici[0](oss, azioni)`, dove il primo argomento è la lista di tutte le
 osservazioni e il secondo la lista di tutte le azioni. Quel critico non esiste
 la domenica.
@@ -865,12 +912,13 @@ la domenica.
   altri e quindi non impara niente, e chi ha lavorato non distingue il proprio
   contributo dal rumore dei compagni; più sono, meno si sente. Il rimedio è
   misurare ciascuno **per differenza**: che voto avrebbe preso lo stesso lavoro
-  se lui, al posto della mossa che ha fatto, ne avesse fatta una qualsiasi fra
-  le sue solite e gli altri no {cite}`foerster2018counterfactual`. Abbassa il
+  se lui, e soltanto lui, al posto della mossa che ha fatto ne avesse fatta una
+  a caso fra quelle che gli capita di fare, mentre tutti gli altri giocavano
+  esattamente come hanno giocato {cite}`foerster2018counterfactual`. Abbassa il
   rumore, non isola il merito del singolo.
 - La ricetta che funziona è **CTDE**: informazione privilegiata in allenamento,
   occhi veri in partita. L'allenatore ha la ripresa dall'alto e il terzino, la
-  domenica, ha solo il proprio sguardo. Un giudice che conosce le mosse di tutti
+  domenica, ha solo il proprio sguardo. Un critico che conosce le mosse di tutti
   dà giudizi che non scadono quando i compagni cambiano abitudini
   {cite}`lowe2017multi`; e se la ricompensa è una sola, si impara un voto per
   giocatore più una regola per comporli, con il vincolo che alzare il proprio

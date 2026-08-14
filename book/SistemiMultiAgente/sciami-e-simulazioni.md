@@ -9,12 +9,13 @@ problema**?
 
 Per una trentina d'anni la risposta a questa domanda ha occupato una fetta
 grossa della ricerca multi-agente, e conviene dirlo perché oggi lo si dimentica:
-prima che «agente» significasse un modello di linguaggio con un prompt di
-sistema, in buona parte di quella letteratura un agente era una particella con
-tre righe di aritmetica dentro. Le sezioni precedenti hanno contato token e
-tipizzato messaggi perché i partecipanti erano cari e loquaci; qui il regime si
-ribalta. I partecipanti sono centinaia, costano niente, non
-ragionano e non si parlano. L'idea comune resta però quella dell'apertura:
+prima che «agente» significasse un modello di linguaggio con un foglio di
+istruzioni, in buona parte di quella letteratura un agente era una particella con
+tre righe di aritmetica dentro. Le sezioni precedenti hanno contato quanto testo
+si fanno rileggere gli agenti, e hanno messo ordine nei loro messaggi, perché
+erano partecipanti costosi e chiacchieroni; qui la situazione si ribalta. I
+partecipanti sono centinaia, non costano quasi niente, non ragionano e non si
+scrivono messaggi. L'idea comune resta però quella dell'apertura:
 molte unità quasi banali, nessun controllore centrale, e una soluzione che
 **emerge** dall'interazione invece di essere calcolata da qualcuno.
 
@@ -59,6 +60,14 @@ con probabilità maggiore, e depositano altro feromone proprio lì.
 Nessuno ha misurato le due strade. Nessuno le ha confrontate. La strada corta
 vince perché la si percorre più spesso, e la si percorre più spesso perché è
 corta: è il tempo a fare la misura al posto di un cervello.
+
+Le formiche del computer fanno la stessa cosa con una scorciatoia. Invece di
+lasciare sempre la stessa quantità di traccia e aspettare che sia il tempo a
+contare i passaggi, fanno un giro solo per volta e alla fine lasciano una
+quantità di traccia **tanto maggiore quanto più corto è stato il giro**: chi ha
+fatto il giro lungo il doppio ne lascia la metà. Il risultato è lo stesso, il
+doppio di traccia sulla strada corta, ma arriva in un colpo invece che a forza
+di passaggi. Ed è la versione che useremo da qui in poi, figura compresa.
 
 `````
 
@@ -115,19 +124,11 @@ registra il traffico, registra il **merito**.
 
 `````
 
-Una differenza fra le formiche vere e quelle artificiali conviene averla in
-mente prima di guardare la figura, perché è tutta lì. Le vere lasciano sempre la
-stessa quantità di feromone e a fare la selezione è la frequenza: sulla strada
-corta si passa più spesso. Le artificiali fanno il giro una volta per ciclo e
-lasciano una quantità **tanto maggiore quanto più corto è stato il giro**: il
-tempo non lo si misura più contando i passaggi, entra tutto in una volta, alla
-fine.
-
-L'accumulo è anche una delle poche cose del libro che un disegno fermo non
-riesce a mostrare: in un fotogramma solo non c'è niente da vedere, perché è
-proprio l'accumularsi a decidere. In {numref}`fig-formiche-feromone` ci sono sei giri della
-colonia sulle due strade, che cambiano spessore man mano che il feromone si
-deposita.
+L'accumulo è una delle poche cose del libro che un disegno fermo non riesce a
+mostrare: in un fotogramma solo non c'è niente da vedere, perché è proprio
+l'accumularsi a decidere. In {numref}`fig-formiche-feromone` ci sono sei giri
+della colonia sulle due strade, che cambiano spessore man mano che il feromone
+si deposita.
 
 ```{figure} ../figures/formiche-feromone.svg
 :name: fig-formiche-feromone
@@ -137,34 +138,37 @@ deposita.
 Sei giri della colonia sulle due strade: lo spessore di ciascuna è il
 feromone che ci si è accumulato sopra. Si parte in parità, cinquanta e
 cinquanta, e si finisce con l'ottantadue per cento delle formiche sulla strada
-corta. I numeri li calcola la figura, con le due formule qui sopra nel caso più
-spoglio: scelta guidata dal solo feromone (nessun termine di visibilità) e
-deposito proporzionale alla bontà del giro. L'evaporazione qui non c'è ancora,
-arriva nella sezione seguente.
+corta. I numeri non sono disegnati a occhio, li calcola la figura applicando le
+due sole regole viste finora: si sceglie la strada in proporzione al feromone
+che ci si trova sopra, e si lascia feromone in proporzione a quanto è stato buono
+il giro. L'evaporazione qui non c'è ancora, arriva nel prossimo paragrafo.
 ```
 
 Due cose vale la pena guardare, e la seconda è quella che conta.
 
-La prima è *dove* cambia la pendenza: il salto grosso è fra il primo e il
-secondo giro (sedici punti, contro i sette del secondo e i quattro del terzo),
-cioè quando le due strade sono ancora percorse dallo stesso numero di
-formiche e a fare la differenza è **solo** quanto ciascuna lascia alla fine del
-giro, il doppio da una parte e la metà dall'altra perché uno dei due giri è
-lungo la metà. Da lì in poi il vantaggio si rinforza da sé.
+La prima è *dove* si muove di più. La quota di formiche sulla strada corta parte
+da cinquanta su cento e diventa, giro dopo giro, sessantasei, settantatré,
+settantasette, ottanta, ottantadue: il salto grosso è il primo, sedici punti,
+contro i sette del secondo e i quattro del terzo. Ed è il salto che avviene
+quando le due strade sono ancora percorse dallo stesso numero di formiche: lì a
+fare la differenza è **soltanto** quanto ciascuna lascia alla fine del giro, e
+siccome un giro è lungo la metà dell'altro, chi lo fa lascia il doppio di chi fa
+l'altro. Da lì in poi il vantaggio si rinforza da sé.
 
 La seconda è che **anche la strada lunga si ispessisce**. Non è un dettaglio del
 disegno: è il difetto del meccanismo. Finché le formiche passano, il feromone si
 accumula dappertutto e non se ne va più; quello che cresce è il *divario*, non
 la differenza fra una traccia e nessuna traccia. Un sistema fatto così sa
-premiare, ma non sa dimenticare, ed è esattamente il buco che la sezione
-seguente va a tappare.
+premiare, ma non sa dimenticare, ed è esattamente il buco che le prossime pagine
+vanno a tappare.
 
 ## L'evaporazione è l'esplorazione
 
 Fin qui il meccanismo ha un difetto grosso, e vale la pena vederlo prima della
-cura, perché è lo stesso difetto di molti sistemi che si auto-rinforzano. Il
-feromone attira formiche, le formiche depositano feromone: il ciclo è
-**positivo**, e un ciclo positivo lasciato a sé stesso non converge, esplode.
+cura, perché è lo stesso di molti sistemi che si alimentano da soli. Il feromone
+attira formiche, le formiche depositano feromone, il feromone attira altre
+formiche: è un cane che si morde la coda, e nel verso che rinforza. Lasciato a
+sé stesso non si assesta su niente, scappa via.
 La prima strada trovata per caso diventa la più battuta, la più battuta diventa
 l'unica, e la colonia si fossilizza su una soluzione che non ha nessun motivo di
 essere buona: nel gergo dell'articolo è il **comportamento di stagnazione**, la
@@ -249,37 +253,39 @@ loro esperienza è diventata una proprietà fisica dell'ambiente, e la traccia
 sopravvive alle singole formiche che l'hanno lasciata.
 
 Gli autori lo dicono in una frase che potrebbe stare in un manuale di sistemi
-distribuiti: nell'Ant System un insieme di formiche comunica **modificando una
-struttura dati globale**. Chi ha letto la sezione sulle topologie ha già
-riconosciuto la forma e ha già il nome: è la **lavagna condivisa** di
-Hearsay-II, ed è la **stigmergia** che lì abbiamo definito, il coordinamento
-attraverso le tracce lasciate in uno spazio comune invece che attraverso
-messaggi diretti. Le tre proprietà tornano tutte: il disaccoppiamento è massimo
-(una formica in più non richiede di modificare nessun'altra), il centro non
-decide ma conserva, e la provenienza si perde, perché il feromone su un arco è
-un numero e non dice più chi ce l'ha messo.
+distribuiti: nell'Ant System le formiche comunicano **modificando un pezzo di
+memoria comune**. Chi ha letto la sezione sulle topologie ha già riconosciuto la
+forma e ha già il nome: è la **lavagna condivisa** di Hearsay-II, ed è la
+**stigmergia** che lì abbiamo definito, il coordinamento attraverso le tracce
+lasciate in uno spazio comune invece che attraverso messaggi diretti. Tornano
+tutte e tre le sue proprietà. Aggiungere una formica non obbliga a modificare
+nessun'altra, perché nessuna sa dell'esistenza delle altre. Al centro c'è
+qualcosa che conserva e non qualcuno che decide. E si perde per strada chi ha
+fatto che cosa, perché il feromone su una strada è un numero, e un numero non
+dice chi ce l'ha messo.
 
 La conseguenza fino a oggi è meno metaforica di quanto sembri. Una squadra di
 agenti che si coordina lasciando file in una cartella condivisa, o note in un
 documento che tutti possono leggere e riscrivere, sta facendo esattamente
-questo: non si scrivono messaggi, si modifica uno stato comune e si reagisce a
+questo: non si scrivono messaggi, si modifica uno spazio comune e si reagisce a
 come lo si trova. Cambia la taglia (il feromone è un numero, una nota è un
-paragrafo) ma il regime di progetto è lo stesso, e con esso i problemi: la
-contesa in scrittura, la provenienza da registrare a mano, e **che cosa fa
-dimenticare** allo stato condiviso ciò che non serve più. Le formiche ce
-l'hanno per costruzione; una cartella di file cresce e basta.
+paragrafo) ma i problemi da risolvere sono gli stessi: che cosa succede se due
+scrivono insieme, come si tiene traccia di chi ha scritto che cosa, e **che cosa
+fa dimenticare** allo spazio comune ciò che non serve più. Le formiche
+quest'ultima cosa ce l'hanno per costruzione; una cartella di file cresce e
+basta.
 
 ## Lo sciame di particelle
 
 Il secondo classico del filone nasce da tutt'altra parte, e la sua origine
 riporta dritti allo stormo dell'apertura. Nel 1995, alla International
 Conference on Neural Networks di Perth, James Kennedy e Russell Eberhart
-presentano la **particle swarm optimization** {cite}`kennedy1995particle`.
-Una riga delle loro conclusioni spiega mezza storia: gli autori sono uno
-psicologo sociale e un ingegnere elettrotecnico. Erano partiti provando a simulare
-uno stormo, ispirandosi ai *boids* di Reynolds {cite}`reynolds1987flocks` e ai
-modelli di volo coordinato di Heppner e Grenander, e hanno scoperto che quel
-giocattolo, tolti i pezzi giusti, **ottimizzava**.
+presentano la **particle swarm optimization** {cite}`kennedy1995particle`. Chi
+sono i due autori spiega già mezza storia: uno psicologo sociale e un ingegnere
+elettrotecnico. Erano partiti provando a simulare uno stormo, ispirandosi ai
+*boids* di Reynolds {cite}`reynolds1987flocks` e ai modelli di volo coordinato
+di Heppner e Grenander, e hanno scoperto che quel giocattolo, tolti i pezzi
+giusti, **risolveva problemi**.
 
 Il racconto delle amputazioni è la parte istruttiva. Via la «pazzia», cioè il
 rumore aggiunto a mano per rendere il volo credibile: non serviva. Via
@@ -307,8 +313,8 @@ uno andasse solo dove è tirato, arriverebbe al punto migliore conosciuto e si
 fermerebbe lì, insieme a tutti gli altri; ma siccome arriva lanciato, lo
 supera, va a guardare un po' più in là, e ogni tanto scopre che più in là si
 scende ancora. Gli autori hanno provato a togliere questa inerzia e il metodo ha
-smesso di trovare i minimi buoni: le soluzioni migliori non stanno dove il
-gruppo sta già puntando, stanno appena oltre.
+smesso di trovare i punti più bassi: quelli buoni non stanno dove il gruppo sta
+già puntando, stanno appena oltre.
 
 `````
 
@@ -373,7 +379,7 @@ semplice è il torneo: si pescano due individui a caso e passa il migliore.
 
 **Incrocio.** Da due genitori si fa un figlio prendendo la prima metà
 dell'elenco dall'uno e la seconda dall'altro. È il gesto che le formiche e le
-particelle non hanno, ed è quello che dà il nome alla famiglia.
+particelle non hanno: loro si spostano, questi si mescolano.
 
 **Mutazione.** Ogni tanto, a caso, si ribalta una scelta: un oggetto che c'era
 esce, uno che non c'era entra. Serve a non restare prigionieri del materiale
@@ -436,10 +442,13 @@ degli obiettivi in anticipo e rilanciare la ricerca per ogni compromesso.
 
 `````
 
-Lo zaino non è un esempio scelto a caso: è il tipo di problema su cui la
-discesa del gradiente non ha proprio dove appoggiarsi. Nel codice che segue
-l'istanza è fissata, e poiché ha solo venti oggetti possiamo permetterci il
-lusso di conoscere la risposta vera, enumerando tutte le combinazioni: così
+Lo zaino non è un esempio scelto a caso: è il tipo di problema su cui il metodo
+solito, quello che cerca il punto più basso sentendo da che parte scende il
+terreno (la **discesa del gradiente**, di cui si parla fra due pagine), non ha
+proprio dove appoggiarsi. Nel codice che segue i
+venti oggetti, con i loro pesi e i loro valori, sono sorteggiati una volta sola e
+poi restano quelli; e siccome sono soltanto venti possiamo permetterci il lusso
+di conoscere la risposta vera, provando tutte le combinazioni una per una. Così
 l'algoritmo si può giudicare invece che ammirare.
 
 ```python
@@ -488,9 +497,12 @@ quante volte lo trova: 8/10, con 4800 zaini provati su un milione
 ```
 
 Il risultato dice due cose insieme, e vanno tenute insieme. La prima è che
-provando meno di mezzo per cento delle combinazioni si arriva otto volte su
-dieci all'ottimo esatto, e le altre due volte al $98\%$ di esso: per un
-problema in cui non esiste alcuna pendenza da seguire, è molto. La seconda è
+l'algoritmo prova quattromilaottocento zaini (sessanta per generazione, per
+ottanta generazioni) su un milione e passa di combinazioni possibili, cioè meno
+di mezzo per cento; e con quelli arriva otto volte su dieci alla risposta
+esatta, mentre le altre due volte si ferma a duecentoventiquattro contro
+duecentoventotto, cioè meno del due per cento sotto. Per un problema in cui non esiste
+alcuna pendenza da seguire, è molto. La seconda è
 che quel «otto volte su dieci» non si può eliminare. Un algoritmo genetico non
 dà garanzie, e soprattutto **non dice quanto gli è mancato**: qui lo sappiamo
 solo perché venti oggetti si possono enumerare a mano. Con quaranta oggetti il
@@ -580,9 +592,9 @@ Il modo più rapido di crederci è farlo girare. La funzione di prova è la
 larghissima e regolare, che scende dolcemente verso il centro, sulla quale
 qualcuno ha passato una grattugia, cioè un'ondulazione fitta e ordinata che
 scava una fossetta attorno a ogni coppia di numeri interi. Il fondo vero è al
-centro e vale zero; le fossette sono centinaia, e dal fondo di ognuna tutte le
-direzioni salgono. È il paesaggio fatto apposta per mettere in crisi chi segue
-la pendenza.
+centro e vale zero; di fossette ce ne sono più di cento, e dal fondo di ognuna
+tutte le direzioni salgono. È il paesaggio fatto apposta per mettere in crisi
+chi segue la pendenza.
 
 ```python
 import numpy as np
@@ -626,69 +638,85 @@ iterazione  60   f = 0.000168   x = (+0.0009, +0.0000)
 ```
 
 La riga da guardare è la prima. Alla decima iterazione il punto migliore che lo
-sciame conosce è $(-0{,}93,\ 0{,}03)$, che non è il minimo globale: è dentro la
-conca locale accanto, sul cui fondo la funzione vale circa $1$ e nel punto
-trovato $1{,}95$. Un metodo a gradiente partito da lì scivolerebbe in fondo a
-quella conca e ci resterebbe per sempre, perché dal fondo tutte le direzioni
-salgono. Lo sciame ne esce entro la ventesima, e ne esce senza aver capito
-niente: una particella era semplicemente arrivata più in là del punto migliore
-conosciuto, e più in là si scendeva. Dalla ventesima in poi il gruppo raffina un
-valore già a tre zeri dopo la virgola.
+sciame conosce non è il fondo vero: è dentro la fossetta accanto, quella scavata
+attorno al punto di coordinate meno uno e zero, il cui fondo vale uno invece di
+zero (e nel punto trovato la funzione vale poco meno di due, perché lo sciame in
+fondo a quella fossetta non c'è nemmeno arrivato). Un metodo che segue la
+pendenza, partito da lì,
+scivolerebbe in fondo a quella fossetta e ci resterebbe per sempre, perché dal
+fondo tutte le direzioni salgono. Lo sciame ne esce entro la ventesima, e ne esce
+senza aver capito niente: una particella era semplicemente arrivata più in là del
+punto migliore conosciuto, e più in là si scendeva. Dalla ventesima in poi il
+gruppo si limita a rifinire un valore già piccolissimo.
 
-Un paio di conti per non farsi un'idea sbagliata. Le valutazioni della funzione
-sono $30 \times 61 = 1830$: in due dimensioni sono niente, in mille sarebbero
-ancora $1830$ e non basterebbero. E il risultato è **probabilistico**: ripetendo
-lo stesso esperimento con trecento semi diversi (da $0$ a $299$, e tutto il
-resto identico), e contando come riuscite le prove che chiudono sotto
-$10^{-2}$, lo sciame arriva al minimo globale in $277$
-casi su $300$, cioè poco più di nove volte su dieci, non sempre.
+Quanto costa? Ogni giro lo sciame misura la quota nei trenta punti in cui si
+trovano le sue particelle; i giri sono sessanta, più la misura iniziale, quindi
+in tutto milleottocentotrenta misure. In due dimensioni sono niente. In mille
+dimensioni sarebbero ancora milleottocentotrenta, e non basterebbero.
 
-Resta il confronto con il gradiente, ed è il punto in cui la divulgazione su
-questi metodi imbroglia quasi sempre. Fatta partire da **un solo** punto preso a
-caso, una discesa del gradiente ordinaria (passo $0{,}005$, duemila iterazioni)
-chiude sotto $10^{-2}$ due volte su trecento, e nelle altre duecentonovantotto
-si ferma ordinatamente nella fossetta in cui è nata. Duecentosettantasette contro
-due: un confronto splendido e scorretto, perché schiera trenta esploratori
-contro uno solo, e viola la clausola che questo stesso capitolo ha enunciato
-come regola vincolante due sezioni fa, **a parità di budget**.
+E il risultato **non è garantito**. Il programma qui sopra parte da posizioni
+sorteggiate, e ripetendolo con sorteggi diversi le cose vanno diversamente. Se
+lo si rifà trecento volte, cambiando ogni volta soltanto il sorteggio, lo sciame
+arriva al fondo vero in duecentosettantasette casi su trecento: poco più di nove
+volte su dieci, non sempre.
 
-Rifacciamolo per bene. Al gradiente si danno **trenta ripartenze** per prova,
-cioè gli stessi trenta punti iniziali che ha lo sciame, e si tiene il migliore
-dei trenta. Allora chiude $67$ prove su $300$, cioè poco più di una su cinque,
-contro le nove su dieci dello sciame. Lo sciame vince ancora, e vince
-nettamente, ma vince quattro volte tanto e non centoquaranta. Se poi si guarda
-la spesa, il confronto è perfino generoso verso il gradiente: le trenta discese
-sono sessantamila passi, contro le $1830$ valutazioni dello sciame.
+### Il confronto che si legge in giro, e quello onesto
 
-I due numeri del gradiente si tengono poi l'un l'altro, ed è così che si sa che
-non sono un caso fortunato. Le partenze singole in tutto sono novemila (trecento
-prove per trenta punti ciascuna) e ne riescono $72$, cioè lo $0{,}8\%$: vicino
-alla stima puramente geometrica, perché la fossetta centrale è larga circa
-$1 \times 1$ su un dominio di lato $10{,}24$ e occupa poco meno dell'$1\%$
-dell'area. Da quel tasso, il conto elementare per trenta ripartenze
-indipendenti (la probabilità che almeno una vada a segno è uno meno la
-probabilità che sbaglino tutte e trenta, cioè
-$1 - (1 - 0{,}008)^{30} \approx 0{,}21$) prevede $64$ prove su
-$300$, e ne escono $67$. Si può anche verificare ciò che il conto sottintende,
-e il risultato è più netto di quanto ci si aspetti: i semi che hanno almeno un
-punto di partenza dentro la fossetta centrale sono $66$, e riescono tutti e
-$66$; le prove riuscite sono $67$, quindi una sola ce l'ha fatta partendo tutta
-da fuori. Nascere nel bacino giusto, qui, è sempre bastato e quasi sempre è
-servito.
-Il gradiente con trenta ripartenze non ha imparato niente in più, ha soltanto
-avuto trenta dadi da tirare invece di uno. (E il suo numero dipende dal passo
-più di quanto dipenda dal metodo: con $0{,}01$ al posto di $0{,}005$ non ci
-arriva mai, in nessuna delle trecento prove.)
+Adesso il paragone con il metodo che segue la pendenza, che è il punto in cui la
+divulgazione su questi argomenti imbroglia quasi sempre. Fatta partire da **un
+solo** punto preso a caso, e lasciata scendere per duemila passi, una discesa
+lungo la pendenza arriva al fondo vero due volte su trecento; nelle altre
+duecentonovantotto si ferma ordinatamente nella fossetta in cui è nata.
+Duecentosettantasette contro due: un confronto splendido e scorretto, perché
+schiera trenta esploratori contro uno solo, e viola la clausola che il «Costo
+del coordinamento» ha dichiarato vincolante, **a parità di spesa**.
+
+Rifacciamolo per bene. Alla discesa si danno **trenta ripartenze** per prova,
+cioè esattamente gli stessi trenta punti iniziali che ha lo sciame, e si tiene
+il migliore dei trenta risultati. Allora arriva al fondo vero sessantasette volte
+su trecento, cioè poco più di una su cinque, contro le nove su dieci dello
+sciame. Lo sciame vince ancora, e vince nettamente, ma vince quattro volte tanto
+e non centoquaranta. Se poi si guarda la spesa il confronto è perfino generoso
+verso la discesa, che fa trenta discese da duemila passi l'una, cioè sessantamila
+passi, contro le milleottocentotrenta misure dello sciame.
+
+E si può capire da dove venga quel sessantasette, il che è più interessante del
+numero. Le partenze singole in tutto sono novemila, cioè trecento prove per
+trenta punti ciascuna, e ne riescono settantadue: **otto su mille**. Non è un
+caso: la fossetta centrale è larga circa uno per uno dentro un quadrato di lato
+dieci e un quarto, quindi occupa poco meno dell'uno per cento dell'area, e
+nascere lì dentro è appunto un tiro di dado che va bene una volta ogni cento e
+rotti.
+
+Ogni punto iniziale, insomma, è un biglietto della lotteria che vince otto volte
+su mille, e ogni prova ne compra trenta. Attenzione a non sommarli: trenta per
+otto farebbe ventiquattro su cento, ma una prova in cui due biglietti vincono
+resta una prova riuscita, e nel conto va contata una volta sola. La domanda
+giusta è al contrario: quante prove **perdono tutti e trenta** i biglietti? Il
+conto lo si fa una volta e dà poco più di una prova su cinque che va a segno,
+cioè sessantaquattro su trecento. Ne escono sessantasette.
+
+Vale la pena verificare che la storia sia davvero questa, e non un'altra che dà
+per caso lo stesso numero. Contiamo i sorteggi che avevano almeno un punto di
+partenza dentro la fossetta centrale: sono sessantasei, e riescono tutti e
+sessantasei. Le prove riuscite in tutto sono sessantasette, quindi una sola ce
+l'ha fatta partendo interamente da fuori. Nascere nel posto giusto, qui, è
+sempre bastato e quasi sempre è servito. La discesa con trenta ripartenze non ha
+imparato niente in più dello sciame: ha soltanto avuto trenta biglietti invece
+di uno. (E il suo risultato dipende da quanto sono lunghi i passi più di quanto
+dipenda dal metodo: raddoppiando la lunghezza del passo non arriva più al fondo
+vero in nessuna delle trecento prove.)
 
 Un'ultima nota sui tre numeri in cima al programma, quelli che pesano le tre
 spinte (tirare dritto per dove stavo andando, tornare dove sono stato meglio io,
 andare dove è stato meglio il gruppo). Non sono i valori del 1995 ma quelli oggi
-standard, e non sono stati trovati provando: vengono dal **fattore di
-costrizione** di Clerc e Kennedy (2002), un conto che dice per
-quali valori la velocità delle particelle **non esplode** (dà $0{,}7298$ e
-$1{,}496$, che arrotondati sono i tre numeri qui sopra). Con spinte troppo
-forti lo sciame si sparpaglia e non torna più; con questi tre numeri sta insieme
-da sé, e nessuno deve tarare a mano l'ampiezza dei passi.
+standard, e non sono stati trovati provando: vengono da un conto di Clerc e
+Kennedy del 2002, il **fattore di costrizione**, che dice per quali valori la
+velocità delle particelle **non esplode**. Il conto dà due numeri, uno per
+l'inerzia e uno per le altre due spinte, che sono uguali fra loro: arrotondati,
+sono lo `0.73` e i due `1.50` del programma. Con spinte troppo forti lo sciame si
+sparpaglia e non torna più; con questi valori sta insieme da sé, e nessuno deve
+tarare a mano l'ampiezza dei passi.
 
 ## Venticinque agenti in un paese
 
@@ -718,35 +746,45 @@ usa solo il primo si ricorda l'ultima cosa successa; chi usa solo il secondo si
 ripete addosso sempre lo stesso trauma; chi usa solo il terzo pesca frasi che
 somigliano alla domanda ma sono di sei mesi fa.
 
-Prima di sommarli bisogna però saperli misurare, e la **recenza** si misura
+Prima di sommarli bisogna però saperli misurare, e la **freschezza** si misura
 così: ogni ora che passa il ricordo perde mezzo punto percentuale di freschezza,
-sempre lo stesso mezzo punto sul valore che gli era rimasto. L'orologio però non
-parte da quando il ricordo è nato, parte dall'ultima volta che è stato
-ripescato: un fatto di sei mesi fa a cui hai ripensato ieri è fresco. Da lì escono i tre
-numeri della prima colonna qui sotto: dopo un'ora resta $0{,}995$, dopo
-cinquanta ore $0{,}778$, dopo duecento ore $0{,}367$, cioè poco più di un terzo.
+sempre lo stesso mezzo punto su quello che gli era rimasto (quindi cala in
+fretta all'inizio e poi sempre più piano). L'orologio, però, non parte da quando
+il ricordo è nato: parte dall'ultima volta che è stato ripescato, e così un fatto
+di sei mesi fa a cui hai ripensato ieri è fresco. Partendo da uno, dopo un'ora
+resta 0,995; dopo cinquanta ore 0,78; dopo duecento ore 0,37, cioè poco più di
+un terzo.
 
-Il guaio è sommarli, perché sono misurati in unità diverse. L'importanza è un
-voto da 1 a 10 che l'agente si dà da sé, gli altri due sono numeri fra zero e
-uno. Facciamo il conto su tre ricordi in gara:
+Il guaio è sommare i tre criteri, perché sono misurati in unità diverse.
+L'importanza è un voto da 1 a 10 che l'agente si dà da sé; gli altri due sono
+numeri fra zero e uno. Facciamo il conto su tre ricordi in gara:
 
-| ricordo | recenza | importanza | pertinenza | somma diretta |
+| ricordo | freschezza | importanza | pertinenza | somma diretta |
 |---|---|---|---|---|
-| A: di un'ora fa, molto attinente | $0{,}995$ | $3$ | $0{,}82$ | $4{,}82$ |
-| B: di duecento ore fa, drammatico | $0{,}367$ | $8$ | $0{,}44$ | $8{,}81$ |
-| C: di cinquanta ore fa, così così | $0{,}778$ | $5$ | $0{,}60$ | $6{,}38$ |
+| A: di un'ora fa, molto attinente | 0,995 | 3 | 0,82 | 4,82 |
+| B: di duecento ore fa, drammatico | 0,367 | 8 | 0,44 | 8,81 |
+| C: di cinquanta ore fa, così così | 0,778 | 5 | 0,60 | 6,38 |
 
 Sommandoli così vince B, poi C, poi A: cioè esattamente l'ordine
 dell'importanza, e gli altri due criteri non hanno contato niente. Ovvio: un
 voto che va da 1 a 10 schiaccia due numeri che vanno da 0 a 1.
 
-La cura è mettere le tre colonne sulla stessa scala prima di sommarle: in ogni
-colonna il migliore prende 1, il peggiore prende 0, gli altri stanno in mezzo in
-proporzione. Rifatti i conti, A totalizza $2{,}00$, C fa $1{,}48$ e B si ferma a
-$1{,}00$: la classifica si è **rovesciata**, e il ricordo appena successo e
-attinente batte quello drammatico e vecchio. Non è un dettaglio implementativo:
-è la differenza fra un agente che ragiona su quello che sta succedendo e uno
-ossessionato dal proprio passato più intenso.
+La cura è mettere le tre colonne sulla stessa scala prima di sommarle. In ogni
+colonna, il migliore dei tre prende 1, il peggiore prende 0, e quello di mezzo
+prende la frazione che gli spetta: sulla freschezza, per esempio, il migliore è
+A con 0,995 e il peggiore B con 0,367, quindi C, che sta a 0,778, ha percorso
+due terzi scarsi della distanza fra i due e prende 0,65.
+
+| ricordo | freschezza | importanza | pertinenza | **somma** |
+|---|---|---|---|---|
+| A | 1 | 0 | 1 | **2,00** |
+| B | 0 | 1 | 0 | **1,00** |
+| C | 0,65 | 0,40 | 0,42 | **1,47** |
+
+La classifica si è **rovesciata**: adesso vince A, il ricordo appena successo e
+attinente, e il drammatico e vecchio finisce ultimo. Non è un dettaglio
+tecnico: è la differenza fra un agente che ragiona su quello che sta succedendo
+e uno ossessionato dal proprio passato più intenso.
 
 `````
 
@@ -820,7 +858,8 @@ visto qualcosa di vero cresce proprio con la qualità del modello, cioè con la
 sua abilità a produrre testo convincente, che è la variabile meno legata alla
 verità di tutte. Le mani avanti se le mettono gli autori stessi, in una nota a
 piè di pagina: i loro agenti, scrivono, puntano a dare un senso di credibilità
-come i personaggi animati della Disney, e non implicano nessuna agentività vera.
+come i personaggi animati della Disney, e non pretendono in nessun modo di
+volere, decidere o capire davvero.
 
 Credibile non vuol dire predittivo, ed è la solita distinzione fra somigliare e
 prevedere. Perché una simulazione dicesse qualcosa sulle società reali dovrebbe
@@ -848,20 +887,22 @@ del proprio modello.
 ## La stessa manopola, girata su sistemi diversi
 
 Il capitolo si chiude dove è cominciato. Abbiamo contato quanto costa
-coordinarsi, disegnato le forme del grafo di comunicazione, tipizzato i messaggi
-e le regole di decisione, visto che cosa succede quando gli agenti imparano
+coordinarsi, disegnato le forme che può prendere lo schema di chi parla con chi,
+messo ordine nei messaggi e nelle regole con cui si decide, visto che cosa
+succede quando gli agenti imparano
 insieme, e siamo finiti su sistemi in cui i partecipanti non ragionano affatto.
 Cambia tutto da una sezione all'altra: la taglia dei partecipanti, il loro
 costo, perfino se si parlino o no. Non cambia la variabile di progetto, che è
-sempre la regola di interazione. I sei o sette vicini topologici dello storno,
-gli archi che il progettista concede o nega, la performativa scritta in cima al
-messaggio, la ricompensa condivisa o individuale, il tasso di evaporazione del
-feromone: sono la stessa manopola, girata su sistemi diversi.
+sempre la regola di interazione. I sei o sette vicini che lo storno tiene
+d'occhio, i collegamenti che il progettista concede o nega, il tipo di messaggio
+scritto in cima al biglietto, il premio dato alla squadra o al singolo, la
+velocità con cui il feromone svanisce: sono la stessa manopola, girata su
+sistemi diversi.
 
 È la tesi dell'apertura, arrivata in fondo intatta: il comportamento di un
-gruppo è una proprietà del protocollo di interazione più che della bravura dei
-singoli. Vale per gli storni sopra Termini, che con una regola metrica invece
-che topologica si sfalderebbero nel momento peggiore
+gruppo è una proprietà della regola di interazione più che della bravura dei
+singoli. Vale per gli storni sopra Termini, che contando i vicini restano uniti
+e misurandoli in metri si sfalderebbero nel momento peggiore
 {cite}`ballerini2008interaction`; vale per una colonia di formiche artificiali,
 che con la stessa formula e un parametro di evaporazione diverso o esplora per
 sempre o si fossilizza sul primo tentativo. E vale per la squadra di agenti che
@@ -919,7 +960,7 @@ ciascuno, ma che cosa può scrivere ciascuno, a chi, quando, e chi decide dopo.
   (terreni pieni di buche, misure rumorose, scelte in cui non ci si può
   spostare di un millimetro, come l'ordine in cui visitare venti città), e si
   pagano in tentativi: sulla valle piena di fossette dell'esempio lo sciame
-  trova il fondo vero in $277$ prove su $300$. Il confronto va però fatto
+  trova il fondo vero in 277 prove su 300. Il confronto va però fatto
   **a parità di esploratori**, altrimenti si bara: una discesa del gradiente
   lanciata da un punto solo ci arriva due volte su trecento, ma lanciata dagli
   stessi trenta punti dello sciame ci arriva poco più di una volta su cinque.

@@ -2,26 +2,23 @@
 
 Nel 1999 NVIDIA lanciò la GeForce 256 e la vendette come «la prima GPU al
 mondo»: da lì in poi **Graphics Processing Unit** è il nome con cui chiamiamo
-questi chip. Il compito era disegnare i mondi dei
-videogiochi: milioni di pixel e di poligoni da illuminare, ruotare, colorare
-sessanta volte al secondo. È un lavoro fatto di un solo gesto ripetuto
-all'infinito: prendi un vertice, applicagli la stessa trasformazione, passa al
-prossimo. Nessuno di questi conti è difficile; sono soltanto tantissimi, e
-indipendenti l'uno dall'altro. Per farli in fretta non serve un cervello
-raffinato che ragiona su un problema alla volta: serve una folla che lavora
-tutta insieme.
+questi chip. Il compito era disegnare i mondi dei videogiochi: milioni di punti
+da spostare e milioni di pixel da colorare, sessanta volte al secondo. Ed è un
+lavoro fatto di un solo gesto ripetuto all'infinito. Se il personaggio gira la
+testa, ogni singolo punto della sua sagoma va spostato dove la rotazione lo
+manda: lo stesso conto, per centinaia di migliaia di punti, uno indipendente
+dall'altro. Nessuno di quei conti è difficile; sono soltanto tantissimi. Per
+farli in fretta non serve un cervello raffinato che ragiona su un problema alla
+volta: serve una folla che lavora tutta insieme.
 
-Da qui una scommessa di progettazione opposta a quella delle CPU. Invece di
-costruire pochi processori velocissimi sul singolo flusso di istruzioni, i
-progettisti delle GPU ne misero migliaia, ciascuno lento e limitato ma tutti
-attivi nello stesso istante. Per anni fu una scommessa confinata alla grafica.
-Poi, nel 2006-2007, NVIDIA aprì quei chip al calcolo generico con **CUDA**
-{cite}`nickolls2008scalable`, e qualcuno si accorse che la stessa folla di
-manovali brava a colorare pixel era perfetta anche per un altro lavoro fatto
-di conti identici e indipendenti: addestrare reti neurali. Nel 2012 AlexNet
-riscosse la scommessa vincendo ImageNet su due schede da videogiocatori
-{cite}`krizhevsky2012imagenet`, e da allora hardware e deep learning non si
-sono più lasciati.
+Da qui la scommessa costruttiva opposta a quella delle CPU. Una CPU è fatta per
+finire in fretta *un* programma, cioè per correre lungo un'unica fila di
+istruzioni, e per questo i suoi core sono pochi e complicati. I progettisti
+delle GPU ne misero migliaia, ciascuno lento e limitato, tutti attivi nello
+stesso istante. Per anni fu una scommessa confinata alla grafica; poi CUDA
+aprì quei chip a conti di ogni tipo, AlexNet vinse ImageNet nel 2012 su due
+schede da videogiocatori, e le due storie non si sono più separate: è il
+racconto con cui si è aperto il capitolo.
 
 Nella sezione «Prestazioni e scala» del capitolo su PyTorch abbiamo già
 incontrato l'immagine della GPU come squadra di operai semplici. Qui apriamo
@@ -55,8 +52,9 @@ qui sopra, ed è così che il capitolo le userà. La CPU è la lepre: pochi
 processori potentissimi, pensati per finire in fretta il singolo compito. La
 GPU è il formicaio: tante unità lente, pensate per smaltire una montagna di
 compiti tutti insieme. Per aprire un file o rispondere a un clic vuoi la
-lepre; per fare sessanta milioni di moltiplicazioni identiche (un solo strato
-di una rete), vuoi il formicaio.
+lepre; per fare i sessantaquattro milioni di moltiplicazioni tutte uguali di un
+solo strato di una rete (è il conto fatto all'inizio del capitolo), vuoi il
+formicaio.
 
 `````
 
@@ -88,57 +86,72 @@ cui il lavoro viene davvero eseguito. Una GPU moderna ne ha da qualche decina a
 oltre un centinaio, e la
 sua potenza cresce, prima di tutto, moltiplicando gli SM.
 
-Ogni SM è una piccola macchina completa, con i suoi calcolatori, il suo
-caposquadra e i suoi ripiani di lavoro. Contiene:
+Prima di aprirne una, però, va tolto di mezzo un equivoco che rovina tutto il
+resto del capitolo se resta in piedi. Nelle pagine che seguono si parla di
+«lavoratori» a migliaia, e viene naturale immaginarli come pezzi di ferro. Non
+lo sono. I pezzi di ferro che fanno i conti si chiamano **ALU** (le unità
+aritmetiche, quelle che eseguono materialmente una moltiplicazione o una somma)
+e sono in numero fisso, stampati nel silicio; il lavoratore è invece un
+**thread**, cioè
+un *compito*: «occupati tu del numero in posizione 4173». La parola inglese
+vuol dire «filo», ed è un filo di lavoro da sbrogliare, non qualcosa che si
+possa toccare. Questo spiega il numero che altrimenti non tornerebbe: le ALU di
+una GPU sono migliaia, i thread che ha in carico sono centinaia di migliaia. Ce
+ne sono molti più che postazioni, ed è proprio da lì che verrà, in fondo a
+questa sezione, il trucco che tiene la macchina sempre occupata.
+
+Fatta questa premessa, ogni SM è una piccola macchina completa, con i suoi
+calcolatori, il suo caposquadra e i suoi ripiani di lavoro. Contiene:
 
 - molte **ALU**, le unità aritmetiche che fanno materialmente i conti (una
-  moltiplicazione, una somma): sono i «CUDA core», gli operai della folla di
-  cui si parlava sopra. Sulle schede recenti accanto a esse ci sono anche i
-  **tensor core**, unità costruite apposta per il prodotto tra matrici, che
-  vedremo in una sezione dedicata;
+  moltiplicazione, una somma): NVIDIA le chiama «CUDA core», anche se non sono
+  calcolatori completi come i core di una CPU, ma proprio soltanto le
+  postazioni dove il conto avviene. Sulle schede recenti accanto a esse ci sono
+  anche i **tensor core**, unità costruite apposta per moltiplicare fra loro
+  due tabelloni di numeri, che vedremo in una sezione dedicata;
 - uno o più **warp scheduler**, i caposquadra: decidono, momento per momento,
-  quale gruppo di lavoratori far avanzare;
+  quale gruppetto di thread far avanzare (il gruppetto si chiama *warp*, e la
+  sezione qui sotto dice perché);
 - un grande **register file**, il taccuino: la memoria velocissima dove ogni
-  lavoratore tiene i numeri su cui sta operando in questo istante;
+  thread tiene i numeri su cui sta operando in questo istante. In inglese
+  *file* qui non vuol dire documento, vuol dire schedario;
 - un blocco di **shared memory**, il tavolo comune: una memoria di lavoro
-  condivisa fra i lavoratori della stessa squadra. La incontreremo in dettaglio
+  condivisa fra i thread della stessa squadra. La incontreremo in dettaglio
   nella prossima sezione, perché è la chiave delle prestazioni.
 
-I «lavoratori» di questo elenco hanno un nome che ricorrerà in tutto il
-capitolo: si chiamano **thread**, e la sezione qui sotto racconta come sono
-organizzati (in squadre, e dentro le squadre in plotoni da 32 detti *warp*).
-
 Gli ordini di grandezza aiutano a fissare le proporzioni, senza inseguire il
-numero esatto di un modello specifico (che cambia a ogni generazione): **da
-parecchie decine a oltre un centinaio di SM** per GPU, per un totale di
-**migliaia o decine di migliaia di CUDA core**, capaci
-di tenere in volo **centinaia di migliaia di thread** contemporaneamente.
-Questa scala è la ragione dei numeri visti nel capitolo su PyTorch: le decine
-di migliaia di miliardi di **operazioni in virgola mobile** al secondo (in
-virgola mobile vuol dire «sui numeri con la virgola», quelli con cui una rete
-neurale lavora; l'inglese le chiama *floating-point operations*, e da lì la
-sigla **FLOP**, che nel resto del capitolo indicherà appunto un conto
-elementare, una moltiplicazione o una somma). È anche il motivo per cui la GPU
-divora le moltiplicazioni tra matrici delle reti neurali.
+numero esatto di un modello specifico (che cambia a ogni generazione). Da
+parecchie decine a oltre un centinaio di **SM** per GPU; dentro ogni SM un
+centinaio di **ALU**, per un totale di migliaia o decine di migliaia sul chip;
+e sopra tutte queste postazioni, **centinaia di migliaia di thread** che la
+GPU tiene in carico contemporaneamente, cioè qualche decina di compiti per ogni
+postazione.
+
+Da lì si ricavano i numeri che si leggono sulle schede tecniche, e il conto è
+di quelli che si fanno a mente: diecimila postazioni, ciascuna un conto per
+battito, e un metronomo che batte più di un miliardo di volte al secondo, fanno
+più di diecimila miliardi di conti al secondo. È il motivo per cui una GPU
+divora le moltiplicazioni fra tabelloni di numeri di cui una rete neurale è
+fatta.
+
+Quei conti hanno un nome che ricorrerà per tutto il capitolo. Sono
+**operazioni in virgola mobile**, cioè conti sui numeri con la virgola, che
+sono quelli di cui una rete neurale è fatta; l'inglese le chiama *floating-point
+operations* e da lì viene la sigla **FLOP**. Un FLOP è *un* conto elementare,
+una moltiplicazione o una somma: quando serve dire quanti se ne fanno al
+secondo si scrive FLOP/s, e le due cose non vanno confuse, come non si
+confondono i chilometri con i chilometri all'ora.
 
 ## La gerarchia dei thread: griglia, blocchi, warp
 
 Con migliaia di unità di calcolo, la vera domanda diventa organizzativa: come
 si dice a decine di migliaia di lavoratori *chi fa cosa*, senza scrivere
 decine di migliaia di istruzioni diverse? La risposta di CUDA
-{cite}`nickolls2008scalable` è una gerarchia a tre livelli, illustrata in
-{numref}`fig-gpu-esecuzione`.
-
-```{figure} ../figures/gpu-gerarchia-esecuzione.svg
-:name: fig-gpu-esecuzione
-:alt: "In alto la scomposizione logica da sinistra a destra; una griglia (grid) di blocchi, un blocco (CTA) fatto di più warp, un warp di 32 thread, il singolo thread che elabora un dato. In basso l'hardware: una GPU come insieme di Streaming Multiprocessor; una freccia tratteggiata collega un blocco a uno SM, a indicare che l'hardware assegna ogni blocco a uno SM che lo esegue a warp di 32 thread."
-:width: 100%
-
-La gerarchia logica dei thread (in alto) e la sua esecuzione fisica (in
-basso). Il programmatore lancia una griglia di blocchi; l'hardware assegna
-ogni blocco a uno Streaming Multiprocessor, che lo esegue in gruppi da 32
-thread: i warp.
-```
+{cite}`nickolls2008scalable` è organizzarli su tre livelli, come si organizza
+un'operazione che coinvolge molta gente: l'operazione intera, le squadre in cui
+è divisa, i singoli. I loro nomi tecnici sono **griglia**, **blocco** e
+**thread**, e la scheda Elementare qui sotto li racconta con un esempio prima
+che la {numref}`fig-gpu-esecuzione` li metta in fila.
 
 `````{tab} Elementare
 
@@ -152,9 +165,10 @@ ogni singolo rilevatore: dice «voglio una griglia di 100 squadre da 256
 rilevatori l'una», e lascia che l'organizzazione si dispieghi da sola. C'è poi
 un dettaglio che viene dall'hardware: dentro ogni squadra i rilevatori
 marciano in **plotoni da 32**, che ricevono l'ordine tutti nello stesso
-istante. Questo plotone da 32 ha un nome che ci accompagnerà per tutto il
-capitolo: **warp**. Ricordalo, perché quel numero 32 non è un dettaglio: è il
-battito del cuore della GPU.
+istante. Una squadra da 256 rilevatori, quindi, sono otto plotoni, e i conti
+tornano sempre così: le squadre si scelgono di una taglia che sia un multiplo
+di 32, altrimenti l'ultimo plotone parte mezzo vuoto. Ricordati quel 32, perché
+è il battito del cuore della GPU.
 
 `````
 
@@ -191,33 +205,60 @@ warp intero.
 
 `````
 
+```{figure} ../figures/gpu-gerarchia-esecuzione.svg
+:name: fig-gpu-esecuzione
+:alt: "In alto la scomposizione logica da sinistra a destra; una griglia (grid) di blocchi, un blocco (CTA) fatto di più warp, un warp di 32 thread, il singolo thread che elabora un dato. In basso l'hardware: una GPU come insieme di Streaming Multiprocessor; una freccia tratteggiata collega un blocco a uno SM, a indicare che l'hardware assegna ogni blocco a uno SM che lo esegue a warp di 32 thread."
+:width: 100%
+
+Gli stessi tre livelli in figura, dall'operazione intera al singolo. In alto
+come li pensa chi scrive il programma: una **griglia** di **blocchi**, ogni
+blocco fatto di **warp** da 32, ogni warp fatto di 32 **thread**, ognuno su un
+proprio dato. In basso come li esegue la macchina: ogni blocco finisce su una
+delle officine (gli Streaming Multiprocessor) e lì avanza un warp per volta.
+```
+
 ## SIMT: stessa mossa, dati diversi
 
-Perché proprio i warp da 32? Perché un chip ha una superficie di silicio
-limitata, e ogni millimetro speso a decidere *cosa* fare è un millimetro non
-speso a *fare*: far condividere a 32 lavoratori un solo apparato di comando
-libera spazio per altre unità di calcolo, e più unità di calcolo vuol dire più
-conti al secondo a parità di chip. Tutti e 32 ricevono la stessa istruzione
-nello stesso momento e la eseguono insieme, ognuno sul proprio dato. Il numero
-32, invece, non ha niente di necessario: è la scelta di chi ha progettato
-queste GPU (AMD per anni ne ha usati 64) ed è rimasta identica da vent'anni,
-tanto che ormai conviene trattarla come una costante dell'hardware. NVIDIA
-chiama questo modello **SIMT**: *Single Instruction, Multiple Threads*.
+Perché i thread avanzano a gruppetti, e non ciascuno per conto proprio? Perché
+dentro un chip non c'è solo la parte che *calcola*: ce n'è un'altra, altrettanto
+ingombrante, che a ogni passo va a prendere l'istruzione seguente, la decifra e
+dice alle unità di calcolo cosa devono fare. Chiamiamola l'apparato di comando.
+Il silicio è una superficie limitata, e ogni millimetro speso a comandare è un
+millimetro non speso a calcolare: far condividere quell'apparato a 32
+lavoratori, invece di darne uno a testa, libera spazio per altre unità di
+calcolo, e più unità di calcolo vuol dire più conti al secondo a parità di
+chip. Tutti e 32 ricevono così la stessa istruzione nello stesso momento e la
+eseguono insieme, ognuno sul proprio dato. NVIDIA chiama questo modello
+**SIMT**: *Single Instruction, Multiple Threads*, una istruzione sola per molti
+thread.
+
+Il gruppetto ha un nome, **warp**, ed è quello che nel resto del capitolo
+chiameremo il plotone da 32. Sul perché siano proprio 32 la risposta onesta è
+che non c'è una ragione profonda: è la scelta di chi ha progettato queste GPU,
+e AMD sulle proprie ne ha usati a lungo 64. Ma è una scelta che NVIDIA non
+cambia da vent'anni, e su cui è tarato il codice di mezzo mondo: conviene
+trattarla come una costante dell'hardware, ed è per questo che il 32 va
+ricordato anche se è arbitrario.
 
 `````{tab} Elementare
 
 Torniamo al plotone da 32. Il sergente grida un solo ordine («fai un passo
 avanti!») e tutti e trentadue lo eseguono insieme, ciascuno sul proprio pezzo
 di strada. Un solo ordine, trentadue esecuzioni: è efficientissimo, finché
-tutti devono fare la stessa cosa. Il guaio nasce a un bivio. Immagina l'ordine
-«se il tuo numero è pari vai a destra, se è dispari vai a sinistra». Il
-plotone non può separarsi: il sergente dà *un* ordine alla volta. Allora fa
-marciare a destra i pari mentre i dispari stanno fermi ad aspettare; poi fa
-marciare a sinistra i dispari mentre i pari aspettano. I due gruppi hanno
-percorso strade diverse, ma in fila invece che insieme, impiegando il doppio
-del tempo. Morale: sulla GPU i «se... allora... altrimenti...» in cui i 32
-compagni di plotone prendono strade diverse costano cari. Il codice più veloce
-è quello in cui tutti fanno la stessa mossa.
+tutti devono fare la stessa cosa.
+
+Il guaio nasce a un bivio. In ogni programma esistono istruzioni della forma
+«*se* è vero questo fai una cosa, *altrimenti* fanne un'altra»: sono quelle che
+gli fanno prendere strade diverse a seconda dei dati, e senza di esse un
+programma non saprebbe fare niente di interessante. Immagina allora l'ordine
+«se il tuo numero è pari vai a destra, se è dispari vai a sinistra». Il plotone
+non può separarsi: il sergente dà *un* ordine alla volta. Allora fa marciare a
+destra i pari mentre i dispari stanno fermi ad aspettare; poi fa marciare a
+sinistra i dispari mentre i pari aspettano. I due gruppi hanno percorso strade
+diverse, ma in fila invece che insieme, impiegando il doppio del tempo. Morale:
+sulla GPU i bivi in cui i 32 compagni di plotone prendono strade diverse
+costano cari, e il codice più veloce è quello in cui tutti fanno la stessa
+mossa.
 
 `````
 
@@ -263,8 +304,9 @@ Resta la domanda cruciale. Ogni thread, prima o poi, chiede un dato alla
 memoria e deve aspettare: centinaia di **cicli**, un'eternità per un
 processore. Un ciclo è un battito del metronomo di cui si parlava all'inizio
 del capitolo, e una GPU ne fa più di un miliardo al secondo: centinaia di cicli
-sono meno di un milionesimo di secondo, ma per la GPU sono come per noi restare
-fermi mezz'ora davanti a una porta chiusa. Se si fermasse a ogni attesa, tutta
+sono meno di un milionesimo di secondo, ma per la GPU è come se noi, che di
+conti ne facciamo uno al secondo, restassimo fermi otto minuti davanti a una
+porta chiusa. Se si fermasse a ogni attesa, tutta
 la sua potenza sarebbe sprecata. La mossa che la salva non è aspettare meno, ma
 **avere sempre qualcos'altro da fare**.
 
@@ -288,12 +330,22 @@ due, passerebbe comunque gran parte del tempo a fissare l'acqua.
 
 Quante pentole ha sul fuoco un'officina in un dato momento, in rapporto a
 quante potrebbe averne, è proprio la parola del titolo: si chiama
-**occupancy**, e tenerla alta vuol dire tenere il caposquadra sempre con
-qualcosa da fare. Con una precisazione che vale la pena portarsi dietro: ciò
-che conta davvero non è il numero di pentole, è il numero di **richieste in
-viaggio** verso il magazzino. Poche pentole che chiedono ciascuna una cassetta
-intera tengono la strada piena quanto molte pentole che chiedono un pacchetto
-per volta.
+**occupancy**, che in italiano suonerebbe «riempimento», e tenerla decente vuol
+dire tenere il caposquadra sempre con qualcosa da fare.
+
+Una precisazione, che è anche la cosa più utile da portarsi dietro. Il vero
+obiettivo non è avere tante pentole: è che nel corridoio fra la cucina e la
+dispensa ci sia sempre roba in viaggio, perché è quello il collo di bottiglia.
+E la roba in viaggio si conta. Dieci pentole che chiedono un cucchiaio per
+volta mettono in strada dieci cucchiai; due pentole che chiedono una cassa da
+cinque cucchiai l'una ne mettono in strada dieci anche loro. Corridoio
+ugualmente pieno, con cinque volte meno pentole.
+
+Detto in termini di GPU: si arriva allo stesso risultato con tanti plotoni che
+chiedono un numero a testa, oppure con pochi plotoni che a ogni richiesta si
+fanno portare un blocco di numeri. Tenere alta l'occupancy resta il modo più
+semplice per riuscirci, e un'occupancy bassissima è quasi sempre un guaio; ma
+se un plotone chiede tanto per volta, ne bastano meno.
 
 `````
 
@@ -349,10 +401,12 @@ prossima sezione.
   *Streaming Multiprocessor*), da qualche decina a oltre un centinaio, ognuna
   con i propri calcolatori, il proprio caposquadra e il proprio tavolo di
   lavoro. Insieme tengono al lavoro centinaia di migliaia di lavoratori.
-- I lavoratori si chiamano **thread** e sono organizzati come in un censimento:
+- I lavoratori si chiamano **thread** e non sono pezzi di ferro: un thread è un
+  *compito*, «occupati tu di questo numero», e ce n'è qualche decina per ogni
+  postazione di lavoro vera. Sono organizzati come in un censimento:
   l'operazione intera (la *griglia*), le squadre di quartiere (i *blocchi*) e,
-  dentro ogni squadra, i **plotoni da 32** (i *warp*). Il 32 è il battito del
-  cuore della GPU: se lo ricordi, ricordi metà del capitolo.
+  dentro ogni squadra, i **plotoni da 32** (i *warp*). Il 32 è arbitrario ma
+  non cambia da vent'anni: se lo ricordi, ricordi metà del capitolo.
 - Il sergente dà **un ordine solo** a tutto il plotone. Efficientissimo finché
   tutti fanno la stessa mossa; a un bivio («se pari a destra, se dispari a
   sinistra») il plotone si divide e le due strade si percorrono una dopo
@@ -360,8 +414,11 @@ prossima sezione.
   dividono i compagni di plotone costano cari.
 - L'attesa non si accorcia, si **nasconde**: come il cuoco con dieci pentole,
   il caposquadra manda avanti un altro plotone mentre il primo aspetta i dati.
-  Quanti plotoni ha pronti si chiama **occupancy**, e tenerla decente è quello
-  che tiene l'officina occupata.
+  Quanti plotoni ha pronti, in rapporto a quanti potrebbe averne, si chiama
+  **occupancy**. Tenerla decente è il modo più semplice per non lasciare
+  l'officina a mani vuote; quello che conta davvero, però, è che il corridoio
+  verso la memoria sia sempre pieno di roba in viaggio, e ci si arriva anche
+  con pochi plotoni che chiedono molto per volta.
 - Le attese che si nascondono così sono attese di **dati che arrivano dalla
   memoria**: è il vero collo di bottiglia, ed è l'argomento della sezione
   successiva.

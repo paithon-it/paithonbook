@@ -11,17 +11,19 @@ del controllo e di elaborazione dei segnali, lontana anni luce dal linguaggio
 naturale.
 
 Eppure è la stessa idea che, mezzo secolo dopo, ha dato una seconda strada
-verso un vecchio obiettivo di questo capitolo: un modello di sequenze che si
-addestri in parallelo come un Transformer e che, quando lo si usa (in gergo
-*inferenza*, cioè il lavoro che il modello fa dopo aver imparato, quando gli
-si chiede una risposta), spenda per ogni parola sempre la stessa quantità di
-tempo e di memoria, come una rete ricorrente. Nel capitolo precedente ci siamo
+verso l'obiettivo che questo capitolo condivide con il precedente: un modello di
+sequenze che si addestri in parallelo come un Transformer e che poi, una volta
+in servizio, spenda per ogni parola sempre la stessa quantità di tempo e di
+memoria, come una rete ricorrente. Usare un modello già addestrato, in gergo,
+si dice fare **inferenza**, e da qui in avanti capiterà spesso di leggerlo.
+
+Nel capitolo precedente ci siamo
 arrivati partendo dall'attenzione, smontandone il pezzo che costava di più
 finché quello che restava era, di nuovo, una memoria di taglia fissa
 aggiornata parola per parola. Qui partiamo dal lato opposto (un sistema
 dinamico continuo) e arriviamo, sorprendentemente, quasi allo stesso posto.
-Stessa meta, radice diversa. Alla fine del capitolo Mamba-2 chiuderà il
-cerchio, mostrando che le due strade portavano alla stessa città.
+Alla fine del capitolo Mamba-2 chiuderà il cerchio, mostrando che le due strade
+portavano alla stessa città.
 
 ## Un sistema che evolve nel tempo
 
@@ -30,10 +32,11 @@ riceve, si modifica e restituisce, senza salti. Entra un segnale, dentro c'è
 uno stato che cambia in continuazione, ed esce un altro segnale. Le tre
 grandezze sono legate da due regole, che dicono l'una come lo stato cambia da
 un istante al successivo e l'altra come si legge l'uscita a partire dallo
-stato. Quelle due regole sono, in matematica, due **equazioni differenziali**:
-mettono in relazione una grandezza con la sua velocità di variazione, cioè con
-quanto sta cambiando in questo momento (la velocità di variazione è la derivata
-della sezione su analisi e ottimizzazione, e qui basta leggerla così).
+stato. Ciascuna delle due mette in relazione una grandezza con la sua velocità
+di variazione, cioè con quanto sta cambiando in questo momento: quella velocità
+è la **derivata** incontrata nella sezione su analisi e ottimizzazione, e qui
+basta leggerla così. Regole di questa forma, in matematica, si chiamano
+**equazioni differenziali**.
 
 `````{tab} Elementare
 
@@ -45,7 +48,7 @@ scarico è la dinamica interna: se smetti di versare acqua, il livello cala da
 solo, un po' alla volta. E ciò che *leggi* (magari un galleggiante collegato a
 un ago) è l'uscita, che dipende dal livello.
 
-Un eco in una valle funziona allo stesso modo: gridi (ingresso), il suono
+Un'eco in una valle funziona allo stesso modo: gridi (ingresso), il suono
 rimbomba e si spegne gradualmente (stato che decade), e quello che senti è una
 versione attenuata e ritardata del grido (uscita). In tutti questi casi lo stato
 è una fotografia compatta del passato: sapendo il livello dell'acqua *adesso* e
@@ -100,7 +103,8 @@ sequenza di campioni, prenderà il nome di $x_t$.
 `````
 
 Finora tutto è continuo: il tempo scorre senza gradini. Ma una frase è una
-sequenza di token, un segnale audio è una sequenza di campioni: dati **discreti**,
+sequenza di **token** (i pezzetti in cui il testo viene diviso, i «passi» di
+cui parlavamo), un segnale audio è una sequenza di campioni: dati **discreti**,
 uno dopo l'altro. Per usare questo sistema su una sequenza dobbiamo prima
 tradurlo dal continuo al discreto.
 
@@ -114,14 +118,13 @@ invece di scivolare con continuità.
 
 C'è un punto su cui vale la pena essere espliciti, perché è una fonte comune di
 confusione: **non esiste un solo modo di discretizzare**. Quello che succede
-*tra* una misura e l'altra non lo si è visto, e va indovinato: regole diverse
-lo indovinano in modi diversi. I due modelli principali di questo capitolo ne
-usano due, e non vanno scambiate. S4 adotta la **trasformazione bilineare**
-(nota anche come metodo di Tustin), che immagina il tratto non visto come un
-trapezio. Mamba (l'altro protagonista del capitolo, quello che nella prossima
-sezione insegnerà a questa macchina a scegliere) adotta lo **zero-order hold**
-(ZOH, «tenuta di ordine zero»), che immagina l'ingresso fermo per tutto il
-tratto. Attribuire lo ZOH a S4 è un errore che si trova spesso in giro.
+*tra* una misura e l'altra non lo si è visto, e va indovinato; regole diverse
+lo indovinano in modi diversi, e i due modelli principali del capitolo ne usano
+due che non vanno scambiate.
+
+Il modo più rapido di tenerle separate è pensarle come due figure
+geometriche: quella di S4 è un trapezio, quella di Mamba (l'altro protagonista
+del capitolo) è un rettangolo. Qui sotto si vede perché, e come si chiamano.
 
 `````{tab} Elementare
 
@@ -145,12 +148,10 @@ inclina, e la figura diventa un **trapezio**. Il risultato è lo stesso tipo di
 regola passo dopo passo; cambia quanto errore ti porti dietro a ogni salto, e
 l'errore, a forza di salti, si accumula.
 
-Le stesse due figure torneranno più avanti nel capitolo per una seconda
-domanda, e le due domande conviene non confonderle. Qui si è deciso come si
-muove il rubinetto durante il tratto; là si tratterà di stabilire quanta, di
-quell'acqua, resta davvero nella vasca alla fine, visto che intanto lo scarico
-lavora. Anche in quel secondo conto Mamba si accontenta del rettangolo, ed è il
-pezzo che Mamba-3, il modello più recente della famiglia, rifarà a trapezi.
+Il rettangolo di Mamba tornerà una seconda volta, e conviene saperlo fin
+d'ora: anche il conto di quanta acqua, di quella entrata, finisce davvero nella
+memoria, Mamba lo fa a rettangoli. È il pezzo che Mamba-3, il modello più
+recente della famiglia, rifarà a trapezi.
 
 `````
 
@@ -195,7 +196,9 @@ $$
 \bar{\mathbf{B}} = \Big(\mathbf{I} - \tfrac{\Delta}{2}\mathbf{A}\Big)^{-1}\Delta \mathbf{B} .
 $$
 
-È la scelta di S4. In entrambi i casi la $\mathbf{C}$ resta invariata ($\bar{\mathbf{C}}=\mathbf{C}$), e i
+È la scelta di S4, e vale la pena ricordarsela: attribuire lo ZOH a S4 è un
+errore che si trova spesso in giro. In entrambi i casi la $\mathbf{C}$ resta
+invariata ($\bar{\mathbf{C}}=\mathbf{C}$), e i
 parametri effettivi del modello sono la quaterna $(\Delta, \mathbf{A}, \mathbf{B}, \mathbf{C})$: le matrici
 continue più il passo, da cui si generano le matrici discrete. Il passo $\Delta$
 non è un dettaglio: fissa la *scala temporale* del sistema, cioè quanto in fretta
@@ -228,20 +231,20 @@ una RNN.
 Dall'altro la forma **convoluzionale**: se il sistema non cambia nel tempo, si
 può dimostrare che l'intera uscita è una singola convoluzione dell'ingresso
 con un filtro fisso. E la convoluzione la conosciamo dalle reti convoluzionali
-del capitolo sul deep learning: un filtro che scorre lungo il segnale. Due
+del capitolo sul deep learning: un filtro che scorre lungo il segnale e a ogni
+posizione moltiplica i propri pesi per i valori che ha sotto, poi somma. Due
 differenze. La prima è che qui il filtro è lungo quanto tutta la sequenza, non
 una finestrella di pochi elementi. La seconda è che nessuno lo scrive a mano:
-si ricava, con
-un conto, dalle tre regole del sistema, ed è per questo che il modello impara
-le regole e non il filtro. Il vantaggio è che una convoluzione si calcola in un
-colpo solo, in parallelo su tutta la sequenza: proprio ciò che serve per
+si ricava, con un conto, dalle tre regole del sistema. Ed è una buona notizia,
+perché il modello ha da imparare le tre regole, che sono poche, e non il
+i numeri del filtro, che sono tanti quanto il testo è lungo. Il vantaggio è
+che una convoluzione si
+calcola in un colpo solo, in parallelo su tutta la sequenza: proprio ciò che serve per
 sfruttare le GPU in addestramento.
 
-Morale: si **addestra** in forma convoluzionale (veloce, parallela) e si
-**usa** in forma ricorrente (economica, una parola alla volta). In gergo usare
-un modello già addestrato si dice fare **inferenza**, e da qui in avanti
-capiterà spesso di leggerlo. La stessa funzione, due vestiti diversi a seconda
-dell'occasione.
+Morale: si **addestra** in forma convoluzionale (veloce, parallela) e si fa
+**inferenza** in forma ricorrente (economica, una parola alla volta). La stessa
+funzione, due vestiti diversi a seconda dell'occasione.
 
 `````
 
@@ -309,12 +312,20 @@ centro dice che non sono due calcoli diversi: è lo stesso, scritto in due modi.
 
 ## HiPPO e S4: ricordare a lungo
 
-C'è un problema che abbiamo scavalcato. Perché uno stato di dimensione piccola
-(poche decine di numeri), dovrebbe ricordare qualcosa avvenuto migliaia di
-passi prima? A ogni passo ciò che è già in memoria viene moltiplicato per un
-fattore, e a forza di moltiplicare per numeri più piccoli di uno il contributo
-di ciò che è entrato tempo fa si riduce in fretta: dopo poche decine di passi è
-già polvere. Una RNN classica soffre esattamente di questo, ed è la ragione per
+C'è un problema che abbiamo scavalcato. Nei modelli veri lo stato non è un
+numero solo, come il livello della vasca: è un pugno di numeri, qualche decina,
+che insieme fanno il riassunto. Restano pochi, però, e la domanda è perché un
+riassunto così piccolo dovrebbe ricordare qualcosa avvenuto migliaia di passi
+prima.
+
+Torniamo alla vasca. A ogni passo lo scarico porta via una fetta di ciò che c'è
+dentro, e di quel che era entrato all'inizio sopravvive ogni volta solo una
+frazione della frazione di prima. Facciamo che a ogni passo ne resti il novanta
+per cento, che come scarico è già lento: dopo cinquanta passi di quella prima
+acqua è rimasto $0{,}9^{50}$, cioè circa mezzo per cento; e siccome altri
+cinquanta passi rifanno lo stesso lavoro, dopo cento passi ne resta mezzo per
+cento di mezzo per cento. Polvere. Una RNN classica soffre esattamente
+di questo, ed è la ragione per
 cui sono nate LSTM e GRU, che aggiungono dei **cancelli** (in inglese *gate*:
 piccole valvole apprese che decidono, a ogni passo, quanto lasciar passare e
 quanto trattenere). Per gli SSM la risposta non sta in nuovi cancelli, ma nella
@@ -325,29 +336,35 @@ corta; costruita con criterio, può essere lunghissima.
 
 Immagina di dover riassumere un romanzo lunghissimo in una sola pagina di
 appunti, aggiornata mentre leggi. Se ogni frase nuova cancella la precedente,
-alla fine ti resta in mano solo l'ultimo capitolo. Serve un modo *principiato*
+alla fine ti resta in mano solo l'ultimo capitolo. Serve un modo studiato apposta
 di comprimere: tenere una specie di riassunto a più livelli (l'idea generale,
 gli snodi principali, i dettagli recenti), così che ciò che conta del passato
 lontano non sbiadisca del tutto.
 
-È l'idea di **HiPPO** (le lettere stanno per «operatori di proiezione
-polinomiale di ordine alto», che è il nome tecnico di quel modo di
-riassumere): non un'euristica inventata a mano, ma la risposta migliore
+È l'idea di **HiPPO** (la sigla è inglese, e sciolta suona «operatori di
+proiezione polinomiale di ordine alto»: è il nome tecnico di quel modo di
+riassumere): non una regola trovata a tentoni, ma la risposta migliore
 possibile a una domanda posta con precisione, cioè «fra tutti i riassunti che
 stanno in questo numero di numeri, quale somiglia di più alla storia intera?».
 La ricetta di HiPPO non è un pezzo in più da attaccare al modello: dice con
 quali numeri **partire**, prima ancora che l'addestramento cominci. Chi parte
 da lì ottiene, gratis, una memoria a lungo raggio; chi parte da numeri a caso
-ha una memoria corta e non la recupera più.
+si ritrova con una memoria corta, e l'addestramento non gliela allunga.
 
 Su questa base nasce **S4**, il modello che dà il titolo alla sezione. Due
 mosse, una dietro l'altra: parte con la ricetta di HiPPO, così ha la memoria
-lunga, e poi si accorge che quei numeri hanno una forma regolare, che permette
-di calcolare il filtro lungo senza rifare ogni volta tutti i conti. La prima
-mossa gli dà la memoria, la seconda la velocità: senza tutt'e due sarebbe
-rimasto un esercizio. Con tutt'e due è il primo modello che risolve **Path-X**,
-la prova più dura del *Long Range Arena*, dove la sequenza è lunga $16\,384$
-elementi e i Transformer restavano al livello di chi tira a indovinare.
+lunga; poi i suoi autori si accorgono che quei numeri di partenza non sono
+messi a caso ma seguono uno schema, e da uno schema si può calcolare il filtro
+lungo senza rifare ogni volta tutti i conti. La prima mossa gli dà la memoria, la seconda
+la velocità: senza tutt'e due sarebbe rimasto un esercizio.
+
+Con tutt'e due è il primo modello che risolve **Path-X**, la prova più dura del
+*Long Range Arena*, la gara sulle dipendenze a lunghissimo raggio. In Path-X si
+guarda un'immagine di 128 pixel per 128 letta un pixel alla volta, in fila come
+se fosse un testo (fanno appunto $16\,384$ passi), e si deve dire se due
+puntini sono uniti da un tratto oppure no: per rispondere bisogna tenere
+insieme parti dell'immagine lontanissime nella fila. Lì i Transformer
+restavano al livello di chi tira a indovinare.
 
 `````
 
@@ -425,11 +442,15 @@ vale la pena nominare, perché ognuna smonta un pezzo del problema.
 
 `````{tab} Elementare
 
-Tre modelli, tre pezzi del problema. **S5** (2023) semplifica la macchina di
-S4 e, soprattutto, dimostra che la forma «passo dopo passo» non è condannata a
-essere lenta: organizzando i calcoli in modo furbo (si combinano i passi a
-coppie, poi a gruppi di quattro, di otto, e così via) anche la ricorrenza si
-può svolgere quasi tutta in parallelo. È il trucco che Mamba erediterà.
+Tre modelli, tre pezzi del problema. **S5** (2023) semplifica la macchina di S4
+e, soprattutto, dimostra che la forma «passo dopo passo» non è condannata a
+essere lenta. Sembrerebbe di sì, visto che ogni passo ha bisogno del risultato
+del precedente. Il fatto è che due passi consecutivi si possono fondere in un
+passo solo, che fa il lavoro di tutti e due; e le fusioni di coppie diverse non
+si aspettano fra loro, quindi si possono fare tutte nello stesso momento. Un
+giro dimezza i passi rimasti, il giro dopo li dimezza ancora, e in una manciata
+di giri si è arrivati in fondo. Il conto per esteso sta nella prossima sezione:
+è il trucco che Mamba erediterà.
 
 **H3** (2023) affronta invece la memoria «a richiamo»: ritrovare più avanti
 una cosa già letta ("chi era il soggetto di quella frase?"). I modelli di
@@ -442,8 +463,11 @@ finché gli serve.
 è un filtro lungo che scorre su tutta la frase (come quelli delle reti
 convoluzionali del capitolo sul deep learning, ma lunghi quanto l'intero
 testo), tanto vale imparare direttamente il filtro, senza passare dal sistema
-dinamico. Funziona
-quasi come l'attenzione, costando molto meno.
+dinamico. Con un accorgimento, però: quei numeri Hyena non se li impara a
+memoria uno per uno, che sarebbe un elenco lungo quanto il testo. A disegnare
+il filtro mette una piccola rete, così le cose da imparare restano poche come
+prima; è cambiato soltanto chi tiene la matita. Funziona quasi come
+l'attenzione, costando molto meno.
 
 `````
 
@@ -517,17 +541,17 @@ Mamba, ed è il tema della prossima sezione.
   dualità vista con l'attenzione lineare.
 - L'equivalenza regge **solo** finché quelle regole restano fisse: Mamba le farà
   dipendere da ciò che legge, e allora resterà solo il modo passo dopo passo.
-- **HiPPO** (Gu et al., 2020) è il modo principiato di riassumere una storia
+- **HiPPO** (Gu et al., 2020) è il modo studiato apposta per riassumere una storia
   lunghissima in pochi numeri, come appunti a più livelli su un romanzo: dice
   da quali numeri **partire** perché uno stato piccolo abbia memoria lunga.
-  **S4** (2022) parte da lì e rende il conto efficiente sfruttando la forma
+  **S4** (2022) parte da lì e rende il conto efficiente sfruttando lo schema
   regolare di quei numeri, ed è il primo a risolvere Path-X (sequenze da
   $16\,384$ elementi), la prova più dura della gara sulle dipendenze a
   lunghissimo raggio, Long Range Arena.
 - Le tappe verso il linguaggio: **S5** (mostra che anche il passo dopo passo si
-  può svolgere quasi tutto in parallelo), **H3** (due memorie e un rubinetto,
-  per ritrovare a distanza una cosa già letta), **Hyena** (impara direttamente
-  il filtro lungo). Preparano Mamba.
+  può svolgere quasi tutto in parallelo), **H3** (due memorie e una valvola che
+  dosa quanto passa dall'una all'altra, per ritrovare a distanza una cosa già
+  letta), **Hyena** (impara direttamente il filtro lungo). Preparano Mamba.
 ```
 
 `````

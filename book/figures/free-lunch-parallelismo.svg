@@ -68,6 +68,6 @@
   <text class="leg" x="146" y="125">frequenza di clock (velocità di un core)</text>
 
   <!-- riquadro conclusivo -->
-  <rect x="366" y="284" width="286" height="34" rx="8" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="1.6" stroke-opacity="0.8"/>
+  <rect x="342" y="284" width="334" height="34" rx="8" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="1.6" stroke-opacity="0.8"/>
   <text class="call" x="509" y="305" text-anchor="middle">i transistor in più → più core: il futuro è parallelo</text>
 </svg>

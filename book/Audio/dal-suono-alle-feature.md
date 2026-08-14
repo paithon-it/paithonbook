@@ -15,8 +15,9 @@ percorso: sono le fondamenta comuni a tutto ciò che segue (qui, e nel capitolo
 sullo Speech Recognition).
 
 Nel titolo c'è la parola **feature**, che in questo libro indica i numeri con
-cui descriviamo un esempio: qui, i numeri con cui descriviamo un suono. La
-domanda della sezione è quali scegliere, e perché proprio quelli.
+cui descriviamo una cosa da dare in pasto a un modello: qui, i numeri con cui
+descriviamo un suono. La domanda della sezione è quali scegliere, e perché
+proprio quelli.
 
 ## Il suono come numeri
 
@@ -55,36 +56,55 @@ audio "CD" è quindi, per ogni canale, un vettore di $44\,100$ interi.
 
 `````
 
+Ognuna di quelle annotazioni si chiama **campione**: una singola misura della
+posizione della membrana, presa in un istante preciso. Un suono digitale è una
+fila di campioni, e le due domande che vengono subito dopo sono quanti
+prenderne al secondo e quanto precisa debba essere ciascuna misura. La prima ha
+la sezione qui sotto; alla seconda rispondiamo in due righe alla fine.
+
 ## Quanti campioni al secondo? Il teorema di Nyquist
 
-La domanda cruciale è: quante volte al secondo dobbiamo misurare per non
-perdere informazione? Troppo poche e il suono si deforma; troppe e sprechiamo
-memoria.
+La domanda è: quante volte al secondo dobbiamo misurare per non perdere
+informazione? Troppo poche e il suono si deforma; troppe e sprechiamo memoria.
 
-Attenzione a un tranello di vocabolario, perché da qui in avanti la parola
-«frequenza» fa due mestieri. Quante volte al secondo *misuriamo* si chiama
-**frequenza di campionamento**, e si scrive in hertz esattamente come la
-frequenza di un suono: la prima dice quanto è fitto il nostro metro, la seconda
-quanto è acuto ciò che stiamo misurando. Sono numeri diversi, e quando più
-avanti un disegno dirà che la finestra è lunga «400 campioni, cioè 25 millesimi
-di secondo» (sedicimila misure al secondo, dunque) e insieme mostrerà un asse
-delle frequenze che si ferma a tremila oscillazioni al secondo, non è una
-contraddizione: sono le due grandezze, non la stessa due volte.
+Attenzione, però, a un tranello di vocabolario, perché da qui in avanti la
+parola «frequenza» fa due mestieri diversi. Uno lo conosciamo già: **la
+frequenza di un suono**, quante volte al secondo oscilla l'aria, quella che dice
+se è acuto o grave. L'altro è nuovo: **la frequenza di campionamento**, quante
+volte al secondo *noi* andiamo a guardare dov'è la membrana. Il suono oscilla da
+sé, e non gliene importa niente di noi; noi decidiamo ogni quanto guardare. Sono
+due cose distinte, ma si scrivono tutte e due in hertz, ed è lì che ci si
+confonde.
+
+Un modo per non sbagliare mai: la frequenza di campionamento è una nostra
+scelta, quella del suono no.
 
 `````{tab} Elementare
 
 Pensa a una ruota che gira ripresa da una telecamera. Se scatti troppe poche
 foto, nel video la ruota sembra girare al contrario, o ferma: è l'effetto che
-vediamo sulle ruote delle auto nei film. Con il suono succede lo stesso. La
-regola è semplice: bisogna misurare **più del doppio** delle volte rispetto alla
-vibrazione più rapida che vogliamo catturare. L'orecchio umano arriva a circa
-$20\,000$ oscillazioni al secondo (20 kHz), quindi servono più di $40\,000$
-misure al secondo: i CD ne fanno $44\,100$, che stanno larghi apposta. Per la
-voce al telefono bastano $8\,000$: la linea taglia tutto quello che sta sopra i
-$3\,400$ hertz, e sotto quella soglia la voce "vive" quasi tutta. E c'è una via di mezzo,
-$16\,000$ misure al secondo, che è quella scelta dalla maggior parte dei
-sistemi di questo capitolo: prende tutta la voce senza sprecare memoria, ed è il
-numero che ritroverai nelle figure e nel codice.
+vediamo sulle ruote delle auto nei film. Con il suono succede la stessa cosa, e
+la battuta finale è altrettanto strana. Un fischio troppo acuto per il numero di
+misure che stiamo prendendo non sparisce: si **traveste**, e torna indietro più
+grave di quanto era, come una nota che nessuno ha mai suonato.
+
+La regola per evitarlo è semplice: bisogna misurare **più del doppio** delle
+volte rispetto alla vibrazione più rapida che vogliamo catturare. L'orecchio
+umano arriva a circa $20\,000$ oscillazioni al secondo (20 kHz), quindi servono
+più di $40\,000$ misure al secondo: i CD ne fanno $44\,100$, che stanno larghi
+apposta. Per la voce al telefono bastano $8\,000$ misure al secondo, perché la
+linea taglia via tutte le oscillazioni sopra le $3\,400$ al secondo e sotto
+quella soglia la voce "vive" quasi tutta. (Il doppio di 3.400 sarebbe 6.800:
+gli 8.000 lasciano un margine, perché nessun filtro taglia di netto.)
+
+E c'è una via di mezzo, $16\,000$ misure al secondo, che copre le oscillazioni
+fino a poco meno di $8\,000$ (la regola dice «più del doppio», quindi $8\,000$
+tondi resterebbero fuori di un soffio): è quella delle figure e del codice di
+questa sezione, ed è la scelta abituale dei sistemi che lavorano sulla voce.
+Per la musica non basta,
+ed è il motivo per cui i sistemi delle ultime sezioni salgono a 24.000, 32.000 o
+48.000 misure al secondo: il brillare di un piatto della batteria, o il fischio
+acutissimo di certi uccelli, vivono lassù, dove la voce non arriva.
 
 `````
 
@@ -112,10 +132,20 @@ trattata a $f_s = 16\,\text{kHz}$, un buon compromesso tra fedeltà e peso.
 
 `````
 
+Resta in sospeso la seconda domanda: quanto precisa deve essere ogni singola
+misura? La risposta abituale è che ogni campione si scrive con 16 risposte
+sì/no, e può quindi prendere uno di 65.536 valori diversi. Sono abbastanza da
+non farsi sentire: fra un valore e il successivo la differenza è troppo piccola
+perché l'orecchio la colga. Ci torneremo nell'ultima sezione del capitolo, dove
+un modello famoso si accontenta di 256 valori e deve inventarsi un trucco per
+farli bastare.
+
 ## Dal tempo alla frequenza: la trasformata di Fourier
 
-La forma d'onda ci dice *quando* il suono è forte o debole, ma non ci dice di
-quali "note" è fatto. Eppure è proprio quella composizione a distinguere una
+La lista di campioni che abbiamo in mano ha un nome, **forma d'onda**, ed è il
+disegno che farebbe un sismografo: quanto era in avanti o indietro la membrana,
+istante per istante. Ci dice *quando* il suono è forte o debole, ma non ci dice
+di quali "note" è fatto. Eppure è proprio quella composizione a distinguere una
 "a" da una "i", o la voce di una persona da un'altra. Serve un cambio di punto
 di vista.
 
@@ -155,7 +185,9 @@ C'è un problema: la trasformata di Fourier di un intero file dice *quali*
 frequenze ci sono, ma non *quando*. Una frase è fatta di suoni che cambiano di
 continuo. La soluzione è tagliare l'audio in tante finestrelle brevi (20–40
 millisecondi), calcolare la trasformata di Fourier di ciascuna, e affiancare i
-risultati. Questa è la **Short-Time Fourier Transform** (STFT). Il risultato,
+risultati. Questa è la trasformata di Fourier a finestre brevi, che in
+letteratura si trova sempre con la sigla inglese: **STFT**, *Short-Time Fourier
+Transform*. Il risultato,
 disposto in una tabella, è lo **spettrogramma**: un'immagine con il tempo
 sull'asse orizzontale, la frequenza su quello verticale, e l'intensità di
 ciascuna frequenza resa dal colore ({numref}`fig-onda-spettrogramma`).
@@ -181,10 +213,11 @@ segnale a passi regolari, e ogni sua posizione lascia dietro di sé una colonna.
 
 Il segnale sono tre note che salgono, una dopo l'altra. La finestra ci scorre
 sopra un passo alla volta e a ogni posizione lascia una colonna dello
-spettrogramma: è lunga 25 millesimi di secondo e avanza di 10, quindi due
-finestre vicine si sovrappongono ma le loro colonne no. Le note che salgono si
-vedono come gradini, ed è esattamente l'informazione che la trasformata del file
-intero non saprebbe dare.
+spettrogramma: è lunga 25 millesimi di secondo e avanza di 10 alla volta, quindi
+due finestre vicine coprono in parte lo stesso pezzo di suono, mentre le colonne
+che ne escono restano una accanto all'altra. Le note che salgono si vedono come
+gradini, ed è esattamente l'informazione che la trasformata del file intero non
+saprebbe dare.
 ```
 
 Le finestre a cavallo fra una nota e l'altra mostrano **entrambe** le frequenze,
@@ -212,15 +245,34 @@ nota era?») si contendono la stessa finestra, perché per riconoscere una nota
 bisogna sentirla oscillare un po' di volte, e quel po' di tempo è esattamente
 l'istante che si perde.
 
-I numeri della finestra da 25 millesimi di secondo, che è quella usata qui e nel
-resto del libro: colloca un suono nel tempo con un'incertezza di tre millesimi e
-mezzo di secondo, e distingue due frequenze che distano una ventina di
-hertz. Allungala a 100 millesimi e la seconda cifra migliora di quattro volte
-(scende a sei hertz), ma la prima peggiora esattamente di quattro (sale a
-quattordici millesimi di secondo). Il prodotto delle due non cambia mai, e sotto
-una certa soglia non si va: quello che si guadagna da una parte si paga, tutto,
-dall'altra. Scegliere la lunghezza della finestra vuol dire scegliere quale
-delle due precisioni comprare.
+A questo compromesso si possono dare dei numeri, e vale la pena farlo perché il
+risultato è sorprendente. Prendiamo la finestra da 25 millesimi di secondo,
+quella usata qui e nel resto del libro. Le sue due precisioni sono **3,5
+millesimi di secondo** sul quando, e **23 oscillazioni al secondo** sul che nota
+era.
+
+Da dove escono? La prima sorprende, perché è molto più piccola dei 25 millesimi
+della finestra: il motivo è che la finestra non pesa uguale dappertutto, è gonfia
+in mezzo e va a zero ai bordi, quindi il suo peso è tutto concentrato in un
+tratto molto più corto della sua lunghezza. La seconda si ottiene facendo il
+conto sulla stessa curva. Per capire se 23 sono tante o poche: attorno al la del
+diapason due tasti vicini del pianoforte distano 26 oscillazioni al secondo,
+quindi lì li separa appena; un'ottava più in basso quella distanza si dimezza,
+e non li separa più.
+
+Adesso allunghiamo la finestra a 100 millesimi, quattro volte tanto. La
+precisione sulle note migliora esattamente di quattro (23 diviso 4 fa 5,75
+oscillazioni al secondo, e i due tasti gravi ora si separano senza fatica) e
+quella sugli istanti peggiora esattamente di quattro (3,5 per 4 fa 14 millesimi
+di secondo). Moltiplichiamole, prima e dopo: $3{,}5 \times 23 = 80{,}5$ e
+$14 \times 5{,}75 = 80{,}5$. Identico.
+
+Non è una coincidenza: quel prodotto è la stessa cosa comunque si allunghi o
+accorci la finestra. Cambiando la *forma* della finestra si può scendere
+un pochino, ma poco, e sotto una certa soglia non ci va nessuna forma: è un
+limite, non un difetto delle finestre che usiamo. Sceglierne la lunghezza vuol
+dire scegliere quale delle due precisioni comprare, sapendo che l'altra la si
+paga tutta.
 
 `````
 
@@ -253,8 +305,8 @@ dove $\sigma_t$ e $\sigma_f$ sono le deviazioni standard dell'energia della
 finestra nel tempo e in frequenza. L'uguaglianza vale per la finestra
 gaussiana; per la finestra di Hann il prodotto vale $0{,}0817$ contro il limite
 $1/(4\pi) = 0{,}0796$, ed è **costante al variare della lunghezza**: la Hann da
-25 ms ha $\sigma_t \approx 3{,}5$ ms e $\sigma_f \approx 23$ Hz, quella da 100 ms
-$\sigma_t \approx 14{,}1$ ms e $\sigma_f \approx 5{,}8$ Hz. Quadruplicare la
+25 ms ha $\sigma_t \approx 3{,}54$ ms e $\sigma_f \approx 23{,}1$ Hz, quella da
+100 ms $\sigma_t \approx 14{,}1$ ms e $\sigma_f \approx 5{,}77$ Hz. Quadruplicare la
 finestra quadruplica $\sigma_t$ e divide $\sigma_f$ per quattro, senza sconti.
 Non esiste una finestra furba: esiste un cambio fisso, e sceglierne la lunghezza
 significa decidere quale delle due risoluzioni si vuole comprare.
@@ -273,14 +325,21 @@ reti.
 
 ## MFCC e la scala mel: ascoltare come un orecchio
 
-Lo spettrogramma è ancora ricco e ridondante. Possiamo comprimerlo imitando il
-modo in cui l'orecchio umano percepisce davvero i suoni, ottenendo feature più
-compatte e robuste: i **coefficienti cepstrali in scala mel** (MFCC).
+Lo spettrogramma dice tutto, e proprio per questo dice troppo: righe vicine si
+somigliano parecchio, e molti dei suoi numeri non fanno che ripetere quello che
+c'è accanto. Possiamo riassumerlo, e conviene farlo imitando il modo in cui
+l'orecchio percepisce davvero i suoni: quello che l'orecchio butta via possiamo
+buttarlo via anche noi, senza rimpianti. Il riassunto più famoso porta la sigla
+inglese **MFCC**, da *mel-frequency cepstral coefficients*, cioè «coefficienti
+cepstrali in scala mel»: quattro parole difficili, e le prossime righe le
+sciolgono una a una.
 
-«Cepstrale» non è un refuso per «spettrale»: è un gioco di parole degli
-ingegneri che negli anni Sessanta inventarono il metodo, che rovesciarono le
-prime lettere di *spectrum* per dire che si applica una seconda trasformata allo
-spettro, e il termine è rimasto.
+«Cepstrale» non è un refuso per «spettrale». È un gioco di parole degli
+ingegneri che negli anni Sessanta inventarono il metodo: rovesciarono le prime
+lettere di *spectrum* (*spec* diventa *ceps*) per dire che allo spettro si
+applica una **seconda** trasformata, dopo quella di Fourier. La prima scompone
+il suono nelle sue frequenze; la seconda prende quella scomposizione e ne ricava
+un riassunto ancora più corto. Il termine è rimasto.
 
 `````{tab} Elementare
 
@@ -298,6 +357,28 @@ funzionava bene sul parlato, ed è rimasto per abitudine e per poter confrontare
 un sistema con l'altro. Sono numeri che qualcuno ha deciso, e infatti la parte
 finale del capitolo racconta come le macchine abbiano poi imparato a
 sceglierseli da sole.
+
+E c'è un seguito che conviene sapere subito, perché spiega perché nel resto del
+capitolo gli MFCC quasi non compaiono. Quel riassunto in 13 numeri serviva a
+macchine con pochissima memoria e pochissima capacità di calcolo, che senza non
+ce l'avrebbero fatta. Le reti di oggi sono grandi abbastanza da non averne
+bisogno, e allora si fermano **un passo prima**: prendono l'immagine riletta a
+orecchio e saltano il riassunto finale. Anzi, quel riassunto le danneggerebbe,
+perché mescola fra loro frequenze lontane e cancella la vicinanza fra bande
+vicine, che è proprio ciò su cui una rete lavora.
+
+Un'ultima parola sul nome che da qui in poi troverai dappertutto: **log-mel**.
+La parte «mel» l'abbiamo appena vista, è la riscrittura delle frequenze a
+orecchio. La parte «log» è la stessa idea applicata alle *intensità*. Fra un
+sussurro e un concerto, in numeri veri, ci passa un fattore diecimila: messi
+sulla stessa immagine, il sussurro sparirebbe sotto l'altro. Allora si
+schiacciano, in modo che passare da 1 a 10 conti quanto passare da 10 a 100 e da
+100 a 1.000. È esattamente il trucco dei **decibel**, la scala con cui si
+misurano i rumori: quel fattore diecimila, in decibel, diventa la distanza fra
+30 (una biblioteca) e 110 (il concerto). Due numeri vicini per due mondi
+lontanissimi, ed è proprio quello che ci serve. Uno spettrogramma **log-mel** è
+dunque la nostra immagine del suono, con le frequenze riscritte a orecchio e le
+intensità schiacciate allo stesso modo.
 
 `````
 
@@ -353,12 +434,15 @@ usa proprio per il primo raggruppamento).
 ## Perché queste feature aiutano il modello
 
 La forma d'onda grezza è enorme (decine di migliaia di numeri al secondo) e
-piena di variazioni irrilevanti: il volume, il rumore di fondo, uno
-spostamento di pochi millisecondi. Spettrogramma mel e MFCC concentrano
-l'informazione *linguisticamente utile* (quali frequenze, quando) scartando
-gran parte del resto. Il compito del modello diventa così più facile: parte da
-una rappresentazione più piccola, più stabile e già "orientata" verso ciò che
-distingue un suono dall'altro.
+piena di variazioni che al modello non servono: quanto forte è stata registrata
+la stessa frase, il rumore di fondo della stanza, il fatto che il suono cominci
+due millesimi di secondo prima o dopo. Sono differenze vere, ma non cambiano
+*che suono è*, ed è quello che vogliamo sapere. Lo spettrogramma mel (e, nei
+sistemi di una volta, gli MFCC) concentra l'informazione che serve a
+riconoscerlo, cioè quali frequenze e quando, scartando gran parte del resto.
+Il compito del modello diventa così più facile:
+parte da una descrizione più piccola, più stabile e già "orientata" verso ciò
+che distingue un suono dall'altro.
 
 Onestà d'obbligo: i sistemi più recenti *end-to-end*, come wav2vec 2.0
 {cite}`baevski2020wav2vec` o Whisper {cite}`radford2022robust`, tendono a
@@ -368,7 +452,8 @@ input proprio uno **spettrogramma log-mel**. La scala mel, ispirata al nostro
 orecchio, resta il punto di partenza più diffuso anche nell'era del deep
 learning.
 
-Vale la pena fermarsi su quella parola, perché è qui che cambia padrone. Fin dal
+Vale la pena fermarsi sulla parola **feature**, quella del titolo, perché è qui
+che cambia padrone. Fin dal
 capitolo sul machine learning le feature erano *scelte da noi*: qualcuno decideva
 quali numeri estrarre da ogni esempio, e quella decisione era metà del lavoro.
 Da questa pagina in poi saranno quasi sempre *imparate dalla rete*, che si
@@ -385,29 +470,32 @@ mel) è una manciata di righe.
 ```python
 import librosa
 
-# carica l'audio a 16 kHz (frequenza tipica per la voce)
+# carica l'audio prendendo 16.000 misure al secondo (lo standard per la voce)
 y, sr = librosa.load("frase.wav", sr=16000)
 
 # spettrogramma mel: 40 bande, finestre da 25 ms ogni 10 ms
-# htk=True: la scala mel della formula qui sopra (il default di librosa e' quella di Slaney)
+# htk=True sceglie una delle due scale mel in circolazione: danno bande
+# diverse, quindi qual e' delle due va sempre dichiarato
 S = librosa.feature.melspectrogram(
     y=y, sr=sr, n_fft=400, hop_length=160, n_mels=40, htk=True
 )
-S_db = librosa.power_to_db(S, ref=S.max())  # in decibel, come "vede" l'orecchio
+# intensita' schiacciate (la parte "log" del log-mel): i suoni deboli
+# tornano visibili accanto a quelli forti
+S_db = librosa.power_to_db(S, ref=S.max())
 
-# 13 coefficienti MFCC per ogni finestra temporale.
-# Si calcolano DALLA S_db appena ottenuta: gli MFCC sono la DCT delle log-mel,
-# e chiamando mfcc(y=...) librosa rifarebbe lo spettrogramma con i propri
-# default (n_fft=2048, hop_length=512), su un asse temporale diverso.
+# 13 coefficienti MFCC per ogni finestra temporale: il riassunto piu' corto.
+# Si calcolano DALLA S_db appena ottenuta. Chiamando invece mfcc(y=...) librosa
+# rifarebbe lo spettrogramma da capo con i propri default (n_fft=2048,
+# hop_length=512), quindi su un asse dei tempi diverso dal nostro.
 mfcc = librosa.feature.mfcc(S=S_db, n_mfcc=13)
 
 print(S_db.shape, mfcc.shape)  # (bande, tempo) e (coefficienti, tempo)
 ```
 
-Le due matrici escono con lo stesso numero di colonne, e non è un dettaglio:
+Le due tabelle escono con lo stesso numero di colonne, e non è un dettaglio:
 sono allineate finestra per finestra, quindi si possono affiancare e dare al
 modello insieme. Sarebbe bastato chiamare `mfcc(y=...)` invece che `mfcc(S=...)`
-per ritrovarsi due assi temporali diversi e un errore di dimensione
+per ritrovarsi due assi dei tempi diversi e un errore di dimensione
 incomprensibile.
 
 `````{tab} Elementare
@@ -429,17 +517,19 @@ incomprensibile.
   **spettrogramma**, l'immagine del suono (tempo in orizzontale, frequenze in
   verticale).
 - Le finestrelle non si possono avere insieme corte e precise sulle note:
-  allungarle fa guadagnare sulle note e perdere sugli istanti, e il cambio è
-  fisso, non migliorabile. Sceglierne la lunghezza vuol dire decidere quale
-  delle due precisioni si compra.
+  allungarle di quattro volte fa guadagnare quattro sulle note e perdere quattro
+  sugli istanti, e il prodotto delle due precisioni resta lo stesso. Sceglierne
+  la lunghezza vuol dire decidere quale delle due si compra.
 - La **scala mel** e gli **MFCC** rileggono quell'immagine come la sente un
   orecchio (preciso sui suoni gravi, approssimativo sugli acuti) e la
   riassumono in pochi numeri per finestrella: meno dati, ma quelli che contano
   davvero, e il modello ha un compito più facile.
 - I modelli di oggi però si fermano **un passo prima**: prendono l'immagine
-  riletta a orecchio e saltano il riassunto finale, che serviva a macchine molto
-  più piccole di loro. È il primo esempio di una cosa che si ripeterà: un
-  accorgimento intelligente smette di servire quando cambia chi lo usa.
+  riletta a orecchio (lo spettrogramma **log-mel**, con anche le intensità
+  schiacciate) e saltano il riassunto finale, che serviva a macchine con molta
+  meno memoria e molta meno capacità di calcolo. È il primo esempio di una cosa
+  che si ripeterà: un accorgimento intelligente smette di servire quando cambia
+  chi lo usa.
 ```
 
 `````

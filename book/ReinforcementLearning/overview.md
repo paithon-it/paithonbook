@@ -22,10 +22,22 @@ un'**azione**, l'ambiente passa a un nuovo stato e gli consegna una ricompensa;
 poi il ciclo ricomincia ({numref}`fig-rl-ciclo`). Quello che l'agente cerca di
 rendere più grande possibile non è la ricompensa di adesso, ma la somma di
 tutte quelle che verranno da qui alla fine: quella somma ha un nome, **ritorno**
-(in inglese *return*), e da qui in avanti la useremo continuamente. Con una
-regola di impazienza, che la sezione sugli MDP renderà precisa: nella somma un
-premio lontano entra ridotto, perché dieci euro oggi valgono più di dieci euro
-l'anno prossimo.
+(in inglese *return*), e da qui in avanti la useremo continuamente.
+
+Nella somma c'è però una regola di impazienza, perché dieci euro oggi valgono
+più di dieci euro l'anno prossimo: un premio lontano entra ridotto. Il taglio è
+sempre lo stesso a ogni passo di attesa. Se per esempio ogni attesa lascia in
+piedi nove decimi, un premio di dieci punti che arriva una mossa più tardi ne
+vale nove, due mosse più tardi otto e un decimo, e così via.
+
+Serve anche a una cosa pratica, e questa vale la pena vederla coi numeri.
+Immagina una partita che non finisce mai e che paga dieci punti a ogni mossa,
+per sempre. Senza il taglio la somma cresce all'infinito e non vuol dire più
+niente. Con il taglio la somma è $10 + 9 + 8{,}1 + 7{,}29 + \ldots$, e per
+quanto si vada avanti non arriva mai a $100$: ogni pezzo nuovo è nove decimi
+del precedente, e quello che resta da aggiungere si assottiglia più in fretta
+di quanto la somma cresca. Un totale infinito diventa così un numero
+maneggiabile. La sezione sulle funzioni valore lo scrive per bene.
 
 ```{figure} ../figures/rl-ciclo-interazione.svg
 :name: fig-rl-ciclo
@@ -34,9 +46,10 @@ l'anno prossimo.
 
 Il ciclo di interazione del reinforcement learning: l'agente compie un'azione,
 l'ambiente risponde con un nuovo stato e una ricompensa, e l'anello si richiude.
-Nel disegno le etichette portano un pedice, che è soltanto il numero del passo:
-l'azione la si compie all'istante $t$, lo stato nuovo e la ricompensa arrivano
-subito dopo, all'istante $t+1$.
+Accanto a ogni etichetta il disegno mette una lettera con un numeretto in
+basso: la lettera è l'iniziale ($a$ per azione, $s$ per stato, $r$ per
+ricompensa) e il numeretto è il conto dei passi. L'azione la si compie al passo
+$t$, lo stato nuovo e la ricompensa arrivano subito dopo, al passo $t+1$.
 ```
 
 Una domanda viene prima di ogni algoritmo, e conviene togliersela subito: **chi
@@ -46,11 +59,17 @@ robot che deve imparare a camminare qualcuno deve stabilire che cadere vale
 $-5$ e che un metro guadagnato vale $+1$. È una scelta di progetto, ed è una
 scelta seria, perché un agente ottimizza esattamente i numeri che gli sono
 stati dati e non le intenzioni di chi glieli ha dati: premiato per la velocità,
-può imparare a buttarsi in avanti e cadere in fretta. Nel capitolo di deep
-reinforcement learning la sezione su esplorazione e ricompensa ci torna per
-esteso: aggiungere premi intermedi per guidare l'agente si chiama *reward
-shaping*, e c'è una forma garantita a non spostare la strategia migliore, più
-molte che la spostano senza avvisare.
+può imparare a buttarsi in avanti e cadere in fretta. Chi imposta il problema
+può anche aggiungere premi intermedi, per guidare l'agente invece di lasciarlo
+cercare a vuoto: si chiama *reward shaping*, «dare forma alla ricompensa». È
+un'arma a doppio taglio. Esiste un modo di aggiungerli che è dimostrato non
+cambiare quale sia la strategia migliore, e l'idea in una riga è questa: si
+attacca un punteggio a ogni situazione e si premia solo la *differenza* fra il
+punteggio di dove si arriva e quello di dove si era, così che un giro che torna
+al punto di partenza non frutti niente e nessuno possa guadagnare andando
+avanti e indietro. Tutti gli altri modi, che sono la maggior parte, la
+strategia migliore la spostano senza dirlo. Il capitolo di deep reinforcement
+learning ci torna per esteso, nella sezione su esplorazione e ricompensa.
 
 La regola con cui l'agente sceglie, situazione per situazione, si chiama
 **politica**, all'inglese **policy**. Le due parole indicano la stessa cosa e in
@@ -182,38 +201,59 @@ all'incertezza invece che a caso.
 ## Tre tappe che hanno fatto la storia
 
 Il RL non è un'idea nuova, ma ha avuto pochi momenti che ne hanno mostrato la
-potenza. Nei primi anni Novanta, all'IBM, Gerald Tesauro costruì
-**TD-Gammon**: una rete neurale addestrata con la *differenza temporale* (il
-metodo, che vedremo, del correggere le proprie previsioni un passo alla volta)
-che imparò a giocare a backgammon quasi al livello dei campioni umani,
-giocando oltre un milione di partite contro sé stessa e scoprendo aperture che
-i maestri poi adottarono. Nel 2015 DeepMind pubblicò su *Nature* il **DQN**
-(*Deep Q-Network*, e il capitolo successivo lo smonta pezzo per pezzo): un
-agente che imparava a giocare a decine di videogiochi della vecchia console
-**Atari**, partendo dai soli pixel dello schermo e dal punteggio, senza sapere
-nulla delle regole. E nel marzo 2016 **AlphaGo** batté
-4-1 il campione Lee Sedol al Go, un gioco considerato fuori portata per le
-macchine perché le posizioni possibili sono troppe per elencarle (quante, di
-preciso, lo si vede nella sezione sugli MDP): un risultato che molti si
-aspettavano lontano un decennio.
+potenza. Nei primi anni Novanta, all'IBM, Gerald Tesauro costruì **TD-Gammon**,
+un programma che imparò a giocare a backgammon (il gioco da tavolo con le
+pedine e i dadi) quasi al livello dei campioni umani. Il metodo con cui
+imparava è quello che l'ultima sezione di questo capitolo racconta per esteso:
+a ogni mossa il programma si fa un'idea di come andrà a finire, e alla mossa
+dopo corregge un poco l'idea di prima. Le partite se le giocò da solo, oltre un
+milione, muovendo da tutte e due le parti: nessuno gli diceva quale fosse la
+mossa buona, ma alla fine uno dei due lati aveva vinto, e quel giudizio bastava
+per capire quali idee erano da rivedere. Ne uscirono aperture che i maestri poi
+adottarono.
+
+Nel 2015 DeepMind, un laboratorio londinese, pubblicò su *Nature*, una delle
+riviste scientifiche più importanti che esistano, il **DQN**. Era un agente che
+imparava a giocare a decine di videogiochi della vecchia console **Atari**
+partendo dai soli pixel dello schermo e dal punteggio, senza sapere nulla delle
+regole. Le tre lettere del nome stanno per *Deep Q-Network*: la Q è il voto che
+l'agente dà a ogni mossa, ed è il filo di tutto questo capitolo; *network* è la
+rete neurale che quel voto lo indovina; *deep*, «profonda», è come si chiamano
+le reti a molti strati dei capitoli precedenti. Il capitolo prossimo lo smonta
+pezzo per pezzo. E
+nel marzo 2016 **AlphaGo** batté 4-1 il campione Lee Sedol al Go, il gioco
+orientale in cui si posano pietre bianche e nere sugli incroci di una griglia:
+era considerato fuori portata per le macchine perché le posizioni possibili
+sono troppe per elencarle (quante di preciso lo dice la sezione sulle funzioni
+valore), e molti davano quel risultato lontano un decennio.
 
 ## Come è organizzato questo capitolo
 
 Cominciamo da una versione del problema spogliata di tutto tranne il dilemma
 appena descritto: i **bandit a più braccia**, dove la situazione non cambia mai
 e l'unica domanda è quale leva tirare. Poi rimettiamo al suo posto la situazione
-che cambia, e con essa il modo di dire quanto vale trovarsi in un certo punto;
-da lì i metodi classici per calcolare quel valore (programmazione dinamica,
-Monte Carlo, differenze temporali, Q-learning), che sono tutti modi di riempire
-una grande tabella, una casella per ogni situazione. Il passo verso il **deep
-reinforcement learning**, dove reti neurali stimano quei numeri o direttamente
-la politica, non è un ampliamento facoltativo: è una necessità, perché la
-tabella smette di stare in piedi appena le situazioni possibili sono tante, e va
-sostituita da qualcosa che sappia indovinare il valore di situazioni mai viste
-prima. Lo affrontiamo nel capitolo successivo, ricostruendo proprio il tipo di
-agente che ha imparato a giocare a partire dai pixel. L'obiettivo non è
-collezionare sigle, ma capire un'unica idea da tutte le angolazioni: come si
-impara a decidere quando l'unico maestro è l'esperienza.
+che cambia, e con essa la domanda che tiene insieme tutto il resto: **quanto
+vale trovarsi in un certo punto**, cioè quanti punti ci si può aspettare di
+raccogliere da lì in avanti.
+
+Dopo i bandit restano tre sezioni, e sono tre risposte a quella domanda, in
+ordine di quanto pretendono di sapere. La prima pretende la mappa del mondo, e
+con la mappa in mano calcola quei valori senza giocare nemmeno una partita. La
+seconda non pretende niente: gioca partite intere e fa la media di com'è
+andata. La terza non aspetta nemmeno la fine della partita e corregge a ogni
+mossa, ed è la strada dell'algoritmo più famoso del campo, il **Q-learning**.
+Tutte e tre riempiono la stessa cosa: una grande tabella con una casella per
+ogni situazione.
+
+Il passo verso il **deep reinforcement learning**, dove reti neurali stimano
+quei valori o direttamente la politica, non è un ampliamento facoltativo: è una
+necessità, perché la tabella smette di stare in piedi appena le situazioni
+possibili sono tante, e va sostituita da qualcosa che sappia indovinare il
+valore di situazioni mai viste prima. Lo affrontiamo nel capitolo successivo,
+ricostruendo proprio il tipo di agente che ha imparato a giocare a partire dai
+pixel. L'obiettivo non è collezionare sigle, ma capire un'unica idea da tutte
+le angolazioni: come si impara a decidere quando l'unico maestro è
+l'esperienza.
 
 `````{tab} Elementare
 

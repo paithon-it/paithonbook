@@ -12,7 +12,9 @@ l'immagine in patch, un connettore la consegna a un modello di linguaggio, un
 tokenizzatore la riduce a simboli. In tutti e tre i casi c'era un numero
 nascosto sotto il tappeto, quanti pixel entrano nell'encoder, ed è il vincolo
 economico che governa i sistemi reali molto più delle differenze
-architetturali: ogni pixel in più si paga in contesto, e non in proporzione.
+architetturali. Ogni pixel in più si paga in **contesto**, cioè nei posti che
+l'immagine occupa nella sequenza e sottrae a tutto il resto; e non lo si paga in
+proporzione.
 
 ## Il conto, in due righe
 
@@ -24,16 +26,18 @@ sua conseguenza sul costo dell'attenzione non lo è.
 `````{tab} Elementare
 
 Prendiamo un encoder che taglia tessere da $14 \times 14$ puntini. Su
-un'immagine da $224 \times 224$ ne stanno $16$ per riga e $16$ per colonna,
-quindi $16 \times 16 = 256$ tessere: la nostra immagine è una «frase» di 256
-pezzi.
+un'immagine da $224 \times 224$ ne stanno $224 : 14 = 16$ per riga e altrettante
+per colonna, quindi $16 \times 16 = 256$ tessere: la nostra immagine è una
+«frase» di 256 pezzi.
 
 Adesso raddoppiamo il lato, da $224$ a $448$: le tessere diventano $32$ per riga
-e $32$ per colonna, in tutto $32 \times 32 = 1024$. Sono **quadruplicate**, ed è
-ovvio, perché l'immagine ha quattro volte l'area.
+e $32$ per colonna, in tutto $32 \times 32 = 1024$. Sono **quadruplicate**, e la
+ragione è che a raddoppiare sono due lati insieme, la larghezza e l'altezza:
+l'immagine ha quattro volte l'area.
 
 Il seguito è meno ovvio. Il modello, per capire ogni tessera, la confronta con
-tutte le altre: con 256 tessere i confronti sono $256 \times 256$, con 1024 sono
+tutte le altre (è l'**attenzione**, il meccanismo del capitolo sui Transformer):
+con 256 tessere i confronti sono $256 \times 256$, con 1024 sono
 $1024 \times 1024$. Quattro volte i pezzi significa $4 \times 4 = 16$ volte i
 confronti: raddoppiare il lato di una fotografia moltiplica per sedici il lavoro
 dell'attenzione, e raddoppiarlo ancora (da $448$ a $896$) lo moltiplica per
@@ -80,7 +84,7 @@ Se il conto è così severo, quanta risoluzione serve davvero? Non c'è una
 risposta valida in generale, ed è l'osservazione che riorganizza tutta la
 sezione: **la risoluzione la detta il compito, non l'architettura**.
 
-Un gatto lo si riconosce da lontano, perché la sagoma, il pelo e le orecchie
+Un gatto lo si riconosce da lontano, perché la sagoma, le orecchie e la coda
 sono strutture larghe che sopravvivono a una riduzione brutale, ed è il tipo di
 compito su cui sono stati costruiti i primi encoder visivi. La riga di una
 fattura, no. Il numero di un grafico, la voce di una tabella, la scritta su un
@@ -90,19 +94,21 @@ quella che sparisce per prima.
 `````{tab} Elementare
 
 Facciamo il conto su un foglio A4, alto 297 millimetri. Se lo riduciamo a 224
-puntini di altezza, ogni millimetro di carta diventa **tre quarti di puntino**:
-una maiuscola alta due millimetri ne occupa uno e mezzo, e un puntino e mezzo
-non contiene una lettera, contiene una macchia grigia.
+puntini di altezza, ogni millimetro di carta diventa **tre quarti di puntino**
+($224 : 297 = 0{,}75$). Una maiuscola stampata in un libro come questo è alta
+circa due millimetri, quindi ne occupa uno e mezzo, e un puntino e mezzo non
+contiene una lettera: contiene una macchia grigia.
 
-Guardiamola dall'altro verso. Ogni tessera del mosaico è larga 14 puntini, e a
-questa riduzione 14 puntini valgono **quasi due centimetri di pagina**: il
-modello riceve, in un unico pezzetto di informazione, un frammento di paragrafo
-con dentro cinque o sei parole. Chiedergli cosa c'è scritto è come chiedere di
-leggere un libro attraverso un vetro smerigliato.
+Guardiamola dall'altro verso. Se un millimetro vale tre quarti di puntino, un
+puntino vale un millimetro e un terzo, e la tessera del mosaico, che è larga 14
+puntini, copre **quasi due centimetri di pagina**. Il modello riceve, in un
+unico pezzetto di informazione, un quadratino di foglio alto quattro o cinque
+righe di testo. Chiedergli cosa c'è scritto è come chiedere di leggere un libro
+attraverso un vetro smerigliato.
 
-Se invece la pagina la diamo alta 1024 puntini, la maiuscola ne occupa sette e
-una tessera copre quattro millimetri di carta, quanto è alta una riga di testo:
-adesso qualcosa da leggere c'è. Il compito ha deciso la risoluzione, e nessuna
+Se invece la pagina la diamo alta 1024 puntini, ogni millimetro vale tre puntini
+e mezzo: la maiuscola ne occupa sette e una tessera copre quattro millimetri di
+carta, quanto è alta una riga di testo. Adesso qualcosa da leggere c'è. Il compito ha deciso la risoluzione, e nessuna
 astuzia di architettura può cambiare il fatto che dove non ci sono puntini non
 c'è informazione.
 
@@ -149,31 +155,31 @@ Il resto della sezione è la storia di tre risposte a questo vincolo. Nessuna lo
 cancella: tutte e tre lo **spostano** in un punto del sistema dove fa meno male,
 e vale la pena tenere d'occhio dove finisce il conto ogni volta.
 
-## Prima risposta: tagliare l'immagine a tessere
+## Prima risposta: tagliare l'immagine a riquadri
 
 La più semplice e la più diffusa. L'encoder sa lavorare a una risoluzione sola,
 quella su cui è stato addestrato, e l'immagine è più grande. Invece di
-rimpicciolire l'immagine fino all'encoder, la si taglia in **riquadri** grandi
-esattamente quanto l'encoder si aspetta, si passa ogni riquadro separatamente e
-si mettono in fila tutti i token che escono, più una **miniatura** dell'immagine
-intera che porta il contesto globale. Il metodo si chiama **tiling**, che in
-italiano vuol dire «tagliare a piastrelle», e si trova anche sotto il nome
-*any-resolution*.
+rimpicciolire l'immagine fino a farla stare nell'encoder, la si taglia in
+**riquadri** grandi esattamente quanto lui si aspetta. Ogni riquadro passa per
+conto suo, e i pezzi che ne escono si mettono tutti in fila; in coda si aggiunge
+una **miniatura** dell'immagine intera, che è l'unico posto in cui si vede come
+i riquadri stanno insieme. Il metodo si chiama **tiling**, che in italiano vuol
+dire «tagliare a piastrelle», e si trova anche sotto il nome *any-resolution*.
 
 `````{tab} Elementare
 
 Devi fotografare un quadro grande con una macchina che inquadra solo un
 quadratino. Fai così: scatti sei foto ravvicinate, una per ogni pezzo del
-quadro, poi fai un passo indietro e ne scatti una settima che prende tutto,
-sfocata ma completa. Chi riceve le sette foto ha il dettaglio (le sei
+quadro, poi fai un passo indietro e ne scatti una settima che prende tutto, con
+molto meno dettaglio ma completa. Chi riceve le sette foto ha il dettaglio (le sei
 ravvicinate) e sa anche come stanno insieme (la settima). Il pregio è che non
-hai comprato una macchina nuova, ed è per questo che il taglio a tessere ha
+hai comprato una macchina nuova, ed è per questo che il taglio a riquadri ha
 vinto: si aggiunge sopra un encoder già addestrato senza toccarlo.
 
 Il difetto lo indovini pensando a una figura a cavallo fra due pezzi. Nelle sei
 foto ravvicinate non c'è mai per intero: mezza faccia in una e mezza nell'altra,
 e chi guarda deve rimetterle insieme senza essere sicuro che appartengano alla
-stessa cosa. L'unico posto dove si vede tutta è la settima foto, quella sfocata.
+stessa cosa. L'unico posto dove si vede tutta è la settima foto, quella senza dettaglio.
 Il taglio è arbitrario, non segue i confini degli oggetti, e questa
 arbitrarietà è il prezzo del metodo.
 
@@ -200,7 +206,7 @@ $O\big((g_h g_w N_t)^2\big)$ a $O(g_h g_w N_t^2)$, cioè da quadratico a
 **lineare nell'area**: asintoticamente è un guadagno vero, ed è la ragione per
 cui il metodo scala. Con $896 \times 896$, $t = 448$ e
 $p = 14$: monolitica sono $4096$ token e $4096^2 \approx 16{,}8$ milioni di
-coppie; a tessere sono cinque pezzi (quattro più la miniatura) da $1024$ token,
+coppie; a riquadri sono cinque pezzi (quattro più la miniatura) da $1024$ token,
 cioè $5 \cdot 1024^2 \approx 5{,}2$ milioni di coppie, $3{,}2$ volte meno.
 
 Quel $3{,}2$, però, conta le **coppie di attenzione**, non i FLOP dell'encoder, e
@@ -210,9 +216,11 @@ siamo ancora *sotto*: l'attenzione è meno della metà del blocco, e il tiling
 taglia la parte piccola del conto mentre manda nel feed-forward $5120$ token
 invece di $4096$, cioè paga di più sul termine che domina. Rifacendo il conto per
 intero con la stessa contabilità di prima ($24Nd^2 + 4N^2d$ per strato), il
-risparmio è $1{,}24$ volte a $d = 768$, $1{,}14$ a $d = 1024$ e $1{,}06$ a
-$d = 1408$: fra il 6% e il 24%, non tre volte, e tanto meno quanto più l'encoder
-è largo. In cambio i token *totali* salgono da $4096$ a $5120$, perché la
+lavoro totale cala di $1{,}24$ volte a $d = 768$, di $1{,}14$ a $d = 1024$ e di
+$1{,}06$ a $d = 1408$: un risparmio fra il 5% e il 20%, non tre volte, e tanto
+minore quanto più l'encoder è largo. (Attenzione a non leggere il rapporto come
+una percentuale: dividere per $1{,}24$ vuol dire risparmiare il 19%, non il
+24%.) In cambio i token *totali* salgono da $4096$ a $5120$, perché la
 miniatura è ridondante per costruzione: **il conto si è spostato, non è
 sparito**, e tutti quei token finiscono nella stessa sequenza del modello di
 linguaggio, dove l'attenzione è di nuovo quadratica su tutto.
@@ -236,37 +244,38 @@ altre contromisure, $13 \cdot 1024 = 13\,312$ token.
 
 ## Seconda risposta: comprimere i token
 
-Tagliando a riquadri, però, i pezzi si moltiplicano: una pagina divisa in dodici
-riquadri più la miniatura sono tredici passaggi dell'encoder, e più di
-tredicimila tessere messe in fila. Tante non sono sostenibili, e la seconda
+Tagliando a riquadri, però, i pezzi si moltiplicano. Una pagina di documento, con
+la griglia più fitta che questi sistemi usano in addestramento, può volerne
+dodici, e con la miniatura fanno tredici passaggi dell'encoder: siccome ogni
+riquadro da $448$ puntini di lato dà $1024$ tessere, in fila ne finiscono
+$13 \times 1024 = 13\,312$. Tante non sono sostenibili, e la seconda
 risposta attacca quel numero riducendo le tessere *dopo* l'encoder e *prima* del
 modello di linguaggio: l'immagine viene guardata ad alta risoluzione, ma quello
 che entra nel contesto è più corto. Resta da decidere **come** si comprime, e
-c'è un modo che butta via informazione e uno che non la butta.
+c'è un modo che butta via subito e uno che rimanda il conto.
 
 `````{tab} Elementare
 
-Hai quattro scatole di bottoni, una per colore, e devi liberare tre ripiani.
+Hai quattro barattoli di tempera, uno per colore, e devi liberare tre ripiani.
 
-Primo modo: rovesci le quattro scatole in una sola e mescoli. Occupi un ripiano
-invece di quattro, ma se qualcuno chiede «di che colore era la terza scatola?»
-non c'è modo di saperlo. Hai fatto la media di quattro cose e ne è rimasta una:
-questo è il **pooling**, prendere quattro tessere vicine e sostituirle con la
-loro media. Semplice, efficace, irreversibile.
+Primo modo: versi i quattro colori in un barattolo solo e mescoli. Occupi un
+ripiano invece di quattro, e quel che ne esce è davvero la media dei quattro; ma
+se qualcuno chiede «di che colore era il terzo barattolo?», dal marrone che hai
+in mano non lo ricavi più. Questo è il **pooling**, prendere quattro tessere
+vicine e sostituirle con la loro media. Semplice, efficace, irreversibile.
 
-Secondo modo: prendi una scatola con quattro scomparti e ci metti dentro le
-quattro scatole originali, ciascuna nel suo. Sempre un ripiano occupato invece
-di quattro, e non hai perso un bottone: la scatola nuova è solo quattro volte
+Secondo modo: prendi una cassetta con quattro scomparti e ci infili dentro i
+quattro barattoli, ciascuno nel suo. Sempre un ripiano occupato invece di
+quattro, e non hai perso un grammo di colore: la cassetta è solo quattro volte
 più pesante. Questo è il **pixel shuffle** (alla lettera «rimescolamento dei
 puntini»: il nome è più oscuro della cosa): quattro tessere adiacenti diventano
 un pezzo solo, che porta con sé tutti e quattro i contenuti, uno di fianco
 all'altro. L'informazione si è spostata dai *posti* al *contenuto di ogni posto*.
 
-Una precisazione onesta, però. La scatola a quattro scomparti, prima di entrare
-nel modello di linguaggio, deve passare per una fessura di misura fissa: il
-rimescolamento in sé non perde niente, la fessura sì, perché i token sono tutti
-della stessa taglia e in quella taglia adesso devono starci quattro tessere
-invece di una.
+Una precisazione onesta, però. La cassetta, prima di entrare nel modello di
+linguaggio, deve passare per una fessura larga sempre uguale: i posti in fila
+sono tutti della stessa taglia, e in quella taglia adesso devono starci quattro
+tessere invece di una. Il rimescolamento in sé non perde niente; la fessura sì.
 
 `````
 
@@ -321,8 +330,8 @@ contesto.
 C'è una famiglia di compiti in cui tutto questo si vede a occhio nudo, ed è la
 lettura dei documenti. Per decenni la sola strada praticabile è stata una
 catena: la pagina a un sistema di **riconoscimento ottico dei caratteri**
-(l'OCR), il testo che ne usciva a un modello di linguaggio, il modello a
-rispondere. Ogni anello è una conversione, e ogni conversione decide qualcosa al
+(l'OCR), e il testo che ne usciva a chi doveva farci qualcosa, che oggi è un
+modello di linguaggio. Ogni anello è una conversione, e ogni conversione decide qualcosa al
 posto di chi verrà dopo.
 
 `````{tab} Elementare
@@ -332,9 +341,10 @@ a macchina.
 
 La trascrizione è comodissima, perché poi si cerca per parola. Ma chi ribatteva
 ha dovuto decidere: in che ordine si leggono due colonne affiancate? Dove
-finisce una cella della tabella? Il numero scritto a fianco di quella barra, a
-quale barra apparteneva? E il grafico, che non è fatto di parole, come si
-ribatte? (Di solito non si ribatte: sparisce.) Decisioni prese al buio, senza
+finisce una cella della tabella? E il grafico, che non è fatto di parole, come
+si ribatte? (Di solito non si ribatte: sparisce, e con lui il numero stampato di
+fianco a una delle sue colonne, che nessuno saprebbe più a quale colonna
+attribuire.) Decisioni prese al buio, senza
 sapere che domanda arriverà, e una volta per tutte.
 
 La fotocopia non decide niente: tiene la pagina com'è, con le colonne al loro
@@ -364,19 +374,21 @@ mentre la sua trascrizione ne costerebbe attorno al migliaio.
 
 `````
 
-Il passo successivo riguarda la ricerca. La RAG l'abbiamo costruita nella
-sezione «Cercare per rispondere», e il capitolo sugli agenti la raffinerà nella
-sezione sul RAG avanzato: non la rispieghiamo. Qui cambia una cosa sola, ma a
+Il passo successivo riguarda la ricerca. La RAG (cercare in un archivio i pezzi
+che servono e passarli al modello insieme alla domanda) l'abbiamo costruita
+nella sezione «Cercare per rispondere», e il capitolo sugli agenti la raffinerà
+nella sezione sul RAG avanzato: non la rispieghiamo. Qui cambia una cosa sola, ma a
 monte di tutto: **che cosa si mette nell'indice**. L'indice è la copia
-riorganizzata dell'archivio su cui la ricerca lavora davvero: come quello in
-fondo a un libro, che non è il libro ma serve a trovarlo, con la differenza che
-qui al posto delle parole ci sono file di numeri. Nessuno cerca frugando fra i
-documenti originali: si cerca lì dentro, e quel che nell'indice non è finito, per
-la ricerca non esiste. In una pipeline classica si
-indicizza il testo estratto, e si eredita ogni decisione dell'OCR prima ancora
-che una domanda sia stata formulata. L'alternativa è indicizzare la pagina
-**come immagine**, con gli embedding delle sue patch visive, ed è la strada del
-recupero *vision-native* alla ColPali {cite}`faysse2025colpali`.
+riorganizzata dell'archivio su cui la ricerca lavora davvero. È come quello in
+fondo a un libro: non è il libro, ma serve a trovarci dentro le cose, con la
+differenza che qui al posto delle parole ci sono file di numeri. Nessuno cerca
+frugando fra i documenti originali: si cerca lì dentro, e quel che nell'indice
+non è finito, per la ricerca non esiste. In una pipeline classica si indicizza
+il testo estratto, e si eredita ogni decisione dell'OCR prima ancora che una
+domanda sia stata formulata. L'alternativa è indicizzare la pagina **come
+immagine**, senza trascriverla: si cerca fra le pagine viste invece che fra le
+pagine ribattute, ed è la strada del recupero *vision-native* alla ColPali
+{cite}`faysse2025colpali`.
 
 `````{tab} Elementare
 
@@ -387,8 +399,8 @@ numeri. Nessuno ha trascritto niente, quindi nessuno ha deciso in che ordine
 leggere le colonne o cosa fare del grafico: la decisione arriva insieme alla
 domanda, che è il momento giusto.
 
-C'è un dettaglio che fa la differenza: di ogni pagina non si tiene un solo
-numero riassuntivo, ma **un numero per ogni tessera del mosaico**, mille
+C'è un dettaglio che fa la differenza: di ogni pagina non si tiene una sola fila
+di numeri riassuntiva, ma **una fila per ogni tessera del mosaico**, mille
 riassunti minuscoli invece di uno grande. Così ogni parola della domanda può
 cercarsi il pezzo di pagina che le somiglia di più, ed è quello il pezzo che fa
 punteggio. In cambio l'archivio occupa molto più spazio: è il prezzo di non aver
@@ -437,7 +449,7 @@ con l'altro.
 
 `````
 
-## Il conto in venti righe
+## Il conto, in poche righe
 
 Tutta l'aritmetica della sezione si scrive in poche righe eseguibili: la prima
 funzione conta i token, la seconda simula il tiling con la miniatura e con
@@ -452,15 +464,15 @@ def token(lato, patch=PATCH):
     """Token di un ViT su un'immagine quadrata: una patch, un token."""
     return (lato // patch) ** 2
 
-def a_tessere(lato, tessera=448, riduzione=1):
+def a_riquadri(lato, riquadro=448, riduzione=1):
     """Tiling: riquadri alla risoluzione nativa piu' una miniatura dell'intera
     immagine. Restituisce (pezzi, token totali, coppie viste dall'encoder).
 
-    Vale per immagini quadrate con lato multiplo della tessera: la griglia
-    rettangolare g_h x g_w del testo si ottiene sostituendo (lato // tessera)**2
+    Vale per immagini quadrate con lato multiplo del riquadro: la griglia
+    rettangolare g_h x g_w del testo si ottiene sostituendo (lato // riquadro)**2
     con g_h * g_w."""
-    pezzi = (lato // tessera) ** 2 + 1                 # +1: la miniatura
-    per_pezzo = token(tessera) // riduzione
+    pezzi = (lato // riquadro) ** 2 + 1                # +1: la miniatura
+    per_pezzo = token(riquadro) // riduzione
     return pezzi, pezzi * per_pezzo, pezzi * per_pezzo ** 2
 
 lati = np.array([224, 448, 896])
@@ -471,12 +483,12 @@ for lato, t in zip(lati, n):
     print(f"{lato:>5} x {lato:<5} {t:>7} {t / n[0]:>8.0f}x {(t / n[0]) ** 2:>12.0f}x")
 
 lato = 896
-pezzi, tot, coppie = a_tessere(lato)
-_, tot_ps, _ = a_tessere(lato, riduzione=4)   # riduzione=4: pixel shuffle 2x2
+pezzi, tot, coppie = a_riquadri(lato)
+_, tot_ps, _ = a_riquadri(lato, riduzione=4)  # riduzione=4: pixel shuffle 2x2
 
-print(f"\n{lato} x {lato} in tessere da 448:")
+print(f"\n{lato} x {lato} in riquadri da 448:")
 print(f"  monolitica    {token(lato):>5} token   {token(lato) ** 2:>9} coppie nell'encoder")
-print(f"  a tessere     {tot:>5} token   {coppie:>9} coppie  ({pezzi} pezzi)")
+print(f"  a riquadri    {tot:>5} token   {coppie:>9} coppie  ({pezzi} pezzi)")
 print(f"  l'encoder confronta {token(lato) ** 2 / coppie:.1f} volte meno coppie")
 print(f"  con pixel shuffle al modello di linguaggio arrivano {tot_ps} token")
 ```
@@ -489,43 +501,49 @@ L'uscita è il riassunto numerico della sezione:
   448 x 448      1024        4x           16x
   896 x 896      4096       16x          256x
 
-896 x 896 in tessere da 448:
+896 x 896 in riquadri da 448:
   monolitica     4096 token    16777216 coppie nell'encoder
-  a tessere      5120 token     5242880 coppie  (5 pezzi)
+  a riquadri     5120 token     5242880 coppie  (5 pezzi)
   l'encoder confronta 3.2 volte meno coppie
   con pixel shuffle al modello di linguaggio arrivano 1280 token
 ```
 
 Le tre righe della tabella sono il vincolo; le quattro sotto sono le due
 contromisure. Il tiling compra un encoder che confronta $3{,}2$ volte meno
-coppie (in lavoro totale, come si è visto, fra il 6% e il 24% in meno, tanto
-meno quanto più l'encoder è largo) pagando mille
-token di ridondanza, e il pixel shuffle riporta quei $5120$ token a $1280$, meno
-di un terzo di quanto vedrebbe l'immagine monolitica. Nessuna delle due ha
-toccato la prima tabella.
+coppie, e lo paga con mille token di ridondanza. Attenzione però a non leggere quel $3{,}2$ come un risparmio di lavoro. I
+confronti fra tessere sono solo una parte di quello che l'encoder fa: c'è anche
+il lavoro che spende su ogni tessera per conto suo, e quello cresce con il
+numero delle tessere e basta, quindi il taglio a riquadri, che di tessere ne
+aggiunge mille, lo peggiora. Messi insieme i due conti, il risparmio vero sta
+fra il 5% e il 20%, ed è tanto minore quanto più l'encoder è grosso. Il pixel shuffle, dal canto suo, riporta quei
+$5120$ token a $1280$, meno di un terzo di quanto vedrebbe l'immagine
+monolitica, cioè non tagliata a pezzi. Nessuna delle due ha toccato la prima
+tabella.
 
 ## La risoluzione si decide guardando il mestiere
 
 Il proiettore lineare della sezione sui connettori {cite}`liu2023visual`
-sembrava una scelta architetturale, e in parte lo era. Ma il numero che decide
-se un sistema saprà leggere una bolletta sta in quanti pixel gli si danno da
-guardare, e quella scelta si fa guardando **cosa il modello dovrà leggere**.
+sembrava la scelta che decide tutto, e in parte lo era. Ma se la domanda è se un
+sistema saprà leggere una bolletta, il numero che conta non sta lì: sta in
+quanti pixel gli si danno da guardare, e quella scelta si fa guardando **cosa il
+modello dovrà leggere**.
 È una manopola che si gira sapendo a che cosa servirà il prodotto finito, non un
-dettaglio interno da lasciare a chi disegna l'architettura: nel gergo del libro,
-un **iperparametro** (un numero che nessun addestramento sceglie per noi) di
-prodotto.
+dettaglio interno da lasciare a chi disegna l'architettura. Nel gergo del libro
+è un **iperparametro**, cioè un numero che nessun addestramento sceglie per noi;
+la novità è che questo non lo sceglie nemmeno chi progetta il modello, lo
+sceglie chi sa che cosa il modello dovrà leggere.
 
 Le tre risposte non eliminano il costo, lo spostano, e ognuna lo lascia in un
 posto diverso. Il tiling lo toglie all'encoder e lo consegna al contesto, dove
 diventa lunghezza di sequenza. La compressione lo toglie al contesto e lo carica
 sui singoli token, dove diventa capacità. Il recupero *vision-native* lo toglie
 alla pipeline di estrazione e lo mette nell'indice, dove diventa spazio su
-disco. Chi progetta sceglie in quale dei tre posti preferisce pagare, e la
-risposta dipende dal compito.
+disco. Chi progetta sceglie in quale dei tre posti preferisce pagare, e la risposta
+dipende dal compito.
 
 Resta un'ultima domanda. Abbiamo speso una sezione intera a far arrivare al
-modello abbastanza dettaglio; ma un modello che riceve tremila token visivi li
-sta davvero *guardando*? È il tema della prossima sezione, e la risposta non è
+modello abbastanza dettaglio; ma un modello che riceve qualche migliaio di pezzi
+d'immagine li sta davvero *guardando*? È il tema della prossima sezione, e la risposta non è
 confortante.
 
 `````{tab} Elementare
@@ -542,23 +560,23 @@ confortante.
   mezzo e una tessera copre due centimetri di pagina, cioè cinque o sei parole in
   un pezzetto solo. Dove non ci sono puntini non c'è informazione, e nessuna
   astuzia la rimette.
-- **A tessere**: sei foto ravvicinate più una settima che prende tutto. Si monta
+- **A riquadri**: sei foto ravvicinate più una settima che prende tutto. Si monta
   sopra un encoder già addestrato senza toccarlo, e in cambio una figura a
   cavallo di due pezzi si spezza: l'unico posto dove si vede intera è la
   settima foto, quella sfocata.
-- **Le scatole di bottoni**: rovesciarne quattro in una sola libera i ripiani ma
-  butta via il colore (è il *pooling*); metterle in una scatola a quattro
-  scomparti libera gli stessi ripiani senza perdere un bottone (è il *pixel
-  shuffle*). Nel secondo caso il peso si sposta dal numero di scatole al peso di
-  ciascuna.
+- **I barattoli di tempera**: versarne quattro in uno solo libera i ripiani, ma
+  dei quattro colori resta un marrone (è il *pooling*); infilarli in una
+  cassetta a quattro scomparti libera gli stessi ripiani senza perdere un
+  grammo (è il *pixel shuffle*). Nel secondo caso il peso si sposta dal numero
+  di contenitori al peso di ciascuno.
 - Per i documenti, **fotocopiare invece di ribattere**: chi ribatte decide in che
   ordine si leggono le colonne, che fare delle tabelle e dei grafici, e lo decide
   prima di sapere che domanda arriverà. Un modello che vede la pagina toglie
   l'obbligo, e si può perfino cercare fra le fotocopie invece che fra le
   trascrizioni, al prezzo di un archivio molto più grosso.
 - Nessuna delle tre risposte cancella il costo: lo spostano. Chi progetta sceglie
-  se pagarlo in posto occupato, in quanto deve stare dentro ogni tessera, o in
-  spazio su disco.
+  se pagarlo in posto occupato, in quanta roba deve stare dentro ogni tessera, o
+  in spazio su disco.
 ```
 
 `````
@@ -582,7 +600,7 @@ confortante.
   globale: l'attenzione dell'encoder diventa lineare nell'area e non serve
   riaddestrare nulla. Attenzione a non sopravvalutare il guadagno immediato: a
   $4096$ token le coppie di attenzione calano di $3{,}2$ volte ma i FLOP solo del
-  6-24% a seconda di $d$, perché a quei valori domina il feed-forward. I due
+  5-20% a seconda di $d$, perché a quei valori domina il feed-forward. I due
   argomenti solidi sono gli embedding di posizione che restano validi e
   l'indifferenza alle proporzioni. In cambio un oggetto a cavallo di due riquadri
   si spezza, e la miniatura è l'unico posto dove l'insieme resta visibile.

@@ -2,13 +2,15 @@
 
 Scrivi `c = a + b` su due **tensori** PyTorch che vivono sulla GPU, e sembra
 l'operazione più banale del mondo: la stessa somma che faresti su due numeri.
-(Un tensore è la scatola in cui il deep learning tiene i numeri: una lunga fila
-di valori, o una tabella, o una pila di tabelle, comunque tanti numeri
-raccolti sotto un nome solo. `a + b` somma i due mucchi posizione per
-posizione.) Ma se `a` e `b` hanno un milione di elementi, dietro quella riga innocua è
-appena partito un piccolo programma, lanciato in un colpo solo su un milione
-di minuscoli esecutori che sommano ognuno la propria coppia di numeri, in
-parallelo. Quel programma ha un nome: **kernel**. È il vero protagonista di
+Ma se `a` e `b` hanno un milione di elementi ciascuno, dietro quella riga
+innocua è appena partito un piccolo programma, lanciato in un colpo solo su un
+milione di minuscoli esecutori che sommano ognuno la propria coppia di numeri,
+tutti insieme. Quel programma ha un nome: **kernel**.
+
+(Un tensore, se serve un ripasso, è la scatola in cui il deep learning tiene i
+numeri: una lunga fila di valori, o una tabella, o una pila di tabelle,
+comunque tanti numeri raccolti sotto un nome solo. `a + b` somma i due mucchi
+posizione per posizione.) È il vero protagonista di
 questo capitolo (l'unità di lavoro che gira davvero sulla GPU) e finora
 l'abbiamo solo nominato. Nella sezione sull'architettura abbiamo visto *chi*
 esegue (gli Streaming Multiprocessor, i warp da 32 thread); in quella sulla
@@ -17,14 +19,23 @@ appunto, e come lo si scrive.
 
 ## Un programma solo, un milione di esecutori
 
-La cosa spiazzante, la prima volta, è che un kernel non descrive cosa fa la
-GPU sull'intero **array**, cioè su tutta la fila di numeri messi in ordine, uno
-dopo l'altro, ciascuno con la sua posizione (l'array è la forma più semplice di
-tensore, e nelle prossime pagine le due parole si alterneranno). Descrive cosa
-fa **un singolo thread** su *un pezzetto*
-di dato. Poi lo lanci su una griglia, e l'hardware lo replica identico su
-tutti i thread. Ognuno esegue lo stesso codice, ma su dati diversi, e per
-sapere *su quali* dati, ogni thread comincia col calcolare il proprio indice.
+La cosa spiazzante, la prima volta, è che un kernel **non descrive il lavoro
+intero**. Descrive quello di *un solo* esecutore, un thread, su un pezzetto di
+dato: come una ricetta scritta per una porzione, che poi viene consegnata a
+migliaia di cuochi in una volta sola.
+
+Facciamo prima un po' d'ordine sul pezzetto di dato. La fila di numeri su cui
+un kernel lavora, messi in ordine uno dopo l'altro e ciascuno con la sua
+posizione, si chiama **array**: è la forma più semplice di tensore, e nelle
+prossime pagine le due parole si alterneranno. Il thread numero 7 si occuperà
+del numero in posizione 7 dell'array, e così via.
+
+Il kernel, dunque, si scrive per uno e si lancia su tutti. «Lanciare», qui, è
+il verbo tecnico: si passa alla GPU il programmino e le si dice su quanti
+esecutori farlo partire. Quell'insieme di esecutori è la **griglia** (in
+inglese *grid*) della sezione precedente, cioè l'operazione intera, tutte le
+squadre messe insieme. Ognuno esegue lo stesso codice su dati diversi, e per
+sapere *su quali*, comincia col ricavare il proprio numero.
 
 `````{tab} Elementare
 
@@ -33,13 +44,18 @@ della posta, e di avere a disposizione un esercito. Non scrivi un milione di
 ordini diversi. Ne scrivi **uno solo**, che vale per tutti: «guarda il numero
 cucito sulla tua divisa, va' alla cassetta con quel numero, infila il
 volantino». Poi lo leggi ad alta voce una volta, e l'intero esercito parte. Il
-soldato numero 0 va alla cassetta 0, il numero 41.999 alla cassetta 41.999,
-tutti insieme. L'ordine è identico per ognuno; l'unica cosa che cambia è quel
-numero sulla divisa, che ciascuno legge da sé per capire di quale cassetta
-occuparsi. Un kernel è esattamente quell'ordine unico: una manciata di righe,
-scritte pensando a *un* esecutore, che la GPU fa eseguire in parallelo a
-un'intera folla. La riga «leggi il tuo numero» è la più importante di tutte:
-senza, i soldati si accalcherebbero tutti sulla stessa cassetta.
+soldato numero 0 va alla cassetta 0, il soldato numero 999.999 alla cassetta
+999.999, tutti insieme. L'ordine è identico per ognuno; l'unica cosa che cambia
+è quel numero, che ciascuno ricava da sé per capire di quale cassetta
+occuparsi. E lo ricava proprio come farebbe un esercito vero: sulla divisa non
+c'è scritto «999.999», c'è scritto a quale squadra appartiene e che posto
+occupa in fila, e da quei due il soldato si calcola il proprio numero. È la
+figura qui sotto.
+
+Un kernel è esattamente quell'ordine unico: una manciata di righe, scritte
+pensando a *un* esecutore, che la GPU fa eseguire in parallelo a un'intera
+folla. La riga «calcola il tuo numero» è la più importante di tutte: senza, i
+soldati si accalcherebbero tutti sulla stessa cassetta.
 
 `````
 
@@ -85,22 +101,30 @@ bordi.
 :alt: "Un array di otto elementi indicizzati da 0 a 7; sotto, otto thread raggruppati in due blocchi da quattro, ciascuno collegato da una freccia all'elemento dell'array di cui si occupa. Il thread con threadIdx 2 del blocco 1 è evidenziato in terracotta: la formula i = blockIdx per blockDim piu threadIdx dà 1 per 4 piu 2, cioè 6, l'elemento anch'esso evidenziato."
 :width: 90%
 
-Ogni thread calcola il proprio indice globale $i$ dalle coordinate
-(`blockIdx`, `threadIdx`) e lo usa per scegliere il proprio elemento. È l'unica
-riga che distingue un esecutore dall'altro: il resto del kernel è identico per
+Il numero cucito sulla divisa, disegnato. Ogni esecutore sa due cose, in quale
+squadra è e che posto occupa dentro la squadra, e da quelle due ricava il
+proprio numero unico in tutta l'operazione: qui il terzo della seconda squadra
+(le squadre sono da quattro, e si conta da zero) trova
+$1 \cdot 4 + 2 = 6$, e va a occuparsi dell'elemento numero 6. È l'unica riga
+che distingue un esecutore dall'altro: il resto del kernel è identico per
 tutti.
 ```
 
 ## Un kernel in Python: Triton
 
-Scrivere kernel nel C per GPU è potente ma ostico: indici a mano, gestione
-della memoria, dettagli dell'hardware. Nel 2019 Philippe Tillet ha proposto
-un'alternativa che ha cambiato le carte in tavola: **Triton**
-{cite}`tillet2019triton`, un linguaggio per kernel *dentro* Python. Il motivo
-per cui ci riguarda da vicino è dichiarato nella sezione «Prestazioni e
-scala»: Triton è il linguaggio in cui `torch.compile`, tramite il suo
-compilatore TorchInductor, **genera** i kernel fusi. Impararne la forma
-significa vedere, dal di dentro, cosa fabbrica quella riga di `torch.compile`.
+Un kernel, storicamente, si scrive in **C**, che è il linguaggio di
+programmazione con cui si parla alle macchine quando si vuole controllare tutto:
+potente, e faticoso. Chi lo usa deve calcolarsi gli indici a mano, decidere in
+quale memoria mettere ogni numero, tenere a mente i dettagli della scheda che
+ha davanti. Nel 2019 Philippe Tillet ha proposto un'alternativa che ha cambiato
+le carte in tavola: **Triton** {cite}`tillet2019triton`, un modo di scrivere
+kernel *dentro* Python.
+
+Il motivo per cui ci riguarda da vicino è che Triton non serve solo a chi
+scrive kernel a mano. Quando in «Prestazioni e scala» si chiedeva a PyTorch di
+riscriversi il programma in forma più efficiente, la lingua in cui PyTorch se
+lo riscrive è proprio questa: guardare un kernel Triton significa vedere che
+cosa quella riga fabbrica.
 
 Ecco un kernel che calcola in un colpo solo $y = \max(0,\; a x + b)$. In
 parole povere: prendi ogni numero della lista, moltiplicalo per $a$, aggiungi
@@ -109,10 +133,11 @@ e $b = 1$: da $3$ esce $7$; da $-4$ uscirebbe $-7$, che diventa $0$.
 Quell'ultima mossa («se è sotto zero, metti zero») è la ReLU incontrata nel
 capitolo sulle reti neurali, e la catena moltiplica-somma-ReLU ricorre ovunque
 nelle reti. Che cosa calcola il kernel, insomma, lo abbiamo appena detto senza
-simboli; il codice si può anche solo guardare da lontano, cogliendone la taglia
-(una decina di righe). La scheda Elementare qui sotto spiega proprio perché un
-kernel Triton riesca a stare in così poche righe; la lettura riga per riga sta
-nella scheda Superiore.
+simboli; il codice si può anche solo guardare da lontano, cogliendone la taglia:
+il kernel vero e proprio sono le sette righe di conti in alto, il resto è il
+modo di lanciarlo. La scheda Elementare qui sotto spiega proprio perché un kernel
+Triton riesca a stare in così poche righe; la lettura riga per riga sta nella
+scheda Superiore.
 
 ```python
 import torch
@@ -143,14 +168,19 @@ def fused_relu(x, a, b):
 `````{tab} Elementare
 
 C'è una differenza di *taglia* rispetto all'esercito di prima, e vale la pena
-notarla. Nel modello CUDA ogni soldato si occupa di una sola cassetta. In
-Triton dài l'ordine non al singolo soldato ma a un'intera **squadra**: «voi
-mille, occupatevi delle cassette da 1000 a 1999». Come le mille persone si
-spartiscano il lavoro dentro la squadra non è più affar tuo: lo decide Triton,
-che sa come tenere occupati i thread della GPU meglio di quanto faresti a
-mano. Tu ragioni a blocchi di lavoro; il compilatore scende ai dettagli. È per
-questo che un kernel Triton sta in dieci righe di Python leggibile invece che
-in una pagina di codice di basso livello.
+notarla. Con CUDA (il modo di programmare le GPU aperto da NVIDIA, quello di
+cui parlava l'apertura del capitolo) l'ordine si dà al singolo soldato, che si
+occupa di una cassetta sola. In Triton lo si dà a un'intera **squadra**: «voi
+della seconda squadra, occupatevi delle cassette dalla 1024 alla 2047». (Le
+squadre qui sono da 1024, ed è la riga `BLOCK_SIZE=1024` del codice: si sceglie
+un multiplo di 32 perché i lavoratori marciano in plotoni da 32, e una squadra
+di taglia diversa lascerebbe l'ultimo plotone mezzo vuoto.) Come
+le mille e passa persone si spartiscano il lavoro dentro la squadra non è più
+affar tuo: lo decide Triton, che sa come tenere occupati i lavoratori della GPU
+meglio di quanto faresti a mano. Tu ragioni a squadre; il **compilatore**, cioè
+il programma che traduce quello che scrivi in istruzioni per la macchina,
+scende ai dettagli. È per questo che un kernel Triton sta in dieci righe di
+Python leggibile invece che in una pagina di C.
 
 `````
 
@@ -251,21 +281,20 @@ diverse dal codice ai kernel.
 
 `````{tab} Elementare
 
-Torniamo alle telefonate per piazzare gli ordini. La prima strada, quella di
-partenza (l'*eager*, «impaziente», di poco fa), esegue il tuo programma
-un'operazione alla volta: ognuna è una telefonata, un ordine piazzato e subito eseguito.
-È comodissima: vedi il risultato di ogni passo appena lo scrivi, e se
-qualcosa va storto capisci subito quale riga è stata. Ma paghi il conto
-appena visto: una telefonata e un viaggio in memoria per ogni riga.
+Le telefonate di poco fa erano il modo di partenza, quello *eager*: PyTorch
+esegue il programma un'operazione alla volta, e ognuna è una telefonata. È
+comodissimo, perché vedi il risultato di ogni passo appena lo scrivi e, se
+qualcosa va storto, capisci subito quale riga è stata. Ma paghi il conto appena
+visto: una telefonata e un viaggio in memoria per ogni riga.
 
-La seconda strada è quella della riga `torch.compile`: invece di telefonare
-ordine per ordine, consegni alla cucina la ricetta intera. PyTorch se la
-legge tutta *prima* di cominciare, nota i passaggi che si possono fare in un
-colpo solo e li riscrive da sé come ordini unici, esattamente il lavoro di
-fusione di questa sezione. I piatti davvero impegnativi restano affidati agli
-specialisti (kernel scritti a mano dal costruttore della GPU); tutto il
-contorno di piccole operazioni viene accorpato. Meno telefonate, meno viaggi,
-stesso identico risultato.
+La seconda strada è quella che si accende con la riga `torch.compile`: invece
+di telefonare un ordine alla volta, consegni la lista intera. PyTorch se la
+legge tutta *prima* di cominciare, riconosce le voci che si possono chiedere in
+un colpo solo e le riscrive da sé come un ordine unico, che è esattamente il
+lavoro di fusione di questa sezione. Le richieste davvero impegnative restano
+affidate agli specialisti (kernel scritti a mano dal costruttore della GPU);
+tutto il contorno di operazioni piccole viene accorpato. Meno telefonate, meno
+viaggi, stesso identico risultato.
 
 `````
 
@@ -296,9 +325,24 @@ sforna sono scritti nel linguaggio che abbiamo appena letto.
 
 Con questo il quadro è completo: sappiamo *chi* esegue (le officine e i plotoni
 da 32), *da dove* arrivano i dati (la piramide della memoria) e *che cosa* si
-esegue (il kernel). Resta la domanda che tiene insieme tutte e tre le risposte:
-com'è fatto il kernel su cui una rete neurale spende quasi tutto il suo tempo,
-quello della moltiplicazione fra matrici. È la prossima sezione.
+esegue (il kernel).
+
+Tre sezioni hanno però lasciato per strada parecchi mestieri, e conviene
+metterli in fila una volta per tutte, perché sono la stessa cosa vista da
+angoli diversi. La formica, il rilevatore del censimento, il soldato con il
+numero sulla divisa e il lavoratore alla scrivania sono tutti la stessa cosa:
+un **thread**. Con l'avvertenza dell'architettura, che nelle analogie si perde:
+il thread è il *compito*, non chi lo esegue; se qui sembrano coincidere è
+perché ogni lavoratore ha esattamente un compito. Il plotone da 32 e la squadra
+al tavolo comune sono il **warp** e il **blocco**: il primo è il gruppetto che
+marcia insieme, il secondo la squadra più grande che condivide il ripiano.
+L'officina con il caposquadra è lo **Streaming Multiprocessor**. La dispensa,
+il magazzino e l'armadio dall'altra parte della stanza sono sempre la stessa
+cosa, la memoria grande della scheda.
+
+Resta la domanda che tiene insieme le tre risposte: com'è fatto il kernel su
+cui una rete neurale spende quasi tutto il suo tempo, quello che moltiplica fra
+loro due tabelloni di numeri. È la prossima sezione.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare

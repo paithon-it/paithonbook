@@ -131,7 +131,7 @@ parts:
     - file: GPU/gemm-e-tensor-core.md
       title: GEMM e tensor core
     - file: GPU/flash-attention.md
-      title: Flash Attention
+      title: FlashAttention
     - file: GPU/parallelismo-distribuito.md
       title: Parallelismo distribuito
 

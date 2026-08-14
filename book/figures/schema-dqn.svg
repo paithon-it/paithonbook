@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 300" role="img" aria-labelledby="title-dqn">
-  <title id="title-dqn">Schema del Deep Q-Network: un fotogramma di gioco entra in una rete convoluzionale che produce un valore Q per ogni azione</title>
+  <title id="title-dqn">Schema del Deep Q-Network: lo schermo di gioco entra in una rete convoluzionale che produce un valore Q per ogni azione</title>
   <!-- Palette: terracotta #B5532C, teal #2D5A5C, ocra #C9A961, warm-black #1A1A1A, cream #F8F5EE, neutri #5E5852 #8B847C #C9C2B4 #E8E2D5 -->
   <defs>
     <marker id="dqn-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
@@ -28,7 +28,7 @@
   <circle cx="90" cy="162" r="4.5" fill="#1A1A1A"/>
   <!-- racchetta -->
   <rect x="72" y="192" width="36" height="7" rx="2" fill="#B5532C"/>
-  <text x="90" y="234" text-anchor="middle" font-family="Inter, Helvetica, Arial, sans-serif" font-size="14" fill="#1A1A1A">stato: un fotogramma</text>
+  <text x="90" y="234" text-anchor="middle" font-family="Inter, Helvetica, Arial, sans-serif" font-size="14" fill="#1A1A1A">stato: lo schermo</text>
 
   <!-- freccia stato -> conv -->
   <line x1="158" y1="146" x2="200" y2="146" stroke="#1A1A1A" stroke-width="2.5" marker-end="url(#dqn-arrow)"/>

@@ -10,17 +10,24 @@ da sola la tattica di scavare un tunnel sul lato del muro per far rimbalzare la
 pallina dietro i mattoni. Nessuno gliel'ha insegnata, e nel punteggio non c'era
 scritta.
 
-Nel capitolo precedente abbiamo visto il *reinforcement learning* classico:
-un agente, degli stati, delle azioni, delle ricompense, e algoritmi come il
-Q-learning che imparano *quanto vale* ogni mossa. Ma quel Q-learning teneva i
-suoi conti in una **tabella**: una casella per ogni coppia stato-azione. Ed è
-proprio la tabella a rompersi non appena il mondo diventa grande. Il *deep*
-reinforcement learning nasce per sostituirla.
+Nel capitolo precedente abbiamo visto il *reinforcement learning* classico.
+C'è qualcuno che decide (l'**agente**), c'è la situazione in cui si trova (lo
+**stato**), ci sono le mosse che può fare (le **azioni**) e c'è il premio o la
+penalità che riceve (la **ricompensa**). Algoritmi come il Q-learning imparano
+*quanto vale* ogni mossa in ogni situazione. Ma quel Q-learning teneva i suoi
+conti in una **tabella**: una casella per ogni situazione, e dentro un voto per
+ciascuna mossa possibile lì. Ed è proprio la tabella a rompersi non appena il
+mondo diventa grande.
+
+Al suo posto arriva una rete neurale, ed è questa sostituzione che dà il nome al
+capitolo: *deep*, «profondo», è l'aggettivo che si usa per le reti fatte di
+molti strati sovrapposti, quelle del capitolo sul deep learning.
 
 ## Quando la tabella diventa impossibile
 
-Il Q-learning tabellare funziona benissimo in un labirinto con cento caselle.
-Ma proviamo a giocare guardando lo schermo, come farebbe una persona.
+Con una tabella si va benissimo in un labirinto di cento caselle: cento righe,
+e ci stanno su un foglio. Ma proviamo a giocare guardando lo schermo, come
+farebbe una persona.
 
 `````{tab} Elementare
 
@@ -128,18 +135,22 @@ colleghi, 2013), diventa nel 2015 un articolo su *Nature*, *Human-level
 control through deep reinforcement learning*: **un'unica architettura**, senza
 ritocchi specifici per gioco, regge il confronto con un collaudatore umano
 professionista su 49 titoli Atari, e in ventinove di essi ne raggiunge almeno
-il 75% del punteggio. È la prova che pixel grezzi e ricompensa scarna bastano.
+il 75% del punteggio. Nessuno ha detto a quel programma cosa fosse una navicella
+o come si vinca: gli sono bastati lo schermo e il punteggio, e il punteggio nei
+giochi Atari è avaro, arriva ogni tanto e non spiega mai perché.
 
 L'anno dopo arriva il colpo che raggiunge il grande pubblico. L'articolo su
 *Nature* del gennaio 2016 (Silver e colleghi) presenta **AlphaGo** e la
 vittoria per 5 a 0 sul campione europeo Fan Hui; due mesi più tardi, a Seul,
 una versione più forte dello stesso programma batte per 4 a 1 Lee Sedol, fra i
 più forti giocatori al mondo. Il Go, un gioco con più configurazioni che atomi
-nell'universo, era a lungo considerato fuori portata per le macchine. Deep
-reinforcement learning e ricerca ad albero, insieme. Il deep RL smette di
-essere una curiosità da laboratorio.
+nell'universo, era a lungo considerato fuori portata per le macchine. Ad
+AlphaGo non basta l'istinto di una rete: prima di muovere prova mentalmente le
+continuazioni, un po' come farebbe un giocatore forte, ed è la tecnica che la
+sezione sui gradienti di policy chiama *ricerca ad albero*. Il deep RL smette
+di essere una curiosità da laboratorio.
 
-## Il prezzo: instabilità e campioni costosi
+## Il prezzo: un addestramento che balla, e milioni di partite
 
 L'entusiasmo non deve nascondere il conto da pagare. Il deep RL (l'abbreviazione
 di *deep reinforcement learning*, e da qui in avanti si userà spesso) è
@@ -147,12 +158,18 @@ notoriamente capriccioso.
 
 `````{tab} Elementare
 
-Due difficoltà su tutte. La prima: l'allenamento è **instabile**, come cercare
-di colpire la propria ombra, che si sposta ogni volta che ti muovi tu; piccole
-modifiche possono far crollare tutto. La seconda: serve
-**una quantità enorme di partite**. L'agente impara per tentativi, e di
-tentativi ne vuole milioni: settimane di gioco. In un videogioco simulato va
-bene; con un robot vero che si può rompere, molto meno.
+Due difficoltà su tutte. La prima: l'allenamento è **instabile**. La rete si
+corregge inseguendo un numero che calcola lei stessa, e quel numero si sposta a
+ogni correzione: è come cercare di colpire la propria ombra, che si muove ogni
+volta che ti muovi tu. Basta poco (un ritocco alla velocità con cui la rete si
+corregge) e invece di assestarsi i suoi giudizi crescono senza fermarsi. È qui
+che servono i due accorgimenti annunciati poco fa, la memoria delle esperienze
+e la copia congelata della rete, e la sezione su DQN li racconta per esteso.
+
+La seconda difficoltà: serve **una quantità enorme di partite**. L'agente
+impara per tentativi, e di tentativi ne vuole milioni: settimane di gioco. In
+un videogioco simulato va bene; con un robot vero che si può rompere, molto
+meno.
 
 `````
 
@@ -177,14 +194,19 @@ esiste, cioè quale fragilità del pezzo precedente è venuto a curare.
 
 Si comincia dal **DQN**, la rete che prende il posto della tabella, e dai due
 accorgimenti che le impediscono di esplodere: la memoria delle esperienze e la
-copia congelata. Poi si cambia famiglia. Invece di dare un voto a ogni mossa e
-scegliere la migliore, si può imparare **direttamente a decidere**: è la strada
-dei metodi a *gradiente di policy*, e passa per l'idea di affiancare al
-giocatore un giudice, per l'algoritmo che oggi si prova per primo (PPO), per la
-ricerca ad albero che sta dietro ad AlphaGo, e per il modo in cui si addestrano
-oggi gli assistenti conversazionali. Quella strada serve subito, perché nel
-**controllo continuo** (un braccio robotico, uno sterzo) le mosse non sono un
-menu di poche voci e la ricetta del DQN non si applica più.
+copia congelata.
+
+Poi si cambia famiglia. Invece di dare un voto a ogni mossa e scegliere la
+migliore, si può imparare **direttamente a decidere**. Sono i metodi a
+*gradiente di policy*, e portano lontano: al giocatore si affianca un giudice
+che commenta ogni mossa; nasce l'algoritmo che oggi si prova per primo, PPO;
+compare la ricerca ad albero che sta dietro ad AlphaGo. E in fondo a quella
+strada ci sono gli assistenti conversazionali, che oggi si addestrano proprio
+così.
+
+Quella famiglia serve subito. Nel **controllo continuo** (un braccio robotico,
+uno sterzo) le mosse non sono un menu di poche voci, sono una quantità da
+dosare, e la ricetta del DQN non si applica più.
 
 Le tre sezioni che seguono attaccano tutte lo stesso problema, cioè che
 l'esperienza costa. Il RL **basato su modello** fa provare all'agente le mosse

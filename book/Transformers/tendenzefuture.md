@@ -8,33 +8,57 @@ mai è stato così chiaro quanto costa farla funzionare.
 
 ## Dove punta la ricerca
 
+Tre cantieri, su tutti, e conviene nominarli prima di scendere in uno.
+
+Il primo è **fare di più con meno**: i grandi modelli sono motori potentissimi
+che consumano moltissimo, e buona parte della ricerca è una gara di efficienza,
+per farli stare in un telefono invece che in un centro di calcolo. Il secondo è
+**unire i sensi**: modelli che leggono, guardano e ascoltano insieme, come
+l'assistente a cui mostri una foto e fai una domanda a voce. Il terzo è
+**superare i limiti dell'architettura stessa**: l'assemblea in cui ogni parola
+parla con ogni altra costa troppo sui testi lunghi, perché raddoppiando le
+parole le conversazioni quadruplicano, e questo spinge a cercare modi più
+economici di far comunicare le parti di un testo.
+
+Del primo cantiere vale la pena vedere da vicino il metodo più elegante, che si
+chiama **distillazione**: si prende un modello grande e bravo, lo si mette a
+fare il maestro, e se ne addestra uno piccolo a imitarlo.
+
 ```{figure} ../figures/distillazione-insegnante-allievo.svg
 :name: fig-distillazione
 :alt: "Un modello maestro, grande, riceve un input e produce non una sola risposta ma una distribuzione di probabilità su tutte le risposte possibili. Un modello allievo, molto più piccolo, viene addestrato a riprodurre quella distribuzione intera invece della sola risposta corretta."
 :width: 92%
 
-Perché imparare dal maestro batta imparare dalle etichette. L'etichetta dice
-solo qual è la risposta giusta; la distribuzione del maestro dice anche quali
-errori erano quasi ragionevoli, e quella è informazione in più.
+Perché imparare dal maestro batta imparare dalla risposta giusta. La risposta
+giusta dice solo qual è; il maestro dice anche quali errori erano quasi
+ragionevoli, e quella è informazione in più.
 ```
 
-Il dettaglio di {numref}`fig-distillazione` che spiega il metodo è la forma
-di ciò che passa dal maestro all'allievo. Non è la risposta, è l'intera
-graduatoria: fra «gatto» e «lince» il maestro esita, fra «gatto» e «camion»
-no, e l'allievo impara anche questa geometria, che nessuna etichetta secca
-gli avrebbe insegnato.
+Il dettaglio di {numref}`fig-distillazione` che fa funzionare la distillazione
+è **che cosa** passa dal maestro all'allievo. Non la risposta, ma l'intera
+graduatoria: davanti a una foto di gatto il maestro non dice «gatto», dice
+«gatto quasi certamente, lince un pochino, camion per niente». È
+un'informazione che nessun elenco di risposte giuste conterrebbe, perché quella
+esitazione fra gatto e lince dice all'allievo che i due si somigliano, e
+imparare quali cose si somigliano è metà del mestiere.
 
 `````{tab} Elementare
-Tre cantieri, su tutti. Il primo è **fare di più con meno**: i grandi modelli
-sono motori potentissimi che consumano moltissimo, e buona parte della ricerca
-è una gara di efficienza; modelli più piccoli che imparano dai grandi come
-apprendisti dal maestro, versioni "compresse" che girano su un telefono invece
-che in un centro di calcolo. Il secondo è **unire i sensi**: modelli che
-leggono, guardano e ascoltano insieme, come l'assistente a cui mostri una foto
-e fai una domanda a voce. Il terzo è **superare i limiti dell'architettura
-stessa**: l'assemblea plenaria delle parole (il costo quadratico visto nel
-confronto con le RNN) spinge a cercare modi più economici di collegare le
-parti di un testo lungo.
+Gli altri modi di rimpicciolire un modello sono due, e sono più bruti. Il primo
+è scrivere ogni suo numero con meno cifre: dove prima ne servivano dieci adesso
+ne bastano due o tre, il modello occupa quattro o otto volte meno spazio, e in
+cambio è un po' meno preciso, spesso molto meno di quanto ci si aspetterebbe.
+Il secondo è togliere di mezzo i numeri che contano poco: in una rete
+addestrata ce ne sono moltissimi vicini allo zero, che si possono azzerare del
+tutto senza che quasi nulla cambi.
+
+Sul contesto lungo la ricerca prova invece a far comunicare le parole senza
+convocarle tutte insieme, e i due filoni più promettenti hanno un capitolo
+ciascuno subito dopo questo. Sul fronte dei sensi si costruiscono mappe del
+significato condivise, dove una foto di gatto e la parola «gatto» cadono nello
+stesso punto. E c'è un cantiere in più, che dieci anni fa nessuno avrebbe messo
+in un elenco di ricerca: rendere questi modelli **utili e non dannosi**, cioè
+il post-training della sezione precedente, che nel frattempo è diventato una
+disciplina a sé.
 `````
 
 `````{tab} Superiore
@@ -68,18 +92,28 @@ calcolo. Detta così suona strana, perché non è affatto come funzioniamo noi:
 sulle cose facili rispondiamo a colpo, sulle difficili ci fermiamo a pensare.
 
 L'idea, allora, è di lasciare che il modello decida **quanto pensare**, e nel
-2018 qualcuno ci provò: invece di impilare strati tutti diversi, se ne usa uno
-solo applicato più volte di fila (diventa una specie di ricorrenza, non nel
-tempo ma in profondità), e a ogni giro ogni parola può dire «io ho finito» e
-smettere, mentre le altre continuano.
+2018 qualcuno ci provò con una mossa che risolve il problema alla radice. Il
+guaio è che i piani della torre sono sei, o sessanta, ma comunque un numero
+deciso in anticipo: sono pezzi diversi l'uno dall'altro, quindi non se ne può
+usare qualcuno in più. E se invece il piano fosse **uno solo**, sempre lo
+stesso, riapplicato più volte di fila? Allora il numero di volte non sarebbe
+più scritto nell'architettura, e si potrebbe decidere caso per caso: due giri
+per una domanda facile, venti per una difficile. In più, a ogni giro ogni
+parola può dire «io ho finito» e smettere, mentre le altre continuano a
+girare.
 
-All'epoca non prese piede. È tornata attuale adesso, per una strada
-inaspettata: i modelli che «ragionano» prima di rispondere fanno, in fondo, la
-stessa cosa, cioè spendere più calcolo sulle domande difficili. Solo che lo
-fanno **scrivendo** il ragionamento, un passo alla volta in parole, invece di
-girare più volte dentro sé stessi in silenzio. Quale delle due strade sia la
-migliore è una questione aperta: la prima è più economica, la seconda si può
-leggere.
+All'epoca non prese piede, e la ragione è soprattutto una: un piano solo
+riapplicato molte volte costa, in ore di computer, quanto una pila di piani
+diversi, perché il lavoro è lo stesso, ma di numeri da imparare ne ha molti di
+meno, quindi a parità di conto impara meno cose. Nel frattempo la strada
+dell'ingrandire funzionava benissimo, e nessuno aveva un buon motivo per
+complicarsi la vita. L'idea è tornata attuale adesso, per una strada
+inaspettata: i modelli che «ragionano» prima di
+rispondere fanno, in fondo, la stessa cosa, cioè spendere più calcolo sulle
+domande difficili. Solo che lo fanno **scrivendo** il ragionamento, un passo
+alla volta in parole, invece di girare più volte dentro sé stessi in silenzio.
+Quale delle due strade sia la migliore è una questione aperta: la prima è più
+economica, la seconda si può leggere.
 
 `````
 
@@ -144,17 +178,20 @@ Un elenco onesto, da tenere accanto agli entusiasmi:
 - **Costo**: addestramento e inferenza dei modelli maggiori richiedono risorse
   (economiche, energetiche, di hardware) concentrate in poche aziende; la
   ricerca indipendente lavora per necessità su scala ridotta.
-- **Dati**: i corpora del web si stanno esaurendo come fonte "gratuita" di
-  testo di qualità, e portano con sé bias e contenuti problematici che i
-  modelli assorbono.
+- **Dati**: le grandi raccolte di testo prese dal web (i *corpora*) si stanno
+  esaurendo come fonte gratuita di materiale di qualità, e portano con sé le
+  distorsioni sistematiche di ciò che è stato scritto online, i **bias**, che i
+  modelli assorbono insieme al resto.
 - **Affidabilità**: le allucinazioni (risposte fluenti ma false) derivano dal
   mestiere stesso di questi modelli, che è scrivere una parola alla volta
   scegliendo ogni volta la continuazione più probabile; probabile non vuol dire
   vero, e nulla nel meccanismo distingue le due cose. Mitigarle (con il
   recupero di fonti esterne, la verifica, la calibrazione) è un problema aperto.
 - **Comprensione**: su cosa i modelli *capiscano* davvero il dibattito
-  scientifico è tutt'altro che chiuso; prudenza nell'attribuire loro
-  intenzioni o ragionamento è una virtù, oltre che buona epistemologia.
+  scientifico è tutt'altro che chiuso, e attribuire loro intenzioni o
+  ragionamento senza prove è un errore prima ancora che una scortesia verso i
+  fatti. Prudenza, qui, non è modestia di facciata: è il modo in cui si tratta
+  un'affermazione che non si sa ancora come verificare.
 
 ## Il posto dei Transformer in questo libro
 
@@ -164,10 +201,10 @@ concetto che hai già incontrato, montato in una configurazione nuova.
 L'evidenziatore che pesa le parole, il posto numerato che dice l'ordine, la
 riunione e il lavoro individuale che si alternano piano dopo piano, la mappa
 del significato dove le cose simili stanno vicine, il provare-e-correggere che
-sistema i numeri un'inezia alla volta: chi ha letto le pagine tecniche
-riconoscerà gli stessi oggetti sotto i loro nomi propri (attenzione, positional
-encoding, feed-forward, embedding, discesa del gradiente). È la
-lezione migliore di questa storia: le "rivoluzioni" dell'AI, viste da vicino,
+sistema i numeri un'inezia alla volta: se hai seguito queste immagini hai
+seguito tutto, e questi sono i loro nomi propri, quelli che troverai scritti
+altrove (attenzione, positional encoding, feed-forward, embedding, discesa del
+gradiente). È la lezione migliore di questa storia: le "rivoluzioni" dell'AI, viste da vicino,
 sono quasi sempre ricombinazioni ingegnose di idee semplici, rese possibili da
 più dati e più calcolo. Chi conosce le idee semplici non insegue le mode: le
 legge.

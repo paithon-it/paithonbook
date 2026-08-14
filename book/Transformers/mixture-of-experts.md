@@ -6,18 +6,21 @@ ventinove restano sullo scaffale. Possedere una conoscenza e consultarla sono
 due costi diversi, e nessuno si sognerebbe di confonderli.
 
 Il Transformer che abbiamo montato nella sezione sull'architettura fa
-esattamente il contrario. Ogni token attraversa **tutti** i numeri che la rete
-ha imparato, a ogni piano: quelli dell'attenzione e quelli della rete
-feed-forward, dal primo piano fino in cima, senza saltarne uno. (Quei numeri
-stanno in tabelle di righe e colonne, che in matematica si chiamano *matrici*,
-e presi tutti insieme sono i **parametri** del modello, quelli che si contano
-quando si dice «un modello da sette miliardi».) Da qui un'aritmetica spietata:
-raddoppiare i parametri raddoppia il calcolo per ogni parola, sia mentre il
-modello studia sia quando scrive. La
-sezione sui grandi modelli linguistici ha mostrato che crescere conviene (le
-leggi di scala {cite}`kaplan2020scaling` {cite}`hoffmann2022training` sono
-curve lisce, prevedibili, che premiano ogni raddoppio) ma ha mostrato anche il
-prezzo: la bolletta cresce insieme al modello, e a un certo punto smette di
+esattamente il contrario. Ogni **token** (uno dei mattoncini in cui il testo
+viene spezzato, di solito una parola o un pezzo di parola) viene moltiplicato
+per **tutti** i numeri che la rete ha imparato, a ogni piano: quelli
+dell'attenzione e quelli della rete feed-forward, dal primo piano fino in cima,
+senza saltarne uno. (Quei numeri stanno in tabelle di righe e colonne, che in
+matematica si chiamano *matrici*, e presi tutti insieme sono i **parametri**
+del modello, quelli che si contano quando si dice «un modello da sette
+miliardi».) Da qui un'aritmetica spietata: raddoppiare i parametri raddoppia il
+calcolo per ogni parola, sia mentre il modello studia sia quando scrive.
+
+La sezione sui grandi modelli linguistici ha mostrato che crescere conviene: le
+leggi di scala {cite}`kaplan2020scaling` {cite}`hoffmann2022training` dicono
+che ogni raddoppio di parametri e di testo fa sbagliare il modello un po' meno,
+in modo regolare e prevedibile. Ma ha mostrato anche il prezzo: la bolletta di
+ogni singola parola cresce insieme al modello, e a un certo punto smette di
 essere pagabile.
 
 La domanda di questa sezione è se le due cose si possano separare. Esiste un
@@ -29,12 +32,16 @@ sempre, però, non è un pasto gratis: il conto non sparisce, cambia voce.
 
 ## Molti blocchi al posto di uno
 
-Se si vuole tagliare, conviene farlo dove c'è più stoffa. Nella sezione
-sull'architettura abbiamo visto che il blocco Transformer alterna attenzione
-(le posizioni si scambiano informazione) e **rete feed-forward** (ogni
-posizione rielabora per conto suo), e che la seconda, pur essendo la parte
-concettualmente più semplice, contiene circa due terzi dei parametri di ogni
-strato: è lì che risiede gran parte della capacità del modello.
+Se si vuole risparmiare calcolo, conviene farlo dove il calcolo è più grosso.
+Nella sezione sull'architettura abbiamo visto che ogni piano del Transformer
+alterna la riunione (l'attenzione, dove le parole si scambiano informazione) e
+il lavoro individuale (la **rete feed-forward**, dove ogni parola rielabora per
+conto suo), e che il secondo momento, pur essendo il più semplice da capire,
+contiene due terzi dei numeri imparati di un piano. Il conto stava lì: quattro
+tabelle di una certa taglia nell'attenzione, contro due tabelle grandi il
+quadruplo nel lavoro individuale, cioè otto della stessa taglia. Otto contro
+quattro, due terzi contro un terzo. È lì che risiede gran parte di ciò che il
+modello sa.
 
 ```{figure} ../figures/mixture-of-experts.svg
 :name: fig-moe-layer
@@ -140,22 +147,39 @@ modello, lo $0{,}003\%$ del totale.
 
 `````
 
-Da qui in avanti un modello sparso non si descrive più con un numero solo. Ne
-servono due, e non sono intercambiabili: i **parametri totali** dicono quanta
+Un modello fatto così si chiama **sparso**, perché per ogni token accende solo
+una piccola parte di sé; quello di prima, che accendeva tutto, si chiama
+**denso**. E un modello sparso non si descrive più con un numero solo: ne
+servono due, che non sono intercambiabili. I **parametri totali** dicono quanta
 memoria serve per ospitarlo, i **parametri attivi** quanto costa fargli
-scrivere un token. Confonderli è l'errore più comune quando si leggono le
-schede tecniche di questi modelli, e conviene prendere l'abitudine di citarli
-sempre in coppia.
+scrivere una parola.
 
-## Il router, in formule
+Un esempio con numeri veri, perché la differenza sorprende. Si parte da un
+modello denso normale, di quelli «da sette miliardi»: 6,44 miliardi di
+parametri, contando i piani e non il vocabolario. Se ne prende il momento di
+lavoro individuale, che vale 134 milioni per piano, e lo si moltiplica per
+otto: il modello arriva a **36,5 miliardi** di parametri totali. Ma ogni parola
+ne attraversa uno solo degli otto, quindi i parametri **attivi** restano
+**6,44 miliardi**, cioè esattamente quelli del modello di partenza. Quasi sei
+volte la conoscenza, la stessa bolletta a parola. Confondere i due numeri è
+l'errore più comune quando si leggono le schede tecniche di questi modelli, e
+conviene prendere l'abitudine di citarli sempre in coppia.
 
-Il router è il pezzo più semplice di tutta l'architettura. Prende la lista di
-numeri che rappresenta il token e ne ricava $N$ punteggi, uno per esperto, con
-la moltiplicazione più elementare che ci sia fra una tabella di numeri e una
-lista (in gergo: un singolo strato lineare, senza nemmeno il termine costante
-che di solito si aggiunge). Poi si tengono i $k$ punteggi più alti, si
-trasformano in proporzioni che sommano a uno, e l'uscita dello strato è la
-miscela degli esperti scelti in quelle proporzioni.
+## Come sceglie lo smistatore
+
+Il router è il pezzo più semplice di tutta l'architettura, e vale la pena
+vederlo per intero perché è un conto solo. Prende la lista di numeri che
+rappresenta il token e ne deve ricavare $N$ punteggi, uno per esperto. Come? Si
+tiene in serbo, per ciascun esperto, una lista di numeri lunga uguale, e il
+punteggio di quell'esperto è il confronto fra le due liste: si moltiplicano
+numero per numero e si sommano i risultati, cioè lo stesso prodotto scalare con
+cui l'attenzione confronta una query e una key. Le $N$ liste, messe una sotto
+l'altra, formano una tabella, e in gergo l'operazione si chiama uno *strato
+lineare*.
+
+Poi si tengono i $k$ punteggi più alti, si trasformano in proporzioni che
+sommano a uno, e l'uscita dello strato è la miscela degli esperti scelti in
+quelle proporzioni.
 
 `````{tab} Elementare
 
@@ -289,11 +313,14 @@ paga trenta stipendi per tre redattori. Nel modello è identico: si è pagata
 memoria per parametri che non imparano nulla, e il vantaggio dell'architettura
 svanisce.
 
-La cura non è furba, è amministrativa: si aggiunge alla pagella del modello una
-voce che **punisce lo sbilanciamento**. Oltre a chiedergli di predire bene la
-parola successiva, gli si chiede di distribuire il lavoro; e siccome è una
-penalità piccola, il modello la paga volentieri quando specializzarsi conviene
-davvero, ma non può ignorarla del tutto.
+La cura non è furba, è amministrativa. Un modello, mentre impara, ha davanti un
+numero solo che dice quanto ha sbagliato, e tutto il suo mestiere è farlo
+scendere: chiamiamola la sua pagella. Bene, a quella pagella si aggiunge una
+seconda voce che **punisce lo sbilanciamento**: oltre a chiedergli di predire
+bene la parola successiva, gli si chiede di distribuire il lavoro. Il peso della
+seconda voce, nel lavoro che l'ha introdotta, è un centesimo di quello della
+prima; abbastanza poco perché il modello possa pagarla volentieri quando
+specializzarsi conviene davvero, abbastanza perché non possa ignorarla.
 
 `````
 
@@ -389,16 +416,18 @@ $$
 dove $T$ è il numero di token del batch, $N$ il numero di esperti, $c$ il
 *capacity factor*, cioè il margine, appena sopra 1 (valori tipici tra $1{,}0$ e
 $1{,}25$), e le parentesi con gli angoli sono l'arrotondamento all'intero
-superiore. Con $T = 8$ token, $N = 4$ esperti e $c = 1{,}25$ la capacità è $3$
-(due token a testa più un quarto, cioè $2{,}5$, arrotondato a $3$): un esperto
-che si vedesse assegnare cinque token ne elabora tre e ne lascia cadere due.
+superiore. Il conto su un esempio minuscolo: con $T = 8$ token e $N = 4$
+esperti, in un mondo perfettamente equo ne toccherebbero due a testa; il margine
+$c = 1{,}25$ li porta a $2 \times 1{,}25 = 2{,}5$, che arrotondato per eccesso
+fa $3$. Un esperto che si vedesse assegnare cinque token ne elabora dunque tre
+e ne lascia cadere due.
 
-Cosa succede ai token caduti? Nulla di drammatico e nulla di visibile: l'uscita
-dello strato MoE per quel token è zero, e siccome il blocco è avvolto dalla
-connessione residua incontrata con le ResNet nel capitolo sul deep learning
-($\mathbf{x} + \text{MoE}(\mathbf{x})$), il token attraversa lo strato
-**immutato**, come se lì
-non ci fosse. Nessun errore, nessun messaggio: solo un po' di qualità in meno,
+Cosa succede ai token caduti? Nulla di drammatico e nulla di visibile. Lo
+strato non produce niente per quel token, e qui torna comoda la **scorciatoia**
+della sezione sull'attenzione, quella che porta la lista di numeri intatta
+accanto al blocco e la somma all'uscita: se l'uscita è zero, resta la
+scorciatoia, e il token attraversa lo strato **immutato**, come se lì non ci
+fosse. Nessun errore, nessun messaggio: solo un po' di qualità in meno,
 distribuita in modo silenzioso. Alzare $c$ riduce i token caduti ma alloca
 buffer più grandi, cioè spreca memoria per posti mai occupati. E c'è una
 conseguenza più insidiosa: **il destino di un token dipende dagli altri token
@@ -423,22 +452,38 @@ sparsi per la città: a quel punto lavorare su un pezzo costa poco, ma
 *consegnarlo* costa tanto, perché ogni articolo deve attraversare la città per
 arrivare al suo specialista e poi tornare indietro per andare in stampa.
 
-È esattamente ciò che succede alle schede grafiche. Il calcolo risparmiato si
-ritrova, in buona parte, come **traffico**: i token viaggiano verso la scheda
-che ospita il loro esperto e tornano indietro, due volte per ogni strato. E
-c'è un effetto collaterale del collasso di cui sopra: se il carico è
-sbilanciato, la scheda affollata fa aspettare tutte le altre, che restano
-ferme a guardare. Il bilanciamento, insomma, non serve solo alla qualità del
-modello: serve a non pagare venti schede per farne lavorare tre.
+E gli edifici sparsi per la città non sono una metafora esagerata. Un modello di
+questa taglia in un computer solo non ci sta: lo si spezza fra decine o
+centinaia di **schede grafiche**, i processori specializzati nel fare tanti
+conti insieme, e gli esperti finiscono su schede diverse. Il calcolo
+risparmiato si ritrova allora, in buona parte, come **traffico**: i token
+viaggiano verso la scheda che ospita il loro esperto e tornano indietro, due
+volte per ogni piano. E c'è un effetto collaterale del collasso di cui sopra:
+se il carico è sbilanciato, la scheda affollata fa aspettare tutte le altre,
+che restano ferme a guardare. Il bilanciamento, insomma, non serve solo alla
+qualità del modello: serve a non pagare venti schede per farne lavorare tre.
 
 Quando poi il modello **scrive**, il problema è ancora più netto, e conviene
 dirlo per esteso perché è controintuitivo. Il tempo che ci mette a produrre una
 parola non se ne va a fare i conti: se ne va ad **andare a prendere** dalla
-memoria i numeri con cui fare i conti. Sono decine di miliardi di numeri, vanno
-letti tutti, e leggerli costa più che moltiplicarli (il capitolo sull'MLOps ci
-tornerà sopra con i numeri). Un modello con
-pochi parametri attivi ma tantissimi totali attacca il lato sbagliato del
-problema, e resta pesante da servire.
+memoria i numeri con cui fare i conti. Il perché è che una scheda grafica è
+fatta apposta per moltiplicare: ha migliaia di calcolatori affiancati, e quando
+un numero le arriva in mano se lo sbriga in un attimo. Ma quel numero deve
+arrivarci, e la strada che lo porta dalla memoria ai calcolatori è una sola e
+stretta. È la differenza fra una cucina con venti cuochi e una porta di
+servizio: i cuochi non sono mai il problema, il problema è far entrare la spesa.
+E un modello sparso, quando scrive, sta risparmiando proprio sui cuochi.
+
+Se poi quel risparmio si senta o no dipende da **quante richieste ci sono in
+volo insieme**, ed è il punto in cui la faccenda si fa interessante. Con una
+richiesta alla volta, i pochi esperti scelti sono davvero gli unici da andare a
+prendere, la porta di servizio deve far passare molto meno del totale, e la
+sparsità è un vantaggio pieno. Ma se le richieste sono centinaia, ciascuna
+sceglie esperti suoi, e alla fine si finisce per doverli portare dentro quasi
+tutti: la porta di servizio torna a essere quella di un modello da trentasei
+miliardi. Siccome servire tante richieste insieme è proprio ciò che rende
+sostenibile far girare un modello grande, i due obiettivi tirano in direzioni
+opposte, e non c'è un modo di averli tutti e due.
 
 `````
 
@@ -480,11 +525,12 @@ direzioni opposte.
 
 `````
 
-Riassumendo in una frase: la mixture of experts sposta il collo di bottiglia
-dal **calcolo** alla **memoria e alla comunicazione**. È un ottimo affare per
-chi addestra su cluster con interconnessioni veloci e per chi serve poche
-sequenze a bassa latenza; è un affare meno ovvio per chi deve stipare il
-modello in una macchina sola.
+Riassumendo in una frase: la mixture of experts sposta il collo di bottiglia dal
+**calcolo** alla **memoria e alla comunicazione**. È un ottimo affare per chi
+addestra su un parco di macchine collegate fra loro da cavi veloci, e per chi
+deve rispondere in fretta a poche richieste per volta; è un affare molto meno
+ovvio per chi deve stipare il modello in una macchina sola, o per chi ne serve
+tante di richieste insieme.
 
 ## Da un'idea del 1991
 
@@ -523,11 +569,23 @@ capacità con i token che cadono, e gli esperti sparsi su centinaia di schede ch
 si scambiano token in continuazione. Sette mesi dopo, nel gennaio 2021, Switch
 Transformer {cite}`fedus2022switch` (uscito su rivista l'anno dopo, che è la
 data in bibliografia) fa la mossa controintuitiva: **un solo esperto per
-token**. Il ragionamento del 2017
-diceva che ne servivano almeno due per avere un gradiente sensato sul router;
-Fedus, Zoph e Shazeer mostrano che il gradiente arriva comunque, e che il
-top-1 dimezza il traffico dell'all-to-all, semplifica il codice e permette
-capacità più piccole. Con il top-1 arrivano anche gli accorgimenti che rendono
+token**. Il ragionamento del 2017 diceva che ne servivano almeno due, altrimenti
+lo smistatore avrebbe perso il segnale con cui impara (quella domanda «se avessi
+alzato di pochissimo il punteggio, sarebbe andata meglio?», che in gergo si
+chiama il **gradiente**): con un solo scelto e le proporzioni rinormalizzate su
+di lui, il suo peso varrebbe sempre uno, qualunque punteggio gli sia stato
+assegnato, e lo smistatore non avrebbe più modo di accorgersi di niente.
+
+Fedus, Zoph e Shazeer risolvono la cosa togliendo proprio la rinormalizzazione:
+con un esperto solo, il peso resta la proporzione calcolata su tutti e otto, un
+numero minore di uno che varia con il punteggio, e il segnale arriva. Non
+contraddice il «rinormalizzare sempre» di poco fa, lo circoscrive: la
+rinormalizzazione serve quando gli esperti scelti sono più d'uno, per non
+perdere per strada una parte dell'uscita; con uno solo quella parte perduta è
+tutta la stessa uscita moltiplicata per un fattore, il che è una cosa che la
+rete impara a compensare da sé, e in cambio si guadagna la manopola su cui lo
+smistatore impara. In più, scegliere un solo esperto dimezza il viavai fra le
+schede, semplifica il codice e permette tetti di capacità più bassi. Con il top-1 arrivano anche gli accorgimenti che rendono
 stabile l'addestramento. Il più istruttivo riguarda le cifre con cui si scrivono
 i numeri: per andare più in fretta il modello ne usa poche (mezza precisione,
 `float16`), ma i punteggi del router si calcolano con il doppio delle cifre
@@ -557,8 +615,8 @@ che riguarda la **correttezza**: non c'è la loss di bilanciamento. Chi prendess
 questo strato e lo addestrasse così com'è otterrebbe, puntualmente, il collasso
 descritto due sezioni sopra. Calcolarla sarebbe questione di poche righe a
 partire da `indici` e `punteggi`, che il `forward` ha già in mano. Chi legge al
-livello Elementare può saltare da qui alla fine della sezione: il conto che
-chiude la pagina è raccontato senza formule nel riquadro finale.
+livello Elementare può saltare i due blocchi di codice e riprendere dal conto
+che li segue, che è in italiano e non chiede di saper leggere Python.
 
 ```python
 import torch
@@ -619,14 +677,20 @@ print(totali, per_esperto * strato.k)
 # 265216 66176  -> totali contro attivi per token: circa 4 volte tanto
 ```
 
-Un esperto pesa $64 \times 256 + 256 + 256 \times 64 + 64 = 33\,088$
-parametri (un *parametro* è uno dei numeri che la rete regola durante
-l'addestramento: sono quelli che si contano quando si dice «un modello da sette
-miliardi»); otto ne fanno $264\,704$, più i $512$ del router: $265\,216$ in
-tutto. Ogni token ne attraversa due, cioè $66\,176$: esattamente un quarto dei
-parametri degli esperti, cioè la frazione $k/N = 2/8$ (contando anche il
-router, che lo pagano tutti i token, i totali sono $4{,}008$ volte gli
-attivi invece di $4$ esatti). Quattro volte i parametri, lo stesso conto.
+Il conto, in italiano. Ogni esperto è fatto di due tabelle, una che allarga la
+lista da 64 numeri a 256 e una che la ricomprime a 64, più un numero di
+aggiustamento per ciascuna delle uscite: $64 \times 256 + 256$ per la prima,
+$256 \times 64 + 64$ per la seconda, in tutto $33\,088$ numeri da regolare (un
+*parametro* è appunto uno di quei numeri). Otto esperti ne fanno $264\,704$; lo
+smistatore, che tiene una lista da 64 numeri per ciascuno degli otto, ne
+aggiunge $512$; totale $265\,216$.
+
+Ogni token, però, ne attraversa soltanto due esperti, cioè $33\,088 \times 2 =
+66\,176$: **un quarto**, che è poi la frazione $k/N = 2/8$ degli esperti che
+lavorano. Lo strato sa quattro volte quello che gli costa lavorare una parola.
+(A voler essere pignoli il rapporto non è $4$ esatto ma $4{,}008$, perché nel
+totale ci sono anche i $512$ dello smistatore, che negli attivi non li abbiamo
+contati; contandoli da tutte e due le parti verrebbe $3{,}98$.)
 
 Lo strato è intercambiabile con la FFN di un blocco Transformer: stessa forma
 in ingresso, stessa forma in uscita. Ed è precisamente questa

@@ -1,9 +1,9 @@
 # Panorama e limiti
 
 Abbiamo attraversato due capitoli (l'attenzione lineare e gli *state space
-model*) che sembravano raccontare storie diverse: uno partiva dai Transformer
-e ne linearizzava l'attenzione, l'altro dai sistemi dinamici continui e li
-discretizzava. Eppure siamo arrivati, ogni volta, allo stesso posto. Vale la
+model*) che sembravano raccontare storie diverse: uno partiva dai Transformer e
+toglieva all'attenzione il pezzo che la faceva costare tanto, l'altro dai
+sistemi dinamici continui e li misurava a intervalli. Eppure siamo arrivati, ogni volta, allo stesso posto. Vale la
 pena, ora che li abbiamo entrambi in mano, mettere i pezzi in fila e chiedersi
 cosa abbiamo davvero costruito, dove regge e dove no.
 
@@ -14,17 +14,22 @@ nella lunghezza della sequenza. Raddoppiare il testo quadruplica il lavoro. Da
 lì nascevano le finestre di contesto limitate e una vasta ricerca su come
 collegare le parti di un testo lungo senza convocare ogni volta l'assemblea
 plenaria. Le architetture di questi due capitoli sono una delle risposte più
-promettenti a quel problema. E la tesi che le tiene insieme, ripetuta di sezione
-in sezione, è una sola: sono tutte **reti ricorrenti lineari a stato di
-dimensione fissa**, che si addestrano in parallelo come un Transformer e fanno
+promettenti a quel problema. E la tesi che le tiene insieme, ripetuta di
+sezione in sezione, è una sola. Tengono tutte un riassunto che non si allarga
+mai, lo aggiornano parola per parola, e lo stesso conto lo sanno fare in due
+modi: tutto insieme quando c'è da imparare, un pezzo alla volta quando c'è da
+rispondere. In gergo si chiamano **reti ricorrenti lineari a stato di
+dimensione fissa**: si addestrano in parallelo come un Transformer e fanno
 inferenza un token alla volta a costo costante come una RNN.
 
 ## Un'unica famiglia
 
-Ricapitoliamo la convenzione che ci ha accompagnato. La memoria di tutte
-queste architetture funziona come uno schedario: a ogni parola si archivia una
+Ricapitoliamo l'immagine con cui il capitolo precedente ha descritto questa
+memoria. Funziona come uno schedario: a ogni parola si archivia una
 voce nuova, formata da un'**etichetta** e da un **contenuto**, e per rileggere
-si presenta un'etichetta e si riceve indietro ciò che le assomiglia di più.
+si presenta un'etichetta e si riceve indietro ciò che le assomiglia di più. Lo
+schedario ha un numero fisso di **cassetti**, sempre quello, e ogni voce nuova
+lascia un segno un po' in tutti.
 Prima di archiviare la voce nuova, però, quello che c'è già viene sbiadito un
 po': è la **transizione**, ed è l'unica cosa su cui le architetture di questi
 due capitoli sono davvero diverse fra loro. Da RetNet a Mamba, cambia come e
@@ -37,13 +42,18 @@ sempre lo stesso: una memoria che a ogni parola scrive una nuova voce e ne
 rilegge le vecchie. Cambiare architettura non vuol dire cambiare macchina, ma
 girare tre manopole. La prima decide **quanto è grande** la memoria. La
 seconda decide **come sbiadisce** il passato quando arriva il presente: si può
-tenere tutto senza dimenticare mai, sbiadire tutto in blocco della stessa
-quantità, sbiadire cassetto per cassetto in modo diverso, oppure (la versione
-più raffinata) cancellare *di mira* solo la vecchia voce che sta per essere
-riscritta. La terza manopola decide se queste scelte sono **fisse**, uguali
+non sbiadire affatto, sbiadire tutto in blocco della stessa quantità, sbiadire
+cassetto per cassetto in modo diverso, oppure (la versione più raffinata)
+cancellare *di mira* solo la vecchia voce che sta per essere riscritta. Non
+sbiadire affatto, però, non vuol dire tenere tutto: i cassetti restano quelli,
+le voci continuano ad ammucchiarsi una sopra l'altra, e più avanti in questa
+pagina vedremo che è il limite di fondo di tutta la famiglia. La terza manopola
+decide se queste scelte sono **fisse**, uguali
 per ogni parola, o se invece è la parola stessa a deciderle, momento per
 momento. RetNet, GLA, DeltaNet, Mamba: sono lo stesso apparecchio con le
-manopole in posizioni diverse. Nomi e sigle diversi per un solo schema.
+manopole in posizioni diverse. Nomi e sigle diversi per un solo schema. E le
+posizioni si combinano: c'è chi gira insieme la manopola dello sbiadire in
+blocco e quella del cancellare di mira, e si chiama **Gated DeltaNet**.
 
 `````
 
@@ -140,20 +150,24 @@ sono, alla lettera, due viste della stessa cosa.
 
 ## Il collo di bottiglia dello stato fisso
 
-Fin qui i pregi. Ora il limite, e va detto senza giri di parole, perché è
-strutturale e non un difetto d'implementazione: **uno stato di dimensione
-fissa non può fare tutto ciò che fa l'attenzione piena**. In particolare non
-regge il confronto sul *recall associativo esatto*: ritrovare, in un contesto
-lunghissimo, un dettaglio preciso letto centinaia di pagine prima.
+Fin qui i pregi. Ora il limite, che va detto senza giri di parole: **un
+riassunto di taglia fissa non può fare tutto ciò che fa l'attenzione piena**.
+Non è un difetto di come è stato costruito, di quelli che prima o poi qualcuno
+aggiusta: è la conseguenza dell'essere di taglia fissa. Il punto in cui si vede
+è ritrovare alla lettera, in un contesto lunghissimo, un dettaglio preciso
+letto centinaia di pagine prima; nel gergo del campo, il *recall associativo
+esatto*.
 
 `````{tab} Elementare
 
 La differenza è quella tra un quaderno di appunti e una biblioteca. L'attenzione
 piena dei Transformer è la biblioteca: conserva *ogni* parola letta, e quando le
 chiedi «cosa diceva esattamente quella frase a pagina 900?» va allo scaffale e la
-ripesca alla lettera. Il prezzo è lo spazio: la biblioteca cresce senza fine, un
-ripiano per ogni pagina, ed è esattamente il costo quadratico che volevamo
-evitare.
+ripesca alla lettera. Il prezzo è doppio. Prima lo spazio: la biblioteca cresce
+senza fine, un ripiano per ogni pagina. Poi, e conta di più, il lavoro: ogni
+pagina nuova va confrontata con tutte quelle che sono già sugli scaffali, e
+così un libro lungo il doppio non costa il doppio ma il quadruplo. È il costo
+quadratico che volevamo evitare.
 
 Le architetture di questi due capitoli sono invece un quaderno di appunti di
 taglia fissa. A ogni pagina che leggi aggiorni i tuoi appunti: riassumi,
@@ -162,7 +176,10 @@ pochissimo: resta sempre dello stesso spessore per quante pagine tu legga. Ma
 proprio perché non cresce, non può contenere tutto: se dopo mille pagine ti
 chiedo di **citare a memoria** una frase precisa di pagina 900, il quaderno ti
 dà il senso generale, non le parole esatte. Le hai riassunte, non trascritte.
-Questo è il compromesso: memoria che costa poco e non cresce, in cambio della
+Che sia proprio così lo si misura con due prove fatte apposta: nascondere una
+frase in un testo lunghissimo e chiedere di ripescarla alla lettera (è *l'ago
+nel pagliaio*), oppure riempire la memoria di centinaia di coppie nome-numero e
+chiedere a bruciapelo il numero di un nome qualsiasi. Questo è il compromesso: memoria che costa poco e non cresce, in cambio della
 rinuncia al ricordo alla lettera di ogni singolo dettaglio.
 
 `````
@@ -176,7 +193,9 @@ esistono più di $d$ direzioni mutuamente ortogonali. Attenzione a come si legge
 questo limite, perché la lettura sbagliata è la più comoda: l'interferenza fra
 associazioni **non compare oltre una soglia**. Come si è visto nel capitolo
 precedente, con chiavi casuali il *crosstalk* cresce da subito, come
-$\sqrt{N/d}$ nel numero $N$ di coppie scritte, e intorno a $N \approx d$ vale
+$\sqrt{N/d}$ nel numero $N$ di coppie scritte (in questa formula, e solo qui,
+$N$ conta le coppie: non è la dimensione dello stato di un SSM, che nel resto
+del capitolo porta la stessa lettera), e intorno a $N \approx d$ vale
 ormai quanto il valore che si sta cercando. Non c'è un punto in cui la memoria
 «si riempie»: c'è un degrado continuo, che a un certo punto diventa
 intollerabile per il compito che si ha davanti. L'attenzione piena non ha
@@ -203,12 +222,12 @@ conviene **non giocare da sole**.
 
 ## Il meglio dei due mondi: gli ibridi
 
-Se l'attenzione piena vince sul recall esatto e la ricorrenza lineare vince
-sul costo, la mossa ovvia è non scegliere. È la strada che ricorre in tutti i
-lavori recenti: le architetture **ibride**, che
-alternano **pochi strati di attenzione piena** a **molti strati lineari o
-SSM**. Pochi strati di biblioteca dove serve ritrovare alla lettera, molti
-strati di quaderno per tutto il resto. Il costo che cresce al quadrato non
+Se una delle due vince sul ricordo alla lettera e l'altra sul costo, la mossa
+ovvia è non scegliere: pochi strati di biblioteca dove serve ripescare la
+citazione esatta, molti strati di quaderno per tutto il resto. È la strada che
+ricorre in tutti i lavori recenti, e sono le architetture **ibride**: alternano
+**pochi strati di attenzione piena** a **molti strati lineari o
+SSM**. Il costo che cresce al quadrato non
 sparisce, ma lo paga una minoranza di strati, e finché il contesto non diventa
 smisurato pesa poco sul totale.
 
@@ -221,18 +240,20 @@ cronisti veloci che tengono il filo del racconto senza rileggersi ogni volta
 tutto l'archivio. La stragrande maggioranza del lavoro la fanno i cronisti, a
 costo basso; gli archivisti intervengono nei pochi momenti in cui l'esattezza
 è decisiva. Le architetture ibride sono organizzate così: qualche strato che
-conserva tutto e ricorda alla lettera, il resto a memoria costante. Non è un
-compromesso al ribasso, è la divisione dei compiti che oggi rende meglio.
+conserva tutto e ricorda alla lettera, il resto a memoria costante. Sono fatti
+così **Jamba** e **Samba**, e le versioni miste di architetture che abbiamo già
+incontrato. Non è un compromesso al ribasso, è la divisione dei compiti che
+oggi rende meglio.
 
 `````
 
 `````{tab} Superiore
 
 L'idea ricorre in tutti i lavori recenti, con dosaggi diversi. **Jamba**
-{cite}`lieber2024jamba` (AI21 Labs, 2024) intervalla strati di attenzione e
-strati Mamba in una proporzione sbilanciata verso questi ultimi, aggiungendo
-esperti selettivi (*mixture-of-experts*), e regge contesti molto lunghi con
-una occupazione di memoria contenuta. **Samba** {cite}`ren2024samba`
+(AI21 Labs, 2024) intervalla strati di attenzione e strati Mamba in una
+proporzione sbilanciata verso questi ultimi, aggiungendo esperti selettivi
+(*mixture-of-experts*), e regge contesti molto lunghi con una occupazione di
+memoria contenuta {cite}`lieber2024jamba`. **Samba** {cite}`ren2024samba`
 (Microsoft, 2024) combina strati Mamba con strati di **attenzione a finestra
 scorrevole** (*sliding-window attention*): l'attenzione locale copre il
 contesto ravvicinato, Mamba porta la memoria a lungo raggio, e insieme
@@ -263,17 +284,17 @@ nicchie diverse.
 Dove le ricorrenze lineari e gli SSM danno il meglio è chiaro, e sono
 territori di crescente importanza. Il **contesto lunghissimo**, dove il costo
 quadratico dell'attenzione piena diventa proibitivo e uno stato che non cresce
-è un enorme vantaggio. L'**inferenza a memoria costante**: un Transformer, per
-non rileggersi tutto a ogni parola che scrive, tiene da parte quello che ha già
-calcolato (è la *KV cache*, l'archivio delle etichette e dei contenuti di tutte
-le parole viste), e quell'archivio si gonfia a ogni parola generata; qui non
-serve, e la memoria occupata resta quella. È una differenza decisiva quando si
-serve il modello a molti utenti in parallelo. Gli scenari in **streaming**,
-dove i dati arrivano
-in flusso continuo e non si può rileggere tutto da capo a ogni passo. E i
+è un enorme vantaggio. Poi l'**inferenza a memoria costante**. Un Transformer,
+per non rileggersi tutto a ogni parola che scrive, tiene da parte quello che ha
+già calcolato: è la *KV cache*, l'archivio delle etichette e dei contenuti di
+tutte le parole viste, e si gonfia a ogni parola generata. Un modello a stato
+fisso non ne ha bisogno, e la memoria che occupa mentre scrive resta quella con
+cui è partito, il che è decisivo quando si serve il modello a molti utenti in
+parallelo. Poi gli scenari in **streaming**, dove i dati arrivano
+in flusso continuo e non si può rileggere tutto da capo a ogni passo. E infine i
 **dispositivi con poca memoria** (telefoni, sistemi embedded), dove una
-memoria fissa e prevedibile vale più di qualche punto di qualità sul retrieval
-esatto.
+memoria fissa e prevedibile vale più di qualche punto di qualità sul ricordo
+alla lettera.
 
 Conviene chiudere con la stessa prudenza con cui, nel capitolo sui
 Transformer, avevamo messo in guardia dalle profezie: questo campo brucia in
@@ -304,10 +325,10 @@ stesso scheletro sotto il prossimo nome che farà rumore.
   queste scelte sono fisse per ogni parola oppure decise dalla parola stessa,
   che è ciò che compra il ragionamento basato sul contenuto. Sbiadire e
   cancellare di mira la vecchia voce non sono uno il perfezionamento
-  dell'altro, fanno cose diverse, e c'è un'architettura che le usa tutt'e due
-  insieme: si chiama **Gated DeltaNet**, cioè DeltaNet con in più la manopola
-  dello sbiadire, quella che sbiadisce tutto in blocco (lo sbiadire cassetto
-  per cassetto, invece, non ci sta dentro: resta un ramo per conto suo).
+  dell'altro: fanno cose diverse, e c'è un'architettura che le usa tutt'e due
+  insieme, il **Gated DeltaNet**. È DeltaNet con in più la manopola dello
+  sbiadire, quella che sbiadisce tutto in blocco; lo sbiadire cassetto per
+  cassetto, invece, resta fuori anche da lui.
 - **La dualità** di Mamba-2 {cite}`dao2024mamba2` dimostra che uno *state space
   model* che sbiadisce tutto in blocco è esattamente un'attenzione lineare che
   guarda solo all'indietro: le due famiglie sono due viste della stessa cosa.

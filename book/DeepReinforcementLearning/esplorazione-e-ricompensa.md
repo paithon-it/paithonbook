@@ -1,17 +1,22 @@
 # Esplorazione e ricompensa: curiosità, ricompense rade, reward hacking
 
-Fra i 49 giochi Atari su cui DeepMind mise alla prova il DQN nel 2015, ce n'è
-uno dove l'agente che su decine di altri titoli reggeva il confronto con un
-collaudatore umano professionista colleziona un punteggio desolante: **zero**
-{cite}`mnih2015human`. Il gioco è *Montezuma's Revenge*, un platform del 1984:
-un esploratore in un tempio azteco deve scendere una scala, saltare una fune,
-scansare un teschio rotolante e raccogliere una chiave prima di ricevere il suo
-primo punto. Decine di mosse esatte, in sequenza, per un solo segnale di
-"bene". Un agente che sceglie mosse a caso non arriverà mai in fondo a quella
-catena: cadrà, morirà, e non vedrà mai una ricompensa da cui imparare. Il muro
-contro cui il DQN sbatté non è la percezione né la memoria: è
-l'**esplorazione** in un mondo dove le ricompense sono **rade**, o come si dice
-di solito **sparse**: capitano una volta ogni tanto e in mezzo non c'è niente.
+DeepMind mise alla prova il DQN su 49 giochi Atari, nel 2015, e su decine di
+essi l'agente resse il confronto con un collaudatore umano professionista. Su
+uno solo collezionò un punteggio desolante: **zero** {cite}`mnih2015human`.
+
+Il gioco è *Montezuma's Revenge*, un platform del 1984. Un esploratore in un
+tempio azteco deve scendere una scala, saltare una fune, scansare un teschio
+rotolante e raccogliere una chiave prima di ricevere il suo primo punto: decine
+di mosse esatte, in sequenza, per un solo segnale di «bene». Un agente che
+sceglie mosse a caso non arriverà mai in fondo a quella catena: cadrà, morirà, e
+non vedrà mai una ricompensa da cui imparare.
+
+Notare che cosa *non* è andato storto. Il DQN quello schermo lo vedeva
+benissimo, e i suoi conti li faceva come sugli altri quarantotto giochi. Il muro
+è un altro, ed è il tema di questa sezione: come si va a cercare qualcosa in un
+mondo dove le ricompense sono **rade**, o come si dice di solito **sparse**,
+cioè capitano una volta ogni tanto e in mezzo non c'è niente. Si chiama
+**esplorazione**.
 
 ## Il problema delle ricompense sparse
 
@@ -20,14 +25,18 @@ secondo, e l'agente ha un flusso costante di segnali da cui correggersi. Ma
 quando la ricompensa arriva solo dopo lunghe sequenze di azioni giuste (la
 chiave, la porta, il livello), il segnale diventa un ago in un pagliaio.
 Finché l'agente non inciampa *per caso* in quella prima ricompensa, non ha
-nulla che gli dica in che direzione andare. E la probabilità di inciamparci per
-caso crolla a precipizio con la lunghezza della catena: se a ogni passo ci sono
-otto mosse possibili e una sola è quella giusta, azzeccarne dieci di fila per
-puro caso capita una volta su un miliardo.
+nulla che gli dica in che direzione andare. E il conto di quanto sia improbabile
+inciamparci si fa a mente: se a ogni passo ci sono otto mosse possibili e una
+sola è quella giusta, azzeccarne dieci di fila vuol dire $8^{10}$, cioè una
+volta su un miliardo abbondante.
 
 Nel capitolo sul reinforcement learning abbiamo introdotto il dilemma
-esplorazione–sfruttamento e la strategia $\varepsilon$-greedy: agire quasi
-sempre secondo la stima migliore, ma ogni tanto scegliere a caso. Qui vediamo
+esplorazione–sfruttamento e la strategia detta
+$\varepsilon$-greedy: agire quasi sempre secondo la stima migliore, ma ogni
+tanto, con una piccola probabilità, scegliere a caso. Quella probabilità è la
+lettera greca $\varepsilon$ («epsilon»), che in matematica indica per tradizione
+una quantità piccola; e *greedy*, «goloso», è il resto del tempo, quando
+l'agente prende senza esitare la mossa che ha il voto più alto. Qui vediamo
 perché quella ricetta, in ambienti come Montezuma, non basta, e cosa si è
 inventato per andare oltre.
 
@@ -35,10 +44,10 @@ inventato per andare oltre.
 
 `````{tab} Elementare
 
-Immagina di esplorare una città enorme lanciando una monetina a ogni incrocio
-per decidere dove girare. Andrai avanti e indietro nello stesso quartiere per
-ore: il caso non ha memoria, non sa quali strade hai già battuto e quali no.
-Per raggiungere un vicolo lontano dieci svolte precise, la probabilità di
+Immagina di esplorare una città enorme tirando un dado a ogni incrocio per
+decidere dove girare. Andrai avanti e indietro nello stesso quartiere per ore:
+il caso non ha memoria, non sa quali strade hai già battuto e quali no. Per
+raggiungere un vicolo che sta a dieci svolte precise da qui, la probabilità di
 azzeccarle tutte tirando a sorte è minuscola.
 
 L'esplorazione casuale è così: agita le mani nel buio nei dintorni di dove sei
@@ -68,10 +77,12 @@ ricompensa dell'ambiente un **bonus** che premia la novità.
 
 ## Bonus di novità: premiare ciò che si visita di rado
 
-L'idea più intuitiva per un'esplorazione diretta ha una lunga storia nel RL
-tabellare {cite}`sutton2018reinforcement`: se uno stato è stato visitato poche
-volte, l'agente ne sa poco, quindi vale la pena andarci. Si aggiunge alla
-ricompensa un termine che decresce col numero di visite.
+L'idea più intuitiva è anche la più vecchia, e nasce ai tempi in cui i giudizi
+stavano in una tabella {cite}`sutton2018reinforcement`. Se in una certa
+situazione l'agente si è trovato poche volte, di quella situazione sa poco, e
+allora vale la pena andarci. Basta tenere il conto di quante volte ci è passato
+e aggiungere alla ricompensa un premietto che scende man mano che quel conto
+sale.
 
 `````{tab} Elementare
 
@@ -134,28 +145,55 @@ $0{,}5$ (è il `beta` scelto nel codice) e si divide per la radice quadrata di
 quante volte quello stato è stato visto, più uno. Lo stato mai visitato prende
 quindi $0{,}5$ diviso $1$, cioè il bonus massimo, $0{,}500$; quello battuto
 duecento volte prende $0{,}5$ diviso la radice di $201$, che vale poco più di
-quattordici, cioè $0{,}035$: quattordici volte meno. La ricompensa aumentata
-inclina l'agente verso l'ignoto senza toccare la regola con cui sceglie.
+quattordici, cioè $0{,}035$: quattordici volte meno.
+
+La radice quadrata, in quel conto, non è un capriccio: serve a far scendere il
+premio in fretta all'inizio e piano dopo. Fra zero visite e tre il premio si
+dimezza esatto, da $0{,}500$ a $0{,}250$, e la differenza si sente; fra cento e
+centotré scende da $0{,}0498$ a $0{,}0490$, cioè non cambia niente. Ed è giusto
+così: la centesima visita a un posto insegna molto meno della prima.
+
+Notare che cosa non è cambiato: la regola con cui l'agente sceglie è quella di
+sempre, prendere la mossa col voto più alto. È solo il voto ad avere adesso un
+pezzo in più, e l'agente si dirige verso l'ignoto credendo di dirigersi verso il
+guadagno. Non gli si è insegnata la curiosità: gliel'hanno pagata.
+
+Questo però funziona finché le situazioni si possono contare. Davanti allo
+schermo di un videogioco no: ogni schermata è unica, basta che un puntino si
+sposti e non l'hai mai vista prima, quindi il conto delle visite vale sempre
+uno e il premietto viene identico dappertutto, il che è come non darlo. La via
+d'uscita è smettere
+di contare e cominciare a **stimare**: si valuta quanto una schermata assomigli
+a quelle già viste, e da quella somiglianza si ricava un conteggio finto, uno
+*pseudo-conteggio*, che si usa al posto di quello vero. È così che, nel 2016,
+sono arrivati i primi progressi veri proprio su Montezuma's Revenge.
 
 ## Curiosità intrinseca: la sorpresa come ricompensa
 
-Contare le visite, anche per approssimazione, resta difficile. Un'idea più
-elegante ribalta la domanda: invece di chiederci *quante volte* abbiamo visto
-uno stato, chiediamoci *quanto ci sorprende*. Uno stato sorprendente (uno di
-cui non sappiamo prevedere le conseguenze) è, per definizione, uno da cui
-abbiamo ancora molto da imparare. La sorpresa diventa così una **ricompensa
-intrinseca**, generata dall'agente stesso, che affianca quella estrinseca
-dell'ambiente.
+Stimare un conteggio, però, resta un mestiere delicato. Un'idea più elegante
+ribalta la domanda: invece di chiederci *quante volte* abbiamo visto una
+situazione, chiediamoci *quanto ci sorprende*. Se non sappiamo prevedere che
+cosa succederà, vuol dire che di quel pezzo di mondo non abbiamo ancora capito
+il funzionamento, e sono proprio i posti da cui c'è da imparare. La sorpresa
+diventa così una ricompensa che l'agente si dà da sé, e che si somma a quella
+che gli dà il gioco.
 
-Di questa idea esistono due realizzazioni classiche, e vale la pena distinguerle
-perché la sorpresa la misurano in due modi diversi. La prima si chiama **ICM**
-(*Intrinsic Curiosity Module*, modulo di curiosità intrinseca): l'agente si
-costruisce un modello di «che cosa succederà se faccio questo», e ogni volta
-che sbaglia la previsione incassa un premietto. La seconda si chiama **RND**
-(*Random Network Distillation*): due reti fatte allo stesso modo, una congelata
-con pesi tirati a caso e mai toccati, l'altra che si allena a imitarla; dove
-l'imitazione riesce male, l'agente non è ancora passato abbastanza, e proprio
-quello scarto è la misura di novità.
+Di questa idea esistono due realizzazioni classiche, e la differenza sta tutta
+nel come misurano la sorpresa. La prima si chiama **ICM** (*Intrinsic Curiosity
+Module*, modulo di curiosità intrinseca): l'agente si costruisce una previsione
+di «che cosa succederà se faccio questo», e ogni volta che la sbaglia incassa un
+premietto.
+
+La seconda si chiama **RND** (*Random Network Distillation*) e sembra un gioco
+di prestigio, quindi conviene smontarla. Si prendono due reti fatte allo stesso
+modo. La prima ha i numeri interni tirati a caso e non si tocca più: data una
+schermata sputa fuori un altro numero, che non significa niente ed è però
+sempre lo stesso per la stessa schermata. La seconda rete ha un compito solo,
+indovinare che numero dirà la prima, e si allena a farlo sulle schermate per cui
+l'agente passa davvero. Ecco allora perché lo scarto fra le due misura la
+novità: dove l'agente è passato tante volte la seconda rete ha avuto tempo di
+imparare la risposta a memoria e sbaglia poco; su una schermata nuova non ha mai
+studiato quella risposta, e sbaglia parecchio.
 
 `````{tab} Elementare
 
@@ -249,8 +287,8 @@ def ricompensa_intrinseca(stati):
     with torch.no_grad():
         obiettivo = target(stati)            # output della rete casuale fissa
     previsione = predictor(stati)
-    # errore per-stato = novità: alto sugli stati poco visti. La media al posto
-    # della somma della formula cambia solo la scala, che poi si ritara comunque
+    # errore per ogni stato = novità: alto sugli stati poco visti.
+    # (media invece di somma: cambia solo la scala, e la scala si ritara a parte)
     return (previsione - obiettivo).pow(2).mean(dim=1)
 
 stati = torch.randn(8, 16)
@@ -276,22 +314,38 @@ Vuoi insegnare al robot a uscire dal labirinto e, per aiutarlo, gli dài un
 premietto ogni volta che si avvicina all'uscita. Sembra ragionevole. Ma se non
 stai attento, il robot può scoprire che gli conviene oscillare avanti e
 indietro davanti a una porta, incassando premietti all'infinito, senza mai
-uscire davvero. Gli hai insegnato a *inseguire il premietto*, non a uscire.
+uscire davvero. Gli hai insegnato a *inseguire il premietto*, non a uscire: hai
+cambiato il gioco senza accorgertene, ed è questo il rischio da cui ci si vuole
+difendere.
 
-Per fortuna esiste un modo sicuro di dare questi aiuti. L'idea, dovuta a Andrew
-Ng e colleghi nel 1999, è dare l'aiuto come *differenza di quota*: assegna a
-ogni posto un "livello di vicinanza all'uscita" e premia l'agente solo per la
-differenza di livello fra dove arriva e dove era. Sei alla quota $3$ e arrivi
-alla $5$: prendi $+2$. Torni indietro: prendi $-2$. Avanti e indietro fa zero,
-quindi oscillare davanti alla porta non frutta niente, e la strategia migliore
-resta esattamente quella di prima, solo più facile da trovare.
+Per fortuna esiste un modo di dare questi aiuti che quel rischio non ce l'ha,
+mai, comunque lo si usi. L'idea, dovuta ad Andrew Ng e colleghi nel 1999, è
+dare l'aiuto come *differenza di quota*. A ogni posto del labirinto si attacca
+un numero, la sua «quota», e si premia il robot soltanto per la differenza fra
+la quota di dove arriva e la quota di dove era. Sei alla quota $3$ e arrivi alla
+$5$: prendi $+2$. Torni indietro: prendi $-2$. Avanti e indietro fa zero, quindi
+oscillare davanti alla porta non frutta più niente.
 
-(Il conto torna così tondo se i premi lontani valgono quanto quelli vicini. Se
-il futuro conta un po' meno del presente, come succede quasi sempre, il giro
-chiuso non fa esattamente zero. La garanzia regge lo stesso, per una ragione un
-po' più sottile: sommando tutti i premietti di un percorso, alla fine sopravvive
-solo la quota del punto di partenza, che è la stessa per qualunque strategia e
-quindi non ne favorisce nessuna.)
+Verrebbe da obiettare: se so già dare a ogni posto un numero che dice quanto è
+vicino all'uscita, il labirinto non l'ho già risolto? Ed è qui la finezza:
+**la quota non deve essere giusta**. Può essere una stima grossolana, per
+esempio la distanza in linea d'aria dall'uscita, che ignora i muri e ogni tanto
+manda dalla parte sbagliata. Se la stima è buona il robot impara molto più in
+fretta, perché a ogni passo ha un segnale invece del buio; se è pessima non
+aiuta, e può anche fargli perdere tempo. Ma in nessuno dei due casi gli fa
+imparare la cosa sbagliata: la strategia migliore resta quella di prima. È
+tutto lì il valore della garanzia.
+
+(Un'ultima precisazione, per chi ha fatto il conto. Il «vado e torno fa zero»
+funziona così tondo solo se un premio incassato più tardi vale quanto uno
+incassato subito. Di solito non è così: come si è visto nel corridoio di Dyna,
+i premi lontani si scontano, cioè valgono un po' meno. Il conto giusto, allora,
+non è la somma nuda dei premietti: è quella somma con ciascun premietto già
+moltiplicato per quanto vale a quella distanza. E in *quella* somma i pezzi si
+cancellano di nuovo a due a due, perché ogni quota ci entra con lo stesso peso
+in positivo e in negativo. Alla fine sopravvive soltanto la quota della casella
+da cui si è partiti, che è la stessa per qualunque strategia: un vantaggio
+uguale per tutti non favorisce nessuno.)
 
 `````
 
@@ -332,7 +386,8 @@ l'apprendimento rendendo il segnale più denso, senza spostare l'obiettivo
 ## Reward hacking: la lettera contro l'intento
 
 Il pericolo intravisto con il reward shaping è in realtà molto più generale, e
-ha un nome: **reward hacking** (o *specification gaming*). L'agente ottimizza
+ha un nome: **reward hacking**, cioè «scassinare la ricompensa» (si dice anche
+*specification gaming*, «giocare sulle regole scritte»). L'agente ottimizza
 esattamente la ricompensa che gli abbiamo scritto, e proprio per questo trova
 scorciatoie che massimizzano quel numero tradendo del tutto ciò che
 intendevamo.
@@ -349,17 +404,20 @@ miglioramenti fino alla fine, anche molto dopo il punto in cui le cose hanno
 cominciato a peggiorare.
 ```
 
-Il punto di divergenza in {numref}`fig-reward-hacking` porta il nome di
-Charles Goodhart, l'economista che nel 1975, parlando di politica monetaria,
-osservò come una regolarità statistica tenda a rompersi non appena la si usa
-per governare qualcosa. La formulazione che tutti citano («quando una misura
-diventa un obiettivo, cessa di essere una buona misura») non è però sua: è
-dell'antropologa **Marilyn Strathern**, che la scrisse nel 1997 a proposito
-della valutazione delle università britanniche
-{cite}`strathern1997improving`, ed è quella che ha portato la legge fuori
-dall'economia. Vale per gli agenti come per le organizzazioni, e per la stessa
+Il punto di divergenza in {numref}`fig-reward-hacking` ha una formulazione
+celebre: «quando una misura diventa un obiettivo, cessa di essere una buona
+misura». Vale per gli agenti come per le organizzazioni, e per la stessa
 ragione: la misura era un buon indicatore *finché nessuno ci puntava contro
 tutto lo sforzo*.
+
+La legge porta il nome di Charles Goodhart, un economista britannico che nel
+1975 la osservò a proposito della moneta: le banche centrali usavano certi
+indicatori per capire come andasse l'economia, e quegli indicatori smisero di
+funzionare non appena si cominciò a governarli. Ma quella frase così memorabile
+non è sua: è dell'antropologa **Marilyn Strathern**, che la scrisse nel 1997
+studiando come si valutano le università britanniche
+{cite}`strathern1997improving`, ed è la formulazione che ha portato la legge
+fuori dall'economia.
 
 L'esempio diventato manifesto è di OpenAI {cite}`clark2016faulty`: in
 *CoastRunners*, un gioco di
@@ -415,15 +473,20 @@ l'agente a cercare.
 
 Con questo il capitolo si chiude, e quella frase vale anche per tutto ciò che lo
 precede. Dal DQN in avanti ogni sezione ha dato all'agente un pezzo di libertà
-in più, e subito dopo ha dovuto inventarsi come contenerla: la memoria delle
-esperienze e la copia congelata perché i valori non esplodessero, il guinzaglio
-di PPO perché non esplodesse la strategia, i sogni corti perché non esplodesse
-l'immaginazione, il recinto attorno all'archivio perché non esplodessero le
-stime su ciò che nessuno ha mai provato, l'esperto richiamato a etichettare
-perché l'allievo non finisse nel fosso. Il reward hacking è la stessa storia
-raccontata all'ultimo livello, quello dell'obiettivo. Con una differenza: lì il
-contenimento non è più un accorgimento tecnico, è una domanda su che cosa
-vogliamo davvero. Il capitolo sull'AI responsabile comincia da qui.
+in più, e subito dopo ha dovuto inventarsi come contenerla.
+
+L'elenco, riletto tutto insieme, è impressionante. Nella sezione su DQN, la
+memoria delle esperienze e la copia congelata, perché i voti non esplodessero.
+Nei gradienti di policy, il guinzaglio di PPO, perché non esplodesse la
+strategia. Nel RL basato su modello, i sogni corti, perché non esplodesse
+l'immaginazione. Nell'offline RL, il recinto attorno all'archivio, perché non
+esplodessero le stime su ciò che nessuno ha mai provato. Nell'imitazione,
+l'esperto richiamato a etichettare, perché l'allievo non finisse nel fosso.
+
+Il reward hacking è la stessa storia raccontata all'ultimo livello, quello
+dell'obiettivo, e con una differenza: qui il contenimento non è più un
+accorgimento tecnico, è una domanda su che cosa vogliamo davvero. Il capitolo
+sull'AI responsabile comincia da qui.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
@@ -444,9 +507,10 @@ vogliamo davvero. Il capitolo sull'AI responsabile comincia da qui.
   una previsione di come andrà a finire, e ogni volta che sbaglia la previsione
   incassa. Si spegne da sé: quando ha imparato, non c'è più sorpresa.
 - Aggiungere premietti intermedi per guidare l'agente (**reward shaping**)
-  funziona, ma solo se sono dati come *differenza di quota*: altrimenti il robot
-  scopre che gli conviene oscillare davanti alla porta incassando premietti,
-  senza mai uscire.
+  funziona, ma può cambiargli l'obiettivo sotto il naso: il robot scopre che gli
+  conviene oscillare davanti alla porta incassando premietti, senza mai uscire.
+  C'è però un modo di darli che quel rischio non ce l'ha mai, e sono le
+  *differenze di quota*.
 - Il pericolo grosso ha un nome, **reward hacking**: l'idraulico pagato a tubi
   sostituiti che comincia a sostituire tubi sani, la barca di *CoastRunners* che
   gira in tondo prendendo fuoco. Il problema non è che l'agente disobbedisce, è

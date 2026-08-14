@@ -12,9 +12,10 @@ non esiste, e «un gatto nero che salta sul muro» non esiste nemmeno come
 domanda: non è una classe, è una frase.
 
 Nel capitolo sulla visione abbiamo visto la via d'uscita standard, il
-**transfer learning**: si prende una rete pre-addestrata, si toglie la testa,
-se ne monta una nuova dimensionata sulle proprie classi e la si addestra su
-esempi etichettati a mano. Funziona, e resta il modo normale di costruire un
+**transfer learning**: si prende una rete pre-addestrata, si toglie la testa
+(l'ultimo strato, quello che sceglie fra le classi), se ne monta una nuova con
+tante uscite quante sono le proprie classi e la si addestra su esempi
+etichettati a mano. Funziona, e resta il modo normale di costruire un
 classificatore quando le classi sono poche e stabili. Ma il conto si paga ogni
 volta che l'elenco cambia: una classe in più vuole immagini nuove, etichette
 nuove, un addestramento nuovo e un modello nuovo da mettere in servizio. Quello
@@ -31,7 +32,10 @@ sul linguaggio abbiamo visto che una parola si può scrivere come un **vettore**
 cioè una fila di numeri, e che quelle file di numeri formano una **mappa del
 significato**: *gatto* e *felino* finiscono vicini, *gatto* e *mercoledì*
 lontanissimi, e quanto due cose siano vicine lo dice un solo numero fra $-1$ e
-$+1$. Lo spazio di cui parla questa sezione è quella mappa, con un'aggiunta:
+$+1$: più è alto, più le due cose si somigliano. Di numeri veri, misurati su un
+modello vero, ne vedremo qualcuno prima della fine della sezione, e non sono
+quelli che ci si aspetta. Lo spazio di cui parla questa sezione è quella mappa,
+con un'aggiunta:
 dentro non ci vanno soltanto le parole, ci vanno anche le fotografie. La foto di
 un gatto nero su un muro deve finire **più vicina** alla frase «un gatto nero su
 un muro» di quanto sia a «una scodella di minestra». Più vicina, si badi, non
@@ -54,25 +58,6 @@ La matrice è il compito. Ogni riga porta con sé una risposta giusta e tante
 sbagliate, e sono queste ultime, gratuite e numerose, a fare il grosso del
 lavoro.
 ```
-
-Il conto di {numref}`fig-clip-matrice` spiega perché conti tanto la dimensione
-del **batch**, cioè quante coppie si mettono sul tavolo insieme a ogni passo di
-addestramento (ci si torna più avanti in questa pagina). Con $N$ coppie ogni
-riga porta una risposta giusta e $N - 1$ sbagliate: raddoppiare il batch
-raddoppia le alternative sbagliate che ogni immagine deve scartare, e l'esame si
-fa più difficile.
-
-Le celle da riempire, però, sono $N^2$, e raddoppiando il batch diventano quattro
-volte tante. Attenzione a che cosa costa: non i prodotti fra numeri che riempiono
-la tabella, che accanto al lavoro dei due encoder sono briciole (gli encoder
-elaborano $N$ immagini e $N$ testi, e quel conto cresce del doppio insieme al
-batch). A crescere di quattro volte è **l'ingombro**: quella tabella va tenuta
-tutta insieme in memoria, e ogni riga, per fare la sua media, ha bisogno di tutte
-le colonne, cioè anche dei risultati calcolati sulle altre schede grafiche, che
-vanno quindi radunati a ogni passo. La difficoltà dell'esame cresce del doppio,
-l'ingombro per prepararlo di quattro volte: è questa forbice a rendere cari i
-batch molto grandi, ed è esattamente il nodo che una variante successiva
-scioglierà.
 
 `````{tab} Elementare
 
@@ -133,6 +118,14 @@ allontanando ciò che non va insieme.
 
 `````
 
+Adesso che il gioco è chiaro, il conto di {numref}`fig-clip-matrice` dice perché
+conti tanto la dimensione del **batch**, cioè quante coppie si mettono sul
+tavolo insieme a ogni passo di addestramento. Con $N$ coppie ogni riga porta una
+risposta giusta e $N - 1$ sbagliate: raddoppiare il batch raddoppia le
+alternative sbagliate che ogni immagine deve scartare, e l'esame si fa più
+difficile. Quanto costi tenere il tavolo grande lo vediamo fra poco, perché è il
+vincolo che decide la forma di tutto il metodo.
+
 ```{figure} ../figures/vlm-contrastivo.svg
 :name: fig-vlm-contrastivo
 :alt: A sinistra due torri, l'encoder delle immagini e l'encoder del testo, che producono ciascuno un vettore normalizzato; le due frecce convergono in uno spazio condiviso rappresentato come una sfera unitaria su cui i due vettori sono vicini. A destra la matrice quattro per quattro delle similarità coseno del batch, con la diagonale piena di terracotta e i valori più alti, e tutte le altre celle chiare con valori bassi.
@@ -146,9 +139,9 @@ sembra.
 ```
 
 La {numref}`fig-vlm-contrastivo` mostra la struttura che ne esce, ed è tutta la
-sezione in un disegno. Le due torri lavorano indipendenti, non si scambiano
-niente durante il calcolo, e si incontrano solo alla fine, in un prodotto
-scalare. Da un batch di $N$ coppie nasce una matrice $N \times N$ di
+sezione in un disegno. Le due reti (si chiamano **torri**, perché ciascuna è una
+pila di strati che lavora per conto suo) non si scambiano niente durante il
+calcolo, e si incontrano solo alla fine, in un prodotto scalare. Da un batch di $N$ coppie nasce una matrice $N \times N$ di
 similarità: sulla diagonale le coppie vere, ovunque altrove i **negativi**,
 cioè gli abbinamenti sbagliati che il caso ha messo insieme nello stesso batch.
 
@@ -157,7 +150,8 @@ cioè gli abbinamenti sbagliati che il caso ha messo insieme nello stesso batch.
 A questo punto serve una **funzione di costo** che dica al modello che cosa fare
 di quella tabella (in inglese si chiama *loss*, ed è il nome che si sente più
 spesso; in questa sezione le due parole indicano la stessa cosa). La richiesta è
-semplice da enunciare: la diagonale in alto, tutto il resto in basso. Il modo di
+semplice da enunciare: i numeri sulla diagonale devono salire, tutti gli altri
+scendere. Il modo di
 ottenerlo è la vecchia conoscenza di questo libro, la **cross-entropy**, cioè il
 modo di misurare quanto si paga caro sbagliare una domanda a risposta multipla,
 applicata qui a una domanda a risposta multipla che il batch costruisce da solo.
@@ -263,27 +257,31 @@ $0{,}15$):
 Guarda la prima riga: la coppia giusta somiglia $0{,}30$, la migliore delle
 sbagliate $0{,}10$. Differenze piccole, e il mestiere della **temperatura** è
 decidere quanto pesano: è una manopola che amplifica le differenze fra i
-punteggi prima di trasformarli in percentuali di fiducia, e più è bassa, più
-amplifica.
+punteggi prima di trasformarli in percentuali di fiducia, ed è girata
+all'incontrario: più il suo numero è basso, più amplifica.
 
 Con la temperatura di partenza di CLIP, che è bassa ($0{,}07$), quel piccolo
-vantaggio viene ingigantito, e i passaggi si possono seguire con una
+vantaggio viene ingigantito, e i passaggi si possono rifare con una
 calcolatrice. Primo: si divide ogni somiglianza per la temperatura, cioè la si
 moltiplica per quattordici e rotti. La riga diventa $4{,}3$, poi $1{,}4$, $0{,}7$
-e $0{,}3$. Secondo: quei numeri si trasformano in fiducia con un'operazione che
-gonfia i grandi molto più dei piccoli, e $4{,}3$ diventa $72{,}7$ mentre $1{,}4$
-diventa appena $4{,}2$ (poi $2{,}0$ e $1{,}3$). Terzo: si guarda che fetta è
-ciascuno del totale, che è $80{,}2$: alla coppia giusta va $72{,}7$ su $80{,}2$,
-cioè il **91%** della fiducia.
+e $0{,}3$. Secondo: quei numeri si trasformano in fiducia con l'**esponenziale**,
+il tasto $e^x$, che gonfia i grandi molto più dei piccoli: $4{,}3$ diventa
+$72{,}7$ mentre $1{,}4$ diventa appena $4{,}2$ (poi $2{,}0$ e $1{,}3$). Terzo:
+si guarda che fetta è ciascuno del totale, che è $80{,}2$: alla coppia giusta va
+$72{,}7$ su $80{,}2$, cioè il **91%** della fiducia.
 
-Il costo della riga è tanto più basso quanto più alta è quella fetta: al 91% vale
-$0{,}099$, e se il modello tirasse a caso, dando il 25% a ciascuna delle quattro,
-varrebbe $1{,}386$. Facendo la media sulle quattro righe, e poi anche sulle
-colonne, il costo complessivo è $0{,}148$.
+Il costo della riga si ricava da quella fetta con il logaritmo naturale (il
+tasto $\ln$, che disfa quello che fa l'esponenziale), cambiato di segno perché
+venga un numero positivo: più alta è la fetta, più basso è il costo. Al 91% vale $0{,}099$; se
+il modello tirasse a caso, dando il 25% a ciascuna delle quattro, varrebbe
+$1{,}386$. Facendo la media sulle quattro righe, e poi anche sulle colonne, il
+costo complessivo è $0{,}148$.
 
-Ora alziamo la manopola a $0{,}5$, senza toccare una sola somiglianza.
-L'amplificazione quasi sparisce: alla coppia giusta va il 35% della fiducia e
-alle tre sbagliate poco meno, fra il 20 e il 24. Il costo sale a $1{,}082$;
+Ora portiamo la manopola da $0{,}07$ a $0{,}5$, senza toccare una sola
+somiglianza. Siccome è girata all'incontrario, alzarne il numero *riduce*
+l'amplificazione, che infatti quasi sparisce: alla coppia giusta va il 35% della
+fiducia e alle tre sbagliate poco meno, fra il 20 e il 24. Il costo sale a
+$1{,}082$;
 per confronto, tirare a caso fra quattro didascalie costerebbe $1{,}386$.
 Stessa tabella, stesso ordine corretto: con la manopola alta si paga quasi
 quanto tirando a caso, con quella bassa un decimo.
@@ -321,22 +319,36 @@ correggere.
 
 `````{tab} Elementare
 
-La temperatura è la severità dell'esaminatore. Un esaminatore mite (temperatura
-alta) dà a tutte le risposte voti simili: passi anche se la tua risposta giusta
-era di poco davanti alle altre, e quindi non hai motivo di migliorare. Un
-esaminatore severo (temperatura bassa) amplifica ogni differenza: se la
-didascalia giusta è appena più vicina di una sbagliata, per lui è quasi un
-errore, e il modello viene spinto ad allargare quel margine. Nei conti di
-prima, lo stesso identico compito costava $0{,}15$ con l'esaminatore severo e
-$1{,}08$ con quello mite.
+La temperatura decide quanto l'esaminatore distingue. Un esaminatore mite
+(temperatura alta) dà a tutti voti quasi uguali: che la risposta giusta fosse
+nettamente davanti alle altre o appena appaiata, il voto cambia pochissimo, e
+allora non hai nessun motivo di allargare quel vantaggio. Un esaminatore severo
+(temperatura bassa) amplifica ogni differenza: essere appena davanti vale molto,
+essere appena dietro costa moltissimo, e il modello viene spinto ad allargare il
+margine. È per questo che nei conti di prima lo stesso identico compito costava
+$0{,}15$ con l'esaminatore severo, che quel piccolo vantaggio l'ha visto e
+premiato, e $1{,}08$ con quello mite, che non se n'è nemmeno accorto.
 
 La cosa curiosa è che questa severità non la sceglie chi progetta: è un numero
-che il modello **impara** insieme a tutto il resto, come i pesi. E c'è un
+che il modello **impara** insieme a tutto il resto, come i pesi. E siccome
+abbassarla fa scendere il costo da sola, senza che il modello abbia imparato
+niente, le si mette un fondo oltre il quale non può andare, altrimenti
+l'addestramento si accontenterebbe di quello. E c'è un
 secondo ingrediente altrettanto poco appariscente: quante didascalie sbagliate
 ci sono nel mucchio. Indovinare fra quattro è facile, e un modello che sbaglia
 poco impara poco. Indovinare fra trentamila è tutta un'altra cosa, e trentamila
 è esattamente l'ordine di grandezza che CLIP usa: il batch non è una scelta di
 ingegneria, è la difficoltà dell'esame.
+
+Il mucchio grande, però, costa, e costa in un modo storto. Le caselle da
+riempire sono $N$ righe per $N$ colonne: se le coppie raddoppiano, le caselle
+diventano quattro volte tante, e vanno tenute tutte insieme sotto gli occhi,
+perché per dare le percentuali di una riga bisogna avere davanti la riga intera.
+Trentamila coppie in memoria a una macchina sola non ci stanno: il lavoro si
+spezza fra centinaia di schede grafiche, e a ogni passo i pezzi vanno radunati e
+poi ridistribuiti. La difficoltà dell'esame cresce del doppio, l'ingombro per
+prepararlo di quattro volte, ed è questa forbice a rendere cari i mucchi molto
+grandi. È anche il nodo che l'ultima parte della sezione scioglierà.
 
 `````
 
@@ -378,8 +390,9 @@ una variante successiva scioglie.
 ## La loss in dieci righe
 
 Tradotta in PyTorch, tutta la sezione sta in una funzione. Gli embedding
-arrivano dai due encoder come due matrici $(N, d)$; il resto è normalizzazione,
-un prodotto matriciale e due cross-entropy.
+arrivano dai due encoder come due matrici $(N, d)$, cioè $N$ righe (una per
+elemento del batch) lunghe $d$ numeri ciascuna; il resto è normalizzazione, un
+prodotto matriciale e due cross-entropy.
 
 ```python
 import torch
@@ -439,8 +452,8 @@ l'immagine $i$.
 
 Conviene tornare sulla parola «vicino», perché presa alla lettera inganna. Fin
 qui si è detto che una foto e la sua didascalia finiscono vicine sulla mappa.
-Vicine quanto? La risposta si misura in dieci righe di codice, e non è quella che
-ci si aspetta.
+Vicine quanto? La risposta è stata misurata su un modello CLIP pubblico, e non è
+quella che ci si aspetta.
 
 `````{tab} Elementare
 
@@ -453,7 +466,9 @@ vicina a una foto che non c'entra niente che alla frase che la descrive.
 
 Non è un guasto, e non impedisce al meccanismo di funzionare: sulle stesse
 ottanta immagini, con quel compito facile a dieci categorie, il classificatore
-scritto a parole indovina quasi nove volte su dieci. Funziona perché il
+scritto a parole (si scrivono le dieci categorie come dieci frasi e si tiene la
+più vicina: è il trucco della prossima sezione) indovina quasi nove volte su
+dieci. Funziona perché il
 confronto che conta non è mai «foto contro frase, in assoluto»: è sempre
 «questa foto, con quale delle dieci frasi va meglio?». Fra le frasi la
 graduatoria è giusta, ed è tutto quello che serve.
@@ -547,8 +562,8 @@ la ragione è che il modello ha imparato dalle didascalie del web, che sono
 frasi, non parole isolate; presentargli una parola secca è come parlargli in una
 lingua un po' diversa da quella su cui si è allenato. E poi c'è l'ambiguità:
 «gru» da sola può essere l'uccello o la macchina da cantiere, mentre «una foto
-di una gru, l'uccello» chiude la questione. Sistemare la frase vale, su
-ImageNet, poco più di un punto percentuale.
+di una gru, l'uccello» chiude la questione. Sistemare la frase vale, su ImageNet, poco più
+di un punto di risposte giuste in più.
 
 Il secondo trucco sta nel non fidarsi di una formulazione sola.
 Della stessa classe si scrivono ottanta frasi diverse («una foto di un gatto»,
@@ -604,9 +619,10 @@ vedremo nel capitolo sui modelli di diffusione.
 
 `````
 
-## Una sigmoide al posto della softmax
+## Sì o no, una casella alla volta
 
-Il vincolo lasciato in sospeso poco fa nasce tutto dalla forma dell'esame. Per
+Il vincolo lasciato in sospeso quando si parlava del mucchio nasce tutto dalla
+forma dell'esame. Per
 dare le percentuali di una riga bisogna avere sotto gli occhi la riga intera,
 cioè tutte le didascalie del gruppo; e se il gruppo è spalmato su duecento schede
 grafiche, ogni passo di addestramento comincia radunando i risultati di tutte e
@@ -626,12 +642,14 @@ insieme, sì o no?». Sedici domandine al posto di quattro interrogazioni.
 Il guadagno è che per rispondere a una non serve sapere niente delle altre.
 Nessuno deve più radunare la riga intera, il lavoro si può spezzare in pezzi che
 viaggiano per conto proprio, e soprattutto cade l'obbligo del mucchio enorme:
-l'esame a scelta multipla, per essere difficile, il mucchio grande lo pretendeva;
-una domanda sì-o-no è difficile da sola.
+l'esame a scelta multipla, per essere difficile, il mucchio grande lo
+pretendeva; una domanda sì-o-no si regge da sé. Non che il mucchio grande faccia
+male: semplicemente smette di essere obbligatorio.
 
 Un guaio però c'è, ed è di proporzioni. In una tabella di quattro per quattro le
-caselle da «sì» sono quattro e quelle da «no» dodici; con quattromila immagini
-per volta diventano quattromila «sì» contro quasi sedici milioni di «no». Chi
+caselle da «sì» sono quattro e quelle da «no» dodici; con un mucchio da
+quattromila coppie diventano quattromila «sì» contro quasi sedici milioni di
+«no». Chi
 rispondesse «no» a tutto avrebbe quasi sempre ragione senza aver imparato niente,
 e le prime ore di addestramento se ne andrebbero tutte a scoprire questa
 sciocchezza. Il rimedio è dirgliela in partenza: si regala al modello la
@@ -678,20 +696,22 @@ una coppia sola. Non c'è più niente da normalizzare su tutto il batch, il
 calcolo si può spezzare in blocchi che si scambiano gli embedding a turno, e
 soprattutto la qualità dell'addestramento smette di dipendere dall'avere un
 batch enorme. Sul
-proprio impianto gli autori misurano due soglie: sotto le sedicimila coppie la
-sigmoide stacca la softmax di parecchio, e oltre le trentaduemila nessuna delle
-due guadagna più molto. Sono i numeri di quelle prove, non costanti di natura, e
-a un altro modello su altri dati verranno diversi; quello che non dipende dai
-numeri è la direzione, cioè che alla dimensione del batch viene tolto il ruolo
-di prerequisito. È lo stesso allineamento, ottenuto togliendo un vincolo invece
-di aggiungere un pezzo.
+proprio impianto gli autori misurano due soglie: sotto le sedicimila coppie il
+metodo a domande sì-o-no stacca di parecchio quello a scelta multipla, e oltre
+le trentaduemila nessuno dei due guadagna più molto. Sono i numeri di quelle
+prove, non costanti di natura, e a un altro modello su altri dati verranno
+diversi; quello che non dipende dai numeri è la direzione, cioè che alla
+dimensione del batch viene tolto il ruolo di prerequisito. È lo stesso
+allineamento, ottenuto togliendo un vincolo invece di aggiungere un pezzo.
 
 Vale la pena registrare anche un risultato di metodo, arrivato negli stessi mesi
-di CLIP: ALIGN {cite}`jia2021scaling` ha addestrato la stessa architettura a due
-torri su oltre un miliardo di coppie immagine-testo raccolte senza costosi
-passaggi di filtraggio, praticamente il web così com'è. Il messaggio, che sono
-gli autori stessi a formulare, è che la scala del corpus compensa il suo
-rumore: la curatela dei dataset di visione non è un prerequisito del metodo.
+di CLIP. ALIGN {cite}`jia2021scaling` ha addestrato le stesse due reti su oltre
+un miliardo di coppie prese dal web così com'è, senza i costosi passaggi di
+pulizia con cui di solito si prepara un archivio di immagini. Molte di quelle
+didascalie con la loro fotografia c'entrano poco o niente; il messaggio, che
+sono gli autori stessi a formulare, è che quando le coppie sono così tante la
+sciatteria di ciascuna pesa meno. Ripulire l'archivio non è un
+prerequisito del metodo.
 
 ## Uno spazio allineato non è uno spazio che capisce
 
@@ -713,14 +733,16 @@ compito di appaiarle correttamente. Si misura in tre modi: scegliere la
 didascalia giusta per ciascuna delle due immagini, scegliere l'immagine giusta
 per ciascuna delle due didascalie, e riuscire in tutte e quattro le scelte
 insieme. Le prime due misure chiedono di indovinare *entrambe* le volte fra due
-possibilità, quindi tirando a caso si prende il 25%; la terza chiede di
-ordinare correttamente quattro punteggi, e a caso si prende un sesto, cioè il
-16,7%. Il risultato dello studio, enunciato dagli autori stessi, è che nessuno
-dei modelli provati fa molto meglio del caso; sulle due misure più difficili
-sono tutti *sotto* il livello del caso. (Sulla prima delle tre, la più facile,
-qualcuno il caso lo stacca, ed è l'unica in cui succede: chi va a guardare la
-tabella dello studio trova una colonna che sembra smentire la frase, e sono le
-altre due a contare.) Non è una classifica fra prodotti: è la misura di un
+possibilità, quindi tirando a caso si prende il 25%; la terza chiede le prime
+due insieme, e a caso si prende un sesto, cioè il 16,7% (è il livello del caso
+che lo studio stesso riporta). Il risultato, enunciato dagli autori, è che
+nessuno dei modelli provati fa molto meglio del caso; sulle due misure più
+difficili, cioè scegliere l'immagine giusta e riuscire in tutte e quattro le
+scelte insieme, sono tutti *sotto* il livello del caso, il che non è sfortuna:
+vuol dire che qualcosa li spinge sistematicamente verso la risposta sbagliata. (Sulla prima delle tre, quella in cui si sceglie la
+didascalia, qualcuno il caso lo stacca, ed è l'unica in cui succede: chi va a
+guardare la tabella dello studio trova quella colonna e crede che la frase sia
+smentita, mentre sono le altre due a contare.) Non è una classifica fra prodotti: è la misura di un
 limite che riguarda la famiglia.
 
 La ragione è strutturale, e sta nel gioco stesso che abbiamo descritto: il
@@ -732,8 +754,9 @@ una scodella di minestra, riconoscere «gatto» e «muro» è più che sufficien
 capire *chi sta sopra chi* non porta nessun vantaggio. La strada più economica
 verso un costo basso è trattare la didascalia come un **sacco di concetti**, e
 l'ottimizzazione, che è pigra per mestiere, la prende. La sintassi, le
-relazioni spaziali, il conteggio, la negazione (una didascalia con «senza» resta
-vicinissima alla stessa senza il «senza») sono i primi a rimanere fuori.
+relazioni spaziali, il conteggio, la negazione (togliere un «senza» da una
+didascalia le rovescia il significato e non la sposta quasi per niente sulla
+mappa) sono i primi a rimanere fuori.
 
 Che sia davvero il gioco a produrre quel comportamento, e non un difetto delle
 reti, lo si è dimostrato con un esperimento di una semplicità disarmante
@@ -741,19 +764,19 @@ reti, lo si è dimostrato con un esperimento di una semplicità disarmante
 **mescolano le parole**, si rifà la ricerca per immagini, e il risultato non
 peggiora. Se l'ordine si può buttare via senza pagare pegno, l'ordine il compito
 non lo chiedeva. Lo stesso lavoro mostra anche il rovescio, che è la parte utile:
-aggiungendo al mucchio, come didascalie sbagliate, delle **versioni permutate
-della didascalia giusta**, la stessa identica rete impara l'ordine. Il limite
+aggiungendo al mucchio, come didascalie sbagliate, la **didascalia giusta con le
+parole rimescolate**, la stessa identica rete impara l'ordine. Il limite
 non era dell'architettura, era di quello che le si chiedeva di distinguere.
 
 Due precisazioni, per onestà. La prima è che quegli esempi, scelti a mano
 perché siano difficili, lo sono anche per altre ragioni (alcuni chiedono
-conoscenza del mondo, altri sono visivamente ostici), e quindi misurano la
-composizionalità insieme a qualcos'altro: il fenomeno è solido, la sua
-quantificazione esatta lo è meno. La seconda è che un limite parallelo viene
-dalla forma della rappresentazione: un'intera immagine finisce in **un solo**
-vettore da qualche centinaio di dimensioni, e un vettore solo non può portare
-insieme la scena, la posizione di ogni oggetto e il testo scritto su un
-cartello. Il dettaglio fine e i documenti sono un problema a parte, e li
+conoscenza del mondo, altri sono visivamente ostici), e quindi quel che misurano non è soltanto il
+saper mettere insieme i pezzi di una frase (la **composizionalità**): è quello,
+più qualcos'altro. Il fenomeno è solido, la sua quantificazione esatta lo è
+meno. La seconda è che un limite parallelo viene
+dalla forma della rappresentazione: un'intera immagine finisce in **una sola**
+fila di qualche centinaio di numeri, e una fila sola non può portare insieme la
+scena, la posizione di ogni oggetto e il testo scritto su un cartello. Il dettaglio fine e i documenti sono un problema a parte, e li
 affronta la sezione sulla risoluzione.
 
 Da qui in avanti il capitolo prova a superare entrambi i limiti nello stesso
@@ -785,8 +808,9 @@ che sa solo leggere è la prossima sezione.
   chiede a ogni casella «voi due andate insieme?»: nessuno deve più radunare
   tutta la riga, e il mucchio enorme non serve più.
 - Immagini e parole finiscono sulla stessa mappa, ma in **due quartieri
-  separati**: la coppia giusta è più vicina di tutte le altre coppie, e questo
-  basta a farla vincere, ma non è mai vicina quanto due fotografie fra loro. I
+  separati**: la coppia giusta è più vicina di qualunque altra coppia foto-frase,
+  e questo basta a farla vincere, ma non è mai vicina quanto due fotografie fra
+  loro. I
   numeri si confrontano fra pari, mai una foto con una frase in assoluto.
 - Appaiare non è capire: al gioco si vince riconoscendo gli oggetti, quindi «il
   gatto sotto il tappeto» e «il tappeto sotto il gatto» restano indistinguibili.

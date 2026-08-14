@@ -3,13 +3,17 @@
 C'è stato un periodo, tra il 2011 e il 2016, in cui per fare deep learning
 all'avanguardia conveniva imparare **Lua**, un linguaggio di scripting nato in
 Brasile e famoso soprattutto per gli *addon* di World of Warcraft. Il motivo
-si chiamava **Torch**: una libreria di calcolo scientifico potente e veloce,
-usata dal gruppo di Yann LeCun alla New York University e nei primi anni di
-DeepMind, ma scritta appunto in Lua. Nel 2016, nei laboratori di Facebook AI
-Research (oggi Meta AI), un piccolo gruppo (tra cui lo stagista Adam Paszke,
-Sam Gross e Soumith Chintala) decise di rifare l'interfaccia da zero in
-Python, conservando il motore di calcolo. Il risultato, rilasciato in beta
-pubblica a inizio 2017, si chiama **PyTorch** {cite}`paszke2019pytorch`. In
+si chiamava **Torch**, una libreria di calcolo scientifico potente e veloce. Il
+termine tornerà spesso: una *libreria*, in informatica, è una cassetta di
+attrezzi già pronti che qualcun altro ha scritto e che tu chiami dal tuo
+programma invece di rifarli da capo. Quella cassetta la usavano il gruppo di
+Yann LeCun alla New York University e i primi anni di DeepMind, ed era scritta
+appunto in Lua. Nel 2016, nei laboratori di Facebook AI Research (oggi Meta
+AI), un piccolo gruppo (tra cui lo stagista Adam Paszke, Sam Gross e Soumith
+Chintala) decise di rifare da zero la parte con cui ci si parla, il manico
+degli attrezzi, riscrivendola in Python e lasciando intatto il motore di
+calcolo sotto. Il risultato, uscito in versione di prova a inizio 2017, si
+chiama **PyTorch** {cite}`paszke2019pytorch`. In
 pochi anni è diventato lo strumento standard della ricerca mondiale
 sull'intelligenza artificiale: la quasi totalità dei modelli pubblicati su
 Hugging Face (il grande archivio pubblico dove la comunità condivide i propri
@@ -57,24 +61,29 @@ punto la storia ha dato ragione a PyTorch.
 
 ## Perché ha vinto nella ricerca
 
-Nel 2017 TensorFlow dominava e PyTorch era l'ultimo arrivato; cinque anni dopo
-i rapporti si erano invertiti, almeno nei laboratori, dove ormai la grande
-maggioranza degli articoli che dichiarano quale libreria hanno usato dichiara
-questa. Le ragioni sono meno misteriose di quanto sembri: un ricercatore passa
-le giornate a *provare idee strane*, e uno
-strumento che si lascia ispezionare riga per riga, che non chiede di imparare
-un secondo linguaggio mentale oltre a Python, fa risparmiare esattamente il
-tempo che conta. Attorno a questa comodità è cresciuto un circolo virtuoso: i
+Nel 2017 il posto di PyTorch era già occupato. Lo teneva **TensorFlow**, la
+libreria di Google, uscita nel 2015 e allora usata praticamente da tutti: era
+lei lo strumento con cui si faceva deep learning, e PyTorch era l'ultimo
+arrivato. Cinque anni dopo i rapporti si erano invertiti, almeno nei
+laboratori, dove ormai la maggior parte degli articoli scientifici dichiara di
+aver usato PyTorch.
+
+Le ragioni sono meno misteriose di quanto sembri. Un ricercatore passa le
+giornate a *provare idee strane*, e quasi sempre a sbagliarle: gli serve uno
+strumento che si lasci aprire e guardare dentro riga per riga, mentre gira. Con
+un grafo da scrivere tutto in anticipo, invece, si finisce per pensare in due
+lingue insieme, Python e quella del grafo, e il tempo che si perde è quello
+buono. Attorno a questa comodità è cresciuto un circolo virtuoso: i
 paper pubblicano codice PyTorch, chi vuole riprodurli usa PyTorch, le librerie
 di alto livello (Hugging Face Transformers, PyTorch Lightning, torchvision)
 nascono PyTorch-first. Nel 2022 Meta ha ceduto il progetto alla neonata
 **PyTorch Foundation** sotto la Linux Foundation: da progetto aziendale a bene
 comune dell'ecosistema, com'era successo a Linux stesso.
 
-Onestà impone di dire che non ha vinto *ovunque*: TensorFlow resta diffuso in
-produzione industriale e su mobile, e i concetti (tensori, strati, gradienti,
-ottimizzatori) sono identici nei due mondi. Imparato uno, l'altro si legge
-senza fatica.
+Onestà impone di dire che non ha vinto *ovunque*: TensorFlow resta diffuso
+dove il modello non si studia più ma si usa per lavoro, dentro i sistemi di
+un'azienda o dentro un'app del telefono. E i concetti sono identici nei due
+mondi: imparato uno, l'altro si legge senza fatica.
 
 ## Lo stack: Python sopra, C++ sotto
 
@@ -114,29 +123,38 @@ lavoro è netta: Python decide *cosa* calcolare, il motore C++ decide *come*.
 
 ## Installazione e primo contatto
 
-PyTorch si installa come qualunque pacchetto Python; sul sito ufficiale
-(`pytorch.org`) un selettore genera il comando adatto a sistema operativo e
-GPU. Per tutto questo capitolo basta la versione CPU, ed è una riga:
+Due parole prima del comando, perché compaiono subito e conviene averle. La
+**GPU** è la scheda grafica, il chip nato per i videogiochi che si è rivelato
+bravissimo a fare tanti conti identici tutti insieme; **CUDA** è il nome che
+NVIDIA, che quelle schede le costruisce, dà al modo in cui i programmi le
+parlano (per questo nel codice il dispositivo si chiamerà `"cuda"` e non
+`"gpu"`). La prossima sezione riprende entrambe con calma.
+
+PyTorch si installa come qualunque pacchetto Python, cioè scrivendo una riga
+nel **terminale**, la finestra in cui si danno comandi scritti al computer; sul
+sito ufficiale (`pytorch.org`) un selettore genera la riga adatta al proprio
+sistema operativo e alla propria scheda. Per tutto questo capitolo basta la
+versione senza GPU:
 
 ```bash
 pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
 ```
 
+I pacchetti sono due: `torch` è PyTorch, `torchvision` è la sua cassetta di
+attrezzi per le immagini (dataset pronti, trasformazioni, modelli
+pre-addestrati), e serve dalla sezione sull'addestramento in poi.
+
 L'indirizzo in coda conviene non saltarlo. Su Linux il pacchetto che `pip`
-scarica di default si porta dentro le librerie CUDA di NVIDIA: qualche
-gigabyte che su una macchina senza scheda grafica non serve a niente, e che
-paghi in banda e in disco senza accorgertene. Su Windows e su macOS il
-pacchetto predefinito è già quello per la sola CPU, e la riga si accorcia a
+(il programma che scarica e installa le librerie di Python) prende di sua
+iniziativa si porta dentro le librerie CUDA: qualche gigabyte che su una
+macchina senza scheda grafica non serve a niente, e che paghi in banda e in
+disco senza accorgertene. Su Windows e su macOS il pacchetto predefinito è già
+quello per la sola CPU, e la riga si accorcia a
 `pip install torch torchvision`.
 
-E questo è il primo contatto, un assaggio delle due cose che vedremo nelle
+Ed ecco il primo contatto, un assaggio delle due cose che vedremo nelle
 prossime sezioni: i **tensori** (le scatole in cui PyTorch tiene i numeri) e i
-gradienti automatici. Nel codice compaiono anche due parole che qui basta
-prendere così come sono: la **GPU** è la scheda grafica, il chip nato per i
-videogiochi che si è rivelato bravissimo a fare tanti conti identici insieme, e
-**CUDA** è il nome che NVIDIA dà al modo in cui i programmi le parlano (per
-questo nel codice il dispositivo si chiama `"cuda"` e non `"gpu"`). La prossima
-sezione riprende entrambe con calma.
+gradienti automatici.
 
 ```python
 import torch
@@ -147,42 +165,44 @@ print(torch.cuda.is_available())  # True se c'è una GPU NVIDIA utilizzabile
 x = torch.tensor(3.0, requires_grad=True)  # un tensore "osservato"
 y = x**2 + 2*x                             # y = x² + 2x, calcolato subito
 y.backward()                               # gradiente automatico
-print(x.grad)                              # dy/dx = 2x + 2 -> tensor(8.)
+print(x.grad)                              # la derivata di y in x=3 -> tensor(8.)
 ```
 
-Niente da dichiarare in anticipo e niente da compilare prima di partire: si
+Niente da dichiarare in anticipo e niente da preparare prima di partire: si
 scrivono i conti come si scriverebbero su un foglio, e la **derivata** esce da
-sola. Se il termine non ti dice niente, basta
-questo: la derivata misura quanto cambia il risultato quando l'ingresso si
-sposta di un soffio, e qui dice che attorno a $x = 3$ il valore di $y$ cresce
-$8$ volte più in fretta di $x$. È il numero che il commento nel codice chiama
-**gradiente** e che PyTorch deposita in `x.grad`; chi ricorda le regole del
-capitolo di richiami matematici può verificarlo (la derivata di $x^2 + 2x$ è
-$2x + 2$, che in $x = 3$ vale $8$). In miniatura, è il meccanismo che addestra
-ogni rete neurale di questo libro.
+sola. Se il termine non ti dice niente, basta questo: la derivata misura quanto
+cambia il risultato quando l'ingresso si sposta di un soffio. Qui vale $8$, e
+$8$ vuol dire questo: sposta $x$ da $3$ a $3{,}01$, cioè di un centesimo, e $y$
+cresce di circa otto centesimi, otto volte tanto. Il conto si può rifare a
+mano: $y$ vale $15$ in $x = 3$ e $15{,}0801$ in $x = 3{,}01$. Quel numero, nel
+mestiere, si chiama **gradiente**, ed è quello che la riga `y.backward()`
+calcola e che PyTorch deposita in `x.grad`;
+chi ricorda le regole del capitolo di richiami matematici riconoscerà che la
+derivata di $x^2 + 2x$ è $2x + 2$, che in $x = 3$ vale appunto $8$. In
+miniatura, è il meccanismo che addestra ogni rete neurale di questo libro.
 
 ## Come è organizzato il capitolo
 
 Due movimenti, dal mattone al mestiere.
 
-Il primo mette in mano gli attrezzi. I **tensori**: le scatole di numeri su
-cui tutto si appoggia, con le loro operazioni e il meccanismo **autograd** che
-calcola i gradienti da solo. I **moduli**: come si costruisce un modello con
-`nn.Module` e `nn.Sequential`, e come si misura l'errore con le funzioni di
-perdita. L'**addestramento**: il training loop scritto per esteso (è la firma
-stilistica di PyTorch) e un esempio completo sulle cifre scritte a mano di
-MNIST.
+Il primo mette in mano gli attrezzi, e sono tre. I **tensori**, le scatole di
+numeri su cui tutto si appoggia, insieme al meccanismo che calcola le derivate
+da solo. I **moduli**, cioè come si mette insieme un modello pezzo per pezzo, e
+come si misura quanto sbaglia. L'**addestramento**, cioè il giro di cinque
+mosse che in PyTorch si scrive a mano invece di chiederlo a un comando, e che
+qui si vede all'opera su un problema vero: leggere cifre scritte a mano.
 
 Il secondo insegna a usarli su un problema che non è un esercizio. Il **flusso
 di lavoro**, cioè l'ordine delle mosse che si ripete in ogni progetto e il
 ciclo con cui un modello si migliora. I **dati su misura**: come si porta
 dentro la rete una cartella di file propri, con `Dataset`, `DataLoader` e
-trasformazioni. I **tre errori più comuni** (forma, tipo, dispositivo) che
-valgono da soli la metà del tempo perso da chi comincia. Il passaggio **dal
+trasformazioni. I **tre errori più comuni** (forma, tipo, dispositivo), che da
+soli si prendono metà del tempo perso da chi comincia. Il passaggio **dal
 notebook agli script**, quando un esperimento va reso ripetibile. E infine
-**replicare un paper**: il metodo per trasformare quattro equazioni in codice
-che gira, verificato sul Vision Transformer. Chiude il capitolo una sezione
-sulle **prestazioni**, per quando il modello funziona ma è troppo lento.
+**replicare un paper**, cioè un articolo scientifico: il metodo per
+trasformare quattro equazioni in codice che gira. Chiude il capitolo una
+sezione sulle **prestazioni**, per quando il modello funziona ma è troppo
+lento.
 
 L'obiettivo è che a fine capitolo tu sappia leggere, e scrivere, il codice con
 cui oggi si fa ricerca in deep learning.

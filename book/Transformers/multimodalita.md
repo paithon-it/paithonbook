@@ -3,16 +3,19 @@
 L'architettura del 2017 era una macchina per tradurre. Quello che è successo
 dopo somiglia a ciò che accadde col motore a scoppio: inventato per la
 carrozza, finì su navi, aerei e generatori. Il Transformer è stato smontato
-nelle sue due torri (encoder e decoder) e ciascuna, presa da sola e
-ingrandita, è diventata una famiglia di modelli: da un lato quelli che
-*capiscono* il testo, dall'altro quelli che lo *generano*. Poi qualcuno ha
-provato a dargli in pasto le immagini, e ha funzionato anche lì.
+nelle sue due torri (la torre che legge, l'encoder, e la torre che scrive, il
+decoder) e ciascuna, presa da sola e ingrandita, è diventata una famiglia di
+modelli: da un lato quelli che *capiscono* il testo, dall'altro quelli che lo
+*generano*. Poi qualcuno ha provato a dargli in pasto le immagini, e ha
+funzionato anche lì.
 
 ## GPT, BERT, T5: tre modi di studiare la lingua
 
-I tre grandi capostipiti si distinguono per come vengono **pre-addestrati**:
-quale esercizio fanno, su miliardi di frasi, prima di essere rifiniti su un
-compito specifico.
+I tre capostipiti, cioè i modelli da cui discendono tutti gli altri, si
+distinguono per una cosa sola: l'esercizio che fanno su miliardi di frasi prima
+di essere messi al lavoro. Quella fase di studio generale si chiama
+**pre-addestramento**, e a seconda dell'esercizio scelto ne esce un modello
+bravo a scrivere o uno bravo a capire.
 
 ```{figure} ../figures/bert-vs-gpt.svg
 :name: fig-bert-vs-gpt
@@ -23,11 +26,14 @@ La stessa frase, due permessi di lettura. Non cambia l'architettura: cambia
 cosa ogni parola ha il diritto di guardare, e da lì discende tutto il resto.
 ```
 
-{numref}`fig-bert-vs-gpt` spiega perché i due modelli finiscano a fare
-mestieri diversi. Chi può guardare anche a destra capisce meglio una frase che
-ha già davanti (classificare, estrarre, rispondere su un testo dato); chi vede
-solo a sinistra è costretto a indovinare il seguito, ed è esattamente
-l'esercizio che serve per generare.
+{numref}`fig-bert-vs-gpt` mostra la sola cosa che li distingue davvero: non
+l'architettura, che è la stessa, ma quali parole ciascuno ha il permesso di
+guardare. Il primo può guardare anche le parole che vengono dopo, e chi vede
+tutta la frase la capisce meglio (dire di che parla, trovarci dentro una
+risposta, giudicarla); il secondo vede solo le parole che precedono, ed è
+costretto a indovinare come si continua, che è esattamente l'esercizio da fare
+per imparare a scrivere. La scheda qui sotto racconta chi sono i due, e conviene
+leggerla prima di tornare alla figura.
 
 `````{tab} Elementare
 Immagina tre studenti con tre metodi diversi. **GPT** studia coprendo con la
@@ -41,15 +47,21 @@ frasi, meno a scriverle). **T5** trasforma ogni compito in un tema: "traduci:
 tutti gli esercizi). Quando ChatGPT ti risponde, sotto c'è il metodo di GPT:
 indovinare la parola successiva, solo con miliardi di esempi alle spalle.
 
-C'è un quarto modo di studiare, meno noto e istruttivo, che nasce da
-un'obiezione all'esercizio a buchi: se si cancella una parola su sette, per sei
-parole su sette la rete **non impara niente**, perché non le viene chiesto
-nulla. **ELECTRA** cambia il gioco: invece di cancellare, *sostituisce* qualche
+C'è un quarto modo di studiare, meno noto e molto istruttivo, che nasce da
+un'obiezione all'esercizio a buchi. Negli esercizi veri di BERT i buchi non
+sono uno per frase: si cancella circa il quindici per cento delle parole, cioè
+grosso modo una ogni sette, e su quelle sole la rete viene interrogata. Delle
+altre sei su sette **non impara niente**, perché non le viene chiesto nulla, e
+leggerle è fatica sprecata.
+
+**ELECTRA** cambia il gioco: invece di cancellare, *sostituisce* qualche
 parola con un'alternativa plausibile, prodotta da un modellino apposta, e poi
 chiede alla rete grande di fare il correttore di bozze, dicendo per **ogni**
-parola se è quella originale o un'intrusa. Il compito è più povero (una
-risposta sì/no invece di indovinare una parola fra decine di migliaia) ma
-riguarda tutto il testo, e a parità di calcolo si impara molto di più.
+parola se è quella originale o un'intrusa. Il compito su ciascuna parola è più
+povero (una risposta sì/no invece di indovinarne una fra decine di migliaia) ma
+riguarda tutto il testo, e a parità di ore di computer bruciate si impara molto
+di più: gli autori misurano che per arrivare dove arrivano i modelli a buchi
+del suo tempo, ELECTRA spende meno di un quarto del loro addestramento.
 `````
 
 `````{tab} Superiore
@@ -104,9 +116,10 @@ presa il futuro.
 :alt: "Quattro compiti diversi (traduzione, giudizio di accettabilità grammaticale, somiglianza fra due frasi e riassunto) entrano nello stesso modello scritti come testo, ciascuno preceduto da un prefisso che dice di quale compito si tratta; da tutti e quattro esce testo. Nessuna testa specializzata per compito compare nello schema."
 :width: 100%
 
-Un solo formato per tutto. T5 non aggiunge un giudice diverso per ogni compito:
-mette il nome del compito davanti alla frase, e la risposta esce come testo
-anche quando è un voto o un'etichetta.
+Un solo formato per tutto. Di solito a un modello si attacca in cima un pezzo
+diverso per ogni mestiere, uno che sa dare voti, uno che sa scegliere fra due
+risposte; T5 non ne attacca nessuno: mette il nome del compito davanti alla
+frase, e la risposta esce come testo anche quando è un voto o un'etichetta.
 ```
 
 L'idea di {numref}`fig-t5-text-to-text` sembra un dettaglio ingegneristico e
@@ -116,9 +129,19 @@ cambiare compito non richiede di cambiare il modello: basta cambiare quello che
 gli si scrive davanti. Quel «quello che gli si scrive davanti» è il **prompt**,
 la parola che da qui in avanti tornerà in tutto il capitolo, e che vuol dire
 esattamente questo: le istruzioni e il testo che si consegnano al modello prima
-che risponda.
+che risponda. Dentro il prompt ci si può mettere la sola consegna a parole, o
+anche due o tre esercizi già svolti perché il modello capisca che cosa gli si
+sta chiedendo; e la scoperta che quei due o tre esempi bastino, senza toccare
+un solo numero interno del modello, è una delle cose che hanno stupito di più
+chi lavorava su GPT-3.
 
 ## Oltre il testo: Vision Transformer e modelli multimodali
+
+Fin qui il Transformer ha sempre avuto in pasto delle parole. Ma se si guarda
+bene, l'attenzione non sa niente delle parole: sa solo confrontare liste di
+numeri messe in fila. Qualunque cosa si riesca a ridurre a una fila di liste di
+numeri, allora, può entrarci dentro, e la prima a provarci è stata la
+fotografia.
 
 ```{figure} ../figures/vit-transformer-immagini.svg
 :name: fig-vit
@@ -130,11 +153,15 @@ tessere e le tratta come parole. Da lì in poi è lo stesso encoder del testo.
 ```
 
 Il passaggio mostrato in {numref}`fig-vit` è meno innocente di quanto sembri.
-Tagliare e mettere in fila butta via quello che le reti per le immagini del
-capitolo sul deep learning (le *convoluzioni*, i filtri che guardano un pezzetto
-di foto alla volta) davano per scontato, cioè che i pixel vicini siano
-imparentati: il Vision Transformer quella parentela deve impararla dai dati, e
-infatti ha bisogno di molti più esempi per farlo.
+Le reti per le immagini del capitolo sul deep learning (le *convoluzioni*, i
+filtri che guardano un pezzetto di foto alla volta) hanno una regola scritta
+dentro: i puntini vicini fra loro sono imparentati, e vanno guardati insieme.
+Tagliare la foto in tessere e metterle in fila butta via quella regola, perché
+per l'attenzione due tessere lontanissime e due tessere adiacenti sono
+esattamente sullo stesso piano. La parentela fra vicini, allora, il Vision
+Transformer deve **impararla**, e imparare qualcosa costa esempi: è la ragione
+per cui regge il confronto solo se gli si dà da studiare molta più roba.
+Quando i dati sono pochi, la regola scritta a mano vince.
 
 `````{tab} Elementare
 E le immagini? Il trucco è di una semplicità disarmante: si taglia la foto in
@@ -166,30 +193,39 @@ qualunque dato riducibile a una **sequenza di token** (parole, patch,
 frammenti audio) è terreno di gioco per l'attenzione.
 `````
 
-Qui ci fermiamo al principio, che è il filo di questo capitolo: tutto ciò che
-si riduce a una sequenza di token è terreno dell'attenzione. Come si costruisca
-davvero un modello che vede e parla è un'altra storia, e ha un capitolo suo più
-avanti. Le strade sono tre, e conviene averle in mente. Si può tenere il
-linguaggio e le immagini in due mappe separate e addestrarle a mettere le cose
-corrispondenti nello stesso punto (una foto di gatto e la parola «gatto» finiscono
-vicine, pur restando in mappe diverse). Si può innestare un occhio su un modello
-di linguaggio già addestrato, lasciando che sia il linguaggio a comandare. Oppure
-si può dare a pixel e parole un unico vocabolario, come se le tessere di
-un'immagine fossero parole di una lingua in più. Sono tre risposte diverse alla
-stessa domanda, e ciascuna si paga in modo diverso.
+Qui ci fermiamo al principio, che è il filo di questo capitolo: tutto ciò che si
+riduce a una fila di mattoncini (i *token*: le parole di una frase, le tessere
+di una foto, gli spezzoni di un suono) è terreno dell'attenzione. Come si
+costruisca davvero un modello che vede e parla è un'altra storia, e ha un
+capitolo suo più avanti. Le strade sono tre, e basta averne il nome in mente:
+tenere immagini e parole ciascuna nella propria mappa e allenarle a mettere le
+cose corrispondenti nello stesso punto; innestare un occhio su un modello di
+linguaggio già fatto, lasciando comandare il linguaggio; oppure dare a tessere e
+parole un unico vocabolario, come se le tessere fossero le parole di una lingua
+in più. Quale convenga, e che cosa costi ciascuna, si vedrà là.
 
 ## Fuori dal linguaggio: AlphaFold 2 e la forma delle proteine
 
-Il caso più clamoroso di attenzione applicata a un dominio che con il testo non
-c'entra nulla è arrivato nel novembre 2020, alla CASP14, la gara biennale in cui
-si sfidano i programmi che prevedono la forma delle proteine: **AlphaFold 2**
-predice la struttura tridimensionale delle proteine con un'accuratezza
-confrontabile con quella dei metodi sperimentali **nella maggior parte dei
-casi**, e per i domini a catena singola chiude di fatto un problema aperto da
-mezzo secolo. Le due clausole non sono prudenza di maniera: restano fuori i
-complessi fra più catene, le regioni disordinate, gli stati alternativi della
-stessa proteina e l'effetto delle mutazioni, e la formula «problema risolto»
-che circolò allora era del comunicato, non dei valutatori.
+L'attenzione, però, non è finita a lavorare solo su testi, foto e suoni. Il caso
+più clamoroso è arrivato da una parte che con il linguaggio non c'entra niente:
+la biologia.
+
+Le proteine sono le macchine di cui siamo fatti, e ciascuna nasce come una
+catena di mattoncini agganciati in fila, che appena esiste si ripiega su sé
+stessa in una forma tridimensionale precisa. Da quella forma dipende tutto quel
+che la proteina sa fare, e prevederla a partire dalla sola fila di mattoncini
+era un problema aperto da mezzo secolo. Nel novembre 2020, alla CASP14, la gara
+biennale in cui i programmi che ci provano si sfidano su proteine di cui la
+risposta è nota solo agli organizzatori, **AlphaFold 2** ha predetto quelle
+forme con un'accuratezza confrontabile con quella delle misure fatte in
+laboratorio **nella maggior parte dei casi**, chiudendo di fatto il problema per
+le proteine formate da una catena sola.
+
+Le due clausole non sono prudenza di maniera. Restano fuori le proteine fatte di
+più catene incastrate, i tratti che una forma stabile non ce l'hanno affatto,
+le proteine che ne assumono più d'una a seconda della situazione, e l'effetto
+delle mutazioni; e la formula «problema risolto», che allora circolò molto,
+stava nel comunicato stampa, non nel giudizio di chi assegnava i punteggi.
 
 ```{figure} ../figures/alphafold-2.svg
 :name: fig-alphafold
@@ -202,21 +238,24 @@ fatto milioni di esperimenti, e quelli sono i dati.
 ```
 
 Il blocco centrale di {numref}`fig-alphafold` è dove l'attenzione fa il suo
-mestiere. Una proteina è una catena di anelli, e gli anelli si chiamano
-**residui** (sono i venti amminoacidi della scheda qui sotto; niente a che
-vedere con le «connessioni residue» del corrimano, che è solo la stessa parola
-usata per un'altra cosa). Due residui lontanissimi lungo la catena possono
-ritrovarsi appiccicati una volta che la catena si è ripiegata, ed è esattamente
-il tipo di relazione a lungo raggio che i filtri delle reti per immagini
-faticano a vedere e che l'attenzione tratta come un caso normale.
+mestiere, ed è facile vedere perché sia lei la persona giusta. Gli anelli della
+catena, in gergo, si chiamano **residui** (nel libro la parola «residuo» è già
+comparsa per le connessioni residue, la scorciatoia attorno a un blocco: è la
+stessa parola usata per due cose che non c'entrano niente, e capita). Due
+residui lontanissimi lungo la catena possono ritrovarsi appiccicati una volta
+che la catena si è ripiegata: è la relazione fra due elementi lontani che i
+filtri delle reti per immagini faticano a vedere, ed è esattamente il caso che
+l'attenzione tratta come normale, perché per lei ogni coppia è a un passo di
+distanza.
 
 `````{tab} Elementare
 
-Una proteina nasce come una lunga catena di amminoacidi: venti mattoncini
-agganciati in un ordine preciso, un'informazione monodimensionale come una
-collana di perline. Appena esiste, però, si ripiega su se stessa in una forma
-tridimensionale, e da quella forma dipende tutto ciò che sa fare: catalizzare
-una reazione, trasportare ossigeno, agganciare un farmaco.
+I mattoncini della catena si chiamano amminoacidi, e ne esistono venti tipi:
+una proteina è una fila di quelli, agganciati in un ordine preciso, come una
+collana di perline di venti colori. Appena esiste, però, la collana si ripiega
+su sé stessa in una forma tridimensionale, e da quella forma dipende tutto ciò
+che sa fare: far avvenire una reazione chimica che da sola non avverrebbe,
+trasportare ossigeno nel sangue, agganciare un farmaco.
 
 È come una collana di perline magnetiche che, ogni volta che la lasci cadere,
 si annoda esattamente allo stesso modo. Prevedere quel nodo dal solo ordine
@@ -276,18 +315,22 @@ servizio di consultazione.
 
 ## Vantaggi e sfide
 
-Il quadro va chiuso con la stessa onestà della sezione sui confronti. I
-vantaggi sono reali: gestione di contesti lunghi, addestramento parallelo,
-un'unica architettura per testo, immagini e audio. Ma le sfide non sono
-dettagli:
+Il quadro va chiuso con la stessa onestà con cui la sezione sul confronto con
+le reti ricorrenti aveva ammesso il costo quadratico. I vantaggi sono reali:
+questi modelli reggono testi lunghi senza dimenticare l'inizio, si addestrano
+spartendo il lavoro fra migliaia di processori, e una sola architettura basta
+per il testo, le immagini e l'audio. Ma le sfide non sono dettagli:
 
-- **Risorse**: addestrare un grande modello richiede cluster di GPU, mesi di
-  calcolo e consumi energetici ingenti; anche solo *eseguirlo* può richiedere
-  hardware fuori dalla portata di un laboratorio piccolo.
+- **Risorse**: addestrare un grande modello richiede centinaia di schede
+  grafiche che lavorano insieme per mesi, con i consumi elettrici che ne
+  seguono; anche solo *eseguirlo* può richiedere macchine fuori dalla portata di
+  un laboratorio piccolo.
 - **Dati**: i *corpora* (cioè le grandi raccolte di testi su cui i modelli
   studiano) da miliardi di parole contengono errori, stereotipi e contenuti
-  tossici, e i modelli li assorbono; i **bias** dei dati diventano bias del
-  modello.
+  tossici, e i modelli li assorbono. Se in quei testi le infermiere sono sempre
+  donne e gli ingegneri sempre uomini, il modello impara quella regola come
+  impara la grammatica: sono i **bias**, cioè le distorsioni sistematiche dei
+  dati, che diventano distorsioni del modello.
 - **Affidabilità**: un modello **autoregressivo** (che scrive una parola alla
   volta, ogni volta scegliendo la continuazione più probabile di quello che ha
   già scritto) produce la continuazione più plausibile, non necessariamente

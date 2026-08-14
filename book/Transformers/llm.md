@@ -3,11 +3,15 @@
 Nel 1951 Claude Shannon pubblicò uno degli esperimenti più casalinghi della
 storia dell'informatica {cite}`shannon1951prediction`: copriva una riga di un
 testo e chiedeva a una persona di indovinare, lettera dopo lettera, come
-continuava. Contando i tentativi necessari, stimò che l'inglese scritto
-contiene circa un bit di informazione per lettera: in parole povere, sapere
-quel che c'è scritto prima toglie quasi tutta l'incertezza sulla lettera dopo,
-e ne lascia quanta ne lascia un testa-o-croce. L'abbiamo raccontato nel
-capitolo sui richiami di matematica. Settant'anni dopo, GPT-3
+continuava. Il risultato, contando i tentativi necessari, è più sorprendente di
+quanto sembri. Senza sapere niente del contesto, indovinare una lettera
+dell'alfabeto inglese è come scegliere fra ventisei possibilità: un'incertezza
+che, nell'unità con cui la si misura (il **bit**, cioè il numero di domande sì
+o no che servirebbero a risolverla), vale poco meno di cinque. Sapendo quel che
+c'è scritto prima, quell'incertezza scende a **circa uno**: una domanda sola,
+cioè quanto un testa-o-croce. Il contesto, insomma, toglie da solo i quattro
+quinti dell'incertezza. L'abbiamo raccontato nel capitolo sui richiami di
+matematica, quando si parlava di entropia. Settant'anni dopo, GPT-3
 {cite}`brown2020language` gioca *esattamente lo stesso gioco*: indovinare come
 continua un testo. Niente di più. Non è cambiata la scommessa; è cambiata la
 scala. Un adolescente di tredici anni, secondo le stime usate dalla ricerca
@@ -35,6 +39,11 @@ il cui titolo era già un manifesto: *i modelli di linguaggio sono studenti
 multitask senza supervisione*.
 
 ## Una biblioteca sterminata: il pretraining su scala web
+
+La lunga fase di studio generale in cui un modello legge tutto quel testo si
+chiama **pretraining**, «pre-addestramento», e il «pre» dice già che dopo verrà
+dell'altro: prima si impara la lingua e il mondo, poi si impara un mestiere.
+Qui parliamo del primo tempo.
 
 Trecento miliardi di token non stanno in nessuna enciclopedia: l'unico posto
 dove trovarli è il web. Ma il web non è una biblioteca ordinata: è una
@@ -95,32 +104,48 @@ dibattito è aperto e acceso {cite}`bender2021dangers`.
 
 ## La ricetta a tre ingredienti: le leggi di scala
 
-Perché proprio *grandi* modelli? Non è una moda: è una regolarità empirica.
+Perché proprio *grandi* modelli? Non è una moda, è una regolarità che qualcuno
+ha misurato.
+
+Prima però serve sapere che cosa si misura, perché in questa sezione «migliora»
+e «sbaglia meno» ricorrono di continuo. Un modello di linguaggio ha un solo
+compito, indovinare la parola dopo, e su quel compito si può dargli un voto
+preciso: gli si fa leggere del testo che non ha mai visto e si guarda quanta
+probabilità aveva assegnato alle parole che poi sono comparse davvero. Se ne
+dava tanta, ha indovinato bene; se ne dava poca, male. Quel numero, che va
+verso il basso quando il modello impara, è **l'errore** di cui si parla qui
+sotto (in gergo la *loss*), e più avanti in questa pagina lo ritroveremo sotto
+un altro nome, la perplessità, che è lo stesso numero raccontato come un dado.
+
 Tra il 2020 e il 2022 due lavori hanno misurato, con la pazienza di centinaia
-di addestramenti, come cambia la qualità della predizione al crescere delle
-risorse, e hanno trovato curve così regolari da chiamarle **leggi di scala**.
+di addestramenti, come cambia quell'errore al crescere delle risorse, e hanno
+trovato curve così regolari da chiamarle **leggi di scala**.
 
 `````{tab} Elementare
 La ricetta di un modello di linguaggio ha tre ingredienti: la **taglia del
 modello** (quante manopole interne ha da regolare: sono i numeri che
-l'addestramento sposta un'inezia alla volta, e chiamarle **parametri** è il
-modo in cui le si trova scritte ovunque, «un modello da sette miliardi» vuol
-dire sette miliardi di manopole), la **quantità di testo**
-su cui studia, e il **calcolo** (quante ore di computer può bruciare). La
-scoperta del 2020 {cite}`kaplan2020scaling` è che aumentando gli ingredienti
-la qualità migliora in modo *prevedibile*: niente salti misteriosi, una curva
-liscia, come una ricetta che riesce sempre un po' meglio raddoppiando le dosi.
-Ma i miglioramenti sono lenti: ogni raddoppio del calcolo lima l'errore solo di
-qualche punto percentuale. La seconda scoperta, del 2022
+l'addestramento sposta un'inezia alla volta, e li si trova scritti ovunque con
+tre nomi diversi che vogliono dire la stessa identica cosa, **parametri**,
+**pesi** o appunto manopole; «un modello da sette miliardi» vuol dire sette
+miliardi di manopole), la **quantità di testo** su cui studia, e il **calcolo**
+(quante ore di computer può bruciare). La scoperta del 2020
+{cite}`kaplan2020scaling` è che aumentando gli ingredienti **tutti insieme**
+l'errore cala in modo *prevedibile*: niente salti misteriosi, una curva liscia,
+come una ricetta che riesce sempre un po' meglio se si raddoppia ogni
+ingrediente. Ma i miglioramenti sono lenti: ogni raddoppio del calcolo lima
+l'errore solo di qualche punto percentuale, il tre e mezzo per cento circa. La
+seconda scoperta, del 2022
 {cite}`hoffmann2022training`, è che gli ingredienti vanno **bilanciati**: è
 inutile fare una torta con dieci uova e un cucchiaio di farina. La regola
-pratica emersa (detta "di Chinchilla", dal nome del modello) è circa **20
-pezzi di testo per ogni manopola del modello**, contati in quei mattoncini di
-poco fa, i token, non in parole. Molti modelli dell'epoca
-erano enormi ma avevano studiato troppo poco: un modello *quattro volte più
-piccolo*, fatto studiare quasi cinque volte di più a parità di calcolo totale,
-li batteva. Da allora "più grande" non basta più: conta il rapporto tra modello
-e dati.
+pratica emersa è circa **20 pezzi di testo per ogni manopola del modello**,
+contati in quei pezzi in cui il testo viene spezzato, i token, non in parole:
+per un modello da sette miliardi di manopole vuol dire centoquaranta miliardi
+di token da leggere. Molti modelli dell'epoca erano enormi ma avevano studiato
+troppo poco, e la dimostrazione ha un nome, perché è un modello costruito
+apposta: si chiama **Chinchilla**, ha quattro volte meno manopole del suo
+rivale diretto (**Gopher**), ha letto quasi cinque volte più testo a parità di
+ore di calcolo, e lo batte. Da allora "più grande" non basta più: conta il
+rapporto fra modello e dati.
 `````
 
 `````{tab} Superiore
@@ -184,50 +209,42 @@ parametri dice quanta capacità c'è, non quanta ne è stata riempita, e due
 modelli con lo stesso cartellino possono aver letto quantità di testo
 incomparabili.
 
-Una parola di prudenza, qui solo annunciata, sulle cosiddette **capacità
-emergenti**: certe abilità (fare aritmetica a più cifre, seguire istruzioni
-composte) sembrano comparire *all'improvviso* oltre una certa scala, quasi
-assenti prima e nette dopo. Molti di quei salti però dipendono dal righello,
-non dal modello, e la sezione «Le abilità emergenti, e il dubbio che siano un
-miraggio», più avanti in questa stessa pagina, smonta la faccenda per intero.
-Quello che le leggi di scala garantiscono, intanto, è il miglioramento della
-*predizione del token successivo*, non la comparsa di specifiche abilità a date
-prestabilite. Diffidare di chi vende certezze in una direzione o nell'altra.
-
-```{figure} ../figures/emergent-abilities.svg
-:name: fig-capacita-emergenti
-:alt: "Due grafici affiancati che misurano lo stesso modello al crescere della scala. A sinistra, con una metrica discontinua come la risposta esatta sì o no, la curva resta piatta e poi salta di colpo: sembra un'abilità comparsa all'improvviso. A destra, con una metrica continua come la distanza di edit, la stessa crescita appare come un miglioramento graduale e regolare."
-:width: 100%
-
-Lo stesso modello, due righelli. Il gradino di sinistra non è nei dati: è
-nella metrica, che assegna zero a una risposta quasi giusta finché non diventa
-esatta.
-```
-
-{numref}`fig-capacita-emergenti` mostra da dove nasce l'equivoco. Una metrica
-tutto-o-niente tiene a zero il punteggio finché il modello non azzecca
-l'ultima cifra, e poi lo fa scattare a uno: il salto è reale sul grafico e
-inventato nel modello, che nel frattempo stava migliorando piano.
+Una parola di prudenza, per intanto: quello che le leggi di scala garantiscono
+è che il modello sbaglierà un po' meno a indovinare la parola dopo, non che a
+una certa taglia gli spunterà una certa abilità. Che le abilità spuntino
+davvero all'improvviso è una faccenda controversa, e ha una sezione tutta sua
+in fondo a questa pagina.
 
 ## Generare: l'arte di scegliere la parola dopo
 
-Un modello addestrato assegna probabilità alla parola successiva; ma per
-*scrivere* bisogna sceglierne una, poi un'altra, poi un'altra ancora. Le due
-strategie classiche le abbiamo già viste nel capitolo sull'NLP: prendere
-sempre la più probabile (*greedy*, cioè ingorda) o tenere aperte le $k$ ipotesi
-migliori (*beam search*). Piccola nota che vale per tutta la sezione: lettere
-come $k$, $n$, $T$, $p$ stanno per numeri che sceglie chi usa il modello, non
-per costanti di natura; sono manopole, e il libro dice ogni volta a che cosa
-servono. Per la traduzione funzionano; per la generazione libera (scrivere un
-racconto, rispondere a una domanda aperta), falliscono in un modo curioso,
-documentato da Holtzman e colleghi {cite}`holtzman2020curious`: il testo che
-*massimizza* la probabilità è noioso, ripetitivo, e finisce spesso incastrato
-in un loop («Il gatto nero salta sul muro. Il gatto nero salta sul muro. Il
-gatto nero...»). Il testo umano, misurato con il modello, *non è* una sequenza
-di parole massimamente probabili: è punteggiato di scelte a media e bassa
-probabilità. Per scrivere come noi, il modello deve **rischiare**: non
-scegliere sempre il massimo, ma *campionare* (tirare un dado truccato secondo
-le sue probabilità). E il trucco del dado si può regolare.
+Un modello addestrato non sceglie una parola: distribuisce probabilità su tutte
+quelle possibili. Per *scrivere*, però, bisogna sceglierne una davvero, poi
+un'altra, poi un'altra ancora, e il modo in cui la si sceglie cambia moltissimo
+il testo che ne esce.
+
+I due modi classici li abbiamo già visti nel capitolo sull'NLP. Il primo è
+prendere ogni volta la parola più probabile e tirare dritto (si chiama
+*greedy*, cioè ingorda). Il secondo è meno miope: invece di impegnarsi subito,
+si portano avanti in parallelo le $k$ continuazioni più promettenti, si vede
+come proseguono, e solo alla fine si tiene la migliore delle $k$ (è la *beam
+search*, «ricerca a fascio»). Piccola nota che vale per tutta la sezione:
+lettere come $k$, $n$, $T$, $p$ stanno per numeri che sceglie chi usa il
+modello, non per costanti di natura; sono manopole, e il libro dice ogni volta
+a che cosa servono.
+
+Per la traduzione questi due modi funzionano; per la generazione libera
+(scrivere un racconto, rispondere a una domanda aperta) falliscono in un modo
+curioso, documentato da Holtzman e colleghi {cite}`holtzman2020curious`. Il
+testo che *massimizza* la probabilità è noioso, ripetitivo, e finisce spesso
+incastrato a girare in tondo («Il gatto nero salta sul muro. Il gatto nero
+salta sul muro. Il gatto nero...»). Gli stessi autori sono andati a
+controllare come è fatto il testo scritto da noi: hanno preso pagine di prosa
+umana e hanno chiesto al modello, parola per parola, quanto le riteneva
+probabili. Il risultato è che noi *non* scriviamo la sequenza più probabile,
+mai: le nostre frasi sono punteggiate di scelte a media e bassa probabilità, ed
+è quello che le rende vive. Per scrivere come noi, allora, il modello deve
+**rischiare**: non scegliere sempre il massimo, ma *campionare*, cioè tirare un
+dado truccato secondo le sue probabilità. E il trucco del dado si può regolare.
 
 ```{figure} ../figures/generazione-autoregressiva.gif
 :name: fig-generazione-autoregressiva
@@ -414,9 +431,11 @@ costi molto diversi.
 ## Programmare con le parole: prompt e in-context learning
 
 Abbiamo visto, nella sezione su GPT, BERT e T5, la scoperta sorprendente di
-GPT-3: descrivere un compito nel prompt (magari con due o tre esempi svolti)
-basta spesso a farglielo eseguire, senza aggiornare un solo peso
-{cite}`brown2020language`.
+GPT-3. Il **prompt** è tutto quello che si scrive al modello prima che
+risponda: la richiesta, il testo su cui deve lavorare, le istruzioni su come
+farlo. Ebbene, descrivere un compito lì dentro (magari con due o tre esempi già
+svolti) basta spesso a farglielo eseguire, senza toccargli un solo numero
+interno {cite}`brown2020language`.
 
 ```{figure} ../figures/gpt-2-2019.svg
 :name: fig-gpt2-multitask
@@ -463,15 +482,26 @@ che il modello sta imparando a fare: quanto resta indeciso sulla parola
 successiva. Si chiama **perplessità**, e si legge come il numero di facce del
 dado che il modello si ritrova in mano a ogni passo. Perplessità 1 vuol dire
 che sa sempre esattamente che cosa viene dopo; perplessità 20, che è indeciso
-come chi tira un dado a venti facce. Meno facce, modello migliore. È l'unico
-numero della sezione che si può spiegare senza aggiungere niente: è la misura
-che il pretraining minimizza direttamente, e resta il termometro più affidabile
-della qualità *come modello di linguaggio*.
+come chi tira un dado a venti facce. Meno facce, modello migliore. È un altro
+modo di raccontare l'errore di cui parlavano le leggi di scala, cioè
+esattamente la cosa che il pretraining fa scendere, e resta il termometro più
+affidabile della qualità *come modello di linguaggio*.
 
-Chi legge al livello Elementare può saltare il capoverso che segue e riprendere
-dopo: dice in formule la stessa cosa del dado, più un errore di conto in cui
-cascano in molti.
+`````{tab} Elementare
+Il dado è tutto quello che serve. Se un modello ha perplessità 20 su un certo
+testo, vuol dire che, in media, a ogni parola si trova nella condizione di uno
+che deve indovinare fra venti possibilità equiprobabili. Un modello migliore
+scende a dieci, uno molto migliore a cinque, e nessuno arriverà mai a uno,
+perché il linguaggio ha una sua imprevedibilità di fondo che nessun modello può
+togliere: quella che Shannon misurava all'inizio di questa pagina.
 
+L'unica avvertenza è che il numero non si confronta fra testi diversi. La
+perplessità su una raccolta di leggi e quella su un romanzo non si possono
+mettere sulla stessa riga, perché le leggi sono scritte in modo molto più
+prevedibile: confrontare due modelli ha senso solo sullo stesso testo.
+`````
+
+`````{tab} Superiore
 In formula, con la stessa definizione del capitolo di matematica e di quello
 sull'NLP, la perplessità è $2^H$, dove $H$ è la cross-entropia media per token
 **espressa in bit**. La parola «bit» non è un vezzo, ed è il punto in cui si
@@ -483,6 +513,7 @@ $e^{\bar{\mathcal{L}}}$. Chi invece mette $\bar{\mathcal{L}}$ tale e quale
 all'esponente di 2 sta usando un esponente più piccolo del dovuto di quel
 fattore, e ottiene la perplessità vera elevata a $\ln 2 = 0{,}693$: su una
 perplessità di 20 ne stampa 8.
+`````
 
 Ma nemmeno la perplessità dice quasi nulla di ciò che interessa a chi il modello
 lo usa: sa rispondere a domande di diritto? Sa tradurre? Per questo si
@@ -526,6 +557,20 @@ a più cifre, ragionamento a più passi) i modelli piccoli vanno **a zero**, e
 poi, superata una certa scala, la prestazione **salta** all'improvviso. Non
 migliora gradualmente: appare. Da qui il nome *abilità emergenti*, e l'idea
 inquietante che ingrandendo un modello si ottengano capacità non previste.
+
+```{figure} ../figures/emergent-abilities.svg
+:name: fig-capacita-emergenti
+:alt: "Due grafici affiancati che misurano lo stesso modello al crescere della scala. A sinistra, con una metrica discontinua come la risposta esatta sì o no, la curva resta piatta e poi salta di colpo: sembra un'abilità comparsa all'improvviso. A destra, con una metrica continua come la distanza di edit, la stessa crescita appare come un miglioramento graduale e regolare."
+:width: 100%
+
+Lo stesso modello, due righelli. Il gradino di sinistra non è nei dati: è
+nel modo di dare i voti, che assegna zero a una risposta quasi giusta finché
+non diventa esatta.
+```
+
+I due grafici di {numref}`fig-capacita-emergenti` sono lo stesso modello,
+misurato in due modi diversi, e la differenza fra loro è tutto quello che
+questa sezione ha da dire.
 
 `````{tab} Elementare
 
@@ -578,11 +623,13 @@ qualunque grafico in cui una capacità «appare». La prima domanda da farsi è 
 
 ## In pratica: campionare con PyTorch
 
-Le tre manopole del decoding stanno in una funzione di venti righe. Nessun
-modello scaricato: logits fittizi, per concentrarci sul meccanismo. Chi legge
-al livello Elementare può saltare i due blocchi che seguono senza perdere il
-filo: dicono in Python le stesse tre manopole già raccontate con il dado
-truccato, le carte tolte dal mazzo e il nucleo che si adatta.
+Le tre manopole della scelta stanno in una funzione di venti righe. Non c'è
+nessun modello scaricato: i punteggi grezzi (i *logit*, cioè i voti che il
+modello dà a ogni parola possibile prima di trasformarli in probabilità) sono
+scritti a mano, così resta in vista solo il meccanismo. Chi legge al livello
+Elementare può saltare i due blocchi che seguono senza perdere il filo: dicono
+in Python le stesse tre manopole già raccontate con il dado truccato, le carte
+tolte dal mazzo e il nucleo che si adatta.
 
 ```python
 import torch
@@ -656,11 +703,12 @@ interlocutore che risponde, segue istruzioni e rifiuta le richieste dannose
 richiede una seconda fase di addestramento, con ricette proprie: è il
 **post-training**, e ha una sezione tutta sua poco più avanti. Prima però
 conviene fermarsi su un'idea architetturale che le leggi di scala rendono quasi
-obbligata. Crescere conviene, questo lo abbiamo visto; ma ogni parola che il
-modello scrive deve attraversarlo tutto, e più il modello è grande più quel
-passaggio costa: la bolletta di ogni singola parola sale insieme alla taglia. A
-meno di non fare in modo che ogni parola ne attraversi solo un pezzetto, che è
-esattamente l'idea della sezione seguente.
+obbligata. Crescere conviene, questo lo abbiamo visto; ma per scrivere una sola
+parola il modello deve moltiplicarla, piano dopo piano, per **tutte** le sue
+manopole, e più le manopole sono tante più quel giro costa: la bolletta di ogni
+singola parola sale insieme alla taglia del modello. A meno di non fare in modo
+che ogni parola passi solo per un pezzetto delle manopole, che è esattamente
+l'idea della sezione seguente.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare

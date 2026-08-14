@@ -11,10 +11,12 @@ andava a perdere i soldi presi in prestito dai parenti
 {cite}`metropolis1987beginning`.
 
 L'idea è tutta lì, e serve esattamente al punto in cui la sezione precedente
-si è fermata. La *value iteration* sa calcolare i valori, ma pretende la mappa
-dell'ambiente: dove porta ogni mossa e quanto paga. Se la mappa non c'è, resta
-una via che non chiede nulla a nessuno: far vivere all'agente molte partite
-intere, guardare come sono andate, e fare la media.
+si è fermata. Il metodo di là, quello che riscriveva i numeri delle caselle
+finché non si assestavano (l'*iterazione dei valori*, in inglese *value
+iteration*), sa calcolare i valori ma pretende la mappa: per ogni mossa, dove
+si finisce e quanto si incassa. Se la mappa non c'è, resta una via che non
+chiede nulla a nessuno: far vivere all'agente molte partite intere, guardare
+come sono andate, e fare la media.
 
 ## Giocare, e poi fare la media
 
@@ -33,7 +35,7 @@ hai vinto e zero se hai perso. La media di quei mille numeri è la percentuale
 di vittorie, e se è alta la posizione è buona.
 
 I metodi **Monte Carlo** fanno questo, e la parola difficile non nasconde
-niente di più. L'agente gioca un episodio dall'inizio alla fine, poi torna
+niente di più. L'agente gioca una partita dall'inizio alla fine, poi torna
 indietro con la matita e, per ogni situazione attraversata, si annota quanto
 ha raccolto **da lì in avanti**. Ripetuto molte volte, quel quaderno di
 annotazioni diventa la stima del valore di ogni situazione: basta fare la
@@ -91,65 +93,98 @@ altri.
 ## Che cosa cambia rispetto alla programmazione dinamica
 
 **Programmazione dinamica** è il nome che Bellman diede al modo di procedere
-della sezione precedente, quello che trova i valori girando e rigirando su tutte
+della sezione precedente (con lo scrivere programmi per il computer non c'entra
+niente: «programmazione», per lui, voleva dire pianificazione), quello che trova i valori girando e rigirando su tutte
 le caselle con la mappa in mano: da qui in avanti lo useremo come nome
-collettivo di value iteration e policy iteration. Vale la pena metterlo accanto
+collettivo delle sue due ricette, l'iterazione dei valori e quella della
+pagella (*value iteration* e *policy iteration*). Vale la pena metterlo accanto
 a Monte Carlo, perché la differenza fra i due non è di efficienza ma di **che
 cosa serve sapere**.
 
 La programmazione dinamica guarda **un passo in avanti ma in tutte le
 direzioni**: per calcolare il valore di una casella tiene conto di tutte le
-caselle in cui quella mossa potrebbe far finire, dando a ciascuna l'importanza
-della sua probabilità (in simboli: per aggiornare $V(s)$ somma su tutti gli
-stati d'arrivo, pesandoli con le probabilità di transizione). Ha bisogno di
-quelle probabilità, e in cambio non le deve stimare.
+caselle in cui quella mossa potrebbe far finire, dando a ciascuna un peso pari
+alla sua probabilità.
+
+«Dare un peso» è il gesto che torna in tutto il resto del capitolo, e conviene
+vederlo una volta su due numeri. È la media che si fa a scuola quando una prova
+conta il doppio di un'altra: invece di sommare e dividere per quanti sono, si
+moltiplica ogni numero per quanto conta e poi si somma. Se una mossa porta
+nella casella A otto volte su dieci e nella casella B due volte su dieci, e A
+vale $10$ mentre B vale $0$, quella mossa vale
+$0{,}8 \times 10 + 0{,}2 \times 0 = 8$: non $5$, che sarebbe la media semplice
+fra $10$ e $0$, perché in B ci si finisce di rado.
+
+Alla programmazione dinamica quei pesi servono, e quindi le serve conoscere le
+probabilità; in cambio non le deve stimare.
 
 Monte Carlo guarda **in una direzione sola ma fino in fondo**: segue la
 traiettoria realmente accaduta, dall'inizio alla fine dell'episodio, e ignora
 le strade non prese. Non ha bisogno di sapere nulla dell'ambiente, e in cambio
-paga in rumore.
+paga in **rumore**: è la parola che si usa per il fatto che una misura,
+ripetuta, non dà mai due volte lo stesso numero.
 
 Da questa differenza discendono tre conseguenze pratiche.
 
 - Monte Carlo funziona anche quando l'ambiente è una **scatola nera** o un
-  simulatore: basta saperci giocare, non saperlo descrivere. È spesso molto più
-  facile scrivere un simulatore che scrivere la sua tabella di transizione.
+  simulatore: basta saperci giocare, non saperlo descrivere. Scrivere un
+  programma che simula un gioco è spesso molto più facile che compilare
+  l'elenco, mossa per mossa e con tutte le probabilità, di dove quel gioco può
+  portare.
 - Il costo di stimare un singolo stato **non dipende dal numero di stati**. Se
   interessa il valore di una manciata di posizioni, si giocano partite da
-  quelle e basta, senza spazzare l'intero spazio come fa la programmazione
-  dinamica.
-- Gli errori **non si propagano**. Una stima sbagliata in uno stato non
-  contamina i vicini, perché nessuno la usa come bersaglio.
+  quelle e basta, senza passare in rassegna tutte le altre come fa la
+  programmazione dinamica.
+- Gli errori **non si propagano**. Il voto di una casella esce solo da quello
+  che è successo davvero nelle partite, e nessun'altra casella se ne serve per
+  calcolare il proprio: un voto sbagliato resta sbagliato dov'è, e non contagia
+  i vicini.
 
 ## Tre partite, coi numeri
 
-Riprendiamo l'MDP in miniatura della {numref}`fig-mdp`, con lo stesso sconto di
-prima, $0{,}9$. Stavolta fingiamo di **non** conoscere dove porta ogni mossa:
-l'agente si limita a giocare seguendo una policy che di norma sale verso
-l'obiettivo ma ogni tanto tentenna. Ecco tre episodi, con le ricompense
-incassate lungo la strada.
+Riprendiamo il mondo a tre caselle della {numref}`fig-mdp`, quello in cui
+salire non costa nulla, restare fermi o tornare indietro costano $1$, e
+arrivare all'obiettivo paga $10$. Vale lo stesso sconto di prima, $0{,}9$: un
+premio che arriva una mossa più tardi conta nove decimi. Stavolta però fingiamo
+di **non** conoscere dove porta ogni mossa. L'agente si limita a giocare,
+seguendo una strategia che di norma sale verso l'obiettivo ma ogni tanto
+tentenna, ed ecco tre sue partite, con le ricompense incassate lungo la strada.
 
 1. $s_0 \xrightarrow{\,0\,} s_1 \xrightarrow{\,+10\,} s_2$
 2. $s_0 \xrightarrow{\,-1\,} s_0 \xrightarrow{\,0\,} s_1 \xrightarrow{\,+10\,} s_2$
 3. $s_0 \xrightarrow{\,0\,} s_1 \xrightarrow{\,-1\,} s_0 \xrightarrow{\,0\,} s_1 \xrightarrow{\,+10\,} s_2$
 
 Ogni riga si legge da sinistra a destra, e il numero sopra la freccia è quello
-che si incassa facendo quel passo: nel primo episodio, da $s_0$ si sale a $s_1$
+che si incassa facendo quel passo, col suo segno: $+10$ vuol dire dieci punti
+guadagnati, $-1$ un punto perso. Nella prima partita, da $s_0$ si sale a $s_1$
 senza incassare nulla, e da $s_1$ si arriva all'obiettivo incassando $+10$.
 
 `````{tab} Elementare
 
 I punti raccolti si contano **all'indietro**, ed è il modo comodo di farlo: si
-parte dalla fine e, a ogni passo indietro, si moltiplica per $0{,}9$ il totale
-che si aveva e ci si aggiunge la ricompensa di quel passo.
+parte dalla fine, dove il totale è $0$ perché dopo l'arrivo non c'è più niente
+da raccogliere, e a ogni passo indietro si moltiplica per $0{,}9$ il totale che
+si aveva e ci si aggiunge la ricompensa di quel passo.
 
-Prendiamo il secondo episodio. Dall'ultimo $s_1$ mancava solo il premio, quindi
+La prima partita è la più corta e serve a scaldarsi. Da $s_1$ si arriva
+all'obiettivo incassando $10$, e l'obiettivo vale $0$: quindi da $s_1$ in avanti
+si sono raccolti $10 + 0{,}9 \times 0 = 10$. Da $s_0$, un passo prima, non si
+incassa nulla e si finisce in un posto che vale $10$: quindi
+$0 + 0{,}9 \times 10 = 9$.
+
+Prendiamo adesso la seconda partita. Dall'ultimo $s_1$ mancava solo il premio, quindi
 $10$. Dal $s_0$ che veniva subito prima: quel passo non paga nulla e porta in un
 posto che vale $10$, quindi $0 + 0{,}9 \times 10 = 9$. Dal primo $s_0$: quel
 passo costa $1$ e porta in un posto che vale $9$, quindi
 $-1 + 0{,}9 \times 9 = 7{,}1$.
 
-| episodio | raccolto da $s_0$ in avanti | raccolto da $s_1$ in avanti |
+La terza partita è più lunga e si fa allo stesso modo, sempre partendo dalla
+fine: l'ultimo $s_1$ vale $10$; il $s_0$ prima di lui $0 + 0{,}9 \times 10 = 9$;
+il $s_1$ prima ancora costa $1$ e porta in un posto che vale $9$, quindi
+$-1 + 0{,}9 \times 9 = 7{,}1$; e il primo $s_0$ di tutti non paga nulla e porta
+in un posto che vale $7{,}1$, quindi $0 + 0{,}9 \times 7{,}1 = 6{,}39$.
+
+| partita | raccolto da $s_0$ in avanti | raccolto da $s_1$ in avanti |
 |:--|:--|:--|
 | 1 | $9$ | $10$ |
 | 2 | $7{,}1$ la prima volta, $9$ la seconda | $10$ |
@@ -158,11 +193,14 @@ $-1 + 0{,}9 \times 9 = 7{,}1$.
 Adesso la media, e ci sono due modi di farla. Il primo conta **una riga per
 partita**, quella della prima volta che si è passati di lì, e si chiama *a prima
 visita*: per $s_0$ si mediano $9$, $7{,}1$ e $6{,}39$, cioè
-$22{,}49 : 3 = 7{,}50$; per $s_1$ si mediano $10$, $10$ e $7{,}1$, cioè
-$27{,}1 : 3 = 9{,}03$. Il secondo conta **tutte le righe**, ripassaggi compresi,
-e si chiama *a ogni visita*: per $s_0$ i numeri diventano cinque
-($9 + 7{,}1 + 9 + 6{,}39 + 9 = 40{,}49$, diviso $5$ fa $8{,}10$) e per $s_1$
-quattro ($10 + 10 + 7{,}1 + 10 = 37{,}1$, diviso $4$ fa $9{,}28$).
+$22{,}49 : 3 = 7{,}4966\ldots$; per $s_1$ si mediano $10$, $10$ e $7{,}1$, cioè
+$27{,}1 : 3 = 9{,}0333\ldots$. Il secondo conta **tutte le righe**, ripassaggi
+compresi, e si chiama *a ogni visita*: per $s_0$ i numeri diventano cinque
+($9 + 7{,}1 + 9 + 6{,}39 + 9 = 40{,}49$, diviso $5$ fa $8{,}098$) e per $s_1$
+quattro ($10 + 10 + 7{,}1 + 10 = 37{,}1$, diviso $4$ fa $9{,}275$). Da qui in
+avanti li scriveremo arrotondati alla seconda cifra, $7{,}50$ e $9{,}03$ da una
+parte, $8{,}10$ e $9{,}28$ dall'altra, ma i numeri veri sono questi, e sono
+quelli che stampa il codice più sotto.
 
 `````
 
@@ -183,30 +221,40 @@ $-1 + 0{,}9 \times 9 = 7{,}1$.
 Adesso la media. **A prima visita** si conta una riga per episodio:
 
 $$
-V(s_0) = \frac{9 + 7{,}1 + 6{,}39}{3} = 7{,}50,
+V(s_0) = \frac{9 + 7{,}1 + 6{,}39}{3} = \frac{22{,}49}{3} \simeq 7{,}50,
 \qquad
-V(s_1) = \frac{10 + 10 + 7{,}1}{3} = 9{,}03 .
+V(s_1) = \frac{10 + 10 + 7{,}1}{3} = \frac{27{,}1}{3} \simeq 9{,}03 .
 $$
 
 **A ogni visita** entrano tutte le righe, cinque per $s_0$ e quattro per $s_1$:
 
 $$
-V(s_0) = \frac{9 + 7{,}1 + 9 + 6{,}39 + 9}{5} = 8{,}10,
+V(s_0) = \frac{9 + 7{,}1 + 9 + 6{,}39 + 9}{5} = 8{,}098,
 \qquad
-V(s_1) = \frac{10 + 10 + 7{,}1 + 10}{4} = 9{,}28 .
+V(s_1) = \frac{10 + 10 + 7{,}1 + 10}{4} = 9{,}275 .
 $$
 
 `````
 
-Due numeri diversi dagli stessi dati, ed entrambi legittimi: sono due modi
-diversi di stimare la stessa cosa. E nessuno dei due si avvicina al $9$ e al
-$10$ che la sezione precedente aveva calcolato sullo stesso mondo, per una
-ragione che conviene fissare: là si calcolava il valore della strategia
-**migliore possibile**, qui si misura quello della strategia **che ha giocato
-davvero**, tentennamenti compresi. Sono due domande diverse, e la seconda non
-può avere una risposta più alta della prima. Con tre episodi soli, per di più:
-una media si assesta sul valore vero quando i casi mediati sono tanti, e tre
-non lo sono.
+Per ogni casella sono usciti due numeri diversi dagli stessi identici dati, ed
+entrambi sono legittimi: sono due modi di stimare la stessa cosa, e nella pratica si usano tutti e due. Quello a prima
+visita è il più facile da giustificare: ogni partita porta un numero solo, e
+numeri che vengono da partite diverse non si influenzano a vicenda, che è
+esattamente la condizione in cui fare una media è la cosa giusta da fare.
+Quello a ogni visita conta anche i ripassaggi, quindi butta via meno dati, e
+per questo regge meglio quando le partite sono poche e il quaderno resta quasi
+vuoto: è la situazione del capitolo successivo, dove il quaderno viene
+sostituito da una rete neurale. Con tante partite la scelta non cambia il
+risultato, perché tutti e due finiscono sul valore vero.
+
+Tutti e quattro i numeri, però, restano sotto quelli che la sezione precedente
+aveva calcolato sullo stesso mondo, che erano $9$ per $s_0$ e $10$ per $s_1$, e
+la ragione conviene fissarla:
+là si calcolava il valore della strategia **migliore possibile**, qui si misura
+quello della strategia **che ha giocato davvero**, tentennamenti compresi. Sono
+due domande diverse, e la seconda non può avere una risposta più alta della
+prima. Con tre partite sole, per di più: una media si assesta sul valore vero
+quando i casi mediati sono tanti, e tre non lo sono.
 
 ```python
 gamma = 0.9
@@ -250,12 +298,12 @@ Nulla nel codice conosce l'ambiente: legge una lista di partite già giocate.
 ## Dalla valutazione al controllo
 
 Misurare quanto vale una strategia è metà del lavoro; l'altra metà si chiama
-**controllo**, ed è trovarne una migliore. Si riusa lo schema dell'allenatore
+**controllo**, ed è trovarne una migliore. Si riusa lo schema della pagella
 della sezione precedente: si misura, poi in ogni situazione si tiene la mossa
-che secondo le misure rende di più (si dice che la strategia si rende *greedy*,
-avida, rispetto ai valori stimati), e si ricomincia da capo con la strategia
-nuova. Con una differenza che sembra un dettaglio tecnico e invece è il tema di
-tutto il capitolo.
+che secondo quelle misure rende di più (si dice che la strategia si rende
+*greedy*, cioè avida: prende sempre quello che al momento sembra il meglio), e
+si ricomincia da capo con la strategia nuova. Con una differenza che sembra un
+dettaglio tecnico e invece è il tema di tutto il capitolo.
 
 `````{tab} Elementare
 
@@ -267,9 +315,9 @@ che non si aggiorna più.
 
 Per questo un agente Monte Carlo che vuole *migliorare* (e non solo misurare)
 deve continuare a fare mosse che non crede ottime. È lo stesso dilemma fra
-esplorare e sfruttare che i bandit avevano isolato in apertura di capitolo, e
-qui si presenta nella forma più cruda: senza esplorazione, il metodo
-semplicemente non vede i dati che gli servirebbero.
+esplorare e sfruttare che la sezione sulle leve aveva isolato in apertura di
+capitolo, e qui si presenta nella forma più cruda: senza esplorazione, il
+metodo semplicemente non vede i dati che gli servirebbero.
 
 `````
 
@@ -298,8 +346,9 @@ policy che **genera** i dati da quella che si sta **valutando**.
 
 ## Imparare da una policy e giudicarne un'altra
 
-Qui sta il concetto che questa sezione deve al resto del libro, perché più
-avanti verrà usato tre volte senza essere più spiegato.
+Il concetto di questo paragrafo è fra i più riusati del libro: più avanti
+ricompare tre volte, e da lì in poi si dà per saputo. Conviene quindi
+prendercisi il tempo adesso.
 
 Ci sono due strategie in gioco: quella che vogliamo giudicare e quella che ha
 davvero giocato le partite che abbiamo in mano. Se sono la stessa, cioè se si
@@ -308,8 +357,7 @@ caso di tutto quello che abbiamo visto finora. Se sono diverse si è
 **off-policy**, "fuori dalla propria strategia", ed è la situazione
 interessante: imparare da un archivio di partite giocate da altri, da un
 programma di controllo che c'era già, da un esperto umano, oppure da una
-versione precedente di sé stessi. Nelle formule la strategia da giudicare si
-chiama $\pi$ (*target*) e quella che ha giocato $b$ (*comportamento*).
+versione precedente di sé stessi.
 
 `````{tab} Elementare
 
@@ -334,19 +382,25 @@ non si può dire nulla, e nessun peso può inventare i dati mancanti.
 
 Quanto pesano davvero quei pesi si vede con un conto piccolo. Poniamo che il
 prudente scelga fra due mosse tirando una monetina, e che l'audace sappia
-sempre quale vuole. Una partita di tre mosse in cui la monetina ha indovinato
-per caso tutte e tre le volte la mossa dell'audace è una partita che l'audace
-avrebbe giocato sempre e il prudente una volta su otto: quindi conta **otto
-volte tanto**. Se invece a un certo punto la monetina ha scelto una mossa che
-l'audace non farebbe mai, da lì in avanti quella partita non dice più niente
-sull'audace, e il suo peso va a zero. Ecco il difetto, in due righe: bastano
-poche mosse perché i pesi diventino minuscoli o enormi, ed è il motivo per cui
-giudicare le partite di un altro funziona bene su partite corte e traballa su
-quelle lunghe.
+sempre quale vuole. Prendiamo una partita di tre mosse in cui la monetina ha
+indovinato per caso tutte e tre le volte la mossa dell'audace. L'audace quella
+partita l'avrebbe giocata **sempre**, cioè una volta su una; il prudente ci è
+arrivato per fortuna, e la sua fortuna vale una volta su due a ogni mossa, cioè
+$\frac12 \times \frac12 \times \frac12 = \frac18$, una volta su otto. Il peso è
+il rapporto fra le due: $1$ diviso $\frac18$ fa $8$, e quindi quella partita
+conta **otto volte tanto**. Se
+invece a un certo punto la monetina ha scelto una mossa che l'audace non
+farebbe mai, da lì in avanti quella partita non dice più niente sull'audace, e
+il suo peso va a zero. Ecco il difetto, in due righe: bastano poche mosse
+perché i pesi diventino minuscoli o enormi, ed è il motivo per cui giudicare le
+partite di un altro funziona bene su partite corte e traballa su quelle lunghe.
 
 `````
 
 `````{tab} Superiore
+
+Nelle formule la policy da valutare si chiama $\pi$ (*target*) e quella che ha
+generato i dati $b$ (*behavior*, di comportamento).
 
 La condizione di buon senso si chiama **copertura**: $\pi(a\mid s) > 0$ deve
 implicare $b(a\mid s) > 0$. Ne segue che $b$ deve essere stocastica dove
@@ -416,9 +470,10 @@ degli attrezzi che il libro riusa di più, e conviene sapere dove ricomparirà.
 
 ```{admonition} Dove ritorna
 :class: seealso
-- Nel **PPO**, uno degli algoritmi più usati del capitolo successivo, il peso è
-  il rapporto fra quanto la strategia nuova e quella che ha raccolto i dati
-  avrebbero giocato la stessa mossa: lo stesso oggetto, calcolato su una mossa
+- Nel **PPO** (*Proximal Policy Optimization*), uno degli algoritmi più usati
+  del capitolo successivo, il peso è il rapporto fra quanto la strategia nuova
+  e quella che ha raccolto i dati avrebbero giocato la stessa mossa: lo stesso
+  oggetto di qui, calcolato su una mossa
   sola invece che su tutta la partita. E siccome un peso che esplode è il
   difetto appena visto, PPO gli mette attorno una fascia, sopra e sotto, oltre
   la quale il peso viene tosato (*clipping*).
@@ -426,12 +481,14 @@ degli attrezzi che il libro riusa di più, e conviene sapere dove ricomparirà.
   giocare altre, quell'archivio è tutto ciò che c'è: la condizione appena vista
   (deve contenere tutto quello che la strategia da giudicare potrebbe fare)
   diventa il problema centrale della sezione che gli è dedicata.
-- Nell'**RLHF**, il modo in cui gli assistenti conversazionali imparano dai
-  giudizi delle persone su quale di due risposte sia migliore, il programma che
-  si sta migliorando si allontana passo dopo passo da quello che aveva prodotto
-  le risposte giudicate: è la stessa deriva fra chi ha giocato e chi si
-  giudica, tenuta a bada dallo stesso rapporto, più un termine che penalizza
-  quanto ci si è allontanati dal punto di partenza.
+- Nell'**RLHF** (*Reinforcement Learning from Human Feedback*), il modo in cui
+  gli assistenti conversazionali imparano dai giudizi delle persone su quale di
+  due risposte sia migliore, il programma che si sta migliorando si allontana
+  passo dopo passo da quello che aveva prodotto le risposte giudicate: è la
+  stessa deriva fra chi ha giocato e chi si giudica, tenuta a bada dallo stesso
+  rapporto e da una regola in più: al programma che si sta migliorando vengono
+  tolti punti quanto più le sue risposte si allontanano da quelle del programma
+  di partenza, così che non possa cambiare troppo in fretta.
 ```
 
 ## Il ponte verso le differenze temporali
@@ -456,8 +513,13 @@ subito, e si sostituisce una somma rumorosa di molti termini con un termine
 osservato e una stima sola. Usare una propria stima per aggiornarne un'altra ha
 un nome, **bootstrapping** (alla lettera "tirarsi su per i lacci delle
 scarpe"), e ha un costo: la stima presa come bersaglio può essere sbagliata, e
-allora la correzione tira nella direzione sbagliata, non a caso ma sempre nello
-stesso senso. Questo tipo di errore si chiama **distorsione**, ed è il prezzo di
+allora la correzione tira nella direzione sbagliata. E non tira a caso, tira
+sempre dalla stessa parte, almeno finché le stime non si assestano: nel
+labirinto tutte le caselle partono da zero, che è meno del loro valore vero,
+quindi ogni bersaglio costruito su di esse è più basso del vero, e ogni
+correzione tira verso il basso. Un errore che ha un verso non si cancella
+facendo la media di tante correzioni, e per questo ha un nome suo, la
+**distorsione**; è il prezzo di
 non aspettare la fine: numeri molto più stabili, appoggiati però a un bersaglio
 che potrebbe non essere quello giusto. Nasce così l'apprendimento per
 **differenze temporali**, in inglese *temporal-difference*, che tutti abbreviano
@@ -466,16 +528,17 @@ in **TD**.
 Le tre famiglie si dispongono allora su due assi, ed è la mappa da tenere a
 mente per tutto il resto del capitolo:
 
-| | quanto guarda avanti | serve la mappa dell'ambiente? | usa le proprie stime come bersaglio (*bootstrapping*) |
+| | quanto guarda avanti | serve la mappa dell'ambiente? | si corregge appoggiandosi alle proprie stime (*bootstrapping*) |
 |:--|:--|:--|:--|
-| Programmazione dinamica | un passo, su **tutti** gli stati d'arrivo | sì | sì |
-| Monte Carlo | **fino alla fine**, su una traiettoria sola | no | no |
-| Differenze temporali | un passo, su una traiettoria sola | no | sì |
+| Programmazione dinamica | un passo, su **tutte** le caselle in cui si può finire | sì | sì |
+| Monte Carlo | **fino alla fine**, su una partita sola | no | no |
+| Differenze temporali | un passo, su una partita sola | no | sì |
 
-Manca una casella, quella in mezzo fra un passo e tutta la partita, e non è
-vuota: guardare avanti due, tre o dieci passi invece di uno solo la riempie con
-continuità, dal TD puro al Monte Carlo puro, regolando una sola manopola. Ne
-diremo alla fine della prossima sezione.
+In quella tabella manca una riga, ed è quella in mezzo: guardare avanti non un
+passo solo e nemmeno fino alla fine, ma due passi, o tre, o dieci. Non è una
+possibilità teorica, è una manopola vera, che va con continuità dalle
+differenze temporali pure al Monte Carlo puro; la fine della prossima sezione è
+dedicata a lei.
 
 `````{tab} Elementare
 
@@ -492,6 +555,10 @@ diremo alla fine della prossima sezione.
   fino in fondo e non pretende niente. Basta saper giocare, non saper
   descrivere il gioco. E se interessano poche situazioni, si giocano partite
   solo da quelle, senza passare in rassegna tutte le altre.
+- Le medie si possono fare in due modi, contando una riga per partita (la prima
+  volta che si è passati di lì) oppure contandole tutte, ripassaggi compresi.
+  Danno numeri un po' diversi, sono tutti e due legittimi, e con tante partite
+  finiscono nello stesso posto.
 - Ogni situazione si giudica per conto suo, su quello che è successo davvero:
   un voto sbagliato non contagia le caselle vicine, perché nessuno lo usa per
   calcolare il proprio. Il prezzo sono i due difetti dichiarati fin dall'inizio:

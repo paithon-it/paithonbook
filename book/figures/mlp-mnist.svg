@@ -36,11 +36,11 @@
 
   <!-- Box 5: Output -->
   <rect x="180" y="382" width="260" height="56" rx="10" fill="#F8F5EE" stroke="#C9A961" stroke-width="2.5"/>
-  <text x="310" y="415" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="15" font-weight="600" fill="#1A1A1A">Output: 10 punteggi → softmax</text>
+  <text x="310" y="415" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="15" font-weight="600" fill="#1A1A1A">Fuori dal modello: softmax</text>
 
   <!-- Etichetta laterale: la pila Sequential -->
-  <line x1="150" y1="30" x2="150" y2="438" stroke="#C9C2B4" stroke-width="2"/>
-  <line x1="150" y1="30" x2="158" y2="30" stroke="#C9C2B4" stroke-width="2"/>
-  <line x1="150" y1="438" x2="158" y2="438" stroke="#C9C2B4" stroke-width="2"/>
+  <line x1="150" y1="118" x2="150" y2="350" stroke="#C9C2B4" stroke-width="2"/>
+  <line x1="150" y1="118" x2="158" y2="118" stroke="#C9C2B4" stroke-width="2"/>
+  <line x1="150" y1="350" x2="158" y2="350" stroke="#C9C2B4" stroke-width="2"/>
   <text x="140" y="234" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="700" fill="#2D5A5C" transform="rotate(-90 140 234)">nn.Sequential</text>
 </svg>

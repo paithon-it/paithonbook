@@ -4,32 +4,44 @@ Dopo tanta architettura, mettiamo i Transformer al lavoro su due compiti
 concreti: tradurre una frase e capire se una recensione è entusiasta o delusa.
 Sono gli stessi esempi che un lettore incontra ogni giorno senza pensarci (il
 tasto "traduci" sotto un post, il termometro delle recensioni di un prodotto)
-e per fortuna non serve addestrare nulla da zero: la libreria `transformers`
-di Hugging Face (una *libreria* è una cassetta degli attrezzi già pronta, che
-un programma può aprire e usare), costruita su PyTorch, mette a disposizione
-migliaia di modelli già addestrati.
+e per fortuna non serve addestrare nulla da zero. Qualcun altro ha già fatto la
+parte cara del lavoro: ha preso una di queste macchine ancora vuota, le ha dato
+in pasto montagne di testo e ha lasciato che si aggiustasse i numeri da sola
+per settimane, spendendo in elettricità quanto una casa in un anno. Il
+risultato di quella fatica si scarica e si usa in tre righe, ed è quello che
+chiamiamo un modello **pre-addestrato**. A tenerne il catalogo è Hugging Face,
+un'azienda che ospita un sito da cui chiunque può scaricarli; il programma con
+cui li si adopera si chiama `transformers` ed è una *libreria*, cioè una
+cassetta degli attrezzi già pronta che un programma può aprire e usare.
+Sotto c'è PyTorch, lo strumento con cui in questo libro si costruiscono le reti.
 
 Una parola su come leggere questa pagina. Il programma che fa girare i due
 esempi sta nelle schede Superiore, ma non serve saperlo leggere per seguire
-quel che succede: qui sotto, nel testo comune, c'è scritto in italiano che cosa
-entra, che cosa esce, e soprattutto che cosa il modello **sbaglia**, che è la
-parte più istruttiva delle due.
+quel che succede: nelle schede Elementare c'è scritto in italiano che cosa
+entra e che cosa esce, e qui nel testo comune, alla fine, c'è quello che il
+modello **sbaglia**, che è la parte più istruttiva delle due.
 
 ## Traduzione automatica
 
-Il compito per cui il Transformer è nato: l'encoder legge la frase di
-partenza, il decoder scrive quella d'arrivo, e mentre scrive va a rileggersi
-l'originale. Quel «rileggersi l'originale» ha un nome che tornerà spesso, la
-**cross-attention**: è la stessa attenzione di sempre, con l'unica differenza
-che le domande vengono dalla torre che scrive e le risposte dalla torre che ha
-letto.
+Il compito per cui il Transformer è nato, e quello con cui la sezione
+sull'architettura ce l'ha presentato: la torre che legge (l'**encoder**) si
+prende la frase di partenza, la torre che scrive (il **decoder**) compone
+quella d'arrivo, e mentre la compone torna continuamente a guardare
+l'originale.
+
+Quel «tornare a guardare» ha un nome che tornerà spesso, la
+**cross-attention**, ed è l'attenzione di sempre applicata fra le due torri
+invece che dentro una: le domande (le *query*, cioè «che cosa mi serve
+adesso?») le pone la torre che scrive, e le etichette e le informazioni con cui
+si risponde (le *key* e i *value*) vengono da quella che ha letto.
 
 `````{tab} Elementare
 Segui il viaggio di "The cat sits on the mat". Prima la frase viene spezzata
 in mattoncini (le parole o pezzi di parola: i *token*) e l'encoder la legge
-tutta, costruendo per ogni parola quella rappresentazione ricca di contesto
-che conosciamo. Poi il decoder comincia a scrivere in italiano, una parola
-alla volta: quando deve produrre "gatto" il suo evidenziatore punta su "cat",
+tutta, riscrivendo la lista di numeri di ogni parola in modo che si porti dentro
+anche il contesto in cui si trova. Poi il decoder comincia a scrivere in
+italiano, una parola alla volta: quando deve produrre "gatto" il suo
+evidenziatore (l'attenzione della sezione di apertura) punta su "cat",
 quando produce "siede" punta su "sits". Non è un dizionario che sostituisce
 parola per parola: è più simile a un traduttore che legge tutta la frase, la
 capisce, e la riscrive. La differenza si vede con una parola ambigua: "bank"
@@ -81,15 +93,20 @@ un `nn.Module` PyTorch come quelli del capitolo su PyTorch: con
 parametri.
 `````
 
-## Analisi del sentiment
+## Il termometro delle recensioni
+
+Il secondo compito è capire l'umore di chi scrive: se una recensione è
+entusiasta o delusa. Si chiama *sentiment analysis*, «analisi del sentimento»,
+ed è quello che sta dietro alla percentuale di soddisfatti che compare sotto un
+prodotto in vendita.
 
 Qui il Transformer non deve generare nulla: deve *capire* e dare un voto. Il
 modello che useremo lo dà come lo darebbe un cliente su un sito di recensioni,
-da una a cinque stelle, e leggeremo quel voto come il termometro
-dell'entusiasmo. È un compito perfetto per un modello fatto della sola
-torre che legge, senza quella che scrive: in gergo si dice **solo-encoder**, e
-il capostipite si chiama BERT (lo presentiamo per bene nella sezione
-successiva).
+da una a cinque stelle. Ed è un compito perfetto per un modello fatto della
+sola torre che legge, senza quella che scrive: se la risposta è un voto e non
+una frase, la torre che scrive non serve, e tenerla costerebbe soltanto. In
+gergo un modello così si dice **solo-encoder**, e il capostipite si chiama BERT
+(lo presentiamo per bene nella sezione successiva).
 
 `````{tab} Elementare
 "Mi è piaciuto moltissimo questo prodotto!" e "Una delusione totale": per te è
@@ -153,14 +170,12 @@ classificazione usa la rappresentazione del token speciale `[CLS]` passata a
 una testa lineare (architettura solo-encoder, senza generazione). Le prime due
 righe sono quelle che ci si aspetta; la terza è quella che il paragrafo dopo le
 schede analizza, ed è il motivo per cui il codice stampa la graduatoria e non
-solo la vincente: su «Non è affatto male» il modello dà $0{,}365$
-a due stelle e $0{,}336$ a tre. È in bilico fra le due, e cade dalla parte
-sbagliata per meno di tre centesimi; è anche l'unica delle quattro righe in cui
-la prima e la seconda classe sono così vicine, e questo lo si vede solo
-guardando la coda. È il caso in cui riportare solo
-l'`argmax` nasconde tutto quello che c'è da sapere, ed è per questo che
-`top_k=None` non è un dettaglio di comodo: senza, la pagina non potrebbe
-dimostrare quello che sta per dire.
+solo la vincente. I valori esatti sono $0{,}365$ a due stelle e $0{,}336$ a
+tre: uno scarto di ventinove millesimi, l'unico delle quattro righe in cui le
+prime due classi si toccano così. È il caso in cui riportare solo l'`argmax`
+nasconde tutto quello che c'è da sapere, ed è per questo che `top_k=None` non è
+un dettaglio di comodo: senza, la pagina non potrebbe dimostrare quello che sta
+per dire.
 
 Si noti quindi la **confidenza**: un classificatore serio si valuta con le
 metriche del capitolo sul machine learning (accuratezza, precision/recall), e su
@@ -171,18 +186,28 @@ prestazioni calano sensibilmente.
 Quell'errore sulla terza frase merita di stare nel testo per tutti, perché è la
 cosa più utile che questa pagina abbia da dare. Il modello dà a «non è affatto
 male» **due stelle su cinque**, cioè lo legge come una recensione scontenta,
-mentre a «non è male», la stessa frase senza l'avverbio, ne dà tre. Non è un
-capriccio, ed è probabile che venga dalla compagnia che «affatto» tiene nei
-testi: compare quasi sempre dentro una stroncatura piena («non mi è piaciuto
-affatto»), e quella compagnia se la porta dietro. (È una spiegazione
-plausibile, non una verifica: i testi su cui questo modello ha studiato non si
-possono ispezionare.) Dire una cosa negando il suo contrario (i
-retori la chiamano *litote*) chiede di comporre il significato di tre parole in
-un verso che nessuna delle tre porta da sola: l'attenzione mette «non»,
-«affatto» e «male» in contatto, ma il contatto non garantisce che dalla
-composizione esca la cosa giusta. Le due frasi facili, da sole, avrebbero fatto
-una bella dimostrazione e insegnato molto meno; una demo di tre righe non è una
-validazione, e questa pagina l'ha appena dimostrato su sé stessa.
+mentre a «non è male», la stessa frase senza l'avverbio, ne dà tre.
+
+Il bello è che ci è andato vicinissimo. Il modello non sceglie una risposta
+sola: dà un voto a tutte e cinque, e qui aveva messo le due stelle a 0,36 e le
+tre a 0,34. È in perfetto bilico, e cade dalla parte sbagliata per meno di tre
+centesimi; è l'unica delle quattro frasi in cui i primi due posti sono così
+attaccati, e chi guardasse soltanto il vincitore non se ne accorgerebbe mai. È
+il motivo per cui il programma qui sopra stampa la graduatoria e non solo la
+risposta.
+
+Non è un capriccio, ed è probabile che l'errore venga dalla compagnia che
+«affatto» tiene nei testi: compare quasi sempre dentro una stroncatura piena
+(«non mi è piaciuto affatto»), e quella compagnia se la porta dietro. (È una
+spiegazione plausibile, non una verifica: i testi su cui questo modello ha
+studiato non si possono ispezionare, perché chi lo ha addestrato non li ha
+pubblicati.) Dire una cosa negando il suo contrario (i retori la chiamano
+*litote*) chiede di comporre il significato di tre parole in una direzione che
+nessuna delle tre porta da sola: l'attenzione mette «non», «affatto» e «male»
+in contatto, ma il contatto non garantisce che dalla composizione esca la cosa
+giusta. Le due frasi facili, da sole, avrebbero fatto una bella dimostrazione e
+insegnato molto meno: quattro frasi provate al volo non sono un collaudo, e
+questa pagina l'ha appena dimostrato su sé stessa.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare

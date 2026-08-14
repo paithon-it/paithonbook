@@ -4,9 +4,10 @@ Nel 1952, nei laboratori della Bell Telephone, un apparecchio ingombrante
 fatto di valvole e relè (l'elettronica di allora: bulbi di vetro
 incandescenti e interruttori che scattano da soli) imparò a riconoscere le
 cifre da zero a nove
-pronunciate ad alta voce. Si chiamava **Audrey** e aveva un limite quasi
-comico: funzionava con un solo parlante, che doveva scandire i numeri
-lentamente e fare una pausa netta fra l'uno e l'altro. Settant'anni dopo
+pronunciate ad alta voce. Lo chiamarono poi **Audrey**, e aveva un limite
+quasi comico: funzionava con un solo parlante, che poteva parlare a velocità
+normale ma doveva staccare nettamente una cifra dall'altra, con una pausa in
+mezzo. Attaccate, non le riconosceva più. Settant'anni dopo
 diciamo "metti la sveglia alle sette" al telefono mentre carichiamo la
 lavastoviglie, e la frase diventa testo (e poi azione) in una frazione di
 secondo. In mezzo c'è la storia dell'**ASR** (*Automatic Speech Recognition*),
@@ -60,21 +61,25 @@ l'altra è già metà del lavoro.
 
 ## Da Audrey a Whisper: una breve storia
 
-I primi sistemi, fino agli anni Settanta, funzionavano per **template
-matching**: memorizzavano un modello sonoro di ogni parola e cercavano quello
-più simile al suono in arrivo, stirandolo o comprimendolo nel tempo per farlo
-combaciare (una tecnica detta *dynamic time warping*). Andava bene per
-vocabolari minuscoli e un unico parlante. Il salto di qualità arrivò con una
-famiglia di modelli statistici nota con la sigla **HMM-GMM**: HMM sta per
-«modello di Markov nascosto» (il parlato descritto come una catena di stati
-che non si vedono, uno dietro l'altro) e GMM per «mistura di gaussiane» (ogni
-stato descritto non da un suono solo, ma da una nuvola di suoni possibili).
-Fu l'impianto dominante dagli anni Ottanta fino al 2010 circa.
+I primi sistemi, fino agli anni Settanta, lavoravano per somiglianza:
+tenevano in memoria una registrazione di ogni parola del loro piccolo
+vocabolario e cercavano quella più simile al suono appena arrivato,
+allungandolo o comprimendolo nel tempo per farlo combaciare. L'operazione ha
+un nome che ogni tanto si incontra ancora, *dynamic time warping*, «deformare
+il tempo». Andava bene per pochissime parole e un solo parlante: aggiungerne
+una voleva dire registrarla.
+
+Il salto di qualità, negli anni Ottanta, non venne da macchine più potenti.
+Venne da due idee. La prima: smettere di ragionare per parole intere e
+ragionare per suoni, perché le parole di una lingua sono centinaia di
+migliaia mentre i suoni sono qualche decina, e una parola mai sentita prima è
+comunque fatta di suoni già sentiti. La seconda: dividere il lavoro in due
+pareri.
 
 `````{tab} Elementare
 
-L'idea vincente fu dividere il lavoro in due pareri. Un pezzo del sistema
-giudica *quanto questo suono somiglia alla parola «cane»*; un altro pezzo, che
+Un pezzo del sistema giudica *quanto questo suono somiglia alla parola
+«cane»*; un altro pezzo, che
 ha letto montagne di testo italiano, giudica *quanto è plausibile la frase «il
 cane abbaia» rispetto a «il cane abbaglia»*. La trascrizione finale è il
 miglior compromesso fra i due giudizi. Ecco perché il contesto risolve gli
@@ -113,49 +118,82 @@ si chiama **modello di linguaggio**. Li ritroveremo anche nell'ultima sezione,
 dove il viaggio si fa al contrario e il modello acustico, invece di ascoltare
 suoni, decide quali produrre.
 
+Su questa divisione del lavoro il riconoscimento vocale si è retto per
+trent'anni, dagli anni Ottanta al 2010 circa, e chi legge qualsiasi cosa
+scritta in quel periodo trova sempre la stessa sigla poco amichevole,
+**HMM-GMM**. Sono due macchine che il libro ha già raccontate altrove, e qui
+lavorano insieme.
+
+La prima descrive il parlato come una fila di suoni che si susseguono e che
+nessuno vede direttamente: è una recita dietro la tenda, dove si sentono le
+battute ma non si vede chi le dice, e dagli anni Ottanta è il modo standard di
+raccontare una cosa che si svolge nel tempo e che si può solo intuire da fuori.
+Si chiama «modello di Markov nascosto», HMM, e il libro l'ha già raccontata nel
+capitolo sul linguaggio naturale, dove gli attori dietro la tenda erano le
+categorie grammaticali invece dei suoni.
+
+La seconda dice che uno stesso suono non è mai due volte identico. Dopo
+l'estrazione delle feature ogni frammento di suono è ridotto a una manciata di
+numeri, cioè, se ti aiuta immaginarlo, a un puntino su una mappa; e la «a» di
+mille persone diverse non cade tutte le volte sullo stesso puntino, cade in una
+nuvola di puntini vicini. Descrivere quella nuvola invece del suo centro è
+esattamente quello che fanno le misture di gaussiane (GMM) incontrate nel
+capitolo di Machine Learning, dove servivano a trovare gruppi nei dati:
+«gaussiana» è il nome della forma di nuvola più comune in natura, quella fitta
+al centro e sempre più rada man mano che ci si allontana.
+
 L'ultimo salto è l'approccio **end-to-end** ("da un capo all'altro"): una sola
 rete neurale che impara direttamente il passaggio dall'audio al testo, senza
 scomporre a mano acustica e linguaggio. Tecniche come la **CTC**
 (*Connectionist Temporal Classification* {cite}`graves2006connectionist`) e i
-modelli encoder-decoder con attenzione (una parte della rete ascolta tutto,
-l'altra scrive) hanno reso possibile addestrare l'intero sistema da coppie
-(audio, testo): le vedremo una per una nella prossima sezione, qui bastano i
-nomi. **Whisper** di OpenAI (2022), un Transformer encoder-decoder
-allenato su circa 680.000 ore di audio multilingue, è l'esempio più noto:
-trascrive e traduce decine di lingue, italiano compreso, con un unico modello.
-Per farsi un'idea di quelle ore: sono settantasette anni di parlato
-ininterrotto, giorno e notte, senza una pausa.
+modelli con **attenzione** (una parte della rete ascolta tutto, l'altra
+scrive, e mentre scrive torna a guardare il punto dell'audio che le serve:
+quel tornare a guardare è l'attenzione) hanno reso possibile addestrare
+l'intero sistema da coppie (audio, testo). Le vedremo una per una nella
+prossima sezione: qui bastano i nomi.
 
-## La pipeline, passo per passo
+L'esempio più noto è **Whisper** di OpenAI (2022): trascrive e traduce
+decine di lingue, italiano compreso, con un unico modello, allenato su circa
+680.000 ore di audio multilingue. Per farsi un'idea di quelle ore: sono
+settantasette anni di parlato ininterrotto, giorno e notte, senza una pausa.
+La rete che ci sta dentro è un **Transformer**, l'architettura a cui il libro
+ha già dedicato un capitolo suo, montata anche lei come encoder e decoder.
 
-Anche nei sistemi end-to-end, dove i confini si sfumano dentro un'unica rete, è
-utile riconoscere le fasi concettuali che il segnale attraversa
-({numref}`fig-asr-pipeline`). La prima si chiama **estrazione delle feature**,
-che è l'inglese per «caratteristiche»: al posto dell'onda grezza, poche misure
-per ogni frammento di suono.
+## La catena di montaggio, passo per passo
+
+Dal microfono al testo il suono passa per alcune tappe, sempre le stesse
+({numref}`fig-asr-pipeline`). Conviene conoscerle anche adesso che sono finite
+tutte dentro un'unica rete e non si vedono più dall'esterno, perché i nomi
+sono rimasti quelli e li useremo per tutto il capitolo. La catena nel suo
+insieme si chiama **pipeline**, che in inglese è la conduttura, e qui vale
+quello che da noi si chiamerebbe catena di montaggio.
 
 ```{figure} ../figures/asr-pipeline.svg
 :name: fig-asr-pipeline
 :alt: "Diagramma di flusso a cinque stadi: audio, estrazione delle feature, modello acustico, modello di linguaggio, testo."
 :width: 90%
 
-La pipeline dell'ASR: dall'onda sonora grezza si estraggono le feature, il
-modello acustico le mappa in suoni, il modello di linguaggio ricostruisce le
-parole plausibili, e in fondo esce il testo.
+Le cinque tappe del riconoscimento vocale. Dall'onda sonora si ricavano poche
+misure per ogni frammento (le feature), il modello acustico giudica a quali
+suoni somigliano, il modello di linguaggio sceglie fra le frasi che quei suoni
+consentono, e in fondo esce il testo.
 ```
 
-Quel primo passaggio merita un dettaglio: è qui che l'onda grezza diventa
-qualcosa di trattabile.
+La prima tappa riduce il suono all'essenziale, e si chiama **estrazione delle
+feature** («caratteristiche», in inglese): al posto dell'onda grezza, poche
+misure per ogni frammento di suono. È il passaggio che rende trattabile tutto
+il resto, e merita un dettaglio.
 
 `````{tab} Elementare
 
 Il segnale grezzo è troppo minuto e dettagliato per lavorarci direttamente.
 Allora lo si taglia in fettine di pochi centesimi di secondo e, per ognuna, si
-misura "quanta energia c'è a ciascuna altezza sonora": un po' come le barre di
-un equalizzatore che salgono e scendono a ritmo di musica. Questa sequenza di
+misura "quanta energia c'è a ciascuna altezza sonora": un po' come le barrette
+colorate che ballano nelle app della musica, dove le più a sinistra si alzano
+sui suoni gravi e le più a destra sugli acuti. Questa sequenza di
 istantanee sonore ha un nome, e lo useremo per tutto il capitolo: si chiama
-**spettrogramma**. È molto più facile da dare in pasto a un modello del segnale
-originale.
+**spettrogramma**. Per un modello lavorare su queste istantanee è molto più
+facile che lavorare sull'onda di partenza.
 
 `````
 

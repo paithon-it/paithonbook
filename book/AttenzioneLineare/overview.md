@@ -2,34 +2,43 @@
 
 Nel 2020, mentre il mondo dell'intelligenza artificiale celebrava i
 Transformer come la rottura definitiva con il passato ricorrente, quattro
-ricercatori (Katharopoulos, Vyas, Pappas e Fleuret, tra l'Idiap, l'EPFL e la
-University of Washington)
-pubblicano un articolo dal titolo che suona come una provocazione:
-*Transformers are RNNs* {cite}`katharopoulos2020transformers`. La tesi è tanto
-semplice quanto spiazzante. Togliete al meccanismo di attenzione la sua
+ricercatori fra la Svizzera e gli Stati Uniti (Katharopoulos, Vyas, Pappas e
+Fleuret) pubblicano un articolo dal titolo che suona come una provocazione:
+*Transformers are RNNs* {cite}`katharopoulos2020transformers`, dove RNN è la
+sigla inglese delle reti ricorrenti, quelle che leggono una parola alla volta.
+La tesi è tanto semplice quanto spiazzante. Togliete al meccanismo di attenzione la sua
 funzione softmax (il passaggio che, davanti a una parola, spartisce l'attenzione
-fra tutte le altre come le fette di una torta, in modo che i pesi si sommino a
-uno) e il Transformer, il modello che aveva appena spodestato le reti
-ricorrenti, ricade esattamente in una **rete ricorrente**.
-Il re, sotto il mantello, era un vecchio parente.
+fra tutte le altre come le fette di una torta), mettete al suo posto un modo
+più rozzo di misurare quanto due parole si somigliano, e il Transformer, il
+modello che aveva appena spodestato le reti ricorrenti, ricade esattamente in
+una **rete ricorrente**. Il re, sotto il mantello, era un vecchio parente.
 
 Non è un gioco di prestigio: è una porta. Nel capitolo sui Transformer abbiamo
 visto che l'attenzione si paga due volte. Il primo conto è il lavoro: ogni
 parola guarda tutte le altre, quindi raddoppiando la lunghezza del testo il
-lavoro **quadruplica**, ed è ciò che si chiama costo *quadratico*. Il secondo
-si paga mentre il modello scrive: per non rifare ogni volta gli stessi calcoli
-tiene da parte un archivio di appunti (la *cache*) dove ogni token prodotto (il
-token è il pezzetto di testo che il modello tratta come unità: quasi sempre una
-parola o un frammento di parola, e qui per comodità li chiameremo parole)
-lascia la propria **chiave**, cioè l'etichetta con cui lo si ritrova, e il
-proprio **valore**, cioè l'informazione che porta. Quell'archivio **cresce**
-parola dopo parola. È il muro contro cui sbattono i contesti lunghi. La
-provocazione di Katharopoulos indica una via per aggirarlo: se l'attenzione,
-spogliata della softmax, è una rete ricorrente, allora possiamo riscriverla
-come una ricorrenza a **stato di dimensione fissa**, dove il lavoro cresce in
-modo *lineare*, cioè semplicemente proporzionale (il doppio di testo, il doppio
-di lavoro) e la memoria non cresce affatto, senza rinunciare del tutto a ciò
-che l'aveva resa vincente. È da lì che viene il nome del capitolo: da
+lavoro **quadruplica**, ed è ciò che si chiama costo *quadratico*: dieci volte
+il testo, cento volte il lavoro. Un numero per sentirne il peso: su centomila
+parole, la lunghezza di un romanzo, sono centomila per centomila confronti da
+fare, cioè dieci miliardi, e non una volta sola, ma in ognuno degli strati
+della rete, che sono decine.
+
+Il secondo conto si paga mentre il modello scrive. Per non rifare ogni volta
+gli stessi calcoli, il modello tiene da parte un archivio di appunti, la
+*cache*. Ogni pezzetto di testo che produce (si chiama **token**: quasi sempre
+una parola o un frammento di parola, e qui per comodità li chiameremo parole)
+vi lascia la propria **chiave**, cioè l'etichetta con cui lo si ritrova, e il
+proprio **valore**, cioè l'informazione che porta. Etichetta e informazione non
+le sceglie nessuno a mano: le calcola il modello dalla parola stessa, che al
+suo interno è già diventata una fila di numeri. Quell'archivio **cresce**
+parola dopo parola. È il muro contro cui sbattono i contesti lunghi.
+
+La provocazione di Katharopoulos indica una via per aggirare tutti e due i
+conti. Se l'attenzione, spogliata della softmax, è una rete ricorrente, allora
+la si può riscrivere come una ricorrenza a **stato di dimensione fissa**: un
+riassunto grande sempre uguale (lo chiameremo anche *stato*) che si aggiorna
+una volta per parola. Il lavoro torna a crescere in modo *lineare*, cioè
+semplicemente proporzionale (il doppio di testo, il doppio di lavoro), e la
+memoria non cresce affatto. È da lì che viene il nome del capitolo: da
 quadratico a lineare.
 
 ```{figure} ../figures/kv-cache-generazione.svg
@@ -42,20 +51,23 @@ e quel pezzo resta: la memoria occupata cresce con quanto si è scritto finora,
 e nessun passo la libera.
 ```
 
-{numref}`fig-kv-cache-cresce` è il muro in una figura, ed è il motivo per cui
+{numref}`fig-kv-cache-cresce` mostra il secondo dei due conti, quello che si
+paga mentre il modello scrive: è il muro in una figura, ed è il motivo per cui
 tutto questo capitolo esiste. Una ricorrenza a stato fisso non fa crescere
 niente: comprime il passato in una memoria di taglia costante, e la domanda
 diventa quanto si perde nel comprimerlo.
 
 ## Il compromesso che tutti inseguono
 
+Conviene separare subito due momenti della vita di un modello, perché costano
+in modo diverso ed è su quella differenza che gira l'intero capitolo.
+
 `````{tab} Elementare
 
-Un modello di questo tipo fa due mestieri, in due momenti diversi della sua
-vita, e conviene tenerli separati fin da subito. C'è l'**addestramento**, che
+Il primo è l'**addestramento**, che
 si fa una volta sola: il testo esiste già tutto, e il modello lo attraversa per
-imparare. E c'è la **generazione**, quando il modello è in uso e scrive parola
-per parola un testo che non esiste ancora (nel libro la troverete chiamata
+imparare. Il secondo è la **generazione**, quando il modello è in uso e scrive parola
+per parola un testo che non esiste ancora (nel libro la trovi chiamata
 anche *inferenza*, che è il nome tecnico dello stesso momento). Le due cose
 costano in modo diverso, e un modello può essere bravo in una e disastroso
 nell'altra.
@@ -112,11 +124,20 @@ scheletro, non come invenzioni scollegate.
 
 Il riassunto non è un testo: è una **tabella di numeri**, righe e colonne,
 sempre della stessa taglia (in matematica una tabella così si chiama
-*matrice*, e la parola tornerà spesso). Ogni parola che passa vi deposita
-un'associazione, «a questa etichetta corrisponde questa informazione», che si
-somma a quello che c'è già scritto invece di aggiungere una riga nuova. Ecco
-perché la memoria non cresce: a cambiare sono i numeri dentro le caselle, non
-il numero di caselle.
+*matrice*, e la parola tornerà spesso).
+
+Che una tabella di numeri possa contenere delle parole suona strano, e vale la
+pena chiarirlo qui perché regge tutto il resto: dentro un modello una parola
+non è una parola, è una fila di qualche centinaio di numeri (le posizioni di
+quella fila si chiamano *canali*). Etichetta e informazione sono due file di
+numeri anche loro, ricavate dalla parola. Quindi «scrivere nel riassunto» vuol
+dire sommare dei numeri alle caselle, e «rileggerlo» vuol dire rifare dei
+conti.
+
+Ogni parola che passa deposita così un'associazione, «a questa etichetta
+corrisponde questa informazione», che si somma a quello che c'è già scritto
+invece di aggiungere una riga nuova. Ecco perché la memoria non cresce: a
+cambiare sono i numeri dentro le caselle, non il numero di caselle.
 
 `````
 
@@ -144,20 +165,23 @@ Tre tappe, dal meccanismo alle architetture concrete.
 Si parte da **come l'attenzione diventa economica**: che cosa bisogna cambiare
 nel conto perché il lavoro smetta di esplodere, come quel conto si trasformi in
 un riassunto di taglia fissa aggiornato parola per parola, e qual è il difetto
-di un riassunto che sa soltanto sommare, cioè che prima o poi si satura.
+di un riassunto che sa soltanto sommare: le scritte si sovrappongono fin da
+subito, e bastano poche informazioni perché non ci si legga più niente di
+preciso.
 Seconda tappa, **scrivere meglio nel riassunto**: i due rimedi a quel difetto,
 lasciar sbiadire ciò che è vecchio e correggere ciò che è già scritto invece di
 aggiungerci sopra, fino a una tabella che mostra come i modelli di questa
 famiglia siano lo stesso meccanismo con una manopola girata in modo diverso.
 Terza tappa, **le architetture concrete** che oggi si misurano con i
-Transformer (RetNet, RWKV, xLSTM). Chiude un breve **notebook** in cui
-verifichiamo con i numeri veri che i due modi di fare il conto danno davvero
-lo stesso risultato.
+Transformer (RetNet, RWKV, xLSTM). Chiude un breve **notebook**, cioè una
+pagina di codice che si può far girare, in cui verifichiamo con i numeri veri
+che i due modi di fare il conto danno davvero lo stesso risultato.
 
 `````{tab} Elementare
 
 Non serve portarsi dietro niente: ogni parola nuova viene spiegata dove
-compare, e le formule stanno tutte nell'altro livello. Se leggi solo questo, il
+compare, e le formule stanno tutte nell'altro livello (qui restano solo dei
+conti con i numeri, tenuti il più semplici possibile). Se leggi solo questo, il
 capitolo si legge di fila. Le figure del capitolo sono quattro e le loro
 didascalie raccontano da sole la storia: se un passaggio si complica, guarda
 la figura più vicina.
@@ -166,7 +190,7 @@ la figura più vicina.
 
 `````{tab} Superiore
 
-Con i nomi che troverete nei paper: il *trucco del kernel* che spezza la
+Con i nomi che si trovano nei paper: il *trucco del kernel* che spezza la
 softmax e trasforma l'attenzione in una ricorrenza a stato-matrice, con la sua
 doppia natura parallelo/ricorrente, e il limite di capacità dell'accumulo puro;
 poi i *gate* per dimenticare (RetNet, Mamba-2, GLA) e la *delta rule* per
@@ -185,10 +209,11 @@ aggirarlo.
 
 ```{admonition} Da ricordare
 :class: important
-- Tolta la softmax, il passaggio che spartisce l'attenzione di una parola fra
-  tutte le altre come le fette di una torta, il Transformer si riscopre una
-  **rete ricorrente** {cite}`katharopoulos2020transformers`: legge una parola
-  alla volta portandosi dietro un riassunto di dimensione sempre uguale.
+- Tolta la softmax (il passaggio che spartisce l'attenzione di una parola fra
+  tutte le altre come le fette di una torta) e messo al suo posto un modo più
+  rozzo di misurare quanto due parole si somigliano, il Transformer si riscopre
+  una **rete ricorrente** {cite}`katharopoulos2020transformers`: legge una
+  parola alla volta portandosi dietro un riassunto di dimensione sempre uguale.
 - È la via per aggirare i due conti che i Transformer pagano sui testi lunghi:
   il lavoro che cresce a valanga con la lunghezza (raddoppiando il testo
   quadruplica) e la memoria di appoggio che si allunga a ogni parola generata.

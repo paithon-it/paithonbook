@@ -1,6 +1,6 @@
 <svg viewBox="0 0 760 340" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Timeline parallela: evoluzione dell'hardware sopra, evoluzione dei modelli sotto, dal 1958 al 2020">
   <rect x="0" y="0" width="760" height="340" fill="#F8F5EE"/>
-  <text x="380" y="30" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="bold" fill="#1A1A1A">Due timeline che si incontrano</text>
+  <text x="380" y="30" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="bold" fill="#1A1A1A">Due storie che si inseguono</text>
   <!-- asse centrale -->
   <line x1="60" y1="170" x2="700" y2="170" stroke="#1A1A1A" stroke-width="2"/>
   <!-- etichette lane -->
