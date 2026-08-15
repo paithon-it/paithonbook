@@ -46,30 +46,29 @@ passato cinque anni a guardare che fine faceva la sua espressione: all'inizio,
 racconta, la usava chi il paper l'aveva letto, e poi «la frase ha superato il
 paper» {cite}`bender2026unasked`. È il pappagallo che si descrive da solo.
 
-Intanto la cosa che di quei modelli si ripeteva più spesso, cioè che si
-limitano a indovinare una parola per volta, restava dov'era. È vera, e dice
-come il testo esce, non come viene deciso. Nel 2025 il gruppo che uno di questi
-modelli lo aveva costruito è andato a guardarci dentro mentre scriveva una
-poesia in rima {cite}`lindsey2025biology`. Si aspettavano di vederlo procedere
-parola per parola e aggiustare la rima all'ultimo momento, e hanno trovato il
-contrario: prima ancora di cominciare il verso il modello aveva già in testa le
-parole con cui poteva chiuderlo, e scriveva il verso per arrivarci; tolta
-quella scelta, ne scriveva un altro che finiva su una rima diversa. La riga con
-cui gli autori lo riassumono è questa: anche se questi modelli sono addestrati
-a produrre una parola per volta, per farlo possono pensare su orizzonti molto
-più lunghi. Predire un token alla volta non vuol dire ragionare un token alla
-volta.
+Intanto, di quei modelli, la cosa che si ripeteva più spesso è che si
+limitano a indovinare una parola per volta. È vero, ma dice come il testo
+esce, non come viene deciso. Il gruppo che uno di questi modelli lo aveva
+costruito è andato a guardarci dentro mentre scriveva una poesia in rima
+{cite}`lindsey2025biology`, aspettandosi di vederlo procedere parola per
+parola e aggiustare la rima all'ultimo momento. Ha trovato il contrario. Prima
+ancora di cominciare il verso, il modello aveva già in testa le parole con cui
+poteva chiuderlo, e scriveva il verso per arrivarci; tolta quella scelta, ne
+scriveva un altro che finiva su una rima diversa. La riga con cui gli autori lo
+riassumono è questa: anche se questi modelli sono addestrati a produrre una
+parola per volta, per farlo possono pensare su orizzonti molto più lunghi.
+Predire un token alla volta non vuol dire ragionare un token alla volta.
 
-Qui Bender non sarebbe d'accordo, e conviene dirlo invece di tacerlo. Nello
-stesso testo scrive che «i pappagalli stocastici saranno stati una descrizione
-giusta nel tale anno, ma adesso non più perché…» è l'obiezione che le arriva
-puntuale ogni volta che un'azienda presenta un modello nuovo. Per lei quella
-non è una previsione da superare, è «una descrizione, o una metafora», e il
-bersaglio della sua critica non sono i modelli: «quello che mi preoccupa sono
-le azioni delle persone», scrive, e nell'elenco ci sono il furto dei dati, lo
-sfruttamento del lavoro, l'indifferenza per l'impatto ambientale e «la
-sorprendente disponibilità di tanti a cedere il proprio potere e affidarsi a
-testo sintetico».
+Su questo Bender non sarebbe d'accordo, e conviene dirlo. L'obiezione che le
+arriva puntuale, racconta, è sempre la stessa: i pappagalli stocastici
+andavano bene un tempo, ma adesso non più, perché è appena uscito un modello
+che fa una cosa che prima non faceva. Per lei non è nemmeno un'obiezione, dato
+che quella non era una previsione da superare ma «una descrizione, o una
+metafora» di come sono fatte quelle macchine. E il bersaglio della sua critica,
+aggiunge, non sono affatto i modelli: «quello che mi preoccupa sono le azioni
+delle persone», il furto dei dati, lo sfruttamento del lavoro, l'indifferenza
+per l'impatto ambientale, e «la sorprendente disponibilità di tanti a cedere il
+proprio potere e affidarsi a testo sintetico».
 
 Su che cosa faccia una macchina la penso diversamente da lei. Su chi sia il
 pappagallo, no. E l'unica cosa che separa chi capisce da chi ripete è sapere
@@ -103,10 +102,10 @@ volta con le formule al posto giusto.
 Il secondo senso riguarda la strada che il testo fa per arrivare fin qui.
 Quello che una AI ha scritto lo rilegge **un'altra AI**, che alla stesura non
 ha partecipato e ha un compito solo: cercare l'errore. Non riscrive per farlo
-suonare meglio, controlla che le date siano quelle, che i numeri tornino, che
-le derivazioni si reggano e che il codice giri davvero invece di sembrare
-giusto. Chi ha scritto una cosa è l'ultimo a poterci trovare uno sbaglio, e
-questo vale per una macchina esattamente come per una persona.
+suonare meglio; rifà i conti, riapre i paper citati, ripercorre le derivazioni
+un passaggio alla volta ed esegue il codice invece di guardarlo. Chi ha scritto
+una cosa è l'ultimo a poterci trovare uno sbaglio, e questo vale per una
+macchina esattamente come per una persona.
 
 Solo dopo il testo arriva a me, e quello è il passaggio che decide che cosa
 resta. Non è una formalità, ed è la parte che al posto mio una macchina non sa
@@ -119,13 +118,16 @@ la racconterei a voce; un esempio ineccepibile che però non fa scattare niente
 si butta, anche se funziona; e una pagina che dice tutto il vero senza far
 capire niente torna alla domanda da cui era nata, e si ricomincia da lì.
 
-Il metodo è severo per una ragione precisa. Un modello sbaglia con la stessa
-sicurezza con cui dice il vero, e su una materia tecnica sbaglia proprio dove
-chi legge non ha modo di accorgersene: una data spostata di un anno, un numero
-plausibile, una derivazione che sembra tornare. Perciò la regola qui è che
-ogni affermazione fattuale si controlla sulle fonti primarie, ogni esempio
-numerico si rifà a mano e ogni blocco di codice si esegue prima di finire in
-queste pagine.
+Tutto questo è severo per una ragione precisa: un modello sbaglia con la
+stessa sicurezza con cui dice il vero, e su una materia tecnica sbaglia proprio
+dove chi legge non ha modo di accorgersene. Non sbaglia il tono. Perde il
+fattore due davanti a una formula che per il resto è giusta; attribuisce al
+paper sbagliato un meccanismo, magari a quello più famoso invece che a quello
+che lo ha proposto; salta in una derivazione il passaggio da cui dipende tutto
+e la fa comunque tornare; racconta benissimo un aneddoto sbagliando l'unico
+dettaglio che ne faceva una lezione. Sono guasti che non si vedono rileggendo:
+si vedono solo aprendo la fonte, rifacendo il conto a mano, mandando in
+esecuzione il codice.
 
 Su una cosa questo libro scommette apertamente. Il testo che leggi oggi è il
 meglio che questo metodo sappia produrre adesso, non il meglio possibile:
