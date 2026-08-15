@@ -107,15 +107,21 @@ $$
 
 e cerchiamo una funzione $f:\mathcal{X}\to\mathcal{Y}$ che approssimi la
 relazione ignota tra ingressi e uscite, con $\hat{y}=f(\mathbf{x})$. La qualità
-di $f$ si misura con una **funzione di costo** (o *loss*) $\mathcal{L}$, e
-l'addestramento è il problema di ottimizzazione
+di $f$ si misura con una **funzione di costo** (o *loss*), e conviene
+distinguere subito i due oggetti che portano quel nome: $\ell$ è il costo di
+**una** predizione, $\mathcal{L}$ è quello sull'intero insieme, cioè la media
+dei primi. L'addestramento è il problema di ottimizzazione
 
 $$
-\theta^\star = \arg\min_{\theta}\ \frac{1}{m}\sum_{i=1}^{m}
-\mathcal{L}\big(f_\theta(\mathbf{x}^{(i)}),\, y^{(i)}\big),
+\theta^\star = \arg\min_{\theta}\ \mathcal{L}(\theta),
+\qquad
+\mathcal{L}(\theta) = \frac{1}{m}\sum_{i=1}^{m}
+\ell\big(f_\theta(\mathbf{x}^{(i)}),\, y^{(i)}\big),
 $$
 
-dove $\theta$ sono i parametri del modello. La natura di $\mathcal{Y}$
+dove $\theta$ sono i parametri del modello. La distinzione fra $\ell$ e
+$\mathcal{L}$ tornerà utile più avanti, quando il gradiente si calcolerà su un
+sottoinsieme di esempi invece che su tutti. La natura di $\mathcal{Y}$
 distingue i due problemi cardine: continuo per la regressione, discreto per la
 classificazione.
 

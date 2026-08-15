@@ -276,14 +276,13 @@ dieci volte tanto, la loss resta a 0,89 di quanto era, poco meno di nove
 decimi, per il calcolo (primo pannello, numeretto 0,050); a 0,80, poco più di
 quattro quinti, per i dati (secondo pannello, 0,095); a 0,84, circa cinque
 sesti, per i parametri (terzo, 0,076). Più il numeretto è grande, più quella
-risorsa rende. Le tre rette invece sono disegnate tutte con la stessa
-inclinazione, che è solo una scelta grafica: le pendenze da confrontare sono i
-numeretti, non i disegni. Schema ridisegnato sugli esponenti misurati da
-Kaplan e colleghi nel 2020; la $C$ del primo pannello è il budget di calcolo
-**allocato al meglio** (il $C_{\min}$ del paper), cioè speso nella combinazione
-di taglia del modello e durata dell'addestramento che con quel budget rende di
-più. Non è il calcolo comunque impiegato, che il paper misura a parte e con un
-altro esponente.
+risorsa rende, e le tre rette sono disegnate con inclinazioni proporzionali ai
+tre numeretti: quella dei dati è la più ripida perché 0,095 è il più grande dei
+tre. Schema ridisegnato sugli esponenti misurati da Kaplan e colleghi nel 2020;
+la $C$ del primo pannello è il budget di calcolo **allocato al meglio** (il
+$C_{\min}$ del paper), cioè speso nella combinazione di taglia del modello e
+durata dell'addestramento che con quel budget rende di più. Non è il calcolo
+comunque impiegato, che il paper misura a parte e con un altro esponente.
 ```
 
 L'assenza di un ginocchio in {numref}`fig-leggi-di-scala-tre` è ciò che ha

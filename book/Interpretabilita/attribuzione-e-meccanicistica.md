@@ -88,8 +88,8 @@ $$
 calcolato con una singola *backpropagation* fino allo strato di input anziché
 fermarsi ai pesi. L'idea è una **linearizzazione locale**: nell'intorno di
 $\mathbf{X}$,
-$S_c(\mathbf{X} + \delta) \approx S_c(\mathbf{X}) +
-\big(\partial S_c/\partial \mathbf{X}\big)^\top \delta$,
+$S_c(\mathbf{X} + \boldsymbol{\delta}) \approx S_c(\mathbf{X}) +
+\big(\partial S_c/\partial \mathbf{X}\big)^\top \boldsymbol{\delta}$,
 quindi le componenti del gradiente di modulo maggiore individuano i pixel la cui
 piccola variazione altera di più il punteggio. Per un'immagine a colori si
 prende in genere il massimo del modulo sui tre canali RGB.

@@ -489,22 +489,22 @@ colonne si muovono insieme.
 `````{tab} Superiore
 
 Per la feature $j$, la **partial dependence** è l'attesa della predizione
-marginalizzando sulle altre feature $X_{-j}$, stimata sul dataset come
+marginalizzando sulle altre feature $\mathbf{X}_{-j}$, stimata sul dataset come
 
 $$
-\mathrm{PD}_j(v) = \frac{1}{m}\sum_{i=1}^{m} f\!\big(v,\, X_{-j}^{(i)}\big),
+\mathrm{PD}_j(v) = \frac{1}{m}\sum_{i=1}^{m} f\!\big(v,\, \mathbf{X}_{-j}^{(i)}\big),
 $$
 
 dove si fissa $x_j = v$ e si mediano le predizioni su tutti gli esempi
 {cite}`friedman2001greedy`. La curva **ICE** è la stessa quantità *prima* di
-mediare: $f(v, X_{-j}^{(i)})$ per il singolo esempio $i$
+mediare: $f(v, \mathbf{X}_{-j}^{(i)})$ per il singolo esempio $i$
 {cite}`goldstein2015peeking`. Il PDP
 è dunque la media verticale del fascio di ICE; quando le curve ICE si
 sventagliano, un effetto medio piatto maschera **interazioni** o eterogeneità.
 
 Il difetto profondo del PDP è l'**estrapolazione con feature correlate**:
-fissare $x_j = v$ mentre si tengono i valori reali di $X_{-j}$ genera punti
-$(v, X_{-j}^{(i)})$ implausibili (altezza 2 m con peso 50 kg) su cui il
+fissare $x_j = v$ mentre si tengono i valori reali di $\mathbf{X}_{-j}$ genera punti
+$(v, \mathbf{X}_{-j}^{(i)})$ implausibili (altezza 2 m con peso 50 kg) su cui il
 modello viene interrogato fuori dal supporto dei dati, producendo curve
 fuorvianti. L'**Accumulated Local Effects** (ALE) di Apley e Zhu
 {cite}`apley2020visualizing`
