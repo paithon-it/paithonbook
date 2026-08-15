@@ -48,6 +48,21 @@
 
 versioni:
 
+- versione: "1.5.5"
+  data: 2026-08-15
+  voci:
+
+  - tipo: corretto
+    testo: >
+      **Tre didascalie di figura rompevano un collegamento nel PDF.**
+      Contenevano una citazione, e nella versione a stampa quel richiamo
+      spezzava il rimando alla bibliografia: la didascalia si leggeva bene, ma
+      il collegamento non portava da nessuna parte, ed è il motivo per cui
+      nessuno se n'era accorto. Le citazioni sono passate nel corpo del testo.
+      Su una delle tre il testo ci ha guadagnato: adesso dice chi fabbricò
+      quei quattro insiemi di dati, e quando.
+
+
 - versione: "1.5.4"
   data: 2026-08-15
   voci:

@@ -38,6 +38,14 @@ Una versione corrisponde a una **pubblicazione**, non a una giornata di
 lavoro: il libro si scrive tutti i giorni e si pubblica quando un pezzo sta in
 piedi.
 
+(v1-5-5)=
+
+## 1.5.5 · 15 agosto 2026
+
+### Correzioni
+
+- **Tre didascalie di figura rompevano un collegamento nel PDF.** Contenevano una citazione, e nella versione a stampa quel richiamo spezzava il rimando alla bibliografia: la didascalia si leggeva bene, ma il collegamento non portava da nessuna parte, ed è il motivo per cui nessuno se n'era accorto. Le citazioni sono passate nel corpo del testo. Su una delle tre il testo ci ha guadagnato: adesso dice chi fabbricò quei quattro insiemi di dati, e quando.
+
 (v1-5-4)=
 
 ## 1.5.4 · 15 agosto 2026

@@ -365,16 +365,17 @@ quel punto, ed è la quantità che ogni modello di questo libro cercherà di
 rendere piccola.
 
 Costruire quattro insiemi di dati che coincidono su tutte e quattro
-queste misure è un lavoro di precisione, ed è il punto: sulla carta sono
-indistinguibili. Ma basta disegnarli ({numref}`fig-anscombe`) per scoprire che
-raccontano quattro storie completamente diverse.
+queste misure è un lavoro di precisione, ed è il punto: li fabbricò apposta lo
+statistico Francis Anscombe nel 1973 {cite}`anscombe1973graphs`, e sulla carta
+sono indistinguibili. Ma basta disegnarli ({numref}`fig-anscombe`) per scoprire
+che raccontano quattro storie completamente diverse.
 
 ```{figure} ../figures/quartetto-anscombe.svg
 :name: fig-anscombe
 :alt: "Quattro grafici a dispersione con la stessa retta di regressione ma nubi di punti molto diverse: una relazione lineare, una curva, una lineare con un valore anomalo, e una con i punti allineati verticalmente più un punto isolato."
 :width: 90%
 
-Il quartetto di Anscombe {cite}`anscombe1973graphs`. Stesse statistiche,
+Il quartetto di Anscombe. Stesse statistiche,
 stessa retta: solo il grafico rivela che i quattro dataset non hanno nulla
 in comune.
 ```

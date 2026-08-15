@@ -275,8 +275,9 @@ limitano a confrontare due riassunti; via le probabilità, meglio l'energia;
 via il mostrare al modello anche gli esempi sbagliati perché impari a
 respingerli, meglio costruirlo in modo che non possa dire di sì a tutto; via
 l'imparare per tentativi, meglio pianificare dentro un modello del mondo.
-L'argomento esteso è in *A Path Towards Autonomous Machine Intelligence*
-{cite}`lecun2022path`; la seconda riga è la tesi di questo capitolo.
+L'argomento esteso è in *A Path Towards Autonomous Machine Intelligence*,
+il documento di posizione di LeCun del 2022; la seconda riga è la tesi di
+questo capitolo.
 ```
 
 Le quattro righe di {numref}`fig-quattro-rinunce` non hanno tutte lo stesso

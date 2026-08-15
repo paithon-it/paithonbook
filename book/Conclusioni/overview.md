@@ -279,7 +279,7 @@ sesti, per i parametri (terzo, 0,076). Più il numeretto è grande, più quella
 risorsa rende. Le tre rette invece sono disegnate tutte con la stessa
 inclinazione, che è solo una scelta grafica: le pendenze da confrontare sono i
 numeretti, non i disegni. Schema ridisegnato sugli esponenti misurati da
-{cite}`kaplan2020scaling`; la $C$ del primo pannello è il budget di calcolo
+Kaplan e colleghi nel 2020; la $C$ del primo pannello è il budget di calcolo
 **allocato al meglio** (il $C_{\min}$ del paper), cioè speso nella combinazione
 di taglia del modello e durata dell'addestramento che con quel budget rende di
 più. Non è il calcolo comunque impiegato, che il paper misura a parte e con un
