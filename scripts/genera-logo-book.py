@@ -43,8 +43,12 @@ INCHIOSTRO = {"light": "#1A1714", "dark": "#F4ECDD"}
 # su un font da 2000 unità per em: quindi un em vale 120 unità SVG, la linea di
 # base è y=0 e le ascendenti arrivano a y=-90.
 EM_PAITHON = 120.0
-X_FINE_PAITHON = 641.3        # bordo destro del wordmark, in unità SVG
-VIEWBOX_BASE = (-8.00, -98.24, 660.15, 134.20)
+# Misure aggiornate il 15 agosto 2026, quando la «a» è diventata il tribar e il
+# bollo separato è sparito: la parola comincia a x=0 invece che a 166.189, ed è
+# più corta di quanto il bollo occupava. Si rimisurano rendendo il file senza il
+# gruppo `pt-book` e guardando dove finisce l'inchiostro, non a mano.
+X_FINE_PAITHON = 500.7        # bordo destro del wordmark, in unità SVG
+VIEWBOX_BASE = (-8.00, -98.24, 508.68, 134.20)
 
 # --- parametri regolabili --------------------------------------------------
 PAROLA = "book"
@@ -132,9 +136,9 @@ def main() -> None:
 
     for tema, inchiostro in INCHIOSTRO.items():
         componi(tema, gruppo(x_i, base_i, scala_i, inchiostro), vb_i,
-                "paithon book", STATICO / f"logo-{tema}.svg")
+                "Paithon Book", STATICO / f"logo-{tema}.svg")
         componi(tema, gruppo(x_l, 0.0, scala_l, inchiostro), vb_l,
-                "paithon book", STATICO / f"logo-inline-{tema}.svg")
+                "Paithon Book", STATICO / f"logo-inline-{tema}.svg")
 
     print(f"\n  impilato: em {EM_PAITHON * RAPPORTO_IMPILATO:.1f}, "
           f"«book» x {x_i:.1f}–{X_FINE_PAITHON:.1f}, base {base_i:.1f}")

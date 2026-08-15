@@ -12,7 +12,7 @@ gratis, in aggiornamento continuo.
   <a href="https://www.apache.org/licenses/LICENSE-2.0"><img alt="Licenza codice Apache 2.0" src="https://img.shields.io/badge/codice-Apache%202.0-1A1A1A?style=flat-square"></a>
 </p>
 
-Questa è la versione online di **paithon book**, di Francesco Messina: un
+Questa è la versione online di **Paithon Book**, di Francesco Messina: un
 percorso completo (dall'algebra lineare ai Transformer) scritto con la
 tradizione della divulgazione italiana. Rigoroso nei contenuti, accessibile
 nel tono.
@@ -159,8 +159,8 @@ Il progetto adotta un **doppio regime di licenza**:
   codice dentro i capitoli e i notebook.
 
 Tutto il resto del repository, la meccanica del libro (`book/_static/`,
-`book/_templates/`), gli script e i generatori, è **© paithon.it, tutti i
-diritti riservati**.
+`book/_templates/`), gli script e i generatori, è **© Francesco Messina
+(paithon.it), tutti i diritti riservati**.
 
 Materiale di terzi, con le sue licenze: il tema
 [`sphinx-book-theme`](https://github.com/executablebooks/sphinx-book-theme)

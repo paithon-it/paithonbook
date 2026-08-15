@@ -281,6 +281,46 @@ def rilascia(pdf: pathlib.Path, conferma: bool) -> None:
     print(f"  fatto: https://github.com/{PUBBLICO}/releases/tag/{tag}")
 
 
+def ricompatta(pdf: pathlib.Path) -> None:
+    """Riscrive il PDF eliminando l'imbottitura che LuaTeX ci lascia dentro.
+
+    LuaTeX ogni tanto scrive un oggetto compresso seguito da decine di megabyte
+    di byte a zero, e dichiara nella `/Length` anche quelli. Il PDF resta
+    perfettamente valido e completo (stesse pagine, stessi segnalibri, stessi
+    collegamenti): a cambiare e' solo il peso, che qui e' passato da 66 MB a 29
+    per 39 MB di zeri in un oggetto solo. Non da' nessun errore, e l'unico
+    sintomo e' la dimensione del file, che se ne accorge solo chi la confronta
+    con quella della volta prima.
+
+    Riscrivere tutto con PyMuPDF li toglie, e in piu' fissa l'identificatore
+    del documento, cosi' due costruzioni dello stesso testo danno file uguali:
+    e' lo stesso trattamento che `_stampa/copertina.py` fa alle copertine.
+    """
+    try:
+        import fitz
+    except ImportError:
+        return
+    prima = pdf.stat().st_size
+    documento = fitz.open(pdf)
+    pagine, segnalibri = documento.page_count, len(documento.get_toc())
+    documento.xref_set_key(-1, "ID", "[<70616974686F6E><626F6F6B>]")
+    temporaneo = pdf.with_suffix(".compatto.pdf")
+    documento.save(temporaneo, garbage=3, deflate=True, no_new_id=True)
+    documento.close()
+    controllo = fitz.open(temporaneo)
+    intatto = (controllo.page_count == pagine
+               and len(controllo.get_toc()) == segnalibri)
+    controllo.close()
+    if not intatto:                      # non e' mai successo, ma se succede
+        temporaneo.unlink()              # si tiene quello di LuaTeX
+        print("  ricompattazione saltata: il risultato non combaciava")
+        return
+    temporaneo.replace(pdf)
+    if prima - pdf.stat().st_size > 1024 * 1024:
+        print(f"  ricompattato: {prima / 1024 / 1024:.0f} MB "
+              f"-> {pdf.stat().st_size / 1024 / 1024:.0f} MB")
+
+
 def racconta(pdf: pathlib.Path) -> None:
     try:
         import fitz
@@ -331,6 +371,7 @@ def main() -> None:
     pdf = compila(cartella, passate=passate, nome=nome)
 
     guai = errori_veri(cartella / f"{nome}.log")
+    ricompatta(pdf)
     racconta(pdf)
     if guai:
         print(f"\n{len(guai)} cose che LuaLaTeX non ha digerito:")

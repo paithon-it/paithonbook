@@ -508,10 +508,10 @@ FRONTESPIZIO = r"""
 \begin{flushleft}
   % Il logo del libro, quello vero: bollo tribar piu' il lockup «paithon
   % book». Non il solo bollo con la parola ricomposta a mano, che diceva
-  % «paithon» e non «paithon book», cioe' il nome di un'altra cosa.
+  % «paithon» e non «Paithon Book», cioe' il nome di un'altra cosa.
   \IfFileExists{marchio.pdf}{%
     \includegraphics[width=105mm]{marchio.pdf}\par\vspace{6mm}}{%
-    {\ptDisplay\fontsize{58}{62}\selectfont paithon book\par}\vspace{4mm}}%
+    {\ptDisplay\fontsize{58}{62}\selectfont Paithon Book\par}\vspace{4mm}}%
   {\color{ptTerracotta}\rule{42mm}{2.4pt}\par}
   \vspace{5mm}
   % Il sottotesto: dice come il libro e' fatto, non di che cosa parla. La
@@ -556,7 +556,7 @@ FRONTESPIZIO = r"""
 \thispagestyle{empty}
 \vspace*{\stretch{1}}
 \begin{flushleft}\footnotesize
-{\ptDisplay\large paithon book\par}
+{\ptDisplay\large Paithon Book\par}
 \vspace{1mm}
 di Francesco Messina
 \vspace{7mm}
@@ -571,7 +571,8 @@ qualche mese, là dentro c'è di più.
 
 {\ptDisplayLeggero\normalsize Come si può usare\par}
 \vspace{1mm}
-Copyright \textcopyright{} 2019ANNO_CORRENTE paithon.it. Il testo e le figure sono
+Copyright \textcopyright{} 2019ANNO_CORRENTE Francesco Messina, paithon.it.
+Il testo e le figure sono
 distribuiti sotto licenza \textbf{Creative Commons BY-NC-ND 4.0}
 Internazionale. In breve: si può scaricare, leggere, stampare e
 condividere liberamente, citando l'autore; non si può usare per scopi
@@ -582,12 +583,13 @@ testo completo della licenza:
 
 Il \textbf{codice} degli esempi (blocchi, notebook, script) ha una licenza
 sua, più permissiva, perché il codice serve a essere copiato e riusato:
-si trova in \texttt{LICENSE-CODE} nel repository.
+\textbf{Apache License 2.0}. Il testo completo sta in \texttt{LICENSE-CODE}
+nel repository e su \texttt{apache.org/licenses/LICENSE-2.0}.
 \vspace{7mm}
 
 {\ptDisplayLeggero\normalsize Come citarlo\par}
 \vspace{1mm}
-Francesco Messina, \textit{paithon book}, versione VERSIONE_SOLA,
+Francesco Messina, \textit{Paithon Book}, versione VERSIONE_SOLA,
 \texttt{book.paithon.it}.
 \vspace{7mm}
 
@@ -704,7 +706,7 @@ def disfa_jupyterbook_latex(app, config):
     # E' quello che mostrano un lettore di PDF e un motore di ricerca: dice
     # di che cosa parla il libro dove serve saperlo, senza occupare la
     # copertina, dove il sottotesto dice gia' che cos'e'.
-    preambolo += ("\n\\hypersetup{pdftitle={paithon book},"
+    preambolo += ("\n\\hypersetup{pdftitle={Paithon Book},"
                   "pdfauthor={Francesco Messina},"
                   "pdfsubject={Machine Learning, Deep Learning e "
                   "Reinforcement Learning con Python},"

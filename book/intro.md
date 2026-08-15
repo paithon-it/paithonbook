@@ -1,12 +1,12 @@
 :::{only} html
 ```{image} _static/logo-light.svg
 :class: pt-copertina-logo only-light
-:alt: paithon book
+:alt: Paithon Book
 ```
 
 ```{image} _static/logo-dark.svg
 :class: pt-copertina-logo only-dark
-:alt: paithon book
+:alt: Paithon Book
 ```
 :::
 
@@ -319,7 +319,7 @@ In $x = 0$ la funzione non è derivabile (il grafico ha un punto angoloso); il s
 Ogni progetto ha bisogno di supporto per crescere e migliorare. I progetti open source come questo si basano sul sostegno e l'entusiasmo della comunità. Se questo libro ti è stato utile o credi nel suo valore, ecco come puoi mostrarmi il tuo apprezzamento:
 
 :::{only} html
-- Metti una ⭐ e condividi il progetto GitHub [paithon book](https://github.com/paithon-it/paithonbook)
+- Metti una ⭐ e condividi il progetto GitHub [Paithon Book](https://github.com/paithon-it/paithonbook)
 - Supporta il progetto per contribuire al suo sviluppo ❤️ <span style="display: inline-block; vertical-align: middle;">
     <script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="paithon.it" data-color="#B5532C" data-emoji="🔋"  data-font="Cookie" data-text="Ricarica la mia energia" data-outline-color="#1A1A1A" data-font-color="#ffffff" data-coffee-color="#C9A961" ></script>
 </span>

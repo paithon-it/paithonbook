@@ -38,6 +38,16 @@ Una versione corrisponde a una **pubblicazione**, non a una giornata di
 lavoro: il libro si scrive tutti i giorni e si pubblica quando un pezzo sta in
 piedi.
 
+(v1-5-6)=
+
+## 1.5.6 · 15 agosto 2026
+
+### Correzioni
+
+- **Il libro si chiama Paithon Book, con le iniziali maiuscole.** Fin qui il nome si scriveva tutto minuscolo, e dentro una frase si leggeva come un refuso invece che come un titolo. Il logo resta minuscolo, perché è un disegno e compone il segno della marca: è la convenzione normale dei marchi in minuscolo, dove il segno resta com'è e la prosa scrive il nome in tondo.
+- **Il logo del libro ha il triangolo al posto della «a».** Il sito aveva già smesso di mettere il bollo accanto alla parola, perché ripeteva lo stesso segno, e la «a» lo incorpora: il libro era rimasto alla versione di prima. Ne è uscito anche un guasto che nessuno avrebbe visto: il logo stampato sulla copertina del PDF era un file fatto a mano una volta, che nessuno rigenerava, e sarebbe rimasto quello vecchio per sempre senza dare alcun errore.
+- **Il colophon del PDF diceva che il copyright è di paithon.it**, che però è un dominio e non una persona: i diritti d'autore un dominio non può averli, e in una contestazione la titolarità la prova chi la rivendica. Adesso è intestato a Francesco Messina. E la licenza del codice degli esempi ha un nome scritto per esteso, Apache License 2.0, invece di un rinvio a un file da cercare su GitHub.
+
 (v1-5-5)=
 
 ## 1.5.5 · 15 agosto 2026

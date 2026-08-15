@@ -41,6 +41,7 @@ isolato apposta.
 """
 
 import argparse
+import re
 import math
 import pathlib
 import sys
@@ -167,7 +168,7 @@ def banda(numero: int) -> str:
     corpo = "\n  ".join(disegno(d, colori))
     return f"""<?xml version="1.0" encoding="UTF-8"?>
 <!--
-  paithon book, banda di apertura del capitolo {numero}.
+  Paithon Book, banda di apertura del capitolo {numero}.
   Generata da `book/_stampa/copertina.py`: non modificare a mano.
   Palette-locked. Il seme e' il numero del capitolo, quindi la banda di un
   capitolo e' sempre la stessa: una build non deve produrre un PDF diverso
@@ -271,7 +272,7 @@ def fregio() -> str:
     corpo = "\n  ".join(pezzi)
     return f"""<?xml version="1.0" encoding="UTF-8"?>
 <!--
-  paithon book, il fregio di copertina.
+  Paithon Book, il fregio di copertina.
   Generato da `book/_stampa/copertina.py`: non modificare a mano.
   Palette-locked. La traiettoria e' una discesa del gradiente calcolata, non
   disegnata: le curve di livello sono quelle della funzione su cui scende.
@@ -303,7 +304,7 @@ def senza_data(pdf: pathlib.Path) -> None:
     except ImportError:
         return
     documento = fitz.open(pdf)
-    documento.set_metadata({"producer": "paithon book", "creator": "",
+    documento.set_metadata({"producer": "Paithon Book", "creator": "",
                             "creationDate": "", "modDate": ""})
     # Anche l'identificativo del documento va fissato: Chromium ne genera uno
     # a caso a ogni stampa e PyMuPDF ne genera un altro a ogni salvataggio.
@@ -342,6 +343,25 @@ def quanti_capitoli() -> int:
     return pt_conteggi.conta_capitoli(RADICE / "book" / "_toc.yml") + 4
 
 
+def marchio() -> tuple[str, int, int]:
+    """Il logo del libro per la copertina a stampa, dal file del sito.
+
+    Prima questo PDF non lo generava nessuno: era stato fatto a mano una volta
+    e committato, e quando il logo e' cambiato (la «a» diventata il tribar, il
+    15 agosto 2026) la copertina del PDF ha continuato a mostrare quello
+    vecchio senza dirlo, perche' la ricetta LaTeX trova il file e lo mette.
+    Adesso si rifa' da `logo-light.svg`, cosi' non puo' piu' restare indietro.
+
+    Si prende la versione chiara perche' la copertina e' su fondo crema; le
+    misure escono dal `viewBox`, non si scrivono.
+    """
+    svg = (RADICE / "book" / "_static" / "logo-light.svg").read_text()
+    numeri = re.search(r'viewBox="[-\d.]+ [-\d.]+ ([\d.]+) ([\d.]+)"', svg)
+    larga, alta = (float(v) for v in numeri.groups())
+    scala = 900.0 / larga            # abbastanza grande da non impastare i tratti
+    return svg, round(larga * scala), round(alta * scala)
+
+
 def main() -> None:
     argomenti = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     argomenti.add_argument("--provino", action="store_true",
@@ -361,6 +381,8 @@ def main() -> None:
             converti(banda(numero), BANDE / f"capitolo-{numero}.pdf", pagina)
         converti(fregio(), QUI / "fregio.pdf", pagina,
                  FREGIO_LARGO, FREGIO_ALTO)
+        svg_marchio, m_largo, m_alto = marchio()
+        converti(svg_marchio, QUI / "marchio.pdf", pagina, m_largo, m_alto)
         if scelte.provino:
             provino = (f'<div style="margin-bottom:16px">{fregio()}</div>'
                        + "\n".join(
@@ -375,7 +397,7 @@ def main() -> None:
         browser.close()
 
     print(f"{totale} bande in {BANDE.relative_to(RADICE)}, "
-          f"piu' il fregio di copertina")
+          f"piu' il fregio e il marchio di copertina")
 
 
 if __name__ == "__main__":

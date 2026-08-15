@@ -145,4 +145,4 @@ bene, e da lì in avanti le reti neurali.
 
 `````
 
-Benvenuto in paithon book.
+Benvenuto in *Paithon Book*.

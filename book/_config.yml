@@ -1,5 +1,20 @@
 title: Paithon Book
-author: paithon.it © Copyright 2019–2026. Questo lavoro è licenziato sotto la
+# Il tema antepone «Di » a questo campo: la frase deve quindi cominciare dal
+# titolare, non dalla parola Copyright, o si legge «Di Copyright © 2019…».
+#
+# Il titolare è una persona fisica. paithon.it è un dominio e un marchio, e
+# un dominio i diritti d'autore non può averli: in una contestazione la
+# titolarità la prova chi la rivendica, e un'attribuzione a un'entità che
+# non esiste è la prima cosa che una controparte attacca. Stessa correzione
+# già fatta in b625fdf per il colophon di stampa e per il README; qui era
+# rimasta indietro — cioè proprio nella versione che il sito mostra.
+#
+# La licenza del CODICE è nominata per esteso e non rinviata a un file: il
+# deposito Zenodo dichiara Apache-2.0, e due dichiarazioni che non
+# combaciano alla lettera creano l'ambiguità che un colophon serve a
+# togliere. Chi legge non deve aprire GitHub per sapere cosa può riusare.
+author: Francesco Messina — paithon.it. Copyright © 2019–2026.
+        Testo e figure sotto
         <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" rel="license noopener noreferrer">
         CC BY-NC-ND 4.0
         </a>
@@ -11,8 +26,16 @@ author: paithon.it © Copyright 2019–2026. Questo lavoro è licenziato sotto l
         src="https://mirrors.creativecommons.org/presskit/icons/nc-eu.svg" alt="nc-eu">
         <img style="height:1.05em!important;width:auto;margin:0 0 0 4px!important;vertical-align:-0.18em!important;box-shadow:none!important;border-radius:0!important;"
         src="https://mirrors.creativecommons.org/presskit/icons/nd.svg" alt="nd">
+        · Codice degli esempi sotto
+        <a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank" rel="license noopener noreferrer">
+        Apache License 2.0</a>.
 logo: _static/logo-light.svg #lockup bollo tribar + wordmark "paithon" (fallback; le varianti light/dark sono in html_theme_options.logo)
-copyright: CC BY-NC-ND 4.0
+# Questo campo è il TITOLARE, non la licenza: Sphinx lo usa dove serve dire
+# di chi è l'opera (metadati, output LaTeX/EPUB), e ci stava scritto
+# «CC BY-NC-ND 4.0» — cioè una licenza al posto di una persona. Il tema in
+# uso non lo stampa, quindi non si vedeva; ma un campo giusto solo finché
+# nessuno lo legge è un campo sbagliato. La licenza resta dov'è, in `author`.
+copyright: Francesco Messina
 
 only_build_toc_files: true
 
@@ -122,7 +145,7 @@ sphinx:
       logo:
         image_light: _static/logo-light.svg
         image_dark: _static/logo-dark.svg
-        alt_text: paithon book
+        alt_text: Paithon Book
       repository_url: "https://github.com/paithon-it/paithonbook" #add your own repo URL here
       repository_branch: main
       path_to_docs: book/
