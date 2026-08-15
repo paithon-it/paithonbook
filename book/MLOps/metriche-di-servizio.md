@@ -13,26 +13,33 @@ una persona.
 C'è però un presupposto nascosto, e i modelli generativi lo mandano in pezzi.
 Miller dà per scontato che la risposta sia un **evento**, l'istante in cui la
 macchina consegna il risultato. Per un classificatore è ancora così, e la
-latenza è un numero solo, il tempo fra la domanda e la risposta; la sezione sul
-deployment ci ha insegnato a prometterlo per percentili. Ma un modello che
-genera token non consegna niente in un istante: consegna un pezzo alla volta,
-per secondi, e mentre consegna il lettore sta già leggendo. La domanda «quanto
-ci mette?» ha smesso di avere una risposta sola, e non è una sottigliezza:
-tutte le tecniche della sezione precedente (continuous batching,
-PagedAttention, speculative decoding, quantizzazione) si valutano male se le si
-misura con il metro sbagliato. Prima di ottimizzare bisogna decidere che cosa
-vuol dire, per questo servizio, *andare veloce*.
+latenza è un numero solo, il tempo fra la domanda e la risposta; la sezione
+«Servire un modello» ci ha insegnato a prometterlo per percentili.
+
+Ma un modello che genera testo non consegna niente in un istante: consegna un
+pezzo alla volta, per secondi, e mentre consegna il lettore sta già leggendo.
+La domanda «quanto ci mette?» ha smesso di avere una risposta sola, e non è una
+sottigliezza: tutte le tecniche della sezione precedente (riempire la sala
+appena una sedia si libera, non riservare tavoloni, far indovinare il modello
+piccolo, comprimere i pesi) si valutano male se le si misura con il metro
+sbagliato. Prima di ottimizzare bisogna decidere che cosa vuol dire, per questo
+servizio, *andare veloce*.
 
 ## Scomporre la latenza
 
-La generazione ha due fasi, e le abbiamo incontrate nel capitolo sui
-Transformer parlando di KV cache. Nella prima il modello legge la domanda,
-tutte le parole insieme in una sola passata, e si prende gli appunti su ciò che
-ha letto: sono le *key* e le *value* che finiscono in cache, e questa fase si
-chiama **prefill**. Nella seconda scrive la risposta un token alla volta,
-ciascuno condizionato ai precedenti: è il **decode**, la fase in cui a fare da
-collo di bottiglia è la memoria, quella su cui è costruita l'intera sezione
-precedente. Le due metriche di base cadono esattamente su questa frattura.
+La generazione ha due fasi, molto diverse fra loro, e sono quelle incontrate
+nel capitolo sui Transformer parlando di KV cache.
+
+Nella prima il modello **legge la domanda**: tutte le parole insieme, in un
+colpo solo, prendendosi gli appunti che gli serviranno dopo (sono proprio gli
+appunti della KV cache). Questa fase si chiama **prefill**.
+
+Nella seconda **scrive la risposta**, un token alla volta, e ogni token lo
+decide guardando tutti quelli già scritti. È il **decode**, ed è la fase lenta,
+quella dove il tempo se ne va nel rileggersi i pesi anziché nel calcolare: è il
+punto su cui è costruita l'intera sezione precedente.
+
+Le due misure di base cadono esattamente su questa frattura.
 
 `````{tab} Elementare
 
@@ -45,12 +52,24 @@ minuti ti innervosisci, anche a parità di durata totale).
 Nella generazione di testo è identico. La prima attesa si chiama **TTFT**
 (*time to first token*): il tempo che passa da quando premi invio a quando
 compare la prima parola. La seconda si chiama **TPOT** (*time per output
-token*): la pausa media fra una parola e la successiva.
+token*): la pausa **media** fra una parola e la successiva.
 
-Mettiamoci dei numeri. TTFT di 350 millisecondi, TPOT di 25 millisecondi,
-risposta lunga 200 token. Il primo token arriva dopo 0,350 secondi; poi ne
+Su quel «media» conviene fermarsi un istante, perché più avanti questa pagina
+dirà che le medie mentono, e non si vuole che sembri una contraddizione. La
+media va benissimo per descrivere un ritmo *regolare*, ed è per questo che il
+TPOT esiste. Ma se in mezzo a duecento pause da un ventesimo di secondo ne
+capita una da due secondi, la media si sposta appena e il testo, sotto gli
+occhi, si è piantato in mezzo a una frase. Quindi accanto al TPOT si sorveglia
+sempre anche **la pausa più lunga** di quella risposta: è lei che il lettore
+ricorda.
+
+Mettiamoci dei numeri, e teniamo a mente che un token è un pezzetto di parola
+(più corto di una parola: ci torniamo fra poco con il conto esatto). TTFT di
+350 millisecondi, TPOT di 25 millisecondi, risposta lunga 200 token, cioè un
+centinaio di parole. Il primo token arriva dopo 0,350 secondi; poi ne
 mancano 199, uno ogni 0,025 secondi, cioè 4,975 secondi. In tutto **5,325
-secondi**. E il testo scorre sotto gli occhi a uno diviso 25 millisecondi, cioè
+secondi**. E il testo scorre sotto gli occhi a uno diviso 0,025 secondi (i 25
+millisecondi riscritti in secondi, che è il passaggio che si dimentica), cioè
 **40 token al secondo**.
 
 `````
@@ -87,21 +106,26 @@ questo va sorvegliata anche l'ITL massima per richiesta.
 
 `````
 
-Che le due metriche non siano intercambiabili si vede spendendo la stessa
-latenza totale in due modi. Un sistema con TTFT di 0,350 s e TPOT di 25 ms
-impiega 5,325 secondi per 200 token; un secondo con TTFT di 2,340 s e TPOT di
-15 ms impiega $2{,}340 + 199 \times 0{,}015 = 5{,}325$ secondi, identici al
-millesimo. Ma il primo comincia a scrivere quasi subito e scorre a 40 token/s,
-il secondo lascia lo schermo bianco per oltre due secondi e poi sputa il testo
-a 67 token/s. Con un numero solo sarebbero indistinguibili.
+Che le due misure non siano intercambiabili si vede spendendo la stessa attesa
+totale in due modi. Un sistema con TTFT di 0,350 s e TPOT di 25 ms impiega
+5,325 secondi per 200 token; un secondo con TTFT di 2,340 s e TPOT di 15 ms
+impiega $2{,}340 + 199 \times 0{,}015 = 5{,}325$ secondi, identici al
+millesimo. Ma il primo comincia a scrivere quasi subito e scorre a 40 token al
+secondo; il secondo lascia lo schermo bianco per oltre due secondi e poi sputa
+il testo a $1/0{,}015 \approx 67$ token al secondo. Con un numero solo sarebbero
+indistinguibili.
 
-Il secondo, per giunta, spreca la sua velocità. Un lettore adulto legge qualche
-parola al secondo, che con i tokenizzatori in uso fa un ordine di grandezza di
-5–10 token al secondo: superata di qualche volta quella soglia il testo compare
-comunque più in fretta di quanto lo si legga, e accelerare ancora il TPOT non si
-vede più. Il TTFT invece si sente sempre, perché è tempo in cui non succede
-niente. È il primo criterio di progetto: **oltre una certa soglia il TPOT smette
-di essere percepibile, il TTFT no**.
+Il secondo, per giunta, spreca la sua velocità, e per capire perché serve
+sapere quanto vale un token in parole. Un token non è una parola: è più corto,
+perché le parole lunghe il modello le spezza in due o tre pezzi. Su un paragrafo
+italiano il conto, misurato con due tokenizzatori diversi, sta fra un token e
+mezzo e due e mezzo per parola. Un lettore adulto legge tre o quattro parole al
+secondo, quindi sta consumando qualcosa come 5–10 token al secondo. Un sistema
+che ne consegna 40 va dunque da quattro a otto volte più veloce di chi legge, e
+accelerare ancora non si vede: le parole erano già lì prima che l'occhio le
+raggiungesse. Il TTFT invece si sente sempre, perché è tempo in cui sullo
+schermo non succede niente. È il primo criterio di progetto: **oltre una certa
+soglia il TPOT smette di essere percepibile, il TTFT no**.
 
 ## Prefill e decode sono due mestieri diversi
 
@@ -228,11 +252,12 @@ scala, due reparti mezzi vuoti costano più di uno pieno.
 
 ## Il goodput, ovvero contare solo ciò che è servito bene
 
-Con queste metriche in mano si può dire perché il **throughput** da solo
-inganna: conta le richieste servite nell'unità di tempo, e non chiede *come*
-siano state servite. Il termine che ripara il difetto lo prendiamo in prestito
-dalle reti, dove **goodput** indica da sempre i byte davvero utili
-all'applicazione, al netto di ritrasmissioni e intestazioni.
+Con queste misure in mano si può dire perché il **throughput** da solo inganna:
+conta le richieste servite in un secondo, e non chiede *come* siano state
+servite. Il termine che ripara il difetto lo prendiamo in prestito dalle reti,
+dove **goodput** indica da sempre la parte di traffico che serve davvero a
+chi lo aspetta: non tutto ciò che passa nel cavo, ma solo quello che arriva a
+destinazione ed è utile.
 
 `````{tab} Elementare
 
@@ -246,11 +271,19 @@ Il **throughput** è il numero dei coperti: quante richieste il sistema ha
 sfornato in un secondo. Il **goodput** è il numero dei clienti serviti *bene*:
 si contano solo le richieste che hanno rispettato le promesse fatte, per esempio
 «il primo token entro mezzo secondo e gli altri a non più di 50 millisecondi
-l'uno dall'altro». La differenza non è filosofica: allargare il batch (servire
-più richieste nella stessa infornata) fa quasi sempre salire il throughput,
-perché la GPU lavora su più cose insieme, ma allunga l'attesa di ciascuno
-finché comincia a sfondare gli obiettivi. Il throughput sale mentre il goodput
-crolla: si servono più persone, e se ne accontentano meno.
+l'uno dall'altro». Il conto quindi è una moltiplicazione: si prendono le
+richieste servite in un secondo e si tiene la frazione che ha rispettato tutte
+e due le promesse. Se ne servi venti al secondo e solo l'$85\%$ è a posto, il
+goodput è $20 \times 0{,}85 = 17$: ne hai servite venti e ne hai contentate
+diciassette.
+
+La differenza non è filosofica: allargare il batch (servire
+più richieste nello stesso mazzo) fa quasi sempre salire il throughput,
+perché la GPU lavora su più cose insieme. E, una volta che il sistema sta già
+dietro alle richieste che arrivano (la condizione posta in «Servire un
+modello»), allunga l'attesa di ciascuno, finché comincia a sfondare gli
+obiettivi. Il throughput sale mentre il goodput crolla: si servono più persone,
+e se ne accontentano meno.
 
 `````
 
@@ -291,21 +324,25 @@ spettacolare senza che nessun utente veda il testo scorrere più in fretta.
 
 `````
 
-Vale la pena vederlo su due configurazioni dello stesso sistema, con obiettivi
-di 500 ms sul TTFT e 50 ms sul TPOT. Le cifre che seguono escono dalla
-simulazione di poche righe più avanti, non da una misura sul campo: servono a
-mostrare il rapporto fra throughput, frazione conforme e goodput, non a
-stimare l'entità del fenomeno su un modello particolare. Nella simulazione,
-per giunta, le latenze traslano in blocco quando il batch cresce, mentre in un
-sistema vero la coda si allarga anche in proporzione, perché chi si accoda
-dietro un batch grande aspetta un tempo che dipende da dove capita. La prima
-configurazione serve un batch da 16 sequenze: smaltisce
-20,0 richieste al secondo e ne tiene il 92,5% dentro entrambe le soglie, per un
-goodput di 18,5. La seconda allarga il batch a 64: il throughput sale a 32,0
-richieste al secondo, il $60\%$ in più, ma la frazione conforme scende al 49,4%
-e il goodput cade a 15,8, quasi il $15\%$ in meno della prima. Il grafico del
-throughput dice che la seconda configurazione è migliore; quello del goodput
-dice il contrario, e ha ragione lui.
+Vale la pena vederlo su due configurazioni dello stesso sistema, con le
+promesse fissate a 500 ms sul TTFT e 50 ms sul TPOT.
+
+La prima serve mazzi da 16 richieste: ne smaltisce 20,0 al secondo e ne tiene
+il 92,5% dentro entrambe le promesse, quindi il goodput è
+$20{,}0 \times 0{,}925 = 18{,}5$. La seconda allarga il mazzo a 64: le
+richieste servite salgono a 32,0 al secondo, il $60\%$ in più, ma la quota di
+quelle a posto crolla al 49,4% e il goodput scende a
+$32{,}0 \times 0{,}494 = 15{,}8$, quasi il $15\%$ in meno di prima. Il numero
+che si guarda per abitudine dice che la seconda configurazione è migliore;
+quello che conta dice il contrario, e ha ragione lui.
+
+Un'avvertenza sulla provenienza di queste cifre: escono dalla simulazione di
+poche righe più avanti, non da una misura su un sistema vero. Servono a
+mostrare *che* throughput e goodput possono muoversi in direzioni opposte, non
+a dire di quanto succeda su un modello particolare. Nella simulazione, per
+giunta, allargare il mazzo peggiora l'attesa di tutti della stessa quantità,
+mentre in un sistema vero peggiora molto di più chi ha la sfortuna di accodarsi
+in fondo.
 
 C'è poi una grandezza che si misura per richiesta e non è un tempo: quanti
 token quella richiesta consuma. Vale la pena guardarla qui, perché è la stessa
@@ -317,11 +354,16 @@ quello dell'orologio.
 :alt: "Quattro barre orizzontali in scala logaritmica che confrontano quanti token consuma un'operazione a seconda della forma della richiesta: una quarantina per classificare una frase, circa quattromilatrecento per una domanda su documenti allegati, circa novemila per una conversazione di otto turni, circa sessantatremila per un report tratto da un dossier lungo. Le tacche verticali segnano cento, mille, diecimila e centomila token."
 :width: 96%
 
-Stesso modello, consumi incomparabili. La conversazione è la riga da guardare:
-se ogni turno aggiunge 250 token e la storia si rilegge da capo ogni volta,
-$250 \times (1 + 2 + \dots + 8)$ fa novemila token processati. Le barre sono
-in scala logaritmica, quindi la lunghezza non è proporzionale al valore: le
-tacche dicono dove cadono le decadi.
+Stesso modello, consumi incomparabili. La conversazione è la riga da guardare.
+Un modello non ha memoria fra un turno e l'altro: per rispondere gli si rimanda
+ogni volta tutto quello che ci si è detti fin lì. Se ogni turno aggiunge 250
+token in tutto (la domanda più la risposta), all'ottavo gliene sono passati
+$250 \times (1 + 2 + \dots + 8)$, cioè novemila. È il conto del caso peggiore,
+quello in cui il modello rilegge tutto da capo ogni volta; l'ultima sezione di
+questa pagina mostra come si evita. E attenzione a leggere le barre: **una
+tacca in più non vuol dire un
+po' di più, vuol dire dieci volte tanto** (è la scala logaritmica, l'unico modo
+di far stare quaranta e sessantatremila nello stesso disegno).
 ```
 
 Il divario di {numref}`fig-costo-per-caso-uso` dice una cosa sola, e non
@@ -329,63 +371,80 @@ riguarda i listini: quello che fa il costo è **quanti token servono**, cioè
 quanto testo entra e quanto ne esce, e quello lo decide la forma della
 richiesta. Classificare una frase manda poche parole e ne riceve una;
 riassumere un documento lungo ne manda migliaia; una conversazione le rimanda
-tutte a ogni turno. I token che si pagano sono gli stessi che occupano la
-finestra, riempiono la KV cache e allungano la latenza: ottimizzare l'una cosa
-ottimizza le altre, ed è la leva su cui si chiude questa pagina.
+tutte a ogni turno. E i token che si pagano sono esattamente gli stessi che
+occupano lo spazio che il modello ha per leggere, riempiono gli appunti della
+KV cache e allungano l'attesa: chi ne fa risparmiare uno risparmia insieme
+denaro, memoria e tempo. È la leva su cui si chiude questa pagina.
 
 ## Le medie mentono, e qui in tre modi
 
-La sezione sul deployment ha già stabilito che uno SLO si scrive sui percentili
-alti (p95, p99) e non sulla media, e «Sorvegliare un modello vivo» li ha messi
-in cima al cruscotto. Quando il modello genera, quella regola vale doppio, per
-tre ragioni sue.
+I **percentili** li abbiamo imparati in «Servire un modello»: la p95 è il tempo
+entro cui è servito il 95% delle richieste, la p99 quello entro cui ne è
+servito il 99%, e la promessa si scrive su quelli e non sulla media. Manca
+solo un nome, che da qui in poi torna in ogni paragrafo: il gruppetto di
+richieste sfortunate che resta *oltre* il percentile si chiama la **coda**.
+Attenzione, non è la coda nel senso di fila: è la coda della cometa, cioè la
+striscia di ritardatarie che si allunga dietro a tutte le altre. Sono poche,
+sono molto più lente, e sono quelle che fanno arrabbiare le persone.
 
-La prima è che i percentili vanno riportati **per ciascuna metrica**, non sulla
-latenza complessiva: la p99 del TTFT e quella del TPOT si degradano per cause
-diverse (prompt lunghi e code in ingresso la prima, batch troppo grandi e
-prefill intrusi la seconda) e un numero aggregato le confonde.
+Quando il modello genera, quella regola vale doppio, per tre ragioni sue.
 
-La seconda è che le code si compongono, e *come* si compongono dipende dalla
-forma del sistema. Il caso che morde è quello in cui una risposta aspetta molte
-chiamate lanciate **insieme**: il recupero di venti frammenti di documento, un
-gruppo di strumenti interrogati in parallelo. Lì si aspetta la più lenta di
-tutte, e la lentezza di una sola si trasferisce intera all'insieme. Se ciascuna
-ha l'$1\%$ di probabilità di finire nella coda lenta, la probabilità che
-*almeno una* delle venti ci finisca è $1 - 0{,}99^{20} \approx 18\%$: si calcola
-la probabilità che vadano bene tutte e venti ($0{,}99$ moltiplicato per sé
-stesso venti volte, cioè circa l'$82\%$) e la si toglie da uno. Una p99
-rassicurante sul singolo passo diventa un utente scontento su cinque
-sull'intera interazione, ed è l'argomento di Dean e Barroso
-{cite}`dean2013tail`: in un sistema che si dirama, i percentili alti contano
-più di qualunque media.
+**La prima**: i percentili vanno riportati **separati per ciascuna delle due
+attese**, non su quella totale. La coda del TTFT e quella del TPOT si allungano
+per cause diverse (la prima per i prompt lunghi e per la fila all'ingresso, la
+seconda per i mazzi troppo grandi e per le letture di prompt che si infilano fra
+un token e l'altro), e un numero solo le mescola e non dice a nessuno dove
+mettere le mani.
+
+**La seconda**: quando una risposta è fatta di più pezzi, le code dei pezzi si
+combinano fra loro, e *come* si combinano dipende da com'è fatto il sistema. Il
+caso che morde è quello in cui una risposta aspetta molte
+chiamate lanciate **tutte insieme**: venti pezzi di documento da andare a
+recuperare in venti archivi diversi, oppure venti programmi esterni a cui il
+modello chiede una cosa ciascuno (che ora, un cambio, un prezzo) prima di
+poter rispondere. Lì non si aspetta la media, si
+aspetta **la più lenta di tutte**, e basta che una sia finita nella coda perché
+l'intera risposta ci finisca. Se ciascuna ha l'$1\%$ di probabilità di essere
+lenta, la probabilità che almeno una delle venti lo sia è
+$1 - 0{,}99^{20} \approx 18\%$: si calcola la probabilità che vadano bene tutte
+e venti ($0{,}99$ moltiplicato per sé stesso venti volte, cioè circa l'$82\%$) e
+la si toglie da uno. Una p99 rassicurante sul singolo passo diventa un utente
+scontento su cinque sull'intera interazione, ed è l'argomento di Dean e Barroso
+{cite}`dean2013tail`.
 
 Nel caso opposto l'effetto si rovescia, e conviene saperlo per non applicare il
-conto dove non vale. Un agente che concatena venti chiamate **una dopo
-l'altra** non aspetta la più lenta: somma i tempi, e sommando si compensa (il
-passo sfortunato è annacquato dagli altri diciannove), tanto che la coda del
-totale risulta più stretta di quella del singolo passo. Lì il problema non è la
-coda, è il **budget totale**, venti volte più grande, che sfonda lo SLO da
-solo.
+conto dove non vale. Un agente che fa venti chiamate **una dopo l'altra** non
+aspetta la più lenta, le somma, e sommando la sfortuna si diluisce. Venti passi
+da un secondo fanno venti secondi; se uno va male e ne impiega tre, il totale
+diventa ventidue, cioè il $10\%$ in più, non il $200\%$ che quel passo ha
+subìto per conto suo. Lì il problema non è la coda: è il **totale**, venti volte
+più grande, che sfonda la promessa da solo.
 
-La terza si vede nel confronto fra le due configurazioni di poco fa: a batch 64
-il TTFT **medio** è 457 ms, dentro l'obiettivo di 500 ms, mentre la p99 è 893
-ms, quasi il doppio.
-Peggiorano entrambe, ma una sola delle due attraversa la riga che conta: chi
-riportasse la media direbbe in buona fede che il sistema rispetta la promessa,
-e sarebbe smentito da una richiesta su cento. È il modo più comune in cui un
-cruscotto verde copre un servizio in rosso. Vale poi, a maggior ragione, il
-caso che qui non si vede e che in produzione capita: **una media che migliora
-mentre la p99 peggiora è un peggioramento**, da trattare come una regressione.
-È il primo livello del cruscotto di «Sorvegliare un modello
-vivo» (salute del servizio: latenza, errori, uptime), declinato sulle due
-latenze che la generazione ha invece di una.
+**La terza** si vede nel confronto fra le due configurazioni di poco fa, e sono
+i numeri della tabella che il codice in fondo alla pagina stampa. Con mazzi da
+64 il TTFT **medio** è 457 ms, cioè dentro l'obiettivo di 500 ms: guardando
+quello, il sistema mantiene la promessa. Ma la p95 passa da 486 a 729 ms, e lì
+la riga dei 500 viene attraversata di netto. E la tabella ha una colonna che
+conta proprio le sforate: a mazzi da 64 sfora il mezzo secondo il **33,4%**
+delle richieste, cioè **una su tre**, contro il $3{,}5\%$ dei mazzi da 16. Chi
+riportasse la media lo farebbe in buona fede, e sarebbe smentito da un terzo
+dei suoi utenti. È il modo più comune in cui un cruscotto tutto verde copre un
+servizio in rosso.
+
+Vale poi, a maggior ragione, il caso che qui non si vede e che in produzione
+capita: **una media che migliora mentre la p95 o la p99 peggiorano è un
+peggioramento**, da trattare come un guasto. È il primo dei tre quadranti del
+cruscotto di
+«Sorvegliare un modello vivo» (quello che dice se il servizio è vivo e risponde
+in fretta, prima ancora di chiedersi se risponde *bene*), declinato sulle due
+attese che la generazione ha invece di una.
 
 ## La leva che resta: riusare il prefisso
 
-Scelte le tecniche di serving e sistemato lo scheduling fra prefill e decode,
-quale leva resta per abbassare il TTFT? Una soprattutto, e non riguarda il
-modello ma il traffico: nei sistemi reali le richieste **non sono
-indipendenti**, condividono l'inizio del prompt.
+Scelto come si servono le richieste e come si alternano lettura e scrittura,
+quale leva resta per far comparire prima la prima parola? Una soprattutto, e
+non riguarda il modello ma il traffico: nei sistemi reali le richieste **non
+sono indipendenti fra loro**, cominciano quasi tutte allo stesso modo.
 
 `````{tab} Elementare
 
@@ -405,13 +464,21 @@ nove volte.
 Gli appunti che il modello prende su un pezzo di testo dipendono solo da quel
 pezzo e da ciò che lo precede: se l'inizio è identico, gli appunti sull'inizio
 sono identici. I conti della conversazione lo dicono meglio di ogni argomento.
-Poniamo che ogni turno aggiunga 200 token (la domanda più la risposta), così che
-al primo turno il modello ne legga 200, al secondo 400, al terzo 600 e via
-salendo. In dieci turni, rileggere tutto ogni volta costa
-$200 \times (1+2+\dots+10) = 11\,000$ token di lettura; riusare gli appunti
-significa leggerne 200 per turno, cioè $200 \times 10 = 2\,000$ in tutto,
-cinque volte e mezzo di meno. A venti turni il rapporto sale a dieci e mezzo, e
-continua a crescere: più lunga è la conversazione, più conviene.
+Riprendiamo i 250 token per turno della figura di poco fa (la domanda più la
+risposta), così che al primo turno il modello ne legga 250, al secondo 500, al
+terzo 750 e via salendo. In dieci turni, rileggere tutto ogni volta costa
+$250 \times (1+2+\dots+10) = 13\,750$ token di lettura; riusare gli appunti
+significa leggerne 250 per turno, cioè $250 \times 10 = 2\,500$ in tutto,
+cinque volte e mezzo di meno. Sono i novemila token della figura di poco fa,
+visti dall'altra parte: quel numero era il conto senza riuso, e il riuso lo
+taglia di altrettanto. (Il risparmio è di **lavoro**, cioè di tempo e di
+memoria; quanto di quel lavoro risparmiato finisca poi sulla fattura dipende da
+chi vende il servizio, e non è materia di questa pagina.) E il risparmio cresce
+con la lunghezza della
+conversazione, perché la somma $1+2+\dots+n$ vale $n(n+1)/2$: il rapporto fra
+le due letture è quindi $(n+1)/2$, che non dipende da quanto pesa un turno e
+che a dieci turni fa cinque e mezzo, a venti dieci e mezzo. Più lunga è la
+conversazione, più conviene.
 
 `````
 
@@ -449,28 +516,37 @@ con un risparmio di un fattore $(n+1)/2$.
 
 `````
 
-Una cautela va aggiunta, perché riguarda la sicurezza e non le prestazioni. La
-cache dei prefissi è una **superficie condivisa fra utenti diversi**, e il TTFT
-diventa esso stesso un segnale osservabile: se un sistema riusa i prefissi fra
-clienti distinti, una risposta anormalmente rapida a un prompt tentato rivela
-che *qualcun altro* ha già inviato quel testo. È un canale laterale a base di
+Una cautela va aggiunta, perché riguarda la sicurezza e non le prestazioni. Se
+gli appunti si riusano fra clienti diversi, quel magazzino diventa una **stanza
+in comune**, e il tempo di risposta si trasforma in una spia. Chiunque può
+provare a scrivere un testo e cronometrare: se la prima parola arriva
+stranamente in fretta, vuol dire che gli appunti su quel testo c'erano già,
+cioè che *qualcun altro* lo aveva mandato prima. Si scopre così un pezzo di
+quello che stanno chiedendo gli altri, senza vedere niente di loro. È un canale
+laterale a base di
 tempo, della stessa famiglia degli attacchi che il capitolo sull'AI
 responsabile affronterà parlando di privacy. Le difese sono di progetto, non di
 taratura: si partiziona la cache per cliente, e si condividono solo i prefissi
 dichiaratamente pubblici, tipicamente l'istruzione di sistema del prodotto.
 
-Stessa disciplina per la correttezza. I blocchi in cache dipendono da tre cose:
-da quale modello li ha calcolati, con quale *adattatore* (i pochi pesi aggiunti
-per specializzarlo, la LoRA vista nel capitolo sui Transformer) e con quale
-precisione. Una cache che non le tenga in conto restituisce gli appunti di un
-altro modello, e nessuno se ne accorge.
+Stessa disciplina per la correttezza. Gli appunti tenuti da parte valgono solo
+per chi li ha scritti, e dipendono da tre cose: da quale modello li ha
+calcolati, da quali eventuali pesi aggiuntivi lo stessero specializzando (la
+LoRA vista nel capitolo sui Transformer) e da con quante cifre i suoi numeri
+erano scritti. Se il magazzino non tiene conto di tutte e tre, consegna a un
+modello gli appunti presi da un altro, e nessuno se ne accorge.
 
 ## Misurare in venti righe
 
-Il codice qui sotto prende, per ogni richiesta di una finestra di dieci secondi,
-il suo TTFT e il suo TPOT (qui simulati con una lognormale, la forma tipica
-delle latenze: compatta al centro, con una coda lunga a destra) e ne ricava
-throughput, goodput e percentili.
+Il codice qui sotto prende, per ogni richiesta arrivata in dieci secondi, il suo
+TTFT e il suo TPOT, e ne ricava throughput, goodput e percentili. I due tempi
+non sono misurati ma estratti a sorte, e la forma con cui si sorteggia non è
+scelta a caso: dev'essere quella che i tempi di risposta hanno davvero, cioè
+tantissime richieste ammassate attorno a un valore tipico e poche, sempre più
+rare, che si allontanano verso i tempi lunghi. È esattamente la coda di cui
+parla tutta questa pagina, e ha anche la proprietà che serve, cioè che non
+esce mai un tempo negativo. Quella forma ha un nome, **lognormale**, e nel
+codice è la riga `rng.lognormal`.
 
 ```python
 import numpy as np
@@ -484,12 +560,13 @@ def misura(nome, n, ttft_mediano, tpot_mediano, sigma=0.35):
     """Simula n richieste servite nella finestra e ne riassume le metriche."""
     ttft = rng.lognormal(np.log(ttft_mediano), sigma, n)  # code lunghe a destra
     tpot = rng.lognormal(np.log(tpot_mediano), sigma, n)
-    ok = (ttft <= SLO_TTFT) & (tpot <= SLO_TPOT)          # richiesta "buona"
+    ok = (ttft <= SLO_TTFT) & (tpot <= SLO_TPOT)          # rispetta ENTRAMBE
+    sfora = (ttft > SLO_TTFT).mean()                      # sfora SOLO il TTFT
     p50, p95, p99 = np.percentile(ttft, [50, 95, 99]) * 1000
     print(f"{nome:<9}{n / FINESTRA:8.1f}{ok.sum() / FINESTRA:9.1f}{ok.mean():10.1%}"
-          f"{ttft.mean() * 1000:9.0f}{p50:7.0f}{p95:7.0f}{p99:7.0f}")
+          f"{sfora:9.1%}{ttft.mean() * 1000:9.0f}{p50:7.0f}{p95:7.0f}{p99:7.0f}")
 
-print(f"{'config':<9}{'ric/s':>8}{'good/s':>9}{'conformi':>10}"
+print(f"{'config':<9}{'ric/s':>8}{'good/s':>9}{'conformi':>10}{'TTFT>SLO':>9}"
       f"{'TTFTmed':>9}{'p50':>7}{'p95':>7}{'p99':>7}")
 misura("batch 16", 200, 0.28, 0.028)
 misura("batch 64", 320, 0.43, 0.043)
@@ -498,17 +575,22 @@ misura("batch 64", 320, 0.43, 0.043)
 L'output è la tabella dell'esempio di poco fa:
 
 ```text
-config      ric/s   good/s  conformi  TTFTmed    p50    p95    p99
-batch 16     20.0     18.5     92.5%      297    285    486    530
-batch 64     32.0     15.8     49.4%      457    429    729    893
+config      ric/s   good/s  conformi TTFT>SLO  TTFTmed    p50    p95    p99
+batch 16     20.0     18.5     92.5%     3.5%      297    285    486    530
+batch 64     32.0     15.8     49.4%    33.4%      457    429    729    893
 ```
 
-Il throughput cresce del $60\%$ (da 20,0 a 32,0) e il goodput cala di quasi il
-$15\%$ (da 18,5 a 15,8): allargare il batch ha peggiorato il servizio mentre
-migliorava il numero che di solito si guarda. La media del TTFT resta sotto i
-500 ms in entrambe le configurazioni e da sola non segnala niente; la p99 passa
-da 530 a 893 ms e racconta la verità. Le stesse righe, girate su misure reali e
-ripetute a ogni finestra, sono lo scheletro di un cruscotto.
+Le due colonne di percentuali contano cose diverse, e vale la pena tenerle
+separate. `conformi` è la quota di richieste che rispettano **tutte e due** le
+promesse, quella sul primo token e quella sul ritmo; `TTFT>SLO` è la quota che
+sfora **solo la prima**. Per questo a mazzi da 64 si legge sia «una su tre
+sfora il mezzo secondo» sia «una su due non è a posto»: sono due bocciature
+diverse, e la seconda comprende la prima.
+
+Sono le due righe già commentate. Le stesse venti righe, girate su misure vere
+invece che su numeri sorteggiati, e ripetute a ogni finestra di dieci secondi,
+sono lo scheletro di un cruscotto: throughput, goodput e percentili sono tutto
+quello che serve per sapere se un servizio che genera testo sta funzionando.
 
 ## Che cosa vuol dire funzionare
 

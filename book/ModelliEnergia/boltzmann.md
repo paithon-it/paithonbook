@@ -2,52 +2,84 @@
 
 La pallina di Hopfield ha un difetto di fabbrica: può solo scendere. Se
 l'indizio la deposita sul pendio sbagliato, finisce nella valle sbagliata (o
-in un ricordo fantasma) e da lì non esce più. E c'è un limite più profondo: la
-rete *ricorda*, ma non *inventa*; i suoi neuroni coincidono uno a uno con i
-pixel del ricordo, e non gliene resta nessuno libero per annotarsi qualcosa di
-suo, per esempio che in quel punto c'è una riga verticale (di una rete che non
-ha neuroni liberi per queste annotazioni si dice che non ha
-**rappresentazioni interne**). A metà anni
-Ottanta Geoffrey Hinton e Terrence Sejnowski, con David Ackley, propongono la
-**macchina di Boltzmann** {cite}`ackley1985learning`, che aggiunge alla rete
-di Hopfield esattamente due ingredienti: la **temperatura** e i **neuroni
-nascosti**. Il nome è un omaggio a Ludwig Boltzmann, uno dei padri della
-meccanica statistica (la fisica che spiega il comportamento di miliardi di
+in un ricordo fantasma) e da lì non esce più.
+
+E c'è un limite più profondo: la rete *ricorda*, ma non *inventa*. Le sue
+venticinque caselle coincidono una a una con le venticinque caselle del
+disegno da ricordare, e non gliene resta nessuna libera per annotarsi qualcosa
+di suo, per esempio che nelle tre lettere ricorre spesso una riga verticale al
+centro. Di una rete che non ha caselle libere per queste annotazioni si dice
+che non ha **rappresentazioni interne**.
+
+La risposta a tutti e due i limiti si chiama **macchina di Boltzmann**, e
+aggiunge alla rete di Hopfield esattamente due ingredienti: la **temperatura**
+(la scossa di cui si diceva in apertura di capitolo) e i **neuroni nascosti**,
+che sono quelle caselle libere per gli appunti. Il nome compare già nel 1983,
+in un lavoro di Scott Fahlman, Geoffrey Hinton e Terrence Sejnowski;
+l'articolo che ne fissa l'algoritmo di apprendimento, quello di cui si parla
+qui, è del 1985 e porta la firma di David Ackley, Hinton e Sejnowski
+{cite}`ackley1985learning`.
+
+Il nome è un omaggio a Ludwig Boltzmann, uno dei padri della meccanica
+statistica, cioè della fisica che spiega il comportamento di miliardi di
 particelle contando le configurazioni possibili invece di seguirle una per
-una), e non è un omaggio generico: lasciata scuotere
-abbastanza a lungo, questa rete passa in ogni configurazione la stessa
-frazione di tempo che la fisica prevede per un materiale caldo. E il tempo che
-ci passa *è* la probabilità che le assegna: se guardi dove si trova un milione
-di volte a caso e la trovi in fondo a una certa valle in trentamila occasioni,
-quella valle vale il 3%. È la porta da cui un'altezza diventa una percentuale,
-e il conto del pedaggio arriva subito dopo.
+una. E non è un omaggio generico. Se si lascia scuotere questa rete abbastanza
+a lungo, e poi si guarda dov'è a intervalli a caso, si scopre che passa più
+tempo nelle valli profonde e pochissimo sulle cime, in proporzioni che
+Boltzmann aveva calcolato un secolo prima per un gas o per un pezzo di metallo
+caldo. Sono le stesse proporzioni, con la stessa formula.
+
+E quel tempo *è* la probabilità che la rete assegna a una configurazione: se
+la guardi un milione di volte e la trovi in fondo a una certa valle in
+trentamila occasioni, quella valle vale il 3%. È la porta da cui un'altezza
+diventa una percentuale, e il pedaggio da pagare per attraversarla è il
+personaggio della sezione successiva.
 
 `````{tab} Elementare
 
 La temperatura è una scossa. Immagina la pallina ferma in una conca che non è
 la valle giusta: se il paesaggio resta immobile, non ne uscirà mai. Ora scuoti
-tutto, come una biglia in una scatola da scarpe: con scossoni forti la biglia
-salta fuori anche dalle valli profonde e gira dappertutto; con scossoni deboli
-resta confinata nei fondovalle. Il trucco è scuotere forte all'inizio e sempre
-più piano (è la mossa del fabbro, che scalda il metallo e lo lascia
-raffreddare lentamente perché gli atomi trovino da soli la disposizione
-migliore), così la biglia ha modo di uscire dalle conche mediocri finché può, e
-di assestarsi in una valle profonda quando la calma torna.
+tutto, come faresti con una scatola da scarpe che ha dentro una pallina: con
+scossoni forti salta fuori anche dalle valli profonde e gira dappertutto; con
+scossoni deboli resta confinata nei fondovalle. Il trucco è scuotere forte
+all'inizio e sempre più piano, così ha modo di uscire dalle conche mediocri
+finché può e di assestarsi in una valle profonda quando la calma torna.
 
-I neuroni nascosti, invece, sono taccuini interni: neuroni che non
-corrispondono a nessun pixel del dato ma servono alla rete per annotare
+I neuroni nascosti, invece, sono taccuini interni: caselle che non
+corrispondono a nessuna casella del dato ma servono alla rete per annotare
 regolarità sue («qui c'è una riga verticale», «questi due angoli vanno
-insieme»). E l'apprendimento diventa un confronto tra due modi di stare al
-mondo: nella fase di *veglia* la macchina osserva i dati veri e registra
-quali coppie di neuroni si accendono insieme; nella fase di *sogno* viene
-lasciata libera di produrre stati per conto suo, e si registra la stessa
-cosa. Poi i pesi si ritoccano per rinforzare ciò che accade da svegli più
-che in sogno, e indebolire il contrario. Si smette quando i sogni sono
-indistinguibili dalla veglia: a quel punto la macchina si è fatta un modello
-dei dati. Il guaio, come vedremo, è il tempo, e non soltanto quello del sogno:
-nella macchina originale costava carissima anche la veglia, perché il conto
-delle coppie che si accendono insieme andava rifatto da capo per ogni singolo
-dato. E sognare «per bene» richiedeva tempi biblici.
+insieme»).
+
+E l'apprendimento diventa un confronto fra due modi di stare al mondo. Nella
+fase di *veglia* la macchina guarda i dati veri e prende nota di quali coppie
+di caselle si accendono insieme. Le coppie, e non le singole caselle, perché è
+lì che sta tutto quello che questa rete sa: i suoi legami collegano due caselle
+per volta, quindi la sola cosa che può imparare è quali coppie vanno
+d'accordo. Nella fase di *sogno* la macchina viene lasciata libera di
+inventarsi configurazioni per conto suo, e si prende nota della stessa cosa.
+
+Poi i legami si ritoccano per rinforzare ciò che accade da svegli più che in
+sogno, e indebolire il contrario. Vale la pena dire che cosa vuol dire
+«ritoccare un legame» nel linguaggio del paesaggio, perché è il ponte fra le
+due immagini del capitolo: sono i legami a decidere l'altezza di ogni punto,
+quindi cambiarli *è* deformare il paesaggio. Rinforzare i legami che si vedono
+da svegli abbassa il terreno sotto i dati veri; indebolire quelli che si vedono
+solo in sogno lo alza sotto le fantasie. Un'unica mossa, guardata da due
+parti. Si smette quando i sogni sono
+indistinguibili dalla veglia: a quel punto quello che la macchina si immagina
+ha le stesse regolarità di quello che ha visto, ed è questo che si intende
+quando si dice che «si è fatta un modello dei dati».
+
+Il guaio, come vedremo, è il tempo, e non soltanto quello del sogno. Sognare
+«per bene» vuol dire una cosa precisa: lasciare la macchina a scuotersi finché
+le proporzioni non smettono di cambiare, cioè finché guardarla per altre mille
+volte non sposta più i conteggi. È il momento in cui si può dire di aver
+fotografato il paesaggio e non un pezzo di passeggiata, e arriva tardissimo,
+perché la macchina prima deve aver visitato ogni regione il numero di volte
+che le spetta. E nella macchina originale costava carissima anche la veglia,
+per lo stesso motivo: anche con i dati veri sotto gli occhi, le caselle
+nascoste dovevano assestarsi allo stesso modo, e quell'attesa andava rifatta
+da capo per ogni singolo dato dell'archivio.
 
 `````
 
@@ -150,26 +182,28 @@ di fantasia.
 
 `````{tab} Elementare
 
-Il guaio, si diceva, era il sogno: per farlo «per bene» la macchina deve
-sognare finché il sogno non si assesta, e ci mette un tempo che non abbiamo.
-Allora si bara, e si bara in due modi.
-
-Il primo è quello appena detto: invece di lasciarla partire dal nulla, le si
-mette davanti una cosa vera e le si concede un istante solo di fantasia. Il
-sogno che ne esce è appena abbozzato, costa un attimo invece di un'eternità, e
-basta lo stesso. Il difetto è prevedibile: partendo sempre da cose vere, la
-macchina non va mai a curiosare nelle regioni in cui si sbaglia di grosso, e
-quelle regioni restano sbagliate perché nessuno ci va ad alzare il terreno.
+Si bara in due modi, e il primo è quello appena detto. Il sogno che ne esce è
+appena abbozzato, costa un attimo invece di un'eternità, e basta lo stesso. Il
+difetto è prevedibile: partendo sempre da cose vere, la macchina non va mai a
+curiosare nelle regioni in cui si sbaglia di grosso, e quelle regioni restano
+sbagliate perché nessuno ci va ad alzare il terreno.
 
 Il secondo modo rimedia proprio a questo, e non costa niente di più: non far
 ricominciare il sogno da capo ogni volta, ma lasciar continuare quello di
 prima. Un po' per volta il sogno si allontana e finisce anche nei posti dove
-la macchina si illude.
+la macchina si illude. Si chiama **contrastive divergence persistente**, dove
+«persistente» è il sogno che non viene mai interrotto.
 
 C'è un prezzo, ed è meglio saperlo che credere di aver trovato una scorciatoia
-gratis: con il sogno abbreviato la macchina non sta più migliorando nessuna
-misura precisa, e quel che si guadagna in velocità si perde in garanzie. In
-pratica, sulle reti di allora, funzionava benissimo.
+gratis. Di solito, quando una macchina impara, c'è un numero che dice quanto
+sta sbagliando (non è l'energia, che è il voto dato a una singola risposta: è
+un voto dato all'intera macchina, e si guarda una volta ogni tanto), e
+imparare vuol dire farlo scendere: se scende si è sulla strada giusta, e
+quando smette di scendere si è arrivati. Con il sogno abbreviato quel numero
+non c'è. Nessuno sa dire quale sia la cosa che la
+macchina sta migliorando, e quindi nessuno può garantire che stia andando
+verso qualcosa invece che in tondo. In pratica, sulle reti di allora,
+funzionava benissimo.
 
 `````
 
@@ -219,25 +253,32 @@ energia sulle immagini di una decina d'anni dopo.
 
 La macchina che ha lasciato il segno, però, non è quella piena di Ackley,
 Hinton e Sejnowski: è una sua versione sfoltita, in cui i collegamenti restano
-soltanto fra i neuroni dei dati e i taccuini interni, e nessuno più fra un
+soltanto fra le caselle dei dati e i taccuini interni, e nessuno più fra un
 taccuino e l'altro. Si chiama **macchina di Boltzmann ristretta**, e tutti la
-chiamano con la sigla inglese, **RBM**. È quella potatura a far cadere la
-prima delle due metà care, la veglia, che con i taccuini scollegati fra loro
-si calcola in un colpo solo; la contrastive divergence accorcia la seconda, il
-sogno.
+chiamano con la sigla inglese, **RBM**.
 
-Fu proprio la coppia RBM più contrastive divergence, impilata strato su
-strato {cite}`hinton2006fast`, a rimettere in moto il deep learning a metà
-anni Duemila, quando
-addestrare reti profonde sembrava impossibile. È un ruolo storico che va
-riconosciuto con onestà, insieme al suo epilogo: di lì a pochi anni ReLU, GPU
-e dataset più grandi avrebbero reso superfluo quel modo di partire (si sgrossava
-la rete uno strato alla volta prima di addestrarla per intero, ed è il
-*pre-training* di cui si parlava allora), e oggi le RBM
-non si usano quasi più. Il *linguaggio* con cui erano scritte, invece, è vivo
-e vegeto: nella prossima sezione si vede perché, e quanto costi davvero la
-misura dell'intero paesaggio che qui è appena entrata in scena, quella che
-trasforma un'altezza in una percentuale.
+È quella potatura a far cadere il primo dei due costi, la veglia. Il motivo si
+dice in una riga: se i taccuini non sono collegati fra loro, con i dati veri
+davanti agli occhi ogni taccuino dipende soltanto dai dati, e nessuno deve
+aspettare la decisione del vicino per prendere la sua. Non c'è niente da
+assestare: si calcola tutto in un colpo solo. Il secondo costo, il sogno, è
+quello che la contrastive divergence di poco fa ha già accorciato. Insieme, le
+due mosse rendono praticabile ciò che nel 1985 non lo era.
+
+Fu proprio la coppia RBM più contrastive divergence, con più reti impilate una
+sopra l'altra a formare gli strati di una rete profonda
+{cite}`hinton2006fast`, a rimettere in moto il deep learning a metà anni
+Duemila, quando addestrare reti profonde sembrava impossibile. Si sgrossava la
+rete uno strato alla volta prima di addestrarla per intero, ed è il
+*pre-training* di cui si parlava allora. È un ruolo
+storico che va riconosciuto con onestà, insieme al suo epilogo: di lì a pochi
+anni le ReLU, le GPU e archivi di dati più grandi avrebbero reso superfluo
+quel modo di partire, e oggi le RBM non si usano quasi più.
+
+Il modo di ragionare con cui erano state costruite, invece, è vivo e vegeto:
+nella prossima sezione si vede perché, e quanto costi davvero misurare il
+paesaggio intero, cioè il gesto entrato in scena in apertura di questa pagina,
+quello che trasforma un'altezza in una percentuale.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
@@ -246,10 +287,9 @@ trasforma un'altezza in una percentuale.
   possibilità di risalire ogni tanto (si scuote il paesaggio, e quella scossa
   si chiama **temperatura**) e qualche neurone in più che non corrisponde a
   nessun pixel, buono per annotarsi le regolarità del dato.
-- Si scuote forte all'inizio e sempre più piano, come il fabbro che scalda il
-  metallo e lo lascia raffreddare adagio: così la pallina esce dalle conche
-  mediocri finché può, e si assesta in una valle profonda quando la calma
-  torna.
+- Si scuote forte all'inizio e sempre più piano: così la pallina esce dalle
+  conche mediocri finché può, e si assesta in una valle profonda quando la
+  calma torna. È la *ricottura simulata* nominata in apertura di capitolo.
 - Imparare è un confronto fra **veglia e sogno**: si guarda che cosa succede
   nella rete quando le si mostrano i dati veri, poi che cosa succede quando la
   si lascia fantasticare da sola, e si ritoccano i legami per rinforzare la
@@ -263,9 +303,9 @@ trasforma un'altezza in una percentuale.
   Funziona, ma è una scorciatoia, non una soluzione: nessuno sa più che cosa la
   macchina stia esattamente migliorando.
 - Da qui in avanti l'altezza del paesaggio diventa una percentuale, e per
-  trasformarla servirebbe la misura dell'intero continente. Quel conto ha un
-  nome, **funzione di partizione**, ed è il personaggio a cui è intitolata la
-  prossima sezione.
+  trasformarla bisognerebbe aver misurato il paesaggio intero, valle per
+  valle. È il conto che l'apertura del capitolo chiamava **funzione di
+  partizione**, ed è il personaggio a cui è intitolata la prossima sezione.
 ```
 `````
 

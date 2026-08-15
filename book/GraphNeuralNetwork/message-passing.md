@@ -10,17 +10,21 @@ $K$ giri, la voce partita da un capo della rete è arrivata a chi sta a $K$
 strette di mano di distanza.
 
 Questo passaparola a giri è, alla lettera, il modo in cui una rete neurale su
-grafo elabora l'informazione. La sezione «Il mondo come grafo» ha messo in
-forma il dato: la matrice di adiacenza $\mathbf{A}$, la matrice delle feature
-dei nodi $\mathbf{X}$, la matrice diagonale dei gradi $\mathbf{D}$, e la
-versione con i cappi $\tilde{\mathbf{A}} = \mathbf{A} + \mathbf{I}$. Se quelle
-quattro tabelle sono scivolate via non fa niente: per seguire questa sezione
-basta ricordare che dicono **chi è collegato a chi** e **che cosa c'è scritto
-su ogni nodo**. L'introduzione al capitolo ha dato un nome al meccanismo:
-**message passing**, «scambio di messaggi». Qui lo apriamo: prima nella sua
-forma generale, poi nella sua incarnazione più usata, la *Graph Convolutional
-Network*, che ricaveremo passo dopo passo e faremo girare, coi numeri alla
-mano, su un grafo minuscolo.
+grafo elabora l'informazione. La sezione «Il mondo come grafo» ha messo il dato
+in forma di tabelle, e per seguire questa sezione basta ricordare che cosa
+dicono: **chi è collegato a chi** e **che cosa c'è scritto su ogni nodo**. Se i
+nomi propri sono scivolati via non fa niente; eccoli comunque, da lasciar
+passare senza fermarsi: la matrice di adiacenza $\mathbf{A}$ (chi è collegato a
+chi), la matrice delle feature dei nodi $\mathbf{X}$ (le file di numeri dei
+nodi), la matrice diagonale dei gradi $\mathbf{D}$ (quanti vicini ha ciascuno) e
+la versione con i cappi $\tilde{\mathbf{A}} = \mathbf{A} + \mathbf{I}$ (la
+prima, con ogni nodo dichiarato vicino di sé stesso).
+
+L'introduzione al capitolo ha dato un nome al meccanismo: **message passing**,
+«scambio di messaggi». Qui lo apriamo: prima nella sua forma generale, poi nella
+sua incarnazione più usata, la *Graph Convolutional Network*. Di quella
+vedremo, in quest'ordine, la formula, i conti che ne escono su un grafo
+minuscolo, la ragione per cui è fatta così e infine da dove salta fuori.
 
 ## Un nodo, i suoi vicini, tre mosse
 
@@ -46,9 +50,9 @@ recettivo**) cresce dai vicini diretti ai vicini dei vicini.
 Pensa a ogni nodo come a una persona con una scheda su cui scrive «chi sono».
 Sulla scheda non c'è una frase: c'è una **fila di numeri**, uno per ogni
 caratteristica, come le tre caselline accanto a ogni nodo nella figura della
-sezione scorsa (14 anni, 2 sport, 300 messaggi al giorno). Vale la pena
-fissarlo adesso, perché è quello che viaggia lungo gli archi per tutto il
-capitolo: il messaggio non è un testo, è una fila di numeri.
+sezione «Il mondo come grafo» (14 anni, 2 sport, 300 messaggi al giorno). Vale
+la pena fissarlo adesso, perché è quello che viaggia lungo gli archi per tutto
+il capitolo: il messaggio non è un testo, è una fila di numeri.
 
 A ogni giro un nodo fa tre cose, sempre nell'ordine. **Primo**, ascolta: ogni
 amico gli passa un bigliettino con sopra la propria fila di numeri (sono i
@@ -126,8 +130,14 @@ gira bisogna decidere *come* si scrive il bigliettino, *come* si riassumono e
 *come* si riscrive la scheda. La scelta più celebre (semplice, veloce, e ancora
 oggi il primo modello che si prova su un grafo) è la
 **Graph Convolutional Network** (GCN),
-presentata nel 2017 da Thomas Kipf e Max Welling {cite}`kipf2017semi`. La sua
-regola di propagazione, da uno strato al successivo, sta in una riga:
+presentata nel 2017 da Thomas Kipf e Max Welling {cite}`kipf2017semi`.
+
+Una parola sul vocabolario, perché da qui in avanti le due si alternano: ogni
+**giro** di passaparola è uno **strato** della rete. Sono la stessa cosa detta
+dai due lati, dal lato di chi ascolta e dal lato di chi la rete la costruisce.
+
+La regola di propagazione della GCN, da uno strato al successivo, sta in una
+riga:
 
 $$
 \mathbf{H}^{(l+1)} = \sigma\!\left( \hat{\mathbf{A}}\, \mathbf{H}^{(l)}\, \mathbf{W}^{(l)} \right),
@@ -140,20 +150,31 @@ Ogni simbolo ha un ruolo preciso, e la riga si può leggere a due profondità.
 `````{tab} Elementare
 
 È la scena dei bigliettini scritta in forma abbreviata, tutta in una riga e per
-tutti i nodi insieme. $\mathbf{H}^{(l)}$ è la pila delle schede al giro $l$:
-una riga per nodo e, al giro zero, quello che ogni nodo sa di sé. La
-$\mathbf{A}$ col cappello è la rubrica di chi è collegato a chi, ritoccata in
-due punti: ogni nodo vi figura anche come vicino di sé stesso (sono i cappi
-della sezione precedente: chi ascolta gli altri non deve dimenticare la propria
-scheda) e ogni collegamento porta un peso, calcolato in modo che chi ha tanti
+tutti i nodi insieme.
+
+$\mathbf{H}^{(l)}$ è la pila delle schede al giro $l$: una riga per nodo e, al
+giro zero, quello che ogni nodo sa di sé.
+
+La $\mathbf{A}$ col cappello è la rubrica di chi è collegato a chi, ritoccata
+in due punti: ogni nodo vi figura anche come vicino di sé stesso (sono i cappi
+della sezione «Il mondo come grafo»: chi ascolta gli altri non deve
+dimenticare la propria scheda) e ogni collegamento porta un peso, calcolato in
+modo che chi ha tanti
 vicini non copra la voce degli altri. Moltiplicare la pila delle schede per
-questa rubrica è il giro di raccolta dei bigliettini. $\mathbf{W}^{(l)}$ è la
-ricetta con cui ogni nodo riscrive la propria scheda dopo la raccolta, la
-stessa per tutti, come il filtro che scorre identico su tutta l'immagine in una
-CNN; ed è qui che stanno i numeri che la rete impara. Infine $\sigma$ è il
-solito ritocco finale, una funzione come la ReLU che ci accompagna fin dalle
-prime reti neurali. Un giro intero di passaparola, per l'intera rete, in una
-riga.
+questa rubrica è il giro di raccolta dei bigliettini.
+
+$\mathbf{W}^{(l)}$ è la ricetta con cui ogni nodo riscrive la propria scheda
+dopo la raccolta, la stessa per tutti, come il filtro che scorre identico su
+tutta l'immagine in una rete convoluzionale; ed è qui che stanno i numeri che
+la rete impara. Infine $\sigma$ è il solito ritocco finale, una funzione come
+la ReLU che ci accompagna fin dalle prime reti neurali. Un giro intero di
+passaparola, per l'intera rete, in una riga.
+
+Resta la coda della formula, quella con l'ondina e gli esponenti: è soltanto il
+modo compatto di scrivere «i pesi da mettere sui collegamenti», e dice quel che
+si è appena detto a parole. Non c'è niente da leggerci dentro. Adesso quei pesi
+li vediamo all'opera su un grafo di quattro nodi, e subito dopo si dirà perché
+sono fatti così.
 
 `````
 
@@ -197,25 +218,150 @@ normalizzata.
 
 `````
 
+### Il conto, coi numeri
+
+Vale più di mille formule vedere i conti tornare, e conviene farlo subito, su
+un grafo piccolissimo: quattro nodi in fila
+($1 - 2 - 3 - 4$), ciascuno con **un solo numero** sulla scheda invece di una
+fila, cioè $\mathbf{X} = (1,\, 2,\, 3,\, 4)^\top$. (La $\top$ in alto vuol dire
+solo che quei quattro numeri vanno letti in colonna, uno per nodo, invece che
+in riga: è una convenzione di scrittura e non cambia niente.)
+
+Delle tre mosse ne teniamo una sola. La ricetta di riscrittura e il ritocco
+finale li mettiamo a riposo (in formule, $\mathbf{W} = \mathbf{I}$ e
+$\sigma$ uguale all'identità: due modi di dire «per stavolta, lascia le cose
+come stanno»), così quello che si vede è l'effetto della sola raccolta dei
+bigliettini.
+
+Prima di leggere le tabelle conviene sapere che cosa si sta per vedere, perché
+in due righe si dice tutto. Ogni collegamento porta un **peso**, e il peso è
+tanto più piccolo quanti più vicini hanno i due nodi che collega, contando
+anche il cappio che ciascuno ha verso sé stesso. Qui i pesi sono tre: $0{,}500$
+sui due cappi dei nodi di bordo, che di vicini ne hanno uno solo; $0{,}408$ sui
+due archi che uniscono un nodo di bordo a uno interno; $0{,}333$ sull'arco fra
+i due nodi interni e sui loro cappi. Il nuovo valore di un nodo è la somma dei
+valori dei vicini (e del proprio), ciascuno moltiplicato per il peso del
+collegamento: da lì in poi è una moltiplicazione e un'addizione. Le tabelle qui
+sotto sono il conto esatto di quei pesi; chi non ha voglia di rifarlo può
+saltare alla riga dei quattro risultati e non perde niente, perché la morale
+sta lì.
+
+La matrice di adiacenza e quella con i cappi
+($\tilde{\mathbf{A}} = \mathbf{A} + \mathbf{I}$) sono
+
+$$
+\mathbf{A} = \begin{bmatrix}
+0 & 1 & 0 & 0 \\
+1 & 0 & 1 & 0 \\
+0 & 1 & 0 & 1 \\
+0 & 0 & 1 & 0
+\end{bmatrix},
+\qquad
+\tilde{\mathbf{A}} = \begin{bmatrix}
+1 & 1 & 0 & 0 \\
+1 & 1 & 1 & 0 \\
+0 & 1 & 1 & 1 \\
+0 & 0 & 1 & 1
+\end{bmatrix}.
+$$
+
+Sommando le righe di $\tilde{\mathbf{A}}$ si contano i vicini di ciascun nodo,
+cappio compreso: sono i gradi $\tilde{\mathbf{d}} = (2,\, 3,\, 3,\, 2)$, perché
+i due nodi di bordo hanno un vicino e i due interni ne hanno due, più in tutti
+e quattro i casi sé stessi. Dunque
+
+$$
+\tilde{\mathbf{D}} = \mathrm{diag}(2,3,3,2),
+\qquad
+\tilde{\mathbf{D}}^{-1/2} = \mathrm{diag}\!\left(
+\tfrac{1}{\sqrt{2}},\, \tfrac{1}{\sqrt{3}},\,
+\tfrac{1}{\sqrt{3}},\, \tfrac{1}{\sqrt{2}} \right)
+\approx \mathrm{diag}(0{,}707,\ 0{,}577,\ 0{,}577,\ 0{,}707),
+$$
+
+dove l'esponente $-1/2$ vuol dire soltanto «uno diviso la radice quadrata»:
+$2^{-1/2} = 1/\sqrt{2} \approx 0{,}707$. Quei quattro numeri, uno per nodo,
+sono la porzione di peso che ciascuno mette in ogni suo collegamento, e il peso
+dell'arco è il prodotto delle porzioni delle due estremità: $0{,}707 \cdot
+0{,}707 = 0{,}5$ fra due nodi di bordo, $0{,}707 \cdot 0{,}577 \approx 0{,}408$
+fra un bordo e un interno, $0{,}577 \cdot 0{,}577 \approx 0{,}333$ fra due
+interni. La tabella dei pesi così ottenuta si chiama **adiacenza
+normalizzata**, e si scrive $\hat{\mathbf{A}}$, la $\mathbf{A}$ col cappello:
+«normalizzare» vuol dire appunto questo, dividere per rimettere tutti sulla
+stessa scala, e il perché lo si vede appena finito il conto. In una riga sola:
+$\hat{A}_{vu} = \tilde{A}_{vu} / \sqrt{\tilde{d}_v\,\tilde{d}_u}$, cioè
+$\hat{A}_{12} = 1/\sqrt{2\cdot 3} = 1/\sqrt{6} \approx 0{,}408$ e
+$\hat{A}_{22} = 1/\sqrt{3\cdot 3} = 1/3 \approx 0{,}333$. La matrice completa è
+
+$$
+\hat{\mathbf{A}} = \tilde{\mathbf{D}}^{-1/2}\,\tilde{\mathbf{A}}\,\tilde{\mathbf{D}}^{-1/2} \approx
+\begin{bmatrix}
+0{,}500 & 0{,}408 & 0 & 0 \\
+0{,}408 & 0{,}333 & 0{,}333 & 0 \\
+0 & 0{,}333 & 0{,}333 & 0{,}408 \\
+0 & 0 & 0{,}408 & 0{,}500
+\end{bmatrix}.
+$$
+
+La tabella è simmetrica, e non poteva essere altrimenti: gli archi qui non
+hanno un verso, quindi se il 2 è vicino dell'1 anche l'1 è vicino del 2, e il
+peso del collegamento è lo stesso letto nei due sensi. Il passo di propagazione
+è $\mathbf{H}' = \hat{\mathbf{A}}\,\mathbf{X}$, cioè per ogni nodo la somma
+pesata di sé e dei suoi vicini:
+
+$$
+\begin{aligned}
+h'_1 &= \tfrac{1}{2}\cdot 1 + \tfrac{1}{\sqrt6}\cdot 2 = 0{,}500 + 0{,}816 = 1{,}316, \\
+h'_2 &= \tfrac{1}{\sqrt6}\cdot 1 + \tfrac{1}{3}\cdot 2 + \tfrac{1}{3}\cdot 3 = 0{,}408 + 0{,}667 + 1{,}000 = 2{,}075, \\
+h'_3 &= \tfrac{1}{3}\cdot 2 + \tfrac{1}{3}\cdot 3 + \tfrac{1}{\sqrt6}\cdot 4 = 0{,}667 + 1{,}000 + 1{,}633 = 3{,}300, \\
+h'_4 &= \tfrac{1}{\sqrt6}\cdot 3 + \tfrac{1}{2}\cdot 4 = 1{,}225 + 2{,}000 = 3{,}225.
+\end{aligned}
+$$
+
+Le moltiplicazioni sono fatte con i pesi esatti ($\tfrac{1}{3}$ e
+$\tfrac{1}{\sqrt6}$) e arrotondate solo alla fine: chi le rifà con i valori
+tondi della tabella, $0{,}333$ e $0{,}408$, trova le ultime cifre diverse (per
+esempio $0{,}333 \cdot 3 = 0{,}999$ e non $1{,}000$), e non ha sbagliato niente.
+
+Il risultato è
+$\mathbf{H}' \approx (1{,}316,\, 2{,}075,\, 3{,}300,\, 3{,}225)^\top$, e
+racconta bene cosa fa la GCN: **i quattro valori si stringono**. Partivano da
+$1$ e arrivavano a $4$, tre punti fra il più basso e il più alto; adesso vanno
+da $1{,}32$ a $3{,}30$, due punti scarsi. Il nodo 1, che valeva $1$, sale a
+$1{,}316$ perché è tirato in alto dal vicino 2; il nodo 4, che valeva $4$,
+scende a $3{,}225$ perché è tirato in basso dal 3.
+
+I due nodi di mezzo salgono invece tutti e due, e vale la pena non nasconderlo,
+perché smonta una scorciatoia che verrebbe naturale: **questa non è la media
+dei vicini**. Se lo fosse, il nodo 3, che vale $3$ e sta fra un $2$ e un $4$,
+resterebbe a $3$; invece sale a $3{,}300$. La ragione è che i pesi di una riga
+non sommano a uno (in quella del nodo 3 fanno $1{,}07$), quindi ogni giro non è
+una media ma una somma pesata, che può alzare il livello generale. Quello che
+la GCN garantisce non è che ciascuno vada verso i suoi vicini a ogni singolo
+passo: è che, ripetendo, le differenze di partenza si consumino. Poco più
+avanti in questa sezione si vede succedere, giro dopo giro, su questi stessi
+quattro numeri.
+
 ### Perché normalizzare così
 
-Resta la domanda che dà sostanza a tutta la formula: perché non sommare e basta
-i bigliettini dei vicini, invece di dare a ciascuno un peso che dipende da
-quanti vicini hanno i due nodi collegati dall'arco (è quello che fa, nella
-formula, la radice al denominatore)?
+Nel conto appena fatto ogni collegamento portava un suo peso, e i pesi erano
+tutti più piccoli di uno: qualcosa è stato diviso. Perché? Perché non sommare e
+basta i bigliettini dei vicini?
 
 `````{tab} Elementare
 
-Immagina un'aggregazione che somma e basta, senza dividere. Un nodo con dieci
-amici riceve dieci bigliettini e li somma: un numerone. Un nodo con due amici
-ottiene un numero piccolo. Dopo qualche giro, i nodi «popolari» hanno valori
-enormi e quelli isolati valori minuscoli: non perché contino di più, ma solo
-perché hanno più connessioni. La rete finirebbe per confondere «essere
+Immagina un riassunto fatto sommando e basta, senza dividere niente. Un nodo
+con dieci amici riceve dieci bigliettini e li somma: un numerone. Un nodo con
+due amici ottiene un numero piccolo. Dopo qualche giro, i nodi «popolari» hanno
+valori enormi e quelli isolati valori minuscoli: non perché contino di più, ma
+solo perché hanno più connessioni. La rete finirebbe per confondere «essere
 importante» con «avere tanti amici».
 
-La divisione mette tutti sulla stessa scala. È come fare una **media** invece
-di una somma: dieci opinioni o due, quello che conta è il tenore, non il
-numero. In più, il messaggio di un amico molto popolare pesa un po' meno,
+La divisione rimette tutti sulla stessa scala, e lo spirito è quello di una
+**media** invece di una somma: dieci opinioni o due, quello che conta è il
+tenore, non il numero. Non è una media esatta, per la ragione appena vista (i
+pesi di una riga non fanno precisamente uno), ma il mestiere che svolge è
+quello. In più, il messaggio di un amico molto popolare pesa un po' meno,
 perché la sua attenzione è «spalmata» su tanti: proprio come il consiglio di
 chi conosce mezzo mondo vale un filo meno di quello dell'amico che hai solo tu.
 
@@ -279,17 +425,18 @@ numero piccolo di strati e si addestra come una qualunque rete profonda.
 
 ### Da dove viene la formula: le frequenze di un grafo
 
-Arrivati qui la domanda viene da sé: quella formula da dove esce? La risposta è
-che nessuno l'ha inventata a tavolino, è quel che **resta** di un conto più
-grande, e finora è stato un assegno che non abbiamo coperto. Vale la pena
-coprirlo, perché il conto è breve e in fondo c'è un premio: spiega da sola il
-difetto più famoso delle GNN.
+Arrivati qui la domanda viene da sé: quella formula da dove esce? Nessuno l'ha
+inventata a tavolino: è quel che **resta** di un conto più grande, e vale la
+pena raccontare che conto sia. Rifarlo per intero vorrebbe strumenti che qui
+non servono; ma l'idea si dice a parole in mezza pagina, ed è un buon affare,
+perché in fondo c'è un premio: spiega da sola il difetto più famoso delle GNN.
 
 `````{tab} Elementare
 
-Su un'immagine sappiamo che cos'è una frequenza: bassa vuol dire zone di
-colore che cambiano piano, alta vuol dire dettagli fitti e bordi netti. Un
-filtro che «sfoca» toglie le alte e tiene le basse.
+Su un'immagine c'è una parola che descrive quanto in fretta le cose cambiano da
+un punto al punto accanto, e quella parola è **frequenza**: bassa vuol dire
+zone di colore che cambiano piano, alta vuol dire dettagli fitti e bordi netti.
+Un filtro che «sfoca» toglie le alte e tiene le basse.
 
 Su un grafo la stessa parola ha un senso preciso, e basta cambiare che cosa si
 guarda: una configurazione di numeri sui nodi è a **bassa frequenza** se nodi
@@ -301,15 +448,20 @@ opposto.
 Queste configurazioni, dalla più liscia alla più a scacchiera, hanno un nome
 proprio: si chiamano gli **autovettori del laplaciano** del grafo. Adesso il
 nome non serve a nulla, e non c'è niente da capirci sopra: vale la pena
-registrarlo soltanto perché nell'ultima sezione del capitolo tornerà in un
-posto dove nessuno se lo aspetta, cioè nella firma con cui i Transformer
-segnano la posizione delle parole in una frase.
+registrarlo soltanto perché nell'ultima sezione del capitolo tornerà a fare un
+mestiere che nessuno si aspetta, cioè dire a ogni nodo dove sta nel grafo,
+come i Transformer dicono a ogni parola dove sta nella frase.
 
-Una volta stabilito questo, si può copiare tutto il mestiere dell'elaborazione
-dei segnali: decomporre il segnale sui nodi nelle sue frequenze, moltiplicare
-ciascuna per un coefficiente, ricomporre. È esattamente ciò che i primi lavori
-sulle reti convoluzionali su grafo hanno fatto, e il conto costava carissimo.
-La GCN è quello che resta dopo aver tagliato tutto il superfluo: e quel che
+Una volta stabilito questo si può copiare, di sana pianta, il mestiere di chi
+lavora sui suoni e sulle immagini: si prendono i numeri sui nodi e si scrivono
+come somma di quelle configurazioni, dalla più liscia alla più a scacchiera; si
+decide quanto tenere di ciascuna, alzando le une e abbassando le altre; e si
+rimette tutto insieme. È esattamente ciò che i primi lavori sulle reti
+convoluzionali su grafo hanno fatto, e il computer ci metteva un tempo
+proibitivo: per scrivere quelle configurazioni bisogna prima calcolarle, e su
+un grafo grande è un lavoro immane.
+
+La GCN è quello che resta dopo aver tagliato tutto il superfluo, e quel che
 resta è un filtro che **attenua le alte frequenze**, cioè che smussa le
 differenze fra vicini.
 
@@ -406,9 +558,9 @@ La matrice fra parentesi ha autovalori in $[0, 2]$ e applicarla ripetutamente
 fa esplodere i valori: da qui il *renormalization trick*, cioè sostituirla con
 $\hat{\mathbf{A}} = \tilde{\mathbf{D}}^{-1/2}\tilde{\mathbf{A}}\tilde{\mathbf{D}}^{-1/2}$
 dove $\tilde{\mathbf{A}} = \mathbf{A} + \mathbf{I}_N$ e $\tilde{\mathbf{D}}$ è
-la matrice dei gradi di $\tilde{\mathbf{A}}$. È la formula della GCN, e
-l'assegno è coperto: la normalizzazione simmetrica non era una scelta di
-comodo, è quel che resta di una convoluzione spettrale dopo due
+la matrice dei gradi di $\tilde{\mathbf{A}}$. È la formula della GCN, e il
+conto rimasto in sospeso è saldato: la normalizzazione simmetrica non era una
+scelta di comodo, è quel che resta di una convoluzione spettrale dopo due
 approssimazioni.
 
 I cappi, per inciso, non riscalano soltanto: rendono il grafo non bipartito e
@@ -426,16 +578,32 @@ Il premio annunciato arriva adesso.
 `````{tab} Elementare
 
 Riprendi la frase da tenere a mente: la GCN è un filtro che smussa le
-differenze fra vicini. Ogni giro di bigliettini ne cancella un po'; e se i
-giri sono tanti? Le differenze finiscono. Sulla catena di quattro nodi che
-useremo fra poco i valori di partenza sono 1, 2, 3 e 4: dopo venti giri di
-filtro le differenze fra quei quattro numeri sono sparite, e quello che resta è
-un unico valore comune, ripartito fra i nodi secondo quanti vicini ha ciascuno.
-I nodi sono diventati indistinguibili, se non per il numero di collegamenti.
-Non serve nessun conto sofisticato per capire il perché: un filtro che a ogni
-giro avvicina ciascuno alla media dei suoi vicini, ripetuto abbastanza volte,
-porta tutti nello stesso punto, come lo zucchero che, a forza di mescolare,
-si distribuisce in tutta la tazza.
+differenze fra vicini. Ogni giro di bigliettini ne cancella un po'; e se i giri
+sono tanti? Le differenze finiscono.
+
+Si vede sulla catena di quattro nodi di poco fa, quella che partiva da 1, 2, 3
+e 4. Rifacendo il giro più volte, e sempre senza la ricetta di riscrittura né
+il ritocco finale (che qui restano a riposo, come nel conto di prima), i
+quattro valori vanno così:
+
+| dopo | nodo 1 | nodo 2 | nodo 3 | nodo 4 |
+|---|---|---|---|---|
+| $0$ giri | $1{,}00$ | $2{,}00$ | $3{,}00$ | $4{,}00$ |
+| $1$ giro | $1{,}32$ | $2{,}07$ | $3{,}30$ | $3{,}22$ |
+| $5$ giri | $1{,}95$ | $2{,}57$ | $2{,}88$ | $2{,}50$ |
+| $20$ giri | $2{,}22$ | $2{,}72$ | $2{,}73$ | $2{,}23$ |
+
+Guarda l'ultima riga. Il nodo che partiva da $1$ e quello che partiva da $4$
+sono finiti praticamente sullo stesso numero, e così i due di mezzo. Delle
+differenze di partenza non è rimasto niente, e i due valori diversi che si
+vedono ancora ($2{,}2$ e $2{,}7$) non dicono chi era il nodo: dicono soltanto
+quanti vicini ha, uno i due di bordo e due i due interni.
+
+Non serve nessun conto sofisticato per capire il perché. Se a ogni giro ognuno
+si rimescola con i vicini, e i vicini fanno lo stesso con i loro, dopo un po'
+nessuno ha più niente di suo: è la classe in cui tutti copiano un po' dal
+compagno di banco, e dopo un'ora i compiti si somigliano tutti e non si capisce
+più chi la lezione la sapeva davvero.
 
 `````
 
@@ -456,7 +624,7 @@ scuola, perché un batch di molecole in PyTorch Geometric *è* un unico grafo
 sconnesso, una componente per molecola, e l'oversmoothing non le mescola fra
 loro.)
 
-Sulla catena di quattro nodi che useremo fra poco, con
+Sulla catena di quattro nodi del conto qui sopra, con
 $\mathbf{X} = (1,2,3,4)^\top$, i quattro autovalori di $\hat{\mathbf{A}}$
 valgono $1$, $0{,}729$, $0{,}167$ e $-0{,}229$. Applicando $\hat{\mathbf{A}}$
 venti volte a $\mathbf{X}$, il rapporto fra il valore di ogni nodo e la radice
@@ -466,7 +634,8 @@ due cifre decimali. Il divario fra il più alto e il più basso è $3{,}4 \cdot
 10^{-3}$ e si stringe come la potenza $K$-esima del secondo autovalore,
 $0{,}729^K$: a cinquanta applicazioni vale $2{,}6 \cdot 10^{-7}$ e a cento
 $3{,}5 \cdot 10^{-14}$. Anche lì i quattro numeri restano diversi fra loro (in
-doppia precisione li separano ancora centocinquanta passi elementari), ma è
+doppia precisione li separano ancora più di centocinquanta passi elementari,
+$155$ per la precisione), ma è
 una differenza che nessun modello può più usare: al passo successivo della
 rete, moltiplicata per pesi dell'ordine dell'unità, resta quello che era.
 
@@ -479,111 +648,20 @@ per la rete intera è un teorema con le sue condizioni.
 
 `````
 
-Questo è l'**oversmoothing**, che l'ultima sezione del capitolo elencherà fra i
-limiti come un fenomeno osservato; adesso sappiamo che non è una sfortuna
-sperimentale, è quello che fa, per costruzione, un filtro che smussa (in gergo
-un **filtro passa-basso**) applicato molte volte. Non c'è un baco da correggere
-nell'implementazione. C'è da decidere quanti strati mettere, oppure cambiare
-l'operatore.
-
-## Un passo di propagazione, coi numeri
-
-Vale più di mille formule vedere i conti tornare. Prendiamo un grafo a quattro
-nodi disposti in catena ($1 - 2 - 3 - 4$) con **un solo numero** per nodo,
-$\mathbf{X} = (1,\, 2,\, 3,\, 4)^\top$: una fila di numeri lunga uno, così i
-conti si possono seguire a mente. Calcoliamo un passo di GCN a mano, scegliendo
-$\mathbf{W} = \mathbf{I}$ e $\sigma = \text{identità}$ per isolare l'effetto
-della sola propagazione $\hat{\mathbf{A}}\,\mathbf{H}$.
-
-Prima di leggere le tabelle conviene sapere che cosa si sta per vedere, perché
-in due righe si dice tutto. Ogni collegamento porta un **peso**, e il peso è
-tanto più piccolo quanti più vicini hanno i due nodi che collega, contando
-anche il cappio che ciascuno ha verso sé stesso. Qui i pesi sono tre: $0{,}500$
-sui due cappi dei nodi di bordo, che di vicini ne hanno uno solo; $0{,}408$ sui
-due archi che uniscono un nodo di bordo a uno interno; $0{,}333$ sull'arco fra
-i due nodi interni e sui loro cappi. Il nuovo valore di un nodo è la somma dei
-valori dei vicini (e del proprio), ciascuno moltiplicato per il peso del
-collegamento: da lì in poi è una moltiplicazione e un'addizione. Le tabelle qui
-sotto sono il conto esatto di quei pesi; chi non ha voglia di rifarlo può
-saltare alla riga dei quattro risultati e non perde niente, perché la morale
-sta lì.
-
-La matrice di adiacenza e quella con i cappi
-($\tilde{\mathbf{A}} = \mathbf{A} + \mathbf{I}$) sono
-
-$$
-\mathbf{A} = \begin{bmatrix}
-0 & 1 & 0 & 0 \\
-1 & 0 & 1 & 0 \\
-0 & 1 & 0 & 1 \\
-0 & 0 & 1 & 0
-\end{bmatrix},
-\qquad
-\tilde{\mathbf{A}} = \begin{bmatrix}
-1 & 1 & 0 & 0 \\
-1 & 1 & 1 & 0 \\
-0 & 1 & 1 & 1 \\
-0 & 0 & 1 & 1
-\end{bmatrix}.
-$$
-
-Sommando le righe di $\tilde{\mathbf{A}}$ otteniamo i gradi con cappio,
-$\tilde{\mathbf{d}} = (2,\, 3,\, 3,\, 2)$: i due nodi di bordo hanno un vicino,
-i due interni ne hanno due, più il cappio. Dunque
-
-$$
-\tilde{\mathbf{D}} = \mathrm{diag}(2,3,3,2),
-\qquad
-\tilde{\mathbf{D}}^{-1/2} = \mathrm{diag}\!\left(
-\tfrac{1}{\sqrt{2}},\, \tfrac{1}{\sqrt{3}},\,
-\tfrac{1}{\sqrt{3}},\, \tfrac{1}{\sqrt{2}} \right)
-\approx \mathrm{diag}(0{,}707,\ 0{,}577,\ 0{,}577,\ 0{,}707).
-$$
-
-Ogni entrata dell'adiacenza normalizzata è
-$\hat{A}_{vu} = \tilde{A}_{vu} / \sqrt{\tilde{d}_v\,\tilde{d}_u}$. Per esempio
-$\hat{A}_{12} = 1/\sqrt{2\cdot 3} = 1/\sqrt{6} \approx 0{,}408$ e
-$\hat{A}_{22} = 1/\sqrt{3\cdot 3} = 1/3 \approx 0{,}333$. La matrice completa è
-
-$$
-\hat{\mathbf{A}} = \tilde{\mathbf{D}}^{-1/2}\,\tilde{\mathbf{A}}\,\tilde{\mathbf{D}}^{-1/2} \approx
-\begin{bmatrix}
-0{,}500 & 0{,}408 & 0 & 0 \\
-0{,}408 & 0{,}333 & 0{,}333 & 0 \\
-0 & 0{,}333 & 0{,}333 & 0{,}408 \\
-0 & 0 & 0{,}408 & 0{,}500
-\end{bmatrix}.
-$$
-
-È simmetrica, come dev'essere. Il passo di propagazione è
-$\mathbf{H}' = \hat{\mathbf{A}}\,\mathbf{X}$, cioè per ogni nodo la somma
-pesata di sé e dei suoi vicini:
-
-$$
-\begin{aligned}
-h'_1 &= 0{,}500\cdot 1 + 0{,}408\cdot 2 = 0{,}500 + 0{,}816 = 1{,}316, \\
-h'_2 &= 0{,}408\cdot 1 + 0{,}333\cdot 2 + 0{,}333\cdot 3 = 0{,}408 + 0{,}667 + 1{,}000 = 2{,}075, \\
-h'_3 &= 0{,}333\cdot 2 + 0{,}333\cdot 3 + 0{,}408\cdot 4 = 0{,}667 + 1{,}000 + 1{,}633 = 3{,}300, \\
-h'_4 &= 0{,}408\cdot 3 + 0{,}500\cdot 4 = 1{,}225 + 2{,}000 = 3{,}225.
-\end{aligned}
-$$
-
-Il risultato è
-$\mathbf{H}' \approx (1{,}316,\, 2{,}075,\, 3{,}300,\, 3{,}225)^\top$, e
-racconta bene cosa fa la GCN: i valori si **lisciano** verso la media locale.
-Il nodo 4, che valeva $4$, scende a $3{,}225$ perché è tirato in basso dal
-vicino 3; il nodo 1, che valeva $1$, sale a $1{,}316$ perché è tirato in alto
-dal vicino 2. Un passo di message passing avvicina ogni nodo al proprio
-vicinato: è il cuore differenziabile su cui la rete costruisce, strato dopo
-strato, rappresentazioni sempre più ricche.
+Questo appiattimento ha un nome, **oversmoothing**, cioè «levigatura
+eccessiva», e l'ultima sezione del capitolo lo elencherà fra i limiti delle
+GNN. Adesso però sappiamo che non è una sfortuna capitata in laboratorio: è
+quello che fa, per costruzione, un filtro che smussa le differenze (in gergo un
+**filtro passa-basso**) quando lo si applica molte volte di fila. Non c'è
+nessun errore di programmazione da andare a cercare. C'è da decidere quanti
+strati mettere, oppure da cambiare filtro.
 
 ## Impilare gli strati: il campo recettivo a $K$ salti
 
-Un solo strato di GCN fa vedere a ogni nodo i suoi vicini diretti. Ma il bello
-comincia impilandone di più. (Una parola sul vocabolario, perché da qui in poi
-le due si alternano: ogni **giro** di passaparola è uno **strato** della rete.
-Sono la stessa cosa detta dai due lati, dal lato di chi ascolta e dal lato di
-chi costruisce la rete.)
+Come vada a finire se si esagera lo sappiamo già. Resta da dire perché,
+fino a un certo punto, impilare gli strati conviene, e conviene molto: un solo
+strato di GCN fa vedere a ogni nodo i suoi vicini diretti, e il bello comincia
+appunto quando gli strati sono più d'uno.
 
 `````{tab} Elementare
 
@@ -615,7 +693,7 @@ o tre strati bastano quasi sempre, perché il numero di nodi raggiunti cresce in
 fretta col grado.
 Secondo, andare troppo profondi è controproducente: applicando molte volte
 $\hat{\mathbf{A}}$ le rappresentazioni dei nodi convergono verso un unico punto
-e diventano indistinguibili; il fenomeno dell'*over-smoothing*, per cui in
+e diventano indistinguibili; il fenomeno dell'*oversmoothing*, per cui in
 pratica le GCN molto profonde rendono peggio di quelle a due strati.
 
 `````
@@ -634,7 +712,7 @@ La {numref}`fig-message-passing-animato` rende evidente il punto che rende
 delicata la profondità: l'informazione lontana non salta, **transita**. Ogni
 strato in più la fa passare per un altro nodo, che la mescola con la propria,
 ed è proprio questa mescolanza ripetuta a produrre, alla lunga,
-l'over-smoothing.
+l'oversmoothing.
 
 ## Addestrare: classificare i nodi con poche etichette
 
@@ -642,16 +720,19 @@ Con lo schema in mano, addestrare una GCN non richiede niente di nuovo: si
 misura quanto la rete sbaglia, si calcola in che direzione muovere i pesi per
 sbagliare meno e ci si muove di un passo, esattamente come nella sezione
 sull'addestramento delle reti (sono la *loss*, il *gradiente* e la
-*backpropagation* di quel capitolo). Cambia solo la forma del dato. Il banco di
-prova classico è **Cora**: un grafo di circa 2700 articoli scientifici (i
-nodi), collegati da un arco quando uno cita l'altro (circa 5400 archi),
-ciascuno descritto da una fila di 1433 numeri che dice quali parole compaiono
-nell'articolo, e da etichettare in una di 7 categorie tematiche.
+*backpropagation* di quel capitolo). Cambia solo la forma del dato.
+
+Il banco di prova classico è **Cora**, ed è un grafo di articoli scientifici.
+I nodi sono circa 2700 articoli e gli archi le citazioni: c'è un arco ogni
+volta che un articolo ne cita un altro, e in tutto sono circa 5400. Su ogni
+nodo c'è una fila di 1433 numeri, che dice quali parole compaiono
+nell'articolo. Il compito è assegnare a ciascun articolo una di 7 categorie
+tematiche.
 
 `````{tab} Elementare
 
-La particolarità è che conosciamo l'argomento di **pochissimi** articoli (nel
-setup standard di Cora appena 20 per categoria, 140 nodi in tutto su 2700) e
+La particolarità è che conosciamo l'argomento di **pochissimi** articoli (nella
+versione standard di Cora appena 20 per categoria, 140 nodi in tutto su 2700) e
 vogliamo indovinare quello di tutti gli altri. Come si fa con così poche
 risposte in mano? Sfruttando i collegamenti: un articolo tende a citare
 articoli del suo stesso campo. Il message passing fa scorrere le poche
@@ -659,12 +740,13 @@ etichette note lungo le citazioni, contagiando i vicini. È come indovinare gli
 hobby di una comitiva conoscendone solo alcuni: chi frequenta i patiti di
 scacchi, probabilmente gioca a scacchi anche lui.
 
-Il trucco è che, pur pagando (con la loss) solo gli errori sui 140 articoli che
-conosciamo, per rispondere su di essi la rete ha dovuto far girare
-l'informazione su **tutto** il grafo. Così, aggiustandosi, impara a
-rappresentare bene anche i nodi che non abbiamo mai etichettato. Per questo si
-chiama apprendimento **semi-supervisionato**: poche etichette, ma tanta
-struttura.
+Il trucco è che, pur pagando solo gli errori sui 140 articoli di cui sappiamo
+la risposta, per rispondere su quei 140 la rete ha dovuto far girare
+l'informazione su **tutto** il grafo. Aggiustandosi per i 140, quindi, migliora
+la fila di numeri di tutti: anche quella degli altri articoli, più di
+duemilacinquecento, su cui non le abbiamo mai detto se aveva ragione. Un
+apprendimento che parte da poche
+risposte e tanta struttura si chiama **semi-supervisionato**.
 
 `````
 
@@ -702,10 +784,10 @@ GCN si è imposta.
 
 ## Uno strato GCN in PyTorch
 
-Le pagine che seguono sono per chi programma e vuole vedere la regola tradotta
-in istruzioni; chi non programma può saltarle senza perdere niente del
-capitolo, perché non c'è nessuna idea nuova, solo la stessa scritta in un'altra
-lingua.
+Quel che resta di questa sezione è per chi programma e vuole vedere la regola
+tradotta in istruzioni. Non c'è nessuna idea nuova, solo la stessa scritta in
+un'altra lingua: chi non programma può saltare i tre riquadri di codice e
+riprendere dall'ultimo paragrafo, che è il ponte verso la sezione seguente.
 
 Tradurre la regola
 $\mathbf{H}^{(l+1)} = \sigma(\hat{\mathbf{A}}\,\mathbf{H}^{(l)}\,\mathbf{W}^{(l)})$
@@ -758,10 +840,10 @@ for epoca in range(200):
 
 In pratica non serve scrivere lo strato a mano: la libreria **PyTorch
 Geometric** offre `GCNConv`, che aggiunge i cappi e applica la normalizzazione
-simmetrica al volo, prendendo il grafo nel formato compatto `edge_index` (la
-lista degli archi, di forma `(2, num_archi)`) invece della matrice
-$\hat{\mathbf{A}}$ densa, indispensabile sui grafi grandi, dove
-$\hat{\mathbf{A}}$ non entrerebbe in memoria:
+simmetrica al volo. Al posto della matrice $\hat{\mathbf{A}}$ intera prende il
+grafo in un formato compatto, `edge_index`, che è la sola lista degli archi (di
+forma `(2, num_archi)`). È l'unica strada praticabile sui grafi grandi, dove
+$\hat{\mathbf{A}}$ per intero non entrerebbe in memoria:
 
 ```python
 from torch_geometric.nn import GCNConv
@@ -771,10 +853,12 @@ conv = GCNConv(in_channels=1433, out_channels=16)
 ```
 
 Da qui in avanti le domande diventano: e se i vicini fossero troppi per
-guardarli tutti? E se alcuni contassero più di altri? Sono esattamente le
-questioni che aprono la sezione successiva, «Oltre la GCN», dove
-incontreremo il campionamento dei vicini di GraphSAGE e i pesi di attenzione
-delle Graph Attention Network.
+guardarli tutti? E se alcuni contassero più di altri? Sono le questioni
+dell'ultima sezione del capitolo, «Oltre la GCN», dove incontreremo il
+campionamento dei vicini di GraphSAGE e i pesi di attenzione delle Graph
+Attention Network. Prima però c'è una sezione che allarga il campo in un'altra
+direzione: che cosa succede quando gli archi non sono tutti uguali e ciascuno
+porta scritto sopra un verbo.
 
 `````{tab} Elementare
 
@@ -797,15 +881,16 @@ delle Graph Attention Network.
 - Anche su un grafo si può parlare di **frequenze**: bassa se nodi collegati
   portano valori simili, alta se lungo ogni collegamento il valore salta. Un
   giro di GCN è un filtro che attenua le alte, cioè smussa le differenze fra
-  vicini; e la sua formula è ciò che resta dei filtri dell'elaborazione dei
-  segnali dopo aver tagliato il superfluo {cite}`defferrard2016convolutional`.
+  vicini; e la sua formula è ciò che resta, dopo aver tagliato il superfluo,
+  dei filtri che si usano sui suoni e sulle immagini
+  {cite}`defferrard2016convolutional`.
 - Ogni strato in più allarga l'orecchio di un salto: con due giri arrivano gli
   amici degli amici, con tre quelli ancora dopo, come in una rete per immagini
   il campo visivo di un neurone cresce con la profondità. Ma smussando a ogni
   giro, troppi giri cancellano le differenze e i nodi diventano
-  indistinguibili (è l'*oversmoothing*, lo zucchero che a forza di mescolare si
-  distribuisce in tutta la tazza): non è un errore di programmazione, è quello
-  che il metodo fa per costruzione.
+  indistinguibili (è l'*oversmoothing*, la classe in cui tutti copiano dal
+  compagno di banco finché i compiti si somigliano tutti): non è un errore di
+  programmazione, è quello che il metodo fa per costruzione.
 - L'addestramento tipico è indovinare la categoria di tutti i nodi
   conoscendola per pochissimi (Cora): si pagano solo gli errori su quei pochi,
   ma per rispondere la rete ha dovuto far girare l'informazione su tutto il
@@ -843,7 +928,7 @@ delle Graph Attention Network.
 - Impilare $K$ strati dà a ogni nodo un **campo recettivo a $K$ salti**,
   l'esatto analogo della profondità nelle CNN. Ma uno strato GCN è un **filtro
   passa-basso**, e applicarlo molte volte lascia sopravvivere solo
-  l'autovettore dominante di $\hat{\mathbf{A}}$: è l'*over-smoothing*, e non è
+  l'autovettore dominante di $\hat{\mathbf{A}}$: è l'*oversmoothing*, e non è
   un incidente ma una conseguenza algebrica.
 - L'addestramento tipico è la **classificazione dei nodi semi-supervisionata**
   (Cora): cross-entropia sui soli nodi etichettati, ma gradienti che fluiscono

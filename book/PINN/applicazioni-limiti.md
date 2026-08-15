@@ -4,20 +4,23 @@ Un neurochirurgo studia un aneurisma: una sacca gonfiata sulla parete di
 un'arteria del cervello, che se cede uccide. La domanda che conta è quanto
 **preme** il sangue contro quella parete, perché è la pressione a decidere se
 e quando si romperà. Ma la pressione dentro un vaso non si misura senza
-infilarci un catetere: un gesto invasivo, rischioso, che sull'arteria malata
-proprio non si può fare. Quello che si riesce ad avere, invece, è un'immagine:
-iniettando un tracciante e filmandolo con la risonanza, si vede *dove va* il
-sangue, la sua concentrazione istante per istante. E siccome la macchia di
-tracciante viaggia con il sangue che la porta, guardarla spostarsi è quasi
-vedere la corrente: la velocità, in qualche modo, è sotto gli occhi. La
-pressione no.
+infilarci un tubicino, il catetere: un gesto invasivo, rischioso, che
+sull'arteria malata proprio non si può fare.
+
+Quello che si riesce ad avere, invece, è un filmato. Nel sangue si inietta una
+sostanza che le macchine sanno vedere (si chiama **tracciante**), poi la si
+segue con la risonanza magnetica, che di immagini ne fa una dopo l'altra: il
+risultato è un film in cui si vede, punto per punto e istante per istante,
+quanto tracciante c'è. Solo quello: dove sta la macchia. Non quanto va veloce
+il sangue, non quanto preme.
 
 Nel 2020 Maziar Raissi, Alireza Yazdani e George Karniadakis pubblicano su
 *Science* un lavoro che chiude proprio questo divario
 {cite}`raissi2020hidden`: il metodo si chiama *Hidden Fluid Mechanics*, e fa
 una cosa che a prima vista sembra magia. Dà in pasto a una rete le immagini
-del tracciante (nell'articolo sono immagini simulate: la sola concentrazione,
-niente sensori di pressione) e le impone di rispettare le equazioni di
+del tracciante (nell'articolo sono immagini simulate al calcolatore, e portano
+solo il tracciante: nessun sensore di pressione da nessuna parte) e le impone
+di rispettare le equazioni di
 Navier–Stokes, con cui si descrive il moto di un fluido. La rete, per essere
 coerente con quelle equazioni *e* con il filmato, è costretta a ricostruire i
 **campi** che nel filmato non ci sono: velocità e, soprattutto,
@@ -25,25 +28,53 @@ coerente con quelle equazioni *e* con il filmato, è costretta a ricostruire i
 grandezza che ha un valore in ogni punto dello spazio e in ogni istante: la
 velocità del sangue in quel punto, la pressione in quel punto.)
 
-La magia si scioglie appena si guarda cosa dicono quelle equazioni, ed è bene
-scioglierla subito. Navier–Stokes non è un elenco di fatti separati: **lega**
-la velocità alla pressione, e dice una cosa precisa, che un fluido accelera
-verso i punti dove la pressione è più bassa. Le due grandezze non sono quindi
-indipendenti, ed è un legame che si può percorrere all'indietro: vista
-l'accelerazione del sangue in ogni punto e in ogni istante, di quanto la
-pressione debba calare da un punto al vicino non si è più liberi di
-decidere. Il filmato del tracciante dà la velocità; la legge, imposta come
-vincolo nella loss, tira fuori la pressione. Su una simulazione di aneurisma
-intracranico il metodo stima la pressione che nessuno strumento aveva
-misurato.
+La magia si scioglie appena si guarda che cosa dicono quelle leggi, ed è bene
+scioglierla subito. Sono una catena di due anelli, e li percorriamo uno alla
+volta.
 
-Con un limite che va detto subito, perché è dentro l'equazione e non nel
-metodo: in un fluido incomprimibile la pressione compare solo attraverso le
-sue *differenze*, quindi da lì si ricava di quanto la pressione cambia da un
-punto all'altro, non a che livello stia. Il valore assoluto resta indefinito
-finché non lo si aggancia a una misura sola, da qualche parte. È moltissimo lo
-stesso, ed è la vera ragione per cui vale la pena studiare le PINN: non tanto
-rifare quello che i solutori classici fanno già benissimo, ma leggere il non
+Il primo anello lega il filmato alla velocità. Il tracciante non si muove da
+solo: se ne sta lì e va dove lo porta il sangue, come una macchia di colore in
+un fiume. Quindi il modo in cui la macchia si allunga e si sposta non è
+compatibile con qualsiasi corrente: è compatibile solo con quella che
+l'avrebbe spostata proprio così. La velocità non si vede nel filmato, ma il
+filmato la restringe moltissimo.
+
+Il secondo anello lega la velocità alla pressione, e la cosa che dice è quella
+che tutti conosciamo senza chiamarla così: un fluido viene spinto verso i
+punti dove la pressione è più bassa. Lascia andare l'imboccatura di un
+palloncino gonfio e l'aria schizza fuori, perché dentro la pressione è alta e
+fuori è più bassa; e più è ripido quel dislivello, più forte è la spinta.
+Adesso la stessa frase si legge all'incontrario. Sapere la velocità in ogni
+punto e in ogni istante vuol dire sapere anche come sta cambiando, cioè quanto
+il sangue accelera: è la mossa della molla, dove dalla curva ricavavamo
+pendenza e curvatura. Ma se il sangue accelera, qualcosa lo sta spingendo. E a
+spingerlo è il dislivello di pressione. Quindi, saputa l'accelerazione, il
+dislivello non è più libero: la legge lo ha già deciso.
+
+Ecco la catena intera. Il filmato restringe la velocità; la velocità inchioda
+la pressione; e le due leggi, messe nella loss come penalità esattamente come
+si è fatto per la molla, costringono la rete a tirare fuori due grandezze che
+nel filmato non c'erano. È il momento di dirlo: nell'esperimento
+dell'articolo il flusso era simulato al calcolatore, il che sembra una
+scorciatoia e invece è il punto. Solo così la risposta vera si conosce, e si
+può controllare se la ricostruzione ci ha preso. Su una simulazione di
+aneurisma intracranico il metodo ricostruisce la pressione senza che nessuna
+misura di pressione gli sia mai stata data.
+
+Va detto subito un limite, perché sta dentro le equazioni e non nel modo di
+risolverle. Se il fluido è **incomprimibile** (l'acqua e il sangue lo sono in
+pratica: per quanto li schiacci, il loro volume non cambia), nelle equazioni
+la pressione non compare mai da sola, compare sempre come dislivello fra un
+punto e il vicino. Il che vuol dire che si ricava di quanto la pressione
+cambia da un punto all'altro, non a che livello stia: la ricostruzione può
+dire «qui la pressione è più alta di cinque millimetri di mercurio che là»
+senza saper dire se qui vale 105 o 205. Per fissare il livello servirebbe una
+misura vera, presa da qualche parte, ed è proprio quella che dentro l'arteria
+malata non si può prendere. Restano i dislivelli, ed è comunque moltissimo:
+sono loro a dire dove la parete è sollecitata di più. Ed è la vera ragione per
+cui vale la pena studiare le PINN: non tanto rifare quello che i **solutori
+classici** fanno già benissimo (il conto a passettini dell'apertura del
+capitolo, quello che avanza su una fitta rete di puntini), ma leggere il non
 misurabile a partire dal misurabile.
 
 ## Il problema inverso, cioè il superpotere
@@ -64,8 +95,8 @@ la torta e provi a indovinare le dosi. Quanto zucchero? Quanto lievito? Hai il
 risultato e cerchi la causa che l'ha prodotto. È incomparabilmente più
 difficile (tante ricette diverse possono dare torte simili) ma è quasi sempre
 la domanda che interessa davvero: dalla curva del corpo che si raffredda, a
-che ora è avvenuto il decesso? Dalle immagini del sangue, quanto preme sulla
-parete? La PINN affronta l'inverso con naturalezza disarmante: la dose ignota
+che ora è avvenuto il decesso? Dal filmato del tracciante, quanto preme il
+sangue sulla parete? La PINN affronta l'inverso con naturalezza disarmante: la dose ignota
 diventa una manopola in più da girare durante l'addestramento, finché fisica e
 osservazioni non vanno d'accordo.
 
@@ -123,10 +154,11 @@ PINN» non vuol dire «senza rivali».
 
 `````
 
-In codice, la promozione del parametro a incognita addestrabile è tre righe,
-le stesse della sezione precedente con un altro coefficiente al posto della
-rigidezza della molla: il parametro fisico diventa una manopola come tutte le
-altre, e finisce nella lista di quelle che l'addestramento aggiorna.
+In codice si fa come nella sezione precedente, e non importa quale sia il
+numero della fisica che manca. Là era la rigidezza di una molla, qui prendiamo
+la diffusività di un materiale, cioè quanto in fretta il calore ci si propaga
+dentro: in tutti e due i casi quel numero diventa una manopola come le altre e
+finisce nella lista di quelle che l'addestramento gira.
 
 ```{code-block} python
 :class: pt-non-eseguibile
@@ -147,9 +179,10 @@ Al di là dell'aneurisma, il filone ha prodotto applicazioni concrete. Vale la
 pena elencarle con onestà: dove le PINN portano un vantaggio reale, e dove
 sono ancora una promessa da verificare.
 
-**Fluidodinamica ed emodinamica.** È il territorio d'elezione, quello di
-*Hidden Fluid Mechanics*: ricostruire campi di velocità e pressione da dati di
-imaging sparsi e rumorosi, imponendo Navier–Stokes come vincolo
+**Fluidodinamica ed emodinamica**, cioè il moto dei fluidi in generale e del
+sangue in particolare. È il territorio d'elezione, quello di *Hidden Fluid
+Mechanics*: ricostruire velocità e pressione punto per punto a partire da
+immagini mediche sparse e disturbate, con Navier–Stokes imposta come penalità
 {cite}`raissi2020hidden`. Il valore non è la velocità di calcolo (un solutore
 maturo è più rapido) ma la capacità di tenere conto di misure reali tutte
 insieme, che in gergo si dice *assimilarle*, e di ricavare da lì ciò che
@@ -160,36 +193,43 @@ deformazione o di temperatura, stimare grandezze nascoste trattandole come
 incognite dell'equazione: quanto un materiale si piega sotto carico (il modulo
 elastico), quanto si lascia attraversare dal calore (la conducibilità), quanto
 si lascia attraversare da un fluido (la permeabilità). Funziona quando il
-modello fisico è quello giusto; se l'equazione imposta è sbagliata, la stima
-è coerentemente sbagliata, e nulla lo segnala.
+modello fisico è quello giusto; se l'equazione imposta è quella sbagliata, la
+stima esce sbagliata ma con l'aria di essere giusta, coerente con tutto il
+resto, e non c'è niente che lo segnali.
 
-**Geofisica e sismica.** L'inversione del campo d'onda (risalire alla
-struttura del sottosuolo dai sismogrammi registrati in superficie) è un
-inverso da manuale, e le PINN sono state proposte per affrontarlo. Resta un
-campo di ricerca attivo più che una tecnologia consolidata: i metodi classici
-di *full-waveform inversion* sono maturi e difficili da battere.
+**Geofisica e sismica.** Risalire alla struttura del sottosuolo dai
+sismogrammi (i tracciati registrati in superficie dai rilevatori di
+vibrazioni) è un inverso da manuale, e le PINN sono state proposte per
+affrontarlo. Resta un campo di ricerca attivo più che una tecnologia
+consolidata: quello stesso problema ha già i suoi metodi classici, che in
+inglese si chiamano *full-waveform inversion*, e sono maturi e difficili da
+battere.
 
 **Clima e meteo.** Qui serve una precisazione netta, per non confondere due
 cose diverse. I grandi modelli meteorologici neurali che negli ultimi anni
 hanno fatto notizia (capaci di previsioni globali a dieci giorni in pochi
 secondi) **non sono PINN**: non hanno alcuna equazione nella loss. Hanno
-imparato a prevedere guardando decenni di mappe del tempo passato, ricostruite
-mettendo insieme tutte le osservazioni disponibili (si chiamano dati di
-*rianalisi*: la storia meteorologica del pianeta, riscritta in modo uniforme e
-completo). Imparano la dinamica dall'osservazione, non dalla fisica imposta.
-Ci torneremo a fine sezione, perché sono la porta verso l'idea più
+imparato a prevedere guardando decenni di mappe del tempo passato. Quelle
+mappe non sono l'archivio grezzo delle misure, che è pieno di buchi e cambia
+strumento ogni pochi anni: sono il risultato di un lavoro lungo, in cui tutte
+le osservazioni disponibili vengono rimesse insieme dai centri meteorologici e
+rese omogenee, così che ogni punto del pianeta e ogni ora abbiano il loro
+valore. Si chiamano dati di *rianalisi*. Da lì i modelli imparano la dinamica
+dall'osservazione, non dalla fisica imposta. Ci torneremo fra qualche pagina,
+in fondo a questa stessa sezione, perché sono la porta verso l'idea più
 interessante di tutte.
 
 ## I limiti, detti con franchezza
 
 Sarebbe disonesto fermarsi qui. Le PINN hanno modi di fallire ben documentati,
-e conoscerli è parte del mestiere. Il riferimento obbligato è il lavoro di
-Krishnapriyan, Gholami, Zhe, Kirby e Mahoney, che mostra una cosa scomoda:
-**una PINN può fallire anche su equazioni semplici**
-{cite}`krishnapriyan2021characterizing`. Non perché la rete sia troppo povera
-per disegnare quella curva, che lo saprebbe fare benissimo, ma perché il modo
-in cui il problema è impostato rende quasi impercorribile la discesa verso il
-punteggio minimo.
+e conoscerli è parte del mestiere. Il lavoro di riferimento è di Aditi
+Krishnapriyan e colleghi, e mostra una cosa scomoda: **una PINN può fallire
+anche su equazioni semplici** {cite}`krishnapriyan2021characterizing`. Non
+perché la rete sia troppo povera per disegnare quella curva, che la saprebbe
+disegnare benissimo. Il guasto è più subdolo: la curva giusta esiste ed è a
+portata della rete, ma la strada per arrivarci, quella che l'addestramento
+percorre abbassando il punteggio un passo alla volta, diventa quasi
+impraticabile.
 
 Il primo motivo è che la loss è un **tiro alla fune**.
 
@@ -199,21 +239,32 @@ Ricordi la loss della PINN: due termini sommati, uno che tira verso la fisica
 e uno che tira verso quello che si sa già, cioè le misure e il punto di
 partenza. È letteralmente un tiro alla fune, con due squadre alle estremità
 della corda. E c'è una manopola che decide quanto è forte una delle due
-squadre: è quel numero 100 che nella sezione precedente moltiplicava il
-termine della partenza. Chi scrive le formule le dà per nome una lettera
-greca, «lambda»; e la mette davanti all'uno o all'altro termine secondo quale
-delle due squadre gli sembra debole, il che non cambia niente, perché a
-contare è solo il rapporto fra le due forze.
+squadre: è quel 100 che nella sezione precedente moltiplicava il termine della
+partenza.
 
 Se la giri troppo da una parte, la fisica vince e la rete produce una curva
 liscia e regolare che però ignora le misure; se la giri troppo dall'altra, la
-rete si incolla ai dati rumorosi e se ne infischia della legge. La soluzione
-buona sta dove le due forze si bilanciano, ma trovare quel punto è un'arte,
-non una formula: nessuna ricetta universale dice quale sia il valore giusto.
-Si prova, si sbaglia, si riprova. Sulla molla della sezione precedente
+rete si incolla alle misure sporche e se ne infischia della legge. La
+soluzione buona sta dove le due forze si bilanciano, ma trovare quel punto è
+un'arte, non una formula: nessuna ricetta universale dice quale sia il valore
+giusto. Si prova, si sbaglia, si riprova. Sulla molla della sezione precedente
 l'abbiamo fatto: con la manopola su 1 la curva finiva lontana dalla risposta,
-con la manopola su 100 molto più vicina, e il solo modo di saperlo era che
-lì, per una volta, la risposta la conoscevamo.
+con la manopola su 100 molto più vicina, e il solo modo di saperlo era che lì,
+per una volta, la risposta la conoscevamo.
+
+E no, non si può lasciarla girare all'addestramento come si fa con la
+rigidezza della molla nel problema inverso, anche se la parola «manopola» è la
+stessa. L'addestramento gira le manopole nella direzione che abbassa il
+punteggio; se gli si desse in mano anche questa, la porterebbe subito a zero,
+perché azzerare una delle due squadre è il modo più rapido di far scendere il
+totale. Le manopole che decidono *come si dà il voto* non possono essere
+girate da chi il voto lo sta prendendo.
+
+Una nota di lettura, per quando si incontrerà una di queste formule scritte da
+altri. Alla manopola si dà per nome una lettera greca, «lambda», e chi scrive
+la mette davanti all'una o all'altra squadra a seconda di quale gli sembra
+debole. Non cambia niente: a contare è solo il rapporto fra le due forze, e
+raddoppiare una squadra o dimezzare l'altra è la stessa cosa.
 
 `````
 
@@ -247,11 +298,12 @@ sequenziale nel tempo.
 
 `````
 
-Il secondo motivo è che una rete impara prima le parti *lisce* di una
-funzione, gli andamenti lenti e le tendenze d'insieme, e fatica molto di più
-con le oscillazioni rapide e i dettagli fini, cioè con le **alte frequenze**.
-Anche questo ha un nome tecnico, lo **spectral bias**, ma l'intuizione è tutta
-lì.
+Il secondo motivo è che una rete impara in fretta gli andamenti larghi e lenti
+di una curva, e fatica moltissimo sulle increspature strette e rapide. Chi
+lavora in questo campo le chiama **alte frequenze**, prendendo in prestito la
+parola dai suoni, dove alto di frequenza vuol dire acuto: qui vuol dire fitto,
+cioè che la cosa cambia parecchie volte nello spazio di poco. Il fenomeno ha
+un nome, lo **spectral bias**, ma l'intuizione è tutta lì.
 
 `````{tab} Elementare
 
@@ -259,10 +311,12 @@ lì.
 (il cielo, il prato) e solo alla fine, con pazienza, aggiunge i dettagli
 minuti: le foglie, i riflessi. Una rete fa lo stesso da sola: cattura in
 fretta la forma d'insieme, aggiunge i particolari fini con enorme lentezza.
-Per molti problemi va benissimo. Ma se la soluzione fisica *è* fatta di
-increspature rapide (un'onda d'urto, una turbolenza, un fronte che oscilla),
-la rete arranca proprio dove servirebbe precisa, e le mancano esattamente i
-dettagli che contano.
+Per molti problemi va benissimo. Ma certe soluzioni fisiche *sono* fatte di
+increspature rapide: l'aria attorno a un aereo supersonico, che cambia di
+colpo nello spazio di pochi centimetri; l'acqua di un fiume in piena, tutta
+vortici piccoli; il bordo netto fra due masse d'aria che avanza. Lì la rete
+arranca proprio dove servirebbe precisa, e le mancano esattamente i dettagli
+che contano.
 
 `````
 
@@ -320,41 +374,58 @@ correggere.
 `````
 
 E poi c'è il confronto onesto con i solutori classici, che vale la pena
-ripetere senza sconti. Su un problema *standard* (equazione nota, forma
-regolare, nessun dato sperimentale da fondere) il conto a passettini visto in
-apertura di capitolo, nelle sue due versioni mature (le differenze finite e
-gli elementi finiti), fatto bene **vince quasi sempre**: è più veloce di
-ordini di grandezza, più accurato, e porta in dote qualcosa che a una rete
-addestrata manca del tutto: la garanzia, dimostrata sotto ipotesi che si sanno
-controllare, che infittendo la griglia l'errore scende, e di quanto. Una PINN
-che impiega minuti dove un solutore maturo impiega millisecondi, e che ogni
-tanto fallisce senza preavviso, non è un progresso: è un passo indietro. Le
-PINN convengono dove i classici arrancano (dati e leggi da fondere, dimensioni
-troppe per qualunque griglia, problemi inversi) non altrove.
+ripetere senza sconti. Prendiamo un problema *standard*: equazione nota, forma
+regolare, nessun dato sperimentale da tenere insieme alla legge. Lì il conto a
+passettini visto in apertura di capitolo, fatto bene, **vince quasi sempre**:
+è più rapido di centinaia o migliaia di volte, ed è più preciso. Ne esistono
+due versioni mature, e vale la pena avere i nomi: le **differenze finite**
+mettono i puntini in righe e colonne regolari, gli **elementi finiti**
+ritagliano la regione in tanti triangolini e sanno quindi seguire una forma
+qualsiasi.
+
+E il conto a passettini porta in dote qualcosa che a una rete addestrata manca
+del tutto: si dimostra, sotto ipotesi che si sanno controllare prima di
+partire, che infittendo i puntini l'errore scende, e pure di quanto. Di una
+rete addestrata non si sa dire niente del genere. Una PINN che impiega minuti
+dove un solutore maturo impiega millisecondi, e che ogni tanto fallisce senza
+preavviso, non è un progresso: è un passo indietro. Le PINN convengono in tre
+casi, e fuori di lì no: quando misure e leggi vanno usate insieme per
+rispondere alla stessa domanda; quando la risposta dipende da così tante
+grandezze che i puntini da mettere sarebbero più di quanti un calcolatore ne
+possa tenere; e quando il problema è inverso.
 
 ## Oltre le PINN: imparare il mestiere, non il compito
 
 C'è un limite più profondo di tutti quelli visti finora, e superarlo apre la
-direzione più promettente. Una PINN risolve **un** problema, e uno soltanto.
-Quando l'addestramento finisce sono fissati per sempre la regione in cui si
-cerca la soluzione (il **dominio**), il punto da cui si parte (la
-**condizione iniziale**), quello che accade ai bordi (le **condizioni al
-contorno**) e ciò che alimenta il fenomeno dall'esterno, per esempio una
-fiamma sotto una sbarra (la **sorgente**). Cambia uno solo di questi
-ingredienti e si riaddestra da capo: è come se, per ogni caffè che parte da
-una temperatura diversa, si dovessero rifare tutti i conti.
+direzione più promettente. Una PINN risolve **un** problema, e uno soltanto: è
+come se, per ogni caffè che parte da una temperatura diversa, si dovesse
+rifare tutta la fatica dal principio.
+
+Quando l'addestramento finisce, infatti, restano fissati per sempre quattro
+ingredienti, e li si capisce tutti e quattro con la sbarra di ferro
+dell'apertura. Dov'è la sbarra e quanto è lunga: è la regione in cui si cerca
+la soluzione, il **dominio**. Com'era calda prima che tutto cominciasse: è la
+**condizione iniziale**. Che cosa le si tiene attaccato ai due capi, una
+fiamma da una parte e un blocco di ghiaccio dall'altra: sono le **condizioni
+al contorno**. E che cosa la scalda dall'interno, se qualcosa la scalda: è la
+**sorgente**. Cambia uno solo dei quattro, sposta la fiamma o accorcia la
+sbarra, e si riaddestra da capo.
 
 `````{tab} Elementare
 
 Pensa alla differenza tra risolvere *un* esercizio e imparare il *metodo*. Uno
 studente che ha risolto un problema di fisica sa la risposta a quel problema;
 uno che ha imparato il metodo li risolve tutti, anche quelli che non ha mai
-visto, senza rifare la fatica ogni volta. Gli **operatori neurali** fanno la
-seconda cosa. Invece di imparare *la soluzione* di un problema, imparano
-l'operatore che *mappa le condizioni nella soluzione*: dammi una qualsiasi
-temperatura di partenza, una qualsiasi forma del contenitore, e ti restituisco
-la curva giusta, subito, senza riaddestrare nulla. Hai imparato il mestiere,
-non il singolo compito, ed è riusabile all'infinito.
+visto, senza rifare la fatica ogni volta.
+
+C'è una famiglia di reti che fa la seconda cosa. Invece di imparare *la
+soluzione* di un problema, imparano il procedimento che porta dalla domanda
+alla risposta: dammi una qualsiasi temperatura di partenza, una qualsiasi
+forma del contenitore, e ti restituisco la curva giusta, subito, senza
+riaddestrare nulla. Hai imparato il mestiere, non il singolo compito, ed è
+riusabile all'infinito. Quelle reti si chiamano **operatori neurali**, dove
+«operatore» è il nome che i matematici danno appunto a un procedimento che
+prende una cosa intera e ne restituisce un'altra intera.
 
 `````
 
@@ -405,24 +476,47 @@ letti come si leggono tutti gli altri.
 
 Ed eccoci al meteo. I modelli neurali che prevedono il tempo su tutto il
 pianeta in pochi secondi, là dove i centri di calcolo tradizionali macinano
-equazioni per ore su un supercomputer, sono costruiti proprio su operatori
-appresi: reti che hanno imparato *il metodo* invece della singola risposta. È
-lo spirito del Fourier Neural Operator, che lavora scomponendo il campo nelle
-onde elementari di cui è fatto; le architetture concrete poi variano da
-modello a modello (reti su grafo, Transformer, varianti spettrali). Una
-previsione che prima richiedeva ore di supercalcolo esce ora in un tempo
-brevissimo, a parità sorprendente di qualità sulle scale di alcuni giorni. È
-un risultato che va maneggiato con prudenza (restano aperte questioni su
-eventi estremi, stabilità a lungo termine, fisica non rispettata alla lettera)
-ma la direzione è inequivocabile, e non passa dalla fisica messa nella loss:
-passa dall'imparare l'operatore dai dati.
+equazioni per ore su un supercomputer, sono costruiti proprio così: reti che
+hanno imparato *il metodo* invece della singola risposta. È lo spirito di uno
+dei capostipiti della famiglia, il **Fourier Neural Operator**, che lavora
+scomponendo in onde quel che vede: come un accordo si scompone nelle note che
+lo formano, una mappa di temperature si scompone in ondulazioni, quelle larghe
+e lente e quelle piccole e fitte, e la rete lavora su quelle invece che sui
+singoli punti. Le architetture concrete dei modelli meteo poi variano parecchio
+da uno all'altro, ma nessuna di esse ha una legge fisica nella loss: quello che
+le fa funzionare è aver imparato dai dati il procedimento, non la fisica
+imposta. Una previsione che prima richiedeva ore di supercalcolo esce ora in un
+tempo brevissimo, a parità sorprendente di qualità nelle previsioni fino a
+qualche giorno.
+
+Un risultato così va maneggiato con prudenza, e non solo perché restano aperte
+questioni serie: gli eventi estremi, che sono rari e quindi mal rappresentati
+in quello che il modello ha studiato; la tenuta quando si spinge la previsione
+lontano nel tempo; e il fatto che, non avendo nessuna legge dentro, un modello
+del genere può restituire uno stato dell'atmosfera che la fisica non
+ammetterebbe.
+
+Poi c'è una prudenza diversa, che riguarda i numeri di targa, ed è una lezione
+che vale ben oltre il meteo. Restiamo sul Fourier Neural Operator, ma
+attenzione: quello che segue non riguarda i modelli meteo, riguarda il
+problema di prova su cui quella famiglia si è fatta conoscere, un fluido in
+due dimensioni. Nel riassunto dell'articolo che lo propone si legge «fino a
+tre ordini di grandezza più rapido dei solutori tradizionali», cioè mille
+volte; qualche pagina dopo, nello stesso articolo, il cronometro dice
+quattrocentoquaranta. E in quel confronto il metodo classico stava lavorando
+molto più fine, cioè stava dando una risposta più precisa. Quando altri sono
+andati a rifarlo **a parità di precisione**, chiedendo cioè ai due la stessa
+accuratezza e poi cronometrando, il vantaggio è sceso a **sette volte**
+{cite}`mcgreivy2024weak`, e per giunta con la rete su una scheda grafica
+contro un portatile. Sette volte è ancora un bel guadagno. Ma fra sette e
+mille c'è la differenza fra un miglioramento e una rivoluzione, e vale la pena
+sapere quale dei due si sta comprando.
 
 ## Congedo: far collaborare conoscenza e dati
 
 Chiudiamo qui il capitolo, e con esso la lunga rassegna di modelli che occupa
-gran parte di questo libro. Le
-PINN valgono, alla fine, più come *simbolo* che come tecnica: le migliori fra
-quelle che abbiamo incontrato non hanno chiesto di scegliere tra la
+gran parte di questo libro. Le PINN valgono, alla fine, più come *simbolo* che
+come tecnica, e il simbolo è questo: non hanno chiesto di scegliere fra la
 conoscenza umana e i dati. Per secoli la scienza ha scritto leggi e le ha
 risolte al calcolatore; nel decennio abbondante che va dalla svolta del deep
 learning, attorno al 2012, a oggi, il machine learning ha fatto l'opposto,
@@ -437,9 +531,10 @@ Non una che sostituisce l'altra: una collaborazione, scritta in una loss.
 È l'ultima delle tante idee che abbiamo montato pezzo per pezzo, dai vettori
 dei primi capitoli fino a qui. Da qui in avanti il libro cambia domanda: non
 più che cosa un modello sa fare, ma che cosa succede quando lo si mette
-davanti a delle persone. I capitoli che seguono parlano di portarlo in
-produzione e tenercelo, di farsi spiegare perché decide quello che decide, e
-di che cosa dobbiamo a chi quelle decisioni le subisce. Solo alla fine, nelle
+davanti a delle persone. I capitoli che seguono parlano di metterlo al lavoro
+sul serio, con utenti veri, e di tenercelo negli anni; di farsi spiegare
+perché decide quello che decide; e di che cosa dobbiamo a chi quelle decisioni
+le subisce. Solo alla fine, nelle
 Conclusioni, guarderemo l'intero percorso dall'alto: a cercare il disegno che,
 capitolo per capitolo, era troppo vicino per vedersi.
 
@@ -449,12 +544,13 @@ capitolo per capitolo, era troppo vicino per vedersi.
 :class: important
 - Il vero superpotere è il **problema inverso**: misurare quello che si può
   misurare e far tirare fuori alla legge quello che non si può, come la
-  pressione dentro un vaso sanguigno a partire da un filmato del sangue che
-  scorre {cite}`raissi2020hidden`. Funziona perché le leggi della fisica
+  pressione dentro un vaso sanguigno a partire dal filmato di un tracciante
+  iniettato nel sangue {cite}`raissi2020hidden`. Funziona perché le leggi della fisica
   **legano fra loro** le grandezze: chi ne conosce una ovunque, dell'altra sa
   già qualcosa.
 - Dove serve per davvero: sangue e fluidi, stima delle proprietà nascoste di
-  un materiale, struttura del sottosuolo dalle onde dei terremoti. I grandi
+  un materiale. Sulla struttura del sottosuolo dalle onde dei terremoti si sta
+  ancora provando, e i metodi vecchi per ora tengono. I grandi
   modelli che prevedono il tempo in pochi secondi, invece, **non sono PINN**:
   non hanno nessuna legge dentro il punteggio, hanno solo imparato da decenni
   di mappe del tempo passato.
@@ -469,10 +565,12 @@ capitolo per capitolo, era troppo vicino per vedersi.
 - Il passo successivo sono reti che imparano **il metodo invece del singolo
   compito**: una volta addestrate rispondono a qualunque situazione simile
   senza rifare la fatica. È il motivo per cui certe previsioni meteo escono in
-  secondi anziché in ore. I confronti di velocità che si leggono in giro
-  vanno però verificati: una di queste reti era stata data per mille volte più
-  rapida del metodo classico, e quando altri hanno rifatto il confronto per
-  bene è risultata sette volte più rapida {cite}`mcgreivy2024weak`.
+  secondi anziché in ore.
+- I confronti di velocità che si leggono in giro vanno però verificati, e la
+  storia più istruttiva non riguarda il meteo ma il problema di prova su cui
+  quella famiglia si è fatta conoscere: dichiarato mille volte più rapido del
+  metodo classico, rifacendo la corsa **a parità di precisione** è risultato
+  sette volte più rapido {cite}`mcgreivy2024weak`.
 ```
 
 `````

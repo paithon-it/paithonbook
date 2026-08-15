@@ -31,18 +31,20 @@ tutto entro binari accettabili (la governance).
 ## Il problema dell'allineamento
 
 L'aneddoto del motoscafo ha un nome tecnico: **specification gaming**, il
-«giocare» con la specifica, cioè con la descrizione precisa di ciò che gli
-abbiamo chiesto. Ne abbiamo già visto la meccanica parlando di reinforcement
-learning e, per gli LLM, nell'ultima fase dell'addestramento dei Transformer,
-dove va sotto il nome di **reward hacking**, «imbrogliare col premio».
+«giocare» con la specifica, cioè con la descrizione precisa di ciò che abbiamo
+chiesto. Non è una novità di questo capitolo. Il libro l'ha già incontrato dove
+si insegna a una macchina inseguendo un premio, cioè nell'apprendimento per
+rinforzo; e poi di nuovo nell'ultima fase con cui si rifiniscono i grandi
+modelli di linguaggio (gli **LLM**, dall'inglese *large language model*), dove
+lo stesso guaio prende il nome di **reward hacking**, «imbrogliare col premio».
 
-La formula da tenere a mente è questa: quando ottimizzi un **surrogato** del tuo
-vero obiettivo, prima o poi ottieni il surrogato e perdi l'obiettivo. Surrogato,
-o *proxy*, sono le due parole con cui il testo chiamerà d'ora in poi la stessa
-cosa che il genio della lampada spiega qui sotto: una **imitazione** di ciò che
-volevamo davvero, un numero che gli somiglia abbastanza da poterlo misurare, e
-che proprio per questo non è la cosa vera. Il punteggio del videogioco era il
-surrogato di «vinci la gara».
+La formula da tenere a mente è questa: quando ottimizzi un **surrogato** del
+tuo vero obiettivo, prima o poi ottieni il surrogato e perdi l'obiettivo.
+Surrogato, o *proxy*, sono le due parole con cui il testo chiamerà d'ora in
+poi la stessa cosa che il genio della lampada spiega qui sotto: una
+**imitazione** di ciò che volevamo davvero, un numero che gli somiglia
+abbastanza da poterlo misurare, e che proprio per questo non è la cosa vera.
+Il punteggio del videogioco era il surrogato di «vinci la gara».
 
 ```{figure} ../figures/problema-allineamento.svg
 :name: fig-problema-allineamento
@@ -53,7 +55,10 @@ Due traduzioni, due occasioni di sbagliare. Dall'intenzione al numero che
 misuriamo traduciamo noi; da quel numero al comportamento traduce
 l'addestramento. Nessuno dei due passaggi è fedele, e non per sbadataggine: un
 desiderio non entra mai per intero in un numero, e un numero non determina mai
-per intero un comportamento.
+per intero un comportamento. Nel disegno i due scarti portano i nomi con cui si
+chiamano in letteratura, *outer* e *inner alignment*: quello di fuori, fra noi
+e la macchina, e quello di dentro, fra ciò che le abbiamo chiesto e ciò che ha
+finito per imparare.
 ```
 
 {numref}`fig-problema-allineamento` mostra perché il problema non si risolve
@@ -101,19 +106,27 @@ andrà a cercare.
 
 `````
 
-Un piccolo esperimento numerico rende tangibile il fenomeno. Immaginiamo un
-insieme di risposte candidate a uno stesso prompt: di ciascuna esiste una
-*qualità vera* (quanto è utile e corretta) che però non osserviamo mai
-direttamente. Al suo posto abbiamo il surrogato: un giudice automatico che
-guarda le caratteristiche di superficie e, come i giudici umani da cui ha
-imparato, premia le risposte lunghe.
+Un piccolo esperimento numerico rende tangibile il fenomeno. Immaginiamo tante
+risposte candidate alla stessa domanda. Di ciascuna esiste una *qualità vera*
+(quanto è utile e corretta), che però non osserviamo mai: è un numero fra zero
+e uno, e più è alto meglio è. Al suo posto abbiamo il surrogato, cioè un
+giudice automatico che dà un voto.
 
-Una cosa va detta prima, perché altrimenti l'esperimento sembra mordersi la
-coda: il difetto del giudice ce lo mettiamo noi, quindi non stiamo scoprendo che
-esiste. Quel che l'esperimento misura è un'altra cosa, e non è affatto ovvia:
-**quanto danno fa quel difetto al crescere della pressione con cui si ottimizza**.
-La pressione qui si simula generando $k$ risposte e tenendo quella che il
-giudice preferisce, e alzando $k$.
+Le regole del giocattolo sono tre, e vanno dette tutte prima, altrimenti i
+numeri non si possono commentare. **Primo**: la qualità vera di una risposta
+dipende dal suo merito e dalla sua lunghezza, e la lunghezza aiuta fino a un
+certo punto e poi stanca chi legge; quindi una risposta troppo lunga è davvero
+peggio, non solo giudicata peggio. **Secondo**: il giudice il merito lo vede,
+però ci somma un premio per la lunghezza, e quel premio non smette mai di
+crescere. Questa è la deformazione che i giudici automatici ereditano dalle
+persone da cui hanno imparato, che le risposte lunghe tendono a preferirle.
+**Terzo**: il difetto del giudice ce lo siamo messi noi, quindi non stiamo
+scoprendo che esiste.
+
+Quel che l'esperimento misura è un'altra cosa, e non è affatto ovvia: **quanto
+danno fa quel difetto al crescere della pressione con cui si ottimizza**. La
+pressione qui si simula generando $k$ risposte, tenendo quella che il giudice
+preferisce, e poi alzando $k$.
 
 ```python
 import numpy as np
@@ -136,41 +149,55 @@ def migliore_di(k):
     m = (n // k) * k
     scelto = proxy[:m].reshape(-1, k).argmax(axis=1)
     riga = np.arange(m // k)
-    return (qualita_vera[:m].reshape(-1, k)[riga, scelto].mean(),
-            lunghezza[:m].reshape(-1, k)[riga, scelto].mean())
+    def media(v):
+        return v[:m].reshape(-1, k)[riga, scelto].mean()
+    return media(qualita_vera), media(merito), media(lunghezza)
 
-print(f"{'candidati':>10} {'qualita vera':>13} {'lunghezza':>10}")
+print(f"{'candidati':>10} {'qualita vera':>13} {'merito':>8} {'lunghezza':>10}")
 for k in (1, 3, 10, 30, 100, 1000):
-    q, l = migliore_di(k)
-    print(f"{k:>10} {q:>13.3f} {l:>10.3f}")
+    q, me, l = migliore_di(k)
+    print(f"{k:>10} {q:>13.3f} {me:>8.3f} {l:>10.3f}")
 ```
 
 ```text
- candidati  qualita vera  lunghezza
-         1         0.373      0.501
-         3         0.495      0.586
-        10         0.500      0.686
-        30         0.431      0.773
-       100         0.361      0.830
-      1000         0.267      0.885
+ candidati  qualita vera   merito  lunghezza
+         1         0.373    0.499      0.501
+         3         0.495    0.722      0.586
+        10         0.500    0.857      0.686
+        30         0.431    0.907      0.773
+       100         0.361    0.934      0.830
+      1000         0.267    0.953      0.885
 ```
 
-La colonna centrale è la storia, e non è la storia che ci si aspetta. All'inizio
-ottimizzare il giudice **funziona**: da un candidato solo a tre, la qualità vera
-sale da $0{,}373$ a $0{,}495$, perché scegliere il migliore fra tre significa
-per lo più scegliere quello con più merito. Poi la curva si ferma attorno a
-$0{,}50$, e poi **scende**: a mille candidati la qualità vera è $0{,}267$, cioè
-peggio che non ottimizzare affatto. Nel frattempo la lunghezza non ha mai smesso
-di crescere, fino a $0{,}885$ contro lo $0{,}501$ della popolazione.
+La colonna della qualità vera è la storia, e non è la storia che ci si
+aspetta. All'inizio ottimizzare il giudice **funziona**: da un candidato solo
+a tre, la qualità vera sale da $0{,}373$ a $0{,}495$. Il motivo è che fra tre
+risposte prese a caso le differenze di merito sono grosse e quelle di
+lunghezza contano poco, quindi scegliere quella che piace al giudice vuol dire
+quasi sempre scegliere quella che vale di più.
+
+Poi la salita si ferma attorno a $0{,}50$, e la colonna **scende**: a mille
+candidati la qualità vera è $0{,}267$, peggio che non ottimizzare affatto. Il
+motivo si legge nelle altre due colonne, ed è la cosa più istruttiva della
+tabella: **salgono tutte e due, ma una sola può salire per sempre**. Il merito
+delle risposte scelte va da $0{,}499$ a $0{,}953$ e poi si arena, perché più di
+uno non può valere: fra cento candidati e mille guadagna appena diciannove
+millesimi. La lunghezza invece continua per la sua strada, da $0{,}501$ a
+$0{,}885$, e ogni passo in quella direzione costa più del precedente, perché è
+già molto oltre la misura che a chi legge fa comodo. Da un certo punto in poi,
+quindi, il giudice compra pochissimo merito in più pagandolo con parecchia
+lunghezza in più. E lui questo non lo sa: nel suo voto la lunghezza è sempre e
+soltanto un pregio.
 
 È la legge di Goodhart in una tabella. Finché la pressione è bassa, il
 surrogato e l'obiettivo vero indicano quasi la stessa direzione. Alzandola, la
-ricerca del massimo si sposta nella regione in cui il surrogato sovrastima, e da
-lì in poi ogni punto guadagnato sul giudice è pagato dall'utente. La lezione di
+ricerca del massimo si sposta proprio dove il giudice si sbaglia di più, e da
+lì in poi ogni punto guadagnato su di lui è pagato da chi legge. La lezione di
 progetto è scomoda e vale ben oltre questo giocattolo: **non è vero che
 ottimizzare di più sia meglio**, ed esiste una quantità di ottimizzazione oltre
-la quale il sistema peggiora mentre il suo punteggio migliora. La curva
-misurata sui reward model veri ha la stessa forma {cite}`gao2023scaling`.
+la quale il sistema peggiora mentre il suo punteggio migliora. Gli stessi conti
+fatti sui giudici automatici veri, quelli addestrati sui giudizi delle persone,
+danno una tabella della stessa forma {cite}`gao2023scaling`.
 
 ## Allineare gli LLM
 
@@ -180,16 +207,19 @@ qui la richiamiamo per sommi capi e ne aggiungiamo il tassello mancante.
 
 La prima mossa storica è l'**RLHF** (*Reinforcement Learning from Human
 Feedback*, apprendimento per rinforzo dai giudizi delle persone). L'idea di far
-imparare a un sistema da confronti umani circola dagli anni Duemila; quello che
-succede nel 2017 è che Christiano e colleghi {cite}`christiano2017deep` la
-portano su reti profonde, insegnando a un robottino simulato a fare un salto
-mortale all'indietro senza scrivere alcuna funzione di ricompensa: bastava
-mostrare a un umano coppie di video e chiedere «quale somiglia di più a un
-salto?». Sono gli autori stessi a dire che il loro contributo è la **scala**,
-non l'idea.
+imparare a un sistema da confronti umani circola dai primi anni Dieci (Akrour e
+colleghi nel 2011, Wilson e colleghi nel 2012); quello che succede nel 2017 è
+che Christiano e colleghi {cite}`christiano2017deep` la
+portano sulle reti profonde, insegnando a un robottino simulato a fare un salto
+mortale all'indietro senza scrivere da nessuna parte che cosa fosse un bel
+salto: bastava mostrare a una persona coppie di video e chiederle «quale
+somiglia di più a un salto mortale?». Sono gli autori stessi a dire che il loro
+contributo è averlo fatto funzionare in grande, non l'idea in sé.
 
-Poi la tecnica arriva sul linguaggio, e con InstructGPT {cite}`ouyang2022training`
-sul problema specifico di far seguire le istruzioni.
+Poi la tecnica arriva sul linguaggio, e nel 2022, con InstructGPT
+{cite}`ouyang2022training`, sul problema specifico di far seguire le
+istruzioni. Se il nome non dice niente, questo sì: è in sostanza il metodo con
+cui, a novembre di quello stesso anno, sarebbe stato addestrato ChatGPT.
 
 `````{tab} Elementare
 
@@ -231,41 +261,47 @@ tutto l'uso conversazionale.
 
 `````
 
-L'RLHF funziona ma è un cantiere pesante. Nel 2023 la **DPO** (*Direct
-Preference Optimization*) di Rafailov e colleghi {cite}`rafailov2023direct`
-mostra che si può allineare *direttamente* dalle preferenze, con una semplice
-loss supervisionata sulle coppie preferita/scartata, saltando del tutto il
-reward model esplicito e il reinforcement learning.
+Tutto questo funziona, ma è un cantiere pesante: due addestramenti in fila, il
+giudice da tirare su e poi il modello da allenare contro di lui. Nel 2023 la
+**DPO** (*Direct Preference Optimization*, «ottimizzazione diretta dalle
+preferenze») di Rafailov e colleghi {cite}`rafailov2023direct` mostra che il
+giudice si può togliere di mezzo. Le stesse coppie di risposte, con scritto
+quale delle due era migliore, si danno direttamente al modello che parla,
+chiedendogli di rendere un po' più probabile la risposta preferita e un po'
+meno quella scartata. Un passaggio solo, e nessun giudice da costruire.
 
-Su che cosa esattamente sia dimostrato, però, conviene essere precisi, perché la
-formula con cui la DPO viene di solito riassunta («stessa destinazione, due
-tappe in meno») dice più del vero. Ciò che il lavoro dimostra è che i due metodi
-hanno lo **stesso punto di ottimo**, sotto le stesse ipotesi sul modello di
-preferenza e con la stessa policy di riferimento. Non dimostra che ci arrivino
-per la stessa strada, né che falliscano nello stesso modo: la DPO non campiona
-dalla policy corrente mentre impara, quindi il suo giudizio implicito non è mai
-messo alla prova fuori dai dati di preferenza raccolti. Sono modi di sbagliare
-**propri**, non versioni più leggere di quelli dell'RLHF.
+Su che cosa esattamente sia dimostrato, però, conviene essere precisi, perché
+la formula con cui la DPO viene di solito riassunta («stessa destinazione, due
+tappe in meno») dice più del vero. Quello che il lavoro dimostra è che i due
+metodi, se portati fino in fondo, arrivano **allo stesso punto migliore**. Non
+dimostra che ci arrivino per la stessa strada, né che sbaglino nello stesso
+modo. E una differenza c'è: nella ricetta col giudice il modello, mentre
+impara, produce risposte nuove e se le fa valutare, mentre la DPO legge
+soltanto le coppie raccolte in partenza, e su tutto ciò che sta fuori da
+quelle non viene mai messa alla prova. Ha modi di sbagliare **suoi**, non
+versioni più leggere di quelli della ricetta precedente.
 
 ```{figure} ../figures/dpo-allineare-senza-reward-model.svg
 :name: fig-rlhf-vs-dpo
 :alt: "Confronto fra due pipeline che partono dagli stessi dati di preferenza (A preferita a B). In alto RLHF in tre stadi: i dati addestrano un reward model separato, che fa da giudice in un ciclo di reinforcement learning con PPO, che aggiorna l'LLM; a margine il costo, fino a quattro modelli in memoria, campionamento a ogni passo, addestramento instabile. In basso DPO in un solo stadio: gli stessi dati alimentano direttamente una loss di classificazione che aggiorna l'LLM, con due soli modelli in memoria."
 :width: 100%
 
-Lo stesso ottimo, due tappe in meno. La DPO non raccoglie preferenze diverse:
-usa le stesse, e mostra che il giudizio del reward model si può assorbire
-dentro la formula invece di addestrarlo a parte.
+Lo stesso punto d'arrivo, con meno macchinari in mezzo. La DPO non raccoglie
+preferenze diverse: usa le stesse, e mostra che il giudizio del reward model si
+può assorbire dentro la formula invece di addestrarlo a parte.
 ```
 
 Il confronto di {numref}`fig-rlhf-vs-dpo` spiega la fortuna della DPO meglio di
 qualsiasi argomento teorico, e la ragione riguarda anche chi non addestrerà mai
-un modello. La riga sotto ciascuna delle due pipeline elenca cosa si smette di
-tenere in piedi: dove l'RLHF richiede di tenere in memoria fino a quattro
-modelli insieme e di far generare risposte a ogni passo, la DPO ne tiene due e
-legge dati già raccolti. È
-la differenza fra una tecnica che possono permettersi pochi laboratori e una che
+un modello: è una questione di quanta macchina serve. La riga sotto ciascuna
+delle due file elenca che cosa si smette di tenere in piedi. Con il giudice
+bisogna tenere accesi insieme fino a quattro modelli (quello che si sta
+allenando, la copia di com'era prima che fa da guinzaglio, il giudice, e un
+quarto che stima quanto si sta andando bene) e far generare risposte nuove a
+ogni passo; con la DPO i modelli sono due e le risposte sono già scritte. È la
+differenza fra una tecnica che possono permettersi pochi laboratori e una che
 può usare un gruppo qualsiasi, ed è il motivo per cui l'allineamento ha smesso
-di essere una cosa che fanno in tre.
+di essere una cosa che si fa in tre posti al mondo.
 
 C'è però un limite che nessuna delle due tocca: le preferenze restano
 **umane**, e raccoglierne a sufficienza (specie sui temi delicati della
@@ -345,9 +381,9 @@ pubblico, mentre rivedere diecimila giudizi individuali no.
 
 ## I rischi degli LLM
 
-Allineare non elimina i pericoli; li rende gestibili, non nulli. Vale la pena
-nominarli con precisione, perché appartengono a famiglie diverse e chiedono
-difese diverse.
+Allineare non elimina i pericoli; li rende gestibili, non nulli. E appartengono
+a famiglie diverse, che chiedono difese diverse, quindi vanno nominati con
+precisione.
 
 ```{figure} ../figures/allucinazioni-perche-modelli-inventano.svg
 :name: fig-allucinazioni
@@ -468,8 +504,8 @@ come obbligo per i modelli più capaci.
 ## Governance e regolamentazione
 
 Gli strumenti tecnici non bastano da soli: servono regole condivise su *chi*
-può fare *cosa*, e chi risponde quando qualcosa va storto. Qui l'Europa ha fatto
-la prima mossa di portata mondiale.
+può fare *cosa*, e chi risponde quando qualcosa va storto. Qui l'Europa ha
+fatto la prima mossa di portata mondiale.
 
 ```{figure} ../figures/ai-act-guida-pratica.svg
 :name: fig-ai-act-rischio
@@ -481,7 +517,7 @@ pesanti stanno in cima, dove i casi sono pochi, e la base larga (quasi tutto
 ciò che si costruisce) non ha obblighi specifici.
 ```
 
-Vale la pena leggere {numref}`fig-ai-act-rischio` dal basso. La lettura
+La {numref}`fig-ai-act-rischio` si legge dal basso. La lettura
 corrente («l'Europa regola l'AI») suggerisce un peso uniforme, mentre la
 piramide dice il contrario: la regola morde in proporzione al danno possibile,
 e per la maggior parte dei sistemi non morde affatto. Sapere in quale gradino
@@ -503,17 +539,21 @@ scuola o lavori.
 - Dare a ogni cittadino un **punteggio sociale**: un voto unico attaccato a
   ogni persona, calcolato dal suo comportamento in un ambito, che poi decide
   cosa può fare in un altro (prendere un treno, affittare una casa, iscrivere
-  un figlio da qualche parte). È in cima alla piramide perché non c'è modo di
-  usarlo bene: sposta il potere su chi tiene il registro, e chi ha il voto basso
-  non ha nemmeno un posto in cui protestare.
+  un figlio da qualche parte). Il legislatore europeo lo ha messo in cima alla
+  piramide invece che fra gli usi sorvegliati, e la ragione che ne ha dato è
+  che qui non c'è una versione fatta bene da autorizzare: un sistema simile
+  sposta comunque il potere su chi tiene il registro, e chi si ritrova il voto
+  basso non ha nemmeno un posto in cui protestare.
 - **Riconoscere le emozioni sul luogo di lavoro e a scuola.** Sì, a scuola:
   usare l'intelligenza artificiale per dedurre dal volto o dalla voce di uno
   studente se è attento, annoiato, nervoso, è vietato in Europa (con eccezioni
-  strette, per esempio motivi medici o di sicurezza). È una delle poche righe di
-  questo capitolo che parla direttamente a chi in un'aula ci sta seduto: quella
-  legge esiste anche per te.
+  strette, per esempio motivi medici o di sicurezza). Se stai leggendo da un
+  banco, quella legge esiste anche per te.
 - **Raccogliere facce da internet o dalle telecamere** senza un bersaglio
-  preciso, per costruire archivi di riconoscimento facciale.
+  preciso (cioè senza cercare una persona in particolare), per costruire
+  archivi che servono poi a riconoscere la gente dal viso. Riconoscere qualcuno
+  da una caratteristica del suo corpo, il volto, la voce, le impronte, si dice
+  **biometrico**, e la parola torna qui sotto.
 - **Prevedere chi commetterà un reato** basandosi soltanto sul profilo di una
   persona (dove vive, che tratti ha) invece che su fatti concreti: è il parente
   stretto del software da cui questo capitolo è partito.
@@ -530,13 +570,27 @@ scuola o lavori.
   questo divieto vale per le **forze dell'ordine**, non per chiunque. Fuori da
   quel caso il riconoscimento biometrico non è vietato, è solo sorvegliato.
 
-Sotto, l'*alto rischio*: usi permessi ma sorvegliati (selezione del personale,
-valutazione del credito, dispositivi medici) con obblighi stringenti prima di
-andare sul mercato. Più giù, il *rischio limitato*: basta la **trasparenza**,
-cioè avvisare le persone («stai parlando con un'AI», «questo video è
-generato»). In fondo, il *rischio minimo*: la stragrande maggioranza dei
-sistemi, senza obblighi particolari. Un unico principio: più un uso può ferire,
-più regole deve rispettare.
+Sotto c'è l'*alto rischio*, ed è il gradino che riguarda le decisioni serie:
+chi viene assunto, chi ottiene un prestito, un dispositivo medico, l'ammissione
+a una scuola. Questi usi sono permessi, ma prima di andare sul mercato bisogna
+avere una documentazione tecnica in ordine, tenere il registro di quello che il
+sistema decide, garantire che una persona in carne e ossa possa intervenire e
+farsi certificare da fuori. Sembrano adempimenti da ufficio; alla fine di
+questa sezione si vedrà a chi servono davvero.
+
+Più giù, il *rischio limitato*: basta la **trasparenza**, cioè avvisare le
+persone («stai parlando con un'AI», «questo video è generato»). In fondo, il
+*rischio minimo*: la stragrande maggioranza dei sistemi, senza obblighi
+particolari. Un unico principio: più un uso può ferire, più regole deve
+rispettare.
+
+Resta una domanda che a questo punto viene naturale: e i modelli come quelli
+che usiamo tutti i giorni per farci scrivere un testo, in quale gradino stanno?
+In nessuno, ed è il punto in cui la piramide non basta più. Un modello
+buono-per-tutto non ha un impiego suo, ce l'hanno le cose che ci si
+costruiscono sopra; per questo il regolamento gli dedica un capitolo a parte,
+con obblighi che riguardano chi lo fabbrica invece di chi lo usa, e obblighi in
+più per i pochi più grossi di tutti.
 
 `````
 
@@ -590,7 +644,7 @@ rischi sistemici, cybersicurezza e segnalazione degli incidenti gravi (art. 55).
 Le sanzioni per le pratiche vietate arrivano fino a 35 milioni di euro o al 7%
 del fatturato mondiale annuo (art. 99(3)).
 
-Vale la pena fermarsi un attimo su come si stabilisce quel «rischio sistemico»,
+Fermiamoci un attimo su come si stabilisce quel «rischio sistemico»,
 perché è il punto in cui il regolamento **cambia asse** e contraddice la
 formula con cui si riassume di solito («non regola la tecnologia, regola
 l'uso»). La presunzione scatta oltre una soglia di calcolo di addestramento di
@@ -615,39 +669,41 @@ cambia in fretta).
 `````
 
 Resta una domanda che questo capitolo ha rimandato a lungo, ed è la prima che
-farebbe chiunque si trovi dall'altra parte: **e poi con chi ci si lamenta?** La
-risposta onesta è che dipende, e che fino a ieri spesso non c'era nessuno. Le
-persone escluse dallo strumento di selezione di Amazon non lo hanno mai saputo,
-e non avevano modo di saperlo. È esattamente il vuoto che le regole provano a
-riempire, ed è il motivo per cui gli obblighi che sembrano burocratici (tenere i
-registri di cosa il sistema ha deciso, garantire che una persona possa
-intervenire, dichiarare che una decisione è stata presa da un sistema
-automatico) sono la parte che riguarda chi quelle decisioni le subisce: senza
-traccia scritta e senza un umano responsabile, un reclamo non ha nemmeno un
-posto dove essere depositato. Chi vuole tirare il filo trova la parte tecnica
-della stessa domanda, poter dire *perché* il sistema ha deciso così, nel
-capitolo sull'interpretabilità, che in questo libro viene appena prima.
+farebbe chiunque si trovi dall'altra parte: **e poi con chi ci si lamenta?**
+La risposta onesta è che dipende, e che fino a ieri spesso non c'era nessuno.
+Le persone scartate dal selezionatore automatico di Amazon, quello che apre la
+sezione sull'equità e che penalizzava i curriculum delle donne, non lo hanno
+mai saputo: non è stato detto loro che una macchina aveva letto il loro
+curriculum, e non avevano modo di scoprirlo. È esattamente il vuoto che le
+regole provano a riempire, ed è il motivo per cui gli obblighi che sembrano
+burocratici (tenere i registri di cosa il sistema ha deciso, garantire che una
+persona possa intervenire, dichiarare che una decisione è stata presa da un
+sistema automatico) sono la parte che riguarda chi quelle decisioni le
+subisce: senza traccia scritta e senza un umano responsabile, un reclamo non
+ha nemmeno un posto dove essere depositato. Chi vuole tirare il filo trova la
+parte tecnica della stessa domanda, poter dire *perché* il sistema ha deciso
+così, nel capitolo sull'interpretabilità, che in questo libro viene appena
+prima.
 
-Dietro le regole c'è poi un dibattito che vale la pena rendere esplicito, perché
-divide anche gli addetti ai lavori: è quello annunciato all'inizio del capitolo,
-quando si è detto che qui ci saremmo occupati dei danni misurabili adesso. Da un
-lato chi mette al centro i **danni
-presenti e documentati** (i pregiudizi, le violazioni di privacy, gli esempi
-avversari di cui parla il resto di questo capitolo) e teme che l'attenzione ai
-rischi lontani distolga risorse da ingiustizie che colpiscono persone reali
-*oggi*. Dall'altro chi punta sui **rischi catastrofici futuri** di sistemi
-molto più capaci di quelli attuali, e sostiene che prevenirli richieda
-cominciare adesso. Non è una disputa che questo libro può chiudere; ma è
-onesto notare che non sono alternative: un ponte va progettato sia contro le
-crepe di oggi sia contro il terremoto che forse verrà, e le due cose competono
-per lo stesso budget di attenzione.
+Dietro le regole c'è poi un dibattito che va reso esplicito, perché divide
+anche gli addetti ai lavori: è quello annunciato all'inizio del capitolo,
+quando si è detto che qui ci saremmo occupati dei danni misurabili adesso. Da
+un lato chi mette al centro i **danni presenti e documentati** (i pregiudizi,
+le violazioni di privacy, gli esempi avversari di cui parla il resto di questo
+capitolo) e teme che l'attenzione ai rischi lontani distolga risorse da
+ingiustizie che colpiscono persone reali *oggi*. Dall'altro chi punta sui
+**rischi catastrofici futuri** di sistemi molto più capaci di quelli attuali,
+e sostiene che prevenirli richieda cominciare adesso. Non è una disputa che
+questo libro può chiudere; ma è onesto notare che non sono alternative: un
+ponte va progettato sia contro le crepe di oggi sia contro il terremoto che
+forse verrà, e le due cose competono per lo stesso budget di attenzione.
 
 ## L'onestà dovuta
 
 Chiudiamo dove il capitolo intero insiste. L'allineamento è oggi un'area di
 ricerca a pieno titolo, non un ritocco finale: abbiamo strumenti per
 *orientare* il comportamento dei modelli (RLHF, DPO, Constitutional AI,
-red-teaming, evals) non **garanzie** sul risultato. Sotto tutto corre una
+red-teaming, evals), non **garanzie** sul risultato. Sotto tutto corre una
 tensione strutturale, che nessuna tecnica ha sciolto: le stesse capacità che
 rendono un modello utile lo rendono difficile da controllare, e più un sistema
 è potente, più il divario tra ciò che gli chiediamo e ciò che fa può costare.

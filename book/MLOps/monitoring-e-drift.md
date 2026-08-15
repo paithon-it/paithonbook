@@ -1,7 +1,8 @@
 # Sorvegliare un modello vivo
 
 Nella sezione «Quando i dati cambiano» avevamo chiuso con un'immagine: un
-modello in produzione va trattato «come un impianto, non come un quadro
+modello acceso, che sta rispondendo a persone vere, va trattato «come un
+impianto, non come un quadro
 appeso». Un quadro, una volta appeso, non chiede più niente a nessuno; un
 impianto invece vive, consuma, si scalda, si stara, e va sorvegliato con una
 sala di controllo piena di spie e manometri. Lì l'immagine era servita a dire
@@ -84,9 +85,10 @@ e per latenza {cite}`breck2017ml`.
 
 `````
 
-Questo affina i tre controlli abbozzati nella sezione «Quando i dati cambiano»
-(ingressi, uscite, errore) e aggiunge sotto di essi lo strato più prosaico, e
-più spesso dimenticato. Un modello può servire predizioni perfette e restare
+I quadranti due e tre sono i controlli già abbozzati nella sezione «Quando i
+dati cambiano» (che cosa entra, che cosa esce, quanto si sbaglia), qui resi più
+precisi. Il quadrante uno invece è nuovo, ed è lo strato più prosaico e più
+spesso dimenticato di tutti. Un modello può servire predizioni perfette e restare
 inutile: perché risponde in tre secondi quando l'utente ne aspetta uno, o
 perché va in errore su un input malformato che nessuno aveva previsto. La
 correttezza è inutile se il servizio è morto.
@@ -94,31 +96,48 @@ correttezza è inutile se il servizio è morto.
 ## Rilevare il drift in pratica
 
 Il secondo livello, quello che guarda che tipo di richieste stanno arrivando e
-che risposte stanno uscendo, è dove si gioca la partita del *drift*. Nella
-sezione «Quando i dati cambiano» abbiamo classificato i modi in cui il mondo
-può divergere dall'addestramento {cite}`quinonero2009dataset`, e non li
-ripetiamo qui; bastano i loro nomi, con accanto che cosa vuol dire ciascuno. Il
-**covariate shift** è quando cambia il
-*tipo di richieste che arrivano*: arriva altra gente, con altre
-caratteristiche. Il **label shift** è quando cambiano le *proporzioni delle
-risposte giuste*: le frodi erano una su cento e adesso sono una su dieci. Il
-**concept shift** è il più insidioso: le richieste sembrano identiche, ma è
-cambiata *la regola* che lega la richiesta alla risposta giusta. Qui ci
-interessa il gesto operativo: come ci si *accorge* che uno di questi è in
-corso, in produzione, mentre accade.
+che risposte stanno uscendo, è dove si gioca la partita della deriva (il
+*drift*: da qui in poi le due parole valgono l'una per l'altra). Nella sezione
+«Quando i dati cambiano» abbiamo già classificato i modi in cui il mondo può
+allontanarsi da com'era durante l'addestramento
+{cite}`quinonero2009dataset`, e qui non serve rifare quel discorso: basta
+richiamare i tre nomi, con accanto in una riga che cosa vuol dire ciascuno.
+
+Il **covariate shift** è quando cambia il *tipo di richieste che arrivano*:
+arriva altra gente, con altre caratteristiche. Il **label shift** è quando
+cambiano le *proporzioni delle risposte giuste*: le frodi erano una su cento e
+adesso sono una su dieci. Il **concept shift** è il più insidioso: le richieste
+sembrano identiche, ma è cambiata *la regola* che lega la richiesta alla
+risposta giusta, e quindi il modello continua a rispondere come ha imparato
+mentre la risposta corretta è diventata un'altra.
+
+Qui ci interessa il gesto operativo: come ci si *accorge* che uno di questi è
+in corso, mentre accade.
 
 Lo strumento l'abbiamo già incontrato: il **classificatore-detective**. Si
 addestra un modello a distinguere i dati di ieri da quelli di oggi, e si
 guarda quanto ci riesce. Il numero con cui si misura quanto ci riesce è
 l'**AUC**, incontrata nel capitolo sul machine learning parlando di metriche, e
-qui va letta così: vale $1$ quando il detective indovina sempre da quale delle
-due finestre viene un dato, e vale $0{,}5$ quando sta tirando a indovinare,
-perché fra due possibilità chi tira a caso ne azzecca la metà. Un'AUC vicina a
-$0{,}5$ dice quindi che le due finestre sono indistinguibili *per lui*: è una
-rassicurazione, non una prova, perché un cambiamento su una *feature* che il
-detective non guarda gli passa sotto il naso. Lì era una diagnosi *una tantum*;
-per l'impianto in produzione va reso una **sorveglianza continua**, e questo
-richiede tre decisioni operative.
+qui va letta così: vale $1$ quando il detective indovina sempre da quale dei
+due periodi viene un dato, e vale $0{,}5$ quando sta tirando a indovinare,
+perché fra due possibilità chi tira a caso ne azzecca la metà.
+
+Un'AUC vicina a $0{,}5$ dice quindi che i due periodi sono indistinguibili *per
+lui*. È una rassicurazione, non una prova: un cambiamento su una colonna che il
+detective non guarda gli passa sotto il naso. (Le colonne dei dati, nel gergo
+di questo capitolo, sono le **feature**: è la parola che il codice più avanti
+userà, e vuol dire esattamente quello.)
+
+Nel capitolo di Machine Learning il detective era una diagnosi fatta una volta
+sola. Per un impianto acceso va invece trasformato in una **sorveglianza
+continua**, e questo obbliga a decidere tre cose. Primo, **che cosa si
+confronta con che cosa**: si sceglie un periodo in cui il modello stava bene (è
+la *finestra di riferimento*, e resta ferma) e lo si paragona a quello appena
+trascorso, che invece scorre in avanti giorno dopo giorno (la *finestra
+corrente*). Secondo, **quanto in alto mettere l'asticella**: sopra quale valore
+dell'AUC far scattare l'allarme. Terzo, **come capire dove**, cioè quale
+colonna dei dati è cambiata, perché sapere soltanto che qualcosa è cambiato non
+dice a nessuno che cosa fare.
 
 `````{tab} Elementare
 
@@ -188,10 +207,19 @@ cambia). Le tre decisioni operative sono:
 `````
 
 La deriva è una delle poche cose di questo libro che **in un fotogramma non si
-vede**: un istogramma di oggi, da solo, non è né normale né anomalo, e lo
-diventa solo accanto a quello di prima. In {numref}`fig-deriva-ks` ci sono sei
-mesi di una stessa *feature*, con la finestra di riferimento ferma e quella
-corrente che le scivola via.
+vede**: il grafico dei valori di oggi, da solo, non è né normale né anomalo, e
+lo diventa solo accanto a quello di prima. In {numref}`fig-deriva-ks` ci sono
+sei mesi di una stessa colonna: la finestra di riferimento sta ferma e quella
+corrente le scivola via, mese dopo mese.
+
+Le due curve del disegno non sono i valori grezzi ma la loro **cumulata**: a
+ogni punto dell'asse orizzontale, la curva dice quale frazione dei dati sta
+sotto quel valore. Comincia da zero a sinistra, arriva a uno a destra, e se i
+dati scivolano verso destra la curva scivola con loro. Il numero che misura la
+deriva è allora il più semplice possibile: **quanto le due curve si allontanano
+nel punto in cui sono più lontane**, che nel disegno è il segmento verticale.
+Si chiama $D$, e il controllo che lo calcola porta il nome dei due statistici
+che l'hanno inventato, Kolmogorov e Smirnov, in sigla **KS**.
 
 ```{figure} ../figures/deriva-ks.svg
 :name: fig-deriva-ks
@@ -200,27 +228,69 @@ corrente che le scivola via.
 
 Le due finestre in cumulata, mese per mese. Il segmento verticale non è un
 ornamento: **è** la statistica $D$, cioè il punto in cui le due curve si
-allontanano di più. Il numero sotto è quello che decide se suonare l'allarme.
+allontanano di più. Il numero sotto è quello che decide se suonare l'allarme, e
+cresce da un mese all'altro: $0$ al mese zero, $0{,}06$ al mese 1, e poi
+$0{,}12$, $0{,}20$, $0{,}29$, $0{,}40$.
 ```
 
-Due cose che {numref}`fig-deriva-ks` mostra e una formula non dice. La prima è
-*dove* cade il massimo: non agli estremi, dove le due cumulate tornano
-comunque a coincidere per costruzione, ma nel mezzo, e per due normali sfalsate
-esattamente a metà strada fra le due medie. La seconda è che la soglia
-disegnata è sull'**ampiezza**, non sul $p$-value: qui $0{,}10$, decisa sul
-significato pratico.
+Due cose il disegno le mostra e una formula non le dice. La prima è *dove* cade
+il segmento: non ai bordi, perché lì le due curve tornano comunque a
+coincidere, l'una partendo da zero e l'altra arrivando a uno, ma nel mezzo,
+esattamente a metà strada fra il centro di ieri e il centro di oggi. La
+seconda è che la soglia disegnata, quel $0{,}10$, è una soglia
+**sull'ampiezza** del segmento, decisa su quanto si è disposti a lasciar
+scivolare le cose prima di preoccuparsi.
 
-Con duemila osservazioni per finestra, la taglia presa a esempio poche righe
-più su, il test respingerebbe l'ipotesi nulla già al mese 1, quando $D$ vale
-sei centesimi e la soglia di ampiezza, che sta a dieci centesimi, è ancora
-lontana. Il valore
-critico al cinque per cento, a quella taglia, scende a $0{,}043$. Simulando le
-due finestre di quel mese (due normali di uguale varianza sfalsate di
-$0{,}15$ deviazioni standard, duemila osservazioni ciascuna, duemila prove) il
-rifiuto arriva **in circa il $99\%$ dei casi**, con un $p$ tipico dell'ordine
-di $10^{-5}$. Alla stessa identica deriva, con cinquecento osservazioni per
-finestra, il rifiuto scende a **poco più della metà** delle prove. Non è
-cambiato il mondo fra i due casi: è cambiata la taglia del campione.
+Sembra un dettaglio e non lo è, perché c'è un altro numero che il KS
+restituisce, e prenderlo per la soglia è l'errore più comune del mestiere.
+
+`````{tab} Elementare
+
+Il controllo, oltre a $D$, restituisce un secondo numero, che si chiama
+**$p$-value** e che dice **quanto sarebbe improbabile vedere uno scarto così
+grande se in realtà non fosse cambiato niente**. Se quel numero è minuscolo, si
+conclude che qualcosa è cambiato davvero. Sembra la spia perfetta, e invece è
+una spia che, con i numeri di un servizio vero, suona sempre.
+
+Il motivo è che il $p$-value non dipende solo da quanto le cose sono cambiate:
+dipende anche da **quanti dati hai guardato**. Con pochi dati un piccolo scarto
+può benissimo essere frutto del caso; con moltissimi dati, lo stesso identico
+piccolo scarto non può più esserlo, e il controllo lo dichiara reale.
+
+Lo si vede sul **mese 1** della figura, quello in cui la deriva è appena
+cominciata: lì il segmento $D$ vale sei centesimi, cioè molto meno dei dieci
+centesimi della soglia. Adesso immagina di rifare la misura di quello stesso
+mese duemila volte, ripescando ogni volta dati diversi. Con duemila dati
+per finestra il controllo grida «è cambiato!» in circa il $99\%$ di quelle
+duemila ripetizioni. Con cinquecento dati per finestra, e la deriva identica,
+grida solo in poco più della metà. Non è cambiato il mondo fra i due casi: sono
+cambiati quanti dati avevi in mano.
+
+Morale: il $p$-value risponde alla domanda «è cambiato qualcosa?», che in un
+servizio vero è quasi sempre sì. La domanda che serve a chi deve decidere è
+un'altra, «è cambiato *abbastanza* da darmi fastidio?», e a quella risponde
+soltanto l'ampiezza del segmento.
+
+`````
+
+`````{tab} Superiore
+
+L'altro numero è il **$p$-value**, e il paragrafo sull'eccesso di potenza qui
+sopra si vede su questa figura in un caso solo. Il valore critico al cinque per
+cento, che per finestre di uguale taglia vale circa $1{,}36\sqrt{2/n}$, a
+$n = 2000$ scende a $0{,}043$: meno della metà della soglia di ampiezza
+disegnata, e già sotto il $D$ del **mese 1**, che vale $0{,}060$. Cioè il test
+rifiuta quando l'occhio non vede ancora niente.
+
+Il conto, su quel mese (due normali di uguale varianza sfalsate di $0{,}15$
+deviazioni standard, che è il $\mu$ con cui la scena è generata; duemila
+osservazioni per finestra, duemila ripetizioni): il rifiuto al cinque per cento
+arriva nel $98{,}5\%$ delle prove, con un $p$ mediano di $6\cdot 10^{-5}$. Alla
+stessa identica deriva, con cinquecento osservazioni per finestra, il rifiuto
+scende al $54\%$ e il $p$ mediano risale a $4\cdot 10^{-2}$. Non è cambiato lo
+scostamento: è cambiata la taglia del campione, e con essa la potenza del test.
+
+`````
 
 Mettiamo insieme le tre decisioni in poche righe eseguibili. Il codice confronta
 una finestra di riferimento con una corrente, in cui iniettiamo di proposito uno
@@ -266,11 +336,13 @@ else:
 ```
 
 L'output stampa `AUC detective = 0.775`, ben oltre la soglia di $0{,}65$:
-l'allarme scatta. Poi il controllo tasca per tasca punta senza esitazioni la
-*feature* 1 e lascia innocenti le altre tre. Il controllo è il test di
-Kolmogorov–Smirnov, `KS` nel codice, che misura di quanto le due distribuzioni
-si scostano (qui $0{,}45$), accompagnato dal $p$-value, che dice quanto sarebbe
-improbabile vedere uno scostamento simile per puro caso (qui: minuscolo).
+l'allarme scatta. Poi il controllo colonna per colonna, cioè lo stesso KS della
+figura di poco fa, punta senza esitazioni la colonna 1 e lascia innocenti le
+altre tre: lì lo scarto massimo fra le due curve vale $0{,}45$, e sulle altre
+resta attorno a due o tre centesimi, cioè al livello che il caso produce da
+solo. (Il $0{,}45$ è più grande del $0{,}40$ della figura perché qui lo
+scostamento non è cresciuto per sei mesi: gliel'abbiamo iniettato tutto in una
+volta, e più grande.)
 
 È lo scheletro di un sistema di monitoraggio reale, e la stessa funzione,
 girata a ogni ora sulla finestra scorrevole, produce una serie storica
@@ -300,9 +372,12 @@ Una cautela finale, la stessa della sezione statistica ma più severa di come la
 si racconta di solito. Il detective è addestrato **sui soli ingressi**: quello
 che rileva è che è cambiato il tipo di richieste che arrivano, e nient'altro.
 Non distingue un cambiamento innocuo da uno che rovina le predizioni; e non
-distingue nemmeno le tre famiglie fra loro, perché anche un puro cambio di
-proporzioni fra le risposte giuste (il *label shift*) sposta il tipo di
-richieste in arrivo e lo fa suonare. Del **concept shift** puro, poi, non vede
+distingue nemmeno le tre famiglie fra loro. Anche un puro cambio di proporzioni
+fra le risposte giuste (il *label shift*) lo fa suonare, e la ragione è
+semplice: se le frodi passano da una su cento a una su dieci, in mezzo alle
+richieste in arrivo ce ne sono dieci volte tante che *assomigliano* a una
+frode. Il detective non vede le risposte, ma vede quelle richieste, e le nota.
+Del **concept shift** puro, poi, non vede
 niente: lì gli ingressi restano identici ed è la regola giusta a essere
 cambiata sotto. Per separare i tre casi non c'è scorciatoia: servono le
 etichette vere del terzo livello, o almeno le predizioni aggregate. Il
@@ -322,8 +397,9 @@ rotto, un bug nella *pipeline* dei dati; più spesso è questo che un vero
 mutamento del mondo), un covariate shift benigno o l'inizio di un concept
 shift. Solo se l'indagine conferma un degrado reale si sale al **retraining**:
 riaddestrare su dati recenti. E in cima, riservato all'emergenza, il
-**rollback**: tornare in fretta al modello precedente, che è possibile solo se
-i modelli sono versionati e il vecchio è ancora a portata di mano.
+**rollback**, cioè la retromarcia: rimettere in servizio il modello di prima,
+nel tempo di un respiro. Che è possibile solo se di ogni modello si è conservata
+la propria copia, con il proprio numero, e quella vecchia è ancora lì dov'era.
 
 `````{tab} Elementare
 
@@ -340,6 +416,18 @@ può fare due cose: il tagliando **a scadenza fissa** (ogni diecimila chilometri
 che tu abbia problemi o no) oppure l'intervento **solo quando qualcosa si guasta**.
 La prima è prevedibile e semplice; la seconda risparmia lavoro ma richiede spie
 affidabili. I sistemi reali quasi sempre fanno entrambe.
+
+E c'è una trappola che riguarda proprio il riaddestramento fatto in automatico,
+ed è più insidiosa di quanto sembri. Un modello che decide che cosa mostrare
+alle persone decide, con quello, anche che cosa potranno mai cliccare; un
+sistema che nega un prestito non saprà mai se quel cliente avrebbe restituito i
+soldi. I dati di domani, insomma, sono in parte una conseguenza delle scelte
+che il modello sta facendo oggi. Riaddestrarlo su quei dati non lo corregge: gli
+ridà indietro le sue stesse convinzioni come se fossero fatti, e a ogni giro le
+rende più forti. È l'equivalente di un microfono puntato sulla propria cassa:
+prima o poi fischia. Per questo, anche negli impianti più automatici, sopra una
+certa soglia decide una persona, e i dati con cui si riaddestra si cercano dove
+il modello in carica non ha messo le mani.
 
 `````
 
@@ -382,11 +470,13 @@ decide che cosa l'utente può vedere, e quindi che cosa potrà mai cliccare.
 Supponiamo che l'indagine abbia dato ragione all'allarme e il retraining abbia
 prodotto un modello nuovo, che sui dati di test sembra migliore. Resta il
 passo più rischioso di tutti: **sostituire** il modello vivo con quello nuovo.
-Un modello che va benissimo in laboratorio può comportarsi in modo pessimo in
-produzione: su input mai visti, con latenze diverse, con effetti che nessun
-test offline cattura. Rimpiazzarlo di colpo per tutti gli utenti è una
-scommessa che non conviene fare mai. Esistono tre modi per introdurlo in
-sicurezza, ed è la stessa cassetta degli attrezzi dei rilasci graduali.
+Un modello che va benissimo in laboratorio può comportarsi in modo pessimo
+davanti agli utenti veri: su richieste mai viste, con tempi di risposta
+diversi, con effetti che nessuna prova fatta a tavolino cattura. Rimpiazzarlo
+di colpo per tutti gli utenti è una
+scommessa che non conviene fare mai. I tre modi per introdurlo in sicurezza
+sono quelli già nominati in fondo a «Servire un modello»: qui si vede a che cosa
+serve ciascuno, perché non rispondono alla stessa domanda.
 
 `````{tab} Elementare
 
@@ -402,11 +492,21 @@ al tavolo arriva ancora il vecchio). Nessun cliente corre rischi. Si chiama
 Il secondo: lo **fai assaggiare a pochi tavoli**. Lo metti nel piatto di due
 tavoli su cento, tieni d'occhio le loro facce, e se funziona allarghi a dieci, a
 cinquanta, a tutti; se storcono il naso, lo ritiri e nessun danno è fatto. È il
-*canary*, dal canarino dei minatori.
+*canary*, dal canarino che i minatori si portavano sottoterra: se il gas c'era,
+lo sentiva lui per primo.
 
 Il terzo: **due metà della sala**, stesso momento, piatto vecchio a una metà e
 nuovo all'altra, e a fine serata conti chi ha lasciato il piatto pulito. Così sai
 davvero se il nuovo è meglio, e non te lo sei immaginato. È il test *A/B*.
+
+E adesso il pezzo che conta, cioè *quando* si usa quale. I primi due rispondono
+a una domanda sola, «il piatto nuovo fa danni?»: l'ombra la si usa quando non ci
+si fida affatto e non si vuole rischiare un cliente, i pochi tavoli quando ci si
+fida abbastanza da servirlo ma si vuole poter tornare indietro subito. Il terzo
+risponde a una domanda completamente diversa, «il piatto nuovo è *migliore*?»,
+ed è l'unico che può rispondere, perché è l'unico in cui due gruppi di persone
+vere mangiano due piatti diversi nello stesso momento. Di solito si fanno tutti
+e tre in fila, in quest'ordine.
 
 `````
 
@@ -460,14 +560,15 @@ modello serve.
   infine, la più importante e la più lenta, aveva ragione? L'ultima si scopre
   solo quando arriva la risposta giusta, che spesso arriva con settimane di
   ritardo e a volte non arriva mai.
-- Per accorgersi che il mondo è cambiato si usa un **metal detector**: un
-  programma che prova a distinguere i dati di ieri da quelli di oggi. Se ci
-  riesce, qualcosa è cambiato; se tira a indovinare, no. Va tarato: troppo
-  sensibile e suona per tutti, e dopo il decimo falso allarme nessuno gli dà
-  più retta.
-- Il metal detector dice *che* qualcosa è cambiato, non *cosa* e nemmeno *se è
+- Per accorgersi che il mondo è cambiato si mette al lavoro un
+  **classificatore-detective**, che funziona come il metal detector
+  dell'aeroporto: prova a distinguere i dati di ieri da quelli di oggi, e se ci
+  riesce vuol dire che qualcosa è cambiato; se tira a indovinare, no. Va
+  tarato: troppo sensibile suona per tutti, e dopo il decimo falso allarme
+  nessuno gli dà più retta.
+- Il detective dice *che* qualcosa è cambiato, non *cosa* e nemmeno *se è
   grave*. Soprattutto, non vede il caso peggiore: quello in cui le richieste
-  sembrano identiche di ieri ma è cambiata la risposta giusta.
+  sembrano identiche a quelle di ieri ma è cambiata la risposta giusta.
 - Quando suona, si risponde **per gradi**, come con la spia dell'olio: prima si
   guarda, poi si controlla, poi semmai si riaddestra, e solo in emergenza si
   torna al modello vecchio. Rispondere sempre col gesto più drastico è come

@@ -12,8 +12,9 @@ Questa è la trappola numero uno di chi lavora con le serie temporali, e ha un
 nome: **leakage**, la fuga di informazione dal futuro verso il passato. La
 sezione precedente ci ha dato il vocabolario delle serie: trend, stagionalità,
 autocorrelazione. Questa spiega come *valutare* onestamente una previsione e
-come *rappresentare* il tempo perché un normale modello tabellare (uno che
-vuole una tabella di righe, come la regressione o gli alberi) possa impararlo.
+come *rappresentare* il tempo perché un normale modello tabellare (uno che vuole
+una tabella di righe, come la regressione o gli alberi) possa impararlo. Le
+colonne di quella tabella si chiamano **feature**, ed è la parola del titolo.
 
 Il modo di valutare che vedremo si chiama **backtesting**, ed è esattamente
 quello che il nome dice: provare all'indietro. Si finge di essere in un giorno
@@ -22,11 +23,15 @@ quello che è successo davvero; poi si sposta in avanti quel giorno, e si rifà.
 
 ## Perché mescolare i dati è un errore
 
-Nel capitolo sul Machine Learning abbiamo costruito la validazione come un rito:
-si divide in train, validation e test, si mischiano gli esempi per non lasciare
-ordini spurii, e la **k-fold cross-validation** rimescola più volte per una stima
-più stabile. Con le serie temporali quel rimescolare, che altrove è igiene, qui
-è veleno.
+Nel capitolo sul Machine Learning abbiamo costruito la validazione come un rito.
+Gli esempi si dividono in tre mucchi: uno su cui il modello impara, uno su cui lo
+si mette a punto, uno su cui lo si esamina alla fine e che non si tocca mai
+prima. E prima di dividerli si mescolano, perché se arrivassero già in un ordine
+suo (tutte le foto di gatti in fondo, per dire) i tre mucchi verrebbero diversi
+fra loro senza che sia colpa di nessuno. La **k-fold cross-validation** rifà la
+divisione più volte, a turno, e fa la media: un voto più stabile.
+
+Con le serie temporali quel rimescolare, che altrove è igiene, qui è veleno.
 
 `````{tab} Elementare
 
@@ -64,13 +69,15 @@ non un'estrazione a sorte.
 
 ## Validazione temporale: lo split cronologico
 
-La cura è semplice da enunciare: rispettare la freccia del tempo. Si allena sul
-passato, si valida sul futuro, mai il contrario. Ma con una serie sola non
-possiamo permetterci un unico taglio: butteremmo via troppe informazioni. La
-soluzione standard porta tre nomi per la stessa identica cosa, e conviene
-conoscerli tutti e tre perché si incontrano tutti e tre: **walk-forward**,
-*backtesting*, e valutazione «su **origine mobile**»
-{cite}`hyndman2021forecasting`.
+La cura è semplice da enunciare: rispettare la freccia del tempo. Ci si allena
+sul passato, si verifica sul futuro, mai il contrario. Un taglio solo, però, non
+basta, e la ragione è che darebbe un voto solo, misurato su una manciata di
+giorni: se in quei giorni è capitato un fatto strano (una nevicata, uno
+sciopero), il voto racconta la nevicata e non il modello. Meglio tagliare in
+molti punti diversi e fare la media dei voti. È il backtesting di poche righe
+fa, e conviene sapere che gli altri due nomi con cui lo si incontra sono
+**walk-forward** e valutazione «su **origine mobile**»: tre parole, una cosa
+sola {cite}`hyndman2021forecasting`.
 
 `````{tab} Elementare
 
@@ -127,15 +134,32 @@ dopo il training, sia a finestra espansa sia a finestra scorrevole.
 Con lo schema di validazione in mano, resta la domanda che il capitolo sul
 Machine Learning si poneva per i modelli tabellari: *con che numero* giudichiamo
 una previsione? Il MAE e l'RMSE, già incontrati per la regressione, restano i
-mattoni di base. Il **MAE** è l'errore assoluto medio, nell'unità della serie.
-L'**RMSE** eleva al quadrato prima di mediare, e quindi punisce di più i grandi
-svarioni; poi ne prende la radice quadrata, che è la R del nome (*root*) e
-serve solo a riportare il numero nell'unità di partenza, perché senza un errore
-in gradi diventerebbe gradi al quadrato.
+mattoni di base, e la differenza fra i due sta tutta in come trattano gli
+sbagli grossi.
+
+Il **MAE** è la media degli errori presi senza segno: un giorno in cui hai
+previsto tre gradi in più e uno in cui ne hai previsti tre in meno per lui sono
+la stessa cosa, tre gradi di errore.
+
+L'**RMSE** fa tre cose in fila, e il nome le elenca al contrario. Prima **eleva
+al quadrato ogni errore**, poi ne fa la **media**, e infine prende la **radice
+quadrata** del risultato, che è la R del nome (*root*) e serve solo a riportare
+il numero nell'unità di partenza, perché senza di essa un errore in gradi
+verrebbe fuori in gradi al quadrato. Il pezzo che conta è il primo: siccome il
+quadrato di otto è sessantaquattro mentre il quadrato di due è quattro, un solo
+sbaglio grosso pesa più di tanti sbagli piccoli messi insieme.
+
+Due modelli che il MAE giudica identici: uno sbaglia di due gradi tutti e
+quattro i giorni, l'altro ne azzecca tre e sbaglia di otto il quarto. MAE due
+contro due, pari. Con l'RMSE il primo fa
+$\sqrt{(4+4+4+4)/4} = \sqrt{4} = 2$ e il secondo
+$\sqrt{(0+0+0+64)/4} = \sqrt{16} = 4$: il doppio, perché quel giorno di
+disastro gli altri tre non lo compensano.
 
 Il guaio è che entrambi
-dipendono dalla scala: un MAE di 500 è ottimo per il PIL, disastroso per la
-temperatura. Servono metriche che si possano confrontare tra serie diverse.
+dipendono dall'unità di misura della serie: un MAE di 500 è ottimo per il PIL,
+disastroso per la temperatura. Servono numeri che si possano confrontare fra
+serie diverse.
 
 `````{tab} Elementare
 
@@ -150,16 +174,28 @@ lo zero non si va. Se prevedi 1000, hai sbagliato del 900%, e non c'è nessun
 tetto. Sbagliare per eccesso costa quindi molto di più, e alla lunga la metrica
 premia i modelli timidi, quelli che sottostimano sempre.
 
-Una scorciatoia più robusta è confrontarsi con una previsione stupida: «di
-quanto sbaglio, rispetto a chi si limita a copiare?». È l'idea della **MASE**.
-Se viene 1 sbagli quanto lui, se viene $0{,}5$ sbagli la metà, se viene 2 il
-doppio: un solo numero, senza unità di misura, leggibile a colpo d'occhio.
+La strada che funziona è un'altra: invece di guardare l'errore in sé, si guarda
+**quante volte è più grande** dell'errore di qualcuno che non fa niente di
+intelligente. Se il tuo modello sbaglia in media di 4 gradi e chi si limita a
+copiare il giorno prima ne sbaglia 8, il tuo numero è $4/8 = 0{,}5$. È la
+**MASE**, sigla inglese per «errore assoluto medio scalato», e *scalato* vuol
+dire proprio questo: diviso per il metro di qualcun altro. Se viene 1 sbagli
+quanto lui, se viene $0{,}5$ sbagli la metà, se viene 2 il doppio: un numero
+solo, senza unità di misura, leggibile a colpo d'occhio.
 
-Con un'avvertenza che vale la pena prendersi subito, perché è il modo più comune
-di sbagliarla: chi copia può copiare ieri, oppure lo stesso giorno della
-settimana scorsa se la serie ha un ritmo settimanale. Sono due pigrizie diverse,
-e il numero che ne esce è diverso. Va detto sempre quale delle due si è messa al
-paragone.
+Due avvertenze, e sono i due modi in cui la si sbaglia. La prima: chi copia può
+copiare ieri, oppure lo stesso giorno della settimana scorsa se la serie ha un
+ritmo settimanale. Sono due pigrizie diverse, il numero che ne esce è diverso, e
+va detto sempre quale delle due si è messa al paragone.
+
+La seconda: **non è un duello alla pari**, per quanto «di quanto sbaglio rispetto
+a lui» faccia pensare di sì. Chi copia viene fatto correre sul percorso più
+facile che c'è, cioè prevedere un solo giorno avanti, mentre il tuo modello
+magari ne sta prevedendo dodici. Sbagliare
+quanto lui, allora, non vuol dire pareggiare: su dodici giorni avanti è un
+ottimo risultato, su un giorno solo sarebbe mediocre. Quel numero sotto la linea
+di frazione serve a togliere di mezzo l'unità di misura, non a fare da
+avversario.
 
 `````
 
@@ -273,86 +309,124 @@ sezione.
 ## Le linee di base che bisogna sempre battere
 
 Prima di dichiarare vittoria con una rete neurale, un modello va confrontato con
-avversari volutamente banali. Se non li batte, non serve. In inglese si chiamano
-*baseline*, e sono l'idea che il capitolo chiama **linea di base**.
+avversari volutamente banali. Se non li batte, non serve. Noi li chiamiamo
+**linee di base**; in inglese si dice *baseline*, ed è la parola che si trova
+nel codice e nei manuali.
 
-Le tre classiche {cite}`hyndman2021forecasting` si scrivono con tre simboli
-soli: $y_t$ è il valore osservato all'istante $t$, il cappellino di
+Le tre classiche {cite}`hyndman2021forecasting` si scrivono quasi tutte con
+quattro simboli: $y_t$ è il valore osservato all'istante $t$, il cappellino di
 $\hat{y}$ vuol dire «previsto» invece che «osservato», $h$ è quanti passi avanti
 si guarda e $m$ la lunghezza del ciclo stagionale (7 per una settimana, 12 per
 un anno di mesi).
 
-- **Naive**: la previsione per ogni istante futuro è l'**ultimo valore
-  osservato**, $\hat{y}_{t+h}=y_t$. Sorprendentemente forte sulle serie quasi
-  casuali (i prezzi finanziari, per dire).
+- **Naive**, cioè ingenuo: la previsione per ogni istante futuro è l'**ultimo
+  valore osservato**, $\hat{y}_{t+h}=y_t$. Sembra una resa, e invece è
+  durissimo da battere sulle serie che camminano alla cieca (i prezzi
+  finanziari, per dire): se ogni scossa sposta il livello per sempre, il punto
+  in cui la serie sta oggi *è* la migliore informazione che si ha su domani.
 - **Naive stagionale**: si ripete il valore dello **stesso istante del periodo
-  precedente**, e quando l'orizzonte supera un ciclo intero si ricicla sempre
+  precedente**. Le vendite di questo dicembre sono quelle dello scorso
+  dicembre. Quando l'orizzonte supera un ciclo intero si ricicla sempre
   l'ultimo ciclo *osservato*, invece di andare a pescare stagioni che non sono
   ancora accadute: $\hat{y}_{t+h}=y_{t+h-m(k+1)}$ con
-  $k = \lfloor (h-1)/m \rfloor$, la stessa contabilità di Holt-Winters (le due
-  parentesi tagliate in basso vogliono dire «arrotonda per difetto», e servono a
-  contare quanti cicli interi stanno dentro l'orizzonte). In
-  parole: le vendite di questo dicembre sono quelle dello scorso dicembre. È la
-  linea di base da battere ogni volta che c'è stagionalità.
-- **Drift**: come il naive, ma con una **retta di tendenza** stimata dai due
-  estremi della serie, $\hat{y}_{t+h}=y_t+h\cdot\frac{y_t-y_1}{t-1}$: la
-  frazione è la salita media per passo (quanto è cresciuta la serie dal primo
-  all'ultimo punto, diviso quanti passi ci sono voluti), e moltiplicandola per
-  $h$ si prolunga il segmento che unisce il primo e l'ultimo punto.
+  $k = \lfloor (h-1)/m \rfloor$, la stessa contabilità del metodo Holt-Winters
+  della sezione precedente (le due parentesi tagliate in basso vogliono dire
+  «arrotonda per difetto», e servono a contare quanti cicli interi stanno dentro
+  l'orizzonte). Con i numeri: siamo a dicembre, i mesi fanno $m=12$, e vogliamo
+  prevedere quindici mesi avanti, cioè il marzo dell'anno dopo il prossimo.
+  Allora $k = \lfloor 14/12 \rfloor = 1$, e l'indice da andare a pescare è
+  $t + 15 - 12\cdot 2 = t - 9$, cioè nove mesi fa: il marzo scorso, che è
+  l'ultimo marzo che abbiamo davvero visto. È la linea di base da battere ogni
+  volta che c'è stagionalità.
+- **Drift**, cioè deriva: come il naive, ma con una **retta di tendenza**
+  tirata fra i due estremi della serie,
+  $\hat{y}_{t+h}=y_t+h\cdot\frac{y_t-y_1}{t-1}$: la frazione è la salita media
+  per passo (quanto è cresciuta la serie dal primo all'ultimo punto, diviso
+  quanti passi ci sono voluti), e moltiplicandola per $h$ si prolunga in avanti
+  il segmento che unisce il primo e l'ultimo punto. Con i numeri: la serie è
+  partita da 10, adesso sta a 40, e ci ha messo 30 giorni; sale dunque di
+  $30/30 = 1$ al giorno, e la previsione per fra una settimana è $40 + 7 = 47$.
 
-Non è falsa modestia: è il modo per accorgersi quando un modello complicato sta
-solo imitando, peggio, ciò che una riga di codice farebbe gratis.
+Non è falsa modestia, è il solo modo di accorgersi quando un modello complicato
+sta imitando, e per giunta peggio, quello che una riga di codice farebbe gratis.
 
 ## Le bande di previsione sono più strette di quello che dichiarano
 
-Qui è il posto giusto per una parentesi, perché qui ci sono gli attrezzi per
-chiuderla. Il filo rosso del capitolo dice che una previsione seria è un numero
-con la sua incertezza; e quasi nessun metodo dichiara l'incertezza giusta.
+Una previsione che dichiara una forbice («domani fra 22 e 26 gradi») quasi
+sempre la dichiara **più stretta** di quanto sarebbe onesto. Vale per quasi
+tutti i metodi del capitolo, ed è la parentesi che il filo rosso ha lasciato
+aperta nell'introduzione: qui ci sono gli attrezzi per chiuderla.
 
-Le bande che ARIMA, il lisciamento esponenziale e le reti probabilistiche
-restituiscono (le forbici dentro cui dicono che cadrà il valore vero) poggiano
-su due comodità.
+Prima però va detto per bene che cosa promette una forbice, perché è una
+promessa precisa e si può controllare. Quando un modello dice «fra 22 e 26,
+all'80%» sta dicendo: se ripetessi questa previsione mille volte, il valore vero
+mi cadrebbe dentro ottocento volte. Non è una speranza, è un conto che il
+modello ha fatto, ed è un conto che poggia su due comodità.
 
 La prima: i numeri del modello (la frazione con cui ieri pesa su oggi,
 l'ampiezza tipica degli scarti) vengono trattati come se li conoscessimo, mentre
-li abbiamo stimati dalla stessa storia e potevano venire diversi. È questa a
-stringere le bande **sempre**, perché ignora un'incertezza che c'è: un
-intervallo dichiarato all'80% ne copre meno dell'80%
+li abbiamo ricavati da quella stessa storia e potevano venire diversi. È questa
+a stringere le bande **sempre**, perché fa finta che un'incertezza non ci sia,
+mentre c'è: un intervallo dichiarato all'80% ne copre meno dell'80%
 {cite}`hyndman2021forecasting`.
 
-La seconda comodità è che si dà per buono che gli scarti si dispongano secondo la
-campana della statistica classica (la **gaussiana** del capitolo di matematica),
-mentre le serie vere di sorprese grosse ne hanno di più. Questa sbaglia in un
-verso che **dipende da quanto in là si guarda**, e conviene saperlo perché è
-controintuitivo: le code pesanti spostano massa sia al centro sia agli estremi,
-quindi una banda gaussiana all'80% finisce per coprire *più* dell'80%, mentre una
-al 99% copre meno del 99%. Chi dichiara forbici strette e frequenti è al riparo;
-chi promette di coprire quasi tutto, no.
+La seconda comodità è che si dà per buono che gli scarti si dispongano secondo
+la campana della statistica classica (la **gaussiana** del capitolo di
+matematica), mentre le serie vere di sorprese davvero grosse ne hanno di più.
+Questa seconda, a differenza della prima, non stringe le bande: le allarga o le
+stringe a seconda di quanto larghe le si chiede, e vale la pena vedere da dove
+viene, perché è controintuitivo.
 
-La buona notizia è che questo si misura, e si chiama **copertura empirica**: si
-prende il walk-forward, si contano quante volte il valore osservato cade dentro
-la banda, e si confronta col livello dichiarato.
+Prendi due fenomeni che nel complesso si agitano uguale, ma uno dei due ogni
+tanto fa un salto enorme. Quei pochi salti enormi, nel bilancio
+dell'agitazione, pesano tantissimo; e siccome il bilancio totale deve restare lo
+stesso, tutti gli altri giorni devono essere più tranquilli. I valori, cioè, si
+accalcano attorno al centro, qualcuno finisce lontanissimo, e a diradarsi sono
+le vie di mezzo. Il risultato è che una forbice stretta, quella all'80%, di
+valori ne raccoglie **più** dell'80% (in un caso tipico, l'85%), mentre una
+forbice larghissima, quella al 99%, ne raccoglie meno del 99% (attorno al 98%),
+perché i pochi mostri le passano oltre.
 
-Il conto si fa su un AR(1) come quello della sezione precedente ($c=4$,
-$\phi=0{,}6$, rumore sparpagliato con deviazione standard $1$, ripetendo la
-prova ventimila volte). Con i parametri
-noti la banda all'80% copre l'80% esatto, come promette. Appena si stimano i
-parametri dalla storia, invece di conoscerli, la copertura cede: a un passo
-scende al **77%** con trenta osservazioni di storia, e risale al 79% con cento.
-E cede di più via via che l'orizzonte si allunga, perché all'incertezza
-dell'ultimo passo si somma quella di tutti i passi in mezzo: a cinque passi,
-sempre con trenta osservazioni, resta il **73%**. È la diagnostica più semplice
-della previsione probabilistica, costa dieci righe, e quasi nessuno la fa.
+Le due comodità, quindi, non tirano dalla stessa parte, e il titolo di questa
+sezione resta vero per merito della prima: sulle forbici strette, quelle che si
+usano tutti i giorni, la seconda lavora perfino a favore, e ciò che rimane è lo
+sconto della prima. A dover stare in guardia su tutte e due è chi promette di
+coprire quasi tutto.
+
+La buona notizia è che tutto questo si misura, e la misura ha un nome,
+**copertura empirica**: si prende il walk-forward di poche righe fa, si conta
+quante volte il valore osservato è caduto davvero dentro la banda, e si
+confronta con il livello dichiarato.
+
+Il conto si fa sulla stessa serie della sezione precedente, quella in cui il
+valore di domani è il 60% di quello di oggi più quattro, più una scossa casuale.
+I due numeri del modello (il 60% e il quattro) si ricavano dalla storia con la
+retta dei minimi quadrati, esattamente come là, e la prova si ripete ventimila
+volte.
+
+Se al modello i due numeri si regalano già giusti, la banda all'80% copre l'80%
+esatto: la promessa è mantenuta. Appena invece glieli si fa ricavare dalla
+storia, la copertura cede: a un passo scende al **77%** con trenta osservazioni
+di storia, e risale al 79% con cento. E cede di più via via che l'orizzonte si allunga, perché
+all'incertezza dell'ultimo passo si somma quella di tutti i passi in mezzo: a
+cinque passi, sempre con trenta osservazioni, resta sotto il **74%**. È la
+diagnostica più semplice della previsione probabilistica, costa poche righe più
+del walk-forward che c'è già, e quasi nessuno la fa.
 
 ## Trasformare il tempo in una tabella
 
 Ed eccoci alla seconda metà del titolo: *rappresentare*. Buona parte dei
 modelli che conosciamo (la regressione, gli alberi decisionali, le reti) non
-sanno nulla di «tempo»: vogliono una tabella di righe indipendenti, ciascuna con
-le sue colonne di ingresso (le **feature**) e la sua risposta giusta (il
-**target**), come nel capitolo sul Machine Learning. Costruire quella tabella a
-partire da una serie si chiama **feature engineering temporale**, e riduce la
-previsione a un normale problema **supervisionato** tabellare.
+sanno nulla di «tempo». Vogliono una tabella, come quelle del capitolo sul
+Machine Learning: una riga per ogni caso, alcune colonne di domanda (le
+**feature**) e una colonna di risposta giusta (il **target**), e ogni riga deve
+poter essere letta da sola, senza sapere che cosa c'è nelle righe accanto.
+Imparare da una tabella così è ciò che si chiama apprendimento
+**supervisionato**: si chiama così perché per ogni riga qualcuno ha già scritto
+la risposta, e il modello impara confrontandosi con quella. Costruire una
+tabella del genere a partire da una serie si chiama **feature engineering
+temporale**, e serve a questo: una volta fatta, prevedere il futuro torna a
+essere il solito problema tabellare che sappiamo già risolvere.
 
 `````{tab} Elementare
 
@@ -417,9 +491,9 @@ esattamente l'analista con la curva liscia come una pista da sci.
 
 E attenzione a dove cade il taglio, perché qui la regola «netta» enunciata in
 apertura di sezione si viola da sé, al bordo. Se si divide train e test
-guardando l'istante $t$ delle **feature**, le ultime $h-1$ righe di training
+guardando l'istante $t$ delle **feature**, le ultime $h$ righe di training
 hanno un bersaglio $y_{t+h}$ che sta già dentro il periodo di test, e le
-finestre mobili di ampiezza $w$ allungano la sovrapposizione di altri $w-1$ passi.
+finestre mobili di ampiezza $w$ allungano la sovrapposizione di altri $w$ passi.
 Si tagliano via quelle righe, ed è un'operazione che ha un nome, la **purga**.
 Quante siano si conta senza formule da ricordare: una riga di training
 all'istante $t$ tocca le osservazioni da $y_{t-w}$ a $y_{t-1}$ e in più il suo
@@ -496,18 +570,17 @@ Volendo prevedere $H$ passi $\hat{y}_{t+1}, \dots, \hat{y}_{t+H}$:
 
 `````
 
-Non esiste una scelta sempre migliore: la ricorsiva è economica ma fragile sui
-lunghi orizzonti, la diretta è robusta ma pesante, la multi-output sta nel mezzo
-ed è comoda con le reti. La regola di prima resta sovrana: qualunque strategia si
-scelga, la si valuta col walk-forward, mai mescolando il tempo.
+Non esiste una scelta sempre migliore, e la regola di prima resta sovrana:
+qualunque strategia si scelga, la si valuta col walk-forward, mai mescolando il
+tempo.
 
 ## In pratica: walk-forward e MASE con NumPy
 
-Mettiamo insieme i due pezzi centrali della sezione (lo split walk-forward e
-la MASE) in poche righe di NumPy puro, su una serie sintetica con trend
-leggero e stagionalità settimanale. Confrontiamo due linee di base: il naive
-stagionale (ripete l'ultima settimana) e il naive semplice (ripete l'ultimo
-valore).
+Mettiamo insieme i due pezzi centrali della sezione, lo split walk-forward e la
+MASE, in poche righe di NumPy (la libreria di calcolo numerico del capitolo su
+Python) e niente altro. La serie è inventata da noi, con una salita leggera e un
+ciclo di sette giorni. Confrontiamo due linee di base: il naive stagionale
+(ripete l'ultima settimana) e il naive semplice (ripete l'ultimo valore).
 
 ```python
 import numpy as np
@@ -555,9 +628,9 @@ volte tanto. La morale non è che il naive stagionale sia bravo, è che su una
 serie stagionale il metro giusto è quello, e chi non lo batte non ha un modello.
 
 Vale la pena notare quanto la scelta del metro cambi il verdetto, perché è una
-scorciatoia che si incontra spesso: mettendo al denominatore il naive a un passo
-invece che a sette, gli stessi due predittori escono a $0{,}34$ e $1{,}64$, e il
-primo sembrerebbe bravissimo. Non ha previsto meglio di prima: è cambiato il
+scorciatoia che si incontra spesso: mettendo sotto la linea di frazione il naive
+a un passo invece che a sette, gli stessi due predittori escono a $0{,}34$ e
+$1{,}64$, e il primo sembrerebbe bravissimo. Non ha previsto meglio di prima: è cambiato il
 righello. È la lettura che rende la MASE preziosa e insieme la sua unica
 insidia: un numero senza unità dice al volo se un modello vale più della
 pigrizia, purché si dichiari **quale** pigrizia.
@@ -638,8 +711,8 @@ pigrizia, purché si dichiari **quale** pigrizia.
   (un solo modello, tutti i passi).
 - Le bande di previsione sono calcolate a **parametri noti** e sotto ipotesi di
   normalità: escono sistematicamente troppo strette. Su un AR(1) con trenta
-  osservazioni di storia, un intervallo nominale all'80% ne copre il 77% a un
-  passo e il 73% a cinque.
+  osservazioni di storia e parametri stimati ai minimi quadrati, un intervallo
+  nominale all'80% ne copre il 77% a un passo e meno del 74% a cinque.
 ```
 
 `````

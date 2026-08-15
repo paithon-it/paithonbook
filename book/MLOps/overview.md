@@ -6,10 +6,11 @@ conferenza di apprendimento automatico {cite}`sculley2015hidden`. Al centro
 del foglio c'è un rettangolino nero, minuscolo, con dentro due parole: *codice
 ML*. È l'unico pezzo di cui parlano di solito i libri, i corsi, i paper: il
 modello, l'algoritmo, la rete che impara. Tutto intorno, a soffocarlo, ci sono
-scatole molto più grandi: raccolta dati, verifica dei dati, estrazione delle
-*feature*, gestione della configurazione, l'impianto che *serve* il modello a
-chi lo interroga (in gergo il *serving*), monitoraggio, strumenti di analisi,
-gestione delle risorse di calcolo. La morale della figura è brutale e onesta:
+scatole molto più grandi: raccogliere i dati, controllarli, ricavarne le
+grandezze su cui il modello ragiona (le *feature*), tenere in ordine le
+impostazioni, far girare la macchina che riceve le domande e restituisce le
+risposte (in gergo il *serving*), sorvegliare, analizzare, e amministrare i
+computer che fanno i conti. La morale della figura è brutale e onesta:
 addestrare il modello è la parte più piccola del lavoro. Tutto il resto (il
 grosso) è il sistema che gli sta intorno.
 
@@ -33,8 +34,9 @@ che è in funzione.
 L'errore di prospettiva è comprensibile: fino a qui, in tutto il libro, «fare
 machine learning» ha significato scegliere un modello, addestrarlo, misurarne
 l'accuratezza. E tutto questo si fa in un **notebook**, che qui non è un
-computer portatile: è il foglio elettronico su cui si scrive un programma un
-pezzetto alla volta, vedendo subito il risultato di ognuno. È comodissimo per
+computer portatile: è una pagina su cui il programma si scrive a pezzetti, uno
+sotto l'altro, e ogni pezzetto lo si può far partire da solo vedendo subito che
+cosa combina. È comodissimo per
 provare, ed è lì che nasce quasi ogni modello. Sul proprio computer il lavoro
 sembra finito quando la metrica sui dati di prova è buona.
 
@@ -56,6 +58,15 @@ Il modello addestrato è il piatto: la ricetta funziona. MLOps è tutto il resto
 del ristorante. E come in un ristorante, il grosso dei guai non viene dalla
 ricetta: viene dal magazzino che si svuota, dal fornitore che cambia gli
 ingredienti, dalla cucina che va tenuta pulita ogni giorno.
+
+C'è poi una cosa che rende questa cucina più insidiosa di una vera. Se il
+fornitore cambia i pomodori, tu ti aspetti che cambi il sapore dei piatti col
+pomodoro; qui invece cambia anche il sapore di piatti che il pomodoro non lo
+contengono affatto. Il motivo è che il modello non impara una regola per volta:
+impara un equilibrio fra tutto quello che gli è stato dato. Cambia una sola
+delle informazioni in ingresso e l'equilibrio si rifà da capo, e le risposte si
+spostano anche dove non te lo aspettavi. È la ragione per cui un impianto del
+genere si tiene d'occhio invece di darlo per finito.
 
 `````
 
@@ -88,11 +99,14 @@ Il nome ricalca **DevOps**. Chi costruisce software si divideva in due mondi
 separati: chi scrive i programmi (*Dev*, lo sviluppo) e chi li tiene in
 funzione (*Ops*, le operazioni). DevOps è il modo di lavorare con cui quei due
 mondi hanno smesso di essere separati, e il patto è che tutto ciò che sta in
-mezzo diventi automatico e tracciato. Si conserva ogni versione del programma
-invece dell'ultima soltanto; una macchina la prova e la consegna da sé a ogni
-modifica (è la **CI/CD**, integrazione e distribuzione continue); si sorveglia
-ciò che è in funzione. Il risultato è che pubblicare una versione nuova
-diventa un gesto ordinario invece che una notte in bianco.
+mezzo diventi automatico e tracciato. Si conserva ogni versione del programma,
+non soltanto l'ultima. E a ogni modifica, senza che nessuno lo chieda, un
+computer di servizio riprende il programma, gli fa passare tutte le prove e,
+se le supera, lo pubblica al posto della versione di prima: quel meccanismo si
+chiama **CI/CD**, che sta per «integrazione e distribuzione continue», cioè
+controllo e pubblicazione che avvengono di continuo invece che una volta ogni
+tanto. Infine si sorveglia ciò che è in funzione. Il risultato è che pubblicare
+una versione nuova diventa un gesto ordinario invece che una notte in bianco.
 
 MLOps prende quella cultura e la porta al ciclo di vita del machine learning
 {cite}`kreuzberger2023machine`. Con una complicazione in più, che è il cuore
@@ -100,8 +114,11 @@ di tutto. Nel software classico la cosa da conservare versione per versione è
 una sola, il codice; qui i pezzi che compongono il lavoro finito (gli
 **artefatti**) sono **tre**: il codice, i dati e il modello addestrato. E due
 dei tre non sono testo. Gli strumenti con cui il software tiene la propria
-cronologia da decenni sono fatti apposta per il testo, e su una cartella di
-immagini o su un file di pesi non funzionano.
+cronologia da decenni sono fatti apposta per il testo: sanno dire quale riga è
+cambiata fra ieri e oggi. Su una cartella di immagini, o sul file che contiene
+i **pesi** del modello (i milioni di numeri che l'addestramento ha aggiustato,
+e che *sono* quello che il modello ha imparato), quel confronto non vuol dire
+niente: sono file enormi, e dentro non ci sono righe da confrontare.
 
 `````{tab} Elementare
 
@@ -149,12 +166,14 @@ Ed è proprio la parola «processo» a segnare la differenza più importante.
 Siamo abituati a pensare al machine learning come a una linea retta: si
 raccolgono i dati, si addestra, si valuta, si consegna. Fine. Ma la consegna
 non è la fine: è il punto in cui il modello incontra il mondo reale, e il
-mondo reale cambia. Un modello in produzione va **sorvegliato**, e prima o poi
-i dati che incontra smettono di somigliare a quelli su cui è stato addestrato:
-il *drift* che avevamo incontrato nella sezione «Quando i dati cambiano» del
-capitolo di Machine Learning, dove lo abbiamo inquadrato in termini
-statistici. Quando succede, si torna all'inizio: nuovi dati, nuovo
-addestramento. Il percorso non è una linea, è un **anello**
+mondo reale cambia. Un modello in produzione va **sorvegliato**, perché prima o
+poi i dati che incontra smettono di somigliare a quelli su cui è stato
+addestrato. Quello scivolamento lento ha un nome inglese che useremo sempre,
+*drift*, e vuol dire deriva: è la stessa cosa di cui parla la sezione «Quando i
+dati cambiano» del capitolo di Machine Learning, lì misurata con gli strumenti
+della statistica, qui affrontata da chi il servizio lo deve tenere acceso.
+Quando succede, si torna all'inizio: nuovi dati, nuovo addestramento. Il
+percorso non è una linea, è un **anello**
 ({numref}`fig-mlops-ciclo-vita`).
 
 ```{figure} ../figures/mlops-ciclo-vita.svg
@@ -206,6 +225,12 @@ questa la ragione strutturale per cui il ciclo è un anello e non un segmento.
 
 ## Perché non basta il notebook
 
+Il notebook, si è detto, è dove il modello nasce. Il guaio è che di solito lo
+si scambia anche per il posto dove il lavoro finisce, e in realtà è la prima
+casella di cinque ({numref}`fig-cinque-tappe`): dopo di lui il modello deve
+uscire dal foglio, farsi raggiungere da altri programmi, girare uguale su
+computer che non sono il proprio, e poi restare sotto controllo per anni.
+
 ```{figure} ../figures/dal-notebook-alla-produzione.svg
 :name: fig-cinque-tappe
 :alt: "Cinque tappe in fila dal notebook alla produzione: l'esperimento nel notebook, l'estrazione in programmi di cui si conserva ogni versione, il rilascio dietro uno sportello a cui altri programmi possono rivolgersi, il confezionamento in una scatola che si comporta uguale su qualsiasi computer e infine la sorveglianza continua. Una freccia tratteggiata torna dall'ultima tappa alla prima. Solo la prima è quella che di solito si considera «il lavoro»."
@@ -222,12 +247,13 @@ serva a qualcuno. E la freccia che torna indietro in fondo è l'anello: da lì
 si ricomincia.
 ```
 
-La proporzione di {numref}`fig-cinque-tappe` è il messaggio dell'intero
-capitolo. Il capitolo dà per acquisito tutto ciò che serve a *costruire* un
-modello: la teoria dei capitoli precedenti e gli strumenti di **PyTorch**,
-`torch.nn`, `torch.optim`, il `DataLoader` (visti nel capitolo dedicato). Il notebook che
-addestra una rete e ne stampa l'accuratezza è, a tutti gli effetti, il punto
-di partenza di questo capitolo, non un traguardo.
+Quattro caselle su cinque vengono *dopo* il notebook: è la proporzione di
+{numref}`fig-cinque-tappe`, ed è il messaggio dell'intero capitolo. Perché
+questo capitolo dà per acquisito tutto ciò che serve a *costruire* un modello,
+cioè la teoria dei capitoli precedenti e gli attrezzi con cui si addestra una
+rete, che sono quelli del capitolo su **PyTorch**. Il notebook che addestra una
+rete e ne stampa il voto è, a tutti gli effetti, il punto di partenza di questo
+capitolo, non un traguardo.
 
 Perché un notebook non basta lo si capisce elencando ciò che non fa. Non mette
 il modello a disposizione di chi deve usarlo. Non decide *come* metterlo a
@@ -249,37 +275,38 @@ pagina che le introduce, e nessuna va saputa già adesso.
   dall'ambiente di sperimentazione: riproducibilità, versionamento degli
   artefatti (dati, codice, modello), esperimenti tracciabili, il debito
   tecnico da tenere a bada.
-- **Dati e pipeline**, l'ingranaggio più grande e più trascurato: raccolta,
-  validazione, *feature engineering* automatizzato e ripetibile, così che il
-  dato che alimenta l'addestramento e quello che alimenta le predizioni siano
-  costruiti allo stesso modo.
-- **Deployment e serving**, come si mette un modello *in ascolto*: servizio in
-  tempo reale contro elaborazione a lotti, latenza e *throughput* (quanto si
-  aspetta una risposta, e quante se ne servono al secondo), rilasci graduali
-  (*canary*, *shadow*, A/B) per non rompere niente.
-- **Monitoraggio e drift**, l'occhio in produzione: sorvegliare ingressi,
-  uscite ed errori, rilevare il *dataset shift* introdotto nel capitolo di
-  Machine Learning e decidere *quando* riaddestrare. È il lato operativo del
-  problema che lì avevamo posto in termini statistici.
+- **Dati e pipeline**, l'ingranaggio più grande e più trascurato. Una
+  *pipeline* è alla lettera una conduttura: la catena di stazioni che prende il
+  dato grezzo, lo pulisce e lo consegna pronto al modello. Qui si vede come si
+  raccoglie, come si controlla e come si fa in modo che il dato su cui il
+  modello impara e quello su cui risponde siano costruiti allo stesso modo.
+- **Servire un modello**, cioè come lo si mette *in ascolto*: rispondere a
+  una richiesta per volta oppure a mille tutte insieme di notte, quanto si
+  aspetta una risposta (la *latenza*) e quante se ne servono al secondo (il
+  *throughput*), e come si sostituisce un modello con uno nuovo facendolo
+  provare prima a pochi, per non rompere niente.
+- **Monitoraggio e drift**, l'occhio in produzione: sorvegliare che cosa entra,
+  che cosa esce e quanto si sbaglia, accorgersi della deriva di cui si diceva
+  poco fa e decidere *quando* rimettere mano al modello.
 - **LLMOps**, come cambiano le regole del gioco con i grandi modelli
-  linguistici: modelli che non si addestrano ma si *interrogano*, valutazione
-  senza una risposta giusta univoca, costi per *token*, *prompt* e recupero di
-  informazioni come nuovi artefatti da versionare.
+  linguistici (in sigla **LLM**, *large language model*): modelli che non si
+  addestrano ma si *interrogano*, testi da giudicare senza che esista una
+  risposta giusta sola, e un conto che si paga a pezzetti di testo (i *token*).
 - **Misurare un servizio**, che cosa vuol dire davvero «veloce» quando la
-  risposta arriva un pezzo alla volta: TTFT, TPOT, il *goodput* e perché le
-  medie mentono.
+  risposta non arriva tutta insieme ma una parola alla volta: quanto si aspetta
+  la prima, con che ritmo scorrono le altre, e perché le medie mentono.
 - **Il conto in energia**, l'unica voce che non si dichiara quasi mai: dove
-  finiscono i joule (nel movimento dei dati, non nei conti), come si arriva
-  dai joule ai grammi di anidride carbonica, e perché per un modello servito a
-  lungo l'inferenza pesa più dell'addestramento.
+  finisce la corrente (nel movimento dei dati, non nei conti), come si arriva
+  dall'energia ai grammi di anidride carbonica, e perché in un modello che
+  resta in servizio per anni rispondere costa più che addestrare.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
 - Addestrare un modello è **la punta dell'iceberg**: è il piatto del cuoco, e
   il ristorante è tutto il resto (le forniture, la cucina, il servizio in
-  sala). Nella figura che apre questa pagina il pezzo che i libri raccontano è
-  un rettangolino, e tutto intorno ci sono scatole più grandi.
+  sala). Nel disegno del 2015 raccontato all'inizio, il pezzo di cui parlano i
+  libri è un rettangolino, e tutto intorno ci sono scatole più grandi.
 - **In produzione** vuol dire che il modello ha smesso di essere un
   esperimento: lo stanno usando persone vere, adesso, e la distanza fra le due
   cose è quasi tutta fuori dal modello.

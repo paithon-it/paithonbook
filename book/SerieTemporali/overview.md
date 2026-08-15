@@ -22,11 +22,13 @@ l'orecchio.
 Come metodo sistematico la disciplina nasce nel 1970, con un libro di George
 Box e Gwilym Jenkins destinato a diventare un classico dell'econometria (la
 statistica applicata ai fenomeni economici) e dell'ingegneria
-{cite}`box2015time`. La loro ricetta sta in tre parole: identificare, stimare,
-verificare. Non è la prima idea di previsione statistica (l'autoregressione la
-usava già George Udny Yule nel 1927, sulle macchie solari), ma è la prima
-**procedura** che si possa applicare a una serie qualunque, invece di inventare
-un metodo diverso ogni volta. Mezzo secolo dopo, lo statistico
+{cite}`box2015time`. La loro ricetta sta in tre parole: identificare che forma
+ha la serie, stimare i numeri del modello, verificare che il modello non abbia
+lasciato fuori niente. Non è la prima idea di previsione statistica: spiegare un
+valore con quelli che lo precedono, e cioè l'**autoregressione**, la faceva già
+George Udny Yule nel 1927, sulle macchie solari. È però la prima **procedura**
+che si possa applicare a una serie qualunque, invece di inventare un metodo
+diverso ogni volta. Mezzo secolo dopo, lo statistico
 greco Spyros Makridakis mette alla prova quei metodi su larga scala con le
 **competizioni M**, gare pubbliche di previsione su decine di migliaia di
 serie reali {cite}`makridakis2020m4`. La lezione che ne esce è tanto tecnica
@@ -76,13 +78,14 @@ convivere con questa doppia rottura.
 
 ## I problemi che si pongono
 
-«Serie temporale» è la forma dei dati; i compiti che ci si costruisce sopra sono
-diversi, e conviene distinguerli subito perché richiedono strumenti e metriche
-differenti.
+«Serie temporale» è la forma dei dati. Le domande che ci si può fare sopra sono
+diverse, e conviene distinguerle subito, perché ciascuna vuole i suoi strumenti
+e il suo modo di dare un voto al risultato.
 
-Il più importante è il **forecasting**: stimare i valori *futuri* della serie a
-partire dai passati. È l'unico compito in cui la variabile da prevedere è la
-stessa serie proiettata in avanti. Attorno ad esso ruotano gli altri:
+I compiti sono quattro, e il primo è il più importante: il **forecasting**,
+stimare i valori *futuri* della serie a partire dai passati. È l'unico in cui la
+cosa da indovinare è la serie stessa, più in là nel tempo. Attorno a lui ruotano
+gli altri tre:
 
 - **Classificazione di serie**, assegnare un'etichetta a un'intera sequenza:
   un elettrocardiogramma è normale o aritmico? una vibrazione del motore
@@ -93,7 +96,8 @@ stessa serie proiettata in avanti. Attorno ad esso ruotano gli altri:
 - **Imputazione**: ricostruire i valori mancanti *dentro* la serie, quando un
   sensore si è spento per qualche ora e restano dei buchi da riempire.
 
-Il forecasting stesso si declina lungo due assi che ne cambiano la difficoltà.
+Il forecasting stesso, poi, non è sempre lo stesso mestiere: due cose ne
+cambiano la difficoltà, e conviene guardarle una per volta.
 
 `````{tab} Elementare
 
@@ -109,12 +113,20 @@ che verrà è *a più passi*. E qui c'è una trappola quotidiana: le previsioni
 del tempo a un giorno ci azzeccano quasi sempre, quelle a dieci giorni molto
 meno. La ragione è semplice: fra oggi e il giorno che vuoi prevedere devono
 succedere tutte le cose intermedie, e nessuno le ha ancora viste. Più giorni ci
-metti in mezzo, più incertezza si somma. Con un limite, che
-dipende da com'è fatta la serie: se il fenomeno torna sempre verso un suo valore
-di riposo (la temperatura di una città lo fa), a un certo punto l'incertezza
-smette di crescere e si assesta su quanto è ballerino il fenomeno in generale; se
-invece non ha nessun valore a cui tornare, come il prezzo di un titolo, cresce
-senza fermarsi mai.
+metti in mezzo, più incertezza si somma.
+
+Ma non all'infinito, e questo dipende da com'è fatto il fenomeno. Alcuni hanno
+un valore di riposo verso cui tornano sempre, e la temperatura di una città è
+uno di quelli: per quanto lontano tu guardi, marzo non se ne andrà mai a cento
+gradi. Metti che a marzo, un anno con l'altro, si stia fra i 10 e i 18 gradi:
+prevedere il marzo di fra dieci anni vuol dire dire esattamente quello, fra 10 e
+18. L'incertezza è cresciuta fino a lì e poi si è fermata, perché a quel punto
+si è già ignoranti quanto si può essere, e aspettare altri dieci anni non
+peggiora niente.
+
+Altri fenomeni un valore di riposo non ce l'hanno, e il prezzo di un'azione in
+borsa è l'esempio classico: dopo un crollo riparte da dove è arrivato, e il
+livello di prima non lo rincorre. Lì l'incertezza cresce e basta.
 
 `````
 
@@ -161,19 +173,22 @@ stazionarie.
 ## Perché è un problema diverso (e difficile)
 
 Se le serie temporali meritano un capitolo a sé, e non un paragrafo dentro il
-Machine Learning, è perché ognuna delle loro proprietà rompe un'assunzione che
-altrove davamo per scontata.
+Machine Learning, è perché ognuna delle loro proprietà rompe qualcosa che
+altrove davamo per scontato.
 
 La prima è l'**autocorrelazione**. Prendi la serie, fanne una copia e falla
 scivolare indietro di un giorno, di due, di dodici: le due si somigliano, e
-quella somiglianza è il legame della serie con il proprio passato. Di quanti
-passi si è spostata la copia si chiama **ritardo**; in inglese *lag*, ed è la
-parola che si trova nel codice e nei manuali (qui ritardo, passo e lag sono la
-stessa cosa). Quella somiglianza si misura, ed è il modo più diretto di vedere
-quanto una serie sia lontana dai dati indipendenti del resto del libro. Il
-codice qui sotto la calcola su una serie inventata da noi, che sale piano e ha
-un ciclo di dodici passi; quello che conta sono i cinque numeri che stampa, e il
-commento subito dopo li legge uno per uno.
+quella somiglianza è il legame della serie con il proprio passato. Il numero di
+passi di cui si è spostata la copia si chiama **ritardo**; in inglese *lag*, ed
+è la parola che si trova nel codice e nei manuali (qui ritardo e lag sono la
+stessa cosa). La somiglianza si misura mettendo le due file di numeri a coppie,
+il primo con il primo, il secondo con il secondo, e guardando se salgono e
+scendono insieme: quello che ne esce è un numero solo, il **coefficiente di
+autocorrelazione**, ed è il modo più diretto di vedere quanto una serie sia
+lontana dai dati indipendenti del resto del libro. Il
+codice qui sotto lo calcola su una serie inventata da noi, che sale piano e ha
+un ciclo di dodici passi; quello che conta sono i cinque numeri che stampa, e i
+paragrafi che seguono li leggono uno per uno, dopo aver detto che scala hanno.
 
 ```python
 import numpy as np
@@ -213,34 +228,53 @@ Sulla serie ordinata l'autocorrelazione a un passo vale $0{,}94$, cioè quasi il
 massimo: ogni valore anticipa quasi perfettamente il successivo. Una parte di
 quel numero, per onestà, la mette la salita: in una serie che cresce sempre due
 giorni consecutivi si somigliano più di due giorni presi a caso in tutta la
-storia, e questo succede anche se di memoria vera non ce n'è nessuna. Tolta la
-tendenza il coefficiente scende a $0{,}78$, che resta molto: la dipendenza è
-reale, non è solo la salita.
+storia, e questo succede anche se di memoria vera non ce n'è nessuna. Per
+levarla di mezzo si tira la retta che segue meglio la salita e si tiene, di ogni
+punto, soltanto quanto sta sopra o sotto quella retta: sono due righe di codice,
+e il codice qui sopra le ha già fatte. Su quel che resta il coefficiente scende
+a $0{,}78$, che è ancora tanto: la dipendenza è vera, non è solo la salita.
 
-La tendenza va tolta anche per leggere la stagionalità, e per lo stesso motivo:
+La retta va tolta anche per leggere la stagionalità, e per lo stesso motivo:
 altrimenti terrebbe alta l'autocorrelazione a qualunque distanza. Fatto questo,
-il contrasto è netto. A sei passi, che qui è mezzo ciclo (estate contro
-inverno), la somiglianza è fortemente **negativa**, $-0{,}87$; a dodici torna
-**alta**, $0{,}83$, perché la stagionalità riporta il fenomeno allo stesso punto
-del ciclo. Ma appena rimescoliamo le date il coefficiente **crolla a**
-$0{,}14$, cioè praticamente a niente: la permutazione ha cancellato
-l'unica cosa che rendeva prevedibile la serie. È il motivo profondo per cui,
-nel forecasting, **non si può mescolare futuro e passato**, né
-nell'addestramento né, soprattutto, nella validazione.
-Torneremo su questo punto nella sezione dedicata alla validazione temporale;
-per ora basti la regola: si addestra sul passato, si verifica sul futuro, mai
-il contrario.
+il contrasto è netto. A sei passi di ritardo, cioè mezzo ciclo, la serie si
+trova nel punto opposto del giro (dove prima c'era un picco adesso c'è un
+avvallamento) e la somiglianza è fortemente **negativa**, $-0{,}87$; a dodici
+passi di ritardo, cioè un ciclo intero, torna **alta**, $0{,}83$, perché il
+fenomeno è tornato dov'era.
+
+E adesso la prova che conta. Rimescoliamo le date: teniamo gli stessi duecento
+numeri e li rimettiamo in fila a caso. Il coefficiente **crolla** a $0{,}14$.
+Non è esattamente zero, e non poteva esserlo: rimescolando duecento numeri
+qualche somiglianza per puro caso ci scappa sempre, di solito di qualche
+centesimo, e questa volta è capitata un po' più grossa. Ma di quel $0{,}94$ non
+è rimasto niente. Gli stessi identici valori, in un altro ordine, non prevedono
+più niente: quello che rendeva prevedibile la serie non stava nei numeri, stava
+nel loro ordine.
+
+Ecco perché nel forecasting **futuro e passato non si mescolano mai**. E c'è un
+posto in cui la regola è più facile da dimenticare che altrove, ed è proprio
+quello in cui costa di più: quando si tratta di dare un voto al modello (in
+gergo, la **validazione**). Se per giudicarlo gli si fanno indovinare dei giorni
+che stanno *in mezzo* a quelli su cui si è allenato, gli si sta chiedendo di
+riempire un buco avendo davanti i due bordi, che è tutt'altro mestiere che
+indovinare il seguito. Il voto che ne esce è gonfiato, e non se ne accorge
+nessuno finché il modello non va a lavorare sul futuro vero. La sezione sulla
+validazione temporale è dedicata a questo; per ora basti la regola: ci si allena
+sul prima, si verifica sul dopo, mai il contrario.
 
 La seconda proprietà è la **non stazionarietà**, ed è quella che manda in crisi
-i modelli classici.
+i metodi statistici classici, quelli della prossima sezione.
 
 `````{tab} Elementare
 
 Pensa a un fiume. Se la sua portata oscilla sempre attorno allo stesso valore
 medio, con piene e magre di ampiezza costante, il fiume è «stabile»: chi lo
-studia oggi può usare le stesse regole di chi lo studiava vent'anni fa. Questa
-stabilità delle *regole statistiche* (la media attorno a cui la serie balla,
-l'ampiezza con cui balla) è ciò che i tecnici chiamano **stazionarietà**.
+studia oggi può usare le stesse regole di chi lo studiava vent'anni fa. Le cose
+che devono restare ferme sono tre: il valore attorno a cui la portata balla,
+l'ampiezza con cui balla, e il modo in cui due giorni si somigliano, che deve
+dipendere da **quanto** distano fra loro e non da **quando** cadono nel
+calendario (due giorni di fila si somigliano uguale, che siano di marzo o di
+settembre). Questa stabilità è ciò che i tecnici chiamano **stazionarietà**.
 
 Molte serie vere non sono così. Il prezzo di una casa cresce di decennio in
 decennio (la media sale: c'è una **tendenza**), i consumi di gelato salgono
@@ -292,51 +326,62 @@ essa.
 `````
 
 Autocorrelazione, non stazionarietà, cambi di regime, ordine che conta: sono
-quattro facce dello stesso fatto. In una serie temporale l'**indipendenza**
+modi diversi di dire una cosa sola. In una serie temporale l'**indipendenza**
 tra gli esempi (la comoda finzione su cui abbiamo costruito il resto del
 machine learning supervisionato) semplicemente non c'è, e ogni metodo del
 capitolo è un modo diverso di prenderla sul serio.
 
 ## Come è organizzato il capitolo
 
-La storia del forecasting è una lunga convivenza tra due famiglie: i metodi
-**statistici** classici, trasparenti e sorprendentemente difficili da battere,
-e i metodi **neurali**, più affamati di dati ma capaci di catturare pattern
-complessi e di condividere ciò che imparano tra migliaia di serie. La grande
-lezione delle competizioni M è che la rivalità è meno netta di quanto sembri.
-Nella M4 correvano 100.000 serie e 61 metodi, e a vincere non fu né la
-statistica pura né il deep learning puro: fu un **ibrido**, una rete ricorrente
-innestata su un modello di lisciamento esponenziale (uno dei classici della
-prossima sezione). Dietro, a fare meglio dei singoli concorrenti, c'erano le
-**combinazioni** di più metodi {cite}`makridakis2020m4`. Il capitolo segue
-proprio questa parabola, in tre sezioni:
+Il capitolo è in tre sezioni, e si leggono in fila.
 
 1. **Componenti e modelli classici**, come scomporre una serie in tendenza,
    stagionalità e residuo, e i due cavalli di battaglia storici: la famiglia
    **ARIMA** di Box e Jenkins e il lisciamento esponenziale nella forma
-   **Holt-Winters**. Sono ancora oggi la linea di base onesta contro cui
-   misurare qualunque metodo più sofisticato.
-2. **Validazione temporale e feature**. Perché la *k-fold* mescolata del
-   capitolo sul Machine Learning (dividere gli esempi in fette a caso e provare
-   il modello su una fetta per volta) qui è vietata, e come si valida sul tempo
-   facendo scorrere in avanti il confine fra passato e futuro (è il
-   *backtesting*). Poi come si trasformano le serie in colonne di una tabella
-   (i valori dei giorni precedenti, le medie degli ultimi giorni, gli indicatori
-   di calendario), per darle in pasto ai modelli tabellari già visti nel
-   capitolo sul Machine Learning.
-3. **Forecasting neurale**: dalle reti convoluzionali causali (**TCN**) alle
-   reti che prevedono non un numero ma una distribuzione (**DeepAR**), fino ai
-   **Transformer** adattati alle serie e ai **foundation model** (come
-   TimesFM o Chronos), pre-addestrati su enormi collezioni di serie e capaci di
-   prevedere fenomeni mai visti prima.
+   **Holt-Winters**. Sono ancora oggi la **linea di base**, cioè l'avversario
+   banale che un metodo più sofisticato deve battere per meritare la fatica che
+   costa.
+2. **Validazione temporale e feature** (le *feature* sono le colonne di una
+   tabella, quelle che si danno in pasto a un modello). Perché la *k-fold*
+   mescolata del capitolo sul Machine Learning (dividere gli esempi in fette a
+   caso e provare il modello su una fetta per volta) qui è vietata, e come si
+   valida sul tempo facendo scorrere in avanti il confine fra passato e futuro
+   (è il *backtesting*). Poi come si trasforma una serie in una tabella di
+   quelle: una colonna per il valore di ieri, una per la media degli ultimi
+   giorni, una per il giorno della settimana, e a quel punto la sanno leggere
+   tutti i modelli del capitolo sul Machine Learning.
+3. **Forecasting neurale**: le reti che possono guardare solo all'indietro
+   (**TCN**), quelle che invece di un numero prevedono un ventaglio di futuri
+   possibili (**DeepAR**), i **Transformer** adattati alle serie, e infine i
+   **foundation model** (come TimesFM o Chronos), addestrati una volta sola su
+   collezioni sterminate di serie e poi capaci di prevedere fenomeni che non
+   hanno mai visto.
 
-Attraversa tutte e tre un filo rosso, ereditato da Kelvin e dalle competizioni M:
-la previsione seria non è un numero, è un numero *con la sua incertezza*. Un
-modello che dice «domani 24 gradi» vale meno di uno che dice «domani tra 22 e 26
-gradi, con l'80% di confidenza», perché il secondo sa quanto poco sa. Con una
-riserva che la sezione sulla validazione riprenderà, e che vale per quasi tutti i
-metodi del capitolo: quel «22 e 26» tende a essere **più stretto** del dovuto, e
-quanto lo sia è una cosa che si misura.
+L'ordine è quello della storia, e la storia del forecasting è una lunga
+convivenza fra due famiglie: i metodi **statistici** classici, trasparenti e
+sorprendentemente difficili da battere, e i metodi **neurali**, che hanno fame
+di dati ma sanno cogliere regolarità più intricate e, guardando insieme migliaia
+di serie diverse, portare a ciascuna quello che hanno imparato dalle altre. La
+grande lezione delle competizioni M è che la rivalità fra le due è meno netta di
+quanto sembri. Nella quarta edizione, la M4, correvano centomila serie e
+sessantuno metodi, e a vincere non fu né la statistica pura né il deep learning
+puro: fu un **ibrido**, cioè una rete neurale montata sopra uno dei metodi
+classici della prossima sezione, in modo che ciascuno dei due facesse il pezzo
+in cui era più bravo. Dietro, a fare meglio dei singoli concorrenti, c'erano le
+**combinazioni**, cioè la media delle previsioni di più metodi messi insieme
+{cite}`makridakis2020m4`.
+
+Attraversa tutte e tre le sezioni un filo rosso, ed è quella stessa lezione: la
+previsione seria non è un numero, è un numero *con la sua incertezza*. Un
+modello che dice «domani 24 gradi» vale meno di uno che dice «domani fra 22 e 26
+gradi, e sono sicuro all'80%», dove quell'80% vuol dire: otto volte su dieci il
+valore vero cade dentro la forbice. Il secondo sa quanto poco sa.
+
+Su questo, però, quasi tutti i metodi del capitolo barano un po', e senza
+volerlo: quel «fra 22 e 26» tende a essere **più stretto** di quanto sarebbe
+onesto, e la forbice che promette di contenere il valore vero otto volte su
+dieci lo contiene un po' meno spesso. Non è una fatalità. Quanto stretta sia di
+troppo si misura, e la sezione sulla validazione mostra come.
 
 `````{tab} Elementare
 

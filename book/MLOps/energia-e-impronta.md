@@ -17,24 +17,36 @@ anelli che vale la pena conoscere, perché ognuno è una leva.
 
 ## Dal FLOP al joule
 
-Il primo anello è già stato costruito nel capitolo sulle GPU, anche se lì lo
-guardavamo con il cronometro invece che col contatore.
+Il **joule** è l'unità con cui si misura l'energia, come il metro lo è per le
+distanze: la corrente che si compra a kilowattora sono joule, e anche quello
+che un chip brucia per fare un conto sono joule, solo molti di meno. Il primo
+anello della catena porta dai conti ai joule, ed è già stato costruito nel
+capitolo sulle GPU, anche se lì lo guardavamo con il cronometro invece che col
+contatore.
 
 `````{tab} Elementare
 
 Intuitivamente, l'energia se ne va nei conti: più moltiplicazioni, più
 corrente. È sbagliato, ed è sbagliato di parecchio.
 
-Fare una moltiplicazione dentro il processore costa pochissimo. Andare a
-**prendere** i due numeri da moltiplicare nella memoria esterna costa
-centinaia di volte tanto. Muovere un dato è caro perché significa far
-commutare lunghe piste di rame dentro il silicio, e quella è fisica, non
-programmazione.
+I due numeri veri li ha misurati un ingegnere di Stanford, Mark Horowitz, e
+sono facili da tenere a mente. Moltiplicare due numeri dentro il processore
+costa **circa 5**. Andare a **prendere** un numero nella memoria che sta fuori
+dal chip costa **circa 640**, cioè più di cento volte tanto: e i numeri da
+prendere sono due, quindi la spesa vera del viaggio è più di duecento volte
+quella del conto. L'unità in cui sono misurati non conta (è il picojoule, una
+quantità di energia talmente piccola che non ha senso immaginarla): conta il
+rapporto fra i due.
 
-Il capitolo sulle GPU aveva già detto questa cosa con il cronometro in mano:
-il collo di bottiglia non sono i conti, sono i byte. Adesso la stessa frase si
-rilegge con la bolletta in mano, e dice la stessa cosa. Le due ottimizzazioni
-coincidono, ed è per questo che tutte le tecniche di quel capitolo (lavorare a
+Il motivo è fisico, non informatico. Portare un numero da fuori a dentro il
+chip vuol dire far cambiare stato a lunghissime piste di rame, e ogni
+cambiamento di stato costa corrente. Fare un conto su un numero che è già
+dentro, invece, muove pochissimo rame.
+
+Ed è la stessa identica frase del capitolo sulle GPU, «il collo di bottiglia non
+sono i conti, sono i byte», che là valeva per il tempo e qui vale per la
+corrente. Le due ottimizzazioni coincidono, ed è per questo che tutte le
+tecniche di quel capitolo (lavorare a
 piccoli blocchi tenuti vicino al processore, fare più operazioni in un
 passaggio solo invece di andare e tornare dalla memoria a ogni passo, far
 scorrere il dato fra unità vicine invece che dentro e fuori) sono in fondo la
@@ -112,25 +124,52 @@ Un centro dati non consuma solo quello che consumano i calcolatori. Consuma
 anche il condizionamento che porta via il calore, i gruppi di continuità (le
 batterie che tengono tutto acceso quando manca la corrente, e che per restare
 cariche consumano di continuo), le perdite negli alimentatori. La misura di
-quanto pesa questo contorno si chiama
-**PUE**: è il rapporto fra l'energia che entra nell'edificio e quella che
-arriva davvero ai calcolatori. Un PUE di $1$ sarebbe la perfezione (impossibile);
-una struttura moderna sta attorno a $1{,}1$–$1{,}3$, cioè spende il dieci o il
-trenta per cento in più; una vecchia può superare il $2$, cioè per ogni watt di
-calcolo ne brucia un altro per raffreddarlo.
+quanto pesa questo contorno ha un nome in sigla, **PUE** (l'iniziale di tre
+parole inglesi che vogliono dire «con che efficienza si usa la corrente»), ed è
+un rapporto: quanta elettricità entra nell'edificio diviso quanta ne arriva
+davvero ai calcolatori. Un PUE di $1$ sarebbe la perfezione, cioè zero
+sprechi, ed è impossibile; una struttura moderna sta attorno a $1{,}1$–$1{,}3$,
+cioè spende il dieci o il trenta per cento in più; una vecchia può superare il
+$2$, cioè per ogni watt di calcolo ne brucia un altro per raffreddarlo.
 
 Poi c'è il terzo passaggio, ed è quello che sfugge di più: **la stessa
-elettricità non inquina uguale dappertutto**. Un kilowattora prodotto dove la
-rete è idroelettrica o nucleare porta con sé pochi grammi di anidride
-carbonica; lo stesso kilowattora dove si brucia carbone ne porta un ordine di
-grandezza in più. E non cambia solo da paese a paese: cambia da un'ora
-all'altra, perché di notte, o quando non c'è vento, la rete accende centrali
-diverse.
+elettricità non inquina uguale dappertutto**. Un kilowattora (l'unità con cui
+si compra l'elettricità, quella che si legge sulla bolletta di casa) prodotto
+dove la rete è idroelettrica o nucleare porta con sé qualche decina di grammi
+di anidride carbonica; lo stesso kilowattora, dove si brucia carbone, ne porta
+qualche centinaio: più di dieci volte tanto. E non cambia solo da paese a paese:
+cambia da un'ora all'altra, perché di notte, o quando non c'è vento, la rete
+accende centrali diverse.
 
 La conseguenza è concreta e un po' sorprendente: **lo stesso addestramento,
 identico, cambia impronta a seconda di dove e quando lo si fa girare**. Da qui
 l'idea di spostare i lavori che possono aspettare verso le ore e i luoghi in
 cui la rete è pulita.
+
+Un gruppo di ricerca di Google, guidato da David Patterson, ha provato a
+mettere in fila quanto pesano le varie decisioni, e il risultato sorprende
+perché le quattro leve non pesano affatto uguale.
+
+Al primo posto c'è **quale modello si sceglie**. Alcuni modelli, per rispondere,
+si accendono tutti quanti; altri sono costruiti a scomparti, e per ogni domanda
+un piccolo selettore ne sveglia due o tre lasciando spenti tutti gli altri.
+Sono grandi uguale, ma consumano come la parte che accendono, e fra i due casi,
+a parità di qualità delle risposte, ci possono stare dieci volte.
+
+Al secondo posto c'è **dove si esegue**, cioè in quale rete elettrica, che
+sposta le emissioni da cinque a dieci volte anche restando nello stesso paese e
+nella stessa azienda.
+
+Più sotto le altre due, e sono quelle a cui di solito si pensa per prime:
+**che macchina si usa** (una fatta apposta per il machine learning rende da due
+a cinque volte più di una generica) e **quanto è ben progettato l'edificio**,
+dove uno costruito bene consuma da 1,4 a 2 volte meno di uno qualunque, ed è
+il conto del raffreddamento di cui si parlava poco fa.
+
+Quei numeri sono misure fatte su macchine del 2021 e come tutte le misure hanno
+una scadenza. Quello che regge è l'ordine: le decisioni prese al tavolo da
+disegno (quanto modello serve, e dove farlo girare) contano più di qualunque
+limatura del programma.
 
 `````
 
@@ -193,31 +232,36 @@ scelta del luogo è di qualcun altro.
 ## Addestrare una volta, servire un miliardo di volte
 
 C'è un errore di prospettiva che quasi tutti fanno all'inizio, e nasce dal
-fatto che l'addestramento fa notizia e l'inferenza no.
+fatto che addestrare fa notizia e rispondere no.
 
-L'addestramento è un costo **una tantum**, grande e ben visibile: si può
-misurare, si può datare, si può scrivere in un paper. L'inferenza è un costo
-**minuscolo moltiplicato per un numero enorme**: una singola risposta consuma
-pochissimo, ma se il modello risponde a milioni di richieste al giorno per due
-anni, il totale supera facilmente l'addestramento che l'ha prodotto.
+Addestrare è un costo che si paga **una volta sola**: grande, ben visibile, si
+può misurare, si può datare, si può scrivere in un articolo scientifico.
+Rispondere è un costo **minuscolo moltiplicato per un numero enorme**: una
+singola risposta consuma pochissimo, ma se il modello risponde a milioni di
+richieste al giorno per due anni, il totale supera facilmente l'addestramento
+che l'ha prodotto. C'è quindi un momento, nella vita di un modello, in cui la
+somma di tutte le risposte date fin lì raggiunge il costo di averlo costruito:
+è il **punto di pareggio**. Dove cada non è un numero universale e non lo si può
+scrivere qui: dipende da quanto è grande il modello, da quante richieste riceve
+e da quanto a lungo resta acceso, e ciascuno se lo deve calcolare per il proprio
+caso. Quello che è stabile è l'ordine di priorità che ne discende, e vale la
+pena tenerlo in mente quando si sceglie fra un modello grande e uno piccolo
+rifinito bene.
 
-La conseguenza operativa è che **le leve dell'inferenza contano più di quelle
-dell'addestramento**, e sono esattamente quelle già viste per motivi di costo e
-di latenza: la quantizzazione e la potatura della sezione su LLMOps, il
-*batching* che ammortizza la lettura dei pesi su molte richieste, la cache del
-prefisso della sezione sulle metriche di servizio, che evita di ricalcolare ciò
-che è già stato calcolato. Ci si aggiunge la **distillazione**, cioè
-addestrare un modello piccolo a imitare le risposte di uno grande e poi servire
-il piccolo: la incontra il capitolo sui Transformer, nella sezione *Tendenze e
-limiti*, e sul conto dell'energia è la leva più radicale di tutte, perché non
-alleggerisce il modello, lo sostituisce. Nella sezione su LLMOps quelle
-tecniche erano presentate come modi di spendere meno e rispondere prima; sono
-la stessa cosa vista da un'altra finestra.
+Ne segue che **le leve che contano sono quelle del rispondere, non quelle
+dell'addestrare**. E la buona notizia è che non sono leve nuove: sono le
+stesse già viste in questo capitolo per risparmiare denaro e tempo, cioè
+alleggerire il modello (la quantizzazione e la potatura della sezione su
+LLMOps), servire molte richieste in una volta sola, e non ricalcolare ciò che è
+già stato calcolato (la cache del prefisso della sezione sulle metriche di
+servizio). Là erano modi di spendere meno e rispondere prima; sono la stessa
+cosa vista da un'altra finestra.
 
-Il punto di pareggio non è un numero universale: dipende da quanto è grande il
-modello, da quante richieste riceve e da quanto a lungo resta in servizio. Ma
-l'ordine delle priorità che ne discende è stabile, e vale la pena tenerlo in
-mente quando si sceglie fra un modello grande e uno piccolo rifinito bene.
+Se ne aggiunge una, ed è la più radicale, perché non alleggerisce il modello:
+lo sostituisce. Si chiama **distillazione** e consiste nell'addestrare un
+modello piccolo a imitare le risposte di uno grande, per poi mandare in
+servizio soltanto il piccolo. La incontra il capitolo sui Transformer, nella
+sezione *Tendenze e limiti*.
 
 ## Il carbonio che c'è già dentro
 
@@ -232,12 +276,18 @@ fra gli impianti industriali più energivori che esistano, per trasportare il
 prodotto. Si chiama **carbonio incorporato**, ed è la parte dell'impronta che
 un dispositivo si porta dietro dalla nascita.
 
-Per un acceleratore in un centro dati che macina calcoli ventiquattr'ore al
-giorno per cinque anni, il carbonio incorporato è una frazione piccola del
-totale: quello che consuma girando è molto di più. Ma per un dispositivo che
-sta acceso poco (un sensore, un telefono, una scheda che si sveglia due volte
-al giorno) il rapporto si **rovescia**: quasi tutta la sua impronta è stata
-fissata prima che qualcuno lo accendesse.
+Quanto pesi dipende da una cosa sola: **per quale frazione della sua vita quel
+chip lavora davvero**. Una scheda da centro dati (un *acceleratore*, cioè un
+chip costruito apposta per fare i conti del machine learning e nient'altro)
+macina calcoli ventiquattr'ore al giorno per cinque anni: consumando così
+tanto e così a lungo, quello che ha speso per nascere diventa una briciola del
+totale.
+
+Un oggetto che si accende di rado sta all'estremo opposto. Un sensore che si
+sveglia due volte al giorno lavora per una frazione minuscola del tempo in cui
+esiste, e quindi consuma pochissimo: la parte grossa della sua impronta è stata
+fissata in fabbrica, prima che qualcuno lo accendesse, e non c'è modo di
+recuperarla.
 
 Da cui una conclusione poco intuitiva: per gli oggetti piccoli e poco usati, la
 scelta ambientale più efficace non è renderli più efficienti, è **tenerli in
@@ -273,13 +323,17 @@ pesa più di anni di funzionamento.
 
 ## Che cosa si può fare, e che cosa non funziona
 
-Tirando le somme, le leve sono cinque, e le prime due contano più delle altre:
-**quanto** modello serve davvero (un modello che si accende solo in parte, o
-dieci volte più piccolo, purché basti allo scopo, batte qualunque
-micro-ottimizzazione) e **dove** si esegue, cioè l'intensità di carbonio della
-rete elettrica. Vengono poi, nell'ordine, **su cosa** si esegue (un
-acceleratore adatto contro uno generico), **quando** si esegue per i lavori
-differibili, e infine **come** è scritto il codice.
+Tirando le somme, le leve sono cinque. Le prime tre sono le prime tre della
+classifica di poco fa, nello stesso ordine: **quanto** modello serve davvero
+(uno a scomparti, o uno dieci volte più piccolo purché basti allo scopo, batte
+qualunque limatura del programma), **dove** si esegue, cioè quanto è pulita
+l'elettricità di quella rete, e **su cosa** si esegue, cioè una macchina fatta
+apposta contro una generica. Le altre due la classifica non le misurava:
+**quando** si esegue, spostando ciò che può aspettare nelle ore in cui la rete
+è pulita, e infine **come** è scritto il codice, che è la leva che conta meno di
+tutte. Fuori dall'elenco resta la quarta voce della classifica, la qualità
+dell'edificio, e non per distrazione: quella non la sceglie chi costruisce il
+modello, la sceglie chi costruisce il centro dati.
 
 Due avvertenze finali, che valgono più di molte buone intenzioni.
 
@@ -289,12 +343,19 @@ più economico il risparmio è stato in buona parte reinvestito in modelli più
 grandi anziché incassato: è l'effetto di rimbalzo che va sotto il nome di
 paradosso di Jevons. Non è però una legge, ed è onesto dire che la questione è
 aperta. C'è almeno un caso, e non piccolo, in cui l'efficienza la crescita l'ha
-assorbita davvero: fra il 2010 e il 2018 il consumo elettrico complessivo dei
-centri dati del mondo è cresciuto di circa il sei per cento, mentre il lavoro
-che ci girava dentro si moltiplicava per più di sei. Otto anni, non un secolo, e
-prima dell'ondata che questo libro racconta: la misura serve a dire che il
-rimbalzo è un effetto documentato e frequente, non un destino. L'argomento non
-è contro l'efficienza, è contro il crederla sufficiente da sola.
+assorbita davvero. Lo ha misurato un gruppo guidato da Eric Masanet, su
+*Science* nel 2020, ricontando quanta elettricità consumano i centri dati del
+mondo: fra il 2010 e il 2018 quel consumo è cresciuto di **circa il sei per
+cento**, mentre nello stesso periodo il lavoro che ci girava dentro si è
+**moltiplicato per più di sei**. Attenzione a non confondere le due cifre: la
+prima è un pochino in più, la seconda è sei volte tanto. In otto anni il mondo
+ha chiesto ai centri dati sei volte il lavoro, e loro hanno consumato quasi
+uguale: lì l'efficienza la crescita se l'è mangiata tutta.
+
+È un caso solo, e per giunta precedente all'ondata che questo libro racconta,
+quindi non dimostra niente sul futuro. Serve a dire che il rimbalzo **non è un
+destino**: è un effetto frequente, non una legge. L'argomento, insomma, non è
+contro l'efficienza; è contro il crederla sufficiente da sola.
 
 La seconda riguarda i numeri. Quasi tutte le cifre pubblicate su questo tema
 sono **stime**, ottenute da ipotesi su hardware, utilizzo e mix energetico che
@@ -314,10 +375,11 @@ molto.
   riletta con la bolletta in mano: andare più veloci e consumare meno sono la
   stessa cosa.
 - L'impronta finale è il prodotto di **tre fattori**: l'energia che consumano i
-  calcolatori, il sovrapprezzo dell'edificio (raffreddamento e perdite, dal
-  dieci per cento fino a più del doppio) e quanto sporca è l'elettricità di
-  quella rete, che cambia di dieci volte fra un luogo e l'altro e di alcune
-  volte fra un'ora e l'altra della stessa rete.
+  calcolatori, il sovrapprezzo dell'edificio (raffreddamento e perdite: un
+  edificio moderno aggiunge dal dieci al trenta per cento, uno vecchio può
+  arrivare a raddoppiare il conto) e quanto sporca è l'elettricità di quella
+  rete, che cambia di dieci volte fra un luogo e l'altro e di alcune volte fra
+  un'ora e l'altra della stessa rete.
 - **Rispondere costa più che addestrare**, quando il modello resta in servizio
   a lungo: rimpicciolirlo, servire più richieste in una volta sola e riusare
   ciò che è già stato calcolato sono leve ambientali oltre che economiche.

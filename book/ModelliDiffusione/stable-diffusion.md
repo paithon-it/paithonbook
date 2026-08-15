@@ -1,7 +1,10 @@
 # Lo spazio latente: Stable Diffusion
 
-Il 22 agosto 2022 compare online un file da circa quattro gigabyte. Sono i
-pesi di **Stable Diffusion**, un modello text-to-image nato dai *latent
+Il 22 agosto 2022 compare online un file da circa quattro gigabyte. Dentro ci
+sono i **pesi** di **Stable Diffusion**, un modello che disegna un'immagine a
+partire da una frase scritta: i pesi sono i milioni di numeri che una rete si
+ritrova dentro dopo l'addestramento, cioè tutto quello che ha imparato, e
+averli vuol dire avere il modello. È nato dai *latent
 diffusion models* del gruppo di Björn Ommer all'Università Ludwig Maximilian
 di Monaco {cite}`rombach2022high`, sviluppato con Runway e addestrato con la
 potenza di calcolo di Stability AI. La novità non è la qualità delle immagini
@@ -9,9 +12,11 @@ potenza di calcolo di Stability AI. La novità non è la qualità delle immagini
 condizioni: quei modelli vivevano nei data center dei loro proprietari,
 accessibili con il contagocce dietro liste d'attesa e interfacce controllate.
 Stable Diffusion invece si *scarica*. Chiunque, gratis, può metterlo sul
-proprio computer, e per farlo girare basta una scheda video da videogiochi con
-meno di dieci gigabyte di memoria. Nel giro di poche settimane i forum si
-riempiono di immagini, spuntano interfacce grafiche amatoriali, plugin per
+proprio computer, e per farlo girare basta la **GPU** di un computer da
+videogiochi, cioè il processore grafico, quel pezzo che nei giochi disegna le
+immagini a schermo e che qui fa i conti del modello. Nel giro di poche
+settimane i forum si riempiono di immagini, spuntano interfacce grafiche
+amatoriali, plugin per
 Photoshop e Blender, versioni modificate per ogni gusto. La generazione di
 immagini smette di essere una demo da guardare e diventa uno strumento da
 usare.
@@ -20,12 +25,16 @@ La domanda di questa sezione è: che cosa lo rende possibile *tecnicamente*?
 Non un modello più grande: al contrario, uno più piccolo. Il segreto è un
 trasloco: la diffusione che conosciamo fa le valigie, lascia i pixel e si
 trasferisce in uno spazio compresso, decine di volte più piccolo, dove ogni
-passo di pulitura costa una frazione. Per capire il trasloco, però, dobbiamo
-prima conoscere il traslocatore: una rete che si chiama *variational
-autoencoder*. Il libro l'ha finora solo nominata di sfuggita, nel capitolo sul
-reinforcement learning profondo, e ne ha usato una variante fra i codec
-neurali dell'audio: qui la guardiamo per esteso, perché è lei che porta i
-mobili.
+passo di pulitura costa una frazione. Vale la pena dire subito in che moneta si
+paga, perché in tutta la sezione parleremo di costi: si paga in **conti da
+fare**, cioè in secondi di attesa e in memoria occupata sulla GPU. Meno numeri
+da elaborare, meno conti, meno attesa.
+
+Per capire il trasloco, però, dobbiamo prima conoscere il traslocatore, che è
+una rete a sé, diversa da quella che toglie il rumore, e si chiama
+*variational autoencoder*. Il libro l'ha finora solo nominata di sfuggita e ne
+ha usato una variante fra i codec neurali dell'audio; qui la guardiamo per
+esteso, perché è lei che porta i mobili.
 
 ## Il prezzo dei pixel
 
@@ -37,8 +46,8 @@ $512 \times 512$ pixel è fatta quindi di
 $512 \times 512 \times 3 = 786\,432$ numeri. Il restauratore della sezione
 precedente (la U-Net {cite}`ronneberger2015u` che predice il rumore) deve
 elaborarli *tutti*, e deve farlo a ogni passo di pulitura: centinaia o
-migliaia di passaggi per una sola immagine. Su un cluster da laboratorio si
-può fare; su un computer di casa no.
+migliaia di passaggi per una sola immagine. Con le centinaia di macchine di un
+laboratorio si può fare; su un computer di casa no.
 
 Ed è uno spreco, per una ragione precisa: la maggior parte di quei 786.432
 numeri non descrive *che cosa* c'è nell'immagine, ma dettagli percettivi (la
@@ -53,23 +62,37 @@ importanti: dov'è il gatto, dov'è il muro, da che parte arriva la luce.
 L'idea di Robin Rombach, Björn Ommer e colleghi {cite}`rombach2022high` è
 dividere il lavoro tra due specialisti. Una prima rete impara la
 **compressione percettiva**: trasforma i pixel in una rappresentazione
-compatta (lo **spazio latente**) che conserva il contenuto e scarta il
-dettaglio ricostruibile. La diffusione, poi, impara la **composizione** dentro
-quello spazio compatto, dove ogni passo costa decine di volte meno. È la
-ricetta dei *latent diffusion models*, e Stable Diffusion ne è il figlio
-famoso.
+compatta che conserva il contenuto e scarta il dettaglio ricostruibile. La
+diffusione, poi, impara la **composizione** dentro quello spazio compatto, dove
+ogni passo costa decine di volte meno.
+
+Quello spazio compatto ha un nome che ricorre ovunque in questa letteratura, e
+tanto vale prenderlo subito: si chiama **spazio latente**. «Latente» vuol dire
+nascosto, non manifesto, ed è il modo in cui si nominano le grandezze che un
+modello si costruisce per conto suo e che nessuno gli ha mostrato: nei dati non
+c'era scritto da nessuna parte come comprimere un gatto, la rete se l'è
+inventato. La ricetta si chiama quindi dei *latent diffusion models*, e Stable
+Diffusion ne è il figlio famoso.
 
 ## L'archivista: il variational autoencoder
 
-Il pezzo nuovo della pipeline è una rete a forma di clessidra: un
-**autoencoder**, addestrato a ricostruire il proprio input dopo averlo fatto
-passare da una strettoia. La variante che ci serve, il **variational
+Il pezzo nuovo è una rete a forma di clessidra: si chiama **autoencoder**, e a
+prima vista fa la cosa più inutile del mondo, cioè si allena a riprodurre
+esattamente quello che le si dà in pasto. L'inutilità sparisce appena si guarda
+la strettoia in mezzo alla clessidra: quello che entra deve passare di lì, e di
+lì passano molti meno numeri di quanti ne sono entrati. Per riuscire a
+riprodurre l'immagine, la rete è dunque costretta a scegliere che cosa fare
+stare nella strettoia, e imparare a scegliere è tutto il punto. La variante che
+ci serve, il **variational
 autoencoder** (VAE) di Diederik Kingma e Max Welling {cite}`kingma2014auto`, è
 del 2014 (più vecchia della diffusione moderna e persino delle GAN) e tornerà
 più avanti nel libro. Qui ci serve l'essenziale: che cosa fa e perché rende lo
-spazio latente un posto dove si può lavorare. Per parlarne useremo un'immagine
-che ci accompagnerà fino alla fine del capitolo: la rete che comprime è un
-**archivista** e la rappresentazione compatta che scrive è una **scheda**.
+spazio latente un posto dove si può lavorare. Per parlarne useremo una
+metafora che ci accompagnerà fino alla fine del capitolo. Le due metà della
+clessidra diventano due persone: la rete che comprime è un **archivista** e
+la rappresentazione compatta che scrive è la sua **scheda**; la rete che
+ricostruisce è un **copista**, che dalla scheda ridipinge il quadro. Da qui
+in avanti «scheda» vorrà dire sempre e solo questo.
 
 ```{figure} ../figures/vae-auto-encoding-variational-bayes.svg
 :name: fig-vae
@@ -79,55 +102,78 @@ che ci accompagnerà fino alla fine del capitolo: la rete che comprime è un
 La rete che comprime non restituisce una scheda sola, ma una scheda **e un
 margine di tolleranza**: «all'incirca questo, più o meno tanto». È quel margine
 la trovata, ed è ciò che costringe schede vicine a ridiventare immagini simili.
+(Le lettere greche del disegno sono i nomi tecnici delle stesse cose:
+$\mu$ il valore scritto sulla scheda, $\sigma$ il margine di tolleranza, e il
+pallino nero il punto sorteggiato dentro quel margine. La scheda, quindi, è la
+coppia: il valore *e* il margine.)
 ```
 
-Il sorteggio in mezzo alla {numref}`fig-vae` (si prende la scheda, la si sposta
-di un po' a caso dentro il margine di tolleranza, e solo allora la si passa a
-chi deve ridipingere) è ciò che distingue questa rete da un compressore
-qualunque, e ha una conseguenza pratica precisa: siccome l'addestramento vede
-ogni volta una scheda leggermente diversa, chi ridipinge è costretto a
-funzionare su tutto un intorno, non su un punto solo. Lo spazio delle schede ne
-esce **continuo**, cioè senza buchi: qualunque scheda si peschi, anche una a
-metà strada fra due che esistono, corrisponde a un'immagine sensata. Ed è la
-premessa perché la diffusione ci si possa muovere dentro, dato che la
-diffusione, di suo, passa il tempo a mettere piede in posti a caso.
+La {numref}`fig-vae` dà per scontata una cosa che vale la pena fissare. Una
+scheda è una lista di numeri, e come tale si può immaginare come un **punto su
+una mappa**, esattamente la mappa delle immagini
+possibili di poche pagine fa: schede simili sono punti vicini, e fra due punti
+c'è sempre tutto lo spazio in mezzo. È quello che permette di dire frasi come
+«una scheda a metà strada fra due che esistono», che con dei foglietti di carta
+non vorrebbero dire niente.
+
+Il sorteggio in mezzo alla figura (si prende la scheda, la si sposta di un po'
+a caso dentro il margine di tolleranza, e solo allora la si passa al copista) è
+ciò che distingue questa rete da un compressore qualunque. La conseguenza è
+precisa: siccome durante l'addestramento il copista vede ogni volta una scheda
+leggermente spostata, è costretto a funzionare su tutta una zona e non su un
+punto solo. Lo spazio delle schede ne esce **continuo**, cioè senza buchi:
+qualunque punto si peschi, anche uno a metà strada fra due schede vere,
+corrisponde a un'immagine sensata. Ed è la premessa perché la diffusione ci si
+possa muovere dentro, dato che la diffusione, di suo, passa il tempo a mettere
+piede in posti sorteggiati a caso.
 
 `````{tab} Elementare
 
 Immagina l'archivista di un museo pieno di quadri enormi. Per ogni quadro
 scrive una scheda molto più piccola dell'originale, e il suo mestiere si
-giudica con una prova concreta: un collega deve *ridipingere* il quadro
+giudica con una prova concreta: il copista deve *ridipingere* il quadro
 leggendo solo la scheda. Se la copia somiglia all'originale, la scheda
-conteneva l'essenziale; se non somiglia, la scheda va scritta meglio. Dopo
-milioni di prove su milioni di quadri, l'archivista ha imparato da solo che
-cosa annotare (soggetto, composizione, colori dominanti) e che cosa lasciar
-perdere, perché il collega sa ricostruirlo da sé: la grana della tela, le
-singole pennellate dello sfondo. Nei numeri di Stable Diffusion: il quadro è
-fatto di 786.432 valori, la scheda di 16.384, quarantotto volte meno. E quel
-16.384 non è un numero magico ma una scelta di progetto: la scheda è una
-griglia di 64 caselle per lato invece delle 512 dell'immagine (otto volte meno
-per lato) con quattro numeri per casella, e $64 \times 64 \times 4$ fa
-appunto 16.384.
+conteneva l'essenziale; se non somiglia, la scheda va scritta meglio. I due si
+allenano insieme e si giudicano insieme, perché una scheda è buona o cattiva
+solo rispetto a chi la deve leggere.
+
+Dopo milioni di prove su milioni di quadri, l'archivista ha imparato da solo
+che cosa annotare (soggetto, composizione, colori dominanti) e che cosa
+lasciar perdere: la grana della tela, le singole pennellate dello sfondo. Non
+perché il copista se le ricordi, ma perché se le **inventa**, e a nessuno
+importa che siano proprio quelle: una grana di tela vale l'altra, e nessuno va
+a controllarla filo per filo.
+
+Nei numeri di Stable Diffusion: il quadro è fatto di 786.432 valori, la scheda
+di 16.384, quarantotto volte meno. E quel 16.384 non è un numero magico ma una
+scelta di progetto: la scheda è una griglia di 64 caselle per lato invece delle
+512 dell'immagine (otto volte meno per lato) con quattro numeri per casella, e
+$64 \times 64 \times 4$ fa appunto 16.384. I quattro numeri, a differenza dei
+tre dell'immagine, non hanno un significato leggibile: non sono rosso, verde e
+blu, sono quattro coordinate che l'archivista si è scelto da solo e che nessuno
+gli ha insegnato. Guardarli non dice niente a un essere umano; al copista sì.
 
 Va detta anche l'altra metà, perché il capitolo ci tornerà: **la compressione
 distrugge**, e quello che l'archivista non ha annotato non lo recupera più
-nessuno, per quanto bravo sia il restauratore che lavora dopo di lui. La scheda
-è il soffitto della qualità finale. Quattro numeri per casella bastano per un
-gatto su un muro e non bastano per una scritta leggibile, per un volto in
-secondo piano o per una mano con cinque dita: è una delle ragioni (non l'unica)
-dei difetti tipici della prima generazione di questi modelli, che sono sempre
-difetti di dettaglio fine. Alzare quel soffitto è una delle cose che i
-successori hanno fatto.
+nessuno, per quanto bravo sia chi lavora dopo di lui. La scheda è il soffitto
+della qualità finale. Quattro numeri per casella bastano per un gatto su un
+muro e non bastano per una scritta leggibile, per un volto in secondo piano o
+per una mano con cinque dita: se il copista si inventa la grana della tela
+nessuno se ne accorge, se si inventa le lettere di un'insegna se ne accorgono
+tutti. È una delle ragioni (non l'unica) dei difetti tipici della prima
+generazione di questi modelli, che sono sempre difetti di dettaglio fine.
+Alzare quel soffitto è una delle cose che i successori hanno fatto.
 
-E il «variazionale» del nome? Sta in due regole che tengono l'archivio in
-ordine. Primo: la scheda non inchioda il quadro a un punto esatto ma descrive
-una *nuvola di possibilità* («un gatto nero più o meno così») cosicché quadri
-quasi uguali abbiano schede quasi uguali. Secondo: l'archivio non deve avere
-buchi; se peschi una scheda plausibile a caso, anche una mai scritta da
-nessuno, il collega deve comunque saperne dipingere un quadro sensato.
-Sembrano pignolerie, ma sono esattamente ciò che serve alla diffusione: il
-restauratore lavorerà *dentro* questo archivio, muovendosi tra schede piene di
-rumore, e ogni casella in cui mette piede deve corrispondere a un'immagine
+E il «variational» del nome, che in italiano diremmo «variazionale»? Sta in due
+regole che tengono l'archivio in ordine. Primo: la scheda non inchioda il
+quadro a un punto esatto ma descrive una *nuvola di possibilità* («un gatto
+nero più o meno così»), cosicché quadri quasi uguali abbiano schede quasi
+uguali. Secondo: l'archivio non deve avere buchi; se peschi un punto a caso
+nella zona dove le schede stanno di solito, anche uno mai scritto da nessuno,
+il copista deve comunque saperne dipingere un quadro sensato. Sembrano
+pignolerie, ma sono esattamente ciò che serve alla diffusione: il restauratore
+lavorerà *dentro* questo archivio, e ogni punto in cui mette piede (compresi i
+mille punti sorteggiati del suo viaggio) deve corrispondere a un'immagine
 possibile.
 
 `````
@@ -187,15 +233,23 @@ conseguenze proprie.
 
 ## La ricetta in quattro mosse
 
-Ora abbiamo tutti i pezzi, e {numref}`fig-latent-diffusion` li mette in fila:
-la rete che comprime, lo spazio delle schede dove avviene la diffusione, il
-testo che entra di lato, la rete che riporta ai pixel. Un dettaglio
-dell'ordine dei lavori conta più di quanto sembri: l'archivista impara il suo
-mestiere *prima*, da solo, e poi **smette di imparare**. Da quel momento in
-avanti è uno strumento fisso, e mentre il restauratore si allena nessuno gli
-tocca più niente. In gergo si dice che i suoi pesi vengono *congelati*, e la
-ragione è che il restauratore deve allenarsi su un archivio che non cambia
-sotto i suoi occhi.
+Manca un pezzo solo, che finora questa sezione ha tenuto in disparte: **il
+testo**. Le fotografie con cui questi modelli si
+addestrano non arrivano nude, arrivano con una didascalia accanto («un gatto
+nero seduto su un muro»), raccolta insieme all'immagine dal sito da cui è stata
+presa. È così che il modello impara ad associare le parole alle cose, ed è il
+motivo per cui alla fine gli si potrà scrivere che cosa disegnare.
+
+La {numref}`fig-latent-diffusion` mette allora in fila tutto: la rete che
+comprime, lo spazio delle schede dove avviene la diffusione, il testo che entra
+di lato, la rete che riporta ai pixel. Un dettaglio dell'ordine dei lavori
+conta più di quanto sembri: l'archivista impara il suo mestiere *prima*, da
+solo, e poi **smette di imparare**. Da quel momento in avanti è uno strumento
+fisso, e mentre il restauratore si allena nessuno gli tocca più niente. In
+gergo si dice che i suoi pesi vengono *congelati* (i pesi sono i numeri interni
+della rete, quelli che decidono le sue risposte, e congelarli vuol dire
+smettere di ritoccarli). La ragione è che il restauratore deve allenarsi su un
+archivio che non cambia sotto i suoi occhi.
 
 ```{figure} ../figures/latent-diffusion.svg
 :name: fig-latent-diffusion
@@ -212,24 +266,29 @@ richiesta scritta dall'utente, che entra di lato.
 Quattro mosse. **Prima**: l'archivista comprime ogni fotografia dell'archivio
 di addestramento nella sua scheda; d'ora in poi si lavora solo su schede.
 **Seconda**: il restauratore della sezione precedente fa esattamente il suo
-solito mestiere (sporca di rumore, impara a pulire un velo alla volta) ma su
-schede da 16.384 numeri invece che su quadri da 786.432: come restaurare
-cartoline anziché affreschi, ogni passata costa decine di volte meno (non
-esattamente quarantotto: la rete che lavora sulle schede non è quella dei
-quadri rimpicciolita, è una rete sua).
+solito mestiere (sporca di rumore, impara a indicare il disturbo) ma su schede
+da 16.384 numeri invece che su quadri da 786.432, come restaurare cartoline
+anziché affreschi. Ogni giro di domanda e risposta costa decine di volte meno.
+Non esattamente quarantotto volte meno, e il motivo è che la rete che lavora
+sulle schede non è quella dei quadri rimpicciolita, è una rete progettata
+apposta e con i suoi numeri.
+
 **Terza**: mentre pulisce, il restauratore tiene sul tavolo la commissione
 scritta dal cliente («un gatto nero che salta sul muro, in acquerello») e a
 ogni pennellata le dà un'occhiata, soffermandosi sulle parole che servono in
 quel momento: «nero» quando decide i toni, «acquerello» quando decide il
 tratto. È la stessa occhiata selettiva dell'interprete della traduzione
 automatica, ritrovata poi nei Transformer: lì collegava due lingue, qui
-collega parole e immagine. **Quarta**: finita la pulitura, la scheda torna
-all'archivista, che ridipinge il quadro a piena risoluzione.
+collega parole e immagine. (Quella commissione, nel gergo di tutti i giorni,
+si chiama **prompt**, ed è la frase che si scrive nella casella di un
+generatore di immagini. Da qui in avanti useremo le due parole come sinonimi.)
+**Quarta**: finita la pulitura, la scheda passa al copista, che ridipinge il
+quadro a piena risoluzione.
 
 Per **generare** un'immagine nuova si parte, come sempre, dalla fine: una
-scheda di puro rumore casuale, mai appartenuta a nessun quadro. Il
+scheda di puro rumore sorteggiato, mai appartenuta a nessun quadro. Il
 restauratore la pulisce passo dopo passo con la commissione sotto gli
-occhi, e l'archivista trasforma il risultato in pixel. Il gatto in
+occhi, e il copista trasforma il risultato in pixel. Il gatto in
 acquerello che compare non esisteva da nessuna parte: né il quadro, né la
 sua scheda.
 
@@ -293,7 +352,8 @@ dove $h(\mathbf{z}_t)$ sono le mappe di attivazione intermedie della U-Net
 appiattite in sequenza, $\tau(c)$ gli embedding del prompt e $\mathbf{W}_Q$,
 $\mathbf{W}_K$, $\mathbf{W}_V$ proiezioni apprese, che moltiplicano a destra le
 sequenze secondo la
-convenzione per righe (un token per riga) di quel capitolo. Come nel decoder del Transformer originale, le
+convenzione per righe (un token per riga) di quel capitolo. Come nel decoder
+del Transformer originale, le
 query vengono da chi genera e le key/value dalla sorgente da consultare:
 solo che qui chi genera è un'immagine e la sorgente è una frase.
 
@@ -308,13 +368,16 @@ raccolte dal web).
 
 `````
 
-Vale la pena fissare l'asimmetria che ne risulta, ed è un'asimmetria di
-lavoro, non di listino. *Addestrare* Stable Diffusion è rimasto un mestiere da
-data center: la scheda tecnica del modello dichiara centocinquantamila ore di
-calcolo su schede grafiche professionali, cioè una macchina sola accesa per
-diciassette anni. *Usarlo*, grazie al trasloco nelle schede compresse, costa
-quattro gigabyte di memoria video e qualche secondo. È il secondo di questi
-due conti, non il primo, ad aver cambiato chi può partecipare.
+Vale la pena fissare l'asimmetria che ne risulta, e riguarda il lavoro da
+fare, non il prezzo da pagare a qualcuno. *Addestrare* Stable Diffusion è rimasto un mestiere da
+data center: la documentazione del modello dichiara centocinquantamila ore di
+calcolo su GPU professionali, cioè una macchina sola accesa per diciassette
+anni. *Usarlo*, grazie al trasloco nelle schede compresse, chiede alla GPU
+quattro gigabyte di memoria e qualche secondo di attesa. (Che siano quattro
+come i quattro del file scaricato è quasi un caso: quel file, caricato in
+memoria con numeri a metà precisione, di gigabyte ne occupa circa due, e gli
+altri due servono ai conti.) È il secondo di questi due conti, non il primo,
+ad aver cambiato chi può partecipare.
 
 ## Due bussole: quanto dare retta alla richiesta
 
@@ -330,28 +393,51 @@ ed è di una semplicità che spiazza.
 
 `````{tab} Elementare
 
-Il trucco comincia in addestramento: circa una volta su dieci, al modello
-il prompt viene *nascosto*. Così impara due mestieri insieme: disegnare
+Il trucco comincia in addestramento: circa una volta su dieci, al modello la
+commissione viene *nascosta*. Così impara due mestieri insieme: disegnare
 «un'immagine plausibile qualunque» quando non ha indicazioni, e disegnare
 «quello che dice il testo» quando le ha.
 
-In generazione hai quindi due bussole, ed è proprio la bussola della sezione
-precedente, quella che indica come ritoccare l'immagine per renderla più
-credibile, che si sdoppia. Una punta verso «immagini credibili in generale»,
-ed è quella di prima tale e quale; l'altra verso «immagini credibili *che
-rispettano la tua richiesta*».
-La differenza tra le due direzioni ti dice esattamente da che parte sta il
-prompt, e il colpo di genio è camminare *esagerando* quella differenza: non un
-passo verso il prompt, ma sette e mezzo (è letteralmente il valore di default
-di Stable Diffusion, $w = 7{,}5$). Con $w$ basso, il modello va quasi a
-briglia sciolta: immagini varie, prompt preso alla leggera. Con $w$ alto,
-aderenza ferrea ma meno fantasia; ed esagerando davvero ($w$ oltre 15–20),
-l'immagine viene «sovracotta»: colori saturi, contrasti duri, composizioni
-tutte uguali.
+In generazione, allora, a ogni passo puoi porre la domanda due volte e
+ottenere due risposte. È il cartello della salita della sezione precedente,
+quello che indica in che direzione ritoccare l'immagine per renderla più
+credibile, che si sdoppia: un cartello dice «per una figura credibile in
+generale, va' di là», l'altro dice «per una figura credibile *e che rispetta
+la richiesta*, va' di là». Chiamiamole le due bussole, tenendo a mente che non
+sono bussole vere: non indicano il nord tutte e due, ognuna indica la sua
+direzione, e le due direzioni non coincidono.
+
+Le due direzioni sono quasi uguali, e la piccola differenza fra loro è tutto
+quello che il testo ha da dire. Facciamo finta di essere su una cartina: la
+prima bussola dice «nord», la seconda dice «nord, un pelo verso est». Quel
+«pelo verso est» è il contributo della richiesta. Seguire semplicemente la
+seconda bussola si può, ed è quello che si faceva prima: il guaio è che
+l'indicazione del testo, nel totale, pesa pochissimo. La rete tira soprattutto
+verso «un'immagine credibile», e «acquerello» è una spintarella dentro quella
+spinta grossa: si perde per strada, e il gatto viene a olio. Il colpo di genio
+è prendere quel pelo verso est e
+moltiplicarlo: non un passo, ma sette passi e mezzo verso est, e poi camminare
+verso nord-est-est. Sette e mezzo non è una figura retorica, è il numero che
+Stable Diffusion usa di serie, e si chiama il **peso della guida**, $w$.
+
+A $w = 1$ non si esagera niente: si cammina nella direzione della seconda
+bussola e basta, ed è il caso in cui il gatto viene a olio. Scendendo verso
+quel valore il modello va più a briglia sciolta, con immagini varie e richiesta
+presa alla leggera; salendo, ubbidisce di più e inventa di meno. Esagerando
+davvero, ben oltre il 7 e mezzo, l'immagine viene «sovracotta»: colori saturi,
+contrasti duri, composizioni tutte uguali.
+
+Resta da spiegare il nome. Un **classificatore** è una rete che guarda
+un'immagine e dice che cosa contiene («questo è un gatto»), e il metodo che
+veniva prima faceva proprio così: addestrava un classificatore a parte e lo
+usava per tirare la generazione verso la categoria voluta. Costoso, e un pezzo
+in più da mantenere. Ho e Salimans ottengono lo stesso effetto senza costruire
+nessun classificatore, usando due risposte della rete che c'è già: da qui
+*classifier-free*, «senza classificatore».
 
 I **negative prompt** sono la stessa idea usata al contrario: al posto della
 bussola «qualunque cosa» ne metti una che punta verso ciò che *non* vuoi
-(«sfocato, deforme, watermark») e cammini allontanandotene.
+(«sfocato, deforme, con una scritta sopra») e cammini allontanandotene.
 
 `````
 
@@ -425,12 +511,15 @@ estrapola allontanandosi da esso.
 
 ## Dieci righe di Python
 
-Non reimplementeremo la pipeline: il modo onesto di usare Stable Diffusion è
-la libreria `diffusers` di Hugging Face, che gira su PyTorch e impacchetta
-VAE, U-Net, text encoder e campionatore in un oggetto solo
+Non riscriveremo da zero tutta la catena di montaggio: nessuno lo fa, e il modo
+in cui la si usa davvero è la libreria `diffusers` di Hugging Face, che gira su
+PyTorch e impacchetta in un blocco solo l'archivista, il copista, il
+restauratore, la rete che legge la commissione scritta e la procedura che
+scende la scala
 (`pip install diffusers transformers accelerate`). Al primo avvio scarica i
 pesi (qualche gigabyte) e serve una GPU NVIDIA con circa quattro gigabyte di
-memoria video.
+memoria. Senza una GPU così il blocco non gira, e non è un problema: si legge,
+perché quello che c'è da capire sta nei nomi delle opzioni.
 
 ```{code-block} python
 :class: pt-non-eseguibile
@@ -480,34 +569,42 @@ Le versioni successive raccontano una traiettoria che qui interessa per una
 ragione sola: dice dove è andata a finire l'architettura. Le prime rifiniscono
 la ricetta senza cambiarla; poi la si ingrandisce, con una rete più capiente,
 due lettori di testo invece di uno e una risoluzione nativa doppia; infine, nel
-2024, arriva il passo che a questo punto del libro suona inevitabile, cioè
-buttare la U-Net e metterci al suo posto un Transformer. Come e perché la
-diffusione e i Transformer si siano incontrati è la storia della prossima
+2024, si butta la U-Net e le si mette al posto un Transformer. Chi ha letto il
+capitolo sui Transformer se lo aspettava, perché la stessa sostituzione era già
+avvenuta nella traduzione e nella visione; ma che funzionasse anche qui non era
+affatto scontato, e come e perché sia successo è la storia della prossima
 sezione.
 
 ## Le domande che restano aperte
 
-Chiudiamo con la stessa onestà usata per bias e allucinazioni nel capitolo
-sui Transformer, perché i nodi sono paralleli e altrettanto strutturali.
+Il capitolo sui Transformer si era chiuso elencando i problemi aperti dei
+modelli di linguaggio, senza addolcirli. Qui i problemi sono paralleli e
+altrettanto strutturali, e sono tre.
 
-Il primo è il **consenso**: la stessa pipeline che dipinge un gatto in
-acquerello genera il volto di una persona reale in una scena mai avvenuta, e i
-pesi aperti rendono le contromisure centralizzate (filtri, blocchi nei prompt)
-facili da rimuovere. Il secondo sono i **dati**: LAION è raccolto dal web, e
-contiene anche opere protette da diritto d'autore e immagini di persone che
-non hanno mai acconsentito. Su questo si è aperto un contenzioso vero:
-all'inizio del 2023 Getty Images ha citato in giudizio Stability AI, e un
-gruppo di artisti ha avviato una class action contro Stability AI, Midjourney
-e DeviantArt; mentre scriviamo, i procedimenti hanno prodotto esiti parziali e
-diversi da una giurisdizione all'altra, e la questione di fondo (se addestrare
-su opere protette sia un uso lecito) non ha ancora una risposta stabile. Il
-terzo è la **provenienza**: il codice di rilascio di Stable Diffusion
-incorporava di serie una filigrana invisibile nelle immagini generate, e
-standard come le *Content Credentials* del consorzio C2PA provano a
-certificare l'origine dei contenuti; ma chi ha i pesi può disattivare la
-filigrana con una riga di codice, e il riconoscimento a posteriori resta una
-rincorsa. Sono problemi aperti nel senso pieno: tecnici solo in parte, e non
-risolvibili solo con la tecnica.
+Il primo è il **consenso**. La stessa catena di montaggio che dipinge un gatto
+in acquerello dipinge il volto di una persona reale in una scena mai avvenuta,
+e i pesi aperti rendono facili da rimuovere le contromisure decise da chi
+distribuisce il modello (filtri, parole vietate nella richiesta).
+
+Il secondo sono i **dati**. Stable Diffusion è addestrato su LAION, un enorme
+elenco pubblico di indirizzi di immagini raccolte dal web con la loro
+didascalia: miliardi di voci, prese dove capitava. Dentro ci sono anche opere
+protette da diritto d'autore e fotografie di persone che non hanno mai
+acconsentito. Su questo si è aperto un contenzioso vero. All'inizio del 2023
+Getty Images ha citato in giudizio Stability AI, e un gruppo di artisti ha
+fatto causa a Stability AI, Midjourney e DeviantArt. Mentre scriviamo, le
+sentenze sono parziali e diverse da un paese all'altro, e la domanda di fondo,
+cioè se addestrare un modello su opere protette sia lecito, non ha ancora una
+risposta stabile.
+
+Il terzo è la **provenienza**, cioè poter dire se un'immagine è stata generata
+o no. Il codice di rilascio di Stable Diffusion incorporava di serie una
+filigrana invisibile nelle immagini che produceva, e ci sono standard, come le
+*Content Credentials* del consorzio C2PA, che provano a certificare l'origine
+dei contenuti. Ma chi possiede i pesi disattiva la filigrana con una riga di
+codice, e riconoscere l'origine dopo il fatto resta una rincorsa. Sono problemi
+aperti nel senso pieno: tecnici solo in parte, e non risolvibili solo con la
+tecnica.
 
 `````{tab} Elementare
 
@@ -518,31 +615,33 @@ risolvibili solo con la tecnica.
   sezione è **spostare tutto il lavoro su una versione compressa** della
   fotografia, quarantotto volte più piccola, e tornare ai pixel solo alla fine.
 - Chi comprime è l'**archivista**: per ogni quadro scrive una scheda molto più
-  piccola, e la prova che la scheda è buona è che un collega, leggendo solo
-  quella, sappia ridipingere il quadro. La sua trovata è non scrivere un valore
-  esatto ma un valore *con un margine*, così che schede vicine diventino
-  immagini simili e l'archivio non abbia buchi.
+  piccola, e chi la legge per ridipingere il quadro è il **copista**. I due si
+  allenano insieme, e la prova che la scheda è buona è che la copia somigli
+  all'originale. La trovata dell'archivista è non scrivere un valore esatto ma
+  un valore *con un margine*, così che schede vicine diventino immagini simili
+  e l'archivio non abbia buchi.
 - Quello che l'archivista non annota è **perso per sempre**: la scheda è il
-  soffitto della qualità finale, e nessuna bravura del restauratore lo alza. È
+  soffitto della qualità finale, e nessuna bravura di chi viene dopo lo alza. È
   una delle ragioni per cui i primi modelli di questa famiglia sbagliavano
   scritte, volti piccoli e mani, che sono tutte cose di dettaglio fine.
 - La ricetta in quattro mosse: l'archivista comprime, il restauratore fa il suo
   solito mestiere sulle schede invece che sui quadri, tenendo d'occhio la
-  commissione scritta dal cliente, poi l'archivista ridipinge. L'archivista
+  commissione scritta dal cliente, poi il copista ridipinge. L'archivista
   impara prima e poi smette di imparare.
-- Per decidere **quanto dare retta alla richiesta** si usano due bussole (una
-  punta alle immagini credibili in generale, l'altra a quelle che rispettano la
-  richiesta) e si cammina esagerando la differenza fra le due. Più si esagera,
-  più il modello ubbidisce e meno inventa; esagerando troppo, l'immagine viene
-  «sovracotta».
+- Per decidere **quanto dare retta alla richiesta** si interroga la rete due
+  volte, una senza dirle niente e una dandole la richiesta, e si guarda di
+  quanto le due risposte differiscono: quella differenza è il contributo del
+  testo, ed è piccola. Si cammina moltiplicandola, di solito per sette e mezzo.
+  Più si moltiplica, più il modello ubbidisce e meno inventa; esagerando,
+  l'immagine viene «sovracotta».
 - I pesi aperti hanno generato una comunità e non solo un'utenza: sono nate
   tecniche per specializzare il modello con file da pochi megabyte, o per
   costringerlo a seguire uno schizzo.
-- Restano aperti i nodi del **consenso**, dei **diritti sui dati** con cui
-  questi modelli sono addestrati e della **provenienza** delle immagini che
-  producono. Sono i problemi paralleli ai bias e alle allucinazioni dei modelli
-  di linguaggio, e altrettanto strutturali: non si risolvono con la sola
-  tecnica.
+- Restano aperti i problemi del **consenso** di chi finisce ritratto, dei
+  **diritti sulle immagini** con cui questi modelli sono addestrati e della
+  **provenienza**, cioè del riuscire a dire se un'immagine è stata generata.
+  Sono altrettanto strutturali dei difetti dei modelli di linguaggio, e non si
+  risolvono con la sola tecnica.
 ```
 
 `````

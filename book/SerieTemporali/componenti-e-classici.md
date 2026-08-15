@@ -4,8 +4,8 @@ Nel 1970 George Box e Gwilym Jenkins misero in appendice al loro libro una
 tabella di numeri che sarebbe diventata la «cavia» di generazioni di
 statistici: i passeggeri mensili delle linee aeree internazionali dal 1949 al
 1960 {cite}`box2015time`. A guardarla, quella serie racconta tre storie
-sovrapposte. Una **crescita** costante, decennio del boom dei voli: ogni anno
-si vola più dell'anno prima. Un **respiro stagionale**: ogni estate un picco,
+sovrapposte. Una **crescita** costante, perché era il decennio del boom dei
+voli: ogni anno si vola più dell'anno prima. Un **respiro stagionale**: ogni estate un picco,
 ogni inverno un avvallamento, puntuali come le stagioni che li causano. E,
 sopra a tutto, un **tremolio** irregolare che nessuna regola spiega. Box e
 Jenkins notarono anche un dettaglio decisivo: le oscillazioni estive non erano
@@ -86,6 +86,14 @@ centrate** (ogni istante sostituito dalla media dei suoi vicini: la
 
 `````
 
+Le tre parti si possono rimettere insieme in due modi, e la differenza conta. O
+la stagione **aggiunge** sempre la stessa cifra, d'estate tanti euro in più e
+sempre quelli, che il giro d'affari sia grande o piccolo: è la forma
+**additiva**. Oppure la stagione **moltiplica**, cioè aggiunge una percentuale,
+e allora cresce insieme al resto: è la forma **moltiplicativa**, ed è quella dei
+passeggeri delle linee aeree con cui si è aperta la sezione, dove i picchi
+estivi si alzavano man mano che si volava di più.
+
 Un esempio minuscolo rende concreta la differenza. Prendiamo le vendite di
 gelato di una gelateria in quattro trimestri (in migliaia di euro):
 
@@ -126,12 +134,15 @@ fattori che hanno **media** $1$ invece di sommare a zero, e il conto si controll
 subito: $0{,}44+1{,}00+1{,}78+0{,}78 = 4$, diviso quattro fa $1$. La lettura è
 diversa: l'additivo dice
 «d'estate si vendono 35 mila euro *in più* del solito»; il moltiplicativo dice
-«d'estate si vende il 78% *in più*». Se l'anno prossimo la gelateria raddoppia
-il giro d'affari, il modello additivo continuerebbe a prevedere +35 mila,
-sottostimando l'estate; quello moltiplicativo prevede +78%, cioè uno scarto
-raddoppiato. Il **residuo** è ciò che resta dopo aver tolto trend e stagionalità:
-se l'estate avesse fruttato $82$ invece di $80$, il residuo di quel trimestre
-sarebbe $82 - (45 + 35) = 2$.
+«d'estate si vende il 78% *in più*» (moltiplicare per $1{,}78$ e aggiungere il
+$78\%$ sono la stessa operazione: $1$ è quello che c'era già, $0{,}78$ è quello
+che si aggiunge). Se l'anno prossimo la gelateria raddoppia il giro d'affari, e
+il livello passa da 45 a 90, il modello additivo continuerebbe a dire +35 mila,
+sottostimando l'estate; quello moltiplicativo continua a dire +78%, che su un
+livello di 90 vuol dire +70 mila, cioè uno scarto raddoppiato. Il **residuo** è ciò che resta dopo aver
+tolto il livello e la stagione: se questa estate avesse fruttato $82$, mentre il
+livello ($45$) e lo scarto estivo ($+35$) restano quelli stimati sugli anni
+scorsi, il residuo di quel trimestre sarebbe $82 - (45 + 35) = 2$.
 
 ## Stazionarietà e differenziazione
 
@@ -142,9 +153,18 @@ restano gli stessi lungo tutta la serie. L'ultimo punto è quello che conta, e v
 detto con precisione: due istanti si somigliano in base a **quanto** distano fra
 loro, non a **quando** cadono nel calendario.[^senso-debole]
 
+Perché proprio il terzo, e non è pedanteria: i primi due riguardano *dove* sta
+la serie e *quanto* si agita, cose che si vedono a occhio e si aggiustano in
+fretta. Il terzo riguarda la memoria, cioè proprio quello da cui una previsione
+si tira fuori. Se il legame fra un giorno e il successivo è uno a gennaio e un
+altro a luglio, non c'è nessuna regola da imparare: ce ne sono due, e il modello
+ne troverà una terza che non vale né qui né lì.
+
 Qui interessa il *perché* quasi tutti i modelli classici la pretendono, e la
-ragione è semplice. Un modello stima pochi parametri e li dà per buoni su tutta
-la serie, passato e futuro. Se la media scivola verso l'alto, o se l'ampiezza
+ragione è semplice. Un modello si sceglie pochi numeri guardando i dati (li
+chiameremo d'ora in poi i suoi **parametri**: la frazione con cui ieri pesa su
+oggi, l'ampiezza tipica degli scossoni) e poi li dà per buoni su tutta la serie,
+passato e futuro. Se la media scivola verso l'alto, o se l'ampiezza
 delle oscillazioni cambia, quei parametri descrivono bene un pezzo di serie e ne
 sbagliano un altro. Rendere la serie stazionaria vuol dire toglierle
 di dosso trend e stagionalità, così che ciò che resta *balli sempre allo stesso
@@ -175,29 +195,44 @@ riga di prima. È il caso della serie $100, 110, 120, 130$ di poco fa: la regola
 c'è, e uno scarto casuale non la cambia. Una tendenza è invece **stocastica**
 (la parola vuol dire «governata dal caso») quando la retta
 non c'è: la serie cammina alla cieca, e ogni scossa le sposta il livello **per
-sempre**, come il prezzo di un titolo che dopo un crollo riparte da dove è
-arrivato e non da dove sarebbe dovuto essere.
+sempre**, come il prezzo di un'azione in borsa che dopo un crollo riparte da
+dove è arrivato e non da dove sarebbe dovuto essere.
 
-La differenziazione è la cura del secondo caso, e lì è insostituibile. Sul
-primo fa un danno: dopo aver tolto la retta lascia nella serie una struttura che
-nella serie non c'era. Il conto si rifà in due righe. Si prendono trecento punti
-di una retta più rumore (in cifre: $x_t = 0{,}5\,t + \varepsilon_t$, con
-$\varepsilon_t$ gaussiano di deviazione $1$), si differenzia, e si ripete la
-prova su venti serie generate allo stesso modo. Il risultato è sempre quello: la
-differenziata esce con un'autocorrelazione di $-0{,}50$ al primo ritardo e con il
-**doppio della varianza** del rumore che c'era dentro (la varianza, non
-l'ampiezza: a raddoppiare è il quadrato degli scarti). Quel $-0{,}50$ è la
-struttura che non c'era: dice che nella serie differenziata a un valore alto ne
-segue regolarmente uno basso, cosa che nella serie di partenza non succedeva, e
-un modello che la guardi si metterà a spiegare una regolarità che abbiamo
-fabbricato noi.
+La differenziazione è la cura del secondo caso, e lì è insostituibile. Sul primo
+fa un danno, e il danno si vede a mano, senza far girare niente.
 
-La cura del primo caso si chiama **detrendizzazione**: si stima la retta e si
-tengono gli scarti da quella retta. È precisamente ciò che faceva il codice
-dell'introduzione al capitolo con `polyfit` e `polyval`, e sulla stessa serie di
-prova la detrendizzata esce con autocorrelazione praticamente nulla ($-0{,}01$)
-e varianza giusta. Le due operazioni non sono intercambiabili: ciascuna guasta
-il caso che l'altra risolve.
+Prendi una serie che è davvero una retta più uno scossone casuale al giorno: il
+valore di oggi è il punto della retta di oggi, più lo scossone di oggi. Adesso
+sottrai il valore di ieri. Della retta resta solo la salita, sempre uguale
+(quei $10$ dell'esempio di prima), e accanto a quella resta *lo scossone di oggi
+meno quello di ieri*.
+
+Guarda cosa è appena successo a un singolo scossone, mettiamo quello di ieri.
+Ieri era il «più» del conto di ieri; oggi è il «meno» del conto di oggi. Lo
+stesso numero, in due giorni consecutivi, una volta con un segno e una volta con
+l'altro. Se ieri è stato grosso, ieri ha spinto in alto e oggi spinge in basso,
+e così per ogni scossone: nella serie differenziata a un valore alto ne segue
+regolarmente uno basso. Quella è una regolarità, e nella serie di partenza non
+c'era: l'abbiamo fabbricata noi differenziando. Un modello che la guardi si
+metterà a spiegarla.
+
+Fatta la prova al computer (trecento punti di retta più rumore, ripetuta su
+venti serie fatte allo stesso modo), i due numeri escono sempre gli stessi. Il
+primo: fra un giorno e il successivo la somiglianza vale $-0{,}50$, cioè
+fortemente negativa, ed è precisamente l'effetto appena descritto. Il secondo:
+gli scarti della differenziata, elevati al quadrato e mediati, sono il **doppio**
+di quelli del rumore che c'era dentro. Il doppio esatto, e non una quantità a
+caso, perché ogni giorno adesso si porta dentro due scossoni invece di uno, e
+quando si sommano due cose che non hanno niente a che vedere fra loro a sommarsi
+sono i loro quadrati.
+
+La cura del primo caso si chiama **detrendizzazione**: si tira la retta che
+segue la salita e si tengono, di ogni punto, gli scarti da quella retta. È
+precisamente ciò che faceva il codice dell'introduzione al capitolo con
+`polyfit` e `polyval`, e sulla stessa serie di prova la detrendizzata esce con
+una somiglianza fra giorni vicini di un paio di centesimi, cioè nulla, e con la
+stessa irregolarità che c'era prima. Le due operazioni non sono
+intercambiabili: ciascuna guasta il caso che l'altra risolve.
 
 Per la stagionalità si usa la **differenziazione stagionale**
 $\nabla_m x_t = x_t - x_{t-m}$, dove $m$ è la lunghezza del ciclo (12 per dati
@@ -205,26 +240,37 @@ mensili, 7 per dati giornalieri con un ritmo settimanale): sottrae il valore
 dello stesso periodo del ciclo precedente, mese contro stesso mese dell'anno
 prima. Prima di modellare si differenzia quanto basta a stabilizzare la serie, e
 non di più: differenziare una volta di troppo è un errore vero e ha un nome,
-**sovradifferenziazione**, ed è lo stesso guasto descritto qui sopra visto da un
-altro lato.
+**sovradifferenziazione**. È lo stesso guasto di poco fa, e la ragione è la
+stessa: quando non c'era più niente da togliere, sottrarre il giorno prima non
+toglie una salita, sparpaglia solo ogni scossone su due giorni.
 
-Come si *diagnostica* la struttura che resta? Con due grafici che sono il pane
-quotidiano dell'analista di serie temporali: l'**ACF** e la **PACF**.
+E adesso la domanda pratica: come si fa a vedere quanta memoria è rimasta dentro
+una serie, e di che tipo? Con due grafici a barre che sono il pane quotidiano
+dell'analista di serie temporali, l'**ACF** e la **PACF**.
 
 `````{tab} Elementare
 
 Immagina di confrontare la serie con una sua copia fatta scivolare indietro nel
 tempo di un passo, di due, di tre. Ogni volta ti chiedi: quanto si somigliano?
 La risposta, passo per passo, è la **funzione di autocorrelazione** (ACF): un
-grafico a barre che dice quanto oggi assomiglia a ieri, a l'altro ieri, e così
+grafico a barre che dice quanto oggi assomiglia a ieri, all'altro ieri, e così
 via. Se le barre restano alte a lungo, la serie ha una memoria lunga.
 
-C'è però un inganno. Se oggi somiglia a ieri e ieri somigliava a l'altro ieri,
-allora oggi somiglierà a l'altro ieri *di rimbalzo*, anche senza un legame
+C'è però un inganno. Se oggi somiglia a ieri e ieri somigliava all'altro ieri,
+allora oggi somiglierà all'altro ieri *di rimbalzo*, anche senza un legame
 diretto. La **PACF** (autocorrelazione parziale) toglie questo effetto a catena:
 misura quanto oggi dipende dal valore di tre giorni fa *una volta scontato* ciò
 che passa attraverso ieri e l'altro ieri. È la differenza fra «il nonno somiglia
 al nipote» e «il nonno somiglia al nipote al netto del padre».
+
+Si guardano in coppia, perché nessuno dei due da solo dice tutto, e insieme
+dicono una cosa in più: il **punto in cui le barre si schiacciano di colpo**
+segna fin dove arriva la memoria. Di memorie, fra poco, ne incontreremo due, e
+ciascuna lascia la firma su un grafico diverso: se a schiacciarsi di colpo è la
+PACF, la serie si ricorda i **valori** passati; se è l'ACF, si ricorda gli
+**urti** passati. Con una riserva che verrà detta per esteso: sulle serie vere
+le due firme si sovrappongono, e questo modo di leggerle funziona molto meno di
+quanto i manuali lascino sperare.
 
 `````
 
@@ -323,9 +369,14 @@ Prendiamo $c = 4$ e $\phi = 0{,}6$, cioè: di quello che c'era ieri ne resta il
 60%, e ogni giorno se ne aggiungono 4.
 
 Dove finisce una serie fatta così, se la si lascia andare? In un valore che non
-si muove più, quello per cui «il 60% di sé stesso più 4» ridà sé stesso:
-$\mu = 0{,}6\,\mu + 4$, cioè $\mu = 4/(1-0{,}6) = 10$. È la **media di lungo
-periodo**. Partiamo da un valore alto, $x_0 = 20$, e seguiamo la parte
+si muove più, cioè quello per cui «il 60% di sé stesso più 4» ridà sé stesso.
+Chiamiamolo $\mu$ (si legge *mu*, ed è la lettera con cui in statistica si
+indica una media). La condizione si scrive $\mu = 0{,}6\,\mu + 4$, e si risolve
+come qualunque equazione di prima media: porti i $\mu$ da una parte,
+$\mu - 0{,}6\,\mu = 4$, cioè $0{,}4\,\mu = 4$, quindi $\mu = 10$. È la **media
+di lungo periodo**, e in generale vale $c/(1-\phi)$.
+
+Partiamo da un valore alto, $x_0 = 20$, e seguiamo la parte
 prevedibile (mettendo a zero il rumore, $\varepsilon_t = 0$):
 
 $$
@@ -352,9 +403,10 @@ L'AR è metà della storia. L'altra metà guarda non ai valori passati, ma agli
 **urti** passati: è il modello a **media mobile**, sigla MA. Attenzione, perché
 «media mobile» in questo campo indica due cose diverse. La prima, la più comune,
 è il modo più semplice di lisciare un grafico: si sostituisce ogni valore con la
-media dei suoi vicini, e così il tremolio si attenua e si vede il fondo (è anche
-il modo in cui si stimano trend e stagionalità nella decomposizione della prima
-sezione). La seconda è questa, il modello MA, e non è una media dei valori: è
+media dei suoi vicini, e così il tremolio si attenua e si vede il fondo. È anche
+il modo più semplice di tirar fuori la tendenza di una serie, ed è per questo
+che il nome ricorre in giro. La seconda è questa, il modello MA, e non è una
+media dei valori: è
 una media **degli imprevisti**. Sono due mestieri diversi con lo stesso nome, e
 d'ora in avanti «media mobile», da sola, indica il modello.
 
@@ -365,9 +417,9 @@ sciopero che blocca i voli. L'effetto non si esaurisce il giorno stesso: si fa
 sentire ancora domani, un po' meno dopodomani, e poi svanisce. Un modello a
 media mobile dice proprio questo: il valore di oggi è il livello normale, più
 la sorpresa di oggi, più l'eco delle sorprese degli ultimi giorni. L'eco di
-solito si smorza, ma non è obbligata: quanto pesa ciascun giorno passato è un
-numero che si stima dai dati, e può benissimo contare più il penultimo del
-precedente.
+solito si smorza, ma non è obbligata a farlo: quanto pesa ciascun giorno passato
+è un numero che si legge dai dati, e può benissimo venir fuori che l'urto di tre
+giorni fa conta più di quello di ieri.
 
 Le due memorie si possono usare insieme: quella dei valori (l'AR appena visto)
 e quella degli urti (il MA). E siccome le serie vere quasi mai stanno ferme
@@ -445,26 +497,35 @@ scrivono $p$ (quanti valori passati), $d$ (quante volte si raddrizza la serie) e
 $q$ (per quanti giorni dura l'eco degli urti). Resta la domanda pratica, che è
 quella che si pone chiunque abbia una serie davanti: **quali numeri ci metto
 dentro, e come faccio a sapere se il modello che ne esce va bene?** La risposta
-è una procedura, ed è la spina dorsale metodologica di tutta la famiglia.
+è una procedura in tre tempi, e vale per tutti i modelli di questa famiglia, dal
+più piccolo al SARIMA più carico di lettere.
 
 `````{tab} Elementare
 
-La ricetta dei manuali dice di leggere i due grafici a barre di poco fa, l'ACF e
-la PACF, e dedurne gli ordini. Funziona sui casi da libro di testo, e
-sulle serie vere quasi mai: quando ci sono insieme la memoria dei valori e
-quella degli urti, entrambi i grafici scendono lentamente e non si legge
-niente.
+**Primo tempo: raddrizzare la serie.** È il lavoro della sezione di poco fa:
+togliere la retta se una retta c'è, oppure sostituire ogni valore con la
+variazione rispetto al giorno prima se la serie cammina alla cieca. Da qui esce
+già uno dei tre conteggi, quello di mezzo, che dice quante volte si è
+raddrizzato.
+
+**Secondo tempo: scegliere gli altri due.** La ricetta dei manuali dice di
+leggere i due grafici a barre di poco fa, l'ACF e la PACF, e dedurli da lì.
+Funziona sui casi da libro di testo, e sulle serie vere quasi mai: quando ci
+sono insieme la memoria dei valori e quella degli urti, entrambi i grafici
+scendono lentamente e non si legge niente.
 
 Allora si fa la cosa onesta: **si provano tutte le combinazioni** entro un
-limite ragionevole. Sono pochi modelli e costano poco. Poi si sceglie con un
-criterio che tiene conto di due cose insieme: quanto bene il modello spiega i
-dati, e quanti parametri ha speso per farlo. Aggiungere
-parametri migliora sempre l'aderenza ai dati visti, quindi senza una penalità
-si finirebbe per scegliere sempre il modello più grosso, che è il modo classico
-di imparare a memoria.
+limite ragionevole. Sono una manciata di modelli e il computer li stima tutti in
+qualche secondo. Poi si sceglie con un criterio che tiene conto di due cose
+insieme: quanto bene il modello spiega i dati, e quanti numeri ha dovuto
+inventarsi per riuscirci. Il secondo pezzo non è pignoleria: aggiungere numeri
+migliora sempre l'aderenza ai dati che si hanno sotto gli occhi, quindi senza
+una penalità si finirebbe per scegliere ogni volta il modello più grosso, che è
+il modo classico di imparare a memoria invece che imparare la regola.
 
-Fatta la scelta, però, non si è finito. Manca il passo che quasi tutti saltano,
-ed è quello che dice se il modello è *utile*: **guardare quello che resta**.
+**Terzo tempo: guardare quello che resta.** Fatta la scelta non si è finito, e
+questo è il passo che quasi tutti saltano, che è poi l'unico che dice se il
+modello è *utile*.
 Un modello buono ha spremuto dalla serie tutta la regolarità che c'era, quindi
 ciò che avanza, la differenza fra previsto e osservato, deve essere
 indistinguibile dal caso. Se in quello che avanza si vede ancora una
@@ -550,12 +611,16 @@ un'osservazione in meno), e due AIC così non si possono sottrarre. Vale identic
 per le trasformazioni: l'AIC di un modello su $\log x_t$ e quello di un modello
 su $x_t$ non vivono nella stessa scala, e la differenza fra i due è dominata dal
 cambio di variabile, non dal modello. Su una serie di prova (duecento punti
-positivi attorno al centinaio, a crescita moltiplicativa, con un ARMA(1,1)
-stimato su ciascuna delle due scale) il logaritmo «vince» di quasi
-duemilaquattrocento unità, cioè di più di mille volte la soglia delle due. Ma
-duemiladuecento di quelle unità sono soltanto il cambio di variabile, cioè il
-termine jacobiano $2\sum_t \log x_t$: rimettendolo al suo posto, del vantaggio
-ne resta poco più di un centinaio.
+positivi che partono da un centinaio e si moltiplicano fino a circa sette volte
+tanto, con un ARMA(1,1) stimato su ciascuna delle due scale) il logaritmo
+«vince» di quasi duemilaquattrocento unità, cioè di più di mille volte la soglia
+delle due. Ma duemiladuecento di quelle unità sono soltanto il cambio di
+variabile, cioè il termine jacobiano $2\sum_t \log x_t$: rimettendolo al suo
+posto, del vantaggio ne resta poco più di un centinaio. Quel termine dipende
+**solo da quanto sono grandi i numeri** della serie, non da come si comportano,
+ed è la ragione per cui la lunghezza della serie e la sua crescita cambiano i
+primi due numeri di questo conto lasciando intatta la morale: il confronto
+grezzo stava misurando l'unità di misura.
 
 **3. Verificare i residui.** Se il modello ha catturato la struttura, i residui
 $\hat\varepsilon_t = x_t - \hat x_t$ devono essere **rumore bianco**: media
@@ -608,15 +673,17 @@ sezione seguente.
 
 Il ciclo, in una riga: **stima, seleziona, verifica, e se in quello che resta si
 vede ancora una regolarità torna indietro**. È la stessa disciplina che nel
-Machine Learning separa il training dalla validazione, applicata a un oggetto
-diverso.
+Machine Learning tiene separati i dati su cui il modello impara da quelli su cui
+lo si esamina, applicata qui a un oggetto diverso.
 
 Le due cose hanno un nome, e conviene averlo prima di vederle all'opera. Il
-criterio che sceglie fra i modelli, quello che mette insieme «quanto spiega» e
-«quanti parametri ha speso», si chiama **AIC**: più è basso, meglio è. Ma è un
-numero che vale solo per differenza, e la differenza va guardata con una soglia
-in testa: **sotto le due unità l'AIC non sta distinguendo niente**, e due modelli
-così vicini sono, per lui, lo stesso modello.
+criterio che sceglie fra i modelli si chiama **AIC**: più è basso, meglio è. Ma
+è un numero che vale solo per differenza, e la differenza va guardata con una
+soglia in testa: **sotto le due unità l'AIC non sta distinguendo niente**, e due
+modelli così vicini sono, per lui, lo stesso modello. Quel due non è una legge
+di natura, è la regola d'uso della materia, e nasce da un'osservazione semplice:
+scarti più piccoli si ottengono anche solo cambiando una manciata di
+osservazioni, quindi non sono prova di niente.
 
 Il test che guarda quello che resta si chiama **Ljung-Box**, dai due statistici
 che lo misero a punto, e risponde a una domanda sola: negli errori del modello
@@ -696,11 +763,12 @@ Il risultato è più istruttivo di quello che ci si aspetterebbe, ed è il motiv
 per cui vale la pena eseguirlo invece di raccontarlo.
 
 Con **600 osservazioni l'AIC sbaglia**: sceglie un ARMA(1,1) invece del vero
-ARMA(2,1). Ma guardate i margini. Il secondo è a $+0{,}4$, il terzo a $+1{,}5$,
-e il vero ARMA(2,1) è quinto a $+1{,}8$: tutti dentro le due unità sotto le
-quali, come si è appena detto, l'AIC non distingue niente. L'AIC non ha
-**scartato** il modello vero, l'ha messo nella stessa nuvola d'indifferenza
-degli altri, il che con seicento osservazioni è la verità.
+ARMA(2,1). Ma guarda i margini. Il secondo classificato è a $+0{,}4$ dal
+primo, il terzo a $+1{,}5$, e il vero ARMA(2,1) arriva quinto a $+1{,}8$: dal
+primo all'ultimo di questi, tutti stanno dentro le due unità sotto le quali,
+come si è appena detto, l'AIC non distingue niente. L'AIC non ha **scartato** il
+modello vero, l'ha messo nella stessa nuvola d'indifferenza degli altri, il che
+con seicento osservazioni è la verità.
 
 Il Ljung-Box sul modello scelto dà $p = 0{,}514$: il test, su questi dati, non
 trova traccia di struttura residua. Che non è la stessa cosa che dimostrare
@@ -710,30 +778,45 @@ l'obiettivo non è indovinare il modello vero (che sulle serie reali non
 esiste), è trovarne uno che non lasci struttura fuori.
 
 Con 2000 osservazioni l'AIC trova l'ordine giusto, e il secondo classificato è
-ancora lì a $+0{,}6$. Ma non è una questione di numerosità, e vale la pena
-dirlo perché è la lettura che verrebbe naturale: rilanciando lo stesso
-esperimento cambiando soltanto il seme del generatore, l'ordine esatto salta
-fuori una volta su venti con seicento osservazioni e cinque volte su venti con
-duemila. Non è un difetto dell'AIC: è che l'AIC è costruito per scegliere il
-modello che prevede meglio, non per indovinare quello che ha generato i dati, e
-con verosimiglianze così vicine i due obiettivi non coincidono (il criterio che
-punta all'identificazione è semmai il BIC). La lezione, invece, tiene su tutti
-i semi e a tutte e due le numerosità: il Ljung-Box non rifiuta mai, e il
-$p$-value più basso osservato in quaranta esperimenti è $0{,}13$.
+ancora lì a $+0{,}6$. Verrebbe da concludere che basti avere più dati, e sarebbe
+una conclusione affrettata, perché quello è un colpo riuscito, uno solo.
+Rilanciando lo stesso esperimento venti volte, cambiando ogni volta soltanto il
+numero da cui parte il generatore di numeri casuali (il **seme**: è quello che
+decide quale, fra le infinite serie che quel modello può produrre, esce
+davvero), l'ordine esatto salta fuori una volta su venti con seicento
+osservazioni e cinque volte su venti con duemila. Più dati aiutano, quindi, e si
+vede; ma non bastano affatto, perché anche con duemila osservazioni l'AIC manca
+il modello vero tre volte su quattro.
 
-Sul modello vuoto, infine, il $p$-value crolla a zero: il test vede benissimo
-la struttura rimasta fuori, ed è esattamente il suo mestiere.
+Non è un difetto dell'AIC: è che l'AIC è fatto per scegliere il modello che
+prevede meglio, non per indovinare quello che ha generato i dati, e quando due
+modelli spiegano i dati quasi ugualmente bene i due obiettivi non coincidono. A
+puntare sull'identificazione è semmai il **BIC**, un parente stretto che
+penalizza i parametri tanto più severamente quante più osservazioni ci sono. La
+lezione che invece tiene su tutti i semi e a tutte e due le numerosità è
+un'altra: il Ljung-Box non rifiuta mai, e il $p$-value più basso osservato in
+quaranta esperimenti è $0{,}13$.
 
-Un'ultima avvertenza sulla procedura, che la sezione seguente riprenderà da
-capo: anche **scegliere** $p$ e $q$ è un uso dei dati. Qui la griglia gira su
-tutta la serie, e se poi si misurasse l'errore del modello scelto sugli stessi
-dati quel numero sarebbe ottimista, perché l'ordine è stato scelto avendo visto
-anche i pezzi che dovrebbero fare da prova. Con l'AIC il difetto è lieve, perché
-l'AIC giudica quanto il modello aderisce ai dati che ha già visto, penalità
-compresa, e non pretende di dire quanto sbaglierà su dati nuovi. Con una
-selezione fatta a colpi di errore di validazione, invece, è grave. La versione
-pulita mette la selezione **dentro** il ciclo di validazione, e la sezione
-seguente costruisce quel ciclo.
+Sul modello vuoto, infine, il $p$-value crolla a zero. «Vuoto» vuol dire
+letteralmente questo: un ARMA($0,0$) non guarda nessun valore passato e nessun
+urto passato, dice soltanto che la serie balla a caso attorno alla propria
+media. Su una serie che una memoria invece ce l'ha, quello che avanza è tutta la
+memoria, e il test la vede benissimo: è esattamente il suo mestiere.
+
+Un'ultima avvertenza, che la sezione seguente riprenderà da capo: anche
+**scegliere** $p$ e $q$ è un modo di usare i dati. Qui le sedici combinazioni
+sono state provate su tutta la serie, dal primo giorno all'ultimo. Se adesso
+misurassimo quanto sbaglia il modello scelto su quegli stessi giorni, il numero
+verrebbe più bello del vero, perché il modello non è stato scelto a occhi
+chiusi: è stato scelto avendo già visto anche i giorni che avrebbero dovuto
+fargli da esame.
+
+Con l'AIC il danno è piccolo, perché l'AIC non promette di dire quanto il
+modello sbaglierà su giorni nuovi: dichiara solo quanto aderisce a quelli che ha
+già visto, penalità compresa. Diventa grave quando a scegliere è l'errore
+misurato su un pezzo di serie tenuto da parte, che è il meccanismo costruito
+nella sezione seguente: lì la scelta va fatta **dentro** quel meccanismo, non
+prima.
 
 ## Il mondo entra nella serie: SARIMAX e VAR
 
@@ -857,11 +940,12 @@ osservati.
 
 ## Lisciamento esponenziale: da SES a Holt-Winters
 
-La famiglia ARIMA modella la memoria della serie in modo esplicito. Una seconda
-famiglia, altrettanto classica, la modella in modo implicito e leggerissimo: il
-**lisciamento esponenziale** (*exponential smoothing*). L'idea sta in una riga:
-la previsione è una media di tutto il passato, in cui i valori recenti pesano
-di più e quelli lontani sempre meno.
+La famiglia ARIMA dichiara la memoria della serie a voce alta: tanti valori
+passati, tanti urti passati, un coefficiente per ciascuno. C'è una seconda
+famiglia, altrettanto classica, che non dichiara niente e ottiene lo stesso
+effetto con molto meno: il **lisciamento esponenziale** (*exponential
+smoothing*). Al posto dei coefficienti ha una media, e la fa su tutto il
+passato in una volta sola.
 
 `````{tab} Elementare
 
@@ -869,8 +953,9 @@ Per indovinare le vendite di domani potresti fare la media di tutti i giorni
 passati. Ma il mese scorso conta davvero quanto ieri? No. Il lisciamento
 esponenziale fa una media *pesata*, in cui ieri pesa molto, l'altro ieri un po'
 meno, la settimana scorsa ancora meno, e così via a scendere. A ogni passo
-indietro il peso si riduce di una stessa frazione, come l'eco di un suono che
-si spegne.
+indietro il peso si riduce di una stessa frazione, come un ricordo che sbiadisce
+sempre allo stesso ritmo: nitido ieri, sfocato la settimana scorsa, quasi niente
+un anno fa.
 
 La versione base tiene conto solo del **livello** (dove sta la serie ora). Ma se
 la serie sale con costanza, ti serve anche una stima di *quanto* sale: aggiungi
@@ -943,22 +1028,26 @@ Verrebbe da pensare che, con le reti neurali che il capitolo affronta più
 avanti, questi modelli di mezzo secolo fa siano roba da manuale di storia. Non
 è così, e vale
 la pena dire perché con onestà. La prova più citata sono le **competizioni M**
-dello statistico greco Spyros Makridakis: gare pubbliche in cui decine di
-metodi si sfidano su decine di migliaia di serie reali. Il verdetto, ripetuto
-edizione dopo edizione, è scomodo per gli entusiasti: i metodi statistici
+dell'introduzione al capitolo, quelle di Spyros Makridakis. Il verdetto,
+ripetuto edizione dopo edizione, è scomodo per gli entusiasti: i metodi
+statistici
 semplici (ARIMA, Holt-Winters, e loro medie) restano difficilissimi da
 battere, e per molti anni hanno superato reti neurali ben più complesse.
 
-Le ragioni sono tre. La **robustezza**: un modello con pochi parametri non ha
-molto spazio per adattarsi al rumore, quindi generalizza bene anche quando la
-serie è corta o disturbata. La **frugalità di dati**: gran parte delle serie
-reali (le vendite mensili di un prodotto, i pazienti di un reparto) hanno
-poche decine o centinaia di osservazioni, troppo poche per addestrare una rete
-affamata di dati, più che sufficienti per un ARIMA. E l'**interpretabilità**.
-La frazione con cui il passato pesa sul futuro, la componente stagionale, la
-forbice fra cui il modello dice che cadrà il valore vero: sono oggetti che un
-analista legge, discute e difende davanti a chi deve decidere. I pesi di una
-rete no {cite}`hyndman2021forecasting`. La
+Le ragioni sono tre. La **robustezza**: un modello con pochi parametri ha poco
+spazio per rincorrere il rumore, e rincorrere il rumore è il modo migliore di
+sbagliare sul futuro, perché il rumore di domani non è quello di ieri. Quel poco
+che impara, allora, ha buone probabilità di valere anche sui giorni che non ha
+visto, e questo vale pure quando la serie è corta o disturbata. La **frugalità
+di dati**: gran parte delle serie reali (le vendite mensili di un prodotto, i
+pazienti di un reparto) hanno poche decine o centinaia di osservazioni, troppo
+poche per addestrare una rete affamata di dati, più che sufficienti per un
+ARIMA. E l'**interpretabilità**. La frazione con cui il passato pesa sul futuro,
+la componente stagionale, la forbice dentro cui il modello dichiara che cadrà il
+valore vero (il filo rosso dell'introduzione al capitolo): sono oggetti che un
+analista legge, discute e difende davanti a chi deve decidere. I numeri interni
+di una rete neurale, che sono milioni e non vogliono dire niente presi uno per
+uno, no {cite}`hyndman2021forecasting`. La
 regola pratica che ne discende attraversa tutto il forecasting serio: un
 modello classico è la **linea di base onesta**. Prima si batte quella, poi si
 tira in ballo il deep learning.
@@ -970,8 +1059,8 @@ $x_t$ sul suo ritardo $x_{t-1}$, cioè si cerca la retta che passa il più vicin
 possibile a tutte le coppie (valore di ieri, valore di oggi). «Il più vicino
 possibile» in che senso: nel senso che rende minima la somma dei quadrati degli
 scarti, che è lo stesso criterio con cui il capitolo sul Machine Learning
-sceglieva la retta di best fit. In statistica quel criterio ha un nome, il
-metodo dei **minimi quadrati**. Generiamo una serie dal modello con una
+sceglieva la retta che passa meglio in mezzo ai dati. In statistica quel
+criterio ha un nome, il metodo dei **minimi quadrati**. Generiamo una serie dal modello con una
 frazione $\phi$ nota e
 verifichiamo di saperla recuperare, poi facciamo una previsione a un passo.
 Tutto in puro NumPy.
@@ -1008,26 +1097,35 @@ Il $\phi$ stimato cade vicino a $0{,}6$ e la costante vicino a $4$: con
 cinquecento osservazioni i minimi quadrati ricostruiscono bene i parametri del
 processo che ha generato la serie. La previsione a un passo è semplicemente la
 formula del modello applicata all'ultimo valore osservato. Da qui in avanti si
-può iterare in avanti per orizzonti più lunghi: ricadendo, però, nel problema
-dell'accumulo dell'errore visto nell'introduzione al capitolo.
+può ripetere il conto in avanti per prevedere più giorni (quanto lontano si
+guarda si chiama **orizzonte**). Ricadendo, però, in un guaio: dal secondo
+giorno in poi il conto non parte più da un valore osservato, parte da una
+previsione, cioè da un numero che può già essere sbagliato, e quello sbaglio si
+trascina fino in fondo. La sezione seguente lo riprende per esteso.
 
 `````{tab} Elementare
 
 Due cose, per non prendere il risultato per più di quel che è.
 
 La prima riguarda il metodo. Tirare una retta in mezzo a punti che vengono da
-giorni diversi è un'operazione delicata, perché quei punti non sono
-indipendenti fra loro: si tengono per mano. Qui la delicatezza non morde, perché
-in un AR(1) fatto come si deve quello che avanza, dopo la retta, è
-imprevedibile per costruzione. Morderebbe se in quello che avanza restasse
-ancora una regolarità.
+giorni diversi è delicato, perché quei punti non sono indipendenti fra loro: si
+tengono per mano. E il guaio che ne verrebbe è questo: la retta viene fuori
+sensata, ma il conto che dice *quanto ci si può fidare* di quella retta assume
+punti indipendenti, e allora dichiara una precisione che non c'è.
 
-La seconda: con cinquecento osservazioni la stima è buona (questo giro dà
-$0{,}635$ contro un vero $0{,}6$), con cinquanta lo è molto meno. E c'è un
-difetto che una prova sola non fa vedere: ripetendo l'esperimento tante volte, la
-media delle stime cade **sotto** il valore vero, e ci cade tanto più quanto la
-serie è corta. Molte serie reali sono corte, e vale la pena saperlo prima di
-fidarsi del numero.
+Qui il guaio non si presenta. In un AR(1) fatto come si deve, gli scarti fra il
+valore vero e quello che la retta prevede *sono* le scosse casuali del modello,
+e le scosse casuali fra loro per mano non si tengono. Si presenterebbe se in
+quegli scarti restasse ancora una regolarità, ed è per questo che guardarli è il
+passo che non si salta.
+
+La seconda: con cinquecento osservazioni la stima è buona, con cinquanta lo è
+molto meno. Questo giro dà $0{,}635$ contro un vero $0{,}6$, cioè un po' alto,
+ma una prova sola non dice niente sul metodo: dice cosa è capitato questa volta.
+È ripetendo l'esperimento tante volte che salta fuori il difetto vero, e il
+difetto vero punta dalla parte opposta: la media delle stime cade **sotto** il
+valore vero, e ci cade tanto più quanto la serie è corta. Molte serie reali sono
+corte, e vale la pena saperlo prima di fidarsi del numero.
 
 `````
 
@@ -1117,8 +1215,8 @@ tabellari già incontrati nel capitolo sul Machine Learning.
   a indovinarne un'altra, non che la faccia succedere. Gelato e condizionatori
   si prevedono a vicenda benissimo, ma a farli salire è il caldo.
 - Il **lisciamento esponenziale** è una media del passato in cui ieri pesa
-  molto e ogni passo indietro pesa una frazione in meno, come l'eco di un suono
-  che si spegne. Tre gradini: solo il livello, poi livello più tendenza, poi
+  molto e ogni passo indietro pesa una frazione in meno, come un ricordo che
+  sbiadisce. Tre gradini: solo il livello, poi livello più tendenza, poi
   anche la stagione, e con tutti e tre il metodo si chiama Holt-Winters.
 - I classici sono **robusti, si accontentano di poche osservazioni e si
   spiegano a chi deve decidere**: nelle competizioni M restano una **linea di
@@ -1173,7 +1271,9 @@ tabellari già incontrati nel capitolo sul Machine Learning.
 
 `````
 
-[^senso-debole]: Questa è la stazionarietà detta *in senso debole*, perché
+[^senso-debole]: Questa nota si può saltare senza perdere niente del capitolo:
+    dà il nome tecnico, per chi lo incontrerà nei manuali. Quella del testo è la
+    stazionarietà detta *in senso debole*, e si chiama così perché
     guarda solo la media, l'ampiezza delle oscillazioni e le somiglianze a due
     a due (e perché abbia senso chiederlo serve che quelle quantità esistano,
     cioè $\mathbb{E}[X_t^2] < \infty$). La versione forte chiede di più: che

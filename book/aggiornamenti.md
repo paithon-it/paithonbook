@@ -38,6 +38,21 @@ Una versione corrisponde a una **pubblicazione**, non a una giornata di
 lavoro: il libro si scrive tutti i giorni e si pubblica quando un pezzo sta in
 piedi.
 
+(v1-5-4)=
+
+## 1.5.4 · 15 agosto 2026
+
+### Pagine ampliate
+
+- {doc}`Prefazione </prefazione>`. **La prefazione dice perché il libro esiste adesso**, e non solo perché esisteva nel 2019. Con l'intelligenza artificiale usata da tutti, e con gli interessi che le si sono mossi attorno, i «pappagalli stocastici» siamo diventati noi: la stessa frase ripetuta per settimane da chi alla fonte non è mai andato, e il modello scaricato e messo in produzione perché lo stavano facendo tutti, spesso senza che nessuno aprisse la licenza. Chi quell'espressione l'ha coniata, cinque anni dopo, osserva la stessa cosa: «la frase ha superato il paper».
+
+### Correzioni
+
+- **La rilettura per la leggerezza è arrivata in fondo: tutti e trentatré i capitoli.** Gli ultimi undici sono i più tecnici del libro, e sono quelli in cui il difetto ricorrente pesava di più: una pagina prometteva «il conto si rifà in due righe» e consegnava un esperimento al computer, pieno per giunta di parole mai dette a chi legge il percorso semplice. Adesso quel conto si fa su un foglio. Il lettore di tredici anni che ha riletto tutto ha anche corretto la matematica di chi gliela stava spiegando, almeno una volta.
+- **Ogni correzione è stata poi messa in dubbio da chi doveva smentirla**, e la cosa è servita più del previsto: quasi tutte le smentite fondate riguardavano difetti che la correzione stessa aveva introdotto. Alcuni esempi finiti nel libro sbagliati e ora sistemati: l'anno in cui si scoprì l'inganno del cavallo che sembrava saper contare (1904, e il 1907 è solo l'anno del libro che lo racconta), il meccanismo con cui negli anni Settanta si telefonava gratis con un fischietto, e l'ipotesi di un teorema sull'equità, dichiarata verificata da chi il paper non lo aveva aperto.
+- **Un numero che il testo commenta adesso lo stampa il codice.** In una pagina sulle metriche di servizio due percentuali reggevano un paragrafo intero e non comparivano nella tabella che il libro invitava a riprodurre; una delle due era per giunta un caso fortunato del sorteggio. Riparato aggiungendo la colonna al programma, così quel numero non può più scostarsi dal testo.
+- **Due capitoli si contraddicevano fra loro.** Le conclusioni dicevano che il costo dell'attenzione supera quello del resto della rete quando il contesto si avvicina alla dimensione del modello: succede sei volte più in là, e il capitolo sui Transformer lo diceva già con i numeri giusti.
+
 (v1-5-3)=
 
 ## 1.5.3 · 14 agosto 2026

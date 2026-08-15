@@ -32,14 +32,15 @@ neurale, è più difficile che in un quadro.
 
 Un video, per quanto perfetto, si guarda e basta: il futuro che mostra è già
 deciso. Nel 2024 un gruppo di Google DeepMind compie il passo successivo con
-**Genie** {cite}`bruce2024genie`, presentato a ICML 2024 e premiato tra i
-migliori articoli della conferenza: non generare *video*, ma **ambienti
-interattivi**; mondi in cui, a ogni fotogramma, è chi gioca a decidere la
+**Genie** {cite}`bruce2024genie`, presentato alla conferenza ICML e premiato
+fra i migliori articoli dell'anno: non generare *video*, ma **ambienti
+interattivi**, cioè mondi in cui a ogni fotogramma è chi gioca a decidere la
 mossa, e il modello risponde generando il fotogramma coerente con quella
-mossa. Il materiale di partenza è sorprendentemente povero: circa 30.000 ore
-di video di piattaforme in 2D (personaggi che corrono e saltano, alla Super
-Mario) filtrate da un mucchio iniziale di 244.000 ore raccolte da internet.
-Video e basta: nessuno ha detto al modello quali tasti premevano i giocatori.
+mossa. Il materiale di partenza è sorprendentemente povero: circa 30.000 ore di
+video di videogiochi a piattaforme, quelli in due dimensioni con i personaggi
+che corrono e saltano alla Super Mario, setacciate da un mucchio iniziale di
+244.000 ore raccolte da internet. Video e basta: nessuno ha detto al modello
+quali tasti premevano i giocatori.
 
 `````{tab} Elementare
 
@@ -56,9 +57,11 @@ Il colpo di scena è che nessuno gli ha mai mostrato un joystick. Come fa a
 sapere quali comandi esistono? I ricercatori gli impongono una regola severa:
 per spiegare che cosa cambia tra un fotogramma e il successivo può usare
 soltanto otto «mosse tipiche», e quali siano le otto più utili deve scoprirlo
-da solo, guardando migliaia di ore di partite. Funziona perché nei platform i
-cambiamenti tipici sono davvero pochi: il personaggio si sposta a destra, o a
-sinistra, o salta, o cade. Quelle otto mosse diventano i pulsanti di un
+da solo, guardando migliaia di ore di partite. Otto lo hanno deciso loro,
+pensando a chi poi giocherà: un joystick con cento pulsanti sarebbe
+ingovernabile. E funziona perché in quei giochi i cambiamenti tipici sono
+davvero pochi: il personaggio si sposta a destra, o a sinistra, o salta, o
+cade. Quelle otto mosse diventano i pulsanti di un
 joystick che Genie si è inventato da solo. Quando giochi, scegli un numero da
 1 a 8: che il pulsante 3 significhi «salta» lo scopri provando, come davanti a
 una console senza libretto di istruzioni.
@@ -108,28 +111,35 @@ legata ai platform.
 
 `````
 
-La discendenza di Genie è andata avanti a passo rapido, e conviene raccontarla
-per quel che ha di strutturale, perché il resto invecchia in fretta e la fonte
-sono gli annunci sul blog di DeepMind, con dimostrazioni scelte, non articoli
-passati da revisione. Due passi contano. Il primo, **Genie 2** (dicembre 2024),
-esce dal piano: da una singola immagine genera mondi tridimensionali
-esplorabili con tastiera e mouse, con acqua, fumo e gravità. Il secondo,
-**Genie 3** (agosto 2025), passa dal differito al **tempo reale**: il mondo si
-genera mentre lo si attraversa, non dopo, e si possono richiamare eventi con una
-frase («fa' piovere», «aggiungi un cane»). Gli stessi autori elencano i limiti,
-e sono i limiti a contare più delle risoluzioni: le sessioni si misurano in
-minuti; il repertorio di comandi è ristretto, cioè si possono fare poche cose,
-non andare in pochi posti; il testo che compare in scena è spesso illeggibile;
-e mettere più agenti nello stesso mondo resta problematico. Anteprime di
-ricerca, insomma: dimostrazioni notevoli, non prodotti, e la distanza tra le
-due cose, in questo campo, va sempre tenuta a mente.
+La discendenza di Genie è andata avanti a passo rapido. Qui la raccontiamo solo
+per quello che ha di strutturale: il resto invecchia in fretta, e vale il
+cartello appeso poco fa a Sora, perché la fonte sono annunci sul blog di
+DeepMind, non articoli passati da revisione. Due passi contano. Il primo,
+**Genie 2** (dicembre 2024), esce dal piatto del disegno a due dimensioni: da una singola
+immagine genera mondi a tre dimensioni, esplorabili con tastiera e mouse, con
+acqua, fumo e gravità. Il secondo, **Genie 3** (agosto 2025), passa dal
+differito al **tempo reale**: il mondo si genera mentre lo si attraversa, non
+dopo, e si possono richiamare eventi con una frase («fa' piovere», «aggiungi un
+cane»).
+
+I limiti li elencano gli autori stessi, e contano più delle immagini
+spettacolari. Le
+sessioni si misurano in minuti. Il repertorio di comandi è ristretto: quel che
+scarseggia sono le azioni possibili, non i posti dove andare. Il testo che
+compare in scena è spesso illeggibile. E mettere più agenti autonomi nello
+stesso mondo resta problematico. Anteprime di ricerca, insomma: dimostrazioni
+notevoli, non prodotti, e la distanza tra le due cose, in questo campo, va
+sempre tenuta a mente.
 
 ## La scacchiera nella macchina: gli LLM hanno un world model?
 
 Genie *deve* avere un modello del suo mondo, per costruzione: è la sua unica
 funzione. La domanda si fa più spinosa quando la voltiamo verso i modelli di
-linguaggio {cite}`brown2020language`, addestrati solo a indovinare il token
-successivo. L'apertura del capitolo ha lasciato in sospeso un esperimento,
+linguaggio, i grandi modelli di linguaggio dell'apertura, gli LLM
+{cite}`brown2020language`, addestrati a fare
+una cosa sola: indovinare la parola che viene dopo (per la precisione il
+**token** successivo, cioè il pezzetto di parola con cui questi modelli
+lavorano). L'apertura del capitolo ha lasciato in sospeso un esperimento,
 citandolo di sfuggita: è il momento di raccontarlo, perché è il tentativo più
 pulito di rispondere con i dati anziché con gli slogan.
 
@@ -139,10 +149,16 @@ ICLR l'esperimento oggi noto come **Othello-GPT** {cite}`li2023emergent`.
 Prendono un piccolo GPT (8 strati, la stessa architettura dei modelli di
 linguaggio) e lo addestrano su un solo tipo di testo: sequenze di mosse del
 gioco dell'Otello, scritte come liste di caselle («E3, D2, …»), per venti
-milioni di partite sintetiche. Il modello non ha mai visto una scacchiera, non
-conosce le regole, non sa che esistono pedine bianche e nere: per lui le mosse
-sono token, come parole. Eppure, a fine addestramento, propone mosse *legali*
-con un tasso d'errore dello 0,01%. La domanda, a quel punto, è una sola: ci
+milioni di partite generate a tavolino da un programma. Una parola sulle
+regole, perché tutto l'esperimento poggia lì: nell'Otello si posano pedine su
+una griglia di 64 caselle, e una mossa vale soltanto se accerchia almeno una
+pedina avversaria, che allora cambia colore. Le caselle in cui è consentito
+posare cambiano quindi a ogni turno, e dipendono da com'è messa l'intera
+scacchiera. Il modello non ha mai visto una scacchiera, non conosce le regole,
+non sa che esistono pedine bianche e nere: per lui le mosse sono token, come
+parole. Eppure, a fine addestramento, propone mosse *legali* con un tasso
+d'errore dello 0,01%: una mossa illegale ogni diecimila. La domanda, a quel
+punto, è una sola: ci
 riesce accumulando statistiche di superficie sulle sequenze (dopo «E3, D2»
 viene spesso «C4») o si è costruito dentro, da qualche parte, una scacchiera?
 
@@ -155,15 +171,17 @@ con mosse che non fanno mai arrabbiare gli arbitri. Ha in testa una
 scacchiera immaginata, o solo un enorme orecchio per le frasi tipiche?
 
 Con una persona non potremmo saperlo. Con una rete sì, perché possiamo
-guardarle dentro, ed è quel che fanno gli autori, in due passi. Primo passo:
-addestrano un piccolo «lettore del pensiero» (una seconda rete, molto
-semplice) che guardando solo l'attività interna della prima deve indovinare
-dove sono le pedine. Ci riesce: sbaglia meno di 2 caselle su 100. Quindi
-l'informazione «com'è messa la scacchiera» *dentro la rete c'è*, anche se
-nessuno gliel'ha mai chiesta. Secondo passo, il più bello: il test del falso
-ricordo. Gli sperimentatori entrano nell'attività interna e la ritoccano,
-spostando una pedina *nella mente* della rete: non nella sequenza di mosse,
-che resta identica. Se la scacchiera interna fosse un ornamento inutile, le
+guardarle dentro. Che cosa vuol dire, guardarci dentro? Che mentre la rete
+elabora una partita, ogni suo strato produce una fila di numeri, e quei numeri
+si possono leggere uno per uno: è l'attività interna, ed è la sola cosa che la
+rete abbia in testa. Gli autori la usano in due passi. Primo passo: addestrano
+un piccolo «lettore del pensiero» (una seconda rete, molto semplice) che
+guardando soltanto quei numeri deve indovinare dove sono le pedine. Ci riesce:
+sbaglia meno di 2 caselle su 100. Quindi l'informazione «com'è messa la
+scacchiera» *dentro la rete c'è*, anche se nessuno gliel'ha mai chiesta.
+Secondo passo, il più bello: il test del falso ricordo. Gli sperimentatori
+entrano in quei numeri e li ritoccano, spostando una pedina *nella mente* della
+rete: non nella sequenza di mosse, che resta identica. Se la scacchiera interna fosse un ornamento inutile, le
 mosse proposte non cambierebbero. Invece cambiano, e in modo coerente con la
 scacchiera contraffatta: la rete gioca in base a ciò che «crede» di vedere.
 Non è un pappagallo di sequenze: dentro c'è un piccolo mondo, e lo usa.
@@ -175,11 +193,11 @@ Non è un pappagallo di sequenze: dentro c'è un piccolo mondo, e lo usa.
 Lo strumento è il **probing**: una sonda $p_\psi$ (un classificatore
 addestrato a parte) riceve le attivazioni $\mathbf{h}_t^{(\ell)}$ dello strato $\ell$
 al passo $t$ e deve predire lo stato di ciascuna delle 64 caselle (vuota,
-nera, bianca). Le sonde *lineari* falliscono (errore del 20–23%, appena meglio
-del 27–29% che si ottiene sondando una rete con pesi casuali), quelle *non
-lineari* (un MLP a uno strato nascosto) arrivano all'1,7% di errore negli
-strati più profondi: lo stato della partita è ricostruibile quasi per intero
-dalle attivazioni. Poiché una sonda potrebbe leggere una correlazione senza
+nera, bianca). Le sonde *lineari* falliscono (errore fra il 20% e il 24% a
+seconda dello strato, appena meglio del 26–29% che si ottiene sondando una rete
+con pesi casuali), quelle *non lineari* (un MLP a uno strato nascosto) arrivano
+all'1,7% di errore negli strati più profondi: lo stato della partita è
+ricostruibile quasi per intero dalle attivazioni. Poiché una sonda potrebbe leggere una correlazione senza
 ruolo causale, il passo decisivo è l'**intervento**: si modificano le
 attivazioni con una discesa di gradiente finché la sonda vi legge una
 scacchiera contraffatta, si lascia proseguire il calcolo e si osserva che la
@@ -200,39 +218,44 @@ risultato.
 `````
 
 Come si tengono insieme questi risultati? Il dibattito ha due letture, ed è
-onesto dire che nessuna delle due ha vinto. La prima: Othello-GPT dimostra che
-la pura predizione del token successivo *può* far emergere una
-rappresentazione interna dello stato del mondo; la caricatura del modello che
-«rimescola frasi senza rappresentarsi nulla» è, almeno in questo caso
-controllato, falsificata. La seconda: un mondo di 64 caselle con regole fisse è
-lontanissimo dal mondo fisico, e c'è un secondo esperimento che raffredda gli
-entusiasmi. Un gruppo guidato da Keyon Vafa {cite}`vafa2024evaluating` ha
-addestrato una rete sui percorsi dei taxi di New York: le indicazioni che dà,
-svolta per svolta, sono valide quasi sempre, ma se dalla rete si prova a
-ricavare la mappa che ha in testa vengono fuori strade che non esistono e
-cavalcavia impossibili, e basta imporre qualche deviazione perché smetta di
-funzionare. Le rappresentazioni emerse per questa via, insomma, possono essere
-frammentarie: buone finché si resta nelle situazioni su cui la rete si è
-addestrata, fragili appena se ne esce (**fuori distribuzione** si dice appunto
-di tutto ciò che al momento dell'addestramento non c'era). È
-l'eco di una prudenza già incontrata nel capitolo sui Transformer, a proposito
-di allucinazioni e comprensione: su che cosa i modelli capiscano davvero, il
-dibattito scientifico è tutt'altro che chiuso. Chi, come LeCun, ritiene che
-serva un'architettura pensata apposta per prevedere il mondo (la strada JEPA
-delle sezioni precedenti) e chi scommette che scala e dati
-{cite}`kaplan2020scaling` faranno maturare i modelli del mondo dentro i
-modelli di linguaggio, oggi si divide esattamente su questo punto. Il lettore
-arrivato fin qui ha gli strumenti per seguire la partita senza tifare.
+onesto dire che nessuna delle due ha vinto.
+
+La prima: Othello-GPT dimostra che la pura predizione del token successivo
+*può* far emergere una rappresentazione interna dello stato del mondo. La
+caricatura del modello che «rimescola frasi senza rappresentarsi nulla»,
+almeno in questo caso controllato, è smentita dai fatti.
+
+La seconda: un mondo di 64 caselle con regole fisse è lontanissimo dal mondo
+fisico, e c'è un secondo esperimento che raffredda gli entusiasmi. Un gruppo
+guidato da Keyon Vafa {cite}`vafa2024evaluating` ha addestrato una rete sui
+percorsi dei taxi di New York. Le indicazioni che dà, svolta per svolta, sono
+valide quasi sempre; ma se dalle sue previsioni si ricostruisce la mappa che ha
+in testa, vengono fuori strade che non esistono e cavalcavia impossibili, e
+basta imporre qualche deviazione perché smetta di funzionare. Le
+rappresentazioni emerse per questa via, insomma, possono essere frammentarie:
+buone finché si resta nelle situazioni su cui la rete si è addestrata, fragili
+appena se ne esce (**fuori distribuzione** si dice appunto di tutto ciò che al
+momento dell'addestramento non c'era).
+
+È l'eco di una prudenza già incontrata nel capitolo sui Transformer, a
+proposito di allucinazioni e comprensione: su che cosa i modelli capiscano
+davvero, il dibattito scientifico è tutt'altro che chiuso. Da una parte c'è
+chi, come LeCun, ritiene che serva un'architettura pensata apposta per
+prevedere il mondo, ed è la strada JEPA delle sezioni precedenti. Dall'altra
+c'è chi scommette che basteranno la taglia dei modelli e la quantità di dati
+{cite}`kaplan2020scaling` a far maturare un modello del mondo dentro i modelli
+di linguaggio. Il lettore arrivato fin qui ha gli strumenti per seguire la
+partita senza tifare.
 
 ## Applicazioni con i piedi per terra
 
 Mentre il dibattito continua, i world model lavorano. In **robotica** la
 strada l'abbiamo già vista nella sezione precedente: V-JEPA 2, nella variante
 condizionata sulle azioni, usa le previsioni nello spazio delle
-rappresentazioni per *pianificare* (provare mentalmente le sequenze di comandi
-e scegliere quella che avvicina il braccio all'obiettivo) su robot mai visti
-in addestramento. Nella **guida autonoma** il problema sono gli scenari rari:
-il bambino che sbuca tra due auto, il carico che cade dal camion. Raccoglierli
+rappresentazioni per *pianificare* (provare mentalmente i comandi possibili,
+uno alla volta, e scegliere quello che avvicina il braccio all'obiettivo) su
+robot mai visti in addestramento. Nella **guida autonoma** il problema sono gli
+scenari rari: il bambino che sbuca tra due auto, il carico che cade dal camion. Raccoglierli
 su strada è impraticabile, oltre che inaccettabile; un world model generativo
 li produce in quantità e in sicurezza, ed è dal 2023 la scommessa di più di un
 laboratorio del settore (GAIA-1 di Wayve è stato fra i primi a mostrarla in
@@ -240,8 +263,9 @@ pubblico).
 Nei **videogiochi e negli ambienti di addestramento**, infine,
 il cerchio si chiude: DeepMind presenta Genie 2 esplicitamente come generatore
 di ambienti illimitati in cui addestrare e valutare agenti; il rimedio a un
-vizio storico del reinforcement learning, dove gli agenti imparano a memoria i
-pochi ambienti disponibili invece di imparare ad adattarsi.
+vizio storico dell'apprendimento per rinforzo, dove i programmi che imparano
+per tentativi finiscono per sapere a memoria i pochi ambienti disponibili
+invece di imparare ad adattarsi.
 
 E c'è una ragione strutturale per cui questo fronte è considerato tra i più
 caldi della ricerca, al di là delle demo spettacolari.
@@ -250,17 +274,16 @@ caldi della ricerca, al di là delle demo spettacolari.
 
 Per tutto il libro il collo di bottiglia è stato lo stesso: i dati con le
 etichette costano. Qualcuno deve scrivere «gatto» sotto la foto del gatto,
-tradurre la frase, assegnare il voto. Il video no: è il primo giacimento in
+tradurre la frase, assegnare il voto. Il video no: è un giacimento sterminato in
 cui la correzione è *gratis*. Vuoi sapere se il modello ha previsto bene?
 Aspetta il fotogramma successivo: la risposta esatta arriva da sola, milioni
-di volte per ogni ora di filmato. E ogni video è un piccolo esperimento di
+di volte per ogni ora di filmato. Per giunta ogni video è un piccolo esperimento di
 fisica già eseguito (bicchieri che cadono, palle che rimbalzano, porte che
 sbattono) registrato senza che nessuno lo abbia allestito. E il testo, invece,
-non è infinito: il capitolo sui Transformer lo dice due volte, con le leggi di
-scala (una ventina di token per ogni parametro, e il conto cresce con il
-modello) e con la constatazione che i corpora del web si stanno esaurendo come
-fonte gratuita di testo di qualità. Le pagine scritte dagli esseri umani
-restano quelle che sono. Il video è
+non è infinito. Il capitolo sui Transformer lo dice in due punti: più un modello è
+grande, più testo pretende per essere addestrato come si deve; e il web sta
+finendo come fonte gratuita di scrittura di qualità. Le pagine scritte dagli
+esseri umani restano quelle che sono. Il video è
 la più grande riserva di esperienza del mondo non ancora spremuta: ecco perché
 tutti scavano qui.
 
@@ -290,9 +313,9 @@ Riavvolgiamo. Kenneth Craik, 1943: un organismo con un «modello in scala
 ridotta» della realtà può provare le alternative nella testa e reagire al
 futuro prima che arrivi. Ha e Schmidhuber, 2018: un agente si allena dentro il
 proprio sogno e torna nel gioco vero più bravo di prima. Hopfield, 1982, e la
-tradizione delle energie: dare a ogni combinazione possibile un voto, e poi
-lasciare che il sistema scivoli verso quelle che il voto dice compatibili, che
-è insieme il modo di ricordare e quello di giudicare; è la lingua in cui LeCun
+tradizione delle energie: dare un voto a ogni combinazione possibile, e poi
+lasciare che il sistema scivoli verso quelle che il voto dice compatibili. È
+insieme il modo di ricordare e quello di giudicare, ed è la lingua in cui LeCun
 ha scritto la sua proposta.
 Le JEPA: prevedere sì, ma nello spazio delle rappresentazioni, lasciando
 cadere i dettagli che non contano. E infine Sora e Genie: la previsione fatta
@@ -306,17 +329,20 @@ Che cosa manca, lo si può dire con la stessa calma. Manca la
 hanno visto, mescolandole e sfumando dall'una all'altra (in gergo si dice che
 le **interpolano**), ma ricombinare pezzi noti in situazioni radicalmente
 nuove, che è il forte delle menti biologiche, resta fragile. Manca la
-**causalità**: prevedere ciò che *segue*
-non è capire ciò che *provoca*, e la differenza tra osservare una correlazione
-e intervenire su un meccanismo, che un bambino esplora rovesciando bicchieri
-apposta, nei modelli è ancora sottile. E manca la **pianificazione a lungo
+**causalità**: prevedere ciò che *segue* non è capire ciò che *provoca*. Un
+bambino la differenza la esplora da sé, rovesciando bicchieri apposta: vedere
+due cose che vanno sempre insieme è un conto, andarne a toccare una per vedere
+che ne è dell'altra è un altro. Nei modelli quella differenza è ancora poco
+marcata. E manca la **pianificazione a lungo
 orizzonte**: l'errore dei modelli si accumula passo dopo passo, ed è il difetto
 che il capitolo ha incontrato per primo, quando l'agente si allenava dentro una
-copia imprecisa del gioco (in gergo tecnico si chiama *model bias*). I sogni
-dentro cui si può ancora pianificare durano **secondi, non minuti**: una
-quindicina di passi immaginati per i Dreamer, un solo passo per il world model
-che guida il braccio robotico. I minuti sono la lunghezza dei video che un
-simulatore generativo sa tenere in piedi da *guardare*, che è un'altra cosa.
+copia imprecisa del gioco (in gergo si chiama *model bias*, la piega
+sistematica del modello). I sogni dentro cui si può ancora pianificare sono
+**corti**: una quindicina di passi immaginati per i Dreamer, gli eredi del
+sogno di Ha e Schmidhuber, e un passo solo per il world model che guida il
+braccio robotico. I minuti di cui si parla per i simulatori generativi sono
+un'altra cosa: sono la lunghezza di un video da *guardare*, non di un piano da
+eseguire.
 Nessuna di queste lacune autorizza il
 catastrofismo («è tutto un trucco») né il trionfalismo («è fatta, questione di
 mesi»): autorizzano un cantiere. Se c'è una lezione nelle date di questo

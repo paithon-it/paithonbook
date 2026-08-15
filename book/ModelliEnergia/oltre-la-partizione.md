@@ -2,61 +2,82 @@
 
 Nella sezione precedente è comparso, quasi di sfuggita, il personaggio che
 domina questo capitolo: la **funzione di partizione**, che il titolo qui sopra
-chiama con la sua iniziale, $Z$. È il conto di cui si diceva: la somma su
-*tutte* le configurazioni possibili, quella che trasforma un'altezza in una
-percentuale. Vale la pena guardarla in faccia, perché è lei a dettare tutto ciò
-che segue, e perché la sua intrattabilità non è una difficoltà tecnica fra le
-tante, è un muro.
+chiama con la lettera con cui la si indica sempre, $Z$ (che in italiano non è
+l'iniziale di niente: viene dal tedesco *Zustandssumme*, «somma su tutti gli
+stati»). È il conto di cui si diceva: la somma su *tutte* le configurazioni
+possibili. Vale la pena guardarla in faccia, perché è lei a dettare tutto ciò
+che segue, e perché il fatto che non si riesca a calcolarla non è una
+difficoltà tecnica fra le tante, è un muro.
 
 Una rete di venticinque neuroni accesi o spenti, come quella della memoria
 associativa, ha trentatré milioni di configurazioni ($2^{25} = 33\,554\,432$),
-e $Z$ si calcola davvero: contarle è questione di istanti, e valutare
-l'energia di ciascuna, che è il conto vero, richiede meno di un minuto
-(misurato: quarantasette secondi). Aggiungiamone settantacinque. Con cento neuroni le
-configurazioni diventano un numero lungo trentuno cifre, e a un miliardo al
-secondo servirebbero quasi **tremila volte l'età dell'universo** per contarle
-tutte ($2^{100} \approx 1{,}27 \times 10^{30}$, cioè circa
-$4 \times 10^{13}$ anni). E cento neuroni accesi o spenti sono un'immagine in
-bianco e nero di dieci pixel per dieci: nemmeno una figurina. Nessun trucco di
-ingegneria recupera trenta ordini di grandezza: se una strada passa da $Z$,
-quella strada è chiusa.
+e $Z$ si calcola davvero: percorrerle tutte e valutare l'energia di ciascuna,
+che è il conto vero, prende meno di un minuto su un computer qualunque.
+
+Aggiungiamone settantacinque. Con cento neuroni le configurazioni diventano un
+numero lungo trentuno cifre ($2^{100} \approx 1{,}27 \times 10^{30}$), e anche
+regalando a quel computer una velocità mille volte superiore a quella che ha,
+un miliardo di configurazioni al secondo, servirebbero circa
+$4 \times 10^{13}$ anni per percorrerle: quasi **tremila volte l'età
+dell'universo**. E cento neuroni accesi o spenti sono un'immagine in bianco e
+nero di dieci pixel per dieci: nemmeno una figurina. Nessun trucco di
+ingegneria fa sparire trenta zeri: se una strada passa da $Z$, quella strada è
+chiusa.
 
 `````{tab} Elementare
 
-Torniamo al paesaggio, e immaginiamo che ci piova sopra: l'acqua si raccoglie
-nelle valli, e quanto più una valle è profonda tanta più acqua ci finisce
-dentro. La pioggia raccolta, allora, è la probabilità: una risposta molto
-plausibile è una valle molto profonda, cioè un posto molto bagnato. Per dire
-quanto è *alta* una valle rispetto alle
-altre non serve nulla di speciale: si guardano le due altezze e si
-confrontano. Per dire invece che una valle raccoglie «il 30% di tutta la
-pioggia che cade sul continente» bisogna aver misurato l'intero continente,
-valle per valle. La funzione di partizione è la misura dell'intero
-continente: è ciò che trasforma un'altezza in una percentuale.
+Il paesaggio, con tutte le risposte possibili messe una accanto all'altra, è
+grande come un continente: da qui in avanti lo chiameremo così. E immaginiamo
+che ci piova sopra. L'acqua scende e si raccoglie in basso, quindi le valli si
+riempiono e le cime restano asciutte; e quanta acqua raccolga una valle dipende
+da due cose, da quanto è profonda e da quanto è larga, esattamente come nel
+mondo vero. Un pozzo strettissimo può essere profondo e raccogliere poco; una
+conca larga e poco profonda può raccogliere molto.
+
+La pioggia raccolta, allora, è la probabilità. Da qui una distinzione che
+conviene tenere a mente per tutto il capitolo: il punto **più basso** è la
+singola risposta più plausibile, ma la valle **più bagnata** è la famiglia di
+risposte in cui il modello scommette più probabilità, e le due cose possono
+stare in due posti diversi. Quando si cerca una risposta sola si va al punto
+più basso; quando si vogliono risposte varie, come per generare immagini, si
+pesca dalla pioggia.
+
+Per dire quanto è *alta* una valle rispetto a un'altra non serve nulla di
+speciale: si guardano le due altezze e si confrontano. Per dire invece che una
+valle raccoglie «il 30% di tutta la pioggia che cade sul continente» bisogna
+aver misurato l'intero continente, valle per valle. La funzione di partizione è
+quella misura: è ciò
+che trasforma un'altezza in una percentuale.
 
 E qui verrebbe da chiedersi perché mai dovremmo misurarlo. La risposta è che
 imparare, per un modello a energia, sono **due** gesti e non uno: abbassare il
 paesaggio dove stanno i dati veri, e alzarlo dove il modello si immagina roba
 che non esiste. Il primo è facile, i dati ce li abbiamo in mano. Il secondo
 no: per sapere che cosa il modello si immagina bisogna prima fargli produrre
-qualcosa, e per farlo per bene bisognerebbe conoscere il paesaggio intero. Se
-ci si limitasse ad abbassare, il modello troverebbe subito la scorciatoia:
-abbassare tutto, dappertutto, e dire di sì a qualunque cosa gli si presenti.
-L'alzare è il gesto che costa, ed è il motivo per cui la misura del continente
-continua a ripresentarsi.
+qualcosa, e produrlo *nelle proporzioni giuste* sembra richiedere di conoscere
+il continente intero.
+
+Che i gesti siano due, e non uno, non è un dettaglio: se ci si limitasse ad
+abbassare, il modello troverebbe subito la scorciatoia, cioè abbassare tutto
+dappertutto e dire di sì a qualunque cosa gli si presenti. L'alzare è il gesto
+che costa, ed è il motivo per cui la misura del continente continua a
+ripresentarsi. E quel «sembra richiedere» di due righe fa è la parola su cui
+gira il resto della sezione: la prima delle tre strade sta tutta nell'aver
+scoperto che non è vero.
 
 Il problema è che il continente, qui, è grande quanto tutte le immagini
 possibili. Non lo si percorre. E allora si può fare una di tre cose.
 *Campionarlo* (mandare esploratori a caso e accontentarsi di quello che
-riportano). *Evitarlo* (accorgersi che per molte domande la percentuale non
-serve: basta la pendenza sotto i piedi). Oppure *aggirarlo con un trucco*:
+riportano). *Evitarlo* (smettere di descrivere il paesaggio con le percentuali
+e descriverlo con le pendenze, che sono una descrizione locale e non chiedono
+nessuna misura d'insieme). Oppure *aggirarlo con un trucco*:
 sostituire la domanda «quanto è probabile questo?» con «questo viene dai dati
 o l'ho inventato io?», che è una domanda da rispondere sì o no, e per le
 domande sì o no sappiamo addestrare un classificatore da trent'anni.
 
-Le tre strade esistono tutte e tre, hanno tutte e tre un nome, e la seconda
-(la meno intuitiva) è quella che nel giro di un decennio ha prodotto i modelli
-di diffusione del capitolo precedente.
+Le tre strade esistono tutte e tre, hanno tutte e tre un nome, e la seconda è
+quella che nel giro di un decennio ha prodotto i modelli di diffusione del
+capitolo precedente.
 
 `````
 
@@ -113,17 +134,24 @@ questa luce, tre risposte alla stessa domanda: chi solleviamo, e come?
 ## Prima via: campionare il paesaggio
 
 Se il conto esatto su tutto il paesaggio non si può fare, lo si può stimare
-visitandone dei pezzi: non calcolare, campionare. Serve però un modo di
-produrre risposte davvero pescate dal modello, cioè che escano fuori con la
-frequenza che il paesaggio prescrive, e il modo classico è lasciar vagare
-qualcosa sul paesaggio abbastanza a lungo perché passi in ogni punto il tempo
-che gli spetta. Quando le risposte non sono acceso e spento ma numeri con la
-virgola (un'immagine vera, per dire, dove ogni pixel può avere qualunque
-sfumatura), la ricetta più usata porta il nome del fisico francese Paul
-Langevin, che nel 1908 la scrisse per il **moto browniano**, il tremolio di un
-granello di polline sull'acqua sotto gli urti delle molecole, ed è quasi uno
-slogan: **scendere lungo la pendenza dell'energia, con addosso
-un po' di rumore**.
+visitandone dei pezzi: non calcolare, campionare. Il modo classico è mandare
+un esploratore a spasso sul paesaggio, lasciarlo camminare a lungo e segnare
+ogni tanto dove si trova. Se cammina secondo la regola giusta, il tempo che
+passa in un posto è proporzionale alla pioggia che quel posto raccoglie, e
+allora i punti segnati sono un campione onesto: valgono quanto se li avessimo
+pescati sapendo tutte le percentuali. Un esploratore così, in gergo, si chiama
+**catena**, e nella pratica se ne fanno camminare migliaia in parallelo.
+
+Quando le risposte non sono acceso e spento ma numeri con la virgola
+(un'immagine vera, per dire, dove ogni pixel può avere qualunque sfumatura),
+la regola più usata porta il nome del fisico francese Paul Langevin, che nel
+1908 la scrisse per il **moto browniano**, il tremolio di un granello di
+polline sull'acqua sotto gli urti delle molecole. È quasi uno slogan:
+**scendere lungo la pendenza dell'energia, con addosso un po' di rumore**. E
+«rumore», qui, non ha niente a che fare con i suoni: vuol dire una spintarella
+a caso, diversa a ogni passo, che non si sa da che parte arriverà. In questa
+pagina la parola avrà anche un secondo mestiere, e quando succederà il testo lo
+dirà.
 
 `````{tab} Elementare
 
@@ -136,11 +164,15 @@ tempo e segni dove si trova, scoprirai che passa **più tempo dove il
 paesaggio è basso** e pochissimo sulle cime: la frequenza con cui visita
 ogni punto *è* la probabilità che il paesaggio definisce.
 
-Questo è il punto elegante della faccenda: per far vibrare e scendere la
-pallina serve solo la pendenza locale, quella sotto i suoi piedi. La misura
-dell'intero continente (la costante che non sappiamo calcolare) non entra mai
-nella discesa, perché una costante non ha pendenza. Campionare non richiede di
-normalizzare.
+Questo è il punto elegante della faccenda, ed è il perno di tutta la sezione:
+per far vibrare e scendere la pallina serve solo la pendenza locale, quella
+sotto i suoi piedi. La misura dell'intero continente, quella che non sappiamo
+calcolare, è un numero solo, sempre lo stesso in ogni punto, e sul paesaggio
+agisce come uno spostamento in blocco: alza tutte le altezze della stessa
+quantità. Ma alzare l'intero paesaggio di dieci metri non cambia di un grado
+nessuna salita e nessuna discesa. La pallina, che sente solo il pendio sotto i
+piedi, non se ne accorgerebbe nemmeno, e infatti non ha bisogno di
+conoscerlo.
 
 Il prezzo è il tempo. Se due valli sono separate da una montagna alta, la
 pallina può restare intrappolata a lungo da una parte, e la fotografia che
@@ -217,14 +249,17 @@ Il codice che segue costruisce il paesaggio più semplice in cui la faccenda si
 vede: due valli e una collinetta in mezzo. In formula è l'energia a doppia
 buca $E(x) = (x^2 - 1)^2$, e i conti si fanno a mente: in $x = 1$ e in
 $x = -1$ la parentesi vale zero, quindi l'energia vale zero (sono i due
-fondovalle), mentre in $x = 0$ vale $(0-1)^2 = 1$, che è la collinetta.
-Ci mette sopra ventimila
-palline, le fa vibrare con la ricetta di Langevin e alla fine guarda dove si
-sono distribuite, senza aver mai calcolato $Z$. Poi, per pura verifica, $Z$ la
-calcola: in un paesaggio a una sola dimensione si può, ed è l'unico modo per
-sapere se il campionamento ha detto il vero. Chi non programma può saltare
-alla tabella: la colonna «campioni» dice dove sono finite le palline, la
-colonna «esatto» dove sarebbero dovute finire.
+fondovalle), mentre in $x = 0$ vale $(0^2-1)^2 = 1$, che è la collinetta.
+Ci mette sopra ventimila palline (nel codice si chiamano `catene`, che è il
+nome tecnico di poco fa), le fa vibrare con la ricetta di Langevin e alla fine
+guarda dove si sono distribuite, senza aver mai calcolato $Z$. Poi, per pura
+verifica, $Z$ la calcola: in un paesaggio a una sola dimensione si può, ed è
+l'unico modo per sapere se il campionamento ha detto il vero. Chi non
+programma può saltare alla tabella: la colonna «campioni» dice dove sono
+finite le palline, la colonna «esatto» dove sarebbero dovute finire. Ogni riga
+raccoglie le palline finite in un tratto di paesaggio, per esempio fra $-0,5$
+e $+0,5$; un tratto così, in gergo, si chiama **bin**, e la parola torna
+qualche volta in questa pagina.
 
 ```python
 import numpy as np
@@ -277,28 +312,34 @@ frazione x>0 (campioni) = 0.497   (esatto 0.500)
  [+1.5,+2.0)     0.012    0.011
 ```
 
-Le due colonne coincidono entro pochi millesimi (lo scarto più largo è di
-0,006, nella riga centrale, quella che raccoglie le palline finite fra $-0,5$
-e $+0,5$: un tratto di paesaggio così, in gergo, si chiama **bin**, e da qui
-in avanti la parola torna qualche volta): le catene hanno ricostruito la
-distribuzione senza
-che $Z$ sia mai entrata nel ciclo. Quell'ultimo millesimo, però, non è tutto
-rumore statistico. Dentro c'è un errore di natura diversa, ed è colpa del
+Le due colonne coincidono entro pochi millesimi: lo scarto più largo vale
+0,006, e capita in due righe, quella centrale e quella subito a destra. Le
+catene hanno ricostruito le proporzioni giuste senza che $Z$ sia mai entrata
+nel ciclo.
+
+Quei pochi millesimi, però, non sono tutti fortuna del sorteggio. Dentro c'è
+anche un errore di natura diversa, che c'è sempre e sempre nello stesso verso,
+ed è colpa del
 **passo**: la pallina non scivola giù per il pendio con continuità, lo scende
 a saltelli, e $\epsilon$ (nel codice, `eps`) è quanto dura ogni saltello. Una
 scala di gradini non è una rampa. Più i saltelli sono brevi, più la fotografia
-finale somiglia a quella
-vera; con saltelli di durata finita resta uno scarto che non è statistico e
-che nessuna quantità di catene fa sparire.
+finale somiglia a quella vera; con saltelli di durata finita resta uno scarto
+che non dipende dalla sfortuna e che nessuna quantità di catene fa sparire.
 
-Per vederlo, una sola esecuzione non basta, e vale la pena spiegare perché. Con
-ventimila catene l'incertezza statistica su un bin vale circa 0,003, cioè
-quanto l'effetto che vogliamo misurare: il numero stampato qui sopra, da solo,
-non sa distinguere le due cose. Allora si ripete: sei esecuzioni con sei
-sorteggi diversi (i semi da 0 a 5), tutte a parità di *tempo percorso*
-($k\epsilon = 20$, dove $k$ è il numero di passi: se si dimezza il passo si
-raddoppiano i passi, così la passeggiata dura sempre lo stesso). Lo scarto
-**medio** sul bin centrale vale $+0{,}0032 \pm 0{,}0008$ con
+Per vederlo, una sola esecuzione non basta, e vale la pena spiegare perché.
+Con ventimila catene, due esecuzioni identiche in tutto tranne che nel
+sorteggio danno risultati che ballano di circa 0,003 su un bin, cioè quanto
+l'effetto che vogliamo misurare: il numero stampato qui sopra, da solo, non sa
+distinguere le due cose. Lo 0,006 della tabella, insomma, è la somma di un
+effetto vero e di una botta di fortuna, e non sappiamo quanto sia l'uno e
+quanto l'altra. I numeri che seguono servono a separarli, e saranno più
+piccoli.
+
+Allora si ripete. Sei esecuzioni con sei sorteggi diversi (nel codice si
+cambia il numero da cui parte il sorteggiatore, e qui sono i numeri da 0 a 5),
+tutte a parità di *tempo percorso*: se si dimezza la durata del saltello si
+raddoppia il numero di saltelli, così la passeggiata dura sempre lo stesso. Lo
+scarto **medio** sul bin centrale vale $+0{,}0032 \pm 0{,}0008$ con
 $\epsilon = 0{,}01$, poi $+0{,}0024 \pm 0{,}0011$ con $\epsilon = 0{,}002$ e
 $-0{,}0002 \pm 0{,}0009$ con $\epsilon = 0{,}0005$ (il numero dopo il $\pm$
 dice di quanto quella media balla da un sorteggio all'altro).
@@ -306,36 +347,50 @@ dice di quanto quella media balla da un sorteggio all'altro).
 E adesso la parte onesta, perché sei ripetizioni **non bastano ancora**: fra i
 primi due punti c'è una differenza di 0,0008 con incertezze di 0,0008 e
 0,0011, cioè nessuna differenza. Chi si fermasse qui avrebbe due punti
-indistinguibili e uno compatibile con zero, e concluderebbe per fede. La
-strada che chiude la questione è la stessa che questa sezione ha già usato per
-$Z$: in una dimensione **si può calcolare la risposta esatta**. La
-distribuzione su cui la catena a passo $\epsilon$ si assesta davvero è
-l'autovettore di Perron del suo operatore di transizione, e su una griglia
-fine si trova per iterazione. Il suo scarto sul bin centrale vale
-$+0{,}00357$ a $\epsilon = 0{,}01$, $+0{,}00071$ a $\epsilon = 0{,}002$ e
-$+0{,}00018$ a $\epsilon = 0{,}0005$: sempre positivo (la barriera è
-sovrappesata), e il rapporto scarto/$\epsilon$ resta fra $0{,}35$ e $0{,}36$
-su due ordini di grandezza di passo. Ecco l'errore «dell'ordine di
-$\epsilon$» annunciato nella scheda Superiore, non annunciato ma misurato.
-Sparirebbe aggiungendo, dopo ogni saltello, un controllo che
-ogni tanto lo rifiuta (si chiama test di accettazione di Metropolis), ed è la
-mossa a cui i modelli a energia rinunciano per semplicità.
+indistinguibili e uno compatibile con zero, e concluderebbe per fede.
 
-Il confronto fra le due colonne di numeri è la lezione, e vale ben oltre
-questo esempio. Sul singolo seme il segno cambia perfino: con
+La strada che chiude la questione è la stessa che questa sezione ha già usato
+per $Z$: in una dimensione **si può calcolare la risposta esatta**, senza
+tirare nemmeno una pallina. Si prende la regola con cui la catena si sposta e
+si chiede quale sia l'unica distribuzione che, applicandole quella regola,
+resta identica a se stessa: è quella su cui la catena a passo $\epsilon$ si
+assesta davvero, e su una griglia fine si trova in poche righe di codice. Chi
+volesse cercarne il nome per esteso: è l'autovettore di Perron dell'operatore
+di transizione. Il suo
+scarto sul bin centrale vale $+0{,}00357$ a $\epsilon = 0{,}01$, $+0{,}00071$
+a $\epsilon = 0{,}002$ e $+0{,}00018$ a $\epsilon = 0{,}0005$: sempre positivo
+(la barriera è sovrappesata), e il rapporto fra lo scarto e la durata del
+saltello resta fra $0{,}35$ e $0{,}36$ su due ordini di grandezza. Lo scarto,
+cioè, cala esattamente in proporzione al passo: passo cinque volte più corto,
+scarto cinque volte più piccolo, e zero soltanto al limite di saltelli di
+durata nulla. Sparirebbe anche in un altro modo: aggiungendo, dopo ogni
+saltello, un controllo che confronta il punto di arrivo con quello di partenza
+e ogni tanto rifiuta la mossa, con una regola tarata apposta perché le
+proporzioni finali tornino esatte. Si chiama test di accettazione di
+Metropolis, e i modelli a energia ci rinunciano per semplicità.
+
+Il confronto fra le sei ripetizioni e il conto esatto è la lezione, e vale ben
+oltre questo esempio. Su un singolo sorteggio cambia perfino il segno: con
 $\epsilon = 0{,}0005$ tre esecuzioni su sei danno uno scarto negativo, mentre
-il valore vero è positivo. E la stima a $\epsilon = 0{,}002$ sbaglia di tre
-volte tanto. Un effetto sistematico più piccolo del rumore non si vede
-ripetendo di più: si vede cambiando strumento, e un numero solo, per quanto
-stampato con quattro cifre, non dimostra niente.
+il valore vero è positivo. E la media delle sei, a $\epsilon = 0{,}002$, dà
+$0{,}0024$ dove il valore vero è $0{,}00071$: più del triplo. Un effetto che
+c'è sempre, ma è più piccolo di quanto i numeri ballino da un sorteggio
+all'altro, ripetendo di più si vedrebbe anche, ma tardi: per dimezzare il ballo
+servono quattro volte le esecuzioni, e qui ce ne vorrebbero centinaia. Cambiare
+strumento costa molto meno. E un numero solo, per quanto stampato con quattro
+cifre, non dimostra niente.
 
 Vale la pena notare anche *perché* qui funziona così bene, per non trarne una
-lezione sbagliata: la barriera fra le due buche è alta un'unità di energia
-(bassa) e le catene sono ventimila e indipendenti. Alzando la barriera, o
-passando a mille dimensioni dove le valli sono separate da creste
-lunghissime, la stessa procedura darebbe una fotografia sbilanciata, e nessuno
-se ne accorgerebbe: in alta dimensione la colonna «esatto» non si può
-stampare.
+lezione sbagliata. La collinetta fra le due buche è alta un'unità di energia,
+e un'unità è esattamente la salita che le spintarelle casuali riescono a far
+fare a una pallina senza sforzarsi: barriere così si scavalcano di continuo, e
+le catene sono ventimila e indipendenti. Ma la difficoltà di superare una
+barriera non cresce in proporzione alla sua altezza, cresce molto più in
+fretta. Misurato sullo stesso paesaggio, alzando la collinetta da uno a dieci
+le catene la scavalcano **duemila volte** più di rado. Alzandola, o passando a
+mille dimensioni dove le valli sono separate da creste lunghissime,
+la stessa procedura darebbe una fotografia sbilanciata, e nessuno se ne
+accorgerebbe: in alta dimensione la colonna «esatto» non si può stampare.
 
 ## Seconda via: imparare la pendenza, non la probabilità
 
@@ -355,14 +410,15 @@ Puoi dirgli, per ogni punto, «qui c'è il 3% della pioggia», e per farlo devi
 aver misurato tutto il continente. Oppure puoi dirgli, per ogni punto, «da qui
 si scende verso nord-est, con questa pendenza». La seconda descrizione non
 richiede di conoscere il continente: è tutta locale. Eppure basta a
-ricostruire la forma del paesaggio, a meno di quanto sta in alto o in basso in
-assoluto, che per generare non serve.
+ricostruire la forma del paesaggio, tutta tranne una cosa: a che altezza sta
+il paesaggio nel suo insieme. E quella, per produrre risposte, non serve.
 
-Attenzione a non immaginare due paesaggi: è sempre lo stesso. L'altezza è
-l'energia, e dove l'energia è bassa la probabilità è alta, quindi parlare del
-paesaggio dell'una o dell'altra è parlare della stessa carta, una capovolta
-rispetto all'altra. La sua pendenza ha un nome tecnico, **score**, ed è la
-stessa parola che compare nel capitolo sui modelli di diffusione. Non è una
+Attenzione a non immaginare due carte diverse: è sempre la stessa, guardata da
+sopra o da sotto. L'altezza è l'energia, e dove l'energia è bassa la
+probabilità è alta, quindi il paesaggio della probabilità è il paesaggio
+dell'energia messo a testa in giù, con le stesse valli diventate colline. La
+sua pendenza ha un nome tecnico, **score**, ed è la stessa parola che compare
+nel capitolo sui modelli di diffusione. Non è una
 coincidenza: è la stessa cosa. Insegnare a una rete la pendenza in ogni punto,
 invece della percentuale, è ciò che rende addestrabile un generatore di
 immagini, e ciò che ha tolto di mezzo, per quella strada, il problema della
@@ -392,17 +448,27 @@ $$
 
 che a prima vista è inservibile (lo score dei dati non lo conosciamo) ma che
 un'integrazione per parti trasforma in una quantità calcolabile su un
-campione. Le ipotesi vale la pena scriverle, perché non sono formalità: oltre
-alla regolarità e al decadimento all'infinito ($p_{\text{dati}}(\mathbf{x})\,
-\nabla_{\mathbf{x}} \log p_\theta(\mathbf{x}) \to 0$ per $\lVert\mathbf{x}\rVert
-\to \infty$, che è ciò che annulla il termine di bordo), servono
-$p_{\text{dati}}$ **strettamente positiva e differenziabile su tutto**
-$\mathbb{R}^D$ e a **supporto connesso**. Sono le due che si rompono davvero:
-i dati veri vivono su una varietà di dimensione molto minore dello spazio in
-cui stanno (una fotografia di volti non riempie $\mathbb{R}^{D}$), e senza
-connessione due densità con lo stesso score possono differire di un fattore
-costante da una componente all'altra, cioè lo score non identifica più la
-densità. Sotto quelle ipotesi {cite}`hyvarinen2005estimation`:
+campione. Le ipotesi vale la pena scriverle, perché non sono formalità.
+L'integrazione per parti richiede regolarità, $p_{\text{dati}}$
+differenziabile e un decadimento all'infinito
+($p_{\text{dati}}(\mathbf{x})\, \nabla_{\mathbf{x}} \log p_\theta(\mathbf{x})
+\to 0$ per $\lVert\mathbf{x}\rVert \to \infty$, che è ciò che annulla il
+termine di bordo); per concludere che il minimo di $J$ identifica il modello
+serve in più la densità del **modello** strettamente positiva ovunque,
+ipotesi che nel caso ben specificato si trasmette ai dati
+{cite}`hyvarinen2005estimation`.
+
+È lì che le cose si rompono davvero, e per due motivi diversi. Il primo: i
+dati veri vivono su una varietà di dimensione molto minore dello spazio in cui
+stanno (una fotografia di volti non riempie $\mathbb{R}^{D}$), e la positività
+ovunque salta. Il secondo: quando il supporto si spezza in pezzi separati lo
+score smette di identificare la densità, perché due densità che differiscono
+di un fattore costante da una componente all'altra hanno lo stesso score. La
+seconda osservazione, si noti, non è nell'articolo del 2005: è arrivata quindici
+anni dopo, con il lavoro di Li K. Wenliang e Heishiro Kanagawa sulla cecità
+dei metodi a score alle componenti isolate, ed è la ragione per cui questi
+metodi sbagliano i pesi di una miscela. Sotto le ipotesi del teorema
+{cite}`hyvarinen2005estimation`:
 
 $$
 J(\theta) = \mathbb{E}_{\mathbf{x} \sim p_{\text{dati}}}
@@ -490,18 +556,20 @@ che le frecce imparate siano la pendenza di qualcosa. Che sia possibile
 sbagliare si vede con quattro frecce: disponile lungo il bordo di un quadrato
 in modo che ognuna punti alla successiva, in tondo. Sembrano un pendio, ma
 seguendole si torna al punto di partenza dopo essere sempre scesi, e un
-paesaggio in cui si scende sempre tornando dove si era non esiste. Ci si guadagna in
-stabilità dell'addestramento, e a chi genera immagini l'altra cosa non è mai
-importata.
+paesaggio in cui si scende sempre tornando dove si era non esiste. In cambio
+l'addestramento è più stabile, e a chi genera immagini che il paesaggio esista
+davvero non è mai importato.
 
-## Terza via: trasformare la densità in una domanda sì o no
+## Terza via: cambiare la domanda, e chiederne una da sì o no
 
 La terza strada è la più obliqua e ha il fascino delle idee che spostano il
 problema invece di risolverlo. Michael Gutmann e Aapo Hyvärinen, nel 2010,
-osservano che stimare una densità è difficile, ma **distinguere** i dati veri
-da rumore fabbricato da noi è un problema di classificazione, e a classificare
-siamo bravi {cite}`gutmann2010noise`. Il metodo si chiama **stima contrastiva
-col rumore**, e la sigla inglese con cui lo si trova ovunque è **NCE**.
+osservano che dire quanto è probabile un dato è difficile, mentre
+**distinguere** i dati veri da roba fabbricata da noi è un problema di
+classificazione, e a classificare siamo bravi {cite}`gutmann2010noise`. Il
+metodo si chiama **stima contrastiva col rumore**, dove «rumore» sono appunto
+gli esempi finti che ci fabbrichiamo, e la sigla inglese con cui lo si trova
+ovunque è **NCE**.
 
 `````{tab} Elementare
 
@@ -518,10 +586,10 @@ delle GAN, quella a cui tocca dire se l'immagine che ha davanti viene dal
 mondo o l'ha fabbricata l'altra rete. Ed è la stessa mossa con cui si insegna
 a un computer a rappresentare con dei numeri le parole di una lingua o i nodi
 di un grafo: gli si mostrano accostamenti veri e accostamenti inventati, e gli
-si chiede di distinguerli. Per le parole sono gli *word embedding* del
-capitolo sul natural language processing; nel capitolo sulle Graph Neural
-Network la stessa mossa torna col suo nome inglese, *negative sampling*. La
-famiglia è più larga di quanto il nome lasci pensare.
+si chiede di distinguerli. Per le parole sono i *word embedding* del capitolo
+sul natural language processing; nel capitolo sulle Graph Neural Network, più
+avanti nel libro, la stessa mossa si ritroverà col suo nome inglese, *negative
+sampling*. La famiglia è più larga di quanto il nome lasci pensare.
 
 `````
 
@@ -589,7 +657,7 @@ un rapporto fra densità, non una densità.
     su dati sporcati apposta)
   - La elimina, perché sparisce nel passaggio dall'altezza alla pendenza
   - Nella forma originale un conto su come la pendenza stessa cambia da un
-    punto al vicino (in gergo le derivate seconde, l'hessiana), caro
+    punto al vicino (in gergo, le derivate seconde), caro
     in alta dimensione; nella forma *denoising*, il fatto che la pendenza
     imparata è quella dei dati sporcati di rumore, non dei dati
 * - **NCE** (*noise-contrastive estimation*, la domanda sì o no) e parenti
@@ -598,20 +666,23 @@ un rapporto fra densità, non una densità.
     distinguere diventa banale e non si impara nulla
 ```
 
-Tre modi di non pagare il conto, e nessuno dei tre gratis. Resta una quarta
-possibilità, la più radicale, che è anche la tesi della sezione seguente:
-**non chiedere mai la probabilità**. Se ciò che serve è decidere,
-ordinare, pianificare (non stampare percentuali), l'energia basta da sola, e il
+Tre modi di non pagare il conto, e nessuno dei tre gratis. Le tre strade
+hanno però tutte lo stesso scopo, costruire un modello di com'è fatto il
+paesaggio, e si distinguono solo per come pagano il conto. Resta una quarta
+possibilità, la più radicale, e cambia lo scopo invece del metodo: è la tesi
+della sezione seguente, e dice **non chiedere mai la probabilità**. Se ciò che
+serve è decidere, ordinare, pianificare, e non stampare percentuali, un
+modello della distribuzione non serve affatto: l'energia basta da sola, e il
 conto non si apre nemmeno.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
-- Misurare l'intero continente non è caro, è impossibile. Cento interruttori
-  accesi o spenti danno un numero di configurazioni lungo trentuno cifre: a un
-  miliardo di configurazioni al secondo servirebbero quasi tremila volte
-  l'età dell'universo, e cento interruttori sono un'immagine in bianco e nero
-  di dieci pixel per dieci.
+- Misurare l'intero continente non è caro, è impossibile. Cento neuroni, cioè
+  cento interruttori accesi o spenti, danno un numero di configurazioni lungo
+  trentuno cifre: a un miliardo di configurazioni al secondo servirebbero
+  quasi tremila volte l'età dell'universo, e cento interruttori sono
+  un'immagine in bianco e nero di dieci pixel per dieci.
 - Imparare vuol dire abbassare il paesaggio dove stanno i dati veri e alzarlo
   dove il modello immagina male. Il primo gesto è facile, i dati ce li
   abbiamo; il secondo no, perché per sapere che cosa il modello immagina

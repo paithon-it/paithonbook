@@ -1,16 +1,17 @@
 # La raccomandazione neurale
 
-Intorno al 2016 il deep learning aveva già conquistato la visione e stava
-conquistando il linguaggio, e la domanda era nell'aria: perché la
-raccomandazione dovrebbe accontentarsi di un confronto voce per voce? Quel
-confronto, il prodotto scalare della sezione precedente, è pur sempre una
-regola di calcolo fissa, decisa a tavolino da chi ha scritto il modello. Una
-rete neurale, invece, sa imitare con la precisione che si vuole qualunque
-regola leghi ingressi e uscite senza salti bruschi, come racconta la panoramica
-del capitolo sul Deep Learning. Il paper che diede forma alla domanda è *Neural
-Collaborative Filtering* {cite}`he2017neural`, e la risposta è più
-interessante di un semplice «sì»: è un piccolo caso di studio su cosa
-significa davvero «più potente» in machine learning.
+Intorno al 2016 il deep learning aveva già conquistato il riconoscimento delle
+immagini e stava conquistando il linguaggio, e la domanda era nell'aria: una
+rete al posto del confronto voce per voce farebbe meglio? Quel confronto, il
+prodotto scalare della sezione precedente, è pur sempre una regola di calcolo
+fissa, decisa a tavolino da chi ha scritto il modello, mentre una rete la
+regola se la cerca da sé. E può cercarla molto lontano: il capitolo sul Deep
+Learning racconta che una rete abbastanza grande sa imitare, con la precisione
+che si vuole, quasi qualunque legame fra un ingresso e un'uscita. Il paper che
+diede forma alla domanda è *Neural Collaborative Filtering*
+{cite}`he2017neural`, e la risposta è più interessante di un semplice «sì»: è
+un piccolo caso di studio su cosa significa davvero «più potente» in machine
+learning.
 
 ## Dal prodotto scalare alla rete
 
@@ -99,8 +100,10 @@ Klagenfurt hanno provato a rifare i conti di diciotto metodi neurali per la
 raccomandazione, presentati alle conferenze principali {cite}`dacrema2019are`.
 Solo sette si sono lasciati riprodurre con uno sforzo ragionevole, e di quei
 sette **sei venivano spesso battuti da metodi molto più semplici**: i vicini
-della sezione precedente, o tecniche su grafo. Il settimo batteva i metodi di
-riferimento, ma non un metodo lineare, senza reti, tarato con cura. Il lavoro
+della sezione precedente, o tecniche su grafo. Il settimo batteva i termini di
+paragone scelti dai suoi autori, ma perdeva contro un metodo lineare, cioè
+senza reti neurali, quando qualcuno si prendeva la briga di tararlo bene. Il
+lavoro
 ha vinto il premio per il miglior articolo lungo di RecSys, la conferenza del
 settore, e ha spostato la domanda che si fa a un risultato nuovo: non
 «funziona?» ma «meglio di che cosa, tarato da chi?».
@@ -118,14 +121,18 @@ modello la libertà di scoprire da sé come confrontare due schede sembra un
 regalo, e invece gli toglie l'unica cosa che sapeva già di sicuro, cioè che le
 voci vanno confrontate a coppie. Il confronto voce per voce non è una rigidità
 arbitraria: è un'ipotesi giusta sul problema, e su dati scarsi un'ipotesi
-giusta vale più di mille parametri in più. Ed è anche l'unica forma che permette
-di **non** calcolare un punteggio per ogni titolo del catalogo, e su cataloghi
-da milioni di titoli è questo, più della qualità, a decidere se il sistema sta
-in piedi. Il motivo in breve: le schede dei titoli si possono preparare tutte
+giusta vale più di mille parametri in più.
+
+E il confronto voce per voce ha un secondo pregio, che con la qualità non
+c'entra: è l'unica forma di punteggio che permette di **non** calcolarne uno
+per ogni titolo del catalogo. Su cataloghi da milioni di titoli è questo, più
+della qualità, a decidere se il sistema sta in piedi. Il motivo in breve: le
+schede dei titoli si possono preparare tutte
 in anticipo e mettere in uno scaffale ordinato, dove trovare le più vicine alla
 tua non richiede di guardarle tutte; una rete, invece, va fatta girare una
-volta per ogni titolo, e un milione di volte a testa non le fa nessuno (ci
-torniamo in fondo al capitolo). Su dati fitti, cioè il contrario
+volta per ogni titolo, e nessuno può farla girare un milione di volte per ogni
+persona che apre l'app (ci torniamo in fondo al capitolo). Su dati fitti, cioè
+il contrario
 della tabella quasi vuota di prima, le reti ripagano; e ripagano ancora di più
 quando accanto alle interazioni c'è dell'altro da guardare, l'ora, il
 dispositivo, il prezzo, il genere, che nel gergo del mestiere si chiamano
@@ -137,15 +144,18 @@ scalare ben tarato resta un avversario durissimo.
 C'è un secondo modo di andare oltre il confronto voce per voce, e non consiste
 nel rendere più furba la regola che confronta le due schede: consiste nel darle
 più cose da guardare. Per vederlo basta riscrivere lo stesso dato in un'altra
-forma.
+forma. (Le due parole del titolo, in breve: la tabella dei voti in matematica
+si chiama **matrice**, e il disegno di pallini e linee che stiamo per fare si
+chiama **grafo**.)
 
 `````{tab} Elementare
 
 La tabella utenti per film si può disegnare invece che tabulare. Metti tutti
 gli utenti in una colonna di pallini a sinistra, tutti i film in una colonna a
 destra, e tira una linea ogni volta che qualcuno ha visto qualcosa. I pallini
-sono i *nodi* e le linee gli *archi*: sono le parole del capitolo precedente,
-quello sui grafi, e da qui in avanti il testo userà quelle. Non hai
+sono i *nodi* e le linee gli *archi*: sono le parole tecniche, quelle del
+capitolo precedente sui grafi, e le ritroverete ovunque; qui però continueremo
+a dire pallini e linee, che si vedono meglio. Non hai
 aggiunto né tolto niente: è lo stesso dato, disegnato. Ma adesso si vede una
 cosa che nella tabella era nascosta, e cioè che **raccomandare vuol dire
 indovinare le linee che ancora non ci sono**.
@@ -154,21 +164,21 @@ Vista così, la fattorizzazione guarda vicino: la scheda di ognuno riassume le
 linee che partono dal suo pallino, e per giudicare una coppia si confrontano
 quelle due schede. Non è poco (le schede sono proprio la mossa che permette di
 confrontare due persone senza film in comune) ma è **un passo solo** di
-distanza. Il filtraggio per vicinato della sezione precedente arriva un passo
-più in là: da te, ai film che hai visto, alle persone che li hanno visti. E
-poi? Perché fermarsi a due passi? Un film può somigliarti perché piace a gente
-che ha gusti simili ai
-tuoi, e quella somiglianza si scopre camminando sul disegno per tre, quattro
-passi. Il grafo permette di raccogliere quel segnale lontano; la tabella no,
-perché lì i passi non si vedono.
+distanza. Il metodo dei vicini della sezione precedente arriva più in là: da
+te, ai film che hai visto, alle persone che li hanno visti, e da lì ai film che
+loro hanno visto e tu no. Sono tre passi. E poi? Perché fermarsi lì? Un film
+può interessarti perché piace a persone che a loro volta somigliano a chi
+somiglia a te, e per scoprire un legame così bisogna camminare più a lungo. Il
+grafo permette di raccogliere quel segnale lontano; la tabella no, perché lì i
+passi non si vedono.
 
 Camminare così ha un nome, **propagazione**: a ogni passo ogni pallino si
 riscrive mescolando ciò che gli arriva dai pallini a cui è collegato, e dopo
 tre o quattro passi ha in pancia anche notizie che vengono da lontano. E c'è un
 modello del 2020, **LightGCN**, famoso proprio perché non fa altro: niente rete
 neurale sopra, solo il camminare, ripetuto qualche volta e rimesso insieme alla
-fine. È nato togliendo pezzi a un modello che ne aveva di più, e quel modello
-lo batte: togliere, qui, è servito.
+fine. È nato per sottrazione: qualcuno ha preso un modello che faceva di più e
+gli ha tolto dei pezzi, scoprendo che così andava meglio.
 
 `````
 
@@ -226,23 +236,24 @@ precedente ad avere resistito anche qui.
 `````
 
 La morale somiglia a quella del paragrafo su Rendle, e vale la pena metterle in
-fila. Una precisazione però conta, e di solito si salta: i due episodi non
-valgono come prova allo stesso modo. Il primo è una rivalutazione fatta da
-altri, che ha ritarato i concorrenti e li ha fatti correre di nuovo; il secondo
-è un metodo che riporta i propri risultati, e i propri risultati li riportano
-tutti.
+fila. Una precisazione però conta, e di solito si salta: le due storie non
+pesano allo stesso modo come prova. La prima, il riesame del NCF, l'hanno fatta
+persone diverse da chi il metodo l'aveva proposto, ritarando con cura gli
+avversari e facendoli correre di nuovo. La seconda è il paper di LightGCN,
+cioè i suoi autori che riportano la propria vittoria: è quello che fa chiunque
+pubblichi, ed è proprio per questo che da sola pesa meno.
 Detto questo, la direzione è la stessa, ed è quella già incontrata: **più
-libertà non è gratis**. NCF aggiunge una rete al posto del confronto voce per
+libertà non è gratis**. NCF mette una rete al posto del confronto voce per
 voce e non guadagna niente; LightGCN toglie la rete, tiene solo il camminare, e
-batte il modello più carico da cui è stato ricavato. Camminare sul grafo, in
+batte il modello più complicato da cui è stato ricavato. Camminare sul grafo, in
 fondo, è un modo di dire al modello una cosa
 che il confronto voce per voce non sa: *chi ha visto cose simili alle tue va
 ascoltato, anche a più di un passo di distanza*. Non è più potenza di calcolo:
 è un'ipotesi migliore su come è fatto il problema.
 
 Il disegno dà anche una risposta parziale alla partenza a freddo, il muro
-contro cui la sezione precedente si era fermata, e vale la pena guardarla bene
-perché è una delle idee più eleganti del capitolo.
+contro cui la sezione precedente si era fermata, e quella risposta vale la pena
+guardarla bene: è una delle idee più eleganti del capitolo.
 
 Nella tabella, un film appena uscito è una riga vuota, e da una riga vuota non
 si estrae niente: fine del discorso. Nel disegno no, perché nel disegno nulla
@@ -261,22 +272,27 @@ prevedere gli archi che mancano, non è un gioco di parole: è la lettura che
 rende disponibile tutto l'armamentario delle reti su grafo. Il caso più
 noto, **PinSage** {cite}`ying2018graph`, è raccontato nel capitolo sulle reti
 neurali su grafo, insieme al campionamento dei vicini che lo rende praticabile
-a scala web. Non è però *la definizione* del problema, ed è bene non prenderla
-per tale: più avanti in questa pagina due paragrafi ne mostrano i limiti da due
-lati diversi, perché un grafo statico non ha un orologio, e i sistemi che
-girano davvero restano organizzati intorno al confronto fra due schede.
+a scala web. Leggere la raccomandazione come link prediction non è però *la
+definizione* del problema, ed è bene non prenderla per tale: più avanti in
+questa pagina due paragrafi ne mostrano i limiti da due lati diversi, perché un
+disegno di pallini e linee non ha un orologio, e i sistemi che girano davvero
+restano organizzati intorno al confronto fra due schede.
 
 ## Imparare a ordinare: BPR
 
-Il vero salto concettuale della raccomandazione moderna non è
-nell'architettura: è nell'obiettivo. Con il feedback implicito non ci sono voti
-da prevedere. C'è l'elenco di ciò che hai guardato e l'oceano di ciò che non
-hai guardato; e quell'oceano, lo sappiamo dalla panoramica, non è un elenco di
-bocciature. La **Bayesian Personalized Ranking** (BPR) prende sul serio questa
-asimmetria: smette di prevedere valori e impara direttamente a *ordinare*
+Il vero salto della raccomandazione moderna non sta nel disegno del modello:
+sta in che cosa gli si chiede di indovinare. Quando non ci sono voti, ma solo
+la traccia di quello che uno ha guardato (il feedback implicito della prima
+pagina del capitolo), non c'è nessun numero da prevedere. C'è l'elenco di ciò
+che hai guardato e l'oceano di ciò che non hai guardato; e quell'oceano, lo
+sappiamo dalla panoramica, non è un elenco di bocciature. La **Bayesian
+Personalized Ranking** (BPR) prende sul serio questa asimmetria: smette di
+prevedere valori e impara direttamente a *ordinare*
 {cite}`rendle2009bpr`. Delle tre parole del nome quella che conta è l'ultima,
-*ranking*, che vuol dire mettere in fila; le altre due dicono come è stata
-ricavata la formula, e le spiega la versione formale qui sotto.
+*ranking*, che vuol dire mettere in fila. Le altre due dicono da dove viene la
+formula: *personalized* perché la fila è diversa per ogni persona, *bayesian*
+perché la si ricava partendo da un'ipotesi su come sono fatti i numeri del
+modello, dichiarata prima ancora di guardare i dati.
 
 `````{tab} Elementare
 
@@ -285,7 +301,7 @@ abituale. Non conosci i suoi voti, ma sai cosa ha comprato. La regola di BPR è
 tutta qui: *ciò che ha scelto deve stare più in alto di ciò che ha ignorato*.
 A ogni passo peschi una coppia (un libro che ha comprato, uno a caso tra i
 mille che non ha mai toccato) e controlli la tua vetrina: se il libro comprato
-sta già sopra, va bene così, quasi nessuna correzione; se sta sotto, sistemi
+sta già ben sopra, va bene così, quasi nessuna correzione; se sta sotto, sistemi
 la vetrina spostandolo su. Ripetuto milioni di volte, questo gioco di
 confronti a coppie produce una classifica personale senza che nessuno abbia
 mai dato un voto. Nota la finezza: non serve decidere *quanto* gli piace ogni
@@ -296,8 +312,10 @@ libro pescato a caso era proprio uno che gli sarebbe piaciuto, e che non ha
 comprato solo perché non l'ha mai visto? Succede, e per un istante lo stiamo
 spingendo giù per sbaglio. Il gioco regge lo stesso, per due motivi. Il primo è
 che su un catalogo grande capita di rado, e più il catalogo è grande più capita
-di rado (nel codice qui sotto lo evitiamo del tutto, almeno per i libri che
-quel cliente ha già preso). Il secondo, che conta di più: ogni singolo
+di rado (nel codice qui sotto un libro che quel cliente ha già comprato non
+viene mai pescato come ignorato; un libro che gli sarebbe piaciuto e che non ha
+mai visto sì, e non c'è modo di accorgersene). Il secondo, che conta di più:
+ogni singolo
 confronto sposta la vetrina di pochissimo, quindi dopo milioni di confronti
 resta impressa la regolarità, non lo sbaglio di uno di essi. È il motivo per
 cui questo metodo vuole tantissimi confronti approssimativi e non pochi giudizi
@@ -358,15 +376,17 @@ Ottanta confronti a coppie su una vetrina di dieci libri; l'animazione mostra
 uno per uno i primi dieci, poi salta al risultato. Ogni confronto pesca un
 libro comprato e uno ignorato: se il comprato sta già sopra la spinta è quasi
 nulla e la vetrina resta ferma, se sta sotto risale di uno o più posti. A un
-certo punto
-l'ignorato pescato è $E$, che a quel cliente sarebbe piaciuto davvero: scende
-di un posto per sbaglio, e due confronti dopo è già risalito. Alla fine i
-quattro comprati sono i primi quattro, e nessuno ha mai dato un voto.
+certo punto l'ignorato pescato è il libro $E$ del disegno, che a quel cliente
+sarebbe piaciuto davvero: scende di un posto per sbaglio, e due confronti dopo
+è già risalito. Alla fine i quattro comprati sono i primi quattro, e nessuno ha
+mai dato un voto.
 ```
 
 In PyTorch la misura di quanto il modello sta sbagliando (la **loss**) è una
 riga, e si innesta sul modello di fattorizzazione della sezione precedente
-senza toccarlo:
+senza toccarlo. È un frammento, non un programma completo: `modello`, `u` e
+`n_film` sono quelli di là, e `positivi` è l'elenco delle coppie (utente, film)
+che si conoscono.
 
 ```{code-block} python
 :class: pt-non-eseguibile
@@ -398,18 +418,34 @@ loss = loss_bpr(modello(u, v), modello(u, w))  # stesso modello di prima
 Quella riga, detta in italiano: guarda di quanto il libro comprato sta sopra a
 quello ignorato, e trasforma quel margine in una spinta. Se il comprato sta già
 molto sopra, la spinta è quasi zero e la vetrina non si muove; se sta sotto, la
-spinta cresce, e cresce tanto più quanto è sotto. Il nome della funzione,
-`F.logsigmoid`, tiene insieme in un passaggio solo due conti che si potrebbero
-fare separati, e non è un vezzo: fatti separati, quando il comprato sta molto
-sotto, il computer arrotonda a zero il risultato intermedio e il conto finale
-esce infinito. Tenuti insieme, resta un numero.
+spinta cresce, e cresce tanto più quanto è sotto.
+
+`F.logsigmoid` fa in un passaggio solo due conti che si potrebbero anche fare
+separati, e non è un vezzo. Il primo schiaccia il margine fra zero e uno, ed è
+il mestiere della sigmoide: così si legge come una probabilità, «quanto il
+modello è convinto di aver messo i due libri nell'ordine giusto». Il secondo
+trasforma quella probabilità nel punteggio da minimizzare, e per farlo ne
+prende il logaritmo cambiato di segno (è il meno davanti a `F.logsigmoid` nel
+codice): quel punteggio vale zero quando la probabilità è uno e cresce senza
+limite quando la probabilità si avvicina a zero, che è esattamente il
+comportamento che serve a una misura di errore.
+
+Il guaio, se i due conti si fanno separati, è che «senza limite» il computer
+non lo regge. Quando il libro comprato sta molto sotto quello ignorato, diciamo
+cento posizioni di punteggio, la sigmoide restituisce un numero con più di
+quaranta zeri dopo la virgola, e la macchina non riesce più a distinguerlo
+dallo zero: scrive proprio zero. Sullo zero il logaritmo non ha una risposta
+finita, il calcolatore stampa `-inf`, e da lì in poi ogni conto che ci passa
+sopra è rovinato. Fatti insieme, invece, i due passaggi si semplificano a
+vicenda e il punteggio resta un numero: esattamente $100$.
 
 ## Misurare una classifica
 
-Se l'obiettivo è ordinare, anche il metro deve cambiare: l'errore quadratico
-sui voti non dice nulla sulla qualità di una vetrina. Le metriche di ranking
-guardano la lista dei primi $k$ suggerimenti, con $k$ piccolo, dieci o venti,
-perché è l'unica cosa che l'utente vedrà.
+Se il compito è mettere in ordine, anche il metro deve cambiare. Contare di
+quanto si sbaglia sui voti non serve a niente qui: una vetrina è buona o
+cattiva per l'ordine in cui ci stanno i titoli, e di voti non ce n'è nemmeno
+uno. I metri buoni per una classifica guardano solo la lista dei primi dieci o
+venti suggerimenti, perché è l'unica cosa che l'utente vedrà.
 
 Prima del metro, però, c'è una domanda che si salta quasi sempre e che pesa più
 del metro: **su che cosa si misura**. Nessuno può dire se ti sarebbe piaciuto
@@ -423,9 +459,10 @@ tutti i trucchi funziona finché si ricorda che è un trucco.
 
 `````{tab} Elementare
 
-Supponi che i titoli nascosti fossero 6, che il sistema te ne mostri 10, e che
-3 dei 10 fossero fra i nascosti. La **precision@10** è la frazione di consigli
-azzeccati: $3/10 = 0{,}3$. Il **recall@10** misura invece quanti dei 6 ne ha
+Supponi che i titoli nascosti fossero 6, che il sistema ti mostri 10 consigli,
+e che 3 di quei 10 fossero fra i nascosti. La **precision@10** (la chiocciola
+si legge «sui primi dieci») è la frazione di consigli azzeccati:
+$3/10 = 0{,}3$. Il **recall@10** misura invece quanti dei 6 nascosti ne ha
 ritrovati: $3/6 = 0{,}5$. Le
 due metriche tirano in direzioni opposte: sparare consigli a raffica alza il
 recall e affonda la precision.
@@ -438,13 +475,24 @@ giornale che sceglie bene la prima pagina. Il nome non vuol dire niente in
 italiano, sono le iniziali di quattro parole inglesi: è un'etichetta, non una
 sigla da decifrare. Quanto premia, in cifre: un titolo giusto al primo posto
 vale $1$, lo stesso titolo al secondo posto vale $0{,}63$, al decimo $0{,}29$.
-I punti si sommano e poi si dividono per il punteggio della classifica
-perfetta, quella che avrebbe messo i titoli giusti tutti in testa, così il
-risultato sta sempre fra $0$ e $1$ e le persone si possono confrontare fra
-loro.
+Lo sconto cala sempre più piano man mano che si scende: fra il primo e il
+secondo posto c'è più differenza ($0{,}37$) che fra il quinto e il decimo
+($0{,}10$).
+
+I punti si sommano, e poi si dividono per il punteggio della classifica
+perfetta, quella che avrebbe messo i titoli giusti tutti in testa. Così il
+risultato sta sempre fra $0$ e $1$, e diventa confrontabile fra persone
+diverse: chi ha sei titoli nascosti raccoglierebbe più punti di chi ne ha due
+solo perché ne ha di più, e dividere per il massimo che ciascuno poteva
+raggiungere toglie di mezzo quel vantaggio.
+
+Finiamo l'esempio di prima. I 3 titoli azzeccati stiano ai posti 1, 4 e 7:
+valgono $1 + 0{,}43 + 0{,}33 = 1{,}76$. La classifica perfetta avrebbe messo
+tutti e 6 i nascosti in cima, dal primo al sesto posto, per un totale di
+$3{,}30$. La **NDCG@10** è $1{,}76 / 3{,}30 = 0{,}53$.
 
 E nascondere si può fare in più modi, che non sono affatto equivalenti.
-Si può togliere un pezzo di storia **a caso**, che è comodo e bara: il
+Si può togliere un pezzo di storia **a caso**, che è comodo e imbroglia: il
 modello finisce per addestrarsi anche su cose successe *dopo* quelle su cui
 viene interrogato, e nella vita vera il futuro non è disponibile. Si può
 nascondere **l'ultima cosa** che ciascuno ha guardato, che è più onesto. Oppure
@@ -533,11 +581,11 @@ anni fa pesano uguale. Ma chi ha appena comprato una tenda da campeggio è, per
 qualche giorno, una persona diversa: sacco a pelo e fornelletto sono consigli
 d'oro oggi e rumore tra un mese. La **raccomandazione sequenziale** tratta la
 storia dell'utente come una frase da continuare: prevedere la prossima
-interazione come si prevede la prossima parola. La cosa da portarsi via è
-tutta qui, e sono due: la storia recente pesa più di quella vecchia, e i
-modelli del linguaggio sanno già trattare le sequenze. Gli strumenti li avete
-già visti nei capitoli sul NLP e sui Transformer; qui cambia solo cosa c'è al
-posto delle parole, e al posto delle parole c'è il catalogo.
+interazione come si prevede la prossima parola. Le cose da portarsi via sono
+due: la storia recente pesa più di quella vecchia, e i modelli del linguaggio
+sanno già trattare le sequenze. Gli strumenti li avete
+già visti nei capitoli sul NLP e sui Transformer; qui cambia solo che al posto
+delle parole ci sono i titoli del catalogo.
 
 Non a caso il settore ha seguito la stessa parabola del NLP: prima le reti
 ricorrenti (GRU4Rec {cite}`hidasi2016session`), poi l'auto-attenzione (SASRec
@@ -551,7 +599,7 @@ saperlo servono le riprove indipendenti, non gli annunci.
 ## Come lo fa l'industria
 
 Un'ultima dose di realismo, ed è la sezione che racconta cosa succede davvero
-nei due secondi fra il momento in cui apri l'app e il momento in cui compare la
+nell'attimo fra il momento in cui apri l'app e il momento in cui compare la
 prima riga di suggerimenti. Nessuna piattaforma calcola un punteggio
 raffinato per milioni di titoli a ogni visita: i sistemi reali lavorano **a due
 stadi**, e li descrissero pubblicamente gli ingegneri di YouTube nel 2016
@@ -565,29 +613,23 @@ rapidissima e grossolana, che da un milione ne tiene qualche centinaio, e poi
 la giuria vera ascolta solo quelli. Chi consiglia i video fa la stessa cosa, e
 la fa da capo ogni volta che apri l'app, in una frazione di secondo.
 
-**Il primo tempo** è la scrematura, e deve essere velocissima, quindi il lavoro
-grosso è già stato fatto la notte prima: per ogni titolo del catalogo la scheda
-di numeri è già lì, calcolata e messa in cassetto. Quando arrivi tu, si calcola
-solo la *tua* scheda, che è l'unica che può essere cambiata da quello che hai
-fatto dieci minuti fa, e poi si cerca nel cassetto quali schede di titoli le
-somigliano di più. Questa ricerca è **approssimata** nel senso che non le
-guarda tutte: nel cassetto le schede che si somigliano stanno vicine, e questo
-permette di scartare interi scomparti senza aprirli.
-Ogni tanto ci si perde per strada un titolo buono, e in cambio si va
-enormemente più veloci: a questo stadio è un baratto che conviene sempre. È
-anche il momento in cui il
-vecchio confronto voce per voce si prende la rivincita: è l'unica forma di
-punteggio che permette di preparare tutto in anticipo così.
+**Il primo tempo** (nel gergo, il primo *stadio*) è la scrematura, e deve
+essere velocissima, quindi il lavoro grosso è già stato fatto la notte prima:
+per ogni titolo del catalogo la scheda di numeri è già lì, calcolata e messa
+nello scaffale di cui si parlava più su. Quando arrivi tu, si calcola solo la
+*tua* scheda, tenendo conto anche di quello che hai guardato oggi, e poi si
+cerca sullo scaffale quali schede di titoli le somigliano di più. Questa
+ricerca è **approssimata** nel senso che non le guarda tutte: sullo scaffale le
+schede che si somigliano stanno vicine, e questo permette di scartare interi
+ripiani senza aprirli. Ogni tanto ci si perde per strada un titolo buono, e in
+cambio si va enormemente più veloci: a questo punto è un baratto che conviene
+sempre.
 
 **Il secondo tempo** è la giuria: sulle poche centinaia di superstiti si può
-finalmente spendere, e lì entra tutto ciò che il primo tempo non poteva
-guardare, cioè che ore sono, da che dispositivo stai guardando, cosa hai visto
-dieci minuti fa. È qui che si decide l'ordine di quello che vedi.
-
-E una cosa che sorprende sempre: il lavoro difficile, in un sistema del genere,
-non è quasi mai il modello. È l'impianto che tiene tutto aggiornato, perché un
-cassetto di schede vecchie di una settimana consiglia benissimo la settimana
-scorsa.
+finalmente spendere del calcolo, e lì entra tutto ciò che il primo tempo non
+poteva guardare, cioè che ore sono, da che dispositivo stai guardando, quante
+volte quel titolo ti è già stato messo davanti senza che tu lo aprissi. È qui
+che si decide l'ordine di quello che vedi.
 
 `````
 
@@ -619,9 +661,10 @@ esattamente la partenza a freddo di cui il capitolo si occupa a lungo.
 
 `````
 
-Vale per entrambi i livelli la stessa chiusa: gran parte del lavoro vero, in un
-sistema di raccomandazione industriale, non è nel modello ma nell'infrastruttura
-che lo tiene fresco.
+E una cosa che sorprende sempre, in un sistema del genere: il lavoro difficile
+non è quasi mai il modello, è l'impianto che tiene tutto aggiornato. Uno
+scaffale di schede vecchie di una settimana consiglia benissimo la settimana
+scorsa.
 
 ## Suggerire o pilotare?
 
@@ -632,35 +675,43 @@ vedi, e impara da ciò che vedi, ti sta *servendo* o ti sta *plasmando*? Nel
 {cite}`pariser2011filter`: *filter bubble*, la bolla in cui l'algoritmo,
 inseguendo i tuoi click, ti mostra sempre più di ciò che già pensi. Gli studi
 empirici hanno poi restituito un quadro meno netto, e per certi versi
-sorprendente. Prendiamo le notizie online. Chi ci arriva passando da un motore
-di ricerca o dai social legge, in media, cose più lontane dalle opinioni degli
-altri lettori rispetto a chi va dritto sul sito del giornale; ma quelle stesse
-persone, insieme, incontrano **più spesso** anche articoli del lato politico
-che preferiscono meno {cite}`flaxman2016filter`. Le due cose valgono
-contemporaneamente, e la seconda è quella che non ci si aspetta. Il meccanismo
-di fondo però è reale,
-ed è il feedback loop già incontrato: il modello impara da dati che il modello
-stesso ha filtrato, come discusso nella sezione *Quando i dati cambiano* del
-capitolo di Machine Learning.
+sorprendente. Prendiamo le notizie online. Immagina di dare a ogni giornale un
+posto su una riga che va da sinistra a destra, e a ogni lettore il posto medio
+dei giornali che legge: si può allora misurare quanto due lettori sono lontani.
+Chi arriva agli articoli passando da un motore di ricerca o dai social risulta,
+in media, più lontano dagli altri lettori di chi va dritto sul sito del
+giornale: quei canali dividono di più, e fin qui la bolla c'è. Ma le stesse
+persone, proprio passando di lì, finiscono **più spesso** anche su articoli
+della parte politica che gradiscono meno {cite}`flaxman2016filter`. Le due cose
+non si contraddicono, perché non misurano la stessa cosa: la prima dice quanto i
+lettori sono distanti fra loro, la seconda quanto ciascuno di loro incontra
+l'altra campana. Ed è la seconda a sorprendere. Resta però vero il meccanismo
+da cui è nata la paura di Pariser, il feedback loop già incontrato: il modello
+impara da dati che il modello stesso ha filtrato, come discusso nella sezione
+*Quando i dati cambiano* del capitolo di Machine Learning.
 
 Il punto critico non è la tecnica, è la metrica. Un sistema addestrato a
-massimizzare i minuti di visione imparerà, con perfetta onestà matematica,
-tutto ciò che trattiene: inclusi l'indignazione e il sensazionalismo, se
-trattengono. Chi sceglie il metro su cui il sistema viene premiato (la
-**funzione obiettivo**, come si dice in gergo) sceglie, in ultima analisi, il
+massimizzare i minuti di visione imparerà, con perfetta onestà matematica, a
+mostrare tutto ciò che ci tiene incollati allo schermo: l'indignazione e il
+sensazionalismo compresi, se funzionano. Chi sceglie il metro su cui il sistema
+viene premiato (la **funzione obiettivo**, come si dice in gergo) sceglie, in
+ultima analisi, il
 comportamento che il sistema coltiverà nei suoi utenti: è qui che passa il
-confine tra suggerire e pilotare. Le contromisure esistono e sono concrete:
-misurare accanto all'accuratezza anche quanto la lista è varia e quanto spesso
-fa incontrare qualcosa di buono che non si stava cercando (la *serendipità*),
-mettere controlli espliciti nelle mani di chi legge, e da qualche anno anche la
-legge (in Europa
-il Digital Services Act impone alle grandi piattaforme di offrire almeno una
-versione del loro sistema di raccomandazione non basata sulla profilazione).
+confine tra suggerire e pilotare. Le contromisure esistono e sono concrete. Si
+può misurare, accanto a quanto il sistema ci azzecca, anche quanto la lista è
+varia e quanto spesso fa incontrare qualcosa di buono che non si stava
+cercando, e quest'ultima si chiama *serendipità*. Si possono mettere controlli
+espliciti nelle mani di chi il sistema lo usa. E da qualche anno c'è anche la
+legge: in Europa il Digital Services Act impone alle grandi piattaforme di
+offrire almeno una versione del loro sistema di raccomandazione che non si basi
+sulla **profilazione**, cioè sulla ricostruzione dei gusti di ciascuno a
+partire da quello che ha fatto.
 Nessuna di queste è una soluzione definitiva. Ma un ingegnere che sa *come*
 funziona la macchina (e ora lo sapete) è esattamente la persona nella
 posizione giusta per pretendere che funzioni bene. E lo è, per un'altra via,
 anche chi la macchina la subisce e basta: sapere che il consiglio nasce da un
-confronto fra schede di numeri senza nome, che la lista è già stata scremata
+confronto fra schede di numeri a cui nessuno ha dato un nome, che la lista è
+già stata scremata
 prima che tu arrivassi, e che il sistema insegue il metro su cui è stato
 premiato, è ciò che trasforma «me l'ha consigliato l'app» in una frase che si
 può discutere. Da questa parte dello schermo non si progetta niente, ma si può

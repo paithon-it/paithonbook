@@ -7,7 +7,7 @@ film che ho amato io, e ne ha visto uno che io non conosco, il suo entusiasmo
 vale una previsione. Il **filtraggio collaborativo** è questa idea resa
 calcolabile: prevedere i gusti di una persona usando i giudizi delle persone
 che le somigliano. Il dettaglio sorprendente è ciò che *ignora*: il sistema
-non sa nulla dei film, né trama, né genere, né regista. Vede solo la matrice
+non sa nulla dei film, né trama, né genere, né regista. Vede solo la tabella
 dei voti, e gli basta.
 
 Il nome è del 1992, e nasce a Xerox PARC con Tapestry, un sistema che
@@ -46,27 +46,33 @@ seconda.
 ```
 
 Il disegno indica un vicino, non il vincitore di una classifica, e vale la pena
-dire perché. Applicando alla lettera la formula che vedremo fra poco, il più
-somigliante a Carla non è Bruno: è Dario, che con lei ha in comune **un film
-solo**, e su un film solo l'accordo è perfetto per costruzione. È lo stesso
-inganno che questa pagina smonta poche righe più sotto, e capita già qui, su
-una griglia di venticinque caselle.
+dire perché. Applicando alla lettera il modo standard di misurare la
+somiglianza, davanti a Bruno finiscono in due: prima Dario, poi Anna. E Dario
+con Carla ha in comune **un film solo**, il che, come vedremo fra poco, basta a
+farlo sembrare un gemello perfetto. È il difetto che questa pagina smonta poco
+più avanti, e si vede già qui, su una griglia di venticinque caselle.
 
 Il disegno però mente su una cosa, ed è la più importante: lì le celle piene
-sono la maggioranza. In un catalogo vero ogni utente ha visto una frazione
-minuscola dei titoli, quindi due utenti qualsiasi hanno pochissimi film in
-comune su cui misurare la somiglianza. Quel vuoto è la difficoltà vera del
-mestiere, e da lì nasce il bisogno di riassumere persone e film in poche schede
-di numeri, che è il resto di questa pagina.
+sono la maggioranza. In un catalogo vero ognuno ha visto una frazione minuscola
+dei titoli, quindi due persone qualsiasi hanno pochissimi film in comune su cui
+misurare la somiglianza. Quel vuoto è la difficoltà vera del mestiere, e da lì
+nasce il bisogno di riassumere ogni persona e ogni film in una scheda di pochi
+numeri, che è il resto di questa pagina.
 
 `````{tab} Elementare
 
 **Da utente a utente.** Per consigliare un film a Carla, cerco i suoi
 "gemelli di gusto": le persone che hanno dato voti simili ai suoi sugli
 stessi film. Se Bruno e Carla concordano su tutto ciò che entrambi hanno
-visto, e Bruno ha dato 4 stelle a un film che Carla non ha ancora visto,
-prevedo che anche Carla gli darà circa 4. Con più vicini, faccio una media
-pesata: i gemelli quasi perfetti pesano di più dei sosia approssimativi.
+visto, e Bruno ha dato 2 stelle a *Notting Hill*, che Carla non ha visto,
+prevedo che anche Carla gli darà circa 2. È la stima del disegno qui sopra.
+
+Con più vicini faccio una media pesata, in cui i gemelli quasi perfetti pesano
+più dei sosia approssimativi. Diciamo che Bruno somiglia a Carla con un peso di
+$0{,}9$ e ha dato 2, ed Elena le somiglia molto meno, peso $0{,}2$, e ha dato
+4. La previsione non è la media dei due voti, che sarebbe 3: è
+$(0{,}9 \cdot 2 + 0{,}2 \cdot 4) / (0{,}9 + 0{,}2) \approx 2{,}4$ (per la
+precisione $2{,}36$), cioè quasi il voto di Bruno.
 
 **Da oggetto a oggetto.** Si può ribaltare il punto di vista: invece di
 cercare utenti simili, cerco *film* simili; dove "simili" non significa stesso
@@ -170,38 +176,47 @@ I vicini funzionano, e per anni hanno fatto girare i primi sistemi
 commerciali. Ma pagano la sparsità, e la pagano due volte. Due persone con
 gusti gemelli che per caso non hanno votato *nessun* film in comune risultano
 perfette estranee: il metodo non le vede. E due persone che hanno visto un film
-solo in comune risultano gemelle perfette, qualunque voto gli abbiano dato: con
-un film solo non c'è un andamento da confrontare, la ricetta che misura
-l'accordo non ha su cosa lavorare e risponde «identiche» comunque, anche a chi
-ha dato 1 e a chi ha dato 5. Il metodo, qui, vede troppo. La radice è la
-stessa, cioè che il confronto passa dai film
-in comune, e in una tabella quasi vuota i film in comune sono pochissimi. Serve
-un modo per confrontare due persone che non passi da lì.
+solo in comune risultano gemelle perfette, qualunque voto gli abbiano dato. La
+ragione sta in che cosa guarda il conto della somiglianza: non mette a
+confronto i due voti uno con l'altro, guarda se le due righe si muovono
+insieme, cioè se dove una sale sale anche l'altra. Con un film solo in comune
+ogni riga si riduce a un numero, e un numero da solo non sale né scende: non
+c'è nessun movimento da confrontare, e il conto risponde «identiche» comunque,
+tanto a chi ha dato 1 quanto a chi ha dato 5. Il metodo, qui, vede una
+somiglianza che non c'è. La
+radice è la stessa, cioè che il confronto passa dai film in comune, e in una
+tabella quasi vuota i film in comune sono pochissimi. Serve un modo per
+confrontare due persone che non passi da lì.
 
 ## Fattori latenti: la matrice compressa
 
-La mossa vincente del Netflix Prize fu cambiare il modo di guardare i dati.
-Invece di confrontare fra loro le righe e le colonne della tabella, si parte da
-un'ipotesi: dietro quella tabella gigantesca c'è una struttura piccola, pochi
-tratti di fondo che bastano a spiegare i gusti. È la **fattorizzazione di
-matrici** (*matrix factorization*) {cite}`koren2009matrix`, illustrata in
-{numref}`fig-matrix-factorization`.
+La mossa vincente del Netflix Prize, la gara raccontata nella prima pagina del
+capitolo, fu cambiare il modo di guardare i dati. Invece di confrontare fra
+loro le righe e le colonne della tabella, si parte da un'ipotesi: dietro quella
+tabella gigantesca c'è una struttura piccola, pochi tratti di fondo che bastano
+a spiegare i gusti. È la **fattorizzazione di matrici** (*matrix
+factorization*) {cite}`koren2009matrix`, e «fattorizzare» è la stessa parola
+della prima pagina del capitolo: scomporre in pezzi, qui una tabella al posto
+di un numero. Il disegno è in {numref}`fig-matrix-factorization`.
 
 ```{figure} ../figures/matrix-factorization.svg
 :name: fig-matrix-factorization
 :alt: La grande matrice sparsa dei voti R è approssimata dal prodotto di due matrici strette, P con una riga per utente e Q trasposta con una colonna per film, entrambe con k fattori latenti.
 :width: 95%
 
-La matrice dei voti, enorme e quasi vuota, viene approssimata dal prodotto di
-due matrici strette: una scheda di pochi numeri per ogni utente (nel disegno,
-il suo «profilo») e una per ogni film, e il voto previsto è il confronto voce
-per voce fra le due schede. Il segno in mezzo è un «circa» e non un uguale
-perché due tabelle strette non possono riprodurre esattamente la grande, ed è
-tutto il punto. Il disegno inoltre si ferma al prodotto: nel modello completo
-si sommano anche due correzioni, quanto quella
-persona vota alto in generale e quanto quel film è apprezzato in generale. La
-Q ribaltata, «Qᵀ», è la stessa tabella dei film girata su un fianco, così che
-le schede diventino colonne e le due tabelle combacino.
+Le lettere del disegno sono tre: R è la tabella dei voti, enorme e quasi tutta
+vuota; P raccoglie una scheda di pochi numeri per ogni utente (nel disegno, il
+suo «profilo»); Q fa lo stesso per ogni film. Il voto previsto è il confronto
+voce per voce fra due schede, una riga di P e una colonna di Q. Il segno in
+mezzo è un «circa» e non un uguale, perché due tabelle strette non possono
+riprodurre esattamente la grande: e non è un difetto, è lo scopo, perché
+costringere il modello a dire tanto con pochi numeri è ciò che lo obbliga a
+cercare i tratti che contano invece di ricopiare i voti. Il disegno si ferma
+poi al confronto: nel modello completo si sommano anche due correzioni, quanto
+quella persona vota alto in generale e quanto quel film è apprezzato in
+generale. La piccola «T» accanto alla Q dice solo che quella tabella è girata
+su un fianco, così che le schede dei film diventino colonne e le due tabelle
+combacino.
 ```
 
 `````{tab} Elementare
@@ -214,12 +229,14 @@ un confronto tra le due schede. Se Anna ha «commedia $0{,}9$, azione $0{,}1$»
 e un film ha «commedia $0{,}8$, azione $0{,}2$», l'affinità si calcola voce
 per voce: $0{,}9 \cdot 0{,}8 + 0{,}1 \cdot 0{,}2 = 0{,}74$. Con un film
 d'azione puro («commedia $0{,}1$, azione $0{,}9$»), verrebbe
-$0{,}9 \cdot 0{,}1 + 0{,}1 \cdot 0{,}9 = 0{,}18$. Il primo numero è quattro
-volte il secondo, ed è così che si leggono: uno accanto all'altro, perché il
-punteggio da solo non vuol dire niente. (Qui i numeri stanno fra $0$ e $1$ per
-rendere l'esempio leggibile, ma non è una regola: nel programma di poco più
-avanti le manopole vengono anche negative, e una manopola negativa vuol dire
-semplicemente «di questo, il contrario».)
+$0{,}9 \cdot 0{,}1 + 0{,}1 \cdot 0{,}9 = 0{,}18$. Il primo numero è più di
+quattro volte il secondo, ed è così che si leggono: uno accanto all'altro,
+perché il punteggio da solo non vuol dire niente. (Qui i numeri stanno fra $0$
+e $1$ per rendere l'esempio leggibile, ma non è una regola: nel programma di
+poco più avanti le manopole vengono anche negative. Un valore negativo sulla
+manopola «commedia» dice che quella persona la commedia la evita, e in quel
+caso il conto con un film pieno di commedia viene negativo: un consiglio da
+non fare.)
 
 Ed è qui che si capisce **perché conviene**, cioè perché questa strada batte
 quella dei gemelli di gusto. Con i vicini, per confrontare due persone bisogna
@@ -233,17 +250,18 @@ smette di essere un ostacolo.
 Il colpo di scena è che le manopole **non le sceglie nessuno**. Non c'è un
 esperto che etichetta i film: l'algoritmo riceve solo la tabella dei voti e
 cerca da solo i numeri da mettere nelle schede, in modo che i voti già noti
-tornino. I tratti che emergono (a posteriori, ispezionandoli, somigliano
-spesso a "commedia/dramma" o "mainstream/nicchia") sono per questo detti
+tornino. I tratti che emergono (andandoli a guardare dopo, somigliano spesso a
+"commedia/dramma" o "mainstream/nicchia") sono per questo detti
 **fattori latenti**: nascosti nei dati, mai dichiarati da nessuno.
 
-Due conseguenze di questo, che vale la pena portarsi via.
+Due cose da portarsi via, prima di andare avanti.
 
-La prima riguarda le caselle vuote della tabella. Non sono zeri, e la
-differenza è tutta: uno zero direbbe «questo film lo detesta», mentre una
+La prima riguarda le caselle vuote della tabella. La tentazione, per far
+tornare i conti, sarebbe di riempirle con degli zeri, e sarebbe un disastro:
+su una scala che parte da 1, uno zero direbbe «peggio del peggio», mentre una
 casella vuota dice «non lo so», che è un'altra cosa. L'algoritmo infatti non
 le guarda affatto: cerca le manopole che fanno tornare i voti *che ci sono*, e
-sulle altre celle si limita poi a rispondere.
+sulle celle vuote si limita, alla fine, a dire il numero che ne viene fuori.
 
 La seconda riguarda te. Se le manopole non le ha scelte nessuno e non hanno un
 nome, allora quando l'app ti mette davanti un titolo **non è in grado di dirti
@@ -328,22 +346,24 @@ interazioni resterà fermo alla sua inizializzazione casuale.
 ## Il modello in PyTorch
 
 La palestra classica per questi modelli è **MovieLens**
-{cite}`harper2015movielens`: una famiglia di dataset di voti raccolti
-dall'omonimo sito del gruppo GroupLens dell'Università del Minnesota, attivo
-dal 1997. La versione storica, MovieLens 100K, contiene 100.000 voti da 1 a 5
-dati da 943 utenti a 1.682 film, con almeno 20 voti per utente: un fratello
-minore del dataset Netflix, da vent'anni banco di prova standard del settore.
-Per un esempio eseguibile all'istante generiamo invece voti sintetici con la
-stessa struttura, triple (utente, film, voto), così il codice gira senza
-scaricare nulla; per usare MovieLens basterebbe sostituire la generazione con
-la lettura del file dei voti. Due differenze da tenere a mente, perché più
-avanti spiegano dei numeri. I nostri voti finti sono numeri con la virgola,
-quelli di MovieLens sono stelle intere. E la nostra tabella la faremo piena al
-10% circa: più fitta perfino di MovieLens 100K, che con 100.000 voti su
-$943 \times 1.682$ celle sta al 6,3%, ed è un banco di prova fra i meno
-sparsi. Su
-un esempio così piccolo, con la sparsità vera non resterebbe abbastanza
-segnale per imparare qualcosa in trenta secondi.
+{cite}`harper2015movielens`, una raccolta di voti veri messa insieme dal sito
+omonimo del gruppo GroupLens dell'Università del Minnesota, attivo dal 1997. La
+versione storica, MovieLens 100K, contiene 100.000 voti da 1 a 5 dati da 943
+utenti a 1.682 film, con almeno 20 voti per utente: un fratello minore del
+dataset Netflix, da vent'anni banco di prova standard del settore.
+
+Qui però i voti ce li inventiamo noi, così il codice gira all'istante senza
+scaricare niente. Hanno la stessa forma di quelli veri, cioè un elenco di
+terzetti (utente, film, voto), e per passare a MovieLens basterebbe leggere il
+suo file invece di generarli. Restano due differenze, e più avanti servono a
+spiegare i risultati. I nostri voti li calcola una formula, e vengono numeri
+con la virgola; quelli di MovieLens li hanno dati delle persone, in stelle
+intere. E la nostra tabella la faremo piena al 10% circa, cioè più fitta
+perfino di MovieLens 100K: là i 100.000 voti stanno in una tabella di
+$943 \times 1.682$ celle, poco meno di un milione e seicentomila, e la
+riempiono al 6,3%. Fra i banchi di prova del settore, MovieLens 100K è già uno
+dei meno vuoti. Su un esempio piccolo come il nostro, con la sparsità vera non
+resterebbe abbastanza da cui imparare in trenta secondi.
 
 Il modello è la traduzione letterale dell'idea appena vista. Un
 `nn.Embedding` è una tabella con una riga di numeri per ogni utente (o per
@@ -375,8 +395,8 @@ class FattorizzazioneMatrici(nn.Module):
                 + self.b_i(i).squeeze(1) + interazione)
 ```
 
-I dati sintetici nascono da fattori "veri" nascosti, che il modello non vede:
-vede solo le triple, come vedrebbe i voti di MovieLens.
+I nostri voti finti nascono da fattori "veri" nascosti, che il modello non
+vede: vede solo i terzetti, come vedrebbe i voti di MovieLens.
 
 ```python
 from torch.utils.data import DataLoader, TensorDataset
@@ -402,38 +422,40 @@ loader = DataLoader(TensorDataset(u[tr], i[tr], voti[tr]),
 ```
 
 I voti si pescano a caso, quindi la stessa coppia (utente, film) può uscire due
-volte, e in effetti succede: le celle distinte sono 5.723 invece di 6.000. Non
+volte, e in effetti succede: contandole, le celle distinte sono 5.723 invece di
+6.000. Non
 è un problema per l'esempio (sono due osservazioni concordi della stessa cosa),
 ma è il tipo di dettaglio che su dati veri va guardato.
 
 L'addestramento è un normale ciclo PyTorch. A ogni giro completo sui voti, e un
 giro si chiama **epoca**, il modello prevede, si misura di quanto ha sbagliato
 e l'ottimizzatore ritocca le schede. La misura è l'errore quadratico medio, la
-**MSE** incontrata nel capitolo di Machine Learning, che è poi il metro del
-Netflix Prize a meno di una radice quadrata: il RMSE dell'annuncio è la radice
-della MSE che vedremo stampata, quindi una MSE di $0{,}42$ vale un errore di
-circa $0{,}65$ stelle.
+**MSE** incontrata nel capitolo di Machine Learning. È lo stesso metro del
+Netflix Prize, meno l'ultimo passaggio: il RMSE della prima pagina del capitolo
+è la radice quadrata della MSE che vedremo stampata. Una MSE di $0{,}42$ vale
+quindi un errore di circa $0{,}65$ stelle, perché $\sqrt{0{,}42} \approx
+0{,}65$.
 
-C'è poi un **freno**, e serve a impedire che i numeri delle schede crescano a
-dismisura pur di far tornare i voti già noti: nel codice è il `weight_decay`
-dell'ottimizzatore, e più è stretto, più il modello è costretto a spiegare i
-voti con schede modeste. Su quel freno conviene essere precisi, perché la
-ricetta scritta sulla carta dice una cosa e la riga che gira ne fa una
-leggermente diversa.
+C'è poi un **freno**, che a ogni passo tira verso lo zero i numeri delle schede
+e impedisce che crescano a dismisura pur di far tornare i voti già noti. Nel
+codice è il `weight_decay` dell'ottimizzatore: più lo si stringe, più il
+modello è costretto a spiegare i voti con schede modeste. Su quel freno
+conviene essere precisi, perché la ricetta scritta sui libri dice una cosa e la
+riga che gira ne fa una leggermente diversa.
 
 `````{tab} Elementare
 
-Sulla carta il freno tira verso lo zero i numeri delle schede, cioè quelli che
-il modello si sta inventando, e solo quelli. Nel programma invece stringe verso
-lo zero **tutti** i numeri del modello, a ogni passo, senza guardare chi sono.
-Fra questi c'è anche il numero
-che dice «su questo sito, in generale, si vota alto»: quello non andrebbe
-frenato affatto, perché non sta inventando niente, sta constatando un fatto, e
-tirarlo verso lo zero vuol dire spingerlo a dire il falso. Su un esempio
-piccolo come questo la differenza non si vede nei risultati. Vale però la pena
-saperlo: fra la ricetta scritta sulla carta e le righe che girano davvero c'è
-quasi sempre un piccolo scarto, e chi scrive il codice è l'unico che può
-accorgersene.
+Il freno, come lo descrivono i libri, dovrebbe tirare verso lo zero soltanto i
+numeri delle schede, cioè quelli che il modello si sta inventando. La riga che
+gira davvero fa una cosa un po' diversa: stringe verso lo zero **tutti** i
+numeri del modello, a ogni passo, senza guardare chi sono. Fra questi c'è anche
+quello che tiene la media dei voti di tutto il sito (nel codice si chiama
+`mu`). Quello non andrebbe frenato affatto, perché non sta inventando niente,
+sta constatando un fatto, e tirarlo verso lo zero vuol dire spingerlo a dire il
+falso. Su un esempio piccolo come questo la differenza non si vede nei
+risultati. Vale però la pena saperlo: fra la ricetta scritta sui libri e le
+righe che girano davvero c'è quasi sempre un piccolo scarto, e chi scrive il
+codice è l'unico che può accorgersene.
 
 `````
 
@@ -481,45 +503,54 @@ epoca 20 · MSE visti 0.043 · MSE tenuti da parte 0.549 · banale 0.997
 epoca 30 · MSE visti 0.019 · MSE tenuti da parte 0.418 · banale 0.997
 ```
 
-Vale la pena leggere questi tre numeri con calma, perché dicono tre cose
-diverse e la più interessante è la meno spettacolare.
+Vale la pena leggerli con calma, perché il numero che salta all'occhio non è
+quello che conta.
 
-Sui voti già visti l'errore crolla a $0{,}019$, cioè praticamente a zero, e da
-solo quel numero non dimostra niente: il modello ha $4.501$ numeri da regolare
-(le $500$ schede da otto voci l'una, più una correzione per ogni utente e per
-ogni film, più la media globale) per $4.800$ voti di addestramento, quasi uno
-per voto, e con tanta libertà
-impararseli a memoria è alla sua portata. È esattamente la situazione in cui
-un errore basso sui dati di casa è la cosa che ci si aspetta di vedere anche da
-un modello che non ha capito niente.
+Quello che salta all'occhio è il primo: sui voti già visti l'errore crolla a
+$0{,}019$, cioè praticamente a zero. Da solo non dimostra niente. Contiamo
+quanti numeri il modello ha da regolare: una scheda per ciascuno dei 300 utenti
+e una per ciascuno dei 200 film, otto voci l'una (l'otto è la `k=8` del codice,
+e sono un po' più delle quattro manopole con cui i voti sono stati davvero
+fabbricati, perché nella vita vera quel numero non lo si conosce e conviene
+tenersi larghi), fanno $500 \times 8 = 4.000$; più una correzione per ogni
+utente e per ogni film, altre $500$; più la media globale, e siamo a $4.501$. I
+voti su cui si allena sono $4.800$: quasi un numero libero per voto, e con
+tanta libertà impararseli a memoria è alla sua portata. È esattamente la
+situazione in cui un errore basso sui voti già visti è la cosa che ci si
+aspetta di vedere anche da un modello che non ha capito niente.
 
 Il numero che conta è il secondo. Sui voti tenuti da parte, che il modello non
 ha mai visto, l'errore si ferma a $0{,}42$: più che accettabile contro lo
 $0{,}997$ della previsione banale «a tutti il voto medio», ma **ventidue volte
-peggio** di quello che si legge sui voti di casa. Le due cose insieme sono la
-misura onesta: il modello ha imparato qualcosa di vero (l'errore quadratico è
-meno della metà di quello di chi non sa niente, che in stelle vuol dire
-$0{,}65$ contro $1{,}00$) e insieme ha
-memorizzato parecchio. Un capitolo che insegna a valutare i sistemi di
-raccomandazione non può permettersi di guardare solo il primo numero, ed è la
-ragione per cui il codice qui sopra mette da parte il 20% delle triple prima
-ancora di cominciare.
+peggio** di quello che si legge sui voti già visti. Le due cose insieme sono la
+misura onesta. Il modello ha imparato qualcosa di vero, perché $0{,}42$ è meno
+della metà di $0{,}997$; anche se, essendo errori al quadrato, in stelle il
+vantaggio si assottiglia, $0{,}65$ contro $1{,}00$. E insieme ha memorizzato
+parecchio. Un capitolo che insegna a valutare i sistemi di raccomandazione non
+può permettersi di guardare solo il primo numero, ed è la ragione per cui il
+codice qui sopra mette da parte il 20% dei voti prima ancora di cominciare.
 
 Una nota sul freno, già che i numeri ci sono. A `weight_decay=1e-4`, cioè
 $0{,}0001$, non sta frenando quasi nulla, e lo si vede: se frenasse, l'errore
 sui voti visti non arriverebbe a $0{,}019$. Portandolo a `1e-2`, cento volte
 tanto, e lasciando tutto il resto com'è, il freno si sente eccome, e il modello
-smette del tutto di personalizzare: $0{,}987$ sui voti visti e $1{,}015$ su
-quelli tenuti da parte, cioè la previsione banale. Fra i due estremi c'è una
+smette del tutto di personalizzare: rifacendo girare lo stesso programma
+escono $0{,}987$ sui voti visti e $1{,}015$ su quelli tenuti da parte. Cioè
+appena peggio dello $0{,}997$ della previsione banale, il che vuol dire che
+tutto quell'addestramento non è servito a niente. Fra i due estremi c'è una
 taratura buona, e trovarla è mestiere: non è un valore che si copia da un
 libro.
 
-Su MovieLens la ricetta è la stessa, con due avvertenze. I voti veri sono
-stelle intere, e un giudizio arrotondato all'intero si porta dietro un errore
-che nessun modello potrà mai togliere: c'è quindi una soglia sotto la quale
-non si scende, e qui non c'è. E la tabella vera è più vuota di questa (il 6,3%
-contro il 10%, e i dataset più grandi stanno molto più in basso), quindi non
-aspettatevi questi numeri.
+Su MovieLens il procedimento è lo stesso, con due avvertenze. La prima è che i
+nostri voti finti nascono da un conto, e un conto è ripetibile: rifatto due
+volte dà sempre lo stesso voto. I voti veri no. La stessa persona, rivotando lo
+stesso film a distanza di mesi, non dà sempre le stesse stelle, e
+quell'oscillazione nessun modello può prevederla: su dati veri esiste quindi
+una soglia sotto la quale l'errore non scende, per quanto si affini il modello.
+Nel nostro esempio quella fonte di errore non c'è, e i numeri ne risentono. La
+seconda avvertenza è quella già annunciata: la tabella vera è più vuota della
+nostra, e i dataset più grandi stanno molto più in basso. Non aspettatevi
+questi numeri.
 
 ## Dove il collaborativo si ferma
 
@@ -540,8 +571,8 @@ tua riga. Finché quelle celle non ci sono, la cosa più sensata da fare è anch
 la più banale: mostrarti i titoli che piacciono a tutti. Non è una resa, è la
 miglior risposta possibile a chi non si conosce.
 
-**La dittatura della popolarità.** I film con moltissimi voti compaiono tra i
-vicini di tutti, vengono consigliati spesso, e così raccolgono altri voti: i
+**La dittatura della popolarità.** I film con moltissimi voti entrano nei conti
+di tutti, vengono consigliati spesso, e così raccolgono altri voti: i
 ricchi diventano più ricchi. Il capolavoro di nicchia con dodici voti
 entusiasti resta invisibile: proprio il titolo che il tuo amico cinefilo, lui
 sì, ti avrebbe messo in mano.
@@ -583,9 +614,10 @@ davvero la personalizzazione; senza quella riga, non lo dice niente.
 `````
 
 Nessuno dei due limiti si chiude restando dentro la sola tabella dei voti, ed è
-il motivo per cui la sezione seguente va a cercare altrove: prima una rete al
-posto del confronto fra le schede, poi un modo diverso di guardare lo stesso
-dato. Prima però, il riepilogo.
+il motivo per cui la sezione seguente va a cercare altrove: prima una rete
+neurale al posto del confronto fra le schede, e non basterà; poi un modo
+diverso di guardare lo stesso dato, che sulla partenza a freddo qualcosa dà.
+Prima però, il riepilogo.
 
 `````{tab} Elementare
 
@@ -601,12 +633,14 @@ dato. Prima però, il riepilogo.
   è apprezzato in generale. Le manopole non le sceglie nessuno: le trova
   l'algoritmo dai soli voti già dati (le celle vuote sono incognite, non zeri),
   con un freno che dovrebbe impedirgli di imparare quei voti a memoria, e che
-  va tarato: qui è lasco, e a memoria ne impara parecchi.
+  va tarato: qui è così largo che non stringe quasi nulla, e a memoria ne
+  impara parecchi.
 - In PyTorch sono due tabelle di schede e un confronto voce per voce: poche
   righe, la stessa idea che ha vinto il Netflix Prize.
 - L'errore va guardato **sui voti messi da parte**, non su quelli con cui il
-  modello si è addestrato: sui secondi qui fa $0{,}019$, sui primi $0{,}42$, e
-  solo il secondo numero dice se ha imparato o se ha imparato a memoria.
+  modello si è addestrato: qui fa $0{,}42$ sui voti messi da parte e $0{,}019$
+  su quelli di addestramento, e solo lo $0{,}42$ dice se ha imparato o se ha
+  imparato a memoria.
 - Due limiti restano: di chi è appena arrivato non si sa nulla, e il libraio
   che consiglia in base agli acquisti passati è muto (**partenza a freddo**,
   e nell'attesa la cosa migliore da fare è mostrare i titoli che piacciono a

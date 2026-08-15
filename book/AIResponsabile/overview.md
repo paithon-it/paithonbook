@@ -17,26 +17,28 @@ La macchina, pensata per essere più imparziale di un giudice in carne e ossa,
 aveva ereditato un pregiudizio.
 
 Ereditato da dove, se nessuno lo aveva scritto? Da ciò che c'era scritto nei
-dati, ed è un punto che conviene mettere subito perché regge tutto il capitolo.
+dati, ed è il punto che regge tutto il capitolo.
 Un sistema del genere non impara chi ha commesso un reato: quel dato non esiste
 in nessun archivio. Impara chi è **stato arrestato**, che è un'altra cosa. Se
 in un quartiere passano più pattuglie, lì risultano più reati anche quando non
 ce ne sono di più, e chi ci abita entra nello storico con più precedenti. Il
 modello legge quel registro e ne ricava una regolarità che sui dati è vera e
 sulle persone è ingiusta. Ci torneremo, perché la cosa è più profonda di quanto
-sembri: pesa sui numeri stessi su cui poggiano i risultati matematici di questo
-capitolo.
+sembri. Più avanti in questo capitolo faremo dei conti per stabilire se un
+sistema è equo, e quei conti si faranno su registri come questo. Chi misura con
+un metro storto ottiene numeri storti, per quanto impeccabile sia il conto che
+ci fa sopra.
 
-Un anno prima, in un laboratorio del MIT, la ricercatrice Joy Buolamwini si era
-imbattuta in un problema più intimo: i sistemi commerciali di analisi del volto
-non riconoscevano la sua faccia. Funzionavano, ma solo se indossava una maschera
-bianca. Nel 2018, con Timnit Gebru, misura il fenomeno in modo sistematico su
-tre prodotti in commercio, nello studio *Gender Shades*
-{cite}`buolamwini2018gender`: gli
-stessi sistemi che sbagliano a classificare il genere in meno di un caso su
-cento per gli uomini dalla pelle chiara arrivano a sbagliare in oltre un terzo
-dei casi per le donne dalla pelle scura. Non un errore casuale, distribuito a
-caso: un errore che colpisce sempre gli stessi.
+Un anno prima, in un laboratorio del MIT, la ricercatrice Joy Buolamwini si
+era imbattuta in un problema più intimo: i sistemi commerciali di analisi del
+volto non riconoscevano la sua faccia. Funzionavano, ma solo se indossava una
+maschera bianca. Nel 2018, con Timnit Gebru, misura il fenomeno in modo
+sistematico su tre prodotti in commercio, nello studio *Gender Shades*
+{cite}`buolamwini2018gender`: gli stessi sistemi che sbagliano a classificare
+il genere in meno di un caso su cento per gli uomini dalla pelle chiara
+arrivano a sbagliare in oltre un terzo dei casi per le donne dalla pelle
+scura. Non un errore casuale, distribuito a caso: un errore che colpisce
+sempre gli stessi.
 
 Questi due episodi dicono la stessa cosa, ed è la tesi di apertura di questo
 capitolo: **un modello non è uno strumento neutro**. Impara dai dati, e i dati
@@ -55,8 +57,9 @@ persone, funzionerà bene su quelle e peggio su tutte le altre. Il
 riconoscimento facciale allenato per lo più su volti chiari sbaglia di più sui
 volti scuri: gli altri quasi non li ha visti.
 
-Nel caso del tribunale il guasto è di un secondo tipo, e vale la pena non
-confonderli, perché è quello che porta fuori strada. Lì i dati sugli imputati
+Quello della bilancia è il primo dei due modi in cui il guasto entra. Nel caso
+del tribunale è in gioco il secondo, e i due non vanno confusi, perché è
+confonderli che porta fuori strada. Lì i dati sugli imputati
 neri non mancavano affatto: erano tanti. Il problema è che dicevano un'altra
 cosa da quella che sembrava. Nel registro non c'è scritto «ha commesso un
 reato», c'è scritto «è stato arrestato», e chi viene arrestato dipende anche da
@@ -105,27 +108,32 @@ con un'unica definizione tecnica.
 In Europa la reazione a questi problemi è stata anche normativa, e ci riguarda
 da vicino. Nel marzo del 2023 il **Garante per la protezione dei dati
 personali** italiano è stato la prima autorità occidentale a fermare ChatGPT.
-Vale la pena dire perché, visto che un'autorità non spegne un servizio per
-capriccio. Contestava, in sostanza, tre cose: che agli utenti non fosse stato
+Un'autorità non spegne un servizio per capriccio, quindi vale la pena dire
+perché. Contestava, in sostanza, quattro cose: che agli utenti non fosse stato
 spiegato quali dati venissero raccolti; che non ci fosse una ragione ammessa
-dalla legge per usarli nell'addestramento del modello; che non esistesse alcun
-controllo dell'età di chi lo usava. Il servizio tornò disponibile qualche
-settimana dopo, con un'informativa e uno sbarramento sull'età.
+dalla legge per darli in pasto al modello mentre imparava (l'**addestramento**,
+che è la fase in cui il modello guarda gli esempi e da lì ricava le sue
+regolarità); che le risposte del sistema attribuissero alle persone fatti non
+corrispondenti al vero; e che non esistesse alcun controllo dell'età di chi lo
+usava. Il
+servizio tornò disponibile qualche settimana dopo, con una pagina che spiegava
+il trattamento dei dati e uno sbarramento sull'età.
 
 E soprattutto l'Unione Europea ha approvato nel 2024 il primo regolamento
 **orizzontale** al mondo sull'intelligenza artificiale, l'**AI Act**
 {cite}`euaiact2024`: orizzontale vuol dire che vale per tutti i settori
 insieme, invece di essere una regola per la sanità, una per le banche e una per
 i trasporti. La sua idea portante è di guardare anzitutto al *rischio* che
-ciascun impiego comporta per le persone, più che alla tecnologia in astratto (e
-vedremo, parlando dei modelli generalisti, dove questa idea ha dovuto piegarsi).
-Ci torneremo; per ora ci dice che l'AI responsabile non è più solo un tema da
-conferenza accademica, ma materia di diritto.
+ciascun impiego comporta per le persone, più che alla tecnologia in astratto. È
+un'idea che regge finché il sistema ha un impiego preciso, e alla fine del
+capitolo vedremo che con i modelli buoni-per-tutto, quelli che l'uso non lo
+scelgono, ha dovuto piegarsi. Per ora ci dice che l'AI responsabile non è più
+solo un tema da conferenza accademica, ma materia di diritto.
 
 ## Che cosa vuol dire «responsabile»
 
 «AI responsabile» è un ombrello che copre diverse preoccupazioni, distinte ma
-intrecciate. Conviene nominarle subito, perché sono l'ossatura del capitolo.
+intrecciate. Sono l'ossatura del capitolo, e quindi si nominano subito.
 
 - **Equità (*fairness*)**: il modello non deve sistematicamente svantaggiare
   gruppi di persone in base a genere, etnia, età o altre **caratteristiche
@@ -134,11 +142,18 @@ intrecciate. Conviene nominarle subito, perché sono l'ossatura del capitolo.
   succedere, vuol dire che quando succede è illecito. È il filo che lega COMPAS
   e *Gender Shades*.
 - **Privacy**: i modelli si nutrono di dati, spesso personali. Proteggerli
-  significa impedire che un sistema riveli chi c'era nei dati di addestramento:
-  o dicendolo apertamente, o lasciandolo indovinare da come si comporta.
-- **Robustezza e sicurezza**: un modello dovrebbe comportarsi in modo
-  prevedibile anche di fronte a input insoliti o *deliberatamente* costruiti per
-  ingannarlo. È il territorio degli **attacchi avversari**.
+  significa impedire che un sistema riveli chi c'era fra quegli esempi. Può
+  farlo in due modi, e li vedremo tutti e due. Il primo è sputare fuori di sana
+  pianta un indirizzo o un numero di telefono veri. Il secondo è più di
+  nascosto: su una persona che ha già visto il modello risponde con una
+  sicurezza insolita, e da quella sicurezza si capisce che era nei dati, il che
+  a volte è già un'informazione delicata («era fra i pazienti di quel reparto»).
+- **Robustezza e sicurezza**: un modello dovrebbe rispondere in modo
+  prevedibile anche davanti a casi insoliti, o costruiti *apposta* per
+  ingannarlo. E si può, con una facilità che sorprende: a un'immagine si
+  possono cambiare i colori così poco che l'occhio non se ne accorge, e lo
+  stesso programma che diceva «panda» dice «scimmia». Le immagini truccate così
+  si chiamano **esempi avversari**.
 - **Trasparenza**: poter spiegare *perché* un modello ha deciso così. È lo scopo
   dell'**interpretabilità**, di cui il libro parla in un capitolo dedicato: qui
   la trattiamo come uno strumento al servizio della responsabilità, non come fine
@@ -148,25 +163,26 @@ intrecciate. Conviene nominarle subito, perché sono l'ossatura del capitolo.
   di come gliel'ha detto. È il guaio del genio della lampada, che esaudisce il
   desiderio esattamente come lo hai pronunciato: si dice *allineato* un sistema
   quando quello che fa e quello che volevamo si sovrappongono.
-- **Governance**: le regole, le verifiche indipendenti, le responsabilità
-  legali. Chi risponde quando un modello sbaglia? L'AI Act è un primo tentativo
-  di risposta.
+- **Governance**, che si potrebbe tradurre con «chi comanda e chi risponde»: le
+  regole, le verifiche fatte da qualcuno che non sia il costruttore, le
+  responsabilità legali. Chi paga quando un modello sbaglia? L'AI Act è un primo
+  tentativo di risposta.
 
 Nessuna di queste dimensioni si ottiene con un numero da tenere d'occhio o con
 un pezzo di software da installare. Sono proprietà del *sistema nel suo
 contesto d'uso*, non del solo codice.
 
-E conviene dire subito anche che cosa resta fuori, perché la prima cosa che
-viene in mente sentendo «pericoli dell'intelligenza artificiale» è spesso
-quella dei film. C'è chi ritiene che un giorno una macchina molto più capace di
-noi possa sfuggirci di mano in modo irreparabile: è il **rischio esistenziale**,
-e sulle sue probabilità le opinioni degli esperti vanno da «è fantascienza» a
-«bisogna fermare tutto». Qui non ne parliamo, e non perché sia una domanda
-sciocca: perché non esistono ancora metodi per misurarlo, e questo è un libro
-su ciò che si sa fare. Ci occupiamo dei danni che si possono misurare adesso,
-quelli su cui esistono metriche e correzioni. Il dibattito fra le due
-preoccupazioni, che è vivo e serio, lo riprendiamo alla fine del capitolo, dove
-parliamo delle regole.
+Va detto subito anche che cosa resta fuori, perché la prima cosa che viene in
+mente sentendo «pericoli dell'intelligenza artificiale» è spesso quella dei
+film. C'è chi ritiene che un giorno una macchina molto più capace di noi possa
+sfuggirci di mano in modo irreparabile: è il **rischio esistenziale**, e sulle
+sue probabilità le opinioni degli esperti vanno da «è fantascienza» a «bisogna
+fermare tutto». Qui non ne parliamo, e non perché sia una domanda sciocca:
+perché non esistono ancora metodi per misurarlo, e questo è un libro su ciò
+che si sa fare. Ci occupiamo dei danni che si possono misurare adesso, quelli
+su cui esistono metriche e correzioni. Il dibattito fra le due preoccupazioni,
+che è vivo e serio, lo riprendiamo alla fine del capitolo, dove parliamo delle
+regole.
 
 ## Perché il tema esplode adesso
 
@@ -216,25 +232,32 @@ Tre spostamenti quantitativi hanno reso il tema ineludibile.
 ## Come è organizzato il capitolo
 
 Il resto del capitolo procede lungo tre assi, dagli effetti più visibili a
-quelli più strutturali.
+quelli più strutturali, e quello di mezzo prende due sezioni invece di una.
 
 Prima l'**equità e i *bias***: da dove nasce un pregiudizio (dai dati, dalle
-etichette, dalla scelta stessa dell'obiettivo), come lo si *misura* e quali
-tecniche provano a mitigarlo, senza illudersi che esista una cura definitiva.
-Per misurarlo non serve niente di nuovo. Si riusa la tabella a quattro caselle
-del capitolo di Machine Learning, quella del rilevatore di fumo: c'era davvero
-un incendio o no, ha suonato o no. Là si chiama **matrice di confusione**.
-L'unica differenza è anche quella decisiva: qui la tabella si compila
-*separatamente per ogni gruppo*, e poi si confrontano i risultati. Da lì
-tornano due numeri già visti, quanti dei casi veri il sistema riesce a prendere
-(il **tasso di veri positivi**, che là si chiama anche *recall*) e quanti falsi
-allarmi dà su chi non c'entrava nulla (il **tasso di falsi positivi**).
+etichette, da come è stato scelto l'obiettivo), come lo si *misura* e quali
+tecniche provano a ridurlo, senza illudersi che esista una cura definitiva.
+Per misurarlo non serve niente di nuovo: basta un rilevatore di fumo. Le cose
+che possono succedere sono quattro, e torneranno di continuo: c'era un
+incendio e ha suonato, c'era e non ha suonato, non c'era e ha suonato, non
+c'era e non ha suonato. Sono le quattro caselle di una tabella che nel
+capitolo di Machine Learning si chiama **matrice di confusione**. Qui la
+differenza è una sola, ed è quella decisiva: la tabella si compila
+*separatamente per ogni gruppo di persone*, e poi si confrontano. Da lì escono
+i due numeri attorno a cui gira tutto il capitolo: quanti dei casi veri il
+sistema riesce a prendere (il **tasso di veri positivi**) e quanti falsi
+allarmi dà su chi non c'entrava niente (il **tasso di falsi positivi**).
 
-Poi **privacy, robustezza e sicurezza**: come un modello può, senza volerlo,
-lasciar trapelare i dati su cui è stato addestrato; e come un avversario possa
-manipolarne l'input con perturbazioni impercettibili (gli **esempi
-avversari**) per fargli sbagliare a comando. Due facce della stessa domanda:
-quanto è fragile, e quanto discreto, un modello messo davvero nel mondo.
+Poi **privacy, robustezza e sicurezza**, che prendono due sezioni. La prima
+chiede come un modello possa, senza volerlo, lasciar trapelare i dati su cui è
+stato addestrato, e come un avversario possa manipolarne l'input con
+perturbazioni impercettibili (gli **esempi avversari** di poco fa) per fargli
+sbagliare a comando. La seconda porta la stessa domanda ai modelli di
+linguaggio, dove l'attacco non è più un rumore invisibile ma una frase scritta
+in italiano: basta nasconderla dentro una pagina web che il sistema andrà a
+leggere, e il modello la esegue come se gliel'avesse data chi lo ha costruito.
+Sono due facce della stessa domanda: un modello messo davvero nel mondo, quanto
+sa tenere un segreto e quanto è facile fargli sbagliare.
 
 Infine **allineamento e governance**: che cosa significa chiedere a un sistema
 potente di perseguire *ciò che intendiamo* e non la lettera di un obiettivo
@@ -250,12 +273,15 @@ Decidere *quale* nozione di equità far valere, *quanto* rischio è tollerabile,
 politiche, che nessuna formula risolve al posto nostro.
 
 Ce n'è una che viene prima di tutte, e che un capitolo tecnico rischia di
-saltare: **chi ha deciso di mettere lì quel sistema, e perché**. Un tribunale
-non compra un software di punteggi perché sia più giusto di un giudice: lo
-compra perché costa meno e va più veloce, e perché un numero è più facile da
-difendere in un fascicolo di una motivazione. Tenere presente quel passo dice
-che «come rendo equo il modello» non è sempre la prima domanda: a volte lo è
-«questo compito va dato a un modello?», e la risposta legittima può essere no.
+saltare: **chi ha deciso di mettere lì quel sistema, e per risolvere quale
+problema**. Quando un tribunale adotta un software di punteggi, il problema che
+si sta togliendo dal tavolo non è quasi mai «vorremmo essere più giusti»: sono
+i tempi, i costi, la pila di fascicoli da smaltire. E c'è un vantaggio in più,
+meno confessabile: davanti a un reclamo un numero si difende meglio di una
+motivazione scritta, perché sembra non avere un autore. Tenere presente quel
+passo dice che «come rendo equo il modello» non è sempre la prima domanda: a
+volte lo è «questo compito va dato a un modello?», e la risposta legittima può
+essere no.
 Non è una domanda che si chiude con una metrica, ma lasciarla fuori significa
 dare per scontata proprio la decisione che ha causato tutto il resto.
 
@@ -265,12 +291,17 @@ Pensa a dividere una torta «in modo giusto». Fette identiche per tutti? Fette
 proporzionali a quanto ciascuno ha contribuito a comprarla? Di più a chi ha
 più fame? Sono tre idee di giustizia ragionevoli, e portano a tagli diversi:
 nessun coltello, per quanto affilato, sceglie da solo quale sia quella
-corretta. Con i modelli è identico. Possiamo chiedere che sbaglino ugualmente
-poco su ogni gruppo, oppure che uno stesso punteggio significhi la stessa cosa
-per tutti, ma spesso non possiamo avere entrambe le cose insieme. Quale
-garanzia pretendere è una decisione che spetta alle persone, non alla
-matematica. La tecnica ci dice quali sono i compromessi possibili; sceglierli
-resta un atto di responsabilità umana.
+corretta.
+
+Con i modelli è identico, e la sezione sull'equità farà i conti che lo
+mostrano. Possiamo pretendere che il modello **sbagli allo stesso modo** su
+ogni gruppo, oppure che il suo «sì» **valga lo stesso** per tutti, cioè che
+quando dice sì ci prenda ugualmente spesso in ogni gruppo. Sono due richieste
+sensate, e le vorremmo tutte e due; ma se una certa cosa, nei dati, capita più
+spesso in un gruppo che nell'altro, le due richieste litigano e una va lasciata
+andare. Quale, è una decisione che spetta alle persone e non alla matematica:
+la tecnica dice quali compromessi esistono, sceglierli resta un atto di
+responsabilità umana.
 
 `````
 

@@ -3,12 +3,13 @@
 C'è un esperimento, nel 2018, che sembra uscito da un racconto più che da un
 laboratorio di machine learning. David Ha e Jürgen Schmidhuber prendono un
 livello di *Doom* (lo storico sparatutto) in cui bisogna schivare palle di
-fuoco, e ci allenano un agente che il gioco vero, durante l'allenamento, non
-tocca mai: guarda migliaia di partite giocate a caso nel gioco vero, si costruisce una copia
-compressa e approssimativa del gioco dentro le proprie reti neurali, e si
-allena esclusivamente lì dentro; nel proprio «sogno», l'hanno chiamato proprio
-così. Riportato nel gioco autentico, schiva le palle di fuoco ben oltre la
-soglia che definisce il livello «risolto» {cite}`ha2018world`.
+fuoco, e ci allenano un agente che, durante l'allenamento, il gioco vero non lo
+tocca mai. L'ordine delle cose è questo: prima si raccolgono migliaia di
+partite giocate premendo i tasti a caso; da quelle partite due reti neurali si
+costruiscono una copia compressa e approssimativa del gioco; e l'agente si
+allena esclusivamente dentro quella copia, nel proprio «sogno», l'hanno
+chiamato proprio così. Riportato nel gioco autentico, schiva le palle di fuoco
+ben oltre la soglia che definisce il livello «risolto» {cite}`ha2018world`.
 
 L'articolo ha un titolo di due parole, *World Models* (presentato a NeurIPS
 2018 come *Recurrent World Models Facilitate Policy Evolution*) e contiene un
@@ -42,7 +43,9 @@ già visto, e quel riassunto, nel disegno qui sotto, si chiama $\mathbf{h}$) e i
 come quel codice evolve in risposta alle azioni; la variante di rete ricorrente
 che Ha e Schmidhuber adoperano si chiama **LSTM**, ed è il nome che si legge nel
 disegno. C, che dei tre è di gran lunga il più piccolo, legge codice e memoria e
-decide. La
+decide. Un avviso sui numeri che seguono: sono quelli del gioco di guida, che è
+il più comodo da raccontare; nell'esperimento del sogno, che è l'altro, le
+taglie cambiano, e a tempo debito lo diremo. La
 {numref}`fig-world-model-vmc` mostra il giro completo: l'azione di C torna
 all'ambiente, che produce il fotogramma successivo. E mostra l'anello
 tratteggiato che rende speciale l'architettura: M può alimentare se stesso,
@@ -64,12 +67,15 @@ puntini; ma ogni puntino è colorato, e per dire un colore servono tre numeri
 (quanto rosso, quanto verde, quanto blu), quindi il fotogramma sono
 $64 \times 64 \times 3 = 12\,288$ numeri. Troppi, e quasi tutti ridondanti:
 alla guida non servono i singoli fili d'erba, serve sapere dove curva la
-strada e dove sta l'auto. V è un **autoencoder variazionale** (VAE) (lo
-abbiamo conosciuto nel capitolo sui Modelli di Diffusione
-{cite}`kingma2014auto`) addestrato a comprimere ogni fotogramma in un codice di
-appena 32 numeri: quasi quattrocento volte meno. Quel codice si chiama $\mathbf{z}$, e
+strada e dove sta l'auto. V è una rete addestrata a spremere ogni fotogramma in
+un codice di appena 32 numeri, quasi quattrocento volte meno; il suo nome
+tecnico è **autoencoder variazionale**, in sigla VAE, e l'abbiamo conosciuta
+nel capitolo sui Modelli di Diffusione {cite}`kingma2014auto`. Quel codice si
+chiama $\mathbf{z}$, e
 la lettera è soltanto un nome (come la $x$ dell'incognita a scuola): da qui in
 avanti «$\mathbf{z}$» vuol dire «il riassunto in 32 numeri di quel che si vede adesso».
+Per fare questo mestiere V si porta dietro circa 4,3 milioni di numeri
+imparati, i suoi **parametri**: è di gran lunga il più pesante dei tre moduli.
 
 `````{tab} Elementare
 
@@ -132,11 +138,14 @@ pesa circa 4,3 milioni di parametri.
 Un fotogramma compresso è una fotografia, non un film: non dice cosa
 succederà. Il secondo modulo impara la **dinamica**: dato il codice di adesso
 e l'azione scelta, quale sarà il codice di poi? M è una LSTM, la rete
-ricorrente con i *gate* che decidono cosa ricordare e cosa dimenticare,
-incontrata nel capitolo sul Natural Language Processing
+ricorrente con i *gate* (i cancelli che decidono cosa ricordare e cosa
+dimenticare) incontrata nel capitolo sul Natural Language Processing
 {cite}`hochreiter1997long`. Solo che qui la «frase» da proseguire non è fatta
 di parole ma di codici $\mathbf{z}$: M vive nel piccolo mondo dei 32 numeri, senza mai
-toccare i pixel, perciò è veloce ed economica.
+toccare i pixel, perciò è veloce ed economica. Il riassunto che si porta dietro
+di passo in passo, cioè la memoria vera e propria, è una fila di 256 numeri, ed
+è la $\mathbf{h}$ del disegno; in tutto a M bastano poco più di 400.000 parametri,
+meno di un decimo di quelli di V.
 
 `````{tab} Elementare
 
@@ -207,8 +216,9 @@ centinaia di migliaia, il modulo che *decide* è la cosa più semplice del
 capitolo. C prende i 32 numeri del codice visivo e i 256 della memoria, li
 mette in fila (288 numeri in tutto) e da quei 288 ricava i tre comandi (sterzo,
 acceleratore, freno) facendo per ciascuno una somma pesata: 288 pesi per il
-primo comando, 288 per il secondo, 288 per il terzo, più tre numeri di
-aggiustamento. Totale $288 \times 3 + 3 = 867$ numeri. Non è un vezzo, è la
+primo comando, 288 per il secondo, 288 per il terzo, più tre numeri che
+alzano o abbassano ciascun comando di una quantità fissa. Totale
+$288 \times 3 + 3 = 867$ numeri. Non è un vezzo, è la
 tesi dell'articolo: se V e M hanno digerito davvero il mondo, per agire bene
 basta un riflesso. Tutta l'intelligenza sta nel modello, non nel controllore.
 
@@ -231,7 +241,7 @@ direzione che conviene (in gergo si chiama seguire il **gradiente**). Basta un
 metodo alla Darwin: si provano 64 piloti presi un po' a caso, si tengono quelli
 che hanno guidato meglio, si fa una nuova generazione somigliante a loro, e si
 ricomincia. Ci vuole pazienza (nell'articolo le generazioni sono
-milleottocento), ma alla fine si guida.
+1.800), ma alla fine si guida.
 
 `````
 
@@ -260,35 +270,44 @@ segnale su cui giudicare un pilota (il punteggio) arriva solo a fine episodio.
 
 ## Allenarsi nel sogno
 
-Fin qui M ha fatto da comparsa: aiutare C fornendogli un po' di futuro
-anticipato. Ma guardate l'anello tratteggiato della
+Fin qui M ha fatto da spalla a C: gli passava la propria memoria, il riassunto
+di quel che era successo prima, e C decideva. Adesso guardiamo l'anello
+tratteggiato della
 {numref}`fig-world-model-vmc`. M predice il prossimo codice $\mathbf{z}$; e se quel
 codice, invece di confrontarlo con la realtà, lo ridessimo in pasto a M come
-input del passo successivo? Il modello comincia a raccontarsi il gioco da
+ingresso del passo successivo? Il modello comincia a raccontarsi il gioco da
 solo, un passo dopo l'altro: niente più ambiente, niente pixel, solo codici
-che generano codici. Ha e Schmidhuber lo chiamano *dream*, e l'esperimento è
-tutto qui: C viene addestrato **esclusivamente** dentro il sogno e poi
-trasferito, senza ritocchi, nel gioco vero.
+che generano codici. Ha e Schmidhuber lo chiamano *dream*, sogno, e
+l'esperimento è tutto qui: C viene addestrato **esclusivamente** dentro il
+sogno e poi trasferito, senza ritocchi, nel gioco vero.
+
+Sulla parola conviene fermarsi un secondo, perché si porta dietro qualcosa che
+qui non c'entra. Un sogno vero è sconclusionato, e da un sogno ci si aspetta
+che sbagli; questo invece è una simulazione, e la si vuole fedele: quando si
+scolla dal gioco vero non è pittoresco, è un guasto, ed è il guasto di cui
+parla il resto della sezione. Per il resto la parola calza: il gioco è
+staccato, si procede a occhi chiusi, e quel che si vede se lo sta inventando
+chi lo guarda.
 
 Un cambio di scena, però, va dichiarato. I numeri dati finora (32 numeri di
-codice, 256 unità di memoria, 867 parametri di controller) sono quelli di
+codice, 256 di memoria, 867 parametri di controller) sono quelli di
 *CarRacing*, e su *CarRacing* il controller gli autori lo fanno evolvere
 nell'ambiente **vero**: l'unico esperimento allenato davvero dentro il sogno è
-l'altro, lo sparatutto, cioè lo scenario *Take Cover* di VizDoom (la versione
-di *Doom* usata nella ricerca). Lì lo stesso schema usa un codice da 64
-numeri, una memoria da 512 unità e un controller da 1088 parametri: la ricetta
-è la stessa, le taglie no. (Chi prova a rifare quel 1088 con $64 + 512$ non ci
-arriva, e la ragione è una differenza vera: su *Take Cover* il controller legge
-anche lo stato di **cella** della LSTM, quindi in ingresso ha
-$64 + 512 + 512 = 1088$ numeri, e da lì ricava un comando solo, andare a
-sinistra o a destra. Il conto dei parametri, a rigore, farebbe uno in più per
-via del termine costante, e il paper riporta la larghezza dell'ingresso.)
+l'altro, lo sparatutto: per la precisione lo scenario *Take Cover* di VizDoom
+(la versione di *Doom* usata nella ricerca), che d'ora in poi chiamiamo con il
+suo nome. Lì lo stesso schema usa un codice da 64
+numeri, una memoria da 512 numeri e un controller da 1088 parametri: la ricetta
+è la stessa, le taglie no.[^taglie-doom]
 
 `````{tab} Elementare
 
 È il pilota che la sera prima della gara ripassa il circuito a occhi chiusi,
 curva per curva, i piloti veri lo fanno davvero: costa zero benzina e zero
-incidenti. Ma c'è un tallone d'Achille: se nella tua testa una curva è più
+incidenti. Una domanda viene subito: se il gioco vero è staccato, chi tiene il
+punteggio? Il sogno stesso. Nello sparatutto il punteggio è quanto sopravvivi,
+e M, oltre al fotogramma dopo, prevede anche se sei stato colpito: quando
+decide che l'hai presa, la partita sognata finisce e il punteggio è la sua
+durata. Ma c'è un tallone d'Achille: se nella tua testa una curva è più
 dolce che in pista, impari una traiettoria che domani ti manda nella ghiaia.
 All'agente di Ha e Schmidhuber successe qualcosa di più subdolo: dentro il
 sogno scoprì dei *trucchi*. Trovò modi di muoversi per cui i mostri, in certe
@@ -297,9 +316,22 @@ far svanire le palle di fuoco. Stava barando non al gioco ma al *proprio sogno*,
 sfruttandone i difetti, come uno studente che si prepara all'esame
 inventandosi da solo domande facili. Punteggi splendidi nel mondo immaginato,
 figuraccia in quello vero. Il rimedio è elegante: rendere il sogno *più
-capriccioso* del gioco reale, così che i trucchi smettano di funzionare.
-Allenato in quel simulatore cattivo, l'agente trovò il gioco vero quasi
-riposante: vi sopravvisse in media *più a lungo* che nel proprio sogno.
+capriccioso* del gioco reale, così che i trucchi smettano di funzionare. E si
+fa girando una manopola sola, che si chiama **temperatura**. M, ricordi, non
+annuncia una continuazione unica ma un ventaglio di continuazioni con le loro
+probabilità: alzando la temperatura si dà più spazio a quelle improbabili, che
+escono più spesso. Il sogno diventa dispettoso, e un trucco che ha funzionato
+una volta la volta dopo non funziona più. Alzarla troppo, però, non conviene:
+un sogno completamente sregolato non somiglia più a niente, e lì dentro non si
+impara nulla. Con la manopola messa al punto giusto l'agente trovò il gioco
+vero quasi riposante: vi sopravvisse in media *più a lungo* che nel proprio
+sogno.
+
+Resta una cosa da tenere a mente, ed è quella da cui siamo partiti: il sogno è
+stato imparato guardando partite giocate a casaccio. Il pilota è cresciuto
+dentro la copia di un gioco che nessun bravo giocatore ha mai giocato, e questo
+è un limite non del sogno in sé ma di quello che il sogno ha avuto occasione di
+vedere.
 
 `````
 
@@ -364,56 +396,63 @@ ragione per cui i sogni utili sono brevi.
 `````
 
 Che gli errori si accumulino è una di quelle cose che si leggono e si
-accettano senza vederle. {numref}`fig-sogno-diverge` la mette in scena sul mondo più
-piccolo che si possa immaginare: **un'altalena che qualcuno continua a
+accettano senza vederle. {numref}`fig-sogno-diverge` la mette in scena sul
+mondo più piccolo che si possa immaginare: **un'altalena che qualcuno continua a
 spingere**. Va avanti e indietro, a ogni passaggio perde un po' di slancio per
 l'attrito e ne riceve un po' dalla spinta, e nella finestra disegnata la spinta
 vince: l'ampiezza cresce. Il modello che se la immagina sbaglia una cosa sola, e
-di poco: **quanto slancio sopravvive** a ogni passaggio, e lo sbaglia del due e
-otto per cento. Basta quello.
+di poco: **quanto slancio sopravvive** a ogni passaggio. Crede che ne sopravviva
+un filo più del vero, il 2,8 per cento in più. Basta quello.
 
 ```{figure} ../figures/sogno-diverge.svg
 :name: fig-sogno-diverge
-:alt: "Due curve che oscillano come un'altalena partono dallo stesso punto e restano sovrapposte per una quindicina di passi, tanto da sembrare una sola; poi si separano sempre di più. L'asse orizzontale conta i passi, quello verticale dice dove si trova l'altalena. Una banda chiara copre la parte finale del grafico, da dove lo scarto ha superato la tolleranza in poi."
+:alt: "Due curve che oscillano come un'altalena partono dallo stesso punto e restano sovrapposte per una quindicina di passi, tanto da sembrare una sola; poi si separano sempre di più. L'asse orizzontale conta i passi, quello verticale dice dove si trova l'altalena. Una fascia ombreggiata copre la parte finale del grafico, da dove lo scarto ha superato la tolleranza in poi."
 :width: 92%
 
 La stessa spinta iniziale, due altalene quasi identiche: una vera e una
 immaginata. Per sedici passi il sogno è una fotocopia della realtà; poi si
-stacca. La banda chiara comincia dove lo scarto **peggiore fin lì** ha superato
-la tolleranza che ci si è dati, ed è la parte di sogno su cui non conviene più
-allenare nessuno.
+stacca. La fascia ombreggiata, a destra della riga tratteggiata, comincia dove
+lo scarto **peggiore fin lì** ha superato quello che si era deciso di
+tollerare: da lì in avanti il sogno non è più roba su cui allenare nessuno.
 ```
 
 Tre cose vale la pena notare in {numref}`fig-sogno-diverge`, e nessuna delle
-tre si vede in un fotogramma. La prima è che l'inizio è **identico**: chi
-guardasse solo i primi passi concluderebbe che il modello è ottimo, ed è
-esattamente il modo in cui un modello del mondo viene di solito valutato: **un
-passo alla volta**, cioè partendo da una situazione vera, chiedendo al modello
-che cosa succede subito dopo e misurando quanto ha sbagliato, poi ripartendo da
-un'altra situazione vera. Un modello promosso a pieni voti da questa prova può
-essere bocciato appena lo si lascia andare da solo per venti passi, ed è quello
-che qui succede. La seconda cosa richiede di guardare bene, perché è controintuitiva:
-lo scarto **grezzo si richiude**, anche parecchio. Al passo 17 vale 0,43 e al
-19 è sceso a 0,06, perché le due altalene, oscillando, ogni tanto si
-ritrovano dalla stessa parte per caso. Quello che non torna più indietro è lo
-scarto **peggiore fin lì**, ed è l'unica quantità onesta con cui giudicare un
-sogno: un modello che al passo 19 sembra tornato buono ha comunque già sbagliato
-di 0,43, e su quell'errore ci ha costruito sopra tutti i passi seguenti. La
-terza è che il numero di passi affidabili non è una proprietà del modello da
+tre si vede in un fotogramma.
+
+La prima è che l'inizio è **identico**. Chi guardasse solo i primi passi
+concluderebbe che il modello è ottimo, ed è esattamente il modo in cui un
+modello del mondo viene di solito valutato: **un passo alla volta**, cioè
+partendo da una situazione vera, chiedendogli che cosa succede subito dopo e
+misurando quanto ha sbagliato, poi ripartendo da un'altra situazione vera. Un
+modello promosso a pieni voti da questa prova può essere bocciato appena lo si
+lascia andare da solo per venti passi, ed è quello che qui succede.
+
+La seconda richiede di guardare bene, perché è controintuitiva: lo scarto fra
+le due curve, misurato passo per passo sulla scala verticale del disegno,
+**si richiude**, anche parecchio. Al
+passo 17 vale 0,43 e al 19 è sceso a 0,06, perché le due altalene, oscillando,
+ogni tanto si ritrovano dalla stessa parte per caso. Quello che non torna più
+indietro è il **record**, cioè il peggiore scarto visto fin lì, ed è l'unica
+quantità onesta con cui giudicare un sogno: un modello che al passo 19 sembra
+tornato buono ha comunque già sbagliato di 0,43, e su quell'errore ci ha
+costruito sopra tutti i passi seguenti.
+
+La terza è che il numero di passi affidabili non è una proprietà del modello da
 solo: dipende da quanto scarto si è disposti a tollerare. Qui la tolleranza è
-0,25, e nei sedici passi che il sogno regge l'altalena percorre poco più di
-cinque unità: si sta accettando uno scarto pari a un ventesimo scarso di quel
-movimento. (Il confronto va fatto sui passi buoni. Prendendo tutto il tracciato
-l'escursione raddoppia, ma i suoi estremi cadono **dopo** la rottura, cioè
-dentro il tratto che stiamo dichiarando inaffidabile: dividere per quelli
-farebbe sembrare la tolleranza più piccola di quello che è.) È dichiarata
-apposta: chi non la dichiara non sta dichiarando neanche l'**orizzonte**, cioè
-fino a che punto il sogno vale la pena di essere ascoltato. Una quarta cosa,
-infine, la figura non può mostrarla, ed è bene non dedurla da qui: *quanto in
-fretta* lo scarto si apra non è una legge universale, dipende da quanto il
-sistema amplifica le perturbazioni che riceve. Il capitolo sul Deep
+0,25, e nei sedici passi che il sogno regge, fra il punto più alto e il più
+basso, l'altalena si sposta di poco più di cinque di quelle stesse
+unità.[^scala-altalena] Si sta accettando, insomma, uno scarto pari a un
+ventesimo scarso del movimento, che è una scelta e non una legge: chi
+accettasse il doppio di scarto si terrebbe cinque passi in più, ventuno invece
+di sedici. Dichiararla non è pignoleria: chi non dichiara la tolleranza non sta
+dichiarando neanche l'**orizzonte**, cioè fino a che punto il sogno vale la
+pena di essere ascoltato.
+
+Una quarta cosa, infine, la figura non può mostrarla, ed è bene non dedurla da
+qui. *Quanto in fretta* lo scarto si apra non è una legge universale: dipende
+da quanto il sistema amplifica gli scossoni che riceve. Il capitolo sul Deep
 Reinforcement Learning lo scrive per bene, e mostra che su una dinamica
-abbastanza docile lo scarto, invece di esplodere, si assesta.
+abbastanza mite lo scarto, invece di esplodere, si assesta.
 
 ## Dai sogni ai diamanti: la linea Dreamer
 
@@ -421,9 +460,10 @@ abbastanza docile lo scarto, invece di esplodere, si assesta.
 metodo generale è stato in buona parte il lavoro di Danijar Hafner e colleghi.
 Dreamer (2020) impara i comportamenti senza quasi mai uscire dal proprio
 modello: le partite su cui si allena sono tutte immaginate, e sono immaginate
-nello spazio dei codici, non in quello dei pixel. Una partita immaginata così
-si chiama **rollout**: una catena di passi generati uno dall'altro, esattamente
-il sogno di poco fa. A imparare da quei rollout sono due reti che si danno il
+nello spazio dei codici, non in quello dei pixel. Una catena di passi generati
+uno dall'altro si chiama **rollout**, ed è esattamente il sogno di poco fa; la
+parola vale anche per le partite vere, quando si raccolgono una mossa alla
+volta. A imparare da quei rollout sono due reti che si danno il
 cambio, e le abbiamo incontrate nel capitolo sul Deep Reinforcement Learning:
 l'**attore**, che sceglie la mossa, e il **critico**, che stima quanto vale la
 situazione in cui l'attore si è cacciato, così che l'attore sappia subito se ha
@@ -437,8 +477,8 @@ ritocchi per dominio. Il risultato simbolo: applicato così com'è a Minecraft,
 dimostrazioni umane né curricula. Arrivarci richiede una catena lunghissima di
 sotto-obiettivi (legno, banco da lavoro, picconi via via migliori, ferro da
 fondere, scavi in profondità) con ricompense rarissime lungo il cammino: il
-tipo di compito su cui, come abbiamo visto con *Montezuma's Revenge*, il DQN
-si arena.
+tipo di compito su cui, come ha mostrato il capitolo sul Deep Reinforcement
+Learning con *Montezuma's Revenge*, il DQN si arena.
 
 È qui il raccordo con il capitolo sul Deep Reinforcement Learning: i world
 model sono la risposta **model-based** alla fame di esperienza vera dei metodi
@@ -487,16 +527,18 @@ costano poco, è tutt'altro che chiuso.
 `````
 
 Una nota di prospettiva: oggi «world model» è anche un'etichetta di moda per
-i grandi modelli generativi di video, promossi a simulatori del mondo
-fisico. La parentela concettuale c'è; la capacità di sostenere un intero
-ciclo di apprendimento dentro il modello, come qui, resta materia di ricerca.
+i grandi modelli generativi di video, promossi a simulatori del mondo fisico.
+La parentela concettuale c'è. Quello che quei modelli non hanno ancora mostrato
+è proprio la cosa raccontata qui: reggere un intero addestramento al proprio
+interno, cioè lasciarci crescere dentro un agente che poi, riportato fuori,
+funzioni davvero.
 
 ## I tre moduli in PyTorch
 
-Chiudiamo con lo scheletro di V, M e C: pochi tensori, forme esplicite nei
-commenti. Chi non programma può saltare fino al riquadro finale senza perdere
-il filo. Manca tutta la parte di addestramento (i tre moduli qui nascono con i
-pesi a caso e non imparano niente); quello che il codice mostra è il percorso
+Chiudiamo con lo scheletro di V, M e C: poche righe, con le dimensioni di ogni
+pacchetto di numeri scritte nei commenti. Chi non programma può saltare fino al
+riquadro finale senza perdere il filo. Manca tutta la parte di addestramento
+(i tre moduli qui nascono con i pesi a caso e non imparano niente); quello che il codice mostra è il percorso
 dei dati, cioè chi passa che cosa a chi, ed è quello vero.
 
 ```python
@@ -554,21 +596,22 @@ l'evoluzione dei suoi pochi parametri (867 con le taglie di *CarRacing* usate
 in questo scheletro, 1088 su *Take Cover*, che è il gioco in cui il sogno è
 stato davvero adoperato per allenare).
 
-Due avvertenze prima di metterci le mani. La prima: con i pesi non addestrati
-la ricorrenza dimentica quasi subito da dove è partita, e dopo due o tre passi
-il sogno prosegue uguale qualunque fotogramma lo abbia iniziato. Il modo di
-misurarlo: cinque fotogrammi casuali al posto di uno, le stesse identiche
-azioni per tutti e cinque, e si guarda la distanza media fra i cinque codici
-sognati. Dopo dieci passi è scesa di più di tremila volte rispetto a quella
-fra i codici di partenza (fra 3.300 e 4.700 volte, sui sei semi provati), e
-ciascuno dei tre comandi finali, confrontato fra un sogno e l'altro, cambia per
-meno di un millesimo. Cambiare il
-fotogramma iniziale, che è la prima cosa che viene in mente di provare, non
-produce nessun effetto visibile: qui si guarda il percorso dei dati, non il
-contenuto.
-La seconda: questo M ha una testa deterministica, predice *un* codice e non una
-miscela, quindi non ha la manopola della temperatura, che di una distribuzione
-da riscaldare ha bisogno per esistere.
+Due avvertenze prima di metterci le mani, e servono a non aspettarsi da queste
+righe più di quello che danno.
+
+La prima: con i pesi non addestrati la ricorrenza dimentica quasi subito da
+dove è partita. Dopo due o tre passi il sogno prosegue uguale qualunque
+fotogramma lo abbia iniziato, e cambiare il fotogramma di partenza (che è la
+prima cosa che viene in mente di provare) non produce nessun effetto visibile.
+Lo si misura così: si parte da cinque fotogrammi diversi invece che da uno, si
+danno a tutti e cinque le stesse identiche azioni, e si guarda quanto restano
+distanti fra loro i cinque codici sognati. Dopo dieci passi quella distanza è
+scesa di più di tremila volte rispetto alla partenza, e i tre comandi finali si
+somigliano fino a meno di due millesimi.[^sei-prove]
+
+La seconda: questo M predice *un* codice solo e non un ventaglio di
+continuazioni possibili, quindi la manopola della temperatura qui non c'è,
+perché non ci sono probabilità da rimescolare.
 
 ```python
 V, M, C = EncoderVAE(), ModelloRNN(), Controller()
@@ -655,3 +698,21 @@ comandi = C(z.squeeze(1), h)     # (1, 3): sterzo, acceleratore, freno
 ```
 
 `````
+
+[^taglie-doom]: Chi prova a rifare quel 1088 sommando $64 + 512$ non ci arriva,
+    e la ragione è una differenza vera: su *Take Cover* il controller legge
+    anche il secondo dei due riassunti che una LSTM si porta dietro (lo stato
+    di *cella*), quindi in ingresso ha $64 + 512 + 512 = 1088$ numeri, e da lì
+    ricava un comando solo, andare a sinistra o a destra. Il conto dei
+    parametri, a rigore, farebbe uno in più per via del termine costante: il
+    paper riporta la larghezza dell'ingresso.
+
+[^scala-altalena]: Il confronto va fatto sui passi buoni. Prendendo tutto il
+    tracciato l'escursione quasi raddoppia, ma i suoi estremi cadono **dopo**
+    la rottura, cioè dentro il tratto che stiamo dichiarando inaffidabile:
+    dividere per quelli farebbe sembrare la tolleranza più piccola di quello
+    che è.
+
+[^sei-prove]: I numeri esatti: ripetendo la prova sei volte, ciascuna con pesi
+    casuali diversi, la distanza fra i codici sognati si riduce di un fattore
+    compreso fra 3.300 e 4.700.

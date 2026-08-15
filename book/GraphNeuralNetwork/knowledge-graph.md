@@ -8,14 +8,15 @@ sapere che Torino è una **città**, che sta in Italia, che ha un fiume, un
 sindaco e una squadra di calcio, e che «Torino» può anche essere quella
 squadra.
 
-L'idea non era nuova. Le **reti semantiche** degli anni Sessanta (schemi in cui
-i concetti sono puntini e le linee fra loro dicono «è un», «ha un», «si trova
-in»), gli enormi progetti di senso comune scritti a mano a partire dagli anni
-Ottanta e tutta la tradizione del **web semantico**, che voleva pagine
-leggibili non solo dalle persone ma anche dai programmi, avevano già proposto
-la stessa struttura. Nuovo era che, per la prima volta, un grafo di fatti
-abbastanza grande da servire a qualcosa si poteva costruire in modo
-automatico.
+L'idea non era nuova. La stessa struttura era già stata proposta tre volte, e
+vale la pena elencarle. Negli anni Sessanta con le **reti semantiche**, schemi
+in cui i concetti sono puntini e le linee fra loro dicono «è un», «ha un», «si
+trova in». Dagli anni Ottanta con quei progetti in cui squadre di persone
+scrivevano a mano, un fatto per volta, le ovvietà che tutti sanno e nessuno
+scrive («la pioggia bagna», «chi dorme ha gli occhi chiusi»). E infine con il
+**web semantico**, che voleva pagine leggibili non solo dalle persone ma anche
+dai programmi. Nuovo era che, per la prima volta, un grafo di fatti abbastanza
+grande da servire a qualcosa si poteva costruire in modo automatico.
 
 Fin qui il capitolo ha trattato grafi in cui tutti i nodi sono la stessa specie
 di cosa e tutti gli archi vogliono dire la stessa cosa: utenti, atomi,
@@ -25,26 +26,31 @@ articoli. Questa sezione toglie quella comodità.
 
 `````{tab} Elementare
 
-Un **knowledge graph** è un grafo in cui gli archi hanno un'etichetta, e
-l'etichetta è un verbo. L'unità elementare è una frasetta di tre parole:
+Un **knowledge graph** è un grafo in cui ogni arco porta scritto sopra che cosa
+lega le due cose che collega: «si trova in», «è capitale di», «ha diretto».
+L'unità elementare è una frasetta di tre parole:
 
 > (Torino, si-trova-in, Piemonte) · (Torino, attraversata-da, Po) ·
 > (Po, sfocia-in, Adriatico)
 
 Soggetto, relazione, oggetto. Si chiama **tripla**, e migliaia di triple messe
 insieme formano un grafo in cui i nodi sono cose (persone, luoghi, film,
-proteine, prodotti) e gli archi sono fatti. Nodi di specie diverse, archi di
-specie diverse: un grafo **eterogeneo**.
+proteine, prodotti) e gli archi sono fatti. Le cose, d'ora in poi, si chiamano
+**entità**: è la parola che userà il resto della sezione, e vuol dire soltanto
+questo. Nodi di specie diverse, archi di specie diverse: un grafo
+**eterogeneo**.
 
-C'è una differenza che sembra filosofica e invece decide come si progetta tutto
-il resto. In una tabella, una casella vuota di solito vuol dire «no». In un
-knowledge graph, un arco che non c'è vuol dire **«non lo so»**. Nessuno ha
-scritto tutti i fatti veri del mondo, e nessuno mai lo farà: l'assenza di
-(Torino, gemellata-con, Salt Lake City) non è una smentita, è un silenzio.
+C'è poi una differenza che sembra filosofica e invece decide come si progetta
+tutto il resto. In un knowledge graph, un arco che non c'è vuol dire **«non lo
+so»**, non «è falso». Nessuno ha scritto tutti i fatti veri del mondo, e
+nessuno mai lo farà: l'assenza di (Torino, gemellata-con, Salt Lake City) non è
+una smentita, è un silenzio.
 
 Sembra un dettaglio da logici, e invece è il motivo per cui, poco più avanti,
-non si potrà addestrare un modello nel modo ovvio: non ci sono esempi negativi
-da nessuna parte.
+non si potrà addestrare un modello nel modo consueto. Per imparare a distinguere
+il vero dal falso a un modello servono esempi delle due specie; qui gli esempi
+di fatti veri abbondano, e di fatti falsi non ce n'è nemmeno uno, perché
+nessuno si mette a scrivere le cose che non sono successe.
 
 `````
 
@@ -77,27 +83,31 @@ insiemi di addestramento e di valutazione vanno costruiti di conseguenza.
 Il grafo non arriva già fatto, e va detto con chiarezza che questa è la parte
 grossa: rispetto a costruirlo, i modelli che ci girano sopra sono la parte
 facile e divertente. Il percorso da un mucchio di testi a un grafo di fatti
-passa per tre gradini, e il libro ha già affrontato il primo.
+passa per quattro gradini, e il libro ha già affrontato il primo.
 
-Il **riconoscimento delle entità nominate** individua nel testo i pezzi che
-nominano una cosa, ed è la sezione sull'etichettatura di sequenze del capitolo
-di NLP. Trovato «Torino» in una frase, però, non si sa ancora *quale* Torino
-sia: la città, la squadra, il comune omonimo in un altro paese, la persona con
-quel cognome. Risolverlo si chiama **collegamento delle entità**, e comporta
-decidere a quale nodo del grafo un nome si riferisce, usando il contesto.
+Il primo gradino è **trovare i nomi**: individuare nel testo i pezzi che
+nominano una cosa. Si chiama **riconoscimento delle entità nominate**, ed è la
+sezione «POS tagging ed entità» del capitolo sul linguaggio.
 
-Il gradino gemello, e in pratica il più costoso, è la **risoluzione delle
-entità**: capire che «F.C. Juventus», «Juventus Football Club» e «la Juve»
-sono un nodo solo, e che due schede prodotto con nomi diversi descrivono lo
-stesso oggetto. È il problema di togliere i doppioni, su una scala enorme, ed è
-la voce su cui chi mantiene un knowledge graph spende gran parte del proprio
-lavoro.
+Il secondo è capire *quale* cosa. Trovato «Torino» in una frase non si sa
+ancora se sia la città, la squadra, il comune omonimo in un altro paese o la
+persona con quel cognome; a deciderlo è il resto della frase, perché «Torino ha
+battuto la Juve» e «Torino è bagnata dal Po» parlano di due nodi diversi.
+Agganciare un nome al nodo giusto si chiama **collegamento delle entità**.
+
+Il terzo, e in pratica il più costoso, è il gemello del secondo: capire che
+«F.C. Juventus», «Juventus Football Club» e «la Juve» sono un nodo solo, e che
+due schede prodotto con nomi diversi descrivono lo stesso oggetto. Si chiama
+**risoluzione delle entità**, è il problema di togliere i doppioni su una scala
+enorme, ed è la voce su cui chi mantiene un knowledge graph spende gran parte
+del proprio lavoro.
 
 L'ultimo gradino è l'**estrazione di relazioni**: dedurre dal testo che fra due
 entità esiste un certo legame. Oggi si fa in larga parte chiedendolo a un
 grande modello di linguaggio, con tutti i problemi di verifica che il capitolo
-dedicato ha già discusso: un modello che inventa una tripla plausibile e falsa
-la inserisce nel grafo con la stessa faccia con cui inserisce quelle vere.
+sui Transformer ha già discusso: un modello che inventa una tripla plausibile e
+falsa la inserisce nel grafo con la stessa faccia con cui inserisce quelle
+vere.
 
 ## Entità come punti, relazioni come frecce
 
@@ -110,12 +120,14 @@ e qui succede una cosa che al lettore di questo libro suonerà familiare.
 Nel capitolo sul linguaggio si è visto che a ogni parola si può assegnare una
 fila di numeri, e che quella fila si può immaginare come un **punto**, come una
 città su una mappa: solo che invece di due coordinate ne ha qualche decina.
-Parole di significato simile finiscono vicine. E lì era emersa una proprietà
-curiosa: anche gli spostamenti da un punto all'altro hanno un senso. Lo
-spostamento che porta da «re» a «regina» è più o meno lo stesso che porta da
-«attore» ad «attrice», tanto che partendo da «re», annullando lo spostamento
-del maschile e applicando quello del femminile, si arriva vicino a «regina».
-Le relazioni di significato, insomma, diventano **frecce** sulla mappa.
+Parole di significato simile finiscono vicine.
+
+E lì era emersa una proprietà curiosa: hanno un senso anche gli *spostamenti*
+da un punto all'altro. Lo spostamento che separa «uomo» da «donna» è più o meno
+lo stesso che separa «re» da «regina», tanto che partendo da «re», togliendo lo
+spostamento «uomo» e aggiungendo lo spostamento «donna», si atterra vicino a
+«regina». Le relazioni di significato, insomma, diventano **frecce** sulla
+mappa.
 
 L'idea di base per i knowledge graph è la stessa, presa sul serio e fatta
 diventare l'obiettivo dell'addestramento invece di un effetto collaterale.
@@ -130,10 +142,45 @@ Fatto questo, prevedere un fatto mancante diventa un calcolo: prendi
 «Lisbona», applica la freccia «capitale-di», guarda quale entità è più vicina
 al punto in cui sei arrivato.
 
-Resta un problema, ed è geometrico prima ancora che informatico. Una freccia
-porta da un punto a **un solo** punto. Ma «ha-recitato-in» lega un attore a
-decine di film: la stessa freccia dovrebbe arrivare in decine di posti diversi,
-e non può. È il difetto che ha generato una lunga discendenza di modelli.
+Qui si paga il debito lasciato in sospeso all'inizio, quello degli esempi
+falsi che non esistono. Per sistemare punti e frecce bisogna poter dire al
+modello «questo sì e quest'altro no», e i «no» non ce li ha nessuno. La
+soluzione è tanto sfacciata quanto efficace: **ce li fabbrichiamo guastando i
+fatti veri**. Si prende (Roma, capitale-di, Italia), si sostituisce una delle
+due estremità con un'entità pescata a caso, e viene fuori (Roma, capitale-di,
+Portogallo), che quasi certamente è falsa. Chiediamo allora che il fatto vero
+finisca più vicino del suo gemello guastato, e tanto basta.
+
+Restano però due problemi, e sono geometrici prima ancora che informatici,
+perché nascono da com'è fatta una freccia. Il primo: una freccia porta da un
+punto a **un solo** punto. Ma «ha-recitato-in» lega un attore a decine di film:
+la stessa freccia dovrebbe arrivare in decine di posti diversi, e non può.
+
+Il secondo è più insidioso, e riguarda le relazioni che si ereditano lungo la
+catena. Se sei antenato di mio nonno, sei antenato anche mio; se un pezzo è
+parte di un motore e il motore è parte di un'automobile, quel pezzo è parte
+dell'automobile. Qui la stessa freccia deve valere tanto per un passo quanto
+per due, e nessuna freccia lo fa, tranne una: prova con una freccia che sposta
+di tre, e farla due volte sposta di sei, che non è tre. L'unico numero per cui
+due passi e un passo portano nello stesso posto è **zero**, cioè la freccia che
+non sposta niente. La relazione si annulla, e con lei ogni possibilità di
+prevederla.
+
+Dal primo problema è nata una lunga discendenza di modelli, che sostituiscono
+la freccia con qualcosa di più flessibile (una moltiplicazione, una rotazione),
+e ognuno rimedia a un caso e ne rompe un altro. Il secondo problema non lo
+risolve nessuno di loro. Per le relazioni che si ereditano servono modelli in
+cui un'entità non è un punto ma una regione, capace di **contenerne** un'altra,
+il che è un modo molto più naturale di dire «è un caso particolare di».
+
+C'è infine una via del tutto diversa, ed è quella che questo capitolo ha
+costruito per intero: portare il **passaparola** delle sezioni precedenti su
+questo grafo. La difficoltà nuova è che qui gli archi non sono tutti uguali, e
+un bigliettino che arriva lungo un «è nato a» non va letto come uno che arriva
+lungo un «ha diretto». La risposta è semplice: una ricetta di riscrittura
+diversa per ogni tipo di arco. Il vantaggio rispetto ai punti e alle frecce è
+lo stesso di tutto il capitolo, cioè che la fila di numeri di un'entità non è
+più imparata a memoria, si **calcola** da quel che le sta intorno.
 
 `````
 
@@ -241,40 +288,47 @@ un'entità mai vista resta fuori, esattamente come in TransE.
 
 ## Rispondere navigando
 
-A che serve, in concreto, oltre a completarsi da sé.
+Riempire da sé i buchi che ha, come si è appena visto con Lisbona, è già
+qualcosa. Ma a che cosa serve, un grafo di fatti, quando la domanda arriva da
+fuori? A tre cose, e sono tre cose che un archivio di documenti non sa fare.
 
-La cosa che un grafo di fatti fa e un archivio di testi non fa è **comporre**.
-Se il grafo contiene «il regista di questo film è X» e «X è nato in questa
-città», la domanda «in che città è nato il regista di questo film» si risponde
-percorrendo due archi. Il modo usuale di rispondere a una domanda su un archivio
-di testi è invece cercare i **brani più somiglianti alla domanda** e darli in
-pasto a un modello di linguaggio (è il *recupero denso* del capitolo sui
-Transformer). Se nessun documento contiene entrambi i fatti nella stessa frase,
+La prima è **comporre**. Se il grafo contiene «il regista di questo film è X» e
+«X è nato in questa città», la domanda «in che città è nato il regista di
+questo film» si risponde percorrendo due archi. Il modo usuale di rispondere a
+una domanda su un archivio di testi è invece cercare i **brani più somiglianti
+alla domanda** e darli in pasto a un modello di linguaggio: è il **retrieval
+denso** del capitolo sui Transformer, dove i brani non si confrontano parola
+per parola, ma trasformando ciascuno in una fila di numeri e cercando le file
+più vicine. Se nessun documento contiene entrambi i fatti nella stessa frase,
 quel sistema non li mette insieme: non gli è stato chiesto di ragionare, gli è
 stato chiesto di somigliare.
 
 Il secondo vantaggio è che **il cammino è la spiegazione**. Una ricerca per
 somiglianza restituisce tre paragrafi e una risposta, e per verificarla bisogna
-leggere i paragrafi. Una risposta ottenuta navigando restituisce la catena di fatti che
-l'ha prodotta, e ogni anello si può controllare da solo. In un dominio dove
-sbagliare costa (clinico, legale, finanziario) è una differenza di natura.
-
-È da qui che nasce l'idea di combinare le due cose, che va sotto il nome
-generico di **GraphRAG**: invece di andare a prendere dei brani di testo, si va
-a prendere un **sottografo**, cioè il pezzetto di grafo attorno alle cose
-nominate nella domanda, e si mette quello davanti al modello di linguaggio
-insieme alla domanda. Le varianti differiscono per come si sceglie il pezzetto
-e per come lo si riscrive in frasi (un grafo va disteso in una fila di parole
-prima di poterlo dare a un modello che legge testo), ma il principio è quello,
-e si innesta esattamente sulla tecnica, discussa nel capitolo sugli agenti, di
-dare al modello dei documenti pescati sul momento invece di fidarsi di ciò che
-ricorda.
+leggere i paragrafi. Una risposta ottenuta navigando restituisce la catena di
+fatti che l'ha prodotta, e ogni anello si può controllare da solo. In un
+dominio dove sbagliare costa (clinico, legale, finanziario) è una differenza di
+natura.
 
 Il terzo vantaggio si dimentica spesso ed è forse il più pratico: le domande
-**aggregate**. «Quanti registi italiani hanno girato almeno tre film
-ambientati a Napoli» non è una domanda a cui un modello di linguaggio possa
-rispondere in modo affidabile, e non è una domanda di somiglianza. È una query,
-e vuole una struttura su cui contare.
+che chiedono di **contare**. «Quanti registi italiani hanno girato almeno tre
+film ambientati a Napoli» non è una domanda a cui un modello di linguaggio
+possa rispondere in modo affidabile, e non è nemmeno una domanda di
+somiglianza: è un'interrogazione da fare a un archivio ordinato, e vuole una
+struttura su cui contare davvero.
+
+Messi insieme, i tre vantaggi hanno prodotto un'idea che gira parecchio.
+Dare a un modello di linguaggio dei documenti pescati sul momento, invece di
+fidarsi di quel che ricorda, è la tecnica che i capitoli sui Transformer e
+sugli agenti chiamano **RAG**, dalle iniziali di *Retrieval-Augmented
+Generation*, «generazione con recupero». Da qui l'idea di fare la stessa cosa
+con un grafo, e il nome che ne è venuto fuori è **GraphRAG**: invece di andare
+a prendere dei brani di testo si va a prendere un **sottografo**, cioè il
+pezzetto di grafo attorno alle cose nominate nella domanda, e si mette quello
+davanti al modello insieme alla domanda. Le varianti differiscono per come si
+sceglie il pezzetto e per come lo si riscrive in frasi (un grafo va disteso in
+una fila di parole prima di poterlo dare a un modello che legge testo), ma il
+principio è quello.
 
 ## Quando conviene, e quando no
 
@@ -290,10 +344,12 @@ I grandi modelli di linguaggio, inoltre, hanno assorbito buona parte del
 mestiere che si affidava ai grafi di fatti: molte domande fattuali ricevono
 oggi una risposta corretta senza che nessun grafo sia stato consultato. Quello
 che i modelli non danno, e che resta la ragione durevole di questa struttura, è
-di altro tipo: la **verificabilità** del cammino, la possibilità di
-**contare** e aggregare, e la capacità di dichiarare **vincoli** che il sistema
-non può violare. Sono garanzie, non conoscenza, ed è per le garanzie che si
-paga il prezzo di costruirlo.
+di altro tipo. Il cammino che si può **verificare** anello per anello. La
+possibilità di **contare**. E la possibilità di dichiarare delle regole che il
+sistema non ha il permesso di violare: che il sindaco di un posto debba essere
+una persona e non un'altra città, che nessuno possa essere nato dopo essere
+morto. Sono garanzie, non conoscenza, ed è per le garanzie che si paga il
+prezzo di costruirlo.
 
 `````{tab} Elementare
 
@@ -323,14 +379,17 @@ paga il prezzo di costruirlo.
   e l'unica freccia che lo fa è quella lunga zero. Da lì una lunga discendenza
   di modelli che sostituiscono la freccia con qualcosa di più flessibile, senza
   però che nessuno di loro risolva proprio quest'ultimo caso.
-- L'altra via è portare il **passaparola** dei capitoli precedenti su questo
-  grafo, usando una ricetta di riscrittura diversa per ogni tipo di arco.
+- L'altra via è portare il **passaparola** delle sezioni precedenti su questo
+  grafo, usando una ricetta di riscrittura diversa per ogni tipo di arco: così
+  la fila di numeri di un'entità non si impara a memoria, si calcola da quel
+  che le sta intorno.
 - Il vantaggio che resta, e per cui vale la pena pagare la manutenzione, non è
   sapere i fatti (per quello ci sono i modelli di linguaggio): è **mettere
   insieme** più fatti in catena, mostrare il **percorso** che ha prodotto la
-  risposta perché sia verificabile, e rispondere a domande che chiedono di
-  **contare**. E un grafo non aggiornato è peggio di nessun grafo, perché
-  sembra ancora autorevole quando è già falso.
+  risposta perché sia verificabile, rispondere a domande che chiedono di
+  **contare**, e poter dichiarare **regole** che il sistema non può violare.
+  E un grafo non aggiornato è peggio di nessun grafo, perché sembra ancora
+  autorevole quando è già falso.
 ```
 
 `````
@@ -350,9 +409,9 @@ paga il prezzo di costruirlo.
   di relazioni. La parte modellistica viene dopo, ed è la più facile.
 - **TransE** {cite}`bordes2013translating` fa delle relazioni delle
   **traslazioni** ($\mathbf{h}+\mathbf{r}\approx\mathbf{t}$), cioè prende sul
-  serio l'aritmetica delle analogie del capitolo di NLP. Non regge le relazioni
-  uno-a-molti, le simmetriche e le riflessive; la **composizione** invece la
-  regge ($\mathbf{r}_3 = \mathbf{r}_1 + \mathbf{r}_2$), ed è il suo caso
+  serio l'aritmetica delle analogie del capitolo sul linguaggio. Non regge le
+  relazioni uno-a-molti, le simmetriche e le riflessive; la **composizione**
+  invece la regge ($\mathbf{r}_3 = \mathbf{r}_1 + \mathbf{r}_2$), ed è il suo caso
   particolare, la **transitività**, a forzare $\mathbf{r} \approx \mathbf{0}$.
   Da lì la discendenza (DistMult perde l'antisimmetria, ComplEx la recupera e
   perde la composizione, RotatE le tiene tutte), che però la transitività non

@@ -1,72 +1,114 @@
 # Aprire la scatola nera
 
 Nel 2016 tre ricercatori dell'Università di Washington (Marco Túlio Ribeiro,
-Sameer Singh e Carlos Guestrin) addestrarono di proposito un classificatore
-truccato a distinguere le foto di **husky** da quelle di **lupo**: scelsero a
-mano le venti immagini di addestramento in modo che tutti i lupi comparissero
-su sfondo innevato e nessun husky lo facesse. Come previsto, il classificatore
-imparò una scorciatoia («c'è neve → lupo») che con l'animale non c'entrava
-nulla: un rilevatore di neve travestito da riconoscitore di canidi. Poi
-mostrarono dieci sue predizioni, errori compresi, a ventisette studenti di
-machine learning, chiedendo se il modello fosse affidabile e come pensavano che
-decidesse: senza altro in mano, in dieci dissero di fidarsi, e meno della metà
-sospettò della neve. Allora diedero loro le *spiegazioni*, cioè le porzioni di
-immagine su cui ogni risposta si era basata, evidenziate sopra la foto.
-L'inganno crollò: i fiduciosi scesero a tre, e venticinque studenti su
-ventisette indicarono la neve {cite}`ribeiro2016why`. Era una messinscena
-costruita apposta per dimostrare una cosa sola: senza una spiegazione, nemmeno
-gli addetti ai lavori si accorgono di un modello che funziona per la ragione
-sbagliata. Il metodo che disegna quelle macchie lo proposero gli stessi autori
-insieme all'esperimento, e lo vedremo in questo capitolo.
+Sameer Singh e Carlos Guestrin) costruirono di proposito un programma truccato.
+Doveva guardare una fotografia e dire se ritraeva un **husky** o un **lupo**, e
+nessuno gliel'aveva insegnato a parole: l'aveva imparato da solo, guardando
+delle foto su cui qualcuno aveva già scritto la risposta giusta. Dare in pasto
+a un programma quegli esempi si chiama **addestrarlo**, e il programma che ne
+esce, quello che d'ora in poi risponde da solo sulle foto nuove, si chiama
+**modello**. È la parola che tornerà in ogni riga di questo capitolo.
+
+Il trucco stava nelle foto. Erano venti soltanto, poche apposta, e scelte a mano
+in modo che tutti i lupi comparissero su sfondo innevato e nessun husky lo
+facesse. Come previsto, il modello imparò una scorciatoia («c'è neve → lupo»)
+che con l'animale non c'entrava nulla: un rilevatore di neve travestito da
+riconoscitore di canidi.
+
+Poi venne la parte interessante. I tre mostrarono dieci risposte del modello,
+errori compresi, a ventisette studenti universitari che un corso di machine
+learning l'avevano già fatto, e chiesero loro se si
+fidassero e come pensavano che quel programma decidesse. Con le sole risposte
+sotto gli occhi, dieci studenti su ventisette dissero di fidarsi, e meno della
+metà sospettò della neve. Allora i ricercatori diedero loro le *spiegazioni*:
+sopra ogni foto, evidenziate a colori, le porzioni di immagine su cui quella
+risposta si era basata. L'inganno crollò. I fiduciosi scesero a tre, e
+venticinque studenti su ventisette indicarono la neve
+{cite}`ribeiro2016why`. Era una messinscena costruita apposta per dimostrare
+una cosa sola: senza una spiegazione, nemmeno gli addetti ai lavori si
+accorgono di un modello che funziona per la ragione sbagliata. Il metodo che
+disegna quelle macchie lo proposero gli stessi autori insieme all'esperimento,
+e lo vedremo in questo capitolo.
 
 La storia ha un antenato illustre. All'inizio del Novecento, a Berlino, un
 cavallo di nome **Hans il Sapiente** sembrava saper contare: gli si chiedeva
-«quanto fa sette più cinque?» e lui batteva lo zoccolo dodici volte. Nel 1904
-lo psicologo Oskar Pfungst scoprì l'inganno, e nel 1907 lo raccontò in un
-libro: Hans non faceva aritmetica, leggeva i movimenti involontari di chi gli
-poneva la domanda. L'esaminatore si irrigidiva appena lo zoccolo raggiungeva il
+«quanto fa sette più cinque?» e lui batteva lo zoccolo dodici volte. Nel
+settembre del 1904 una commissione di tredici persone lo esaminò e concluse due
+cose: che imbroglio non ce n'era, e che il caso meritava un'indagine seria.
+L'indagine cominciò poche settimane dopo, all'Istituto di psicologia
+dell'università di Berlino, e a condurla fu lo psicologo Oskar Pfungst: in due
+mesi era finita, e a dicembre si sapeva come stavano le cose. Hans non faceva
+aritmetica, leggeva i movimenti involontari di chi gli poneva la domanda.
+L'esaminatore si irrigidiva appena lo zoccolo raggiungeva il
 numero giusto, e il cavallo si fermava lì. Bastava che l'esaminatore non
-conoscesse la risposta, e Hans sbagliava. Da allora si chiama **effetto Clever
+conoscesse la risposta, e Hans sbagliava. Il resoconto per esteso Pfungst lo
+pubblicò in un libro nel 1907, ed è quello che si cita ancora. Da allora si
+chiama **effetto Clever
 Hans** ogni sistema che *sembra* risolvere un problema mentre in realtà ne
-risolve un altro, più facile e nascosto. Il classificatore di husky è un Clever
-Hans in silicio: accuratissimo, e per la ragione sbagliata.
+risolve un altro, più facile e nascosto. Il rilevatore di lupi è un Clever
+Hans in silicio: azzeccava quasi sempre, e per la ragione sbagliata.
 
-Il problema è che una rete neurale con milioni di parametri non ci dice, di suo,
-*perché* decide come decide. È una **scatola nera**: entra un input, esce una
-risposta, e in mezzo c'è un groviglio di numeri che nessuno legge a occhio.
+Il problema è che un modello non ci dice, di suo, *perché* decide come decide.
+È una **scatola nera**: entra una fotografia, esce una risposta, e in mezzo non
+si vede niente.
 
-Vale la pena fermarsi un momento su questo groviglio, perché di solito un
+Vale la pena fermarsi un momento su quel «in mezzo», perché di solito un
 computer fa quello che qualcuno gli ha scritto di fare, e verrebbe da dire:
-leggiamo il programma e vediamo cosa c'è scritto. Qui non funziona, e la
+apriamo il programma e leggiamo cosa c'è scritto. Qui non funziona, e la
 ragione è che le regole di questo programma non le ha scritte nessuno. Il
 modello se le è ricavate da solo guardando gli esempi, e ciò che ne è uscito
-non è un elenco di frasi ma una tabella di milioni di numeri senza nome,
-nessuno dei quali significa qualcosa preso da solo: ciascuno sposta la
-risposta di pochissimo, e la decisione è la somma di tutti quegli spostamenti.
-Stampare il programma non serve a niente, perché il programma *è* quella
-tabella. Chiamiamo **interpretabilità** la capacità di capire su che cosa si
-appoggia la risposta di un modello, e questo capitolo raccoglie i modi di
+non è un elenco di frasi ma una tabella di numeri senza nome: milioni, nei
+modelli di oggi. Quei numeri si chiamano **parametri**. E il tipo di
+modello che li organizza a strati, dove il primo strato fa un po' di conti sui
+dati in arrivo, il secondo rifà i conti sul risultato del primo, e così via fino
+in fondo, si chiama **rete neurale**.
+
+Nessuno di quei numeri, preso da solo, significa qualcosa, e conviene vedere in
+che senso. Il modello non risponde «lupo» e basta: risponde con un punteggio,
+mettiamo 87 su 100 a favore del lupo. Quegli 87 non stanno scritti da nessuna
+parte: sono il risultato di milioni di spintarelle minuscole, alcune verso il
+lupo e altre contro, che si compensano quasi tutte fra loro e lasciano quel
+numero come residuo. Stampare il programma non serve a niente, perché il
+programma *è* quella tabella, e lì dentro la parola «neve» non è scritta da
+nessuna parte. Chiamiamo **interpretabilità** la capacità di capire su che cosa
+si appoggia la risposta di un modello, e questo capitolo raccoglie i modi di
 ottenerla quando il modello non la offre da sé.
 
 Fin quando la posta in gioco è suggerire un film, poco male. Ma quando un
 modello decide se concedere un mutuo, se un tumore è maligno o se rilasciare un
 imputato, la domanda «perché?» diventa una questione di fiducia e di giustizia.
-È anche, da qualche anno, una questione di legge. Il Regolamento generale sulla
-protezione dei dati europeo (GDPR, applicabile dal 2018) ha introdotto norme
-sulle decisioni automatizzate e un «diritto alla spiegazione» per chi le
-subisce. Fin dove arrivi quel diritto, però, i giuristi lo discutono ancora. Il
-testo obbliga a fornire «informazioni significative sulla logica utilizzata»,
-e il punto controverso è se questo basti a pretendere il motivo della *singola*
-decisione.
+
+Da qui in avanti gli esempi cambieranno spesso faccia, e conviene sapere come
+sono fatti i dati quando non sono fotografie. Sono una tabella: una **riga** per
+persona, e una **colonna** per ogni informazione che di lei si conosce, il
+reddito, l'età, i debiti in corso. Sono quelle colonne che il capitolo passerà
+il tempo a interrogare, e più avanti le chiameremo anche **feature**, che è il
+termine di mestiere.
+
+La domanda «perché?», dicevamo, è anche una questione di legge. Il Regolamento generale sulla
+protezione dei dati europeo (GDPR, applicabile dal 2018) detta delle regole
+sulle decisioni prese da un programma senza che un essere umano ci metta mano,
+e obbliga chi le usa a dare all'interessato «informazioni significative sulla
+logica utilizzata». Che da lì nasca un vero e proprio «diritto alla
+spiegazione» è invece contestato fra i giuristi, e il punto della lite è
+proprio questo: quelle informazioni riguardano il funzionamento del sistema in
+generale, o si può pretendere il motivo della *propria* decisione, quella e non
+un'altra? La differenza fra le due cose, che qui sembra un cavillo da tribunale,
+è invece una delle domande con cui fra poco metteremo ordine fra i metodi:
+spiegare il modello in generale non è la stessa cosa che spiegare una sua
+singola risposta, e non si fa con gli stessi attrezzi.
 
 `````{tab} Elementare
 
 Immagina un professore che dà sempre voti giusti ma non spiega mai come li
 assegna. Finché i voti sono corretti ti fidi; ma il giorno che ne prendi uno
 che ti sembra ingiusto, senza una spiegazione non puoi né capire dove hai
-sbagliato né difenderti. E se scoprissi che il professore, invece di leggere il
-compito, guarda di nascosto la calligrafia o il nome sul foglio? Sarebbe come
-il cavallo Hans: risposte «giuste» ottenute con il trucco sbagliato.
+sbagliato né difenderti. E adesso il colpo di scena: quel professore i compiti
+non li legge, guarda la calligrafia. Nella sua classe, per caso, i più bravi
+scrivono anche più ordinato, e lui quella regola lì l'ha imparata bene: finché
+la classe è quella, i voti tornano davvero. È il cavallo Hans in cattedra:
+risposte «giuste» ottenute con il metodo sbagliato, e nessuno se ne accorge
+finché non arriva uno bravo con una brutta calligrafia.
 
 Aprire la scatola nera vuol dire proprio questo: chiedere al modello non solo
 *cosa* ha deciso, ma *su cosa* si è basato. Nel caso degli husky e dei lupi,
@@ -102,27 +144,35 @@ stesso peso. Vale la pena elencarle, perché guidano *che tipo* di spiegazione
 cerchiamo.
 
 - **Fiducia.** Un medico non delega una diagnosi a un sistema di cui non
-  capisce il ragionamento. La spiegazione è la condizione perché un esperto
-  accetti di affidarsi al modello, o di scartarlo, come è giusto quando guarda
-  la neve.
-- **Debug.** Il caso husky è il manifesto: senza interpretabilità, un bug
-  concettuale (la scorciatoia) resta invisibile dietro una buona accuratezza.
-  Aprire la scatola è, prima di tutto, uno strumento di ingegneria.
+  capisce il ragionamento. E senza una spiegazione non può nemmeno fare il
+  contrario, cioè scartarlo con cognizione di causa: gli mancano gli elementi
+  tanto per fidarsi quanto per rifiutare.
+- **Trovare i difetti.** Il caso husky è il manifesto. La scorciatoia non è un
+  errore di programmazione: il programma faceva esattamente quello che doveva.
+  È un difetto che si vede solo guardando *su che cosa* il modello si appoggia,
+  perché dai risultati non emerge affatto: il modello indovina tanto, e chi
+  guarda i risultati lo promuove. (Cercare e togliere i difetti da un programma
+  si chiama fare *debug*.) Aprire la scatola è, prima di tutto, uno strumento
+  di ingegneria.
 - **Equità.** Un modello può discriminare per genere o provenienza anche senza
   che quelle informazioni gli siano state date: gli basta una colonna che ne
-  faccia le veci, quello che si chiama un *proxy*, cioè una spia. Il quartiere
-  di residenza, in molte città, dice qualcosa sul reddito e sulla storia di chi
-  ci abita; il tipo di contratto di lavoro dice qualcosa sull'età. Il modello
-  non ha bisogno di sapere che sta discriminando: gli basta trovare la spia
-  nei dati. Solo esaminando *su cosa* si basa una decisione si può scoprirlo:
-  un tema che riprenderemo nel capitolo sull'AI responsabile.
-- **Scoperta scientifica.** Quando un modello prevede la struttura di una
-  proteina o l'attività di un farmaco, capire *cosa ha imparato* può suggerire
-  ipotesi nuove ai ricercatori: il modello come microscopio, non solo come
-  oracolo.
-- **Obblighi normativi.** Dal credito all'assicurazione, un numero crescente di
-  ordinamenti richiede che le decisioni automatizzate su una persona siano, in
-  qualche misura, spiegabili e contestabili.
+  faccia le veci, cioè che ne sia una spia. Il quartiere di residenza, in molte
+  città, dice qualcosa sul reddito di chi ci abita, e un modello che rifiuta un
+  prestito «per il quartiere» sta di fatto rifiutandolo per il reddito, che è
+  proprio la cosa che non gli era stata data. Il modello non ha bisogno di
+  sapere che sta discriminando: gli basta trovare la spia nei dati. Solo
+  esaminando *su cosa* si basa una decisione si può scoprirlo, ed è un tema che
+  riprenderemo nel capitolo sull'AI responsabile.
+- **Scoperta scientifica.** Ci sono modelli che indovinano cose che nessuno
+  sapeva prevedere: come si ripiega una proteina, se una molecola nuova sarà un
+  farmaco. Lì la domanda cambia segno. Non si chiede una spiegazione per
+  controllare il modello, la si chiede per **imparare qualcosa dal modello**:
+  se ha capito qualcosa che noi non sappiamo, quel qualcosa è un'ipotesi da
+  andare a verificare in laboratorio. Il modello come microscopio, non solo
+  come macchina che dà responsi.
+- **Obblighi normativi.** Dal credito all'assicurazione, sempre più leggi
+  chiedono che una decisione presa da un programma su una persona sia, in
+  qualche misura, spiegabile e contestabile.
 
 C'è un punto sottile che lega tutto: **la stessa decisione richiede spiegazioni
 diverse a seconda di chi la riceve**.
@@ -130,12 +180,14 @@ diverse a seconda di chi la riceve**.
 `````{tab} Elementare
 
 Chiedi «perché questo prestito è stato rifiutato?» a tre persone diverse e ti
-aspetti tre risposte diverse. Al **cliente** serve una spiegazione azionabile:
+aspetti tre risposte diverse. Al **cliente** serve sapere che cosa può fare:
 «il reddito dichiarato è troppo basso rispetto alla rata; con una rata inferiore
 la domanda passerebbe». All'**ingegnere** che ha costruito il modello serve
-sapere quali variabili pesano e se ce n'è una sospetta (di nuovo: la neve). Al
-**regolatore** serve la garanzia che il sistema non discrimini e che la
-decisione sia contestabile. Una sola frase non può accontentarli tutti: la
+sapere quali colonne pesano e se ce n'è una sospetta, cioè se in questa tabella
+esiste l'equivalente della neve. All'ufficio
+pubblico che vigila sulle banche, il **regolatore**, serve la garanzia che il
+sistema non discrimini e che chi si vede dire di no possa protestare con
+qualche argomento in mano. Una sola frase non può accontentarli tutti: la
 spiegazione «buona» dipende da a chi parli e a cosa gli serve.
 
 `````
@@ -159,29 +211,36 @@ regolatore.
 
 ## Una mappa delle spiegazioni
 
-Il campo dell'*explainable AI* può sembrare una giungla di sigle. Tre domande,
-indipendenti l'una dall'altra, mettono ordine e ci accompagneranno per tutto il
-capitolo.
+I metodi per spiegare un modello sono decine, e presi in blocco sembrano un
+elenco senza capo né coda. Tre domande, indipendenti l'una dall'altra, mettono
+ordine e ci accompagneranno per tutto il capitolo.
 
 `````{tab} Elementare
 
 Pensa a tre domande da porre a ogni metodo di spiegazione.
 
-- **Il modello è trasparente di suo, o va spiegato dopo?** Un piccolo albero
-  di decisione («se il reddito è sotto X e l'età sotto Y, rifiuta») si legge
-  come una ricetta: è **trasparente**. Una rete profonda no, e allora serve
-  uno strumento esterno che la interroghi *dopo* l'addestramento (spiegazione
-  **post-hoc**).
+- **Il modello si legge da sé, o va spiegato dopo?** Alcuni modelli decidono
+  con una catena di domande sì/no («il reddito supera i 30 000? se sì, l'età
+  supera i 40? se no, rifiuta»). Un modello così si disegna, e viene fuori una
+  cosa che si biforca a ogni domanda: per questo si chiama **albero di
+  decisione**. Leggerlo è come leggere una ricetta, e diciamo che è
+  **trasparente**. Un modello con milioni di numeri dentro no: lì serve uno
+  strumento esterno che lo interroghi *dopo* che ha finito di imparare, e una
+  spiegazione ottenuta così si chiama **post-hoc**, che in latino vuol dire
+  «dopo il fatto».
 - **Vuoi capire tutto il modello, o una singola decisione?** «In generale questo
   modello dà molto peso al reddito» riguarda il modello **nel suo insieme**
   (spiegazione *globale*). «*Questo* prestito è stato rifiutato per via della
   rata troppo alta» riguarda **una risposta sola** (spiegazione *locale*).
 - **Lo strumento funziona solo per un tipo di modello, o per qualunque
-  modello?** Alcuni metodi guardano dentro un modello specifico (i pesi di una
-  regressione lineare); altri lo trattano come una scatola chiusa e funzionano
-  con qualunque cosa: li chiamiamo *agnostici*.
+  modello?** Alcuni metodi hanno bisogno di sapere com'è fatto il modello
+  dentro, e valgono solo per quel tipo lì. Altri non lo aprono nemmeno: gli
+  passano un caso, si prendono la risposta, e tanto basta. Questi ultimi
+  funzionano con qualunque cosa, e si chiamano *agnostici*: la parola, presa a
+  prestito dalla filosofia, qui vuol dire soltanto «che non si pronuncia su
+  com'è fatto il modello».
 
-Tre domande, e ogni tecnica del capitolo trova il suo posto nella griglia.
+Tre domande, e ogni tecnica del capitolo si colloca rispondendo a tutte e tre.
 
 `````
 
@@ -214,36 +273,78 @@ specifici.
 
 `````
 
-Le tre domande dicono *come* lavora un metodo, non che cosa restituisce, e
-conviene sapere fin d'ora che sotto la parola «spiegazione» il capitolo mette
-oggetti di forma diversissima: un numero per ogni **feature**, cioè per ogni
-colonna dei dati («il reddito ha pesato 25»); una regola scritta («finché il
-reddito supera 30 000, è sì»); un altro caso, simile al tuo, in cui la risposta
-cambia; una macchia colorata sopra una fotografia; una classifica di colonne.
-Cinque cose che non si assomigliano per niente. Quando una sezione dice
-«spiegazione», la prima domanda utile è quale delle cinque.
+Le tre domande dicono *come* lavora un metodo, non che cosa restituisce. E qui
+conviene mettere in guardia, perché sotto la parola «spiegazione» questo
+capitolo mette oggetti di forma diversissima:
+
+- **una classifica delle colonne**, valida per tutti gli esempi insieme: «in
+  questo modello il reddito conta più dell'età, e il colore preferito non conta
+  niente»;
+- **un conto per un caso solo**, che è un'altra cosa: non l'ordine delle
+  colonne, ma di quanto ciascuna ha spinto *questa* risposta. Spinto rispetto a
+  che cosa? Rispetto alla risposta che il modello darebbe di un cliente di cui
+  non sapesse niente. Ed è un conto vero e proprio, nel senso che le quote
+  devono sommare esattamente alla distanza fra le due risposte, senza avanzi;
+- **una regola scritta**: «finché il reddito supera 30 000 e non ci sono
+  ritardi di pagamento, la risposta è sì»;
+- **un altro caso, quasi identico, in cui la risposta cambia**: «con 6 000 euro
+  di reddito in più sarebbe stato un sì»;
+- **una macchia colorata sopra una fotografia**, come quella che ha smascherato
+  la neve.
+
+Cinque cose che non si assomigliano per niente, e la prima e la seconda si
+somigliano solo in apparenza: una classifica non ti dice niente sul tuo caso, e
+un conto sul tuo caso non è una classifica valida per tutti. Quando una sezione
+dice «spiegazione», la prima domanda utile è quale delle cinque.
 
 C'è poi una quarta domanda, che non riguarda il funzionamento di un metodo ma
 decide quale risposta sia quella giusta: **si vuole spiegare il modello, o il
-fenomeno?** Sono cose diverse, e la differenza si misura. Mettiamo che due
-colonne dicano quasi la stessa cosa e che il modello ne guardi una sola. Un
-metodo che chiede «su che cosa si appoggia questo programma» dà tutto il merito
-alla colonna usata e zero all'altra; un metodo che chiede «che cosa dice il
-dato» lo divide a metà, perché l'informazione sta in tutte e due. Nessuna delle
-due risposte è sbagliata: rispondono a domande diverse. Chi cerca un difetto nel
-modello vuole la prima; chi cerca una causa nel mondo vuole la seconda, e da un
-modello predittivo non la otterrà comunque, perché il modello ha visto
-correlazioni e non esperimenti. Questa forcella tornerà quattro volte nel
-capitolo, ogni volta che due metodi entrambi ragionevoli daranno due numeri
-diversi per lo stesso caso.
+mondo?** Sembra la stessa cosa e non lo è, e conviene vederlo su un caso.
 
-L'esempio più pulito di interpretabilità *intrinseca* (cioè che il modello ha
-già per come è costruito, senza bisogno di strumenti esterni) è un albero di
-decisione poco profondo: la sua logica si stampa per intero.
+Mettiamo che nella tabella ci siano due colonne che dicono quasi la stessa cosa:
+lo stipendio del mese e il reddito dichiarato in un anno. Chi ha l'uno alto ha
+alto anche l'altro, quindi al modello ne basta una, e mettiamo che abbia scelto
+lo stipendio e ignorato il reddito annuo. Adesso chiediamoci quanto vale
+ciascuna delle due colonne, e notiamo che ci sono due domande diverse, non una.
 
-Il dataset `iris` è un classico: 150 fiori di iris di tre specie, ciascuno
-descritto da quattro misure (lunghezza e larghezza del petalo e del sepalo), e
-il compito è indovinare la specie.
+- «**Su che cosa si appoggia questo programma?**» Risposta: tutto sullo
+  stipendio, zero sul reddito annuo. È la verità sul programma: se cancelli la
+  colonna del reddito annuo, non cambia niente.
+- «**Che cosa ci dice il dato?**» Risposta: metà e metà. Le due colonne
+  portano la stessa informazione, il modello ne ha scelta una per caso, e se lo
+  si riaddestrasse domani potrebbe scegliere l'altra. Non c'è nessuna ragione
+  per dare più credito a una che all'altra, quindi si divide in parti uguali.
+
+Nessuna delle due risposte è sbagliata: rispondono a domande diverse, e chi
+usa un metodo senza sapere a quale delle due sta rispondendo si prende il numero
+per quello che non è. Chi cerca un difetto nel modello vuole la prima. Chi cerca
+una causa nel mondo vorrebbe la seconda, e conviene dire subito che nemmeno
+quella gliela darà: un modello ha visto solo cose che vanno insieme (si dice
+che sono **correlate**), non ha mai fatto un esperimento, e due cose che vanno
+insieme non sono per forza l'una la causa dell'altra. Questo bivio tornerà più volte
+nel capitolo, ogni volta che due metodi entrambi ragionevoli daranno due numeri
+diversi per lo stesso caso. (Il bivio ricompare soprattutto nei passaggi più
+tecnici del capitolo, quelli del livello Superiore: se ne troverà traccia ogni
+volta che due metodi discordano.)
+
+## Un modello che si spiega da sé
+
+Basta di teoria: guardiamone uno. Della prima delle tre domande abbiamo detto
+che alcuni modelli si leggono da sé e altri no, e vale la pena vedere in
+concreto che aspetto ha un modello del primo tipo. Ricordiamo il nome che gli
+diamo: **trasparente**, e nel resto del capitolo si dirà anche che è
+interpretabile in modo **intrinseco**, che è la stessa cosa detta col termine
+di mestiere.
+
+L'esempio più pulito è l'albero di decisione già incontrato, tenuto basso, con
+poche domande. Qui sotto lo costruiamo davvero, con qualche riga di codice: chi
+non programma può saltare il riquadro grigio e leggere subito quello che stampa,
+che è il pezzo interessante.
+
+I dati sono un classico, l'`iris`: 150 fiori di iris di tre specie diverse,
+ciascuno descritto da quattro misure in centimetri (lunghezza e larghezza del
+petalo, e le stesse due del sepalo, che è la fogliolina verde che sta sotto al
+fiore). Il compito è indovinare la specie a partire dalle quattro misure.
 
 ```python
 from sklearn.datasets import load_iris
@@ -271,34 +372,56 @@ Ecco cosa stampa, per intero:
 |   |   |--- class: 2
 ```
 
-Tre regole annidate su una misura sola, la larghezza del petalo: petalo
-strettissimo, prima specie; sotto 1,75 cm, seconda; sopra, terza. Nessuna
-spiegazione post-hoc, il modello *è* la propria spiegazione, e sta in sette
-righe. Se lo stesso dato lo diamo in pasto a una foresta casuale da centinaia
-di alberi (tanti alberi diversi che votano insieme sbagliano meno di uno solo,
-come si è visto nella sezione sugli alberi e gli ensemble del capitolo sul
-machine learning) l'accuratezza sale ma la leggibilità sparisce, ed è lì che
-nascono i metodi del capitolo.
+Le tre righe che cominciano con `class` sono le tre specie, numerate da zero
+come si usa in programmazione. Il resto sono tre regole annidate su una misura
+sola, la larghezza del petalo: fino a 0,80 cm, prima specie; fra 0,80 e 1,75,
+seconda; oltre 1,75, terza. Nessuno strumento esterno, nessuna spiegazione
+aggiunta dopo: il modello *è* la propria spiegazione, e sta in sette righe.
 
-## Spiegare non è essere fedeli
+Adesso il confronto. Al posto di un albero solo se ne possono far crescere
+centinaia, tutti un po' diversi fra loro, e far votare le loro risposte: si
+chiama **foresta casuale**, ed è il metodo visto nella sezione sugli alberi e
+gli insiemi di modelli del capitolo sul machine learning. Tanti pareri sbagliano meno di
+uno, e infatti su questi fiori la foresta indovina un po' più dell'alberello: il
+$96{,}0\%$ contro il $94{,}7\%$. Il modo di misurarlo è quello di sempre, e vale
+la pena dirlo: si dividono i 150 fiori in dieci gruppi, si addestra il modello
+su nove gruppi e lo si interroga sul decimo, e si ripete dieci volte cambiando
+ogni volta il gruppo tenuto da parte, così che ogni fiore prima o poi faccia da
+esame. La media di quelle dieci prove è il numero scritto sopra. La differenza,
+dunque, è di **un punto e tre**. In cambio, la logica della foresta non si
+stampa più, perché non è una ricetta: sono centinaia di ricette che votano. È in questo scambio che nascono i metodi del capitolo, e
+vale la pena notare fin d'ora che qui lo scambio conviene poco.
 
-C'è una trappola, e il campo ci è caduto più di una volta. Una spiegazione
-post-hoc è, per sua natura, una ricostruzione fatta *dopo*, a decisione presa,
-di ciò che il modello ha fatto: non il modello stesso. E una ricostruzione può essere
-**plausibile senza essere fedele**: raccontarci una storia convincente sul
-perché di una decisione, mentre il modello dentro faceva tutt'altro.
+## Una spiegazione può convincere ed essere falsa
+
+C'è una trappola, e i ricercatori ci sono caduti più di una volta. Una
+spiegazione che arriva dopo, a decisione presa, è un racconto su quello che è
+successo. Non è la cosa che è successa. E un racconto può essere convincente e
+falso insieme.
 
 `````{tab} Elementare
 
-Immagina di chiedere a un amico perché ha scelto un ristorante e lui ti
-risponde: «per le recensioni». Suona sensato, ma se la verità è che ci andava
-la sua ex e voleva rivederla, la spiegazione è *credibile* e *falsa* insieme.
-Con i modelli è lo stesso: uno strumento post-hoc può produrre una motivazione
-che a noi umani sembra ragionevole, ma che non corrisponde a come il modello
-ha davvero deciso. Chiamiamo **fedeltà** quanto la spiegazione aderisce al
-vero funzionamento del modello, e **plausibilità** quanto ci convince. Sono
-due cose diverse, e la seconda è pericolosa proprio quando non c'è la prima:
-una spiegazione bella e infedele ci fa fidare di un modello che non lo merita.
+Pensa a un telecronista che spiega perché un calciatore ha tirato in quel modo:
+«ha visto il portiere spostarsi». Suona sensato, sta guardando la stessa partita
+che guardi tu, ma non è stato nella testa del calciatore, che magari è solo
+scivolato. La spiegazione è *credibile* e *falsa* insieme, e il telecronista
+non sta mentendo: sta indovinando dall'esterno, ed è tutto quello che può fare.
+
+Uno strumento che spiega un modello dall'esterno è nella stessa posizione. Può
+produrre una motivazione che a noi sembra ragionevole e che non corrisponde a
+come il modello ha davvero deciso. Chiamiamo **fedeltà** quanto la spiegazione
+aderisce al vero funzionamento del modello, e **plausibilità** quanto ci
+convince. Sono due cose diverse, e la seconda è pericolosa proprio quando non
+c'è la prima: una spiegazione bella e infedele ci fa fidare di un modello che
+non lo merita.
+
+E il guaio è che a occhio non si distinguono, perché una spiegazione che
+convince e una spiegazione vera si presentano allo stesso identico modo. Come
+si smaschera una spiegazione infedele? Provando a farla fallire: si cambia
+qualcosa nel modello e si guarda se la spiegazione cambia di conseguenza. Se
+non cambia, non stava parlando del modello. È esattamente l'esperimento che
+faremo nell'ultima sezione del capitolo, quella dentro le reti profonde, e che
+boccerà parecchi metodi in uso.
 
 `````
 
@@ -334,56 +457,82 @@ plausibilità e fedeltà vale per ogni spiegazione, comunque prodotta.
 
 `````
 
-Da qui uno dei dibattiti più netti del campo. Cynthia Rudin
-{cite}`rudin2019stop` sostiene una tesi tagliente: per le **decisioni ad alto
-rischio** (giustizia, sanità, credito) si dovrebbe **smettere di spiegare le
-scatole nere** e usare invece **modelli intrinsecamente interpretabili**.
-L'argomento è duplice. Primo: una spiegazione post-hoc infedele è peggio di
-niente, perché dà una falsa sensazione di controllo. Secondo, e più radicale:
-il presunto compromesso tra accuratezza e interpretabilità spesso *non
-esiste*; su molti problemi con feature ben strutturate, un modello trasparente
-raggiunge la stessa accuratezza di uno opaco, e allora l'opacità è un costo
-senza contropartita.
+Da qui uno dei dibattiti più aspri della materia, e per capirlo serve prima
+mettere sul tavolo la convinzione che mette in discussione. La convinzione è
+questa: che chiarezza e bravura si paghino l'una con l'altra, cioè che un
+modello leggibile sia per forza più scarso di uno oscuro, e che quindi l'oscurità sia un prezzo
+che si paga volentieri per avere ragione più spesso. Chiamiamolo il presunto
+**scambio fra accuratezza e chiarezza**; sui fiori di poco fa lo abbiamo visto
+valere un punto e tre.
 
-Non tutti concordano. Su dati non strutturati (immagini, testo, segnali) le
-reti profonde restano di gran lunga le più accurate, e rinunciarvi non è
-un'opzione: lì il post-hoc è, pragmaticamente, l'unica finestra disponibile
-sulla scatola nera. Il monito di Doshi-Velez e Kim {cite}`doshi2017towards`
-vale per entrambe le fazioni: qualunque spiegazione va prodotta e *valutata*
-con rigore scientifico, dichiarando cosa misura e con quale metodo, non
-offerta come rassicurazione qualitativa. Non esistono spiegazioni «gratis»:
-esistono spiegazioni verificate e spiegazioni che ci raccontiamo.
+Cynthia Rudin {cite}`rudin2019stop` sostiene una tesi tagliente: per le
+**decisioni che pesano davvero** (giustizia, sanità, credito) si dovrebbe
+**smettere di spiegare le scatole nere** e usare direttamente modelli leggibili.
+L'argomento è duplice. Primo: una spiegazione infedele è peggio di niente,
+perché dà una falsa sensazione di controllo. Secondo, e più radicale: quello
+scambio, su molti problemi veri, semplicemente non esiste. Quando i dati stanno
+in una tabella e ogni colonna significa qualcosa di preciso (il reddito, l'età,
+la pressione arteriosa), un modello trasparente ben costruito arriva quasi
+sempre dove arriva la scatola nera, e allora l'oscurità è un costo senza
+contropartita: si paga e non si compra niente.
+
+Non tutti concordano, e la ragione è che non tutti i dati stanno in una
+tabella. Su fotografie, testi e suoni, dove le colonne di partenza sono i pixel
+o le lettere e presi uno per uno non significano nulla, le reti profonde
+restano di gran lunga le più brave, e rinunciarvi non è un'opzione: lì una
+spiegazione appiccicata dopo è l'unica finestra che abbiamo.
+
+Su una cosa, però, le due fazioni concordano, e l'hanno scritta nel 2017 due
+ricercatrici, Finale Doshi-Velez e Been Kim {cite}`doshi2017towards`: una
+spiegazione è una cosa da **misurare**, non da esibire. Chi la produce deve
+dichiarare che cosa ha misurato e con quale esperimento, esattamente come si fa
+per l'**accuratezza** di un modello, che è la quota di risposte giuste e che
+nessuno si sognerebbe di dichiarare senza dire su quali casi l'ha contata. Non
+esistono spiegazioni «gratis»: esistono spiegazioni verificate e spiegazioni
+che ci raccontiamo.
 
 ## Come è organizzato il capitolo
 
 Con questa mappa in tasca, il capitolo procede seguendo quelle tre domande.
 
-Cominceremo dai **modelli trasparenti**: la regressione lineare e logistica,
-gli alberi di decisione, i sistemi a regole. Li abbiamo già incontrati nel
-capitolo sul Machine Learning, e qui li rileggiamo con un'altra domanda in
-testa, quanto sono leggibili. Vengono poi le misure di **importanza delle
-feature**, che dicono su che cosa un modello si appoggia in media, su tutti gli
-esempi insieme.
+Cominceremo dai **modelli trasparenti**, quelli che si leggono senza aiuto:
+l'albero di poco fa, e i modelli che rispondono facendo una somma, tanti punti
+per il reddito, tanti per l'età. Li abbiamo già incontrati nel capitolo sul
+Machine Learning, e qui li rileggiamo con un'altra domanda in testa, quanto sono
+leggibili. Vengono poi i modi di misurare su che cosa un modello si appoggia in
+media, su tutti gli esempi insieme: è la classifica delle colonne, e si chiama
+**importanza delle feature**.
 
-Passeremo quindi alle **spiegazioni locali**, quelle che riguardano *questa*
-singola predizione. Sono tre: **LIME**, il metodo del caso husky, che
-approssima il modello con un surrogato lineare nell'intorno del punto; **SHAP**,
-che distribuisce il «merito» di una predizione tra le feature con una regola
-presa dalla teoria dei giochi; e le spiegazioni **controfattuali**, che
-rispondono a «cosa sarebbe dovuto cambiare nell'input perché la decisione fosse
-diversa?».
+Passeremo quindi alle spiegazioni che riguardano una risposta sola, le
+**spiegazioni locali**, e ne vedremo tre. La prima costruisce, lì attorno al
+caso da spiegare e solo lì, un modellino semplice che imita quello vero: una
+copia leggibile buona in quel punto, che si chiama **surrogato locale**; il
+metodo che la costruisce si chiama **LIME**, ed è quello che disegnò le macchie
+sulla neve. La seconda spartisce fra le colonne il merito di una risposta. La
+regola per farlo non nasce nell'informatica: viene da un problema del 1953, come
+dividere in modo equo il guadagno di un'impresa fra i soci che ci hanno
+lavorato. Quelle quote si chiamano **valori di Shapley**, e il modo di
+calcolarle in fretta si chiama **SHAP**. La terza
+risponde alla domanda più pratica di tutte, «che cosa sarebbe dovuto essere
+diverso perché la risposta cambiasse?», e sono le spiegazioni
+**controfattuali**.
 
-Chiuderemo con l'**attribuzione nelle reti profonde**, cioè saliency map,
-gradienti integrati e le mappe di attenzione che avevamo visto nascere nel
-capitolo sui Transformer. E con la giovane **interpretabilità meccanicistica**,
-che prova a smontare una rete circuito per circuito, come un ingegnere inverso
-apre un chip per capirne la logica.
+Chiuderemo dentro le reti profonde. Lì la domanda diventa quanto ogni pezzo
+dell'ingresso, ogni singolo pixel, ha contribuito a una risposta: quella quota
+di merito si chiama **attribuzione**, e la cartina che la disegna sopra la foto
+(le macchie dell'inizio) si chiama mappa di **salienza**. Vedremo che quelle
+mappe promettono più di quanto mantengano, e la stessa domanda la rivolgeremo
+ai pesi di attenzione che abbiamo visto nascere nel capitolo sui Transformer,
+che sembrano una spiegazione già pronta e non lo sono. E finiremo con il
+tentativo più ambizioso e più giovane, quello di smontare una rete pezzo per pezzo come un
+ingegnere apre un chip per capire che cosa fa ciascun componente: si chiama
+**interpretabilità meccanicistica**.
 
 Un filo, sopra a tutto, tiene insieme il capitolo con quello sull'**AI
 responsabile**: aprire la scatola nera non è un vezzo accademico, ma il primo
 passo per costruire sistemi di cui potersi fidare, e da poter contestare
-quando sbagliano. Il classificatore che guardava la neve era stato truccato
-apposta, per dimostrare quanto è facile non accorgersene: i modelli veri
+quando sbagliano. Il rilevatore di lupi era stato truccato apposta, per
+dimostrare quanto è facile non accorgersene: i modelli veri
 arrivano da soli alla stessa scorciatoia, e l'unico modo di scoprirlo è
 guardarci dentro.
 
@@ -401,23 +550,28 @@ guardarci dentro.
 - Si chiede una spiegazione per **fidarsi**, per **trovare i difetti**, per
   **equità**, per **scoprire** cose nuove e perché a volte lo **impone la
   legge**. E la spiegazione buona dipende da chi la riceve: al cliente serve
-  sapere cosa cambiare, all'ingegnere quali variabili pesano, al regolatore che
-  il sistema non discrimini.
+  sapere cosa cambiare, all'ingegnere quali colonne pesano, all'ufficio che
+  vigila che il sistema non discrimini.
 - Tre domande ordinano tutti i metodi del capitolo: il modello si legge da sé
   o va interrogato **dopo**? vuoi capire il modello **intero** o **una risposta
   sola**? lo strumento serve un solo tipo di modello o va bene per
   **qualunque** modello? E una quarta, che decide chi ha ragione quando due
-  metodi discordano: vuoi spiegare **il modello** o **il fenomeno**?
-- Una spiegazione può essere **convincente e falsa insieme** (l'amico che dice
-  «ci vado per le recensioni» e ci va per la sua ex). «Mi convince» e «è vera»
-  sono due cose diverse, e la prima senza la seconda è pericolosa: ci fa
-  fidare di un modello che non lo merita.
-- Il dibattito: per le decisioni che pesano davvero (giustizia, sanità,
-  credito) Cynthia Rudin dice che è meglio usare un modello trasparente invece
-  di appiccicare una spiegazione a una scatola nera, perché su quei dati la
-  scatola nera spesso non indovina nemmeno di più. Su foto, testo e suoni,
-  però, la scatola nera resta la più brava, e la spiegazione appiccicata dopo
-  è l'unica finestra che abbiamo.
+  metodi discordano: vuoi spiegare **il modello** o **il mondo**? Se due colonne
+  dicono quasi la stessa cosa e il modello ne usa una sola, la prima domanda dà
+  tutto a quella e zero all'altra, la seconda divide a metà. Nessuna delle due
+  sbaglia: sono domande diverse.
+- Una spiegazione può essere **convincente e falsa insieme** (il telecronista
+  che spiega il tiro e non è mai stato nella testa del calciatore). «Mi
+  convince» e «è vera» sono due cose diverse, e la prima senza la seconda è
+  pericolosa: ci fa fidare di un modello che non lo merita. Per distinguerle
+  non basta guardare: bisogna provare a far fallire la spiegazione.
+- Il dibattito: si crede che un modello chiaro sia per forza più scarso di uno
+  oscuro, ma sui dati a righe e colonne quello scambio spesso non c'è (sui
+  fiori dell'esempio la foresta guadagna un punto e tre). Per le decisioni
+  che pesano davvero (giustizia, sanità, credito) Cynthia Rudin dice quindi che
+  è meglio usare un modello trasparente invece di appiccicare una spiegazione a
+  una scatola nera. Su foto, testo e suoni, però, la scatola nera resta la più
+  brava, e la spiegazione appiccicata dopo è l'unica finestra che abbiamo.
 ```
 
 `````
@@ -435,7 +589,9 @@ guardarci dentro.
 - Tre assi ordinano il campo: **intrinseca vs post-hoc**, **globale vs locale**,
   **model-specific vs model-agnostic**. Sono largamente indipendenti. A essi si
   affianca una domanda che non è un asse ma decide quale risposta sia corretta:
-  si sta spiegando **il modello** o **il fenomeno**?
+  si sta spiegando **il modello** o **il fenomeno**? (Due colonne quasi
+  ridondanti di cui il modello ne usa una: la prima domanda attribuisce tutto a
+  quella usata, la seconda ripartisce.)
 - **Plausibilità ≠ fedeltà**: una spiegazione post-hoc può convincere senza
   aderire a come il modello decide davvero. È il rischio di ogni racconto
   costruito dopo, a decisione presa, e cresce quando a essere letto non è il

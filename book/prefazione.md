@@ -22,6 +22,60 @@ manoscritto è rimasta l'ossatura, e attorno sono nati i capitoli che allora
 non si potevano scrivere. Il codice, nel frattempo, è passato a PyTorch. Quello
 che non è cambiato è il motivo per cui il libro esiste.
 
+Quello che è cambiato, e molto, è il mondo intorno. Nel 2019 questa era una
+materia da addetti ai lavori. Oggi la usano tutti, e attorno le si sono mossi
+interessi industriali e commerciali di ogni ordine di grandezza. È guardando
+quel passaggio che ho capito perché valeva la pena riprendere il manoscritto.
+
+Nel 2021 un articolo molto discusso ha chiamato i modelli linguistici
+**pappagalli stocastici** {cite}`bender2021dangers`: macchine che rimettono
+insieme pezzi di quello che hanno letto senza capire quello che dicono.
+L'espressione ha fatto il giro del mondo. E a un certo punto mi sono accorto
+che, a forza di ripeterla, i pappagalli eravamo diventati noi.
+
+Succedeva in due modi, e si somigliavano. Usciva una notizia, e per settimane
+la stessa frase rimbalzava identica sui canali di chi commenta questa materia
+di mestiere, ripetuta da gente che alla fonte non era mai andata. Nelle aziende
+capitava la versione tecnica: si scaricava un modello da Hugging Face, lo si
+metteva in produzione perché lo stavano facendo tutti, e spesso nessuno apriva
+la licenza per vedere se quell'uso commerciale fosse permesso. Il gesto era lo
+stesso: ripetere una cosa senza sapere che cosa si stava dicendo.
+
+Non è un'impressione mia. Emily M. Bender, prima firma di quell'articolo, ha
+passato cinque anni a guardare che fine faceva la sua espressione: all'inizio,
+racconta, la usava chi il paper l'aveva letto, e poi «la frase ha superato il
+paper» {cite}`bender2026unasked`. È il pappagallo che si descrive da solo.
+
+Intanto la cosa che di quei modelli si ripeteva più spesso, cioè che si
+limitano a indovinare una parola per volta, restava dov'era. È vera, e dice
+come il testo esce, non come viene deciso. Nel 2025 il gruppo che uno di questi
+modelli lo aveva costruito è andato a guardarci dentro mentre scriveva una
+poesia in rima {cite}`lindsey2025biology`. Si aspettavano di vederlo procedere
+parola per parola e aggiustare la rima all'ultimo momento, e hanno trovato il
+contrario: prima ancora di cominciare il verso il modello aveva già in testa le
+parole con cui poteva chiuderlo, e scriveva il verso per arrivarci; tolta
+quella scelta, ne scriveva un altro che finiva su una rima diversa. La riga con
+cui gli autori lo riassumono è questa: anche se questi modelli sono addestrati
+a produrre una parola per volta, per farlo possono pensare su orizzonti molto
+più lunghi. Predire un token alla volta non vuol dire ragionare un token alla
+volta.
+
+Qui Bender non sarebbe d'accordo, e conviene dirlo invece di tacerlo. Nello
+stesso testo scrive che «i pappagalli stocastici saranno stati una descrizione
+giusta nel tale anno, ma adesso non più perché…» è l'obiezione che le arriva
+puntuale ogni volta che un'azienda presenta un modello nuovo. Per lei quella
+non è una previsione da superare, è «una descrizione, o una metafora», e il
+bersaglio della sua critica non sono i modelli: «quello che mi preoccupa sono
+le azioni delle persone», scrive, e nell'elenco ci sono il furto dei dati, lo
+sfruttamento del lavoro, l'indifferenza per l'impatto ambientale e «la
+sorprendente disponibilità di tanti a cedere il proprio potere e affidarsi a
+testo sintetico».
+
+Su che cosa faccia una macchina la penso diversamente da lei. Su chi sia il
+pappagallo, no. E l'unica cosa che separa chi capisce da chi ripete è sapere
+come funziona la cosa di cui si sta parlando: è quello che queste pagine
+provano a dare.
+
 Il metodo lo trovi descritto nella {doc}`pagina di apertura </intro>`: ogni
 concetto che conta è spiegato due volte, una con un'analogia che non chiede
 prerequisiti e una con le formule al posto giusto, e decidi tu da quale parte

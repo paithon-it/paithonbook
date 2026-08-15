@@ -10,9 +10,10 @@ cosa c'entra la *fisica*? Hopfield e Hinton non hanno scoperto particelle né
 misurato onde gravitazionali: hanno costruito reti neurali.
 
 La risposta della giuria è seria, ed è la porta d'ingresso di questo capitolo.
-Le reti premiate non *assomigliano* a sistemi fisici: si comportano
-esattamente come tali. A ogni configurazione dei loro neuroni è associato un
-numero, e quel numero si chiama **energia**.
+Le reti premiate non *assomigliano* a un sistema fisico, per esempio a una
+calamita: si comportano esattamente come tale. A ogni **configurazione** dei
+loro neuroni, cioè a ogni modo in cui possono essere accesi e spenti, è
+associato un numero, e quel numero si chiama **energia**.
 
 Conviene fermarsi subito su quella parola, perché è una parola presa in
 prestito. Qui «energia» non è la corrente che accende una lampadina né le
@@ -21,9 +22,14 @@ consuma. È un **voto**, un numero che il modello dà a ogni risposta possibile:
 basso se la risposta è sensata, alto se è assurda. Poteva chiamarsi punteggio,
 o stranezza, o altezza. Si chiama energia per due motivi: la formula che lo
 calcola è, lettera per lettera, quella con cui i fisici descrivono una
-calamita (la prima sezione dice quale, e da dove viene), e quella
+calamita (da dove esca lo racconta la prima sezione), e quella
 parola porta con sé un'immagine comoda, le risposte buone come il fondo di una
 valle.
+
+Sarà così per tutto il capitolo: ogni volta che una parola arriva dalla fisica
+il testo lo dice, e dice che cosa significa qui. Sono quattro in tutto, e nel
+loro ordine di comparsa le altre tre sono **temperatura**, **partizione** e
+**spin**.
 
 E c'è una ragione precisa per cui il fondo, e non la cima. Una pallina, nel
 mondo, cade: nei punti bassi ci va da sola, mentre in cima a un monte non ci
@@ -35,10 +41,12 @@ scivolare in un minimo, e *imparare* significa scolpire il paesaggio, scavare
 valli nei punti dove vogliamo che la rete vada a finire.
 
 Quarant'anni dopo quelle reti, il linguaggio dell'energia non è un pezzo da
-museo. È la lingua in cui è scritta la proposta di Yann LeCun per l'AI che
-verrà; è, sotto mentite spoglie, ciò che addestra i modelli di diffusione del
-capitolo precedente; ed è il modo più economico che conosciamo per rispondere
-a una domanda senza essere costretti a rispondere, insieme, a tutte le altre.
+museo. È la lingua in cui è scritta la proposta per l'AI che verrà di Yann
+LeCun, uno dei tre a cui nel 2018 è andato il premio Turing per il deep
+learning; è, sotto mentite spoglie, ciò che addestra i modelli di diffusione
+del capitolo precedente; ed è il modo più economico che conosciamo per
+rispondere a una domanda senza essere costretti a rispondere, insieme, a tutte
+le altre.
 
 ## Un numero al posto di una probabilità
 
@@ -49,31 +57,51 @@ a una domanda senza essere costretti a rispondere, insieme, a tutte le altre.
 
 Il paesaggio che dà il nome al capitolo: in basso le risposte sensate, in alto
 quelle assurde, e in orizzontale (nel disegno, «spazio delle soluzioni») tutte
-le risposte possibili messe in fila. Chi scende soltanto si ferma nella conca
-più vicina, e quando le conche sono i ricordi è esattamente quello che si
-vuole: nel disegno la mossa si chiama *hill climbing*, «scalata della
-collina», perché il nome è nato dove si cercava il punto più alto, e qui il
-paesaggio è rovesciato. Chi invece ogni tanto accetta di risalire (*simulated
-annealing*, la ricottura simulata, ed è la scossa del fabbro che riscalda il
-metallo: la «T» del disegno è la temperatura, ne parla la seconda sezione) può
-cambiare valle. Sono due mosse per due problemi diversi, e il capitolo le
-incontra in quest'ordine.
+le risposte possibili messe in fila. La pallina di sinistra si limita a
+scendere, e si ferma nella prima conca che trova; quella tratteggiata ogni
+tanto accetta di risalire, e così cambia valle. Sono due mosse per due
+problemi diversi, e il capitolo le incontra in quest'ordine.
 ```
 
-La seconda mossa di {numref}`fig-paesaggio-energia`, quella che accetta di
-risalire, anticipa una differenza di mentalità che attraversa tutto il
-capitolo. Dove un classificatore o un regressore *ottimizzano* (cercano la
-risposta migliore e si fermano lì), i modelli di questo capitolo
-**campionano**: ne producono una alla volta, pescandola con la frequenza
-giusta, e per riuscirci accettano di peggiorare per un tratto, perché è
-l'unico modo di uscire da una valle e vederne un'altra. Non è una novità
-assoluta, e sarebbe scorretto farla passare per tale: i generatori dei due
-capitoli precedenti campionano anche loro, e quello di diffusione lo fa con
-una mossa che è parente stretta di quella che si incontra qui.
+Le due mosse del disegno portano i loro nomi inglesi, e conviene scioglierli
+subito perché nel disegno sembrano dire il contrario di quel che fanno. La
+prima si chiama *hill climbing*, «scalata della collina», e il nome viene da
+dove è nata, cioè da chi cercava il punto più *alto*: qui il paesaggio è
+rovesciato e quella stessa mossa scende, ma il nome le è rimasto addosso. La
+seconda si chiama *simulated annealing*, «ricottura simulata»: si scuote il
+paesaggio, forte all'inizio e poi sempre più piano, e finché la scossa è forte
+la pallina salta fuori anche dalle conche in cui si era infilata per sbaglio.
+«Ricottura» è quello che fa il fabbro quando scalda un pezzo di metallo e lo
+lascia raffreddare adagio invece di buttarlo nell'acqua: raffreddando piano,
+gli atomi hanno tempo di sistemarsi bene. È la mossa su cui è costruita la
+seconda sezione, quella delle macchine di Boltzmann.
+
+Ed ecco la seconda parola presa in prestito dalla fisica, quella che nel
+disegno è la «T»: **temperatura**. Qui non c'è niente di caldo e non c'è
+nessun termometro. «Temperatura» vuol dire soltanto *quanto forte stiamo
+scuotendo*: alta quando la pallina salta dappertutto, bassa quando resta nei
+fondovalle, zero quando può solo scendere. La seconda sezione la riprende per
+esteso, e le fa fare un mestiere in più: trasformare le altezze del paesaggio
+in percentuali.
+
+Quella seconda mossa, la scossa che accetta di far risalire, anticipa una
+differenza di mentalità che attraversa quasi tutto il capitolo. Un
+classificatore o un regressore *ottimizzano*: cercano la risposta migliore e
+si fermano lì. La prima rete che incontreremo, quella di Hopfield, fa lo
+stesso. Ma dalla seconda sezione in poi i modelli di questo capitolo
+**campionano**, cioè producono una risposta alla volta, e la pescano in modo
+che a lungo andare le risposte buone escano
+spesso, quelle mediocri ogni tanto e quelle assurde quasi mai: è la frequenza
+che il paesaggio prescrive. Per riuscirci accettano di peggiorare per un
+tratto, perché è l'unico modo di uscire da una valle e vederne un'altra. Non è
+una novità assoluta, e sarebbe scorretto farla passare per tale: i generatori
+dei due capitoli precedenti campionano anche loro, e quello di diffusione lo
+fa con una mossa che è parente stretta di quella che si incontra qui.
 
 Un modello probabilistico, per dire quanto è verosimile una risposta, deve
-tenere il conto di tutte le risposte possibili: le probabilità sommano a uno,
-e quell'uno è un vincolo globale. Un modello a energia rinuncia al vincolo.
+tenere il conto di tutte le risposte possibili: le percentuali che dà a tutte
+le risposte, sommate, devono fare cento, e quel cento è un vincolo che tiene
+insieme il mondo intero. Un modello a energia rinuncia al vincolo.
 Assegna a ogni **configurazione** (cioè a ogni risposta possibile: un'immagine,
 una frase, uno stato della rete) un numero, l'energia, e si limita a pretendere
 che le configurazioni sensate stiano in basso e le altre in alto. Nessuna
@@ -148,24 +176,24 @@ un'immagine tutta sporca di rumore e arrivano, mille passi più tardi, a
 un'immagine pulita; e ogni passo ha il suo paesaggio: all'inizio liscio, con
 poche valli larghe, poi via via più dettagliato. Quello che quei modelli
 imparano, punto per punto, è la **pendenza** di quei paesaggi: da che parte si
-scende e quanto ripido. Ha un nome tecnico, *score*, ed è la pendenza del
-paesaggio di energia di quel passo. Attraversare quella successione di
+scende e quanto ripido. In inglese quella pendenza si chiama *score*, ed è la
+parola che si incontra nei loro articoli. Attraversare quella successione di
 paesaggi, dal più liscio al più dettagliato, *è* generare.
 
-Le architetture **JEPA** del prossimo capitolo (*Joint-Embedding Predictive
-Architecture*, cioè architettura predittiva a incorporamento congiunto: sono i
-modelli che invece di ridisegnare il mondo ne confrontano
-due riassunti) sono energie che nessuno ha mai
-trasformato in percentuali: giudicano quanto un pezzo di mondo osservato e uno
-da predire stiano bene insieme. Le reti di Hopfield «moderne» richiamano un
-ricordo con lo stesso conto con cui i Transformer prestano attenzione
-{cite}`ramsauer2021hopfield`. E il programma che LeCun ripete da anni in fondo
-alle sue conferenze contiene, come seconda delle quattro rinunce, «abbandonare
-il modello probabilistico in favore dei modelli a energia»
-{cite}`lecun2022path`.
+Il prossimo capitolo racconta i modelli che, invece di ridisegnare il mondo,
+ne confrontano due riassunti: si chiamano **JEPA** (*Joint-Embedding
+Predictive Architecture*). Anche loro sono energie mai trasformate in
+percentuali: giudicano quanto un pezzo di mondo osservato e uno da predire
+stiano bene insieme. Le reti di Hopfield «moderne», poi, richiamano un ricordo
+con lo stesso conto con cui un modello di linguaggio decide a quali parole
+guardare {cite}`ramsauer2021hopfield`. E LeCun chiude da anni le sue
+conferenze con lo stesso elenco: quattro cose a cui il campo dovrebbe
+rinunciare, ciascuna con la sua alternativa (l'ultima sezione le guarda una
+per una). La seconda dice «abbandonare il modello probabilistico in favore dei
+modelli a energia» {cite}`lecun2022path`.
 
-Quattro cose che sembravano quattro. Sono una sola, e questo capitolo la
-guarda in faccia.
+Diffusione, JEPA, Hopfield moderne, il programma di LeCun: sembrano quattro
+argomenti distinti. Sono lo stesso, e questo capitolo lo guarda in faccia.
 
 ## Come è organizzato il capitolo
 
@@ -174,31 +202,43 @@ associativa** di Hopfield {cite}`hopfield1982neural`, venticinque neuroni che
 ricostruiscono un ricordo rovinato rotolando in fondo a una valle, con il
 codice per vederlo accadere. Poi la **macchina di Boltzmann**
 {cite}`ackley1985learning`, che aggiunge temperatura e neuroni nascosti,
-trasforma il paesaggio in una distribuzione di probabilità e incontra per la
-prima volta il muro: la funzione di partizione.
+trasforma il paesaggio in percentuali e proprio per questo incontra il muro
+contro cui va a sbattere metà del capitolo: per dire che una risposta vale il
+30% bisogna aver pesato tutte le altre, cioè aver misurato il paesaggio
+intero.
+
+Quel conto porta un nome che spaventa più di quel che vale, ed è la terza
+parola presa in prestito: si chiama **funzione di partizione**. «Partizione»
+qui non ha niente a che vedere con il dividere un insieme in parti né con le
+partizioni di un disco fisso: il conto dice come il cento per cento si
+*ripartisce* fra tutte le configurazioni possibili, e il nome viene da lì. La
+lettera con cui i libri lo indicano è $Z$, che in italiano non è l'iniziale di
+niente: arriva dal tedesco *Zustandssumme*, «somma su tutti gli stati», che è
+esattamente quello che quel conto fa.
 
 La terza tappa è quel muro. **Oltre la partizione** mette in fila le tre
-strade che l'hanno aggirato: mandare esploratori a caso nel paesaggio e
-accontentarsi di quello che riportano (il campionamento, con la dinamica di
-Langevin); rinunciare alle percentuali e imparare soltanto la pendenza (lo
-*score matching* {cite}`hyvarinen2005estimation` e la sua forma denoising
-{cite}`vincent2011connection`); oppure cambiare domanda, e chiedere «questo
-viene dai dati o l'ho fabbricato io?» (la stima contrastiva col rumore
-{cite}`gutmann2010noise`). La seconda strada è quella che, un decennio dopo, è
-finita dentro i modelli di diffusione. I nomi tecnici sono qui perché tu li
-riconosca quando torneranno, non perché tu li sappia già: ciascuno ha la sua
-sezione.
+strade che l'hanno aggirato, e i nomi tecnici sono qui perché tu li riconosca
+quando torneranno, non perché tu li sappia già: ciascuna delle tre ha il suo
+pezzo di quella pagina. La prima manda esploratori a caso nel paesaggio e si
+accontenta di
+quello che riportano: è il campionamento, e la ricetta che si usa porta il
+nome di Langevin. La seconda rinuncia alle percentuali e impara soltanto la
+pendenza: si chiama *score matching* {cite}`hyvarinen2005estimation`, e nella
+sua forma su dati sporcati apposta {cite}`vincent2011connection` è quella che,
+un decennio dopo, è finita dentro i modelli di diffusione. La terza cambia
+domanda e chiede «questo viene dai dati o l'ho fabbricato io?»: è la stima
+contrastiva col rumore {cite}`gutmann2010noise`.
 
-La quarta tappa è il gesto di LeCun: il tutorial del 2006
+La quarta tappa è il gesto di LeCun: il lungo articolo didattico del 2006
 {cite}`lecun2006tutorial` che rilegge quasi ogni modello di apprendimento come
-un giudizio di **compatibilità** fra una domanda e una risposta, con la sua
-promessa (niente misura del continente) e il suo pericolo (il collasso).
-L'ultima guarda al presente: i modelli a energia addestrati sulle immagini
-vere {cite}`du2019implicit`, il classificatore che era un modello a energia
-senza saperlo
-{cite}`grathwohl2020your`, e le quattro rinunce con cui LeCun chiude le sue
-conferenze, discusse per quello che sono: un programma di ricerca, non un
-verdetto.
+un giudizio di **compatibilità** fra una domanda e una risposta. Ha una
+promessa (il paesaggio non va mai misurato tutto) e un pericolo: che il
+modello impari a dire di sì a qualunque cosa, e in gergo si chiama
+**collasso**. L'ultima tappa guarda al presente: i modelli a energia
+addestrati sulle immagini vere {cite}`du2019implicit`, il classificatore che
+era un modello a energia senza saperlo {cite}`grathwohl2020your`, e le quattro
+rinunce che LeCun ripete nelle sue conferenze, discusse per quello che sono:
+un programma di ricerca, non un verdetto.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
@@ -212,7 +252,8 @@ verdetto.
   pesato tutto quello che gatto non è. Il paesaggio non lo chiede mai: per
   sapere quale di due risposte torna di più bastano due altezze messe a
   confronto. Quel conto di tutto il resto del mondo, che nessuno riesce a
-  fare, è l'ostacolo con cui si scontra metà del capitolo.
+  fare, si chiama **funzione di partizione**, ed è l'ostacolo contro cui si
+  scontra metà del capitolo.
 - Il **premio Nobel per la fisica del 2024** a Hopfield e Hinton ha ricordato
   a tutti che questo modo di ragionare non se n'è mai andato: i generatori di
   immagini del capitolo precedente ripuliscono il rumore seguendo la pendenza

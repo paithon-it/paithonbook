@@ -1,15 +1,17 @@
 # I dati come cittadini di prima classe
 
-Apri il registro delle modifiche (la cronologia di `git`) di un sistema di
-rilevamento frodi in produzione. Il codice del modello è quasi fermo: qualche
-riga nuova al mese, ciascuna depositata con la sua data e il suo perché (un
-*commit*), una libreria aggiornata, un iperparametro ritoccato. Poi
+Apri il registro delle modifiche di un sistema che riconosce le frodi con la
+carta di credito, mentre è in funzione davanti a clienti veri. Il registro è
+quello di `git`, il programma con cui il mondo del software tiene la propria
+cronologia: ogni modifica ci finisce dentro con la sua data e il suo perché (si
+chiama *commit*). E il codice del modello è quasi fermo: qualche riga nuova al
+mese, una libreria aggiornata, una manopola ritoccata. Poi
 guarda i dati che quel codice ingoia: milioni di transazioni ogni giorno, mai
 due uguali, con nuovi negozi, nuovi importi, nuove truffe che ieri non
-esistevano. Il codice è il fiume; i dati sono la piena. Nel software
-tradizionale l'oggetto che cambia (e che quindi si versiona, si testa, si
-sorveglia) è il codice. Nel machine learning il codice è spesso la parte
-*stabile*, e la parte viva, quella che si muove sotto i piedi, sono i dati.
+esistevano. Il codice è la strada; i dati sono il traffico che ci passa sopra.
+Nel software tradizionale la cosa che cambia (e che quindi si conserva versione
+per versione, si controlla, si sorveglia) è la strada. Nel machine learning la
+strada sta quasi ferma, e a muoversi sotto i piedi è il traffico.
 
 Da questa asimmetria nasce un'idea che negli ultimi anni ha un nome:
 **data-centric AI**. La provocazione, resa popolare da Andrew Ng intorno al
@@ -30,11 +32,12 @@ grande e trascurato dei tre, e nel sistema di tubature che lo trasporta
 
 Se non sai *quali* dati hanno prodotto un modello, non puoi riprodurlo, non
 puoi capire perché una predizione è quella che è, e non puoi tornare indietro
-quando un nuovo addestramento peggiora le cose. Il codice lo versiona `git` da
-decenni; per i dati serve qualcosa di analogo, ma `git` da solo non basta: è
-pensato per file di testo piccoli e confrontabili riga per riga, mentre un
-dataset è grande, binario e opaco. Metterci dentro dieci gigabyte di immagini
-lo gonfia fino a renderlo inservibile.
+quando un nuovo addestramento peggiora le cose. Del codice `git` conserva ogni
+versione da decenni, ma sui dati, per il motivo già visto nella pagina
+d'apertura, non funziona: una raccolta di dati (un **dataset**) è enorme e non è
+fatta di righe da confrontare, e metterci dentro dieci gigabyte di immagini
+gonfia il progetto fino a renderlo inservibile. Per i dati serve quindi qualcosa
+di diverso, che faccia lo stesso mestiere.
 
 `````{tab} Elementare
 
@@ -88,19 +91,23 @@ predizione?») risalendo la catena fino al singolo dato grezzo.
 ## Le pipeline di dati
 
 Un dataset pronto per l'addestramento non nasce così: è il prodotto finale di
-una catena di trasformazioni. Si **estrae** il dato grezzo da una o più
-sorgenti (un database, un flusso di eventi, dei file); si **pulisce** (valori
-mancanti, duplicati, formati incoerenti); si costruiscono le **feature**, cioè
-le variabili in cui il modello «vede» il mondo; e solo alla fine si
-**addestra**. Una catena del genere si chiama **pipeline**, che alla lettera è
-una conduttura: il dato entra da un capo, attraversa una stazione dopo
-l'altra e ne esce pronto. Ognuno di questi passaggi usa gli strumenti di
-manipolazione dei dati del capitolo su Python, i filtri e i raggruppamenti di
-Pandas e la vettorizzazione di NumPy. Ma il salto di qualità non è tecnico, è
-organizzativo, e chiede due cose alla catena. Che sia **riproducibile**:
-rieseguendola sugli stessi dati grezzi si riottiene lo stesso dataset. E che
-sia **orchestrata**: i passaggi si succedono in un ordine dichiarato, non a
-mano in un notebook.
+una catena di trasformazioni. Si **estrae** il dato grezzo, cioè come arriva
+dal mondo, da una o più sorgenti (un archivio, un flusso di eventi, dei file);
+si **pulisce**, buttando via i doppioni e sistemando le caselle vuote e i
+formati incoerenti; si costruiscono le **feature**, cioè le poche grandezze che
+si mettono davanti al modello al posto del dato grezzo («la spesa media
+dell'ultimo mese», «quante volte ha comprato di notte»); e solo alla fine si
+**addestra**. È la *pipeline* annunciata nella pagina d'apertura: il dato entra
+da un capo, attraversa una stazione dopo l'altra e ne esce pronto. Ognuno di
+questi passaggi si scrive con gli attrezzi per maneggiare tabelle già visti nel
+capitolo su Python.
+
+Il salto di qualità, però, non è tecnico: è organizzativo, e chiede due cose
+alla catena. Che sia **riproducibile**, cioè che rilanciandola sugli stessi
+dati grezzi si riottenga lo stesso identico dataset. E che sia **orchestrata**,
+cioè che l'ordine dei passaggi sia scritto una volta in un file, e sia un
+programma a farli partire in quell'ordine, invece di una persona che li lancia
+a mano in un notebook e ogni tanto ne salta uno.
 
 ```{figure} ../figures/feature-engineering.svg
 :name: fig-feature-engineering
@@ -111,11 +118,13 @@ Il modello non vede i dati: vede le feature. Tutto ciò che si decide nel
 blocco di mezzo è il mondo dentro cui il modello dovrà cavarsela.
 ```
 
-La freccia a senso unico di {numref}`fig-feature-engineering` è il motivo per
-cui questa catena va versionata come si versiona il codice. Se cambia il modo
-di costruire una feature, il modello addestrato prima e quello addestrato dopo
-non stanno più guardando la stessa cosa, e nessun confronto fra i due punteggi
-significa niente.
+La freccia a senso unico di {numref}`fig-feature-engineering` dice una cosa
+sola: quello che il modello sa del mondo passa tutto per il blocco di mezzo, e
+niente lo scavalca. Ne segue che quel blocco va conservato versione per
+versione esattamente come il programma. Se cambia il modo di costruire una
+feature, il modello addestrato prima e quello addestrato dopo non stanno più
+guardando la stessa cosa, e confrontare i loro voti è come confrontare i tempi
+di due corse su piste di lunghezza diversa.
 
 `````{tab} Elementare
 
@@ -160,8 +169,12 @@ affidabile.
 ### In che formato stanno i dati, e perché conta
 
 C'è una decisione che si prende all'inizio, che sembra tecnica e non lo è: come
-i dati stanno scritti su disco fra uno stadio e il successivo. Il CSV è la
-scelta di default di tutti, ed è quasi sempre quella sbagliata.
+i dati stanno scritti su disco fra uno stadio e il successivo. Quasi tutti,
+senza pensarci, scelgono il **CSV**, che è il modo più semplice di scrivere una
+tabella in un file di testo: una riga del file per ogni riga della tabella, e
+dentro ogni riga i valori separati da una virgola. È quello che esce da un
+foglio di calcolo quando gli si chiede di esportare. Ed è quasi sempre la
+scelta sbagliata.
 
 `````{tab} Elementare
 
@@ -174,8 +187,12 @@ tutte le età, poi un elenco di tutte le città, e così via.
 Quale conviene dipende da cosa fai. E quello che si fa per addestrare un
 modello è sempre lo stesso: leggere **tre colonne su ottanta**, per tutti. Con
 l'archivio per riga devi attraversare l'intero milione di schede e scartare il
-$96\%$ di ciò che leggi (77 voci buttate ogni 80). Con quello per colonna
-prendi solo i tre elenchi che ti servono e il resto non lo tocchi nemmeno.
+$96\%$ di ciò che leggi (77 voci buttate ogni 80). Non è pigrizia di chi ha
+scritto il programma: un disco non consegna un valore alla volta, consegna
+blocchi interi, e le tre voci che ti servono sono sparse dentro un milione di
+schede, una qui e una là. Prenderle senza prendere anche il resto è
+impossibile. Con l'archivio per colonna, invece, i tre elenchi che ti servono
+stanno già tutti insieme: li prendi e il resto non lo tocchi nemmeno.
 
 C'è un secondo guadagno, meno ovvio e spesso più grosso: **valori simili stanno
 vicini**. In una colonna di città ci sono migliaia di «Milano» di fila, in una
@@ -192,11 +209,17 @@ Poi c'è **Arrow**, che risolve un problema diverso: non come i dati stanno sul
 disco, ma come stanno **in memoria**. Sono due posti diversi dentro un
 computer: il disco è l'armadio, dove le cose restano anche a macchina spenta;
 la memoria è il tavolo su cui le tiri fuori per lavorarci, molto più veloce e
-molto più piccolo. Se due programmi diversi si accordano
-sulla stessa disposizione in memoria, passarsi una tabella non costa nulla:
-non c'è niente da convertire, si punta allo stesso pezzo di memoria. È il
-motivo per cui compare ovunque, sotto strumenti che apparentemente non hanno
-niente in comune.
+molto più piccolo.
+
+Il guaio è che ogni programma, sul suo tavolo, dispone i dati a modo proprio.
+Quando due programmi si passano una tabella, il primo deve quindi riscriverla
+nella forma che il secondo capisce, e su una tabella grande quella traduzione
+costa più del lavoro vero. Arrow è l'accordo che toglie di mezzo il problema:
+se tutti e due dispongono i dati alla stessa maniera, non c'è niente da
+riscrivere. Il secondo programma guarda direttamente lo stesso pezzo di tavolo
+del primo, e il passaggio non costa nulla. È il motivo per cui questo accordo,
+che nessuno nomina mai, sta sotto strumenti che sembrano non avere niente in
+comune, compresi quelli con cui si maneggiano le tabelle in Python.
 
 `````
 
@@ -216,19 +239,25 @@ per contenuto, il che abilita codifiche specializzate (dizionario per le
 categorie a bassa cardinalità, run-length per i valori ripetuti, delta per i
 timestamp) prima ancora della compressione generica. Rispetto al CSV
 equivalente il guadagno è di **qualche volta**, e a decidere quante è proprio
-la prima di quelle codifiche. Su tabelle da duecentomila righe, misurate qui,
-sei colonne di categorie con sei valori distinti stanno in un file **molte
-volte** più piccolo, perché il dizionario sostituisce ogni stringa con un
-indice: quante volte lo decide la lunghezza delle stringhe, e con nomi di città
-il rapporto arriva a diciannove. Sei colonne di numeri casuali con la virgola
-scendono a **poco più di due volte**, perché lì non c'è niente da riconoscere,
-e una tabella mista come quelle su cui si addestra di solito sta **attorno al
-tre**. Le colonne ordinate, che l'intuizione metterebbe in alto, non ci vanno,
-e la ragione è istruttiva: la codifica che le comprimerebbe davvero (memorizzare
-le differenze fra un valore e il precedente) **non è quella che le librerie
-scelgono da sole**. Chiedendola esplicitamente il guadagno raddoppia; lasciando
-fare al default resta modesto, perché il dizionario, su valori quasi tutti
-diversi, non ha niente da riusare.
+la prima di quelle codifiche. I numeri che seguono sono misurati qui, su
+tabelle da duecentomila righe, confrontando il `.csv` e il `.parquet` scritti
+da Pandas con le impostazioni di serie. Sei colonne di categorie con sei valori
+distinti (nomi di città) stanno in un file **diciotto volte** più piccolo,
+perché il dizionario sostituisce ogni stringa con un indice, e quante volte lo
+decide la lunghezza delle stringhe. Sei colonne di numeri casuali con la
+virgola scendono a **poco più di due volte**, perché lì non c'è niente da
+riconoscere, e una tabella mista come quelle su cui si addestra di solito sta
+fra il due e il tre a seconda di quante colonne siano categoriche.
+
+Le colonne ordinate, che l'intuizione metterebbe in alto, non ci vanno, e la
+ragione è istruttiva: la codifica che le comprimerebbe davvero (memorizzare le
+differenze fra un valore e il precedente, la *delta encoding*) **non è quella
+che la libreria sceglie da sola**. Su una colonna di istanti che crescono di
+pochi secondi alla volta, il default si ferma a **due volte**, perché il
+dizionario, su valori quasi tutti diversi, non ha niente da riusare; chiedendo
+esplicitamente la delta si arriva a **quasi quaranta**. È il caso da tenere a
+mente ogni volta che si dichiara che cosa fa uno strumento «di serie»: qui
+l'impostazione di serie lascia sul tavolo un fattore venti.
 
 **Predicate pushdown**: Parquet memorizza per ogni gruppo di righe le
 statistiche di ciascuna colonna (minimo, massimo, conteggio dei nulli), quindi
@@ -264,13 +293,15 @@ linguaggio, Arrow.
 
 C'è un punto della pipeline che merita un discorso a sé: le **feature**. Una
 stessa feature («spesa media dell'utente negli ultimi 30 giorni», «numero di
-transazioni nell'ultima ora») serve a più modelli e, soprattutto, va calcolata
-in *due momenti diversi*: durante l'addestramento, su masse di dati storici, e
-durante il servizio, su un singolo caso che arriva ora. Se i due calcoli
-divergono anche di poco, il modello riceve in produzione qualcosa di diverso
-da ciò su cui ha imparato. Il **feature store** è l'infrastruttura che risolve
-questo problema centralizzando la definizione e il calcolo delle feature
-{cite}`huyen2022designing`.
+transazioni nell'ultima ora») serve a più modelli. E soprattutto va calcolata
+in *due momenti diversi*: una volta mentre il modello impara, su montagne di
+dati vecchi, e un'altra mentre il modello risponde, su un singolo caso appena
+arrivato. Se i due calcoli divergono anche di poco, il modello in funzione
+riceve qualcosa di diverso da ciò su cui ha imparato.
+
+Il rimedio è un magazzino unico delle feature, dove ciascuna è definita una
+volta sola e da cui la prendono tutti e due, chi addestra e chi risponde. Si
+chiama **feature store** {cite}`huyen2022designing`.
 
 `````{tab} Elementare
 
@@ -313,15 +344,16 @@ store esiste come componente dedicato.
 
 ## Training–serving skew
 
-Arriviamo così al bug più classico e più costoso di tutta la disciplina,
-quello che il feature store esiste per prevenire: il **training–serving
-skew**, alla lettera «lo storto fra addestramento e servizio» (*skew* è la
-sbilenchezza, lo scostamento fra due cose che dovrebbero coincidere). Si
-verifica quando una feature è calcolata in un modo durante
-l'addestramento e in un modo *anche solo leggermente diverso* durante il
-servizio. Il modello, tarato sui numeri del training, riceve in produzione
-numeri che vogliono dire un'altra cosa, e sbaglia in silenzio, senza che
-nessuna eccezione venga sollevata.
+Arriviamo così al guasto più classico e più costoso di tutta la disciplina,
+quello che il feature store esiste per prevenire. Succede quando una feature
+viene calcolata in un modo mentre il modello impara e in un modo *anche solo
+leggermente diverso* mentre risponde. Il modello, tarato sui numeri del primo
+calcolo, si trova davanti numeri che vogliono dire un'altra cosa, e sbaglia in
+silenzio: nessun messaggio d'errore, nessun programma che si ferma.
+
+Il nome inglese è **training–serving skew**, cioè «lo storto fra addestramento
+e servizio»: *skew* è la sbilenchezza, lo scostamento fra due cose che
+dovrebbero coincidere.
 
 `````{tab} Elementare
 
@@ -412,13 +444,15 @@ scarto massimo sulle predizioni: 0.793
 ```
 
 Lo stesso identico modello, sugli stessi identici dati, dà due risposte
-opposte. La pipeline corretta riconosce il lotto come sospetto (probabilità
-media di frode $0{,}97$); quella bacata, ricentrando ogni batch su sé stesso,
-cancella l'anomalia e lo giudica quasi innocuo ($0{,}45$), con differenze fino
-a $0{,}79$ su singole transazioni. Nessun errore, nessun avviso: solo
-predizioni sbagliate. Ecco perché la definizione di una feature deve vivere in
-*un posto solo*, condiviso tra addestramento e servizio: è il compito del
-feature store.
+opposte. La pipeline corretta riconosce il lotto come sospetto: probabilità
+media di frode $0{,}97$, cioè un allarme netto. Quella bacata, ricentrando ogni
+lotto su sé stesso, cancella l'anomalia e scende a $0{,}45$, che non vuol dire
+«innocuo»: vuol dire **testa o croce**, ed è anche peggio, perché un sistema
+antifrode tarato per intervenire sopra una certa soglia adesso lascia passare
+tutto senza fiatare. Su singole transazioni la differenza fra le due risposte
+arriva a $0{,}79$. Nessun errore, nessun avviso: solo predizioni sbagliate.
+Ecco perché la definizione di una feature deve vivere in *un posto solo*,
+condiviso tra addestramento e servizio: è il compito del feature store.
 
 ## Validare i dati in ingresso
 
@@ -443,8 +477,10 @@ attese, e del tipo giusto (un'età è un numero, non la parola «trenta»)? Il
 negativo)? I **valori mancanti**: quante caselle sono vuote, e possiamo
 permettercelo? Le **distribuzioni**: i numeri di oggi somigliano a quelli di
 ieri, come valore tipico e come quanto sono sparpagliati, e le categorie
-arrivano nelle stesse proporzioni? Le prime tre si controllano su ogni
-singolo record; l'ultima solo guardando tanti record insieme.
+arrivano nelle stesse proporzioni? Le prime tre si controllano su ogni singola
+scheda (in gergo un *record*, ed è la parola che userà il codice qui sotto);
+l'ultima solo guardando tante schede insieme, perché una scheda da sola non ha
+una media.
 
 `````
 
@@ -527,24 +563,30 @@ record 3: citta: valore mancante
 record 4: eta: tipo str, atteso int
 ```
 
-Poche righe, ma è la porta blindata del sistema: ogni record che entra viene
-promosso o respinto secondo regole esplicite, e i respinti finiscono in un
-registro invece che, silenziosamente, dentro il modello. In produzione questo
-schema si arricchisce (soglie sulla percentuale di `NaN` tollerata, controlli
-di coerenza tra campi, l'aggancio ai test distribuzionali) ma l'ossatura è
-questa: dichiarare cosa ci si aspetta dai dati, e verificarlo prima di
-fidarsene. Trattare i dati da cittadini di prima classe significa, alla fine,
-esattamente questo: dargli un contratto, e farlo rispettare.
+Poche righe, ma è la porta blindata del sistema: ogni scheda che entra viene
+promossa o respinta secondo regole esplicite, e le respinte finiscono in un
+registro invece che, silenziosamente, dentro il modello.
 
-Un'ultima avvertenza, perché riguarda proprio il controllo che la funzione
-promette di fare. In Python `bool` è un sottotipo di `int`, quindi
-`isinstance(True, int)` è vero e un campo `eta` valorizzato `True` passa sia il
-controllo di tipo sia quello di intervallo ($0 \le \text{True} \le 120$). È
-esattamente il caso che si presenta quando una colonna binaria viene letta come
-booleana da un lettore e come intera da un altro, cioè la classe di bug
-silenziosi che il CSV senza schema produce a getto continuo. Un controllo
-severo confronta il tipo esatto (`type(valore) is regole["tipo"]`) invece di
-accettarne i sottotipi.
+E proprio su questo guardiano va detta una cosa, perché il guardiano ha una
+falla. In Python il vero e il falso sono, sotto sotto, dei numeri: vero vale
+uno e falso vale zero. Ne segue che un'età scritta «vero» passa indenne da tutti
+e due i controlli, quello sul tipo (perché vero *è* un numero) e quello
+sull'intervallo (perché uno sta fra zero e centoventi). Il guardiano dice che va
+tutto bene, e non va bene niente.
+
+Non è un caso di scuola: è quello che capita quando una colonna di sì e no viene
+letta come vero-e-falso da un programma e come zero-e-uno da un altro, cioè
+proprio la classe di guasti silenziosi che un CSV senza tipi dichiarati produce
+a getto continuo. La cura è chiedere il tipo *esatto*
+(`type(valore) is regole["tipo"]`) invece di accontentarsi di uno che gli
+somiglia.
+
+In un impianto vero, poi, questo schema si arricchisce (soglie su quante
+caselle vuote si tollerano, controlli di coerenza fra un campo e l'altro,
+l'aggancio ai controlli sulle distribuzioni) ma l'ossatura resta questa:
+dichiarare cosa ci si aspetta dai dati, e verificarlo prima di fidarsene.
+Trattare i dati da cittadini di prima classe significa, alla fine, esattamente
+questo: dargli un contratto, e farlo rispettare.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
@@ -596,8 +638,9 @@ accettarne i sottotipi.
 - Il **formato** in cui i dati stanno fra uno stadio e l'altro non è un
   dettaglio: un formato **colonnare** (**Parquet**) legge solo le colonne che
   servono, comprime meglio perché i valori simili sono vicini (misurato:
-  quasi venti volte su colonne categoriche, poco più di due su float casuali,
-  attorno al tre su una tabella mista), salta interi blocchi grazie alle
+  diciotto volte su colonne categoriche, poco più di due su float casuali, fra
+  due e tre su una tabella mista, e due sole su istanti ordinati finché non si
+  chiede la *delta encoding*, che porta a quaranta), salta interi blocchi grazie alle
   statistiche, e ha uno **schema con i tipi** che al CSV manca. **Arrow** fa la
   stessa cosa **in memoria**, e serve a passarsi una tabella fra processi o
   linguaggi senza convertirla. CSV per un umano, Parquet per tutto il resto.

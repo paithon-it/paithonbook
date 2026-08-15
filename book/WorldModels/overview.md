@@ -2,10 +2,12 @@
 
 Un gatto di casa ha molto più senso comune e comprensione del mondo di
 qualunque modello di linguaggio. A ripeterlo da anni, con poche variazioni, in
-conferenze e interviste, non è uno scettico qualsiasi ma Yann LeCun (premio
-Turing 2018, uno dei padri del deep learning). Mentre mezzo mondo si stupiva di
-ciò che i grandi modelli di linguaggio (gli **LLM**, *Large Language Model*)
-sanno scrivere, uno dei loro nonni intellettuali indicava un gatto. Provocazione calcolata, certo. Ma
+conferenze e interviste, non è uno scettico qualsiasi ma Yann LeCun, premio
+Turing 2018 (il riconoscimento che in informatica vale quanto un Nobel) e uno
+dei padri del deep learning. Mentre mezzo mondo si stupiva di ciò che sanno
+scrivere i programmi che compongono un testo indovinando una parola dopo
+l'altra, i grandi modelli di linguaggio (gli **LLM**, *Large Language Model*),
+uno dei loro nonni intellettuali indicava un gatto. Provocazione calcolata, certo. Ma
 proviamo a prenderla sul serio: che cosa sa fare, un gatto? Non risolve
 integrali e non scrive sonetti; però salta sul mobile calibrando la
 traiettoria al primo colpo, prevede da che parte sbucherà il gomitolo rotolato
@@ -16,8 +18,10 @@ si misura da quanto a lungo guarda), quando un giocattolo nascosto da uno
 schermo, una volta abbassato lo schermo, non c'è più: ha già capito che gli
 oggetti non svaniscono. Entro il primo anno si stupisce se un oggetto resta
 sospeso a mezz'aria invece di cadere. Nessuno gli ha spiegato la permanenza
-degli oggetti o la gravità; nessuno gli ha mostrato milioni di esempi
-etichettati. Ha guardato, e guardando si è costruito dentro qualcosa che gli
+degli oggetti o la gravità; nessuno gli ha mostrato milioni di esempi con la
+risposta giusta scritta accanto (in gergo: esempi *etichettati*, come le foto
+con sotto il nome dell'animale che ritraggono). Ha guardato, e guardando si è
+costruito dentro qualcosa che gli
 permette di *aspettarsi* il mondo: un modello. Questo capitolo racconta il
 tentativo di dare alle macchine qualcosa di simile (un **world model**, un
 modello del mondo) e il dibattito, tuttora aperto, su quanto sia davvero il
@@ -37,6 +41,18 @@ cognitive, ed è ancora oggi la definizione più limpida di world model: un
 **simulatore interno** che serve a **prevedere** («cosa succede se lascio il
 bicchiere?») e quindi a **pianificare**, senza dover provare tutto per
 davvero.
+
+Su quella parola, «simulatore», conviene intendersi subito, perché il capitolo
+la userà spesso e i mestieri non sono lo stesso. Il simulatore di volo su cui
+si esercitano i piloti l'hanno scritto degli ingegneri che le equazioni
+dell'aria le conoscevano già: la fisica, lì dentro, ce l'ha messa qualcuno, una
+regola alla volta. Un modello del mondo no: nessuno gliel'ha scritto, se lo
+costruisce guardando, e resta per sempre una copia approssimata. Quando qui un
+world model viene chiamato «simulatore» si intende questo, un simulatore
+*imparato*: serve alla stessa cosa (esercitarsi senza conseguenze), ma nessuno
+ne ha scritto le regole. E siccome le ha indovinate da sé, può sbagliare in
+modi che un simulatore scritto a mano non sbaglierebbe. Mezzo capitolo parla
+proprio di quegli sbagli.
 
 `````{tab} Elementare
 
@@ -98,13 +114,14 @@ lasciar fuori) è una delle domande centrali del capitolo.
 
 ## Immaginare costa meno che provare
 
-La prima ragione per volere un world model è un conto della spesa, e lo
-abbiamo già pagato nel capitolo sul Deep Reinforcement Learning: il DQN
-(*Deep Q-Network*, la rete che impara direttamente quanto vale ogni mossa) ha
-raggiunto il livello umano sui giochi Atari consumando decine di milioni di
-fotogrammi per titolo (settimane di gioco ininterrotto {cite}`mnih2015human`),
-dove a una persona bastano pochi minuti per capire *Breakout*. Il vocabolario
-tecnico per questa differenza esiste da decenni
+La prima ragione per volere un world model è il conto della spesa, e il
+capitolo sul Deep Reinforcement Learning lo ha già pagato. Là il **DQN**
+(*Deep Q-Network*, la rete che impara da sé quanto vale ogni mossa) arrivava al
+livello di un giocatore umano sui vecchi videogiochi Atari. Ci arrivava però
+dopo decine di milioni di fotogrammi per titolo, cioè settimane di gioco senza
+mai staccare {cite}`mnih2015human`. A una persona, per capire *Breakout* (la
+pallina che rimbalza su una racchetta e sbriciola un muro di mattoni), bastano
+pochi minuti. Il vocabolario tecnico per questa differenza esiste da decenni
 {cite}`sutton2018reinforcement`: gli algoritmi **model-free** provano tutto
 per davvero, quelli **model-based** provano nella propria immaginazione.
 
@@ -115,8 +132,9 @@ emergenze (un motore in fiamme, una raffica in atterraggio) su un aereo vero:
 si usa il simulatore, dove un errore non costa niente e la stessa situazione
 si può ripetere cento volte in un pomeriggio. Il DQN di quel capitolo è un
 allievo senza simulatore: ogni cosa che impara la impara schiantandosi per
-davvero, e per questo gli servono decine di milioni di fotogrammi, cioè
-settimane di gioco senza mai staccare. Tu no: dopo qualche pallina persa a
+davvero, e per questo gli servono quelle decine di milioni di fotogrammi:
+partite su partite, una dietro l'altra, per settimane. Tu no: dopo qualche
+pallina persa a
 *Breakout* hai già in testa un piccolo *Breakout* tascabile
 («se la racchetta è qui e la pallina scende lì, la manco») e le mosse le
 ripassi lì dentro, gratis. Chi possiede un simulatore interno spreme da ogni
@@ -157,22 +175,23 @@ repertorio di previsioni: le cose non sostenute cadono, ciò che è nascosto
 continua a esistere, i liquidi si versano, gli oggetti spinti si muovono. È la
 *fisica intuitiva* che il neonato dell'incipit costruisce guardando, senza
 etichette: il segnale di apprendimento è la sorpresa, lo scarto tra ciò che il
-suo modello prevedeva e ciò che accade. Tradotto nel lessico di questo libro:
-è apprendimento **auto-supervisionato**, dove la risposta giusta su cui
-correggersi (il **bersaglio**, in gergo: quel che il modello avrebbe dovuto
-prevedere) non la fornisce un annotatore umano ma il futuro stesso. Se il senso
-comune è fatto così,
-inseguirlo significa costruire macchine che imparano a prevedere il mondo: non
-a memorizzarlo.
+suo modello prevedeva e ciò che accade. Nel lessico di questo libro quella è
+una lezione **auto-supervisionata**: la risposta giusta su cui correggersi (in
+gergo il **bersaglio**) non la scrive nessuno, è il futuro stesso che arriva. Il
+maestro non è un annotatore umano, è il mondo un istante dopo. Se il senso
+comune è fatto così, inseguirlo significa costruire macchine che imparano a
+prevedere il mondo, non a memorizzarlo.
 
 ## La scommessa di LeCun (e chi non è d'accordo)
 
-Nel 2022 LeCun deposita su OpenReview un documento di posizione di una
-sessantina di pagine, *A Path Towards Autonomous Machine Intelligence*
-{cite}`lecun2022path`. Non è un articolo di risultati: è un programma di
-ricerca. Al centro c'è un'architettura modulare per agenti autonomi il cui
-cuore è precisamente un world model appreso in modo auto-supervisionato,
-affiancato da percezione, memoria e un modulo che pianifica simulando. La tesi
+Nel 2022 LeCun mette online, aperto ai commenti di chiunque, un documento di
+una sessantina di pagine: *A Path Towards Autonomous Machine Intelligence*
+{cite}`lecun2022path`. Non è un articolo di risultati, è un programma di
+ricerca, cioè il disegno di come andrebbe costruita una macchina che si
+arrangia da sola nel mondo. Il disegno è fatto di pezzi che si passano il
+lavoro: uno guarda, uno ricorda, uno propone la mossa, uno pianifica provando
+le alternative. Al centro c'è un modello del mondo, imparato guardando e senza
+etichette. La tesi
 ha una faccia costruttiva (come *dovrebbe* essere fatta un'intelligenza
 artificiale che capisce il mondo) e una polemica: i modelli di linguaggio
 autoregressivi, addestrati solo a indovinare la parola successiva, per quanto
@@ -229,32 +248,42 @@ JEPA, nel linguaggio del capitolo precedente.
 
 ## Come è organizzato il capitolo
 
-Tre tappe. Si parte dai **mondi in miniatura**: nel 2018 David Ha e Jürgen
-Schmidhuber addestrano un agente che impara a giocare a un vecchio sparatutto
-(schivare palle di fuoco in *Doom*) esercitandosi *dentro il proprio sogno*. Il
-sogno è fatto da una rete **ricorrente**, cioè una rete che legge una cosa alla
-volta portandosi dietro un riassunto di quel che ha già visto: le basta quel
-riassunto per raccontarsi come prosegue il gioco, e la strategia dell'agente
-(la sua *policy*, il modo in cui sceglie la mossa) si allena lì dentro senza
-toccare il gioco vero. Quella linea di ricerca arriva ai **Dreamer** di Danijar
-Hafner e colleghi (2020–2023), che imparano quasi soltanto immaginando, fino a
-ottenere (primo algoritmo al mondo) un diamante in *Minecraft* senza
-dimostrazioni umane. Seconda tappa, la **via di LeCun**: le architetture
-**JEPA** (*Joint-Embedding Predictive Architecture*, cioè architettura che
-predice fra due riassunti: una rete riassume il presente, un'altra riassume il
-futuro, e la previsione avviene fra i due riassunti). Ce ne sono due versioni,
-I-JEPA per le immagini e V-JEPA per i video, e tutte e due prevedono nello
+Tre tappe.
+
+La prima sono i **mondi in miniatura**. Nel 2018 David Ha e Jürgen Schmidhuber
+addestrano un **agente**, cioè un programma che guarda e sceglie le mosse, a
+giocare a un vecchio sparatutto: schivare palle di fuoco in *Doom*. E lo
+addestrano *dentro il suo stesso sogno*, che è il nome che gli autori danno
+alla simulazione del gioco che il programma si è costruito da sé. A raccontargli
+come prosegue la partita è una rete **ricorrente**, cioè una rete che legge una
+cosa alla volta portandosi dietro un riassunto di quel che ha già visto: le
+basta quel riassunto, e la strategia dell'agente (in gergo la sua *policy*) si
+allena lì dentro senza mai toccare il gioco vero.
+Quella linea di ricerca arriva ai **Dreamer** di Danijar Hafner e colleghi
+(2020–2023), che imparano quasi soltanto immaginando, fino a ottenere (primo
+algoritmo al mondo) un diamante in *Minecraft* senza dimostrazioni umane.
+
+Seconda tappa, la **via di LeCun**. Invece di immaginare il mondo puntino per
+puntino, lo immagina per idee: prevede a grandi linee che cosa ci sarà, non
+ogni singolo dettaglio dello schermo. Le architetture che lo fanno si chiamano
+**JEPA** (*Joint-Embedding Predictive Architecture*, «architettura che predice
+fra due riassunti»): una rete riassume il presente, un'altra riassume il
+futuro, e la previsione avviene fra i due riassunti. Ce ne sono due versioni,
+I-JEPA per le immagini e V-JEPA per i video, e tutte e due lavorano nello
 **spazio delle rappresentazioni**, che è poi lo «spazio delle idee» del titolo
-di quella sezione: il posto in cui una scena è già diventata un riassunto
-e non è più un mosaico di puntini colorati. Qui il capitolo precedente torna
-utile per intero, perché una JEPA è un modello a energia: la stessa idea del
-buttafuori che assegna un voto di compatibilità, e gli stessi due problemi, il
-collasso e i modi di evitarlo. Ultima tappa, i
-**simulatori generativi di video** (Sora di OpenAI, presentato nel 2024 come
-passo verso «simulatori di mondo», e Genie di Google DeepMind, che genera
-ambienti interattivi giocabili) e la domanda con cui il capitolo chiude,
-onestamente aperta: generare video plausibili significa aver capito la fisica,
-o soltanto saperla imitare?
+di quella sezione: il posto in cui una scena è già diventata un riassunto e non
+è più un mosaico di puntini colorati. Qui il capitolo precedente torna utile
+per intero, perché una JEPA è un modello a energia: la stessa idea del
+buttafuori che assegna un voto di compatibilità, e lo stesso pericolo, che le
+due reti si mettano d'accordo per dare a ogni cosa lo stesso riassunto (è il
+**collasso**, e lo vedremo da vicino).
+
+Ultima tappa, i **simulatori generativi di video** (Sora di OpenAI, presentato
+nel 2024 come passo verso «simulatori di mondo», e Genie di Google DeepMind,
+che genera ambienti interattivi giocabili) e la domanda con cui il capitolo
+chiude, onestamente aperta: generare video plausibili significa aver capito la
+fisica, o soltanto saperla imitare? È anche la sezione in cui si racconta per
+intero l'esperimento sul gioco da tavolo promesso poco fa.
 
 `````{tab} Elementare
 

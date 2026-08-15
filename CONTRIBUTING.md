@@ -90,7 +90,10 @@ In pratica, scrivendo una pagina:
   Il framework di deep learning del libro è **PyTorch**: niente
   Keras/TensorFlow, che possono comparire solo come citazione storica o
   confronto. Se una pagina ha un notebook in `notebooks/`, il codice viene
-  eseguito dalla CI: un blocco che non gira fa fallire la verifica;
+  eseguito dalla CI: un blocco che non gira fa fallire la verifica. E se il
+  testo **commenta** un numero, quel numero lo deve **stampare il codice**: un
+  valore scritto a mano accanto a un blocco che non lo produce si scolla al
+  primo ritocco, e chi legge esegue e non lo trova;
 - **figure**: solo SVG geometriche in palette (terracotta `#B5532C`, teal
   `#2D5A5C`, ocra `#C9A961`, warm-black `#1A1A1A`, cream `#F8F5EE`), leggibili
   anche in tema scuro. Niente immagini generate da AI, niente stock, niente
@@ -150,6 +153,46 @@ Una cosa che il libro **non** ospita: la cronaca. Classifiche, benchmark,
 prezzi, "questo modello supera quell'altro" invecchiano dentro un testo che si
 legge per anni. Qui si spiega come funziona un meccanismo; le notizie stanno su
 [paithon.it](https://paithon.it).
+
+## La pagina deve leggersi di fila
+
+La correttezza è la soglia d'ingresso, non il traguardo: una pagina può essere
+tutta vera e restare illeggibile. Il traguardo è che uno se la legga di fila,
+senza fermarsi. Il metro è un buon articolo divulgativo, non una dispensa
+universitaria.
+
+Queste cinque cose sono **difetti**, non questioni di gusto, e una revisione
+che ha riletto tutto il libro le ha trovate ovunque:
+
+- **il periodo lungo con tre subordinate**, che regge la dimostrazione e uccide
+  la lettura. Una idea per frase: se una frase ha due «che» e un «il quale»,
+  sono due frasi;
+- **il termine tecnico prima della cosa che nomina.** Prima si dice cosa fa,
+  poi come si chiama: «una rete che passa messaggi ai vicini, il *message
+  passing*», non il contrario;
+- **l'attacco di sezione più difficile del resto della pagina.** È il difetto
+  numero uno del libro: chi legge il livello Elementare non ha ancora difese, e
+  proprio lì gli si parla come al Superiore. Stessa cosa per le didascalie
+  delle figure e i riquadri «Da ricordare», che spesso poggiano su un termine
+  definito **solo** nella tab Superiore, cioè in un posto che quel lettore non
+  aprirà mai;
+- **la parentetica che spezza il respiro** dove il lettore stava prendendo il
+  ritmo. Se l'inciso è lungo, è una frase dopo, o una nota;
+- **le citazioni infilate a metà periodo**: `{cite}` a fine frase, non fra
+  soggetto e verbo.
+
+E la soglia non è la stessa dappertutto: nei capitoli d'apertura
+(Introduzione, Python, Matematica, Machine Learning, Reti neurali, PyTorch,
+Deep Learning) arriva chi non ha basi, ed è lì che si decide se continuerà a
+leggere.
+
+**Se correggi, rileggi.** Una correzione ne introduce di nuove più spesso di
+quanto sembri: rileggendo i capitoli corretti si sono trovati guasti creati
+dalla correzione stessa in sette casi su diciotto. Due accortezze che costano
+poco: cerca la tua correzione in **tutte e due le tab** (il libro dice ogni
+cosa due volte, e riparare solo il Superiore lascia l'errore dove fa più
+danno), e se rendi *precisa* una frase vaga apri prima la fonte, perché una
+frase precisa e sbagliata è peggio di una vaga e innocua.
 
 ## Vedere le proprie modifiche
 

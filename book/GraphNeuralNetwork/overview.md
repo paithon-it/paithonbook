@@ -22,13 +22,14 @@ immaginato. Nel 2020, un gruppo del MIT guidato da Jonathan Stokes e James
 Collins pubblica su *Cell* la scoperta di un nuovo antibiotico: hanno
 addestrato una rete neurale a leggere le molecole come grafi (atomi nei nodi,
 legami chimici negli archi) e a prevedere quali fermassero la crescita dei
-batteri. Passata al setaccio una libreria di composti, la rete ha segnalato
-una molecola che nessuno associava agli antibiotici; nei topi ha curato anche
-un'infezione da *Acinetobacter baumannii* resistente a tutti gli antibiotici
-provati. L'hanno chiamata **halicin**, in omaggio a HAL
-9000. Il filo che unisce i sette ponti di Königsberg a un antibiotico del XXI
-secolo è proprio l'oggetto di questo capitolo: le **reti neurali su grafo**
-(*Graph Neural Networks*, GNN).
+batteri. Le hanno poi fatto passare al setaccio un archivio di migliaia di
+sostanze già preparate, e la rete ne ha segnalata una che nessuno associava
+agli antibiotici; nei topi ha curato anche un'infezione da *Acinetobacter
+baumannii* resistente a tutti gli antibiotici provati. L'hanno chiamata
+**halicin**, in omaggio a HAL 9000, il computer di *2001: Odissea nello
+spazio*. Il filo che unisce i sette ponti di Königsberg a un
+antibiotico del XXI secolo è proprio l'oggetto di questo capitolo: le **reti
+neurali su grafo** (*Graph Neural Networks*, GNN).
 
 ## Perché un capitolo dedicato
 
@@ -40,7 +41,8 @@ frase arrivano in un ordine, una dopo l'altra. Sono ipotesi comode, e per
 immagini e testo sono anche giuste.
 
 Ma moltissimi dati del mondo non sono né una griglia né una sequenza. Sono
-**relazionali**: fatti di entità e delle relazioni tra loro.
+fatti di cose e dei legami fra quelle cose: si dice che sono dati
+**relazionali**, perché quel che conta non sono i pezzi ma le relazioni.
 
 - Una **molecola** è un insieme di atomi tenuti insieme da legami.
 - Un **social network** è un insieme di persone tenute insieme da amicizie.
@@ -112,21 +114,22 @@ $\theta$.
 
 La soluzione è tanto semplice da enunciare quanto potente nelle conseguenze:
 
-> imparare una **rappresentazione** (una fila di numeri) per ogni nodo, per
-> ogni arco o per l'intero grafo, facendo **propagare l'informazione lungo gli
-> archi**; e farlo con operazioni di cui si sa calcolare la derivata, così che
-> la macchina intera si addestri in un colpo solo, dall'ingresso all'uscita,
-> con la stessa discesa del gradiente di ogni altra rete di questo libro.
+> dare a ogni nodo (o a ogni arco, o all'intero grafo) una **fila di numeri**
+> che lo descrive, e costruirla facendo **circolare l'informazione lungo gli
+> archi**: ogni nodo ascolta i suoi vicini e si aggiorna, e si ricomincia.
 
-L'idea di far girare una rete neurale direttamente su un grafo non è nuova, e
-vale la pena datarla bene. Le reti ricorsive su strutture di Alessandro
-Sperduti e Antonina Starita (1997) e di Paolo Frasconi, Marco Gori e Sperduti
-(1998) sono la prima forma, e trattavano però soltanto grafi aciclici diretti.
-Il modello del gruppo di Siena di Franco Scarselli e Marco Gori, proposto a
-metà anni Duemila e pubblicato in forma estesa nel 2009
-{cite}`scarselli2009graph`, è il primo a coprire i grafi qualunque, cicli
-compresi. L'idea è diventata poi centrale nell'ultimo decennio, quando si è
-capito come renderla efficiente e scalabile {cite}`hamilton2020graph`.
+Quella fila di numeri si chiama **rappresentazione** del nodo, ed è la parola
+che in questo capitolo torna più spesso: vuol dire sempre questo, la fila di
+numeri con cui il modello descrive un nodo in un certo momento. All'inizio non
+contiene niente di speciale, sono le informazioni che sul nodo abbiamo già noi
+(per una persona l'età, per un atomo il tipo di elemento); a ogni giro di
+ascolto diventa qualcosa di più.
+
+Il resto è la macchina di sempre. Le operazioni che compongono un giro sono
+tutte di quelle di cui si sa calcolare la derivata, e quindi la rete si
+addestra dall'ingresso all'uscita con la stessa discesa del gradiente di ogni
+altro modello di questo libro. Non serve un modo nuovo di imparare: serve solo
+un modo di far parlare i nodi fra loro.
 
 `````{tab} Elementare
 
@@ -171,20 +174,34 @@ Convolutional Network* (GCN).
 
 `````
 
-Le rappresentazioni così ottenute rispondono a domande a **tre livelli**, e
-conviene tenerle distinte fin da subito perché ogni compito reale ricade in una
-di queste tre caselle.
+L'idea non è nuova, e ha una storia in buona parte italiana che vale la pena
+datare bene. La prima forma è di fine anni Novanta, con i lavori di Alessandro
+Sperduti e Antonina Starita (1997) e di Paolo Frasconi, Marco Gori e Sperduti
+(1998); reggevano però soltanto grafi in cui, seguendo le frecce, non si torna
+mai al punto di partenza. Il primo modello che regge un grafo qualunque, giri
+chiusi compresi, è del gruppo di Siena di Franco Scarselli e Marco Gori,
+proposto a metà anni Duemila e pubblicato in forma estesa nel 2009
+{cite}`scarselli2009graph`. Centrale, l'idea, lo è diventata solo nell'ultimo
+decennio, quando si è capito come farla girare in fretta anche su grafi enormi
+{cite}`hamilton2020graph`.
+
+Una volta che ogni nodo ha la sua rappresentazione, che cosa ce ne facciamo?
+Le domande che si possono fare a un grafo sono di tre tipi soltanto, e conviene
+distinguerli fin da subito, perché ogni problema reale ricade in una di queste
+tre caselle.
 
 `````{tab} Elementare
 
-Su un grafo puoi fare tre tipi di domanda. Su un **singolo nodo**: «questo
-account è un bot?», «questo utente a quale categoria appartiene?». Su un
+Il primo tipo di domanda riguarda un **singolo nodo**: «questo account è un
+bot?», «questo utente a quale categoria appartiene?». Il secondo riguarda un
 **arco** che ancora non c'è: «queste due persone diventeranno amiche?», «a
 questo cliente piacerà questo prodotto?»; è la domanda che sta dietro ai
-suggerimenti di amicizia e alle raccomandazioni. Oppure sull'**intero grafo**
-preso come un tutt'uno: «questa molecola è tossica?», «questo composto uccide
-i batteri?», ed eccoci di nuovo ad halicin. Nodo, arco, grafo intero: la
-stessa macchina, tre domande diverse.
+suggerimenti di amicizia e alle raccomandazioni, e indovinare un collegamento
+che non c'è ancora si chiama *link prediction*, «previsione dei
+collegamenti». Il terzo riguarda l'**intero grafo** preso come un tutt'uno:
+«questa molecola è tossica?», «questo composto uccide i batteri?», ed eccoci di
+nuovo ad halicin. Nodo, arco, grafo intero: la stessa macchina, tre domande
+diverse.
 
 `````
 
@@ -209,41 +226,55 @@ mai visti in addestramento.
 Il capitolo procede dal dato all'architettura.
 
 - **Il mondo come grafo**. Come si mette un problema «in forma di grafo»: cosa
-  sono nodi, archi e le loro *feature*; grafi diretti e non diretti, pesati,
-  con più tipi di relazione; e i tre livelli di compito (nodo, arco, grafo
-  intero) appena introdotti, con esempi concreti.
+  sono nodi e archi, e che cosa c'è scritto su ciascuno (le loro
+  caratteristiche, in gergo le *feature*); collegamenti con e senza verso, con
+  e senza peso, di più tipi; e i tre tipi di domanda appena visti, con esempi
+  concreti.
 - **Message passing**. Il meccanismo di propagazione vicino-per-vicino nella
-  sua forma generale, e la derivazione della *Graph Convolutional Network*: il
-  modello che ha fatto delle GNN uno strumento pratico, presentato nel 2017 da
-  Thomas Kipf e Max Welling.
-- **I knowledge graph**. Che cosa cambia quando gli archi hanno un'etichetta e
-  sono **fatti**: le triple, l'assunzione di mondo aperto (un arco che manca
-  vuol dire «non lo so»), le entità come punti e le relazioni come frecce, e a
-  che serve poter rispondere **navigando** invece che recuperando.
+  sua forma generale, e da lì, passo dopo passo, la *Graph Convolutional
+  Network* (**GCN**): il modello che ha fatto delle GNN uno strumento pratico,
+  presentato nel 2017 da Thomas Kipf e Max Welling.
+- **I knowledge graph**, cioè i grafi di fatti. Che cosa cambia quando ogni
+  arco porta scritto sopra un verbo, e la coppia di nodi con il verbo in mezzo
+  è un fatto sul mondo: («Roma», *è capitale di*, «Italia»). Come si mettono in
+  numeri quei fatti, perché un arco che manca vuol dire «non lo so» e non «è
+  falso», e perché a una domanda si può rispondere **camminando sul grafo** da
+  un fatto all'altro invece di cercare la pagina che la contiene.
 - **Oltre la GCN: GraphSAGE, GAT e applicazioni**. Le due varianti che hanno
-  reso le GNN utilizzabili su scala reale: *GraphSAGE*, che campiona i vicini
-  per scalare a grafi enormi, e la *Graph Attention Network* (GAT), che pesa i
-  vicini con l'attenzione incontrata nel capitolo sui Transformer. Poi come si
-  passa dai nodi a un verdetto sull'intero grafo, e fin dove quel verdetto
-  riesce a distinguere due grafi diversi; una carrellata di applicazioni, dalla
-  chimica alla frode, dalle mappe ai sistemi di raccomandazione; i limiti; e
-  infine i *Graph Transformer*, cioè il tentativo di rifare la strada al
-  contrario.
+  reso le GNN utilizzabili su scala reale: *GraphSAGE*, che guarda solo un
+  campione dei vicini e regge così grafi enormi, e la *Graph Attention
+  Network* (GAT), che pesa i vicini con l'attenzione incontrata nel capitolo
+  sui Transformer. Poi come si passa dai nodi a un verdetto sull'intero grafo, e
+  la sorpresa che ne viene fuori: esistono coppie di grafi diversi che nessuna
+  rete di questa famiglia riuscirà mai a distinguere. Una carrellata di
+  applicazioni, dalla chimica alla frode, dalle mappe ai sistemi
+  di raccomandazione; i limiti; e infine i *Graph Transformer*, che rifanno la
+  strada in senso inverso: non una rete su grafo che assomiglia a un
+  Transformer, ma un Transformer messo a lavorare su un grafo.
 
 ## Tre fili che tornano
 
-Vale la pena legare esplicitamente questo capitolo a tre che il libro ha già
-percorso.
+Vale la pena legare esplicitamente questo capitolo a tre capitoli che il libro
+ha già percorso.
 
 Il primo è la **convoluzione**. Nel capitolo sul deep learning abbiamo visto
 un filtro scorrere su una griglia di pixel, combinando ogni pixel con i suoi
 vicini. Il message passing è la stessa idea (combinare un elemento con i suoi
 vicini) liberata dal vincolo della griglia: i «vicini» non sono più i quattro
-pixel adiacenti, ma i nodi collegati da un arco, in numero variabile. In
-questo senso la GNN **generalizza** la CNN a domini irregolari; è la
-prospettiva del *geometric deep learning*, che legge CNN, reti ricorrenti e
-GNN come casi particolari di uno stesso principio: sfruttare le simmetrie del
-dominio del dato {cite}`bronstein2021geometric`.
+pixel adiacenti, ma i nodi collegati da un arco, in numero variabile. In questo
+senso la rete su grafo **generalizza** la rete convoluzionale, la CNN dei
+capitoli sulle immagini, a dati che una griglia non la formano.
+
+Su questo c'è un modo di guardare le cose che vale la pena conoscere, e si
+chiama *geometric deep learning* {cite}`bronstein2021geometric`. Parte da una
+domanda sola: che cosa si può fare a un dato senza cambiarne il significato?
+Un'immagine spostata di un pixel contiene sempre lo stesso gatto; un grafo con
+i nodi rinumerati è sempre lo stesso grafo. Queste trasformazioni che non
+cambiano la risposta si chiamano **simmetrie** del dato, e una volta elencate
+dicono come deve essere fatta la rete che ci lavora sopra. Da quel punto di
+vista reti convoluzionali, reti ricorrenti e reti su grafo non sono tre
+invenzioni separate: sono la stessa ricetta applicata a tre elenchi di
+simmetrie diversi.
 
 Il secondo filo porta ai **sistemi di raccomandazione**. Lì il dato è, per sua
 natura, un grafo: da un lato gli utenti, dall'altro gli oggetti, e un arco
@@ -261,10 +292,11 @@ che leggono e scrivono il linguaggio.
 
 `````{tab} Elementare
 
-Nel capitolo sui Transformer si è visto come un modello legge una frase. Per
-farsi un'idea di una parola non guarda solo quella: la confronta con tutte le
-altre della frase e decide quanto ciascuna conta, dando a ognuna un peso; poi
-la nuova descrizione di quella parola è il miscuglio delle descrizioni delle
+Nel capitolo sui Transformer si è visto come un modello legge una frase. Anche
+lì ogni parola ha la sua fila di numeri, la sua rappresentazione. Per farsi
+un'idea di una parola il modello non guarda solo quella: la confronta con tutte
+le altre della frase e decide quanto ciascuna conta, dando a ognuna un peso;
+poi la nuova rappresentazione di quella parola è il miscuglio di quelle delle
 altre, dosato secondo quei pesi. È il meccanismo che lì si chiama
 **attenzione**.
 
@@ -272,7 +304,7 @@ Adesso rileggi la stessa cosa con le parole di questo capitolo. «Ogni parola
 guarda tutte le altre» vuol dire: c'è un grafo in cui ogni parola è un nodo, e
 ogni nodo è collegato a tutti gli altri (un grafo così si chiama **completo**).
 «Decide quanto ciascuna conta» vuol dire: ogni collegamento porta un peso. E
-«la nuova descrizione è il miscuglio delle altre» è, parola per parola, il
+«la nuova rappresentazione è il miscuglio delle altre» è, parola per parola, il
 passaparola fra vicini descritto qui sopra. Un Transformer, insomma, sta già
 facendo message passing: solo che il grafo non glielo dà nessuno, se lo
 fabbrica collegando tutti con tutti.
@@ -280,11 +312,12 @@ fabbrica collegando tutti con tutti.
 Il che ha un vantaggio e un prezzo, e conviene vederli in coppia perché
 tornano per tutto il capitolo. Il vantaggio è che non gli serve sapere niente
 su chi è collegato a chi: funziona anche quando i collegamenti veri nessuno li
-conosce. Il prezzo è che collegare tutti con tutti costa: con dieci parole sono
-cento collegamenti, con mille parole un milione. Da qui una cosa che a prima
-vista non c'entra niente: buona parte della ricerca su come rendere
-l'attenzione meno costosa consiste, alla lettera, nel **togliere archi** da
-quel grafo completo.
+conosce. Il prezzo è che collegare tutti con tutti costa, e il conto è presto
+fatto: ogni parola va confrontata con ogni parola, quindi con dieci parole sono
+dieci per dieci, cento confronti, e con mille parole un milione. Da qui una
+cosa che a prima vista non c'entra niente: buona parte della ricerca su come
+rendere l'attenzione meno costosa consiste, alla lettera, nel **togliere
+archi** da quel grafo completo.
 
 `````
 

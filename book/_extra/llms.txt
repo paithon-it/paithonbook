@@ -226,7 +226,7 @@ della sezione e URL), non si ridistribuisce il testo.
   - [LLMOps](https://book.paithon.it/main/MLOps/llmops.html)
   - [Misurare un servizio](https://book.paithon.it/main/MLOps/metriche-di-servizio.html)
   - [Il conto in energia](https://book.paithon.it/main/MLOps/energia-e-impronta.html)
-- [Interpretabilità](https://book.paithon.it/main/Interpretabilita/overview.html): Nel 2016 tre ricercatori dell'Università di Washington (Marco Túlio Ribeiro, Sameer Singh e Carlos Guestrin) addestrarono di proposito un classificatore truccato a distinguere le foto di husky da…
+- [Interpretabilità](https://book.paithon.it/main/Interpretabilita/overview.html): Nel 2016 tre ricercatori dell'Università di Washington (Marco Túlio Ribeiro, Sameer Singh e Carlos Guestrin) costruirono di proposito un programma truccato.
   - [Modelli trasparenti](https://book.paithon.it/main/Interpretabilita/modelli-trasparenti-e-importanza.html)
   - [Spiegazioni locali](https://book.paithon.it/main/Interpretabilita/spiegazioni-locali.html)
   - [Attribuzione e meccanicistica](https://book.paithon.it/main/Interpretabilita/attribuzione-e-meccanicistica.html)
@@ -238,6 +238,6 @@ della sezione e URL), non si ridistribuisce il testo.
 
 ## Chiusura
 
-- [Conclusioni](https://book.paithon.it/main/Conclusioni/overview.html): Siamo partiti, nell'introduzione, da una frase di Joseph Weizenbaum: «si dice che spiegare significhi dissolvere» . Adesso possiamo dire com'è andata.
+- [Conclusioni](https://book.paithon.it/main/Conclusioni/overview.html): Siamo partiti, nell'introduzione, da una frase di Joseph Weizenbaum: «si dice che spiegare significhi dissolvere» .
 - [Bibliografia](https://book.paithon.it/main/references.html): Le opere citate nel libro, in ordine alfabetico. Nel testo le citazioni compaiono come rimandi tra parentesi quadre: ogni rimando porta qui.
 - [Aggiornamenti](https://book.paithon.it/main/aggiornamenti.html): Questo libro non esce e finisce: cambia. Una sezione si aggiunge, un conto sbagliato si corregge, una spiegazione che non ha funzionato si riscrive.

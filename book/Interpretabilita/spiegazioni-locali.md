@@ -1,30 +1,28 @@
 # Spiegazioni locali: LIME, SHAP e controfattuali
 
-Nel 1953 **Lloyd Shapley**, un giovane matematico di Princeton che di lì a poco
-sarebbe entrato alla RAND Corporation, si pose una domanda che con
-l'intelligenza artificiale non c'entrava nulla: se un gruppo di persone
-collabora a un'impresa e ne ricava un guadagno, come si divide il merito «in
-modo equo» tra chi ha partecipato? Alcuni contano di più, alcuni solo in
-combinazione con altri; non basta guardare cosa fa ciascuno da solo. Shapley
-rispose fissando quattro requisiti così ragionevoli che nessuno li
-discuterebbe, e dimostrando che un solo modo di dividere li rispetta tutti e
-quattro. Quasi sessant'anni dopo avrebbe vinto il premio Nobel per l'economia:
-non per questa formula, per la verità, ma per un altro filone dei suoi studi di
-teoria dei giochi, quello sugli abbinamenti stabili. Non poteva immaginare che
-la sua idea sarebbe diventata, nel 2017, lo strumento più usato al mondo per
-spiegare la singola decisione di una rete neurale.
+Nel 1953 **Lloyd Shapley**, un giovane matematico che a Princeton stava
+finendo il dottorato, si pose una domanda che con l'intelligenza artificiale
+non c'entrava nulla: se un gruppo di persone collabora a un'impresa e ne ricava
+un guadagno, come si divide il merito «in modo equo» tra chi ha partecipato?
+Alcuni contano di più, alcuni solo in combinazione con altri; non basta guardare
+cosa fa ciascuno da solo. Shapley rispose fissando quattro requisiti così
+ragionevoli che nessuno li discuterebbe, e dimostrando che un solo modo di
+dividere li rispetta tutti e quattro. Nel 2012 avrebbe vinto il premio Nobel per
+l'economia, per un altro filone dei suoi studi. Non poteva immaginare che questa
+sua formula sarebbe diventata, più di sessant'anni dopo, uno degli strumenti
+più usati per spiegare la singola decisione di una rete neurale.
 
-Questa è la seconda tappa del capitolo, e cambia scala. La sezione precedente,
-sull'importanza delle feature, rispondeva a una domanda **globale**: «su quali
-colonne si regge il modello, *in media*?». Ma chi si vede negare un prestito
-non chiede una media: chiede «perché *la mia* domanda?». È una domanda
-**locale**, perché riguarda una predizione sola e non l'intero comportamento
-del modello. In formule quella predizione si scrive $f(\mathbf{x}_0)$: il
-modello $f$ applicato a quel caso lì, $\mathbf{x}_0$. Qui vediamo tre modi di
-risponderle, tre attrezzi diventati lo standard di fatto: **LIME**, **SHAP** e
-le spiegazioni **controfattuali**.
+Questa è la seconda tappa del capitolo, e cambia scala. La sezione precedente
+rispondeva a una domanda **globale**: «su quali colonne dei dati (le
+**feature**) si regge il modello, *in media*?». Ma chi si vede negare un
+prestito non chiede una media: chiede «perché *la mia* domanda?». È una domanda
+**locale**, perché riguarda una risposta sola e non l'intero comportamento del
+modello. Qui vediamo i modi di risponderle: i tre attrezzi che si incontrano
+più spesso, **LIME**, **SHAP** e le spiegazioni **controfattuali**, e poi altre
+due forme di risposta, la regola e ciò che manca, che rispondono alla stessa
+domanda in un modo abbastanza diverso da meritarsi una sezione.
 
-## Perché *questa* predizione
+## Perché proprio *questa* risposta
 
 `````{tab} Elementare
 
@@ -69,32 +67,49 @@ un riferimento.
 
 Il primo attrezzo è **LIME** (*Local Interpretable Model-agnostic
 Explanations*) proposto nel 2016 da Marco Túlio Ribeiro, Sameer Singh e Carlos
-Guestrin {cite}`ribeiro2016why`, gli stessi dell'esperimento sugli husky e i
-lupi visto in apertura di capitolo. L'idea è disarmante nella sua semplicità:
-se la scatola nera è troppo complicata da capire tutta, costruiamone una copia
-*facile* che le somigli **solo qui vicino**, attorno al punto da spiegare.
+Guestrin {cite}`ribeiro2016why`, gli stessi dell'esperimento con cui si è aperto
+il capitolo, quello del riconoscitore di lupi che in realtà guardava la neve.
+L'idea è disarmante nella sua semplicità: se il modello è troppo complicato da
+capire tutto, costruiamone una copia *facile* che gli somigli **solo qui
+vicino**, attorno al caso da spiegare. Del modello vero non apriremo niente: gli
+faremo solo delle domande, come si fa con una scatola chiusa.
 
 `````{tab} Elementare
 
 Immagina di voler capire come il modello decide sul caso di Maria. LIME fa
-così: fabbrica tante pratiche finte, **casi-fantasma** che somigliano più o
-meno a quella di Maria (un po' più di reddito, un debito in meno, un'età
-diversa), e per ciascuna chiede alla scatola nera cosa risponderebbe. Ottiene
-una nuvola di esempi inventati, ognuno con la risposta che il modello gli
-darebbe.
+così: fabbrica tante pratiche finte, **casi-fantasma** con dentro numeri
+plausibili (redditi, debiti, età presi da altri clienti o tirati a sorte), e per
+ciascuna chiede al modello cosa risponderebbe. Ottiene una nuvola di esempi
+inventati, ognuno con la risposta che il modello gli darebbe.
 
-A questo punto cerca fra quei punti un modello **semplice e leggibile**: la
-retta che ci passa più vicino possibile, come la regressione lineare del
-capitolo di machine learning. Con una regola in più, ed è quella che fa tutto
-il lavoro: i fantasmi più simili alla pratica vera di Maria contano di più,
-quelli lontani quasi niente. È tutto qui il senso della parola «pesata», ed è
-qui, nel conteggio, che entra il «solo qui vicino»: non nel modo in cui i
-fantasmi sono stati fabbricati.
+A questo punto, su quella nuvola, costruisce un modello **semplice e
+leggibile**, del tipo che abbiamo visto nella sezione precedente: quello che
+risponde facendo una somma, tanti punti per il reddito, tanti per i debiti,
+tanti per l'anzianità di lavoro. Cerca cioè i numeri che fanno somigliare la
+somma alle risposte della nuvola.
 
-I coefficienti di quella retta *sono* la spiegazione: «il reddito basso ha
-spinto verso il no di tanto, i debiti di tanto, l'anzianità di lavoro ha spinto
-un po' verso il sì». È come tracciare la tangente a una curva: non descrive
-tutta la strada, ma dice benissimo la pendenza nel punto in cui ti trovi.
+C'è però una regola in più, ed è quella che fa tutto il lavoro: nel conto, i
+fantasmi più simili alla pratica vera di Maria **contano di più**, quelli
+lontani quasi niente. Un conto in cui ogni voce entra con un'importanza sua si
+dice **pesato**, e nel caso di LIME il peso è la somiglianza con Maria. Qui sta il «solo qui vicino», e vale la pena sottolineare **dove** sta: nel
+conteggio, non nella fabbrica. I fantasmi nascono sparsi un po' dappertutto, ed
+è soltanto quando si tirano le somme che quelli lontani vengono messi a tacere.
+
+I numeri di quella somma *sono* la spiegazione: «il reddito basso ha spinto
+verso il no di tanto, i debiti di tanto, l'anzianità di lavoro ha spinto un po'
+verso il sì». Un ultimo modo di vederla: se il modello vero è una strada di
+montagna, LIME appoggia un righello sull'asfalto nel punto in cui ti trovi. Il
+righello non racconta la strada, ma della salita sotto i tuoi piedi ti dice
+tutto.
+
+Un avvertimento, però, prima di fidarsene troppo. Di scelte, in tutto questo, ce
+ne sono parecchie, e nessuna la suggeriscono i dati: quanti fantasmi fabbricare,
+quanto in fretta il loro peso deve calare allontanandosi da Maria (cioè quanto
+largo prendere il «qui vicino»), e, se al posto della pratica di Maria c'è una
+fotografia, in quali pezzi spezzettarla prima di spegnerli a turno. Ognuna di
+quelle scelte sposta i numeri della spiegazione. In più i fantasmi sono
+fabbricati a caso, quindi rilanciando LIME sullo stesso identico caso si
+ottengono numeri un po' diversi: si dice che il metodo è **instabile**.
 
 `````
 
@@ -158,58 +173,116 @@ controlla: un motivo per affiancarle un metodo dai fondamenti più solidi.
 
 ## I valori di Shapley: dividere il merito in modo equo
 
-Quel metodo esiste, ed è la formula di Shapley del 1953. Il salto concettuale è
-vedere una predizione come un **gioco cooperativo**: le feature sono i
-giocatori, e il «guadagno» da spartire è di quanto la predizione si scosta dal
-valore medio del modello. La domanda «quanto ha contribuito il reddito a questo
-rifiuto?» diventa la vecchia domanda di Shapley: «quanto merito spetta a questo
-giocatore?».
+LIME risponde alla domanda, ma il modo in cui lo fa poggia su una lunga catena
+di scelte fatte da chi lo usa: quanti casi-fantasma fabbricare, quanto contare
+quelli lontani, come spezzettare l'ingresso. Rilanciandolo si ottengono numeri
+un po' diversi. Viene voglia di un metodo che, data la domanda, abbia una
+risposta sola e dimostrabile. Quel metodo esiste, ed è la formula di Shapley del
+1953. Il salto sta nel
+guardare una risposta del modello come il bottino di una squadra. Le colonne
+sono i giocatori; il bottino da spartire non è il punteggio che il modello ha
+dato a Maria, ma **di quanto quel punteggio si scosta** dalla risposta che il
+modello darebbe senza sapere niente di lei. Quella risposta a vuoto la
+chiameremo, qui e per tutto il resto del capitolo, la **risposta base**. La
+domanda «quanto ha contribuito il reddito a questo rifiuto?» diventa così la
+vecchia domanda di Shapley: «quanto merito spetta a questo giocatore?».
 
 `````{tab} Elementare
 
 Il punto delicato è che i giocatori non agiscono da soli: contano anche le
-**combinazioni**. Prendiamo due feature, il *reddito* e la *storia creditizia*,
-e chiediamoci quanto vale ciascuna. L'idea di Shapley è: proviamo tutti gli
-ordini in cui le feature possono «entrare in campo» e, per ognuna, misuriamo
-quanto aggiunge nel momento in cui entra. Poi facciamo la media.
+**combinazioni**. Prendiamo due colonne sole, per tenere il conto piccolo: il
+*reddito* e i *pagamenti passati*, cioè se in passato il cliente ha pagato
+puntuale. Chiediamoci quanto vale ciascuna. L'idea di Shapley è: proviamo tutti
+gli ordini in cui le colonne possono «entrare in campo» e, per ognuna,
+misuriamo quanto aggiunge nel momento in cui entra. Poi facciamo la media.
 
 Prima però va sciolto un dubbio ragionevole: che cosa vuol dire far girare il
 modello «senza» una colonna? Il modello vuole tutte le sue caselle piene, non
 gli si può lasciare una casella vuota. Quello che si fa è riempirla con
 qualcosa di neutro: il valore medio di quella colonna su tutti i clienti, o un
-valore preso a caso da un altro cliente, o uno zero convenzionale. È una
-**scelta**, non un fatto, e più avanti si vedrà che sceglierla in un modo o
-nell'altro sposta i numeri; per ora basta tenere presente che «il modello non
-sa il reddito» significa «al posto del reddito c'è qualcosa che non dice
-niente».
+valore preso a caso da un altro cliente, oppure uno zero, messo lì per
+convenzione a significare «niente». È una **scelta**, non un fatto, e sposta i numeri:
+cambiando ciò che si mette al posto del valore vero cambia la risposta del
+modello quando non sa niente, e siccome tutti i meriti sono la ripartizione
+della distanza *da quella risposta lì*, cambiano anche loro. Per ora basta
+tenere presente che «il modello non sa il reddito» significa «al posto del
+reddito c'è qualcosa che non dice niente».
 
-Diciamo allora che il modello, senza sapere niente del cliente, parte da un punteggio
-base di **10**. Se conosce solo il reddito, sale a **30**; se conosce solo la
-storia, sale a **20**; se le conosce entrambe, arriva a **50**. Con due
-feature gli ordini possibili sono due, prima il reddito, oppure prima la
-storia:
+Diciamo allora che il modello dà a ogni cliente un punteggio da 0 a 100, e che
+sopra i 35 il prestito è approvato. Senza sapere niente del nostro cliente
+parte dalla **risposta base**, che vale **10**. Se conosce solo il reddito,
+sale a **30**; se conosce solo i pagamenti passati, sale a **20**; se conosce
+entrambe le cose, arriva a **50**, cioè al sì.
+
+Prima di fare il conto, una cosa da notare, perché è il motivo per cui
+l'esempio è costruito così. Guardiamo quanto aggiunge ciascuna colonna da sola:
+il reddito porta da 10 a 30, cioè aggiunge **20**; i pagamenti portano da 10 a
+20, cioè aggiungono **10**. Sommati fanno 30, e partendo da 10 dovremmo arrivare
+a 40. Invece si arriva a 50. Ci sono dieci punti in più che non appartengono a
+nessuna delle due colonne: nascono dall'averle tutte e due, ed è ragionevole che
+sia così, perché guadagnare tanto conta poco se non hai mai dimostrato di saper
+pagare, e aver sempre pagato conta poco se guadagni una miseria. Le due cose si
+rinforzano a vicenda, e un guadagno che nasce così si chiama **interazione**. È
+il caso in cui la domanda «quanto vale ciascuna?» smette di avere una risposta
+ovvia, e tornerà in fondo alla sezione.
+
+Con due colonne gli ordini possibili sono due, prima il reddito, oppure prima i
+pagamenti:
 
 - *Prima il reddito*: entra e porta il punteggio da 10 a 30, quindi aggiunge
-  **20**. Poi entra la storia e lo porta da 30 a 50, aggiunge **20**.
-- *Prima la storia*: entra e porta da 10 a 20, aggiunge **10**. Poi entra il
-  reddito e porta da 20 a 50, aggiunge **30**.
+  **20**. Poi entrano i pagamenti e lo portano da 30 a 50, aggiungono **20**.
+- *Prima i pagamenti*: entrano e portano da 10 a 20, aggiungono **10**. Poi
+  entra il reddito e porta da 20 a 50, aggiunge **30**.
 
 Il merito del reddito è la media di quanto aggiunge nei due ordini:
-$(20 + 30)/2 = 25$. Quello della storia: $(20 + 10)/2 = 15$. E il conto torna:
-$25 + 15 = 40$, esattamente quanto separa il punteggio finale (50) da quello
-base (10). Tutto il «guadagno» è stato ripartito, senza avanzi: nessun merito
-inventato, nessuno perso per strada.
+$(20 + 30)/2 = 25$. Quello dei pagamenti: $(20 + 10)/2 = 15$. E il conto torna:
+$25 + 15 = 40$, esattamente quanto separa il punteggio finale (50) dalla
+risposta base (10). Tutto il bottino è stato ripartito, senza avanzi: nessun
+merito inventato, nessuno perso per strada.
+
+E i dieci punti dell'interazione? Non sono spariti, sono stati divisi a metà, e
+il modo in cui è successo si legge nei due ordini qui sopra. Chi entra per
+**secondo** se li prende tutti e dieci: nel primo ordine sono i pagamenti (che
+da soli valevano 10 e lì aggiungono 20), nel secondo è il reddito (che da solo
+valeva 20 e lì aggiunge 30). Siccome ciascuno dei due arriva secondo in metà
+degli ordini, ciascuno intasca quei dieci una volta su due: cinque a testa.
+Infatti il reddito prende 25, che è i suoi 20 più cinque, e i pagamenti 15, che
+sono i loro 10 più cinque.
+
+Perché fare la **media** su tutti gli ordini, e non prendere il primo che
+capita? Perché nessun ordine è quello vero. Le colonne non entrano davvero una
+dopo l'altra, ci sono tutte insieme; gli ordini sono un espediente per misurare
+i contributi, e siccome non c'è ragione di preferirne uno, si tengono tutti e si
+fa la media. È esattamente l'idea di equità di Shapley.
 
 Le quattro proprietà con cui Shapley aveva fissato il suo modo di dividere sono
 cose ovvie come quella che abbiamo appena visto tornare, e conviene chiamarle
-per nome perché il resto del capitolo le usa. Che il conto torni senza avanzi si
-chiama **efficienza**. Che due colonne che fanno esattamente lo stesso mestiere
-ricevano lo stesso merito si chiama **simmetria**. Che una colonna che non
-aggiunge mai niente, in nessun ordine, prenda zero si chiama **giocatore
-nullo**. E che, mettendo insieme due modelli, i meriti si sommino, si chiama
-**additività**. Sono quattro richieste che nessuno discuterebbe, e la cosa
-notevole (il motivo per cui questa formula del 1953 è ancora qui) è che c'è un
-solo modo di dividere il merito che le soddisfa tutte e quattro insieme.
+per nome perché il resto del capitolo le usa.
+
+- Che il conto torni senza avanzi, come qui $25 + 15 = 50 - 10$, si chiama
+  **efficienza**.
+- Che due colonne che fanno esattamente lo stesso mestiere ricevano lo stesso
+  merito si chiama **simmetria**. È il principio dietro la divisione in due dei
+  dieci punti: rispetto a quel pezzo di guadagno, e solo rispetto a quello, le
+  due colonne facevano lo stesso lavoro. Sull'intero conto no, tant'è che
+  prendono 25 e 15.
+- Che una colonna che non aggiunge mai niente, in nessun ordine, prenda zero si
+  chiama **giocatore nullo**. Sembra una banalità e invece torna comoda: quando
+  in un conto c'è una colonna che non c'entra, la si può togliere di mezzo e
+  fare i conti sulle altre.
+- E poi c'è l'**additività**, che è la meno intuitiva delle quattro e la più
+  utile, quindi vale un esempio. Immagina che il punteggio di un cliente sia la
+  somma di due pagelle separate, una sulla sua situazione economica e una sulla
+  sua storia di pagamenti, ciascuna con le sue regole. L'additività dice questo:
+  il merito che una colonna prende sul punteggio totale è la somma dei meriti
+  che prende su ciascuna delle due pagelle, calcolati separatamente. In altre
+  parole, un conto complicato lo si può spezzare in pezzi, fare i conti sui
+  pezzi e sommare. Alla fine della sezione lo faremo davvero, e sarà quello a
+  rendere leggibile un risultato altrimenti misterioso.
+
+Sono quattro richieste che nessuno discuterebbe, e la cosa notevole (il motivo
+per cui questa formula del 1953 è ancora qui) è che c'è un solo modo di dividere
+il merito che le soddisfa tutte e quattro insieme.
 
 `````
 
@@ -276,30 +349,37 @@ per sé stesso una volta per colonna: con trenta colonne fa oltre un miliardo di
 gruppi. Nel 2017 Scott Lundberg e Su-In Lee
 {cite}`lundberg2017unified` hanno mostrato come stimarli in modo efficiente,
 unificando sotto un'unica teoria (**SHAP**, *SHapley Additive exPlanations*)
-metodi fino ad allora scollegati (LIME incluso, come caso particolare). Da qui
-il metodo è diventato lo standard pratico dell'interpretabilità post-hoc.
+metodi fino ad allora scollegati. Anche LIME rientra in quella teoria, come caso
+particolare: ha la stessa forma, e a distinguerlo è **come conta la
+somiglianza** fra i casi-fantasma, che LIME fissa a occhio e SHAP invece deriva
+dalla formula di Shapley. Da qui SHAP è diventato uno degli strumenti più
+usati per spiegare una decisione dall'esterno, a modello già addestrato.
 
 `````{tab} Elementare
 
 SHAP non cambia la definizione: restituisce ancora i contributi «equi» di
-Shapley. Cambia il *come* li ottiene, con due scorciatoie a seconda del
-modello. Per una scatola nera qualsiasi usa **KernelSHAP**: campiona con
-astuzia solo alcune coalizioni invece di tutte, e ne ricostruisce i valori con
-una regressione pesata; cugino di LIME, ma con i pesi «giusti» che
-garantiscono di puntare ai valori di Shapley. Per i modelli ad alberi (foreste
-casuali, gradient boosting, i protagonisti della sezione sugli alberi e gli
-ensemble del capitolo sul machine learning), usa **TreeSHAP**, che sfrutta la
-struttura ad albero per calcolare i valori **esatti** in tempo ragionevole,
-senza campionare nulla. Esatti, s'intende, rispetto al modo che si è scelto per
-«spegnere» una colonna: quella resta una scelta anche qui.
+Shapley. Cambia il *come* li ottiene, con due scorciatoie a seconda del modello.
 
-Il risultato più leggibile è il grafico **a cascata** (*waterfall*) della
-{numref}`fig-shap-contributi`: si parte dal valore base (la predizione media
-del modello) e si impilano i contributi, uno per riga. Quelli che **alzano** la
-predizione sono barre che vanno verso destra, in terracotta (il rosso mattone);
-quelli che la **abbassano** tornano verso sinistra, in teal (il verde-azzurro
-scuro). Si arriva così alla predizione di *questo* cliente, e una singola
-immagine racconta, voce per voce, perché il modello ha deciso così.
+Se il modello è una scatola chiusa qualunque, si usa **KernelSHAP**, che prova
+solo alcuni dei gruppi invece di tutti, scelti a caso, e dai pochi provati
+ricostruisce i meriti di tutti. Il ricostruire è di nuovo un conto pesato, come
+quello di LIME; la differenza è che qui i pesi non sono scelti a occhio, li dà
+la formula di Shapley, ed è questo che garantisce di stare puntando ai numeri
+giusti.
+
+Se invece il modello è fatto di alberi di decisione, quelli a catena di domande
+sì/no della sezione precedente, si usa **TreeSHAP**, che sfrutta la forma
+dell'albero per calcolare i meriti **esatti** senza provare niente a caso.
+Esatti, s'intende, rispetto al modo che si è scelto per «spegnere» una colonna:
+quella resta una scelta anche qui.
+
+Il risultato più leggibile è il grafico **a cascata** della
+{numref}`fig-shap-contributi`: si parte dalla risposta base e si impilano i
+contributi, uno per riga. Quelli che **alzano** la risposta sono barre che vanno
+verso destra, in terracotta (il rosso mattone); quelli che la **abbassano**
+tornano verso sinistra, in teal (il verde-azzurro scuro). Si arriva così alla
+risposta per *questo* cliente, e una singola immagine racconta, voce per voce,
+perché il modello ha deciso così.
 
 `````
 
@@ -350,17 +430,25 @@ usato.
 
 ```{figure} ../figures/shap-contributi.svg
 :name: fig-shap-contributi
-:alt: "Grafico a cascata di una predizione. A sinistra una linea verticale tratteggiata al valore base E[f(x)] uguale a 0,20. Quattro barre orizzontali si impilano dal basso verso l'alto: 'storia = buona' aggiunge +0,18 verso destra in terracotta, 'reddito = alto' aggiunge +0,10, 'eta = 40' aggiunge +0,04, mentre in cima 'debito = alto' sottrae 0,08 tornando verso sinistra in teal. Si arriva all'output f(x) uguale a 0,44, segnato da una seconda linea verticale tratteggiata più a destra della prima."
+:alt: "Grafico a cascata di una singola risposta del modello. A sinistra una linea verticale tratteggiata al valore base E[f(x)] uguale a 0,20. Quattro barre orizzontali si impilano dal basso verso l'alto: 'storia = buona' aggiunge +0,18 verso destra in terracotta, 'reddito = alto' aggiunge +0,10, 'eta = 40' aggiunge +0,04, mentre in cima 'debito = alto' sottrae 0,08 tornando verso sinistra in teal. Si arriva all'output f(x) uguale a 0,44, segnato da una seconda linea verticale tratteggiata più a destra della prima."
 :width: 85%
 
-Un grafico a cascata (*waterfall*) SHAP scompone una singola predizione. Si
-parte dalla riga tratteggiata di sinistra, il **valore base**: la risposta
-media del modello quando non sa niente di questo cliente, che nel disegno è
-scritta $\mathbb{E}[f(x)]$ e qui vale $0{,}20$. Poi si impilano i contributi,
-uno per riga, partendo dal basso: le barre che vanno verso destra, in
-terracotta, alzano la predizione; quella che torna verso sinistra, in teal, la
+Un grafico a cascata (*waterfall*) SHAP scompone una singola risposta. Qui il
+modello risponde con una probabilità, un numero fra $0$ e $1$, e non con un
+punteggio da 0 a 100 come nell'esempio di poco fa: la scala cambia, il
+ragionamento no. Si parte dalla riga tratteggiata di sinistra, la **risposta
+base**, cioè quanto risponde il modello quando di questo cliente non sa niente:
+$0{,}20$. Nel disegno la si trova scritta $\mathbb{E}[f(x)]$, che è il modo dei
+matematici di dire «la media delle risposte del modello su tutti i clienti».
+È una delle scelte possibili, ed è quella che si fa di solito: al posto di
+«niente» si mette la media di tutti, invece di uno zero o dei valori di un
+cliente preso a caso. Cambiando quella scelta si sposta la riga tratteggiata di
+sinistra, e con essa tutte le barre. Poi si impilano i
+contributi, uno per riga, partendo dal basso: le barre che vanno verso destra,
+in terracotta, alzano la risposta; quella che torna verso sinistra, in teal, la
 abbassa. La seconda riga tratteggiata è la risposta per questo cliente,
-$0{,}44$, e la somma dei contributi ci arriva esattamente: è la proprietà che
+$0{,}44$, e la somma dei contributi ci arriva esattamente
+($0{,}20 + 0{,}18 + 0{,}10 + 0{,}04 - 0{,}08 = 0{,}44$): è la proprietà che
 abbiamo chiamato efficienza.
 ```
 
@@ -430,17 +518,17 @@ usa.
 
 ## Regole invece di pesi: gli anchor
 
-LIME e SHAP consegnano un elenco di feature con dei numeri accanto, e per
-leggerlo bisogna saper leggere dei pesi. C'è una forma di spiegazione locale
+LIME e SHAP consegnano un elenco di colonne con dei numeri accanto, e per
+leggerlo bisogna saper interpretare dei numeri. C'è una forma di spiegazione locale
 che non chiede questo sforzo, ed è la più antica che esista: una **regola**.
 
 `````{tab} Elementare
 
 La regola di cui parliamo suona così:
 
-> «Finché il reddito supera i 30 000 € **e** non ci sono insolvenze negli
-> ultimi due anni, questo modello dice sì, qualunque cosa facciano le altre
-> feature.»
+> «Finché il reddito supera i 30 000 € **e** negli ultimi due anni non ci sono
+> state rate non pagate, questo modello dice sì, qualunque cosa facciano le
+> altre colonne.»
 
 Una regola così si chiama **anchor**, àncora, e la differenza con LIME non è
 di stile, è di sostanza. LIME dice quanto ogni feature ha pesato *in questo
@@ -450,16 +538,24 @@ verificabile: si può prendere la regola, cercare altri casi che la
 soddisfano, e controllare se il modello risponde davvero sempre allo stesso
 modo.
 
-Da qui le due misure che accompagnano ogni anchor. La **precisione** dice
-quanto spesso la regola azzecca la risposta del modello; la **copertura** dice
-su quale porzione dei casi la regola si applica. Le due tirano in direzioni
-opposte: una regola con dieci condizioni sarà quasi sempre esatta e varrà
-quasi per nessuno; una con una condizione sola varrà per molti e sbaglierà
-spesso. Un buon anchor è la regola più corta che mantiene la precisione
-richiesta. Quanto debba essere alta quella precisione non lo dicono i dati: lo
-decide chi usa lo strumento, e di solito la si fissa molto in alto, per esempio
-al 95%, cioè la regola deve azzeccare la risposta del modello in almeno
-novantacinque casi su cento fra quelli che ricadono sotto di essa.
+Da qui le due misure che accompagnano ogni anchor, e conviene guardarle con dei
+numeri in mano. La **precisione** dice quanto spesso la regola azzecca la
+risposta del modello: se su cento clienti che soddisfano la regola il modello
+dice sì a novantasette, la precisione è del 97%. La **copertura** dice su
+quanti clienti la regola si applica: se su diecimila clienti duemila hanno
+reddito sopra 30 000 e nessuna rata non pagata, la copertura è del 20%.
+
+Le due tirano in direzioni opposte, ed è ovvio perché: più condizioni si
+aggiungono, più la regola diventa infallibile e meno gente ci ricade sotto. Una
+regola con dieci condizioni sarà quasi sempre esatta e varrà quasi per nessuno;
+una con una condizione sola varrà per molti e sbaglierà spesso. Un buon anchor è
+la regola più corta che tiene la precisione richiesta.
+
+E quanto debba essere alta quella precisione non lo dicono i dati: lo decide chi
+usa lo strumento, e di solito la si fissa molto in alto, per esempio al 95%.
+Attenzione a che cosa promette quel 95%: promette che la regola descrive bene
+**il modello**, non che il modello abbia ragione. Un anchor precisissimo su un
+modello sbagliato descrive perfettamente uno sbaglio.
 
 `````
 
@@ -508,8 +604,10 @@ determinando la risposta».
 
 `````{tab} Elementare
 
-Prendi una cifra scritta a mano che il modello classifica come un $3$. Due
-domande diverse.
+Cambiamo per un attimo mestiere al modello, perché su questo l'esempio si vede
+meglio. Immagina un modello che guarda una cifra scritta a mano, di quelle sulle
+buste da lettera, e deve dire quale cifra è. Su una certa immagine risponde
+$3$. Due domande diverse.
 
 La prima: quali tratti dell'immagine **bastano** perché resti un $3$? Se si
 cancella tutto il resto e restano solo quelli, la risposta non cambia. Sono i
@@ -521,10 +619,12 @@ pertinente**: non c'è nell'immagine, e la sua assenza è parte del motivo per
 cui la risposta è $3$ e non $8$.
 
 È la differenza fra dire «è un tre per via di questi tratti» e «è un tre e non
-un otto perché manca questo». La seconda è il modo in cui le persone
-spiegano davvero le cose, e in medicina è la forma standard del ragionamento:
-una diagnosi si regge tanto sui sintomi presenti quanto su quelli **attesi e
-assenti**.
+un otto perché manca questo». La seconda è il modo in cui le persone spiegano
+davvero le cose, e in medicina è la forma standard del ragionamento: un medico
+che esclude l'influenza non lo fa solo per quello che il paziente ha, lo fa
+anche per quello che non ha (febbre alta sì, ma nessun dolore muscolare e
+nessuna tosse). Una diagnosi si regge tanto sui sintomi presenti quanto su
+quelli **attesi e assenti**.
 
 `````
 
@@ -562,29 +662,42 @@ minima dell'input che conserva la classe da sola.
 
 `````
 
-## In pratica: i valori di Shapley con NumPy
+## In pratica: i valori di Shapley calcolati da zero
 
-La libreria `shap` calcola tutto questo in poche righe, ma per capire davvero
-cosa c'è sotto conviene ricostruire i valori di Shapley **a mano**, con la
-definizione per forza bruta: la media dei contributi marginali su tutti gli
-ordini di ingresso. È lo stesso conto con 10, 30, 20 e 50 di qualche pagina fa,
-fatto su tre colonne invece che su due.
+Esistono librerie che calcolano tutto questo in due righe. Qui sotto c'è il
+programma che lo fa, ma chi non programma può saltarlo a piè pari: subito dopo
+il conto lo rifacciamo per intero a mano, con carta e penna, ed è quella la
+parte che conta.
 
-Il codice qui sotto usa solo NumPy. Per «spegnere» una feature adotta la più
-semplice fra le scelte elencate sopra, la variante *baseline*: al posto del
-valore vero mette quello di un riferimento fisso $\mathbf{r}$, qui tutti zeri.
-Il valore base è quindi $f(\mathbf{r})$, cioè la risposta del modello quando è
-spento tutto, e la proprietà da verificare, l'**efficienza**, diventa
-$\sum_i \phi_i = f(\mathbf{x}) - f(\mathbf{r})$: la somma dei tre meriti deve
-fare esattamente la differenza fra la risposta vera e quella base.
+Per capire cosa c'è sotto conviene infatti rifare il conto **provando tutti gli
+ordini a uno a uno**,
+esattamente come si è fatto con 10, 30, 20 e 50 di qualche pagina fa. Stavolta
+però con tre colonne invece che due, il che cambia una cosa sola e vale la pena
+dirla subito: con due colonne gli ordini erano due, con tre diventano **sei**
+(la prima entrata si può scegliere in tre modi, la seconda nei due rimasti, la
+terza è obbligata: $3 \times 2 \times 1$).
 
-Il modello giocattolo è una formula inventata di tre variabili, scelta perché
-contiene un'**interazione**: il terzo termine, $x_0 x_2$, vale qualcosa solo
-quando le due variabili sono accese insieme, e nessuna delle due lo produce da
-sola. È il caso su cui vale la pena vedere Shapley al lavoro. Qui $x_0$, $x_1$
-e $x_2$ sono le tre **componenti** del caso $\mathbf{x}$, numerate da zero come
-si usa in Python: la «feature 0» è la prima, la «feature 1» la seconda, la
-«feature 2» la terza.
+Il modellino su cui lo faremo è una formula inventata, con tre colonne che
+chiameremo $x_0$, $x_1$ e $x_2$: si numera da zero perché così fa Python, quindi
+la «colonna 0» è la prima. La formula è
+
+$$
+f(x_0, x_1, x_2) = x_0 + 2\,x_1 + x_0\,x_2 .
+$$
+
+Tre addendi. Il primo prende la prima colonna così com'è; il secondo prende la
+seconda e la raddoppia; il terzo moltiplica la prima per la terza, e quindi vale
+qualcosa solo se **tutte e due** sono diverse da zero. Quel terzo addendo è
+un'**interazione**, la stessa cosa che nell'esempio dei prestiti faceva
+arrivare a 50 invece che a 40, ed è il motivo per cui questa formula è stata
+scelta: è il caso in cui i meriti non sono ovvi.
+
+Per «spegnere» una colonna useremo la più semplice delle tre scelte elencate
+sopra: al posto del suo valore vero ci mettiamo uno zero. Il caso da spiegare è
+quello in cui tutte e tre le colonne valgono $1$; la risposta base, cioè quella
+a tutto spento, è $f(0,0,0) = 0$. La proprietà da verificare alla fine è
+l'efficienza: la somma dei tre meriti deve fare esattamente la risposta vera
+meno la risposta base, cioè $f(1,1,1) - f(0,0,0) = 4 - 0 = 4$.
 
 ```python
 import itertools
@@ -631,32 +744,58 @@ somma dei phi:      4.0
 f(x) - f(base):     4.0
 ```
 
-Il conto racconta esattamente cosa fa Shapley, e per leggerlo servono **due**
-delle quattro proprietà, in fila.
+Tre numeri: $1{,}5$, $2{,}0$ e $0{,}5$. Da dove escono? Verrebbe da aspettarsi
+$1$ e $2$, che sono i due numeri scritti nella formula, e niente per la terza
+colonna, che un numero suo non ce l'ha. Il modo più pulito di capire perché non
+è così è rifare il conto con carta e penna, usando tre delle quattro proprietà,
+una dopo l'altra.
 
-La prima è l'**additività**: i valori di Shapley di
-$f = x_0 + 2x_1 + x_0x_2$ sono la somma dei valori dei tre addendi presi come
-giochi separati, e i tre pezzi valgono $(1,\,0,\,0)$, $(0,\,2,\,0)$ e
-$(0{,}5,\,0,\,0{,}5)$. Da qui si legge subito la feature 1: compare solo nel
-secondo addendo, con coefficiente $2$ e nessuna interazione, e prende $2{,}0$,
-tutto suo.
+La prima è l'**additività**, quella dell'esempio delle due pagelle: un conto che
+è una somma si può spezzare, fare i conti sui pezzi e sommare i risultati. Qui i
+pezzi sono i tre addendi, e su ciascuno il merito si vede a occhio.
 
-La seconda è la **simmetria**, ma va applicata dove vale. Nel terzo gioco, e
-solo lì, le feature 0 e 2 sono intercambiabili: dentro il termine $x_0x_2$
-fanno esattamente lo stesso mestiere, e chi contribuisce allo stesso modo
-riceve lo stesso, quindi quel punto si divide a metà. Ecco perché la feature 0
-arriva a $1{,}5$ (il suo $1$ del primo addendo più $0{,}5$ dell'interazione) e
-la feature 2 si ferma a $0{,}5$, non avendo altre entrate. Attenzione a non
-applicare la simmetria al gioco **intero**: lì le due feature non sono affatto
-intercambiabili, e infatti $\phi_0 = 1{,}5 \neq 0{,}5 = \phi_2$. È l'additività
-a permettere di spezzare il conto in tre, ed è solo dopo averlo spezzato che la
-simmetria chiude il pezzo dove serve.
+- $x_0$ da solo. Accendere la prima colonna porta questo addendo da $0$ a $1$,
+  in qualunque ordine, e le altre due colonne non lo toccano mai. Meriti:
+  $(1,\;0,\;0)$.
+- $2\,x_1$ da solo. Stessa cosa, ma il salto è di $2$, e tocca alla seconda
+  colonna. Meriti: $(0,\;2,\;0)$.
+- $x_0 x_2$ da solo. Qui serve il conto vero. Questo addendo vale $1$ se le
+  colonne $0$ e $2$ sono accese entrambe, e $0$ in tutti gli altri casi; la
+  colonna $1$ non lo tocca mai, quindi è un **giocatore nullo** e la si può
+  togliere di mezzo, restando con un conto a due giocatori come quello dei
+  prestiti. Se entra prima la $0$: non aggiunge niente (l'altra è ancora
+  spenta), poi entra la $2$ e aggiunge $1$. Se entra prima la $2$: non aggiunge
+  niente, poi entra la $0$ e aggiunge $1$. Media per la colonna $0$:
+  $(0+1)/2 = 0{,}5$. Media per la $2$: uguale. Meriti:
+  $(0{,}5,\;0,\;0{,}5)$.
 
-E la somma $1{,}5 + 2{,}0 + 0{,}5 = 4{,}0$ coincide con l'ultima riga stampata,
-$f(\mathbf{x}) - f(\mathbf{r})$:
-l'**efficienza** è verificata numericamente. Nella pratica non si enumerano
-tutti gli ordini (sono $n!$) ma si campionano, o si usa TreeSHAP se il modello
-è un albero; la definizione, però, è questa.
+Adesso si sommano colonna per colonna: la prima prende $1 + 0 + 0{,}5 = 1{,}5$,
+la seconda $0 + 2 + 0 = 2$, la terza $0 + 0 + 0{,}5 = 0{,}5$. Sono i tre numeri
+stampati dal programma, ottenuti senza programma. E la terza colonna, che nella
+formula non aveva un numero suo, prende comunque mezzo punto: se l'è guadagnato
+tutto nell'interazione.
+
+La terza proprietà usata è la **simmetria**, e vale la pena vedere dove è
+entrata: nel terzo pezzo, e solo lì. Dentro $x_0x_2$ le due colonne fanno
+esattamente lo stesso mestiere (nessuna delle due vale niente senza l'altra), e
+chi contribuisce allo stesso modo riceve lo stesso: da qui il mezzo punto a
+testa. Applicarla al conto **intero** sarebbe invece un errore, perché lì le due
+colonne non fanno affatto lo stesso mestiere, e infatti prendono $1{,}5$ e
+$0{,}5$. È l'additività a permettere di spezzare, ed è solo dopo aver spezzato
+che la simmetria si può usare, nel pezzo in cui vale.
+
+Resta la quarta, l'**efficienza**, che è quella che il programma verifica nelle
+ultime due righe: $1{,}5 + 2{,}0 + 0{,}5 = 4{,}0$, che è
+esattamente la risposta vera meno la risposta base. Il conto torna.
+
+Un'ultima nota pratica sul costo, e conviene chiarire un punto che altrimenti
+confonde: la stessa fatica si può contare in due modi, gli ordini di ingresso
+oppure i gruppi di colonne da provare, e crescono a valanga tutti e due. Qui gli
+ordini sono sei e i gruppi otto. Con dieci colonne gli ordini superano i tre
+milioni; con venti sono più di due miliardi di miliardi; e con trenta i gruppi
+passano il miliardo, che è il numero citato all'inizio della sezione. Nella pratica quindi non si provano tutti: se ne prova un campione
+a caso, oppure si usa TreeSHAP quando il modello è fatto di alberi. La
+definizione, però, è questa.
 
 `````{tab} Elementare
 
@@ -667,24 +806,25 @@ tutti gli ordini (sono $n!$) ma si campionano, o si usa TreeSHAP se il modello
   modello può essere intricato dappertutto e semplice qui accanto, come la
   strada di montagna che da vicino sembra dritta.
 - **LIME** fabbrica tanti casi-fantasma, chiede al modello che cosa
-  risponderebbe per ciascuno, e a quella nuvola adatta una retta contando di
-  più i fantasmi più simili al caso da spiegare. Il «solo qui vicino» sta tutto
-  in quel conteggio, non nel modo in cui i fantasmi sono nati. I pesi della
-  retta sono la spiegazione. Funziona con qualunque modello, ma è
-  **instabile**: rilanciato sullo stesso caso dà numeri diversi, e cambia anche
-  a seconda di quanto largo si prende il vicinato e di come si è deciso di
-  spezzettare l'input in parti.
+  risponderebbe per ciascuno, e su quella nuvola costruisce un modellino a
+  somma, contando di più i fantasmi più simili al caso da spiegare. Il «solo
+  qui vicino» sta tutto in quel conteggio, non nel modo in cui i fantasmi sono
+  nati. I numeri di quella somma sono la spiegazione. Funziona con qualunque
+  modello, ma è **instabile**: rilanciato sullo stesso caso dà numeri diversi, e
+  cambia anche a seconda di quanto largo si prende il vicinato e di come si è
+  deciso di spezzettare il caso in parti.
 - I **valori di Shapley** (una formula del 1953, nata per dividere fra i soci
   il guadagno di un'impresa) ripartiscono fra le colonne lo scarto fra la
   risposta su questo caso e la **risposta base**, cioè quella che il modello dà
   quando non sa niente. La quota di ogni colonna è la media di quanto aggiunge,
-  su tutti gli ordini in cui le colonne possono entrare in campo: è il conto
-  con 10, 30, 20 e 50. Sono l'unico modo di dividere che rispetta quattro
-  richieste ragionevoli (il conto torna senza avanzi; chi fa lo stesso prende
-  uguale; chi non aggiunge mai niente prende zero; due modelli messi insieme
-  sommano i meriti), una volta però stabilito che cosa significa «non far
-  sapere» una colonna al modello: deciderlo in un modo o nell'altro sposta la
-  risposta base, e con essa tutti i meriti.
+  su tutti gli ordini in cui le colonne possono entrare in campo: è il conto con
+  10, 30, 20 e 50.
+- Sono l'unico modo di dividere che rispetta quattro richieste ragionevoli: il
+  conto torna senza avanzi; chi fa lo stesso lavoro prende uguale; chi non
+  aggiunge mai niente prende zero; e un conto che è una somma si può spezzare in
+  pezzi, fare i conti sui pezzi e sommare. Con un però: prima bisogna stabilire
+  che cosa significa «non far sapere» una colonna al modello, e deciderlo in un
+  modo o nell'altro sposta la risposta base, e con essa tutti i meriti.
 - **SHAP** è il modo di calcolarli in fretta, perché provare tutte le
   combinazioni è impossibile: ne prova solo alcune, se il modello è una scatola
   chiusa qualsiasi, oppure sfrutta la forma degli alberi per farlo in modo
@@ -694,9 +834,10 @@ tutti gli ordini (sono $n!$) ma si campionano, o si usa TreeSHAP se il modello
   d'uscita concreta, purché resti vicina alla situazione reale e riguardi
   qualcosa su cui si può davvero agire.
 - Gli **anchor** sostituiscono i numeri con una **regola** («finché il reddito
-  supera 30 000, è sì») e ne dichiarano i limiti: quanto spesso azzecca la
-  risposta del modello, e su quanti casi si applica. Dicono **fin dove** la
-  risposta non cambia, che è la cosa che LIME non dice.
+  supera 30 000, è sì») e ne dichiarano i limiti: la **precisione**, quanto
+  spesso azzecca la risposta del modello, e la **copertura**, su quanti casi si
+  applica. Dicono **fin dove** la risposta non cambia, che è la cosa che LIME
+  non dice. Attenzione: azzeccare il modello non vuol dire aver ragione.
 - I **positivi** e i **negativi pertinenti** sono le due domande del tre e
   dell'otto: quali tratti bastano perché resti un tre, e quale tratto, se ci
   fosse, lo farebbe diventare un otto. La seconda è il modo in cui le persone

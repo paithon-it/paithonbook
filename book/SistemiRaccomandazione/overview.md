@@ -6,12 +6,18 @@ sistema di raccomandazione, Cinematch.
 
 Del 10% *che cosa*, conviene dirlo subito, perché la gara si gioca tutta lì.
 Cinematch prevede quante stelle un utente darà a un film, e ogni previsione
-sbaglia di un po'. Il metro della gara è quanto sbaglia, e si misura in stelle:
-un errore medio, calcolato però in un modo che punisce le cantonate più di
-quanto premi le mezze misure. Ha un nome che ritroverai ovunque, **RMSE**, e il
-capitolo di Machine Learning lo definisce per esteso. Cinematch stava a
-$0{,}9525$ stelle: togliere il 10% vuol dire scendere sotto $0{,}8572$, ed è
-quella la soglia dell'assegno.
+sbaglia di un po'. Il metro della gara è quanto sbaglia, e si misura in stelle.
+Non è però la semplice media degli errori. Ogni errore viene prima elevato al
+quadrato, così una cantonata da tre stelle pesa nove volte un errore da una
+stella ($3^2 = 9$ contro $1^2 = 1$); poi si fa la media di quei quadrati; e
+solo alla fine se ne prende la radice, che non annulla i quadrati, perché in
+mezzo c'è la media, e serve a riportare il risultato sulla scala delle stelle.
+Con due sole previsioni, sbagliate di 1 e di 3 stelle, il conto fa
+$(1 + 9) / 2 = 5$ e poi $\sqrt{5} \approx 2{,}24$: più della media semplice,
+che sarebbe 2, ed è proprio quello che si voleva. Questo metro ha un nome che
+ritroverai ovunque, **RMSE**, e il capitolo di Machine Learning lo definisce per
+esteso. Misurato così, l'errore di Cinematch valeva $0{,}9525$ stelle: togliere
+il 10% vuol dire scendere sotto $0{,}8572$, ed è quella la soglia dell'assegno.
 
 Per partecipare basta scaricare un dataset che all'epoca sembra sterminato:
 poco più di 100 milioni di voti, da una a cinque stelle, dati da circa 480.000
@@ -20,7 +26,7 @@ squadre, forum incandescenti, ricercatori universitari e ingegneri che di
 notte inseguono decimali. E dura molto più del previsto, quasi tre anni. Solo
 il 21 settembre 2009 Netflix consegna l'assegno al team **BellKor's Pragmatic
 Chaos**, che chiude a $0{,}8567$ stelle: il 10,06% meglio di Cinematch, cioè
-la soglia passata per un pelo. Sul filo di lana: i rivali di
+la soglia superata per un soffio. E sul filo di lana anche in gara: i rivali di
 *The Ensemble* erano arrivati allo stesso punteggio, ma avevano consegnato
 venti minuti più tardi.
 
@@ -44,9 +50,9 @@ Una parola sul nome, prima di partire, perché in italiano «raccomandazione»
 significa due cose e una delle due è la spintarella. Qui vale l'altra, quella
 del consiglio: raccomandare è consigliare, e un sistema di raccomandazione è
 una macchina che consiglia. Il senso brutto, però, non è del tutto fuori luogo.
-Una macchina che decide cosa vedi ti sta servendo, o ti sta spingendo? L'ultima
-sezione del capitolo affronta la domanda, e conviene leggere tutto il resto
-tenendola in mano.
+Una macchina che decide cosa vedi ti sta servendo, o ti sta spingendo? Le
+ultime pagine del capitolo affrontano la domanda, e conviene leggere tutto il
+resto tenendola in mano.
 
 ## Non «qual è il film più bello», ma «quale piacerà a te»
 
@@ -109,8 +115,9 @@ dieci secondi. È abbondante (ogni gesto ne produce) e per certi versi più
 sincero delle dichiarazioni: puoi *dire* che ami i documentari, ma la
 cronologia rivela le serie poliziesche. Ha però un difetto: è ambiguo. Un
 click non è una promozione (magari il film ti ha deluso), e un film ignorato
-non è una bocciatura: forse non l'hai mai visto passare. Per abbondanza,
-l'implicito domina i sistemi reali; per ambiguità, richiede più cautela.
+non è una bocciatura: forse non l'hai mai visto passare. Nei sistemi veri è
+l'implicito a farla da padrone, perché ce n'è tantissimo; ma proprio perché è
+ambiguo va maneggiato con più cautela.
 
 `````
 
@@ -138,37 +145,39 @@ Visto da lontano sembra il solito apprendimento supervisionato: dati storici
 in ingresso, una predizione in uscita. Visto da vicino, tre cose lo rendono
 un animale a parte.
 
-La prima si vede guardando la materia prima, che è una tabella: un utente per
-riga, un film per colonna, i voti nelle celle, come in
+La prima si vede guardando la materia prima, che è una tabella: una riga per
+ogni persona iscritta (nel gergo del settore, un **utente**), una colonna per
+ogni film, i voti nelle celle, come in
 {numref}`fig-matrice-utenti-film`. Il punto è quante celle sono **vuote**. Nel
 Netflix Prize i 100 milioni di voti sembrano tanti, ma la tabella completa
 avrebbe $480.000 \times 17.770 \approx 8{,}5$ miliardi di celle: cento milioni
 su otto miliardi e mezzo fa l'1,2%, ed è quanto ne era piena. Nei cataloghi
-industriali di oggi, con milioni di oggetti, si
-supera facilmente il 99,9% di vuoto. Quel vuoto ha un nome, **sparsità**, e
-raccomandare significa riempirlo in modo sensato.
+industriali di oggi, con milioni di oggetti, si scende facilmente sotto lo
+0,1% di celle piene. Quel vuoto ha un nome, **sparsità**, e raccomandare
+significa riempirlo in modo sensato.
 
 ```{figure} ../figures/matrice-utenti-film.svg
 :name: fig-matrice-utenti-film
 :alt: Griglia di sei utenti per otto film in cui poche celle contengono un voto da uno a cinque e tutte le altre un punto interrogativo; una cella evidenziata in terracotta indica il voto da prevedere.
 :width: 90%
 
-La matrice utenti × film: poche celle di cui conosciamo il voto (le cornici
-distinguono i voti alti, 4 e 5, dai bassi), un oceano di punti interrogativi.
-Prevedere il valore di una cella vuota (qui, il voto di Anna al film D) è
-l'intero problema.
+La tabella dei voti: poche celle di cui conosciamo il voto (le cornici
+distinguono i voti alti, 4 e 5, dai bassi), e in quattro celle su cinque un
+punto interrogativo. Prevedere il valore di una cella vuota (qui, il voto di
+Anna al film D) è l'intero problema.
 ```
 
 La seconda anomalia è che **non esiste una «risposta giusta» da guardare**.
-Un classificatore di cifre si può confrontare con l'etichetta vera. Qui invece
+Un classificatore di cifre si può confrontare con l'etichetta vera, perché
+quell'immagine o è un 7 o non lo è, e qualcuno lo sa. Qui invece
 la domanda riguarda un fatto che non è avvenuto: *se* ti avessimo mostrato
 quel film, ti sarebbe piaciuto? Una domanda così si dice **controfattuale**, e
 per la stragrande maggioranza delle coppie utente-film non avrà mai una
-risposta osservata. La valutazione deve allora arrangiarsi con un ripiego: si
-nasconde una parte delle interazioni che si conoscono, e si guarda se il
-modello le ritrova. *Quale* parte si nasconde non è un dettaglio di
-procedura: è la decisione che sposta i risultati più di quasi ogni scelta di
-modello, e la riprenderemo quando parleremo di come si misura una classifica.
+risposta osservata. Per giudicare un modello bisogna allora arrangiarsi con un
+ripiego: si nasconde una parte delle interazioni che si conoscono, e si guarda
+se il modello le ritrova. *Quale* parte si nasconde non è un dettaglio di
+procedura. È la decisione che sposta i risultati più di quasi ogni scelta di
+modello, e ci torneremo quando parleremo di come si misura una classifica.
 
 La terza è la più insidiosa: **il sistema influenza i dati che raccoglie**.
 
@@ -206,38 +215,41 @@ non avrebbe scelto.
 Due sezioni, dall'idea classica a quella neurale.
 
 La prima muove da un'idea che usiamo tutti i giorni senza chiamarla così:
-**chiedere all'amico giusto**. Vedremo come si rende calcolabile (il metodo si
-chiama *filtraggio collaborativo*), perché la versione ingenua si arena sul
-vuoto della tabella, e come se ne esce riassumendo persone e film in poche
-schede di numeri: è l'idea che ha vinto il Netflix Prize, e la scriveremo in
-PyTorch in una ventina di righe.
+**chiedere all'amico giusto**. Vedremo come si rende calcolabile, e il metodo
+si chiama *filtraggio collaborativo*. Vedremo poi perché la versione ingenua si
+arena sul vuoto della tabella, e come se ne esce: riassumendo ogni persona e
+ogni film in una scheda di pochi numeri. È l'idea che ha vinto il Netflix
+Prize, e la scriveremo in PyTorch in una ventina di righe.
 
-La seconda porta le reti neurali dentro il problema, e la risposta non è quella
-che ci si aspetta. Proveremo a sostituire il confronto fra le schede con una
-rete (e vedremo che non conviene); ridisegneremo la tabella come un disegno di
-pallini e linee, dove consigliare vuol dire indovinare le linee che mancano;
-cambieremo obiettivo, perché quando non ci sono voti non si prevede un numero,
-si mette in ordine una vetrina, e allora serve anche un altro modo di misurare
-se la vetrina è buona. Chiuderemo con il funzionamento vero della macchina che
-ti consiglia i video, e con la domanda che le sta sotto: quando un consiglio
+La seconda porta le reti neurali dentro il problema. La domanda è ovvia (una
+rete farà meglio del confronto fra due schede?) e la risposta non è quella che
+ci si aspetta. Proveremo a sostituire il confronto fra le schede con una
+rete, e vedremo che non conviene. Ridisegneremo poi la tabella come un disegno
+di pallini e linee, dove consigliare vuol dire indovinare le linee che mancano.
+Cambieremo infine obiettivo: quando non ci sono voti non si prevede un numero,
+si mette in ordine una vetrina, e per una vetrina serve anche un altro modo di
+misurare se è buona. Chiuderemo con il funzionamento vero della macchina che ti
+consiglia i video, e con la domanda che le sta sotto: quando un consiglio
 smette di essere un consiglio.
 
 ```{admonition} Da ricordare
 :class: important
-- Consigliare non è classificare: **non esiste una risposta valida per tutti**,
-  e lo stesso sistema deve produrre una classifica diversa per ogni persona.
+- Consigliare non è riconoscere: **non esiste una risposta valida per tutti**,
+  e lo stesso sistema deve mettere le cose in un ordine diverso per ogni
+  persona.
 - Il carburante sono le **interazioni**: o dichiarate (le stelle, il pollice in
   su: chiare ma rarissime) o lasciate senza pensarci (click, acquisti, minuti
   di visione: abbondanti ma ambigue, perché un titolo ignorato non è una
   bocciatura). Nei sistemi veri dominano le seconde.
 - Il dato di partenza è una **tabella quasi tutta vuota**: nel Netflix Prize
-  era piena all'1,2%, nei cataloghi di oggi si va sotto lo 0,1%. Consigliare
-  vuol dire riempire quei buchi in modo sensato.
+  era piena all'1,2%, nei cataloghi di oggi si scende sotto lo 0,1% di celle
+  piene. Consigliare vuol dire riempire quei buchi in modo sensato.
 - **Non c'è una risposta giusta da guardare**: nessuno saprà mai se ti sarebbe
   piaciuto il film che non hai visto, e per valutare si nasconde una parte di
   ciò che si sa, per poi vedere se il modello la ritrova.
-- **Il sistema si fabbrica da solo i dati con cui impara**: mostra, e ciò che
-  mostra è ciò che verrà cliccato. È il cameriere che consiglia sempre gli
+- **Il sistema si fabbrica da solo i dati con cui impara**: mostra quello che
+  ha scelto lui, e ciò che mostra è ciò che verrà cliccato. È il cameriere che
+  consiglia sempre gli
   stessi tre piatti, ed è il problema che questo capitolo si porta dietro fino
   all'ultima riga.
 ```

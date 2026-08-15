@@ -1,39 +1,57 @@
 # Un canale solo: attaccare e difendere un modello di linguaggio
 
 Nell'ottobre del 1971 la rivista *Esquire* pubblica un reportage di Ron
-Rosenbaum su un gruppo di appassionati che telefonava gratis in tutto il mondo.
-Uno dei suoi personaggi, John Draper, doveva il soprannome a un fischietto di
-plastica che si trovava nelle scatole dei cereali Cap'n Crunch: soffiato dentro
-la cornetta emetteva una nota a 2600 hertz. Quella nota era esattamente il tono
-con cui, all'epoca, le due macchine che smistavano le telefonate si dicevano fra
-loro che un collegamento a lunga distanza era libero. Alla rete il fischio non
-arrivava come un suono dentro una conversazione: arrivava come un **comando**,
-perché le parole delle persone e i comandi delle macchine viaggiavano sullo
-stesso paio di fili. Non c'era nessun errore di programmazione da correggere.
-C'era un canale solo.
+Rosenbaum su un gruppo di appassionati che telefonava gratis in tutto il
+mondo. Uno dei suoi personaggi, John Draper, doveva il soprannome a un
+fischietto di plastica che si trovava nelle scatole dei cereali Cap'n Crunch:
+soffiato dentro la cornetta emetteva una nota a 2600 hertz. Quella nota era
+esattamente il tono con cui, all'epoca, le due macchine che smistavano le
+telefonate si dicevano fra loro che una linea a lunga distanza era di nuovo
+libera.
 
-Il problema la rete telefonica lo ha risolto nel giro di un decennio, nell'unico
-modo davvero strutturale che esista: mandando i comandi delle macchine (in gergo
-la **segnalazione**: non «segnalare un problema», ma i messaggi che gli
-apparati si scambiano per far funzionare la telefonata) su un filo **separato**
-da quello della voce. Da allora si può fischiare quanto si vuole nella cornetta:
-il fischio resta un suono, perché i comandi passano da un'altra parte.
+Il trucco stava tutto lì, e aveva un passaggio in più di quanto sembri. Prima
+si chiamava un numero che non costava niente, per esempio il numero verde di
+un'azienda dall'altra parte del paese: la centrale di partenza segnava sul
+nastro della contabilità una telefonata gratuita, e quella riga non sarebbe più
+cambiata. Poi, mentre di là il telefono squillava ancora, si fischiava. La
+macchina lontana sentiva «linea libera», concludeva che chi aveva chiamato
+avesse riagganciato e smetteva di far squillare; il collegamento però restava
+aperto, perché dalla parte di chi chiamava la cornetta era ancora alzata. A
+quel punto quella macchina era lì che aspettava di sentirsi dire dove mandare
+la chiamata, e con altri toni le si dettava un numero qualunque, a New York
+come a Roma. A fine mese sul conto compariva la sola cosa che il nastro avesse
+mai registrato: una telefonata a un numero gratuito. Chi finì arrestato,
+racconta il reportage, aveva fatto l'unico errore che si potesse fare, e cioè
+partire da un numero che gratuito non era. Alla rete il fischio non era arrivato come un suono dentro una
+conversazione: era arrivato come un **comando**, perché le parole delle persone
+e i comandi delle macchine viaggiavano sullo stesso paio di fili. Non c'era
+nessun errore di programmazione da correggere. C'era un canale solo.
+
+Il problema la rete telefonica lo ha risolto nel giro di un decennio,
+nell'unico modo davvero strutturale che esista: mandando i comandi delle
+macchine (in gergo la **segnalazione**: non «segnalare un problema», ma i
+messaggi che gli apparati si scambiano per far funzionare la telefonata) su un
+filo **separato** da quello della voce. Da allora si può fischiare quanto si
+vuole nella cornetta: il fischio resta un suono, perché i comandi passano da
+un'altra parte.
 
 La sezione sulla privacy e la robustezza ha mostrato come si inganna la *vista*
-di una rete neurale, con perturbazioni invisibili all'occhio. Questa affronta
+di una rete neurale, con manomissioni invisibili all'occhio. Questa affronta
 la stessa domanda per i modelli di linguaggio, e il quadro cambia in due modi.
-Il primo: l'attacco non è un rumore impercettibile, è prosa leggibile da
-chiunque, e non serve alcun gradiente per scriverla. Il secondo, meno
-rassicurante: il canale separato, per ora, non c'è.
+Il primo: l'attacco non è un rumore impercettibile, è prosa che chiunque può
+leggere, e per scriverla non serve né conoscere il modello né saper fare i
+conti. Il secondo, meno rassicurante: il canale separato, per ora, non c'è.
 
 ## Il difetto sta nel canale, non nel modello
 
-Un modello di linguaggio riceve una sequenza di token e ne predice la
-continuazione. Dentro quella sequenza ci sono, mescolate, le istruzioni di chi
-gestisce il servizio, la domanda dell'utente e i dati che il sistema ha
-raccolto per rispondere: una pagina scaricata, un documento, il corpo di
-un'email. Sono cose profondamente diverse per **provenienza** e per la fiducia
-che meritano, e sono la stessa identica cosa per il modello: token in fila.
+Un modello di linguaggio riceve un testo e indovina come continua. Il testo non
+lo legge come lo leggiamo noi: lo spezza prima in pezzetti (i **token**, che
+sono più o meno le parole o le sillabe) e a ciascun pezzetto associa un numero.
+Dentro quella fila di numeri ci sono, mescolate, le istruzioni di chi gestisce
+il servizio, la domanda dell'utente e i dati che il sistema ha raccolto per
+rispondere: una pagina scaricata, un documento, il corpo di un'email. Sono cose
+profondamente diverse per **provenienza** e per la fiducia che meritano, e sono
+la stessa identica cosa per il modello: token in fila.
 
 `````{tab} Elementare
 
@@ -86,19 +104,20 @@ nel fatto che il ricevente ricostruisce la distinzione fra istruzione e dato
 
 `````
 
-Vale la pena rendere concreta la differenza fra i due modi di trasportare quel
-confine, e l'esperimento si può raccontare prima ancora di guardarlo: facciamo
-scrivere a un estraneo, dentro il suo testo, la stessa formula magica che usa il
-padrone di casa per dare ordini, e guardiamo se il computer produce la stessa
-identica cosa nei due casi. La prima volta sì, ed è il guasto. La seconda no,
-perché quella formula magica il programma se la tiene per sé.
+La differenza fra i due modi di trasportare quel confine si rende concreta con
+un esperimento, che si può raccontare prima ancora di guardarlo: facciamo
+scrivere a un estraneo, dentro il suo testo, la stessa formula magica che usa
+il padrone di casa per dare ordini, e guardiamo se il computer produce la
+stessa identica cosa nei due casi. La prima volta sì, ed è il guasto. La
+seconda no, perché quella formula magica il programma se la tiene per sé.
 
-Nel codice che segue un tokenizzatore giocattolo (un programmino che spezza una
-frase in pezzi e dà a ciascuno un numero, come fa un modello vero prima di
-leggere) compone la stessa conversazione in due modi: nel primo i marcatori di
-ruolo sono **scritti nella stringa** e poi riletti da lì; nel secondo li emette
-solo il programma, e il testo dei messaggi non può fabbricarli perché gli
-identificativi riservati sono fuori dalla sua portata.
+La formula magica, nel codice che segue, è un **marcatore di ruolo**: un
+cartellino tipo `<|sistema|>` che si mette davanti a un pezzo di testo per dire
+chi lo ha scritto. Un tokenizzatore giocattolo compone la stessa conversazione
+in due modi. Nel primo i cartellini vengono scritti dentro il testo e poi
+riletti da lì, e allora chiunque sappia scrivere può fabbricarne uno. Nel
+secondo li mette solo il programma, e il testo dei messaggi non ha modo di
+produrli, perché i numeri riservati ai cartellini sono fuori dalla sua portata.
 
 ```python
 # Un tokenizzatore giocattolo: gli identificativi 1-4 sono riservati ai
@@ -161,61 +180,65 @@ marcatori fuori canale: ostile == autentica -> False
 le parole del comando arrivano comunque al modello -> True
 ```
 
-La prima riga è il guasto in forma pura: quando i marcatori viaggiano dentro il
-testo (è questo che si intende con «in banda», cioè dentro lo stesso canale
-delle parole), la sequenza di numeri prodotta da un documento ostile è
-**identica** a quella di una conversazione in cui quell'ordine l'aveva impartito
-davvero il gestore del sistema, e nessun modello può distinguere due input
-uguali. La seconda riga
-dice che una parte del problema si risolve, ed è il motivo per cui i formati di
-chat moderni riservano identificativi speciali che il testo dell'utente non
-deve poter produrre (garantirlo spetta a chi tokenizza: il contenuto va
-codificato senza mai interpretare quei marcatori, altrimenti il rimedio salta).
-La terza dice fin dove arriva quel rimedio: il **falso marcatore** è
-bloccato, la frase in prosa no. Continua ad arrivare al modello, dentro la
-regione dei dati, e continua a essere una richiesta scritta in una lingua che
-lui capisce benissimo.
+La prima riga è il guasto in forma pura. Quando i cartellini viaggiano dentro
+il testo, la fila di numeri prodotta da un documento ostile è **identica** a
+quella di una conversazione in cui quell'ordine lo aveva impartito davvero il
+gestore del sistema. Non si somigliano: sono la stessa cosa, e nessun modello,
+per quanto bravo, può distinguere due ingressi identici. Viaggiare così,
+mescolati alle parole invece che su una via propria, ha un nome vecchio in
+informatica: si dice che il cartellino viaggia **in banda**.
+
+La seconda riga dice che una parte del problema si risolve, ed è il motivo per
+cui i formati di chat moderni riservano numeri speciali che il testo di chi
+scrive non deve poter produrre. Il rimedio però regge solo se chi spezza il
+testo in pezzetti non interpreta mai quei cartellini quando li incontra nel
+contenuto: basta una svista lì e la porta si riapre.
+
+La terza riga dice fin dove arriva quel rimedio, ed è la riga che conta: il
+cartellino falso è bloccato, la frase in prosa no. Continua ad arrivare al
+modello, dentro la regione dei dati, e continua a essere una richiesta scritta
+in una lingua che lui capisce benissimo.
 
 ## Due minacce, due vittime
 
 Da questo unico difetto discendono due attacchi che vengono spesso confusi e
-che invece hanno geometrie diverse, e quindi difese e gravità diverse.
+che invece hanno forme diverse, e quindi difese e gravità diverse. Portano due
+nomi inglesi, che restano in inglese perché così si chiamano ovunque, ma che
+tradotti si confondono molto meno.
+
+Il primo è il **jailbreak**, alla lettera «evasione dal carcere», ed è l'utente
+che scappa dalle regole. È lui stesso a spingere: vuole dal modello un
+comportamento che chi lo ha addestrato ha cercato di escludere, e lo cerca
+riformulando la propria richiesta finché non passa. La vittima, semmai, è chi
+ha messo il modello a disposizione; il confine violato è fra ciò che il
+fornitore consente e ciò che l'utente pretende.
+
+Il secondo è la **prompt injection**, «iniezione nel prompt», ed è un ordine
+infilato dentro i dati da qualcun altro. Qui l'utente è innocente. L'istruzione
+ostile arriva da un terzo, nascosta dentro i dati che il sistema legge per
+conto dell'utente: una pagina web, un documento condiviso, il corpo di
+un'email, il commento in un file di codice. La vittima è l'utente legittimo, e
+il confine violato è fra chi comanda il sistema e chi ha soltanto scritto un
+testo che il sistema è passato a leggere.
 
 ```{figure} ../figures/jailbreak-e-prompt-injection.svg
 :name: fig-jailbreak-injection
 :alt: "Due schemi affiancati. A sinistra il jailbreak, attacco diretto: l'utente coincide con l'attaccante, manda un prompt manipolato al modello e ne aggira le regole; un solo attore, davanti allo schermo. A destra la prompt injection, attacco iniettato: l'utente è la vittima, un attaccante distinto nasconde un'istruzione dentro un contenuto esterno, il modello la legge ed esegue l'ordine iniettato; l'attaccante non parla mai col modello, lascia l'ordine nei dati."
 :width: 100%
 
-Due geometrie diverse. A sinistra chi attacca e chi usa il sistema sono la
-stessa persona; a destra sono due, e quella che parla col modello è la vittima.
+Chi c'è in scena, nei due casi. A sinistra il jailbreak: chi attacca e chi usa
+il sistema sono la stessa persona, davanti allo stesso schermo. A destra la
+prompt injection: sono due, e quella che parla col modello è la vittima.
 ```
 
-Il confronto di {numref}`fig-jailbreak-injection` chiarisce perché le difese
-non si scambino. Contro il jailbreak si può irrigidire il modello, perché
-l'avversario è dall'altra parte dello schermo e chiede. Contro la prompt
-injection irrigidire il modello serve poco: l'ordine ostile entra insieme ai
-dati che il sistema *deve* leggere, e chi lo ha scritto non è mai in
-conversazione.
+Il confronto di {numref}`fig-jailbreak-injection` mostra perché le difese non
+si scambiano. Contro il jailbreak si può irrigidire il modello, perché
+l'avversario è dall'altra parte dello schermo e sta chiedendo qualcosa. Contro
+la prompt injection irrigidire il modello serve poco: l'ordine ostile entra
+insieme ai dati che il sistema *deve* leggere, e chi lo ha scritto non è mai in
+conversazione con nessuno.
 
-Le due parole restano in inglese perché così si chiamano in letteratura, ma
-tradurle aiuta a non confonderle: *jailbreak* vuol dire alla lettera «evasione
-dal carcere» ed è l'utente che scappa dalle regole; *prompt injection* vuol dire
-«iniezione nel prompt» ed è un ordine infilato dentro i dati da qualcun altro.
-
-Nel **jailbreak** è l'utente stesso a spingere: vuole dal modello un
-comportamento che chi lo ha addestrato ha cercato di escludere, e lo cerca
-riformulando la propria richiesta. La vittima, semmai, è chi ha messo il
-modello a disposizione; il confine violato è fra ciò che il fornitore consente
-e ciò che l'utente pretende.
-
-Nella **prompt injection** l'utente è innocente. L'istruzione ostile arriva da
-un terzo, nascosta dentro i dati che il sistema legge per conto dell'utente:
-una pagina web, un documento condiviso, il corpo di un'email, il commento in un
-file di codice. La vittima è l'utente legittimo, e il confine violato è fra chi
-comanda il sistema e chi ha soltanto scritto un testo che il sistema è passato
-a leggere.
-
-La seconda è più grave per una ragione che conviene mettere in chiaro:
+La seconda è più grave, e la ragione va messa in chiaro:
 **l'attaccante non ha bisogno di parlare con il sistema**. Gli basta lasciare
 il proprio testo dove prima o poi qualcuno lo farà leggere a un modello. Non
 sceglie il bersaglio, non conosce l'utente, non paga nulla a nessuno: pubblica
@@ -223,21 +246,24 @@ e aspetta.
 
 ## L'allineamento è una disposizione, non un controllo di accesso
 
-Il titolo dice «controllo di accesso», che è il termine con cui in informatica
-si chiama un cancello vero: la regola che decide chi può fare cosa, scritta da
-qualche parte e verificabile.
+Il titolo mette a confronto due cose, e servono chiare tutte e due.
+**Allineare** un modello, come si è detto in apertura di capitolo, vuol dire
+fare in modo che quello che fa combaci con quello che volevamo: in pratica,
+addestrarlo a rifiutare certe richieste. Un **controllo di accesso** è invece
+il termine con cui in informatica si chiama un cancello vero: la regola che
+decide chi può fare cosa, scritta da qualche parte e verificabile da chiunque.
 
-L'obiezione ragionevole è: ma i modelli non sono addestrati apposta a rifiutare?
-Sì. Il modo, che il capitolo sui Transformer racconta per esteso, in sostanza è
-questo: gli si fanno vedere moltissime coppie di risposte con scritto quale
-delle due era migliore, finché non prende l'abitudine di produrre quelle
-{cite}`ouyang2022training`, oppure gli si fa imparare la stessa cosa in un
-passaggio solo invece che in tre {cite}`rafailov2023direct`. Il risultato di
-quel lavoro va però guardato
-per quello che è: una **disposizione appresa**, distribuita in miliardi di
-pesi, non una regola che qualcuno possa esibire e verificare. Una regola vale o
-non vale; una disposizione si può *spostare* cambiando il contesto in cui la
-richiesta arriva.
+L'obiezione ragionevole è: ma i modelli non sono addestrati apposta a
+rifiutare? Sì. Il modo, che il capitolo sui Transformer racconta per esteso,
+in sostanza è questo: gli si fanno vedere moltissime coppie di risposte con
+scritto quale delle due era migliore, finché non prende l'abitudine di
+produrre quelle {cite}`ouyang2022training`; oppure gli si fa imparare la
+stessa cosa in un colpo solo, con una scorciatoia che la sezione seguente
+racconta per esteso {cite}`rafailov2023direct`. In un modo o nell'altro, il
+risultato di quel lavoro va guardato per quello che è: una **disposizione
+appresa**, sparsa in miliardi di numeri, non una regola che qualcuno possa
+esibire e verificare. Una regola vale o non vale; una disposizione si può
+*spostare* cambiando il contesto in cui la richiesta arriva.
 
 `````{tab} Elementare
 
@@ -293,22 +319,22 @@ C'è un altro modo di spostare quella disposizione, e non richiede di essere
 astuti: richiede solo spazio. Un modello impara anche dagli esempi che trova
 scritti nella conversazione stessa, senza che nessuno lo riaddestri: è la cosa
 che rende utile mostrargli due o tre esempi di come si vuole la risposta. Solo
-che quel meccanismo non sa distinguere ciò che gli si vuole insegnare da ciò che
-gli si vuole far disimparare. Se si riempie la conversazione di finti scambi in
-cui il modello accetta di fare una cosa che non dovrebbe, alla fine la fa. E
-siccome le conversazioni che questi sistemi riescono a tenere a mente si sono
-allungate moltissimo, di finti esempi ce ne stanno centinaia. Il punto non è il
-singolo attacco: è che **la memoria lunga, che è una capacità, è anche una
-superficie**.
+che quel meccanismo non sa distinguere ciò che gli si vuole insegnare da ciò
+che gli si vuole far disimparare. Se si riempie la conversazione di finti
+scambi in cui il modello accetta di fare una cosa che non dovrebbe, alla fine
+la fa. E siccome le conversazioni che questi sistemi riescono a tenere a mente
+si sono allungate moltissimo, di finti esempi ce ne stanno centinaia. Il punto
+non è il singolo attacco: è che **la memoria lunga, che è una capacità, è
+anche una porta**, e più la si allarga per rendere il sistema utile, più larga
+diventa anche per chi vuole entrare.
 
 `````{tab} Elementare
 
 La parte che colpisce di questo attacco è quanto sia regolare. Non c'è una
 frase magica che a un certo punto sblocca il modello: più esempi finti si
 mettono, più spesso funziona, e cresce in modo liscio e prevedibile. Vuol dire
-che non esiste una soglia sotto la quale si è al sicuro, e che ogni volta che si
-allarga la memoria di un modello per renderlo più utile, gli si allarga anche
-questa porta. Le due cose sono la stessa cosa vista da due lati.
+che non esiste un numero di esempi finti sotto il quale si possa dire «fin qui
+siamo al sicuro»: si può solo dire quanto è difficile, mai che è impossibile.
 
 `````
 
@@ -345,19 +371,27 @@ notizia, degli esempi avversari della visione.
 Passiamo alla parte che conta di più per chi costruisce sistemi. Finché il
 modello risponde a una domanda, il danno di un'istruzione ostile è limitato a
 un testo sbagliato. Ma il capitolo sugli agenti ha descritto un modello che
-*agisce*: chiama strumenti, naviga, legge documenti, interroga archivi, e
-reinietta nel proprio contesto ciò che trova. Ogni testo che entra in quel
-contesto è un possibile canale di comando: è la **prompt injection indiretta**
-descritta da Kai Greshake, Sahar Abdelnabi e colleghi {cite}`greshake2023not`,
-che per primi ne hanno dato una tassonomia sulle applicazioni reali.
+*agisce*: usa strumenti, naviga, legge documenti, interroga archivi, e ogni
+volta rimette dentro alla conversazione ciò che ha trovato. Quella
+conversazione, con tutto quello che ci è finito dentro, si chiama il
+**contesto** del modello, ed è l'unica cosa che lui vede. Quindi ogni testo
+che ci entra è un possibile canale di comando.
+
+Si chiama **prompt injection indiretta**, e l'aggettivo distingue due modi di
+consegnare l'ordine: nel caso diretto è qualcuno che scrive al modello, nel
+caso indiretto nessuno gli scrive niente, e il testo ostile aspetta in un posto
+dove prima o poi il modello andrà a leggere da solo. L'hanno descritta e
+catalogata sulle applicazioni reali Kai Greshake, Sahar Abdelnabi e colleghi
+{cite}`greshake2023not`.
 
 Il collegamento è diretto con quella tecnica, vista nel capitolo sugli agenti,
 in cui il modello prima cerca dei documenti e poi risponde basandosi su quelli
-invece che sulla propria memoria (si chiama **RAG**, recupero più generazione).
-Lì serviva ad **ancorare** le risposte a fonti vere, ed era una difesa contro la
-tendenza dei modelli a inventare con sicurezza; lo stesso meccanismo, guardato
-dall'altro lato, è una porta d'ingresso: un archivio in cui chiunque può
-scrivere è un archivio da cui chiunque può parlare al modello.
+invece che sulla propria memoria (si chiama **RAG**, recupero più
+generazione). Lì serviva ad **ancorare** le risposte a fonti vere, ed era una
+difesa contro la tendenza dei modelli a inventare con sicurezza; lo stesso
+meccanismo, guardato dall'altro lato, è una porta d'ingresso: un archivio in
+cui chiunque può scrivere è un archivio da cui chiunque può parlare al
+modello.
 
 `````{tab} Elementare
 
@@ -492,13 +526,13 @@ lavoro legittimo, con la solita soglia da tarare.
 
 **Confini di privilegio.** Qui si cambia mestiere. Invece di provare a rendere
 il modello inattaccabile, si progetta il sistema in modo che un modello
-attaccato non possa fare danno: il modello **propone**, un componente
-deterministico **decide**. L'invariante, detto con precisione, è questo: un
-testo non fidato non deve poter *causare* un'azione irreversibile o
-un'esfiltrazione (una fuga di dati verso l'esterno), **comunque sia
-formulato**. È l'ultima clausola a distinguere questa difesa da tutte le
-precedenti, perché non fa alcuna ipotesi su quanto sia astuto l'attaccante o
-robusto il modello.
+attaccato non possa fare danno: il modello **propone**, un pezzo di programma
+normale **decide**. Quello che si ottiene è una promessa che vale sempre, e in
+informatica una promessa così si chiama **invariante**: qui è che un testo non
+fidato non deve poter *causare* un'azione irreversibile o una fuga di dati
+verso l'esterno, **comunque sia formulato**. È l'ultima clausola a distinguere
+questa difesa da tutte le precedenti, perché non fa alcuna ipotesi su quanto
+sia astuto l'attaccante o robusto il modello.
 
 Il modo di ottenerlo è vecchio quanto la sicurezza dei sistemi: privilegio
 minimo (l'agente ha solo i permessi che servono al compito, non quelli
@@ -570,43 +604,45 @@ C) il contenuto non fidato arriva da uno strumento che chiede conferma:
   contesto finale: ['non_fidato', 'riservato', 'utente']
 ```
 
-Una trentina di righe senza una sola chiamata a un modello, ed è già una
-proprietà diversa da tutte quelle discusse finora: nel primo scenario l'invio è
+Sono una trentina di righe, e non chiamano mai un modello: eppure danno già una
+garanzia diversa da tutte quelle discusse finora. Nel primo scenario l'invio è
 negato *indipendentemente* da quanto fosse persuasivo il testo della pagina,
 perché la decisione non ha letto quel testo. Nel secondo lo stesso strumento è
-ammesso sotto conferma, perché la triade non è completa.
+ammesso sotto conferma, perché dei tre ingredienti pericolosi ne manca uno.
 
 Il terzo scenario è quello che vale la pena guardare, perché è il punto in cui
-una difesa del genere si rompe più facilmente. Lo strumento che apre un allegato
-di terzi è **insieme** marcante (immette testo non fidato in finestra) e
-irreversibile (il mittente vede che l'allegato è stato aperto), quindi il
-cancello chiede conferma prima di eseguirlo. Ma «conferma umana» non è un
-rifiuto: l'azione poi viene fatta, e il testo entra. Se il marchio si mettesse
-solo sulle azioni che passano senza chiedere niente, quel testo entrerebbe
-**senza lasciare traccia**, e da lì in avanti l'invariante che la sezione
-dichiara sarebbe violato in silenzio: il sistema continuerebbe a funzionare,
-semplicemente non proteggerebbe più. È la ragione della riga di commento nel
-codice, ed è il tipo di difetto che non si vede finché qualcuno non aggiunge uno
-strumento nuovo.
+una difesa del genere si rompe più facilmente. Aprire l'allegato di un estraneo
+fa due cose insieme: porta testo non fidato dentro la conversazione, e non si
+può disfare (il mittente riceve la conferma di lettura e sa che qualcuno ha
+aperto). Per la seconda ragione il cancello chiede conferma prima di eseguirlo.
 
-C'è infine un prezzo, e va pagato consapevolmente: l'agente è meno autonomo, il
-compito A si ferma e chiede aiuto, e un sistema tarato male chiede conferma così
-spesso che l'utente comincia ad approvare senza leggere, il che riporta la
-difesa a zero.
+E qui sta la trappola. «Conferma umana» non è un rifiuto: l'azione poi viene
+fatta, e quel testo entra lo stesso. Se il cancello segnasse «qui è entrata
+roba non fidata» solo per le azioni che passano lisce, il testo dell'allegato
+entrerebbe **senza lasciare traccia**, e da lì in poi la promessa dichiarata
+qui sopra sarebbe rotta in silenzio: il sistema continuerebbe a funzionare
+benissimo, semplicemente non proteggerebbe più. È la ragione della riga di
+commento nel codice, ed è il tipo di difetto che non si vede finché qualcuno
+non aggiunge uno strumento nuovo.
+
+C'è infine un prezzo, e va pagato consapevolmente: l'agente è meno autonomo,
+il compito A si ferma e chiede aiuto, e un sistema tarato male chiede conferma
+così spesso che l'utente comincia ad approvare senza leggere, il che riporta
+la difesa a zero.
 
 **Isolamento del contesto.** L'ultima voce non è un gradino sopra la
 precedente: è il modo di realizzarla quando il testo non fidato va comunque
-letto. Consiste nel tenere separato ciò che è fidato da ciò che non lo è, invece
-di impastare tutto in un'unica finestra. In pratica, far elaborare i contenuti
-non fidati a una chiamata dedicata, con permessi propri e senza accesso ai dati
-riservati, e restituire al ciclo principale non il testo originale ma un
-risultato **tipizzato**, cioè costretto in campi previsti in anticipo invece che
-in prosa libera: è l'**output strutturato** del capitolo sull'ingegneria degli
-LLM. La garanzia però continua a venire dai permessi di quella chiamata, non
-dall'isolamento in sé: una chiamata isolata ma potente legge testo ostile e
-restituisce campi ostili. Non è il canale separato della rete telefonica, ma è
-il suo surrogato più onesto: se il confine non può stare *dentro* il modello, lo
-si mette *fra* le chiamate.
+letto. Consiste nel tenere separato ciò che è fidato da ciò che non lo è,
+invece di impastare tutto in un'unica finestra. In pratica, far elaborare i
+contenuti non fidati a una chiamata dedicata, con permessi propri e senza
+accesso ai dati riservati, e restituire al ciclo principale non il testo
+originale ma un risultato **tipizzato**, cioè costretto in campi previsti in
+anticipo invece che in prosa libera: è l'**output strutturato** del capitolo
+sull'ingegneria degli LLM. La garanzia però continua a venire dai permessi di
+quella chiamata, non dall'isolamento in sé: una chiamata isolata ma potente
+legge testo ostile e restituisce campi ostili. Non è il canale separato della
+rete telefonica, ma è il suo surrogato più onesto: se il confine non può stare
+*dentro* il modello, lo si mette *fra* le chiamate.
 
 ## Cercare i guasti prima che li trovi qualcun altro
 
@@ -616,52 +652,54 @@ in generale: il **red teaming** è il mestiere di chi attacca il proprio
 sistema apposta, per trovare le falle prima che le trovi qualcun altro; le
 **evals** (da *evaluation*) sono esami ripetibili, liste di prove con un voto,
 per controllare che le falle già corrette non tornino. La divisione dei
-compiti è questa: la ricerca manuale scopre le categorie nuove, la suite
+compiti è questa: la ricerca a mano scopre le categorie nuove, l'esame
 ripetibile controlla le vecchie. Su questa materia la divisione si vede
-benissimo, perché quasi tutte le famiglie di attacco
-descritte qui sopra le ha trovate una persona, non un generatore. Quello che
-vale la pena guardare da vicino è il meccanismo della metà automatica, l'unica
-che si può mettere in una pipeline e far girare su un sistema che cambia ogni
-settimana.
+benissimo, perché quasi tutte le famiglie di attacco descritte qui sopra le ha
+trovate una persona, non un programma. Guardiamo allora da vicino come funziona
+la metà automatica, l'unica che si può far girare da
+sola tutte le notti su un sistema che cambia ogni settimana.
 
 Lo schema è quello di Ethan Perez e colleghi {cite}`perez2022red`, ed è un
-ciclo in tre tempi: un modello di linguaggio (il *red LM*) genera un gran
-numero di domande contro il modello bersaglio; il bersaglio risponde; un
-**classificatore** addestrato a riconoscere le risposte dannose tiene i
-tentativi riusciti. C'è poi un quarto passo, ed è quello che trasforma una
-lista in uno strumento: i casi positivi si **raggruppano** (nel lavoro
-originale con un clustering sulle rappresentazioni delle domande) e ogni gruppo
-diventa una categoria di guasto, cioè una voce della suite. Da lì in poi la
-suite gira a ogni cambio di prompt, di modello o di strumenti, come una
-batteria di test di non regressione. Il giudice automatico porta con sé i
-limiti già visti per l'*LLM-as-a-judge* nel capitolo di MLOps: è un surrogato,
-ha i suoi bias, e ottimizzare troppo contro di lui produce un sistema bravo a
-superare il giudice.
+ciclo in tre tempi: un primo modello di linguaggio, messo lì apposta per fare
+l'attaccante, genera un gran numero di domande insidiose; il modello che
+vogliamo collaudare risponde; un terzo programma, addestrato a riconoscere le
+risposte dannose, tiene da parte i tentativi riusciti. C'è poi un quarto passo,
+ed è quello che trasforma una lista in uno strumento: i casi riusciti si
+**raggruppano** per somiglianza, e ogni gruppo diventa una categoria di guasto,
+cioè una voce dell'esame. Da lì in poi la
+lista di prove si rilancia a ogni cambio di istruzioni, di modello o di
+strumenti, e serve a verificare che quello che era stato aggiustato sia rimasto
+aggiustato. Il programma che fa da giudice porta però con sé i limiti già visti
+nel capitolo di MLOps per i giudici automatici: non è la verità, è un
+sostituto della verità, e ha i suoi pregiudizi. Lavorare troppo per compiacerlo
+produce un sistema bravo a superare lui, che non è la stessa cosa di un sistema
+sicuro.
 
 Il limite di metodo vale per ogni collaudo, e la sezione successiva lo
 enuncerà in generale: passare le prove dimostra l'assenza dei fallimenti
-*cercati*, non la sicurezza in assoluto. Qui morde più che altrove per
-una ragione precisa: **un red team trova ciò che cerca**, cioè genera i
-tentativi dalle categorie che conosce, mentre l'ingresso è prosa libera e le
-formulazioni possibili non hanno un confine. È la **generalizzazione
-discordante** vista sopra, letta dal lato di chi misura. Un rapporto che dice
-«nessun tentativo riuscito» descrive la copertura del rapporto, non la
-sicurezza del sistema.
+*cercati*, non la sicurezza in assoluto. Qui morde più che altrove per una
+ragione precisa: **chi attacca per mestiere trova quello che cerca**, cioè
+prepara i tentativi a partire dalle categorie che già conosce, mentre a quel
+modello si può scrivere qualunque cosa, e le frasi possibili non finiscono mai.
+È lo stesso guaio del portiere di prima, guardato dal lato di chi misura: la
+richiesta in una forma mai vista non è nel suo addestramento, e non è nemmeno
+nell'elenco delle prove. Un rapporto che dice «nessun tentativo riuscito»
+descrive la copertura del rapporto, non la sicurezza del sistema.
 
 ## Quello che si può promettere
 
-Chiudiamo con l'onestà che il resto del capitolo pretende. Nessuna delle difese
-descritte qui è una dimostrazione, e non lo diventa mettendole insieme, per la
-ragione da cui siamo partiti col fischietto: al modello arriva un canale solo, e
-in quel canale non c'è scritto da dove viene ciascuna parola. Finché è così,
-qualunque separazione fra istruzioni e dati che avvenga *dentro* il modello è
-una separazione appresa, cioè probabile e non garantita. Una
-difesa strutturale richiederebbe una funzione $f_\theta(\mathbf{X}, \tau)$ in cui a ogni
-token sia associata un'etichetta $\tau_i \in \{\text{fidato},
-\text{non fidato}\}$, e richiederebbe soprattutto di **dimostrare**
-l'invarianza del comportamento rispetto alle istruzioni contenute nelle
-porzioni non fidate. Nessuno, oggi, sa ottenere quella dimostrazione da una
-funzione appresa.
+Chiudiamo con l'onestà che il resto del capitolo pretende. Nessuna delle
+difese descritte qui è una dimostrazione, e non lo diventa mettendole insieme,
+per la ragione da cui siamo partiti col fischietto: al modello arriva un
+canale solo, e in quel canale non c'è scritto da dove viene ciascuna parola.
+Finché è così, qualunque separazione fra istruzioni e dati che avvenga
+*dentro* il modello è una separazione appresa, cioè probabile e non garantita.
+Una difesa strutturale vorrebbe due cose: che a ogni pezzetto di testo fosse
+attaccata l'etichetta della sua provenienza, fidata o no, e che il modello la
+ricevesse insieme al testo invece di doverla indovinare; e poi, soprattutto,
+che si potesse **dimostrare** che le istruzioni scritte nelle parti non fidate
+non cambiano il comportamento. La prima cosa si sa fare. La seconda, da una
+funzione appresa, oggi non la sa ottenere nessuno.
 
 Il modo giusto di leggere tutto questo è quello della sicurezza informatica,
 che ha smesso da tempo di promettere l'invulnerabilità e ragiona in termini di
