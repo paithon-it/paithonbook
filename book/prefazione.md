@@ -118,6 +118,23 @@ la racconterei a voce; un esempio ineccepibile che però non fa scattare niente
 si butta, anche se funziona; e una pagina che dice tutto il vero senza far
 capire niente torna alla domanda da cui era nata, e si ricomincia da lì.
 
+Il segno che vedi in copertina dice esattamente questo, e non per caso. È un
+**triangolo di Penrose**: tre lati che si reggono l'un l'altro in cerchio, e
+nessuno è il primo. Sono i tre passaggi appena descritti, chi scrive, chi cerca
+l'errore e chi decide, con l'ultimo che rimanda al primo.
+
+E poi c'è la seconda cosa che quel triangolo fa, che è la ragione per cui sta
+su questo libro e non su un altro: **è una figura impossibile**. Copri con una
+mano uno qualsiasi dei tre angoli e quello che resta è corretto, due travi che
+si incontrano ad angolo retto, una davanti e una dietro; si costruisce davvero,
+con dei pezzi di legno. Vale per tutti e tre, uno alla volta. L'impossibilità
+non sta in nessun angolo: sta nel fatto che le tre soluzioni locali non si
+possono avere tutte insieme, e per accorgersene bisogna smettere di guardare
+l'angolo e seguire una trave per l'intero giro.
+
+È il modo esatto in cui una macchina sbaglia su una materia tecnica. Ogni frase
+regge da sola, ogni numero è verificabile, e il montaggio è falso.
+
 Tutto questo è severo per una ragione precisa: un modello sbaglia con la
 stessa sicurezza con cui dice il vero, e su una materia tecnica sbaglia proprio
 dove chi legge non ha modo di accorgersene. Non sbaglia il tono. Perde il

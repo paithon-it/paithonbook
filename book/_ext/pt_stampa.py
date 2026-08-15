@@ -605,6 +605,15 @@ Composto con LuaLaTeX. Caratteri Fraunces, Inter e JetBrains Mono
 (SIL Open Font License). Tutte le figure sono originali, disegnate in
 SVG; dove il libro online mostra un'animazione, qui trovi tre fermi
 immagine e l'indirizzo per vederla muoversi.
+\vspace{3mm}
+
+Il segno al posto della \textbf{a} è un \textbf{triangolo di Penrose}: tre
+lati che si reggono l'un l'altro in cerchio, come i tre passaggi da cui
+questo libro esce. Ed è una figura impossibile, che è il modo esatto in
+cui una macchina sbaglia su una materia tecnica: copri un angolo
+qualunque e quel che resta è corretto, ma le tre soluzioni locali non si
+possono avere tutte insieme. Ogni frase regge da sola, e il montaggio è
+falso. La Prefazione lo racconta per esteso.
 \end{flushleft}
 \vspace*{\stretch{2}}
 \clearpage
