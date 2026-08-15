@@ -143,9 +143,22 @@ capitoli sul mestiere (produzione, interpretabilità, responsabilità) non stann
 su questo asse: stanno attorno a tutto.
 ```
 
-I **dati** sono il carburante: nessun modello sa più di ciò che ha visto. Le
-**rappresentazioni apprese** sono il cuore, cioè la parte che il deep learning
-ha cambiato più di ogni altra.
+I **dati** vengono prima di tutto: nessun modello sa più di ciò che ha visto.
+L'introduzione li ha paragonati all'ossigeno, e adesso che il percorso è finito
+quel paragone si può stringere. L'ossigeno è l'avanzo di una vita che non era
+la nostra, e noi siamo diventati quello che siamo imparando a respirarlo; i
+dati sono l'avanzo del nostro passaggio nel mondo digitale, e ogni macchina di
+questo libro è un modo diverso di respirare quello. Le reti convoluzionali
+respirano immagini, i Transformer testo, le reti su grafo relazioni fra cose.
+Cambia il polmone, l'aria è sempre quella.
+
+Ed è il filo che spiega perché il libro insista tanto su cose che sembrano
+noiose accanto alle architetture: come si dividono i dati, che cosa succede
+quando cambiano sotto i piedi, chi li ha lasciati e se era d'accordo. Un
+modello non è più intelligente dell'aria che gli hai dato da respirare.
+
+Le **rappresentazioni apprese** sono il cuore, cioè la parte che il deep
+learning ha cambiato più di ogni altra.
 
 `````{tab} Elementare
 Per decenni, per far riconoscere un gatto a un computer, un esperto doveva
@@ -447,6 +460,64 @@ come tale: i **modelli del mondo**, cioè imparare la dinamica dell'ambiente
 invece delle sole correlazioni nei dati. Se funzionasse su larga scala,
 cambierebbe l'ordine dei capitoli di un libro come questo.
 `````
+
+## Il campo di casa
+
+Prima o poi la domanda arriva, di solito a cena: è più intelligente di noi?
+
+Messa così non ha risposta, e non per prudenza: manca il *dove*. Nessuno
+chiederebbe se un pesce nuota meglio di un uomo senza dire in quale acqua.
+
+Il posto dove queste macchine nuotano ha un nome preciso, ed è il **mondo
+digitale**. Lì tutto è già nella forma che serve a loro. Ogni cosa è già un
+numero, e non c'è da andare a misurarla. Ogni azione costa quasi niente e si
+può ripetere un miliardo di volte. Ogni partita finita lascia scritto chi ha
+vinto, quindi c'è da imparare a costo zero. E sbagliare non rompe niente: si
+ricomincia. Gli scacchi, il go, il codice, il testo, le immagini sono tutti
+mondi fatti di quella sostanza, ed è lì che sono arrivati per primi i
+risultati che hanno fatto notizia. Torna il discorso dell'aria: il mondo
+digitale è il posto in cui i dati sono densi, e lì un polmone respira a
+pieno.
+
+Non è una gara alla pari, è una **partita in casa**. E la cosa da portarsi via
+è che il vantaggio non viene dall'intelligenza, viene dal terreno.
+
+Fuori, il conto si rovescia, ed è un'osservazione vecchia di decenni. Nel
+1988 Hans Moravec notò che dare a un computer le prestazioni di
+un adulto in un test di intelligenza o a dama è relativamente facile, mentre
+dargli le capacità di un bambino di un anno nel percepire e nel muoversi è
+difficile o impossibile {cite}`moravec1988mind`. La ragione sta nei tempi: il
+ragionamento astratto lo abbiamo imparato in qualche migliaio di anni e
+sappiamo dirlo a parole; il resto lo abbiamo affinato in qualche centinaio di
+milioni, e nessuno sa come si scriva.
+
+Da qui viene la tentazione di rilassarsi, perché a noi resterebbe il mondo
+vero. È giusto a metà, e la metà che manca conta.
+
+La prima cosa che manca è che **il campo si allarga**. Ogni sensore, ogni
+telecamera, ogni pagamento tracciato prende un pezzo di mondo analogico e lo
+converte in mondo digitale, cioè lo porta dentro casa loro. È il rovescio di
+quello che l'introduzione chiamava scarto: ciò che lasciamo dietro non è solo
+l'aria che respirano, è anche il terreno su cui giocano. La robotica è il
+tentativo di portare la partita all'aperto, ed è il posto in cui i progressi
+sono più lenti e più cari: conferma la regola, non la smentisce.
+
+La seconda è che quello che resta nostro non è un **territorio**, è un
+**mestiere**: un territorio si perde, e ce ne si accorge quando qualcun altro
+ci sta già giocando.
+
+Sono due cose. La prima è **rispondere** di una scelta, e in italiano quella
+parola ne vuol dire due: dare una risposta, e assumersi le conseguenze. Una
+macchina fa la prima cosa benissimo e la seconda non può farla, perché quando
+una decisione fa un danno, davanti a chi l'ha subìto non si presenta un
+modello. La seconda è **decidere quale partita giocare**: un sistema ottimizza
+il punteggio che gli abbiamo dato, e lo fa meglio di noi, ma se quel punteggio
+sia quello giusto è una domanda che sta fuori dal campo. Non è che la macchina
+la sbagli: è che lì dentro non esiste.
+
+Sapere dove si sta giocando è anche il modo migliore per leggere la prossima
+notizia che ti capiterà sotto gli occhi. Prima di chiederti quanto sia brava,
+chiediti se giocava in casa.
 
 ## Una nota onesta
 

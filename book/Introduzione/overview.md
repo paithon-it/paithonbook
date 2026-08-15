@@ -496,7 +496,40 @@ learning li conta uno per uno; quanto pesi ciascuno dei tre si può perfino
 misurare, e lo fa il capitolo sui **Transformer**, che sono i modelli nati da
 quell'articolo del 2017 di cui si diceva all'inizio.
 
-Il debito, peraltro, è stato ripagato con gli interessi
+Su che cosa siano quei dati vale la pena fermarsi, perché è la cosa che si
+fraintende più spesso. Non sono un giacimento che qualcuno è andato a scavare.
+Sono uno **scarto**. Nessuno si alza la mattina per produrre dati: li lascia
+dietro di sé mentre fa altro, cercando un indirizzo, comprando un libro,
+scrivendo a un amico, guardando un video fino in fondo o smettendo al secondo
+minuto. Sono la traccia di un passaggio, non il prodotto di un'intenzione.
+
+C'è un precedente, ed è successo su scala planetaria. Circa due miliardi e
+mezzo di anni fa certi batteri cominciarono a usare la luce del sole per
+spezzare l'acqua, e buttarono via quel che ne avanzava: **ossigeno**
+{cite}`lyons2014rise`. A loro non serviva a niente. Per la vita di allora era
+anzi un veleno, perché era cresciuta in un mondo che non ne aveva mai avuto.
+L'atmosfera ci mise moltissimo a riempirsene, e i livelli vicini a quelli di
+oggi arrivarono due miliardi di anni più tardi. Lungo quella strada comparve
+una forma di vita che di quello scarto faceva il proprio respiro, e ne ricavava
+molta più energia di prima. Quella forma di vita siamo noi: respiriamo, alla
+lettera, il rifiuto di qualcun altro.
+
+I dati stanno alle macchine come l'ossigeno sta a noi. Sono l'avanzo del nostro
+passaggio nel mondo digitale, prodotto senza volerlo e in quantità che nessuno
+ha deciso; e sopra quell'avanzo è cresciuta una cosa che di lì trae il proprio
+respiro. È la ragione per cui in questo libro i dati pesano quanto gli
+algoritmi: l'algoritmo è il polmone, i dati sono l'aria, e un polmone nel vuoto
+non è niente.
+
+C'è però una parte scomoda, e vale quanto l'altra. Quello scarto, prima di
+diventare respiro, fu un veleno: il mondo che viveva senza ossigeno non
+sopravvisse alla sua comparsa. Nel nostro caso quella parte si chiama
+**privacy**: ciò che lasciamo per strada senza pensarci è esattamente ciò di
+cui vive qualcuno che non abbiamo scelto. Il capitolo sull'AI responsabile la
+prende sul serio, in
+{doc}`Privacy e robustezza </AIResponsabile/privacy-e-robustezza>`.
+
+Il debito con l'informatica, peraltro, è stato ripagato con gli interessi
 {cite}`russell2020artificial`: parecchie idee nate nei laboratori di
 intelligenza artificiale hanno poi fatto il giro dell'informatica intera e oggi
 si usano ovunque senza ricordarne la provenienza. La più diffusa è la

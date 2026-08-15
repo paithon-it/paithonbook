@@ -52,11 +52,10 @@ CLAIM = [
     [("Il Libro di Intelligenza Artificiale", INCHIOSTRO)],
     [("che spiega ", INCHIOSTRO), ("due ", TEAL), ("volte.", TERRACOTTA)],
 ]
-# Il sottotesto, la riga che sulla landing sta sotto il claim e che in stampa
-# è in copertina. Qui mancava, e la card diceva metà di quello che dicono le
-# altre superfici. I puntini sono suoi: nel claim non ci vanno.
-SOTTOTESTO = [("l'AI che spiega se stessa… ", TENUE), ("due ", TEAL),
-              ("volte.", TERRACOTTA)]
+# Il sottotesto («l'AI che spiega se stessa… due volte») qui NON ci va, e per
+# un po' c'è stato: sotto al claim diventa un'eco, perché finiscono tutte e due
+# su «due volte» e la seconda sembra la prima detta peggio. Una card dice una
+# cosa sola. Il sottotesto vive sulla landing, dov'è una postilla.
 PIEDE = "book.paithon.it"
 
 
@@ -108,7 +107,7 @@ def main() -> None:
         logo(84, 74, 430),
     ]
 
-    y = 352
+    y = 372
     for riga in CLAIM:
         x = 84.0
         for parole, colore in riga:
@@ -116,16 +115,6 @@ def main() -> None:
             parti.append(gruppo)
             x += larghezza
         y += 74
-
-    # Il sottotesto, in corpo minore: sulla landing è una postilla, e una
-    # postilla che gridasse quanto il claim non sarebbe più una postilla.
-    # Sta più vicino al claim che al piede, perché è del claim: a distanze
-    # uguali si leggerebbe come una seconda riga dell'indirizzo.
-    x = 84.0
-    for parole, colore in SOTTOTESTO:
-        gruppo, larghezza = testo_vettoriale(parole, display, 28, x, y - 8, colore)
-        parti.append(gruppo)
-        x += larghezza
 
     # Niente simbolo accanto al claim: i due colori dicono già che i livelli
     # sono due, e il segno accanto era una ripetizione.

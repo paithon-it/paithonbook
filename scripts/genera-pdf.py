@@ -246,6 +246,19 @@ def rilascia(pdf: pathlib.Path, conferma: bool) -> None:
     if not pdf.exists():
         sys.exit(f"il PDF non c'e': {pdf}. Prima si costruisce.")
 
+    # IL NUMERO E IL FILE ARRIVANO DA DUE POSTI DIVERSI, e non e' un dettaglio:
+    # il numero lo dice il registro, il file sta su disco, e finche' non li si
+    # confronta possono raccontare due versioni diverse. E' successo: la 1.5.7
+    # e' uscita con dentro un PDF che in copertina diceva 1.5.6, perche' era
+    # stato costruito prima di aggiungere la voce al registro. Nessuno se n'era
+    # accorto perche' tutto funzionava, e il numero giusto lo scriveva il tag.
+    # La copertina il numero lo stampa: si legge di li'.
+    stampata = versione_stampata(pdf)
+    if stampata and stampata != numero:
+        sys.exit(f"il PDF in copertina dice {stampata}, il registro {numero}: "
+                 f"e' il PDF di un'altra versione.\n"
+                 f"  Ricostruiscilo: python3 scripts/genera-pdf.py")
+
     # CHI firma. Una release porta il nome dell'account attivo di `gh`, e su
     # questa macchina ce n'e' piu' di uno: il primo giro sarebbe uscito a nome
     # di un account personale invece che del progetto. Non e' un dettaglio
@@ -321,6 +334,22 @@ def ricompatta(pdf: pathlib.Path) -> None:
               f"-> {pdf.stat().st_size / 1024 / 1024:.0f} MB")
 
 
+def versione_stampata(pdf: pathlib.Path) -> str | None:
+    """Il numero che il PDF si porta stampato sulla copertina.
+
+    Il nome del file non lo dice (e' sempre lo stesso) e la data di modifica
+    nemmeno. La copertina invece porta «1.5.7 del 15 agosto 2026», scritto dal
+    registro nel momento in cui il libro e' stato composto: e' l'unica prova
+    di quale versione sia davvero quel file.
+    """
+    try:
+        import fitz
+    except ImportError:
+        return None
+    trovato = re.search(r"\b(\d+\.\d+\.\d+) del ", fitz.open(pdf)[0].get_text())
+    return trovato.group(1) if trovato else None
+
+
 def copertina_intera(pdf: pathlib.Path) -> str | None:
     """La copertina sta ancora in una pagina sola?
 
@@ -344,7 +373,7 @@ def copertina_intera(pdf: pathlib.Path) -> str | None:
     testo = prima.get_text()
     manca = [nome for nome, presente in (
         ("il claim", "che spiega due volte" in testo),
-        ("il sottotesto", "spiega se stessa" in testo),
+        ("l'autore", "Francesco Messina" in testo),
         ("l'indirizzo del libro", "book.paithon.it" in testo),
         ("il fregio", len(prima.get_drawings()) > 100),
     ) if not presente]

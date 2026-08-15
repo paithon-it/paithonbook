@@ -516,9 +516,11 @@ FRONTESPIZIO = r"""
   % (LuaLaTeX non se ne lamenta: la copertina «riesce» lo stesso). Chi tocca
   % il corpo del claim, la larghezza del marchio o uno di questi \vspace
   % rifaccia il conto: `genera-pdf.py` lo verifica da se' a fine build, e con
-  % questi valori il margine e' meno di 4mm.
+  % questi valori il margine e' una decina di millimetri: tolto il sottotesto
+  % la copertina ha ritrovato spazio, e una parte e' tornata al marchio e
+  % all'aria sopra la firma invece di restare margine inutilizzato.
   \IfFileExists{marchio.pdf}{%
-    \includegraphics[width=88mm]{marchio.pdf}\par\vspace{5mm}}{%
+    \includegraphics[width=96mm]{marchio.pdf}\par\vspace{5mm}}{%
     {\ptDisplay\fontsize{50}{54}\selectfont Paithon Book\par}\vspace{4mm}}%
   {\color{ptTerracotta}\rule{42mm}{2.4pt}\par}
   \vspace{5mm}
@@ -531,22 +533,17 @@ FRONTESPIZIO = r"""
   {\ptDisplay\fontsize{22}{27}\selectfont
    Il Libro di Intelligenza Artificiale\\
    che spiega \textcolor{ptTeal}{due} \textcolor{ptTerracotta}{volte.}\par}
-  \vspace{3mm}
-  % Il sottotesto: dice come il libro e' fatto, non di che cosa parla. La
-  % Prefazione lo spiega per esteso.
-  % «due» e «volte» nei colori dei due livelli, gli stessi del sito: teal per
-  % l'Elementare, terracotta per il Superiore. Vanno in quest'ordine e non
-  % nell'altro: sul sito «due» e' `--accent-color`, che e' il verde petrolio.
-  % I puntini sono suoi e restano suoi: nel claim non ci vanno, o la stessa
-  % sospensione si ripeterebbe due volte a quattro righe di distanza.
-  {\ptDisplayLeggero\itshape\fontsize{16}{21}\selectfont
-   l'AI che spiega se stessa\ldots{}
-   \textcolor{ptTeal}{due} \textcolor{ptTerracotta}{volte.}\par}
+  % QUI SOTTO NON VA IL SOTTOTESTO, e per un po' c'e' stato. «l'AI che spiega
+  % se stessa... due volte» e' una riga bella, ma sotto al claim diventa un'eco:
+  % finiscono tutte e due su «due volte», a quattro centimetri di distanza, e
+  % la seconda sembra la prima detta peggio. Una copertina dice una cosa. Il
+  % sottotesto resta dov'e' una postilla e non un secondo titolo, cioe' sulla
+  % landing, dove la Prefazione poi lo spiega per esteso.
   % Il sottotitolo lungo («Machine Learning, Deep Learning e Reinforcement
   % Learning con Python») non e' in copertina: dice di che cosa parla il
   % libro, e il sottotesto dice gia' che cos'e'. Resta nel colophon, dove
   % serve per citarlo: li' e' un dato bibliografico, non un richiamo.
-  \vspace{8mm}
+  \vspace{12mm}
   {\ptDisplay\Large Francesco Messina\par}
 \end{flushleft}
 \vspace*{\stretch{1}}

@@ -13,7 +13,6 @@
 ```{raw} html
 <p class="pt-claim" aria-hidden="true">Il Libro di Intelligenza Artificiale che spiega
 <span class="pt-claim__el">due</span> <span class="pt-claim__sup">volte.</span></p>
-<p class="pt-sottotesto">l'AI che spiega se stessa&hellip; <span class="pt-claim__el">due</span> <span class="pt-claim__sup">volte.</span></p>
 ```
 
 # Il Libro di Intelligenza Artificiale che spiega due volte.
@@ -80,7 +79,7 @@ si copia; per eseguirlo, l'indirizzo è nel colophon.
 :::{container} pt-scarica
 [**Scarica il libro intero in PDF** · versione {{ versione }}](https://github.com/paithon-it/paithonbook/releases/latest/download/paithon-book.pdf)
 
-[**Oppure leggilo nel browser**, senza scaricare niente](https://doi.org/10.5281/zenodo.21947219)
+[**Leggilo nel browser**](https://doi.org/10.5281/zenodo.21947219)
 
 Tutti i capitoli in un file solo, impaginato per la lettura e per la stampa. Dove qui il libro anima una figura, là trovi tre fermi immagine e l'indirizzo per vederla muoversi. Leggerlo nel browser vuol dire aprirlo su Zenodo, l'archivio del CERN dove il libro è depositato: quel collegamento è il suo **DOI**, l'identificativo permanente che porta sempre all'ultima versione, la mostra pagina per pagina e dà la scheda per citarla.
 :::

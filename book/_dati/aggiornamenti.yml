@@ -48,6 +48,46 @@
 
 versioni:
 
+- versione: "1.5.8"
+  data: 2026-08-15
+  voci:
+
+  - tipo: ampliato
+    pagina: Introduzione/overview.md
+    testo: >
+      **I dati non sono un giacimento, sono uno scarto, e adesso il libro lo
+      dice.** Nessuno si alza la mattina per produrre dati: li lascia dietro di
+      sé mentre fa altro. C'è un precedente, ed è successo su scala planetaria:
+      l'ossigeno che respiriamo è il rifiuto di certi batteri che due miliardi e
+      mezzo di anni fa cominciarono a spezzare l'acqua con la luce del sole, e
+      la vita che se ne nutre è arrivata dopo. Siamo noi. I dati stanno alle
+      macchine come l'ossigeno sta a noi, e l'analogia tiene anche dalla parte
+      scomoda: quello scarto, prima di diventare respiro, fu un veleno.
+
+  - tipo: nuovo
+    pagina: Conclusioni/overview.md
+    testo: >
+      **«È più intelligente di noi?» è una domanda a cui manca il dove.** Una
+      sezione nuova sostiene che una macchina non è migliore di noi in senso
+      assoluto, ma nel mondo digitale sì, e che quel vantaggio non viene
+      dall'intelligenza: viene dal terreno. Là dentro tutto è già un numero,
+      ogni azione costa niente e si ripete un miliardo di volte, ogni partita
+      finita lascia scritto chi ha vinto. È una partita in casa. La consolazione
+      («a noi resta il mondo reale») regge solo a metà, perché il campo si
+      allarga da sé. Quello che resta nostro non è un territorio, che si può
+      perdere, ma due cose che nessuna quantità di dati sposta: rispondere di
+      una scelta, e decidere quale partita giocare.
+
+  - tipo: corretto
+    testo: >
+      **Il libro dice di sé una cosa sola, e la dice dappertutto uguale.** La
+      copertina del PDF, l'anteprima che compare condividendo un link e il
+      titolo delle pagine portavano tre versioni diverse della stessa frase, e
+      per un po' ne hanno portate perfino due in fila, che finivano tutte e due
+      su «due volte» e sembravano un'eco. Adesso è una riga sola. E dalla home
+      il libro si può aprire nel browser, oltre che scaricare.
+
+
 - versione: "1.5.7"
   data: 2026-08-15
   voci:

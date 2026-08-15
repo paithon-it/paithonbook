@@ -1,12 +1,10 @@
 # Paithon Book
 
-<a href="https://book.paithon.it/main/"><img src="book/_static/social/og-book.png" width="840" alt="Paithon Book: Il Libro di Intelligenza Artificiale che spiega due volte. l'AI che spiega se stessa… due volte."></a>
+<a href="https://book.paithon.it/main/"><img src="book/_static/social/og-book.png" width="840" alt="Paithon Book: Il Libro di Intelligenza Artificiale che spiega due volte."></a>
 
-**Il Libro di Intelligenza Artificiale che spiega due volte.**
-*l'AI che spiega se stessa… due volte.*
-
-Machine Learning, Deep Learning e Reinforcement Learning con Python: in
-italiano, gratis, in aggiornamento continuo.
+**Il Libro di Intelligenza Artificiale che spiega due volte.** Machine
+Learning, Deep Learning e Reinforcement Learning con Python: in italiano,
+gratis, in aggiornamento continuo.
 
 <p>
   <a href="https://book.paithon.it/main/"><img alt="Leggi online" src="https://img.shields.io/badge/Leggi%20online-book.paithon.it-B5532C?style=flat-square"></a>

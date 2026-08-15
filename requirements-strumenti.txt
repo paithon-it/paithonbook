@@ -1,0 +1,49 @@
+# Quello che serve a PUBBLICARE il libro, non a leggerlo né a costruirlo.
+#
+# Ci sono tre elenchi di dipendenze e fanno tre mestieri diversi:
+#
+#   requirements.txt           il sito: jupyter-book e le estensioni Sphinx.
+#                              Lo installa il workflow che costruisce il libro.
+#   requirements-notebook.txt  le versioni con cui il CODICE del libro è stato
+#                              eseguito, che è un vincolo di riproducibilità.
+#   questo file                gli attrezzi della redazione: il PDF, la card
+#                              social, il registro, il deposito su Zenodo.
+#
+# Perché esiste. Queste librerie i workflow se le installavano una per una
+# nella riga di comando (`pip install --quiet playwright pymupdf` nel PDF,
+# `pip install --quiet pyyaml` in altri tre punti), e da nessuna parte c'era
+# scritto che cosa serve per pubblicare. Chi clona e vuole rifare il PDF non
+# poteva saperlo se non leggendo i workflow; e una dipendenza nuova si scopre
+# quando un job diventa rosso, che è tardi.
+#
+# Non sono pinnate come quelle dei notebook, e la ragione è la differenza fra
+# i due file: là il pin serve a far dire al test la verità (se diventa rosso è
+# cambiato il libro, non il mondo), qui invece un pin vecchio impedirebbe
+# soltanto di prendere le correzioni. Dove servirà un vincolo, avrà il suo
+# perché scritto accanto, come `docutils` in requirements.txt.
+
+# Il registro delle versioni e il `_toc.yml`: li legge mezza cartella
+# `scripts/`, e il numero di versione arriva da lì a tutto il resto.
+pyyaml
+
+# PyMuPDF, che si importa `fitz`. Fa tre cose in `genera-pdf.py`: ricompatta il
+# PDF, ne racconta pagine e peso, e controlla la copertina, cioè che stia in
+# una pagina sola e che il numero stampato sia quello del registro. Serve anche
+# allo strumento che deposita il PDF su Zenodo, che da lì legge quale versione
+# sia davvero il file che sta per depositare.
+pymupdf
+
+# Chromium, che è il convertitore delle figure in stampa (`book/_ext/pt_stampa.py`):
+# 73 dei 312 SVG portano un `<style>` con selettori di classe e tutti usano i
+# font del brand, e un browser vero è l'unica cosa che li disegna come li vede
+# chi legge online. ATTENZIONE: il pacchetto pip non basta, il browser si
+# scarica a parte, ed è un passo che si dimentica:
+#
+#     python3 -m playwright install chromium
+playwright
+
+# La card social (`scripts/genera-og.py`): cairosvg rasterizza il PNG 1200x630
+# e fontTools vettorizza i glifi di Fraunces, perché a runtime quel font non
+# c'è e il testo uscirebbe in un ripiego che non è la nostra voce.
+cairosvg
+fonttools
