@@ -321,6 +321,36 @@ def ricompatta(pdf: pathlib.Path) -> None:
               f"-> {pdf.stat().st_size / 1024 / 1024:.0f} MB")
 
 
+def copertina_intera(pdf: pathlib.Path) -> str | None:
+    """La copertina sta ancora in una pagina sola?
+
+    Sta in una pagina per pochi millimetri: il fregio da solo prende 111mm dei
+    297 del foglio. Aggiungendoci il claim, fregio e riga della versione sono
+    scivolati sulla seconda pagina, e nessuno se n'e' accorto perche' nessuno
+    si lamenta: LuaLaTeX non emette avvisi (dentro un `titlepage` il contenuto
+    che avanza semplicemente prosegue), il codice di uscita e' 0 e il PDF c'e'.
+    Si vede solo aprendolo, e la copertina uno la guarda una volta l'anno.
+
+    Quindi si controlla: sulla prima pagina devono esserci tutte e tre le cose
+    che ci mettiamo, il claim, l'indirizzo del libro e il fregio, che non e'
+    testo e si riconosce dalla sua texture di punti (centinaia di tracciati:
+    il resto della copertina ne ha una quindicina).
+    """
+    try:
+        import fitz
+    except ImportError:
+        return None
+    prima = fitz.open(pdf)[0]
+    testo = prima.get_text()
+    manca = [nome for nome, presente in (
+        ("il claim", "che spiega due volte" in testo),
+        ("il sottotesto", "spiega se stessa" in testo),
+        ("l'indirizzo del libro", "book.paithon.it" in testo),
+        ("il fregio", len(prima.get_drawings()) > 100),
+    ) if not presente]
+    return ", ".join(manca) or None
+
+
 def racconta(pdf: pathlib.Path) -> None:
     try:
         import fitz
@@ -373,6 +403,17 @@ def main() -> None:
     guai = errori_veri(cartella / f"{nome}.log")
     ricompatta(pdf)
     racconta(pdf)
+
+    # Il provino di un capitolo la copertina non ce l'ha: si controlla il
+    # libro intero, che e' poi quello che va in release.
+    if not scelte.capitolo and (mancante := copertina_intera(pdf)):
+        print(f"\nATTENZIONE: sulla prima pagina manca {mancante}.")
+        print("  La copertina e' scivolata su due pagine: sta in una per "
+              "pochi millimetri.")
+        print("  Si rimedia in `book/_ext/pt_stampa.py`, stringendo la "
+              "larghezza del marchio,")
+        print("  il corpo del claim o i \\vspace del frontespizio.")
+
     if guai:
         print(f"\n{len(guai)} cose che LuaLaTeX non ha digerito:")
         for riga in guai[:25]:

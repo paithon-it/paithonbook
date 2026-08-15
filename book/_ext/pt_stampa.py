@@ -509,16 +509,36 @@ FRONTESPIZIO = r"""
   % Il logo del libro, quello vero: bollo tribar piu' il lockup «paithon
   % book». Non il solo bollo con la parola ricomposta a mano, che diceva
   % «paithon» e non «Paithon Book», cioe' il nome di un'altra cosa.
+  % LA COPERTINA STA IN UNA PAGINA PER POCHI MILLIMETRI, e le misure qui
+  % sotto sono tarate su quello: il fregio da solo prende 111mm dei 297 del
+  % foglio, e quando il claim si e' aggiunto sopra, il fregio e la riga della
+  % versione sono finiti su una seconda pagina senza che niente lo dicesse
+  % (LuaLaTeX non se ne lamenta: la copertina «riesce» lo stesso). Chi tocca
+  % il corpo del claim, la larghezza del marchio o uno di questi \vspace
+  % rifaccia il conto: `genera-pdf.py` lo verifica da se' a fine build, e con
+  % questi valori il margine e' meno di 4mm.
   \IfFileExists{marchio.pdf}{%
-    \includegraphics[width=105mm]{marchio.pdf}\par\vspace{6mm}}{%
-    {\ptDisplay\fontsize{58}{62}\selectfont Paithon Book\par}\vspace{4mm}}%
+    \includegraphics[width=88mm]{marchio.pdf}\par\vspace{5mm}}{%
+    {\ptDisplay\fontsize{50}{54}\selectfont Paithon Book\par}\vspace{4mm}}%
   {\color{ptTerracotta}\rule{42mm}{2.4pt}\par}
   \vspace{5mm}
+  % Il claim: dice che cosa e' il libro, ed e' la riga che il lettore trova
+  % identica sulla landing, nella card social e nel README. Qui mancava, e la
+  % copertina apriva sulla postilla senza aver detto la cosa principale.
+  % Va a capo dove va a capo sul sito (`.pt-claim` si chiude a 34ch) e sulla
+  % card: e' la stessa riga e deve avere lo stesso respiro, quindi il ritorno
+  % e' scritto invece di essere lasciato alla giustezza della pagina.
+  {\ptDisplay\fontsize{22}{27}\selectfont
+   Il Libro di Intelligenza Artificiale\\
+   che spiega \textcolor{ptTeal}{due} \textcolor{ptTerracotta}{volte.}\par}
+  \vspace{3mm}
   % Il sottotesto: dice come il libro e' fatto, non di che cosa parla. La
   % Prefazione lo spiega per esteso.
   % «due» e «volte» nei colori dei due livelli, gli stessi del sito: teal per
   % l'Elementare, terracotta per il Superiore. Vanno in quest'ordine e non
   % nell'altro: sul sito «due» e' `--accent-color`, che e' il verde petrolio.
+  % I puntini sono suoi e restano suoi: nel claim non ci vanno, o la stessa
+  % sospensione si ripeterebbe due volte a quattro righe di distanza.
   {\ptDisplayLeggero\itshape\fontsize{16}{21}\selectfont
    l'AI che spiega se stessa\ldots{}
    \textcolor{ptTeal}{due} \textcolor{ptTerracotta}{volte.}\par}
@@ -526,7 +546,7 @@ FRONTESPIZIO = r"""
   % Learning con Python») non e' in copertina: dice di che cosa parla il
   % libro, e il sottotesto dice gia' che cos'e'. Resta nel colophon, dove
   % serve per citarlo: li' e' un dato bibliografico, non un richiamo.
-  \vspace{20mm}
+  \vspace{8mm}
   {\ptDisplay\Large Francesco Messina\par}
 \end{flushleft}
 \vspace*{\stretch{1}}
@@ -590,7 +610,14 @@ nel repository e su \texttt{apache.org/licenses/LICENSE-2.0}.
 {\ptDisplayLeggero\normalsize Come citarlo\par}
 \vspace{1mm}
 Francesco Messina, \textit{Paithon Book}, versione VERSIONE_SOLA,
-\texttt{book.paithon.it}.
+\texttt{doi.org/10.5281/zenodo.21947219}.
+\vspace{3mm}
+
+Quel DOI è l'identificativo permanente del libro, ed è quello
+\emph{di tutte le versioni}: chi lo apre arriva sempre all'ultima
+depositata. Ogni versione ne ha poi uno suo, che si legge sulla scheda
+di deposito, e va usato quando si cita un passaggio che potrebbe
+cambiare. L'indirizzo di casa resta \texttt{book.paithon.it}.
 \vspace{7mm}
 
 {\ptDisplayLeggero\normalsize Se trovi un errore\par}

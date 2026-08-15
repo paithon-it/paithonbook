@@ -1893,10 +1893,17 @@ nav.bd-links li.toctree-l1.current > details > summary .toctree-toggle {
   margin: 0;
 }
 
-.pt-scarica p + p {
+/* Il blocco ha una forma fissa, e le regole qui sotto ci contano: due
+   paragrafi-azione (scarica, leggi nel browser) e poi la spiegazione. Chi ne
+   aggiunge una terza sposta la spiegazione e deve aggiornare i selettori. */
+.pt-scarica p:last-child:not(:first-child) {
   margin-top: 0.45rem;
   font-size: 0.92em;
   opacity: 0.82;
+}
+
+.pt-scarica p:nth-child(2) {
+  margin-top: 0.35rem;
 }
 
 .pt-scarica a {
@@ -1914,6 +1921,17 @@ nav.bd-links li.toctree-l1.current > details > summary .toctree-toggle {
   border-right: 2px solid currentColor;
   border-bottom: 2px solid currentColor;
   transform: translateY(-0.18em) rotate(45deg);
+}
+
+/* La seconda azione non porta un file sul disco, porta su un'altra pagina:
+   la stessa squadra girata a destra, «vai li'» contro «scende da te». Due
+   azioni con la stessa freccia direbbero che fanno la stessa cosa.
+   La rotazione ha solo quattro valori buoni, e vanno di 90 in 90 a partire
+   da 45: la squadra e' fatta di due bordi ad angolo retto, e solo in
+   diagonale si legge come una punta. A -90deg torna allineata agli assi e
+   diventa un angolo, che non indica niente. */
+.pt-scarica p:nth-child(2) a::before {
+  transform: translateY(-0.08em) rotate(-45deg);
 }
 
 .pt-scarica a:hover {

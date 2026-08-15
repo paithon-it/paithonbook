@@ -1,11 +1,16 @@
 # Paithon Book
 
-**Il Libro di Intelligenza Artificiale che spiega due volte.** Machine
-Learning, Deep Learning e Reinforcement Learning con Python: in italiano,
-gratis, in aggiornamento continuo.
+<a href="https://book.paithon.it/main/"><img src="book/_static/social/og-book.png" width="840" alt="Paithon Book: Il Libro di Intelligenza Artificiale che spiega due volte. l'AI che spiega se stessa… due volte."></a>
+
+**Il Libro di Intelligenza Artificiale che spiega due volte.**
+*l'AI che spiega se stessa… due volte.*
+
+Machine Learning, Deep Learning e Reinforcement Learning con Python: in
+italiano, gratis, in aggiornamento continuo.
 
 <p>
   <a href="https://book.paithon.it/main/"><img alt="Leggi online" src="https://img.shields.io/badge/Leggi%20online-book.paithon.it-B5532C?style=flat-square"></a>
+  <a href="https://doi.org/10.5281/zenodo.21947219"><img alt="DOI 10.5281/zenodo.21947219" src="https://img.shields.io/badge/DOI-10.5281%2Fzenodo.21947219-2D5A5C?style=flat-square"></a>
   <a href="https://jupyterbook.org"><img alt="Jupyter Book" src="https://img.shields.io/badge/costruito%20con-Jupyter%20Book-2D5A5C?style=flat-square"></a>
   <a href="https://pytorch.org"><img alt="PyTorch" src="https://img.shields.io/badge/framework-PyTorch-C9A961?style=flat-square"></a>
   <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.it"><img alt="Licenza testi CC BY-NC-ND 4.0" src="https://img.shields.io/badge/testi-CC%20BY--NC--ND%204.0-1A1A1A?style=flat-square"></a>
@@ -142,6 +147,31 @@ di quante sembri:
 - ✉️ Feedback e proposte: **info@paithon.it**.
 - ⭐ Se il libro ti è utile, una stella al repo aiuta il progetto a farsi trovare.
 - ❤️ Puoi anche [offrire una pizza](https://buymeacoffee.com/paithon.it) all'autore.
+
+## Come citarlo
+
+Il libro è depositato su **Zenodo** e ha un DOI:
+**[10.5281/zenodo.21947219](https://doi.org/10.5281/zenodo.21947219)**. Quello
+è il DOI *di tutte le versioni*: apre sempre l'ultima depositata, e da lì si
+legge il PDF nel browser senza scaricarlo. Ogni versione ne ha poi uno suo,
+scritto sulla sua scheda, e va usato quando si cita un passaggio che potrebbe
+cambiare, perché questo libro cambia davvero.
+
+La citazione pronta la dà il pulsante **«Cite this repository»** nella colonna
+di destra, che GitHub costruisce da [`CITATION.cff`](CITATION.cff): quel file
+non si scrive a mano, lo genera `python3 scripts/genera-citazione.py` dal
+registro delle versioni, così il numero non può divergere da quello del libro.
+
+```bibtex
+@book{paithonbook,
+  author    = {Messina, Francesco},
+  title     = {Paithon Book. Il Libro di Intelligenza Artificiale che spiega due volte},
+  publisher = {paithon.it},
+  year      = {2026},
+  doi       = {10.5281/zenodo.21947219},
+  url       = {https://book.paithon.it/main/}
+}
+```
 
 ## Licenza
 

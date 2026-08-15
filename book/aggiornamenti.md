@@ -38,6 +38,18 @@ Una versione corrisponde a una **pubblicazione**, non a una giornata di
 lavoro: il libro si scrive tutti i giorni e si pubblica quando un pezzo sta in
 piedi.
 
+(v1-5-7)=
+
+## 1.5.7 · 15 agosto 2026
+
+### Pagine ampliate
+
+- **Il libro si legge anche nel browser, senza scaricarlo, e ha un indirizzo che non cambia.** Accanto al pulsante che scarica il PDF ce n'è un secondo che lo apre e basta, pagina per pagina. Quel collegamento è il DOI del libro, cioè il suo identificativo permanente: porta sempre all'ultima versione depositata e dà la scheda già pronta per chi deve citarlo in una bibliografia.
+
+### Correzioni
+
+- **La copertina del PDF diceva come è fatto il libro senza dire che libro è.** Portava soltanto la postilla, «l'AI che spiega se stessa… due volte», e chi apriva il file trovava il nome e nient'altro. Adesso c'è anche la riga che dice che cos'è, la stessa che si legge sulla home e nell'anteprima che compare condividendo il link: le tre superfici dicevano tre cose diverse, ciascuna vera per conto suo.
+
 (v1-5-6)=
 
 ## 1.5.6 · 15 agosto 2026

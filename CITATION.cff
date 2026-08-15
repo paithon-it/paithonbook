@@ -1,0 +1,62 @@
+# Come si cita questo libro.
+#
+# NON si scrive a mano: lo genera `python3 scripts/genera-citazione.py` dal
+# registro delle versioni (`book/_dati/aggiornamenti.yml`), che e' l'unico
+# posto in cui il numero di versione esiste. `--verifica` dice se e' rimasto
+# indietro.
+#
+# La forma e' quella che vuole lo standard CFF 1.2.0, e non e' quella che
+# verrebbe spontanea: al primo livello `type` puo' valere solo `software` o
+# `dataset`, quindi il *libro* si descrive dentro `preferred-citation`, che e'
+# poi il blocco che GitHub preferisce quando c'e'.
+cff-version: 1.2.0
+message: "Se citi questo libro, usa il deposito qui sotto."
+title: "Paithon Book"
+abstract: >-
+  Libro di intelligenza artificiale in italiano, gratuito e in aggiornamento
+  continuo. Ogni concetto e' spiegato su due livelli: Elementare, con analogie
+  quotidiane e senza prerequisiti, e Superiore, con la trattazione formale.
+  Copre machine learning, deep learning e reinforcement learning con Python e
+  PyTorch, dall'algebra lineare ai Transformer.
+type: software
+authors:
+  - family-names: "Messina"
+    given-names: "Francesco"
+    orcid: "https://orcid.org/0009-0008-8586-9018"
+    website: "https://www.paithon.it"
+version: "1.5.7"
+date-released: "2026-08-15"
+url: "https://book.paithon.it/main/"
+repository-code: "https://github.com/paithon-it/paithonbook"
+license:
+  - CC-BY-NC-ND-4.0
+  - Apache-2.0
+identifiers:
+  - type: doi
+    value: "10.5281/zenodo.21947219"
+    description: >-
+      Il DOI di tutte le versioni del libro: apre sempre l'ultima depositata.
+keywords:
+  - intelligenza artificiale
+  - machine learning
+  - deep learning
+  - reinforcement learning
+  - Python
+  - PyTorch
+  - divulgazione scientifica
+preferred-citation:
+  type: book
+  title: "Paithon Book. Il Libro di Intelligenza Artificiale che spiega due volte"
+  authors:
+    - family-names: "Messina"
+      given-names: "Francesco"
+      orcid: "https://orcid.org/0009-0008-8586-9018"
+  version: "1.5.7"
+  year: 2026
+  month: 8
+  doi: "10.5281/zenodo.21947219"
+  url: "https://book.paithon.it/main/"
+  publisher:
+    name: "paithon.it"
+  languages:
+    - ita

@@ -83,6 +83,9 @@
       aggiornamenti si presentavano a Google e a chi condivideva il link come
       se fossero la copertina del libro. -#}
 {%- set pt_claim = 'Paithon Book: Il Libro di Intelligenza Artificiale che spiega due volte.' -%}
+{#- Il testo alternativo della card social descrive la card, quindi porta
+    tutte e due le righe che ci stanno stampate: il claim e il sottotesto. -#}
+{%- set pt_card_alt = pt_claim ~ ' l\'AI che spiega se stessa… due volte.' -%}
 {%- set pt_sommario_libro = 'Libro di Intelligenza Artificiale in italiano, su due livelli: Elementare per chi parte da zero, Superiore per la trattazione formale. Machine Learning, Deep Learning e Reinforcement Learning con Python. Online, gratuito, in aggiornamento continuo.' -%}
 {#- Le pagine di servizio del tema (l'indice dei termini, la ricerca) non sono
     contenuto: nessun dato strutturato e `noindex`, o finiscono nei risultati al
@@ -105,13 +108,13 @@
 <meta property="og:image:type" content="image/png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Paithon Book: Il Libro di Intelligenza Artificiale che spiega due volte.">
+<meta property="og:image:alt" content="{{ pt_card_alt | e }}">
 
 <!-- Twitter Card -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="{{ pt_titolo | e }}">
 <meta name="twitter:image" content="https://book.paithon.it/main/_static/social/og-book.png">
-<meta name="twitter:image:alt" content="Paithon Book: Il Libro di Intelligenza Artificiale che spiega due volte.">
+<meta name="twitter:image:alt" content="{{ pt_card_alt | e }}">
 <meta name="twitter:description" content="{{ pt_sommario | e }}">
 
 <!-- SEO Meta Tags -->
