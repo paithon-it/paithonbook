@@ -151,11 +151,12 @@ Perché è il non conoscere ciò che genera paura e alimenta false speranze.
 % pagina di apertura.
 
 ```{raw} html
-<p class="text-right mt-2"><em>Francesco Messina</em></p>
+<p class="text-right mt-3">Napoli, 15 agosto 2026<br><em>Francesco Messina</em></p>
 ```
 
 :::{only} latex
 ```{raw} latex
-\vspace{4mm}\hfill\textit{Francesco Messina}\par
+\vspace{4mm}\hfill Napoli, 15 agosto 2026\par
+\vspace{1mm}\hfill\textit{Francesco Messina}\par
 ```
 :::
