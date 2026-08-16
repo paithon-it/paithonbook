@@ -31,7 +31,7 @@ accanto che corregge. Il meccanismo di questa sezione si chiama invece
 sta in una riga: si inventa un compito (un **pretesto**, *pretext task*) la cui
 risposta corretta è ricavabile dai dati stessi, senza che nessuno la scriva.
 Risolverlo non interessa a nessuno; interessa quello che il modello è costretto
-a capire per riuscirci, e che resta nell'**encoder** (la parte della rete che
+a capire per riuscirci, e che resta nell’**encoder** (la parte della rete che
 trasforma l'immagine nella sua lista di numeri, il riassunto interno di cui si
 diceva) quando il pretesto si butta via. È un'idea che il libro ritroverà in
 ogni campo: nel capitolo sui Transformer regge il pre-addestramento dei modelli
@@ -204,7 +204,7 @@ prenderà.
 Che la scorciatoia esista si verifica in una ventina di righe, senza addestrare
 nulla. Costruiamo duecento immagini finte, ciascuna con una propria dominante di
 colore, ne estraiamo due ritagli casuali a testa e proviamo ad accoppiarli
-usando **soltanto** l'**istogramma** dei colori, cioè il conto di quanti pixel
+usando **soltanto** l’**istogramma** dei colori, cioè il conto di quanti pixel
 di ogni tinta ci sono in un ritaglio, senza sapere dove stanno. È la carta
 d'identità cromatica di un'immagine, e ignora completamente la forma.
 
@@ -647,7 +647,7 @@ generative.
 Un modello addestrato così non classifica niente: di ogni immagine dà soltanto
 il suo riassunto interno, la lista di numeri di cui si diceva all'inizio. Come
 si misura se quei riassunti sono buoni? Si potrebbe rifinirlo, cioè lasciarlo
-imparare ancora un po' su un compito vero con le etichette, e guardare quanto ci
+imparare ancora un po’ su un compito vero con le etichette, e guardare quanto ci
 prende alla fine. Ma quel numero non basta, perché mescola due cose diverse:
 quanto era buono il riassunto di partenza e quanto è andata bene la rifinitura.
 
@@ -706,7 +706,7 @@ che conta, perché è il motivo per cui addestriamo in anticipo: non risolvere i
 pretesto, ma avere un punto di partenza utile per compiti che, mentre ci
 addestravamo, non sapevamo nemmeno quali sarebbero stati.
 
-## Tre modi di rendere difficile un compito facile
+## Dove si mette la difficoltà
 
 La varietà dei nomi nasconde un'unica struttura. Chi mette a confronto (SimCLR,
 MoCo), chi predice senza rivali (BYOL, DINO) e chi ricostruisce quello che ha
@@ -730,8 +730,18 @@ nelle trasformazioni né nella quantità coperta, ma nel modo in cui le due reti
 sono fatte diverse l'una dall'altra, ed è quella differenza a tenere il sistema
 lontano dalla risposta vuota.
 
+Tre posti, ma non sono tutti, e conviene dirlo subito. Ce n'è un quarto, e sta
+dove nessuno dei tre guarda: la difficoltà si mette **dentro il riassunto**,
+chiedendo che i numeri che lo compongono dicano ciascuno una cosa propria
+invece di ripetersi a vicenda. Niente rivali da allontanare, e nessun
+bisogno che le due reti siano fatte diverse: la condizione che tiene lontana la
+risposta vuota è scritta direttamente nel punteggio. Il capitolo
+sull'auto-supervisione presenta questa quarta famiglia insieme alle altre tre,
+e poi rilegge tutte e quattro secondo una seconda domanda, che cosa impedisce
+in ciascuna al modello di rispondere sempre la stessa cosa.
+
 Da qui il libro prosegue in due direzioni che chiudono il cerchio. Nel capitolo
-sui world model la JEPA porta la difficoltà in un terzo posto ancora: si
+sui world model la JEPA porta la difficoltà in un posto ancora diverso: si
 maschera come nel MAE, ma si predice la **rappresentazione** della parte
 nascosta invece dei suoi pixel, e le augmentation artigianali spariscono del
 tutto. Nel capitolo su visione e linguaggio il gemello da ritrovare non è più
@@ -792,7 +802,7 @@ qualcuno, pubblicando quell'immagine, ci ha scritto accanto che cosa c'era.
 - I negativi costano batch enormi. **MoCo** {cite}`he2020momentum` li mette in
   una **coda** alimentata da un encoder aggiornato per **media mobile**, così
   restano numerosi e coerenti nel tempo; **BYOL** {cite}`grill2020bootstrap` li
-  elimina e non collassa grazie all'**asimmetria** fra le due reti (testa di
+  elimina e non collassa grazie all’**asimmetria** fra le due reti (testa di
   predizione da un lato, media mobile e stop-gradient dall'altro), un fatto
   robusto la cui spiegazione è arrivata dopo il risultato.
 - **DINO** {cite}`caron2021emerging` distilla lo studente da una copia lenta di

@@ -236,7 +236,7 @@ dove mettere gli attrezzi: l'ha scoperto misurando quanto lo aiutavano.
 
 `````{tab} Superiore
 
-Toolformer usa un'**auto-supervisione** elegante. Partendo da poche
+Toolformer usa un’**auto-supervisione** elegante. Partendo da poche
 dimostrazioni per ciascuna API (calcolatrice, sistema di domanda-risposta,
 motore di ricerca, traduttore, calendario), il modello campiona in molte
 posizioni di un corpus delle *candidate* chiamate ad API con i relativi
@@ -285,8 +285,8 @@ schema di lavoro che ha dato il nome a questo modo di procedere si chiama
 **ReAct**, dall'inglese *reasoning* e *acting*, ragionare e agire, ed è stato
 proposto nel 2022 da Shunyu Yao e colleghi {cite}`yao2023react`. L'idea è
 intrecciare, in un unico flusso, tre tipi di passi: un **pensiero**
-(*Thought*, il ragionamento ad alta voce), un'**azione** (*Action*, la
-chiamata a uno strumento) e un'**osservazione** (*Observation*, il risultato
+(*Thought*, il ragionamento ad alta voce), un’**azione** (*Action*, la
+chiamata a uno strumento) e un’**osservazione** (*Observation*, il risultato
 che torna indietro). Il modello genera un pensiero, poi un'azione; il sistema
 esegue e restituisce l'osservazione; il modello legge l'osservazione, genera
 il pensiero successivo, e così via, fino a produrre la risposta finale.
@@ -326,7 +326,7 @@ prosaica: dà al modello un posto dove scrivere a che punto è del compito prima
 di scegliere l'azione. È la stessa idea che ritroveremo, chiamata **foglio di
 brutta**, parlando di come si riempie la finestra di contesto.
 
-Ma il guadagno più grosso non è il pensiero: è l'**osservazione**, e per
+Ma il guadagno più grosso non è il pensiero: è l’**osservazione**, e per
 apprezzarlo serve un nome. Quando un modello inventa un fatto e lo dice con la
 faccia di chi lo sa, si parla di **allucinazione**: non è che menta, è che
 genera la continuazione più plausibile e nessuno gli ha mai chiesto di

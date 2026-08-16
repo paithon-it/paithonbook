@@ -101,7 +101,7 @@ bene, e da lì in avanti le reti neurali.
   raccolgono migliaia di **esempi** e si lascia che le regole **emergano dai
   dati**. È questo che significa, qui, dire che un programma *impara*. Gli
   esempi possono portare la risposta scritta accanto da una persona
-  (l'**etichetta**), oppure averla già dentro di sé, come una parola coperta in
+  (l’**etichetta**), oppure averla già dentro di sé, come una parola coperta in
   mezzo a una frase.
 - I tre nomi da tenere distinti: **machine learning** è ricavare le regole dagli
   esempi; **deep learning** è farlo con reti a molti strati; **reinforcement

@@ -174,7 +174,7 @@ tre famiglie canoniche sono {cite}`quinonero2009dataset`:
   invernali hanno una distribuzione diversa da quelle estive, ma la mappa
   immagine $\to$ specie è la stessa. È il caso della figura: il modello è
   accurato dove $p_{\text{train}}(x)$ è densa, e viene interrogato dove è
-  quasi nulla (di fatto, un'**estrapolazione**).
+  quasi nulla (di fatto, un’**estrapolazione**).
 - **Label shift** (o *prior probability shift*): cambia $P(y)$, resta
   invariata $P(X \mid y)$. La malattia si presenta come prima, ma la sua
   prevalenza è diversa. Un classificatore bayesiano tarato sul *prior* vecchio
@@ -278,7 +278,7 @@ sicura e sbagliata.
 `````{tab} Superiore
 
 Sul versante algoritmico, il rimedio classico per il *covariate shift* puro è
-l'**importance weighting**: ripesare la loss di training così che gli esempi
+l’**importance weighting**: ripesare la loss di training così che gli esempi
 frequenti in produzione ma rari in addestramento contino di più,
 
 $$
@@ -298,7 +298,7 @@ $p_{\text{train}}(\mathbf{x}) = 0$ ma $p_{\text{test}}(\mathbf{x}) > 0$ nessun
 peso può inventare esempi mai raccolti; e stimare il rapporto di densità in alta
 dimensione è difficile, con pesi enormi su pochi esempi che fanno esplodere la
 varianza. Correzioni analoghe esistono per il *label shift*, ripesando per
-classi. Complementare a tutto questo è l'**out-of-distribution detection**:
+classi. Complementare a tutto questo è l’**out-of-distribution detection**:
 riconoscere gli input troppo lontani dalla distribuzione di addestramento e,
 invece di predire con finta sicurezza, astenersi o segnalare; un problema
 particolarmente delicato per le reti profonde, che su input fuori
@@ -420,7 +420,7 @@ un effetto collaterale ma la struttura stessa del problema.
 - La **validazione classica non protegge**: validation e test sono ritagli
   dello stesso passato. Con dati temporali, meglio lo split temporale.
 - Rimedi onesti: **monitoraggio in produzione**, **retraining periodico**,
-  **validazione su dati freschi**; l'*importance weighting* corregge il
+  **validazione su dati freschi**; l’*importance weighting* corregge il
   covariate shift ma solo con supporti sovrapposti e densità stimabili.
 - Attenzione ai **feedback loop**: quando le decisioni del modello generano i
   dati futuri (raccomandazioni, credito), il modello smette di osservare il

@@ -1,7 +1,7 @@
 # Scommettere sulla prossima parola: i modelli n-gram
 
 San Pietroburgo, inverno 1913. Andrej Andreevič Markov, cinquantaseienne,
-matematico dell'Accademia Imperiale delle Scienze, ha davanti a sé l'*Evgenij
+matematico dell'Accademia Imperiale delle Scienze, ha davanti a sé l’*Evgenij
 Onegin* di Puškin (il romanzo in versi che ogni russo conosce a memoria) e una
 matita. Ricopia le prime 20.000 lettere, tutto il primo capitolo e parte del
 secondo, eliminando spazi e punteggiatura; le dispone in duecento tabelle da
@@ -111,7 +111,7 @@ $$
 dove $w_t$ è la parola in posizione $t$ e ogni fattore è la scommessa sulla
 parola successiva dato il prefisso. Il problema è la stima: i prefissi
 lunghi sono quasi tutti unici e i loro conteggi valgono zero o uno.
-L'**assunzione di Markov** tronca la storia alle ultime $n-1$ parole:
+L’**assunzione di Markov** tronca la storia alle ultime $n-1$ parole:
 
 $$
 P(w_t \mid w_1, \dots, w_{t-1}) \;\approx\; P(w_t \mid w_{t-n+1}, \dots, w_{t-1}).
@@ -132,7 +132,7 @@ dimostra che queste frazioni massimizzano la verosimiglianza del corpus. Due
 accorgimenti pratici: si incorniciano le frasi con simboli di inizio e fine,
 `<s>` e `</s>`, così anche la prima parola e la chiusura sono scommesse come
 le altre; e i prodotti di molte probabilità piccole si calcolano come somme di
-logaritmi, per evitare l'*underflow* (lo stesso trucco di Naive Bayes).
+logaritmi, per evitare l’*underflow* (lo stesso trucco di Naive Bayes).
 
 `````
 
@@ -218,7 +218,7 @@ E Shakespeare è un corpus generoso. Qualunque testo nuovo conterrà coppie
 legittime che il modello non ha mai visto: il quaderno è quasi tutto bianco, e
 questa è la condizione normale del linguaggio, non l'eccezione (in gergo la si
 chiama **sparsità**). I rimedi si chiamano **smoothing**, lisciamento: togliere
-un po' di probabilità alle coppie viste per regalarne un po' a quelle mai
+un po’ di probabilità alle coppie viste per regalarne un po’ a quelle mai
 viste.
 
 `````{tab} Elementare
@@ -247,7 +247,7 @@ di «nero dopo cane»? Allora chiedi soltanto quanto è comune «nero» in
 generale, senza guardare che cosa c'era prima.
 
 Meglio ancora: non aspettare di essere in difficoltà, e **mescola** sempre i
-due giudizi, un po' di coppia e un po' di parola singola. È come chiedere
+due giudizi, un po’ di coppia e un po’ di parola singola. È come chiedere
 consiglio a due persone diverse su chi verrà alla festa. La prima ha visto
 tantissime feste come questa, ma proprio *questa* non l'ha mai vista, e quando
 non l'ha vista non sa dire niente: è il giudizio della coppia, preciso quando
@@ -474,7 +474,7 @@ mucchio di parole italiane.
 
 Per le grandezze reali, nell'esperimento classico riportato da Jurafsky e
 Martin {cite}`jurafsky2026speech` su 38 milioni di parole del *Wall Street
-Journal*, la perplessità scende da circa 960 con l'**unigramma** (il modello
+Journal*, la perplessità scende da circa 960 con l’**unigramma** (il modello
 che scommette guardando solo quanto una parola è comune, senza nemmeno
 l'ultima parola letta: è il gradino sotto il bigramma) a 170 col bigramma e a
 circa 110 col trigramma. I modelli neurali che incontreremo faranno molto
@@ -674,7 +674,7 @@ sé, parola dopo parola, un riassunto dell'intera frase.
 - Un **modello di linguaggio** scommette su quale parola viene dopo, e la
   probabilità di una frase intera è il prodotto di tutte quelle scommesse in
   fila. L'idea nasce con Markov, che nel 1913 conta a matita le lettere
-  dell'*Onegin*, e con le «approssimazioni» di Shannon del 1948, costruite
+  dell’*Onegin*, e con le «approssimazioni» di Shannon del 1948, costruite
   sfogliando libri a caso.
 - Il patto degli **n-gram**: fingere che conti solo l'ultima parola letta
   (le coppie, il bigramma) o le ultime due (le terne, il trigramma), perché
@@ -710,9 +710,9 @@ sé, parola dopo parola, un riassunto dell'intera frase.
 :class: important
 - Un **modello di linguaggio** assegna una probabilità a una frase
   scomponendola, con la regola della catena, in scommesse sulla parola
-  successiva; l'idea nasce con i conteggi a mano di Markov sull'*Onegin*
+  successiva; l'idea nasce con i conteggi a mano di Markov sull’*Onegin*
   (1913) e con le «approssimazioni» di Shannon (1948).
-- L'**assunzione di Markov** tronca la storia alle ultime $n-1$ parole:
+- L’**assunzione di Markov** tronca la storia alle ultime $n-1$ parole:
   bigrammi, trigrammi. La stima **MLE** è un rapporto di conteggi:
   $C(w_{t-1} w_t) / C(w_{t-1})$.
 - I conteggi zero confondono «mai visto» con «impossibile»: servono gli

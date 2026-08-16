@@ -128,7 +128,7 @@ y_i\,(\mathbf{w}^\top \mathbf{x}_i + b) \ge 1 \ \ \forall i,
 $$
 
 dove $\mathbf{w}$ è il vettore dei pesi, $b$ il termine di bias,
-$\mathbf{x}_i$ l'$i$-esimo esempio e $y_i \in \{-1,+1\}$ la sua etichetta. È
+$\mathbf{x}_i$ l’$i$-esimo esempio e $y_i \in \{-1,+1\}$ la sua etichetta. È
 un problema di programmazione quadratica *convesso*: ha un'unica soluzione, senza minimi
 locali in cui restare intrappolati.
 
@@ -264,7 +264,7 @@ $$
 y_i\,(\mathbf{w}^\top \mathbf{x}_i + b) \ge 1 - \xi_i,\ \ \xi_i \ge 0,
 $$
 
-dove $\xi_i$ è la violazione dell'$i$-esimo punto e $C > 0$ regola il
+dove $\xi_i$ è la violazione dell’$i$-esimo punto e $C > 0$ regola il
 compromesso tra «corridoio largo» ($\lVert \mathbf{w}\rVert$ piccolo) e «poche
 violazioni» ($\sum\xi_i$ piccolo). Eliminando i vincoli, il problema si
 riscrive come minimizzazione della **hinge loss** più un termine di
@@ -333,7 +333,7 @@ lei sappiamo una cosa sola: la direzione, di traverso alla strada. Quanto sia
 lunga non lo sappiamo ancora, e la cosa tornerà utile.
 
 Arriva un punto nuovo, di cui non conosciamo la classe. Come decidiamo da che
-parte sta? Gli facciamo fare l'**ombra sulla freccia**. Immagina la freccia
+parte sta? Gli facciamo fare l’**ombra sulla freccia**. Immagina la freccia
 appoggiata per terra, con la coda nell'origine, e una luce che arriva
 perpendicolare a lei: l'ombra del punto cade sulla freccia, in un certo punto,
 e quel punto lo possiamo misurare come una distanza dalla coda. Ne esce un
@@ -912,7 +912,7 @@ $$
 $$
 
 dove $d$ è il grado del polinomio, $c \ge 0$ un termine costante e $\gamma > 0$
-il parametro di ampiezza del kernel gaussiano, che è l'**inverso** della
+il parametro di ampiezza del kernel gaussiano, che è l’**inverso** della
 larghezza della campana (la deviazione standard equivalente vale
 $1/\sqrt{2\gamma}$): $\gamma$ grande, campana stretta. Il kernel RBF
 corrisponde a uno spazio $\phi$ di dimensione *infinita*: sarebbe impossibile
@@ -1044,7 +1044,7 @@ C'è un'ultima variante, e risponde a una domanda diversa: e se avessimo esempi
 di *una sola* classe? Vogliamo imparare com'è fatto il «normale» (transazioni
 regolari, macchinari sani, traffico di rete legittimo) per poi accorgerci di
 ciò che se ne discosta. È il problema della **novelty detection** (riconoscere
-il nuovo) e dell'**anomaly detection** (riconoscere il guasto), e si lega a
+il nuovo) e dell’**anomaly detection** (riconoscere il guasto), e si lega a
 quel tema dei dati fuori distribuzione toccato nella sezione sui dati che
 cambiano: individuare gli input troppo lontani da ciò che il modello ha visto,
 invece di predire con finta sicurezza.
@@ -1070,7 +1070,7 @@ siano rari o non ancora visti.
 La one-class SVM di Schölkopf e colleghi {cite}`scholkopf2001estimating`
 adatta l'idea del margine al caso non supervisionato: mappati i dati nello
 spazio delle feature con un kernel (di solito RBF), cerca l'iperpiano che
-separa i punti dall'**origine** con il massimo margine. Ricondotto allo spazio
+separa i punti dall’**origine** con il massimo margine. Ricondotto allo spazio
 originale, questo equivale a racchiudere i dati normali in una regione
 compatta; ciò che cade fuori è novità/anomalia. Il parametro $\nu \in (0,1]$
 ha un doppio significato preciso: è un limite *superiore* alla frazione di
@@ -1080,7 +1080,7 @@ classificazione binaria un'assenza: in addestramento **non** c'è la classe
 «anomalo»: si impara solo la forma del normale. Un parente stretto è la
 **Support Vector Data Description** (SVDD) di Tax e Duin, che invece della
 separazione dall'origine cerca la *ipersfera* minima che racchiude i dati; e
-tra le alternative non-kernel ci sono l'**Isolation Forest** (che isola le
+tra le alternative non-kernel ci sono l’**Isolation Forest** (che isola le
 anomalie con partizioni casuali, ereditando la scalabilità degli alberi della
 sezione sugli ensemble) e il *Local Outlier Factor* basato sulla densità
 locale.
@@ -1220,7 +1220,7 @@ su griglia con la cross-validation della sezione sull'overfitting è la prassi.
   per ogni punto fuori dal margine, e $\mathbf{w}=\sum_i\alpha_iy_i\mathbf{x}_i$
   non lo contiene.
 - Il **margine morbido** ammette violazioni $\xi_i$ pagate dal parametro $C$,
-  l'**inverso** della forza di regolarizzazione: $C$ grande → margine stretto
+  l’**inverso** della forza di regolarizzazione: $C$ grande → margine stretto
   (overfitting), $C$ piccolo → margine largo. La perdita è la **hinge loss**,
   parente della log-loss ma piatta oltre il margine.
 - Il **kernel trick** rende non lineare la SVM: mappa i dati in uno spazio più
@@ -1229,7 +1229,7 @@ su griglia con la cross-validation della sezione sull'overfitting è la prassi.
   senza costruirlo: funziona perché nel **duale** gli esempi compaiono solo
   dentro prodotti scalari, e vale se e solo se $k$ è simmetrica e semidefinita
   positiva (Mercer). Kernel principali: lineare, polinomiale, RBF, dove
-  $\gamma$ è l'**inverso** della larghezza della campana.
+  $\gamma$ è l’**inverso** della larghezza della campana.
 - La **SVR** regredisce con un tubo $\epsilon$-insensitive; la **one-class SVM**
   ($\nu$ = frazione di anomalie attese) impara la regione dei dati normali per
   la **novelty/anomaly detection**, senza vedere esempi anomali.

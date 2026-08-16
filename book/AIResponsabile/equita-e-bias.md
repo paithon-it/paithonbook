@@ -51,7 +51,7 @@ risposta che il modello doveva imparare a dare («questo candidato era bravo»,
 
 Il bias non attraversa il modello e si ferma: torna indietro. Le decisioni di
 oggi diventano i dati di domani, e il giro seguente parte da una disparità un
-po' più marcata.
+po’ più marcata.
 ```
 
 La freccia di ritorno in {numref}`fig-ciclo-del-bias` è la ragione per cui il
@@ -123,7 +123,7 @@ perché il difetto è nella definizione stessa dell'obiettivo.
 ## Misurare l'equità guardando i gruppi
 
 Per parlare di equità con rigore serve un vocabolario, e quattro cose da
-tenere distinte: il **gruppo** a cui una persona appartiene, l'**esito reale**
+tenere distinte: il **gruppo** a cui una persona appartiene, l’**esito reale**
 (quello che poi è successo davvero), la **decisione** del modello, e il
 **punteggio** da cui quella decisione si ricava fissando una soglia. Punteggio
 e decisione non sono la stessa cosa, e la differenza tornerà utile: il
@@ -193,8 +193,8 @@ si aspetterebbe.
 
 `````{tab} Superiore
 
-Fissiamo la notazione: $A$ è l'**attributo protetto** che identifica il gruppo
-(per esempio $A=a$ e $A=b$), $Y \in \{0,1\}$ è l'**esito reale**, $\hat{Y}$ è la
+Fissiamo la notazione: $A$ è l’**attributo protetto** che identifica il gruppo
+(per esempio $A=a$ e $A=b$), $Y \in \{0,1\}$ è l’**esito reale**, $\hat{Y}$ è la
 **decisione** del modello e $S \in [0,1]$ il **punteggio** da cui la decisione
 si ottiene fissando una soglia. Sono le quattro grandezze nominate sopra a
 parole; la distinzione fra $S$ e $\hat{Y}$ è quella che regge la sezione
@@ -892,7 +892,7 @@ libro viene appena prima.
   (riequilibrio dei dati), in-processing (vincoli/regolarizzazione di equità) o
   post-processing (soglie per gruppo: raggiungono l'equalized odds lasciando
   intatta la calibrazione, al prezzo di separare il VPP).
-- L'**equità individuale** {cite}`dwork2012fairness` chiede esiti simili per
+- L’**equità individuale** {cite}`dwork2012fairness` chiede esiti simili per
   individui simili, ma sposta la difficoltà sul definire «simile».
 - Nessuna metrica è «quella giusta»: scegliere il criterio di equità è una
   **decisione di valore**, non un calcolo.

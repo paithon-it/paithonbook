@@ -25,7 +25,7 @@ statistica applicata ai fenomeni economici) e dell'ingegneria
 {cite}`box2015time`. La loro ricetta sta in tre parole: identificare che forma
 ha la serie, stimare i numeri del modello, verificare che il modello non abbia
 lasciato fuori niente. Non è la prima idea di previsione statistica: spiegare un
-valore con quelli che lo precedono, e cioè l'**autoregressione**, la faceva già
+valore con quelli che lo precedono, e cioè l’**autoregressione**, la faceva già
 George Udny Yule nel 1927, sulle macchie solari. È però la prima **procedura**
 che si possa applicare a una serie qualunque, invece di inventare un metodo
 diverso ogni volta. Mezzo secolo dopo, lo statistico
@@ -176,7 +176,7 @@ Se le serie temporali meritano un capitolo a sé, e non un paragrafo dentro il
 Machine Learning, è perché ognuna delle loro proprietà rompe qualcosa che
 altrove davamo per scontato.
 
-La prima è l'**autocorrelazione**. Prendi la serie, fanne una copia e falla
+La prima è l’**autocorrelazione**. Prendi la serie, fanne una copia e falla
 scivolare indietro di un giorno, di due, di dodici: le due si somigliano, e
 quella somiglianza è il legame della serie con il proprio passato. Il numero di
 passi di cui si è spostata la copia si chiama **ritardo**; in inglese *lag*, ed
@@ -246,7 +246,7 @@ E adesso la prova che conta. Rimescoliamo le date: teniamo gli stessi duecento
 numeri e li rimettiamo in fila a caso. Il coefficiente **crolla** a $0{,}14$.
 Non è esattamente zero, e non poteva esserlo: rimescolando duecento numeri
 qualche somiglianza per puro caso ci scappa sempre, di solito di qualche
-centesimo, e questa volta è capitata un po' più grossa. Ma di quel $0{,}94$ non
+centesimo, e questa volta è capitata un po’ più grossa. Ma di quel $0{,}94$ non
 è rimasto niente. Gli stessi identici valori, in un altro ordine, non prevedono
 più niente: quello che rendeva prevedibile la serie non stava nei numeri, stava
 nel loro ordine.
@@ -326,7 +326,7 @@ essa.
 `````
 
 Autocorrelazione, non stazionarietà, cambi di regime, ordine che conta: sono
-modi diversi di dire una cosa sola. In una serie temporale l'**indipendenza**
+modi diversi di dire una cosa sola. In una serie temporale l’**indipendenza**
 tra gli esempi (la comoda finzione su cui abbiamo costruito il resto del
 machine learning supervisionato) semplicemente non c'è, e ogni metodo del
 capitolo è un modo diverso di prenderla sul serio.
@@ -377,10 +377,10 @@ modello che dice «domani 24 gradi» vale meno di uno che dice «domani fra 22 e
 gradi, e sono sicuro all'80%», dove quell'80% vuol dire: otto volte su dieci il
 valore vero cade dentro la forbice. Il secondo sa quanto poco sa.
 
-Su questo, però, quasi tutti i metodi del capitolo barano un po', e senza
+Su questo, però, quasi tutti i metodi del capitolo barano un po’, e senza
 volerlo: quel «fra 22 e 26» tende a essere **più stretto** di quanto sarebbe
 onesto, e la forbice che promette di contenere il valore vero otto volte su
-dieci lo contiene un po' meno spesso. Non è una fatalità. Quanto stretta sia di
+dieci lo contiene un po’ meno spesso. Non è una fatalità. Quanto stretta sia di
 troppo si misura, e la sezione sulla validazione mostra come.
 
 `````{tab} Elementare
@@ -400,7 +400,7 @@ troppo si misura, e la sezione sulla validazione mostra come.
   compiti: dire che tipo di serie è, trovarci dentro i punti anomali, e
   ricostruire i valori mancanti.
 - La difficoltà nasce dal fatto che i valori sono legati fra loro. Ogni valore
-  somiglia a quelli vicini (l'**autocorrelazione**), le regole del gioco
+  somiglia a quelli vicini (l’**autocorrelazione**), le regole del gioco
   cambiano nel tempo (una **tendenza** che sale, una **stagione** che torna, o
   un cambio improvviso), e nessuna di queste cose capitava con le palline nel
   sacchetto. Una serie si dice **stabile** (i tecnici dicono *stazionaria*)
@@ -428,7 +428,7 @@ troppo si misura, e la sezione sulla validazione mostra come.
 - I compiti principali sono **forecasting** (uni/multivariato, a passo singolo o
   a più passi), classificazione di serie, rilevamento di anomalie e imputazione.
   Nel multi-step l'incertezza cresce con l'orizzonte perché si sommano le
-  varianze delle $h$ innovazioni non ancora osservate; l'*error compounding*
+  varianze delle $h$ innovazioni non ancora osservate; l’*error compounding*
   della strategia ricorsiva è un fenomeno **distinto**, e riguarda la
   distorsione che la reiniezione introduce con modelli stimati o non lineari.
 - Ciò che rende il problema difficile è la rottura dell'indipendenza:

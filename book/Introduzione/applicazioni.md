@@ -31,7 +31,7 @@ quella data nella pagina precedente: la regola che decide quando fermare il
 risciacquo l'ha scritta un tecnico, riga per riga.
 
 Esiste però un ponte fra i due mondi, ed è fatto di programmi che imparano per
-tentativi ed errori, incassando un «premio» ogni volta che fanno bene, un po'
+tentativi ed errori, incassando un «premio» ogni volta che fanno bene, un po’
 come si addestra un cucciolo premiandolo quando obbedisce. Quel ramo
 dell'intelligenza artificiale si chiama **reinforcement learning**
 (apprendimento per rinforzo). È così che oggi si insegna a un robot a
@@ -50,8 +50,8 @@ Ogni tentativo, però, lascia una traccia: il robot si segna che cosa ha fatto e
 quanti punti ne ha ricavato. E le mosse non le sceglie a colpo sicuro, le
 sorteggia, come tirando dei dadi: all'inizio i dadi sono onesti e ogni mossa ha
 la stessa probabilità di uscire. Dopo ogni prova il programma li ritocca di
-pochissimo, e questo è il punto in cui l'imparare succede: rende un po' più
-facile l'uscita delle mosse comparse nelle prove andate bene, un po' più
+pochissimo, e questo è il punto in cui l'imparare succede: rende un po’ più
+facile l'uscita delle mosse comparse nelle prove andate bene, un po’ più
 difficile quella delle mosse comparse nelle prove andate male. Ripeti migliaia
 di volte e i dadi si sbilanciano sempre di più verso il camminare; il punteggio
 sale a $10$, poi a $50$, poi a $500$.

@@ -14,7 +14,7 @@ nulla su cui scrivere.
 
 La parola *codec* non è nuova. Ogni volta che ascoltate un brano in streaming
 o salvate un vocale, un codec ha ridotto l'audio a una frazione della sua
-dimensione. Il più famoso, l'**MP3** (il cui progetto fu completato nel 1992 e
+dimensione. Il più famoso, l’**MP3** (il cui progetto fu completato nel 1992 e
 pubblicato come standard ISO l'anno dopo), comprime
 buttando via ciò che l'orecchio non sente: si appoggia a un modello
 psicoacustico (un insieme di **regole fisse**, scritte a mano da ingegneri)
@@ -43,8 +43,8 @@ che serve a ricostruire.
 La forma di {numref}`fig-autoencoder-clessidra` è quella di ogni compressione
 imparata, e il resto della sezione non fa che stringere e disciplinare quel
 collo centrale. Nel disegno le parole sono in inglese, come si trovano nel
-codice: l'*input* è ciò che entra, l'*encoder* la parte che stringe, il
-*bottleneck* la strozzatura, il *decoder* la parte che riapre, l'*output* ciò
+codice: l’*input* è ciò che entra, l’*encoder* la parte che stringe, il
+*bottleneck* la strozzatura, il *decoder* la parte che riapre, l’*output* ciò
 che esce. Il pugno di numeri che sopravvive nella strozzatura si chiama
 **latente**, ed è una parola che da qui in poi torna in ogni pagina: latente
 perché quei numeri non li ha scelti nessuno e non dicono niente a guardarli, ma
@@ -117,7 +117,7 @@ semplice, e vale la pena vederla prima con un'immagine e poi con i numeri.
 
 Pensa a una fotografia con milioni di sfumature di colore e a una tavolozza
 fissa di, diciamo, 16 colori. Per ogni pixel della foto scegli il colore della
-tavolozza che gli somiglia di più e lo sostituisci: la foto diventa un po' più
+tavolozza che gli somiglia di più e lo sostituisci: la foto diventa un po’ più
 «a blocchi», ma la riconosci ancora. E adesso il colpo di genio: invece di
 salvare per ogni pixel i suoi tre numeri di colore, salvi **un solo numero**
 (la *posizione* nella tavolozza, da 0 a 15). La tavolozza la conosciamo già,
@@ -142,7 +142,7 @@ Sia $\mathcal{C} = \{\mathbf{e}_1, \dots, \mathbf{e}_K\}$ un **codebook** di $K$
 vettori-prototipo, appresi
 durante l'addestramento. Dato un vettore latente $\mathbf{z}$ prodotto dall'encoder, la
 quantizzazione sceglie il prototipo più vicino (in norma euclidea) e ne
-restituisce l'**indice**:
+restituisce l’**indice**:
 
 $$
 k^\star = \arg\min_{k \in \{1,\dots,K\}} \lVert \mathbf{z} - \mathbf{e}_k \rVert^2,

@@ -186,7 +186,7 @@ $1$ per riga e colonna). Rinumerare i nodi significa trasformare
 $\mathbf{A} \mapsto \mathbf{P} \mathbf{A} \mathbf{P}^\top$ e
 $\mathbf{X} \mapsto \mathbf{P} \mathbf{X}$. Poiché questi descrivono lo stesso
 grafo, un modello sensato deve rispettare una di due proprietà. Per un compito
-che produce **una risposta per l'intero grafo**, serve l'**invarianza a
+che produce **una risposta per l'intero grafo**, serve l’**invarianza a
 permutazione**:
 
 $$
@@ -195,7 +195,7 @@ $$
 
 la predizione non cambia comunque si rinumerino i nodi. Per un compito che
 produce **una risposta per nodo** (un vettore per ciascuno), serve invece
-l'**equivarianza a permutazione**:
+l’**equivarianza a permutazione**:
 
 $$
 f(\mathbf{P} \mathbf{A} \mathbf{P}^\top,\, \mathbf{P} \mathbf{X}) = \mathbf{P}\, f(\mathbf{A}, \mathbf{X}),
@@ -247,7 +247,7 @@ esempio se una molecola è tossica.
   affronterà per intero: un grafo con gli utenti da una parte e i prodotti
   dall'altra, e consigliare un film vuol dire prevedere un arco che ancora non
   c'è.
-- **Livello-grafo.** Si prevede una proprietà dell'*intero* grafo, riassunto in
+- **Livello-grafo.** Si prevede una proprietà dell’*intero* grafo, riassunto in
   un solo verdetto. L'esempio principe è la chimica: una molecola è un grafo di
   atomi e legami, e vogliamo prevedere se è solubile, tossica, o efficace come
   farmaco.
@@ -350,9 +350,9 @@ nodi). **node2vec** {cite}`grover2016node2vec` rende il cammino *distorto*
 (*biased*): due iperparametri $p$ e $q$ controllano la probabilità, a ogni
 passo, di tornare indietro, restare nei paraggi o allontanarsi. Regolando $p$
 e $q$ si interpola con continuità tra un'esplorazione «in ampiezza» (di tipo
-BFS, che tende a cogliere l'*equivalenza strutturale*, nodi con ruoli simili,
+BFS, che tende a cogliere l’*equivalenza strutturale*, nodi con ruoli simili,
 per esempio due «hub») e una «in profondità» (di tipo DFS, che esplora regioni
-più ampie e coglie l'*omofilia*, nodi della stessa comunità). In entrambi i
+più ampie e coglie l’*omofilia*, nodi della stessa comunità). In entrambi i
 casi l'embedding di un nodo è appreso come una riga di una tabella,
 esattamente come per le parole.
 
@@ -574,7 +574,7 @@ print(A_tilde.sum(axis=1))     # gradi con i cappi: [3 3 4 3 2]
   **un numero diverso di nodi**. Griglie di pixel e frasi non hanno nessuno dei
   tre problemi.
 - Tre tipi di domanda: su un **nodo** (questo account è un bot?), su un **arco**
-  che ancora non c'è (queste due persone diventeranno amiche?), sull'**intero
+  che ancora non c'è (queste due persone diventeranno amiche?), sull’**intero
   grafo** (questa molecola è tossica?). E due situazioni: o il grafo è uno solo
   e fisso, e si tratta di riempire i buchi, oppure si vuole imparare qualcosa
   che funzioni anche su nodi e grafi mai visti, come imparare a leggere le

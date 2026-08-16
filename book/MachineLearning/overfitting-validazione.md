@@ -46,7 +46,7 @@ gli errori di misura, gli accidenti, il caso. Su un dato nuovo crolla. Si chiama
 `````{tab} Superiore
 
 Formalmente, l'errore che ci interessa è quello su dati **non** visti in
-addestramento, l'*errore di generalizzazione*. Confrontarlo con l'errore
+addestramento, l’*errore di generalizzazione*. Confrontarlo con l'errore
 sull'insieme di training rivela il regime in cui ci troviamo:
 
 - **Underfitting**: errore di training *alto* e vicino a quello di test. Il
@@ -138,7 +138,7 @@ bias cala ma la varianza cresce: l'errore di test ha la classica forma a **U**, 
 il minimo è il modello ottimale.
 
 Un'avvertenza sull'ambito di validità, perché il vocabolario viaggia più
-lontano del teorema. La decomposizione è un'**identità della loss quadratica**:
+lontano del teorema. La decomposizione è un’**identità della loss quadratica**:
 per la loss 0-1 dei classificatori non esiste una scomposizione additiva
 analoga, e più varianza può perfino *ridurre* l'errore quando il bias sta dalla
 parte sbagliata della soglia {cite}`wood2023unified`. Da qui in avanti «bias» e
@@ -244,7 +244,7 @@ sarebbe stata $0{,}09 + 3{,}38/2 = 1{,}78$, parecchio più in basso.)
 L'errore di addestramento, per giunta, non è migliorato di un'unghia, anzi è
 salito appena ($2{,}294$ con 120 esempi, $2{,}321$ con 2400). Il rialzo è
 normale, ed è il segno che stiamo cercando: con pochi esempi una retta riesce a
-passare un po' più vicino a tutti; con tanti non ce la fa più, perché la forma
+passare un po’ più vicino a tutti; con tanti non ce la fa più, perché la forma
 giusta non è una retta e i punti in più non fanno che ricordarglielo. Quel
 modello ha dato tutto quello che aveva, e altri diecimila esempi non
 sposterebbero nulla. Se serve di meglio, serve un modello diverso.
@@ -254,7 +254,7 @@ decisione che votano: la incontreremo nella sezione sugli alberi, e qui basta
 sapere che è molto più flessibile di una retta) arriva a $0{,}031$
 sull'addestramento e
 $0{,}215$ in validazione, con un divario di $+0{,}184$ ancora aperto: ha
-imparato benissimo ciò che ha visto e generalizza un po' meno. Ma il suo
+imparato benissimo ciò che ha visto e generalizza un po’ meno. Ma il suo
 $0{,}215$, sul metro di prima, è a un passo dal traguardo: della strada da
 $3{,}471$ a $0{,}09$ ne ha percorso il $96\%$. Diagnosi opposta e ricetta
 opposta: qui i dati in più pagano.
@@ -300,7 +300,7 @@ $80/10/10$, cioè in ogni caso la maggior parte degli esempi allo studio.
 
 Il test set è il compito d'esame vero. Se lo sbirci mentre studi e aggiusti le
 tue scelte in base a quello, il voto finale non dice più nulla: hai imparato a
-memoria *quell'* esame. Per questo il test si tiene chiuso in un cassetto e si
+memoria *quell’* esame. Per questo il test si tiene chiuso in un cassetto e si
 apre soltanto alla fine. Ogni volta che usi il test per decidere qualcosa, lo
 "consumi", e il numero che ti restituisce diventa troppo ottimista.
 
@@ -365,7 +365,7 @@ imparano guardando anche il test, allora il test ha già parlato.
 
 È la forma più insidiosa di **data leakage** (una «fuga» di informazione dal
 test verso l'addestramento) perché non produce nessun errore e nessun avviso:
-produce solo un punteggio un po' più alto del vero. La regola pratica che ne
+produce solo un punteggio un po’ più alto del vero. La regola pratica che ne
 discende è secca: qualunque cosa impari dai dati va calcolata **dentro** il
 training e poi applicata al resto, mai prima della divisione.
 
@@ -437,7 +437,7 @@ loro. Se più righe descrivono lo **stesso soggetto** (più visite dello stesso
 paziente, più eventi dello stesso utente, più fotogrammi dello stesso video),
 il rimescolamento mette quasi-duplicati sia in training sia in validation, e il
 modello ritrova in validation ciò che ha già visto. Il risultato non è una
-stima un po' ottimista: è una stima priva di significato, e non dà nessun
+stima un po’ ottimista: è una stima priva di significato, e non dà nessun
 segnale d'allarme. Con duecento soggetti, dieci misure quasi identiche
 ciascuno e un'etichetta assegnata **a caso** (quindi non c'è niente da
 imparare, e la verità è $0{,}50$), la 5-fold mescolata riporta accuratezza
@@ -581,7 +581,7 @@ automatico di feature.
 
 Due cose le formule le dicono in silenzio, e vale la pena dirle ad alta voce.
 La prima è che l'indice $j$ corre da $1$ a $n$, cioè sulle sole
-caratteristiche: l'**intercetta non è penalizzata**. Se lo fosse, il modello
+caratteristiche: l’**intercetta non è penalizzata**. Se lo fosse, il modello
 dipenderebbe dall'origine scelta per $y$, e sommare mille a tutte le etichette
 (misurare in gradi Kelvin invece che in Celsius) cambierebbe la soluzione, il
 che non ha senso. La seconda è che la penalità mette sullo stesso piano pesi
@@ -593,7 +593,7 @@ che qui è meno visibile, perché un modello mal regolarizzato funziona
 comunque, solo peggio: `Ridge` e `Lasso` non standardizzano da soli, e vanno
 messi in una pipeline dietro uno `StandardScaler`.
 
-L'**Elastic Net** somma le due penalità,
+L’**Elastic Net** somma le due penalità,
 $\lambda\big(\alpha\sum_j|\theta_j| + \tfrac{1-\alpha}{2}\sum_j\theta_j^2\big)$,
 e non è un compromesso pigro: rimedia a un difetto preciso del Lasso. Fra due
 feature fortemente correlate il Lasso ne tiene **una sola**, scelta in modo
@@ -607,7 +607,7 @@ diversi. Nella formula dell'Elastic Net è il **rapporto di miscela** fra le due
 penalità ($\alpha = 1$ è Lasso puro, $\alpha = 0$ è Ridge puro) e non ha niente
 a che vedere con la loro intensità, che resta $\lambda$. Nel codice, invece,
 l'argomento `alpha` di `Ridge`, `Lasso` ed `ElasticNet` è proprio
-l'**intensità**, cioè il nostro $\lambda$, mentre la miscela lì si chiama
+l’**intensità**, cioè il nostro $\lambda$, mentre la miscela lì si chiama
 `l1_ratio`. Sono due tradizioni che si sono incrociate su una lettera sola:
 conviene guardare che cosa fa il parametro, non come si chiama.
 
@@ -788,7 +788,7 @@ come un mazzo di biglietti comprati tutti insieme.
 
 `````{tab} Superiore
 
-La procedura {cite}`frankle2019lottery` è l'*iterative magnitude pruning*: si
+La procedura {cite}`frankle2019lottery` è l’*iterative magnitude pruning*: si
 annota l'inizializzazione
 $\theta_0$, si addestra, si elimina una frazione dei pesi più piccoli, si
 riportano i sopravvissuti ai valori in $\theta_0$, si riaddestra, si ripete. Le
@@ -832,7 +832,7 @@ sezione.
   dove serviva una curva: si sbaglia già sugli esempi di scuola) ed essere
   **troppo flessibili** (una curva che passa per ogni punto, rumore compreso:
   dieci e lode sugli esempi di scuola, disastro sui casi nuovi). Il secondo è
-  l'*overfitting*, cioè imparare a memoria.
+  l’*overfitting*, cioè imparare a memoria.
 - Immagina di riaddestrare il modello molte volte su dati sempre nuovi: se le
   risposte sono tutte spostate dalla stessa parte è un difetto di **mira**; se
   sono sparpagliate è un difetto di **stabilità**. Si correggono in modi

@@ -13,7 +13,7 @@ qualunque giocatore umano che *finiva* la gara. Aveva fatto esattamente ciò
 che gli avevamo chiesto. Non ciò che intendevamo.
 
 Questa distanza (tra la **lettera** di un obiettivo e la sua **intenzione**) è
-il cuore del problema dell'**allineamento**. La parola dice quello che sembra
+il cuore del problema dell’**allineamento**. La parola dice quello che sembra
 dire: due cose sono allineate quando si sovrappongono, come due righe messe una
 sull'altra, e un sistema è allineato quando quello che fa combacia con quello
 che volevamo. (Nella sezione sulla traduzione automatica, dentro il capitolo di
@@ -77,16 +77,16 @@ far salire, con la stessa fedeltà cieca del genio: se quel numero è una buona
 imitazione di ciò che vogliamo, ottimo; ma nessuna imitazione è perfetta, e il
 modello è bravissimo a scovare i punti in cui il numero sale *senza* che le cose
 migliorino davvero. Non è cattiveria, e non è nemmeno un errore di
-programmazione: è che «di' esattamente cosa vuoi» è, con un sistema abbastanza
+programmazione: è che «di’ esattamente cosa vuoi» è, con un sistema abbastanza
 capace, molto più difficile di quanto sembri.
 
 `````
 
 `````{tab} Superiore
 
-Conviene distinguere due sottoproblemi. L'**outer alignment** riguarda la
+Conviene distinguere due sottoproblemi. L’**outer alignment** riguarda la
 *specifica*: scrivere un obiettivo $\tilde{r}$ che catturi davvero ciò che ci
-interessa, $r^*$. L'**inner alignment** riguarda ciò che il modello finisce
+interessa, $r^*$. L’**inner alignment** riguarda ciò che il modello finisce
 per perseguire *internamente* una volta addestrato: anche con una specifica
 perfetta, un sistema ottimizzato su una distribuzione può interiorizzare un
 obiettivo che generalizza male fuori da essa (*goal misgeneralization*). Sul
@@ -205,7 +205,7 @@ Come si orienta, in concreto, un modello di linguaggio? Il capitolo sui
 Transformer, nella sezione sul post-training, sviluppa la ricetta per intero;
 qui la richiamiamo per sommi capi e ne aggiungiamo il tassello mancante.
 
-La prima mossa storica è l'**RLHF** (*Reinforcement Learning from Human
+La prima mossa storica è l’**RLHF** (*Reinforcement Learning from Human
 Feedback*, apprendimento per rinforzo dai giudizi delle persone). L'idea di far
 imparare a un sistema da confronti umani circola dai primi anni Dieci (Akrour e
 colleghi nel 2011, Wilson e colleghi nel 2012); quello che succede nel 2017 è
@@ -267,7 +267,7 @@ giudice da tirare su e poi il modello da allenare contro di lui. Nel 2023 la
 preferenze») di Rafailov e colleghi {cite}`rafailov2023direct` mostra che il
 giudice si può togliere di mezzo. Le stesse coppie di risposte, con scritto
 quale delle due era migliore, si danno direttamente al modello che parla,
-chiedendogli di rendere un po' più probabile la risposta preferita e un po'
+chiedendogli di rendere un po’ più probabile la risposta preferita e un po’
 meno quella scartata. Un passaggio solo, e nessun giudice da costruire.
 
 Su che cosa esattamente sia dimostrato, però, conviene essere precisi, perché
@@ -353,7 +353,7 @@ risponde: un modello, guidato da un insieme scritto di principi. Il metodo ha
 due fasi. Nella prima, supervisionata, il modello genera una risposta, la
 **critica** rispetto a un principio campionato dalla costituzione e la
 **riscrive**; si fa poi fine-tuning sulle risposte riviste. Nella seconda si
-applica l'**RLAIF** (*RL from AI Feedback*): un modello confronta coppie di
+applica l’**RLAIF** (*RL from AI Feedback*): un modello confronta coppie di
 risposte alla luce dei principi e produce le etichette di preferenza, che
 addestrano il preference model usato poi in RL. Il risultato empirico
 riportato è un modello meno nocivo e *meno evasivo* (che spiega perché rifiuta
@@ -436,7 +436,7 @@ l'analogo dell'SQL injection, come ha mostrato in dettaglio la sezione su
 come si attacca e si difende un modello di linguaggio; e nei sistemi agentici
 (con accesso a strumenti, mail, file) il danno smette di essere un testo
 sbagliato e diventa un'azione. Sopra tutto sta la
-questione dell'**uso duale**: le stesse capacità che rendono un modello utile
+questione dell’**uso duale**: le stesse capacità che rendono un modello utile
 per chimica, biologia o codice possono assistere chi vuole nuocere. Non è un
 bug da correggere, è una proprietà della capacità stessa, e ne fa una
 questione di controllo dell'accesso, non solo di addestramento.
@@ -488,7 +488,7 @@ che sondano capacità pericolose, jailbreak, fughe di dati) o
 **evals** sono suite di benchmark riproducibili; si distinguono quelle di
 *capacità* (cosa il modello sa fare) da quelle di *sicurezza* (tossicità,
 rifiuto di richieste illecite, resistenza ai jailbreak, propensione alle
-allucinazioni), spesso riassunte in metriche come l'*attack success rate* o il
+allucinazioni), spesso riassunte in metriche come l’*attack success rate* o il
 tasso di rifiuto appropriato. Due avvertenze di metodo, entrambe corollari di
 Goodhart. Primo: un benchmark è un proxy, e ottimizzare *per* il benchmark
 (magari perché finito nei dati di addestramento) gonfia il punteggio senza
@@ -528,7 +528,7 @@ anche l'ultimo.
 
 Non regoliamo tutti i prodotti allo stesso modo: un giocattolo di plastica e
 un farmaco seguono controlli diversissimi, perché diverso è il danno che
-possono fare. L'**AI Act** europeo applica la stessa idea all'intelligenza
+possono fare. L’**AI Act** europeo applica la stessa idea all'intelligenza
 artificiale: guarda anzitutto al **rischio** di ogni suo impiego, più che alla
 tecnologia in astratto, e lo dispone su una piramide a quattro gradini.
 
@@ -570,7 +570,7 @@ scuola o lavori.
   questo divieto vale per le **forze dell'ordine**, non per chiunque. Fuori da
   quel caso il riconoscimento biometrico non è vietato, è solo sorvegliato.
 
-Sotto c'è l'*alto rischio*, ed è il gradino che riguarda le decisioni serie:
+Sotto c'è l’*alto rischio*, ed è il gradino che riguarda le decisioni serie:
 chi viene assunto, chi ottiene un prestito, un dispositivo medico, l'ammissione
 a una scuola. Questi usi sono permessi, ma prima di andare sul mercato bisogna
 avere una documentazione tecnica in ordine, tenere il registro di quello che il
@@ -596,7 +596,7 @@ più per i pochi più grossi di tutti.
 
 `````{tab} Superiore
 
-L'**AI Act** {cite}`euaiact2024`, entrato in vigore nell'agosto 2024, struttura
+L’**AI Act** {cite}`euaiact2024`, entrato in vigore nell'agosto 2024, struttura
 gli obblighi su quattro livelli di rischio. I numeri di articolo che seguono
 valgono la pena: sono la sola cosa che permette a chi legge di andare a
 verificare, e sono anche la parte più stabile del testo. Stabile non vuol dire
@@ -721,7 +721,7 @@ noi.
   volevamo. Il guaio è che noi non gli diamo il desiderio, gli diamo un numero
   da far salire, e lui quel numero lo fa salire davvero: come il genio della
   lampada, che esaudisce le parole e non l'intenzione.
-- Il numero che gli diamo è sempre un'**imitazione** di ciò che ci interessa
+- Il numero che gli diamo è sempre un’**imitazione** di ciò che ci interessa
   (nel libro: un *surrogato*, o *proxy*). E c'è una cosa da sapere, che si vede
   nella tabella dell'esperimento: spremere quell'imitazione **all'inizio
   funziona e poi peggiora le cose**. Non è vero che ottimizzare di più sia
@@ -742,7 +742,7 @@ noi.
   possono fare esami ripetibili per controllare che le falle vecchie non
   tornino. Ma **passare un esame non vuol dire essere sicuri**: vuol dire non
   aver fallito le prove che qualcuno ha pensato di fare.
-- L'**AI Act** europeo regola in base a quanto un uso può ferire: pochissimi usi
+- L’**AI Act** europeo regola in base a quanto un uso può ferire: pochissimi usi
   vietati del tutto (fra cui riconoscere le emozioni degli studenti a scuola),
   alcuni sorvegliati, alcuni con l'obbligo di dire «stai parlando con un'AI», e
   tutto il resto libero.
@@ -761,7 +761,7 @@ noi.
   lettera dell'obiettivo. *Specification gaming* / **reward hacking** e legge di
   **Goodhart** (il proxy $\tilde{r}$ diverge dal vero $r^*$ proprio dove
   l'ottimizzatore cerca il massimo); si distinguono *outer* e *inner* alignment.
-- La curva dell'**overottimizzazione** non è monotona: al crescere della
+- La curva dell’**overottimizzazione** non è monotona: al crescere della
   pressione la qualità vera prima sale, poi ripiega e scende sotto il punto di
   partenza, mentre il punteggio surrogato continua a salire
   {cite}`gao2023scaling`. La penalità KL dell'RLHF è la difesa contro questo, e
@@ -774,12 +774,12 @@ noi.
   {cite}`bai2022constitutional` (principi scritti e feedback dell'AI per ridurre
   il giudizio umano).
 - **Rischi**: allucinazioni (errore intrinseco → verifica a valle) contro
-  jailbreak e **prompt injection** (attacchi → difesa di perimetro); e l'**uso
+  jailbreak e **prompt injection** (attacchi → difesa di perimetro); e l’**uso
   duale**, proprietà della capacità, non bug da correggere.
 - **Valutare la sicurezza**: **red-teaming** (cercare le falle da avversari) ed
   **evals**/benchmark (esami ripetibili). Ma passare un test è un proxy: assenza
   di prove non è prova d'assenza.
-- **Governance**: l'**AI Act** {cite}`euaiact2024` regola per *rischio*
+- **Governance**: l’**AI Act** {cite}`euaiact2024` regola per *rischio*
   (inaccettabile/vietato art. 5, alto art. 6 e allegato III,
   limitato/trasparenza art. 50, minimo), con obblighi extra per i **GPAI**
   (artt. 53 e 55) a rischio sistemico, presunto oltre $10^{25}$ FLOP (art.

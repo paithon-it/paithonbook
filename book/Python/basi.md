@@ -106,7 +106,7 @@ f"accuratezza: {0.8723:.1%}"     # -> 'accuratezza: 87.2%'  una cifra, in percen
 
 `````{tab} Elementare
 
-Pensa a una variabile come a un'**etichetta adesiva** che attacchi a un valore.
+Pensa a una variabile come a un’**etichetta adesiva** che attacchi a un valore.
 `nome = "Ada"` vuol dire "d'ora in poi l'etichetta `nome` sta su questa
 stringa". La cosa comoda è che puoi spostare l'etichetta su un valore di tipo
 diverso quando vuoi:
@@ -125,7 +125,7 @@ cui Python è veloce da scrivere.
 
 `````{tab} Superiore
 
-Python è **dinamicamente tipizzato**: il tipo appartiene all'*oggetto*, non al
+Python è **dinamicamente tipizzato**: il tipo appartiene all’*oggetto*, non al
 nome. Un nome è solo un riferimento; `x = 5` lega il nome `x` all'oggetto
 intero `5`. Ogni valore è un oggetto con un tipo a runtime, e lo stesso nome può
 essere rilegato a oggetti di tipo diverso in momenti diversi.
@@ -137,7 +137,7 @@ Dettagli che contano più avanti: gli `int` hanno **precisione arbitraria**
 `False == 0`. Ne segue lo stile *duck typing*: conta cosa un oggetto *sa
 fare*, non a quale classe appartiene.
 
-Il modello a riferimenti ha due conseguenze immediate. La prima è l'*alias*:
+Il modello a riferimenti ha due conseguenze immediate. La prima è l’*alias*:
 `b = a` non copia niente, dà un secondo nome allo stesso oggetto, e
 `b.append(3)` si vede anche da `a` (per copiare servono `a.copy()`, che è
 superficiale, o `copy.deepcopy`). La seconda è la distinzione fra i due
@@ -153,7 +153,7 @@ che è esattamente il motivo per cui non va usato così).
 ## Le strutture dati di ogni giorno
 
 Quattro contenitori bastano per il 90% del lavoro: la **lista**, la **tupla**,
-il **dizionario** e l'**insieme**. Nel codice si scrivono con i nomi inglesi
+il **dizionario** e l’**insieme**. Nel codice si scrivono con i nomi inglesi
 (`list`, `tuple`, `dict`, `set`), e ciascuno si riconosce dalle parentesi che
 usa:
 
@@ -233,7 +233,7 @@ La differenza tecnica è **mutabilità** e **hashabilità**. `list`, `dict` e
 `set` sono mutabili; `tuple` è immutabile, ed è *hashable* solo se lo sono
 anche i suoi elementi: solo in quel caso può fare da chiave di dizionario.
 `dict` e `set` sono tabelle hash: l'accesso e il test di appartenenza sono in
-media $O(1)$, contro l'$O(n)$ della ricerca lineare in una lista. Le chiavi di
+media $O(1)$, contro l’$O(n)$ della ricerca lineare in una lista. Le chiavi di
 un `dict` e gli elementi di un `set` devono essere hashable, cioè avere un
 hash che non cambia nel tempo. Per i tipi built-in la proprietà coincide in
 pratica con l'immutabilità (una tupla che contiene una lista, per esempio,
@@ -500,7 +500,7 @@ aggiungere parametri senza rompere il codice altrui.
 
 Una trappola classica: il valore di default è valutato **una sola volta**, alla
 definizione. Non usare mai un oggetto mutabile come default (`def f(x, acc=[])`)
-o l'`acc` sarà condiviso tra le chiamate. Le funzioni in Python sono
+o l’`acc` sarà condiviso tra le chiamate. Le funzioni in Python sono
 *first-class*: si assegnano a variabili, si passano ad altre funzioni, si
 restituiscono. Senza `return` esplicito, una funzione restituisce `None`.
 
@@ -630,7 +630,7 @@ l'oggetto parla di sé stesso.
 `__init__` è il **costruttore**, invocato quando scrivi `Punto(3, 4)`; `self` è
 il riferimento esplicito all'istanza, primo parametro di ogni metodo. Gli
 attributi assegnati con `self.x = x` sono dati d'istanza. Le classi supportano
-l'**ereditarietà** (`class Punto3D(Punto): ...`), che permette di specializzare
+l’**ereditarietà** (`class Punto3D(Punto): ...`), che permette di specializzare
 comportamenti riusando il codice della classe base.
 
 Questo pattern è ovunque nell'ecosistema: uno stimatore di scikit-learn è un
@@ -871,7 +871,7 @@ interpreter lock*, che si può tradurre come «il lucchetto dell'interprete».
 L'immagine giusta è una cucina professionale con un solo coltello. Puoi
 assumere quattro cuochi, ma il coltello è uno: mentre uno taglia, gli altri
 tre aspettano il loro turno. Assumerne altri non fa uscire i piatti più in
-fretta, anzi li rallenta un po', perché il coltello va passato di mano.
+fretta, anzi li rallenta un po’, perché il coltello va passato di mano.
 
 I cuochi, in un programma, si chiamano **thread**: sono le linee di lavoro che
 procedono in parallelo dentro lo stesso programma, e condividono tutto, come
@@ -1116,7 +1116,7 @@ GIL); se la parete non scende e la CPU è quasi zero, si sta solo aspettando.
 - Quattro strutture dati coprono quasi tutto: **list** (ordinata, modificabile),
   **tuple** (immutabile), **dict** (chiave → valore, accesso immediato per
   chiave), **set** (senza duplicati).
-- I blocchi sono definiti dall'**indentazione**; `if/elif/else`, `for` e `while`
+- I blocchi sono definiti dall’**indentazione**; `if/elif/else`, `for` e `while`
   bastano per il controllo di flusso.
 - Le **funzioni** (`def` … `return`) e le **list comprehension** rendono il
   codice conciso; le **classi** modellano oggetti su misura: la stessa forma

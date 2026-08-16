@@ -11,7 +11,7 @@ pallina dietro i mattoni. Nessuno gliel'ha insegnata, e nel punteggio non c'era
 scritta.
 
 Nel capitolo precedente abbiamo visto il *reinforcement learning* classico.
-C'è qualcuno che decide (l'**agente**), c'è la situazione in cui si trova (lo
+C'è qualcuno che decide (l’**agente**), c'è la situazione in cui si trova (lo
 **stato**), ci sono le mosse che può fare (le **azioni**) e c'è il premio o la
 penalità che riceve (la **ricompensa**). Algoritmi come il Q-learning imparano
 *quanto vale* ogni mossa in ogni situazione. Ma quel Q-learning teneva i suoi
@@ -146,7 +146,7 @@ una versione più forte dello stesso programma batte per 4 a 1 Lee Sedol, fra i
 più forti giocatori al mondo. Il Go, un gioco con più configurazioni che atomi
 nell'universo, era a lungo considerato fuori portata per le macchine. Ad
 AlphaGo non basta l'istinto di una rete: prima di muovere prova mentalmente le
-continuazioni, un po' come farebbe un giocatore forte, ed è la tecnica che la
+continuazioni, un po’ come farebbe un giocatore forte, ed è la tecnica che la
 sezione sui gradienti di policy chiama *ricerca ad albero*. Il deep RL smette
 di essere una curiosità da laboratorio.
 
@@ -179,7 +179,7 @@ I campioni sono **fortemente correlati** (fotogrammi consecutivi) e il *target*
 $r + \gamma \max_{a'} Q(s',a';\theta)$ **si muove** insieme ai pesi che stiamo
 aggiornando: la combinazione di approssimazione, bootstrapping e
 apprendimento off-policy è la celebre *deadly triad* che può divergere. DQN la
-addomestica con due trucchi: l'**experience replay** (campionare a caso da un
+addomestica con due trucchi: l’**experience replay** (campionare a caso da un
 buffer di transizioni passate, decorrelandole) e la **rete target** $\theta^{-}$
 aggiornata di rado, che stabilizza il bersaglio. Resta il costo campionario:
 la versione di *Nature* usava circa $50$ milioni di fotogrammi per titolo. La
@@ -210,13 +210,13 @@ dosare, e la ricetta del DQN non si applica più.
 
 Le tre sezioni che seguono attaccano tutte lo stesso problema, cioè che
 l'esperienza costa. Il RL **basato su modello** fa provare all'agente le mosse
-nella propria testa prima che nel mondo. L'**imitazione** salta i tentativi ed
+nella propria testa prima che nel mondo. L’**imitazione** salta i tentativi ed
 errori: si guarda qualcuno che il compito lo sa già fare, e si scopre perché non
-basta. L'**offline RL** impara da un archivio di esperienze altrui senza mai
+basta. L’**offline RL** impara da un archivio di esperienze altrui senza mai
 agire, che è l'unica strada quando sbagliare è pericoloso, in terapia intensiva
 come al volante.
 
-Si chiude sull'**esplorazione**: cosa fare quando la ricompensa arriva così di
+Si chiude sull’**esplorazione**: cosa fare quando la ricompensa arriva così di
 rado che non c'è nulla da inseguire, e cosa succede quando l'agente ottimizza
 *troppo* bene una ricompensa scritta male. Quest'ultima insidia, il *reward
 hacking*, è il ponte verso il capitolo sull'AI responsabile.

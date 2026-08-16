@@ -26,12 +26,12 @@ inferenza un token alla volta a costo costante come una RNN.
 
 Ricapitoliamo l'immagine con cui il capitolo precedente ha descritto questa
 memoria. Funziona come uno schedario: a ogni parola si archivia una
-voce nuova, formata da un'**etichetta** e da un **contenuto**, e per rileggere
+voce nuova, formata da un’**etichetta** e da un **contenuto**, e per rileggere
 si presenta un'etichetta e si riceve indietro ciò che le assomiglia di più. Lo
 schedario ha un numero fisso di **cassetti**, sempre quello, e ogni voce nuova
-lascia un segno un po' in tutti.
+lascia un segno un po’ in tutti.
 Prima di archiviare la voce nuova, però, quello che c'è già viene sbiadito un
-po': è la **transizione**, ed è l'unica cosa su cui le architetture di questi
+po’: è la **transizione**, ed è l'unica cosa su cui le architetture di questi
 due capitoli sono davvero diverse fra loro. Da RetNet a Mamba, cambia come e
 quanto si sbiadisce, e chi lo decide.
 
@@ -80,7 +80,7 @@ di questo capitolo la stessa transizione compariva **a sinistra**,
 $\mathbf{h}_t = \bar{\mathbf{A}}\mathbf{h}_{t-1} + \dots$, e non è una contraddizione: lì lo stato
 era il vettore colonna $\mathbf{h}$ di un singolo canale, cioè una riga di $\mathbf{S}$
 trasposta, e trasporre scambia i due lati. L'unico caso in cui il lato non
-conta davvero è quello di un fattore **scalare**, come l'$\alpha_t$ di Mamba-2,
+conta davvero è quello di un fattore **scalare**, come l’$\alpha_t$ di Mamba-2,
 che commuta con tutto.
 
 Gli assi di progetto sono tre, e ciascuno ha un prezzo e un guadagno.
@@ -284,7 +284,7 @@ nicchie diverse.
 Dove le ricorrenze lineari e gli SSM danno il meglio è chiaro, e sono
 territori di crescente importanza. Il **contesto lunghissimo**, dove il costo
 quadratico dell'attenzione piena diventa proibitivo e uno stato che non cresce
-è un enorme vantaggio. Poi l'**inferenza a memoria costante**. Un Transformer,
+è un enorme vantaggio. Poi l’**inferenza a memoria costante**. Un Transformer,
 per non rileggersi tutto a ogni parola che scrive, tiene da parte quello che ha
 già calcolato: è la *KV cache*, l'archivio delle etichette e dei contenuti di
 tutte le parole viste, e si gonfia a ogni parola generata. Un modello a stato

@@ -141,7 +141,7 @@ lato di $D$, e da lì raggiunge $G$ di rimbalzo.
 
 ## Il gioco minimax
 
-Le due reti non inseguono due obiettivi scollegati: condividono un'**unica
+Le due reti non inseguono due obiettivi scollegati: condividono un’**unica
 funzione di valore**, cioè un punteggio solo per tutta la partita, che uno
 vuole tirare più in alto possibile e l'altro più in basso possibile.
 
@@ -272,7 +272,7 @@ mezzo, cioè dove l'esperto smette di dire "falso" e comincia a dire "vero".
 All'inizio sta a sinistra, perché a sinistra il falsario è di casa; poi scivola
 verso destra mentre il falsario avanza.
 
-La seconda è l'**altezza della gobba**, cioè quanto l'esperto è sicuro nel suo
+La seconda è l’**altezza della gobba**, cioè quanto l'esperto è sicuro nel suo
 terreno migliore. Nella prima tappa la gobba arriva a $0{,}93$, che è quasi
 certezza; nell'ultima è scesa a $0{,}50$, che è nessuna certezza. Il confine si
 sposta e intanto la gobba si sgonfia, e quando la gobba tocca il mezzo il
@@ -399,7 +399,7 @@ puntino è chiaro o scuro. Dipingere vuol dire scegliere quei numeri.
 
 L'esperto, allora, è fatto in modo che gli si possa chiedere qualcosa di più
 fine di un giudizio, e cioè, per ogni singolo puntino del quadro: *se questo
-puntino fosse un po' più chiaro, il tuo giudizio salirebbe o scenderebbe, e di
+puntino fosse un po’ più chiaro, il tuo giudizio salirebbe o scenderebbe, e di
 quanto?* La risposta a quella domanda, posta per tutti i puntini insieme, è
 lunga quanto il quadro: per ciascun puntino, da che parte spostarlo e con
 quanta forza. È questo che torna indietro. Non un voto, ma una correzione con
@@ -820,7 +820,7 @@ ImageNet) come strumento di misura.
 
 `````{tab} Elementare
 
-Il primo tentativo, l'**Inception Score**, chiede due cose insieme a un
+Il primo tentativo, l’**Inception Score**, chiede due cose insieme a un
 giudice esterno che sa riconoscere gli oggetti. E qui attenzione, perché
 entra in scena un personaggio nuovo: non è l'esperto d'arte del duello, è un
 giudice terzo, una rete addestrata altrove a riconoscere cani, automobili e
@@ -879,7 +879,7 @@ quindi prendere un ottimo voto.
 
 `````{tab} Superiore
 
-L'**Inception Score** {cite}`salimans2016improved` combina le due richieste in
+L’**Inception Score** {cite}`salimans2016improved` combina le due richieste in
 un'unica quantità:
 
 $$
@@ -998,6 +998,31 @@ utili; fargli guardare i falsi a gruppi invece che uno per volta
 quadro venga smascherato proprio per la ripetizione; dosare i turni delle due
 reti perché nessuna delle due prenda troppo vantaggio sull'altra.
 
+Su due di queste tre leve, però, va messa un'avvertenza, perché cambiare **la
+misura** cambia il senso di quel che si fa sul **regolamento**, ed è il genere
+di dettaglio che fa perdere pomeriggi. Cambiare la misura cambia anche
+il mestiere di chi giudica: con la probabilità l'esperto rispondeva «quanto lo
+credo vero», un numero fra zero e uno, e nella rete c'era una funzione apposta
+a schiacciare l'uscita dentro quell'intervallo; con la distanza risponde invece
+con un punteggio senza tetto né pavimento, quella funzione sparisce, e nei
+paper l'esperto non si chiama più discriminatore ma **critico**. Il punto è che
+il numero calcolato dal critico *è* la distanza fra i due mucchi soltanto se il
+critico ha fatto del suo meglio: se è mediocre, la sua risposta non misura
+niente, e la correzione che consegna al falsario indica una direzione che non
+porta da nessuna parte. Quindi il consiglio si capovolge. Con il punteggio
+classico l'esperto non deve diventare troppo bravo, altrimenti il suo giudizio
+si schiaccia sul «falso» e smette di correggere; con la distanza conviene
+lasciarlo allenare fino in fondo *prima* di muovere il falsario, e lo si fa a
+turni sbilanciati: cinque giri del critico per ogni giro del falsario, nei due
+lavori che hanno introdotto la ricetta
+{cite}`arjovsky2017wasserstein,gulrajani2017improved`. Con la multa sui gradienti
+arriva anche un divieto, e nasce dallo stesso ragionamento. Nelle reti si usa
+spesso un accorgimento che, a ogni passaggio, rimette in riga i numeri di un
+gruppo di immagini guardandoli **tutte insieme** (si chiama *batch
+normalization*): nel critico non ci va, perché così il giudizio su
+un'immagine finirebbe per dipendere dalle altre del gruppo, mentre la multa è
+scritta per un'immagine alla volta {cite}`gulrajani2017improved`.
+
 Nessuno di questi trucchi è una bacchetta magica, e addestrare una GAN resta in
 buona parte un mestiere che si impara provando. È anche il motivo per cui la
 storia delle GAN è una fila di ricette, ciascuna che aggiusta un guasto della
@@ -1027,9 +1052,16 @@ precedente: ed è la storia della prossima sezione.
   chiedendo al falsario, nel suo turno, di far passare i propri quadri per
   autentici; il prezzo sono correzioni più sbalzate, e un duello che non si
   lascia più tenere con un punteggio solo.
+- Cambiando **il modo di misurare** (dalla probabilità «quanto lo credo vero»
+  alla distanza fra il mucchio dei veri e quello dei falsi) chi giudica cambia
+  mestiere e nome: diventa un **critico** che dà un punteggio senza tetto né
+  pavimento. E si capovolge il consiglio di prima: il critico va lasciato
+  allenare fino in fondo prima di muovere il falsario, cinque suoi giri per
+  ogni giro dell'altro, perché soltanto un critico al meglio delle proprie
+  possibilità sta misurando davvero qualcosa.
 - **La loss, cioè il conto dell'errore, non misura la qualità**: dice solo chi
   dei due sta vincendo. Si giudica confrontando *insiemi* di immagini, mai una
-  alla volta: con l'**Inception Score** (nitidezza e varietà secondo un giudice
+  alla volta: con l’**Inception Score** (nitidezza e varietà secondo un giudice
   esterno, che però le immagini vere non le guarda mai) e soprattutto con il
   **FID**, la distanza fra la nuvola delle immagini vere e quella delle
   generate: più è basso, meglio è. Neanche il FID però è infallibile: vede dove
@@ -1061,8 +1093,20 @@ precedente: ed è la storia della prossima sezione.
   riguardano l'obiettivo minimax originale: la *non-saturating loss* usata nel
   codice li evita, al prezzo di aggiornamenti ad alta varianza quando $D$ è
   quasi ottimo, e di un gioco che non è più a somma zero.
+- La **Wasserstein GAN** {cite}`arjovsky2017wasserstein` sostituisce la
+  probabilità con una stima della distanza fra $p_G$ e $p_{\text{dati}}$: cade
+  la sigmoide finale, $D$ diventa un **critico** a valori in $\mathbb{R}$ e va
+  portato vicino all'ottimo *prima* di ogni passo di $G$ (cinque iterazioni nei
+  due lavori originali), perché quella distanza è definita come un estremo
+  superiore sulle funzioni 1-Lipschitziane e solo lì il gradiente che $G$
+  riceve la approssima. Il vincolo di Lipschitz è imposto con il *weight
+  clipping* nel lavoro originale e con il *gradient penalty*
+  {cite}`gulrajani2017improved` in quello che si è affermato; quest'ultimo
+  esclude però la *batch normalization* nel critico, perché la penalità è
+  definita campione per campione mentre la batchnorm accoppia i campioni del
+  minibatch.
 - **La loss non misura la qualità**: dice solo chi sta vincendo. Si valuta
-  confrontando *distribuzioni*, con l'**Inception Score** (nitidezza e varietà
+  confrontando *distribuzioni*, con l’**Inception Score** (nitidezza e varietà
   secondo un classificatore, ma senza mai guardare i dati veri) e soprattutto
   con il **FID**, la distanza fra la nuvola delle attivazioni reali e quella
   delle generate: più basso è meglio. Il FID però guarda solo i primi due

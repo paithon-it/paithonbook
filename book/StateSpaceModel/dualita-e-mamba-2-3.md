@@ -34,7 +34,7 @@ la potenza della scheda.
 
 Il risultato, detto in una riga, è questo: una macchina a spazio degli stati,
 purché si accetti di semplificarne un pezzo, non somiglia all'attenzione, *è*
-l'attenzione. Più precisamente un'**attenzione mascherata**, cioè
+l'attenzione. Più precisamente un’**attenzione mascherata**, cioè
 un'attenzione a cui è vietato guardare avanti, che confronta ogni parola solo
 con quelle che l'hanno preceduta. Gli autori chiamano questo fatto **State
 Space Duality** (SSD), la dualità fra spazio degli stati e attenzione.
@@ -404,7 +404,7 @@ taccuino comune, più capiente. Il vantaggio sta nel modo di lavorare delle
 schede grafiche: andare a prendere i dati in memoria costa più che farci i
 conti sopra, quindi conviene, a ogni viaggio, portare a casa più lavoro utile.
 Con il taccuino condiviso ogni lettura serve più corsie in un colpo solo, e il
-risultato pratico è una qualità un po' migliore **senza** rallentare la
+risultato pratico è una qualità un po’ migliore **senza** rallentare la
 generazione: l'attesa tra una parola prodotta e la successiva resta la stessa.
 
 `````
@@ -416,7 +416,7 @@ ingresso e singola uscita** (SISO): ogni canale evolve con un proprio stato,
 indipendente, e $\mathbf{B}_t$ e $\mathbf{C}_t$ sono vettori. Mamba-3 propone una formulazione
 **MIMO** (*multi-input multi-output*, come per S5), in cui più ingressi e più
 uscite condividono lo stesso stato attraverso matrici $\mathbf{B}$ e $\mathbf{C}$ non più
-vettoriali ma di rango maggiore. L'effetto tecnico è aumentare l'**intensità
+vettoriali ma di rango maggiore. L'effetto tecnico è aumentare l’**intensità
 aritmetica** (il numero di operazioni per ogni byte letto dalla memoria) che è
 proprio ciò che tiene occupati i tensor core: si fa più lavoro utile per ogni
 accesso in memoria. Il guadagno pratico riportato è qualità migliore **senza**
@@ -466,7 +466,7 @@ meglio l'hardware. Da una macchina che tratta tutti allo stesso modo e ricorda
 a lungo, a una che sceglie, poi riconciliata con l'attenzione e resa veloce,
 poi affinata nel modo in cui la memoria evolve: è la parabola di una singola,
 ostinata idea (comprimere il passato in un riassunto che non cresce mai) che a
-ogni passo si avvicina un po' di più al meglio dei Transformer senza rinunciare
+ogni passo si avvicina un po’ di più al meglio dei Transformer senza rinunciare
 al costo lineare.
 
 `````{tab} Elementare

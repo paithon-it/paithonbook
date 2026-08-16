@@ -75,7 +75,7 @@ Immagina uno spettacolo di improvvisazione a tre voci. Il **regista**
 (*system*) parla una volta sola, prima che si alzi il sipario, e dà le
 direttive di fondo: «sei un assistente cortese, non promettere mai rimborsi,
 rispondi in italiano». Poi c'è chi dalla platea lancia i temi (*user*): è
-l'utente, quello che scrive nella chat. E c'è l'**attore** (*assistant*), che
+l'utente, quello che scrive nella chat. E c'è l’**attore** (*assistant*), che
 è il modello e sta sul palco a rispondere. La conversazione è l'alternarsi di
 spunti dalla platea e risposte dell'attore, ma le direttive del regista restano
 valide per tutta la recita, sopra ogni singolo scambio. Sapere «chi parla»
@@ -287,7 +287,7 @@ gli ha spiegato cos'è il sentiment: gliel'hanno mostrato tre volte.
 
 `````{tab} Superiore
 
-Il *few-shot prompting* è la manifestazione più diretta dell'**in-context
+Il *few-shot prompting* è la manifestazione più diretta dell’**in-context
 learning**, la capacità (documentata su larga scala da Brown e colleghi con
 GPT-3 {cite}`brown2020language`) di apprendere un compito dai soli esempi
 presenti nel contesto, senza fine-tuning. La formalizzazione (la stima
@@ -394,7 +394,7 @@ accuratezza fino al 36% su tredici compiti di BIG-Bench Hard. Lanham e colleghi
 inseriscono errori, la parafrasano) e trovano che i modelli a volte vi si
 appoggiano molto e a volte la ignorano quasi del tutto, e soprattutto che «al
 crescere della taglia e delle capacità producono ragionamenti **meno** fedeli
-sulla maggior parte dei compiti». Questo si accosta male all'«emerge con la
+sulla maggior parte dei compiti». Questo si accosta male all’«emerge con la
 scala» di poche righe fa, ed è bene che le due cose stiano vicine: con la
 scala il guadagno cresce e la fedeltà cala. Conseguenza operativa: la catena
 si legge come **traccia ispezionabile**, utile per accorgersi che qualcosa non
@@ -416,7 +416,7 @@ su cui il modello si ritrova d'accordo con sé stesso più volte.
 
 Se un problema difficile lo dai a dieci persone diverse e otto arrivano allo
 stesso numero, quel numero è probabilmente giusto: anche se ognuna ci è
-arrivata per una strada un po' diversa. La self-consistency fa esattamente
+arrivata per una strada un po’ diversa. La self-consistency fa esattamente
 questo con un solo modello: gli fai risolvere lo stesso problema **più
 volte**, con un pizzico di casualità (temperatura non nulla), così che ogni
 volta ragioni in modo leggermente diverso, e poi tieni la risposta che compare
@@ -449,7 +449,7 @@ fornitore sconta il contesto già visto. Senza nessuna delle due, $N$ chiamate
 separate si pagano $N$ volte per intero. È un compromesso di puro
 context/compute engineering: si compra affidabilità spendendo campioni.
 
-Vale la pena dichiarare l'ipotesi che sta sotto all'«intuizione statistica»,
+Vale la pena dichiarare l'ipotesi che sta sotto all’«intuizione statistica»,
 perché il testo di solito la tace e non è innocua: il voto premia la risposta
 giusta **solo se gli errori sono poco correlati fra le catene**. Le $N$ catene
 non sono $N$ ragionatori indipendenti, sono $N$ campioni dalla stessa
@@ -643,7 +643,7 @@ valgono più di ogni «prompt segreto»:
   bersaglio. La genericità è una causa ricorrente di risposte deludenti.
 - **Dai esempi.** Un esempio del formato o dello stile voluto vale più di un
   paragrafo di descrizione: mostra invece di spiegare.
-- **Di' cosa fare, non (solo) cosa non fare.** «Non essere prolisso» lascia il
+- **Di’ cosa fare, non (solo) cosa non fare.** «Non essere prolisso» lascia il
   modello a indovinare; «rispondi in una frase» gli dà una direzione. Un
   divieto dice dove non andare, un'istruzione positiva dice dove andare.
 - **Separa le istruzioni dai dati.** Tieni nettamente distinto ciò che il

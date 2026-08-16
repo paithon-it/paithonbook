@@ -174,7 +174,7 @@ GraphSAGE tratta i vicini campionati alla pari: nella media, ognuno pesa quanto
 gli altri. Ma è ragionevole? In una molecola, non tutti i legami di un atomo
 sono ugualmente informativi; in un social, l'amico stretto conta più del
 contatto occasionale. L'idea di **pesare** i vicini l'abbiamo già incontrata, e
-in grande stile: è l'**attenzione** del capitolo sui Transformer. La *Graph
+in grande stile: è l’**attenzione** del capitolo sui Transformer. La *Graph
 Attention Network* (GAT), proposta nel 2018 da Petar Veličković e colleghi, la
 prende pari pari e la porta sui grafi {cite}`velickovic2018graph`.
 
@@ -346,7 +346,7 @@ colora iterativamente i nodi impastando la propria etichetta con il
 message passing.
 
 Prima di enunciare il risultato conviene dire che cos'è 1-WL, perché il nome
-«test di isomorfismo» promette più di quel che mantiene: è un'**euristica
+«test di isomorfismo» promette più di quel che mantiene: è un’**euristica
 incompleta**, e lo dichiara il paper stesso. Se due grafi ricevono colorazioni
 diverse allora non sono isomorfi; se le ricevono uguali non si può concludere
 niente. Il controesempio è elementare: un ciclo di sei nodi e due triangoli
@@ -465,7 +465,7 @@ deboli: vale la pena conoscerli prima di innamorarsene. Una rassegna d'insieme
 
 Il difetto più curioso è che **impilare troppi strati peggiora le cose**. Con
 uno strato ogni nodo ascolta i vicini; con due, anche i vicini dei vicini; ma
-continuando così, dopo un po' *tutti* finiscono per ascoltare *tutti*, e le
+continuando così, dopo un po’ *tutti* finiscono per ascoltare *tutti*, e le
 rappresentazioni dei nodi si assomigliano sempre di più fino a diventare
 indistinguibili, come una voce che, passando di bocca in bocca per tutto il
 paese, si uniforma in un unico mormorio. Si chiama **oversmoothing**,
@@ -525,7 +525,7 @@ connesso è *diverso*, rendono molto meno.
 - **Scalabilità.** Il campionamento di GraphSAGE e PinSage attenua il costo, ma
   addestrare su grafi da miliardi di nodi resta un problema aperto di sistemi,
   non solo di modelli.
-- **Eterofilia.** Molte GNN presuppongono l'**omofilia** (nodi collegati con
+- **Eterofilia.** Molte GNN presuppongono l’**omofilia** (nodi collegati con
   etichette simili) che l'aggregazione dei vicini sfrutta implicitamente. Sui
   grafi **eterofili**, dove i nodi collegati tendono a differire, le
   architetture standard possono fare peggio di un percettrone che ignora la
@@ -544,8 +544,8 @@ meno lieta di come la si racconta di solito.
 
 Dei quattro limiti appena elencati ne tocca due, e ne guarisce uno solo:
 conviene sapere subito quale. Guarisce
-l'**over-squashing**, perché se ogni nodo parla con ogni altro non c'è più
-niente da far transitare per strade strette. Non guarisce l'**oversmoothing**,
+l’**over-squashing**, perché se ogni nodo parla con ogni altro non c'è più
+niente da far transitare per strade strette. Non guarisce l’**oversmoothing**,
 anzi. L'oversmoothing non nasce dalla distanza fra i nodi, ma dal fatto che a
 ogni giro si fa una media con i vicini; e se i vicini diventano tutti, la media
 cancella le differenze ancora più in fretta. Togliere il vincolo del vicinato,
@@ -802,7 +802,7 @@ riordinare i nodi di un grafo. Cambia l'elenco, cambia la rete.
   media pesata con quei voti, che non scrive nessuno a mano ma impara la rete. È
   la stessa attenzione dei Transformer, dove però ogni parola guarda tutte le
   altre: qui ogni nodo guarda solo i vicini a cui è davvero collegato.
-- Per un verdetto sull'**intero grafo** («questa molecola è tossica?») i valori
+- Per un verdetto sull’**intero grafo** («questa molecola è tossica?») i valori
   di tutti i nodi vanno ridotti a uno solo, come si ricava il voto di una squadra
   dai voti dei giocatori: sommandoli, mediandoli o prendendo il massimo. La
   **somma** è la scelta più fine perché è l'unica che ricorda **quanti** sono i
@@ -844,7 +844,7 @@ riordinare i nodi di un grafo. Cambia l'elenco, cambia la rete.
   embedding fissi: generalizza a nodi e grafi mai visti) e **scalabile**
   (**campiona** un sottoinsieme di vicini a ogni strato). Aggregatori: mean, pool
   (max), LSTM.
-- La **GAT** pesa i vicini con l'**attenzione**: coefficienti $\alpha_{ij}$
+- La **GAT** pesa i vicini con l’**attenzione**: coefficienti $\alpha_{ij}$
   appresi e normalizzati con softmax sul vicinato ($\sum_j \alpha_{ij}=1$), con
   più teste in parallelo. È la self-attention dei Transformer su un grafo
   qualunque anziché completo.

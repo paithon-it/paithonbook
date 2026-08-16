@@ -70,7 +70,7 @@ della formula.
 
 Il capitolo segue la scia dell'articolo del 2017. Si comincia dal **meccanismo
 di attenzione**: cos'è, come si calcola, perché funziona. Poi si monta
-l'**architettura** completa, cioè come i blocchi di attenzione diventano una
+l’**architettura** completa, cioè come i blocchi di attenzione diventano una
 rete vera. Segue un confronto onesto con i **modelli precedenti**, quelli che
 leggevano in fila, inclusi i punti dove il Transformer è più debole, e poi due
 **esempi pratici** che si possono eseguire.

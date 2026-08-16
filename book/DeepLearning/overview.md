@@ -139,14 +139,17 @@ nome del primo dei suoi autori, Alex Krizhevsky.
 
 `````{tab} Elementare
 
-Pensa a un fuoco. Ti serve la legna, l'ossigeno e una scintilla: se manca anche
+Pensa a un fuoco. Ti serve la legna, l'aria e una scintilla: se manca anche
 uno solo dei tre, non parte. Il deep learning è rimasto "spento" per anni non
 perché mancasse l'idea, ma perché mancava la combustione completa.
 
 La legna sono i **dati**: milioni di immagini **etichettate**, cioè fotografie
 accanto a cui qualcuno ha scritto a mano che cosa c'è dentro. Prima di Internet
 non esistevano, perché raccoglierle e descriverle una per una era un lavoro
-fuori portata. L'ossigeno è il **calcolo**: le schede grafiche (GPU), nate per i
+fuori portata. Attenzione a una cosa, però, perché l'Introduzione ci ha
+insistito: quella legna nessuno è andato a tagliarla apposta. Erano le foto che
+la gente caricava per farle vedere agli amici, e qualcuno si è accorto che
+potevano servire ad altro. L'aria è il **calcolo**: le schede grafiche (GPU), nate per i
 videogiochi, si sono rivelate perfette per i conti delle reti.
 
 La scintilla sono gli **algoritmi**, e vale la pena dire quali, perché tre
@@ -216,7 +219,7 @@ imitare con la precisione che si vuole qualunque regola che leghi ingressi e
 uscite senza salti bruschi.[^universalita]
 
 Una condizione c'è, ed è essenziale. La funzione che ogni neurone applica al
-proprio risultato, l'**attivazione** (la ReLU, per esempio, che azzera i numeri
+proprio risultato, l’**attivazione** (la ReLU, per esempio, che azzera i numeri
 negativi e lascia passare i positivi), non deve essere un *polinomio*, cioè una
 somma di potenze come $3x^2-x+5$. Il motivo è che sommare e moltiplicare
 polinomi dà sempre e solo altri polinomi: se l'attivazione fosse uno di quelli,
@@ -345,7 +348,7 @@ precedente: la stessa scala dai bordi agli oggetti della
 - Le costruisce **a strati**, dal semplice al complesso: prima bordi e linee,
   poi pezzi riconoscibili (un occhio, una ruota), infine l'oggetto intero.
 - Non è esplosa prima del 2012 perché servivano tre cose insieme, come la
-  legna, l'ossigeno e la scintilla: milioni di **fotografie già etichettate**,
+  legna, l'aria e la scintilla: milioni di **fotografie già etichettate**,
   **schede grafiche** abbastanza veloci e tre accorgimenti precisi (la **ReLU**
   al posto delle funzioni che spegnevano il segnale, il **dropout** contro
   l'imparare a memoria, il moltiplicare le foto con ritagli e specchiature).

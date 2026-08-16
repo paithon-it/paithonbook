@@ -163,7 +163,7 @@ loro bias insieme, il che restringe lo spazio delle soluzioni ammissibili.
 Restringere lo spazio delle ipotesi con informazione **vera** è la definizione
 operativa di regolarizzazione: il rumore specifico di un compito viene mediato
 via, la struttura comune sopravvive. Nei termini del compromesso
-bias-varianza già incontrato, si accetta un po' di bias in cambio di molta
+bias-varianza già incontrato, si accetta un po’ di bias in cambio di molta
 varianza in meno, ed è per questo che il guadagno è massimo dove la varianza è
 alta, cioè con **pochi dati per il compito principale**. Con dataset
 abbondanti l'effetto si assottiglia fino a sparire, e a volte si inverte.
@@ -243,7 +243,7 @@ diversi hanno **unità e scale diverse** (una cross-entropia e un errore in
 metri non sono commensurabili) e cercarli a mano è un'ottimizzazione in $T-1$
 dimensioni, ciascuna delle quali costa un addestramento. La soluzione di
 Kendall, Gal e Cipolla {cite}`kendall2018multi` li tratta come funzione
-dell'**incertezza omoschedastica** di ciascun compito, parametrizzata da un
+dell’**incertezza omoschedastica** di ciascun compito, parametrizzata da un
 $\sigma_t$ **appreso**:
 
 $$
@@ -416,7 +416,7 @@ provandoli a coppie, più che deducendolo.
 `````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
-- L'**apprendimento multi-compito** addestra una rete su più compiti insieme
+- L’**apprendimento multi-compito** addestra una rete su più compiti insieme
   con una rappresentazione condivisa: un **tronco** comune e una **testa** per
   compito (*condivisione dura*), oppure reti separate tenute vicine da una
   penalità (*condivisione morbida*).

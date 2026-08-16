@@ -174,7 +174,7 @@ primo va reimparato da capo sul secondo.
 L'alternativa è dare a ogni token una lista molto più corta (da qualche
 centinaio a qualche migliaio di numeri) e, soprattutto, **non deciderla noi**:
 quei numeri sono manopole come tutte le altre, e l'addestramento li regola
-insieme al resto. È l'**embedding**, e il capitolo sul Natural Language
+insieme al resto. È l’**embedding**, e il capitolo sul Natural Language
 Processing lo tratta per esteso, insieme alla ragione per cui funziona: una
 parola si conosce dalla compagnia che frequenta, quindi parole che compaiono
 negli stessi contesti finiscono per prendere liste simili.
@@ -247,8 +247,8 @@ vengono decisi.
 `````{tab} Elementare
 
 Per capire «salta» in «Il gatto nero salta sul muro» conviene mescolare al
-suo vettore un po' di ciò che sanno le altre parole: parecchio di «gatto»
-(è chi salta), un po' di «muro» (è dove), quasi niente di «il» e di «sul».
+suo vettore un po’ di ciò che sanno le altre parole: parecchio di «gatto»
+(è chi salta), un po’ di «muro» (è dove), quasi niente di «il» e di «sul».
 Mescolare in proporzioni diverse è fare una **media pesata**: si moltiplica
 ogni vettore per un numero e si somma tutto (sono i due gesti della sezione di
 algebra lineare, moltiplicare una lista per un numero e sommarne due voce per
@@ -440,7 +440,7 @@ Una **forma bilineare** è un modo di misurare l'accordo fra due liste di
 numeri passando per una tabella: si prende la prima lista, la si fa attraversare
 dalla tabella e si fa il prodotto scalare con la seconda.
 
-Il **rango** di una tabella è un po' più sottile, e conviene vederlo su un
+Il **rango** di una tabella è un po’ più sottile, e conviene vederlo su un
 esempio piccolo. Una tabella di cento righe sembra contenere cento
 informazioni, ma può darsi che la terza riga sia semplicemente la prima più la
 seconda, la quarta il doppio della prima, e così via: allora le righe davvero
@@ -734,7 +734,7 @@ la ragione per cui la profondità aggiunge davvero qualcosa.
 
 Due accorgimenti rendono la pila addestrabile. Il primo è che ogni strato non
 riscrive la rappresentazione: le somma una correzione. Il vettore attraversa
-la pila e ogni strato lo ritocca un po', come una bozza che passa fra molte
+la pila e ogni strato lo ritocca un po’, come una bozza che passa fra molte
 mani invece di essere riscritta da capo ogni volta. Il secondo è rimettere i
 numeri su una scala standard dopo ogni passaggio, come azzerare la bilancia
 fra una pesata e l'altra.
@@ -931,7 +931,7 @@ Le manopole si girano come nell'escursionista nella nebbia: si guarda in che
 direzione l'errore cala più in fretta e si fa un passo di lì. Con una
 scorciatoia obbligata, però: calcolare la pendenza su tutto il testo del mondo
 a ogni passo è impensabile, quindi la si calcola ogni volta su un pugno di
-brani presi a caso. Il risultato è una direzione un po' storta, ma storta per
+brani presi a caso. Il risultato è una direzione un po’ storta, ma storta per
 caso, e su tanti passi gli errori si compensano invece di accumularsi.
 
 `````
@@ -1169,7 +1169,7 @@ identificabili separatamente.
   su un vocabolario da 50 000 fanno un numero con 47 cifre, il doppio delle
   molecole d'acqua degli oceani), quindi al posto di un quaderno da consultare
   serve una funzione da calcolare, che generalizzi anche ai contesti mai visti.
-- Il motore è una **media pesata**: per capire una parola si mescola un po' di
+- Il motore è una **media pesata**: per capire una parola si mescola un po’ di
   ciò che sanno le altre, in proporzioni decise dai vettori stessi. Le
   proporzioni non le scrive nessuno: sono il risultato di parametri appresi,
   ed è per questo che il modello non riceve la grammatica ma può arrivarci.

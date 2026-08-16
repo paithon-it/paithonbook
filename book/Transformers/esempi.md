@@ -24,7 +24,7 @@ modello **sbaglia**, che è la parte più istruttiva delle due.
 ## Traduzione automatica
 
 Il compito per cui il Transformer è nato, e quello con cui la sezione
-sull'architettura ce l'ha presentato: la torre che legge (l'**encoder**) si
+sull'architettura ce l'ha presentato: la torre che legge (l’**encoder**) si
 prende la frase di partenza, la torre che scrive (il **decoder**) compone
 quella d'arrivo, e mentre la compone torna continuamente a guardare
 l'originale.
@@ -172,7 +172,7 @@ righe sono quelle che ci si aspetta; la terza è quella che il paragrafo dopo le
 schede analizza, ed è il motivo per cui il codice stampa la graduatoria e non
 solo la vincente. I valori esatti sono $0{,}365$ a due stelle e $0{,}336$ a
 tre: uno scarto di ventinove millesimi, l'unico delle quattro righe in cui le
-prime due classi si toccano così. È il caso in cui riportare solo l'`argmax`
+prime due classi si toccano così. È il caso in cui riportare solo l’`argmax`
 nasconde tutto quello che c'è da sapere, ed è per questo che `top_k=None` non è
 un dettaglio di comodo: senza, la pagina non potrebbe dimostrare quello che sta
 per dire.
@@ -231,7 +231,7 @@ questa pagina l'ha appena dimostrato su sé stessa.
 :class: important
 - La **traduzione** usa il Transformer completo: encoder che legge, decoder
   che genera, cross-attention che li allinea.
-- L'**analisi del sentiment** usa un solo-encoder (stile BERT) con una testa
+- L’**analisi del sentiment** usa un solo-encoder (stile BERT) con una testa
   di classificazione: capire, non generare.
 - La libreria `transformers` di Hugging Face (su PyTorch) dà accesso a
   modelli pre-addestrati per entrambi i compiti in poche righe: sotto, sono

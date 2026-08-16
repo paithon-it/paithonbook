@@ -4,7 +4,7 @@ New York, estate del 1939. Nel padiglione della Bell all'Esposizione
 universale, una giovane donna siede a una console che ricorda un piccolo
 organo: una quindicina di tasti sotto le dita, una barra sotto il polso, un
 pedale sotto il piede. Il presentatore fa una domanda, la donna muove le dita,
-e dagli altoparlanti esce una voce che risponde: gommosa, un po' subacquea, ma
+e dagli altoparlanti esce una voce che risponde: gommosa, un po’ subacquea, ma
 si capisce. Non è una registrazione. Il **Voder** di
 Homer Dudley, ingegnere dei Bell Labs, la voce la *genera* sul momento. I
 tasti dosano l'energia alle varie altezze sonore, dalle più gravi alle più
@@ -140,7 +140,7 @@ Un **fonema** è il più piccolo suono che, cambiando, cambia il significato:
 «pane» e «cane» differiscono per un solo suono iniziale, e infatti sono due
 parole diverse. Le lettere non bastano a rappresentarli: la «c» di *casa* e la
 «c» di *ciao* sono la stessa lettera ma due suoni completamente diversi. Per
-scriverli senza ambiguità i linguisti usano l'**alfabeto fonetico
+scriverli senza ambiguità i linguisti usano l’**alfabeto fonetico
 internazionale** (IPA), dove ogni simbolo è un suono e uno solo, e si scrive
 fra due barrette: /k/ per la c di *casa*, /tʃ/ per la c di *ciao*. Il
 passaggio automatico dalle lettere ai suoni ha una sigla che compare anche
@@ -260,7 +260,7 @@ uscita.
 
 Ricordi il traduttore del capitolo sul linguaggio naturale? Una parte della
 rete legge tutta la frase, l'altra scrive la traduzione parola per parola,
-con l'«evidenziatore» dell'attenzione che si sposta sul punto giusto del
+con l’«evidenziatore» dell'attenzione che si sposta sul punto giusto del
 testo di partenza. Tacotron 2 è la stessa macchina, con una differenza: non
 scrive parole, scrive *colonne di mel-spettrogramma*, un fotogramma sonoro
 alla volta, e l'attenzione scorre sul testo come il dito di chi impara a

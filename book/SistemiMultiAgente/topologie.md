@@ -356,7 +356,7 @@ la finestra di ciascun supervisore regge**, e abbassare $D$ di conseguenza.
 È il contrario di ciò che suggerisce l'istinto organizzativo.
 
 Il secondo costo è formale quanto il primo: la gerarchia rende difficile
-l'**assegnazione del merito** (e della colpa). Attribuire un esito sbagliato a
+l’**assegnazione del merito** (e della colpa). Attribuire un esito sbagliato a
 un nodo richiede di ripercorrere all'indietro tutti i riassunti, e i riassunti
 sono proprio ciò che ha cancellato l'informazione che servirebbe. È lo stesso
 problema di *credit assignment* che nell'apprendimento per rinforzo
@@ -383,7 +383,7 @@ e se fa zero non parla più nessuno.
 Le prime quattro forme hanno quindici agenti a testa: stessa squadra, schemi
 diversi. La quinta è quella che Baran disegnava per terza e che finora abbiamo
 lasciato da parte: una maglia in cui ogni nodo ha più strade per raggiungere
-ogni altro. Ne prendiamo la versione più regolare che esista, l'**ipercubo**, e
+ogni altro. Ne prendiamo la versione più regolare che esista, l’**ipercubo**, e
 ne bastano tre cose. La prima è che cosa ne esce: una maglia in cui ogni agente
 ha esattamente quattro vicini e in cui nessuno sta più al centro degli altri;
 quattro collegamenti a testa, quindi, contro i due o tre di un capo
@@ -686,7 +686,7 @@ la gara costa più del lavoro che assegna.
 
 E poi c'è il problema che chiunque abbia mai fatto fare un lavoro conosce:
 quello che ti promette di finire in due giorni a metà prezzo, e poi non lo fa.
-Nelle gare vere ha perfino un nome, l'**offerta anomala**, ed è quella che chi
+Nelle gare vere ha perfino un nome, l’**offerta anomala**, ed è quella che chi
 bandisce deve controllare prima di assegnare. Un modello di linguaggio a cui si
 chiede «sei in grado di fare questo?» tende a rispondere di sì, e allora la gara
 premia chi si stima meglio, non chi lavora meglio.
@@ -695,13 +695,13 @@ premia chi si stima meglio, non chi lavora meglio.
 
 `````{tab} Superiore
 
-Il protocollo ha quattro messaggi principali. L'**annuncio di compito**, con
-quattro campi: l'*astrazione del compito* (di che lavoro si tratta), la
+Il protocollo ha quattro messaggi principali. L’**annuncio di compito**, con
+quattro campi: l’*astrazione del compito* (di che lavoro si tratta), la
 *specifica di eleggibilità* (i requisiti minimi per poter offrire, un filtro
 che serve a tagliare traffico inutile), la *specifica dell'offerta* (quali
 informazioni il gestore vuole ricevere) e il *tempo di scadenza*.
-L'**offerta**, che descrive il nodo secondo quanto richiesto.
-L'**assegnazione**, con la *specifica del compito*. E i **rapporti**, interinali e
+L’**offerta**, che descrive il nodo secondo quanto richiesto.
+L’**assegnazione**, con la *specifica del compito*. E i **rapporti**, interinali e
 finale. Smith attribuisce alla negoziazione quattro proprietà: è locale (nessun
 controllo centralizzato), lo scambio è bidirezionale, ciascuna parte valuta
 secondo il proprio criterio, e l'accordo finale è per **selezione reciproca**.
@@ -849,7 +849,7 @@ controllo che sbarra la strada, è nel frattempo un ottimo posto dove aspettare.
   chi ha un lavoro lo annuncia, chi si sente in grado si offre, il banditore
   assegna. Nessuno è capo per decreto, e il sistema si riequilibra da sé perché
   chi è sommerso non risponde. Si paga con il bando stesso, che è lavoro che non
-  produce niente, e con l'**offerta anomala**: un modello a cui si chiede «sei in
+  produce niente, e con l’**offerta anomala**: un modello a cui si chiede «sei in
   grado?» tende a dire di sì, e la gara premia chi si stima meglio, non chi
   lavora meglio.
 - Lavagna e mercato sono i due modi di coordinarsi **senza sapere in anticipo con
@@ -899,7 +899,7 @@ controllo che sbarra la strada, è nel frattempo un ottimo posto dove aspettare.
 - **Mercato** (il *contract net* di Smith, 1980 {cite}`smith1980contract`):
   annuncio, offerta, assegnazione, rapporto, con ruoli assunti e lasciati.
   Ottimizza l'allocazione senza pianificatore; paga il costo del bando ($N+2$
-  messaggi, e con gli LLM $N$ inferenze per assegnarne una) e l'**offerta
+  messaggi, e con gli LLM $N$ inferenze per assegnarne una) e l’**offerta
   anomala**, cioè l'agente che vince perché si stima meglio, non perché lavora
   meglio.
 - Lavagna e mercato sono i due modi di coordinarsi **senza un grafo deciso in

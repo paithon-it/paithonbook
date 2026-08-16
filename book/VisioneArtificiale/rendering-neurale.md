@@ -197,7 +197,7 @@ $$
 T_i = \prod_{j<i} (1 - \alpha_j).
 $$
 
-Chi conosce la grafica riconoscerà l'*alpha compositing* classico: la forma
+Chi conosce la grafica riconoscerà l’*alpha compositing* classico: la forma
 discreta è esattamente il "sopra" di Porter e Duff, con l'opacità ricavata
 dalla densità. I pesi $w_i = T_i \alpha_i$ formano una distribuzione lungo il
 raggio, e la loro massa $\sum_i w_i$ è l'opacità totale, mentre $\sum_i w_i
@@ -447,7 +447,7 @@ anni fa era fantascienza.
 **Cosa serve, e viene dalla sezione precedente.** Le **pose** delle
 fotocamere. Praticamente ogni pipeline le ottiene da una ricostruzione
 *structure from motion*, e quando quella sbaglia il campo di radianza non
-sbaglia un po': produce una nuvola incoerente. La geometria classica non è
+sbaglia un po’: produce una nuvola incoerente. La geometria classica non è
 stata sostituita, è diventata l'infrastruttura su cui il metodo poggia.
 
 **Cosa resta aperto.** Tre cose, e conviene distinguerle.
@@ -463,7 +463,7 @@ stata sostituita, è diventata l'infrastruttura su cui il metodo poggia.
   diceva all'inizio) si modifica: si sposta un vertice, si
   cambia una texture. Un campo di radianza è una funzione appresa, e "sposta
   quella sedia" non è un'operazione che abbia un senso ovvio. Lo splatting,
-  essendo esplicito, sta un po' meglio, ed è una delle ragioni della sua
+  essendo esplicito, sta un po’ meglio, ed è una delle ragioni della sua
   fortuna.
 
 Su una cosa vale la pena non lasciarsi trascinare: questi metodi **non
@@ -594,7 +594,7 @@ pesci pigliare.
   di triangoli: continua, senza risoluzione, e addestrata **su una scena sola**.
 - Il colore di un pixel si ottiene per **composizione volumetrica** lungo un
   raggio, $\hat{C} = \sum_i T_i \alpha_i \mathbf{c}_i$: legge di
-  Beer-Lambert, cioè l'$\alpha$-blending della grafica. I pesi $w_i = T_i
+  Beer-Lambert, cioè l’$\alpha$-blending della grafica. I pesi $w_i = T_i
   \alpha_i$ danno gratis anche la profondità, purché si ricordi che è una somma
   pesata e va normalizzata per la loro massa.
 - Tutta la catena è **differenziabile**, quindi basta confrontare i pixel resi

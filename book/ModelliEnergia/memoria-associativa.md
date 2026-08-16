@@ -25,7 +25,7 @@ soglia, e mostra che una rete così può restare a lungo nella stessa
 configurazione invece di cambiarne in continuazione: quelle configurazioni le
 chiama *stati persistenti* {cite}`little1974existence`. Quello che Hopfield
 aggiunge, e che fa ripartire
-il campo da lui, è l'**energia**: un solo numero associato a ogni
+il campo da lui, è l’**energia**: un solo numero associato a ogni
 configurazione della rete, più la dimostrazione che il modo in cui la rete si
 aggiorna non lo fa mai salire. Da quel momento i ricordi sono minimi, e
 ricordare è una discesa.
@@ -132,7 +132,7 @@ abbassa l'energia quando i due neuroni
 concordano, e la alza quando discordano (per pesi negativi vale l'opposto).
 Manca il termine di soglia $+\sum_i \theta_i s_i$ del modello generale: qui le
 soglie sono nulle, com'è nel codice della pagina. La
-dinamica è l'**aggiornamento asincrono**: si sceglie un neurone $i$, si
+dinamica è l’**aggiornamento asincrono**: si sceglie un neurone $i$, si
 calcola il suo campo locale $h_i = \sum_j w_{ij} s_j$ e si pone
 $s_i \leftarrow \operatorname{sign}(h_i)$ (con la convenzione
 $\operatorname{sign}(0) = s_i$, cioè in caso di parità il neurone resta com'è:
@@ -178,7 +178,7 @@ w_{ij} = \frac{1}{N} \sum_{\mu=1}^{P} \xi_i^{\mu}\, \xi_j^{\mu}
 \qquad (i \neq j),
 $$
 
-dove $\xi_i^{\mu}$ è l'$i$-esimo bit del pattern $\mu$: ogni pattern rafforza
+dove $\xi_i^{\mu}$ è l’$i$-esimo bit del pattern $\mu$: ogni pattern rafforza
 i legami tra i propri bit concordi. Che questo lo renda un minimo locale di
 $E$ si vede in un conto solo, ed è il conto da cui discende tutto il resto
 della sezione. Mettendo la rete nello stato $\boldsymbol{\xi}^\mu$, il campo

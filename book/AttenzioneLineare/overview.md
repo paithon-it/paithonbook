@@ -64,7 +64,7 @@ in modo diverso ed è su quella differenza che gira l'intero capitolo.
 
 `````{tab} Elementare
 
-Il primo è l'**addestramento**, che
+Il primo è l’**addestramento**, che
 si fa una volta sola: il testo esiste già tutto, e il modello lo attraversa per
 imparare. Il secondo è la **generazione**, quando il modello è in uso e scrive parola
 per parola un testo che non esiste ancora (nel libro la trovi chiamata

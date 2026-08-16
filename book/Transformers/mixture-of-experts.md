@@ -18,7 +18,7 @@ calcolo per ogni parola, sia mentre il modello studia sia quando scrive.
 
 La sezione sui grandi modelli linguistici ha mostrato che crescere conviene: le
 leggi di scala {cite}`kaplan2020scaling` {cite}`hoffmann2022training` dicono
-che ogni raddoppio di parametri e di testo fa sbagliare il modello un po' meno,
+che ogni raddoppio di parametri e di testo fa sbagliare il modello un po’ meno,
 in modo regolare e prevedibile. Ma ha mostrato anche il prezzo: la bolletta di
 ogni singola parola cresce insieme al modello, e a un certo punto smette di
 essere pagabile.
@@ -199,7 +199,7 @@ numero $e = 2{,}718\ldots$, lo si eleva a ciascun punteggio, e si divide
 ciascun risultato per la somma di tutti. Sui nostri due, $e^{2{,}0} = 7{,}39$ e
 $e^{1{,}5} = 4{,}48$, che sommati fanno $11{,}87$; quindi
 $7{,}39 / 11{,}87 = 0{,}62$ e $4{,}48 / 11{,}87 = 0{,}38$. Due pesi che sommano
-a uno, con il primo un po' più pesante perché il suo punteggio era più alto.
+a uno, con il primo un po’ più pesante perché il suo punteggio era più alto.
 (L'elevamento a potenza serve a due cose: non far uscire mai numeri negativi,
 e allargare le differenze, così che mezzo punto di vantaggio conti davvero.)
 
@@ -279,7 +279,7 @@ numeri calcolati poco fa. Quelli sì che rispondono a variazioni piccole, e
 dipendono direttamente dai punteggi del router. Se l'esperto 1 ha dato una
 risposta utile, conviene alzare il suo peso; per alzare il suo peso bisogna
 alzare il punteggio che il router gli aveva assegnato; e allora la prossima
-volta che arriverà un token simile, l'esperto 1 sarà scelto un po' più
+volta che arriverà un token simile, l'esperto 1 sarà scelto un po’ più
 volentieri. Il router impara di riflesso, guardando com'è andata a chi ha
 mandato, senza mai essere corretto direttamente su chi avrebbe dovuto
 scegliere.
@@ -300,7 +300,7 @@ bug di implementazione, è la dinamica naturale del sistema.
 `````{tab} Elementare
 
 Torniamo in redazione. All'inizio i trenta redattori valgono più o meno
-uguale, e lo smistatore assegna i pezzi un po' a caso. Per puro effetto del
+uguale, e lo smistatore assegna i pezzi un po’ a caso. Per puro effetto del
 sorteggio, però, il redattore numero 7 ne riceve qualcuno in più. Scrivendo di
 più migliora; migliorando, lo smistatore impara che mandare i pezzi a lui dà
 buoni risultati; e allora gliene manda ancora di più. Dopo un mese il 7 e altri
@@ -348,11 +348,11 @@ quantità continua) e $\alpha$ il peso della penalità, $10^{-2}$ nel paper.
 
 Perché quel prodotto spinge verso il carico uniforme? Entrambi i vettori $f$ e
 $P$ stanno sul simplesso ($\sum_i f_i = \sum_i P_i = 1$) e tendono a essere
-**allineati**, perché l'instradamento segue l'$\arg\max$ delle stesse
+**allineati**, perché l'instradamento segue l’$\arg\max$ delle stesse
 probabilità che compongono $P$: gli esperti con $P_i$ alto sono di norma
 quelli con $f_i$ alto. In quel regime si può **sostituire** $f_i$ con $P_i$
 (una sostituzione dichiarata, non una conseguenza: è lecita solo dove
-l'$\arg\max$ è netto) e il prodotto scalare si comporta come $\sum_i P_i^2$.
+l’$\arg\max$ è netto) e il prodotto scalare si comporta come $\sum_i P_i^2$.
 Su quella somma vale Cauchy-Schwarz, applicata a $P$ e al vettore di tutti
 uno, che insieme al vincolo $\sum_i P_i = 1$ dà
 
@@ -376,7 +376,7 @@ token, con cinque token al primo esperto, due al secondo, uno al terzo e
 nessuno al quarto:
 $f = (0{,}625;\ 0{,}25;\ 0{,}125;\ 0)$ e
 $P = (0{,}55;\ 0{,}25;\ 0{,}15;\ 0{,}05)$ danno
-$4 \times 0{,}425 = 1{,}70$, contro l'$1{,}00$ del caso uniforme.
+$4 \times 0{,}425 = 1{,}70$, contro l’$1{,}00$ del caso uniforme.
 
 Il dettaglio elegante è **dove passa il gradiente**. Il conteggio $f_i$ non è
 differenziabile (è la stessa selezione discreta di prima), quindi la derivata
@@ -427,7 +427,7 @@ strato non produce niente per quel token, e qui torna comoda la **scorciatoia**
 della sezione sull'attenzione, quella che porta la lista di numeri intatta
 accanto al blocco e la somma all'uscita: se l'uscita è zero, resta la
 scorciatoia, e il token attraversa lo strato **immutato**, come se lì non ci
-fosse. Nessun errore, nessun messaggio: solo un po' di qualità in meno,
+fosse. Nessun errore, nessun messaggio: solo un po’ di qualità in meno,
 distribuita in modo silenzioso. Alzare $c$ riduce i token caduti ma alloca
 buffer più grandi, cioè spreca memoria per posti mai occupati. E c'è una
 conseguenza più insidiosa: **il destino di un token dipende dagli altri token
@@ -495,7 +495,7 @@ contro i $12{,}9$ GB del modello denso che gli costa la stessa aritmetica per
 token. Quasi sei volte la memoria per lo stesso calcolo: il baratto è
 esplicito.
 
-In addestramento distribuito la strategia naturale è l'**expert parallelism**,
+In addestramento distribuito la strategia naturale è l’**expert parallelism**,
 già nominato nella sezione sul parallelismo distribuito accanto agli assi
 dati, tensor e pipeline: gli esperti di ciascuno strato si spartiscono fra le
 schede, una manciata per GPU. Il pattern di comunicazione che ne nasce non è
@@ -760,7 +760,7 @@ testo, e per trasformarlo in un interlocutore serve la fase successiva, il
   $\alpha N \sum_i f_i P_i$ {cite}`fedus2022switch`, che resta bassa quando il
   lavoro è distribuito in parti uguali e cresce quando si concentra su pochi
   esperti (un incentivo, non una garanzia: l'argomento regge finché
-  l'$\arg\max$ tiene allineati $f$ e $P$); la **capacità** limita i token per
+  l’$\arg\max$ tiene allineati $f$ e $P$); la **capacità** limita i token per
   esperto e quelli in eccesso attraversano lo strato immutati grazie alla
   connessione residua.
 - Si risparmia **calcolo**, non **memoria**: tutti gli esperti devono

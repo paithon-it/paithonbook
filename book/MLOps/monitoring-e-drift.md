@@ -72,7 +72,7 @@ e per latenza {cite}`breck2017ml`.
    $\hat{p}_c = \frac{1}{N}\sum_{i=1}^{N}\mathbb{1}[\hat{y}_i = c]$, dove $N$ è il
    numero di richieste nella finestra e $\hat{y}_i$ la classe predetta per la
    $i$-esima. Non richiedono le etichette vere: si calcolano sul traffico così
-   com'è, e sono l'**allarme anticipato** del drift.
+   com'è, e sono l’**allarme anticipato** del drift.
 
 3. **Qualità vera** (metriche di modello: accuratezza, F1, calibrazione,
    errore di regressione). Sono ciò che davvero ci interessa, ma richiedono le
@@ -117,7 +117,7 @@ in corso, mentre accade.
 Lo strumento l'abbiamo già incontrato: il **classificatore-detective**. Si
 addestra un modello a distinguere i dati di ieri da quelli di oggi, e si
 guarda quanto ci riesce. Il numero con cui si misura quanto ci riesce è
-l'**AUC**, incontrata nel capitolo sul machine learning parlando di metriche, e
+l’**AUC**, incontrata nel capitolo sul machine learning parlando di metriche, e
 qui va letta così: vale $1$ quando il detective indovina sempre da quale dei
 due periodi viene un dato, e vale $0{,}5$ quando sta tirando a indovinare,
 perché fra due possibilità chi tira a caso ne azzecca la metà.
@@ -197,7 +197,7 @@ cambia). Le tre decisioni operative sono:
   non è la molteplicità dei test ma la
   **taglia del campione**, e correggere per Bonferroni non lo tocca, perché i
   $p$-value non sono al limite, sono a molti ordini di grandezza sotto
-  qualunque soglia. L'allarme va quindi fondato sull'**ampiezza** ($D$, o una
+  qualunque soglia. L'allarme va quindi fondato sull’**ampiezza** ($D$, o una
   distanza normalizzata, o il PSI) con una soglia decisa sul significato
   pratico, tenendo il $p$-value al più come filtro contro il rumore delle
   finestre piccole. La correzione per test multipli serve contro la
@@ -390,8 +390,8 @@ organizza come una **piramide**, dal gesto più economico e automatico al più
 costoso e delicato, e la regola d'oro è che la risposta sia *proporzionata* alla
 prova: la maggior parte degli allarmi non deve arrivare in cima.
 
-Alla base c'è l'**allarme**: automatico, a costo quasi nullo, tanto abbondante
-quanto lo consente una buona soglia. Sopra c'è l'**indagine**: un umano guarda
+Alla base c'è l’**allarme**: automatico, a costo quasi nullo, tanto abbondante
+quanto lo consente una buona soglia. Sopra c'è l’**indagine**: un umano guarda
 *quale* *feature* è cambiata e prova a capire se è un artefatto (un sensore
 rotto, un bug nella *pipeline* dei dati; più spesso è questo che un vero
 mutamento del mondo), un covariate shift benigno o l'inizio di un concept
@@ -444,7 +444,7 @@ Sul *quando* riaddestrare, due strategie {cite}`shankar2022operationalizing`:
   supera una soglia. Reagisce a ciò che serve, ma dipende interamente dalla
   qualità degli allarmi.
 
-Il punto delicato è l'**automazione** del retraining, che è il sogno di ogni
+Il punto delicato è l’**automazione** del retraining, che è il sogno di ogni
 *pipeline* MLOps ma nasconde una trappola già incontrata: il **feedback
 loop**. Se le predizioni del modello concorrono a generare i dati futuri, un
 sistema di credito che nega prestiti non vedrà mai come sarebbero andati quei
@@ -598,7 +598,7 @@ modello serve.
   sui soli ingressi, rileva un cambiamento della **marginale $P(X)$**, che
   covariate shift e label shift condividono, ed è cieco al *concept shift*
   puro.
-- L'allarme si fonda sull'**ampiezza** dello scostamento, non sul $p$-value: a
+- L'allarme si fonda sull’**ampiezza** dello scostamento, non sul $p$-value: a
   taglie di produzione il KS rifiuta su differenze che nessun modello sente. E
   il test per colonna è necessario ma non sufficiente: uno shift che vive nella
   struttura congiunta lascia tutte le marginali intatte.

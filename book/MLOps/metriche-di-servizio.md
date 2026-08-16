@@ -154,7 +154,7 @@ bloccarsi a metà frase. Un singhiozzo.
 
 `````{tab} Superiore
 
-Riprendiamo l'**intensità aritmetica** del modello roofline, vista nel capitolo
+Riprendiamo l’**intensità aritmetica** del modello roofline, vista nel capitolo
 sulla GPU: quanti FLOP si eseguono per ogni byte letto dalla memoria. Per un
 modello da $N_p$ parametri il costo di una passata in avanti è circa $2 N_p$
 FLOP **per token** elaborato, mentre i pesi in 16 bit occupano $2 N_p$ byte e
@@ -202,7 +202,7 @@ separa.
 Il primo rimedio è quello della cassa del supermercato. Se arriva un cliente col
 carrello pieno, la cassiera non gli passa tutta la spesa in un colpo lasciando
 in attesa chi ha in mano solo il pane: gli passa una decina di articoli, poi
-serve chi ha il pane, poi altri dieci, e così via. Il carrello finisce un po'
+serve chi ha il pane, poi altri dieci, e così via. Il carrello finisce un po’
 più tardi, ma nessuno resta fermo a lungo. Applicato ai modelli si chiama
 **chunked prefill**: il prompt lungo viene spezzato in pezzi, e fra un pezzo e
 l'altro si infilano i passi di generazione di tutti gli altri.
@@ -273,7 +273,7 @@ si contano solo le richieste che hanno rispettato le promesse fatte, per esempio
 «il primo token entro mezzo secondo e gli altri a non più di 50 millisecondi
 l'uno dall'altro». Il conto quindi è una moltiplicazione: si prendono le
 richieste servite in un secondo e si tiene la frazione che ha rispettato tutte
-e due le promesse. Se ne servi venti al secondo e solo l'$85\%$ è a posto, il
+e due le promesse. Se ne servi venti al secondo e solo l’$85\%$ è a posto, il
 goodput è $20 \times 0{,}85 = 17$: ne hai servite venti e ne hai contentate
 diciassette.
 
@@ -362,7 +362,7 @@ $250 \times (1 + 2 + \dots + 8)$, cioè novemila. È il conto del caso peggiore,
 quello in cui il modello rilegge tutto da capo ogni volta; l'ultima sezione di
 questa pagina mostra come si evita. E attenzione a leggere le barre: **una
 tacca in più non vuol dire un
-po' di più, vuol dire dieci volte tanto** (è la scala logaritmica, l'unico modo
+po’ di più, vuol dire dieci volte tanto** (è la scala logaritmica, l'unico modo
 di far stare quaranta e sessantatremila nello stesso disegno).
 ```
 
@@ -404,10 +404,10 @@ recuperare in venti archivi diversi, oppure venti programmi esterni a cui il
 modello chiede una cosa ciascuno (che ora, un cambio, un prezzo) prima di
 poter rispondere. Lì non si aspetta la media, si
 aspetta **la più lenta di tutte**, e basta che una sia finita nella coda perché
-l'intera risposta ci finisca. Se ciascuna ha l'$1\%$ di probabilità di essere
+l'intera risposta ci finisca. Se ciascuna ha l’$1\%$ di probabilità di essere
 lenta, la probabilità che almeno una delle venti lo sia è
 $1 - 0{,}99^{20} \approx 18\%$: si calcola la probabilità che vadano bene tutte
-e venti ($0{,}99$ moltiplicato per sé stesso venti volte, cioè circa l'$82\%$) e
+e venti ($0{,}99$ moltiplicato per sé stesso venti volte, cioè circa l’$82\%$) e
 la si toglie da uno. Una p99 rassicurante sul singolo passo diventa un utente
 scontento su cinque sull'intera interazione, ed è l'argomento di Dean e Barroso
 {cite}`dean2013tail`.

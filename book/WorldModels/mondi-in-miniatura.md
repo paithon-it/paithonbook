@@ -238,7 +238,7 @@ lavoro da riflesso.
 Con così poche manopole non serve nemmeno il metodo di addestramento abituale
 delle reti, quello che dopo ogni errore ritocca ogni peso di un soffio nella
 direzione che conviene (in gergo si chiama seguire il **gradiente**). Basta un
-metodo alla Darwin: si provano 64 piloti presi un po' a caso, si tengono quelli
+metodo alla Darwin: si provano 64 piloti presi un po’ a caso, si tengono quelli
 che hanno guidato meglio, si fa una nuova generazione somigliante a loro, e si
 ricomincia. Ci vuole pazienza (nell'articolo le generazioni sono
 1.800), ma alla fine si guida.
@@ -398,8 +398,8 @@ ragione per cui i sogni utili sono brevi.
 Che gli errori si accumulino è una di quelle cose che si leggono e si
 accettano senza vederle. {numref}`fig-sogno-diverge` la mette in scena sul
 mondo più piccolo che si possa immaginare: **un'altalena che qualcuno continua a
-spingere**. Va avanti e indietro, a ogni passaggio perde un po' di slancio per
-l'attrito e ne riceve un po' dalla spinta, e nella finestra disegnata la spinta
+spingere**. Va avanti e indietro, a ogni passaggio perde un po’ di slancio per
+l'attrito e ne riceve un po’ dalla spinta, e nella finestra disegnata la spinta
 vince: l'ampiezza cresce. Il modello che se la immagina sbaglia una cosa sola, e
 di poco: **quanto slancio sopravvive** a ogni passaggio. Crede che ne sopravviva
 un filo più del vero, il 2,8 per cento in più. Basta quello.
@@ -445,7 +445,7 @@ unità.[^scala-altalena] Si sta accettando, insomma, uno scarto pari a un
 ventesimo scarso del movimento, che è una scelta e non una legge: chi
 accettasse il doppio di scarto si terrebbe cinque passi in più, ventuno invece
 di sedici. Dichiararla non è pignoleria: chi non dichiara la tolleranza non sta
-dichiarando neanche l'**orizzonte**, cioè fino a che punto il sogno vale la
+dichiarando neanche l’**orizzonte**, cioè fino a che punto il sogno vale la
 pena di essere ascoltato.
 
 Una quarta cosa, infine, la figura non può mostrarla, ed è bene non dedurla da
@@ -465,7 +465,7 @@ uno dall'altro si chiama **rollout**, ed è esattamente il sogno di poco fa; la
 parola vale anche per le partite vere, quando si raccolgono una mossa alla
 volta. A imparare da quei rollout sono due reti che si danno il
 cambio, e le abbiamo incontrate nel capitolo sul Deep Reinforcement Learning:
-l'**attore**, che sceglie la mossa, e il **critico**, che stima quanto vale la
+l’**attore**, che sceglie la mossa, e il **critico**, che stima quanto vale la
 situazione in cui l'attore si è cacciato, così che l'attore sappia subito se ha
 fatto bene invece di dover aspettare la fine della partita. DreamerV2 (2021) è
 il primo agente a livello umano sul banco di prova dei giochi Atari imparando

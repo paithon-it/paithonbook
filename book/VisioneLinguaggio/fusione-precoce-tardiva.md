@@ -131,7 +131,7 @@ $$
 k^\star = \arg\min_{k \in \{1, \dots, K\}} \lVert \mathbf{z} - \mathbf{e}_k \rVert^2,
 $$
 
-con $k^\star$ token della porzione. L'$\arg\min$ non è differenziabile, e il
+con $k^\star$ token della porzione. L’$\arg\min$ non è differenziabile, e il
 gradiente non attraverserebbe la quantizzazione: lo si aggira con lo
 *straight-through estimator*, cioè copiando il gradiente del decoder tal quale
 sull'uscita dell'encoder, come se l'arrotondamento fosse l'identità. Quel che
@@ -278,7 +278,7 @@ fetta importante del calcolo è già stata spesa.
 
 Immagina due cantanti che condividono un solo microfono e un solo amplificatore
 con una sola manopola del volume. Il primo canta piano, il secondo forte. Per
-farsi sentire, il primo alza un po' la voce; allora il secondo, per non essere
+farsi sentire, il primo alza un po’ la voce; allora il secondo, per non essere
 coperto, alza la sua; e il primo di nuovo. Nessuno dei due sta facendo niente
 di sbagliato, ciascuno sta solo cercando di farsi sentire, ma il livello sale e
 sale, e a un certo punto l'amplificatore non ce la fa più: quel che esce
@@ -290,7 +290,7 @@ sono fatti in modo molto diverso: indovinare quale sarà la prossima tessera di
 mosaico è molto più difficile che indovinare un articolo determinativo, e i
 numeri che le due cose fanno girare dentro la rete non hanno la stessa taglia.
 Passano però per gli stessi pesi, e ciascuna, per contare qualcosa nel
-risultato, tende a farsi un po' più grossa. I numeri interni crescono, lentamente, per milioni
+risultato, tende a farsi un po’ più grossa. I numeri interni crescono, lentamente, per milioni
 di passi; e poiché sono memorizzati con una precisione finita, prima o poi si
 esce dall'intervallo in cui quei numeri hanno ancora un senso, e
 l'addestramento salta. La cura è quella che userebbe un fonico: mettere un
@@ -308,7 +308,7 @@ parte da una proprietà innocua della softmax: è invariante per traslazione,
 $\mathrm{softmax}(\mathbf{z}) = \mathrm{softmax}(\mathbf{z} + c)$, e quindi il suo risultato non
 dice nulla sul livello assoluto dei logit. Con pesi condivisi fra modalità
 dalle statistiche diverse, ciascuna può allora «competere» con l'altra alzando
-un po' la norma delle proprie attivazioni, senza che la funzione di perdita se
+un po’ la norma delle proprie attivazioni, senza che la funzione di perdita se
 ne accorga. Le norme di query e chiavi crescono, con esse i logit
 $\mathbf{Q}\mathbf{K}^\top/\sqrt{d_k}$ che entrano nella softmax dell'attenzione, e quando quei
 valori escono dall'intervallo in cui l'aritmetica a precisione ridotta (bf16)

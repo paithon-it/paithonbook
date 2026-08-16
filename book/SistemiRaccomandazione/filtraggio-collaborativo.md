@@ -447,7 +447,7 @@ riga che gira ne fa una leggermente diversa.
 
 Il freno, come lo descrivono i libri, dovrebbe tirare verso lo zero soltanto i
 numeri delle schede, cioè quelli che il modello si sta inventando. La riga che
-gira davvero fa una cosa un po' diversa: stringe verso lo zero **tutti** i
+gira davvero fa una cosa un po’ diversa: stringe verso lo zero **tutti** i
 numeri del modello, a ogni passo, senza guardare chi sono. Fra questi c'è anche
 quello che tiene la media dei voti di tutto il sito (nel codice si chiama
 `mu`). Quello non andrebbe frenato affatto, perché non sta inventando niente,
@@ -510,7 +510,7 @@ Quello che salta all'occhio è il primo: sui voti già visti l'errore crolla a
 $0{,}019$, cioè praticamente a zero. Da solo non dimostra niente. Contiamo
 quanti numeri il modello ha da regolare: una scheda per ciascuno dei 300 utenti
 e una per ciascuno dei 200 film, otto voci l'una (l'otto è la `k=8` del codice,
-e sono un po' più delle quattro manopole con cui i voti sono stati davvero
+e sono un po’ più delle quattro manopole con cui i voti sono stati davvero
 fabbricati, perché nella vita vera quel numero non lo si conosce e conviene
 tenersi larghi), fanno $500 \times 8 = 4.000$; più una correzione per ogni
 utente e per ogni film, altre $500$; più la media globale, e siamo a $4.501$. I

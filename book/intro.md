@@ -17,22 +17,22 @@
 
 # Il Libro di Intelligenza Artificiale che spiega due volte.
 
-:::{only} html
-In alto nella barra trovi questo comando, <span class="pt-livello-inline"
-aria-hidden="true"><svg class="pt-livello__icona
-pt-livello__icona--elementare" viewBox="0 0 16 16" width="15"
-height="15"><rect x="1.6" y="7" width="5.2" height="6.4" rx="1.3"
-fill="currentColor"/><rect x="9.2" y="2.6" width="5.2" height="10.8" rx="1.3"
-fill="none" stroke="currentColor" stroke-width="1.4"
-opacity="0.55"/></svg><svg class="pt-livello__icona
-pt-livello__icona--superiore" viewBox="0 0 16 16" width="15" height="15"><rect
-x="1.6" y="7" width="5.2" height="6.4" rx="1.3" fill="currentColor"/><rect
-x="9.2" y="2.6" width="5.2" height="10.8" rx="1.3"
-fill="currentColor"/></svg></span>, per scegliere **come** leggere: l'analogia
-quotidiana o la trattazione formale con le formule. Ogni concetto che conta è
-spiegato in tutti e due i modi, e nessuno dei due è una versione ridotta
-dell'altro: raccontano la stessa cosa a profondità diverse, quindi scegliendo
-non perdi niente. La scelta vale per tutto il libro e si cambia quando vuoi.
+L'intelligenza artificiale ha la fama di essere una materia per pochi, e in giro si trovano soprattutto due cose: articoli che promettono tutto senza spiegare niente, e testi che spiegano bene ma danno per acquisiti tre esami di matematica. Questo libro prova a stare nel mezzo, in italiano, partendo da zero e senza saltare i passaggi difficili: se una cosa è complicata te lo dice, e poi te la spiega lo stesso.
+
+Te la spiega **due volte**: una con un'analogia di tutti i giorni, una con la notazione e le formule per intero. Non è la stessa spiegazione in versione corta e in versione lunga: sono due strade per lo stesso posto, e prendendone una non perdi l'altra.
+
+```{epigraph}
+Invece di cercare di produrre un programma che simuli la mente adulta, perché non provare piuttosto a produrne uno che simuli quella di un bambino?
+
+<p class="attribution">Alan Turing, <i>Computing Machinery and Intelligence</i>,&nbsp;1950</p>
+```
+
+% L'attribuzione della citazione qui sopra e’ scritta in HTML perche’ al sito
+% serve la classe CSS `attribution`. In stampa il blocco raw sparisce e la
+% citazione resterebbe senza autore, quindi si ripete per il solo LaTeX.
+
+:::{only} latex
+*Alan Turing, «Computing Machinery and Intelligence», 1950.*
 :::
 
 :::{only} html
@@ -45,21 +45,20 @@ Questo libro è, alla lettera, **l'AI che spiega se stessa**. Perché il metodo
 {doc}`Prefazione </prefazione>`.
 :::
 
-```{epigraph}
-Invece di cercare di produrre un programma che simuli la mente adulta, perché non provare piuttosto a produrne uno che simuli quella di un bambino?
-
-<p class="attribution">Alan Turing, <i>Computing Machinery and Intelligence</i>,&nbsp;1950</p>
-```
-
-% L'attribuzione della citazione qui sopra e' scritta in HTML perche' al sito
-% serve la classe CSS `attribution`. In stampa il blocco raw sparisce e la
-% citazione resterebbe senza autore, quindi si ripete per il solo LaTeX.
-
-:::{only} latex
-*Alan Turing, «Computing Machinery and Intelligence», 1950.*
+:::{only} html
+Il comando per scegliere è in alto nella barra, <span class="pt-livello-inline"
+aria-hidden="true"><svg class="pt-livello__icona
+pt-livello__icona--elementare" viewBox="0 0 16 16" width="15"
+height="15"><rect x="1.6" y="7" width="5.2" height="6.4" rx="1.3"
+fill="currentColor"/><rect x="9.2" y="2.6" width="5.2" height="10.8" rx="1.3"
+fill="none" stroke="currentColor" stroke-width="1.4"
+opacity="0.55"/></svg><svg class="pt-livello__icona
+pt-livello__icona--superiore" viewBox="0 0 16 16" width="15" height="15"><rect
+x="1.6" y="7" width="5.2" height="6.4" rx="1.3" fill="currentColor"/><rect
+x="9.2" y="2.6" width="5.2" height="10.8" rx="1.3"
+fill="currentColor"/></svg></span>. Vale per tutto il libro
+in un colpo solo, e si cambia quando vuoi.
 :::
-
-L'intelligenza artificiale ha la fama di essere una materia per pochi, e in giro si trovano soprattutto due cose: articoli che promettono tutto senza spiegare niente, e testi che spiegano bene ma danno per acquisiti tre esami di matematica. Questo libro prova a stare nel mezzo, in italiano, partendo da zero e senza saltare i passaggi difficili: se una cosa è complicata te lo dice, e poi te la spiega lo stesso.
 
 :::{only} html
 Questa versione online del libro **è gratuita** ed **in continuo aggiornamento** per stare al passo con le innovazioni di questa materia: aggiungiamo regolarmente sezioni, argomenti ed esempi in Python. Il codice usa **PyTorch**, NumPy e scikit-learn, e per provarlo non devi installare niente. Dove in alto compare **Esegui il codice**, quel capitolo ha un *notebook*: una copia della pagina in cui i blocchi di codice, invece di stare lì solo da leggere, si eseguono uno dopo l'altro. Il collegamento lo apre su Google Colab, un servizio gratuito che fa girare il codice su una macchina di Google (serve un account Google). Qualche pagina è essa stessa un notebook, e si riconosce dall'icona a razzo 🚀 in alto a destra: lì il codice si esegue restando nel libro. Altrove si legge qui e si copia dove preferisci.
@@ -186,10 +185,21 @@ class="pt-card" href="ModelliDiffusione/overview.html"> <span
 class="pt-card-num"></span> <span class="pt-card-title">Modelli di
 Diffusione</span> <span class="pt-card-desc">Rumore e ritorno: da DDPM a
 Stable Diffusion e ai Diffusion Transformer.</span> </a> <a class="pt-card"
-href="ModelliEnergia/overview.html"> <span class="pt-card-num"></span> <span
+href="VerosimiglianzaEsatta/overview.html"> <span class="pt-card-num"></span>
+<span class="pt-card-title">Verosimiglianza esatta</span> <span
+class="pt-card-desc">I modelli che sanno dire quanto &egrave; probabile un
+dato: un pixel alla volta, oppure deformando lo spazio.</span> </a> <a
+class="pt-card" href="ModelliEnergia/overview.html"> <span
+class="pt-card-num"></span> <span
 class="pt-card-title">Modelli a energia</span> <span class="pt-card-desc">Il
 paesaggio invece della probabilit&agrave;: da Hopfield e Boltzmann allo score
 matching, la lingua in cui sono scritte diffusione e JEPA.</span> </a> <a
+class="pt-card" href="AutoSupervisione/overview.html"> <span
+class="pt-card-num"></span> <span
+class="pt-card-title">Auto-supervisione</span> <span class="pt-card-desc">Il
+paradigma che regge quasi tutto il libro, detto una volta sola: come si
+fabbrica un segnale dai dati, le quattro famiglie (contrasto, distillazione,
+ridondanza, ricostruzione) e il dibattito sul rinforzo.</span> </a> <a
 class="pt-card" href="WorldModels/overview.html"> <span
 class="pt-card-num"></span> <span class="pt-card-title">World Model</span>
 <span class="pt-card-desc">Simulatori interni della realtà: dai sogni di Ha
@@ -307,7 +317,7 @@ $$
 Questa funzione prende un input $x$ e restituisce $x$ se $x$ è positivo; altrimenti, restituisce zero. \
 La ReLU è ampiamente utilizzata nelle reti neurali perché introduce una non linearità essenziale e la sua derivata vale esattamente $1$ per $x > 0$: durante la *backpropagation*, **lungo i cammini attivi**, il gradiente non si attenua per colpa dell'attivazione, e sparisce la saturazione che affligge sigmoide e tangente iperbolica.
 
-Attenzione però a non chiedere alla ReLU più di quanto dia. Il gradiente che attraversa uno strato è $\mathbf{W}^\top \mathrm{diag}(\mathbb{1}[z>0])$: l'attenuazione la producono i pesi e le unità spente, non l'attivazione. Che il segnale sopravviva a molti strati dipende quindi dalla **scala dell'inizializzazione**, e con quella sbagliata si vede subito: attraversando cinquanta strati di sole ReLU, con la scala di Xavier (giusta per la tangente iperbolica) il gradiente si attenua di sette ordini di grandezza, e con una scala un po' troppo grande esplode di otto. È proprio la ReLU a richiedere una scala sua, il fattore $2$ di He, perché azzera metà delle unità: la frazione di derivate nulle, misurata, è $0{,}50$.
+Attenzione però a non chiedere alla ReLU più di quanto dia. Il gradiente che attraversa uno strato è $\mathbf{W}^\top \mathrm{diag}(\mathbb{1}[z>0])$: l'attenuazione la producono i pesi e le unità spente, non l'attivazione. Che il segnale sopravviva a molti strati dipende quindi dalla **scala dell'inizializzazione**, e con quella sbagliata si vede subito: attraversando cinquanta strati di sole ReLU, con la scala di Xavier (giusta per la tangente iperbolica) il gradiente si attenua di sette ordini di grandezza, e con una scala un po’ troppo grande esplode di otto. È proprio la ReLU a richiedere una scala sua, il fattore $2$ di He, perché azzera metà delle unità: la frazione di derivate nulle, misurata, è $0{,}50$.
 
 In $x = 0$ la funzione non è derivabile (il grafico ha un punto angoloso); il sottodifferenziale è l'intervallo $[0, 1]$ e nella pratica, PyTorch compreso, si adotta la convenzione $f'(0) = 0$.
 

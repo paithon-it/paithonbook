@@ -35,7 +35,7 @@ notazione scientifica che si impara a scuola quando si scrive $3{,}0\cdot10^8$
 invece di $300\,000\,000$:
 
 - una casella sola per il **segno**, positivo o negativo;
-- un gruppo per l'**esponente**, cioè il «per dieci alla…» che dice **fin
+- un gruppo per l’**esponente**, cioè il «per dieci alla…» che dice **fin
   dove** si può arrivare, verso il grandissimo e verso il piccolissimo;
 - il gruppo più lungo per la **mantissa**, cioè le cifre significative
   ($3{,}0$ nell'esempio), che dicono con **quanta finezza** il numero è
@@ -91,18 +91,18 @@ x = \pm\, (1 + f)\cdot 2^{e},
 $$
 
 dove $1+f$ è la **mantissa** (o *significando*: le cifre significative) ed $e$
-l'**esponente** (la scala). Di quel numero si memorizza solo la parte
-frazionaria $f$, con $0 \le f < 1$, perché l'$1$ davanti è implicito e non
+l’**esponente** (la scala). Di quel numero si memorizza solo la parte
+frazionaria $f$, con $0 \le f < 1$, perché l’$1$ davanti è implicito e non
 serve scriverlo: è la ragione per cui il formato `float32` spende 1 bit di
 segno, 8 di esponente e 23 per $f$, ma la precisione effettiva è di 24 bit ed
-è da lì che esce l'$\varepsilon = 2^{-23}$ di due righe più sotto. Il
+è da lì che esce l’$\varepsilon = 2^{-23}$ di due righe più sotto. Il
 `float64` (doppia precisione) dà 52 bit a $f$. La granularità relativa è
-l'**epsilon macchina** $\varepsilon$: la
+l’**epsilon macchina** $\varepsilon$: la
 distanza fra $1$ e il numero rappresentabile immediatamente successivo, pari a
 $2^{-23}\approx 1{,}19\cdot10^{-7}$ per `float32` e
 $2^{-52}\approx 2{,}22\cdot10^{-16}$ per `float64`. Ogni operazione arrotonda
 al numero rappresentabile più vicino, e l'errore relativo che ne deriva è
-limitato dall'**unità di arrotondamento** $u=\varepsilon/2$ (metà del gradino,
+limitato dall’**unità di arrotondamento** $u=\varepsilon/2$ (metà del gradino,
 perché si arrotonda all'estremo più vicino). Le reti neurali si addestrano
 spesso in precisione ridotta (`float32` o perfino `float16`) per risparmiare
 memoria e tempo: più veloci, ma con meno cifre di margine.
@@ -131,7 +131,7 @@ un peso che valeva $0{,}5$ diventa $0{,}50000006$. Se a girarsi è il bit del
 segno, quel peso diventa $-0{,}5$: cambia verso, ma resta della stessa taglia,
 e una rete se ne accorge poco. Il caso che conta davvero è il terzo: se a
 passare da $0$ a $1$ è il **primo bit dell'esponente**, quello che vale di
-più, il peso non cambia un po', cambia scala. Da $0{,}5$ salta a
+più, il peso non cambia un po’, cambia scala. Da $0{,}5$ salta a
 $1{,}7\cdot10^{38}$, cioè a metà del più grande numero che quel formato
 riesca a scrivere.
 
@@ -167,7 +167,7 @@ ai **dati**, che a sua volta si sdoppia: il mondo può cambiare sotto il modello
 (è la *deriva*, e ne parla il capitolo sul machine learning) oppure qualcuno
 può sottoporgli apposta immagini costruite per ingannarlo (sono gli *esempi
 avversari*, e ne parla il capitolo sull'AI responsabile). E c'è quella
-all'**hardware**, che non riguarda il modello ma il silicio su cui gira.
+all’**hardware**, che non riguarda il modello ma il silicio su cui gira.
 ```
 
 ## Overflow e underflow: i bordi del mondo rappresentabile
@@ -421,7 +421,7 @@ molto più tonda e la discesa punta quasi dritta al fondo.
 Non è una cura completa. Mette tutte le caratteristiche sulla stessa scala, ma
 non cambia il modo in cui si somigliano fra loro: se due di esse crescono e
 calano quasi sempre insieme (i metri quadri e il numero di stanze, per dire) la
-valle resta un po' storta e qualche zig-zag la discesa lo fa ancora. Resta il
+valle resta un po’ storta e qualche zig-zag la discesa lo fa ancora. Resta il
 rimedio più economico che ci sia: due righe di codice.
 
 `````
@@ -447,7 +447,7 @@ fattore che moltiplica ogni errore.
 Non è una cura completa, perché mette tutte le feature sulla stessa scala ma
 non cambia la loro **correlazione**: se due di esse crescono e calano quasi
 sempre insieme, la matrice resta mal condizionata fuori dagli assi, la valle
-resta un po' storta e qualche zig-zag la discesa lo fa ancora (a togliere anche
+resta un po’ storta e qualche zig-zag la discesa lo fa ancora (a togliere anche
 quella servirebbe una trasformazione che decorrela, come lo *sbiancamento*).
 Resta il rimedio più economico che ci sia: due righe di codice, e il problema è
 molto meglio condizionato di prima. Una sola avvertenza operativa: media e

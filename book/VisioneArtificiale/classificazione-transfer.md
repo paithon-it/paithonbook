@@ -66,7 +66,7 @@ $\theta$ della rete.
 ## Perché partire da zero costa caro
 
 Una CNN moderna ha da qualche milione a decine di milioni di **parametri**: i
-numeri interni che la rete regola mentre impara, un po' come le manopole di un
+numeri interni che la rete regola mentre impara, un po’ come le manopole di un
 impianto che si tarano una a una finché il suono non è giusto. Più manopole ci
 sono, più esempi servono per trovare la posizione giusta di tutte. Per
 regolarle senza andare in **overfitting**, cioè senza che la rete impari a

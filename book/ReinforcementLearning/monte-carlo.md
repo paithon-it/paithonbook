@@ -12,7 +12,7 @@ andava a perdere i soldi presi in prestito dai parenti
 
 L'idea è tutta lì, e serve esattamente al punto in cui la sezione precedente
 si è fermata. Il metodo di là, quello che riscriveva i numeri delle caselle
-finché non si assestavano (l'*iterazione dei valori*, in inglese *value
+finché non si assestavano (l’*iterazione dei valori*, in inglese *value
 iteration*), sa calcolare i valori ma pretende la mappa: per ogni mossa, dove
 si finisce e quanto si incassa. Se la mappa non c'è, resta una via che non
 chiede nulla a nessuno: far vivere all'agente molte partite intere, guardare
@@ -426,7 +426,7 @@ l'off-policy è possibile senza modello.
 
 Poiché $\mathbb{E}_b\big[\rho_{t:T-1}\,G_t \mid S_t = s\big] = V^\pi(s)$ (il
 pedice non è pignoleria: l'attesa è sulle traiettorie generate da $b$, ed è
-tutto il punto), si può stimare in due modi. L'**importance sampling
+tutto il punto), si può stimare in due modi. L’**importance sampling
 ordinario** fa la media semplice dei ritorni pesati; quello **pesato**
 normalizza per la somma dei pesi:
 
@@ -477,11 +477,11 @@ degli attrezzi che il libro riusa di più, e conviene sapere dove ricomparirà.
   sola invece che su tutta la partita. E siccome un peso che esplode è il
   difetto appena visto, PPO gli mette attorno una fascia, sopra e sotto, oltre
   la quale il peso viene tosato (*clipping*).
-- Nell'**offline RL**, cioè imparare da un archivio di partite senza poterne
+- Nell’**offline RL**, cioè imparare da un archivio di partite senza poterne
   giocare altre, quell'archivio è tutto ciò che c'è: la condizione appena vista
   (deve contenere tutto quello che la strategia da giudicare potrebbe fare)
   diventa il problema centrale della sezione che gli è dedicata.
-- Nell'**RLHF** (*Reinforcement Learning from Human Feedback*), il modo in cui
+- Nell’**RLHF** (*Reinforcement Learning from Human Feedback*), il modo in cui
   gli assistenti conversazionali imparano dai giudizi delle persone su quale di
   due risposte sia migliore, il programma che si sta migliorando si allontana
   passo dopo passo da quello che aveva prodotto le risposte giudicate: è la
@@ -557,7 +557,7 @@ dedicata a lei.
   solo da quelle, senza passare in rassegna tutte le altre.
 - Le medie si possono fare in due modi, contando una riga per partita (la prima
   volta che si è passati di lì) oppure contandole tutte, ripassaggi compresi.
-  Danno numeri un po' diversi, sono tutti e due legittimi, e con tante partite
+  Danno numeri un po’ diversi, sono tutti e due legittimi, e con tante partite
   finiscono nello stesso posto.
 - Ogni situazione si giudica per conto suo, su quello che è successo davvero:
   un voto sbagliato non contagia le caselle vicine, perché nessuno lo usa per
@@ -599,7 +599,7 @@ dedicata a lei.
   episodio finito.
 - Per **migliorare** una policy, e non solo misurarla, serve esplorazione:
   inizi esplorativi (teorici) o policy $\varepsilon$-soft (pratiche).
-- L'**importance sampling** permette di valutare una policy $\pi$ con dati
+- L’**importance sampling** permette di valutare una policy $\pi$ con dati
   generati da un'altra policy $b$, pesando le traiettorie con
   $\rho = \prod \pi(a_k\mid s_k)/b(a_k\mid s_k)$. Le probabilità di transizione
   si cancellano, quindi non serve il modello. Serve la **copertura**.

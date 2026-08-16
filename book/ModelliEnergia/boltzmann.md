@@ -143,7 +143,7 @@ $$
 $$
 
 dove $\langle \cdot \rangle$ è il valore atteso (le parentesi angolari sono la
-notazione dei fisici per l'$\mathbb{E}[\cdot]$ del resto del libro, e qui si
+notazione dei fisici per l’$\mathbb{E}[\cdot]$ del resto del libro, e qui si
 tengono perché è così che la formula si trova in letteratura), il primo
 termine è la correlazione media tra i neuroni $i$ e $j$ con i
 visibili bloccati sui dati (fase positiva, la «veglia») e il secondo la
@@ -190,7 +190,7 @@ sbagliate perché nessuno ci va ad alzare il terreno.
 
 Il secondo modo rimedia proprio a questo, e non costa niente di più: non far
 ricominciare il sogno da capo ogni volta, ma lasciar continuare quello di
-prima. Un po' per volta il sogno si allontana e finisce anche nei posti dove
+prima. Un po’ per volta il sogno si allontana e finisce anche nei posti dove
 la macchina si illude. Si chiama **contrastive divergence persistente**, dove
 «persistente» è il sogno che non viene mai interrotto.
 

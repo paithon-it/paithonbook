@@ -19,14 +19,14 @@ scrivi dentro si chiama **contesto**. Larga quanto vuoi, resta finita.
 scrivendo codice, si programma scrivendo il contesto. Il modello non si tocca
 e non si modifica; l'unica cosa su cui hai davvero le mani è il testo che gli
 metti davanti. Nel capitolo sui Transformer questa scoperta ha un nome
-inglese, l'*in-context learning*, l'imparare dal contesto: gli descrivi il
+inglese, l’*in-context learning*, l'imparare dal contesto: gli descrivi il
 compito lì dentro, magari con due esempi, e lui lo esegue senza che nessuno
 abbia cambiato una virgola dentro di lui. È un modo di comandare un programma
 scrivendo in italiano invece che in codice, e come tutti i comandi è potente e
 fragile insieme: una parola diversa cambia la risposta.
 
 Il mestiere che nasce da lì si chiama **context engineering**, l'ingegneria
-del contesto, ed è l'arte di riempire bene quella finestra. Per un po' lo si è
+del contesto, ed è l'arte di riempire bene quella finestra. Per un po’ lo si è
 chiamato *prompt engineering*, come se il problema fosse trovare la formula
 magica, la frase che sblocca il modello. Chi costruisce applicazioni ha
 imparato che il problema vero è un altro: non la frase perfetta, ma il governo
@@ -116,7 +116,7 @@ peggiorato le risposte di oggi. Il prompt magico non esiste; esiste il prompt
 La finestra di contesto ha una misura, e la misura è un numero preciso. Non si
 conta in parole né in pagine, ma in **token**: i pezzetti in cui una frase
 viene tagliata prima di entrare nel modello, ciascuno grande all'incirca una
-parola, spesso un po' meno. Ogni modello dichiara quanti token riesce a
+parola, spesso un po’ meno. Ogni modello dichiara quanti token riesce a
 leggere in una volta, e oltre quel numero non si va.
 
 Riempirli, poi, non è gratis, e da qui in avanti «quanto costa» vorrà sempre
@@ -165,7 +165,7 @@ C'è di peggio, e va contro l'intuizione: **anche quando lo spazio ci sarebbe,
 riempirlo può danneggiare la risposta**. Nel 2023 Nelson Liu e colleghi lo
 hanno misurato in un lavoro dal titolo eloquente, *Lost in the Middle*
 {cite}`liu2024lost`: i modelli usano bene l'informazione che sta
-all'**inizio** e alla **fine** del contesto, e trascurano quella sepolta **in
+all’**inizio** e alla **fine** del contesto, e trascurano quella sepolta **in
 mezzo**.
 
 `````{tab} Elementare
@@ -173,7 +173,7 @@ mezzo**.
 Pensa alla tua scrivania: ci sta solo un certo numero di fogli davanti a te,
 oltre quelli finiscono nel cassetto e li dimentichi. Ma c'è un secondo
 effetto, più sottile, che chiunque abbia studiato conosce: di una pila di
-fogli, l'occhio cade sul **primo** e sull'**ultimo**. Quelli in mezzo li
+fogli, l'occhio cade sul **primo** e sull’**ultimo**. Quelli in mezzo li
 sfogli distrattamente. Se metti l'informazione che conta proprio lì (impilata
 al centro, tra decine di altre carte), rischi di non «vederla» nemmeno se ce
 l'hai sotto il naso. Vale per te alla scrivania e, sorprendentemente, vale
@@ -496,7 +496,7 @@ Sei punti per rileggere la sezione.
   memoria, in attesa e in denaro. E c'è la trappola dei **fogli in mezzo alla
   pila** (in inglese *lost in the middle* {cite}`liu2024lost`): il modello usa
   bene l'inizio e la fine di quello che legge, e trascura il centro. Quindi
-  l'**ordine conta**.
+  l’**ordine conta**.
 - **Memoria**: a breve termine il **foglio di brutta** dentro la finestra, dove
   l'agente scrive i conti a metà; a lungo termine uno **schedario esterno** da
   cui pescare solo la pagina che serve adesso (i documenti recuperati, i
@@ -529,7 +529,7 @@ Sei punti per rileggere la sezione.
 - La finestra è **finita e costosa**: ogni token pesa su KV cache e costo per
   token, e nel budget vanno contati anche i marcatori che il montaggio
   aggiunge. E c'è il **lost in the middle** {cite}`liu2024lost`: i modelli usano
-  bene l'inizio e la fine del contesto, male il centro. Quindi l'**ordine
+  bene l'inizio e la fine del contesto, male il centro. Quindi l’**ordine
   conta**.
 - **Memoria**: a breve termine lo *scratchpad* nella finestra; a lungo termine
   una memoria esterna (database vettoriale/RAG, riassunti progressivi, fatti

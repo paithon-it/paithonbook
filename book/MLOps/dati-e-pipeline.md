@@ -150,7 +150,7 @@ mano» che non lasci traccia.
 Formalmente una pipeline è un **DAG** (*directed acyclic graph*): i nodi sono
 trasformazioni, gli archi le dipendenze dato-verso-dato, e l'assenza di cicli
 garantisce un ordine di esecuzione ben definito. Due proprietà la rendono
-governabile. L'**idempotenza**: rieseguire uno stadio sugli stessi input
+governabile. L’**idempotenza**: rieseguire uno stadio sugli stessi input
 produce lo stesso output, senza effetti collaterali accumulati (condizione per
 poter ripartire da metà catena dopo un errore). E la **materializzazione
 versionata** degli stadi intermedi, così che un cambiamento a valle non
@@ -322,9 +322,9 @@ dieci modelli diversi: si cucina una volta, si serve a tutti.
 
 `````{tab} Superiore
 
-Un feature store ha tipicamente due volti. L'**offline store** conserva lo
+Un feature store ha tipicamente due volti. L’**offline store** conserva lo
 storico completo delle feature, ottimizzato per letture massicce: è la sorgente
-per costruire i dataset di addestramento. L'**online store** tiene invece
+per costruire i dataset di addestramento. L’**online store** tiene invece
 l'ultimo valore di ogni feature, ottimizzato per letture a bassissima latenza:
 è ciò che il servizio interroga quando deve rispondere in millisecondi. La
 stessa *definizione* alimenta entrambi, ed è questa condivisione a sradicare
@@ -627,7 +627,7 @@ questo: dargli un contratto, e farlo rispettare.
   migliorare i dati, e li tratta come artefatti di prima classe (versionati,
   testati, sorvegliati {cite}`huyen2022designing`).
 - **Versionare i dati**: `git` non basta (file grandi e binari); si usa
-  l'**hash del contenuto** come indirizzo (*content-addressable storage*), da
+  l’**hash del contenuto** come indirizzo (*content-addressable storage*), da
   cui immutabilità, deduplicazione e **lineage** che lega ogni modello ai dati
   esatti che l'hanno prodotto. Gli strumenti che lo fanno cambiano; il
   meccanismo è quello con cui `git` indirizza i propri oggetti.

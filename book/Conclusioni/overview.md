@@ -73,7 +73,7 @@ non riceve le risposte giuste ma le scopre agendo: è così che AlphaGo, nel
 imparato le prime mosse. E infine le architetture nate da un conto che non si
 regge: per capire un testo un Transformer confronta ogni parola con tutte le
 altre, e su un testo lungo quel confronto diventa proibitivo. Da lì
-l'[attenzione
+l’[attenzione
 lineare](../AttenzioneLineare/overview.md) e i [modelli a spazio di
 stati](../StateSpaceModel/overview.md). E gli [agenti](../Agenti/overview.md)
 che usano strumenti, il modo in cui li si [programma a
@@ -183,7 +183,7 @@ Il feature engineering manuale del machine learning classico non è sparito, ma
 va detto dove è finito, perché le destinazioni sono due e il libro le insegna
 in capitoli diversi. Una parte è stata assorbita dentro $\theta$ e delegata
 all'ottimizzazione, ed è la parte che si racconta di solito. L'altra si è
-spostata nell'**architettura**, come bias induttivo: la convoluzione dichiara
+spostata nell’**architettura**, come bias induttivo: la convoluzione dichiara
 che un motivo va riconosciuto ovunque compaia, una rete su grafo che l'ordine
 con cui si elencano i nodi non cambia la risposta. Sono proprietà della forma
 della funzione, vere per ogni valore di $\theta$ e anche a rete non addestrata:
@@ -191,12 +191,12 @@ non sono state imparate, le ha scritte a mano il progettista prima che
 l'ottimizzazione cominciasse.
 `````
 
-E l'**ottimizzazione** è il motore che rende tutto questo possibile: apprendere
+E l’**ottimizzazione** è il motore che rende tutto questo possibile: apprendere
 significa cercare i parametri che minimizzano un errore.
 
 `````{tab} Elementare
 Immagina di regolare le manopole di un vecchio mixer audio per far suonare bene
-una canzone. Giri un po' una manopola, ascolti se è migliorato, correggi.
+una canzone. Giri un po’ una manopola, ascolti se è migliorato, correggi.
 Addestrare un modello è la stessa cosa, con milioni di manopole: a ogni passo
 il modello guarda quanto ha sbagliato e sposta ciascuna manopola nella
 direzione che riduce l'errore, un pochino. Ripetuto abbastanza volte, funziona.
@@ -222,7 +222,7 @@ $$
 
 dove $\theta$ sono i parametri, $\mathcal{L}$ la funzione di costo totale,
 $\ell$ la perdita sul singolo esempio, $f_\theta$ il modello, e
-$\mathbf{x}^{(i)}$, $y^{(i)}$ l'input e il target dell'$i$-esimo degli $m$
+$\mathbf{x}^{(i)}$, $y^{(i)}$ l'input e il target dell’$i$-esimo degli $m$
 esempi di addestramento. Due avvertenze sulla scrittura, prima di usarla. Nel
 capitolo sul machine learning la stessa lettera $\mathcal{L}$ indica, a seconda
 del punto, ora il singolo esempio ora il totale; qui la teniamo ferma sul
@@ -340,9 +340,9 @@ prima del resto.
 Ecco la cosa che quel nome teneva insieme, e che ormai fanno tutti: non si
 addestra più un modello nuovo per ogni problema. Se ne addestra *uno solo*,
 enorme, su una montagna di testo o immagini, e poi lo si adatta a mille compiti
-diversi con poco sforzo, o riaddestrandolo un altro po' su qualche migliaio di
+diversi con poco sforzo, o riaddestrandolo un altro po’ su qualche migliaio di
 esempi del compito nuovo, o semplicemente spiegandogli a parole che cosa
-vogliamo. Una base unica su cui si costruisce tutto, un po' come una persona
+vogliamo. Una base unica su cui si costruisce tutto, un po’ come una persona
 con una solida cultura generale che, con una breve formazione, impara mestieri
 molto diversi.
 
@@ -465,55 +465,95 @@ cambierebbe l'ordine dei capitoli di un libro come questo.
 
 Prima o poi la domanda arriva, di solito a cena: è più intelligente di noi?
 
-Messa così non ha risposta, e non per prudenza: manca il *dove*. Nessuno
-chiederebbe se un pesce nuota meglio di un uomo senza dire in quale acqua.
+Messa così non ha risposta, e non per prudenza: manca il *dove*. È come
+chiedere se un pesce si muove meglio di un uomo. In acqua vince lui senza
+sforzo; su un prato perde senza appello. Stessi due, risposta rovesciata.
 
 Il posto dove queste macchine nuotano ha un nome preciso, ed è il **mondo
 digitale**. Lì tutto è già nella forma che serve a loro. Ogni cosa è già un
 numero, e non c'è da andare a misurarla. Ogni azione costa quasi niente e si
-può ripetere un miliardo di volte. Ogni partita finita lascia scritto chi ha
-vinto, quindi c'è da imparare a costo zero. E sbagliare non rompe niente: si
-ricomincia. Gli scacchi, il go, il codice, il testo, le immagini sono tutti
-mondi fatti di quella sostanza, ed è lì che sono arrivati per primi i
-risultati che hanno fatto notizia. Torna il discorso dell'aria: il mondo
-digitale è il posto in cui i dati sono densi, e lì un polmone respira a
-pieno.
+può ripetere un miliardo di volte. E il giudizio non bisogna chiederlo a
+nessuno, perché sta già dentro il materiale: una partita finita dice chi ha
+vinto, un programma o gira o non gira, e in una frase basta coprire una parola
+e chiedere di indovinarla, che è il trucco visto nell'introduzione (con un
+pezzo di immagine funziona uguale). Infine, sbagliare mentre si impara non
+rompe niente: si ricomincia. Gli scacchi, il go, il codice dei programmi, il
+testo, le immagini sono tutti mondi fatti di quella sostanza, ed è lì che sono
+arrivati per primi i risultati che hanno fatto notizia. Torna il discorso
+dell'aria: il mondo digitale è il posto dove quell'aria è più densa, e lì un
+polmone respira a pieno.
 
 Non è una gara alla pari, è una **partita in casa**. E la cosa da portarsi via
-è che il vantaggio non viene dall'intelligenza, viene dal terreno.
+è che buona parte del vantaggio non viene dall'intelligenza, viene dal terreno.
 
-Fuori, il conto si rovescia, ed è un'osservazione vecchia di decenni. Nel
-1988 Hans Moravec notò che dare a un computer le prestazioni di
-un adulto in un test di intelligenza o a dama è relativamente facile, mentre
-dargli le capacità di un bambino di un anno nel percepire e nel muoversi è
-difficile o impossibile {cite}`moravec1988mind`. La ragione sta nei tempi: il
-ragionamento astratto lo abbiamo imparato in qualche migliaio di anni e
-sappiamo dirlo a parole; il resto lo abbiamo affinato in qualche centinaio di
-milioni, e nessuno sa come si scriva.
+Questa però è una lettura, non un risultato, e conviene dirlo: c'è chi la mette
+in fila al contrario. Le curve della sezione «Dove sta andando», qui sopra, non
+si piegano; chi le guarda risponde che il terreno spiega soltanto dove si è
+potuto misurare per primi, e che una capacità cresciuta lì dentro poi esce e
+serve anche fuori. Non si stabilisce chi ha ragione discutendone: si guarda che
+cosa succede quando la partita si sposta all'aperto, ed è il resto di questa
+sezione.
+
+Fuori, il conto si rovescia, ed è un'osservazione vecchia di decenni. Un
+computer batte il campione del mondo di scacchi dal 1997; costruire il braccio
+che sposta i pezzi sulla scacchiera è rimasta la parte difficile. Nel 1988 Hans
+Moravec lo mise così: dare a un computer le prestazioni di un adulto in un test
+di intelligenza, o a dama, è relativamente facile; dargli le capacità di un
+bambino di un anno nel percepire e nel muoversi è difficile o impossibile
+{cite}`moravec1988mind`.
+
+L'osservazione ha retto. La spiegazione che ne diede lui è un'altra cosa, e va
+tenuta separata, perché nessuno l'ha mai messa alla prova. Moravec la
+attribuiva ai tempi dell'evoluzione: nel vedere e nel muoverci abbiamo dietro
+un miliardo di anni di mestiere, mentre il pensiero astratto è un trucco
+recente, forse di meno di centomila anni. È un racconto che convince, ed è per
+questo che gira. Arvind Narayanan, nel 2026, ha obiettato che quel paradosso
+dice più su quali problemi la ricerca trovi interessanti che su quali siano
+difficili davvero: i casi facili per tutti, e quelli difficili per tutti, non
+li racconta nessuno {cite}`narayanan2026moravec`.
+
+Questo libro quella differenza la spiega in un altro modo, ed è il terreno.
+Dove il giudizio è già lì si impara in fretta; dove bisogna andarselo a
+prendere nel mondo, no.
+Per dire perché un braccio robotico faccia più fatica di un programma che gioca
+a scacchi non serve tirare in ballo l'evoluzione: basta notare che al programma
+la partita dice subito com'è andata, e al braccio no.
 
 Da qui viene la tentazione di rilassarsi, perché a noi resterebbe il mondo
 vero. È giusto a metà, e la metà che manca conta.
 
 La prima cosa che manca è che **il campo si allarga**. Ogni sensore, ogni
-telecamera, ogni pagamento tracciato prende un pezzo di mondo analogico e lo
-converte in mondo digitale, cioè lo porta dentro casa loro. È il rovescio di
-quello che l'introduzione chiamava scarto: ciò che lasciamo dietro non è solo
-l'aria che respirano, è anche il terreno su cui giocano. La robotica è il
-tentativo di portare la partita all'aperto, ed è il posto in cui i progressi
-sono più lenti e più cari: conferma la regola, non la smentisce.
+telecamera, ogni pagamento tracciato prende un pezzo di mondo vero e lo
+trasforma in numeri, cioè lo porta dentro casa loro. È l'altra faccia di quello
+che l'introduzione chiamava scarto: ciò che lasciamo dietro non è solo l'aria
+che respirano, è anche il terreno su cui giocano. La robotica è il tentativo di
+portare la partita all'aperto, e lì il conto si vede a occhio nudo: una prova
+dura il tempo vero che ci vuole, il braccio si consuma, e una caduta non si
+annulla premendo un tasto. Non è una profezia sul fatto che la robotica resterà
+indietro, perché le profezie scadono: è il motivo per cui lì ogni tentativo
+costa più che al chiuso, e se un giorno costerà meno sarà perché uno di quei
+tre pezzi è cambiato.
 
 La seconda è che quello che resta nostro non è un **territorio**, è un
 **mestiere**: un territorio si perde, e ce ne si accorge quando qualcun altro
 ci sta già giocando.
 
-Sono due cose. La prima è **rispondere** di una scelta, e in italiano quella
-parola ne vuol dire due: dare una risposta, e assumersi le conseguenze. Una
-macchina fa la prima cosa benissimo e la seconda non può farla, perché quando
-una decisione fa un danno, davanti a chi l'ha subìto non si presenta un
-modello. La seconda è **decidere quale partita giocare**: un sistema ottimizza
-il punteggio che gli abbiamo dato, e lo fa meglio di noi, ma se quel punteggio
-sia quello giusto è una domanda che sta fuori dal campo. Non è che la macchina
-la sbagli: è che lì dentro non esiste.
+Quel mestiere è fatto di due cose. La prima è **rispondere** di una scelta, e
+in italiano quella parola ne vuol dire due: dare una risposta, e assumersi le
+conseguenze. Una macchina fa la prima cosa benissimo e la seconda no. Non
+perché le manchi qualcosa di misterioso: quando una decisione fa un danno,
+davanti a chi l'ha subìto deve andarci qualcuno che possa scusarsi, risarcire e
+cambiare le regole, e quel qualcuno è sempre una persona o un'organizzazione
+fatta di persone. Vale anche per un'azienda, che di suo non ha faccia né
+braccia: la responsabilità non si trova, si assegna, e la si assegna a chi può
+portarla.
+
+La seconda è **decidere quale partita giocare**. A un sistema si dà un
+punteggio da far salire, e lui lo fa salire con una costanza che noi non
+abbiamo: se il punteggio è «quanti minuti resti a guardare», diventerà bravo a
+tenerti lì, e ci riuscirà. Se quello sia il numero giusto da far salire è una
+domanda che sta fuori dal campo. Non è che la macchina la sbagli: è che lì
+dentro non esiste.
 
 Sapere dove si sta giocando è anche il modo migliore per leggere la prossima
 notizia che ti capiterà sotto gli occhi. Prima di chiederti quanto sia brava,
@@ -576,7 +616,7 @@ i dati sotto-rappresentano qualcuno, e allora raccoglierne altri aiuta. In
 parte, e peggio, i dati rappresentano fedelmente un mondo già iniquo: lì la
 regolarità che il modello apprende *è* la disuguaglianza, e nessuna quantità di
 dati aggiuntivi la corregge, perché il difetto sta nella definizione stessa
-dell'obiettivo. La sezione sull'[equità e i
+dell'obiettivo. La sezione sull’[equità e i
 bias](../AIResponsabile/equita-e-bias.md) distingue quattro sorgenti proprio
 perché richiedono rimedi diversi {cite}`mehrabi2021survey`, e due di quelle
 quattro non si aggiustano con i dati.
@@ -694,7 +734,7 @@ pratica.
 - Tutto il libro poggia su tre idee ricorrenti: i **dati** (nessun modello sa
   più di ciò che ha visto), le **rappresentazioni apprese** (le "lenti" che la
   rete si costruisce da sola, invece di farsele suggerire) e
-  l'**ottimizzazione** (le manopole del mixer, regolate un pochino alla volta).
+  l’**ottimizzazione** (le manopole del mixer, regolate un pochino alla volta).
 - Addestrare vuol dire quasi sempre la stessa cosa: misurare quanto il modello
   ha sbagliato e spostare ogni manopola nella direzione che riduce l'errore,
   finché non c'è più molto da guadagnare. Qualche famiglia ci arriva per

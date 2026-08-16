@@ -106,7 +106,7 @@ disposizione.
 `````{tab} Elementare
 
 I rilevatori **a due stadi** lavorano come un revisore scrupoloso: prima
-propongono un po' di zone "sospette" dove *potrebbe* esserci qualcosa, poi
+propongono un po’ di zone "sospette" dove *potrebbe* esserci qualcosa, poi
 guardano con calma dentro ognuna per decidere cosa sia e correggere la cornice.
 Più precisi, ma più lenti.
 
@@ -140,7 +140,7 @@ Le due famiglie condividono un problema, e la soluzione. Nello stesso punto
 dell'immagine possono trovarsi oggetti dalle forme opposte: un pedone alto e
 stretto, un'auto bassa e larga, un pallone quasi quadrato. Chiedere alla rete
 di disegnare il riquadro giusto partendo dal nulla è chiederle molto. La
-scorciatoia si chiama **anchor box**, l'"ancora": un riquadro di partenza già
+scorciatoia si chiama **anchor box**, l’"ancora": un riquadro di partenza già
 pronto, da correggere invece che da inventare.
 
 ```{figure} ../figures/anchor-boxes.svg
@@ -161,7 +161,7 @@ più vicino. Le ancore funzionano allo stesso modo. In ogni punto dell'immagine
 la rete ha a disposizione qualche cornice predefinita, di taglie e proporzioni
 diverse ({numref}`fig-anchor-boxes`). Davanti a un pedone non deve inventarsi
 il rettangolo: prende la cornice verticale, che gli somiglia già, e la
-aggiusta ("spostati un po' a sinistra, allungati un pelo"). Correggere una
+aggiusta ("spostati un po’ a sinistra, allungati un pelo"). Correggere una
 cornice quasi giusta è molto più facile che disegnarne una dal nulla, e la
 rete impara proprio questo: piccole correzioni, più il nome di ciò che c'è
 dentro.
@@ -199,7 +199,7 @@ per capire come una griglia fissa possa produrre riquadri di ogni forma.
 ## Quanto è buona una predizione? IoU e mAP
 
 Un riquadro predetto non è mai esattamente sovrapposto a quello vero. Serve una
-misura numerica di "quanto ci ha preso". Quella misura è l'**Intersection over
+misura numerica di "quanto ci ha preso". Quella misura è l’**Intersection over
 Union**.
 
 ```{figure} ../figures/iou.svg
@@ -264,7 +264,7 @@ sola** predizione, e i duplicati, per quanto ben sovrapposti, contano come
 **falsi positivi**. Da qui si costruisce la curva
 *precision–recall* per ciascuna classe: l'area sotto la sua **interpolata**
 (l'inviluppo monotono decrescente, campionato a 11 punti di recall nel VOC fino
-al 2009, a tutti i cambi di recall dal 2010, a 101 punti in COCO) è l'**Average
+al 2009, a tutti i cambi di recall dal 2010, a 101 punti in COCO) è l’**Average
 Precision** (AP). La curva grezza è a denti di sega e nessuno la integra: è la
 scelta dell'interpolazione a rendere i numeri riproducibili fra
 implementazioni. La **mean Average Precision** (mAP) ne fa la media sulle
@@ -476,9 +476,9 @@ ordinaria.
 
 Questi strumenti non sono un esercizio accademico. Nella **guida autonoma**,
 detection e segmentazione insieme dicono al veicolo dove sono i pedoni e dove
-finisce la carreggiata. Nell'**imaging medico**, U-Net e derivati delimitano un
+finisce la carreggiata. Nell’**imaging medico**, U-Net e derivati delimitano un
 nodulo o un organo su una TAC, misurandone il volume con una precisione che a
-occhio si perderebbe. Nell'**industria**, un rilevatore su una linea di
+occhio si perderebbe. Nell’**industria**, un rilevatore su una linea di
 produzione individua il graffio o il pezzo mal assemblato prima che arrivi al
 cliente.
 
@@ -531,7 +531,7 @@ la traiettoria è chiara: dal *cosa*, al *dove*, fino al contorno esatto.
 
 ```{admonition} Da ricordare
 :class: important
-- L'**object detection** predice per ogni oggetto un **riquadro** e una
+- L’**object detection** predice per ogni oggetto un **riquadro** e una
   **classe** insieme.
 - Due famiglie: **due stadi** (R-CNN, Faster R-CNN) più accurate, **uno
   stadio** (YOLO, SSD) più veloci (un compromesso accuratezza/velocità); e una

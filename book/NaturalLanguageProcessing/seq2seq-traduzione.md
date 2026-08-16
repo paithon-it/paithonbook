@@ -115,7 +115,7 @@ ma è inapplicabile alla generazione autoregressiva: al passo $t$ la catena
 all'indietro richiederebbe $x_{t+1}, \dots, x_n$, che non sono ancora stati
 generati. Il decoder resta quindi unidirezionale per costruzione: un vincolo
 di causalità che ritroveremo, sotto forma di *maschera*, anche nei
-Transformer. Ortogonale a questo è l'**impilamento** (*stacked RNN*): più
+Transformer. Ortogonale a questo è l’**impilamento** (*stacked RNN*): più
 strati ricorrenti sovrapposti, dove la sequenza di stati dello strato $\ell-1$
 fa da input allo strato $\ell$, per rappresentazioni via via più astratte.
 
@@ -201,7 +201,7 @@ l'intervento intero, lo tiene tutto a memoria e solo alla fine lo ripete in
 italiano. L'encoder è l'ascolto, il vettore di contesto è ciò che gli resta in
 testa, il decoder è la resa in italiano. Nel paper di Google c'è un dettaglio
 curioso: dare all'encoder la frase sorgente **al contrario** («muro sul salta
-nero gatto Il») migliorava nettamente le traduzioni. Perché? Così l'*inizio*
+nero gatto Il») migliorava nettamente le traduzioni. Perché? Così l’*inizio*
 della frase (la prima cosa che il decoder deve tradurre) viene letto per
 *ultimo*, ed è il ricordo più fresco. Un trucco che rivela il difetto di
 fondo: se la qualità dipende da quale parola è stata ascoltata più di recente,
@@ -286,7 +286,7 @@ tutti tranne l'ultimo. Smettiamo di buttarli. Teniamoli lì tutti, in fila, e
 lasciamo che il decoder, ogni volta che deve scrivere una parola, **li guardi
 tutti quanti** e decida da sé a quali dare retta adesso. Non «guarda solo il
 quinto»: dà a ciascuno un voto, alto per quelli che gli servono, basso per gli
-altri, e poi li mescola in proporzione ai voti. Quei voti sono l'**attenzione**:
+altri, e poi li mescola in proporzione ai voti. Quei voti sono l’**attenzione**:
 un numero per ogni parola della frase di partenza, ricalcolato da capo a ogni
 parola prodotta.
 
@@ -503,7 +503,7 @@ $lp(y) = \frac{(5+|y|)^{\alpha}}{6^{\alpha}}$, dove l'esponente agisce su
 $(5+|y|)$ e non su $|y|$: per questo il valore che gli autori usano,
 $\alpha = 0{,}2$, non è confrontabile con lo $0{,}65$ dell'euristica di
 partenza, ed è un dettaglio che vale la pena tenere a mente prima di citare
-«l'$\alpha$ di GNMT».
+«l’$\alpha$ di GNMT».
 
 `````
 
@@ -547,7 +547,7 @@ Questa storia ha una data di consegna. Nel settembre 2016 Google annuncia GNMT
 con l'attenzione, esattamente la ricetta di questa sezione, ma in grande: otto
 **strati** di celle impilate per l'encoder e altrettanti per il decoder. L'idea
 dell'impilamento è che il primo strato legge le parole, il secondo legge quello
-che ha capito il primo, e così via, ogni piano un po' più astratto del
+che ha capito il primo, e così via, ogni piano un po’ più astratto del
 precedente.
 
 Questa rete prende il posto del sistema che Google usava davvero, quello dietro
@@ -598,7 +598,7 @@ da comprimario a protagonista. Come, di preciso, è il tema del capitolo sui
   l'intera frase di partenza e la tiene in un unico ricordo, una seconda (il
   decoder) la ridice nell'altra lingua partendo da lì. Se la frase è lunga,
   in quel ricordo non ci sta tutto: è il collo di bottiglia.
-- L'**attenzione di Bahdanau** mette il testo sul tavolo dell'interprete: per
+- L’**attenzione di Bahdanau** mette il testo sul tavolo dell'interprete: per
   ogni parola che pronuncia, un'occhiata al punto che serve adesso, con
   un'attenzione che si sposta a ogni passo e che nessuno gli ha insegnato dove
   posare. In regalo si ottiene l'allineamento fra le parole delle due lingue,
@@ -625,7 +625,7 @@ da comprimario a protagonista. Come, di preciso, è il tema del capitolo sui
 - **Seq2seq**: un encoder comprime la frase sorgente in un vettore di
   contesto, un decoder la riscrive nell'altra lingua. Il vettore fisso è un
   **collo di bottiglia** sulle frasi lunghe.
-- L'**attenzione di Bahdanau** lo elimina: a ogni passo il decoder rivede
+- L’**attenzione di Bahdanau** lo elimina: a ogni passo il decoder rivede
   *tutti* gli stati dell'encoder con pesi $\alpha_{ij}$ appresi; è il
   precursore diretto della *scaled dot-product attention* dei Transformer.
 - In generazione la scelta **greedy** è miope; la **beam search** tiene

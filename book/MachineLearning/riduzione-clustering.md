@@ -10,7 +10,7 @@ stragrande maggioranza dei dati che il mondo produce (foto, transazioni,
 segnali di sensori, log di navigazione) arriva **muta**, senza nessuna
 risposta allegata.
 
-Questo è il territorio dell'**apprendimento non supervisionato**: si danno al
+Questo è il territorio dell’**apprendimento non supervisionato**: si danno al
 modello solo gli input, e gli si chiede di scoprire da sé una struttura
 nascosta. Due domande, soprattutto, si possono porre a dati senza etichette.
 La prima: *questi dati hanno davvero bisogno di tutte queste dimensioni, o si
@@ -87,7 +87,7 @@ $0{,}8 \times 0{,}8 = 0{,}64$; in dieci $0{,}8$ moltiplicato per sé stesso diec
 volte, cioè $0{,}11$.
 
 Il guscio è tutto il resto: il $20\%$ in una dimensione, il $36\%$ in due, e già
-l'**$89\%$** in dieci. In cento dimensioni il cuore è praticamente zero: nessun
+l’**$89\%$** in dieci. In cento dimensioni il cuore è praticamente zero: nessun
 punto sta «nel mezzo», stanno tutti appiccicati alle pareti. In un
 mondo così svuotato e spinto ai margini, gli algoritmi che si fidano delle
 distanze («chi è vicino a chi») vanno in crisi. Da qui l'idea di **ridurre le
@@ -128,7 +128,7 @@ l'informazione utile: è la **riduzione della dimensionalità**.
 
 ## PCA: le direzioni in cui i dati si muovono di più
 
-Il metodo più antico e più usato per ridurre le dimensioni è l'**analisi delle
+Il metodo più antico e più usato per ridurre le dimensioni è l’**analisi delle
 componenti principali** (*Principal Component Analysis*, PCA), le cui radici
 risalgono a Karl Pearson {cite}`pearson1901lines` nel 1901 e a Harold Hotelling
 {cite}`hotelling1933analysis` nel 1933. L'idea è di una semplicità elegante:
@@ -241,7 +241,7 @@ $(-2,-2)$ a cadere sul centro: $(0+2+0+2)/4 = 1$.
 
 Le due direzioni sono perpendicolari e insieme coprono tutto il piano, quindi
 la dispersione totale è la somma, $4 + 1 = 5$. La prima direzione, da sola, ne
-cattura $4$: l'$80\%$.
+cattura $4$: l’$80\%$.
 
 Proiettare significa allora tenere solo le ombre sulla diagonale che sale, e
 buttare via il resto. Ogni punto diventa un numero solo: $(2,2)$ diventa
@@ -417,7 +417,7 @@ milioni di punti e tende a **preservare meglio la struttura globale**. Su
 quest'ultimo punto vale però una precisazione che ridimensiona il confronto:
 Kobak e Linderman {cite}`kobak2021initialization` hanno mostrato che il divario
 si annulla inizializzando t-SNE con la PCA invece che a caso, ed è quindi
-l'**inizializzazione**, più dell'algoritmo, a decidere quanto sopravvive della
+l’**inizializzazione**, più dell'algoritmo, a decidere quanto sopravvive della
 struttura globale (in scikit-learn, `init="pca"`). Resta comunque lo stesso
 monito per entrambi: sono strumenti di visualizzazione, non di
 analisi metrica. Entrambi vanno usati per *esplorare*, mai per concludere che
@@ -513,7 +513,7 @@ devi decidere tu in anticipo.
 
 Dato un numero $k$ di cluster, k-means cerca i centroidi
 $\boldsymbol{\mu}_1, \dots, \boldsymbol{\mu}_k$ e l'assegnazione dei punti che
-minimizzano l'**inerzia** (somma delle distanze quadrate dai rispettivi
+minimizzano l’**inerzia** (somma delle distanze quadrate dai rispettivi
 centroidi):
 
 $$
@@ -636,7 +636,7 @@ partizione: si sceglie il $k$ che la rende più alta.
 
 `````{tab} Superiore
 
-Il metodo del gomito osserva l'**inerzia** $\mathcal{L}(k)$ in funzione di $k$
+Il metodo del gomito osserva l’**inerzia** $\mathcal{L}(k)$ in funzione di $k$
 e cerca il punto di rendimento decrescente (la curvatura massima), un criterio
 utile ma soggettivo. La **silhouette** lo rende quantitativo: per il punto $i$,
 detta $a_i$ la distanza media dai punti del suo cluster e $b_i$ la distanza
@@ -1108,7 +1108,7 @@ criterio invece che con un giudizio a occhio su un grafico.
   il **clustering gerarchico** offre un dendrogramma da tagliare a piacere.
 - Le **misture gaussiane** imparano di ogni gruppo non solo il centro ma la
   **forma** (la covarianza), e assegnano una **probabilità** invece di
-  un'etichetta secca. Si stimano con l'**algoritmo EM**, che alterna il calcolo
+  un'etichetta secca. Si stimano con l’**algoritmo EM**, che alterna il calcolo
   delle responsabilità (passo E) e la ristima dei parametri (passo M) e
   garantisce che la verosimiglianza non decresca. **k-means è il caso limite**
   di questo schema con covarianze sferiche che tendono a zero.

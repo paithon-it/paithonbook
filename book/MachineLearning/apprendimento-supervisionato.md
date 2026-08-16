@@ -3,7 +3,7 @@
 Immagina di affiancare per una settimana un agente immobiliare esperto. Non ti
 spiega nessuna formula: ti mostra centinaia di case già vendute (metri quadri,
 numero di stanze, quartiere) e accanto a ciascuna il prezzo finale. Dopo un
-po', davanti a un appartamento mai visto, sai già sparare una cifra
+po’, davanti a un appartamento mai visto, sai già sparare una cifra
 ragionevole. Hai imparato **dagli esempi etichettati**. È, in una frase, ciò
 che fa l'apprendimento supervisionato: mostragli abbastanza coppie
 *domanda–risposta* e imparerà a rispondere da solo.
@@ -234,7 +234,7 @@ $$
 $$
 
 I parametri $\mathbf{w}\in\mathbb{R}^n$ e $b\in\mathbb{R}$ si stimano
-minimizzando l'**errore quadratico medio** (*Mean Squared Error*):
+minimizzando l’**errore quadratico medio** (*Mean Squared Error*):
 
 $$
 \mathcal{L}(\mathbf{w}, b)
@@ -365,7 +365,7 @@ conti.
 Va detto che cosa gira davvero quando si scrive `LogisticRegression()`, perché
 non è la stima di massima verosimiglianza: scikit-learn aggiunge di suo una
 penalità $\ell_2$ sui
-pesi, di intensità `C=1.0` (in quella parametrizzazione $C$ è l'*inverso* della
+pesi, di intensità `C=1.0` (in quella parametrizzazione $C$ è l’*inverso* della
 forza del freno, come nelle SVM). Il modello che esce, quindi, minimizza la
 cross-entropy **più** quella penalità, e la differenza non è cosmetica: sui
 quattro punti $x = -2, -1, 1, 2$ con etichette $0, 0, 1, 1$ (una dimensione,
@@ -466,7 +466,7 @@ essere identici o lontanissimi: il caso decide tutto. Con mille colonne gli
 addendi sono mille, e succede quello che succede lanciando mille dadi: il
 totale cade quasi sempre attorno a $3\,500$, perché i lanci alti e quelli bassi
 si compensano a vicenda, e vedere mille sei di fila non capita mai. Allo stesso
-modo, due esempi qualsiasi saranno un po' diversi su certe colonne e un po'
+modo, due esempi qualsiasi saranno un po’ diversi su certe colonne e un po’
 simili su altre, e la somma finisce quasi sempre attorno allo stesso valore. Le
 distanze fra tutte le coppie si assomigliano, e lo scarto fra il vicino più
 prossimo e il più lontano si assottiglia fino a sparire. È
@@ -490,7 +490,7 @@ dell'apertura del capitolo, quello che studia con le soluzioni a fianco: là
 guardare le soluzioni era il metodo giusto, qui il guaio è **ricopiarle senza
 averle capite**, e accorgersene è possibile solo interrogandolo su un esercizio
 che non ha mai visto.
-È l'**overfitting**, il problema centrale del machine learning applicato: lo
+È l’**overfitting**, il problema centrale del machine learning applicato: lo
 affrontiamo nella sezione dedicata, insieme all'idea di tenere sempre da parte
 dati che il modello non ha mai visto per misurarne l'onestà.
 
@@ -541,7 +541,7 @@ per tutto il resto del libro.
   domanda, fa votare i $k$ più simili. Semplicissimo, ma va in crisi quando le
   colonne sono troppe, perché allora tutti i punti sono lontani uguale.
 - L'insidia di tutto il capitolo è imparare **a memoria** invece che capire
-  (l'*overfitting*): è la prossima sezione.
+  (l’*overfitting*): è la prossima sezione.
 ```
 
 `````
@@ -561,7 +561,7 @@ per tutto il resto del libro.
 - **k-NN** è non parametrico: non stima parametri, ricorda i dati e li fa votare.
   Costo $O(mn)$ per query ($m$ distanze da $n$ coordinate ciascuna), e la
   concentrazione delle distanze lo affossa in alta dimensione.
-- Attenzione all'**overfitting**: imparare a memoria non è capire. Ne parliamo
+- Attenzione all’**overfitting**: imparare a memoria non è capire. Ne parliamo
   nella sezione dedicata.
 ```
 

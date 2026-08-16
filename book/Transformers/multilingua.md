@@ -103,8 +103,8 @@ appiattisce verso l'uniforme. Il valore non è universale, ed è bene sapere di
 chi è: **mBERT usa $\alpha = 0{,}7$** (il README multilingue ufficiale lo chiama
 $S$), XLM {cite}`lample2019cross` $\alpha = 0{,}5$, XLM-R
 {cite}`conneau2020unsupervised` $\alpha = 0{,}3$. La differenza non è di
-dettaglio. Prendendo due lingue che stanno nei dati al $99\%$ e all'$1\%$: con
-l'$\alpha$ di mBERT si campiona al $96\%$ e al $4\%$, cioè la lingua piccola è
+dettaglio. Prendendo due lingue che stanno nei dati al $99\%$ e all’$1\%$: con
+l’$\alpha$ di mBERT si campiona al $96\%$ e al $4\%$, cioè la lingua piccola è
 sovracampionata di quasi quattro volte; con quello di XLM-R si arriva a $80\%$ e
 $20\%$, venti volte. È così che, quando si costruisce il vocabolario condiviso,
 alle lingue a bassa disponibilità toccano pezzi sensati invece di sole lettere
@@ -396,7 +396,7 @@ Se un modello di dimensione fissa deve ospitare più lingue, ciascuna riceve
 meno spazio. Per una lingua con pochi testi il baratto conviene: guadagna dal
 fatto di somigliare alle vicine più di quanto perda in spazio. Ma continuando
 ad aggiungere lingue si arriva a un punto in cui lo spazio manca a tutti, e da
-lì in poi ogni lingua in più peggiora un po' tutte le altre, compresa quella
+lì in poi ogni lingua in più peggiora un po’ tutte le altre, compresa quella
 che si voleva aiutare.
 
 Non è un difetto da correggere: è una coperta corta. L'unico modo per
@@ -419,7 +419,7 @@ capacità, non di metodo.
 Ne discendono due tensioni concrete nel disegno di un modello multilingue. La
 prima riguarda il **vocabolario condiviso**: allargarlo dà pezzi migliori alle
 lingue piccole ma consuma parametri nella tabella di embedding, che è già una
-frazione notevole del modello. La seconda riguarda l'$\alpha$ del
+frazione notevole del modello. La seconda riguarda l’$\alpha$ del
 ricampionamento: abbassarlo aiuta le lingue rare e sottrae dati a quelle
 comuni, e non esiste un valore giusto in assoluto, solo un valore giusto
 rispetto a quali lingue interessano.
@@ -466,7 +466,7 @@ lingue si parlano.
   Siccome l'inglese sommergerebbe le altre, si bara sulle dosi in modo
   controllato: alle lingue piccole si dà più turni di quanti ne avrebbero, e
   le proporzioni si appiattiscono verso il pari.
-- L'**allineamento fra lingue emerge da solo**: nessuno mostra mai al modello
+- L’**allineamento fra lingue emerge da solo**: nessuno mostra mai al modello
   una frase accanto alla sua traduzione, eppure le due finiscono vicine.
   Perché, non si sa fino in fondo: i pezzi di parola in comune aiutano ma non
   sono indispensabili (toglierli di proposito costa poco), contano più i piani
@@ -485,7 +485,7 @@ lingue si parlano.
   imparare il compito sono gli stessi che tenevano vicine le lingue), e il
   salto riesce meglio fra lingue costruite allo stesso modo.
 - La **maledizione della multilingualità**: lo spazio è una coperta corta.
-  Oltre un certo numero di lingue, ognuna in più peggiora un po' tutte le
+  Oltre un certo numero di lingue, ognuna in più peggiora un po’ tutte le
   altre, e l'unico rimedio pieno è un modello più grande.
 ```
 `````
@@ -497,7 +497,7 @@ lingue si parlano.
   dell'architettura: stesso esercizio a buchi, testi di molte lingue e un
   **vocabolario di sottotoken condiviso**. Lo squilibrio fra lingue si corregge
   campionando con $q_i \propto p_i^{\alpha}$, che appiattisce le proporzioni.
-- L'**allineamento fra lingue emerge da solo**, senza che nessun termine della
+- L’**allineamento fra lingue emerge da solo**, senza che nessun termine della
   loss lo chieda. Perché, non è del tutto chiaro: la sovrapposizione di
   vocabolario correla ma non è necessaria, la profondità conta più delle teste,
   e c'è chi sostiene che il modello allinei perché la capacità limitata lo

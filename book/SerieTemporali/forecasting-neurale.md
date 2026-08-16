@@ -185,7 +185,7 @@ valore, la previsione del prossimo passo: si allena come una regressione, con la
 finestra come input e $x_{t+1}$ come bersaglio. Per prevedere più in là si
 riapplica la rete in modo **ricorsivo**, reiniettando le proprie stime, con
 l'accumulo dell'errore già visto nell'introduzione. Nel **seq-to-seq**, invece,
-una prima rete (l'*encoder*) riassume tutta la storia in una manciata di numeri,
+una prima rete (l’*encoder*) riassume tutta la storia in una manciata di numeri,
 e una seconda (il *decoder*) srotola da quel riassunto l'intero orizzonte futuro
 in un colpo, esattamente come una traduzione genera l'intera frase d'uscita. È lo
 schema che, nell'NLP, ha fatto nascere il meccanismo di attenzione.
@@ -424,7 +424,7 @@ assesta su quella di lungo periodo.
 A crescere senza fermarsi è invece l'incertezza delle serie che un valore
 centrale non ce l'hanno, le **non stazionarie** dell'introduzione al capitolo.
 E ci sarebbe da aggiungere l'incertezza sul modello stesso, che qui non c'è per
-un motivo un po' furbesco: la regola con cui la serie viene generata è la stessa
+un motivo un po’ furbesco: la regola con cui la serie viene generata è la stessa
 con cui la prevediamo, perché l'abbiamo scritta noi da tutte e due le parti. Su
 una serie vera quella regola non la conosce nessuno, va indovinata dai dati, e
 può venire sbagliata.
@@ -508,7 +508,7 @@ scrivono gli autori, i mattoni del deep learning si bastavano da soli
 Nel capitolo sui Transformer il libro ha raccontato una rete che, invece di
 leggere una sequenza un pezzo per volta, guarda tutti i pezzi in una volta sola
 e decide da sé a quali dare peso: quel «decidere a quali dare peso» è
-l'**attenzione**, e nel trattamento del linguaggio ha spazzato via le reti che
+l’**attenzione**, e nel trattamento del linguaggio ha spazzato via le reti che
 leggevano in fila {cite}`vaswani2017attention`. Portarla nelle serie temporali
 era una tentazione irresistibile, per una ragione precisa: un Transformer mette
 in comunicazione due giorni lontanissimi con **un solo passaggio**, mentre una
@@ -522,7 +522,7 @@ confronti, e più si allunga la finestra più il conto esplode. **Informer** tag
 i confronti, e ne fa solo una parte, scelta bene, invece di tutti.
 **Autoformer** cambia proprio domanda: invece di confrontare coppie di giorni
 cerca le somiglianze della serie con sé stessa fatta scivolare indietro, cioè
-l'**autocorrelazione** della prima sezione, da cui viene il nome, e per
+l’**autocorrelazione** della prima sezione, da cui viene il nome, e per
 calcolarle tutte in fretta usa una scorciatoia che il libro ha già incontrato
 nel capitolo sull'audio, la trasformata di Fourier (la stessa famiglia di conti
 da cui vengono il seno e il coseno della sezione precedente). Fra un blocco e

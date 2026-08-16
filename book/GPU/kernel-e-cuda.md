@@ -24,7 +24,7 @@ intero**. Descrive quello di *un solo* esecutore, un thread, su un pezzetto di
 dato: come una ricetta scritta per una porzione, che poi viene consegnata a
 migliaia di cuochi in una volta sola.
 
-Facciamo prima un po' d'ordine sul pezzetto di dato. La fila di numeri su cui
+Facciamo prima un po’ d'ordine sul pezzetto di dato. La fila di numeri su cui
 un kernel lavora, messi in ordine uno dopo l'altro e ciascuno con la sua
 posizione, si chiama **array**: è la forma più semplice di tensore, e nelle
 prossime pagine le due parole si alterneranno. Il thread numero 7 si occuperà
@@ -42,7 +42,7 @@ sapere *su quali*, comincia col ricavare il proprio numero.
 Immagina di dover consegnare a mano un milione di volantini, uno per cassetta
 della posta, e di avere a disposizione un esercito. Non scrivi un milione di
 ordini diversi. Ne scrivi **uno solo**, che vale per tutti: «guarda il numero
-cucito sulla tua divisa, va' alla cassetta con quel numero, infila il
+cucito sulla tua divisa, va’ alla cassetta con quel numero, infila il
 volantino». Poi lo leggi ad alta voce una volta, e l'intero esercito parte. Il
 soldato numero 0 va alla cassetta 0, il soldato numero 999.999 alla cassetta
 999.999, tutti insieme. L'ordine è identico per ognuno; l'unica cosa che cambia
@@ -78,7 +78,7 @@ orientarsi:
 - `blockIdx`, la posizione del blocco *dentro* la griglia;
 - `blockDim`: quanti thread ha ogni blocco.
 
-Da queste, la prima riga di quasi ogni kernel ricostruisce l'**indice
+Da queste, la prima riga di quasi ogni kernel ricostruisce l’**indice
 globale** del thread, la sua identità univoca nell'intera griglia:
 
 $$

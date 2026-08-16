@@ -119,7 +119,7 @@ DeepMind, non articoli passati da revisione. Due passi contano. Il primo,
 immagine genera mondi a tre dimensioni, esplorabili con tastiera e mouse, con
 acqua, fumo e gravità. Il secondo, **Genie 3** (agosto 2025), passa dal
 differito al **tempo reale**: il mondo si genera mentre lo si attraversa, non
-dopo, e si possono richiamare eventi con una frase («fa' piovere», «aggiungi un
+dopo, e si possono richiamare eventi con una frase («fa’ piovere», «aggiungi un
 cane»).
 
 I limiti li elencano gli autori stessi, e contano più delle immagini
@@ -198,7 +198,7 @@ seconda dello strato, appena meglio del 26–29% che si ottiene sondando una ret
 con pesi casuali), quelle *non lineari* (un MLP a uno strato nascosto) arrivano
 all'1,7% di errore negli strati più profondi: lo stato della partita è
 ricostruibile quasi per intero dalle attivazioni. Poiché una sonda potrebbe leggere una correlazione senza
-ruolo causale, il passo decisivo è l'**intervento**: si modificano le
+ruolo causale, il passo decisivo è l’**intervento**: si modificano le
 attivazioni con una discesa di gradiente finché la sonda vi legge una
 scacchiera contraffatta, si lascia proseguire il calcolo e si osserva che la
 distribuzione sulle mosse legali si adegua alla scacchiera modificata, non

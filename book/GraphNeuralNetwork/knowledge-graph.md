@@ -70,7 +70,7 @@ codominio di ogni relazione (`sindaco-di` va da una `Persona` a un
 entra e permettere l'inferenza per ereditarietà, cioè dedurre triple non scritte
 da quelle scritte.
 
-La proprietà semantica decisiva è l'**assunzione di mondo aperto**: la
+La proprietà semantica decisiva è l’**assunzione di mondo aperto**: la
 mancanza di una tripla non è la sua negazione. Ne discende che il problema
 naturale su un knowledge graph, la **link prediction**, non è una
 classificazione binaria ordinaria: dispone di soli esempi positivi, e gli
@@ -102,7 +102,7 @@ due schede prodotto con nomi diversi descrivono lo stesso oggetto. Si chiama
 enorme, ed è la voce su cui chi mantiene un knowledge graph spende gran parte
 del proprio lavoro.
 
-L'ultimo gradino è l'**estrazione di relazioni**: dedurre dal testo che fra due
+L'ultimo gradino è l’**estrazione di relazioni**: dedurre dal testo che fra due
 entità esiste un certo legame. Oggi si fa in larga parte chiedendolo a un
 grande modello di linguaggio, con tutti i problemi di verifica che il capitolo
 sui Transformer ha già discusso: un modello che inventa una tripla plausibile e
@@ -401,7 +401,7 @@ prezzo di costruirlo.
 - Un **knowledge graph** è un multigrafo diretto etichettato di **triple**
   (soggetto, relazione, oggetto): nodi ed archi di tipi diversi, cioè un grafo
   **eterogeneo**, a differenza di tutti quelli visti finora nel capitolo.
-- Vale l'**assunzione di mondo aperto**: un arco che manca vuol dire «non lo
+- Vale l’**assunzione di mondo aperto**: un arco che manca vuol dire «non lo
   so», non «è falso». Da qui il fatto che gli esempi negativi non esistano e si
   debbano fabbricare **corrompendo** le triple vere.
 - Costruirlo è il lavoro: riconoscimento delle entità, **collegamento** (quale

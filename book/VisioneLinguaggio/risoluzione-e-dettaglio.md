@@ -36,7 +36,7 @@ ragione è che a raddoppiare sono due lati insieme, la larghezza e l'altezza:
 l'immagine ha quattro volte l'area.
 
 Il seguito è meno ovvio. Il modello, per capire ogni tessera, la confronta con
-tutte le altre (è l'**attenzione**, il meccanismo del capitolo sui Transformer):
+tutte le altre (è l’**attenzione**, il meccanismo del capitolo sui Transformer):
 con 256 tessere i confronti sono $256 \times 256$, con 1024 sono
 $1024 \times 1024$. Quattro volte i pezzi significa $4 \times 4 = 16$ volte i
 confronti: raddoppiare il lato di una fotografia moltiplica per sedici il lavoro
@@ -59,7 +59,7 @@ $$
 
 dove $H$ e $W$ sono altezza e larghezza in pixel e $p$ il lato della patch.
 Con $H = W = 224$ e $p = 14$ si ha $N = 256$; con $H = W = 448$, $N = 1024$.
-$N$ è lineare nell'**area**, quindi quadratico nel lato.
+$N$ è lineare nell’**area**, quindi quadratico nel lato.
 
 Il costo dell'attenzione è a sua volta quadratico in $N$, cioè $O(N^2 d)$ con
 $d$ dimensione del modello: quartico nel lato dell'immagine. Da $224$ a $448$
@@ -417,7 +417,7 @@ dimensione bassa, così che la pagina diventi una matrice
 $\mathbf{D} \in \mathbb{R}^{n_d \times k}$ con $n_d$ dell'ordine del migliaio di patch e
 $k$ dell'ordine del centinaio (ColPali poggia su un VLM da tre miliardi di
 parametri che guarda la pagina a $448 \times 448$). Il secondo è
-l'**interazione tardiva** di ColBERT {cite}`khattab2020colbert`, che il capitolo
+l’**interazione tardiva** di ColBERT {cite}`khattab2020colbert`, che il capitolo
 sugli agenti riprenderà in versione testuale: invece di collassare la pagina in
 un vettore solo si conservano tutti i vettori e il punteggio si compone in
 fondo,
@@ -426,7 +426,7 @@ $$
 s(q, d) = \sum_{i \in q} \max_{j \in d} \; E(q_i)^{\top} E(d_j),
 $$
 
-dove $q_i$ è l'$i$-esimo token della domanda, $d_j$ la $j$-esima **patch** della
+dove $q_i$ è l’$i$-esimo token della domanda, $d_j$ la $j$-esima **patch** della
 pagina ed $E(\cdot)$ il rispettivo embedding. La differenza rispetto al caso
 testuale è tutta nel secondo indice: il massimo non corre più sui token di un
 passaggio trascritto, ma sulle regioni dell'immagine, e un token della domanda
@@ -587,7 +587,7 @@ confortante.
 :class: important
 - Il conto è aritmetica: $N = \lfloor H/p \rfloor \cdot \lfloor W/p \rfloor$, e
   con patch $14 \times 14$ un'immagine $224 \times 224$ dà **256 token**,
-  $448 \times 448$ ne dà **1024**. I token crescono con l'**area**, il costo
+  $448 \times 448$ ne dà **1024**. I token crescono con l’**area**, il costo
   dell'attenzione con il loro **quadrato**: raddoppiare il lato moltiplica per
   sedici il costo dell'attenzione.
 - La risoluzione la detta **il compito, non l'architettura**. Un gatto si

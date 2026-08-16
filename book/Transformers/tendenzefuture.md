@@ -46,7 +46,7 @@ imparare quali cose si somigliano è metà del mestiere.
 Gli altri modi di rimpicciolire un modello sono due, e sono più bruti. Il primo
 è scrivere ogni suo numero con meno cifre: dove prima ne servivano dieci adesso
 ne bastano due o tre, il modello occupa quattro o otto volte meno spazio, e in
-cambio è un po' meno preciso, spesso molto meno di quanto ci si aspetterebbe.
+cambio è un po’ meno preciso, spesso molto meno di quanto ci si aspetterebbe.
 Il secondo è togliere di mezzo i numeri che contano poco: in una rete
 addestrata ce ne sono moltissimi vicini allo zero, che si possono azzerare del
 tutto senza che quasi nulla cambi.
@@ -71,7 +71,7 @@ ottimizzazioni di memoria come FlashAttention, e gli *state space model*
 (Mamba); a questi ultimi, e alle attenzioni lineari, sono dedicati i due
 capitoli che seguono. Sul fronte multimodale: spazi di rappresentazione
 condivisi tra testo, immagini e audio, con il transfer learning contrastivo
-alla CLIP come collante. A cui si aggiunge il filone dell'**allineamento**:
+alla CLIP come collante. A cui si aggiunge il filone dell’**allineamento**:
 tecniche (come il fine-tuning con feedback umano) per rendere i modelli più
 utili e meno dannosi, che è oggi un'area di ricerca a pieno titolo, non un
 ritocco finale.
@@ -119,7 +119,7 @@ economica, la seconda si può leggere.
 
 `````{tab} Superiore
 
-L'**Universal Transformer** {cite}`dehghani2019universal` (l'articolo è del
+L’**Universal Transformer** {cite}`dehghani2019universal` (l'articolo è del
 luglio 2018, presentato a ICLR l'anno successivo, che è la data della voce in
 bibliografia) sostituisce gli $N$
 strati distinti con **un solo blocco applicato ricorrentemente in profondità**,
@@ -128,7 +128,7 @@ recuperare il *bias induttivo* ricorrente che il Transformer aveva buttato via
 insieme alla ricorrenza temporale, e che serve sui compiti a struttura
 gerarchica e sulla generalizzazione a lunghezze non viste in addestramento.
 
-Sopra ci mettono l'**Adaptive Computation Time** di Graves
+Sopra ci mettono l’**Adaptive Computation Time** di Graves
 {cite}`graves2016adaptive`: a ogni iterazione,
 per **ogni posizione**, una piccola unità emette una probabilità di
 arresto; le posizioni che si fermano vengono copiate invariate mentre le altre
@@ -218,7 +218,7 @@ legge.
   far parlare fra loro le parti di un testo, fino agli *state space model*) e
   **multimodalità** (leggere, guardare e ascoltare con lo stesso meccanismo).
 - Un Transformer spende **lo stesso calcolo** su ogni ingresso, facile o
-  difficile che sia. L'**Universal Transformer** (2018) provò a togliere quel
+  difficile che sia. L’**Universal Transformer** (2018) provò a togliere quel
   vincolo legando i pesi fra gli strati e lasciando che ogni posizione decida
   quando fermarsi. Non prese piede allora, ed è tornata attuale dalla parte
   opposta: i modelli che ragionano spendono più calcolo sulle domande difficili

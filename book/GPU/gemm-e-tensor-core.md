@@ -62,7 +62,7 @@ elemento di uscita e legge dalla memoria globale, per calcolare
 $C_{ij} = \sum_{k} A_{ik} B_{kj}$, un'intera riga di $\mathbf{A}$ ($K$ valori)
 e un'intera colonna di $\mathbf{B}$ ($K$ valori). Sommando su tutte le uscite sono
 $2 M N K$ letture di elementi, a fronte di $2 M N K$ FLOP: in `float32`
-(4 byte per elemento) l'**intensità aritmetica** vale
+(4 byte per elemento) l’**intensità aritmetica** vale
 
 $$
 I_\text{naive} = \frac{2 M N K}{4 \cdot 2 M N K} = \frac{1}{4} \ \text{FLOP/byte},
@@ -71,7 +71,7 @@ $$
 *indipendente dalla taglia delle matrici*. Il conto assume il modello più
 crudo: ogni lettura emessa viene servita dalla HBM, senza cache di mezzo.
 Nella realtà la L2 e il broadcast dentro il warp recuperano una parte del
-riuso, e il kernel ingenuo fa un po' meglio di $\tfrac14$; ma è un riuso
+riuso, e il kernel ingenuo fa un po’ meglio di $\tfrac14$; ma è un riuso
 *sperato*, affidato alla cache, mentre il tiling che segue lo rende
 *garantito* dal programma. Sul roofline della sezione «La
 memoria: il vero collo di bottiglia» è comunque un punto incollato in basso a
@@ -191,7 +191,7 @@ capiente che ci sia.
 Ed è questa, più della gerarchia in sé, la morale che il capitolo si è
 guadagnato: **c'è un roofline per ogni livello della piramide**, ciascuno con
 la sua banda e il suo ginocchio, e ogni livello di tiling esiste per superare
-il proprio. Quanto al tetto, l'$n/6$ della sezione precedente è un *ideale* che
+il proprio. Quanto al tetto, l’$n/6$ della sezione precedente è un *ideale* che
 richiederebbe le tre matrici intere on-chip, e per fortuna non serve
 raggiungerlo: l'intensità realmente raggiungibile non cresce con $n$, ma con la
 **radice** della memoria veloce disponibile (è il risultato classico di Hong e
@@ -472,7 +472,7 @@ questo secondo effetto dà la colpa alla tessera, che non c'entra.
 
 `````{tab} Superiore
 La prima precisazione: il requisito vero non è sulle dimensioni logiche ma
-sull'**allineamento in byte** (multipli di 16 byte sulla dimensione
+sull’**allineamento in byte** (multipli di 16 byte sulla dimensione
 principale), quindi una matrice con $M$, $N$ e $K$ multipli di 8 ma con un
 *passo di riga* storto (lo *stride*, cioè la distanza in memoria fra l'inizio
 di una riga e l'inizio della successiva, che in una vista o in una fetta non
@@ -557,7 +557,7 @@ esempio di una lezione che tornerà a ogni pagina.
   quello nei registri, risolve un problema diverso: la **banda della shared
   memory**, circa 19 TB/s su A100 contro i 16 FLOP/byte che i tensor core
   pretendono. C'è un roofline per ogni livello della piramide, e ogni tiling
-  supera il proprio. L'$n/6$ è un tetto ideale; il raggiungibile cresce come
+  supera il proprio. L’$n/6$ è un tetto ideale; il raggiungibile cresce come
   $\sqrt{M_\text{chip}}$, non come $n$ {cite}`hongkung1981io`.
 - I **tensor core** (dal 2017, Volta) eseguono un piccolo prodotto-matrice con
   accumulo $\mathbf{D} = \mathbf{A}\mathbf{B} + \mathbf{C}$ per colpo di clock
@@ -565,7 +565,7 @@ esempio di una lezione che tornerà a ogni pagina.
   mista** {cite}`micikevicius2018mixed` (ingressi 16 bit, accumulo 32 bit):
   circa un ordine di grandezza di throughput in più. `cuBLAS`/`cuDNN` li usano
   da soli.
-- L'**array sistolico** {cite}`kung1982why` risolve lo stesso problema
+- L’**array sistolico** {cite}`kung1982why` risolve lo stesso problema
   dall'altro capo: invece di andare a prendere i dati, li fa **scorrere** fra
   unità adiacenti, e il riuso è nella geometria invece che in una cache. La TPU
   {cite}`jouppi2017datacenter` usa la variante *weight stationary*: pesi

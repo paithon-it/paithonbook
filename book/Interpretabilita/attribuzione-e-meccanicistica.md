@@ -127,7 +127,7 @@ quella forma compare. Ognuna, insomma, è come un faretto puntato su una parte
 della foto.
 
 E adesso il passaggio: il gradiente si può puntare anche su quei faretti, non
-solo sui pixel. La domanda diventa «se questo faretto si accendesse un po' di
+solo sui pixel. La domanda diventa «se questo faretto si accendesse un po’ di
 più, di quanto salirebbe la fiducia nella risposta?». Grad-CAM chiede questo, e
 poi accende ciascun faretto in proporzione alla risposta che ha avuto. Se stiamo spiegando la risposta
 «cane», i faretti sul muso e sulle orecchie pesano tanto, quelli sull'erba
@@ -208,7 +208,7 @@ su quei due il modello risponde in modo diverso, allora quel pixel deve ricevere
 una quota di merito diversa da zero. Non si può dire «non conta niente» di
 quello che è l'unica differenza fra i due casi.
 
-Il secondo assioma è l'**invarianza all'implementazione**: due reti costruite in
+Il secondo assioma è l’**invarianza all'implementazione**: due reti costruite in
 modo diverso, ma che a conti fatti calcolano esattamente la stessa cosa, devono
 ricevere le stesse attribuzioni. La spiegazione riguarda *cosa* la rete calcola,
 non *come* è scritta.
@@ -427,7 +427,7 @@ restare in piedi nel prodotto è soprattutto la foto. A occhio si continua a
 
 La conclusione è spiacevole e va detta, con la precisazione di prima: per i
 metodi bocciati e per quelli in mezzo, la mappa stava in buona parte descrivendo
-l'**immagine** e non la rete. Somigliava al risultato di un programmino che
+l’**immagine** e non la rete. Somigliava al risultato di un programmino che
 segna i bordi degli oggetti in una foto, uno di quelli che esistono da
 cinquant'anni e non hanno bisogno di imparare niente; e siccome i bordi di una
 foto di cane disegnano un cane, la mappa sembrava sensata.
@@ -487,7 +487,7 @@ nemmeno costruire, perché nel modello c'è già.
 
 ## L'attenzione è una spiegazione?
 
-Quell'oggetto è l'**attenzione** dei Transformer, e c'è una tentazione naturale
+Quell'oggetto è l’**attenzione** dei Transformer, e c'è una tentazione naturale
 a usarlo così {cite}`vaswani2017attention`. Richiamiamo in due righe di che si
 tratta: per decidere che cosa fare di una parola, il modello distribuisce una
 specie di sguardo sulle altre parole della frase, dando a ciascuna una quota. Le
@@ -566,7 +566,7 @@ $$
 $$
 
 e si moltiplicano gli strati fra loro per ottenere quanto di ogni token di
-ingresso è finito in ogni posizione all'altezza voluta. È l'**attention
+ingresso è finito in ogni posizione all'altezza voluta. È l’**attention
 rollout**. La variante *attention flow* tratta la stessa struttura come un
 grafo orientato aciclico e calcola il flusso massimo dal token di ingresso a
 quello di arrivo, che è più costoso e tiene conto dei colli di bottiglia lungo
@@ -603,7 +603,7 @@ poco fa) dice *dove* sta l'informazione; nessuno dei due dice *come* la rete la
 calcola. La frontiera, giovane e ambiziosa e ancora molto aperta, punta più in
 alto: **fare reverse-engineering** dei calcoli interni, come si smonta un
 circuito elettronico per capire cosa fa ciascun componente. È
-l'**interpretabilità meccanicistica**.
+l’**interpretabilità meccanicistica**.
 
 `````{tab} Elementare
 
@@ -617,8 +617,8 @@ pezzo che tiene il conto delle parentesi aperte in un testo).
 C'è però un ostacolo curioso. La rete ha meno neuroni dei concetti che deve
 rappresentare, e allora fa come chi ha poche scatole e troppa roba: mette più
 concetti nella stessa scatola. Il risultato è che un singolo neurone si accende
-per cose scollegate fra loro, un po' per i gatti, un po' per le automobili, un
-po' per il colore verde, e diventa illeggibile.
+per cose scollegate fra loro, un po’ per i gatti, un po’ per le automobili, un
+po’ per il colore verde, e diventa illeggibile.
 
 Il nome tecnico di questa faccenda è **sovrapposizione**, e viene dal modo in
 cui la si disegna: non come scatole, ma come frecce su un foglio. Immagina un
@@ -699,7 +699,7 @@ metterla. La prova della **scala** la tecnica l'ha superata: Templeton e
 colleghi {cite}`templeton2024scaling` hanno addestrato autoencoder sparsi fino
 a decine di milioni di feature sulle attivazioni interne di un modello
 linguistico di produzione, non di un giocattolo di laboratorio. Quella che non
-ha superato è la prova dell'**affidabilità**: Chanin e colleghi, nel 2024, hanno
+ha superato è la prova dell’**affidabilità**: Chanin e colleghi, nel 2024, hanno
 documentato modi sistematici in cui un latente apparentemente monosemantico non
 si accende proprio dove dovrebbe, perché un latente più specifico ne ha
 assorbito i casi (lo chiamano *feature absorption*), e che il fenomeno non si
@@ -722,7 +722,7 @@ sua direzione dice in quale mescolanza di neuroni quel concetto è scritto. A
 sinistra i concetti sono due quanti i neuroni, e ognuno si prende una direzione
 tutta sua, perpendicolare all'altra: leggere quel neurone vuol dire leggere quel
 concetto. A destra i concetti sono cinque e i neuroni sempre due, e allora le
-frecce si dispongono a raggiera, oblique, ciascuna un po' addosso alle altre. Il
+frecce si dispongono a raggiera, oblique, ciascuna un po’ addosso alle altre. Il
 prezzo è che nessuna ha più una direzione pulita, e infatti nessun neurone,
 guardato da solo, corrisponde più a un concetto.
 ```
@@ -848,7 +848,7 @@ seconda ($w_2 = -1 < 0$) lo tira giù, esattamente come ci si aspetta.
 
 Su una rete vera, Grad-CAM si costruisce agganciando due *hook* allo stadio
 convoluzionale finale: uno cattura le attivazioni in avanti, l'altro i
-gradienti all'indietro. In una ResNet il punto giusto è l'**uscita dell'ultimo
+gradienti all'indietro. In una ResNet il punto giusto è l’**uscita dell'ultimo
 blocco** di `layer4`, dopo la somma residuale: è lì che agganciano le
 implementazioni di riferimento, perché fermarsi a una convoluzione interna al
 blocco ignorerebbe il contributo della scorciatoia. Ecco lo scheletro su una
@@ -952,7 +952,7 @@ volevamo poter vedere.
   verso il piano di sopra; **attention rollout** e *attention flow* rifanno il
   conto lungo tutta la pila. Il **probing** risponde a un'altra domanda: a
   quale piano è scritta una certa informazione.
-- L'**interpretabilità meccanicistica** apre la scatola e prova a ricostruire i
+- L’**interpretabilità meccanicistica** apre la scatola e prova a ricostruire i
   circuiti con cui la rete calcola, sciogliendo la **sovrapposizione** (troppi
   concetti nella stessa scatola, un neurone che si accende per cose scollegate)
   con gli *sparse autoencoder*, che riscrivono le attivazioni su molte più
@@ -968,7 +968,7 @@ volevamo poter vedere.
 
 ```{admonition} Da ricordare
 :class: important
-- Le reti profonde non hanno coefficienti leggibili: l'**attribuzione** usa il
+- Le reti profonde non hanno coefficienti leggibili: l’**attribuzione** usa il
   **gradiente dell'uscita rispetto all'ingresso** per stimare quanto ogni parte
   dell'input ha pesato su una singola decisione.
 - Le **saliency maps** {cite}`simonyan2014deep` sono il gradiente sui pixel:
@@ -1004,7 +1004,7 @@ volevamo poter vedere.
   classificatori lineari {cite}`alain2017understanding` mappa invece dove sta
   l'informazione negli strati interni, con i *control task* di Hewitt e Liang
   {cite}`hewitt2019control` a misurare che stia leggendo e non risolvendo.
-- L'**interpretabilità meccanicistica** (circuiti {cite}`olah2020zoom` e
+- L’**interpretabilità meccanicistica** (circuiti {cite}`olah2020zoom` e
   sparse autoencoder {cite}`bricken2023monosemanticity`) punta a fare
   reverse-engineering dei calcoli interni. La scala non è più il limite
   {cite}`templeton2024scaling`; la **monosemanticità** delle feature estratte

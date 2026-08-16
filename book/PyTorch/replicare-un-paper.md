@@ -12,7 +12,7 @@ matrice, e la matrice ha una forma precisa.
 Quello che questa sezione insegna è un **metodo**, ed è la cosa più
 trasferibile che si possa imparare qui dentro. Il modello su cui lo mettiamo
 alla prova usa due strati che il libro spiegherà più avanti: la
-**convoluzione**, nel capitolo sul deep learning, e l'**attenzione
+**convoluzione**, nel capitolo sul deep learning, e l’**attenzione
 multi-testa**, in quello sui Transformer.
 
 Non serve sapere che cosa facciano dentro. Contano come scatole di cui si
@@ -184,7 +184,7 @@ replica un paper.
 **Il token di classe.** È un vettore in più, premesso ai 196 quadratini, che
 non contiene nessun pezzo di immagine: è un foglio bianco. Attraversando la
 rete, quel foglio raccoglie informazione da tutti gli altri, e alla fine è lì
-che si va a leggere la risposta: un po' come il verbale di una riunione, che
+che si va a leggere la risposta: un po’ come il verbale di una riunione, che
 non è uno dei partecipanti ma è dove finisce il senso di quello che si sono
 detti.
 `````
@@ -539,7 +539,7 @@ qualunque articolo che dichiari un'architettura e dei numeri.
 - ViT-Base ha $85\,797\,120$ parametri senza LayerNorm finale né testa (la
   testa ne aggiunge $768 \cdot K + K$): il conto si rifà a mano e smaschera
   qualunque svista strutturale.
-- Riprodurre l'**architettura** è quasi sempre possibile; riprodurre i
+- Riprodurre l’**architettura** è quasi sempre possibile; riprodurre i
   **risultati** spesso no: dati non pubblici, iperparametri omessi, hardware
   diverso. Dirlo è parte del lavoro.
 ```

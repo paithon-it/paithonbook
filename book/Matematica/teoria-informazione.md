@@ -10,14 +10,12 @@ stessa oggettività con cui si misurano metri e chilogrammi. L'unità di misura
 collega John Tukey e che proprio in quell'articolo compare a stampa per la
 prima volta.
 
-Alla grandezza centrale della teoria Shannon diede il nome **entropia**, lo
-stesso della termodinamica. Si racconta (la fonte è lo stesso Shannon, in una
-conversazione riferita molti anni dopo, quindi va presa con la cautela che
-meritano gli aneddoti) che a suggerirglielo fu John von Neumann: "chiamala
-entropia: nessuno sa davvero cosa sia, e in ogni discussione partirai in
-vantaggio". Vera o abbellita che sia la battuta, il nome è rimasto. E ci
-riguarda da vicino: il punteggio d'errore con cui addestreremo quasi tutti i
-**classificatori** di questo libro (cioè i modelli che devono scegliere fra
+In quell'articolo la grandezza centrale della teoria prende il nome che ha
+ancora oggi, **entropia**, lo stesso della termodinamica: è il nome
+dell'aneddoto raccontato in apertura di capitolo, quello che von Neumann
+avrebbe suggerito a Shannon. Qui lo riempiamo di contenuto, perché ci riguarda
+da vicino: il punteggio d'errore con cui addestreremo quasi tutti
+i **classificatori** di questo libro (cioè i modelli che devono scegliere fra
 alternative: gatto o cane, spam o no) discende in linea diretta da
 quell'articolo del 1948, e si chiama *cross-entropy*.
 
@@ -75,7 +73,7 @@ sezione, dov'è la prima volta che serve davvero.)
 
 `````{tab} Superiore
 
-L'**autoinformazione** (o sorpresa) di un esito $x$ con probabilità $p(x)$ è
+L’**autoinformazione** (o sorpresa) di un esito $x$ con probabilità $p(x)$ è
 
 $$
 I(x) = -\log_2 p(x),
@@ -134,7 +132,7 @@ Una moneta con due teste ha entropia zero: nessuna sorpresa, mai.
 
 `````{tab} Superiore
 
-Per una distribuzione discreta $p=(p_1,\dots,p_n)$, l'**entropia** è il valore
+Per una distribuzione discreta $p=(p_1,\dots,p_n)$, l’**entropia** è il valore
 atteso dell'autoinformazione:
 
 $$
@@ -153,7 +151,7 @@ distribuzione uniforme. L'entropia è quindi una misura di *incertezza*: nulla
 quando l'esito è scritto, massima quando le $n$ alternative sono equiprobabili.
 
 Entrambe valgono nel **discreto**, ed è bene dirlo perché nel continuo la
-prima cade. L'analogo per una densità, l'*entropia differenziale*
+prima cade. L'analogo per una densità, l’*entropia differenziale*
 $h(f) = -\int f\log_2 f$, può essere negativo appena la densità si concentra:
 $h(\mathcal{N}(0,1)) = +2{,}05$ bit, ma $h(\mathcal{N}(0,\,0{,}1^2)) =
 -1{,}27$. La divergenza KL, invece, resta $\ge 0$ in entrambi i casi, ed è una
@@ -375,7 +373,7 @@ Chiudiamo con la conseguenza più concreta del lavoro di Shannon: l'entropia è
 un **limite alla compressione**. Comprimere un file, come fa un programma tipo
 `zip` o `gzip`, vuol dire riscriverlo più corto in modo da poterlo poi
 ricostruire identico. Shannon dimostrò che quel «più corto» ha un fondo:
-nessun programma, per quanto ingegnoso, può scendere sotto l'**entropia per
+nessun programma, per quanto ingegnoso, può scendere sotto l’**entropia per
 simbolo** del messaggio, cioè sotto la sorpresa media che ogni carattere porta
 con sé. In media, sotto quella soglia non si scende.
 
@@ -451,7 +449,7 @@ print(2**entropia(equa), 2**entropia(dado))   # 2.0  6.0
 - L'informazione è **sorpresa**: una notizia scontata (domani sorge il sole)
   non informa, una rara sì. Si misura in **bit**, e un bit è una domanda ben
   posta, con risposta sì o no.
-- L'**entropia** è la sorpresa media di una sorgente: 1 bit a lancio per la
+- L’**entropia** è la sorpresa media di una sorgente: 1 bit a lancio per la
   moneta equa, circa 0,47 per quella truccata che dà testa nove volte su dieci,
   circa 2,585 per il dado a sei facce. Massima quando tutti gli esiti sono
   ugualmente possibili, nulla quando l'esito è già deciso in partenza.
@@ -482,7 +480,7 @@ print(2**entropia(equa), 2**entropia(dado))   # 2.0  6.0
 :class: important
 - L'informazione è **sorpresa**: un esito di probabilità $p$ vale $-\log_2 p$
   bit; tanto più, quanto più è raro.
-- L'**entropia** $H(p)=-\sum_i p_i \log_2 p_i$ è la sorpresa media: 1 bit per
+- L’**entropia** $H(p)=-\sum_i p_i \log_2 p_i$ è la sorpresa media: 1 bit per
   la moneta equa, 0,47 per quella truccata, 2,585 per il dado. Massima
   sull'uniforme, nulla sul certo.
 - La **cross-entropia** $H(p,q)$ è il costo di usare il "codice" sbagliato; la
@@ -492,7 +490,7 @@ print(2**entropia(equa), 2**entropia(dado))   # 2.0  6.0
   modello = massima verosimiglianza: tre nomi per la stessa operazione.
 - La **perplessità** $2^{H}$ traduce l'entropia in "facce del dado": la
   ritroveremo nei modelli di linguaggio.
-- Il limite della compressione senza perdite è l'**entropia per simbolo**
+- Il limite della compressione senza perdite è l’**entropia per simbolo**
   (*entropy rate*) $\lim_n H(X_1,\dots,X_n)/n$, non la $H$ di ordine zero
   calcolata sulle frequenze marginali: per una sorgente con memoria la seconda
   sovrastima largamente, e un compressore generico la scavalca senza

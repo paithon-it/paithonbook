@@ -42,7 +42,7 @@ modello ha azzeccato (VP e VN) e, soprattutto, *in che modo* ha sbagliato
 (falso allarme o incendio mancato). Non è mai indifferente quale dei due.
 
 Da questi quattro numeri si ricava tutto il resto. Il primo e più ovvio è
-l'**accuratezza**: la quota di volte in cui il modello ha risposto giusto,
+l’**accuratezza**: la quota di volte in cui il modello ha risposto giusto,
 cioè i due casi buoni (VP e VN) divisi per il totale delle risposte. Cento
 allarmi, novantanove giusti: accuratezza del 99%. Tieni d'occhio questo numero,
 perché le prossime righe servono a diffidarne.
@@ -55,7 +55,7 @@ Per un problema binario con classe *positiva* e *negativa*, ogni predizione
 cade in una delle quattro celle: $\text{VP}$, $\text{FP}$, $\text{FN}$,
 $\text{VN}$ (con $m = \text{VP}+\text{FP}+\text{FN}+\text{VN}$ esempi totali).
 Da questi quattro numeri si ricava ogni metrica di classificazione. La prima,
-l'**accuratezza**, è semplicemente la frazione di predizioni corrette:
+l’**accuratezza**, è semplicemente la frazione di predizioni corrette:
 
 $$
 \text{accuratezza} = \frac{\text{VP}+\text{VN}}{\text{VP}+\text{FP}+\text{FN}+\text{VN}} .
@@ -223,7 +223,7 @@ preferisce pagare.
 
 La diagonale di {numref}`fig-curva-roc` è il termine di paragone che rende
 leggibile tutto il resto: è ciò che otterrebbe un modello che tira a
-indovinare. Più la curva sale verso l'angolo in alto a sinistra, meglio va, e l'**AUC** è il
+indovinare. Più la curva sale verso l'angolo in alto a sinistra, meglio va, e l’**AUC** è il
 modo di ridurre quello «stacco» a un numero solo: è l'area che resta sotto la
 curva. Il suo pregio è di riassumere *tutte* le soglie, senza che se ne debba
 fissare una.
@@ -241,7 +241,7 @@ tutte e due fra $0$ e $1$. Unendo i punti ottieni la **curva ROC**. Un modello
 che distingue bene le due classi disegna una curva che sale subito verso
 l'angolo in alto a sinistra; uno che tira a caso segue la diagonale.
 
-L'**AUC** è semplicemente l'area sotto quella curva. Siccome il grafico è un
+L’**AUC** è semplicemente l'area sotto quella curva. Siccome il grafico è un
 quadrato di lato $1$, l'area totale disponibile vale $1$, e la diagonale lo
 taglia esattamente a metà: ecco perché chi tira a caso prende $0{,}5$ e non
 $0$. È un voto unico fra $0$ e $1$, dove $1$ è la separazione perfetta e
@@ -262,7 +262,7 @@ $$
 \text{FPR} = \frac{\text{FP}}{\text{FP}+\text{VN}} .
 $$
 
-L'**AUC** (*Area Under the Curve*) è l'area sottesa, in $[0,1]$. Ha una lettura
+L’**AUC** (*Area Under the Curve*) è l'area sottesa, in $[0,1]$. Ha una lettura
 probabilistica elegante: è la probabilità che il modello assegni a un positivo
 scelto a caso uno score più alto che a un negativo scelto a caso, **contando
 mezzo punto quando i due score coincidono**:
@@ -337,14 +337,14 @@ volte tanto cambia quel conteggio, e quindi cambia direttamente cosa al modello
 conviene fare. In scikit-learn è
 `class_weight="balanced"`, ed è spesso la prima cosa da provare.
 
-Solo come quarta mossa si interviene sui **dati**. L'*oversampling* aumenta il
+Solo come quarta mossa si interviene sui **dati**. L’*oversampling* aumenta il
 numero di
 esempi rari: o duplicandoli, o inventandone di nuovi ma verosimili. La ricetta
 più nota si chiama **SMOTE** (è il nome di un metodo, non di un programma): per
 fabbricare un nuovo caso raro prende due casi rari che si somigliano e ne
 costruisce uno a metà strada, come se fra due pazienti di 40 e 50 anni si
 inventasse un paziente di 45 con tutti i valori a metà (si dice *interpolare*).
-L'*undersampling* fa il contrario: scarta esempi della classe frequente, e così
+L’*undersampling* fa il contrario: scarta esempi della classe frequente, e così
 butta via informazione.
 
 `````
@@ -435,7 +435,7 @@ radice serve a rimettere il numero nell'unità di
 partenza, perché senza di lei avremmo euro al quadrato. Ecco perché MAE e RMSE
 si leggono entrambi in euro.
 
-L'**R²** invece è un voto, e si legge «erre quadro». Vale $1$ se la
+L’**R²** invece è un voto, e si legge «erre quadro». Vale $1$ se la
 previsione è perfetta e $0$ se il modello non fa meglio di chi risponde sempre
 la media di tutti i valori; e sì, può anche scendere **sotto zero**, se fa
 peggio di così. Un esempio: se rispondendo sempre la media si sbaglia in media
@@ -482,7 +482,7 @@ sono categorie, ma **in fila**.
 
 `````{tab} Elementare
 
-Nella sezione sull'apprendimento supervisionato l'**ordinalità** era comparsa
+Nella sezione sull'apprendimento supervisionato l’**ordinalità** era comparsa
 come proprietà di una colonna *in ingresso*: la classe energetica di una casa,
 i cui valori stanno in fila ma senza una distanza fra loro. Qui è la cosa da
 **predire** a essere ordinata, e cambia quale errore conta.
@@ -617,7 +617,7 @@ print("R2 :", r2_score(y_test_reg, y_pred_reg))
 - Tutto parte dal contare i **quattro esiti** del rilevatore di fumo: allarme
   giusto, falso allarme, incendio mancato, silenzio giusto. Da quei quattro
   numeri si ricava ogni altra misura.
-- La percentuale di risposte giuste (l'**accuratezza**) **inganna** quando una
+- La percentuale di risposte giuste (l’**accuratezza**) **inganna** quando una
   risposta è molto più frequente dell'altra: la guardia che dorme sempre prende
   99 su 100 e non ha mai fermato un ladro.
 - Due domande diverse: *quando dice sì, quanto spesso ci azzecca?* (la
@@ -626,12 +626,12 @@ print("R2 :", r2_score(y_test_reg, y_pred_reg))
   entrambe. Nello screening medico conta di più trovarli tutti, nell'antispam
   conta di più non cestinare un'email buona.
 - Spostando la soglia si cambia il compromesso senza riaddestrare niente; la
-  **curva ROC** li mostra tutti insieme e l'area sotto di essa (l'**AUC**) è un
+  **curva ROC** li mostra tutti insieme e l'area sotto di essa (l’**AUC**) è un
   voto fra $0$ e $1$: $1$ è perfetto, $0{,}5$ è quanto prende chi tira a caso,
   e sotto quel valore il modello sta scambiando le due classi.
 - Se la risposta è un numero: **MAE** e **RMSE** dicono di quanto sbagliamo,
   nella stessa unità del target (euro, gradi), e l'RMSE è più severo con i
-  grandi svarioni; l'**R²** dice quanto siamo meglio di chi risponde sempre la
+  grandi svarioni; l’**R²** dice quanto siamo meglio di chi risponde sempre la
   media.
 - La metrica si sceglie **prima** di addestrare, guardando quale dei due errori
   costa di più. È il modo in cui diciamo al modello che cosa significa
@@ -648,7 +648,7 @@ print("R2 :", r2_score(y_test_reg, y_pred_reg))
   nasce ogni metrica di classificazione. L'orientamento non è universale:
   `scikit-learn` usa verità in riga, predizione in colonna, classe $0$ per
   prima.
-- L'**accuratezza inganna** con classi sbilanciate: premia chi predice sempre la
+- L’**accuratezza inganna** con classi sbilanciate: premia chi predice sempre la
   classe maggioritaria.
 - **Precision** (pochi falsi allarmi) vs **recall** (pochi casi mancati): la
   $F_1$ le riassume. Privilegia la recall nello screening medico, la precision

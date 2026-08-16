@@ -202,7 +202,7 @@ finestra di chi parla contiene 18.000 token di conversazione già avvenuta, e
 l'informazione decisiva (una decisione presa al decimo turno, un vincolo
 enunciato al terzo) sta sepolta lì in mezzo. È la posizione peggiore: misurando
 dove finiscono le informazioni che un modello effettivamente usa, si scopre che
-quelle in cima e quelle in fondo pesano molto più di quelle nel mezzo, un po'
+quelle in cima e quelle in fondo pesano molto più di quelle nel mezzo, un po’
 come succede a chi impara una poesia e si ricorda benissimo la prima strofa e
 l'ultima. Il capitolo sugli **Agenti**, parlando di come si riempie quella
 finestra, chiama il difetto con il suo nome inglese, *lost in the middle*,
@@ -306,7 +306,7 @@ ginocchio si sposta ancora più a sinistra.
 La conseguenza pratica è una sola: si aggiungono agenti finché il pezzo
 divisibile lo giustifica, e poi si smette. La domanda da farsi non è «un altro
 agente aiuterebbe?» (la risposta è quasi sempre sì, di pochissimo) ma «quanto
-vale l'*ultimo* agente aggiunto, rispetto a quello che costa?».
+vale l’*ultimo* agente aggiunto, rispetto a quello che costa?».
 
 Sul rapporto in dieci ore la risposta si legge senza calcoli. Passare da quattro
 persone a otto accorcia il lavoro di meno di un'ora, cioè compra mezza volta
@@ -412,7 +412,7 @@ intercettato viene rifatto, e rifatto bene. È l'ipotesi giusta nella pratica,
 perché la distinzione che conta è fra il fallimento **silenzioso**, che si
 propaga travestito da dato di partenza, e quello **segnalato**, che è
 recuperabile. Con $p = 0{,}95$ e un verificatore che ne pesca
-l'$80\%$ si ottiene $p' = 0{,}99$, e su venti passi
+l’$80\%$ si ottiene $p' = 0{,}99$, e su venti passi
 $0{,}99^{20} = 0{,}818$ invece di $0{,}358$: da due catene su tre che
 falliscono a una su cinque, cambiando **non il modello ma il ponteggio**.
 
@@ -506,7 +506,7 @@ fondo con probabilità $P(E)\,P(M \mid E)$. Poniamo $P(E) = 0{,}05$ e, per
 fissare le idee, un autocontrollo che si accorge del proprio errore una volta su
 dieci ($P(M \mid E) \approx 0{,}9$): lascia passare il $4{,}5\%$. Un critico con
 contesto pulito e criteri propri scende a $P(M \mid E) \approx 0{,}3$ e lascia
-passare l'$1{,}5\%$, tre volte meglio a parità di modello. Le due cifre sono
+passare l’$1{,}5\%$, tre volte meglio a parità di modello. Le due cifre sono
 plausibili, non misurate; quello che conta è il verso della disuguaglianza, che
 non dipende da quanto valgono esattamente. Tutto il valore del secondo agente
 sta in quel condizionamento, e sparisce se gli si passa la trascrizione del
@@ -674,7 +674,7 @@ solista non chiudeva.
   scrivere, si rilegge tutto dall'inizio) a ogni raddoppio degli interventi le
   righe da leggere si quadruplicano, perché ogni messaggio nuovo dovrà essere
   riletto da tutti quelli che parleranno dopo. Sul conto vero, che comprende
-  anche le istruzioni di partenza, la crescita è un po' più mite ma resta
+  anche le istruzioni di partenza, la crescita è un po’ più mite ma resta
   spaventosa: quattro agenti per otto giri leggono 328.000 token contro i 34.000
   di un solista, cioè **quasi dieci volte**, non quattro.
 - La parte di lavoro che **non si può dividere** mette un tetto (è la **legge di
@@ -727,7 +727,7 @@ solista non chiudeva.
   penale di coordinamento la curva torna giù dopo $N^{*}=\sqrt{(1-s)/\kappa}$.
 - Gli errori si **compongono**: $n$ passi corretti con probabilità $p$ danno
   $p^n$. Con $p = 0{,}95$, dieci passi danno $0{,}60$ e venti $0{,}36$. Un
-  **validation gate** che intercetta l'$80\%$ degli errori (e fa rifare il
+  **validation gate** che intercetta l’$80\%$ degli errori (e fa rifare il
   passo intercettato) porta $p'$ a $0{,}99$ e i venti passi a $0{,}82$: la
   verifica non è un lusso, è ciò che spezza la catena moltiplicativa.
 - Si guadagna davvero in **tre casi soli**: il compito si decompone in parti

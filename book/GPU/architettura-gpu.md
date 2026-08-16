@@ -44,7 +44,7 @@ pacco, sfreccia, lo consegna, torna indietro, ne prende un altro. Se hai *un*
 pacco urgente, la lepre è imbattibile. Ma se ne hai diecimila, quella corsa
 avanti e indietro non basta più. Il formicaio funziona all'opposto: ogni
 formica è lenta, ma sono migliaia e partono tutte insieme. Il primo pacco
-arriverà un po' più tardi che con la lepre (nessuna formica è veloce) ma nello
+arriverà un po’ più tardi che con la lepre (nessuna formica è veloce) ma nello
 stesso tempo ne arrivano diecimila. La lepre ha la **latenza** più bassa (il
 singolo pacco arriva prestissimo), il formicaio il **throughput** più alto
 (nella giornata ne arrivano molti di più): sono le due parole del paragrafo
@@ -159,7 +159,7 @@ Pensa a un grande censimento da svolgere in una città. Il **thread** è il
 singolo rilevatore, che si occupa di *una* casa. Per non impazzire, i
 rilevatori si organizzano in **squadre** (i «blocchi»): quelli di una squadra
 lavorano nello stesso quartiere, si passano informazioni e si coordinano tra
-loro. Tutte le squadre insieme formano l'**operazione cittadina** (la
+loro. Tutte le squadre insieme formano l’**operazione cittadina** (la
 «griglia»), che copre l'intera città. Il capo del censimento non dà ordini a
 ogni singolo rilevatore: dice «voglio una griglia di 100 squadre da 256
 rilevatori l'una», e lascia che l'organizzazione si dispieghi da sola. C'è poi
@@ -381,7 +381,7 @@ con pochi warp che leggono largo.
 
 `````
 
-Abbiamo così il quadro dell'*esecuzione*: una GPU è una federazione di SM,
+Abbiamo così il quadro dell’*esecuzione*: una GPU è una federazione di SM,
 ogni SM macina warp da 32 thread in stile SIMT, e nasconde le attese tenendo
 in volo tanti warp insieme. Ma quelle attese (l'abbiamo nominate a ogni passo)
 di cosa sono attese? Di **dati che arrivano dalla memoria**. È qui il vero
@@ -446,7 +446,7 @@ prossima sezione.
   program counter unico; **da Volta** ogni thread ha PC e stack propri
   (*independent thread scheduling*), il costo della divergenza resta ma i
   thread di un warp possono sincronizzarsi fra loro.
-- La GPU nasconde la latenza della memoria con l'**occupancy**: tanti warp
+- La GPU nasconde la latenza della memoria con l’**occupancy**: tanti warp
   residenti, così che mentre uno aspetta un altro lavora. Il cambio di warp è a
   costo zero perché i registri restano tutti allocati. Ciò che va davvero
   tenuto alto sono gli **accessi in volo** (banda × latenza): tanti warp, o

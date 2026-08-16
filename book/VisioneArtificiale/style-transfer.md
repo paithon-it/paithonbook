@@ -4,7 +4,7 @@ Nell'estate del 2015 tre ricercatori dell'Università di Tubinga (Leon Gatys,
 Alexander Ecker e Matthias Bethge) misero online una manciata di immagini
 destinate a fare il giro del mondo: la Neckarfront, la fila di case sul fiume
 che è la cartolina della loro città, ridipinta nello stile della *Notte
-stellata* di van Gogh, dell'*Urlo* di Munch, di una composizione di Kandinsky
+stellata* di van Gogh, dell’*Urlo* di Munch, di una composizione di Kandinsky
 {cite}`gatys2016image`. Nessun pittore e nessun filtro fotografico: solo una
 rete convoluzionale e la solita correzione a piccoli passi. Il metodo aveva un
 difetto
@@ -69,7 +69,7 @@ $$
 \hat{\theta} = \arg\min_{\theta} \; \mathcal{L}(\theta;\, \mathbf{X}) ;
 $$
 
-qui cerchiamo l'**immagine** migliore a parametri fissati:
+qui cerchiamo l’**immagine** migliore a parametri fissati:
 
 $$
 \hat{\mathbf{X}} = \arg\min_{\mathbf{X}} \; \mathcal{L}(\mathbf{X};\, \theta),
@@ -308,7 +308,7 @@ originale di Gatys.
 
 **Da dove si parte.** Qui si parte dalla foto, mentre nell'articolo si partiva
 dai puntini a caso. Partire dalla foto fa arrivare al risultato in meno passi e
-piega un po' l'esito verso la struttura della foto, ma non lo rende «più
+piega un po’ l'esito verso la struttura della foto, ma non lo rende «più
 fedele» in generale: gli autori osservano che il punto di partenza incide poco
 sull'esito finale. Quello a cui si rinuncia è la varietà, perché da una
 partenza sempre uguale esce sempre la stessa immagine, mentre dai puntini a

@@ -64,16 +64,18 @@ I due livelli si alternano nello stesso capitolo: si può leggere tutto all'Elem
 | 21 | **Speech Recognition** | Dalla voce al testo: allineamento e CTC, modelli con attenzione, Whisper, sintesi vocale (TTS) |
 | 22 | **Generative Adversarial Network** | Il gioco avversario, applicazioni ed evoluzioni |
 | 23 | **Modelli di Diffusione** | Da DDPM a Stable Diffusion e ai Diffusion Transformer (DiT, Sora) |
-| 24 | **Modelli a energia** | Il paesaggio invece della probabilità: memoria associativa di Hopfield, macchine di Boltzmann e contrastive divergence, i modi di aggirare la funzione di partizione (Langevin, score matching, NCE), la cornice di LeCun, EBM di oggi (IGEBM, JEM) |
-| 25 | **World Model** | Simulatori interni: Ha & Schmidhuber, Dreamer, la via di LeCun (JEPA), simulatori video e dibattito |
-| 26 | **Graph Neural Network** | Dati relazionali e message passing: GCN, GraphSAGE, GAT; node embedding, applicazioni (molecole, raccomandazione, frodi, traffico) e limiti (oversmoothing) |
-| 27 | **Sistemi di Raccomandazione** | Dal Netflix Prize alla matrix factorization e alla raccomandazione neurale |
-| 28 | **Serie temporali** | Prevedere dal passato: decomposizione, ARIMA e Holt-Winters, validazione temporale e metriche (MASE, pinball loss), forecasting neurale (TCN, DeepAR, N-BEATS, Transformer, foundation model) |
-| 29 | **Physics-Informed Neural Networks** | Le equazioni differenziali dentro la loss; operatori neurali |
-| 30 | **MLOps** | Dal notebook alla produzione: versionamento, pipeline di dati, serving e quantizzazione, metriche di servizio (TTFT, TPOT, goodput), monitoraggio del drift, LLMOps e deploy |
-| 31 | **Interpretabilità e XAI** | Aprire la scatola nera: modelli trasparenti, importanza delle feature, LIME/SHAP/controfattuali, Grad-CAM e integrated gradients, interpretabilità meccanicistica |
-| 32 | **AI responsabile** | Equità e bias, privacy (differential privacy, federated learning) e robustezza agli attacchi avversari, sicurezza degli LLM (prompt injection, jailbreak, red teaming), allineamento (RLHF/DPO) e governance (l'AI Act europeo) |
-| 33 | **Conclusioni** | Bilancio e letture per proseguire |
+| 24 | **Verosimiglianza esatta** | I modelli che sanno dire quanto è probabile un dato: autoregressivi sulle immagini (PixelCNN, maschere e punto cieco), flussi normalizzanti (cambio di variabile, RealNVP, GLOW), a che serve la verosimiglianza e dove sbaglia |
+| 25 | **Modelli a energia** | Il paesaggio invece della probabilità: memoria associativa di Hopfield, macchine di Boltzmann e contrastive divergence, i modi di aggirare la funzione di partizione (Langevin, score matching, NCE), la cornice di LeCun, EBM di oggi (IGEBM, JEM) |
+| 26 | **Auto-supervisione** | Il segnale fabbricato dai dati: la banda informativa e la torta di LeCun, le quattro famiglie (contrastiva, distillazione, riduzione di ridondanza con Barlow Twins e VICReg, mascheramento), collasso e misura, il dibattito sul rinforzo |
+| 27 | **World Model** | Simulatori interni: Ha & Schmidhuber, Dreamer, la via di LeCun (JEPA), simulatori video e dibattito |
+| 28 | **Graph Neural Network** | Dati relazionali e message passing: GCN, GraphSAGE, GAT; node embedding, applicazioni (molecole, raccomandazione, frodi, traffico) e limiti (oversmoothing) |
+| 29 | **Sistemi di Raccomandazione** | Dal Netflix Prize alla matrix factorization e alla raccomandazione neurale |
+| 30 | **Serie temporali** | Prevedere dal passato: decomposizione, ARIMA e Holt-Winters, validazione temporale e metriche (MASE, pinball loss), forecasting neurale (TCN, DeepAR, N-BEATS, Transformer, foundation model) |
+| 31 | **Physics-Informed Neural Networks** | Le equazioni differenziali dentro la loss; operatori neurali |
+| 32 | **MLOps** | Dal notebook alla produzione: versionamento, pipeline di dati, serving e quantizzazione, metriche di servizio (TTFT, TPOT, goodput), monitoraggio del drift, LLMOps e deploy |
+| 33 | **Interpretabilità e XAI** | Aprire la scatola nera: modelli trasparenti, importanza delle feature, LIME/SHAP/controfattuali, Grad-CAM e integrated gradients, interpretabilità meccanicistica |
+| 34 | **AI responsabile** | Equità e bias, privacy (differential privacy, federated learning) e robustezza agli attacchi avversari, sicurezza degli LLM (prompt injection, jailbreak, red teaming), allineamento (RLHF/DPO) e governance (l'AI Act europeo) |
+| 35 | **Conclusioni** | Bilancio e letture per proseguire |
 
 Il framework di riferimento per tutto il codice è **PyTorch** (con NumPy e
 scikit-learn dove appropriato). Due capitoli (Introduzione e Attenzione

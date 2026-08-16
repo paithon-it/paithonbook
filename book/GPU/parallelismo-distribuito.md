@@ -23,7 +23,7 @@ Ma addestrare è un'altra faccenda, perché durante l'addestramento in memoria
 non ci sono solo i pesi. C'è anche la contabilità di chi guida l'apprendimento,
 cioè di chi a ogni passo decide di quanto spostare ciascun peso: quel «chi» si
 chiama **ottimizzatore**, e il più usato, **Adam** {cite}`kingma2015adam`, non
-guarda soltanto la correzione del momento, si tiene anche un po' di memoria di
+guarda soltanto la correzione del momento, si tiene anche un po’ di memoria di
 come quel peso si è mosso di recente (il capitolo sul deep learning gli dedica
 una sezione). Quella memoria va conservata numero per numero, per tutta la
 durata dell'addestramento. L'inventario completo, per **ogni** parametro, è
@@ -165,7 +165,7 @@ già ricordato nella sezione «Prestazioni e scala», in
 al calcolo e sparisca dietro di esso.
 
 Il limite è strutturale, non implementativo: ogni replica deve contenere
-l'**intero** modello, più i suoi gradienti, più gli stati dell'ottimizzatore.
+l’**intero** modello, più i suoi gradienti, più gli stati dell'ottimizzatore.
 Se questo pacchetto non entra nella memoria di una singola GPU, il
 parallelismo dati (per quanto ben implementato), non serve a nulla. Da qui le
 strategie che seguono, che invece di replicare **spezzano**.
@@ -337,7 +337,7 @@ testa è uno spreco enorme di zaini. L'alternativa: se gli insegnanti sono otto,
 si strappa il tomo in otto fascicoli e ognuno ne porta uno solo. Quando arriva
 la domanda la cui regola sta a pagina 700, l'insegnante che non ce l'ha la
 chiede al collega che tiene quel fascicolo, se la fa fotocopiare *giusto per
-quella correzione*, e appena finito butta la fotocopia. Un po' più di viavai tra
+quella correzione*, e appena finito butta la fotocopia. Un po’ più di viavai tra
 colleghi, in cambio di zaini otto volte più leggeri. È così che modelli enormi
 riescono a girare su GPU «normali»: nessuna scheda tiene mai il modello intero,
 solo la sua fetta, radunando i pezzi che servono un attimo prima di usarli e
@@ -432,7 +432,7 @@ scheda (le prime mille parole a una, le seconde mille a un'altra), per
 alleggerire la memoria che si mangiano le **attivazioni**, cioè i risultati
 intermedi che ogni strato produce e che vanno conservati fino al passaggio
 all'indietro, quello in cui il modello impara dai propri errori.
-L'**expert parallelism** riguarda i modelli *Mixture of Experts*, quelli in cui
+L’**expert parallelism** riguarda i modelli *Mixture of Experts*, quelli in cui
 il modello non è uno solo ma un mazzo di modelli specializzati fra cui un
 selettore smista ogni parola in arrivo: lì si mettono esperti diversi su schede
 diverse.

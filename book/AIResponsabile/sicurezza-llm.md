@@ -340,7 +340,7 @@ siamo al sicuro»: si può solo dire quanto è difficile, mai che è impossibile
 
 `````{tab} Superiore
 
-È l'**apprendimento in contesto**, il meccanismo che il capitolo sui Transformer
+È l’**apprendimento in contesto**, il meccanismo che il capitolo sui Transformer
 ha descritto come base del *few-shot*: qualche esempio dentro il prompt orienta
 il comportamento senza toccare i pesi. Cem Anil e colleghi
 {cite}`anil2024manyshot` hanno osservato che, con le finestre di contesto lunghe
@@ -637,7 +637,7 @@ invece di impastare tutto in un'unica finestra. In pratica, far elaborare i
 contenuti non fidati a una chiamata dedicata, con permessi propri e senza
 accesso ai dati riservati, e restituire al ciclo principale non il testo
 originale ma un risultato **tipizzato**, cioè costretto in campi previsti in
-anticipo invece che in prosa libera: è l'**output strutturato** del capitolo
+anticipo invece che in prosa libera: è l’**output strutturato** del capitolo
 sull'ingegneria degli LLM. La garanzia però continua a venire dai permessi di
 quella chiamata, non dall'isolamento in sé: una chiamata isolata ma potente
 legge testo ostile e restituisce campi ostili. Non è il canale separato della
@@ -774,7 +774,7 @@ può rendere bravo; il confine bisogna costruirlo altrove.
   **generalizzazione discordante** {cite}`wei2023jailbroken`, e la stessa
   finestra lunga che serve a imparare in contesto è una superficie
   {cite}`anil2024manyshot`.
-- L'**iniezione indiretta** {cite}`greshake2023not` diventa **azione** quando
+- L’**iniezione indiretta** {cite}`greshake2023not` diventa **azione** quando
   l'agente ha strumenti: la combinazione pericolosa è dati riservati +
   contenuti non fidati + un canale verso l'esterno. Tutte e tre insieme,
   l'esfiltrazione è possibile senza rompere nulla.
@@ -782,7 +782,7 @@ può rendere bravo; il confine bisogna costruirlo altrove.
   confine), **classificatori** a monte e a valle (difesa in profondità, al
   prezzo di latenza e falsi positivi), **confini di privilegio** (il modello
   propone, un componente deterministico decide: l'unica che cambia la classe
-  del problema), e l'**isolamento del contesto**, che non è un gradino sopra ma
+  del problema), e l’**isolamento del contesto**, che non è un gradino sopra ma
   il modo di realizzare la precedente quando il testo non fidato va letto.
 - Il **red teaming** va reso ripetibile, manuale per scoprire e automatizzato
   {cite}`perez2022red` per non regredire; ma trova ciò che cerca, e l'assenza

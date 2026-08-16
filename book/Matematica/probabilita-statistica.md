@@ -89,11 +89,11 @@ tutti e due, perché nel resto del libro compaiono entrambi.
 
 La stessa variabile, due modi di guardarla. A sinistra la **densità** appena
 descritta, che disegna quali valori escono spesso e quali di rado: lì la
-probabilità è l'*area* sotto la curva, e infatti la zona colorata è il cinque
+probabilità è l’*area* sotto la curva, e infatti la zona colorata è il cinque
 per cento dei casi che cadono oltre il valore segnato. A destra una seconda
 curva, che per ogni valore risponde alla domanda «quanta parte dei casi sta
 sotto questo numero?» e perciò sale da $0$ a $1$: lì la stessa probabilità è
-l'*altezza* della curva, cioè un punto da leggere invece di un'area da
+l’*altezza* della curva, cioè un punto da leggere invece di un'area da
 calcolare. Il nome tecnico della seconda è **funzione di ripartizione**. (Le
 due sigle in cima ai grafici sono le abbreviazioni inglesi con cui si trovano
 ovunque: *PDF* per la densità, *CDF* per la ripartizione.)
@@ -294,7 +294,7 @@ $\sup_z |F_n(z)-\Phi(z)| \le C\,\rho_3 / (\sigma^3\sqrt{n})$ con $\rho_3 =
 \mathbb{E}|X-\mu|^3$: la distanza cala come $1/\sqrt{n}$, e davanti c'è un
 momento terzo **assoluto**, che non sa distinguere una coda lunga da un lato
 sola da due code lunghe simmetriche. A separarle è lo sviluppo di Edgeworth, il
-cui primo termine correttivo è proporzionale all'**asimmetria** e si annulla
+cui primo termine correttivo è proporzionale all’**asimmetria** e si annulla
 quando la distribuzione di partenza è simmetrica: è quella, e non la
 "stranezza" percepita, a governare la velocità. Misurato con la statistica di
 Kolmogorov–Smirnov sulla somma standardizzata: partendo da un dado uniforme
@@ -503,8 +503,8 @@ $n$ conta molto meno di quanto dica il conteggio delle righe.
 
 ## Quanto fidarsi di una stima: gli intervalli di confidenza
 
-Un modello nuovo raggiunge l'$87{,}2\%$ di accuratezza sul test set, il vecchio
-si fermava all'$86{,}8\%$. Il team festeggia. Ma se il test set ha $500$
+Un modello nuovo raggiunge l’$87{,}2\%$ di accuratezza sul test set, il vecchio
+si fermava all’$86{,}8\%$. Il team festeggia. Ma se il test set ha $500$
 esempi, quattro decimi di punto sono **due risposte esatte in più**. Due.
 
 ```{figure} ../figures/intervalli-di-confidenza.svg
@@ -536,9 +536,9 @@ candidato A è al $47{,}2\%$" senza il margine d'errore: con mille intervistati
 quel numero significa "da qualche parte fra il $44\%$ e il $50\%$". Valutare un
 modello su $500$ esempi è come sondare $500$ elettori.
 
-Con $500$ esempi e un'accuratezza dell'$87\%$, il margine al $95\%$ è di circa
-**$\pm 3$ punti**: la stima onesta è "fra l'$84\%$ e il $90\%$". Il modello
-vecchio sta fra l'$83{,}8\%$ e l'$89{,}8\%$. I due intervalli si sovrappongono
+Con $500$ esempi e un'accuratezza dell’$87\%$, il margine al $95\%$ è di circa
+**$\pm 3$ punti**: la stima onesta è "fra l’$84\%$ e il $90\%$". Il modello
+vecchio sta fra l’$83{,}8\%$ e l’$89{,}8\%$. I due intervalli si sovrappongono
 quasi per intero: quel miglioramento non è distinguibile dal **rumore**, che è
 il nome che si dà alla parte di un risultato dovuta al caso e non al merito
 (niente a che vedere con i suoni: è un'immagine presa dalle
@@ -551,7 +551,7 @@ percentuali è circa $100/\sqrt{n}$, e con $n=500$ fa circa $4{,}5$ punti
 ha anche meno modo di variare (chi sbaglia raramente non può sbagliare in tanti
 modi diversi), quindi quel margine va ridotto, e di quanto lo dice un fattore
 che dipende solo dall'accuratezza. Vale $1$ al $50\%$, cioè non riduce niente;
-vale circa $0{,}8$ all'$80\%$, circa due terzi all'$87\%$, circa la metà al
+vale circa $0{,}8$ all’$80\%$, circa due terzi all’$87\%$, circa la metà al
 $93\%$. Ecco i tre punti: $4{,}5$ moltiplicato per due terzi fa $3$.
 
 Anche il «$95\%$» ha un significato preciso:
@@ -761,7 +761,7 @@ avanti, e non serve andarlo a cercare adesso.
 
 ## Dalla probabilità all'apprendimento
 
-Resta un'ultima domanda: cosa c'entra tutto questo con l'*addestrare* un modello?
+Resta un'ultima domanda: cosa c'entra tutto questo con l’*addestrare* un modello?
 Il ponte si chiama **massima verosimiglianza** (*maximum likelihood estimation*,
 MLE).
 

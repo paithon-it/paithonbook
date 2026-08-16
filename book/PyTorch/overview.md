@@ -188,7 +188,7 @@ Due movimenti, dal mattone al mestiere.
 Il primo mette in mano gli attrezzi, e sono tre. I **tensori**, le scatole di
 numeri su cui tutto si appoggia, insieme al meccanismo che calcola le derivate
 da solo. I **moduli**, cioè come si mette insieme un modello pezzo per pezzo, e
-come si misura quanto sbaglia. L'**addestramento**, cioè il giro di cinque
+come si misura quanto sbaglia. L’**addestramento**, cioè il giro di cinque
 mosse che in PyTorch si scrive a mano invece di chiederlo a un comando, e che
 qui si vede all'opera su un problema vero: leggere cifre scritte a mano.
 

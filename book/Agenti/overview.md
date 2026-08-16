@@ -1,45 +1,59 @@
 # Agenti: quando i modelli linguistici agiscono
 
-Abbiamo lasciato il modello di linguaggio così: gli scrivi una domanda, lui
-completa il testo con la risposta più probabile. Utile, ma passivo: un oracolo
-che parla da dietro un vetro, e sa *dire* senza poter *fare*. Se gli chiedi
-che tempo farà domani a Roma non ne ha idea, perché quel dato non esisteva nei
-mesi in cui ha studiato (in gergo si dice che è stato **addestrato**: gli si è
-fatta leggere una montagna di testo finché non ha imparato a proseguirlo). Può
-inventare la risposta, con la stessa sicurezza con cui ne direbbe una vera, ma
-non può *guardare* il meteo.
+Fra rispondere bene a una domanda e portare a termine un lavoro c'è un salto, e
+qualcuno ha provato a misurarlo con una gara di riparazioni. La gara prende
+2.294 segnalazioni di errore vere, di quelle che gli utenti scrivono agli autori
+di un programma quando qualcosa non funziona, e le usa come compiti d'esame: al
+sistema si dà la segnalazione insieme al codice del progetto, e deve produrre la
+correzione. Si chiama **SWE-bench** {cite}`jimenez2024swebench`.
 
-Poi, tra il 2023 e il 2024, qualcosa cambia registro. Compaiono sistemi che
-non si limitano a rispondere: cercano sul web una notizia di ieri, eseguono un
-pezzo di codice per controllare se gira, compilano un modulo, prenotano,
-propongono una correzione a un programma vero.
+A dire se ha funzionato non c'è una persona, ma i **test** del progetto: pezzi
+di programma che gli sviluppatori scrivono apposta per controllare il proprio
+lavoro, e che a ogni modifica rispondono «a posto» oppure «rotto». Sono gli
+stessi test che avevano approvato la correzione scritta, a suo tempo, da uno
+sviluppatore in carne e ossa. È un compito che nessun completamento di testo,
+per quanto fluente, chiude in un colpo solo: bisogna trovare i file giusti,
+provare, sbagliare, rileggere il messaggio d'errore, correggere. I primi
+sistemi ci riuscivano in una **piccola frazione** dei casi, pochi punti
+percentuali. Un numero così basso non è una delusione, è la notizia: è la prima
+misura pubblica di quanto costi tenere insieme molte mosse di fila.
+Sull'affidabilità di quella misura, però, l'ultima sezione avrà qualcosa da
+ridire, e non è un dettaglio: si scoprirà che una parte di quei pochi successi
+non era stata guadagnata sul campo.
 
-L'esempio più spietato di questo salto è una gara che si chiama **SWE-bench**
-{cite}`jimenez2024swebench`. Prende 2.294 segnalazioni di errore vere, di
-quelle che gli utenti scrivono agli autori di un programma quando qualcosa non
-funziona, e le usa come compiti d'esame. Al sistema si dà la segnalazione e il
-codice del progetto; deve produrre la correzione. A dire se ha funzionato non
-c'è una persona, ma i **test** del progetto: pezzi di programma che gli
-sviluppatori scrivono apposta per controllare il proprio lavoro, e che a ogni
-modifica rispondono «a posto» oppure «rotto». Sono gli stessi test che avevano
-approvato la correzione scritta, a suo tempo, da uno sviluppatore in carne e
-ossa.
+Quel salto, però, non è il salto fra dire e fare. Il capitolo su visione e
+linguaggio si è appena chiuso su un modello che *fa*: se si tagliano i comandi
+di un braccio robotico in gradini, muovere la mano diventa scrivere sette parole
+di fila, e la stessa macchina che compone frasi compone movimenti. Quel modello
+nel mondo ci mette le mani sul serio. Quello che non fa è decidere: l'obiettivo
+glielo consegna qualcun altro («prendi la tazza»), e la mossa la sceglie
+guardando soltanto la fotografia di adesso e l'istruzione ricevuta. Da un
+comando al successivo non si porta dietro il ricordo di che cosa ha già provato.
 
-È un compito che nessun completamento di testo, per quanto fluente, chiude in
-un colpo solo: bisogna trovare i file giusti, provare, sbagliare, rileggere il
-messaggio d'errore, correggere. I primi sistemi ci riuscivano in una **piccola
-frazione** dei casi, pochi punti percentuali. Un numero così basso non è una
-delusione, è la notizia: è la prima misura pubblica di quanto sia largo il
-fosso fra dire e fare. Sull'affidabilità di quella misura, però, l'ultima
-sezione avrà qualcosa da ridire, e non è un dettaglio: si scoprirà che una
-parte di quei pochi successi non era stata guadagnata sul campo.
+È lì che si apre lo spazio di questo capitolo. La domanda non è se un modello
+possa agire, ma chi decide **quando** agire e con quale strumento, chi sceglie
+la **sequenza** delle mosse, e chi tiene il conto di **quello che è già
+successo** mentre il lavoro va avanti.
+
+Un esempio piccolo lo dice meglio di una definizione. Se chiedi a un modello che
+tempo farà domani a Roma non ne ha idea, perché quel dato non esisteva nei mesi
+in cui ha studiato (in gergo si dice che è stato **addestrato**: gli si è fatta
+leggere una montagna di testo finché non ha imparato a proseguirlo). Può
+inventare la risposta, con la stessa sicurezza con cui ne direbbe una vera,
+oppure fermarsi a metà, andare a *guardare* il meteo e riprendere da lì. La
+seconda strada non è più fluenza: è una decisione presa nel mezzo di una frase.
+
+Fra il 2023 e il 2024 compaiono i sistemi che quella decisione la prendono di
+continuo: cercano sul web una notizia di ieri, eseguono un pezzo di codice per
+controllare se gira, compilano un modulo, prenotano, propongono una correzione a
+un programma vero. È il mondo di SWE-bench, ed è il mondo di questo capitolo.
 
 Prima di andare avanti, mettiamo un paletto che vale per tutto il capitolo. Un
 **modello** è la rete che, dato un testo, ne predice la continuazione: quello
 che abbiamo studiato nel capitolo sui Transformer. Un **agente** è un
 *sistema* costruito attorno a un modello: un programma che guarda l'ambiente,
 lascia che il modello decida la mossa successiva, la esegue davvero, osserva
-com'è andata e ricomincia. L'**ambiente** è tutto ciò su cui l'agente può
+com'è andata e ricomincia. L’**ambiente** è tutto ciò su cui l'agente può
 mettere le mani e da cui può ricevere notizie: le pagine del web, i file di un
 computer, i servizi a cui si può chiedere qualcosa. Il modello è il motore;
 l'agente è l'automobile, con volante, ruote e strada. Questo capitolo è
@@ -96,7 +110,7 @@ sotto questo nome fin da subito.
 Pensa alla differenza tra un consulente e un assistente. Il **consulente** ti
 dà consigli a parole: «per andare a Milano ti conviene il treno delle 9, poi
 prenota un hotel in centro». Ottimo, ma il lavoro resta tutto a te: sei tu che
-apri il sito, digiti le date, paghi. L'**assistente**, invece, le cose le
+apri il sito, digiti le date, paghi. L’**assistente**, invece, le cose le
 *fa*: telefona, prenota, compila il modulo, ti mette in mano il biglietto. La
 stessa testa, ma con le mani.
 
@@ -115,7 +129,7 @@ osserva**) in cui il modello ricopre il ruolo di *policy*: la funzione che,
 dato lo stato corrente, sceglie l'azione. È la stessa nozione di policy vista
 nel capitolo sul reinforcement learning, ma qui lo «stato» è una sequenza di
 testo (il contesto accumulato: la richiesta, le mosse fatte, i loro risultati)
-e l'«azione» è, tipicamente, l'invocazione di uno strumento oppure la risposta
+e l’«azione» è, tipicamente, l'invocazione di uno strumento oppure la risposta
 finale. A ogni passo:
 
 1. il sistema fornisce al modello lo stato $s_t$ (il contesto);
@@ -282,10 +296,10 @@ capisce da sé quando ha senso usarlo. È questa comprensione delle consegne
 `````{tab} Superiore
 
 Due proprietà, entrambe discusse nel capitolo sui Transformer, si combinano.
-La prima è l'**instruction tuning**: la fase di post-training in cui il modello
+La prima è l’**instruction tuning**: la fase di post-training in cui il modello
 viene addestrato su coppie *istruzione → buona risposta*, imparando a trattare
 una consegna in linguaggio naturale come qualcosa da *eseguire*, non solo da
-continuare. La seconda è l'**in-context learning**: la capacità, emersa con la
+continuare. La seconda è l’**in-context learning**: la capacità, emersa con la
 scala, di adattarsi a un compito descritto (magari con qualche esempio) nel
 solo prompt, senza toccare i pesi. Messe insieme, rendono *eseguibile* una
 consegna come «ecco gli strumenti a tua disposizione, usali per raggiungere
@@ -297,7 +311,7 @@ Due avvertenze prima di andare avanti, e sono l'onestà su cui insiste il resto
 del libro. La prima: gli agenti sono un campo **giovane e in rapido
 movimento** {cite}`xi2023rise`. Non c'è una teoria consolidata sotto, ci sono
 ricette che qualcuno ha provato e che sembrano funzionare (di una ricetta così,
-che non garantisce niente ma spesso va, si dice che è un'**euristica**).
+che non garantisce niente ma spesso va, si dice che è un’**euristica**).
 
 La seconda avvertenza è un problema strutturale: gli errori si **sommano lungo
 il ciclo**. Se il modello azzecca una mossa nove volte su dieci, dieci mosse di
@@ -368,7 +382,7 @@ copertura dei casi non previsti; in cambio si perde parte del controllo e
 della prevedibilità che rendevano affidabili i sistemi a frame. Non è un
 rimpiazzo indolore: è uno scambio, e i due mondi convivono ancora; spesso un
 agente flessibile viene racchiuso dentro binari rigidi proprio per riottenere
-un po' di quelle garanzie.
+un po’ di quelle garanzie.
 
 `````
 

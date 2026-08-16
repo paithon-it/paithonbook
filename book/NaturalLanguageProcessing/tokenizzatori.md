@@ -29,7 +29,7 @@ caratteri. Le parole sconosciute spariscono per costruzione, perché ogni testo
 attorno ai cinque o sei caratteri, quindi contare a lettere invece che a parole
 allunga il testo di cinque volte. E la lunghezza si paga cara. Il motivo è un
 meccanismo che incontreremo fra qualche sezione, con la traduzione automatica,
-e per esteso nel capitolo sui Transformer: l'**attenzione**, cioè il modo in
+e per esteso nel capitolo sui Transformer: l’**attenzione**, cioè il modo in
 cui un modello moderno guarda tutte le parole della frase insieme e decide
 quali contano davvero. Per farlo confronta ogni posizione con ogni altra, e
 quel conto cresce con il **quadrato** della lunghezza: raddoppiare le posizioni
@@ -164,7 +164,7 @@ Il meccanismo si racconta in quattro righe.
    volete.
 
 Alla fine avete due cose: un elenco di pezzi (il vocabolario) e, soprattutto,
-l'**elenco ordinato delle fusioni**. Il secondo è più importante del primo,
+l’**elenco ordinato delle fusioni**. Il secondo è più importante del primo,
 perché è la ricetta. Per tokenizzare una parola nuova non serve cercarla da
 nessuna parte: la si spezza in lettere e le si riapplicano le stesse fusioni,
 nello stesso ordine in cui erano state imparate. Se la parola contiene pezzi
@@ -226,7 +226,7 @@ se il primo è una desinenza e il secondo l'inizio di un verbo. Nel rimettere
 insieme i pezzi, poi, non c'è modo di sapere dove finisce una parola e comincia
 la successiva. Le implementazioni reali aggiungono perciò un marcatore: nel
 lavoro originale è un simbolo di fine parola, `</w>`; altrove è un simbolo che
-segna l'*inizio*, attaccato allo spazio che precede la parola, ed è la strada
+segna l’*inizio*, attaccato allo spazio che precede la parola, ed è la strada
 di SentencePiece che vedremo fra poco. Nell'esempio che segue lo omettiamo per
 non appesantire i conti.
 
@@ -546,7 +546,7 @@ adiacente. È una trasformazione monotona della **informazione mutua puntuale**
 (PMI): passando dalle frequenze assolute a quelle relative, il rapporto diventa
 $\frac{p(ab)}{p(a)\,p(b)}$ a meno di un fattore che dipende solo dalla taglia
 del corpus, quindi costante entro un singolo passo e ininfluente
-sull'$\arg\max$. Quel rapporto è l'esponenziale della PMI fra $a$ e $b$: vale
+sull’$\arg\max$. Quel rapporto è l'esponenziale della PMI fra $a$ e $b$: vale
 $1$ quando i due simboli si incontrano esattamente come farebbero per caso, più
 di $1$ quando si attirano.
 

@@ -43,10 +43,19 @@ valli nei punti dove vogliamo che la rete vada a finire.
 Quarant'anni dopo quelle reti, il linguaggio dell'energia non è un pezzo da
 museo. È la lingua in cui è scritta la proposta per l'AI che verrà di Yann
 LeCun, uno dei tre a cui nel 2018 è andato il premio Turing per il deep
-learning; è, sotto mentite spoglie, ciò che addestra i modelli di diffusione
-del capitolo precedente; ed è il modo più economico che conosciamo per
-rispondere a una domanda senza essere costretti a rispondere, insieme, a tutte
-le altre.
+learning; è, sotto mentite spoglie, ciò che addestra i modelli di diffusione;
+ed è il modo più economico che conosciamo per rispondere a una domanda senza
+essere costretti a rispondere, insieme, a tutte le altre.
+
+Quel «senza rispondere a tutte le altre» è il seguito diretto del capitolo
+precedente, e vale la pena dirlo perché i due si tengono per mano. Là abbiamo
+visto la famiglia che la probabilità la restituisce esatta, e il prezzo che
+paga per riuscirci: chi mette i dati in fila è poi costretto a generarli un
+pezzetto alla volta, chi li deforma non può buttare via niente e quindi non può
+comprimere. In tutti e due i casi se n'è andata la libertà di dare alla rete la
+forma che si vuole. Qui si prende la strada opposta: si rinuncia in partenza a
+normalizzare, si tiene un voto e basta, e quella libertà torna indietro. Tutto
+il capitolo racconta come si vive senza la normalizzazione, e quanto costa.
 
 ## Un numero al posto di una probabilità
 
@@ -171,8 +180,8 @@ tutt'altro che ovvia, che moltissimi compiti non ne hanno mai avuto bisogno.
 Perché lo stesso oggetto continua a riaffiorare sotto nomi diversi, e finché
 lo si incontra un pezzo per volta non lo si riconosce.
 
-Prendiamo i modelli di diffusione del capitolo precedente. Partono da
-un'immagine tutta sporca di rumore e arrivano, mille passi più tardi, a
+Prendiamo di nuovo i modelli di diffusione. Partono da un'immagine tutta
+sporca di rumore e arrivano, mille passi più tardi, a
 un'immagine pulita; e ogni passo ha il suo paesaggio: all'inizio liscio, con
 poche valli larghe, poi via via più dettagliato. Quello che quei modelli
 imparano, punto per punto, è la **pendenza** di quei paesaggi: da che parte si
@@ -180,8 +189,8 @@ scende e quanto ripido. In inglese quella pendenza si chiama *score*, ed è la
 parola che si incontra nei loro articoli. Attraversare quella successione di
 paesaggi, dal più liscio al più dettagliato, *è* generare.
 
-Il prossimo capitolo racconta i modelli che, invece di ridisegnare il mondo,
-ne confrontano due riassunti: si chiamano **JEPA** (*Joint-Embedding
+Il capitolo sui world model racconta i modelli che, invece di ridisegnare il
+mondo, ne confrontano due riassunti: si chiamano **JEPA** (*Joint-Embedding
 Predictive Architecture*). Anche loro sono energie mai trasformate in
 percentuali: giudicano quanto un pezzo di mondo osservato e uno da predire
 stiano bene insieme. Le reti di Hopfield «moderne», poi, richiamano un ricordo
@@ -256,8 +265,8 @@ un programma di ricerca, non un verdetto.
   scontra metà del capitolo.
 - Il **premio Nobel per la fisica del 2024** a Hopfield e Hinton ha ricordato
   a tutti che questo modo di ragionare non se n'è mai andato: i generatori di
-  immagini del capitolo precedente ripuliscono il rumore seguendo la pendenza
-  di un paesaggio, e le reti di Hopfield di oggi richiamano un ricordo con lo
+  immagini a diffusione ripuliscono il rumore seguendo la pendenza di un
+  paesaggio, e le reti di Hopfield di oggi richiamano un ricordo con lo
   stesso conto con cui i modelli di linguaggio decidono a quali parole
   guardare.
 - Nelle prossime pagine, cinque: la memoria che si ripara da sola, le reti che
@@ -286,6 +295,6 @@ un programma di ricerca, non un verdetto.
   value.
 - Nel resto del capitolo: memoria associativa, macchine di Boltzmann e
   contrastive divergence, i modi di aggirare $Z$, la cornice
-  dell'*energy-based learning* e i modelli a energia di oggi.
+  dell’*energy-based learning* e i modelli a energia di oggi.
 ```
 `````

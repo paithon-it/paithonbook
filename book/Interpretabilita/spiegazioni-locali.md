@@ -92,11 +92,11 @@ C'è però una regola in più, ed è quella che fa tutto il lavoro: nel conto, i
 fantasmi più simili alla pratica vera di Maria **contano di più**, quelli
 lontani quasi niente. Un conto in cui ogni voce entra con un'importanza sua si
 dice **pesato**, e nel caso di LIME il peso è la somiglianza con Maria. Qui sta il «solo qui vicino», e vale la pena sottolineare **dove** sta: nel
-conteggio, non nella fabbrica. I fantasmi nascono sparsi un po' dappertutto, ed
+conteggio, non nella fabbrica. I fantasmi nascono sparsi un po’ dappertutto, ed
 è soltanto quando si tirano le somme che quelli lontani vengono messi a tacere.
 
 I numeri di quella somma *sono* la spiegazione: «il reddito basso ha spinto
-verso il no di tanto, i debiti di tanto, l'anzianità di lavoro ha spinto un po'
+verso il no di tanto, i debiti di tanto, l'anzianità di lavoro ha spinto un po’
 verso il sì». Un ultimo modo di vederla: se il modello vero è una strada di
 montagna, LIME appoggia un righello sull'asfalto nel punto in cui ti trovi. Il
 righello non racconta la strada, ma della salita sotto i tuoi piedi ti dice
@@ -109,7 +109,7 @@ largo prendere il «qui vicino»), e, se al posto della pratica di Maria c'è un
 fotografia, in quali pezzi spezzettarla prima di spegnerli a turno. Ognuna di
 quelle scelte sposta i numeri della spiegazione. In più i fantasmi sono
 fabbricati a caso, quindi rilanciando LIME sullo stesso identico caso si
-ottengono numeri un po' diversi: si dice che il metodo è **instabile**.
+ottengono numeri un po’ diversi: si dice che il metodo è **instabile**.
 
 `````
 
@@ -155,7 +155,7 @@ conseguenza è concreta: la fedeltà locale dipende da quanti dei punti generati
 globalmente cadono davvero vicino a $\mathbf{x}_0$, e in alta dimensione sono
 pochi.
 
-Tre limiti vanno dichiarati. Primo, l'**instabilità**: campionamento casuale e
+Tre limiti vanno dichiarati. Primo, l’**instabilità**: campionamento casuale e
 scelta del kernel rendono la spiegazione sensibile ai dettagli; rieseguire
 LIME sullo stesso punto può dare coefficienti diversi, ed è in buona parte una
 conseguenza del punto appena visto. Secondo, la **larghezza
@@ -176,7 +176,7 @@ controlla: un motivo per affiancarle un metodo dai fondamenti più solidi.
 LIME risponde alla domanda, ma il modo in cui lo fa poggia su una lunga catena
 di scelte fatte da chi lo usa: quanti casi-fantasma fabbricare, quanto contare
 quelli lontani, come spezzettare l'ingresso. Rilanciandolo si ottengono numeri
-un po' diversi. Viene voglia di un metodo che, data la domanda, abbia una
+un po’ diversi. Viene voglia di un metodo che, data la domanda, abbia una
 risposta sola e dimostrabile. Quel metodo esiste, ed è la formula di Shapley del
 1953. Il salto sta nel
 guardare una risposta del modello come il bottino di una squadra. Le colonne
@@ -270,7 +270,7 @@ per nome perché il resto del capitolo le usa.
   chiama **giocatore nullo**. Sembra una banalità e invece torna comoda: quando
   in un conto c'è una colonna che non c'entra, la si può togliere di mezzo e
   fare i conti sulle altre.
-- E poi c'è l'**additività**, che è la meno intuitiva delle quattro e la più
+- E poi c'è l’**additività**, che è la meno intuitiva delle quattro e la più
   utile, quindi vale un esempio. Immagina che il punteggio di un cliente sia la
   somma di due pagelle separate, una sulla sua situazione economica e una sulla
   sua storia di pagamenti, ciascuna con le sue regole. L'additività dice questo:
@@ -302,7 +302,7 @@ $$
 
 dove $v(S \cup \{i\}) - v(S)$ è quanto aggiunge $i$ unendosi alla coalizione
 $S$, e il coefficiente combinatorio conta la frazione di permutazioni in cui $i$
-entra proprio dopo l'insieme $S$. Questa è l'**unica** attribuzione che
+entra proprio dopo l'insieme $S$. Questa è l’**unica** attribuzione che
 soddisfa quattro assiomi:
 
 - **Efficienza**: $\sum_{i} \phi_i = v(N) - v(\varnothing) = f(\mathbf{x}_0) - \mathbb{E}[f]$.
@@ -430,7 +430,7 @@ usato.
 
 ```{figure} ../figures/shap-contributi.svg
 :name: fig-shap-contributi
-:alt: "Grafico a cascata di una singola risposta del modello. A sinistra una linea verticale tratteggiata al valore base E[f(x)] uguale a 0,20. Quattro barre orizzontali si impilano dal basso verso l'alto: 'storia = buona' aggiunge +0,18 verso destra in terracotta, 'reddito = alto' aggiunge +0,10, 'eta = 40' aggiunge +0,04, mentre in cima 'debito = alto' sottrae 0,08 tornando verso sinistra in teal. Si arriva all'output f(x) uguale a 0,44, segnato da una seconda linea verticale tratteggiata più a destra della prima."
+:alt: "Grafico a cascata di una singola risposta del modello. A sinistra una linea verticale tratteggiata al valore base E[f(x)] uguale a 0,20. Quattro barre orizzontali si impilano dal basso verso l'alto: 'storia = buona’ aggiunge +0,18 verso destra in terracotta, 'reddito = alto’ aggiunge +0,10, 'eta = 40' aggiunge +0,04, mentre in cima 'debito = alto’ sottrae 0,08 tornando verso sinistra in teal. Si arriva all'output f(x) uguale a 0,44, segnato da una seconda linea verticale tratteggiata più a destra della prima."
 :width: 85%
 
 Un grafico a cascata (*waterfall*) SHAP scompone una singola risposta. Qui il
@@ -688,7 +688,7 @@ $$
 Tre addendi. Il primo prende la prima colonna così com'è; il secondo prende la
 seconda e la raddoppia; il terzo moltiplica la prima per la terza, e quindi vale
 qualcosa solo se **tutte e due** sono diverse da zero. Quel terzo addendo è
-un'**interazione**, la stessa cosa che nell'esempio dei prestiti faceva
+un’**interazione**, la stessa cosa che nell'esempio dei prestiti faceva
 arrivare a 50 invece che a 40, ed è il motivo per cui questa formula è stata
 scelta: è il caso in cui i meriti non sono ovvi.
 
@@ -750,7 +750,7 @@ colonna, che un numero suo non ce l'ha. Il modo più pulito di capire perché no
 è così è rifare il conto con carta e penna, usando tre delle quattro proprietà,
 una dopo l'altra.
 
-La prima è l'**additività**, quella dell'esempio delle due pagelle: un conto che
+La prima è l’**additività**, quella dell'esempio delle due pagelle: un conto che
 è una somma si può spezzare, fare i conti sui pezzi e sommare i risultati. Qui i
 pezzi sono i tre addendi, e su ciascuno il merito si vede a occhio.
 
@@ -784,7 +784,7 @@ colonne non fanno affatto lo stesso mestiere, e infatti prendono $1{,}5$ e
 $0{,}5$. È l'additività a permettere di spezzare, ed è solo dopo aver spezzato
 che la simmetria si può usare, nel pezzo in cui vale.
 
-Resta la quarta, l'**efficienza**, che è quella che il programma verifica nelle
+Resta la quarta, l’**efficienza**, che è quella che il programma verifica nelle
 ultime due righe: $1{,}5 + 2{,}0 + 0{,}5 = 4{,}0$, che è
 esattamente la risposta vera meno la risposta base. Il conto torna.
 

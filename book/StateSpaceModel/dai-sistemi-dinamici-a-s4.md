@@ -45,7 +45,7 @@ chiuso. Il *livello dell'acqua* è lo stato: riassume tutta la storia passata
 di quanto hai aperto il rubinetto, senza bisogno di ricordarla minuto per
 minuto. Il rubinetto è l'ingresso: quando lo apri di più, il livello sale. Lo
 scarico è la dinamica interna: se smetti di versare acqua, il livello cala da
-solo, un po' alla volta. E ciò che *leggi* (magari un galleggiante collegato a
+solo, un po’ alla volta. E ciò che *leggi* (magari un galleggiante collegato a
 un ago) è l'uscita, che dipende dal livello.
 
 Un'eco in una valle funziona allo stesso modo: gridi (ingresso), il suono
@@ -137,7 +137,7 @@ mezzo. È lo stesso compromesso di ogni fotografia a scatti di un movimento
 fluido.
 
 Le due regole (bilineare e ZOH) sono due modi diversi di indovinare cosa
-succede *tra* un campione e l'altro, e basta un po' di geometria a
+succede *tra* un campione e l'altro, e basta un po’ di geometria a
 raccontarli. Immagina di dover calcolare quanta acqua è entrata nella vasca
 durante il tratto che non hai visto, sapendo solo l'apertura del rubinetto
 all'inizio e alla fine. Lo *zero-order hold*, la scelta di Mamba, tiene

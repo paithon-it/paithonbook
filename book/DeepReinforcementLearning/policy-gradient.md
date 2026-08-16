@@ -179,7 +179,7 @@ con la situazione successiva e la ricompensa.
 
 `````{tab} Elementare
 
-Immagina due ruoli. L'**attore** è chi gioca: decide le mosse. Il **critico**
+Immagina due ruoli. L’**attore** è chi gioca: decide le mosse. Il **critico**
 è un allenatore a bordo campo che, mossa dopo mossa, mormora "meglio del
 previsto" oppure "peggio del previsto". L'attore non deve più aspettare la fine
 della partita per sapere com'è andata: riceve un giudizio immediato a ogni
@@ -193,7 +193,7 @@ a prevedere come andrà a finire.
 
 `````{tab} Superiore
 
-Nell'architettura **Actor-Critic** convivono due reti. L'*attore* è la policy
+Nell'architettura **Actor-Critic** convivono due reti. L’*attore* è la policy
 $\pi_\theta(a\mid s)$; il *critico* stima la funzione valore $V_\phi(s)$. Al
 ritorno grezzo $G_t$ si sostituisce il **vantaggio** (*advantage*), che è per
 definizione
@@ -228,7 +228,7 @@ $$
 = b(s)\,\nabla_\theta 1 = 0 .
 $$
 
-Il primo passaggio usa l'**identità della log-derivata**,
+Il primo passaggio usa l’**identità della log-derivata**,
 $\pi_\theta\,\nabla_\theta\log\pi_\theta = \nabla_\theta \pi_\theta$, che è la
 stessa che fa comparire il $\log$ nel teorema di poco fa; il secondo scambia la
 derivata con la somma. È scritto per azioni discrete, e nel continuo la somma
@@ -668,7 +668,7 @@ visite finisce sulla foglia migliore, contro il $6{,}2\%$ che le toccherebbe
 tirando a caso, cioè una foglia su sedici.
 
 Su sessanta semi, però, quella quota ha **mediana $50{,}5\%$** e oscilla fra il
-$16\%$ e l'$89\%$; scartando le quindici prove più basse e le quindici più alte,
+$16\%$ e l’$89\%$; scartando le quindici prove più basse e le quindici più alte,
 le trenta di mezzo stanno fra il $33\%$ e il $60\%$. Le visite al ramo giusto
 hanno mediana $1582$ e vanno da $593$ a $1965$, cioè il $1922$ del seme $7$ è
 vicino al massimo osservato. Peggio, in **nove semi su sessanta** il ramo più
@@ -763,9 +763,9 @@ Il dettaglio di {numref}`fig-instructgpt` che vale la pena notare è il primo
 riquadro: alle persone si chiede di **ordinare**, non di valutare. Confrontare
 due risposte è un giudizio che gli esseri umani danno con buona coerenza fra
 loro; assegnare un voto da uno a dieci molto meno, e su scale diverse.
-Nell'**RLHF** (*Reinforcement Learning from Human Feedback*, cioè apprendimento
+Nell’**RLHF** (*Reinforcement Learning from Human Feedback*, cioè apprendimento
 per rinforzo dal giudizio umano; {cite}`christiano2017deep`,
-{cite}`ouyang2022training`) le risposte del modello sono l'"azione", dei
+{cite}`ouyang2022training`) le risposte del modello sono l’"azione", dei
 valutatori umani indicano quali preferiscono, e le loro preferenze addestrano un
 *modello di ricompensa* che fa da critico. Con PPO si ritocca poi la policy del
 modello (la sua tendenza a produrre certe risposte), verso ciò che gli umani
@@ -808,7 +808,7 @@ sull'imitazione ci torna sopra per esteso, e spiega perché da sola non basta.
 - **AlphaGo** e **AlphaZero** uniscono la strategia, la stima di chi sta
   vincendo e quella esplorazione ad albero. Nel 2016 la ricerca si fidava a
   metà della rete e a metà delle partite tirate a caso; solo con AlphaGo Zero,
-  l'anno dopo, la rete basta da sola. Con l'**RLHF** lo stesso meccanismo,
+  l'anno dopo, la rete basta da sola. Con l’**RLHF** lo stesso meccanismo,
   guidato dalle preferenze delle persone, allinea i modelli linguistici.
 ```
 `````

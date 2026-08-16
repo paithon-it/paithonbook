@@ -101,7 +101,7 @@ il loop interno non ha:
   dall'esterno.
 
 In termini di controllo, il loop interno è un *controllore reattivo* dentro un
-singolo episodio; il loop esterno è l'*orchestratore* che decide quanti episodi
+singolo episodio; il loop esterno è l’*orchestratore* che decide quanti episodi
 avviare, con quali condizioni iniziali, e come giudicarne l'esito.
 
 `````
@@ -492,7 +492,7 @@ Resta il motivo per cui il **cancello di verifica** non è un lusso, e sta
 proprio in come è definito quel $p$: non è la probabilità di sbagliare, è la
 probabilità di sbagliare **senza che nessuno se ne accorga**. Un cancello
 intercetta, e quindi abbassa $p$; e siccome quel numero viene moltiplicato per
-sé stesso venti volte, abbassarlo un po' cambia moltissimo il risultato.
+sé stesso venti volte, abbassarlo un po’ cambia moltissimo il risultato.
 
 Il cancello però lavora dentro il ciclo, e contro l'aritmetica c'è una seconda
 difesa che sta invece attorno: non consegnare al loop tutto il potere il primo
@@ -502,7 +502,7 @@ giorno.
 
 Nessuno dà a un nuovo assunto le chiavi dell'azienda il primo giorno. La prima
 settimana scrive solo **relazioni** che tu leggi: osserva e riferisce, decidi
-tu. Guadagnata un po' di fiducia, può **proporre correzioni** che tu approvi
+tu. Guadagnata un po’ di fiducia, può **proporre correzioni** che tu approvi
 prima che partano: ecco il secondo cancello promesso all'inizio della sezione,
 quello che non è un controllo automatico ma una persona che guarda e dà il via
 libera. Solo dopo, e solo per cose di cui ti fidi, il nuovo assunto lavora **da
@@ -527,7 +527,7 @@ quando le metriche lo giustificano:
   una *allow-list* (quali file, quali comandi, quali repository) e sotto
   monitoraggio continuo. Vi si sale solo dopo che L2 ha dato numeri buoni.
 
-A ogni livello si accompagnano le difese che il capitolo sull'**AI
+A ogni livello si accompagnano le difese che il capitolo sull’**AI
 responsabile** mette in fila per la sicurezza degli LLM: il **minimo dei
 permessi** che servono al compito (quali file, quali comandi, quali archivi),
 i worktree isolati come recinto, e la **conferma umana** davanti a ogni azione
@@ -624,7 +624,7 @@ una frase, va sorvegliato mentre lavora.
   (i loop amplificano il giudizio
   buono *e* cattivo; chi mantiene deve leggere ciò che parte), la sicurezza
   (permessi minimi, cancelli umani ai punti irreversibili, come nel capitolo
-  sull'**AI responsabile**) e il **costo** per giro, da mettere a budget
+  sull’**AI responsabile**) e il **costo** per giro, da mettere a budget
   e monitorare come insegna LLMOps. E lo statuto delle fonti: il vocabolario
   del loop engineering viene da chi costruisce, non da chi misura; qui si
   riporta il meccanismo, che dura, non i nomi degli attrezzi, che cambiano.

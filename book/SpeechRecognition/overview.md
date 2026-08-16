@@ -10,7 +10,7 @@ normale ma doveva staccare nettamente una cifra dall'altra, con una pausa in
 mezzo. Attaccate, non le riconosceva più. Settant'anni dopo
 diciamo "metti la sveglia alle sette" al telefono mentre carichiamo la
 lavastoviglie, e la frase diventa testo (e poi azione) in una frazione di
-secondo. In mezzo c'è la storia dell'**ASR** (*Automatic Speech Recognition*),
+secondo. In mezzo c'è la storia dell’**ASR** (*Automatic Speech Recognition*),
 il riconoscimento vocale automatico.
 
 ## Che cosa fa, in fondo
@@ -188,7 +188,7 @@ il resto, e merita un dettaglio.
 
 Il segnale grezzo è troppo minuto e dettagliato per lavorarci direttamente.
 Allora lo si taglia in fettine di pochi centesimi di secondo e, per ognuna, si
-misura "quanta energia c'è a ciascuna altezza sonora": un po' come le barrette
+misura "quanta energia c'è a ciascuna altezza sonora": un po’ come le barrette
 colorate che ballano nelle app della musica, dove le più a sinistra si alzano
 sui suoni gravi e le più a destra sugli acuti. Questa sequenza di
 istantanee sonore ha un nome, e lo useremo per tutto il capitolo: si chiama

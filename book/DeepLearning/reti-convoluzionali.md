@@ -46,7 +46,7 @@ pesi) diversi. Manca l'idea che *un motivo è lo stesso ovunque appaia*.
 Uno strato *fully-connected* su un input $\mathbf{x}\in\mathbb{R}^{d}$ con
 $h$ unità richiede $h\cdot d$ pesi. Per un'immagine RGB $256\times256$ si ha
 $d = 256\cdot256\cdot3 \approx 1{,}97\times10^{5}$: con $h=1000$ servono circa
-$2\times10^{8}$ parametri, un invito all'*overfitting*.
+$2\times10^{8}$ parametri, un invito all’*overfitting*.
 
 Soprattutto, lo strato denso non è **equivariante alla traslazione**: un
 pattern spostato di un vettore $\boldsymbol{\Delta}$ attiva pesi diversi,
@@ -219,7 +219,7 @@ stato assorbito. Se invece scavalca il confine fra due quadratini, cambia
 eccome. Su una mappa piena di valori diversi uno spostamento di un solo pixel
 altera quasi sempre il risultato.
 
-È un baratto, non un regalo: si guadagnano leggerezza e un po' di tolleranza,
+È un baratto, non un regalo: si guadagnano leggerezza e un po’ di tolleranza,
 si perde precisione su dove le cose stanno.
 
 `````
@@ -252,7 +252,7 @@ in una decisione, cioè nella classe dell'immagine: gatto, cane, tazza da caffè
 La ReLU sta in mezzo, fra il filtro e il pooling, e non è un ornamento: è lei a
 rendere davvero diversi due strati impilati. Una convoluzione è fatta di
 moltiplicazioni e somme, e applicarne una al risultato di un'altra, senza niente
-in mezzo, darebbe ancora moltiplicazioni e somme: una convoluzione sola, un po'
+in mezzo, darebbe ancora moltiplicazioni e somme: una convoluzione sola, un po’
 più larga. È il piegare i numeri (buttare via i negativi) a far sì che il
 secondo strato veda qualcosa che il primo non poteva produrre da solo.
 
@@ -361,7 +361,7 @@ a chi progetta la rete, non alla libreria.
   **dove**. Se il motivo si sposta, si sposta con lui anche il segnale che lo
   indica.
 - Il **max pooling** tiene, di ogni quadratino, solo il valore più forte:
-  rimpicciolisce le mappe e regala un po' di tolleranza agli spostamenti
+  rimpicciolisce le mappe e regala un po’ di tolleranza agli spostamenti
   minimi. L'architettura tipica alterna convoluzione e pooling, e chiude con
   gli strati densi che decidono la classe.
 ```

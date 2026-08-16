@@ -82,7 +82,7 @@ estrazione e trasformazione delle *feature*, un livello di *serving* che
 espone il modello, monitoraggio, gestione della configurazione e delle
 risorse: il codice di addestramento è una frazione minima del totale.
 
-Il debito più caratteristico è l'**entanglement**, riassunto dal principio
+Il debito più caratteristico è l’**entanglement**, riassunto dal principio
 **CACE**: *Changing Anything Changes Everything*. In un modello di ML nessuna
 *feature* è davvero indipendente. Cambiare la distribuzione di un solo
 ingresso, aggiungerne o toglierne uno, ritoccare un iperparametro: ognuna di
@@ -124,7 +124,7 @@ niente: sono file enormi, e dentro non ci sono righe da confrontare.
 
 C'è una differenza tra saper cucinare e saper mandare avanti una catena di
 ristoranti. Il cuoco tiene la ricetta in testa, aggiusta a occhio, e ogni suo
-piatto è un po' diverso dal precedente, ed è bellissimo così. Ma una catena
+piatto è un po’ diverso dal precedente, ed è bellissimo così. Ma una catena
 che serve mille coperti al giorno in venti città non può permetterselo: la
 ricetta va scritta al grammo, gli ingredienti devono essere sempre gli stessi,
 e il piatto di oggi a Milano deve essere identico a quello di ieri a Napoli.
@@ -150,7 +150,7 @@ pratiche cardine: *data versioning* e *feature store* per gli ingressi,
 per i modelli, pipeline automatizzate che rieseguono l'intero percorso (da
 dato grezzo a modello servito) con un comando solo.
 
-L'obiettivo non è la sofisticazione, ma l'**automazione** e la
+L'obiettivo non è la sofisticazione, ma l’**automazione** e la
 **tracciabilità**: ridurre il lavoro che si rifà a mano ogni volta, rendere
 ogni rilascio ripetibile e ogni predizione riconducibile agli artefatti che
 l'hanno prodotta. È la tesi di fondo dei testi che hanno sistematizzato la
@@ -239,7 +239,7 @@ computer che non sono il proprio, e poi restare sotto controllo per anni.
 Il notebook è la prima delle cinque caselle, non l'ultima. Dopo di lui il
 codice esce dal foglio e diventa un programma di cui si conserva ogni versione
 (`Git`); il programma viene messo dietro uno sportello a cui altri programmi
-possono bussare (l'*API*); lo sportello viene chiuso in una scatola che si
+possono bussare (l’*API*); lo sportello viene chiuso in una scatola che si
 comporta uguale su qualsiasi computer (il *container*); e solo allora si apre
 al pubblico, sorvegliato. Le quattro tappe che seguono la prima non aggiungono
 intelligenza al modello: aggiungono le condizioni perché quell'intelligenza
@@ -333,7 +333,7 @@ pagina che le introduce, e nessuna va saputa già adesso.
 - **MLOps** porta la cultura DevOps (automazione, CI/CD, monitoraggio) al
   ciclo di vita del ML, aggiungendo i **dati** e il **modello** come artefatti
   da versionare accanto al codice {cite}`kreuzberger2023machine`.
-- Il **debito tecnico** del ML è aggravato dall'**entanglement** (principio
+- Il **debito tecnico** del ML è aggravato dall’**entanglement** (principio
   CACE: *Changing Anything Changes Everything*): nessuna feature è davvero
   indipendente dalle altre.
 - Il ciclo di vita è un **anello**, non una linea: dati → addestramento →

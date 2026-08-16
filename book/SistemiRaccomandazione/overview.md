@@ -6,7 +6,7 @@ sistema di raccomandazione, Cinematch.
 
 Del 10% *che cosa*, conviene dirlo subito, perché la gara si gioca tutta lì.
 Cinematch prevede quante stelle un utente darà a un film, e ogni previsione
-sbaglia di un po'. Il metro della gara è quanto sbaglia, e si misura in stelle.
+sbaglia di un po’. Il metro della gara è quanto sbaglia, e si misura in stelle.
 Non è però la semplice media degli errori. Ogni errore viene prima elevato al
 quadrato, così una cantonata da tre stelle pesa nove volte un errore da una
 stella ($3^2 = 9$ contro $1^2 = 1$); poi si fa la media di quei quadrati; e

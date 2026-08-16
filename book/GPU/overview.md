@@ -201,7 +201,7 @@ memory on-chip, cache, e la grande HBM off-chip dove vivono pesi e
 attivazioni. I gruppi di thread nascondono la *latenza* di ogni accesso, ma la
 **banda** (quanti byte al secondo la memoria consegna davvero) è finita, ed è
 lei il vero muro. Lo strumento che formalizza tutto questo è il modello
-**roofline** {cite}`williams2009roofline`: mette a confronto l'*intensità
+**roofline** {cite}`williams2009roofline`: mette a confronto l’*intensità
 aritmetica* di un calcolo (quanti conti fai per ogni byte spostato) con i due
 tetti dell'hardware, la banda e il picco di calcolo, e dice se un programma è
 *memory-bound* o *compute-bound*. Da qui un filo conduttore che ritroverai in
@@ -222,7 +222,7 @@ parentesi, la cosa che significa, ed è quella la promessa della sezione.
   della CPU; gli **Streaming Multiprocessor** (le officine autonome in cui la
   GPU è divisa), la gerarchia griglia–blocco–**warp** (l'organizzazione dei
   lavoratori in operazione, squadre e plotoni da 32), il modello **SIMT** (un
-  ordine solo, trentadue esecuzioni) e l'**occupancy** (quanti gruppi la GPU
+  ordine solo, trentadue esecuzioni) e l’**occupancy** (quanti gruppi la GPU
   tiene pronti per coprire le attese).
 - **La memoria: il vero collo di bottiglia**. La piramide che va dai posti
   minuscoli e vicinissimi ai calcolatori fino alla memoria grande della scheda
@@ -238,7 +238,7 @@ parentesi, la cosa che significa, ed è quella la promessa della sezione.
   spende il grosso del tempo: qui si vede il **tiling** (portare i dati sul
   tavolo di lavoro una volta sola) che la rende veloce, i **tensor core**
   (pezzi di silicio che fanno un intero pezzo di quella moltiplicazione a ogni
-  battito di clock) e l'**array sistolico**, la soluzione opposta scelta dai
+  battito di clock) e l’**array sistolico**, la soluzione opposta scelta dai
   chip costruiti solo per l'AI, dove sono i dati a scorrere fra i calcolatori.
 - **FlashAttention: l'attenzione che non spreca memoria**. L'attenzione dei
   Transformer, cioè il meccanismo con cui ogni parola di un testo viene

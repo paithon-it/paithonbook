@@ -5,7 +5,7 @@ modello di diffusione che abbiamo incontrato (il DDPM del 2020, lo Stable
 Diffusion del 2022) è la U-Net {cite}`ronneberger2015u`: un'architettura nata
 nel 2015 a Friburgo per **segmentare cellule al microscopio**, come ricordiamo
 dal capitolo sulla visione artificiale. Per anni nessuno l'ha messa in
-discussione: le si è aggiunta un po' di attenzione, le si è appesa l'etichetta
+discussione: le si è aggiunta un po’ di attenzione, le si è appesa l'etichetta
 con il numero del passo, ma l'impalcatura (guardare da lontano e poi da vicino,
 con i ponti diretti fra le due viste) è rimasta quella del microscopio.
 
@@ -151,7 +151,7 @@ di aver imparato il proprio.
 
 Ricordiamo dal capitolo sui Transformer la layer normalization: normalizza
 ogni token a media zero e varianza uno, poi riscala con un guadagno e un bias
-appresi, uguali per tutti gli input. L'**adaptive layer norm** (adaLN) rende
+appresi, uguali per tutti gli input. L’**adaptive layer norm** (adaLN) rende
 guadagno e bias *funzioni del condizionamento*: un piccolo MLP riceve
 $\mathbf{c} = \mathrm{emb}(t) + \mathrm{emb}(y)$ (embedding sinusoidale del
 passo più embedding della classe) e produce, per ciascun sotto-strato di
@@ -177,7 +177,7 @@ hanno niente a che vedere con $\alpha_t$ e $\beta_t$, che in questo capitolo
 sono lo schedule del rumore. Il suffisso *zero* sta
 nell'inizializzazione: l'ultimo strato dell'MLP parte azzerato, quindi
 $\boldsymbol{\gamma}_c = \boldsymbol{\beta}_c = \boldsymbol{\alpha}_c = 0$ e
-ogni blocco all'inizio è l'**identità**;
+ogni blocco all'inizio è l’**identità**;
 la rete comincia come un tubo vuoto e i blocchi si accendono gradualmente.
 L'idea di modulare le normalizzazioni ha un precedente illustre che
 conosciamo: l'AdaIN con cui StyleGAN {cite}`karras2019style` inietta lo stile
@@ -468,7 +468,7 @@ differenza fra un tornante di montagna e una provinciale con qualche curva.
 
 Si fissa una scala continua $t \in [0, 1]$ (dato pulito a $t = 0$, rumore puro
 a $t = 1$, coerente con il verso del capitolo) e si collega ogni dato al
-rumore con un'**interpolazione lineare**:
+rumore con un’**interpolazione lineare**:
 
 $$
 \mathbf{x}_t = (1 - t)\,\mathbf{x}_0 + t\,\boldsymbol{\epsilon},

@@ -59,7 +59,7 @@ ragione è che le regole di questo programma non le ha scritte nessuno. Il
 modello se le è ricavate da solo guardando gli esempi, e ciò che ne è uscito
 non è un elenco di frasi ma una tabella di numeri senza nome: milioni, nei
 modelli di oggi. Quei numeri si chiamano **parametri**. E il tipo di
-modello che li organizza a strati, dove il primo strato fa un po' di conti sui
+modello che li organizza a strati, dove il primo strato fa un po’ di conti sui
 dati in arrivo, il secondo rifà i conti sul risultato del primo, e così via fino
 in fondo, si chiama **rete neurale**.
 
@@ -131,7 +131,7 @@ partizioni, indistinguibili sotto l'ipotesi che siano campionate dalla stessa
 distribuzione. È l'illusione dell'accuratezza: un modello «giusto per la
 ragione sbagliata» collassa appena la distribuzione cambia (un lupo su erba,
 un husky sulla neve), perché la scorciatoia appresa non è la relazione causale
-che ci interessava. L'**interpretabilità** è lo strumento diagnostico che
+che ci interessava. L’**interpretabilità** è lo strumento diagnostico che
 espone la discrepanza tra ciò che il modello *dovrebbe* usare e ciò che *usa*
 davvero, e che l'accuratezza aggregata, per costruzione, non può vedere.
 
@@ -182,7 +182,7 @@ diverse a seconda di chi la riceve**.
 Chiedi «perché questo prestito è stato rifiutato?» a tre persone diverse e ti
 aspetti tre risposte diverse. Al **cliente** serve sapere che cosa può fare:
 «il reddito dichiarato è troppo basso rispetto alla rata; con una rata inferiore
-la domanda passerebbe». All'**ingegnere** che ha costruito il modello serve
+la domanda passerebbe». All’**ingegnere** che ha costruito il modello serve
 sapere quali colonne pesano e se ce n'è una sospetta, cioè se in questa tabella
 esiste l'equivalente della neve. All'ufficio
 pubblico che vigila sulle banche, il **regolatore**, serve la garanzia che il
@@ -341,7 +341,7 @@ poche domande. Qui sotto lo costruiamo davvero, con qualche riga di codice: chi
 non programma può saltare il riquadro grigio e leggere subito quello che stampa,
 che è il pezzo interessante.
 
-I dati sono un classico, l'`iris`: 150 fiori di iris di tre specie diverse,
+I dati sono un classico, l’`iris`: 150 fiori di iris di tre specie diverse,
 ciascuno descritto da quattro misure in centimetri (lunghezza e larghezza del
 petalo, e le stesse due del sepalo, che è la fogliolina verde che sta sotto al
 fiore). Il compito è indovinare la specie a partire dalle quattro misure.
@@ -379,10 +379,10 @@ seconda; oltre 1,75, terza. Nessuno strumento esterno, nessuna spiegazione
 aggiunta dopo: il modello *è* la propria spiegazione, e sta in sette righe.
 
 Adesso il confronto. Al posto di un albero solo se ne possono far crescere
-centinaia, tutti un po' diversi fra loro, e far votare le loro risposte: si
+centinaia, tutti un po’ diversi fra loro, e far votare le loro risposte: si
 chiama **foresta casuale**, ed è il metodo visto nella sezione sugli alberi e
 gli insiemi di modelli del capitolo sul machine learning. Tanti pareri sbagliano meno di
-uno, e infatti su questi fiori la foresta indovina un po' più dell'alberello: il
+uno, e infatti su questi fiori la foresta indovina un po’ più dell'alberello: il
 $96{,}0\%$ contro il $94{,}7\%$. Il modo di misurarlo è quello di sempre, e vale
 la pena dirlo: si dividono i 150 fiori in dieci gruppi, si addestra il modello
 su nove gruppi e lo si interroga sul decimo, e si ripete dieci volte cambiando
@@ -486,7 +486,7 @@ Su una cosa, però, le due fazioni concordano, e l'hanno scritta nel 2017 due
 ricercatrici, Finale Doshi-Velez e Been Kim {cite}`doshi2017towards`: una
 spiegazione è una cosa da **misurare**, non da esibire. Chi la produce deve
 dichiarare che cosa ha misurato e con quale esperimento, esattamente come si fa
-per l'**accuratezza** di un modello, che è la quota di risposte giuste e che
+per l’**accuratezza** di un modello, che è la quota di risposte giuste e che
 nessuno si sognerebbe di dichiarare senza dire su quali casi l'ha contata. Non
 esistono spiegazioni «gratis»: esistono spiegazioni verificate e spiegazioni
 che ci raccontiamo.
@@ -528,7 +528,7 @@ tentativo più ambizioso e più giovane, quello di smontare una rete pezzo per p
 ingegnere apre un chip per capire che cosa fa ciascun componente: si chiama
 **interpretabilità meccanicistica**.
 
-Un filo, sopra a tutto, tiene insieme il capitolo con quello sull'**AI
+Un filo, sopra a tutto, tiene insieme il capitolo con quello sull’**AI
 responsabile**: aprire la scatola nera non è un vezzo accademico, ma il primo
 passo per costruire sistemi di cui potersi fidare, e da poter contestare
 quando sbagliano. Il rilevatore di lupi era stato truccato apposta, per
@@ -543,7 +543,7 @@ guardarci dentro.
 - Un modello può indovinare tantissimo e farlo **per la ragione sbagliata**: il
   cavallo Hans leggeva la faccia di chi chiedeva, il riconoscitore di lupi
   guardava la neve. Contare quante volte ha ragione non lo smaschera; guardare
-  su che cosa si appoggia sì. Questo è l'**interpretabilità**.
+  su che cosa si appoggia sì. Questo è l’**interpretabilità**.
 - Dentro un modello non c'è un programma da leggere: ci sono milioni di numeri
   che nessuno ha scritto a mano e che il modello si è ricavato dagli esempi.
   Per questo serve un capitolo intero invece di una stampa.

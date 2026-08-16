@@ -21,7 +21,7 @@ una parte è scritta una volta per tutte da chi progetta e l'esperienza non la
 cambia (l'analogo del dolore e del piacere), l'altra si impara ed è un
 *critico*, cioè una rete il cui unico mestiere è prevedere quanto costerà il
 seguito, così che l'agente sappia se una mossa conviene senza aspettarne le
-conseguenze. Poi ci sono l'**attore**, che propone le azioni, la **memoria a
+conseguenze. Poi ci sono l’**attore**, che propone le azioni, la **memoria a
 breve termine**, che tiene il filo di quel che è appena successo, e il
 **configuratore**, che sovrintende e regola gli altri a seconda del compito.
 
@@ -100,7 +100,7 @@ dove $\mathbf{z}$ è una variabile latente che assorbe la molteplicità dei futu
 $\theta$ sono i parametri dei due encoder e del predictor. L'energia della
 *coppia* è la seconda quantità, $F$: si sceglie la $\mathbf{z}$ che spiega meglio il
 futuro osservato, e quel minimo misura la compatibilità tra $\mathbf{x}$ e $\mathbf{y}$. Il
-collegamento con il capitolo precedente è letterale: una JEPA **è** un
+collegamento con il capitolo sui modelli a energia è letterale: una JEPA **è** un
 modello a energia non normalizzato; la compatibilità tra presente e futuro è
 l'errore di predizione nello spazio latente, l'inferenza è la solita
 $\arg\min$ (qui, il minimo su $z$), e della funzione di partizione non c'è
@@ -180,7 +180,7 @@ gatto da un lampadario. È il **collasso**, e per le JEPA è il pericolo numero
 uno, perché qui (a differenza dei modelli generativi, ancorati ai pixel veri)
 anche il *bersaglio* è prodotto da una rete che avrebbe tutto l'interesse a
 barare. Nel documento del 2022 LeCun indica la famiglia di rimedi che
-preferisce, quella già incontrata nel capitolo precedente: invece di
+preferisce, quella già incontrata fra i modelli a energia: invece di
 fabbricare risposte sbagliate da bocciare, si toglie al modello la possibilità
 stessa di dare a tutto lo stesso riassunto, per esempio obbligandolo a tenerli
 diversi fra loro. Ma nei sistemi JEPA costruiti davvero da Meta la difesa
@@ -314,7 +314,7 @@ decisivo: l'encoder target elabora l'immagine **intera**, e i bersagli si
 ottengono mascherando la sua *uscita*, non il suo ingresso; così ogni
 rappresentazione-bersaglio incorpora il contesto globale ed è semanticamente
 ricca. Niente augmentation artigianali: nessun crop multiplo, nessun jitter di
-colore. I numeri del paper {cite}`assran2023self`: su ImageNet-1K con l'**1%
+colore. I numeri del paper {cite}`assran2023self`: su ImageNet-1K con l’**1%
 delle etichette**, un ViT-H/14 pre-addestrato con I-JEPA raggiunge il 73,3% di
 accuratezza top-1 (77,3% per il ViT-H/16 a risoluzione 448), contro il 71,5%
 di MAE (il metodo generativo che ricostruisce i pixel mascherati) e il 69,7%
@@ -439,7 +439,7 @@ diffidare di chi riassume queste cose con «ci riesce».
 Ma la parte concettualmente nuova è **V-JEPA 2-AC** (*action-conditioned*,
 condizionato sulle azioni), ed è la parte in cui il capitolo arriva finalmente
 a un robot vero. Il meccanismo è quello dell'inizio, montato sopra un braccio
-meccanico: si dà al robot un'**immagine-obiettivo** (la tazza sopra il piatto),
+meccanico: si dà al robot un’**immagine-obiettivo** (la tazza sopra il piatto),
 il modello immagina l'effetto di centinaia di comandi possibili e sceglie
 quello il cui esito previsto è più vicino all'obiettivo. Poi lo esegue, guarda
 com'è andata e ricomincia da capo, un comando alla volta. Vale la pena notare
@@ -548,7 +548,7 @@ della softmax non esiste e ricostruire costringe a modellare l'irrilevante: è
 l'argomento centrale di {cite}`lecun2022path`. **Contrastiva**: si impara una
 geometria, avvicinando le coppie compatibili e allontanando quelle
 incompatibili (CLIP {cite}`radford2021learning` con la loss InfoNCE su coppie
-immagine–didascalia). Nel lessico del capitolo precedente: energia abbassata
+immagine–didascalia). Nel lessico dei modelli a energia: energia abbassata
 sulle coppie giuste e *alzata esplicitamente* sui controesempi, con la nota
 difficoltà di trovarne mai abbastanza in alta dimensione. **Predittiva nello
 spazio latente**: la famiglia JEPA; energia = errore di predizione tra
@@ -600,8 +600,8 @@ embedding) stanno comodamente in una pagina di PyTorch. L'esperimento è
 volutamente in miniatura: ogni «immagine» è una scena finta fatta di 8
 **patch**, cioè di 8 tessere (è il modo in cui i Vision Transformer tagliano
 un'immagine; qui le tessere nascono da un contenuto comune più rumore). Il
-modello vede 6 tessere di contesto e deve prevedere l'**embedding** (non i
-valori!) delle 2 tessere coperte. Il commento chiave è sull'**asimmetria**: il
+modello vede 6 tessere di contesto e deve prevedere l’**embedding** (non i
+valori!) delle 2 tessere coperte. Il commento chiave è sull’**asimmetria**: il
 bersaglio non riceve gradiente, e per questo non può mettersi d'accordo con
 l'encoder. Quel «non riceve gradiente» ha un nome, **stop-gradient**, ed è la
 traduzione in codice dell'insegnante che non può lamentarsi del voto: è lui a
@@ -774,10 +774,14 @@ ingegneria; la logica è tutta in queste righe.
   *attentive probe* (per V-JEPA 2, quattro blocchi transformer), quindi
   misurano quanto l'informazione sia **estraibile**, non quanto il modello
   «capisca».
-- Tre famiglie di auto-supervisione: **generativa** (ricostruisci: BERT,
-  MAE), **contrastiva** (avvicina/allontana: CLIP), **predittiva nello
-  spazio latente** (JEPA). La partita tra generare e predire-nelle-idee è
-  aperta: la prossima sezione visita l'altra sponda.
+- Tre famiglie di auto-supervisione, classificate secondo **dove avviene la
+  previsione**: **generativa** (ricostruisci il dato: BERT, MAE),
+  **contrastiva** (avvicina/allontana: CLIP), **predittiva nello spazio
+  latente** (JEPA). È un asse diverso da quello del capitolo
+  sull'auto-supervisione, che taglia invece secondo che cosa impedisce il
+  collasso e ottiene quattro famiglie: i due elenchi non si contraddicono, si
+  incrociano. La partita tra generare e predire-nelle-idee è aperta: la
+  prossima sezione visita l'altra sponda.
 ```
 
 `````

@@ -248,7 +248,7 @@ quattro costa quasi lo stesso**. Generarli in fila costa un giro del modello
 ciascuno; controllarli tutti insieme, un giro solo.
 
 La seconda osservazione riguarda il linguaggio: scrivere non è uniformemente
-difficile. Dopo «il gatto si è arrampicato sull'» la parola «albero» è quasi
+difficile. Dopo «il gatto si è arrampicato sull’» la parola «albero» è quasi
 obbligata; dopo «la capitale della Francia è» segue «Parigi». Solo alcuni
 punti (una scelta di argomento, un numero, una svolta del ragionamento)
 richiedono davvero tutta la potenza del modello grande.
@@ -554,7 +554,7 @@ scegliere la migliore fra due risposte. Zheng e colleghi lo validano su due
 banchi di prova (**MT-Bench**, ottanta domande a più turni, e **Chatbot
 Arena**, confronti a coppie raccolti dal pubblico e aggregati con un punteggio
 Elo) e misurano che il giudice-GPT-4 concorda con le preferenze umane oltre
-l'**80%** delle volte: lo stesso livello di accordo che due esseri umani hanno
+l’**80%** delle volte: lo stesso livello di accordo che due esseri umani hanno
 fra loro. Il giudice automatico non è però neutro, e i suoi bias hanno nomi
 precisi: il **position bias** (tende a preferire la risposta presentata per
 prima), il **verbosity bias** (favorisce le risposte lunghe) e il

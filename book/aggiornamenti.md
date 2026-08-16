@@ -38,6 +38,27 @@ Una versione corrisponde a una **pubblicazione**, non a una giornata di
 lavoro: il libro si scrive tutti i giorni e si pubblica quando un pezzo sta in
 piedi.
 
+(v1-6-0)=
+
+## 1.6.0 · 16 agosto 2026
+
+### Sezioni nuove
+
+- {doc}`Auto-supervisione </AutoSupervisione/overview>`. **Un capitolo su come si impara senza che nessuno corregga.** Quasi tutto quello che una macchina sa oggi lo ha imparato da dati che nessuno aveva etichettato: il segnale era già dentro i dati, bastava nascondere un pezzo e chiedere di indovinarlo. Il capitolo racconta i quattro modi di fabbricare quel segnale, il guasto che li minaccia tutti (la scorciatoia di rispondere sempre la stessa cosa, che è la risposta perfetta a una domanda mal posta) e i modi di impedirlo. In fondo, il dibattito aperto: quanto conta davvero il rinforzo, se il grosso lo ha già fatto qualcun altro.
+- {doc}`Verosimiglianza esatta </VerosimiglianzaEsatta/overview>`. **Un capitolo sui modelli che sanno dire quanto è probabile quello che vedono.** Un generatore di immagini fabbrica figure ma non sa dirti quanto una figura sia verosimile; questa famiglia sì, e lo dice con un numero. Come ci riesce (un pixel alla volta, oppure deformando una nuvola di punti con trasformazioni che si sanno invertire), quanto costa, e la sorpresa che ha messo in crisi tutti: modelli addestrati su cani danno probabilità più alta a fotografie di numeri civici. La ragione è geometrica, e spiega perché «probabile» non vuol dire «tipico».
+- {doc}`L'inferenza attiva </WorldModels/inferenza-attiva>` (World Model). **E se la ricompensa non fosse il punto di partenza?** Una sezione sull'idea che agire e capire siano lo stesso gesto: un agente che si muove per ridurre la propria sorpresa cerca informazione dove non ne ha, senza che nessuno gli abbia scritto un premio per farlo. È un'alternativa di principio al rinforzo, con una sorpresa nel finale: il termine che trattiene un modello di linguaggio vicino a quello di partenza, durante l'allineamento, è formalmente lo stesso.
+
+### Pagine ampliate
+
+- {doc}`Evoluzioni e applicazioni </GAN/applicazioni-evoluzioni>` (GAN). **Sotto il cofano di StyleGAN, e il pezzo che manca a metà dei generatori di oggi.** Come si separa lo stile dal contenuto in un volto sintetico, e perché una goccia comparsa in tutte le immagini restò senza spiegazione per un anno. Poi la quantizzazione delle immagini in un vocabolario di simboli, che è la cerniera fra i generatori di immagini e i modelli di linguaggio.
+- {doc}`Generare suono e musica </Audio/generazione-audio>` (Audio oltre la voce). **Generare lo spartito invece del suono.** Un minuto di musica scritta come note e durate sta in venti kilobyte; lo stesso minuto registrato ne occupa trenta megabyte. Che cosa si guadagna e che cosa si perde a generare il primo invece del secondo, e perché la scelta di come si scrivono le note decide se la macchina saprà tenere il tempo.
+
+### Correzioni
+
+- **Il libro è stato riletto da capo con l'idea di metterlo in difficoltà**, pagina per pagina, su tutto quello che è arrivato con l'ultima pubblicazione: un lettore che non sa niente di intelligenza artificiale, uno studente che contesta le formule, e uno che apre le fonti una per una. Sono venuti fuori più di cento difetti, e i peggiori erano numeri: un rapporto sbagliato di cento volte, una memoria dichiarata otto volte più grande del vero, un fattore invertito in una formula spiegata due volte (giusta nella versione difficile, rovesciata in quella facile). Corretti tutti, con la prova accanto.
+- **Su quasi ogni pagina c'erano mille apostrofi sbagliati, e nessuno li vedeva.** «Un po' meno» usciva stampato come «un po” meno», con una virgoletta doppia al posto dell'apostrofo, perché il programma che compone il testo, in italiano, interpretava così ogni apostrofo a fine parola. Il sorgente era giusto, il difetto nasceva nella composizione: 1086 occorrenze, riparate.
+- **Le aperture e i congedi.** Il capitolo di matematica cominciava con quarantasette righe di definizioni, e la frase di Galileo in cima non era di Galileo ma una parafrasi da manuale: adesso c'è il passo vero del *Saggiatore*, e ad aprire è von Neumann che consiglia a Shannon di chiamarla entropia «perché nessuno sa davvero cosa sia». Il capitolo sugli agenti diceva che un modello di linguaggio è passivo e non può agire, una pagina dopo averne mostrato uno che comanda un braccio robotico. E dove un capitolo finiva dentro un elenco puntato, adesso c'è una frase che consegna il passaggio a quello dopo.
+
 (v1-5-8)=
 
 ## 1.5.8 · 15 agosto 2026
@@ -48,11 +69,11 @@ piedi.
 
 ### Pagine ampliate
 
-- {doc}`Introduzione </Introduzione/overview>`. **I dati non sono un giacimento, sono uno scarto, e adesso il libro lo dice.** Nessuno si alza la mattina per produrre dati: li lascia dietro di sé mentre fa altro. C'è un precedente, ed è successo su scala planetaria: l'ossigeno che respiriamo è il rifiuto di certi batteri che due miliardi e mezzo di anni fa cominciarono a spezzare l'acqua con la luce del sole, e la vita che se ne nutre è arrivata dopo. Siamo noi. I dati stanno alle macchine come l'ossigeno sta a noi, e l'analogia tiene anche dalla parte scomoda: quello scarto, prima di diventare respiro, fu un veleno.
+- {doc}`Introduzione </Introduzione/overview>`. **I dati non sono un giacimento, sono uno scarto, e adesso il libro lo dice.** Nessuno si alza la mattina per produrre dati: li lascia dietro di sé mentre fa altro. C'è un precedente, ed è successo su scala planetaria: l'ossigeno che respiriamo è il rifiuto di certi batteri che forse tre miliardi di anni fa cominciarono a spezzare l'acqua con la luce del sole, e che per centinaia di milioni di anni non cambiò l'aria di niente. La vita che se ne nutre è arrivata molto dopo. Siamo noi. I dati stanno alle macchine come l'ossigeno sta a noi, e l'analogia tiene anche dalla parte scomoda: quello scarto, prima di diventare respiro, fu un veleno.
 
 ### Correzioni
 
-- **Il libro dice di sé una cosa sola, e la dice dappertutto uguale.** La copertina del PDF, l'anteprima che compare condividendo un link e il titolo delle pagine portavano tre versioni diverse della stessa frase, e per un po' ne hanno portate perfino due in fila, che finivano tutte e due su «due volte» e sembravano un'eco. Adesso è una riga sola. E dalla home il libro si può aprire nel browser, oltre che scaricare.
+- **Il libro dice di sé una cosa sola, e la dice dappertutto uguale.** La copertina del PDF, l'anteprima che compare condividendo un link e il titolo delle pagine portavano tre versioni diverse della stessa frase, e per un po’ ne hanno portate perfino due in fila, che finivano tutte e due su «due volte» e sembravano un'eco. Adesso è una riga sola. E dalla home il libro si può aprire nel browser, oltre che scaricare.
 
 (v1-5-7)=
 
@@ -123,7 +144,7 @@ piedi.
 - **Tutti e trentatré i capitoli sono stati riletti da capo**, con il codice eseguito davvero e i conti rifatti a mano. Non è una rilettura di forma: sono usciti errori di sostanza in quasi ogni capitolo, e i più gravi erano affermazioni che il libro smentiva da sé qualche pagina dopo. Qualche esempio: il clipping di PPO è asimmetrico e taglia da un lato solo, il gradiente della funzione di partizione era annunciato e mai derivato, TransE la composizione ce l'ha (a mancargli è un'altra cosa), e «PALLA sta in sette frame» è falso, il minimo è sei.
 - **I sette capitoli d'apertura sono stati riscritti per essere più leggeri.** Un capitolo può essere tutto vero e restare illeggibile, e quelle sono le pagine dove arriva chi non ha basi. A leggerli è stato un ragazzo di tredici anni che non aveva mai sentito parlare di intelligenza artificiale, e ogni punto in cui si è fermato è stato riscritto: il conto con il seno che «non è un conto che posso rifare, è un numero da credere», la matrice che «gira e stira lo spazio» dopo un esempio che non gira niente, gli alberi che «si trovano a casa» prima che il libro dica che cos'è un albero.
 - **Le figure adesso mostrano quello che le didascalie promettono.** Erano decine i casi in cui il testo accreditava un disegno di qualcosa che non c'era: «quasi tutte le celle sono vuote» di una griglia piena al settantadue per cento, «ogni tacca vale dieci volte la precedente» di un disegno senza tacche, «le caselle sono numerate a partire da zero» dove i numeri non c'erano. In una figura sulle GAN una freccia diceva l'esatto contrario di quanto la pagina spiega per tre paragrafi.
-- {doc}`Allineamento e governance </AIResponsabile/allineamento-e-governance>` (AI responsabile). L'elenco delle pratiche vietate dall'**AI Act** era rimasto indietro: il regolamento europeo del 24 luglio 2026 lo ha allungato, e dal 2 dicembre 2026 sono vietati anche i sistemi che generano materiale intimo non consensuale e materiale di abuso sessuale su minori.
+- {doc}`Allineamento e governance </AIResponsabile/allineamento-e-governance>` (AI responsabile). L'elenco delle pratiche vietate dall’**AI Act** era rimasto indietro: il regolamento europeo del 24 luglio 2026 lo ha allungato, e dal 2 dicembre 2026 sono vietati anche i sistemi che generano materiale intimo non consensuale e materiale di abuso sessuale su minori.
 - **La copertina del PDF non è più mezza pagina vuota**: sotto il titolo c'è una conca disegnata con le sue curve di livello e la discesa che ne trova il fondo, cioè il gesto che il libro racconta dal capitolo di matematica fino all'ultimo. La traiettoria è calcolata, non disegnata a occhio.
 
 (v1-5-1)=

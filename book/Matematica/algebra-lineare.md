@@ -123,7 +123,7 @@ l'operazione aritmetica più eseguita sul pianeta in questo momento.
 :alt: "Proiezione geometrica: il vettore a proiettato sul vettore b, con l'angolo theta e la perpendicolare tratteggiata; la lunghezza della proiezione evidenziata in terracotta"
 :width: 85%
 
-La proiezione di $\mathbf{a}$ su $\mathbf{b}$ è l'"ombra" che $\mathbf{a}$
+La proiezione di $\mathbf{a}$ su $\mathbf{b}$ è l’"ombra" che $\mathbf{a}$
 getta sulla direzione di $\mathbf{b}$. Il prodotto scalare è la lunghezza di
 quest'ombra moltiplicata per la lunghezza di $\mathbf{b}$, e l'angolo fra le
 due frecce (nel disegno la lettera greca $\theta$, si legge «theta») decide se
@@ -178,7 +178,7 @@ sull'asfalto: quell'ombra è la parte di $\mathbf{a}$ che va nella stessa
 direzione della strada. Il
 prodotto scalare è la lunghezza dell'ombra moltiplicata per la lunghezza della
 strada. (Se il bastone pende anche di lato, l'ombra non cade più tutta sulla
-carreggiata ma un po' di sbieco: quel che conta è solo quanto ne avanza *lungo*
+carreggiata ma un po’ di sbieco: quel che conta è solo quanto ne avanza *lungo*
 la strada, e il pezzo di traverso non entra nel conto. È la stessa cosa che
 facciamo quando diciamo che di un viaggio verso sud-est «tanti chilometri sono
 verso sud».)
@@ -340,10 +340,10 @@ cambia fra loro è la direzione). Quasi tutte ruotano; le due sulle diagonali
 l'altra non si muove affatto. La riga scritta nel disegno,
 $\mathbf{A}\mathbf{v} = \lambda\mathbf{v}$, si legge: «applicare la matrice a
 quella freccia dà la stessa freccia moltiplicata per un numero», e quel numero
-è il $3$ o l'$1$.
+è il $3$ o l’$1$.
 ```
 
-Il $3$ e l'$1$ non sono da prendere per buoni, sono due conti come quelli
+Il $3$ e l’$1$ non sono da prendere per buoni, sono due conti come quelli
 dell'appartamento. Nella didascalia la tabella è scritta stretta fra due
 parentesi, che è il modo consueto di scriverla: la prima riga è $2$ e $1$, la
 seconda è $1$ e $2$. E la diagonale che sale è la freccia $(1,1)$, cioè quella
@@ -445,7 +445,7 @@ $$
 \det(\mathbf{A} - \lambda \mathbf{I}) = 0 .
 $$
 
-È l'**equazione caratteristica**, un polinomio di grado $n$ in $\lambda$: una
+È l’**equazione caratteristica**, un polinomio di grado $n$ in $\lambda$: una
 matrice $n\times n$ ha quindi $n$ autovalori nel campo complesso, contati con
 molteplicità. Per la matrice della figura,
 $\det\!\begin{pmatrix}2-\lambda&1\\1&2-\lambda\end{pmatrix}
@@ -584,7 +584,7 @@ norma, comodo perché deriva bene e toglie la radice, distanza non è:
 raddoppiando lo spostamento quadruplica, e la disuguaglianza triangolare
 salta.
 
-Proprio il quadrato è però ciò che compare nella celebre loss dell'**errore
+Proprio il quadrato è però ciò che compare nella celebre loss dell’**errore
 quadratico medio**:
 
 $$
@@ -648,14 +648,14 @@ tutti casi della stessa operazione.
   opposti. È il conto che fa un singolo neurone.
 - Gli **autovettori** sono le venature del legno di una matrice: le direzioni
   che la trasformazione non devia, e lungo cui si limita ad allungare o
-  accorciare di un fattore fisso, l'**autovalore** $\lambda$. Applicando cento
+  accorciare di un fattore fisso, l’**autovalore** $\lambda$. Applicando cento
   volte la *stessa* matrice quel fattore si moltiplica per sé stesso, e basta
   poco perché il risultato scappi via: un fattore appena sopra l'uno fa
   esplodere tutto, uno appena sotto lo fa svanire. In una rete vera le matrici
   sono diverse a ogni strato, quindi va tenuta l'idea (gli effetti si
   moltiplicano lungo la catena) e non il numero.
 - La **norma** è la lunghezza di una freccia (il teorema di Pitagora sulle sue
-  componenti) e serve soprattutto a misurare l'**errore** di un modello:
+  componenti) e serve soprattutto a misurare l’**errore** di un modello:
   quanto è lunga la differenza fra la risposta giusta e la previsione. La
   stessa lunghezza, applicata alla differenza di due vettori qualsiasi, è la
   loro **distanza**: quanto si somigliano.
@@ -680,7 +680,7 @@ tutti casi della stessa operazione.
   **valori singolari** $\sigma_i$ dicono di quanto la matrice allunga al
   massimo e al minimo, e quanti sono i non nulli è il rango.
 - La **norma** $\lVert\mathbf{x}\rVert_2=\sqrt{\mathbf{x}^\top\mathbf{x}}$
-  misura lunghezze e, soprattutto, l'**errore** di un modello; la
+  misura lunghezze e, soprattutto, l’**errore** di un modello; la
   **distanza** $\lVert\mathbf{x}-\mathbf{y}\rVert_2$ che ne discende è ciò
   che si intende quando si dice che due embedding sono vicini.
 ```

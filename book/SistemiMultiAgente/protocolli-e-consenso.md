@@ -209,7 +209,7 @@ rispondere in un formato fisso invece che in prosa: si restringe quello che può
 scrivere, e in cambio si ottiene la possibilità di controllarlo a macchina.
 Quello che cambia qui è la scala. Il cancello di verifica del «Costo del
 coordinamento», quel controllo esterno che o passa o non passa, giudica **una
-risposta** per volta; un protocollo giudica l'**intera conversazione**. Non
+risposta** per volta; un protocollo giudica l’**intera conversazione**. Non
 «questa risposta è ben formata», ma «questo scambio, dal primo messaggio
 all'ultimo, è una partita legale».
 
@@ -325,7 +325,7 @@ $n$.
 ## L'ipotesi che non regge
 
 Qui arriva il punto della sezione, e conviene dirlo senza attenuanti. Il
-teorema di Condorcet ha un'ipotesi, l'**indipendenza**, e nei sistemi
+teorema di Condorcet ha un'ipotesi, l’**indipendenza**, e nei sistemi
 multi-agente costruiti oggi quell'ipotesi è quasi sempre falsa.
 
 Dieci copie dello stesso modello, con lo stesso foglio di istruzioni, davanti
@@ -379,7 +379,7 @@ partecipanti supera quella soglia, perché su quel quinto di domande stanno
 sbagliando tutti insieme.
 
 C'è di peggio, ed è la parte che dovrebbe far paura. Sulle trappole i nove
-agenti non sbagliano un po' ciascuno per conto suo: rispondono la stessa cosa
+agenti non sbagliano un po’ ciascuno per conto suo: rispondono la stessa cosa
 sbagliata, **all'unanimità**. Chi usa l'accordo come misura di fiducia (nove su
 nove, andiamo tranquilli) sta leggendo il segnale più forte proprio nel momento
 in cui è più falso.
@@ -413,7 +413,7 @@ $$
 
 dove il fattore $1-\lambda$ non dipende da $n$ e mette un **tetto** che nessun
 numero di votanti supera. Con $\lambda = 0{,}2$ e $p_0 = 0{,}875$ si ha
-$p = 0{,}7$, identica al caso indipendente, ma il tetto è $0{,}8$ contro l'$1$
+$p = 0{,}7$, identica al caso indipendente, ma il tetto è $0{,}8$ contro l’$1$
 di Condorcet.
 
 La versione generale del fenomeno si legge sulla varianza. Per $n$ votanti
@@ -506,7 +506,7 @@ l'esito peggiore possibile: un sistema che sbaglia e dà segno di essere incerto
 si può ancora recuperare, mentre uno che sbaglia esibendo nove firme in calce
 no.
 
-L'indipendenza, però, non è tutto o niente: un po' se ne può comprare, e ogni
+L'indipendenza, però, non è tutto o niente: un po’ se ne può comprare, e ogni
 modo di comprarla ha il suo prezzo. Si può **alzare la manopola della
 temperatura**, perché le risposte prendano strade diverse. Si può chiedere
 esplicitamente **modi di ragionare diversi**: risolvi per stima, poi per calcolo
@@ -523,8 +523,8 @@ modello produce quando lo si costringe a scegliere sempre la parola più
 probabile, se ne fanno produrre molti diversi e si tiene la risposta finale che
 compare più spesso, buttando via i ragionamenti che ci hanno portato. Funziona,
 e funziona per la ragione che questa sezione ha appena messo in conto: variare
-il modo di generare rende gli errori **un po' meno simili** fra loro. Vale la
-pena insistere su quel «un po'». Quei percorsi escono tutti dallo stesso
+il modo di generare rende gli errori **un po’ meno simili** fra loro. Vale la
+pena insistere su quel «un po’». Quei percorsi escono tutti dallo stesso
 modello, quindi la somiglianza si abbassa ma non arriva a zero, il tetto resta
 dov'era, e il guadagno reale è sempre inferiore a quello che il conto di
 Condorcet promette.
@@ -605,7 +605,7 @@ Due avvertenze, e sono sostanziali. La prima: il risultato vale con gioco
 ottimale e giudice affidabile, cioè capace di valutare correttamente l'ultimo
 passaggio conteso. Un giudice sensibile alla **posizione** dell'intervento, alla
 sua **lunghezza** o alla somiglianza con il proprio stile (sono esattamente i
-tre bias dell'*LLM-as-a-judge*, *position*, *verbosity* e *self-enhancement*,
+tre bias dell’*LLM-as-a-judge*, *position*, *verbosity* e *self-enhancement*,
 che il capitolo su MLOps misurerà più avanti) rompe l'ipotesi, e il gioco premia
 la persuasione invece della verità. La seconda riguarda proprio questo capitolo: due
 dibattenti istanziati dallo **stesso modello** ereditano la correlazione appena
@@ -763,7 +763,7 @@ partecipanti, tre volte tanti quanti sono i bugiardi che si vogliono tollerare.
 Che cosa ci fa un teorema sui protocolli di consenso in un libro di
 intelligenza artificiale? Ci fa la distinzione che introduce, che è
 esattamente quella che serve qui. Un partecipante **guasto** smette di
-rispondere: se ne accorge chiunque, basta aspettare un po' e dichiararlo morto,
+rispondere: se ne accorge chiunque, basta aspettare un po’ e dichiararlo morto,
 e la cura è avere qualcuno di riserva (se uno tace, chiedi a un altro). Un
 partecipante **bizantino**, cioè bugiardo, risponde: risponde in tempo,
 risponde in modo perfettamente plausibile, e dice il falso. Nessuna attesa lo
@@ -778,7 +778,7 @@ con lo stesso garbo con cui produce quelle vere. Ecco la ragione tecnica per cui
 dalle bugie, e le architetture multi-agente costruite sull'idea «se sono in
 tanti, qualcuno se ne accorgerà» stanno applicando la contromisura sbagliata al
 guasto sbagliato. È lo stesso terreno su cui tornerà, in chiusura di libro, il
-capitolo sull'**AI responsabile**, dove la robustezza non è la capacità di non
+capitolo sull’**AI responsabile**, dove la robustezza non è la capacità di non
 rompersi ma quella di comportarsi in modo prevedibile quando qualcosa (o
 qualcuno) prova a farti sbagliare.
 
@@ -799,7 +799,7 @@ davvero non aggiunge informazione, aggiunge una firma {cite}`cemri2025why`.
 ## Rendere visibile il disaccordo
 
 C'è una cosa che il teorema dei generali bizantini garantisce e una che non
-garantisce, e la distinzione chiude la sezione. Garantisce l'**accordo**: i
+garantisce, e la distinzione chiude la sezione. Garantisce l’**accordo**: i
 partecipanti leali decidono tutti lo stesso valore. Non garantisce la
 **verità**: se il comandante leale ordina una ritirata sbagliata, il protocollo
 farà ritirare tutti, ordinatamente e all'unanimità. Consenso e correttezza sono
@@ -853,7 +853,7 @@ converge in silenzio sulla risposta sbagliata.
   insieme e allo stesso modo, e su quelle il voto non corregge, certifica. Il
   voto non aumenta la correttezza, aumenta la **sicurezza con cui la risposta
   viene data**: su nove agenti concordi, quasi una unanimità su due è sbagliata.
-- Un po' di indipendenza si compra: far generare le risposte in modo meno
+- Un po’ di indipendenza si compra: far generare le risposte in modo meno
   prevedibile, chiedere strade di ragionamento diverse, riformulare la domanda,
   cambiare modello. È il motivo per cui la **self-consistency**
   {cite}`wang2023selfconsistency` funziona; il guadagno però resta sempre sotto
@@ -884,7 +884,7 @@ converge in silenzio sulla risposta sbagliata.
   {cite}`fischer1985impossibility`. I sistemi veri comprano un orologio: aspetto
   al massimo tanto, e chi non risponde lo do per morto, sapendo che ogni tanto
   sbaglierò.
-- E il consenso garantisce l'**accordo**, mai la **verità**: un gruppo può
+- E il consenso garantisce l’**accordo**, mai la **verità**: un gruppo può
   ritirarsi tutto insieme, ordinatamente, dalla parte sbagliata.
 ```
 
@@ -907,12 +907,12 @@ converge in silenzio sulla risposta sbagliata.
   all'errore: il voto amplifica la tendenza di fondo, non aggiunge competenza.
 - **L'ipotesi crolla fra agenti identici.** Dieci istanze dello stesso modello
   sono un votante interrogato dieci volte: con una frazione $\lambda$ di errori
-  sistematici il voto ha un tetto $1-\lambda$ ($0{,}80$ contro l'$1$ promesso),
+  sistematici il voto ha un tetto $1-\lambda$ ($0{,}80$ contro l’$1$ promesso),
   e con correlazione $\rho$ il numero efficace di votanti si ferma, come ordine
   di grandezza, a $1/\rho$.
   Il voto non aumenta la correttezza, aumenta la **confidenza**: su nove agenti
   concordi, il 45% delle unanimità è sbagliato.
-- Un po' di indipendenza si compra: campionare a temperatura, imporre percorsi
+- Un po’ di indipendenza si compra: campionare a temperatura, imporre percorsi
   di ragionamento diversi, riformulare la domanda, cambiare modello. È il
   motivo per cui la **self-consistency** {cite}`wang2023selfconsistency`
   funziona, ma decorrela solo **parzialmente**: il guadagno reale è sempre
@@ -936,7 +936,7 @@ converge in silenzio sulla risposta sbagliata.
   comprato la sincronia; le monete sono timeout, randomizzazione e rilevatori di
   guasti, e Paxos {cite}`lamport1998part` e Raft {cite}`ongaro2014raft` comprano
   la prima.
-- E il consenso garantisce l'**accordo**, mai la **verità**.
+- E il consenso garantisce l’**accordo**, mai la **verità**.
 ```
 
 `````

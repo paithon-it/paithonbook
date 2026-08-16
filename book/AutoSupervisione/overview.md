@@ -1,0 +1,361 @@
+# Auto-supervisione: il segnale è già nei dati
+
+Nel 1953 Wilson Taylor, che studiava giornalismo e non calcolatori, aveva un
+problema pratico: misurare quanto un testo sia facile da leggere. Le formule in
+circolazione contavano sillabe e lunghezza delle frasi, e a lui non
+convincevano. Propose allora un metodo diverso e quasi brutale
+{cite}`taylor1953cloze`: prendere il testo, cancellare una parola ogni tante e
+darlo da completare a dei lettori. Più parole indovinavano, più quel testo era
+prevedibile per loro, e quindi facile. Chiamò la procedura *cloze*, dalla
+chiusura percettiva di cui parlavano gli psicologi della forma: la tendenza a
+completare da sé una figura interrotta.
+
+Taylor voleva misurare i lettori. Sessantasei anni dopo, lo stesso identico
+gioco (coprire una parola e farla indovinare) è diventato il modo in cui si
+addestrano i modelli di linguaggio, e gli autori di BERT lo dicono in chiaro,
+rimandando proprio a Taylor: quel loro esercizio, scrivono, in letteratura si
+chiama *compito cloze* {cite}`devlin2019bert`. Nel mezzo non è cambiato l'esercizio:
+è cambiato **chi lo fa** e **a che scopo**. Non si misura più il lettore, si
+fabbrica il lettore.
+
+Questo capitolo parla di quella mossa, che il libro ha già usato cinque volte
+con cinque nomi diversi senza mai fermarsi a dire che era una cosa sola, e che
+oggi regge il pre-addestramento di quasi tutti i modelli di cui si parla.
+
+## Un compito la cui risposta è già nei dati
+
+Il nome è **apprendimento auto-supervisionato**, e la definizione sta in una
+riga: ci si inventa un compito la cui risposta corretta è ricavabile dai dati
+stessi, senza che nessuno la scriva. Un compito così si chiama un **pretesto**,
+e il nome è onesto: risolverlo non interessa a nessuno. Interessa quello che il
+modello è costretto a capire per riuscirci, e che gli resta addosso quando il
+pretesto si butta via.
+
+La differenza con l'apprendimento supervisionato dei capitoli precedenti non
+sta nell'algoritmo, che è lo stesso, e nemmeno nella rete, che è la stessa.
+Sta in **chi scrive la risposta giusta**. Là la scriveva una persona, una per
+esempio, a mano; qui la si ricava dal dato con un'operazione meccanica: quale
+parola avevo coperto, quale pezzo di immagine avevo ritagliato, quale
+fotogramma viene dopo. La risposta c'era già, e noi l'abbiamo solo nascosta per
+un momento.
+
+Detta così sembra un trucco contabile. Non lo è, e la ragione è il resto di
+questa pagina.
+
+## Quanta informazione porta una risposta
+
+Le tre grandi famiglie di apprendimento che il libro ha attraversato
+(supervisionato, per rinforzo, auto-supervisionato) si distinguono di solito
+per come sono fatte. Conviene invece guardarle da un'altra parte: per **quanto
+dice** la risposta con cui il modello si corregge. Non quanto è giusta: quanto
+è *grande*.
+
+`````{tab} Elementare
+
+Immagina tre modi di imparare a riconoscere gli uccelli.
+
+Nel primo, qualcuno ti mostra una fotografia e ti dice una parola:
+«cardellino». Hai imparato qualcosa, ma quella parola è tutto quello che hai
+ricevuto per quella fotografia: una parola sola, scelta da un elenco di nomi
+che qualcuno ha compilato prima.
+
+Nel secondo, ti mostrano la stessa fotografia con mezza immagine coperta e ti
+chiedono di disegnare quello che manca. Adesso la risposta giusta non è una
+parola: è tutta la metà nascosta, con la forma del becco, il colore delle ali,
+il ramo che continua, l'ombra che cade dalla parte giusta. Per riempire quel
+buco devi aver capito parecchio, e ogni singolo dettaglio che indovini o sbagli
+ti dice qualcosa.
+
+Nel terzo, giri tutto il giorno in un bosco a osservare uccelli e la sera
+qualcuno ti dice: «oggi hai fatto bene». Punto. È stata una giornata intera, e
+di ritorno hai avuto una frase sola, che vale per tutto. Quali degli sguardi che
+hai dato erano quelli buoni? Nessuno te lo dice.
+
+Il terzo modo è l'apprendimento per rinforzo. Il primo è quello
+supervisionato. Il secondo è quello di cui parla questo capitolo, ed è il solo
+in cui la correzione che ricevi è **grande quanto la cosa che stai guardando**.
+
+`````
+
+`````{tab} Superiore
+
+La quantità da guardare è l'informazione portata dal **bersaglio**, cioè dalla
+risposta corretta su cui si calcola la perdita. Una scelta fra $K$ possibilità
+equiprobabili porta al più $\log_2 K$ bit, che è la definizione di entropia
+applicata al caso uniforme (la sezione sulla teoria dell'informazione, nei
+richiami di matematica, la ricava).
+
+Da qui tre conti, e sono conti di **tetto**, non di sostanza:
+
+- un'etichetta su $K = 1000$ classi porta al più $\log_2 1000 \approx 10$ bit,
+  e li porta **per immagine**;
+- un token su un vocabolario di $V = 128\,000$ porta al più
+  $\log_2 128\,000 \approx 17$ bit, ma li porta **per token**, e un esempio di
+  pre-addestramento è una finestra di migliaia di token;
+- una ricompensa binaria porta **1 bit**, e lo porta **per episodio**, cioè per
+  l'intera traiettoria, comunque lunga sia.
+
+L'ultima riga è quella che decide tutto, e non per la dimensione del numero ma
+per il denominatore: nel supervisionato e nell'auto-supervisionato il bersaglio
+si misura per esempio o per token, nel rinforzo per **episodio**. Un episodio
+può essere una mossa oppure diecimila.
+
+`````
+
+Il conto lo facciamo fare al calcolatore, così si può rifare e discutere.
+
+```python
+from math import log2
+
+# Quanta informazione porta AL PIU' il bersaglio, cioe' la risposta giusta su
+# cui il modello si corregge. E' il tetto del canale: quanto ci passa davvero
+# e' un'altra domanda, e la pagina ci torna sopra.
+
+def bit_per_scelta(n):
+    """Una scelta fra n possibilita' equiprobabili vale log2(n) bit."""
+    return log2(n)
+
+CLASSI = 1000         # ImageNet: una foto, una categoria fra mille
+VOCABOLARIO = 128000  # un tokenizzatore di oggi
+FINESTRA = 8192       # token in un esempio di pre-addestramento
+PASSI = 10000         # passi di una partita prima del verdetto
+
+etichetta = bit_per_scelta(CLASSI)
+token     = bit_per_scelta(VOCABOLARIO)
+testo     = token * FINESTRA
+rinforzo  = 1.0       # vinto o perso: una risposta binaria per partita
+
+print(f"{'compito':34s} {'bit per esempio':>16s}")
+print("-" * 51)
+print(f"{'etichetta su ' + str(CLASSI) + ' classi':34s} {etichetta:16.1f}")
+print(f"{'un token su ' + str(VOCABOLARIO):34s} {token:16.1f}")
+print(f"{'una finestra di ' + str(FINESTRA) + ' token':34s} {testo:16.1f}")
+print(f"{'vinto o perso, a fine partita':34s} {rinforzo:16.1f}")
+print()
+print(f"la finestra di testo vale {testo/etichetta:,.0f} etichette".replace(",", "."))
+print(f"e {testo/rinforzo:,.0f} verdetti di fine partita".replace(",", "."))
+print(f"spalmato sui {PASSI} passi della partita, il verdetto")
+print(f"vale {rinforzo/PASSI:.4f} bit per passo")
+```
+
+```text
+compito                             bit per esempio
+---------------------------------------------------
+etichetta su 1000 classi                       10.0
+un token su 128000                             17.0
+una finestra di 8192 token                 138983.7
+vinto o perso, a fine partita                   1.0
+
+la finestra di testo vale 13.946 etichette
+e 138.984 verdetti di fine partita
+spalmato sui 10000 passi della partita, il verdetto
+vale 0.0001 bit per passo
+```
+
+Le due righe da confrontare non sono la prima e l'ultima, che stanno in un
+rapporto di dieci a uno: sono la **terza** e l'ultima. La terza riga è il brano
+di testo che il modello legge in un colpo solo, ottomila pezzetti di parola:
+vale quasi quattordicimila etichette e centotrentanovemila verdetti di fine
+partita, e sono i due rapporti che il programma stampa in fondo. È la ragione
+per cui una fotografia etichettata «vale» poco e ce ne vogliono milioni, mentre
+una pagina di testo che nessuno ha mai guardato può bastare a insegnare
+qualcosa.
+
+Adesso però va detta la cosa che rende il conto onesto, perché senza di essa
+questa pagina prometterebbe più di quanto può mantenere.
+
+`````{tab} Elementare
+
+Quei numeri dicono **quanto è grande la risposta giusta**, non quanto il
+modello ne ha capito. Sono il diametro del tubo, non l'acqua che ci passa.
+
+Un modello può ricevere una metà di fotografia da indovinare e cavarne pochissimo,
+per esempio sfumando tutto e accontentandosi di una macchia del colore giusto:
+la risposta era grande, quello che ha imparato è piccolo. E all'opposto, un
+solo «hai sbagliato» detto al momento giusto può insegnare più di mille foto
+etichettate male.
+
+Il confronto regge sui rapporti grossi, quelli da dieci volte in su, e sulla
+tendenza; non sui decimali. E va usato per quello: dice dove c'è **spazio** per
+imparare, non quanto si impara davvero.
+
+`````
+
+`````{tab} Superiore
+
+Tre precisazioni, e sono tutte nella stessa direzione.
+
+La prima: $\log_2 K$ è l'entropia della distribuzione **uniforme**, cioè un
+massimo. Le etichette reali non sono uniformi e i token nemmeno: l'entropia
+condizionata di un token dato il contesto è molto minore di $\log_2 V$, ed è
+proprio ciò che un buon modello linguistico abbassa. Quindi i numeri della
+tabella sono tetti, e il tetto vero è più basso.
+
+La seconda: l'informazione del bersaglio è un limite superiore
+sull'informazione che il gradiente può trasportare, non una misura di ciò che
+la rete acquisisce. Fra le due c'è di mezzo l'ottimizzazione, l'architettura e
+la scelta del pretesto, e il capitolo sulla visione ha già mostrato quanto
+quella scelta pesi: con le trasformazioni sbagliate un modello risolve il
+pretesto per scorciatoia e non impara niente.
+
+La terza, ed è quella che il dibattito sul rinforzo userà: la povertà del
+segnale nel rinforzo non è solo una questione di quantità. Un bit per episodio
+va anche **assegnato**, cioè distribuito fra i passi che hanno contribuito, e
+quel problema (l'assegnazione del credito) è duro in modo indipendente dal
+numero di bit. L'ultima sezione di questo capitolo lo prende di petto.
+
+`````
+
+## La torta, e la parola che ci hanno cambiato dentro
+
+L'argomento ha una forma celebre, e vale la pena raccontarla per intero perché
+la sua storia dice qualcosa sul campo.
+
+Nel dicembre del 2016, a un convegno, Yann LeCun mostra una diapositiva con
+una fetta di torta e una frase: «se l'intelligenza è una torta, il grosso della
+torta è l'apprendimento **non supervisionato**, la glassa è l'apprendimento
+supervisionato, e la ciliegina è l'apprendimento per rinforzo»
+{cite}`lecun2016cake`. L'immagine fa il giro del mondo, e la ciliegina diventa
+un modo di dire.
+
+Nel 2019, alla stessa diapositiva, LeCun cambia una parola: dove diceva «non
+supervisionato» adesso dice «**auto**-supervisionato». Non è una limatura. La
+ragione l'ha scritta lui stesso, insieme a Ishan Misra, in un testo del 2021
+che è la formulazione più chiara di tutta questa faccenda
+{cite}`lecun2021darkmatter`: «non supervisionato» è un termine mal definito e
+fuorviante, perché suggerisce che l'apprendimento non usi supervisione affatto,
+mentre in realtà l'auto-supervisione «usa molti più segnali di correzione di
+quanti ne usino i metodi supervisionati e per rinforzo standard».
+
+Quella frase è il conto della sezione precedente, detto in una riga e dalla
+persona che ha disegnato la torta. Ed è anche la ragione per cui in questo
+libro la parola «non supervisionato» compare pochissimo: descrive un'assenza
+che non c'è.
+
+```{admonition} Una nota sulla fonte
+:class: note
+Della diapositiva del 2016 circolano moltissime riproduzioni e la frase è
+riportata in modo concorde, ma le lastre originali non sono più reperibili
+online. L'argomento di questa pagina non poggia su di esse: poggia sul testo
+del 2021, che è firmato, datato e leggibile da chiunque. La torta serve come
+immagine e come cronologia, non come prova.
+```
+
+## Dove il libro l'ha già fatto
+
+Se l'auto-supervisione è il paradigma, allora questo libro ne è pieno, e la
+tabella che segue serve a due cose: al lettore, per accorgersene, e a questo
+capitolo, per dichiarare che non le rifarà.
+
+| dove | il pretesto | che cosa se ne tiene |
+|---|---|---|
+| `NaturalLanguageProcessing`, `Transformers` | coprire una parola, o indovinare la prossima | un modello di linguaggio |
+| `VisioneArtificiale`, «Imparare a vedere senza etichette» | ritrovare il ritaglio gemello, oppure ricostruire i tre quarti coperti | un encoder di immagini |
+| `Audio`, «Imparare senza etichette» | indovinare il tratto di parlato mascherato | rappresentazioni del suono |
+| `VisioneLinguaggio`, «Allineare due spazi» | riappaiare l'immagine con la sua didascalia | uno spazio comune fra vista e lingua |
+| `WorldModels` | prevedere come continua la scena | un simulatore interno |
+
+Cinque righe e un solo meccanismo, distribuito su sei capitoli, perché la prima
+riga ne tiene due. La colonna di mezzo cambia sempre; la colonna di destra è
+sempre la stessa cosa, una **rappresentazione**, cioè il riassunto interno che
+il modello si costruisce e che tutto il resto usa come materia prima. Il pezzo
+di rete che produce quel riassunto si chiama **encoder**, ed è esattamente
+quello che si tiene quando il pretesto si butta.
+
+C'è poi una sesta riga, che non è un capitolo del libro ma un organismo vivo.
+Nelle neuroscienze teoriche c'è un modo di guardare al cervello, l’**inferenza
+attiva**, secondo cui percepire e agire non sono due mestieri distinti ma lo
+stesso mestiere: indovinare che cosa c'è là fuori, e muoversi per indovinare
+meglio. Il capitolo sui world model gli dedica una sezione. Qui serve una frase
+sola, perché dice del paradigma qualcosa che nessun sistema artificiale può
+dire: imparare «non è fondamentalmente diverso dalla percezione; opera
+semplicemente su una scala di tempo più lenta» {cite}`parr2022active`.
+
+In un essere vivente, cioè, non esiste una fase di addestramento separata
+dall'uso, con le etichette da una parte e il lavoro dall'altra: c'è una cosa
+sola che va avanti sempre, e il bersaglio su cui si corregge è il segnale
+successivo. L'auto-supervisione non è quindi un espediente ingegneristico
+trovato quando le etichette sono finite: è il modo in cui funziona l'unico
+sistema che sappiamo imparare davvero, e che noi abbiamo raggiunto per un'altra
+strada.
+
+Una nota di vocabolario, per non inciampare più avanti. Lo stesso obiettivo, in
+quella letteratura, circola sotto molti nomi: minimizzare la **sorpresa**,
+l’**entropia**, l’**errore di predizione** oppure l’**energia libera
+variazionale**. Non sono quattro cose, sono quattro modi di dire, e la scelta
+dipende dal mestiere di chi parla: «errore di predizione» dove si spiegano
+segnali cerebrali, «energia libera variazionale» dove si fa apprendimento
+automatico.
+
+Da qui il capitolo prosegue in tre passi. Prima le **famiglie**: i quattro modi
+di fabbricare un pretesto, letti tutti come risposte diverse a una sola
+domanda, che è come si impedisce al modello di rispondere sempre la stessa
+cosa. Poi il **collasso e la misura**: che cosa va storto, e come si fa a
+sapere se ha funzionato quando non c'è nessun punteggio da guardare. Infine la
+**ciliegina**, cioè il dibattito su quanto conti l'apprendimento per rinforzo,
+che è la parte in cui persone molto autorevoli non sono d'accordo fra loro e
+questo libro si limita a riportare gli argomenti con i loro nomi giusti.
+
+`````{tab} Elementare
+
+```{admonition} Da ricordare
+:class: important
+- **Auto-supervisione** vuol dire inventarsi un esercizio la cui risposta
+  giusta è già dentro i dati: coprire una parola e farla indovinare, ritagliare
+  un pezzo di foto e farlo ritrovare. Nessuno scrive la risposta, si nasconde e
+  basta. L'esercizio si butta via; quello che il modello ha dovuto capire per
+  farlo si tiene.
+- Il gioco è più vecchio dei calcolatori: nel 1953 serviva a misurare quanto un
+  testo fosse facile da leggere. Oggi serve a fabbricare chi lo legge.
+- La differenza che conta con gli altri modi di imparare è **quanto è grande la
+  correzione** che il modello riceve. Una parola sola («cardellino») per una
+  fotografia intera; oppure mezza fotografia da ricostruire, cioè migliaia di
+  dettagli; oppure un «bravo» a fine giornata, che vale per tutta la giornata.
+- Fra il secondo modo e il primo ci sono quattro zeri di differenza, e fra il
+  secondo e il terzo ce ne sono cinque. Il primo e il terzo, invece, distano
+  appena dieci volte: il conto è in questa pagina, fatto da un programma che si
+  può rilanciare.
+- Attenzione a non chiedere troppo a quei numeri: dicono quanto è **grande** la
+  risposta, non quanto il modello ne ha capito. Sono il diametro del tubo, non
+  l'acqua che ci passa.
+- L'immagine famosa è la **torta** di Yann LeCun: il grosso è
+  l'auto-supervisione, la glassa è imparare dalle etichette, la ciliegina è
+  imparare per tentativi e premi. Nel 2016 la fetta grossa si chiamava «non
+  supervisionata»; è LeCun stesso ad averle cambiato nome, perché di
+  supervisione ce n'è, e ce n'è molta di più.
+```
+
+`````
+
+`````{tab} Superiore
+
+```{admonition} Da ricordare
+:class: important
+- L'apprendimento **auto-supervisionato** costruisce un **pretesto** il cui
+  bersaglio è ricavabile dal dato con un'operazione meccanica, e ne conserva
+  l’**encoder**, non il compito. Algoritmo e architettura restano quelli del
+  supervisionato: cambia chi produce il bersaglio.
+- Il criterio discriminante è l’**informazione del bersaglio**, e soprattutto il
+  suo denominatore: $\log_2 K \approx 10$ bit **per immagine** per
+  un'etichetta su $K = 1000$ classi; $\log_2 V \approx 17$ bit **per token**
+  per un vocabolario da $V = 128\,000$, cioè circa $1{,}4 \cdot 10^5$ bit per
+  una finestra da 8192 token; 1 bit **per episodio** per una ricompensa
+  binaria, indipendentemente dalla lunghezza dell'episodio.
+- Sono **limiti superiori** in ipotesi uniforme, quindi tetti e non misure:
+  l'entropia condizionata reale è più bassa, e fra informazione del bersaglio e
+  informazione acquisita ci sono ottimizzazione, architettura e qualità del
+  pretesto. Il confronto vale sugli ordini di grandezza.
+- Nel rinforzo alla scarsità si somma un problema indipendente,
+  l’**assegnazione del credito** fra i passi di una traiettoria: pochi bit, e
+  per giunta da distribuire.
+- La **torta** di LeCun {cite}`lecun2016cake` data la cornice al 2016 e la sua
+  revisione al 2019, quando *unsupervised* diventa *self-supervised*. La
+  motivazione è scritta in {cite}`lecun2021darkmatter`: «unsupervised» è
+  fuorviante perché l'auto-supervisione «usa molti più segnali di correzione»
+  del supervisionato e del rinforzo.
+- Il libro ha già istanziato il paradigma in cinque ambiti e sei capitoli
+  (linguaggio, che ne occupa due, visione, audio, visione-linguaggio, world
+  model): questo capitolo non li ripete, li unifica.
+```
+
+`````

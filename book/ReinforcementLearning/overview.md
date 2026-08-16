@@ -18,7 +18,7 @@ decide (il bambino, un robot, un programma che gioca a scacchi). C'è un
 cui interagisce. E c'è una **ricompensa**, un numero che l'ambiente restituisce
 per dire "bene" o "male". L'agente guarda la situazione in cui si trova (lo
 **stato**: tutto ciò che in questo istante vede del mondo), sceglie
-un'**azione**, l'ambiente passa a un nuovo stato e gli consegna una ricompensa;
+un’**azione**, l'ambiente passa a un nuovo stato e gli consegna una ricompensa;
 poi il ciclo ricomincia ({numref}`fig-rl-ciclo`). Quello che l'agente cerca di
 rendere più grande possibile non è la ricompensa di adesso, ma la somma di
 tutte quelle che verranno da qui alla fine: quella somma ha un nome, **ritorno**
@@ -78,7 +78,7 @@ questo capitolo si alternano: è la sola cosa che l'agente cerca di migliorare.
 `````{tab} Elementare
 
 Immagina un videogioco. A ogni istante vedi lo schermo (lo **stato**),
-premi un tasto (l'**azione**) e il gioco reagisce: nuova schermata e magari
+premi un tasto (l’**azione**) e il gioco reagisce: nuova schermata e magari
 qualche punto in più o in meno (la **ricompensa**). L'obiettivo non è indovinare
 il tasto "giusto" in questo istante, ma accumulare più punti possibile fino alla
 fine della partita: quel totale è il **ritorno**, ed è il numero da cui si
@@ -129,7 +129,7 @@ ricompensa che dice *quanto è andata bene*, non *cosa avrebbe dovuto fare*. E i
 punto più difficile è che la ricompensa spesso arriva **tardi**: negli scacchi
 capisci di aver sbagliato solo trenta mosse dopo, quando perdi. Quale mossa
 ringraziare per la vittoria? Quale incolpare per la sconfitta? Questo si chiama
-problema dell'**assegnazione del merito** (*credit assignment*), ed è il cuore
+problema dell’**assegnazione del merito** (*credit assignment*), ed è il cuore
 di tutta la difficoltà.
 
 `````

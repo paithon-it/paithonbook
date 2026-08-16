@@ -22,7 +22,7 @@ paesaggio non è disegnato da nessuna parte, esiste solo nel senso che quella
 rete, per ogni immagine che le si dà, sa dire quanto in alto sta. Le risposte
 sbagliate su cui alzare il terreno se le fabbrica il modello stesso, lasciando
 rotolare qualche pallina con la ricetta di Langevin, cioè scendendo lungo la
-pendenza con addosso un po' di rumore. E le palline non ripartono da capo ogni
+pendenza con addosso un po’ di rumore. E le palline non ripartono da capo ogni
 volta: si tengono in un serbatoio e riprendono da dove erano arrivate, che è
 parola per parola l'idea della sezione sulle macchine di Boltzmann, quella con
 cui si faceva proseguire il sogno invece di rifarlo da capo
@@ -115,7 +115,7 @@ p_\theta(\mathbf{x}) = \sum_{y} p_\theta(\mathbf{x}, y)
 $$
 
 dove $\operatorname{logsumexp}_y f[y] = \log \sum_y e^{f[y]}$ è il massimo
-«ammorbidito» dei logit (vale sempre almeno quanto il più grande, e un po' di
+«ammorbidito» dei logit (vale sempre almeno quanto il più grande, e un po’ di
 più quando anche gli altri sono grandi), da cui l'energia marginale
 $E_\theta(\mathbf{x}) = -\operatorname{logsumexp}_y f_\theta(\mathbf{x})[y]$
 {cite}`grathwohl2020your`. Perché non la si veda mai, in un classificatore
@@ -307,14 +307,24 @@ costruirsi un modello di come va il mondo e pianificare dentro quello,
 ricorrendo ai tentativi soltanto per correggere il modello (o il giudice che
 valuta le mosse) quando la previsione sbaglia.
 
+Il *perché* di quella riga non sta nella diapositiva, e vale la pena
+anticiparlo perché è un conto, non un'antipatia. Quando un sistema impara per
+tentativi, la correzione che riceve alla fine di un tentativo è una quantità
+sola: è andata bene oppure male. Quando impara guardando, la correzione è
+grande quanto il pezzo di mondo che stava provando a indovinare, e contata in
+bit è dell'ordine di centomila volte tanto. È l'argomento che LeCun riassume
+dicendo che l'apprendimento per rinforzo è la «ciliegina sulla torta»
+{cite}`lecun2016cake`, e il capitolo sull'auto-supervisione lo misura per
+intero, quel conto compreso, insieme alle obiezioni di chi non ci sta.
+
 La **prima** riga è la più contestata, e non conviene nasconderlo. Rinunciare
 ai modelli generativi in favore delle architetture a incorporamento congiunto,
 cioè delle JEPA nominate in apertura di capitolo, quelle che confrontano due
 riassunti del mondo invece di ridisegnarlo, è una tesi sul modo giusto di
 costruire un modello del mondo. Non è un verdetto sulla generazione in quanto
 tale, e i fatti lo mostrano: mentre la slide circolava, i modelli generativi
-hanno prodotto i generatori di immagini del capitolo precedente e i modelli
-linguistici che hanno cambiato il dibattito pubblico.
+hanno prodotto i generatori di immagini a diffusione e i modelli linguistici
+che hanno cambiato il dibattito pubblico.
 
 L'argomento di LeCun non è che quei sistemi non funzionino. È che predire ogni
 pixel costringe la rete a spendere i suoi neuroni e il suo addestramento su
@@ -322,9 +332,9 @@ dettagli che nessuno potrebbe indovinare, la forma esatta di una foglia mossa
 dal vento, e che per prevedere il mondo convenga prevedere non i pixel ma il
 *riassunto* che la rete se ne fa. È una previsione sul futuro della ricerca, e
 come tutte le previsioni va tenuta distinta dai risultati che abbiamo in mano.
-Il capitolo che segue la prende sul serio proprio perché la tratta così: come
-una scommessa argomentata, con i suoi risultati e i suoi limiti, non come una
-profezia.
+Il capitolo sui world model la prende sul serio proprio perché la tratta così:
+come una scommessa argomentata, con i suoi risultati e i suoi limiti, non come
+una profezia.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare

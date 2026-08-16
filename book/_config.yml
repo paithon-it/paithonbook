@@ -104,6 +104,7 @@ sphinx:
       - AIResponsabile
       - Agenti
       - Audio
+      - AutoSupervisione
       - DeepLearning
       - DeepReinforcementLearning
       - GraphNeuralNetwork
@@ -123,6 +124,7 @@ sphinx:
       - SpeechRecognition
       - StateSpaceModel
       - Transformers
+      - VerosimiglianzaEsatta
       - VisioneArtificiale
       - VisioneLinguaggio
       - WorldModels

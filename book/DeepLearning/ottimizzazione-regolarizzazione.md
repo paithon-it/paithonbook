@@ -103,7 +103,7 @@ minore di $1$, il prodotto tende a $0$ esponenzialmente in $L$ (**vanishing
 gradient**); se maggiore di $1$, diverge (**exploding gradient**).
 
 Una nota sul simbolo, perché in questa sezione lavora troppo. $\sigma$ qui è
-l'**attivazione generica**, qualunque essa sia, e non la sigmoide, che ne è
+l’**attivazione generica**, qualunque essa sia, e non la sigmoide, che ne è
 solo un caso particolare e che viene sempre nominata per esteso; più avanti,
 nella batch normalization, $\sigma_{\mathcal{B}}$ sarà invece una deviazione
 standard, come vuole la tradizione statistica. Tre mestieri per una lettera
@@ -289,7 +289,7 @@ mini-batch corrente. È come rimettere in scala i numeri a ogni passo, così che
 nessuno strato debba adattarsi a ingressi che cambiano scala di continuo. In
 pratica accelera molto l'addestramento, permette learning rate (il passo di
 correzione dei pesi) più aggressivi e ha un lieve effetto di regolarizzazione
-(cioè frena l'imparare a memoria), perché ogni gruppetto ha statistiche un po'
+(cioè frena l'imparare a memoria), perché ogni gruppetto ha statistiche un po’
 diverse dal precedente e quella variabilità fa da rumore utile.
 
 `````
@@ -334,7 +334,7 @@ tutto ciò che si è visto. Attenzione al nome del parametro: il `momentum` di
 l'opposto del $\beta_1$ di Adam, dove $0{,}9$ è il peso della **storia**.
 
 Ioffe e Szegedy la
-introdussero per contrastare l'*internal covariate shift*, cioè lo spostarsi
+introdussero per contrastare l’*internal covariate shift*, cioè lo spostarsi
 della distribuzione degli input di ogni strato durante l'addestramento, ma
 quella spiegazione è stata contestata: Santurkar e colleghi
 {cite}`santurkar2018batchnorm` mostrano che la stabilità distribuzionale
@@ -367,9 +367,9 @@ in pratica e ancora senza una teoria che regga.
 
 ## Spegnere neuroni a caso: il dropout
 
-La batch normalization regolarizza un po' come effetto collaterale. Il dropout
+La batch normalization regolarizza un po’ come effetto collaterale. Il dropout
 lo fa per scelta esplicita, ed è uno dei modi più semplici per combattere
-l'*overfitting*, cioè il caso in cui la rete impara a memoria gli esempi che le
+l’*overfitting*, cioè il caso in cui la rete impara a memoria gli esempi che le
 sono stati mostrati e su quelli nuovi sbaglia.
 
 ```{figure} ../figures/dropout.svg
@@ -470,7 +470,7 @@ direzione utile e smorza le oscillazioni, arrivando più dritto al minimo.
 
 `````{tab} Elementare
 
-Il **momentum** dà alla discesa un po' di inerzia, come una pallina che rotola
+Il **momentum** dà alla discesa un po’ di inerzia, come una pallina che rotola
 in una valle: accumula velocità nella direzione giusta e si lascia dietro i
 rimbalzi laterali. **Adagrad** aggiunge un'idea in più: dare a ogni parametro
 (i pesi, più i bias: tutti i numeri che la rete regola) un passo su misura, più
@@ -677,7 +677,7 @@ toppa muovendo la mano dieci centimetri per volta.
 
 La ricetta che regola il passo mentre l'addestramento procede si chiama
 **schedule** (è l'inglese per "programma"). Ce ne sono diverse e si assomigliano
-tutte: ridurre il passo un po' a ogni passata sui dati, dimezzarlo a scalini
+tutte: ridurre il passo un po’ a ogni passata sui dati, dimezzarlo a scalini
 ogni tot, oppure farlo scendere lungo una curva morbida che parte quasi piatta,
 cala in fretta a metà strada e si riappiattisce alla fine (quella curva è il
 coseno, ed è la scelta più comune oggi).
@@ -796,7 +796,7 @@ dall'uscita fino ai primi strati, e riguarda l'inizializzazione, la scelta
 dell'attivazione e la batch normalization. La seconda è come camminare in quel
 paesaggio una volta ricevuto il segnale: gli ottimizzatori, la lunghezza del
 passo e il modo in cui cambia nel tempo. Il dropout e la multa sui pesi grandi
-stanno un po' di traverso rispetto a entrambe, perché non servono a far
+stanno un po’ di traverso rispetto a entrambe, perché non servono a far
 imparare la rete ma a impedirle di imparare *troppo* quello che ha davanti; e
 compaiono qui perché in pratica si montano nello stesso punto, dentro lo stesso
 ciclo di addestramento.

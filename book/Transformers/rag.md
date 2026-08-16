@@ -18,7 +18,7 @@ modello) costa settimane di calcolo e cifre con molti zeri.
 
 L'idea di questa sezione è dare al modello il libro aperto, e insegnargli a
 consultarlo. Servono due mestieri diversi: **cercare** (ed è il territorio
-dell'*information retrieval*, una disciplina che ha mezzo secolo di vantaggio
+dell’*information retrieval*, una disciplina che ha mezzo secolo di vantaggio
 sui modelli di linguaggio) e **rispondere** usando ciò che si è trovato. La
 combinazione dei due ha un nome che oggi si sente ovunque: **RAG**,
 *Retrieval-Augmented Generation*. Ma per capirla davvero conviene partire dal
@@ -42,14 +42,14 @@ di documenti *senza leggerli tutti* a ogni richiesta?
 
 `````{tab} Elementare
 
-La risposta ce l'hai già in casa: è l'**indice analitico** in fondo ai
+La risposta ce l'hai già in casa: è l’**indice analitico** in fondo ai
 manuali. Se in un testo di biologia di seicento pagine cerchi «fotosintesi»,
 non sfogli il libro: vai in fondo, trovi *fotosintesi → pp. 214, 380* e salti
 dritto lì. Qualcuno ha fatto il lavoro una volta sola (leggere tutto e
 annotare dove compare ogni parola), perché tu non debba rifarlo a ogni
 ricerca.
 
-L'**indice invertito** dei motori di ricerca è la stessa idea in scala: per
+L’**indice invertito** dei motori di ricerca è la stessa idea in scala: per
 *ogni* parola, la lista di *tutti* i documenti che la contengono. Alla query
 «gatto muro» il motore prende le due liste, le interseca, e ottiene i
 documenti che contengono entrambe le parole, senza aprirne nessuno.
@@ -62,7 +62,7 @@ chiama «peso», che è la stessa parola usata per i numeri che una rete impara.
 Sono due cose diverse chiamate uguale, e capita spesso.) E il buon senso
 aggiunge due correzioni.
 Primo: se «gatto» compare dieci volte, il documento non è dieci volte più
-pertinente di uno in cui compare una volta; dopo un po' il tema è chiaro, le
+pertinente di uno in cui compare una volta; dopo un po’ il tema è chiaro, le
 ripetizioni in più aggiungono briciole. Secondo: un documento lunghissimo
 contiene quasi ogni parola per forza di cose, quindi la lunghezza va messa in
 conto, altrimenti vincono sempre i documenti-fiume.
@@ -113,7 +113,7 @@ penalizza i documenti più lunghi della media, che accumulano occorrenze per
 pura mole.
 
 Due parole sulla valutazione, perché torneranno: la **precision@k** è la
-frazione di documenti rilevanti tra i primi $k$ restituiti, e l'**MRR** (*Mean
+frazione di documenti rilevanti tra i primi $k$ restituiti, e l’**MRR** (*Mean
 Reciprocal Rank*) è la media, sulle query, di $1/r$ dove $r$ è la posizione
 del primo risultato corretto (vale $1$ se il sistema azzecca sempre il primo
 posto).
@@ -232,7 +232,7 @@ analisi della domanda, batté i campioni umani del quiz *Jeopardy!*.
 `````{tab} Elementare
 
 Ci sono due modi di rispondere avendo il testo sotto gli occhi, e li conosci
-dai compiti in classe. Il primo è l'**evidenziatore**: la risposta è già
+dai compiti in classe. Il primo è l’**evidenziatore**: la risposta è già
 scritta nel brano, basta sottolinearla. «Su cosa salta il gatto nero?»: il
 brano dice «il gatto nero salta sul muro», evidenzi «sul muro», fine. È il QA
 **estrattivo**. Il secondo è la **penna**: la risposta va composta con parole
@@ -354,7 +354,7 @@ allucinazioni (su ciò che sta nell'archivio, il modello non deve più
 inventare) ma **non le elimina**: un recupero sbagliato produce una risposta
 sbagliata con le fonti in bella vista. In cambio offre due cose che i pesi da
 soli non daranno mai: la **citabilità**, perché una risposta con la fonte si
-può verificare e una senza fonte no; e l'**aggiornabilità**, perché quando i
+può verificare e una senza fonte no; e l’**aggiornabilità**, perché quando i
 documenti cambiano si reindicizza l'archivio, non si riaddestra il modello.
 Quando, nella prossima sezione, troverai «il recupero di fonti esterne» tra le
 mitigazioni del problema dell'affidabilità, saprai esattamente che cosa c'è
@@ -465,7 +465,7 @@ il prompt) è esattamente quella che hai appena eseguito.
 - Un modello da solo risponde **a libro chiuso**: quello che non ha in testa se
   lo inventa in modo plausibile, e rifargli studiare il libro costa settimane.
   Il recupero gli apre il libro.
-- **Cercare per parole** è il mestiere antico: l'**indice analitico** dice
+- **Cercare per parole** è il mestiere antico: l’**indice analitico** dice
   subito in quali pagine compare una parola, senza doverle sfogliare tutte;
   poi si ordinano i risultati dando più peso alle parole rare, contando le
   ripetizioni sempre meno man mano che aumentano, e penalizzando i
@@ -492,7 +492,7 @@ il prompt) è esattamente quella che hai appena eseguito.
 - Un LLM da solo risponde **a libro chiuso**: ciò che non è nei pesi viene
   completato in modo plausibile (allucinazioni), e aggiornare i pesi costa un
   riaddestramento. Il retrieval gli apre il libro.
-- L'**information retrieval** classico cerca per parole: indice invertito per
+- L’**information retrieval** classico cerca per parole: indice invertito per
   non leggere tutto, **BM25** {cite}`robertson2009probabilistic` per ordinare
   (un TF-IDF evoluto con **saturazione** della term frequency e
   normalizzazione per lunghezza). Qualità misurata con precision@$k$ e MRR.

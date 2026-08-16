@@ -257,7 +257,7 @@ $0{,}24 + 0{,}24 + 0{,}16 = 0{,}64$.
 
 Graves e colleghi lo scrivono già nel paper del 2006
 {cite}`graves2006connectionist`, nella sezione in cui costruiscono il
-classificatore: per l'$\arg\max$ esatto «non conosciamo un algoritmo di
+classificatore: per l’$\arg\max$ esatto «non conosciamo un algoritmo di
 decodifica trattabile in generale». Al suo posto propongono due metodi
 approssimati. Il primo è proprio il *best path*, che costa niente e non
 garantisce di trovare l'etichettatura più probabile. Il secondo è la *prefix
@@ -679,7 +679,7 @@ $$
 dove $S$ è il numero di **sostituzioni**, $D$ le **cancellazioni**, $I$ le
 **inserzioni** e $N$ il numero di parole nel riferimento. Attenzione ai nomi,
 perché sono dal punto di vista del sistema e non di chi corregge: una
-*cancellazione* è una parola che il sistema si è mangiato, un'*inserzione* è
+*cancellazione* è una parola che il sistema si è mangiato, un’*inserzione* è
 una parola che ha aggiunto di suo. Chi corregge fa il gesto opposto, ma
 l'errore si chiama così. Un WER di $0$ è la trascrizione perfetta; può
 superare $1$ se il sistema aggiunge più parole di quante ce ne siano.
@@ -763,7 +763,7 @@ Tiriamo le fila, ciascuno al proprio livello.
 - Audio e testo hanno **lunghezze diverse** e l'allineamento non è dato: è il
   problema centrale dell'ASR.
 - La **CTC** lo risolve con il simbolo «vuoto» e sommando tutti gli
-  allineamenti possibili, al prezzo dell'**indipendenza condizionale** fra i
+  allineamenti possibili, al prezzo dell’**indipendenza condizionale** fra i
   frame; i modelli **con attenzione** lo imparano in modo morbido, un token
   alla volta, ma perdono monotonia e streaming; il **trasduttore**
   {cite}`graves2012sequence` tiene il reticolo monotono e ci aggiunge una

@@ -234,7 +234,7 @@ percentuali.
 C'è un effetto collaterale, e conviene saperlo perché altrimenti i numeri a
 schermo sorprendono. Con la ricetta da manuale una parola presente in *tutti* i
 documenti prendeva zero e spariva; con la variante della libreria non sparisce
-del tutto, si porta dietro un po' di peso. Poco male: quello che conta è che le
+del tutto, si porta dietro un po’ di peso. Poco male: quello che conta è che le
 parole rare ne abbiano di più.
 
 `````
@@ -345,6 +345,15 @@ globale di co-occorrenza. Da $\mathbb{R}^{|V|}$ sparso si passa a
 $\mathbb{R}^{d}$ denso: meno dimensioni, ma cariche di struttura semantica.
 
 `````
+
+Quella procedura ha un nome, e conviene impararlo qui perché torna per tutto il
+libro. Nessuno ha preparato gli esercizi su cui word2vec si addestra: la parola
+al centro e le sue vicine stavano già nel testo, e a separarle per farne una
+domanda e una risposta siamo stati noi. Un compito costruito così si chiama
+**auto-supervisionato**. La sezione «Imparare senza etichette», nel capitolo
+sulla visione artificiale, l'ha già fatto sulle immagini: si copre un pezzo di
+foto e si chiede di indovinarlo. Il capitolo che porta quel nome lo racconta
+per esteso.
 
 ## Sotto la parola: fastText
 
@@ -478,7 +487,7 @@ cui i conti che seguono si rifanno in tre righe), il coseno con *king* vale
 $0{,}855$ contro lo $0{,}783$ di *queen*, e la stessa cosa succede a
 `man : doctor :: woman : ?` ($0{,}866$ per *doctor*, $0{,}776$ per *nurse*) e a
 `good : better :: bad : ?` ($0{,}886$ per *bad*, $0{,}839$ per *worse*).
-L'enunciato onesto non è dunque l'$\approx$ della formula, ma
+L'enunciato onesto non è dunque l’$\approx$ della formula, ma
 
 $$
 \arg\max_{w \,\notin\, \{\text{re},\,\text{uomo},\,\text{donna}\}}
@@ -543,7 +552,7 @@ Da qui l'idea, che è vecchia e bellissima: invece di insegnare al modello
 *che cosa* è una frase, gli si insegna **quali frasi vanno vicine**. Gli si
 mostrano tre frasi per volta. La prima si chiama **ancora**, ed è quella di
 riferimento. La seconda vuol dire la stessa cosa dell'ancora. La terza parla
-d'altro. Poi si chiede una cosa sola: fa' in modo che l'ancora finisca più
+d'altro. Poi si chiede una cosa sola: fa’ in modo che l'ancora finisca più
 vicina alla seconda che alla terza. Nessuno dice *dove* metterle: si chiede
 solo che una distanza sia minore dell'altra. Ripetuto su milioni di terne, lo
 spazio si riorganizza da sé, e alla fine «vicino» significa «di argomento
@@ -791,7 +800,7 @@ davvero, e non una classifica generica.
 - Gli **word embedding** (word2vec, GloVe) sono densi e a bassa dimensione: la
   **vicinanza geometrica riflette la vicinanza di significato**, misurata con
   la **similarità del coseno**.
-- L'**analogia lineare** ($\mathbf{v}_{\text{re}} - \mathbf{v}_{\text{uomo}} +
+- L’**analogia lineare** ($\mathbf{v}_{\text{re}} - \mathbf{v}_{\text{uomo}} +
   \mathbf{v}_{\text{donna}}$) restituisce *regina* solo perché i tre termini di
   ingresso sono esclusi dai candidati: senza quel vincolo, mai scritto nelle
   equazioni, vince *re* {cite}`nissim2020fair`.

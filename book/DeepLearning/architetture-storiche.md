@@ -238,7 +238,7 @@ arrivano a $5$, esattamente come una $5\times5$, e tre a $7$. È il conto che
 giustifica l'intera scelta di VGG.
 
 Il prezzo, però, non sta dove ci si aspetta. VGG-16 ha $138\,357\,544$
-parametri, **2,3 volte** AlexNet, e l'$89{,}4\%$ è ancora nei tre strati densi
+parametri, **2,3 volte** AlexNet, e l’$89{,}4\%$ è ancora nei tre strati densi
 finali: esattamente il difetto che *Network in Network* aveva appena mostrato
 come evitare, e che VGG non raccoglie. Per dare la misura: gli stessi 138
 milioni sono 2,3 volte anche una ResNet-152 ($60\,192\,808$ parametri), che di
@@ -291,7 +291,7 @@ una decina di volte meno di AlexNet, e per di più sbagliando meno.
 
 Restava un muro. Impilando strati oltre una certa soglia, le reti non solo
 smettevano di migliorare: peggioravano. E il sospetto ovvio, che stessero
-imparando a memoria le fotografie di addestramento (l'*overfitting*, che si
+imparando a memoria le fotografie di addestramento (l’*overfitting*, che si
 riconosce perché la rete migliora su quelle e peggiora su tutte le altre), qui
 non regge: sbagliavano di più **anche** sulle fotografie di addestramento, cioè
 proprio su quelle che avevano sotto gli occhi. Questo **problema di
@@ -662,7 +662,7 @@ che sarebbe impossibile: ne prova alcune, guarda quali vanno meglio e da quelle
 ricava le prossime da provare. La rete base di EfficientNet è stata trovata
 proprio così, non disegnata a mano. E la storia non è finita:
 dal 2020 i **Vision Transformer** {cite}`dosovitskiy2021image`, reti basate
-sull'**attenzione** (è il nome di un meccanismo preciso, non la parola di tutti
+sull’**attenzione** (è il nome di un meccanismo preciso, non la parola di tutti
 i giorni) e nate per il linguaggio, hanno dimostrato di poter competere
 con le CNN quando i dati abbondano. Oggi in visione artificiale le due
 famiglie convivono e si scambiano idee; ne riparleremo nel capitolo dedicato
@@ -671,7 +671,7 @@ ai Transformer.
 ## L'architettura conta quanto i dati
 
 Nessuna di queste reti ha vinto solo con più esempi o più GPU. Ogni salto è nato
-da un'**idea strutturale** su come far scorrere l'informazione dentro la rete:
+da un’**idea strutturale** su come far scorrere l'informazione dentro la rete:
 dove farla passare, dove farla saltare, dove farla incontrare con se stessa. E
 quasi tutte quelle idee sono nate dal vincolo opposto a quello che uno si
 aspetterebbe, cioè non da «come faccio a metterci più roba» ma da «come faccio a
@@ -679,7 +679,7 @@ spendere meno»: la tabella di connessione di LeNet, la divisione in due schede
 di AlexNet, il finale a media di NiN, i colli di bottiglia di Inception e di
 ResNet, la convoluzione separata di MobileNet.
 
-I dati sono il carburante, ma la forma del motore decide quanto lontano si
+I dati da soli non bastano: è la forma del motore a decidere quanto lontano si
 arriva, ed è una lezione che vale ancora oggi, dai Transformer in poi.
 
 `````{tab} Elementare
@@ -725,7 +725,7 @@ arriva, ed è una lezione che vale ancora oggi, dai Transformer in poi.
   *global average pooling* al posto degli strati densi.
 - **VGG** (2014): profondità con soli filtri $3\times 3$ impilati (campo
   recettivo $r_\ell = r_{\ell-1} + (k_\ell-1)\prod_{i<\ell}s_i$), ma
-  $138$ milioni di parametri, l'$89{,}4\%$ nei tre densi finali.
+  $138$ milioni di parametri, l’$89{,}4\%$ nei tre densi finali.
 - **Inception/GoogLeNet** (2014): elaborare a più scale in parallelo, con
   colli di bottiglia $1\times 1$.
 - **ResNet** (2015): la connessione residua $\mathbf{y}=\mathcal{F}(\mathbf{x})+\mathbf{x}$

@@ -76,7 +76,7 @@ cinque picojoule**, mentre **leggere un dato a 32 bit dalla DRAM ne costa circa
 640**:
 più di due ordini di grandezza. Un accesso alla memoria che sta *dentro* il
 chip costa invece quanto l'aritmetica stessa, dell'ordine dei $5$ pJ, e il
-salto dei due ordini di grandezza è tutto nell'**uscita dal chip**. Finché il
+salto dei due ordini di grandezza è tutto nell’**uscita dal chip**. Finché il
 dato resta nel silicio, toccarlo costa quanto calcolarci sopra; appena esce,
 costa cento volte tanto. I valori assoluti dipendono dal nodo e dal progetto,
 ma il rapporto è la cosa robusta, e nel tempo è peggiorato: la densità dei
@@ -141,7 +141,7 @@ qualche centinaio: più di dieci volte tanto. E non cambia solo da paese a paese
 cambia da un'ora all'altra, perché di notte, o quando non c'è vento, la rete
 accende centrali diverse.
 
-La conseguenza è concreta e un po' sorprendente: **lo stesso addestramento,
+La conseguenza è concreta e un po’ sorprendente: **lo stesso addestramento,
 identico, cambia impronta a seconda di dove e quando lo si fa girare**. Da qui
 l'idea di spostare i lavori che possono aspettare verso le ore e i luoghi in
 cui la rete è pulita.
@@ -183,7 +183,7 @@ $$
 
 dove $E_{\text{IT}}$ è l'energia consumata dai calcolatori (in kWh), il **PUE**
 (*Power Usage Effectiveness*) è il rapporto fra energia totale della struttura
-ed energia dei calcolatori, e $I_{\text{rete}}$ è l'**intensità di carbonio**
+ed energia dei calcolatori, e $I_{\text{rete}}$ è l’**intensità di carbonio**
 della rete elettrica in grammi di CO₂ equivalente per kWh.
 
 I tre fattori si governano con leve diverse e da attori diversi. $E_{\text{IT}}$
@@ -196,7 +196,7 @@ e di alcune volte fra ore diverse della stessa rete.
 
 Una precisazione sul PUE, perché la formula insegna a fare un conto ed è così
 che il conto sbaglia. Il PUE è un rapporto **di struttura, annualizzato**:
-riguarda tutto l'edificio su tutto l'anno. Moltiplicarlo per l'$E_{\text{IT}}$
+riguarda tutto l'edificio su tutto l'anno. Moltiplicarlo per l’$E_{\text{IT}}$
 di *un* singolo carico di lavoro assume che il contorno cresca in proporzione
 al carico, mentre una quota rilevante (illuminazione, gruppi di continuità a
 vuoto, ventilazione di base) è fissa: il PUE **marginale** di un lavoro
@@ -214,7 +214,7 @@ rete *densa*) poteva consumare meno di un decimo di una densa a parità di
 qualità. Le stava vicina la **collocazione geografica**, cioè in quale rete
 elettrica si esegue il lavoro, che sposta le emissioni di un fattore fra cinque
 e dieci, anche restando dentro lo stesso paese e la stessa organizzazione. Più
-sotto le altre due, che il paper tiene distinte: l'**hardware** specializzato
+sotto le altre due, che il paper tiene distinte: l’**hardware** specializzato
 per il machine learning rende da due a cinque volte più di un sistema generico,
 e un centro dati progettato bene è da 1,4 a 2 volte più efficiente di uno
 tipico (è il PUE di poco fa).
@@ -315,7 +315,7 @@ dell'uno per cento è dominato dall'incorporato.
 La conseguenza progettuale è che le due categorie richiedono ottimizzazioni
 opposte. Nel centro dati si ottimizza il joule per inferenza, e sostituire
 l'hardware con una generazione più efficiente conviene anche
-ambientalmente. Sull'*edge* si ottimizza la **longevità**: un modello che
+ambientalmente. Sull’*edge* si ottimizza la **longevità**: un modello che
 continua a funzionare su hardware vecchio evita un ricambio, e quel ricambio
 pesa più di anni di funzionamento.
 
@@ -399,7 +399,7 @@ molto.
 ```{admonition} Da ricordare
 :class: important
 - L'energia non se ne va nei conti ma nel **movimento dei dati**, a una
-  condizione: che l'**intensità aritmetica** sia bassa. Leggere dalla DRAM costa
+  condizione: che l’**intensità aritmetica** sia bassa. Leggere dalla DRAM costa
   più di due ordini di grandezza rispetto a una moltiplicazione-accumulo
   {cite}`horowitz2014computing` (mentre un accesso *on-chip* costa quanto
   l'aritmetica: il salto è nell'uscita dal chip), e il pareggio cade attorno a
@@ -409,7 +409,7 @@ molto.
 - La catena completa è
   $\text{gCO}_2\text{e} = E_{\text{IT}} \times \text{PUE} \times I_{\text{rete}}$:
   il **PUE** misura il costo dell'edificio (da $1{,}1$ a oltre $2$, quasi tutto
-  raffreddamento), l'**intensità di rete** varia di oltre un ordine di
+  raffreddamento), l’**intensità di rete** varia di oltre un ordine di
   grandezza fra luoghi, e di alcune volte fra le ore della stessa rete. Il PUE
   però è una media annuale di struttura: applicato a un singolo carico
   sovrastima, perché una parte del contorno è fissa.

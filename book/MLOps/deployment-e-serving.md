@@ -104,7 +104,7 @@ si aspetta.
 ## Il modello dietro un'API
 
 Nel regime online (il più comune e il più esigente) il modello vive dietro
-l'**API** di cui parlava *Dal notebook alla produzione*: lo sportello elettronico
+l’**API** di cui parlava *Dal notebook alla produzione*: lo sportello elettronico
 a cui un altro programma manda la domanda e da cui riceve la risposta, senza
 sapere né dover sapere che cosa c'è dietro.
 
@@ -156,7 +156,7 @@ le domande man mano che arrivano: si chiama **model server**.
 È lo sportello di un ufficio. Dietro il vetro c'è l'impiegato (il modello) che
 sa fare una cosa sola ma la sa fare bene. Tu non entri nel retro a rovistare
 tra le pratiche: passi il tuo modulo dalla fessura e ti torna indietro la
-risposta compilata. Lo sportello (l'*endpoint*) nasconde tutto il resto. E c'è
+risposta compilata. Lo sportello (l’*endpoint*) nasconde tutto il resto. E c'è
 una regola di buon senso che vale oro: l'impiegato arriva la mattina, si siede
 *una volta sola* e resta lì tutto il giorno. Sarebbe assurdo se andasse a casa
 e tornasse a ogni singolo cliente. Con i modelli è identico: i pesi si
@@ -248,7 +248,7 @@ definite). Dimenticarla non solleva alcuna eccezione: produce solo predizioni
 sbagliate.
 
 La seconda, `torch.no_grad()`, disattiva la costruzione del grafo delle
-operazioni che l'*autograd* userebbe per la retropropagazione. In inferenza
+operazioni che l’*autograd* userebbe per la retropropagazione. In inferenza
 quel grafo non serve, e costruirlo costa memoria e tempo a ogni richiesta;
 `torch.inference_mode()` è la variante più aggressiva della stessa rinuncia, che
 disattiva anche il version counter dei tensori.
@@ -295,7 +295,7 @@ bit sono due volte più leggeri, otto bit quattro volte.
 
 `````{tab} Elementare
 
-È il trucco di quando mandi una foto su una chat: l'app la spedisce un po'
+È il trucco di quando mandi una foto su una chat: l'app la spedisce un po’
 sgranata. Non la ritaglia e non la rimpicciolisce, i pixel restano tutti al
 loro posto: sono i **colori** a diventare più grossolani, e a occhio quasi non
 si vede. In cambio il file pesa un quarto e parte in un lampo. Quantizzare un
@@ -340,7 +340,7 @@ $S = (r_{\max} - r_{\min}) / (127 - (-128)) = 2{,}55 / 255 = 0{,}01$ e lo
 zero-point $Z = -128 - \mathrm{round}(r_{\min}/S) = -128 - (-100) = -28$.
 Quantizzando ($q = \mathrm{round}(r/S) + Z$) si ottiene
 $\mathbf{q} = [-128,\ -63,\ -8,\ 127,\ -21]$; ricostruendo ($\hat r = S(q - Z)$) si torna a
-$\hat{\mathbf{r}} = [-1{,}00,\ -0{,}35,\ 0{,}20,\ 1{,}55,\ 0{,}07]$. L'**errore** è al più
+$\hat{\mathbf{r}} = [-1{,}00,\ -0{,}35,\ 0{,}20,\ 1{,}55,\ 0{,}07]$. L’**errore** è al più
 $0{,}003$: non può superare mezzo gradino, $S/2 = 0{,}005$. Sul piano dei byte, i
 cinque `float32` (20 byte) diventano cinque `int8` (5 byte) più i due parametri di
 calibrazione $S$ e $Z$ condivisi da tutto il tensore: per uno strato con milioni di
@@ -475,7 +475,7 @@ notte apposta perché non ci fosse nessuno ad aspettare, e adesso invece
 l'attesa è tutto il problema. E con dei numeri. Un'infornata da una pagnotta
 sola richiede mezz'ora, quindi il forno ne sforna due all'ora; una da cento
 richiede
-quaranta minuti, un po' di più, ma di pagnotte ne consegna centocinquanta
+quaranta minuti, un po’ di più, ma di pagnotte ne consegna centocinquanta
 all'ora. Adesso mettiamo che i clienti che entrano nel negozio siano sessanta
 all'ora.
 
@@ -584,7 +584,7 @@ prudenza che l'anello MLOps chiede a ogni tappa: misurare prima di fidarsi.
   sola la mattina: i pesi si caricano all'avvio del servizio, non a ogni
   richiesta.
 - Perché lo sportello funzioni uguale ovunque, il modello si chiude in una
-  scatola sigillata con dentro tutto quello che gli serve (l'**immagine**); una
+  scatola sigillata con dentro tutto quello che gli serve (l’**immagine**); una
   sua copia in funzione (il **container**) è usa e getta, e ciò che deve
   sopravvivere si tiene fuori.
 - Per andare più veloci: servire più richieste in un colpo solo, scrivere i
@@ -626,7 +626,7 @@ prudenza che l'anello MLOps chiede a ogni tappa: misurare prima di fidarsi.
   `torch.export` cattura il grafo, e da PyTorch 2.9 **l'esportatore ONNX passa
   di lì** invece di essere la sua alternativa (serve `onnxscript`, che non è più
   una dipendenza di `torch`).
-- I termini sono **tre**: l'**SLI** è ciò che si misura (la p99 della latenza),
+- I termini sono **tre**: l’**SLI** è ciò che si misura (la p99 della latenza),
   lo **SLO** la soglia che il team si impone su quell'indicatore, lo **SLA** il
   contratto con le penali. Uno SLO serio si scrive sui **percentili alti**
   (p95, p99), non sulla media, e va bilanciato con **throughput** e **costo per

@@ -184,7 +184,7 @@ SNR segmentale mu-law:      36.8 dB
 SNR segmentale lineare:     26.3 dB
 ```
 
-L'errore massimo di ricostruzione resta attorno all'$1\%$ dell'escursione
+L'errore massimo di ricostruzione resta attorno all’$1\%$ dell'escursione
 picco-picco (il segnale vive in $[-1, 1]$, quindi l'escursione è 2 e l'errore
 $0{,}0201$): con un solo byte per campione l'onda torna indietro quasi intatta.
 Si noti però
@@ -193,7 +193,7 @@ lineare è **cinque volte migliore** ($0{,}0039$ contro $0{,}0201$), perché la
 $\mu$-law spende i suoi gradini sulle ampiezze piccole e ne lascia di più larghi
 sui picchi. È il baratto voluto, ed è anche una lezione sulle metriche: qui una
 misura peggiora di cinque volte e il suono migliora. Il
-confronto per finestre (l'**SNR segmentale**, che misura il rapporto
+confronto per finestre (l’**SNR segmentale**, che misura il rapporto
 segnale/rumore mediando su spezzoni di $20$ ms e quindi pesa allo stesso modo
 i tratti forti e quelli deboli) premia nettamente la $\mu$-law: dieci decibel
 di vantaggio, tutti guadagnati sulle code sommesse dove la quantizzazione
@@ -392,13 +392,267 @@ addestramento, controllabile a parole.
 
 `````
 
+## Lo spartito invece del suono
+
+Tutto quello che abbiamo visto finora genera **suono**: onde, oppure token che
+un decoder trasforma in onde. C'è una seconda strada, più vecchia e molto più
+leggera, e genera lo **spartito**: non la registrazione, le istruzioni. La
+differenza si misura. Tre minuti di musica registrati senza compressione sono
+circa trenta milioni di byte ($44\,100$ misure al secondo come su un CD, due
+byte ciascuna, due canali per lo stereo); gli stessi tre minuti scritti come
+note stanno in qualche decina di migliaia. Chi sceglie questa strada non chiede
+alla rete di inventare un timbro: le chiede di inventare la **musica**, e a
+fare il suono penserà uno strumento, vero o campionato.
+
+Il formato in cui questa strada si scrive esiste dal 1983 e si chiama **MIDI**:
+non contiene audio, contiene messaggi del tipo «premi il tasto SOL, con questa
+forza» e «lascia il tasto SOL». Un pianoforte elettrico li esegue; un computer
+li disegna, di solito come una griglia in cui il tempo scorre in orizzontale e
+l'altezza delle note sale in verticale. Quella griglia porta un nome che viene
+da lontano, **piano roll**: è il rotolo di carta perforata delle pianole
+meccaniche di inizio Novecento, dove i buchi erano le note e la carta scorreva.
+
+E qui arriva il problema vero, che sta tutto nella parola «sequenza». Un
+modello che indovina il prossimo token vuole una fila: un simbolo, poi un
+altro, poi un altro. La musica una fila non lo è. In un accordo tre note
+partono **insieme**, e ciascuna dura per conto proprio: la linea di basso tiene
+una nota lunga mentre quella acuta ne fa passare otto. Ognuna di queste linee,
+in musica, si chiama **voce**, anche quando a suonarla è uno strumento e non
+qualcuno che canta. Mettere più voci su una riga sola è la domanda tecnica di
+questa strada, e le risposte sono essenzialmente due.
+
+`````{tab} Elementare
+
+La prima risposta è **fotografare**. Si taglia il tempo in istanti tutti
+uguali (per esempio ogni sedicesimo di battuta) e per
+ogni istante si scrive che cosa sta suonando ciascuna voce. Viene fuori una
+tabella: una riga per istante, una colonna per voce. Poi la si srotola, primo
+istante, secondo istante, e via, ed ecco la fila. Funziona, ed è la cosa più
+semplice da programmare.
+
+Ha però due difetti, e sono di quelli che si scoprono tardi. Il primo: una
+fotografia dice che cosa **sta suonando**, non che cosa è **cominciato**. Un
+SOL tenuto per una battuta intera e lo stesso SOL suonato due volte di seguito
+danno esattamente la stessa sequenza di fotografie, mentre all'orecchio sono
+due cose diverse. Un rimedio ci sarebbe, aggiungere un simbolo che dica «questa
+nota sta continuando», ma è un simbolo in più da imparare, e il difetto che
+viene adesso resta tale e quale. Il secondo: gli istanti sono per forza tutti uguali, quindi
+la griglia decide in anticipo quali durate esistono al mondo. Per poter
+scrivere una terzina (tre note nello spazio di due) bisogna tagliare il tempo
+più fine, e la fila si allunga per tutti, anche per le battute che di terzine
+non ne hanno nessuna.
+
+La seconda risposta è **raccontare** invece di fotografare. Non si dice che
+cosa c'è, si dice che cosa **accade**: «parte il SOL», «finisce il SOL»,
+«aspetta mezzo secondo». Tre soli tipi di frase, e ci si scrive qualunque
+polifonia: le note che partono insieme sono semplicemente due frasi di fila,
+senza attesa in mezzo. Sparisce il primo difetto, perché ora «comincia» e «sta
+suonando» sono due cose diverse e si scrivono diversamente. E si allenta il
+secondo: l'attesa è un numero che si scrive accanto agli eventi, quindi la fila
+si allunga solo dove succede qualcosa, invece di infittirsi per tutta la
+musica. Resta posto anche per un quarto tipo di frase, quella che dice *come*
+si suona invece di *che cosa*: «da qui in poi più forte».
+
+Una cosa però si perde, ed è quella che la griglia dava gratis: dov'è il
+battere. Nella tabella ogni casella cadeva su un punto preciso della battuta;
+in una fila di attese misurate in millisecondi la battuta non è scritta da
+nessuna parte, e il modello deve indovinarla dai numeri. Per la musica a ritmo
+regolare, il pop per dire, questo non basta, e chi la genera il battere ce
+l'ha rimesso: eventi che dicono «qui comincia una battuta» e «siamo al terzo
+sedicesimo».
+
+`````
+
+`````{tab} Superiore
+
+Le due risposte hanno un nome, e la differenza è quella fra una codifica **di
+stato** e una codifica **di evento**.
+
+Nella prima, la *griglia*, il tempo è discretizzato in $T$ passi e a ogni
+passo si registra l'altezza suonata da ciascuna delle $V$ voci: la sequenza è
+la serializzazione di una matrice $T \times V$ e ha lunghezza $T \cdot V$. La
+codifica è **ambigua sugli attacchi**: una nota tenuta per $2k$ passi e due
+note uguali da $k$ passi ciascuna producono la stessa matrice, quindi la mappa
+non è iniettiva e nessun modello addestrato su questa codifica può imparare la
+distinzione, perché nei dati non c'è più. Il rimedio consueto è un simbolo
+dedicato di *hold*, oppure un canale separato per gli attacchi: allarga il
+vocabolario e lascia intatto il difetto che segue. Il passo $\Delta t$ va inoltre
+fissato a priori e vincola l'insieme delle durate rappresentabili: ammettere le
+suddivisioni ternarie richiede un $\Delta t$ tre volte più fine, quindi
+sequenze tre volte più lunghe, con l'attenzione che costa quadraticamente nella
+lunghezza.
+
+Nella seconda si emette una sequenza di istruzioni. Il vocabolario diventato
+standard è quello di Oore e colleghi {cite}`oore2018time`, ripreso dal Music
+Transformer {cite}`huang2019music`: $128$ eventi `NOTE_ON` (uno per altezza
+MIDI), $128$ `NOTE_OFF`, $100$ `TIME_SHIFT` (avanzamenti da $10$ ms a un
+secondo, a passi di $10$ ms) e $32$ livelli di `VELOCITY` (nel MIDI la *forza*
+con cui il tasto è premuto, non una velocità; il valore vale per le note che
+seguono), per un totale di $388$
+simboli. La polifonia è gratis (eventi consecutivi senza `TIME_SHIFT` in mezzo
+sono simultanei), le durate sono esplicite, e l'espressività (dinamica,
+micro-ritardi dell'esecuzione) entra nello stesso alfabeto invece di
+richiedere un canale a parte. Il guadagno è misurato: sulle esecuzioni
+pianistiche della Piano-e-Competition, un minuto di musica a risoluzione di
+$10$ ms sta in circa $2000$ eventi, contro i $6000$–$18\,000$ di una griglia
+fissa che porti gli stessi attributi espressivi {cite}`huang2019music`. Il
+prezzo è che la lunghezza della sequenza non è
+più proporzionale al tempo ma alla **densità di eventi**: un passaggio
+virtuosistico occupa molti più token di una nota lunga, e la finestra di
+contesto si consuma in modo non uniforme. E ce n'è un secondo, più sottile: con
+il solo `TIME_SHIFT` il metro non compare da nessuna parte, e sulla musica a
+metro regolare i modelli addestrati così tengono il tempo peggio. È
+la ragione della codifica **REMI** del *Pop Music Transformer*
+{cite}`huang2020pop`, che rimpiazza gli avanzamenti liberi con coppie `Bar`/`Position` su
+una griglia di sedicesimi e rende esplicita la durata di ogni nota: non un
+ritorno alla griglia, ma un alfabeto di eventi che si porta dentro il metro.
+
+`````
+
+I due difetti della griglia non sono un'opinione, e per vederli bastano due
+funzioni corte. Prendiamo due battute identiche salvo una nota, tokenizziamole
+in entrambi i modi e contiamo. (Per leggibilità le attese sono qui in sedicesimi
+invece che in millisecondi: cambia l'unità, non il meccanismo.)
+
+```python
+# Due battute uguali in tutto tranne una nota. Sotto, un DO grave tenuto per
+# tutta la battuta; sopra, un SOL: nel primo caso tenuto anch'esso, nel secondo
+# ribattuto a meta'. All'orecchio sono due cose diverse.
+# Una nota e' (altezza MIDI, istante d'inizio, durata); i tempi in sedicesimi.
+tenuta    = [(67, 0, 16), (48, 0, 16)]              # SOL tenuto per 16 sedicesimi
+ribattuta = [(67, 0, 8), (67, 8, 8), (48, 0, 16)]   # SOL suonato due volte
+
+def a_griglia(note, passi=16, voci=2):
+    """Fotografia: per ogni istante l'altezza che ciascuna voce sta suonando."""
+    griglia = [[0] * voci for _ in range(passi)]     # 0 = silenzio
+    scala = passi // 16                              # quanti passi vale un sedicesimo
+    for altezza, inizio, durata in note:
+        v = 0 if altezza >= 60 else 1                # voce acuta / voce grave
+        for t in range(inizio * scala, (inizio + durata) * scala):
+            griglia[t][v] = altezza
+    return [x for riga in griglia for x in riga]     # srotolata istante per istante
+
+def a_eventi(note):
+    """Ricetta: che cosa accade, e quanto si aspetta fra un fatto e il successivo."""
+    fatti = []
+    for altezza, inizio, durata in note:
+        fatti.append((inizio, f"NOTE_ON<{altezza}>"))
+        fatti.append((inizio + durata, f"NOTE_OFF<{altezza}>"))
+    sequenza, adesso = [], 0
+    for istante, evento in sorted(fatti):
+        if istante > adesso:
+            sequenza.append(f"TIME_SHIFT<{istante - adesso}>")
+            adesso = istante
+        sequenza.append(evento)
+    return sequenza
+
+g1, g2 = a_griglia(tenuta), a_griglia(ribattuta)
+e1, e2 = a_eventi(tenuta), a_eventi(ribattuta)
+
+print(f"a griglia: {len(g1)} token ciascuno, e sono identici? {g1 == g2}")
+print(f"a eventi:  {len(e1)} e {len(e2)} token, e sono identici? {e1 == e2}")
+print(f"  tenuta    -> {' '.join(e1)}")
+print(f"  ribattuta -> {' '.join(e2)}")
+print(f"la stessa battuta, se la griglia deve reggere le terzine: "
+      f"{len(a_griglia(tenuta, passi=48))} token invece di {len(g1)}")
+```
+
+```text
+a griglia: 32 token ciascuno, e sono identici? True
+a eventi:  5 e 8 token, e sono identici? False
+  tenuta    -> NOTE_ON<48> NOTE_ON<67> TIME_SHIFT<16> NOTE_OFF<48> NOTE_OFF<67>
+  ribattuta -> NOTE_ON<48> NOTE_ON<67> TIME_SHIFT<8> NOTE_OFF<67> NOTE_ON<67> TIME_SHIFT<8> NOTE_OFF<48> NOTE_OFF<67>
+la stessa battuta, se la griglia deve reggere le terzine: 96 token invece di 32
+```
+
+La prima riga è il difetto: trentadue token per parte, **e sono gli stessi**,
+cioè la griglia ha buttato via una differenza che qualunque orecchio sente. La
+seconda mostra il rimedio: cinque token contro otto, e questa volta diversi. Il
+punto esatto in cui differiscono si legge nelle due righe successive, ed è il
+`NOTE_OFF<67>` seguito da un secondo `NOTE_ON<67>` che nella versione tenuta
+non c'è. L'ultima riga è il secondo difetto messo in cifre: per lasciare alla
+griglia la possibilità di scrivere terzine il conto passa da trentadue a
+novantasei token, il triplo, e lo paga tutta la musica.
+
+Chiarito come si mette la musica in fila, la macchina che indovina il simbolo
+successivo è quella del capitolo sui Transformer, senza una riga di differenza.
+C'è però una ragione per cui proprio qui l'attenzione ha contato più che
+altrove, e la dice il titolo del lavoro che l'ha portata nella musica: *Music
+Transformer: Generating Music with Long-Term Structure*, di Cheng-Zhi Anna
+Huang e colleghi, preprint del settembre 2018 e poi ICLR 2019
+{cite}`huang2019music`. La musica è fatta di
+**ritorni**: un tema si ripresenta dopo trenta secondi, e trenta secondi sono
+circa mille simboli. Una rete ricorrente, che porta con sé un riassunto e lo
+aggiorna a ogni passo, a quel punto il tema l'ha dimenticato; l'attenzione può
+andarselo a rileggere, ed è lo stesso collo di bottiglia da cui era nata,
+raccontato là.
+
+Il contributo tecnico di quel lavoro è però un altro, ed è una lezione
+d'ingegneria: l'idea giusta era già pubblicata, e non entrava in memoria.
+
+`````{tab} Elementare
+
+L'idea era guardare a *quanto indietro* nella fila sta un simbolo, invece che
+al posto preciso che occupa, e per la musica è proprio ciò che serve: una
+battuta fa lo stesso effetto all'inizio o alla fine del pezzo. Il modo in cui
+era scritta, però, chiedeva di tenere da parte un appunto per **ogni coppia**
+di simboli della fila, e con brani da duemila simboli quel foglio di appunti
+pesa $8{,}5$ GB per ogni strato della rete: in una scheda grafica non ci sta,
+quindi non si fa. Huang e colleghi si accorgono che il foglio grande non serve
+tenerlo: lo si ricava da uno molto più piccolo, facendo scorrere le sue righe,
+ognuna di una casella in più della precedente. Il conto scende a $4{,}2$ MB,
+circa duemila volte meno, e il risultato è identico. Con quella memoria
+liberata il modello arriva a brani di un minuto, attorno ai duemila simboli,
+con i temi che tornano davvero.
+
+`````
+
+`````{tab} Superiore
+
+L'attenzione **relativa** di Shaw e colleghi {cite}`shaw2018self` modula i logit
+dell'attenzione con la distanza fra le posizioni, ma per farlo materializza un tensore di
+rappresentazioni relative indicizzato su ogni coppia, di costo $O(L^2 D)$ in
+memoria: per $L = 2048$ e $D = 512$ sono $8{,}5$ GB per strato ($1{,}1$ GB per
+testa, con $H = 8$ teste e $D_h = 64$), e su una GPU da $16$ GB la massima
+lunghezza addestrabile si ferma a $L = 650$. Huang e colleghi osservano che i
+termini che servono si ottengono già da $\mathbf{Q}\mathbf{E}_r^{\top}$, cioè
+dal prodotto fra le query e le sole $L$ rappresentazioni di distanza, e che
+basta poi uno *skewing* (un riempimento e un rimodellamento che traslano la
+riga $i$ di $i$ posizioni) per portare ogni logit al posto giusto. Il termine
+intermedio passa da $O(L^2 D)$ a $O(L D)$, cioè da $8{,}5$ GB a $4{,}2$ MB per
+strato ($0{,}52$ MB per testa), a parità di risultato, e la lunghezza
+addestrabile sale a $L = 3500$ {cite}`huang2019music`. Resta la matrice dei
+logit $L \times L$, che nessuna delle due implementazioni evita. Con
+$L = 2048$ il contesto copre circa un minuto di esecuzione: è lì che i ritorni
+tematici cominciano a essere visibili al modello.
+
+`````
+
+Questa strada non è in concorrenza con l'altra, perché non risponde alla stessa
+domanda. Uno spartito il timbro non lo fissa: al più dice quale strumento, e
+come quello strumento suoni davvero lo decide chi lo esegue. In compenso è
+leggibile, è correggibile nota per
+nota da un musicista, e la fila da produrre è più corta: un minuto di
+pianoforte sono i duemila simboli di poco fa, mentre un minuto di token audio
+con il codec di MusicGen sono cinquanta istanti al secondo per quattro
+codebook, cioè dodicimila. Sono due contenuti diversi e il confronto va preso
+per quello che è, un ordine di grandezza, non una misura. È il motivo per cui
+sopravvive benissimo dove il risultato dev'essere modificato (accompagnamenti,
+composizione assistita, colonne sonore da rimaneggiare), mentre la frase che
+diventa canzone passa per i token audio e non per lo spartito. E c'è una
+morale che vale oltre la musica: la parte difficile non era il modello, era
+**decidere come scrivere i dati in fila**. La stessa domanda, con risposte
+diverse, torna ogni volta che qualcosa che non è testo va dato in pasto a una
+macchina che predice il simbolo successivo.
+
 ## Diffusione, e uno sguardo onesto ai limiti
 
-La via dei token non è l'unica. C'è un secondo grande filone, quello dei
+Torniamo al suono. Anche lì la via dei token non è l'unica: c'è un secondo
+grande filone, quello dei
 **modelli di diffusione**, a cui il libro dedica un capitolo intero più avanti
 (dove il metodo nasce, per le immagini) e che qui vale la pena almeno nominare,
 perché nell'audio pesa quanto l'altro. L'idea in due righe: si prende un dato
-vero e lo si sporca di rumore un po' alla volta, finché non resta che rumore;
+vero e lo si sporca di rumore un po’ alla volta, finché non resta che rumore;
 poi si addestra una rete a fare il percorso inverso, a togliere rumore un passo
 per volta. Fatto questo, si può partire da rumore puro e arrivare a un dato
 nuovo, che nessuno ha mai visto. Il dato, nell'audio, raramente è l'onda grezza:
@@ -459,6 +713,13 @@ più che altrove, le regole del gioco sono ancora tutte da scrivere.
 - **MusicGen** {cite}`copet2023simple` compone a partire da una **descrizione a
   parole**. A ogni istante il codec produce quattro token sovrapposti, e
   MusicGen li sfalsa di un passo l'uno dall'altro, come le voci di un canone.
+- Si può anche generare lo **spartito** invece del suono, e allora la domanda
+  difficile è una sola: come si mette su una riga qualcosa in cui più note
+  suonano insieme e ciascuna dura per conto suo. Fotografare istante per
+  istante è semplice ma confonde una nota lunga con due corte uguali; elencare
+  quel che **accade** («parte il SOL», «finisce il SOL», «aspetta») non le
+  confonde, ed è quello che si usa, a patto di rimetterci dentro il battere,
+  che la griglia dava gratis.
 - C'è anche una seconda strada, la **diffusione**: invece di scrivere token, si
   parte da rumore puro e lo si ripulisce un passo alla volta finché non ne esce
   un suono.
@@ -493,6 +754,17 @@ più che altrove, le regole del gioco sono ancora tutte da scrivere.
   quattro token sovrapposti: MusicGen li **sfasa di un passo** l'uno dall'altro,
   come le voci di un canone che entrano una dopo l'altra, invece di metterli
   tutti in fila (lento) o di produrli insieme fingendoli indipendenti (falso).
+- Nel **simbolico** (MIDI, non audio) il nodo è la codifica. La *griglia*
+  serializza una matrice $T \times V$ ma è ambigua sugli attacchi (nota tenuta
+  $2k$ e due note da $k$ danno la stessa matrice) e fissa $\Delta t$ a priori.
+  La codifica **a eventi** {cite}`oore2018time` la sostituisce con $388$
+  simboli ($128$ `NOTE_ON`, $128$ `NOTE_OFF`, $100$ `TIME_SHIFT` a $10$ ms,
+  $32$ `VELOCITY`): polifonia e durate esplicite, lunghezza proporzionale alla
+  densità di eventi, e metro non rappresentato (che **REMI** rimette fra gli
+  eventi con `Bar`/`Position`). Il **Music Transformer** {cite}`huang2019music`
+  ci mette sopra l'attenzione relativa, con lo *skewing* che porta il termine
+  intermedio da $8{,}5$ GB a $4{,}2$ MB **per strato** ($L = 2048$, $D = 512$;
+  per testa, da $1{,}1$ GB a $0{,}52$ MB), e arriva a brani di un minuto.
 - La via dei token non è l'unica: c'è anche la **diffusione**, che parte da
   rumore puro e lo ripulisce un passo alla volta finché non ne esce un suono. I
   limiti

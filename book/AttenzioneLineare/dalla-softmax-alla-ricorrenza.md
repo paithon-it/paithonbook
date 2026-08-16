@@ -275,7 +275,7 @@ meccanismo, non il meccanismo.
 `````{tab} Elementare
 
 Nelle prossime sezioni ritroverai lo stesso foglio-registro raccontato in modo
-un po' più asciutto, perché i gruppi di ricerca non usano tutti gli stessi
+un po’ più asciutto, perché i gruppi di ricerca non usano tutti gli stessi
 accorgimenti di conto. Il meccanismo però non cambia di una virgola: si scrive,
 si somma, si rilegge. Se leggi solo questo livello, tira dritto.
 
@@ -390,7 +390,7 @@ architetture è lavoro di implementazione, non di formule.
 sul posto e si legge $\mathbf{o}_t$, con costo $O(d^2)$ per token e memoria $O(d^2)$
 **costante**. Nessuna KV cache che si allunga: lo stato è sempre la stessa
 matrice $d \times d$. In un Transformer, ricordiamo, la cache cresce di una
-coppia $(\mathbf{k}_t, \mathbf{v}_t)$ per token e per strato, e il costo di generare l'$n$-esimo
+coppia $(\mathbf{k}_t, \mathbf{v}_t)$ per token e per strato, e il costo di generare l’$n$-esimo
 token sale con la lunghezza del prefisso; qui resta piatto.
 
 È da questo contrasto che nasce l'accelerazione più spettacolare riportata da
@@ -526,7 +526,7 @@ la *regola delta*). Sono esattamente i due fili della prossima sezione.
   (raccontarlo a voce, cioè generare), senza la pila che si allunga. La stessa
   doppia natura tornerà con gli State Space Model.
 - Il difetto del registro: somma e basta, non cancella e non corregge. Le
-  scritte si sovrappongono un po' fin dalla prima riga, e il foglio si riempie
+  scritte si sovrappongono un po’ fin dalla prima riga, e il foglio si riempie
   molto prima di quanto lascino sperare le sue caselle, perché ogni
   informazione si spalma su tutto il foglio: uno da trentadue righe per
   trentadue colonne ne ha più di mille, ma già a otto informazioni la risposta

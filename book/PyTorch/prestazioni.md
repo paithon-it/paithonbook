@@ -398,7 +398,7 @@ gioco non vale la candela.
 
 `````{tab} Superiore
 Con $K$ repliche e il batch spartito in fette, ogni replica $k$ calcola
-$\nabla_\theta \mathcal{L}_k$ sulla propria fetta; l'**all-reduce** calcola
+$\nabla_\theta \mathcal{L}_k$ sulla propria fetta; l’**all-reduce** calcola
 
 $$
 \nabla_\theta \mathcal{L} = \frac{1}{K} \sum_{k=1}^{K} \nabla_\theta \mathcal{L}_k,
@@ -462,7 +462,7 @@ conosci.
 ## Partire col piede giusto: `nn.init`
 
 C'è un'ottimizzazione che non riguarda la velocità dell'hardware ma quella
-dell'*apprendimento*: da quali valori partono i pesi.
+dell’*apprendimento*: da quali valori partono i pesi.
 
 Che la cosa conti non è ovvio, e mezza riga di spiegazione la merita. Prima di
 imparare qualunque cosa, i pesi di una rete sono numeri a caso, e la domanda è
@@ -478,7 +478,7 @@ tanti contributi piccoli sommati fanno comunque un numero della misura giusta.
 Delle due, la prima è pensata per le reti in cui il segnale passa per intero,
 positivi e negativi trattati allo stesso modo; la seconda per la ReLU, che i
 negativi li schiaccia a zero e quindi ne lascia passare circa metà, e per
-compensare vuole pesi un po' più grandi. Il capitolo sul deep
+compensare vuole pesi un po’ più grandi. Il capitolo sul deep
 learning ne darà la ragione per esteso; qui vediamo il gesto con cui si
 applicano.
 
@@ -504,7 +504,7 @@ model.apply(inizializza)   # applica la funzione a ogni sotto-modulo
 ```
 
 `apply()` visita ricorsivamente tutti i sotto-moduli e passa ciascuno alla
-funzione; l'`if isinstance` fa da filtro, così solo gli strati `nn.Linear`
+funzione; l’`if isinstance` fa da filtro, così solo gli strati `nn.Linear`
 ricevono la ricetta He (`kaiming`, dal nome di Kaiming He). Lo stesso schema
 serve per qualunque intervento mirato sui pesi di una rete già costruita.
 
@@ -581,7 +581,7 @@ tenuta a regime. Il capitolo successivo apre il cofano dell'hardware.
   grandi e addestramenti lunghi, non sugli esperimenti brevi, dove il
   compilato può risultare **più lento** dell'eager.
 - Il **parallelismo dati** replica il modello su ogni GPU, spartisce il
-  batch e media i gradienti con l'**all-reduce**: lo standard è
+  batch e media i gradienti con l’**all-reduce**: lo standard è
   `DistributedDataParallel`, lanciato con `torchrun`; il training loop resta
   identico.
 - `nn.init` con `apply()` applica le inizializzazioni Xavier/He

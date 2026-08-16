@@ -42,7 +42,7 @@ comuni a entrambi.
 
 Nel riconoscimento vocale il traguardo è sempre lo stesso: da un'onda sonora
 ricavare le parole giuste. Qui il traguardo cambia forma. Non c'è più
-necessariamente un testo in fondo: a volte vogliamo un'**etichetta** («questo
+necessariamente un testo in fondo: a volte vogliamo un’**etichetta** («questo
 è un violino»), a volte una **lista di tag** («pioggia, tuono, traffico»), a
 volte un suono **nuovo** che prima non esisteva.
 
@@ -151,7 +151,7 @@ un elenco finito di simboli, e tutto si scrive con quelli.
 
 La via classica, quella del riconoscimento vocale: l'onda diventa immagine,
 l'immagine diventa testo. Nel disegno il Transformer è un blocco solo, ma dentro
-fa due mestieri: la parte che legge (l'*encoder*) riassume lo spettrogramma e la
+fa due mestieri: la parte che legge (l’*encoder*) riassume lo spettrogramma e la
 parte che scrive (il *decoder*) ne ricava le parole, una alla volta. È la strada
 che il capitolo sullo Speech Recognition, subito dopo questo, percorre per
 intero. Il pezzo su cui le pagine qui sotto intervengono è il secondo riquadro:
@@ -287,7 +287,7 @@ sa maneggiare, che sia un'immagine tempo–frequenza o un alfabeto di token).
   successiva di una frase può indovinare il pezzetto di suono successivo di un
   brano.
 - Le quattro tappe: **riconoscere** i suoni, **imparare** dal suono senza
-  etichette, costruire l'**alfabeto**, **generare** suono nuovo.
+  etichette, costruire l’**alfabeto**, **generare** suono nuovo.
 ```
 
 `````

@@ -126,7 +126,7 @@ Nyquist si appoggia a uno strumento che il capitolo introduce fra poco.
 
 La soglia $f_s/2$ è la **frequenza di Nyquist**. Se il segnale contiene
 componenti oltre questa soglia, esse si "ripiegano" su frequenze più basse
-generando l'**aliasing**: artefatti irreversibili. Per questo si applica un
+generando l’**aliasing**: artefatti irreversibili. Per questo si applica un
 filtro anti-aliasing (passa-basso) *prima* di campionare. La voce viene tipicamente
 trattata a $f_s = 16\,\text{kHz}$, un buon compromesso tra fedeltà e peso.
 
@@ -242,7 +242,7 @@ meteorologo austriaco Julius von Hann, ed è quella disegnata in
 Vale la pena insistere sul compromesso, perché non è un consiglio pratico: è un
 limite, e nessuna astuzia lo aggira. Le due domande («quando è successo?» e «che
 nota era?») si contendono la stessa finestra, perché per riconoscere una nota
-bisogna sentirla oscillare un po' di volte, e quel po' di tempo è esattamente
+bisogna sentirla oscillare un po’ di volte, e quel po’ di tempo è esattamente
 l'istante che si perde.
 
 A questo compromesso si possono dare dei numeri, e vale la pena farlo perché il

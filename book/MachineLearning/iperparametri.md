@@ -72,7 +72,7 @@ $3\,125 \times 2 = 6\,250$ minuti, cioè quattro giorni e un terzo di macchina
 accesa. E se aggiungi una quinta manopola, sempre a cinque livelli, le
 combinazioni si moltiplicano ancora per cinque e i giorni diventano quasi
 ventidue. È
-l'**esplosione combinatoria**: ogni manopola in più *moltiplica* le
+l’**esplosione combinatoria**: ogni manopola in più *moltiplica* le
 prove, non le somma.
 
 `````
@@ -165,7 +165,7 @@ salvati. Come un torneo a eliminazione diretta. (Il nome tecnico è
 *multi-fidelity*, cioè «a più livelli di fedeltà»: la prova breve è una versione
 poco fedele di quella vera.)
 
-L'unità di misura di tutta questa sezione è l'**epoca**: una passata completa
+L'unità di misura di tutta questa sezione è l’**epoca**: una passata completa
 sull'insieme di addestramento, cioè il modello che ha visto una volta ciascuno
 dei suoi esempi. Un addestramento serio ne fa decine o centinaia, e il costo di
 una ricerca si conta in epoche esattamente come il costo di un viaggio si conta
@@ -225,7 +225,7 @@ migliore col senno di poi.
 
 `````
 
-L'*early stopping* (che vedremo all'opera nel capitolo su PyTorch) è il caso
+L’*early stopping* (che vedremo all'opera nel capitolo su PyTorch) è il caso
 limite di questa idea: un torneo con un solo iscritto, che si ritira quando la
 validazione smette di migliorare.
 
@@ -257,7 +257,7 @@ prova **ignora ciò che le precedenti hanno scoperto**. Se dieci esperimenti
 hanno già mostrato che con un passo troppo lungo l'errore, invece di scendere,
 schizza fuori controllo (si dice che il modello *diverge*: rimbalza da un
 fianco all'altro della valle e se ne allontana),
-l'undicesimo estratto a caso può cascarci di nuovo. L'**ottimizzazione
+l'undicesimo estratto a caso può cascarci di nuovo. L’**ottimizzazione
 bayesiana** {cite}`snoek2012practical` tratta la ricerca degli iperparametri
 come un problema di apprendimento a sua volta: impara a prevedere *quale
 punteggio darà una combinazione di manopole prima di provarla*, e usa quella
@@ -273,8 +273,8 @@ Pensa a un geologo che cerca l'acqua potendo scavare pochi pozzi, perché ogni
 trivellazione costa cara. Dopo tre pozzi non sceglie il quarto a caso: disegna
 una mappa ("qui l'acqua c'era a dieci metri, là il terreno era secco"),
 completa di zone d'ombra dove non sa ancora nulla. Il quarto pozzo lo piazza
-dove la *promessa* è massima: un po' dove la mappa dice bene (sfruttare ciò
-che sa), un po' dove la mappa è bianca (esplorare ciò che ignora).
+dove la *promessa* è massima: un po’ dove la mappa dice bene (sfruttare ciò
+che sa), un po’ dove la mappa è bianca (esplorare ciò che ignora).
 L'ottimizzazione bayesiana funziona così: dopo ogni addestramento aggiorna la
 sua mappa del punteggio e sceglie la combinazione successiva chiedendosi *di
 quanto mi aspetto di battere il mio record, se provo qui?* La domanda ha un
@@ -296,7 +296,7 @@ standard è il **processo gaussiano** {cite}`rasmussen2006gaussian`, che per
 ogni $\lambda$ fornisce una media $\mu(\lambda)$ e una deviazione standard
 $\sigma(\lambda)$: la stima e la sua incertezza. (Ai processi gaussiani è
 dedicata una sezione di questo capitolo.) La **funzione di acquisizione**
-traduce stima e incertezza in una decisione; la più usata è l'*expected
+traduce stima e incertezza in una decisione; la più usata è l’*expected
 improvement*:
 
 $$
@@ -462,8 +462,8 @@ danno.
   migliori uno lungo: si spende dove serve. Il rischio è tagliare fuori i
   «diesel», quelli che partono piano e finirebbero forte.
 - Il metodo più furbo **impara dalle prove già fatte**, come il geologo che
-  sceglie dove scavare il prossimo pozzo: un po' dove la mappa promette bene,
-  un po' dove la mappa è ancora bianca.
+  sceglie dove scavare il prossimo pozzo: un po’ dove la mappa promette bene,
+  un po’ dove la mappa è ancora bianca.
 - Il punteggio del vincitore è **troppo bello**: fra mille che lanciano una
   moneta, qualcuno fa nove teste per fortuna. Il numero da raccontare al mondo
   si misura una volta sola, alla fine, sui dati d'esame rimasti intatti.
@@ -485,7 +485,7 @@ danno.
 - **Successive halving** e **Hyperband** sono tornei a eliminazione: poco
   budget a molti, molto budget a pochi
   {cite}`karnin2013almost,jamieson2016non,li2018hyperband`.
-- L'**ottimizzazione bayesiana** usa un surrogato (tipicamente un processo
+- L’**ottimizzazione bayesiana** usa un surrogato (tipicamente un processo
   gaussiano) e una funzione di acquisizione per imparare dalle prove passate
   {cite}`snoek2012practical`.
 - Il punteggio del vincitore è **ottimista**: numero finale solo dal test

@@ -111,7 +111,7 @@ personali** italiano è stato la prima autorità occidentale a fermare ChatGPT.
 Un'autorità non spegne un servizio per capriccio, quindi vale la pena dire
 perché. Contestava, in sostanza, quattro cose: che agli utenti non fosse stato
 spiegato quali dati venissero raccolti; che non ci fosse una ragione ammessa
-dalla legge per darli in pasto al modello mentre imparava (l'**addestramento**,
+dalla legge per darli in pasto al modello mentre imparava (l’**addestramento**,
 che è la fase in cui il modello guarda gli esempi e da lì ricava le sue
 regolarità); che le risposte del sistema attribuissero alle persone fatti non
 corrispondenti al vero; e che non esistesse alcun controllo dell'età di chi lo
@@ -120,7 +120,7 @@ servizio tornò disponibile qualche settimana dopo, con una pagina che spiegava
 il trattamento dei dati e uno sbarramento sull'età.
 
 E soprattutto l'Unione Europea ha approvato nel 2024 il primo regolamento
-**orizzontale** al mondo sull'intelligenza artificiale, l'**AI Act**
+**orizzontale** al mondo sull'intelligenza artificiale, l’**AI Act**
 {cite}`euaiact2024`: orizzontale vuol dire che vale per tutti i settori
 insieme, invece di essere una regola per la sanità, una per le banche e una per
 i trasporti. La sua idea portante è di guardare anzitutto al *rischio* che
@@ -155,7 +155,7 @@ intrecciate. Sono l'ossatura del capitolo, e quindi si nominano subito.
   stesso programma che diceva «panda» dice «scimmia». Le immagini truccate così
   si chiamano **esempi avversari**.
 - **Trasparenza**: poter spiegare *perché* un modello ha deciso così. È lo scopo
-  dell'**interpretabilità**, di cui il libro parla in un capitolo dedicato: qui
+  dell’**interpretabilità**, di cui il libro parla in un capitolo dedicato: qui
   la trattiamo come uno strumento al servizio della responsabilità, non come fine
   a sé.
 - **Allineamento (*alignment*)**: fare in modo che il comportamento di un
@@ -234,7 +234,7 @@ Tre spostamenti quantitativi hanno reso il tema ineludibile.
 Il resto del capitolo procede lungo tre assi, dagli effetti più visibili a
 quelli più strutturali, e quello di mezzo prende due sezioni invece di una.
 
-Prima l'**equità e i *bias***: da dove nasce un pregiudizio (dai dati, dalle
+Prima l’**equità e i *bias***: da dove nasce un pregiudizio (dai dati, dalle
 etichette, da come è stato scelto l'obiettivo), come lo si *misura* e quali
 tecniche provano a ridurlo, senza illudersi che esista una cura definitiva.
 Per misurarlo non serve niente di nuovo: basta un rilevatore di fumo. Le cose
@@ -372,7 +372,7 @@ l'equità e i pregiudizi che si annidano nei dati.
   trasparenza (l'interpretabilità come strumento), allineamento, governance.
 - Il tema è urgente **adesso** per tre spostamenti insieme (modelli potenti,
   diffusi a scala di popolazione, opachi) con impatto reale su credito,
-  giustizia, sanità e lavoro: gli usi «ad alto rischio» dell'**AI Act**
+  giustizia, sanità e lavoro: gli usi «ad alto rischio» dell’**AI Act**
   europeo del 2024.
 - Diverse definizioni di equità sono **matematicamente incompatibili** quando i
   **tassi di base** (la frequenza reale dell'esito in ciascun gruppo)

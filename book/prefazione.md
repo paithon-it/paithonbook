@@ -153,7 +153,7 @@ così. Ma un libro online non ha una tiratura da rincorrere con un foglietto di
 errata corrige: si riscrive dove sbaglia, il giorno in cui qualcuno se ne
 accorge. E gli strumenti con cui è scritto migliorano a loro volta, anno dopo
 anno. Se mantengono quello che promettono, ogni versione dovrebbe arrivare un
-po' più completa e un po' meno sbagliata della precedente, finché le
+po’ più completa e un po’ meno sbagliata della precedente, finché le
 correzioni diventeranno rare e poi rarissime. È la scommessa che questo libro
 fa su se stesso, e la si può verificare: {doc}`Aggiornamenti </aggiornamenti>`
 tiene il conto di ogni correzione, una per una.
@@ -162,9 +162,9 @@ La responsabilità di quello che leggi è mia.
 
 Perché è il non conoscere ciò che genera paura e alimenta false speranze.
 
-% La firma e' in HTML perche' al sito serve l'allineamento a destra. In stampa
+% La firma e’ in HTML perche’ al sito serve l'allineamento a destra. In stampa
 % il blocco raw sparisce, e la prefazione restava senza firma: si ripete per
-% il solo LaTeX, com'e' gia' successo con l'attribuzione della citazione nella
+% il solo LaTeX, com'e’ gia’ successo con l'attribuzione della citazione nella
 % pagina di apertura.
 
 ```{raw} html

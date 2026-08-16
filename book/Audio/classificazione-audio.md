@@ -55,7 +55,7 @@ spettrogrammi finché non si riabitua, e in poco tempo diventa brava anche lì.
 
 Lo spettrogramma mel è una matrice $\mathbf{S} \in \mathbb{R}^{F \times T}$: $F$ bande
 di frequenza (tipicamente 64 o 128) per $T$ finestre temporali. La trattiamo
-come un'**immagine a un solo canale** (l'analogo di una foto in scala di
+come un’**immagine a un solo canale** (l'analogo di una foto in scala di
 grigi) e la diamo in pasto a una CNN 2D, con i filtri convoluzionali che
 scorrono contemporaneamente sull'asse del tempo e su quello della frequenza. È
 esattamente la pipeline convoluzione + non linearità + pooling della
@@ -155,7 +155,7 @@ sempre.
 `````{tab} Superiore
 
 L'articolo che presenta AudioSet {cite}`gemmeke2017audioset` descrive
-un'**ontologia** di 632 categorie sonore organizzate a gerarchia e una prima
+un’**ontologia** di 632 categorie sonore organizzate a gerarchia e una prima
 raccolta di $1\,789\,621$ segmenti da 10 secondi. La raccolta pubblicata è poi
 cresciuta oltre l'articolo, e la versione che si scarica oggi conta
 $2\,084\,320$ clip su 527 categorie: sono queste ultime a formare il benchmark
@@ -176,7 +176,7 @@ modello e il pre-addestramento della precisione di ogni singola annotazione.
 ## Quando l'attenzione arriva all'audio: l'AST
 
 Fino al 2021 la mappa era chiara: gli spettrogrammi si classificano con le reti
-convoluzionali, punto. Poi è arrivato l'**Audio Spectrogram Transformer** (AST)
+convoluzionali, punto. Poi è arrivato l’**Audio Spectrogram Transformer** (AST)
 di Gong, Chung e Glass {cite}`gong2021ast`, e ha buttato via proprio quelle. Le
 convoluzioni sono i **filtri che scorrono**: piccole griglie di numeri, larghe
 pochi quadretti, che passano sull'immagine un pezzetto alla volta cercando
@@ -252,7 +252,7 @@ suono tutto insieme, lo tagliamo a fettine di qualche centesimo di secondo e
 misuriamo dentro ciascuna. Una fettina è una finestra, e le misure si rifanno da
 capo per ognuna.
 
-Le misure sono due, semplicissime. La prima è l'**energia**: quanto è «forte» il
+Le misure sono due, semplicissime. La prima è l’**energia**: quanto è «forte» il
 suono in quella finestra (grande quando l'onda oscilla ampia, quasi zero nel
 silenzio). La seconda è lo **zero-crossing rate**, che nella tabella qui sotto
 troverai abbreviato in `zcr`: quanto spesso l'onda attraversa lo zero, cioè
@@ -274,7 +274,7 @@ numeri veri.
 
 `````{tab} Superiore
 
-Su una finestra di $L$ campioni $x[0], \dots, x[L-1]$ definiamo l'**energia a
+Su una finestra di $L$ campioni $x[0], \dots, x[L-1]$ definiamo l’**energia a
 breve termine** come potenza media e lo **zero-crossing rate** come frazione di
 cambi di segno tra campioni adiacenti:
 
@@ -438,7 +438,7 @@ imparano da soli, invece di riceverle scritte a mano.
   oltre 2 milioni di clip da 10 s su 527 classi di benchmark, con etichette
   *deboli*. Contano scala e pre-addestramento più della precisione della
   singola annotazione (metrica: mAP).
-- L'**Audio Spectrogram Transformer** {cite}`gong2021ast` applica un
+- L’**Audio Spectrogram Transformer** {cite}`gong2021ast` applica un
   Transformer in stile ViT alle patch dello spettrogramma, senza convoluzioni;
   in cambio del campo recettivo globale, chiede molti dati o il transfer da
   ImageNet.

@@ -107,7 +107,7 @@ e le previsioni si scrivono $\hat{y}$, come nel resto del libro. Fissato un
 training minimo e un orizzonte $h$, il
 walk-forward produce una sequenza di coppie $(\text{train}, \text{test})$ in cui
 il blocco di test cade sempre dopo il blocco di train. Nella variante
-**espansa** l'$i$-esima iterazione addestra su $y_1, \dots, y_{t_i}$ e valuta su
+**espansa** l’$i$-esima iterazione addestra su $y_1, \dots, y_{t_i}$ e valuta su
 $y_{t_i+1}, \dots, y_{t_i+h}$, con $t_i$ crescente; nella variante **scorrevole**
 il training è $y_{t_i-w+1}, \dots, y_{t_i}$, con ampiezza $w$ costante. L'errore
 finale è la media degli errori sui blocchi di test, e la
@@ -141,7 +141,7 @@ Il **MAE** è la media degli errori presi senza segno: un giorno in cui hai
 previsto tre gradi in più e uno in cui ne hai previsti tre in meno per lui sono
 la stessa cosa, tre gradi di errore.
 
-L'**RMSE** fa tre cose in fila, e il nome le elenca al contrario. Prima **eleva
+L’**RMSE** fa tre cose in fila, e il nome le elenca al contrario. Prima **eleva
 al quadrato ogni errore**, poi ne fa la **media**, e infine prende la **radice
 quadrata** del risultato, che è la R del nome (*root*) e serve solo a riportare
 il numero nell'unità di partenza, perché senza di essa un errore in gradi
@@ -319,7 +319,7 @@ $\hat{y}$ vuol dire «previsto» invece che «osservato», $h$ è quanti passi a
 si guarda e $m$ la lunghezza del ciclo stagionale (7 per una settimana, 12 per
 un anno di mesi).
 
-- **Naive**, cioè ingenuo: la previsione per ogni istante futuro è l'**ultimo
+- **Naive**, cioè ingenuo: la previsione per ogni istante futuro è l’**ultimo
   valore osservato**, $\hat{y}_{t+h}=y_t$. Sembra una resa, e invece è
   durissimo da battere sulle serie che camminano alla cieca (i prezzi
   finanziari, per dire): se ogni scossa sposta il livello per sempre, il punto
@@ -442,7 +442,7 @@ cattura il livello recente lisciando il rumore; la deviazione (quella standard,
 la misura di quanto i valori si sparpagliano attorno alla loro media, del
 capitolo di matematica) dice quanto la serie è stata mossa di recente.
 
-L'**encoding del tempo**, cioè trasformare la data in numeri: dal calendario
+L’**encoding del tempo**, cioè trasformare la data in numeri: dal calendario
 ricaviamo il giorno della settimana, il mese, se è un giorno festivo. Sono le
 informazioni che spiegano perché il lunedì è diverso dalla domenica e agosto da
 novembre.
@@ -508,14 +508,14 @@ un pugno di esempi; il guadagno è che la regola torna vera anche al bordo.
 Quanto costa tenersele, quelle righe, dipende da quanto è lungo il training. Su
 una serie fortemente autocorrelata ($\phi = 0{,}9$) con $p=5$ ritardi, $w=10$ e
 $h=7$, cioè diciassette righe da purgare, la stima dell'errore esce ottimista
-di circa l'$1{,}7\%$ quando il training è di centoventi righe e **di qualche
+di circa l’$1{,}7\%$ quando il training è di centoventi righe e **di qualche
 decimo di punto** quando è di quattrocento (confrontando, a parità di numero di
 righe, una finestra di addestramento che arriva al confine e una purgata; la
 cifra esatta dipende dalla lunghezza del blocco di test e da quale errore si
 guarda, quello quadratico o la sua radice). Il guasto si
 vede quando i dati sono pochi, cioè proprio quando si è più tentati di tenersele.
 
-L'**embargo**, che nella letteratura sul machine learning finanziario accompagna
+L’**embargo**, che nella letteratura sul machine learning finanziario accompagna
 sempre la purga, qui invece **non serve**, e vale la pena dirlo perché i due
 viaggiano in coppia e chi li importa entrambi butta via dati per difendersi da
 una minaccia che non c'è. L'embargo mette una zona morta anche *dopo* il blocco

@@ -148,7 +148,7 @@ questa immagine?» e si accetta solo sì o no. La risposta è una parola sola, l
 verità sta nell'elenco di quel che c'è, e nessun giudice deve interpretare
 niente. È la ragione per cui il protocollo esiste. L'alternativa sarebbe mettere
 a correggere un secondo modello di linguaggio (il modello giudice,
-l'*LLM-as-a-judge* di cui parlerà il capitolo sull'MLOps), e un secondo modello
+l’*LLM-as-a-judge* di cui parlerà il capitolo sull'MLOps), e un secondo modello
 si porta dietro i propri difetti proprio là dove si vuole misurarne uno.
 
 Il cuore del metodo, però, non è il formato binario: è **come si scelgono gli
@@ -257,7 +257,7 @@ print(pagella(guarda_davvero(0.90)))       # (0.9, 0.5)    guarda bene
 Il primo modello risponde sempre «sì»: non guarda mai, e sbaglia una domanda su
 due, perché azzecca tutte le millecinquecento domande sugli oggetti che ci sono e
 sbaglia tutte le millecinquecento su quelli che non ci sono. Eppure il punteggio
-con cui di solito si riassumono queste prove, l'**F1**, lo premia. Conviene
+con cui di solito si riassumono queste prove, l’**F1**, lo premia. Conviene
 smontarlo, perché è fatto di due numeri che qui tirano in direzioni opposte. Il
 **richiamo** è la quota di oggetti presenti che il modello ha riconosciuto: chi
 dice sempre «sì» non se ne lascia sfuggire nemmeno uno, quindi prende il massimo,
@@ -275,7 +275,7 @@ colpo: $1{,}0$ contro $0{,}5$, e il primo dei due non sta rispondendo, sta
 ripetendo sempre la stessa cosa.
 
 Tre onestà, per non trasformare un protocollo in un oracolo. La prima: si misura
-l'**esistenza degli oggetti**, e nient'altro; un colore sbagliato, un conteggio
+l’**esistenza degli oggetti**, e nient'altro; un colore sbagliato, un conteggio
 sbagliato, una relazione rovesciata restano invisibili. La seconda: poiché la
 misura è pubblica e la strategia per migliorarla è nota, un modello istruito a
 dire «no» più spesso guadagna punti senza aver guadagnato un grammo di vista, e
@@ -523,7 +523,7 @@ In pratica si sottrae, punto per punto, quello che il modello direbbe comunque.
 
 Una precauzione serve, altrimenti il trucco si rivolta: sottraendo senza freni
 si finisce per premiare parole assurde, che a occhi chiusi erano
-improbabilissime e a occhi aperti solo un po' meno. Il rimedio è restringere la
+improbabilissime e a occhi aperti solo un po’ meno. Il rimedio è restringere la
 scelta in partenza alle parole che a occhi aperti valevano almeno un decimo
 della più probabile: dentro quella rosa si confronta, fuori non si guarda. E il
 conto da pagare è semplice: due letture invece di una, quindi il doppio del
@@ -760,7 +760,7 @@ pagina: provare in quella copia costa meno che provare sul robot vero.
 
 Resta il fatto che il meccanismo è di una economia notevole. Non c'è
 un'architettura per l'azione: c'è la stessa macchina di tutto il capitolo, con
-un vocabolario un po' più largo. E c'è, insieme, il motivo per cui l'azione sta
+un vocabolario un po’ più largo. E c'è, insieme, il motivo per cui l'azione sta
 in coda all'allucinazione e non altrove: un sistema che allucina una forchetta
 scrive una parola di troppo, lo stesso sistema che comanda una mano allucina un
 movimento.
@@ -823,7 +823,7 @@ di una fotografia che non ha guardato.
 
 ```{admonition} Da ricordare
 :class: important
-- L'**allucinazione visiva** non è un errore di percezione: la perdita si
+- L’**allucinazione visiva** non è un errore di percezione: la perdita si
   scompone in un **priore linguistico** più un **contributo visivo**, e dove la
   didascalia è già prevedibile dal testo il gradiente che spinge a guardare è
   debole. Guardare non è vietato, è facoltativo.
@@ -854,7 +854,7 @@ di una fotografia che non ha guardato.
   una soglia di plausibilità), una **seconda passata** di verifica (utile solo se
   indipendente). Riducono, non eliminano.
 - Discretizzando i comandi di un robot in 256 gradini per grado di libertà,
-  l'**azione diventa una sequenza di token** e tutta la macchina del capitolo si
+  l’**azione diventa una sequenza di token** e tutta la macchina del capitolo si
   riusa {cite}`brohan2023rt2`, {cite}`kim2024openvla`. Restano il passo di
   quantizzazione, la frequenza di controllo di pochi hertz, i dati che non si
   raccolgono dal web, e un modello di errore in cui la mossa sbagliata è già
@@ -862,3 +862,10 @@ di una fotografia che non ha guardato.
 ```
 
 `````
+
+Ci portiamo dietro due cose, che poi sono la stessa vista da due lati: l'azione
+si può scrivere, e chi scrive azioni sbaglia come sbaglia chi scrive parole,
+cioè con sicurezza e senza accorgersene. Quello che qui nessuno fa è il resto
+del mestiere: decidere quando è il momento di agire, mettere in fila le mosse di
+un lavoro lungo, tenere il conto di che cosa si è già provato. Comincia da lì il
+capitolo sugli **agenti**.

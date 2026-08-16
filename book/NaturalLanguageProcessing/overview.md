@@ -14,6 +14,13 @@ Il **Natural Language Processing** (NLP, elaborazione del linguaggio naturale)
 abbiamo progettati noi perché ogni istruzione voglia dire una cosa sola,
 l'italiano e l'inglese no.
 
+Arriviamo qui dal deep reinforcement learning, che ci lascia una domanda in
+mano: come si scrive una ricompensa che dica davvero quel che vogliamo. La
+risposta che il libro darà, molto più avanti, non sarà un numero calcolato da un
+programma ma il giudizio di una persona che legge due frasi e dice quale
+preferisce. Prima però bisogna sapere che cos'è una frase, per una macchina, ed
+è quel che si fa da qui in poi.
+
 ## Perché il linguaggio è così difficile
 
 `````{tab} Elementare
@@ -29,11 +36,11 @@ oggetto, e una macchina deve capirlo. Ci sono le parole piccole che da sole non
 vogliono dire niente e vanno a pescare il significato in quello che è già
 stato detto: in "Marco ha preso il libro e l'ha letto", quel "l" è il libro, ma
 per saperlo bisogna ricordarsi la prima metà della frase. Questo rimando
-all'indietro ha un nome, l'**anafora**, e tornerà nell'ultima sezione del
+all'indietro ha un nome, l’**anafora**, e tornerà nell'ultima sezione del
 capitolo, quella sul dialogo: lì le parole piccole dovranno pescare il
 significato non nella stessa frase, ma in una battuta detta prima da un'altra
 persona. E c'è
-l'**ironia**: se dico "che bella giornata" mentre diluvia, intendo l'esatto
+l’**ironia**: se dico "che bella giornata" mentre diluvia, intendo l'esatto
 contrario. Nessuna di queste cose è scritta nelle parole: sta tra le righe, ed
 è lì che le macchine si perdono.
 
@@ -203,10 +210,10 @@ Con i numeri in mano affrontiamo i compiti, uno alla volta.
   tenendo un riassunto aggiornato (le *reti ricorrenti*).
 - **Tradurre**: una rete legge la frase in una lingua, una seconda la riscrive
   nell'altra (la coppia si chiama *encoder–decoder*), e fra le due nasce l'idea
-  che cambierà tutto, l'*attenzione*.
+  che cambierà tutto, l’*attenzione*.
 - **Dire il mestiere di ogni singola parola** (nome, verbo, articolo) e
   riconoscere nomi di persona, di luogo e date: sono il *POS tagging* e il
-  *NER*, e li risolve un procedimento del 1967, l'*algoritmo di Viterbi*.
+  *NER*, e li risolve un procedimento del 1967, l’*algoritmo di Viterbi*.
 - **Scoprire com'è costruita una frase**, cioè quali parole vanno insieme e
   chi fa che cosa a chi (il *parsing*).
 - **Parlare con le macchine**: dialogo e chatbot, che chiude il cerchio aperto

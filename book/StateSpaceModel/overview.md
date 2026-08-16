@@ -90,7 +90,7 @@ L'attenzione lineare del capitolo precedente e gli *state space model* di
 questo nascono da mondi diversi, e arrivano alla stessa macchina. È quella
 appena descritta: tiene un riassunto di taglia sempre uguale (lo **stato**) e a
 ogni parola lo aggiorna con una regola semplice, in cui il nuovo riassunto è il
-vecchio, un po' sbiadito, più ciò che entra adesso. Si addestra lavorando su
+vecchio, un po’ sbiadito, più ciò che entra adesso. Si addestra lavorando su
 tutta la sequenza in una volta sola, e poi genera una parola alla volta senza
 che la memoria cresca mai.
 
@@ -122,7 +122,7 @@ taglia fissa resta, ed è l'argomento dell'ultima sezione del capitolo.
 
 Il secondo filo è una parentela. Alla fine, con **Mamba-2**
 {cite}`dao2024mamba2`, vedremo che non è una somiglianza vaga: un *state space
-model* di forma opportuna *è* un'**attenzione mascherata**, cioè
+model* di forma opportuna *è* un’**attenzione mascherata**, cioè
 un'attenzione che guarda solo all'indietro, in cui il confronto fra due parole
 è pesato da quanto della prima è sopravvissuto nel frattempo. Le due famiglie
 che raccontiamo in due capitoli sono, in fondo, due viste dello stesso

@@ -246,7 +246,7 @@ Nella {numref}`fig-autograd-due-passate` c'è però una cosa che il disegno non
 può mostrare, e che spiega un comportamento di PyTorch altrimenti sorprendente:
 per poter tornare indietro, l'andata deve **ricordare**. Una rete è
 fatta di **strati**, cioè di stazioni in fila: i dati entrano dalla prima,
-ognuna li trasforma un po' e passa il risultato alla successiva, finché
+ognuna li trasforma un po’ e passa il risultato alla successiva, finché
 dall'ultima esce la risposta. Il viaggio di andata si chiama **passata in
 avanti** (in inglese *forward pass*).
 

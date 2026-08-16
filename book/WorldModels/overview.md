@@ -66,7 +66,7 @@ rispondi senza bisogno di lasciarlo: nella tua testa il bicchiere è già caduto
 e già in mille pezzi. Il modello del mondo è questo cinema interiore in cui il
 futuro si prova a costo zero. Non è perfetto (la manovra immaginata a volte
 finisce comunque con una strisciata) ma ogni volta che la realtà ti smentisce,
-il cinema interiore si aggiorna e la prossima previsione è un po' migliore.
+il cinema interiore si aggiorna e la prossima previsione è un po’ migliore.
 
 `````
 
@@ -199,6 +199,19 @@ grandi non basteranno. Che LeCun ci creda davvero lo dice la biografia: a fine
 2025 ha lasciato Meta (dove nel 2013 aveva fondato il laboratorio di ricerca
 FAIR) per avviare una startup dedicata proprio ai world model.
 
+Dentro quel programma c'è anche una **retrocessione**, ed è quella che di solito
+si ricorda per prima. In una conferenza del 2016 LeCun disse che se
+l'intelligenza è una torta, il grosso della torta è l'apprendimento senza
+etichette, la glassa è l'apprendimento dalle etichette e la ciliegina è
+l'apprendimento per rinforzo {cite}`lecun2016cake`. Due capitoli di questo libro
+sono dedicati a quella ciliegina, e conviene dire subito che la battuta ha un
+argomento sotto, non è uno sfottò: riguarda **quanta informazione** porta la
+correzione con cui un sistema impara, e chi impara per tentativi ne riceve
+pochissima. Il capitolo sull'auto-supervisione lo misura e riporta anche chi la
+pensa diversamente; qui basta sapere che è da lì che viene la proposta di sostituire i
+tentativi con la **pianificazione dentro un modello del mondo**, che è
+esattamente l'oggetto delle pagine che seguono.
+
 `````{tab} Elementare
 
 L'accusa di LeCun, in soldoni: un LLM scrive come chi detta una storia una
@@ -242,13 +255,13 @@ emerso dalla sola predizione del token successivo. La proposta alternativa di
 {cite}`lecun2022path` (predire non nello spazio dei token o dei pixel ma in
 uno spazio di rappresentazioni astratte, con architetture *joint-embedding*
 addestrate a energia) è esattamente ciò che studieremo nella sezione sulla
-JEPA, nel linguaggio del capitolo precedente.
+JEPA, nel linguaggio del capitolo sui modelli a energia.
 
 `````
 
 ## Come è organizzato il capitolo
 
-Tre tappe.
+Quattro tappe.
 
 La prima sono i **mondi in miniatura**. Nel 2018 David Ha e Jürgen Schmidhuber
 addestrano un **agente**, cioè un programma che guarda e sceglie le mosse, a
@@ -272,11 +285,20 @@ futuro, e la previsione avviene fra i due riassunti. Ce ne sono due versioni,
 I-JEPA per le immagini e V-JEPA per i video, e tutte e due lavorano nello
 **spazio delle rappresentazioni**, che è poi lo «spazio delle idee» del titolo
 di quella sezione: il posto in cui una scena è già diventata un riassunto e non
-è più un mosaico di puntini colorati. Qui il capitolo precedente torna utile
+è più un mosaico di puntini colorati. Qui il capitolo sui modelli a energia
+torna utile
 per intero, perché una JEPA è un modello a energia: la stessa idea del
 buttafuori che assegna un voto di compatibilità, e lo stesso pericolo, che le
 due reti si mettano d'accordo per dare a ogni cosa lo stesso riassunto (è il
 **collasso**, e lo vedremo da vicino).
+
+Terza tappa, l’**inferenza attiva**, e qui si cambia disciplina: è la risposta
+che alla stessa domanda danno le neuroscienze teoriche. La tesi è che percepire
+e agire non siano due mestieri ma lo stesso, in due direzioni: davanti a uno
+scarto fra quel che ti aspettavi e quel che trovi, o cambi idea o cambi il
+mondo. E che imparare sia ancora la stessa cosa, più lenta. Ne esce un sistema
+in cui non c'è nessun premio scritto a parte, perché quello che l'organismo
+desidera sta nello stesso posto in cui sta quello che si aspetta.
 
 Ultima tappa, i **simulatori generativi di video** (Sora di OpenAI, presentato
 nel 2024 come passo verso «simulatori di mondo», e Genie di Google DeepMind,
@@ -310,13 +332,22 @@ intero l'esperimento sul gioco da tavolo promesso poco fa.
   **posizione** autorevole dentro un dibattito aperto, non un verdetto: altri
   ricercatori sostengono che, per azzeccare le parole, quei modelli un modello
   del mondo se lo siano già costruito dentro, per quanto rudimentale.
-- Il percorso del capitolo, in tre tappe. Prima i **mondi in miniatura**: il
+- Nella stessa proposta c'è una **retrocessione**: imparare per tentativi e
+  premi, dice LeCun, è «la ciliegina sulla torta», e al suo posto va la
+  pianificazione dentro un modello del mondo. Il motivo non è il disprezzo, è un
+  conto: chi impara per tentativi riceve una correzione pochissimo informativa,
+  una specie di «bravo» a fine giornata. Il capitolo sull'auto-supervisione lo
+  fa, quel conto, e riporta anche le obiezioni.
+- Il percorso del capitolo, in quattro tappe. Prima i **mondi in miniatura**: il
   programma che impara a giocare allenandosi dentro il proprio sogno, e i suoi
   eredi (i *Dreamer*, che di sogno vivono quasi soltanto). Poi la strada di
   LeCun, che invece di immaginare il mondo immagine per immagine lo immagina
   **per idee**, cioè prevede a grandi linee cosa ci sarà, non ogni singolo
   puntino dello schermo (la sigla è **JEPA**, *Joint-Embedding Predictive
-  Architecture*: «architettura che predice fra due riassunti»). Infine i
+  Architecture*: «architettura che predice fra due riassunti»). Poi
+  l’**inferenza attiva**, che è la risposta delle neuroscienze alla stessa
+  domanda: percepire e agire sono la stessa cosa in due direzioni, e un pesce si
+  muove per non trovarsi all'asciutto, non per incassare un premio. Infine i
   programmi che sanno
   generare video, e la domanda con cui il capitolo si chiude: chi sa girare il
   filmato giusto ha capito come funziona il mondo, o è solo bravissimo a
@@ -344,9 +375,19 @@ intero l'esperimento sul gioco da tavolo promesso poco fa.
   un world model che predica in uno spazio di rappresentazioni. È una
   **posizione** autorevole dentro un dibattito aperto, non un consenso: altri
   ricercatori vedono negli LLM world model impliciti già in formazione.
+- La stessa proposta **retrocede il reinforcement learning** a «ciliegina sulla
+  torta» {cite}`lecun2016cake`, in favore del controllo predittivo su modello.
+  L'argomento è l'informazione del bersaglio (uno scalare per episodio contro
+  ordini di grandezza in più nel pre-addestramento) e l'assegnazione del credito
+  lungo la traiettoria: il capitolo sull'auto-supervisione lo quantifica, con il
+  contraddittorio.
 - Il percorso del capitolo: mondi in miniatura (Ha & Schmidhuber, Dreamer) →
-  JEPA → simulatori video generativi e dibattito. Il linguaggio dell'energia,
-  su cui poggia la JEPA, è quello del capitolo precedente.
+  JEPA → **inferenza attiva** (percezione, azione e apprendimento come
+  minimizzazioni della stessa energia libera, con le preferenze nei priori
+  invece che in una ricompensa) → simulatori video generativi e dibattito. Il
+  linguaggio dell'energia, su cui poggia la JEPA, è quello del capitolo sui
+  modelli a energia, e non è la stessa «energia» dell'inferenza attiva: la
+  sezione lo dice apertamente.
 ```
 
 `````

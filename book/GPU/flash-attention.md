@@ -466,7 +466,7 @@ rovescio, ed è la morale di tutto il capitolo: più la macchina è veloce, più
 facile che a mancare siano i pezzi e non le braccia.
 
 **La terza: dare a ciascuno un ruolo fisso.** Invece di far fare a ogni squadra
-un po' di tutto, alcune squadre fanno *solo* i portapacchi e altre *solo* il
+un po’ di tutto, alcune squadre fanno *solo* i portapacchi e altre *solo* il
 montaggio, come in una catena vera: un operaio dedicato a un compito lo fa
 meglio di uno che salta di continuo da un lavoro all'altro, e così le macchine
 non restano mai senza materiale e nessuno dei due lavori si ferma ad aspettare
@@ -493,7 +493,7 @@ calcolo:
   mista vista nella sezione «Prestazioni e scala». Ma più i tensor core sono
   veloci, più è facile ritrovarsi memory-bound: il ginocchio del roofline si
   sposta a destra, e la partita torna a giocarsi sui byte.
-- **Warp specialization.** Invece di far fare a ogni warp un po' di tutto, gli si
+- **Warp specialization.** Invece di far fare a ogni warp un po’ di tutto, gli si
   assegnano *ruoli*: alcuni warp fanno solo da *producer* (caricano i dati dalla
   HBM), altri da *consumer* (calcolano sui tensor core), coordinati come i
   reparti di una catena di montaggio. La specializzazione tiene le unità di
@@ -532,7 +532,7 @@ capitolo.
 - Non fa **meno** conti degli altri: ne fa altrettanti, e nel viaggio di
   ritorno (quello in cui la rete impara dai propri errori) qualcuno in più,
   perché avendo buttato i blocchetti se li deve rifare. È un baratto voluto:
-  si spende un po' di calcolo, che costa poco, per risparmiare tanti viaggi,
+  si spende un po’ di calcolo, che costa poco, per risparmiare tanti viaggi,
   che costano molto.
 - Il guadagno: la memoria non cresce più con il quadrato della lunghezza del
   testo ma in proporzione ad essa, e sui testi lunghi (dove prima la GPU

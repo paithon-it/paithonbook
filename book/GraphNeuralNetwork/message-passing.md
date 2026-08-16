@@ -91,7 +91,7 @@ $$
 
 Qui $\mathcal{N}(v)$ è l'insieme dei vicini di $v$; $M_k$ è la **funzione
 messaggio** (una rete, che può usare anche la feature dell'arco
-$\mathbf{e}_{vu}$); il simbolo $\bigoplus$ è l'**aggregazione**, un'operazione
+$\mathbf{e}_{vu}$); il simbolo $\bigoplus$ è l’**aggregazione**, un'operazione
 *invariante alla permutazione* dei vicini (tipicamente $\sum$, la media o il
 massimo) che produce il messaggio aggregato $\mathbf{m}_v^{(k)}$; e $U_k$ è la
 **funzione di aggiornamento** che fonde lo stato precedente con
@@ -114,7 +114,7 @@ per un compito sull'intero grafo si applica una funzione di lettura
 ($\mathrm{READOUT}$), anch'essa invariante alla permutazione,
 $\hat{y}_G = R\big(\{\, \mathbf{h}_v^{(K)} : v \in V \,\}\big)$.
 
-L'invarianza di $\bigoplus$ è ciò che garantisce l'**equivarianza alla
+L'invarianza di $\bigoplus$ è ciò che garantisce l’**equivarianza alla
 permutazione** anticipata nell'introduzione: rinumerare i nodi non cambia i
 messaggi, perché una somma non ha un primo addendo. Ed è la stessa forma
 astratta («aggrega dai vicini, poi aggiorna») dello schema
@@ -361,7 +361,7 @@ La divisione rimette tutti sulla stessa scala, e lo spirito è quello di una
 **media** invece di una somma: dieci opinioni o due, quello che conta è il
 tenore, non il numero. Non è una media esatta, per la ragione appena vista (i
 pesi di una riga non fanno precisamente uno), ma il mestiere che svolge è
-quello. In più, il messaggio di un amico molto popolare pesa un po' meno,
+quello. In più, il messaggio di un amico molto popolare pesa un po’ meno,
 perché la sua attenzione è «spalmata» su tanti: proprio come il consiglio di
 chi conosce mezzo mondo vale un filo meno di quello dell'amico che hai solo tu.
 
@@ -411,7 +411,7 @@ e ricomporre con $\mathbf{U}^\top$ presuppone una base ortonormale, e senza di
 essa la lettura spettrale non sta in piedi.
 
 Ed è anche la ragione per cui quella forma non è stata scelta: è **caduta** dal
-conto. Qui sta il secondo punto, l'**origine spettrale**. La GCN nasce come
+conto. Qui sta il secondo punto, l’**origine spettrale**. La GCN nasce come
 approssimazione al prim'ordine di una convoluzione definita nel dominio
 spettrale del grafo: i filtri polinomiali di Čebyšëv di Defferrard, Bresson e
 Vandergheynst {cite}`defferrard2016convolutional`. Troncare quel polinomio al
@@ -578,7 +578,7 @@ Il premio annunciato arriva adesso.
 `````{tab} Elementare
 
 Riprendi la frase da tenere a mente: la GCN è un filtro che smussa le
-differenze fra vicini. Ogni giro di bigliettini ne cancella un po'; e se i giri
+differenze fra vicini. Ogni giro di bigliettini ne cancella un po’; e se i giri
 sono tanti? Le differenze finiscono.
 
 Si vede sulla catena di quattro nodi di poco fa, quella che partiva da 1, 2, 3
@@ -600,8 +600,8 @@ vedono ancora ($2{,}2$ e $2{,}7$) non dicono chi era il nodo: dicono soltanto
 quanti vicini ha, uno i due di bordo e due i due interni.
 
 Non serve nessun conto sofisticato per capire il perché. Se a ogni giro ognuno
-si rimescola con i vicini, e i vicini fanno lo stesso con i loro, dopo un po'
-nessuno ha più niente di suo: è la classe in cui tutti copiano un po' dal
+si rimescola con i vicini, e i vicini fanno lo stesso con i loro, dopo un po’
+nessuno ha più niente di suo: è la classe in cui tutti copiano un po’ dal
 compagno di banco, e dopo un'ora i compiti si somigliano tutti e non si capisce
 più chi la lezione la sapeva davvero.
 
@@ -693,7 +693,7 @@ o tre strati bastano quasi sempre, perché il numero di nodi raggiunti cresce in
 fretta col grado.
 Secondo, andare troppo profondi è controproducente: applicando molte volte
 $\hat{\mathbf{A}}$ le rappresentazioni dei nodi convergono verso un unico punto
-e diventano indistinguibili; il fenomeno dell'*oversmoothing*, per cui in
+e diventano indistinguibili; il fenomeno dell’*oversmoothing*, per cui in
 pratica le GCN molto profonde rendono peggio di quelle a due strati.
 
 `````
@@ -775,7 +775,7 @@ numero di classi. Il punto sottile è che $\mathbf{z}_v$ dipende, tramite
 $\hat{\mathbf{A}}$, dalle feature dell'intero vicinato a due salti: il
 gradiente di $\mathcal{L}$ fluisce quindi indietro anche attraverso nodi
 **non** etichettati, che partecipano all'addestramento pur senza comparire
-nella somma. Nel loro articolo Kipf e Welling riportano su Cora l'$81{,}5\%$ di
+nella somma. Nel loro articolo Kipf e Welling riportano su Cora l’$81{,}5\%$ di
 accuratezza contro il $75{,}7\%$ del miglior metodo che confrontano: quel salto,
 ottenuto con appena due strati e $140$ nodi etichettati, è la ragione per cui la
 GCN si è imposta.
@@ -876,7 +876,7 @@ porta scritto sopra un verbo.
   poi una ricetta di riscrittura uguale per tutti i nodi (sono i numeri che la
   rete impara) e un ritocco finale non lineare.
 - I bigliettini si **pesano** invece di sommarli e basta: chi ha tanti vicini
-  non deve coprire la voce degli altri, un po' come fare una media invece di un
+  non deve coprire la voce degli altri, un po’ come fare una media invece di un
   totale. Serve anche a tenere i valori sulla stessa scala giro dopo giro.
 - Anche su un grafo si può parlare di **frequenze**: bassa se nodi collegati
   portano valori simili, alta se lungo ogni collegamento il valore salta. Un
@@ -888,7 +888,7 @@ porta scritto sopra un verbo.
   amici degli amici, con tre quelli ancora dopo, come in una rete per immagini
   il campo visivo di un neurone cresce con la profondità. Ma smussando a ogni
   giro, troppi giri cancellano le differenze e i nodi diventano
-  indistinguibili (è l'*oversmoothing*, la classe in cui tutti copiano dal
+  indistinguibili (è l’*oversmoothing*, la classe in cui tutti copiano dal
   compagno di banco finché i compiti si somigliano tutti): non è un errore di
   programmazione, è quello che il metodo fa per costruzione.
 - L'addestramento tipico è indovinare la categoria di tutti i nodi
@@ -928,7 +928,7 @@ porta scritto sopra un verbo.
 - Impilare $K$ strati dà a ogni nodo un **campo recettivo a $K$ salti**,
   l'esatto analogo della profondità nelle CNN. Ma uno strato GCN è un **filtro
   passa-basso**, e applicarlo molte volte lascia sopravvivere solo
-  l'autovettore dominante di $\hat{\mathbf{A}}$: è l'*oversmoothing*, e non è
+  l'autovettore dominante di $\hat{\mathbf{A}}$: è l’*oversmoothing*, e non è
   un incidente ma una conseguenza algebrica.
 - L'addestramento tipico è la **classificazione dei nodi semi-supervisionata**
   (Cora): cross-entropia sui soli nodi etichettati, ma gradienti che fluiscono

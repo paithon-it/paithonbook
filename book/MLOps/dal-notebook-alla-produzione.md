@@ -29,7 +29,7 @@ cioè lasciare che il risultato buono viva soltanto nella memoria di una
 sessione che qualcuno prima o poi chiuderà.
 
 Fra quel notebook e un sistema che dà previsioni a persone vere, ogni giorno,
-senza sorprese, c'è quindi un abisso. Colmarlo è il mestiere dell'**MLOps**, e
+senza sorprese, c'è quindi un abisso. Colmarlo è il mestiere dell’**MLOps**, e
 questa sezione è la mappa dell'abisso: che cosa cambia davvero quando si passa
 «dal mio computer» al mondo, e con quali attrezzi si attraversa.
 
@@ -101,7 +101,7 @@ Il percorso che una modifica compie prima di andare in pubblico. Qualcuno
 propone un cambiamento, una macchina prova il codice, poi riaddestra il
 modello e gli dà un voto su esempi che non ha mai visto. Solo se quel voto
 supera la soglia decisa in anticipo, il cambiamento viene accettato e
-pubblicato. Nella figura il voto è l'`F1`, uno dei modi di dare un numero solo
+pubblicato. Nella figura il voto è l’`F1`, uno dei modi di dare un numero solo
 alla bravura di un classificatore, visto nel capitolo sul machine learning; va
 bene qualunque altro, purché la soglia sia stata scritta *prima*. Rispetto al
 software normale lo stadio in più è proprio quello del voto, ed è un cancello
@@ -131,7 +131,7 @@ fasi ricorrenti di un progetto di machine learning
    machine learning (si veda [Overfitting e
    validazione](../MachineLearning/overfitting-validazione.md)).
 5. **Deploy**: mettere il modello in un servizio che risponde a richieste
-   reali, dietro un'**API** o dentro un'applicazione. Un'API è una specie di
+   reali, dietro un’**API** o dentro un'applicazione. Un'API è una specie di
    sportello elettronico: un indirizzo a cui un altro programma manda una
    domanda e da cui riceve la risposta, senza sapere né dover sapere che cosa
    c'è dietro.
@@ -165,7 +165,7 @@ Una torta viene uguale a quella di ieri solo se tre cose coincidono: la
 **forno** (la stessa temperatura, lo stesso tempo). Sbaglia uno solo dei tre e
 il risultato cambia. Nel software tradizionale, di solito, basta congelare la
 ricetta: stesso codice, stesso risultato. Nel machine learning no: lo stesso
-codice, addestrato su dati anche solo un po' diversi, produce un modello
+codice, addestrato su dati anche solo un po’ diversi, produce un modello
 diverso. Per rifare la torta servono tutti e tre gli elementi congelati, e, in
 più, va segnato pure il lancio dei dadi, perché qui dentro c'è del caso.
 
@@ -175,7 +175,7 @@ forno è il computer con sopra le sue **librerie**, cioè i pacchi di programmi
 già fatti che il nostro programma usa senza riscriverli (uno che sa fare i
 conti sui numeri, uno che sa addestrare le reti); e come un forno vero, una
 libreria di marca diversa, o della stessa marca ma di un altro anno, cuoce in
-modo un po' diverso.
+modo un po’ diverso.
 
 E la torta si conserva anche lei, non solo la ricetta: rifarla identica costa
 ore di forno, e chi la deve mangiare non può aspettarle. Le cose da tenere
@@ -192,13 +192,13 @@ contesto in cui sono stati combinati:
 - **Codice**: sorgente del modello, delle trasformazioni e della pipeline. Qui
   `git` fa benissimo il suo mestiere.
 - **Dati**: l'esatto insieme di addestramento e valutazione. Si versiona
-  fissandone un'**impronta** (l'hash del contenuto) e conservando lo
+  fissandone un’**impronta** (l'hash del contenuto) e conservando lo
   *snapshot* in un archivio dedicato.
 - **Modello**: i pesi addestrati (in PyTorch lo `state_dict` visto nel
   capitolo PyTorch), catalogati in un **model registry** che ne traccia
   versione, metriche e provenienza.
 
-A questi si aggiungono l'**ambiente**, versioni esatte di Python e delle
+A questi si aggiungono l’**ambiente**, versioni esatte di Python e delle
 librerie, *pinnate* (`pip freeze > requirements.txt`, un lockfile, un'immagine
 container), perché una minor version diversa di una libreria può cambiare i
 risultati, e la **configurazione**: iperparametri e, cruciale, i **semi**
@@ -312,7 +312,7 @@ metterà un cartellino a un intero archivio di dati.
 
 `````{tab} Superiore
 
-Il cuore è un'**impronta** della configurazione: si serializza il dizionario
+Il cuore è un’**impronta** della configurazione: si serializza il dizionario
 degli iperparametri in una forma canonica e se ne prende un hash, così da
 riconoscere quando stiamo ripetendo un esperimento già fatto. `sort_keys=True`
 è ciò che rende irrilevante l'ordine in cui le chiavi sono state scritte, ed è
@@ -392,7 +392,7 @@ software normale.
 `````{tab} Elementare
 
 Il debito tecnico è come costruire una casa di fretta: per consegnare in tempo
-salti qualche fondamenta, e per un po' la casa sta in piedi. Ma ogni
+salti qualche fondamenta, e per un po’ la casa sta in piedi. Ma ogni
 scorciatoia è un prestito: prima o poi va restituito, con gli interessi, sotto
 forma di crepe da riparare. Lo stesso gruppo, un anno prima, aveva intitolato
 un articolo così: il machine learning è «la carta di credito ad alto tasso del
@@ -495,7 +495,7 @@ contare.
   modelli sono grandi e binari, se ne versiona un'impronta. Distinguere la
   riproducibilità **bit a bit** (che si paga in prestazioni e che il batching
   dinamico rinuncia a dare) da quella **statistica**, che è quella che serve.
-- L'**experiment tracking** registra iperparametri, metriche e artefatti di ogni
+- L’**experiment tracking** registra iperparametri, metriche e artefatti di ogni
   run: un'impronta della configurazione, stabile rispetto all'ordine delle
   chiavi, basta a riconoscere gli esperimenti già fatti.
 - Il ML accumula **debito tecnico** in fretta {cite}`sculley2015hidden` (glue

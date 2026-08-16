@@ -76,7 +76,7 @@ puri possibile.
 
 `````{tab} Elementare
 
-La misura più usata è l'**indice di Gini**: la probabilità di sbagliare se
+La misura più usata è l’**indice di Gini**: la probabilità di sbagliare se
 tirassimo a indovinare la classe di un esempio pescando a caso dal gruppo, con
 le stesse proporzioni del gruppo. Un gruppo puro non ci fa mai sbagliare (Gini
 = 0); un gruppo bilanciato ci fa sbagliare spesso (Gini alto).
@@ -95,7 +95,7 @@ probabilità si moltiplicano: $p \cdot p = p^2$.
 Sommando quei quadrati su tutte le classi ottieni la probabilità che le due
 pescate coincidano, cioè di indovinare. Ma o le due pescate coincidono o sono
 diverse, non c'è una terza possibilità, e quindi la probabilità di **sbagliare**
-è $1$ meno quella somma. Ecco da dove viene l'«uno meno la somma dei
+è $1$ meno quella somma. Ecco da dove viene l’«uno meno la somma dei
 quadrati».
 
 Facciamo i conti su un esempio. Un negozio online ha 10 clienti, e vogliamo
@@ -147,7 +147,7 @@ colonna, non infinite.
 `````{tab} Superiore
 
 Sia $p_k$ la frazione di esempi di classe $k$ in un nodo. Le due misure di
-impurità classiche sono l'**indice di Gini** e l'**entropia**:
+impurità classiche sono l’**indice di Gini** e l’**entropia**:
 
 $$
 G = 1 - \sum_{k=1}^{K} p_k^2 ,
@@ -158,7 +158,7 @@ $$
 dove $K$ è il numero di classi. Entrambe valgono $0$ su un nodo puro ($p_k = 1$
 per una sola classe) e sono massime sulla distribuzione uniforme. La qualità di
 uno split che manda una frazione $w_L$ degli esempi nel figlio sinistro e $w_R
-= 1 - w_L$ nel destro si misura con l'**information gain**, la riduzione attesa
+= 1 - w_L$ nel destro si misura con l’**information gain**, la riduzione attesa
 di impurità:
 
 $$
@@ -170,7 +170,7 @@ la loro numerosità. CART sceglie, tra tutte le coppie (caratteristica, soglia),
 quella che massimizza $\Delta$, e procede in modo ricorsivo e *greedy*: nessun
 passo indietro, ogni split è ottimo solo localmente.
 
-Riprendendo l'esempio numerico dell'altro livello con l'**entropia**: il nodo
+Riprendendo l'esempio numerico dell'altro livello con l’**entropia**: il nodo
 padre bilanciato ha $H_\text{padre} = -\tfrac{1}{2}\log_2\tfrac{1}{2} -
 \tfrac{1}{2}\log_2\tfrac{1}{2} = 1$ bit. Il figlio «sì» è puro ($H = 0$); il
 figlio «no» ha
@@ -182,7 +182,7 @@ $$
 
 L'entropia media dopo lo split è $\tfrac{4}{10}\cdot 0 + \tfrac{6}{10}\cdot
 0{,}650 = 0{,}390$ bit, e l'information gain vale $1 - 0{,}390 = 0{,}610$ bit.
-Gini ed entropia danno in pratica alberi quasi identici; Gini è un po' più
+Gini ed entropia danno in pratica alberi quasi identici; Gini è un po’ più
 veloce (niente logaritmi) ed è la scelta di default in scikit-learn.
 
 `````
@@ -197,7 +197,7 @@ scritto nella foglia: non più una classe, ma la media dei valori degli esempi
 che ci sono finiti dentro. La seconda è la misura da minimizzare: al posto del
 Gini si cerca il taglio che rende i valori di ciascun gruppo il più possibile
 vicini alla loro media, e la misura è quella già usata per la retta di best fit
-(scarto fra vero e previsto, al quadrato, mediato: l'**errore quadratico
+(scarto fra vero e previsto, al quadrato, mediato: l’**errore quadratico
 medio**). Il risultato non è una retta ma una funzione «a scalini», costante su
 ogni rettangolo.
 
@@ -205,7 +205,7 @@ ogni rettangolo.
 
 Un albero lasciato crescere senza freni continua a dividere finché ogni foglia
 contiene un solo esempio: a quel punto classifica alla perfezione i dati di
-addestramento, e generalizza malissimo. È l'**overfitting** della sezione su
+addestramento, e generalizza malissimo. È l’**overfitting** della sezione su
 overfitting e validazione, nella sua forma più estrema.
 
 `````{tab} Elementare
@@ -296,7 +296,7 @@ pesca a caso dal mucchio degli esempi, *rimettendo* ogni volta dentro quello
 appena pescato. È come pescare da un mazzo di carte guardando la carta e
 rimettendola nel mazzo prima di pescare di nuovo: nella nuova mano qualche
 carta capiterà due o tre volte e qualche altra non uscirà affatto. Ogni
-campione così ottenuto è una versione un po' storta dell'originale, e ogni
+campione così ottenuto è una versione un po’ storta dell'originale, e ogni
 volta storta in modo diverso.
 
 Su ognuno di questi campioni si addestra un albero. Ne escono, poniamo, 100
@@ -374,7 +374,7 @@ costretto a guardare altrove.
 È come chiedere a una giuria di esperti di votare, ma bendando ogni giurato su
 aspetti diversi del caso: nessuno può basarsi sempre sull'indizio più ovvio, e i
 loro pareri diventano davvero indipendenti. Alberi più diversi tra loro, media
-più efficace, varianza ancora più bassa. Il singolo albero diventa un po' meno
+più efficace, varianza ancora più bassa. Il singolo albero diventa un po’ meno
 bravo (gli abbiamo nascosto delle carte), ma l'insieme diventa molto più forte.
 
 `````
@@ -403,7 +403,7 @@ di ottimizzarle, guadagnando velocità e ulteriore decorrelazione.
 
 La foresta casuale porta in dote due strumenti pratici molto amati.
 
-Il primo è l'**errore out-of-bag** (OOB), e nasce da un fatto curioso del
+Il primo è l’**errore out-of-bag** (OOB), e nasce da un fatto curioso del
 bootstrap. Ogni albero è addestrato su un campione pescato con reimmissione: da
 un mucchio di
 mille esempi se ne pescano mille, rimettendo dentro ogni volta quello appena
@@ -489,7 +489,7 @@ $$
 detto **pseudo-residuo**. Il nuovo albero $h_t$ viene addestrato per
 approssimare proprio questi pseudo-residui. Nel caso della loss quadratica
 $\mathcal{L} = \tfrac{1}{2}(y - F)^2$ il gradiente si riduce a $r_i = y_i -
-F_{t-1}(\mathbf{x}_i)$: cioè, semplicemente, l'**errore residuo** ancora da
+F_{t-1}(\mathbf{x}_i)$: cioè, semplicemente, l’**errore residuo** ancora da
 spiegare (al primo passo, lo scarto dalla media $F_0$).
 Detto a parole: ogni albero fitta ciò che i precedenti hanno sbagliato. AdaBoost
 è il caso particolare che si ottiene scegliendo la *exponential loss*.
@@ -543,7 +543,7 @@ boosting molto più veloci e robuste, e vale la pena sapere perché vincono:
   sta ancora sbagliando parecchio, e delle altre ne
   campiona solo una parte, ripesandola per non falsare il conto: righe che
   contano poco, invece di pesare quanto le altre, si fanno rappresentare.
-  L'**EFB** (*exclusive feature bundling*) impacchetta in una colonna sola
+  L’**EFB** (*exclusive feature bundling*) impacchetta in una colonna sola
   colonne che quasi mai sono diverse da zero contemporaneamente, e taglia il
   numero di
   colonne da scandire. La crescita *leaf-wise*, cioè espandere sempre la foglia
@@ -576,7 +576,7 @@ somma al modello**: al minimo si prende solo un pezzetto della correzione che
 quell'albero propone. La logica però è la stessa della collina nella nebbia:
 passi piccoli
 rendono l'apprendimento più lento ma più stabile, e di solito si abbina un
-passo piccolo a molti alberi. Il secondo freno è l'**early stopping**, cioè
+passo piccolo a molti alberi. Il secondo freno è l’**early stopping**, cioè
 fermarsi quando l'errore
 su un validation set smette di migliorare, come abbiamo visto nella sezione
 sugli iperparametri. Il boosting inoltre è **sequenziale** per costruzione:
@@ -722,7 +722,7 @@ lo **stacking** $0{,}9089$.
 Prima di ricavarne una classifica, il promemoria della sezione
 sull'overfitting e la validazione: due punteggi che distano meno del rumore
 della misura non sono una classifica. Il test qui sono $900$ esempi, e attorno
-a un'accuratezza dell'$89\%$ l'incertezza di un punteggio così vale circa un
+a un'accuratezza dell’$89\%$ l'incertezza di un punteggio così vale circa un
 punto percentuale ($0{,}010$). Fra la foresta e i due voti gli scarti sono
 $0{,}007$ e $0{,}011$: dello stesso ordine dell'incertezza, cioè troppo piccoli
 per pronunciarsi.
@@ -876,8 +876,8 @@ alle reti.
 :class: important
 - Un **albero decisionale** (CART) classifica per domande sì/no che partizionano
   lo spazio in rettangoli; sceglie a ogni nodo lo split che riduce di più
-  l'impurità (**Gini** o **entropia**), massimizzando l'**information gain**.
-  In regressione la foglia predice la media e si minimizza l'**MSE**.
+  l'impurità (**Gini** o **entropia**), massimizzando l’**information gain**.
+  In regressione la foglia predice la media e si minimizza l’**MSE**.
 - Gli alberi sono **interpretabili** («scatola bianca») ma ad **alta varianza**:
   un albero profondo memorizza i dati ed è instabile.
 - Il **bagging** addestra molti alberi in parallelo su campioni **bootstrap** e

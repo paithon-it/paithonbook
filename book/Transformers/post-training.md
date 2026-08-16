@@ -24,7 +24,7 @@ volte più grande. Quel che manca al gigante non sono le conoscenze: è la
 disposizione a usarle per aiutarti.
 
 La ricetta, schematizzata in {numref}`fig-post-training-pipeline`, ha due mosse
-principali: prima si insegna il *formato* con esempi svolti (l'**instruction
+principali: prima si insegna il *formato* con esempi svolti (l’**instruction
 tuning**), poi si affina il *gusto* con i giudizi delle persone (l'apprendimento
 dalle **preferenze**, per cui esistono due strade, quella lunga e la scorciatoia
 che si chiama DPO). In mezzo alle due ci fermeremo su un problema di puro
@@ -365,7 +365,14 @@ $-\beta\log\frac{\pi_\theta(y\mid x)}{\pi_{\text{ref}}(y\mid x)}$ dentro
 l'unica aspettazione: è la stessa cosa.) La penalità KL serve a due cose:
 impedisce alla policy di derivare verso le zone in cui $r_\phi$ (addestrato su
 dati limitati) estrapola male (il *reward hacking* su cui torneremo), e
-preserva la fluidità linguistica accumulata nel pre-addestramento.
+preserva la fluidità linguistica accumulata nel pre-addestramento. Vale la
+pena sapere che questa forma non è soltanto un espediente pratico: massimizzare
+una ricompensa restando vicini a una distribuzione di riferimento è
+formalmente la stessa cosa che fare inferenza bayesiana, con $\pi_{\text{ref}}$
+nel ruolo del priore {cite}`korbak2022rl`. La sezione sull'inferenza attiva,
+nel capitolo sui *world model*, riprende quell'identità e ne mostra la
+conseguenza: il termine che qui trattiene la policy è, letto dall'altra parte,
+lo stesso che altrove spinge un agente a cercare informazione.
 L'ottimizzazione usa **PPO** {cite}`schulman2017proximal`, l'algoritmo a
 gradiente di policy che hai visto sviluppato, insieme a tutta la famiglia dei
 *policy gradient*, nel capitolo sul Deep Reinforcement Learning: l'idea in una
@@ -420,8 +427,8 @@ un giudice artificiale sui confronti degli assaggiatori, poi far cucinare il
 cuoco per il giudice. La DPO si accorge che il giro è più lungo del
 necessario: il cuoco può **saltare il giudice** e imparare direttamente dai
 confronti. Per ogni coppia già valutata (piatto preferito, piatto scartato),
-ritocca la ricetta in modo da rendere un po' più probabile il preferito e un
-po' meno probabile lo scartato. E il ritocco è dosato con intelligenza: se il
+ritocca la ricetta in modo da rendere un po’ più probabile il preferito e un
+po’ meno probabile lo scartato. E il ritocco è dosato con intelligenza: se il
 cuoco *già* favorisce il piatto giusto, il confronto non insegna quasi nulla e
 la correzione è minima; se invece è ancora in pareggio, o peggio sta dalla parte
 sbagliata, la correzione è energica. Anche la regola d'oro sopravvive, incorporata nel
@@ -683,12 +690,33 @@ dal deragliare del tutto, ma non gli insegna a distinguere una risposta utile
 da una che *sembra* utile.
 
 Il secondo è la **ruffianeria** (*sycophancy*), documentata empiricamente
-{cite}`sharma2023sycophancy`: se i valutatori preferiscono (anche solo un po' più
+{cite}`sharma2023sycophancy`: se i valutatori preferiscono (anche solo un po’ più
 spesso) le risposte che danno loro ragione, il modello impara a dare ragione.
 Contraddici un assistente addestrato sulle preferenze e spesso ritratterà una
 risposta corretta, perché nei dati di confronto l'accordo vinceva sul
 disaccordo. È l'esempio perfetto di ottimizzazione riuscita dell'obiettivo
 sbagliato.
+
+Il terzo non è un difetto del giudice ma dello **strumento**, e riguarda tanto
+l'RLHF quanto l'addestramento sui problemi verificabili. Quando si fa generare al
+modello una lunga risposta e poi le si assegna un voto unico alla fine, quel voto
+va ridistribuito su tutto quello che il modello ha scritto per arrivarci: se la
+risposta finale è giusta vengono rinforzati anche i passaggi sbagliati che stanno
+per strada, e se è sbagliata viene punito anche il ragionamento buono. Andrej
+Karpathy lo ha detto con un'immagine che è rimasta: si sta «aspirando la
+supervisione attraverso una cannuccia», e quel poco lo si spalma sull'intera
+traiettoria {cite}`karpathy2025dwarkesh`. Nella stessa intervista aggiunge che,
+ciò nonostante, l'apprendimento per rinforzo resta oggi il meglio disponibile,
+perché quello che c'era prima era peggio.
+
+Un'ultima avvertenza, sulla domanda se questo addestramento aggiunga capacità o
+soltanto le riordini. Chiedendo al modello **una sola** risposta per problema, i
+modelli addestrati sui domini verificabili battono i loro modelli di partenza;
+chiedendone moltissime e contando se almeno una è giusta, il rapporto si
+rovescia, e il confine delle capacità tende a restringersi man mano che
+l'addestramento procede {cite}`yue2025rlvr`. Il risultato riguarda
+l'impostazione di addestramento corrente, non un limite di principio, ed è il
+motivo per cui il capitolo sull'auto-supervisione ci torna sopra per esteso.
 
 E c'è la domanda che nessun addestramento può chiudere. Tutto il lavoro di
 questa pagina serve a far sì che un modello si comporti come vorremmo, e quel
@@ -728,8 +756,8 @@ garanzie sul risultato.
   cucina: restare vicini alla ricetta di partenza, perché il giudice è
   un'imitazione e ha i suoi punti ciechi.
 - **Saltare il giudice** {cite}`rafailov2023direct`: dagli stessi confronti si
-  può imparare direttamente, rendendo un po' più probabile la risposta
-  preferita e un po' meno quella scartata, e misurando sempre i ritocchi
+  può imparare direttamente, rendendo un po’ più probabile la risposta
+  preferita e un po’ meno quella scartata, e misurando sempre i ritocchi
   rispetto alla ricetta di partenza. Stessa destinazione, senza il cantiere.
 - **Mostrare i passaggi** {cite}`wei2022chain`: scrivere il ragionamento prima
   della risposta fa sbagliare meno; rifare lo stesso problema per strade
@@ -741,6 +769,11 @@ garanzie sul risultato.
   utile (risposte lunghe, sicure di sé, ben impaginate), impara a **dare
   ragione** a chi lo contraddice, e resta la domanda che nessun addestramento
   chiude: allineato ai gusti di chi?
+- E c'è un limite dello **strumento**, non del giudice: un voto solo alla fine di
+  una risposta lunga va poi spalmato su tutto quello che c'è scritto dentro, e
+  così si rinforzano anche i passaggi sbagliati di una risposta finita bene.
+  Karpathy dice che è come **aspirare la supervisione con una cannuccia**;
+  aggiunge però che resta il meglio che si abbia.
 ```
 `````
 
@@ -772,5 +805,12 @@ garanzie sul risultato.
   domini verificabili, a costo di più calcolo per risposta).
 - Limiti aperti: **reward hacking**, **ruffianeria**, e la domanda non
   tecnica «allineato a chi?».
+- Limite dello strumento: un ritorno scalare a fine sequenza va ridistribuito su
+  tutti i token generati, quindi rinforza anche i passaggi errati delle
+  traiettorie riuscite («sucking supervision through a straw»,
+  {cite}`karpathy2025dwarkesh`). E misurando col **pass@$k$**: i modelli
+  addestrati con ricompensa verificabile vincono a $k$ piccolo, i modelli base a
+  $k$ grande {cite}`yue2025rlvr`. Il capitolo sull'auto-supervisione tratta
+  entrambe le questioni per esteso.
 ```
 `````

@@ -55,7 +55,7 @@ print(immagine.shape, etichetta)  # torch.Size([3, 224, 224]) 0
 ```
 
 Un dettaglio che sembra burocratico e non lo è: l'associazione classe → numero
-segue l'**ordine alfabetico** delle cartelle, non quello in cui le abbiamo in
+segue l’**ordine alfabetico** delle cartelle, non quello in cui le abbiamo in
 testa. Quando poi si legge una predizione, `dati_train.classes[indice]` è
 l'unico modo corretto di tradurla in una parola. Scrivere a mano una lista di
 nomi in un altro ordine è un classico modo di ottenere un modello che sembra
@@ -586,7 +586,7 @@ del calcolo.
 - Un `Dataset` è un contratto di **tre metodi**: `__init__` (lavoro pesante,
   una volta), `__len__`, `__getitem__` (lavoro leggero, milioni di volte).
 - `ImageFolder` copre il caso "una cartella per classe"; l'indice delle classi
-  segue l'**ordine alfabetico**, e va riletto da `.classes`, mai riscritto a
+  segue l’**ordine alfabetico**, e va riletto da `.classes`, mai riscritto a
   mano.
 - Le trasformazioni **preparano** (resize, `ToTensor`, `Normalize`) e
   **moltiplicano** (augmentation): moltiplicare solo in addestramento, mai in

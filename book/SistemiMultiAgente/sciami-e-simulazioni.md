@@ -181,7 +181,7 @@ La cura è una sola parola: il feromone **evapora**.
 
 Immagina che ogni sera metà del feromone se ne vada da solo. Una strada che
 continua a essere usata non se ne accorge, perché ogni giorno riceve un
-deposito nuovo. Una strada che è stata la migliore per un po' e poi non lo è
+deposito nuovo. Una strada che è stata la migliore per un po’ e poi non lo è
 più si sbiadisce in fretta: partendo da cento, in cinque sere passa a cinquanta,
 venticinque, dodici e mezzo, poco più di sei, poco più di tre. Dopo una
 settimana è sotto l'uno per cento, come se non fosse mai esistita, e le formiche
@@ -291,7 +291,7 @@ Il racconto delle amputazioni è la parte istruttiva. Via la «pazzia», cioè i
 rumore aggiunto a mano per rendere il volo credibile: non serviva. Via
 l'allineamento con il vicino più prossimo (ogni agente copiava la velocità del
 compagno più vicino, che è l'allineamento dei boids ridotto a un solo vicino):
-senza, riportano gli autori, l'ottimizzazione va perfino un po' più in fretta, e
+senza, riportano gli autori, l'ottimizzazione va perfino un po’ più in fretta, e
 quello che resta non è più uno stormo, è uno sciame. Restano due sole
 attrazioni: verso il punto migliore che quella particella ha trovato finora, e
 verso il punto migliore che ha trovato il gruppo.
@@ -304,14 +304,14 @@ ha la mappa.
 
 Ciascuno si ricorda una cosa sola: il punto più basso in cui *lui* è passato. E
 ne sente una sola: il punto più basso in cui è passato *qualcuno*, gridato a
-tutti. A ogni passo tira un po' verso il proprio ricordo, un po' verso quello
-del gruppo, e un po' tira dritto per dove stava già andando, perché ha una sua
+tutti. A ogni passo tira un po’ verso il proprio ricordo, un po’ verso quello
+del gruppo, e un po’ tira dritto per dove stava già andando, perché ha una sua
 velocità e non si ferma di colpo.
 
 Quest'ultima cosa sembra un dettaglio ed è quella che fa funzionare tutto. Se
 uno andasse solo dove è tirato, arriverebbe al punto migliore conosciuto e si
 fermerebbe lì, insieme a tutti gli altri; ma siccome arriva lanciato, lo
-supera, va a guardare un po' più in là, e ogni tanto scopre che più in là si
+supera, va a guardare un po’ più in là, e ogni tanto scopre che più in là si
 scende ancora. Gli autori hanno provato a togliere questa inerzia e il metodo ha
 smesso di trovare i punti più bassi: quelli buoni non stanno dove il gruppo sta
 già puntando, stanno appena oltre.
@@ -337,7 +337,7 @@ dove $\mathbf{p}_i$ è la posizione migliore visitata dalla particella $i$ (il
 termine *cognitivo*), $\mathbf{g}$ la migliore visitata dall'intero sciame (il
 termine *sociale*), $\mathbf{r}_1$ e $\mathbf{r}_2$ sono vettori di numeri
 casuali uniformi in $[0,1]$ estratti daccapo a ogni passo, $\odot$ è il prodotto
-componente per componente, mentre $c_1$, $c_2$ e l'**inerzia** $w$ sono scalari
+componente per componente, mentre $c_1$, $c_2$ e l’**inerzia** $w$ sono scalari
 che dosano le tre spinte. I tre addendi sono, nell'ordine, dove stavo andando,
 dove sono stato meglio io, dove è stato meglio il gruppo.
 
@@ -405,13 +405,13 @@ generazione si applicano tre operatori:
 
 - **selezione**, che campiona i genitori con probabilità crescente nella
   fitness (proporzionale alla fitness, cioè la «roulette», oppure per torneo,
-  che è più robusto perché dipende solo dall'*ordine* e non dalla scala dei
+  che è più robusto perché dipende solo dall’*ordine* e non dalla scala dei
   valori);
 - **crossover**, che ricombina due genotipi (a un punto, a due punti,
   uniforme);
 - **mutazione**, che perturba ogni gene con probabilità piccola.
 
-Si aggiunge quasi sempre l'**elitismo**, cioè il trasferimento diretto del
+Si aggiunge quasi sempre l’**elitismo**, cioè il trasferimento diretto del
 migliore alla generazione successiva, senza il quale la ricerca può peggiorare
 da una generazione all'altra.
 
@@ -817,7 +817,7 @@ istruttivo: la colonia dimentica in due cicli perché deve continuare a
 esplorare, un agente in duecento ore perché deve restare la stessa persona.
 La **pertinenza** (*relevance*) è la similarità del coseno fra l'embedding del
 ricordo e quello della query, cioè il recupero denso già visto nel RAG.
-L'**importanza** è l'unica anomala: non si calcola, si **chiede al modello**,
+L’**importanza** è l'unica anomala: non si calcola, si **chiede al modello**,
 che assegna alla memoria un voto di salienza da 1 a 10 nel momento in cui la
 scrive, con tutti i pregiudizi che ha su che cosa conti in una vita.
 
@@ -915,7 +915,7 @@ ciascuno, ma che cosa può scrivere ciascuno, a chi, quando, e chi decide dopo.
 :class: important
 - Prima dei modelli di linguaggio il multi-agente era soprattutto
   **ottimizzazione**: tante unità quasi banali, nessuno che comanda, e una
-  soluzione che emerge dall'interazione. Il capostipite è l'**ottimizzazione a
+  soluzione che emerge dall'interazione. Il capostipite è l’**ottimizzazione a
   colonia di formiche** {cite}`dorigo1996ant`, nata al Politecnico di Milano fra
   il 1991 e il 1992 (un articolo di convegno e la tesi di dottorato di Marco
   Dorigo). Fra due strade verso lo stesso cibo, quella corta si percorre più
@@ -923,12 +923,12 @@ ciascuno, ma che cosa può scrivere ciascuno, a chi, quando, e chi decide dopo.
   formica confronti niente. E si lascia traccia in quantità proporzionale a
   quanto è buono il giro appena finito, così la traccia registra il merito e non
   il traffico.
-- L'**evaporazione è l'esplorazione**. Se ogni sera metà della traccia se ne va
+- L’**evaporazione è l'esplorazione**. Se ogni sera metà della traccia se ne va
   da sola, una strada che continua a essere usata non se ne accorge e una strada
   abbandonata sparisce in una settimana; quanto lentamente evapora dice per
   quanti giri il gruppo ricorda. Senza evaporazione la prima strada trovata per
   caso resta la più marcata per sempre e la colonia si fossilizza.
-- La memoria del gruppo non sta negli individui, sta nell'**ambiente**: è la
+- La memoria del gruppo non sta negli individui, sta nell’**ambiente**: è la
   **stigmergia**, cioè la lavagna condivisa della sezione sulle topologie. Una
   squadra di agenti che si coordina lasciando file in una cartella comune fa
   esattamente questo, con gli stessi problemi (chi scrive mentre un altro
@@ -936,8 +936,8 @@ ciascuno, ma che cosa può scrivere ciascuno, a chi, quando, e chi decide dopo.
   comune ciò che non serve più).
 - Nello **sciame di particelle** {cite}`kennedy1995particle`, nato togliendo
   pezzi a una simulazione di stormo {cite}`reynolds1987flocks`, ognuno cerca il
-  punto più basso della valle nella nebbia tirando un po' verso il proprio
-  ricordo, un po' verso il punto migliore che ha trovato il gruppo, e un po'
+  punto più basso della valle nella nebbia tirando un po’ verso il proprio
+  ricordo, un po’ verso il punto migliore che ha trovato il gruppo, e un po’
   dritto per dove stava già andando. È quest'ultima spinta a far superare il
   punto migliore conosciuto e a guardare appena più in là: senza, il metodo
   smette di trovare i minimi buoni.
@@ -986,19 +986,19 @@ ciascuno, ma che cosa può scrivere ciascuno, a chi, quando, e chi decide dopo.
 :class: important
 - Prima degli LLM il multi-agente era soprattutto **ottimizzazione**: molte
   unità quasi banali, nessun controllore centrale, e una soluzione che emerge
-  dall'interazione. Il capostipite è l'**ottimizzazione a colonia di formiche**
+  dall'interazione. Il capostipite è l’**ottimizzazione a colonia di formiche**
   {cite}`dorigo1996ant`, nata al Politecnico di Milano fra il 1991 e il 1992 (un
   articolo di convegno e la tesi di dottorato di Marco Dorigo). Una formica
   sceglie l'arco con probabilità
   $p_{ij} \propto \tau_{ij}^{\alpha}\eta_{ij}^{\beta}$ (feromone contro
   visibilità) e deposita $Q/L_k$, tanto più quanto è buono il giro che ha
   costruito: la traccia registra il merito, non il traffico.
-- L'**evaporazione è l'esplorazione**. Con
+- L’**evaporazione è l'esplorazione**. Con
   $\tau_{ij} \leftarrow (1-\rho)\tau_{ij} + \Delta\tau_{ij}$ la traccia è una
   media mobile esponenziale con orizzonte $1/\rho$ cicli; senza evaporazione il
   rinforzo positivo fossilizza la colonia sul primo cammino trovato per caso
   (comportamento di stagnazione).
-- La memoria del gruppo non sta negli individui, sta nell'**ambiente**: è la
+- La memoria del gruppo non sta negli individui, sta nell’**ambiente**: è la
   **stigmergia**, cioè la lavagna condivisa della sezione sulle topologie. Una
   squadra di agenti che si coordina lasciando file in una cartella condivisa fa
   esattamente questo, con gli stessi problemi (contesa, provenienza, e che cosa

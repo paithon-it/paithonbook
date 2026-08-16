@@ -506,7 +506,7 @@ sapere dove metterla è oggi materia di ricerca aperta.
   la casella di partenza finisce a un valore cinque volte più alto, che è poi
   quello giusto.
 - Immaginare lontano è il gioco del telefono senza fili: ogni previsione parte
-  da una precedente già un po' sbagliata e l'errore si gonfia a ogni passaggio.
+  da una precedente già un po’ sbagliata e l'errore si gonfia a ogni passaggio.
   *Quanto* si gonfi dipende dal sistema: dove gli scarti si riassorbono da sé
   l'errore resta piccolo per sempre, dove il sistema li ingigantisce esplode in
   pochi passi. La cura è tenere i sogni **corti** e farli partire da situazioni
@@ -533,7 +533,7 @@ sapere dove metterla è oggi materia di ricerca aperta.
   bias**.
 - **Dyna** (Sutton, 1990) è il capostipite: intreccia aggiornamenti da
   esperienza reale e da esperienza «immaginata» campionata dal modello appreso.
-- L'**errore si accumula** lungo il rollout (compounding error), maggiorato da
+- L’**errore si accumula** lungo il rollout (compounding error), maggiorato da
   $\epsilon\sum_{i<k}L^{\,i}$: esponenziale in $k$ appena la dinamica amplifica
   le perturbazioni ($L>1$), lineare solo nel caso limite $L=1$, limitato se è
   contrattiva. **MBPO** (Janner et al., 2019) lo aggira con rollout *brevi*

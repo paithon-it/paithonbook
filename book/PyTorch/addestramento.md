@@ -16,7 +16,7 @@ Eccole, le cinque righe. Tutto il resto della sezione non fa che spiegarle e
 metterle al lavoro su un problema vero. Prima, però, due parole che nel codice
 compaiono senza presentazioni.
 
-L'**ottimizzatore** è il pezzo che a ogni giro corregge i pesi del modello. Il
+L’**ottimizzatore** è il pezzo che a ogni giro corregge i pesi del modello. Il
 **learning rate** (in italiano si dice anche, più brevemente, il **passo**: le
 due parole in questo libro vogliono dire la stessa cosa) è la sua manopola
 principale, e decide quanto è grande ogni correzione: un passo corto impara
@@ -99,7 +99,7 @@ Butti via gli appunti del giro precedente (passo 3), capisci *in che
 direzione* hai sbagliato, troppo alto? troppo basso? (passo 4), e aggiusti di
 conseguenza il tuo modo di rispondere, un poco alla volta (passo 5). Poi passi
 al mazzetto successivo, e quando hai ripassato l'intero mazzo una volta, hai
-completato quella che si chiama un'**epoca**. Ripetuto per migliaia di carte
+completato quella che si chiama un’**epoca**. Ripetuto per migliaia di carte
 ed epoche, questo giro è tutto ciò che serve a una rete per imparare.
 `````
 
@@ -131,7 +131,7 @@ messo subito dopo il `backward()`.
 L'ordine dei passi 3–5 è l'unica liturgia da rispettare; tutto il resto è
 normale Python, e infatti qui si innestano senza attrito *gradient clipping*,
 *scheduler* del learning rate, *mixed precision*. L'eccezione alla liturgia è
-una sola, ed è l'**accumulo dei gradienti**, il modo di simulare un batch
+una sola, ed è l’**accumulo dei gradienti**, il modo di simulare un batch
 grande su una macchina piccola che vedremo in
 [replicare un paper](replicare-un-paper.md): lì si eseguono $k$ `backward()` e
 un solo `step()`, quindi l'azzeramento esce dal giro e si fa una volta ogni
@@ -275,7 +275,7 @@ punteggi, perché il primo, `dim=0`, è quello delle immagini). Il confronto
 `.sum()` conta i sì (che valgono uno) e `.item()` estrae quel conteggio come
 numero Python normale, da poter sommare al totale. Quattro gesti, quattro
 parole, e sono gli stessi quattro che torneranno in ogni programma del
-capitolo. Il rapporto fra i sì e il totale è l'**accuratezza**: la quota di
+capitolo. Il rapporto fra i sì e il totale è l’**accuratezza**: la quota di
 risposte giuste, e basta.
 
 Cinque epoche, e l'accuratezza sul test arriva attorno al **97–98%**:
@@ -331,7 +331,7 @@ piuttosto che normalizzare per qualcosa che non ha calcolato. Dove invece i
 valori per canale sono più di uno il conto si fa e `nan` non ne esce: un
 ingresso $(1, 3, 5)$, o l'immagine $(1, 3, 4, 4)$ di una `nn.BatchNorm2d`,
 passano senza storie, e su un ingresso costante l'uscita non è `nan` ma un
-numero minuscolo, dell'ordine di $10^{-5}$, cioè l'$\varepsilon$ che si somma
+numero minuscolo, dell'ordine di $10^{-5}$, cioè l’$\varepsilon$ che si somma
 al denominatore proprio perché non possa mai essere zero.
 `torch.no_grad()` è un context manager che sospende la
 costruzione del grafo autograd: non vengono salvati i valori intermedi per un
@@ -382,14 +382,14 @@ dell'arresto anticipato marca il momento giusto per fermarsi.
 
 `````{tab} Elementare
 Guarda le due curve in {numref}`fig-curve-overfitting`. Attenzione al verso:
-qui in verticale c'è l'**errore**, quindi *scendere* è migliorare. La curva
+qui in verticale c'è l’**errore**, quindi *scendere* è migliorare. La curva
 dell'addestramento è come i compiti fatti a casa: l'errore cala sempre, perché
 il modello rivede gli stessi esercizi. Quella della validazione è la
 simulazione d'esame con domande nuove. All'inizio scendono insieme, ed è buon
 segno. Poi quella della validazione tocca il fondo e ricomincia a salire,
 mentre quella dell'addestramento continua a scendere: da lì in avanti il
 modello non sta più imparando, sta imparando **a memoria**, ed è
-l'**overfitting** incontrato nel capitolo sul machine learning. La mossa giusta
+l’**overfitting** incontrato nel capitolo sul machine learning. La mossa giusta
 è fermarsi nel punto più basso della validazione, e tenere da parte la copia
 del modello salvata in quel momento.
 
@@ -397,7 +397,7 @@ Nel programma di poco fa niente di tutto questo c'è: cinque epoche e via,
 perché su MNIST cinque epoche non bastano a mandare a memoria sessantamila
 immagini. Aggiungerlo però costa poco, ed è un `if`: a ogni epoca si guarda il
 numero della validazione, se è il migliore finora si salva una copia del
-modello, e se non migliora per un po' di epoche di fila si esce dal ciclo. Come
+modello, e se non migliora per un po’ di epoche di fila si esce dal ciclo. Come
 si salva una copia è l'argomento delle prossime righe.
 `````
 
@@ -405,7 +405,7 @@ si salva una copia è l'argomento delle prossime righe.
 Nel loop esplicito la diagnosi si scrive da sé: si ritaglia un set di
 validazione (ad esempio con
 `torch.utils.data.random_split(train_data, [55000, 5000])`), a fine epoca si
-misura $\mathcal{L}_{\text{val}}$, e l'*early stopping* è un `if`: se la
+misura $\mathcal{L}_{\text{val}}$, e l’*early stopping* è un `if`: se la
 validazione non migliora da $k$ epoche (la *patience*), si esce dal ciclo e si
 ricaricano i pesi dell'epoca migliore, salvati via via con `torch.save`. Ciò
 che Keras offriva come callback preconfezionate, in PyTorch sono sei righe di
@@ -574,7 +574,7 @@ mesi: i nomi delle classi e la configurazione dell'esperimento.
 - In valutazione: `model.eval()` spegne il dropout e passa la batch norm alle
   **medie mobili** (non la spegne: continua a normalizzare); `torch.no_grad()`
   sospende autograd. Servono entrambi.
-- Le curve di training e validazione diagnosticano l'**overfitting**;
+- Le curve di training e validazione diagnosticano l’**overfitting**;
   l'early stopping in PyTorch è un semplice `if` nel loop.
 - Si salva lo **`state_dict`** (`torch.save`/`load_state_dict`), non
   l'oggetto: contiene parametri **e** buffer. Per *riprendere* servono anche

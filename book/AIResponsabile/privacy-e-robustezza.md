@@ -98,9 +98,9 @@ dato campione $\mathbf{x}$
 apparteneva o meno all'insieme di addestramento, sfruttando il divario di
 comportamento del modello tra ciò che ha visto e ciò che non ha visto:
 tipicamente una loss più bassa, o una confidenza più alta, sugli esempi di
-training. È l'evidenza empirica dell'*overfitting* discusso nel capitolo di
+training. È l'evidenza empirica dell’*overfitting* discusso nel capitolo di
 Machine Learning, qui riletto come vulnerabilità: più un modello si adatta ai
-singoli esempi, più li lascia riconoscere. L'**estrazione di dati di
+singoli esempi, più li lascia riconoscere. L’**estrazione di dati di
 addestramento** è più aggressiva: Carlini e colleghi
 {cite}`carlini2021extracting` mostrarono che da
 GPT-2 si potevano recuperare *verbatim* sequenze memorizzate (nomi, recapiti,
@@ -175,7 +175,7 @@ $e^{0{,}5}\approx 1{,}65$, uno scarto modesto. Una versione rilassata, la
 **$(\varepsilon,\delta)$-DP**, ammette un termine additivo $+\,\delta$ con
 $\delta$ piccolissimo: un margine sulla disuguaglianza, che si può leggere
 informalmente come una piccola probabilità di eccezione (la lettura precisa è un
-po' più debole di così), ed è la versione che serve per i meccanismi gaussiani
+po’ più debole di così), ed è la versione che serve per i meccanismi gaussiani
 usati nel deep learning.
 
 Come si ottiene? Con il **meccanismo di Laplace**. Data una funzione numerica
@@ -284,7 +284,7 @@ direzione che riduce il suo errore. Il problema di privacy è che un esempio
 nei pesi. DP-SGD fa due cose per cancellare quell'impronta. Primo, mette un
 **tetto** alla spinta di ogni singolo esempio: per quanto strano sia, non può
 spingere più di tanto. Secondo, alla spinta complessiva del gruppo aggiunge un
-po' di **rumore casuale**, così da confondere il contributo dei singoli. Il
+po’ di **rumore casuale**, così da confondere il contributo dei singoli. Il
 modello impara comunque la tendenza generale (la spingono tutti nella stessa
 direzione) ma il segno particolare di ciascuno si perde nel rumore. Si paga in
 accuratezza, com'è giusto: la privacy non è mai gratis.
@@ -353,7 +353,7 @@ raccogliere tutte le cartelle cliniche in un unico grande archivio. Ma quelle
 cartelle non devono uscire dall'ospedale. Il *federated learning* rovescia il
 verso del viaggio: invece di portare i dati al modello, porta il **modello ai
 dati**. Il server manda a ogni ospedale una copia del modello; ognuno lo
-allena un po' sui propri pazienti, in casa; poi rispedisce indietro non i
+allena un po’ sui propri pazienti, in casa; poi rispedisce indietro non i
 dati, ma solo il modello aggiornato: cosa ha *imparato*, non cosa ha *visto*.
 Il server fonde insieme tutte le versioni in un modello migliore e ricomincia.
 Le cartelle non lasciano mai l'ospedale.
@@ -398,7 +398,7 @@ riproduce schematicamente la {numref}`fig-esempio-avversario`.
 
 ```{figure} ../figures/esempio-avversario.svg
 :name: fig-esempio-avversario
-:alt: Tre riquadri in fila collegati da un piu e da un uguale. Nel primo una sagoma stilizzata di panda con etichetta panda 58 per cento. Nel secondo una griglia di rumore impercettibile etichettata rho per il segno del gradiente, con sotto la spiegazione che e' la mappa di dove spingere ogni pixel. Nel terzo la stessa identica sagoma di panda con l'etichetta errata gibbone 99 per cento in terracotta.
+:alt: Tre riquadri in fila collegati da un piu e da un uguale. Nel primo una sagoma stilizzata di panda con etichetta panda 58 per cento. Nel secondo una griglia di rumore impercettibile etichettata rho per il segno del gradiente, con sotto la spiegazione che e’ la mappa di dove spingere ogni pixel. Nel terzo la stessa identica sagoma di panda con l'etichetta errata gibbone 99 per cento in terracotta.
 :width: 100%
 
 La ricetta di un esempio avversario. All'immagine di un panda, riconosciuta con
@@ -454,7 +454,7 @@ $\varepsilon$.
 
 Il metodo si chiama **Fast Gradient Sign Method** (FGSM). Fissati i pesi
 $\theta$, invece di derivare la loss rispetto ai parametri (come
-nell'addestramento) la si deriva rispetto all'**input**, e ci si muove nella
+nell'addestramento) la si deriva rispetto all’**input**, e ci si muove nella
 direzione che la *aumenta*:
 
 $$
@@ -611,7 +611,7 @@ La regola del gioco è più semplice di quanto la
 {numref}`fig-watermarking-testo` faccia sospettare. Prima di
 scrivere ogni parola, il modello tira a sorte: divide in due metà tutte le
 parole che potrebbe usare, chiama «verdi» quelle di una metà e «rosse» quelle
-dell'altra, e poi sceglie un po' più spesso del normale fra le verdi. Il
+dell'altra, e poi sceglie un po’ più spesso del normale fra le verdi. Il
 sorteggio sembra casuale ma non lo è: come i dadi di un videogioco, esce da un
 calcolo che parte da un numero segreto, e chi conosce quel numero rifà la
 stessa identica sequenza di sorteggi tutte le volte che vuole. Così chi vuole
@@ -725,7 +725,7 @@ si può saltare: quello che conta sono le righe stampate alla fine.
 Due dettagli del codice meritano di essere annunciati, perché sono lì proprio
 per evitare che l'esperimento si autoconvinca. Il primo: l'esempio non è
 scelto a mano, lo sceglie un criterio (il primo che il modello azzecca con una
-fiducia fra l'$85$ e il $95$ per cento), e la ragione è che un esempio su cui
+fiducia fra l’$85$ e il $95$ per cento), e la ragione è che un esempio su cui
 il modello è sicuro al $100\%$ questo attacco non lo ribalta, e sceglierne uno
 a caso avrebbe potuto nasconderlo. Il secondo: la parola «corretto» o
 «sbagliato» accanto a ogni riga la calcola il programma confrontando
@@ -796,7 +796,7 @@ spinta: 0.15 per caratteristica; lunghezza complessiva 0.82 contro 6.00 dell'inp
 ribaltati 183 dei 443 esempi classificati bene (41%)
 ```
 
-Il modello passa da una fiducia dell'$89\%$ nella risposta giusta a una
+Il modello passa da una fiducia dell’$89\%$ nella risposta giusta a una
 risposta sbagliata. E la terza riga dice quanto è costato: la spinta
 complessiva vale $0{,}82$ contro il $6{,}00$ dell'esempio di partenza, cioè
 meno di un settimo. Attenzione però a come si sommano quelle spinte, perché
@@ -886,13 +886,13 @@ perimetro da difendere non si riuscirà nemmeno a disegnare dentro il modello.
   Il punto scomodo è che dai **pesi** del modello, una volta addestrato, non si
   tolgono senza rifare tutto: si cancellano dagli archivi, non da lì.
 - Il trucco della **moneta lanciata prima di rispondere** protegge la singola
-  persona e lascia leggere il totale: si aggiunge un po' di caso, in quantità
+  persona e lascia leggere il totale: si aggiunge un po’ di caso, in quantità
   nota. Una manopola decide quanto: più caso, più protezione e meno precisione.
   Ma non promette che di te non si sappia più nulla, promette che la *tua
   presenza* cambi poco le idee di chi guarda; e non ti protegge dalle
   conclusioni sulla popolazione a cui appartieni.
 - Un'altra strada è **non raccogliere i dati affatto**: si manda il modello a
-  casa di chi li ha, ognuno lo allena un po' sui propri e rimanda indietro solo
+  casa di chi li ha, ognuno lo allena un po’ sui propri e rimanda indietro solo
   quello che ha imparato. Riduce il rischio, non lo azzera.
 - Si può far sbagliare una rete a comando con **tante piccole spinte concordi**,
   invisibili una per una. Difendersi è una rincorsa: al momento non esiste una
@@ -909,7 +909,7 @@ perimetro da difendere non si riuscirà nemmeno a disegnare dentro il modello.
 ```{admonition} Da ricordare
 :class: important
 - I modelli **memorizzano** i dati rari o ripetuti: da qui i *membership
-  inference* (capire se un individuo era nel training) e l'**estrazione**
+  inference* (capire se un individuo era nel training) e l’**estrazione**
   verbatim di dati sensibili dagli LLM. La memorizzazione è overfitting visto
   come falla di privacy.
 - La **privacy differenziale** {cite}`dwork2006calibrating` garantisce che
@@ -927,7 +927,7 @@ perimetro da difendere non si riuscirà nemmeno a disegnare dentro il modello.
 - Gli **esempi avversari** {cite}`goodfellow2015explaining` ingannano una rete
   con perturbazioni impercettibili: **FGSM** somma $\rho$ per il segno del
   gradiente della loss rispetto all'input; **PGD** {cite}`madry2018towards` ne è
-  la versione iterativa e la base dell'*adversarial training*. Attenzione al
+  la versione iterativa e la base dell’*adversarial training*. Attenzione al
   simbolo: il raggio della perturbazione qui è $\rho$, mentre negli articoli si
   scrive $\varepsilon$, che in questo capitolo è già il budget di privacy.
 - La palla $\ell_p$ è una comodità matematica, non il modello di minaccia: la

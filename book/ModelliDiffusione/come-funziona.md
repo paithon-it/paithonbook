@@ -47,7 +47,7 @@ che il ritorno farà affidamento.
 L'ingrediente è sempre lo stesso: numeri sorteggiati dalla **campana di
 Gauss**, la distribuzione normale incontrata nei richiami di statistica. È la
 curva che descrive il modo più comune in cui i valori si distribuiscono attorno
-a una media: quasi tutti vicini allo zero, qualcuno un po' più in là, quasi
+a una media: quasi tutti vicini allo zero, qualcuno un po’ più in là, quasi
 nessuno lontanissimo. E non è una scelta di comodo, perché questa curva ha una
 proprietà rara: sommare mille sorteggi da una campana di Gauss dà ancora un
 sorteggio da una campana di Gauss, solo più larga. È su questo che poggia tutto
@@ -254,7 +254,7 @@ saper rispondere all'una vorrebbe dire saper rispondere all'altra, e al passo
 900 sono tutte e due da veggente.
 
 La differenza non sta nella risposta esatta, che nessuno può dare, ma
-nell'**errore**. Alla rete non chiediamo di indovinare: chiediamo la migliore
+nell’**errore**. Alla rete non chiediamo di indovinare: chiediamo la migliore
 approssimazione che sa dare, e le due approssimazioni si comportano in modo
 diverso. Quella sul disturbo sbaglia sempre più o meno della stessa quantità,
 perché il bersaglio ha sempre la stessa taglia. Quella sulla foto pulita no:
@@ -341,7 +341,7 @@ la sola parametrizzazione con cui la loss semplificata addestri davvero.
 Finito l'addestramento, il generatore è pronto. Non serve nessuna foto di
 partenza: si sorteggia rumore puro e si percorre la scala all'indietro, un
 gradino alla volta, interrogando la rete a ogni passo. Ogni gradino fa tre
-cose, e le chiameremo sempre così: **correggi** (togli un po' del disturbo che
+cose, e le chiameremo sempre così: **correggi** (togli un po’ del disturbo che
 la rete ti ha indicato), **alza il volume** (ingrandisci di un soffio tutto
 quello che resta) e **rimescola** (getta sopra del rumore appena sorteggiato).
 
@@ -547,7 +547,7 @@ come le più probabili di tutte. Ragionevole: se il modello ritiene probabile
 ciò che nel mondo esiste davvero, quando lo si lascia inventare inventerà cose
 del genere.
 
-Applicata alla nostra catena di mille passi, dopo un bel po' di conti, quella
+Applicata alla nostra catena di mille passi, dopo un bel po’ di conti, quella
 idea si riduce esattamente a «misura la distanza fra il disturbo indicato e
 quello vero», un livello di rovina alla volta. Con un dettaglio che DDPM
 aggiunge di suo. Fatti i conti fino in fondo, i mille livelli non contano
@@ -568,7 +568,7 @@ cioè quasi tutto, è pianura bassa e infinita.
 
 La rete, allenandosi a indicare il disturbo, sta imparando senza saperlo il
 **verso della salita**: in ogni punto della mappa, in che direzione spostarsi
-per guadagnare quota, cioè per rendere l'immagine un po' più credibile. Non è
+per guadagnare quota, cioè per rendere l'immagine un po’ più credibile. Non è
 un nord unico e uguale dappertutto, come per una bussola vera: è un cartello
 diverso a ogni incrocio, che indica dove si sale *da lì*. Generare, allora, è
 partire da un punto qualsiasi della pianura e seguire i cartelli a piccoli
@@ -582,7 +582,7 @@ capito che stavano costruendo lo stesso oggetto con due linguaggi diversi.
 `````{tab} Superiore
 
 **Da dove viene la loss.** Come per ogni modello a variabili latenti, la
-log-verosimiglianza $\log p_\theta(\mathbf{x}_0)$ (l'*evidenza*) non è calcolabile
+log-verosimiglianza $\log p_\theta(\mathbf{x}_0)$ (l’*evidenza*) non è calcolabile
 direttamente, ma ammette un limite inferiore variazionale (ELBO). Nella
 convenzione del libro, dove $\mathcal{L}$ si minimizza, si lavora con il suo
 opposto, $\mathcal{L}_{\text{var}} = -\mathrm{ELBO}$ (un limite *superiore*
@@ -850,7 +850,7 @@ ci tornerà sopra. Lo schedule di DDPM presuppone dati di una certa taglia: i
 loro valori devono spargersi attorno allo zero di circa una unità. I punti
 della spirale si spargono di circa mezza unità, la metà del previsto, e la
 tazza di caffè e latte parte quindi mezza vuota. Qui non fa danno (la catena
-affoga la spirale un po' prima del dovuto, e la spirale riemerge lo stesso);
+affoga la spirale un po’ prima del dovuto, e la spirale riemerge lo stesso);
 in Stable Diffusion sì, e vedremo che il rimedio, una moltiplicazione per
 riportare i dati alla taglia giusta, diventa una costante scritta dentro il
 modello.
@@ -987,7 +987,7 @@ carattere per carattere.
 
 ```{admonition} Da ricordare
 :class: important
-- L'**andata** non si impara, è una ricetta fissa: a ogni passo il valore di
+- L’**andata** non si impara, è una ricetta fissa: a ogni passo il valore di
   ogni pixel si attenua un pochino e riceve un pizzico di disturbo casuale,
   come nella tazza sempre piena in cui a ogni giro un cucchiaino di caffè
   lascia il posto a uno di latte. Dopo mille giri resta solo pulviscolo,
@@ -1042,7 +1042,7 @@ carattere per carattere.
 
 ```{admonition} Da ricordare
 :class: important
-- L'**andata** è fissa: $q(\mathbf{x}_t \mid \mathbf{x}_{t-1}) =
+- L’**andata** è fissa: $q(\mathbf{x}_t \mid \mathbf{x}_{t-1}) =
   \mathcal{N}(\sqrt{1-\beta_t}\,\mathbf{x}_{t-1},\ \beta_t \mathbf{I})$ con
   schedule $\beta_t$; la forma chiusa $\mathbf{x}_t =
   \sqrt{\bar{\alpha}_t}\,\mathbf{x}_0 + \sqrt{1-\bar{\alpha}_t}\,\boldsymbol{\epsilon}$

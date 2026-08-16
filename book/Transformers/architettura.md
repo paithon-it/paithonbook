@@ -5,7 +5,7 @@ Transformer descritto in *Attention Is All You Need*, l'articolo del 2017 da
 cui questo capitolo è partito, è una macchina per tradurre: da un lato entra
 una frase ("The black cat jumps on the wall"), dall'altro esce la traduzione
 ("Il gatto nero salta sul muro"). Per farlo combina due torri di blocchi
-identici (l'**encoder** che legge, il **decoder** che scrive), più un
+identici (l’**encoder** che legge, il **decoder** che scrive), più un
 ingrediente facile da sottovalutare: un modo per dire alla rete *in che ordine*
 stanno le parole.
 
@@ -198,7 +198,7 @@ lancetta veloce distingue i vicini immediati, quella lenta dice in quale parte
 della frase siamo: due scale insieme invece di una.
 
 Il legame con la figura è che l'altezza della punta di una lancetta, disegnata
-mano a mano che l'orologio avanza, è proprio un'**onda** che sale e scende: le
+mano a mano che l'orologio avanza, è proprio un’**onda** che sale e scende: le
 tre curve del disegno sono tre lancette a tre velocità. La firma di una
 posizione è allora la fila verticale dei tre punti che le tre onde toccano lì.
 

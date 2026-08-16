@@ -36,7 +36,7 @@ Pensa alla bolletta della luce. Dentro quel numero ci sono tre cose diverse.
 C'è una **parte fissa**, il canone, che cambia poco e semmai cresce piano di
 anno in anno: è il *trend*, la direzione di fondo. C'è una **parte
 stagionale**: d'estate il condizionatore, d'inverno le luci accese di più (un
-su e giù che torna uguale ogni anno). E poi c'è l'**imprevisto**: il mese che
+su e giù che torna uguale ogni anno). E poi c'è l’**imprevisto**: il mese che
 sei stato in ferie e hai consumato meno, l'amico ospite che ha lasciato tutto
 acceso; piccoli scarti che non seguono nessuna regola. È il *residuo*.
 
@@ -246,7 +246,7 @@ toglie una salita, sparpaglia solo ogni scossone su due giorni.
 
 E adesso la domanda pratica: come si fa a vedere quanta memoria è rimasta dentro
 una serie, e di che tipo? Con due grafici a barre che sono il pane quotidiano
-dell'analista di serie temporali, l'**ACF** e la **PACF**.
+dell'analista di serie temporali, l’**ACF** e la **PACF**.
 
 `````{tab} Elementare
 
@@ -276,7 +276,7 @@ quanto i manuali lascino sperare.
 
 `````{tab} Superiore
 
-L'**autocorrelazione** a ritardo $k$ è
+L’**autocorrelazione** a ritardo $k$ è
 
 $$
 \rho_k = \frac{\gamma(k)}{\gamma(0)}
@@ -315,13 +315,13 @@ combinazione dei valori appena passati, più una spinta casuale.
 
 Domani la temperatura sarà simile a quella di oggi, con una correzione. Se oggi
 fa più caldo della media di stagione, è probabile che anche domani sia sopra la
-media, ma un po' meno: il caldo «rientra» piano verso il normale. Un modello
+media, ma un po’ meno: il caldo «rientra» piano verso il normale. Un modello
 **autoregressivo** cattura proprio questo: prende gli ultimi valori, li pesa, li
 somma, e aggiunge un pizzico di imprevedibile per il resto. «Auto-regressivo»
 vuol dire che la serie fa da predittore *a sé stessa*: guarda il proprio
 passato, non variabili esterne.
 
-Il numero di passati che guarda è l'**ordine**, ed è la lettera $p$ che compare
+Il numero di passati che guarda è l’**ordine**, ed è la lettera $p$ che compare
 fra parentesi nel nome del modello: AR($p$) vuol dire soltanto «autoregressivo
 che guarda indietro di $p$ giorni». Un AR(1) guarda solo ieri; un AR(2) guarda
 ieri e l'altro ieri. Più passati includi, più la memoria del modello si
@@ -414,7 +414,7 @@ d'ora in avanti «media mobile», da sola, indica il modello.
 
 Pensa a un urto imprevisto: una gita scolastica che svuota la gelateria, uno
 sciopero che blocca i voli. L'effetto non si esaurisce il giorno stesso: si fa
-sentire ancora domani, un po' meno dopodomani, e poi svanisce. Un modello a
+sentire ancora domani, un po’ meno dopodomani, e poi svanisce. Un modello a
 media mobile dice proprio questo: il valore di oggi è il livello normale, più
 la sorpresa di oggi, più l'eco delle sorprese degli ultimi giorni. L'eco di
 solito si smorza, ma non è obbligata a farlo: quanto pesa ciascun giorno passato
@@ -468,11 +468,11 @@ dati, cioè solo con essa il modello si può usare per prevedere. Una spia utile
 quando una serie è stata **sovradifferenziata**, il $\theta$ stimato finisce
 inchiodato a $-1$ o quasi, cioè proprio sul bordo di questa regione.
 
-Mettendo insieme le due idee si ottiene l'**ARMA($p,q$)**, che spiega il valore
+Mettendo insieme le due idee si ottiene l’**ARMA($p,q$)**, che spiega il valore
 odierno con $p$ valori passati e $q$ errori passati. Ma l'ARMA vive solo su
 serie stazionarie, e le serie vere quasi mai lo sono. La soluzione di Box e
 Jenkins è incorporare la differenziazione nel modello stesso: nasce
-l'**ARIMA($p,d,q$)** {cite}`box2015time`. Le tre lettere:
+l’**ARIMA($p,d,q$)** {cite}`box2015time`. Le tre lettere:
 
 - **AR($p$)**, l'ordine autoregressivo, quanti valori passati;
 - **I($d$)**, *integrated*, quante volte si differenzia la serie per renderla
@@ -549,7 +549,7 @@ riconoscibile: introduce autocorrelazione negativa artificiale al ritardo 1
 $\theta$ stimato, che finisce sul bordo della regione di invertibilità.
 
 Sui test conviene spendere quattro righe, perché sono due e vanno usati
-**insieme**. L'**ADF** (Dickey-Fuller aumentato) ha per ipotesi nulla «c'è una
+**insieme**. L’**ADF** (Dickey-Fuller aumentato) ha per ipotesi nulla «c'è una
 radice unitaria», quindi un $p$-value **basso** dice *stazionaria*; il **KPSS**
 ha per ipotesi nulla «la serie è stazionaria», quindi un $p$-value **basso**
 dice *non stazionaria*. Il KPSS ha dunque lo stesso verso del Ljung-Box del
@@ -574,7 +574,7 @@ che stanno rispondendo a domande diverse.
 
 **2. Scegliere gli ordini con un criterio di informazione.** Si stimano tutte
 le combinazioni di $(p,q)$ entro una griglia e si prende quella che minimizza
-l'**AIC**:
+l’**AIC**:
 
 $$
 \mathrm{AIC} = 2k - 2\ln \hat{L},
@@ -593,7 +593,7 @@ $\theta$ e la costante; `statsmodels` la conta (per un ARMA(1,1) con costante
 $k=4$), e chi rifà il conto a mano con $k=3$ sbaglia di due unità, cioè
 esattamente la soglia sotto la quale l'AIC non distingue niente. Il secondo: il
 $2k$ è una correzione **asintotica**, e in campione corto va sostituita con
-quella esatta, l'**AICc** $= \mathrm{AIC} + \frac{2k(k+1)}{n-k-1}$, che è
+quella esatta, l’**AICc** $= \mathrm{AIC} + \frac{2k(k+1)}{n-k-1}$, che è
 quella che i manuali usano di default sugli ARIMA
 {cite}`hyndman2021forecasting`. Con seicento osservazioni la differenza è di
 sei centesimi; con quaranta, e sei parametri, supera le due unità e cambia la
@@ -951,7 +951,7 @@ passato in una volta sola.
 
 Per indovinare le vendite di domani potresti fare la media di tutti i giorni
 passati. Ma il mese scorso conta davvero quanto ieri? No. Il lisciamento
-esponenziale fa una media *pesata*, in cui ieri pesa molto, l'altro ieri un po'
+esponenziale fa una media *pesata*, in cui ieri pesa molto, l'altro ieri un po’
 meno, la settimana scorsa ancora meno, e così via a scendere. A ogni passo
 indietro il peso si riduce di una stessa frazione, come un ricordo che sbiadisce
 sempre allo stesso ritmo: nitido ieri, sfocato la settimana scorsa, quasi niente
@@ -1042,7 +1042,7 @@ visto, e questo vale pure quando la serie è corta o disturbata. La **frugalità
 di dati**: gran parte delle serie reali (le vendite mensili di un prodotto, i
 pazienti di un reparto) hanno poche decine o centinaia di osservazioni, troppo
 poche per addestrare una rete affamata di dati, più che sufficienti per un
-ARIMA. E l'**interpretabilità**. La frazione con cui il passato pesa sul futuro,
+ARIMA. E l’**interpretabilità**. La frazione con cui il passato pesa sul futuro,
 la componente stagionale, la forbice dentro cui il modello dichiara che cadrà il
 valore vero (il filo rosso dell'introduzione al capitolo): sono oggetti che un
 analista legge, discute e difende davanti a chi deve decidere. I numeri interni
@@ -1120,7 +1120,7 @@ quegli scarti restasse ancora una regolarità, ed è per questo che guardarli è
 passo che non si salta.
 
 La seconda: con cinquecento osservazioni la stima è buona, con cinquanta lo è
-molto meno. Questo giro dà $0{,}635$ contro un vero $0{,}6$, cioè un po' alto,
+molto meno. Questo giro dà $0{,}635$ contro un vero $0{,}6$, cioè un po’ alto,
 ma una prova sola non dice niente sul metodo: dice cosa è capitato questa volta.
 È ripetendo l'esperimento tante volte che salta fuori il difetto vero, e il
 difetto vero punta dalla parte opposta: la media delle stime cade **sotto** il
@@ -1170,7 +1170,7 @@ tabellari già incontrati nel capitolo sul Machine Learning.
 :class: important
 - **Scomporre** una serie vuol dire leggerla come la bolletta della luce: il
   **canone** di fondo (il trend), la **stagione** che torna ogni anno uguale
-  (la stagionalità) e l'**imprevisto** che non segue regole (il residuo). La
+  (la stagionalità) e l’**imprevisto** che non segue regole (il residuo). La
   stagione può aggiungere sempre la stessa cifra (caso **additivo**) oppure una
   percentuale, e allora cresce insieme al giro d'affari (caso
   **moltiplicativo**): in gelateria, «d'estate 35 mila euro in più» contro
@@ -1184,7 +1184,7 @@ tabellari già incontrati nel capitolo sul Machine Learning.
   livello per sempre, si sostituisce ogni valore con la **variazione** rispetto
   al precedente. Usare la seconda al posto della prima non è gratis: lascia
   dentro la serie una regolarità che non c'era. Per capire che memoria resta si
-  guardano due grafici a barre: l'**ACF**
+  guardano due grafici a barre: l’**ACF**
   (la funzione di autocorrelazione), quanto oggi assomiglia ai giorni passati, e
   la **PACF** (l'autocorrelazione parziale), quanto ci assomiglia al netto degli
   effetti a catena (il nonno e il nipote, scontato il padre). Si leggono in
@@ -1201,7 +1201,7 @@ tabellari già incontrati nel capitolo sul Machine Learning.
   {cite}`box2015time`.
 - Gli ordini non si indovinano guardando i grafici: **si provano tutte le
   combinazioni** e si sceglie con un criterio che pesa insieme quanto il
-  modello spiega e quanti parametri ha speso (l'**AIC**). Poi, e questo è il
+  modello spiega e quanti parametri ha speso (l’**AIC**). Poi, e questo è il
   passo che quasi tutti saltano, **si guarda quello che resta**: se negli
   errori si vede ancora una regolarità, il modello se l'è lasciata sfuggire.
   Il modello sbagliato si riconosce dai suoi errori, non dalle sue previsioni.
@@ -1248,7 +1248,7 @@ tabellari già incontrati nel capitolo sul Machine Learning.
   passati; **ARIMA($p,d,q$)** unisce i due sulla serie differenziata $d$ volte,
   e **SARIMA** aggiunge i termini stagionali al ritardo $m$ {cite}`box2015time`.
 - La **procedura** è in tre tempi: stazionarizzare (fissando $d$), scegliere
-  $(p,q)$ minimizzando l'**AIC** $= 2k - 2\ln\hat L$ su una griglia, verificare
+  $(p,q)$ minimizzando l’**AIC** $= 2k - 2\ln\hat L$ su una griglia, verificare
   che i residui siano **rumore bianco** con il Q-Q plot e il test di
   **Ljung-Box**, calcolato con $\ell - (p+q)$ gradi di libertà: ometterlo gonfia
   sempre il $p$-value. Attenzione al verso del test: qui si spera di **non**

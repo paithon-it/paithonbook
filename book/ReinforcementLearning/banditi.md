@@ -116,7 +116,7 @@ Q_t(a) = \frac{\sum_{i<t} R_i \cdot \mathbb{1}[A_i = a]}{\sum_{i<t} \mathbb{1}[A
 $$
 
 che si calcola in forma incrementale, senza tenere in memoria la storia. Se
-$Q_n$ è la stima dopo $n-1$ tiri della stessa leva e $R_n$ è l'$n$-esima
+$Q_n$ è la stima dopo $n-1$ tiri della stessa leva e $R_n$ è l’$n$-esima
 ricompensa,
 
 $$
@@ -178,7 +178,7 @@ no, escono dal codice in fondo, che lo rifà da capo.
 Il banco è fatto così. Dieci leve, mille tiri in tutto. Ogni leva ha un suo
 **valore vero**, cioè quanto rende in media. Quei dieci valori li sorteggia,
 prima di cominciare, chi ha costruito l'esperimento, e li sorteggia attorno
-allo zero: qualche leva rende un po' più di zero, qualcuna un po' meno,
+allo zero: qualche leva rende un po’ più di zero, qualcuna un po’ meno,
 nessuna moltissimo. Quando tiri una leva incassi il suo valore vero più un
 errore casuale, che di solito sta fra il meno uno e il più uno: ecco perché
 due tiri della stessa leva danno numeri diversi, ed ecco perché le tue stime,
@@ -216,7 +216,7 @@ casi: dopo mille tentativi, due volte su tre sta ancora tirando la leva
 sbagliata.
 
 Basta pochissimo per cambiare le cose. Con $\varepsilon$-greedy, cioè una leva
-a caso una volta ogni dieci, si sale all'**80,2%**. Non è però una ricetta
+a caso una volta ogni dieci, si sale all’**80,2%**. Non è però una ricetta
 senza numeri da scegliere: $\varepsilon$ è un numero, lo si sceglie, e poche
 pagine più avanti si vedrà che va scelto guardando quanto dura la partita. Ha
 comunque una virtù: sbagliarlo per difetto costa poco. Azzardare una volta su
@@ -257,7 +257,7 @@ la stima salta di colpo sul numero appena visto, e su quella leva l'ottimismo è
 finito. Resta il giro forzato sulle altre nove, e infatti anche così si arriva
 al **71,3%**, quasi il doppio del 36,7% dell'agente avido. Una parte del
 guadagno però se n'è andata, e conviene misurarla invece di dirla a occhio. Con
-il passo fisso si arriva all'**86,6%**, il risultato migliore fra le strategie
+il passo fisso si arriva all’**86,6%**, il risultato migliore fra le strategie
 di questa sezione, cioè quasi cinquanta punti sopra l'avido
 ($86{,}6 - 36{,}7 = 49{,}9$); con la media se ne guadagnano trentaquattro e
 mezzo ($71{,}3 - 36{,}7 = 34{,}6$). Quindici punti su cinquanta sono rimasti
@@ -282,7 +282,7 @@ e infatti si arriva al **71,3%** contro il **36,7%** dell'avido puro: circa il
 paragone corretto per l'ottimismo è quello, non $\varepsilon$-greedy; resta però
 che con la media campionaria il risultato finisce sotto l'80,2% della leva a
 caso una volta ogni dieci, mentre con $\alpha = 0{,}1$ costante l'ottimismo si
-consuma abbastanza lentamente da arrivare all'**86,6%**.
+consuma abbastanza lentamente da arrivare all’**86,6%**.
 
 `````
 
@@ -325,7 +325,7 @@ leva trascurata a lungo torna prima o poi in cima alla lista: nessuna viene
 abbandonata per sempre, ma le peggiori vengono ricontrollate sempre più di
 rado.
 
-Sul solito banco di prova UCB azzecca la leva migliore l'**85,9%** delle volte:
+Sul solito banco di prova UCB azzecca la leva migliore l’**85,9%** delle volte:
 praticamente quanto l'ottimismo iniziale, e nettamente meglio della leva a caso
 una volta ogni dieci.
 
@@ -333,7 +333,7 @@ una volta ogni dieci.
 
 `````{tab} Superiore
 
-L'**Upper Confidence Bound** sceglie
+L’**Upper Confidence Bound** sceglie
 
 $$
 A_t = \arg\max_{a} \left[\, Q_t(a) + c \sqrt{\frac{\ln t}{N_t(a)}} \,\right],
@@ -377,7 +377,7 @@ Per confronto, $\varepsilon$-greedy con $\varepsilon$ costante ha rimpianto
 per sempre: è la differenza fra un'esplorazione che si dosa e una che non si
 spegne mai.
 
-Sul banco di prova, con $c = 2$, UCB sceglie la leva migliore l'**85,9%** delle
+Sul banco di prova, con $c = 2$, UCB sceglie la leva migliore l’**85,9%** delle
 volte. Attenzione a non leggere quel $c=2$ come la costante del teorema: è la
 scelta empirica di Sutton e Barto, mentre UCB1 nella forma dimostrata da Auer e
 colleghi corrisponde a $c = \sqrt{2}$ per ricompense in $[0,1]$. Il limite
@@ -437,11 +437,11 @@ riferimento, quel che conta non è quanto ho preso ma quanto ho preso **rispetto
 al solito**, e quel mille sparisce dal conto.
 
 Quanto conti si misura, ed è tanto. Sul banco di prova di prima il metodo dei
-voti azzecca la leva migliore l'**84,1%** delle volte. Aggiungiamo adesso
+voti azzecca la leva migliore l’**84,1%** delle volte. Aggiungiamo adesso
 quattro punti a tutte le ricompense: quattro tanto per dire, serve solo un
 numero abbastanza grande da coprire le differenze fra le leve, che su questo
 banco sono dell'ordine dell'uno. Il problema non cambia in nulla, perché fra le
-leve i distacchi restano quelli. Con il riferimento si resta all'**83,8%**;
+leve i distacchi restano quelli. Con il riferimento si resta all’**83,8%**;
 senza, si crolla al **48,5%**.
 
 `````
@@ -482,9 +482,9 @@ per la stessa ragione: ridurre la varianza senza spostare la media del
 gradiente.
 
 Che la baseline serva davvero si misura. Sul banco di prova centrato in zero il
-metodo arriva all'**84,1%**. Traslando **tutte** le ricompense di $+4$, cosa
+metodo arriva all’**84,1%**. Traslando **tutte** le ricompense di $+4$, cosa
 che non cambia in nulla la difficoltà del problema (le differenze fra le leve
-sono identiche), con la baseline si resta all'**83,8%**, mentre togliendola si
+sono identiche), con la baseline si resta all’**83,8%**, mentre togliendola si
 crolla al **48,5%**. La baseline non è un'ottimizzazione: è ciò che rende
 l'algoritmo indifferente all'origine della scala delle ricompense.
 
@@ -542,14 +542,14 @@ print(f"UCB c=2                   {prova(eps=0.0, c=2.0):5.1f}%")
 ```
 
 Un risultato merita attenzione, ed è quello di chi esplora una volta su cento:
-dopo mille tiri sta al **59,1%**, contro l'**80,2%** di chi esplora una volta su
+dopo mille tiri sta al **59,1%**, contro l’**80,2%** di chi esplora una volta su
 dieci, e sembra il peggiore dei rimedi. Ma sta ancora salendo. Esplorando una
 volta su cento impiega dieci volte più tempo a farsi un'idea di tutte le leve, e
 alla fine supera l'altro, che invece continuerà per sempre a buttare un tiro su
 dieci. Allungando la prova da mille a trentamila tiri (nel codice qui sopra è
 la costante `PASSI`), il sorpasso arriva attorno al decimillesimo tiro, e alla
 fine chi azzarda una volta su cento sta al **91,6%** e chi azzarda una volta su
-dieci all'**89,0%**: le parti si sono invertite. La classifica dipende insomma
+dieci all’**89,0%**: le parti si sono invertite. La classifica dipende insomma
 da quanto è lunga la partita, e questa è una morale generale:
 **quanto esplorare
 si decide guardando l'orizzonte**, cioè il numero di tiri che si hanno davanti,
@@ -621,7 +621,7 @@ Un modello di machine learning, prima di essere addestrato, va regolato: quanto
 grande farlo, quanto in fretta farlo imparare, e così via. Sono decine di
 combinazioni possibili, provarle tutte fino in fondo costerebbe giorni, e allora
 si prova ciascuna un pochino e si insiste sulle più promettenti. Descritto così
-è un bandit, e infatti lo è: ogni combinazione è una leva, e provarla un po' è
+è un bandit, e infatti lo è: ogni combinazione è una leva, e provarla un po’ è
 un tiro. Il *successive halving* («dimezzamento successivo») e **Hyperband**,
 che è costruito sopra il primo, fanno esattamente questo, e il capitolo sul
 machine learning li racconta per esteso. Con una differenza
@@ -678,7 +678,7 @@ prossima sezione.
 - Non sono giocattoli: si incontrano nei test A/B che spostano i visitatori
   verso la versione che sta vincendo, nel decidere quali oggetti nuovi mostrare
   in un catalogo, e nel regolare le impostazioni di un modello prima di
-  addestrarlo (ogni combinazione è una leva, provarla un po' è un tiro). Il
+  addestrarlo (ogni combinazione è una leva, provarla un po’ è un tiro). Il
   gradino successivo è il caso in cui prima di scegliere si guarda la
   situazione, ma le proprie scelte non la cambiano.
 ```

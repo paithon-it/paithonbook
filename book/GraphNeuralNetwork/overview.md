@@ -92,7 +92,7 @@ Formalmente un grafo è una coppia $G = (V, E)$, dove $V$ è l'insieme dei nodi 
 $E \subseteq V \times V$ quello degli archi. Lo si rappresenta spesso con la
 **matrice di adiacenza** $\mathbf{A} \in \{0,1\}^{N \times N}$ (con $N = |V|$),
 in cui $A_{ij} = 1$ se esiste l'arco $(i,j)$. Ma questa rappresentazione
-nasconde un'insidia: $\mathbf{A}$ dipende dall'**ordine** con cui numeriamo i
+nasconde un'insidia: $\mathbf{A}$ dipende dall’**ordine** con cui numeriamo i
 nodi. Rietichettare i nodi con una permutazione $\mathbf{P}$ trasforma
 $\mathbf{A}$ in $\mathbf{P} \mathbf{A} \mathbf{P}^\top$ senza cambiare il
 grafo. Un modello sensato deve quindi essere **invariante alla permutazione**
@@ -198,7 +198,7 @@ bot?», «questo utente a quale categoria appartiene?». Il secondo riguarda un
 questo cliente piacerà questo prodotto?»; è la domanda che sta dietro ai
 suggerimenti di amicizia e alle raccomandazioni, e indovinare un collegamento
 che non c'è ancora si chiama *link prediction*, «previsione dei
-collegamenti». Il terzo riguarda l'**intero grafo** preso come un tutt'uno:
+collegamenti». Il terzo riguarda l’**intero grafo** preso come un tutt'uno:
 «questa molecola è tossica?», «questo composto uccide i batteri?», ed eccoci di
 nuovo ad halicin. Nodo, arco, grafo intero: la stessa macchina, tre domande
 diverse.

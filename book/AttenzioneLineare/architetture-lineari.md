@@ -51,7 +51,7 @@ Puoi farlo in tre modi, e il totale non cambia. **Tutto insieme**: metti tutti i
 voti in tabella, accanto a ciascuno il suo peso, e sommi in un colpo solo
 (comodo se hai un foglio
 di calcolo che macina tante moltiplicazioni in parallelo). **Uno alla volta**:
-tieni un totale corrente e, a ogni nuova interrogazione, sbiadisci un po' il
+tieni un totale corrente e, a ogni nuova interrogazione, sbiadisci un po’ il
 totale vecchio e ci aggiungi il voto nuovo; comodo quando i voti arrivano in
 diretta, uno oggi e uno domani, e non vuoi rifare tutto da capo ogni volta.
 **A blocchi**: sommi un mese per volta con il metodo veloce, e poi colleghi
@@ -69,7 +69,7 @@ già si dimezza. Il totale dopo il terzo voto viene così:
 - Tutto insieme: l'ultimo voto vale pieno, il precedente metà, quello prima
   ancora un quarto, cioè $8 + 0{,}5\times 7 + 0{,}25\times 6 = 13$.
 - Uno alla volta: parto da $6$; arriva il $7$ e faccio $0{,}5\times 6 + 7 = 10$;
-  arriva l'$8$ e faccio $0{,}5\times 10 + 8 = 13$. (E per strada mi sono
+  arriva l’$8$ e faccio $0{,}5\times 10 + 8 = 13$. (E per strada mi sono
   ritrovato in mano anche i totali intermedi, $6$ e $10$.)
 - A blocchi, con blocchi da due: i primi due voti li peso e li sommo in un
   colpo solo, senza passare per il totale del primo, $7 + 0{,}5\times 6 = 10$;
@@ -290,7 +290,7 @@ Beck e colleghi, presentato a NeurIPS 2024 {cite}`beck2024xlstm`.
 La domanda di partenza è schietta: che cosa mancava alla LSTM per reggere il
 confronto? Due cose, secondo gli autori. Primo, un modo di **rivedere le
 decisioni di memoria** in modo più netto, cioè interruttori capaci di
-spalancarsi davvero invece di fermarsi sempre un po' prima (nei paper si chiama
+spalancarsi davvero invece di fermarsi sempre un po’ prima (nei paper si chiama
 *gating esponenziale*). Secondo, una memoria più **capiente** e che si possa
 riempire tutta insieme invece che una casella per volta: da qui il passaggio da
 una cella con un solo posto a una cella a griglia (da *scalare* a
@@ -303,14 +303,14 @@ Pensa alla vecchia LSTM come a un magazziniere con un unico scaffale e tre
 interruttori: uno per buttare via, uno per riporre, uno per mostrare cosa c'è.
 Ha funzionato per anni, ma lo scaffale è piccolo e gli interruttori sono
 timidi. Timidi in un senso preciso: sono manopole che non arrivano mai al
-fondo, si fermano sempre un po' prima dello spalancato e un po' prima del
+fondo, si fermano sempre un po’ prima dello spalancato e un po’ prima del
 chiuso. Non è un difetto di fabbrica, è come sono fatte: dentro c'è un conto che
 prende qualunque numero, anche enorme, e lo riporta dentro l'intervallo fra
 zero e uno. È comodo, perché così niente sfugge di mano, ma impedisce a una
 manopola di dare più di «tutto». Se il
 magazziniere si accorge, dopo mille articoli, che quello di oggi conta più di
 tutti gli altri messi insieme, non riesce a dargli molto più spazio degli
-altri: al massimo un po' di più. xLSTM è lo stesso magazziniere che riapre
+altri: al massimo un po’ di più. xLSTM è lo stesso magazziniere che riapre
 bottega in grande.
 
 Nella prima variante (nei paper si chiama **sLSTM**) tiene lo scaffale singolo

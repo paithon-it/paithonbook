@@ -25,6 +25,10 @@ senza essere riprogrammato a mano.
 
 È un'idea che ribalta il modo consueto di pensare al software.
 
+Il capitolo di matematica si era chiuso sull'ultimo strato di un modello
+linguistico, cioè su un punto d'arrivo; con Samuel siamo al punto di partenza,
+e la strada fra i due è il resto del libro.
+
 ## Scrivere le regole, o farle emergere
 
 Il salto concettuale del machine learning si capisce meglio mettendolo accanto
@@ -87,7 +91,7 @@ Un programma **impara** se, facendo pratica, diventa più bravo in un compito, e
 questo "più bravo" lo possiamo misurare. Servono tre ingredienti:
 
 - il **compito**, cosa deve fare (giocare a dama);
-- l'**esperienza**, su cosa fa pratica (le partite giocate);
+- l’**esperienza**, su cosa fa pratica (le partite giocate);
 - la **misura**, come contiamo i progressi (la percentuale di partite vinte).
 
 Il programma di Samuel diventava più bravo (vinceva di più) man mano che
@@ -376,7 +380,7 @@ valutare su dati mai visti): cambieranno i modelli, non la grammatica.
   fra le parole di una frase.
 - Un programma **impara** (Mitchell) se, facendo pratica, diventa più bravo in
   un compito e questo «più bravo» si può misurare: servono il **compito**,
-  l'**esperienza** e la **misura**.
+  l’**esperienza** e la **misura**.
 - Tre modi di imparare: con le **soluzioni a fianco** (supervisionato), senza
   etichette, cercando una struttura nascosta (non supervisionato), per
   tentativi e ricompense (per rinforzo).

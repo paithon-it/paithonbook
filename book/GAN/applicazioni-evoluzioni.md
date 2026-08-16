@@ -13,8 +13,9 @@ Ripercorriamola, seguendo il filo delle idee più che il calendario.
 I due personaggi restano quelli: un falsario che dipinge e un esperto che
 giudica. Quello che cambia, di variante in variante, è come sono fatti dentro
 (DCGAN), che cosa gli si mette in mano oltre al rumore (conditional GAN), in
-che momento del lavoro gli si danno le istruzioni (StyleGAN) e che cosa gli si
-chiede di conservare mentre dipinge (pix2pix e CycleGAN). Ogni variante, insomma, si
+che momento del lavoro gli si danno le istruzioni (StyleGAN), che cosa gli si
+chiede di conservare mentre dipinge (pix2pix e CycleGAN) e, all'ultima tappa,
+perfino a che cosa serva il duello (VQ-GAN). Ogni variante, insomma, si
 legge bene come una modifica al regolamento di quel duello.
 
 ## DCGAN: dare occhi alla rete
@@ -146,9 +147,276 @@ L'innovazione è architetturale: una rete di *mapping* trasforma $\mathbf{z}$ in
 La risoluzione $1024\times1024$, invece, StyleGAN la eredita: viene dalla **Progressive GAN** dello stesso gruppo {cite}`karras2018progressive`, che l'anno prima aveva imparato a salire fino a lì facendo crescere le due reti un livello per volta, e che StyleGAN dichiara come propria configurazione di base, «da cui ereditiamo le reti e tutti gli iperparametri». Là si era imparato a *salire* la scala; qui si impara a decidere che cosa succede a ciascun gradino. StyleGAN2 (2020) elimina poi i caratteristici artefatti "a goccia" ridisegnando la normalizzazione: con quella revisione la ricetta si assesta, ed è la forma in cui la famiglia è entrata nell'uso corrente.
 `````
 
+## Sotto il cofano: crescere, modulare, e la goccia
+
+Le tre righe qui sopra nominano tre meccanismi e non ne aprono nessuno: come si
+fanno crescere due reti, che cosa vuol dire «consegnare una manopola a un
+livello», e che cos'era quel difetto che StyleGAN2 ha tolto. Valgono la pena
+tutti e tre, perché sono meccanismi e non risultati: la crescita per gradini è
+l'esempio più limpido di un'idea che torna ogni volta che un addestramento è
+troppo grosso per essere affrontato tutto insieme (e che qui, si vedrà, verrà
+poi superata proprio da chi l'aveva inventata), la modulazione degli
+strati è finita dentro i generatori di immagini di oggi (la ritroveremo nel
+capitolo sulla diffusione, sotto un altro nome), e la storia della goccia è la
+migliore lezione di metodo di tutto il capitolo.
+
+### Crescere per gradini
+
+Un'immagine di $4 \times 4$ pixel è fatta di sedici puntini. Su una cosa così
+il falsario e l'esperto hanno poco su cui litigare: dov'è il chiaro, dov'è lo
+scuro, e basta. È una lite che si chiude in fretta. Su un'immagine di
+$1024 \times 1024$ le cose su cui litigare sono un milione, e il duello, che
+già di suo è capriccioso, non arriva da nessuna parte. L'idea della
+**Progressive GAN** {cite}`karras2018progressive` è ovvia a dirsi: si comincia
+dai sedici puntini, si aspetta che le due reti vadano d'accordo, poi si aggiunge
+un gradino e si raddoppia il lato. Sedici puntini, poi sessantaquattro, poi
+duecentocinquantasei, e via fino al milione.
+
+Il punto delicato è il gradino, ed è lì che sta il mestiere. Aggiungere di
+colpo uno strato nuovo, coi suoi numeri ancora casuali, davanti a due reti che
+avevano appena trovato l'equilibrio vuol dire buttare all'aria l'equilibrio. La
+soluzione è una **dissolvenza**: per un po’ l'immagine che esce non è quella
+del gradino nuovo, è una miscela fra quella del gradino vecchio (semplicemente
+ingrandita) e quella del gradino nuovo, e il peso della miscela scivola da zero
+a uno nel corso dell'addestramento. All'inizio comanda il vecchio, alla fine il
+nuovo, e in mezzo non c'è nessun salto. Lo stesso, specularmente, dalla parte
+dell'esperto. Nessuno dei due si sveglia una mattina in un mondo diverso.
+
+`````{tab} Elementare
+
+Serve un'immagine per capire perché il gradino è delicato, e quella giusta è
+una lezione di disegno. Un maestro che insegna a copiare un volto non fa
+cominciare dalle ciglia: fa tracciare l'ovale, poi la posizione degli occhi,
+poi i lineamenti, e i dettagli per ultimi. Se si comincia dalle ciglia si
+sbaglia tutto, perché non c'è ancora una faccia su cui metterle.
+
+La crescita per gradini fa esattamente questo con due allievi che si
+controllano a vicenda. E la dissolvenza è la cortesia di non cambiare foglio di
+colpo: per un po’ il disegno che si consegna è mezzo quello vecchio ingrandito
+e mezzo quello nuovo, e la proporzione si sposta piano. Chi giudica non se ne
+accorge, e continua a giudicare.
+
+Nel paper ci sono altri tre accorgimenti, e li nominiamo perché sono il genere
+di cosa che non si trova sui manuali e fa la differenza fra un addestramento
+che regge e uno che no. Il primo: si fa in modo che tutte le manopole della
+rete rispondano con la stessa prontezza, perché altrimenti alcune si girano in
+fretta e altre restano indietro, e chi resta indietro rallenta tutti. Il
+secondo: dentro il falsario, dopo ogni passaggio, i numeri vengono riportati a
+una taglia standard, perché in una gara a chi urla più forte tendono a
+gonfiarsi da soli. Il terzo: si mostra all'esperto **quanto si assomigliano fra
+loro** le immagini di un gruppo, che è il modo più diretto di smascherare un
+falsario che dipinge sempre lo stesso quadro.
+
+`````
+
+`````{tab} Superiore
+
+La dissolvenza si applica agli strati $1\times1$ che convertono le mappe di
+attivazione in tre canali RGB (*toRGB*) e viceversa (*fromRGB*). Passando da
+risoluzione $R$ a $2R$, per un certo numero di iterazioni l'uscita è
+
+$$
+\mathbf{x} = (1 - \alpha)\, \mathrm{up}\big(\mathrm{toRGB}_R(\mathbf{h}_R)\big)
+\;+\; \alpha\, \mathrm{toRGB}_{2R}(\mathbf{h}_{2R}),
+\qquad \alpha: 0 \to 1,
+$$
+
+con $\mathrm{up}$ un semplice raddoppio per interpolazione: il vecchio ramo
+resta in funzione e cede il passo con continuità. Il discriminatore fa il
+percorso simmetrico sui *fromRGB*.
+
+Gli altri tre contributi del lavoro:
+
+- **Equalized learning rate.** I pesi si inizializzano da $\mathcal{N}(0,1)$ e
+  si riscalano *a tempo di esecuzione* con la costante per-strato
+  dell'inizializzatore di He, invece di applicarla all'inizializzazione. Il
+  motivo è che ottimizzatori adattivi come
+  Adam normalizzano l'aggiornamento peso per peso, quindi il tempo che un peso
+  impiega ad adattarsi dipende dalla sua scala: con l'inizializzazione classica
+  gli strati con pochi ingressi hanno pesi grandi e si muovono più lentamente
+  degli altri. Scalando a runtime, tutti i pesi hanno lo stesso raggio d'azione
+  e lo stesso passo effettivo.
+- **Pixelwise feature normalization** nel generatore: dopo ogni convoluzione il
+  vettore di attivazioni di ciascun pixel è normalizzato a norma unitaria. Non
+  ha parametri appresi e serve a impedire che le magnitudini scappino via
+  durante l'escalation del duello.
+- **Minibatch standard deviation**: al discriminatore si aggiunge un canale
+  costante che riporta la deviazione standard delle attivazioni *attraverso il
+  batch*. È una misura diretta della varietà del gruppo, e rende il *mode
+  collapse* visibile a chi giudica invece che invisibile.
+
+`````
+
+### Modulare invece di ordinare
+
+Detto come cresce, resta da dire che cosa StyleGAN aggiunge, e la risposta sta
+in una parola che il libro finora ha usato senza scioglierla: **AdaIN**, che
+sta per *adaptive instance normalization*, cioè «taratura adattiva, una corsia
+alla volta». Le corsie sono la parte da spiegare.
+
+Il gesto ha due tempi. Primo tempo, si azzera: dentro il falsario, a ogni
+livello, il segnale viaggia in tante corsie parallele (le stesse pile di valori
+della DCGAN, che in gergo si chiamano *canali*), e di ciascuna corsia si prende il livello medio e l'ampiezza
+delle sue oscillazioni e li si riporta a zero e a uno. Tutte le corsie escono
+da lì con la stessa taratura, come un mixer con tutti i cursori rimessi in
+posizione neutra. Secondo tempo, si riassegna: a ciascuna corsia si rimette un
+livello medio e un'ampiezza, e questa volta a dirli è lo **stile**, cioè la
+manciata di numeri consegnata a quel livello. Non c'è nessun ordine impartito
+all'immagine, c'è una taratura del mixer: ed è per questo che cambiando lo
+stile dei primi livelli cambia la posa e cambiando quello degli ultimi cambiano
+le lentiggini, perché nei primi livelli le corsie decidono cose grosse e negli
+ultimi cose fini.
+
+Il meccanismo non nasce qui. Viene dal trasferimento di stile fra immagini,
+dove Xun Huang e Serge Belongie {cite}`huang2017arbitrary` l'avevano proposto
+proprio per prendere il «carattere» di un quadro e appiccicarlo a una
+fotografia: allineare media e ampiezza delle corsie del contenuto a quelle
+dello stile. StyleGAN se lo porta dentro il generatore e lo usa livello per
+livello, ed è il motivo per cui il controllo esce separato per scala.
+
+### La goccia
+
+Le immagini di StyleGAN avevano un difetto che si vedeva a occhio nudo, e nella
+maggior parte dei casi anche senza cercarlo: una macchia a forma di goccia
+d'acqua, sempre uguale, da qualche parte nel quadro. Quando nel quadro finito
+non si vedeva c'era comunque nei passaggi intermedi dentro il falsario, e lì
+c'era praticamente sempre. Per un anno è stata una di quelle cose che si vedono
+e non si spiegano, e a renderla un enigma c'era anche il fatto che l'esperto,
+che sta lì apposta per accorgersi di ciò che non torna, se la lasciava passare.
+
+La spiegazione, quando arriva {cite}`karras2020analyzing`, è la parte
+istruttiva. La goccia non è un errore del falsario: è il falsario che **aggira
+il proprio impianto**. Il primo tempo di AdaIN, quello che rimette tutte le
+corsie alla stessa taratura, butta via un'informazione che al falsario serve,
+cioè quanto una corsia è forte rispetto alle altre. E allora il falsario si
+inventa un trucco da contrabbandiere: fabbrica in un punto qualunque
+dell'immagine un picco enorme, così enorme da dominare da solo la statistica
+della corsia; quando la normalizzazione divide per quell'ampiezza gonfiata,
+tutto il resto della corsia esce schiacciato della quantità che serviva. Il
+picco è la goccia. Il costo di una macchia in un angolo, per lui, è minore del
+costo di perdere quel controllo.
+
+Il rimedio, che arriva con StyleGAN2, è elegante e vale come regola generale:
+invece di tarare le
+**attivazioni**, si tarano i **pesi**. Lo stile scala i pesi della convoluzione
+(la *modulazione*), e subito dopo i pesi vengono rinormalizzati (la
+*demodulazione*) in modo che l'uscita torni ad ampiezza unitaria. Il risultato
+sulla carta è quasi lo stesso, ma la seconda operazione non guarda mai il
+contenuto dell'immagine: lavora su una tabella di numeri, prima che l'immagine
+esista. E un contrabbandiere non può nascondere niente dentro un controllo che
+non lo guarda. Le gocce spariscono.
+
+```{admonition} Come si legge questa storia
+:class: tip
+Un difetto visibile in quasi ogni immagine è rimasto senza spiegazione per un
+anno, e quando è arrivata la spiegazione non diceva «c'è un errore»: diceva che
+il modello stava **facendo il suo lavoro nel modo che l'impianto gli
+permetteva**. È la differenza fra il debug di un programma, dove qualcosa è
+scritto storto, e la diagnosi di un modello, dove di solito non c'è niente di
+storto e c'è invece un obiettivo che premia una strada che non avevamo
+previsto. Il libro ci torna nel capitolo sull'interpretabilità, ma la lezione è
+già tutta qui: quando un modello fa una cosa strana e ripetuta, la prima
+domanda non è «dov'è il bug» ma «che cosa ci sta guadagnando».
+```
+
+Quel rimedio, e le altre due revisioni che lo stesso lavoro si porta dietro,
+meritano di essere guardati da vicino.
+
+`````{tab} Elementare
+
+Le altre due revisioni sono queste. La prima è che **la crescita per gradini
+viene messa da parte**. Serviva a
+tenere in piedi un addestramento che nel frattempo si era imparato a tenere in
+piedi in altri modi, e in cambio faceva un danno: inchiodava i dettagli a
+posizioni fisse sul foglio. Nei volti che si muovono si vedeva benissimo,
+perché i denti restavano orientati verso l'obiettivo invece di seguire la
+testa.
+
+La seconda è una regola nuova che chiede al falsario di **camminare a passo
+costante**: spostarsi di un tanto nella manciata di numeri di partenza deve
+cambiare l'immagine di un tanto, né di più né di meno, dovunque ci si trovi.
+Serve a fare immagini migliori, e regala un mestiere in più: un falsario che
+cammina a passo costante è molto più facile da percorrere **al contrario**,
+cioè da usare per scoprire quali numeri di partenza produrrebbero una
+fotografia che abbiamo già in mano.
+
+`````
+
+`````{tab} Superiore
+
+L'operazione che sparisce è AdaIN, che in StyleGAN {cite}`karras2019style`
+agisce separatamente su ogni mappa di attivazioni $\mathbf{x}_i$:
+
+$$
+\mathrm{AdaIN}(\mathbf{x}_i, \mathbf{y}) =
+\mathbf{y}_{s,i}\, \frac{\mathbf{x}_i - \mu(\mathbf{x}_i)}{\sigma(\mathbf{x}_i)}
++ \mathbf{y}_{b,i},
+$$
+
+dove $\mu$ e $\sigma$ sono media e deviazione standard **della mappa stessa**, e
+la coppia $(\mathbf{y}_s, \mathbf{y}_b)$ è lo stile, ricavato da $\mathbf{w}$
+con una trasformazione affine appresa. Il varco del contrabbandiere è quella
+divisione per $\sigma(\mathbf{x}_i)$, che è l'unico punto in cui il calcolo
+guarda i valori prodotti.
+
+Al suo posto la modulazione scala i pesi della convoluzione per lo stile, e la
+demodulazione li rinormalizza sotto l'ipotesi che gli ingressi siano
+indipendenti e a varianza unitaria:
+
+$$
+w'_{ijk} = s_i \, w_{ijk},
+\qquad
+w''_{ijk} = \frac{w'_{ijk}}{\sqrt{\sum_{i,k} \big(w'_{ijk}\big)^2 + \epsilon}},
+$$
+
+dove $i$ indicizza i canali d'ingresso, $j$ quelli d'uscita, $k$ le posizioni
+spaziali del filtro, $s_i$ è la scala dettata dallo stile ed $\epsilon$ evita la
+divisione per zero. L'ipotesi statistica è il punto: la demodulazione non
+misura le attivazioni vere, le assume, e per questo non offre nessun canale in
+cui nascondere segnale. Gli autori la dichiarano per quello che è, cioè **più
+debole** dell'instance normalization proprio perché poggia su ipotesi sul
+segnale invece che sul contenuto effettivo delle mappe: il controllo
+sull'ampiezza vale in media e non su ogni singolo esempio. Ed è quel «in media»
+a chiudere il varco.
+
+Lo stesso lavoro rivede la crescita progressiva, che a quel punto risolveva un
+problema di stabilità già risolto altrove e in cambio dava ai dettagli una
+preferenza per le posizioni fisse (i denti che restano allineati alla macchina
+fotografica invece di seguire la posa). Al suo posto va una coppia
+**asimmetrica**, e l'asimmetria è il risultato: fra le nove combinazioni
+provate, il generatore vuole connessioni *skip* e il discriminatore
+connessioni **residue**, mentre un generatore residuo peggiora le cose.
+
+Arriva poi la **path length regularization**. L'ideale che insegue è che un
+passo di ampiezza fissa in $\mathcal{W}$ produca nell'immagine un cambiamento
+di ampiezza fissa, quale che sia il punto di partenza e quale che sia la
+direzione; lo scarto da quell'ideale si misura sui gradienti rispetto a
+$\mathbf{w}$ di una proiezione casuale dell'immagine, e si penalizza la loro
+distanza da una costante:
+
+$$
+\mathbb{E}_{\mathbf{w},\, \mathbf{y} \sim \mathcal{N}(\mathbf{0}, \mathbf{I})}
+\Big( \big\lVert \mathbf{J}_{\mathbf{w}}^{\top} \mathbf{y} \big\rVert_2 - a \Big)^2,
+\qquad
+\mathbf{J}_{\mathbf{w}} = \frac{\partial g(\mathbf{w})}{\partial \mathbf{w}},
+$$
+
+dove $g$ è il generatore e $a$ non è un iperparametro ma una media mobile
+esponenziale delle lunghezze osservate, cioè un bersaglio che il termine si
+sceglie da solo strada facendo. Lo Jacobiano non si calcola mai per esteso:
+basta l'identità $\mathbf{J}_{\mathbf{w}}^{\top}\mathbf{y} =
+\nabla_{\mathbf{w}}\big(g(\mathbf{w}) \cdot \mathbf{y}\big)$, che è una normale
+retropropagazione. È un vincolo di buon condizionamento della mappa
+latente-immagine, e ha un effetto collaterale utile dichiarato dagli autori: i
+generatori così regolarizzati sono molto più facili da **invertire**, cioè da
+usare al contrario per trovare il $\mathbf{w}$ che produce una data fotografia,
+e questo permette di attribuire un'immagine generata alla rete che l'ha fatta.
+
+`````
+
 ## pix2pix e CycleGAN: tradurre le immagini
 
-Se condizioniamo una GAN non su un'etichetta ma su un'*intera immagine*,
+Se condizioniamo una GAN non su un'etichetta ma su un’*intera immagine*,
 otteniamo un traduttore visivo: schizzo → foto, mappa → satellite, giorno →
 notte. È **pix2pix** {cite}`isola2017image`. Ha però un vincolo: servono
 coppie allineate, cioè lo stesso soggetto ripreso nei due mondi che si vogliono
@@ -188,7 +456,7 @@ Questo vincolo rende superfluo l'allineamento a coppie. Che poi «ancori il cont
 
 L'onda applicativa è stata vasta. La **super-risoluzione**: SRGAN
 {cite}`ledig2017photo` ricostruisce dettagli plausibili in immagini a bassa
-risoluzione, usata poi nel restauro fotografico e nell'*upscaling*
+risoluzione, usata poi nel restauro fotografico e nell’*upscaling*
 (l'ingrandimento di un'immagine senza che diventi sgranata). La parola
 "plausibili" va presa alla lettera, ed è il limite dello strumento: i dettagli
 che nella foto piccola non c'erano la rete non li recupera, li **inventa** in
@@ -200,7 +468,7 @@ altri modelli quando i dati reali sono scarsi o sensibili, con l'avvertenza
 che un dato sintetico eredita le distorsioni di chi l'ha generato (i *bias*: se
 il generatore ha visto soltanto volti chiari, soltanto quelli saprà fare).
 
-E l'**arte**. Nel 2018 il ritratto *Edmond de Belamy*, prodotto con una GAN dal
+E l’**arte**. Nel 2018 il ritratto *Edmond de Belamy*, prodotto con una GAN dal
 collettivo francese Obvious, fu battuto da Christie's per 432.500 dollari, con
 una stima di partenza di 7.000–10.000: la casa d'aste lo presentava come il
 primo ritratto generato da un algoritmo mai arrivato all'asta. Il dibattito
@@ -209,6 +477,137 @@ utile: buona parte del codice e del lavoro sui dati era di Robbie Barrat, un
 altro artista, cosa che Obvious riconobbe pubblicamente dopo l'asta. La domanda
 "di chi è l'opera" nasce già con due risposte possibili prima ancora di
 arrivare alla macchina.
+
+## VQ-GAN: il duello che fabbrica un alfabeto
+
+Tutte le varianti viste finora cambiano il regolamento del duello lasciandone
+intatto lo scopo: alla fine esce un'immagine, e a farla è il falsario.
+L'ultima che raccontiamo cambia lo scopo. Il duello non serve più a fare
+immagini: serve a fabbricare un **alfabeto** con cui scriverle. E chi poi le
+scrive è una macchina che questo libro conosce da tempo, quella che indovina il
+simbolo successivo.
+
+Il ragionamento parte da un desiderio. Un Transformer sa continuare qualunque
+cosa gli si dia in fila, purché sia una fila corta di simboli presi da un
+elenco finito: è così che scrive testo, ed è così che, nel capitolo sull'audio,
+ha scritto musica. Un'immagine non è né l'una né l'altra cosa. Non è un elenco
+finito, perché i suoi puntini sono numeri che variano con continuità; e non è
+corta, perché di puntini ce ne sono centinaia di migliaia. Servono due
+riduzioni, e per tutte e due il libro ha già gli attrezzi: un **autoencoder**
+per accorciare, e un **codebook** per rendere finito, cioè la tavolozza di
+pezzetti-tipo dei codec audio, quella del VQ-VAE {cite}`oord2017neural`.
+
+Il guaio è che le due riduzioni si mordono la coda. Un Transformer paga
+l'attenzione col quadrato della lunghezza della fila (fila doppia, conto
+quadruplo), quindi la fila va accorciata tanto; ma comprimere tanto, con una
+rete addestrata a somigliare all'originale puntino per puntino, produce
+immagini molli, perché la strada più sicura per somigliare a tutto è fare la
+media di tutto. È qui che entra il duello. Patrick Esser, Robin Rombach e
+Björn Ommer {cite}`esser2021taming` cambiano due cose al compressore. Primo: al
+posto del conto puntino per puntino mettono un giudizio **percettivo**, che
+misura la somiglianza come la valuterebbe un occhio (due fili d'erba
+diversi nello stesso prato sono la stessa cosa, una scritta storta no).
+Secondo: gli mettono contro un esperto. A quel punto il compressore non può più
+cavarsela con la media, perché una media l'esperto la riconosce, e con lo stesso
+accorciamento le immagini tornano nitide.
+
+I numeri dicono quanto pesa il trucco. Con un fattore di riduzione $f = 16$
+un'immagine di $256 \times 256$ diventa una griglia di $16 \times 16$, cioè
+**256 simboli** presi da un catalogo di 1.024 voci; il VQ-VAE-2, uscito un anno
+e mezzo prima, a parità di fedeltà nel rimettere insieme l'immagine ne chiedeva
+5.120. Duecentocinquantasei
+simboli sono una fila che un Transformer digerisce senza fatica, e da lì in poi
+generare un'immagine è, alla lettera, scrivere una frase di 256 parole.
+
+`````{tab} Elementare
+
+Immagina di dover dettare un quadro al telefono, e di avere davanti un catalogo
+di mille tessere di mosaico numerate. Il quadro lo copri con una griglia di
+sedici caselle per lato, per ogni casella scegli la tessera del catalogo che le
+somiglia di più, e detti i numeri: duecentocinquantasei numeri, e dall'altra
+parte qualcuno rimonta il quadro. Il catalogo è l'alfabeto, i numeri sono la
+frase.
+
+Fatto questo, succede la cosa interessante. Chi rimonta il quadro non ha bisogno
+che i numeri arrivino da un quadro vero: se qualcuno gliene inventa una fila
+plausibile, lui la rimonta lo stesso. E inventare file plausibili di simboli è
+esattamente il mestiere che sappiamo far fare a una macchina, quella che
+completa le frasi. Un'immagine nuova diventa allora una frase nuova.
+
+Il catalogo però va fatto bene, e qui torna il duello. Se le tessere si scelgono
+soltanto col criterio «somiglia», il catalogo si riempie di tessere sbiadite:
+davanti a un dubbio la scelta più prudente è sempre il grigio medio, che
+somiglia un po’ a tutto e non è niente. Mettendo un esperto a bocciare le
+ricostruzioni molli, le tessere restano nette. È lo stesso mestiere che l'esperto
+fa in tutto il capitolo, ma stavolta il suo prodotto non è un'immagine: è un
+alfabeto.
+
+Con un'avvertenza che questo libro ripete: il catalogo è **un soffitto**. Ciò
+che nessuna delle mille tessere sa dire, nessuno lo recupera più a valle, per
+quanto bravo sia chi scrive le frasi. E per le immagini grandi la fila
+tornerebbe lunga, quindi si lavora a finestra, generando un pezzo per volta e
+facendo scorrere la finestra: cuce bene, ma è un rimedio, non una soluzione.
+
+`````
+
+`````{tab} Superiore
+
+L'encoder $E$ produce $\hat{\mathbf{z}} = E(\mathbf{x}) \in \mathbb{R}^{h
+\times w \times d}$; ogni vettore spaziale è quantizzato al più vicino elemento
+del codebook $\mathcal{C} = \{\mathbf{e}_1, \dots, \mathbf{e}_K\}$ con la
+regola e lo *straight-through estimator* già visti per il VQ-VAE
+{cite}`oord2017neural`. La differenza sta nella loss del primo stadio, e sono
+due mosse distinte: la ricostruzione $\ell_2$ sui pixel viene **sostituita** da
+una **loss percettiva**, e sopra si **aggiunge** una **loss avversaria** con un
+discriminatore *patch-based*, quello di pix2pix {cite}`isola2017image`, che
+giudica riquadri invece dell'immagine intera e quindi valuta la resa locale più
+che il contenuto globale. I due termini che tengono agganciati codebook ed
+encoder (la perdita sul codebook e la *commitment loss*) restano quelli del
+VQ-VAE.
+
+L'effetto dichiarato è sul **fattore di compressione ammissibile**: con
+$f = 16$ e $K = 1024$ un'immagine $256 \times 256$ si riduce a $16 \times 16 =
+256$ indici, contro i $5\,120 = 32^2 + 64^2$ della gerarchia a due livelli di
+VQ-VAE-2, a fedeltà di ricostruzione dello stesso ordine (il modello ImageNet
+di punta del lavoro tiene $f = 16$ e sale a $K = 16\,384$).
+
+Sul valore di $f$ conviene riportare esattamente ciò che il paper misura,
+perché le due metà del compromesso vengono da due esperimenti diversi. Verso
+l'alto: gli autori osservano che oltre un certo numero di dimezzamenti la
+qualità della ricostruzione degrada, e la soglia dipende dal dataset. Verso il
+basso: tenendo **fissa** la lunghezza della sequenza a $16 \times 16 = 256$ e
+variando $f \in \{1, 2, 8, 16\}$, la porzione d'immagine che quei 256 simboli
+coprono si stringe al calare di $f$, e sotto $f = 16$ le strutture globali non
+reggono più (a $f = 8$ escono facce mezze barbute, con punti di vista
+incoerenti da una zona all'altra). Il vincolo dal basso, quindi, non è che la
+fila si allunghi: a fila costante è il campo visivo che si restringe.
+
+Il secondo stadio è un Transformer autoregressivo sugli indici, addestrato a
+massimizzare $\sum_i \log p(s_i \mid s_{<i})$ sulla sequenza serializzata in
+ordine di scansione. Per risoluzioni oltre quella di addestramento il
+campionamento avviene **a finestra scorrevole**, condizionando ogni blocco sul
+contesto che ricade nella finestra: è ciò che permette immagini di dimensione
+arbitraria a lunghezza di contesto fissa. Gli autori dichiarano anche a quale
+condizione funziona, ed è la parte che conviene non perdere: il contesto
+disponibile basta finché le statistiche del dataset sono all'incirca invarianti
+per traslazione, oppure finché c'è un condizionamento spaziale che regge la
+coerenza. Dove la condizione cade (sintesi non condizionata su dati allineati)
+si rimedia condizionando sulle coordinate.
+
+Due fili vanno tirati, perché il libro li riprende. Il primo: la stessa ricetta
+di perdite (ricostruzione percettiva, avversaria di patch, più un termine che
+disciplina il latente) è quella con cui è addestrato l'autoencoder di **Stable
+Diffusion**, e non per caso, dato che Esser, Rombach e Ommer sono tutti e tre
+fra i suoi autori; là però il latente resta **continuo**, perché il termine che
+disciplina è una KL leggera invece di una quantizzazione, e a comporre non
+pensa un Transformer autoregressivo ma la diffusione. VQ-GAN è la fucina in cui
+quella ricetta è stata forgiata. Il secondo: l'idea di trattare un'immagine
+come una sequenza di simboli non è nuova per chi legge, perché il capitolo su
+visione e linguaggio l'ha già usata per i generatori multimodali a fusione
+precoce; qui se ne vede l'officina, cioè da dove arriva l'alfabeto e a che
+prezzo lo si fabbrica.
+
+`````
 
 ## Il passaggio di testimone ai modelli di diffusione
 
@@ -234,7 +633,7 @@ alla diffusione.
 
 Le GAN non sono scomparse, e il motivo è la velocità: una GAN produce
 l'immagine in un colpo solo, un unico passaggio attraverso il generatore,
-mentre la diffusione parte dal rumore e lo ripulisce un po' per volta,
+mentre la diffusione parte dal rumore e lo ripulisce un po’ per volta,
 ripetendo l'operazione decine di volte. Il vantaggio era così evidente che la
 ricerca sulla diffusione ha passato anni a rincorrerlo, imparando a ottenere lo
 stesso risultato in pochi passi invece che in molti; e per riuscirci ha spesso
@@ -242,7 +641,8 @@ rimesso in gioco un discriminatore, cioè proprio l'idea avversaria di questo
 capitolo.
 
 C'è di più, ed è la ragione migliore per aver letto questo capitolo anche
-volendo usare soltanto la diffusione: un discriminatore è servito a costruire
+volendo usare soltanto la diffusione. La sezione su VQ-GAN l'ha anticipato, e
+adesso conviene dirlo per esteso: un discriminatore è servito a costruire
 **un pezzo di** Stable Diffusion. Alla fine di tutto il lavoro c'è una parte
 che riporta quella versione ridotta e compatta ai pixel veri e propri, e la si
 chiama decodificatore: ecco, è stata addestrata anche con una loss avversaria,
@@ -281,10 +681,25 @@ duello, e conviene ripassarle così.
   propria manopola: da lì il controllo separato di posa, lineamenti e
   lentiggini. La risoluzione da fotografia, invece, era già stata conquistata
   dal modello che l'ha preceduta, la Progressive GAN.
+- Sotto il cofano, tre meccanismi. Si **cresce per gradini**, da sedici puntini
+  a un milione, e a ogni gradino si passa in **dissolvenza** invece che di
+  colpo. La manopola non impartisce ordini: **rimette tutte le corsie del
+  segnale alla stessa taratura e poi le ritara** secondo lo stile, come un
+  mixer. E la famosa macchia a goccia delle immagini di StyleGAN non era un
+  errore: era il falsario che si fabbricava un picco enorme per contrabbandare,
+  attraverso quella taratura, un'informazione che la taratura gli toglieva.
+  StyleGAN2 la fa sparire tarando i **pesi** invece del segnale, cioè con un
+  controllo che l'immagine non la guarda.
 - **pix2pix** e **CycleGAN** traducono un'immagine in un'altra (schizzo in
   foto, foto in Monet); la seconda ci riesce senza coppie di immagini
   corrispondenti, grazie alla regola dell'andata e ritorno, che però va tenuta
   insieme all'esperto: da sola si lascia aggirare.
+- **VQ-GAN** cambia lo scopo del duello: l'esperto non serve più a fare
+  immagini, serve a fabbricare un **alfabeto**. Un'immagine diventa una fila di
+  256 simboli presi da un catalogo di mille, e da lì generarne una nuova è
+  scrivere una frase nuova, con la stessa macchina che completa il testo. Senza
+  l'esperto il catalogo si riempirebbe di tessere sbiadite, perché per
+  «somigliare» conviene sempre il grigio medio.
 - Dal 2021 il testimone passa ai **modelli di diffusione** (Stable Diffusion,
   DALL·E 2). Le GAN restano dove conta la velocità (un colpo solo contro decine
   di passaggi), e l'idea avversaria continua a servire per **costruire** gli
@@ -304,13 +719,38 @@ duello, e conviene ripassarle così.
   la **conditional GAN** aggiunge il controllo tramite una variabile ausiliaria
   $y$ passata a entrambe le reti.
 - **StyleGAN** introduce lo spazio latente intermedio $\mathcal{W}$, la
-  modulazione per strato via AdaIN e il rumore per-livello: il suo contributo è
-  il controllo *scale-specific*, mentre la scala di risoluzione è ereditata
-  dalla Progressive GAN {cite}`karras2018progressive`.
+  modulazione per strato via AdaIN {cite}`huang2017arbitrary` e il rumore
+  per-livello: il suo contributo è il controllo *scale-specific*, mentre la
+  scala di risoluzione è ereditata dalla Progressive GAN
+  {cite}`karras2018progressive`, che la ottiene con la **dissolvenza** sui
+  *toRGB*/*fromRGB* più equalized learning rate, normalizzazione pixelwise e
+  minibatch standard deviation.
+- **StyleGAN2** {cite}`karras2020analyzing` diagnostica gli artefatti a goccia
+  come contrabbando di segnale attraverso l'instance normalization, e li elimina
+  con **modulazione e demodulazione dei pesi**: la rinormalizzazione avviene su
+  $w$ sotto ipotesi statistiche, mai sulle attivazioni vere, quindi non offre
+  un canale nascosto. Con essa cade anche la crescita progressiva, sostituita
+  da una coppia asimmetrica (*skip* nel generatore, connessioni **residue** nel
+  discriminatore), e arriva la *path length regularization*, che spinge un
+  passo di ampiezza fissa in $\mathcal{W}$ a produrre un cambiamento di
+  ampiezza fissa nell'immagine: migliora il condizionamento della mappa
+  $\mathcal{W} \to$ immagine e rende il generatore molto più facile da
+  invertire.
 - **pix2pix** e **CycleGAN** fanno traduzione immagine-a-immagine (la seconda
   senza coppie, grazie alla *cycle-consistency* pesata da un $\lambda$); il
   ciclo però si può chiudere per steganografia, quindi non certifica la fedeltà
   al soggetto.
+- **VQ-GAN** {cite}`esser2021taming` sposta l'obiettivo del duello sul
+  **vocabolario**: encoder e codebook come nel VQ-VAE, ma primo stadio in cui
+  la loss percettiva sostituisce l’$\ell_2$ e un discriminatore *patch-based*
+  si aggiunge, il che alza il
+  fattore di compressione ammissibile ($f=16$: $256\times256 \to 16\times16 =
+  256$ indici su $K = 1024$, contro i 5.120 di VQ-VAE-2). Sopra, un Transformer
+  autoregressivo sugli indici, a finestra scorrevole oltre la risoluzione di
+  addestramento, e regge finché le statistiche del dataset sono all'incirca
+  invarianti per traslazione o c'è un condizionamento spaziale. È la ricetta di
+  perdite poi riusata nell'autoencoder di Stable
+  Diffusion, con latente continuo invece che quantizzato.
 - Dal 2021 i **modelli di diffusione** (Stable Diffusion, DALL·E 2) raccolgono
   il testimone della generazione di immagini; le GAN restano rilevanti per
   velocità di campionamento e come componente ibrida, decodificatori dei modelli

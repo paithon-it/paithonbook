@@ -78,7 +78,7 @@ si prova il modello su una foto scaricata al volo.
 Il conto da tenere è quello delle dimensioni lungo la rete, e le tre cause si
 formalizzano così.
 
-**Appiattimento.** `nn.Linear(d_in, d_out)` opera sull'**ultima** dimensione e
+**Appiattimento.** `nn.Linear(d_in, d_out)` opera sull’**ultima** dimensione e
 lascia intatte le precedenti: applicato a $(B, C, H, W)$ fallisce a meno che
 $W = d_{\text{in}}$. Per un MLP su immagini serve `nn.Flatten()` (che per
 default appiattisce da `start_dim=1`, preservando il batch) e
@@ -298,7 +298,7 @@ scende affatto, e non c'è niente di rosso da leggere.
 
 ```{figure} ../figures/overfitting-memoria.svg
 :name: fig-curva-nervosa
-:alt: "Una decina di punti disposti lungo una tendenza crescente, attraversati da due curve. La prima è quasi una retta e coglie la tendenza generale, lasciando i punti un po' sopra e un po' sotto. La seconda è nervosa, sale e scende fra un punto e l'altro e passa esattamente per ognuno."
+:alt: "Una decina di punti disposti lungo una tendenza crescente, attraversati da due curve. La prima è quasi una retta e coglie la tendenza generale, lasciando i punti un po’ sopra e un po’ sotto. La seconda è nervosa, sale e scende fra un punto e l'altro e passa esattamente per ognuno."
 :width: 92%
 
 La curva che passa per tutti i punti non ha capito meglio: ha memorizzato. Sul
@@ -424,7 +424,7 @@ collegata all'uscita del modello). Se invece scende pochissimo ma scende, è
 **sottoadattamento**: il modello non ha abbastanza capacità, o il passo è
 troppo corto, o le feature non contengono l'informazione richiesta.
 
-**Sano.** Entrambe scendono, la validazione sta un po' sopra, e il divario fra
+**Sano.** Entrambe scendono, la validazione sta un po’ sopra, e il divario fra
 le due resta più o meno costante. Un divario c'è quasi sempre e non è una
 malattia: quello che si sorveglia è se **si allarga**.
 
@@ -453,7 +453,7 @@ ingrandisci il modello. Curva che salta: abbassa il learning rate (di un
 fattore tre) o aumenta la dimensione del batch, che è l'altro modo di rendere
 meno rumoroso il gradiente. Divario che si allarga: servono i freni, cioè
 qualcosa che renda la vita più difficile al modello mentre studia (deformare
-un po' gli esempi a ogni giro, spegnergli a caso qualche neurone) oppure, più
+un po’ gli esempi a ogni giro, spegnergli a caso qualche neurone) oppure, più
 semplicemente, fermarsi prima.
 
 E un collaudo che vale i cinque minuti che costa, da fare **prima** di lanciare

@@ -144,7 +144,7 @@ ramificazione); per più input, skip connection o rami paralleli (come le
 ResNet che incontreremo nel capitolo sul deep learning) si torna a `nn.Module`
 con un `forward` esplicito, dove le ramificazioni sono semplici variabili
 Python. È la differenza chiave rispetto alle API dichiarative: non serve
-un'"API funzionale" separata, perché la composizione arbitraria è già Python.
+un’"API funzionale" separata, perché la composizione arbitraria è già Python.
 Per MNIST la pila lineare basta e avanza.
 `````
 

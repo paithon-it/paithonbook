@@ -76,7 +76,9 @@ Diffusion ne è il figlio famoso.
 
 ## L'archivista: il variational autoencoder
 
-Il pezzo nuovo è una rete a forma di clessidra: si chiama **autoencoder**, e a
+Il pezzo che porta i mobili è una rete a forma di clessidra, l’**autoencoder**,
+che il capitolo sull'audio ha già montato per i codec neurali e che qui
+riprendiamo dall'inizio perché è la sua variante a fare la differenza. A
 prima vista fa la cosa più inutile del mondo, cioè si allena a riprodurre
 esattamente quello che le si dà in pasto. L'inutilità sparisce appena si guarda
 la strettoia in mezzo alla clessidra: quello che entra deve passare di lì, e di
@@ -116,16 +118,38 @@ c'è sempre tutto lo spazio in mezzo. È quello che permette di dire frasi come
 «una scheda a metà strada fra due che esistono», che con dei foglietti di carta
 non vorrebbero dire niente.
 
-Il sorteggio in mezzo alla figura (si prende la scheda, la si sposta di un po'
+Sulla mappa si vede anche perché un archivista semplice, quello senza il
+margine di tolleranza, non serve a inventare niente. Comprime e ricostruisce, e
+in quel mestiere è ottimo. Ma proviamo a usarlo al contrario: scegliamo un
+punto sulla mappa, diamolo al copista, guardiamo che cosa dipinge. Il guaio è
+che non si sa **dove** sceglierlo. Nessuno ha mai chiesto alle schede di stare
+in una zona precisa, e quindi si sistemano dove capita: la regione che occupano
+non ha una forma nota né un centro noto, i vari soggetti (gatti, ritratti,
+paesaggi) se la spartiscono male, chi prendendosi una fetta larga chi restando
+schiacciato in una scaglia sottile, e in mezzo restano dei vuoti. Un punto
+pescato a caso finisce quasi sempre fuori
+dalla regione o dentro uno di quei vuoti, e il copista, che lì non è mai stato,
+dipinge una macchia. Non è una svista dell'archivista: nella pagella con cui
+l'abbiamo giudicato («la copia somiglia all'originale?») la richiesta di
+generare non compariva da nessuna parte, e quello che non si chiede non si
+ottiene.
+
+Il sorteggio in mezzo alla figura (si prende la scheda, la si sposta di un po’
 a caso dentro il margine di tolleranza, e solo allora la si passa al copista) è
 ciò che distingue questa rete da un compressore qualunque. La conseguenza è
 precisa: siccome durante l'addestramento il copista vede ogni volta una scheda
 leggermente spostata, è costretto a funzionare su tutta una zona e non su un
-punto solo. Lo spazio delle schede ne esce **continuo**, cioè senza buchi:
-qualunque punto si peschi, anche uno a metà strada fra due schede vere,
-corrisponde a un'immagine sensata. Ed è la premessa perché la diffusione ci si
+punto solo. Lo spazio delle schede ne esce **continuo**, cioè senza i vuoti di
+prima: un punto a metà strada fra due schede vere non è più terra sconosciuta,
+e il copista sa che farsene. Ed è la premessa perché la diffusione ci si
 possa muovere dentro, dato che la diffusione, di suo, passa il tempo a mettere
 piede in posti sorteggiati a caso.
+
+Il sorteggio, però, è metà del rimedio: aggiusta le vicinanze, una scheda alla
+volta, e non dice ancora dove sia la regione in cui pescare. La seconda metà è
+una regola che tiene tutte le schede raccolte attorno a uno stesso centro: è il
+secondo dei due tratti che danno a questa rete il suo nome, e li vediamo
+adesso.
 
 `````{tab} Elementare
 
@@ -168,9 +192,12 @@ E il «variational» del nome, che in italiano diremmo «variazionale»? Sta in 
 regole che tengono l'archivio in ordine. Primo: la scheda non inchioda il
 quadro a un punto esatto ma descrive una *nuvola di possibilità* («un gatto
 nero più o meno così»), cosicché quadri quasi uguali abbiano schede quasi
-uguali. Secondo: l'archivio non deve avere buchi; se peschi un punto a caso
-nella zona dove le schede stanno di solito, anche uno mai scritto da nessuno,
-il copista deve comunque saperne dipingere un quadro sensato. Sembrano
+uguali. Secondo: le schede devono stare tutte raccolte attorno a uno stesso
+centro, invece di sparpagliarsi dove capita, e questo serve a sapere **dove
+pescare**. Se so che l'archivio sta lì attorno posso inventarmi un punto senza
+finire fuori dal mondo dei quadri possibili, e il copista deve saperne
+dipingere un quadro sensato anche se quel punto non l'ha mai scritto nessuno.
+Sembrano
 pignolerie, ma sono esattamente ciò che serve alla diffusione: il restauratore
 lavorerà *dentro* questo archivio, e ogni punto in cui mette piede (compresi i
 mille punti sorteggiati del suo viaggio) deve corrispondere a un'immagine
@@ -180,15 +207,17 @@ possibile.
 
 `````{tab} Superiore
 
-Un VAE è una coppia di reti. L'**encoder** mappa il dato $\mathbf{x}$ non in un punto
+Un VAE è una coppia di reti. L’**encoder** mappa il dato $\mathbf{x}$ non in un punto
 ma in una distribuzione sul latente,
-$q_\phi(\mathbf{z} \mid \mathbf{x}) = \mathcal{N}\big(\mathbf{z};\, \boldsymbol{\mu}_\phi(\mathbf{x}),\, \sigma_\phi^2(\mathbf{x})\, \mathbf{I}\big)$;
+$q_\phi(\mathbf{z} \mid \mathbf{x}) = \mathcal{N}\big(\mathbf{z};\, \boldsymbol{\mu}_\phi(\mathbf{x}),\, \mathrm{diag}\big(\boldsymbol{\sigma}_\phi^2(\mathbf{x})\big)\big)$
+(la covarianza è diagonale, con una varianza propria per componente, non un
+unico valore per tutte);
 il **decoder** definisce $p_\psi(\mathbf{x} \mid \mathbf{z})$, la ricostruzione a partire
 dal codice (scriviamo $\psi$ per i suoi parametri perché in questo capitolo
 $\theta$ è già impegnato dalla rete di diffusione $\boldsymbol{\epsilon}_\theta$: sono due
 reti distinte, addestrate separatamente). Sul latente si
 impone un prior semplice, $p(\mathbf{z}) = \mathcal{N}(0, \mathbf{I})$. L'addestramento
-massimizza l'**ELBO** (*evidence lower bound*):
+massimizza l’**ELBO** (*evidence lower bound*):
 
 $$
 \mathrm{ELBO}(\psi, \phi; \mathbf{x}) =
@@ -199,13 +228,36 @@ $$
 dove il primo termine premia la fedeltà della ricostruzione e il secondo (la
 divergenza di Kullback–Leibler vista nei richiami di matematica) penalizza gli
 encoder che si allontanano dal prior. È questo secondo termine a rendere lo
-spazio latente **continuo** (input simili, codici vicini) e **campionabile**
-(ogni regione con probabilità apprezzabile sotto il prior decodifica in un
-dato plausibile). Nella convenzione del libro, dove $\mathcal{L}$ si
+spazio latente **continuo** (input simili, codici vicini) e **campionabile**,
+cioè a fornire una distribuzione da cui pescare $\mathbf{z}$ senza doverla
+stimare: l'obiettivo è che ogni regione con probabilità apprezzabile sotto il
+prior decodifichi in un dato plausibile, e quanto ci si riesca davvero è la
+domanda del paragrafo che segue. Nella convenzione del libro, dove $\mathcal{L}$ si
 minimizza, la loss corrispondente è $\mathcal{L} = -\mathrm{ELBO}$. La
 derivazione dell'ELBO come limite inferiore della
 log-verosimiglianza è nel paper originale {cite}`kingma2014auto`; qui ci basta
 il ruolo funzionale dei due termini.
+
+Conviene dire che cosa manca a un autoencoder semplice, perché è esattamente
+ciò che il secondo di quei due termini aggiunge. Un autoencoder ottimizza la sola
+ricostruzione: nella sua loss non compare nulla che riguardi la distribuzione
+dei codici che produce. L'aggregato
+$q_\phi(\mathbf{z}) = \mathbb{E}_{p_{\text{dati}}}\!\big[q_\phi(\mathbf{z} \mid \mathbf{x})\big]$
+resta quindi ignoto, e generare richiede di conoscerlo: senza, non esiste
+alcuna distribuzione da cui pescare $\mathbf{z}$. Il termine KL scioglie il nodo
+imponendo il bersaglio invece di stimarlo, ed è il motivo per cui il prior si
+sceglie semplice. Con una precisazione che vale la pena registrare: quel
+termine agisce **su un esempio alla volta**, quindi vincola ciascuna
+$q_\phi(\mathbf{z} \mid \mathbf{x})$ e non direttamente l'aggregato. I due non
+coincidono, e lo scarto lascia regioni con massa apprezzabile sotto il prior
+che il decoder ha visto poco: campionarle produce immagini deboli. È un limite
+noto del VAE puro, non un difetto di implementazione, e ha anche un nome e una
+letteratura: lo scarto fra prior e posteriore aggregato
+{cite}`hoffman2016elbo,rosca2018distribution`. In Stable Diffusion il
+problema si aggira non risolvendolo: al VAE non si chiede affatto di generare,
+il peso KL è tenuto molto piccolo (la fedeltà della ricostruzione conta più
+della somiglianza al prior) e a decidere che cosa esce dal latente pensa la
+diffusione, non il decoder da solo.
 
 Il VAE di Stable Diffusion è convoluzionale e riduce ogni lato di un fattore
 $f = 8$, con 4 canali latenti: da $512 \times 512 \times 3$ a
@@ -402,8 +454,8 @@ In generazione, allora, a ogni passo puoi porre la domanda due volte e
 ottenere due risposte. È il cartello della salita della sezione precedente,
 quello che indica in che direzione ritoccare l'immagine per renderla più
 credibile, che si sdoppia: un cartello dice «per una figura credibile in
-generale, va' di là», l'altro dice «per una figura credibile *e che rispetta
-la richiesta*, va' di là». Chiamiamole le due bussole, tenendo a mente che non
+generale, va’ di là», l'altro dice «per una figura credibile *e che rispetta
+la richiesta*, va’ di là». Chiamiamole le due bussole, tenendo a mente che non
 sono bussole vere: non indicano il nord tutte e due, ognuna indica la sua
 direzione, e le due direzioni non coincidono.
 
@@ -547,7 +599,7 @@ immagine.save("gatto_acquerello.png")
 Due note pratiche. Il prompt è in inglese perché i modelli della famiglia
 SD v1 sono addestrati su didascalie in inglese: con altre lingue i
 risultati peggiorano sensibilmente. E se la memoria non basta,
-`pipe.enable_attention_slicing()` scambia un po' di velocità per un
+`pipe.enable_attention_slicing()` scambia un po’ di velocità per un
 consumo molto più basso.
 
 ## L'onda lunga dei pesi aperti
@@ -614,7 +666,7 @@ tecnica.
   fotografia servono a descrivere la grana, non il gatto. L'idea di questa
   sezione è **spostare tutto il lavoro su una versione compressa** della
   fotografia, quarantotto volte più piccola, e tornare ai pixel solo alla fine.
-- Chi comprime è l'**archivista**: per ogni quadro scrive una scheda molto più
+- Chi comprime è l’**archivista**: per ogni quadro scrive una scheda molto più
   piccola, e chi la legge per ridipingere il quadro è il **copista**. I due si
   allenano insieme, e la prova che la scheda è buona è che la copia somigli
   all'originale. La trovata dell'archivista è non scrivere un valore esatto ma

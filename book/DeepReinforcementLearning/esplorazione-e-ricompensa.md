@@ -213,7 +213,7 @@ lo stupore.
 
 Nel modulo di curiosità intrinseca **ICM** (*Intrinsic Curiosity Module*,
 Pathak e colleghi, 2017 {cite}`pathak2017curiosity`) la ricompensa intrinseca
-è l'**errore di predizione** di un modello di dinamica. La chiave è che la
+è l’**errore di predizione** di un modello di dinamica. La chiave è che la
 previsione non avviene sui pixel grezzi ma in uno **spazio di feature**
 $\phi(s)$ appreso, che cattura solo ciò che l'agente *può controllare* e ignora
 il rumore irrilevante dell'ambiente. Come si ottenga una proprietà del genere è
@@ -301,6 +301,69 @@ loss.backward()
 optimizer.step()
 ```
 
+## Un modo diverso di guardare la curiosità
+
+Prima di cambiare argomento vale la pena fermarsi su una cosa che, messa così,
+sembra ovvia e non lo è. In tutto quello che abbiamo visto finora la curiosità è
+un **premio in più**: c'era una ricompensa, ci siamo accorti che non bastava, e
+gliene abbiamo affiancata un'altra, fabbricata da noi. È una toppa che funziona
+benissimo, ma resta una toppa, e la frase di prima («non gli si è insegnata la
+curiosità: gliel'hanno pagata») lo dice meglio di qualunque commento.
+
+Esiste una lettura opposta, e chiarisce parecchio anche a chi non intende
+seguirla. Nel quadro dell’**inferenza attiva**, che nelle neuroscienze teoriche
+descrive percezione e azione come un unico problema {cite}`parr2022active`,
+l'agente non massimizza una ricompensa: minimizza una grandezza (l’**energia
+libera attesa**) che tiene insieme due cose, quanto un'azione lo avvicina a ciò
+che preferisce e quanto gli farebbe **guadagnare informazione**. All'inferenza
+attiva il capitolo sui world model dedica una sezione, e il capitolo
+sull'auto-supervisione se ne serve per rispondere a un'obiezione sul rinforzo:
+qui ci interessa solo il riflesso che getta su questa pagina.
+
+`````{tab} Elementare
+
+La differenza che conta è questa: lì il valore di sapere non è un premio
+aggiunto, **c'era già dall'inizio**, accanto al valore di ottenere. E allora non
+c'è nessun dosaggio da regolare fra il curiosare e l'incassare, perché tutti e
+due sono pezzi della stessa quantità.
+
+Vista da lì, la storia di questa sezione si legge al contrario. Non è che
+abbiamo aggiunto la curiosità a un agente che non ce l'aveva: è che, partendo da
+una ricompensa che dice solo «quanto ti è andata bene» e mai «quanto hai
+imparato», eravamo **obbligati** a rimetterla dentro a mano. Ogni coefficiente
+che in questa sezione dosa il peso del bonus è il prezzo di quella scelta
+iniziale.
+
+`````
+
+`````{tab} Superiore
+
+Formalmente il legame è più stretto di un'analogia. Gli autori mostrano che
+diversi schemi noti si riottengono **togliendo pezzi** alla loro grandezza:
+annullate le preferenze dell'agente, l'energia libera attesa **cambiata di
+segno** «è variamente nota come sorpresa bayesiana attesa (nel contesto
+dell'esplorazione attentiva) o **motivazione intrinseca** (nel contesto
+dell'apprendimento autonomo)» {cite}`parr2022active`, che è esattamente la
+famiglia di metodi di questa sezione. Il segno non è un dettaglio: quella
+grandezza si **massimizza**, come si massimizza il bonus di novità qui sopra,
+mentre l'energia libera attesa da cui viene si minimizza.
+
+Il rapporto fra le due letture non è quindi di concorrenza: la ricompensa
+intrinseca è il caso particolare che si ottiene spegnendo il termine
+pragmatico. E c'è un motivo per cui la cosa riguarda proprio questa pagina: in
+un ambiente a ricompense rade il termine pragmatico, per la gran parte della
+traiettoria, vale lo stesso per tutte le mosse, e allora smette di ordinarle.
+Quel che resta a decidere è il termine epistemico, cioè la curiosità. È una
+conseguenza della decomposizione, non una misura: chi la volesse usare come tale
+dovrebbe verificarla.
+
+Resta la differenza che conta per chi implementa: questo quadro nasce come
+teoria del comportamento biologico, e i sistemi che oggi arrivano più lontano in
+*Montezuma's Revenge* sono quelli di questa sezione, non quelli dell'inferenza
+attiva. Serve a capire da dove viene la toppa, non a sostituirla.
+
+`````
+
 ## Reward shaping: guidare senza barare
 
 C'è un'alternativa più diretta al problema della sparsità: se le ricompense
@@ -339,7 +402,7 @@ tutto lì il valore della garanzia.
 (Un'ultima precisazione, per chi ha fatto il conto. Il «vado e torno fa zero»
 funziona così tondo solo se un premio incassato più tardi vale quanto uno
 incassato subito. Di solito non è così: come si è visto nel corridoio di Dyna,
-i premi lontani si scontano, cioè valgono un po' meno. Il conto giusto, allora,
+i premi lontani si scontano, cioè valgono un po’ meno. Il conto giusto, allora,
 non è la somma nuda dei premietti: è quella somma con ciascun premietto già
 moltiplicato per quanto vale a quella distanza. E in *quella* somma i pezzi si
 cancellano di nuovo a due a due, perché ogni quota ci entra con lo stesso peso
@@ -543,6 +606,14 @@ sull'AI responsabile comincia da qui.
 - Il **reward hacking** è l'agente che ottimizza la *lettera* della ricompensa,
   non l'intento, come la barca di *CoastRunners*. La legge che porta il nome di
   Goodhart, nella formulazione che tutti citano, è in realtà di Marilyn
-  Strathern (1997). È il ponte verso il problema dell'**allineamento**.
+  Strathern (1997). È il ponte verso il problema dell’**allineamento**.
 ```
 `````
+
+Quel ponte, però, è lungo: all'AI responsabile si arriva fra molti capitoli,
+quasi in fondo al libro. La pagina dopo riparte da un'altra storia, la
+traduzione automatica del 1954, e non è una deviazione. Qui la ricompensa la
+scriveva un programma, e si è visto che cosa succede quando la scrive male;
+quando l'allineamento tornerà, a scriverla sarà una persona che legge due frasi
+e dice quale preferisce. Prima bisogna sapere che cos'è una frase, per una
+macchina.

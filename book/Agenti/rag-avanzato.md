@@ -26,9 +26,9 @@ recuperare ciò che la ricerca non ha trovato.
 Quanto sia duro quel tetto lo ha misurato l'articolo che ha inaugurato la RAG.
 Prendiamo le domande in cui la risposta non compare in **nessuno** dei
 documenti recuperati: il sistema di Lewis e colleghi le azzecca comunque poco
-più di una volta su dieci, l'$11{,}8\%$ su *Natural Questions*, che è una
+più di una volta su dieci, l’$11{,}8\%$ su *Natural Questions*, che è una
 raccolta di domande vere rivolte a un motore di ricerca
-{cite}`lewis2020retrieval`. Quel po' che resta viene dalla memoria del
+{cite}`lewis2020retrieval`. Quel po’ che resta viene dalla memoria del
 modello, cioè da quello che gli era rimasto impresso in addestramento.
 
 Il numero si legge in due modi, e vale la pena tenerli tutti e due. In un
@@ -144,7 +144,7 @@ L'idea è interporre, tra l'utente e la ricerca, un passaggio di
 query pensate *per la ricerca*. Le varianti sono tre, di ambizione crescente.
 La **riscrittura** rende esplicito il sottinteso («il tagliando» →
 «manutenzione periodica dell'automobile, intervalli e operazioni»).
-L'**espansione** aggiunge sinonimi e termini correlati, così da coprire più
+L’**espansione** aggiunge sinonimi e termini correlati, così da coprire più
 modi di dire la stessa cosa. La **multi-query** genera diverse riformulazioni
 della stessa domanda, cerca con ciascuna e fonde i risultati: se anche una
 sola variante «azzecca» le parole del documento giusto, quel documento entra.
@@ -366,7 +366,7 @@ primi $k$, cioè i passaggi che entreranno davvero nel prompt del generatore
 $k$ pochi). Il costo del reranking è $N$ inferenze di cross-encoder per query:
 accettabile con quei valori di $N$, proibitivo sull'intero archivio.
 
-Tra i due estremi esiste una via di mezzo elegante: l'**interazione tardiva**
+Tra i due estremi esiste una via di mezzo elegante: l’**interazione tardiva**
 di **ColBERT** {cite}`khattab2020colbert`. Invece di collassare ogni testo in
 *un* vettore (bi-encoder) o di rifare l'attenzione congiunta a ogni query
 (cross-encoder), ColBERT conserva un embedding *per token* e calcola la
@@ -376,7 +376,7 @@ $$
 s(q, d) = \sum_{i \,\in\, q} \max_{j \,\in\, d}\; E(q_i)^\top E(d_j),
 $$
 
-dove $q_i$ è l'$i$-esimo token della query, $d_j$ il $j$-esimo del documento,
+dove $q_i$ è l’$i$-esimo token della query, $d_j$ il $j$-esimo del documento,
 ed $E(\cdot)$ il loro embedding contestuale. Per ogni token della domanda si
 prende la migliore corrispondenza tra i token del documento e si sommano: un
 confronto fine, token-a-token, ma con gli embedding dei documenti
@@ -686,7 +686,7 @@ contesto fa eccezione: per contare i rilevanti *mancati* serve una risposta di
 riferimento annotata, e infatti la libreria la calcola solo se gliene si dà
 una. Il reference-free è comodo perché non richiede un dataset etichettato a
 mano, ma eredita in blocco i limiti
-dell'**LLM-as-a-judge** che vedremo più avanti, nel capitolo su MLOps (il
+dell’**LLM-as-a-judge** che vedremo più avanti, nel capitolo su MLOps (il
 *position bias*, il *verbosity bias*, l'auto-preferenza) e va perciò calibrato
 contro un campione di giudizi umani, mai preso per oracolo.
 
@@ -781,7 +781,7 @@ Sei punti per ripercorrere la sezione più lunga del capitolo.
   passaggi?), pertinenza della risposta, precision/recall del contesto.
   **RAGAS** {cite}`es2024ragas` stima le prime tre senza risposte di
   riferimento, con un LLM-giudice (la recall del contesto vuole una risposta
-  annotata) e con i bias dell'**LLM-as-a-judge** del capitolo su MLOps.
+  annotata) e con i bias dell’**LLM-as-a-judge** del capitolo su MLOps.
 - Fedeltà **non è** verità: una risposta fedele a un documento sbagliato è
   sbagliata, e una citazione corretta non salva una risposta che travisa la
   fonte.

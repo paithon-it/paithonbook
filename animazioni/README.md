@@ -138,9 +138,11 @@ nota, e costa meno di un minuto.
 | `svg/autovettori.py` | `fig-autovettori` | `Matematica/algebra-lineare.md` |
 | `svg/bpe-fusioni.py` | `fig-bpe-fusioni` | `NaturalLanguageProcessing/tokenizzatori.md` |
 | `svg/broadcasting-si-stende.py` | `fig-broadcasting-si-stende` | `Python/numpy.md` |
+| `svg/campo-cieco.py` | `fig-campo-cieco` | `VerosimiglianzaEsatta/pixel-per-pixel.md` |
 | `svg/cancello-che-respinge.py` | `fig-cancello-che-respinge` | `IngegneriaLLM/loop-engineering.md` |
 | `svg/ciclo-addestramento.py` | `fig-ciclo-addestramento` | `PyTorch/addestramento.md` |
 | `svg/ciclo-agente.py` | `fig-ciclo-agente` | `Agenti/agenti-e-tool-use.md` |
+| `svg/credito-spalmato.py` | `fig-credito-spalmato` | `AutoSupervisione/dibattito-rl.md` |
 | `svg/ctc-collassa.py` | `fig-ctc-allineamento` | `SpeechRecognition/modelli-asr.md` |
 | `svg/decodifica-per-differenza.py` | `fig-decodifica-per-differenza` | `VisioneLinguaggio/vedere-quel-che-non-ce.md` |
 | `svg/deriva-ks.py` | `fig-deriva-ks` | `MLOps/monitoring-e-drift.md` |

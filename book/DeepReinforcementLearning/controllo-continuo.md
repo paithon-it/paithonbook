@@ -19,7 +19,7 @@ I metodi a gradiente di policy della sezione precedente (REINFORCE,
 attore-critico, A3C, PPO) su questo non hanno problemi: imparano a decidere,
 non a votare, e una quantità da dosare la sanno produrre. Ma hanno due difetti
 loro. Il primo: imparano soltanto dalla strategia che stanno giocando in quel
-momento (in gergo sono *on-policy*, il contrario dell'*off-policy* di DQN), e
+momento (in gergo sono *on-policy*, il contrario dell’*off-policy* di DQN), e
 quindi ogni esperienza si usa una volta e poi si butta. Il secondo: il loro
 apprendimento
 **balla**, cioè la stessa strategia, rigiocata, dà correzioni molto diverse fra
@@ -73,7 +73,7 @@ Il primo algoritmo a tenere insieme le due virtù appena chieste è **DDPG**,
 *Deep Deterministic Policy Gradient*, presentato da Lillicrap e colleghi di
 DeepMind nel 2016 {cite}`lillicrap2016continuous`.
 
-L'idea è tenere due reti che collaborano. L'**attore** guarda la situazione e
+L'idea è tenere due reti che collaborano. L’**attore** guarda la situazione e
 propone un'azione precisa: non un ventaglio di possibilità con le loro
 probabilità, come faceva la strategia della sezione precedente, ma esattamente
 la spinta da dare, un numero per ciascun motore. È **deterministica**, cioè
@@ -102,7 +102,7 @@ le azioni una per una. È la differenza tra cercare la vetta a tentoni e
 seguire la bussola della pendenza.
 
 Per non restare fermo su ciò che già conosce, l'attore aggiunge alle sue azioni
-un po' di **rumore** casuale: piccole spinte imprevedibili che lo fanno provare
+un po’ di **rumore** casuale: piccole spinte imprevedibili che lo fanno provare
 varianti nuove. È l'equivalente continuo del "ogni tanto tira a caso invece di
 prendere la mossa migliore" con cui il Q-learning del capitolo precedente
 esplorava.
@@ -143,8 +143,8 @@ y = r + \gamma\, Q_{\phi'}\!\big(s', \mu_{\theta'}(s')\big),
 $$
 
 dove $\phi'$ e $\theta'$ sono i parametri delle reti target, aggiornate con
-uno scorrimento lento (*Polyak averaging*) $\phi' \leftarrow \tau\phi +
-(1-\tau)\phi'$, con $\tau\ll 1$. L'esplorazione avviene aggiungendo rumore
+uno scorrimento lento (*Polyak averaging*) $\phi’ \leftarrow \tau\phi +
+(1-\tau)\phi’$, con $\tau\ll 1$. L'esplorazione avviene aggiungendo rumore
 all'azione in fase di raccolta, $a = \mu_\theta(s) + \epsilon$: nel paper
 originale $\epsilon$ è un processo di Ornstein-Uhlenbeck (rumore temporalmente
 correlato, utile in sistemi con inerzia), ma nella pratica un semplice rumore
@@ -162,7 +162,7 @@ critico ha errori di stima in ogni direzione; l'attore, addestrato a cercare le
 azioni che il critico valuta di più, si infila proprio dove il critico ha
 sbagliato *per eccesso*. Quegli errori ottimistici vengono così selezionati,
 amplificati e reimmessi nel bersaglio che il critico insegue, dove tendono ad
-accumularsi. Il secondo è l'**ipersensibilità agli iperparametri**, cioè alle
+accumularsi. Il secondo è l’**ipersensibilità agli iperparametri**, cioè alle
 manopole che si decidono prima di cominciare e non si imparano: la velocità con
 cui le reti si correggono, quanto rumore aggiungere, quanto farle grandi.
 Ritoccarne una di poco può fare la differenza fra un agente che impara a
@@ -194,8 +194,8 @@ meno per eccesso.
 E vale l'avvertenza già vista per il Double DQN, perché è la stessa: i due
 giudici non sono estranei fra loro, hanno studiato sugli stessi dati e inseguito
 lo stesso bersaglio, quindi tendono a illudersi insieme. Il minimo attenua, non
-guarisce, e semmai sposta il difetto: al posto di un voto un po' troppo alto se
-ne prende uno un po' troppo basso.
+guarisce, e semmai sposta il difetto: al posto di un voto un po’ troppo alto se
+ne prende uno un po’ troppo basso.
 
 **L'attore parla di meno.** Il secondo trucco è rallentare l'attore: i critici
 si aggiornano a ogni passo, l'attore solo una volta ogni due. Prima di cambiare
@@ -330,7 +330,7 @@ esperienze passate dal quaderno del replay, si aggiorna il critico verso il
 bersaglio che insegue e l'attore verso l'azione che il critico premia. Ecco il
 cuore nella variante DDPG, senza gli orpelli; TD3 aggiunge il secondo critico e
 il rumore sul bersaglio, SAC il premio alla varietà, che in termini tecnici è
-l'**entropia** della policy, cioè quanto le sue scelte restano imprevedibili: è
+l’**entropia** della policy, cioè quanto le sue scelte restano imprevedibili: è
 esattamente ciò che la manopola della temperatura dosa.
 
 ```{code-block} python
@@ -420,7 +420,7 @@ che porta un robot a muoversi nel mondo.
 - **DDPG** insegna all'attore a seguire la *pendenza* indicata dal critico,
   come chi sale una collina con la bussola invece che a tentoni; riusa il
   quaderno delle esperienze passate e le copie congelate delle reti ereditate
-  da DQN, ed esplora aggiungendo un po' di rumore casuale alle proprie mosse.
+  da DQN, ed esplora aggiungendo un po’ di rumore casuale alle proprie mosse.
 - DDPG è nervoso e si lascia illudere dai voti troppo alti. **TD3** lo
   corregge con tre accorgimenti: due giudici invece di uno, e ci si regola sul
   più prudente; l'attore cambia strategia una volta ogni due aggiornamenti dei
@@ -441,7 +441,7 @@ che porta un robot a muoversi nel mondo.
 `````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
-- Nel **controllo continuo** l'azione è un vettore reale: l'`argmax` di DQN è
+- Nel **controllo continuo** l'azione è un vettore reale: l’`argmax` di DQN è
   intrattabile. La soluzione è un **attore** $\mu_\theta(s)$ che propone
   l'azione e un **critico** $Q_\phi(s,a)$ che la valuta, in impianto off-policy.
 - **DDPG** addestra l'attore deterministico con il *deterministic policy

@@ -220,7 +220,7 @@ sta a cavallo dello zero invece che tutta sopra.
 La `tanh` schiaccia i numeri tra $-1$ e $+1$, con lo zero che resta zero. La
 differenza con la sigmoide è che ora l'uscita può essere anche negativa: in
 media i valori si bilanciano attorno allo zero, e questo aiuta la rete a
-imparare un po' più in fretta. Il motivo, in breve: con la sigmoide tutte le
+imparare un po’ più in fretta. Il motivo, in breve: con la sigmoide tutte le
 uscite sono positive, e allora le correzioni dei pesi di uno stesso neurone
 tendono ad andare tutte nella stessa direzione insieme, il che fa zigzagare la
 discesa invece di farla andare dritta. Con lo zero al centro le uscite si
@@ -279,7 +279,7 @@ fermi. È il neurone "morto". Non è del tutto senza ritorno, perché i neuroni
 che stanno **prima** di lui continuano a cambiare e possono cominciare a
 mandargli numeri diversi; ma da solo non si tira fuori. La **Leaky ReLU**
 previene il problema lasciando filtrare una piccola pendenza anche per i valori
-negativi, così un po' di indicazione arriva sempre.
+negativi, così un po’ di indicazione arriva sempre.
 
 `````
 
@@ -395,7 +395,7 @@ Una guida ragionevole per la maggior parte dei casi:
 | Dove | Scelta consigliata | Perché |
 |---|---|---|
 | Strati nascosti (scelta di partenza) | **ReLU** | veloce, il messaggio non si spegne, ottimo punto di partenza |
-| Strati nascosti, neuroni "morti" | **Leaky ReLU** | un po' di pendenza anche sui negativi |
+| Strati nascosti, neuroni "morti" | **Leaky ReLU** | un po’ di pendenza anche sui negativi |
 | Celle ricorrenti (le LSTM e le GRU della sezione sui modelli di sequenza, nel capitolo sul linguaggio naturale) | **tanh** + sigmoide | uscita centrata; la sigmoide fa da rubinetto, perché moltiplicare per un numero fra $0$ e $1$ è decidere quanta informazione lasciar passare |
 | Uscita, scelta fra due risposte (classificazione binaria) | **sigmoide** | una probabilità, mai esattamente $0$ né $1$ |
 | Uscita, scelta fra più risposte (classificazione multiclasse) | **softmax** | una percentuale per ciascuna delle classi in gioco |
@@ -453,7 +453,7 @@ stabile.
   strati equivale a metterne uno, e tutta la profondità non serve a niente.
 - **Sigmoide** e **tanh** schiacciano i numeri fra due estremi, e proprio agli
   estremi diventano piatte: lì la rete non trova più nessuna pendenza da
-  seguire e smette di imparare. La tanh è un po' meglio perché è centrata sullo
+  seguire e smette di imparare. La tanh è un po’ meglio perché è centrata sullo
   zero.
 - La **ReLU** ("se è positivo lascialo passare, altrimenti zero") dal lato
   positivo non si appiattisce mai, e costa un confronto: è la scelta di

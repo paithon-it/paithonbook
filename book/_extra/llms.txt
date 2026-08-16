@@ -29,7 +29,7 @@ della sezione e URL), non si ridistribuisce il testo.
   - [Le basi di Python](https://book.paithon.it/main/Python/basi.html)
   - [NumPy](https://book.paithon.it/main/Python/numpy.html)
   - [Pandas e Matplotlib](https://book.paithon.it/main/Python/pandas-matplotlib.html)
-- [Matematica](https://book.paithon.it/main/Matematica/overview.html): C'è un equivoco tenace da sciogliere prima di cominciare: per usare il machine learning non serve essere matematici, ma per capirlo serve riconoscere le poche idee matematiche che vi ritornano di…
+- [Matematica](https://book.paithon.it/main/Matematica/overview.html): «Chiamala entropia: nessuno sa davvero che cosa sia, e in una discussione partirai sempre in vantaggio.» Si racconta che il consiglio venisse da John von Neumann, e che a riceverlo fosse Claude…
   - [Algebra lineare](https://book.paithon.it/main/Matematica/algebra-lineare.html)
   - [Analisi e ottimizzazione](https://book.paithon.it/main/Matematica/analisi-ottimizzazione.html)
   - [Probabilità e statistica](https://book.paithon.it/main/Matematica/probabilita-statistica.html)
@@ -150,7 +150,7 @@ della sezione e URL), non si ridistribuisce il testo.
 
 ## Lavorare con gli LLM
 
-- [Agenti](https://book.paithon.it/main/Agenti/overview.html): Abbiamo lasciato il modello di linguaggio così: gli scrivi una domanda, lui completa il testo con la risposta più probabile.
+- [Agenti](https://book.paithon.it/main/Agenti/overview.html): Fra rispondere bene a una domanda e portare a termine un lavoro c'è un salto, e qualcuno ha provato a misurarlo con una gara di riparazioni.
   - [Il ciclo dell'agente](https://book.paithon.it/main/Agenti/agenti-e-tool-use.html)
   - [RAG avanzato](https://book.paithon.it/main/Agenti/rag-avanzato.html)
   - [Il contesto è l'interfaccia](https://book.paithon.it/main/Agenti/context-engineering.html)
@@ -187,15 +187,24 @@ della sezione e URL), non si ridistribuisce il testo.
   - [Come funziona la diffusione](https://book.paithon.it/main/ModelliDiffusione/come-funziona.html)
   - [Stable Diffusion](https://book.paithon.it/main/ModelliDiffusione/stable-diffusion.html)
   - [Diffusion Transformer (DiT)](https://book.paithon.it/main/ModelliDiffusione/diffusion-transformer.html)
+- [Verosimiglianza esatta](https://book.paithon.it/main/VerosimiglianzaEsatta/overview.html): Immagina di avere fra le mani il generatore di volti del capitolo sulle GAN, quello che sforna a ripetizione persone che non esistono, e di fargli una domanda diversa da tutte quelle che gli abbiamo…
+  - [Un pixel alla volta](https://book.paithon.it/main/VerosimiglianzaEsatta/pixel-per-pixel.html)
+  - [I flussi normalizzanti](https://book.paithon.it/main/VerosimiglianzaEsatta/flussi.html)
+  - [A che serve saperlo](https://book.paithon.it/main/VerosimiglianzaEsatta/a-che-serve.html)
 - [Modelli a energia](https://book.paithon.it/main/ModelliEnergia/overview.html): L'8 ottobre 2024 l'Accademia reale svedese delle scienze annuncia il premio Nobel per la fisica: va a John Hopfield e Geoffrey Hinton «per scoperte e invenzioni fondamentali che rendono possibile…
   - [Memoria associativa](https://book.paithon.it/main/ModelliEnergia/memoria-associativa.html)
   - [Macchine di Boltzmann](https://book.paithon.it/main/ModelliEnergia/boltzmann.html)
   - [Oltre la partizione](https://book.paithon.it/main/ModelliEnergia/oltre-la-partizione.html)
   - [Energia come compatibilità](https://book.paithon.it/main/ModelliEnergia/energia-come-compatibilita.html)
   - [Paesaggi di oggi](https://book.paithon.it/main/ModelliEnergia/paesaggi-di-oggi.html)
+- [Auto-supervisione](https://book.paithon.it/main/AutoSupervisione/overview.html): Nel 1953 Wilson Taylor, che studiava giornalismo e non calcolatori, aveva un problema pratico: misurare quanto un testo sia facile da leggere.
+  - [Le quattro famiglie](https://book.paithon.it/main/AutoSupervisione/famiglie.html)
+  - [Collasso e misura](https://book.paithon.it/main/AutoSupervisione/collasso-e-misura.html)
+  - [Il dibattito sul rinforzo](https://book.paithon.it/main/AutoSupervisione/dibattito-rl.html)
 - [World Model](https://book.paithon.it/main/WorldModels/overview.html): Un gatto di casa ha molto più senso comune e comprensione del mondo di qualunque modello di linguaggio.
   - [Mondi in miniatura](https://book.paithon.it/main/WorldModels/mondi-in-miniatura.html)
   - [La via di LeCun (JEPA)](https://book.paithon.it/main/WorldModels/jepa.html)
+  - [L'inferenza attiva](https://book.paithon.it/main/WorldModels/inferenza-attiva.html)
   - [Simulare il mondo](https://book.paithon.it/main/WorldModels/simulatori-e-dibattito.html)
 
 ## Altri dati, altri domini

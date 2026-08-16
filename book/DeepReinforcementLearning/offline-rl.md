@@ -64,7 +64,7 @@ problema.
 Verrebbe da pensare che sia facile, e la ragione l'abbiamo già vista nella
 sezione su DQN. Il Q-learning tira ogni tanto una mossa a caso per esplorare,
 ma sui suoi appunti scrive sempre quanto vale la mossa *migliore*: si allena
-insomma su una strategia diversa da quella che sta giocando, ed è l'*off-policy*
+insomma su una strategia diversa da quella che sta giocando, ed è l’*off-policy*
 di allora. Se sa fare questo, dovrebbe saper imparare anche da partite giocate
 da altri e finite da un pezzo. Basterebbe dargli in pasto il diario invece delle
 esperienze fresche, e lasciarlo lavorare. Purtroppo, fatto così, fallisce quasi
@@ -352,7 +352,7 @@ $$
 \mathcal{L}_Q = \mathbb{E}_{(s,a,s')\sim\mathcal{D}}\Big[\big(r + \gamma\, V(s') - Q(s,a)\big)^2\Big].
 $$
 
-Dove $\tau \in (0,1)$ è l'**expectile** (in pratica $\tau \approx 0{,}7$–$0{,}9$):
+Dove $\tau \in (0,1)$ è l’**expectile** (in pratica $\tau \approx 0{,}7$–$0{,}9$):
 la perdita asimmetrica $L_2^\tau$ pesa di più i residui positivi, spingendo $V$
 verso l'alto della distribuzione dei $Q$ nel dataset. Un dettaglio che sembra di
 implementazione e non lo è: il $Q$ dentro $\mathcal{L}_V$ è una **copia
@@ -458,7 +458,7 @@ learning si può riformulare come apprendimento supervisionato di sequenze.
 ## Un filo che torna: le preferenze dell'RLHF
 
 Questa prospettiva illumina qualcosa che abbiamo già incontrato. Nella sezione
-sui metodi a gradiente di policy abbiamo visto l'**RLHF**, il modo in cui si
+sui metodi a gradiente di policy abbiamo visto l’**RLHF**, il modo in cui si
 addestrano oggi gli assistenti conversazionali {cite}`ouyang2022training`: delle
 persone confrontano a due a due le risposte del modello e dicono quale
 preferiscono; da quei confronti si costruisce un giudice automatico, il *modello
@@ -538,7 +538,7 @@ possiamo fidarci di ciò che non abbiamo mai visto?
 - Il **Decision Transformer** riformula l'RL come modellazione di sequenze:
   condiziona sul *return-to-go* desiderato e predice l'azione con un Transformer,
   in modo puramente supervisionato {cite}`chen2021decision`.
-- I dati di preferenza dell'**RLHF** sono anch'essi un dataset raccolto a
+- I dati di preferenza dell’**RLHF** sono anch'essi un dataset raccolto a
   tornate e fermo fra una tornata e l'altra: stesso problema, stessi rimedi
   (restare vicini alla distribuzione dei dati {cite}`ouyang2022training`).
 ```

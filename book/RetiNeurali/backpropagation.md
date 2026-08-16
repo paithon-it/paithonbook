@@ -108,7 +108,7 @@ l'addestramento è una caccia a quel numero più basso.
 
 `````{tab} Superiore
 
-Per la regressione si usa spesso l'**errore quadratico medio** su $m$ esempi:
+Per la regressione si usa spesso l’**errore quadratico medio** su $m$ esempi:
 
 $$
 \mathcal{L} = \frac{1}{m} \sum_{i=1}^{m} \left(\hat{y}^{(i)} - y^{(i)}\right)^2 .
@@ -162,7 +162,7 @@ non è una convenzione, è ciò che decide se il gradiente sopravvive.
 ## L'idea della backpropagation
 
 Sappiamo di quanto la rete ha sbagliato. La domanda vera è: *di chi è la colpa?*
-Ogni peso, in mezzo alla catena, ha contribuito un po' all'errore finale. La
+Ogni peso, in mezzo alla catena, ha contribuito un po’ all'errore finale. La
 backpropagation calcola con precisione quel contributo, ripercorrendo la rete a
 ritroso.
 
@@ -437,10 +437,10 @@ Calcolare il gradiente su *tutti* i dati a ogni passo sarebbe accuratissimo ma
 lentissimo. In pratica l'insieme dei dati si divide in gruppetti, i
 **mini-batch** (per esempio 32 o 64 esempi per volta): per ciascuno si fa
 un'andata, un ritorno e un aggiornamento dei pesi. Un giro completo su tutti i
-gruppetti è un'**epoca**, e un addestramento ne conta decine o centinaia.
+gruppetti è un’**epoca**, e un addestramento ne conta decine o centinaia.
 
 Ogni gruppetto però è solo un campioncino dei dati, preso a caso, quindi la
-pendenza che si misura non è quella vera: è una stima un po' storta, e storta in
+pendenza che si misura non è quella vera: è una stima un po’ storta, e storta in
 modo diverso ogni volta. Il nome del metodo viene da lì, perché "a caso" in
 matematica si dice *stocastico*: **discesa del gradiente stocastica** (SGD,
 *Stochastic Gradient Descent*).
@@ -452,12 +452,12 @@ cioè le conche poco profonde in cui la discesa si può fermare credendo di
 essere arrivata in fondo; ma nelle reti profonde quelle conche sono rare
 {cite}`dauphin2014identifying`. Serve piuttosto a staccarsi dai tratti piatti e
 dalle selle di poco fa, dove la pendenza vera è quasi zero e un algoritmo
-perfettamente preciso resterebbe immobile. Un po' di imprecisione dà la spinta
+perfettamente preciso resterebbe immobile. Un po’ di imprecisione dà la spinta
 per uscirne.
 
 Si racconta anche che i gruppetti piccoli portino a fermarsi in valli larghe
 invece che in fessure strette, e che sia un bene: una soluzione che regge anche
-spostandola un po' dovrebbe reggere meglio sui dati nuovi, quelli che la rete
+spostandola un po’ dovrebbe reggere meglio sui dati nuovi, quelli che la rete
 non ha mai visto. Il fenomeno è documentato {cite}`keskar2017large`; la
 spiegazione, invece, è contestata, e vale la pena dirlo perché è una frase che
 si ripete come se fosse assodata.
@@ -640,7 +640,7 @@ Il `20` delle epoche non è un numero magico, ed è anzi la domanda che il codic
 lascia aperta: quand'è che si smette? Non quando la loss sui dati di
 addestramento smette di calare, perché quella può calare anche mentre il
 modello sta imparando a memoria gli esempi che ha visto invece della regola che
-li governa. È l'*overfitting* incontrato nel capitolo di machine learning, e si
+li governa. È l’*overfitting* incontrato nel capitolo di machine learning, e si
 riconosce nello stesso modo: tenendo da parte dei dati che la rete non vede
 mai, e fermandosi quando è su **quelli** che i risultati smettono di migliorare.
 Il prossimo capitolo è dedicato proprio a questo codice: lo riprenderemo riga

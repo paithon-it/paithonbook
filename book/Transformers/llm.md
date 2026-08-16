@@ -102,6 +102,17 @@ Sui rischi di corpora così raccolti (bias, contenuti tossici, opacità) il
 dibattito è aperto e acceso {cite}`bender2021dangers`.
 `````
 
+Quell'idea, che qualunque testo esistente sia già un esercizio con la soluzione
+inclusa, ha un nome e non riguarda soltanto il linguaggio: si chiama
+**apprendimento auto-supervisionato**. È lo stesso meccanismo con cui il
+capitolo sulla visione ha fatto imparare a guardare senza etichette, e con cui
+più avanti si riconoscerà il parlato senza trascrizioni e si allineeranno le
+immagini alle loro didascalie. Il capitolo sull'auto-supervisione lo tratta
+come il paradigma che è, e dice anche **perché** ha finito per reggere quasi
+tutto: la correzione che il modello riceve a ogni singola parola è
+incomparabilmente più ricca di un'etichetta scritta sotto una fotografia, e di
+un «hai vinto» a fine partita.
+
 ## La ricetta a tre ingredienti: le leggi di scala
 
 Perché proprio *grandi* modelli? Non è una moda, è una regolarità che qualcuno
@@ -131,7 +142,7 @@ miliardi di manopole), la **quantità di testo** su cui studia, e il **calcolo**
 (quante ore di computer può bruciare). La scoperta del 2020
 {cite}`kaplan2020scaling` è che aumentando gli ingredienti **tutti insieme**
 l'errore cala in modo *prevedibile*: niente salti misteriosi, una curva liscia,
-come una ricetta che riesce sempre un po' meglio se si raddoppia ogni
+come una ricetta che riesce sempre un po’ meglio se si raddoppia ogni
 ingrediente. Ma i miglioramenti sono lenti: ogni raddoppio del calcolo lima
 l'errore solo di qualche punto percentuale, il tre e mezzo per cento circa. La
 seconda scoperta, del 2022
@@ -210,7 +221,7 @@ modelli con lo stesso cartellino possono aver letto quantità di testo
 incomparabili.
 
 Una parola di prudenza, per intanto: quello che le leggi di scala garantiscono
-è che il modello sbaglierà un po' meno a indovinare la parola dopo, non che a
+è che il modello sbaglierà un po’ meno a indovinare la parola dopo, non che a
 una certa taglia gli spunterà una certa abilità. Che le abilità spuntino
 davvero all'improvviso è una faccenda controversa, e ha una sezione tutta sua
 in fondo a questa pagina.
@@ -267,7 +278,7 @@ Tre manopole, tutte con la stessa filosofia: quanta sorpresa vogliamo?
 **La temperatura** regola quanto è truccato il dado. Riprendiamo il gioco: «Il
 gatto nero salta sul...» con quattro esiti; muro (probabile), tetto, divano,
 pigiama (assurdo). A temperatura *bassa* il dado è truccatissimo: esce «muro»
-quasi sempre, il testo è prudente e un po' monotono. A temperatura 1 il dado
+quasi sempre, il testo è prudente e un po’ monotono. A temperatura 1 il dado
 rispetta le probabilità del modello. A temperatura *alta* il dado si
 "stempera" verso l'equità: ogni tanto esce «pigiama», e il testo si fa
 creativo fino allo sproposito. Bassa = affidabile e prevedibile; alta = vivace
@@ -395,7 +406,7 @@ $\mathbf{q}_t, \mathbf{k}_t, \mathbf{v}_t$ del token nuovo, si appendono
 $\mathbf{k}_t, \mathbf{v}_t$ alla cache e si valuta l'attenzione di
 $\mathbf{q}_t$ contro le $t$ chiavi
 accumulate: costo $O(t\,d + d^2)$ per passo **e per strato**, invece
-dell'$O(t^2 d + t\,d^2)$ di
+dell’$O(t^2 d + t\,d^2)$ di
 un forward rifatto da capo sul prefisso. Sull'intera generazione di $n$ token il
 totale per strato scende da $O(n^3 d + n^2 d^2)$ a $O(n^2 d + n\,d^2)$; per il
 modello intero si moltiplica per gli $L$ strati, ed è la forma con cui vanno
@@ -457,7 +468,7 @@ un'inezia alla volta, per giorni. Qui no: il compito viene *descritto in
 italiano* (o in inglese), e il modello, completando il testo nel modo più
 probabile, di fatto lo esegue. Il prompt è diventato un'interfaccia di
 programmazione in linguaggio naturale: si "programma" il modello scrivendo, e
-l'*in-context learning* (imparare dal contesto della singola richiesta) non
+l’*in-context learning* (imparare dal contesto della singola richiesta) non
 era un obiettivo di progetto, ma un comportamento comparso con la scala.
 
 L'onestà impone però di dire che questa "programmazione" è fragile.
@@ -611,7 +622,7 @@ molti casi l'emergenza svanisce.
 Il dibattito non è chiuso, e conviene tenere distinte due affermazioni. Che gran
 parte delle curve «a salto» siano artefatti di misura è ormai ben argomentato.
 Che *nessun* cambiamento qualitativo avvenga con la scala è un'affermazione più
-forte e non dimostrata: fenomeni come l'*in-context learning* restano difficili
+forte e non dimostrata: fenomeni come l’*in-context learning* restano difficili
 da ridurre a un miglioramento puramente continuo.
 
 La ricaduta pratica è però univoca, e riguarda chiunque valuti un modello:

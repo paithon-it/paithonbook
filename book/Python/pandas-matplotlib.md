@@ -13,7 +13,7 @@ osservare cosa abbiamo davvero tra le mani.
 ## Series e DataFrame: la tabella come oggetto
 
 Pandas ruota attorno a due strutture. Una **Series** è una colonna: una
-sequenza di valori con un'etichetta ciascuno (l'*indice*). Un **DataFrame** è
+sequenza di valori con un'etichetta ciascuno (l’*indice*). Un **DataFrame** è
 una tabella intera: tante Series affiancate che condividono lo stesso indice
 di riga. Attenzione alla parola *indice*, che qui cambia mestiere rispetto alla
 pagina su NumPy: là era il numero della posizione (`x[0]`, il primo), qui è
@@ -115,7 +115,7 @@ quello. Ecco che cosa risponde la prima:
 ```
 
 Da leggere ci sono due cose oltre ai dati. La colonna senza intestazione a
-sinistra, con 0, 1, 2, 3, 4, è l'**indice**: le etichette di riga di cui si
+sinistra, con 0, 1, 2, 3, 4, è l’**indice**: le etichette di riga di cui si
 parlava poco fa, che qui pandas ha messo da sé perché il file non ne aveva. E
 quei due `NaN` sono le caselle vuote: torneranno più avanti in questa pagina, e sono il
 motivo per cui la colonna `eta`, che contiene numeri interi, viene mostrata con
@@ -360,7 +360,7 @@ Il cappuccio sopra la $y$ è la notazione, che ritroverai in tutto il libro, per
 davvero. Vale la pena fare il conto una volta, perché è la distinzione su cui
 poggia mezzo libro: nel primo insieme, dove $x$ vale $10$, la retta prevede
 $\hat{y} = 3 + 0{,}5 \cdot 10 = 8$, mentre il punto misurato in quel posto sta
-a $8{,}04$. La differenza fra i due, qui quattro centesimi, è l'**errore** su
+a $8{,}04$. La differenza fra i due, qui quattro centesimi, è l’**errore** su
 quel punto, ed è la quantità che ogni modello di questo libro cercherà di
 rendere piccola.
 
@@ -387,7 +387,7 @@ la pendenza. Nessuna
 di queste patologie emerge dai numeri riassuntivi: solo l'occhio le coglie.
 
 Matplotlib è lo strumento per farlo. Tre grafici bastano per l'esplorazione
-iniziale: la **dispersione** per due variabili, l'**istogramma** per la
+iniziale: la **dispersione** per due variabili, l’**istogramma** per la
 distribuzione di una, la **linea** per un andamento nel tempo. («Variabile»,
 qui, non è la variabile di Python: in statistica è una grandezza misurata, cioè
 una colonna della tabella.)

@@ -94,11 +94,11 @@ $$
 dove $F$ è la frase, SN, SV e SP i sintagmi nominale, verbale e
 preposizionale, e le categorie lessicali (DET, N, V, AUX, P) riscrivono le
 parole. Una **derivazione** parte da $F$ e riscrive un simbolo alla volta
-finché restano solo parole; la sua storia è l'**albero di derivazione**. Si
+finché restano solo parole; la sua storia è l’**albero di derivazione**. Si
 noti la ricorsione di $\text{SN} \to \text{SN}\ \text{SP}$: sei regole
 generano infinite frasi, ed è proprio questa regola, in concorrenza con
 $\text{SV} \to \text{SV}\ \text{SP}$, a produrre l'ambiguità del binocolo
-(l'*attacco del sintagma preposizionale* al nome oppure al verbo, lo stesso
+(l’*attacco del sintagma preposizionale* al nome oppure al verbo, lo stesso
 bivio annunciato nella panoramica del capitolo).
 
 `````
@@ -144,7 +144,7 @@ frecce, e infatti si chiama «delle dipendenze».
 
 `````{tab} Superiore
 
-Un'**analisi a dipendenze** di una frase di $n$ parole è un albero diretto ed
+Un’**analisi a dipendenze** di una frase di $n$ parole è un albero diretto ed
 etichettato: ogni parola ha esattamente una testa (un solo arco entrante), una
 parola (la radice, tipicamente il verbo principale) dipende da un nodo
 fittizio *root*, e ogni arco porta una **relazione grammaticale**. Nello
@@ -212,7 +212,7 @@ cosa detta in due modi.
 Con un solo complemento le letture sono due: pazienza. Ma allunghiamo la
 frase, e mettiamoci «Ho visto un uomo con il binocolo **nel parco**». Adesso i
 complementi da sistemare sono due, e ciascuno si può agganciare a qualcosa che
-lo precede: al *vedere*, all'*uomo*, o al *binocolo*.
+lo precede: al *vedere*, all’*uomo*, o al *binocolo*.
 
 La regola da tenere è una sola, ed è quella del trasloco: due scatole o sono
 una dentro l'altra, o sono separate, mai mezze sovrapposte. Ecco perché non si
@@ -225,7 +225,7 @@ agganci del secondo.
 
 **Caso A: il binocolo è dell'uomo**, cioè «con il binocolo» sta dentro la
 scatola di «un uomo». Dove può andare «nel parco»? Al *vedere* (ho visto nel
-parco), all'*uomo con il binocolo* (l'uomo col binocolo che stava nel parco),
+parco), all’*uomo con il binocolo* (l'uomo col binocolo che stava nel parco),
 oppure al *binocolo* (il binocolo del parco, quello lì in dotazione). Tre.
 Attenzione: agganciarlo al solo «uomo» *senza* il binocolo non è una quarta
 possibilità, è la stessa scatola: dal momento che il binocolo è già dentro
@@ -233,7 +233,7 @@ l'uomo, non c'è modo di infilare il parco fra i due senza tagliare il cartone.
 
 **Caso B: il binocolo è mio**, cioè «con il binocolo» è già agganciato al
 vedere. Dove può andare «nel parco»? Al *vedere*, oppure al *binocolo*. Non
-all'*uomo*: per farlo dovrebbe scavalcare «con il binocolo», che sta più a
+all’*uomo*: per farlo dovrebbe scavalcare «con il binocolo», che sta più a
 sinistra ma è agganciato più in alto, e le scatole si incrocerebbero. Due.
 
 Tre più due fa **cinque**, tutte grammaticalmente ineccepibili.
@@ -526,7 +526,7 @@ dialogo tra persone e macchine.
   scopre con due prove da fare a orecchio, sostituire il gruppo con una parola
   sola e spostarlo tutto intero. Le scatole stanno dentro altre scatole, fino
   alle singole parole.
-- L'**organigramma**: la stessa struttura si può disegnare con delle frecce,
+- L’**organigramma**: la stessa struttura si può disegnare con delle frecce,
   ogni parola con un capo solo e il verbo principale in cima. L'ambiguità del
   binocolo diventa una domanda sola: per chi lavora «binocolo»? Le frecce
   reggono meglio le lingue che spostano le parole con libertà, come l'italiano,
@@ -555,7 +555,7 @@ dialogo tra persone e macchine.
 ```{admonition} Da ricordare
 :class: important
 - L'ambiguità di «Ho visto un uomo con il binocolo» è **strutturale**: le
-  etichette POS sono identiche nelle due letture; a cambiare è l'*attacco*
+  etichette POS sono identiche nelle due letture; a cambiare è l’*attacco*
   del sintagma preposizionale, al nome o al verbo.
 - I **costituenti** raggruppano le parole in sintagmi annidati (prove di
   sostituzione e spostamento); il formalismo è la **grammatica

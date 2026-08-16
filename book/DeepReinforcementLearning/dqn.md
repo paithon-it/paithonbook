@@ -107,7 +107,7 @@ sorprendentemente pulito.
 Ci sono tre ingredienti in gioco, ognuno dei quali, preso da solo, è
 innocuo e anzi utile.
 
-Il primo è l'**approssimazione**: una rete al posto della tabella, cioè
+Il primo è l’**approssimazione**: una rete al posto della tabella, cioè
 sacrificare la precisione su ogni singolo stato in cambio della capacità di
 generalizzare. Il secondo è il **bootstrapping**: aggiornare una stima usando
 un'altra stima invece di aspettare la fine della partita, ed è la mossa che
@@ -115,7 +115,7 @@ distingue le differenze temporali (il **TD** del capitolo precedente, che
 aggiornano subito) dai metodi **Monte Carlo**, che aspettano il fischio finale e
 solo allora tirano le somme (si chiamano così, come il casinò, perché è il nome
 che i matematici danno ai metodi che fanno i conti lasciando andare le cose a
-sorte e guardando com'è finita). Il terzo è l'**off-policy**, quello di poco fa:
+sorte e guardando com'è finita). Il terzo è l’**off-policy**, quello di poco fa:
 giocare in un modo e imparare un altro modo.
 
 La sintesi, che si deve a Richard Sutton e Andrew Barto (i due autori del
@@ -202,10 +202,10 @@ non lineari come le reti si conoscono controesempi di divergenza perfino
 on-policy.
 
 Sutton e Barto passano poi in rassegna i tre elementi chiedendosi a quale si
-possa rinunciare, ed è la lettura più utile per chi progetta. All'**approssimazione**
+possa rinunciare, ed è la lettura più utile per chi progetta. All’**approssimazione**
 no: senza, non si scala. Al **bootstrapping** si può, usando Monte Carlo, e si
 paga in efficienza computazionale (bisogna conservare tutto fino alla fine
-dell'episodio) e in efficienza di dati. All'**off-policy** si può, sostituendo
+dell'episodio) e in efficienza di dati. All’**off-policy** si può, sostituendo
 il Q-learning con Sarsa, e si perde la possibilità di imparare da un archivio
 di esperienze altrui, che è però proprio la premessa del replay buffer.
 
@@ -300,7 +300,7 @@ sono un milione e quelle pescate a ogni giro sono trentadue.
 
 Si vede anche quale dei tre ingredienti ciascun accorgimento addolcisce. La
 copia congelata addolcisce il secondo, cioè il correggere una stima guardandone
-un'altra: quell'altra adesso sta ferma per un po' e si fa raggiungere. La
+un'altra: quell'altra adesso sta ferma per un po’ e si fa raggiungere. La
 memoria di replay addolcisce il terzo, cioè l'imparare da partite giocate in un
 altro modo: pescando a caso da un milione di ricordi l'agente si allena su un
 miscuglio largo, invece che sulla manciata di situazioni che sta attraversando
@@ -399,7 +399,7 @@ ogni voto sbagli di una quantità qualsiasi fra $-1$ e $+1$, in su come in giù,
 senza preferenze. Fra otto errori pescati così, il più grande sta quasi sempre
 vicino al bordo alto: in media vale $+0{,}78$, non $0$. Quindi il voto più alto
 degli otto, in media, non vale $5$: vale $5{,}78$. (Il conto esatto si fa con un
-po' di probabilità, ma si può anche solo simulare, e viene lo stesso.) E il
+po’ di probabilità, ma si può anche solo simulare, e viene lo stesso.) E il
 guaio è che quel numero gonfiato diventa il bersaglio
 dell'aggiornamento successivo, quindi la gonfiatura non resta dov'era: si
 tramanda.
@@ -448,7 +448,7 @@ y^{\text{Double}} = r + \gamma\, Q\Big(s',\;
 $$
 
 Da confrontare con $y = r + \gamma \max_{a'} Q(s',a';\theta^{-})$: la differenza
-sta tutta in quali parametri compaiono dentro l'$\arg\max$, ed è una riga sola
+sta tutta in quali parametri compaiono dentro l’$\arg\max$, ed è una riga sola
 di codice. L'ordine dei due ruoli non è però scambiabile a piacere: far scegliere
 a $\theta^{-}$ e valutare a $\theta$ conserverebbe il disaccoppiamento, e quindi
 una parte della correzione, ma rimetterebbe i pesi in aggiornamento dentro il
@@ -532,7 +532,7 @@ la pena metterli in fila. Oltre alla sovrastima appena vista, ne restano tre.
   soli dei tre l'instabilità si può evitare, con tutti e tre no, e il **controesempio di
   Baird** lo mostra su sette stati con ricompense tutte nulle, dove la
   soluzione esatta è rappresentabile e i pesi divergono lo stesso.
-- Due accorgimenti lo rendono stabile: l'**experience replay** (memoria di
+- Due accorgimenti lo rendono stabile: l’**experience replay** (memoria di
   transizioni campionate a caso) e la **rete-target** (bersaglio congelato).
   Non rinunciano a nessuno dei tre anelli: ne attenuano due.
 - Il $\max$ nel bersaglio **sovrastima** perché il rumore incontra una funzione

@@ -106,7 +106,7 @@ dice *stack*, e il nome torna spesso). Ognuna fa
 una cosa e la fa bene. Non serve ancora capire ogni termine di questo elenco:
 è la mappa del viaggio, e ogni territorio ha il suo capitolo più avanti.
 
-- **NumPy**: il fondamento. Introduce l'*array* N-dimensionale e rende
+- **NumPy**: il fondamento. Introduce l’*array* N-dimensionale e rende
   l'algebra lineare veloce; quasi tutto il resto poggia su di lui.
 - **Pandas**: dati tabellari. Il `DataFrame` è un foglio di calcolo
   programmabile: caricare, pulire e trasformare i dati prima di darli a un
@@ -163,7 +163,7 @@ La differenza si chiama **vettorizzazione**. Un `ndarray` di NumPy è una vista
 tipizzata su un blocco di memoria, contiguo nel caso più comune: le operazioni
 elemento-per-elemento sono delegate a cicli in C ottimizzati (spesso con
 istruzioni SIMD), evitando
-l'*overhead* dell'interprete Python su ogni iterazione; i prodotti tra
+l’*overhead* dell'interprete Python su ogni iterazione; i prodotti tra
 matrici passano invece per librerie BLAS dedicate. Il risultato tipico è un
 codice più conciso e due o tre ordini di grandezza più veloce del ciclo
 Python equivalente: la ragione per cui l'intero ecosistema adotta l'array
@@ -177,7 +177,7 @@ Python si può usare in tre modi, di crescente comodità per chi sperimenta.
 
 `````{tab} Elementare
 
-Il modo più diretto è l'**interprete interattivo**: apri una finestra, scrivi
+Il modo più diretto è l’**interprete interattivo**: apri una finestra, scrivi
 un'istruzione, premi Invio e vedi subito il risultato, come una calcolatrice
 con cui puoi conversare. Un passo avanti è il **notebook Jupyter**: un
 quaderno digitale fatto di celle, dove testo, codice, grafici e formule
@@ -309,7 +309,7 @@ il machine learning dei capitoli successivi.
 - Le librerie sono **una torre**: NumPy alla base (i numeri), sopra Pandas
   (le tabelle), Matplotlib (i grafici) e scikit-learn, in cima PyTorch, quella
   con cui si costruiscono le reti neurali ed è usata in questo libro.
-- Il codice si prova in tre posti: l'**interprete** (scrivi una riga, risponde
+- Il codice si prova in tre posti: l’**interprete** (scrivi una riga, risponde
   subito), i **notebook** (quaderni fatti di celle) e **Colab**, che dà
   notebook e schede grafiche gratis nel browser. Il pulsante «Esegui il
   codice», in cima a ogni pagina che contiene codice, porta lì.
@@ -325,7 +325,7 @@ il machine learning dei capitoli successivi.
   per velocità bruta: fa da collante a librerie compilate in C/C++/CUDA.
 - Lo **stack scientifico** è a strati: NumPy alla base, poi Pandas, Matplotlib
   e scikit-learn, in cima PyTorch (il framework di questo libro) e TensorFlow.
-- Si lavora nell'**interprete**, nei **notebook Jupyter** e su **Colab**, che
+- Si lavora nell’**interprete**, nei **notebook Jupyter** e su **Colab**, che
   offre GPU gratuite nel browser; in locale, un **ambiente virtuale** per
   progetto (`python3 -m venv`) tiene separate le dipendenze.
 ```

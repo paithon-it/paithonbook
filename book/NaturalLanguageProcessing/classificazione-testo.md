@@ -49,7 +49,7 @@ machine learning.
 
 L'idea di Naive Bayes è quella del detective che non ha la prova regina ma
 tanti piccoli indizi: nessuna parola, da sola, dimostra che un'email è spam,
-ma ogni parola *sposta* un po' il sospetto.
+ma ogni parola *sposta* un po’ il sospetto.
 
 ```{figure} ../figures/naive-bayes-filtro-antispam.svg
 :name: fig-naive-bayes-spam
@@ -289,7 +289,7 @@ la mettiamo al lavoro sul testo.
 Immagina una bilancia a due piatti: ogni parola della recensione butta un
 pesetto sul piatto "positivo" o su quello "negativo", e i pesetti non li
 decidiamo noi; li impara il modello dagli esempi etichettati, aggiustandoli un
-po' alla volta finché i verdetti tornano. Dopo l'addestramento potremmo
+po’ alla volta finché i verdetti tornano. Dopo l'addestramento potremmo
 trovare, per dire: «splendido» +2,0, «sorprende» +1,5, «noia» −2,2,
 «delusione» −2,5. La frase «un film splendido, che sorprende» totalizza
 $2{,}0 + 1{,}5 = 3{,}5$ sul piatto positivo.
@@ -554,7 +554,7 @@ porzioni di frase e richiede modelli che leggano le sequenze, non i mucchi.
 Ed è proprio questo il passo successivo. Il nostro giudice tratta ancora il
 testo come un sacchetto: per lui «Il gatto nero salta sul muro» e «Il muro
 nero salta sul gatto» sono indistinguibili. Per andare oltre serve un modello
-che prenda sul serio l'*ordine* delle parole: che sappia dire quanto è
+che prenda sul serio l’*ordine* delle parole: che sappia dire quanto è
 plausibile una sequenza, e scommettere sulla parola che viene dopo. È il
 modello di linguaggio n-gram della prossima sezione, dove ritroveremo un
 vecchio amico appena conosciuto: il +1 di Laplace.

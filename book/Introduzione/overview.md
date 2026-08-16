@@ -45,11 +45,11 @@ benissimo come fosse fatto, gli chiese di uscire dalla stanza per poterci
 parlare in privato {cite}`weizenbaum1976computer`. Ma siamo sicuri che quella
 da lui creata sia soltanto una lista di istruzioni? O c'è qualcosa di più? Se è
 un semplice programma, perché attribuirgli una parola così ricca di significato
-come l'*intelligenza*?
+come l’*intelligenza*?
 
 E poi: che cos'è, esattamente, questa intelligenza artificiale? In inglese si
 dice *Artificial Intelligence*, e la sigla **AI** è quella che si legge
-dappertutto. Ogni anno la si perfeziona, e ogni anno sembra sfuggire un po' di
+dappertutto. Ogni anno la si perfeziona, e ogni anno sembra sfuggire un po’ di
 più a una definizione precisa.
 
 Sono le due domande da cui parte questo capitolo. La prima ha una risposta
@@ -275,7 +275,7 @@ un campione già raccolto e si spera che le due quantità non siano troppo
 distanti. Misurare quella distanza, e sapere quando fidarsene, è il mestiere
 del capitolo sul machine learning.
 
-È la cornice dell'**agente razionale** {cite}`russell2020artificial`: un
+È la cornice dell’**agente razionale** {cite}`russell2020artificial`: un
 sistema che sceglie le azioni che massimizzano l'utilità attesa, date le
 informazioni disponibili. Qui l'ottimizzazione agisce sui parametri, non
 direttamente sulle azioni, ma il ponte è corto: $\theta$ determina il
@@ -429,7 +429,7 @@ questo punto si dicono in una riga ciascuno:
 - il **deep learning** (apprendimento profondo) è il modo di farlo che ha
   vinto: le **reti neurali**, cioè programmi fatti di molti passaggi
   elementari disposti in fila per **strati**, dove ogni strato ricava dai
-  numeri dello strato precedente una descrizione un po' più astratta (dai
+  numeri dello strato precedente una descrizione un po’ più astratta (dai
   pixel ai bordi, dai bordi alle forme, dalle forme al gatto). «Profondo» vuol
   dire proprio questo, e nient'altro: che gli strati sono tanti, uno sopra
   l'altro, e per questo si dicono anche **reti profonde**. Come siano fatte
@@ -497,36 +497,52 @@ misurare, e lo fa il capitolo sui **Transformer**, che sono i modelli nati da
 quell'articolo del 2017 di cui si diceva all'inizio.
 
 Su che cosa siano quei dati vale la pena fermarsi, perché è la cosa che si
-fraintende più spesso. Non sono un giacimento che qualcuno è andato a scavare.
-Sono uno **scarto**. Nessuno si alza la mattina per produrre dati: li lascia
-dietro di sé mentre fa altro, cercando un indirizzo, comprando un libro,
+fraintende più spesso. Il modo di dire corrente li chiama «il petrolio del
+nostro secolo», cioè un giacimento che qualcuno è andato a scavare. Non sono
+quello. Sono uno **scarto**. Non che nessuno li produca apposta: le fotografie
+con scritto accanto «gatto» le ha etichettate una persona, a mano, ed è un
+mestiere pagato. Ma quella è la fetta piccola, e costa cara proprio perché è
+l'eccezione. Il grosso non lo produce nessuno di proposito: lo lasciamo dietro
+di noi mentre facciamo altro, cercando un indirizzo, comprando un libro,
 scrivendo a un amico, guardando un video fino in fondo o smettendo al secondo
-minuto. Sono la traccia di un passaggio, non il prodotto di un'intenzione.
+minuto. È la traccia di un passaggio, non il prodotto di un'intenzione.
 
-C'è un precedente, ed è successo su scala planetaria. Circa due miliardi e
-mezzo di anni fa certi batteri cominciarono a usare la luce del sole per
-spezzare l'acqua, e buttarono via quel che ne avanzava: **ossigeno**
+C'è un precedente, ed è successo su scala planetaria. Certi batteri, i
+cianobatteri, impararono a spezzare l'acqua con la luce del sole per prendersi
+la parte che serviva loro a costruirsi il cibo: è la **fotosintesi**, quella
+che si studia a scuola. Quel che restava lo buttarono via, ed era **ossigeno**
 {cite}`lyons2014rise`. A loro non serviva a niente. Per la vita di allora era
 anzi un veleno, perché era cresciuta in un mondo che non ne aveva mai avuto.
-L'atmosfera ci mise moltissimo a riempirsene, e i livelli vicini a quelli di
-oggi arrivarono due miliardi di anni più tardi. Lungo quella strada comparve
-una forma di vita che di quello scarto faceva il proprio respiro, e ne ricavava
-molta più energia di prima. Quella forma di vita siamo noi: respiriamo, alla
-lettera, il rifiuto di qualcun altro.
+
+E per moltissimo tempo non successe niente. I cianobatteri cominciarono forse
+tre miliardi di anni fa (la data si discute ancora) e l'aria restò come prima:
+l'ossigeno finiva subito, mangiato dalle rocce e dai gas che incontrava. Solo
+intorno a due miliardi e trecento milioni di anni fa l'atmosfera cominciò a
+tenerselo, e ai livelli vicini a quelli di oggi ci arrivò altri due miliardi di
+anni più tardi {cite}`lyons2014rise`: qualche centinaio di milioni di anni fa,
+cioè quasi ieri. Lungo quella strada comparve una forma di vita che di quello
+scarto faceva il proprio respiro, e da quel respiro ricavava molta più energia
+di qualunque modo di vivere venuto prima. Quella strada è la nostra:
+respiriamo, alla lettera, il rifiuto di qualcun altro.
 
 I dati stanno alle macchine come l'ossigeno sta a noi. Sono l'avanzo del nostro
 passaggio nel mondo digitale, prodotto senza volerlo e in quantità che nessuno
 ha deciso; e sopra quell'avanzo è cresciuta una cosa che di lì trae il proprio
 respiro. È la ragione per cui in questo libro i dati pesano quanto gli
 algoritmi: l'algoritmo è il polmone, i dati sono l'aria, e un polmone nel vuoto
-non è niente.
+non è niente. E torna la domanda di questa sezione, «perché proprio adesso»:
+come l'ossigeno, i dati sono rimasti lì un pezzo prima che qualcosa imparasse a
+respirarli.
 
 C'è però una parte scomoda, e vale quanto l'altra. Quello scarto, prima di
-diventare respiro, fu un veleno: il mondo che viveva senza ossigeno non
-sopravvisse alla sua comparsa. Nel nostro caso quella parte si chiama
-**privacy**: ciò che lasciamo per strada senza pensarci è esattamente ciò di
-cui vive qualcuno che non abbiamo scelto. Il capitolo sull'AI responsabile la
-prende sul serio, in
+diventare respiro, fu un veleno, e chi non seppe conviverci non sparì del
+tutto: si ritirò. Gli organismi che l'ossigeno avvelena esistono ancora, ma
+solo dove l'aria non arriva, nel fango dei fondali e dentro il nostro
+intestino. Nel nostro caso quella parte si chiama **privacy**: ciò che
+lasciamo per strada senza pensarci è esattamente ciò di cui vive qualcuno che
+non abbiamo scelto (di solito un'azienda di cui non abbiamo mai sentito il
+nome), e i posti dove non si lascia niente si fanno più stretti.
+Il capitolo sull'AI responsabile la prende sul serio, in
 {doc}`Privacy e robustezza </AIResponsabile/privacy-e-robustezza>`.
 
 Il debito con l'informatica, peraltro, è stato ripagato con gli interessi
@@ -534,7 +550,7 @@ Il debito con l'informatica, peraltro, è stato ripagato con gli interessi
 intelligenza artificiale hanno poi fatto il giro dell'informatica intera e oggi
 si usano ovunque senza ricordarne la provenienza. La più diffusa è la
 **gestione automatica della memoria**. Un programma, mentre gira, chiede
-continuamente al computer un po' di spazio in cui mettere quello che sta
+continuamente al computer un po’ di spazio in cui mettere quello che sta
 maneggiando, e quello spazio prima o poi va restituito, altrimenti si esaurisce
 e tutto si ferma. Per anni tenerne il conto è stato un lavoro di chi
 programmava, e una fonte inesauribile di errori; l'idea che a restituirlo possa

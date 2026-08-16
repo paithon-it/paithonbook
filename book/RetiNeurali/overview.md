@@ -64,8 +64,8 @@ La storia comincia in piena Seconda guerra mondiale. Nel 1943 il neurofisiologo
 Warren McCulloch e il logico Walter Pitts pubblicano *A Logical Calculus of the
 Ideas Immanent in Nervous Activity*: dimostrano che una rete di neuroni
 "tutto-o-niente" può calcolare qualunque **funzione logica**, cioè qualunque
-regola che, ricevuti in ingresso dei sì e dei no, risponda sì o no (l'*e*,
-l'*o*, il *non*, e tutto ciò che si ottiene combinandoli). Era una macchina di
+regola che, ricevuti in ingresso dei sì e dei no, risponda sì o no (l’*e*,
+l’*o*, il *non*, e tutto ciò che si ottiene combinandoli). Era una macchina di
 carta, senza apprendimento: i pesi li fissava a mano il progettista.
 
 Il salto arriva nel 1958 con Frank Rosenblatt e il suo **percettrone**. Non
@@ -125,13 +125,13 @@ Il fatto è questo. Un neurone solo, dovendo dividere i casi in due gruppi, sa
 tracciare una riga dritta e nient'altro. Esistono allora regole semplicissime
 che gli restano precluse, perché per separarne i casi una riga non basta.
 Nel 1969 questo si sapeva benissimo: è un'osservazione di poche righe, e i due
-autori la danno per nota. L'esempio che tutti ricordano è lo **XOR**, l'"o
+autori la danno per nota. L'esempio che tutti ricordano è lo **XOR**, l’"o
 esclusivo". I teoremi veri del libro sono un'altra cosa, più forte, e li
 vediamo nella sezione dedicata al percettrone.
 
 E qui il titolo di questa sezione. Al 1969 seguirono anni in cui i soldi per
 l'intelligenza artificiale si ritirarono e molti gruppi di ricerca chiusero:
-sono l'**inverno dell'AI**, e sono la ragione per cui fra il libro di Minsky e
+sono l’**inverno dell'AI**, e sono la ragione per cui fra il libro di Minsky e
 Papert e la ripresa passano quasi vent'anni. Quanta parte di colpa tocchi
 davvero a quel libro è una questione aperta, e la riprendiamo nella sezione sul
 percettrone: meno di quanta gliene attribuisca il racconto corrente.

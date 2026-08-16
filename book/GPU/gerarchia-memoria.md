@@ -292,7 +292,7 @@ illuminante delle prestazioni», e la promessa è mantenuta: riassume in un solo
 grafico il perché un programma va veloce o lento
 ({numref}`fig-roofline`).
 
-L'idea ruota attorno a una sola quantità, l'**intensità aritmetica**: quanti
+L'idea ruota attorno a una sola quantità, l’**intensità aritmetica**: quanti
 conti fai per ogni byte che sposti dalla memoria. Si misura in FLOP per byte
 (un FLOP, come si è detto nell'architettura, è un conto elementare: una
 moltiplicazione o una somma). Poche operazioni per tanti byte significa che
@@ -406,7 +406,7 @@ Due esempi concreti, con dati in `float32` (4 byte):
   saldamente compute-bound. Attenzione però a che cosa vuol dire «riuso
   perfetto»: leggere ogni elemento di $\mathbf{A}$ e $\mathbf{B}$ *una volta
   sola*, cioè tenerle intere in memoria veloce. Per $n = 4096$ in `float32`
-  sarebbero 201 MB, contro gli 84 MB di memoria on-chip di una H100: quell'$n/6$
+  sarebbero 201 MB, contro gli 84 MB di memoria on-chip di una H100: quell’$n/6$
   è un tetto ideale, non un traguardo. Ci si torna nella sezione sul GEMM, dove
   si vede quanto ci si arriva davvero (e perché non serve arrivarci).
 

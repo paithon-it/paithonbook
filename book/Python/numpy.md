@@ -5,7 +5,7 @@ in un solo progetto, che l'anno seguente rilascia come **NumPy 1.0**. È una di
 quelle scelte silenziose che cambiano un intero campo: da allora quasi ogni
 pezzo dell'ecosistema scientifico di Python (Pandas, scikit-learn, PyTorch,
 TensorFlow) poggia, direttamente o no, sulla struttura dati che NumPy
-introduce. Quella struttura è l'**array N-dimensionale**, l'`ndarray`: una
+introduce. Quella struttura è l’**array N-dimensionale**, l’`ndarray`: una
 griglia di numeri che può essere una semplice fila, una tabella, o una pila di
 tabelle. Capirlo bene è il prerequisito pratico a tutto il resto del libro: è
 il ponte tra la matematica dei vettori e delle matrici e il codice che
@@ -51,7 +51,7 @@ ogni elemento è una scatola separata sparsa nella memoria, e per raddoppiare un
 milione di numeri deve visitarle una a una, chiedendosi ogni volta "che cos'è
 questo?".
 
-L'`ndarray` fa il patto opposto: tutti gli elementi sono dello **stesso tipo** e
+L’`ndarray` fa il patto opposto: tutti gli elementi sono dello **stesso tipo** e
 stanno **uno accanto all'altro** in un blocco compatto di memoria. Perde la
 libertà di mescolare tipi diversi, ma in cambio le operazioni sui numeri
 diventano corte da scrivere e molto più veloci da eseguire.
@@ -77,7 +77,7 @@ che gli stride esistono); `reshape` è una vista quando la disposizione in
 memoria lo consente, altrimenti copia. Secondo: le operazioni
 elemento-per-elemento sono delegate a cicli in C compilati e vettorizzati
 (istruzioni SIMD), che
-saltano l'*overhead* dell'interprete su ogni iterazione; l'algebra lineare
+saltano l’*overhead* dell'interprete su ogni iterazione; l'algebra lineare
 vera e propria (i prodotti tra matrici) passa invece per librerie BLAS
 ottimizzate. È la differenza tra `float` scatolati sparsi nella heap e un
 array C nudo.
@@ -207,7 +207,7 @@ C'è poi un'indicizzazione che in Python puro richiederebbe un ciclo con `if`.
 
 `````{tab} Elementare
 
-L'**indicizzazione booleana** seleziona gli elementi in base a una condizione.
+L’**indicizzazione booleana** seleziona gli elementi in base a una condizione.
 Scrivi la domanda ("quali sono maggiori di 25?") e NumPy ti restituisce solo
 quelli:
 
@@ -367,7 +367,7 @@ un array, quasi sempre esiste un modo per non scriverlo*.
 
 Il divario è di due o tre ordini di grandezza (sull'esempio qui sopra: circa
 $100$ ms il ciclo, circa $0{,}2$ ms la forma vettorizzata) e nasce
-dall'*overhead* dell'interprete: ogni iterazione in Python comporta controllo
+dall’*overhead* dell'interprete: ogni iterazione in Python comporta controllo
 di tipo, allocazione di oggetti e dispatch dinamico. La forma vettorizzata
 sposta il ciclo dentro codice C compilato che opera su memoria contigua, con
 buona località di cache e, dove disponibile, vettorizzazione SIMD.
@@ -453,7 +453,7 @@ di volte.
 
 ```{admonition} Da ricordare
 :class: important
-- L'`ndarray` è una **vista tipizzata** su un blocco di memoria, contigua
+- L’`ndarray` è una **vista tipizzata** su un blocco di memoria, contigua
   quando gli stride sono quelli della forma: da qui il fatto che una slice
   resti una vista, e la possibilità di far scendere il ciclo nel codice
   compilato (che è dove nasce il guadagno, vedi sotto).

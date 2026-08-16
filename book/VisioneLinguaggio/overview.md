@@ -258,7 +258,7 @@ sempre, con una differenza: chi fa le domande e chi le riceve sono due sequenze
 diverse. Le domande (in gergo, le *query*) vengono dal testo; quel che si va a
 consultare (le *chiavi*, per trovare il punto giusto, e i *valori*, cioè quel che
 si porta via) viene dall'immagine. È il meccanismo con cui il testo interroga
-l'immagine. Dallo stesso capitolo serve l'**instruction tuning**, che trasforma
+l'immagine. Dallo stesso capitolo serve l’**instruction tuning**, che trasforma
 un modello che descrive immagini in un modello a cui si fanno domande.
 
 Dal capitolo sulla **visione artificiale** serve il **transfer learning**,
@@ -293,7 +293,7 @@ il token al passo $t$ e $\mathbf{I}$ l'immagine. Nulla in questa funzione di cos
 obbliga il modello a *usare* $\mathbf{I}$: se il **priore linguistico** concentra già la
 massa di probabilità sulla parola corretta, il gradiente che spinge a sfruttare
 l'informazione visiva è debole, e il modello impara la statistica delle
-didascalie invece della scena. È il meccanismo dell'**allucinazione visiva**:
+didascalie invece della scena. È il meccanismo dell’**allucinazione visiva**:
 non un incidente, ma quel che l'obiettivo premia.
 
 `````

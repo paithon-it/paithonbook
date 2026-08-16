@@ -204,7 +204,7 @@ anni, ne ha proposto un catalogo utile {cite}`breunig2025contexts`, che qui
 riprendiamo con parole nostre. Quattro guasti ricorrenti:
 
 - **L'avvelenamento** (*context poisoning*): un errore, o una cosa che il
-  modello si è inventato di sana pianta (un'**allucinazione**), entra nel
+  modello si è inventato di sana pianta (un’**allucinazione**), entra nel
   contesto e ci resta. Da lì in poi il modello la tratta come un fatto
   acquisito e ci costruisce sopra. È il guasto peggiore, perché si alimenta da
   sé.
@@ -392,7 +392,7 @@ progettata come tale.
 ```{admonition} Da ricordare
 :class: important
 - Il context engineering {cite}`karpathy2025context` sposta l'unità del
-  mestiere dal **singolo messaggio** (il prompt) all'**intero payload** che
+  mestiere dal **singolo messaggio** (il prompt) all’**intero payload** che
   riempie la finestra a ogni passo: un **sistema** (regole, esempi,
   documentazione, validazione) non una «frase magica».
 - Una scala di complessità utile (metafora biologica): **atomi** (istruzioni) →

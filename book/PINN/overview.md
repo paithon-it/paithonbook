@@ -23,8 +23,8 @@ Nelle scienze fisiche è tutto rovesciato. Le leggi le conosciamo con
 precisione ammirevole, e a scarseggiare sono i dati, perché lì misurare costa:
 una sonda calata sul fondo del mare, un sensore infilato dentro un'arteria, un
 prototipo messo in galleria del vento sono misure che si contano sulle dita.
-E nessuna dà il valore vero: lo strumento sbaglia sempre un pochino, un po'
-sopra o un po' sotto, e di misure fatte così si dice che sono **rumorose**. La
+E nessuna dà il valore vero: lo strumento sbaglia sempre un pochino, un po’
+sopra o un po’ sotto, e di misure fatte così si dice che sono **rumorose**. La
 domanda di questo capitolo, allora: e se si potessero usare *entrambi*?
 
 ## Una regola che dice come cambiano le cose
@@ -85,7 +85,7 @@ completamente diverse. Sono, letteralmente, le condizioni ai bordi.
 
 `````{tab} Superiore
 
-La regola del caffè è la legge del raffreddamento di Newton, un'**equazione
+La regola del caffè è la legge del raffreddamento di Newton, un’**equazione
 differenziale ordinaria** (ODE):
 
 $$
@@ -144,7 +144,7 @@ neurali informate dalla fisica.
 `````{tab} Elementare
 
 Immagina di dover disegnare la curva di raffreddamento del caffè avendo solo
-tre misure di termometro, pure un po' ballerine. Una rete addestrata alla
+tre misure di termometro, pure un po’ ballerine. Una rete addestrata alla
 vecchia maniera passerebbe vicino ai tre punti e, nel resto del grafico,
 inventerebbe: tra una misura e l'altra potrebbe fare gobbe assurde, magari un
 caffè che si riscalda da solo. La PINN aggiunge un secondo esaminatore. Il
@@ -353,7 +353,7 @@ mappa onesta dei limiti: quando convengono, quando no.
 
 ```{admonition} Da ricordare
 :class: important
-- Un'**equazione differenziale** non dice quanto vale una grandezza ma **come
+- Un’**equazione differenziale** non dice quanto vale una grandezza ma **come
   cambia** (il caffè si raffredda tanto più in fretta quanto più è caldo della
   stanza). Sapendo da dove si parte, e cosa succede ai bordi quando conta
   anche lo spazio (ai due capi della sbarra che si scalda), la storia è
@@ -391,7 +391,7 @@ mappa onesta dei limiti: quando convengono, quando no.
 
 ```{admonition} Da ricordare
 :class: important
-- Un'**equazione differenziale** non dice quanto vale una grandezza ma **come
+- Un’**equazione differenziale** non dice quanto vale una grandezza ma **come
   cambia**; con condizioni iniziali e al contorno questo basta a determinarla
   (ODE: una variabile indipendente; PDE: più di una). Vale per le equazioni
   ben educate che risolveremo qui, il caffè e la molla; per certe equazioni

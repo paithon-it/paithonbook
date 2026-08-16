@@ -3,7 +3,7 @@
 Nella sezione precedente abbiamo costruito S4 e i suoi parenti: uno *state
 space model* nasce come sistema dinamico continuo e, una volta discretizzato,
 diventa una ricorrenza lineare a stato fisso (a ogni passo lo stato di prima si
-riduce un po', ci si somma quello che entra adesso, e da lì si legge l'uscita),
+riduce un po’, ci si somma quello che entra adesso, e da lì si legge l'uscita),
 con la sua doppia natura (ricorrente per l'inferenza, convoluzionale per
 l'addestramento). È una macchina potente e a lungo raggio. Ha però un limite di
 fondo, che finora abbiamo lasciato sullo sfondo: è **invariante nel tempo**.
@@ -140,7 +140,7 @@ poi a gruppi di quattro, di otto, invece di percorrerli in fila da sinistra a
 destra. Questo è il *parallel scan*, dove «scan» è la passata che percorre la
 sequenza accumulando i risultati parziali. I conti da fare, a seconda di come
 si raggruppa, restano tanti quanti erano oppure crescono un poco. Quello che
-crolla è l'**attesa**: raddoppiando la lunghezza della sequenza si aggiunge un
+crolla è l’**attesa**: raddoppiando la lunghezza della sequenza si aggiunge un
 turno soltanto, e dove prima c'erano mille passi in fila adesso ci sono una
 decina di turni. È il compromesso tipico del calcolo parallelo, dove si
 accettano più conti in cambio di meno attesa.
@@ -191,7 +191,7 @@ somma, ma si comporta come una somma, nel senso che si può cominciare a
 raggruppare i passi da dove si vuole. Ed è per questo che perdere la forma
 «tutto insieme» non è la catastrofe che sembrava.
 
-Poi l'*hardware*. Pensa a un contabile che deve tenere la somma corrente di una
+Poi l’*hardware*. Pensa a un contabile che deve tenere la somma corrente di una
 lunghissima lista di movimenti. Ha due posti dove lavorare: un foglietto sulla
 scrivania, piccolo ma a portata di mano, e un archivio in cantina, enorme ma
 lontano (ogni discesa in cantina costa tempo). Il modo stupido è scendere in
@@ -259,7 +259,7 @@ Nell'addestramento, il passo all'indietro (*backward*) ha bisogno degli stati
 intermedi $\mathbf{h}_t$ per calcolare i gradienti; salvarli tutti costerebbe memoria
 quanto materializzare lo stato espanso. Mamba non li salva: li **ricalcola**
 durante il backward, rifacendo la ricorrenza. È lo stesso compromesso del
-*gradient checkpointing* (si spende un po' di calcolo in più per risparmiare
+*gradient checkpointing* (si spende un po’ di calcolo in più per risparmiare
 molta memoria) e permette al selective scan di avere lo stesso profilo di
 memoria di un'implementazione ottimizzata dell'attenzione, senza mai pagare il
 costo dello stato espanso in HBM.
@@ -271,7 +271,7 @@ fretta. Il codice che segue si può leggere anche senza saper programmare: le
 prime righe dicono che cosa entra, e il ciclo `for` (che vuol dire «per ogni
 passo, ripeti quanto segue») è la vasca da bagno di inizio capitolo, quella in
 cui il livello cala da solo e risale con l'acqua che entra, scritta in Python.
-A ogni giro il livello di prima viene ridotto un po', si aggiunge quello che
+A ogni giro il livello di prima viene ridotto un po’, si aggiunge quello che
 entra adesso, e si legge il risultato.
 
 ```python

@@ -38,7 +38,7 @@ nell'acqua.
 ## Il film proiettato al contrario
 
 Un modello di diffusione vive quindi di due processi, uno l'inverso dell'altro.
-L'**andata** non si impara: è una ricetta fissa che a ogni passo sbiadisce un
+L’**andata** non si impara: è una ricetta fissa che a ogni passo sbiadisce un
 pochino la fotografia e le getta sopra un pizzico di rumore casuale (due gesti,
 non uno, e nella prossima sezione si vedrà perché servono tutti e due). Il
 **ritorno** è l'unica cosa che si apprende, ed è una domanda sola: guardando un
@@ -103,7 +103,7 @@ $$
 
 dove $\mathbf{x}_t$ è il dato al passo $t$, $\beta_t$ una piccola varianza fissata
 da uno *schedule* crescente e $\mathbf{I}$ l'identità: a ogni passo si attenua un
-po' il segnale e si inietta rumore gaussiano. La catena ammette una
+po’ il segnale e si inietta rumore gaussiano. La catena ammette una
 scorciatoia in forma chiusa:
 
 $$

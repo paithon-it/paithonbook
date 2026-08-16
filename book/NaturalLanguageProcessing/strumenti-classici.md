@@ -252,7 +252,7 @@ dizionario e contesto (per disambiguare, ad esempio, *porta* sostantivo da
 *porta* voce del verbo *portare*) e restituisce il lemma: *andavamo* →
 *andare*. Nei sistemi a conteggio la riduzione morfologica aumenta la *recall*
 (query e documento si incontrano anche se flessi diversamente) al prezzo di un
-po' di *precision* (forme distinte collassano); per una lingua flessiva come
+po’ di *precision* (forme distinte collassano); per una lingua flessiva come
 l'italiano il compromesso è quasi sempre favorevole.
 
 `````
@@ -512,7 +512,7 @@ in Jurafsky e Martin {cite}`jurafsky2026speech`.
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
-- Un'**espressione regolare** descrive una *forma* («cinque cifre di fila»),
+- Un’**espressione regolare** descrive una *forma* («cinque cifre di fila»),
   non una parola precisa: è la funzione Trova con i superpoteri. Perfetta per
   estrarre e per controllare che un dato sia scritto bene, incapace di capire
   un significato e incapace, per un limite preciso e non per distrazione, di

@@ -59,7 +59,7 @@ stima $\theta$ minimizzando il rischio empirico sul training set; si misura il
 rischio su un campione indipendente per stimare la generalizzazione. Le
 stazioni 3–5 sono un ciclo di ricerca su iperparametri e architettura, guidato
 dalla metrica di **validazione**, e ogni decisione presa guardando quel numero
-lo consuma un po', perché il set di validazione diventa a poco a poco parte
+lo consuma un po’, perché il set di validazione diventa a poco a poco parte
 dell'addestramento. Per questo il test set si tocca **una volta sola**, alla
 fine: è l'unica stima onesta che rimane. Il capitolo sul machine learning
 tratta per esteso questa contabilità in [overfitting e
@@ -77,7 +77,7 @@ poi buttiamo via la formula, lasciando al modello solo i punti.
 Vale la pena fermarsi un attimo su quei due nomi, perché è il punto migliore
 di tutto il capitolo per capire che cosa sia davvero un peso. La **pendenza**
 di una retta è quanto la retta sale ogni volta che ci si sposta di uno verso
-destra; l'**intercetta** è l'altezza a cui la retta taglia l'asse verticale, il
+destra; l’**intercetta** è l'altezza a cui la retta taglia l'asse verticale, il
 punto da cui parte. Nel vocabolario delle reti neurali quei due numeri si
 chiamano **peso** e **bias**, ed è la stessa cosa: il peso dice quanto
 l'ingresso conta, il bias dove si parte. Una rete vera ne ha milioni invece di
@@ -336,7 +336,7 @@ sensato in cui provare, dal più efficace al più illusorio.
 4. **Il learning rate**, cioè il passo. Tra tutti i numeri regolabili è quello
    che conta di più: cambiarlo per un fattore dieci in su o in giù spesso fa la
    differenza tra un modello che impara e uno che non parte.
-5. **I freni**: tutto ciò che rende la vita un po' più difficile al modello
+5. **I freni**: tutto ciò che rende la vita un po’ più difficile al modello
    mentre studia, apposta perché non si limiti a memorizzare (i nomi che
    incontrerai sono *dropout* e *weight decay*, e li spiega il capitolo sul
    deep learning). Si mettono solo se la distanza fra l'errore in addestramento

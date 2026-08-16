@@ -502,7 +502,7 @@ misurare fin dove arriva quella semplice messa a punto per bene.
 
 ## L'avversario sei tu di ieri
 
-Nel 1959 Arthur Samuel, ingegnere IBM, pubblica sull'*IBM Journal of Research
+Nel 1959 Arthur Samuel, ingegnere IBM, pubblica sull’*IBM Journal of Research
 and Development* uno studio su un programma che gioca a dama. Dentro c'è
 un'idea che regge ancora oggi. Per giudicare una posizione sulla scacchiera il
 programma usava una formula che sommava alcune caratteristiche (quanti pezzi ho
@@ -609,7 +609,7 @@ di vertici è fatta e sui vertici resta. A convergerci è la **frequenza empiric
 di una successione di strategie pure, ed è precisamente quello che fa il rimedio
 qui sotto.
 
-Il rimedio è cambiare l'avversario: non l'**ultima** versione, ma la
+Il rimedio è cambiare l'avversario: non l’**ultima** versione, ma la
 **popolazione** di tutte quelle passate. La miglior risposta alla media
 empirica delle versioni precedenti è il **gioco fittizio** di Brown e Robinson,
 di cui è noto che in un gioco a due giocatori e somma zero la frequenza
@@ -760,7 +760,7 @@ chiamiamo le due reti come si chiamano di solito quando si spiega una GAN: il
 **falsario** è quello che fabbrica i falsi, il **poliziotto** è quello che cerca
 di riconoscerli.
 
-Il primo modo è l'**oscillazione**: le due reti girano in tondo invece di
+Il primo modo è l’**oscillazione**: le due reti girano in tondo invece di
 avvicinarsi, come i pesci dell'Adriatico e come sasso, carta e forbici. Il
 falsario impara a battere il poliziotto di adesso; il poliziotto impara a
 battere quel falsario lì; il falsario cambia di nuovo, e si ricomincia. Ognuno
@@ -800,7 +800,7 @@ somma zero è una proprietà della sola versione minimax, e va attribuita a
 quella.
 
 Riletti da qui, i guasti classici dell'addestramento avversario smettono di
-sembrare capricci di quella famiglia di modelli. L'**oscillazione** è la stessa
+sembrare capricci di quella famiglia di modelli. L’**oscillazione** è la stessa
 orbita di poche righe fa: il generatore fa la miglior risposta al discriminatore
 corrente, il discriminatore la miglior risposta a quello, e la coppia percorre
 un ciclo invece di avvicinarsi all'equilibrio. Il **collasso dei modi** è il

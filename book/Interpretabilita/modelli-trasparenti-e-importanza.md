@@ -102,7 +102,7 @@ logistica $\hat{y} = \sigma(\mathbf{w}^\top \mathbf{x} + b)$
 l'interpretazione passa alle *log-odds*: $w_j$ è la variazione del logaritmo
 del rapporto di probabilità
 $\log\frac{p}{1-p}$ per un incremento unitario di $x_j$, cosicché $e^{w_j}$ è
-il fattore moltiplicativo sull'*odds ratio*.
+il fattore moltiplicativo sull’*odds ratio*.
 
 Due avvertenze rendono onesta questa lettura. Primo, i coefficienti sono
 confrontabili tra loro solo se le feature sono **standardizzate** (stessa
@@ -375,7 +375,7 @@ L'importanza da impurità premia le feature che l'albero *usa spesso* per
 tagliare. Il problema è che una feature con tanti valori diversi (un'età
 precisa al giorno, un importo in centesimi) offre all'albero un'enorme
 quantità di soglie tra cui scegliere, e con così tante possibilità ne trova
-quasi sempre una che, per puro caso, separa un po' i dati. Così accumula
+quasi sempre una che, per puro caso, separa un po’ i dati. Così accumula
 «meriti» anche quando non porta vera informazione. Una feature con pochi
 valori (sì/no, tre categorie) parte invece svantaggiata: ha poche soglie da
 provare.
@@ -502,11 +502,11 @@ mediare: $f(v, \mathbf{X}_{-j}^{(i)})$ per il singolo esempio $i$
 è dunque la media verticale del fascio di ICE; quando le curve ICE si
 sventagliano, un effetto medio piatto maschera **interazioni** o eterogeneità.
 
-Il difetto profondo del PDP è l'**estrapolazione con feature correlate**:
+Il difetto profondo del PDP è l’**estrapolazione con feature correlate**:
 fissare $x_j = v$ mentre si tengono i valori reali di $\mathbf{X}_{-j}$ genera punti
 $(v, \mathbf{X}_{-j}^{(i)})$ implausibili (altezza 2 m con peso 50 kg) su cui il
 modello viene interrogato fuori dal supporto dei dati, producendo curve
-fuorvianti. L'**Accumulated Local Effects** (ALE) di Apley e Zhu
+fuorvianti. L’**Accumulated Local Effects** (ALE) di Apley e Zhu
 {cite}`apley2020visualizing`
 corregge il tiro: invece di marginalizzare su tutta la distribuzione, media le
 *differenze* di predizione entro piccoli intervalli di $x_j$, usando la
@@ -622,7 +622,7 @@ stampa viene $0{,}998$: è colpa dei tre decimali a cui la stampa arrotonda, non
 del conto.)
 
 Il **terzo**, la colonna del rimescolamento, è il calo di quel primo numero,
-l'$R^2$, quando la colonna viene rimescolata. Le due colonne di numeri non sono
+l’$R^2$, quando la colonna viene rimescolata. Le due colonne di numeri non sono
 quindi nella stessa unità di misura: la prima è una fetta di torta, la seconda
 è un danno misurato in $R^2$ perduto. Il «$\pm$» accanto dice quanto quel danno
 balla fra un rimescolamento e l'altro dei dieci provati (nella stampa, dove i
@@ -723,7 +723,7 @@ scatola: sta a noi non leggerci dentro più di quel che c'è.
   sistemi a regole.
 - Il presunto scambio fra accuratezza e chiarezza **non vale sempre**, e sui
   dati a righe e colonne spesso non vale affatto.
-- L'**importanza per rimescolamento** (Breiman, 2001; in inglese *permutation
+- L’**importanza per rimescolamento** (Breiman, 2001; in inglese *permutation
   importance*) rimescola i valori di una sola colonna e guarda quanto peggiora
   il modello: se rimescolando il reddito le risposte giuste scendono dal $90\%$
   al $72\%$, quella colonna vale 18 punti. Funziona con qualunque modello, va
@@ -740,12 +740,12 @@ scatola: sta a noi non leggerci dentro più di quel che c'è.
   Meglio fidarsi del rimescolamento.
 - Sapere quanto una colonna conta non dice **come** agisce. Il **PDP** riscrive
   a tutti lo stesso valore («e se aveste tutti quarant'anni?») e fa la media
-  delle risposte; l'**ICE** disegna una curva per ogni esempio e rivela i
+  delle risposte; l’**ICE** disegna una curva per ogni esempio e rivela i
   casi in cui l'effetto è opposto da persona a persona e la media lo nasconde.
   Attenzione quando due colonne vanno sempre insieme (l'altezza e il peso, per
   dire): riscrivendone una sola, il PDP finisce per chiedere al modello cosa
   pensa di persone che non esistono, alte due metri e pesanti cinquanta chili,
-  e la curva che ne esce inganna. In quel caso si usa l'**ALE**, che confronta
+  e la curva che ne esce inganna. In quel caso si usa l’**ALE**, che confronta
   solo valori vicini fra chi quei valori li ha davvero, senza inventare
   nessuno.
 - L'importanza dice **che** una colonna pesa sulle risposte, non come agisce

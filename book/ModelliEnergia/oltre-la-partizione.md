@@ -76,8 +76,7 @@ o l'ho inventato io?», che è una domanda da rispondere sì o no, e per le
 domande sì o no sappiamo addestrare un classificatore da trent'anni.
 
 Le tre strade esistono tutte e tre, hanno tutte e tre un nome, e la seconda è
-quella che nel giro di un decennio ha prodotto i modelli di diffusione del
-capitolo precedente.
+quella che nel giro di un decennio ha prodotto i modelli di diffusione.
 
 `````
 
@@ -147,7 +146,7 @@ Quando le risposte non sono acceso e spento ma numeri con la virgola
 la regola più usata porta il nome del fisico francese Paul Langevin, che nel
 1908 la scrisse per il **moto browniano**, il tremolio di un granello di
 polline sull'acqua sotto gli urti delle molecole. È quasi uno slogan:
-**scendere lungo la pendenza dell'energia, con addosso un po' di rumore**. E
+**scendere lungo la pendenza dell'energia, con addosso un po’ di rumore**. E
 «rumore», qui, non ha niente a che fare con i suoni: vuol dire una spintarella
 a caso, diversa a ogni passo, che non si sa da che parte arriverà. In questa
 pagina la parola avrà anche un secondo mestiere, e quando succederà il testo lo
@@ -158,7 +157,7 @@ dirà.
 Una pallina che rotola in discesa finisce nel fondovalle più vicino e lì si
 ferma: è la dinamica di Hopfield, e produce sempre la stessa risposta. Ora
 immagina la stessa pallina su un tavolo che vibra: continua a scendere,
-perché la pendenza c'è ancora, ma i sussulti la fanno anche risalire un po',
+perché la pendenza c'è ancora, ma i sussulti la fanno anche risalire un po’,
 uscire dalle conche, passare da una valle all'altra. Se la guardi per molto
 tempo e segni dove si trova, scoprirai che passa **più tempo dove il
 paesaggio è basso** e pochissimo sulle cime: la frequenza con cui visita
@@ -519,12 +518,12 @@ compatibili con $\tilde{\mathbf{x}}$; la seconda è che il minimo di una
 regressione quadratica *è* la media condizionale del bersaglio. Chi minimizza
 la regressione, quindi, ottiene esattamente lo score della marginale. È il
 **denoising score matching**, niente hessiana e niente MCMC, ed è la loss dei
-modelli di diffusione del capitolo precedente {cite}`song2021score` a meno di
-una **riponderazione per livello di rumore**, che non è un dettaglio: senza
-di essa il bersaglio $-\boldsymbol{\varepsilon}/\sigma$ farebbe esplodere il
-peso dei livelli di rumore piccoli, e il fattore che si usa (proporzionale a
-$\sigma^2$) è precisamente quello che cancella l'$1/\sigma$ e lascia la
-regressione sul rumore in forma pulita.
+modelli di diffusione {cite}`song2021score` a meno di una **riponderazione per
+livello di rumore**, che non è un dettaglio: senza di essa il bersaglio
+$-\boldsymbol{\varepsilon}/\sigma$ farebbe esplodere il peso dei livelli di
+rumore piccoli, e il fattore che si usa (proporzionale a $\sigma^2$) è
+precisamente quello che cancella l’$1/\sigma$ e lascia la regressione sul
+rumore in forma pulita.
 
 Il prezzo c'è, e non è quello che si direbbe: ciò che si impara non è lo score
 dei dati, è lo score dei dati **sporcati**, cioè della densità marginale
@@ -541,11 +540,11 @@ e il campionamento deve attraversarli in fila.
 
 Qui conviene fermarsi un istante, perché il cerchio che si chiude è largo. Il
 compito con cui si addestrano i modelli di diffusione, «indovina il rumore che
-ho aggiunto a questa immagine», nasce nel capitolo precedente come una scelta
-pratica e felice. Vista da questo capitolo è la soluzione di un problema
-vecchio di vent'anni: come dare forma a un paesaggio senza mai misurare il
-continente. I modelli di diffusione sono, in questa luce, modelli a energia
-addestrati sulla pendenza.
+ho aggiunto a questa immagine», nasce nel capitolo che porta il loro nome come
+una scelta pratica e felice. Vista da questo capitolo è la soluzione di un
+problema vecchio di vent'anni: come dare forma a un paesaggio senza mai
+misurare il continente. I modelli di diffusione sono, in questa luce, modelli a
+energia addestrati sulla pendenza.
 
 Con una differenza tecnica che vale la pena dire per onestà. Un modello a
 energia impara l'altezza del paesaggio, e la pendenza si ricava da quella; un

@@ -6,7 +6,7 @@ e in penombra, mezza nascosta dietro la caffettiera. Ogni sguardo è
 un'immagine diversa dello stesso oggetto, e da quella manciata di occhiate il
 concetto di "tazza" esce solidissimo. Una rete neurale non ha mani. Ma
 possiamo girare noi l'oggetto al posto suo: prendere ogni fotografia del
-training set e mostrargliela specchiata, ritagliata, un po' ruotata, più
+training set e mostrargliela specchiata, ritagliata, un po’ ruotata, più
 chiara o più scura. Si chiama **data augmentation** (letteralmente "aumento
 dei dati") ed è il modo più economico che esista per moltiplicare gli esempi
 senza raccoglierne di nuovi. Non è un'idea recente: nel capitolo sul deep
@@ -178,7 +178,7 @@ differenza: agisce sui dati invece che sulla rete.
 
 `````{tab} Elementare
 Uno studente che rifà cento volte lo stesso identico esercizio finisce per
-ricordare il risultato, non il metodo. Se invece i numeri cambiano un po' ogni
+ricordare il risultato, non il metodo. Se invece i numeri cambiano un po’ ogni
 volta, memorizzare non serve più a niente: l'unico modo di rispondere bene è
 capire la regola. L'augmentation fa questo alla rete: le rende impossibile
 "fotografare" il training set, perché il training set non è mai due volte lo

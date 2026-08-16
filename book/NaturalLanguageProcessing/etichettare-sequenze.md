@@ -37,7 +37,7 @@ riapre):
 
 Le sigle sono abbreviazioni inglesi, e conviene scioglierle subito: `DET` è il
 *determiner*, cioè l'articolo; `NOUN` il nome; `ADJ` l'aggettivo; `VERB` il
-verbo; `ADP` l'*adposition*, che raccoglie le nostre preposizioni e le
+verbo; `ADP` l’*adposition*, che raccoglie le nostre preposizioni e le
 posposizioni di quelle lingue che le mettono dopo il nome invece che prima
 (una categoria sola per tutte e due, così l'etichetta vale in ogni lingua).
 Le altre dodici sono le stesse che si imparano a scuola più qualche
@@ -120,7 +120,7 @@ dedicato alla voce: un lettore automatico davanti ad «ancora» deve scegliere
 tra *àncora* e *ancóra*, e l'accento giusto lo decide la categoria
 grammaticale.
 
-E all'**analisi sintattica**: le etichette POS sono i mattoni con cui, nella
+E all’**analisi sintattica**: le etichette POS sono i mattoni con cui, nella
 prossima sezione, si costruisce l'impalcatura della frase.
 
 ## Chi, dove, quando: le entità nominate
@@ -206,7 +206,7 @@ Come si insegna a una macchina a etichettare? La risposta classica, cuore
 della stagione statistica del NLP, è un modello dal nome intimidatorio e
 dall'idea limpida: lo **Hidden Markov Model** (HMM, modello di Markov
 nascosto). Il nome si scioglie pezzo per pezzo. *Markov* è il matematico russo
-che due sezioni fa contava le lettere dell'*Onegin*, e la parola richiama il
+che due sezioni fa contava le lettere dell’*Onegin*, e la parola richiama il
 suo patto: quello che succede adesso dipende solo da quello che è successo
 subito prima. *Model*, modello, perché è appunto una descrizione semplificata
 di come nasce una frase. E *hidden*, nascosto, che è l'aggettivo importante: le
@@ -567,7 +567,7 @@ raddoppiato $0{,}20$, diviso la somma $1{,}1$, fa $0{,}18$. E ha ragione lei.
 
 `````{tab} Superiore
 
-Per il POS tagging la metrica è l'**accuratezza per token**,
+Per il POS tagging la metrica è l’**accuratezza per token**,
 $\text{acc} = \frac{\#\{i : \hat{t}_i = t_i\}}{n}$. Va letta contro una base
 di confronto onesta: il baseline «assegna a ogni parola la sua etichetta più
 frequente nel corpus» supera già il 92% sull'inglese giornalistico, quindi lo
@@ -575,7 +575,7 @@ spazio reale di miglioramento (dal 92% al 97% e oltre) sta tutto nelle
 occorrenze ambigue, le più difficili.
 
 Per il NER si usano precisione, richiamo e F1 **a livello di entità**, con
-il criterio dell'*exact match* reso standard dalle campagne di valutazione
+il criterio dell’*exact match* reso standard dalle campagne di valutazione
 CoNLL dei primi anni Duemila: un'entità predetta conta come corretta solo
 se coincidono sia i confini del segmento sia il tipo. Dette $C$ le entità
 corrette, $\hat{E}$ quelle predette ed $E$ quelle di riferimento:

@@ -35,7 +35,7 @@ Il problema che questa idea viene a risolvere si vede bene guardando com'era
 fatto un traduttore automatico prima. Erano due macchine attaccate: la prima
 leggeva la frase di partenza e ne faceva un riassunto, la seconda leggeva solo
 quel riassunto e da lì scriveva la traduzione. Le due metà hanno un nome che
-torna in tutto il capitolo: l'**encoder** è la parte che legge, il **decoder**
+torna in tutto il capitolo: l’**encoder** è la parte che legge, il **decoder**
 quella che scrive (li rivediamo per bene in fondo a questa pagina). E il
 riassunto era una sola lista di numeri, sempre lunga uguale: la stessa per una
 frase di cinque parole e per una di cinquanta.
@@ -77,7 +77,7 @@ l'evidenziatore, ripassa la frase e assegna a ogni parola un'intensità di
 colore: "gatto" fluorescente (è il soggetto!), "muro" un colore medio (è la
 destinazione), "il" e "sul" quasi trasparenti. Poi costruisce il significato
 di "salta" *in questa frase* mescolando le informazioni di tutte le parole,
-ma in proporzione all'evidenziatura: tanta parte di "gatto", un po' di
+ma in proporzione all'evidenziatura: tanta parte di "gatto", un po’ di
 "muro", pochissimo del resto.
 
 Le intensità sono numeri veri, e vale la pena vederli almeno una volta. Per
@@ -259,7 +259,7 @@ teste addestrate conferma almeno in parte.
 
 L'attenzione, da sola, non è ancora un modello: è un pezzo, e va montato. Il
 pezzo si chiama **blocco**, e un blocco è quello che si ripete sempre uguale a
-sé stesso lungo la macchina, come un piano di un palazzo. L'**encoder**, la
+sé stesso lungo la macchina, come un piano di un palazzo. L’**encoder**, la
 torre che legge, è una pila di questi blocchi; il **decoder**, quella che
 scrive, è un'altra pila fatta allo stesso modo, che produce l'uscita (una
 traduzione, una risposta) un pezzo alla volta. In mezzo, ancora attenzione:
@@ -282,7 +282,7 @@ quando la rete scopre di aver sbagliato, il segnale che dice «di quanto e in
 che direzione ritoccare» deve tornare indietro fino ai primi blocchi. Tornando
 indietro, però, quel segnale attraversa a ritroso gli stessi conti dell'andata,
 e a ogni blocco viene moltiplicato per i numeri di quel blocco, che di solito
-sono un po' minori di uno. Se ogni blocco lo riduce a nove decimi, dopo
+sono un po’ minori di uno. Se ogni blocco lo riduce a nove decimi, dopo
 cinquanta blocchi ne resta lo $0{,}5\%$: praticamente niente, e i primi blocchi
 smettono di imparare. La scorciatoia è la strada che il segnale può fare senza
 subire nessuna di quelle moltiplicazioni. Come un corrimano lungo una scala
@@ -352,7 +352,7 @@ viene letto mescolando i fatti in quelle proporzioni. Poi si ripete, usando il
 risultato come nuova domanda: erano gli *hop*, cioè i salti di ragionamento,
 che permettevano di concatenare due fatti per rispondere a una domanda che
 nessuno dei due risolveva da solo. E siccome adesso ogni fatto contribuisce un
-po', la rete può imparare da sola quali contano, senza che glielo si dica.
+po’, la rete può imparare da sola quali contano, senza che glielo si dica.
 
 Due cose da portarsi via. La prima è che quella graduatoria sui fatti **è**
 l'attenzione, con la sola differenza che qui l'archivio è un magazzino a parte
@@ -367,7 +367,7 @@ del settembre 2014, le memory network dell'ottobre dello stesso anno, la
 versione a graduatoria del marzo 2015. Sono due strade partite quasi insieme,
 da due problemi diversi, e arrivate alla stessa operazione; nessuna delle due
 nasce dall'altra. Quello che le reti a memoria hanno di proprio non è dunque
-l'attenzione, è l'**archivio tenuto fuori dai numeri imparati** e consultato al
+l'attenzione, è l’**archivio tenuto fuori dai numeri imparati** e consultato al
 momento della domanda: ed è quel pezzo lì, messo da parte perché la sua epoca
 non aveva né i dati né l'hardware, a tornare cinque anni dopo con un altro nome.
 ```
@@ -375,7 +375,7 @@ non aveva né i dati né l'hardware, a tornare cinque anni dopo con un altro nom
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
-- L'**attenzione** rilegge la frase con un evidenziatore: per capire una
+- L’**attenzione** rilegge la frase con un evidenziatore: per capire una
   parola, guarda tutte le altre, dà a ciascuna un'intensità di colore e ne
   mescola le informazioni in quella proporzione.
 - Le intensità le decide la frase, non un programmatore: la rete le impara
@@ -396,7 +396,7 @@ non aveva né i dati né l'hardware, a tornare cinque anni dopo con un altro nom
 `````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
-- L'**attenzione** costruisce, per ogni parola, una rappresentazione
+- L’**attenzione** costruisce, per ogni parola, una rappresentazione
   contestuale: media dei *value* pesata dalle affinità *query*·*key*,
   normalizzate con softmax e scalate di $\sqrt{d_k}$ (il fattore neutralizza la
   dipendenza della varianza da $d_k$, sotto l'ipotesi di componenti

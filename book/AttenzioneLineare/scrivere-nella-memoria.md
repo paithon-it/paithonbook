@@ -15,8 +15,8 @@ resto. La rubrica non ha una riga per contatto: ha un numero fisso di caselle,
 e ogni voce nuova si somma a quello che c'è già scritto. Quando le chiedi «che
 cosa corrisponde a questa etichetta?», lei non pesca una riga: risponde con un
 miscuglio, in cui pesa soprattutto l'informazione scritta sotto l'etichetta più
-somigliante, più un po' di tutte le altre. Finché le etichette sono ben diverse
-fra loro quel «po' di tutte le altre» è trascurabile, ed è per questo che il
+somigliante, più un po’ di tutte le altre. Finché le etichette sono ben diverse
+fra loro quel «po’ di tutte le altre» è trascurabile, ed è per questo che il
 trucco funziona.
 
 `````
@@ -63,7 +63,7 @@ moltiplica.
 `````{tab} Elementare
 
 Pensa al registro come a una lavagna su cui l'inchiostro sbiadisce. A ogni
-passo tutte le voci si affievoliscono un po': quelle appena scritte sono nitide,
+passo tutte le voci si affievoliscono un po’: quelle appena scritte sono nitide,
 quelle vecchie quasi invisibili. Se il fattore di sbiadimento è $0{,}9$, dopo
 dieci passi una voce vale $0{,}9^{10} \approx 0{,}35$ di quanto valeva: circa
 un terzo. La lavagna così non si satura mai, perché fa spazio da sola buttando via
@@ -224,7 +224,7 @@ $$
 $$
 
 Qui $\bar{\mathbf{v}}_t$ è la «vecchia risposta»: ciò che la rubrica restituisce oggi
-alla chiave $\mathbf{k}_t$. La delta rule scrive allora soltanto l'**errore** $\mathbf{v}_t -
+alla chiave $\mathbf{k}_t$. La delta rule scrive allora soltanto l’**errore** $\mathbf{v}_t -
 \bar{\mathbf{v}}_t$, scalato da un *learning-rate* $\beta_t \in (0,1)$ appreso
 dinamicamente ($\beta_t = \sigma(\mathbf{w}_\beta^\top \mathbf{x}_t)$):
 
@@ -391,7 +391,7 @@ numeri: la rubrica che rispondeva $7$, dopo la correzione risponde $8{,}5$, e
 si avvicina al $10$ senza arrivarci in un colpo solo. Ecco perché la delta rule
 assomigliava a correggere un tiro:
 non *assomiglia* a imparare, è imparare, nell'unico modo in cui una macchina
-lo fa, cioè guardare di quanto ha sbagliato e spostarsi un po' in quella
+lo fa, cioè guardare di quanto ha sbagliato e spostarsi un po’ in quella
 direzione.
 
 `````
@@ -570,7 +570,7 @@ chiamano *dualità* quella doppia scrittura.
   **diagonale** e data-dipendente in GLA; dal più grossolano al più selettivo,
   canale per canale.
 - La **delta rule** (Widrow–Hoff, dai fast weights di Schlag e colleghi, che nel
-  2021 la portano in **DeltaNet**) scrive solo l'**errore**
+  2021 la portano in **DeltaNet**) scrive solo l’**errore**
   $\mathbf{v}_t - \mathbf{S}_{t-1}\mathbf{k}_t$ scalato da $\beta_t$: $\beta_t=1$ sovrascrive la chiave,
   $\beta_t=0$ la ignora. Yang e colleghi (2024) l'hanno resa
   **parallelizzabile** (algoritmo chunk-parallel, rappresentazione WY), e quindi

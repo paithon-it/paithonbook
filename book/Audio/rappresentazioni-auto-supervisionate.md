@@ -163,7 +163,7 @@ Attenzione a *come* avviene la scelta, perché non è quella che verrà definita
 nella sezione sui codec neurali: qui non si cerca l'entrata più vicina in
 distanza. $\mathbf{z}_t$ viene proiettato su una griglia di $G \times V$
 **logit** (con $G = 2$ gruppi e $V = 320$ voci per gruppo) e l'indice
-è l'`argmax` della **Gumbel-softmax** di quei logit, cioè della softmax dei
+è l’`argmax` della **Gumbel-softmax** di quei logit, cioè della softmax dei
 logit perturbati con rumore di Gumbel e temperatura $\tau$; all'indietro si usa
 lo *straight-through*, che rende derivabile una scelta discreta. La differenza
 non è di dettaglio: senza logit non ci sarebbe niente da regolarizzare, ed è
@@ -290,7 +290,7 @@ sembrano simili e dai a ogni gruppo un simbolo («suono numero 1», «suono
 numero 2») anche se sono etichette rozze, inventate da te. Poi giochi al
 solito gioco della parola coperta: nascondi dei tratti di audio e ti alleni a
 indovinare *quale simbolo* c'era sotto. Il bello arriva dopo: una volta che il
-modello ha imparato un po', i suoi raggruppamenti diventano più sensati di
+modello ha imparato un po’, i suoi raggruppamenti diventano più sensati di
 quelli di partenza, e allora rifai l'alfabeto usando i suoi (più fine del
 primo) e ricominci. Un ciclo che si affina da solo, come uno schizzo ripassato
 più volte a matita finché il disegno emerge.
@@ -306,7 +306,7 @@ modello a capire la struttura del suono.
 
 HuBERT alterna due passi. **Passo di clustering** (offline): si estraggono
 feature dall'audio e le si raggruppa con un semplice **k-means**, ottenendo
-per ogni frame un'etichetta discreta $u_t \in \{1, \dots, V\}$, l'«unità
+per ogni frame un'etichetta discreta $u_t \in \{1, \dots, V\}$, l’«unità
 nascosta», dove $V$ è il numero di cluster, cioè la taglia dell'inventario
 discreto: lo stesso ruolo del $V = 320$ di wav2vec 2.0. La lettera è diversa
 apposta rispetto a $\mathbf{z}_t$: qui

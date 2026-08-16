@@ -54,6 +54,7 @@ import re
 import subprocess
 import sys
 import xml.etree.ElementTree as ET
+from datetime import datetime, timezone
 from pathlib import Path
 
 import yaml
@@ -176,6 +177,25 @@ def prima_frase(percorso: Path, limite: int = 165) -> str:
     return frase[:limite - 1].rsplit(" ", 1)[0] + "…"
 
 
+def _iso_utc(quando: str) -> str:
+    """La stessa data scritta sempre allo stesso modo.
+
+    `git log --format=%cI` non e' stabile fra versioni di git: la 2.43 stampa
+    l'UTC come `+00:00`, la 2.54 come `Z`. Sono lo stesso istante e per la
+    sitemap valgono uguale, ma il file cambia byte, e allora `--verifica`
+    dichiara disallineato un file che nessuno ha toccato: passava in locale e
+    falliva in CI, dove git e' piu' recente. Qui la data si riscrive noi, in
+    UTC, e il risultato non dipende ne' dalla versione di git ne' dal fuso di
+    chi ha committato.
+    """
+    try:
+        return (datetime.fromisoformat(quando)
+                .astimezone(timezone.utc)
+                .strftime("%Y-%m-%dT%H:%M:%S+00:00"))
+    except ValueError:
+        return quando
+
+
 def date_git() -> dict[str, str]:
     """Data dell'ultima modifica per ogni file sotto `book/`, da git.
 
@@ -197,7 +217,7 @@ def date_git() -> dict[str, str]:
         if re.match(r"^\d{4}-\d{2}-\d{2}T", riga):
             data = riga.strip()
         elif riga.startswith("book/"):
-            fuori.setdefault(riga[len("book/"):], data)
+            fuori.setdefault(riga[len("book/"):], _iso_utc(data))
     return fuori
 
 

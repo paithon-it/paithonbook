@@ -193,7 +193,7 @@ La regola all'opera su otto esempi di cui conosciamo già la risposta giusta:
 quattro vogliono uscita $1$ (i punti color terracotta, arancione di vaso) e
 quattro uscita $0$ (i punti color teal, il verde-azzurro). Ciascuno dei due
 gruppi si chiama **classe**. La retta parte sbagliata e a ogni punto messo dal
-lato sbagliato ruota un po'. Dopo quattro correzioni le due classi sono
+lato sbagliato ruota un po’. Dopo quattro correzioni le due classi sono
 separate, e da lì in poi nessun esempio provoca più un aggiornamento.
 ```
 
@@ -495,7 +495,7 @@ lezione che vale oltre questa storia. I teoremi erano corretti e limitati, e
 riguardavano macchine a uno strato; la loro lettura pubblica fu che le reti
 neurali non funzionavano, e servì quasi un ventennio per rimediare. Il libro
 contribuì a spostare risorse verso l'altro modo di fare intelligenza
-artificiale, quello dei programmi a regole scritte a mano (l'**AI simbolica**);
+artificiale, quello dei programmi a regole scritte a mano (l’**AI simbolica**);
 ma la ragione tecnica per cui le reti restarono ferme la indicarono gli stessi
 autori, ed è quella che il libro non prova a nascondere: nessuno sapeva come
 correggere i neuroni in mezzo. È da lì che sarebbe arrivata la via d'uscita.
@@ -611,7 +611,7 @@ risponda $0, 1, 1, 0$.
   divergono, entrano in un ciclo.
 - Un solo neurone è un **classificatore lineare**: separa lo spazio con un
   iperpiano e fallisce su problemi non separabili come lo **XOR**. Quel che
-  *Perceptrons* dimostra però è sull'**ordine** dei predicati (la parità su $n$
+  *Perceptrons* dimostra però è sull’**ordine** dei predicati (la parità su $n$
   bit lo richiede pari a $n$); sul multistrato il libro avanza una congettura e
   lo dichiara.
 - Servono **strati nascosti** e **non linearità** per superare quel limite: è

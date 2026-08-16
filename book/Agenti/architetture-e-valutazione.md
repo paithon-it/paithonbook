@@ -93,7 +93,7 @@ specializzato**, che si passano il lavoro e conversano tra loro.
 :alt: "Uno schema gerarchico su tre livelli: in alto un agente orchestratore, che divide e sintetizza, ed è collegato da tre linee, etichettate «delega», ad altrettanti esecutori disposti sotto di lui; ciascuno ha il proprio mestiere, la ricerca sul web, l'interrogazione di un database, la lettura di documenti. Dai tre esecutori scendono tre linee tratteggiate, etichettate «risultati», che convergono in un unico riquadro in basso: la risposta unica."
 :width: 90%
 
-Uno che divide, l'**orchestratore**, e tre che eseguono (nel disegno sono
+Uno che divide, l’**orchestratore**, e tre che eseguono (nel disegno sono
 etichettati *worker*, che è il termine inglese per gli esecutori). I tre
 risultati si ricompongono in una risposta sola.
 La specializzazione non sta nel modello,
@@ -281,7 +281,7 @@ sommano. Primo: spesso non esiste **una** sola risposta giusta; a un compito
 come «sistema questo errore» corrispondono molte soluzioni valide. Secondo: il
 compito è fatto di **molti passi**, e un agente può arrivare al risultato
 giusto per la strada sbagliata, o fallire dopo aver fatto quasi tutto bene.
-Terzo: l'**ambiente cambia** sotto i suoi piedi (una ricerca sul web dà
+Terzo: l’**ambiente cambia** sotto i suoi piedi (una ricerca sul web dà
 risultati diversi oggi e domani) e quindi la stessa prova, ripetuta, non è mai
 identica a se stessa.
 
@@ -540,7 +540,7 @@ rovinare tutto: non è così, e i rimedi che questa sezione ha mostrato
 parte, tanto che il tasso di successo vero può stare sopra quel $35\%$. La
 direzione, però, non cambia, ed è tutto quello che al modellino chiediamo. Il
 **costo**, intanto, cresce con i passi, con gli agenti, con i giri di
-conversazione. E l'**imprevedibilità**
+conversazione. E l’**imprevedibilità**
 che rende versatile un motore linguistico è la stessa che rende difficile
 garantire cosa farà: più libertà d'azione, meno controllo.
 
@@ -592,7 +592,7 @@ Sei punti per chiudere il capitolo.
 - Gli errori si **sommano** sui compiti lunghi: se sbagli una mossa su dieci e
   le mosse sono dieci, la probabilità di non sbagliarne nessuna è
   $0{,}9^{10} \approx 0{,}35$, cioè poco più di una volta su tre. È un
-  modellino, e nella pratica va un po' meglio, perché non tutti gli errori sono
+  modellino, e nella pratica va un po’ meglio, perché non tutti gli errori sono
   fatali e perché rileggersi e ripianificare ne recuperano una parte. Gli
   agenti sono promettenti ma
   fragili, e restano un campo **giovane** {cite}`xi2023rise`. Misurare più che
@@ -633,7 +633,7 @@ Sei punti per chiudere il capitolo.
   tassi di successo inizialmente modesti, ma la cifra misura anche il
   benchmark: SWE-Bench+ trova il $32{,}67\%$ di soluzioni già presenti nella
   issue {cite}`aleithan2024swebenchplus`. In produzione valgono i **guardrail**
-  e l'**LLM-as-a-judge** di LLMOps, con i suoi bias.
+  e l’**LLM-as-a-judge** di LLMOps, con i suoi bias.
 - Gli errori si **accumulano** sui compiti lunghi: *se* i passi sono
   indipendenti, una traiettoria senza errori ha probabilità $(1-p)^n$, dove $p$
   è la probabilità di sbagliare un passo e $n$ il numero di passi, e precipita

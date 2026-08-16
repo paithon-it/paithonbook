@@ -62,7 +62,7 @@ Senza questi segnali la conversazione si sfalda.
 
 Quarto: i **sottintesi**. «All'aperto *ne* è rimasto uno»: ne... di che? Di
 tavoli all'aperto, ma nessuno lo ripete, il filo del discorso lo regge. «*Lo*
-prendiamo»: lo, quel tavolo lì. È l'**anafora** di cui si diceva all'inizio del
+prendiamo»: lo, quel tavolo lì. È l’**anafora** di cui si diceva all'inizio del
 capitolo: le parole piccole pescano il significato in quello che è già stato
 detto. (Nulla a che vedere con l'anafora delle poesie, quella figura retorica
 che ripete la stessa parola in testa a più versi: stesso nome, due mestieri
@@ -82,7 +82,7 @@ descrissero la sistematica: i parlanti proiettano il punto di completamento
 del turno altrui e si avvicendano con pause tipiche di circa 0,2 secondi in
 lingue e culture diversissime (Stivers et al., 2009), troppo brevi per
 pianificare da zero: pianifichiamo *mentre* l'altro parla. Per un sistema
-vocale è un vincolo concreto: l'*endpointing* deve distinguere una pausa da
+vocale è un vincolo concreto: l’*endpointing* deve distinguere una pausa da
 una cessione del turno.
 
 **Atti linguistici** (*speech acts*). Austin (*How to Do Things with Words*,
@@ -244,7 +244,7 @@ già date relative, ellissi e semplici anafore: nel 1977.
 L'erede moderno è l'architettura a **stato di dialogo**, una catena di
 componenti in gran parte già costruita in questo capitolo:
 
-1. **NLU**: classificazione dell'**intento** (un classificatore di testo come
+1. **NLU**: classificazione dell’**intento** (un classificatore di testo come
    quelli visti per il sentiment) e **slot filling**, cioè etichettatura di
    sequenze con schema BIO, identica al NER: in «che tempo fa domani a Roma»,
    *domani* → `B-DATA`, *Roma* → `B-LUOGO`, intento = `previsioni_meteo`.
@@ -336,7 +336,7 @@ prenotazione è andata a buon fine, sì o no? Quante battute ci sono volute?
 Sono numeri, e si contano. Con i chatbot aperti resta il tema: si fanno
 conversare con persone in carne e ossa, e si chiede ai giudici di votare: le
 risposte filavano? stavano in piedi da un capo all'altro? veniva voglia di
-continuare? Costoso, lento, un po' soggettivo: ma a oggi non c'è metro
+continuare? Costoso, lento, un po’ soggettivo: ma a oggi non c'è metro
 migliore del giudizio umano su una cosa fatta per gli umani.
 
 `````
@@ -467,9 +467,9 @@ capitolo intero: i **Transformer** ci aspettano alla prossima pagina.
   storia del capitolo sui Transformer.
 - **Il dettato e il tema**: un sistema a moduli si corregge come un dettato (la
   prenotazione è andata a buon fine, sì o no?), un chatbot aperto come un tema,
-  e per il tema serve un giudice che legga. Costoso e un po' soggettivo, ma non
+  e per il tema serve un giudice che legga. Costoso e un po’ soggettivo, ma non
   c'è di meglio per una cosa fatta per gli umani.
-- L'**effetto ELIZA**: attribuiamo comprensione a qualunque cosa parli la
+- L’**effetto ELIZA**: attribuiamo comprensione a qualunque cosa parli la
   nostra lingua, ed è un riflesso, non ingenuità. È il monito di Weizenbaum, ed
   è più attuale del suo programma: sapere che dall'altra parte non c'è nessuno,
   per quanto forte sia l'impressione contraria.
@@ -496,7 +496,7 @@ capitolo intero: i **Transformer** ci aspettano alla prossima pagina.
   reggono, perché due risposte ottime possono non condividere un $n$-gramma;
   il test di Turing {cite}`turing1950computing` è una cornice
   storica, non una metrica.
-- L'**effetto ELIZA** (attribuire comprensione a ciò che parla) è il riflesso
+- L’**effetto ELIZA** (attribuire comprensione a ciò che parla) è il riflesso
   su cui i chatbot fanno leva, volenti o nolenti: il monito di Weizenbaum
   {cite}`weizenbaum1976computer` su antropomorfizzazione, privacy e deleghe da
   non dare è più attuale del suo programma.

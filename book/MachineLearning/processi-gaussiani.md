@@ -114,7 +114,7 @@ L'influenza di una misura, insomma, non si spegne piano: sparisce.
 
 `````{tab} Superiore
 
-Il kernel più usato è l'**RBF** (*Radial Basis Function*, o gaussiano):
+Il kernel più usato è l’**RBF** (*Radial Basis Function*, o gaussiano):
 
 $$
 k(\mathbf{x}, \mathbf{x}') = \sigma^2
@@ -226,7 +226,7 @@ la seconda; se è «quanto vale la grandezza vera», la prima.
 
 La {numref}`fig-processo-gaussiano` mostra tutto il meccanismo in un colpo
 d'occhio: la banda si stringe sui punti osservati fin quasi a toccarli (quasi,
-perché anche le misure sbagliano un po', e quel margine d'errore non si può
+perché anche le misure sbagliano un po’, e quel margine d'errore non si può
 eliminare) e si riapre nel buco centrale e ai bordi, dove i dati mancano.
 
 ```{figure} ../figures/processo-gaussiano.svg
@@ -324,7 +324,7 @@ addestreremo mai un processo gaussiano sulle foto di tutto internet.
 
 Il collo di bottiglia è l'inversione (in pratica, la fattorizzazione di
 Cholesky) di $\mathbf{K} + \sigma_n^2 \mathbf{I}$: costo $O(m^3)$ in tempo e
-$O(m^2)$ in memoria, il caso peggiore dell'$O(m^2)$–$O(m^3)$ visto per la SVM
+$O(m^2)$ in memoria, il caso peggiore dell’$O(m^2)$–$O(m^3)$ visto per la SVM
 con kernel, e qui senza sconti. Oltre qualche decina di migliaia di punti il metodo
 esatto diventa proibitivo. Esistono approssimazioni *sparse*, si riassume il
 dataset con $p \ll m$ punti "induttori", scendendo a $O(m p^2)$, ma pagano in
@@ -337,7 +337,7 @@ aggiunge la sensibilità alla scelta del kernel, che incorpora ipotesi forti
 Il suo territorio, allora, è l'opposto del big data: **pochi dati costosi**.
 Esperimenti di laboratorio dove ogni misura vale una giornata di lavoro,
 simulazioni ingegneristiche da ore di calcolo l'una, prove sul campo che non
-si possono ripetere. E il caso che abbiamo già incontrato: l'**ottimizzazione
+si possono ripetere. E il caso che abbiamo già incontrato: l’**ottimizzazione
 bayesiana degli iperparametri** {cite}`snoek2012practical`, dove ogni "dato" è
 un intero addestramento e il processo gaussiano fa da mappa (stima più
 incertezza) per decidere quale configurazione provare dopo. La sezione sugli

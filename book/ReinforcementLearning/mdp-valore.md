@@ -21,7 +21,7 @@ abbreviano in **MDP**, ed è la sigla che d'ora in poi si incontra dappertutto.
 
 ## Il ciclo: stati, azioni, ricompense
 
-A ogni istante l'agente si trova in uno **stato**, sceglie un'**azione**,
+A ogni istante l'agente si trova in uno **stato**, sceglie un’**azione**,
 l'ambiente lo trasporta in un nuovo stato e gli consegna una **ricompensa**
 numerica. Poi il ciclo riparte. Tutto il reinforcement learning abita dentro
 questo giro.
@@ -321,7 +321,7 @@ sposta: si sposta la notizia che esiste.
 `````{tab} Superiore
 
 Spezzando il ritorno come $G_t = R_{t+1} + \gamma\, G_{t+1}$ e prendendo
-l'attesa si ottiene l'**equazione di Bellman** per $V^\pi$:
+l'attesa si ottiene l’**equazione di Bellman** per $V^\pi$:
 
 $$
 V^\pi(s) = \mathbb{E}_\pi\!\left[\, R_{t+1} + \gamma\, V^\pi(S_{t+1})
@@ -390,7 +390,7 @@ $$
 
 dove $V_k$ è la stima dei valori al passo $k$: è l'equazione di Bellman con un
 $\max$ sulle azioni al posto della media pesata dalla policy. Il punto fisso è
-l'**equazione di ottimalità di Bellman**,
+l’**equazione di ottimalità di Bellman**,
 $V^*(s) = \max_a \sum_{s'} P(s'\mid s,a)\big[r(s,a) + \gamma\, V^*(s')\big]$,
 dove $V^*$ è il valore della migliore policy possibile. La convergenza è
 garantita: l'operatore di aggiornamento è una **contrazione** di fattore
@@ -707,7 +707,7 @@ esemplare più famoso è il **Q-learning**, con cui il capitolo si chiude.
   dall'intera storia.
 - La **policy** $\pi(a\mid s)$ è la strategia; il **ritorno scontato** $G_t$
   pesa il futuro con $\gamma$.
-- $V^\pi$ e $Q^\pi$ misurano il ritorno *atteso*; l'**equazione di Bellman** li
+- $V^\pi$ e $Q^\pi$ misurano il ritorno *atteso*; l’**equazione di Bellman** li
   definisce in modo ricorsivo, ed è la base di ogni algoritmo di RL.
 - Con il modello ($P$ e $r$) noto, **value iteration** e **policy iteration**
   calcolano valori e policy ottimi iterando Bellman; quando il modello manca

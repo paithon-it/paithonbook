@@ -127,7 +127,7 @@ distribuzione, eventualmente riscalata e troncata dai parametri di decoding
 (temperatura, top_p) che vedremo nella sezione sul prompt: a temperatura non
 nulla, lo stesso $C$ può dare risposte diverse (e non solo a temperatura non
 nulla, come vedremo lì). Programmare significa progettare $C$. Il meccanismo che rende
-possibile tutto questo è l'**in-context learning**, documentato su larga scala
+possibile tutto questo è l’**in-context learning**, documentato su larga scala
 da Brown e colleghi nel lavoro su GPT-3 {cite}`brown2020language`: bastano poche
 coppie richiesta → risposta nel contesto (il *few-shot*), perché il modello
 esegua un compito nuovo *senza alcun aggiornamento dei pesi*. Gli esempi non
@@ -247,7 +247,7 @@ La prima si vede meglio in una figura. Quando un modello non fa quello che vogli
 davanti abbiamo tre strade, e non costano uguale: riscrivere il messaggio;
 andare a prendere i documenti che al
 modello mancano e metterglieli davanti insieme alla domanda (è il **RAG**);
-oppure riaprire i pesi e riaddestrarlo un po' sui nostri esempi (il
+oppure riaprire i pesi e riaddestrarlo un po’ sui nostri esempi (il
 **fine-tuning**). Le prime due lasciano il modello com'è, la terza lo cambia,
 ed è la più cara di tutte.
 
@@ -381,7 +381,7 @@ Il capitolo segue i tre cerchi, dal centro verso l'esterno.
   Karpathy lo chiama **Software 3.0** («si programma in inglese») e nel 2025 ha
   reso popolare per quel mestiere il nome **context engineering**
   {cite}`karpathy2025context`.
-- Il meccanismo che lo rende possibile è l'**in-context learning**: pochi esempi
+- Il meccanismo che lo rende possibile è l’**in-context learning**: pochi esempi
   nel contesto (*few-shot*) orientano il modello senza aggiornarne i pesi
   {cite}`brown2020language`. Gli esempi non addestrano, **condizionano**.
 - Si programma a parole su **tre livelli concentrici**: il **prompt** (il singolo

@@ -135,9 +135,9 @@ lineare.
 `````{tab} Superiore
 La matrice di attenzione ha $n \times n$ elementi. Contando la sola
 operazione di attenzione (proiezioni escluse), il costo in tempo è
-$O(n^2 \cdot d)$ nella lunghezza $n$ della sequenza, contro l'$O(n \cdot
+$O(n^2 \cdot d)$ nella lunghezza $n$ della sequenza, contro l’$O(n \cdot
 d^2)$ delle ricorrenti; la memoria per i punteggi è $O(n^2)$, contro
-l'$O(n \cdot d)$ delle attivazioni ricorrenti. Sotto questo vincolo sono
+l’$O(n \cdot d)$ delle attivazioni ricorrenti. Sotto questo vincolo sono
 nate le finestre di contesto limitate dei grandi modelli, e una vasta
 letteratura di rimedi:
 attenzione **sparsa** o a finestre locali (Longformer, BigBird),
@@ -190,7 +190,7 @@ massa di attenzione va su pochissime chiavi, quindi calcolare l'intera matrice
 è sprecare lavoro su valori destinati a essere quasi zero; e le chiavi che
 contano sono quelle con prodotto scalare grande, cioè quelle *vicine* alla
 query. Trovare i vicini senza confrontarli tutti è un problema classico, e la
-risposta classica è l'**hashing sensibile alla località** (LSH): una funzione
+risposta classica è l’**hashing sensibile alla località** (LSH): una funzione
 $g$ che manda vettori simili nello stesso secchiello con alta probabilità.
 Perché l'hashing funzioni, però, query e chiavi devono **coincidere**: se
 $g(\mathbf{q}_j) \neq g(\mathbf{k}_j)$ una query può finire in un secchiello

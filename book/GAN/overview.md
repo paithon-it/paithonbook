@@ -207,7 +207,7 @@ primo sguardo non si distingue da una fotografia. Da qui arrivano anche i
 **deepfake** (volti sostituiti nei video) con tutto il loro carico di rischi
 per disinformazione e consenso, un tema su cui questo libro sceglie l'onestà
 più che l'entusiasmo. E
-arriva l'**arte generata**, con un ritratto prodotto da una GAN battuto
+arriva l’**arte generata**, con un ritratto prodotto da una GAN battuto
 all'asta da Christie's nel 2018: l'episodio, e la questione di chi ne sia
 l'autore, sono raccontati in chiusura di capitolo.
 

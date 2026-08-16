@@ -151,7 +151,7 @@ nella direzione dettata dalla fisica, trascurando l'unico ancoraggio che c'è.
 Le ragioni per cui succede sono due, e conviene tenerle distinte perché non
 agiscono sempre insieme.
 
-La prima è l'**ampiezza dei gradienti**. Il residuo si ottiene applicando alla
+La prima è l’**ampiezza dei gradienti**. Il residuo si ottiene applicando alla
 rete degli operatori differenziali, e i gradienti che tornano indietro da quel
 ramo *possono* essere di ordini di grandezza più grandi di quelli del termine
 sulle condizioni iniziali. Succede sulle PDE con operatori di ordine alto e
@@ -228,8 +228,8 @@ pezzo nuovo, ed è tutto qui.
 
 Ci serve un problema abbastanza semplice da avere una soluzione esatta con cui
 dare i voti alla rete, e abbastanza ricco da non essere un giocattolo. Il
-classico dei classici: l'**oscillatore armonico smorzato**, cioè un corpo
-appeso a una molla, con un po' d'attrito che spegne piano piano le
+classico dei classici: l’**oscillatore armonico smorzato**, cioè un corpo
+appeso a una molla, con un po’ d'attrito che spegne piano piano le
 oscillazioni. La legge di Newton per questo sistema è
 
 $$
@@ -254,7 +254,7 @@ molla: $m = 1$, $c = 0{,}4$, $k = 4$.
 Prima di leggere l'equazione, saldiamo i due vocabolari, perché sono lo stesso
 vocabolario. La curva sul foglio *è* il movimento del corpo appeso: la sua
 pendenza è la **velocità** (quanto in fretta il corpo si sposta) e la sua
-curvatura è l'**accelerazione** (quanto in fretta cambia quella velocità). Un
+curvatura è l’**accelerazione** (quanto in fretta cambia quella velocità). Un
 nome viene dal disegno, l'altro dalla fisica, e l'oggetto è lo stesso. È il
 motivo per cui una regola sul moto di un corpo si può far rispettare a una
 linea tracciata su un foglio.
@@ -271,7 +271,7 @@ $= -4 \cdot 1 - 0{,}4 \cdot 0 = -4$, e il corpo parte richiamato con decisione
 verso il centro.
 
 Il film completo lo conosce chiunque abbia giocato con una molla: il corpo
-oscilla su e giù, e ogni oscillazione è un po' più bassa della precedente,
+oscilla su e giù, e ogni oscillazione è un po’ più bassa della precedente,
 perché l'attrito ruba energia a ogni passaggio. Con i nostri tre numeri
 un'oscillazione completa dura **3,16 secondi**, e dopo 10 secondi l'ampiezza
 (l'altezza del rimbalzo, misurata dalla posizione di riposo) è scesa al
@@ -631,7 +631,7 @@ seguendo. Sui primi cinque secondi è brava; nella coda ha smesso.
 Si noti infine il terzo numero, quello che quasi nessun articolo su questi
 metodi si prende la briga di stampare: sulla griglia fitta di istanti che la
 rete non ha mai visto il residuo è $3 \cdot 10^{-2}$, quattro volte più alto
-che nei punti controllati. La rete va un po' meglio dove la si guarda che dove
+che nei punti controllati. La rete va un po’ meglio dove la si guarda che dove
 non la si guarda. Qui è uno scarto modesto, e fra poche righe vedremo quanto
 può diventare grande. Un ultimo dettaglio da non lasciarsi sfuggire nel crollo
 della loss: quasi tutta quella caduta è il termine sulle condizioni iniziali,
@@ -999,7 +999,7 @@ la propagazione con un'ottimizzazione globale non convessa: nessuna garanzia
 formale, costo superiore di ordini di grandezza su un problema standard come
 questo, ma soluzione *mesh-free* e continua, valutabile e **derivabile** in
 qualunque punto. Su quest'ultimo vantaggio conviene non calcare troppo: un
-integratore a passo adattivo offre da decenni l'*output denso*, cioè
+integratore a passo adattivo offre da decenni l’*output denso*, cioè
 un'interpolante dello stesso ordine del metodo, richiamabile in qualunque
 istante. Quello che resta davvero alla rete è la derivabilità, e il fatto che
 la stessa impalcatura non cambia passando a più variabili o a un problema

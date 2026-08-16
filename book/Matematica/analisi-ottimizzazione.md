@@ -61,7 +61,7 @@ ovunque nel machine learning.
 
 `````{tab} Elementare
 
-Le tre "solite sospette" sono le **potenze**, l'**esponenziale** e il
+Le tre "solite sospette" sono le **potenze**, l’**esponenziale** e il
 **logaritmo**. Le prime le conosci già: la parabola $x^2$, cioè «il numero
 moltiplicato per sé stesso», è la forma dell'errore quadratico, quello che si
 minimizza quando il modello deve prevedere un numero. Le altre due meritano
@@ -268,7 +268,7 @@ a C di $2 \times 1{,}5 = 3$ volte. Gli effetti lungo la catena si
 **moltiplicano**.
 
 E un ingranaggio è una derivata travestita, perché «quanti giri fa B per ogni
-giro di A» è esattamente la domanda della derivata: *se muovo un po'
+giro di A» è esattamente la domanda della derivata: *se muovo un po’
 l'ingresso, di quanto si muove l'uscita?* Sostituendo agli ingranaggi gli
 strati di una rete, la conclusione è la stessa: le pendenze si moltiplicano una
 dopo l'altra. Il *backpropagation* è questo e nient'altro: moltiplicare le
@@ -349,7 +349,7 @@ quel che mostra il disegno.
 La sigla del disegno, **SGD**, sta per *stochastic gradient descent*, discesa
 stocastica del gradiente: è la discesa raccontata qui, con l'accorgimento che
 a ogni passo la pendenza non si misura su tutti i dati ma su un pugno di
-esempi presi a caso, il che la rende più sbrigativa e un po' traballante. È la
+esempi presi a caso, il che la rende più sbrigativa e un po’ traballante. È la
 variante che si usa in pratica, e su di essa il momento è quasi sempre
 attivo.
 

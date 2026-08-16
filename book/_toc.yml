@@ -360,6 +360,15 @@ parts:
       title: Stable Diffusion
     - file: ModelliDiffusione/diffusion-transformer.md
       title: Diffusion Transformer (DiT)
+  - file: VerosimiglianzaEsatta/overview.md
+    title: Verosimiglianza esatta
+    sections:
+    - file: VerosimiglianzaEsatta/pixel-per-pixel.md
+      title: Un pixel alla volta
+    - file: VerosimiglianzaEsatta/flussi.md
+      title: I flussi normalizzanti
+    - file: VerosimiglianzaEsatta/a-che-serve.md
+      title: A che serve saperlo
   - file: ModelliEnergia/overview.md
     title: Modelli a energia
     sections:
@@ -373,6 +382,15 @@ parts:
       title: Energia come compatibilità
     - file: ModelliEnergia/paesaggi-di-oggi.md
       title: Paesaggi di oggi
+  - file: AutoSupervisione/overview.md
+    title: Auto-supervisione
+    sections:
+    - file: AutoSupervisione/famiglie.md
+      title: Le quattro famiglie
+    - file: AutoSupervisione/collasso-e-misura.md
+      title: Collasso e misura
+    - file: AutoSupervisione/dibattito-rl.md
+      title: Il dibattito sul rinforzo
   - file: WorldModels/overview.md
     title: World Model
     sections:
@@ -380,6 +398,8 @@ parts:
       title: Mondi in miniatura
     - file: WorldModels/jepa.md
       title: La via di LeCun (JEPA)
+    - file: WorldModels/inferenza-attiva.md
+      title: L'inferenza attiva
     - file: WorldModels/simulatori-e-dibattito.md
       title: Simulare il mondo
 

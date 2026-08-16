@@ -83,7 +83,7 @@ $\mathbf{y}$: il libro tiene $y$ tondo perché la stessa formula deve valere
 quando $y$ è un'etichetta), $Z_\theta(\mathbf{x})$ può addirittura non esistere,
 e quando esiste è intrattabile: è il muro
 della sezione precedente. La tesi del tutorial è che per decidere, ordinare o
-pianificare serve solo l'$\arg\min$, che di $Z$ non ha alcun bisogno:
+pianificare serve solo l’$\arg\min$, che di $Z$ non ha alcun bisogno:
 rinunciare alla normalizzazione non è una perdita ma un vantaggio
 computazionale.
 
@@ -155,7 +155,7 @@ E il fatto che il primo metodo non regga quando le risposte possibili sono
 tantissime (per una foto sono più di quante se ne possano contare) è
 esattamente l'argomento su cui poggia la proposta di LeCun per i *world
 model*, i modelli che si costruiscono un'idea di come va il mondo per poterlo
-prevedere, e a cui è dedicato il capitolo che segue.
+prevedere, e a cui è dedicato più avanti un capitolo intero.
 
 `````
 
@@ -196,8 +196,8 @@ sull'audio è esattamente questo) e termini che impongono varianza o
 decorrelazione alle rappresentazioni. L'intuizione è che un modello con pochi
 gradi di libertà non *può* dare energia bassa a tutto, e allora non serve
 alcun controesempio a impedirglielo. È la famiglia su cui LeCun scommette per
-i world model, ed è il motivo per cui, nel capitolo che segue, la JEPA si
-difende dal collasso senza mai fabbricare un solo controesempio.
+i world model, ed è il motivo per cui, nel capitolo sui *world model*, la JEPA
+si difende dal collasso senza mai fabbricare un solo controesempio.
 
 `````
 
@@ -234,7 +234,7 @@ altre.
 `````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
-- La cornice dell'**energy-based learning** {cite}`lecun2006tutorial`: ogni
+- La cornice dell’**energy-based learning** {cite}`lecun2006tutorial`: ogni
   modello è una $E(\mathbf{x}, y)$ che misura la compatibilità fra input e risposta;
   inferire è $\arg\min_y E$, imparare è abbassare l'energia delle coppie
   giuste e alzarla sulle sbagliate. I modelli probabilistici sono il caso

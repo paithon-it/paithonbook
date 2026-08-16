@@ -628,7 +628,7 @@ qui.
 - **Questionario fisso** {cite}`li2023blip2`: 32 domande scritte una volta per
   tutte in addestramento vengono poste a ogni foto, e ne escono 32 risposte: dai
   257 vettori con cui la foto era stata descritta si scende a 32, e siccome ogni
-  risposta è anche un po' più corta, nel punto più stretto passano circa undici
+  risposta è anche un po’ più corta, nel punto più stretto passano circa undici
   volte meno numeri. **Tabella di conversione**
   {cite}`liu2023visual`: una tessera entra, un token esce, nessun riassunto
   (circa quattro milioni di caselle, poi una ventina di milioni con due tabelle

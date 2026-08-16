@@ -256,7 +256,7 @@ non piega le rette.
 Quindi: il punto che cerchi nella seconda foto, qualunque sia la profondità
 vera, **sta su una retta ben precisa**, che si può calcolare in anticipo
 conoscendo solo la posizione reciproca delle due fotocamere. Quella retta ha un
-nome che tornerà: si chiama **retta epipolare**, e l'*epipolo* da cui prende il
+nome che tornerà: si chiama **retta epipolare**, e l’*epipolo* da cui prende il
 nome è il punto in cui ciascuna fotocamera vedrebbe l'altra. Non devi cercare in
 tutta l'immagine, devi cercare lungo una riga.
 
@@ -271,7 +271,7 @@ le cose: è una legge geometrica che vale sempre, per qualsiasi scena.
 Il piano che contiene i due centri ottici e il punto $\mathbf{p}$ si chiama
 **piano epipolare**; la sua intersezione con ciascun piano immagine è la
 **retta epipolare** corrispondente. Tutte le rette epipolari di un'immagine
-passano per uno stesso punto, l'**epipolo**, che è la proiezione dell'altro
+passano per uno stesso punto, l’**epipolo**, che è la proiezione dell'altro
 centro ottico e può cadere fuori dall'immagine. Va all'infinito quando è la
 **base**, cioè il segmento che unisce i due centri ottici, a essere parallela
 al piano immagine: è il caso della coppia stereo affiancata, ed è il motivo per
@@ -561,7 +561,7 @@ aspirapolvere, un visore per la realtà aumentata, un drone che rientra da solo.
 
 `````{tab} Superiore
 
-Il criterio è l'**errore di riproiezione**: dati i parametri delle fotocamere
+Il criterio è l’**errore di riproiezione**: dati i parametri delle fotocamere
 $\{\mathbf{K}_j, \mathbf{R}_j, \mathbf{t}_j\}$ e i punti $\{\mathbf{p}_i\}$,
 
 $$
@@ -722,7 +722,7 @@ fotocamere affiancate e allineate, il gemello di un pixel sta sulla **stessa
 riga** dell'altra immagine, così che a cercarlo basta scorrere quella.
 
 Ora il caso generale, con la seconda fotocamera ruotata di otto gradi attorno
-alla verticale, come due telecamere puntate un po' l'una verso l'altra. Qui non
+alla verticale, come due telecamere puntate un po’ l'una verso l'altra. Qui non
 c'è più nessuna riga comoda, ma la retta esiste ancora: il calcolo qui sotto la
 scrive a partire da come sono messe le due fotocamere (è la matrice `F`), e poi
 verifica, punto per punto, di quanto il pixel della seconda immagine cade

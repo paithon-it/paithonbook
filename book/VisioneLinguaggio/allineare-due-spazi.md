@@ -264,7 +264,7 @@ Con la temperatura di partenza di CLIP, che è bassa ($0{,}07$), quel piccolo
 vantaggio viene ingigantito, e i passaggi si possono rifare con una
 calcolatrice. Primo: si divide ogni somiglianza per la temperatura, cioè la si
 moltiplica per quattordici e rotti. La riga diventa $4{,}3$, poi $1{,}4$, $0{,}7$
-e $0{,}3$. Secondo: quei numeri si trasformano in fiducia con l'**esponenziale**,
+e $0{,}3$. Secondo: quei numeri si trasformano in fiducia con l’**esponenziale**,
 il tasto $e^x$, che gonfia i grandi molto più dei piccoli: $4{,}3$ diventa
 $72{,}7$ mentre $1{,}4$ diventa appena $4{,}2$ (poi $2{,}0$ e $1{,}3$). Terzo:
 si guarda che fetta è ciascuno del totale, che è $80{,}2$: alla coppia giusta va
@@ -516,7 +516,7 @@ l'ottimizzazione chiede. La InfoNCE dipende soltanto dai **rapporti** fra le
 similarità di una riga, quindi è insensibile a qualunque spostamento in blocco
 di una delle due nuvole che non cambi l'ordinamento; il minimo non è «le due
 nuvole sovrapposte», è «dentro ogni riga, la coppia vera davanti alle altre». Il
-divario nasce per giunta già all'inizializzazione (è l'**effetto cono**: una rete
+divario nasce per giunta già all'inizializzazione (è l’**effetto cono**: una rete
 profonda non addestrata concentra le proprie uscite in un cono stretto, e due
 reti diverse danno due coni diversi), e la temperatura bassa di cui si è parlato
 lo difende invece di chiuderlo: forzando a mano la sovrapposizione, alla
@@ -528,7 +528,7 @@ mescolano in un'unica soglia. La seconda: le operazioni che presuppongono uno
 spazio omogeneo (il centroide fra un'immagine e un testo, un $k$-means su
 vettori misti, una soglia assoluta di appartenenza) restituiscono risultati che
 sembrano sensati e non lo sono. Quel che è lecito, ed è quanto basta a tutto il
-resto della sezione, è l'$\arg\max$ **dentro** una modalità sola.
+resto della sezione, è l’$\arg\max$ **dentro** una modalità sola.
 
 `````
 
@@ -560,7 +560,7 @@ C'è però una stranezza da conoscere: **come** scrivi la frase cambia il
 risultato. «Una foto di un gatto» funziona meglio della sola parola «gatto», e
 la ragione è che il modello ha imparato dalle didascalie del web, che sono
 frasi, non parole isolate; presentargli una parola secca è come parlargli in una
-lingua un po' diversa da quella su cui si è allenato. E poi c'è l'ambiguità:
+lingua un po’ diversa da quella su cui si è allenato. E poi c'è l'ambiguità:
 «gru» da sola può essere l'uccello o la macchina da cantiere, mentre «una foto
 di una gru, l'uccello» chiude la questione. Sistemare la frase vale, su ImageNet, poco più
 di un punto di risposte giuste in più.
@@ -839,7 +839,7 @@ che sa solo leggere è la prossima sezione.
   quanto la distribuzione è piccata, e i negativi vengono dal batch, quindi un
   batch piccolo rende il compito troppo facile. A crescere con $N^2$ non è il
   calcolo, che accanto ai due encoder è trascurabile, ma la **memoria** della
-  matrice e l'**all-gather** fra i dispositivi.
+  matrice e l’**all-gather** fra i dispositivi.
 - Le due modalità restano in **due regioni disgiunte** dello spazio condiviso, il
   *modality gap* {cite}`liang2022mind`: il contrastivo ottimizza un ordinamento
   dentro il batch, che è invariante per traslazione di una delle due nuvole.

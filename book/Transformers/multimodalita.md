@@ -275,11 +275,11 @@ AlphaFold impara a leggere quella traccia e a trasformarla in geometria.
 
 `````{tab} Superiore
 
-Il sistema lavora su due rappresentazioni tenute in dialogo dall'**Evoformer**,
+Il sistema lavora su due rappresentazioni tenute in dialogo dall’**Evoformer**,
 una pila di blocchi che alternano attenzione e aggiornamenti moltiplicativi
 sui triangoli:
 
-- l'**allineamento multiplo di sequenze** (MSA), la stessa proteina in molte
+- l’**allineamento multiplo di sequenze** (MSA), la stessa proteina in molte
   specie, da cui emerge il segnale di co-evoluzione;
 - la **rappresentazione di coppia**, una matrice indicizzata su ogni coppia di
   residui $(i,j)$: di fatto un grafo pesato sulla catena.

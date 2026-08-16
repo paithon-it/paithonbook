@@ -53,7 +53,7 @@ V(s) \leftarrow V(s) + \alpha\,\underbrace{\big[\,r + \gamma\,V(s') - V(s)\,\big
 $$
 
 Qui $\alpha \in (0,1]$ è il **learning rate**, $\gamma \in [0,1]$ il **fattore
-di sconto** e $\delta$ l'**errore TD**. Il termine $r + \gamma V(s')$ è una
+di sconto** e $\delta$ l’**errore TD**. Il termine $r + \gamma V(s')$ è una
 stima aggiornata di $V(s)$ costruita *usando la stima successiva* $V(s')$:
 questa dipendenza da una stima per aggiornarne un'altra si chiama
 *bootstrapping*, ed è esattamente ciò che i metodi Monte Carlo della sezione
@@ -143,7 +143,7 @@ DQN.
 ## La formula di aggiornamento
 
 Il cuore dell'algoritmo è una sola riga. In parole suona così: *nuovo voto =
-vecchio voto + un po' della sorpresa*, dove la sorpresa è la differenza tra
+vecchio voto + un po’ della sorpresa*, dove la sorpresa è la differenza tra
 com'è andata davvero (premio incassato più prospettive dalla nuova casella) e
 come pensavi andasse.
 
@@ -528,7 +528,7 @@ La domanda è: **quanti passi guardo prima di fidarmi della mia stima?** Uno
 solo (e allora ho il TD), tutti fino alla fine (e allora ho Monte Carlo),
 oppure tre, o dieci.
 
-Guardare pochi passi dà una correzione stabile ma quasi sempre un po'
+Guardare pochi passi dà una correzione stabile ma quasi sempre un po’
 sbagliata, perché si appoggia a una stima che, quando si è appena cominciato a
 giocare, non vale niente. Guardare fino in fondo dà una correzione sempre onesta ma ballerina.
 Guardarne una manciata, in pratica, batte quasi sempre entrambi gli estremi.
@@ -683,7 +683,7 @@ qualcosa che nessuno ha dimostrato che funzioni.
   volta.
 - Il **Q-learning** tiene una tabella di voti (una riga per situazione, una
   colonna per mossa) e la corregge giocando: nuovo voto uguale vecchio voto più
-  un po' della sorpresa. Impara quali sarebbero le mosse migliori anche mentre
+  un po’ della sorpresa. Impara quali sarebbero le mosse migliori anche mentre
   si muove a casaccio per esplorare, cioè impara una cosa mentre ne fa
   un'altra.
 - Nella correzione ci sono due manopole: una decide quanto dare retta alla

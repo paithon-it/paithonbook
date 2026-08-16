@@ -19,7 +19,7 @@ registrazioni di un guidatore vero, due anni dopo, si trovò davanti a un
 ostacolo che dovette aggirare a mano: un guidatore bravo non esce mai dalla
 corsia, quindi nelle sue registrazioni non c'è un solo fotogramma che mostri
 come si rimedia a un'auto storta. Se li dovette fabbricare, deformando le foto
-buone per ottenerne altre scattate come se l'auto fosse un po' fuori centro
+buone per ottenerne altre scattate come se l'auto fosse un po’ fuori centro
 {cite}`pomerleau1991efficient`. Il resto della sezione spiega perché quel
 lavoro in più non fosse un capriccio, ma la sola cosa che tenesse in piedi il
 furgone.
@@ -211,13 +211,13 @@ dei casi pratici quell'esperto è una persona, il che sposta il costo dai dati a
 tempo umano.
 
 Vale la pena distinguere la clonazione da un parente che risolve lo stesso
-problema in un altro modo. Nell'**apprendimento per rinforzo inverso** non si
+problema in un altro modo. Nell’**apprendimento per rinforzo inverso** non si
 impara la politica, si impara la **ricompensa** che rende ottimo il
 comportamento osservato, e poi la si ottimizza con i metodi dei capitoli
 precedenti. È più costoso, ed è più robusto per una ragione precisa: una
 ricompensa è una descrizione **compatta e trasferibile** dell'obiettivo, mentre
 una politica è una tabella di reazioni valida solo dove è stata vista. Se
-l'ambiente cambia un po', la ricompensa regge e la politica no. È lo stesso
+l'ambiente cambia un po’, la ricompensa regge e la politica no. È lo stesso
 motivo per cui l'RLHF non si ferma alla fase supervisionata: il modello di
 ricompensa addestrato sulle preferenze è, di fatto, una ricompensa inferita da
 comportamento umano.
@@ -260,9 +260,9 @@ cancellare quell'aggiunta: deve cioè valere almeno **un quarto dello scarto**.
 
 L'esperto è un controllore che sa cosa fare ovunque, anche lontanissimo da
 zero: la sua regola è correggere in proporzione allo scarto, così da riportarlo
-ogni volta all'$85\%$ di quello che era. A $s = 3$ corregge di $1{,}2$, e il
+ogni volta all’$85\%$ di quello che era. A $s = 3$ corregge di $1{,}2$, e il
 conto torna: $1{,}25 \times 3 = 3{,}75$, meno $1{,}2$ fa $2{,}55$, che è
-esattamente l'$85\%$ di $3$. A $s = 20$ correggerà di $8$, e così via. E siccome
+esattamente l’$85\%$ di $3$. A $s = 20$ correggerà di $8$, e così via. E siccome
 è bravo, dallo zero non si allontana mai. Poi, a
 metà partita, diamo una folata di vento che l'esperto nelle sue registrazioni
 non ha mai preso.
@@ -458,7 +458,7 @@ i suoi stessi errori, resta un risultato teorico, e questo codice non la prova.
   soltanto un archivio di registrazioni.
 - C'è un'altra strada: invece della strategia, imparare la **ricompensa**, cioè
   che cosa l'esperto stesse cercando di ottenere. Costa di più e regge meglio se
-  il mondo cambia un po', perché descrive l'obiettivo e non solo le reazioni. Ha
+  il mondo cambia un po’, perché descrive l'obiettivo e non solo le reazioni. Ha
   un difetto suo, però: di obiettivi che spiegano lo stesso comportamento ce n'è
   un'infinità, e distinguerli guardando solo il comportamento non si può.
 ```
@@ -485,7 +485,7 @@ i suoi stessi errori, resta un risultato teorico, e questo codice non la prova.
   Serve un esperto interrogabile, non solo un archivio; e la garanzia lineare
   vale a patto che il compito sia **recuperabile**, altrimenti la costante $u$
   del bound cresce con $T$ e si torna al quadrato.
-- L'**RL inverso** risolve lo stesso problema per un'altra strada: impara la
+- L’**RL inverso** risolve lo stesso problema per un'altra strada: impara la
   **ricompensa** invece della politica. Costa di più ed è più trasferibile,
   perché una ricompensa descrive l'obiettivo mentre una politica descrive solo
   delle reazioni. È la ragione per cui l'RLHF non si ferma alla fase

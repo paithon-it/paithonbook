@@ -77,7 +77,7 @@ perdono altri, finché ciascuno resta solo e lo stormo si sfalda nell'istante
 peggiore.
 
 Con la regola **topologica** ogni storno guarda i suoi sette vicini più
-prossimi, dovunque siano, e sette restano: stanno solo un po' più lontano.
+prossimi, dovunque siano, e sette restano: stanno solo un po’ più lontano.
 
 Quanto più lontano? Meno di quanto verrebbe da dire, e vale la pena farlo
 vedere con dei cubetti, perché è il punto su cui poggia tutto il resto. Una
@@ -235,7 +235,7 @@ $P_n \to 1$ se $p > 1/2$ e $P_n \to 0$ se $p < 1/2$. Con $p = 0{,}7$ si ha
 $P_3 = 0{,}784$, $P_5 = 0{,}837$, $P_9 = 0{,}901$; con $p = 0{,}4$,
 $P_3 = 0{,}352$ e $P_9 = 0{,}267$.
 
-L'ipotesi vincolante è l'**indipendenza degli errori**, ed è la più fragile che
+L'ipotesi vincolante è l’**indipendenza degli errori**, ed è la più fragile che
 ci sia fra agenti che condividono il modello di base, i dati di
 pre-addestramento e spesso metà del prompt. Nel limite di correlazione perfetta
 $P_n = p$ per ogni $n$: la maggioranza di $n$ agenti vale un agente,
@@ -256,7 +256,7 @@ molti. Dal **Reinforcement Learning** viene il processo decisionale di Markov
 mossa, si incassa un premio e si finisce nella situazione successiva),
 insieme alla *policy* (la regola con cui un agente sceglie che mossa fare in una
 data situazione) e
-all'**assegnazione del merito**: la ricompensa arriva alla fine di una partita e
+all’**assegnazione del merito**: la ricompensa arriva alla fine di una partita e
 bisogna capire quale delle mosse se la sia guadagnata. Con più agenti quella
 domanda si sdoppia, e non chiede più soltanto *quale mossa* ha prodotto il
 risultato, ma anche *quale agente*.
