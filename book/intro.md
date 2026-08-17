@@ -47,8 +47,8 @@ scritte. Le stende un'intelligenza artificiale; le rilegge **un'altra AI**,
 che alla stesura non ha partecipato e ha un compito solo, cercare l'errore;
 e alla fine passano da me, ed è quel passaggio a decidere che cosa resta.
 Questo libro è, alla lettera, **l'AI che spiega se stessa**. Perché il metodo
-è severo, e su che cosa il libro scommette, sta nella
-{doc}`Prefazione </prefazione>`.
+è severo, su che cosa il libro scommette, e perché il segno qui sopra è un
+triangolo impossibile, sta nella {doc}`Prefazione </prefazione>`.
 :::
 
 :::{only} html

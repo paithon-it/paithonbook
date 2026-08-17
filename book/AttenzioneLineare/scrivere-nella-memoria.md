@@ -228,7 +228,10 @@ $$
 Qui $\bar{\mathbf{v}}_t$ è la «vecchia risposta»: ciò che la rubrica restituisce oggi
 alla chiave $\mathbf{k}_t$. La delta rule scrive allora soltanto l’**errore** $\mathbf{v}_t -
 \bar{\mathbf{v}}_t$, scalato da un *learning-rate* $\beta_t \in (0,1)$ appreso
-dinamicamente ($\beta_t = \sigma(\mathbf{w}_\beta^\top \mathbf{x}_t)$):
+dinamicamente ($\beta_t = \sigma(\mathbf{w}_\beta^\top \mathbf{x}_t)$, dove
+$\mathbf{x}_t$ è il vettore in ingresso al passo $t$, $\mathbf{w}_\beta$ un
+vettore di pesi appresi e $\sigma$ la sigmoide, che tiene $\beta_t$ fra $0$ e
+$1$):
 
 $$
 \mathbf{S}_t = \mathbf{S}_{t-1} + \beta_t\,(\mathbf{v}_t - \bar{\mathbf{v}}_t)\, \mathbf{k}_t^\top

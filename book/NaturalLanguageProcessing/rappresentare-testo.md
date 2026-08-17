@@ -190,7 +190,9 @@ $$
 $$
 
 dove $\text{tf}(t,d)$ è la frequenza di $t$ in $d$, $N$ il numero totale di
-documenti e $\text{df}(t)$ il numero di documenti che contengono $t$. Il
+documenti, $\text{df}(t)$ il numero di documenti che contengono $t$ e il
+logaritmo è quello **naturale** (è la scelta di `scikit-learn`; la base
+cambia solo un fattore di scala comune a tutti i termini). Il
 fattore logaritmico penalizza i termini onnipresenti (df alto). Restano due
 limiti strutturali: i vettori sono ancora sparsi e $|V|$-dimensionali, e
 nessuna relazione lega parole diverse tra loro.

@@ -2,11 +2,11 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://book.paithon.it/main/intro.html</loc>
-    <lastmod>2026-08-17T10:23:32+00:00</lastmod>
+    <lastmod>2026-08-17T12:18:43+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/prefazione.html</loc>
-    <lastmod>2026-08-17T10:23:32+00:00</lastmod>
+    <lastmod>2026-08-17T12:18:43+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/Introduzione/overview.html</loc>
@@ -306,7 +306,7 @@
   </url>
   <url>
     <loc>https://book.paithon.it/main/NaturalLanguageProcessing/rappresentare-testo.html</loc>
-    <lastmod>2026-08-17T10:54:48+00:00</lastmod>
+    <lastmod>2026-08-17T12:18:43+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/NaturalLanguageProcessing/tokenizzatori.html</loc>
@@ -330,7 +330,7 @@
   </url>
   <url>
     <loc>https://book.paithon.it/main/NaturalLanguageProcessing/etichettare-sequenze.html</loc>
-    <lastmod>2026-08-16T09:43:01+00:00</lastmod>
+    <lastmod>2026-08-17T12:18:43+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/NaturalLanguageProcessing/struttura-frase.html</loc>
@@ -398,11 +398,11 @@
   </url>
   <url>
     <loc>https://book.paithon.it/main/AttenzioneLineare/scrivere-nella-memoria.html</loc>
-    <lastmod>2026-08-17T10:54:48+00:00</lastmod>
+    <lastmod>2026-08-17T12:18:43+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/AttenzioneLineare/architetture-lineari.html</loc>
-    <lastmod>2026-08-16T12:07:01+00:00</lastmod>
+    <lastmod>2026-08-17T12:18:43+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/AttenzioneLineare/linear-attention-ricorrenza.html</loc>
@@ -790,6 +790,6 @@
   </url>
   <url>
     <loc>https://book.paithon.it/main/aggiornamenti.html</loc>
-    <lastmod>2026-08-17T11:07:34+00:00</lastmod>
+    <lastmod>2026-08-17T12:19:05+00:00</lastmod>
   </url>
 </urlset>

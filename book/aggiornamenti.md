@@ -38,6 +38,18 @@ Una versione corrisponde a una **pubblicazione**, non a una giornata di
 lavoro: il libro si scrive tutti i giorni e si pubblica quando un pezzo sta in
 piedi.
 
+(v1-6-2)=
+
+## 1.6.2 · 17 agosto 2026
+
+### Pagine ampliate
+
+- {doc}`Prefazione </prefazione>`. **Perché il segno di questo libro è un triangolo impossibile.** La prefazione lo mostrava senza dirlo. Adesso lo racconta, e non come curiosità: quell'impossibilità è un teorema, scritto da Roger Penrose nel 1991, e dice una cosa che vale per chi rilegge un libro tecnico. I tre pezzi della figura sono tutti e tre perfetti, corrispondono a oggetti veri, e il guasto non è in nessuno dei tre: è che messi in fila non tornano al punto di partenza. L'errore non ha un luogo. Da cui il modo in cui questo libro si controlla: non rileggere gli angoli uno per uno, ma fare il giro. C'è anche la storia della figura, che è a sua volta un anello: uno studente svedese nel 1934, i due Penrose nel 1958, Escher nel 1961, e Penrose che a quel triangolo era arrivato dopo aver visto una mostra di Escher.
+
+### Correzioni
+
+- **Le ultime formule della prima metà, e cinque numeri che dicevano il falso.** La spiegazione facile della precisione media definiva un punteggio che a un rilevatore quasi cieco avrebbe dato il massimo invece del minimo; la colpa ripartita all'indietro in una rete era data come «due terzi e un terzo» quando quella ripartizione non c'è; e i tre numeri di un confronto fra inizializzazioni venivano da due esperimenti diversi. Rifatti i conti, e corretti.
+
 (v1-6-1)=
 
 ## 1.6.1 · 17 agosto 2026

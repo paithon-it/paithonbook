@@ -134,6 +134,65 @@ l'angolo e seguire una trave per l'intero giro.
 È il modo esatto in cui una macchina sbaglia su una materia tecnica. Ogni frase
 regge da sola, ogni numero è verificabile, e il montaggio è falso.
 
+E quell'impossibilità non è un modo di dire né un inganno dell'occhio: è un
+teorema, e a scriverlo in matematica è stato lo stesso Roger Penrose,
+trentatré anni dopo l'articolo suo e di suo padre, in un lavoro del 1991
+intitolato «On the
+cohomology of impossible figures». Il ragionamento sta in poche righe. Un
+disegno piatto non dice a che distanza dall'occhio stiano le cose che
+rappresenta: di un pezzo di figura sai com'è fatto, non quanto è lontano, e
+quella libertà che ti resta è un numero, un fattore di scala. Prendi due pezzi
+che si sovrappongono: lì il disegno ti obbliga, e fissa il rapporto fra le due
+distanze. Fai il giro del triangolo passando per i tre pezzi, moltiplica i tre
+rapporti che hai raccolto e guarda il risultato. Se viene uno, la figura si
+costruisce. Se viene qualunque altro numero, no. Su questo triangolo non viene
+uno.
+
+Quel numero ha una casa precisa, il primo gruppo di coomologia della regione su
+cui la figura è disegnata, ma il nome conta meno di ciò che dice. Dice che
+**l'errore non ha un luogo**. Non c'è un angolo sbagliato da trovare guardando
+meglio: ogni pezzo, da solo, corrisponde a un oggetto vero, e corrisponde nel
+senso più forte, quello per cui si va dal disegno all'oggetto e si torna
+indietro senza perdere niente. In matematica una corrispondenza così si chiama
+**isomorfismo**, ed è la parola che rende il punto. Di isomorfismi, qui, ce ne
+sono tre, tutti e tre perfetti, e il guasto non è in nessuno dei tre: è che
+**non si compongono**. Chiudi il giro e non torni da dove eri partito. (È la
+stessa forma che in geometria e in fisica si chiama *olonomia*, quanto un
+oggetto cambia se lo trasporti lungo un percorso chiuso. Penrose quella parola
+non la usa; la sostanza è quella.)
+
+Ci ho messo un po’ a capire che era la descrizione più precisa che avessi mai
+letto del mestiere che stavo facendo, e che da lì viene una conseguenza pratica
+e non una metafora. Il secondo passaggio, quello che cerca l'errore, **non è
+una rilettura**. Rileggere vuol dire guardare gli angoli uno per uno, che è
+esattamente il gesto che non trova niente. Trovare vuol dire fare il giro:
+prendere un'affermazione, aprire il paper da cui viene, rifare la derivazione
+fino in fondo, eseguire il codice, e vedere se si torna al punto di partenza.
+
+Anche la storia di quel triangolo, del resto, è un anello. Lo disegnò per primo
+uno studente svedese di diciotto anni, Oscar Reutersvärd, nel 1934, e non stava
+cercando niente del genere: stava disegnando stelle. Disponendo dei cubi in
+cerchio attorno a una stella a sei punte si accorse che ne era venuta fuori una
+costellazione strana, ne aggiunse altri tre per chiudere il triangolo, e si
+ritrovò in mano nove cubi che nessun falegname potrebbe montare. Ventiquattro
+anni dopo, e senza saperne niente, lo ridisegnarono Lionel Penrose,
+psichiatra e genetista, e suo figlio Roger, matematico, in tre pagine sul
+British Journal of Psychology. Escher le lesse, e nel 1961 ci costruì sopra la
+sua *Cascata*, che di triangoli impossibili ne incastra tre; lo scrisse lui, in
+una lettera, che l'idea veniva «dai due Penrose». Ma Roger Penrose a quel
+triangolo era arrivato dopo aver visto una mostra di Escher ad Amsterdam, nel
+1954. Escher aveva acceso Penrose, Penrose aveva dato forma alla figura, la
+figura era tornata a Escher: anche qui nessuno è il primo.
+
+Un'ultima cosa, che non è una consolazione retorica. A East Perth, in
+Australia, dal 1999 c'è una scultura in acciaio di tredici metri e mezzo, di
+Brian McKay e Ahmad Abas, che è un triangolo di Penrose. Costruito. Si tocca.
+Non contraddice niente di quello che ho scritto fin qui: è un oggetto aperto e
+spezzato, che solo da certi punti della rotonda si richiude e diventa il
+triangolo. Il comunicato del giorno dell'inaugurazione ci teneva a dirlo, che
+per capirla bisogna muoversi. È l'unico modo che conosco di avere davvero
+quella figura: rinunciare a possederla da fermi, e girarci intorno.
+
 Tutto questo è severo per una ragione precisa: un modello sbaglia con la
 stessa sicurezza con cui dice il vero, e su una materia tecnica sbaglia proprio
 dove chi legge non ha modo di accorgersene. Non sbaglia il tono. Perde il

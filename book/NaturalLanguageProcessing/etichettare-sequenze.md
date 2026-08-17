@@ -427,7 +427,7 @@ proviene il massimo. Sul modello giocattolo la tabella dei massimi è:
 Al termine si prende lo stato finale con $v_n$ massimo (qui `VERBO`, con
 $0{,}0063$) e si segue $\psi$ a ritroso: `DET` → `NOME` → `VERBO`. Il cammino
 alternativo completo `DET` → `VERBO` → `VERBO` vale
-$0{,}012 \times 0{,}2 \times 0{,}3 = 0{,}00072$: quasi dieci volte meno. Il
+$0{,}012 \times 0{,}2 \times 0{,}3 = 0{,}00072$: quasi nove volte meno. Il
 costo è $O(n\,T^2)$ (per ogni parola, per ogni stato, un massimo su $T$
 predecessori) contro gli $O(T^n)$ cammini della forza bruta: con $T = 17$ e
 $n = 20$, poche migliaia di operazioni al posto di $10^{24}$, e con la

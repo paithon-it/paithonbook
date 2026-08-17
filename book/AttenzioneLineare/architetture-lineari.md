@@ -94,17 +94,17 @@ del token $t$. Le tre forme della retention sono:
 $$
 \text{Retention}(\mathbf{X}) = \big(\mathbf{Q} \mathbf{K}^\top \odot \mathbf{D}\big)\,\mathbf{V},
 \qquad
-D_{nm} =
+D_{ij} =
 \begin{cases}
-\gamma^{\,n-m} & n \ge m \\[2pt]
-0 & n < m
+\gamma^{\,i-j} & i \ge j \\[2pt]
+0 & i < j
 \end{cases}
 $$
 
 dove $\mathbf{Q}, \mathbf{K}, \mathbf{V}$ sono le matrici di query, chiavi e valori, $\odot$ è il prodotto
 elemento per elemento e $\mathbf{D}$ è una **maschera causale con decadimento**: sostituisce
-la normalizzazione softmax moltiplicando la coppia di posizioni $(n,m)$ per
-$\gamma^{\,n-m}$, un peso che dipende *solo* dalla distanza $n-m$ e svanisce in modo
+la normalizzazione softmax moltiplicando la coppia di posizioni $(i,j)$ per
+$\gamma^{\,i-j}$, un peso che dipende *solo* dalla distanza $i-j$ e svanisce in modo
 esponenziale ($0 < \gamma < 1$). Costa $O(n^2 d)$ come l'attenzione, ma tutte le
 posizioni si calcolano insieme.
 
