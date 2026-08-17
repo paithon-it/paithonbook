@@ -43,8 +43,10 @@ rilegge le vecchie. Cambiare architettura non vuol dire cambiare macchina, ma
 girare tre manopole. La prima decide **quanto è grande** la memoria. La
 seconda decide **come sbiadisce** il passato quando arriva il presente: si può
 non sbiadire affatto, sbiadire tutto in blocco della stessa quantità, sbiadire
-cassetto per cassetto in modo diverso, oppure (la versione più raffinata)
-cancellare *di mira* solo la vecchia voce che sta per essere riscritta. Non
+cassetto per cassetto in modo diverso, oppure cancellare *di mira* solo la
+vecchia voce che sta per essere riscritta. Quest'ultima non è il gradino sopra
+le altre, è un'altra cosa: sbiadire alleggerisce tutto senza guardare che cosa
+butta via, cancellare di mira tiene in ordine una voce sola. Non
 sbiadire affatto, però, non vuol dire tenere tutto: i cassetti restano quelli,
 le voci continuano ad ammucchiarsi una sopra l'altra, e più avanti in questa
 pagina vedremo che è il limite di fondo di tutta la famiglia. La terza manopola
@@ -174,7 +176,10 @@ quadratico che volevamo evitare.
 
 Le architetture di questi due capitoli sono invece un quaderno di appunti di
 taglia fissa. A ogni pagina che leggi aggiorni i tuoi appunti: riassumi,
-sovrascrivi, cancelli il vecchio per far posto al nuovo. Il quaderno costa
+sovrascrivi, cancelli il vecchio per far posto al nuovo. E non è che a un certo
+punto il quaderno si riempia e smetta di funzionare: peggiora da subito, un
+pochino a ogni pagina, e a un certo punto quel pochino è diventato troppo per
+la domanda che gli stai facendo. Il quaderno costa
 pochissimo: resta sempre dello stesso spessore per quante pagine tu legga. Ma
 proprio perché non cresce, non può contenere tutto: se dopo mille pagine ti
 chiedo di **citare a memoria** una frase precisa di pagina 900, il quaderno ti

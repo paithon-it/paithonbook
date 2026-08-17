@@ -486,7 +486,9 @@ Cinque righe, una storia sola: **cambia soltanto la prima mossa**, quella che
 decide che cosa resta di ciò che si era scritto prima. Tutto il resto (la
 memoria che non cresce mai, la voce che si somma sotto la sua etichetta, il
 fatto che il modello si alleni tutto in una volta e poi scriva una parola alla
-volta) è identico in tutte e cinque.
+volta) è identico in tutte e cinque, con una sola differenza di contorno: nelle
+due righe che correggono, quel che si somma sotto l'etichetta è la correzione,
+e la manopola la dosa.
 
 `````
 

@@ -55,9 +55,10 @@ calcolati uno per uno; con mille parole che fanno mille domande, sono un
 milione di caselle.
 
 Se invece la somiglianza **si spezza**, il peso diventa il prodotto di due
-numeri, uno di chi chiede e uno di chi risponde. Chi chiede porta allora sempre
-lo stesso numero, e il conto si raccoglie: $3\times 2 + 3\times 5 + 3\times 9 =
-3\times(2+5+9) = 3\times 16$. Il bello è che la parte fra parentesi non dipende
+numeri, uno di chi chiede e uno di chi risponde; il numero di chi risponde sta
+già dentro il suo contributo, e allora resta scoperto solo quello di chi
+chiede. Chi chiede porta sempre lo stesso numero, e il conto si raccoglie:
+$3\times 2 + 3\times 5 + 3\times 9 = 3\times(2+5+9) = 3\times 16$. Il bello è che la parte fra parentesi non dipende
 da chi chiede: la parola dopo farà $7\times 16$, quella dopo ancora
 $4\times 16$. Quel $16$ si calcola **una volta per tutte**, e le caselle della
 tabella grande non si scrivono mai.
@@ -353,6 +354,12 @@ parole sono poche; poi il registro passa da un pezzo al successivo. In fila
 vanno i pezzi, che sono pochi e grossi; il grosso del lavoro, quello dentro ai
 pezzi, resta in parallelo. Il risultato non cambia, e i blocchi torneranno in
 tutto il resto del capitolo.
+
+E c'è una seconda avvertenza, sulle promesse: meno conti non vuol dire subito
+più veloce. Su un testo corto un'attenzione dei Transformer scritta con cura
+vince ancora, perché è stata limata per anni; il guadagno si raccoglie quando
+il testo si allunga, ed è lì che il conto proporzionale stacca quello a
+valanga.
 
 `````
 

@@ -599,6 +599,12 @@ cifre sono corrette, o la probabilità assegnata alla risposta giusta), la
 curva diventa liscia e prevedibile. Il miglioramento c'era ed era continuo: la
 metrica lo nascondeva.
 
+In molti casi, non in tutti. Che gran parte di quelle curve a scalino sia un
+effetto del righello è ormai ben argomentato; che ingrandire un modello non gli
+cambi **mai** niente di qualitativo è un'affermazione più forte, e nessuno l'ha
+dimostrata. Il dibattito è aperto, e conviene tenerlo aperto anche quando la
+spiegazione furba fa comodo.
+
 La morale vale ben oltre gli LLM: **una metrica discontinua trasforma un
 progresso graduale in un miracolo apparente.**
 

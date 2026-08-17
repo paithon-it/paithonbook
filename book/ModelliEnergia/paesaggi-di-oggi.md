@@ -97,6 +97,12 @@ che non ha mai visto, ed è più difficile da ingannare con immagini manipolate.
 La misura di quanto una cosa è plausibile, che sembrava un lusso per generare,
 si rivela utile per non prendere abbagli.
 
+Il conto però va chiuso, perché una contropartita c'è. Il secondo mestiere si
+insegna con le palline che rotolano della prima delle tre vie, e quelle ogni
+tanto scappano: chiedere le due cose insieme rende l'addestramento fragile, e va
+messo in preventivo. È il difetto di famiglia di tutti i modelli a energia di
+questo capitolo, non di questo in particolare.
+
 `````
 
 `````{tab} Superiore

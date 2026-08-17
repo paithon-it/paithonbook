@@ -414,6 +414,16 @@ richiede di conoscere il continente: è tutta locale. Eppure basta a
 ricostruire la forma del paesaggio, tutta tranne una cosa: a che altezza sta
 il paesaggio nel suo insieme. E quella, per produrre risposte, non serve.
 
+C'è però un punto cieco, e non è quello. Se il continente è fatto di due regioni
+separate da un deserto dove non piove mai, le pendenze dicono benissimo com'è
+fatta ciascuna delle due e non dicono **quanta pioggia tocchi all'una rispetto
+all'altra**: per confrontarle bisognerebbe camminare dall'una all'altra, e di
+strada non ce n'è. Un modello che mette metà della sua probabilità sulla prima
+regione e uno che ce ne mette un decimo hanno le stesse identiche pendenze, e
+chi impara solo quelle non ha modo di distinguerli. Quando i dati stanno in
+gruppi ben separati, che è il caso normale, è lì che questi metodi sbagliano le
+proporzioni.
+
 Attenzione a non immaginare due carte diverse: è sempre la stessa, guardata da
 sopra o da sotto. L'altezza è l'energia, e dove l'energia è bassa la
 probabilità è alta, quindi il paesaggio della probabilità è il paesaggio

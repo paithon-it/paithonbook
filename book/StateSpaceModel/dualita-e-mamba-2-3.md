@@ -195,6 +195,14 @@ ogni corsia (da una manciata di numeri a diverse decine o centinaia) e
 organizza le corsie in gruppi, che chiama **teste**, esattamente come
 l'attenzione.
 
+Un'avvertenza, la stessa del capitolo precedente: la grande tabella dei
+confronti non si forma mai per intero, perché su un testo lungo sarebbe di
+nuovo la tabella da cui eravamo scappati. Si lavora **a blocchi**: dentro un
+blocco di poche centinaia di parole la tabella è piccola e si fa tutta insieme,
+e da un blocco al successivo passa soltanto il riassunto. Tabella dentro il
+blocco, riassunto da un blocco all'altro: è così che il lavoro resta
+proporzionale alla lunghezza e la pressa lavora lo stesso.
+
 `````
 
 `````{tab} Superiore
@@ -280,8 +288,13 @@ furbizia in più, tipica di questo capitolo: quanto contano i due estremi non è
 deciso una
 volta per tutte a metà e metà, lo decide il modello a ogni passo, in base a ciò
 che legge (il trapezio della geometria, quello che fa la media, è il caso
-particolare in cui i due estremi pesano uguale). L'errore a ogni passo è
-più piccolo, e la conseguenza pratica è curiosa: Mamba-1 e Mamba-2 avevano
+particolare in cui i due estremi pesano uguale). Le due cose, però, tirano da
+parti opposte: il conto è davvero più preciso solo se i due estremi pesano
+quasi uguale, e lasciato libero il modello preferisce sbilanciarli. Gli autori
+hanno provato a obbligarlo a stare vicino alla metà, e i risultati sono
+peggiorati: quello che si guadagna non è tanto un errore più piccolo, è una
+regola più ricca, che il modello dosa come gli conviene. La conseguenza pratica
+è curiosa: Mamba-1 e Mamba-2 avevano
 bisogno, prima del cuore selettivo, di una **piccola convoluzione causale** (un
 mini-filtro che mescola qualche parola vicina) per funzionare bene. Con il
 conto più fine, e con un ritocco in più (un numero fisso aggiunto ai due pezzi

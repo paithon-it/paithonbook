@@ -38,13 +38,26 @@ Una versione corrisponde a una **pubblicazione**, non a una giornata di
 lavoro: il libro si scrive tutti i giorni e si pubblica quando un pezzo sta in
 piedi.
 
+(v1-6-3)=
+
+## 1.6.3 · 17 agosto 2026
+
+### Pagine ampliate
+
+- {doc}`Prefazione </prefazione>`. **La chiusa torna a legarsi a quello che la precede.** Le ultime due frasi erano rimaste affiancate senza il ponte che le teneva, e il «Perché» finale restava sospeso. Rimesso il nesso, e riportato il paragrafo sul triangolo impossibile alla lunghezza giusta: dice ancora che l'impossibilità è un teorema e che i tre pezzi sono isomorfismi perfetti che non si compongono, in un terzo dello spazio e senza più separare due frasi che si tenevano.
+
+### Correzioni
+
+- **Due spiegazioni facili insegnavano il contrario di quello che succede.** Nel capitolo sull'auto-supervisione, la pagina dice che il guasto da evitare è descrivere tutte le fotografie allo stesso modo, e poi raccontava che a impedirlo è la richiesta di non ripetersi. È il contrario: quel guasto lo ferma l'altra richiesta, quella che due ritagli della stessa foto diano la stessa scheda, e la pagina non diceva la cosa da cui dipende tutto, cioè che una casella che scrive sempre lo stesso numero viene messa da parte prima del confronto. Nei modelli a energia, la descrizione «locale» del paesaggio era data per completa a meno dell'altezza complessiva: su un paesaggio a due valli separate se ne perde una per ogni valle, ed è per questo che quei metodi sbagliano le proporzioni fra gruppi di dati distinti. Corrette tutte e due, e anche i riquadri finali che le ripetevano.
+- **Diciotto punti in cui la spiegazione facile e quella formale non raccontavano lo stesso oggetto.** Il passo di tempo dei modelli a spazio di stato era presentato come la finezza di un campionamento, «con più lavoro» se piccolo, mentre è la manopola che decide quanto in fretta il sistema dimentica, e stringerla non costa niente. La divisione che protegge l'attenzione dal saturare non aveva nessuna controparte concreta, e con essa spariva un modo in cui l'attenzione si guasta. «Attenzione lineare» sembrava voler dire «più veloce sempre», mentre sotto qualche migliaio di parole il metodo classico vince ancora. E poi: i lucidi di LoRA adattano ma non insegnano, il metodo diretto di allineamento e quello classico non finiscono nello stesso punto, e la verosimiglianza «esatta» di un flusso è esatta su dati leggermente sporcati, non sul file vero.
+
 (v1-6-2)=
 
 ## 1.6.2 · 17 agosto 2026
 
 ### Pagine ampliate
 
-- {doc}`Prefazione </prefazione>`. **Perché il segno di questo libro è un triangolo impossibile.** La prefazione lo mostrava senza dirlo. Adesso lo racconta, e non come curiosità: quell'impossibilità è un teorema, scritto da Roger Penrose nel 1991, e dice una cosa che vale per chi rilegge un libro tecnico. I tre pezzi della figura sono tutti e tre perfetti, corrispondono a oggetti veri, e il guasto non è in nessuno dei tre: è che messi in fila non tornano al punto di partenza. L'errore non ha un luogo. Da cui il modo in cui questo libro si controlla: non rileggere gli angoli uno per uno, ma fare il giro. C'è anche la storia della figura, che è a sua volta un anello: uno studente svedese nel 1934, i due Penrose nel 1958, Escher nel 1961, e Penrose che a quel triangolo era arrivato dopo aver visto una mostra di Escher.
+- {doc}`Prefazione </prefazione>`. **Perché il segno di questo libro è un triangolo impossibile.** La prefazione lo mostrava senza dirlo. Adesso aggiunge la ragione, in un paragrafo: quell'impossibilità non è un inganno dell'occhio, è un teorema, e dice una cosa che vale per chi rilegge un libro tecnico. I tre pezzi della figura sono tutti e tre perfetti, corrispondono a oggetti veri, e il guasto non è in nessuno dei tre: è che non si compongono. L'errore non ha un luogo.
 
 ### Correzioni
 

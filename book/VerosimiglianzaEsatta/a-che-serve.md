@@ -35,6 +35,15 @@ numero, e $3.072 \times 2{,}92$ fa 8.970 bit, cioè meno di 1.130 byte. Stesso
 contenuto, ricostruibile senza perdere niente, in poco più di un terzo dello
 spazio. L'unica cosa che il modello ha in più è sapere che cosa aspettarsi.
 
+Un'avvertenza sulla parola «esatto», perché vale per una delle due strade e non
+per l'altra. Chi mette i pixel in fila lavora sui numeri interi che l'immagine
+ha davvero, e il conto è quello e basta. Un flusso invece lavora con quantità
+continue, e su valori interi una descrizione continua non sta in piedi: si
+aggiunge allora un pizzico di rumore ai pixel prima di misurarli, e quello che
+esce è la misura esatta dei dati così sporcati. Rispetto al file vero è un
+numero prudente: il file non sarà mai più grosso di così, semmai un po’ più
+piccolo. Va benissimo per confrontare due modelli, ma non è la stessa cosa.
+
 `````
 
 `````{tab} Superiore

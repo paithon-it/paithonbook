@@ -189,7 +189,13 @@ $e^2 = 7{,}39$, $e^1 = 2{,}72$, $e^{-1} = 0{,}37$, che sommati fanno $10{,}48$;
 le tre intensità sono allora $0{,}71$, $0{,}26$ e $0{,}04$, che sommano a uno a
 meno degli arrotondamenti, come promesso. L'elevamento a potenza serve a due cose: non far uscire mai
 numeri negativi (una parola non può contribuire in negativo), e allargare le
-differenze, così che un punto di vantaggio si veda davvero. Fatto questo, i
+differenze, così che un punto di vantaggio si veda davvero. Proprio perché le
+allarga, però, va tenuto d'occhio: se i punteggi grezzi sono numeri enormi, il
+più alto si prende tutto il colore e agli altri resta zero, cioè l'evidenziatore
+smette di sfumare e diventa un interruttore. E i punteggi crescono con la
+lunghezza delle liste, perché sono somme di tanti pezzi: per questo, prima della
+softmax, si rimpiccioliscono tutti dividendoli per uno stesso numero, tanto più
+grande quanto più le liste sono lunghe. Fatto questo, i
 value si mescolano in quelle proporzioni.
 
 ```{figure} ../figures/attention-is-all-you-need.svg

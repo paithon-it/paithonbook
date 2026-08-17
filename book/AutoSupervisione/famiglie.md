@@ -87,19 +87,26 @@ Due cose devono essere vere perché la scheda sia buona, e sono due cose diverse
 
 La prima: se compilo la scheda guardando due ritagli diversi della stessa foto,
 le due schede devono venire uguali. È il punto di sempre, l'indifferenza alle
-differenze che non contano.
+differenze che non contano. Con un'avvertenza che qui conta più che altrove:
+prima di confrontare due schede si guarda che cosa ogni casella ha scritto su
+tutte le altre fotografie, e una casella che scrive sempre lo stesso numero
+viene messa da parte, perché non ha detto niente. Due schede identiche perché
+tutte le caselle sono bloccate non si somigliano affatto: non hanno detto
+niente su cui somigliarsi.
 
 La seconda è quella nuova: **le otto caselle devono dire otto cose diverse**. Se
 la casella 3 dice sempre la stessa cosa della casella 5, allora ho una scheda da
-otto caselle che ne vale sette, e sto sprecando spazio. Il caso estremo è la
-risposta vuota: tutte e otto le caselle dicono la stessa identica cosa, e la
-scheda vale una casella sola.
+otto caselle che ne vale sette, e sto sprecando spazio.
 
 Ecco perché questa famiglia non ha bisogno né di rivali né di trucchi
-costruttivi. La risposta vuota è **vietata dal secondo requisito**, e non per
-via traverse: è scritto nel punteggio che caselle diverse devono portare
-informazione diversa, e otto caselle identiche prendono il voto peggiore
-possibile.
+costruttivi: i due requisiti vietano due guasti diversi, e insieme li coprono
+tutti e due. La **risposta vuota**, cioè descrivere tutte le fotografie allo
+stesso identico modo, la ferma il **primo**: caselle bloccate non si
+somigliano, non c'è niente da premiare, e quel requisito resta insoddisfatto
+per intero. Il **secondo** ferma un guasto più educato, la scheda che cambia da
+foto a foto ma dice otto volte la stessa cosa: lì i due ritagli si somigliano
+quanto devono, e a pagare è lo spreco. In tutti e due i casi la penalità è
+scritta nel punteggio, e non arriva per vie traverse.
 
 `````
 
@@ -347,9 +354,11 @@ da due lati.
 - **Vincolare le statistiche** è la novità di questa sezione. Si compila una
   scheda con otto caselle e si chiede due cose insieme: che due ritagli della
   stessa foto diano la stessa scheda, e che **le otto caselle dicano otto cose
-  diverse**. La risposta vuota, dove tutte le caselle dicono la stessa cosa,
-  prende così il voto peggiore possibile, e non per via traverse: è scritto nel
-  punteggio. L'idea viene dalla neurofisiologia degli anni Sessanta.
+  diverse**. Le due richieste fermano due guasti diversi: la risposta vuota,
+  dove ogni casella scrive sempre lo stesso numero, la ferma la prima, perché
+  caselle bloccate non si somigliano; la scheda che dice otto volte la stessa
+  cosa la ferma la seconda. Nessuna delle due arriva per vie traverse: è
+  scritto nel punteggio. L'idea viene dalla neurofisiologia degli anni Sessanta.
 - **Ricostruire**: si copre un pezzo e si chiede di rifarlo. Qui la risposta
   vuota non serve nemmeno a niente, perché per rifare *quella* foto bisogna
   averla descritta in modo suo. Si paga altrove: si spreca fatica su dettagli

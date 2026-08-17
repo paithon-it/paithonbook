@@ -145,6 +145,13 @@ appena le coppie possibili diventano tante: quanti controesempi devi mostrare?
 Per ogni coppia giusta ne esiste un numero enorme di sbagliate, e mostrargliene
 un pugno alla volta è come puntellare un tendone con tre paletti.
 
+E i controesempi non sono tutti uguali: quello che insegna qualcosa è la coppia
+sbagliata che al buttafuori sembra più giusta di tutte, cioè l'impostore
+migliore. Ma per trovarlo bisogna passare in rassegna la fila, che è esattamente
+il lavoro del rispondere, e va rifatto a ogni passo dell'addestramento. Il
+difetto è quindi doppio: i controesempi servono a migliaia, e trovarne uno buono
+costa quanto rispondere a una domanda.
+
 Il secondo: cambiare la porta invece di istruire il buttafuori. Se al posto
 della porta c'è una fessura, di là non passa una folla qualunque cosa lui
 dica: si costruisce il modello in modo che il numero di risposte a cui *può*

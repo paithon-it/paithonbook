@@ -205,6 +205,13 @@ fine si addestra spesso **meno dello 0,1%** dei parametri dell'intero modello:
 il file da salvare pesa megabyte invece di gigabyte, e la qualità resta vicina
 al fine-tuning completo.
 
+Con un confine da tenere presente, ed è lo stesso dell'analogia: su un lucido si
+disegnano le modifiche, non un edificio nuovo. Il ramo laterale è stretto
+apposta, e in quello stretto ci sta un cambio di tono, di formato, di materia
+trattata; non ci sta una materia che il modello non ha mai letto, né un cambio
+profondo del suo comportamento. Per quello tocca riscrivere la tabella grande,
+cioè tornare a spostare tutti i numeri.
+
 `````
 
 `````{tab} Superiore
@@ -433,8 +440,13 @@ cuoco *già* favorisce il piatto giusto, il confronto non insegna quasi nulla e
 la correzione è minima; se invece è ancora in pareggio, o peggio sta dalla parte
 sbagliata, la correzione è energica. Anche la regola d'oro sopravvive, incorporata nel
 metodo: i ritocchi si misurano sempre *rispetto alla ricetta di partenza*,
-così il cuoco migliora senza stravolgere. Stessa destinazione dell'RLHF, senza
-l'intermediario, e senza il cantiere.
+così il cuoco migliora senza stravolgere. Stessa destinazione dell'RLHF sulla
+carta, e senza il cantiere. Nei fatti le due strade non finiscono esattamente
+nello stesso punto, e la ragione è una sola: qui il cuoco impara da un quaderno
+di confronti raccolti una volta per tutte, mentre nel metodo classico il palato
+artificiale è lì, in cucina, e assaggia anche i piatti che il cuoco inventa
+oggi. Un quaderno alle domande nuove non risponde, ed è lì che va cercata la
+differenza fra i risultati dei due metodi.
 
 `````
 
@@ -758,7 +770,9 @@ garanzie sul risultato.
 - **Saltare il giudice** {cite}`rafailov2023direct`: dagli stessi confronti si
   può imparare direttamente, rendendo un po’ più probabile la risposta
   preferita e un po’ meno quella scartata, e misurando sempre i ritocchi
-  rispetto alla ricetta di partenza. Stessa destinazione, senza il cantiere.
+  rispetto alla ricetta di partenza. Stessa destinazione sulla carta, senza il
+  cantiere: nei fatti i due metodi divergono, perché il quaderno dei confronti è
+  fermo e il palato artificiale no.
 - **Mostrare i passaggi** {cite}`wei2022chain`: scrivere il ragionamento prima
   della risposta fa sbagliare meno; rifare lo stesso problema per strade
   diverse e tenere la risposta più votata aiuta ancora; i modelli

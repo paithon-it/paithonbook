@@ -130,11 +130,14 @@ del capitolo) è un rettangolo. Qui sotto si vede perché, e come si chiamano.
 
 Discretizzare è come campionare un segnale continuo: invece di seguire l'acqua
 della vasca in ogni istante, ne misuri il livello a intervalli regolari (ogni
-$\Delta$ secondi) e ti chiedi come passare da una misura alla successiva. Se
-il passo $\Delta$ è piccolo campioni fitto e cogli ogni sfumatura, ma con più
-lavoro; se è grande campioni rado e rischi di perderti quello che succede in
-mezzo. È lo stesso compromesso di ogni fotografia a scatti di un movimento
-fluido.
+$\Delta$ secondi) e ti chiedi come passare da una misura alla successiva. Quel
+$\Delta$ non dice quante misure prendere, che sono già decise (una per parola):
+dice quanto tempo passa fra l'una e l'altra, cioè quanta storia della vasca sta
+dentro un salto solo. Con $\Delta$ piccolo, fra un salto e l'altro lo scarico
+porta via poco e la memoria si allunga; con $\Delta$ grande, fra un salto e
+l'altro succede molto e di quel che c'era prima resta poco. È la manopola che
+decide quanto in fretta il sistema dimentica, e più avanti Mamba la girerà a
+ogni parola.
 
 Le due regole (bilineare e ZOH) sono due modi diversi di indovinare cosa
 succede *tra* un campione e l'altro, e basta un po’ di geometria a

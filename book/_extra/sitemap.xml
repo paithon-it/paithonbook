@@ -6,7 +6,7 @@
   </url>
   <url>
     <loc>https://book.paithon.it/main/prefazione.html</loc>
-    <lastmod>2026-08-17T12:18:43+00:00</lastmod>
+    <lastmod>2026-08-17T16:04:31+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/Introduzione/overview.html</loc>
@@ -346,7 +346,7 @@
   </url>
   <url>
     <loc>https://book.paithon.it/main/Transformers/attenzione.html</loc>
-    <lastmod>2026-08-17T10:23:32+00:00</lastmod>
+    <lastmod>2026-08-17T16:04:31+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/Transformers/architettura.html</loc>
@@ -370,7 +370,7 @@
   </url>
   <url>
     <loc>https://book.paithon.it/main/Transformers/llm.html</loc>
-    <lastmod>2026-08-16T09:39:44+00:00</lastmod>
+    <lastmod>2026-08-17T16:04:31+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/Transformers/mixture-of-experts.html</loc>
@@ -378,7 +378,7 @@
   </url>
   <url>
     <loc>https://book.paithon.it/main/Transformers/post-training.html</loc>
-    <lastmod>2026-08-16T09:39:44+00:00</lastmod>
+    <lastmod>2026-08-17T16:04:31+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/Transformers/rag.html</loc>
@@ -394,11 +394,11 @@
   </url>
   <url>
     <loc>https://book.paithon.it/main/AttenzioneLineare/dalla-softmax-alla-ricorrenza.html</loc>
-    <lastmod>2026-08-16T09:39:44+00:00</lastmod>
+    <lastmod>2026-08-17T16:04:31+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/AttenzioneLineare/scrivere-nella-memoria.html</loc>
-    <lastmod>2026-08-17T12:18:43+00:00</lastmod>
+    <lastmod>2026-08-17T16:04:31+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/AttenzioneLineare/architetture-lineari.html</loc>
@@ -414,7 +414,7 @@
   </url>
   <url>
     <loc>https://book.paithon.it/main/StateSpaceModel/dai-sistemi-dinamici-a-s4.html</loc>
-    <lastmod>2026-08-16T09:39:44+00:00</lastmod>
+    <lastmod>2026-08-17T16:04:31+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/StateSpaceModel/mamba.html</loc>
@@ -422,11 +422,11 @@
   </url>
   <url>
     <loc>https://book.paithon.it/main/StateSpaceModel/dualita-e-mamba-2-3.html</loc>
-    <lastmod>2026-08-16T09:39:44+00:00</lastmod>
+    <lastmod>2026-08-17T16:04:31+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/StateSpaceModel/panorama-e-limiti.html</loc>
-    <lastmod>2026-08-17T10:54:48+00:00</lastmod>
+    <lastmod>2026-08-17T16:04:31+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/VisioneLinguaggio/overview.html</loc>
@@ -590,7 +590,7 @@
   </url>
   <url>
     <loc>https://book.paithon.it/main/VerosimiglianzaEsatta/a-che-serve.html</loc>
-    <lastmod>2026-08-16T12:06:27+00:00</lastmod>
+    <lastmod>2026-08-17T16:04:31+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/ModelliEnergia/overview.html</loc>
@@ -606,15 +606,15 @@
   </url>
   <url>
     <loc>https://book.paithon.it/main/ModelliEnergia/oltre-la-partizione.html</loc>
-    <lastmod>2026-08-17T10:23:32+00:00</lastmod>
+    <lastmod>2026-08-17T16:04:31+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/ModelliEnergia/energia-come-compatibilita.html</loc>
-    <lastmod>2026-08-16T09:43:01+00:00</lastmod>
+    <lastmod>2026-08-17T16:04:31+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/ModelliEnergia/paesaggi-di-oggi.html</loc>
-    <lastmod>2026-08-16T12:06:27+00:00</lastmod>
+    <lastmod>2026-08-17T16:04:31+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/AutoSupervisione/overview.html</loc>
@@ -622,7 +622,7 @@
   </url>
   <url>
     <loc>https://book.paithon.it/main/AutoSupervisione/famiglie.html</loc>
-    <lastmod>2026-08-16T09:39:44+00:00</lastmod>
+    <lastmod>2026-08-17T16:04:31+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/AutoSupervisione/collasso-e-misura.html</loc>
@@ -790,6 +790,6 @@
   </url>
   <url>
     <loc>https://book.paithon.it/main/aggiornamenti.html</loc>
-    <lastmod>2026-08-17T12:19:05+00:00</lastmod>
+    <lastmod>2026-08-17T16:43:10+00:00</lastmod>
   </url>
 </urlset>
